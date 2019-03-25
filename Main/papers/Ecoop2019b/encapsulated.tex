@@ -1,10 +1,6 @@
 \section{Invariants over encapsulated state}
 \label{s:encapsulated}
-\REV{Consider managing the shipment of items, where there is a maximum combined weight:}{D}{This discussion of shipping lists and items explains a problem that this system's
-	restrictions solve, but it really needs to argue for why this solution is *good*, not that it just
-	works.  Fundamentally, the first example in Section 6 is about rep exposure; why not use reference
-	immuatbility to address that too? (I'm not saying it's easy to do so, only that it should be
-	discussed, given that reference immutability was proposed in part to address just that issue.)}
+Consider managing the shipment of items, where there is a maximum combined weight:
 \begin{lstlisting}
 class ShippingList {
   capsule Items items;
@@ -32,7 +28,7 @@ mut ShippingList l = new ShippingList(items); // l is valid
 items.addItem(new HeavyItem()); // l is now invalid!
 \end{lstlisting}
 
-As you can see it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
+As you can se\IO{e, i}t would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
 \footnote{%
 Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
 In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.
@@ -40,8 +36,8 @@ In order to write correct library code in mainstream languages like Java and C++
 For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour~\cite{Bloch08}.}
 %}{2}{citation to support this?}
 
-Our restrictions on capsule mutators ensure that capsule fields are essentially an exclusive mutable reference.
-Removing these restrictions would break our invariant protocol.
+\IO{Removing} our restrictions on capsule mutators \IODel{ensure that capsule fields are essentially an exclusive mutable reference.
+Removing these restrictions} would break our invariant protocol.
 If we were to allow \Q@x.items@ to be seen as \Q@mut@, where \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
 %\saveSpace
 \begin{lstlisting}
@@ -53,7 +49,7 @@ evilAlias.addItem(new HeavyItem()); // now l is invalid!
 If we allowed a \Q@mut@ return type the following would be accepted:
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}
-\end{lstlisting}
+\end{lstlisting}\IOComm{Merge this and the previous example?}
 
 Depending on dynamic dispatch, \Q@c.foo()@ may just be the identity function, thus
 we would get in the same situation as the former example.
@@ -69,7 +65,7 @@ we would get in the same situation as the former example.
 %\noindent  Moreover, if the used capsule field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
 
 
-\REV{Allowing \Q@this@ to be used more than once can also cause problems:}{D}{allowing 'this' to be used more than once without restriction does cause problems, but are there no intermediate restrictions that work?  This one is drastic.}
+Allowing \Q@this@ to be used more than once can also cause problems:
 \begin{lstlisting}
 mut method imm Void multiThis(C c) {
   read Foo f = c.foo(this);
@@ -84,12 +80,12 @@ In order to ensure that a second reference to \Q@this@ is not reachable through 
 If we were however to accept a \Q@read@ parameter, as in the example below,
 we would be in the same situation as before, where \Q@f@ may contain
 a reference to \Q@this@:
-\begin{lstlisting}
+\begin{lstlisting}[escapechar=\%]
 mut method imm Void addHeavy(read Foo f) {
   this.items.add(new HeavyItem())
   f.hi() } // Can 'this' be observed here?
 ...
-mut ShippingList l = new ShippingList();
+mut ShippingList l = new ShippingList(%\IO{new Items()}%);
 read Foo f = new Foo(l);
 l.addHeavy(f); // We pass another reference to `l' through f
 \end{lstlisting}

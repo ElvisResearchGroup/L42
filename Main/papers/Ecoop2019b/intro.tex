@@ -1,4 +1,4 @@
-\section{Introduction \textnormal{\IOComm{Make design goals more explicit!}}}
+\section{Introduction}\IOComm{Make design goals more explicit!}
 \label{s:intro}
 %\newpage
 %\LINE
@@ -294,8 +294,8 @@ a separate \Q@moveTo@ method, since we do not want to burden our language with e
 %We evaluate our contribution by means of case studies;
 \subheading{Summary}
 We have fully implemented our protocol in L42\footnote{
-\IO{Our implementation does not actually extend the core L42 language, but is implemented a meta-programming operation that
-checks that a given class conforms to our protocol, and injects invariant checks in the appropriate places.}
+Our implementation does not actually extend the core L42 language, but is implemented a meta-programming operation that
+checks that a given class conforms to our protocol, and injects invariant checks in the appropriate places.
 A suitably anonymised, experimental version of L42, supporting the protocol described in this paper, together with the full code of our case studies, is available at \url{http://l42.is/InvariantArtifact.zip}. We also believe it would be easy to implement our protocol in Pony and Gordon \etal's language.}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $5$ objects with an invariant, 
 our protocol performed only $77$ invariant checks, whereas the visible state semantic invariant protocols of D and Eiffel perform $53$ and $14$ million checks (respectively). See Section \ref{s:case-study} for an explanation of these result.
 % \MS{The difference between D and Eiffel is an effect of Eiffel's `uniform access principle', where fields can be used to implements `interface methods', while not triggering invariant checks.}

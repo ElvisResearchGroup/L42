@@ -46,11 +46,10 @@ These restrictions only apply to our formalism; our code examples and the L42 im
 %access restriction designed to prevent representation exposure
 %and to be allowed within invariants.
 To allow invariants over complex (cyclic) mutable objects, we introduce a novel kind of \Q!capsule! field\footnote{
-\IO{Our L42 implementation for our invariant protocol supports these fields by enforcing syntactic
-restrictions over constructors, getters, setters, and capsule mutators.}
-}, which can be accessed within invariants.
+Our L42 implementation for our invariant protocol supports these fields by enforcing syntactic
+restrictions over constructors, getters, setters, and capsule mutators.}, which can be accessed within invariants.
 %To ensure that an object has control over the mutation of its capsule fields
-\IO{To be able to easily detect when an objects invariant could be violated, we define the following rules on \Q!capsule! fields:}
+To be able to easily detect when an objects invariant could be violated, we define the following rules on \Q!capsule! fields:
 %Because the mutation of the ROG of objects capsule field could violate its invariant, we ensure that an object has control over such mutation of its capsule fields: this is preserved by the our rules on \Q!capsule! fields:
 \begin{itemize}
 	\item A \Q!capsule! field can only be initialised/updated with a \Q!capsule! expression.
@@ -96,7 +95,7 @@ Thus we can be sure that the ROG of $o.f$ will only mutate within a capsule muta
  
 Rather than allowing the values of such fields to be shared between threads/actors, this new kind of \Q!capsule! field prevents representation exposure, as does the very similar concept of owner-as-modifier~\cite{?}, where we could consider an object to be the `owner' of all the mutable objects in the ROG of its capsule fields.
 
-Note that these properties are \emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!capsule! field, and we do allow \Q!mut! references to exist on the stack \IO{during the execution of a capsule mutator}. In particular, unrestricted readonly access to \Q!capsule! fields can be allowed by writing getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language~\cite{?}. Since \Q!mut! is a subtype of \Q!read!, such a method can be called on a \Q!mut! \Q!this!, without making the method a capsule mutator.
+Note that these properties are \emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!capsule! field, and we do allow \IO{arbitrary} \Q!mut! aliases \IODel{references} to exist on \IODel{the stack} during the execution of a capsule mutator. In particular, unrestricted readonly access to \Q!capsule! fields can be allowed by writing getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language~\cite{?}. Since \Q!mut! is a subtype of \Q!read!, such a method can be called on a \Q!mut! \Q!this!, without making the method a capsule mutator.
 
 L42 also supports \Q!capsule! methods; methods with a \Q@capsule@ \Q@this@. They are not considered capsule mutators since \Q!capsule! variables can only be used once. This means that L42 guarantees that \Q!this! will not be reachable from anywhere else including the \Q!capsule! field itself; thus immediately after the single use of \Q!this! to read the \Q!capsule! field, \Q!this! will be garbage collectable.
 
@@ -129,16 +128,11 @@ The language runtime will insert automatic calls to \Q!invariant!, if such a cal
 \noindent In Appendix \ref{s:proof}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that all objects involved in execution (except as part of an invariant check) are valid.
 
 \subheading{Relaxations}
-\IO{In L42, and our code examples, we allow a couple of sound relaxations:}
+In L42, and our code examples, we allow a couple of sound relaxations:
 \begin{itemize}
-	\item \Q!invariant! methods can \IODel{be allowed to} call instance methods that in turn only use \Q@this@ to read \Q!imm! or \Q!capsule! fields, or call other such instance methods.
-	\IODel{With this relaxation, the semantics of \Q@invariant@ needs to be understood with the body of those methods inlined; thus the semantics of the inlined code needs to be logically}
-	\IO{The semantics of such methods must then be} reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. \IODel{In some sense, those inlined methods and field accesses can be thought of as macro expanded, and hence are not dynamically dispatched.
-	Such inlining has been implemented in L42.}
-	
-	\item \IODel{We could allow} All fields \IODel{to} \IO{can} be allowed to be public, \IO{provided that} access to a \Q!capsule! field on a \Q!mut! receiver other than \Q!this! is typed as \Q!read!. \IO{However,} even without this relaxation\IODel{, however,} getters and setters could be used to simulate public fields.
-	\item \IODel{\IOBlock{Moved!}{Unrestricted readonly access to \Q!capsule! fields \ldots}}
-	\item \IODel{\IOBlock{Moved!}{Java style constructors\ldots}}
+	\item \Q!invariant! methods can call instance methods that in turn only use \Q@this@ to read \Q!imm! or \Q!capsule! fields, or call other such instance methods.
+	The semantics of such methods must then be reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. 	
+	\item All fields can be allowed to be public, provided that access to a \Q!capsule! field on a \Q!mut! receiver other than \Q!this! is typed as \Q!read!. However, even without this relaxation getters and setters could be used to simulate public fields.
 \end{itemize}
 
 %\noindent\IO{L42 does not support traditional constructors or sub classing, however we could relax our restrictions to work with Pony and Gordon \etal's language which have these features:}
@@ -148,6 +142,4 @@ In our examples, we allow user written constructors, provided that \Q!this! is o
 
 To apply our invariant protocol to a language with traditional sub-classing, such as Gordon\etal's, invariant methods of a sub-class would implicitly start with a check that \Q@super.invariant()@ returns \Q@true@. In addition, invariant methods of non-final classes should also be prevented from calling non-final methods on \Q!this!, so that a subclass can't override such a method to access non \Q!imm! or \Q!capsule! fields. Note that invariant checks would not be performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}.
 
-\IODel{Both L42, and our formal language (see Section~\ref{s:formalism}) do not have traditional subclassing, rather all `classes' are either interfaces (which only have abstract methods), or are final (which cannot be subtyped). In a language with traditional sub-classing, }
-
-\IO{We do not allow the above relaxations in our formalism as they would make the proof more complicated, without making it more interesting.}
+We do not allow the above relaxations in our formalism as they would make the proof more complicated, without making it more interesting.

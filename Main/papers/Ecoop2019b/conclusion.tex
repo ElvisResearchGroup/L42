@@ -10,8 +10,8 @@
 \section{Conclusions and Future Work}
 \label{s:conclusion}
 Our approach follows the principles of \emph{offensive programming}
-~\cite{stephens2015beginning}, where 
-no attempt to fix or recover an invalid object is performed and
+~\cite{stephens2015beginning}\IODel{,} wher\IO{e:}
+no attempt to fix or recover an invalid object is performe\IO{d, a}nd
 %	\begin{itemize}
 %\item
  failures (unchecked exceptions)
@@ -36,11 +36,6 @@ than Spec\#, (the system with the most comparable goals). In Section~\ref{s:form
 To stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more), we do not formalise any specific type system.
 
 
-\IODel{\REV{One interesting avenue for future work would be to
-use invariants to encode pre and post conditions,
-as done by~\cite{Flanagan06hybridtypes}: where pre and post-conditions are encoded as the invariants of the parameter and return types (respectively).}{C}{[This] strikes me as a bit silly and impractical. Indeed: a precondition would have to hold throughout the method's execution, which is generally not the case.}
-Without good syntax sugar, such an approach could be quite verbose, however it would ensure that a method's pre-condition holds during the entire execution of a method, and not just the beginning. In addition this could be more efficient than traditional runtime checking when the same argument is used in the invocations of methods with the same pre-condition, as happens often in practice for recursive methods: where many parameters are simply passed unmodified in recursive calls.}
-
 % a method could be declared as taking a class whose invariant corresponds to the method's pre-condition,  and returning a class whose invariant corresponds to the pos-condition.
 
 
@@ -56,14 +51,14 @@ Without good syntax sugar, such an approach could be quite verbose, however it w
 
 The language we presented here restricts the forms of \Q@invariant@ and capsule mutator methods;
 such strong restrictions allow for sound and efficient injection of invariant checks. 
-These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. 
+\IOBlock{Merge this and the next paragraph \& compact them!}{These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. }
 
-In order to obtain safety, simplicity, and efficiency we traded some expressive power:
+\IOBlock{Merge into the previous paragraph \& compact}{In order to obtain safety, simplicity, and efficiency we traded some expressive power:
 the \Q@invariant@ method can only refer to immutable and encapsulated state.
 This means that while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
 we can not do the same for a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data structures, but the \Q@invariant@ method would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
-In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
+In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.} \IOComm{Mention flexible ownership types as a potential solution? (Assuming it is)}
 
 % To verify those data-structures, in future work
 % we may investigate a special kind of field that
@@ -93,7 +88,7 @@ cannot be allowed in \Q@invariant@ methods, since they are not deterministically
 %allowing non deterministic behaviour.
 Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that enables catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap sizes.
 
-Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box and the transform patterns; type modifier inference, and support for flexible ownership types.
+Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box and the transform patterns; type modifier inference\IODel{, and support for flexible ownership types}.
 
 %Our work, in comparison to previous RV techniques,
 %aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.
