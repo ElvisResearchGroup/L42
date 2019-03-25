@@ -197,7 +197,7 @@ encapsulation of \Q@children@, thus their approach would not be sound in our con
 %\end{itemize}
 %The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 
-We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. In the following table we summarise the \REV{annotation burden\footnote{\IO{We present token and character accounts since Spec\# annotations can get quite long and complicated, whereas ours are just single keywords.}}}{D}{Counting tokens and characters in annotations is not useful, and is not something we should be counting.  Please remove those, which would set a bad precedent for others. The annotation counts and categories of course are fine.},
+We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. In the following table we summarise the \REV{annotation burden\footnote{\IO{We present token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.}}}{D}{Counting tokens and characters in annotations is not useful, and is not something we should be counting.  Please remove those, which would set a bad precedent for others. The annotation counts and categories of course are fine.},
 for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GUI; as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling.\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
 \begin{center}\saveSpace\saveSpace
 \begin{tabular}{ c  c  c  c  c}
@@ -251,7 +251,7 @@ Based on these results, we believe our system is significantly simpler and easie
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
 \subheading{The Box Pattern}
-\IO{We have found} our design, \REV{using an inner \Q@Box@ object, \IO{to be quite a useful pattern in static verification}\IODel{is a common pattern in static verification}}{C}{I thought I knew a bit about static verification, but I've never heard of the Box pattern or seen anything like it.}: where one encapsulates all relevant mutating state into an encapsulated subobject which is not exposed to users.
+\IO{We have found} that \REV{using an inner \Q@Box@ object, \IO{is quite a useful pattern in static verification}\IODel{is a common pattern in static verification}}{C}{I thought I knew a bit about static verification, but I've never heard of the Box pattern or seen anything like it.}: where one encapsulates all relevant mutating state into an encapsulated subobject which is not exposed to users.
 
 % We also found natural to use the box pattern also in Spec\# requires.
 Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
