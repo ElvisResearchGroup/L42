@@ -83,7 +83,6 @@ restricts their creation, the above example would be prevented.
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
 \subheading{Allowing Internal Mutation Through Back Doors}
-\MSBlock{Compacted}{}
 Suppose we relax our rules by allowing interior mutability
 as in Rust and Javari, allowing the ROG of an `immutable' object to be mutated through back doors.
 Such back doors would allow the \Q@invariant@ method to store and read information about previous calls.

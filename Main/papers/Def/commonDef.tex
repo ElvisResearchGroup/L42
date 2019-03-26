@@ -321,30 +321,37 @@ privateNameForSaveWithName#1\endcsname%
 \newcommand{\ACComm}[1]{} 
 \else
 
-\newcommand{\NoteColour}[2]{\textcolor{#1}{#2}}
-\newcommand{\NoteText}[1]{{#1}}
-\newcommand{\NoteComm}[3]{\NoteText{\scriptsize \textcolor{#1}{[#2{:} #3]}}}
-\newcommand{\NoteBlock}[4]{%
-	\NoteText{\textcolor{#1}{[{\scriptsize #2{:} #3{ }}}}%
-	 #4%
-	\NoteText{\textcolor{#1}{]}}%
-}
-\newcommand{\NoteDel}[2]{\NoteText{\textcolor{#1!60!White}{[#2]}}}
-\newcommand{\NL}{\NoteText{\textbackslash\textbackslash}}
+
+\newcommand\parcolor[2]{{\leavevmode\color{#1}#2}}
+
+
+\newcommand{\NoteColour}[2]{\parcolor{#1}{#2}}
+\newcommand{\NoteText}[2]{{{\parcolor{#1}{#2}}}}
+
+% Marks a new line, as \\
+\newcommand{\NL}{\textbackslash\textbackslash}
+
 \newcommand{\HideNotes}{%
 	\renewcommand{\NoteColour}[2]{##2}%
 	
 	% Makes \NoteText give the same 'spacing' as a space character
 	% i.e. preceding or suceeding this command by any number of spaces
 	% should be equivalent to a single space
-	\renewcommand{\NoteText}[1]{\ignorespaces}		%\unskip\space
+	\renewcommand{\NoteText}[2]{}		%\unskip\space\ignorespaces
 }
 
+%{prefix}{name}{colour}
 \newcommand{\MakeNoteCommands}[3]{%
-	\expandafter\newcommand\csname#1\endcsname[1]{\NoteColour{#3}{##1}}%
-	\expandafter\newcommand\csname#1Comm\endcsname[1]{\NoteComm{#3}{#2}{##1}}%
-	\expandafter\newcommand\csname#1Del\endcsname[1]{\NoteDel{#3}{##1}}%
-	\expandafter\newcommand\csname#1Block\endcsname[2]{\NoteBlock{#3}{#2}{##1}{##2}}%
+	\expandafter\newcommand\csname#1\endcsname[1]{%
+		\NoteColour{#3}{##1}}%
+	\expandafter\newcommand\csname#1Comm\endcsname[1]{%
+		\NoteText{#3}{\scriptsize [#2{:} ##1]}}%
+	\expandafter\newcommand\csname#1Del\endcsname[1]{%
+		\NoteText{#3!60!White}{[##1]}}%
+	\expandafter\newcommand\csname#1Block\endcsname[2]{%
+		\NoteText{#3}{[{\scriptsize #2{:} ##1{ }}}%
+		##2%
+		\NoteText{#3}{]}}%
 }
 
 \MakeNoteCommands{EZ}{Elenna}{Blue} 

@@ -41,6 +41,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 \newcommand{\ctxG}{\myCalBig{G}}
 \renewcommand{\vs}{\Many{v}}
 \renewcommand{\Opt}[1]{#1?}
+%	\setlength{\belowcaptionskip}{0.06em}
 \begin{figure}
 	\!\!\!\!
 	\begin{grammatica}
@@ -109,7 +110,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 			,\quad\text{where }
 			\ctx_v \text{ not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\ \Kw{catch}\ \oC\_\cC]
 		}{validation error}
-	\end{grammatica}
+	\end{grammatica}%\vspace{-1em}
 	\caption{Grammar}\label{f:grammar}
 \end{figure}
 

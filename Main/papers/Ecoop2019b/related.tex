@@ -89,7 +89,14 @@ some approaches like JML suggest verifying a simpler approach (that method calls
 
 \newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
 
-\subheading{Runtime Verification Tools}\MSComm{If rejected by ECOOP, put this subheading in the appendix and add a note: we have extended related work on RV Tools}
+\iftoggle{ECOOP}{%
+	\newcommand\ECOOPDel[1]{#1}}
+{%
+	\newcommand\ECOOPDel[1]{\MSDel{#1}}%
+}
+\ECOOPDel{
+\MSBlock{If rejected by ECOOP, put this subheading in the appendix and add a note: we have extended related work on RV Tools}{
+\subheading{Runtime Verification Tools}
 By looking to a survey by Voigt \etal~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
 it seems that most runtime verification tools (RV) empower users
 to implement the kind of monitoring they see fit for their specific problem at hand. This means that users are responsible for deciding, designing, and encoding both the logical properties and the instrumentation criteria~\cite{meredith2012overview}.
@@ -172,18 +179,18 @@ Using TMs to enforce strong exception safety is a much simpler alternative, prov
 
 %\LINE
 %\subheading{Chaperones and impersonators}
-Chaperones and impersonators~\cite{DBLP:conf/oopsla/StricklandTFF12} lift\IODel{s} the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
+Chaperones and impersonators~\cite{DBLP:conf/oopsla/StricklandTFF12} lifts the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
 to work on general purpose predicates, where
 values can be wrapped to ensure an invariant holds.
 This technique is very powerful and can be used to enforce pre and post-conditions by wrapping function arguments and return values.
 This technique however does not monitor the effects of aliasing, as such they may notice if a contract has been broken, but not when or why. In addition, due to the difficulty of performing static analysis in weakly typed languages, they need to inject runtime checking code around every user-facing operation.
 Aspect oriented systems like Jose~\cite{feldman2006jose}, similarly wrap invariant checks around method bodies.
-
+%
 %One of the advantages of their system is that is transparent to the user. 
 %\LINE
-
+%
 %\LINE
-
+%
 %\noindent\textit{Performance}
 %Our case study shows that our sound approach can monitor programs
 %for a fraction of the cost of many other approaches.
@@ -199,8 +206,7 @@ Aspect oriented systems like Jose~\cite{feldman2006jose}, similarly wrap invaria
 %We expect our approach to result in a dramatic reduction over the number of required checks,
 %except for cases when public methods just update many fields directly (without using setters).
 
-
-
+}}%
 %\LINE
 \subheading{Security and Scalability}
 Our approach allows verifying an object's invariant independently of the actual invariants of other objects.
@@ -257,10 +263,10 @@ Ensuring determinism in a non-functional language is challenging. Spec\# recogni
 	of functions. The first approach is not scalable, the second overly restrictive and
 	the third unsound}'.
 	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}
-\begin{lstlisting}
-[Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
-\end{lstlisting}
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}\\*
+%\saveSpace\saveSpace\begin{lstlisting}
+\indent\Q![Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}!\\*
+%\end{lstlisting}
 And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
 As you can see, failing to handle non-determinism jeopardises reasoning.
 
