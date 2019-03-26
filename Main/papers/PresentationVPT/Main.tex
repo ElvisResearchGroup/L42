@@ -13,6 +13,35 @@
 \usepackage{listings}
 %\input{../LocalDef}
 \input{../Def/Def}
+\lstset{language=Java,
+%\lstdefinelanguage{FortyTwo}{
+   morekeywords={@requires,@ensures,method,Use,constructor,as,into,rename},
+   deletekeywords={double},
+   basicstyle=\fontfamily{pcr}\selectfont,
+   keywordstyle=\fontfamily{pcr}\selectfont\bfseries\color{darkRed},
+   identifierstyle=\idstyle,
+   showstringspaces=false,
+   mathescape=true,
+%   texcl=true,
+   xleftmargin=0pt,
+   xrightmargin=0pt,
+   breaklines=false,
+   breakatwhitespace=false,
+   breakautoindent=false,
+   tabsize=2,
+   commentstyle=\color{darkBlue}\fontfamily{pcr}\selectfont,
+   stringstyle=\color{darkRed}\fontfamily{pcr}\selectfont,
+   literate=
+             {\%}{{\mbox{\textbf{\%}}}}1
+             {[}{{\fontfamily{pcr}\selectfont\textbf{\color{darkBlue}[}}}1
+             {]}{{\fontfamily{pcr}\selectfont\textbf{\color{darkBlue}]}}}1
+             {(}{{\fontfamily{pcr}\selectfont\textbf{\color{darkBlue}(}}}1
+             {)}{{\fontfamily{pcr}\selectfont\textbf{\color{darkBlue})}}}1
+             {\{}{{\fontfamily{cmr}\selectfont\textbf{\color{darkBlue}\{}}}1
+             {\}}{{\fontfamily{cmr}\selectfont\textbf{\color{darkBlue}\}}}}1
+             {;}{{\fontfamily{pcr}\selectfont\textbf{\color{darkBlue};}}}1
+             {~} {$\sim$}1
+}
 
 \setbeamersize{text margin left=3mm,text margin right=5mm} 
 \title{Iteratively Composing Statically Verified Traits

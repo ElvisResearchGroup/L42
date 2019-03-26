@@ -66,7 +66,8 @@ generating a class body with a method \Q@pow(x)@ computing
 \item \tiny{A code optimizer could inline nested calls, producing 
 the same efficient code of the hand written versions of before}
 \end{itemize}
-\vspace{-1ex}
+
+\begin{Scaled}{0.95}{0.95}
 \begin{lstlisting}
 class Pow1{
   @ensures(result=x**1)
@@ -80,6 +81,7 @@ class Pow3 extends Pow2{
   @ensures(result=x**3)
   Int pow3(Int x){return x*pow2(x);}  }
 \end{lstlisting}
+\end{Scaled}
 \end{frame}
 
 
@@ -87,6 +89,7 @@ class Pow3 extends Pow2{
 \begin{frame}[fragile]
 \frametitle{Pow and Exp}
 \vspace{-4ex}
+\begin{Scaled}{0.95}{0.95}
 \begin{lstlisting}
 class Pow1{
   Int exp1(){return 1;}
@@ -103,15 +106,17 @@ class Pow3 extends Pow2{
   @ensures(result=x**exp3())
   Int pow3(Int x){return x*pow2(x);}  }
 \end{lstlisting}
+\end{Scaled}
 \end{frame}
 
 
 \begin{frame}[fragile]
 \frametitle{Traits}
-\vspace{-3ex}
+\vspace{-1ex}
 \begin{columns}
     \column{\dimexpr\paperwidth-10pt}
-\begin{lstlisting}[basicstyle=\small]
+\begin{Scaled}{0.9}{0.9}
+\begin{lstlisting}
 //induction base case: pow(x)=x**1
 Trait base=class {
   @ensures(result>0)@ensures(result=1)Int exp(){return 1;}  
@@ -132,6 +137,7 @@ Trait even=class {
   @ensures(result=x**exp())Int pow(Int x){return $\_$pow(x*x);}
 }
 \end{lstlisting}
+\end{Scaled}
 \end{columns}
 \end{frame}
 
@@ -140,7 +146,8 @@ Trait even=class {
 \vspace{-3ex}
 \begin{columns}
     \column{\dimexpr\paperwidth-10pt}
-\begin{lstlisting}[basicstyle=\small]
+\begin{Scaled}{0.9}{0.9}
+\begin{lstlisting}
 //`compose' performs a step of iterative composition
 Trait compose(Trait current, Trait next){
   current = current[rename exp()->$\_$exp(), pow(x)->$\_$pow(x)];
@@ -160,13 +167,15 @@ class Pow7: generate(7)
 
 /*example usage:*/new Pow7().pow(3)==2187//Compute 3**7
 \end{lstlisting}
+\end{Scaled}
 \end{columns}
 \end{frame}
 
 \begin{frame}[fragile]
 \frametitle{Comparing code}
-\vspace{-3ex}
-\begin{lstlisting}[basicstyle=\small]
+\vspace{-1ex}
+\begin{Scaled}{0.9}{0.9}
+\begin{lstlisting}
 //conventional code
 @requires(exp > 0)
 @ensures(result = x**exp)
@@ -184,9 +193,10 @@ Trait generate(Int exp) {
   }
 
 class Pow7:{//generated code
-@ensures(result>0) exp(){return 1+1+1+1+1+1+1;}
-@ensures(result = x**exp()) Int pow(Int x) {??}
+  @ensures(result>0) exp(){return 1+1+1+1+1+1+1;}
+  @ensures(result = x**exp()) Int pow(Int x) {??}
 \end{lstlisting}
+\end{Scaled}
 \end{frame}
 
 \begin{frame}[fragile]
