@@ -85,7 +85,7 @@ restricts their creation, the above example would be prevented.
 \subheading{Allowing Internal Mutation Through Back Doors}
 \MSBlock{Compacted}{}
 Suppose we relax our rules by allowing interior mutability
-as in Rust and Javari, allowing back doors to sneaky mutate the ROG of an `immutable' object.
+as in Rust and Javari, allowing the ROG of an `immutable' object to be mutated through back doors.
 Such back doors would allow the \Q@invariant@ method to store and read information about previous calls.
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:

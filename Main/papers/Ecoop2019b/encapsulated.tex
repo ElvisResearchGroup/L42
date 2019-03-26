@@ -74,7 +74,7 @@ mut method imm Void multiThis(C c) {
 
 In order to ensure that a second reference to \Q@this@ is not reachable through the parameters, we only accept \Q@imm@ and \Q@capsule@ parameters.
 Accepting a \Q@read@ parameter, as in the example below,
-would cause the same situation as before, where \Q@f@ may contain
+would cause the same problems as before, where \Q@f@ may contain
 a reference to \Q@this@:
 \begin{lstlisting}
 mut method imm Void addHeavy(read Foo f) {
