@@ -59,7 +59,7 @@ In contrast, Pony treats \Q!capsule! fields the same as \Q!capsule! variables: i
 %do not return a \Q!capsule!, but destructive reads do.
 %rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
 Pony's \Q!capsule! fields are still useful for safe parallelism, as destructive reads of a \Q!capsule! field return a \Q!capsule! reference (which can then be sent to other actors), however the ROG of a \Q!capsule! field can be mutated by the same actor, even within methods of unrelated objects.
-L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,?}. 
+L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}. 
 
 These forms of capsule fields are useful for safe parallelism but not invariant checking: Pony and L42's existing capsule fields do not prevent representation exposure; while Gordon \etal's cannot be read non-destructively, thus they should not be accessible in a invariant method.
 In Section~\ref{s:protocol} we present a novel kind of \Q!capsule! field that does not have these problems; we added support for these fields to L42, and we believe they could be easily added to Pony and Gordon \etal's language.
@@ -81,7 +81,7 @@ capsule Circle cc = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
 
 Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@. All
-\Q@new@ expressions return a \Q@mut@~\cite{clebsch2015deny,?}, so \Q@mc@ is obviously ok. The declarations of \Q@cc@ and \Q@ic@ are ok, since 
+\Q@new@ expressions return a \Q@mut@~\cite{clebsch2015deny,GIANNINI2019145}, so \Q@mc@ is obviously ok. The declarations of \Q@cc@ and \Q@ic@ are ok, since 
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
 any expression (not just \Q@new@ expressions) 
