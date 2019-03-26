@@ -83,16 +83,11 @@ Suppose we want to \IO{allow} \IODel{scale a} \Q@Widget@\IO{s to be scaled}, we 
 
 A simple and practical solution would be to define a \Q@transform@ method in \Q@Widget@, and a \Q@Transformer@ interface 
 like so:\footnote{A more general transformer could return a generic \Q@read R@.}
-\begin{lstlisting}[escapechar=\%]
+\begin{lstlisting}
 interface Transformer<T> { method Void apply(mut T elem); }
 interface Widget { ...
-<<<<<<< HEAD
   mut method Void top(Int that); // setter for immutable data
   
-=======
-  // setter%\IODel{s}% for immutable data
-  mut method Void top(Int that);
->>>>>>> branch 'master' of https://github.com/ElvisResearchGroup/L42
   // transformer for possibly encapsulated data
   mut method read Void transform(Transformer<Widgets> t);
 }
