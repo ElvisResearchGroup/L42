@@ -10,8 +10,8 @@
 \section{Conclusions and Future Work}
 \label{s:conclusion}
 Our approach follows the principles of \emph{offensive programming}
-~\cite{stephens2015beginning}\IODel{,} wher\IO{e:}
-no attempt to fix or recover an invalid object is performe\IO{d, a}nd
+~\cite{stephens2015beginning} where:
+no attempt to fix or recover an invalid object is performed, and
 %	\begin{itemize}
 %\item
  failures (unchecked exceptions)
@@ -51,14 +51,17 @@ To stay parametric over the various existing type systems which provably enforce
 
 The language we presented here restricts the forms of \Q@invariant@ and capsule mutator methods;
 such strong restrictions allow for sound and efficient injection of invariant checks. 
-\IOBlock{Merge this and the next paragraph \& compact them!}{These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. }
 
-\IOBlock{Merge into the previous paragraph \& compact}{In order to obtain safety, simplicity, and efficiency we traded some expressive power:
+
+In order to obtain safety, simplicity, and efficiency we traded some expressive power:
 the \Q@invariant@ method can only refer to immutable and encapsulated state.
 This means that while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
 we can not do the same for a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data structures, but the \Q@invariant@ method would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
-In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.} \IOComm{Mention flexible ownership types as a potential solution? (Assuming it is)}
+%In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
+Our restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality.
+
+% \IOComm{Mention flexible ownership types as a potential solution? (Assuming it is)}
 
 % To verify those data-structures, in future work
 % we may investigate a special kind of field that

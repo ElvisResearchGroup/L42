@@ -49,7 +49,7 @@
 %  private capsule Foo inner;
 %  validate
 %}
-Here we show that we are able to verify classes with circular mutable object graph\IO{s, t}hat interact with the real world using I/O.
+Here we show that we are able to verify classes with circular mutable object graphs, that interact with the real world using I/O.
 %Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
 %patterns allows to circumvent some of the apparent limitations of our system.
 % At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs.
@@ -60,7 +60,7 @@ Here we show that we are able to verify classes with circular mutable object gra
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
 the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ are stored in a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable@'s invariant.
-Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at\\ \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@\IODel{,} and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
+Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at\\ \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@ and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
 \begin{lstlisting}[mathescape=false]
 class SafeMovable implements Widget {
   capsule Box box; Int width = 300; Int height = 300;
@@ -89,8 +89,7 @@ class MoveAction implements Action { mut Box outer;
 ..
 //main expression; #$ is a capability method making a Gui object
 Gui.#$().display(new SafeMovable(..));
-\end{lstlisting}\IOComm{Later on we talk about the width and height \emph{fields}, however the above code dosn't have them!}
-
+\end{lstlisting}
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
 \Q@left@, \Q@top@, and \Q@children@. Also note how the ROG of \Q@Box@ is circular: since
 the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box@ in order to move it.
@@ -98,7 +97,7 @@ Even though the children of \Q@SafeMovable@s are fully encapsulated, we can stil
 
 %Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
 Our example shows that the restrictions of TMs and OCs are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
-In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library require\IO{s} back door\IO{s, i}nto either our type modifier or capability system to function, demonstrating the practical usability of our restrictions.
+In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either our type modifier or capability system to function, demonstrating the practical usability of our restrictions.
 
 
 \subheading{The Invariant}
@@ -144,13 +143,13 @@ Our main method automatically presses each of the $16$ buttons once. In L42, usi
 \subheading{Comparison With Visible State Semantics}
 As an experiment, we set our implementation to generate invariant checks following the  visible state semantics approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,DRef},
 where the invariant of the receiver is instead checked at the start and end of \emph{every} 
-public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call\IODel{s}.
-In our \Q!SafeMovable! class, all methods are public, and all calls \IO{(outside the invariant)} are qualified, thus this difference is irrelevant. Neither protocol performs invariant checks on field accesses or updates,
+public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call.
+In our \Q!SafeMovable! class, all methods are public, and all calls (outside the invariant) are qualified, thus this difference is irrelevant. Neither protocol performs invariant checks on field accesses or updates,
 however due to the `uniform access principle'%\footnote{%
 %L42 also follows the Eiffel uniform access principle: field accesses are the same as method calls.%
 %}
 , Eiffel allows fields to directly implement methods,
- allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width! and \Q!height! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would \IODel{invoke} \IO{perform} invariant checks.
+ allowing the \Q!width! and \Q!height! \emph{fields} to directly implement \Q!Widget!'s \Q!width! and \Q!height! \emph{methods}. On the other hand in D, one would have to write getter \emph{methods}, which would perform invariant checks.
 %though 42 represents field accesses as method calls, for a fair comparison with conventional OO approach, we do not treat field accesses on \Q@SafeMovable@s within the \Q@SafeMovable@ class itself as public method calls
 % D and Eiffel have slightly different interpretation of
 % visible state semantic when qualified/unqualified method calls or field accesses are performed.
@@ -179,7 +178,7 @@ in comparison our invariant protocol only performed $77$ calls. The number of ch
 We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties, as well as the admissibility of invariants.
 % To keep the Spec\# code aligned with the L42 one, 
 % we do not use a .NET GUI library, but we just simulate the behaviour of L42, without actually opening a window.
-\IO{As} the backend of the L42 GUI library is written in Java, we did not port it to Spec\#, rather we just simulate\IO{d it} \IODel{the backend}, and don't actually display a GUI in Spec\#.
+As the back-end of the L42 GUI library is written in Java, we did not port it to Spec\#, rather we just simulated it, and don't actually display a GUI in Spec\#.
 
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which only gave us $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array bounds. %. and value presence.
 This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method. Like our system however, Spec\# checks the invariant

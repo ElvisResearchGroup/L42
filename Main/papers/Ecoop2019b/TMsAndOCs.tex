@@ -93,9 +93,6 @@ This requires the absence of \Q!read! and \Q!mut! \emph{global/static} variables
 %This requires some restrictions on \Q@read@ fields not discussed in detail for lack of space.
 %}}
 This is the main improvement on the flexibility of TMs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
-
-\IOBlock{Move this to related work.}{Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon \etal's,  does not consider promotion and 
-infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.}
 From a usability perspective, this improvement means that
 these TMs are opt-in: a programmer can write large sections of code
 mindlessly using \Q@mut@ types and be free to have rampant aliasing. 

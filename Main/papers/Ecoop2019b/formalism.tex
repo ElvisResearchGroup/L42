@@ -14,7 +14,7 @@ We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type
 
 To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:
 \begin{itemize}
-	\item An implicit program/class table; \IO{we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the field declaration of field $f$.}
+	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the field declaration of field $f$.
 	\item Memory, $\sigma : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
 	We use the notation $\sigma[l.f=v]$ to update a field of an object, and $\sigma[l.f]$ to access one.
 	\item A main expression that is reduced in the context of such a memory and program.
@@ -159,8 +159,7 @@ We additionally restrict the grammar with the following well-formedness criteria
 		
 		
 		\text{if } \mdf=\Kw{mut}\text{ and }\exists \f\text{ such that }
-		\\*\quad C.f=\Kw{capsule}\,\_ \text{ and } \IO{e = \ctx[\Kw{this}\singleDot\f]} \IODel{\f\, \text{inside}\, C\singleDot\m}
-		\\*
+		\\*\quad C.f=\Kw{capsule}\,\_ \text{ and } e = \ctx[\Kw{this}\singleDot\f]\\*
 		\text{then }\e'=\M{l}{e}{l\singleDot\invariant}\\*
 		\text{otherwise }\e'= \e
 	\end{array}
@@ -204,12 +203,12 @@ We additionally restrict the grammar with the following well-formedness criteria
 \subheading{Reduction rules}
 Our reduction rules are defined in Figure \ref{f:reductions}.
 They are pretty standard, except for our handling of monitor expressions.
-\IODel{We define the relation \emph{inside} as follows:}\par
-\IODel{$%\begin{array}{l}
-\f\, \textit{inside}\ C\singleDot\m\text{ iff }
-C\singleDot\m=\_\,\Kw{method}\_\,\ctx[\Kw{this}\singleDot\f]
+%\IODel{We define the relation \emph{inside} as follows:}\par
+%\IODel{$%\begin{array}{l}
+%\f\, \textit{inside}\ C\singleDot\m\text{ iff }
+%C\singleDot\m=\_\,\Kw{method}\_\,\ctx[\Kw{this}\singleDot\f]
 %\end{array}
-$}
+%$}
 
 %\noindent Inserting the monitor expressions during reduction is convenient for the proof,
 %but it could instead be done ahead of time.
@@ -221,7 +220,7 @@ Monitor expressions are only a proof device, they need not be implemented direct
 For example, in L42 we implement them by statically injecting calls to \Q!invariant! at the end of setters, factory methods and capsule mutators; this works as L42 follows the uniform access principle, so it does not have primitive expression forms for field updates and constructors, rather they are uniformly represented as method calls.
 % do not need to represent them.  In L42 field updates are always performed throughout a setters, thus we can just inject calls to \Q@invariant@ on setters, at the end of constructor bodies and at the end of  capsule mutators.
 
-\IO{The failure of a monitor expression, \M{l}{e_1}{e_2},} \IODel{Monitor failures} will be caught by our \textsc{try error} rule, as will any other uncaught monitor failure in $e_1$ or $e_2$.
+The failure of a monitor expression, \M{l}{e_1}{e_2}, will be caught by our \textsc{try error} rule, as will any other uncaught monitor failure in $e_1$ or $e_2$.
 
 \subheading{Statement of Soundness}
 We define a deterministic reduction to mean that exactly one reduction is possible:\\*

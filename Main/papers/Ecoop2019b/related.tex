@@ -3,7 +3,6 @@
 
 \subheading{Type Modifiers}
 \IOComm{Background on capsule fields, relation with owner as modifier?}
-
 We rely on a combination of modifiers that are supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
 Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
@@ -12,6 +11,9 @@ Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12
 %Since such proofs have already been done,
 %in this work we just assume the required properties.
 Those approaches all support deep/strong interpretation, without back doors.
+Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon \etal's,  does not consider promotion and 
+infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
+
 
 Other TMs approaches like Javari~\cite{TschantzErnst05,Boyland06}
 and Rust~\cite{matsakis2014rust}
@@ -22,18 +24,6 @@ Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is another popular form of
 muller2002modular,%
 barnett2011specification%
 }.
-%\IOBlock{Why does this paragraph exist? It's unrelated to anything.}{Capsule/isolated local variables are affine in that they can be used only once, however this linearity is a property of variables, not expressions or fields. Linear/affine types extend this idea further, however they usually do not consider the ROGs of such types, or work in an OO setting~\cite{ahmed20073,fahndrich2002adoption}.}
-% The interpretation of capsule/isolated local variable is linear/affine: they can be used at most 1 time. See~\cite{Smith:2000:AT:645394.651903,ahmed20073,fahndrich2002adoption} for foundational work on linear/affine types, where...
-
-%On ownership verification
-%Peter Mueller and Arnd Peotzsch Heffter,  eg Müller, P.: Modular Specification and Verification of Object-Oriented Programs, 2002.
-%M. Barnett and M. Fähndrich and K. R. M. Leino and P. Müller and W. Schulte and H. Venter: Specification and Verification: The Spec# Experience. Communications of the ACM, 2011.
-%\noindent\textit{Strong Exception Safety:}
-%Exception safety seems at first glance a smaller issue with respect 
-%to the other two, but is the final piece that lets the whole system work in a real world setting.
-%Note that state of the art type systems to enforce exception safety
-% do not restrict code that do not capture errors, and
-%only the point of error capturing is constrained.
 
 \subheading{Object Capabilities}
 In literature, OCs are used to provide a wide range of guarantees, and many variations are present.
@@ -45,7 +35,7 @@ immutable classes must be final with only final fields that refer to immutable c
 %Instances of immutable classes are immutable objects.
 In Joe-E, every method that only takes instances of immutable classes is pure.
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
-In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}. In our work, every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type\IO{; in particular, we allow the parameter of such a method to be mutated later on by other code}.
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}. In our work, every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Class invariant protocols}
@@ -215,7 +205,7 @@ Aspect oriented systems like Jose~\cite{feldman2006jose}, similarly wrap invaria
 %\LINE
 \subheading{Security and Scalability}
 Our approach allows verifying an object's invariant independently of the actual invariants of other objects.
-This is in contrast \IODel{with} \IO{to} the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
+This is in contrast to the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
 Thus, static verification proceeds like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
 This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
  Static verification has more flexible and fine-grained annotations and often relies on a fragile theorem prover as a backend.
@@ -227,15 +217,15 @@ To soundly verify code embedded in an untrusted environment, as in gradual typin
 consider a verified core and a runtime verified boundary.
 You can see our approach as an extremely modularized	version of such system: every class is its
 own verified core, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
-soundly handled by our protocol, independently of the \IO{behaviour of} code that uses such class or any other surrounding code.
+soundly handled by our protocol, independently of the behaviour of code that uses such class or any other surrounding code.
 
 Our approach works both  in a library setting and with the open world assumption.
 Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real-world system with dynamic class loading, and could trivially be broken by a user-defined \Q@EvilSubject@.
 
 \subheading{Static Verification}
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts and class invariants. 
-It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it also allows only part of an object's ROG to be owned/encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotatio\IO{n, s}ince merely having an alias to an object
-is insufficient to modify it or call \IO{its} methods \IODel{on it}.
+It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it also allows only part of an object's ROG to be owned/encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
+is insufficient to modify it or call its methods.
 %tells you nothing about it, hindering
 %modification and method calls.
 Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like us, does perform runtime checks for invariants and throws unchecked exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
@@ -244,7 +234,7 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
 Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid! function as the invariant and injects pre and post-conditions following visible state semantics;
 however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
-Dafny is also generally highly restrictive with its rules for mutation\IODel{,} and object construction, it also does not provide any means of performing non deterministic I/O.
+Dafny is also generally highly restrictive with its rules for mutation and object construction, it also does not provide any means of performing non deterministic I/O.
 
 
 
@@ -268,13 +258,12 @@ Ensuring determinism in a non-functional language is challenging. Spec\# recogni
 	of functions. The first approach is not scalable, the second overly restrictive and
 	the third unsound}'.
 	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. For example, the following method verifies:
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:
 \begin{lstlisting}
 [Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
 \end{lstlisting}
-
 And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
-As you can se\IO{e, f}ailing to handle non-determinism jeopardises reasoning.
+As you can see, failing to handle non-determinism jeopardises reasoning.
 
 A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non final fields, or calling any impure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
 \saveSpace
