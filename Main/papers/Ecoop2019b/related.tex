@@ -257,7 +257,7 @@ Ensuring determinism in a non-functional language is challenging. Spec\# recogni
 	of functions. The first approach is not scalable, the second overly restrictive and
 	the third unsound}'.
 	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}
 \begin{lstlisting}
 [Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}
 \end{lstlisting}
