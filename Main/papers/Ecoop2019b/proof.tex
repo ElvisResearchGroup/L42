@@ -316,7 +316,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 	  	\item If it was $\mathit{monitored}$, it still is.
 	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
 			\begin{itemize}
-				\item If $l\in \mathit{erog}(\sigma,l_1)$\IO{, by $\mathit{wellEncapsulated}$, not $\mathit{mutatatable}{l, \sigma, e}$, but by \thm{Mut Field}, $\mathit{mutatable}(l, \sigma, e)$, a contradiction.}
+				\item If $l\in \mathit{erog}(\sigma,l_1)$\IO{, by $\mathit{wellEncapsulated}$, not $\mathit{mutatable}(l, \sigma, e)$, but by \thm{Mut Field}, $\mathit{mutatable}(l, \sigma, e)$, a contradiction.}
 				\IODel{we have a contradiction since
 				 $\mathit{mutatable}(l, \sigma, e)$, (by \thm{Mut Field})}
 		    	\item Otherwise, by our well\IO{-}formed\IO{n}ess criteria that \Q@invariant@ only accesses \Q@imm@ and \Q@capsule@ fields, and by \thm{Determinism}, it is clearly the case that $\mathit{valid}$ still holds;
@@ -325,7 +325,7 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 		  	\end{itemize}
 	  \end{itemize}
 	  \item \IODel{Every} \IO{$l$ is not reachable from any} other $l_0$\IO{,} \IODel{is not in the reachable object graph of $l$,
-	  thus it} \IO{$l_0$} being $\mathit{OK}$ could not have been effected by this reduction step.
+	  thus it} \IO{thus $l_0$} being $\mathit{OK}$ could not have been effected by this reduction step.
 	\end{itemize}
 
 \item (\textsc{access}) $\sigma|l\singleDot f \rightarrow \sigma|v$:

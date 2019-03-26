@@ -337,7 +337,7 @@ privateNameForSaveWithName#1\endcsname%
 	% Makes \NoteText give the same 'spacing' as a space character
 	% i.e. preceding or suceeding this command by any number of spaces
 	% should be equivalent to a single space
-	\renewcommand{\NoteText}[1]{\unskip\space\ignorespaces}
+	\renewcommand{\NoteText}[1]{\ignorespaces}		%\unskip\space
 }
 
 \newcommand{\MakeNoteCommands}[3]{%

@@ -6,18 +6,23 @@
 
 We rely on a combination of modifiers that are supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
-Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}; 
-each of these works is accompanied by proofs about the properties of those modifiers. \IOComm{The Pony ones have no proofs!}
-Since such proofs have already been done, in this work we just assume the required properties.
+Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
+%each of these works is accompanied by proofs about the properties of those modifiers.
+%\IOComm{The Pony ones have no proofs!}
+%Since such proofs have already been done,
+%in this work we just assume the required properties.
 Those approaches all support deep/strong interpretation, without back doors.
 
-TM approaches like Javari~\cite{TschantzErnst05,Boyland06} and \REV{Rust}{A}{Why? Can you expand what the problem is?}~\cite{matsakis2014rust} are unsuitable since they introduce back doors which are not easily verifiable as being used properly. \IOComm{This is problematic, because TMs are very general! In particular, the way Rust wants them to be used is unsuitable, even without back doors. If we deleted interior mutability or made their exclusive/mutable references deep, however it might work.}
+Other TMs approaches like Javari~\cite{TschantzErnst05,Boyland06}
+and Rust~\cite{matsakis2014rust}
+are unsuitable;
+they model weaker properties and provide back doors which are not easily verifiable as being used properly.
 Many approaches just try to preserve purity (as for example~\cite{pearce2011jpure}), but here we also need aliasing control.
 Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is another popular form of aliasing control that can be used as a building block for static verification~\cite{%
 muller2002modular,%
 barnett2011specification%
 }.
-\IOBlock{Why does this paragraph exist? It's unrelated to anything.}{Capsule/isolated local variables are affine in that they can be used only once, however this linearity is a property of variables, not expressions or fields. Linear/affine types extend this idea further, however they usually do not consider the ROGs of such types, or work in an OO setting~\cite{ahmed20073,fahndrich2002adoption}.}
+%\IOBlock{Why does this paragraph exist? It's unrelated to anything.}{Capsule/isolated local variables are affine in that they can be used only once, however this linearity is a property of variables, not expressions or fields. Linear/affine types extend this idea further, however they usually do not consider the ROGs of such types, or work in an OO setting~\cite{ahmed20073,fahndrich2002adoption}.}
 % The interpretation of capsule/isolated local variable is linear/affine: they can be used at most 1 time. See~\cite{Smith:2000:AT:645394.651903,ahmed20073,fahndrich2002adoption} for foundational work on linear/affine types, where...
 
 %On ownership verification
@@ -70,7 +75,8 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};
 %invariant can be manually opened and closed by using special operations; % Add cite here!
-\item Or, as in this work, the invariant of any object which could be \emph{involved} in execution is assumed to hold. It is checked after every modification of the object or its encapsulated ROG. \IOComm{Is a reading going to know what an 'encapsulated ROG' is?}
+\item Or, as in this work, the invariant of any object which could be \emph{involved} in execution is assumed to hold. It is checked after every modification of the object or 
+the ROG of its \Q@capsule@ fields.
 \end{itemize}
 \noindent These different protocols can be deceivingly similar, and 
 some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
@@ -95,9 +101,6 @@ some approaches like JML suggest verifying a simpler approach (that method calls
 \newcommand\sepItems{\saveSpace\saveSpace\saveSpace\\*${}_{}$\\*${}_{}\,\bullet\,$}
 
 \subheading{Runtime Verification Tools}
-Many languages and tools support some form of runtime invariant checking (e.g. Eiffel~\cite{Meyer:1992:EL:129093}, D~\cite{Alexandrescu:2010:DPL:1875434},
-and JML~\cite{Burdy2005}). \IOComm{This sentence is unconnected to the rest of the paragraph, it also dosn't say anything interesting.}
-
 By looking to a survey by Voigt \etal~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
 it seems that most runtime verification tools (RV) empower users
 to implement the kind of monitoring they see fit for their specific problem at hand. This means that users are responsible for deciding, designing, and encoding both the logical properties and the instrumentation criteria~\cite{meredith2012overview}.
@@ -239,7 +242,7 @@ Spec\# also works with existing .NET libraries by annotating them with contracts
 
 
 Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
-Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!\{:autocontracts\}! annotation, which treats a class's \Q!Valid! function as the invariant and injects pre and post-conditions following visible state semantics;
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid! function as the invariant and injects pre and post-conditions following visible state semantics;
 however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
 Dafny is also generally highly restrictive with its rules for mutation\IODel{,} and object construction, it also does not provide any means of performing non deterministic I/O.
 
@@ -259,10 +262,11 @@ However, a study~\cite{chalin2007logical} discovered that developers expect spec
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.
 Dafny~\cite{DBLP:conf/sigada/Leino12} uses a hybrid approach: it has mostly the same language for both specification and execution. Specification (`ghost') contexts can use uncomputable constructs such as universal quantification over infinite sets, whereas runtime contexts allow mutation, object allocation and print statements. The semantics of shared constructs (such as short circuiting logic operators) is the same in both contexts.
+Most runtime verification systems, such as ours, use a metacircular approach: specifications are simply code in the underlying language. Since specifications are checked at runtime, they are unable to verify uncomputable contracts.
 
-Most runtime verification systems, such as ours, use a metacircular approach: specifications are simply code in the underlying language. Since specifications are checked at runtime, they are unable to verify uncomputable contracts. \IOComm{The rest of this section is about `purity'. Put a section header?} Ensuring determinism in a non\IO{-}functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} `\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
+Ensuring determinism in a non-functional language is challenging. Spec\# recognizes the need for purity/determinism when method calls are allowed in contracts~\cite{barnett200499} `\emph{There are three main current approaches: a) forbid the use of functions in specifications, b) allow only provably pure functions, or c) allow programmers free use
 	of functions. The first approach is not scalable, the second overly restrictive and
-	the third unsound.}'. \IODel{\NL}
+	the third unsound}'.
 	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
 Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. For example, the following method verifies:
 \begin{lstlisting}

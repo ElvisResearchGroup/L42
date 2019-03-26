@@ -59,7 +59,7 @@ class Person { .. // Same as before
 
 Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust \IOComm{why are we mentioning Rust when it dosn't support imm at all?}), or even eliminate (as in Java), the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
-\subheading{Unrestricted \IO{Access To Capability Objects} \IODel{use of non-determinism}} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation\IODel{, such as} by creating new capability objects \IO{or mutating existing ones}, could break our guarantee that (manually) calling it always returns \Q!true!.
+\subheading{Unrestricted \IO{Access To Capability Objects} \IODel{use of non-determinism}} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation\IODel{, such as} by creating new capability objects \IO{or mutating existing ones}, could break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
 %\Q@invariant@ to be non-deterministic.}%
 % 
 For example consider this simple and contrived (mis)use of person:

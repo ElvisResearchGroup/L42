@@ -88,7 +88,7 @@ cannot be allowed in \Q@invariant@ methods, since they are not deterministically
 %allowing non deterministic behaviour.
 Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that enables catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap sizes.
 
-Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box and the transform patterns; type modifier inference\IODel{, and support for flexible ownership types}.
+Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box pattern, as well as type modifier inference.
 
 %Our work, in comparison to previous RV techniques,
 %aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.
