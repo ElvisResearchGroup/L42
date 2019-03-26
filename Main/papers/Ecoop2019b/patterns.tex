@@ -1,7 +1,9 @@
 \section{Patterns}
 \label{s:patterns}
 \lstset{morekeywords={invalid}}
-In Section~\ref{s:case-study} and Appendix~\ref{s:MoreCaseStudies} we showed how the box pattern can be used to write invariants over cyclic mutable object graphs, the later also shows how a complex mutation can be done in a an `atomic' way, with a single invariant check. However the box pattern is much more powerful. Suppose we want to pass a temporarily `broken' object to other code as well as perform multiple field updates with a single invariant check. Suppose we added another type-modifier \Q!invalid! (denoting an object whose invariant need not hold), and an \Q!expose! statement like Spec\#:
+In Section~\ref{s:case-study} and Appendix~\ref{s:MoreCaseStudies} we showed how the box pattern can be used to write invariants over cyclic mutable object graphs, the \MS{latter} also shows how a complex mutation can be done in a an `atomic' way, with a single invariant check. However the box pattern is much more powerful. Suppose we want to pass a temporarily `broken' object to other code as well as perform multiple field updates with a single invariant check. 
+\MS{One may think we would need to add features
+to the language, like } another type-modifier \Q!invalid! (denoting an object whose invariant need not hold), and an \Q!expose! statement like Spec\#:
 \begin{lstlisting}
 interface Person {
   mut method Bool accept(read Account a, read Transaction t); }
@@ -13,8 +15,8 @@ interface Transaction {
 class Transfer { Int money;
   // gain some money, or lose some money
   method Void execute(mut invalid Account that) {
-         if (this.money > 0) { that.income   += money; }
-    else if (this.money < 0) { that.expenses -= money; }}}
+    if (this.money >= 0) { that.income   += money; }
+    else { that.expenses -= money; }}}
 
 class Account {
   UInt income; UInt expenses; mut Person holder;
@@ -28,13 +30,14 @@ class Account {
      } // check the invariant here
 }}}
 \end{lstlisting}
-The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each element of the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we dont want a \Q!Transaction! to do this. This is what the Spec\# style expose block is expression: during the \Q!for! loop we dont know/care if \Q!this.invariant()! is \Q!true!, but after the loop it will be checked. For this to make sense, we explicitly annotate \Q!Transfer.execute! to take an \Q!invalid Account!: it cannot assume that the invariant of \Q!that! holds, and it is allowed to modify its fields without needing to check it. Adding support for such code in our invariant protocol would likely require making the type system significantly more complicated as well as burdening it with more core syntactic forms. This however is unnecessary, as we can use our box pattern to achieve the same result:
+The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each element of the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we dont want a \Q!Transaction! to do this. 
+\MS{In Spec\#, the expose block would be the right tool for this job:} during the \Q!for! loop we dont know/care if \Q!this.invariant()! is \Q!true!, but after the loop it will be checked. For this to make sense, we explicitly annotate \Q!Transfer.execute! to take an \Q!invalid Account!: it cannot assume that the invariant of \Q!that! holds, and it is allowed to modify its fields without needing to check it. Adding support for such code in our invariant protocol would likely require making the type system significantly more complicated as well as burdening it with more core syntactic forms. This however is unnecessary, as we can use our box pattern to achieve the same result:
 \begin{lstlisting}
 class Transfer { Int money;
   method Void execute(mut AccountBox that) {
    // same as before
-         if (this.money > 0) { that.income   += money; }
-    else if (this.money < 0) { that.expenses -= money; }}}
+    if (this.money >= 0) { that.income   += money; }
+    else { that.expenses -= money; }}}
 
 class AccountBox { UInt income; UInt expenses; }
 class Account {
@@ -44,7 +47,7 @@ class Account {
     
   mut method Void transfer(mut Transaction ts) {
     if (this.holder.accept(this, ts)) {
-	  t.transferInner(ts.compute()); }}
+	  this.transferInner(ts.compute()); }}
 
   // capsule mutator
   private mut method Void transferInner(ImmList<Transfer> ts) {
@@ -56,14 +59,14 @@ class Account {
 \end{lstlisting}
 An \Q!AccountBox! now acts like an \Q!invalid Account!, and the capsule mutator, \Q!transferInner!, behaves like an \Q!expose! block. In particular, the above code demonstrates that our system can:
 \begin{itemize}
-\item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field, this is fine since it is not mentioned in the invariant of \Q!invariant!.
+\item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the invariant of \Q!invariant!.
 \item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner! method can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant! will only be checked at the end of the loop.
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before it terminates.
 \item Pass state of an `invalid' object around in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not it's invariant: if you have an \Q!Account!, you can be sure that it's \Q!income > expenses!, but not if you have an \Q!AccountBox!.
 \item Wrap normal methods over capsule mutators: in the above code \Q!transfer! is not a capsule mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
 \end{itemize}
 
-Though capsule mutators can be used to perform batch operations like the above, since they can only take immutable objects, this means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such an operation.
+Though capsule mutators can be used to perform batch operations like the above, they can only take immutable objects. \MS{This} means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such an operation.
 
 \subheading{The Transform Pattern}
 \IO{Recall the GUI case study in Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements it.}
@@ -83,7 +86,7 @@ like so:\footnote{A more general transformer could return a generic \Q@read R@.}
 \begin{lstlisting}
 interface Transformer<T> { method Void apply(mut T elem); }
 interface Widget { ...
-  mut method Void top(Int that); // setters for immutable data
+  mut method Void top(Int that); // setter for immutable data
   
   // transformer for possibly encapsulated data
   mut method read Void transform(Transformer<Widgets> t);
