@@ -14,7 +14,7 @@ We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type
 
 To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:
 \begin{itemize}
-	\item An implicit program/class table\IODel{.}\IO{, were e use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the field declaration of field $f$.}
+	\item An implicit program/class table; \IO{we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the field declaration of field $f$.}
 	\item Memory, $\sigma : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
 	We use the notation $\sigma[l.f=v]$ to update a field of an object, and $\sigma[l.f]$ to access one.
 	\item A main expression that is reduced in the context of such a memory and program.

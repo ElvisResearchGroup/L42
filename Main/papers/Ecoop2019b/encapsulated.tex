@@ -80,12 +80,12 @@ In order to ensure that a second reference to \Q@this@ is not reachable through 
 If we were however to accept a \Q@read@ parameter, as in the example below,
 we would be in the same situation as before, where \Q@f@ may contain
 a reference to \Q@this@:
-\begin{lstlisting}[escapechar=\%]
+\begin{lstlisting}
 mut method imm Void addHeavy(read Foo f) {
   this.items.add(new HeavyItem())
   f.hi() } // Can 'this' be observed here?
 ...
-mut ShippingList l = new ShippingList(%\IO{new Items()}%);
+mut ShippingList l = new ShippingList(new Items());
 read Foo f = new Foo(l);
 l.addHeavy(f); // We pass another reference to `l' through f
 \end{lstlisting}

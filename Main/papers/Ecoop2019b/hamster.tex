@@ -31,7 +31,7 @@ Though we don't want \Q@pos@ to ever mutate, Spec\# currently has no way of enfo
 
 To enable Spec\# to reason about \Q@pos@'s validity, we will require that it be a \emph{peer} of the enclosing \Q@Hamster@; we can do this by annotating \Q@pos@ with \Q@[Peer]@. Peers are objects that have the same owner, implying that  whenever one is valid and/or consistent, the other one also is. This means that if we have a \Q@Hamster@, we can use its \Q@pos@, in the same ways as we could use the \Q@Hamster@.
 
-To simplify instantiation of \Q@Hamster@s, their constructors will take unowned \Q@Point@s\IODel{,} \IO{;} Spec\# will then automatically make such \Q@Point@ a peer. This is achieved by taking a \Q@[Captured]@ \Q@Point@ in the constructor (note how similar this is to taking a \Q@capsule@ \Q@Point@). Note that unlike our system, this prevents multiple \Q@Hamster@s from sharing the same \Q@Point@, unless both \Q@Hamster@s have the same owner, if \Q@Point@ were immutable, there would be no such restriction.
+To simplify instantiation of \Q@Hamster@s, their constructors will take unowned \Q@Point@s; Spec\# will then automatically make such \Q@Point@ a peer. This is achieved by taking a \Q@[Captured]@ \Q@Point@ in the constructor (note how similar this is to taking a \Q@capsule@ \Q@Point@). Note that unlike our system, this prevents multiple \Q@Hamster@s from sharing the same \Q@Point@, unless both \Q@Hamster@s have the same owner, if \Q@Point@ were immutable, there would be no such restriction.
 
 With the aforementioned modifications, the \Q@Hamster@ becomes:
 \begin{lstlisting}
