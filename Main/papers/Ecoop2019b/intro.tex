@@ -317,8 +317,17 @@ Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclus
 
 Appendix \ref{s:proof} provides a proof that our invariant protocol is sound.
 
-\IODel{Appendices \ref{s:hamster} and \ref{s:MoreCaseStudies} provide further
-case studies and comparisons against Spec\#, D and Eiffel.}
-\IO{Appendix~\ref{s:hamster} explains exactly why the Spec\# \Q!Hamster! encoding was so verbose. Appendix~\ref{s:MoreCaseStudies} shows an additional case study were Spec\# only performs half as many invariant checks as our protocol, whereas D and Eiffel only perform twice as many; we additionally discuss how Spec\# is able to represent more kinds of invariants than our protocol. Finally, in Appendix~\ref{s:patterns}, we show how the box pattern can be used to perform batch operations with a single invariant check, as well as how the state of `broken' objects can be passed around.} \IOComm{For OOPSLA mention extended related work appendix.}
+\IO{Appendix~\ref{s:hamster} explains exactly why the Spec\# \Q!Hamster! encoding was so verbose. In Appendix~\ref{s:MoreCaseStudies} \MS{we designed a worst case scenario} were Spec\# 
+%FALSE is a quarter? only performs half as many invariant checks as our protocol,
+perform a quarter of our  invariant checks,
+ while D and Eiffel perform twice as many.
+\MS{In order to compare with examples from other authors, in Appendix~\ref{s:MoreCaseStudies} we exam the examples of some Spec\# papers~\cite{DBLP:journals/jot/BarnettDFLS04,leino2004object,DBLP:conf/mpc/BarnettN04}; we show that we can not encode some of those examples.}
+\MS{At first glance, our approach may feel very restrictive.} In Appendix~\ref{s:patterns}, we show} 
+%The name Box pattern is not introduced yet
+\MS{programming patterns supporting very expressive programming patterns.}
+
+%you see this already later on... I wanted to avoid repating it
+%to perform batch operations with a single invariant check, as well as how the state of `broken' objects can be passed around.}
+ \IOComm{For OOPSLA mention extended related work appendix.}
 	
 %http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf

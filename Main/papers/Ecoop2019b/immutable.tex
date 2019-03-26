@@ -165,7 +165,7 @@ without the need for back doors.
 %\end{comment}
 
 \subheading{Strong Exception Safety}
-The ability to catch and recover from invariant failures is extremely useful as it allows programs to take corrective action.
+The ability to catch and recover from invariant failures allows programs to take corrective action.
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try@--\Q@catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).

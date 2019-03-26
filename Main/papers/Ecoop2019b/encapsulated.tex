@@ -28,7 +28,7 @@ mut ShippingList l = new ShippingList(items); // l is valid
 items.addItem(new HeavyItem()); // l is now invalid!
 \end{lstlisting}
 
-As you can se\IO{e, i}t would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
+As you can see, it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
 \footnote{%
 Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
 In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.

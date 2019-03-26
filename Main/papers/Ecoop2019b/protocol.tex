@@ -111,7 +111,7 @@ L42 also supports \Q!capsule! methods; methods with a \Q@capsule@ \Q@this@. They
 %\footnote{This is sound provided \Q!this! can be used only once. This is already enforced by L42, since \Q!this! will be a \Q!capsule! variable, which L42 only allows to be used once.}. By the the properties of \Q!capsule!}
 
 \subheading{Invariants}
-We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. As this method only takes a \Q!read! parameter (the receiver), we can be sure that it is pure \footnote{If the invariant were not pure, it would be nearly impossible to ensure that it would return \Q@true@ at any point.}, as discussed in Section \ref{s:purity}.
+We require that all classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant! method is present, a trivial one returning \Q!true! will be assumed. Since \Q@invariant@ only takes a \Q!read! parameter (the receiver), it is pure \footnote{If \Q@invariant@ were not pure, it would be nearly impossible to ensure that it would \MS{keep returning} \Q@true@.}, as discussed in Section \ref{s:purity}.
 The bodies of \Q@invariant@ methods are limited in their usage of \Q@this@: \Q!this! can only occur as the receiver of a field access to an \Q!imm! or \Q!capsule! field. This restriction ensures that 
 an invalid \Q@this@ cannot be passed around.
 We prevent accessing \Q@mut@ fields since their ROG could be changed by unrelated code (see Section \ref{s:immutable}).
@@ -124,7 +124,6 @@ The language runtime will insert automatic calls to \Q!invariant!, if such a cal
 	\item After a field update, on the receiver.
 	\item After a capsule mutator method returns, on the receiver of the method\footnote{The invariant is not checked if the call was terminated via an an unchecked exception, since strong exception safety guarantees the object will be unreachable anyway.}.
 \end{itemize}
-
 \noindent In Appendix \ref{s:proof}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that all objects involved in execution (except as part of an invariant check) are valid.
 
 \subheading{Relaxations}
@@ -134,10 +133,9 @@ In L42, and our code examples, we allow a couple of sound relaxations:
 	The semantics of such methods must then be reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. 	
 	\item All fields can be allowed to be public, provided that access to a \Q!capsule! field on a \Q!mut! receiver other than \Q!this! is typed as \Q!read!. However, even without this relaxation getters and setters could be used to simulate public fields.
 \end{itemize}
-
 %\noindent\IO{L42 does not support traditional constructors or sub classing, however we could relax our restrictions to work with Pony and Gordon \etal's language which have these features:}
 %\IO{Pony and Gordon \etal's language, unlike L42, supports traditional constructors and sub-classing. We were to be used in such languages, we could allow:}
-If we were to extend L42 to support user written constructors or traditional sub-classing:
+\noindent If we were to extend L42 to support user written constructors or traditional sub-classing:
 In our examples, we allow user written constructors, provided that \Q!this! is only used as the receiver of field initialisations. L42 itself does not support user-written constructors, instead one would just write a static factory method that behaves equivalently.
 
 To apply our invariant protocol to a language with traditional sub-classing, such as Gordon\etal's, invariant methods of a sub-class would implicitly start with a check that \Q@super.invariant()@ returns \Q@true@. In addition, invariant methods of non-final classes should also be prevented from calling non-final methods on \Q!this!, so that a subclass can't override such a method to access non \Q!imm! or \Q!capsule! fields. Note that invariant checks would not be performed at the end of \Q@super(..)@ constructor calls, but only at the end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}.
