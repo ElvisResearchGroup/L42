@@ -66,9 +66,11 @@ An \Q!AccountBox! now acts like an \Q!invalid Account!, and the capsule mutator,
 Though capsule mutators can be used to perform batch operations like the above, since they can only take immutable objects, this means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such an operation.
 
 \subheading{The Transform Pattern}
+\IO{Recall the GUI case study in Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements it.}
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
-Suppose we want to scale a \Q@Widget@, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, to keep control of their ROGs.
+Suppose we want to \IO{allow} \IODel{scale a} \Q@Widget@\IO{s to be scaled}, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
+\IO{to mention their \Q!children! in their \Q!invariant!} \IODel{to keep control of their ROGs}.
 
 % In the above \Q@SafeMovable@ we only had one capsule mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
 % At first glance, it may seem that capsule mutators allow only very limited kinds %of mutation.
@@ -80,22 +82,26 @@ A simple and practical solution would be to define a \Q@transform@ method in \Q@
 like so:\footnote{A more general transformer could return a generic \Q@read R@.}
 \begin{lstlisting}
 interface Transformer<T> { method Void apply(mut T elem); }
-interface Widget { ..
-mut method Void top(Int that); // setters for immutable data
-mut method read Void transform(Transformer<Widgets> t);
-} // transformers for possibly encapsulated data
-class SafeMovable { ..
-mut method Void transform(Transformer<Widgets> t) {
-return t.apply(this.box.c); }} // Well typed capsule mutator
+interface Widget { ...
+  mut method Void top(Int that); // setters for immutable data
+  
+  // transformer for possibly encapsulated data
+  mut method read Void transform(Transformer<Widgets> t);
+}
+
+class SafeMovable { ...
+  // A well typed capsule mutator
+  mut method Void transform(Transformer<Widgets> t) {
+   return t.apply(this.box.c); }}
 \end{lstlisting}\saveSpace
 % Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other capsule fields.
-The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply:
+The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply \IO{written as}:
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
-w.transform(ws -> { for (wi : ws) { zoom(wi,scale); }});
-w.width(w.width() / 2); ..; w.top(w.top() / 2); }
+  w.transform(ws -> { for (wi : ws) { zoom(wi,scale); }});
+  w.width(w.width() / 2); ..; w.top(w.top() / 2); }
 \end{lstlisting}
 
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere
