@@ -109,29 +109,36 @@ mutate pre-existing memory (and thus does not not perform I/O by mutating the pr
 For each \Q@try@--\Q@catch@, execution preserves the memory needed to continue the execution in case of an error (the memory visible outside of the \Q@try@).\saveSpace\saveSpace
 \begin{Assumption}[Strong Exception Safety]\rm
 	if $\Sigma^{\sigma,\sigma'};\emptyset\vdash \ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]:\T$
-	and\\*
+	and\\*\indent
 	$
 	\sigma,\sigma'|\ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]\rightarrow 
 	\sigma''|\ctx[\Kw{try}^\sigma\oC\e'\cC\ \Kw{catch}\ \oC\e_1\cC]
 	$
 	then 
-	$\sigma''=\sigma,\_$
-	and
-	$\Sigma^\sigma;\emptyset\vdash \ctx[\e_1]:\T$
+	$\sigma''=\sigma,\_$, $\Sigma^\sigma;\emptyset\vdash \ctx[\e_1]:\T$,
+	\\*\indent \IO{and $\forall l \in \dom(\sigma)$, not $\mathit{mutatable}(l, \sigma, e_0)$}
 \end{Assumption}
 
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
 %@Progress will need to rely on @StrongExceptionSafety internally.
 
-\IOBlock{Put this as a lemma, not a well-formedness requirement}{Note that our last well-formedness rule requires 
-\textsc{update} and \textsc{mcall} to introduce
-monitor expressions only over locations
-that are not preserved by \Q@try@ blocks.
-This can be achieved, since monitors are introduced
-around mutation operations
-(and \Q@new@ expression),
-and \thm{Strong Exception Safety} ensures no mutation happens on preserved memory.}
+SES allows us to prove that locations preserved by \Q@try@ blocks are never monitored:
+\IO{
+\begin{Lemma}[Unmonitored Try]\rm
+	if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and $c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \_|\Kw{try}^\sigma\oC\ctx[\M{l}{\_}{\_}]\cC\ \_$, then $l\notin\sigma$
+\end{Lemma}}
+\IO{\begin{proof}
+The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monitor expression, since they may only be introduced by reduction rules. If this property holds after $n$ reduction steps, but is violated on the $n+1$'th step, we must have applied the \textsc{update}, \textsc{mcal} or \textsc{new} rules, since they are the only ones that can introduce a montior expression. If the rule was a \textsc{new} rule, $l$ will be fresh, so it could not have been in $\sigma$. If the rule was an \textsc{update}, by \thm{Mut Field}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a \Q!mut! receiver, either way $l$ is $\mathit{mutatable}$, so by \thm{Strong Exception Safety}, we have that $l \notin \sigma$.
+\end{proof}}
 
+\IODel{Note that our last well-formedness rule requires 
+	\textsc{update} and \textsc{mcall} to introduce
+	monitor expressions only over locations
+	that are not preserved by \Q@try@ blocks.
+	This can be achieved, since monitors are introduced
+	around mutation operations
+	(and \Q@new@ expression),
+	and \thm{Strong Exception Safety} ensures no mutation happens on preserved memory.}
 % To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,ServettoZucca15}
 %  supports all these assumptions out of the box,
 % while both Gordon~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
@@ -381,6 +388,6 @@ $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_
 
 \item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
 
-	By \thm{Strong Exception Safety}, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our \IOBlock{change this! lemma}{well-formedness criteria}, no location inside $\sigma$ could have been \emph{monitored}.
+	By \thm{Strong Exception Safety}, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By \IODel{our well-formedness criteria} \IO{\thm{Unmonitored Try}}, no location inside $\sigma$ could have been \emph{monitored}.
 	Since we don't modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$. 
 \end{enumerate}

@@ -130,9 +130,6 @@ We additionally restrict the grammar with the following well-formedness criteria
 	\item \Q@invariant@ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
 	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$, respectively.
 	\item Field accesses and updates in the main expression are of the form $l.f$ or $l.f\equals\e$, respectively.
-	\item \IOBlock{Move to appendix A}{\REV{Locations that are preserved by \Q@try@ blocks are
-	never monitored, that is, for $\Kw{try}^\sigma\oC\e\cC\ \_$, if $\e$ is of the form $\ctx[\M{l}{\_}{\_}]$, then $l\notin\sigma$.}{D}{... It must be a property *proven* true of program executions under the specific type system. This isn't something that would just follow from from of the SES work, either (at least not the papers cited specifically for SES), because it relates to the
-	monitoring new to this work.} In Appendix~\ref{s:proof}, we show that this property is preserved thanks to strong exception safety.}
 \end{itemize}
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}
 \begin{figure}
