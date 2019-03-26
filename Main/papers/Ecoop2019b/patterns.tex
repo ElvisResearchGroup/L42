@@ -4,71 +4,35 @@
 In Section~\ref{s:case-study} and Appendix~\ref{s:MoreCaseStudies} we showed how the box pattern can be used to write invariants over cyclic mutable object graphs, the later also shows how a complex mutation can be done in a an 'atomic' way, with a single invariant check. However the box pattern is much more powerful, we can use it to pass temporarily `broken' objects to other code as well as perform multiple field updates with a single invariant check.
 
 Consider
+
 \begin{lstlisting}
 class Person {
-	mut method Bool needsMoney(read Account that) { 
-		return that.balance < 5;
-	}
-	mut method Void spend(read /*possibly broken*/ Account that) { 
-		// Note that the invariant of that might not hold at this point!
-		that.expenses += 5; // just spend some money for no reason!
-	}
-}
+  read method Bool authorize(read Acc a, read Trans t) { ... }}
 
-class Account {
-	UInt income, expenses, balance;
-	mut Person owner; // dosn't need to be encapsulated!
+interface Trans { // a transaction
+  mut method TComponents get();  }
 
-	read method Bool invariant() {
-		return this.income > this.expenses && this.balance == this.income - this.expenses;
-	}
+class TComponent { // a component of a transaction
+  Int money; // gain some money, or lose some money
+  method Void apply(mut AccBox that) {
+    if (this.money > 0) { that.income += money; }
+    else if (this.money < 0) { that.expenses -= money; }}}
+class TComponents { ... /* a list of imm 'TComponent's*/ }
 	
-	mut method Void update() {
-		if (this.owner.needsMoney()) {
-			expose (this) { // unpack this, allowing it's invariant to be violated
-				this.income += 5; // violate the invariant!
-				// pass the now broken 'this'
-				this.owner.spend(this); // give them a chance to spend it
-				this.balance = income - expenses;
-			} // If I spent too much money above, an invariant violation will now be thrown!
-		}
-	}
-	...
-}
-\end{lstlisting}
-
-
-\begin{lstlisting}
-class Person {
-mut method Bool needsMoney(read Account that) { 
-return that.balance < 5;
-}
-mut method Void spend(read /*possibly broken*/ Account that) { 
-// Note that the invariant of that might not hold at this point!
-that.expenses += 5; // just spend some money for no reason!
-}
-}
-
-class Account {
-UInt income, expenses, balance;
-mut Person owner; // dosn't need to be encapsulated!
-
-read method Bool invariant() {
-return income > expenses && balance == income - expenses;
-}
-
-mut method Void update() {
-if (this.owner.needsMoney()) {
-expose (this) { // unpack this, allowing it's invariant to be violated
-this.income += 5; // violate the invariant!
-// pass the now broken 'this'
-this.spend(this); // give them a chance to spend it
-this.balance = income - expenses;
-} // If I spent too much money above, an invariant violation will now be thrown!
-}
-}
-...
-}
+class AccBox { UInt income, expenses, balance; }
+class Acc { // an account
+  capsule AccBox box; read Person holder;
+  read method Bool invariant() {
+    return this.box.income > this.box.expenses &&
+      this.box.balance == this.box.income - this.box.expenses; }
+    
+    mut method Void apply(mut Trans trans) {
+        if (this.holder.authorize(this, trans)) {
+            this.applyInner(ts.get()); }}
+    private mut method Void applyInner(TComponents ts) {
+        mut AccBox b = this.box;
+        for (TComponments t : ts) { t.apply(b); }
+        b.balance = b.income - b.expenses; }}
 \end{lstlisting}
 
 \subheading{The Transform Pattern}

@@ -1,87 +1,39 @@
-reuse L42.is/AdamTowel02
-CacheAdamTowel02:Load.cacheTowel()
-// Note: Size is the equivalent of Spec#'s int type
-
-// Also, we are not encoding pre & post-conditions that are unrelated to invariant checking
-
-// page 42
-Reader: {interface implements Concept.Base // needed for toS etc. to work
-    mut method Size getChar()
+class Person {
+    mut method Bool needsMoney(read Account that) { 
+        return that.balance < 5;
+    }
+    static method Void spend(read AccountBox that) { 
+        that.expenses += 5; // just spend some money for no reason!
+    }
 }
 
-CharList: Collections.vector(of: Size)
-// page 43
-ArrayReader: Data <>< {implements Reader
-  var capsule CharList src
-  var Size n
-  read method Bool #invariant()
-    0Size <= this.n() & this.n() <= this.src().size()
-
-  class method mut ArrayReader(capsule CharList source)
-    This(src: source, n: 0Size)
-
-  method getChar() (
-    var Size ch = 0Size
-    if this.n() == this.src().size() (
-      ch := Size"-1")
-    else (
-      ch := this.src().val(this.n())
-      this.n(this.n() + 1Size))
-    ch)
+class Transaction {
+	// gain some money, and/or lose some money
+	method Void apply(mut AccountBox that) {
+		this.income += 4;
+		this.expenses += 2;
+	}
 }
+class AccountBox { UInt income, expenses, balance; }
+class Account {
+    capsule AccountBox box;
+    mut Person owner; // dosn't need to be encapsulated!
 
-OReader:Option(Reader)
-// page 44
-Lexer: Data.Invariant <>< {
-  mut OReader rd // Ok, the ctor takes a capsule
-  read method Bool #invariant() this.rd().isPresent()
-
-  class method mut This(capsule OReader rd) // The real constructor
-  class method mut Lexer(capsule Reader reader)
-    This(rd: OReader(reader))
-  
-  mut method Size getToken() (
-    var Size t = 0Size
-    var Size ch = Size"0"
-    while ch != Size"-1" (
-      ch := this.#rd().#get().getChar()
-      t := t + ch
-      )
-    t
-  )
-
-  // page 45
-  // Note: this method ensures that the Lexer can never be used again
-  // wheras the Spec# version allows it to be, provided it is made valid again
-  capsule method capsule Reader relinquishReader() this.#rd().#get()
+    read method Bool invariant() {
+        return this.box.income > this.box.expenses && this.box.balance == this.box.income - this.box.expenses;
+    }
+    
+    mut method Void applyTransactions(Transactions transactions) {
+        if (this.owner.needsMoney()) {
+            this.applyDonation(charity); // ok, not an access to a capsule field, so not a capsule mutator!
+        }
+    }
+    private mut method Void applyDonation(Charity charity) { // a capsule mutator! Only uses this once
+        mut AccountBox b = this.box;
+        charity.donateTo(b)
+        expense.apply(b); // give a b to some external code
+        b.balance = b.income - b.expenses;
+        // does an invariant check here!
+    }
+    ...
 }
-
-// 42 does not support subclassing, a similar effect can be achieved with traits
-// however, theres no way to use the type system to ensure that a certain specific invariant on an object holds
-// unless that object has a final class type.
-// Wheras in Spec#, you can know that all super-class invariants hold (along with subclass ones, which you don't statically know)
-FileListT: Trait({
-  var Strings names
-  var Size selection
-  read method Bool _invariant()
-    0Size <= this.selection() & this.selection() < this.names().size()
-  read method Bool isSelectionADirectory()
-})
-
-Bools:Collections.vector(of:Bool)
-DirFileList:FileListT & {
-  Bools isDirectory
-  read method Bool #invariant()
-    this._invariant() & this.isDirectory().size() == this.names().size()
-  method Bool isSelectionADiretory() 
-    this.isDirectory().val(this.selection())
-}
-
-Main: (
-  // Trick to force compilation and typechecking of each of the above types
-  var class Any x = Reader
-  x := Lexer
-  x := DirFileList
-  Debug(S"Examples Compiled Correctly")
-  ExitCode.normal() 
-)
