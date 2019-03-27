@@ -66,7 +66,7 @@ To be able to easily detect when an objects invariant could be violated, we defi
 \end{itemize}
 %\IO{These restrictions ensure that an object has control over the mutation of its capsule fields.}
 
-\noindent These restrictions ensure that for all objects $o$, and capsule field's $f$ of that object:
+\noindent These restrictions ensure that for all objects $o$, and capsule field's $f$ of that object\footnote{\IO{See Appendix~\ref{s:proof} for a proof of these properties.}}:
 \begin{itemize}
 	\item $o$ is not in the ROG of $o.f$.
 %		\item $o.f$ must have been initialised/updated with a \Q!capsule! expression, which couldn't alias $o$, since $o$ was used in the same expressions as the new value of $o.f$.
