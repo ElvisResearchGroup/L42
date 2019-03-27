@@ -4,7 +4,7 @@
 In Section~\ref{s:case-study} and Appendix~\ref{s:MoreCaseStudies} we showed how the box pattern can be used to write invariants over cyclic mutable object graphs, the latter also shows how a complex mutation can be done in an `atomic' way, with a single invariant check. However the box pattern is much more powerful. Suppose we want to pass a temporarily `broken' object to other code as well as perform multiple field updates with a single invariant check. 
 \IODel{One may think we would need to}
 \IO{Instead of adding new} \IODel{add} features
-to the language, like another type-modifier \Q!invalid! (denoting an object whose invariant need not hold), and an \Q!expose! statement like Spec\#, \IO{we can use a `box' class and a capsule mutator to the same effect}:
+to the language, like an \IODel{other type-modifier} \Q!invalid! \IO{TM} (denoting an object whose invariant need not hold), and an \Q!expose! statement like Spec\#, \IO{we can use a `box' class and a capsule mutator to the same effect}:
 \begin{lstlisting}
 interface Person {
   mut method Bool accept(read Account a, read Transaction t); }
@@ -14,19 +14,23 @@ interface Transaction {
   mut method ImmList<Transfer> compute(); }
 
 class Transfer { Int money;
-  // gain some money, or lose some money
-  // an `AccountBox' is like an `invalid Account'
+  // An `AccountBox' is like an `invalid Account':
+  //   `that' need not have income > expenses
   method Void execute(mut AccountBox that) {
-  	// that need not have income > expenses
-    if (this.money >= 0) { that.income   += money; }
+    // Gain some money, or lose some money
+    if (this.money > 0) { that.income += money; }
     else { that.expenses -= money; }}}
 
-class AccountBox { UInt income; UInt expenses; }
+class AccountBox { UInt income = 0; UInt expenses = 0; }
 class Account {
   capsule AccountBox box; mut Person holder;
   read method Bool invariant() {
     return this.box.income > this.box.expenses; }
-    
+
+  // `h' could be aliased elsewehere in the program    
+  Account(mut Person h) { 
+    this.holder = h; this.box = new AccountBox(); }
+
   mut method Void transfer(mut Transaction ts) {
     if (this.holder.accept(this, ts)) {
 	  this.transferInner(ts.compute()); }}
@@ -38,27 +42,27 @@ class Account {
      // check the invariant here
 }}
 \end{lstlisting}
-The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each element of the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we don't want a\IO{n entire} \Q!Transaction! to do this. 
-\IO{The capsule mutaator (\Q!transferInner!) behaves like a Spec\# \Q!expose! block: }
-\IODel{In Spec\#, the expose block would be the right tool for this job:} during the \Q!for! loop we don't know \IO{or} care if \Q!this.invariant()! is \Q!true!, but after the loop it will be checked. For this to make sense, we \IO{make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!}\IODel{explicitly annotate \Q!Transfer.execute! to take an \Q!invalid Account!}: it cannot assume that the invariant of \IODel{\Q!that! }\IO{Account} holds, and it is allowed to modify \IO{the fields of \Q!that!}\IODel{ its fields} without needing to check it. \IO{As you can see, adding support for features like \Q!invalid! and \Q!expose! is unnecessary, and} would likely require making the type system significantly more complicated as well as burdening it with more core syntactic forms.\IODel{ This however is unnecessary, as we can use our box pattern to achieve the same result:}
+The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each \IODel{element of} \IO{transfer in} the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we don't want a\IO{n entire} \Q!Transaction! to do this. 
+\IO{Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q!expose! block:}
+\IODel{In Spec\#, the expose block would be the right tool for this job:} during \IO{its body (}the \Q!for! loop\IO{)} we don't know \IO{or} care if \Q!this.invariant()! is \Q!true!, but \IODel{after the loop} \IO{at the end} it will be checked. For this to make sense, we \IO{make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!} \IODel{explicitly annotate \Q!Transfer.execute! to take an \Q!invalid Account!}: it cannot assume that the invariant of \IODel{\Q!that!} \IO{\Q!Account!} holds, and it is allowed to modify \IO{the fields of \Q!that!} \IODel{its fields} without needing to check it. \IO{As you can see, adding support for features like \Q!invalid! and \Q!expose! is unnecessary, and} would likely require making the type system significantly more complicated as well as burdening \IO{the language} \IODel{it} with more core syntactic forms. \IODel{This however is unnecessary, as we can use our box pattern to achieve the same result:}
 
-\IODel{An \Q!AccountBox! now acts like an \Q!invalid Account!, and the capsule mutator, \Q!transferInner!, behaves like an \Q!expose! block. }In particular, the above code demonstrates that our system can:
+\IODel{An \Q!AccountBox! now acts like an \Q!invalid Account!, and the capsule mutator, \Q!transferInner!, behaves like an \Q!expose! block.} In particular, the above code demonstrates that our system can:
 \begin{itemize}
-\item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the\IODel{ invariant of} \Q!invariant! \IO{method}.
-\item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner!\IODel{ method} can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant! will only be checked at the end of the loop.
-\item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before\IODel{ it terminates} \IO{the end of the loop}.
-\item Pass the state of an `invalid' object around in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not its invariant: if you have an \Q!Account!, you can be sure that it's \Q!income > expenses!, but not if you have an \Q!AccountBox!.
-\item Wrap normal methods over capsule mutators: \IODel{in the above code }\Q!transfer! is not a capsule mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
+\item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the \IODel{invariant of} \Q!invariant! \IO{method}.
+\item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner! \IODel{method} can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant! will only be checked at the end of the loop.
+\item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before \IODel{it terminates} \IO{the end of the loop}.
+\item Pass the state of an `invalid' object aroun\IO{d, i}n a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not its invariant: if you have an \Q!Account!, you can be sure that it\IODel{'}s \Q!income > expenses!, but not if you have an \Q!AccountBox!.
+\item Wrap normal methods over capsule mutators: \IODel{in the above code} \Q!transfer! is not a capsule mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
 \end{itemize}
 
-\noindent Though capsule mutators can be used to perform batch operations like the above, they can only take immutable \IO{and capsule} objects. \MS{This} means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such\IODel{ an} \IO{a batch} operation.
+\noindent Though capsule mutators can be used to perform batch operations like the above, they can only take immutable \IO{and capsule} objects. \MS{This} means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such \IODel{an} \IO{a batch} operation.
 
 \subheading{The Transform Pattern}
-\IO{Recall the GUI case study in Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements\IODel{ it} \IO{\Q!Widget!}.}
+\IO{Recall the GUI case study in Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \IODel{it} \IO{\Q!Widget!}.}
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
-Suppose we want to \IO{allow}\IODel{ scale a} \Q@Widget@\IO{s to be scaled}, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
-\IO{to mention their \Q!children! in their \Q!invariant!}\IODel{ to keep control of their ROGs}.
+Suppose we want to \IO{allow} \IODel{scale a} \Q@Widget@\IO{s to be scaled}, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
+\IO{to mention their \Q!children! in their \Q!invariant!} \IODel{to keep control of their ROGs}.
 
 % In the above \Q@SafeMovable@ we only had one capsule mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
 % At first glance, it may seem that capsule mutators allow only very limited kinds %of mutation.
@@ -79,7 +83,7 @@ interface Widget { ...
 class SafeMovable { ...
   // A well typed capsule mutator
   mut method Void transform(Transformer<Widgets> t) {
-   return t.apply(this.box.c); }}
+   %\IODel{return }%t.apply(this.box.c); }}
 \end{lstlisting}\saveSpace
 % Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
@@ -88,7 +92,7 @@ The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, 
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
   w.transform(ws -> { for (wi : ws) { zoom(wi,scale); }});
-  w.width(w.width() / 2); ..; w.top(w.top() / 2); }
+  w.width(w.width() / 2); ...; w.top(w.top() / 2); }
 \end{lstlisting}
 
 % One of the advantages of this approach is that a the \@zoom@ method can be written by anyone anywhere

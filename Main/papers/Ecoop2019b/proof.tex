@@ -25,7 +25,7 @@ in the ROG of its immutable and capsule fields:\\*
 \noindent An object is \emph{mutatable} in a $\sigma$ and  $\e$ if there is an occurrence of 
 $l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
 \indent $\mathit{mutatable}(l,\sigma,\e)$ iff for some $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\ctx[l]=\e$,\\*
-\indent \indent $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.%\loseSpace
+\indent \indent $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.
 \IOComm{Should we have an assumption that if an $l$ is not mutatable, its rog won't be mutated? Currently we just use Mut Field vaguely to say essentially the same thing...}
 
 %if $\ \sigma_0|e_0\rightarrow \sigma|e$ then $\sigma_1|\e_1=\sigma|\e$
@@ -61,7 +61,7 @@ the receiver is also \Q!mut!, in addition field updates are only allowed on \Q!m
 \end{Assumption}%
 \IOComm{Have a subtyping assumption? So that whenever we talk about mut, it also aplies to capsule...}
 
-An object is not part of the ROG of its immutable or capsule fields\footnote{This is not strictly true in L42, as 42 allows circular objects with \Q!fwd imm! fields,\IOComm{cite billion dolar fix} however such objects cannot have an invariant.}:\saveSpace\saveSpace
+An object is not part of the ROG of its immutable or capsule fields\footnote{This is not strictly true in L42, as 42 allows circular objects with \Q!fwd imm! fields, \IOComm{cite billion dolar fix} however such objects cannot have an invariant.}:\saveSpace\saveSpace
 \begin{Assumption}[Head Not Circular]\rm
 	if
 	$\Sigma^\sigma;\Gamma\vdash l:T$,
@@ -205,7 +205,7 @@ modify the object; only after that moment, the object may become invalid.
 \noindent\textbf{Define} $\mathit{OK}(\sigma,e)$:\\
 \indent $\forall l\in\textit{dom}(\sigma)$
   either\\
-\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$,\IOComm{garbage is not defined!}\\
+\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$, \IOComm{garbage is not defined!}\\
 \indent\indent 2. $\mathit{valid}(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$, or\\
 \indent\indent 3. $\mathit{monitored}(\e,l)$.
 

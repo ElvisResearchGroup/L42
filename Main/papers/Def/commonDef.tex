@@ -326,18 +326,33 @@ privateNameForSaveWithName#1\endcsname%
 
 
 \newcommand{\NoteColour}[2]{\parcolor{#1}{#2}}
-\newcommand{\NoteText}[2]{{{\parcolor{#1}{#2}}}}
+\newcommand{\NoteText}[2]{{\parcolor{#1}{#2}}}
+
+%\newcommand{\supresspar}[1]{%
+%	\def\temp{#1}%
+%	\def\ppar{\par}%
+%	\let\oldpar=\par
+%	\ifx\temp\ppar%
+%		\def\par{\let\par=\oldpar}%
+%	\else%
+%	\fi%
+%	#1
+%}
 
 % Marks a new line, as \\
 \newcommand{\NL}{\textbackslash\textbackslash}
 
+\let\munskip=\relax
 \newcommand{\HideNotes}{%
 	\renewcommand{\NoteColour}[2]{##2}%
 	
-	% Makes \NoteText give the same 'spacing' as a space character
-	% i.e. preceding or suceeding this command by any number of spaces
-	% should be equivalent to a single space
-	\renewcommand{\NoteText}[2]{}		%\unskip\space\ignorespaces
+	\renewcommand{\NoteText}[2]{}
+
+	% Ignore any spaces before a \XXComm or \XXDel command 	
+	% WARNING: don't put a forced newline or vspace that you want to be chewed up AFTER a \XXComm or \XXDel, e.g. if you want to delete the b line, DONT do this:
+	%	a\\ \XXDel{b}\\ c
+	% remove the \\ after the XXDel or put it inside the \XXDel
+	\let\munskip=\unskip
 }
 
 %{prefix}{name}{colour}
@@ -345,11 +360,11 @@ privateNameForSaveWithName#1\endcsname%
 	\expandafter\newcommand\csname#1\endcsname[1]{%
 		\NoteColour{#3}{##1}}%
 	\expandafter\newcommand\csname#1Comm\endcsname[1]{%
-		\NoteText{#3}{\scriptsize [#2{:} ##1]}}%
+		\munskip\NoteText{#3}{\scriptsize [#2{:} ##1]}}%
 	\expandafter\newcommand\csname#1Del\endcsname[1]{%
-		\NoteText{#3!60!White}{[##1]}}%
+		\munskip\NoteText{#3!60!White}{[##1]}}%
 	\expandafter\newcommand\csname#1Block\endcsname[2]{%
-		\NoteText{#3}{[{\scriptsize #2{:} ##1{ }}}%
+		\NoteText{#3}{[{\scriptsize #2{:} ##1{| }}}%
 		##2%
 		\NoteText{#3}{]}}%
 }
