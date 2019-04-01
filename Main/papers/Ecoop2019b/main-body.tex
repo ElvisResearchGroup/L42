@@ -2,21 +2,25 @@
 \newcommand{\ASS}[1]{\textcolor{red}{\thm{ASS[#1]}}}
 \newcommand{\AASS}[1]{\textcolor{red}{\thm{AASS[#1]}}}
 \newcommand{\CFS}{\thm{Capsule Field Soundess}\xspace}
-\newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}}
+\newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
 
-\newmathword{\CNO}{capsuleNotObservable}
+\newcommand{\qindent}{\\\indent$\quad$}
+\newmathword{\CNO}{headNotObservable}
 \newmathword{\dom}{dom}
-\newmathword{\CNC}{capsuleNotCircular}
-\newmathword{\CNA}{capsuleNotAccessed}
-\newmathword{\CNE}{capsuleNotExposed}
+\newmathword{\CNC}{headNotCircular}
+\newmathword{\CNA}{notUnmonitored}
+\newmathword{\CNE}{wellEncapsulated}
 \newmathword{\rog}{rog}
-\newmathword{\cf}{cfields}
-\newmathword{\nirog}{nirog}
-\newmathword{\tmuty}{tmutatable}
+\newmathword{\mrog}{mrog}
+\newmathword{\cf}{capsuleFields}
+\newmathword{\OK}{OK}
+\newmathword{\tmuty}{mutatable}
 \newmathword{\mony}{monitored}
 \newmathword{\valid}{valid}
+\newmathword{\trusted}{trusted}
 \newmathword{\reach}{reachable}
-\newmathword{\cap}{capsuleRef}
+\newmathword{\cap}{encapsulated}
+\newmathword{\imut}{immutable}
 \newmathword{\VS}{validState}
 
 \NewDocumentCommand\ty{o O{\G} O{\vdash} m m}{%
@@ -46,8 +50,8 @@
 \input{related}
 \input{conclusion}
 \bibliography{main} % The OOPSLA template has this at the end...
-\appendix
 
+\appendix
 %\input{proof}
 \section{Proof and Axioms}
 \label{s:proof}

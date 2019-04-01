@@ -11,7 +11,7 @@ These projects are quite large: several million lines of code are written in Gor
 
 Type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
- that allow static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):
+ that allow static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):
 \SSI\begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, and freely shared/aliased, as in most imperative languages without modifiers.
 If all types are \Q@mut@, there is no restriction on aliasing/mutation.

@@ -47,7 +47,7 @@ These restrictions only apply to our formalism; our code examples and the L42 im
 %and to be allowed within invariants.
 To allow invariants over complex (cyclic) mutable objects, we introduce a novel kind of \Q!capsule! field\footnote{
 Our L42 implementation for our invariant protocol supports these fields by enforcing syntactic
-restrictions over constructors, getters, setters, and capsule mutators.}, which can be accessed within invariants.\footnote{\IO{These capsule fields are not designed to be useful if \emph{not} used in an invariant: one should instead use a normal \Q!mut! field or another kind of capsule field, such as those designed for safe parallelism~\cite{GordonEtAl12,clebsch2015deny,GIANNINI2019145}.}}
+restrictions over constructors, getters, setters, and capsule mutators.}, which can be accessed within invariants.
 %To ensure that an object has control over the mutation of its capsule fields
 To be able to easily detect when an objects invariant could be violated, we define the following rules on \Q!capsule! fields:
 %Because the mutation of the ROG of objects capsule field could violate its invariant, we ensure that an object has control over such mutation of its capsule fields: this is preserved by the our rules on \Q!capsule! fields:
@@ -66,7 +66,7 @@ To be able to easily detect when an objects invariant could be violated, we defi
 \end{itemize}
 %\IO{These restrictions ensure that an object has control over the mutation of its capsule fields.}
 
-\noindent These restrictions ensure that for all objects $o$, and capsule field's $f$ of that object\footnote{\IO{See Appendix~\ref{s:proof} for a proof of these properties.}}:
+\noindent These restrictions ensure that for all objects $o$, and capsule field's $f$ of that object\footnote{See Appendix~\ref{s:proof} for a proof of these properties.}:
 \SSI\begin{itemize}
 	\item $o$ is not in the ROG of $o.f$.
 %		\item $o.f$ must have been initialised/updated with a \Q!capsule! expression, which couldn't alias $o$, since $o$ was used in the same expressions as the new value of $o.f$.
@@ -93,7 +93,7 @@ Thus we can be sure that the ROG of $o.f$ will only mutate within a capsule muta
 
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the ROG of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated capsule field will not alias the object.
  
-Rather than allowing the values of such fields to be shared between threads/actors, this new kind of \Q!capsule! field prevents representation exposure, as does the very similar concept of owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, where we could consider an object to be the `owner' of all the mutable objects in the ROG of its capsule fields.
+Rather than allowing the values of such fields to be shared between threads/actors, this new kind of \Q!capsule! field prevents representation exposure, as does the very similar concept of owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, where we could consider an object to be the `owner' of all the mutable objects in the ROG of its capsule fields. \IO{In particular, our new kind of capsule field is designed specifically to be used in invariants; for other uses, one should consider using normal \Q!mut! fields or another kind of capsule field, such as those designed for safe parallelism~\cite{GordonEtAl12,clebsch2015deny,GIANNINI2019145}.}
 
 Note that these properties are \emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!capsule! field, and we do allow arbitrary \Q!mut! aliases  to exist during the execution of a capsule mutator. In particular, unrestricted readonly access to \Q!capsule! fields can be allowed by writing getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already a fundamental part of the L42 language~\cite{DBLP:journals/programming/AroraSO19}. Since \Q!mut! is a subtype of \Q!read!, such a method can be called on a \Q!mut! \Q!this!, without making the method a capsule mutator.
 
