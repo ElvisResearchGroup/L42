@@ -142,7 +142,7 @@ Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
 Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause problems if, for example, a child was updated before their parent.
 
-\loseSpace
+%\loseSpace
 We have a simple test case that calls \Q!processDay! on a \Q!Family! $1{,}095$ ($3\times365$) times.
 %$3\times365$ times ($1{,}095$ days):
 \begin{lstlisting}
@@ -174,7 +174,7 @@ This is a worst case scenario for our approach compared to visible state semanti
 our approach avoids invariant checks when objects are not mutated
 but in this example most operations are mutations; 
 similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{As happened in our GUI case study, see Section \ref{s:case-study}.} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
-\loseSpace
+%\loseSpace
 
 We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D and Eiffel perform $7{,}995$, and finally, Spec\# performs only $1{,}104$.
 
@@ -220,7 +220,7 @@ The annotations we had to add in the Spec\# version\footnote{The Spec\# code is 
 
 \subheading{Spec\# Papers}
 Their are many published papers about the pack/unpack methodology used by Spec\#. To compare against their expressiveness we will consider the three mains ones that introduced their methodology and extensions:
-\begin{itemize}
+\SSI\begin{itemize}
 	\item \emph{Verification of Object-Oriented Programs with Invariants:}~\cite{DBLP:journals/jot/BarnettDFLS04} this paper introduces their methodology. In their examples section (pages 41--47), they show how their methodology would work in a class heirarchy with \Q!Reader! and \Q!ArrayReader! classes. The former represents something that reads characters, whereas the latter is a concrete implementation that reads from an owned array. They extend this further with a \Q!Lexer! that owns a \Q!Reader!, which it uses to read characters and parse them into tokens. They also show an example of a \Q!FileList! class that owns an array of filenames, and a \Q!DirFileList! class that extends it with a stronger invariant. All of these examples can be represented in L42\footnote{Our encodings are in the artifact.}. The most interesting considerations are as follow:
 	\begin{itemize}
 		\item Their \Q!ArrayReader! class has a \Q!relinquishReader! method that `unpacks' the \Q!ArrayReader! and returns its owned array.

@@ -11,8 +11,8 @@ These projects are quite large: several million lines of code are written in Gor
 
 Type modifiers
  are a well known language mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
- that allow static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):\SS
-\begin{itemize}
+ that allow static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,ServettoEtAl13a,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):
+\SSI\begin{itemize}
 \item Mutable (\Q@mut@): the referenced object can be mutated, and freely shared/aliased, as in most imperative languages without modifiers.
 If all types are \Q@mut@, there is no restriction on aliasing/mutation.
 \item Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. We call an object referenced as \Q!imm!, an \emph{immutable object}. Note that an object may be mutated and then \emph{later} become immutable.
@@ -42,8 +42,8 @@ ip = new Point(3, 5); // ok, ip is not final
 \end{lstlisting} 
 
 There are several possible interpretations of the semantics of type modifiers when applied to fields.
-Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:\SS
-\begin{itemize}
+Here we assume the full/deep meaning~\cite{ZibinEtAl10,Potanin2013}:
+\SSI\begin{itemize}
   \item Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all the objects in the ROG of an immutable object are also immutable,
   \item A \Q!mut! field accessed from a \Q@read@ reference produces a \Q@read@ reference; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.
 %  \item no \emph{down}-casting is allowed between different type modifiers.
@@ -124,8 +124,8 @@ This is needed to support safe parallelism. Pony takes a more drastic approach a
 We are not aware of how Gordon \etal handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.%
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
 }
-L42 enforces SES using TMs in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}\SS
-\begin{itemize}
+L42 enforces SES using TMs in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
+\SSI\begin{itemize}
 \item Code inside a \Q@try@ block that captures unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
@@ -194,9 +194,9 @@ This design has been explored by Joe-E~\cite{finifter2008verifiable}.
 OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. 
 
 However, since
-L42 allows user code to perform foreign calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:\SS
+L42 allows user code to perform foreign calls without going through a predefined standard library, its type system enforces the OC pattern over such calls:
 %To reason about determinism, L42 connects TMs with the OC style as follows: % style by requiring:
-\begin{itemize}
+\SSI\begin{itemize}
 \item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability methods}.%
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
 \item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes.
@@ -217,8 +217,8 @@ For the purposes of invariant checking, we only care about the effects that meth
 
 \subheading{Purity}\label{s:purity}
 TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
-as being deterministic and not mutating existing memory. Such methods are pure because:\SS
-\begin{itemize}
+as being deterministic and not mutating existing memory. Such methods are pure because:
+\SSI\begin{itemize}
 	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon \etal, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
 	Thus, since such methods do not write to memory accessible by another thread, nor read memory that could be mutated by another thread, they are atomic.},
 	\item if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any non deterministic (capability) methods,

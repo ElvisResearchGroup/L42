@@ -49,8 +49,7 @@ check and assume the invariant of an object after its construction, they handle 
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
 %S. Drossopoulou and A. Francalanza and  P. Müller and A. J. Summers: A Unified Framework for Verification Techniques for Object Invariants ECOOP 2008. 
 %There are different options as to what object-invariants are known to hold:
-\SS
-\begin{itemize}
+\SSI\begin{itemize}
 \item The invariants of objects in a \textit{steady} state are known to hold: that is when execution is not inside any of the objects' public methods~\cite{Gopinathan:2008:RMO:1483018.1483028}. Invariants need to be constantly maintained between calls to public methods~\cite{WikiInvariant}.
 \item 
 %\LINE
@@ -153,7 +152,6 @@ And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails 
 As you can see, failing to handle non-determinism jeopardises reasoning.
 
 A simpler and more restrictive solution to these problems is to prevent `pure' functions from reading or writing to any non final fields, or calling any impure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
-\saveSpace
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 
 % They propose a concept of observational purity, that if completely fleshed out could possibly be a great addition to our proposed system. We speculate that some  primitive language support may be needed, for example implementing the Flyweight pattern as part of the language semantics.

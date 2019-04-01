@@ -62,8 +62,8 @@
 \fi}
 \end{comment}
 
-\newcommand{\saveSpace}{\vspace{-3px}}
-\newcommand{\loseSpace}{\vspace{1ex}}
+%\newcommand{\saveSpace}{\vspace{-3px}}
+%\newcommand{\loseSpace}{\vspace{1ex}}
 \newcommand{\etal}{\emph{et~al.}\xspace}
 \newcommand{\REV}[3]{%
 	\NoteColour{red}{#1\NoteText{\footnote{%
@@ -73,7 +73,7 @@
 \newcommand{\REVt}[2]{\footnotetext{\textcolor{red}{\textbf{REV#1{:} #2}}}}
 			
 \newcommand{\subheading}[1]{%
-	\loseSpace%
+	\vspace{1ex}%
 	\noindent\textsf{\textbf{\large#1\\\noindent}}
 }
 
@@ -96,10 +96,14 @@
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
 \renewcommand{\mapsto}{\mathrel{\origMapsTo}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
-\lstset{morekeywords={assert, expose, iso, isolated, baloon}, aboveskip=0.25\baselineskip,belowskip=0.25\baselineskip}
+\lstset{morekeywords={assert, expose, iso, isolated, baloon}}
 \newcommand{\thm}[1]{\scalebox{0.9}[0.9]{\sf #1}}
 
 %\HideNotes
 
+% Spacing hacks!
 \renewcommand{\SS}[1][0.5]{\vspace{-#1\baselineskip}}
 \newcommand{\LS}[1][0.5]{\vspace{#1\baselineskip}}
+
+\lstset{aboveskip=0.25\baselineskip,belowskip=0.25\baselineskip} % spacing arround lstlistings
+\newcommand{\SSI}{\SS[0.25]} % spacing before top level itemizes/enumerations

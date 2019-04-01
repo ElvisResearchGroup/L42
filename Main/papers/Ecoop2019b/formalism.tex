@@ -12,8 +12,8 @@ of its own, and indeed many such papers exist in literature%
 Thus we are going to assume that we already have an expressive and sound type system enforcing the properties we need, and instead focus on invariant checking.
 We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type system, so that any language satisfying them, such as L42, can soundly support our invariant protocol.
 
-To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:\SS
-\begin{itemize}
+To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:
+\SSI\begin{itemize}
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the \IODel{field} declaration of field $f$\IO{, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field}.
 	\item Memory, $\sigma : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
 	We use the notation $\sigma[l.f=v]$ to update a field of an object, and $\sigma[l.f]$ to access one.
@@ -28,7 +28,7 @@ a variable environment, $\Gamma : x\rightarrow T$. \IO{\E encodes the location l
 \end{itemize}
 
 \noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object whose fields model things like the content of files. In order to simplify our proof, we assume that:
-\begin{itemize}
+\SSI\begin{itemize}
 	\item instances of \Q@Cap@ cannot be created with a \Q@new@ expression,
 	\item all methods in the \Q@Cap@ class must require a \Q@mut@ receiver, and will mutate its ROG, such methods may be non-deterministic, i.e. may have multiple possible reductions,
 	\item \Q@Cap@ can only have \Q@mut@ fields, and
@@ -126,8 +126,8 @@ In addition, our reduction rules will annotate \Q@try@ expressions with
 the original state of memory. This is used to model the guarantee of strong exception safety, that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
 
 \subheading{Well-Formedness Criteria}
-We additionally restrict the grammar with the following well-formedness criteria:\SS
-\begin{itemize}
+We additionally restrict the grammar with the following well-formedness criteria:
+\SSI\begin{itemize}
 	\item \Q@invariant@ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
 	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$, respectively.
 	\item Field accesses and updates in the main expression are of the form $l.f$ or $l.f\equals\e$, respectively.

@@ -196,7 +196,7 @@ encapsulation of \Q@children@, thus their approach would not be sound in our con
 
 We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. In the following table we summarise the annotation burden\footnote{We present token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.},
 for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GUI; as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling.\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
-\begin{center}\saveSpace\saveSpace
+\begin{center}\SS
 \begin{tabular}{ c  c  c  c  c}
  & Spec\# & Spec\# & L42 & L42 \\ 
  & \!\!program\!\! & library & \!\!program\!\! & library \\

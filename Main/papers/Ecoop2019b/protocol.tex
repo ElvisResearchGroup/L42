@@ -49,9 +49,9 @@ To allow invariants over complex (cyclic) mutable objects, we introduce a novel 
 Our L42 implementation for our invariant protocol supports these fields by enforcing syntactic
 restrictions over constructors, getters, setters, and capsule mutators.}, which can be accessed within invariants.\footnote{\IO{These capsule fields are not designed to be useful if \emph{not} used in an invariant: one should instead use a normal \Q!mut! field or another kind of capsule field, such as those designed for safe parallelism~\cite{GordonEtAl12,clebsch2015deny,GIANNINI2019145}.}}
 %To ensure that an object has control over the mutation of its capsule fields
-To be able to easily detect when an objects invariant could be violated, we define the following rules on \Q!capsule! fields:\SS
+To be able to easily detect when an objects invariant could be violated, we define the following rules on \Q!capsule! fields:
 %Because the mutation of the ROG of objects capsule field could violate its invariant, we ensure that an object has control over such mutation of its capsule fields: this is preserved by the our rules on \Q!capsule! fields:
-\begin{itemize}
+\SSI\begin{itemize}
 	\item A \Q!capsule! field can only be initialised/updated with a \Q!capsule! expression.
 	\item Access to a \Q!capsule! field on a \Q@mut@ receiver will return a \Q!mut!. Since fields are instance private, this access will be on \Q!this! and within a \Q!mut! method. We call such methods \emph{capsule mutators}, they must:
 	\begin{itemize}
@@ -66,8 +66,8 @@ To be able to easily detect when an objects invariant could be violated, we defi
 \end{itemize}
 %\IO{These restrictions ensure that an object has control over the mutation of its capsule fields.}
 
-\noindent These restrictions ensure that for all objects $o$, and capsule field's $f$ of that object\footnote{\IO{See Appendix~\ref{s:proof} for a proof of these properties.}}:\SS
-\begin{itemize}
+\noindent These restrictions ensure that for all objects $o$, and capsule field's $f$ of that object\footnote{\IO{See Appendix~\ref{s:proof} for a proof of these properties.}}:
+\SSI\begin{itemize}
 	\item $o$ is not in the ROG of $o.f$.
 %		\item $o.f$ must have been initialised/updated with a \Q!capsule! expression, which couldn't alias $o$, since $o$ was used in the same expressions as the new value of $o.f$.
 %		\item an alias to $o$ cannot be used inside capsule mutators (see below), such an alias could not be stored in the ROG of $o.f$.
@@ -119,7 +119,7 @@ Note that we do not require such fields to be \Q@final@: when a field is updated
 
 \subheading{Monitoring}
 The language runtime will insert automatic calls to \Q!invariant!, if such a call returns \Q!false!, an unchecked exception will be thrown. Such calls are inserted in the following points:
-\begin{itemize}
+\SSI\begin{itemize}
 	\item After a constructor call, on the newly created object.
 	\item After a field update, on the receiver.
 	\item After a capsule mutator method returns, on the receiver of the method\footnote{The invariant is not checked if the call was terminated via an an unchecked exception, since strong exception safety guarantees the object will be unreachable anyway.}.
@@ -128,7 +128,7 @@ The language runtime will insert automatic calls to \Q!invariant!, if such a cal
 
 \subheading{Relaxations}
 In L42, and our code examples, we allow a couple of sound relaxations:
-\begin{itemize}
+\SSI\begin{itemize}
 	\item \Q!invariant! methods can call instance methods that in turn only use \Q@this@ to read \Q!imm! or \Q!capsule! fields, or call other such instance methods.
 	The semantics of such methods must then be reinterpreted in the context of \Q@invariant@, where \Q@this@ may be invalid. 	
 	\item All fields can be allowed to be public, provided that access to a \Q!capsule! field on a \Q!mut! receiver other than \Q!this! is typed as \Q!read!. However, even without this relaxation getters and setters could be used to simulate public fields.

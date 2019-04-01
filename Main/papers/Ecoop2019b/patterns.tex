@@ -47,7 +47,7 @@ The idea here is that \Q!transfer(ts)! will first check to see if the account ho
 \IODel{In Spec\#, the expose block would be the right tool for this job:} during \IO{its body (}the \Q!for! loop\IO{)} we don't know \IO{or} care if \Q!this.invariant()! is \Q!true!, but \IODel{after the loop} \IO{at the end} it will be checked. For this to make sense, we \IO{make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!} \IODel{explicitly annotate \Q!Transfer.execute! to take an \Q!invalid Account!}: it cannot assume that the invariant of \IODel{\Q!that!} \IO{\Q!Account!} holds, and it is allowed to modify \IO{the fields of \Q!that!} \IODel{its fields} without needing to check it. \IO{As you can see, adding support for features like \Q!invalid! and \Q!expose! is unnecessary, and} would likely require making the type system significantly more complicated as well as burdening \IO{the language} \IODel{it} with more core syntactic forms. \IODel{This however is unnecessary, as we can use our box pattern to achieve the same result:}
 
 \IODel{An \Q!AccountBox! now acts like an \Q!invalid Account!, and the capsule mutator, \Q!transferInner!, behaves like an \Q!expose! block.} In particular, the above code demonstrates that our system can:
-\begin{itemize}
+\SSI\begin{itemize}
 \item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the \IODel{invariant of} \Q!invariant! \IO{method}.
 \item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner! \IODel{method} can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant! will only be checked at the end of the loop.
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before \IODel{it terminates} \IO{the end of the loop}.
@@ -84,7 +84,7 @@ class SafeMovable { ...
   // A well typed capsule mutator
   mut method Void transform(Transformer<Widgets> t) {
    %\IODel{return }%t.apply(this.box.c); }}
-\end{lstlisting}\saveSpace
+\end{lstlisting}
 % Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other capsule fields.

@@ -118,7 +118,7 @@ show that it is preserved during reduction by means of conventional
 \thm{Progress} and \thm{Subject Reduction} (\thm{Progress} is one of our assumptions,
 while \thm{Subject Reduction} relies heavily upon \thm{Subject Reduction Base}).
 That is:
-\begin{itemize}
+\SSI\begin{itemize}
 \item \thm{Progress} $\wedge$ \thm{Subject Reduction} $\Rightarrow$ \thm{Stronger Soundness}, and
 \item \thm{Stronger Soundness} $\Rightarrow$ \thm{Soundness}.
 \end{itemize}
@@ -177,7 +177,7 @@ and \emph{OK} will always hold.
 \begin{proof}
 \noindent By \thm{Stronger Soundness}, each $l$ in the current redex must be \emph{OK} \IOComm{This assumes that each $l$ in $e$ must be in dom of sigma! We should make this as an assumption!}:
 \IOComm{Expand out the theorem we are proving, such as with a suppose e -> E[rl]...}
-\begin{enumerate}
+\SS\begin{enumerate}
 	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to \thm{Determinism}
 	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
@@ -198,7 +198,7 @@ Some auxilary properties:\\
 
 %Capsule-Non-Circular(s, l, f): l not in rog(s, s[l.f])
 \newcommand{\qindent}{\\\indent$\quad$}
-\begin{itemize}
+\SSI\begin{itemize}
 \item $\CNC(\s, l)$ iff $\forall f$,
 \qindent if  $\S(l).f = \Kw{capsule}\,\_$ then $l \notin \rog(\s, \s[l.f])$.
 \item $\CNE(\s, e, l)$ iff $\forall l' \in e,\forall f$:
@@ -230,9 +230,7 @@ $\gap{\forall \s|e},\forall l \in \mathit{dom}(\s)$:\\
 \gap{This trivially holds in the base case when $\s = c\mapsto\Kw{Cap}\{\_\}$, since \Q!Cap! has no capsule fields.
 
 Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We will prove the theorem for $s'|\EV[e']$ based on cases for the non-\textsc{ctxv} reduction rule applied:}
-\clearpage
-
-\begin{enumerate}
+\SS\begin{enumerate}
 
 \item (\textsc{mcall}) $\sigma|\EV[l\singleDot\m\oR v_1,\ldots,v_n\cR]\rightarrow \sigma|\EV[\e[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]]$:
 \begin{itemize}
@@ -315,7 +313,6 @@ these rules don't change the $l$s in the main expression, modify memory, or remo
 \end{enumerate}
 \end{proof}
 \vfill
-\clearpage
 \subheading{Subject Reduction}
 \begin{theorem}[Subject Reduction]\rm
 if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
@@ -328,7 +325,7 @@ $\mathit{OK}(\sigma_1,e_1)$
 
 \begin{proof}
 By \thm{Subject Reduction Base}, $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$. Any reduction step can be obtained by exactly one application of the \textsc{ctxv} rule and one other rule. So we just need to proceed by cases on the other reduction rule applied, and verify that each $l \in \dom(\s)$ is \valid or \mony.
-\begin{enumerate}
+\SS\begin{enumerate}
 \item (\textsc{update}) $\sigma|\ctx_v[l.f\equals v]\rightarrow \sigma'|\ctx_v[\e']$:
 	\begin{itemize}
 	  \item By \textsc{update}, $\e'=\M{l}{l}{l.\invariant}$, thus $\mathit{monitored}(\EV[e'],l)$.
