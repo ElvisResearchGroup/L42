@@ -1,4 +1,3 @@
-\clearpage
 \section{Proof and Axioms}
 \label{s:proof}
 \lstset{morekeywords={fwd}}
@@ -15,25 +14,12 @@ To express these properties, we first need some auxiliary definitions.
 %\noindent As we discussed, only encapsulated objects can support invariants;
 %their class declarations only have immutable or capsule fields. Note how here we see immutable
 %and simple objects as special cases of encapsulated ones.
-
-The encapsulated ROG of $l_0$ is composed of all the objects
-in the ROG of its immutable and capsule fields:\\*
-\indent $l \in \mathit{erog}(\sigma,l_0)
-\text{ iff } \exists f, \Sigma^\sigma(l_0).f \in \{\Kw{imm}\,\_,\Kw{capsule}\,\_\}
-\text{ and } l \in \mathit{rog}(\sigma, \sigma[l_0.f])$% \loseSpace
-\IOComm{TODO: Change mutatable to take $(\s, e, l)$}
-\noindent An object is \emph{mutatable} in a $\sigma$ and  $\e$ if there is an occurrence of 
-$l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
-\indent $\mathit{mutatable}(l,\sigma,\e)$ iff for some $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\ctx[l]=\e$,\\*
-\indent \indent $\Sigma^\sigma;\x:T\vdash\ctx[\x]:T'$ does not hold for any $T'$.
-\IOComm{Should we have an assumption that if an $l$ is not mutatable, its rog won't be mutated? Currently we just use Mut Field vaguely to say essentially the same thing...}
-
 %if $\ \sigma_0|e_0\rightarrow \sigma|e$ then $\sigma_1|\e_1=\sigma|\e$
 % $\exists! \sigma_1|\e_1$ such that $\sigma_0|\e_0\rightarrow \sigma_1|\e_1$\\*
 
 %We can now assume the following properties over the type system:
 
-Here we assume the usual \thm{Progress} and \thm{Subject Reduction Base}. Note that \thm{Subject Reduction Base} only ensures properties about type checking, not invariant checking.\saveSpace\saveSpace
+Here we assume the usual \thm{Progress} and \thm{Subject Reduction Base}. Note that \thm{Subject Reduction Base} only ensures properties about type checking, not invariant checking.
 \begin{Assumption}[Progress]\rm
 	if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
 	and $e_0$ is not of form $l$ or $\mathit{error}$, then
@@ -49,7 +35,7 @@ Here we assume the usual \thm{Progress} and \thm{Subject Reduction Base}. Note t
 
 
 If the result of a field access is \Q!mut!,
-the receiver is also \Q!mut!, in addition field updates are only allowed on \Q!mut! receivers:\saveSpace\saveSpace
+the receiver is also \Q!mut!, in addition field updates are only allowed on \Q!mut! receivers:
 \begin{Assumption}[Mut Field]\rm
 	\ \\
 	\indent(1)\ if $\Sigma;\Gamma\vdash\e\singleDot\f:\Kw{mut}\,\_$
@@ -63,7 +49,7 @@ the receiver is also \Q!mut!, in addition field updates are only allowed on \Q!m
 
 The execution of an expression
 with no \Q@mut@ free variables is deterministic and does not
-mutate pre-existing memory (and thus does not not perform I/O by mutating the pre-existing $c$):\saveSpace\saveSpace
+mutate pre-existing memory (and thus does not not perform I/O by mutating the pre-existing $c$):
 \begin{Assumption}[Determinism]\rm
 	if $\emptyset;\Gamma\vdash \e:\T$, 
 	$\forall x\, ( \Gamma(x)\neq\Kw{mut}\,\_$), and
@@ -73,7 +59,7 @@ mutate pre-existing memory (and thus does not not perform I/O by mutating the pr
 	where $\e'=\e[x_1=l_1,\ldots,x_n=l_n]$ and $\Sigma^\sigma;\emptyset\vdash \e':\T$
 \end{Assumption}
 
-For each \Q@try@--\Q@catch@, execution preserves the memory needed to continue the execution in case of an error (the memory visible outside of the \Q@try@).\saveSpace\saveSpace
+For each \Q@try@--\Q@catch@, execution preserves the memory needed to continue the execution in case of an error (the memory visible outside of the \Q@try@).
 \begin{Assumption}[Strong Exception Safety]\rm
 	if $\Sigma^{\sigma,\sigma'};\emptyset\vdash \ctx[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]:\T$
 	and\\*\indent
@@ -83,7 +69,7 @@ For each \Q@try@--\Q@catch@, execution preserves the memory needed to continue t
 	$
 	then 
 	$\sigma''=\sigma,\_$, $\Sigma^\sigma;\emptyset\vdash \ctx[\e_1]:\T$,
-	\\*\indent and $\forall l \in \dom(\sigma)$, not $\mathit{mutatable}(l, \sigma, e_0)$
+	\\*\indent and $\forall \E, l \in \dom(\sigma)$, if $e_0 = \E[l]$, then \ntyr{l}{\Kw{mut}\,\_}.
 \end{Assumption}
 
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
@@ -94,7 +80,7 @@ SES allows us to prove that locations preserved by \Q@try@ blocks are never moni
 	if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and $c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \_|\Kw{try}^\sigma\oC\ctx[\M{l}{\_}{\_}]\cC\ \_$, then $l\notin\sigma$
 \end{Lemma}
 \begin{proof}
-The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monitor expression, since they may only be introduced by reduction rules. If this property holds after $n$ reduction steps, but is violated on the $n+1$'th step, we must have applied the \textsc{update}, \textsc{mcal} or \textsc{new} rules, since they are the only ones that can introduce a montior expression. If the rule was a \textsc{new} rule, $l$ will be fresh, so it could not have been in $\sigma$. If the rule was an \textsc{update}, by \ASS{mut-r update}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a \Q!mut! receiver, either way $l$ is $\mathit{mutatable}$, so by \thm{Strong Exception Safety}, we have that $l \notin \sigma$.
+The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monitor expression, since they may only be introduced by reduction rules. If this property holds after $n$ reduction steps, but is violated on the $n+1$'th step, we must have applied the \textsc{update}, \textsc{mcal} or \textsc{new} rules, since they are the only ones that can introduce a montior expression. If the rule was a \textsc{new} rule, $l$ will be fresh, so it could not have been in $\sigma$. If the rule was an \textsc{update}, by \ASS{mut-r update}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a \Q!mut! receiver, either way $l$ is \Q!mut!, so by \thm{Strong Exception Safety}, we have that $l \notin \sigma$.
 \end{proof}
 
 % To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,ServettoZucca15}
@@ -177,7 +163,7 @@ and \emph{OK} will always hold.
 \begin{proof}
 \noindent By \thm{Stronger Soundness}, each $l$ in the current redex must be \emph{OK} \IOComm{This assumes that each $l$ in $e$ must be in dom of sigma! We should make this as an assumption!}:
 \IOComm{Expand out the theorem we are proving, such as with a suppose e -> E[rl]...}
-\SS\begin{enumerate}
+\SSI\begin{enumerate}
 	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to \thm{Determinism}
 	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
@@ -201,11 +187,11 @@ Some auxilary properties:\\
 \SSI\begin{itemize}
 \item $\CNC(\s, l)$ iff $\forall f$,
 \qindent if  $\S(l).f = \Kw{capsule}\,\_$ then $l \notin \rog(\s, \s[l.f])$.
-\item $\CNE(\s, e, l)$ iff $\forall l' \in e,\forall f$:
-\qindent  if $\S(l).f = \Kw{capsule}\,\_$ and $\muty(\s, e, l')$, then not $\tmuty(\s\setminus l, e, l', \s[l.f])$.
+\item $\CNE(\s, e, l)$ iff $\forall f$:
+\qindent  if $\S(l).f = \Kw{capsule}\,\_$ and not $\tmuty(\s\setminus l, e, \s[l.f])$.
 \item $\CNA(\s, e, l)$ iff $\forall \E$:
 \qindent if $e = \E[\M{l}{e'}{\_}]$, then $e' = l$ and
-\qindent if $e = \E[l.f]$ and $\S(l).f = \Kw{capsule}\,\_$, then not $\muty(s, E)$.
+\qindent if $e = \E[l.f]$ and $\S(l).f = \Kw{capsule}\,\_$, then \ntyr{l.f}{\Kw{mut}\,\_}.
 
 \item $\CNO(\s, e, l)$ iff $e = \EV[\M{l}{e'}{\_}]$, and either:
 \qindent $e' = \E[l.f]$ and not $\reach(\s, \E, l)$ or \IOComm{$f$ will be a capsule field.}
@@ -230,16 +216,16 @@ $\gap{\forall \s|e},\forall l \in \mathit{dom}(\s)$:\\
 \gap{This trivially holds in the base case when $\s = c\mapsto\Kw{Cap}\{\_\}$, since \Q!Cap! has no capsule fields.
 
 Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We will prove the theorem for $s'|\EV[e']$ based on cases for the non-\textsc{ctxv} reduction rule applied:}
-\SS\begin{enumerate}
-
+\clearpage
+\SSI\begin{enumerate}
 \item (\textsc{mcall}) $\sigma|\EV[l\singleDot\m\oR v_1,\ldots,v_n\cR]\rightarrow \sigma|\EV[\e[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]]$:
 \begin{itemize}
-\item If $m$ is not a capsule mutator, by \gap{our well-formedness rules for method bodies}, $e$ doesn't contain a monitor:
+\item If $m$ is not a capsule mutator, by our well-formedness rules for method bodies, $e$ doesn't contain a monitor:
 \begin{itemize}
-		\item Thus $e$ wont contain $\Kw{this}.f$ as \muty, where $f \in \cf(\s, l)$; since fields are instance private, we can't have introduced any other field accesses, so we can't have broken \CNA, for any $l$.
-		\item We can't have broken \CNC, \CNE or \CNO for any $l$, since we haven't changed the $l$s in the main expression, modified memory, or removed a monitor.
+		\item By \thm{Mut Consistency}, $e$ wont contain $l.f$ as \Q!mut!, where $f \in \cf(\s, l)$; since fields are instance private, we can't have introduced any other field accesses, so we can't have broken \CNA, for any $l$.
+		\item We can't have broken \CNC, \CNE, or \CNO for any $l$, since we haven't changed the $l$s in the main expression, modified memory, or removed a monitor.
 \end{itemize}
-\item Otherwise, $e = \M{l}{e'}{l.\invariant}$. By our rules for capsule mutators, $m$ can only have \Q!imm! and \Q!capsule! parameters. Since capsule mutators are \Q!mut! methods, $l$ must have been \muty, so by \ASS{imm not mut} and \ASS{capsule}, $l$ cant be reachable from any $x_i$. By \gap{our well-formedness rules for method bodies}, $e'$ can't contain any $l$s, and since $m$ uses \Q!this! only once, to access a capsule field, $e' = \E[l.f]$, for some $f \in \cf{\s, l}$. Since $l$ is not \reach from any $x_i$, and $l \notin \E$, $l$ is not \reach from any $l' \in \E$, thus we have that \CNO holds.
+\item Otherwise, $e = \M{l}{e'}{l.\invariant}$. By our rules for capsule mutators, $m$ can only have \Q!imm! and \Q!capsule! parameters. Since capsule mutators are \Q!mut! methods, by \thm{Type Consistency}, $l$ must have been \Q!mut!, so by \thm{Imm Consistency} and \thm{Capsule Consistency}, $l$ cant be reachable from any $x_i$. By our well-formedness rules for method bodies, $e'$ can't contain any $l$s, and since $m$ uses \Q!this! only once, to access a capsule field, $e' = \E[l.f]$, for some $f \in \cf{\s, l}$. Since $l$ is not \reach from any $x_i$, and $l \notin \E$, $l$ is not \reach from any $l' \in \E$, thus we have that \CNO holds.
 \item Note that no other reduction rule can introduce an $l.f$ or an $\M{l}{e}{l.\invariant}$ with $e \neq l$; so they trivially preserve \CNA and ensure it for new $l$s.
 \end{itemize}
 
@@ -249,19 +235,24 @@ Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We 
 \item Consider any $l' \neq l$:
 \begin{itemize}
 \item We can't have broken \CNE, since we haven't changed the $l$s in the main expression, nor modified memory.
-\item Similarly, we can't have affected \CNO, since this reduction step doesn't introduce any $l$s, and the monitor we are removing is for an $l \neq l'$.
+\item Similarly, we can't have affected \CNO, since this reduction step doesn't introduce any $l$s, and the monitor we are removing is for an $l' \neq l$.
 \end{itemize}
-\item If this monitor was not introduced by \textsc{mcall}, $v = l$:
+\item If this monitor was introduced by \textsc{new} or \textsc{update}, then $v = l$:
 \begin{itemize}
-\item If \CNE held for $l$, by the above proof for the case for $l' \neq l$, we can't have violated it.
-\item \CNO can't have held for $l$ since $l \in v$, and $v$ was not the receiver of a field access.
+\item If \CNE held for $l$, by the above proof for the case for $l' \neq l$, it still holds.
+\item \CNO can't have held for $l$ since $l = v$, and $v$ was not the receiver of a field access.
 \end{itemize}
 
 \item Otherwise, this monitor was introduce by \textsc{mcall} due to a call to a capsule mutator on $l$, consider the state $\s_0|\EV[e_0]$ immediately before that \textsc{mcall}:
 \begin{itemize}
-\item We must not have had that \CNO l, since $e_0$ would contain $l$ as the receiver of a method call. Thus $\CNE(s_0, \EV[e_0], l)$ and $\CNA(s_0, \EV[e_0], l)$. 
-\item Because \CNA held in $s_0|\EV[e_0]$, and we aren't introducing a field access or monitor, it still holds.
-\item Since a capsule mutator cannot have any \Q!mut! parameters, by \ASS{!tmutatable -!> mutatable} and \ASS{mut-r update}, the body of the method can't have modified $\s_0$, thus $\s = \s_0, \_$. Since no pre-existing memory has changed since the \textsc{mcall}, and a capsule mutator cannot have a \Q!mut! return type, we can't have $\muty(\s, \EV, v)$, so the \textsc{monitor exit} reduction have restored $\CNE(\s_0, \EV[e_0], l)$.
+\item We must not have had that $l$ was \CNO, since $e_0$ would contain $l$ as the receiver of a method call. Thus $\CNE(s_0, \EV[e_0], l)$ and $\CNA(s_0, \EV[e_0], l)$. 
+\item Because \CNA held in $s_0|\EV[e_0]$, and $v$ contains no field accesses or monitor, it holds in $\EV[v]$.
+\item Since a capsule mutator cannot have any \Q!mut! parameters, by \thm{Type Consistency}, \thm{Mut Consistency}, and \thm{Mut Field}, the body of the method can't have modified $\s_0$, thus $\s = \s_0, \_$. Since no pre-existing memory has changed since the \textsc{mcall}, and a capsule mutator cannot have a \Q!mut! return type, by \thm{Type Consistency} we must have $\S; \emptyset; \EV \nvdash v : \mdf\,\_$ where $\mdf \neq \Kw{mut}$:
+\begin{itemize}
+\item If $\mdf = \Kw{capsule}$, by \thm{Capsule Consistency}, the value of any capsule field of $l$ cant be in the \rog of $v$, so we haven't made such a field \tmuty.
+\item Otherwise, $\mdf \in {\Kw{read}, \Kw{imm}}$, and by \thm{Read Consistency} and \thm{Imm Consistency}, we have that $v$ is not \tmuty.
+\end{itemize}
+Either way, the \textsc{monitor exit} reduction has restored $\CNE(\s_0, \EV[e_0], l)$.
 \end{itemize}
 \end{itemize}
 
@@ -270,13 +261,13 @@ Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We 
 	\item Consider any pre-existing $l'$:
 	\begin{itemize}
 		\item This reduction rule only adds to \s, so it couldn't have modified the \rog of $l'$ and broken \CNC for $l'$.
-		\item Suppose we broke \CNE for $l'$ by making a $f' \in \cf(s, l)$ \tmuty. Since the \rog of $l'$ can't have been modified, nor could the \rog of any other pre-existing $l"$ have be modified we must have that $\s[l'.f]$ is \tmuty through some $v_i$. This requires that $v_i$ be the initiliser for a \Q!mut! or \Q!capsule! field, which by \ASS{mut init} and \ASS{capsule init}, means that $v_i$ must also be \muty. But then the $\s[l'.f]$ was \tmuty through $l'$, so $l'$ can't have already been \CNE.
+		\item Suppose we broke \CNE for $l'$ by making some $f' \in \cf(s, l)$ \tmuty. Since the \rog of $l'$ can't have been modified, nor could the \rog of any other pre-existing $l''$ have be modified, we must have that $\s[l'.f]$ is \tmuty through some $v_i$. This requires that $v_i$ be the initiliser for a \Q!mut! or \Q!capsule! field, which by \thm{Type Consistency} and \thm{Capsule Consistency}, means that $v_i$ must also be typeable \Q!mut!. But then the $\s[l'.f]$ was \tmuty through $l'$, so $l'$ can't have already been \CNE.
 		\item This reduction does not remove monitors nor introduce $l'$ into the main expression, thus it could not have violated \CNO.
 	\end{itemize}
 	\item Now consider each $i$ with $C.i = \Kw{capsule}\,\_\,f$:
 	\begin{itemize}
 	\item Since the pre-existing $\s$ was not modified, by \VS, $l \notin \rog(\s, v_i) = \rog(\s', \s'[l.f])$; thus \CNC holds.
-	\item By \ASS{capsule init}, $\cap(\s, v_i, \EV[\Kw{new}\ C\oR v_1,\ldots,v_{i-1},\square,v_{i+1},\ldots,v_n\cR])$ and $\rog(s, v_i)$ is not \tmuty from \EV, and so not $\tmuty(\s'\setminus l, \EV[\M{l}{l}{l.\invariant}], v_i)$, thus \CNE holds.
+	\item By \thm{Type Consistency} and \thm{Capsule Soundness}, $\cap(\s, \EV[\Kw{new}\ C\oR v_1,\ldots,v_{i-1},\square,v_{i+1},\ldots,v_n\cR], v_i)$ and $\rog(s, v_i)$ is not \tmuty from \EV, and so not $\tmuty(\s'\setminus l, \EV[\M{l}{l}{l.\invariant}], v_i)$, thus \CNE holds.
 	\end{itemize}
 \end{itemize}
 
@@ -285,14 +276,14 @@ Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We 
 \begin{itemize}
 \item Consider any $l' \neq l$:
 \begin{itemize}
-		\item If $l'$ was \CNE, by \ASS{mut-r update}, $l$ is \muty. Consider any $f' \in \cf(\s, l')$, by \CNE, the \rog of $l'.f'$ is not \tmuty and $l$ not in $\rog(\s, \s[l'.f'])$, so we can't have modified $\rog(\s, \s[l'.f'])$ hence $l$ is still \CNC. By \ASS{!tmutatable -!> mutatable}, we can't have broken \CNE either.
+		\item If $l'$ was \CNE, by \thm{Mut Field}, $l$ is \Q!mut!. Consider any $f' \in \cf(\s, l')$, by \CNE, the \rog of $l'.f'$ is not \tmuty and $l$ not in $\rog(\s, \s[l'.f'])$, so we can't have modified $\rog(\s, \s[l'.f'])$ hence $l$ is still \CNC. By \thm{Mut Consistency}, we can't have broken \CNE either.
 		\item Otherwise, $l'$ was \CNO. Since this reduction dosen't remove monitors, or introduce any new $l$s into the main expression, we can't have violated \CNO.
 \end{itemize}
 \item $l$ cant have been $\CNO$, since we had $l.f = v$ inside our evaluation context, and $l.f = v$ is not a field access.
 \item If $f \in \cf(\s, l)$:
 \begin{itemize} 
-\item By \ASS{capsule update}, $\cap(\s, v, \EV[l.f = \square])$ and $l \notin \nirog(v)$, by \ASS{mut-r update} and \ASS{imm not mut}, $l$ can't be \reach from an \Q!imm! field in the \rog of $v$, so $l\notin \rog(s, v)$, hence \CNC holds.
-\item By $\cap(\s, v, \EV[l.f = \square])$, $v$ is not \tmuty from \EV, and so not $\tmuty(s\setminus l, \EV[\M{l}{l}{l.\invariant}], v)$, thus \CNE still holds.
+\item By \thm{Type Consistency} and \thm{Capsule Consistency}, $\cap(\s, \EV[l.f = \square], v)$ and $l \notin \nirog(\s, v)$, by \thm{Mut Field} and \thm{Imm Consistency}, $l$ can't be \reach from an \Q!imm! field in the \rog of $v$, so $l\notin \rog(s, v)$, hence \CNC holds.
+\item By $\cap(\s, \EV[l.f = \square], v)$, $v$ is not \tmuty from \EV, and so not $\tmuty(s\setminus l, \EV[\M{l}{l}{l.\invariant}], v)$, thus \CNE still holds.
 \end{itemize}
 \item By the proof above for the case $l' \neq l$, we can't have broken \CNE or \CNC for $f \notin \cf(\s, l)$, nor any other field of $l$.
 \end{itemize}
@@ -303,7 +294,7 @@ Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We 
 	\item This reduction doesn't modify memory, so we can't have violated \CNC for any $l'$ and $f'$.
 	\item Consider any $l'$:
 	\begin{itemize}
-		\item If $l'$ was \CNE and \CNA, then by \ASS{!tmutatable -!> mutatable}, for any $f \in \cf(\s, l')$, we can't have made $l.f'$ \tmuty (even if $l.f$ = $l'.f'$).
+		\item If $l'$ was \CNE and \CNA, then by \thm{Mut Consistency}, for any $f \in \cf(\s, l')$, we can't have made $l.f'$ \tmuty (even if $l.f$ = $l'.f'$).
 		\item Suppose $l'$ was \CNO, with $l' \neq l$, we must have $l' \notin \rog(\s, l)$. Since this reduction doesn't remove a monitor, and $\s[l.f] \in \rog(\s, l)$, we $l' \notin \rog(\s, \s[l.f])$, thus we didn't break \CNO.
 		\item Suppose $l'$ = $l$, and $l'$ was \CNO. Then by \CNC, $l \notin \rog(\s, \s[l.f])$, for any $f \in \cf(\s, l)$ of $l$; thus since we haven't made $l'$ \reach from the main expression, nor removed a monitor, $l'$ is still \CNO.
 	\end{itemize}
@@ -325,7 +316,7 @@ $\mathit{OK}(\sigma_1,e_1)$
 
 \begin{proof}
 By \thm{Subject Reduction Base}, $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$. Any reduction step can be obtained by exactly one application of the \textsc{ctxv} rule and one other rule. So we just need to proceed by cases on the other reduction rule applied, and verify that each $l \in \dom(\s)$ is \valid or \mony.
-\SS\begin{enumerate}
+\SSI\begin{enumerate}
 \item (\textsc{update}) $\sigma|\ctx_v[l.f\equals v]\rightarrow \sigma'|\ctx_v[\e']$:
 	\begin{itemize}
 	  \item By \textsc{update}, $\e'=\M{l}{l}{l.\invariant}$, thus $\mathit{monitored}(\EV[e'],l)$.
@@ -334,10 +325,10 @@ By \thm{Subject Reduction Base}, $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$. A
 	  	\item If it was $\mathit{monitored}$, it still is.
 	    \item Otherwise it was $\mathit{valid}$:
 			\begin{itemize}
-				\item Suppose we made $l'$ not valid. By our well-formedness criteria, \Q@invariant@ can only accesses \Q@imm@ and \Q@capsule@ fields, thus by \ASS{imm not mut} and \ASS{mut-r update}, we must have that $l$ was in the \rog of a capsule field $f$ of $l'$; $l'$ can't have been \CNE, since $l$ is \muty. Thus, by \CFS, $l'$ was \CNO, and $\EV = \EV'[\M{l}{\EV''}{\_}]$:
+				\item Suppose we made $l'$ not valid. By our well-formedness criteria, \Q@invariant@ can only accesses \Q@imm@ and \Q@capsule@ fields, thus by \thm{Imm Consistency} and \thm{Mut Field}, we must have that $l$ was in the \rog of a capsule field $f$ of $l'$; $l'$ can't have been \CNE, since $l$ is \Q!mut!. Thus, by \CFS, $l'$ was \CNO, and $\EV = \EV'[\M{l}{\EV''}{\_}]$:
 				\begin{itemize}
-					\item If $\EV''[l.f \equals v] = \E[l'.f]$ then by \CNO, $l'$ is not reachable from $\E$. The monitor must have been introduced by an \textsc{mcall} on a capsule mutator for $l'$. Since a capsule mutator can take only \Q!imm! and \Q!capsule! parameters, $l$ cannot be reachable from them (since $l$ was in the \rog of $l'$, and $l$ is \muty). Thus the only way to access $l$ is by accessing $l'.f$.
-					Since capsule mutators can access \Q!this! only once, and \gap{by the proof of \CFS}, there is no other $l'.f$ in $\E[l'.f]$, nor was there one in a previous stage of reduction; this contradicts the fact that we just updated $l$ (which is only reachable through $l'.f$).
+					\item If $\EV''[l.f \equals v] = \E[l'.f]$ then by \CNO, $l'$ is not reachable from $\E$. The monitor must have been introduced by an \textsc{mcall} on a capsule mutator for $l'$. Since a capsule mutator can take only \Q!imm! and \Q!capsule! parameters, $l$ cannot be reachable from them (since $l$ was in the \rog of $l'$, and $l$ is \Q!mut!). Thus the only way to access $l$ is by accessing $l'.f$.
+					Since capsule mutators can access \Q!this! only once, and by the proof of \CFS, there is no other $l'.f$ in $\E[l'.f]$, nor was there one in a previous stage of reduction; this contradicts the fact that we just updated $l$ (which is only reachable through $l'.f$).
 					\item Thus, by \CNO, we must have $\EV''[l.f \equals v] = e$ with $l'$ not reachable from $e$; so $l'$ was, and still is, \mony.
 				\end{itemize}
 				\item Otherwise, $l'$ is still \emph{valid}.
@@ -366,7 +357,7 @@ By \thm{Subject Reduction Base}, $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$. A
 
 \item (\textsc{monitor exit}) $\sigma|\M{l}{v}{\Kw{true}}\rightarrow \sigma|v$:
 \begin{itemize}
-	\item By \ASS{no monitors}, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \emph{valid}.
+	\item By our \VS and our well formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \emph{valid}.
 \end{itemize} 
 \end{enumerate}
 \end{proof}
@@ -390,6 +381,13 @@ execution will only be continued by the \textsc{try error} rule, which by \thm{U
 
 \bigskip
 \begin{verbatim}
+Required Definitions:
+	tmutatable
+	reachable
+	cfields
+	nirog
+	capsule
+	
 capsule(s, l, Ctx):
     for all l' in Ctx, rog(s, l') disjoint nirog(s, l)
     where l' in nirog(s, l) iff l' = l or l' in nirog(s, s[l.f]) and S(l).f = imm _
@@ -407,12 +405,12 @@ mutatable(s, E)
 reacheable(s, E, l) exists l' in E, l in rog(s, l')
 similarly with reacheable(s, e, l)
 	
+	
+MAKE valid-state blue!
 Valid-State(s, e):
     exists e0, with M(_; _; _) not in e0, such that:
         c -> Cap |- e0 : T
         and c->Cap{_} | e0 ->+ s|e
-
-C.i (it is usefull! and easy to explain)
 \end{verbatim}
 
 %	\indent(1)\  ... \\*
@@ -422,18 +420,14 @@ C.i (it is usefull! and easy to explain)
 %	if S; G; E |- e.f : mut _, then S; G; E[[].f] |- e : mut _
 
 % This is to have an enumerate that is indented!
-\newenvironment{ienumerate}{${}$% allows a line break
-	\begin{itemize}\item[] % indents like a normal itemize, but with no bullet!
-	\begin{enumerate}
-}{\end{enumerate}\end{itemize}}
 
-\begin{Assumption}[Type Consistency]\rm
-\begin{ienumerate}
+\begin{Assumption}[Type Consistency]\rm\ 
+\begin{enumerate}
 %if S; G; E |- e.f = e' : _ C, and C.f = T', then S; G; E[e.f = []] |- e' : T'
 \item if \ty{e.f \equals e'}{\_\,C} and $C.f = T'$, then \ty[\e.f \equals \h]{e'}{T'}
 \item if \ty{e.m\oR e_1,\ldots,e_n\cR}{T}, \\
 \ty[\h.m\oR e_1,\ldots,e_n\cR]{e}{\_\,C}, and
-$C.m = \mdf\,\Kw{method}\,\T'\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\_$, then:
+$C.m = \mdf\,\Kw{method}\,\T'\,m\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\_$, then:
 \begin{enumerate}
 \item \ty{e.m\oR e_1,\ldots,e_n\cR}{T'},
 \item \ty[\h.m\oR e_1,\ldots,e_n\cR]{e}{\mdf\,\_}, and
@@ -442,12 +436,49 @@ $C.m = \mdf\,\Kw{method}\,\T'\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\_$, then:
 \end{enumerate}
 \item if \ty{\Kw{new}\ C\oR e_1,\ldots,e_n\cR}{T} and $C.i = T_i\,\_$, then:
 \qindent \ty[\Kw{new}\ C\oR \e_1,\ldots,e_{i-1},\h,e_{i+1},\ldots,e_n\cR]{e_i}{T_i}
-\end{ienumerate}
+\end{enumerate}
 \end{Assumption}%
 
-\begin{Assumption}[Mut Field]\rm
-\begin{ienumerate}
-\item if \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}
-\item if \ty{e.f}{\Kw{mut}\,\_}, then \ty[\h.f]{e}{\Kw{mut}\,\_}
-\end{ienumerate}
+\begin{Assumption}[Method Consistency]\rm\
+ If $\VS(\s, \EV[l.m\oR v_1,\ldots,v_n \cR])$ %and $\s|\EV[l.m\oR v_1,\ldots,v_n \cR] \rightarrow \s|$,
+where:
+\begin{itemize}
+\item $\S; \emptyset; \EV[\h.m\oR v_1,\ldots,v_n \cR]{l}{\_\,C}$ and $C.m  =\mdf\,\Kw{method}\,\_\,m\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\E[e]$ and
+\item $\S; \Kw{this} : \mdf,C, x_1 : T_1, \ldots, x_n : T_n; \E \vdash e : \mdf\,\_$,
+% \rightarrow^{+} \s'\mid\EV[e']$
+%\item If \tyr{l}{\Kw{capsule}\,\_}, then $\cap(\s, \E, l)$.
+%\item If \ty{e}{\Kw{capsule}\,C}, then \ty{e}{\Kw{mut}\,C}.
+\end{itemize}
+then $\S; \emptyset; \EV[\E[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]] \vdash e[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n] : \mdf\,\_$%
+% and $C.m  =\mdf\,\Kw{method}\,\_\,m\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\E[e]$ and
+\end{Assumption}
+\begin{Assumption}[Mut Field]\rm\ 
+\begin{enumerate}
+\item If \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}
+\item If \ty{e.f}{\Kw{mut}\,\_}, then \ty[\h.f]{e}{\Kw{mut}\,\_}
+\end{enumerate}
 \end{Assumption}%
+
+\begin{Assumption}[Capsule Consistency]\rm\
+\begin{enumerate}
+\item If \tyr{l}{\Kw{capsule}\,\_}, then $\cap(\s, \E, l)$.
+\item If \ty{e}{\Kw{capsule}\,C}, then \ty{e}{\Kw{mut}\,C}.
+\end{enumerate}
+\end{Assumption}%
+
+\begin{Assumption}[Imm Consistency]\rm\ 
+\begin{enumerate}
+\item If \tyr{l}{\Kw{imm}\,\_}, then not $\tmuty(\s, \E[\_], l)$
+\item If $\VS(\s, e)$ and $\S(l).f = \Kw{imm}\,\_$, then not $\tmuty(\s, e, \s[l.f])$.
+%\item If \tyr{l}{\Kw{capsule}\,\_}, then $\cap(\s, \E, l)$.
+%\item If \ty{e}{\Kw{capsule}\,C}, then \ty{e}{\Kw{mut}\,C}.
+\end{enumerate}
+\end{Assumption}%
+
+\begin{Assumption}[Mut Consistency]\rm If $\VS(\s, \EV[e])$ and $\tmuty(\s, e, l)$ and $\s|\EV[e] \rightarrow^{+} \s'\mid\EV[e']$, then not $\tmuty(\s, e', l)$.
+\end{Assumption}%
+
+\begin{Assumption}[Read Consistency] 
+If \ty{e.m\oR \es \cR}{\mdf\,\_}, \ty[\h.m\oR es\cR]{e}{\_\,C}, and $C.m = \mdf\,\Kw{method}\,\Kw{read}\,C'\,\_$, then $\mdf \neq \Kw{mut}$.
+\end{Assumption}%
+

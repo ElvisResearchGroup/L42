@@ -1,3 +1,4 @@
+\renewcommand{\vs}{\Many{v}}
 \newcommand{\ASS}[1]{\textcolor{red}{\thm{ASS[#1]}}}
 \newcommand{\AASS}[1]{\textcolor{red}{\thm{AASS[#1]}}}
 \newcommand{\CFS}{\thm{Capsule Field Soundess}\xspace}
@@ -12,25 +13,29 @@
 \newmathword{\cf}{cfields}
 \newmathword{\nirog}{nirog}
 \newmathword{\tmuty}{tmutatable}
-\newmathword{\muty}{mutatable}
 \newmathword{\mony}{monitored}
 \newmathword{\valid}{valid}
 \newmathword{\reach}{reachable}
 \newmathword{\cap}{capsuleRef}
 \newmathword{\VS}{validState}
 
-\NewDocumentCommand\ty{o m m}{%
-	\ensuremath{\S; \G; %
-		\IfNoValueTF{#1}{\E}{\E[#1]}%
-		\vdash #2 : #3}\xspace}
+\NewDocumentCommand\ty{o O{\G} O{\vdash} m m}{%
+	\ensuremath{\S; #2; %
+		\IfNoValueTF{#1}{\E}{\ensuremath{\E[#1]}}%
+		#3 #4 : #5}\xspace}
+
+\NewDocumentCommand\tyr{o m m}{\ty[#1][\emptyset]{#2}{#3}}
+\NewDocumentCommand\ntyr{o m m}{\ty[#1][\emptyset][\nvdash]{#2}{#3}}
+
 \renewcommand{\h}{\ensuremath{\square}\xspace}
 %\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
-\renewcommand{\G}{\Gamma}
+\renewcommand{\G}{\ensuremath{\Gamma}\xspace}
 \newcommand{\EV}{\ensuremath{\ctx_v}{}\xspace}
 \newcommand{\E}{\ensuremath{\ctx}\xspace}
 \newcommand{\gap}[1]{{\parcolor{red}{#1}}}
 \newcommand{\s}{\ensuremath{\sigma}\xspace}
 \renewcommand{\S}{\ensuremath{\Sigma^\sigma}\xspace}
+
 \input{intro}
 \input{TMsAndOCs}
 \input{protocol}
@@ -42,6 +47,7 @@
 \input{conclusion}
 \bibliography{main} % The OOPSLA template has this at the end...
 \appendix
+
 %\input{proof}
 \section{Proof and Axioms}
 \label{s:proof}

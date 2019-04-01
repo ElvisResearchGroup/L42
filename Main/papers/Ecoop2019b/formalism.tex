@@ -38,9 +38,6 @@ For simplicity, we do not formalise actual exception objects, rather we have \em
 in this way there is no value associated with an \emph{error}.
 Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as exceptions, formalising exceptions in this way would not cause any interesting variation of our proof.
 
-\newcommand{\ctxG}{\myCalBig{G}}
-\renewcommand{\vs}{\Many{v}}
-\renewcommand{\Opt}[1]{#1?}
 %	\setlength{\belowcaptionskip}{0.06em}
 \begin{figure}
 	\!\!\!\!
@@ -245,8 +242,8 @@ $\ctx_v=\ctx_v'[\M{l}{v}{\ctx_v''}]$.
 %\loseSpace
 
 \noindent \IO{We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:}\\
-\noindent $\mathit{\VS}(\s, e)$ iff $c\mapsto\Kw{Cap}\{\_\}|e_0\rightarrow^+ \sigma|e$, for some $e_0$ with:\\*
-\indent $c:\Kw{Cap};\emptyset\vdash e_0: \T$, $\M{\_}{\_}{\_} \notin \e$, and if $l \in e_0$ then $l = c$.
+\noindent \IO{$\mathit{\VS}(\s, e)$ iff $c\mapsto\Kw{Cap}\{\_\}|e_0\rightarrow^+ \sigma|e$, for some $e_0$ with:}\\*
+\indent \IO{$c:\Kw{Cap};\emptyset\vdash e_0: \T$, $\M{\_}{\_}{\_} \notin \e$, and if $l \in e_0$ then $l = c$.}
 %\loseSpace
 
 \noindent Finally, we define what it means to soundly enforce our invariant protocol: every object referenced by any untrusted redex\IO{, within a \VS,} is valid.
