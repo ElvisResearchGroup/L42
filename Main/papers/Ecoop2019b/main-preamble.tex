@@ -2,7 +2,8 @@
 %\addbibresource{main.bib}
 \usepackage{wrapfig}
 \usepackage{etoolbox}
-
+\usepackage{xparse}
+%\usepackage[stable]{footmisc}
 \newtoggle{ECOOP}
 
 %
@@ -95,7 +96,10 @@
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
 \renewcommand{\mapsto}{\mathrel{\origMapsTo}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
-\lstset{morekeywords={assert, expose, iso, isolated, baloon}}
+\lstset{morekeywords={assert, expose, iso, isolated, baloon}, aboveskip=0.25\baselineskip,belowskip=0.25\baselineskip}
 \newcommand{\thm}[1]{\scalebox{0.9}[0.9]{\sf #1}}
 
 %\HideNotes
+
+\renewcommand{\SS}[1][0.5]{\vspace{-#1\baselineskip}}
+\newcommand{\LS}[1][0.5]{\vspace{#1\baselineskip}}

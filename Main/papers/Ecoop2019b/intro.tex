@@ -31,7 +31,7 @@ This allows us to closely compare our approach with Spec\#.
 Instead of using automated theorem proving, 
 it is becoming more popular to verify aliasing and immutability using a type system.
 For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use Type Modifiers (TMs)\footnote{TMs are called \emph{reference capabilities} in other works. We use the term TM here
-		to not confuse them with object capabilities, another technique we also use in this paper. \IOComm{If accepted to ECOOP, change TMs to reference capabilities}} and Object Capabilities (OCs) to statically ensure  deterministic parallelism and the absence of data-races.
+		to not confuse them with object capabilities, another technique we also use in this paper.} and Object Capabilities (OCs) to statically ensure  deterministic parallelism and the absence of data-races.
 While studying those languages, we discovered an elegant way to enforce invariants.
 
 We use the guarantees provided by these systems to ensure that at all times, if an object is usable in execution, its invariant holds. What this means is that if you can do anything with an object, such as by using it as an argument/receiver of a method call, we know that the invariant of it, and all objects reachable from it, holds. In order to achieve this, we use TMs and OCs to restrict how the result of invariant methods may change, this is done by restricting I/O, what state the invariant can refer to\IO{,} and what can alias/mutate such state.  We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol. Our aim is to leverage on these existing TM and OC guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
@@ -51,11 +51,9 @@ Here we show an example illustrating our system in action. Suppose we have a \Q@
 class Point { Double x; Double y; Point(Double x, Double y) {..}
   @Override read method Bool equals(read Object that) {
     return that instanceof Point &&
-      this.x == ((Point)that).x && this.y == ((Point)that).y; }
-}
+      this.x == ((Point)that).x && this.y == ((Point)that).y; }}
 class Hamster {Point pos; //pos is imm by default
-  Hamster(Point pos) {..} 
-}
+  Hamster(Point pos) {..}}
 class Cage {
   capsule Hamster h;
   List<Point> path; //path is imm by default
@@ -65,8 +63,7 @@ class Cage {
   mut method Void move() {
     Int index = 1 + this.path.indexOf(this.h.pos));
     this.moveTo(this.path.get(index % this.path.size())); }
-  mut method Void moveTo(Point p) { this.h.pos = p; }
-}
+  mut method Void moveTo(Point p) { this.h.pos = p; }}
 \end{lstlisting}
 
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
@@ -103,11 +100,9 @@ language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
 // Note: assume everything is `public'
 class Point { double x; double y; Point(double x, double y) {..}
   [Pure] bool Equal(double x, double y) {
-    return x == this.x && y == this.y; }
-}
+    return x == this.x && y == this.y; }}
 class Hamster{[Peer]Point pos; 
-  Hamster([Captured]Point pos){..}
-}
+  Hamster([Captured]Point pos){..}}
 class Cage {
   [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
   Cage([Captured] Hamster h, [Captured] List<Point> path)
@@ -118,8 +113,7 @@ class Cage {
   void Move() {
     int i = 0;
     while(i<path.Count && !path[i].Equal(h.pos.x,h.pos.y)){i++;}
-    expose(this) {this.h.pos = this.path[i%this.path.Count];}}
-}
+    expose(this) {this.h.pos = this.path[i%this.path.Count];}}}
 \end{lstlisting}
 
 In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant: thus \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
@@ -322,7 +316,7 @@ perform a quarter of our  invariant checks,
 In order to compare with examples from other \IO{work} \IODel{authors}, in Appendix~\ref{s:MoreCaseStudies} we exam\IO{in} the examples of some Spec\# papers~\cite{DBLP:journals/jot/BarnettDFLS04,leino2004object,DBLP:conf/mpc/BarnettN04}; we show \IO{why we can not encode some of them} \IODel{that we can not encode some of those examples}.
 At first glance, our approach may feel very restrictive\IODel{. I}\IO{; }in Appendix~\ref{s:patterns}, we show
 %The name Box pattern is not introduced yet
-programming patterns supporting \IO{demonstrating that these restrictions do not significantly hamper expressivity} \IODel{very expressive programming patterns}.
+programming patterns  \IO{demonstrating that these restrictions do not significantly hamper expressivity} \IODel{supporting very expressive programming patterns}. \IO{In Appendix \ref{s:runtime-verification}, we discuss related work on runtime verification.}
 %you see this already later on... I wanted to avoid repating it
 %to perform batch operations with a single invariant check, as well as how the state of `broken' objects can be passed around.}
 \IOComm{For OOPSLA mention extended related work appendix.}

@@ -21,7 +21,7 @@ in the ROG of its immutable and capsule fields:\\*
 \indent $l \in \mathit{erog}(\sigma,l_0)
 \text{ iff } \exists f, \Sigma^\sigma(l_0).f \in \{\Kw{imm}\,\_,\Kw{capsule}\,\_\}
 \text{ and } l \in \mathit{rog}(\sigma, \sigma[l_0.f])$% \loseSpace
-
+\IOComm{TODO: Change mutatable to take $(\s, e, l)$}
 \noindent An object is \emph{mutatable} in a $\sigma$ and  $\e$ if there is an occurrence of 
 $l$ in $e$, that when seen as \Q@imm@ makes the expression ill typed:\\*
 \indent $\mathit{mutatable}(l,\sigma,\e)$ iff for some $T=\Kw{imm}\,\Sigma^\sigma(l)$ and $\ctx[l]=\e$,\\*
@@ -61,39 +61,6 @@ the receiver is also \Q!mut!, in addition field updates are only allowed on \Q!m
 \end{Assumption}%
 \IOComm{Have a subtyping assumption? So that whenever we talk about mut, it also aplies to capsule...}
 
-An object is not part of the ROG of its immutable or capsule fields\footnote{This is not strictly true in L42, as 42 allows circular objects with \Q!fwd imm! fields, \IOComm{cite billion dolar fix} however such objects cannot have an invariant.}:\saveSpace\saveSpace
-\begin{Assumption}[Head Not Circular]\rm
-	if
-	$\Sigma^\sigma;\Gamma\vdash l:T$,
-	then $l\notin\text{erog}(\sigma,l)$.
-\end{Assumption}\IOComm{This relies on our novel capsule fields, so we should prove it (for the capsule field case at least)!}
-
-
-In a well typed $\sigma$ and $e$, if mutatable $l_2$ is reachable  through the \emph{erog} of
-$l_1$, and $l_1$ is reachable through the \emph{erog} of $l_0$,
-then all the paths connecting $l_0$ and $l_2$ pass trough $l_1$; thus
-if we were to remove $l_1$ from the object graph, $l_0$ would no longer reach $l_2$:
-\saveSpace\saveSpace
-\begin{Assumption}[Capsule Tree]\rm
-	If   $\Sigma^\sigma;\Gamma\vdash \e:\T$,
-	$l_2\in\text{erog}(\sigma,l_1)$,
-	$l_1\in\text{erog}(\sigma,l_0)$,\\*
-	and
-	$\mathit{mutatable}(l_2,\sigma,\e)$
-	then 
-	$l_2\notin\text{erog}(\sigma\setminus l_1,l_0)$.
-\end{Assumption}\IOComm{This does not hold! And relies on our novel capsule fields!}
-
-
-\thm{Capsule Tree} and \thm{Head Not Circular} together 
-imply that capsule fields section the object graph into a tree of nested `balloons',
-where nodes are mutable encapsulated objects and
-edges are given by reachability between those objects in the original memory: if
-$l_2$ is in the encapsulated ROG of $l_1$, and
-$l_2$ is mutatable and reachable through $l_1$, then $l_2$ must be reachable by a \Q@capsule@ field.
-Thanks to \thm{Head Not Circular} and $l_1\in\text{erog}(\sigma,l_0)$ we can derive that
-$l_0\notin\text{erog}(\sigma,l_1)$.
-
 The execution of an expression
 with no \Q@mut@ free variables is deterministic and does not
 mutate pre-existing memory (and thus does not not perform I/O by mutating the pre-existing $c$):\saveSpace\saveSpace
@@ -116,29 +83,20 @@ For each \Q@try@--\Q@catch@, execution preserves the memory needed to continue t
 	$
 	then 
 	$\sigma''=\sigma,\_$, $\Sigma^\sigma;\emptyset\vdash \ctx[\e_1]:\T$,
-	\\*\indent \IO{and $\forall l \in \dom(\sigma)$, not $\mathit{mutatable}(l, \sigma, e_0)$}
+	\\*\indent and $\forall l \in \dom(\sigma)$, not $\mathit{mutatable}(l, \sigma, e_0)$
 \end{Assumption}
 
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
 %@Progress will need to rely on @StrongExceptionSafety internally.
 
 SES allows us to prove that locations preserved by \Q@try@ blocks are never monitored:
-\IO{
 \begin{Lemma}[Unmonitored Try]\rm
 	if $c:\Kw{Cap};\emptyset\vdash \e: \T$ and $c\mapsto\Kw{Cap}\{\_\}|\e\rightarrow^+ \_|\Kw{try}^\sigma\oC\ctx[\M{l}{\_}{\_}]\cC\ \_$, then $l\notin\sigma$
-\end{Lemma}}
-\IO{\begin{proof}
-The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monitor expression, since they may only be introduced by reduction rules. If this property holds after $n$ reduction steps, but is violated on the $n+1$'th step, we must have applied the \textsc{update}, \textsc{mcal} or \textsc{new} rules, since they are the only ones that can introduce a montior expression. If the rule was a \textsc{new} rule, $l$ will be fresh, so it could not have been in $\sigma$. If the rule was an \textsc{update}, by \thm{Mut Field}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a \Q!mut! receiver, either way $l$ is $\mathit{mutatable}$, so by \thm{Strong Exception Safety}, we have that $l \notin \sigma$.
-\end{proof}}
+\end{Lemma}
+\begin{proof}
+The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monitor expression, since they may only be introduced by reduction rules. If this property holds after $n$ reduction steps, but is violated on the $n+1$'th step, we must have applied the \textsc{update}, \textsc{mcal} or \textsc{new} rules, since they are the only ones that can introduce a montior expression. If the rule was a \textsc{new} rule, $l$ will be fresh, so it could not have been in $\sigma$. If the rule was an \textsc{update}, by \ASS{mut-r update}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a \Q!mut! receiver, either way $l$ is $\mathit{mutatable}$, so by \thm{Strong Exception Safety}, we have that $l \notin \sigma$.
+\end{proof}
 
-\IODel{Note that our last well-formedness rule requires 
-	\textsc{update} and \textsc{mcall} to introduce
-	monitor expressions only over locations
-	that are not preserved by \Q@try@ blocks.
-	This can be achieved, since monitors are introduced
-	around mutation operations
-	(and \Q@new@ expression),
-	and \thm{Strong Exception Safety} ensures no mutation happens on preserved memory.}
 % To the best of our knowledge, only the type system of 42~\cite{ServettoEtAl13a,ServettoZucca15}
 %  supports all these assumptions out of the box,
 % while both Gordon~\cite{GordonEtAl12} and Pony~\cite{clebsch2015deny,clebsch2017orca} supports all except StrongExceptionSafety,
@@ -175,20 +133,12 @@ That is:
 
 
 \subheading{Stronger Soundness $\Rightarrow$ Soundness}
-\thm{Stronger Soundness} depends on
-$\mathit{wellEncapsulated}$, $\mathit{monitored}$
-and \emph{OK}:\\
-%\loseSpace%
-\indent $\mathit{wellEncapsulated}(\sigma,\e,l_0)$ iff
-$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutatable}(l,\sigma,\e)$.%\loseSpace
-
-\noindent The main idea is that an object is well encapsulated if its encapsulated state cannot be
-modified by $e$.
+\thm{Stronger Soundness} depends on $\mathit{monitored}$ and \emph{OK}. 
 
 An object is \emph{monitored} if execution
 is currently inside of a monitor for that object, and
 the monitored expression $\e_1$ does not
-contain $l$ as a \emph{proper} subexpression:
+contain $l$ as a \emph{proper} sub-expression:
 
 \indent $\mathit{monitored}(\e,l)$ iff
 $\e=\ctx_v[\M{l}{\e_1}{\e_2}]$ and either $\e_1=l$, or $l$ is not inside $\e_1$.%\loseSpace
@@ -203,11 +153,8 @@ modify the object; only after that moment, the object may become invalid.
 
 
 \noindent\textbf{Define} $\mathit{OK}(\sigma,e)$:\\
-\indent $\forall l\in\textit{dom}(\sigma)$
-  either\\
-\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$, \IOComm{garbage is not defined!}\\
-\indent\indent 2. $\mathit{valid}(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$, or\\
-\indent\indent 3. $\mathit{monitored}(\e,l)$.
+\indent $\forall l\in\dom(\sigma)$
+  either $\mathit{valid}(\sigma,l)$ or $\mathit{monitored}(\e,l)$\\
 
 \noindent Finally, the system is in an \emph{OK} state
 if all objects in memory, are either
@@ -231,45 +178,202 @@ and \emph{OK} will always hold.
 \noindent By \thm{Stronger Soundness}, each $l$ in the current redex must be \emph{OK} \IOComm{This assumes that each $l$ in $e$ must be in dom of sigma! We should make this as an assumption!}:
 \IOComm{Expand out the theorem we are proving, such as with a suppose e -> E[rl]...}
 \begin{enumerate}
-	\item If $l$ is \emph{garbage}, it cannot be in the current redex, a contradiction.
 	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to \thm{Determinism}
 	no invalid object could be observed.
 	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
 	\begin{itemize}
-	 \item we are executing inside of $\e_1$, thus the current redex is inside of a sub expression of the monitor that does not contain $l$, a contradiction.
+	 \item we are executing inside of $\e_1$, thus the current redex is inside of a \IO{sub-}expression of the monitor that does not contain $l$, a contradiction.
 	 \item or we are executing inside $\e_2$:
 	 by our reduction rules, all monitor expressions start with
 	 $\e_2=l.\invariant$, thus the first execution step
-	 of $\e_2$ is trusted. Further execution steps are also trusted, since by well-formedness the body of invariant methods only use \Q@this@ (now replaced with $l$) to read fields.
+	 of $\e_2$ is \emph{trusted}. Further execution steps are also \emph{trusted}, since by well-formedness the body of invariant methods only use \Q@this@ (now replaced with $l$) to read fields.
 	\end{itemize}
 \end{enumerate}
 In any of the possible cases above, \thm{Soundness} holds for $l$, and so it holds for all redexes.
 \end{proof}
 
+\subheading{Capsule Field Soundness}
+% ....
+Some auxilary properties:\\
+
+%Capsule-Non-Circular(s, l, f): l not in rog(s, s[l.f])
+\newcommand{\qindent}{\\\indent$\quad$}
+\begin{itemize}
+\item $\CNC(\s, l)$ iff $\forall f$,
+\qindent if  $\S(l).f = \Kw{capsule}\,\_$ then $l \notin \rog(\s, \s[l.f])$.
+\item $\CNE(\s, e, l)$ iff $\forall l' \in e,\forall f$:
+\qindent  if $\S(l).f = \Kw{capsule}\,\_$ and $\muty(\s, e, l')$, then not $\tmuty(\s\setminus l, e, l', \s[l.f])$.
+\item $\CNA(\s, e, l)$ iff $\forall \E$:
+\qindent if $e = \E[\M{l}{e'}{\_}]$, then $e' = l$ and
+\qindent if $e = \E[l.f]$ and $\S(l).f = \Kw{capsule}\,\_$, then not $\muty(s, E)$.
+
+\item $\CNO(\s, e, l)$ iff $e = \EV[\M{l}{e'}{\_}]$, and either:
+\qindent $e' = \E[l.f]$ and not $\reach(\s, \E, l)$ or \IOComm{$f$ will be a capsule field.}
+\qindent not $\reach(\s, e', l)$.
+%Capsule-Not-Observed(s, e, l): e = EV[M(l; e'; _)], and either:
+%		e' = E[l.f] and not reacheable(s, E, l) or,
+%		not reacheable(s, e', l)
+
+\end{itemize}
+
+\begin{theorem}[Capsule Field Soundnes]\rm
+%	forall VS(s, e), forall l in dom(s), CNC(S, l, f) and either
+$\gap{\forall \s|e},\forall l \in \mathit{dom}(\s)$:\\
+\indent $\CNC(\s, l, f)$ and either:
+\qindent $\CNE(\s, e, l)$ and $\CNA(\s, e, l)$, or
+\qindent $\CNO(\s, e, l)$.
+\end{theorem}
+\begin{proof}
+%if $c:\Kw{Cap};\emptyset\vdash \e_0: \T_0$ and
+%$c\mapsto\Kw{Cap}\{\_\}|\e_0\rightarrow^+ \sigma|\e$, then
+%$\emph{OK}(\sigma,\e)$.
+\gap{This trivially holds in the base case when $\s = c\mapsto\Kw{Cap}\{\_\}$, since \Q!Cap! has no capsule fields.
+
+Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We will prove the theorem for $s'|\EV[e']$ based on cases for the non-\textsc{ctxv} reduction rule applied:}
+\clearpage
+
+\begin{enumerate}
+
+\item (\textsc{mcall}) $\sigma|\EV[l\singleDot\m\oR v_1,\ldots,v_n\cR]\rightarrow \sigma|\EV[\e[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]]$:
+\begin{itemize}
+\item If $m$ is not a capsule mutator, by \gap{our well-formedness rules for method bodies}, $e$ doesn't contain a monitor:
+\begin{itemize}
+		\item Thus $e$ wont contain $\Kw{this}.f$ as \muty, where $f \in \cf(\s, l)$; since fields are instance private, we can't have introduced any other field accesses, so we can't have broken \CNA, for any $l$.
+		\item We can't have broken \CNC, \CNE or \CNO for any $l$, since we haven't changed the $l$s in the main expression, modified memory, or removed a monitor.
+\end{itemize}
+\item Otherwise, $e = \M{l}{e'}{l.\invariant}$. By our rules for capsule mutators, $m$ can only have \Q!imm! and \Q!capsule! parameters. Since capsule mutators are \Q!mut! methods, $l$ must have been \muty, so by \ASS{imm not mut} and \ASS{capsule}, $l$ cant be reachable from any $x_i$. By \gap{our well-formedness rules for method bodies}, $e'$ can't contain any $l$s, and since $m$ uses \Q!this! only once, to access a capsule field, $e' = \E[l.f]$, for some $f \in \cf{\s, l}$. Since $l$ is not \reach from any $x_i$, and $l \notin \E$, $l$ is not \reach from any $l' \in \E$, thus we have that \CNO holds.
+\item Note that no other reduction rule can introduce an $l.f$ or an $\M{l}{e}{l.\invariant}$ with $e \neq l$; so they trivially preserve \CNA and ensure it for new $l$s.
+\end{itemize}
+
+\item (\textsc{Monitor Exit}) $\sigma|\EV[\M{l}{v}{\Kw{true}}]\rightarrow \sigma|\EV[v]$:
+\begin{itemize}
+\item This reduction doesn't modify memory, so we can't have violated \CNC for any $l'$.
+\item Consider any $l' \neq l$:
+\begin{itemize}
+\item We can't have broken \CNE, since we haven't changed the $l$s in the main expression, nor modified memory.
+\item Similarly, we can't have affected \CNO, since this reduction step doesn't introduce any $l$s, and the monitor we are removing is for an $l \neq l'$.
+\end{itemize}
+\item If this monitor was not introduced by \textsc{mcall}, $v = l$:
+\begin{itemize}
+\item If \CNE held for $l$, by the above proof for the case for $l' \neq l$, we can't have violated it.
+\item \CNO can't have held for $l$ since $l \in v$, and $v$ was not the receiver of a field access.
+\end{itemize}
+
+\item Otherwise, this monitor was introduce by \textsc{mcall} due to a call to a capsule mutator on $l$, consider the state $\s_0|\EV[e_0]$ immediately before that \textsc{mcall}:
+\begin{itemize}
+\item We must not have had that \CNO l, since $e_0$ would contain $l$ as the receiver of a method call. Thus $\CNE(s_0, \EV[e_0], l)$ and $\CNA(s_0, \EV[e_0], l)$. 
+\item Because \CNA held in $s_0|\EV[e_0]$, and we aren't introducing a field access or monitor, it still holds.
+\item Since a capsule mutator cannot have any \Q!mut! parameters, by \ASS{!tmutatable -!> mutatable} and \ASS{mut-r update}, the body of the method can't have modified $\s_0$, thus $\s = \s_0, \_$. Since no pre-existing memory has changed since the \textsc{mcall}, and a capsule mutator cannot have a \Q!mut! return type, we can't have $\muty(\s, \EV, v)$, so the \textsc{monitor exit} reduction have restored $\CNE(\s_0, \EV[e_0], l)$.
+\end{itemize}
+\end{itemize}
+
+\item (\textsc{new}) $\sigma|\EV[\Kw{new}\ C\oR v_1,\ldots,v_n\cR]\rightarrow \sigma,l\mapsto C\{v_1,\ldots,v_n\}| \EV[\M{l}{l}{l\singleDot\invariant}]$:
+\begin{itemize}
+	\item Consider any pre-existing $l'$:
+	\begin{itemize}
+		\item This reduction rule only adds to \s, so it couldn't have modified the \rog of $l'$ and broken \CNC for $l'$.
+		\item Suppose we broke \CNE for $l'$ by making a $f' \in \cf(s, l)$ \tmuty. Since the \rog of $l'$ can't have been modified, nor could the \rog of any other pre-existing $l"$ have be modified we must have that $\s[l'.f]$ is \tmuty through some $v_i$. This requires that $v_i$ be the initiliser for a \Q!mut! or \Q!capsule! field, which by \ASS{mut init} and \ASS{capsule init}, means that $v_i$ must also be \muty. But then the $\s[l'.f]$ was \tmuty through $l'$, so $l'$ can't have already been \CNE.
+		\item This reduction does not remove monitors nor introduce $l'$ into the main expression, thus it could not have violated \CNO.
+	\end{itemize}
+	\item Now consider each $i$ with $C.i = \Kw{capsule}\,\_\,f$:
+	\begin{itemize}
+	\item Since the pre-existing $\s$ was not modified, by \VS, $l \notin \rog(\s, v_i) = \rog(\s', \s'[l.f])$; thus \CNC holds.
+	\item By \ASS{capsule init}, $\cap(\s, v_i, \EV[\Kw{new}\ C\oR v_1,\ldots,v_{i-1},\square,v_{i+1},\ldots,v_n\cR])$ and $\rog(s, v_i)$ is not \tmuty from \EV, and so not $\tmuty(\s'\setminus l, \EV[\M{l}{l}{l.\invariant}], v_i)$, thus \CNE holds.
+	\end{itemize}
+\end{itemize}
+
+
+\item (\textsc{update}) $\sigma|\EV[l.f\equals{}v]\rightarrow \sigma[l.f=v]|\EV[\M{l}{l}{l.\invariant}]$:
+\begin{itemize}
+\item Consider any $l' \neq l$:
+\begin{itemize}
+		\item If $l'$ was \CNE, by \ASS{mut-r update}, $l$ is \muty. Consider any $f' \in \cf(\s, l')$, by \CNE, the \rog of $l'.f'$ is not \tmuty and $l$ not in $\rog(\s, \s[l'.f'])$, so we can't have modified $\rog(\s, \s[l'.f'])$ hence $l$ is still \CNC. By \ASS{!tmutatable -!> mutatable}, we can't have broken \CNE either.
+		\item Otherwise, $l'$ was \CNO. Since this reduction dosen't remove monitors, or introduce any new $l$s into the main expression, we can't have violated \CNO.
+\end{itemize}
+\item $l$ cant have been $\CNO$, since we had $l.f = v$ inside our evaluation context, and $l.f = v$ is not a field access.
+\item If $f \in \cf(\s, l)$:
+\begin{itemize} 
+\item By \ASS{capsule update}, $\cap(\s, v, \EV[l.f = \square])$ and $l \notin \nirog(v)$, by \ASS{mut-r update} and \ASS{imm not mut}, $l$ can't be \reach from an \Q!imm! field in the \rog of $v$, so $l\notin \rog(s, v)$, hence \CNC holds.
+\item By $\cap(\s, v, \EV[l.f = \square])$, $v$ is not \tmuty from \EV, and so not $\tmuty(s\setminus l, \EV[\M{l}{l}{l.\invariant}], v)$, thus \CNE still holds.
+\end{itemize}
+\item By the proof above for the case $l' \neq l$, we can't have broken \CNE or \CNC for $f \notin \cf(\s, l)$, nor any other field of $l$.
+\end{itemize}
+
+
+\item (\textsc{access}) $\sigma|\EV[l.f]\rightarrow \sigma|\EV[\s[l.f]]$:
+\begin{itemize}
+	\item This reduction doesn't modify memory, so we can't have violated \CNC for any $l'$ and $f'$.
+	\item Consider any $l'$:
+	\begin{itemize}
+		\item If $l'$ was \CNE and \CNA, then by \ASS{!tmutatable -!> mutatable}, for any $f \in \cf(\s, l')$, we can't have made $l.f'$ \tmuty (even if $l.f$ = $l'.f'$).
+		\item Suppose $l'$ was \CNO, with $l' \neq l$, we must have $l' \notin \rog(\s, l)$. Since this reduction doesn't remove a monitor, and $\s[l.f] \in \rog(\s, l)$, we $l' \notin \rog(\s, \s[l.f])$, thus we didn't break \CNO.
+		\item Suppose $l'$ = $l$, and $l'$ was \CNO. Then by \CNC, $l \notin \rog(\s, \s[l.f])$, for any $f \in \cf(\s, l)$ of $l$; thus since we haven't made $l'$ \reach from the main expression, nor removed a monitor, $l'$ is still \CNO.
+	\end{itemize}
+\end{itemize}
+\item (\textsc{try enter}, \textsc{try ok}, and \textsc{try error}):
+these rules don't change the $l$s in the main expression, modify memory, or remove monitors, thus they can't break \CNC, \CNE, or \CNO for any $l$.
+\end{enumerate}
+\end{proof}
+\vfill
+\clearpage
 \subheading{Subject Reduction}
-\noindent\textbf{Define} $\mathit{fieldGuarded}(\sigma,\e)$:\\*
-\indent$\forall \ctx$ such that $\e=\ctx[l\singleDot\f] $
-and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$\\*
-\indent\indent either not $\mathit{mutatable}(\sigma[l.f], \sigma, \ctx[\sigma[l.f]])$, or\\*
-\indent\indent $\ctx=\ctx'[\M{l}{\ctx''}{\e}]$ and $l$ is not contained  in $\ctx''$.
-
-That is, all \Q@mut@ capsule field accesses are individually guarded by monitors.
-Note how we use $C$ in $\x:\Kw{mut}\,C$ to guess the type of the accessed field,
-and that we use the full context $\ctx$, instead of the evaluation context $\ctx_v$,
-to refer to field accesses everywhere in the expression $\e$.
-
-
 \begin{theorem}[Subject Reduction]\rm
 if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
 $\sigma_0|e_0\rightarrow \sigma_1|e_1$,
 $\mathit{OK}(\sigma_0,\e_0)$
-and
-$\mathit{fieldGuarded}(\sigma_0,\e_0)$
 then
 $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$,
-$\mathit{OK}(\sigma_1,e_1)$ and
-$\mathit{fieldGuarded}(\sigma_1,\e_1)$
+$\mathit{OK}(\sigma_1,e_1)$
 \end{theorem}
+
+\begin{proof}
+By \thm{Subject Reduction Base}, $\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$. Any reduction step can be obtained by exactly one application of the \textsc{ctxv} rule and one other rule. So we just need to proceed by cases on the other reduction rule applied, and verify that each $l \in \dom(\s)$ is \valid or \mony.
+\begin{enumerate}
+\item (\textsc{update}) $\sigma|\ctx_v[l.f\equals v]\rightarrow \sigma'|\ctx_v[\e']$:
+	\begin{itemize}
+	  \item By \textsc{update}, $\e'=\M{l}{l}{l.\invariant}$, thus $\mathit{monitored}(\EV[e'],l)$.
+	  \item Consider any other $l'$ such that $l\in \mathit{rog}(\sigma,l')$:
+	  \begin{itemize}
+	  	\item If it was $\mathit{monitored}$, it still is.
+	    \item Otherwise it was $\mathit{valid}$:
+			\begin{itemize}
+				\item Suppose we made $l'$ not valid. By our well-formedness criteria, \Q@invariant@ can only accesses \Q@imm@ and \Q@capsule@ fields, thus by \ASS{imm not mut} and \ASS{mut-r update}, we must have that $l$ was in the \rog of a capsule field $f$ of $l'$; $l'$ can't have been \CNE, since $l$ is \muty. Thus, by \CFS, $l'$ was \CNO, and $\EV = \EV'[\M{l}{\EV''}{\_}]$:
+				\begin{itemize}
+					\item If $\EV''[l.f \equals v] = \E[l'.f]$ then by \CNO, $l'$ is not reachable from $\E$. The monitor must have been introduced by an \textsc{mcall} on a capsule mutator for $l'$. Since a capsule mutator can take only \Q!imm! and \Q!capsule! parameters, $l$ cannot be reachable from them (since $l$ was in the \rog of $l'$, and $l$ is \muty). Thus the only way to access $l$ is by accessing $l'.f$.
+					Since capsule mutators can access \Q!this! only once, and \gap{by the proof of \CFS}, there is no other $l'.f$ in $\E[l'.f]$, nor was there one in a previous stage of reduction; this contradicts the fact that we just updated $l$ (which is only reachable through $l'.f$).
+					\item Thus, by \CNO, we must have $\EV''[l.f \equals v] = e$ with $l'$ not reachable from $e$; so $l'$ was, and still is, \mony.
+				\end{itemize}
+				\item Otherwise, $l'$ is still \emph{valid}.
+		  	\end{itemize}
+	  \end{itemize}
+	  \item $l$ is not reachable from any other $l'$, thus $l'$ being \valid or \mony could not have been effected by this reduction step.
+	\end{itemize}
+
+\item (\textsc{access}) $\sigma|\EV[l\singleDot f] \rightarrow \sigma|\EV[v]$:
+	\begin{itemize}
+		\item Consider any \mony $l'$, then $\EV = \EV'[\M{l'}{\EV''}{l.\invariant}]$:\\
+			The monitor can't have been introduced by \textsc{new} or \textsc{update}, since they wrap monitors around $v$s which cannot be reduced; thus the monitor was introduced by \textsc{mcall}.
+			Since the monitor for $l'$ contains a $l.f$, it cant have been \CNA, thus by \CFS, we must have that $l'$ is \CNO. 
+			Thus $\s[l'.f] \neq l$, and so $l'$ is still \mony.
+		\item Otherwise $l'$ was \valid, since this rule doesn't mutate memory, by \thm{Determinism}, it is still \valid.
+\end{itemize}
+
+\item (\textsc{mcall}, \textsc{try enter}, \textsc{try ok}, and \textsc{try error}):
+
+	These reduction steps do not modify memory, the memory locations reachable inside of main expression, or any pre-existing monitor expressions. Therefore it cannot have any effect on the \emph{valid} (due to \thm{Determinism}), or $\mathit{monitored}$ properties of any memory locations.
+
+\item (\textsc{new}) $\sigma|\EV[\Kw{new}\ C\oR\vs\cR]\rightarrow \sigma,l\mapsto C\{\vs\}|\EV[ \M{l}{l}{l.\invariant}]$:
+
+	Clearly the newly created object, $l$, is \emph{monitored}. As for \textsc{mcall}, other objects and properties are not disturbed, and so they are still \valid or \mony.
+
+
+\item (\textsc{monitor exit}) $\sigma|\M{l}{v}{\Kw{true}}\rightarrow \sigma|v$:
+\begin{itemize}
+	\item By \ASS{no monitors}, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \emph{valid}.
+\end{itemize} 
+\end{enumerate}
+\end{proof}
+
 
 \begin{theorem}\rm
 	\thm{Progress} + \thm{Subject Reduction} $\Rightarrow$ \thm{Stronger Soundness}
@@ -277,111 +381,76 @@ $\mathit{fieldGuarded}(\sigma_1,\e_1)$
 \begin{proof}
 This proof proceeds by induction in the usual manner.
 
-\emph{Base case}: At the start of execution, memory only contains $c$: since $c$ is defined to always be $\mathit{valid}$, and has only \Q@mut@ fields, it is trivially $\mathit{wellEncapsulated}$, thus $\mathit{OK}(c\mapsto\Kw{Cap},e)$.
+\emph{Base case}: At the start of execution, memory only contains $c$: since $c$ is defined to always be $\mathit{valid}$, and has only \Q@mut@ fields, we trivially have, thus $\mathit{OK}(c\mapsto\Kw{Cap},e)$.
 
 \emph{Induction}: By \thm{Progress}, we always have another evaluation step to take, by \thm{Subject Reduction} such a step will preserve $\mathit{OK}$, and so by induction, $\mathit{OK}$ holds after any number of steps.
 
-Note how for the proof garbage collectability is important:
+Note how for the proof garbage collections is important:
 when the \Q@invariant()@ method evaluates to \Q@false@,
-execution can continue only if the offending object is classified as \emph{garbage}.
+execution will only be continued by the \textsc{try error} rule, which by \thm{Unmonitored Try}, garbage collects the offending object: it will no longer be in \s.
+
 \end{proof}
 
-\subheading{Exposer Instrumentation}
-We first introduce a lemma derived from our well-formedness criteria and the type system:
-\begin{Lemma}[Exposer Instrumentation]\rm
-If $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
-$\mathit{fieldGuarded}(\sigma_0,\e_0)$
-\\*
-then $\mathit{fieldGuarded}(\sigma_1,\e_1)$.
-\end{Lemma}
-\begin{proof}
-The only rule that can
-introduce a new field access is \textsc{mcall}.
-In that case, \thm{Exposer Instrumentation} holds
-by well-formedness (all field accesses in methods are of the form \Q@this.f@),
-since \textsc{mcall} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, \IOBlock{Change to match new definition of fieldGuarded}{by \thm{Mut Field} such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.}
+\bigskip
+\begin{verbatim}
+capsule(s, l, Ctx):
+    for all l' in Ctx, rog(s, l') disjoint nirog(s, l)
+    where l' in nirog(s, l) iff l' = l or l' in nirog(s, s[l.f]) and S(l).f = imm _
 
-Note that \textsc{monitor exit} is fine because monitors are removed only when
- $e_1$ is a value.
-\end{proof}
+nirog
+f in cfields(s, l) iff
+    S(l).f = capsule _
+	
+tmutatable(s, e, l, l'):
+    l in rog(s, l') or (tmutatable(s, e, s[l.f], l') for some S(l).f in {capsule _, mut _})
 
-\subheading{Proof of Subject Reduction}%\saveSpace
-Any reduction step can be obtained
-by exactly one application of the \textsc{ctxv} rule and one other rule. Thus the proof can simply proceed by cases on the other applied rule.
+mutatable(s, e, l)
+mutatable(s, E)
 
-By \thm{Subject Reduction Base} and \thm{Exposer Instrumentation},
-$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_1,\e_1)$. So we just need to proceed by cases on the reduction rule applied to verify that $\mathit{OK}(\sigma_1,\e_1)$ holds:
+reacheable(s, E, l) exists l' in E, l in rog(s, l')
+similarly with reacheable(s, e, l)
+	
+Valid-State(s, e):
+    exists e0, with M(_; _; _) not in e0, such that:
+        c -> Cap |- e0 : T
+        and c->Cap{_} | e0 ->+ s|e
+
+C.i (it is usefull! and easy to explain)
+\end{verbatim}
+
+%	\indent(1)\  ... \\*
+
+%\Mut Field:
+%	if S; G; E |- e.f = e' : T, then S; G; E[[].f = e'] |- e : mut _
+%	if S; G; E |- e.f : mut _, then S; G; E[[].f] |- e : mut _
+
+% This is to have an enumerate that is indented!
+\newenvironment{ienumerate}{${}$% allows a line break
+	\begin{itemize}\item[] % indents like a normal itemize, but with no bullet!
+	\begin{enumerate}
+}{\end{enumerate}\end{itemize}}
+
+\begin{Assumption}[Type Consistency]\rm
+\begin{ienumerate}
+%if S; G; E |- e.f = e' : _ C, and C.f = T', then S; G; E[e.f = []] |- e' : T'
+\item if \ty{e.f \equals e'}{\_\,C} and $C.f = T'$, then \ty[\e.f \equals \h]{e'}{T'}
+\item if \ty{e.m\oR e_1,\ldots,e_n\cR}{T}, \\
+\ty[\h.m\oR e_1,\ldots,e_n\cR]{e}{\_\,C}, and
+$C.m = \mdf\,\Kw{method}\,\T'\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\_$, then:
 \begin{enumerate}
-\item (\textsc{update}) $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
-	\begin{itemize}
-	  \item By \textsc{update} $\e'=\M{l}{l}{l}\singleDot\Kw{invariant}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
-	  \item Every other $l_1$ such that $l\in \mathit{rog}(\sigma,l_1)$ will \IOBlock{what does this mean?}{verify the same case as the former step}:
-	  \begin{itemize}
-	  	\item If it was $\mathit{garbage}$, clearly it still is.
-	  	\item If it was $\mathit{monitored}$, it still is.
-	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
-			\begin{itemize}
-				\item If $l\in \mathit{erog}(\sigma,l_1)$, by $\mathit{wellEncapsulated}$, not $\mathit{mutatable}(l, \sigma, e)$, but by \thm{Mut Field}, $\mathit{mutatable}(l, \sigma, e)$, a contradiction.
-		    	\item Otherwise, by our well-formedness criteria that \Q@invariant@ only accesses \Q@imm@ and \Q@capsule@ fields, and by \thm{Determinism}, it is clearly the case that $\mathit{valid}$ still holds;
-		    	Since $l \notin \mathit{erog}(\sigma, l_1)$, $l_1$ is still $\mathit{wellEncapsulated}$.
-		  	\end{itemize}
-	  \end{itemize}
-	  \item $l$ is not reachable from any other $l_0$, thus $l_0$ being $\mathit{OK}$ could not have been effected by this reduction step.
-	\end{itemize}
-
-\item (\textsc{access}) $\sigma|l\singleDot f \rightarrow \sigma|v$:
-	\begin{itemize}
-		\item If $l$ was \emph{valid} and \emph{wellEncapsulated}:
-		\begin{itemize}
-			\item If we have now broken \emph{wellEncapsulated}, we must have made something in its \emph{erog} \emph{mutatable}.
-			By \thm{Mut Field} we can not type \Q!imm! fields as \Q!mut!,
-			we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is \IOBlock{is this right?}{being typed as \Q@mut@}. By $\mathit{fieldGuarded}(\sigma_0,\e_0)$, the former step must have been inside a monitor \M{l}{\ctx_v[l.f]}{\e}
-		    and the $l$ under reduction was the only occurrence of $l$.
-		    Since $f$ is a \Q!capsule!, we know that $l\notin \text{erog}(\sigma,l)$
-		    by \thm{Head Not Circular}. Thus in our next step $l$ is not inside $\ctx_v[v]$. Thus $l$ must be \emph{monitored} and hence it is $\mathit{OK}$.
-
-		    \item Otherwise, $l$ is still $\mathit{OK}$
-    	\end{itemize}
-
-	\item Suppose some other $l_0$ was \emph{wellEncapsulated} and \emph{valid}:
-	\begin{itemize}
-			\item \IOBlock{Wrong!}{If $l$ was in the \emph{rog} of $l_0$, by \thm{Capsule Tree}, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non \emph{wellEncapsulated}. In addition, since only things in the \emph{erog} can be referenced by \Q@invariant@, validity can not depend on $l$, and by \thm{Determinism} it is still the case that $l_0$ is \emph{valid}. And so we can't have effected $l_0$ being $\mathit{OK}$.} \IOComm{Suppose $v \in erog(\sigma, l_0)$, either $l_0$ is monitored, ... or not mutable $l_0$}
-			\item Otherwise, this reduction step could not have affected $l_0$, so $l_0$ is still $\mathit{OK}$.
-	\end{itemize}
-
-
-	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $\mathit{garbage}$), thus $l$ is still $\mathit{OK}$.
-
-	\item As we don't change any monitors here, nothing that was $\mathit{monitored}$ could have been made un-$\mathit{monitored}$, and so it is still $\mathit{OK}$.
-\end{itemize}
-
-\item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
-
-	These reduction steps do not modify memory, the memory locations reachable inside of main expression, or any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, \emph{wellEncapsulated}, \emph{valid} (due to \thm{Determinism}), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
-
-\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \M{l}{l}{l.\invariant}$:
-
-	Clearly the newly created object, $l$, is \emph{monitored}. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
-
-
-\item (\textsc{monitor exit}) $\sigma|\M{l}{v}{\Kw{true}}\rightarrow \sigma|v$:
-\begin{itemize}
-	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{invariant}\oR\cR$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \emph{valid}.
-
-	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was $\mathit{wellEncapsulated}$ before \textsc{update} was executed (since it can't have been \emph{garbage} and \emph{monitored}), as \textsc{update} itself preserves this property and we haven't modified memory in anyway, we must still have that $l$ is \emph{wellEncapsulated}. As $l$ is \emph{valid} and \emph{wellEncapsulated}, it is $\mathit{OK}$.
-
-	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule mutator method that mutated a field $f$.
-	\begin{itemize}
-		\item A location that was \emph{garbage} obviously still is, and so is also $\mathit{OK}$.
-		\item No location that was \emph{valid} could have been made invalid since this reduction rule performs no mutation of memory. If a location was \emph{wellEncapsulated} before, the only way it could be non \emph{wellEncapsulated} is if we somehow leaked a \Q@mut@ reference, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected \emph{wellEncapsulated}, hence that location is still $\mathit{OK}$.
-		\item \IOBlock{Wrong!}{The only location that could have been made un \emph{monitored} is $l$ itself. By our well-formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non \emph{wellEncapsulated}, since that would violate \thm{Capsule Tree}. As nothing else in $l$ was modified, and it must have been \emph{wellEncapsulated} before the \textsc{mcall}, and so it still is. In addition since  $l$ is valid, it is $\mathit{OK}$.} \IOComm{before MCall, $l$ cant have been monitored (or else we'd have a capsule mutator observe it's receiver...) it cant have been garbage, so it must have been valid and wellEncapsulated, which by the above, still holds}
-	\end{itemize}
-	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, \IOBlock{Change this!}{by \thm{Capsule Tree}}, the resulting value, $l$, must be \emph{wellEncapsulated}, since $l$ is also \emph{valid} we have that $l$ is $\mathit{OK}$.
-
-\end{itemize}
-
-\item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
-
-	By \thm{Strong Exception Safety}, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By \thm{Unmonitored Try}, no location inside $\sigma$ could have been \emph{monitored}.
-	Since we don't modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$. 
+\item \ty{e.m\oR e_1,\ldots,e_n\cR}{T'},
+\item \ty[\h.m\oR e_1,\ldots,e_n\cR]{e}{\mdf\,\_}, and
+\item \ty[e.m\oR\e_1,\ldots,e_{i-1},\h,e_{i+1},\ldots,e_n\cR]{e_i}{T_i}
+%\item hello
 \end{enumerate}
+\item if \ty{\Kw{new}\ C\oR e_1,\ldots,e_n\cR}{T} and $C.i = T_i\,\_$, then:
+\qindent \ty[\Kw{new}\ C\oR \e_1,\ldots,e_{i-1},\h,e_{i+1},\ldots,e_n\cR]{e_i}{T_i}
+\end{ienumerate}
+\end{Assumption}%
+
+\begin{Assumption}[Mut Field]\rm
+\begin{ienumerate}
+\item if \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}
+\item if \ty{e.f}{\Kw{mut}\,\_}, then \ty[\h.f]{e}{\Kw{mut}\,\_}
+\end{ienumerate}
+\end{Assumption}%

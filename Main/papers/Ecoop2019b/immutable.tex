@@ -65,13 +65,13 @@ For example consider this simple and contrived (mis)use of person:
 class EvilString extends String {
   @Override read method Bool isEmpty() {
     // Create a new capability object out of thin air
-    return new Random().bool(); }
-} ..
+    return new Random().bool(); }}
+...
 method mut Person createPersons(String name) {
   // we can not be sure that name is not an EvilString
   mut Person schrodinger = new Person(name); // exception here?
   assert schrodinger.invariant(); // will this fail?
-  ..}
+  ...}
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
 
@@ -96,8 +96,8 @@ class MagicCounter {
 class NastyS extends String {..
   MagicCounter evil = new MagicCounter(0);
   @Override read method Bool isEmpty() {
-    return this.evil.increment() != 2; }
-} ..
+    return this.evil.increment() != 2; }}
+...
 NastyS name = new NastyS("bob"); //TMs believe name's ROG is imm
 Person person = new Person(name); // person is valid, counter=1
 name.increment(); // counter == 2, person is now broken

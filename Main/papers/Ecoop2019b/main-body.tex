@@ -1,3 +1,36 @@
+\newcommand{\ASS}[1]{\textcolor{red}{\thm{ASS[#1]}}}
+\newcommand{\AASS}[1]{\textcolor{red}{\thm{AASS[#1]}}}
+\newcommand{\CFS}{\thm{Capsule Field Soundess}\xspace}
+\newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}}
+
+\newmathword{\CNO}{capsuleNotObservable}
+\newmathword{\dom}{dom}
+\newmathword{\CNC}{capsuleNotCircular}
+\newmathword{\CNA}{capsuleNotAccessed}
+\newmathword{\CNE}{capsuleNotExposed}
+\newmathword{\rog}{rog}
+\newmathword{\cf}{cfields}
+\newmathword{\nirog}{nirog}
+\newmathword{\tmuty}{tmutatable}
+\newmathword{\muty}{mutatable}
+\newmathword{\mony}{monitored}
+\newmathword{\valid}{valid}
+\newmathword{\reach}{reachable}
+\newmathword{\cap}{capsuleRef}
+\newmathword{\VS}{validState}
+
+\NewDocumentCommand\ty{o m m}{%
+	\ensuremath{\S; \G; %
+		\IfNoValueTF{#1}{\E}{\E[#1]}%
+		\vdash #2 : #3}\xspace}
+\renewcommand{\h}{\ensuremath{\square}\xspace}
+%\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
+\renewcommand{\G}{\Gamma}
+\newcommand{\EV}{\ensuremath{\ctx_v}{}\xspace}
+\newcommand{\E}{\ensuremath{\ctx}\xspace}
+\newcommand{\gap}[1]{{\parcolor{red}{#1}}}
+\newcommand{\s}{\ensuremath{\sigma}\xspace}
+\renewcommand{\S}{\ensuremath{\Sigma^\sigma}\xspace}
 \input{intro}
 \input{TMsAndOCs}
 \input{protocol}
@@ -13,3 +46,4 @@
 \input{hamster}
 \input{more-case-studies}
 \input{patterns}
+\input{runtime-verification}
