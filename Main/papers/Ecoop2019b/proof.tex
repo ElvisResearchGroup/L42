@@ -370,10 +370,7 @@ Now we assume that everything reachable from the previous \VS was was \valid or 
 			\item Otherwise $l'$ was \valid, since this rule doesn't mutate memory, by \thm{Determinism}, it is still \valid.
 		\end{itemize}
 
-	\item (\textsc{monitor exit}) $\s|\M{l}{v}{\Kw{true}}\rightarrow \s|v$:
-	\begin{itemize}
-		\item By our \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \valid.
-	\end{itemize} 
+	\item (\textsc{monitor exit}) $\s|\M{l}{v}{\Kw{true}}\rightarrow \s|v$: By our \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \valid.
 	
 		\item (\textsc{new}) $\s|\EV[\Kw{new}\ C\oR\vs\cR]\rightarrow \s,l\mapsto C\{\vs\}|\EV[ \M{l}{l}{l.\invariant}]$:
 			Clearly the newly created object, $l$, is \mony. This rule does not modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors, thus every pre-existing $l'$ is still \valid (due to \thm{Determinism}), or \mony.
@@ -382,5 +379,5 @@ Now we assume that everything reachable from the previous \VS was was \valid or 
 			These reduction steps do not modify memory, the memory locations reachable inside of the main expression, or any pre-existing monitor expressions. Thus by the case for \textsc{new} above, they could not have violated \valid or \mony for any $l$.
 \end{ienumerate}
 
-Regardless of the reduction performed, we have each \reach $l$ is \valid or \mony.
+\noindent Regardless of the reduction performed, we have each \reach $l$ is \valid or \mony.
 \end{proof}
