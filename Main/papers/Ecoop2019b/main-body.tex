@@ -1,48 +1,3 @@
-<<<<<<< HEAD
-=======
-\renewcommand{\vs}{\Many{v}}
-\newcommand{\ASS}[1]{\textcolor{red}{\thm{ASS[#1]}}}
-\newcommand{\AASS}[1]{\textcolor{red}{\thm{AASS[#1]}}}
-\newcommand{\CFS}{\thm{Capsule Field Soundess}\xspace}
-\newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
-
-\newcommand{\qindent}{\\\indent$\quad$}
-\newmathword{\CNO}{headNotObservable}
-\newmathword{\dom}{dom}
-\newmathword{\CNC}{headNotCircular}
-\newmathword{\CNA}{notUnmonitored}
-\newmathword{\CNE}{wellEncapsulated}
-\newmathword{\rog}{rog}
-\newmathword{\mrog}{mrog}
-\newmathword{\cf}{capsuleFields}
-\newmathword{\OK}{OK}
-\newmathword{\tmuty}{mutatable}
-\newmathword{\mony}{monitored}
-\newmathword{\valid}{valid}
-\newmathword{\trusted}{trusted}
-\newmathword{\reach}{reachable}
-\newmathword{\cap}{encapsulated}
-\newmathword{\imut}{immutable}
-\newmathword{\VS}{validState}
-
-\NewDocumentCommand\ty{o O{\G} O{\vdash} m m}{%
-	\ensuremath{\S; #2; %
-		\IfNoValueTF{#1}{\E}{\ensuremath{\E[#1]}}%
-		#3 #4 : #5}\xspace}
-
-\NewDocumentCommand\tyr{o m m}{\ty[#1][\emptyset]{#2}{#3}}
-\NewDocumentCommand\ntyr{o m m}{\ty[#1][\emptyset][\nvdash]{#2}{#3}}
-
-\renewcommand{\h}{\ensuremath{\square}\xspace}
-%\ensuremath{\scalebox{0.5}[1]{\ensuremath{\square}}}\xspace}
-\renewcommand{\G}{\ensuremath{\Gamma}\xspace}
-\newcommand{\EV}{\ensuremath{\ctx_v}{}\xspace}
-\newcommand{\E}{\ensuremath{\ctx}\xspace}
-\newcommand{\gap}[1]{{\parcolor{red}{#1}}}
-\newcommand{\s}{\ensuremath{\sigma}\xspace}
-\renewcommand{\S}{\ensuremath{\Sigma^\sigma}\xspace}
-
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \input{intro}
 \input{TMsAndOCs}
 \input{protocol}
@@ -52,18 +7,10 @@
 \input{case-study} %s:case-study
 \input{related}
 \input{conclusion}
+
 \bibliography{main} % The OOPSLA template has this at the end...
-<<<<<<< HEAD
-=======
-
 \appendix
-%\input{proof}
-\section{Proof and Axioms}
-\label{s:proof}
-\IOComm{To do}
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 
-\appendix
 \input{proof}
 \input{hamster}
 \input{more-case-studies}

@@ -3,7 +3,6 @@
 \lstset{morekeywords={fwd}}
 
 As previously discussed, instead of providing a concrete set of type rules, we provide a set of properties that the type system needs to respect.
-<<<<<<< HEAD
 We will express such properties using type judgements of the form $\ty{e}{T}$. This judgement form allows an $l$ to be typed with different types based how it is used, e.g. we might have $\S;\G;\h.m\oR l \cR \vdash l : \Kw{mut}\ C$  and $\S;\G;l.m\oR \h \cR \nvdash l : \Kw{mut}\ C$, where $m$ is a \Q!mut! method taking a \Q!read! parameter. Importantly, we allow types to change during reduction (such as to model promotions), but do not allow the types inside methods to change when they are called (see the \thm{Method Consistency} assumption below). However, for this to work in practice, the type-system may need to keep track of more information than what is provided by an \E and $\S$. Such information could include which method an $e$ in the main expression came from, or what previous reductions have been executed. Such extra information is not needed for the correctness of our proof, but rather to extend the set of valid programs, however doing so would add more verbosity to our notations.
 
 \subheading{Auxiliary Definitions}
@@ -72,81 +71,6 @@ where:
 \end{iitemize}
 
 \indent then $\emptyset; \Kw{this} : \mdf\,C,\Many{x : T}; \E \vdash e : \mdf\,\_$ iff $\Ss; \emptyset; \EV[\E'[\Kw{this}\coloneqq l,\Many{x\coloneqq v}]] \vdash e[\Kw{this}\coloneqq l,\Many{x\coloneqq v}] : \mdf\,\_$.
-=======
-To express these properties, we first need some auxiliary definitions.
-
-\subheading{Auxiliary Definitions}
-We define what it means for an $l$ to be \reach from an expression:\\
-\indent $\reach(\s, e, l)$ iff $\exists l' \in e$ such that $l \in \rog(\s, l')$.
-We define a notation to easily get the capsule fields of an $l$:\\
-\indent $f \in \cf(\s, l)$ iff $\S(l).f = \Kw{capsule}\,\_$.
-
-\noindent We now define what it means for an object to be immutable: it is in the \rog of an \Q!imm! reference, or an \Q!imm! field:\\*
-\indent $\imut(\s, e, l)$ iff $\exists l'$ such that:
-\SS[0.25]\begin{itemize}
-\item $e = \E[l']$, \tyr{l'}{\Kw{imm}\,\_}, and $l \in \rog(\s, l')$, or
-\item $\S(l').f = \Kw{imm}\,\_$ and $l \in \rog(\s, \s[l.f])$.
-\end{itemize}
-
-\noindent We now model what the \cap property of \Q!capsule! references:\\
-\indent $\cap(\s, \E, l)$ iff $\forall l' \in \rog(\s, l)$, if not $\imut(\s, \E[\_], l')$, then 
-not $\reach(\s, \E[\_], l')$.
-We use the notation $\E[\_]$ to trivially transform an $\E$ into an $e$; we expect $\E[\_]$ to be well-typed and not introduce any $l$s into the hole.
-
-We define the \mrog of an $l$ to be the $l'$s recheable from $l$ by traversing through only \Q!mut! and \Q!capsule! fields:
-\indent $l' \in \mrog(\s, l)$ iff $\exists f$ such that:
-\SS[0.25]\begin{itemize}
-	\item $\S(l).f \in \{\Kw{capsule}\,\_, \Kw{mut}\,\_\}$, and
-	\item $\s[l.f] = l'$ or $l' \in \mrog(\s, \s[l.f])$
-\end{itemize}
-
-\noindent Now we can define what it means for an object $l$ to be mutatable by an expression $e$: something in $l$ is reachable from a \Q!mut! reference in $e$, by passing through any number of \Q!mut! and \Q!capsule! fields:
-\SS[0.25]\indent $\tmuty(\s, e, l)$ iff $\exists \E,l'$ such that:
-\begin{itemize}
-	\item $e = \E[l']$, $\tyr{l'}{\Kw{mut}\,\_,}$ and
-	\item $\exists l'' \in \rog(\s, l)$ such that $l' = l''$ or $l'' \in \mrog(\s, l')$
-\end{itemize}
-
-\subheading{Axiomatic Type Properties}
-Here we assume the usual \thm{Progress} and \thm{Subject Reduction Base}. Note that \thm{Subject Reduction Base} only ensures properties about type checking, not invariant checking.
-\begin{Assumption}[Progress]\rm
-	If $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
-	and $e_0$ is not of form $l$ or $\mathit{error}$, then
-	$\sigma_0|e_0\rightarrow \sigma_1|e_1$.
-\end{Assumption}
-
-\begin{Assumption}[Subject Reduction Base]\rm
-	If $\VS(\s, e)$, then $\tyr{e}{T}$.\\
-(Recall that a \VS is one that was reduced from a well-typed and well-formed initial $\s_0|e_0$)
-\end{Assumption}
-
-As we do not have a concrete type system, we need to assume some properties about it's derivations. First we assume that  \Q!new! expressions must have field initialisers with the appropriate type, fields can only be updated with expressions of the appropriate type, methods can only be called on receivers with the appropriate modifier, method parameters must have the appropriate type, and method calls are typed with the return type of the method:
-\SS\begin{Assumption}[Type Consistency]\rm\ 
-\begin{enumerate}
-%if S; G; E |- e.f = e' : _ C, and C.f = T', then S; G; E[e.f = []] |- e' : T'
-\item if \ty{\Kw{new}\ C\oR e_1,\ldots,e_n\cR}{T} and $C.i = T_i\,\_$, then:
-\qindent \ty[\Kw{new}\ C\oR \e_1,\ldots,e_{i-1},\h,e_{i+1},\ldots,e_n\cR]{e_i}{T_i}
-\item if \ty{e.f \equals e'}{\_\,C} and $C.f = T'$, then \ty[\e.f \equals \h]{e'}{T'}
-\item if \ty{e.m\oR e_1,\ldots,e_n\cR}{T}, \\
-\ty[\h.m\oR e_1,\ldots,e_n\cR]{e}{\_\,C}, and
-$C.m = \mdf\,\Kw{method}\,\T'\,m\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\_$, then:
-\begin{enumerate}
-\item \ty{e.m\oR e_1,\ldots,e_n\cR}{T'},
-\item \ty[\h.m\oR e_1,\ldots,e_n\cR]{e}{\mdf\,\_}, and
-\item \ty[e.m\oR\e_1,\ldots,e_{i-1},\h,e_{i+1},\ldots,e_n\cR]{e_i}{T_i}
-%\item hello
-\end{enumerate}
-\end{enumerate}
-\end{Assumption}%
-
-We also assume that any expression $e$ inside a method body, can be typed with the same types as when it is expanded by our \textsc{mcall} rule:
-\SS\begin{Assumption}[Method Consistency]\rm\
- If $\VS(\s, \EV[l.m\oR \vs \cR])$ %and $\s|\EV[l.m\oR v_1,\ldots,v_n \cR] \rightarrow \s|$,
-where:\\
-\indent $\S; \emptyset; \EV[\h.m\oR \vs \cR]{l}{\_\,C}$ and $C.m =\mdf\,\Kw{method}\,\_\,m\,\oR\Many{x:T}\cR\,\E[e]$,\\
-\indent and $\E'$ = $\M{l}{\E}{l.\invariant}$ if $C.m$ is a capsule mutator, otherwise $\E' = \E$\\
-then $\S; \Kw{this} : \mdf,C,\Many{x : T}; \E \vdash e : \mdf'\,\_$ iff $\S; \emptyset; \EV[\E'[\Kw{this}\coloneqq l,\Many{x\coloneqq v}]] \vdash e[\Kw{this}\coloneqq l,\Many{x\coloneqq v}] : \mdf'\,\_$.
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 % and $C.m  =\mdf\,\Kw{method}\,\_\,m\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\E[e]$ and
 \end{Assumption}
 Note that for this to work in general, the type-system may need to keep track of more information then is given by a $\E$ and $e$, such as where in the source code $e$ came from; for simplicity we do not model such behaviour here, however such extensions could be made without effecting the correctness of our proof.
@@ -169,7 +93,6 @@ Now we define formal properties about our type-modifiers, thus giving them meani
 \end{enumerate}
 \end{Assumption}%
 
-<<<<<<< HEAD
 \noindent Now we define formal properties about our TMs, thus giving them meaning. First we require that an \immut object not also be \muty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut!/\Q!capsule! reference and through \Q!mut!/\Q!capsule! fields:%
 \SS\begin{Assumption}[Imm Consistency]\rm\ \\
 \indent If $\VS(\s, e)$ and $\immut(\s, e, l)$, then not $\muty(\s, e, l)$.
@@ -192,48 +115,11 @@ We require that if something was not \muty, that it remains that way; this preve
 
 \noindent We require that field updates only be performed on \Q!mut! receivers:%
 \SS\begin{Assumption}[Mut Update]\rm If \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}.
-=======
-\noindent We require that field updates only be performed on \Q!mut! receivers:
- \begin{Assumption}[Mut Update]\rm If \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}.
-\end{Assumption}
-
-\noindent Finally, we require that a \Q!read! result of a method not be tapeable as \Q!mut!, which in conjunction with \thm{Mut Consistency} and \thm{Mut Update}, allows a method to safely return \Q!read! without fear of that reference being used to modify the object's \rog.
-\SS\begin{Assumption}[Read Consistency] 
-If \ty{e.m\oR \es \cR}{\mdf\,\_}, \ty[\h.m\oR \es\cR]{e}{\_\,C}, and $C.m = \mdf\,\Kw{method}\,\Kw{read}\,C'\,\_$, then $\mdf \neq \Kw{mut}$.
-\end{Assumption}%
-
-Note that none of the above rules prevent expressions from changing type during reduction, nor do they prevent sound promotions such as those offered in Pony, L42, and Gordon \etal's language.
-
-The execution of an expression
-with no \Q@mut@ memory locations is deterministic and does not
-mutate pre-existing memory (and thus does not not perform I/O by mutating the pre-existing $c$):
-\begin{Assumption}[Determinism]\rm If
-	\SS[0.25]\begin{itemize}
-	\item $\tyr{e}{T}$,
-	\item $\forall \E'$, if $e = \E'[l]$, then $\ntyr[\E']{l}{\Kw{mut}}$, and
-	\item $\s\e \rightarrow^+ \s'\e'$,
-	\end{itemize}\SS[0.25]
-then $\s' = \s,\_$ and $\s | \e \Rightarrow^+ \s,\_ | \e'$.
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{Assumption}
 We believe that this assumption can be proven from the above ones, however for simplicity we have left this as an assumption, as this is a property of the pre-existing TM and OC systems, and not our novel invariant protocol or capsule fields.
 
-<<<<<<< HEAD
 \noindent We also require that field access only be typed as \Q!mut!, if their receiver is also \Q!mut!:%
 \SS\begin{Assumption}[Mut Access]\rm If \ty{e.f}{\Kw{mut}\,\_}, then \ty[\h.f]{e}{\Kw{mut}\,\_}.
-=======
-Finally we assume strong-exception safety: the memory preserved by each \Q@try@--\Q@catch@ execution is not \tmuty within the \Q!try!; and the \Q!catch! cannot access any non-preserved memory locations.
-\begin{Assumption}[Strong Exception Safety]\rm
-If
-	\SS[0.25]\begin{itemize}
-	\item $\VS(\s\s', \EV[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC])$, and 
-	\item $
-	\sigma,\sigma'|\EV[\Kw{try}^\sigma\oC\e_0\cC\ \Kw{catch}\ \oC\e_1\cC]\rightarrow 
-	\sigma''|\EV[\Kw{try}^\sigma\oC\e'\cC\ \Kw{catch}\ \oC\e_1\cC]
-	$
-	\end{itemize}\SS[0.25]
-Then $\forall l \in \dom(\s)$, not $\tmuty(\s, e_0, l)$; and $\forall l \in e_1, l \in \dom(\s)$.
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{Assumption}
 
 \noindent Finally, we require that a \Q!read! variable or method result not be typeable as \Q!mut!; in conjunction with \thm{Mut Consistency}, \thm{Mut Update}, and \thm{Method Consistency}, this allows one to safely pass or return a \Q!read! without it being used to modify the object's \rog:%
@@ -251,7 +137,6 @@ Finally we assume strong-exception safety: the memory preserved by each \Q@try@-
 \indent If $\VS(\s', \E[\Kw{try}^{\s_0}\oC e_0\cC\ \Kw{catch}\ \oC e_1\cC])$, then $\forall l \in \dom(\s_0)$, not $\muty(\s, e_0, l)$;.
 \end{Assumption}
 
-<<<<<<< HEAD
 We use SES to prove that locations preserved by \Q@try@ blocks are never monitored (this is important as it means that a \Q!catch! that catches a monitor failure, will not be able to see the responsible object):%
 \SS\begin{Lemma}[Unmonitored Try]\rm
 	If $\VS(\s, \E[\Kw{try}^\s\oC\E[\M{l}{\_}{\_}]\cC\,\_])$, then $l\notin\s_0$
@@ -278,14 +163,6 @@ By our well-formedness rules, the \Q!invariant! method takes a \Q!read! \Q!this!
 The only non-deterministic single reduction steps are for calls to \Q!mut! methods on a \Q!Cap!; however \Q!invariant! is a \!read! methods, so even if $l$ = $c$, we have $\s|\EV[l.\invariant] \Rightarrow \s'|\EV[e']$. In addition, since \textsc{mcall} does not mutate $\s'$ with have $\s' = \s$.
 
 \emph{Inductive case}: Consider $\s|\EV[l.\invariant] \Rightarrow^+ \s'|\EV[e'] \rightarrow \s''|\EV[e'']$. We inductively assume that $\forall l' \in \dom(\s)$, not $\muty(\s', e', l)$; thus by \thm{Mut Consistency}, each such $l'$ is not \muty in $e'$. We also inductively assume that $\s' = \s,\_$, since nothing in $\s$ was \muty, by \thm{Mut Update}, our reduction can't have modified anything in \s, i.e. $\s'' = \s,\_$. Finally, if $c \in \dom(\s)$, then it cant by $\muty$ in $e$, thus by \thm{Type Consistency}, we can't have called a \Q!mut! method on it. By definition of \Q!Cap!, no new instances of $c$ can be created, so no \Q!mut! methods of \Q!Cap! can be called; since calling such a method is the only way to get a non-deterministic reduction, we have $\s'|\EV[e'] \Rightarrow \s''|\EV[e'']$.
-=======
-SES allows us to prove that locations preserved by \Q@try@ blocks are never monitored:
-\SS\begin{Lemma}[Unmonitored Try]\rm
-	If $\VS(\s, \E[\Kw{try}^\sigma\oC\ctx[\M{l}{\_}{\_}]\cC\,\_])$, then $l\notin\sigma$
-\end{Lemma}
-\begin{proof}
-The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monitor expression by the definition of \VS. If this property holds for $\VS(\s, e)$ but not for $\s'|e'$ with $\s|\e\rightarrow \s'|e$, we must have applied the \textsc{update}, \textsc{mcal} or \textsc{new} rules; since our well-formedness rules on method bodies prevent any other reduction step from introducing a monitor expression. If the rule was a \textsc{new} rule, $l$ will be fresh, so it could not have been in $\sigma$. If the rule was an \textsc{update}, by \thm{Mut Update}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a call to a \Q!mut! method, so by \thm{Type Consistency} $l$ was \Q!mut!; either way we have that $l$ is \tmuty, so by \thm{Strong Exception Safety}, we have that $l \notin \sigma$.
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{proof}
 
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
@@ -309,51 +186,19 @@ The proof is by induction: after 0 reduction steps, $\e$ cannot contain a monito
 \subheading{Proof of Soundness}
 It is hard to prove \thm{Soundness} directly,
 so we first define a stronger property,
-<<<<<<< HEAD
 called \thm{Stronger Soundness}, which depends on \mony and \OK. 
 
 An object is \mony if execution
-=======
-called \thm{Stronger Soundness}, and
-show that it is preserved during reduction by means of conventional
-\thm{Progress} and \thm{Subject Reduction} (\thm{Progress} is one of our assumptions,
-while \thm{Subject Reduction} relies heavily upon \thm{Subject Reduction Base}).
-That is:
-\SSI\begin{itemize}
-\item \thm{Progress} $\wedge$ \thm{Subject Reduction} $\Rightarrow$ \thm{Stronger Soundness}, and
-\item \thm{Stronger Soundness} $\Rightarrow$ \thm{Soundness}.
-\end{itemize}
-%The structure of the proof is interesting:
-%It is hard to prove Sound Validation directly,
-%so we first define a stronger property,
-%called Stronger Sound Validation and
-%we show that it is preserved during reduction by mean of conventional Progress and Subject Reduction.
-%That is,
-%Progress+Subject Reduction $\Rightarrow$ Stronger Sound Validation
-%and Stronger Sound Validation $\Rightarrow$ Sound Validation.
-
-
-\subheading{Stronger Soundness $\Rightarrow$ Soundness}
-\thm{Stronger Soundness} depends on \mony and \OK. 
-
-An object is \emph{monitored} if execution
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 is currently inside of a monitor for that object, and
 the monitored expression $e_1$ does not
 contain $l$ as a \emph{proper} sub-expression:
 
-<<<<<<< HEAD
 \indent $\mony(e,l)$ iff
 $e=\EV[\M{l}{e_1}{e_2}]$ and either $e_1=l$ or $l \notin e_1$.%\loseSpace
-=======
-\indent $\mony(\e,l)$ iff
-$\e=\ctx_v[\M{l}{\e_1}{\e_2}]$ and either $\e_1=l$, or $l \notin \e_1$.%\loseSpace
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 
 \noindent A monitored object is associated with an expression that can not observe it, but may
 reference its internal representation directly.
 In this way, we can safely modify its representation before checking its invariant.
-<<<<<<< HEAD
 The idea is that at the start the object will be valid and $e_1$ will reference $l$;
 but during reduction, $l$ will be used to
 modify the object; only after that moment, the object may become invalid.
@@ -362,32 +207,10 @@ modify the object; only after that moment, the object may become invalid.
 \SS\begin{theorem}[Stronger Soundness]\rm
 If \VS(\s, e) then $\forall l$, if $\reach(\s, e, l)$ then $\valid(\s, l)$ or $\mony(e, l)$.
 \end{theorem}
-=======
-The idea is that at the start the object will be valid and $\e_1$ will reference $l$;
-but during reduction, $l$ will be used to
-modify the object; only after that moment, the object may become invalid.
-
-
-Finally, the system is in an \OK state
-if all objects in memory, are either
-%the class of the object has no invariant method;
-not (transitively) reachable from the expression (thus can be garbage collected),
-valid and encapsulated,
-or currently monitored:\\
-\indent $\OK(\sigma,e)$ iff $\forall l\in\dom(\sigma)$
-  either $\valid(\sigma,l)$ or $\mony(\e,l)$\\
-
-\noindent We now say that any \VS is also \OK: i.e. starting from a well-typed and well-formed $\s_0|e_0$, and performing any number of reductions, every object is either $\valid$ or $\mony$:
-\begin{theorem}[Stronger Soundness]\rm
-If \VS(\s, \e) then $\emph{OK}(\sigma,\e)$.
-\end{theorem}
-
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 
 \begin{theorem}\rm \thm{Stronger Soundness} $\Rightarrow$ \thm{Soundness}
 \end{theorem}\SS
 \begin{proof}
-<<<<<<< HEAD
 \noindent Suppose $\VS(\s, e)$, and $e = \EV[r_l]$:
 \begin{ienumerate}
 	% by \thm{Stronger Soundness}, \l is \valid or \mony?
@@ -445,139 +268,12 @@ We will first proceed by cases on the property we need to prove, and then by the
 \item \HNC:
 \begin{enumerate}
 	\item (\textsc{new}) $\s|\EV[\Kw{new}\ C\oR v_1,\ldots,v_n\cR]\rightarrow \s'| \EV[\M{l}{l}{l\singleDot\invariant}]$, where $\s' = \s,l\mapsto C\{v_1,\ldots,v_n\}$:
-=======
-\noindent Suppose $\VS(\s, e)$, and $e = \EV[r_l]$, by \thm{Stronger Soundness}, $l$ is \valid or \mony?
-\SSI\begin{enumerate}
-	\item If $\valid(\sigma,l)$, then $l$ is valid, exactly as required.
-	\item Otherwise, if $\mony(\e,l)$ then $e = \E[\M{l}{e_1}{e_2}]$ and either:
-	\begin{itemize}
-	 \item $\EV = \E[\M{l}{\E'}{e_2}]$, that is $r_l$ was found inside of $\e_1$, this contradicts the definition of \mony, or
-	 \item $\EV = \E[\M{l}{e_1}{e_2}]$, and thus $r_l$ was found inside $\e_2$,  by our reduction rules, all monitor expressions start with $\e_2=l.\invariant$, thus the first execution step
-	 of $\e_2$ is \emph{trusted}. Further execution steps are also \emph{trusted}, since by well-formedness the body of invariant methods only use \Q@this@ (now replaced with $l$) to read fields.
-	\end{itemize}
-\end{enumerate}
-In any of the possible cases above, $r_l$ is either $\valid$ or $\trusted$, thus \thm{Soundness} holds.
-
-\subheading{Capsule Field Soundness}
-Now we define and prove important properties about our novel capsule fields:
-Some auxiliary properties:\\
-
-%Capsule-Non-Circular(s, l, f): l not in rog(s, s[l.f])
-\SSI\begin{itemize}
-\item $\CNC(\s, l)$ iff $\forall f$,
-\qindent if  $\S(l).f = \Kw{capsule}\,\_$ then $l \notin \rog(\s, \s[l.f])$.
-\item $\CNE(\s, e, l)$ iff $\forall f$:
-\qindent  if $\S(l).f = \Kw{capsule}\,\_$ and not $\tmuty(\s\setminus l, e, \s[l.f])$.
-\item $\CNA(\s, e, l)$ iff $\forall \E$:
-\qindent if $e = \E[\M{l}{e'}{\_}]$, then $e' = l$ and
-\qindent if $e = \E[l.f]$ and $\S(l).f = \Kw{capsule}\,\_$, then \ntyr{l.f}{\Kw{mut}\,\_}.
-
-\item $\CNO(\s, e, l)$ iff $e = \EV[\M{l}{e'}{\_}]$, and either:
-\qindent $e' = \E[l.f]$ and not $\reach(\s, \E[\_], l)$ or \IOComm{$f$ will be a capsule field.}
-\qindent not $\reach(\s, e', l)$.
-%Capsule-Not-Observed(s, e, l): e = EV[M(l; e'; _)], and either:
-%		e' = E[l.f] and not reacheable(s, E, l) or,
-%		not reacheable(s, e', l)
-
-\end{itemize}
-
-\begin{theorem}[Capsule Field Soundnes]\rm
-%	forall VS(s, e), forall l in dom(s), CNC(S, l, f) and either
-$\gap{\forall \s|e},\forall l \in \mathit{dom}(\s)$:\\
-\indent $\CNC(\s, l, f)$ and either:
-\qindent $\CNE(\s, e, l)$ and $\CNA(\s, e, l)$, or
-\qindent $\CNO(\s, e, l)$.
-\end{theorem}
-\begin{proof}
-%if $c:\Kw{Cap};\emptyset\vdash \e_0: \T_0$ and
-%$c\mapsto\Kw{Cap}\{\_\}|\e_0\rightarrow^+ \sigma|\e$, then
-%$\emph{OK}(\sigma,\e)$.
-\gap{This trivially holds in the base case when $\s = c\mapsto\Kw{Cap}\{\_\}$, since \Q!Cap! has no capsule fields.
-
-Now suppose it holds for $s|\EV[e]$ and $\s|\EV[e] \rightarrow \s'|\EV[e']$. We will prove the theorem for $s'|\EV[e']$ based on cases for the non-\textsc{ctxv} reduction rule applied:}
-\clearpage
-\SSI\begin{enumerate}
-\item (\textsc{mcall}) $\sigma|\EV[l\singleDot\m\oR v_1,\ldots,v_n\cR]\rightarrow \sigma|\EV[\e[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]]$:
-\begin{itemize}
-\item If $m$ is not a capsule mutator, by our well-formedness rules for method bodies, $e$ doesn't contain a monitor:
-\begin{itemize}
-		\item By \thm{Method Consistency}, $e$ wont contain $l.f$ as \Q!mut!, where $f \in \cf(\s, l)$; since fields are instance private, we can't have introduced any other field accesses, so we can't have broken \CNA, for any $l$.
-		\item We can't have broken \CNC, \CNE, or \CNO for any $l$, since we haven't changed the $l$s in the main expression, modified memory, or removed a monitor.
-\end{itemize}
-\item Otherwise, $e = \M{l}{e'}{l.\invariant}$. By our rules for capsule mutators, $m$ can only have \Q!imm! and \Q!capsule! parameters. Since capsule mutators are \Q!mut! methods, by \thm{Type Consistency}, $l$ must have been \Q!mut!, so by \thm{Imm Consistency} and \thm{Capsule Consistency}, $l$ cant be reachable from any $x_i$. By our well-formedness rules for method bodies, $e'$ can't contain any $l$s, and since $m$ uses \Q!this! only once, to access a capsule field, $e' = \E[l.f]$, for some $f \in \cf{\s, l}$. Since $l$ is not \reach from any $v_i$, and $l \notin \E$, $l$ is not \reach from any $l' \in \E$, thus \CNO holds.
-\item Note that no other reduction rule can introduce an $l.f$ or an $\M{l}{e}{l.\invariant}$ with $e \neq l$; so they trivially preserve \CNA and ensure it for new $l$s.
-\end{itemize}
-
-\item (\textsc{Monitor Exit}) $\sigma|\EV[\M{l}{v}{\Kw{true}}]\rightarrow \sigma|\EV[v]$:
-\begin{itemize}
-\item This reduction doesn't modify memory, so we can't have violated \CNC for any $l'$.
-\item Consider any $l' \neq l$:
-\begin{itemize}
-\item We can't have broken \CNE, since we haven't changed the $l$s in the main expression, nor modified memory.
-\item Similarly, we can't have affected \CNO, since this reduction step doesn't introduce any $l$s, and the monitor we are removing is for an $l' \neq l$.
-\end{itemize}
-\item If this monitor was introduced by \textsc{new} or \textsc{update}, then $v = l$:
-\begin{itemize}
-\item If \CNE held for $l$, by the above proof for the case for $l' \neq l$, it still holds.
-\item \CNO can't have held for $l$ since $l = v$, and $v$ was not the receiver of a field access.
-\end{itemize}
-
-\item Otherwise, this monitor was introduce by \textsc{mcall} due to a call to a capsule mutator on $l$, consider the state $\s_0|\EV[e_0]$ immediately before that \textsc{mcall}:
-\begin{itemize}
-\item We must not have had that $l$ was \CNO, since $e_0$ would contain $l$ as the receiver of a method call. Thus $\CNE(s_0, \EV[e_0], l)$ and $\CNA(s_0, \EV[e_0], l)$. 
-\item Because \CNA held in $s_0|\EV[e_0]$, and $v$ contains no field accesses or monitor, it holds in $\EV[v]$.
-\item Since a capsule mutator cannot have any \Q!mut! parameters, by \thm{Type Consistency}, \thm{Mut Consistency}, and \thm{Mut Field}, the body of the method can't have modified $\s_0$, thus $\s = \s_0, \_$. Since no pre-existing memory has changed since the \textsc{mcall}, and a capsule mutator cannot have a \Q!mut! return type, by \thm{Type Consistency} we must have $\S; \emptyset; \EV \nvdash v : \mdf\,\_$ where $\mdf \neq \Kw{mut}$:
-\begin{itemize}
-\item If $\mdf = \Kw{capsule}$, by \thm{Capsule Consistency}, the value of any capsule field of $l$ cant be in the \rog of $v$, so we haven't made such a field \tmuty.
-\item Otherwise, $\mdf \in \{\Kw{read}, \Kw{imm}\}$, and by \thm{Read Consistency} and \thm{Imm Consistency}, we have that $v$ is not \tmuty.
-\end{itemize}
-Either way, the \textsc{monitor exit} reduction has restored $\CNE(\s_0, \EV[e_0], l)$.
-\end{itemize}
-\end{itemize}
-
-\item (\textsc{new}) $\sigma|\EV[\Kw{new}\ C\oR v_1,\ldots,v_n\cR]\rightarrow \sigma,l\mapsto C\{v_1,\ldots,v_n\}| \EV[\M{l}{l}{l\singleDot\invariant}]$:
-\begin{itemize}
-	\item Consider any pre-existing $l'$:
-	\begin{itemize}
-		\item This reduction rule only adds to \s, so it couldn't have modified the \rog of $l'$ and broken \CNC for $l'$.
-		\item Suppose we broke \CNE for $l'$ by making some $f' \in \cf(s, l)$ \tmuty. Since the \rog of $l'$ can't have been modified, nor could the \rog of any other pre-existing $l''$ have be modified, we must have that $\s[l'.f]$ is \tmuty through some $v_i$. This requires that $v_i$ be the initiliser for a \Q!mut! or \Q!capsule! field, which by \thm{Type Consistency} and \thm{Capsule Consistency}, means that $v_i$ must also be typeable \Q!mut!. But then the $\s[l'.f]$ was \tmuty through $l'$, so $l'$ can't have already been \CNE.
-		\item This reduction does not remove monitors nor introduce $l'$ into the main expression, thus it could not have violated \CNO.
-	\end{itemize}
-	\item Now consider each $i$ with $C.i = \Kw{capsule}\,\_\,f$:
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 	\begin{itemize}
 		\item This reduction step doesn't modify any pre-existing $l'$, so we can't have broken \HNC for them.
 		\item Since the pre-existing \s was not modified, by \VS, $l \notin \rog(\s, v_i) = \rog(\s', \s'[l.f])$; thus \HNC holds for $l$.
 	\end{itemize}
-<<<<<<< HEAD
 
 	\item (\textsc{update}) $\s|\EV[l.f\equals{}v]\rightarrow \s[l.f=v]|\EV[\M{l}{l}{l.\invariant}]$:
-=======
-\end{itemize}
-
-
-\item (\textsc{update}) $\sigma|\EV[l.f\equals{}v]\rightarrow \sigma[l.f=v]|\EV[\M{l}{l}{l.\invariant}]$:
-\begin{itemize}
-\item Consider any $l' \neq l$:
-\begin{itemize}
-		\item If $l'$ was \CNE, by \thm{Mut Field}, $l$ is \Q!mut!. Consider any $f' \in \cf(\s, l')$, by \CNE, the \rog of $l'.f'$ is not \tmuty and $l$ not in $\rog(\s, \s[l'.f'])$, so we can't have modified $\rog(\s, \s[l'.f'])$ hence $l$ is still \CNC. By \thm{Mut Consistency}, we can't have broken \CNE either.
-		\item Otherwise, $l'$ was \CNO. Since this reduction dosen't remove monitors, or introduce any new $l$s into the main expression, we can't have violated \CNO.
-\end{itemize}
-\item $l$ cant have been $\CNO$, since we had $l.f = v$ inside our evaluation context, and $l.f = v$ is not a field access.
-\item If $f \in \cf(\s, l)$:
-\begin{itemize} 
-\item By \thm{Type Consistency} and \thm{Capsule Consistency}, $\cap(\s, \EV[l.f = \square], v)$ and $l$ is either immutable, or $l'$, by \thm{Mut Field} and \thm{Imm Consistency}, $l$ can't be \reach from an \Q!imm! field in the \rog of $v$, so $l\notin \rog(s, v)$, hence \CNC holds.
-\item By $\cap(\s, \EV[l.f = \square], v)$, $v$ is not \tmuty from \EV, and so not $\tmuty(s\setminus l, \EV[\M{l}{l}{l.\invariant}], v)$, thus \CNE still holds.
-\end{itemize}
-\item By the proof above for the case $l' \neq l$, we can't have broken \CNE or \CNC for $f \notin \cf(\s, l)$, nor any other field of $l$.
-\end{itemize}
-
-
-\item (\textsc{access}) $\sigma|\EV[l.f]\rightarrow \sigma|\EV[\s[l.f]]$:
-\begin{itemize}
-	\item This reduction doesn't modify memory, so we can't have violated \CNC for any $l'$ and $f'$.
-	\item Consider any $l'$:
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 	\begin{itemize}
 		\item Consider any $l' \neq l$:
 		\begin{itemize}
@@ -600,7 +296,6 @@ Either way, the \textsc{monitor exit} reduction has restored $\CNE(\s_0, \EV[e_0
 	\end{itemize}
 
 
-<<<<<<< HEAD
 	\item (\textsc{monitor exit}) $\s|\EV[\M{l}{v}{\Kw{true}}]\rightarrow \s|\EV[v]$:
 	\begin{itemize}
 		\item As with the above case, we can't have violated \HNO for any $l' \neq l$.
@@ -708,28 +403,4 @@ Now we assume that everything reachable from the previous \VS was was \valid or 
 \end{ienumerate}
 
 Regardless of the reduction performed, we have each \reach $l$ is \valid or \mony.
-=======
-
-\item (\textsc{monitor exit}) $\sigma|\M{l}{v}{\Kw{true}}\rightarrow \sigma|v$:
-\begin{itemize}
-	\item By our \VS and our well formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \emph{valid}.
-\end{itemize} 
-\end{enumerate}
-\end{proof}
-
-
-\begin{theorem}\rm
-	\thm{Progress} + \thm{Subject Reduction} $\Rightarrow$ \thm{Stronger Soundness}
-\end{theorem}
-\begin{proof}
-This proof proceeds by induction in the usual manner.
-
-\emph{Base case}: At the start of execution, memory only contains $c$: since $c$ is defined to always be $\mathit{valid}$, and has only \Q@mut@ fields, we trivially have, thus $\mathit{OK}(c\mapsto\Kw{Cap},e)$.
-
-\emph{Induction}: By \thm{Progress}, we always have another evaluation step to take, by \thm{Subject Reduction} such a step will preserve $\mathit{OK}$, and so by induction, $\mathit{OK}$ holds after any number of steps.
-
-Note how for the proof garbage collections is important:
-when the \Q@invariant()@ method evaluates to \Q@false@,
-execution will only be continued by the \textsc{try error} rule, which by \thm{Unmonitored Try}, garbage collects the offending object: it will no longer be in \s.
->>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{proof}
