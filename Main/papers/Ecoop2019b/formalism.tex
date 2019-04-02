@@ -15,84 +15,97 @@ We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type
 To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:
 \SSI\begin{itemize}
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
+<<<<<<< HEAD
+	\item Memory, $\s : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
+	We use the notation $\s[l.f=v]$ to update a field of \IODel{an object} $l$, \IODel{and} $\s[l.f]$ to access one\IO{, and $\s \setminus l$ to delete $l$}.
+	\item A main expression that is reduced in the context of such a memory and program.
+	\item A typing relation, $\S;\G;\E\vdash e:T$, where 
+	the expression $e$ can contain locations and free variables. The types of locations are encoded in 
+=======
 	\item Memory, $\sigma : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
 	We use the notation $\sigma[l.f=v]$ to update a field of an object, and $\sigma[l.f]$ to access one.
 	\item A main expression that is reduced in the context of such a memory and program.
 	\item A typing relation, $\Sigma;\Gamma;\E\vdash\e:T$, where 
 	the expression $\e$ can contain locations and free variables. The types of locations are encoded in 
+>>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 a memory environment, 
-$\Sigma : l\rightarrow C$,
+$\S : l\rightarrow C$,
 	while the types of free variables are encoded in
+<<<<<<< HEAD
+a variable environment, $\G : x\rightarrow T$. \E encodes the location \IODel{location}\IO{, }\IODel{(}relative to the top-level expression we are typing\IODel{)}\IO{,} where $e$ was found; this is needed so that $l$s can be typed with different type-modifiers when in different positions.
+	\item We use \Ss to trivially extract the corresponding \S from a \s.
+=======
 a variable environment, $\Gamma : x\rightarrow T$. \E encodes the location \IODel{location}\IO{, }\IODel{(}relative to the top-level expression we are typing\IODel{)}\IO{,} where $e$ was found; this is needed so that $l$s can be typed with different type-modifiers when in different positions.
 	\item We use $\Sigma^\sigma$ to trivially extract the corresponding $\Sigma$ from a $\sigma$.
+>>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{itemize}
 
-\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object whose fields model things like the content of files. In order to simplify our proof, we assume that:
+\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object \IO{with methods that behave non-deterministically, such methods would model operations such as file reading.} \IODel{whose fields model things like the content of files}. In order to simplify our proof, we assume that:
 \SSI\begin{itemize}
+	\item \Q@Cap@ \IO{has no fields} \IODel{can only have \Q@mut@ fields, and}.
 	\item instances of \Q@Cap@ cannot be created with a \Q@new@ expression,
-	\item all methods in the \Q@Cap@ class must require a \Q@mut@ receiver, and will mutate its ROG, such methods may be non-deterministic, i.e. may have multiple possible reductions,
-	\item \Q@Cap@ can only have \Q@mut@ fields, and
-	\item \Q@Cap@'s \Q@invariant@ method is defined to return \Q@true@.
+	\item \Q@Cap@'s \Q@invariant@ method is defined to \IO{have a body of `\Q!true!', and} \IODel{return \Q@true@.}
+	\item all \IO{other} methods in the \Q@Cap@ class must require a \Q@mut@ receiver\IODel{, and will mutate its ROG,}\IO{;} such methods \IO{will have a} \IODel{may be} non-deterministic \IO{body}, i.e. \IO{calls to them} may have multiple possible reductions\IODel{,} \IO{.}
 \end{itemize}
-For simplicity, we do not formalise actual exception objects, rather we have \emph{error}s, which correspond to expressions which are currently  `throwing' an exception; 
-in this way there is no value associated with an \emph{error}.
+For simplicity, we do not formalise actual exception objects, rather we have \error{}s, which correspond to expressions which are currently  `throwing' an exception; 
+in this way there is no value associated with an \error.
 Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as exceptions, formalising exceptions in this way would not cause any interesting variation of our proof.
 
 %	\setlength{\belowcaptionskip}{0.06em}
 \begin{figure}
 	\!\!\!\!
 	\begin{grammatica}
-		\produzione{\e}{\x\mid l\mid\Kw{true}\mid\Kw{false}\mid \e\singleDot\m\oR\es\cR\mid \e\singleDot\f 
-			\mid\e\singleDot\f\equals\e 
+		\produzione{e}{\x\mid l\mid\Kw{true}\mid\Kw{false}\mid e\singleDot\m\oR\es\cR\mid e\singleDot\f 
+			\mid e\singleDot\f\equals e 
 			\mid\Kw{new}\ C\oR\es\cR
-			\mid\Kw{try}\ \oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
+			\mid\Kw{try}\ \oC e_1\cC\ \Kw{catch}\ \oC e_2\cC
 		}{expression}\\
 		\seguitoProduzione{
-			\mid \M{l}{\e_1}{\e_2}\mid\Kw{try}^{\sigma}\oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
+			\mid \M{l}{e_1}{e_2}\mid\Kw{try}^{\s}\oC e_1\cC\ \Kw{catch}\ \oC e_2\cC
 		}{runtime expr.}\\
 		\produzione{v}{l}{value}\\
-		\produzione{\ctx_v}{\square
-			\mid \ctx_v\singleDot m\oR\es\cR
-			\mid v\singleDot\m\oR\Many{v}_1,\ctx_v,\es_2\cR
-			%\mid \ctx_v\singleDot\f 
-			%\mid \ctx_v\singleDot\f\equals\e
-			\mid v\singleDot\f\equals\ctx_v
+		\produzione{\EV}{\square
+			\mid \EV\singleDot m\oR\es\cR
+			\mid v\singleDot\m\oR\Many{v}_1,\EV,\es_2\cR
+			%\mid \EV\singleDot\f 
+			%\mid \EV\singleDot\f\equals\e
+			\mid v\singleDot\f\equals\EV
 		}{evaluation context}\\
 		\seguitoProduzione{
-			\mid \Kw{new}\ C\oR\Many{v}_1,\ctx_v,\es_2\cR
-			\mid \M{l}{\ctx_v}{\e}
-			\mid \M{l}{v}{\ctx_v}
-			\mid \Kw{try}^\sigma\oC\ctx_v\cC\ \Kw{catch}\ \oC\e\cC}{}\\
+			\mid \Kw{new}\ C\oR\Many{v}_1,\EV,\es_2\cR
+			\mid \M{l}{\EV}{e}
+			\mid \M{l}{v}{\EV}
+			\mid \Kw{try}^\s\oC\EV\cC\ \Kw{catch}\ \oC e\cC}{}\\
 		
-		\produzione{\ctx}{\square\mid\ctx\singleDot m\oR\es\cR\mid\e\singleDot\m\oR\es_1,\ctx,\es_2\cR
-			%\mid \ctx\singleDot\f 
-			%\mid \ctx\singleDot\f\equals\e
-			\mid \e\singleDot\f\equals\ctx
-			\mid \Kw{new}\ C\oR\es_1,\ctx,\es_2\cR
+		\produzione{\E}{\square\mid\E\singleDot m\oR\es\cR\mid e\singleDot\m\oR\es_1,\E,\es_2\cR
+			%\mid \E\singleDot\f 
+			%\mid \E\singleDot\f\equals\e
+			\mid e\singleDot\f\equals\E
+			\mid \Kw{new}\ C\oR\es_1,\E,\es_2\cR
 		}{full context}\\
 		\seguitoProduzione{
 			\mid
-			\M{l}{\ctx}{\e}\mid
-			\M{l}{\e}{\ctx}\mid
-			\Kw{try}^{\sigma?}\oC\ctx\cC\ \Kw{catch}\ \oC\e\cC\mid
-			\Kw{try}^{\sigma?}\oC\e\cC\ \Kw{catch}\ \oC\ctx\cC
+			\M{l}{\E}{e}\mid
+			\M{l}{e}{\E}\mid
+			\Kw{try}^{\s?}\oC\E\cC\ \Kw{catch}\ \oC e\cC\mid
+			\Kw{try}^{\s?}\oC e\cC\ \Kw{catch}\ \oC\E\cC
 			
 		}{}\\
 		
 		
-		%\produzione{M_l}{\ctx[M\oR l,\e\cR]}{}\\
-		%\produzione{\ctxG_l}{
-		%  M_l\singleDot\m\oR\es_1,\ctx,\es_2\cR
-		% |\e\singleDot\m\oR\es_1, M_l, \es_2, \ctx, \es_3\cR
-		% |M_l\singleDot\f\equals\ctx
-		% |\Kw{new}\ C\oR\es_1,M_l,\es_2,\ctx,\es_3\cR
-		% |\Kw{try}\oC\ctx\cC\ \Kw{catch}\ \oC\e\cC
-		% |\ctx[\ctxG_l]}{}\\
+		%\produzione{M_l}{\E[M\oR l,e\cR]}{}\\
+		%\produzione{\EG_l}{
+		%  M_l\singleDot\m\oR\es_1,\E,\es_2\cR
+		% |e\singleDot\m\oR\es_1, M_l, \es_2, \E, \es_3\cR
+		% |M_l\singleDot\f\equals\E
+		% |\Kw{new}\ C\oR\es_1,M_l,\es_2,\E,\es_3\cR
+		% |\Kw{try}\oC\E\cC\ \Kw{catch}\ \oC e\cC
+		% |\E[\EG_l]}{}\\
 		\produzione{\mathit{CD}}{\Kw{class}\ C\ \Kw{implements}\ \Many{C}\oC\Many{F}\,\Many{M}\cC\mid 
 			\Kw{interface}\ C\ \Kw{implements}\ \Many{C}\oC\Many{M}\cC
 		}{class declaration}\\
 		\produzione{F}{\T\ \f\semiColon}{field}\\
-		\produzione{M}{\mdf\, \Kw{method}\, \T\ \m\oR\T_1\,\x_1,\ldots,\T_n\,\x_n\cR\ \Opt\e}{method}\\
+		\produzione{M}{\mdf\, \Kw{method}\, \T\ \m\oR\T_1\,\x_1,\ldots,\T_n\,\x_n\cR\ \Opt e}{method}\\
 		\produzione{\mdf}{\Kw{mut}\mid\Kw{imm}\mid\Kw{capsule}\mid\Kw{read}}{type modifier}\\
 		\produzione{\T}{\mdf\,C}{type}\\
 		\produzione{r_l}{
@@ -102,13 +115,17 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 			\mid \Kw{new}\,C\oR\Many{v}\cR
 			,\quad\text{where }l\in \{v,v_1,v_2,\Many{v}\}
 		}{redex containing $l$}\\
-		\produzione{\mathit{error}}{
-			\ctx_v[\M{l}{v}{\Kw{false}}]
+		\produzione{\error}{
+			\EV[\M{l}{v}{\Kw{false}}]
 			,\quad\text{where }
-			\ctx_v \text{ not of form}\ \ctx_v'[\Kw{try}^{\sigma?}\oC\ctx_v''\cC\ \Kw{catch}\ \oC\_\cC]
+			\EV \text{ not of form}\ \EV'[\Kw{try}^{\s?}\oC\EV''\cC\ \Kw{catch}\ \oC\_\cC]
 		}{validation error}
 	\end{grammatica}%\vspace{-1em}
+<<<<<<< HEAD
+\SS[1]\caption{Grammar}\label{f:grammar}\SS[1.5]
+=======
 	\caption{Grammar}\label{f:grammar}\SS[2]
+>>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{figure}
 
 
@@ -116,8 +133,8 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 The detailed grammar is defined in Figure \ref{f:grammar}. 
 Most of our expressions are standard.
 \emph{Monitor expressions}
- are of the form \M{l}{\e_1}{\e_2}, they 
-are run time expressions and thus are not present in method bodies, rather they are generated by our reduction rules inside the main expression. Here, $l$ refers to the object being monitored, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.\invariant$; $e_1$ will be evaluated to a value, and the $e_2$ will be further evaluated, if $e_2$ evaluated to \Q!false! or an $\mathit{error}$, then $l$'s invariant failed to hold; such a monitor expression corresponds to the throwing of an unchecked exception.
+ are of the form \M{l}{e_1}{e_2}, they 
+are run time expressions and thus are not present in method bodies, rather they are generated by our reduction rules inside the main expression. Here, $l$ refers to the object being monitored, $e_1$ is the expression which is being monitored, and $e_2$ denotes the evaluation of $l.\invariant$; $e_1$ will be evaluated to a value, and the $e_2$ will be further evaluated, if $e_2$ evaluated to \Q!false! or an \error, then $l$'s invariant failed to hold; such a monitor expression corresponds to the throwing of an unchecked exception.
 
 In addition, our reduction rules will annotate \Q@try@ expressions with
 the original state of memory. This is used to model the guarantee of strong exception safety, that is, the annotated memory will not be mutated by executing the body of the \Q@try@.
@@ -126,8 +143,13 @@ the original state of memory. This is used to model the guarantee of strong exce
 We additionally restrict the grammar with the following well-formedness criteria:
 \SSI\begin{itemize}
 	\item \Q@invariant@ methods and capsule mutators satisfy the restrictions in Section \ref{s:protocol}.
+<<<<<<< HEAD
+	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals e$, respectively.
+	\item Field accesses and updates in the main expression are of the form $l.f$ or $l.f\equals e$, respectively.
+=======
 	\item Field accesses and updates in methods are of the form $\Kw{this}.f$ or $\Kw{this}.f\equals\e$, respectively.
 	\item Field accesses and updates in the main expression are of the form $l.f$ or $l.f\equals\e$, respectively.
+>>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 	\item Method bodies do not contain any $l$ or $\M{\_}{\_}{\_}$ expressions.
 \end{itemize}
 \newcommand{\rowSpace}{\\\vspace{2.5ex}}
@@ -135,81 +157,75 @@ We additionally restrict the grammar with the following well-formedness criteria
 	\!\!
 	$\!\!\!\!\!\begin{array}{l}
 	\inferrule[(update)]{{}_{}}{
-		\sigma|l.f\equals{}v\rightarrow \sigma[l.f=v]|
+		\s|l.f\equals{}v\rightarrow \s[l.f=v]|
 		\M{l}{l}{l\singleDot\invariant}
 	}{}
 	\quad
 	\inferrule[(new)]{{}_{}}{
-		\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}|
+		\s|\Kw{new}\ C\oR\vs\cR\rightarrow \s,l\mapsto C\{\vs\}|
 		\M{l}{l}{l\singleDot\invariant}
 	}{}
 	\\
 	\rowSpace
 	\inferrule[(mcall)]{{}_{}}{
+<<<<<<< HEAD
+		\s|l\singleDot\m\oR v_1,\ldots,v_n\cR\rightarrow \s|
+		e'[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]
+=======
 		\sigma|l\singleDot\m\oR v_1,\ldots,v_n\cR\rightarrow \sigma|
 		\e'[\Kw{this}\coloneqq l,\x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]
+>>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 	}{
 		\begin{array}{l}
-		\sigma(l)=C\{\_\}\\
-		C.m=\mdf\,\Kw{method}\,\T\,\m\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\e\\
+		\s(l)=C\{\_\}\\
+		C.m=\mdf\,\Kw{method}\,\T\,\m\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,e\\
 		
 		
 		\text{if } \mdf=\Kw{mut}\text{ and }\exists \f\text{ such that }
-		\\*\quad C.f=\Kw{capsule}\,\_ \text{ and } e = \ctx[\Kw{this}\singleDot\f]\\*
-		\text{then }\e'=\M{l}{e}{l\singleDot\invariant}\\*
-		\text{otherwise }\e'= \e
+		\\*\quad C.f=\Kw{capsule}\,\_ \text{ and } e = \E[\Kw{this}\singleDot\f]\\*
+		\text{then }e'=\M{l}{e}{l\singleDot\invariant}\\*
+		\text{otherwise }e'= e
 	\end{array}
 }
 \rowSpace
 \inferrule[(monitor exit)]{{}_{}}{
-	\sigma|\M{l}{v}{\Kw{true}}\rightarrow \sigma|v
+	\s|\M{l}{v}{\Kw{true}}\rightarrow \s|v
 }{}
 \quad
 
-\inferrule[(ctxv)]{\sigma_0|\e_0\rightarrow\sigma_1|\e_1}{
-	\sigma_0|\ctx_v[\e_0]\rightarrow \sigma_1|\ctx_v[\e_1]
+\inferrule[(ctxv)]{\s_0|e_0\rightarrow\s_1|e_1}{
+	\s_0|\EV[e_0]\rightarrow \s_1|\EV[e_1]
 }{}
 
 \quad
 \inferrule[(try enter)]{{}_{}}{
-	\sigma|\Kw{try}\ \oC \e_1\cC\ \Kw{catch}\ \oC\e_2\cC\rightarrow 
-	\sigma|\Kw{try}^\sigma\oC\e_1\cC\ \Kw{catch}\ \oC\e_2\cC
+	\s|\Kw{try}\ \oC e_1\cC\ \Kw{catch}\ \oC e_2\cC\rightarrow 
+	\s|\Kw{try}^\s\oC e_1\cC\ \Kw{catch}\ \oC e_2\cC
 }{}
 \quad
 
 \rowSpace
 
 \inferrule[(try ok)]{{}_{}}{
-	\sigma,\sigma'|\Kw{try}^{\sigma}\oC v\cC\ \Kw{catch}\ \oC\_\cC\rightarrow \sigma,\sigma'|v
+	\s,\s'|\Kw{try}^{\s}\oC v\cC\ \Kw{catch}\ \oC\_\cC\rightarrow \s,\s'|v
 }{}
 \quad
 
 \inferrule[(try error)]{{}_{}}{
-	\sigma,\_|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e
+	\s,\_|\Kw{try}^\s\oC \error\cC\ \Kw{catch}\ \oC e\cC\rightarrow \s|e
 }
 \quad
 \inferrule[(access)]{{}_{}}{
-	\sigma|l.f\rightarrow \sigma|\sigma[l.f]
+	\s|l.f\rightarrow \s|\s[l.f]
 }{}
 %\quad
 \end{array}$
-\caption{Reduction rules}\label{f:reductions}\SS[1.5]
+\SS[1.5]\caption{Reduction rules}\label{f:reductions}\SS[1.5]
 \end{figure}
 
 \subheading{Reduction rules}
 Our reduction rules are defined in Figure \ref{f:reductions}.
-They are pretty standard, except for our handling of monitor expressions.
-%\IODel{We define the relation \emph{inside} as follows:}\par
-%\IODel{$%\begin{array}{l}
-%\f\, \textit{inside}\ C\singleDot\m\text{ iff }
-%C\singleDot\m=\_\,\Kw{method}\_\,\ctx[\Kw{this}\singleDot\f]
-%\end{array}
-%$}
-
-%\noindent Inserting the monitor expressions during reduction is convenient for the proof,
-%but it could instead be done ahead of time.
-
-\noindent Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
+They are pretty standard, except for our handling of monitor expressions. \IODel{\NL} Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
 %Our formalism of monitor expressions are only a proof device, they need not be part of the language itself, for example L42 implements our invariant protocol by generating wrapper functions over primitive setters and factory methods.
 %Monitor expressions are only a proof device, and an execution on a real hardware 
 Monitor expressions are only a proof device, they need not be implemented directly as presented.
@@ -220,18 +236,39 @@ The failure of a monitor expression, \M{l}{e_1}{e_2}, will be caught by our \tex
 
 \subheading{Statement of Soundness}
 We define a deterministic reduction to mean that exactly one reduction is possible:\\*
-\indent$\ \sigma_0|e_0\Rightarrow \sigma_1|e_1$ iff $\{\sigma_1|\e_1\}=\{\sigma|\e \text{, where } \sigma_0|e_0\rightarrow \sigma|e\}$
+\indent$\ \s_0|e_0\Rightarrow \s_1|e_1$ iff $\{\s_1|e_1\}=\{\s|e \text{, where } \s_0|e_0\rightarrow \s|e\}$
 
-\noindent An object is \emph{valid} iff calling its \Q@invariant@ method would
-deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an \emph{error}.
-We also require evaluating \Q@invariant@ to preserve existing memory ($\sigma$), however new objects ($\sigma'$) can be created and freely mutated.
+\noindent An object is \valid iff calling its \Q@invariant@ method would
+deterministically produce \Q@true@ in a finite number of steps, i.e. it does not evaluate to \Q@false@, fail to terminate, or produce an \error.
+We also require evaluating \Q@invariant@ to preserve existing memory (\s), however new objects ($\s'$) can be created and freely mutated.
 
-\indent$\mathit{valid}(\sigma,l)$ iff $\sigma | l.\invariant {\Rightarrow^+} \sigma,\sigma' | \Kw{true}$.%\loseSpace
+\indent$\valid(\s,l)$ iff $\s | l.\invariant {\Rightarrow^+} \s,\s' | \Kw{true}$.%\loseSpace
 
 \noindent 
 To allow the invariant method to be called on an invalid object, and access fields on such object, we define the set of trusted execution steps as the the call to \Q@invariant@ itself, and any field accesses inside its evaluation. Note that this only applies to single small step reductions, and not the entire evaluation of \Q!invariant!.
 
 %\loseSpace
+<<<<<<< HEAD
+\indent $\trusted(\EV,r_l)$ iff\IO{, either:}
+\begin{iitemize}
+\item[\IO{$\bullet$}] \IODel{either} $r_l=l.\invariant$ and
+$\EV=\EV'[\M{l}{v}{\square}]$, \IO{or}
+\item[\IO{$\bullet$}] \IODel{or} $r_l=l\singleDot f$ and
+$\EV=\EV'[\M{l}{v}{\EV''}]$.
+\end{iitemize}
+%\loseSpace
+
+\noindent We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\
+\indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\IODel{\_}\}|e_0\rightarrow^+ \s|e$, for some $e_0$ with:
+\begin{iitemize}
+\item[\IO{$\bullet$}] $c:\Kw{Cap};\emptyset\IO{; \h} \vdash e_0: \T$, $\M{\_}{\_}{\_} \notin \IO{e_0} \IODel{e}$, and if $l \in e_0$ then $l = c$.
+\end{iitemize}
+%\loseSpace
+
+\noindent Finally, we define what it means to soundly enforce our invariant protocol: every object referenced by any untrusted redex, within a \VS, is valid:%
+\SS\begin{theorem}[Soundness]\rm
+If $\VS(\s, \EV[r_l])$, then either $\valid(\s,l)$ or $\trusted(\EV,r_l)$.
+=======
 \indent $\trusted(\ctx_v,r_l)$ iff\IO{, either:}
 \SS[0.25]\begin{itemize}
 \item[\IO{$\bullet$}] \IODel{either} $r_l=l.\invariant$ and
@@ -250,5 +287,6 @@ $\ctx_v=\ctx_v'[\M{l}{v}{\ctx_v''}]$.
 \SS
 \begin{theorem}[Soundness]\rm
 If $\VS(\s, \EV[r_l])$, then either $\mathit{valid}(\sigma,l)$ or $\mathit{trusted}(\ctx_v,r_l)$.
+>>>>>>> 9b685242d5a2952aa13c0236f51f67ef973602f2
 \end{theorem}
 %We believe this property captures very precisely our statements in section~\ref{s:protocol}.
