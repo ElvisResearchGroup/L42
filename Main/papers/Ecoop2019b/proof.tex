@@ -73,25 +73,6 @@ where:
 \indent then $\emptyset; \Kw{this} : \mdf\,C,\Many{x : T}; \E \vdash e : \mdf\,\_$ iff $\Ss; \emptyset; \EV[\E'[\Kw{this}\coloneqq l,\Many{x\coloneqq v}]] \vdash e[\Kw{this}\coloneqq l,\Many{x\coloneqq v}] : \mdf\,\_$.
 % and $C.m  =\mdf\,\Kw{method}\,\_\,m\,\oR\T_1\,\x_1\ldots\T_n\x_n\cR\,\E[e]$ and
 \end{Assumption}
-Note that for this to work in general, the type-system may need to keep track of more information then is given by a $\E$ and $e$, such as where in the source code $e$ came from; for simplicity we do not model such behaviour here, however such extensions could be made without effecting the correctness of our proof.
-
-Now we define formal properties about our type-modifiers, thus giving them meaning. First we require that an \imut object not also be \tmuty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut! reference and through \Q!mut!/\Q!capsule! fields.
-\SS\begin{Assumption}[Imm Consistency]\rm\ \\
-\indent If $\VS(\s, e)$ and $\imut(\s, \E, l)$, then not $\tmuty(\s, \E[\_], l)$.
-\end{Assumption}%
-
-\noindent We require that if something was not \tmuty, that it remains that way; this prevents, for example, runtime promotions from \Q!read! to \Q!mut!, as well as field-access that return a \Q!mut! from a receiver that was not \Q!mut!.
-\SS\begin{Assumption}[Mut Consistency]\rm\ \\
-\indent If $\VS(\s, \EV[e])$ and $\tmuty(\s, e, l)$ and $\s|\EV[e] \rightarrow^{+} \s'\mid\EV[e']$, then not $\tmuty(\s, e', l)$.
-\end{Assumption}
-
-\noindent We require that a \Q!capsule! reference be \cap; and require that \Q!capsule! is a subtype of \Q!mut!:
-\SS\begin{Assumption}[Capsule Consistency]\rm\ 
-\begin{enumerate}
-\item If \tyr{l}{\Kw{capsule}\,\_}, then $\cap(\s, \E, l)$.
-\item If \ty{e}{\Kw{capsule}\,C}, then \ty{e}{\Kw{mut}\,C}.
-\end{enumerate}
-\end{Assumption}%
 
 \noindent Now we define formal properties about our TMs, thus giving them meaning. First we require that an \immut object not also be \muty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut!/\Q!capsule! reference and through \Q!mut!/\Q!capsule! fields:%
 \SS\begin{Assumption}[Imm Consistency]\rm\ \\
@@ -116,7 +97,6 @@ We require that if something was not \muty, that it remains that way; this preve
 \noindent We require that field updates only be performed on \Q!mut! receivers:%
 \SS\begin{Assumption}[Mut Update]\rm If \ty{e.f \equals e'}{T}, then \ty[\h.f \equals e']{e}{\Kw{mut}\,\_}.
 \end{Assumption}
-We believe that this assumption can be proven from the above ones, however for simplicity we have left this as an assumption, as this is a property of the pre-existing TM and OC systems, and not our novel invariant protocol or capsule fields.
 
 \noindent We also require that field access only be typed as \Q!mut!, if their receiver is also \Q!mut!:%
 \SS\begin{Assumption}[Mut Access]\rm If \ty{e.f}{\Kw{mut}\,\_}, then \ty[\h.f]{e}{\Kw{mut}\,\_}.
