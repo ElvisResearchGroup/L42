@@ -354,6 +354,10 @@ privateNameForSaveWithName#1\endcsname%
 	% remove the \\ after the XXDel or put it inside the \XXDel
 	\let\munskip=\unskip
 }
+\newcommand{\NoNotes}{
+	\let\NoteColour=\undefined
+	\let\NoteText=\undefined
+}
 
 %{prefix}{name}{colour}
 \newcommand{\MakeNoteCommands}[3]{%

@@ -16,23 +16,23 @@ To keep our small step semantics as conventional as possible, we follow Pierce~\
 \SSI\begin{itemize}
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
 	\item Memory, $\s : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
-	We use the notation $\s[l.f=v]$ to update a field of \IODel{an object} $l$, \IODel{and} $\s[l.f]$ to access one\IO{, and $\s \setminus l$ to delete $l$}.
+	We use the notation $\s[l.f=v]$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$.
 	\item A main expression that is reduced in the context of such a memory and program.
 	\item A typing relation, $\S;\G;\E\vdash e:T$, where 
 	the expression $e$ can contain locations and free variables. The types of locations are encoded in 
 a memory environment, 
 $\S : l\rightarrow C$,
 	while the types of free variables are encoded in
-a variable environment, $\G : x\rightarrow T$. \E encodes the location \IODel{location}\IO{, }\IODel{(}relative to the top-level expression we are typing\IODel{)}\IO{,} where $e$ was found; this is needed so that $l$s can be typed with different type-modifiers when in different positions.
+a variable environment, $\G : x\rightarrow T$. \E encodes the location, relative to the top-level expression we are typing, where $e$ was found; this is needed so that $l$s can be typed with different type-modifiers when in different positions.
 	\item We use \Ss to trivially extract the corresponding \S from a \s.
 \end{itemize}
 
-\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object \IO{with methods that behave non-deterministically, such methods would model operations such as file reading.} \IODel{whose fields model things like the content of files}. In order to simplify our proof, we assume that:
+\noindent To encode object capabilities and I/O, we assume a special location  $c$ of class \Q@Cap@. This location would refer to an object with methods that behave non-deterministically, such methods would model operations such as file reading. In order to simplify our proof, we assume that:
 \SSI\begin{itemize}
-	\item \Q@Cap@ \IO{has no fields} \IODel{can only have \Q@mut@ fields, and}.
+	\item \Q@Cap@ has no fields,
 	\item instances of \Q@Cap@ cannot be created with a \Q@new@ expression,
-	\item \Q@Cap@'s \Q@invariant@ method is defined to \IO{have a body of `\Q!true!', and} \IODel{return \Q@true@.}
-	\item all \IO{other} methods in the \Q@Cap@ class must require a \Q@mut@ receiver\IODel{, and will mutate its ROG,}\IO{;} such methods \IO{will have a} \IODel{may be} non-deterministic \IO{body}, i.e. \IO{calls to them} may have multiple possible reductions\IODel{,} \IO{.}
+	\item \Q@Cap@'s \Q@invariant@ method is defined to have a body of `\Q!true!', and
+	\item all other methods in the \Q@Cap@ class must require a \Q@mut@ receiver; such methods will have a non-deterministic body, i.e. calls to them may have multiple possible reductions.
 \end{itemize}
 For simplicity, we do not formalise actual exception objects, rather we have \error{}s, which correspond to expressions which are currently  `throwing' an exception; 
 in this way there is no value associated with an \error.
@@ -198,7 +198,7 @@ We additionally restrict the grammar with the following well-formedness criteria
 
 \subheading{Reduction rules}
 Our reduction rules are defined in Figure \ref{f:reductions}.
-They are pretty standard, except for our handling of monitor expressions. \IODel{\NL} Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
+They are pretty standard, except for our handling of monitor expressions. Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
 %Our formalism of monitor expressions are only a proof device, they need not be part of the language itself, for example L42 implements our invariant protocol by generating wrapper functions over primitive setters and factory methods.
 %Monitor expressions are only a proof device, and an execution on a real hardware 
 Monitor expressions are only a proof device, they need not be implemented directly as presented.
@@ -221,19 +221,19 @@ We also require evaluating \Q@invariant@ to preserve existing memory (\s), howev
 To allow the invariant method to be called on an invalid object, and access fields on such object, we define the set of trusted execution steps as the the call to \Q@invariant@ itself, and any field accesses inside its evaluation. Note that this only applies to single small step reductions, and not the entire evaluation of \Q!invariant!.
 
 %\loseSpace
-\indent $\trusted(\EV,r_l)$ iff\IO{, either:}
+\indent $\trusted(\EV,r_l)$ iff, either:
 \begin{iitemize}
-\item[\IO{$\bullet$}] \IODel{either} $r_l=l.\invariant$ and
-$\EV=\EV'[\M{l}{v}{\square}]$, \IO{or}
-\item[\IO{$\bullet$}] \IODel{or} $r_l=l\singleDot f$ and
+\item $r_l=l.\invariant$ and
+$\EV=\EV'[\M{l}{v}{\square}]$, or
+\item $r_l=l\singleDot f$ and
 $\EV=\EV'[\M{l}{v}{\EV''}]$.
 \end{iitemize}
 %\loseSpace
 
 \noindent We define a \VS as one that was obtained by any number of reductions from a well typed initial expression and memory, containing no monitors and with only the $c$ memory location available:\\
-\indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\IODel{\_}\}|e_0\rightarrow^+ \s|e$, for some $e_0$ with:
+\indent $\VS(\s, e)$ iff $c\mapsto\Kw{Cap}\{\_\}|e_0\rightarrow^+ \s|e$, for some $e_0$ with:
 \begin{iitemize}
-\item[\IO{$\bullet$}] $c:\Kw{Cap};\emptyset\IO{; \h} \vdash e_0: \T$, $\M{\_}{\_}{\_} \notin \IO{e_0} \IODel{e}$, and if $l \in e_0$ then $l = c$.
+\item[] $c:\Kw{Cap};\emptyset; \h \vdash e_0: \T$, $\M{\_}{\_}{\_} \notin e_0$, and if $l \in e_0$ then $l = c$.
 \end{iitemize}
 %\loseSpace
 
