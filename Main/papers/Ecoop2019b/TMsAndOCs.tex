@@ -1,4 +1,4 @@
-\section{Type Modifiers and Object Capabilities Background}
+\section{Background on Type Modifiers}
 \label{s:TMsAndOCs}
 Reasoning about imperative object-oriented (OO) programs is a non trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning, here we use the type system to restrict, but not prevent such behaviour in order to be able to soundly enforce invariants with runtime verification (RV).
@@ -165,7 +165,7 @@ OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{mill
 noble2016abstract,karger1988improving} programming technique where access to resources are encoded as objects. When this style
 is respected, code that does not possess an alias to such an object cannot use its associated resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon \etal's work, we use OCs to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
+Here, as in Gordon \etal's work, we enforce the OC pattern with TMs in order to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control. 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
 % While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
 
@@ -216,7 +216,7 @@ L42 allows user code to perform foreign calls without going through a predefined
 For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) can be whitelisted as `deterministic', provided they do not affect program execution, such as by non deterministically throwing I/O errors.
 
 \subheading{Purity}\label{s:purity}
-TMs and OCs together statically guarantee that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
+Our TM enforcement of OCs statically guarantees that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
 as being deterministic and not mutating existing memory. Such methods are pure because:
 \SSI\begin{itemize}
 	\item the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon \etal, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
@@ -231,7 +231,7 @@ as being deterministic and not mutating existing memory. Such methods are pure b
 		\Q@imm@ type would not cause such problems.%
 	}
 \end{itemize}
-We are unsure about the details of Gorodn \etal's and Pony's OC style, and if they can be used to enforce purity.
+We are unsure about the exact details of Gorodn \etal's and Pony's OC style, and if they can be used to enforce purity.
 
 %Methods that perform non-deterministic \emph{input} shouldn't be white-listed.%, including methods that read information passed to white-listed output methods.
 

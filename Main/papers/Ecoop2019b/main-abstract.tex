@@ -1,9 +1,9 @@
-In this paper we use pre-existing language support for type modifiers and object capabilities to enable a system for sound runtime verification of invariants.
+In this paper we use pre-existing language support for type modifiers to enable a system for sound runtime verification of invariants.
 Our system guarantees that class invariants hold for all objects involved in execution.
 Invariants are specified simply as methods whose execution is statically guaranteed to be deterministic and not access any externally mutable state.
 We automatically call such invariant methods only when objects are created or the state they refer to may have been mutated.
 Our design restricts the range of expressible invariants but improves upon the usability and performance of prior work.
-In addition, we soundly support mutation, dynamic dispatch, exceptions, and non-determinism, while requiring only a modest amount of annotation.
+In addition, we soundly support mutation, dynamic dispatch, exceptions, and non-deterministic I/O, while requiring only a modest amount of annotation.
 %\IOComm{Mention how we introduce a novel form of 'capsule' field, that prevents rep exposure}
 
 We present case studies showing that our system requires a lower annotation burden compared to Spec\#, and  performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D, Eiffel.

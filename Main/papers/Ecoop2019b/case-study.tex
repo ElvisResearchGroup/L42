@@ -92,7 +92,7 @@ the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box
 Even though the children of \Q@SafeMovable@s are fully encapsulated, we can still easily dispatch events to them using \Q@dispatch@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID, it will call its \Q@Action@'s \Q@process@ method. 
 
 %Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
-Our example shows that the restrictions of TMs and OCs are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
+Our example shows that the restrictions of TMs are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
 In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either our type modifier or capability system to function, demonstrating the practical usability of our restrictions.
 
 \subheading{The Invariant}

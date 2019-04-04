@@ -55,7 +55,7 @@ class Person { .. // Same as before
 % Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \Q@invariant@ method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
 % The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
 
-Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs or OCs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
+Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
 
 \subheading{Unrestricted Access To Capability Objects} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation by creating new capability objects or mutating existing ones, could break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
 %\Q@invariant@ to be non-deterministic.}%
