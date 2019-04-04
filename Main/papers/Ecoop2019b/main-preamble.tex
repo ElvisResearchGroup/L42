@@ -92,7 +92,7 @@
 \newcommand{\M}[3]{\ensuremath{\Kw{M}\oR{}#1\semiColon{}#2\semiColon{}#3\cR}}
 
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
-\renewcommand{\mapsto}{\mathrel{\origMapsTo}}
+\renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
 \lstset{morekeywords={assert, expose, iso, isolated, baloon}}
 \newcommand{\thm}[1]{\textsf{#1}}
@@ -109,7 +109,7 @@
 \newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
 \newmathword{\HNO}{headNotObservable}
 \newmathword{\dom}{dom}
-\newmathword{\HNC}{headNotCircular}
+\newmathword{\HNC}{capsuleNotCircular}
 \newmathword{\NCM}{notCapsuleMutating}
 \newmathword{\WE}{wellEncapsulated}
 \newmathword{\rog}{rog}
@@ -152,4 +152,4 @@
 \newcommand{\Ss}{\ensuremath{\Sigma^\sigma}\xspace}
 \renewcommand{\S}{\ensuremath{\Sigma}\xspace}
 %\HideNotes
-\NoNotes
+%\NoNotes
