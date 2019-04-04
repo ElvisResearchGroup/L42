@@ -22,7 +22,7 @@ every non-immutable object in the reachable object graph (ROG) of a capsule refe
 
 In L42, a \Q!capsule! variable always holds a \Q!capsule! reference: this is ensured by only allowing them to be used once, thus they are expressed using linear/affine types~\cite{boyland2001alias}. 
 Pony and Gordon \etal follow a more complicated approach where \Q!capsule! variables can be accessed multiple times, however the result (which will not be a \Q!capsule! reference) can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
-Later on, we discuss capsule fields, which behave differently.
+Later on, we discuss \Q!capsule! fields, which behave differently.
 \end{itemize}
 
 \noindent TMs are different to field or variable modifiers like Java's \Q@final@: TMs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
@@ -55,16 +55,16 @@ Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
 In contrast, Pony treats \Q!capsule! fields the same as \Q!capsule! variables: it does not guarantee that they contain a \Q!capsule! reference, as it provides non-destructive reads.
-%Pony treats \Q!capsule! fields in the same way as it treats local variables: reading a capsule field creates a %non-\Q!capsule! alias to it's value, 
+%Pony treats \Q!capsule! fields in the same way as it treats local variables: reading a \Q!capsule! field creates a %non-\Q!capsule! alias to it's value, 
 %do not return a \Q!capsule!, but destructive reads do.
 %rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
 Pony's \Q!capsule! fields are still useful for safe parallelism, as destructive reads of a \Q!capsule! field return a \Q!capsule! reference (which can then be sent to other actors), however the ROG of a \Q!capsule! field can be mutated by the same actor, even within methods of unrelated objects.
-L42 supports a variation of capsule fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}. 
+L42 supports a variation of \Q!capsule! fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}. 
 
-These forms of capsule fields are useful for safe parallelism but not invariant checking: Pony and L42's existing capsule fields do not prevent representation exposure; while Gordon \etal's cannot be read non-destructively, thus they should not be accessible in a invariant method.
+These forms of \Q!capsule! fields are useful for safe parallelism but not invariant checking: Pony and L42's existing \Q!capsule! fields do not prevent representation exposure; while Gordon \etal's cannot be read non-destructively, thus they should not be accessible in a invariant method.
 In Section~\ref{s:protocol} we present a novel kind of \Q!capsule! field that does not have these problems; we added support for these fields to L42, and we believe they could be easily added to Pony and Gordon \etal's language.
 
-%None of those forms of capsule fields are suitable for invariant checking, since they are designed to prevent  data-races. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, designed to prevent representation exposure. We added this new kind of capsule field to L42, and it could be easily added to Gordon \etal and Pony.
+%None of those forms of \Q!capsule! fields are suitable for invariant checking, since they are designed to prevent  data-races. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, designed to prevent representation exposure. We added this new kind of \Q!capsule! field to L42, and it could be easily added to Gordon \etal and Pony.
 
 \subheading{Promotion and Recovery}
 \noindent There are many different existing techniques and type systems that handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.

@@ -274,7 +274,7 @@ We will first proceed by cases on the property we need to prove, and then by the
 		\begin{itemize}
 			\item Consider any pre-existing $l'$. Suppose we broke \WE for $l'$ by making some $f' \in \cf(\s, l)$ \muty. Since the \rog of $l'$ can't have been modified, nor could the \rog of any other pre-existing $l''$, we must have that $\s[l'.f]$ is now \muty through some $l.f$. This requires that a $v_i$ be an initialiser for a \Q!mut! or \Q!capsule! field, which by \thm{Type Consistency} and \thm{Capsule Consistency}, means that $v_i$ must also be typeable as \Q!mut!. But then the $\s[l'.f']$ was already \muty through $v_i$, so $l'$ can't have already been \WE, a contradiction.
 
-			\item Now consider each $i$ with $C.i = \Kw{capsule}\,\_\,f$. By \thm{Type Consistency} and \thm{Capsule Consistency}, $v_i$ was \encap and $\rog(\s, v_i)$ is not \muty from \EV, and so $v_i$ is not $\muty(\s'\setminus l, \h, \EV[\M{l}{l}{l.\invariant}], v_i)$; thus \WE holds for $l$ and each of its capsule fields.
+			\item Now consider each $i$ with $C.i = \Kw{capsule}\,\_\,f$. By \thm{Type Consistency} and \thm{Capsule Consistency}, $v_i$ was \encap and $\rog(\s, v_i)$ is not \muty from \EV, and so $v_i$ is not $\muty(\s'\setminus l, \h, \EV[\M{l}{l}{l.\invariant}], v_i)$; thus \WE holds for $l$ and each of its \Q!capsule! fields.
 		\end{itemize}
 		
 		
@@ -291,7 +291,7 @@ We will first proceed by cases on the property we need to prove, and then by the
 		\item (\textsc{access}) $\s|\EV[l.f]\rightarrow \s|\EV[\s[l.f]]$:
 		\begin{itemize}
 			\item Suppose $l$ was \WE and \NCM, and $f \in \cf(\s, l)$, by \thm{Mut Access}, either $\Ss; \emptyset; \EV \nvdash \s[l.f] : \Kw{mut}\,\_$ or $\Ss; \emptyset; \EV[\h.f] \vdash l : \Kw{capsule}\,\_$. If $l$ was \Q!capsule!, then by \thm{Capsule Consistency} and \HNC, $l$ is not \reach from $\EV[\s[l.f]]$, so it is irrelevant if $l$ is no longer \WE. Otherwise, if $l$ was not \Q!capsule!, $\s[l.f]$ will not be \Q!mut!, so \WE is preserved for l. Note that if $l$ wasn't \NCM, it was \HNO, so we don't need to preserve \WE. 
-			\item Since this reduction doesn't modify memory, by \thm{Mut Consistency}, there is no other way to make the \rog of a capsule field $f'$ of $l'$ \muty without going through $l'$, so \WE is preserved for $l'$.
+			\item Since this reduction doesn't modify memory, by \thm{Mut Consistency}, there is no other way to make the \rog of a \Q!capsule! field $f'$ of $l'$ \muty without going through $l'$, so \WE is preserved for $l'$.
 		\end{itemize}
 	\end{enumerate}
 	

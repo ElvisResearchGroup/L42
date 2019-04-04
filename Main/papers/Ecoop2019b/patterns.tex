@@ -82,9 +82,9 @@ class SafeMovable { ...
   mut method Void transform(Transformer<Widgets> t) {
     t.apply(this.box.c); }}
 \end{lstlisting}
-% Note that the code above does not access a capsule field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
+% Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
-%,  i.e. they can't see or update the other capsule fields.
+%,  i.e. they can't see or update the other \Q!capsule! fields.
 The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply written as:
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
@@ -109,8 +109,8 @@ static method Void zoom(mut Widget w) {
 %  // instead of:
 %\Comment{}%this.exposeItems().add(i)
 
-%Note that the code above does not access a capsule field but merely calls a method that does; thus
-%it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple capsule fields in one method.
+%Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus
+%it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system
 %as if it was atomic.%
-%,  i.e. they can't see or update the other capsule fields.
+%,  i.e. they can't see or update the other \Q!capsule! fields.

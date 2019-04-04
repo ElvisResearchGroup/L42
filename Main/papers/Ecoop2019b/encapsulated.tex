@@ -58,7 +58,7 @@ we would get in the same situation as the former example.
 %\item no \Q@mut@ or \Q@read@ parameters are allowed (apart from the implicit \Q@this@ parameter)
 %\item and the return type cannot be \Q@mut@.
 %\end{itemize}
-%\noindent  Moreover, if the used capsule field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
+%\noindent  Moreover, if the used \Q!capsule! field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
 
 
 Allowing \Q@this@ to be used more than once can also cause problems;
@@ -114,7 +114,7 @@ l.addHeavy(f); // We pass another reference to `l' through f
 %
 %
 %REWRITE THIS BIT
-%Here capsule fields 
+%Here \Q!capsule! fields 
 %as input to our code-generation / \Q@validate()@-injection; that is, \Q@capsule T f@ is expanded by the language into:
 %\begin{itemize}
 %\item Induce a \Q@capsule@ parameter for the generated %constructor.
