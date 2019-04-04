@@ -79,7 +79,7 @@ where:
 \noindent Note that this does not prevent \emph{promotion} from a \Q!mut! to an \Q!imm!: a reduction step may change the type of an $l$ from \Q!mut! to \Q!imm!, provided that in the new state, the above assumption holds.
 \end{Assumption}
 
-We require that if something was not \muty, that it remains that way; this prevents, for example, runtime promotions from \Q!read! to \Q!mut!, as well as field accesses return inga \Q!mut! from a receiver that was not \Q!mut!:%
+We require that if something was not \muty, that it remains that way; this prevents, for example, runtime promotions from \Q!read! to \Q!mut!, as well as field accesses returning a \Q!mut! from a receiver that was not \Q!mut!:%
 \SS\begin{Assumption}[Mut Consistency]\rm If $\VS(\s, \EV[e])$, \\
 \indent not $\muty(\s, \EV, e, l)$, and $\s|\EV[e] \rightarrow^{+} \s'|\EV[e']$, then not $\muty(\s, \EV, e', l)$.
 \end{Assumption}
@@ -384,15 +384,10 @@ We can now finally prove the soundness of our invariant protocol:
 If $\VS(\s, \EV[r_l])$, then either $\valid(\s,l)$ or $\trusted(\EV,r_l)$.
 \end{theorem}\SS
 \begin{proof}
-\noindent Suppose $\VS(\s, e)$, and $e = \EV[r_l]$:
-\begin{ienumerate}
-	% by \thm{Stronger Soundness}, \l is \valid or \mony?
-	\item If $\valid(\s,l)$, then $l$ is valid, exactly as required.
-	\item If $l$ is not $\valid$ and $l$ is \reach, by \thm{Stronger Soundness}, $\mony(e,l)$, $e = \E[\M{l}{e_1}{e_2}]$, and either:
-	\begin{itemize}
-	 \item $\EV = \E[\M{l}{\E'}{e_2}]$, that is $r_l$ (which by definition cannot equal $l$) was found inside of $e_1$, this contradicts the definition of \mony, or
-	 \item $\EV = \E[\M{l}{e_1}{\E'}]$, and thus $r_l$ was found inside $e_2$. By our reduction rules, all monitor expressions start with $e_2=l.\invariant$; if this has yet to be reduced, then $\E'[r_l] = l.\invariant$ thus $r_l$ is \trusted. The next execution step will be an \textsc{mcall}, so by our well-formedness rules for \Q!invariant!, $e_2$ will only contain $l$ as the receiver of an \Q!imm! or \Q!capsule! field access; so if we just performed said \textsc{mcall}, $r_l = l.f$, for some \Q!imm! or \Q!capsule! field $f$: hence $r_l$ is trusted. Otherwise, by \thm{Imm Not Circular}, \thm{Capsule Field Soundness}, and \HNC, no further reductions of $e_2$ could have introduced an occurrence of $l$, so we must have that $r_l$ was introduced by the \textsc{mcall} to \Q!invariant!, and so it is \trusted.
-	\end{itemize}
-\end{ienumerate}
-Since $l$ is \reach, either $l$ is $\valid$ or $r_l$ is \trusted.
+\noindent Suppose $\VS(\s, e)$, and $e = \EV[r_l]$. If $l$ is not $\valid$, since $l$ is \reach, by \thm{Stronger Soundness}, $\mony(e,l)$, $e = \E[\M{l}{e_1}{e_2}]$, and either:
+\begin{iitemize}
+	\item $\EV = \E[\M{l}{\E'}{e_2}]$, that is $r_l$ (which by definition cannot equal $l$) was found inside of $e_1$, this contradicts the definition of \mony, or
+	\item $\EV = \E[\M{l}{e_1}{\E'}]$, and thus $r_l$ was found inside $e_2$. By our reduction rules, all monitor expressions start with $e_2=l.\invariant$; if this has yet to be reduced, then $\E'[r_l] = l.\invariant$ thus $r_l$ is \trusted. The next execution step will be an \textsc{mcall}, so by our well-formedness rules for \Q!invariant!, $e_2$ will only contain $l$ as the receiver of an \Q!imm! or \Q!capsule! field access; so if we just performed said \textsc{mcall}, $r_l = l.f$, for some \Q!imm! or \Q!capsule! field $f$: hence $r_l$ is trusted. Otherwise, by \thm{Imm Not Circular}, \thm{Capsule Field Soundness}, and \HNC, no further reductions of $e_2$ could have introduced an occurrence of $l$, so we must have that $r_l$ was introduced by the \textsc{mcall} to \Q!invariant!, and so it is \trusted.
+\end{iitemize}
+Thus either $l$ is $\valid$ or $r_l$ is \trusted.
 \end{proof}
