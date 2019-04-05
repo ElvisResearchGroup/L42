@@ -300,23 +300,21 @@ We also compared with Spec\#, whose invariant protocol performs the same number 
 
 
 In this paper we argue that our protocol is not only more succinct than the pack/unpack approach, but is also easier and safer to use.
-Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures and also carefully handle non deterministic operations like I/O.
+Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures and also carefully handle non-deterministic operations like I/O.
 %In our case study we show that
 %we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
 Section \ref{s:TMsAndOCs} explains the pre-existing \emph{type modifier} features we use for this work.
 Section \ref{s:protocol} explains the details of our invariant protocol, and Section \ref{s:formalism} formalises a language enforcing this protocol.
-Sections \ref{s:immutable} and \ref{s:encapsulated}, respectively, explain and motivate how our protocol can handle invariants over immutable and encapsulated data.
-Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#.
+Sections \ref{s:immutable} and \ref{s:encapsulated} explain and motivate how our protocol can handle invariants over immutable and encapsulated mutable data, respectively.
+Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#: they performed 5 orders of magnitude more invariant checks, and required 60\% more annotations, respectively.
 Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
 
-Appendix \ref{s:proof} provides a proof that our invariant protocol is sound.  Appendix~\ref{s:hamster} explains exactly why the Spec\# \Q!Hamster! encoding was so verbose. In Appendix~\ref{s:MoreCaseStudies} we designed a worst case scenario were Spec\# 
-%FALSE is a quarter? only performs half as many invariant checks as our protocol,
-perform a quarter of our  invariant checks,
- while D and Eiffel perform twice as many.
-In order to compare with examples from other work, in Appendix~\ref{s:MoreCaseStudies} we examine the examples of some Spec\# papers~\cite{DBLP:journals/jot/BarnettDFLS04,leino2004object,DBLP:conf/mpc/BarnettN04}; we show why we can not encode some of them.
+Appendix \ref{s:proof} provides a proof that our invariant protocol is sound.  Appendix~\ref{s:hamster} explains exactly why the above Spec\# \Q!Hamster! encoding was so verbose. In Appendix~\ref{s:MoreCaseStudies}, we designed a worst case scenario for our invariant protocol, where Spec\# 
+performed four times less invariant checks,
+ while D and Eiffel performed only twice as many.
+In Appendix~\ref{s:MoreCaseStudies} we compare with examples from others work on Spec\# ~\cite{DBLP:journals/jot/BarnettDFLS04,leino2004object,DBLP:conf/mpc/BarnettN04}; we show why we cannot encode some of their examples: namely when state that an object's invariant depends on can be directly modified by other objects.
 At first glance, our approach may feel very restrictive; in Appendix~\ref{s:patterns}, we show
-%The name Box pattern is not introduced yet
-programming patterns  demonstrating that these restrictions do not significantly hamper expressivity. In Appendix \ref{s:runtime-verification}, we discuss related work on runtime verification.
+programming patterns demonstrating that these restrictions do not significantly hamper expressivity, in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around. In Appendix \ref{s:runtime-verification}, we discuss related work on runtime verification.
 %you see this already later on... I wanted to avoid repating it
 %to perform batch operations with a single invariant check, as well as how the state of `broken' objects can be passed around.}	
 %http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf
