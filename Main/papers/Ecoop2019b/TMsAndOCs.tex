@@ -175,9 +175,9 @@ Here, as in Gordon \etal's work, we enforce the OC pattern with TMs in order to 
 % Their main use case is to allow for fine grained control over what sections of code are allowed to do. 
 
 \lstset{language=Java}
- For example, in Java, \Q@System.in@
- \lstset{language=FortyTwo} 
-  is a \emph{capability object} that provides access to the standard input resource, however, as it is globally accessible it completely prevents reasoning about determinism. 
+ For example, in Java, \Q@System.in@%
+ \lstset{language=FortyTwo}
+ is a \emph{capability object} that provides access to the standard input resource, however, as it is globally accessible it completely prevents reasoning about determinism. 
  % In contrast, in the object capability style, one would not have-global variables but have the main por
 
 % a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
@@ -199,7 +199,7 @@ L42 allows user code to perform foreign calls without going through a predefined
 \SSI\begin{itemize}
 \item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability methods}.%
 \item Constructors of classes declared as \emph{capability classes} are also capability methods.
-\item Capability methods can only be called by other capability-methods or \Q@mut@/\Q@capsule@ methods of capability classes.
+\item Capability methods can only be called by other capability methods or \Q@mut@/\Q@capsule@ methods of capability classes.
 \item In L42 there is no \Q@main@ \emph{method}, rather it has several main \emph{expressions}; such expressions can also call capability methods, thus they can instantiate capability objects and pass them around to the rest of the program.
 % \item Any method that uses non deterministic primitive operations (such as native calls or access to global variables\footnote{ Even just allowing unrestricted access to \Q@imm@ global variables would prevent reasoning over determinism due to the possibility of global variable updates; however constant/final globals of an \Q@imm@ type would not cause such problems.
 % }) must be an instance method requiring a \Q@mut@ receiver.
