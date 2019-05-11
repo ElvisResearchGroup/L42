@@ -1,4 +1,4 @@
-Here you can find a sequence of files aiming to provide a 
+Here you can find a sequence of files aiming to provide a  
 compact formal definition for the programming language L42.
 
 We chose to use ASCII for the simplicity of editing and visualizing it,
