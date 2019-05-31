@@ -552,4 +552,32 @@ public class CachingTest {
       .forEach(File::delete);
   }
 
+  //--------------------------------------------------------
+  @Test
+  public void testActualIDE_loadFamilyProject() throws IOException {
+    Path path=Paths.get("TestFolder").toAbsolutePath();
+    Files.createFile(path.resolve("This.L42"));//create an empty This.L42 file in the selected folder
+    String content="reuse L42.is/AdamTowel02\n" +
+        "CacheAdamTowel02:Load.cacheTowel()\n" +
+        "Main: {\n" +
+        "  Debug(S\"Hello loaded\")\n" +
+        "  return ExitCode.normal()\n" +
+        "  }";
+    Files.write(path.resolve("This.L42"), content.getBytes());
+    L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
+    ReplMain.copyResetKVCthenRun(Loader::new, content);
+
+    ReplGui.main=new ReplMain() {
+      public void eventStart() {
+        L42.setRootPath(Paths.get("TestFolder").toAbsolutePath());
+        CachingTest.waitToRun();
+        ReplGui.main.runCode(Loader::new);
+        ReplGui.main.stop();;
+      }
+    };
+    startApplication();
+    String output= L42.record.toString();
+    assertEquals("Hello loaded\nHello loaded\n", output);
+  }
+  
 }
