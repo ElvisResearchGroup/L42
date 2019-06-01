@@ -1,0 +1,160 @@
+Full 42 syntax
+
+-----------------------------------
+Part 0: general discussions:
+-----------------------------------
+only character drown on conventional English keyboards (except 'tab')
+can be in the input file.
+Comments are normal // and /**/. Comments and are discarded. This changed from last time
+Docs have a different syntax, are aware of Paths and are kept and adapted during metaprogramming,
+but only exists in few crucial points in the syntax.
+"using P check m(xes) e" is now "native P m(xes)[e]"
+and is expected to be used directly only during bootstrapping.
+
+Outside of comments and docs; space, newline and ',' are all just spacing characters
+
+-----------------------------------
+Part 1: boring part, identifiers and other stuff
+-----------------------------------
+char   ::=  all the ones drown on English keyboards except 'tab' :-)
+StrLit  ::= StrOpi char* (StrIni char*)* StrCli
+StrOp0  ::="
+StrCl0  ::="
+StrOp1  ::=["
+StrCl1  ::="]
+StrIn1  ::=[ e ]
+StrOp2  ::=[["
+StrCl2  ::="]]
+StrIn2  ::=[[ e ]]
+...
+StrOpn  ::=[..["
+StrCln  ::="]..]
+StrInn  ::=[..[ e ]..]
+
+NumLit::= (0..9)+ ((.|_|e|E|-) (0..9)*)*
+Doc:@PathLit
+PathLit::= (C.)* s | Cs |This | {charsWithBalancedCurly}
+x ::= LowChar charId* | _ // '_' will be replaced with a fresh name
+C ::= UpChar charId*
+UpChar ::= _* (A..Z | $) 
+LowChar::= _* a..z
+charId   ::= a..z |A..Z| $ | _
+URL::= /*too boring*/
+s  ::= Doc mOp(x*)
+Tx ::= T x
+mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class
+T  ::= mdf P Doc | mdf Cs Doc 
+P  ::= This(n?).Cs | Any | Void | Library
+MH ::= Doc refine? mdf method T mOp(Doc Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
+Cs ::=C(.C)*  //Is it the only sequence where we need a separator? 
+throw::= error | exception | return
+Doc:@PathLit
+PathLit::= (C.)* s | Cs |This | {anyTextWithBalancedCurly}
+m ::= #?x(#x)*
+mOp::= m| op | ! | ~
+op0 ::= ^ | : | <- | << | & | '|'
+op1 ::= + | - | * | / | ++ | -- | ** | >> | ->
+op2 ::= == | != | < | > | >= | <=
+op3 ::= => | && | || //will be short circuting
+op  ::= op0 | op1 | op2 | op3 
+updateOp ::=  := | op0= | op1= // except ':' from op0; op2 and op3 are dangerous to lift to updateOp
+
+
+-----------------------------------
+Part 2: core
+-----------------------------------
+All metavariables declared here can be used in the full language only inside of a core(..) block.
+Now all core expressions are normalized expression
+
+e   ::= x | (D* w) | void | L | e0.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e) | native P m(xes)[e]
+D   ::= T x=e
+K   ::= catch throw T x e
+NC  ::= Doc C=L 
+MWT ::= MH=e 
+M   ::= NC | MWT
+L   ::= interface?[T+]?{MWT* NC*}
+
+Well formedness:
+ -the receiver expression e0 must be of form w ::= x | (D* w)
+ -under a p an L need to mention all the methods of all implemented interfaces,
+  and all list all the transitively implemented interfaces.
+ -P are not of form mdf Cs Doc (that is, without the 'Thisn.')
+   
+-----------------------------------
+Part 3: full L
+-----------------------------------
+
+H  ::= interface? [T+]? | reuse URL
+L  ::= H{F* M*}
+F  ::= var? T x
+M  ::= NC | MWT | MI
+NC ::= Doc C ECurly | Doc C =core(L)
+MWT::= MH ECurly 
+MI ::= s ECurly 
+
+Well formedness:
+ -L can only appear in Doc C ECurly,
+    inside method bodies only core(L) is allowed
+
+-----------------------------------
+Part 4: expressions and statements
+-----------------------------------
+For Isaac:
+I know there are a set of things you will disagree:
+  -required parameter names
+  -the wops
+  -the '={' token
+  -the nominal patter matching
+  -the 'no space between pe(' rule
+  
+//atomic expression
+ae ::= '...' | x | P | void | L |core(L)| B | \ | \x | 'PathLit // 'stuff == \"stuff"
+//post operators expression
+pe ::= ae | pe.m'(' par ')' | pe'(' par ')' | pe Square | pe StrLit | pe%T // or pe:T, but then we can not use ':' as binary op
+//no space between pe( otherwise it can be parsed as pe B
+par::= e? xe*
+xe ::= x ECurly
+Square::= [ (par;)*par? ] //not sure how else to force the last semicolon to be optional
+//unary expression
+ue ::= pe | !pe | ~pe | NumLit pe
+//binary expressions 
+b0e ::= ue0 (op0 ue1 .. op0 uen) //right associative, all op the same
+b1e ::= b0e0 (op1 b0e1 .. op1 b0en) //left associative, all op the same
+b2e ::= b1e0 (op2 b1e1 .. op2 b1en) //unassociative, all op the same (see desugaring)
+b3e ::= b2e0 (op3 b2e1 .. op2 b2en) //left associative, all op the same
+//block
+B   ::= '(' BIN ')'
+BIN ::= DE* e | DE+ K+ WOPS? DE* e | DE+ K+ WOPS?
+DE  ::= e | DX ECurly
+DX  ::= var? T? x | T?(var1? T1? x1.. varn?Tn? xn)
+K   ::= catch throw? T x e
+WOPS::= wops T+
+Curly::= '={' BIN '}' //yes, '={' is a single token, so the parser do not get confused with L
+ECurly::= = e | Curly
+//statements (just another kind of expression)
+S  ::= IF | While | For | loop e | throw e | x updateOp e | native P m'('par')'[e]
+IF  ::= if (tMatch+ |e0) e1 (else e2)?
+tMatch::= T x | T x=e | T0?(T1? x1..Tn? xn)=e //where at least one Ti? is not empty
+While::= while e0 e1
+For ::= for DXe+ e
+DXe ::= DX in e
+e  ::= S | b3e
+
+
+-----------------------------------
+Part 5: well formedness, to complete
+-----------------------------------
+
+well formed BIN:
+  if BIN of form DE*1 DE e DE*2 e0, then noBlockNeeded(DE.e)
+  if BIN of form DE*1 K* K e DE*2 e0, then noBlockNeeded(K.e)
+  if BIN of form DE*1 K* K e, then noBlockNeeded(loop K.e)
+  if BIN of form DE*1 DE e, then noBlockNeeded(DE.e)
+
+noBlockNeeded(e):
+  noBlockNeeded(B)
+  noBlockNeeded(b3e)
+  noBlockNeeded(S)
+   if S is of form 'while e0 e', 'if e0 e', 'for DXe+ e', 'if e0 e1 else e' or 'loop e'
+   then e must be of form 'B', 'throw _', 'loop _' or 'void'
+ 
