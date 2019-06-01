@@ -42,7 +42,7 @@ charId   ::= a..z |A..Z| $ | _
 URL::= /*too boring*/
 s  ::= Doc mOp(x*)
 Tx ::= T x
-mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class
+mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class | fwd%Imm | fwd%mut
 T  ::= mdf P Doc | mdf Cs Doc 
 P  ::= This(n?).Cs | Any | Void | Library
 MH ::= Doc refine? mdf method T mOp(Doc Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
@@ -70,15 +70,16 @@ e   ::= x | (D* w) | void | L | e0.m( x1=e1 .. xn=en ) | loop e | throw e | x :=
 D   ::= var? T x=e
 K   ::= catch throw T x e
 NC  ::= Doc C=L 
-MWT ::= MH=e 
+MWT ::= MH=e | MH 
 M   ::= NC | MWT
 L   ::= interface?[T+]?{MWT* NC*}
 
-Well formedness:
- -the receiver expression e0 must be of form w ::= x | (D* w)
- -under a p an L need to mention all the methods of all implemented interfaces,
+Core Well formedness:
+* the receiver expression e0 must be of form w ::= x | (D* w)
+* under a p an L need to mention all the methods of all implemented interfaces,
   and all list all the transitively implemented interfaces.
- -P are not of form mdf Cs Doc (that is, without the 'Thisn.')
+* P are not of form mdf Cs Doc (that is, without the 'Thisn.')
+* Core well formedness also inherits all the well formedness of the full language
    
 -----------------------------------
 Part 3: full L
@@ -89,12 +90,8 @@ L  ::= H{F* M*}
 F  ::= var? T x
 M  ::= NC | MWT | MI
 NC ::= Doc C ECurly | Doc C =core(L)
-MWT::= MH ECurly 
+MWT::= MH ECurly?
 MI ::= s ECurly 
-
-Well formedness:
- -L can only appear in Doc C ECurly,
-    inside method bodies only core(L) is allowed
 
 -----------------------------------
 Part 4: expressions and statements
@@ -124,12 +121,12 @@ b2e ::= b1e0 (op2 b1e1 .. op2 b1en) //unassociative, all op the same (see desuga
 b3e ::= b2e0 (op3 b2e1 .. op2 b2en) //left associative, all op the same
 //block
 B   ::= '(' BIN ')'
-BIN ::= DE* e | DE+ K+ WOPS? DE* e | DE+ K+ WOPS?
+BIN ::= DE* e | DE+ K+ WOPS? DE* e | DE* e K+ WOPS?
 DE  ::= e | DX ECurly
 DX  ::= var? T? x | T?(var1? T1? x1.. varn?Tn? xn)
 K   ::= catch throw? T x e
 WOPS::= wops T+
-Curly::= '={' BIN '}' //yes, '={' is a single token, so the parser do not get confused with L
+Curly::= '={' DE* (DE K+ WOPS? DE*)?  '}' //yes, '={' is a single token, so the parser do not get confused with L
 ECurly::= = e | Curly
 //statements (just another kind of expression)
 S  ::= IF | While | For | loop e | throw e | x updateOp e | native P m'('par')'[e]
@@ -140,18 +137,22 @@ For ::= for DXe+ e
 DXe ::= DX in e
 e  ::= S | b3e
 
-
 -----------------------------------
 Part 5: well formedness, to complete
 -----------------------------------
 
-*BIN:
+* MWT: MWT.e can not contain L, only core(L) is allowed
+
+* s=e: e can not contain L, only core(L) is allowed
+
+
+* BIN:
   if BIN of form DE*1 DE e DE*2 e0, then noBlockNeeded(DE.e)
   if BIN of form DE*1 K* K e DE*2 e0, then noBlockNeeded(K.e)
   if BIN of form DE*1 K* K e, then noBlockNeeded(loop K.e)
   if BIN of form DE*1 DE e, then noBlockNeeded(DE.e)
-
-Define noBlockNeeded(e):
+_______
+#define noBlockNeeded(e):
   noBlockNeeded(B)
   noBlockNeeded(b3e)
   noBlockNeeded(S)
@@ -167,43 +168,40 @@ Define noBlockNeeded(e):
 
 * s: 'this' notin xs and all x in xs are unique
 
-* mh: 'Any' notin Ps //Ps is thrown exceptions //TODO: why??? should we remove this restriciton? 24/10/2018
+* MH: 'Any' notin [Ts] //Ts is thrown exceptions //TODO: why??? should we remove this restriciton? 24/10/2018
 
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 
-* C:e :  C not Any, Library, Void, This, Thisn
+* NC: NC.C not Any, Library, Void, This, Thisn
 
-* L: unique LDom in dom(L), Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
+* L: unique LDom in dom(L), Any notin [Ts] //Library and Void are not interfaces so you will get the normal error from implementing them
     Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? is empty
 
 * L interface:
    methods in interfaces have no body
-   forall m__n(xs),  m__n(xs) notin dom(L)//TODO: in code check interfaces has no unique named methods
+   forall m__n(xs),  m__n(xs) notin dom(L)
 
-* (ds ks e[T]): unique x in dom(ds), FV(ks) disjoint dom(ds) and
-  forall k1,k2 in ks, k1.throw=k2.throw//TODO: is this restrictions still needed?
-  That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
+* (ds1 ks ds2 e): unique x in dom(ds1,ds2), FV(ks) disjoint dom(ds1,ds2)
 
-* use P check m((x:e)s) e: P not Any/Void/Library
+* native P m(xes)[e]: P not Any/Void/Library
 
 //C:e :  FV(e)=empty subsumed by next check
 
 * C:e : //checks for capsuleWellFormed and absence of free variables
-   cX(e)=empty
-   //TODO: in code Note, this can be applied directly after desugaring
+   cX(e)=empty  //FV(e)=empty this is implied
+   //Note: need to be checked again after normalization
 
 * mwt: Ts=parameter types, T=return type
   if exists fwdImm _ in Ts then T.mdf in {mut, fwdMut, imm, fwdImm}
   if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
-* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "s e"
-  mwt= refine? mdf method T m(T1 x1..Tn xn)e
+* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "s=e"
+  mwt= refine? mdf method T m(T1 x1..Tn xn)[Ts]e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
-  //Note: in the code this happens while "Program.methods" adds a methodType to a MethodImplemented.
-  //TODO: still need to happen in desugaring for methods that are born as MethodWithType
+  //Note: need to be checked again after normalization
 
 _______
 #define     //note: FV is trivially defined from cX
@@ -228,4 +226,28 @@ _______
   max (x xs,ys)=x max(xs,removeOne(x,ys))
   max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
 
+
+* Curly returning(Curly) must hold
+* B of form (DEs1 Ks WOPS? DEs2 e)
+    forall DE in DEs1,DEs2: not returning(DE)
+* B of form (DE* e K+ WOPS?)
+    forall DE DE*: not returning(DE) 
+_______
+#define returning(Curly)
+  returning(={ DEs1 Ks WOPS? DEs2})=returning(={ DEs1 Ks DEs2})
+  returning(={ DEs1 Ks DEs2}) iff
+    DEs,DE=DEs1,Des2
+    returning(DE)
+    forall DE' in DEs: not returning(DE') //dead code after
+    forall catch throw T x e' in Ks: returning(e')
+ returning(loop e)
+ returning(throw e)
+ returning(loop e)
+ returning(if _ e1 else e2) iff 
+   returning(e1) and returning(e2)
+ returning( (DEs1 Ks WOPS? DEs2 e) ) iff
+   returning(e)
+   forall catch throw T x e' in Ks: returning(e')
+ //forall DE in DEs1,DEs2: not returning(DE) already in block well formedness
+ //returning(T x=e) does not hold, so DE must be of form e for returning to hope to hold 
  
