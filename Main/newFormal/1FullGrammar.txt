@@ -32,13 +32,17 @@ StrCln  ::="]..]
 StrInn  ::=[..[ e ]..]
 
 NumLit::= (0..9)+ ((.|_|e|E|-) (0..9)*)*
-Doc:@PathLit
+Doc: empty | @PathLit
 PathLit::= (C.)* s | Cs |This | {charsWithBalancedCurly}
+//Note, we may need two different PathLit, one for docs and one for '
+//in docs we want the free text and the Thisn.Cs
+//we also need s.x to reference a s parameter
+
 x ::= LowChar charId* | _ // '_' will be replaced with a fresh name
 C ::= UpChar charId* (_n) //the unique number
 UpChar ::= _* (A..Z | $) 
 LowChar::= _* a..z
-charId   ::= a..z |A..Z| $ | _
+charId   ::= a..z |A..Z| $ | _ | 0..9
 URL::= /*too boring*/
 s  ::= Doc mOp(x*)
 Tx ::= T x
@@ -48,10 +52,8 @@ P  ::= This(n?).Cs | Any | Void | Library
 MH ::= Doc refine? mdf method T mOp(Doc Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
 Cs ::=C(.C)*  //Is it the only sequence where we need a separator? 
 throw::= error | exception | return
-Doc:@PathLit
-PathLit::= (C.)* s | Cs |This | {anyTextWithBalancedCurly}
-m ::= #?x(#x)* (_n) //the unique number
-mOp::= m| op | ! | ~
+m ::= (# | #$)?x(#x+)* (_n) //the unique number
+mOp::= empty | m| op | ! | ~
 op0 ::= ^ | : | <- | << | & | '|'
 op1 ::= + | - | * | / | ++ | -- | ** | >> | ->
 op2 ::= == | != | < | > | >= | <=
