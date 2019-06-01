@@ -35,7 +35,7 @@ NumLit::= (0..9)+ ((.|_|e|E|-) (0..9)*)*
 Doc:@PathLit
 PathLit::= (C.)* s | Cs |This | {charsWithBalancedCurly}
 x ::= LowChar charId* | _ // '_' will be replaced with a fresh name
-C ::= UpChar charId*
+C ::= UpChar charId* (_n) //the unique number
 UpChar ::= _* (A..Z | $) 
 LowChar::= _* a..z
 charId   ::= a..z |A..Z| $ | _
@@ -50,7 +50,7 @@ Cs ::=C(.C)*  //Is it the only sequence where we need a separator?
 throw::= error | exception | return
 Doc:@PathLit
 PathLit::= (C.)* s | Cs |This | {anyTextWithBalancedCurly}
-m ::= #?x(#x)*
+m ::= #?x(#x)* (_n) //the unique number
 mOp::= m| op | ! | ~
 op0 ::= ^ | : | <- | << | & | '|'
 op1 ::= + | - | * | / | ++ | -- | ** | >> | ->
@@ -67,7 +67,7 @@ All metavariables declared here can be used in the full language only inside of 
 Now all core expressions are normalized expression
 
 e   ::= x | (D* w) | void | L | e0.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e) | native P m(xes)[e]
-D   ::= T x=e
+D   ::= var? T x=e
 K   ::= catch throw T x e
 NC  ::= Doc C=L 
 MWT ::= MH=e 
@@ -145,16 +145,87 @@ e  ::= S | b3e
 Part 5: well formedness, to complete
 -----------------------------------
 
-well formed BIN:
+*BIN:
   if BIN of form DE*1 DE e DE*2 e0, then noBlockNeeded(DE.e)
   if BIN of form DE*1 K* K e DE*2 e0, then noBlockNeeded(K.e)
   if BIN of form DE*1 K* K e, then noBlockNeeded(loop K.e)
   if BIN of form DE*1 DE e, then noBlockNeeded(DE.e)
 
-noBlockNeeded(e):
+Define noBlockNeeded(e):
   noBlockNeeded(B)
   noBlockNeeded(b3e)
   noBlockNeeded(S)
    if S is of form 'while e0 e', 'if e0 e', 'for DXe+ e', 'if e0 e1 else e' or 'loop e'
    then e must be of form 'B', 'throw _', 'loop _' or 'void'
+   
+
+* L: if C__n in dom(L) or m__n(xs) in dom(L),
+  then for any other L' in the project
+  C'__n notin dom(L') and m'__n(xs') notin dom(L')
+
+* D: var T x=e is valid only if T not capsule or fwd.
+
+* s: 'this' notin xs and all x in xs are unique
+
+* mh: 'Any' notin Ps //Ps is thrown exceptions //TODO: why??? should we remove this restriciton? 24/10/2018
+
+* mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
+
+* C:e :  C not Any, Library, Void, This, Thisn
+
+* L: unique LDom in dom(L), Any notin Ps //Library and Void are not interfaces so you will get the normal error from implementing them
+    Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? is empty
+
+* L interface:
+   methods in interfaces have no body
+   forall m__n(xs),  m__n(xs) notin dom(L)//TODO: in code check interfaces has no unique named methods
+
+* (ds ks e[T]): unique x in dom(ds), FV(ks) disjoint dom(ds) and
+  forall k1,k2 in ks, k1.throw=k2.throw//TODO: is this restrictions still needed?
+  That is, all throw in a specific ks are the same (thus no "catch return T1 x1 e1 catch error T2 x2 e2")
+
+* use P check m((x:e)s) e: P not Any/Void/Library
+
+//C:e :  FV(e)=empty subsumed by next check
+
+* C:e : //checks for capsuleWellFormed and absence of free variables
+   cX(e)=empty
+   //TODO: in code Note, this can be applied directly after desugaring
+
+* mwt: Ts=parameter types, T=return type
+  if exists fwdImm _ in Ts then T.mdf in {mut, fwdMut, imm, fwdImm}
+  if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
+  if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
+
+* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "s e"
+  mwt= refine? mdf method T m(T1 x1..Tn xn)e
+  T0=mdf This0
+  FV(e)\ this,x1..xn= empty
+  for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
+  //Note: in the code this happens while "Program.methods" adds a methodType to a MethodImplemented.
+  //TODO: still need to happen in desugaring for methods that are born as MethodWithType
+
+_______
+#define     //note: FV is trivially defined from cX
+cX(e)//count occurences of xs
+  cX(x)=x
+  cX(void)=cX(P)=cX(L)=empty
+  cX(throw[T1,T2] e)=cX(e)
+  cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work
+  cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
+  cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
+  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
+    where
+    ys=cX(e1),..,cX(en)
+    xsi=cX(ki)
+    xs0=cX(e0)
+    if Ti=capsule _ then
+      xi 0 or 1 times in ys,xs0
+_______
+#define max(xs1,..,xsn)= zs // as many repetition of each x as in the most repetitive of xs1..xsn
+  max(ys)=max(empty,ys)=ys
+  max (x xs,ys)=x max(xs,ys) if x not in ys
+  max (x xs,ys)=x max(xs,removeOne(x,ys))
+  max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
+
  
