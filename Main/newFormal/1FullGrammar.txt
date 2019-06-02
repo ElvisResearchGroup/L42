@@ -118,7 +118,7 @@ b3e ::= b2e0 (op3 b2e1 .. op2 b2en) //left associative, all op the same
 //block
 B   ::= '(' BIN ')' | '{' DE* (DE K+ WOPS? DE*)?  '}'
 BIN ::= DE* e | DE+ K+ WOPS? DE* e | DE* e K+ WOPS?
-DE  ::= DX? = e
+DE  ::= (DX=)? e
 DX  ::= var? T? x | T?(var1? T1? x1.. varn?Tn? xn)
 K   ::= catch throw? T x e
 WOPS::= wops T+

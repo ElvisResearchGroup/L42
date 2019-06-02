@@ -1,3 +1,51 @@
+
+Abstract grammar: Objective, be still readable, still look 1:1 with the source
+
+start:
+D::= (DX=?) e
+e::= ... | x | P | void | L |core(L;label;ps1;ps2) | B | (P e) | \ | \x | 'PathLit
+ | throw e | loop e | e StrLit | ~e |!e 
+ | NumLit e | x updateOp e | (P e)
+ | e(.m)?(par)
+ | e[pars]
+ | e1 op ..op en
+ | ( Ds Ks Wops? Ds2 e? )  
+ | { Ds Ks Wops? Ds2 }
+ | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
+ | while e1 e2
+ | for DXes e
+
+
+Do all but typeDrivenDesugar, this includes refineDesugar
+e::=  x | P | void | L |core(L;label;ps1;ps2) | B | (P e) | \ 
+ | throw e | loop e | x := e | (P e)
+ | e.m(xes)
+ | e[xes1;...;xesn]
+ | e1 op ..op en
+ | ( Ds Ks e )  
+ 
+// blocks can be desugared for T x and start methods | { Ds Ks Ds2 }
+
+
+//---note: may be block on parameters are just bad. 9 lines instead of 7
+Foo(
+   bar={
+    if a>b return q
+    if a<b return w
+    wops AEFatal
+    return e
+    }
+  beer=e.foo()
+  )
+
+T bar={
+    if a>b return q
+    if a<b return w
+    wops AEFatal
+    return e
+    }
+Foo(bar=bar, beer=e.foo())
+
 _______
 #define LC: an L is LC if forall C in dom(L), L(C).e=core(L')
 _______

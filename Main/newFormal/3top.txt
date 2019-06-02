@@ -43,6 +43,14 @@ p ==> p'.pop()
  p|-MCs->MCs'
  collectDeps(L)
  
+_______
+#define normalize_p(e)
+ steps:
+  for all L inside e,
+    L=refineDesugar_p(L) //all methods are MWT, fields are desugared into methods HERE, reuse, '...', members reordered
+  e=syntacticDesugar(e) //if, while, that:, for, square, \x, unops, literals   
+  e=typeDrivenDesugar(e)//bin ops, method receivers, return blocks
+ 
  
 _______
 #define collectDeps(L) //core L 
@@ -64,3 +72,4 @@ collectDepsE((P' P))= P',P;P
   where P'!=Any
 collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
 collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
+
