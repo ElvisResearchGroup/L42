@@ -38,6 +38,7 @@ p ==> p'.pop()
   // and p'.top() is the LC result of metaprogramming L
  
  
+ Need to define:
  normalize_p(e)
  p|-MCs->MCs'
  collectDeps(L)
@@ -48,48 +49,18 @@ _______
 collectDeps(interface?[Ts]{MWT1...MWTn1 NCs})=Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
 collectDeps(C=_)=empty;empty
 collectDeps(T f)=T;empty
- 
- 
- 
- 
- 
- 
- 
- 
-_______
-#define C.Dep
-  C.(Cs=Flag;Ps1;Ps2) =  C.Cs=Flag;Ps1[from This1];Ps2[from This1]
+collectDeps(refine? native[P]? mdf method T0 mOp(T1 x1 ..Tn xn) [Ts] = e?)
+= P?,T0..Tn, Ts;empty U collectDepsE(e?)
+//what about Docs 
 
-
-no more
-{
-method m(){ A= {..} B=A()} //was requiring to compile code in method bodies, like subtraits
-}
-now the worst is
-{
-A={..}
-B=A()+{ C=A()+{C ...} D=C()}
-}
-
-top
-|-empty;{A={..},B} --> A=typed;{A=core(L), B}
-enter
-|-A=typed;{A=core(L), B} -> ...A=typed, B
-because 
-top1
-A=typed|-empty;{ C=A()+{C ...} D=C()}{A=coreL(),B=A()+[]} --> C=typed;{ C={C ...} D:C()}{A=coreL(),B=A()+[]}
-top2
-A=typed|-C=typed;{ C={C ...} D:C()}{A=coreL(),B=A()+[]} -->C=typed, D=typed;{ C={C ...} D:{}}{A=coreL(),B=A()+[]}
-
-
-OK
-{
-A:Trait:{ B f }
-B:Class:{ ...}
-}
-
-KO
-{
-MyCode:{A:Trait:{ B f }}
-B:Class:{ ...}
-}
+collectDepsE(x)=collectDepsE(void)=empty;empty
+collectDepsE(L)=collectDeps(L) U Ps11..Ps1n; Ps21..Ps2n 
+  L=interface?[Ts]{MWTs NC1..NCn}
+  NCi=core(Li;Flagi;Ps1i;Ps2i)
+collectDepsE( (P e0).m( x1=e1 .. xn=en ) )=P U collectDepsE(e0) U..U collectDepsE(en) 
+collectDepsE(loop e)=collectDepsE(throw e)=collectDepsE(x :=e)=collectDepsE(e)
+collectDepsE((Any P))= P;empty
+collectDepsE((P' P))= P',P;P
+  where P'!=Any
+collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
+collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
