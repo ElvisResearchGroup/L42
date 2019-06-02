@@ -1,0 +1,65 @@
+
+-----------------------------------------------------------
+Part 1: 42 top level reduction rules
+-----------------------------------------------------------
+### reduction rules
+ReductionTop:
+precondition: at top level we have an L not of form LC.
+Rule (top) performs a step of execution, while rule (enter)
+propagates the execution inside nested classes and libraries in method bodies.
+
+Flag::= norm |typed 
+typed::=uncoherent | coherent
+Dep::= Cs=Flag;Ps1;Ps2;
+
+r::=LC| exception v | error v
+
+(top)
+Depss|-Deps; p ==> Deps'; p.update(p.top()[C=core(L)])
+  where
+  p.top()=_[Ps0]{MCs  C:e Ms}//MCs are already compiled
+  e not of form core(L)//thus e is the first point to execute
+  core(eC)=normalize_p(e)
+  Depss;p|-eC:T
+  eC -->p+ r //execute the expression under the program and obtain a result
+  L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
+  Depss;p|- Deps,C=Norm;collectDeps(L)' -> Deps'
+
+(enter)
+Depss|- Deps;p ==> Deps, C.Deps0; p'.pop()
+  where
+  Depss,Deps|- empty; p.push(ctxL, L)  ==>+  Deps0| p'
+  p.top()=interface?[Ps]{MCs C=e Ms}
+  e not of form core(_)
+  e=ctxC[L], L not of form LC
+  ctxL=interface?[Ps]{MCs C=ctxC Ms}
+  p'.top() of form LC //Note: p' is one level deeper than p,
+  // and p'.top() is the LC result of metaprogramming L
+ 
+_______
+#define C.Dep
+  C.(Cs=Flag;Ps1;Ps2) =  C.Cs=Flag;Ps1[from This1];Ps2[from This1]
+
+
+no more
+{
+method m(){ A= {..} B=A()} //was requiring to compile code in method bodies, like subtraits
+}
+now the worst is
+{
+A={..}
+B=A()+{ C:A()+{C ...} D:C()}
+}
+
+
+OK
+{
+A:Trait:{ B f }
+B:Class:{ ...}
+}
+
+KO
+{
+MyCode:{A:Trait:{ B f }}
+B:Class:{ ...}
+}

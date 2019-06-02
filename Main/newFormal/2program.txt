@@ -1,0 +1,152 @@
+_______
+#define LC: an L is LC if forall C in dom(L), L(C).e=core(L')
+_______
+#define eC, parC, etcetera: an e is eC if all the L inside are of form LC, similarly for parC etcetera
+
+ctxC::=[]
+  //first all the propagate right cases
+ | throw ctxC | loop ctxC | x:=ctxC | ctxC StrLit | ~ctxC |!ctxC 
+ | NumLit ctcX | x updateOp ctxC | (P ctxC)
+ //kinds of meth calls
+ | ctxC(.m)?( par)
+ | eC(.m)?(ctxC par)
+ | eC(.m)?parC, x=ctxC, par)
+ |ctxC Square
+ |eC[parCs; ctxC, par;pars]
+ |eC[parCs; parC, x=ctxC, par;pars]
+ //bin ops
+ | (eC op)s ctxC (op e)s
+ //blocks
+ | '(' DECs DX? ctxC DEs Ks WOPS? e? ')'  
+ | '(' DECs KCs catch throw? T x ctxC Ks WOPS? e? ')'  
+ | '(' DECs KCs WOPS? ctxC ')'  
+ | { DECs DX? ctxC DEs Ks WOPS? DEs2 }
+ | { DECs KCs catch throw? T x ctxC Ks WOPS? DEs2 }
+ | { DECs1 KCs WOPS? DECs2 DX? ctxC DEs }
+ //statements
+ | if ctxC e (else e0)?
+ | if (tMatchC+ |eC) ctxC (else e0)?
+ | if (tMatchC+ |eC) eC0 else ctxC
+ | if tMatchC+ DX=ctxC tMatch+ e (else e0)?
+ | while ctxC e
+ | while eC ctxC 
+ | for DXeCs DX in ctxC DXes e
+ | for DXeCs ctxC
+
+
+Thus if e=ctxC[L] where L not of form LC, all other L more top-left are of form LC
+The compilation context, e=ctxC[L] selects an L where
+all of the former Ls are LC.
+The context does not enter into libraries
+
+ctxM::= C = ctxC |s = ctxC | MH = ctxC
+ctxL::= interface?Ts{MCs ctxM Ms}
+_______
+#define functional notation for L, ctxL and LC (over the domain Ldom)
+
+
+_______
+#define eC' inside eC //INCOMPLETE... but... is it needed now?
+- eC' inside eC if eC=ctxC[eC']
+- P inside ( _ DX _) if P=T.P
+- P inside ( _ catch throw T x _ _) if P=T.P
+- P inside M holds iff P inside M.e //called CollectPaths0.of(P)
+ or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
+ and Ti= _ P or P in Ps //or P is in the method docs
+
+--------------------
+-----------------------------------------------------------
+Part 3: program
+-----------------------------------------------------------
+Program-specific grammar is needed to represent the position
+in the project (top level Library) that we are reducing.
+For example, if our 42 project is
+{ A=... B=This0.A.second({ method Library m(){C=This2.A.first({})} }) }
+we first need to reduce "A.first({})"
+In order to explicitly denote the meaning of "Thisn", we split the project
+into the 3 part program
+p={C=This2.A.first({})};{ method Library m()[]};{ A=... B=This0.A.second([]) }
+Note that the first component is an L, while the others have a hole, [],
+so they are of form ctxL.
+Note how the first component uses This2.A in order to skip two levels
+and refer to A in the outer most layer of our project.
+
+It is possible to see the program as a stack, with a top() and a pop() operation.
+Given a program is always possible to reconstruct the project
+by doing a series of pop operations.
+Since the top of the stack is of a different kind with respect to the other elements,
+pop replaces the [] with the stack top to forge an L
+push, the opposite of pop, extracts a piece of the top to forge a new top.
+To do so, it takes in input the split form of the old head.
+Finally, notice how in this model updating the top  can not be emulated with pop() + push()
+
+p::= L0;ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+
+program primitive operations:
+
+-p.top()=L
+ (L,_).top()=L
+
+-p.pop()=p'
+ (L,interface?[Ps]{Ms C_evil:[]},ctxLs).pop()=interface?[Ps]{Ms},ctxLs
+ otherwise // we have C_evil not in dom(ctxL)
+ (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
+
+-p.push(ctxL,L)=p'
+ (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
+
+-p.update(L)=p' //this is the only one that can detect evilPush
+ (L,ctxLs).update(L')=L',ctxLs
+
+-p.reducePath(P)=P' //assert defined only if p.top() of form LC
+ p.reducePath(This(n+1).C.Cs)=Thisn.Cs
+   where p.pop().reducePath(Thisn.C.Cs) is defined
+ (LC,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
+   where ctxL(C)=ctxC //Note:ctxL(C)=[] would be more restrictive, for example
+   //preventing A:Data<><{method A (..)} to be summed with the constructor.
+-p.location()=P // Where we are in the program
+ (L).location()=This0
+ (L, ctxL, ctxLs).location() = This(k+1).Cs.C
+    ctxL(C) = ctxC // We are in C
+    (ctxL[L], ctxLs).location() = Thisk.Cs
+
+program derived operations:
+
+-p.get(n)=L
+ p.get(0)=p.top()
+ p.get(n+1)=p.pop().get(n)
+
+-p.navigate(Cs)=p'
+ p.navigate(C1..Ck)=p.push(C1)...push(Ck)
+
+-p.navigate(P)=p'
+ p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
+
+-p.equiv(P0,P1)
+ p.equiv(P,P)
+ p.equiv(P0,P1)=p.equiv(P1,P0)
+ p.equiv(Thisn.Cs,This(n+k).Cs')=p.equiv(Thisn.Cs,p.reducePath(This(n+k).Cs'))
+
+-p.minimize(P) = P
+  where p.reducePath(P) undefined
+ p.minimize(P) = p.minimize(p.reducePath(P))
+
+-p.noUnique(P) holds if p.minimize(P) not  of form Thisk._.C__n._
+
+-p(P)=L //functional notation
+ p(P)=p.navigate(P).top()//but some implementation could be faster
+
+-p.push(C)=p'
+ p.push(C)=p.push(ctxL,L)
+ where ctxL[L]=p.top() and ctxL(C)=[]
+
+-p.evilPush(LV)=p'// TODO: in code make sure we only call on LV
+ ({interface? Ps Ms},ctxLs).evilPush(LV)=LV,{interface? Ps Ms C_evil:[]},ctxLs
+ with C_evil reserved C name.
+ A well-formed project (top level L) can not have C_evil anywhere.
+
+ //Note: p.push(L)=p' (ie searching p.top() for a library that matches L)
+ // is not used in the code since it would be very slow and not expressive enough.
+ // p.push(L)=p.push(ctxL,L) with ctxL[L]=p.top()
+
+----------------------------------
