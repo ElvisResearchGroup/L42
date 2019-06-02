@@ -10,31 +10,51 @@ propagates the execution inside nested classes and libraries in method bodies.
 
 Flag::= norm |typed 
 typed::=uncoherent | coherent
-Dep::= Cs=Flag;Ps1;Ps2;
 
 r::=LC| exception v | error v
 
+NC::= Docs C = core(L;Flag;Ps1;Ps2)
+
 (top)
-Depss|-Deps; p ==> Deps'; p.update(p.top()[C=core(L)])
+p ==> p.update(p.top()[MCs'])
   where
   p.top()=_[Ps0]{MCs  C:e Ms}//MCs are already compiled
   e not of form core(L)//thus e is the first point to execute
-  core(eC)=normalize_p(e)
-  Depss;p|-eC:T
+  eC=normalize_p(e) //eC is core
+  p|-eC:T
   eC -->p+ r //execute the expression under the program and obtain a result
   L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
-  Depss;p|- Deps,C=Norm;collectDeps(L)' -> Deps'
+  p|- MCs,C=core(L,Norm;collectDeps(L)) ->MCs'
 
 (enter)
-Depss|- Deps;p ==> Deps, C.Deps0; p'.pop()
+p ==> p'.pop()
   where
-  Depss,Deps|- empty; p.push(ctxL, L)  ==>+  Deps0| p'
+  p.push(ctxL, L)  ==>+  p'
   p.top()=interface?[Ps]{MCs C=e Ms}
   e not of form core(_)
   e=ctxC[L], L not of form LC
   ctxL=interface?[Ps]{MCs C=ctxC Ms}
   p'.top() of form LC //Note: p' is one level deeper than p,
   // and p'.top() is the LC result of metaprogramming L
+ 
+ 
+ normalize_p(e)
+ p|-MCs->MCs'
+ collectDeps(L)
+ 
+ 
+_______
+#define collectDeps(L) //core L 
+collectDeps(interface?[Ts]{MWT1...MWTn1 NCs})=Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
+collectDeps(C=_)=empty;empty
+collectDeps(T f)=T;empty
+ 
+ 
+ 
+ 
+ 
+ 
+ 
  
 _______
 #define C.Dep
@@ -48,8 +68,18 @@ method m(){ A= {..} B=A()} //was requiring to compile code in method bodies, lik
 now the worst is
 {
 A={..}
-B=A()+{ C:A()+{C ...} D:C()}
+B=A()+{ C=A()+{C ...} D=C()}
 }
+
+top
+|-empty;{A={..},B} --> A=typed;{A=core(L), B}
+enter
+|-A=typed;{A=core(L), B} -> ...A=typed, B
+because 
+top1
+A=typed|-empty;{ C=A()+{C ...} D=C()}{A=coreL(),B=A()+[]} --> C=typed;{ C={C ...} D:C()}{A=coreL(),B=A()+[]}
+top2
+A=typed|-C=typed;{ C={C ...} D:C()}{A=coreL(),B=A()+[]} -->C=typed, D=typed;{ C={C ...} D:{}}{A=coreL(),B=A()+[]}
 
 
 OK

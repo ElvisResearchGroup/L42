@@ -62,11 +62,8 @@ Part 2: core
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
 
-<<<<<<< HEAD
 e   ::= x | void | L | (P e0).m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
-=======
-e   ::= x | void | L | e0.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e) | native P m(xes)[e]
->>>>>>> branch 'master' of https://github.com/ElvisResearchGroup/L42
+
 D   ::= var? T x=e
 K   ::= catch throw T x e
 NC  ::= Doc* C=L 
