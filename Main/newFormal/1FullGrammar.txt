@@ -17,26 +17,19 @@ Outside of comments and docs; space, newline and ',' are all just spacing charac
 Part 1: boring part, identifiers and other stuff
 -----------------------------------
 char   ::=  all the ones drown on English keyboards except 'tab' :-)
-StrLit  ::= StrOpi char* (StrIni char*)* StrCli
-StrOp0  ::="
-StrCl0  ::="
-StrOp1  ::=["
-StrCl1  ::="]
-StrIn1  ::=[ e ]
-StrOp2  ::=[["
-StrCl2  ::="]]
-StrIn2  ::=[[ e ]]
-...
-StrOpn  ::=[..["
-StrCln  ::="]..]
-StrInn  ::=[..[ e ]..]
+chars0 ::= all chars sequences excluding "
+charsi ::= all chars sequences excluding StrOpi, for i!=0 //Isaac seams keen to also exclude StrCli... why?
+StrOp0 ::=empty
+StrCl0 ::=empty
+StrOpi+1 ::= [StrOpi
+StrCli+1 ::= StrOCl]
+StrLit  ::= StrOpi" charsi (StrOpi e StrCli charsi)* "StrCli
 
-NumLit::= (0..9)+ ((.|_|e|E|-) (0..9)*)*
-Doc: empty | @PathLit
-PathLit::= (C.)* s | Cs |This | {charsWithBalancedCurly}
-//Note, we may need two different PathLit, one for docs and one for '
-//in docs we want the free text and the Thisn.Cs
-//we also need s.x to reference a s parameter
+NumLit::= (0..9)+ ((.|_|-) (0..9)*)*
+
+//for under: This and Thisn are valid C, is just going to be well formedness to avoid issues
+Doc ::= @PathLit | @PathLit?{charsWithBalancedCurly}
+PathLit::= Cs | (C.)* s | (C.)* s.x
 
 x ::= LowChar charId* | _ // '_' will be replaced with a fresh name
 C ::= UpChar charId* (_n) //the unique number
@@ -44,12 +37,13 @@ UpChar ::= _* (A..Z | $)
 LowChar::= _* a..z
 charId   ::= a..z |A..Z| $ | _ | 0..9
 URL::= /*too boring*/
-s  ::= Doc mOp(x*)
+s  ::= Doc* mOp(x*)
+Ldom::=s|Cs
 Tx ::= T x
 mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class | fwd%Imm | fwd%mut
-T  ::= mdf P Doc | mdf Cs Doc 
+T  ::= mdf P Doc* | mdf Cs Doc* 
 P  ::= This(n?).Cs | Any | Void | Library
-MH ::= Doc refine? mdf method T mOp(Doc Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
+MH ::= Doc* refine? native[P]? mdf method T mOp(Doc* Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
 Cs ::=C(.C)*  //Is it the only sequence where we need a separator? 
 throw::= error | exception | return
 m ::= (# | #$)?x(#x+)* (_n) //the unique number
@@ -68,16 +62,15 @@ Part 2: core
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
 
-e   ::= x | (D* w) | void | L | e0.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e) | native P m(xes)[e]
+e   ::= x | void | L | (P e0).m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
 D   ::= var? T x=e
 K   ::= catch throw T x e
-NC  ::= Doc C=L 
+NC  ::= Doc* C=L 
 MWT ::= MH=e | MH 
 M   ::= NC | MWT
 L   ::= interface?[T+]?{MWT* NC*}
 
 Core Well formedness:
-* the receiver expression e0 must be of form w ::= x | (D* w)
 * under a p an L need to mention all the methods of all implemented interfaces,
   and all list all the transitively implemented interfaces.
 * P are not of form mdf Cs Doc (that is, without the 'Thisn.')
@@ -87,13 +80,13 @@ Core Well formedness:
 Part 3: full L
 -----------------------------------
 
-H  ::= interface? [T+]? | reuse URL
-L  ::= H{F* M*}
+H  ::= interface? [T+]? | reuse [URL]
+L  ::= H{M*}
+M  ::= NC | MWT | MI | F 
+NC ::= Doc* C = e
+MWT::= MH (= e)?
+MI ::= s  = e
 F  ::= var? T x
-M  ::= NC | MWT | MI
-NC ::= Doc C ECurly | Doc C =core(L)
-MWT::= MH ECurly?
-MI ::= s ECurly 
 
 -----------------------------------
 Part 4: expressions and statements
@@ -107,12 +100,12 @@ I know there are a set of things you will disagree:
   -the 'no space between pe(' rule
   
 //atomic expression
-ae ::= '...' | x | P | void | L |core(L)| B | \ | \x | 'PathLit // 'stuff == \"stuff"
+ae ::= '...' | x | P | void | L |core(L)| B | (P e) | \ | \x | 'PathLit // 'stuff == \"stuff"
 //post operators expression
 pe ::= ae | pe.m'(' par ')' | pe'(' par ')' | pe Square | pe StrLit | pe%T // or pe:T, but then we can not use ':' as binary op
 //no space between pe( otherwise it can be parsed as pe B
 par::= e? xe*
-xe ::= x ECurly
+xe ::= x = e
 Square::= [ (par;)*par? ] //not sure how else to force the last semicolon to be optional
 //unary expression
 ue ::= pe | !pe | ~pe | NumLit pe
@@ -122,14 +115,12 @@ b1e ::= b0e0 (op1 b0e1 .. op1 b0en) //left associative, all op the same
 b2e ::= b1e0 (op2 b1e1 .. op2 b1en) //unassociative, all op the same (see desugaring)
 b3e ::= b2e0 (op3 b2e1 .. op2 b2en) //left associative, all op the same
 //block
-B   ::= '(' BIN ')'
+B   ::= '(' BIN ')' | '{' DE* (DE K+ WOPS? DE*)?  '}'
 BIN ::= DE* e | DE+ K+ WOPS? DE* e | DE* e K+ WOPS?
-DE  ::= e | DX ECurly
+DE  ::= DX? = e
 DX  ::= var? T? x | T?(var1? T1? x1.. varn?Tn? xn)
 K   ::= catch throw? T x e
 WOPS::= wops T+
-Curly::= '={' DE* (DE K+ WOPS? DE*)?  '}' //yes, '={' is a single token, so the parser do not get confused with L
-ECurly::= = e | Curly
 //statements (just another kind of expression)
 S  ::= IF | While | For | loop e | throw e | x updateOp e | native P m'('par')'[e]
 IF  ::= if (tMatch+ |e0) e1 (else e2)?
@@ -185,7 +176,7 @@ _______
 
 * (ds1 ks ds2 e): unique x in dom(ds1,ds2), FV(ks) disjoint dom(ds1,ds2)
 
-* native P m(xes)[e]: P not Any/Void/Library
+* native[P]: P not Any/Void/Library
 
 //C:e :  FV(e)=empty subsumed by next check
 
@@ -229,15 +220,15 @@ _______
   max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
 
 
-* Curly returning(Curly) must hold
+* B of form { DEs1 Ks WOPS? DEs2} returning({ DEs1 Ks WOPS? DEs2}) must hold
 * B of form (DEs1 Ks WOPS? DEs2 e)
     forall DE in DEs1,DEs2: not returning(DE)
 * B of form (DE* e K+ WOPS?)
     forall DE DE*: not returning(DE) 
 _______
-#define returning(Curly)
-  returning(={ DEs1 Ks WOPS? DEs2})=returning(={ DEs1 Ks DEs2})
-  returning(={ DEs1 Ks DEs2}) iff
+#define returning({ DEs1 Ks WOPS? DEs2})
+  returning({ DEs1 Ks WOPS? DEs2})=returning({ DEs1 Ks DEs2})
+  returning({ DEs1 Ks DEs2}) iff
     DEs,DE=DEs1,Des2
     returning(DE)
     forall DE' in DEs: not returning(DE') //dead code after
@@ -252,4 +243,7 @@ _______
    forall catch throw T x e' in Ks: returning(e')
  //forall DE in DEs1,DEs2: not returning(DE) already in block well formedness
  //returning(T x=e) does not hold, so DE must be of form e for returning to hope to hold 
- 
+
+
+//TODO: alive and similar was well formedness somewhere... recover them
+//TODO: Cs and similar may only start for This or Thisn but not have it in the middle. 
