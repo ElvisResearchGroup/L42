@@ -41,7 +41,7 @@ s  ::= Doc* mOp(x*)
 Ldom::=s|Cs
 Tx ::= T x
 mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class | fwd%Imm | fwd%mut
-T  ::= mdf P Doc* | mdf Cs Doc* 
+T  ::= mdf P Doc* | mdf Cs Doc* | \
 P  ::= This(n?).Cs | Any | Void | Library
 MH ::= Doc* refine? native[P]? mdf method T mOp(Doc* Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
 Cs ::=C(.C)*  //Is it the only sequence where we need a separator? 
@@ -62,8 +62,8 @@ Part 2: core
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
 
-e   ::= x | (P' P) | void | L |  xP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
-xP  ::=x|P
+e   ::= x | (P' P) | void | L |  xPP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
+xPP  ::=x|(P' P)
 //may be the mdf part in (T e0) will be ignored by the type system..
 
 D   ::= var? T x=e

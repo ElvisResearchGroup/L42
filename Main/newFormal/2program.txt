@@ -9,15 +9,15 @@ We also omit = before method bodies.
 _______
 #define FullE
 
-D::= (DX=?) e
+DE::= (DX=?) e
 e::= ... | x | P | void | L  | B | (T e) | \ | \x | 'PathLit
  | throw e | loop e | e StrLit | ~e |!e 
  | NumLit e | x updateOp e 
  | e(.m)?(par)
  | e[pars]
  | e1 op ..op en
- | ( Ds Ks Wops? Ds2 e? )  
- | { Ds Ks Wops? Ds2 }
+ | ( DEs Ks Wops? DEs2 e? )  
+ | { DEs Ks Wops? DEs2 }
  | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
  | while e1 e2
  | for DXes e
@@ -29,10 +29,10 @@ Do all but typeDrivenDesugar, this includes refineDesugar
 _______
 #define HalfE
 
+xP  ::=x|P
 e::=  x | P | void | L | \  //not sure about P instead of (P' P)
  | throw e | loop e | x := e 
  | xP.m(xes)
- | xP[xes1;...;xesn]
  | xP1 op ..op xPn
  | ( Ds Ks e )  
  where

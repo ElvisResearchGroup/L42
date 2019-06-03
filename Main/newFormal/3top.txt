@@ -20,7 +20,7 @@ p ==> p.update(p.top()[MCs'])
   where
   p.top()=_[Ps0]{MCs  C:e Ms}//MCs are already compiled
   e not of form core(L)//thus e is the first point to execute
-  eC=normalize_p(e) //eC is core
+  eC=normalize(p,e) //eC is core
   p|-eC:T
   eC -->p+ r //execute the expression under the program and obtain a result
   L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
@@ -39,21 +39,22 @@ p ==> p'.pop()
  
  
  Need to define:
- normalize_p(e)
+ Y::=p;xP?;T?
+ normalize(Y,e) normalize(p,e)
  p|-MCs->MCs'
  collectDeps(L)
  alive(p,P) to check for all P at the end of normalize
  //forall P inside MH e?, alive(p,P) //else error here
 _______
-#define normalize_p(FullE):HalfE
-  normalize_p(core(L))=core(L)
+#define normalize(p,FullE):HalfE
+  normalize(Y,core(L))=core(L)
   
-  normalize_p(reuse [URL]{Ms})=normalize_p({NCs,Ms})
+  normalize(p,reuse [URL]{Ms})=normalize(p,{NCs,Ms})
     with followURL(URL)={NCs} //all the NC of form Docs C=core(L)
   //thus, we can not save on an url an interface or method bodies. 
   //this is ok for towels, and for libs we have Load:reuse[URL]{} anyway
   
-  normalize_p(LL)=interface?[Ts,(Ts'\p Ts)]{normalize_p'(Ms')}
+  normalize(p,LL)=interface?[Ts,(Ts'\p Ts)]{normalize_p'(Ms')}
     LL=interface?[Ts]{Ms0}
     p'=p.push(LL)
     Ts'=collect(p',Ts)
@@ -63,64 +64,108 @@ _______
     //the line above use [|] to make sequences nor sets. The order of members is important here.
     //Note: using Ts'\p Ts the docs of any T inside Ts override the one inside Ts'
     
-  normalize_p(MH e?)= resolveCs_p(MH) e'?
+  normalize(p,MH e?)= resolveCs_p(MH) e'?
     where e'?=empty if e?=empty
-    otherwise e'?= normalize_p(empty,e?) 
+    otherwise e'?= normalize(p,empty,e?) 
 
-  normalize_p(Docs C:LL) =resolveCs_p(Docs) C: normalize_p.push(C)(LL)
+  normalize(p,Docs C:LL) =resolveCs_p(Docs) C: normalize_p.push(C)(LL)
   //cases fields and s e should never happen at this point.
 
-  normalize_p(xP?,e) //in the following:
+  normalize(Y,e) //in the following:
   
-  normalize_p(xP?,...)=readFolder(p)
-  normalize_p(xP?,x)=x
-  normalize_p(xP?,P)=P
-  normalize_p(xP?,void)=void
-  normalize_p(xP?,L)=normalize_p(L)
-  normalize_p(xP?,B)=hard
-  normalize_p(xP?, (T e) )=(T x=normalize_p(xP?,e) x)
-  normalize_p(xP?,\)=\
-  normalize_p(xP,\x)=xP.x()
-  normalize_p(xP?,'PathLit)=normalize_p(xP?,\"PathLit")
-  normalize_p(xP?,throw e)=throw normalize_p(xP?,e)
-  normalize_p(xP?,loop e)=loop normalize_p(xP?,e)
-  normalize_p(xP?,e StrLit)=
-    normalize_p(xP?,e).#from(stringLiteral=(
+  normalize(Y,...)=readFolder(p)
+  normalize(Y,x)=x
+  normalize(Y,P)=P
+  normalize(Y,void)=void
+  normalize(Y,L)=normalize(p,L)
+  normalize(Y,B)=hard
+  normalize(Y, (T e) )=(T x=normalize(Y[T=T],e) x)
+  normalize(Y,\)=\
+  normalize(p,xP,\x)=xP.x()
+  normalize(Y,'PathLit)=normalize(Y,\"PathLit")
+  normalize(Y,throw e)=throw normalize(Y,e)
+  normalize(Y,loop e)=loop normalize(Y,e)
+  normalize(Y,e StrLit)=
+    normalize(Y,e).#from(stringLiteral=(
       b=\.#stringLiteralBuilder()
       b.chars0() //one call for each char
-      b.#spliceIn(normalize_p(xP?,e1)) //better name??
+      b.#spliceIn(normalize(Y,e1)) //better name??
       b.chars1()
       ..
-      b.#spliceIn(normalize_p(xP?,en)) //better name??
+      b.#spliceIn(normalize(Y,en)) //better name??
       b.charsn()
       b))
     with StrLit= chars0 e1 chars1 .. en charsn
-  normalize_p(xP?,~e)=normalize_p(xP?,e).methName(~)()
-  normalize_p(xP?,!e)=normalize_p(xP?,e).methName(!)()
-  normalize_p(xP?, NumLit e)=normalize_p(xP?, e"NumLit")
-  normalize_p(xP?,x updateOp e)=  x:= x toBinOp(updateOp) normalize_p(xP?,e)
+  normalize(Y,~e)=normalize(Y,e).methName(~)()
+  normalize(Y,!e)=normalize(Y,e).methName(!)()
+  normalize(Y, NumLit e)=normalize(Y, e"NumLit")
+  normalize(Y,x updateOp e)=  x:= x toBinOp(updateOp) normalize(Y,e)
   //x +=e == x:=x+e
-  normalize_p(xP?, e(.m)?(par))=(x=normalize_p(xP?,e) x.methName(.m?)(normalize_p(x,par))
+  normalize(Y, e(.m)?(par))=(x=normalize(Y,e) x.methName(.m?)(normalize(Y[xP=x,T=\],par))
     if e not of form xP, with x fresh
-  normalize_p(xP?, xP(.m)?(par))=normalize_p(xP,xP.methName(.m?)(normalize_p(xP,par))
+  normalize(Y, xP(.m)?(par))=normalize(p,xP,xP.methName(.m?)(normalize(Y[xP=x,T=\],par))
  
- normalize_p(xP?,e[pars])= ( x=normalize_p(xP?,e) x[normalize_p(x,pars)])
+ normalize(Y,e[pars])= normalize(Y,(x=e x[par1;..;parn]) )
     if e not of form xP, with x fresh
- normalize_p(xP?,xP[pars])= xP[normalize_p(xP,pars)]
- normalize_p(xP?,xP1 op .. op xPn)=xP1 op .. op xPn
- normalize_p(xP?,e1 op .. op en)=(x1=e'1 ..xn=e'n )
-    [xP|x=e in x1=e1,..,xn=en, xP in]
-    e'1..e'k=[e| e in e1..en, e not of form xP]
-    if k!=0, with x1..xn fresh//TOO BORING!!! EASY IN CODE...
+ normalize(Y,xP[pars])= 
+   xP.#from(squareBuilder:(
+     b=\.#squareBuilder()
+     if xP.#shortCircutPass() (     
+       b.add(par1) //ok no #, it is a builder, 
+       ..
+       b.add(parn)
+       )
+     b))
+   
+ normalize(Y,xP1 op .. op xPn)=xP1 op .. op xPn
+ normalize(Y,e1 op .. op en)=(x1=e'1 ..xn=e'n e1 op .. op en[x1..xk/e'1..e'k])
+    if k!=0, with x1..xk fresh//e[xs=es] is boring, but easy in code
  
- | ( Ds Ks Wops? Ds2 e? )  
- | { Ds Ks Wops? Ds2 }
- | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
- | while e1 e2
+ normalize(Y,( DEs Ks Wops? DEs2))=normalize(Y,(DEs Ks Wops? DEs2 void))
+ normalize(Y,( DEs Ks Wops? DE DEs2 e))=normalize(Y,( DEs Ks Wops? (DE DEs2 e)))
+ normalize(Y,( DEs Ks wops T1.nTn e)=
+   ( normalize(Y,DEs) normalize(Y,Ks) K1..Kn normalize(Y,e) ) 
+   Ki=catch exception Ti xi error xi.#intoErrorAt(that:core({}))
+   
+ normalize(Y,DEs)
+ normalize(Y,e)= void x= normalize(Y[T=empty],e), with x fresh
+ normalize(Y,T _=e)= T x= normalize(Y[T=T],e), with x fresh
+ normalize(Y,T%%% _=e) =%%%%
+ normalize(Y,var T? = e)=var T? = normalize(Y[T=T?],e)
+ normalize(Y,T?(var1? T1? x1.. varn?Tn? xn)=e)
+   =T? x=e
+    var1? T1? x1=x.methNameTrim(x1)() //removes any numberPedex from the end
+    ..
+    varn? Tn? xn=x.methNameTrim(xn)()
+  with x fresh.
+ 
+ normalize(Y,{ DEs Ks Wops? DEs2 }) = (Y.T x=(
+   Void x''=normalize(Y[T=Void],(DEs Ks Wops? DEs2 void))
+   catch return Y.T x' x'
+   error void//unreachable thanks to {return} well formedness   
+   )
+   x)
+   with x,x',x'' fresh
+ 
+ normalize(Y,if e0 e1)=normalize(Y,if e0 e1 else void)
+ normalize(Y,if e0 e1 else e2)= (
+   x=normalize(Y,e0)
+   (x.#checkTrue()
+   catch exception Void x' normalize(Y,e2)
+   normalize(Y,e1) 
+   )) 
+   with x, x' fresh
+%%%still missing the tMatch cases | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
+ normalize(Y,while e0 e1)=
+   normalize(Y,(loop( (e0.#checkTrue() e1) ) catch exception Void _ void))
+   //better if I use normalize inside
+   
+ normalize(Y,for DXes e)
  | for DXes e  
+
  
- normalize_p(xP,e? xes)=   that=normalize_p(xP,e?) normalize_p(xP,xes)
- normalize_p(xP,x=e)=   x=normalize_p(xP,e)
+ normalize(Y,e? xes)=   that=normalize(Y,e?) normalize(Y,xes)
+ normalize(Y,x=e)=   x=normalize(Y,e)
  
 H  ::= interface? [T+]? | reuse [URL]
 LL  ::= H{M*}
