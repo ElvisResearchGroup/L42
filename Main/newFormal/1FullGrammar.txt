@@ -62,7 +62,8 @@ Part 2: core
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
 
-e   ::= x | (P' P) | void | L | (T e0).m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
+e   ::= x | (P' P) | void | L |  xP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
+xP  ::=x|P
 //may be the mdf part in (T e0) will be ignored by the type system..
 
 D   ::= var? T x=e
@@ -185,6 +186,7 @@ _______
    methods in interfaces have no body
    forall m__n(xs),  m__n(xs) notin dom(L)
 
+* loop P, loop x, loop void, loop L, not well formed
 * (ds1 ks ds2 e): unique x in dom(ds1,ds2), FV(ks) disjoint dom(ds1,ds2)
 
 * native[P]: P not Any/Void/Library

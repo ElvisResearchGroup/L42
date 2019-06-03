@@ -70,43 +70,58 @@ _______
   normalize_p(Docs C:LL) =resolveCs_p(Docs) C: normalize_p.push(C)(LL)
   //cases fields and s e should never happen at this point.
 
-  normalize_p(x?,e) //in the following:
+  normalize_p(xP?,e) //in the following:
   
-  normalize_p(x?,...)=readFolder(p)
-  normalize_p(x?,x)=x
-  normalize_p(x?,P)=P
-  normalize_p(x?,void)=void
-  normalize_p(x?,L)=normalize_p(L)
-  normalize_p(x?,B)=hard
-  normalize_p(x?, (T e) )=(T x=normalize_p(x?,e) x)
-  normalize_p(\)=\
-  normalize_p(x',\x)=x'.x()
-  normalize_p(x?,'PathLit)=normalize_p(x?,\"PathLit")
-  normalize_p(x?,throw e)=throw normalize_p(x?,e)
-  normalize_p(x?,loop e)=loop normalize_p(x?,e)
-  normalize_p(x?,e StrLit)=
-    normalize_p(x?,e).#from(stringLiteral=(
+  normalize_p(xP?,...)=readFolder(p)
+  normalize_p(xP?,x)=x
+  normalize_p(xP?,P)=P
+  normalize_p(xP?,void)=void
+  normalize_p(xP?,L)=normalize_p(L)
+  normalize_p(xP?,B)=hard
+  normalize_p(xP?, (T e) )=(T x=normalize_p(xP?,e) x)
+  normalize_p(xP?,\)=\
+  normalize_p(xP,\x)=xP.x()
+  normalize_p(xP?,'PathLit)=normalize_p(xP?,\"PathLit")
+  normalize_p(xP?,throw e)=throw normalize_p(xP?,e)
+  normalize_p(xP?,loop e)=loop normalize_p(xP?,e)
+  normalize_p(xP?,e StrLit)=
+    normalize_p(xP?,e).#from(stringLiteral=(
       b=\.#stringLiteralBuilder()
       b.chars0() //one call for each char
-      b.#spliceIn(e1) //better name??
+      b.#spliceIn(normalize_p(xP?,e1)) //better name??
       b.chars1()
       ..
-      b.#spliceIn(en) //better name??
+      b.#spliceIn(normalize_p(xP?,en)) //better name??
       b.charsn()
       b))
     with StrLit= chars0 e1 chars1 .. en charsn
-  normalize_p(x?,~e)=normalize_p(x?,e).methName(~)()
-  normalize_p(x?,!e)=normalize_p(x?,e).methName(!)()
-....
- | NumLit e | x updateOp e | (P e)
- | e(.m)?(par)
- | e[pars]
- | e1 op ..op en
+  normalize_p(xP?,~e)=normalize_p(xP?,e).methName(~)()
+  normalize_p(xP?,!e)=normalize_p(xP?,e).methName(!)()
+  normalize_p(xP?, NumLit e)=normalize_p(xP?, e"NumLit")
+  normalize_p(xP?,x updateOp e)=  x:= x toBinOp(updateOp) normalize_p(xP?,e)
+  //x +=e == x:=x+e
+  normalize_p(xP?, e(.m)?(par))=(x=normalize_p(xP?,e) x.methName(.m?)(normalize_p(x,par))
+    if e not of form xP, with x fresh
+  normalize_p(xP?, xP(.m)?(par))=normalize_p(xP,xP.methName(.m?)(normalize_p(xP,par))
+ 
+ normalize_p(xP?,e[pars])= ( x=normalize_p(xP?,e) x[normalize_p(x,pars)])
+    if e not of form xP, with x fresh
+ normalize_p(xP?,xP[pars])= xP[normalize_p(xP,pars)]
+ normalize_p(xP?,xP1 op .. op xPn)=xP1 op .. op xPn
+ normalize_p(xP?,e1 op .. op en)=(x1=e'1 ..xn=e'n )
+    [xP|x=e in x1=e1,..,xn=en, xP in]
+    e'1..e'k=[e| e in e1..en, e not of form xP]
+    if k!=0, with x1..xn fresh//TOO BORING!!! EASY IN CODE...
+ 
  | ( Ds Ks Wops? Ds2 e? )  
  | { Ds Ks Wops? Ds2 }
  | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
  | while e1 e2
  | for DXes e  
+ 
+ normalize_p(xP,e? xes)=   that=normalize_p(xP,e?) normalize_p(xP,xes)
+ normalize_p(xP,x=e)=   x=normalize_p(xP,e)
+ 
 H  ::= interface? [T+]? | reuse [URL]
 LL  ::= H{M*}
 M  ::= NC | MWT | MI | F 

@@ -10,9 +10,9 @@ _______
 #define FullE
 
 D::= (DX=?) e
-e::= ... | x | P | void | L  | B | (P e) | \ | \x | 'PathLit
+e::= ... | x | P | void | L  | B | (T e) | \ | \x | 'PathLit
  | throw e | loop e | e StrLit | ~e |!e 
- | NumLit e | x updateOp e | (P e)
+ | NumLit e | x updateOp e 
  | e(.m)?(par)
  | e[pars]
  | e1 op ..op en
@@ -29,14 +29,15 @@ Do all but typeDrivenDesugar, this includes refineDesugar
 _______
 #define HalfE
 
-e::=  x | P | void | L |core(L;label;ps1;ps2) | B | (P e) | \ 
- | throw e | loop e | x := e | (P e)
- | e.m(xes)
- | e[xes1;...;xesn]
- | e1 op ..op en
+e::=  x | P | void | L | \  //not sure about P instead of (P' P)
+ | throw e | loop e | x := e 
+ | xP.m(xes)
+ | xP[xes1;...;xesn]
+ | xP1 op ..op xPn
  | ( Ds Ks e )  
  where
  K::= catch throw (T|\) x e
+ xe::= x=e
  //In this way, the slash can be replaced for the T the parameter is taking
 // blocks can be desugared for T x and start methods | { Ds Ks Ds2 }
 // for blocks at the start of method parameters, this \ could be used.
@@ -70,7 +71,7 @@ _______
 ctxC::=[]
   //first all the propagate right cases
  | throw ctxC | loop ctxC | x:=ctxC | ctxC StrLit | ~ctxC |!ctxC 
- | NumLit ctcX | x updateOp ctxC | (P ctxC)
+ | NumLit ctcX | x updateOp ctxC | (T ctxC)
  //kinds of meth calls
  | ctxC(.m)?( par)
  | eC(.m)?(ctxC par)
