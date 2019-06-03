@@ -62,14 +62,26 @@ Part 2: core
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
 
-e   ::= x | (P' P) | void | L | (P e0).m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
+e   ::= x | (P' P) | void | L | (T e0).m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
+//may be the mdf part in (T e0) will be ignored by the type system..
 
 D   ::= var? T x=e
 K   ::= catch throw T x e
 NC  ::= Doc* C=L 
 MWT ::= MH=e | MH 
 M   ::= NC | MWT
-L   ::= interface?[T+]?{MWT* NC*}
+L   ::= interface?[T+]?{Info Doc* MWT* NC*}
+Info::=[Flag;
+  P*;//typeDep
+  P*;//coherentDep
+  P*;//friendsDep
+  //Paths whose unique numbers are used either directly,
+  //or in a private nested class or in an L in a method
+  P.s*;//usedMethDep//methods used either directly or ...
+  P* //interfaces implemented by a private nested class or in an L in a method
+  ]
+Flag::= norm |typed 
+typed::=uncoherent | coherent
 
 Core Well formedness:
 * under a p an L need to mention all the methods of all implemented interfaces,
@@ -78,11 +90,11 @@ Core Well formedness:
 * Core well formedness also inherits all the well formedness of the full language
    
 -----------------------------------
-Part 3: full L
+Part 3: full LL
 -----------------------------------
 
 H  ::= interface? [T+]? | reuse [URL]
-L  ::= H{M*}
+LL  ::= H{M*}
 M  ::= NC | MWT | MI | F 
 NC ::= Doc* C = e
 MWT::= MH (= e)?
@@ -92,19 +104,15 @@ F  ::= var? T x
 -----------------------------------
 Part 4: expressions and statements
 -----------------------------------
-For Isaac:
-I know there are a set of things you will disagree:
-  -required parameter names
-  -the wops
-  -the '={' token
-  -the nominal patter matching
-  -the 'no space between pe(' rule
   
 //atomic expression
-ae ::= '...' | x | P | void | L |core(L)| B | (P e) | \ | \x | 'PathLit // 'stuff == \"stuff"
+L::=LL|core(L)
+ae ::= '...' | x | P | void | L | B | (T e) | \ | \x | 'PathLit // 'stuff == \"stuff"
 //post operators expression
-pe ::= ae | pe.m'(' par ')' | pe'(' par ')' | pe Square | pe StrLit | pe%T // or pe:T, but then we can not use ':' as binary op
+pe ::= ae | pe.m'(' par ')' | pe'(' par ')' | pe Square | pe StrLit
 //no space between pe( otherwise it can be parsed as pe B
+//or, easier to parse: if an expression ends with ')' ']' or '"', and there next character is 
+'(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
 par::= e? xe*
 xe ::= x = e
 Square::= [ (par;)*par? ] //not sure how else to force the last semicolon to be optional
@@ -135,9 +143,9 @@ e  ::= S | b3e
 Part 5: well formedness, to complete
 -----------------------------------
 
-* MWT: MWT.e can not contain L, only core(L) is allowed
+* MWT: MWT.e can not contain LL, only core(L) is allowed
 
-* s=e: e can not contain L, only core(L) is allowed
+* s=e: e can not contain LL, only core(L) is allowed
 
 
 * BIN:
@@ -158,7 +166,9 @@ _______
   then for any other L' in the project
   C'__n notin dom(L') and m'__n(xs') notin dom(L')
 
-* D: var T x=e is valid only if T not capsule or fwd.
+* DE: var T x=e is valid only if T not capsule or fwd.
+  if e = DE, that is,(DX=)?=empty, then e not of form '...', x, P, void, L, core(L), \, \x or 'PathLit
+  //none of those would make sense anyway, and it helps with parsing a()()
 
 * s: 'this' notin xs and all x in xs are unique
 

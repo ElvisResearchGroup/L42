@@ -42,14 +42,79 @@ p ==> p'.pop()
  normalize_p(e)
  p|-MCs->MCs'
  collectDeps(L)
- 
+ alive(p,P) to check for all P at the end of normalize
+ //forall P inside MH e?, alive(p,P) //else error here
 _______
-#define normalize_p(e)
- steps:
-  for all L inside e,
-    L=refineDesugar_p(L) //all methods are MWT, fields are desugared into methods HERE, reuse, '...', members reordered
-  e=syntacticDesugar(e) //if, while, that:, for, square, \x, unops, literals   
-  e=typeDrivenDesugar(e)//bin ops, method receivers, return blocks
+#define normalize_p(FullE):HalfE
+  normalize_p(core(L))=core(L)
+  
+  normalize_p(reuse [URL]{Ms})=normalize_p({NCs,Ms})
+    with followURL(URL)={NCs} //all the NC of form Docs C=core(L)
+  //thus, we can not save on an url an interface or method bodies. 
+  //this is ok for towels, and for libs we have Load:reuse[URL]{} anyway
+  
+  normalize_p(LL)=interface?[Ts,(Ts'\p Ts)]{normalize_p'(Ms')}
+    LL=interface?[Ts]{Ms0}
+    p'=p.push(LL)
+    Ts'=collect(p',Ts)
+    Ms=expandFields(Ms0)
+    forall T in Ts'\p Ps, p'.noUnique(T)
+    Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
+    //the line above use [|] to make sequences nor sets. The order of members is important here.
+    //Note: using Ts'\p Ts the docs of any T inside Ts override the one inside Ts'
+    
+  normalize_p(MH e?)= resolveCs_p(MH) e'?
+    where e'?=empty if e?=empty
+    otherwise e'?= normalize_p(empty,e?) 
+
+  normalize_p(Docs C:LL) =resolveCs_p(Docs) C: normalize_p.push(C)(LL)
+  //cases fields and s e should never happen at this point.
+
+  normalize_p(x?,e) //in the following:
+  
+  normalize_p(x?,...)=readFolder(p)
+  normalize_p(x?,x)=x
+  normalize_p(x?,P)=P
+  normalize_p(x?,void)=void
+  normalize_p(x?,L)=normalize_p(L)
+  normalize_p(x?,B)=hard
+  normalize_p(x?, (T e) )=(T x=normalize_p(x?,e) x)
+  normalize_p(\)=\
+  normalize_p(x',\x)=x'.x()
+  normalize_p(x?,'PathLit)=normalize_p(x?,\"PathLit")
+  normalize_p(x?,throw e)=throw normalize_p(x?,e)
+  normalize_p(x?,loop e)=loop normalize_p(x?,e)
+  normalize_p(x?,e StrLit)=
+    normalize_p(x?,e).#from(stringLiteral=(
+      b=\.#stringLiteralBuilder()
+      b.chars0() //one call for each char
+      b.#spliceIn(e1) //better name??
+      b.chars1()
+      ..
+      b.#spliceIn(en) //better name??
+      b.charsn()
+      b))
+    with StrLit= chars0 e1 chars1 .. en charsn
+  normalize_p(x?,~e)=normalize_p(x?,e).methName(~)()
+  normalize_p(x?,!e)=normalize_p(x?,e).methName(!)()
+....
+ | NumLit e | x updateOp e | (P e)
+ | e(.m)?(par)
+ | e[pars]
+ | e1 op ..op en
+ | ( Ds Ks Wops? Ds2 e? )  
+ | { Ds Ks Wops? Ds2 }
+ | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
+ | while e1 e2
+ | for DXes e  
+H  ::= interface? [T+]? | reuse [URL]
+LL  ::= H{M*}
+M  ::= NC | MWT | MI | F 
+NC ::= Doc* C = e
+MWT::= MH (= e)?
+MI ::= s  = e
+F  ::= var? T x
+
  
  
 _______

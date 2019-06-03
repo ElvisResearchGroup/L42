@@ -1,9 +1,16 @@
 
-Abstract grammar: Objective, be still readable, still look 1:1 with the source
 
-start:
+
+
+Abstract grammar:
+For Isaac: is the following equivalent to the full grammar (Part4), except for precedence enforcements?
+In this version, more friendly for formalism, we omit [] around implemented interfaces and thrown exceptions.
+We also omit = before method bodies.
+_______
+#define FullE
+
 D::= (DX=?) e
-e::= ... | x | P | void | L |core(L;label;ps1;ps2) | B | (P e) | \ | \x | 'PathLit
+e::= ... | x | P | void | L  | B | (P e) | \ | \x | 'PathLit
  | throw e | loop e | e StrLit | ~e |!e 
  | NumLit e | x updateOp e | (P e)
  | e(.m)?(par)
@@ -15,16 +22,24 @@ e::= ... | x | P | void | L |core(L;label;ps1;ps2) | B | (P e) | \ | \x | 'PathL
  | while e1 e2
  | for DXes e
 
+--------
 
 Do all but typeDrivenDesugar, this includes refineDesugar
+
+_______
+#define HalfE
+
 e::=  x | P | void | L |core(L;label;ps1;ps2) | B | (P e) | \ 
  | throw e | loop e | x := e | (P e)
  | e.m(xes)
  | e[xes1;...;xesn]
  | e1 op ..op en
  | ( Ds Ks e )  
- 
+ where
+ K::= catch throw (T|\) x e
+ //In this way, the slash can be replaced for the T the parameter is taking
 // blocks can be desugared for T x and start methods | { Ds Ks Ds2 }
+// for blocks at the start of method parameters, this \ could be used.
 
 
 //---note: may be block on parameters are just bad. 9 lines instead of 7
@@ -51,6 +66,7 @@ _______
 _______
 #define eC, parC, etcetera: an e is eC if all the L inside are of form LC, similarly for parC etcetera
 
+//FullE CtxC
 ctxC::=[]
   //first all the propagate right cases
  | throw ctxC | loop ctxC | x:=ctxC | ctxC StrLit | ~ctxC |!ctxC 
@@ -81,14 +97,26 @@ ctxC::=[]
  | for DXeCs DX in ctxC DXes e
  | for DXeCs ctxC
 
-
 Thus if e=ctxC[L] where L not of form LC, all other L more top-left are of form LC
 The compilation context, e=ctxC[L] selects an L where
 all of the former Ls are LC.
 The context does not enter into libraries
 
+//CoreE ctxCore
+ctxCore ::= []
+ | (P ctxCore).m( (x=e)s )
+ | (P e0).m( (x=e)s x=ctxCore (x=e)s' )
+ | loop ctxCore | throw ctxCore | x := ctxSore
+ | (Ds Ks ctxCore)
+ | (Ds T x=ctxCore Ds' Ks e)
+ | (Ds Ks catch throw T x ctxCore Ks' e)
+
 ctxM::= C = ctxC |s = ctxC | MH = ctxC
-ctxL::= interface?Ts{MCs ctxM Ms}
+ctxL::= interface?[Ts]{MCs ctxM Ms} 
+  | core(interface?[Ts]{MWTs NCs1 C =[] NCs2}
+  | core(interface?[Ts]{MWTs1 MH=ctxCore[] MWTs2 NCs}
+  
+
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
 
@@ -102,7 +130,7 @@ _______
  or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
  and Ti= _ P or P in Ps //or P is in the method docs
 
---------------------
+
 -----------------------------------------------------------
 Part 3: program
 -----------------------------------------------------------
