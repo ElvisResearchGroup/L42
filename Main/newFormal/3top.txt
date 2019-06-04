@@ -198,3 +198,41 @@ collectDepsE((P' P))= P',P;P
 collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
 collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
 
+
+T%e
+(T e)
+
+T foo()=(
+P.foo()
+foo.bar(x:(\ P)   class P class Any
+
+foo.bar(x:  //P.foo(P)
+  (class P y=P y.foo((\ P)))
+xPP::= x| (T P)
+
+e::= xPP.m(..)
+D::= T x=e
+
+Foo().bar(\foo)
+==> (T x = Foo() x.bar())
+	(T Foo()).bar()
+	
+	(T x = P x.bar())
+	(T P).bar()
+	
+class MethodCall:	
+	receiver: AST
+	receiver_type: Type-AST
+	method-name
+	args...
+
+
+
+
+foo.bar(/*Bar*/x:(
+  \ y=\
+  y.foo()
+  catch return \ x
+  ))
+
+)
