@@ -86,7 +86,7 @@ Iterative Composition is a metacircular metaprogramming technique relying on \em
 in our context this means that arbitrary expressions can be used as the right hand side of a class declaration; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `meta language'.
  
 
-\vspace{-1ex}
+%\vspace{-1ex}
 \begin{lstlisting}
 Trait base=class {//induction base case: pow(x)==x**1
   @ensures(result>0) Int exp(){return 1;}  
@@ -118,4 +118,4 @@ class Pow7: generate(7) //generate(7) is executed at compile time
 //the body of class Pow7 is the result of generate(7)
 /*example usage:*/new Pow7().pow(3)==2187//Compute 3**7
 \end{lstlisting}
-\vspace{-1ex}
+%\vspace{-1ex}

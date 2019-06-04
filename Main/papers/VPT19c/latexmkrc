@@ -2,3 +2,4 @@
 $pdf_mode = 1;                      # Use pdflatex
 $bibtex_use = 2;                    # Run bibtex/biber when necessary, delete .bbl on cleanup 
 push @generated_exts, 'pag';        # Tell latexmk that these files are generated
+push @extra_pdflatex_options, '-synctex=1'; # pass -synctex=1 to pdflatex
