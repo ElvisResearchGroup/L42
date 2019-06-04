@@ -112,6 +112,19 @@
 	
 \begin{document}
 \maketitle
+\begin{abstract}
+Static verification relying on an automated theorem prover can be very slow and brittle: since static verification is undecidable correct code may not pass a particular static verifier.
+In this work we use metaprogramming to generate
+code that is correct by construction.
+A theorem prover is used only to verify the initial traits: little code unit that can be used to compose bigger programs.
+In this way, trait composition is guaranteed to
+start from correct code and to always produce correct code.
+We extends conventional traits with methods pre and post conditions.
+Crucially, the checking performed by the traditional trait composition (/+/)  operator need to also check the compatibility of contracts. In this way, there is no need to re-verify the produced code.
+
+We show how to apply our approach to the
+iconic example of the power function, where metaprogramming can generate fast (and correct by construction) specialized versions when the exponent known in advance.
+\end{abstract}
 
 %\input{abstract}
 %\input{introduction}
