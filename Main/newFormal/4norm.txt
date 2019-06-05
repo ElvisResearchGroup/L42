@@ -1,6 +1,6 @@
 #define HalfE
 
-xP  ::=x|P
+xP  ::=x | P | (T P)
 e::=  x | P | void | L | \  //not sure about P instead of (P' P)
  | throw e | loop e | x := e 
  | xP.m(x1=e1 ..xn=en)
@@ -9,8 +9,17 @@ e::=  x | P | void | L | \  //not sure about P instead of (P' P)
 K::= catch throw T x e
 D::= var? T? x=e
 Y::=p;xP?;T?;PType
-PType::=error| classP | \ 
- 
+PType::=error| classP | \ | m(n)
+
+_______
+#define Y(xP)= Y.PType(Y.p,xP)
+  PType(p,x)=x
+   PType(p,(T P))=(T P) 
+  classP(p,P)= (class P P)
+  \(p,P) =  (\ P)
+  m(n)(p,P)= (class P P) iff m(x1..xn) in dom p(P) 
+  m(n)(p,P)= (class Any P) otherwise 
+  
  discussing (T P)
  throw P -> throw (class P P)
  loop P -> error //class P?
@@ -110,7 +119,7 @@ _______
   normalize(Y, e(.m)?(par))=(x=normalize(Y[PType=classP],e) x.methName(.m?)(normalize(Y[xP=x,T=\,PType=\],par))
     if e not of form xP, with x fresh
   normalize(Y, xP(.m)?(par))=
-    classP(xP).methName(.m?)( normalize(Y[xP=x,T=\,PType=\],par) )
+    classP(Y.p,xP).methName(.m?)( normalize(Y[xP=x,T=\,PType=\],par) )
   normalize(Y,e(.m)?[pars])=
    normalize(Y[PType=classP],e).methName(.m?)(squareBuilder:(
      b=\.#squareBuilder()
@@ -131,11 +140,16 @@ _______
  classP(xP).#shortCircut'op3'Result()
  )
     ///here
-    
- normalize(Y,xP1 op .. op xPn)=xP1 op .. op xPn //here and below, op not of form op3
- normalize(Y,e1 op .. op en)=(x1=e'1 ..xn=e'n e1 op .. op en[x1..xk/e'1..e'k])
-    if k!=0, with x1..xk fresh//e[xs=es] is boring, but easy in code
  
+//here and below, op not of form op3, n>=1
+normalize(Y,e0 op .. op en)=(Ds e0'' op .. op en'')
+//replace all e' not of form xP with x=normalize(Y[PType=methName(op)(n)],e') and 
+  ei'=normalize(Y[PType=methName(op)(n)],ei)
+  Ds=[xi=e'i| e'i not of form xP]
+  ei''=e'i if e'i of form xP,
+  ei''=xi otherwise
+  with x1..xn fresh.
+   
  normalize(Y,( DEs Ks Wops? DEs2))=normalize(Y,(DEs Ks Wops? DEs2 void))
  normalize(Y,( DEs Ks Wops? DE DEs2 e))=normalize(Y,( DEs Ks Wops? (DE DEs2 e)))
  normalize(Y,( DEs Ks wops T1.nTn e)=
@@ -145,7 +159,6 @@ _______
  normalize(Y,DEs)
  normalize(Y,e)= void x= normalize(Y[T=empty],e), with x fresh
  normalize(Y,T _=e)= T x= normalize(Y[T=T],e), with x fresh
- normalize(Y,T%%% _=e) =%%%%
  normalize(Y,var T? = e)=var T? = normalize(Y[T=T?],e)
  normalize(Y,T?(var1? T1? x1.. varn?Tn? xn)=e)
    =T? x=e
@@ -174,30 +187,59 @@ _______
    )
  with x, x' fresh
  
-%%%still missing the tMatch cases | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
+//simpler, much simpler without else for tMatch+, may be add a well formedness. Still all expressive power just using return
+normalize(Y,if tMatch tMatch+ e) =
+  normalize(Y,if tMatch if tMatch+ e)
+
+normalize(Y,if T x e) =  
+  normalize(Y,if T x'= x e[x=x'] )
+  with x' fresh
+  
+normalize(Y,if T x= e e')= ( x'=normalize(Y,e) normalize(Y,if T x= x' e') )
+
+normalize(Y,if T x= x0 e)= (
+  T x=(return x0 catch T x1 x1 error void)
+  catch T.mdf Any x2 void
+  normalize(Y,e)
+  )  
+
+normalize(Y,if T(T?1 x1 ..T?n x1)=e e')=normalize(Y,
+  if T x=e (
+    (x1, xn)=x
+    e''
+    ))
+  with x fresh,
+    Tx=[Ti xi | T?i != empty]
+    e''= if Txs  e' if Txs!=empty,
+    e''=e' otherwise
+    
+normalize(Y,if (T?1 x1 .. T?2 xn)=e e')=normalize(Y, (
+  (x1 .. xn)=e
+  if Tx e1
+  ))
+  with x fresh, Tx=[Ti xi | T?i != empty]
+
  normalize(Y,while e0 e1)=
    normalize(Y,(loop( (e0.#checkTrue() e1) ) catch exception Void _ void))
    //better if I use normalize inside
 
 
-   
- normalize(Y,for DXes e)//still missing the case with  tMatch
- normalize(Y,for var1? T1? x1 in e1..varn? Tn? xn in en e)=normalize(Y,(
+ normalize(Y,for DX1 in e1..DXn in en e)=normalize(Y,(
    c1=e1.iterator'var1?'();...cn=en.iterator'varn?'();//varIterator if var x in..
    var i=c1.indexZero()
     while(
       c1.hasNext(i) &&..&& cn.hasNext(i) //hasElem==hasNext
       && ( c1.incomplete(i) ||..||cn.incomplete(i))
       ) (
-      var1? T1? x1=c1.next(i) .. var1? T1?  en=cn.next(i);
+      DX1 = c1.next(i) .. DXn = cn.next(i);
       e [xi updateOp e'=xi:= xi toBinOp(updateOp) e']
         [xi := e' = xi:=ci.update(i,e')]
       i:=i.succ()
       )
       c1.close(i) .. cn.close(i)
     ) )
+  with c1..cn fresh
    
-
  normalize(Y,e? xes)=   that=normalize(Y,e?) normalize(Y,xes)
  normalize(Y,x=e)=   x=normalize(Y,e)
  
