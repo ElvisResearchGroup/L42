@@ -110,13 +110,12 @@ Part 4: expressions and statements
 L::=LL|core(L)
 ae ::= '...' | x | P | void | L | B | (T e) | \ | \x | 'PathLit // 'stuff == \"stuff"
 //post operators expression
-pe ::= ae | pe.m'(' par ')' | pe'(' par ')' | pe Square | pe StrLit
+pe ::= ae | pe(.m)?'(' par ')' | pe'(' par ')' | pe(.m)?[ (par;)*par? ] | pe StrLit
 //no space between pe( otherwise it can be parsed as pe B
 //or, easier to parse: if an expression ends with ')' ']' or '"', and there next character is 
 '(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
 par::= e? xe*
 xe ::= x = e
-Square::= [ (par;)*par? ] //not sure how else to force the last semicolon to be optional
 //unary expression
 ue ::= pe | !pe | ~pe | NumLit pe
 //binary expressions 

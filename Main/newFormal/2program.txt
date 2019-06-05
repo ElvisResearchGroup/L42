@@ -10,7 +10,7 @@ _______
 #define FullE
 
 DE::= (DX=?) e
-e::= ... | x | P | void | L  | B | (T e) | \ | \x | 'PathLit
+e::= ... | x | P | void | L  | (T e) | \ | \x | 'PathLit
  | throw e | loop e | e StrLit | ~e |!e 
  | NumLit e | x updateOp e 
  | e(.m)?(par)
@@ -25,42 +25,6 @@ e::= ... | x | P | void | L  | B | (T e) | \ | \x | 'PathLit
 --------
 
 Do all but typeDrivenDesugar, this includes refineDesugar
-
-_______
-#define HalfE
-
-xP  ::=x|P
-e::=  x | P | void | L | \  //not sure about P instead of (P' P)
- | throw e | loop e | x := e 
- | xP.m(xes)
- | xP1 op ..op xPn
- | ( Ds Ks e )  
- where
- K::= catch throw (T|\) x e
- xe::= x=e
- //In this way, the slash can be replaced for the T the parameter is taking
-// blocks can be desugared for T x and start methods | { Ds Ks Ds2 }
-// for blocks at the start of method parameters, this \ could be used.
-
-
-//---note: may be block on parameters are just bad. 9 lines instead of 7
-Foo(
-   bar={
-    if a>b return q
-    if a<b return w
-    wops AEFatal
-    return e
-    }
-  beer=e.foo()
-  )
-
-T bar={
-    if a>b return q
-    if a<b return w
-    wops AEFatal
-    return e
-    }
-Foo(bar=bar, beer=e.foo())
 
 _______
 #define LC: an L is LC if forall C in dom(L), L(C).e=core(L')
