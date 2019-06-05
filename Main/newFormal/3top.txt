@@ -8,12 +8,8 @@ precondition: at top level we have an L not of form LC.
 Rule (top) performs a step of execution, while rule (enter)
 propagates the execution inside nested classes and libraries in method bodies.
 
-Flag::= norm |typed 
-typed::=uncoherent | coherent
 
 r::=LC| exception v | error v
-
-NC::= Docs C = core(L;Flag;Ps1;Ps2)
 
 (top)
 p ==> p.update(p.top()[MCs'])
