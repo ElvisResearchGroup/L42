@@ -59,15 +59,14 @@ Part 2: core
 -----------------------------------
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
-P  ::= Thisn.Cs | Any | Void | Library
-T  ::= mdf P Doc*
+P  ::= Thisn.Cs | Any | Void | Library //here we mean that Ps and Ts in the core are a subset of the Ps,Ts in the full.
+T  ::= mdf P Doc* //even Docs containing Ps will have Ps from the subset.
 e   ::= x | (T P) | void | L |  xPP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
 xPP  ::=x|(T P)
 D   ::= var? T x=e
-K   ::= catch throw T x e
+K   ::= catch throw T x e //of course e is a core(e)
 NC  ::= Doc* C=L 
 MWT ::= MH=e | MH 
-M   ::= NC | MWT
 L   ::= interface?[T+]?{Info Doc* MWT* NC*}
 Info::=[Flag;
   P*;//typeDep
