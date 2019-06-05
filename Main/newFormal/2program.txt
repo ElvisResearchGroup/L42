@@ -2,25 +2,7 @@
 
 
 
-Abstract grammar:
-For Isaac: is the following equivalent to the full grammar (Part4), except for precedence enforcements?
-In this version, more friendly for formalism, we omit [] around implemented interfaces and thrown exceptions.
-We also omit = before method bodies.
-_______
-#define FullE
 
-DE::= (DX=?) e
-e::= ... | x | P | void | L  | (T e) | \ | \x | 'PathLit
- | throw e | loop e | e StrLit | ~e |!e 
- | NumLit e | x updateOp e 
- | e(.m)?(par)
- | e[pars]
- | e1 op ..op en
- | ( DEs Ks Wops? DEs2 e? )  
- | { DEs Ks Wops? DEs2 }
- | if tMatchC* e0? e1 (else e2)? //either tMatchC is empty or e0 is empty
- | while e1 e2
- | for DXes e
 
 --------
 

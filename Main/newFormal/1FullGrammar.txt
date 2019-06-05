@@ -8,8 +8,6 @@ can be in the input file.
 Comments are normal // and /**/. Comments and are discarded. This changed from last time
 Docs have a different syntax, are aware of Paths and are kept and adapted during metaprogramming,
 but only exists in few crucial points in the syntax.
-"using P check m(xes) e" is now "native P m(xes)[e]"
-and is expected to be used directly only during bootstrapping.
 
 Outside of comments and docs; space, newline and ',' are all just spacing characters
 
@@ -18,7 +16,7 @@ Part 1: boring part, identifiers and other stuff
 -----------------------------------
 char   ::=  all the ones drown on English keyboards except 'tab' :-)
 chars0 ::= all chars sequences excluding "
-charsi ::= all chars sequences excluding StrOpi, for i!=0 //Isaac seams keen to also exclude StrCli... why?
+charsi ::= all chars sequences excluding StrOpi and StrCli", for i!=0
 StrOp0 ::=empty
 StrCl0 ::=empty
 StrOpi+1 ::= [StrOpi
@@ -41,12 +39,12 @@ s  ::= Doc* mOp(x*)
 Ldom::=s|Cs
 Tx ::= T x
 mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class | fwd%Imm | fwd%mut
-T  ::= mdf P Doc* | mdf Cs Doc* | \
-P  ::= This(n?).Cs | Any | Void | Library
-MH ::= Doc* refine? native[P]? mdf method T mOp(Doc* Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
+T  ::= mdf P Doc* | \
+P  ::= Cs | Any | Void | Library //Thisn can be a C
+MH ::= Doc* refine? (native[URL])? mdf method T mOp(Doc* Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
 Cs ::=C(.C)*  //Is it the only sequence where we need a separator? 
 throw::= error | exception | return
-m ::= (# | #$)?x(#x+)* (_n) //the unique number
+m ::= (# | #$)?x(#x+)* (_n)? //the unique number, the '_' is not the concrete syntax, we need to find a better one
 mOp::= empty | m| op | ! | ~
 op0 ::= ^ | : | <- | << | & | '|'
 op1 ::= + | - | * | / | ++ | -- | ** | >> | ->
@@ -61,11 +59,10 @@ Part 2: core
 -----------------------------------
 All metavariables declared here can be used in the full language only inside of a core(..) block.
 Now all core expressions are normalized expression
-
-e   ::= x | (P' P) | void | L |  xPP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
-xPP  ::=x|(P' P)
-//may be the mdf part in (T e0) will be ignored by the type system..
-
+P  ::= Thisn.Cs | Any | Void | Library
+T  ::= mdf P Doc*
+e   ::= x | (T P) | void | L |  xPP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
+xPP  ::=x|(T P)
 D   ::= var? T x=e
 K   ::= catch throw T x e
 NC  ::= Doc* C=L 
@@ -121,7 +118,7 @@ ue ::= pe | !pe | ~pe | NumLit pe
 //binary expressions 
 b0e ::= ue0 (op0 ue1 .. op0 uen) //right associative, all op the same
 b1e ::= b0e0 (op1 b0e1 .. op1 b0en) //left associative, all op the same
-b2e ::= b1e0 (op2 b1e1 .. op2 b1en) //unassociative, all op the same (see desugaring)
+b2e ::= b1e0 (op2 b1e1 .. op2 b1en) //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
 b3e ::= b2e0 (op3 b2e1 .. op2 b2en) //left associative, all op the same
 //block
 B   ::= '(' BIN ')' | '{' DE* (DE K+ WOPS? DE*)?  '}'
@@ -131,16 +128,39 @@ DX  ::= var? T? x | T?(var1? T1? x1.. varn?Tn? xn)
 K   ::= catch throw? T x e
 WOPS::= wops T+
 //statements (just another kind of expression)
-S  ::= IF | While | For | loop e | throw e | x updateOp e | native P m'('par')'[e]
-IF  ::= if (tMatch+ |e0) e1 (else e2)?
+S  ::= IF | While | For | loop e | throw e | x updateOp e
+IF  ::= if e0 e1 (else e2)? | if tMatch+ e
 tMatch::= T x | T x=e | T0?(T1? x1..Tn? xn)=e //where at least one Ti? is not empty
 While::= while e0 e1
-For ::= for DXe+ e
-DXe ::= DX in e
+For ::= for DX0 in e0 .. DXn in en e
 e  ::= S | b3e
 
 -----------------------------------
-Part 5: well formedness, to complete
+Part 5: full grammar abstract syntax
+-----------------------------------
+For Isaac: is the following equivalent to the full grammar (Part4), except for precedence enforcements?
+In this version, more friendly for formalism, we omit '[' and ']' around implemented interfaces and thrown exceptions.
+We also omit '=' before method bodies.
+_______
+#define FullE
+
+DE::= (DX=?) e
+e::= ... | x | P | void | L  | (T e) | \ | \x | 'PathLit
+ | throw e | loop e | e StrLit | ~e |!e 
+ | NumLit e | x updateOp e 
+ | e(.m)?(par)
+ | e[pars]
+ | e1 op ..op en
+ | ( DEs Ks Wops? DEs2 e? )  
+ | { DEs Ks Wops? DEs2 }
+ | if e0 e1 (else e2)?
+ | if tMatch+  e
+ | while e1 e2
+ | for DX0 in e0 .. DXn in en e
+
+
+-----------------------------------
+Part 6: well formedness, to complete
 -----------------------------------
 
 * MWT: MWT.e can not contain LL, only core(L) is allowed
