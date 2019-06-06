@@ -1,0 +1,89 @@
+Core e for reference
+e   ::= a | x | ( T P ) | void | L |  xPP.m(x1=e1 ..xn=en ) 
+      | loop e | throw e | x := e | ( Ds Ks e )
+xPP  ::= x | (T P)
+D   ::= var? T x = e
+K   ::= catch throw T x e
+v   ::= a|P|void|L
+
+A ::= ( a->P(x1=v1..xn=vn) )*, (x->v)*
+
+ctxV::=xPP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
+
+_______
+#define A.pathOf(v)
+
+A.pathOf(P)=P
+A.pathOf(a)=A(a).P
+    
+A | x  -->p A| A(x)
+
+A | x := v -->p A[x=v]| void
+  
+A | loop e -->p A | (void x=e loop e)  
+A0 | (var? T x=e0 Ds Ks e) -->p A1 | (var? T x=e1 Ds Ks e)
+  where
+  A0 | e0 -->p A1 | e1
+
+A0 | (var? T x=v Ds Ks e) -->p A[x=v]| (Ds Ks e)
+
+A0 | (Ks e) -->p A| e
+
+A | (var? T x=ctxV[throw v] Ds K Ks e) -->p A[K.x=v]|K.e
+  where
+  throw=K.throw
+  A.pathOf(v)<=K.T.P
+  
+A | (var? T x=ctxV[throw v] Ds K Ks e) -->p (var? T x=ctxV[throw v] Ds Ks e)
+  where 
+  throw!=K.throw or not A.pathOf(v)<=K.T.P
+  
+A | (var? T x=ctxV[throw v] Ds e) -->p throw v 
+
+A | v.m(x1=v1 .. xn=vn)  -->p A | e[this=v,x1=v1,..xn=vn]
+  where
+  e=p[A.pathOf(v)].m(x1..xn).e
+  p[A.pathOf(v)].m(x1..xn).nativeUrl = empty
+
+A | v.m(x1=v1 .. xn=vn)  -->p A | e[this=v,x1=v1,..xn=vn]
+  where
+  e=p[A.pathOf(v)].m(x1..xn).e
+  p[A.pathOf(v)].m(x1..xn).nativeUrl = URL
+  
+  
+-mut libraries created by plugins
+ensure a field is controlled by plugins by:
+  use is well typed if this.x_n() is the argument and
+  This.k_n(use..)
+is the only form for ever calling a k of a class with a certain plg annotation.
+Such class is coherent only when the state is private.
+While privatizing the state, it is easy to check such form is the
+only form for k.
+
+Then, mut/mdf libraries has an associated set of mut/mdf objects, and
+certain plugin operation allows to add and remove from such set.
+
+In this way, we can implement a vector of mut and imm at the same time.
+Now we need to be sure that the desugaring can infer enough types to
+work well with such vector, expectially for iteration.
+
+
+coherent?
+ {
+  class method This0 native[mutLibK] k_1()
+  mut method mut Library native[mutLibGet] f_1()
+ }
+
+starting point: Integer, String and other can be seen as imm Library
+ this is needed for the plg with part
+ 
+ plugins only take in input imm/class stuff
+ 
+ plugins takes mut stuff only: 
+ 
+ 
+ {
+  class method This0 native[mutK] k_1()
+  mut method mut T native[mutGet] f_1(K that)
+  
+ }
