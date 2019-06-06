@@ -1,165 +1,181 @@
 Full 42 syntax
 
+Notation for grammar:
+< ... > indicate character classes
+A -- B to mean anything matching A, but with no sub-string matching B
+
+	When there are multiple grammar forms for the core and full, I will prefix them with CORE. and FULL. 
+	(On the RHS of a CORE. or FULL. declaration, any unqualified forms should be interpreted as a CORE./FULL. (respectively) where all child-asts conform to their CORE versions)
+	// I should explain that better!
+--------------------------------------------------------------------------------------
+
+======================================================================================
+Part 0: Lexical Syntax
+======================================================================================
+	NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D> (and others?)
+A line feed or carriage return
+	CHAR   ::=  <0x20-0x7E> | NEWLINE
+An Any printable ASCII character, or a newline
+// You said "drown" on an english keyboard, and I wasn't sure wether that includes newlines or carriage returns, but unless you don't want Windows users to write 42 code, I think it should include both!
+
+	STR-CHARS0 ::= CHAR* -- "
+	STR-CHARS(i+1) ::= CHAR* -- STR-OP(i+1) -- STR-CL(i+1)
+	STR-OP0 ::= empty
+  STRCL0 ::= empty
+	STR-OP(i+1) ::= [ STR-OPi
+  STR-CL(i+1) ::= STR-CLi ]
+	STRING ::= STR-OPi " STR-CHARSi (STR-OPi e STR-CLi CHARSi)* " STR-CLi
+
+	NUMBER ::= <0-9>+ ("."|"_"|"-"|<0-9>)*
+
+	COMM-CHARS ::= CHAR* -- "/*" -- "*/"
+	COMMENT ::= "//" (CHAR* -- NEWLINE) NEWLINE | "/*" (COMM-CHARS | COMMENT)* "*/"
+
+// Note: this allows /* comments to nest
+	WHITESPACE ::= (COMMENT | " " | NEWLINE| ",")+
+In any grammar form in any subsequent section, WHITESPACE is to be implicitecly allowed between every token, unless I write !WHITESPACE
+// (let me know if there are any such places you don't want to allow WHITESPACE)
+
+	URL::= /*too boring*/
+// What was the reason for not just saying a URL is an arbitrary string literal (without [e]s of course)?
+	
+	CHARS-CURLY ::= (CHAR* -- "{" -- "}") | CHARS-CURLY { CHARS-CURLY } CHARS-CURLY
+// charsWithBalancedCurly... (this is not a nice way of writing it at all...)
+
+	ID-UP ::= _* (<A-Z> | $) 
+	ID-LOW ::= _* <a-z>
+	ID-CHAR   ::= <a-z> |<A-Z> | $ | _ | <0-9>
+
+	n ::= 0 | <1-9> <0-9>*
+// Assume you don't want people to write This0001 instead of This1
+
+	UNIQUE-NUM ::= _n?
+// I really don't like this syntax! //Isaac propose foo.n() and C.n.Bar
+
+	CORE.x ::= ID-LOW ID-CHAR*
+	FULL.x ::= CORE.X | "_"
+	C ::= ID-UP ID-CHAR* UNIQUE-NUM
+  m ::= (#|#$)?x(#x)* UNIQUE-NUM
+	m-OP ::= empty | m | OP | OPP
+// I'm guessing ! and ~ are meant to be unary operators? What about negation (e.g. -1?) Although I've seen ~ used for this purpose.
+
+	OPP ::= ! | ~ // prefix
+// Note: lower numbers denote higher precedence?
+	OP0 ::= ^ | : | <- | << | & | '|' // right associative
+	OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
+	OP2 ::= == | != | < | > | >= | <= // unassiociative
+	OP3 ::= => | && | "||" // right associative, will be short circuting
+	OP  ::= OP0 | OP1 | OP2 | OP3 
+	OP-UPDATE ::=  ":=" | (OP0 -- ":")= | OP1= 
+	
+	mdf::= empty | mut | lent | read | capsule | fwd WHITESPACE mut | fwd | class | fwd%imm | fwd%mut
+	// may be we could define two kinds of mdf 
+
+	throw ::= "error" | "exception" | "return" // How about "except"? I find exception to be quite long (not an important point though)
+
+======================================================================================
+Paths and Stuff
+======================================================================================
+> //for under: This and Thisn are valid C, is just going to be well formedness to avoid issues
+	Doc ::= @PathLit | @PathLit?{(CHARS-CURLY -- DOC|DOC)*}
+	PathLit::= Cs | Cs? s | Cs? s.x
+	s  ::= m-OP(x*)
+	Ldom::=s | Cs
+	Tx ::= T x
+
+	Cs ::=C(.C)*  
+	
+	CORE.T  ::= mdf Doc* P //even Docs containing Ps will have Ps from the subset.
+	FULL.T  ::= CORE.T | "\"
+
+// Now the Doc comes after? Ok we need to have a proper discussion about this!
+
+	CORE.P  ::= Thisn.Cs? | Any | Void | Library
+	FULL.P  ::= Cs  // in the full This, Any,Void,Library are C
+
+==================================================================================================================
+Part 2: Expressions:
+==================================================================================================================
+	CORE.e   ::= x | "(" T P ")" | void | L |  xPP . m "(" xe* ")" | loop e | throw e | x := e | "(" D* K* e ")"
+	CORE.xPP  ::= x | (T P)
+  xe ::= x = e
+
+	CORE.D   ::= "var"? T x = e
+	CORE.K   ::= "catch" throw T x e
+	FULL.K   ::= "catch" throw? T x e // TODO: normalise empty throw to exception
+FULL:
+	e-atomic ::= x | P | "void" | L | block | (T e) | \ | \x | 'PathLit
+	e-postfix ::= e-atomic | e-postfix (.m)? !WHITESPACE "(" paramaters ")" 
+              | e-postfix (.m)? '[" (paramaters;)* paramaters? "]" | e-postfix STRING
+// The !WHITESPACE is apparanetly needed to disambigoute againts e-postfix block
+//or, easier to parse: if an expression ends with ')' ']' or '"', and there next character is  '(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
+
+	paramaters ::= e? xe*
+	
+	e-unary ::= e-postfix | OPP e-postifx | NUMBER e-postfix
+	
+	e-binary0 ::= e-unary (OP0 e-unary)* //right associative, all ops must be the same
+	e-binary1 ::= (e-binary0 OP1)* e-binary0 //left associative, all op the same
+	e-binary2 ::= (e-binary1 OP2)* e-binary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
+	e-binary3 ::= (e-binary2 OP3)* e-binary2 //left associative, all op the same
+	
+	block   ::= "(" block-body ")" | '{' DE* (DE K+ WOPS? DE*)?  '}'
+	block-body ::= DE* e | DE+ K* WOPS? DE* e | DE* e K+ WOPS?
+
+	DE  ::= (DX =)? e
+	DX  ::= "var"? T? x | T? "(" ("var"? T? x)+ ")"
+	WOPS ::= wops T+
+
+	statement  ::= IF | While | For | "loop" e | "throw" e | x OP-UPDATE e
+	IF  ::= "if" e e ("else" e)? | "if" Match+ e
+	Match ::= T x | T x = e | T? "(" (T? x)+ ")" = e //where at least one Ti? is not empty
+
+	While::= "while" e e
+	For ::= "for" (DX in e)* e
+
+	FULL.e  ::= statement | e-binary3
+
+	ABSTARCT.e ::= statement | (e-atomic -- block)
+		| e STRING | OPP e | NUMBER e
+		| e (.m)? "(" paramaters ")"
+		| e (.m)? "[" pararamaters* "]"
+		| e (OP e)+
+		| ( DE* K* Wops? DE* e? )  
+		| { DE* K* Wops? DE* }
+		
+==================================================================================================================
+Part 3: Libary literals
+==================================================================================================================
+	FULL.L ::= CORE.L | H { (... | reuse[URL])? M*}
+	CORE.L ::= H {Info Doc* MWT* NC*}
+Well Formedness: need to mention all the methods of all implemented interfaces, and list all the transitively implemented interfaces.
+	Info::= [Flag;
+  		P*;//typeDep
+  		P*;//coherentDep
+  		P*;//friendsDep
+  		//Paths whose unique numbers are used either directly,
+  		//or in a private nested class or in an L in a method
+  		P.s*;//usedMethDep//methods used either directly or ...
+  		P* //interfaces implemented by a private nested class or in an L in a method
+	]
+	Flag ::= "norm" | typed
+	typed::= "coherent"?
+
+	FULL.M  ::= NC | MWT | MI | F 
+	FULL.MI ::= Doc* s = e
+	FULL.F  ::= "var"? T x
+
+	CORE.NC ::= Doc* C = L
+	FULL.NC ::= Doc* C = e
+	
+	MWT ::= MH (= e)?
+	MH ::= Doc* "refine"? ("native" [ URL ])? mdf "method" T m-OP Doc*(Tx*) [T+]? //the Doc after the '(' is  conceptually on the this type.
+
+	CORE.H ::= "interface"?[T+]?
+	FULL.H  ::= CORE.H
+
 -----------------------------------
-Part 0: general discussions:
------------------------------------
-only character drown on conventional English keyboards (except 'tab')
-can be in the input file.
-Comments are normal // and /**/. Comments and are discarded. This changed from last time
-Docs have a different syntax, are aware of Paths and are kept and adapted during metaprogramming,
-but only exists in few crucial points in the syntax.
-
-Outside of comments and docs; space, newline and ',' are all just spacing characters
-
------------------------------------
-Part 1: boring part, identifiers and other stuff
------------------------------------
-char   ::=  all the ones drown on English keyboards except 'tab' :-)
-chars0 ::= all chars sequences excluding "
-charsi ::= all chars sequences excluding StrOpi and StrCli", for i!=0
-StrOp0 ::=empty
-StrCl0 ::=empty
-StrOpi+1 ::= [StrOpi
-StrCli+1 ::= StrOCl]
-StrLit  ::= StrOpi" charsi (StrOpi e StrCli charsi)* "StrCli
-
-NumLit::= (0..9)+ ((.|_|-) (0..9)*)*
-
-//for under: This and Thisn are valid C, is just going to be well formedness to avoid issues
-Doc ::= @PathLit | @PathLit?{charsWithBalancedCurly}
-PathLit::= Cs | (C.)* s | (C.)* s.x
-
-x ::= LowChar charId* | _ // '_' will be replaced with a fresh name
-C ::= UpChar charId* (_n) //the unique number
-UpChar ::= _* (A..Z | $) 
-LowChar::= _* a..z
-charId   ::= a..z |A..Z| $ | _ | 0..9
-URL::= /*too boring*/
-s  ::= Doc* mOp(x*)
-Ldom::=s|Cs
-Tx ::= T x
-mdf::= empty | mut | lent | read | capsule | fwd mut | fwd | class | fwd%Imm | fwd%mut
-T  ::= mdf P Doc* | \
-P  ::= Cs | Any | Void | Library //Thisn can be a C
-MH ::= Doc* refine? (native[URL])? mdf method T mOp(Doc* Tx*) [T+]? //the Doc after the '(' is conceptually on the this type.
-Cs ::=C(.C)*  //Is it the only sequence where we need a separator? 
-throw::= error | exception | return
-m ::= (# | #$)?x(#x+)* (_n)? //the unique number, the '_' is not the concrete syntax, we need to find a better one
-mOp::= empty | m| op | ! | ~
-op0 ::= ^ | : | <- | << | & | '|'
-op1 ::= + | - | * | / | ++ | -- | ** | >> | ->
-op2 ::= == | != | < | > | >= | <=
-op3 ::= => | && | || //will be short circuting
-op  ::= op0 | op1 | op2 | op3 
-updateOp ::=  := | op0= | op1= // except ':' from op0; op2 and op3 are dangerous to lift to updateOp
-
-
------------------------------------
-Part 2: core
------------------------------------
-All metavariables declared here can be used in the full language only inside of a core(..) block.
-Now all core expressions are normalized expression
-P  ::= Thisn.Cs | Any | Void | Library //here we mean that Ps and Ts in the core are a subset of the Ps,Ts in the full.
-T  ::= mdf P Doc* //even Docs containing Ps will have Ps from the subset.
-e   ::= x | (T P) | void | L |  xPP.m( x1=e1 .. xn=en ) | loop e | throw e | x := e | (D* K* e)
-xPP  ::=x|(T P)
-D   ::= var? T x=e
-K   ::= catch throw T x e //of course e is a core(e)
-NC  ::= Doc* C=L 
-MWT ::= MH=e | MH 
-L   ::= interface?[T+]?{Info Doc* MWT* NC*}
-Info::=[Flag;
-  P*;//typeDep
-  P*;//coherentDep
-  P*;//friendsDep
-  //Paths whose unique numbers are used either directly,
-  //or in a private nested class or in an L in a method
-  P.s*;//usedMethDep//methods used either directly or ...
-  P* //interfaces implemented by a private nested class or in an L in a method
-  ]
-Flag::= norm |typed 
-typed::=uncoherent | coherent
-
-Core Well formedness:
-* under a p an L need to mention all the methods of all implemented interfaces,
-  and all list all the transitively implemented interfaces.
-* P are not of form mdf Cs Doc (that is, without the 'Thisn.')
-* Core well formedness also inherits all the well formedness of the full language
-   
------------------------------------
-Part 3: full LL
------------------------------------
-
-H  ::= interface? [T+]? | reuse [URL]
-LL  ::= H{M*}
-M  ::= NC | MWT | MI | F 
-NC ::= Doc* C = e
-MWT::= MH (= e)?
-MI ::= s  = e
-F  ::= var? T x
-
------------------------------------
-Part 4: expressions and statements
------------------------------------
-  
-//atomic expression
-L::=LL|core(L)
-ae ::= '...' | x | P | void | L | B | (T e) | \ | \x | 'PathLit // 'stuff == \"stuff"
-//post operators expression
-pe ::= ae | pe(.m)?'(' par ')' | pe'(' par ')' | pe(.m)?[ (par;)*par? ] | pe StrLit
-//no space between pe( otherwise it can be parsed as pe B
-//or, easier to parse: if an expression ends with ')' ']' or '"', and there next character is 
-'(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
-par::= e? xe*
-xe ::= x = e
-//unary expression
-ue ::= pe | !pe | ~pe | NumLit pe
-//binary expressions 
-b0e ::= ue0 (op0 ue1 .. op0 uen) //right associative, all op the same
-b1e ::= b0e0 (op1 b0e1 .. op1 b0en) //left associative, all op the same
-b2e ::= b1e0 (op2 b1e1 .. op2 b1en) //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
-b3e ::= b2e0 (op3 b2e1 .. op2 b2en) //left associative, all op the same
-//block
-B   ::= '(' BIN ')' | '{' DE* (DE K+ WOPS? DE*)?  '}'
-BIN ::= DE* e | DE+ K+ WOPS? DE* e | DE* e K+ WOPS?
-DE  ::= (DX=)? e
-DX  ::= var? T? x | T?(var1? T1? x1.. varn?Tn? xn)
-K   ::= catch throw? T x e
-WOPS::= wops T+
-//statements (just another kind of expression)
-S  ::= IF | While | For | loop e | throw e | x updateOp e
-IF  ::= if e0 e1 (else e2)? | if tMatch+ e
-tMatch::= T x | T x=e | T0?(T1? x1..Tn? xn)=e //where at least one Ti? is not empty
-While::= while e0 e1
-For ::= for DX0 in e0 .. DXn in en e
-e  ::= S | b3e
-
------------------------------------
-Part 5: full grammar abstract syntax
------------------------------------
-For Isaac: is the following equivalent to the full grammar (Part4), except for precedence enforcements?
-In this version, more friendly for formalism, we omit '[' and ']' around implemented interfaces and thrown exceptions.
-We also omit '=' before method bodies.
-_______
-#define FullE
-
-DE::= (DX=?) e
-e::= ... | x | P | void | L  | (T e) | \ | \x | 'PathLit
- | throw e | loop e | e StrLit | ~e |!e 
- | NumLit e | x updateOp e 
- | e(.m)?(par)
- | e[pars]
- | e1 op ..op en
- | ( DEs Ks Wops? DEs2 e? )  
- | { DEs Ks Wops? DEs2 }
- | if e0 e1 (else e2)?
- | if tMatch+  e
- | while e1 e2
- | for DX0 in e0 .. DXn in en e
-
-
------------------------------------
-Part 6: well formedness, to complete
+Part 6: well formedness
 -----------------------------------
 
 * MWT: MWT.e can not contain LL, only core(L) is allowed
