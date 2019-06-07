@@ -148,7 +148,16 @@ Part 3: Libary literals
 ==================================================================================================================
 	FULL.L ::= CORE.L | H { (... | reuse[URL])? M*}
 	CORE.L ::= H {Info Doc* MWT* NC*}
-Well Formedness: need to mention all the methods of all implemented interfaces, and list all the transitively implemented interfaces.
+Well-Formedness:
+    * if C__n in dom(L) or m__n(xs) in dom(L), then for any other L' in the project, C'__n notin dom(L') and m'__n(xs') notin dom(L')
+    * unique LDom in dom(L) // what?
+    * Any notin H //Library and Void are not interfaces so you will get the normal error from implementing them
+    * Exists at most one n such that exists m__n(xs) where L(m__n(xs))=mwt, and mwt.e? is empty
+    * if H.interface? = interface, then methods in interfaces have no body and forall m__n(xs),  m__n(xs) notin dom(L)
+   
+CORE.Well-Formedness: 
+        need to mention all the methods of all implemented interfaces, and list all the transitively implemented interfaces.
+        
 	Info::= [Flag;
   		P*;//typeDep
   		P*;//coherentDep
@@ -163,12 +172,16 @@ Well Formedness: need to mention all the methods of all implemented interfaces, 
 
 	FULL.M  ::= NC | MWT | MI | F 
 	FULL.MI ::= Doc* s = e
+Well-Formdness: e can not contain FULL.L, only CORE.L is allowed
+// WHY?
 	FULL.F  ::= "var"? T x
 
 	CORE.NC ::= Doc* C = L
 	FULL.NC ::= Doc* C = e
 	
 	MWT ::= MH (= e)?
+Well-Formedness: e can not contain FULL.L, only CORE.L is allowed
+
 	MH ::= Doc* "refine"? ("native" [ URL ])? mdf "method" T m-OP Doc*(Tx*) [T+]? //the Doc after the '(' is  conceptually on the this type.
 
 	CORE.H ::= "interface"?[T+]?
@@ -177,10 +190,6 @@ Well Formedness: need to mention all the methods of all implemented interfaces, 
 -----------------------------------
 Part 6: well formedness
 -----------------------------------
-
-* MWT: MWT.e can not contain LL, only core(L) is allowed
-
-* s=e: e can not contain LL, only core(L) is allowed
 
 
 * BIN:
@@ -197,9 +206,6 @@ _______
    then e must be of form 'B', 'throw _', 'loop _' or 'void'
    
 
-* L: if C__n in dom(L) or m__n(xs) in dom(L),
-  then for any other L' in the project
-  C'__n notin dom(L') and m'__n(xs') notin dom(L')
 
 * DE: var T x=e is valid only if T not capsule or fwd.
   if e = DE, that is,(DX=)?=empty, then e not of form '...', x, P, void, L, core(L), \, \x or 'PathLit
@@ -213,12 +219,6 @@ _______
 
 * NC: NC.C not Any, Library, Void, This, Thisn
 
-* L: unique LDom in dom(L), Any notin [Ts] //Library and Void are not interfaces so you will get the normal error from implementing them
-    Exists 0 or 1 n such that exists m__n(xs) where L(m__n(xs))=mwt, mwt.e? is empty
-
-* L interface:
-   methods in interfaces have no body
-   forall m__n(xs),  m__n(xs) notin dom(L)
 
 * loop P, loop x, loop void, loop L, not well formed
 * (ds1 ks ds2 e): unique x in dom(ds1,ds2), FV(ks) disjoint dom(ds1,ds2)

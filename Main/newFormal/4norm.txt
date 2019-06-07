@@ -1,55 +1,61 @@
-Here we define normalize(p,FullE.LL):HalfE.LL  and  normalize(Y,FullE):HalfE
+Here we define normalize(p,FULL.L):HALF.L  and  normalize(Y,FULL.e):HALF.e
 
- normalize(Y,FullE):HalfE
- will be called on an expression in the full language that may contain LL, but in those all the C=e are of form C=core(L)
- The result should be of form HalfE.
- ideally, we can define another function typeInference(p,HalfE):CoreE using your algorithm
+normalize(Y,FULL.e):HALF.e
+ will be called on an expression in the full language that may contain FULL.L, but in those all the
+NC's are CORE.NCs 
+// Is that what this means? C=e are of form C=core(L)
+ The result should be of form HALF.e
+ ideally, we can define another function typeInference(p,HALF.e):CORE.e using your algorithm
 -------------
-HalfE
--------------
-H  ::= interface? T*
-LL  ::= H{MWTs NCs}
-NC ::= Doc* C = core(L)
-MWT::= MH e?
-xP  ::=x | P | (T P)
-L   ::= core(L) | LL
-e::=  x | core(P) | void | L | \  //not sure about P instead of (P' P)
+HALF.e
+------------- // For consistency
+HALF.L ::= H { MWT* CORE.NC* }
+xP  ::= x | P | (T P)
+// Is the T & P a FULL or CORE P?
+
+HALF.e::= x | CORE.P | void | FULL.L | \  //not sure about P instead of (P' P)
  | throw e | loop e | x := e 
- | xP.m(x1=e1 ..xn=en)
- | xP1 op ..op xPn
+ | xP.m(xe*)
+ | xP (op xP)+
  | ( Ds Ks e )  
-K::= catch throw T x e
-D::= var? T? x=e
+HALF.K ::= "catch" throw T x e
+HALF.D ::= "var"? T? x = e
 
 -------------
 Y environment
 -------------
-Y::=p;xP?;T?;PType
+Y ::= p; xP?; T?; PType
 PType::=error| classP |classAny| \ | m(n)
 
 _______
 #define Y(xP),  PTYpe(p,xP) 
   
-  Y(x)= resolveCs(p,Y.PType(Y.p,xP))
+  Y(x)= resolveCs(p,Y.PType(Y.p,xP)) // You're going to need to define resolveCs
   
-  PType(p,x)=x
-  PType(p,(T P))=(T P) 
-  classP(p,P)= (class P P)
+  PType(p, x) = x
+  PType(p, (T P)) = (T P)
+  classP(p, P) = (class P P)
   \(p,P) =  (\ P)
   m(n)(p,P)= (class P P) iff m(x1..xn) in dom p(P) 
   m(n)(p,P)= (class Any P) otherwise 
+  // so error(p, e) is undefined?
   
  discussing Y(P)
+ // What is this relation?
  throw P -> throw (class P P)
  loop P -> error
  x:= P ->  (class P P)//because class Any will fail var ass to any class P
+    // what if x has type class Any?
  P.m(...) -> (class P P).m(...)
  e.m(x=P...)->e.m(x=(\ P)...)
  P op xP-> (class P P) if p(P.op(x)) is defined for some x, else (class Any P)
+    // what if we later decide not to call P.op(x) but xP.op(x = P)?
  xP op P-> (class P P) if p(P.op(x)) is defined for some x, else (class Any P)
  ( ks P) -> the block was in one other context, same for kP
+    // um what?
  T x=P -> T x=(class P P) if T not class Any
  x=P -> (class Any P)
+    // what, why are we infering Any for the type of x? That is unlikely to be expected!
  
 -------------
 NORMALIZATION
@@ -61,17 +67,19 @@ normalize(Y,core(L))=core(L)
 
 normalize(p,reuse [URL]{Ms})=normalize(p,{NCs,Ms})
   where followURL(URL)={NCs} //all the NC of form Docs C=core(L)
-  //thus, we can not save on an url an interface or method bodies. 
+  //thus, we can not save on an url an interface or method bodies.
   //this is ok for towels, and for libs we have Load:reuse[URL]{} anyway
 
 normalize(p,LL)=interface?[Ts,(Ts'\p Ts)]{normalize_p'(Ms')}
   where 
     LL=interface?[Ts]{Ms0}
     p'=p.push(LL)
-    Ts'=collect(p',Ts)
-    Ms=expandFields(Ms0)
-    forall T in Ts'\p Ps, p'.noUnique(T)
+    Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any) right?
+    Ms=expandFields(Ms0) // And this turns the fields into abstract methods....
+    forall T in Ts'\p Ps, p'.noUnique(T) // Um what?
     Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
+    // I think you mean Ms0 instead of Ms?
+    // What about collecting methods from interfaces and your s = e thing?
   //the line above use [|] to make sequences nor sets. The order of members is important here.
   //Note: using Ts'\p Ts the docs of any T inside Ts override the one inside Ts'
     
@@ -80,13 +88,14 @@ normalize(p,MH e?)= resolveCs(p,MH) e'?
     e'?=empty if e?=empty
     e'?= normalize(p,empty,e?) otherwise 
 
-normalize(p,Docs C:LL) =resolveCs(p,Docs) C: normalize(p.push(C),LL)
+normalize(p,Docs C:LL) =resolveCs(p,Docs) C = normalize(p.push(C),LL)
 //cases fields and s e should never happen at this point.
 
 _______
 #define normalize(Y,FullE):HalfE
 //simple cases first
 
+// Where does this get called? (and what is the initial value of Y?)
 normalize(Y,...)=readFolder(p)
 normalize(Y,x)=x
 normalize(Y,P)=Y.PType(P)
@@ -95,19 +104,19 @@ normalize(Y,L)=normalize(p,L)
 normalize(Y, (T e) )=(T' x=normalize(Y[T=T'],e) x)
   where 
     T'=resolveCs(Y.p,T)
-    e not of form P
+    e not of form P // Ok now I just hate you...
 normalize(Y, (T P) )= resolveCs(Y.p,(T P) )
 normalize(Y,\)=\
 normalize(Y,\x)=(Y.xP).x()
 normalize(Y,'PathLit)=normalize(Y,\"PathLit")
-normalize(Y,return e)=return normalize(Y[PType=classP],e)
+normalize(Y,return e)=return normalize(Y[PType=classP],e) // Because you'd never want to return a class Any?
 normalize(Y,throw e)=throw normalize(Y[PType=error],e)
   where throw in {error,exception}
 normalize(Y,loop e)=loop normalize(Y[PType=error],e)
 normalize(Y,~e)=normalize(Y[PType=classP],e).methName(~)()
 normalize(Y,!e)=normalize(Y[PType=classP],e).methName(!)()
 normalize(Y, NumLit e)=normalize(Y, e"NumLit")
-normalize(Y,x updateOp e)=  normalize(Y,x:= x toBinOp(updateOp) e)
+normalize(Y,x updateOp e)=  normalize(Y,x:= x toBinOp(updateOp) e) // I think := is technically an updateOp, so this is wrong!
 normalize(Y, e(.m)?(par))=(x=normalize(Y[PType=classP],e) x.methName(.m?)(normalizePar(Y[xP=x,T=\,PType=\],par))
   where e not of form xP, x fresh
 normalize(Y, xP(.m)?(par))= classP(Y.p,xP).methName(.m?)( normalizePar(Y[xP=x,T=\,PType=\],par) )
