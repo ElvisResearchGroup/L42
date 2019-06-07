@@ -1,48 +1,35 @@
 
-
-
-
-
-
---------
-
-Do all but typeDrivenDesugar, this includes refineDesugar
-
 _______
-#define LC: an L is LC if forall C in dom(L), L(C).e=core(L')
+#define LC: an L is LC if forall C in dom(L), L(C).e is of form CORE.L
 _______
 #define eC, parC, etcetera: an e is eC if all the L inside are of form LC, similarly for parC etcetera
 
-//FullE CtxC
-ctxC::=[]
-  //first all the propagate right cases
- | throw ctxC | loop ctxC | x:=ctxC | ctxC StrLit | ~ctxC |!ctxC 
- | NumLit ctcX | x updateOp ctxC | (T ctxC)
- //kinds of meth calls
- | ctxC(.m)?( par)
+
+FULL.wrapE::= throw [] | loop [] |[](.m)?( par) |[]Square | []StrLit |x updateOp [] |(T []) 
+      | '(' DEs Ks WOPS? [] ')' | while e [] | for DXes []
+      | if (tMatchC+ |e) [] (else e0)?     
+wrapEC::= wrapE but has all subexps as eC
+
+//FullE ctxC
+strLit[e1..en]=STR-OPi" STR-CHARSi STR-OPi e1 STR-CLi CHARSi1 .. STR-OPi en STR-CLi CHARSin "STR-CLi
+FULL.ctxC::=[]
+ | wrapEC[ctxC]
+ | eC strLit[eCs ctxC es]
  | eC(.m)?(ctxC par)
- | eC(.m)?parC, x=ctxC, par)
- |ctxC Square
- |eC[parCs; ctxC, par;pars]
- |eC[parCs; parC, x=ctxC, par;pars]
- //bin ops
+ | eC(.m)?(parC, x=ctxC, par)
+ | eC[parCs; ctxC, par;pars]
+ | eC[parCs; parC, x=ctxC, par;pars]
  | (eC op)s ctxC (op e)s
- //blocks
  | '(' DECs DX? ctxC DEs Ks WOPS? e? ')'  
  | '(' DECs KCs catch throw? T x ctxC Ks WOPS? e? ')'  
- | '(' DECs KCs WOPS? ctxC ')'  
  | { DECs DX? ctxC DEs Ks WOPS? DEs2 }
  | { DECs KCs catch throw? T x ctxC Ks WOPS? DEs2 }
  | { DECs1 KCs WOPS? DECs2 DX? ctxC DEs }
- //statements
  | if ctxC e (else e0)?
- | if (tMatchC+ |eC) ctxC (else e0)?
  | if (tMatchC+ |eC) eC0 else ctxC
- | if tMatchC+ DX=ctxC tMatch+ e (else e0)?
+ | if tMatchC+ DX=ctxC tMatch+ e
  | while ctxC e
- | while eC ctxC 
  | for DXeCs DX in ctxC DXes e
- | for DXeCs ctxC
 
 Thus if e=ctxC[L] where L not of form LC, all other L more top-left are of form LC
 The compilation context, e=ctxC[L] selects an L where
@@ -50,19 +37,16 @@ all of the former Ls are LC.
 The context does not enter into libraries
 
 //CoreE ctxCore
-ctxCore ::= []
- | (P ctxCore).m( (x=e)s )
- | (P e0).m( (x=e)s x=ctxCore (x=e)s' )
- | loop ctxCore | throw ctxCore | x := ctxSore
- | (Ds Ks ctxCore)
- | (Ds T x=ctxCore Ds' Ks e)
- | (Ds Ks catch throw T x ctxCore Ks' e)
+CORE.wrapE::= throw [] | loop [] | x := []  | '(' Ds Ks [] ')'
+CORE.ctx ::= []
+ | wrapE[ctx]
+ | xPP.m( xes x=ctxCore xes' )
+ | (Ds T x=ctx Ds' Ks e)
+ | (Ds Ks catch throw T x ctx Ks' e)
 
-ctxM::= C = ctxC |s = ctxC | MH = ctxC
-ctxL::= interface?[Ts]{MCs ctxM Ms} 
-  | core(interface?[Ts]{MWTs NCs1 C =[] NCs2}
-  | core(interface?[Ts]{MWTs1 MH=ctxCore[] MWTs2 NCs}
-  
+FULL.ctxM::= C = ctxC |s = ctxC | MH = ctxC
+FULL.ctxL::= interface? Ts{MCs ctxM Ms} | CORE.ctxL
+CORE.ctxL ::= interface? Ts{MWTs NCs1 C =[] NCs2} |interface? Ts{MWTs1 MH=ctx MWTs2 NCs}  
 
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
@@ -103,7 +87,7 @@ push, the opposite of pop, extracts a piece of the top to forge a new top.
 To do so, it takes in input the split form of the old head.
 Finally, notice how in this model updating the top  can not be emulated with pop() + push()
 
-p::= L0;ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+p::= L0;FULL.ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 
 program primitive operations:
 

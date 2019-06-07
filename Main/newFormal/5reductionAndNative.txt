@@ -12,11 +12,17 @@ A ::= ( imm?a->Obj )*, (imm? x->v)*
 ctxV::=xPP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
 
 _______
-#define A.pathOf(v)
+#define A.rog(v)
+//obvious
 
+_______
+#define A.pathOf(v)
 A.pathOf(P)=P
 A.pathOf(a)=A(a).P
 
+_______
+#define A[mdf v]
+//if mdf is imm, mark A.rog(v) as imm
 A[mdf v]=A if mdf!=imm
 A[imm v]=A if v not of form a or L^as
 A[imm Ls^as]=A[imm A.rog(as)]
@@ -26,6 +32,9 @@ A[imm a1..an]=A[imm? a1->Obj1=imm a1->Obj1 .. imm?n an->Obj1=imm an->Obj1]
 A,mdf x=_[mdf x=v]=A[mdf v], x=v
 A[x=v]=A, mdf x=v
   where x not in dom(A)
+
+_______
+#define A|e --> A'|e'
 
     
 A | x  -->p A| A(x)
@@ -58,8 +67,8 @@ A | v0.m(x1=v1 .. xn=vn)  -->p A' | MWT.e[this=v0,x1=v1,..xn=vn]
   p[A.pathOf(v0)].m(x1..xn).nativeUrl = empty
   A'=A[MWT.mdf0 v0]..[MWT.mdfn vn]
 
-
-allowedRes(mdf,mdfs,vs)
+_______
+#define allowedRes(mdf,mdfs,vs)
 
 a in allowedRes(mdf,mdf1..mdfn,v1..vn)
   mdfi=mdf
@@ -69,19 +78,25 @@ a in res(a)
 a in res(L^(_,a,_))  
 
 
-A | v0.m(x1=v1 .. xn=vn)  -->p A'|v
+A0 | v0.m(x1=v1 .. xn=vn)  -->p A'|v
   where
-  MWT=p[A.pathOf(v0)].m(x1..xn)
+  MWT=p[A0.pathOf(v0)].m(x1..xn)
   MWT.nativeUrl = URL
-  Url.m(A,MWT,this=v0,x1=v1,xn=vn)=A,A'|v
+  A1=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
+  Url.m(A,MWT,this=v0,x1=v1,xn=vn)=A1,A'|v
   MWT.T.mdf
   vi =a, MWT.mdfi=mdf => mdf a //mdf in imm/mut/capsule
   res(v) subsetEq allowedRes(MWT.T.mdf,MWT.mdfs,v0..vn) U dom(A')
-  Free_a(A') subsetOf {a| imm a->Obj in A}
+  Free_a(A') subsetOf {a| imm a->Obj in A1}
   
+------------------
+
 native typing:
-  -a plugin take in input or return either 
-     imm/mut/capsule/class P (no read/lent/fwd*)
+  typed as a normal MWT, plus:
+  -take in input or return either imm/mut/capsule/class P (no read/lent/fwd*)
+  -the URL support such s with such type:urlSupport(URL,p,MWT)
+  -no generic urls, but no need to go down to Any, since urlSupport takes type in input
+   can compute over it, so if it return a parameter, it can use user defined types
      
   -a plugin can return a mut L^as,
   -the annotated 'a' on the L can be all the mut a parameters of the plugin call,

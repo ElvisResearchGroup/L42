@@ -56,10 +56,9 @@ In any grammar form in any subsequent section, WHITESPACE is to be implicitecly 
 	FULL.x ::= CORE.X | "_"
 	C ::= ID-UP ID-CHAR* UNIQUE-NUM
   m ::= (#|#$)?x(#x)* UNIQUE-NUM
-	m-OP ::= empty | m | OP | OPP
-// I'm guessing ! and ~ are meant to be unary operators? What about negation (e.g. -1?) Although I've seen ~ used for this purpose.
+	m-OP ::= empty | m | OP | ~ | !
 
-	OPP ::= ! | ~ // prefix
+	OPP ::= ! | ~ | NUMBER  // prefix
 // Note: lower numbers denote higher precedence?
 	OP0 ::= ^ | : | <- | << | & | '|' // right associative
 	OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
@@ -112,7 +111,7 @@ FULL:
 
 	paramaters ::= e? xe*
 	
-	e-unary ::= e-postfix | OPP e-postifx | NUMBER e-postfix
+	e-unary ::= e-postfix | OPP e-postfix
 	
 	e-binary0 ::= e-unary (OP0 e-unary)* //right associative, all ops must be the same
 	e-binary1 ::= (e-binary0 OP1)* e-binary0 //left associative, all op the same
@@ -136,7 +135,7 @@ FULL:
 	FULL.e  ::= statement | e-binary3
 
 	ABSTARCT.e ::= statement | (e-atomic -- block)
-		| e STRING | OPP e | NUMBER e
+		| e STRING | OPP e
 		| e (.m)? "(" paramaters ")"
 		| e (.m)? "[" pararamaters* "]"
 		| e (OP e)+
