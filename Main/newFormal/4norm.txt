@@ -2,16 +2,15 @@ Here we define normalize(p,FULL.L):HALF.L  and  normalize(Y,FULL.e):HALF.e
 
 normalize(Y,FULL.e):HALF.e
  will be called on an expression in the full language that may contain FULL.L, but in those all the
-NC's are CORE.NCs 
-// Is that what this means? C=e are of form C=core(L)
- The result should be of form HALF.e
- ideally, we can define another function typeInference(p,HALF.e):CORE.e using your algorithm
+NC's are CORE.NCs, that is, C=e are of form C=CORE.L
+
+The result should be of form HALF.e
+ideally, we can define another function typeInference(p,HALF.e):CORE.e using your algorithm
 -------------
 HALF.e
 ------------- // For consistency
 HALF.L ::= H { MWT* CORE.NC* }
-xP  ::= x | P | (T P)
-// Is the T & P a FULL or CORE P?
+HALF.xP ::= x | CORE.P | (CORE.T CORE.P)
 
 HALF.e::= x | CORE.P | void | FULL.L | \  //not sure about P instead of (P' P)
  | throw e | loop e | x := e 
@@ -26,6 +25,12 @@ Y environment
 -------------
 Y ::= p; xP?; T?; PType
 PType::=error| classP |classAny| \ | m(n)
+
+
+toBinOp(x, :=) = x :=
+toBinOp(x, OP=) = x := x OP 
+
+
 
 _______
 #define Y(xP),  PTYpe(p,xP) 
@@ -116,31 +121,37 @@ normalize(Y,loop e)=loop normalize(Y[PType=error],e)
 normalize(Y,~e)=normalize(Y[PType=classP],e).methName(~)()
 normalize(Y,!e)=normalize(Y[PType=classP],e).methName(!)()
 normalize(Y, NumLit e)=normalize(Y, e"NumLit")
-normalize(Y,x updateOp e)=  normalize(Y,x:= x toBinOp(updateOp) e) // I think := is technically an updateOp, so this is wrong!
-normalize(Y, e(.m)?(par))=(x=normalize(Y[PType=classP],e) x.methName(.m?)(normalizePar(Y[xP=x,T=\,PType=\],par))
+normalize(Y,x updateOp e)=  normalize(Y,toBinOp(x, updateOp) e)
+normalize(Y, e(.m)?(par))=(x=normalize(Y[PType=classP],e) x.methName(m?)(normalizePar(Y[xP=x,T=\,PType=\],par))
   where e not of form xP, x fresh
-normalize(Y, xP(.m)?(par))= classP(Y.p,xP).methName(.m?)( normalizePar(Y[xP=x,T=\,PType=\],par) )
+normalize(Y, xP(.m)?(par))= Y[PType=classP](xP).methName(.m?)( normalizePar(Y[xP=x,T=\,PType=\],par) )
   
 //bin operators
-normalize(Y,e1 op3 e2)= (x=normalize(Y,e1) normalize(Y,x && e2) )
+normalize(Y,e1 op3 e2)= (x=normalize(Y,e1) normalize(Y,x op3 e2) )
   where e1 not of form xP //op3: &&, || and => are not static-dispatch, to have short circuit 
 normalize(Y,xP op3 e)= (
   classP(xP).#shortCircut'op3'().#checkTrue()  //here and and under, using ' to generate method names in some standard way
   catch exception Void _ normalize(Y,e2)
   classP(xP).#shortCircut'op3'Result()
   )
-normalize(Y,e0 op .. op en)=(Ds e0'' op .. op en'')
+ Isaac propose to save this temp e1 && e2 ==>
+ 	x = e1	
+ 	y = x.#shortCircut#and()
+ 	if y y.#shortcircuit#and#combine(e2) else x.#shortCircuit#and#result()
+
+normalize(Y,e0 op .. op en)=(Ds e0" op .. op en")
   ei'=normalize(Y[PType=methName(op)(n)],ei)
   Ds=[xi=e'i| e'i not of form xP]
-  ei''=e'i if e'i of form xP,
-  ei''=xi otherwise
+  ei"=e'i if e'i of form xP,
+  ei"=xi otherwise
   where x1..xn fresh, op not of form op3, n>=1
    
 //blocks
 normalize(Y,( DEs Ks Wops? DEs2))=normalize(Y,(DEs Ks Wops? DEs2 void))
 normalize(Y,( DEs Ks Wops? DE DEs2 e))=normalize(Y,( DEs Ks Wops? (DE DEs2 e)))
-normalize(Y,( DEs Ks wops T1.nTn e)=( normalizeDE(Y,DEs) normalize(Y,Ks) K1..Kn normalize(Y,e) ) 
+normalize(Y,( DEs Ks "wops" T1..Tn e)=( normalizeDE(Y,DEs) normalize(Y,Ks) K1..Kn normalize(Y,e) ) 
   where Ki=catch exception resolveCs(p,Ti) xi error xi.#intoErrorAt(that:core({}))
+   // what if xi has no #intoError method?
    
 normalize(Y,{ DEs Ks Wops? DEs2 }) = (Y.T x=(
     Void x''=normalize(Y[T=Void],(DEs Ks Wops? DEs2 void))
@@ -162,10 +173,10 @@ normalize(Y,e(.m)?[pars])= normalize(Y[PType=classP],e).methName(.m?)(squareBuil
 normalize(Y,e StrLit)= normalize(Y[PType=classP],e).#from(stringLiteral=(
     b=\.#stringLiteralBuilder()
     b.chars0() //one call for each char
-    b.#spliceIn(normalize(Y[xP=x,T=\,PType=\],e1)) //better name??
+    b.#splice(normalize(Y[xP=x,T=\,PType=\],e1))
     b.chars1()
     ..
-    b.#spliceIn(normalize(Y[xP=x,T=\,PType=\],en)) //better name??
+    b.#splice(normalize(Y[xP=x,T=\,PType=\],en))
     b.charsn()
     b))
   where StrLit= chars0 e1 chars1 .. en charsn
@@ -187,22 +198,23 @@ normalize(Y,if tMatch tMatch+ e) = normalize(Y,if tMatch if tMatch+ e)
 normalize(Y,if T x e) = normalize(Y,if T x'= x e[x=x'] )
   where x' fresh
   
-normalize(Y,if T x= e e')= ( x'=normalize(Y,e) normalize(Y,if T x= x' e') )
-
-normalize(Y,if T x= x0 e)= (
-  T x=(return x0 catch T x1 x1 error void)
-  catch T.mdf Any x2 void
+normalize(Y,if T x = e e')= ( x'=normalize(Y,e) normalize(Y,if T x= x' e') )
+  where e not of form xP //TODO: check the latter for xP vs x
+  
+normalize(Y,if T x= xP e)= (
+  T x=(return xP catch return T x1 x1 error void)
+  catch return T.mdf Any x2 void
   normalize(Y,e)
   )  
 
 normalize(Y,if T(T?1 x1 ..T?n x1)=e e')=normalize(Y,
   if T x=e (
-    (x1, xn)=x
+    (x1, ..., xn)=x
     e''
     ))
   where 
-    x fresh, Tx=[Ti xi | T?i != empty]
-    e''= if Txs  e' if Txs!=empty
+    x fresh, Txs=[Ti xi | T?i != empty]
+    e''= """if Txs  e""" if Txs!=empty
     e''=e' otherwise
     
 normalize(Y,if (T?1 x1 .. T?2 xn)=e e')=normalize(Y, (
@@ -215,29 +227,29 @@ normalize(Y,while e0 e1)=(Void x=loop(  normalize(Y,(e0.#checkTrue() e1)) ) catc
   where x,x' fresh  
 
 normalize(Y,for DX1 in e1..DXn in en e)=normalize(Y,(
-  c1=e1.iterator'var1?'();...cn=en.iterator'varn?'();//varIterator if var x in..
-  var i=c1.indexZero()
-  while c1.hasNext(i) &&..&& cn.hasNext(i) && ( c1.incomplete(i) ||..||cn.incomplete(i)) (
+  c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
+  var i1=c1.indexZero() .. var i1=cn.indexZero()
+  while c1.hasNext(i1) &&..&& cn.hasNext(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
     DX1 = c1.next(i) .. DXn = cn.next(i);
-    e [xi updateOp e'=xi:= xi toBinOp(updateOp) e'][xi := e' = xi:=ci.update(i,e')]
-    i:=i.succ()
+    e[xi updateOp e'= (toBinOp(xi, updateOp) e' ci.update(ii, xi))]
+    i1:=i1.succ() .. in:=in.succ()
     )
-  c1.close(i) .. cn.close(i)
+  c1.close(i1) .. cn.close(in)
   ) )
-  where c1..cn fresh
+  where c1..cn, i1..in fresh
    
 //auxiliary definitions
-normalizePar(Y,e? xes)=   that=normalize(Y,e?) normalize(Y,xes)
-normalizePar(Y,x=e)=   x=normalize(Y,e)
- 
-normalizeDE(Y,e)= void x= normalize(Y[T=empty],e), with x fresh
-normalizeDE(Y,T _=e)= T x= normalize(Y[T=T],e), with x fresh
-normalizeDE(Y,var T? = e)=var resolveCs(Y.p,T?) = normalize(Y',e)
-  Y'=Y[T=T?,PType=classAny] if T? in {empty,class Any}
+normalizePar(Y,e xes)=   that=normalize(Y,e) normalizePar(Y,xes)
+normalizePar(Y,x1=e1 .. xn=en)=  x1=normalize(Y,e1) .. xn=normalize(Y,en)
+
+normalizeDE(Y,e)= Void x= normalize(Y[T=empty],e), with x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
+normalizeDE(Y,T? _=e)= resolveCs(Y.p,T?) x= normalize(Y[T=T?,PType=classAny],e), with x fresh
+normalizeDE(Y,var T? x = e)=var resolveCs(Y.p,T?) x = normalize(Y',e)
+  Y'=Y[T=T?,PType=classAny] if T? in {empty,class Any} // to obtain classP the user just write down the type
   Y'=Y[T=T?,PType=classP] otherwise
-normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) =
-  resolveCs(Y.p,T?) x=e
+normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) = 
+  resolveCs(Y.p,T?) x=normalize(Y[T=T?,PType=classAny],e)
   var1? resolveCs(Y.p,T1?) x1=x.methNameTrim(x1)() //removes any numberPedex from the end
   ..
   varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
-  where x fresh 
+  where x fresh

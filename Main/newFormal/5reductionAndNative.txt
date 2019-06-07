@@ -1,12 +1,13 @@
 Core e for reference
-e   ::= a | x | ( T P ) | void | L |  xPP.m(x1=e1 ..xn=en ) 
+e   ::= a | x | ( T P ) | void | L^as |  xPP.m(x1=e1 ..xn=en ) 
       | loop e | throw e | x := e | ( Ds Ks e )
 xPP  ::= x | (T P)
 D   ::= var? T x = e
 K   ::= catch throw T x e
 v   ::= a|P|void|L
 
-A ::= ( a->P(x1=v1..xn=vn) )*, (x->v)*
+Obj::=P(x1=v1..xn=vn)
+A ::= ( imm?a->Obj )*, (imm? x->v)*
 
 ctxV::=xPP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
 
@@ -15,21 +16,32 @@ _______
 
 A.pathOf(P)=P
 A.pathOf(a)=A(a).P
+
+A[mdf v]=A if mdf!=imm
+A[imm v]=A if v not of form a or L^as
+A[imm Ls^as]=A[imm A.rog(as)]
+A[imm a]=A[imm A.rog(a)]
+A[imm a1..an]=A[imm? a1->Obj1=imm a1->Obj1 .. imm?n an->Obj1=imm an->Obj1] 
+
+A,mdf x=_[mdf x=v]=A[mdf v], x=v
+A[x=v]=A, mdf x=v
+  where x not in dom(A)
+
     
 A | x  -->p A| A(x)
 
-A | x := v -->p A[x=v]| void
+A | x := v -->p A[mdf x=v]| void //mdf will be fetch from A
   
 A | loop e -->p A | (void x=e loop e)  
 A0 | (var? T x=e0 Ds Ks e) -->p A1 | (var? T x=e1 Ds Ks e)
   where
   A0 | e0 -->p A1 | e1
 
-A0 | (var? T x=v Ds Ks e) -->p A[x=v]| (Ds Ks e)
+A0 | (var? T x=v Ds Ks e) -->p A[T.mdf x=v]| (Ds Ks e)
 
 A0 | (Ks e) -->p A| e
 
-A | (var? T x=ctxV[throw v] Ds K Ks e) -->p A[K.x=v]|K.e
+A | (var? T x=ctxV[throw v] Ds K Ks e) -->p A[K.T.mdf K.x=v]|K.e
   where
   throw=K.throw
   A.pathOf(v)<=K.T.P
@@ -40,15 +52,41 @@ A | (var? T x=ctxV[throw v] Ds K Ks e) -->p (var? T x=ctxV[throw v] Ds Ks e)
   
 A | (var? T x=ctxV[throw v] Ds e) -->p throw v 
 
-A | v.m(x1=v1 .. xn=vn)  -->p A | e[this=v,x1=v1,..xn=vn]
+A | v0.m(x1=v1 .. xn=vn)  -->p A' | MWT.e[this=v0,x1=v1,..xn=vn]
   where
-  e=p[A.pathOf(v)].m(x1..xn).e
-  p[A.pathOf(v)].m(x1..xn).nativeUrl = empty
+  MWT=p[A.pathOf(v0)].m(x1..xn)
+  p[A.pathOf(v0)].m(x1..xn).nativeUrl = empty
+  A'=A[MWT.mdf0 v0]..[MWT.mdfn vn]
 
-A | v.m(x1=v1 .. xn=vn)  -->p A | e[this=v,x1=v1,..xn=vn]
+
+allowedRes(mdf,mdfs,vs)
+
+a in allowedRes(mdf,mdf1..mdfn,v1..vn)
+  mdfi=mdf
+  and either vi=a or vi=L^(_,a,_)
+
+a in res(a)
+a in res(L^(_,a,_))  
+
+
+A | v0.m(x1=v1 .. xn=vn)  -->p A'|v
   where
-  e=p[A.pathOf(v)].m(x1..xn).e
-  p[A.pathOf(v)].m(x1..xn).nativeUrl = URL
+  MWT=p[A.pathOf(v0)].m(x1..xn)
+  MWT.nativeUrl = URL
+  Url.m(A,MWT,this=v0,x1=v1,xn=vn)=A,A'|v
+  MWT.T.mdf
+  vi =a, MWT.mdfi=mdf => mdf a //mdf in imm/mut/capsule
+  res(v) subsetEq allowedRes(MWT.T.mdf,MWT.mdfs,v0..vn) U dom(A')
+  Free_a(A') subsetOf {a| imm a->Obj in A}
+  
+native typing:
+  -a plugin take in input or return either 
+     imm/mut/capsule/class P (no read/lent/fwd*)
+     
+  -a plugin can return a mut L^as,
+  -the annotated 'a' on the L can be all the mut a parameters of the plugin call,
+   or other 'a' annotated on other Ls parameter of the same plugin call
+  -a plugin can not mutate the ROG of any 'a' took in input,
   
   
 -mut libraries created by plugins
