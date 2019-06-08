@@ -1,13 +1,13 @@
-Core e for reference
-e   ::= a | x | ( T P ) | void | L^as |  xPP.m(x1=e1 ..xn=en ) 
+Core e with runtime expressions
+e  ::= a | x | ( T P ) | void | L |  xPP.m(x1=e1 ..xn=en ) 
       | loop e | throw e | x := e | ( Ds Ks e )
-xPP  ::= x | (T P)
-D   ::= var? T x = e
-K   ::= catch throw T x e
-v   ::= a|P|void|L
+xPP::= x | (T P)
+D  ::= var? T x = e
+K  ::= catch throw T x e
+v  ::= a|P|void|L
 
-Obj::=P(x1=v1..xn=vn)
-A ::= ( imm?a->Obj )*, (imm? x->v)*
+Obj::=P(x1=v1..xn=vn) |L as // memory objects. as is the set of mut objects associated to L
+A  ::= empty |imm? a->Obj, A | imm? x->v A  //order is irrelevant
 
 ctxV::=xPP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
 
@@ -16,13 +16,15 @@ _______
 //obvious
 
 _______
+#define Free(A)
+//the set of all the a in the right side of A but not in the dom(A)
+_______
 #define A.pathOf(v)
 A.pathOf(P)=P
 A.pathOf(a)=A(a).P
 
 _______
-#define A[mdf v]
-//if mdf is imm, mark A.rog(v) as imm
+#define A[mdf v] //if mdf is imm, mark A.rog(v) as imm
 A[mdf v]=A if mdf!=imm
 A[imm v]=A if v not of form a or L^as
 A[imm Ls^as]=A[imm A.rog(as)]
@@ -35,11 +37,12 @@ A[x=v]=A, mdf x=v
 
 _______
 #define A|e --> A'|e'
-
     
 A | x  -->p A| A(x)
 
-A | x := v -->p A[mdf x=v]| void //mdf will be fetch from A
+A | L  -->p A,imm a->L empty| a
+
+A | x := v -->p A[_ x=v]| void
   
 A | loop e -->p A | (void x=e loop e)  
 A0 | (var? T x=e0 Ds Ks e) -->p A1 | (var? T x=e1 Ds Ks e)
@@ -61,11 +64,43 @@ A | (var? T x=ctxV[throw v] Ds K Ks e) -->p (var? T x=ctxV[throw v] Ds Ks e)
   
 A | (var? T x=ctxV[throw v] Ds e) -->p throw v 
 
-A | v0.m(x1=v1 .. xn=vn)  -->p A' | MWT.e[this=v0,x1=v1,..xn=vn]
+A0 | v0.m(x1=v1 .. xn=vn)  -->p A1 | MWT.e[this=v0,x1=v1,..xn=vn]
   where
-  MWT=p[A.pathOf(v0)].m(x1..xn)
-  p[A.pathOf(v0)].m(x1..xn).nativeUrl = empty
-  A'=A[MWT.mdf0 v0]..[MWT.mdfn vn]
+  MWT=p[A0.pathOf(v0)].m(x1..xn)
+  MWT.nativeUrl = empty
+  A1=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
+
+A0 | v0.m(x1=v1 .. xn=vn)  -->p A1,A',A2|v
+  where
+  MWT=p[A0.pathOf(v0)].m(x1..xn)
+  MWT.nativeUrl = URL
+  A1,A=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
+  A=mutLibs(A,MWT.Ts,v0..vn) //MWT.Ts includes mdf This
+  as=accessibleAddresses(A,MWT.Ts,v0..vn) //MWT.Ts includes mdf This
+  callPlugin(A1,MWT,v0..vn)=A1,A',A2|v
+  A'=A~as  
+  res(v) subsetEq allowedRes(MWT.T.mdf,MWT.mdfs,v0..vn) U dom(A')
+  Free(A2) subsetOf {a| imm a->Obj in A1}
+  
+_______
+#define accessibleAddresses(A,Ts,vs)
+a in accessibleAddresses(A,T1..Tn,v1..vn)
+  if vi=a, MWT.mdfi=mut, MWT.Ti.P!=Library
+a' in accessibleAddresses(A,T1..Tn,v1..vn)
+  if vi=a, MWT.T= mut Library, a->L _a'_ in A  
+
+_______
+#define A'=A~as
+A'=A~as
+  dom(A) subsetEq dom(A')
+  if mut a-> L as' in A',
+  then mut a-> L _ in A and as' subsetEq as
+  if a in dom(A')\dom(A), then 
+  Free(A') subsetOf {a| imm a->Obj in A1} 
+_______
+#define mutLibs(A,Ts,vs)
+mut a->L as in mutLibs(A,T1..Tn,v1..vn)
+  if vi=a, MWT.T= mut Library, mut a->L as in A  
 
 _______
 #define allowedRes(mdf,mdfs,vs)
@@ -74,20 +109,11 @@ a in allowedRes(mdf,mdf1..mdfn,v1..vn)
   mdfi=mdf
   and either vi=a or vi=L^(_,a,_)
 
+_______
+#define res(a)
 a in res(a)
 a in res(L^(_,a,_))  
-
-
-A0 | v0.m(x1=v1 .. xn=vn)  -->p A'|v
-  where
-  MWT=p[A0.pathOf(v0)].m(x1..xn)
-  MWT.nativeUrl = URL
-  A1=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
-  Url.m(A,MWT,this=v0,x1=v1,xn=vn)=A1,A'|v
-  MWT.T.mdf
-  vi =a, MWT.mdfi=mdf => mdf a //mdf in imm/mut/capsule
-  res(v) subsetEq allowedRes(MWT.T.mdf,MWT.mdfs,v0..vn) U dom(A')
-  Free_a(A') subsetOf {a| imm a->Obj in A1}
+  
   
 ------------------
 

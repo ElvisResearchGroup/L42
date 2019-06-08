@@ -1,33 +1,32 @@
+-----------------------------------------------------------
+Part 1: grammars for auxiliary data and contexts
+-----------------------------------------------------------
+LC::= //an L is LC if forall C in dom(L), L(C).e is of form CORE.L
+eC,parC,... ::= //an e is eC if all the L inside are of form LC, similarly for parC etcetera
 
-_______
-#define LC: an L is LC if forall C in dom(L), L(C).e is of form CORE.L
-_______
-#define eC, parC, etcetera: an e is eC if all the L inside are of form LC, similarly for parC etcetera
-
+LL::= FULL.L | CORE.L
 
 FULL.wrapE::= throw [] | loop [] |[](.m)?( par) |[]Square | []StrLit |x updateOp [] |(T []) 
       | '(' DEs Ks WOPS? [] ')' | while e [] | for DXes []
-      | if (tMatchC+ |e) [] (else e0)?     
+      | if (MatchC+ |e) [] (else e0)?     
 wrapEC::= wrapE but has all subexps as eC
 
-//FullE ctxC
-strLit[e1..en]=STR-OPi" STR-CHARSi STR-OPi e1 STR-CLi CHARSi1 .. STR-OPi en STR-CLi CHARSin "STR-CLi
 FULL.ctxC::=[]
  | wrapEC[ctxC]
  | eC strLit[eCs ctxC es]
- | eC(.m)?(ctxC par)
- | eC(.m)?(parC, x=ctxC, par)
+ | eC.m?(ctxC par)
+ | eC.m?(parC, x=ctxC, par)
  | eC[parCs; ctxC, par;pars]
  | eC[parCs; parC, x=ctxC, par;pars]
  | (eC op)s ctxC (op e)s
- | '(' DECs DX? ctxC DEs Ks WOPS? e? ')'  
- | '(' DECs KCs catch throw? T x ctxC Ks WOPS? e? ')'  
+ | ( DECs DX? ctxC DEs Ks WOPS? e? )  
+ | ( DECs KCs catch throw? T x ctxC Ks WOPS? e? )  
  | { DECs DX? ctxC DEs Ks WOPS? DEs2 }
  | { DECs KCs catch throw? T x ctxC Ks WOPS? DEs2 }
  | { DECs1 KCs WOPS? DECs2 DX? ctxC DEs }
  | if ctxC e (else e0)?
- | if (tMatchC+ |eC) eC0 else ctxC
- | if tMatchC+ DX=ctxC tMatch+ e
+ | if (MatchC+ |eC) eC0 else ctxC
+ | if MatchC+ DX=ctxC Match+ e
  | while ctxC e
  | for DXeCs DX in ctxC DXes e
 
@@ -36,7 +35,6 @@ The compilation context, e=ctxC[L] selects an L where
 all of the former Ls are LC.
 The context does not enter into libraries
 
-//CoreE ctxCore
 CORE.wrapE::= throw [] | loop [] | x := []  | '(' Ds Ks [] ')'
 CORE.ctx ::= []
  | wrapE[ctx]
@@ -51,19 +49,8 @@ CORE.ctxL ::= interface? Ts{MWTs NCs1 C =[] NCs2} |interface? Ts{MWTs1 MH=ctx MW
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
 
-
-_______
-#define eC' inside eC //INCOMPLETE... but... is it needed now?
-- eC' inside eC if eC=ctxC[eC']
-- P inside ( _ DX _) if P=T.P
-- P inside ( _ catch throw T x _ _) if P=T.P
-- P inside M holds iff P inside M.e //called CollectPaths0.of(P)
- or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
- and Ti= _ P or P in Ps //or P is in the method docs
-
-
 -----------------------------------------------------------
-Part 3: program
+Part 2: program
 -----------------------------------------------------------
 Program-specific grammar is needed to represent the position
 in the project (top level Library) that we are reducing.
@@ -87,39 +74,39 @@ push, the opposite of pop, extracts a piece of the top to forge a new top.
 To do so, it takes in input the split form of the old head.
 Finally, notice how in this model updating the top  can not be emulated with pop() + push()
 
-p::= L0;FULL.ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+p::= LL;FULL.ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 
 program primitive operations:
 
--p.top()=L
- (L,_).top()=L
+-p.top()=LL
+ (LL,_).top()=LL
 
 -p.pop()=p'
- (L,interface?[Ps]{Ms C_evil:[]},ctxLs).pop()=interface?[Ps]{Ms},ctxLs
+ (LL,interface?[Ps]{Ms C_evil:[]},ctxLs).pop()=interface?[Ps]{Ms},ctxLs
  otherwise // we have C_evil not in dom(ctxL)
- (L,ctxL,ctxLs).pop()=ctxL[L],ctxLs
+ (LL,ctxL,ctxLs).pop()=ctxL[LL],ctxLs
 
--p.push(ctxL,L)=p'
- (ctxL[L],ctxLs).push(ctxL,L)=L,ctxL,ctxLs
+-p.push(ctxL,LL)=p'
+ (ctxL[LL],ctxLs).push(ctxL,LL)=LL,ctxL,ctxLs
 
--p.update(L)=p' //this is the only one that can detect evilPush
- (L,ctxLs).update(L')=L',ctxLs
+-p.update(LL)=p' //this is the only one that can detect evilPush
+ (LL,ctxLs).update(LL')=LL',ctxLs
 
 -p.reducePath(P)=P' //assert defined only if p.top() of form LC
  p.reducePath(This(n+1).C.Cs)=Thisn.Cs
    where p.pop().reducePath(Thisn.C.Cs) is defined
- (LC,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
+ (CORE.L,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
    where ctxL(C)=ctxC //Note:ctxL(C)=[] would be more restrictive, for example
    //preventing A:Data<><{method A (..)} to be summed with the constructor.
 -p.location()=P // Where we are in the program
- (L).location()=This0
- (L, ctxL, ctxLs).location() = This(k+1).Cs.C
+ (LL).location()=This0
+ (LL, ctxL, ctxLs).location() = This(k+1).Cs.C
     ctxL(C) = ctxC // We are in C
-    (ctxL[L], ctxLs).location() = Thisk.Cs
+    (ctxL[LL], ctxLs).location() = Thisk.Cs
 
 program derived operations:
 
--p.get(n)=L
+-p.get(n)=LL
  p.get(0)=p.top()
  p.get(n+1)=p.pop().get(n)
 
@@ -140,20 +127,30 @@ program derived operations:
 
 -p.noUnique(P) holds if p.minimize(P) not  of form Thisk._.C__n._
 
--p(P)=L //functional notation
+-p(P)=LL //functional notation
  p(P)=p.navigate(P).top()//but some implementation could be faster
 
 -p.push(C)=p'
- p.push(C)=p.push(ctxL,L)
- where ctxL[L]=p.top() and ctxL(C)=[]
+ p.push(C)=p.push(ctxL,LL)
+ where ctxL[LL]=p.top() and ctxL(C)=[]
 
--p.evilPush(LV)=p'// TODO: in code make sure we only call on LV
- ({interface? Ps Ms},ctxLs).evilPush(LV)=LV,{interface? Ps Ms C_evil:[]},ctxLs
+-p.evilPush(CORE.L)=p'// TODO: in code make sure we only call on CORE.L
+ ({interface? Ps Ms},ctxLs).evilPush(CORE.L)=CORE.L,{interface? Ps Ms C_evil:[]},ctxLs
  with C_evil reserved C name.
  A well-formed project (top level L) can not have C_evil anywhere.
 
- //Note: p.push(L)=p' (ie searching p.top() for a library that matches L)
- // is not used in the code since it would be very slow and not expressive enough.
- // p.push(L)=p.push(ctxL,L) with ctxL[L]=p.top()
+------------TAIL
 
-----------------------------------
+ //Note: p.push(LL)=p' (ie searching p.top() for a library that matches LL)
+ // is not used in the code since it would be very slow and not expressive enough.
+ // p.push(LL)=p.push(ctxL,LL) with ctxL[LL]=p.top()
+
+ _______
+#define eC' inside eC //INCOMPLETE... but... is it needed now?
+- eC' inside eC if eC=ctxC[eC']
+- P inside ( _ DX _) if P=T.P
+- P inside ( _ catch throw T x _ _) if P=T.P
+- P inside M holds iff P inside M.e //called CollectPaths0.of(P)
+ or M.mh= refine? T0 m(T1 x1..Tn xn) exception Ps
+ and Ti= _ P or P in Ps //or P is in the method docs
+ 

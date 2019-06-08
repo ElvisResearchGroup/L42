@@ -281,8 +281,8 @@ program derived operations:
  p.push(C)=p.push(ctxL,L)
  where ctxL[L]=p.top() and ctxL(C)=[]
 
--p.evilPush(LV)=p'// TODO: in code make sure we only call on LV
- ({interface? Ps Ms},ctxLs).evilPush(LV)=LV,{interface? Ps Ms C_evil:[]},ctxLs
+-p.evilPush(LC)=p'// TODO: in code make sure we only call on LC //note: was LC LV but LV is not defined 
+ ({interface? Ps Ms},ctxLs).evilPush(LC)=LC,{interface? Ps Ms C_evil:[]},ctxLs
  with C_evil reserved C name.
  A well-formed project (top level L) can not have C_evil anywhere.
 
