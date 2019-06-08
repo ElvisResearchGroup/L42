@@ -74,14 +74,15 @@ A0 | v0.m(x1=v1 .. xn=vn)  -->p A1,A',A2|v
   where
   MWT=p[A0.pathOf(v0)].m(x1..xn)
   MWT.nativeUrl = URL
+  either mut or capsule in MWT.Ts.mdfs
   A1,A=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
-  A=mutLibs(A,MWT.Ts,v0..vn) //MWT.Ts includes mdf This
+  A=mutLibs(A1,A,MWT.Ts,v0..vn) //MWT.Ts includes mdf This
   as=accessibleAddresses(A,MWT.Ts,v0..vn) //MWT.Ts includes mdf This
   callPlugin(A1,MWT,v0..vn)=A1,A',A2|v
-  A'=A~as  
-  res(v) subsetEq allowedRes(MWT.T.mdf,MWT.mdfs,v0..vn) U dom(A')
-  Free(A2) subsetOf {a| imm a->Obj in A1}
-  
+  A'=A~as
+  exists e:  A1,A'| e -->p* A1,A',A2 | v  
+  Free(A2) subsetOf {a| imm a->Obj in A1} U dom(A')
+
 _______
 #define accessibleAddresses(A,Ts,vs)
 a in accessibleAddresses(A,T1..Tn,v1..vn)
@@ -92,30 +93,39 @@ a' in accessibleAddresses(A,T1..Tn,v1..vn)
 _______
 #define A'=A~as
 A'=A~as
-  dom(A) subsetEq dom(A')
+  dom(A') = dom(A)
   if mut a-> L as' in A',
-  then mut a-> L _ in A and as' subsetEq as
-  if a in dom(A')\dom(A), then 
-  Free(A') subsetOf {a| imm a->Obj in A1} 
+    then mut a-> L _ in A and as' subsetEq as
+
 _______
 #define mutLibs(A,Ts,vs)
-mut a->L as in mutLibs(A,T1..Tn,v1..vn)
-  if vi=a, MWT.T= mut Library, mut a->L as in A  
-
-_______
-#define allowedRes(mdf,mdfs,vs)
-
-a in allowedRes(mdf,mdf1..mdfn,v1..vn)
-  mdfi=mdf
-  and either vi=a or vi=L^(_,a,_)
-
-_______
-#define res(a)
-a in res(a)
-a in res(L^(_,a,_))  
+a->L as in mutLibs(A,T1..Tn,v1..vn)
+  if vi=a, MWT.T= mut Library, a->L as in A  
   
   
 ------------------
+examples:
+the plg input no mut/lent/read, execute the expression as usual and return.
+  the expression could have run on another machine, we can not know
+
+the plg input no mut/lent/read, execute the expression as usual and return a capsule lib with an a
+that is the result of such expression.
+  the result could be in a 'future' and trying to read the a with another plugin would block until res is ready
+  
+
+//the plg input no mut/lent/read, execute the expression but is first transformed somehow in other well typed one.
+  
+  
+the plg takes no input and produce a mut L (promotable to capsule) that correspond to a java arrayList
+
+the plg takes a mut L representing an arrayList, a imm L representing an int and a mut/imm Any
+ and put it into the corresponding position of the arrayList.
+the plg takes a mut L representing an arrayList, a imm L representing an int 
+ and return a mut/imm Any that is located in the corresponding position of the arrayList.  
+ 
+ take two lib arrayList and add all the elements of the second to the first
+mut a-> L1 a1..an, mut b-> L2 b1..bn| plg(a,b) -> 
+mut a-> L1 a1..an, mut b-> L2 b1..bn, mut c->L3| plg(a,b) 
 
 native typing:
   typed as a normal MWT, plus:
