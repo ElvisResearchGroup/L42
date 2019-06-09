@@ -312,3 +312,25 @@ normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) =
   ..
   varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
   where x fresh
+  
+------------------
+operator replacement:
+CASE1 assuming xP0..xP1 :T0..Tn
+  xP0 OP ..OP xPn = e
+  where
+    {e} = { xPi.methName(OP)_i(x1=e1 .. xn=en) 
+      | forall x1..xn, forall {i}={0..n} where
+        p|-(T0..Tn/i).Ps <= p(Ti.P).methName(OP)_i(x1..xn).Ts.Ps[From Ti.P],
+        e1..en=xP0..xPn/i }
+    forall j,x1..xn forall (T P) in xP0..xPn:
+      p(P.$methName(OP)_j).#apply(x1..xn) undefined
+    //that is, if any xP is a P with a suitable nested class, that one must have precedence
+
+CASE2 assuming xP0..xP1 :T0..Tn
+  xP0 OP ..OP xPn = e
+  where
+    exists unique i such that:
+      xPi=(T P)
+      p(P.$methName(OP)_i).#apply(_).Ts.Ps=P1..Pn
+      p|-(T0..Tn\i).Ps <= P1..Pn[From P.$methName(OP)_i]
+  //Why this looks so different from the other one?
