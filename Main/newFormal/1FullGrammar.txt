@@ -186,8 +186,7 @@ Well-Formedness: e can not contain FULL.L, only CORE.L is allowed
 
 MH ::= Doc* "refine"? ("native" [ URL ])? mdf "method" T m-OP Doc*(Tx*) [T+]? //the Doc after the '(' is  conceptually on the this type.
 
-CORE.H ::= "interface"?[T+]?
-FULL.H  ::= CORE.H
+H ::= "interface"?[T+]?
 
 -----------------------------------
 Part 6: well formedness

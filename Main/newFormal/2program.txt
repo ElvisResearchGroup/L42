@@ -13,7 +13,6 @@ wrapEC::= wrapE but has all subexps as eC
 
 FULL.ctxC::=[]
  | wrapEC[ctxC]
- | eC strLit[eCs ctxC es]
  | eC.m?(ctxC par)
  | eC.m?(parC, x=ctxC, par)
  | eC[parCs; ctxC, par;pars]
