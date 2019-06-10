@@ -161,7 +161,7 @@ _______
 #define normalize(Y,FullE):HalfE
 //simple cases first
 
-normalize(Y,x)=x
+normalize(Y,x)=x //assert x not of form _
 normalize(Y,P)=Y.PType(P)
 normalize(Y,void)=void
 normalize(Y,L)=normalize(Y.p,L)
@@ -208,7 +208,7 @@ normalize(Y,e0 op .. op en)=(Ds e0" op .. op en")
 //blocks
 normalize(Y,( DEs Ks Wops? DEs2))=normalize(Y,(DEs Ks Wops? DEs2 void))
 normalize(Y,( DEs Ks Wops? DE DEs2 e))=normalize(Y,( DEs Ks Wops? (DE DEs2 e)))
-normalize(Y,( DEs Ks "wops" T1..Tn e)=( normalizeDE(Y,DEs) normalize(Y,Ks) K1..Kn normalize(Y,e) ) 
+normalize(Y,( DEs Ks "wops" T1..Tn e)=( normalizeDE(Y,DEs) normalizeK(Y,Ks) K1..Kn normalize(Y,e) ) 
   where Ki=catch exception resolveCs(p,Ti) xi error xi.#intoErrorAt(that:core({}))
    // what if xi has no #intoError method?
    
@@ -302,8 +302,8 @@ normalizePar(Y,e xes)=   that=normalize(Y,e) normalizePar(Y,xes)
 normalizePar(Y,x1=e1 .. xn=en)=  x1=normalize(Y,e1) .. xn=normalize(Y,en)
 
 normalizeDE(Y,e)= Void x= normalize(Y[T=empty],e), with x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
-normalizeDE(Y,T? _=e)= resolveCs(Y.p,T?) x= normalize(Y[T=T?,PType=classAny],e), with x fresh
-normalizeDE(Y,var T? x = e)=var resolveCs(Y.p,T?) x = normalize(Y',e)
+normalizeDE(Y,T? x=e)= resolveCs(Y.p,T?) underscoreIntoFresh(x)= normalize(Y[T=T?,PType=classAny],e), with x fresh
+normalizeDE(Y,var T? x = e)=var resolveCs(Y.p,T?) x = normalize(Y',e) //assert x not of form _
   Y'=Y[T=T?,PType=classAny] if T? in {empty,class Any} // to obtain classP the user just write down the type
   Y'=Y[T=T?,PType=classP] otherwise
 normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) = 
@@ -312,6 +312,8 @@ normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) =
   ..
   varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
   where x fresh
+normalizeK(Y,catch throw T x e)=catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e)
+normalizeK(Y,catch T x e)=catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e) 
   
 ------------------
 operator replacement:

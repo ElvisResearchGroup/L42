@@ -4,8 +4,6 @@ Part 1: grammars for auxiliary data and contexts
 LC::= //an L is LC if forall C in dom(L), L(C).e is of form CORE.L
 eC,parC,... ::= //an e is eC if all the L inside are of form LC, similarly for parC etcetera
 
-LL::= FULL.L | CORE.L
-
 FULL.wrapE::= throw [] | loop [] |[](.m)?( par) |[]Square | []StrLit |x updateOp [] |(T []) 
       | '(' DEs Ks WOPS? [] ')' | while e [] | for DXes []
       | if (MatchC+ |e) [] (else e0)?     

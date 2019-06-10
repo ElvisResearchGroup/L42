@@ -5,210 +5,148 @@ Notation for grammar:
 A -- B to mean anything matching A, but with no sub-string matching B
 
  When there are multiple grammar forms for the core and full, I will prefix them with CORE. and FULL. 
- (On the RHS of a CORE. or FULL. declaration, any unqualified forms should be interpreted as a CORE./FULL. (respectively) where all child-asts conform to their CORE versions)
- // I should explain that better!
---------------------------------------------------------------------------------------
+ On the RHS of a CORE. or FULL. declaration, any unqualified forms should be interpreted as a CORE./FULL. (respectively) where all child-asts conform to their CORE versions
 
 ======================================================================================
 Part 0: Lexical Syntax
 ======================================================================================
- NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D> (and others?)
-A line feed or carriage return
- CHAR   ::=  <0x20-0x7E> | NEWLINE
-An Any printable ASCII character, or a newline
-// You said "drown" on an english keyboard, and I wasn't sure wether that includes newlines or carriage returns, but unless you don't want Windows users to write 42 code, I think it should include both!
-
- STR-CHARS0 ::= CHAR* -- "
- STR-CHARS(i+1) ::= CHAR* -- STR-OP(i+1) -- STR-CL(i+1)
- STR-OP0 ::= empty
-  STRCL0 ::= empty
- STR-OP(i+1) ::= [ STR-OPi
-  STR-CL(i+1) ::= STR-CLi ]
- STRING ::= STR-OPi " STR-CHARSi (STR-OPi e STR-CLi CHARSi)* " STR-CLi
-
- NUMBER ::= <0-9>+ ("."|"_"|"-"|<0-9>)*
-
- COMM-CHARS ::= CHAR* -- "/*" -- "*/"
- COMMENT ::= "//" (CHAR* -- NEWLINE) NEWLINE | "/*" (COMM-CHARS | COMMENT)* "*/"
-
-// Note: this allows /* comments to nest
- WHITESPACE ::= (COMMENT | " " | NEWLINE| ",")+
-In any grammar form in any subsequent section, WHITESPACE is to be implicitecly allowed between every token, unless I write !WHITESPACE
-// (let me know if there are any such places you don't want to allow WHITESPACE)
-
- URL::= /*too boring*/
-// What was the reason for not just saying a URL is an arbitrary string literal (without [e]s of course)?
- 
- CHARS-CURLY ::= (CHAR* -- "{" -- "}") | CHARS-CURLY { CHARS-CURLY } CHARS-CURLY
-// charsWithBalancedCurly... (this is not a nice way of writing it at all...)
-
- ID-UP ::= _* (<A-Z> | $) 
- ID-LOW ::= _* <a-z>
- ID-CHAR   ::= <a-z> |<A-Z> | $ | _ | <0-9>
-
- n ::= 0 | <1-9> <0-9>*
-// Assume you don't want people to write This0001 instead of This1
-
- UNIQUE-NUM ::= _n?
-// I really don't like this syntax! //Isaac propose foo.n() and C.n.Bar
-
- CORE.x ::= ID-LOW ID-CHAR*
- FULL.x ::= CORE.X | "_"
- C ::= ID-UP ID-CHAR* UNIQUE-NUM
-  m ::= (#|#$)?x(#x)* UNIQUE-NUM
- m-OP ::= empty | m | OP | ~ | !
-
- OPP ::= ! | ~ | NUMBER  // prefix
-// Note: lower numbers denote higher precedence?
- OP0 ::= ^ | : | <- | << | & | '|' // right associative
- OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
- OP2 ::= == | != | < | > | >= | <= // unassiociative
- OP3 ::= => | && | "||" // right associative, will be short circuting
- OP  ::= OP0 | OP1 | OP2 | OP3 
- OP-UPDATE ::=  ":=" | (OP0 -- ":")= | OP1= 
- 
- mdf::= empty | mut | lent | read | capsule | fwd WHITESPACE mut | fwd | class | fwd%imm | fwd%mut
- // may be we could define two kinds of mdf 
-
- throw ::= "error" | "exception" | "return" // How about "except"? I find exception to be quite long (not an important point though)
-
-======================================================================================
-Paths and Stuff
-======================================================================================
-> //for under: This and Thisn are valid C, is just going to be well formedness to avoid issues
- Doc ::= @PathLit | @PathLit?{(CHARS-CURLY -- DOC|DOC)*}
- PathLit::= Cs | Cs? s | Cs? s.x
- s  ::= m-OP(x*)
- Ldom::=s | Cs
- Tx ::= T x
-
- Cs ::=C(.C)*  
- 
- CORE.T  ::= mdf Doc* P //even Docs containing Ps will have Ps from the subset.
- FULL.T  ::= CORE.T | "\"
-
-// Now the Doc comes after? Ok we need to have a proper discussion about this!
-
- CORE.P  ::= Thisn.Cs? | Any | Void | Library
- FULL.P  ::= Cs  // in the full This, Any,Void,Library are C
+NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D>
+//A line feed or carriage return
+CHAR   ::=  <0x20-0x7E> | NEWLINE
+//An Any printable ASCII character, or a newline
+STR_CHARS0 ::= CHAR* -- "
+STR_CHARS(i+1) ::= CHAR* -- STR_OP(i+1) -- STR_CL(i+1)
+STR_OP0 ::= empty
+STRCL0 ::= empty
+STR_OP(i+1) ::= [ STR_OPi
+STR_CL(i+1) ::= STR_CLi ]
+STRING ::= STR_OPi " STR_CHARSi (STR_OPi e STR_CLi CHARSi)* " STR_CLi
+NUMBER ::= <0-9> ('.'|'_'|'-'|<0-9>)*
+COMM_CHARS ::= CHAR* -- '/*' -- '*/'
+COMMENT ::= '//' (CHAR* -- NEWLINE) NEWLINE | '/*' (COMM_CHARS | COMMENT)* '*/' // Note: this allows /* comments to nest
+WHITESPACE ::= (COMMENT | ' ' | NEWLINE| ',')+
+URL::= /*too boring*/
+CHARS_CURLY ::= (CHAR* -- '{' -- '}') | CHARS_CURLY { CHARS_CURLY } CHARS_CURLY
+ID_UP ::= _* (<A-Z> | $) 
+ID_LOW ::= _* <a-z>
+ID_CHAR   ::= <a-z> |<A-Z> | $ | _ | <0-9>
+n ::= 0 | <1-9> <0-9>*
+UNIQUE_NUM ::= (::n)?
+FULL.x ::= ID_LOW ID_CHAR* | '_'
+C ::= ID_UP ID_CHAR* UNIQUE_NUM
+m ::= (#|#$)?x(#x)* UNIQUE_NUM
+mOp ::= empty | m | OP | ~ | !
+OPP ::= ! | ~ | NUMBER  // prefix
+OP0 ::= ^ | : | <- | << | & | '|' // right associative
+OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
+OP2 ::= == | != | < | > | >= | <= // unassiociative
+OP3 ::= => | && | '||' // right associative, will be short circuting
+OP  ::= OP0 | OP1 | OP2 | OP3 
+OP_UPDATE ::=  ':=' | (OP0 -- ':')= | OP1= 
+mdf::= empty | mut | lent | read | capsule | fwd WHITESPACE mut | fwd | class | fwd%imm | fwd%mut 
+throw ::= 'error' | 'exception' | 'return' 
+Cs ::=C(.C)*
+Doc ::= @PathLit | @PathLit?{(CHARS_CURLY -- DOC|DOC)*}
+PathLit::= Cs | Cs? s | Cs? s.x
+s  ::= mOp(x*)
+Ldom::=s | Cs
+Tx ::= T x
+MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T mOp Doc*(Tx*) [T+]? //the Doc before the '(' is  conceptually on the this type.  
+H ::= 'interface'?[T+]?
+FULL.P  ::= Cs  // in the full This, Any,Void,Library are C
+FULL.T  ::= mdf Doc* P | '\'
 
 ==================================================================================================================
-Part 2: Expressions:
+Part 1: FULL Expressions
 ==================================================================================================================
- CORE.e   ::= x | "(" T P ")" | void | L |  xPP . m "(" xe* ")" | loop e | throw e | x := e | "(" D* K* e ")"
- CORE.xPP  ::= x | (T P)
-  xe ::= x = e
+eAtomic ::= x | P | 'void' | LL | block | (T e) | \ | \x | 'PathLit
+ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' 
+              | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix STRING
+//PARSING HINT: if an expression ends with ')' ']' or ''', and the next character
+//is  '(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
 
- CORE.D   ::= "var"? T x = e
- CORE.K   ::= "catch" throw T x e
- FULL.K   ::= "catch" throw? T x e // TODO: normalise empty throw to exception
-FULL:
- e-atomic ::= x | P | "void" | L | block | (T e) | \ | \x | 'PathLit
- e-postfix ::= e-atomic | e-postfix (.m)? !WHITESPACE "(" par ")" 
-              | e-postfix (.m)? '[" (par;)* par? "]" | e-postfix STRING
-// The !WHITESPACE is apparanetly needed to disambigoute againts e-postfix block
-//or, easier to parse: if an expression ends with ')' ']' or '"', and there next character is  '(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
+par ::= e? xe*
+eUnary   ::= OPP? ePostfix
+eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
+eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
+eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
+eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
+block ::= '(' DE* e ')' | '(' DE+ K* WOPS? (DE* e)? ')' | '{' DE* (DE K+ WOPS? DE*)? '}'
+DE  ::= (DX =)? e
+DX  ::= 'var'? T? x | T? '(' ('var'? T? x)+ ')'
+WOPS ::= wops T+
+FULL.K   ::= catch throw? T x e
+statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x OP_UPDATE e
+sIf  ::= 'if' e e ('else' e)? | 'if' Match+ e
+Match ::= T x | T x = e | T? '(' (T? x)+ ')' = e //where at least one Ti? is not empty
+sWhile::= 'while' e e
+sFor ::= 'for' (DX in e)* e
+FULL.e  ::= statement | e-binary3
+FULL.L ::= H { (... | reuse[URL])? M*}
+LL::= FULL.L | CORE.L
+FULL.M  ::= F | MI | MWT | NC 
+FULL.F  ::= 'var'? T x
+FULL.MI ::= Doc* s = e
+FULL.MWT ::= MH (= e)?
+FULL.NC ::= Doc* C = e
 
- par ::= e? xe*
+==================================================================================================================
+Part 2: Abstract syntax and core
+==================================================================================================================
+CORE.P  ::= Thisn.Cs? | Any | Void | Library
+CORE.T  ::= mdf Doc* P //even Docs containing Ps will have Ps from the subset.
+CORE.e ::= x | (T P) | void | L |  xPP.m(x1=e1..xn=en)
+         | loop e | throw e | x := e | ( Ds Ks e )
+CORE.x ::= ID_LOW ID_CHAR*
+CORE.xPP  ::= x | (T P)
+CORE.D   ::= var? T x = e
+CORE.K   ::= catch throw T x e
+CORE.NC ::= Doc* C = L
+CORE.L ::= H {Info Doc* MWT* NC*}
+Info::= [Flag;
+  P*;//typeDep
+  P*;//coherentDep
+  P*;//friendsDep = P* are spyed by This
+  //Paths whose unique numbers are used either directly,
+  //or in a private nested class or in an L in a method
+  P.s*;//usedMethDep//methods used either directly or ...
+  P* //interfaces implemented by a private nested class or in an L in a method: privatly implement
+  ]
+Flag ::= 'norm' | typed
+typed::= 'coherent'?
  
- e-unary ::= e-postfix | OPP e-postfix
- 
- e-binary0 ::= e-unary (OP0 e-unary)* //right associative, all ops must be the same
- e-binary1 ::= (e-binary0 OP1)* e-binary0 //left associative, all op the same
- e-binary2 ::= (e-binary1 OP2)* e-binary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
- e-binary3 ::= (e-binary2 OP3)* e-binary2 //left associative, all op the same
- 
- block   ::= "(" block-body ")" | '{' DE* (DE K+ WOPS? DE*)?  '}'
- block-body ::= DE* e | DE+ K* WOPS? DE* e | DE* e K+ WOPS?
-
- DE  ::= (DX =)? e
- DX  ::= "var"? T? x | T? "(" ("var"? T? x)+ ")"
- WOPS ::= wops T+
-
- statement  ::= IF | While | For | "loop" e | "throw" e | x OP-UPDATE e
- IF  ::= "if" e e ("else" e)? | "if" Match+ e
- Match ::= T x | T x = e | T? "(" (T? x)+ ")" = e //where at least one Ti? is not empty
-
- While::= "while" e e
- For ::= "for" (DX in e)* e
-
- FULL.e  ::= statement | e-binary3
-
-//Abstract grammar for FULL.e 
-FULL.e ::= x | P | void | L | \ | \x  
+FULL.e ::= x | P | void | LL | \ | \x  
   | e strLit[e1..en] | 'PathLit | OPP e
   | e0 OP .. OP en | (T e)
   | e .m? ( par ) | e .m? [ pars ]
   | ( DEs Ks Wops? DEs e? ) | { DEs Ks Wops? DEs }
-  | loop e | throw e | x OP-UPDATE e
+  | loop e | throw e | x OP_UPDATE e
   | if e0 e1 (else e2)? | if Match+ e | while e0 e1
   | for DX0 in e0 .. DX1 in en e
-  
-strLit[e1..en]=STR-OPi" STR-CHARSi STR-OPi e1 STR-CLi CHARSi1 .. STR-OPi en STR-CLi CHARSin "STR-CLi
-==================================================================================================================
-Part 3: Libary literals
-==================================================================================================================
- FULL.L ::= CORE.L | H { (... | reuse[URL])? M*}
- CORE.L ::= H {Info Doc* MWT* NC*}
-Well-Formedness:
-    * if C__n in dom(L) or m__n(xs) in dom(L), then for any other L' in the project, C'__n notin dom(L') and m'__n(xs') notin dom(L')
-    * unique LDom in dom(L) // what?
-    * Any notin H //Library and Void are not interfaces so you will get the normal error from implementing them
-    * Exists at most one n such that exists m__n(xs) where L(m__n(xs))=mwt, and mwt.e? is empty
-    * if H.interface? = interface, then methods in interfaces have no body and forall m__n(xs),  m__n(xs) notin dom(L)
-   
-CORE.Well-Formedness: 
-        need to mention all the methods of all implemented interfaces, and list all the transitively implemented interfaces.
-        
- Info::= [Flag;
-    P*;//typeDep
-    P*;//coherentDep
-    P*;//friendsDep = P* are spyed by This
-    //Paths whose unique numbers are used either directly,
-    //or in a private nested class or in an L in a method
-    P.s*;//usedMethDep//methods used either directly or ...
-    P* //interfaces implemented by a private nested class or in an L in a method: privatly implement
- ]
- Flag ::= "norm" | typed
- typed::= "coherent"?
 
-FULL.M  ::= F | MI | MWT | NC | CORE.NC 
-FULL.MI ::= Doc* s = e
-Well-Formdness: e can not contain FULL.L, only CORE.L is allowed
-// WHY?
-FULL.F  ::= "var"? T x
-
-CORE.NC ::= Doc* C = L
-FULL.NC ::= Doc* C = e
- 
-MWT ::= MH (= e)?
-Well-Formedness: e can not contain FULL.L, only CORE.L is allowed
-
-MH ::= Doc* "refine"? ("native" [ URL ])? mdf "method" T m-OP Doc*(Tx*) [T+]? //the Doc after the '(' is  conceptually on the this type.
-
-H ::= "interface"?[T+]?
+strLit[e1..en] = STR_OPi' STR_CHARSi STR_OPi e1 STR_CLi CHARSi1 .. STR_OPi en STR_CLi CHARSin 'STR_CLi
 
 -----------------------------------
-Part 6: well formedness
+Part 3: well formedness
 -----------------------------------
 
-
-* BIN:
-  if BIN of form DE*1 DE e DE*2 e0, then noBlockNeeded(DE.e)
-  if BIN of form DE*1 K* K e DE*2 e0, then noBlockNeeded(K.e)
-  if BIN of form DE*1 K* K e, then noBlockNeeded(loop K.e)
-  if BIN of form DE*1 DE e, then noBlockNeeded(DE.e)
+* block ( DEs Ks Wops? DEs e? )
+  if block of form (_ DE e _), then noBlockNeeded(DE.e)
+  if block of form (_ K e _), then noBlockNeeded(K.e)
 _______
 #define noBlockNeeded(e):
   noBlockNeeded(B)
-  noBlockNeeded(b3e)
-  noBlockNeeded(S)
-   if S is of form 'while e0 e', 'if e0 e', 'for DXe+ e', 'if e0 e1 else e' or 'loop e'
-   then e must be of form 'B', 'throw _', 'loop _' or 'void'
+  noBlockNeeded(throw e)
+  noBlockNeeded(x OP_UPDATE e)
+  noBlockNeeded(loop e)= 
+    noBlockNeeded(if Match+ e)=noBlockNeeded(if e0 e)=
+    noBlockNeeded(if e0 e1 'else' e)= 
+    noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)* e)=
+      noBlockNeeded(e)
 
 * DE: var T x=e is valid only if T not capsule or fwd.
-  if e = DE, that is,(DX=)?=empty, then e not of form '...', x, P, void, L, core(L), \, \x or 'PathLit
-  //none of those would make sense anyway, and it helps with parsing a()()
+  if e = DE, that is,(DX=)?=empty, then e not of form x, P, void, LL, \, \x or 'PathLit
+  //none of those would make sense anyway, sadly do not helps with parsing a()(), immagine a+b (c).
 
 * s: 'this' notin xs and all x in xs are unique
 
@@ -218,15 +156,15 @@ _______
 
 * NC: NC.C not Any, Library, Void, This, Thisn
 
+* FULL.Cs: only the first C can be This or Thisn, 
+    Cs can contains Library, Void, Any only if Cs=C
+* CORE.Cs: not contain Library, Void, Any, This, Thisn
 
-* loop P, loop x, loop void, loop L, not well formed
+* loop P, loop x, loop void, loop LL, not well formed
 * (ds1 ks ds2 e): unique x in dom(ds1,ds2), FV(ks) disjoint dom(ds1,ds2)
 
-* native[P]: P not Any/Void/Library
-
-//C:e :  FV(e)=empty subsumed by next check
-
-* C:e : //checks for capsuleWellFormed and absence of free variables
+  //C=e:  FV(e)=empty subsumed by next check
+* C=e: //checks for capsuleWellFormed and absence of free variables
    cX(e)=empty  //FV(e)=empty this is implied
    //Note: need to be checked again after normalization
 
@@ -235,7 +173,7 @@ _______
   if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
-* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a "s=e"
+* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
   mwt= refine? mdf method T m(T1 x1..Tn xn)[Ts]e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
@@ -267,11 +205,11 @@ _______
   max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
 
 
-* B of form { DEs1 Ks WOPS? DEs2} returning({ DEs1 Ks WOPS? DEs2}) must hold
-* B of form (DEs1 Ks WOPS? DEs2 e)
+* block of form { DEs1 Ks WOPS? DEs2}: returning({ DEs1 Ks WOPS? DEs2}) must hold
+* block of form (DEs1 Ks WOPS? DEs2 e):
     forall DE in DEs1,DEs2: not returning(DE)
-* B of form (DE* e K+ WOPS?)
-    forall DE DE*: not returning(DE) 
+* block of form (DE* e K+ WOPS?):
+    forall DE in DE*: not returning(DE) 
 _______
 #define returning({ DEs1 Ks WOPS? DEs2})
   returning({ DEs1 Ks WOPS? DEs2})=returning({ DEs1 Ks DEs2})
@@ -288,9 +226,20 @@ _______
  returning( (DEs1 Ks WOPS? DEs2 e) ) iff
    returning(e)
    forall catch throw T x e' in Ks: returning(e')
- //forall DE in DEs1,DEs2: not returning(DE) already in block well formedness
- //returning(T x=e) does not hold, so DE must be of form e for returning to hope to hold 
 
+* e: an e that is a body of a method cannot contain FULL.L.
 
-//TODO: alive and similar was well formedness somewhere... recover them
-//TODO: Cs and similar may only start for This or Thisn but not have it in the middle. 
+* L:
+  * if C::n in dom(L) or m::n(xs) in dom(L), then for any other L' in the project, C'::n notin dom(L') and m'::n(xs') notin dom(L')
+  * M1, M2 in dom(L) and dom(M1)=dom(M2) implies M1=M2
+  * Any notin H
+  * Exists at most one n such that exists m::n(xs) where L(m::n(xs))=mwt, and mwt.e? is empty
+  * if H.interface? = interface, then forall s in dom(L), L(s).e?=empty
+  * if H.interface? = interface, then forall m::n(xs),  m::n(xs) notin dom(L) //TODO: may be we need private methods in interfaces for the new rename
+   
+CORE.L:
+  *difficult: need to be normalized, but that depends on a program p...
+  So, is ti well formedness on a project?
+  We can not ask that if a LL is a CORE.L then all the dependencies are core.
+  What about checking during type checking? so a CORE.L would be not well typed but well formed...
+  
