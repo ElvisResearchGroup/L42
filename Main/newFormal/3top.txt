@@ -24,6 +24,9 @@ p ==> p.update(p.top()[MCs'])
   eC' -->p+ r //execute the expression under the program and obtain a result
   CORE.L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
   p|- MCs,C=CORE.L -> MCs' //type all the MCs that can be compiled now
+  if Ms is empty: //TODO: make more formal
+    if p.top() refer to non alive paths, error
+    if p.top() refer to all completed paths, type it and annotate it. 
 
 (enter)
 p ==> p'.pop()
@@ -37,13 +40,7 @@ p ==> p'.pop()
   // and p'.top() is the LC result of metaprogramming L
  
  
- Need to define:
- normalize(Y,e) normalize(p,e)
- p|-MCs->MCs' //this needs to fail if we discover a Path is not alive any more
- collectDeps(L)
- alive(p,P) to check for all P at the end of normalize
- //forall P inside MH e?, alive(p,P) //else error here 
- 
+ Relate to 4norm and typing (still to upgrade) 
 _______
 #define collectDeps(CORE.L) 
 collectDeps(interface?[Ts]{MWT1...MWTn1 NCs})=Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
@@ -65,3 +62,66 @@ collectDepsE((class P' P))= P',P;P
 collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
 collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
 collectDepsE(T x=e)=T;empty U collectDepsE(e)
+
+-----------------------------------
+p|-MCs->MCs'
+-----------------------------------
+//this needs to fail if we discover a Path is not alive any more
+
+p|-MCs->MCs'
+
+take the largest set of NCs so that assuming them to be well typed
+and any other typed path to be well typed, then
+they can be typed. Then change their Flag to typed
+
+-? finally, for each path in all typed paths, check if it is still alive.
+It is only needed in Docs
+
+_______
+#define P in typed(p) iff p(P).info.Flag=typed
+_______
+#define P in coherent(p) iff p(P).info.Flag=coherent
+_______
+#define typable(p,MCs)=Csz
+Cs1..Csn=typable(p,MCs)
+  is the largest subset of dom({MCs}) so that forall i:
+    p(This0.Csi).info.Flag=norm
+    p(This0.Csi).depTyped subset typed(p) U This0.Cs1..This0.Csn
+  defined only if forall C=CORE.L in MCs:
+    forall P in CORE.L.info.depTypes:
+      alive(p,P) //else compile time error here
+
+_______
+#define typableCoherent(p,MCs)=Csz
+Cs1..Csn=typableCoherent(p,MCs)
+  is the largest subset of dom({MCs}) so that forall i:
+    p(This0.Csi).Flag=empty
+    p(This0.Csi).depCoherent subset coherent(p) U This0.Cs1..This0.Csn 
+  
+_______
+#define mark(Flag,M,Csz)=M
+markTyped(NC, Cs Csz)=markTyped(NC[Cs.info.Flag=Flag], Csz)
+markTyped(M,Csz)=M
+  where dom({M}) not in Csz
+
+_______
+#define p|-MCs->MCs'
+  p|-MCs->mark(coherent,mark(empty,MCs,Csz),Csz')// are we sure we want to use empty to mean 'typed but not coherent'?
+    where
+    typable(p,MCs)=Csz
+    forall Cs in typable(p,MCs):
+      p.navigate(Cs)|-{MCs}(Cs) : OK
+    Csz'=coherent(p,mark(empty,MCs,Csz))
+//WHEN AND HOW docs are checked so that the paths inside
+//the docs are alive and not 'mispelled'?
+// alive(p,P) to check for all P at the end of normalize ??
+//forall P inside MH e?, alive(p,P) //else error here 
+
+_______
+#define alive(p,P) //check if P is defined or has some hope of being defined in the future
+alive(p,Any),alive(p,Void),alive(p,Library) holds
+alive(p,Thisn.Cs)=alive(p(Thisn),Cs) 
+alive(CORE.L,Cs)= Cs in dom(CORE.L)
+alive(FULL.L,Cs)=
+  if FULL.L(C)=LL and alive(LL,Cs)
+  or FULL.L(C)=e, e not of form LL

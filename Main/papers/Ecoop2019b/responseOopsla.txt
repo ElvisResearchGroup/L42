@@ -2,28 +2,27 @@ We thank the reviewers for their comments and time and we will take them all int
 
 About the explicit questions of Rev1:
 
+------
 >What is the relation to the invariant protocols discussed in [Summers et al. 2009]?
-"The Need for Flexible Object Invariant" discusses invariants as logic properties to verify statically,
-not as language expressions to verify at run time. It also focus most of its content on
-invariants that can be observed broken, "client code can neither observe the invariant in a broken state nor.."
-is called "encapsulated fascion" and is considered just a (useful) special kind of invariant.
-In our approach all invariants can never be observed broken.
-Moreover, in the whole paper, there is no discussion about how non determinism, I/O and exceptions may create problems for invariants.
 
+"The Need for Flexible Object Invariants" approaches invariants as logic properties that can be verified statically.
+It focuses most of its content on the invariant protocols that allow observation of broken invariants.
+It uses the term "encapsulated fashion" for a (useful) special kind of invariant that cannot be observed broken.
 
+In our approach we perform runtime invariant checking using expressions written in the underlying programming language, and our invariants can never be observed broken. Furthermore we discuss nondeterminism, I/O and exceptions while their work avoids such practical yet major issues.
+
+--------
 >The protocol description in Section 3 mentions "as does the very similar concept of owner-as-modifier",
 >but then I couldn't find a detailed explanation or comparison. What is the relationship?
 
-In ownership as modifiers, references to owned objects can escape the control of the owner in read-only mode:
-that is, any mutation operation on owned objects need to be initiated by the owner (in terms of stack trace, a method
-of the owner must be active on the stack).
-However, other objects can hold references to those owned objects and can read their ROG.
-Type modifiers like read/readonly/readable simplify implementations of owner-as-modifier patterns, but
-this is possible also without modifiers; for example Java offers Collections.unmodifiableList(..), a poorly named method
-that wraps a list into a readonly wrapper. With such library, the owner of a list (but not of its elements) can wrap the list 
-using Collections.unmodifiableList(..) before returning it from a public getter.
+In owners-as-modifiers, references to owned objects can escape the control of the owner in read-only mode: that is, any mutation operation on owned objects needs to be initiated by the owner (in terms of stack trace, a method of the owner must be active on the stack).
 
-You can see our approach as a simplified version of an owner-as-modifier approach,
-where we could consider an object to be the ‘owner’ of all the mutable objects in the ROG of its capsule fields.
-This is more rigid that most ownership approaches where each class/object can decide in a very flexible way what objects are owned and what are not.
- 
+However, other objects can hold references to those owned objects and can read their ROG.
+
+Type modifiers like read/readonly/readable simplify implementation of owner-as-modifier patterns, but this is also possible without modifiers; for example Java offers Collections.unmodifiableList(..), a poorly named method that wraps a list into a readonly wrapper. With such library, the owner of a list (but not of its elements) can wrap the list using Collections.unmodifiableList(..) before returning it from a public getter.
+
+You can see our approach as a simplified version of an owner-as-modifier approach, where we could consider an object to be the ‘owner’ of all the mutable objects in the ROG of its capsule fields.
+
+This is more rigid that most ownership approaches where each class/object can decide in a very flexible way what objects are owned
+and what are not.
+

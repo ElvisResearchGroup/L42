@@ -288,8 +288,8 @@ normalize(Y,while e0 e1)=(Void x=loop(  normalize(Y,(e0.#checkTrue() e1)) ) catc
 normalize(Y,for DX1 in e1..DXn in en e)=normalize(Y,(
   c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
   var i1=c1.indexZero() .. var i1=cn.indexZero()
-  while c1.hasNext(i1) &&..&& cn.hasNext(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
-    DX1 = c1.next(i) .. DXn = cn.next(i);
+  while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
+    DX1 = c1.elem(i) .. DXn = cn.elem(i);
     e[xi updateOp e'= (toBinOp(xi, updateOp) e' ci.update(ii, xi))]
     i1:=i1.succ() .. in:=in.succ()
     )
