@@ -1,0 +1,166 @@
+
+
+\[\ := mdf? PP] ::= PP
+(\ x = e)[\ := PT] ::= PT x = e[\ := PT]
+(catch throw \ e)[e := PT] ::= catch thow PT e[\ := PT]
+// otherwise propegate on D, K, e
+
+
+HALF.e::= x | (CORE.T CORE.P) | void | CORE.L | \ 
+  | throw e | loop e | x := e  | xP.m(xe*) | xP (op xP)+ | ( Ds Ks e )  
+// HALF.L ::= H { (C = HALF.L | MH = HALF.e)* }
+--------------------------------
+G | CCz |- HALF.e : CORE.T | CCz
+
+--------------------------------
+// TODO: check that there are no \'s outside of method calls....
+TX ::=  T | X;  PX ::=  P | X
+PT ::= TX | PT.s | PT.s.i; PP ::= PX | PX.s | PX.s.i
+// TODO: Update normalisation, so that x = e ==> X x = e
+G := x -> PT
+
+
+//NEW
+
+   G|CCz +> e:PT' = _|CCz'
+--------------------------------------
+   G|CCz +> (PT x = e)  = G|CCz',PT' <= PT
+
+   G,x->PT|CCz +> e:PT' = _|CCz'
+--------------------------------------
+   G|CCz +> (catch throw PT x e : X)  = G|CCz',PT' <= X
+
+
+   G(D1..Dn)|CCz +> D1 +> .. +> Dn +> e:PT = _|CCz'
+   G|CCz',PT <= X +> K1:X +> .. +> Kk:X +> _|CCz''
+-----------------------------------------------------
+   G|CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
+
+--------------------------
+  G | CCz +> (x : G(x)) = G | CCz
+
+--------------------------
+  G | CCz +> ((T P) : T) = G | CCz
+
+  
+  s = m(x1 ... xn)
+  G | CCz +> e0 : PT0+> e1:PT0.s.1 +>..+> en:PT0.s.n = _| CCz'
+-------------------------------------------------------------------
+  G | CCz +> e0.m(x1=e1, ..., xn=en) : PT0.s = G | CCz'
+
+  G | CCz +> e[\ := PT.s.i] : PT'
+------------------------------------------------
+  G | CCz +> e:PT.s.i = G| CCz',PT' <= PT.s.1
+
+  G | CCz +>  e : PT  = _| CCz'
+-----------------------------------------------
+  G | CCz +> x := e : Void = G | CCz', PT <= G(x)
+
+  G | CCz +> e : PT = _ | CCz'
+----------------------------------------------- for fresh X
+  G | CCz +> throw e : X  = G | CCz',PT<=X
+
+
+  G | CCz +> e : PT = _ | CCz'
+------------------------------------------------
+  G | CCz +> loop e : Void | CCz', PT <= Void
+
+
+//OP rule: still to convert and probably to finalize: it still does not try to infer the P.$OP...
+
+=========================================================================================
+    { s } = { s | forall x1..xn, forall {i}={0..n} where,
+        s = methName(OP)_i(x1..xn)
+        Ps = paramaterTypes(PTi, CCz, s)
+        !unsatisfiable((PT0..PTn\i).PPs <= Ps, CCz(n+1)) }
+    forall j,x1..xn forall (class P P) in xP0..xPn:
+      p(P.$methName(OP)_j)(#apply(x1..xn)) undefined
+
+             G | CCz0      |- xP0 : PT0 | CCz1
+                         ...
+             G | CCzn      |- xPn : PTn | CCz(n+1)
+            PT'1 ... PT'n = PT0 ... PTn \ s.i
+---------------------------------------------------------------------------------------------------
+             G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz(n+1), PT'1 <= PTi.s.1 ... PT'n <= PTi.s.n
+=========================================================================================
+unsatisfiable(P <= P', CCz)
+  if p |/- P <= P'
+
+unsatisfiable(PP <= P', PP <= P", CCz)
+  exists s in dom p[P'] and p[P"], where origin(s, P') != origin(s, P")
+
+unsatisfiable(PP <= P', PP <= P", CCz)
+  no P in dom(p) such that P <= P' and P <= P"
+
+
+
+//OLD------------
+--------------------------
+G | CCz |- x : G(x) | CCz
+
+--------------------------
+G | CCz |- (T P) : T | CCz
+
+    Ds = D1 ... Dn
+    G(Ds) | CCz1 |- D1 | CCz2
+    ...
+    G(Ds) | CCzn |- Dn | CCz(n+1)
+    G | X | CCz(n+1) |- K1 | CCz(n+2)
+    ...
+    G | X | CC(n+k+1) |- Kk | CCz(n+k+2)
+    G(Ds) n + k + 3
+    --------------------------------------- X Fresh
+     G |- CCz1  |- A(Ds K1 ... Kk e) : X | CCz(n+k+2)
+=========================================
+         G | CCz0 | Ds | CCz1
+         G | X | CCz1 |- Ks |CCz2
+         G(Ds) | CCz2 |- e : PT | CCz3
+---------------------------------------------------------- X fresh
+         G | CCz0  |- (Ds Ks e) : X | CCz3, PT <= X
+
+         G(Ds) | CCz0              |- e1 : PT'1 | CCz1
+         G(Ds) | CCz1, PT'1 <= PT1 |- e2 : PT'2 | CCz2
+         ...
+         G(Ds) | CCz(n-1), PT'(n-1) <= PT(n-1) |- en : PT'n | CCzn
+         Ds = PT1 x1 = e1 ... PTn xn = en
+-------------------------------------------------------------------
+           G | CCz0 |- Ds | CCzn, PT'n <= PTn
+
+
+         G, x1 -> PT1 | CCz1 |- e1 : PT'1 | CCz2
+         ...
+         G, xn -> PTn | CCzn |- en : PT'n | CCz(n+1)
+         Ks = catch throw1 PT1 x1 e1 ... catch thrown PTn xn en
+----------------------------------------------------------
+           G | X | CCz1 |- Ks | PT'1 <= X, ..., PT'k <= X
+===============================================================
+
+
+================
+
+             G | CCz0     |- e0                : PT0   | CCz1
+             G | CCz1     |- e1[\ := PT0.s.1]  : PT1   | CCz2
+                        ...
+             G | CCzn     |- en[\ := PT0.s.n]  : PTn   | CCz(n+1)
+             s = m(x1 ... xn)
+             CCz' =  PT1 <= PT0.s.1, ..., PTn <= PT0.s.n
+-------------------------------------------------------------------------
+             G | CCz0     |- e0.m(x1=e1, ..., xn=en) : PT0.s | CCz(n+1), CCz'
+
+
+=========================================================================================
+
+    G | CCz |- e : PT        | CCz'
+-----------------------------------------------
+    G | CCz |- x := e : Void | CCz', PT <= G(x)
+
+
+
+    G | CCz |- e : PT        | CCz'
+----------------------------------------------- for fresh X
+    G | CCz |- throw e : X   | CCz'
+
+
+    G | CCz |- e : PT         | CCz'
+------------------------------------------------
+    G | CCz |- loop e : Void | CCz', PT <= Void

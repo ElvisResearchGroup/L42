@@ -12,10 +12,10 @@ propagates the execution inside nested classes and libraries in method bodies.
 r::=LC| exception v | error v
 
 (top)
-p ==> p.update(p.top()[MCs'])
+p ==> p.update(LL)
   where
-  p.top()=_[Ps0]{MCs  C:e Ms}//MCs are already compiled
-  e not of form core(L)//thus e is the first point to execute
+  p.top()=H{MCs C=e Ms}//MCs are already compiled
+  e not of form CORE.L//thus e is the first point to execute
   eC=normalize(Y[p=p,?xP=empty,T?=Library,PType=error],e) //eC is core
   p|-eC:T
   eC'=eC if T.P=Library
@@ -23,10 +23,9 @@ p ==> p.update(p.top()[MCs'])
   eC'=(T x=eC x.#toLibrary()) otherwise, with x fresh
   eC' -->p+ r //execute the expression under the program and obtain a result
   CORE.L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
-  p|- MCs,C=CORE.L -> MCs' //type all the MCs that can be compiled now
-  if Ms is empty: //TODO: make more formal
-    if p.top() refer to non alive paths, error
-    if p.top() refer to all completed paths, type it and annotate it. 
+  p'=p.update(H{MCs C=CORE.L Ms}) if Ms not empty
+  p'=p.update(normalize(p,H{MCs C=CORE.L})) otherwise
+  |- p' -> LL //type all the MCs that can be compiled now, including This0
 
 (enter)
 p ==> p'.pop()
@@ -40,7 +39,6 @@ p ==> p'.pop()
   // and p'.top() is the LC result of metaprogramming L
  
  
- Relate to 4norm and typing (still to upgrade) 
 _______
 #define collectDeps(CORE.L) 
 collectDeps(interface?[Ts]{MWT1...MWTn1 NCs})=Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
@@ -64,54 +62,48 @@ collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE
 collectDepsE(T x=e)=T;empty U collectDepsE(e)
 
 -----------------------------------
-p|-MCs->MCs'
+|-p->CORE.L
 -----------------------------------
-//this needs to fail if we discover a Path is not alive any more
-
-p|-MCs->MCs'
-
-take the largest set of NCs so that assuming them to be well typed
-and any other typed path to be well typed, then
-they can be typed. Then change their Flag to typed
-
--? finally, for each path in all typed paths, check if it is still alive.
-It is only needed in Docs
-
+//TODO: decide where to check if docs patsh are still alive
 _______
 #define P in typed(p) iff p(P).info.Flag=typed
 _______
 #define P in coherent(p) iff p(P).info.Flag=coherent
 _______
-#define typable(p,MCs)=Csz
-Cs1..Csn=typable(p,MCs)
-  is the largest subset of dom({MCs}) so that forall i:
+#define typable(p)=Csz
+Cs1..Csn=typable(p)
+  is the largest subset of dom(p.top()) so that forall i:
+    p(This0.Csi) of form CORE.L
     p(This0.Csi).info.Flag=norm
     p(This0.Csi).depTyped subset typed(p) U This0.Cs1..This0.Csn
-  defined only if forall C=CORE.L in MCs:
+  defined only if forall CORE.L in {p.top()(Cs) : Cs in dom(p.top())}:
     forall P in CORE.L.info.depTypes:
       alive(p,P) //else compile time error here
 
 _______
-#define typableCoherent(p,MCs)=Csz
-Cs1..Csn=typableCoherent(p,MCs)
-  is the largest subset of dom({MCs}) so that forall i:
+#define typableCoherent(p)=Csz
+Cs1..Csn=typableCoherent(p,p.top())
+  is the largest subset of dom(p.top()) so that forall i:
+    p(This0.Csi) of form CORE.L
     p(This0.Csi).Flag=empty
     p(This0.Csi).depCoherent subset coherent(p) U This0.Cs1..This0.Csn 
   
 _______
-#define mark(Flag,M,Csz)=M
-markTyped(NC, Cs Csz)=markTyped(NC[Cs.info.Flag=Flag], Csz)
-markTyped(M,Csz)=M
-  where dom({M}) not in Csz
+#define mark(Flag,LL,Csz)=M
+markTyped(LL, Cs Csz)=markTyped(LL[Cs.info.Flag=Flag], Csz)
+markTyped(LL,Csz)=L
+  where dom(LL) not in Csz
 
 _______
-#define p|-MCs->MCs'
-  p|-MCs->mark(coherent,mark(empty,MCs,Csz),Csz')// are we sure we want to use empty to mean 'typed but not coherent'?
+#define |- p ->CORE.L'
+  |-p -> mark(coherent,mark(empty,L,Csz),Csz')
     where
-    typable(p,MCs)=Csz
-    forall Cs in typable(p,MCs):
-      p.navigate(Cs)|-{MCs}(Cs) : OK
-    Csz'=coherent(p,mark(empty,MCs,Csz))
+    typable(p)=Csz
+    forall Cs in Csz:
+      if p.top()(Cs)=CORE.L
+      then p.navigate(Cs)|-p.top()(Cs) : OK
+    Csz'=coherent(p,mark(empty,p.top(),Csz))
+    
 //WHEN AND HOW docs are checked so that the paths inside
 //the docs are alive and not 'mispelled'?
 // alive(p,P) to check for all P at the end of normalize ??
@@ -125,3 +117,4 @@ alive(CORE.L,Cs)= Cs in dom(CORE.L)
 alive(FULL.L,Cs)=
   if FULL.L(C)=LL and alive(LL,Cs)
   or FULL.L(C)=e, e not of form LL
+  
