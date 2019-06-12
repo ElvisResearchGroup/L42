@@ -11,6 +11,13 @@ propagates the execution inside nested classes and libraries in method bodies.
 
 r::=LC| exception v | error v
 
+(topNorm)
+p ==> p.update(L)
+  where
+  p.top()=H{MCs}=FULL.L
+  CORE.L=normalize(p,p.top())
+  |- p.update(CORE.L) -> L
+
 (top)
 p ==> p.update(LL)
   where
@@ -23,7 +30,7 @@ p ==> p.update(LL)
   eC'=(T x=eC x.#toLibrary()) otherwise, with x fresh
   eC' -->p+ r //execute the expression under the program and obtain a result
   CORE.L=refreshUniqueNames(r) //may fail if r not of form L, and that would be lifted as compilation error.
-  p'=p.update(H{MCs C=CORE.L Ms}) if Ms not empty
+  p'=p.update(H{MCs C=CORE.L Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
   p'=p.update(normalize(p,H{MCs C=CORE.L})) otherwise
   |- p' -> LL //type all the MCs that can be compiled now, including This0
 
@@ -33,7 +40,7 @@ p ==> p'.pop()
   p.push(ctxL, L)  ==>+  p'
   p.top() = H{MCs C=e Ms}
   e not of form core(_)
-  e = ctxC[L], L not of form LC
+  e = ctxC[L], L not of form CORE.L
   ctxL = H{MCs C=ctxC Ms}
   p'.top() of form LC //Note: p' is one level deeper than p,
   // and p'.top() is the LC result of metaprogramming L

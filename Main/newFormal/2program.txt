@@ -1,8 +1,7 @@
 -----------------------------------------------------------
 Part 1: grammars for auxiliary data and contexts
 -----------------------------------------------------------
-LC::= //an L is LC if forall C in dom(L), L(C).e is of form CORE.L
-eC,parC,... ::= //an e is eC if all the L inside are of form LC, similarly for parC etcetera
+eC,parC,... ::= //an e is eC if all the L inside are of form CORE.L, similarly for parC etcetera
 
 FULL.wrapE::= throw [] | loop [] |[](.m)?( par) |[]Square | []StrLit |x updateOp [] |(T []) 
       | '(' DEs Ks WOPS? [] ')' | while e [] | for DXes []
@@ -27,9 +26,9 @@ FULL.ctxC::=[]
  | while ctxC e
  | for DXeCs DX in ctxC DXes e
 
-Thus if e=ctxC[L] where L not of form LC, all other L more top-left are of form LC
-The compilation context, e=ctxC[L] selects an L where
-all of the former Ls are LC.
+Thus forall ctxC, all LL top-left of the hole are of form CORE.L
+The compilation context, e=ctxC[LL] selects an LL where
+all of the former LLs are CORE.L
 The context does not enter into libraries
 
 CORE.wrapE::= throw [] | loop [] | x := []  | '(' Ds Ks [] ')'
@@ -42,7 +41,8 @@ CORE.ctx ::= []
 FULL.ctxM::= C = ctxC |s = ctxC | MH = ctxC
 FULL.ctxL::= interface? Ts{MCs ctxM Ms} | CORE.ctxL
 CORE.ctxL ::= interface? Ts{MWTs NCs1 C =[] NCs2} |interface? Ts{MWTs1 MH=ctx MWTs2 NCs}  
-
+//CORE.ctxL is needed so that a program can explore core libraries, for example needed for typing.
+HasHole:=FULL.ctxC | CORE.ctx
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
 
@@ -93,12 +93,12 @@ program primitive operations:
  p.reducePath(This(n+1).C.Cs)=Thisn.Cs
    where p.pop().reducePath(Thisn.C.Cs) is defined
  (CORE.L,ctxL,_).reducePath(This1.C.Cs)=This0.Cs
-   where ctxL(C)=ctxC //Note:ctxL(C)=[] would be more restrictive, for example
+   where ctxL(C)=HasHole //Note:ctxL(C)=[] would be more restrictive, for example
    //preventing A:Data<><{method A (..)} to be summed with the constructor.
 -p.location()=P // Where we are in the program
  (LL).location()=This0
  (LL, ctxL, ctxLs).location() = This(k+1).Cs.C
-    ctxL(C) = ctxC // We are in C
+    ctxL(C) = HasHole // We are in C
     (ctxL[LL], ctxLs).location() = Thisk.Cs
 
 program derived operations:
@@ -113,20 +113,22 @@ program derived operations:
 -p.navigate(P)=p'
  p.navigate(Thisn.Cs)=p.pop()...pop().navigate(Cs) //with n pops
 
--p.equiv(P0,P1)
- p.equiv(P,P)
- p.equiv(P0,P1)=p.equiv(P1,P0)
- p.equiv(Thisn.Cs,This(n+k).Cs')=p.equiv(Thisn.Cs,p.reducePath(This(n+k).Cs'))
-
 -p.minimize(P) = P
   where p.reducePath(P) undefined
  p.minimize(P) = p.minimize(p.reducePath(P))
 
+-p.equiv(P0,P1)
+ p.equiv(P,P)
+ p.equiv(P0,P1)=p.equiv(P1,P0)
+ p.equiv(Thisn.Cs,This(n+k).C1..Ck.Cs)=p.minimize(Thisk.C1..Ck)=This0
+
 -p.noUnique(P) holds if p.minimize(P) not  of form Thisk._.C__n._
 
 -p(P)=LL //functional notation
- p(P)=p.navigate(P).top()//but some implementation could be faster
-
+ p(Thisn.Cs)=p.get(n)(Cs)
+ p(Any)=interface{}
+ p(Void)=p(Library)={}
+ 
 -p.push(C)=p'
  p.push(C)=p.push(ctxL,LL)
  where ctxL[LL]=p.top() and ctxL(C)=[]
