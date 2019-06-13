@@ -1,30 +1,42 @@
+Isaac: Can you show me a moment the following example:
 
 
-\[\ := mdf? PP] ::= PP
-(\ x = e)[\ := PT] ::= PT x = e[\ := PT]
-(catch throw \ e)[e := PT] ::= catch thow PT e[\ := PT]
-// otherwise propegate on D, K, e
+(
+  Int z=(class This0 This0).bar() //note This.bar() do not exists
+  X x=(class This0 This0).bar()
+  x
+  )
 
+----------------
+
+
+// NOTE: in well formedness, \x only appear in a method parameter expression
+//but a \ can always appear: in the outer scope it is the return type of the method or Library for NC
 
 HALF.e::= x | (CORE.T CORE.P) | void | CORE.L | \ 
   | throw e | loop e | x := e  | xP.m(xe*) | xP (op xP)+ | ( Ds Ks e )  
-// HALF.L ::= H { (C = HALF.L | MH = HALF.e)* }
+// HALF.L ::= H { (C = CORE.L | MH = HALF.e?)* }
+TX ::=  T | X
+PX ::=  P | X
+PT ::= TX | PT.s | PT.s.i
+PP ::= PX | PX.s | PX.s.i
+G := x1:PT1 .. xn:PTn
+CC::= ....????
+_______
+#define HALF.e[\ = PT]
+\[\ = mdf? PP] = PP
+(\ x = e)[\ = PT] = PT x = (e[\ = PT])
+(catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
+otherwise propagate on D, K, e
+
 --------------------------------
 G | CCz |- HALF.e : CORE.T | CCz
-
 --------------------------------
-// TODO: check that there are no \'s outside of method calls....
-TX ::=  T | X;  PX ::=  P | X
-PT ::= TX | PT.s | PT.s.i; PP ::= PX | PX.s | PX.s.i
-// TODO: Update normalisation, so that x = e ==> X x = e
-G := x -> PT
-
-
-//NEW
 
    G|CCz +> e:PT' = _|CCz'
 --------------------------------------
    G|CCz +> (PT x = e)  = G|CCz',PT' <= PT
+
 
    G,x->PT|CCz +> e:PT' = _|CCz'
 --------------------------------------
@@ -36,8 +48,10 @@ G := x -> PT
 -----------------------------------------------------
    G|CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
 
+
 --------------------------
   G | CCz +> (x : G(x)) = G | CCz
+
 
 --------------------------
   G | CCz +> ((T P) : T) = G | CCz
@@ -46,15 +60,18 @@ G := x -> PT
   s = m(x1 ... xn)
   G | CCz +> e0 : PT0+> e1:PT0.s.1 +>..+> en:PT0.s.n = _| CCz'
 -------------------------------------------------------------------
-  G | CCz +> e0.m(x1=e1, ..., xn=en) : PT0.s = G | CCz'
+  G | CCz +> e0.m(x1=e1, ..., xn=en) : PT0.s = G | CCz' //is this right? we do not infer a T not even if p[PT0.s] is defined?
+
 
   G | CCz +> e[\ := PT.s.i] : PT'
 ------------------------------------------------
   G | CCz +> e:PT.s.i = G| CCz',PT' <= PT.s.1
 
+
   G | CCz +>  e : PT  = _| CCz'
 -----------------------------------------------
   G | CCz +> x := e : Void = G | CCz', PT <= G(x)
+
 
   G | CCz +> e : PT = _ | CCz'
 ----------------------------------------------- for fresh X

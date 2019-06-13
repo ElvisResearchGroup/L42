@@ -1,5 +1,5 @@
 Here we define normalize(p,FULL.L):HALF.L  and  normalize(Y,FULL.e):HALF.e
-
+Then p !!e or Y!!e will go to CORE.e
 normalize(Y,FULL.e):HALF.e
  will be called on an expression in the full language that may contain FULL.L, but in those all the
 NC's are CORE.NCs, that is, C=e are of form C=CORE.L
@@ -12,13 +12,14 @@ HALF.e
 HALF.L ::= H { MWT* CORE.NC* }
 HALF.xP ::= x | CORE.P | (CORE.T CORE.P)
 
-HALF.e::= x | CORE.P | void | FULL.L | \  //not sure about P instead of (P' P)
+HALF.e::= x | (TX CORE.P) | void | FULL.L | \
  | throw e | loop e | x := e 
  | xP.m(xe*)
  | xP (op xP)+
  | ( Ds Ks e )  
-HALF.K ::= "catch" throw T x e
-HALF.D ::= "var"? T? x = e
+HALF.K ::= "catch" throw TX x e
+HALF.D ::= "var"? TX x = e
+TX::=CORE.T | X | \
 
 -------------
 Y environment
@@ -111,12 +112,6 @@ _______
 //"A:  interface {refine method A m()}
 // B: [A]{ method A m()}"
 // are ok wrt B but fail for A
-
-
-A:{B:{C.D}}
-C:{D:{}}
-E:A.B()
-
 -------------
 NORMALIZATION
 -------------
@@ -145,18 +140,31 @@ normalize(p,FULL.L)=CORE.L
     Ms=expandFields(Ms0) // And this turns the fields into abstract methods
     forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
     Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
-    // What about collecting methods from interfaces and your s = e thing?
-  //the line above use [|] to make sequences nor sets. The order of members is important here.
-  //Note: using Ts'\p Ts the docs of any T inside Ts override the one inside Ts'
+    //the line above use [|] to make sequences nor sets. The order of members is important here.
+    //Note: using Ts'\p Ts the docs of any T inside Ts override the one inside Ts'
+
+normalize(p,M'1..M'n)=apply(solve(p,CCz),M1)..apply(solve(p,CCz),Mn)
+  where
+    M1..Mn=normalize(p,M'1) .. normalize(p,M'n)
+    p|empty +>M1+>..+>Mn=_|CCz
     
 normalize(p,MH e?)= resolveCs(p,MH) e'?
   where 
     e'?=empty if e?=empty
-    e'?= normalize(Y[p=p,&xP=empty,T=MH.T,PType=MH.T],e?) otherwise 
-
+    e'?= normalize(Y[p=p,&xP=empty,T=MH.T,PType=MH.T],e?) otherwise
+normalize(p,CORE.NC) =CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
 //assert never happens normalize(p,C:Full.L)
 //assert never happens normalize(p,s e)
-normalize(p,CORE.NC) =resolveCs(p,Docs) C = CORE.NC
+
+_______
+#define p|CCz +>M = p|CCz' 
+p|CCz +> CORE.NC = p|CCz
+p|CCz +>MWT =p|CCz
+  where MWT.e?=empty
+p|CCz +>MWT =p|CCz'
+  p|G^MWT|CCz +>MWT.e =p|_|CCz'
+  
+
 _______
 #define normalize(Y,FullE):HalfE
 //simple cases first
@@ -315,6 +323,21 @@ normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) =
 normalizeK(Y,catch throw T x e)=catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e)
 normalizeK(Y,catch T x e)=catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e) 
   
+_______
+#define resolveCs(p,FULL.T)=CORE.T,   resolveCs(p,FULL.P)=CORE.P,  resolveCs(p,FULL.docs)=CORE.docs
+
+resolveCs(p,docs mdf P)=resolveCs(p,docs) mdf resolveCs(p,P)
+resolveCs(p,empty)=X with fresh X //case T?=empty
+
+resolveCs(p,CORE.P)=CORE.P
+resolveCs(p,C.Cs)=Thisn.C.Cs
+  where n is the smallest number such that either
+    C in dom(p.get(n))
+    or p.get(n)=H{... _}
+    or p.get(n)=H{reuse[URL] _}
+    or p.get(n+1) undefined
+
+resolveCs(p,FULL.docs) =docs' where all the Full.P are replaced with resolveCs(p,FULL.P) 
 ------------------
 operator replacement:
 CASE1 assuming xP0..xP1 :T0..Tn

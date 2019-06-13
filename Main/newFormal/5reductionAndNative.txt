@@ -101,8 +101,39 @@ _______
 #define mutLibs(A,Ts,vs)
 a->L as in mutLibs(A,T1..Tn,v1..vn)
   if vi=a, MWT.T= mut Library, a->L as in A  
+
+----------------
+Note, it would seams like either the plugin url is 
+trusted or one of the parameter is a cap object. NOT TRUE, NOT NEEDED.
+SEE the fraction of the type system below 
   
-  
+Adapting the current type system:
+
+tURL::= /*a trusted url*/
+uURL::= /*an untrusted url*/
+URL:=tURL|uURL
+_______
+#define trusted(LL) //Does this need to be added to the INFO?
+
+trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)
+   
+-typing a method p,MWT:
+  if MWT.native=native[uURL]
+  then either
+    MWT.s of form #$_(_)
+    or MWT.mdf in  {lent,mut,capsule}
+-coherent LL:
+  if !trusted(LL) then the candidate constructors selectors are of form #$_(_)
+    
+-while typing the method call: if s of form #$(_)
+ then either
+    original MWT.s of form #$_(_)
+    or original MWT.mdf in {lent,mut,capsule} and !trusted(p.top())
+
+-note: before we could declare a class untrusted explicitly, now you can just add
+  "native[untrusted] class method Void untrusted::1()=void"
+  to the class 
+
 ------------------
 examples:
 the plg input no mut/lent/read, execute the expression as usual and return.

@@ -205,6 +205,7 @@ _______
   max(xs, xs0,..,xsn) = max(max(xs,xs0),xs1,..,xsn)
 
 
+* \x only appear in a method parameter expression
 * block of form { DEs1 Ks WOPS? DEs2}: returning({ DEs1 Ks WOPS? DEs2}) must hold
 * block of form (DEs1 Ks WOPS? DEs2 e):
     forall DE in DEs1,DEs2: not returning(DE)
@@ -237,7 +238,7 @@ _______
   * if H.interface? = interface, then forall s in dom(L), L(s).e?=empty
   * if H.interface? = interface, then forall m::n(xs),  m::n(xs) notin dom(L) //TODO: may be we need private methods in interfaces for the new rename
    
-CORE.L:
+TODO: CORE.L:
   *difficult: need to be normalized, but that depends on a program p...
   So, is ti well formedness on a project?
   We can not ask that if a LL is a CORE.L then all the dependencies are core.
