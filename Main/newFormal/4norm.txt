@@ -148,8 +148,8 @@ normalize(p,M'1..M'n)=apply(solve(p,CCz),M1)..apply(solve(p,CCz),Mn)
     M1..Mn=normalize(p,M'1) .. normalize(p,M'n)
     var CCz = empty
     while CCz changes:
-    	CCz' = p|p[P1] +> ... p[Pn]
-    	CCz = Collect(p, (p|Ccz +>M1+>..+>Mn).CCz) // TODO: call p|CCz +> L directly?
+    	CCz = Collect(p, (p|p[Thisn] +>  p|Ccz +>M1+>..+>Mn).CCz) // TODO: call p|CCz +> L directly?
+    	n = max { n | p[Thisn] is defined }
     
     
 normalize(p,MH e?)= resolveCs(p,MH) e'?
@@ -162,8 +162,8 @@ normalize(p,CORE.NC) =CORE.NC[docs=resolveCs(p,CORE.NC.docs)]
 
 _______
 #define p|CCz +>M = p|CCz' 
-p|CCz +> C = L = p|CCz +> L[from This0.C]
-	where L.Info is defined
+p|CCz +> C = CORE.L = p|CCz +> L[from This0.C]
+p|CCz +> C = FULL.L = p|CCz
 p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
 p|CCz +>MWT =p|CCz
   where MWT.e?=empty
