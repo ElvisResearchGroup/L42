@@ -146,7 +146,10 @@ normalize(p,FULL.L)=CORE.L
 normalize(p,M'1..M'n)=apply(solve(p,CCz),M1)..apply(solve(p,CCz),Mn)
   where
     M1..Mn=normalize(p,M'1) .. normalize(p,M'n)
-    p|empty +>M1+>..+>Mn=_|CCz
+    var CCz = empty
+    while CCz changes:
+    	CCz = Collect(p, (p|Ccz +>M1+>..+>Mn).CCz) // TODO: call p|CCz +> L directly?
+    
     
 normalize(p,MH e?)= resolveCs(p,MH) e'?
   where 
@@ -158,11 +161,12 @@ normalize(p,CORE.NC) =CORE.NC[docs=resolveCs(p,CORE.NC.docs)]
 
 _______
 #define p|CCz +>M = p|CCz' 
-p|CCz +> CORE.NC = p|CCz
+p|CCz +> C = L = p|CCz +> L[from This0.C]
+p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
 p|CCz +>MWT =p|CCz
   where MWT.e?=empty
-p|CCz +>MWT =p|CCz'
-  p|G^MWT|CCz +>MWT.e =p|_|CCz'
+p|CCz +>MWT =p|CCz',PT<=MWT.T
+  p|G^MWT|CCz +>MWT.e:PT =p|_|CCz'
   
 
 _______

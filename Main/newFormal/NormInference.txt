@@ -1,27 +1,18 @@
-Isaac: Can you show me a moment the following example:
-
-
-(
-  Int z=(class This0 This0).bar() //note This.bar() do not exists
-  X x=(class This0 This0).bar()
-  x
-  )
-
-----------------
-
-
 // NOTE: in well formedness, \x only appear in a method parameter expression
 //but a \ can always appear: in the outer scope it is the return type of the method or Library for NC
+//TODO: we can and MUST replace the \ outer scope with ret type of method or Library
 
 HALF.e::= x | (CORE.T CORE.P) | void | CORE.L | \ 
   | throw e | loop e | x := e  | xP.m(xe*) | xP (op xP)+ | ( Ds Ks e )  
 // HALF.L ::= H { (C = CORE.L | MH = HALF.e?)* }
+// TODO: update and translate to this new form:
+xP ::= x | (X p) | (\ P)
 TX ::=  T | X
 PX ::=  P | X
 PT ::= TX | PT.s | PT.s.i
 PP ::= PX | PX.s | PX.s.i
 G := x1:PT1 .. xn:PTn
-CC::= ....????
+CC::= PT <= PT
 _______
 #define HALF.e[\ = PT]
 \[\ = mdf? PP] = PP
@@ -32,40 +23,37 @@ otherwise propagate on D, K, e
 --------------------------------
 G | CCz |- HALF.e : CORE.T | CCz
 --------------------------------
+// TODO: Add ps 
 
-   G|CCz +> e:PT' = _|CCz'
+    G|CCz +> e : PT'   = _|CCz'
 --------------------------------------
-   G|CCz +> (PT x = e)  = G|CCz',PT' <= PT
+   (G|CCz +> PT x = e) = G|CCz',PT' <= PT
 
-
-   G,x->PT|CCz +> e:PT' = _|CCz'
+   G, x->PT | CCz +> e : PT' = _|CCz'
 --------------------------------------
-   G|CCz +> (catch throw PT x e : X)  = G|CCz',PT' <= X
+   G | CCz +> catch throw PT x e : X = G|CCz',PT' <= X
 
+   (G(D1..Dn) | CCz) +> D1 +> .. +> Dn +> (e : PT) = _|CCz'
+   (G | CCz',PT <= X) +> (K1 : X) +> .. +> (Kk : X) = _|CCz''
+--------------------------------------------------------
+   G | CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
 
-   G(D1..Dn)|CCz +> D1 +> .. +> Dn +> e:PT = _|CCz'
-   G|CCz',PT <= X +> K1:X +> .. +> Kk:X +> _|CCz''
------------------------------------------------------
-   G|CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
-
-
---------------------------
+---------------------------------
   G | CCz +> (x : G(x)) = G | CCz
 
 
---------------------------
-  G | CCz +> ((T P) : T) = G | CCz
-
+-------------------------------------
+  G | CCz +> (TP P : TP) = G | CCz, class P <= TP
   
   s = m(x1 ... xn)
-  G | CCz +> e0 : PT0+> e1:PT0.s.1 +>..+> en:PT0.s.n = _| CCz'
+  G | CCz +> (e0 : PT0) >+> (e1 : PT0.s.1) >+>..>+> (en : PT0.s.n) = _| CCz'
 -------------------------------------------------------------------
-  G | CCz +> e0.m(x1=e1, ..., xn=en) : PT0.s = G | CCz' //is this right? we do not infer a T not even if p[PT0.s] is defined?
+  G | CCz +> (e0.m(x1 = e1, ..., xn = en) : PT0.s) = G | CCz'
 
 
-  G | CCz +> e[\ := PT.s.i] : PT'
-------------------------------------------------
-  G | CCz +> e:PT.s.i = G| CCz',PT' <= PT.s.1
+  G | CCz +> e[\ := PT.s.i] : PT' = _ | CCz'
+------------------------------------------------ // do something nicer than >+>
+  G | CCz >+> e : PT.s.i = G | CCz',PT' <= PT.s.1
 
 
   G | CCz +>  e : PT  = _| CCz'
@@ -86,19 +74,30 @@ G | CCz |- HALF.e : CORE.T | CCz
 //OP rule: still to convert and probably to finalize: it still does not try to infer the P.$OP...
 
 =========================================================================================
-    { s } = { s | forall x1..xn, forall {i}={0..n} where,
+    { s } = { s | *forall x1..xn, forall {i}={0..n} where,
         s = methName(OP)_i(x1..xn)
-        Ps = paramaterTypes(PTi, CCz, s)
-        !unsatisfiable((PT0..PTn\i).PPs <= Ps, CCz(n+1)) }
-    forall j,x1..xn forall (class P P) in xP0..xPn:
+        P1 ... Pn = paramaterPaths(PTi, CCz, s)
+*        P'1 ... P'n = (PT0..PTn\i).PPs
+*        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
+    forall j,x1..xn forall (PT P) in xP0..xPn:
       p(P.$methName(OP)_j)(#apply(x1..xn)) undefined
-
-             G | CCz0      |- xP0 : PT0 | CCz1
-                         ...
-             G | CCzn      |- xPn : PTn | CCz(n+1)
-            PT'1 ... PT'n = PT0 ... PTn \ s.i
+*    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
+*	PT'1 ... PT'n = PT0 ... PTn \ s.i
 ---------------------------------------------------------------------------------------------------
-             G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz(n+1), PT'1 <= PTi.s.1 ... PT'n <= PTi.s.n
+             G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= PTi.s.1 ... PT'n <= PTi.s.n
+========================================================================================
+    { P'.s } = { P'.s | forall x1..xn, forall {i}={0..n} where,
+    	P' = P.$methName(OP)_i
+    	s = #apply(x1..xn)
+        xPi = (PT P)
+        P1 ... Pn = p[P'.s].Ps
+        P'1 ... P'n = (PT0..PTn\i).PPs
+        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
+	G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
+    PT'1 ... PT'n = PT0 ... PTn \ s.i
+---------------------------------------------------------------------------------------------------
+    G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= P'.s.1 ... PT'n <= P'.s.n
+ 
 =========================================================================================
 unsatisfiable(P <= P', CCz)
   if p |/- P <= P'
@@ -108,76 +107,104 @@ unsatisfiable(PP <= P', PP <= P", CCz)
 
 unsatisfiable(PP <= P', PP <= P", CCz)
   no P in dom(p) such that P <= P' and P <= P"
-
+paramaterPaths(PT, CCz, s) = p[T.s].Ps
+	PT <= T in Collect(CCz)
+	
 
 
 //OLD------------
---------------------------
-G | CCz |- x : G(x) | CCz
 
---------------------------
-G | CCz |- (T P) : T | CCz
+foo(class Any that)
+foo((\ P) + 3Num)
 
-    Ds = D1 ... Dn
-    G(Ds) | CCz1 |- D1 | CCz2
-    ...
-    G(Ds) | CCzn |- Dn | CCz(n+1)
-    G | X | CCz(n+1) |- K1 | CCz(n+2)
-    ...
-    G | X | CC(n+k+1) |- Kk | CCz(n+k+2)
-    G(Ds) n + k + 3
-    --------------------------------------- X Fresh
-     G |- CCz1  |- A(Ds K1 ... Kk e) : X | CCz(n+k+2)
-=========================================
-         G | CCz0 | Ds | CCz1
-         G | X | CCz1 |- Ks |CCz2
-         G(Ds) | CCz2 |- e : PT | CCz3
----------------------------------------------------------- X fresh
-         G | CCz0  |- (Ds Ks e) : X | CCz3, PT <= X
+P + ...
+(T P) + ... // will call .$
+// nothing ells will!
+((T P))
+(T (P))
+(P)
+(T x = P x) + ...  
+(class Any P) + x // may call .$, will not call .#
+(P) +x may cakk .# will not call .$
+((class Any P)) + x will not call anything on P
 
-         G(Ds) | CCz0              |- e1 : PT'1 | CCz1
-         G(Ds) | CCz1, PT'1 <= PT1 |- e2 : PT'2 | CCz2
-         ...
-         G(Ds) | CCz(n-1), PT'(n-1) <= PT(n-1) |- en : PT'n | CCzn
-         Ds = PT1 x1 = e1 ... PTn xn = en
--------------------------------------------------------------------
-           G | CCz0 |- Ds | CCzn, PT'n <= PTn
+    -------------------------------------------------------------------------------
+    collect, CollectSolution==solve
+    
+ =========================================================================================================
+CC in Collect(CCz,CCz') where CC in Collect(Collect(CCz))
+CC in Collect(CC)
+
+PT <= PT" in Collect(PT <= PT', PT' <= PT")
+
+PT <= PT in Collect(CC)
+  PT in CC
+  
+mdf P <= mdf' P' in Collect(empty)
+	p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
+	P' != _ Any // Just for consistency with everything else, not important!
+
+mdf P <= mdf PP in Collect(mdf PP <= mdf P)
+	p[P].interface = empty // since all classes are final!
+
+T.s <= p[T.s].T in Collect(empty)
+p[T.s].T <= T.s in Collect(empty)
+
+T.s.i <= p[T.s].Ti in Collect(empty)
+p[T.s].Ti <= T.s.i in Collect(empty)
+
+PT.s <= PT'.s in Collect(PT <= PT', CC')
+	PT'.s in CC'
+
+PT'.s.i <= PT.s.i in Collect(PT <= PT',CC')
+	PT'.s.i in CC'
+
+PT.s.i <= PT'.s.i in Collect(PT <= PT',CC')
+	PT'.s.i in CC'
+
+PT1' <= Origin(s, P2') in Collect(PT1 <= P2', PT1 <= PT1', CCz)
+	P2'.s in CCz and PT1'.s in CCz
+========================================================================
+CollectSolution(p, CCz) = X1->T1, ..., Xn->Tn
+	X1 ... Xn = { X | X inside p.top() }
+	Pi = CollectTargets(CCz; Xi)
+	
+T = CollectTargets(CCz,CCz'; X) iff
+	CCz = T1 <= X, ..., Tn <= X, X <= T'1, ..., X <= T'k
+	no T <= X or X <= T in CCz'
+	 Tz = {T in SuperTypes(T1, ..., Tn) | p |- T <= T'1, ..., p |- T <= T'k} //possible solutions
+	if (class Any in Tz) then 
+		T = class Any
+	else 
+		var T = MostSpecific(Tz)
+		if (T = capsule P and X <= capsule _ not in CCz)
+			if X <= imm _ in CCz: //underscore important here
+				T := imm P
+			else T := mut P
+	
+======================================================================
+// Definiitions from redirect (unchanged, except I don't pass p
+arround to everything):
+Define p[P.s] = p[P](s)
+Define p[Cs.s] = p[This0.Cs.s]
+Define mwt.P = mwt.mt.T.P
+Define mwt.Pi = mwt.mt.Ts.i.P
+p[P] = p(P)[from P] // I think....
+
+Origin(s; P) = MostGeneral({P' | p |- P <= P' s in dom p[P']})
+MostGeneral(Pz) = P
+  {P} = SuperClasses(Pz) intersect p.minimize(Pz)
+
+SuperTypes(T0 ... Tn) = SuperTypes(T0) intersect ... intersect SuperTypes(Tn)
+
+mdf' P' in SuperTypes(mdf P)
+	where P' in p.minimize(p[P].Pz U {P, Any})
+	mdf <= mdf'
 
 
-         G, x1 -> PT1 | CCz1 |- e1 : PT'1 | CCz2
-         ...
-         G, xn -> PTn | CCzn |- en : PT'n | CCz(n+1)
-         Ks = catch throw1 PT1 x1 e1 ... catch thrown PTn xn en
-----------------------------------------------------------
-           G | X | CCz1 |- Ks | PT'1 <= X, ..., PT'k <= X
-===============================================================
 
-
-================
-
-             G | CCz0     |- e0                : PT0   | CCz1
-             G | CCz1     |- e1[\ := PT0.s.1]  : PT1   | CCz2
-                        ...
-             G | CCzn     |- en[\ := PT0.s.n]  : PTn   | CCz(n+1)
-             s = m(x1 ... xn)
-             CCz' =  PT1 <= PT0.s.1, ..., PTn <= PT0.s.n
--------------------------------------------------------------------------
-             G | CCz0     |- e0.m(x1=e1, ..., xn=en) : PT0.s | CCz(n+1), CCz'
-
-
-=========================================================================================
-
-    G | CCz |- e : PT        | CCz'
------------------------------------------------
-    G | CCz |- x := e : Void | CCz', PT <= G(x)
-
-
-
-    G | CCz |- e : PT        | CCz'
------------------------------------------------ for fresh X
-    G | CCz |- throw e : X   | CCz'
-
-
-    G | CCz |- e : PT         | CCz'
-------------------------------------------------
-    G | CCz |- loop e : Void | CCz', PT <= Void
+-----
+MostSpecific(Tz) = T
+  T in p.minimize(Tz)
+  p.minimize(Tz) subseteq SuperTypes(T)
+  // capsule T, imm T, mut T <= capsule T
