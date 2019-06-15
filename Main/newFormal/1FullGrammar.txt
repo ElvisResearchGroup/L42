@@ -168,13 +168,13 @@ _______
    cX(e)=empty  //FV(e)=empty this is implied
    //Note: need to be checked again after normalization
 
-* mwt: Ts=parameter types, T=return type
+* MWT: Ts=parameter types, T=return type
   if exists fwdImm _ in Ts then T.mdf in {mut, fwdMut, imm, fwdImm}
   if exists fwdMut _ in Ts then T.mdf in {mut, fwdMut}
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
-* mwt:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
-  mwt= refine? mdf method T m(T1 x1..Tn xn)[Ts]e
+* MWT:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
+  MWT= refine? mdf method T m(T1 x1..Tn xn)[Ts]e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
@@ -234,7 +234,7 @@ _______
   * if C::n in dom(L) or m::n(xs) in dom(L), then for any other L' in the project, C'::n notin dom(L') and m'::n(xs') notin dom(L')
   * M1, M2 in dom(L) and dom(M1)=dom(M2) implies M1=M2
   * Any notin H
-  * Exists at most one n such that exists m::n(xs) where L(m::n(xs))=mwt, and mwt.e? is empty
+  * Exists at most one n such that exists m::n(xs) where L(m::n(xs))=MWT, and MWT.e? is empty
   * if H.interface? = interface, then forall s in dom(L), L(s).e?=empty
   * if H.interface? = interface, then forall m::n(xs),  m::n(xs) notin dom(L) //TODO: may be we need private methods in interfaces for the new rename
    

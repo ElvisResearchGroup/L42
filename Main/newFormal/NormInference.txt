@@ -187,8 +187,8 @@ T = CollectTargets(CCz,CCz'; X) iff
 arround to everything):
 Define p[P.s] = p[P](s)
 Define p[Cs.s] = p[This0.Cs.s]
-Define mwt.P = mwt.mt.T.P
-Define mwt.Pi = mwt.mt.Ts.i.P
+Define MWT.P = MWT.mt.T.P
+Define MWT.Pi = MWT.mt.Ts.i.P
 p[P] = p(P)[from P] // I think....
 
 Origin(s; P) = MostGeneral({P' | p |- P <= P' s in dom p[P']})

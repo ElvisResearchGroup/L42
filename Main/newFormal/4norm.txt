@@ -1,17 +1,13 @@
-Here we define normalize(p,FULL.L):HALF.L  and  normalize(Y,FULL.e):HALF.e
-Then p !!e or Y!!e will go to CORE.e
-normalize(Y,FULL.e):HALF.e
- will be called on an expression in the full language that may contain FULL.L, but in those all the
-NC's are CORE.NCs, that is, C=e are of form C=CORE.L
+-----------------------------------------------------
+Definition of p ♥ FULL.L=CORE.L and Y ♥ FULL.E=CORE.E
+-----------------------------------------------------
+Part 1 Auxiliary
+----------------
+_______
+#define grammar HALF.e and Y environment
 
-The result should be of form HALF.e
-ideally, we can define another function typeInference(p,HALF.e):CORE.e using your algorithm
--------------
-HALF.e
-------------- // For consistency
 HALF.L ::= H { MWT* CORE.NC* }
 HALF.xP ::= x | CORE.P | (CORE.T CORE.P)
-
 HALF.e::= x | (TX CORE.P) | void | FULL.L | \
  | throw e | loop e | x := e 
  | xP.m(xe*)
@@ -20,31 +16,27 @@ HALF.e::= x | (TX CORE.P) | void | FULL.L | \
 HALF.K ::= "catch" throw TX x e
 HALF.D ::= "var"? TX x = e
 TX::=CORE.T | X | \
-
--------------
-Y environment
--------------
 Y ::= p; xP?; T?; PType
 PType::=error| classP |classAny| \ | m(n)
 _______
 #define toBinOp(x,Op=) // convenience method to desugar updateOps
+
 toBinOp(x, :=) = x :=
 toBinOp(x, OP=) = x := x OP 
 _______
-#define Y(xP),  PType(p,xP) 
+#define Y(xP),  PType(p,xP)   // where error(p, e) is undefined
+
+Y(x)= resolveCs(p,Y.PType(Y.p,xP))
   
-  Y(x)= resolveCs(p,Y.PType(Y.p,xP)) // You're going to need to define resolveCs
-  
-  PType(p, x) = x
-  PType(p, (T P)) = (T P)
-  classP(p, P) = (class P P)
-  \(p,P) =  (\ P)
-  m(n)(p,P)= (class P P) iff m(x1..xn) in dom p(P) 
-  m(n)(p,P)= (class Any P) otherwise 
-  // so error(p, e) is undefined?
+PType(p, x) = x
+PType(p, (T P)) = (T P)
+classP(p, P) = (class P P)
+\(p,P) =  (\ P)
+m(n)(p,P)= (X P) //TODO: TO CHANGE 
 
 _______
 #define expandFields(Ms)
+
 M in expandFields(Ms) 
   where M in Ms, M not of form F
 method toRead(T) x() in expandFields(Ms) 
@@ -53,68 +45,65 @@ method capsuleToLent(T) #x() in expandFields(Ms)
   where var? T x in Ms  and   T.mdf in {lent, mut, capsule}
 method Void x(T that) in expandFields(Ms) 
   where var T x in Ms
-
------------------------------------------------------------
-Part 3: methods(p,P)=Ms,  collect(p,Ps)=Ps'
------------------------------------------------------------
-methods(), applied to a FULL.L, will return a mixture of
-the methods retrieved directly from the L and methods declared in its
-implemented interfaces.
-Applied to a CORE.L will just return the methods
-
-methods() collects such methods and their types. It may have to choose a type
-in case of methods refined in different ways from interface diamond implements.
-
 _______
 #define Ts\p Tz,   collect(p,Ts)=Ts' //collects transitively implemented interfaces
--collect(p,empty)=empty
-  //an implementation could keep a list of visited P instead of diverging; mathematically it is the same.
 
--collect(p,T0 Ts)=((T0 Ts') \p collect(p,Ts)) collect(p,Ts)
+Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
+empty \p Tz=empty
+T,Ts\p T',Tz = Ts\p T',Tz
+  where p.equiv(T.P,T'.P)
+T,Ts\p Tz) = T,(Ts\p Tz)
+  otherwise
+
+collect(p,empty)=empty
+collect(p,T0 Ts)=((T0 Ts') \p collect(p,Ts)) collect(p,Ts)
   //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
   p(T0.P)=interface Ts0 {_}=FULL.L
   Ts'=collect(p,Ts0[from T0.P])
-  //this checks absence of circularity by diverging (i.e. looping until stack overflow)
-
--collect(p,T0 Ts)=((T0 Ts0[from T0.P]) \p collect(p,Ts)) collect(p,Ts)
-  //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
+  //this checks absence of circularity by diverging
+  //an implementation could keep a list of visited P instead of diverging; mathematically it is the same
+collect(p,T0 Ts)=((T0 Ts0[from T0.P]) \p collect(p,Ts)) collect(p,Ts)
   p(T0.P)=interface Ts0 {_}=CORE.L
-
--Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
- empty \p Tz=empty
- T,Ts\p T',Tz = Ts\p T',Tz
-   where p.equiv(T.P,T'.P)
- T,Ts\p Tz) = T,(Ts\p Tz)
-   otherwise
-
 _______
-#define methods(p,P0)=M1'..Mk' //methods returns a set: the order of the methods is not relevant
+#define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
+//methods(), applied to a CORE.L will just return the MWTs;
+//applied to a FULL.L, will return a merge of the methods retrieved directly from the L and methods types declared
+//in its implemented interfaces. It chooses a type in case of different refines in interface diamond implementations
+//In this model cases like
+//    A=  interface {refine method A m()}
+//    B= [A]{ method A m()}
+//are ok wrt B but fail for A
+
+methods(p,P0)=CORE.L.MWTs[from P0]
+  where p(P0)=CORE.L
+  
+methods(p,P0)=MWT1..MWTn
   p(P0)=interface? Ts{ Ms }=FULL.L
-  T1..Tn=collect(p,Ts[from P0])
-  s1..sk={s|exists i in 0..n : p(Ti.P)(s) is defined}
+  Ps=collect(p,Ts[from P0]).Ps//T1..Tn is a list, not a set
+  s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
   //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
-  forall s in s1..sk, there is exactly 1 j in 0..n
-    such that p(Tj.P)(s).refine=empty
-  forall i in 1..k //i comes from k in s1..sk
-    Mi= p(P0)(si)[from P0],  with p(P0)(si) of form MWT,
-    otherwise //note: 's e' and missing methods both become MWT from implemented interfaces
-    Mi=methods(p,Pj)(si)[?refine=refine]
-      for the smallest j in 1..n such that methods(p,Pj)(si) is of form MWT
-      //this ordering of j leverages the smart ordering of collect()
-    Mi'=Mi[with e=p(P0)(si).e[from P0]] if defined,
-    otherwise
-    Mi'=Mi
-    
-#define methods(p,P0)=MWTs[from P0]
-  p(P0)=interface? Ts{ MWTs NCs }=CORE.L
-    
-//Note, in this model cases like
-//"A:  interface {refine method A m()}
-// B: [A]{ method A m()}"
-// are ok wrt B but fail for A
--------------
-NORMALIZATION
--------------
+  forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
+  [Mi,_]=[MWT[?refine=refine]| P in P0,Ps such that methods(p,P)(si)=MWT]
+  MWTi=Mi [with e=p(P0)(si).e[from P0]] if defined,
+  MWTi=Mi otherwise
+_______
+#define resolveCs(p,FULL.T)=CORE.T,   resolveCs(p,FULL.P)=CORE.P,  resolveCs(p,FULL.docs)=CORE.docs
+
+resolveCs(p,docs mdf P)=resolveCs(p,docs) mdf resolveCs(p,P)
+resolveCs(p,empty)=X with fresh X //case T?=empty
+
+resolveCs(p,CORE.P)=CORE.P
+resolveCs(p,C.Cs)=Thisn.C.Cs
+  where n is the smallest number such that either
+    C in dom(p.get(n))
+    or p.get(n)=H{... _}
+    or p.get(n)=H{reuse[URL] _}
+    or p.get(n+1) undefined
+
+resolveCs(p,FULL.docs) =docs' where all the Full.P are replaced with resolveCs(p,FULL.P) 
+_____________________
+Part 2: normalization
+---------------------
 _______
 #define normalize(p,FullE):HalfE
 
@@ -338,21 +327,6 @@ normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) =
 normalizeK(Y,catch throw T x e)=catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e)
 normalizeK(Y,catch T x e)=catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e) 
   
-_______
-#define resolveCs(p,FULL.T)=CORE.T,   resolveCs(p,FULL.P)=CORE.P,  resolveCs(p,FULL.docs)=CORE.docs
-
-resolveCs(p,docs mdf P)=resolveCs(p,docs) mdf resolveCs(p,P)
-resolveCs(p,empty)=X with fresh X //case T?=empty
-
-resolveCs(p,CORE.P)=CORE.P
-resolveCs(p,C.Cs)=Thisn.C.Cs
-  where n is the smallest number such that either
-    C in dom(p.get(n))
-    or p.get(n)=H{... _}
-    or p.get(n)=H{reuse[URL] _}
-    or p.get(n+1) undefined
-
-resolveCs(p,FULL.docs) =docs' where all the Full.P are replaced with resolveCs(p,FULL.P) 
 ------------------
 operator replacement:
 CASE1 assuming xP0..xP1 :T0..Tn

@@ -4,11 +4,19 @@ Part 1: 42 top level reduction rules
 
 r::=CORE.L| exception v | error v
 
+(reuse)
+p ==> p.update(H{followURL(URL),Ms})
+  where p.top()=H{reuse [URL] Ms}
+
+(dots)
+p ==> p.update(H{readFolder(p),Ms})
+    p.top()=H{... Ms}
+
 (topNorm)
 p ==> p.update(CORE.L)
   where
   p.top()=H{MCs}=FULL.L //note, all M are of form MC
-  |- p.update(p!!FULL.L) -> CORE.L
+  |- p.update(p♥FULL.L) -> CORE.L
 
 (top)
 p ==> p.update(LL)
@@ -16,11 +24,11 @@ p ==> p.update(LL)
   p.top()=H{MCs C=eC Ms}//MCs are already compiled
   eC not of form CORE.L//thus e is the first point to execute
   Y= p;empty,Library,error //Y[p=p,?xP=empty,T?=Library,PType=error]
-  p|- Y!!eC :T
-  adapt(Y!!eC,T.P) -->p+ r //execute the expression under the program and obtain a result
+  p|- Y♥eC :T
+  adapt(Y♥eC,T.P) -->p+ r //execute the expression under the program and obtain a result
   CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
   p'= p.update(H{MCs C=CORE.L Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
-  p'= p.update(p!!H{MCs C=CORE.L}) otherwise
+  p'= p.update(p♥H{MCs C=CORE.L}) otherwise
   |- p' -> LL //type all the MCs that can be compiled now, including This0
 
 (enter)
