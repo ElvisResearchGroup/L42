@@ -105,16 +105,10 @@ _____________________
 Part 2: normalization
 ---------------------
 _______
-#define normalize(p,FullE):HalfE
-
-normalize(Y,CORE.L)=CORE.L
-
-normalize(p,H{reuse [URL] Ms})=normalize(p,H{NCs,Ms})
-  where followURL(URL)=NCs //all the NC of form Docs C=core(L)
-normalize(Y,H{... Ms})=normalize(Y,H{readFolder(Y.p),Ms})
-
-normalize(p,CORE.L)=CORE.L //assert never happens (not true in real language but good for debugging at the start)
-normalize(p,FULL.L)=CORE.L
+#define p♥Full.L=CORE.L,    normalize(p,M'1..M'n),   p♥Full.M=Half.H,   Y♥Full.E=CORE.E
+//assert p♥H{reuse [URL] _} and p♥{... _} never happens
+p♥CORE.L=CORE.L //assert never happens (not true in real language but good for debugging at the start)
+p♥FULL.L=CORE.L
   where 
     LL=interface? Ts{Ms0}
     CORE.L=interface? Ts,(Ts'\p Ts){Info normalize(p',Ms')}
@@ -126,206 +120,170 @@ normalize(p,FULL.L)=CORE.L
       privateImplements Ps //interfaces implemented by a private nested       
     p'=p.push(LL)
     Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any)
-    Ms=expandFields(Ms0) // And this turns the fields into abstract methods
+    Ms=expandFields(Ms0) // this turns the fields into abstract methods
     forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
     Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
     //the line above use [|] to make sequences nor sets. The order of members is important here.
-    //Note: using Ts'\p Ts the docs of any T inside Ts override the one inside Ts'
+    //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
 
 normalize(p,M'1..M'n)=apply(solve(p,CCz),M1)..apply(solve(p,CCz),Mn)
   where
-    M1..Mn=normalize(p,M'1) .. normalize(p,M'n)
-    var CCz = empty
+    M1..Mn=p♥M'1 .. p♥M'n
+    n = max {n | p.get(n) is defined }
+    p.get(i)={Hi MCsi Mi _}, where Mi not of form Mc
+    var CCz = p|Ccz +> MCs1[from This1] +>..+> MCsn[from Thisn]
     while CCz changes:
-    	CCz = Collect(p, (p|p[Thisn] +>  p|Ccz +>M1+>..+>Mn).CCz) // TODO: call p|CCz +> L directly?
-    	n = max { n | p[Thisn] is defined }
+    	CCz = Collect(p, (p|Ccz +>M1+>..+>Mn).CCz)
     
-    
-normalize(p,MH e?)= resolveCs(p,MH) e'?
-  where 
-    e'?=empty if e?=empty
-    e'?= normalize(Y[p=p,&xP=empty,T=MH.T,PType=MH.T],e?) otherwise
-normalize(p,CORE.NC) =CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
-//assert never happens normalize(p,C:Full.L)
-//assert never happens normalize(p,s e)
-
+p♥MH = resolveCs(p,MH) 
+p♥MH e= resolveCs(p,MH) Y[p=p,&xP=empty,T=MH.T,PType=MH.T]♥e
+p♥CORE.NC =CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
+//assert never happens p♥C:Full.L or p♥s e
 _______
-#define p|CCz +>M = p|CCz' 
-p|CCz +> C = CORE.L = p|CCz +> L[from This0.C]
-p|CCz +> C = FULL.L = p|CCz
-p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
-p|CCz +>MWT =p|CCz
-  where MWT.e?=empty
-p|CCz +>MWT =p|CCz',PT<=MWT.T
-  p|G^MWT|CCz +>MWT.e:PT =p|_|CCz'
-  
-  NOTE/TODO; we need to expand reuse and ... 'earlier', as if they was an additional nested
-  {... Ms}
-  {reuse [towel1]//expanded before 
-  method Foo x()=( x=1Num)//type error
-  EE=foo(`towel1,lib={...})
-  D=deployTowel(`towel1,lib={...})
-  G={reuse [towel1]}
-  C={method foo()=( x=1Num)}
-  }
-
-_______
-#define normalize(Y,FullE):HalfE
+#define Y♥FullE = HalfE
 //simple cases first
 
-normalize(Y,x)=x //assert x not of form _
-normalize(Y,P)=Y.PType(P)
-normalize(Y,void)=void
-normalize(Y,L)=normalize(Y.p,L)
-normalize(Y, (T e) )=(T' x=normalize(Y[T=T'],e) x)
-  where 
-    T'=resolveCs(Y.p,T)
-    e not of form P // Ok now I just hate you...
-normalize(Y, (T P) )= resolveCs(Y.p,(T P) )
-normalize(Y,\)=\
-normalize(Y,\x)=(Y.xP).x()
-normalize(Y,'PathLit)=normalize(Y,\"PathLit")
-normalize(Y,return e)=return normalize(Y[PType=classP],e) // Because you'd never want to return a class Any?
-normalize(Y,throw e)=throw normalize(Y[PType=error],e)
+Y♥x=x //assert x not of form _
+Y♥P=Y.PType(P)
+Y♥void=void
+Y♥L=normalize(Y.p,L)
+Y♥(T e)=(resolveCs(Y.p,T) x=Y[T=resolveCs(Y.p,T)]♥e x)
+  where e not of form P
+Y♥(T P)= resolveCs(Y.p,(T P) )
+Y♥\=\
+Y♥\x=(Y.xP).x()
+Y♥'PathLit=Y♥\"PathLit"
+Y♥return e=return Y[PType=classP]♥e //We can never return class Any anyway, or we could catch return class P on a non coherent P
+Y♥throw e=throw Y[PType=error]♥e
   where throw in {error,exception}
-normalize(Y,loop e)=loop normalize(Y[PType=error],e)
-normalize(Y,~e)=normalize(Y[PType=classP],e).methName(~)()
-normalize(Y,!e)=normalize(Y[PType=classP],e).methName(!)()
-normalize(Y, NumLit e)=normalize(Y, e"NumLit")
-normalize(Y,x updateOp e)=  normalize(Y,toBinOp(x, updateOp) e)
-normalize(Y, e(.m)?(par))=(x=normalize(Y[PType=classP],e) x.methName(m?)(normalizePar(Y[xP=x,T=\,PType=\],par))
+Y♥loop e=loop Y[PType=error]♥e
+Y♥~e=Y[PType=classP]♥e.methName(~)()
+Y♥!e=Y[PType=classP]♥e.methName(!)()
+Y♥NumLit e=Y♥e"NumLit"
+Y♥ x updateOp e=  Y♥toBinOp(x, updateOp) e)
+Y♥e(.m)?(par)=(x=Y[PType=classP]♥e x.methName(m?)(normalizePar(Y[xP=x,T=\,PType=\],par)) )
   where e not of form xP, x fresh
-normalize(Y, xP(.m)?(par))= Y[PType=classP](xP).methName(.m?)( normalizePar(Y[xP=x,T=\,PType=\],par) )
+Y♥xP(.m)?(par)= Y[PType=classP](xP).methName(.m?)( normalizePar(Y[xP=x,T=\,PType=\],par) )
   
 //bin operators
-normalize(Y,e1 op3 e2)= (x=normalize(Y,e1) normalize(Y,x op3 e2) )
-  where e1 not of form xP //op3: &&, || and => are not static-dispatch, to have short circuit 
-normalize(Y,xP op3 e)= (
-  classP(xP).#shortCircut'op3'().#checkTrue()  //here and and under, using ' to generate method names in some standard way
-  catch exception Void _ normalize(Y,e2)
-  classP(xP).#shortCircut'op3'Result()
+Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
+  where e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
+Y♥xP op3 e= (
+  x=classP(xP).#shortCircut'OP3'()  //here and and under, using ' to generate method names in some standard way
+  Y♥if x.#shortResult() 
+  else x.#shortProcess(that=Y♥e2)
   )
- Isaac propose to save this temp e1 && e2 ==>
- 	x = e1	
- 	y = x.#shortCircut#and()
- 	if y y.#shortcircuit#and#combine(e2) else x.#shortCircuit#and#result()
+  where x, x' fresh
 
-normalize(Y,e0 op .. op en)=(Ds e0" op .. op en")
-  ei'=normalize(Y[PType=methName(op)(n)],ei)
+Y♥e0 op .. op en =(Ds e0" op .. op en")
+  ei'=Y[PType=methName(op)(n)]♥ei
   Ds=[xi=e'i| e'i not of form xP]
   ei"=e'i if e'i of form xP,
   ei"=xi otherwise
   where x1..xn fresh, op not of form op3, n>=1
    
 //blocks
-normalize(Y,( DEs Ks Wops? DEs2))=normalize(Y,(DEs Ks Wops? DEs2 void))
-normalize(Y,( DEs Ks Wops? DE DEs2 e))=normalize(Y,( DEs Ks Wops? (DE DEs2 e)))
-normalize(Y,( DEs Ks "wops" T1..Tn e)=( normalizeDE(Y,DEs) normalizeK(Y,Ks) K1..Kn normalize(Y,e) ) 
+Y♥( DEs Ks Wops? DEs2)=Y♥(DEs Ks Wops? DEs2 void)
+Y♥( DEs Ks Wops? DE DEs2 e))=Y♥( DEs Ks Wops? (DE DEs2 e))
+Y♥( DEs Ks "wops" T1..Tn e)=( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
   where Ki=catch exception resolveCs(p,Ti) xi error xi.#intoErrorAt(that:core({}))
    // what if xi has no #intoError method?
    
-normalize(Y,{ DEs Ks Wops? DEs2 }) = (Y.T x=(
-    Void x''=normalize(Y[T=Void],(DEs Ks Wops? DEs2 void))
+Y♥{ DEs Ks Wops? DEs2 } = (Y.T x=(
+    Void x''=Y[T=Void]♥(DEs Ks Wops? DEs2 void))
     catch return Y.T x' x'
     error void//unreachable thanks to {return} well formedness   
     )x)
   where x,x',x'' fresh
 
 //builders
-normalize(Y,e(.m)?[pars])= normalize(Y[PType=classP],e).methName(.m?)(squareBuilder:(
+Y♥e(.m)?[pars]= Y[PType=classP]♥e.methName(.m?)(squareBuilder:(
    b=\.#squareBuilder()
-   void x=normalize(Y,(\.#shortCircutSquare().#checkTrue()     
+   Void x=Y♥if \.#shortCircutSquare() (     
      b.add(par1) //ok no #, it is a builder, 
      ..
-     b.add(parn)))
+     b.add(parn))
    b))
  where b,x fresh
 
-normalize(Y,e StrLit)= normalize(Y[PType=classP],e).#from(stringLiteral=(
+Y♥e StrLit= Y[PType=classP]♥e.#from(stringLiteral=(
     b=\.#stringLiteralBuilder()
     b.chars0() //one call for each char
-    b.#splice(normalize(Y[xP=x,T=\,PType=\],e1))
+    b.#splice(that=Y[xP=x,T=\,PType=\]♥e1)
     b.chars1()
     ..
-    b.#splice(normalize(Y[xP=x,T=\,PType=\],en))
+    b.#splice(that=Y[xP=x,T=\,PType=\]♥en)
     b.charsn()
     b))
   where StrLit= chars0 e1 chars1 .. en charsn
 
 //statements 
-normalize(Y,if e0 e1)=normalize(Y,if e0 e1 else void)
-normalize(Y,if e0 e1 else e2)= ( x=normalize(Y,e0) normalize(Y,if x e1 else e2) )
+Y♥if e0 e1 = Y♥if e0 e1 else void
+Y♥if e0 e1 else e2 = ( x=Y♥e0 Y♥if x e1 else e2 )
   where e0 not of form xP
 
-normalize(Y,if xP e1 else e2)=(
+Y♥if xP e1 else e2=(
   Void x=xP.#if().#checkTrue()
-  catch exception Void x' normalize(Y,e2)
-  normalize(Y,e1) 
+  catch exception Void x' Y♥e2
+  Y♥e1 
   )
   where x, x' fresh
  
-normalize(Y,if tMatch tMatch+ e) = normalize(Y,if tMatch if tMatch+ e)
+Y♥if tMatch tMatch+ e = Y♥if tMatch if tMatch+ e
 
-normalize(Y,if T x e) = normalize(Y,if T x'= x e[x=x'] )
+Y♥if T x e = Y♥if T x'= x e[x=x']
   where x' fresh
   
-normalize(Y,if T x = e e')= ( x'=normalize(Y,e) normalize(Y,if T x= x' e') )
-  where e not of form xP //TODO: check the latter for xP vs x
+Y♥if T x = e e' = ( x'=Y♥e Y♥if T x= x' e')
+  where e not of form xP
   
-normalize(Y,if T x= xP e)= (
+Y♥if T x= xP e= (
   T x=(return xP catch return T x1 x1 error void)
   catch return T.mdf Any x2 void
-  normalize(Y,e)
+  Y♥e
   )  
 
-normalize(Y,if T(T?1 x1 ..T?n x1)=e e')=normalize(Y,
-  if T x=e (
-    (x1, ..., xn)=x
-    e''
-    ))
+Y♥if T(T?1 x1 ..T?n x1)=e e' = Y♥if T x=e ( (x1, ..., xn)=x e'')
   where 
     x fresh, Txs=[Ti xi | T?i != empty]
-    e''= """if Txs  e""" if Txs!=empty
-    e''=e' otherwise
+    e''=e'   if Txs=empty
+    e''= if Txs e  otherwise
     
-normalize(Y,if (T?1 x1 .. T?2 xn)=e e')=normalize(Y, (
-  (x1 .. xn)=e
-  if Tx e1
-  ))
+Y♥if (T?1 x1 .. T?2 xn)=e e') = Y♥( (x1 .. xn)=e if Tx e1)
   where x fresh, Tx=[Ti xi | T?i != empty]
 
-normalize(Y,while e0 e1)=(Void x=loop(  normalize(Y,(e0.#checkTrue() e1)) ) catch exception Void x' void))
+Y♥while e0 e1 = (Void x=loop Y♥(e0.#checkTrue() e1) catch exception Void x' void))
   where x,x' fresh  
 
-normalize(Y,for DX1 in e1..DXn in en e)=normalize(Y,(
+Y♥for DX1 in e1..DXn in en e = Y♥(
   c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
-  var i1=c1.indexZero() .. var i1=cn.indexZero()
+  var i1=c1.indexZero() .. var in=cn.indexZero()
   while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
     DX1 = c1.elem(i) .. DXn = cn.elem(i);
     e[xi updateOp e'= (toBinOp(xi, updateOp) e' ci.update(ii, xi))]
     i1:=i1.succ() .. in:=in.succ()
     )
   c1.close(i1) .. cn.close(in)
-  ) )
+  )
   where c1..cn, i1..in fresh
    
 //auxiliary definitions
-normalizePar(Y,e xes)=   that=normalize(Y,e) normalizePar(Y,xes)
-normalizePar(Y,x1=e1 .. xn=en)=  x1=normalize(Y,e1) .. xn=normalize(Y,en)
+Y♥e xes=  that=Y♥e,Y♥xes
+Y♥x1=e1 .. xn=en=  x1=Y♥e1 .. xn=Y♥en
 
-normalizeDE(Y,e)= Void x= normalize(Y[T=empty],e), with x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
-normalizeDE(Y,T? x=e)= resolveCs(Y.p,T?) underscoreIntoFresh(x)= normalize(Y[T=T?,PType=classAny],e), with x fresh
-normalizeDE(Y,var T? x = e)=var resolveCs(Y.p,T?) x = normalize(Y',e) //assert x not of form _
-  Y'=Y[T=T?,PType=classAny] if T? in {empty,class Any} // to obtain classP the user just write down the type
-  Y'=Y[T=T?,PType=classP] otherwise
-normalizeDE(Y,T?(var1? T1? x1.. varn?Tn? xn)=e) = 
-  resolveCs(Y.p,T?) x=normalize(Y[T=T?,PType=classAny],e)
+Y♥DE= Void x= Y[T=empty]♥e, with DE=e, x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
+Y♥T? x=e= resolveCs(Y.p,T?) underscoreIntoFresh(x)= Y[T=T?,PType=classAny]♥e, with x fresh
+Y♥var T? x = e=var resolveCs(Y.p,T?) x =Y'♥e //assert x not of form _
+  with Y'=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]
+  
+Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
+  resolveCs(Y.p,T?) x=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]♥e
   var1? resolveCs(Y.p,T1?) x1=x.methNameTrim(x1)() //removes any numberPedex from the end
   ..
   varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
   where x fresh
-normalizeK(Y,catch throw T x e)=catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e)
-normalizeK(Y,catch T x e)=catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) normalizeK(Y,e) 
+Y♥catch throw T x e = catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e
+Y♥catch T x e = catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e 
   
 ------------------
 operator replacement:

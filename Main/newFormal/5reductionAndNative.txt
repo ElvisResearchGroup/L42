@@ -1,3 +1,16 @@
+_______
+#define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
+
+p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
+
+//assert never happens p|CCz +> C = FULL.L 
+p|CCz +> C = CORE.L = p|CCz +> L.Ms[from This0.C]
+p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
+p|CCz +>MH =p|CCz
+p|CCz +>MH e = p|CCz',PT<=MH.T
+  p|G^MH|CCz +> e:PT  = p|_|CCz'
+
+
 Core e with runtime expressions
 e  ::= a | x | ( T P ) | void | L |  xPP.m(x1=e1 ..xn=en ) 
       | loop e | throw e | x := e | ( Ds Ks e )
