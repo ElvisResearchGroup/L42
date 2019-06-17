@@ -105,13 +105,13 @@ _____________________
 Part 2: normalization
 ---------------------
 _______
-#define p♥Full.L=CORE.L,    normalize(p,M'1..M'n),   p♥Full.M=Half.H,   Y♥Full.E=CORE.E
+#define p♥Full.L=CORE.L,    infer(p,M'1..M'n),   p♥Full.M=Half.H,   Y♥Full.E=CORE.E
 //assert p♥H{reuse [URL] _} and p♥{... _} never happens
 p♥CORE.L=CORE.L //assert never happens (not true in real language but good for debugging at the start)
 p♥FULL.L=CORE.L
   where 
     LL=interface? Ts{Ms0}
-    CORE.L=interface? Ts,(Ts'\p Ts){Info normalize(p',Ms')}
+    CORE.L=interface? Ts,(Ts'\p Ts){Info infer(p',Ms')}
     Info=
       norm;
       depType;depCoherent=collectDeps(CORE.L);
@@ -126,7 +126,7 @@ p♥FULL.L=CORE.L
     //the line above use [|] to make sequences nor sets. The order of members is important here.
     //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
 
-normalize(p,M'1..M'n)=apply(solve(p,CCz),M1)..apply(solve(p,CCz),Mn)
+infer(p,M'1..M'n)=M1[solve(p,CCz)]..Mn[solve(p,CCz)]
   where
     M1..Mn=p♥M'1 .. p♥M'n
     n = max {n | p.get(n) is defined }
@@ -146,7 +146,7 @@ _______
 Y♥x=x //assert x not of form _
 Y♥P=Y.PType(P)
 Y♥void=void
-Y♥L=normalize(Y.p,L)
+Y♥L=Y.p♥L
 Y♥(T e)=(resolveCs(Y.p,T) x=Y[T=resolveCs(Y.p,T)]♥e x)
   where e not of form P
 Y♥(T P)= resolveCs(Y.p,(T P) )
@@ -161,9 +161,9 @@ Y♥~e=Y[PType=classP]♥e.methName(~)()
 Y♥!e=Y[PType=classP]♥e.methName(!)()
 Y♥NumLit e=Y♥e"NumLit"
 Y♥ x updateOp e=  Y♥toBinOp(x, updateOp) e)
-Y♥e(.m)?(par)=(x=Y[PType=classP]♥e x.methName(m?)(normalizePar(Y[xP=x,T=\,PType=\],par)) )
+Y♥e(.m)?(par)=(x=Y[PType=classP]♥e x.methName(m?)( Y[xP=x,T=\,PType=\]♥par ) )
   where e not of form xP, x fresh
-Y♥xP(.m)?(par)= Y[PType=classP](xP).methName(.m?)( normalizePar(Y[xP=x,T=\,PType=\],par) )
+Y♥xP(.m)?(par)= Y[PType=classP](xP).methName(.m?)( Y[xP=x,T=\,PType=\]♥par )
   
 //bin operators
 Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )

@@ -167,7 +167,7 @@ PT1' <= Origin(s, P2') in Collect(PT1 <= P2', PT1 <= PT1', CCz)
 ========================================================================
 CollectSolution(p, CCz) = X1->T1, ..., Xn->Tn
 	X1 ... Xn = { X | X inside p.top() }
-	Pi = CollectTargets(CCz; Xi)
+	Ti = CollectTargets(CCz; Xi)
 	
 T = CollectTargets(CCz,CCz'; X) iff
 	CCz = T1 <= X, ..., Tn <= X, X <= T'1, ..., X <= T'k
