@@ -150,7 +150,10 @@ Y♥L=Y.p♥L
 Y♥(T e)=(resolveCs(Y.p,T) x=Y[T=resolveCs(Y.p,T)]♥e x)
   where e not of form P
 Y♥(T P)= resolveCs(Y.p,(T P) )
-Y♥\=\
+Y♥\=\ 
+  where Y.xp? !=empty
+Y♥\=T
+  where T=Y.T?  //assert either this or the former case holds
 Y♥\x=(Y.xP).x()
 Y♥'PathLit=Y♥\"PathLit"
 Y♥return e=return Y[PType=classP]♥e //We can never return class Any anyway, or we could catch return class P on a non coherent P

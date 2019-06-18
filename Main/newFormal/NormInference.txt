@@ -1,6 +1,5 @@
-// NOTE: in well formedness, \x only appear in a method parameter expression
-//but a \ can always appear: in the outer scope it is the return type of the method or Library for NC
-//TODO: we can and MUST replace the \ outer scope with ret type of method or Library
+_______
+#define grammar HALF; this is an intermediate form only used internally in this file
 
 HALF.e::= x | (CORE.T CORE.P) | void | CORE.L | \ 
   | throw e | loop e | x := e  | xP.m(xe*) | xP (op xP)+ | ( Ds Ks e )  
@@ -13,6 +12,20 @@ PT ::= TX | PT.s | PT.s.i
 PP ::= PX | PX.s | PX.s.i
 G := x1:PT1 .. xn:PTn
 CC::= PT <= PT
+
+_______
+#define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
+
+p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
+
+//assert never happens p|CCz +> C = FULL.L 
+p|CCz +> C = CORE.L = p|CCz +> L.Ms[from This0.C]
+p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
+p|CCz +>MH =p|CCz
+p|CCz +>MH e = p|CCz',PT<=MH.T
+  p|G^MH|CCz +> e:PT  = p|_|CCz'
+
+
 _______
 #define HALF.e[\ = PT]
 \[\ = mdf? PP] = PP

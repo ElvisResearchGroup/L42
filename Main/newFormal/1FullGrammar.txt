@@ -1,15 +1,15 @@
-Full 42 syntax
-
-Notation for grammar:
+------------------------------------------------------------
+Definition of FULL and CORE 42 syntax, concrete and abstract
+------------------------------------------------------------
+Notation:
 < ... > indicate character classes
 A -- B to mean anything matching A, but with no sub-string matching B
+When we use a non terminal A in the body of a non terminal B.C,
+if A is not directly defined, we refer to B.A
 
- When there are multiple grammar forms for the core and full, I will prefix them with CORE. and FULL. 
- On the RHS of a CORE. or FULL. declaration, any unqualified forms should be interpreted as a CORE./FULL. (respectively) where all child-asts conform to their CORE versions
-
-======================================================================================
+----------------------
 Part 0: Lexical Syntax
-======================================================================================
+----------------------
 NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D>
 //A line feed or carriage return
 CHAR   ::=  <0x20-0x7E> | NEWLINE
@@ -56,9 +56,9 @@ H ::= 'interface'?[T+]?
 FULL.P  ::= Cs  // in the full This, Any,Void,Library are C
 FULL.T  ::= mdf Doc* P | '\'
 
-==================================================================================================================
+------------------------
 Part 1: FULL Expressions
-==================================================================================================================
+------------------------
 eAtomic ::= x | P | 'void' | LL | block | (T e) | \ | \x | 'PathLit
 ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' 
               | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix STRING
@@ -90,9 +90,9 @@ FULL.MI ::= Doc* s = e
 FULL.MWT ::= MH (= e)?
 FULL.NC ::= Doc* C = e
 
-==================================================================================================================
+--------------------------------
 Part 2: Abstract syntax and core
-==================================================================================================================
+--------------------------------
 CORE.P  ::= Thisn.Cs? | Any | Void | Library
 CORE.T  ::= mdf Doc* P //even Docs containing Ps will have Ps from the subset.
 CORE.e ::= x | (T P) | void | L |  xPP.m(x1=e1..xn=en)
