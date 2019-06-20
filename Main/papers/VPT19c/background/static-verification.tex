@@ -1,14 +1,14 @@
 \section{Introduction}
-\MS{With this short paper we contribute
+With this short paper we contribute
 to research on safe metaprogramming, showing how combining 
 pre//post conditions,
 trait composition and metaprogramming
 it is possible to create metaprograms that generat code which is correct by construction.
 That is: only the original source code itself needs to be verified (for example by a theorem prover), and not the code produced by metaprogramming.
 This is important since the original code is often orders of magnitude smaller then the generated code.
-We start by providing some background on those three research areas:}
+We start by providing some background on those three research areas:
 
-\MS{\textbf{Pre-post conditions}:}
+\textbf{Pre-post conditions}:
 object oriented languages supporting static verification usually extend the syntax for method declarations
 to support \emph{contracts} in the form of pre and post-conditions~\cite{Meyer:1988:OSC:534929}.
 Correctness is defined only for code annotated with such contracts.
@@ -20,7 +20,7 @@ method inlining. Sometimes static verification even times out, making the behavi
 
 
 
-\MS{\textbf{Traits}: originally introduced in smalltalk by Scharli~\cite{scharli2003traits}, traits are 
+\textbf{Traits}: originally introduced in smalltalk by Scharli~\cite{scharli2003traits}, traits are 
 units of code reuse. They where created as a simpler way of performing multiple inheritance without the usual complexity.
 Traits are just a set of method declarations.
 Such methods can be abstract and
@@ -28,7 +28,7 @@ mutually recursive by using the implicit /this/ parameter.
 Traits are different from Java-style abstract classes as
 %\begin{itemize}
 %\item
-they are only for reuse: trait names do \emph{not} define types.}
+they are only for reuse: trait names do \emph{not} define types.
 %\item Traits contains only methods; thus they have no field or constructors.
 %\item
 Trait composition is seen as a form of flattening: after the composition, the resulting code contains copies of the adapted methods from the original traits, but do not reference the original traits directly. Since there is no trace of
@@ -67,7 +67,7 @@ Trait b=/*as before*/
 Trait c=class {String world(){return "["+1+"]";}}
 \end{lstlisting}
 
-\MS{\textbf{Metaprogramming}} is often used to programmatically generate faster specialised code when some parameters are known in advance, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}.
+\textbf{Metaprogramming} is often used to programmatically generate faster specialised code when some parameters are known in advance, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}.
 A \emph{metaprogram} is a program, method or function 
 that produces code. Depending on the kind of metaprogramming, such code can be directly executable or can be just an abstract representation of behaviour.
 Metaprogramming is called \emph{metacircular} when the language used to write the metaprogram is the same language of the generate code.
@@ -76,11 +76,11 @@ In this paper we will rely on
 Iterative Composition: 
 a metacircular metaprogramming technique relying on \emph{compile-time execution} (a form of execution also used by~\cite{sheard2002template}).
 This disciplined form of metaprogramming introduced by Servetto and Zucca \cite{servetto2014meta}, is based on the trait composition operators described before, but lifted at the expression level.
-\MS{This means that arbitrary expressions can be used as} the right hand side of \MS{trait and class declarations}; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
+This means that arbitrary expressions can be used as the right hand side of trait and class declarations; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
 
 \section{Combining metaprogramming and static verification}
 
-\MS{A na\"ive way to} combine metaprogramming and static verification could be to use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
+A na\"ive way to combine metaprogramming and static verification could be to use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
 % \MSDel{ensure the correctness of} 
 statically verify the resulting code. 
 However, the resulting code could be much larger than the input to the metaprogramming, and so it could take a long time to statically verify.
@@ -149,9 +149,9 @@ unfolding the recursion produces even more efficient code:
 \end{lstlisting}
 \vspace{-1ex}
 
-\MS{We now show how \emph{Iterative Composition} %(introduced in~\cite{servetto2014meta} and
+We now show how \emph{Iterative Composition} %(introduced in~\cite{servetto2014meta} and
 (enriched by the contract compatibility check we proposed) % performing in trait composition) 
-can be used to write a metaprogram that given an exponent, produces code like the above.}
+can be used to write a metaprogram that given an exponent, produces code like the above.
 %Iterative Composition is a metacircular metaprogramming technique relying on \emph{compile-time execution} (a form of execution also used by~\cite{sheard2002template}),
 %in our context this means that arbitrary expressions can be used as the right hand side of a class declaration; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
  
@@ -182,7 +182,7 @@ The other two traits have abstract methods; implementations for /$\_$pow(x)/ and
 and the fact that /even/ and /odd/ have both been statically verified,
 if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need for further static verification.
 Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
-\MS{Method names starting with $\_$, like /$\_$pow(x)/ and /$\_$exp()/, are not special and are not treated in any special way by trait composition. We use the $\_$ naming convention to emulate /super/ when using trait composition: a call to /$\_$exp()/ is used like a /super.exp()/ call in a language with conventional class based inheritence like Java.}
+Method names starting with $\_$, like /$\_$pow(x)/ and /$\_$exp()/, are not special and are not treated in any special way by trait composition. We use the $\_$ naming convention to emulate /super/ when using trait composition: a call to /$\_$exp()/ is used like a /super.exp()/ call in a language with conventional class based inheritence like Java.
 
 \begin{lstlisting}
 //`compose' performs a step of iterative composition
