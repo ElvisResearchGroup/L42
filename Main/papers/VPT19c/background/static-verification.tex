@@ -1,12 +1,12 @@
 \section{Introduction}
 \MS{With this short paper we contribute
-to the research toward safe metaprogramming, showing how combining 
+to research on safe metaprogramming, showing how combining 
 pre//post conditions,
 trait composition and metaprogramming
-is possible to create metaprograms generating code that is correct by construction.
-That is: only the original source code itself need to be verified (for example by a theorem prover), and not the code produced by metaprogramming.
-This is important since the original code is often order of magnitude smaller then the generated code.
-We start by providing some background on those tree research areas:}
+it is possible to create metaprograms that generat code which is correct by construction.
+That is: only the original source code itself needs to be verified (for example by a theorem prover), and not the code produced by metaprogramming.
+This is important since the original code is often orders of magnitude smaller then the generated code.
+We start by providing some background on those three research areas:}
 
 \MS{\textbf{Pre-post conditions}:}
 object oriented languages supporting static verification usually extend the syntax for method declarations
@@ -20,15 +20,15 @@ method inlining. Sometimes static verification even times out, making the behavi
 
 
 
-\MS{\textbf{Traits}, as originally introduced in smalltalk by Scharli~\cite{scharli2003traits}, are 
-units of code reuse. They are born as a simpler way to handle multiple inheritance without its complexity.
+\MS{\textbf{Traits}: originally introduced in smalltalk by Scharli~\cite{scharli2003traits}, traits are 
+units of code reuse. They where created as a simpler way of performing multiple inheritance without the usual complexity.
 Traits are just a set of method declarations.
-Such methods can be abstract and can be
-mutually recursive by using the implicit parameter /this/.
-This is different with respect to abstract classes in the following ways:}
+Such methods can be abstract and
+mutually recursive by using the implicit /this/ parameter.
+Traits are different from Java-style abstract classes as
 %\begin{itemize}
 %\item
-Traits are only for reuse, thus trait names do not define a type.
+they are only for reuse: trait names do \emph{not} define types.}
 %\item Traits contains only methods; thus they have no field or constructors.
 %\item
 Trait composition is seen as a form of flattening: after the composition, the resulting code contains copies of the adapted methods from the original traits, but do not reference the original traits directly. Since there is no trace of
@@ -76,11 +76,11 @@ In this paper we will rely on
 Iterative Composition: 
 a metacircular metaprogramming technique relying on \emph{compile-time execution} (a form of execution also used by~\cite{sheard2002template}).
 This disciplined form of metaprogramming introduced by Servetto and Zucca \cite{servetto2014meta}, is based on the trait composition operators described before, but lifted at the expression level.
-\MS{This means that arbitrary expressions are used as} the right hand side of \MS{traits and classes declarations}; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
+\MS{This means that arbitrary expressions can be used as} the right hand side of \MS{trait and class declarations}; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
 
 \section{Combining metaprogramming and static verification}
 
-\MS{A naive way to} combine metaprogramming and static verification could be to use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
+\MS{A na\"ive way to} combine metaprogramming and static verification could be to use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
 % \MSDel{ensure the correctness of} 
 statically verify the resulting code. 
 However, the resulting code could be much larger than the input to the metaprogramming, and so it could take a long time to statically verify.
@@ -182,7 +182,7 @@ The other two traits have abstract methods; implementations for /$\_$pow(x)/ and
 and the fact that /even/ and /odd/ have both been statically verified,
 if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need for further static verification.
 Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
-\MS{Method names starting with $\_$, like /$\_$pow(x)/ and /$\_$exp()/ are not special and are not treated in any special way by trait composition. We use the $\_$ naming convention to emulate /super/ over trait composition: when /exp()/ calls /$\_$exp()/ it expects the  kind of behaviour /super.exp()/ could produce in a language with explicit support for supercalls.}
+\MS{Method names starting with $\_$, like /$\_$pow(x)/ and /$\_$exp()/, are not special and are not treated in any special way by trait composition. We use the $\_$ naming convention to emulate /super/ when using trait composition: a call to /$\_$exp()/ is used like a /super.exp()/ call in a language with conventional class based inheritence like Java.}
 
 \begin{lstlisting}
 //`compose' performs a step of iterative composition
