@@ -1,24 +1,15 @@
 
-The traits /base/, /even/, and /odd/ are the basic building blocks we will use to compute our result. They will be compiled, typechecked and statically verified before the method /generate(exp)/ can run.
-As you can see in line /37/, a class body can be an expression in the language itself.
-At compile time such an expression will be run and the resulting /Trait/ will be used as the body of the class.
-For example, we could write /class Pow1: base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
-The other two traits have abstract methods; implementations for /$\_$pow(x)/ and /$\_$exp()/ must be provided. However, given the contract of /pow(x)/,
-and the fact that /even/ and /odd/ have both been statically verified,
-if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need for further static verification.
-Many works in literature allow adapting traits by renaming or hiding methods\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
-Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
-
-The /compose(current,next)/ method starts by renaming the /exp()/ and /pow(x)/ methods of /current/
+The /compose(current,next)/ method starts by renaming the /exp()/ and /pow(x)/ methods of\\* /current/
 so that they satisfy the contracts in /next/ (which will be 
 /even/ or /odd/).
-The /+/ operator is the main way to compose traits%
-~\cite{scharli2003traits,LagorioSZ09}.
-The result of /+/ will contain all the methods from both operands. 
+%The /+/ operator is the main way to compose traits%
+%~\cite{scharli2003traits,LagorioSZ09}.
+%The result of /+/ will contain all the methods from both operands. 
 
-Crucially, it is possible to sum traits where a method is declared in both operands; in this case at least one of the two competing methods needs to be abstract, and the signatures of the two competing methods need to be \emph{compatible}.
-To make sure that the traditional /+/ operator also handles contracts, we need to require that the contract annotations of the two competing methods  are \emph{compatible}.
-For the sake of our example, we can just require them to be syntactically identical. Relaxing this constraint is an important future work.
+%Crucially, it is possible to sum traits where a method is declared in both operands; in this case at least one of the two competing methods needs to be abstract, and the signatures of the two competing methods need to be \emph{compatible}.
+Then, the operator /+/ is used to compose the code of the parameters.
+Here we show how we ensure that the traditional /+/ operator also handles contracts: we require that the contract annotations of the two competing methods are \emph{compatible}.
+\MS{In this short paper we just require them to be syntactically identical.} Relaxing this constraint is an important future work.
 Thanks to this constraint \textbf{the sum operator also preserves code correctness}. %\IO{There are many variations of the /+/ operator, in particular, we could easily extend our contract matching to work with an nary operator}.
 
 The sum is executed when the method /compose/
@@ -26,8 +17,13 @@ The sum is executed when the method /compose/
 runs: if the matched contracts are not identical an exception will be raised. A leaked exception during compile-time metaprogramming would become a compile-time error. 
 Our approach is very similar to~\cite{servetto2014meta}, and does not guarantee the success of the code generation process, rather it guarantees that if it succeeds, correct code is generated.
 
+\MS{Executing /compose(base,even)/ or /compose(base,odd)/ will succeed this test: the contract of /base.pow()/
+is the same of /even.$\_$pow()/ and /even.$\_$pow()/; and the same holds for /exp()/.}
+
 Finally the /$\_$pow(x)/ and /$\_$exp()/ method are hidden, so that the structural shape of the result is
 the same as /base/'s.
+\MS{Note that this structural equality includes the contracts of methods}.
+
 As you can see, /Trait/s are first class values and can be manipulated with a set of primitive operators that preserve code correctness and well-typedness.
 In this way, by inductive reasoning, we can start from the /base/ case and then recursively compose /even/ and /odd/ until we get the desired code.
 Note how the code of /generate(exp)/ follows the same scheme of the code of /pow(x,exp)/ in line 1.
@@ -43,10 +39,17 @@ As /base/ represents /pow1(x)/; /c(base,even)/ represents /pow2(x)/. Then \Q@c(/
 \Q@c(/*pow6(x)*/,odd)@ represents \Q@pow7(x)@.
 The code of each /$\_$pow(x)/ method is only executed once for each top-level /pow(x)/ call, so the /hide/ operator can inline them.
 Thus, the result could be identical to the manually optimized code in line 7.
+We can use our /generate(7)/ as following:
+\begin{lstlisting}
+class Pow7: generate(7) //generate(7) is executed at compile time
+//the body of class Pow7 is the result of generate(7)
+/*example usage:*/
+new Pow7().pow(3)==2187//Compute 3**7
+\end{lstlisting}
 
 %\IO{We are investigation how an additional check can be performed to ensure the resulting code has specific contracts. However, our approach does guarantee that the result will be correct according to whatever contracts it contains.} 
-
-Our approach, as presented in this extended abstract, only guarantees that code resulting from metaprogramming follows its own contracts, it does
+\section{Future work}
+Our approach, as presented in this short paper, only guarantees that code resulting from metaprogramming follows its own contracts, it does
 not statically ensure what those contracts may be. As future work, we are investigating how the resulting contracts can be ensured to have a particular meaning or form.
 To do so, we need to allow assertions on the contracts of /Trait/s to be used within pre//post conditions.
 For example we could allow post conditions like\\*
@@ -89,4 +92,13 @@ there is no need to ensure the correctness of the metaprogram itself: such runti
 %/Pow7.pow/ and only needs to do a coarse grained 
 %determinism check on the implementation of /Pow7.exp()/, before symbolically executing it.
 
-In conclusion, by leveraging over conventional OO static verification techniques, we have extended the Iterative Composition form of metaprogramming with a simple contract compatibility check, to statically ensure the correctness of code produced by such metaprogramming. In particular, our approach does not require static verification of the result of metaprogramming, but only requires verification of code present directly in source code.
+\section{Conclusion}
+By levering over conventional OO static verification techniques, we have extended the Iterative Composition form of metaprogramming with a simple contract compatibility check, to statically ensure the correctness of code produced by such metaprogramming. In particular, our approach does not require static verification of the result of metaprogramming, but only requires verification of code present directly in source code.
+\MS{Following general terminology in software verficiation, we call \emph{correct} a trait whose methods respect their contracts.}
+\MS{Informally, our result is that starting from a set
+of well typed and correct traits, 
+the code resulting from arbitrary many steps of trait composition will be correct and well typed too.
+In this way, the programmer need only to provide correct bulding blocks as traits;
+code generated by metaprogramming can be integrated with a correct program without the need of using expensive theorem provers or manual verification.
+Our example is applied to code specialization of a mathematical function, but our experience suggests that Iterative composition can be used to synthesize arbitrary behaviour.
+}
