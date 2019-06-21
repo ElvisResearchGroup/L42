@@ -11,190 +11,71 @@ PX ::=  P | X
 PT ::= TX | PT.s | PT.s.i
 PP ::= PX | PX.s | PX.s.i
 G := x1:PT1 .. xn:PTn
-CC::= PT <= PT
+CC::= PT <= PT'
 
 _______
-#define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
-
-p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
-
-//assert never happens p|CCz +> C = FULL.L 
-p|CCz +> C = CORE.L = p|CCz +> L.Ms[from This0.C]
-p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
-p|CCz +>MH =p|CCz
-p|CCz +>MH e = p|CCz',PT<=MH.T
-  p|G^MH|CCz +> e:PT  = p|_|CCz'
-
-
+#define PT in CCz
+  PT in PT<=_,_
+  PT in _<=PT,_
 _______
-#define HALF.e[\ = PT]
-\[\ = mdf? PP] = PP
-(\ x = e)[\ = PT] = PT x = (e[\ = PT])
-(catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
-otherwise propagate on D, K, e
+#define Collect(CCz)
 
---------------------------------
-G | CCz |- HALF.e : CORE.T | CCz
---------------------------------
-// TODO: Add ps 
+CC in Collect(CCz) where CC in Collect(Collect(CCz)) //CC in Collect(CCz,CCz') where CC in Collect(Collect(CCz))
 
-    G|CCz +> e : PT'   = _|CCz'
---------------------------------------
-   (G|CCz +> PT x = e) = G|CCz',PT' <= PT
+CC in Collect(CC,_)
 
-   G, x->PT | CCz +> e : PT' = _|CCz'
---------------------------------------
-   G | CCz +> catch throw PT x e : X = G|CCz',PT' <= X
+PT <= PT" in Collect(PT <= PT', PT' <= PT",_)
 
-   (G(D1..Dn) | CCz) +> D1 +> .. +> Dn +> (e : PT) = _|CCz'
-   (G | CCz',PT <= X) +> (K1 : X) +> .. +> (Kk : X) = _|CCz''
---------------------------------------------------------
-   G | CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
-
----------------------------------
-  G | CCz +> (x : G(x)) = G | CCz
-
-
--------------------------------------
-  G | CCz +> (TP P : TP) = G | CCz, class P <= TP
+PT <= PT in Collect(CCz)
+  PT in CCz
   
-  s = m(x1 ... xn)
-  G | CCz +> (e0 : PT0) >+> (e1 : PT0.s.1) >+>..>+> (en : PT0.s.n) = _| CCz'
--------------------------------------------------------------------
-  G | CCz +> (e0.m(x1 = e1, ..., xn = en) : PT0.s) = G | CCz'
-
-
-  G | CCz +> e[\ := PT.s.i] : PT' = _ | CCz'
------------------------------------------------- // do something nicer than >+>
-  G | CCz >+> e : PT.s.i = G | CCz',PT' <= PT.s.1
-
-
-  G | CCz +>  e : PT  = _| CCz'
------------------------------------------------
-  G | CCz +> x := e : Void = G | CCz', PT <= G(x)
-
-
-  G | CCz +> e : PT = _ | CCz'
------------------------------------------------ for fresh X
-  G | CCz +> throw e : X  = G | CCz',PT<=X
-
-
-  G | CCz +> e : PT = _ | CCz'
-------------------------------------------------
-  G | CCz +> loop e : Void | CCz', PT <= Void
-
-
-//OP rule: still to convert and probably to finalize: it still does not try to infer the P.$OP...
-
-=========================================================================================
-    { s } = { s | *forall x1..xn, forall {i}={0..n} where,
-        s = methName(OP)_i(x1..xn)
-        P1 ... Pn = paramaterPaths(PTi, CCz, s)
-*        P'1 ... P'n = (PT0..PTn\i).PPs
-*        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
-    forall j,x1..xn forall (PT P) in xP0..xPn:
-      p(P.$methName(OP)_j)(#apply(x1..xn)) undefined
-*    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
-*	PT'1 ... PT'n = PT0 ... PTn \ s.i
----------------------------------------------------------------------------------------------------
-             G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= PTi.s.1 ... PT'n <= PTi.s.n
-========================================================================================
-    { P'.s } = { P'.s | forall x1..xn, forall {i}={0..n} where,
-    	P' = P.$methName(OP)_i
-    	s = #apply(x1..xn)
-        xPi = (PT P)
-        P1 ... Pn = p[P'.s].Ps
-        P'1 ... P'n = (PT0..PTn\i).PPs
-        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
-	G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
-    PT'1 ... PT'n = PT0 ... PTn \ s.i
----------------------------------------------------------------------------------------------------
-    G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= P'.s.1 ... PT'n <= P'.s.n
- 
-=========================================================================================
-unsatisfiable(P <= P', CCz)
-  if p |/- P <= P'
-
-unsatisfiable(PP <= P', PP <= P", CCz)
-  exists s in dom p[P'] and p[P"], where origin(s, P') != origin(s, P")
-
-unsatisfiable(PP <= P', PP <= P", CCz)
-  no P in dom(p) such that P <= P' and P <= P"
-paramaterPaths(PT, CCz, s) = p[T.s].Ps
-	PT <= T in Collect(CCz)
-	
-
-
-//OLD------------
-
-foo(class Any that)
-foo((\ P) + 3Num)
-
-P + ...
-(T P) + ... // will call .$
-// nothing ells will!
-((T P))
-(T (P))
-(P)
-(T x = P x) + ...  
-(class Any P) + x // may call .$, will not call .#
-(P) +x may cakk .# will not call .$
-((class Any P)) + x will not call anything on P
-
-    -------------------------------------------------------------------------------
-    collect, CollectSolution==solve
-    
- =========================================================================================================
-CC in Collect(CCz,CCz') where CC in Collect(Collect(CCz))
-CC in Collect(CC)
-
-PT <= PT" in Collect(PT <= PT', PT' <= PT")
-
-PT <= PT in Collect(CC)
-  PT in CC
-  
-mdf P <= mdf' P' in Collect(empty)
+mdf P <= mdf' P' in Collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
 	p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
 	P' != _ Any // Just for consistency with everything else, not important!
 
-mdf P <= mdf PP in Collect(mdf PP <= mdf P)
-	p[P].interface = empty // since all classes are final!
+mdf P <= PT in Collect(PT <= mdf P,_)// since all classes are final!
+	p[P].interface = empty 
 
-T.s <= p[T.s].T in Collect(empty)
-p[T.s].T <= T.s in Collect(empty)
+T.s <= PT in Collect(CCz)//since they are alias of each other 
+  PT <= T.s in Collect(CCz)
+  PT=p[T.s].T
+    
+T.s.i <= PT in Collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
+  PT <= T.s.i in Collect(CCz)
+  PT=p[T.s].Ti
 
-T.s.i <= p[T.s].Ti in Collect(empty)
-p[T.s].Ti <= T.s.i in Collect(empty)
-
-PT.s <= PT'.s in Collect(PT <= PT', CC')
-	PT'.s in CC'
+PT.s <= PT'.s in Collect(PT <= PT', CCz)
+  PT'.s in CCz
 
 PT'.s.i <= PT.s.i in Collect(PT <= PT',CC')
-	PT'.s.i in CC'
+  PT'.s.i in CC'
 
-PT.s.i <= PT'.s.i in Collect(PT <= PT',CC')
-	PT'.s.i in CC'
+PT.s.i <= PT'.s.i in Collect(PT <= PT',CC')//since method parameter types can not be refined 
+  PT'.s.i in CC'
 
 PT1' <= Origin(s, P2') in Collect(PT1 <= P2', PT1 <= PT1', CCz)
 	P2'.s in CCz and PT1'.s in CCz
-========================================================================
+
+_______
+#define CollectSolution(p, CCz) = X1->T1, ..., Xn->Tn
 CollectSolution(p, CCz) = X1->T1, ..., Xn->Tn
-	X1 ... Xn = { X | X inside p.top() }
-	Ti = CollectTargets(CCz; Xi)
-	
-T = CollectTargets(CCz,CCz'; X) iff
-	CCz = T1 <= X, ..., Tn <= X, X <= T'1, ..., X <= T'k
-	no T <= X or X <= T in CCz'
-	 Tz = {T in SuperTypes(T1, ..., Tn) | p |- T <= T'1, ..., p |- T <= T'k} //possible solutions
-	if (class Any in Tz) then 
-		T = class Any
-	else 
-		var T = MostSpecific(Tz)
-		if (T = capsule P and X <= capsule _ not in CCz)
-			if X <= imm _ in CCz: //underscore important here
-				T := imm P
-			else T := mut P
-	
+  X1 ... Xn = { X | X inside p.top() }
+  Ti = CollectTargets(CCz; Xi)
+_______
+#define	CollectTargets(CCz; X)=T
+CollectTargets(CCz,CCz'; X) = chooseT(CCz,Tz)
+  CCz = T1 <= X, ..., Tn <= X, X <= T'1, ..., X <= T'k
+  not T in CCz' //no T <= X or X <= T in CCz'
+  Tz = {T in SuperTypes(p,T1, ..., Tn) | p |- T <= T'1, ..., p |- T <= T'k} //possible solutions
+_______	
+#define chooseT(CCz,Tz)=T
+  chooseT(CCz,class Any,_)=class Any
+  chooseT(CCz,Tz)=mostSpecific(Tz)
+    if mostSpecific(Tz)!= capsule P or capsule _ in CCz
+  chooseT(Tz)=imm P  if mostSpecific(Tz)= capsule P, imm _ in CCz and not capsule _ in CCz
+  chooseT(Tz)=mut P  if mostSpecific(Tz)= capsule P, not imm _ in CCz and not capsule _ in CCzP
+  
+  //HERE   
 ======================================================================
 // Definiitions from redirect (unchanged, except I don't pass p
 arround to everything):
@@ -221,3 +102,163 @@ MostSpecific(Tz) = T
   T in p.minimize(Tz)
   p.minimize(Tz) subseteq SuperTypes(T)
   // capsule T, imm T, mut T <= capsule T
+
+
+_______
+#define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
+
+p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
+//assert never happens p|CCz +> C = FULL.L 
+p|CCz +> C = CORE.L = p|CCz +> L.Ms[from This0.C]
+p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
+p|CCz +>MH =p|CCz
+p|CCz +>MH e = p|CCz',PT<=MH.T
+  p|G^MH|CCz +> e:PT  = p|_|CCz'
+_______
+#define HALF.e[\ = PT]
+\[\ = mdf? PP] = PP
+(\ x = e)[\ = PT] = PT x = (e[\ = PT])
+(catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
+otherwise propagate on D, K, e
+
+_______
+#define G | CCz |- HALF.e : CORE.T | CCz
+// TODO: Add ps //WHAT IS ps??? 
+
+    G|CCz +> e : PT'   = _|CCz'
+--------------------------------------
+   (G|CCz +> PT x = e) = G|CCz',PT' <= PT
+
+
+   G, x->PT | CCz +> e : PT' = _|CCz'
+--------------------------------------
+   G | CCz +> catch throw PT x e : X = G|CCz',PT' <= X
+
+
+   (G(D1..Dn) | CCz) +> D1 +> .. +> Dn +> (e : PT) = _|CCz'
+   (G | CCz',PT <= X) +> (K1 : X) +> .. +> (Kk : X) = _|CCz''
+--------------------------------------------------------
+   G | CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
+
+
+---------------------------------
+  G | CCz +> (x : G(x)) = G | CCz
+
+
+-------------------------------------
+  G | CCz +> (TP P : TP) = G | CCz, class P <= TP
+
+  
+  s = m(x1 ... xn)
+  G | CCz +> (e0 : PT0) >+> (e1 : PT0.s.1) +par> .. +par> (en : PT0.s.n) = _| CCz'
+-------------------------------------------------------------------
+  G | CCz +> (e0.m(x1 = e1, ..., xn = en) : PT0.s) = G | CCz'
+
+
+  G | CCz +> e[\ := PT.s.i] : PT' = _ | CCz'
+---------------------------------------------------- //+par> is the parameter accumulation
+  G | CCz +par> e : PT.s.i = G | CCz',PT' <= PT.s.1
+
+
+  G | CCz +>  e : PT  = _| CCz'
+--------------------------------------------------
+  G | CCz +> x := e : Void = G | CCz', PT <= G(x)
+
+
+  G | CCz +> e : PT = _ | CCz'
+----------------------------------------------- for fresh X
+  G | CCz +> throw e : X  = G | CCz',PT<=X
+
+
+  G | CCz +> e : PT = _ | CCz'
+------------------------------------------------
+  G | CCz +> loop e : Void | CCz', PT <= Void
+
+    P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
+    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
+	PT'1 ... PT'n = PT0 ... PTn \ i
+---------------------------------------------------------------------------------------------------
+    G | CCz0 |- xP0 OP ... OP xPn : PTi.s | CCz', PT'1 <= P.s.1 ... PT'n <= P.s.n
+_______
+#define opOptions(CCz, p, OP, PTs, xPs)
+PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
+  where
+  i in 0..n,
+  P'1 ... P'n = (PT0..PTn\i).PPs
+  !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz))
+  either
+    s = methName(OP)_i(x1..xn)
+    P1 ... Pn = paramaterPaths(PTi, CCz, s)
+    PT=PTi
+  or
+    xPi = (PT P')
+    P = P'.$methName(OP)_i
+    s = #apply(x1..xn)
+    P1 ... Pn = p[P.s].Ps
+_______
+#define selectedOption(CCz, p, OP, PTs, xPs)
+selectedOptions(CCz, p, OP, PTs, xPs)=PT,s,i
+  {PT,s,i}=opOptions(CCz,p,OP, PTs, xPs)
+selectedOptions(CCz,p,OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
+  (xPi.P).$methName(OP)_i, s, i in opOptions(CCz,p,OP, PTs, xP0..xPn)
+  forall (xPj.P).$methName(OP)_j, s', j in opOptions(CCz,p,OP, PTs, xP0..xPn)
+    i=j, s=s'
+_______
+#define unsatisfiable(P <= P', CCz)   
+unsatisfiable(P <= P', CCz)
+  if p |/- P <= P'
+unsatisfiable(PP <= P', PP <= P", CCz)
+  exists s in dom p[P'] and p[P"], where origin(s, P') != origin(s, P")
+unsatisfiable(PP <= P', PP <= P", CCz)
+  no P in dom(p) such that P <= P' and P <= P"
+_______
+#define paramaterPaths(PT, CCz, s)  
+paramaterPaths(PT, CCz, s) = p[T.s].Ps
+	PT <= T in Collect(CCz)
+
+    
+====================OLD RULES, Isaac, check is the same as above
+
+    { s } = { s | *forall x1..xn, forall {i}={0..n} where,
+        s = methName(OP)_i(x1..xn)
+        P1 ... Pn = paramaterPaths(PTi, CCz, s)
+*        P'1 ... P'n = (PT0..PTn\i).PPs
+*        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
+    forall j,x1..xn forall (PT P) in xP0..xPn:
+      p(P.$methName(OP)_j)(#apply(x1..xn)) undefined
+*    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
+*	PT'1 ... PT'n = PT0 ... PTn \ s.i
+---------------------------------------------------------------------------------------------------
+    G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= PTi.s.1 ... PT'n <= PTi.s.n
+
+
+    { P'.s } = { P'.s | forall x1..xn, forall {i}={0..n} where,
+    	P' = P.$methName(OP)_i
+    	s = #apply(x1..xn)
+        xPi = (PT P)
+        P1 ... Pn = p[P'.s].Ps
+        P'1 ... P'n = (PT0..PTn\i).PPs
+        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
+	G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
+    PT'1 ... PT'n = PT0 ... PTn \ s.i
+---------------------------------------------------------------------------------------------------
+    G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= P'.s.1 ... PT'n <= P'.s.n
+ 
+=========================================================================================
+
+
+//OLD------------
+
+foo(class Any that)
+foo((\ P) + 3Num)
+
+P + ...
+(T P) + ... // will call .$
+// nothing ells will!
+((T P))
+(T (P))
+(P)
+(T x = P x) + ...  
+(class Any P) + x // may call .$, will not call .#
+(P) +x may cakk .# will not call .$
+((class Any P)) + x will not call anything on P

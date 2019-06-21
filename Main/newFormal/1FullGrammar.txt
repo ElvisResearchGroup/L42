@@ -1,13 +1,13 @@
 ------------------------------------------------------------
 Definition of FULL and CORE 42 syntax, concrete and abstract
 ------------------------------------------------------------
-Notation:
+Notation
+--------
 < ... > indicate character classes
 A -- B to mean anything matching A, but with no sub-string matching B
 When we use a non terminal A in the body of a non terminal B.C,
 if A is not directly defined, we refer to B.A
-
-----------------------
+______________________
 Part 0: Lexical Syntax
 ----------------------
 NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D>
@@ -55,15 +55,15 @@ MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T mOp Doc*(Tx*) [T+]? //t
 H ::= 'interface'?[T+]?
 FULL.P  ::= Cs  // in the full This, Any,Void,Library are C
 FULL.T  ::= mdf Doc* P | '\'
-
-------------------------
+________________________
 Part 1: FULL Expressions
 ------------------------
 eAtomic ::= x | P | 'void' | LL | block | (T e) | \ | \x | 'PathLit
 ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' 
               | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix STRING
-//PARSING HINT: if an expression ends with ')' ']' or ''', and the next character
+//PARSING HINT: if an expression ends with ')' ']' or '"', and the next character
 //is  '(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
+//Also, x and P are not valid DE, so (x|P) '(' is always interpreted as the pe'(' par ')' case. 
 
 par ::= e? xe*
 eUnary   ::= OPP? ePostfix
@@ -82,7 +82,7 @@ Match ::= T x | T x = e | T? '(' (T? x)+ ')' = e //where at least one Ti? is not
 sWhile::= 'while' e e
 sFor ::= 'for' (DX in e)* e
 FULL.e  ::= statement | e-binary3
-FULL.L ::= H { (... | reuse[URL])? M*}
+FULL.L ::= {(H | ... | reuse[URL])? M*}
 LL::= FULL.L | CORE.L
 FULL.M  ::= F | MI | MWT | NC 
 FULL.F  ::= 'var'? T x
@@ -102,7 +102,7 @@ CORE.xPP  ::= x | (T P)
 CORE.D   ::= var? T x = e
 CORE.K   ::= catch throw T x e
 CORE.NC ::= Doc* C = L
-CORE.L ::= H {Info Doc* MWT* NC*}
+CORE.L ::= {H Info Doc* MWT* NC*}
 Info::= [Flag;
   P*;//typeDep
   P*;//coherentDep
