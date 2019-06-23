@@ -4,18 +4,22 @@ Definition of p ♥ FULL.L=CORE.L and Y ♥ FULL.E=CORE.E
 Part 1 Auxiliary
 ----------------
 _______
-#define grammar HALF.e and Y environment
+#define grammar HALF.e, constraints CC and Y environment
 
-HALF.L ::= H { MWT* CORE.NC* }
-HALF.xP ::= x | CORE.P | (CORE.T CORE.P)
-HALF.e::= x | (TX CORE.P) | void | FULL.L | \
- | throw e | loop e | x := e 
- | xP.m(xe*)
- | xP (op xP)+
- | ( Ds Ks e )  
+HALF.xP ::= x | (X CORE.P) | (TX CORE.P) | (\ P)
+HALF.e::= x | (TX CORE.P) | void | CORE.L | \
+ | throw e | loop e | x := e | ( Ds Ks e )   
+ | xP.m(xe*) | xP (op xP)+
 HALF.K ::= "catch" throw TX x e
 HALF.D ::= "var"? TX x = e
+HALF.M ::= CORE.NC | MH HALF.e?
 TX::=CORE.T | X | \
+PX ::=  P | X
+PT ::= TX | PT.s | PT.s.i
+PP ::= PX | PX.s | PX.s.i
+HALF.G := x1:PT1 .. xn:PTn
+CC::= PT <= PT'
+IMap::=X1:T1 .. Xn:Tn
 Y ::= p; xP?; T?; PType
 PType::=error| classP |classAny| \ | m(n)
 _______
@@ -105,7 +109,7 @@ _____________________
 Part 2: normalization
 ---------------------
 _______
-#define p♥Full.L=CORE.L,    infer(p,M'1..M'n),   p♥Full.M=Half.H,   Y♥Full.E=CORE.E
+#define p♥Full.L=CORE.L,    infer(p,M'1..M'n),   p♥Full.M=Half.M,   Y♥Full.E=CORE.E
 //assert p♥H{reuse [URL] _} and p♥{... _} never happens
 p♥CORE.L=CORE.L //assert never happens (not true in real language but good for debugging at the start)
 p♥FULL.L=CORE.L
@@ -126,6 +130,7 @@ p♥FULL.L=CORE.L
     //the line above use [|] to make sequences nor sets. The order of members is important here.
     //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
 
+//TODO:next is informal
 infer(p,M'1..M'n)=M1[solve(p,CCz)]..Mn[solve(p,CCz)]
   where
     M1..Mn=p♥M'1 .. p♥M'n
@@ -133,8 +138,33 @@ infer(p,M'1..M'n)=M1[solve(p,CCz)]..Mn[solve(p,CCz)]
     p.get(i)={Hi MCsi Mi _}, where Mi not of form Mc
     var CCz = p|Ccz +> MCs1[from This1] +>..+> MCsn[from Thisn]
     while CCz changes:
-    	CCz = Collect(p, (p|Ccz +>M1+>..+>Mn).CCz)
+    	CCz = collect(p, (p|Ccz +>M1+>..+>Mn).CCz)
+
+_______
+#define HALF.M[IMap]=CORE.M  HALF.e[IMap;G;T]=CORE.e //TODO: this is incomplete
+CORE.M[IMap]=CORE.M
+(MH e)[IMap]=MH (e[IMap;G^MH;MH.T])
+(TX x=e)[IMap;G;T]=TX[IMap;G;T] x=(e[IMap;G;T]) 
+\[_;_;T]=T.P
+(catch \ x e)[IMap;G;T]=catch T x (e[IMap;G;T])
+(Ds Ks e)[IMap;G;T]=(Ds[IMap;G[Ds];T] Ks[IMap;G;T] e[IMap;G[Ds];T])
+(TX CORE.P) [IMap;G;T] =TX[IMap;G;T] CORE.P[IMap;G;T]
+e[IMap;G;T] propagates on the structure for 
+  x, void, CORE.L, throw e, loop e, x := e   
+xP.m(x1=e1 .. xn=en)[IMap;G;T]=
+  xP[IMap;G;T].m(x1=e1[IMap;G;IMap(G(xP))] .. xn=en[IMap;G;IMap(G(xP))])
+xP0 op..op xPn[IMap;G;T]=e[IMap;G;T]
+  where
+  selectedOptions(CCz, p, op, IMap(G(xP0))..IMap(G(xPn)), xPs)=PT,s,i
+  xP'1..xP'n=xP0..xPn/i
+  e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
+  e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
+  //TODO: do we need CCz?
     
+T[_;_;_]=T
+X[IMap;_;_]=IMap(X)
+\[_;_;T]=T
+
 p♥MH = resolveCs(p,MH) 
 p♥MH e= resolveCs(p,MH) Y[p=p,&xP=empty,T=MH.T,PType=MH.T]♥e
 p♥CORE.NC =CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 

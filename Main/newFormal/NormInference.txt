@@ -1,112 +1,60 @@
 _______
-#define grammar HALF; this is an intermediate form only used internally in this file
-
-HALF.e::= x | (CORE.T CORE.P) | void | CORE.L | \ 
-  | throw e | loop e | x := e  | xP.m(xe*) | xP (op xP)+ | ( Ds Ks e )  
-// HALF.L ::= H { (C = CORE.L | MH = HALF.e?)* }
-// TODO: update and translate to this new form:
-xP ::= x | (X p) | (\ P)
-TX ::=  T | X
-PX ::=  P | X
-PT ::= TX | PT.s | PT.s.i
-PP ::= PX | PX.s | PX.s.i
-G := x1:PT1 .. xn:PTn
-CC::= PT <= PT'
-
+#define p|-T <= Tz //todo: move in typesystem
+p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
 _______
 #define PT in CCz
-  PT in PT<=_,_
-  PT in _<=PT,_
+PT in PT<=_,_
+PT in _<=PT,_
 _______
-#define Collect(CCz)
-
-CC in Collect(CCz) where CC in Collect(Collect(CCz)) //CC in Collect(CCz,CCz') where CC in Collect(Collect(CCz))
-
-CC in Collect(CC,_)
-
-PT <= PT" in Collect(PT <= PT', PT' <= PT",_)
-
-PT <= PT in Collect(CCz)
+#define origin(s; P) = P
+  {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
+_______
+#define mostSpecific(Tz) = T
+mostSpecific(Tz) = T
+  {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
+_______
+#define collect(CCz)
+CC in collect(CCz) where CC in collect(collect(CCz)) //CC in collect(CCz,CCz') where CC in collect(collect(CCz))
+CC in collect(CC,_)
+PT <= PT" in collect(PT <= PT', PT' <= PT",_)
+PT <= PT in collect(CCz)
   PT in CCz
-  
-mdf P <= mdf' P' in Collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
-	p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
-	P' != _ Any // Just for consistency with everything else, not important!
-
-mdf P <= PT in Collect(PT <= mdf P,_)// since all classes are final!
+mdf P <= mdf' P' in collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
+  p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
+  P' != _ Any // Just for consistency with everything else, not important!
+mdf P <= PT in collect(PT <= mdf P,_)// since all classes are final!
 	p[P].interface = empty 
-
-T.s <= PT in Collect(CCz)//since they are alias of each other 
-  PT <= T.s in Collect(CCz)
+T.s <= PT in collect(CCz)//since they are alias of each other 
+  PT <= T.s in collect(CCz)
   PT=p[T.s].T
-    
-T.s.i <= PT in Collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
-  PT <= T.s.i in Collect(CCz)
+T.s.i <= PT in collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
+  PT <= T.s.i in collect(CCz)
   PT=p[T.s].Ti
-
-PT.s <= PT'.s in Collect(PT <= PT', CCz)
+PT.s <= PT'.s in collect(PT <= PT', CCz)
   PT'.s in CCz
-
-PT'.s.i <= PT.s.i in Collect(PT <= PT',CC')
+PT'.s.i <= PT.s.i in collect(PT <= PT',CC')
   PT'.s.i in CC'
-
-PT.s.i <= PT'.s.i in Collect(PT <= PT',CC')//since method parameter types can not be refined 
+PT.s.i <= PT'.s.i in collect(PT <= PT',CC')//since method parameter types can not be refined 
   PT'.s.i in CC'
-
-PT1' <= Origin(s, P2') in Collect(PT1 <= P2', PT1 <= PT1', CCz)
+PT1' <= Origin(s, P2') in collect(PT1 <= P2', PT1 <= PT1', CCz)
 	P2'.s in CCz and PT1'.s in CCz
-
 _______
-#define CollectSolution(p, CCz) = X1->T1, ..., Xn->Tn
-CollectSolution(p, CCz) = X1->T1, ..., Xn->Tn
-  X1 ... Xn = { X | X inside p.top() }
-  Ti = CollectTargets(CCz; Xi)
+#define commonSuperT(p,Tz)=Tz'
+commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
+  where Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
 _______
-#define	CollectTargets(CCz; X)=T
-CollectTargets(CCz,CCz'; X) = chooseT(CCz,Tz)
-  CCz = T1 <= X, ..., Tn <= X, X <= T'1, ..., X <= T'k
-  not T in CCz' //no T <= X or X <= T in CCz'
-  Tz = {T in SuperTypes(p,T1, ..., Tn) | p |- T <= T'1, ..., p |- T <= T'k} //possible solutions
-_______	
-#define chooseT(CCz,Tz)=T
-  chooseT(CCz,class Any,_)=class Any
-  chooseT(CCz,Tz)=mostSpecific(Tz)
-    if mostSpecific(Tz)!= capsule P or capsule _ in CCz
-  chooseT(Tz)=imm P  if mostSpecific(Tz)= capsule P, imm _ in CCz and not capsule _ in CCz
-  chooseT(Tz)=mut P  if mostSpecific(Tz)= capsule P, not imm _ in CCz and not capsule _ in CCzP
-  
-  //HERE   
-======================================================================
-// Definiitions from redirect (unchanged, except I don't pass p
-arround to everything):
-Define p[P.s] = p[P](s)
-Define p[Cs.s] = p[This0.Cs.s]
-Define MWT.P = MWT.mt.T.P
-Define MWT.Pi = MWT.mt.Ts.i.P
-p[P] = p(P)[from P] // I think....
-
-Origin(s; P) = MostGeneral({P' | p |- P <= P' s in dom p[P']})
-MostGeneral(Pz) = P
-  {P} = SuperClasses(Pz) intersect p.minimize(Pz)
-
-SuperTypes(T0 ... Tn) = SuperTypes(T0) intersect ... intersect SuperTypes(Tn)
-
-mdf' P' in SuperTypes(mdf P)
-	where P' in p.minimize(p[P].Pz U {P, Any})
-	mdf <= mdf'
-
-
-
------
-MostSpecific(Tz) = T
-  T in p.minimize(Tz)
-  p.minimize(Tz) subseteq SuperTypes(T)
-  // capsule T, imm T, mut T <= capsule T
-
-
+#define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T
+solve(p, CCz) = X1:T1 .. Xn:Tn
+  X1 .. Xn = { X | X inside p.top() }
+  Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
+  Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
+chooseT(CCz;class Any,_)=class Any
+chooseT(CCz;Tz)=mostSpecific(Tz)
+  if mostSpecific(Tz)!= capsule P or capsule _ in CCz
+chooseT(Tz)=imm P  if mostSpecific(Tz)= capsule P, imm _ in CCz and not capsule _ in CCz
+chooseT(Tz)=mut P  if mostSpecific(Tz)= capsule P, not imm _ in CCz and not capsule _ in CCzP
 _______
 #define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
-
 p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
 //assert never happens p|CCz +> C = FULL.L 
 p|CCz +> C = CORE.L = p|CCz +> L.Ms[from This0.C]
@@ -185,7 +133,7 @@ PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
   where
   i in 0..n,
   P'1 ... P'n = (PT0..PTn\i).PPs
-  !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz))
+  !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz))//TODO: discuss cachability of collect
   either
     s = methName(OP)_i(x1..xn)
     P1 ... Pn = paramaterPaths(PTi, CCz, s)
@@ -214,7 +162,7 @@ unsatisfiable(PP <= P', PP <= P", CCz)
 _______
 #define paramaterPaths(PT, CCz, s)  
 paramaterPaths(PT, CCz, s) = p[T.s].Ps
-	PT <= T in Collect(CCz)
+	PT <= T in collect(CCz)
 
     
 ====================OLD RULES, Isaac, check is the same as above
@@ -223,7 +171,7 @@ paramaterPaths(PT, CCz, s) = p[T.s].Ps
         s = methName(OP)_i(x1..xn)
         P1 ... Pn = paramaterPaths(PTi, CCz, s)
 *        P'1 ... P'n = (PT0..PTn\i).PPs
-*        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
+*        !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
     forall j,x1..xn forall (PT P) in xP0..xPn:
       p(P.$methName(OP)_j)(#apply(x1..xn)) undefined
 *    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
@@ -238,7 +186,7 @@ paramaterPaths(PT, CCz, s) = p[T.s].Ps
         xPi = (PT P)
         P1 ... Pn = p[P'.s].Ps
         P'1 ... P'n = (PT0..PTn\i).PPs
-        !unsatisfiable(Collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
+        !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
 	G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
     PT'1 ... PT'n = PT0 ... PTn \ s.i
 ---------------------------------------------------------------------------------------------------
