@@ -1,58 +1,67 @@
 _______
 #define p|-T <= Tz //todo: move in typesystem
-p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
+* p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
 _______
 #define PT in CCz
-PT in PT<=_,_
-PT in _<=PT,_
+* PT in PT<=_,_
+* PT in _<=PT,_
 _______
 #define origin(s; P) = P
-  {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
+* origin(s; P) = P
+    {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
 _______
 #define mostSpecific(Tz) = T
-mostSpecific(Tz) = T
-  {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
+* mostSpecific(Tz) = T
+    {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
 _______
-#define collect(CCz)
-CC in collect(CCz) where CC in collect(collect(CCz)) //CC in collect(CCz,CCz') where CC in collect(collect(CCz))
-CC in collect(CC,_)
-PT <= PT" in collect(PT <= PT', PT' <= PT",_)
-PT <= PT in collect(CCz)
-  PT in CCz
-mdf P <= mdf' P' in collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
-  p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
-  P' != _ Any // Just for consistency with everything else, not important!
-mdf P <= PT in collect(PT <= mdf P,_)// since all classes are final!
+#define collect(CCz)=CCz'
+* CC in collect(CCz)
+    CC in collect(collect(CCz)) //CC in collect(CCz,CCz') where CC in collect(collect(CCz))
+* CC in collect(CC,_)
+* PT <= PT" in collect(PT <= PT', PT' <= PT",_)
+* PT <= PT in collect(CCz)
+    PT in CCz
+* mdf P <= mdf' P' in collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
+    p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
+    P' != _ Any // Just for consistency with everything else, not important!
+* mdf P <= PT in collect(PT <= mdf P,_)// since all classes are final!
 	p[P].interface = empty 
-T.s <= PT in collect(CCz)//since they are alias of each other 
-  PT <= T.s in collect(CCz)
-  PT=p[T.s].T
-T.s.i <= PT in collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
-  PT <= T.s.i in collect(CCz)
-  PT=p[T.s].Ti
-PT.s <= PT'.s in collect(PT <= PT', CCz)
-  PT'.s in CCz
-PT'.s.i <= PT.s.i in collect(PT <= PT',CC')
-  PT'.s.i in CC'
-PT.s.i <= PT'.s.i in collect(PT <= PT',CC')//since method parameter types can not be refined 
-  PT'.s.i in CC'
-PT1' <= Origin(s, P2') in collect(PT1 <= P2', PT1 <= PT1', CCz)
-	P2'.s in CCz and PT1'.s in CCz
+* T.s <= PT in collect(CCz)//since they are alias of each other 
+    PT <= T.s in collect(CCz)
+    PT=p[T.s].T
+* T.s.i <= PT in collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
+    PT <= T.s.i in collect(CCz)
+    PT=p[T.s].Ti
+* PT.s <= PT'.s in collect(PT <= PT', CCz)
+    PT'.s in CCz
+* PT'.s.i <= PT.s.i in collect(PT <= PT',CC')
+    PT'.s.i in CC'
+* PT.s.i <= PT'.s.i in collect(PT <= PT',CC')//since method parameter types can not be refined 
+    PT'.s.i in CC'
+* PT1' <= Origin(s, P2') in collect(PT1 <= P2', PT1 <= PT1', CCz)
+    P2'.s in CCz
+    PT1'.s in CCz
 _______
 #define commonSuperT(p,Tz)=Tz'
-commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
-  where Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
+* commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
+    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
 _______
 #define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T
-solve(p, CCz) = X1:T1 .. Xn:Tn
-  X1 .. Xn = { X | X inside p.top() }
-  Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
-  Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
-chooseT(CCz;class Any,_)=class Any
-chooseT(CCz;Tz)=mostSpecific(Tz)
-  if mostSpecific(Tz)!= capsule P or capsule _ in CCz
-chooseT(Tz)=imm P  if mostSpecific(Tz)= capsule P, imm _ in CCz and not capsule _ in CCz
-chooseT(Tz)=mut P  if mostSpecific(Tz)= capsule P, not imm _ in CCz and not capsule _ in CCzP
+* solve(p, CCz) = X1:T1 .. Xn:Tn
+    X1 .. Xn = { X | X inside p.top() }
+    Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
+    Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
+* chooseT(CCz;class Any,_)=class Any
+* chooseT(CCz;Tz)=mostSpecific(Tz)
+    mostSpecific(Tz)!= capsule P or capsule _ in CCz
+* chooseT(Tz)=imm P
+    mostSpecific(Tz)= capsule P
+    imm _ in CCz
+    not capsule _ in CCz
+* chooseT(Tz)=mut P 
+    mostSpecific(Tz)= capsule P
+    not imm _ in CCz
+    not capsule _ in CCzP
 _______
 #define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
 p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 

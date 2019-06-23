@@ -1,73 +1,69 @@
 -----------------------------------------------------
 Definition of p ♥ FULL.L=CORE.L and Y ♥ FULL.E=CORE.E
 -----------------------------------------------------
-Part 1 Auxiliary
+Part 1 Auxiliary //TODO: make ♥ into half and collecting inference from half in a file (that would have all the stuff using the HALF syntax
 ----------------
 _______
 #define grammar HALF.e, constraints CC and Y environment
-
-HALF.xP ::= x | (X CORE.P) | (TX CORE.P) | (\ P)
-HALF.e::= x | (TX CORE.P) | void | CORE.L | \
- | throw e | loop e | x := e | ( Ds Ks e )   
- | xP.m(xe*) | xP (op xP)+
-HALF.K ::= "catch" throw TX x e
-HALF.D ::= "var"? TX x = e
-HALF.M ::= CORE.NC | MH HALF.e?
-TX::=CORE.T | X | \
-PX ::=  P | X
-PT ::= TX | PT.s | PT.s.i
-PP ::= PX | PX.s | PX.s.i
-HALF.G := x1:PT1 .. xn:PTn
-CC::= PT <= PT'
-IMap::=X1:T1 .. Xn:Tn
-Y ::= p; xP?; T?; PType
-PType::=error| classP |classAny| \ | m(n)
+  HALF.xP ::= x | (X CORE.P) | (TX CORE.P) | (\ P)
+  HALF.e ::= x | (TX CORE.P) | void | CORE.L | \
+   | throw e | loop e | x := e | ( Ds Ks e )   
+   | xP.m(xe*) | xP (op xP)+
+  HALF.K ::= "catch" throw TX x e
+  HALF.D ::= "var"? TX x = e
+  HALF.M ::= CORE.NC | MH HALF.e?
+  TX ::= CORE.T | X | \
+  PX ::=  P | X
+  PT ::= TX | PT.s | PT.s.i
+  PP ::= PX | PX.s | PX.s.i
+  HALF.G := x1:PT1 .. xn:PTn
+  CC ::= PT <= PT'
+  IMap ::= X1:T1 .. Xn:Tn
+  I  ::=I[p;IMap;G;CCz;onSlash=T?]
+  PType ::= error | classP | TX
+  Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=PType]
 _______
 #define toBinOp(x,Op=) // convenience method to desugar updateOps
-
-toBinOp(x, :=) = x :=
-toBinOp(x, OP=) = x := x OP 
+* toBinOp(x, :=) = x :=
+* toBinOp(x, OP=) = x := x OP 
 _______
-#define Y(xP),  PType(p,xP)   // where error(p, e) is undefined
-
-Y(x)= resolveCs(p,Y.PType(Y.p,xP))
-  
-PType(p, x) = x
-PType(p, (T P)) = (T P)
-classP(p, P) = (class P P)
-\(p,P) =  (\ P)
-m(n)(p,P)= (X P) //TODO: TO CHANGE 
-
+#define Y(xP)
+* Y(x)= x
+* Y((T P))= resolveCs(p,(T P))
+* Y(P)= resolveCs(p,(Y.onPath P))
+    Y.onPath of form TX
+* Y(P)= resolveCs(p,(class P P))
+    Y.onPath=classP
 _______
-#define expandFields(Ms)
-
-M in expandFields(Ms) 
-  where M in Ms, M not of form F
-method toRead(T) x() in expandFields(Ms) 
-  where var? T x in Ms
-method capsuleToLent(T) #x() in expandFields(Ms) 
-  where var? T x in Ms  and   T.mdf in {lent, mut, capsule}
-method Void x(T that) in expandFields(Ms) 
-  where var T x in Ms
+#define expandFields(Ms)=Ms'
+* M in expandFields(Ms) 
+    M in Ms
+    M not of form F
+* method toRead(T) x() in expandFields(Ms) 
+    var? T x in Ms
+* method capsuleToLent(T) #x() in expandFields(Ms) 
+    var? T x in Ms
+    T.mdf in {lent, mut, capsule}
+* method Void x(T that) in expandFields(Ms) 
+    var T x in Ms
 _______
 #define Ts\p Tz,   collect(p,Ts)=Ts' //collects transitively implemented interfaces
+* Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
+* empty \p Tz=empty
+* T,Ts\p T',Tz = Ts\p T',Tz
+    p.equiv(T.P,T'.P)
+* T,Ts\p Tz) = T,(Ts\p Tz)
+    otherwise
 
-Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
-empty \p Tz=empty
-T,Ts\p T',Tz = Ts\p T',Tz
-  where p.equiv(T.P,T'.P)
-T,Ts\p Tz) = T,(Ts\p Tz)
-  otherwise
-
-collect(p,empty)=empty
-collect(p,T0 Ts)=((T0 Ts') \p collect(p,Ts)) collect(p,Ts)
-  //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
-  p(T0.P)=interface Ts0 {_}=FULL.L
-  Ts'=collect(p,Ts0[from T0.P])
-  //this checks absence of circularity by diverging
-  //an implementation could keep a list of visited P instead of diverging; mathematically it is the same
-collect(p,T0 Ts)=((T0 Ts0[from T0.P]) \p collect(p,Ts)) collect(p,Ts)
-  p(T0.P)=interface Ts0 {_}=CORE.L
+* collect(p,empty)=empty
+* collect(p,T0 Ts)=((T0 Ts') \p collect(p,Ts)) collect(p,Ts)
+    //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
+    p(T0.P)=interface Ts0 {_}=FULL.L
+    Ts'=collect(p,Ts0[from T0.P])
+    //this checks absence of circularity by diverging
+    //an implementation could keep a list of visited P instead of diverging; mathematically it is the same
+* collect(p,T0 Ts)=((T0 Ts0[from T0.P]) \p collect(p,Ts)) collect(p,Ts)
+    p(T0.P)=interface Ts0 {_}=CORE.L
 _______
 #define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
 //methods(), applied to a CORE.L will just return the MWTs;
@@ -78,42 +74,39 @@ _______
 //    B= [A]{ method A m()}
 //are ok wrt B but fail for A
 
-methods(p,P0)=CORE.L.MWTs[from P0]
-  where p(P0)=CORE.L
+* methods(p,P0)=CORE.L.MWTs[from P0]
+    p(P0)=CORE.L
   
-methods(p,P0)=MWT1..MWTn
-  p(P0)=interface? Ts{ Ms }=FULL.L
-  Ps=collect(p,Ts[from P0]).Ps//T1..Tn is a list, not a set
-  s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
-  //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
-  forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
-  [Mi,_]=[MWT[?refine=refine]| P in P0,Ps such that methods(p,P)(si)=MWT]
-  MWTi=Mi [with e=p(P0)(si).e[from P0]] if defined,
-  MWTi=Mi otherwise
+* methods(p,P0)=MWT1..MWTn
+    p(P0)=interface? Ts{ Ms }=FULL.L
+    Ps=collect(p,Ts[from P0]).Ps//T1..Tn is a list, not a set
+    s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
+    //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
+    forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
+    [Mi,_]=[MWT[?refine=refine]| P in P0,Ps such that methods(p,P)(si)=MWT]
+    MWTi=Mi [with e=p(P0)(si).e[from P0]] if defined,
+    MWTi=Mi otherwise
 _______
 #define resolveCs(p,FULL.T)=CORE.T,   resolveCs(p,FULL.P)=CORE.P,  resolveCs(p,FULL.docs)=CORE.docs
+* resolveCs(p,docs mdf P)=resolveCs(p,docs) mdf resolveCs(p,P)
+* resolveCs(p,empty)=X with fresh X //case T?=empty
 
-resolveCs(p,docs mdf P)=resolveCs(p,docs) mdf resolveCs(p,P)
-resolveCs(p,empty)=X with fresh X //case T?=empty
+* resolveCs(p,CORE.P)=CORE.P
+* resolveCs(p,C.Cs)=Thisn.C.Cs
+    where n is the smallest number such that either
+      C in dom(p.get(n))
+      or p.get(n)={@{__STOP_SCOPE__} _}
+      or p.get(n+1) undefined
 
-resolveCs(p,CORE.P)=CORE.P
-resolveCs(p,C.Cs)=Thisn.C.Cs
-  where n is the smallest number such that either
-    C in dom(p.get(n))
-    or p.get(n)=H{... _}
-    or p.get(n)=H{reuse[URL] _}
-    or p.get(n+1) undefined
-
-resolveCs(p,FULL.docs) =docs' where all the Full.P are replaced with resolveCs(p,FULL.P) 
+* resolveCs(p,FULL.docs) =docs' where all the Full.P are replaced with resolveCs(p,FULL.P) 
 _____________________
 Part 2: normalization
 ---------------------
 _______
-#define p♥Full.L=CORE.L,    infer(p,M'1..M'n),   p♥Full.M=Half.M,   Y♥Full.E=CORE.E
+#define p♥Full.L=CORE.L
 //assert p♥H{reuse [URL] _} and p♥{... _} never happens
-p♥CORE.L=CORE.L //assert never happens (not true in real language but good for debugging at the start)
-p♥FULL.L=CORE.L
-  where 
+* p♥CORE.L = CORE.L //assert never happens (not true in real language but good for debugging at the start)
+* p♥FULL.L = CORE.L
     LL=interface? Ts{Ms0}
     CORE.L=interface? Ts,(Ts'\p Ts){Info infer(p',Ms')}
     Info=
@@ -129,10 +122,10 @@ p♥FULL.L=CORE.L
     Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
     //the line above use [|] to make sequences nor sets. The order of members is important here.
     //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
-
-//TODO:next is informal
-infer(p,M'1..M'n)=M1[solve(p,CCz)]..Mn[solve(p,CCz)]
-  where
+_______
+#define infer(p,HALF.Ms)=CORE.Ms  //TODO:next is informal
+* infer(p,M'1..M'n)=I(M1)..I(Mn)
+    I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
     M1..Mn=p♥M'1 .. p♥M'n
     n = max {n | p.get(n) is defined }
     p.get(i)={Hi MCsi Mi _}, where Mi not of form Mc
@@ -140,165 +133,170 @@ infer(p,M'1..M'n)=M1[solve(p,CCz)]..Mn[solve(p,CCz)]
     while CCz changes:
     	CCz = collect(p, (p|Ccz +>M1+>..+>Mn).CCz)
 
+I[p;IMap;G;CCz;onSlash=T?]
 _______
-#define HALF.M[IMap]=CORE.M  HALF.e[IMap;G;T]=CORE.e //TODO: this is incomplete
-CORE.M[IMap]=CORE.M
-(MH e)[IMap]=MH (e[IMap;G^MH;MH.T])
-(TX x=e)[IMap;G;T]=TX[IMap;G;T] x=(e[IMap;G;T]) 
-\[_;_;T]=T.P
-(catch \ x e)[IMap;G;T]=catch T x (e[IMap;G;T])
-(Ds Ks e)[IMap;G;T]=(Ds[IMap;G[Ds];T] Ks[IMap;G;T] e[IMap;G[Ds];T])
-(TX CORE.P) [IMap;G;T] =TX[IMap;G;T] CORE.P[IMap;G;T]
-e[IMap;G;T] propagates on the structure for 
-  x, void, CORE.L, throw e, loop e, x := e   
-xP.m(x1=e1 .. xn=en)[IMap;G;T]=
-  xP[IMap;G;T].m(x1=e1[IMap;G;IMap(G(xP))] .. xn=en[IMap;G;IMap(G(xP))])
-xP0 op..op xPn[IMap;G;T]=e[IMap;G;T]
-  where
-  selectedOptions(CCz, p, op, IMap(G(xP0))..IMap(G(xPn)), xPs)=PT,s,i
-  xP'1..xP'n=xP0..xPn/i
-  e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
-  e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
-  //TODO: do we need CCz?
-    
-T[_;_;_]=T
-X[IMap;_;_]=IMap(X)
-\[_;_;T]=T
+#define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e//TODO: this is incomplete
+* I(CORE.M) = CORE.M
+* I(MH e) = MH I[G=G^MH;onSlash=MH.T](e)
+* I(\) = I.onSlash.P //undefined if it is empty
+* I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
+* I((TX CORE.P)) = (iType(I,TX) CORE.P)
+* I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I'(e1) .. xn=I'(en))
+    I'=I[onSlash=I.IMap(I.G(xP))]
+* I(xP0 op..op xPn)=I(e)
+    Ti=I.IMap(I.G(xPi))
+    selectedOptions(I.CCz, I.p, op, T0..Tn, xPs)=PT,s,i
+    xP'1..xP'n=xP0..xPn/i
+    e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
+    e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
+* I(e)=e' propagates on the structure for 
+    x, void, CORE.L, throw e, loop e, x := e
+_______
+#define I[DS] = I',  I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
+* I[TX1 x1=_ .. TXn xn=_]=I[G=I.G,x1:iType(I,TX1),..,xn:iType(I,TXn)]
 
-p♥MH = resolveCs(p,MH) 
-p♥MH e= resolveCs(p,MH) Y[p=p,&xP=empty,T=MH.T,PType=MH.T]♥e
-p♥CORE.NC =CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
-//assert never happens p♥C:Full.L or p♥s e
+* I(TX x=e) = iType(I,TX) x=(e[IMap;G;T]) 
+
+* I(catch \ x e)[IMap;G;T]=catch T x (e[IMap;G;T])
 _______
-#define Y♥FullE = HalfE
+#define iType(I,TX)=CORE.T
+* iType(I,T)=T
+* iType(I,X)=I.IMap(X)
+* iType(I,\)=I.onSlash
+_______
+#define p♥FULL.M = HALF.M
+* p♥MH = resolveCs(p,MH) 
+* p♥MH e = resolveCs(p,MH) Y♥e
+    Y = [p=p,onSlashX=empty,onReturn=MH.T,onPath=MH.T]
+* p♥CORE.NC = CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
+    //assert never happens p♥C:Full.L or p♥s e
+_______
+#define Y♥FULL.e = HALF.e
 //simple cases first
-
-Y♥x=x //assert x not of form _
-Y♥P=Y.PType(P)
-Y♥void=void
-Y♥L=Y.p♥L
-Y♥(T e)=(resolveCs(Y.p,T) x=Y[T=resolveCs(Y.p,T)]♥e x)
-  where e not of form P
-Y♥(T P)= resolveCs(Y.p,(T P) )
-Y♥\=\ 
-  where Y.xp? !=empty
-Y♥\=T
-  where T=Y.T?  //assert either this or the former case holds
-Y♥\x=(Y.xP).x()
-Y♥'PathLit=Y♥\"PathLit"
-Y♥return e=return Y[PType=classP]♥e //We can never return class Any anyway, or we could catch return class P on a non coherent P
-Y♥throw e=throw Y[PType=error]♥e
-  where throw in {error,exception}
-Y♥loop e=loop Y[PType=error]♥e
-Y♥~e=Y[PType=classP]♥e.methName(~)()
-Y♥!e=Y[PType=classP]♥e.methName(!)()
-Y♥NumLit e=Y♥e"NumLit"
-Y♥ x updateOp e=  Y♥toBinOp(x, updateOp) e)
-Y♥e(.m)?(par)=(x=Y[PType=classP]♥e x.methName(m?)( Y[xP=x,T=\,PType=\]♥par ) )
-  where e not of form xP, x fresh
-Y♥xP(.m)?(par)= Y[PType=classP](xP).methName(.m?)( Y[xP=x,T=\,PType=\]♥par )
-  
+//unicode characters to disambiguate equals and parenthesis =() ⚌❪❫ ᙿ≝≖᐀ //what is the best =?
+* Y♥x = x //assert x not of form _
+* Y♥P = Y(P)
+* Y♥void = void
+* Y♥L = Y.p♥L
+* Y♥(T e) = ❪resolveCs(Y.p,T) x⚌Y[T=resolveCs(Y.p,T)]♥e x❫ //do we see an improvement using unicode?
+    e not of form P
+* Y♥(T P) = resolveCs(Y.p,(T P) )
+* Y♥\ = \ 
+    Y.onSlashX != empty
+* Y♥\ = T
+    Y.onSlashX = empty
+    Y.onReturn = T
+* Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
+* Y♥'PathLit = Y♥\"PathLit"
+* Y♥NumLit e=Y♥e"NumLit"
+* Y♥return e = return Y[onReturn=empty;onPath=classP]♥e
+    //We can never return class Any anyway, or we could catch return class P on a non coherent P
+    //we set onReturn=empty to avoid return {} and other funny things
+* Y♥throw e = throw Y[onReturn=empty;onPath=error]♥e
+    throw in {error,exception}
+* Y♥loop e = loop Y[onReturn=imm Void;onPath=error]♥e
+* Y♥~e = Y[onPath=classP]♥e.methName(~)()
+* Y♥!e=Y[onPath=classP]♥e.methName(!)()
+* Y♥ x updateOp e=  Y♥toBinOp(x, updateOp) e)
+* Y♥e(.m)?(par)=(x=Y0♥e x.methName(m?)( Y1♥par ) )
+    Y0=Y[onReturn=empty;onPath=classP]
+    Y1=Y[onSlashX=x;onReturn=\;onPath=\]
+    e not of form xP
+    x fresh
+* Y♥xP(.m)?(par)= Y0(xP).methName(.m?)( Y1♥par )
+    Y0=Y[onReturn=empty;onPath=classP]
+    Y1=Y[onSlashX=x;onReturn=\;onPath=\]
 //bin operators
-Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
-  where e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
-Y♥xP op3 e= (
-  x=classP(xP).#shortCircut'OP3'()  //here and and under, using ' to generate method names in some standard way
-  Y♥if x.#shortResult() 
-  else x.#shortProcess(that=Y♥e2)
-  )
-  where x, x' fresh
-
-Y♥e0 op .. op en =(Ds e0" op .. op en")
-  ei'=Y[PType=methName(op)(n)]♥ei
-  Ds=[xi=e'i| e'i not of form xP]
-  ei"=e'i if e'i of form xP,
-  ei"=xi otherwise
-  where x1..xn fresh, op not of form op3, n>=1
-   
+* Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
+    e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
+* Y♥xP op3 e= (
+      x=Y(xP.#shortCircut'OP3'())  //here and and under, using ' to generate method names in some standard way
+      Y♥if x.#shortResult() 
+      else x.#shortProcess(that=Y♥e2)
+      )
+    x, x' fresh
+* Y♥e0 op .. op en = (Ds e0" op .. op en")
+    Yi = Y[onReturn=\;onPath=Xi]//TODO: would this help? using the same fresh X for many P?
+    ei' = Yi♥ei
+    Ds = [xi=e'i| e'i not of form xP]
+    ei" = e'i if e'i of form xP,
+    ei" = xi otherwise
+    x1..xn fresh
+    X1..Xn fresh
+    op not of form op3
+    n >= 1
 //blocks
-Y♥( DEs Ks Wops? DEs2)=Y♥(DEs Ks Wops? DEs2 void)
-Y♥( DEs Ks Wops? DE DEs2 e))=Y♥( DEs Ks Wops? (DE DEs2 e))
-Y♥( DEs Ks "wops" T1..Tn e)=( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
-  where Ki=catch exception resolveCs(p,Ti) xi error xi.#intoErrorAt(that:core({}))
-   // what if xi has no #intoError method?
-   
-Y♥{ DEs Ks Wops? DEs2 } = (Y.T x=(
-    Void x''=Y[T=Void]♥(DEs Ks Wops? DEs2 void))
-    catch return Y.T x' x'
-    error void//unreachable thanks to {return} well formedness   
-    )x)
-  where x,x',x'' fresh
-
+* Y♥( DEs Ks Wops? DEs2) = Y♥(DEs Ks Wops? DEs2 void)
+* Y♥( DEs Ks Wops? DE DEs2 e)) = Y♥( DEs Ks Wops? (DE DEs2 e))
+* Y♥( DEs Ks "wops" T1..Tn e) = ( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
+    Ki=catch exception resolveCs(p,Ti) xi error xi.#intoErrorAt(that:core({}))   
+* Y♥{ DEs Ks Wops? DEs2 } = (
+      Void x=Y0♥(DEs Ks Wops? DEs2 void)
+      catch return Y.T x' x'
+      error void//unreachable thanks to {return} well formedness   
+      )
+    Y0=Y[onReturn=empty;onPath=error]
+    x,x' fresh
 //builders
-Y♥e(.m)?[pars]= Y[PType=classP]♥e.methName(.m?)(squareBuilder:(
-   b=\.#squareBuilder()
-   Void x=Y♥if \.#shortCircutSquare() (     
-     b.add(par1) //ok no #, it is a builder, 
-     ..
-     b.add(parn))
-   b))
- where b,x fresh
+* Y♥e(.m)?[pars]= Y♥ 
+      e.methName(.m?)(squareBuilder:(
+        b=\.#squareBuilder()
+        Void x=if \.#shortCircutSquare() (     
+          b.#add(par1) .. b.#add(parn)) //so \ and \x are about the builder
+        b))
+    b,x fresh
 
-Y♥e StrLit= Y[PType=classP]♥e.#from(stringLiteral=(
-    b=\.#stringLiteralBuilder()
-    b.chars0() //one call for each char
-    b.#splice(that=Y[xP=x,T=\,PType=\]♥e1)
-    b.chars1()
-    ..
-    b.#splice(that=Y[xP=x,T=\,PType=\]♥en)
-    b.charsn()
-    b))
-  where StrLit= chars0 e1 chars1 .. en charsn
+* Y♥e StrLit= Y♥
+      e.#from(stringLiteral=(
+        b=\.#stringLiteralBuilder()
+        b.methName(chars0)()//one call for each char
+        b.#splice(e1)
+        b.methName(chars1)()
+        ..
+        b.#splice(en)
+        b.methName(charsn)()
+        b))
+    StrLit= chars0 e1 chars1 .. en charsn
 
 //statements 
-Y♥if e0 e1 = Y♥if e0 e1 else void
-Y♥if e0 e1 else e2 = ( x=Y♥e0 Y♥if x e1 else e2 )
-  where e0 not of form xP
-
-Y♥if xP e1 else e2=(
-  Void x=xP.#if().#checkTrue()
-  catch exception Void x' Y♥e2
-  Y♥e1 
-  )
-  where x, x' fresh
- 
-Y♥if tMatch tMatch+ e = Y♥if tMatch if tMatch+ e
-
-Y♥if T x e = Y♥if T x'= x e[x=x']
-  where x' fresh
-  
-Y♥if T x = e e' = ( x'=Y♥e Y♥if T x= x' e')
-  where e not of form xP
-  
-Y♥if T x= xP e= (
-  T x=(return xP catch return T x1 x1 error void)
-  catch return T.mdf Any x2 void
-  Y♥e
-  )  
-
-Y♥if T(T?1 x1 ..T?n x1)=e e' = Y♥if T x=e ( (x1, ..., xn)=x e'')
-  where 
+* Y♥if e0 e1 = Y♥if e0 e1 else void
+* Y♥if e0 e1 else e2 = Y♥( x=e0 if x e1 else e2 )
+    e0 not of form xP
+* Y♥if xP e1 else e2 = Y♥(
+      Void x=xP.#if().#checkTrue()
+      catch exception Void x' e2
+      e1)
+    x, x' fresh
+* Y♥if tMatch tMatch+ e = Y♥if tMatch if tMatch+ e
+* Y♥if T x e = Y♥if T x'= x e[x=x']
+    x' fresh
+* Y♥if T x = e e' = Y♥( x'=e if T x= x' e')
+    e not of form xP
+* Y♥if T x= xP e= (
+      T x=(return xP catch return T x1 x1 error void)
+      catch return T.mdf Any x2 void
+      Y♥e)  
+* Y♥if T(T?1 x1 ..T?n x1)=e e0 = Y♥if T x=e ( (x1, ..., xn)=x e1)
     x fresh, Txs=[Ti xi | T?i != empty]
-    e''=e'   if Txs=empty
-    e''= if Txs e  otherwise
-    
-Y♥if (T?1 x1 .. T?2 xn)=e e') = Y♥( (x1 .. xn)=e if Tx e1)
-  where x fresh, Tx=[Ti xi | T?i != empty]
-
-Y♥while e0 e1 = (Void x=loop Y♥(e0.#checkTrue() e1) catch exception Void x' void))
-  where x,x' fresh  
-
-Y♥for DX1 in e1..DXn in en e = Y♥(
-  c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
-  var i1=c1.indexZero() .. var in=cn.indexZero()
-  while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
-    DX1 = c1.elem(i) .. DXn = cn.elem(i);
-    e[xi updateOp e'= (toBinOp(xi, updateOp) e' ci.update(ii, xi))]
-    i1:=i1.succ() .. in:=in.succ()
-    )
-  c1.close(i1) .. cn.close(in)
-  )
-  where c1..cn, i1..in fresh
+    e1=e0   if Txs=empty
+    e1= 'if Txs e0'  otherwise
+* Y♥if (T?1 x1 .. T?2 xn)=e e0) = Y♥( (x1 .. xn)=e if Tx e0)
+    x fresh
+    Tx=[Ti xi | T?i != empty]
+* Y♥while e0 e1 = (
+      Void x=loop Y♥(e0.#checkTrue() e1)
+      catch exception Void x'
+      void))
+    x,x' fresh
+* Y♥for DX1 in e1..DXn in en e = Y♥(
+      c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
+      var i1=c1.indexZero() .. var in=cn.indexZero()
+      while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
+        DX1 = c1.elem(i) .. DXn = cn.elem(i);
+        e[xi updateOp e'= (toBinOp(xi, updateOp) e' ci.update(ii, xi))]
+        i1:=i1.succ() .. in:=in.succ() )
+      c1.close(i1) .. cn.close(in))
+    c1..cn, i1..in fresh
    
 //auxiliary definitions
 Y♥e xes=  that=Y♥e,Y♥xes
@@ -306,7 +304,7 @@ Y♥x1=e1 .. xn=en=  x1=Y♥e1 .. xn=Y♥en
 
 Y♥DE= Void x= Y[T=empty]♥e, with DE=e, x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
 Y♥T? x=e= resolveCs(Y.p,T?) underscoreIntoFresh(x)= Y[T=T?,PType=classAny]♥e, with x fresh
-Y♥var T? x = e=var resolveCs(Y.p,T?) x =Y'♥e //assert x not of form _
+Y♥var T? x = e = var resolveCs(Y.p,T?) x =Y'♥e //assert x not of form _
   with Y'=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]
   
 Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
