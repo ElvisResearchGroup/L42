@@ -1,0 +1,196 @@
+_______
+#define grammar HALF.e, constraints CC and Y environment
+  HALF.xP ::= x | (X CORE.P) | (TX CORE.P) | (\ P)
+  HALF.e ::= x | (TX CORE.P) | void | CORE.L | \
+   | throw e | loop e | x := e | ( Ds Ks e )   
+   | xP.m(xe*) | xP (op xP)+
+  HALF.K ::= "catch" throw TX x e
+  HALF.D ::= "var"? TX x = e
+  HALF.M ::= CORE.NC | MH HALF.e?
+  I  ::=I[p;IMap;G;CCz;onSlash=T?]
+  PType ::= error | classP | TX
+  Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=PType]
+_______
+#define toBinOp(x,Op=) // convenience method to desugar updateOps
+* toBinOp(x, :=) = x :=
+* toBinOp(x, OP=) = x := x OP 
+_______
+#define Y(xP)
+* Y(x)= x
+* Y((T P))= resolveCs(p,(T P))
+* Y(P)= resolveCs(p,(Y.onPath P))
+    Y.onPath of form TX
+* Y(P)= resolveCs(p,(class P P))
+    Y.onPath=classP
+_______
+#define p♥Full.L=CORE.L
+//assert p♥H{reuse [URL] _} and p♥{... _} never happens
+* p♥CORE.L = CORE.L //assert never happens (not true in real language but good for debugging at the start)
+* p♥FULL.L = CORE.L
+    LL=interface? Ts{Ms0}
+    CORE.L=interface? Ts,(Ts'\p Ts){Info infer(p',Ms')}
+    Info=
+      norm;
+      depType;depCoherent=collectDeps(CORE.L);
+      friendsDep Ps= ??;//using private methods (or paths??)
+      usedMethDep (P.s)s; //non private
+      privateImplements Ps //interfaces implemented by a private nested       
+    p'=p.push(LL)
+    Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any)
+    Ms=expandFields(Ms0) // this turns the fields into abstract methods
+    forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
+    Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
+    //the line above use [|] to make sequences nor sets. The order of members is important here.
+    //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
+_______
+#define p♥FULL.M = HALF.M
+* p♥MH = resolveCs(p,MH) 
+* p♥MH e = resolveCs(p,MH) Y♥e
+    Y = [p=p,onSlashX=empty,onReturn=MH.T,onPath=MH.T]
+* p♥CORE.NC = CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
+    //assert never happens p♥C:Full.L or p♥s e
+_______
+#define Y♥FULL.e = HALF.e
+//simple cases first
+//unicode characters to disambiguate equals and parenthesis =() ⚌❪❫ ᙿ≝≖᐀ //what is the best =?
+* Y♥x = x //assert x not of form _
+* Y♥P = Y(P)
+* Y♥void = void
+* Y♥L = Y.p♥L
+* Y♥(T e) = ❪resolveCs(Y.p,T) x⚌Y[T=resolveCs(Y.p,T)]♥e x❫ //do we see an improvement using unicode?
+    e not of form P
+* Y♥(T P) = resolveCs(Y.p,(T P) )
+* Y♥\ = \ 
+    Y.onSlashX != empty
+* Y♥\ = T
+    Y.onSlashX = empty
+    Y.onReturn = T
+* Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
+* Y♥'PathLit = Y♥\"PathLit"
+* Y♥NumLit e=Y♥e"NumLit"
+* Y♥return e = return Y[onReturn=empty;onPath=classP]♥e
+    //We can never return class Any anyway, or we could catch return class P on a non coherent P
+    //we set onReturn=empty to avoid return {} and other funny things
+* Y♥throw e = throw Y[onReturn=empty;onPath=error]♥e
+    throw in {error,exception}
+* Y♥loop e = loop Y[onReturn=imm Void;onPath=error]♥e
+* Y♥~e = Y[onPath=classP]♥e.methName(~)()
+* Y♥!e=Y[onPath=classP]♥e.methName(!)()
+* Y♥ x updateOp e=  Y♥toBinOp(x, updateOp) e)
+* Y♥e(.m)?(par)=(x=Y0♥e x.methName(m?)( Y1♥par ) )
+    Y0=Y[onReturn=empty;onPath=classP]
+    Y1=Y[onSlashX=x;onReturn=\;onPath=\]
+    e not of form xP
+    x fresh
+* Y♥xP(.m)?(par)= Y0(xP).methName(.m?)( Y1♥par )
+    Y0=Y[onReturn=empty;onPath=classP]
+    Y1=Y[onSlashX=x;onReturn=\;onPath=\]
+//bin operators
+* Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
+    e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
+* Y♥xP op3 e= (
+      x=Y(xP.#shortCircut'OP3'())  //here and and under, using ' to generate method names in some standard way
+      Y♥if x.#shortResult() 
+      else x.#shortProcess(that=Y♥e2)
+      )
+    x, x' fresh
+* Y♥e0 op .. op en = (Ds e0" op .. op en")
+    Yi = Y[onReturn=\;onPath=Xi]//TODO: would this help? using the same fresh X for many P?
+    ei' = Yi♥ei
+    Ds = [xi=e'i| e'i not of form xP]
+    ei" = e'i if e'i of form xP,
+    ei" = xi otherwise
+    x1..xn fresh
+    X1..Xn fresh
+    op not of form op3
+    n >= 1
+//blocks
+* Y♥( DEs Ks Wops? DEs2) = Y♥(DEs Ks Wops? DEs2 void)
+* Y♥( DEs Ks Wops? DE DEs2 e)) = Y♥( DEs Ks Wops? (DE DEs2 e))
+* Y♥( DEs Ks "wops" T1..Tn e) = ( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
+    Ki=catch exception resolveCs(p,Ti) xi error xi.#intoErrorAt(that:core({}))   
+* Y♥{ DEs Ks Wops? DEs2 } = (
+      Void x=Y0♥(DEs Ks Wops? DEs2 void)
+      catch return Y.T x' x'
+      error void//unreachable thanks to {return} well formedness   
+      )
+    Y0=Y[onReturn=empty;onPath=error]
+    x,x' fresh
+//builders
+* Y♥e(.m)?[pars]= Y♥ 
+      e.methName(.m?)(squareBuilder:(
+        b=\.#squareBuilder()
+        Void x=if \.#shortCircutSquare() (     
+          b.#add(par1) .. b.#add(parn)) //so \ and \x are about the builder
+        b))
+    b,x fresh
+
+* Y♥e StrLit= Y♥
+      e.#from(stringLiteral=(
+        b=\.#stringLiteralBuilder()
+        b.methName(chars0)()//one call for each char
+        b.#splice(e1)
+        b.methName(chars1)()
+        ..
+        b.#splice(en)
+        b.methName(charsn)()
+        b))
+    StrLit= chars0 e1 chars1 .. en charsn
+
+//statements 
+* Y♥if e0 e1 = Y♥if e0 e1 else void
+* Y♥if e0 e1 else e2 = Y♥( x=e0 if x e1 else e2 )
+    e0 not of form xP
+* Y♥if xP e1 else e2 = Y♥(
+      Void x=xP.#if().#checkTrue()
+      catch exception Void x' e2
+      e1)
+    x, x' fresh
+* Y♥if tMatch tMatch+ e = Y♥if tMatch if tMatch+ e
+* Y♥if T x e = Y♥if T x'= x e[x=x']
+    x' fresh
+* Y♥if T x = e e' = Y♥( x'=e if T x= x' e')
+    e not of form xP
+* Y♥if T x= xP e= (
+      T x=(return xP catch return T x1 x1 error void)
+      catch return T.mdf Any x2 void
+      Y♥e)  
+* Y♥if T(T?1 x1 ..T?n x1)=e e0 = Y♥if T x=e ( (x1, ..., xn)=x e1)
+    x fresh, Txs=[Ti xi | T?i != empty]
+    e1=e0   if Txs=empty
+    e1= 'if Txs e0'  otherwise
+* Y♥if (T?1 x1 .. T?2 xn)=e e0) = Y♥( (x1 .. xn)=e if Tx e0)
+    x fresh
+    Tx=[Ti xi | T?i != empty]
+* Y♥while e0 e1 = (
+      Void x=loop Y♥(e0.#checkTrue() e1)
+      catch exception Void x'
+      void))
+    x,x' fresh
+* Y♥for DX1 in e1..DXn in en e = Y♥(
+      c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
+      var i1=c1.indexZero() .. var in=cn.indexZero()
+      while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
+        DX1 = c1.elem(i) .. DXn = cn.elem(i);
+        e[xi updateOp e'= (toBinOp(xi, updateOp) e' ci.update(ii, xi))]
+        i1:=i1.succ() .. in:=in.succ() )
+      c1.close(i1) .. cn.close(in))
+    c1..cn, i1..in fresh
+   
+//auxiliary definitions
+Y♥e xes=  that=Y♥e,Y♥xes
+Y♥x1=e1 .. xn=en=  x1=Y♥e1 .. xn=Y♥en
+
+Y♥DE= Void x= Y[T=empty]♥e, with DE=e, x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
+Y♥T? x=e= resolveCs(Y.p,T?) underscoreIntoFresh(x)= Y[T=T?,PType=classAny]♥e, with x fresh
+Y♥var T? x = e = var resolveCs(Y.p,T?) x =Y'♥e //assert x not of form _
+  with Y'=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]
+  
+Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
+  resolveCs(Y.p,T?) x=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]♥e
+  var1? resolveCs(Y.p,T1?) x1=x.methNameTrim(x1)() //removes any numberPedex from the end
+  ..
+  varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
+  where x fresh
+Y♥catch throw T x e = catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e
+Y♥catch T x e = catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e

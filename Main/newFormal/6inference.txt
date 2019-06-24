@@ -1,67 +1,42 @@
 _______
-#define p|-T <= Tz //todo: move in typesystem
-* p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
+#define infer(p,HALF.Ms)=CORE.Ms  //TODO:next is informal
+* infer(p,M'1..M'n)=I(M1)..I(Mn)
+    I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
+    M1..Mn=p♥M'1 .. p♥M'n
+    n = max {n | p.get(n) is defined }
+    p.get(i)={Hi MCsi Mi _}, where Mi not of form Mc
+    var CCz = p|Ccz +> MCs1[from This1] +>..+> MCsn[from Thisn]
+    while CCz changes:
+    	CCz = collect(p, (p|Ccz +>M1+>..+>Mn).CCz)
 _______
-#define PT in CCz
-* PT in PT<=_,_
-* PT in _<=PT,_
+#define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e//TODO: this is incomplete
+* I(CORE.M) = CORE.M
+* I(MH e) = MH I[G=G^MH;onSlash=MH.T](e)
+* I(\) = I.onSlash.P //undefined if it is empty
+* I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
+* I((TX CORE.P)) = (iType(I,TX) CORE.P)
+* I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I'(e1) .. xn=I'(en))
+    I'=I[onSlash=I.IMap(I.G(xP))]
+* I(xP0 op..op xPn)=I(e)
+    Ti=I.IMap(I.G(xPi))
+    selectedOptions(I.CCz, I.p, op, T0..Tn, xPs)=PT,s,i
+    xP'1..xP'n=xP0..xPn/i
+    e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
+    e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
+* I(e)=e' propagates on the structure for 
+    x, void, CORE.L, throw e, loop e, x := e
 _______
-#define origin(s; P) = P
-* origin(s; P) = P
-    {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
+#define I[DS] = I',  I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
+* I[TX1 x1=_ .. TXn xn=_]=I[G=I.G,x1:iType(I,TX1),..,xn:iType(I,TXn)]
+
+* I(TX x=e) = iType(I,TX) x=(e[IMap;G;T]) 
+
+* I(catch \ x e)[IMap;G;T]=catch T x (e[IMap;G;T])
 _______
-#define mostSpecific(Tz) = T
-* mostSpecific(Tz) = T
-    {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
-_______
-#define collect(CCz)=CCz'
-* CC in collect(CCz)
-    CC in collect(collect(CCz)) //CC in collect(CCz,CCz') where CC in collect(collect(CCz))
-* CC in collect(CC,_)
-* PT <= PT" in collect(PT <= PT', PT' <= PT",_)
-* PT <= PT in collect(CCz)
-    PT in CCz
-* mdf P <= mdf' P' in collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
-    p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
-    P' != _ Any // Just for consistency with everything else, not important!
-* mdf P <= PT in collect(PT <= mdf P,_)// since all classes are final!
-	p[P].interface = empty 
-* T.s <= PT in collect(CCz)//since they are alias of each other 
-    PT <= T.s in collect(CCz)
-    PT=p[T.s].T
-* T.s.i <= PT in collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
-    PT <= T.s.i in collect(CCz)
-    PT=p[T.s].Ti
-* PT.s <= PT'.s in collect(PT <= PT', CCz)
-    PT'.s in CCz
-* PT'.s.i <= PT.s.i in collect(PT <= PT',CC')
-    PT'.s.i in CC'
-* PT.s.i <= PT'.s.i in collect(PT <= PT',CC')//since method parameter types can not be refined 
-    PT'.s.i in CC'
-* PT1' <= Origin(s, P2') in collect(PT1 <= P2', PT1 <= PT1', CCz)
-    P2'.s in CCz
-    PT1'.s in CCz
-_______
-#define commonSuperT(p,Tz)=Tz'
-* commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
-    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
-_______
-#define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T
-* solve(p, CCz) = X1:T1 .. Xn:Tn
-    X1 .. Xn = { X | X inside p.top() }
-    Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
-    Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
-* chooseT(CCz;class Any,_)=class Any
-* chooseT(CCz;Tz)=mostSpecific(Tz)
-    mostSpecific(Tz)!= capsule P or capsule _ in CCz
-* chooseT(Tz)=imm P
-    mostSpecific(Tz)= capsule P
-    imm _ in CCz
-    not capsule _ in CCz
-* chooseT(Tz)=mut P 
-    mostSpecific(Tz)= capsule P
-    not imm _ in CCz
-    not capsule _ in CCzP
+#define iType(I,TX)=CORE.T
+* iType(I,T)=T
+* iType(I,X)=I.IMap(X)
+* iType(I,\)=I.onSlash
 _______
 #define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
 p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
@@ -77,7 +52,6 @@ _______
 (\ x = e)[\ = PT] = PT x = (e[\ = PT])
 (catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
 otherwise propagate on D, K, e
-
 _______
 #define G | CCz |- HALF.e : CORE.T | CCz
 // TODO: Add ps //WHAT IS ps??? 
@@ -137,7 +111,7 @@ _______
 ---------------------------------------------------------------------------------------------------
     G | CCz0 |- xP0 OP ... OP xPn : PTi.s | CCz', PT'1 <= P.s.1 ... PT'n <= P.s.n
 _______
-#define opOptions(CCz, p, OP, PTs, xPs)
+#define PT,s,i in opOptions(CCz, p, OP, PTs, xPs)
 PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
   where
   i in 0..n,
@@ -153,26 +127,13 @@ PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
     s = #apply(x1..xn)
     P1 ... Pn = p[P.s].Ps
 _______
-#define selectedOption(CCz, p, OP, PTs, xPs)
+#define selectedOption(CCz, p, OP, PTs, xPs)= PT,s,i
 selectedOptions(CCz, p, OP, PTs, xPs)=PT,s,i
   {PT,s,i}=opOptions(CCz,p,OP, PTs, xPs)
 selectedOptions(CCz,p,OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
   (xPi.P).$methName(OP)_i, s, i in opOptions(CCz,p,OP, PTs, xP0..xPn)
   forall (xPj.P).$methName(OP)_j, s', j in opOptions(CCz,p,OP, PTs, xP0..xPn)
     i=j, s=s'
-_______
-#define unsatisfiable(P <= P', CCz)   
-unsatisfiable(P <= P', CCz)
-  if p |/- P <= P'
-unsatisfiable(PP <= P', PP <= P", CCz)
-  exists s in dom p[P'] and p[P"], where origin(s, P') != origin(s, P")
-unsatisfiable(PP <= P', PP <= P", CCz)
-  no P in dom(p) such that P <= P' and P <= P"
-_______
-#define paramaterPaths(PT, CCz, s)  
-paramaterPaths(PT, CCz, s) = p[T.s].Ps
-	PT <= T in collect(CCz)
-
     
 ====================OLD RULES, Isaac, check is the same as above
 
