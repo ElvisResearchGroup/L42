@@ -1,0 +1,25 @@
+Notation
+--------
+Dot notation and with:
+....
+
+
+
+Grammars:
+< ... > indicate character classes
+A -- B to mean anything matching A, but with no sub-string matching B
+When we use a non terminal A in the body of a non terminal B.C,
+if A is not directly defined, we refer to B.A
+
+Qualified polymorphic grammar:
+'A.B::=..' declares a non terminal B inside qualifier A.
+If '..' mentioned non terminal C, and C is not declared at top level,
+we mean A.C.
+
+A/B.C::=.. is a shortcut for A.C::.. and B.C::=... 
+ 
+ A non terminal that uses unqualified non ter
+ 
+ A grammar record is declared as Name[name1=nonTerminal1: ..;namen=nonTerminaln]
+ and can be created as Name[name1=val1 ..namen=valn], accessed with dot and updated with [..=..].
+ names can be omitted for at most 1 nonTerminal of a certain form.

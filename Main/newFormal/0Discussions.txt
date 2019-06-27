@@ -1,0 +1,43 @@
+Main concepts:
+
+-most important grammatic forms:
+FULL.e: the expressive syntax for expressions used by the programmer
+CORE.e: the minimal syntax used as internal representation and convenient for metaprogramming.
+FULL.L: library literal with expressive syntax.
+CORE.L: library literal with minimal syntax.
+LL: either a FULL.L or a CORE.L
+p: a program; similar to a stack of LL to represent nested scopes.
+P: a path
+CORE.T/FULL.T: types
+
+-most important operations:
+p(P):
+  extract a library from a program
+p==>p'
+  top level reduction
+e-->p e'
+  expression reduction. It can uses native code to call functionalities
+  outside of L42. Some of those are 'trusted and internally implemented'.
+  All other ones are properly sandboxed.
+p♥LL
+  reduces some libraries in the top of the program to core. 
+p|-e:T
+  expression well typed.
+|-p->LL
+  type some libraries in the top of the program and annotate them as 'typed'
+  or 'coherent'; that is, executable. 
+
+
+execution flow:
+  'L42 name' works as follow:
+    -reads a file called either name.L42 or name/This0.L42.
+      The file is parsed according to grammar LL
+    -syntactic well formedness is checked
+    -rules p==>p' are applied until the result is a well typed CORE.L
+      Such rules may require to 
+        -read code from urls; such code must be typed CORE.L. It could be cached locally.
+        -read code from files, this will be parsed and integrated in the execution.
+        -p♥Full.L
+        -p:e:T
+        -|-p->LL
+  

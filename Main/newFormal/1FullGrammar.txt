@@ -1,130 +1,107 @@
-------------------------------------------------------------
-Definition of FULL and CORE 42 syntax, concrete and abstract
-------------------------------------------------------------
-Notation
---------
-< ... > indicate character classes
-A -- B to mean anything matching A, but with no sub-string matching B
-When we use a non terminal A in the body of a non terminal B.C,
-if A is not directly defined, we refer to B.A
-______________________
-Part 0: Lexical Syntax
-----------------------
-NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D>
-//A line feed or carriage return
-CHAR   ::=  <0x20-0x7E> | NEWLINE
-//An Any printable ASCII character, or a newline
-STR_CHARS0 ::= CHAR* -- "
-STR_CHARS(i+1) ::= CHAR* -- STR_OP(i+1) -- STR_CL(i+1)
-STR_OP0 ::= empty
-STRCL0 ::= empty
-STR_OP(i+1) ::= [ STR_OPi
-STR_CL(i+1) ::= STR_CLi ]
-STRING ::= STR_OPi " STR_CHARSi (STR_OPi e STR_CLi CHARSi)* " STR_CLi
-NUMBER ::= <0-9> ('.'|'_'|'-'|<0-9>)*
-COMM_CHARS ::= CHAR* -- '/*' -- '*/'
-COMMENT ::= '//' (CHAR* -- NEWLINE) NEWLINE | '/*' (COMM_CHARS | COMMENT)* '*/' // Note: this allows /* comments to nest
-WHITESPACE ::= (COMMENT | ' ' | NEWLINE| ',')+
-URL::= /*too boring*/
-CHARS_CURLY ::= (CHAR* -- '{' -- '}') | CHARS_CURLY { CHARS_CURLY } CHARS_CURLY
-ID_UP ::= _* (<A-Z> | $) 
-ID_LOW ::= _* <a-z>
-ID_CHAR   ::= <a-z> |<A-Z> | $ | _ | <0-9>
-n ::= 0 | <1-9> <0-9>*
-UNIQUE_NUM ::= (::n)?
-FULL.x ::= ID_LOW ID_CHAR* | '_'
-C ::= ID_UP ID_CHAR* UNIQUE_NUM
-m ::= (#|#$)?x(#x)* UNIQUE_NUM
-mOp ::= empty | m | OP | ~ | !
-OPP ::= ! | ~ | NUMBER  // prefix
-OP0 ::= ^ | : | <- | << | & | '|' // right associative
-OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
-OP2 ::= == | != | < | > | >= | <= // unassiociative
-OP3 ::= => | && | '||' // right associative, will be short circuting
-OP  ::= OP0 | OP1 | OP2 | OP3 
-OP_UPDATE ::=  ':=' | (OP0 -- ':')= | OP1= 
-mdf::= empty | mut | lent | read | capsule | fwd WHITESPACE mut | fwd | class | fwd%imm | fwd%mut 
-throw ::= 'error' | 'exception' | 'return' 
-Cs ::=C(.C)*
-Doc ::= @PathLit | @PathLit?{(CHARS_CURLY -- DOC|DOC)*}
-PathLit::= Cs | Cs? s | Cs? s.x
-s  ::= mOp(x*)
-Ldom::=s | Cs
-Tx ::= T x
-MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T mOp Doc*(Tx*) [T+]? //the Doc before the '(' is  conceptually on the this type.  
-H ::= 'interface'?[T+]?
-FULL.P  ::= Cs  // in the full This, Any,Void,Library are C
-FULL.T  ::= mdf Doc* P | '\'
-________________________
-Part 1: FULL Expressions
-------------------------
-eAtomic ::= x | P | 'void' | LL | block | (T e) | \ | \x | 'PathLit
-ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' 
+_______
+#define Lexical Syntax
+  NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D>
+  CHAR   ::=  <0x20-0x7E> | NEWLINE//An Any printable ASCII character, or a newline
+  STR_CHARS0 ::= CHAR* -- "
+  STR_CHARS(i+1) ::= CHAR* -- STR_OP(i+1) -- STR_CL(i+1)
+  STR_OP0 ::= empty
+  STRCL0 ::= empty
+  STR_OP(i+1) ::= [ STR_OPi
+  STR_CL(i+1) ::= STR_CLi ]
+  STRING ::= STR_OPi " STR_CHARSi (STR_OPi e STR_CLi CHARSi)* " STR_CLi
+  NUMBER ::= <0-9> ('.'|'_'|'-'|<0-9>)*
+  COMM_CHARS ::= CHAR* -- '/*' -- '*/'
+  COMMENT ::= '//' (CHAR* -- NEWLINE) NEWLINE | '/*' (COMM_CHARS | COMMENT)* '*/' // Note: this allows /* comments to nest
+  WHITESPACE ::= (COMMENT | ' ' | NEWLINE| ',')+
+  URL::= /*too boring*/
+  CHARS_CURLY ::= (CHAR* -- '{' -- '}') | CHARS_CURLY { CHARS_CURLY } CHARS_CURLY
+  ID_UP ::= _* (<A-Z> | $) 
+  ID_LOW ::= _* <a-z>
+  ID_CHAR   ::= <a-z> |<A-Z> | $ | _ | <0-9>
+  n ::= 0 | <1-9> <0-9>*
+  UNIQUE_NUM ::= (::n)?
+  FULL.x ::= ID_LOW ID_CHAR* | '_'
+  CORE.x ::=ID_LOW ID_CHAR*
+
+  C ::= ID_UP ID_CHAR* UNIQUE_NUM
+  m ::= (#|#$)?x(#x)* UNIQUE_NUM
+  mOp ::= empty | m | OP | ~ | !
+  OPP ::= ! | ~ | NUMBER  // prefix
+  OP0 ::= ^ | : | <- | << | & | '|' // right associative
+  OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
+  OP2 ::= == | != | < | > | >= | <= // unassiociative
+  OP3 ::= => | && | '||' // right associative, will be short circuting
+  OP  ::= OP0 | OP1 | OP2 | OP3 
+  OP_UPDATE ::=  ':=' | (OP0 -- ':')= | OP1= 
+  mdf::= empty | mut | lent | read | capsule | fwd WHITESPACE mut | fwd | class | fwd%imm | fwd%mut 
+  throw ::= 'error' | 'exception' | 'return' 
+  Cs ::=C(.C)*
+  FULL/CORE.Doc ::= @PathLit | @PathLit?{(CHARS_CURLY -- DOC|DOC)*}
+  FULL.PathLit::= Cs | Cs? s | Cs? s.x
+  CORE.PathLit::= P | P? s | P? s.x
+  s  ::= mOp(x*)
+  Ldom::=s | Cs
+  FULL/CORE.Tx ::= T x
+  FULL/CORE.MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T mOp Doc*(Tx*) [T+]? //the Doc before the '(' is  conceptually on the this type.  
+  FULL/CORE.H ::= 'interface'?[T+]?
+  FULL.T::= mdf Doc* FP | '\'
+  CORE.T::= mdf Doc* P
+  FP::=Cs
+  P  ::= Thisn.Cs | Any | Void | Library //well formedness: C in Cs not Thisn/Any/Void/Library
+_______
+#define FULL Expressions
+  FULL.eAtomic ::= x | P | 'void' | LL | block | (T e) | \ | \x | 'PathLit
+  FULL.ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' //no space in ePostfix(par)
               | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix STRING
-//PARSING HINT: if an expression ends with ')' ']' or '"', and the next character
-//is  '(', then we are in the pe'(' par ')' case, otherwise the pe is terminated.
-//Also, x and P are not valid DE, so (x|P) '(' is always interpreted as the pe'(' par ')' case. 
-
-par ::= e? xe*
-eUnary   ::= OPP? ePostfix
-eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
-eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
-eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
-eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-block ::= '(' DE* e ')' | '(' DE+ K* WOPS? (DE* e)? ')' | '{' DE* (DE K+ WOPS? DE*)? '}'
-DE  ::= (DX =)? e
-DX  ::= 'var'? T? x | T? '(' ('var'? T? x)+ ')'
-WOPS ::= wops T+
-FULL.K   ::= catch throw? T x e
-statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x OP_UPDATE e
-sIf  ::= 'if' e e ('else' e)? | 'if' Match+ e
-Match ::= T x | T x = e | T? '(' (T? x)+ ')' = e //where at least one Ti? is not empty
-sWhile::= 'while' e e
-sFor ::= 'for' (DX in e)* e
-FULL.e  ::= statement | e-binary3
-FULL.L ::= {(H | ... | reuse[URL])? M*}
-LL::= FULL.L | CORE.L
-FULL.M  ::= F | MI | MWT | NC 
-FULL.F  ::= 'var'? T x
-FULL.MI ::= Doc* s = e
-FULL.MWT ::= MH (= e)?
-FULL.NC ::= Doc* C = e
-
---------------------------------
-Part 2: Abstract syntax and core
---------------------------------
-CORE.P  ::= Thisn.Cs? | Any | Void | Library
-CORE.T  ::= mdf Doc* P //even Docs containing Ps will have Ps from the subset.
-CORE.e ::= x | (T P) | void | L |  xPP.m(x1=e1..xn=en)
-         | loop e | throw e | x := e | ( Ds Ks e )
-CORE.x ::= ID_LOW ID_CHAR*
-CORE.xPP  ::= x | (T P)
-CORE.D   ::= var? T x = e
-CORE.K   ::= catch throw T x e
-CORE.NC ::= Doc* C = L
-CORE.L ::= {H Info Doc* MWT* NC*}
-Info::= [Flag;
-  P*;//typeDep
-  P*;//coherentDep
-  P*;//friendsDep = P* are spyed by This
-  //Paths whose unique numbers are used either directly,
-  //or in a private nested class or in an L in a method
-  P.s*;//usedMethDep//methods used either directly or ...
-  P* //interfaces implemented by a private nested class or in an L in a method: privatly implement
-  ]
-Flag ::= 'norm' | typed
-typed::= 'coherent'?
- 
-FULL.e ::= x | P | void | LL | \ | \x  
-  | e strLit[e1..en] | 'PathLit | OPP e
-  | e0 OP .. OP en | (T e)
-  | e .m? ( par ) | e .m? [ pars ]
-  | ( DEs Ks Wops? DEs e? ) | { DEs Ks Wops? DEs }
-  | loop e | throw e | x OP_UPDATE e
-  | if e0 e1 (else e2)? | if Match+ e | while e0 e1
-  | for DX0 in e0 .. DX1 in en e
-
-strLit[e1..en] = STR_OPi' STR_CHARSi STR_OPi e1 STR_CLi CHARSi1 .. STR_OPi en STR_CLi CHARSin 'STR_CLi
+  FULL.par ::= e? xe*
+  FULL.eUnary   ::= OPP? ePostfix
+  FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
+  FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
+  FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
+  FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
+  FULL.block ::= '(' DE* e ')' | '(' DE+ K* WOPS? (DE* e)? ')' | '{' DE* (DE K+ WOPS? DE*)? '}'
+  FULL.DE  ::= (DX =)? e
+  FULL.DX  ::= 'var'? T? x | T? '(' ('var'? T? x)+ ')'
+  FULL.WOPS ::= wops T+
+  FULL.K   ::= catch throw? T x e
+  FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x OP_UPDATE e
+  FULL.sIf  ::= 'if' e e ('else' e)? | 'if' match+ e
+  FULL.match ::= T x | T x = e | T? '(' (T? x)+ ')' = e //where at least one Ti? is not empty
+  FULL.sWhile::= 'while' e e
+  FULL.sFor ::= 'for' (DX in e)* e
+  FULL.e  ::= statement | e-binary3
+  FULL.L ::= {(H | ... | reuse[URL])? M*}
+  LL::= FULL.L | CORE.L
+  FULL.M  ::= F | MI | MWT | NC 
+  FULL.F  ::= 'var'? T x
+  FULL.MI ::= Doc* s = e
+  FULL.MWT ::= MH (= e)?
+  FULL.NC ::= Doc* C = e
+_______
+#define Abstract syntax and core
+  CORE.e ::= x|(T P)|void|L|xP.m(x1=e1..xn=en)|loop e|throw e|x:=e|(Ds Ks e)
+  CORE.xP::= x|(T P)
+  CORE.D ::= var? T x=e
+  CORE.K ::= catch throw T x e
+  CORE.NC::= Docs C = L
+  CORE.L ::= {H Docs MWTs NCs Info}
+  Info::= [Flag;typeDep=Ps;coherentDep=Ps;friendsDep=Ps;usedMethDep=(P.s)s;privateImpl=Ps]
+    //friendsDep are spyed by This:
+    //Paths whose unique numbers are used either directly,
+    //or in a private nested class or in an L in a method
+    //usedMethDep//methods used either directly or ...
+    //privateImpl: interfaces implemented by a private nested class or in an L in a method
+  Flag ::= 'norm' | typed
+  typed::= 'coherent'?
+  FULL.e ::= x | P | void | LL | \ | \x  
+    | e strLit[e1..en] | 'PathLit | OPP e
+    | e0 OP .. OP en | (T e)
+    | e .m? ( par ) | e .m? [ pars ]
+    | ( DEs Ks Wops? DEs e? ) | { DEs Ks Wops? DEs }
+    | loop e | throw e | x OP_UPDATE e
+    | if e0 e1 (else e2)? | if match+ e | while e0 e1
+    | for DX0 in e0 .. DX1 in en e
+  FULL.strLit[e1..en] = STR_OPi' STR_CHARSi STR_OPi e1 STR_CLi CHARSi1 .. STR_OPi en STR_CLi CHARSin 'STR_CLi
 
 -----------------------------------
 Part 3: well formedness
@@ -139,7 +116,7 @@ _______
   noBlockNeeded(throw e)
   noBlockNeeded(x OP_UPDATE e)
   noBlockNeeded(loop e)= 
-    noBlockNeeded(if Match+ e)=noBlockNeeded(if e0 e)=
+    noBlockNeeded(if match+ e)=noBlockNeeded(if e0 e)=
     noBlockNeeded(if e0 e1 'else' e)= 
     noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)* e)=
       noBlockNeeded(e)
@@ -174,7 +151,7 @@ _______
   if T.mdf in {fwdImm,fwdMut} then exists fwdImm _ in Ts or fwdMut _ in Ts
 
 * MWT:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
-  MWT= refine? mdf method T m(T1 x1..Tn xn)[Ts]e
+  MWT= refine? mdf method T m(T1 x1.. Tn xn)[Ts]e
   T0=mdf This0
   FV(e)\ this,x1..xn= empty
   for i in 0..n if Ti=capsule _, xi in cX(e) 0 or 1 times
@@ -190,7 +167,7 @@ cX(e)//count occurences of xs
   cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work
   cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
   cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
-  cX( (T1 x1=e1..Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
+  cX( (T1 x1=e1.. Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
     where
     ys=cX(e1),..,cX(en)
     xsi=cX(ki)

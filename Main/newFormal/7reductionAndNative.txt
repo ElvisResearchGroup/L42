@@ -1,7 +1,7 @@
 Core e with runtime expressions
-e  ::= a | x | ( T P ) | void | L |  xPP.m(x1=e1 ..xn=en ) 
+e  ::= a | x | ( T P ) | void | L |  xP.m(x1=e1 ..xn=en ) 
       | loop e | throw e | x := e | ( Ds Ks e )
-xPP::= x | (T P)
+xP::= x | (T P)
 D  ::= var? T x = e
 K  ::= catch throw T x e
 v  ::= a|P|void|L
@@ -9,7 +9,7 @@ v  ::= a|P|void|L
 Obj::=P(x1=v1..xn=vn) |L as // memory objects. as is the set of mut objects associated to L
 A  ::= empty |imm? a->Obj, A | imm? x->v A  //order is irrelevant
 
-ctxV::=xPP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
+ctxV::=xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
 
 _______
 #define A.rog(v)

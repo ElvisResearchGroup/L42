@@ -5,7 +5,7 @@ eC,parC,... ::= //an e is eC if all the L inside are of form CORE.L, similarly f
 
 FULL.wrapE::= throw [] | loop [] |[](.m)?( par) |[]Square | []StrLit |x updateOp [] |(T []) 
       | '(' DEs Ks WOPS? [] ')' | while e [] | for DXes []
-      | if (MatchC+ |e) [] (else e0)?     
+      | if (matchC+ |e) [] (else e0)?     
 wrapEC::= wrapE but has all subexps as eC
 
 FULL.ctxC::=[]
@@ -21,8 +21,8 @@ FULL.ctxC::=[]
  | { DECs KCs catch throw? T x ctxC Ks WOPS? DEs2 }
  | { DECs1 KCs WOPS? DECs2 DX? ctxC DEs }
  | if ctxC e (else e0)?
- | if (MatchC+ |eC) eC0 else ctxC
- | if MatchC+ DX=ctxC Match+ e
+ | if (matchC+ |eC) eC0 else ctxC
+ | if matchC+ DX=ctxC match+ e
  | while ctxC e
  | for DXeCs DX in ctxC DXes e
 
@@ -34,7 +34,7 @@ The context does not enter into libraries
 CORE.wrapE::= throw [] | loop [] | x := []  | '(' Ds Ks [] ')'
 CORE.ctx ::= []
  | wrapE[ctx]
- | xPP.m( xes x=ctxCore xes' )
+ | xP.m( xes x=ctxCore xes' )
  | (Ds T x=ctx Ds' Ks e)
  | (Ds Ks catch throw T x ctx Ks' e)
 
