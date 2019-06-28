@@ -1,8 +1,8 @@
 _______
-#define infer(p,HALF.Ms)=CORE.Ms  //TODO:next is informal
-* infer(p,M'1..M'n)=I(M1)..I(Mn)
+#define infer(p,FULL.Ms)=CORE.Ms  //TODO:next is informal
+* infer(p,M1..Mn)=I(HALF.M1)..I(HALF.Mn)
     I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
-    M1..Mn=p♥M'1 .. p♥M'n
+    HALF.M1..HALF.Mn=p♥M1 .. p♥Mn
     n = max {n | p.get(n) is defined }
     p.get(i)={Hi MCsi Mi _}, where Mi not of form Mc
     var CCz = p|Ccz +> MCs1[from This1] +>..+> MCsn[from Thisn]
@@ -163,6 +163,9 @@ selectedOptions(CCz,p,OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
     G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= P'.s.1 ... PT'n <= P'.s.n
  
 =========================================================================================
+NOTE: the following syntax is now unused
+  PX ::=  P | X
+  PP ::= PX | PX.s | PX.s.i
 
 
 //OLD------------

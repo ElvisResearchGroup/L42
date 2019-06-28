@@ -1,6 +1,3 @@
-//Can now be done that all P in a CORE.L are minimized?
-
-
 _______
 #define expandFields(Ms)=Ms'
 * M in expandFields(Ms) 
@@ -14,59 +11,26 @@ _______
 * method Void x(T that) in expandFields(Ms) 
     var T x in Ms
 _______
-#define Ts\p Tz,   collect(p,Ts)=Ts' //collects transitively implemented interfaces
-* Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
-* empty \p Tz=empty
-* T,Ts\p T',Tz = Ts\p T',Tz
-    p.equiv(T.P,T'.P)
-* T,Ts\p Tz) = T,(Ts\p Tz)
-    otherwise
-
+#define collect(p,Ts)=Ts' //collects transitively implemented interfaces
 * collect(p,empty)=empty
-* collect(p,T0 Ts)=((T0 Ts') \p collect(p,Ts)) collect(p,Ts)
-    //that is, crucially: depth first but we avoid duplicates by keeping the rightmost occurrence.
+* collect(p,T0 Ts)=((p.resolveCs(T0) Ts') \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)=interface Ts0 {_}=FULL.L
     Ts'=collect(p,Ts0[from T0.P])
-    //this checks absence of circularity by diverging
-    //an implementation could keep a list of visited P instead of diverging; mathematically it is the same
-* collect(p,T0 Ts)=((T0 Ts0[from T0.P]) \p collect(p,Ts)) collect(p,Ts)
+* collect(p,T0 Ts)=((p.resolveCs(T0) Ts0[from T0.P]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)=interface Ts0 {_}=CORE.L
 _______
 #define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
-//methods(), applied to a CORE.L will just return the MWTs;
-//applied to a FULL.L, will return a merge of the methods retrieved directly from the L and methods types declared
-//in its implemented interfaces. It chooses a type in case of different refines in interface diamond implementations
-//In this model cases like
-//    A=  interface {refine method A m()}
-//    B= [A]{ method A m()}
-//are ok wrt B but fail for A
-
 * methods(p,P0)=CORE.L.MWTs[from P0]
     p(P0)=CORE.L
-  
-* methods(p,P0)=MWT1..MWTn
+* methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
     p(P0)=interface? Ts{ Ms }=FULL.L
     Ps=collect(p,Ts[from P0]).Ps//T1..Tn is a list, not a set
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
     //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
     forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
     [Mi,_]=[MWT[?refine=refine]| P in P0,Ps such that methods(p,P)(si)=MWT]
-    MWTi=Mi [with e=p(P0)(si).e[from P0]] if defined,
-    MWTi=Mi otherwise
-_______
-#define resolveCs(p,FULL.T)=CORE.T,   resolveCs(p,FULL.P)=CORE.P,  resolveCs(p,FULL.docs)=CORE.docs
-* resolveCs(p,docs mdf P)=resolveCs(p,docs) mdf resolveCs(p,P)
-* resolveCs(p,empty)=X with fresh X //case T?=empty
-
-* resolveCs(p,CORE.P)=CORE.P
-* resolveCs(p,C.Cs)=Thisn.C.Cs
-    where n is the smallest number such that either
-      C in dom(p.get(n))
-      or p.get(n)={@{__STOP_SCOPE__} _}
-      or p.get(n+1) undefined
-
-* resolveCs(p,FULL.docs) =docs' where all the Full.P are replaced with resolveCs(p,FULL.P)
-
+    MWTi=p.resolveCs(Mi) [with e=p(P0)(si).e[from P0]] if defined,
+    MWTi=p.resolveCs(Mi) otherwise
 _______
 #define p|-T <= Tz //todo: move in typesystem
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -145,6 +109,14 @@ paramaterPaths(PT, CCz, s) = p[T.s].Ps
 	PT <= T in collect(CCz)
 
 
-
+UNISED; since now collect produce minimized paths, no need for equiv set removal
+_______
+#define Ts\p Tz
+* Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
+* empty \p Tz=empty
+* T,Ts\p T',Tz = Ts\p T',Tz
+    p.equiv(T.P,T'.P)
+* T,Ts\p Tz) = T,(Ts\p Tz)
+    otherwise
 
  

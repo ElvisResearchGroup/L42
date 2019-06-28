@@ -68,6 +68,20 @@ pop replaces the [] with the stack top to forge an L
 push, the opposite of pop, extracts a piece of the top to forge a new top.
 To do so, it takes in input the split form of the old head.
 Finally, notice how in this model updating the top  can not be emulated with pop() + push()
-        
+
+Methods and collect discussion
+methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
+//methods(), applied to a CORE.L will just return the MWTs;
+//applied to a FULL.L, will return a merge of the methods retrieved directly from the L and methods types declared
+//in its implemented interfaces. It chooses a type in case of different refines in interface diamond implementations
+//In this model cases like
+//    A=  interface {refine method A m()}
+//    B= [A]{ method A m()}
+//are ok wrt B but fail for A
+
+Collect performs a depth first but we avoid duplicates by keeping the rightmost occurrence.
+We check absence of circularity by diverging
+an implementation could keep a list of visited P instead of diverging; mathematically it is the same
+
         
   

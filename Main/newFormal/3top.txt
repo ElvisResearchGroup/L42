@@ -1,72 +1,69 @@
-------------------------------------
-Part 1: 42 top level reduction rules
-------------------------------------
-
-
-(reuse)
-p ==> p.update(H{followURL(URL),Ms})
-  where p.top()=H{reuse [URL] Ms}
-
-(dots)
-p ==> p.update(H{readFolder(p),Ms})
-    p.top()=H{... Ms}
-
-(topNorm)
-p ==> p.update(CORE.L)
-  where
-  p.top()=H{MCs}=FULL.L //note, all M are of form MC
-  |- p.update(p♥FULL.L) -> CORE.L
-
-(top)
-p ==> p.update(LL)
-  where
-  p.top()=H{MCs C=eC Ms}//MCs are already compiled
-  eC not of form CORE.L//thus e is the first point to execute
-  Y= p;empty,Library,error //Y[p=p,?xP=empty,T?=Library,PType=error]
-  p|- Y♥eC :T
-  cX(eC)=empty
-  adapt(Y♥eC,T.P) -->p+ r //execute the expression under the program and obtain a result
-  CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
-  p'= p.update(H{MCs C=CORE.L Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
-  p'= p.update(p♥H{MCs C=CORE.L}) otherwise
-  |- p' -> LL //type all the MCs that can be compiled now, including This0
-
-(enter)
-p ==> p'.pop()
-  where
-  p.top() = H{MCs C=ctxC[LL] Ms}
-  LL not of form CORE.L
-  p.push(H{MCs C=ctxC Ms}, L)  ==>+  p' //Note: p' is one level deeper than p
-  p'.top() of form CORE.L // and p'.top() is the result of metaprogramming LL
+_______
+#define p ==>p'
+* p ==> p.update({followURL(URL),Ms})  //(reuse)
+    p(This0)={reuse[URL] Ms}
+* p ==> p.update({readFolder(p),Ms})  //(dots)
+    p(This0)={... Ms}
+* p ==> p.update(CORE.L)  //(topNorm)
+    p(This0)={H MCs}=FULL.L //note, all M are of form MC
+    |- p.update(norm(p,FULL.L)) -> CORE.L
+* p ==> p.update(LL)  //(top)
+    p(This0)={H MCs C=eC Ms}//MCs are already compiled
+    eC not of form CORE.L//thus e is the first point to execute
+    Y=Y[p;onSlash=empty,onReturn=Library,onPath=error]
+    p|- Y♥eC :T
+    cX(eC)=empty
+    adapt(Y♥eC,T.P) -->p+ r //execute the expression under the program and obtain a result
+    CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
+    p'= p.update({H MCs C=CORE.L Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
+    p'= p.update(norm(p,{H MCs C=CORE.L})) otherwise
+    |- p' -> LL //type all the MCs that can be compiled now, including This0
+* p ==> p'.pop(1)   //(enter)
+    p(This0) = {H MCs C=ctxC[LL] Ms}
+    LL not of form CORE.L
+    p.push({H MCs C=ctxC Ms}, LL)  ==>+  p' //Note: p' is one level deeper than p
+    p'(This0) of form CORE.L // and p'(This0) is the result of metaprogramming LL
 _______
 #define adapt(eC,P)
-adapt(eC, Library)=eC
-adapt(eC, Void)=(Void x=eC {}); where x fresh
-adapt(eC, _)= (T x=eC x.#toLibrary()); otherwise, where x fresh
-
--------------------------------------
-Part 2: typing driven by dependencies
--------------------------------------
+* adapt(eC, Library)=eC
+* adapt(eC, Void)=(Void x=eC {}); where x fresh
+* adapt(eC, _)= (T x=eC x.#toLibrary()); otherwise, where x fresh
 _______
-#define collectDeps(CORE.L)  //we do not collect dependencies from docs
-collectDeps(interface?[Ts]{MWT1...MWTn1 NCs})=Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
-collectDeps(C=_)=empty;empty
-collectDeps(T f)=T;empty
-collectDeps(Docs refine? native[URL]? mdf method T0 mOp(T1 x1 ..Tn xn)[Ts] = e?)
-  =T0..Tn, Ts;empty U collectDepsE(e?)
-
-collectDepsE(x)=collectDepsE(void)=empty;empty
-collectDepsE(L)=collectDeps(L) U Ps11..Ps1n; Ps21..Ps2n 
-  L=interface?[Ts]{MWTs NC1..NCn}
-  NCi=core(Li;Flagi;Ps1i;Ps2i)
-collectDepsE( (P e0).m( x1=e1 .. xn=en ) )=P U collectDepsE(e0) U..U collectDepsE(en) 
-collectDepsE(loop e)=collectDepsE(throw e)=collectDepsE(x :=e)=collectDepsE(e)
-collectDepsE((class Any P))= P;empty
-collectDepsE((class P' P))= P',P;P
-  where P'!=Any
-collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
-collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
-collectDepsE(T x=e)=T;empty U collectDepsE(e)
+#define norm(p,Full.L)=CORE.L  //assert norm(p,{reuse [URL] _}) and norm(p,{... _} never happens
+* norm(p,CORE.L) = CORE.L //assert never happens (not true in real language but good for debugging at the start)
+* norm(p,FULL.L) = CORE.L
+    FULL.L={interface? Ts Ms0}
+    CORE.L={interface? Ts,(Ts'\p Ts) infer(p',Ms') Info }
+    Info=Info[norm;//ok, non computational rule checking that Info in CORE.L is consistent
+      typeDep;coherentDep==collectDeps(CORE.L);
+      friendsDep= ??Ps;//using private methods (or paths??)
+      usedMethDep=??(P.s)s;
+      privateImpl=??Ps]       
+    p'=p.push(LL)
+    Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any)
+    Ms=expandFields(Ms0) // this turns the fields into abstract methods
+    forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
+    Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
+    //the line above use [|] to make sequences nor sets. The order of members is important here.
+    //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
+_______
+#define collectDeps(CORE.L)  //dont collect dependencies from NCs, Info and Docs
+* collectDeps({H MWT1...MWTn1 NCs Info})=H.Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
+* collectDeps(C=_)=empty;empty
+* collectDeps(Docs refine? native[URL]? mdf method T0 mOp(T1 x1 ..Tn xn)[Ts] = e?)
+    =T0..Tn, Ts;empty U collectDepsE(e?)
+_______
+#define collectDepsE(CORE.e)    //collectDepsE(L) adds NCs dependiencies and relies on cached Info
+* collectDepsE(x)=collectDepsE(void)=empty;empty
+* collectDepsE(L)=L.Info.typeDep;L.Info.coherent U collectDepsE(NC1.L)[from This0.(NC1.C)] U .. U collectDepsE(NCn.L)[from This0.(NCn.C)]
+    L={H MWTs NC1..NCn Info}
+* collectDepsE( e0.m( x1=e1 .. xn=en ) )=P U collectDepsE(e0) U..U collectDepsE(en) 
+* collectDepsE(loop e)=collectDepsE(throw e)=collectDepsE(x :=e)=collectDepsE(e)
+* collectDepsE((class Any P))= P;empty
+* collectDepsE((class P' P))= P',P;P
+    P'!=Any
+* collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
+* collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
 _______
 #define P in typed(p) iff p(P).info.Flag=typed
 _______
@@ -74,17 +71,17 @@ _______
 _______
 #define typable(p)=Csz
 Cs1..Csn=typable(p)
-  is the largest subset of dom(p.top()) so that forall i:
+  is the largest subset of dom(p(This0)) so that forall i:
     p(This0.Csi) of form CORE.L
     p(This0.Csi).info.Flag=norm
     p(This0.Csi).depTyped subset typed(p) U This0.Cs1..This0.Csn
-  defined only if forall CORE.L in {p.top()(Cs) : Cs in dom(p.top())}:
+  defined only if forall CORE.L in {p(This0.Cs) : Cs in dom(p(This0))}:
     forall P in CORE.L.info.depTypes:
       alive(p,P) //else compile time error here
 _______
 #define typableCoherent(p)=Csz
-Cs1..Csn=typableCoherent(p,p.top())
-  is the largest subset of dom(p.top()) so that forall i:
+Cs1..Csn=typableCoherent(p,p(This0))
+  is the largest subset of dom(p(This0)) so that forall i:
     p(This0.Csi) of form CORE.L
     p(This0.Csi).Flag=empty
     p(This0.Csi).depCoherent subset coherent(p) U This0.Cs1..This0.Csn 
@@ -95,18 +92,12 @@ LL[Csz=Flag]=LL
   where dom(LL) not in Csz
 _______
 #define |- p -> CORE.L'
-  |-p -> p.top()[Csz=empty][Csz'=coherent] //are we sure we want to use empty to mean 'justTyped'
+  |-p -> p(This0)[Csz=empty][Csz'=coherent] //are we sure we want to use empty to mean 'justTyped'
     where
     typable(p)=Csz
-    forall Cs in Csz:
-      if p.top()(Cs)=CORE.L
-      then p.navigate(Cs)|-p.top()(Cs) : OK
-    Csz'=typableCoherent(p.update(p.top()[Csz=empty])))
-    
-//WHEN AND HOW docs are checked so that the paths inside
-//the docs are alive and not 'mispelled'?
-// alive(p,P) to check for all P at the end of normalize ??
-//forall P inside MH e?, alive(p,P) //else error here 
+    forall Cs in Csz:  p.navigate(Cs)|-p(This0.Cs) : OK
+    Csz'=typableCoherent(p.update(p(This0)[Csz=empty])))
+    forall Cs in Csz':  coherent(p.navigate(Cs))
 _______
 #define alive(p,P) //check if P is defined or has some hope of being defined in the future
 alive(p,Any),alive(p,Void),alive(p,Library) holds
@@ -115,4 +106,5 @@ alive(CORE.L,Cs)= Cs in dom(CORE.L)
 alive(FULL.L,Cs)=
   if FULL.L(C)=LL and alive(LL,Cs)
   or FULL.L(C)=e, e not of form LL
-  
+//WHEN AND HOW docs are checked so that the paths inside
+//the docs are alive and not 'mispelled'?

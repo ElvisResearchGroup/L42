@@ -28,9 +28,7 @@ _______
 _______
 #define secondary grammars
   TX ::= CORE.T | X | \
-  PX ::=  P | X
   PT ::= TX | PT.s | PT.s.i
-  PP ::= PX | PX.s | PX.s.i
   HALF.G := x1:PT1 .. xn:PTn
   CC ::= PT <= PT'
   IMap ::= X1:T1 .. Xn:Tn
@@ -74,12 +72,15 @@ _______
     | (Ds T x=ctx Ds' Ks e)
     | (Ds Ks catch throw T x ctx Ks' e)
   FULL.ctxM::= C = ctxC |s = ctxC | MH = ctxC //CORE.ctxL is needed so that a p can explore core libraries
-  FULL.ctxL::= interface? Ts{MCs ctxM Ms} | CORE.ctxL
-  CORE.ctxL ::= interface? Ts{MWTs NCs1 C =[] NCs2} |interface? Ts{MWTs1 MH=ctx MWTs2 NCs}  
+  FULL.ctxL::= {H MCs ctxM Ms} | CORE.ctxL //note: no reuse/dots
+  CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}  
   HasHole:=FULL.ctxC | CORE.ctx
-  p::= LL;FULL.ctxLs //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+  p::= LL | p;CORE.L | p; FULL.ctxL //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 _______
 #define functional notation for L, ctxL and LC (over the domain Ldom)
+  /*...*/
+_______
+#define functional update and '\' notation for L, ctxL and LC (over the domain Ldom)
   /*...*/
 _______
 #define Lexical Syntax
@@ -204,6 +205,7 @@ _______
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)
     //We need to check this any time '...' is desugared, while 'reuse URL' will rename the private names
+
 * CORE.L
   //Difficult: Info need to be correct an the CORE.L need to be the proper result
   //of normalization.
@@ -211,6 +213,7 @@ _______
   //   CORE.L are now created only by the language semantic and trusted plugins
   //   +: no need to check well formedness on CORE.L,
   //   -: what about URL imported CORE.L? should we trust them?
+  //   -: how we PARSE imported CORE.L? should we serialize the java object?
 _______
 #define noBlockNeeded(C/FULL.e):
 * noBlockNeeded(B)

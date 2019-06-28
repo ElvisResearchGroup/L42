@@ -11,26 +11,6 @@ _______
 * Y(P)= resolveCs(p,(class P P))
     Y.onPath=classP
 _______
-#define p♥Full.L=CORE.L
-//assert p♥H{reuse [URL] _} and p♥{... _} never happens
-* p♥CORE.L = CORE.L //assert never happens (not true in real language but good for debugging at the start)
-* p♥FULL.L = CORE.L
-    LL=interface? Ts{Ms0}
-    CORE.L=interface? Ts,(Ts'\p Ts){Info infer(p',Ms')}
-    Info=
-      norm;
-      depType;depCoherent=collectDeps(CORE.L);
-      friendsDep Ps= ??;//using private methods (or paths??)
-      usedMethDep (P.s)s; //non private
-      privateImplements Ps //interfaces implemented by a private nested       
-    p'=p.push(LL)
-    Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any)
-    Ms=expandFields(Ms0) // this turns the fields into abstract methods
-    forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
-    Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
-    //the line above use [|] to make sequences nor sets. The order of members is important here.
-    //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
-_______
 #define p♥FULL.M = HALF.M
 * p♥MH = resolveCs(p,MH) 
 * p♥MH e = resolveCs(p,MH) Y♥e
