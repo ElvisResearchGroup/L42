@@ -1,12 +1,6 @@
-_______
-#define constraints grammar
-  TX ::= CORE.T | X | \
-  PX ::=  P | X
-  PT ::= TX | PT.s | PT.s.i
-  PP ::= PX | PX.s | PX.s.i
-  HALF.G := x1:PT1 .. xn:PTn
-  CC ::= PT <= PT'
-  IMap ::= X1:T1 .. Xn:Tn
+//Can now be done that all P in a CORE.L are minimized?
+
+
 _______
 #define expandFields(Ms)=Ms'
 * M in expandFields(Ms) 

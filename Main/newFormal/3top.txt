@@ -2,7 +2,6 @@
 Part 1: 42 top level reduction rules
 ------------------------------------
 
-r::=CORE.L| exception v | error v
 
 (reuse)
 p ==> p.update(H{followURL(URL),Ms})
@@ -25,6 +24,7 @@ p ==> p.update(LL)
   eC not of form CORE.L//thus e is the first point to execute
   Y= p;empty,Library,error //Y[p=p,?xP=empty,T?=Library,PType=error]
   p|- Y♥eC :T
+  cX(eC)=empty
   adapt(Y♥eC,T.P) -->p+ r //execute the expression under the program and obtain a result
   CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
   p'= p.update(H{MCs C=CORE.L Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?

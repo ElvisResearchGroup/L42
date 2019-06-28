@@ -9,6 +9,11 @@ LL: either a FULL.L or a CORE.L
 p: a program; similar to a stack of LL to represent nested scopes.
 P: a path
 CORE.T/FULL.T: types
+ctxC: forall ctxC, all LL top-left of the hole are of form CORE.L
+  The compilation context, e=ctxC[LL] selects an LL where
+  all of the former LLs are CORE.L
+  The context does not enter into libraries
+
 
 -most important operations:
 p(P):
@@ -40,4 +45,29 @@ execution flow:
         -p♥Full.L
         -p:e:T
         -|-p->LL
+        
+Program p discussion:
+Program-specific grammar is needed to represent the position
+in the project (top level Library) that we are reducing.
+For example, if our 42 project is
+{ A=... B=This0.A.second({ method Library m(){C=This2.A.first({})} }) }
+we first need to reduce "A.first({})"
+In order to explicitly denote the meaning of "Thisn", we split the project
+into the 3 part program
+p={C=This2.A.first({})};{ method Library m()[]};{ A=... B=This0.A.second([]) }
+Note that the first component is an L, while the others have a hole, [],
+so they are of form ctxL.
+Note how the first component uses This2.A in order to skip two levels
+and refer to A in the outer most layer of our project.
+
+It is possible to see the program as a stack, with a top() and a pop() operation.
+Given a program is always possible to reconstruct the project
+by doing a series of pop operations.
+Since the top of the stack is of a different kind with respect to the other elements,
+pop replaces the [] with the stack top to forge an L
+push, the opposite of pop, extracts a piece of the top to forge a new top.
+To do so, it takes in input the split form of the old head.
+Finally, notice how in this model updating the top  can not be emulated with pop() + push()
+        
+        
   

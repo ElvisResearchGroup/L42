@@ -1,16 +1,4 @@
 _______
-#define grammar HALF.e, constraints CC and Y environment
-  HALF.xP ::= x | (X CORE.P) | (TX CORE.P) | (\ P)
-  HALF.e ::= x | (TX CORE.P) | void | CORE.L | \
-   | throw e | loop e | x := e | ( Ds Ks e )   
-   | xP.m(xe*) | xP (op xP)+
-  HALF.K ::= "catch" throw TX x e
-  HALF.D ::= "var"? TX x = e
-  HALF.M ::= CORE.NC | MH HALF.e?
-  I  ::=I[p;IMap;G;CCz;onSlash=T?]
-  PType ::= error | classP | TX
-  Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=PType]
-_______
 #define toBinOp(x,Op=) // convenience method to desugar updateOps
 * toBinOp(x, :=) = x :=
 * toBinOp(x, OP=) = x := x OP 
