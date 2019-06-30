@@ -1,17 +1,22 @@
 _______
-#define infer(p,FULL.Ms)=CORE.Ms  //TODO:next is informal
-* infer(p,M1..Mn)=I(HALF.M1)..I(HALF.Mn)
-    I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
-    HALF.M1..HALF.Mn=p♥M1 .. p♥Mn
-    n = max {n | p.get(n) is defined }
-    p.get(i)={Hi MCsi Mi _}, where Mi not of form Mc
-    var CCz = p|Ccz +> MCs1[from This1] +>..+> MCsn[from Thisn]
-    while CCz changes:
-    	CCz = collect(p, (p|Ccz +>M1+>..+>Mn).CCz)
+#define infer(p,FULL.Ms)=CORE.Ms
+* infer(p,M1..Mn)=I(p♥M1)..I(p♥M1)
+    k = max {k | p(Thisk) is defined }
+    p(Thisi)={Hi MCsi Mi _}, where Mi not of form C.M
+    PAcc=collect(PAcc[p;GX=empty;CCz=empty]) +> MCs1[from This1]..MCsk[from Thisk])
+    CCz=fixInfer(PAcc;p♥M1..p♥Mn).CCz
+    I=I[p;IMap=solve(p,CCz);G=empty;CCz';onSlash=empty]
 _______
-#define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e//TODO: this is incomplete
+#define fixInfer(PAcc;HALF.Ms) =CCz
+* fixInfer(PAcc;Ms)=PAcc.CCz
+    collect(PAcc +>Ms).CCz=PAcc.CCz //collect is defined in norm
+* fixInfer(PAcc;Ms)=fixInfer(collect(PAcc +>Ms);Ms)
+    otherwise
+_______
+#define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e
 * I(CORE.M) = CORE.M
 * I(MH e) = MH I[G=G^MH;onSlash=MH.T](e)
+
 * I(\) = I.onSlash.P //undefined if it is empty
 * I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
 * I((TX CORE.P)) = (iType(I,TX) CORE.P)
@@ -19,7 +24,7 @@ _______
     I'=I[onSlash=I.IMap(I.G(xP))]
 * I(xP0 op..op xPn)=I(e)
     Ti=I.IMap(I.G(xPi))
-    selectedOptions(I.CCz, I.p, op, T0..Tn, xPs)=PT,s,i
+    selectedOption(I.CCz, I.p, op, T0..Tn, xPs)=PT,s,i
     xP'1..xP'n=xP0..xPn/i
     e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
     e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
@@ -29,111 +34,122 @@ _______
 #define I[DS] = I',  I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
 * I[TX1 x1=_ .. TXn xn=_]=I[G=I.G,x1:iType(I,TX1),..,xn:iType(I,TXn)]
 
-* I(TX x=e) = iType(I,TX) x=(e[IMap;G;T]) 
+* I(TX x=e) = iType(I,TX) x=I(e) 
 
-* I(catch \ x e)[IMap;G;T]=catch T x (e[IMap;G;T])
+* I(catch TX x e)[IMap;G;T]=catch iType(I,TX) x I(e)
 _______
 #define iType(I,TX)=CORE.T
 * iType(I,T)=T
 * iType(I,X)=I.IMap(X)
 * iType(I,\)=I.onSlash
+
 _______
-#define p|CCz +> CORE.Ms = p|CCz',    p|CCz +> CORE.M = p|CCz'
-p|CCz +> M1..Mn =p|CCz +> M1 +> .. +> Mn 
-//assert never happens p|CCz +> C = FULL.L 
-p|CCz +> C = CORE.L = p|CCz +> L.Ms[from This0.C]
-p|CCz +> H { Info; M1 ... Mn } = p|CCz +> M1 +> ... +> Mn
-p|CCz +>MH =p|CCz
-p|CCz +>MH e = p|CCz',PT<=MH.T
-  p|G^MH|CCz +> e:PT  = p|_|CCz'
+#define PAcc[CCz]=PAcc'    PAcc[GX]   PAcc[D1..Dn]
+* PAcc[CCz]=PAcc[CCz=PAcc.CCz,CCz]
+
+* PAcc[GX]=PAcc[GX=PAcc.GX,GX]
+
+* PAcc[D1..Dn]=PAcc[D1.x:D1.TX .. Dn.x:Dn.TX]
+_______
+#define PAcc +> HALF.Ms = PAcc'  PAcc+>HALF.L=PAcc'    PAcc +> HALF.M = PAcc'
+
+* PAcc +> M1..Mn =PAcc +> M1 +>..+> Mn //assert never happens PAcc +> C = FULL.L 
+* PAcc +> C = CORE.L = PAcc +> CORE.L.Ms[from This0.C]
+
+* PAcc +>{ H M1 ... Mn Info} = PAcc +> M1 +> ... +> Mn
+
+* PAcc +>MH =PAcc
+* PAcc +>MH e = (PACCp[G^MH] +> e:PT)[PT<=MH.T]
 _______
 #define HALF.e[\ = PT]
-\[\ = mdf? PP] = PP
-(\ x = e)[\ = PT] = PT x = (e[\ = PT])
-(catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
-otherwise propagate on D, K, e
+* \[\ = mdf? PP] = PP
+* (\ x = e)[\ = PT] = PT x = (e[\ = PT])
+* (catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
+* otherwise propagate on D, K, e
+
 _______
-#define G | CCz |- HALF.e : CORE.T | CCz
+#define PAcc +> HALF.D : PT = PAcc'    PAcc +> HALF.K : PT = PAcc'   PAcc +par> e:PT = PAcc'
+* PAcc +> D: PT = (PAcc +> D.e : PT)[PT <= D.PT]
+
+* PAcc +>K : X = (PAcc +>K.e: PT)[PT <= X]
+
+* PAcc +par> e:PT.s.i = (PAcc +> e:PT')[PT' <= PT.s.i]
+_______
+#define PAcc +> HALF.e : CORE.T = PAcc'
 // TODO: Add ps //WHAT IS ps??? 
+* PAcc +>(D1..Dn K1..Kk e):X=PAcc'[PT <= X] +> K1:X +> .. +> Kk:X
+    PAcc'=PAcc[D1..Dn] +> D1 +> .. +> Dn +> e:PT
+//   (G(D1..Dn) | CCz) +> D1 +> .. +> Dn +> (e : PT) = _|CCz'
+//   (G | CCz',PT <= X) +> (K1 : X) +> .. +> (Kk : X) = _|CCz''
+//--------------------------------------------------------
+//   G | CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
 
-    G|CCz +> e : PT'   = _|CCz'
---------------------------------------
-   (G|CCz +> PT x = e) = G|CCz',PT' <= PT
+* PAcc +> x:PAcc.GX(x) = PAcc
+//---------------------------------
+//  G | CCz +> (x : G(x)) = G | CCz
 
+* PAcc +> (TP P):TP = PAcc[class P <= TP]
+//-------------------------------------
+//  G | CCz +> (TP P : TP) = G | CCz, class P <= TP
 
-   G, x->PT | CCz +> e : PT' = _|CCz'
---------------------------------------
-   G | CCz +> catch throw PT x e : X = G|CCz',PT' <= X
-
-
-   (G(D1..Dn) | CCz) +> D1 +> .. +> Dn +> (e : PT) = _|CCz'
-   (G | CCz',PT <= X) +> (K1 : X) +> .. +> (Kk : X) = _|CCz''
---------------------------------------------------------
-   G | CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
-
-
----------------------------------
-  G | CCz +> (x : G(x)) = G | CCz
-
-
--------------------------------------
-  G | CCz +> (TP P : TP) = G | CCz, class P <= TP
-
-  
-  s = m(x1 ... xn)
-  G | CCz +> (e0 : PT0) >+> (e1 : PT0.s.1) +par> .. +par> (en : PT0.s.n) = _| CCz'
--------------------------------------------------------------------
-  G | CCz +> (e0.m(x1 = e1, ..., xn = en) : PT0.s) = G | CCz'
+* PAcc +> e0.m(x1 = e1, ..., xn = en):PT0.s = 
+      PAcc +> e0:PT0 +par> e1:PT0.s.1 +par> .. +par> en:PT0.s.n
+    s = m(x1 ... xn)
+//  s = m(x1 ... xn)
+//  G | CCz +> (e0 : PT0) >+> (e1 : PT0.s.1) +par> .. +par> (en : PT0.s.n) = _| CCz'
+//-------------------------------------------------------------------
+//  G | CCz +> (e0.m(x1 = e1, ..., xn = en) : PT0.s) = G | CCz'
 
 
-  G | CCz +> e[\ := PT.s.i] : PT' = _ | CCz'
----------------------------------------------------- //+par> is the parameter accumulation
-  G | CCz +par> e : PT.s.i = G | CCz',PT' <= PT.s.1
+* PAcc +> x := e : Void =(PAcc+>e:PT)[PT <= PAcc.GX(x)]
+//  G | CCz +>  e : PT  = _| CCz'
+//--------------------------------------------------
+//  G | CCz +> x := e : Void = G | CCz', PT <= G(x)
+
+* PAcc +> throw e : X =(PAcc+>e:PT)[PT <= X]
+    fresh X
+//  G | CCz +> e : PT = _ | CCz'
+//----------------------------------------------- for fresh X
+//  G | CCz +> throw e : X  = G | CCz',PT<=X
+
+* PAcc +> loop e : Void =(PAcc+>e:PT)[PT <= Void]
+//  G | CCz +> e : PT = _ | CCz'
+//------------------------------------------------
+//  G | CCz +> loop e : Void | CCz', PT <= Void
 
 
-  G | CCz +>  e : PT  = _| CCz'
---------------------------------------------------
-  G | CCz +> x := e : Void = G | CCz', PT <= G(x)
-
-
-  G | CCz +> e : PT = _ | CCz'
------------------------------------------------ for fresh X
-  G | CCz +> throw e : X  = G | CCz',PT<=X
-
-
-  G | CCz +> e : PT = _ | CCz'
-------------------------------------------------
-  G | CCz +> loop e : Void | CCz', PT <= Void
-
+* PAcc +> xP0 OP ... OP xPn : PTi.s=(PAcc +> xP0:PT0 +> .. +> xPn:PTn)[PT'1 <= P.s.1]..[PT'n <= P.s.n]
     P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
-    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
-	PT'1 ... PT'n = PT0 ... PTn \ i
----------------------------------------------------------------------------------------------------
-    G | CCz0 |- xP0 OP ... OP xPn : PTi.s | CCz', PT'1 <= P.s.1 ... PT'n <= P.s.n
+    PT'1 ... PT'n = PT0 ... PTn \ i
+
+//    P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
+//    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
+//    PT'1 ... PT'n = PT0 ... PTn \ i
+//---------------------------------------------------------------------------------------------------
+//    G | CCz0 |- xP0 OP ... OP xPn : PTi.s | CCz', PT'1 <= P.s.1 ... PT'n <= P.s.n
 _______
 #define PT,s,i in opOptions(CCz, p, OP, PTs, xPs)
-PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
-  where
-  i in 0..n,
-  P'1 ... P'n = (PT0..PTn\i).PPs
-  !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz))//TODO: discuss cachability of collect
-  either
-    s = methName(OP)_i(x1..xn)
-    P1 ... Pn = paramaterPaths(PTi, CCz, s)
-    PT=PTi
-  or
-    xPi = (PT P')
-    P = P'.$methName(OP)_i
-    s = #apply(x1..xn)
-    P1 ... Pn = p[P.s].Ps
+* PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
+    i in 0..n,
+    P'1 ... P'n = (PT0..PTn\i).PPs
+    !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz))//TODO: discuss cachability of collect
+    either
+      s = methName(OP)_i(x1..xn)
+      P1 ... Pn = paramaterPaths(PTi, CCz, s)
+      PT=PTi
+    or
+      xPi = (PT P')
+      P = P'.$methName(OP)_i
+      s = #apply(x1..xn)
+      P1 ... Pn = p[P.s].Ps
 _______
 #define selectedOption(CCz, p, OP, PTs, xPs)= PT,s,i
-selectedOptions(CCz, p, OP, PTs, xPs)=PT,s,i
-  {PT,s,i}=opOptions(CCz,p,OP, PTs, xPs)
-selectedOptions(CCz,p,OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
-  (xPi.P).$methName(OP)_i, s, i in opOptions(CCz,p,OP, PTs, xP0..xPn)
-  forall (xPj.P).$methName(OP)_j, s', j in opOptions(CCz,p,OP, PTs, xP0..xPn)
-    i=j, s=s'
+* selectedOptions(CCz, p, OP, PTs, xPs)=PT,s,i
+    {PT,s,i}=opOptions(CCz,p,OP, PTs, xPs)
+* selectedOptions(CCz,p,OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
+    (xPi.P).$methName(OP)_i, s, i in opOptions(CCz,p,OP, PTs, xP0..xPn)
+    forall (xPj.P).$methName(OP)_j, s', j in opOptions(CCz,p,OP, PTs, xP0..xPn)
+      i=j, s=s'
     
 ====================OLD RULES, Isaac, check is the same as above
 

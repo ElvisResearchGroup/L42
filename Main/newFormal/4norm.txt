@@ -47,33 +47,40 @@ _______
 * mostSpecific(Tz) = T
     {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
 _______
-#define collect(CCz)=CCz'
-* CC in collect(CCz)
-    CC in collect(collect(CCz)) //CC in collect(CCz,CCz') where CC in collect(collect(CCz))
-* CC in collect(CC,_)
-* PT <= PT" in collect(PT <= PT', PT' <= PT",_)
-* PT <= PT in collect(CCz)
-    PT in CCz
+#define collect(PAcc)=PAcc'
+* CC in collect(PAcc)
+    CC in collect(collect(PAcc))
+* CC in collect(PAccp)
+    CC in PAcc.CCz
+* PT <= PT" in collect(PAcc)
+    PT <= PT', PT' <= PT" in PAcc
+* PT <= PT in collect(PAcc)
+    PT in PAcc.CCz
 * mdf P <= mdf' P' in collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
     p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
     P' != _ Any // Just for consistency with everything else, not important!
-* mdf P <= PT in collect(PT <= mdf P,_)// since all classes are final!
+* mdf P <= PT in collect(PAcc)// since all classes are final!
+	PT <= mdf P in PAcc
 	p[P].interface = empty 
-* T.s <= PT in collect(CCz)//since they are alias of each other 
-    PT <= T.s in collect(CCz)
+* T.s <= PT in collect(PAcc)//since they are alias of each other 
+    PT <= T.s in collect(PAcc).CCz //why noy simply in PAcc.CCz?
     PT=p[T.s].T
-* T.s.i <= PT in collect(CCz)//since method parameter types can not be refined (or since they are aliases?)
-    PT <= T.s.i in collect(CCz)
+* T.s.i <= PT in collect(PAcc)//since method parameter types can not be refined (or since they are aliases?)
+    PT <= T.s.i in collect(PAcc).CCz
     PT=p[T.s].Ti
-* PT.s <= PT'.s in collect(PT <= PT', CCz)
-    PT'.s in CCz
-* PT'.s.i <= PT.s.i in collect(PT <= PT',CC')
-    PT'.s.i in CC'
-* PT.s.i <= PT'.s.i in collect(PT <= PT',CC')//since method parameter types can not be refined 
-    PT'.s.i in CC'
-* PT1' <= Origin(s, P2') in collect(PT1 <= P2', PT1 <= PT1', CCz)
-    P2'.s in CCz
-    PT1'.s in CCz
+* PT.s <= PT'.s in collect(PAcc)
+    PT <= PT' in PAcc.CCz
+    PT'.s in PAcc.CCz
+* PT'.s.i <= PT.s.i in collect(PAcc)
+    PT <= PT' in PAcc.CCz
+    PT'.s.i in PAcc.CCz
+* PT.s.i <= PT'.s.i in collect(PAcc)//since method parameter types can not be refined 
+    PT <= PT' in PAcc.CCz
+    PT'.s.i in PAcc.CCz
+* PT1' <= Origin(s, P2') in collect(PAcc)
+    PT1 <= P2', PT1 <= PT1' in PAcc.CCz
+    P2'.s in PAcc.CCz
+    PT1'.s in PAcc.CCz
 _______
 #define commonSuperT(p,Tz)=Tz'
 * commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn

@@ -24,9 +24,8 @@ _______
 * Y♥NumLit e=Y♥e"NumLit"
 * Y♥return e = return Y[onReturn=empty;onPath=classP]♥e
     //We can never return class Any anyway, or we could catch return class P on a non coherent P
-    //we set onReturn=empty to avoid return {} and other funny things
 * Y♥throw e = throw Y[onReturn=empty;onPath=error]♥e
-    throw in {error,exception}
+    throw in {error,exception}//we set onReturn=empty to avoid return {} and other funny things
 * Y♥loop e = loop Y[onReturn=imm Void;onPath=error]♥e
 * Y♥~e = Y[onPath=classP]♥e.methName(~)()
 * Y♥!e=Y[onPath=classP]♥e.methName(!)()
