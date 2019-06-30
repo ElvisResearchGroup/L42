@@ -1,31 +1,17 @@
 _______
-#define toBinOp(x,Op=) // convenience method to desugar updateOps
-* toBinOp(x, :=) = x :=
-* toBinOp(x, OP=) = x := x OP 
-_______
-#define Y(xP)
-* Y(x)= x
-* Y((T P))= resolveCs(p,(T P))
-* Y(P)= resolveCs(p,(Y.onPath P))
-    Y.onPath of form TX
-* Y(P)= resolveCs(p,(class P P))
-    Y.onPath=classP
-_______
 #define p♥FULL.M = HALF.M
-* p♥MH = resolveCs(p,MH) 
-* p♥MH e = resolveCs(p,MH) Y♥e
+* p♥MH = MH 
+* p♥MH e = MH Y♥e
     Y = [p=p,onSlashX=empty,onReturn=MH.T,onPath=MH.T]
-* p♥CORE.NC = CORE.NC[docs=resolveCs(p,CORE.NC.docs)] 
+* p♥CORE.NC = CORE.NC[docs=resolveCs(p,CORE.NC.docs)] //TODO: seams wrong. Where is the right place to resolveCs the docs in a consistent manner? 
     //assert never happens p♥C:Full.L or p♥s e
 _______
-#define Y♥FULL.e = HALF.e
-//simple cases first
-//unicode characters to disambiguate equals and parenthesis =() ⚌❪❫ ᙿ≝≖᐀ //what is the best =?
+#define Y♥FULL.e = HALF.e //unicode characters to disambiguate equals and parenthesis =() ⚌❪❫ ᙿ≝≖᐀ //what is the best =?
 * Y♥x = x //assert x not of form _
 * Y♥P = Y(P)
 * Y♥void = void
 * Y♥L = Y.p♥L
-* Y♥(T e) = ❪resolveCs(Y.p,T) x⚌Y[T=resolveCs(Y.p,T)]♥e x❫ //do we see an improvement using unicode?
+* Y♥(T e) = ❪resolveCs(Y.p,T) x≖Y[T=resolveCs(Y.p,T)]♥e x❫ //do we see an improvement using unicode?
     e not of form P
 * Y♥(T P) = resolveCs(Y.p,(T P) )
 * Y♥\ = \ 
@@ -53,14 +39,12 @@ _______
 * Y♥xP(.m)?(par)= Y0(xP).methName(.m?)( Y1♥par )
     Y0=Y[onReturn=empty;onPath=classP]
     Y1=Y[onSlashX=x;onReturn=\;onPath=\]
-//bin operators
 * Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
     e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
 * Y♥xP op3 e= (
       x=Y(xP.#shortCircut'OP3'())  //here and and under, using ' to generate method names in some standard way
       Y♥if x.#shortResult() 
-      else x.#shortProcess(that=Y♥e2)
-      )
+      else x.#shortProcess(that=Y♥e2) )
     x, x' fresh
 * Y♥e0 op .. op en = (Ds e0" op .. op en")
     Yi = Y[onReturn=\;onPath=Xi]//TODO: would this help? using the same fresh X for many P?
@@ -72,7 +56,6 @@ _______
     X1..Xn fresh
     op not of form op3
     n >= 1
-//blocks
 * Y♥( DEs Ks Wops? DEs2) = Y♥(DEs Ks Wops? DEs2 void)
 * Y♥( DEs Ks Wops? DE DEs2 e)) = Y♥( DEs Ks Wops? (DE DEs2 e))
 * Y♥( DEs Ks "wops" T1..Tn e) = ( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
@@ -80,11 +63,9 @@ _______
 * Y♥{ DEs Ks Wops? DEs2 } = (
       Void x=Y0♥(DEs Ks Wops? DEs2 void)
       catch return Y.T x' x'
-      error void//unreachable thanks to {return} well formedness   
-      )
+      error void )//unreachable thanks to {return} well formedness   
     Y0=Y[onReturn=empty;onPath=error]
     x,x' fresh
-//builders
 * Y♥e(.m)?[pars]= Y♥ 
       e.methName(.m?)(squareBuilder:(
         b=\.#squareBuilder()
@@ -92,7 +73,6 @@ _______
           b.#add(par1) .. b.#add(parn)) //so \ and \x are about the builder
         b))
     b,x fresh
-
 * Y♥e StrLit= Y♥
       e.#from(stringLiteral=(
         b=\.#stringLiteralBuilder()
@@ -104,8 +84,6 @@ _______
         b.methName(charsn)()
         b))
     StrLit= chars0 e1 chars1 .. en charsn
-
-//statements 
 * Y♥if e0 e1 = Y♥if e0 e1 else void
 * Y♥if e0 e1 else e2 = Y♥( x=e0 if x e1 else e2 )
     e0 not of form xP
@@ -144,21 +122,32 @@ _______
         i1:=i1.succ() .. in:=in.succ() )
       c1.close(i1) .. cn.close(in))
     c1..cn, i1..in fresh
-   
-//auxiliary definitions
-Y♥e xes=  that=Y♥e,Y♥xes
-Y♥x1=e1 .. xn=en=  x1=Y♥e1 .. xn=Y♥en
+_______
+#define Y♥FULL.par = (x=HALF.e)s    Y♥FULL.DE = HALF.D
+* Y♥e xes=  that=Y♥e,Y♥xes
+* Y♥x1=e1 .. xn=en=  x1=Y♥e1 .. xn=Y♥en
 
-Y♥DE= Void x= Y[T=empty]♥e, with DE=e, x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
-Y♥T? x=e= resolveCs(Y.p,T?) underscoreIntoFresh(x)= Y[T=T?,PType=classAny]♥e, with x fresh
-Y♥var T? x = e = var resolveCs(Y.p,T?) x =Y'♥e //assert x not of form _
-  with Y'=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]
-  
-Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
-  resolveCs(Y.p,T?) x=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]♥e
-  var1? resolveCs(Y.p,T1?) x1=x.methNameTrim(x1)() //removes any numberPedex from the end
-  ..
-  varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
-  where x fresh
-Y♥catch throw T x e = catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e
-Y♥catch T x e = catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e
+* Y♥DE= Void x= Y[T=empty]♥e, with DE=e, x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
+* Y♥T? x=e= resolveCs(Y.p,T?) underscoreIntoFresh(x)= Y[T=T?,PType=classAny]♥e, with x fresh
+* Y♥var T? x = e = var resolveCs(Y.p,T?) x =Y'♥e //assert x not of form _
+    Y'=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]
+* Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
+      resolveCs(Y.p,T?) x=Y[T=resolveCs(Y.p,T?),PType=resolveCs(Y.p,T?)]♥e
+      var1? resolveCs(Y.p,T1?) x1=x.methNameTrim(x1)() //removes any numberPedex from the end
+      ..
+      varn? resolveCs(Y.p,Tn?) xn=x.methNameTrim(xn)()
+  x fresh
+* Y♥catch throw T x e = catch throw resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e
+* Y♥catch T x e = catch exception resolveCs(Y.p,T) underscoreIntoFresh(x) Y♥e
+_______
+#define toBinOp(x,Op=) // convenience method to desugar updateOps
+* toBinOp(x, :=) = x :=
+* toBinOp(x, OP=) = x := x OP 
+_______
+#define Y(xP)
+* Y(x)= x
+* Y((T P))= resolveCs(p,(T P))
+* Y(P)= resolveCs(p,(Y.onPath P))
+    Y.onPath of form TX
+* Y(P)= resolveCs(p,(class P P))
+    Y.onPath=classP
