@@ -14,7 +14,6 @@ ctxC: forall ctxC, all LL top-left of the hole are of form CORE.L
   all of the former LLs are CORE.L
   The context does not enter into libraries
 
-
 -most important operations:
 p(P):
   extract a library from a program
@@ -24,7 +23,7 @@ e-->p e'
   expression reduction. It can uses native code to call functionalities
   outside of L42. Some of those are 'trusted and internally implemented'.
   All other ones are properly sandboxed.
-p♥LL
+norm(p,LL)
   reduces some libraries in the top of the program to core. 
 p|-e:T
   expression well typed.
@@ -32,6 +31,8 @@ p|-e:T
   type some libraries in the top of the program and annotate them as 'typed'
   or 'coherent'; that is, executable. 
 
+
+PAcc, I, Y: record contexts for normalization
 
 execution flow:
   'L42 name' works as follow:

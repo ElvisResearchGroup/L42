@@ -2,16 +2,52 @@ _______
 #define infer(p,FULL.Ms)=CORE.Ms
 * infer(p,M1..Mn)=I(p♥M1)..I(p♥M1)
     k = max {k | p(Thisk) is defined }
-    p(Thisi)={Hi MCsi Mi _}, where Mi not of form C.M
-    PAcc=collect(PAcc[p;GX=empty;CCz=empty]) +> MCs1[from This1]..MCsk[from Thisk])
-    CCz=fixInfer(PAcc;p♥M1..p♥Mn).CCz
-    I=I[p;IMap=solve(p,CCz);G=empty;CCz';onSlash=empty]
+    p(Thisi)={Hi C/CORE.Msi FULL.Mi _}, where FULL.Mi not of form CORE.M
+    C.Msi={C.M| C.M in C/CORE.Msi}[from Thisi]
+    PAcc=PAcc[p;GX=empty;CCz=empty].add(C.Ms1 .. C.Msk).collect()
+    CCz=PAcc.fixInfer(p♥M1..p♥Mn)//TODO: unsure... why we fix only on the new ones?
+    I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
 _______
-#define fixInfer(PAcc;HALF.Ms) =CCz
-* fixInfer(PAcc;Ms)=PAcc.CCz
-    collect(PAcc +>Ms).CCz=PAcc.CCz //collect is defined in norm
-* fixInfer(PAcc;Ms)=fixInfer(collect(PAcc +>Ms);Ms)
+#define PAcc.fixInfer(HALF.Ms) =CCz
+* PAcc.fixInfer(Ms)=PAcc.CCz
+    PAcc.add(Ms).CCz=PAcc.CCz
+* fixInfer(PAcc;Ms)=PAcc.add(Ms).collect().fixInfer(Ms)
     otherwise
+_______
+#define PAcc.collect()=PAcc'
+* CC in PAcc.collect()
+    CC in PAcc.collect().collect())//is it needed since we have the fixpoint anyway?
+* CC in PAcc.collect()
+    CC in PAcc.CCz
+* PT <= PT" in PAcc.collect()
+    PT <= PT', PT' <= PT" in PAcc
+* PT <= PT in PAcc.collect()
+    PT in PAcc.CCz
+* mdf P <= mdf' P' in PAcc.collect() //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
+    p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
+    P' != _ Any // Just for consistency with everything else, not important!
+* mdf P <= PT in PAcc.collect()// since all classes are final
+	PT <= mdf P in PAcc
+	p[P].interface = empty 
+* T.s <= PT in PAcc.collect()//since they are alias of each other 
+    PT <= T.s in PAcc.collect().CCz //why noy simply in PAcc.CCz?
+    PT=p[T.s].T
+* T.s.i <= PT in PAcc.collect()//since method parameter types can not be refined (or since they are aliases?)
+    PT <= T.s.i in PAcc.collect().CCz
+    PT=p[T.s].Ti
+* PT.s <= PT'.s in PAcc.collect()
+    PT <= PT' in PAcc.CCz
+    PT'.s in PAcc.CCz
+* PT'.s.i <= PT.s.i in PAcc.collect()
+    PT <= PT' in PAcc.CCz
+    PT'.s.i in PAcc.CCz
+* PT.s.i <= PT'.s.i in PAcc.collect()//since method parameter types can not be refined 
+    PT <= PT' in PAcc.CCz
+    PT'.s.i in PAcc.CCz
+* PT1' <= Origin(s, P2') in PAcc.collect()
+    PT1 <= P2', PT1 <= PT1' in PAcc.CCz
+    P2'.s in PAcc.CCz
+    PT1'.s in PAcc.CCz
 _______
 #define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e
 * I(CORE.M) = CORE.M
@@ -42,7 +78,6 @@ _______
 * iType(I,T)=T
 * iType(I,X)=I.IMap(X)
 * iType(I,\)=I.onSlash
-
 _______
 #define PAcc[CCz]=PAcc'    PAcc[GX]   PAcc[D1..Dn]
 * PAcc[CCz]=PAcc[CCz=PAcc.CCz,CCz]
@@ -51,15 +86,12 @@ _______
 
 * PAcc[D1..Dn]=PAcc[D1.x:D1.TX .. Dn.x:Dn.TX]
 _______
-#define PAcc +> HALF.Ms = PAcc'  PAcc+>HALF.L=PAcc'    PAcc +> HALF.M = PAcc'
+#define PAcc.add(HALF.Ms) = PAcc'   PAcc.add(HALF.M) = PAcc'
+* PAcc.add(M1..Mn) = PAcc.add(M1).. .add(Mn) //assert never happens PAcc.add(C = FULL.L) 
+* PAcc.add(C = CORE.L) = PAcc.add(CORE.L.Ms)[from This0.C]
 
-* PAcc +> M1..Mn =PAcc +> M1 +>..+> Mn //assert never happens PAcc +> C = FULL.L 
-* PAcc +> C = CORE.L = PAcc +> CORE.L.Ms[from This0.C]
-
-* PAcc +>{ H M1 ... Mn Info} = PAcc +> M1 +> ... +> Mn
-
-* PAcc +>MH =PAcc
-* PAcc +>MH e = (PACCp[G^MH] +> e:PT)[PT<=MH.T]
+* PAcc.add(MH) =PAcc
+* PAcc.add(MH e) = PACCp[G^MH].add(e:PT)[PT<=MH.T]
 _______
 #define HALF.e[\ = PT]
 * \[\ = mdf? PP] = PP
@@ -68,65 +100,28 @@ _______
 * otherwise propagate on D, K, e
 
 _______
-#define PAcc +> HALF.D : PT = PAcc'    PAcc +> HALF.K : PT = PAcc'   PAcc +par> e:PT = PAcc'
-* PAcc +> D: PT = (PAcc +> D.e : PT)[PT <= D.PT]
+#define PAcc.addD(HALF.D : PT) = PAcc'    PAcc.addK(HALF.K : PT) = PAcc'   PAcc.addPar(e:PT) = PAcc'
+* PAcc.addD(D: PT) = PAcc.add(D.e : PT)[PT <= D.PT]
 
-* PAcc +>K : X = (PAcc +>K.e: PT)[PT <= X]
+* PAcc.addK(K : X) = PAcc.add(K.e: PT)[PT <= X]
 
-* PAcc +par> e:PT.s.i = (PAcc +> e:PT')[PT' <= PT.s.i]
+* PAcc.addPar(e:PT.s.i) = PAcc.add(e:PT')[PT' <= PT.s.i]
 _______
-#define PAcc +> HALF.e : CORE.T = PAcc'
+#define PAcc.add(HALF.e : CORE.T) = PAcc'
 // TODO: Add ps //WHAT IS ps??? 
-* PAcc +>(D1..Dn K1..Kk e):X=PAcc'[PT <= X] +> K1:X +> .. +> Kk:X
-    PAcc'=PAcc[D1..Dn] +> D1 +> .. +> Dn +> e:PT
-//   (G(D1..Dn) | CCz) +> D1 +> .. +> Dn +> (e : PT) = _|CCz'
-//   (G | CCz',PT <= X) +> (K1 : X) +> .. +> (Kk : X) = _|CCz''
-//--------------------------------------------------------
-//   G | CCz +> (D1..Dn K1..Kk e) : X = G|CCz''
-
-* PAcc +> x:PAcc.GX(x) = PAcc
-//---------------------------------
-//  G | CCz +> (x : G(x)) = G | CCz
-
-* PAcc +> (TP P):TP = PAcc[class P <= TP]
-//-------------------------------------
-//  G | CCz +> (TP P : TP) = G | CCz, class P <= TP
-
-* PAcc +> e0.m(x1 = e1, ..., xn = en):PT0.s = 
-      PAcc +> e0:PT0 +par> e1:PT0.s.1 +par> .. +par> en:PT0.s.n
-    s = m(x1 ... xn)
-//  s = m(x1 ... xn)
-//  G | CCz +> (e0 : PT0) >+> (e1 : PT0.s.1) +par> .. +par> (en : PT0.s.n) = _| CCz'
-//-------------------------------------------------------------------
-//  G | CCz +> (e0.m(x1 = e1, ..., xn = en) : PT0.s) = G | CCz'
-
-
-* PAcc +> x := e : Void =(PAcc+>e:PT)[PT <= PAcc.GX(x)]
-//  G | CCz +>  e : PT  = _| CCz'
-//--------------------------------------------------
-//  G | CCz +> x := e : Void = G | CCz', PT <= G(x)
-
-* PAcc +> throw e : X =(PAcc+>e:PT)[PT <= X]
+* PAcc.add( (D1..Dn K1..Kk e):X ) = PAcc'[PT <= X].add(K1:X).. .add(Kk:X)
+    PAcc'=PAcc[D1..Dn].addD(D1).. .addD(Dn).add(e:PT)
+* PAcc.add(x:PAcc.GX(x)) = PAcc
+* PAcc.add( (TP P):TP) = PAcc[class P <= TP]
+* PAcc.add(e0.m(x1=e1..xn=en):PT0.s) = PAcc.add(e0:PT0).addP(e1:PT0.s.1).. .addP(en:PT0.s.n)
+    s = m(x1..xn)
+* PAcc.add(x := e : Void) = PAcc.add(e:PT)[PT <= PAcc.GX(x)]
+* PAcc.add(throw e : X) = PAcc.add(e:PT)[PT <= X]
     fresh X
-//  G | CCz +> e : PT = _ | CCz'
-//----------------------------------------------- for fresh X
-//  G | CCz +> throw e : X  = G | CCz',PT<=X
-
-* PAcc +> loop e : Void =(PAcc+>e:PT)[PT <= Void]
-//  G | CCz +> e : PT = _ | CCz'
-//------------------------------------------------
-//  G | CCz +> loop e : Void | CCz', PT <= Void
-
-
-* PAcc +> xP0 OP ... OP xPn : PTi.s=(PAcc +> xP0:PT0 +> .. +> xPn:PTn)[PT'1 <= P.s.1]..[PT'n <= P.s.n]
+* PAcc.add(loop e : Void) = PAcc.add(e:PT)[PT <= Void]
+* PAcc.add(xP0 OP ... OP xPn : PTi.s) = PAcc.add(xP0:PT0).. .add(xPn:PTn)[PT'1 <= P.s.1]..[PT'n <= P.s.n]
     P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
     PT'1 ... PT'n = PT0 ... PTn \ i
-
-//    P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
-//    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
-//    PT'1 ... PT'n = PT0 ... PTn \ i
-//---------------------------------------------------------------------------------------------------
-//    G | CCz0 |- xP0 OP ... OP xPn : PTi.s | CCz', PT'1 <= P.s.1 ... PT'n <= P.s.n
 _______
 #define PT,s,i in opOptions(CCz, p, OP, PTs, xPs)
 * PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)

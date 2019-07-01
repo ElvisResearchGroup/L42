@@ -47,41 +47,6 @@ _______
 * mostSpecific(Tz) = T
     {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
 _______
-#define collect(PAcc)=PAcc'
-* CC in collect(PAcc)
-    CC in collect(collect(PAcc))
-* CC in collect(PAccp)
-    CC in PAcc.CCz
-* PT <= PT" in collect(PAcc)
-    PT <= PT', PT' <= PT" in PAcc
-* PT <= PT in collect(PAcc)
-    PT in PAcc.CCz
-* mdf P <= mdf' P' in collect(_) //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
-    p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
-    P' != _ Any // Just for consistency with everything else, not important!
-* mdf P <= PT in collect(PAcc)// since all classes are final!
-	PT <= mdf P in PAcc
-	p[P].interface = empty 
-* T.s <= PT in collect(PAcc)//since they are alias of each other 
-    PT <= T.s in collect(PAcc).CCz //why noy simply in PAcc.CCz?
-    PT=p[T.s].T
-* T.s.i <= PT in collect(PAcc)//since method parameter types can not be refined (or since they are aliases?)
-    PT <= T.s.i in collect(PAcc).CCz
-    PT=p[T.s].Ti
-* PT.s <= PT'.s in collect(PAcc)
-    PT <= PT' in PAcc.CCz
-    PT'.s in PAcc.CCz
-* PT'.s.i <= PT.s.i in collect(PAcc)
-    PT <= PT' in PAcc.CCz
-    PT'.s.i in PAcc.CCz
-* PT.s.i <= PT'.s.i in collect(PAcc)//since method parameter types can not be refined 
-    PT <= PT' in PAcc.CCz
-    PT'.s.i in PAcc.CCz
-* PT1' <= Origin(s, P2') in collect(PAcc)
-    PT1 <= P2', PT1 <= PT1' in PAcc.CCz
-    P2'.s in PAcc.CCz
-    PT1'.s in PAcc.CCz
-_______
 #define commonSuperT(p,Tz)=Tz'
 * commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
     Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  

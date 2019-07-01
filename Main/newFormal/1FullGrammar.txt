@@ -12,8 +12,8 @@ _______
     //or in a private nested class or in an L in a method
     //usedMethDep//methods used either directly or ...
     //privateImpl: interfaces implemented by a private nested class or in an L in a method
-  Flag ::= 'norm' | typed
-  typed::= 'coherent'?
+    //implicit 'infos': have private state=closed class, have private static methods (can be casted to class P)
+  Flag ::= 'norm' | 'typed'
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, C.e do not have FULL.L
   C/FULL.e ::= x | P | void | CORE.L | \ | \x  
@@ -39,7 +39,7 @@ _______
   HALF.D ::= "var"? TX x = e
   HALF.M ::= CORE.NC | MH HALF.e?
   PType ::= error | classP | TX
-  G::=x1:CORE.T1 .. xn:CORE.Tn
+  G::=var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX::=x1:PT1 .. xn:PTn
   I  ::=I[p;IMap;G;CCz;onSlash=T?]//inference application environment
   Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=PType]//toCore environment
@@ -47,7 +47,7 @@ _______
   v ::= a|P|void|L
   r::=CORE.L| exception v | error v
   Obj::=P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
-  A  ::= empty | imm? a->Obj, A | imm? x->v A  //order is irrelevant
+  A  ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   ctxV::=xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
   FULL.ctxC::=[]
     | throw ctxC | loop ctxC |ctxC(.m)?( par) |ctxC Square 
@@ -207,8 +207,7 @@ _______
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)
     //We need to check this any time '...' is desugared, while 'reuse URL' will rename the private names
-
-* CORE.L
+* CORE.L:
   //Difficult: Info need to be correct an the CORE.L need to be the proper result
   //of normalization.
   //OPTION1, good for now: info can not be wrote down, so user can not write CORE.L
@@ -216,6 +215,7 @@ _______
   //   +: no need to check well formedness on CORE.L,
   //   -: what about URL imported CORE.L? should we trust them?
   //   -: how we PARSE imported CORE.L? should we serialize the java object?
+* G:var x capsule _ or var x fwd _ or var x fwd% _ not in G
 _______
 #define noBlockNeeded(C/FULL.e):
 * noBlockNeeded(B)

@@ -8,20 +8,21 @@ _______
     p(This0)={H MCs}=FULL.L //note, all M are of form MC
     |- p.update(norm(p,FULL.L)) -> CORE.L
 * p ==> p.update(LL)  //(top)
-    p(This0)={H MCs C=eC Ms}//MCs are already compiled
-    eC not of form CORE.L//thus e is the first point to execute
+    p(This0)={H CORE.Ms C=C.e FULL.Ms}//MCs are already compiled
+    C.e not of form CORE.L//thus e is the first point to execute
     Y=Y[p;onSlash=empty,onReturn=Library,onPath=error]
-    p|- Y♥eC :T
+    p|- Y♥C.e :T
+    coherentClasses(p,Y♥C.e)
     cX(eC)=empty
-    adapt(Y♥eC,T.P) -->p+ r //execute the expression under the program and obtain a result
+    adapt(Y♥C.e,T.P) -->p+ r //execute the expression under the program and obtain a result
     CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
-    p'= p.update({H MCs C=CORE.L Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
-    p'= p.update(norm(p,{H MCs C=CORE.L})) otherwise
+    p'= p.update({H CORE.Ms C=CORE.L FULL.Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
+    p'= p.update(norm(p,{H CORE.Ms C=CORE.L})) otherwise
     |- p' -> LL //type all the MCs that can be compiled now, including This0
 * p ==> p'.pop(1)   //(enter)
-    p(This0) = {H MCs C=ctxC[LL] Ms}
+    p(This0) = {H CORE.Ms C=ctxC[LL] FULL.Ms}
     LL not of form CORE.L
-    p.push({H MCs C=ctxC Ms}, LL)  ==>+  p' //Note: p' is one level deeper than p
+    p.push({H CORE.Ms C=ctxC FULL.Ms}, LL)  ==>+  p' //Note: p' is one level deeper than p
     p'(This0) of form CORE.L // and p'(This0) is the result of metaprogramming LL
 _______
 #define adapt(eC,P)
@@ -65,9 +66,8 @@ _______
 * collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
 * collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
 _______
-#define P in typed(p) iff p(P).info.Flag=typed
-_______
-#define P in coherent(p) iff p(P).info.Flag=coherent
+#define P in typed(p)
+* P in typed(p) iff p(P).info.Flag=typed
 _______
 #define typable(p)=Csz
 Cs1..Csn=typable(p)
@@ -78,13 +78,6 @@ Cs1..Csn=typable(p)
   defined only if forall CORE.L in {p(This0.Cs) : Cs in dom(p(This0))}:
     forall P in CORE.L.info.depTypes:
       alive(p,P) //else compile time error here
-_______
-#define typableCoherent(p)=Csz
-Cs1..Csn=typableCoherent(p,p(This0))
-  is the largest subset of dom(p(This0)) so that forall i:
-    p(This0.Csi) of form CORE.L
-    p(This0.Csi).Flag=empty
-    p(This0.Csi).depCoherent subset coherent(p) U This0.Cs1..This0.Csn 
 _______
 #define LL[Csz=Flag]=LL'
 LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
@@ -97,7 +90,6 @@ _______
     typable(p)=Csz
     forall Cs in Csz:  p.navigate(Cs)|-p(This0.Cs) : OK
     Csz'=typableCoherent(p.update(p(This0)[Csz=empty])))
-    forall Cs in Csz':  coherent(p.navigate(Cs))
 _______
 #define alive(p,P) //check if P is defined or has some hope of being defined in the future
 alive(p,Any),alive(p,Void),alive(p,Library) holds

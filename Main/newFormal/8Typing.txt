@@ -1,0 +1,108 @@
+coherentClasses(p,CORE.e)
+General judgment shape
+D |- e :T <=T'| Tr
+D::= Flag;p;G;Ts;Ps
+MethT::=Ts->T;Ps
+
+* D |- void : imm Void <= T //(void)
+    D.p|-imm Void <= T
+* D |- (class P' P): class P' <= T //(Path)
+    assert D.p(P) well defined
+    D.p|-class P' <= T
+    P'=Any if D.p(P).interface?!=empty or class notin D.p(P).mhs.mdfs
+* D |- L : imm Library <= T //(library propagation)
+    D.p |- imm Library <= T
+    if D.Flag==typed D |- L
+* D |-x : D.G(x).T <= T  //(x)
+    D.p|- D.G(x).T <= T
+* D |- loop e ~> loop e' : imm Void <= T //(loop)
+  D.p|-imm Void <= T
+  D|- e : _ <= imm Void
+* D |- return e : T0 <= T0 //(throw-return)
+    D|- e : T <=fwd T1|Ts;Ps
+    T in D.Ts
+    if T=class P then:
+      D.p(P).interface?=empty
+      class in D.p(P).mhs.mdfs
+  //this forbids return (x:class Any): class Any is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
+  //we also check that is a P that could be assigned to a class P, P!=Any 
+* D |- throw e : T0 <= T0 //(throw)
+    D|- e : imm P <=T2|Ts;Ps
+    if throw=exception, P in D.Ps
+* D |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
+    P0=D.guess(e0)//simple since e0 of form xP
+    T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can be not available, how?
+    D.p |- T <= T'
+    forall i 0..n D|- ei : T'i <= Ti //T'0 is correctly a free variable
+* D |- x:=e : imm Void <= T //(xUpdate)
+    D.G(x).var?=var
+    D.p|- imm Void <= T
+    D|- e : _ <= D.G(x).T 
+    assert not fwd_or_fwd%_in(D.G(x).T)
+* Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <=mdf P  //(capsule promotion)
+    Ds!=empty //TODO: may make the sugar for (capsule P e)==(capsule P (mut P e)) so that it can be promoted
+    mdf in {capsule, imm, fwdImm, fwd%Imm}
+    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <=mut P
+//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
+//this rule can not be applied, since we require mut P <=mut P in the premise.
+//this is another point where a variable 'x' can become undefined thanks to toLent(G)
+
+* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' | Tr'.capture(p,ks') U Tr U Tr0  //(block)
+    Flag; p; G; Ts; Ps |- Ks : Ts' <= T' |Ts';Ps'
+    G'=toRead(G/dom(ds)) if error in Ks.throws
+    G'=G/dom(ds) otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
+    Flag; p; G'[ks]; Ts U Ts'; Ps U Ps' |- Ds | G0
+    //here we have the info to capture a failure about ds and discover if
+    //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
+    //was locked by error safety[cite the line number of the catch] 
+    Flag; p; G',(G0\dom(G')); Ts; Ps |- e0 : T0 <=T'
+    T= mostGeneralMdf({T0.mdf,Ts.mdfs}) T'.P //set of Mdfs admits no single most general mdf
+    // assert D.p|-T <= T'
+_______
+#define Flag; p; G;Ts;Ps |- ds | G0 // The resulting G0 is the enriched G containing info about ds too.
+* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  ds | G3  //(ds)
+    dom(ds) disjoint FV(e0..en)
+    G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
+    for i in 0..n: Flag; p; G'; Ts; Ps|-ei : T'i <= fwd% Ti
+    if fwd_or_fwd%_in Ts
+      then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
+    if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
+      then G2=G0[fwd%(x0:T0..xn:Tn)]
+      otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
+    Flag; p; G2; Ts; Ps|- ds | G3
+* D |- empty | D.G //(dsEmpty)
+#define D |-k1..kn : T1..Tn <= T | Ts;Ps   D |-k : T' <= T |Ts;Ps
+* D |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
+    forall i in 1..n D |-ki : Ti <= T |Tsi;Psi
+* D |- catch return T0 x e : T <= T' |T0;empty //(catch)
+    D |- e : T <= T'
+    if T0.mdf=class then T0.P=Any or class in p(P).mhs.mdfs
+* D |- catch throw imm P x e : T <= T' |empty;P //(catch)
+    throw !=return
+    D |- e : T <= T'
+
+    
+//TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
+//also check the following:
+//Elem e=(return that catch return Elem x x catch return Any y error error)[redirect Elem in Any]
+
+
+  
+
+
+
+
+  rule path:
+//Note: we need p(P) not interface and with some class methods to prevent a bug in sum/redirect
+//when a class 'A' may become an interface, and annotations 'class A' would be invalid.
+//since classes without class methods may become interfaces, we accept the type class A only
+//when class methods are present.
+//Example
+{T:{} //well typed
+method class T ()=T
+method Void doStuff(class T x)
+}[redirect T=Base]
++
+{method Void doStuff(class Base x)=x.class()}//well typed
+//result would not work
+  
