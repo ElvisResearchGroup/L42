@@ -88,6 +88,7 @@ _______
 #define trusted(LL) //Does this need to be added to the INFO?
 
 trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)
+//trusted is not the right name for this concept
    
 -typing a method p,MWT:
   if MWT.native=native[uURL]

@@ -85,11 +85,85 @@ LL[Csz=Flag]=LL
   where dom(LL) not in Csz
 _______
 #define |- p -> CORE.L'
-  |-p -> p(This0)[Csz=empty][Csz'=coherent] //are we sure we want to use empty to mean 'justTyped'
+  |-p -> p(This0)[Csz=typed] //are we sure we want to use empty to mean 'justTyped'
     where
     typable(p)=Csz
     forall Cs in Csz:  p.navigate(Cs)|-p(This0.Cs) : OK
-    Csz'=typableCoherent(p.update(p(This0)[Csz=empty])))
+_______
+#define CORE.e inside CORE.e'
+  e inside ctx[e]
+_______
+#define coherent(p,CORE.e)    coherent(p)
+* coherent(p,e)
+    forall (class P' P) inside e: //assert p(P) and p(P') is CORE.L
+      either P'=Any
+      or coherent(p.navigate(P))
+
+* coherent(p) //interfaces are always coherent
+    p(This0).interface?=interface
+* coherent(p)
+    p(This0).interface?=empty
+    MHs={MH | MH in p(This0).MWTs} //thus, abstract
+    either for no MH in MHs: MH.mdf=class//there is no abstract class method
+    or exists xz  and n? such that:
+      forall MH in MHs, coherent(p;MHs;MH;xz;n?)
+* coherent(p;_;MH;xz;n?)
+    MH=refine? class method T m::n? (_)_
+    G^MH.xz=this,xz
+    p|-This0<=T.P
+    T.mdf not in {class, fwd mut, fwd imm}
+    lent not in G^MH.mdfs
+    if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint G^MH.mdfs
+    if read in G^MWT.mdfs then T.mdf in {read, lent}
+    if !trustedClass(p(This0)) then m is of form #$m
+* coherent(p;MHs;refine? mdf method T m::n?(_)_;_;n?) //must 'n?' be the same for well formedness?
+    mdf in {lent, mut, capsule}
+    forall MH' in MHs: either MH'.mdf!=class
+    or MH'.T.mdf not in {lent, mut, capsule}
+* coherent(p;_;MH;_,x;n?)
+    MH=refine? mdf method T #?x::n?(mdf' P' that) _
+    p |- imm Void <= T
+    mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
+    mdf in {lent, mut, capsule}
+    if mdf = lent then mdf' != mut
+* coherent(p;MHs;MH;_,x;n?)
+    MH=refine? mdf method mdf' P' #?x::n?() _
+    mdf != class
+    forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
+    coherentGetMdf(mdf',mdf,
+      fieldTypes(MHs,x, mdf).mdfs,
+      fieldAccessMdf(MHs,x, mdf))
+_______
+#define coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+* coherentGetMdf(imm,imm, mdfs0,_)
+    class not in mdfs0
+* coherentGetMdf(imm,mdf,mdfs0,mdfs1)
+    mdf!=imm
+    mdfs0 subseteq {imm, fwd imm,capsule}
+    {mut, lent} disjoint mdfs1
+* coherentGetMdf(read, _, mdfs0,_)
+    class not in mdfs0
+* coherentGetMdf(class,_,{class},_)
+* coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
+    mdfs0 subseteq {mut, fwd mut, capsule}
+    imm not in mdfs1
+* coherentGetMdf(lent,mdf,mdfs0,_)
+    mdfs0 subseteq {mut, fwd mut, capsule}//TODO: error, lent too? else never happens
+    mdf in {lent, mut, capsule}
+* coherentGetMdf(mut,mdf,mdfs0,_)
+    mdfs0 subseteq {mut, fwd mut, capsule}
+    mdf in {mut, capsule}
+
+* T in fieldsTypes(MHs, x, mdf)
+    either class method mdf" _(_ T x _)_ in MHs
+    or mdf" method _ #?x::n?(T that)_ in MHs
+    if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
+    //TODO: wrong, if the 'setter' was a method allowed to be abstract because take a mut on imm only class
+
+* mdf' in fieldsAccessMdf(MHs, x, mdf)
+    mdf" method mdf' P #?x::n?() in MHs
+    mdf" != capsule
+    if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
 _______
 #define alive(p,P) //check if P is defined or has some hope of being defined in the future
 alive(p,Any),alive(p,Void),alive(p,Library) holds

@@ -85,4 +85,13 @@ We check absence of circularity by diverging
 an implementation could keep a list of visited P instead of diverging; mathematically it is the same
 
         
+--------------------------------------------
+3 Multiple method types   T0..Tn-> T';Ps in methTypes(p,P,s)
+--------------------------------------------
+The main idea giving flexibility to the 42 type system is that
+methods have many types, where only the modifiers change.
+It can be seen as a form of polymorphism of the method types.
+We here express the methodTypes set with metarules,
+but a finite/predictable sequence of applications is always sufficient,
+as shown later
   
