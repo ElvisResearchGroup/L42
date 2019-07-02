@@ -65,14 +65,28 @@ _______
 
 *p.resolveCs(FULL.MH) propagates on the structure
    Docs0 refine? native[URL]? mdf method T0 mOp Docs1 (T1 x1 .. Tn xn)[Ts]
-  
-
----------should go somewhere else?
 
 _______
-#define MWT.T=T MWT.Ti 
-MWT.T = MWT.mt.T
-MWT.Ti = Ti  where T1..Tn=MWT.mt.Ts
+#define P0[from P1]=P2 e[from P]=e' e[from P]n=e'
+* Thisn.Cs[from Thism.C1..Ck]=Thism.C1..C(k-n).Cs if n<=k
+* Thisn.Cs[from Thism.C1..Ck]=This(m+n-k).Cs if n>k
+* Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
+
+* e[from P] propagate on the structure, and L[from P] = L[ from P]0
+
+* {H Ms}[from P]j = {H[Ps=H.Ps[from P]j+1] Ms[from P]j+1}
+* This(j+n).Cs0[from P]j=This(j+k).Cs1
+    Thisn.Cs0[from P]=Thisk.Cs1
+* Thisn.Cs[from P]j=Thisn.Cs with n<j
+* All cases for other expressions/terms propagate to submembers, including docs  
+_______
+#define MH notations, MWT notations just inherits them,
+with MH=refine? native? mdf method T m(T1 x1..Tn xn) 
+* MH.T=T
+* MH.Ts=Ts
+* G^MH= this:mdf This0, x1:T1..xn:Tn
+* MH.Ti = Ti
+* MH.s=m(x1..xn)
 
 ------------TAIL, probably not needed
 -p.location()=P // Where we are in the program
