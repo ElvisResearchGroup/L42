@@ -118,54 +118,33 @@ _______
     mdf in generalEnough(mdfs)
     forall mdf1 in generalEnough(mdfs): mdf <= mdf1
 
-(mBase)
-mdf0 P T1..Tn-> T';Ps in methTypes(p,P,s)
-  where
-  p(P)(s).mh[from P]=refine? mdf0 method T m(T1 x1,..Tn xn) exception Ps
-  T'=fwd% T if fwd_or_fwd%_in(Ts)
-  otherwise T'=T
-
-(mNoFwd)
-noFwd Ts-> noFwd T;Ps in methTypes(p,P,s)
-  where
-  Ts->T;Ps in methTypes(p,P,s)
-
-//then capsule and imm promotion
-(mC)
-mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,s)
-  where
-  Ts->mut P0;Ps in methTypes(p,P,s)
-
-(mI)
-toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,s)
-//the behaviour of immorcapsule on fwd is not relevant since the method
+//TODO: import From; minimize and from? should from minimize?
+_______
+#define methTypes(p,P,s) = MethT
+* mdf0 P T1..Tn-> T';Ts.Ps in methTypes(p,P,s)  //(mBase)
+    p(P)(s).MH[from P]=refine? native? mdf0 method T m(T1 x1,..Tn xn) Ts
+    T'=fwd% T if fwd_or_fwd%_in(Ts)
+    otherwise T'=T
+* noFwd Ts-> noFwd T;Ps in methTypes(p,P,s)  //(mNoFwd)
+    Ts->T;Ps in methTypes(p,P,s)
+* mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,s)  //(mC)
+    Ts->mut P0;Ps in methTypes(p,P,s)
+* toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,s)  //(mI)
+    Ts->mdf P0;Ps in methTypes(p,P,s), mdf in {read,lent}
+//the behaviour of toImmOrCapsule on fwd is not relevant since the method
 // returns a read and will be not well formed if it had fwd parameters
-  where
-  Ts->mdf P0;Ps in methTypes(p,P,s), mdf in {read,lent}
-  //by well formedness if return type is read, not fwd_or_fwd%_in Ts
+//by well formedness if return type is read, not fwd_or_fwd%_in Ts
+* Ts'->toLent(T);Ps in methTypes(p,P,s) //(mVp)
+    Ts0 mut P Ts2->T;Ps in methTypes(p,P,s)
+    Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
+* mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,s)  //(mImmFwd)
+    Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in fwdImm
+    fwd_or_fwd%_in(Ts)
+* mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s) //(mRead)
+    Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
+    fwd_or_fwd%_in(Ts)
 
-//then lent viewpoint adaptation
-
-(mVp)
-Ts'->toLent(T);Ps in methTypes(p,P,s)
-  where
-  Ts0 mut P Ts2->T;Ps in methTypes(p,P,s)
-  Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
-
-
-//and then rules about fwd and fwd%
-(mImmFwd)
-mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,s)
-  where
-  Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in fwdImm
-  fwd_or_fwd%_in(Ts)
-
-(mRead)
-mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s)
-  where
-  Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
-  fwd_or_fwd%_in(Ts)
-
+-------------------------
 It is possible to obtain all the variations with the following table:
   mBase
   mNoFwd(mBase)
@@ -179,7 +158,16 @@ It is possible to obtain all the variations with the following table:
   mVp(mBase) //1 mType for each mut parameter
   mVp(mNoFwd(base))//1 mType for each mut parameter
 
-
+missing notations:
+noFwd
+fwd_or_fwd%_in
+from
+mutToCapsule
+toImmOrCapsule
+toLent
+toRead
+mutToCapsuleAndFwdMutToFwdImm
+mutToCapsuleAndFwdRead
  ----------------   
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //also check the following:
