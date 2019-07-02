@@ -3,14 +3,14 @@ With this short paper we contribute
 to research on safe metaprogramming, showing how combining 
 pre//post conditions,
 trait composition and metaprogramming
-it is possible to create metaprograms that generat code which is correct by construction.
+it is possible to create metaprograms that generate code which is correct by construction.
 That is: only the original source code itself needs to be verified (for example by a theorem prover), and not the code produced by metaprogramming.
-This is important since the original code is often orders of magnitude smaller then the generated code.
-We start by providing some background on those three research areas:
+This is important since the original code is often orders of magnitude smaller than the generated code.
+We start by providing some background on those three research areas: pre//post conditions, traits, and metaprogramming.
 
-\textbf{Pre-post conditions}:
-object oriented languages supporting static verification usually extend the syntax for method declarations
-to support \emph{contracts} in the form of pre and post-conditions~\cite{Meyer:1988:OSC:534929}.
+\textbf{Pre//post conditions}:
+object-oriented (OO) languages supporting static verification usually extend the syntax for method declarations
+to support \emph{contracts} in the form of pre- and post-conditions~\cite{Meyer:1988:OSC:534929}.
 Correctness is defined only for code annotated with such contracts.
 
 We say that a method is \emph{correct}, if whenever its precondition holds on entry, the precondition of every directly invoked method holds, and the postcondition of the method holds when the method returns. Automated static verification typically works by asking an automated theorem prover to verify that each method is correct individually, by assuming the correctness of every other method~\cite{barnett2004spec}. This process can be very slow and can produce unexpected results: since static verification is undecidable, correct code may not pass a particular static verifier.
@@ -20,8 +20,8 @@ method inlining. Sometimes static verification even times out, making the behavi
 
 
 
-\textbf{Traits}: originally introduced in smalltalk by Scharli~\cite{scharli2003traits}, traits are 
-units of code reuse. They where created as a simpler way of performing multiple inheritance without the usual complexity.
+\textbf{Traits}: originally introduced in Smalltalk by Scharli~\cite{scharli2003traits}, traits are 
+units of code reuse. They were created as a simpler way of performing multiple inheritance without the usual complexity.
 Traits are just a set of method declarations.
 Such methods can be abstract and
 mutually recursive by using the implicit /this/ parameter.
@@ -43,10 +43,10 @@ The /+/ operator is the main way to compose traits
 ~\cite{scharli2003traits,LagorioSZ09}.
 The result of /+/ will contain all the methods from both operands. 
 Crucially, it is possible to sum traits where a method is declared in both operands; in this case at least one of the two competing methods needs to be abstract, and the signatures of the two competing methods need to be \emph{compatible}.
-In this way, /+/ have an expressive power similar to multiple inheritance.
+In this way, /+/ has an expressive power similar to multiple inheritance.
 
-Rename and hide adapt a single trait by renaming a method or by making a method private.
-Many works in literature allow adapting traits by renaming or hiding methods\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
+\emph{Rename} and \emph{hide} adapt a single trait by renaming a method or by making a method private.
+Many works in the literature allow adapting traits by renaming or hiding methods~\cite{servetto2014meta,reppy2007metaprogramming,liquori2008feathertrait}. Hiding a method may also trigger inlining if the method body is simple enough or used only once.
 
 
 Consider the following example code, where we use those 3 operators:
@@ -70,7 +70,7 @@ Trait c=class {String world(){return "["+1+"]";}}
 \textbf{Metaprogramming} is often used to programmatically generate faster specialised code when some parameters are known in advance, this is particularly useful where the specialisation mechanism is too complicated for a generic compiler to automatically derive~\cite{Ofenbeck:2017:SGP:3136040.3136060}.
 A \emph{metaprogram} is a program, method or function 
 that produces code. Depending on the kind of metaprogramming, such code can be directly executable or can be just an abstract representation of behaviour.
-Metaprogramming is called \emph{metacircular} when the language used to write the metaprogram is the same language of the generate code.
+Metaprogramming is called \emph{metacircular} when the language used to write the metaprogram is the same language of the generated code.
 Metaprogramming can happen at run time, or at compile time. In the latter case, the produced code can be needed to typecheck and compile the rest of the code in the program.
 In this paper we will rely on 
 Iterative Composition: 
@@ -78,7 +78,7 @@ a metacircular metaprogramming technique relying on \emph{compile-time execution
 This disciplined form of metaprogramming introduced by Servetto and Zucca \cite{servetto2014meta}, is based on the trait composition operators described before, but lifted at the expression level.
 This means that arbitrary expressions can be used as the right hand side of trait and class declarations; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
 
-\section{Combining metaprogramming and static verification}
+\section{Combining Metaprogramming and Static Verification}
 
 A na\"ive way to combine metaprogramming and static verification could be to use metaprogramming to generate code together with contracts, and then once the metaprogramming has been run,
 % \MSDel{ensure the correctness of} 
@@ -122,10 +122,10 @@ it is sufficient
 to match the contracts of the few composed methods
 to ensure the whole result is correct.
 
-\section{Concrete example}
+\section{Concrete Example}
 
-In our example we will use the notation /@requires($predicate$)/ 
-to specify a precondition, and\\* /@ensures($predicate$)/ 
+In our example below we will use the notation /@requires($predicate$)/ 
+for specifying a precondition and /@ensures($predicate$)/ 
 to specify a postcondition; where $predicate$ is a boolean expression
 in terms of the parameters of the method (including /this/), and for the /@ensures/ case, the /result/ of the method.
 Suppose we want to implement an efficient exponentiation function, we could use recursion and the common technique of `repeated squaring':
@@ -156,6 +156,7 @@ can be used to write a metaprogram that given an exponent, produces code like th
 %in our context this means that arbitrary expressions can be used as the right hand side of a class declaration; during compilation such expressions will be evaluated to produce a /Trait/, which provides the body of the class. In this way metaprograms can be represented as otherwise normal functions//methods that return a /Trait/, without requiring the use of any additional `metalanguage'.
  
 %\vspace{-1ex}
+First we will define tree traits: /base/, /even/ and /odd/.
 \begin{lstlisting}
 Trait base=class {//induction base case: pow(x)==x**1
   @ensures(result>0) Int exp(){return 1;}  
@@ -174,16 +175,19 @@ Trait odd=class {//if _pow(x)==x**_exp(), pow(x)==x**(1+_exp())
   @ensures(result==x**exp()) Int pow(Int x){return x*$\_$pow(x);}
 }
 \end{lstlisting}
-First we will define tree traits: /base/, /even/ and /odd/.
-They are the basic building blocks we will use to compute our result. They will be compiled, typechecked and statically verified before being use in any way.
+
+They are the basic building blocks we will use to compute our result. They will be compiled, typechecked and statically verified before being used in any way.
 Note that we could use /base/ directly:
 we could write /class Pow1: base/; this would generate a class such that /new Pow1().pow(x)==x**1/.
 The other two traits have abstract methods; implementations for /$\_$pow(x)/ and /$\_$exp()/ must be provided. However, given the contract of /pow(x)/,
 and the fact that /even/ and /odd/ have both been statically verified,
 if we supply method bodies respecting these contracts, we will get \emph{correct} code, without the need for further static verification.
 Since all occurrences of names are consistently renamed, \textbf{renaming and hiding preserve code correctness}.
-Method names starting with $\_$, like /$\_$pow(x)/ and /$\_$exp()/, are not special and are not treated in any special way by trait composition. We use the $\_$ naming convention to emulate /super/ when using trait composition: a call to /$\_$exp()/ is used like a /super.exp()/ call in a language with conventional class based inheritence like Java.
+Method names starting with $\_$, like /$\_$pow(x)/ and /$\_$exp()/, are not special and are not treated in any special way by trait composition. We use the $\_$ naming convention to emulate /super/ when using trait composition: a call to /$\_$exp()/ is used like a /super.exp()/ call in a language with conventional class based inheritance like Java.
 
+The /compose(current,next)/ method starts by renaming the /exp()/ and /pow(x)/ methods of\\* /current/
+so that they satisfy the contracts in /next/ (which will be 
+/even/ or /odd/).
 \begin{lstlisting}
 //`compose' performs a step of iterative composition
 Trait compose(Trait current, Trait next){

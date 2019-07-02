@@ -118,7 +118,8 @@ In this work we use metaprogramming to generate code that is correct by construc
 A theorem prover is used only to verify initial "traits": units of code that can be used to compose bigger programs.
 
 In our work, meta-programming is done by trait composition, which starting from correct code, is guaranteed to produce correct code.
-We do this be extending conventional traits with methods pre and post conditions; we also extend the  traditional trait composition (/+/) operator to check the compatibility of contracts. In this way, there is no need to re-verify the produced code.
+We do this by extending conventional traits 
+with pre- and post-conditions for the methods; we also extend the  traditional trait composition (/+/) operator to check the compatibility of contracts. In this way, there is no need to re-verify the produced code.
 
 We show how our approach can be applied to the standard ``power'' function example, where metaprogramming generates optimised, and correct, versions when the exponent is known in advance.
 \end{abstract}
@@ -135,7 +136,7 @@ We show how our approach can be applied to the standard ``power'' function examp
 \catcode\Slash=12% turn of my awesome slash
 \bibliographystyle{eptcs}
 \bibliography{paper}
-\clearpage
-\appendix
-\input{appendix}
+%\clearpage
+%\appendix
+%\input{appendix}
 \end{document}

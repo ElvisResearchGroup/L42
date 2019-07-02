@@ -1,7 +1,44 @@
 reuse L42.is/AdamTowel02
 CacheAdamTowel02:Load.cacheTowel()
+Gui:Load<><{reuse L42.is/GuiLib}
+C:{
+  list=Strings[S"4.png";S"2.png";S"bang.jpg";S"bang.jpg";S"bang.jpg"]
+  var S msg=S"<div id='Alpha'>"
+  mut Gui gui=Gui.#$(id:S"a1")
+  initialState=S"
+      '<div id="Alpha"> </div>
+      '<font size="3" color="blue">Press the button to make stuff happens! otherwise stuff happens after a while to make the test an automated one</font>
+      '<button class="button" onclick="event42('Pressed!')">Click Me!</button>
+      '<script>
+      'pressButton=function(){event42('Pressed!');setTimeout(pressButton, 1500);}
+      'setTimeout(pressButton, 10000);
+      '</script>
+      "
+  Debug(initialState)
+  S resources=S"file:///"++Debug.#$localToAbsolute(fileName:S"examples/resources")++S"\ ".val(0Size)
+  Debug(resources)
+  gui.open(
+    title:S"FIRST!"
+    body:initialState
+    x:600Size
+    y:400Size
+    )
+  with event in gui.events(), h in list.vals(minTo:0Size) (
+    Debug(S"#@ActionBefore:"++ msg)
+    msg++=S"<img src='"++resources++h++S"' height='100' width='100'/>"
+    Debug(S"#@ActionNOW:"++ msg)
+    gui.set(msg++S"</div>", id:S"Alpha")
+    Debug(S"#@ActionAfter:"++ msg)
+    )
+  gui.close()
+  Debug(S"#@Success@#")
+  return ExitCode.normal()
+  }
+  
+T1:Trait({class method Num ()42Num})
+C1:T1&{}
 
 Main: {
-  Debug(S"Hello world")
+  Debug(S"Hello world "[C1()]"")
   return ExitCode.normal()
   }
