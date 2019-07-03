@@ -39,7 +39,7 @@ The code of each /$\_$pow(x)/ method is only executed once for each top-level /p
 Thus, the result could be identical to the manually optimized code in line 7.
 We can use our /generate(7)/ as follows:
 \begin{lstlisting}
-class Pow7: generate(7) //generate(7) is executed at compile time
+class Pow7: generate(7)//generate is executed at compile time
 //the body of class Pow7 is the result of generate(7)
 /*example usage:*/
 new Pow7().pow(3)==2187//Compute 3**7

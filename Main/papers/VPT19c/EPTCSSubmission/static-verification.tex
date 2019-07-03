@@ -162,7 +162,7 @@ Trait base=class {//induction base case: pow(x)==x**1
   @ensures(result>0) Int exp(){return 1;}  
   @ensures(result==x**exp()) Int pow(Int x){return x;}
 }
-Trait even=class {//if _pow(x)==x**_exp(), pow(x)==x**(2*_exp())
+Trait even=class{//if _pow(x)==x**_exp(), pow(x)==x**(2*_exp())
   @ensures(result>0) Int $\_$exp();
   @ensures(result==2*$\_$exp()) Int exp(){return 2*$\_$exp();}
   @ensures(result==x**$\_$exp()) Int $\_$pow(Int x);
