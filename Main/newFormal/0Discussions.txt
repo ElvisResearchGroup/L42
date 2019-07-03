@@ -6,47 +6,64 @@ function notations
 inside
 MH/MWT notations
 cX/FV
-p|-T0<=T1, p|-P0<=P1 
+p|-T0<=T1, p|-P0<=P1, p|-T<=Tz  
 trustedClass(CORE.L)
 ----
 __________________
-top level notation:
+top level notation (file top)
 p ==> p'
+  adapt(CORE.e,P)
+  followUrls
+  readFolder
+  refreshUniqueNames(CORE.L)
+  |- p -> LL
+    typable(p)=Csz
+    LL[Csz=Flag]=LL'
 uses major
   coherentClasses(p,CORE.e)
   p|-CORE.e :CORE.T
   |- p
-  Y♥C.e
+  Y♥C.e/p♥C.M
   norm(p,C.L)
   e -->p e'  
-uses minors
-  followUrls
-  readFolder
-  adapt(CORE.e,P)
-  refreshUniqueNames(CORE.L)
-  |- p -> LL
-  typable(p)=Csz
-  alive(p,P)
-  LL[Csz=Flag]=LL'
+
 __________________
-check coherence:
+check coherence: (file top)
 coherentClasses(p,CORE.e)
   coherent(p)
   coherentGetMdf(mdf0,mdf1,mdfs0,mdfs1)
-  fieldTypes(MHs,x, mdf)
-  fieldAccessMdf(MHs,x, mdf)
+    fieldTypes(MHs,x, mdf)
+    fieldAccessMdf(MHs,x, mdf)
 
 __________________
 expression type system 
 p|-CORE.e :CORE.T
 
 __________________
-normalization
+normalization (file norm)
 norm(p,C.L)
   collectDeps(CORE.L)
     collectDepsE(CORE.e)
+  expandFields(Ms)
+  collect(p,Ts)
+  methods(p,P0)
+  alive(p,P)
+
+
+_________________________
+inference //HERE: i'm checking what inference is using
+infer(p,FULL.Ms)=CORE.Ms
+  solve(p, CCz)
+    commonSuperT(p,Tz)=Tz'
+    chooseT(CCz;Tz)=T
+      mostSpecific(Tz) = T
+  unsatisfiable(CCz)
+      origin(s; P)
+  PAcc operations: .fixInfer(HALF.Ms) =CCz and .collect()=PAcc'
+uses major
+  Y♥C.e/p♥C.M
   
-  
+ 
 Main concepts:
 
 -most important grammatic forms:

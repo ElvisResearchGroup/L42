@@ -1,4 +1,40 @@
 _______
+#define norm(p,Full.L)=CORE.L  //assert norm(p,{reuse [URL] _}) and norm(p,{... _} never happens
+* norm(p,CORE.L) = CORE.L //assert never happens (not true in real language but good for debugging at the start)
+* norm(p,FULL.L) = CORE.L
+    FULL.L={interface? Ts Ms0}
+    CORE.L={interface? Ts,(Ts'\p Ts) infer(p',Ms') Info }
+    Info=Info[norm;//ok, non computational rule checking that Info in CORE.L is consistent
+      typeDep;coherentDep==collectDeps(CORE.L);
+      friendsDep= ??Ps;//using private methods (or paths??)
+      usedMethDep=??(P.s)s;
+      privateImpl=??Ps]       
+    p'=p.push(LL)
+    Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any)
+    Ms=expandFields(Ms0) // this turns the fields into abstract methods
+    forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
+    Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
+    //the line above use [|] to make sequences nor sets. The order of members is important here.
+    //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
+_______
+#define collectDeps(CORE.L)  //dont collect dependencies from NCs, Info and Docs
+* collectDeps({H MWT1...MWTn1 NCs Info})=H.Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
+* collectDeps(C=_)=empty;empty
+* collectDeps(Docs refine? native[URL]? mdf method T0 mOp(T1 x1 ..Tn xn)[Ts] = e?)
+    =T0..Tn, Ts;empty U collectDepsE(e?)
+_______
+#define collectDepsE(CORE.e)    //collectDepsE(L) adds NCs dependiencies and relies on cached Info
+* collectDepsE(x)=collectDepsE(void)=empty;empty
+* collectDepsE(L)=L.Info.typeDep;L.Info.coherent U collectDepsE(NC1.L)[from This0.(NC1.C)] U .. U collectDepsE(NCn.L)[from This0.(NCn.C)]
+    L={H MWTs NC1..NCn Info}
+* collectDepsE( e0.m( x1=e1 .. xn=en ) )=P U collectDepsE(e0) U..U collectDepsE(en) 
+* collectDepsE(loop e)=collectDepsE(throw e)=collectDepsE(x :=e)=collectDepsE(e)
+* collectDepsE((class Any P))= P;empty
+* collectDepsE((class P' P))= P',P;P
+    P'!=Any
+* collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
+* collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
+_______
 #define expandFields(Ms)=Ms'
 * M in expandFields(Ms) 
     M in Ms
@@ -32,53 +68,9 @@ _______
     MWTi=p.resolveCs(Mi) [with e=p(P0)(si).e[from P0]] if defined,
     MWTi=p.resolveCs(Mi) otherwise
 _______
-#define p|-T <= Tz //todo: move in typesystem
-* p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
-_______
 #define PT in CCz
 * PT in PT<=_,_
-* PT in _<=PT,_
-_______
-#define origin(s; P) = P
-* origin(s; P) = P
-    {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
-_______
-#define mostSpecific(Tz) = T
-* mostSpecific(Tz) = T
-    {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
-_______
-#define commonSuperT(p,Tz)=Tz'
-* commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
-    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
-_______
-#define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T
-* solve(p, CCz) = X1:T1 .. Xn:Tn
-    X1 .. Xn = { X | X inside p.top() }
-    Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
-    Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
-* chooseT(CCz;class Any,_)=class Any
-* chooseT(CCz;Tz)=mostSpecific(Tz)
-    mostSpecific(Tz)!= capsule P or capsule _ in CCz
-* chooseT(Tz)=imm P
-    mostSpecific(Tz)= capsule P
-    imm _ in CCz
-    not capsule _ in CCz
-* chooseT(Tz)=mut P 
-    mostSpecific(Tz)= capsule P
-    not imm _ in CCz
-    not capsule _ in CCzP
-_______
-#define unsatisfiable(P <= P', CCz)   
-unsatisfiable(P <= P', CCz)
-  if p |/- P <= P'
-unsatisfiable(PP <= P', PP <= P", CCz)
-  exists s in dom p[P'] and p[P"], where origin(s, P') != origin(s, P")
-unsatisfiable(PP <= P', PP <= P", CCz)
-  no P in dom(p) such that P <= P' and P <= P"
-_______
-#define paramaterPaths(PT, CCz, s)  
-paramaterPaths(PT, CCz, s) = p[T.s].Ps
-	PT <= T in collect(CCz)
+* PT in _<=PT,_   
 
 -----------------
 UNISED; since now collect produce minimized paths, no need for equiv set removal

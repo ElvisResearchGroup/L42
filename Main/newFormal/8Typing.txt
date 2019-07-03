@@ -144,6 +144,10 @@ _______
     Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
     fwd_or_fwd%_in(Ts)
 
+_______
+#define p|-T <= Tz //todo: more subtyping to import. Then move to program?
+* p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
+
 -------------------------
 It is possible to obtain all the variations with the following table:
   mBase

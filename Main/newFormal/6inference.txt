@@ -8,6 +8,31 @@ _______
     CCz=PAcc.fixInfer(p♥M1..p♥Mn)//TODO: unsure... why we fix only on the new ones?
     I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
 _______
+#define commonSuperT(p,Tz)=Tz'
+* commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
+    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
+_______
+#define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T,     mostSpecific(Tz) = T
+* solve(p, CCz) = X1:T1 .. Xn:Tn
+    X1 .. Xn = { X | X inside p.top() }
+    Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
+    Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
+
+* chooseT(CCz;class Any,_)=class Any
+* chooseT(CCz;Tz)=mostSpecific(Tz)
+    mostSpecific(Tz)!= capsule P or capsule _ in CCz
+* chooseT(Tz)=imm P
+    mostSpecific(Tz)= capsule P
+    imm _ in CCz
+    not capsule _ in CCz
+* chooseT(Tz)=mut P 
+    mostSpecific(Tz)= capsule P
+    not imm _ in CCz
+    not capsule _ in CCzP
+
+* mostSpecific(Tz) = T
+    {T}={T| T in p.minimize(Tz) and p|-T<=p.minimize(Tz)}
+_______
 #define PAcc.fixInfer(HALF.Ms) =CCz
 * PAcc.fixInfer(Ms)=PAcc.CCz
     PAcc.add(Ms).CCz=PAcc.CCz
@@ -122,6 +147,20 @@ _______
 * PAcc.add(xP0 OP ... OP xPn : PTi.s) = PAcc.add(xP0:PT0).. .add(xPn:PTn)[PT'1 <= P.s.1]..[PT'n <= P.s.n]
     P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
     PT'1 ... PT'n = PT0 ... PTn \ i
+_______
+#define paramaterPaths(PT, CCz, s)  
+paramaterPaths(PT, CCz, s) = (G^p(T.P)(s)).Ts.Ps
+	PT <= T in collect(CCz)
+_______
+#define unsatisfiable(CCz)    origin(s; P) = P   
+* unsatisfiable(P <= P', CCz)
+    if not p |- P <= P'
+* unsatisfiable(PP <= P', PP <= P", CCz)
+    exists s in dom(p(P'))U dom(p(P")), where origin(s, P') != origin(s, P") //TODO: do we want the U of the two dom or the intersection?
+* unsatisfiable(PP <= P', PP <= P", CCz)
+    no P in dom(p) such that P <= P' and P <= P"
+* origin(s; P) = P
+    {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
 _______
 #define PT,s,i in opOptions(CCz, p, OP, PTs, xPs)
 * PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
