@@ -2,21 +2,21 @@ _______
 #define A.rog(v)
 //obvious
 _______
-#define Free(A)
+#define A.free()
 //the set of all the a in the right side of A but not in the dom(A)
 _______
 #define A.pathOf(v)
 * A.pathOf(P)=P
 * A.pathOf(a)=A(a).P
 _______
-#define A[mdf v0..vn] //if mdf is imm, mark A.rog(v) as imm
+#define A[mdf v0..vn]=A' //if mdf is imm, mark A.rog(v) as imm
 * A[mdf v]=A if mdf!=imm
 * A[imm v]=A if v not of form a or L^as
 * A[imm Ls^as]=A[imm A.rog(as)]
 * A[imm a]=A[imm A.rog(a)]
 * A[imm a1..an]=A[imm? a1->Obj1=imm a1->Obj1 .. imm?n an->Obj1=imm an->Obj1] 
 _______
-#define 
+#define A[mdf x=v]=A'
 (A,mdf x=_)[mdf x=v]=A[mdf v], mdf x=v
 A[mdf x=v]=A, mdf x=v
   where x not in dom(A)
@@ -24,7 +24,7 @@ _______
 #define A|e --> A'|e'    
 * A | x  -->p  A| A(x)
 * A | L  -->p  A,imm a->L empty| a
-  fresh a
+    fresh a
 * A | x := v  -->p  A[_ x=v]| void //non derministically chose the mdf that would make it work
 * A | loop e  -->p  A | (void x=e loop e)  
 * A0 | (var? T x=e0 Ds Ks e)  -->p  A1 | (var? T x=e1 Ds Ks e)
@@ -32,7 +32,7 @@ _______
 * A0 | (var? T x=v Ds Ks e)  -->p  A[T.mdf x=v] | (Ds Ks e)
 * A0 | (Ks e)  -->p  A| e
 * A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  A[K.T.mdf K.x=v] | K.e
-  throw=K.throw
+    throw=K.throw
   p |- A.pathOf(v) <= K.T.P
 * A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  (var? T x=ctxV[throw v] Ds Ks e)
     throw!=K.throw or not p |- A.pathOf(v) <= K.T.P
@@ -85,7 +85,7 @@ tURL::= /*a trusted url*/
 uURL::= /*an untrusted url*/
 URL:=tURL|uURL
 _______
-#define trusted(LL) //Does this need to be added to the INFO?
+#define trusted(LL) //Does this need to be added to the INFO?//TODO: move in program
 
 trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)
 //trusted is not the right name for this concept

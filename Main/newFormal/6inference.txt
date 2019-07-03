@@ -8,6 +8,16 @@ _______
     CCz=PAcc.fixInfer(p♥M1..p♥Mn)//TODO: unsure... why we fix only on the new ones?
     I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
 _______
+#define infer(p,FULL.e)=CORE.e//TODO lots of duplication with above, can we reduce it?
+* infer(p,e)=I(Y♥e)
+    Y[p;onSlash=empty,onReturn=Library,onPath=error]
+    k = max {k | p(Thisk) is defined }
+    p(Thisi)={Hi C/CORE.Msi FULL.Mi _}, where FULL.Mi not of form CORE.M
+    C.Msi={C.M| C.M in C/CORE.Msi}[from Thisi]
+    PAcc=PAcc[p;GX=empty;CCz=empty].collect()
+    //TODO: do we need any fixInfer here?
+    I=I[p;IMap=solve(p,CCz);G=empty;CCz;onSlash=empty]
+_______
 #define commonSuperT(p,Tz)=Tz'
 * commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
     Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
@@ -83,9 +93,9 @@ _______
 * I((TX CORE.P)) = (iType(I,TX) CORE.P)
 * I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I'(e1) .. xn=I'(en))
     I'=I[onSlash=I.IMap(I.G(xP))]
-* I(xP0 op..op xPn)=I(e)
+* I(xP0 OP..OP xPn)=I(e)
     Ti=I.IMap(I.G(xPi))
-    selectedOption(I.CCz, I.p, op, T0..Tn, xPs)=PT,s,i
+    PAcc[I.p;GX=empty;I.CCz].selectedOption(OP, T0..Tn, xPs)=PT,s,i
     xP'1..xP'n=xP0..xPn/i
     e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
     e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
@@ -147,42 +157,44 @@ _______
 * PAcc.add(xP0 OP ... OP xPn : PTi.s) = PAcc.add(xP0:PT0).. .add(xPn:PTn)[PT'1 <= P.s.1]..[PT'n <= P.s.n]
     P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
     PT'1 ... PT'n = PT0 ... PTn \ i
+
 _______
-#define paramaterPaths(PT, CCz, s)  
-paramaterPaths(PT, CCz, s) = (G^p(T.P)(s)).Ts.Ps
-	PT <= T in collect(CCz)
+#define PAcc.paramaterPaths(PT, s)  
+* PAcc.paramaterPaths(T, s) = PAcc.p.minimize((G^PAcc.p(T.P)(s)).Ts.Ps[from P])
+* PAcc.paramaterPaths(PT, s) = PAcc.paramaterPaths(T, s)
+    PT <= T in PAcc.collect()
 _______
-#define unsatisfiable(CCz)    origin(s; P) = P   
-* unsatisfiable(P <= P', CCz)
+#define PAcc.unsatisfiable()    origin(p;s; P) = P   
+* PAcc[P <= P'].unsatisfiable()
     if not p |- P <= P'
-* unsatisfiable(PP <= P', PP <= P", CCz)
-    exists s in dom(p(P'))U dom(p(P")), where origin(s, P') != origin(s, P") //TODO: do we want the U of the two dom or the intersection?
-* unsatisfiable(PP <= P', PP <= P", CCz)
-    no P in dom(p) such that P <= P' and P <= P"
-* origin(s; P) = P
+* PAcc[PP <= P', PP <= P"].unsatisfiable()
+    exists s in dom(PAcc.p(P'))U dom(PAcc.p(P")), where origin(PAcc.p;s; P') != origin(PAcc.p;s; P") //TODO: do we want the U of the two dom or the intersection?
+* PAcc[PP <= P', PP <= P"].unsatisfiable()
+    no P in dom(p) such that PAcc.p|-P <= P' and PAcc.p|-P <= P"
+* origin(p;s; P) = P
     {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
 _______
-#define PT,s,i in opOptions(CCz, p, OP, PTs, xPs)
-* PT,s,i in opOptions(CCz, p, OP, PT0..PTn, xP0..xPn)
+#define PT,s,i in PAcc.opOptions(OP, PTs, xPs)
+* PT,s,i in PAcc.opOptions(OP, PT0..PTn, xP0..xPn)
     i in 0..n,
-    P'1 ... P'n = (PT0..PTn\i).PPs
-    !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz))//TODO: discuss cachability of collect
+    P'1 ... P'n = (PT0..PTn\i).Ps
+    !PAcc[P'1 <= P1, ..., P'n <= Pn].collect().unsatisfiable()//TODO: discuss cachability of collect
     either
       s = methName(OP)_i(x1..xn)
-      P1 ... Pn = paramaterPaths(PTi, CCz, s)
+      P1 ... Pn = PAcc.paramaterPaths(PTi, s)
       PT=PTi
     or
       xPi = (PT P')
       P = P'.$methName(OP)_i
       s = #apply(x1..xn)
-      P1 ... Pn = p[P.s].Ps
+      P1 ... Pn = PAcc.paramaterPaths(imm P, s)//imm is ignored
 _______
-#define selectedOption(CCz, p, OP, PTs, xPs)= PT,s,i
-* selectedOptions(CCz, p, OP, PTs, xPs)=PT,s,i
-    {PT,s,i}=opOptions(CCz,p,OP, PTs, xPs)
-* selectedOptions(CCz,p,OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
-    (xPi.P).$methName(OP)_i, s, i in opOptions(CCz,p,OP, PTs, xP0..xPn)
-    forall (xPj.P).$methName(OP)_j, s', j in opOptions(CCz,p,OP, PTs, xP0..xPn)
+#define PAcc.selectedOption(OP, PTs, xPs)= PT,s,i
+* PAcc.selectedOptions(OP, PTs, xPs)=PT,s,i
+    {PT,s,i}=PAcc.opOptions(OP, PTs, xPs)
+* PAcc.selectedOptions(OP, PTs, xP0..xPn)=(xPi.P).$methName(OP)_i, s, i
+    (xPi.P).$methName(OP)_i, s, i in PAcc.opOptions(OP, PTs, xP0..xPn)
+    forall (xPj.P).$methName(OP)_j, s', j in PAcc.opOptions(OP, PTs, xP0..xPn)
       i=j, s=s'
     
 ====================OLD RULES, Isaac, check is the same as above

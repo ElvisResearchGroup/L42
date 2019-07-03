@@ -1,7 +1,7 @@
 coherentClasses(p,CORE.e)
 General judgment shape
 D |- e :T <=T'| Tr
-D::= Flag;MH?;p;G;Ts;Ps
+D::= D[Flag;MH?;p;G;Ts;Ps]
 MethT::=Ts->T;Ps
 _______
 #define D |-e: T<=T 
@@ -112,11 +112,11 @@ _______
       //or error: leaked exception P is not the subtype of a declared exception
       //or  method declares an exception (P) which is not a subtype of implemented exceptions
 _______
-#define generalEnough(mdfs)=mdfs'   mostGeneralMdf(mdfs)=mdf
-* generalEnough(mdfs)={mdf | forall mdf1 in mdfs, mdf1 <= mdf}
+#define  mostGeneralMdf(mdfs)=mdf     generalEnough(mdfs)=mdfs'
 * mostGeneralMdf(mdfs)=mdf //the most specific generalEnough.
     mdf in generalEnough(mdfs)
     forall mdf1 in generalEnough(mdfs): mdf <= mdf1
+* generalEnough(mdfs)={mdf | forall mdf1 in mdfs, mdf1 <= mdf}
 
 //TODO: import From; minimize and from? should from minimize?
 _______
@@ -143,11 +143,7 @@ _______
 * mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s) //(mRead)
     Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
     fwd_or_fwd%_in(Ts)
-
-_______
-#define p|-T <= Tz //todo: more subtyping to import. Then move to program?
-* p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
-
+    
 -------------------------
 It is possible to obtain all the variations with the following table:
   mBase

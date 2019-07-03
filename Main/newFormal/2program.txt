@@ -29,6 +29,8 @@ _______
 *p.minimize(P) = P
    p.reducePath(P) undefined
 * p.minimize(P) = p.minimize(p.reducePath(P))
+* p.minimize(P) = P
+    P in {Any,Void,Library}
 
 * p.reducePath(This(n+1).C.Cs)=Thisn.Cs
     p.pop(1).reducePath(Thisn.C.Cs) is defined
@@ -46,7 +48,6 @@ _______
 _______
 #define p.noUnique(P)
 *p.noUnique(P) = p.minimize(P) not of form Thisk._.C::n._
-
 _______
 #define p.resolveCs(FULL.T?)=TX
 * p.resolveCs(empty)=X with fresh X// case FULL.T defined below
@@ -87,6 +88,24 @@ with MH=refine? native? mdf method T m(T1 x1..Tn xn)
 * G^MH= this:mdf This0, x1:T1..xn:Tn
 * MH.Ti = Ti
 * MH.s=m(x1..xn)
+_______
+#define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
+* p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
+
+ *p |- mdf0 P0<=mdf1 P1
+    mdf0<=mdf1
+    p |- P0<=P1
+
+* p |- P0<=P1  
+    P1 in P0 U (p(P0).Ts.Ps[from P0]) U Any
+    assert p.normalize(Pi)=Pi
+
+* capsule<=mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm
+* imm<=read,fwd%Imm,fwdImm
+* mut<=lent,fwd%Mut,read,fwdMut
+* lent<=read
+* fwd%Mut<=fwdMut
+* fwd%Imm<=fwdImm
 
 ------------TAIL, probably not needed
 -p.location()=P // Where we are in the program

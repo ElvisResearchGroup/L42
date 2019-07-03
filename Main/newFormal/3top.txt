@@ -10,11 +10,12 @@ _______
 * p ==> p.update(LL)  //(top)
     p(This0)={H C.Ms C=C.e FULL.Ms}//MCs are already compiled
     C.e not of form CORE.L//thus e is the first point to execute
-    Y=Y[p;onSlash=empty,onReturn=Library,onPath=error]
-    p|- Y♥C.e :T
-    coherentClasses(p,Y♥C.e)
+    D=D[Flag=norm;MH?=empty;p;G=empty;Ts=empty;Ps=dom(p)]
+    D|- infer(p,C.e) :T
+    coherentClasses(p,infer(p,C.e))
     cX(eC)=empty
-    adapt(Y♥C.e,T.P) -->p+ r //execute the expression under the program and obtain a result
+    A|adapt(infer(p,C.e),T.P) -->p+ A'|r//TODO: fix the A
+    //execute the expression under the program and obtain a result
     CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
     p'= p.update({H C.Ms C=CORE.L FULL.Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
     p'= p.update(norm(p,{H C.Ms C=CORE.L})) otherwise
