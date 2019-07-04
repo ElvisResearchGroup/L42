@@ -2,8 +2,8 @@ _______
 #define p ==>p'
 * p ==> p.update({followURL(URL),Ms})  //(reuse)
     p(This0)={reuse[URL] Ms}
-* p ==> p.update({readFolder(p),Ms})  //(dots)
-    p(This0)={... Ms}
+* p ==> p.update({readFolder(p),Ms})  //(dots)//consider caching ... to avoid a main
+    p(This0)={... Ms} //write to source an untrusted main with full capabilities powers
 * p ==> p.update(CORE.L)  //(topNorm)
     p(This0)={H MCs}=FULL.L //note, all M are of form MC
     |- p.update(norm(p,FULL.L)) -> CORE.L
@@ -13,7 +13,7 @@ _______
     D=D[Flag=norm;MH?=empty;p;G=empty;Ts=empty;Ps=dom(p)]
     D|- infer(p,C.e) :T
     coherentClasses(p,infer(p,C.e))
-    cX(eC)=empty
+    FV(C.e)=empty
     A|adapt(infer(p,C.e),T.P) -->p+ A'|r//TODO: fix the A
     //execute the expression under the program and obtain a result
     CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.

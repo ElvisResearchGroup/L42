@@ -1,8 +1,3 @@
-coherentClasses(p,CORE.e)
-General judgment shape
-D |- e :T <=T'| Tr
-D::= D[Flag;MH?;p;G;Ts;Ps]
-MethT::=Ts->T;Ps
 _______
 #define D |-e: T<=T 
 * D |- void : imm Void <= T //(void)
@@ -117,8 +112,6 @@ _______
     mdf in generalEnough(mdfs)
     forall mdf1 in generalEnough(mdfs): mdf <= mdf1
 * generalEnough(mdfs)={mdf | forall mdf1 in mdfs, mdf1 <= mdf}
-
-//TODO: import From; minimize and from? should from minimize?
 _______
 #define methTypes(p,P,s) = MethT
 * mdf0 P T1..Tn-> T';Ts.Ps in methTypes(p,P,s)  //(mBase)
@@ -143,8 +136,49 @@ _______
 * mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s) //(mRead)
     Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
     fwd_or_fwd%_in(Ts)
-    
--------------------------
+_______
+#define toLent(G)=G'    toLent(T)=T'
+* toLent(G)(x)=G(x) if G(x).T.mdf=immutable
+* toLent(G)(x)=toLent(G(x))[with var?=empty] otherwise //thus undefined where toLent undefined
+
+* toLent(mut P)=lent P,
+* toLent(fwdMut P) and toLent(fwd%Mut P) undefined;
+* toLent(T)=T otherwise
+_______
+#define fwd% T = T'    fwd_or_fwd%_in Ts    noFwd T = T'    noFwd Ts=Ts'
+* fwd% imm P=fwd%Imm P
+* fwd% mut P=fwd%Mut P
+* fwd% T=T otherwise
+
+* fwd_or_fwd%_in Ts
+  exists T in Ts such that T in {fwdImm _,fwdMut_,fwd%Imm _,fwd%Mut _}
+
+* noFwd fwdImm P = noFwd fwd%Imm P = imm P
+* noFwd fwdMut P = noFwd fwd%Mut P = mut P
+* noFwd T = T otherwise 
+
+* noFwd T1..Tn= noFwd T1 .. noFwd Tn
+_______
+#define mutToCapsule(T)=T'    mutToCapsuleAndFwdRead(T)=T'    mutToCapsuleAndFwdMutToFwdImm(T)=T'   toImmOrCapsule(T)=T'
+* mutToCapsule(fwdMut P) and mutToCapsule(fwd%Mut P) undefined//NO? no reason to restrict?
+* mutToCapsule(mut P)=capsule P
+* mutToCapsule(T)=T otherwise
+
+* mutToCapsuleAndFwdRead(mut P)=capsule P   //mutToCapsuleAndFwdRead(fwd%Mut P) undefined
+* mutToCapsuleAndFwdRead(fwdMut P)= read P
+* mutToCapsuleAndFwdRead(fwdImm P)= imm P //Note: read here would be unsound
+* mutToCapsuleAndFwdRead(T)=T otherwise
+
+* mutToCapsuleAndFwdMutToFwdImm(mut P)=capsule P  //mutToCapsuleAndFwdMutToFwdImm(fwd%Mut P) undefined
+* mutToCapsuleAndFwdMutToFwdImm(fwdMut P)= fwdImm P
+* mutToCapsuleAndFwdMutToFwdImm(T)=T otherwise
+
+* toImmOrCapsule(mdf P)=capsule P with mdf in {lent,mut,fwdMut,fwd%Mut}
+* toImmOrCapsule(read P)=imm P
+* toImmOrCapsule(T)=T otherwise//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
+
+ ----------------
+ -------------------------
 It is possible to obtain all the variations with the following table:
   mBase
   mNoFwd(mBase)
@@ -157,18 +191,8 @@ It is possible to obtain all the variations with the following table:
   mNoFwd(mImmFwd(mBase))
   mVp(mBase) //1 mType for each mut parameter
   mVp(mNoFwd(base))//1 mType for each mut parameter
-
-missing notations:
-noFwd
-fwd_or_fwd%_in
-from
-mutToCapsule
-toImmOrCapsule
-toLent
-toRead
-mutToCapsuleAndFwdMutToFwdImm
-mutToCapsuleAndFwdRead
- ----------------   
+ 
+    
 //TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
 //also check the following:
 //Elem e=(return that catch return Elem x x catch return Any y error error)[redirect Elem in Any]

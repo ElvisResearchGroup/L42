@@ -9,7 +9,6 @@ _______
 * p.pop(0)=p
 * (LL;ctxL;ctxLs).pop(n+1)=(ctxL[LL];ctxLs).pop(n)
 * (LL;CORE.L;ctxLs).pop(n+1)=(CORE.L;ctxLs).pop(n)
-
 _______
 #define p.push(ctxL,LL)=p', p.push(C)=p'
 * (p;ctxL').push(ctxL,LL)=p.push(ctxL,LL);ctxL'
@@ -66,9 +65,8 @@ _______
 
 *p.resolveCs(FULL.MH) propagates on the structure
    Docs0 refine? native[URL]? mdf method T0 mOp Docs1 (T1 x1 .. Tn xn)[Ts]
-
 _______
-#define P0[from P1]=P2 e[from P]=e' e[from P]n=e'
+#define P0[from P1]=P2 e[from P]=e' e[from P]n=e'  //TODO: minimize and from? should from minimize?
 * Thisn.Cs[from Thism.C1..Ck]=Thism.C1..C(k-n).Cs if n<=k
 * Thisn.Cs[from Thism.C1..Ck]=This(m+n-k).Cs if n>k
 * Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
@@ -106,6 +104,16 @@ _______
 * lent<=read
 * fwd%Mut<=fwdMut
 * fwd%Imm<=fwdImm
+_______
+#define toRead(T)   toRead(G)
+* toRead(T) //used in gamma and in return type getter
+    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+    toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
+    toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
+    otherwise toRead(T)=T//mdf in imm,read,class
+
+* toRead(G)
+    toRead(G)(x)=toRead(G(x))[with var?=empty] //thus undefined where toRead undefined
 
 ------------TAIL, probably not needed
 -p.location()=P // Where we are in the program

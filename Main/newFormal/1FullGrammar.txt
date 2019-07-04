@@ -48,26 +48,28 @@ _______
   r::=CORE.L| exception v | error v
   Obj::=P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
   A  ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
+  D ::= D[Flag;MH?;p;G;Ts;Ps] //TODO: consider adding field names?
+  MethT ::= Ts->T;Ps  
   ctxV::=xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
   FULL.ctxC::=[]
-    | throw ctxC | loop ctxC |ctxC(.m)?( par) |ctxC Square 
-    | ctxC StrLit |x updateOp ctxC |(T ctxC) 
-    | while e ctxC | for DXes ctxC
-    | if (matchC+ |e) ctxC (else e0)?
-    | eC.m?(ctxC par) | eC.m?(parC, x=ctxC, par)
-    | eC[parCs; ctxC, par;pars]
-    | eC[parCs; parC, x=ctxC, par;pars]
-    | (eC op)s ctxC (op e)s
-    | ( Ds Ks WOPS? ctxC ) | ( DECs DX? ctxC DEs Ks WOPS? e? )  
-    | ( DECs KCs catch throw? T x ctxC Ks WOPS? e? )  
-    | { DECs DX? ctxC DEs Ks WOPS? DEs2 }
-    | { DECs KCs catch throw? T x ctxC Ks WOPS? DEs2 }
-    | { DECs1 KCs WOPS? DECs2 DX? ctxC DEs }
-    | if ctxC e (else e0)?
-    | if (matchC+ |eC) eC0 else ctxC
-    | if matchC+ DX=ctxC match+ e
-    | while ctxC e
-    | for DXeCs DX in ctxC DXes e
+    | throw ctxC | loop ctxC |ctxC(.m)?(FULL.par) 
+    | ctxC StrLit |x updateOp ctxC | (T ctxC) 
+    | if (matchC+ |C.e) ctxC (else FULL.e)?
+    | C.e.m?(ctxC FULL.par) | C.e.m?(C.par, x=ctxC, FULL.par)
+    | ctxC FULL(.m?)[FULL.pars]
+    | C.e[C.pars; ctxC, FULL.par;FULL.pars]
+    | C.e[C.pars; C.par, x=ctxC, FULL.par;FULL.pars]
+    | (C.e op)s ctxC (OP FULL.e)s
+    | ( C.Ds C.Ks WOPS? ctxC ) | ( C.Ds DX? ctxC FULL.Ds FULL.Ks WOPS? FULL.e? )  
+    | ( C.Ds C.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.e? )  
+    | { C.Ds DX? ctxC FULL.Ds1 FULL.Ks WOPS? FULL.Ds2 }
+    | { C.Ds C.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.Ds }
+    | { C.Ds1 C.Ks WOPS? C.Ds2 DX? ctxC FULL.Ds }
+    | if ctxC FULL.e (else FULL.e0)?
+    | if (C.match+ |C.e) C.e0 else ctxC
+    | if C.match+ DX=ctxC FULL.match+ FULL.e
+    | while ctxC FULL.e | while C.e ctxC
+    | for C.DXes ctxC | for C.DXes DX in ctxC FULL.DXes FULL.e
   CORE.ctx ::= []
     | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
     | xP.m( xes x=ctx xes' )
@@ -176,7 +178,7 @@ _______
 * C/FULL/CORE.loop e: loop P, loop x, loop void, loop LL, not well formed
 * CORE B: in a (Ds1 Ks Ds2 e):
     unique x in dom(Ds1,Ds2)
-    cX(Ks) disjoint dom(Ds1,Ds2)
+    FV(Ks) disjoint dom(Ds1,Ds2)
     dom(Ds1,Ds2) disjoint bindings(Ds1.es,Ds2.es,Ks.es,e)
 * C/FULL.B:
     if B={ Ds1 Ks WOPS? Ds2} then returning({ Ds1 Ks WOPS? Ds2})
@@ -192,8 +194,8 @@ _______
     if exists i: Ti.mdf=fwdMut then T.mdf in {mut, fwdMut}
     if T.mdf in {fwdImm,fwdMut} then exists i: Ti.mdf in {fwdImm, fwdMut}
 * CORE.MWT: if MWT.e?=e, then
-    cX(e)\this,x1..xn = empty    
-    for i in 0..n if Ti.mdf=capsule, xi in cX(e) 0 or 1 times
+    FV(e)\this,x1..xn = empty    
+    for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
 //FV(FULL.e) is not checked at this stage. No real gain since ... desugars late now    
 * C/FULL.sFor: forall T?(var1? T1? x1.. varn?Tn? xn) in FULL.sFor.DXs: var1?..varn?=empty
 * LL:
@@ -234,18 +236,16 @@ _______
 * bindings(T? ( var?1 T?1 CORE.x1 ..var?n T?n CORE.xn )=e = CORE.x1..CORE.xn  U bindings(e)
 * propagates inductivelly in all the other cases
 _______
-#define cX(CORE.e) //note: FV is trivially defined from cX; cX counts occurences of xs
-* cX(x)=x
-* cX(void)=cX(P)=cX(L)=empty
-* cX(throw[T1,T2] e)=cX(e)
-* cX(loop e)=cX(e),cX(e)  //representing each variable twice is enough to make capsule tests work
-* cX(e0.m[T](x1:e1..xn:en) )=cX(e0),..,cX(en)
-* cX(use P check m(x1:e1..xn:en) e0)=cX(e0),..,cX(en)
-* cX( (T1 x1=e1.. Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
-    where
-    ys=cX(e1),..,cX(en)
-    xsi=cX(ki)
-    xs0=cX(e0)
+#define FV(CORE.e) //note: FV defined as a sequence instead of a set, and counts occurences of xs
+* FV(x)=x
+* FV(void)=FV(P)=FV(L)=empty
+* FV(throw e)=FV(e)
+* FV(loop e)=FV(e),FV(e)  //representing each variable twice is enough to make capsule tests work
+* FV(e0.m[T](x1:e1..xn:en) )=FV(e0),..,FV(en)
+* FV( (T1 x1=e1.. Tn xn=en k1..km e0[T]) )=ys/x1..xn ,max( (xs0/x1..xn), xs1,..,xsm)
+    ys=FV(e1),..,FV(en)
+    xsi=FV(ki)
+    xs0=FV(e0)
     if Ti=capsule _ then
       xi 0 or 1 times in ys,xs0
 _______

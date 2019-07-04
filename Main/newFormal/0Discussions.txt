@@ -17,14 +17,10 @@ p|-T0<=T1, p|-P0<=P1, p|-T<=Tz  //TODO: still to add
 trustedClass(CORE.L)
 methodName(OP) and other syntax mangling
 noFwd //TODO: notation below still to add
-fwd_or_fwd%_in
 from
-mutToCapsule
-toImmOrCapsule
-toLent
-toRead
-mutToCapsuleAndFwdMutToFwdImm
-mutToCapsuleAndFwdRead
+toRead(T)
+toRead(G)
+
 ----
 __________________
 top level notation (file top 141)
@@ -73,6 +69,15 @@ D|-CORE.e :CORE.T<=CORE.T'  /  |-p
   mostGeneralMdf(mdfs)=mdf
     generalEnough(mdfs)=mdfs'
   methTypes(p,P,s) = MethT
+  fwd_or_fwd%_in
+  fwd% T
+  mutToCapsule
+  toImmOrCapsule
+  toLent(T)
+  toLent(G)
+  mutToCapsuleAndFwdMutToFwdImm
+  mutToCapsuleAndFwdRead
+  
 __________________
 normalization (file norm 73)
 norm(p,C.L)
