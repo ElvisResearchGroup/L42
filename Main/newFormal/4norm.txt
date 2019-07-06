@@ -1,33 +1,33 @@
 _______
-#define norm(p,Full.L)=CORE.L  //assert norm(p,{reuse [URL] _}) and norm(p,{... _} never happens
-* norm(p,CORE.L) = CORE.L //assert never happens (not true in real language but good for debugging at the start)
-* norm(p,FULL.L) = CORE.L
-    FULL.L={interface? Ts Ms0}
-    CORE.L={interface? Ts,(Ts'\p Ts) infer(p',Ms') Info }
+#define norm(CMP/FULL.L;pTail)=CORE.L    norm(p,CMP.e)=CORE.e
+* norm(p) = {interface? Ts' M1..Mn Info}
+    p={interface? Ts Ms0};pTail //TODO: is Ts minimized? if not the set minus below is wrong
+    Ts'=Ts,(collect(p,Ts)\ Ts) // this gets the transitively implemented interfaces (-Any)
+    forall imm P in Ts'\ Ts, P not of form Thisk._.C::n._ //private interfaces not added
+    Ms=expandFields(Ms0) // this turns the fields into abstract methods
+    Ms'=methods(p,This0)//next line order Ms' following Ms
+    M1..Mn=infer(p;Ms'\Ms.ss, [Ms'(M.s)| M in Ms],[C:e| C:e in Ms])
     Info=Info[norm;//ok, non computational rule checking that Info in CORE.L is consistent
-      typeDep;coherentDep==collectDeps(CORE.L);
+      typeDep;coherentDep==Ts';empty U collectDeps(M1) U..U collectDeps(Mn);
       friendsDep= ??Ps;//using private methods (or paths??)
       usedMethDep=??(P.s)s;
-      privateImpl=??Ps]       
-    p'=p.push(LL)
-    Ts'=collect(p',Ts) // this gets the transitively implemented interfaces (-Any)
-    Ms=expandFields(Ms0) // this turns the fields into abstract methods
-    forall T in Ts'\p Ts, p'.noUnique(T) //no private interfaces are added
-    Ms'=methods(p',This0)\Ms.ss, [methods(p',This0)(M.s)| M in Ms],[C:e| C:e in Ms]
-    //the line above use [|] to make sequences nor sets. The order of members is important here.
-    //Note: using Ts'\p Ts the docs of any T inside Ts overrides the one inside Ts'
+      privateImpl=??Ps]
+* norm(p,e)=infer(p,e) //to turn dependencies into a tree 
+     
+//the line above use [|] to make sequences nor sets. The order of members is important here.
+//Note: using Ts'\ Ts the docs of any T inside Ts overrides the one inside Ts'      
+//assert norm(p,{reuse [URL] _}) and norm(p,{... _} never happens
+//norm(CORE.L;pTail) = CORE.L //assert never happens (not sure if true in real language but good for debugging at the start)
 _______
 #define collectDeps(CORE.L)  //dont collect dependencies from NCs, Info and Docs
-* collectDeps({H MWT1...MWTn1 NCs Info})=H.Ts;empty U collectDeps(MWT1) U .. U collectDeps(MWTn)
 * collectDeps(C=_)=empty;empty
-* collectDeps(Docs refine? native[URL]? mdf method T0 mOp(T1 x1 ..Tn xn)[Ts] = e?)
-    =T0..Tn, Ts;empty U collectDepsE(e?)
+* collectDeps(_ mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=T0..Tn, Ts;empty U collectDepsE(e?)
 _______
-#define collectDepsE(CORE.e)    //collectDepsE(L) adds NCs dependiencies and relies on cached Info
-* collectDepsE(x)=collectDepsE(void)=empty;empty
-* collectDepsE(L)=L.Info.typeDep;L.Info.coherent U collectDepsE(NC1.L)[from This0.(NC1.C)] U .. U collectDepsE(NCn.L)[from This0.(NCn.C)]
-    L={H MWTs NC1..NCn Info}
-* collectDepsE( e0.m( x1=e1 .. xn=en ) )=P U collectDepsE(e0) U..U collectDepsE(en) 
+#define collectDepsE(CORE.e?)    //collectDepsE(L) adds NCs dependiencies and relies on cached Info
+* collectDepsE(empty)=collectDepsE(x)=collectDepsE(void)=empty;empty
+* collectDepsE({H MWTs NC1..NCn Info})=Info.typeDep;Info.coherent U Ps1;Ps'1 U..U Psn;Ps'n
+    Psi;Ps'i=collectDepsE(NCi.L)[from This0.(NCi.C)]
+* collectDepsE( e0.m( x1=e1 .. xn=en ) )= collectDepsE(e0) U..U collectDepsE(en) 
 * collectDepsE(loop e)=collectDepsE(throw e)=collectDepsE(x :=e)=collectDepsE(e)
 * collectDepsE((class Any P))= P;empty
 * collectDepsE((class P' P))= P',P;P
@@ -35,17 +35,14 @@ _______
 * collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
 * collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
 _______
-#define expandFields(Ms)=Ms'
-* M in expandFields(Ms) 
-    M in Ms
+#define expandFields(Ms)=Ms' //need to keep the order
+* expandFields(M,Ms)=M,expandFields(Ms) 
     M not of form F
-* method toRead(T) x() in expandFields(Ms) 
-    var? T x in Ms
-* method capsuleToLent(T) #x() in expandFields(Ms) 
-    var? T x in Ms
+* expandFields(T x,Ms)=method toRead(T) x(), expandFields(Ms)
+    T.mdf not in {lent, mut, capsule}
+* expandFields(T x,Ms)=method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
     T.mdf in {lent, mut, capsule}
-* method Void x(T that) in expandFields(Ms) 
-    var T x in Ms
+* expandFields(var T x,Ms)=Void x(T that), expandFields(T x,Ms)    
 _______
 #define collect(p,Ts)=Ts' //collects transitively implemented interfaces
 * collect(p,empty)=empty
@@ -53,14 +50,15 @@ _______
     p(T0.P)=interface Ts0 {_}=FULL.L
     Ts'=collect(p,Ts0[from T0.P])
 * collect(p,T0 Ts)=((p.resolveCs(T0) Ts0[from T0.P]) \ collect(p,Ts)) collect(p,Ts)
-    p(T0.P)=interface Ts0 {_}=CORE.L
+    p(T0.P)={interface Ts0 _}=CORE.L
 _______
 #define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
 * methods(p,P0)=CORE.L.MWTs[from P0]
     p(P0)=CORE.L
 * methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
-    p(P0)=interface? Ts{ Ms }=FULL.L
-    Ps=collect(p,Ts[from P0]).Ps//T1..Tn is a list, not a set
+    p(P0)=interface? Ts{ Ms0 }=FULL.L
+    Ms=expandFields(Ms0)
+    Ps=collect(p,Ts[from P0]).Ps
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
     //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
     forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
@@ -69,16 +67,5 @@ _______
     MWTi=p.resolveCs(Mi) otherwise
 _______
 #define PT in CCz
-* PT in PT<=_,_
-* PT in _<=PT,_   
-
------------------
-UNISED; since now collect produce minimized paths, no need for equiv set removal
-_______
-#define Ts\p Tz
-* Ts \p Tz=Ts'  //"\p" is set minus on lists using p.equiv(P1,P2)
-* empty \p Tz=empty
-* T,Ts\p T',Tz = Ts\p T',Tz
-    p.equiv(T.P,T'.P)
-* T,Ts\p Tz) = T,(Ts\p Tz)
-    otherwise
+* PT in PT<=_,CCz
+* PT in _<=PT,CCz 

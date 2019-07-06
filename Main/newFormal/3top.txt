@@ -1,107 +1,99 @@
 _______
 #define p ==>p'
-* p ==> p.update({followURL(URL),Ms})  //(reuse)
-    p(This0)={reuse[URL] Ms}
-* p ==> p.update({readFolder(p),Ms})  //(dots)//consider caching ... to avoid a main
-    p(This0)={... Ms} //write to source an untrusted main with full capabilities powers
-* p ==> p.update(CORE.L)  //(topNorm)
-    p(This0)={H MCs}=FULL.L //note, all M are of form MC
-    |- p.update(norm(p,FULL.L)) -> CORE.L
-* p ==> p.update(LL)  //(top)
-    p(This0)={H C.Ms C=C.e FULL.Ms}//MCs are already compiled
-    C.e not of form CORE.L//thus e is the first point to execute
-    D=D[Flag=norm;MH?=empty;p;G=empty;Ts=empty;Ps=dom(p)]
-    D|- infer(p,C.e) :T
-    coherentClasses(p,infer(p,C.e))
-    FV(C.e)=empty
-    A|adapt(infer(p,C.e),T.P) -->p+ A'|r//TODO: fix the A
-    //execute the expression under the program and obtain a result
-    CORE.L= refreshUniqueNames(r) //may fail if r not of form CORE.L, and that would be lifted as compilation error.
-    p'= p.update({H C.Ms C=CORE.L FULL.Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
-    p'= p.update(norm(p,{H C.Ms C=CORE.L})) otherwise
-    |- p' -> LL //type all the MCs that can be compiled now, including This0
-* p ==> p'.pop(1)   //(enter)
-    p(This0) = {H C.Ms C=ctxC[LL] FULL.Ms}
+* {reuse[URL] Ms};pTail ==> {followURL(URL),Ms};pTail  //(reuse)
+* {... Ms};pTail ==> {readFolder(p),Ms};pTail //(dots)//consider caching ... to avoid a main writing to source an untrusted main with full capabilities powers
+* {H MCs};pTail ==> normAndFlag({H MCs};pTail)  //(topNorm)
+* LL;pTail ==> normAndFlag({H CMP.Ms C=CORE.L FULL.Ms};pTail)  //(top)
+    LL={H CMP.Ms C=CMP.e FULL.Ms}
+    CMP.e not of form CORE.L//e is the first point to execute
+    Q=Q[Flag=norm;MH?=empty;p=(LL;pTail);G=empty;Ts=empty;Ps=dom(p)]
+    FV(CMP.e)=empty //not implied by typing: FV check capsules used 1 or 0
+    Q|- infer(p,CMP.e) :T
+    coherentClasses(p,infer(p,CMP.e))
+    empty|adapt(infer(LL;pTail,CMP.e),T.P) -->p+ _|r
+    CORE.L= refreshUniqueNames(r) //fails if r not of form CORE.L, lifted as compilation error
+* {H CMP.Ms C=ctxC[LL] FULL.Ms};pTail ==> p.pop(1)   //(enter)
     LL not of form CORE.L
-    p.push({H C.Ms C=ctxC FULL.Ms}, LL)  ==>+  p' //Note: p' is one level deeper than p
-    p'(This0) of form CORE.L // and p'(This0) is the result of metaprogramming LL
+    LL;{H CMP.Ms C=ctxC FULL.Ms};pTail  ==>+  p //Note: p is one level deeper
+    p(This0) of form CORE.L // p(This0) is the result of metaprogramming LL
 _______
-#define adapt(eC,P)
-* adapt(eC, Library)=eC
-* adapt(eC, Void)=(Void x=eC {}); where x fresh
-* adapt(eC, _)= (T x=eC x.#toLibrary()); otherwise, where x fresh
+#define adapt(CMP.e,P)
+* adapt(CMP.e, Library)=CMP.e
+* adapt(CMP.e, Void)=(Void x=CMP.e {}); where x fresh
+* adapt(CMP.e, _)= (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
-#define LL[Csz=Flag]=LL'
-LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
-LL[Csz=Flag]=LL
-  where dom(LL) not in Csz
-_______
-#define |- p -> CORE.L'    LL[Csz=Flag]=LL'
-* |-p -> p(This0)[Csz=typed] //are we sure we want to use empty to mean 'justTyped'
-    typable(p)=Csz
-    forall Cs in Csz:  |-p.navigate(Cs)
+#define normAndFlag(CMP/FULL.L;pTail)-> CORE.L;pTail    LL[Csz=Flag]=LL'
+    p'= p.update({H CMP.Ms C=CORE.L FULL.Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
+    p'= p.update(norm(p,{H CMP.Ms C=CORE.L})) otherwise
+    |- p' -> LL //type all the MCs that can be compiled now, including This0
+
+* normAndFlag(LL;pTail)=LL'[Csz=typed];pTail
+    LL'=norm(LL;pTail) if LL.Ms of form CMP.Ms
+    LL'=LL otherwise
+    typable(LL';pTail)=Csz
+    forall Cs in Csz:  |-(LL';pTail).navigate(Cs)
    
 * LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
-* LL[Csz=Flag]=LL
-    dom(LL) not in Csz
+* LL[empty=Flag]=LL
 _______
 #define typable(p)=Csz
-Cs1..Csn=typable(p)
-  is the largest subset of dom(p(This0)) so that forall i:
+* Cs1..Csn=typable(p)
+    Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
     p(This0.Csi) of form CORE.L
     p(This0.Csi).info.Flag=norm
     p(This0.Csi).depTyped subset {P| p(P).info.Flag=typed} U This0.Cs1..This0.Csn
-  defined only if forall CORE.L in {p(This0.Cs) : Cs in dom(p(This0))}:
-    forall P in CORE.L.info.depTypes:
-      alive(p,P) //else compile time error here
-
-
+  defined only if forall Cs such that p(This0.Cs)=CORE.L: alive(p,CORE.L.info.dep.depTypes)
 _______
-#define CORE.e inside CORE.e'
-  e inside ctx[e]
-_______
-#define coherent(p,CORE.e)    coherent(p)
+#define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
     forall (class P' P) inside e: //assert p(P) and p(P') is CORE.L
       either P'=Any
       or coherent(p.navigate(P))
 
-* coherent(p) //interfaces are always coherent
+* coherent(p)
     p(This0).interface?=interface
 * coherent(p)
-    p(This0).interface?=empty
     MHs={MH | MH in p(This0).MWTs} //thus, abstract
-    either for no MH in MHs: MH.mdf=class//there is no abstract class method
+    either p(This0).interface?=interface
+    or class not in MHs.mdfs//no abstract class method
     or exists xz  and n? such that:
       forall MH in MHs, coherent(p;MHs;MH;xz;n?)
-* coherent(p;_;MH;xz;n?)
-    MH=refine? class method T m::n? (_)_
-    G^MH.xz=this,xz
+* coherent(p;_;refine? class method T m::n?(T1 x1..Tn xn)_;xz;n?)
+    x1..xn=xz
     p|-This0<=T.P
     T.mdf not in {class, fwd mut, fwd imm}
-    lent not in G^MH.mdfs
-    if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint G^MH.mdfs
-    if read in G^MWT.mdfs then T.mdf in {read, lent}
+    lent _ not in T1..Tn
+    if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint (T1..Tn).mdfs
+    if read _ in T1..Tn then T.mdf in {read, lent}
     if !trustedClass(p(This0)) then m is of form #$m
 * coherent(p;MHs;refine? mdf method T m::n?(_)_;_;n?) //must 'n?' be the same for well formedness?
     mdf in {lent, mut, capsule}
     forall MH' in MHs: either MH'.mdf!=class
     or MH'.T.mdf not in {lent, mut, capsule}
-* coherent(p;_;MH;_,x;n?)
-    MH=refine? mdf method T #?x::n?(mdf' P' that) _
+* coherent(p;_;refine? mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
     p |- imm Void <= T
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
     mdf in {lent, mut, capsule}
     if mdf = lent then mdf' != mut
-* coherent(p;MHs;MH;_,x;n?)
-    MH=refine? mdf method mdf' P' #?x::n?() _
+* coherent(p;MHs;refine? mdf method mdf' P' #?x::n?()_;_,x;n?)
     mdf != class
     forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
     coherentGetMdf(mdf',mdf,
       fieldTypes(MHs,x, mdf).mdfs,
       fieldAccessMdf(MHs,x, mdf))
 _______
-#define coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+#define fieldsTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+* T in fieldsTypes(MHs, x, mdf)
+    either class method mdf" _(_ T x _)_ in MHs
+    or mdf" method _ #?x::n?(T that)_ in MHs
+    if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
+    //TODO: wrong, if the 'setter' was a method allowed to be abstract because take a mut on imm only class
+
+* mdf' in fieldsAccessMdf(MHs, x, mdf)
+    mdf" method mdf' P #?x::n?() in MHs
+    mdf" != capsule
+    if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
+
 * coherentGetMdf(imm,imm, mdfs0,_)
     class not in mdfs0
 * coherentGetMdf(imm,mdf,mdfs0,mdfs1)
@@ -120,24 +112,14 @@ _______
 * coherentGetMdf(mut,mdf,mdfs0,_)
     mdfs0 subseteq {mut, fwd mut, capsule}
     mdf in {mut, capsule}
-
-* T in fieldsTypes(MHs, x, mdf)
-    either class method mdf" _(_ T x _)_ in MHs
-    or mdf" method _ #?x::n?(T that)_ in MHs
-    if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
-    //TODO: wrong, if the 'setter' was a method allowed to be abstract because take a mut on imm only class
-
-* mdf' in fieldsAccessMdf(MHs, x, mdf)
-    mdf" method mdf' P #?x::n?() in MHs
-    mdf" != capsule
-    if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
 _______
-#define alive(p,P) //check if P is defined or has some hope of being defined in the future
-alive(p,Any),alive(p,Void),alive(p,Library) holds
-alive(p,Thisn.Cs)=alive(p(Thisn),Cs) 
-alive(CORE.L,Cs)= Cs in dom(CORE.L)
-alive(FULL.L,Cs)=
-  if FULL.L(C)=LL and alive(LL,Cs)
-  or FULL.L(C)=e, e not of form LL
+#define alive(p;Ps)    alive(LL,Cs) //check if P is defined or has some hope of being defined in the future
+* alive(p;empty)
+* alive(p;Any,Ps)=alive(p;Void,Ps)=alive(p;Library,Ps)=alive(p;Ps)
+* alive(p,Thisn.Cs,Ps)=alive(p(Thisn),Cs) and alive(p;Ps)
+
+* alive(LL,Cs) if Cs in dom(LL)
+* alive(LL,Cs._) if LL(Cs) not of form LL //implies Cs in dom(LL)
+
 //WHEN AND HOW docs are checked so that the paths inside
 //the docs are alive and not 'mispelled'?

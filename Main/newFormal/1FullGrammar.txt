@@ -1,5 +1,15 @@
 _______
 #define Abstract syntax and core : FULL, CORE, C=compiled (yes, clash with 'C' of Cs)
+  mdf::= empty | mut | lent | read | capsule | fwd whitespace mut | fwd | class | fwd%imm | fwd%mut 
+  throw ::= 'error' | 'exception' | 'return' 
+  s  ::= m(CORE.x*) //mOp is normalized when reified as an s
+  Ldom::=s | Cs
+  CMP/FULL/CORE.MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T m Doc*(Tx*) [T+]? //m can be obtained by parsing a mOp
+  CMP/FULL/CORE.H ::= 'interface'?[T+]?
+  CMP/FULL.T::= mdf Doc* FP | '\'
+  CORE.T::= mdf Doc* P
+  FP::=(idUp idChar* uniqueNum)(.Cs)? //the first do not have C well formedness
+  P  ::= Thisn.Cs | Any | Void | Library
   CORE.e ::= xP|void|L|xP.m(x1=e1..xn=en)|loop e|throw e|x:=e|(Ds Ks e)
   CORE.xP::= x|(T P) | a //a=address, only at runtime
   CORE.D ::= var? T x=e
@@ -15,16 +25,19 @@ _______
     //implicit 'infos': have private state=closed class, have private static methods (can be casted to class P)
   Flag ::= 'norm' | 'typed'
   LL::= FULL.L | CORE.L
-  FULL.e ::= FULL.L //combined with line below, C.e do not have FULL.L
-  C/FULL.e ::= x | P | void | CORE.L | \ | \x  
+  FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
+  CMP/FULL.e ::= x | P | void | CORE.L | \ | \x  
     | e strLit[chars0..charsn;e1..en] | 'PathLit | OPP e
     | e0 OP .. OP en | (T e)
     | e .m? ( par ) | e .m? [ pars ]
-    | ( Ds Ks Wops? Ds e? ) | { Ds Ks Wops? Ds }
-    | loop e | throw e | x OP_UPDATE e
+    | ( Ds Ks WOPS? Ds e? ) | { Ds Ks WOPS? Ds }
+    | loop e | throw e | x opUpdate e
     | if e0 e1 (else e2)? | if match+ e | while e0 e1
     | for DX0 in e0 .. DX1 in en e
-  C/FULL.strLit[chars0..charsn;e1..en] = STROPi" chars0 STROPi e1 STRCLi chars1 .. STROPi en STRCLi charsn "STRCLi
+  CMP/FULL.strLit[chars0..charsn;e1..en] = STROPi" chars0 STROPi e1 STRCLi chars1 .. STROPi en STRCLi charsn "STRCLi
+  CMP/FULL.D ::= (DX =)? e
+  CMP/FULL.WOPS ::= wops T+
+  CMP/FULL.K ::= catch throw? T x e
 _______
 #define secondary grammars
   TX ::= CORE.T | X | \
@@ -48,28 +61,28 @@ _______
   r::=CORE.L| exception v | error v
   Obj::=P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
   A  ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
-  D ::= D[Flag;MH?;p;G;Ts;Ps] //TODO: consider adding field names?
+  Q ::= Q[Flag;MH?;p;G;Ts;Ps] //TODO: consider adding field names?
   MethT ::= Ts->T;Ps  
   ctxV::=xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
   FULL.ctxC::=[]
     | throw ctxC | loop ctxC |ctxC(.m)?(FULL.par) 
     | ctxC StrLit |x updateOp ctxC | (T ctxC) 
-    | if (matchC+ |C.e) ctxC (else FULL.e)?
-    | C.e.m?(ctxC FULL.par) | C.e.m?(C.par, x=ctxC, FULL.par)
+    | if (matchC+ |CMP.e) ctxC (else FULL.e)?
+    | CMP.e.m?(ctxC FULL.par) | CMP.e.m?(CMP.par, x=ctxC, FULL.par)
     | ctxC FULL(.m?)[FULL.pars]
-    | C.e[C.pars; ctxC, FULL.par;FULL.pars]
-    | C.e[C.pars; C.par, x=ctxC, FULL.par;FULL.pars]
-    | (C.e op)s ctxC (OP FULL.e)s
-    | ( C.Ds C.Ks WOPS? ctxC ) | ( C.Ds DX? ctxC FULL.Ds FULL.Ks WOPS? FULL.e? )  
-    | ( C.Ds C.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.e? )  
-    | { C.Ds DX? ctxC FULL.Ds1 FULL.Ks WOPS? FULL.Ds2 }
-    | { C.Ds C.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.Ds }
-    | { C.Ds1 C.Ks WOPS? C.Ds2 DX? ctxC FULL.Ds }
+    | CMP.e[CMP.pars; ctxC, FULL.par;FULL.pars]
+    | CMP.e[CMP.pars; CMP.par, x=ctxC, FULL.par;FULL.pars]
+    | (CMP.e op)s ctxC (OP FULL.e)s
+    | ( CMP.Ds CMP.Ks WOPS? ctxC ) | ( CMP.Ds DX? ctxC FULL.Ds FULL.Ks WOPS? FULL.e? )  
+    | ( CMP.Ds CMP.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.e? )  
+    | { CMP.Ds DX? ctxC FULL.Ds1 FULL.Ks WOPS? FULL.Ds2 }
+    | { CMP.Ds CMP.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.Ds }
+    | { CMP.Ds1 CMP.Ks WOPS? CMP.Ds2 DX? ctxC FULL.Ds }
     | if ctxC FULL.e (else FULL.e0)?
-    | if (C.match+ |C.e) C.e0 else ctxC
-    | if C.match+ DX=ctxC FULL.match+ FULL.e
-    | while ctxC FULL.e | while C.e ctxC
-    | for C.DXes ctxC | for C.DXes DX in ctxC FULL.DXes FULL.e
+    | if (CMP.match+ |CMP.e) CMP.e0 else ctxC
+    | if CMP.match+ DX=ctxC FULL.match+ FULL.e
+    | while ctxC FULL.e | while CMP.e ctxC
+    | for CMP.DXes ctxC | for CMP.DXes DX in ctxC FULL.DXes FULL.e
   CORE.ctx ::= []
     | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
     | xP.m( xes x=ctx xes' )
@@ -78,116 +91,104 @@ _______
   FULL.ctxM::= C = ctxC |s = ctxC | MH = ctxC //CORE.ctxL is needed so that a p can explore core libraries
   FULL.ctxL::= {H MCs ctxM Ms} | CORE.ctxL //note: no reuse/dots
   CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}  
-  HasHole:=FULL.ctxC | CORE.ctx
-  p::= LL | p;CORE.L | p; FULL.ctxL //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
+  HasHole::=FULL.ctxC | CORE.ctx
+  pTail::=CORE.L|FULL.ctxL
+  p::= LL;pTails //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 _______
-#define functional notation for L, ctxL and LC (over the domain Ldom)
-  /*...*/
+#define functional notation for LL and ctxL (over the domain Ldom)
+  /*...*/ //note, LL(Cs) may return an e not of form LL
 _______
-#define functional update and '\' notation for L, ctxL and LC (over the domain Ldom)
+#define functional update and '\' (set minus) notation for L, ctxL and LC (over the domain Ldom)
   /*...*/
 _______
 #define Lexical Syntax
-  NEWLINE ::= <0x0A> //linefeed only, normalizing away <0x0D>
-  CHAR   ::=  <0x20-0x7E> | NEWLINE//An Any printable ASCII character, or a newline
+  newline ::= <0x0A> //linefeed only, normalizing away <0x0D>
+  CHAR   ::=  <0x20-0x7E> | newline//An Any printable ASCII character, or a newline
   CHARS0 ::= CHAR* -- "
   CHARS(i+1) ::= CHAR* -- STROP(i+1) -- STRCL(i+1)
-  chars::= CHARS0 | .. | CHARSn
+  chars::= CHAR* //equivalent to ::=CHARS0 | .. | CHARSn
   STROP0 ::= empty
   STRCL0 ::= empty
   STROP(i+1) ::= [ STROPi
   STRCL(i+1) ::= STRCLi ]
   STRING ::= STROPi " CHARSi (STROPi e STRCLi CHARSi)* " STRCLi
-  NUMBER ::= <0-9> ('.'|'_'|'-'|<0-9>)*
-  COMM_CHARS ::= CHAR* -- '/*' -- '*/'
-  COMMENT ::= '//' (CHAR* -- NEWLINE) NEWLINE | '/*' (COMM_CHARS | COMMENT)* '*/' // Note: this allows /* comments to nest
-  WHITESPACE ::= (COMMENT | ' ' | NEWLINE| ',')+
+  number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
+  commentChars ::= chars -- '/*' -- '*/' //TODO: '--' do not work on sequences as we would like, same below
+  comment ::= '//' (chars -- newline) newline | '/*' (commentChars | comment)* '*/' // Note: this allows /* comments to nest
+  whitespace ::= (comment | ' ' | newline| ',')+
   URL::= /*too boring*/
-  CHARS_CURLY ::= (CHAR* -- '{' -- '}') | CHARS_CURLY { CHARS_CURLY } CHARS_CURLY
-  ID_UP ::= _* (<A-Z> | $) 
-  ID_LOW ::= _* <a-z>
-  ID_CHAR   ::= <a-z> |<A-Z> | $ | _ | <0-9>
+  charsCurly ::= (chars -- '{' -- '}') | charsCurly { charsCurly } charsCurly
+  idUp ::= _* (<A-Z> | $) 
+  idLow ::= _* <a-z>
+  idChar   ::= <a-z> |<A-Z> | $ | _ | <0-9>
   n ::= 0 | <1-9> <0-9>*
-  UNIQUE_NUM ::= (::n)?
-  C/FULL.x ::= ID_LOW ID_CHAR* | '_'
-  CORE.x ::=ID_LOW ID_CHAR*
-  C ::= ID_UP ID_CHAR* UNIQUE_NUM //well formedness: C not Thisn/Any/Void/Library
-  m ::= (#|#$)?x(#x)* UNIQUE_NUM
-  mOp ::= empty | m | OP | ~ | !
-  OPP ::= ! | ~ | NUMBER  // prefix
+  uniqueNum ::= (::n)?
+  CMP/FULL.x ::= idLow idChar* | '_'
+  CORE.x ::=idLow idChar*
+  C ::= idUp idChar* uniqueNum //well formedness: C not Thisn/Any/Void/Library
+  m ::= (#|#$)?x(#x)* uniqueNum
+  OPP ::= ! | ~ | number  // prefix
   OP0 ::= ^ | : | <- | << | & | '|' // right associative
   OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
   OP2 ::= == | != | < | > | >= | <= // unassiociative
   OP3 ::= => | && | '||' // right associative, will be short circuting
   OP  ::= OP0 | OP1 | OP2 | OP3 
-  OP_UPDATE ::=  ':=' | (OP0 -- ':')= | OP1= 
-  mdf::= empty | mut | lent | read | capsule | fwd WHITESPACE mut | fwd | class | fwd%imm | fwd%mut 
-  throw ::= 'error' | 'exception' | 'return' 
+  opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= 
   Cs ::=C(.C)*
-  C/FULL/CORE.Doc ::= @PathLit | @PathLit?{(CHARS_CURLY -- DOC|DOC)*}
-  C/FULL.PathLit::= FP | FP? s | FP? s.x
+  CMP/FULL/CORE.Doc ::= @PathLit | @PathLit?{(charsCurly -- DOC|DOC)*}
+  CMP/FULL.PathLit::= FP | FP? s | FP? s.x
   CORE.PathLit::= P | P? s | P? s.x
-  s  ::= mOp(CORE.x*)
-  Ldom::=s | Cs
-  C/FULL/CORE.Tx ::= T CORE.x
-  C/FULL/CORE.MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T mOp Doc*(Tx*) [T+]? //the Doc before the '(' is  conceptually on the this type
-  C/FULL/CORE.H ::= 'interface'?[T+]?
-  C/FULL.T::= mdf Doc* FP | '\'
-  CORE.T::= mdf Doc* P
-  FP::=(ID_UP ID_CHAR* UNIQUE_NUM)(.Cs)? //the first do not have C well formedness
-  P  ::= Thisn.Cs | Any | Void | Library
+  CMP/FULL/CORE.Tx ::= T CORE.x
+  mOp ::= empty | m | OP | ~ | !
 _______
-#define C/FULL Expressions
-  C/FULL.eAtomic ::= CORE.x | P | 'void' | LL | B | (T e) | \  | 'PathLit
-  C/FULL.ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' | \ CORE.x //no space in ePostfix(par) and \x
+#define CMP/FULL Expressions
+  CMP/FULL.eAtomic ::= CORE.x | P | 'void' | LL | B | (T e) | \  | 'PathLit
+  CMP/FULL.ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' | \ CORE.x //no space in ePostfix(par) and \x
               | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix STRING
-  C/FULL.par ::= e? xe*
-  C/FULL.eUnary   ::= OPP? ePostfix
-  C/FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
-  C/FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
-  C/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
-  C/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-  C/FULL.B ::= '(' D* e ')' | '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
-  C/FULL.D ::= (DX =)? e
-  C/FULL.DX ::= 'var'? T? x | T? '(' ('var'? T? CORE.x)+ ')'
-  C/FULL.WOPS ::= wops T+
-  C/FULL.K ::= catch throw? T x e
-  C/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x OP_UPDATE e
-  C/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
-  C/FULL.match ::= Tx | T x = e | T? '(' (T? CORE.x)+ ')' = e //where at least one Ti? is not empty
-  C/FULL.sWhile::= 'while' e e
-  C/FULL.sFor ::= 'for' (DX in e)* e
-  C/FULL.e ::= statement | e-binary3
-  C/FULL.L ::= {(H | ... | reuse[URL])? M*}
-  C/FULL.M ::= F | MI | MWT | NC 
-  C/FULL.F ::= 'var'? T CORE.x
-  C/FULL.MI ::= Doc* s = C.e
-  C/FULL.MWT ::= MH (= C.e)? //this prevents FULL.L inside method bodies
-  C/FULL.NC ::= Doc* C = e
+  CMP/FULL.par ::= e? xe*
+  CMP/FULL.eUnary   ::= OPP? ePostfix
+  CMP/FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
+  CMP/FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
+  CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
+  CMP/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
+  CMP/FULL.B ::= '(' D* e ')' | '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
+  CMP/FULL.DX ::= 'var'? T? x | T? '(' ('var'? T? CORE.x)+ ')'
+  CMP/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x opUpdate e
+  CMP/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
+  CMP/FULL.match ::= Tx | T x = e | T? '(' (T? CORE.x)+ ')' = e //where at least one Ti? is not empty
+  CMP/FULL.sWhile::= 'while' e e
+  CMP/FULL.sFor ::= 'for' (DX in e)* e
+  CMP/FULL.e ::= statement | e-binary3
+  CMP/FULL.L ::= {(H | ... | reuse[URL])? M*}
+  CMP/FULL.M ::= F | MI | MWT | NC 
+  CMP/FULL.F ::= 'var'? T CORE.x
+  CMP/FULL.MI ::= Doc* s = CMP.e
+  CMP/FULL.MWT ::= MH (= CMP.e)? //this prevents FULL.L inside method bodies
+  CMP/FULL.NC ::= Doc* C = e
 _______
 #define grammar well formedness
-* C/FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.
-* C/FULL.D: if e = D, that is,(DX=)?=empty, then e not of form x, P, void, LL, \, \x or 'PathLit
+* CMP/FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.
+* CMP/FULL.D: if e = D, that is,(DX=)?=empty, then e not of form x, P, void, LL, \, \x or 'PathLit
   //none of those would make sense anyway, sadly do not helps with parsing a()(), immagine a+b (c).
 * s: 'this' notin xs and all x in xs are unique
 * MH: 'Any' notin [Ts] //Ts is thrown exceptions//TODO:why??? should we remove this restriciton?24/10/2018
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
-* C/FULL/CORE.NC: NC.C not Any, Library, Void, This, Thisn
+* CMP/FULL/CORE.NC: NC.C not Any, Library, Void, This, Thisn
 * C not This, Thisn, Any, Void or Library
 * FP: if Cs not empty, then the start can not be Library, Void, Any
-* C/FULL/CORE.loop e: loop P, loop x, loop void, loop LL, not well formed
+* CMP/FULL/CORE.loop e: loop P, loop x, loop void, loop LL, not well formed
 * CORE B: in a (Ds1 Ks Ds2 e):
     unique x in dom(Ds1,Ds2)
     FV(Ks) disjoint dom(Ds1,Ds2)
     dom(Ds1,Ds2) disjoint bindings(Ds1.es,Ds2.es,Ks.es,e)
-* C/FULL.B:
+* CMP/FULL.B:
     if B={ Ds1 Ks WOPS? Ds2} then returning({ Ds1 Ks WOPS? Ds2})
     if B=(Ds1 Ks WOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
     if B=(Ds e Ks WOPS?) then forall D in Ds: not returning(D) 
     if B=(_ D e _), then noBlockNeeded(D.e)
     if B=(_ K e _), then noBlockNeeded(K.e)
-* C/FULL/CORE.K: K.x notin bindings(e)
-* C/FULL/CORE.MWT:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
+* CMP/FULL/CORE.K: K.x notin bindings(e)
+* CMP/FULL/CORE.MWT:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
     MWT = refine? mdf method T m(T1 x1.. Tn xn)[Ts] e?
     T0 = mdf This0
     if exists i: Ti.mdf=fwdImm then T.mdf in {mut, fwdMut, imm, fwdImm}
@@ -197,14 +198,14 @@ _______
     FV(e)\this,x1..xn = empty    
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
 //FV(FULL.e) is not checked at this stage. No real gain since ... desugars late now    
-* C/FULL.sFor: forall T?(var1? T1? x1.. varn?Tn? xn) in FULL.sFor.DXs: var1?..varn?=empty
+* CMP/FULL.sFor: forall T?(var1? T1? x1.. varn?Tn? xn) in FULL.sFor.DXs: var1?..varn?=empty
 * LL:
     M1, M2 in dom(LL) and dom(M1)=dom(M2) implies M1=M2
     Any notin H.Ts
     Exists at most one n such that exists m::n(xs) where L(m::n(xs))=MWT, and MWT.e? is empty
     if H.interface? = interface, then forall s in dom(L), L(s).e?=empty
     if H.interface? = interface, then forall m::n(xs),  m::n(xs) notin dom(L) //TODO: may be we need private methods in interfaces for the new rename
-* C/FULL.e: \x only appear in a method parameter expression
+* CMP/FULL.e: \x only appear in a method parameter expression
 * The top level project LL:
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)
@@ -219,7 +220,7 @@ _______
   //   -: how we PARSE imported CORE.L? should we serialize the java object?
 * G:var x capsule _ or var x fwd _ or var x fwd% _ not in G
 _______
-#define noBlockNeeded(C/FULL.e):
+#define noBlockNeeded(CMP/FULL.e):
 * noBlockNeeded(B)
 * noBlockNeeded(throw e)
 * noBlockNeeded(loop e)= 
@@ -228,7 +229,7 @@ _______
     noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)* e)=
     noBlockNeeded(e)
 _______
-#define bindings(C/FULL/CORE.e):CORE.xs
+#define bindings(CMP/FULL/CORE.e):CORE.xs
 * bindings(LL)={}
 * bindings(var? T CORE.x=e)=bindings(catch throw? T CORE.x e)=CORE.x U bindings(e)
 * bindings(var? T? CORE.x)=CORE.x
@@ -255,7 +256,7 @@ _______
 * max (x xs;ys0,x,ys1)=x max(xs;ys0,ys1)
 * max(xs; xs0;..;xsn) = max(max(xs;xs0);xs1;..;xsn)
 _______
-#define returning(C/FULL.e)
+#define returning(CMP/FULL.e)
 * returning({ Ds1 Ks WOPS? Ds2}) iff
     Ds,D=Ds1,Ds2
     returning(D.e)

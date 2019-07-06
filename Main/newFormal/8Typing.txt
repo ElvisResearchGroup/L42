@@ -1,46 +1,46 @@
 _______
-#define D |-e: T<=T 
-* D |- void : imm Void <= T //(void)
-    D.p|-imm Void <= T
-* D |- (class P' P): class P' <= T //(Path)
-    D.p(P) of form CORE.L
-    D.p(P') of form CORE.L
-    D.p|-class P' <= T
-    P'=Any if D.p(P).interface?!=empty or class notin D.p(P).mhs.mdfs
-* D |- L : imm Library <= T //(library propagation)
-    D.p |- imm Library <= T
-    if D.Flag==typed |- D.p.push(L)
-* D |-x : D.G(x).T <= T  //(x)
-    D.p|- D.G(x).T <= T
-* D |- loop e ~> loop e' : imm Void <= T //(loop)
-  D.p|-imm Void <= T
-  D|- e : _ <= imm Void
-* D |- return e : T0 <= T0 //(throw-return)
-    D|- e : T <=fwd T1
-    exists T' in D.Ts such that D.p |-T <= T'
+#define Q |-e: T<=T 
+* Q |- void : imm Void <= T //(void)
+    Q.p|-imm Void <= T
+* Q |- (class P' P): class P' <= T //(Path)
+    Q.p(P) of form CORE.L
+    Q.p(P') of form CORE.L
+    Q.p|-class P' <= T
+    P'=Any if Q.p(P).interface?!=empty or class notin Q.p(P).mhs.mdfs
+* Q |- L : imm Library <= T //(library propagation)
+    Q.p |- imm Library <= T
+    if Q.Flag==typed |- Q.p.push(L)
+* Q |-x : Q.G(x).T <= T  //(x)
+    Q.p|- Q.G(x).T <= T
+* Q |- loop e ~> loop e' : imm Void <= T //(loop)
+  Q.p|-imm Void <= T
+  Q|- e : _ <= imm Void
+* Q |- return e : T0 <= T0 //(throw-return)
+    Q|- e : T <=fwd T1
+    exists T' in Q.Ts such that Q.p |-T <= T'
     if T=class P then:
-      D.p(P).interface?=empty
-      class in D.p(P).mhs.mdfs
+      Q.p(P).interface?=empty
+      class in Q.p(P).mhs.mdfs
   //this forbids return (x:class Any): class Any is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
   //we also check that is a P that could be assigned to a class P, P!=Any 
-* D |- throw e : T0 <= T0 //(throw)
-    D|- e : imm P <=T2
+* Q |- throw e : T0 <= T0 //(throw)
+    Q|- e : imm P <=T2
     either throw=error
-    or exists P' in D.Ps such that D.p |-P <= P'
-* D |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
-    P0=D.guess(e0)//simple since e0 of form xP
+    or exists P' in Q.Ps such that Q.p |-P <= P'
+* Q |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
+    P0=Q.guess(e0)//simple since e0 of form xP
     T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can be not available, how?
-    D.p |- T <= T'
-    forall i 0..n D|- ei : T'i <= Ti //T'0 is correctly a free variable
+    Q.p |- T <= T'
+    forall i 0..n Q|- ei : T'i <= Ti //T'0 is correctly a free variable
     if m of form #$_ then
-      either D.MH?=empty
-      or D.MH?.m of form #$_
-      or D.MH.mdf in {lent,mut,capsule} and !trusted(D.p.top())
-* D |- x:=e : imm Void <= T //(xUpdate)
-    D.G(x).var?=var
-    D.p|- imm Void <= T
-    D|- e : _ <= D.G(x).T 
-    assert not fwd_or_fwd%_in(D.G(x).T)
+      either Q.MH?=empty
+      or Q.MH?.m of form #$_
+      or Q.MH.mdf in {lent,mut,capsule} and !trusted(Q.p.top())
+* Q |- x:=e : imm Void <= T //(xUpdate)
+    Q.G(x).var?=var
+    Q.p|- imm Void <= T
+    Q|- e : _ <= Q.G(x).T 
+    assert not fwd_or_fwd%_in(Q.G(x).T)
 * Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <=mdf P  //(capsule promotion)
     Ds!=empty //TODO: may make the sugar for (capsule P e)==(capsule P (mut P e)) so that it can be promoted
     mdf in {capsule, imm, fwdImm, fwd%Imm}
@@ -59,9 +59,9 @@ _______
     //was locked by error safety[cite the line number of the catch] 
     Flag; p; G',(G0\dom(G')); Ts; Ps |- e0 : T0 <=T'
     T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //set of Mdfs admits no single most general mdf
-    // assert D.p|-T <= T'
+    // assert Q.p|-T <= T'
 _______
-#define D |- ds | G0 // The resulting G0 is the enriched G containing info about ds too.
+#define Q |- ds | G0 // The resulting G0 is the enriched G containing info about ds too.
 * Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  ds | G3  //(ds)
     dom(ds) disjoint FV(e0..en)
     G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
@@ -72,17 +72,17 @@ _______
       then G2=G0[fwd%(x0:T0..xn:Tn)]
       otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
     Flag; p; G2; Ts; Ps|- ds | G3
-* D |- empty | D.G //(dsEmpty)
+* Q |- empty | Q.G //(dsEmpty)
 _______
-#define D |-k1..kn : T1..Tn <= T | Ts;Ps   D |-k : T' <= T |Ts;Ps
-* D |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
-    forall i in 1..n D |-ki : Ti <= T |Tsi;Psi
-* D |- catch return T0 x e : T <= T' |T0;empty //(catch)
-    D |- e : T <= T'
+#define Q |-k1..kn : T1..Tn <= T | Ts;Ps   Q |-k : T' <= T |Ts;Ps
+* Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
+    forall i in 1..n Q |-ki : Ti <= T |Tsi;Psi
+* Q |- catch return T0 x e : T <= T' |T0;empty //(catch)
+    Q |- e : T <= T'
     if T0.mdf=class then T0.P=Any or class in p(P).mhs.mdfs
-* D |- catch throw imm P x e : T <= T' |empty;P //(catch)
+* Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
     throw !=return
-    D |- e : T <= T'
+    Q |- e : T <= T'
 
 * |- p      //(library well typed)
    assert L.Info.Flag=norm // does it holds? 
@@ -96,8 +96,8 @@ _______
     if MH.native=native[uURL] then //uUrl=untrusted URL
       either MH.s of form #$_(_)
       or MH.mdf in {lent,mut,capsule}
-    D = typed; MH; p; G^MH; empty; MH.Ts.Ps
-    if e?=e then D |- e :_ <=fwd% MH.T
+    Q = Q[typed; MH; p; G^MH; empty; MH.Ts.Ps]
+    if e?=e then Q |- e :_ <=fwd% MH.T
     MHs={p.minimize(MH'[from P]) | p(This0).Ts.Ps and p(P)(MH.s)=MH'}//assert all abstract
     if ?refine=empty, then MHs=empty
     else forall MH' in MHs:

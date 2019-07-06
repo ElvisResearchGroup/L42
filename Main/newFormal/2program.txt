@@ -1,23 +1,23 @@
 _______
 #define p(P)=LL //functional notation
-* (LL;_)(This0.Cs)=LL(Cs)
+* (LL;pTails)(This0.Cs)=LL(Cs)
 * p(Thisn+1.Cs)=p.pop(n+1)(This0.Cs)
 * p(Any)=interface{}
 * p(Void)=p(Library)={}
 _______
 #define p.pop(n)= p'
 * p.pop(0)=p
-* (LL;ctxL;ctxLs).pop(n+1)=(ctxL[LL];ctxLs).pop(n)
-* (LL;CORE.L;ctxLs).pop(n+1)=(CORE.L;ctxLs).pop(n)
+* (LL;ctxL;pTails).pop(n+1)=(ctxL[LL];ctxLs).pop(n)
+* (LL;CORE.L;pTails).pop(n+1)=(CORE.L;ctxLs).pop(n)
 _______
-#define p.push(ctxL,LL)=p', p.push(C)=p'
-* (p;ctxL').push(ctxL,LL)=p.push(ctxL,LL);ctxL'
-* (p;CORE.L).push(ctxL,LL)=p.push(ctxL,LL);CORE.L
-* ctxL[LL].push(ctxL,LL) = LL;ctxL
+#define p.push(ctxL,LL)=p'    p.push(C)=p'    p.push(LL)
+* (ctxL[LL];pTails).push(ctxL,LL) = LL;ctxL;pTails
 
-* p.push(C)=p.push(ctxL,LL) //in the code, do not relies push(ctxL,LL)
+* p.push(C)=p.push(ctxL,LL) //the code, do not relies on push(ctxL,LL)
     p(This0)=ctxL[LL]
     ctxL(C)=[]
+
+* (LL0;pTails).push(LL1) = LL1;LL0;pTails    
 _______
 #define p.update(LL)=p'
 * (p;ctxL).update(LL)=p.update(LL);ctxL
@@ -30,28 +30,19 @@ _______
 * p.minimize(P) = p.minimize(p.reducePath(P))
 * p.minimize(P) = P
     P in {Any,Void,Library}
-
-* p.reducePath(This(n+1).C.Cs)=Thisn.Cs
-    p.pop(1).reducePath(Thisn.C.Cs) is defined
-* (CORE.L;ctxL;_).reducePath(This1.C.Cs)=This0.Cs
+* p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
+    p.pop(1).minimize(Thisn.Cs)=Thisk.Cs'
+* (CORE.L;ctxL;_).minimize(This1.C.Cs)=This0.Cs
     ctxL(C)=HasHole //Note:ctxL(C)=[] would be more restrictive, for example
    //preventing A:Data<><{method A (..)} to be summed with the constructor.
-_______
-#define p.equiv(P0,P1)
- p.equiv(P0,P1) = p.minimize(P0)==p.minimize(P1)
 _______
 #define p.navigate(Cs)=p'    p.navigate(P)=p'
 * p.navigate(C1..Ck)=p.push(C1)...push(Ck)
 
 * p.navigate(Thisn.Cs)=p.pop(n).navigate(Cs)
 _______
-#define p.noUnique(P)
-*p.noUnique(P) = p.minimize(P) not of form Thisk._.C::n._
-_______
-#define p.resolveCs(FULL.T?)=TX
-* p.resolveCs(empty)=X with fresh X// case FULL.T defined below
-_______
-#define p.resolveCs(FULL.T)=CORE.T,   p.resolveCs(FP)=CORE.P,  p.resolveCs(FULL.Docs)=CORE.Docs,  p.resolveCs(FULL.MH)=CORE.MH
+#define p.resolveCs(CMP/FULL.T?)=TX   p.resolveCs(FP)=CORE.P,  p.resolveCs(CMP/FULL.Docs)=CORE.Docs,  p.resolveCs(CMP/FULL.MH)=CORE.MH
+* p.resolveCs(empty)=X with fresh X// if FULL.T, then result is CORE.T
 * p.resolveCs(docs mdf P)=p.resolveCs(Docs) mdf p.resolveCs(P)
 
 * p.resolveCs(CORE.P)=p.minimize(CORE.P)//this also handles FP starting for Any/Void/Library/Thisn
@@ -64,7 +55,7 @@ _______
 * p.resolveCs(FULL.Docs) =CORE.Docs where all the FP are replaced with p.resolveCs(FP)
 
 *p.resolveCs(FULL.MH) propagates on the structure
-   Docs0 refine? native[URL]? mdf method T0 mOp Docs1 (T1 x1 .. Tn xn)[Ts]
+   Docs0 refine? native[URL]? mdf method T0 m Docs1 (T1 x1 .. Tn xn)[Ts]
 _______
 #define P0[from P1]=P2 e[from P]=e' e[from P]n=e'  //TODO: minimize and from? should from minimize?
 * Thisn.Cs[from Thism.C1..Ck]=Thism.C1..C(k-n).Cs if n<=k
@@ -80,11 +71,11 @@ _______
 * All cases for other expressions/terms propagate to submembers, including docs  
 _______
 #define MH notations, MWT notations just inherits them,
-with MH=refine? native? mdf method T m(T1 x1..Tn xn) 
-* MH.T=T
-* MH.Ts=Ts
+with MH=refine? native[URL]? mdf method T m(T1 x1..Tn xn)[Ts] 
+* MH.pars=T1..Tn
+* MH.exceptions=Ts
 * G^MH= this:mdf This0, x1:T1..xn:Tn
-* MH.Ti = Ti
+* MH.pari = Ti
 * MH.s=m(x1..xn)
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
@@ -105,19 +96,13 @@ _______
 * fwd%Mut<=fwdMut
 * fwd%Imm<=fwdImm
 _______
+#define CORE.e inside CORE.e'
+  e inside ctx[e]
+_______
 #define toRead(T)   toRead(G)
-* toRead(T) //used in gamma and in return type getter
-    toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
-    toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
-    toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-    otherwise toRead(T)=T//mdf in imm,read,class
+* toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
+* toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
+* toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
+* toRead(T)=T otherwise//mdf in imm,read,class
 
-* toRead(G)
-    toRead(G)(x)=toRead(G(x))[with var?=empty] //thus undefined where toRead undefined
-
-------------TAIL, probably not needed
--p.location()=P // Where we are in the program
- (LL).location()=This0
- (LL, ctxL, ctxLs).location() = This(k+1).Cs.C
-    ctxL(C) = HasHole // We are in C
-    (ctxL[LL], ctxLs).location() = Thisk.Cs
+* toRead(G)(x)=toRead(G(x))[with var?=empty] //thus single entry undefined where toRead undefined
