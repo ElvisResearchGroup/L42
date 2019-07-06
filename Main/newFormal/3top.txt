@@ -82,14 +82,14 @@ _______
       fieldTypes(MHs,x, mdf).mdfs,
       fieldAccessMdf(MHs,x, mdf))
 _______
-#define fieldsTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
-* T in fieldsTypes(MHs, x, mdf)
+#define fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+* T in fieldTypes(MHs, x, mdf)
     either class method mdf" _(_ T x _)_ in MHs
     or mdf" method _ #?x::n?(T that)_ in MHs
     if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
     //TODO: wrong, if the 'setter' was a method allowed to be abstract because take a mut on imm only class
 
-* mdf' in fieldsAccessMdf(MHs, x, mdf)
+* mdf' in fieldAccessMdf(MHs, x, mdf)
     mdf" method mdf' P #?x::n?() in MHs
     mdf" != capsule
     if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
