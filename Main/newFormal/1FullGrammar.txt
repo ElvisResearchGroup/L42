@@ -116,7 +116,9 @@ _______
   commentChars ::= chars -- '/*' -- '*/' //TODO: '--' do not work on sequences as we would like, same below
   comment ::= '//' (chars -- newline) newline | '/*' (commentChars | comment)* '*/' // Note: this allows /* comments to nest
   whitespace ::= (comment | ' ' | newline| ',')+
-  URL::= /*too boring*/
+  tURL::= /*a trusted url*//*too boring*/
+  uURL::= /*an untrusted url*//*too boring*/
+  URL:=tURL|uURL
   charsCurly ::= (chars -- '{' -- '}') | charsCurly { charsCurly } charsCurly
   idUp ::= _* (<A-Z> | $) 
   idLow ::= _* <a-z>

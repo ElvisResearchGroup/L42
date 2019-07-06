@@ -79,16 +79,7 @@ Note, it would seams like either the plugin url is
 trusted or one of the parameter is a cap object. NOT TRUE, NOT NEEDED.
 SEE the fraction of the type system below 
   
-Adapting the current type system:
-
-tURL::= /*a trusted url*/
-uURL::= /*an untrusted url*/
-URL:=tURL|uURL
-_______
-#define trusted(LL) //Does this need to be added to the INFO?//TODO: move in program
-
-trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)
-//trusted is not the right name for this concept
+Adapting the current type system://TODO: should be integrated in Typing, check if is true
    
 -typing a method p,MWT:
   if MWT.native=native[uURL]

@@ -1,45 +1,9 @@
 _______
-#define infer(p,FULL.Ms)=CORE.Ms
-* infer(p,M1..Mn)=I(p♥M1)..I(p♥M1)
-    PAcc=PAccOf(p).fixInfer(p♥M1..p♥Mn)
-    I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
-_______
-#define infer(p,FULL.e)=CORE.e//TODO lots of duplication with above, can we reduce it?
-* infer(p,e)=I(Y♥e)
-    Y[p;onSlash=empty,onReturn=Library,onPath=error]
-    PAcc=PAccOf(p).fixInfer(p♥M1..p♥Mn)
-    I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
-_______
 #define PAccOf(p)=PAcc
 * PAccOf(p)=PAcc[p;GX=empty;CCz=empty].fixInfer(CMP.Ms1 .. CMP.Msk)
     k = max {k | p(Thisk) is defined }
     p(Thisi)={Hi CMP/CORE.Msi FULL.Mi _}, where FULL.Mi not of form CORE.M
     CMP.Msi={CMP.M| CMP.M in CMP/CORE.Msi}[from Thisi]    
-_______
-#define commonSuperT(p,Tz)=Tz'
-* commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
-    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
-_______
-#define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T,     mostSpecific(Tz) = T
-* solve(p, CCz) = X1:T1 .. Xn:Tn
-    X1 .. Xn = { X | X inside p.top() }
-    Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
-    Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
-
-* chooseT(CCz;class Any,_)=class Any
-* chooseT(CCz;Tz)=mostSpecific(Tz)
-    mostSpecific(Tz)!= capsule P or capsule _ in CCz
-* chooseT(CCz;Tz)=imm P
-    mostSpecific(Tz)= capsule P
-    imm _ in CCz
-    not capsule _ in CCz
-* chooseT(CCz;Tz)=mut P 
-    mostSpecific(Tz)= capsule P
-    not imm _ in CCz
-    not capsule _ in CCzP
-
-* mostSpecific(Tz) = T
-    {T}={T| T in p.minimize(Tz) and p|-T<=Tz}
 _______
 #define PAcc.fixInfer(HALF.Ms) = PAcc'
 * PAcc.fixInfer(M1..Mn)=PAcc
@@ -82,36 +46,6 @@ _______
     P2'.s in PAcc.CCz
     PT1'.s in PAcc.CCz
 _______
-#define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e
-* I(CORE.M) = CORE.M
-* I(MH e) = MH I[G=G^MH;onSlash=MH.T](e)
-
-* I(\) = I.onSlash.P //undefined if it is empty
-* I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
-* I((TX CORE.P)) = (iType(I,TX) CORE.P)
-* I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I'(e1) .. xn=I'(en))
-    I'=I[onSlash=I.IMap(I.G(xP))]
-* I(xP0 OP..OP xPn)=I(e)
-    Ti=I.IMap(I.G(xPi))
-    PAcc[I.p;GX=empty;I.CCz].selectedOption(OP, T0..Tn, xPs)=PT,s,i
-    xP'1..xP'n=xP0..xPn/i
-    e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
-    e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
-* I(e)=e' propagates on the structure for 
-    x, void, CORE.L, throw e, loop e, x := e
-_______
-#define I[DS] = I',  I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
-* I[TX1 x1=_ .. TXn xn=_]=I[G=I.G,x1:iType(I,TX1),..,xn:iType(I,TXn)]
-
-* I(TX x=e) = iType(I,TX) x=I(e) 
-
-* I(catch TX x e)[IMap;G;T]=catch iType(I,TX) x I(e)
-_______
-#define iType(I,TX)=CORE.T
-* iType(I,T)=T
-* iType(I,X)=I.IMap(X)
-* iType(I,\)=I.onSlash
-_______
 #define PAcc[CCz]=PAcc'    PAcc[GX]   PAcc[D1..Dn]
 * PAcc[CCz]=PAcc[CCz=PAcc.CCz,CCz]
 
@@ -125,19 +59,18 @@ _______
 * PAcc.add(MH) =PAcc
 * PAcc.add(MH e) = PACCp[G^MH].add(e:PT)[PT<=MH.T]
 _______
-#define HALF.e[\ = PT]
+#define HALF.e[\ = PT] //used in addPar
 * \[\ = mdf? PP] = PP
 * (\ x = e)[\ = PT] = PT x = (e[\ = PT])
-* (catch throw \ e)[\ = PT] ::= catch throw PT (e[\ = PT])
+* (catch throw \ e)[\ = PT] = catch throw PT (e[\ = PT])
 * otherwise propagate on D, K, e
-
 _______
 #define PAcc.addD(HALF.D : PT) = PAcc'    PAcc.addK(HALF.K : PT) = PAcc'   PAcc.addPar(e:PT) = PAcc'
 * PAcc.addD(D: PT) = PAcc.add(D.e : PT)[PT <= D.PT]
 
 * PAcc.addK(K : X) = PAcc.add(K.e: PT)[PT <= X]
 
-* PAcc.addPar(e:PT.s.i) = PAcc.add(e:PT')[PT' <= PT.s.i]
+* PAcc.addPar(e:PT.s.i) = PAcc.add(e[\=PT.s.i]:PT')[PT' <= PT.s.i]
 _______
 #define PAcc.add(HALF.e : CORE.T) = PAcc'
 // TODO: Add ps //WHAT IS ps??? 
@@ -154,7 +87,6 @@ _______
 * PAcc.add(xP0 OP ... OP xPn : PTi.s) = PAcc.add(xP0:PT0).. .add(xPn:PTn)[PT'1 <= P.s.1]..[PT'n <= P.s.n]
     P, s, i=selectedOption(CCz,p,OP, PT0..PTn, xP0..xPn)
     PT'1 ... PT'n = PT0 ... PTn \ i
-
 _______
 #define PAcc.paramaterPaths(PT, s)  
 * PAcc.paramaterPaths(T, s) = PAcc.p.minimize((G^PAcc.p(T.P)(s)).Ts.Ps[from P])

@@ -1,4 +1,53 @@
-All notations:  now is 1163, realistically is going to sit at 1200/1250
+The formalism for 42 is divided in files, 
+The first file, FullGrammar(274), contains all abstract grammars,
+the concrete grammar for the full language and the well formedness criteria.
+
+It is important to familiarize with the CORE grammar,
+while the other grammatical forms can be understood when needed while reading
+the rest of the formalism.
+The most important difference between CORE, FULL and CMP grammars
+is how they handle nested classes and library literals, as explained below:
+
+CORE is a minimal grammar, a CORE.L is a library literal with
+cached informations about typing and dependencies.
+Library literals contained in CORE expressions are of form CORE.L
+Nested classes inside a CORE.L are directly defined by a CORE.L
+
+CMP is a richer grammar, but there is not a library literal of form CMP.L.
+Library literals contained in CMP expressions are of form CORE.L
+
+FULL is very similar to CMP, but allows for library literals of form FULL.L
+Method bodies in a FULL.L are expressions of CMP.
+Nested classes inside a FULL.L are defined using a FULL expression;
+Library literals contained in FULL expressions are of form FULL.L or CORE.L
+
+The file Common(111) contains the definition for operations over the program p, subtyping
+and few other notations that every other part of this formalism could use.
+
+Finally, the file Top(122) define the top level reduction p==>p',
+proceeding left to right, top to bottom to transform FULL expressions into
+core one, and executing code as needed.
+Top depends on 3 other components:
+  normalization (defined in file norm 133+152+128), transform a CMP.e into a CORE.e,
+  and a FULL.L where all the nested classes are defined with CORE.L into
+  a CORE.L.
+  
+  typing (defined in file Typing 178), checks if a CORE.e or a CORE.L are
+  well typed with respect to a program
+  
+  expression execution (defined in file reductionAndNative 75), implementing
+  small step reduction for CORE.e with respect to a program.
+  
+Of those components, the most complex is normalization; relying on components
+toCore (in file toCore) and PAcc (in file ConstraintAccumulation).
+Normalization is fundamental to understand the connection between the rich
+FULL language and the minimal CORE language.
+However, all correctness properties of 42 are stated on the CORE language
+and are unrelated to the FULL language; thus they can be understood
+without a deep understanding of normalization.
+  
+
+All notations:  now is 1173, realistically is going to sit at 1200/1250
 ____________________
 1FullGrammar
   all grammars
