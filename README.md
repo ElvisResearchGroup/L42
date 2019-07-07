@@ -43,4 +43,14 @@ lombock is a metaprogramming tool that exapand some annotations in usefull metho
 There is a very minimal ant script that is building the project in a folder antBuild.
 can be called with "ant compile" or "ant clean compile"
 this also create a jar able to run a primitive REPL for 42. 
+Currently this does not work as javafx has been removed from the jdk
 
+-----------------------------------------
+
+# build using gradle
+
+Currently gradle is only used to build a hello world application
+
+`./gradlew run` runs `src/main/java/L42/App.java`
+
+`./gradlew test` runs tests inside `src/test/`
