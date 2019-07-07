@@ -38,10 +38,14 @@ _______
     Y'=Y[onSlashX=x;onReturn=\;onPath=\]
 * Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
     e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
-* Y♥xP op3 e= Y♥(
-      x=Y(xP.#shortCircut'OP3'())  //here and and under, using ' to generate method names in some standard way
-      if x.#shortResult() else x.#shortProcess(Y♥e2) )
-    x fresh
+* Y♥xP OP3 e= Y♥(
+      x=xP.#shortCircut'OP3'()  //here and and under, using ' to generate method names in some standard way
+      if x x.#shortResult'OP3'() else xP.#shortProcess'OP3'(x,other=e2) )
+    x fresh  
+//    T && X= if !T F else X//shortResult&& is false, shortCircut&& is !this
+//    T || X= if T T else X//shortResult|| is true, shortCircut|| is this
+//    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
+//Path=>classAny= if false err else X//shortResult=> is error, shortCircut=> false
 * Y♥e0 op .. op en = (Ds e0' op .. op en')
     Yi = Y[onReturn=\;onPath=Xi]//TODO: would this help? using the same fresh X for many P?
     Ds = [xi=Yi♥ei| Yi♥ei not of form xP]

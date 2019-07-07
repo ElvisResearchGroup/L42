@@ -2,13 +2,14 @@ _______
 #define Abstract syntax and core : FULL, CORE, CMP=compiled
   mdf::= empty | mut | lent | read | capsule | fwd whitespace mut | fwd | class | fwd%imm | fwd%mut 
   throw ::= 'error' | 'exception' | 'return' 
-  s  ::= m(CORE.x*) //mOp is normalized when reified as an s
+  s  ::= m(xs) //mOp is normalized when reified by FULL.MH.s
   Ldom::=s | Cs
-  CMP/FULL/CORE.MH ::= Doc* 'refine'? ('native' [ URL ])? mdf 'method' T m Doc*(Tx*) [T+]? //m can be obtained by parsing a mOp
-  CMP/FULL/CORE.H ::= 'interface'?[T+]?
-  CMP/FULL.T::= mdf Doc* FP | '\'
-  CORE.T::= mdf Doc* P
-  FP::=(idUp idChar* uniqueNum)(.Cs)? //the first do not have C well formedness
+  CMP/FULL.MH ::= Docs refine? (native[URL])? mdf method T mOp Docs(T1 x1..Tn xn) [T+]?
+  CORE.MH ::= Docs refine? (native[URL])? mdf method T m Docs(T1 x1..Tn xn) [T+]?
+  CMP/FULL/CORE.H ::= interface?[T+]?
+  CMP/FULL.T::= mdf Docs FP | '\'
+  CORE.T::= mdf Docs P
+  FP::=(idUp idChars uniqueNum)(.Cs)? //the first do not have C well formedness
   P  ::= Thisn.Cs | Any | Void | Library
   CORE.e ::= xP|void|L|xP.m(x1=e1..xn=en)|loop e|throw e|x:=e|(Ds Ks e)
   CORE.xP::= x|(T P) | a //a=address, only at runtime
@@ -24,16 +25,16 @@ _______
     //privateImpl: interfaces implemented by a private nested class or in an L in a method
     //implicit 'infos': have private state=closed class, have private static methods (can be casted to class P)
   Flag ::= 'norm' | 'typed'
-  FULL.L ::= {(H | ... | reuse[URL])? M*}
+  FULL.L ::= {(H | ... | reuse[URL])? Ms}
   FULL.M ::= F | MI | MWT | NC 
-  FULL.F ::= 'var'? T CORE.x
-  FULL.MI ::= Doc* s = CMP.e
+  FULL.F ::= var? T CORE.x
+  FULL.MI ::= Docs s = CMP.e
   FULL.MWT ::= MH (= CMP.e)? //this prevents FULL.L inside method bodies
-  FULL.NC ::= Doc* C = e
+  FULL.NC ::= Docs C = e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
   CMP/FULL.e ::= x | P | void | CORE.L | \ | \x | e STRING | 'PathLit | OPP e
-    | e0 OP .. OP en | (T e) | e .m? ( par ) | e .m? [ pars ]
+    | e0 OP .. OP en | (T e) | e (.m)?( par ) | e .m? [ pars ]
     | ( Ds Ks WOPS? Ds e? ) | { Ds Ks WOPS? Ds }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
@@ -141,8 +142,7 @@ _______
   CMP/FULL/CORE.Doc ::= @PathLit | @PathLit?{(charsCurly -- DOC|DOC)*}
   CMP/FULL.PathLit::= FP | FP? s | FP? s.x
   CORE.PathLit::= P | P? s | P? s.x
-  CMP/FULL/CORE.Tx ::= T CORE.x
-  mOp ::= empty | m | OP | ~ | ! //an mOp can be used as an m to declare a method, and is normalised as an m during parsing
+  mOp ::= empty | m | OP | ~ | !
 _______
 #define CMP/FULL Expressions
   CMP/FULL.eAtomic ::= CORE.x | P | 'void' | LL | B | (T e) | \  | 'PathLit
@@ -158,7 +158,7 @@ _______
   CMP/FULL.DX ::= 'var'? T? x | T? '_' | T? '(' ('var'? T? CORE.x)+ ')'
   CMP/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x opUpdate e
   CMP/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
-  CMP/FULL.match ::= Tx | T x = e | T? '(' (T? CORE.x)+ ')' = e //where at least one Ti? is not empty
+  CMP/FULL.match ::= T x | T x = e | T? '(' (T? CORE.x)+ ')' = e //where at least one Ti? is not empty
   CMP/FULL.sWhile::= 'while' e e
   CMP/FULL.sFor ::= 'for' (DX in e)* e
   CMP/FULL.e ::= statement | e-binary3

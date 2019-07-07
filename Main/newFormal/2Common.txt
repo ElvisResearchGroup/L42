@@ -71,12 +71,17 @@ _______
 * All cases for other expressions/terms propagate to submembers, including docs  
 _______
 #define MH notations, MWT notations just inherits them,
-with MH=refine? native[URL]? mdf method T m(T1 x1..Tn xn)[Ts] 
+with MH=refine? native[URL]? mdf method T mOp(T1 x1..Tn xn)[Ts] 
 * MH.pars=T1..Tn
 * MH.exceptions=Ts
 * G^MH= this:mdf This0, x1:T1..xn:Tn
 * MH.pari = Ti
-* MH.s=m(x1..xn)
+* MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness reason on MH.s
+_______
+#define name manglings
+* methName(mOp)=m//from a table
+* #m'OP'=methName(OP)m
+* #m'var?'=#var?m
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
