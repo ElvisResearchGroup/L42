@@ -32,18 +32,14 @@ _______
   FULL.NC ::= Doc* C = e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
-  CMP/FULL.e ::= x | P | void | CORE.L | \ | \x  
-    | e strLit[chars0..charsn;e1..en] | 'PathLit | OPP e
-    | e0 OP .. OP en | (T e)
-    | e .m? ( par ) | e .m? [ pars ]
+  CMP/FULL.e ::= x | P | void | CORE.L | \ | \x | e STRING | 'PathLit | OPP e
+    | e0 OP .. OP en | (T e) | e .m? ( par ) | e .m? [ pars ]
     | ( Ds Ks WOPS? Ds e? ) | { Ds Ks WOPS? Ds }
-    | loop e | throw e | x opUpdate e
-    | if e0 e1 (else e2)? | if match+ e | while e0 e1
-    | for DX0 in e0 .. DX1 in en e
-  CMP/FULL.strLit[chars0..charsn;e1..en] = STROPi" chars0 STROPi e1 STRCLi chars1 .. STROPi en STRCLi charsn "STRCLi
+    | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
+    | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   CMP/FULL.D ::= (DX =)? e
   CMP/FULL.WOPS ::= wops T+
-  CMP/FULL.K ::= catch throw? T x e
+  CMP/FULL.K ::= catch throw? T x e | catch throw? T '_' e
 _______
 #define secondary grammars
   TX ::= CORE.T | X | \
@@ -57,11 +53,10 @@ _______
   HALF.K ::= "catch" throw TX x e
   HALF.D ::= "var"? TX x = e
   HALF.M ::= CORE.NC | MH HALF.e?
-  PType ::= error | classP | TX
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:PT1 .. xn:PTn
   I ::= I[p;IMap;G;CCz;onSlash=T?]//inference application environment
-  Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=PType]//toCore environment
+  Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=(classP|TX)]//toCore environment
   PAcc ::= PAcc[p;GX;CCz]//constraints accumulation environment
   v ::= a|P|void|L
   r ::= CORE.L| exception v | error v
@@ -72,7 +67,7 @@ _______
   ctxV ::= xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
   FULL.ctxC::= []
     | throw ctxC | loop ctxC |ctxC(.m)?(FULL.par) 
-    | ctxC StrLit |x updateOp ctxC | (T ctxC) 
+    | ctxC STRING |x updateOp ctxC | (T ctxC) 
     | if (matchC+ |CMP.e) ctxC (else FULL.e)?
     | CMP.e.m?(ctxC FULL.par) | CMP.e.m?(CMP.par, x=ctxC, FULL.par)
     | ctxC FULL(.m?)[FULL.pars]
@@ -89,6 +84,7 @@ _______
     | if CMP.match+ DX=ctxC FULL.match+ FULL.e
     | while ctxC FULL.e | while CMP.e ctxC
     | for CMP.DXes ctxC | for CMP.DXes DX in ctxC FULL.DXes FULL.e
+    | CMP.e STRING[CMP.es ctxC FULL.e] //somehow handles the STRING case
   CORE.ctx ::= []
     | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
     | xP.m( xes x=ctx xes' )
@@ -113,27 +109,25 @@ _______
   CHAR   ::=  <0x20-0x7E> | newline//An Any printable ASCII character, or a newline
   CHARS0 ::= CHAR* -- "
   CHARS(i+1) ::= CHAR* -- STROP(i+1) -- STRCL(i+1)
-  chars::= CHAR* //equivalent to ::=CHARS0 | .. | CHARSn
   STROP0 ::= empty
   STRCL0 ::= empty
   STROP(i+1) ::= [ STROPi
   STRCL(i+1) ::= STRCLi ]
   STRING ::= STROPi " CHARSi (STROPi e STRCLi CHARSi)* " STRCLi
   number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
-  commentChars ::= chars -- '/*' -- '*/' //TODO: '--' do not work on sequences as we would like, same below
-  comment ::= '//' (chars -- newline) newline | '/*' (commentChars | comment)* '*/' // Note: this allows /* comments to nest
+  commentChars ::= CHAR* -- '/*' -- '*/' //TODO: '--' do not work on sequences as we would like, same below
+  comment ::= '//' (CHAR* -- newline) newline | '/*' (commentChars | comment)* '*/' // Note: this allows /* comments to nest
   whitespace ::= (comment | ' ' | newline| ',')+
   tURL::= /*a trusted url*//*too boring*/
   uURL::= /*an untrusted url*//*too boring*/
   URL:=tURL|uURL
-  charsCurly ::= (chars -- '{' -- '}') | charsCurly { charsCurly } charsCurly
+  charsCurly ::= (CHAR* -- '{' -- '}') | charsCurly { charsCurly } charsCurly
   idUp ::= _* (<A-Z> | $) 
   idLow ::= _* <a-z>
   idChar   ::= <a-z> |<A-Z> | $ | _ | <0-9>
   n ::= 0 | <1-9> <0-9>*
   uniqueNum ::= (::n)?
-  CMP/FULL.x ::= idLow idChar* | '_'
-  CORE.x ::=idLow idChar*
+  x ::=idLow idChar*
   C ::= idUp idChar* uniqueNum //well formedness: C not Thisn/Any/Void/Library
   m ::= (#|#$)?x(#x)* uniqueNum
   OPP ::= ! | ~ | number  // prefix
@@ -161,7 +155,7 @@ _______
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   CMP/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
   CMP/FULL.B ::= '(' D* e ')' | '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
-  CMP/FULL.DX ::= 'var'? T? x | T? '(' ('var'? T? CORE.x)+ ')'
+  CMP/FULL.DX ::= 'var'? T? x | T? '_' | T? '(' ('var'? T? CORE.x)+ ')'
   CMP/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x opUpdate e
   CMP/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
   CMP/FULL.match ::= Tx | T x = e | T? '(' (T? CORE.x)+ ')' = e //where at least one Ti? is not empty

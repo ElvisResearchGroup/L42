@@ -6,7 +6,7 @@ _______
     forall imm P in Ts'\ Ts, P not of form Thisk._.C::n._ //private interfaces not added
     Ms=expandFields(Ms0) // this turns the fields into abstract methods
     Ms'=methods(p,This0)//next line order Ms' following Ms
-    M1..Mn=infer(p;Ms'\Ms.ss, [Ms'(M.s)| M in Ms],[C:e| C:e in Ms])
+    M1..Mn=infer(p;Ms'\Ms.ss, [Ms'(M.s)| M in Ms],[p.resolveCs(Docs) C:e| Docs C:e in Ms])
     Info=Info[norm;//ok, non computational rule checking that Info in CORE.L is consistent
       typeDep;coherentDep==Ts';empty U collectDeps(M1) U..U collectDeps(Mn);
       friendsDep= ??Ps;//using private methods (or paths??)
