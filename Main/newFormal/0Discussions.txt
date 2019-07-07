@@ -1,3 +1,4 @@
+Introduction
 The formalism for 42 is divided in files, 
 The first file, FullGrammar(274), contains all abstract grammars,
 the concrete grammar for the full language and the well formedness criteria.
@@ -13,13 +14,30 @@ cached informations about typing and dependencies.
 Library literals contained in CORE expressions are of form CORE.L
 Nested classes inside a CORE.L are directly defined by a CORE.L
 
-CMP is a richer grammar, but there is not a library literal of form CMP.L.
+CMP is a richer grammar for expressions, but there is not a library literal of form CMP.L, or library members of form CMP.M.
 Library literals contained in CMP expressions are of form CORE.L
 
 FULL is very similar to CMP, but allows for library literals of form FULL.L
 Method bodies in a FULL.L are expressions of CMP.
 Nested classes inside a FULL.L are defined using a FULL expression;
 Library literals contained in FULL expressions are of form FULL.L or CORE.L
+
+
+
+That is, "Foo.bar(Beer.foo())" is a valid CORE.e.
+The formal reduction and the type systems are able to work directly on those kinds of expressions.
+Since CORE.e is a subset of CMP.e and FULL.e, they can appear everywhere an expression of any kind is expected.
+Instead, "if a>b return Foo[a;b]" is a valid CMP.e. 
+Expressions of form CMP.e can appear everywhere, except inside of a CORE.L.
+In particular, method bodies of FULL.L are of form CMP.e 
+Finally,  "Data: Trait:{T x} + Trait:{...}"
+is an expression of form FULL.e; it is not a CMP.e since it contains library literals of form FULL.L: "{T x}" and "{...}".
+
+In order to reduce expressions of form FULL.e, the top level reduction first reduces all the library literal
+of form FULL.L into a normalized form CORE.L; then the expression is now of form CMP.e and can be normalized
+to be of form CORE.e and executed.
+
+ 
 
 The file Common(111) contains the definition for operations over the program p, subtyping
 and few other notations that every other part of this formalism could use.

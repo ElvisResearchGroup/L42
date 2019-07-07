@@ -1,5 +1,5 @@
 _______
-#define Abstract syntax and core : FULL, CORE, C=compiled (yes, clash with 'C' of Cs)
+#define Abstract syntax and core : FULL, CORE, CMP=compiled
   mdf::= empty | mut | lent | read | capsule | fwd whitespace mut | fwd | class | fwd%imm | fwd%mut 
   throw ::= 'error' | 'exception' | 'return' 
   s  ::= m(CORE.x*) //mOp is normalized when reified as an s
@@ -24,6 +24,12 @@ _______
     //privateImpl: interfaces implemented by a private nested class or in an L in a method
     //implicit 'infos': have private state=closed class, have private static methods (can be casted to class P)
   Flag ::= 'norm' | 'typed'
+  FULL.L ::= {(H | ... | reuse[URL])? M*}
+  FULL.M ::= F | MI | MWT | NC 
+  FULL.F ::= 'var'? T CORE.x
+  FULL.MI ::= Doc* s = CMP.e
+  FULL.MWT ::= MH (= CMP.e)? //this prevents FULL.L inside method bodies
+  FULL.NC ::= Doc* C = e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
   CMP/FULL.e ::= x | P | void | CORE.L | \ | \x  
@@ -52,19 +58,19 @@ _______
   HALF.D ::= "var"? TX x = e
   HALF.M ::= CORE.NC | MH HALF.e?
   PType ::= error | classP | TX
-  G::=var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
-  GX::=x1:PT1 .. xn:PTn
-  I  ::=I[p;IMap;G;CCz;onSlash=T?]//inference application environment
+  G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
+  GX ::= x1:PT1 .. xn:PTn
+  I ::= I[p;IMap;G;CCz;onSlash=T?]//inference application environment
   Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=PType]//toCore environment
-  PAcc::=PAcc[p;GX;CCz]//constraints accumulation environment
+  PAcc ::= PAcc[p;GX;CCz]//constraints accumulation environment
   v ::= a|P|void|L
-  r::=CORE.L| exception v | error v
-  Obj::=P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
-  A  ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
+  r ::= CORE.L| exception v | error v
+  Obj ::= P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
+  A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   Q ::= Q[Flag;MH?;p;G;Ts;Ps] //TODO: consider adding field names?
   MethT ::= Ts->T;Ps  
-  ctxV::=xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
-  FULL.ctxC::=[]
+  ctxV ::= xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
+  FULL.ctxC::= []
     | throw ctxC | loop ctxC |ctxC(.m)?(FULL.par) 
     | ctxC StrLit |x updateOp ctxC | (T ctxC) 
     | if (matchC+ |CMP.e) ctxC (else FULL.e)?
@@ -88,11 +94,12 @@ _______
     | xP.m( xes x=ctx xes' )
     | (Ds T x=ctx Ds' Ks e)
     | (Ds Ks catch throw T x ctx Ks' e)
-  FULL.ctxM::= C = ctxC |s = ctxC | MH = ctxC //CORE.ctxL is needed so that a p can explore core libraries
-  FULL.ctxL::= {H MCs ctxM Ms} | CORE.ctxL //note: no reuse/dots
+  FULL.ctxM::= C = ctxC | s = ctxC | MH = ctxC //CORE.ctxL is needed so that a p can explore core libraries
+  CM::= CORE.NC | FULL.F | FULL.MI | FULL.MWT
+  FULL.ctxL::= {H CMs ctxM Ms} | CORE.ctxL //note: no reuse/dots
   CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}  
-  HasHole::=FULL.ctxC | CORE.ctx
-  pTail::=CORE.L|FULL.ctxL
+  HasHole::= FULL.ctxC | CORE.ctx
+  pTail::= CORE.L | FULL.ctxL
   p::= LL;pTails //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 _______
 #define functional notation for LL and ctxL (over the domain Ldom)
@@ -141,7 +148,7 @@ _______
   CMP/FULL.PathLit::= FP | FP? s | FP? s.x
   CORE.PathLit::= P | P? s | P? s.x
   CMP/FULL/CORE.Tx ::= T CORE.x
-  mOp ::= empty | m | OP | ~ | !
+  mOp ::= empty | m | OP | ~ | ! //an mOp can be used as an m to declare a method, and is normalised as an m during parsing
 _______
 #define CMP/FULL Expressions
   CMP/FULL.eAtomic ::= CORE.x | P | 'void' | LL | B | (T e) | \  | 'PathLit
@@ -161,12 +168,6 @@ _______
   CMP/FULL.sWhile::= 'while' e e
   CMP/FULL.sFor ::= 'for' (DX in e)* e
   CMP/FULL.e ::= statement | e-binary3
-  CMP/FULL.L ::= {(H | ... | reuse[URL])? M*}
-  CMP/FULL.M ::= F | MI | MWT | NC 
-  CMP/FULL.F ::= 'var'? T CORE.x
-  CMP/FULL.MI ::= Doc* s = CMP.e
-  CMP/FULL.MWT ::= MH (= CMP.e)? //this prevents FULL.L inside method bodies
-  CMP/FULL.NC ::= Doc* C = e
 _______
 #define grammar well formedness
 * CMP/FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.

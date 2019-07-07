@@ -1,10 +1,10 @@
 _______
 #define p ==>p'
-* {reuse[URL] Ms};pTail ==> {followURL(URL),Ms};pTail  //(reuse)
-* {... Ms};pTail ==> {readFolder(p),Ms};pTail //(dots)//consider caching ... to avoid a main writing to source an untrusted main with full capabilities powers
-* {H MCs};pTail ==> normAndFlag({H MCs};pTail)  //(topNorm)
-* LL;pTail ==> normAndFlag({H CMP.Ms C=CORE.L FULL.Ms};pTail)  //(top)
-    LL={H CMP.Ms C=CMP.e FULL.Ms}
+* {reuse[URL] FULL.Ms};pTail ==> {followURL(URL),FULL.Ms};pTail  //(reuse)
+* {... FULL.Ms};pTail ==> {readFolder(p),FULL.Ms};pTail //(dots)//consider caching ... to avoid a main writing to source an untrusted main with full capabilities powers
+* {H CMs};pTail ==> normAndFlag({H CMs};pTail)  //(topNorm)
+* LL;pTail ==> normAndFlag({H CMs C=CORE.L FULL.Ms};pTail)  //(top)
+    LL={H CMs C=CMP.e FULL.Ms}
     CMP.e not of form CORE.L//e is the first point to execute
     Q=Q[Flag=norm;MH?=empty;p=(LL;pTail);G=empty;Ts=empty;Ps=dom(p)]
     FV(CMP.e)=empty //not implied by typing: FV check capsules used 1 or 0
@@ -22,7 +22,7 @@ _______
 * adapt(CMP.e, Void)=(Void x=CMP.e {}); where x fresh
 * adapt(CMP.e, _)= (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
-#define normAndFlag(CMP/FULL.L;pTail)-> CORE.L;pTail    LL[Csz=Flag]=LL'
+#define normAndFlag(FULL.L;pTail)-> CORE.L;pTail    LL[Csz=Flag]=LL'
     p'= p.update({H CMP.Ms C=CORE.L FULL.Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
     p'= p.update(norm(p,{H CMP.Ms C=CORE.L})) otherwise
     |- p' -> LL //type all the MCs that can be compiled now, including This0
