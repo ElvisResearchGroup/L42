@@ -17,7 +17,7 @@ _______
   CORE.K ::= catch throw T x e
   CORE.NC::= Docs C = L
   CORE.L ::= {H Docs MWTs NCs Info}
-  Info::= [Flag;typeDep=Ps;coherentDep=Ps;friendsDep=Ps;usedMethDep=(P.s)s;privateImpl=Ps]
+  Info::= #flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps}//in concrete syntax, labels for emptys are omitted
     //friendsDep are spyed by This:
     //Paths whose unique numbers are used either directly,
     //or in a private nested class or in an L in a method
@@ -194,7 +194,7 @@ _______
 * CORE.MWT: if MWT.e?=e, then
     FV(e)\this,x1..xn = empty    
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
-//FV(FULL.e) is not checked at this stage. No real gain since ... desugars late now    
+* FULL.e: all used variables are in scope    
 * CMP/FULL.sFor: forall T?(var1? T1? x1.. varn?Tn? xn) in FULL.sFor.DXs: var1?..varn?=empty
 * LL:
     M1, M2 in dom(LL) and dom(M1)=dom(M2) implies M1=M2
@@ -207,15 +207,13 @@ _______
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)
     //We need to check this any time '...' is desugared, while 'reuse URL' will rename the private names
-* CORE.L:
-  //Difficult: Info need to be correct an the CORE.L need to be the proper result
-  //of normalization.
-  //OPTION1, good for now: info can not be wrote down, so user can not write CORE.L
-  //   CORE.L are now created only by the language semantic and trusted plugins
-  //   +: no need to check well formedness on CORE.L,
-  //   -: what about URL imported CORE.L? should we trust them?
-  //   -: how we PARSE imported CORE.L? should we serialize the java object?
-* G:var x capsule _ or var x fwd _ or var x fwd% _ not in G
+* program p:
+  CORE.L;pTail is well formed iff
+    (CORE.L;pTail).pop(1) is well formed
+    FULL.L={CORE.L.H CORE.L.Ms}
+    normAndFlag(FULL.L;pTail)=CORE.L;pTail //defined in file top
+//Note, when we import an url we should check if the corresponding CORE.L;empty is well formed
+* G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 _______
 #define noBlockNeeded(CMP/FULL.e):
 * noBlockNeeded(B)

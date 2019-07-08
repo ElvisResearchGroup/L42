@@ -1,7 +1,7 @@
 _______
 #define p ==>p'
 * {reuse[URL] FULL.Ms};pTail ==> {followURL(URL),FULL.Ms};pTail  //(reuse)
-* {... FULL.Ms};pTail ==> {readFolder(p),FULL.Ms};pTail //(dots)//consider caching ... to avoid a main writing to source an untrusted main with full capabilities powers
+* {... FULL.Ms};pTail ==> {readFolder(p),FULL.Ms};pTail //(dots)//note, ... is cached 
 * {H CMs};pTail ==> normAndFlag({H CMs};pTail)  //(topNorm)
 * LL;pTail ==> normAndFlag({H CMs C=CORE.L FULL.Ms};pTail)  //(top)
     LL={H CMs C=CMP.e FULL.Ms}
@@ -23,10 +23,6 @@ _______
 * adapt(CMP.e, _)= (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
 #define normAndFlag(FULL.L;pTail)-> CORE.L;pTail    LL[Csz=Flag]=LL'
-    p'= p.update({H CMP.Ms C=CORE.L FULL.Ms}) if Ms not empty //can remove this if and will just call topNorm after... IDEAS?
-    p'= p.update(norm(p,{H CMP.Ms C=CORE.L})) otherwise
-    |- p' -> LL //type all the MCs that can be compiled now, including This0
-
 * normAndFlag(LL;pTail)=LL'[Csz=typed];pTail
     LL'=norm(LL;pTail) if LL.Ms of form CMP.Ms
     LL'=LL otherwise

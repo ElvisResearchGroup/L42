@@ -1,6 +1,6 @@
 Introduction
 The formalism for 42 is divided in files, 
-The first file, FullGrammar(274), contains all abstract grammars,
+The first file, FullGrammar, contains all abstract grammars,
 the concrete grammar for the full language and the well formedness criteria.
 
 It is important to familiarize with the CORE grammar,
@@ -22,8 +22,6 @@ Method bodies in a FULL.L are expressions of CMP.
 Nested classes inside a FULL.L are defined using a FULL expression;
 Library literals contained in FULL expressions are of form FULL.L or CORE.L
 
-
-
 That is, "Foo.bar(Beer.foo())" is a valid CORE.e.
 The formal reduction and the type systems are able to work directly on those kinds of expressions.
 Since CORE.e is a subset of CMP.e and FULL.e, they can appear everywhere an expression of any kind is expected.
@@ -37,23 +35,34 @@ In order to reduce expressions of form FULL.e, the top level reduction first red
 of form FULL.L into a normalized form CORE.L; then the expression is now of form CMP.e and can be normalized
 to be of form CORE.e and executed.
 
- 
+So, expressions of form CORE.e also containing CORE.Ls can be executed directly; but how would it look like?
 
-The file Common(111) contains the definition for operations over the program p, subtyping
+The FULL.e expression seen above 'Data: Trait:{T x} + Trait:{...}'
+would look like
+(class Data Data).#colon#1(that:
+  (class Trait Trait).#colon#1({read method This3.T x() #norm={depends=This3.T}})
+  .#plus#1((class Trait Trait).#colon#1({/*??*/ #info={/*??*/}})))
+where an info element is omitted if empty; the full form would be  #norm={depends=This3.T, dependsCoherent=, friendsDep=, usedMethDep=, privateImpl=,}
+
+Summary of the content:
+
+The first file, FullGrammar, contains all grammars and well formedness.
+
+The file Common contains the definition for operations over the program p, subtyping
 and few other notations that every other part of this formalism could use.
 
-Finally, the file Top(122) define the top level reduction p==>p',
+The file Top(122) define the top level reduction p==>p',
 proceeding left to right, top to bottom to transform FULL expressions into
 core one, and executing code as needed.
 Top depends on 3 other components:
-  normalization (defined in file norm 133+152+128), transform a CMP.e into a CORE.e,
+  normalization (defined in file norm), transform a CMP.e into a CORE.e,
   and a FULL.L where all the nested classes are defined with CORE.L into
   a CORE.L.
   
-  typing (defined in file Typing 178), checks if a CORE.e or a CORE.L are
+  typing (defined in file Typing), checks if a CORE.e or a CORE.L are
   well typed with respect to a program
   
-  expression execution (defined in file reductionAndNative 75), implementing
+  expression execution (defined in file reductionAndNative), implements
   small step reduction for CORE.e with respect to a program.
   
 Of those components, the most complex is normalization; relying on components
@@ -65,15 +74,14 @@ and are unrelated to the FULL language; thus they can be understood
 without a deep understanding of normalization.
   
 
-All notations:  now is 1173, realistically is going to sit at 1200/1250
+All notations:
 ____________________
 1FullGrammar
   all grammars
   concrete grammar
   well formedness
-  271 (will grow a little)
 _____________________
-Common for all parts: (file program:90+) TODO: rename filename
+2Common
 [from P]
 p operations
 function notations
@@ -83,14 +91,11 @@ cX/FV
 p|-T0<=T1, p|-P0<=P1, p|-T<=Tz  //TODO: still to add
 trustedClass(CORE.L)
 methodName(OP) and other syntax mangling
-noFwd //TODO: notation below still to add
-from
+noFwd
 toRead(T)
 toRead(G)
-
-----
 __________________
-top level notation (file top 141)
+3Top
 p ==> p'
   adapt(CORE.e,P)
   followUrls
@@ -99,16 +104,17 @@ p ==> p'
   |- p -> LL
     typable(p)=Csz
     LL[Csz=Flag]=LL'
-uses major
   coherentClasses(p,CORE.e)
-  p|-CORE.e :CORE.T<=CORE.T' / |- p
-  infer(p,e)
-  norm(p,C.L)
-  A|e --> A'|e'  
-  
-  
+    coherent(p)
+    coherentGetMdf(mdf0,mdf1,mdfs0,mdfs1)
+      fieldTypes(MHs,x, mdf)
+      fieldAccessMdf(MHs,x, mdf)    
+uses
+  p|-CORE.e :CORE.T<=CORE.T' and |- p
+  norm(p,e) and norm(p,C.L)
+  A|e --> A'|e'    
 _______________
-expression reduction (file reductionAndNative 75)
+7reductionAndNative
  A|e --> A'|e' 
    A operations:
      A.rog(v)
@@ -120,14 +126,7 @@ expression reduction (file reductionAndNative 75)
    accessibleAddresses(A;Ts;vs)=as
    mutLibs(A;Ts;vs) = A'
 __________________
-check coherence: (file top --)
-coherentClasses(p,CORE.e)
-  coherent(p)
-  coherentGetMdf(mdf0,mdf1,mdfs0,mdfs1)
-    fieldTypes(MHs,x, mdf)
-    fieldAccessMdf(MHs,x, mdf)
-__________________
-expression type system (file typing: 163)
+8typing
 D|-CORE.e :CORE.T<=CORE.T'  /  |-p
   D |- ds | G0 
   D |-k1..kn : T1..Tn <= T | Ts;Ps
@@ -144,9 +143,8 @@ D|-CORE.e :CORE.T<=CORE.T'  /  |-p
   toLent(G)
   mutToCapsuleAndFwdMutToFwdImm
   mutToCapsuleAndFwdRead
-  
 __________________
-normalization (file norm 73)
+4norm
 norm(p,C.L)
   collectDeps(CORE.L)
     collectDepsE(CORE.e)
@@ -154,29 +152,20 @@ norm(p,C.L)
   collect(p,Ts)
   methods(p,P0)
   alive(p,P)
-use major
-  infer(p,Ms)
-
-
+  infer(p,C.Ms)=CORE.Ms /infer(p,C.e)=CORE.e
+    I(HALF.M)=CORE.M
+      I(HALF.e) = CORE.e
+        I(HALF.D) = CORE.D
+        I(HALF.K) = CORE.K
+        I[DS]
+        iType(I,C.T)
+    solve(p, CCz)
+      commonSuperT(p,Tz)=Tz'
+      chooseT(CCz;Tz)=T
+        mostSpecific(Tz) = T
+use Pacc operations and Y♥C.e/p♥C.M
 _________________________
-inference (file inference 198)
-infer(p,C.Ms)=CORE.Ms /infer(p,C.e)=CORE.e
-  I(HALF.M)=CORE.M
-    I(HALF.e) = CORE.e
-      I(HALF.D) = CORE.D
-      I(HALF.K) = CORE.K
-      I[DS]
-      iType(I,C.T)
-  solve(p, CCz)
-    commonSuperT(p,Tz)=Tz'
-    chooseT(CCz;Tz)=T
-      mostSpecific(Tz) = T
-uses major
-  Y♥C.e/p♥C.M
-  PAcc operations
-  
-_________________________
-PAcc operations (file inference --)
+6ConstraintsAccumulation (PAcc operations)
   .fixInfer(HALF.Ms) =CCz
   .collect()=PAcc'
   .add(C.Ms)=PAcc'
@@ -189,9 +178,8 @@ PAcc operations (file inference --)
       PAcc.paramaterPaths(PT, s) 
       PAcc.unsatisfiable()
         origin(p;s;P) 
-
 _________________________
-toCore (file toCore 152)
+5toCore
 Y♥C.e=HALF.e / p♥C.M=HALF.M
   Y♥FULL.par = (x=HALF.e)s
   Y♥FULL.DE = HALF.D
@@ -200,11 +188,11 @@ Y♥C.e=HALF.e / p♥C.M=HALF.M
   
 Main concepts:
 
--most important grammatic forms:
-FULL.e: the expressive syntax for expressions used by the programmer
+-most important grammatical forms:
+CMP/FULL.e: the expressive syntax for expressions used by the programmer; FULL is like CMP but allows for FULL.L as expressions
 CORE.e: the minimal syntax used as internal representation and convenient for metaprogramming.
 FULL.L: library literal with expressive syntax.
-CORE.L: library literal with minimal syntax.
+CORE.L: library literal with minimal syntax and cached informations.
 LL: either a FULL.L or a CORE.L
 p: a program; similar to a stack of LL to represent nested scopes.
 P: a path
@@ -225,27 +213,36 @@ e-->p e'
   All other ones are properly sandboxed.
 norm(p,LL)
   reduces some libraries in the top of the program to core. 
-p|-e:T
+Q|-e:T
   expression well typed.
-|-p->LL
-  type some libraries in the top of the program and annotate them as 'typed'
-  or 'coherent'; that is, executable. 
-
+|-p
+  p(This0) is well typed
+normAndFlag(p)=p'
+  type some libraries in the top of the program and annotate them as 'typed'.
 
 PAcc, I, Y: record contexts for normalization
 
 execution flow:
   'L42 name' works as follow:
     -reads a file called either name.L42 or name/This0.L42.
-      The file is parsed according to grammar LL
-    -syntactic well formedness is checked
+      The file is parsed according to grammar LL, but omitting the outermost curly brakets
+    -read an parse all the files referred by ..., as LL as above
+    -syntactic well formedness of all source is checked
     -rules p==>p' are applied until the result is a well typed CORE.L
-      Such rules may require to 
-        -read code from urls; such code must be typed CORE.L. It could be cached locally.
-        -read code from files, this will be parsed and integrated in the execution.
-        -p♥Full.L
-        -p:e:T
-        -|-p->LL
+      Such rules may require to read code from urls;
+        such code must be typed CORE.L. It could be cached locally.
+-------------------------------
+DISCUSSIONS of individual parts
+-------------------------------
+Why we read URL later but '...' early:
+This is related to security:
+  -an URL is fully executed, so just importing it have no side effects
+  -a ... is just raw syntax, so importing it will trigger the execution
+   of all the mains inside of it. Thus, a former main with permissions to
+   write files may generate a malitious ... able to do everything.
+  -moreover, we get syntax errors earlier, that is always a plus.
+Ideally, we would also need to 'protect' 42 source folders so that they can
+be edited only with some special system permissions.
         
 Program p discussion:
 Program-specific grammar is needed to represent the position
@@ -294,8 +291,108 @@ It can be seen as a form of polymorphism of the method types.
 We here express the methodTypes set with metarules,
 but a finite/predictable sequence of applications is always sufficient,
 as shown later
+
+----------------
+Note, it would seams like either the plugin url is 
+trusted or one of the parameter is a cap object. NOT TRUE, NOT NEEDED.
+SEE the fraction of the type system below 
+  
+Adapting the current type system://TODO: should be already integrated in Typing, check if is true
+   
+-typing a method p,MWT:
+  if MWT.native=native[uURL]
+  then either
+    MWT.s of form #$_(_)
+    or MWT.mdf in  {lent,mut,capsule}
+-coherent LL:
+  if !trusted(LL) then the candidate constructors selectors are of form #$_(_)
+    
+-while typing the method call: if s of form #$(_)
+ then either
+    original MWT.s of form #$_(_)
+    or original MWT.mdf in {lent,mut,capsule} and !trusted(p.top())
+
+-note: before we could declare a class untrusted explicitly, now you can just add
+  "native[untrusted] class method Void untrusted::1()=void"
+  to the class 
+
+------------------
+TODO: metaprogramming plg restrictions:
+ -plg url+plg url=plg url
+ -plg +plg url?=plg url?
+ -can not rename a $method into a non $ method or vice versa
+ -redirect non plugin to plg is ok
+ -redirect abstract plg to plg and plg url to plg url
+
+examples:
+the plg input no mut/lent/read, execute the expression as usual and return.
+  the expression could have run on another machine, we can not know
+
+the plg input no mut/lent/read, execute the expression as usual and return a capsule lib with an a
+that is the result of such expression.
+  the result could be in a 'future' and trying to read the a with another plugin would block until res is ready
+  
+
+//the plg input no mut/lent/read, execute the expression but is first transformed somehow in other well typed one.
   
   
-xs sequence, xz set,
-[]sequence, {}set
-sequence\i removes the element i from the sequence
+the plg takes no input and produce a mut L (promotable to capsule) that correspond to a java arrayList
+
+the plg takes a mut L representing an arrayList, a imm L representing an int and a mut/imm Any
+ and put it into the corresponding position of the arrayList.
+the plg takes a mut L representing an arrayList, a imm L representing an int 
+ and return a mut/imm Any that is located in the corresponding position of the arrayList.  
+ 
+ take two lib arrayList and add all the elements of the second to the first
+mut a-> L1 a1..an, mut b-> L2 b1..bn| plg(a,b) -> 
+mut a-> L1 a1..an, mut b-> L2 b1..bn, mut c->L3| plg(a,b) 
+
+native typing:
+  typed as a normal MWT, plus:
+  -take in input or return either imm/mut/capsule/class P (no read/lent/fwd*)
+  -the URL support such s with such type:urlSupport(URL,p,MWT)
+  -no generic urls, but no need to go down to Any, since urlSupport takes type in input
+   can compute over it, so if it return a parameter, it can use user defined types
+     
+  -a plugin can return a mut L^as,
+  -the annotated 'a' on the L can be all the mut a parameters of the plugin call,
+   or other 'a' annotated on other Ls parameter of the same plugin call
+  -a plugin can not mutate the ROG of any 'a' took in input,
+  
+  
+-mut libraries created by plugins
+ensure a field is controlled by plugins by:
+  use is well typed if this.x_n() is the argument and
+  This.k_n(use..)
+is the only form for ever calling a k of a class with a certain plg annotation.
+Such class is coherent only when the state is private.
+While privatizing the state, it is easy to check such form is the
+only form for k.
+
+Then, mut/mdf libraries has an associated set of mut/mdf objects, and
+certain plugin operation allows to add and remove from such set.
+
+In this way, we can implement a vector of mut and imm at the same time.
+Now we need to be sure that the desugaring can infer enough types to
+work well with such vector, expectially for iteration.
+
+
+coherent?
+ {
+  class method This0 native[mutLibK] k_1()
+  mut method mut Library native[mutLibGet] f_1()
+ }
+
+starting point: Integer, String and other can be seen as imm Library
+ this is needed for the plg with part
+ 
+ plugins only take in input imm/class stuff
+ 
+ plugins takes mut stuff only: 
+ 
+ 
+ {
+  class method This0 native[mutK] k_1()
+  mut method mut T native[mutGet] f_1(K that)
+  
+ }

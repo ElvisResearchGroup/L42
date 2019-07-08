@@ -24,3 +24,8 @@ We can use A/B.C as a nonterminal from the union of A.C and B.C
 A grammar record is declared as Name[name1=nonTerminal1: ..;namen=nonTerminaln]
 and can be created as Name[name1=val1 ..namen=valn], accessed with dot and updated with [..=..].
 names can be omitted for at most 1 nonTerminal of a certain form.
+
+We will use s to denote sequence and z to denote sets. Thus
+xs sequence, xz set,
+[]sequence, {}set
+sequence\i removes the element i from the sequence
