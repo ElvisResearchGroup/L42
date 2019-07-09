@@ -1,8 +1,25 @@
 _______
-#define p♥CMP.M = HALF.M //assert never happens p♥C:Full.L or p♥s e
-* p♥MH = MH 
-* p♥MH e = MH Y[p=p,onSlashX=empty,onReturn=MH.T,onPath=MH.T]♥e
-* p♥CORE.NC = CORE.NC 
+#define p♥CoM = HALF.M //assert never happens p♥C:Full.e or p♥s e
+* p♥MH = MH
+* p♥MH CMP.e = MH Y[p=p,onSlashX=empty,onReturn=MH.T,onPath=MH.T]♥CMP.e
+    CMP.e not of form CORE.e
+* p♥CORE.MWT=CORE.MWT//can happen when checking CORE.L well formedness
+* p♥CORE.NC = CORE.NC
+_______
+#define p♥CMP/FULL.T?=TX   p♥FP=CORE.P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
+* p♥emptY=X with fresh X// if FULL.T, then result is CORE.T
+* p♥(Docs mdf P)=p♥Docs mdf p♥P
+
+* p♥CORE.P=p.minimize(CORE.P)//this also handles FP starting for Any/Void/Library/Thisn
+* p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
+    where n is the smallest number such that either
+      C in dom(p.get(n))
+      or @{__STOP_SCOPE__} in p.get(n).Docs
+      or p.get(n+1) undefined
+
+* p♥FULL.Docs =CORE.Docs where all the FP are replaced with p♥FP
+
+*p♥FULL.MH propagates on the structure
 _______
 #define Y♥CMP.e = HALF.e //unicode characters to disambiguate equals and parenthesis =() ⚌❪❫ ᙿ≝≖᐀ //what is the best =?
 * Y♥x = x
@@ -14,14 +31,14 @@ _______
     Y.onSlashX = empty
     Y.onReturn = T
 * Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
-* Y♥P = (Y.onPath Y.p.resolveCs(P))
+* Y♥P = (Y.onPath Y.p♥P)
     Y.onPath of form TX
 * Y♥P = (class P' P')
     Y.onPath=classP
-    P'=Y.p.resolveCs(P)
-* Y♥(T P) = ( Y.p.resolveCs(T)  Y.p.resolveCs(P) )
+    P'=Y.p♥P
+* Y♥(T P) = ( Y.p♥T  Y.p♥P )
 * Y♥(T e) = ❪T' x≖Y[onReturn=T']♥e x ❫ //do we see an improvement using unicode?
-    T'=Y.p.resolveCs(T)
+    T'=Y.p♥T
     e not of form P
 * Y♥'PathLit = Y♥\"PathLit"
 * Y♥NumLit e = Y♥e"NumLit"
@@ -57,7 +74,7 @@ _______
 * Y♥( DEs Ks Wops? DEs2) = Y♥(DEs Ks Wops? DEs2 void)
 * Y♥( DEs Ks Wops? DE DEs2 e)) = Y♥( DEs Ks Wops? (DE DEs2 e))
 * Y♥( DEs Ks wops T1..Tn e) = ( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
-    Ki=catch exception Y.p.resolveCs(Ti) xi error xi.#intoErrorAt(that={Info=empty})//so that we can recover the position   
+    Ki=catch exception Y.p♥Ti xi error xi.#intoErrorAt(that={Info=empty})//so that we can recover the position   
 * Y♥{ DEs Ks Wops? DEs2 } = Y0♥(
       (DEs Ks Wops? DEs2 void)
       catch return Y.T x x
@@ -127,7 +144,7 @@ _______
 * Y♥T? _=e= T? x=e
     x fresh
 * Y♥var? T? x = e = var? TX x =Y[onReturn=TX,onPath=TX]♥e
-    TX=Y.p.resolveCs(T?)
+    TX=Y.p♥T?
 * Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
       Y♥T? x=e
       Y♥var1? T1? x1=x.methNameTrim(x1)() //removes any numberPedex from the end
@@ -138,7 +155,7 @@ _______
 * Y♥catch throw? T '_' e = Y♥catch throw? T x e
     x fresh
 * Y♥catch T x e = Y♥catch exception T x e
-* Y♥catch throw T x e = catch throw Y.p.resolveCs(T) x Y♥e
+* Y♥catch throw T x e = catch throw Y.p♥T x Y♥e
 _______
 #define toBinOp(x,Op=) // convenience method to desugar updateOps
 * toBinOp(x, :=) = x :=

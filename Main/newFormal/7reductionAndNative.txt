@@ -17,9 +17,9 @@ _______
 * A[imm a1..an]=A[imm? a1->Obj1=imm a1->Obj1 .. imm?n an->Obj1=imm an->Obj1] 
 _______
 #define A[mdf x=v]=A'
-(A,mdf x=_)[mdf x=v]=A[mdf v], mdf x=v
-A[mdf x=v]=A, mdf x=v
-  where x not in dom(A)
+* (A,mdf x=_)[mdf x=v]=A[mdf v], mdf x=v
+* A[mdf x=v]=A[mdf v], mdf x=v
+    x not in dom(A)
 _______
 #define A|e --> A'|e'    
 * A | x  -->p  A| A(x)
@@ -30,25 +30,25 @@ _______
 * A0 | (var? T x=e0 Ds Ks e)  -->p  A1 | (var? T x=e1 Ds Ks e)
     A0 | e0  -->p  A1 | e1
 * A0 | (var? T x=v Ds Ks e)  -->p  A[T.mdf x=v] | (Ds Ks e)
-* A0 | (Ks e)  -->p  A| e
-* A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  A[K.T.mdf K.x=v] | K.e
-    throw=K.throw
-  p |- A.pathOf(v) <= K.T.P
-* A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  (var? T x=ctxV[throw v] Ds Ks e)
+* A | (Ks e)  -->p  A| e
+* A | (var? T x=ctxV[K.throw v] Ds K Ks e)  -->p  A[K.T.mdf K.x=v] | K.e
+    p |- A.pathOf(v) <= K.T.P
+* A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  A | (var? T x=ctxV[throw v] Ds Ks e)
     throw!=K.throw or not p |- A.pathOf(v) <= K.T.P
-* A | (var? T x=ctxV[throw v] Ds e)  -->p  throw v 
+* A | (var? T x=ctxV[throw v] Ds e)  -->p  A | throw v 
 * A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1 | MWT.e[this=v0,x1=v1,..xn=vn]
-    MWT=p[A0.pathOf(v0)].m(x1..xn)
-    MWT.nativeUrl = empty
+    MWT=p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
+    MWT.native[Url]? = empty
     A1=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
 * A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v
-    MWT=p[A0.pathOf(v0)].m(x1..xn)
-    MWT.nativeUrl = URL
-    either mut or capsule in MWT.Ts.mdfs
+    MWT=p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
+    MWT.native[Url]? !=empty
     A1,A=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
-    A=mutLibs(A1,A;MWT.Ts,v0..vn) //MWT.Ts includes mdf This
-    as=accessibleAddresses(A,MWT.Ts,v0..vn) //MWT.Ts includes mdf This
-    callPlugin(A1,MWT,v0..vn)=A1,A',A2|v
+    Ts=G^MWT.Ts //includes 'this' type
+    capsule not in Ts.mdfs//not a loss in expressiveness, we can use a wrapper
+    A=mutLibs(A1,A;Ts,v0..vn)
+    as=accessibleAddresses(A,Ts,v0..vn)
+    callPlugin(A1,A;MWT;v0..vn)=A1,A',A2|v
     A'=A~as
     exists e:  A1,A'| e -->p* A1,A',A2 | v  
     Free(A2) subsetOf {a| imm a->Obj in A1} U dom(A')

@@ -98,7 +98,7 @@ _______
       or MH.mdf in {lent,mut,capsule}
     Q = Q[typed; MH; p; G^MH; empty; MH.Ts.Ps]
     if e?=e then Q |- e :_ <=fwd% MH.T
-    MHs={p.minimize(MH'[from P]) | p(This0).Ts.Ps and p(P)(MH.s)=MH'}//assert all abstract
+    MHs={MH'[from P;p] | p(This0).Ts.Ps and p(P)(MH.s)=MH'}//assert all abstract
     if ?refine=empty, then MHs=empty
     else forall MH' in MHs:
       p|-MH.T<= MH'.T //method returns a type which is not a sybtype of its ancestor "name"
@@ -115,7 +115,7 @@ _______
 _______
 #define methTypes(p,P,s) = MethT
 * mdf0 P T1..Tn-> T';Ts.Ps in methTypes(p,P,s)  //(mBase)
-    p(P)(s).MH[from P]=refine? native? mdf0 method T m(T1 x1,..Tn xn) Ts
+    (p(P)(s).MH)[from P;p]=refine? native[URL]? mdf0 method T m(T1 x1,..Tn xn) Ts
     T'=fwd% T if fwd_or_fwd%_in(Ts)
     otherwise T'=T
 * noFwd Ts-> noFwd T;Ps in methTypes(p,P,s)  //(mNoFwd)

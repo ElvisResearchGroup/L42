@@ -3,8 +3,8 @@ _______
 * {reuse[URL] FULL.Ms};pTail ==> {followURL(URL),FULL.Ms};pTail  //(reuse)
 * {... FULL.Ms};pTail ==> {readFolder(p),FULL.Ms};pTail //(dots)//note, ... is cached 
 * {H CMs};pTail ==> normAndFlag({H CMs};pTail)  //(topNorm)
-* LL;pTail ==> normAndFlag({H CMs C=CORE.L FULL.Ms};pTail)  //(top)
-    LL={H CMs C=CMP.e FULL.Ms}
+* LL;pTail ==> normAndFlag({H CMs (LL;pTail)♥Docs C=CORE.L FULL.Ms};pTail)  //(top)
+    LL={H CMs Docs C=CMP.e FULL.Ms}
     CMP.e not of form CORE.L//e is the first point to execute
     Q=Q[Flag=norm;MH?=empty;p=(LL;pTail);G=empty;Ts=empty;Ps=dom(p)]
     FV(CMP.e)=empty //not implied by typing: FV check capsules used 1 or 0
@@ -27,7 +27,7 @@ _______
     LL'=norm(LL;pTail) if LL.Ms of form CMP.Ms
     LL'=LL otherwise
     typable(LL';pTail)=Csz
-    forall Cs in Csz:  |-(LL';pTail).navigate(Cs)
+    forall Cs in Csz:  |-(LL';pTail).navigate(This0.Cs)
    
 * LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
 * LL[empty=Flag]=LL

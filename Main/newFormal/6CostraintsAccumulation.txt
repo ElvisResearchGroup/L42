@@ -1,14 +1,14 @@
 _______
 #define PAccOf(p)=PAcc
-* PAccOf(p)=PAcc[p;GX=empty;CCz=empty].fixInfer(CMP.Ms1 .. CMP.Msk)
+* PAccOf(p)=PAcc[p;GX=empty;CCz=empty].fixInfer(CoMs1 .. CoMsk)
     k = max {k | p(Thisk) is defined }
-    p(Thisi)={Hi CMP/CORE.Msi FULL.Mi _}, where FULL.Mi not of form CORE.M
-    CMP.Msi={CMP.M| CMP.M in CMP/CORE.Msi}[from Thisi]    
+    p(Thisi)={Hi FULL.Msi FULL.Mi _}, where FULL.Mi not of form CORE.MWT or CORE.NC
+    CoMsi={CoM| CoM in FULL.Msi}[from Thisi;p]    
 _______
-#define PAcc.fixInfer(HALF.Ms) = PAcc'
-* PAcc.fixInfer(M1..Mn)=PAcc
-    PAcc.add(M1).. .add(Mn).CCz=PAcc.CCz
-* fixInfer(PAcc;M1..Mn)=PAcc.add(M1).. .add(Mn).collect().fixInfer(Ms)
+#define PAcc.fixInfer(CoMs) = PAcc'
+* PAcc.fixInfer(CoM1..CoMn)=PAcc
+    PAcc.add(CoM1).. .add(CoMn).CCz=PAcc.CCz
+* fixInfer(PAcc;CoM1..CoMn)=PAcc.add(CoM1).. .add(CoMn).collect().fixInfer(Ms)
     otherwise
 _______
 #define PAcc.collect()=PAcc'
@@ -28,10 +28,10 @@ _______
 	p(P).interface = empty 
 * T.s <= PT in PAcc.collect()//since they are alias of each other 
     PT <= T.s in PAcc.collect().CCz //why noy simply in PAcc.CCz?
-    PT=p(T.P)(s).MH.T[from T.P]//TODO: should we minimize? should 'from' minimize?
+    PT=PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]
 * T.s.i <= PT in PAcc.collect()//since method parameter types can not be refined (or since they are aliases?)
     PT <= T.s.i in PAcc.collect().CCz
-    PT=p(T.P)(s).MH.pari[from T.P]
+    PT=PAcc.p(T.P)(s).MH.pari[from T.P;PAcc.p]
 * PT.s <= PT'.s in PAcc.collect()
     PT <= PT' in PAcc.CCz
     PT'.s in PAcc.CCz
@@ -53,11 +53,11 @@ _______
 
 * PAcc[D1..Dn]=PAcc[D1.x:D1.TX .. Dn.x:Dn.TX]
 _______
-#define   PAcc.add(HALF.M) = PAcc'//assert never happens PAcc.add(C = FULL.L)
-* PAcc.add(C = CORE.L) = PAcc.add(M1).. .add(Mn)
-    M1..Mn=CORE.L.Ms[from This0.C]
-* PAcc.add(MH) =PAcc
-* PAcc.add(MH e) = PACCp[G^MH].add(e:PT)[PT<=MH.T]
+#define   PAcc.add(CoM) = PAcc'//assert never happens PAcc.add(C = FULL.L)
+* PAcc.add(FULL/CORE.MH) =PAcc
+* PAcc.add(/*FULL/CORE.*/MH /*CMP/CORE.*/e) = PAcc[G^MH].add(e:PT)[PT<=MH.T] //TODO:does work and extract useful info also on an untyped CORE.MWT?
+* PAcc.add(C = CORE.L) = PAcc.add(CoM1).. .add(CoMn)
+    CoM1..CoMn=CORE.L.CoMs[from This0.C;PAcc.p]
 _______
 #define HALF.e[\ = PT] //used in addPar
 * \[\ = mdf? PP] = PP
@@ -89,7 +89,7 @@ _______
     PT'1 ... PT'n = PT0 ... PTn \ i
 _______
 #define PAcc.paramaterPaths(PT, s)  
-* PAcc.paramaterPaths(T, s) = PAcc.p.minimize((G^PAcc.p(T.P)(s)).Ts.Ps[from P])
+* PAcc.paramaterPaths(T, s) = (G^PAcc.p(T.P)(s)).Ts.Ps[from P;PAcc.p]//TODO: is this what we need? 'this' included here
 * PAcc.paramaterPaths(PT, s) = PAcc.paramaterPaths(T, s)
     PT <= T in PAcc.collect()
 _______

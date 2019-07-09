@@ -1,83 +1,88 @@
 _______
-#define Abstract syntax and core : FULL, CORE, CMP=compiled
-  mdf::= empty | mut | lent | read | capsule | fwd whitespace mut | fwd | class | fwd%imm | fwd%mut 
+#define Abstract syntax and core : CORE, FULL, CMP (=compiled)
+  mdf::= imm | mut | lent | read | capsule | fwd whitespace mut | fwd | class | fwd%imm | fwd%mut 
   throw ::= 'error' | 'exception' | 'return' 
   s  ::= m(xs) //mOp is normalized when reified by FULL.MH.s
   Ldom::=s | Cs
-  CMP/FULL.MH ::= Docs refine? (native[URL])? mdf method T mOp Docs(T1 x1..Tn xn) [T+]?
-  CORE.MH ::= Docs refine? (native[URL])? mdf method T m Docs(T1 x1..Tn xn) [T+]?
-  CMP/FULL/CORE.H ::= interface?[T+]?
-  CMP/FULL.T::= mdf Docs FP | '\'
-  CORE.T::= mdf Docs P
-  FP::=(idUp idChars uniqueNum)(.Cs)? //the first do not have C well formedness
+  CMP/FULL.MH ::= Docs refine? (native[URL])? mdf method T mOp Docs(T1 x1..Tn xn) [Ts]
+  CORE.MH ::= Docs refine? (native[URL])? mdf method T m Docs(T1 x1..Tn xn) [Ts]
+  CMP/FULL/CORE.H ::= interface?[Ts]
   P  ::= Thisn.Cs | Any | Void | Library
-  CORE.e ::= xP|void|L|xP.m(x1=e1..xn=en)|loop e|throw e|x:=e|(Ds Ks e)
-  CORE.xP::= x|(T P) | a //a=address, only at runtime
+  CORE.T::= mdf Docs P
+  FP::=(idUp idChars (::n)?)(.Cs)? //the first do not have C well formedness
+  CMP/FULL.T::= mdf Docs FP | '\'
+  CORE.e ::= xP |void | L | xP.m(x1=e1..xn=en) | loop e |throw e |x:=e | (Ds Ks e)
+  CORE.xP::= x| (T P) | a //a=address, only at runtime
   CORE.D ::= var? T x=e
   CORE.K ::= catch throw T x e
-  CORE.NC::= Docs C = L
   CORE.L ::= {H Docs MWTs NCs Info}
+  CORE.MWT::= Docs MH = e?
+  CORE.NC::= Docs C = L
   Info::= #flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps}//in concrete syntax, labels for emptys are omitted
     //friendsDep are spyed by This:
     //Paths whose unique numbers are used either directly,
     //or in a private nested class or in an L in a method
     //usedMethDep//methods used either directly or ...
     //privateImpl: interfaces implemented by a private nested class or in an L in a method
-    //implicit 'infos': have private state=closed class, have private static methods (can be casted to class P)
+    //may add closed/open class (private abstract mehtods may be removed if unused)
+    //may add 'have private static methods' (can be casted to class P)
   Flag ::= 'norm' | 'typed'
   FULL.L ::= {(H | ... | reuse[URL])? Ms}
   FULL.M ::= F | MI | MWT | NC 
-  FULL.F ::= var? T CORE.x
+  FULL.F ::= var? T x
   FULL.MI ::= Docs s = CMP.e
-  FULL.MWT ::= MH (= CMP.e)? //this prevents FULL.L inside method bodies
+  FULL.MWT ::= MH = CMP.e? //this prevents FULL.L inside method bodies
   FULL.NC ::= Docs C = e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
-  CMP/FULL.e ::= x | P | void | CORE.L | \ | \x | e STRING | 'PathLit | OPP e
-    | e0 OP .. OP en | (T e) | e (.m)?( par ) | e .m? [ pars ]
+  CMP/FULL.e ::= x | P | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
+    | e0 OP .. OP en | (T e) | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WOPS? Ds e? ) | { Ds Ks WOPS? Ds }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   CMP/FULL.D ::= (DX =)? e
   CMP/FULL.WOPS ::= wops T+
   CMP/FULL.K ::= catch throw? T x e | catch throw? T '_' e
+  
+Differences between abstract and concrete grammar:
+* imm and [Ts] with empty Ts are represented by the empty string
+* FULL/CORE.MWT: the = is omitted if the e?=empty
+* labels for empty dependencies in Info are omitted 
 _______
-#define secondary grammars
+#define auxiliary grammars
   TX ::= CORE.T | X | \
   PT ::= TX | PT.s | PT.s.i
   CC ::= PT <= PT'
   IMap ::= X1:T1 .. Xn:Tn
-  HALF.xP ::= x | (X CORE.P) | (TX CORE.P) | (\ P)
-  HALF.e ::= x | (TX CORE.P) | void | CORE.L | \
-   | throw e | loop e | x := e | ( Ds Ks e )   
-   | xP.m(xe*) | xP (op xP)+
-  HALF.K ::= "catch" throw TX x e
-  HALF.D ::= "var"? TX x = e
-  HALF.M ::= CORE.NC | MH HALF.e?
+  HALF.xP ::= x | (TX CORE.P)
+  HALF.e ::= xP | void | CORE.L | \ | xP.m(xes)
+   | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)   
+  HALF.K ::= catch throw TX x e
+  HALF.D ::= var? TX x = e
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:PT1 .. xn:PTn
   I ::= I[p;IMap;G;CCz;onSlash=T?]//inference application environment
   Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=(classP|TX)]//toCore environment
   PAcc ::= PAcc[p;GX;CCz]//constraints accumulation environment
-  v ::= a|P|void|L
-  r ::= CORE.L| exception v | error v
+  v ::= a | P | void | CORE.L
+  r ::= CORE.L | exception v | error v
   Obj ::= P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
-  Q ::= Q[Flag;MH?;p;G;Ts;Ps] //TODO: consider adding field names?
+  Q ::= Q[Flag;MH?;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
   MethT ::= Ts->T;Ps  
-  ctxV ::= xP.m(xvs x=ctxV xes ) | loop ctxV | throw ctxV  | x := ctxV
+  ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV
   FULL.ctxC::= []
     | throw ctxC | loop ctxC |ctxC(.m)?(FULL.par) 
-    | ctxC STRING |x updateOp ctxC | (T ctxC) 
-    | if (matchC+ |CMP.e) ctxC (else FULL.e)?
+    | ctxC string |x updateOp ctxC | (T ctxC) 
+    | if (CMP.match+ |CMP.e) ctxC (else FULL.e)?
     | CMP.e.m?(ctxC FULL.par) | CMP.e.m?(CMP.par, x=ctxC, FULL.par)
-    | ctxC FULL(.m?)[FULL.pars]
-    | CMP.e[CMP.pars; ctxC, FULL.par;FULL.pars]
-    | CMP.e[CMP.pars; CMP.par, x=ctxC, FULL.par;FULL.pars]
-    | (CMP.e op)s ctxC (OP FULL.e)s
-    | ( CMP.Ds CMP.Ks WOPS? ctxC ) | ( CMP.Ds DX? ctxC FULL.Ds FULL.Ks WOPS? FULL.e? )  
+    | ctxC (.m?)[FULL.pars]
+    | CMP.e(.m?)[CMP.pars; ctxC, FULL.par;FULL.pars]
+    | CMP.e(.m?)[CMP.pars; CMP.par, x=ctxC, FULL.par;FULL.pars]
+    | (CMP.e OP)s ctxC (OP FULL.e)s
+    | ( CMP.Ds CMP.Ks WOPS? ctxC ) | ( CMP.Ds (DX=)? ctxC FULL.Ds FULL.Ks WOPS? FULL.e? )  
     | ( CMP.Ds CMP.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.e? )  
-    | { CMP.Ds DX? ctxC FULL.Ds1 FULL.Ks WOPS? FULL.Ds2 }
+    | { CMP.Ds (DX=)? ctxC FULL.Ds1 FULL.Ks WOPS? FULL.Ds2 }
     | { CMP.Ds CMP.Ks catch throw? T x ctxC FULL.Ks WOPS? FULL.Ds }
     | { CMP.Ds1 CMP.Ks WOPS? CMP.Ds2 DX? ctxC FULL.Ds }
     | if ctxC FULL.e (else FULL.e0)?
@@ -85,18 +90,18 @@ _______
     | if CMP.match+ DX=ctxC FULL.match+ FULL.e
     | while ctxC FULL.e | while CMP.e ctxC
     | for CMP.DXes ctxC | for CMP.DXes DX in ctxC FULL.DXes FULL.e
-    | CMP.e STRING[CMP.es ctxC FULL.e] //somehow handles the STRING case
+    | CMP.e string[CMP.es ctxC FULL.e] //somehow handles the string case
   CORE.ctx ::= []
     | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
-    | xP.m( xes x=ctx xes' )
+    | xP.m(xes x=ctx xes')
     | (Ds T x=ctx Ds' Ks e)
     | (Ds Ks catch throw T x ctx Ks' e)
-  FULL.ctxM::= C = ctxC | s = ctxC | MH = ctxC //CORE.ctxL is needed so that a p can explore core libraries
+  FULL.ctxM::= C = ctxC | s = ctxC | MH = ctxC
   CM::= CORE.NC | FULL.F | FULL.MI | FULL.MWT
+  CoM::= FULL.MWT | CORE.MWT | CORE.NC// Constraint member, member we can extract constriants from
   FULL.ctxL::= {H CMs ctxM Ms} | CORE.ctxL //note: no reuse/dots
   CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}  
-  HasHole::= FULL.ctxC | CORE.ctx
-  pTail::= CORE.L | FULL.ctxL
+  pTail::= CORE.L | CORE.ctxL | FULL.ctxL
   p::= LL;pTails //representing This0,...,Thisn // where This0.C refers to a class bound in L0, and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
 _______
 #define functional notation for LL and ctxL (over the domain Ldom)
@@ -114,10 +119,10 @@ _______
   STRCL0 ::= empty
   STROP(i+1) ::= [ STROPi
   STRCL(i+1) ::= STRCLi ]
-  STRING ::= STROPi " CHARSi (STROPi e STRCLi CHARSi)* " STRCLi
+  string ::= STROPi " CHARSi (STROPi e STRCLi CHARSi)* " STRCLi
   number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
-  commentChars ::= CHAR* -- '/*' -- '*/' //TODO: '--' do not work on sequences as we would like, same below
-  comment ::= '//' (CHAR* -- newline) newline | '/*' (commentChars | comment)* '*/' // Note: this allows /* comments to nest
+  commentChars ::= CHAR* -- '/*' -- '*/'
+  comment ::= '//' (CHAR* -- newline) newline | '/*' (commentChars | comment)* '*/'
   whitespace ::= (comment | ' ' | newline| ',')+
   tURL::= /*a trusted url*//*too boring*/
   uURL::= /*an untrusted url*//*too boring*/
@@ -125,12 +130,11 @@ _______
   charsCurly ::= (CHAR* -- '{' -- '}') | charsCurly { charsCurly } charsCurly
   idUp ::= _* (<A-Z> | $) 
   idLow ::= _* <a-z>
-  idChar   ::= <a-z> |<A-Z> | $ | _ | <0-9>
+  idChar ::= <a-z> |<A-Z> | $ | _ | <0-9>
   n ::= 0 | <1-9> <0-9>*
-  uniqueNum ::= (::n)?
   x ::=idLow idChar*
-  C ::= idUp idChar* uniqueNum //well formedness: C not Thisn/Any/Void/Library
-  m ::= (#|#$)?x(#x)* uniqueNum
+  C ::= idUp idChar* (::n)? //well formedness: C not Thisn/Any/Void/Library
+  m ::= (#|#$)?x(#x)* (::n)?
   OPP ::= ! | ~ | number  // prefix
   OP0 ::= ^ | : | <- | << | & | '|' // right associative
   OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
@@ -144,10 +148,10 @@ _______
   CORE.PathLit::= P | P? s | P? s.x
   mOp ::= empty | m | OP | ~ | !
 _______
-#define CMP/FULL Expressions
-  CMP/FULL.eAtomic ::= CORE.x | P | 'void' | LL | B | (T e) | \  | 'PathLit
-  CMP/FULL.ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' | \ CORE.x //no space in ePostfix(par) and \x
-              | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix STRING
+#define CMP/FULL Expressions priority disambiguation and other details
+  CMP/FULL.eAtomic ::= x | P | 'void' | LL | B | (T e) | \  | 'PathLit
+  CMP/FULL.ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' | \x //no space in ePostfix(par) and \x
+              | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix string
   CMP/FULL.par ::= e? xe*
   CMP/FULL.eUnary   ::= OPP? ePostfix
   CMP/FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
@@ -155,37 +159,36 @@ _______
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   CMP/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
   CMP/FULL.B ::= '(' D* e ')' | '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
-  CMP/FULL.DX ::= 'var'? T? x | T? '_' | T? '(' ('var'? T? CORE.x)+ ')'
+  CMP/FULL.DX ::= var? T? x | T? '_' | T? ( var?0 T?0 x0 ..var?n T?n xn )
   CMP/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x opUpdate e
   CMP/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
-  CMP/FULL.match ::= T x | T x = e | T? '(' (T? CORE.x)+ ')' = e //where at least one Ti? is not empty
+  CMP/FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty
   CMP/FULL.sWhile::= 'while' e e
   CMP/FULL.sFor ::= 'for' (DX in e)* e
   CMP/FULL.e ::= statement | e-binary3
 _______
 #define grammar well formedness
 * CMP/FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.
-* CMP/FULL.D: if e = D, that is,(DX=)?=empty, then e not of form x, P, void, LL, \, \x or 'PathLit
-  //none of those would make sense anyway, sadly do not helps with parsing a()(), immagine a+b (c).
 * s: 'this' notin xs and all x in xs are unique
-* MH: 'Any' notin [Ts] //Ts is thrown exceptions//TODO:why??? should we remove this restriciton?24/10/2018
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 * CMP/FULL/CORE.NC: NC.C not Any, Library, Void, This, Thisn
 * C not This, Thisn, Any, Void or Library
 * FP: if Cs not empty, then the start can not be Library, Void, Any
-* CMP/FULL/CORE.loop e: loop P, loop x, loop void, loop LL, not well formed
 * CORE B: in a (Ds1 Ks Ds2 e):
     unique x in dom(Ds1,Ds2)
     FV(Ks) disjoint dom(Ds1,Ds2)
     dom(Ds1,Ds2) disjoint bindings(Ds1.es,Ds2.es,Ks.es,e)
 * CMP/FULL.B:
+    unique x in dom(B.Ds)//all of the Ds, even if divided in 2 groups
+    FV(Ks) disjoint dom(B.Ds)
+    dom(B.Ds) disjoint bindings(B.Ds,Ks.es,e)
     if B={ Ds1 Ks WOPS? Ds2} then returning({ Ds1 Ks WOPS? Ds2})
     if B=(Ds1 Ks WOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
-    if B=(Ds e Ks WOPS?) then forall D in Ds: not returning(D) 
+    if B=(Ds1 e Ks WOPS?) then forall D in Ds1: not returning(D) 
     if B=(_ D e _), then noBlockNeeded(D.e)
     if B=(_ K e _), then noBlockNeeded(K.e)
 * CMP/FULL/CORE.K: K.x notin bindings(e)
-* CMP/FULL/CORE.MWT:  //checks for capsuleWellFormed// normalization can inject a capsule parameter in a 's=e'
+* CMP/FULL/CORE.MWT:
     MWT = refine? mdf method T m(T1 x1.. Tn xn)[Ts] e?
     T0 = mdf This0
     if exists i: Ti.mdf=fwdImm then T.mdf in {mut, fwdMut, imm, fwdImm}
@@ -194,24 +197,25 @@ _______
 * CORE.MWT: if MWT.e?=e, then
     FV(e)\this,x1..xn = empty    
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
+* CMP/FULL.match of form T?(T?0 x0..T?n xn) = e; at least one Ti? is not empty
 * FULL.e: all used variables are in scope    
 * CMP/FULL.sFor: forall T?(var1? T1? x1.. varn?Tn? xn) in FULL.sFor.DXs: var1?..varn?=empty
 * LL:
-    M1, M2 in dom(LL) and dom(M1)=dom(M2) implies M1=M2
+    M1, M2 in LL.Ms and dom(M1)=dom(M2) implies M1=M2
     Any notin H.Ts
     Exists at most one n such that exists m::n(xs) where L(m::n(xs))=MWT, and MWT.e? is empty
-    if H.interface? = interface, then forall s in dom(L), L(s).e?=empty
-    if H.interface? = interface, then forall m::n(xs),  m::n(xs) notin dom(L) //TODO: may be we need private methods in interfaces for the new rename
+    if LL.H.interface? = interface, then forall s in dom(L), L(s).e?=empty
+    if LL.H.interface? = interface, then forall m::n(xs),  m::n(xs) notin dom(L) //TODO: may be we need private methods in interfaces for the new rename
 * CMP/FULL.e: \x only appear in a method parameter expression
 * The top level project LL:
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
-    where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)
-    //We need to check this any time '...' is desugared, while 'reuse URL' will rename the private names
+    where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi) //care when '...' is expanded; while 'reuse URL' will rename the private names
 * program p:
-  CORE.L;pTail is well formed iff
-    (CORE.L;pTail).pop(1) is well formed
+  -if p.pop(1) is defined, then p.pop(1) is well formed 
+  -CORE.L;pTail is well formed iff
     FULL.L={CORE.L.H CORE.L.Ms}
-    normAndFlag(FULL.L;pTail)=CORE.L;pTail //defined in file top
+    normAndFlag(FULL.L;pTail)=CORE.L';pTail //defined in file top
+    and CORE.L'.Info<=CORE.L.Info (that is, all the dependencies are a subset, and so on)//TODO: define formally
 //Note, when we import an url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 _______
@@ -224,12 +228,12 @@ _______
     noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)* e)=
     noBlockNeeded(e)
 _______
-#define bindings(CMP/FULL/CORE.e):CORE.xs
+#define bindings(CMP/FULL/CORE.e):xs
 * bindings(LL)={}
-* bindings(var? T CORE.x=e)=bindings(catch throw? T CORE.x e)=CORE.x U bindings(e)
-* bindings(var? T? CORE.x)=CORE.x
-* bindings(T? ( var?1 T?1 CORE.x1 ..var?n T?n CORE.xn )= CORE.x1..CORE.xn
-* bindings(T? ( var?1 T?1 CORE.x1 ..var?n T?n CORE.xn )=e = CORE.x1..CORE.xn  U bindings(e)
+* bindings(var? T x=e)=bindings(catch throw? T x e)=x U bindings(e)
+* bindings(var? T? x)=x
+* bindings(T? ( var?1 T?1 x1 ..var?n T?n xn )= x1..xn
+* bindings(T? ( var?1 T?1 x1 ..var?n T?n xn )=e = x1..xn  U bindings(e)
 * propagates inductivelly in all the other cases
 _______
 #define FV(CORE.e) //note: FV defined as a sequence instead of a set, and counts occurences of xs
@@ -256,7 +260,7 @@ _______
     Ds,D=Ds1,Ds2
     returning(D.e)
     forall D' in Ds: not returning(D'.e) //dead code after
-    forall catch throw T x e' in Ks: returning(e')
+    forall K in Ks: returning(K.e)
 * returning(loop e)
 * returning(throw e)
 * returning(loop e)

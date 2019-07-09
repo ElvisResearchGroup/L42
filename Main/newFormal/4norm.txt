@@ -1,46 +1,42 @@
 _______
-#define norm(CMP/FULL.L;pTail)=CORE.L    norm(p,CMP.e)=CORE.e infer(p,FULL.Ms)=CORE.Ms
-* norm(p) = {interface? Ts' M1..Mn Info}
-    p={interface? Ts Ms0};pTail //TODO: is Ts minimized? if not the set minus below is wrong
-    Ts'=Ts,(collect(p,Ts)\ Ts) // this gets the transitively implemented interfaces (-Any)
-    forall imm P in Ts'\ Ts, P not of form Thisk._.C::n._ //private interfaces not added
-    Ms=expandFields(Ms0) // this turns the fields into abstract methods
-    Ms'=methods(p,This0)//next line order Ms' following Ms
-    M1..Mn=infer(p;Ms'\Ms.ss, [Ms'(M.s)| M in Ms],[p.resolveCs(Docs) C:e| Docs C:e in Ms])
-    Info=Info[norm;//ok, non computational rule checking that Info in CORE.L is consistent
-      typeDep;coherentDep==Ts';empty U collectDeps(M1) U..U collectDeps(Mn);
+#define norm(CMP/FULL.L;pTail)=CORE.L    norm(p,CMP.e)=CORE.e infer(p,FULL.Ms)=CORE.MWTs U CORE.NCs
+* norm(p) = {interface? [Ts'] MWT1..MWTn NC1..NCk Info} //ordering of members is important here
+    p={interface? [Ts] CMs};pTail//assert {reuse [URL] _}, {... _} and CORE.L never happens
+    Ts0=p.minimize(p♥Ts)
+    Ts'=Ts0,(collect(p,Ts0)\ Ts0) // this gets the transitively implemented interfaces (-Any)
+    forall imm P in Ts'\ Ts0, P not of form Thisk._.C::n._ //private interfaces not added
+    MWTs=methods(p,This0)
+    ss=expandFields(CMs).ss    
+    MWT1..MWTn NC1..NCk=infer(p;MWTs\ss,[MWTs(s)| s in ss],[NC| NC in CMs])//NC of form CORE.NC
+    Info=Info[norm;
+      typeDep;coherentDep==Ts';empty U collectDeps(p;MWT1) U..U collectDeps(p;MWTn);
       friendsDep= ??Ps;//using private methods (or paths??)
       usedMethDep=??(P.s)s;
-      privateImpl=??Ps]     
-//the line above use [|] to make sequences nor sets. The order of members is important here.
-//Note: using Ts'\ Ts the docs of any T inside Ts overrides the one inside Ts'      
-//assert norm(p,{reuse [URL] _}) and norm(p,{... _} never happens
-//norm(CORE.L;pTail) = CORE.L //assert never happens (not sure if true in real language but good for debugging at the start)
+      privateImpl=??Ps]
   
-  * norm(p,e)=I(Y♥e)
+* norm(p,e)=I(Y♥e)
     Y[p;onSlash=empty,onReturn=Library,onPath=error]
-    PAcc=PAccOf(p).fixInfer(p♥M1..p♥Mn)
-    I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
+    I=I[p;IMap=solve(p,PAccOf(p).CCz);G=empty;CCz;onSlash=empty]
 
-* infer(p,M1..Mn)=I(p♥M1)..I(p♥M1)
-    PAcc=PAccOf(p).fixInfer(p♥M1..p♥Mn)
+* infer(p,CoM1..CoMn)=I(p♥CoM1)..I(p♥CoMn)
+    PAcc=PAccOf(p).fixInfer(p♥CoM1..p♥CoMn)
     I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
 _______
-#define collectDeps(CORE.L)  //dont collect dependencies from NCs, Info and Docs
+#define collectDeps(p;CORE.MWT)  //dont collect dependencies from NCs, Info and Docs
 * collectDeps(C=_)=empty;empty
 * collectDeps(_ mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=T0..Tn, Ts;empty U collectDepsE(e?)
 _______
-#define collectDepsE(CORE.e?)    //collectDepsE(L) adds NCs dependiencies and relies on cached Info
-* collectDepsE(empty)=collectDepsE(x)=collectDepsE(void)=empty;empty
-* collectDepsE({H MWTs NC1..NCn Info})=Info.typeDep;Info.coherent U Ps1;Ps'1 U..U Psn;Ps'n
-    Psi;Ps'i=collectDepsE(NCi.L)[from This0.(NCi.C)]
-* collectDepsE( e0.m( x1=e1 .. xn=en ) )= collectDepsE(e0) U..U collectDepsE(en) 
-* collectDepsE(loop e)=collectDepsE(throw e)=collectDepsE(x :=e)=collectDepsE(e)
-* collectDepsE((class Any P))= P;empty
-* collectDepsE((class P' P))= P',P;P
+#define collectDepsE(p;CORE.e?)    //collectDepsE(p;L) adds NCs dependiencies and relies on cached Info
+* collectDepsE(p;empty)=collectDepsE(p;x)=collectDepsE(p;void)=empty;empty
+* collectDepsE(p;{H MWTs NC1..NCn Info})=Info.typeDep;Info.coherent U Ps1;Ps'1 U..U Psn;Ps'n
+    Psi;Ps'i=collectDepsE(p.push(NCi.C);NCi.L)[from This0.(NCi.C);p]
+* collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
+* collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
+* collectDepsE(p;(class Any P))= P;empty
+* collectDepsE(p;(class P' P))= P',P;P
     P'!=Any
-* collectDepsE( (Ds Ks e) ) =collectDepsE(Ds) U collectDepsE(Ks) U collectDepsE(e)
-* collectDepsE(var? T x=e)=collectDepsE(catch throw T x e)= T;empty U collectDepsE(e)
+* collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
+* collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= T;empty U collectDepsE(p;e)
 _______
 #define expandFields(Ms)=Ms' //need to keep the order
 * expandFields(M,Ms)=M,expandFields(Ms) 
@@ -53,25 +49,25 @@ _______
 _______
 #define collect(p,Ts)=Ts' //collects transitively implemented interfaces
 * collect(p,empty)=empty
-* collect(p,T0 Ts)=((p.resolveCs(T0) Ts') \ collect(p,Ts)) collect(p,Ts)
-    p(T0.P)=interface Ts0 {_}=FULL.L
-    Ts'=collect(p,Ts0[from T0.P])
-* collect(p,T0 Ts)=((p.resolveCs(T0) Ts0[from T0.P]) \ collect(p,Ts)) collect(p,Ts)
+* collect(p,T0 Ts)=((p♥T0 Ts') \ collect(p,Ts)) collect(p,Ts)
+    p(T0.P)={interface [Ts0] _}=FULL.L
+    Ts'=collect(p,Ts0[from T0.P;p])
+* collect(p,T0 Ts)=((p♥T0 Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface Ts0 _}=CORE.L
 _______
 #define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
-* methods(p,P0)=CORE.L.MWTs[from P0]
+* methods(p,P0)=CORE.L.MWTs[from P0;p]
     p(P0)=CORE.L
 * methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
     p(P0)=interface? Ts{ Ms0 }=FULL.L
     Ms=expandFields(Ms0)
-    Ps=collect(p,Ts[from P0]).Ps
+    Ps=collect(p,Ts[from P0;p]).Ps
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
     //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
     forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
     [Mi,_]=[MWT[?refine=refine]| P in P0,Ps such that methods(p,P)(si)=MWT]
-    MWTi=p.resolveCs(Mi) [with e=p(P0)(si).e[from P0]] if defined,
-    MWTi=p.resolveCs(Mi) otherwise
+    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
+    MWTi=p♥Mi otherwise
 _______
 #define PT in CCz
 * PT in PT<=_,CCz
@@ -79,7 +75,7 @@ _______
 _______
 #define commonSuperT(p,Tz)=Tz'
 * commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
-    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p.minimize(p(P).Pz[from T.P] U {T.P, Any}, T.mdf <= mdf}  
+    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p(P).Pz[from T.P;p] U {T.P, Any}, T.mdf <= mdf}  
 _______
 #define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T,     mostSpecific(Tz) = T
 * solve(p, CCz) = X1:T1 .. Xn:Tn

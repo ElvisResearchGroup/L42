@@ -2,72 +2,49 @@ _______
 #define p(P)=LL //functional notation
 * (LL;pTails)(This0.Cs)=LL(Cs)
 * p(Thisn+1.Cs)=p.pop(n+1)(This0.Cs)
-* p(Any)=interface{}
-* p(Void)=p(Library)={}
+* p(Any)={interface[]}
+* p(Void)=p(Library)={[]}
 _______
 #define p.pop(n)= p'
 * p.pop(0)=p
 * (LL;ctxL;pTails).pop(n+1)=(ctxL[LL];ctxLs).pop(n)
 * (LL;CORE.L;pTails).pop(n+1)=(CORE.L;ctxLs).pop(n)
 _______
-#define p.push(ctxL,LL)=p'    p.push(C)=p'    p.push(LL)
-* (ctxL[LL];pTails).push(ctxL,LL) = LL;ctxL;pTails
-
-* p.push(C)=p.push(ctxL,LL) //the code, do not relies on push(ctxL,LL)
-    p(This0)=ctxL[LL]
-    ctxL(C)=[]
+#define p.push(C)=p'    p.push(LL)
+* (pTail[LL];pTails).push(C)=LL;pTail;pTails
+    pTail=FULL.ctxL or CORE.ctxL 
+    pTail(C)=[]
 
 * (LL0;pTails).push(LL1) = LL1;LL0;pTails    
 _______
 #define p.update(LL)=p'
 * (p;ctxL).update(LL)=p.update(LL);ctxL
 * (p;CORE.L).update(LL)=p.update(LL);CORE.L
-* (LL';ctxLs).update(LL) = LL
+* (LL';pTails).update(LL) = LL;pTails
 _______
 #define p.minimize(P)=P'   p.reducePath(P)=P' //assert defined only if p(This0) of form C/CORE.L
-*p.minimize(P) = P
-   p.reducePath(P) undefined
-* p.minimize(P) = p.minimize(p.reducePath(P))
 * p.minimize(P) = P
     P in {Any,Void,Library}
 * p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
     p.pop(1).minimize(Thisn.Cs)=Thisk.Cs'
 * (CORE.L;ctxL;_).minimize(This1.C.Cs)=This0.Cs
-    ctxL(C)=HasHole //Note:ctxL(C)=[] would be more restrictive, for example
+    ctxL(C) of form FULL.ctxC or CORE.ctx //Note:ctxL(C)=[] would be more restrictive, for example
    //preventing A:Data<><{method A (..)} to be summed with the constructor.
 _______
-#define p.navigate(Cs)=p'    p.navigate(P)=p'
-* p.navigate(C1..Ck)=p.push(C1)...push(Ck)
-
-* p.navigate(Thisn.Cs)=p.pop(n).navigate(Cs)
+#define p.navigate(P)=p'
+* p.navigate(Thisn.C1..Ck)=p.pop(n).push(C1)...push(Ck)
 _______
-#define p.resolveCs(CMP/FULL.T?)=TX   p.resolveCs(FP)=CORE.P,  p.resolveCs(CMP/FULL.Docs)=CORE.Docs,  p.resolveCs(CMP/FULL.MH)=CORE.MH
-* p.resolveCs(empty)=X with fresh X// if FULL.T, then result is CORE.T
-* p.resolveCs(Docs mdf P)=p.resolveCs(Docs) mdf p.resolveCs(P)
-
-* p.resolveCs(CORE.P)=p.minimize(CORE.P)//this also handles FP starting for Any/Void/Library/Thisn
-* p.resolveCs(C.Cs)=p.minimize(Thisn.C.Cs) //not already minimized
-    where n is the smallest number such that either
-      C in dom(p.get(n))
-      or p.get(n)={@{__STOP_SCOPE__} _}
-      or p.get(n+1) undefined
-
-* p.resolveCs(FULL.Docs) =CORE.Docs where all the FP are replaced with p.resolveCs(FP)
-
-*p.resolveCs(FULL.MH) propagates on the structure
-   Docs0 refine? native[URL]? mdf method T0 m Docs1 (T1 x1 .. Tn xn)[Ts]
-_______
-#define P0[from P1]=P2 e[from P]=e' e[from P]n=e'  //TODO: minimize and from? should from minimize?
-* Thisn.Cs[from Thism.C1..Ck]=Thism.C1..C(k-n).Cs if n<=k
-* Thisn.Cs[from Thism.C1..Ck]=This(m+n-k).Cs if n>k
+#define P0[from P1;p]=P2 e[from P;p]=e' e[from P;p;n]=e'
+* Thisn.Cs[from Thism.C1..Ck;p]=Thism.C1..C(k-n).Cs if n<=k
+* Thisn.Cs[from Thism.C1..Ck;p]=p.minimize(This(m+n-k).Cs) if n>k
 * Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
 
-* e[from P] propagate on the structure, and L[from P] = L[ from P]0
+* e[from P;p] propagate on the structure, and L[from P;p] = L[ from P;p;0]
 
-* {H Ms}[from P]j = {H[Ps=H.Ps[from P]j+1] Ms[from P]j+1}
-* This(j+n).Cs0[from P]j=This(j+k).Cs1
-    Thisn.Cs0[from P]=Thisk.Cs1
-* Thisn.Cs[from P]j=Thisn.Cs with n<j
+* {H Ms}[from P;p;j] = {H[Ps=H.Ps[from P;p;j+1] Ms[from P;p;j+1]}
+* This(j+n).Cs0[from P;p;j]=This(j+k).Cs1 //assert This(j+k).Cs1=p.minimize(This(j+k).Cs1)//does it holds? 
+    Thisn.Cs0[from P;p]=Thisk.Cs1
+* Thisn.Cs[from P;p;j]=Thisn.Cs with n<j
 * All cases for other expressions/terms propagate to submembers, including docs  
 _______
 #define MH notations, MWT notations just inherits them,
@@ -91,7 +68,7 @@ _______
     p |- P0<=P1
 
 * p |- P0<=P1  
-    P1 in P0 U (p(P0).Ts.Ps[from P0]) U Any
+    P1 in P0 U (p(P0).Ts.Ps[from P0;p]) U Any
     assert p.normalize(Pi)=Pi
 
 * capsule<=mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm
