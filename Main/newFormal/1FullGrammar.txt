@@ -54,7 +54,7 @@ _______
   PT ::= TX | PT.s | PT.s.i
   CC ::= PT <= PT'
   IMap ::= X1:T1 .. Xn:Tn
-  HALF.xP ::= x | (TX CORE.P)
+  HALF.xP ::= x | (TX P)
   HALF.e ::= xP | void | CORE.L | \ | xP.m(xes)
    | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)   
   HALF.K ::= catch throw TX x e
@@ -97,7 +97,7 @@ _______
     | (Ds T x=ctx Ds' Ks e)
     | (Ds Ks catch throw T x ctx Ks' e)
   FULL.ctxM::= C = ctxC | s = ctxC | MH = ctxC
-  CM::= CORE.NC | FULL.F | FULL.MI | FULL.MWT
+  CM::= FULL.MWT | CORE.MWT | CORE.NC | FULL.F | FULL.MI
   CoM::= FULL.MWT | CORE.MWT | CORE.NC// Constraint member, member we can extract constriants from
   FULL.ctxL::= {H CMs ctxM Ms} | CORE.ctxL //note: no reuse/dots
   CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}  

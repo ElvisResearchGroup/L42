@@ -1,10 +1,10 @@
 _______
 #define p ==>p'
-* {reuse[URL] FULL.Ms};pTail ==> {followURL(URL),FULL.Ms};pTail  //(reuse)
-* {... FULL.Ms};pTail ==> {readFolder(p),FULL.Ms};pTail //(dots)//note, ... is cached 
+* {reuse[URL] Ms};pTail ==> {followURL(URL),Ms};pTail  //(reuse)
+* {... Ms};pTail ==> {readFolder(pTail),Ms};pTail //(dots)//note, ... is cached 
 * {H CMs};pTail ==> normAndFlag({H CMs};pTail)  //(topNorm)
-* LL;pTail ==> normAndFlag({H CMs (LL;pTail)♥Docs C=CORE.L FULL.Ms};pTail)  //(top)
-    LL={H CMs Docs C=CMP.e FULL.Ms}
+* LL;pTail ==> normAndFlag({H CMs (LL;pTail)♥Docs C=CORE.L Ms};pTail)  //(top)
+    LL={H CMs Docs C=CMP.e Ms}
     CMP.e not of form CORE.L//e is the first point to execute
     Q=Q[Flag=norm;MH?=empty;p=(LL;pTail);G=empty;Ts=empty;Ps=dom(p)]
     FV(CMP.e)=empty //not implied by typing: FV check capsules used 1 or 0
@@ -12,7 +12,7 @@ _______
     coherentClasses(p,infer(p,CMP.e))
     empty|adapt(infer(LL;pTail,CMP.e),T.P) -->p+ _|r
     CORE.L= refreshUniqueNames(r) //fails if r not of form CORE.L, lifted as compilation error
-* {H CMP.Ms C=ctxC[LL] FULL.Ms};pTail ==> p.pop(1)   //(enter)
+* {H CMs C=ctxC[LL] FULL.Ms};pTail ==> p.pop(1)   //(enter)
     LL not of form CORE.L
     LL;{H CMP.Ms C=ctxC FULL.Ms};pTail  ==>+  p //Note: p is one level deeper
     p(This0) of form CORE.L // p(This0) is the result of metaprogramming LL
@@ -23,11 +23,8 @@ _______
 * adapt(CMP.e, _)= (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
 #define normAndFlag(FULL.L;pTail)-> CORE.L;pTail    LL[Csz=Flag]=LL'
-* normAndFlag(LL;pTail)=LL'[Csz=typed];pTail
-    LL'=norm(LL;pTail) if LL.Ms of form CMP.Ms
-    LL'=LL otherwise
-    typable(LL';pTail)=Csz
-    forall Cs in Csz:  |-(LL';pTail).navigate(This0.Cs)
+* normAndFlag(p)=p.update(p(This0)[typable(p)=typed])
+    forall Cs in typable(p):  |-p.navigate(This0.Cs)
    
 * LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
 * LL[empty=Flag]=LL
@@ -38,7 +35,6 @@ _______
     p(This0.Csi) of form CORE.L
     p(This0.Csi).info.Flag=norm
     p(This0.Csi).depTyped subset {P| p(P).info.Flag=typed} U This0.Cs1..This0.Csn
-  defined only if forall Cs such that p(This0.Cs)=CORE.L: alive(p,CORE.L.info.dep.depTypes)
 _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
@@ -46,8 +42,6 @@ _______
       either P'=Any
       or coherent(p.navigate(P))
 
-* coherent(p)
-    p(This0).interface?=interface
 * coherent(p)
     MHs={MH | MH in p(This0).MWTs} //thus, abstract
     either p(This0).interface?=interface
@@ -108,14 +102,3 @@ _______
 * coherentGetMdf(mut,mdf,mdfs0,_)
     mdfs0 subseteq {mut, fwd mut, capsule}
     mdf in {mut, capsule}
-_______
-#define alive(p;Ps)    alive(LL,Cs) //check if P is defined or has some hope of being defined in the future
-* alive(p;empty)
-* alive(p;Any,Ps)=alive(p;Void,Ps)=alive(p;Library,Ps)=alive(p;Ps)
-* alive(p,Thisn.Cs,Ps)=alive(p(Thisn),Cs) and alive(p;Ps)
-
-* alive(LL,Cs) if Cs in dom(LL)
-* alive(LL,Cs._) if LL(Cs) not of form LL //implies Cs in dom(LL)
-
-//WHEN AND HOW docs are checked so that the paths inside
-//the docs are alive and not 'mispelled'?

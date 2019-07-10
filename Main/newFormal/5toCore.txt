@@ -6,11 +6,11 @@ _______
 * p♥CORE.MWT=CORE.MWT//can happen when checking CORE.L well formedness
 * p♥CORE.NC = CORE.NC
 _______
-#define p♥CMP/FULL.T?=TX   p♥FP=CORE.P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
+#define p♥CMP/FULL.T?=TX   p♥FP=P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
 * p♥emptY=X with fresh X// if FULL.T, then result is CORE.T
 * p♥(Docs mdf P)=p♥Docs mdf p♥P
 
-* p♥CORE.P=p.minimize(CORE.P)//this also handles FP starting for Any/Void/Library/Thisn
+* p♥P=p.minimize(P)//this also handles FP starting for Any/Void/Library/Thisn
 * p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
     where n is the smallest number such that either
       C in dom(p.get(n))

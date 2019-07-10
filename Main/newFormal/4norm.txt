@@ -9,7 +9,7 @@ _______
     ss=expandFields(CMs).ss    
     MWT1..MWTn NC1..NCk=infer(p;MWTs\ss,[MWTs(s)| s in ss],[NC| NC in CMs])//NC of form CORE.NC
     Info=Info[norm;
-      typeDep;coherentDep==Ts';empty U collectDeps(p;MWT1) U..U collectDeps(p;MWTn);
+      typeDep;coherentDep==Ts';empty U collectDeps(p;MWT1) U..U collectDeps(p;MWTn) U collectDeps(NC1.Docs..NCk.Docs);
       friendsDep= ??Ps;//using private methods (or paths??)
       usedMethDep=??(P.s)s;
       privateImpl=??Ps]
@@ -22,21 +22,27 @@ _______
     PAcc=PAccOf(p).fixInfer(p♥CoM1..p♥CoMn)
     I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
 _______
-#define collectDeps(p;CORE.MWT)  //dont collect dependencies from NCs, Info and Docs
-* collectDeps(C=_)=empty;empty
-* collectDeps(_ mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=T0..Tn, Ts;empty U collectDepsE(e?)
+#define collectDeps(p;CORE.MWT)=Ps;Ps' collectDeps(p;T)=Ps;Ps' collectDeps(p;Doc)=Ps;Ps'
+//collectDeps(sequence)=union of the results of elements of the sequence
+* collectDeps(Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=
+    collectDeps(Docs) U collectDeps(T0..Tn,Ts) U collectDepsE(e?)
+* collectDeps(T)=T.P;empty U collectDeps(T.Docs)
+* collectDeps(Doc)={P| @P._ inside Doc};empty     
 _______
-#define collectDepsE(p;CORE.e?)    //collectDepsE(p;L) adds NCs dependiencies and relies on cached Info
+#define collectDepsE(p;CORE.e?)  //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
 * collectDepsE(p;empty)=collectDepsE(p;x)=collectDepsE(p;void)=empty;empty
-* collectDepsE(p;{H MWTs NC1..NCn Info})=Info.typeDep;Info.coherent U Ps1;Ps'1 U..U Psn;Ps'n
-    Psi;Ps'i=collectDepsE(p.push(NCi.C);NCi.L)[from This0.(NCi.C);p]
+* collectDepsE(p;CORE.L)=Ps0..Psn;Ps'0..Ps'n
+    Ps0=CORE.L.Info.typeDep
+    Ps'0=CORE.L.Info.coherent
+    Ps1..Psn={CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
+    Ps'1..Ps'n={CORE.L(Cs).Info.coherent[from This.Cs;p]| Cs in dom(CORE.L)}
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;(class Any P))= P;empty
 * collectDepsE(p;(class P' P))= P',P;P
     P'!=Any
 * collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
-* collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= T;empty U collectDepsE(p;e)
+* collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
 _______
 #define expandFields(Ms)=Ms' //need to keep the order
 * expandFields(M,Ms)=M,expandFields(Ms) 
@@ -104,7 +110,7 @@ _______
 
 * I(\) = I.onSlash.P //undefined if it is empty
 * I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
-* I((TX CORE.P)) = (iType(I,TX) CORE.P)
+* I((TX P)) = (iType(I,TX) P)
 * I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I'(e1) .. xn=I'(en))
     I'=I[onSlash=I.IMap(I.G(xP))]
 * I(xP0 OP..OP xPn)=I(e)
