@@ -14,7 +14,8 @@ cached informations about typing and dependencies.
 Library literals contained in CORE expressions are of form CORE.L
 Nested classes inside a CORE.L are directly defined by a CORE.L
 
-CMP is a richer grammar for expressions, but there is not a library literal of form CMP.L, or library members of form CMP.M.
+CMP is a richer grammar for expressions, but there is not a library literal
+of form CMP.L, or library members of form CMP.M.
 Library literals contained in CMP expressions are of form CORE.L
 
 FULL is very similar to CMP, but allows for library literals of form FULL.L
@@ -23,27 +24,27 @@ Nested classes inside a FULL.L are defined using a FULL expression;
 Library literals contained in FULL expressions are of form FULL.L or CORE.L
 
 That is, "Foo.bar(Beer.foo())" is a valid CORE.e.
-The formal reduction and the type systems are able to work directly on those kinds of expressions.
-Since CORE.e is a subset of CMP.e and FULL.e, they can appear everywhere an expression of any kind is expected.
+Reduction and type systems are able to work directly on those kinds of expressions.
+Since CORE.e is a subset of CMP.e and FULL.e, they can appear everywhere an
+expression of any kind is expected.
 Instead, "if a>b return Foo[a;b]" is a valid CMP.e. 
 Expressions of form CMP.e can appear everywhere, except inside of a CORE.L.
 In particular, method bodies of FULL.L are of form CMP.e 
 Finally,  "Data: Trait:{T x} + Trait:{...}"
-is an expression of form FULL.e; it is not a CMP.e since it contains library literals of form FULL.L: "{T x}" and "{...}".
+is an expression of form FULL.e; it is not a CMP.e since it contains
+library literals of form FULL.L: "{T x}" and "{...}".
 
-In order to reduce expressions of form FULL.e, the top level reduction first reduces all the library literal
-of form FULL.L into a normalized form CORE.L; then the expression is now of form CMP.e and can be normalized
-to be of form CORE.e and executed.
+In order to reduce expressions of form FULL.e, the top level reduction first
+reduces all the library literal of form FULL.L into a normalized form CORE.L;
+the expression is now of form CMP.e and can be normalized to a CORE.e and executed.
 
-So, expressions of form CORE.e also containing CORE.Ls can be executed directly; but how would it look like?
-
-The FULL.e expression seen above 'Data: Trait:{T x} + Trait:{...}'
-would look like
+The FULL.e expression seen above 'Data: Trait:{T x} + Trait:{...}', one normlalized
+to CORE.e would look like
 (class Data Data).#colon#1(that:
   (class Trait Trait).#colon#1({read method This3.T x() #norm={depends=This3.T}})
   .#plus#1((class Trait Trait).#colon#1({/*??*/ #info={/*??*/}})))
-where an info element is omitted if empty; the full form would be  #norm={depends=This3.T, dependsCoherent=, friendsDep=, usedMethDep=, privateImpl=,}
 
+-------------------------------
 Summary of the content:
 
 The first file, FullGrammar, contains all grammars and well formedness.
@@ -310,7 +311,7 @@ Adapting the current type system://TODO: should be already integrated in Typing,
 -while typing the method call: if s of form #$(_)
  then either
     original MWT.s of form #$_(_)
-    or original MWT.mdf in {lent,mut,capsule} and !trusted(p.top())
+    or original MWT.mdf in {lent,mut,capsule} and !trusted(p(This0))
 
 -note: before we could declare a class untrusted explicitly, now you can just add
   "native[untrusted] class method Void untrusted::1()=void"
@@ -396,3 +397,40 @@ starting point: Integer, String and other can be seen as imm Library
   mut method mut T native[mutGet] f_1(K that)
   
  }
+ 
+ TYPE SYSTEM
+ 
+-----------------------------------------
+It is possible to obtain all the variations with the following table:
+  mBase
+  mNoFwd(mBase)
+  mImmFwd(mBase)
+  mRead(mBase)
+  mC(mBase)
+  mC(mNoFwd(mBase))
+  mI(mBase)
+  mI(mRead(mBase))
+  mNoFwd(mImmFwd(mBase))
+  mVp(mBase) //1 mType for each mut parameter
+  mVp(mNoFwd(base))//1 mType for each mut parameter
+ 
+    
+//TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
+//also check the following:
+//Elem e=(return that catch return Elem x x catch return Any y error error)[redirect Elem in Any]
+
+
+  rule path:
+//Note: we need p(P) not interface and with some class methods to prevent a bug in sum/redirect
+//when a class 'A' may become an interface, and annotations 'class A' would be invalid.
+//since classes without class methods may become interfaces, we accept the type class A only
+//when class methods are present.
+//Example
+{T:{} //well typed
+method class T ()=T
+method Void doStuff(class T x)
+}[redirect T=Base]
++
+{method Void doStuff(class Base x)=x.class()}//well typed
+//result would not work
+  

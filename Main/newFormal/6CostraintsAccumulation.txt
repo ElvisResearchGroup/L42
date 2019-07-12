@@ -20,7 +20,7 @@ _______
     PT <= PT', PT' <= PT" in PAcc
 * PT <= PT in PAcc.collect()
     PT in PAcc.CCz
-* mdf P <= mdf' P' in PAcc.collect() //TODO: explosive, can we make it more computational? can we mix it with CollectSolution? 
+* mdf P <= mdf' P' in PAcc.collect() //TODO: explosive, can we make it more computational? can we mix it with solve? 
     p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
     P' != _ Any // Just for consistency with everything else, not important!
 * mdf P <= PT in PAcc.collect()// since all classes are final
@@ -73,7 +73,6 @@ _______
 * PAcc.addPar(e:PT.s.i) = PAcc.add(e[\=PT.s.i]:PT')[PT' <= PT.s.i]
 _______
 #define PAcc.add(HALF.e : CORE.T) = PAcc'
-// TODO: Add ps //WHAT IS ps??? 
 * PAcc.add( (D1..Dn K1..Kk e):X ) = PAcc'[PT <= X].add(K1:X).. .add(Kk:X)
     PAcc'=PAcc[D1..Dn].addD(D1).. .addD(Dn).add(e:PT)
 * PAcc.add(x:PAcc.GX(x)) = PAcc
@@ -125,52 +124,3 @@ _______
     (xPi.P).$methName(OP)_i, s, i in PAcc.opOptions(OP, PTs, xP0..xPn)
     forall (xPj.P).$methName(OP)_j, s', j in PAcc.opOptions(OP, PTs, xP0..xPn)
       i=j, s=s'
-    
-====================OLD RULES, Isaac, check is the same as above
-
-    { s } = { s | *forall x1..xn, forall {i}={0..n} where,
-        s = methName(OP)_i(x1..xn)
-        P1 ... Pn = paramaterPaths(PTi, CCz, s)
-*        P'1 ... P'n = (PT0..PTn\i).PPs
-*        !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
-    forall j,x1..xn forall (PT P) in xP0..xPn:
-      p(P.$methName(OP)_j)(#apply(x1..xn)) undefined
-*    G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
-*	PT'1 ... PT'n = PT0 ... PTn \ s.i
----------------------------------------------------------------------------------------------------
-    G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= PTi.s.1 ... PT'n <= PTi.s.n
-
-
-    { P'.s } = { P'.s | forall x1..xn, forall {i}={0..n} where,
-    	P' = P.$methName(OP)_i
-    	s = #apply(x1..xn)
-        xPi = (PT P)
-        P1 ... Pn = p[P'.s].Ps
-        P'1 ... P'n = (PT0..PTn\i).PPs
-        !unsatisfiable(collect(P'1 <= P1, ..., P'n <= Pn, CCz)) }
-	G | CCz0 +> (xP0 : PT0) +> ... +> (xPn : PTn) = _|CCz'
-    PT'1 ... PT'n = PT0 ... PTn \ s.i
----------------------------------------------------------------------------------------------------
-    G | CCz0 |- xP0 OP ... OP xPn : PT(s.i).s | CCz', PT'1 <= P'.s.1 ... PT'n <= P'.s.n
- 
-=========================================================================================
-NOTE: the following syntax is now unused
-  PX ::=  P | X
-  PP ::= PX | PX.s | PX.s.i
-
-
-//OLD------------
-
-foo(class Any that)
-foo((\ P) + 3Num)
-
-P + ...
-(T P) + ... // will call .$
-// nothing ells will!
-((T P))
-(T (P))
-(P)
-(T x = P x) + ...  
-(class Any P) + x // may call .$, will not call .#
-(P) +x may cakk .# will not call .$
-((class Any P)) + x will not call anything on P

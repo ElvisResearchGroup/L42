@@ -8,11 +8,8 @@ _______
     MWTs=methods(p,This0)
     ss=expandFields(CMs).ss    
     MWT1..MWTn NC1..NCk=infer(p;MWTs\ss,[MWTs(s)| s in ss],[NC| NC in CMs])//NC of form CORE.NC
-    Info=Info[norm;
-      typeDep;coherentDep==Ts';empty U collectDeps(p;MWT1) U..U collectDeps(p;MWTn) U collectDeps(NC1.Docs..NCk.Docs);
-      friendsDep= ??Ps;//using private methods (or paths??)
-      usedMethDep=??(P.s)s;
-      privateImpl=??Ps]
+    Ps;Ps'=collectDeps(p;Ts') U collectDeps(p;MWT1..MWTn) U collectDeps(NC1.Docs..NCk.Docs)
+    Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
   
 * norm(p,e)=I(Y♥e)
     Y[p;onSlash=empty,onReturn=Library,onPath=error]
@@ -45,6 +42,7 @@ _______
 * collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
 _______
 #define expandFields(Ms)=Ms' //need to keep the order
+* expandFields(empty)=empty
 * expandFields(M,Ms)=M,expandFields(Ms) 
     M not of form F
 * expandFields(T x,Ms)=method toRead(T) x(), expandFields(Ms)
@@ -85,7 +83,7 @@ _______
 _______
 #define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T,     mostSpecific(Tz) = T
 * solve(p, CCz) = X1:T1 .. Xn:Tn
-    X1 .. Xn = { X | X inside p.top() }
+    X1 .. Xn = { X | X inside p(This0) }
     Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
     Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
 
@@ -111,23 +109,25 @@ _______
 * I(\) = I.onSlash.P //undefined if it is empty
 * I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
 * I((TX P)) = (iType(I,TX) P)
-* I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I'(e1) .. xn=I'(en))
-    I'=I[onSlash=I.IMap(I.G(xP))]
+* I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I1(e1) .. xn=In(en))
+    P=I.IMap(I.G(xP)).P
+    MWT=I.p(P)(m(x1..xn))
+    Ii=I[onSlash=MWT.pari[from P;I.p]]
 * I(xP0 OP..OP xPn)=I(e)
     Ti=I.IMap(I.G(xPi))
     PAcc[I.p;GX=empty;I.CCz].selectedOption(OP, T0..Tn, xPs)=PT,s,i
     xP'1..xP'n=xP0..xPn/i
     e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
     e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
-* I(e)=e' propagates on the structure for 
-    x, void, CORE.L, throw e, loop e, x := e
+* I(e)=e if e in {x, void, CORE.L} 
+* I(e)=e' propagates on the structure for throw e, loop e, x := e
 _______
 #define I[DS] = I',  I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
 * I[TX1 x1=_ .. TXn xn=_]=I[G=I.G,x1:iType(I,TX1),..,xn:iType(I,TXn)]
 
-* I(TX x=e) = iType(I,TX) x=I(e) 
+* I(TX x=e) = iType(I,TX) x=I(e)
 
-* I(catch TX x e)[IMap;G;T]=catch iType(I,TX) x I(e)
+* I(catch throw TX x e)=catch throw iType(I,TX) x I(e)
 _______
 #define iType(I,TX)=CORE.T
 * iType(I,T)=T

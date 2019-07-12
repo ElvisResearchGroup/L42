@@ -3,14 +3,15 @@ _______
 * {reuse[URL] Ms};pTail ==> {followURL(URL),Ms};pTail  //(reuse)
 * {... Ms};pTail ==> {readFolder(pTail),Ms};pTail //(dots)//note, ... is cached 
 * {H CMs};pTail ==> normAndFlag({H CMs};pTail)  //(topNorm)
-* LL;pTail ==> normAndFlag({H CMs (LL;pTail)♥Docs C=CORE.L Ms};pTail)  //(top)
-    LL={H CMs Docs C=CMP.e Ms}
+* p ==> normAndFlag({H CMs p♥Docs C=CORE.L Ms};pTail)  //(top)
+    p={H CMs Docs C=CMP.e Ms};pTail
     CMP.e not of form CORE.L//e is the first point to execute
-    Q=Q[Flag=norm;MH?=empty;p=(LL;pTail);G=empty;Ts=empty;Ps=dom(p)]
-    FV(CMP.e)=empty //not implied by typing: FV check capsules used 1 or 0
-    Q|- infer(p,CMP.e) :T
-    coherentClasses(p,infer(p,CMP.e))
-    empty|adapt(infer(LL;pTail,CMP.e),T.P) -->p+ _|r
+    CORE.e=norm(p,CMP.e)
+    FV(CORE.e)=empty //not implied by typing: FV check capsules used 1 or 0
+    Q=Q[Flag=norm;MH?=empty;p;G=empty;Ts=empty;Ps=Any]
+    Q|- CORE.e :T
+    coherentClasses(p,CORE.e)
+    empty|adapt(CORE.e,T.P) -->p+ _|r
     CORE.L= refreshUniqueNames(r) //fails if r not of form CORE.L, lifted as compilation error
 * {H CMs C=ctxC[LL] FULL.Ms};pTail ==> p.pop(1)   //(enter)
     LL not of form CORE.L
@@ -18,19 +19,19 @@ _______
     p(This0) of form CORE.L // p(This0) is the result of metaprogramming LL
 _______
 #define adapt(CMP.e,P)
-* adapt(CMP.e, Library)=CMP.e
-* adapt(CMP.e, Void)=(Void x=CMP.e {}); where x fresh
-* adapt(CMP.e, _)= (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
+* adapt(CMP.e, Library) = CMP.e
+* adapt(CMP.e, Void) = (Void x=CMP.e {}); where x fresh
+* adapt(CMP.e, _) = (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
-#define normAndFlag(FULL.L;pTail)-> CORE.L;pTail    LL[Csz=Flag]=LL'
-* normAndFlag(p)=p.update(p(This0)[typable(p)=typed])
+#define normAndFlag(FULL.L;pTail)=CORE.L;pTail    LL[Csz=Flag]=LL'
+* normAndFlag(p) = p.update( p(This0)[typable(p)=typed] )
     forall Cs in typable(p):  |-p.navigate(This0.Cs)
    
 * LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
 * LL[empty=Flag]=LL
 _______
 #define typable(p)=Csz
-* Cs1..Csn=typable(p)
+* typable(p) = Cs1..Csn
     Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
     p(This0.Csi) of form CORE.L
     p(This0.Csi).info.Flag=norm
@@ -48,6 +49,7 @@ _______
     or class not in MHs.mdfs//no abstract class method
     or exists xz  and n? such that:
       forall MH in MHs, coherent(p;MHs;MH;xz;n?)
+      
 * coherent(p;_;refine? class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn=xz
     p|-This0<=T.P
@@ -84,15 +86,15 @@ _______
     mdf" != capsule
     if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
 
+* coherentGetMdf(class,_,{class},_)
 * coherentGetMdf(imm,imm, mdfs0,_)
+    class not in mdfs0
+* coherentGetMdf(read, _, mdfs0,_)
     class not in mdfs0
 * coherentGetMdf(imm,mdf,mdfs0,mdfs1)
     mdf!=imm
     mdfs0 subseteq {imm, fwd imm,capsule}
     {mut, lent} disjoint mdfs1
-* coherentGetMdf(read, _, mdfs0,_)
-    class not in mdfs0
-* coherentGetMdf(class,_,{class},_)
 * coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
     mdfs0 subseteq {mut, fwd mut, capsule}
     imm not in mdfs1

@@ -3,10 +3,9 @@ _______
 * Q |- void : imm Void <= T //(void)
     Q.p|-imm Void <= T
 * Q |- (class P' P): class P' <= T //(Path)
-    Q.p(P) of form CORE.L
-    Q.p(P') of form CORE.L
+    Q.p(P) and Q.p(P') of form CORE.L
     Q.p|-class P' <= T
-    P'=Any if Q.p(P).interface?!=empty or class notin Q.p(P).mhs.mdfs
+    P'=Any if Q.p(P).interface?=interface or class notin Q.p(P).mhs.mdfs
 * Q |- L : imm Library <= T //(library propagation)
     Q.p |- imm Library <= T
     if Q.Flag==typed |- Q.p.push(L)
@@ -28,14 +27,14 @@ _______
     either throw=error
     or exists P' in Q.Ps such that Q.p |-P <= P'
 * Q |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
-    P0=Q.guess(e0)//simple since e0 of form xP
-    T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn)) //can be not available, how?
+    P0=guess(Q,e0)//simple since e0 of form xP
+    T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
     Q.p |- T <= T'
     forall i 0..n Q|- ei : T'i <= Ti //T'0 is correctly a free variable
     if m of form #$_ then
       either Q.MH?=empty
       or Q.MH?.m of form #$_
-      or Q.MH.mdf in {lent,mut,capsule} and !trusted(Q.p.top())
+      or Q.MH.mdf in {lent,mut,capsule} and !trusted(Q.p(This0))
 * Q |- x:=e : imm Void <= T //(xUpdate)
     Q.G(x).var?=var
     Q.p|- imm Void <= T
@@ -107,6 +106,10 @@ _______
       //or error: leaked exception P is not the subtype of a declared exception
       //or  method declares an exception (P) which is not a subtype of implemented exceptions
 _______
+#define guess(Q,xP) = P
+* guess(Q,x)=Q.G(x)
+* guess(Q,(T P))=T
+_______
 #define  mostGeneralMdf(mdfs)=mdf     generalEnough(mdfs)=mdfs'
 * mostGeneralMdf(mdfs)=mdf //the most specific generalEnough.
     mdf in generalEnough(mdfs)
@@ -176,39 +179,3 @@ _______
 * toImmOrCapsule(mdf P)=capsule P with mdf in {lent,mut,fwdMut,fwd%Mut}
 * toImmOrCapsule(read P)=imm P
 * toImmOrCapsule(T)=T otherwise//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
-
- ----------------
- -------------------------
-It is possible to obtain all the variations with the following table:
-  mBase
-  mNoFwd(mBase)
-  mImmFwd(mBase)
-  mRead(mBase)
-  mC(mBase)
-  mC(mNoFwd(mBase))
-  mI(mBase)
-  mI(mRead(mBase))
-  mNoFwd(mImmFwd(mBase))
-  mVp(mBase) //1 mType for each mut parameter
-  mVp(mNoFwd(base))//1 mType for each mut parameter
- 
-    
-//TODO: check that this kind of things work {Bar:{}   method m (foo catch exception Bar x e1 e0)  } redirect Bar->Any
-//also check the following:
-//Elem e=(return that catch return Elem x x catch return Any y error error)[redirect Elem in Any]
-
-
-  rule path:
-//Note: we need p(P) not interface and with some class methods to prevent a bug in sum/redirect
-//when a class 'A' may become an interface, and annotations 'class A' would be invalid.
-//since classes without class methods may become interfaces, we accept the type class A only
-//when class methods are present.
-//Example
-{T:{} //well typed
-method class T ()=T
-method Void doStuff(class T x)
-}[redirect T=Base]
-+
-{method Void doStuff(class Base x)=x.class()}//well typed
-//result would not work
-  
