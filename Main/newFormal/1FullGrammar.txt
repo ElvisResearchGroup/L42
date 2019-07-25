@@ -10,7 +10,8 @@ _______
   P  ::= Thisn.Cs | Any | Void | Library
   CORE.T::= mdf Docs P
   FP::=(idUp idChars (::n)?)(.Cs)? //the first do not have C well formedness
-  CMP/FULL.T::= mdf Docs FP | '\'
+  CMP/FULL.T::= mdf? Docs FP | '\'
+  CMP/FULL.TLocal ::= T | mdf | empty 
   CORE.e ::= xP |void | L | xP.m(x1=e1..xn=en) | loop e |throw e |x:=e | (Ds Ks e)
   CORE.xP::= x| (T P) | a //a=address, only at runtime
   CORE.D ::= var? T x=e
@@ -35,7 +36,7 @@ _______
   FULL.NC ::= Docs C = e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
-  CMP/FULL.e ::= x | P | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
+  CMP/FULL.e ::= x | FP | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
     | e0 OP .. OP en | (T e) | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WOPS? Ds e? ) | { Ds Ks WOPS? Ds }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
@@ -45,7 +46,7 @@ _______
   CMP/FULL.K ::= catch throw? T x e | catch throw? T '_' e
   
 Differences between abstract and concrete grammar:
-* imm and [Ts] with empty Ts are represented by the empty string
+* [Ts] with empty Ts are represented by the empty string
 * FULL/CORE.MWT: the = is omitted if the e?=empty
 * labels for empty dependencies in Info are omitted 
 _______
@@ -159,10 +160,10 @@ _______
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   CMP/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
   CMP/FULL.B ::= '(' D* e ')' | '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
-  CMP/FULL.DX ::= var? T? x | T? '_' | T? ( var?0 T?0 x0 ..var?n T?n xn )
+  CMP/FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   CMP/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x opUpdate e
   CMP/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
-  CMP/FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty
+  CMP/FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
   CMP/FULL.sWhile::= 'while' e e
   CMP/FULL.sFor ::= 'for' (DX in e)* e
   CMP/FULL.e ::= statement | e-binary3
@@ -199,7 +200,7 @@ _______
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
 * CMP/FULL.match of form T?(T?0 x0..T?n xn) = e; at least one Ti? is not empty
 * FULL.e: all used variables are in scope    
-* CMP/FULL.sFor: forall T?(var1? T1? x1.. varn?Tn? xn) in FULL.sFor.DXs: var1?..varn?=empty
+* CMP/FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty
 * LL:
     M1, M2 in LL.Ms and dom(M1)=dom(M2) implies M1=M2
     Any notin H.Ts
@@ -231,9 +232,9 @@ _______
 #define bindings(CMP/FULL/CORE.e):xs
 * bindings(LL)={}
 * bindings(var? T x=e)=bindings(catch throw? T x e)=x U bindings(e)
-* bindings(var? T? x)=x
-* bindings(T? ( var?1 T?1 x1 ..var?n T?n xn )= x1..xn
-* bindings(T? ( var?1 T?1 x1 ..var?n T?n xn )=e = x1..xn  U bindings(e)
+* bindings(var? _ x)=x
+* bindings(_ ( var?1 _ x1 ..var?n _ xn )= x1..xn
+* bindings(_ ( var?1 _ x1 ..var?n _ xn )=e = x1..xn  U bindings(e)
 * propagates inductivelly in all the other cases
 _______
 #define FV(CORE.e) //note: FV defined as a sequence instead of a set, and counts occurences of xs

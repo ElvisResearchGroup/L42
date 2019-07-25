@@ -6,9 +6,12 @@ _______
 * p♥CORE.MWT=CORE.MWT//can happen when checking CORE.L well formedness
 * p♥CORE.NC = CORE.NC
 _______
-#define p♥CMP/FULL.T?=TX   p♥FP=P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
-* p♥emptY=X with fresh X// if FULL.T, then result is CORE.T
-* p♥(Docs mdf P)=p♥Docs mdf p♥P
+#define p♥CMP/FULL.TLocal=TX   p♥FP=P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
+* p♥empty=X with fresh X
+* p♥(Docs mdf FP)=p♥Docs mdf p♥FP
+* p♥\ = T
+* p♥mdf = X with fresh X // TODO: and then we enforce the inferred modifier to be mdf? or should we have a Xmdf concept?
+// should we add a constraint X <=mdf Any? I fear it would not be sufficient.
 
 * p♥P=p.minimize(P)//this also handles FP starting for Any/Void/Library/Thisn
 * p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
@@ -27,19 +30,19 @@ _______
 * Y♥CORE.L = CORE.L
 * Y♥\ = \ 
     Y.onSlashX != empty
-* Y♥\ = T
+* Y♥\ = T.P //is this already a P and not an FP?
     Y.onSlashX = empty
     Y.onReturn = T
 * Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
-* Y♥P = (Y.onPath Y.p♥P)
+* Y♥FP = (Y.onPath Y.p♥FP)
     Y.onPath of form TX
-* Y♥P = (class P' P')
+* Y♥FP = (class P' P')
     Y.onPath=classP
-    P'=Y.p♥P
-* Y♥(T P) = ( Y.p♥T  Y.p♥P )
+    P'=Y.p♥FP
+* Y♥(T FP) = ( Y.p♥T  Y.p♥FP )
 * Y♥(T e) = ❪T' x≖Y[onReturn=T']♥e x ❫ //do we see an improvement using unicode?
     T'=Y.p♥T
-    e not of form P
+    e not of form FP
 * Y♥'PathLit = Y♥\"PathLit"
 * Y♥NumLit e = Y♥e"NumLit"
 * Y♥throw e = throw Y[onReturn=empty;onPath=classP]♥e //we set onReturn=empty to avoid 'return {}'
@@ -126,12 +129,14 @@ _______
       catch exception Void x'
       void))
     x,x' fresh
-* Y♥for DX1 in e1..DXn in en e = Y♥(
-      c1=e1.iterator'var1?'(); .. cn=en.iterator'varn?'();//varIterator if var x in..
-      var i1=c1.indexZero() .. var in=cn.indexZero()
+    
+* Y♥for (DX in x)s DX in e (DX in e)s e = (x=e Y♥for (DX in x)s DX in x (DX in e)s e)    
+* Y♥for DX1 in x1..DXn in xn e = Y♥(
+      c1=x1.iterator(); .. cn=xn.iterator();
+      var i1=x1.indexZero() .. var in=xn.indexZero()
       while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
-        DX1 = c1.elem(i) .. DXn = cn.elem(i);
-        e[replaceUnOp DX1.x;i1;c1]..[replaceUnOp DXn.x;in;cn]
+        DX1 = elemOf(DX1,c1,i1) .. DXn = elemOf(DXn,cn,in)
+        e[replaceUnOp DX1;i1;c1]..[replaceUnOp DXn;in;cn]
         i1:=i1.succ() .. in:=in.succ() )
       c1.close(i1) .. cn.close(in))
     c1..cn, i1..in fresh
@@ -161,8 +166,17 @@ _______
 * toBinOp(x, :=) = x :=
 * toBinOp(x, OP=) = x := x OP 
 _______
-#define CMP.e[replaceUnOp x;x0;x1]
-* e[replaceUnOp x;x0;x1]=e
-    not x updateOp _ inside e
-* ctxC[x updateOp e][replaceUnOp x;x0;x1]=
-    ctxC[(toBinOp(x, updateOp) e' x1.update(x0, x))][replaceUnOp x;x0;x1]
+#define CMP.e[replaceUnOp DX;x0;x1]
+* e[replaceUnOp DX;x0;x1]=e
+    DX.x undefined or not DX.x updateOp _ inside e
+* ctxC[DX.x updateOp e][replaceUnOp DX;x0;x1]=
+    ctxC[(toBinOp(DX.x, updateOp) e' updateOf(DX,x1,x0))][replaceUnOp DX;x0;x1]
+_______
+#define elemOf(DX,c,i)=e    updateOf(DX,c,i)=e
+* elemOf(DX,c,i) = c.methName('elem',mdf?)(that=i)
+    mdf? = DX.TLocal.mdf if DX.TLocal.mdf defined
+    mdf? = empty otherwise  
+
+* updateOf(DX,c,i) = c.methName('update',mdf?)(that=i,val=DX.x)
+    mdf? = DX.TLocal.mdf if DX.TLocal.mdf defined
+    mdf? = empty otherwise  
