@@ -123,7 +123,10 @@ _______
 _______
 #define I[Ds] = I',  I\xs I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
 * I[]=I
-* I[TX1 x1=e1 .. TXn xn=en]=I[D; Ds][Ds]
+* I[TX1 x1=e1 .. TXn xn=en]=I[IMap=IMap'][D; Ds][Ds]
+    mdf1 X1..mdfk Xk={mdf X | TX1..TXn}
+    I.IMap=IMdf,X1: _ P1 .. Xk: _ Pk
+    IMap'=IMdf,X1: mdf1 P1 .. Xk: mdfk Pk
     D,Ds=TX1[\=I.onSlash] x1=e1 .. TXn[\=I.onSlash] xn=en
 * I[TX x=e; Ds]=I[IMap=IMap,X: mdf' P][TX x=e; Ds]
     x' in FV(e)
@@ -156,5 +159,5 @@ otherwise
 _______
 #define iType(I,TX)=CORE.T
 * iType(I,T)=T
-* iType(I,X)=I.IMap(X)
+* iType(I,mdf? X)=I.IMap(X)
 * iType(I,\)=I.onSlash

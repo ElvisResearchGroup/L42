@@ -46,7 +46,7 @@ _______
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  TX ::= CORE.T | X | \
+  TX ::= CORE.T | mdf? X | \
   PT ::= TX | PT.s | PT.s.i
   CC ::= PT <= PT'
   IMap ::= X1:CORE.T1 .. Xn:CORE.Tn

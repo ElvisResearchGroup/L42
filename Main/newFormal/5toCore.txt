@@ -10,9 +10,7 @@ _______
 * p♥empty=X with fresh X
 * p♥(Docs mdf FP)=p♥Docs mdf p♥FP
 * p♥\ = T
-* p♥mdf = X with fresh X // TODO: and then we enforce the inferred modifier to be mdf? or should we have a Xmdf concept?
-// should we add a constraint X <=mdf Any? I fear it would not be sufficient.
-
+* p♥mdf = mdf X with fresh X 
 * p♥P=p.minimize(P)//this also handles FP starting for Any/Void/Library/Thisn
 * p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
     where n is the smallest number such that either
@@ -146,15 +144,18 @@ _______
 * Y♥x1=e1 .. xn=en=  x1=Y♥e1 .. xn=Y♥en
 
 * Y♥DE= Void x= Y[T=empty]♥e, with DE=e, x fresh //so that ({..return void ..} {.. return void ..}) is a mistake
-* Y♥T? _=e= T? x=e
+* Y♥TLocal _=e= Y.p♥TLocal x=Y'♥e
+    TX=Y.p♥TLocal
+    Y'=Y[onReturn=TX,onPath=TX]
     x fresh
-* Y♥var? T? x = e = var? TX x =Y[onReturn=TX,onPath=TX]♥e
-    TX=Y.p♥T?
-* Y♥T?(var1? T1? x1.. varn?Tn? xn)=e = 
-      Y♥T? x=e
-      Y♥var1? T1? x1=x.methNameTrim(x1)() //removes any numberPedex from the end
+* Y♥var? TLocal x = e = var? TX x =Y'♥e
+    TX=Y.p♥TLocal
+    Y'=Y[onReturn=TX,onPath=TX]
+* Y♥TLocal(var1? TLocal1 x1.. varn? TLocaln xn)=e = 
+      Y♥TLocal x=e
+      Y♥var1? TLocal1 x1=x.methNameTrim(x1)() //removes any numberPedex from the end
       ..
-      Y♥varn? Tn? xn=x.methNameTrim(xn)()
+      Y♥varn? TLocaln xn=x.methNameTrim(xn)()
     x fresh
 
 * Y♥catch throw? T '_' e = Y♥catch throw? T x e
