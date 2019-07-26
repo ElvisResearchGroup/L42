@@ -1,21 +1,19 @@
 _______
 #define Abstract syntax and core : CORE, FULL, CMP (=compiled)
-  mdf::= imm | mut | lent | read | capsule | fwd whitespace mut | fwd whitespace imm | class | fwd%imm | fwd%mut 
+  mdf::= imm | mut | lent | read | capsule | fwd mut | fwd imm | class | fwd%imm | fwd%mut 
   throw ::= 'error' | 'exception' | 'return' 
   s  ::= m(xs) //mOp is normalized when reified by FULL.MH.s
   Ldom::=s | Cs
-  PL ::= ([(Docs P)s])?
-  CORE/CMP/FULL.MH ::= Docs refine? (native[URL])? mdf method T mOp Docs(T1 x1..Tn xn) PL
-  CORE.mOp ::= m
-  CMP/FULL/CORE.H ::= interface? PL
+  CMP/FULL.MH ::= Docs refine? (native[URL])? mdf method T mOp Docs(T1 x1..Tn xn) [Ts]
+  CORE.MH ::= Docs refine? (native[URL])? mdf method T m Docs(T1 x1..Tn xn) [Ts]
+  CMP/FULL/CORE.H ::= interface?[Ts]
   P  ::= Thisn.Cs | Any | Void | Library
   CORE.T::= mdf Docs P
-  FP::=(idUp idChars (::n)?)(.Cs)? //the first do not have C well formedness
-  // ISAAC: why can ::n only be on the first one?
+  FP::=(idUp idChars (::n)?)(.Cs)? //the first do not have C well formedness; note that C can have ::n too
   CMP/FULL.T::= mdf? Docs FP | '\'
   CMP/FULL.TLocal ::= T | mdf | empty 
   CORE.e ::= xP |void | L | xP.m(x1=e1..xn=en) | loop e |throw e |x:=e | (Ds Ks e)
-  CORE.xP::= x| (T P) | a //a=address, only at runtime // ISAAC: why not call it l?
+  CORE.xP::= x| (T P) | a //a=address, only at runtime
   CORE.D ::= var? T x=e
   CORE.K ::= catch throw T x e
   CORE.L ::= {H Docs MWTs NCs Info}
@@ -30,13 +28,13 @@ _______
     //may add closed/open class (private abstract mehtods may be removed if unused)
     //may add 'have private static methods' (can be casted to class P)
   Flag ::= 'norm' | 'typed'
-  FULL.L ::= {(H | ... | reuse[URL])? Ms} 
+  FULL.L ::= {(H | ... | reuse[URL])? Ms}
   FULL.M ::= F | MI | MWT | NC 
   FULL.F ::= var? T x
   FULL.MI ::= Docs s = CMP.e
-  FULL.MWT ::= MH (= CMP.e)? //this prevents FULL.L inside method bodies
+  FULL.MWT ::= MH = CMP.e? //this prevents FULL.L inside method bodies
   FULL.NC ::= Docs C = e
-  LL::= FULL.L | CORE.L // ISAAC: What is this for? Why not just have FULL.L ::= /*as above */ | CORE.L
+  LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
   CMP/FULL.e ::= x | FP | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
     | e0 OP .. OP en | (T e) | e (.m)?( par ) | e (.m?)[ pars ]
@@ -47,6 +45,10 @@ _______
   CMP/FULL.WOPS ::= wops T+
   CMP/FULL.K ::= catch throw? T x e | catch throw? T '_' e
   
+  Differences between abstract and concrete grammar:
+* [Ts] with empty Ts are represented by the empty string
+* FULL/CORE.MWT: the = is omitted if the e?=empty
+* labels for empty dependencies in Info are omitted
 _______
 #define auxiliary grammars
   TX ::= CORE.T | X | \
@@ -54,8 +56,8 @@ _______
   CC ::= PT <= PT'
   IMap ::= X1:T1 .. Xn:Tn
   HALF.xP ::= x | (TX P)
-  HALF.e ::= xP | void | CORE.L | \ | xP.m(xes)
-   | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)   // ISAAC: What about OPP ?
+  HALF.e ::= xP | void | CORE.L | \ | xP.m(xes) // OPP is already desugared at this stage
+   | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.K ::= catch throw TX x e
   HALF.D ::= var? TX x = e
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
@@ -68,7 +70,6 @@ _______
   r ::= CORE.L | exception v | error v
   Obj ::= P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
-        // ISAAC: Why do you need to store x -> v in memory?
   Q ::= Q[Flag;MH?;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
   MethT ::= Ts->T;Ps  
   ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV
