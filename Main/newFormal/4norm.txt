@@ -68,8 +68,7 @@ _______
     Ps=collect(p,Ts[from P0;p]).Ps
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
     //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
-    forall s in s1..sn, there is exactly 1 P in Ps such that p(P)(s).refine=empty //origin
-    [Mi,_]=[MWT[?refine=refine]| P in P0,Ps such that methods(p,P)(si)=MWT]
+    [Mi,_]=[MWT| P in P0,Ps such that methods(p,P)(si)=MWT]
     MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
     MWTi=p♥Mi otherwise
 _______

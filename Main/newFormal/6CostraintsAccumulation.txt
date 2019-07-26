@@ -92,15 +92,16 @@ _______
 * PAcc.paramaterPaths(PT, s) = PAcc.paramaterPaths(T, s)
     PT <= T in PAcc.collect()
 _______
-#define PAcc.unsatisfiable()    origin(p;s; P) = P   
+#define PAcc.unsatisfiable()    origin(p;s;P) = P'   refine(p;s;P)
 * PAcc[P <= P'].unsatisfiable()
     if not p |- P <= P'
 * PAcc[PP <= P', PP <= P"].unsatisfiable()
     exists s in dom(PAcc.p(P'))U dom(PAcc.p(P")), where origin(PAcc.p;s; P') != origin(PAcc.p;s; P") //TODO: do we want the U of the two dom or the intersection?
 * PAcc[PP <= P', PP <= P"].unsatisfiable()
     no P in dom(p) such that PAcc.p|-P <= P' and PAcc.p|-P <= P"
-* origin(p;s; P) = P
-    {P} = {P| P in collect(p,P) and p(P)(s).refine?=empty}
+* origin(p;s; P) = P'
+    {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
+* refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
 _______
 #define PT,s,i in PAcc.opOptions(OP, PTs, xPs)
 * PT,s,i in PAcc.opOptions(OP, PT0..PTn, xP0..xPn)

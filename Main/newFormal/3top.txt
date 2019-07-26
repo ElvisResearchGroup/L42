@@ -50,7 +50,7 @@ _______
     or exists xz  and n? such that:
       forall MH in MHs, coherent(p;MHs;MH;xz;n?)
       
-* coherent(p;_;refine? class method T m::n?(T1 x1..Tn xn)_;xz;n?)
+* coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn=xz
     p|-This0<=T.P
     T.mdf not in {class, fwd mut, fwd imm}
@@ -58,16 +58,16 @@ _______
     if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint (T1..Tn).mdfs
     if read _ in T1..Tn then T.mdf in {read, lent}
     if !trustedClass(p(This0)) then m is of form #$m
-* coherent(p;MHs;refine? mdf method T m::n?(_)_;_;n?) //must 'n?' be the same for well formedness?
+* coherent(p;MHs;mdf method T m::n?(_)_;_;n?) //must 'n?' be the same for well formedness?
     mdf in {lent, mut, capsule}
     forall MH' in MHs: either MH'.mdf!=class
     or MH'.T.mdf not in {lent, mut, capsule}
-* coherent(p;_;refine? mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
+* coherent(p;_;mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
     p |- imm Void <= T
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
     mdf in {lent, mut, capsule}
     if mdf = lent then mdf' != mut
-* coherent(p;MHs;refine? mdf method mdf' P' #?x::n?()_;_,x;n?)
+* coherent(p;MHs;mdf method mdf' P' #?x::n?()_;_,x;n?)
     mdf != class
     forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
     coherentGetMdf(mdf',mdf,

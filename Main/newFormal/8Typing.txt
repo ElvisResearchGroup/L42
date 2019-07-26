@@ -89,20 +89,18 @@ _______
    forall M in p(This0).Ms:  p |- M
 * p |- C=L  //(member nested)
    |-p.push(C)
-* p|-MH e? //(member method)
+* p|-MWT //(member method)
     //using MH.Ts to give the arguments(with or without this?) or the exceptions? 
-    //TODO: define MH.s MH.Ts MH. ... and say it propagates to MWT
-    if MH.native=native[uURL] then //uUrl=untrusted URL
-      either MH.s of form #$_(_)
-      or MH.mdf in {lent,mut,capsule}
-    Q = Q[typed; MH; p; G^MH; empty; MH.Ts.Ps]
-    if e?=e then Q |- e :_ <=fwd% MH.T
-    MHs={MH'[from P;p] | p(This0).Ts.Ps and p(P)(MH.s)=MH'}//assert all abstract
-    if ?refine=empty, then MHs=empty
-    else forall MH' in MHs:
-      p|-MH.T<= MH'.T //method returns a type which is not a sybtype of its ancestor "name"
-      G^MH=G^MH' //invalid type w.r.t. implemented paramerer xi
-      forall Pi in MH.Ts.Ps exists Pj in MH'.Ts.Ps such that p |- Pi <= Pj
+    if MWT.native[URL]?=native[uURL] then //uUrl=untrusted URL
+      either MWT.s of form #$_(_)
+      or MWT.mdf in {lent,mut,capsule}
+    Q = Q[typed; MWT.MH; p; G^MWT; empty; MWT.exceptions.Ps]
+    if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
+    MHs={MH[from P;p] | p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
+    forall MH in MHs:
+      p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
+      G^MWT=G^MH //invalid type w.r.t. implemented paramerer xi
+      forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
       //or error: leaked exception P is not the subtype of a declared exception
       //or  method declares an exception (P) which is not a subtype of implemented exceptions
 _______
@@ -118,7 +116,7 @@ _______
 _______
 #define methTypes(p,P,s) = MethT
 * mdf0 P T1..Tn-> T';Ts.Ps in methTypes(p,P,s)  //(mBase)
-    (p(P)(s).MH)[from P;p]=refine? native[URL]? mdf0 method T m(T1 x1,..Tn xn) Ts
+    (p(P)(s).MH)[from P;p]=mdf0 method T m(T1 x1,..Tn xn) Ts
     T'=fwd% T if fwd_or_fwd%_in(Ts)
     otherwise T'=T
 * noFwd Ts-> noFwd T;Ps in methTypes(p,P,s)  //(mNoFwd)

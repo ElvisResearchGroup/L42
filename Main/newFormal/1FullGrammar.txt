@@ -2,53 +2,48 @@ _______
 #define Abstract syntax and core : CORE, FULL, CMP (=compiled)
   mdf::= imm | mut | lent | read | capsule | fwd mut | fwd imm | class | fwd%imm | fwd%mut 
   throw ::= 'error' | 'exception' | 'return' 
-  s  ::= m(xs) //mOp is normalized when reified by FULL.MH.s
-  Ldom::=s | Cs
-  CMP/FULL.MH ::= Docs refine? (native[URL])? mdf method T mOp Docs(T1 x1..Tn xn) [Ts]
-  CORE.MH ::= Docs refine? (native[URL])? mdf method T m Docs(T1 x1..Tn xn) [Ts]
-  CMP/FULL/CORE.H ::= interface?[Ts]
+  s ::= m(xs) //mOp is normalized when reified by FULL.MH.s
   P  ::= Thisn.Cs | Any | Void | Library
   CORE.T::= mdf Docs P
   FP::=(idUp idChars (::n)?)(.Cs)? //the first do not have C well formedness; note that C can have ::n too
   CMP/FULL.T::= mdf? Docs FP | '\'
+  CMP/FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) [Ts]
+  CORE.MH ::= (mdf Docs)? method T m (T1 x1..Tn xn) [Ts]
+  CMP/FULL/CORE.H ::= interface?[Ts]  
   CMP/FULL.TLocal ::= T | mdf | empty 
-  CORE.e ::= xP |void | L | xP.m(x1=e1..xn=en) | loop e |throw e |x:=e | (Ds Ks e)
-  CORE.xP::= x| (T P) | a //a=address, only at runtime
+  CORE.e ::= xP | void | L | xP.m(x1=e1..xn=en) | loop e | throw e | x:=e | (Ds Ks e)
+  CORE.xP::= x | (T P) | a //a=address, only at runtime
   CORE.D ::= var? T x=e
   CORE.K ::= catch throw T x e
-  CORE.L ::= {H Docs MWTs NCs Info}
-  CORE.MWT::= Docs MH = e?
+  CORE.L ::= {H MWTs NCs Info Docs}
+  CORE.MWT::= Docs MH (= native[URL]? e)?
   CORE.NC::= Docs C = L
   Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps}//in concrete syntax, labels for emptys are omitted
     //friendsDep are spyed by This:
     //Paths whose unique numbers are used either directly,
     //or in a private nested class or in an L in a method
-    //usedMethDep//methods used either directly or ...
+    //usedMethDep//methods used either directly or in a private nested class or in an L in a method
     //privateImpl: interfaces implemented by a private nested class or in an L in a method
-    //may add closed/open class (private abstract mehtods may be removed if unused)
-    //may add 'have private static methods' (can be casted to class P)
-  Flag ::= 'norm' | 'typed'
-  FULL.L ::= {(H | ... | reuse[URL])? Ms}
-  FULL.M ::= F | MI | MWT | NC 
+    //may add closed/open class (since private abstract methods may be removed if unused)
+    //may add 'have private static methods' (since it can be casted to class P)
+  Flag ::= norm | typed
+  FULL.L ::= {(H | reuse[URL] | ...)? Ms Docs}
+  FULL.M ::= F | MI | MWT | NC
   FULL.F ::= var? T x
   FULL.MI ::= Docs s = CMP.e
-  FULL.MWT ::= MH = CMP.e? //this prevents FULL.L inside method bodies
-  FULL.NC ::= Docs C = e
+  FULL.MWT ::=Docs MH (= native[URL]? CMP.e)? //this prevents FULL.L inside method bodies
+  FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
   CMP/FULL.e ::= x | FP | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
     | e0 OP .. OP en | (T e) | e (.m)?( par ) | e (.m?)[ pars ]
-    | ( Ds Ks WOPS? Ds e? ) | { Ds Ks WOPS? Ds }
+    | ( Ds Ks WOPS? Ds' e? ) | { Ds Ks WOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   CMP/FULL.D ::= (DX =)? e
   CMP/FULL.WOPS ::= wops T+
   CMP/FULL.K ::= catch throw? T x e | catch throw? T '_' e
-  
-  Differences between abstract and concrete grammar:
-* [Ts] with empty Ts are represented by the empty string
-* FULL/CORE.MWT: the = is omitted if the e?=empty
-* labels for empty dependencies in Info are omitted
+  Ldom::=s | Cs
 _______
 #define auxiliary grammars
   TX ::= CORE.T | X | \
@@ -63,16 +58,20 @@ _______
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:PT1 .. xn:PTn
   I ::= I[p;IMap;G;CCz;onSlash=T?]//inference application environment
-// ISAAC: um what, this is infinitely recursive, as you have I ::= I[....], same with Y, PAcc, and Q below
   Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=(classP|TX)]//toCore environment
   PAcc ::= PAcc[p;GX;CCz]//constraints accumulation environment
   v ::= a | P | void | CORE.L
   r ::= CORE.L | exception v | error v
-  Obj ::= P(x1=v1..xn=vn) | L as // memory objects. as is the set of mut objects associated to L
+  Obj ::= P(x1=v1..xn=vn) | L as // memory objects. 'as' is the set of mut objects associated to L
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   Q ::= Q[Flag;MH?;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
-  MethT ::= Ts->T;Ps  
-  ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV
+  MethT ::= CORE.Ts->CORE.T;Ps  
+  CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV
+  CORE.ctx ::= []
+    | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
+    | xP.m(xes x=ctx xes')
+    | (Ds T x=ctx Ds' Ks e)
+    | (Ds Ks catch throw T x ctx Ks' e)
   FULL.ctxC::= []
     | throw ctxC | loop ctxC |ctxC(.m)?(FULL.par) 
     | ctxC string |x updateOp ctxC | (T ctxC) 
@@ -93,11 +92,6 @@ _______
     | while ctxC FULL.e | while CMP.e ctxC
     | for CMP.DXes ctxC | for CMP.DXes DX in ctxC FULL.DXes FULL.e
     | CMP.e string[CMP.es ctxC FULL.e] //somehow handles the string case
-  CORE.ctx ::= []
-    | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
-    | xP.m(xes x=ctx xes')
-    | (Ds T x=ctx Ds' Ks e)
-    | (Ds Ks catch throw T x ctx Ks' e)
   FULL.ctxM::= C = ctxC | s = ctxC | MH = ctxC
   CM::= FULL.MWT | CORE.MWT | CORE.NC | FULL.F | FULL.MI
   CoM::= FULL.MWT | CORE.MWT | CORE.NC// Constraint member, member we can extract constriants from
@@ -191,7 +185,7 @@ _______
     if B=(_ K e _), then noBlockNeeded(K.e)
 * CMP/FULL/CORE.K: K.x notin bindings(e)
 * CMP/FULL/CORE.MWT:
-    MWT = refine? mdf method T m(T1 x1.. Tn xn)[Ts] e?
+    MWT =mdf method T m(T1 x1.. Tn xn)[Ts] e?
     T0 = mdf This0
     if exists i: Ti.mdf=fwdImm then T.mdf in {mut, fwdMut, imm, fwdImm}
     if exists i: Ti.mdf=fwdMut then T.mdf in {mut, fwdMut}
