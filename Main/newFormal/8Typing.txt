@@ -59,10 +59,11 @@ _______
     Flag; p; G',(G0\dom(G')); Ts; Ps |- e0 : T0 <=T'
     T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //set of Mdfs admits no single most general mdf
     // assert Q.p|-T <= T'
-_______
+_______//TODO: rename all ds in Ds
 #define Q |- ds | G0 // The resulting G0 is the enriched G containing info about ds too.
 * Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  ds | G3  //(ds)
-    dom(ds) disjoint FV(e0..en)
+    dom(ds) disjoint FV(e0..en)//here taking a ds in input, we keep the order. Is this needed/can it be more expressive
+    //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
     for i in 0..n: Flag; p; G'; Ts; Ps|-ei : T'i <= fwd% Ti
     if fwd_or_fwd%_in Ts

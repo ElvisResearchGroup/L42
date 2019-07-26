@@ -49,7 +49,7 @@ _______
   TX ::= CORE.T | X | \
   PT ::= TX | PT.s | PT.s.i
   CC ::= PT <= PT'
-  IMap ::= X1:T1 .. Xn:Tn
+  IMap ::= X1:CORE.T1 .. Xn:CORE.Tn
   HALF.xP ::= x | (TX P)
   HALF.e ::= xP | void | CORE.L | \ | xP.m(xes) // OPP is already desugared at this stage
    | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)

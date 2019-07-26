@@ -103,10 +103,10 @@ _______
 _______
 #define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e
 * I(CORE.M) = CORE.M
-* I(MH e) = MH I[G=G^MH;onSlash=MH.T](e)
+* I(MH = reuse[URL]? e) = MH =reuse[URL]? I[G=G^MH;onSlash=MH.T](e)
 
 * I(\) = I.onSlash.P //undefined if it is empty
-* I((Ds Ks e)) = (I[Ds](Ds) I(Ks) I[Ds](e))
+* I((Ds Ks e)) = (I[Ds](Ds) I[Ds]\dom(Ds)(Ks) I[Ds](e)) //not just I(Ks) since I[Ds] modifies I.IMap
 * I((TX P)) = (iType(I,TX) P)
 * I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I1(e1) .. xn=In(en))
     P=I.IMap(I.G(xP)).P
@@ -121,10 +121,36 @@ _______
 * I(e)=e if e in {x, void, CORE.L} 
 * I(e)=e' propagates on the structure for throw e, loop e, x := e
 _______
-#define I[DS] = I',  I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
-* I[TX1 x1=_ .. TXn xn=_]=I[G=I.G,x1:iType(I,TX1),..,xn:iType(I,TXn)]
+#define I[Ds] = I',  I\xs I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
+* I[]=I
+* I[TX1 x1=e1 .. TXn xn=en]=I[D; Ds][Ds]
+    D,Ds=TX1[\=I.onSlash] x1=e1 .. TXn[\=I.onSlash] xn=en
+* I[TX x=e; Ds]=I[IMap=IMap,X: mdf' P][TX x=e; Ds]
+    x' in FV(e)
+    x' not in dom(I.G) //assert x' in dom(X x=e,Ds), else x not in scope
+    Ds(x').TX=X
+    I.IMap=IMap,X: mdf P
+    mdf'=imm if mdf in {read, fwd imm}    
+    mdf'=mut if mdf in {lent, fwd mut}    
+    mfd'=mdf otherwise
+ otherwise
+* I[T x=e; Ds]=I[G=I.G,x:T]
+* I[X x=e; Ds]=I[G=I.G,x:I.IMap(X)]
+    I.IMap(X).mdf!=read
+* I[X x=e; Ds]=I[G=I.G,x:I.IMap(X)]
+    I.IMap(X).mdf=read
+    x' in FV(e)
+    G(x').mdf notin {imm,class,capsule}//and fwd imm?
+* I[X x=e; Ds]=I[G=I.G,x:imm P; IMap=IMap,X:imm P]
+    I.IMap=IMap,X:read P
+    forall x' in FV(e)\x,
+      if x' in dom(G) then G(x').mdf in {imm,class,capsule}//and fwd imm?
+      else IMap(Ds(x').TX).mdf in {imm,class,capsule}//and fwd imm?
+otherwise
+* I[X x=e; Ds]=I[G=I.G,x:I.IMap(X)]
+* I\xs=I[G=G\xs]
 
-* I(TX x=e) = iType(I,TX) x=I(e)
+* I(TX x=e) = G(x) x=I(e) //assert G(x) is defined here thanks to I[Ds] above
 
 * I(catch throw TX x e)=catch throw iType(I,TX) x I(e)
 _______
