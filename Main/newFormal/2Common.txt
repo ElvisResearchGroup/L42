@@ -91,3 +91,8 @@ _______
 _______
 #define trusted(LL) //Does this need to be added to the INFO?
 * trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)//trusted is not the right name for this concept
+_______
+#define origin(p;s;P) = P'   refine(p;s;P)
+* origin(p;s; P) = P'
+    {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
+* refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))

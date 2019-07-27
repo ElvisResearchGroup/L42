@@ -67,7 +67,7 @@ _______
     Ms=expandFields(Ms0)
     Ps=collect(p,Ts[from P0;p]).Ps
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
-    //Note, in the code it is(properly implemented but) done in 2 steps, first cb0, then p1n
+    origin(p;s1,P0)..origin(p;sn,P0) all defined
     [Mi,_]=[MWT| P in P0,Ps such that methods(p,P)(si)=MWT]
     MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
     MWTi=p♥Mi otherwise
