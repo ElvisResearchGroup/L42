@@ -164,7 +164,7 @@ norm(p,C.L)
       commonSuperT(p,Tz)=Tz'
       chooseT(CCz;Tz)=T
         mostSpecific(Tz) = T
-use Pacc operations and Y♥C.e/p♥C.M/p♥FP
+use Pacc operations and Y♥C.e/p♥C.M/p♥CsP
 _________________________
 6ConstraintsAccumulation (PAcc operations)
   .fixInfer(HALF.Ms) =CCz
@@ -218,7 +218,7 @@ Q|-e:T
   expression well typed.
 |-p
   p(This0) is well typed
-normAndFlag(p)=p'
+flagTyped(p)=p'
   type some libraries in the top of the program and annotate them as 'typed'.
 
 PAcc, I, Y: record contexts for normalization

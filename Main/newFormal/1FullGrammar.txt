@@ -6,10 +6,10 @@ _______
   C ::= IdUp IdChars (::n)? //well formedness: C not Thisn/Any/Void/Library
   P  ::= Thisn.Cs | Any | Void | Library
   CORE.T::= mdf Docs P
-  FP::=(IdUp IdChars (::n)?)(.Cs)? //the first do not have C well formedness
-  CMP/FULL.T::= mdf? Docs FP | '\'
+  CsP::=Cs | P
+  CMP/FULL.T::= mdf? Docs CsP | '\'
   CMP/FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) [Ts]
-  CORE.MH ::= (mdf Docs)? method T m (T1 x1..Tn xn) [Ts]
+  CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) [Ts]
   CMP/FULL/CORE.H ::= interface?[Ts] //here and above, the concrete syntax omits [] for empty Ts 
   CMP/FULL.TLocal ::= T | mdf | empty 
   CORE.e ::= xP | void | L | xP.m(x1=e1..xn=en) | loop e | throw e | x:=e | (Ds Ks e)
@@ -38,7 +38,7 @@ _______
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
-  CMP/FULL.e ::= x | FP | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
+  CMP/FULL.e ::= x | CsP | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
     | e0 OP .. OP en | (T e) | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WOPS? Ds' e? ) | { Ds Ks WOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
@@ -126,7 +126,6 @@ _______
   tURL::= /*a trusted url*//*too boring*/
   uURL::= /*an untrusted url*//*too boring*/
   URL:=tURL|uURL
-  charsCurly ::= (CHAR* -- '{' -- '}') | charsCurly { charsCurly } charsCurly
   IdUp ::= _* (<A-Z> | $) 
   IdLow ::= _* <a-z>
   IdChar ::= <a-z> |<A-Z> | $ | _ | <0-9>
@@ -141,9 +140,11 @@ _______
   OP  ::= OP0 | OP1 | OP2 | OP3 
   opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= 
   Cs ::=C(.C)*
-  CMP/FULL/CORE.Doc ::= @PathLit | @PathLit?{(charsCurly -- DOC|DOC)*}
-  CMP/FULL.PathLit::= FP | FP? s | FP? s.x
+  CMP/FULL/CORE.Doc ::= @PathLit | @PathLit?{docText}
+  CMP/FULL.PathLit::= CsP | CsP? s | CsP? s.x
   CORE.PathLit::= P | P? s | P? s.x
+  CMP/FULL/CORE.docText ::= empty| CHAR -- '{' -- '}' -- '@' docText | Doc docText | '{' docText '}' docText
+  
   mOp ::= empty | m | OP | ~ | !
 _______
 #define CMP/FULL Expressions priority disambiguation and other details
@@ -171,7 +172,6 @@ _______
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 * CMP/FULL/CORE.NC: NC.C not Any, Library, Void, This, Thisn
 * C not This, Thisn, Any, Void or Library
-* FP: if Cs not empty, then the start can not be Library, Void, Any
 * CORE B: in a (Ds1 Ks Ds2 e):
     no repetition in Ds1.xs,Ds2.xs
     FV(Ks) disjoint dom(Ds1,Ds2)
@@ -205,8 +205,9 @@ _______
     Any notin LL.H.Ts
     exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
     if LL.H.interface? = interface, then forall s in dom(LL), LL(s).e?=empty
-    if LL(C::n)=LL' and C' in dom(LL') then C' of form _::n' //all members of a private nested are private
-    if LL(C::n)=LL' and m(xs)' in dom(LL') then m of form _::n' 
+    if LL(C::n)=LL' then LL' of form CORE.L
+    if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all members of a private nested are private
+    if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.info.refined //TODO: should we cache sources of interface methods?
 * The top level project LL:
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi) //care when '...' is expanded; while 'reuse URL' will rename the private names
@@ -214,7 +215,7 @@ _______
   -if p.pop(1) is defined, then p.pop(1) is well formed 
   -CORE.L;pTail is well formed iff
     FULL.L={CORE.L.H CORE.L.Ms}
-    normAndFlag(FULL.L;pTail)=CORE.L';pTail //defined in file top
+    flagTyped(norm(FULL.L;pTail);pTail)=CORE.L';pTail //defined in file top
     and CORE.L'.Info<=CORE.L.Info (that is, all the dependencies are a subset, and so on)//TODO: define formally
 //Note, when we import an url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G

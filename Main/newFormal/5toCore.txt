@@ -6,19 +6,19 @@ _______
 * p♥CORE.MWT=CORE.MWT//can happen when checking CORE.L well formedness
 * p♥CORE.NC = CORE.NC
 _______
-#define p♥CMP/FULL.TLocal=TX   p♥FP=P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
+#define p♥CMP/FULL.TLocal=TX   p♥CsP=P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
 * p♥empty=X with fresh X
-* p♥(Docs mdf FP)=p♥Docs mdf p♥FP
+* p♥(Docs mdf CsP)=p♥Docs mdf p♥CsP
 * p♥\ = T
 * p♥mdf = mdf X with fresh X 
-* p♥P=p.minimize(P)//this also handles FP starting for Any/Void/Library/Thisn
+* p♥P=p.minimize(P)//this also handles CsP starting for Any/Void/Library/Thisn
 * p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
     where n is the smallest number such that either
       C in dom(p.get(n))
       or @{__STOP_SCOPE__} in p.get(n).Docs
       or p.get(n+1) undefined
 
-* p♥FULL.Docs =CORE.Docs where all the FP are replaced with p♥FP
+* p♥FULL.Docs =CORE.Docs where all the CsP are replaced with p♥CsP
 
 *p♥FULL.MH propagates on the structure
 _______
@@ -28,19 +28,19 @@ _______
 * Y♥CORE.L = CORE.L
 * Y♥\ = \ 
     Y.onSlashX != empty
-* Y♥\ = T.P //is this already a P and not an FP?
+* Y♥\ = T.P //is this already a P and not a CsP?
     Y.onSlashX = empty
     Y.onReturn = T
 * Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
-* Y♥FP = (Y.onPath Y.p♥FP)
+* Y♥CsP = (Y.onPath Y.p♥CsP)
     Y.onPath of form TX
-* Y♥FP = (class P' P')
+* Y♥CsP = (class P' P')
     Y.onPath=classP
-    P'=Y.p♥FP
-* Y♥(T FP) = ( Y.p♥T  Y.p♥FP )
+    P'=Y.p♥CsP
+* Y♥(T CsP) = ( Y.p♥T  Y.p♥CsP )
 * Y♥(T e) = ❪T' x≖Y[onReturn=T']♥e x ❫ //do we see an improvement using unicode?
     T'=Y.p♥T
-    e not of form FP
+    e not of form CsP
 * Y♥'PathLit = Y♥\"PathLit"
 * Y♥NumLit e = Y♥e"NumLit"
 * Y♥throw e = throw Y[onReturn=empty;onPath=classP]♥e //we set onReturn=empty to avoid 'return {}'

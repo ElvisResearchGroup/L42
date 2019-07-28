@@ -2,8 +2,8 @@ _______
 #define p ==>p'
 * {reuse[URL] Ms};pTail ==> {followURL(URL),Ms};pTail  //(reuse)
 * {... Ms};pTail ==> {readFolder(pTail),Ms};pTail //(dots)//note, ... is cached 
-* {H CMs};pTail ==> normAndFlag({H CMs};pTail)  //(topNorm)
-* p ==> normAndFlag({H CMs p♥Docs C=CORE.L Ms};pTail)  //(top)
+* {H CMs};pTail ==> flagTyped(norm({H CMs};pTail);pTail)  //(topNorm)
+* p ==> flagTyped({H CMs p♥Docs C=CORE.L Ms};pTail)  //(top)
     p={H CMs Docs C=CMP.e Ms};pTail
     CMP.e not of form CORE.L//e is the first point to execute
     CORE.e=norm(p,CMP.e)
@@ -23,8 +23,8 @@ _______
 * adapt(CMP.e, Void) = (Void x=CMP.e {}); where x fresh
 * adapt(CMP.e, _) = (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
-#define normAndFlag(FULL.L;pTail)=CORE.L;pTail    LL[Csz=Flag]=LL'
-* normAndFlag(p) = p.update( p(This0)[typable(p)=typed] )
+#define flagTyped(p)=p'    LL[Csz=Flag]=LL'
+* flagTyped(p) = p.update( p(This0)[typable(p)=typed] )
     forall Cs in typable(p):  |-p.navigate(This0.Cs)
    
 * LL[Cs Csz = Flag]=LL[Cs.info.Flag=Flag][Csz=Flag]
