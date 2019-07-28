@@ -119,20 +119,20 @@ _______
   STROP(i+1) ::= [ STROPi
   STRCL(i+1) ::= STRCLi ]
   string ::= STROPi " CHARSi (STROPi e STRCLi CHARSi)* " STRCLi
-  number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
+  Number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
   commentChars ::= CHAR* -- '/*' -- '*/'
   comment ::= '//' (CHAR* -- newline) newline | '/*' (commentChars | comment)* '*/'
-  whitespace ::= (comment | ' ' | newline| ',')+
+  Whitespace ::= (' ' | newline | ',')+
   tURL::= /*a trusted url*//*too boring*/
   uURL::= /*an untrusted url*//*too boring*/
-  URL:=tURL|uURL
+  URL::=tURL|uURL
   IdUp ::= _* (<A-Z> | $) 
   IdLow ::= _* <a-z>
   IdChar ::= <a-z> |<A-Z> | $ | _ | <0-9>
   n ::= 0 | <1-9> <0-9>*
   x ::=IdLow IdChars
   m ::= (#|#$)?x(#x)* (::n)?
-  OPP ::= ! | ~ | number  // prefix
+  OPP ::= ! | ~ | Number  // prefix
   OP0 ::= ^ | : | <- | << | & | '|' // right associative
   OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
   OP2 ::= == | != | < | > | >= | <= // unassiociative
