@@ -8,22 +8,19 @@ _______
   CORE.T::= mdf Docs P
   CsP::=Cs | P
   CMP/FULL.T::= mdf? Docs CsP | '\'
-  PL ::= [Ts] // In concrete syntax an [empty] can be abreviated as empty; Well formedness: no mdf in Ts.
-  // ISAAC: Is this better? It's just that [Ts] is used allot so it makes sense to put the above two sideconditions on one metaveriable.
-  
-  CMP/FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) PL
+  CMP/FULL.CORE.PL ::= [Ts] // In concrete syntax an [empty] is represented as empty and imm is omitted; Well formedness: all mdf in Ts are imm
+  CMP/FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) PL //the Docs are on the type of 'This'
   CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) PL
   CMP/FULL/CORE.H ::= interface? PL //here and above, the concrete syntax omits [] for empty Ts 
   CMP/FULL.TLocal ::= T | mdf | empty 
   CORE.e ::= xP | void | L | xP.m(x1=e1..xn=en) | loop e | throw e | x:=e | (Ds Ks e)
   CORE.xP::= x | (T P) | a //a=address, only at runtime
   CORE.D ::= var? T x=e
-  CORE.7 catch throw T x e
-  CORE.L ::= {H MWTs NCs Info Docs} // ISAAC: Why are Docs at the end? To me it makes sense to put them at the start
-  CORE.MWT::= Docs MH (= native[URL]? e)? // ISAAC: Yes much better that native is on the RHS of the =, then metaprogramming makes more sense.
-  // ISAAC: based on your syntax for MH, you can have Docs1 mdf Docs2 method _; what do the two docs refer to?  
+  CORE.K ::= catch throw T x e
+  CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
+  CORE.MWT::= Docs MH (= native[URL]? e)?  
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps, refined=(P.s)s}
     //in concrete syntax, labels for emptys are omitted
     //friendsDep are spyed by This:
     //Paths whose unique Numbers are used either directly,
@@ -73,15 +70,13 @@ _______
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   Q ::= Q[Flag;MH?;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
   MethT ::= CORE.Ts->CORE.T;Ps  
-  CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV // ISAAC: No blocks?
+  CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV //blocks manually handled in reduction
   CORE.ctx ::= []
     | throw ctx | loop ctx | x := ctx  | ( Ds Ks ctx )
     | xP.m(xes x=ctx xes')
     | (Ds T x=ctx Ds' Ks e)
     | (Ds Ks catch throw T x ctx Ks' e)
-  FULL.ctxC::= [] // ISAAC: I am not reading all of this...
-    // I am assuming this is like a CtxV but over a FULL.e, and instead of values to the right of the hole you have a CMP.e?
-    // Also, since this is prefixed by FULL allready, I've deleted the redundant FULL.'s below.
+  FULL.ctxC::= []
     | throw ctxC | loop ctxC |ctxC(.m)?(par) 
     | ctxC string |x updateOp ctxC | (T ctxC) 
     | if (CMP.match+ |CMP.e) ctxC (else e)?
@@ -102,17 +97,13 @@ _______
     | for CMP.DXes ctxC | for CMP.DXes DX in ctxC DXes e
     | CMP.e ctxString[CMP.es ctxC e] //somehow handles the string case
   FULL.ctxM::= C = ctxC | s = ctxC | MH = ctxC
-  CM::= FULL.MWT | CORE.MWT | CORE.NC | FULL.F | FULL.MI 
-  // ISAAC: The difference between a CM and a FULL.M is that the former can have CORE.Ls and the latter can have FULL.NCs?
+  CM::= FULL.MWT | CORE.MWT | CORE.NC | FULL.F | FULL.MI //CM sort of ::= FULL.M -- FULL.L
   CoM::= FULL.MWT | CORE.MWT | CORE.NC// Constraint member, member we can extract constriants from
   FULL.ctxL::= {H CMs ctxM Ms} | CORE.ctxL //note: no reuse/dots
-  CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}  
-  // ISAAC: is there a reason you have C = [] and not C = ctxL? Also, is there a reason why [] is not a valid ctxL?
+  CORE.ctxL ::= {H MWTs1 MH=ctx MWTs2 NCs Info} | {H MWTs NCs1 C =[] NCs2 Info}
   pTail::= CORE.L | CORE.ctxL | FULL.ctxL
-  p::= LL;pTails //representing This0,...,Thisn // where This0.C refers to a class bound in L0,
-  and (This1..ThisN).C to bindings in cxtL1..cxtLn respectively
-  // ISAAC: so only the first thing in pTails can be an L and the rest can be ctxL?
-  // I'm not sure I understand this, I'll wait to see how it's used
+  p::= LL;pTails //representing This0,...,Thisn // where This0.C refers to a class bound in LL,
+  and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
 _______
 #define functional notation for LL and ctxL (over the domain Ldom)
   /*...*/ //note, LL(Cs) may return an e not of form LL
@@ -127,8 +118,6 @@ _______
   CHARS(i+1) ::= CHAR* -- STROP(i+1) -- STRCL(i+1)
   STROP0 ::= empty//TODO: can it be made more compact, accepting
   STRCL0 ::= empty//for example S"a[b]c", S"[a][[b],[c]]"
-    // ISAAC: I don't see the issue, they are fine and matche STROP0 " CHARS0* " STRCL0
-    // they are normal string literals, with no splicing.
   STROP(i+1) ::= [ STROPi
   STRCL(i+1) ::= STRCLi ]
   ctxString ::= STROPi " CHARSi (STROPi [] STRCli CHARSi)* " STRCLi
@@ -136,7 +125,6 @@ _______
   Number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
   commentBody ::= CHAR* -- '/*' -- '*/' | commentBody comment commentBody
   comment ::= '//' (CHAR* -- newline) newline | '/*' commentBody '*/'
-  // ISAAC: your version was broken because /**/*/ matched comment, since * matches commentChars and / matches commentChars, hence */ matches (commentChars | comment)*
   Whitespace ::= (' ' | newline | ',')+
   tURL::= /*a trusted url*//*too boring*/
   uURL::= /*an untrusted url*//*too boring*/
@@ -157,10 +145,8 @@ _______
   Cs ::=C(.C)*
   CMP/FULL/CORE.Doc ::= @PathLit | @PathLit?{docText}
   CMP/FULL.PathLit::= CsP | (CsP.)? s | (CsP.)? s.x
-  CORE.PathLit::= P | (P.)? s | (P.)? s.x // ISAAC: Why is the P optional? Shouldn't it just default to This0?
-  CMP/FULL/CORE.docText ::= empty| CHAR* -- '{' -- '}' -- '@' | Doc docText | docText '{' docText '}' docText
-  // ISAAC: Since empty is a valid doctext, an @ is a valid @ docText, of course since I haven't yet seem what an @docText should mean, I'm not sure if this is intended or not.
-    
+  CORE.PathLit::= P | P.s | P.s.x // absent P in FULL will default to This0. TODO: check that the desugaring do it.
+  CMP/FULL/CORE.docText ::= empty| CHAR -- '{' -- '}' -- '@' docText | Doc docText | '{' docText '}' docText
   mOp ::= empty | m | OP | ~ | !
 _______
 #define CMP/FULL Expressions priority disambiguation and other details
@@ -182,14 +168,12 @@ _______
   CMP/FULL.sFor ::= 'for' (DX in e)* e
   CMP/FULL.e ::= statement | e-binary3
 _______
-#define grammar well formedness // ISAAC: as usual, I think the order things are in this file is terrible, in particular, you should put the well formedness criteria next to the corresponding grammar rules
-
+#define grammar well formedness
 * CMP/FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.
-// ISAAC: you could allow capsule and fwd vars, albeit with some restrictions...
 * s: 'this' notin xs and all x in xs are unique
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
-// ISAAC: does that meen the type system will not generate such terms?
-
+* CMP/FULL/CORE.NC: NC.C not Any, Library, Void, This, Thisn
+* C not This, Thisn, Any, Void or Library
 * CMP/FULL/CORE B:
     no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
     FV(Ks) disjoint dom(B.Ds)
@@ -223,16 +207,18 @@ _______
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all members of a private nested are private
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.info.refined //TODO: should we cache sources of interface methods?
 * The top level project LL:
-    forall Cs0 != Cs1, where LLi = CCsi, then ns0 disjoint ns1
+    forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)} //care when '...' is expanded; while 'reuse URL' will rename the private names
 * program p:
   -if p.pop(1) is defined, then p.pop(1) is well formed 
   -CORE.L;pTail is well formed iff
-    FULL.L={CORE.L.H CORE.L.Ms} // What is the relation between this FULL.L and the CORE.L above?
+    FULL.L={CORE.L.H CORE.L.Ms}
     flagTyped(norm(FULL.L;pTail);pTail)=CORE.L';pTail //defined in file top
     and CORE.L'.Info<=CORE.L.Info (that is, all the dependencies are a subset, and so on)//TODO: define formally
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
+* CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm
+* FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= empty //TODO: is there any duplicated check in MWT/LL for their PL?
 _______
 #define noBlockNeeded(CMP/FULL.e):
 * noBlockNeeded(B)
@@ -243,13 +229,18 @@ _______
     noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)* e)=
     noBlockNeeded(e)
 _______
-#define bindings(CMP/FULL/CORE.e):xs
-* bindings(LL)={}
-* bindings(var? T? x=e)=bindings(catch throw? T x e)=x U bindings(e)
-* bindings(var? T x) = x
-* bidnings(for DX0 in e0 .. DX1 in en e) = bindings(DX0 = e0) ... U bindings(DXn = en) U bindings(e) 
-// ISAAC: we need the for case since it is the only place where a plain "x" (and not an "x = e" or "T x") should be treeted as a binding and not variable reference.
-* propagates inductivelly in all the other cases
+#define bindings(CMP/FULL.DX) = xs    bindings(CMP/FULL.match) = xs    bindings(CMP/FULL/CORE.e) = xs
+* bindings(var? TLocal x) = x
+* bindings(var? TLocal _) = empty  
+* bindings(TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )) = x0..xn
+
+* bindings(T x) = x
+* bindings(T x=e) = x U bindings(e)
+* bindings(T?(T?0 x0..T?n xn)=e) = x0..xn U bindings(e)
+
+* bindings(LL)=empty
+* bindings(catch throw? T x e)=x U bindings(e)
+* propagates inductively in all the other cases
 _______
 #define FV(CORE.e) //note: FV defined as a sequence instead of a set, and counts occurences of xs
 * FV(x)=x
@@ -266,8 +257,8 @@ _______
 _______
 #define max(xs1;..;xsn)= zs // as many repetition of each x as in the most repetitive of xs1..xsn
 * max(ys)=max(empty,ys)=ys
-* max (x xs;ys)=x, max(xs;ys) if x not in ys
-* max (x xs;ys0,x,ys1)=x, max(xs;ys0,ys1)
+* max(x,xs;ys)=x, max(xs;ys) if x not in ys
+* max(x,xs;ys0,x,ys1)=x, max(xs;ys0,ys1)
 * max(xs; xs0;..;xsn) = max(max(xs;xs0);xs1;..;xsn)
 _______
 #define returning(CMP/FULL.e)
@@ -275,7 +266,6 @@ _______
     Ds,D=Ds1,Ds2
     returning(D.e)
     forall D' in Ds: not returning(D'.e) //dead code after
-    // ISAAC: what if D' contains a throw that is then caught by one of the Ks?
     forall K in Ks: returning(K.e)
 * returning(loop e)
 * returning(throw e)
@@ -284,4 +274,3 @@ _______
 * returning( (Ds1 Ks WOPS? Ds2 e) ) iff
     returning(e)
     forall K in Ks: returning(K.e)
-    // ISAAC: no "dead code" check here?
