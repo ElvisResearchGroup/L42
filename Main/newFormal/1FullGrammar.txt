@@ -150,21 +150,21 @@ _______
   mOp ::= empty | m | OP | ~ | !
 _______
 #define CMP/FULL Expressions priority disambiguation and other details
-  CMP/FULL.eAtomic ::= x | P | 'void' | LL | B | (T e) | \  | 'PathLit
-  CMP/FULL.ePostfix ::= eAtomic | ePostfix (.m)? '(' par ')' | \x //no space in ePostfix(par) and \x
-              | ePostfix (.m)? '[' (par;)* par? ']' | ePostfix string
+  CMP/FULL.eAtomic ::= x | CsP | 'void' | LL | B | (T e) | \  | 'PathLit
+  CMP/FULL.ePostfix ::= eAtomic | ePostfix (.m)? ( par ) | \x //no space in ePostfix(par) and \x
+              | ePostfix (.m)? [ (par;)* par? ] | ePostfix string
   CMP/FULL.par ::= e? xe*
   CMP/FULL.eUnary   ::= OPP? ePostfix
   CMP/FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
   CMP/FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   CMP/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-  CMP/FULL.B ::= '(' D* e ')' | '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
+  CMP/FULL.B ::= ( Ds e ) | ( D+ Ks WOPS? (Ds e)? ) | { Ds (D K+ WOPS? Ds)? }
   CMP/FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
-  CMP/FULL.statement  ::= sIf | sWhile | sFor | 'loop' e | throw e | x opUpdate e
-  CMP/FULL.sIf ::= 'if' e e ('else' e)? | 'if' match+ e
+  CMP/FULL.statement  ::= sIf | sWhile | sFor | loop e | throw e | x opUpdate e
+  CMP/FULL.sIf ::= if e e (else e)? | if match+ e
   CMP/FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
-  CMP/FULL.sWhile::= 'while' e e
+  CMP/FULL.sWhile::= while e e
   CMP/FULL.sFor ::= 'for' (DX in e)* e
   CMP/FULL.e ::= statement | e-binary3
 _______
