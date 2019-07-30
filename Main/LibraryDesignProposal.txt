@@ -15,7 +15,7 @@ SolvingCircularDependecies
 There are two different reasons dependency can affect 42:
 Interface loops and Generic loops
 
--Interface loops:
+-Interface loops://NOTE: this work with new semantic 27/7/2019
 Shape:{interface method Rectangle boundingBox()}
 Rectangle:Data<><{implements Shape Num x, Num y}
 Can not work in the current semantic of the language.
