@@ -2,7 +2,7 @@ grammar L42;
 @header {package is.L42.generated;}
 fragment IdUp: '_'* ('A'..'Z'|'$');
 fragment IdLow: '_'* 'a'..'z';
-fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9'
+fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9';
 fragment CHAR:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' | '\n';
 fragment CHARInStringSingle:
@@ -10,15 +10,12 @@ fragment CHARInStringSingle:
 fragment CharsUrl:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
 fragment URL:CharsUrl+;
-fragment IdUp: '_'* ('A'..'Z' | '$'); 
-fragment IdLow: '_'* 'a'..'z';
-fragment IdChar: 'a'..'z' |'A'..'Z' | '$' | '_'| '0'..'9';
 fragment Fn: '0' | '1'..'9' ('0'..'9')*;
 fragment Fx: IdLow IdChar*;
 StringSingle: '"' CHARInStringSingle '"';
 string: StringSingle;//TODO: will also match multilineStr and interpolation
 Number : '0'..'9' ('.'|'_'|'-'|'0'..'9')*;
-MUniqeNum: Fx('#' Fx)*'::'Fn;
+MUniqueNum: Fx('#' Fx)*'::'Fn;
 MHash: '#' '$'? Fx('#' Fx)* ('::'Fn)?;
 X:  Fx;
 m: MUniqueNum|MHash|X;
@@ -32,11 +29,11 @@ BlockComment : '/*' (BlockComment|.)*? '*/'	-> channel(HIDDEN) ; // nesting comm
 LineComment : '//' .*? ('\n'|EOF)				-> channel(HIDDEN) ;
 Whitespace :(( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
 
-eAtomic: x | CsP | 'void' | b;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
+eAtomic: x | CsP | 'void' | block;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
 e: eAtomic |e fCall;
 fCall: ORNS par ')';
 oR: OR |ORNS;
 par: e? (x'='e)*;
 block: oR d* e ')' ;//| '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
 d: e;//(DX '=')? e;
-nudeE: eTop EOF;
+nudeE: e EOF;
