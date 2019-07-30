@@ -1,6 +1,5 @@
-// Generated from L42.g4 by ANTLR 4.2.2
+// Generated from L42.g4 by ANTLR 4.7.2
 package is.L42.generated;
-import org.antlr.v4.runtime.misc.NotNull;
 import org.antlr.v4.runtime.tree.AbstractParseTreeVisitor;
 
 /**
@@ -18,85 +17,89 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPar(@NotNull L42Parser.ParContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitString(L42Parser.StringContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitOR(@NotNull L42Parser.ORContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitM(L42Parser.MContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitString(@NotNull L42Parser.StringContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitX(L42Parser.XContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitD(@NotNull L42Parser.DContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitEAtomic(L42Parser.EAtomicContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitE(@NotNull L42Parser.EContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitCsP(L42Parser.CsPContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEAtomic(@NotNull L42Parser.EAtomicContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitVoidE(L42Parser.VoidEContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitX(@NotNull L42Parser.XContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitE(L42Parser.EContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitFCall(@NotNull L42Parser.FCallContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitFCall(L42Parser.FCallContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitNudeE(@NotNull L42Parser.NudeEContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitOR(L42Parser.ORContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitBlock(@NotNull L42Parser.BlockContext ctx) { return visitChildren(ctx); }
-
+	@Override public T visitPar(L42Parser.ParContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitM(@NotNull L42Parser.MContext ctx) { return visitChildren(ctx); }
+	@Override public T visitBlock(L42Parser.BlockContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitD(L42Parser.DContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNudeE(L42Parser.NudeEContext ctx) { return visitChildren(ctx); }
 }

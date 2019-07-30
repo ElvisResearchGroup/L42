@@ -1,4 +1,4 @@
-// Generated from L42.g4 by ANTLR 4.2.2
+// Generated from L42.g4 by ANTLR 4.7.2
 package is.L42.generated;
 import org.antlr.v4.runtime.Lexer;
 import org.antlr.v4.runtime.CharStream;
@@ -11,28 +11,80 @@ import org.antlr.v4.runtime.misc.*;
 
 @SuppressWarnings({"all", "warnings", "unchecked", "unused", "cast"})
 public class L42Lexer extends Lexer {
+	static { RuntimeMetaData.checkVersion("4.7.2", RuntimeMetaData.VERSION); }
+
 	protected static final DFA[] _decisionToDFA;
 	protected static final PredictionContextCache _sharedContextCache =
 		new PredictionContextCache();
 	public static final int
-		T__2=1, T__1=2, T__0=3, StringSingle=4, Number=5, MUniqueNum=6, MHash=7, 
+		T__0=1, T__1=2, T__2=3, StringSingle=4, Number=5, MUniqueNum=6, MHash=7, 
 		X=8, CsP=9, ClassSep=10, OR=11, ORNS=12, BlockComment=13, LineComment=14, 
 		Whitespace=15;
+	public static String[] channelNames = {
+		"DEFAULT_TOKEN_CHANNEL", "HIDDEN"
+	};
+
 	public static String[] modeNames = {
 		"DEFAULT_MODE"
 	};
 
-	public static final String[] tokenNames = {
-		"<INVALID>",
-		"')'", "'void'", "'='", "StringSingle", "Number", "MUniqueNum", "MHash", 
-		"X", "CsP", "'.'", "OR", "'('", "BlockComment", "LineComment", "Whitespace"
-	};
-	public static final String[] ruleNames = {
-		"T__2", "T__1", "T__0", "IdUp", "IdLow", "IdChar", "CHAR", "CHARInStringSingle", 
-		"CharsUrl", "URL", "Fn", "Fx", "StringSingle", "Number", "MUniqueNum", 
-		"MHash", "X", "C", "CsP", "ClassSep", "OR", "ORNS", "BlockComment", "LineComment", 
-		"Whitespace"
-	};
+	private static String[] makeRuleNames() {
+		return new String[] {
+			"T__0", "T__1", "T__2", "IdUp", "IdLow", "IdChar", "CHAR", "CHARInStringSingle", 
+			"CharsUrl", "URL", "Fn", "Fx", "StringSingle", "Number", "MUniqueNum", 
+			"MHash", "X", "C", "CsP", "ClassSep", "OR", "ORNS", "BlockComment", "LineComment", 
+			"Whitespace"
+		};
+	}
+	public static final String[] ruleNames = makeRuleNames();
+
+	private static String[] makeLiteralNames() {
+		return new String[] {
+			null, "'void'", "')'", "'='", null, null, null, null, null, null, "'.'", 
+			null, "'('"
+		};
+	}
+	private static final String[] _LITERAL_NAMES = makeLiteralNames();
+	private static String[] makeSymbolicNames() {
+		return new String[] {
+			null, null, null, null, "StringSingle", "Number", "MUniqueNum", "MHash", 
+			"X", "CsP", "ClassSep", "OR", "ORNS", "BlockComment", "LineComment", 
+			"Whitespace"
+		};
+	}
+	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
+	public static final Vocabulary VOCABULARY = new VocabularyImpl(_LITERAL_NAMES, _SYMBOLIC_NAMES);
+
+	/**
+	 * @deprecated Use {@link #VOCABULARY} instead.
+	 */
+	@Deprecated
+	public static final String[] tokenNames;
+	static {
+		tokenNames = new String[_SYMBOLIC_NAMES.length];
+		for (int i = 0; i < tokenNames.length; i++) {
+			tokenNames[i] = VOCABULARY.getLiteralName(i);
+			if (tokenNames[i] == null) {
+				tokenNames[i] = VOCABULARY.getSymbolicName(i);
+			}
+
+			if (tokenNames[i] == null) {
+				tokenNames[i] = "<INVALID>";
+			}
+		}
+	}
+
+	@Override
+	@Deprecated
+	public String[] getTokenNames() {
+		return tokenNames;
+	}
+
+	@Override
+
+	public Vocabulary getVocabulary() {
+		return VOCABULARY;
+	}
 
 
 	public L42Lexer(CharStream input) {
@@ -44,13 +96,13 @@ public class L42Lexer extends Lexer {
 	public String getGrammarFileName() { return "L42.g4"; }
 
 	@Override
-	public String[] getTokenNames() { return tokenNames; }
-
-	@Override
 	public String[] getRuleNames() { return ruleNames; }
 
 	@Override
 	public String getSerializedATN() { return _serializedATN; }
+
+	@Override
+	public String[] getChannelNames() { return channelNames; }
 
 	@Override
 	public String[] getModeNames() { return modeNames; }
@@ -59,11 +111,11 @@ public class L42Lexer extends Lexer {
 	public ATN getATN() { return _ATN; }
 
 	public static final String _serializedATN =
-		"\3\u0430\ud6d1\u8206\uad2d\u4417\uaef1\u8d80\uaadd\2\21\u00d8\b\1\4\2"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\2\21\u00d8\b\1\4\2"+
 		"\t\2\4\3\t\3\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\4"+
 		"\13\t\13\4\f\t\f\4\r\t\r\4\16\t\16\4\17\t\17\4\20\t\20\4\21\t\21\4\22"+
 		"\t\22\4\23\t\23\4\24\t\24\4\25\t\25\4\26\t\26\4\27\t\27\4\30\t\30\4\31"+
-		"\t\31\4\32\t\32\3\2\3\2\3\3\3\3\3\3\3\3\3\3\3\4\3\4\3\5\7\5@\n\5\f\5\16"+
+		"\t\31\4\32\t\32\3\2\3\2\3\2\3\2\3\2\3\3\3\3\3\4\3\4\3\5\7\5@\n\5\f\5\16"+
 		"\5C\13\5\3\5\3\5\3\6\7\6H\n\6\f\6\16\6K\13\6\3\6\3\6\3\7\3\7\3\b\3\b\3"+
 		"\t\3\t\3\n\3\n\3\13\6\13X\n\13\r\13\16\13Y\3\f\3\f\3\f\7\f_\n\f\f\f\16"+
 		"\fb\13\f\5\fd\n\f\3\r\3\r\7\rh\n\r\f\r\16\rk\13\r\3\16\3\16\3\16\3\16"+
@@ -80,20 +132,20 @@ public class L42Lexer extends Lexer {
 		"\25\2\27\2\31\2\33\6\35\7\37\b!\t#\n%\2\'\13)\f+\r-\16/\17\61\20\63\21"+
 		"\3\2\13\4\2&&C\\\7\2&&\62;C\\aac|\4\2\f\f\"\u0080\4\2\"#%\u0080\7\2\""+
 		"#%(*|~~\u0080\u0080\5\2/\60\62;aa\6\2&&\62;C\\c|\3\3\f\f\5\2\f\f\"\"."+
-		".\u00e0\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\33\3\2\2\2\2\35\3\2\2\2"+
-		"\2\37\3\2\2\2\2!\3\2\2\2\2#\3\2\2\2\2\'\3\2\2\2\2)\3\2\2\2\2+\3\2\2\2"+
-		"\2-\3\2\2\2\2/\3\2\2\2\2\61\3\2\2\2\2\63\3\2\2\2\3\65\3\2\2\2\5\67\3\2"+
+		".\2\u00e0\2\3\3\2\2\2\2\5\3\2\2\2\2\7\3\2\2\2\2\33\3\2\2\2\2\35\3\2\2"+
+		"\2\2\37\3\2\2\2\2!\3\2\2\2\2#\3\2\2\2\2\'\3\2\2\2\2)\3\2\2\2\2+\3\2\2"+
+		"\2\2-\3\2\2\2\2/\3\2\2\2\2\61\3\2\2\2\2\63\3\2\2\2\3\65\3\2\2\2\5:\3\2"+
 		"\2\2\7<\3\2\2\2\tA\3\2\2\2\13I\3\2\2\2\rN\3\2\2\2\17P\3\2\2\2\21R\3\2"+
 		"\2\2\23T\3\2\2\2\25W\3\2\2\2\27c\3\2\2\2\31e\3\2\2\2\33l\3\2\2\2\35p\3"+
 		"\2\2\2\37w\3\2\2\2!\u0084\3\2\2\2#\u0096\3\2\2\2%\u0098\3\2\2\2\'\u009f"+
 		"\3\2\2\2)\u00a8\3\2\2\2+\u00b0\3\2\2\2-\u00b2\3\2\2\2/\u00b4\3\2\2\2\61"+
-		"\u00c3\3\2\2\2\63\u00d2\3\2\2\2\65\66\7+\2\2\66\4\3\2\2\2\678\7x\2\28"+
-		"9\7q\2\29:\7k\2\2:;\7f\2\2;\6\3\2\2\2<=\7?\2\2=\b\3\2\2\2>@\7a\2\2?>\3"+
-		"\2\2\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2BD\3\2\2\2CA\3\2\2\2DE\t\2\2\2E\n"+
-		"\3\2\2\2FH\7a\2\2GF\3\2\2\2HK\3\2\2\2IG\3\2\2\2IJ\3\2\2\2JL\3\2\2\2KI"+
-		"\3\2\2\2LM\4c|\2M\f\3\2\2\2NO\t\3\2\2O\16\3\2\2\2PQ\t\4\2\2Q\20\3\2\2"+
-		"\2RS\t\5\2\2S\22\3\2\2\2TU\t\6\2\2U\24\3\2\2\2VX\5\23\n\2WV\3\2\2\2XY"+
-		"\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z\26\3\2\2\2[d\7\62\2\2\\`\4\63;\2]_\4\62"+
+		"\u00c3\3\2\2\2\63\u00d2\3\2\2\2\65\66\7x\2\2\66\67\7q\2\2\678\7k\2\28"+
+		"9\7f\2\29\4\3\2\2\2:;\7+\2\2;\6\3\2\2\2<=\7?\2\2=\b\3\2\2\2>@\7a\2\2?"+
+		">\3\2\2\2@C\3\2\2\2A?\3\2\2\2AB\3\2\2\2BD\3\2\2\2CA\3\2\2\2DE\t\2\2\2"+
+		"E\n\3\2\2\2FH\7a\2\2GF\3\2\2\2HK\3\2\2\2IG\3\2\2\2IJ\3\2\2\2JL\3\2\2\2"+
+		"KI\3\2\2\2LM\4c|\2M\f\3\2\2\2NO\t\3\2\2O\16\3\2\2\2PQ\t\4\2\2Q\20\3\2"+
+		"\2\2RS\t\5\2\2S\22\3\2\2\2TU\t\6\2\2U\24\3\2\2\2VX\5\23\n\2WV\3\2\2\2"+
+		"XY\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z\26\3\2\2\2[d\7\62\2\2\\`\4\63;\2]_\4\62"+
 		";\2^]\3\2\2\2_b\3\2\2\2`^\3\2\2\2`a\3\2\2\2ad\3\2\2\2b`\3\2\2\2c[\3\2"+
 		"\2\2c\\\3\2\2\2d\30\3\2\2\2ei\5\13\6\2fh\5\r\7\2gf\3\2\2\2hk\3\2\2\2i"+
 		"g\3\2\2\2ij\3\2\2\2j\32\3\2\2\2ki\3\2\2\2lm\7$\2\2mn\5\21\t\2no\7$\2\2"+

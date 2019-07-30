@@ -1,6 +1,5 @@
-package is.L42.main;
+package is.L42.tests;
 
-import org.antlr.v4.runtime.CharStream;
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ConsoleErrorListener;
@@ -14,6 +13,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
+import is.L42.generated.L42Visitor;
 import is.L42.generated.L42Parser.BlockContext;
 import is.L42.generated.L42Parser.CsPContext;
 import is.L42.generated.L42Parser.DContext;
@@ -27,14 +27,9 @@ import is.L42.generated.L42Parser.ParContext;
 import is.L42.generated.L42Parser.StringContext;
 import is.L42.generated.L42Parser.VoidEContext;
 import is.L42.generated.L42Parser.XContext;
-import is.L42.generated.L42Visitor;
 
-class FailConsole extends ConsoleErrorListener{
-  @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){throw e;}
-  public static final FailConsole INSTANCE=new FailConsole();
-}
-public class Main {
-  public static void main(String[] args) {
+public class TestHelpers {
+  public static String parseStructure(ParserRuleContext ctx){
     var visitor=new L42Visitor<StringBuilder>(){
       StringBuilder logVisit(ParserRuleContext prc){
         var sb=new StringBuilder();
@@ -44,7 +39,7 @@ public class Main {
         prc.children.forEach(c->sb.append(c.accept(this)));
         sb.append(")");
         return sb;
-      }
+        }
       @Override public StringBuilder visit(ParseTree arg0) {return null;}
       @Override public StringBuilder visitChildren(RuleNode arg0) {return null;}
       @Override public StringBuilder visitErrorNode(ErrorNode arg0) {return new StringBuilder("ERROR");}
@@ -63,9 +58,9 @@ public class Main {
       @Override public StringBuilder visitCsP(CsPContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitVoidE(VoidEContext ctx) {return logVisit(ctx);}
       };
-    System.out.println(getParser("Cacca").nudeE().accept(visitor));
-  }
-  public static L42Parser getParser(String s){
+    return ctx.accept(visitor).toString();
+    }
+  public static L42Parser getPositiveParser(String s){
     var in = CharStreams.fromString(s);
     var l=new L42Lexer(in);
     l.removeErrorListener(ConsoleErrorListener.INSTANCE);
@@ -75,5 +70,9 @@ public class Main {
     p.removeErrorListener(ConsoleErrorListener.INSTANCE);
     p.addErrorListener(FailConsole.INSTANCE);
     return p;
+    }
   }
+class FailConsole extends ConsoleErrorListener{
+  @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){throw e;}
+  public static final FailConsole INSTANCE=new FailConsole();
 }

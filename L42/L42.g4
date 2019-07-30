@@ -4,7 +4,7 @@ fragment IdUp: '_'* ('A'..'Z'|'$');
 fragment IdLow: '_'* 'a'..'z';
 fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9';
 fragment CHAR:
-'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '\"' | '\'' | '\n';
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '"' | '\'' | '\n';
 fragment CHARInStringSingle:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' |         '\'';//no \n and "
 fragment CharsUrl:
@@ -29,7 +29,9 @@ BlockComment : '/*' (BlockComment|.)*? '*/'	-> channel(HIDDEN) ; // nesting comm
 LineComment : '//' .*? ('\n'|EOF)				-> channel(HIDDEN) ;
 Whitespace :(( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
 
-eAtomic: x | CsP | 'void' | block;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
+eAtomic: x | csP | voidE | block;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
+csP: CsP;
+voidE: 'void';
 e: eAtomic |e fCall;
 fCall: ORNS par ')';
 oR: OR |ORNS;
