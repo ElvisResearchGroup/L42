@@ -66,7 +66,7 @@ _______
   PAcc ::= PAcc[p;GX;CCz]//constraints accumulation environment
   v ::= a | P | void | CORE.L
   r ::= CORE.L | exception v | error v
-  Obj ::= P(x1=v1..xn=vn) | L as // memory objects. 'as' is the set of mut objects associated to L
+  Obj ::= P(x1=v1..xn=vn) empty;empty| P() as1;as2 // memory objects. 'as' is the set of mut objects associated to L
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   Q ::= Q[Flag;MH?;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
   MethT ::= CORE.Ts->CORE.T;Ps  

@@ -39,38 +39,51 @@ _______
 * A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1 | MWT.e[this=v0,x1=v1,..xn=vn]
     MWT=p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
     MWT.native[Url]? = empty
+    //or is not empty but next rule can not be applied, may be just remove this line and make it non deterministic?
     A1=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
 * A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v
-    MWT=p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
-    MWT.native[Url]? !=empty
-    A1,A=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
-    Ts=G^MWT.Ts //includes 'this' type
+    MWT = p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
+    MWT.native[Url]? != empty
+    A1,A = A0[MWT.mdf0 v0]..[MWT.mdfn vn]
+    Ts = MWT.pars, MWT.mdf A0.pathOf(v0)
     capsule not in Ts.mdfs//not a loss in expressiveness, we can use a wrapper
-    A=mutLibs(A1,A;Ts,v0..vn)
-    as=accessibleAddresses(A,Ts,v0..vn)
-    callPlugin(A1,A;MWT;v0..vn)=A1,A',A2|v
-    A'=A~as
-    exists e:  A1,A'| e -->p* A1,A',A2 | v  
-    Free(A2) subsetOf {a| imm a->Obj in A1} U dom(A')
+    A = plgMuts(A1,A;Ts;v0..vn)//mutLibs(A1,A;Ts,v0..vn)
+    as1 = accessibleMutAddresses(A,Ts,v0..vn)
+    as2 = accessibleImmAddresses(A,Ts,v0..vn)
+    callPlugin(A1,A;MWT;v0..vn)=A1,A'|v
+    A' = A~as1;as2
+    either MWT.T.mdf=mut, v in as1, v->P(_)_;_ in A and p|-P<=MWT.T.P
+    or MWT.T.mdf=imm
+    //untyped libs, now if a lib is not typed we know it could not have been typed yet
+    either v=L and L.flag=norm implies {L| L in v1..vn, L.flag=norm} not empty
+    or v in as2, imm v->P(_)_;_ in A and p|-P<=MWT.T.P 
+//rationale: plg values P() as are created (with empty as1;as2) by normal constructors, no need of plg calls.
+//plg can reorganize the as on top of any P().
+//plg can create a new L or return any accessible as consistent with the method return mdf
 _______
-#define accessibleAddresses(A;Ts;vs)=as
-* a in accessibleAddresses(A;T1..Tn;v1..vn)
+#define accessibleMutAddresses(A;Ts;vs)=as      accessibleImmAddresses(A;Ts;vs)=as
+* a0..an in accessibleMutAddresses(A;T1..Tn;v1..vn)
+    vi=a0
+    Ti.mdf=mut
+    a0->P(_)a1..an;_ in A
+
+* a1..an in accessibleImmAddresses(A;T1..Tn;v1..vn)
+    vi=a0
+    Ti.mdf=mut
+    a0->P(_) _;a1..an in A
+* a0,as1,as2 in accessibleImmAddresses(A;T1..Tn;v1..vn)
+    vi=a0
+    Ti.mdf=imm
+    a0->P(_) as1;as2 in A
+_______
+#define A~as1;as2 = A'
+* A~as1;as2 = A'    //note: no imm a-> P()_;_ in A', since is only mut stuff
+    dom(A') = dom(A)
+    if a-> P() as1';as2' in A' then a-> P() _;_ in A, as1' subsetEq as1 and as2' subsetEq as2
+_______
+#define plgMuts(A;Ts;vs) = A'
+* a->P() as1;as2 in plgMuts(A,T1..Tn,v1..vn)
     vi=a
     Ti.mdf=mut
-    Ti.P!=Library
-* a' in accessibleAddresses(A;T1..Tn;v1..vn)
-    vi=a
-    Ti= mut Library
-    a->L _a'_ in A  
-_______
-#define A~as = A'
-* A~as = A'
-    dom(A') = dom(A)
-    if mut a-> L as' in A' then mut a-> L _ in A and as' subsetEq as
-_______
-#define mutLibs(A;Ts;vs) = A'
-* a->L as in mutLibs(A,T1..Tn,v1..vn)
-    vi=a
-    Ti= mut Library
-    a->L as in A  
+    a->P() as1;as2 in A
     
