@@ -15,6 +15,6 @@ public AtomicTest(Runnable r){this.r=r;}
 public String toString() {return "line "+lineNumber;}
 public void run() {r.run();}
 public static int lineNumber() {
-  return Thread.currentThread().getStackTrace()[4].getLineNumber();
+  return Thread.currentThread().getStackTrace()[3].getLineNumber();
   }
 }

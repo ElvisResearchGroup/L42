@@ -38,15 +38,15 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitX(L42Parser.XContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42Parser#eAtomic}.
+	 * Enter a parse tree produced by {@link L42Parser#doc}.
 	 * @param ctx the parse tree
 	 */
-	void enterEAtomic(L42Parser.EAtomicContext ctx);
+	void enterDoc(L42Parser.DocContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42Parser#eAtomic}.
+	 * Exit a parse tree produced by {@link L42Parser#doc}.
 	 * @param ctx the parse tree
 	 */
-	void exitEAtomic(L42Parser.EAtomicContext ctx);
+	void exitDoc(L42Parser.DocContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#csP}.
 	 * @param ctx the parse tree
@@ -57,6 +57,36 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitCsP(L42Parser.CsPContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#t}.
+	 * @param ctx the parse tree
+	 */
+	void enterT(L42Parser.TContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#t}.
+	 * @param ctx the parse tree
+	 */
+	void exitT(L42Parser.TContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#tLocal}.
+	 * @param ctx the parse tree
+	 */
+	void enterTLocal(L42Parser.TLocalContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#tLocal}.
+	 * @param ctx the parse tree
+	 */
+	void exitTLocal(L42Parser.TLocalContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#eAtomic}.
+	 * @param ctx the parse tree
+	 */
+	void enterEAtomic(L42Parser.EAtomicContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#eAtomic}.
+	 * @param ctx the parse tree
+	 */
+	void exitEAtomic(L42Parser.EAtomicContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#voidE}.
 	 * @param ctx the parse tree
@@ -127,6 +157,16 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitD(L42Parser.DContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#dX}.
+	 * @param ctx the parse tree
+	 */
+	void enterDX(L42Parser.DXContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#dX}.
+	 * @param ctx the parse tree
+	 */
+	void exitDX(L42Parser.DXContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#nudeE}.
 	 * @param ctx the parse tree

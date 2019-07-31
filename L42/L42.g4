@@ -1,5 +1,8 @@
 grammar L42;
 @header {package is.L42.generated;}
+Mdf: 'fwd mut' | 'fwd imm' |'imm' | 'mut' | 'lent' | 'read' | 'capsule' | 'class';
+VoidKW:'void';
+VarKw:'var';
 fragment IdUp: '_'* ('A'..'Z'|'$');
 fragment IdLow: '_'* 'a'..'z';
 fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9';
@@ -9,6 +12,8 @@ fragment CHARInStringSingle:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' |         '\'';//no \n and "
 fragment CharsUrl:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
+fragment CHARDocText:
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '"' | '\'' | '\n'; //no {}@
 fragment URL:CharsUrl+;
 fragment Fn: '0' | '1'..'9' ('0'..'9')*;
 fragment Fx: IdLow IdChar*;
@@ -23,19 +28,32 @@ x: X;
 fragment C: IdUp ('A'..'Z'|'$'|'a'..'z'|'0'..'9')*;
 CsP: C(ClassSep C)*;
 ClassSep: '.';
+UnderScore:'_';//need to be not earlier then here, after X and CsP
 OR:' ('| ',(' | '\n(';
 ORNS:'(';
-BlockComment : '/*' (BlockComment|.)*? '*/'	-> channel(HIDDEN) ; // nesting comments allowed
-LineComment : '//' .*? ('\n'|EOF)				-> channel(HIDDEN) ;
-Whitespace :(( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
+Doc: '@'FPathLit | '@'FPathLit?'{'DocText'}';
+fragment FS:(MUniqueNum|MHash|X) FParXs;
+fragment FParXs: '(' ')' | '(' X ( (' '|',')X )* ')';
+fragment FPathLit: FS('.'X)? |FParXs('.'X)? | CsP( ('.'FS|FParXs)('.'X)? )?;
+fragment DocText: | CHARDocText DocText | Doc DocText | '{' DocText '}' DocText;
+doc:Doc;
+
+BlockComment: '/*' (BlockComment|.)*? '*/'	-> channel(HIDDEN) ; // nesting comments allowed
+LineComment: '//' .*? ('\n'|EOF)				-> channel(HIDDEN) ;
+Whitespace: (( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
+
+csP: CsP;
+t:Mdf? doc* csP | '\\';
+tLocal: t | Mdf | ; 
 
 eAtomic: x | csP | voidE | block;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
-csP: CsP;
-voidE: 'void';
+voidE: VoidKW;
 e: eAtomic |e fCall;
 fCall: ORNS par ')';
 oR: OR |ORNS;
 par: e? (x'='e)*;
-block: oR d* e ')' ;//| '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
-d: e;//(DX '=')? e;
+block: oR d*? e ')' ;//| '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
+d: (dX '=')? e;
+dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';
+
 nudeE: e EOF;

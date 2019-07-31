@@ -29,17 +29,35 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitX(L42Parser.XContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42Parser#eAtomic}.
+	 * Visit a parse tree produced by {@link L42Parser#doc}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitEAtomic(L42Parser.EAtomicContext ctx);
+	T visitDoc(L42Parser.DocContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#csP}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitCsP(L42Parser.CsPContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#t}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitT(L42Parser.TContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#tLocal}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitTLocal(L42Parser.TLocalContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#eAtomic}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEAtomic(L42Parser.EAtomicContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#voidE}.
 	 * @param ctx the parse tree
@@ -82,6 +100,12 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitD(L42Parser.DContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#dX}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDX(L42Parser.DXContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#nudeE}.
 	 * @param ctx the parse tree

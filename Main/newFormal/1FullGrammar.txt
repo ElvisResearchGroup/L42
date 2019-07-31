@@ -144,7 +144,7 @@ _______
   opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= 
   Cs ::=C(.C)*
   CMP/FULL/CORE.Doc ::= @PathLit | @PathLit?{docText}
-  CMP/FULL.PathLit::= CsP | (CsP.)? s | (CsP.)? s.x
+  CMP/FULL.PathLit::= CsP | (CsP.)? s(.x)?
   CORE.PathLit::= P | P.s | P.s.x // absent P in FULL will default to This0. TODO: check that the desugaring do it.
   CMP/FULL/CORE.docText ::= empty| CHAR -- '{' -- '}' -- '@' docText | Doc docText | '{' docText '}' docText
   mOp ::= empty | m | OP | ~ | !

@@ -17,6 +17,8 @@ import is.L42.generated.L42Visitor;
 import is.L42.generated.L42Parser.BlockContext;
 import is.L42.generated.L42Parser.CsPContext;
 import is.L42.generated.L42Parser.DContext;
+import is.L42.generated.L42Parser.DXContext;
+import is.L42.generated.L42Parser.DocContext;
 import is.L42.generated.L42Parser.EAtomicContext;
 import is.L42.generated.L42Parser.EContext;
 import is.L42.generated.L42Parser.FCallContext;
@@ -25,6 +27,8 @@ import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.ORContext;
 import is.L42.generated.L42Parser.ParContext;
 import is.L42.generated.L42Parser.StringContext;
+import is.L42.generated.L42Parser.TContext;
+import is.L42.generated.L42Parser.TLocalContext;
 import is.L42.generated.L42Parser.VoidEContext;
 import is.L42.generated.L42Parser.XContext;
 
@@ -36,7 +40,8 @@ public class TestHelpers {
         var name=prc.getClass().getSimpleName();
         name=name.substring(0,name.length()-"Context".length());
         sb.append(name+"(");
-        prc.children.forEach(c->sb.append(c.accept(this)));
+        if(prc.children!=null)
+          prc.children.forEach(c->sb.append(c.accept(this)));
         sb.append(")");
         return sb;
         }
@@ -53,26 +58,39 @@ public class TestHelpers {
       @Override public StringBuilder visitX(XContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitFCall(FCallContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitNudeE(NudeEContext ctx) {return logVisit(ctx);}
-      @Override public StringBuilder visitBlock(BlockContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitBlock(BlockContext ctx) {var r=logVisit(ctx);r.append("ENDBLOCK");return r;}
       @Override public StringBuilder visitM(MContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitCsP(CsPContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitVoidE(VoidEContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitT(TContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitTLocal(TLocalContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitDX(DXContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitDoc(DocContext ctx) {return logVisit(ctx);}
       };
     return ctx.accept(visitor).toString();
     }
-  public static L42Parser getPositiveParser(String s){
+  public static NudeEContext parseWithException(String s){
+    StringBuilder errorst=new StringBuilder();
+    StringBuilder errorsp=new StringBuilder();
     var in = CharStreams.fromString(s);
     var l=new L42Lexer(in);
     l.removeErrorListener(ConsoleErrorListener.INSTANCE);
-    l.addErrorListener(FailConsole.INSTANCE);
+    l.addErrorListener(new FailConsole(errorst));
     var t = new CommonTokenStream(l);
     var p=new L42Parser(t);
     p.removeErrorListener(ConsoleErrorListener.INSTANCE);
-    p.addErrorListener(FailConsole.INSTANCE);
-    return p;
+    p.addErrorListener(new FailConsole(errorsp));
+    try{return p.nudeE();}
+    finally{
+      if(errorst.length()!=0)throw new RuntimeException("Tokenizer errors:\n"+errorst);
+      if(errorsp.length()!=0)throw new RuntimeException("Parsing errors:\n"+errorsp);
+      }
     }
   }
 class FailConsole extends ConsoleErrorListener{
-  @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){throw e;}
-  public static final FailConsole INSTANCE=new FailConsole();
-}
+  public final StringBuilder sb;
+  public FailConsole(StringBuilder sb){this.sb=sb;}
+  @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){
+    sb.append("line " + line + ":" + charPos + " " + msg);
+    }
+  }

@@ -52,13 +52,13 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterEAtomic(L42Parser.EAtomicContext ctx) { }
+	@Override public void enterDoc(L42Parser.DocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitEAtomic(L42Parser.EAtomicContext ctx) { }
+	@Override public void exitDoc(L42Parser.DocContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -71,6 +71,42 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitCsP(L42Parser.CsPContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterT(L42Parser.TContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitT(L42Parser.TContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterTLocal(L42Parser.TLocalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitTLocal(L42Parser.TLocalContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterEAtomic(L42Parser.EAtomicContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitEAtomic(L42Parser.EAtomicContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -155,6 +191,18 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitD(L42Parser.DContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterDX(L42Parser.DXContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDX(L42Parser.DXContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

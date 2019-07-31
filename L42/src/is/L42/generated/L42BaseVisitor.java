@@ -38,7 +38,7 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitEAtomic(L42Parser.EAtomicContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDoc(L42Parser.DocContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -46,6 +46,27 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitCsP(L42Parser.CsPContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitT(L42Parser.TContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitTLocal(L42Parser.TLocalContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitEAtomic(L42Parser.EAtomicContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -95,6 +116,13 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitD(L42Parser.DContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitDX(L42Parser.DXContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
