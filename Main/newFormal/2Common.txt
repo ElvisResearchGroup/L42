@@ -7,29 +7,26 @@ _______
 _______
 #define p.pop(n)= p'
 * p.pop(0)=p
-* (LL;ctxL;pTails).pop(n+1)=(ctxL[LL];ctxLs).pop(n)
-* (LL;CORE.L;pTails).pop(n+1)=(CORE.L;ctxLs).pop(n)
+* (LL;FULL/CORE.ctxL;pTails).pop(n+1)=(ctxL[LL];pTails).pop(n)
+* (LL;CORE.L;pTails).pop(n+1)=(CORE.L;pTails).pop(n)
 _______
 #define p.push(C)=p'    p.push(LL)
-* (pTail[LL];pTails).push(C)=LL;pTail;pTails
-    pTail=FULL.ctxL or CORE.ctxL 
-    pTail(C)=[]
+* (FULL/CORE.ctxL[LL];pTails).push(C)=LL;FULL/CORE.ctxL;pTails 
+    FULL/CORE.ctxL(C)=[]
 
 * (LL0;pTails).push(LL1) = LL1;LL0;pTails    
 _______
 #define p.update(LL)=p'
-* (p;ctxL).update(LL)=p.update(LL);ctxL
-* (p;CORE.L).update(LL)=p.update(LL);CORE.L
-* (LL';pTails).update(LL) = LL;pTails
+* (_;pTails).update(LL) = LL;pTails
 _______
 #define p.minimize(P)=P'   p.reducePath(P)=P' //assert defined only if p(This0) of form C/CORE.L
 * p.minimize(P) = P
     P in {Any,Void,Library}
 * p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
     p.pop(1).minimize(Thisn.Cs)=Thisk.Cs'
-* (CORE.L;ctxL;_).minimize(This1.C.Cs)=This0.Cs
-    ctxL(C) of form FULL.ctxC or CORE.ctx //Note:ctxL(C)=[] would be more restrictive, for example
-   //preventing A:Data<><{method A (..)} to be summed with the constructor.
+* (CORE.L;FULL/CORE.ctxL;_).minimize(This1.C.Cs)=This0.Cs
+    FULL/CORE.ctxL(C) of form FULL.ctxC or CORE.ctx //Note:ctxL(C)=[] would be more restrictive, for example
+   //preventing A:Data<><{method A (..)} to be summed with a constructor returning This0.
 _______
 #define p.navigate(P)=p'
 * p.navigate(Thisn.C1..Ck)=p.pop(n).push(C1)...push(Ck)
@@ -41,7 +38,7 @@ _______
 
 * e[from P;p] propagate on the structure, and L[from P;p] = L[ from P;p;0]
 
-* {H Ms}[from P;p;j] = {H[Ps=H.Ps[from P;p;j+1] Ms[from P;p;j+1]}
+* {H Ms}[from P;p;j] = {H[Ts=H.Ts[from P;p;j+1] Ms[from P;p;j+1]}
 * This(j+n).Cs0[from P;p;j]=This(j+k).Cs1 //assert This(j+k).Cs1=p.minimize(This(j+k).Cs1)//does it holds? 
     Thisn.Cs0[from P;p]=Thisk.Cs1
 * Thisn.Cs[from P;p;j]=Thisn.Cs with n<j
@@ -53,12 +50,14 @@ with MH=mdf method T mOp(T1 x1..Tn xn)[Ts]
 * MH.exceptions=Ts
 * G^MH= this:mdf This0, x1:T1..xn:Tn
 * MH.pari = Ti
-* MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness reason on MH.s
+* MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness for no repetition in dom reasons on MH.s
 _______
 #define name manglings
 * methName(mOp)=m//from a table
 * #m'OP'=methName(OP)m
-* #m'var?'=#var?m
+* methNameTrim(x)//removes any numeric pedex
+* methName(x,mdf)=x#mdf
+* methName(x,empty)=x#'default'
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -68,8 +67,7 @@ _______
     p |- P0<=P1
 
 * p |- P0<=P1  
-    P1 in P0 U (p(P0).Ts.Ps[from P0;p]) U Any
-    assert p.normalize(Pi)=Pi
+    P1 in P0 U (p(P0).Ts.Ps[from P0;p]) U Any //assert p.normalize(Pi)=Pi
 
 * capsule<=mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm
 * imm<=read,fwd%Imm,fwdImm
@@ -79,20 +77,20 @@ _______
 * fwd%Imm<=fwdImm
 _______
 #define CORE.e inside CORE.e'
-  e inside ctx[e]
+  e inside CORE.ctx[e]
 _______
 #define toRead(T)   toRead(G)
-* toRead(fwdMut P)=toRead(fwd%Mut P)=undefined
-* toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
+//* toRead(fwdMut P)=toRead(fwd%Mut P)=toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
 * toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-* toRead(T)=T otherwise//mdf in imm,read,class
+* toRead(mdf P)=mdf P if mdf in {imm,read,class}
 
 * toRead(G)(x)=toRead(G(x))[with var?=empty] //thus single entry undefined where toRead undefined
 _______
 #define trusted(LL) //Does this need to be added to the INFO?
-* trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)//trusted is not the right name for this concept
+* trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)//trusted=untrustedsAre#$
 _______
 #define origin(p;s;P) = P'   refine(p;s;P)
 * origin(p;s; P) = P'
     {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
+    
 * refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
