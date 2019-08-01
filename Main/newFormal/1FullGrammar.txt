@@ -5,9 +5,9 @@ _______
   s ::= m(xs) //mOp is normalized when reified by FULL.MH.s
   C ::= IdUp IdChars (::n)? //well formedness: C not Thisn/Any/Void/Library/This
   P  ::= Thisn.Cs | Any | Void | Library
-  CORE.T::= mdf Docs P
-  CsP::=Cs | P
-  CMP/FULL.T::= mdf? Docs CsP | '\'
+  CORE.T ::= mdf Docs P
+  CsP ::=Cs | P
+  CMP/FULL.T ::= mdf? Docs CsP | '\'
   CMP/FULL.CORE.PL ::= [Ts] // In concrete syntax an [empty] is represented as empty and imm is omitted; Well formedness: all mdf in Ts are imm
   CMP/FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) PL //the Docs are on the type of 'This'
   CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) PL
@@ -31,10 +31,10 @@ _______
     //may add 'have private static methods' (since it can be casted to class P)
     //may add 'free this': 'this' only used as receiver
   Flag ::= norm | typed
-  FULL.L ::= {(H | reuse[URL] | ...)? Ms Docs}
+  FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
   FULL.M ::= F | MI | MWT | NC
   FULL.F ::= var? T x
-  FULL.MI ::= Docs s = CMP.e
+  FULL.MI ::= Docs method s = CMP.e
   FULL.MWT ::=Docs MH (= native[URL]? CMP.e)? //this prevents FULL.L inside method bodies
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
@@ -219,6 +219,10 @@ _______
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 * CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= empty //TODO: is there any duplicated check in MWT/LL for their PL?
+//CODE ONLY WELL FORMEDNESS:
+//* FULL.L not in MWT.e and Mi.e
+//* x, P not valid DX=e
+//* CsP well formed, not Any in the middle and so on..
 _______
 #define noBlockNeeded(CMP/FULL.e):
 * noBlockNeeded(B)

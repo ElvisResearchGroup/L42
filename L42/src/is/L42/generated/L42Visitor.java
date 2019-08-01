@@ -59,6 +59,54 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitEAtomic(L42Parser.EAtomicContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullL}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullL(L42Parser.FullLContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullM}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullM(L42Parser.FullMContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullF}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullF(L42Parser.FullFContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullMi}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullMi(L42Parser.FullMiContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullMWT}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullMWT(L42Parser.FullMWTContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#header}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitHeader(L42Parser.HeaderContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullMH}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullMH(L42Parser.FullMHContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#mOp}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMOp(L42Parser.MOpContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#voidE}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

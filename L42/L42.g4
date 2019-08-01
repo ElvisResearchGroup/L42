@@ -4,8 +4,11 @@ Mdf: 'fwd mut' | 'fwd imm' |'imm' | 'mut' | 'lent' | 'read' | 'capsule' | 'class
 VoidKW:'void';
 VarKw:'var';
 CatchKw: 'catch';
+InterfaceKw:'interface';
 Throw: 'return'|'error'|'exception';
 WhoopsKw: 'whoops';
+MethodKw: 'method';
+DotDotDot:'...';
 fragment IdUp: '_'* ('A'..'Z'|'$');
 fragment IdLow: '_'* 'a'..'z';
 fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9';
@@ -14,10 +17,12 @@ fragment CHAR:
 fragment CHARInStringSingle:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' |         '\'';//no \n and "
 fragment CharsUrl:
-'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
 fragment CHARDocText:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '"' | '\'' | '\n'; //no {}@
 fragment URL:CharsUrl+;
+ReuseURL:'reuse' Whitespace* '['URL']';
+NativeURL:'native' Whitespace* '['URL']';
 fragment Fn: '0' | '1'..'9' ('0'..'9')*;
 fragment Fx: IdLow IdChar*;
 StringSingle: '"' CHARInStringSingle '"';
@@ -49,7 +54,16 @@ csP: CsP;
 t:Mdf? doc* csP | '\\';
 tLocal: t | Mdf | ; 
 
-eAtomic: x | csP | voidE | block;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
+eAtomic: x | csP | voidE | fullL | block;//| LL | B | '('T e')' | '\'  | '\'' PathLit;
+fullL:'{' (header | DotDotDot | ReuseURL) fullM* doc*'}';
+fullM: fullF | fullMi;//| MI | MWT | NC
+fullF: VarKw? t x;
+fullMi: doc* MethodKw m oR x* ')' '=' e;
+fullMWT: doc* fullMH ('=' NativeURL? e)?;
+//  FULL.NC ::= Docs C = e //FULL.L can be inside e
+header: InterfaceKw? ('['t+']')?;
+fullMH: (Mdf doc*)? MethodKw t mOp oR (t x)* ')' ('['t+']')?;
+mOp: | m | '~' | '!';// |OP;
 voidE: VoidKW;
 e: eAtomic |e fCall;
 fCall: ORNS par ')';

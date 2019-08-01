@@ -22,8 +22,16 @@ import is.L42.generated.L42Parser.DocContext;
 import is.L42.generated.L42Parser.EAtomicContext;
 import is.L42.generated.L42Parser.EContext;
 import is.L42.generated.L42Parser.FCallContext;
+import is.L42.generated.L42Parser.FullFContext;
+import is.L42.generated.L42Parser.FullLContext;
+import is.L42.generated.L42Parser.FullMContext;
+import is.L42.generated.L42Parser.FullMHContext;
+import is.L42.generated.L42Parser.FullMWTContext;
+import is.L42.generated.L42Parser.FullMiContext;
+import is.L42.generated.L42Parser.HeaderContext;
 import is.L42.generated.L42Parser.KContext;
 import is.L42.generated.L42Parser.MContext;
+import is.L42.generated.L42Parser.MOpContext;
 import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.ORContext;
 import is.L42.generated.L42Parser.ParContext;
@@ -70,6 +78,14 @@ public class TestHelpers {
       @Override public StringBuilder visitDoc(DocContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitK(KContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitWhoops(WhoopsContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitFullL(FullLContext ctx) {var r=logVisit(ctx);r.append("ENDLIB");return r;}
+      @Override public StringBuilder visitFullM(FullMContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitFullF(FullFContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitHeader(HeaderContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitFullMi(FullMiContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitFullMWT(FullMWTContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitFullMH(FullMHContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitMOp(MOpContext ctx) {return logVisit(ctx);}
       };
     return ctx.accept(visitor).toString();
     }

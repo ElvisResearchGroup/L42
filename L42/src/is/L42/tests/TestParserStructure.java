@@ -140,6 +140,33 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{x=A catch T _ x y Z}",
    "[D(DX(TLocal()X)|P)K(|T(CsP)|x)D(x)D(P)]")
+   ),new AtomicTest(()->
+   pass("{}","{Header()}")
+   ),new AtomicTest(()->
+   pass("{T x=void x}","[D(DX(TLocal(T(CsP))X)|E(EAtomic(VoidE)))D(x)]")
+   ),new AtomicTest(()->
+   pass("{T x=void}","[D(DX(TLocal(T(CsP))X)|E(EAtomic(VoidE)))]")
+   ),new AtomicTest(()->
+   pass("{T x}","{Header()FullM(FullF(T(CsP)X))}")
+   ),new AtomicTest(()->
+   pass("{T x y}","[D(P)D(x)D(x)]")
+   ),new AtomicTest(()->
+   pass("{T x T y}",
+   "{Header()FullM(FullF(T(CsP)X))FullM(FullF(T(CsP)X))}")
+   ),new AtomicTest(()->
+   pass("({})","[{Header()}]")
+   ),new AtomicTest(()->
+   pass("{interface mut@Foo Bar fName}","{Header FullM(FullF(T(|Doc CsP)X))}")
+   ),new AtomicTest(()->
+   pass("{interface [mut@Foo Bar] E fName}",
+   "{Header(||T(|Doc CsP)|)FullM(FullF(T(CsP)X))}")
+   ),new AtomicTest(()->
+   pass("{[mut@Foo Bar] E fName}",
+   "{Header(|T(|Doc CsP)|)FullM(FullF(T(CsP)X))}")
+   ),new AtomicTest(()->
+   pass("{E f method bar()=x}",
+   "{Header()FullM(FullF(T(CsP)X))FullM(FullMi(|M OR||x))}")
+
      ));}
 public static void pass(String input,String output) {
   String res=parseStructure(parseWithException(input));
@@ -151,6 +178,7 @@ public static void pass(String input,String output) {
   res=res.replace("E(EAtomic(CsP(|)))","P ").replace("E(EAtomic(X(|)))","x ");
   res=res.replace("(|))", ")").replace("(|)|", "|").replace("(|)", " ");
   res=res.replace("E(EAtomic(Block(OR ","[").replace("E(EAtomic(Block(|","[").replace("|)ENDBLOCK))","]");
+  res=res.replace("E(EAtomic(FullL(|","{").replace("|)ENDLIB))","}");
   res=res.trim();
   assertEquals(output,res);
 

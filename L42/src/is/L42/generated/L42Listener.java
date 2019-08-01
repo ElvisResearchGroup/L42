@@ -88,6 +88,86 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitEAtomic(L42Parser.EAtomicContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#fullL}.
+	 * @param ctx the parse tree
+	 */
+	void enterFullL(L42Parser.FullLContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#fullL}.
+	 * @param ctx the parse tree
+	 */
+	void exitFullL(L42Parser.FullLContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#fullM}.
+	 * @param ctx the parse tree
+	 */
+	void enterFullM(L42Parser.FullMContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#fullM}.
+	 * @param ctx the parse tree
+	 */
+	void exitFullM(L42Parser.FullMContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#fullF}.
+	 * @param ctx the parse tree
+	 */
+	void enterFullF(L42Parser.FullFContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#fullF}.
+	 * @param ctx the parse tree
+	 */
+	void exitFullF(L42Parser.FullFContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#fullMi}.
+	 * @param ctx the parse tree
+	 */
+	void enterFullMi(L42Parser.FullMiContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#fullMi}.
+	 * @param ctx the parse tree
+	 */
+	void exitFullMi(L42Parser.FullMiContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#fullMWT}.
+	 * @param ctx the parse tree
+	 */
+	void enterFullMWT(L42Parser.FullMWTContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#fullMWT}.
+	 * @param ctx the parse tree
+	 */
+	void exitFullMWT(L42Parser.FullMWTContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#header}.
+	 * @param ctx the parse tree
+	 */
+	void enterHeader(L42Parser.HeaderContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#header}.
+	 * @param ctx the parse tree
+	 */
+	void exitHeader(L42Parser.HeaderContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#fullMH}.
+	 * @param ctx the parse tree
+	 */
+	void enterFullMH(L42Parser.FullMHContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#fullMH}.
+	 * @param ctx the parse tree
+	 */
+	void exitFullMH(L42Parser.FullMHContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#mOp}.
+	 * @param ctx the parse tree
+	 */
+	void enterMOp(L42Parser.MOpContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#mOp}.
+	 * @param ctx the parse tree
+	 */
+	void exitMOp(L42Parser.MOpContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#voidE}.
 	 * @param ctx the parse tree
 	 */
