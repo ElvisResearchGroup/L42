@@ -64,7 +64,7 @@ _______
   I ::= I[p;IMap;G;CCz;onSlash=T?]//inference application environment
   Y ::= Y[p; onSlashX=xP?; onReturn=T?; onPath=(classP|TX)]//toCore environment
   PAcc ::= PAcc[p;GX;CCz]//constraints accumulation environment
-  v ::= a | P | void | CORE.L
+  v ::= a | x | P | void | CORE.L
   r ::= CORE.L | exception v | error v
   Obj ::= P(x1=v1..xn=vn) empty;empty| P() as1;as2 // memory objects. 'as' is the set of mut objects associated to L
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant

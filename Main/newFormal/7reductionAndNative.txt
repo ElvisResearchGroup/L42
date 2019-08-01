@@ -1,30 +1,33 @@
 _______
 #define A.rog(v)
-//obvious
+//obvious, but includes the as1;as2
 _______
 #define A.free()
 //the set of all the a in the right side of A but not in the dom(A)
 _______
-#define A.pathOf(v)
+#define A.pathOf(v)   A.callByValue(v1..vn)
 * A.pathOf(P)=P
 * A.pathOf(a)=A(a).P
+
+* A.callByValue(v vs) = A(v), A.callByValue(vs) if A(v) is defined
+* A.callByValue(v vs) = v, A.callByValue(vs) if A(v) is undefined
+* A.callByValue() =empty 
 _______
 #define A[mdf v0..vn]=A' //if mdf is imm, mark A.rog(v) as imm
-* A[mdf v]=A if mdf!=imm
-* A[imm v]=A if v not of form a or L^as
-* A[imm Ls^as]=A[imm A.rog(as)]
+* A[mdf v]=A if mdf!=imm or v not of form a
 * A[imm a]=A[imm A.rog(a)]
-* A[imm a1..an]=A[imm? a1->Obj1=imm a1->Obj1 .. imm?n an->Obj1=imm an->Obj1] 
+* A[imm a]=A[imm A.rog(a)]
+* (A,imm?1 a1->Obj1..imm?n an->Objn)[imm a1..an]=A,imm a1->Obj1..imm an->Objn 
 _______
-#define A[mdf x=v]=A'
-* (A,mdf x=_)[mdf x=v]=A[mdf v], mdf x=v
-* A[mdf x=v]=A[mdf v], mdf x=v
+#define A[mdf x=v]=A'  A[x=v]
+* (A,mdf x=_)[mdf x=v]=A[x=v][mdf v], mdf x=v
+* A[mdf x=v]=A[x=v][mdf v], mdf x=v
     x not in dom(A)
+* (A,a->P(xvs1,x=x',xvs2))[x'=v]=(A,a->P(xvs1,x=v,xvs2))[x'=v]
+* A[x=v]=A otherwise
 _______
 #define A|e --> A'|e'    
-* A | x  -->p  A| A(x)
-* A | L  -->p  A,imm a->L empty| a
-    fresh a
+* A | x  -->p  A| A(x) //is ok that can not be applied on unresolved fwds
 * A | x := v  -->p  A[_ x=v]| void //non derministically chose the mdf that would make it work
 * A | loop e  -->p  A | (void x=e loop e)  
 * A0 | (var? T x=e0 Ds Ks e)  -->p  A1 | (var? T x=e1 Ds Ks e)
@@ -35,27 +38,42 @@ _______
     p |- A.pathOf(v) <= K.T.P
 * A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  A | (var? T x=ctxV[throw v] Ds Ks e)
     throw!=K.throw or not p |- A.pathOf(v) <= K.T.P
-* A | (var? T x=ctxV[throw v] Ds e)  -->p  A | throw v 
-* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1 | MWT.e[this=v0,x1=v1,..xn=vn]
-    MWT=p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
-    MWT.native[Url]? = empty
-    //or is not empty but next rule can not be applied, may be just remove this line and make it non deterministic?
-    A1=A0[MWT.mdf0 v0]..[MWT.mdfn vn]
-* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v
-    MWT = p(A0.pathOf(v0)).m(x1..xn)[from A0.pathOf(v0);p]
+* A | (var? T x=ctxV[throw v] Ds e)  -->p  A | throw v
+* A | P.m(x1=v1 .. xn=vn)  -->p  A', imm? a->P(x1=v'1..xn=v'n) empty;empty | a
+    MWT=p(P).m(x1..xn)
+    imm?=imm if MWT.mdf=imm
+    imm?=empty otherwise
+    v'1..v'n=A.callByValue(v1..vn)
+    A'=A[MWT.mdf1 v'1]..[MWT.mdfn v'n]
+* A,a->P(xvs1,x=_,xvs2) | v0.#?x(that=v1)  -->p  A' | void
+    {mdf}=p(P).#?x(that).params.mwts
+    a,v=A.callByValue(v0,v1)
+    A'=(A,a->P(xvs1,x=v,xvs2))[mdf v]
+* A,a->P(xvs1,x=v,xvs2) | v0.#?x()  -->p  A' | v
+    {mdf}=p(P).#?x(that).mdf
+    a=A.callByValue(v0)
+    A'=(A,a->P(xvs1,x=v,xvs2))[mdf a]
+* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1 | MWT.e[this=v'0,x1=v'1,..xn=v'n]
+    v'0..v'n=A.callByValue(v0..vn)
+    MWT=p(A0.pathOf(v'0)).m(x1..xn)[from A0.pathOf(v'0);p]
+    MWT.native[Url]? = empty// or not empty but plg not applicable.
+    A1=A0[MWT.mdf0 v'0]..[MWT.mdfn v'n]
+* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v //TODO: somehow is deterministic if Url of form tUrl
+    v'0..v'n=A.callByValue(v0..vn)
+    MWT = p(A0.pathOf(v'0)).m(x1..xn)[from A0.pathOf(v'0);p]
     MWT.native[Url]? != empty
-    A1,A = A0[MWT.mdf0 v0]..[MWT.mdfn vn]
-    Ts = MWT.pars, MWT.mdf A0.pathOf(v0)
+    A1,A = A0[MWT.mdf0 v'0]..[MWT.mdfn v'n]
+    Ts = MWT.pars, MWT.mdf A0.pathOf(v'0)
     capsule not in Ts.mdfs//not a loss in expressiveness, we can use a wrapper
-    A = plgMuts(A1,A;Ts;v0..vn)//mutLibs(A1,A;Ts,v0..vn)
-    as1 = accessibleMutAddresses(A,Ts,v0..vn)
-    as2 = accessibleImmAddresses(A,Ts,v0..vn)
+    A = plgMuts(A1,A;Ts;v'0..v'n)
+    as1 = accessibleMutAddresses(A,Ts,v'0..v'n)
+    as2 = accessibleImmAddresses(A,Ts,v'0..v'n)
     callPlugin(A1,A;MWT;v0..vn)=A1,A'|v
     A' = A~as1;as2
     either MWT.T.mdf=mut, v in as1, v->P(_)_;_ in A and p|-P<=MWT.T.P
     or MWT.T.mdf=imm
     //untyped libs, now if a lib is not typed we know it could not have been typed yet
-    either v=L and L.flag=norm implies {L| L in v1..vn, L.flag=norm} not empty
+    either v=L and L.flag=norm implies {L| L in v'1..v'n, L.flag=norm} not empty
     or v in as2, imm v->P(_)_;_ in A and p|-P<=MWT.T.P 
 //rationale: plg values P() as are created (with empty as1;as2) by normal constructors, no need of plg calls.
 //plg can reorganize the as on top of any P().
