@@ -134,7 +134,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(A whoops B C D)",
    "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))]")
-
+   ),new AtomicTest(()->
+   pass("{A whoops B C D}",
+   "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))]")
+   ),new AtomicTest(()->
+   pass("{x=A catch T _ x y Z}",
+   "[D(DX(TLocal()X)|P)K(|T(CsP)|x)D(x)D(P)]")
      ));}
 public static void pass(String input,String output) {
   String res=parseStructure(parseWithException(input));
@@ -145,7 +150,7 @@ public static void pass(String input,String output) {
   res=res.replace("E(EAtomic(CsP(|)))|","P|").replace("E(EAtomic(X(|)))|","x|");
   res=res.replace("E(EAtomic(CsP(|)))","P ").replace("E(EAtomic(X(|)))","x ");
   res=res.replace("(|))", ")").replace("(|)|", "|").replace("(|)", " ");
-  res=res.replace("E(EAtomic(Block(OR ","[").replace("|)ENDBLOCK))","]");
+  res=res.replace("E(EAtomic(Block(OR ","[").replace("E(EAtomic(Block(|","[").replace("|)ENDBLOCK))","]");
   res=res.trim();
   assertEquals(output,res);
 

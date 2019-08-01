@@ -55,7 +55,7 @@ e: eAtomic |e fCall;
 fCall: ORNS par ')';
 oR: OR |ORNS;
 par: e? (x'='e)*;
-block: oR d*? e ')' | oR d+ k* whoops? (d* e)? ')';// | '{' D* (D K+ WOPS? D*)? '}'
+block: oR d*? e ')' | oR d+ k* whoops? (d* e)? ')' | '{' d+ (k+ whoops? d* | whoops d*)? '}';
 d: (dX '=')? e;
 dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';
 k: CatchKw Throw? t x e | CatchKw Throw? t UnderScore e;

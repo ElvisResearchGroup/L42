@@ -159,7 +159,7 @@ _______
   CMP/FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   CMP/FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-  CMP/FULL.B ::= ( Ds e ) | ( D+ Ks WHOOPS? (Ds e)? ) | { Ds (D K+ WHOOPS? Ds)? }
+  CMP/FULL.B ::= ( Ds e ) | ( D+ Ks WHOOPS? (Ds e)? ) | { D+ (K+ WHOOPS? Ds | WHOOPS Ds)? }
   CMP/FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   CMP/FULL.statement  ::= sIf | sWhile | sFor | loop e | throw e | x opUpdate e
   CMP/FULL.sIf ::= if e e (else e)? | if match+ e
