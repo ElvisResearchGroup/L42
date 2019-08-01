@@ -56,12 +56,11 @@ _______
     T.mdf not in {class, fwd mut, fwd imm}
     lent _ not in T1..Tn
     if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint (T1..Tn).mdfs
-    if read _ in T1..Tn then T.mdf in {read, lent}
+    if {read _, lent _} not disjoint T1..Tn then T.mdf in {read, lent}
     if !trustedClass(p(This0)) then m is of form #$m
 * coherent(p;MHs;mdf method T m::n?(_)_;_;n?) //must 'n?' be the same for well formedness?
-    mdf in {lent, mut, capsule}
-    forall MH' in MHs: either MH'.mdf!=class
-    or MH'.T.mdf not in {lent, mut, capsule}
+    not callable(MHs, mdf)
+
 * coherent(p;_;mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
     p |- imm Void <= T
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
@@ -75,16 +74,40 @@ _______
       fieldAccessMdf(MHs,x, mdf))
 _______
 #define fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
-* T in fieldTypes(MHs, x, mdf)
-    either class method mdf" _(_ T x _)_ in MHs
-    or mdf" method _ #?x::n?(T that)_ in MHs
-    if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
-    //TODO: wrong, if the 'setter' was a method allowed to be abstract because take a mut on imm only class
 
+{lent, mut, capsule} subseteq relevent(mdf)
+    mdf in {mut, capsule}
+{lent, mut} subseteq relevent(lent)
+
+
+callable(MHs, mdf) // TODO: combine and simplify with relevent?
+    mdf in {read, imm}
+    class method _ in MHs
+
+callable(MHs, mdf)
+    mdf in {mut, lent}
+    class method mdf" in MHs
+    mdf" in {mut, lent, capsule}
+
+    
+callable(MHs, capsule)
+    class method mdf" in MHs
+    mdf" in {mut, capsule}
+    
+    
+* T in fieldTypes(MHs, x, mdf)
+    class method mdf' _(_ T x _)_ in MHs
+    mdf' in relevent(mdf)
+    
+* T in fieldTypes(MHs, x, mdf)
+    mdf' method _ #?x::n?(T that)_ in MHs
+    callable(MHs, mdf')
+    mdf' in relevent(mdf)
+    
 * mdf' in fieldAccessMdf(MHs, x, mdf)
     mdf" method mdf' P #?x::n?() in MHs
     mdf" != capsule
-    if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule}
+    mdf' in relevent(mdf)
 
 * coherentGetMdf(class,_,{class},_)
 * coherentGetMdf(imm,imm, mdfs0,_)
@@ -99,8 +122,18 @@ _______
     mdfs0 subseteq {mut, fwd mut, capsule}
     imm not in mdfs1
 * coherentGetMdf(lent,mdf,mdfs0,_)
-    mdfs0 subseteq {mut, fwd mut, capsule}//TODO: error, lent too? else never happens
+    mdfs0 subseteq {mut, fwd mut, capsule, lent}//TODO: error, lent too? else never happens
     mdf in {lent, mut, capsule}
 * coherentGetMdf(mut,mdf,mdfs0,_)
     mdfs0 subseteq {mut, fwd mut, capsule}
     mdf in {mut, capsule}
+    
+/*
+class method lent This foo(lent X x, lent X y)
+mut method lent X x() // ok?
+mut method lent X y() // ok?
+*/
+
+
+lent X method evil(lent X x) = 
+    foo(x).x()
