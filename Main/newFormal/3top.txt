@@ -53,66 +53,50 @@ _______
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn=xz
     p|-This0<=T.P
+    mdfs=(T1..Tn).mdfs
     T.mdf not in {class, fwd mut, fwd imm}
-    lent _ not in T1..Tn
-    if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint (T1..Tn).mdfs
-    if {read _, lent _} not disjoint T1..Tn then T.mdf in {read, lent}
+    lent not in mdfs
+    if T.mdf in {imm, capsule} then {mut, fwd mut} disjoint mdfs
+    if read or lent in mdfs then T.mdf in {read, lent}
     if !trustedClass(p(This0)) then m is of form #$m
-* coherent(p;MHs;mdf method T m::n?(_)_;_;n?) //must 'n?' be the same for well formedness?
-    not callable(MHs, mdf)
-
+* coherent(p;MHs;mdf' method T m::n?(_)_;_;n?) //by well formedness if n is present is the same, but it may be absent.
+    forall class method mdf _(_)_ in MHs:  !mdf canAlsoBe mdf'
 * coherent(p;_;mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
     p |- imm Void <= T
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
-    mdf in {lent, mut, capsule}
+    mdf in {lent, mut}
     if mdf = lent then mdf' != mut
+* coherent(p;_;capsule method T #?x::n?(mdf' P' that)_;_,x;n?)
+    p |- imm Void <= T //capsule setters are guaranteed to trash the object anywhay... they are also dead code
 * coherent(p;MHs;mdf method mdf' P' #?x::n?()_;_,x;n?)
-    mdf != class
+    mdf notin {class, fwd mut, fwd imm}
     forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
     coherentGetMdf(mdf',mdf,
       fieldTypes(MHs,x, mdf).mdfs,
       fieldAccessMdf(MHs,x, mdf))
 _______
-#define fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+#define mdf canAlsoBe mdf'    fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+* capsule canAlsoBe mdf, with mdf in {capsule,mut,lent, read, imm, fwd imm, fwd mut}
+* mut canAlsoBe mdf, with mdf in {mut,lent, read,imm,capsule, fwd imm, fwd mut}
+* lent canAlsoBe mdf, with mdf in {mut,lent, read, fwd mut}
+* read canAlsoBe mdf, with mdf in {read,imm, fwd imm}
+* imm canAlsoBe mdf, with mdf in {read,imm, fwd imm} //is ok that canAlsoBe is undefined on fwd _ and class
 
-{lent, mut, capsule} subseteq relevent(mdf)
-    mdf in {mut, capsule}
-{lent, mut} subseteq relevent(lent)
-
-
-callable(MHs, mdf) // TODO: combine and simplify with relevent?
-    mdf in {read, imm}
-    class method _ in MHs
-
-callable(MHs, mdf)
-    mdf in {mut, lent}
-    class method mdf" in MHs
-    mdf" in {mut, lent, capsule}
-
-    
-callable(MHs, capsule)
-    class method mdf" in MHs
-    mdf" in {mut, capsule}
-    
-    
 * T in fieldTypes(MHs, x, mdf)
-    class method mdf' _(_ T x _)_ in MHs
-    mdf' in relevent(mdf)
+    either class method mdf' _(_ T x _)_ in MHs
+    or mdf' method _ #?x::n?(T that)_ in MHs
+    mdf' != capsule //capsule setters are dead code
+    mdf' canAlsoBe mdf
     
-* T in fieldTypes(MHs, x, mdf)
-    mdf' method _ #?x::n?(T that)_ in MHs
-    callable(MHs, mdf')
-    mdf' in relevent(mdf)
-    
-* mdf' in fieldAccessMdf(MHs, x, mdf)
-    mdf" method mdf' P #?x::n?() in MHs
-    mdf" != capsule
-    mdf' in relevent(mdf)
+* mdf" in fieldAccessMdf(MHs, x, mdf)
+    mdf' method mdf" P #?x::n?() in MHs
+    mdf' != capsule or mdf" = class//capsule getters can always return any mdf except class
+    mdf' canAlsoBe mdf
 
-* coherentGetMdf(class,_,{class},_)
-* coherentGetMdf(imm,imm, mdfs0,_)
-    class not in mdfs0
+* coherentGetMdf(class,_,{class},_)//valueMdf, getterMdf, inMdfs, outMdfs
 * coherentGetMdf(read, _, mdfs0,_)
+    class not in mdfs0
+* coherentGetMdf(imm,imm, mdfs0,_)
     class not in mdfs0
 * coherentGetMdf(imm,mdf,mdfs0,mdfs1)
     mdf!=imm
@@ -121,13 +105,16 @@ callable(MHs, capsule)
 * coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
     mdfs0 subseteq {mut, fwd mut, capsule}
     imm not in mdfs1
-* coherentGetMdf(lent,mdf,mdfs0,_)
-    mdfs0 subseteq {mut, fwd mut, capsule, lent}//TODO: error, lent too? else never happens
+* coherentGetMdf(lent,mdf,mdfs0,mdfs1)
+    mdfs0 subseteq {mut, fwd mut, capsule, lent}
     mdf in {lent, mut, capsule}
-* coherentGetMdf(mut,mdf,mdfs0,_)
+    imm not in mdfs1
+* coherentGetMdf(mut,mdf,mdfs0,mdfs1)
     mdfs0 subseteq {mut, fwd mut, capsule}
     mdf in {mut, capsule}
+    imm not in mdfs1
     
+--------------------------END, examples only after this line
 /*
 class method lent This foo(lent X x, lent X y)
 mut method lent X x() // ok?
@@ -137,3 +124,21 @@ mut method lent X y() // ok?
 
 lent X method evil(lent X x) = 
     foo(x).x()
+
+    if we can have a lent collection of read objects
+or anyway update a read field, we have -capsule visible as read
+  lent list=.. //lent method add(read r)
+  capsule a=..
+  capsule a2=(mut b=a
+   list.add(b)
+   b)
+  a2 and list usable
+  
+  {
+  class method mut This (S x)
+  class method imm This (N x)
+  mut method S #x()
+  read method Any x()
+  //mut method x(N that) //enabling this method makes #x not valid for coherence
+  }
+  
