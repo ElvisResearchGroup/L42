@@ -22,6 +22,7 @@ import is.L42.generated.L42Parser.DocContext;
 import is.L42.generated.L42Parser.EAtomicContext;
 import is.L42.generated.L42Parser.EContext;
 import is.L42.generated.L42Parser.FCallContext;
+import is.L42.generated.L42Parser.KContext;
 import is.L42.generated.L42Parser.MContext;
 import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.ORContext;
@@ -30,6 +31,7 @@ import is.L42.generated.L42Parser.StringContext;
 import is.L42.generated.L42Parser.TContext;
 import is.L42.generated.L42Parser.TLocalContext;
 import is.L42.generated.L42Parser.VoidEContext;
+import is.L42.generated.L42Parser.WhoopsContext;
 import is.L42.generated.L42Parser.XContext;
 
 public class TestHelpers {
@@ -66,6 +68,8 @@ public class TestHelpers {
       @Override public StringBuilder visitTLocal(TLocalContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitDX(DXContext ctx) {return logVisit(ctx);}
       @Override public StringBuilder visitDoc(DocContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitK(KContext ctx) {return logVisit(ctx);}
+      @Override public StringBuilder visitWhoops(WhoopsContext ctx) {return logVisit(ctx);}
       };
     return ctx.accept(visitor).toString();
     }

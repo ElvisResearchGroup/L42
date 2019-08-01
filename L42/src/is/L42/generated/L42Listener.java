@@ -168,6 +168,26 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitDX(L42Parser.DXContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#k}.
+	 * @param ctx the parse tree
+	 */
+	void enterK(L42Parser.KContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#k}.
+	 * @param ctx the parse tree
+	 */
+	void exitK(L42Parser.KContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#whoops}.
+	 * @param ctx the parse tree
+	 */
+	void enterWhoops(L42Parser.WhoopsContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#whoops}.
+	 * @param ctx the parse tree
+	 */
+	void exitWhoops(L42Parser.WhoopsContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#nudeE}.
 	 * @param ctx the parse tree
 	 */

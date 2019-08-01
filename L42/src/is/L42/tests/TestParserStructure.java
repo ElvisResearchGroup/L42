@@ -85,6 +85,55 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("(fwd imm A _=A x)","[D(DX(TLocal(T(|CsP))|)|P)x]")
    ),new AtomicTest(()->
    pass("(fwd mut _=A x)","[D(DX(TLocal|)|P)x]")
+   ),new AtomicTest(()->
+   pass("(var A x=A x)","[D(DX(|TLocal(T(CsP))X)|P)x]")
+   ),new AtomicTest(()->
+   pass("(A(A y, A z) x=A x)",
+   "[D(P)D([D(P)D(x)D(P)x])D(DX(TLocal()X)|P)x]")
+   ),new AtomicTest(()->
+   pass("((A y, A z) x=A x)","[D([D(P)D(x)D(P)x])D(DX(TLocal()X)|P)x]")
+   ),new AtomicTest(()->
+   pass("(A(A y, A z)=A x)",
+   "[D(DX(TLocal(T(CsP))OR TLocal(T(CsP))X TLocal(T(CsP))X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("((A y, A z)=A x)",
+   "[D(DX(TLocal()OR TLocal(T(CsP))X TLocal(T(CsP))X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("((y,z)=A x)",
+   "[D(DX(TLocal()OR TLocal()X TLocal()X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("((y)=A x)",
+   "[D(DX(TLocal()OR TLocal()X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("((var y)=A x)",
+   "[D(DX(TLocal()OR|TLocal()X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("((z, var y)=A x)",
+   "[D(DX(TLocal()OR TLocal()X|TLocal()X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("((z, var A y)=A x)",
+   "[D(DX(TLocal()OR TLocal()X|TLocal(T(CsP))X|)|P)x]")
+   ),new AtomicTest(()->
+   pass("(A catch return A x x y)","[D(P)K(||T(CsP)X x)x]")
+   ),new AtomicTest(()->
+   pass("(A catch return A x x)","[D(P)K(||T(CsP)X x)]")
+   ),new AtomicTest(()->
+   pass("(A catch return A _ x)","[D(P)K(||T(CsP)|x)]")
+   ),new AtomicTest(()->
+   pass("(A catch return A _ x catch error A x y z)",
+   "[D(P)K(||T(CsP)|x)K(||T(CsP)X x)x]")
+   ),new AtomicTest(()->
+   pass("(A catch return A _ x catch error A x y z)",
+   "[D(P)K(||T(CsP)|x)K(||T(CsP)X x)x]")
+   ),new AtomicTest(()->
+   pass("(A whops B C D z)",
+   "[D(P)D(x)D(P)D(P)D(P)x]")//well formedness will check for those issues
+   ),new AtomicTest(()->
+   pass("(A whoops B C D x)",
+   "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))x]")
+   ),new AtomicTest(()->
+   pass("(A whoops B C D)",
+   "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))]")
 
      ));}
 public static void pass(String input,String output) {

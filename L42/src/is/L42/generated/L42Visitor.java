@@ -107,6 +107,18 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDX(L42Parser.DXContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#k}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitK(L42Parser.KContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#whoops}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitWhoops(L42Parser.WhoopsContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#nudeE}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

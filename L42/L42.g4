@@ -3,6 +3,9 @@ grammar L42;
 Mdf: 'fwd mut' | 'fwd imm' |'imm' | 'mut' | 'lent' | 'read' | 'capsule' | 'class';
 VoidKW:'void';
 VarKw:'var';
+CatchKw: 'catch';
+Throw: 'return'|'error'|'exception';
+WhoopsKw: 'whoops';
 fragment IdUp: '_'* ('A'..'Z'|'$');
 fragment IdLow: '_'* 'a'..'z';
 fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9';
@@ -52,8 +55,10 @@ e: eAtomic |e fCall;
 fCall: ORNS par ')';
 oR: OR |ORNS;
 par: e? (x'='e)*;
-block: oR d*? e ')' ;//| '(' D+ K* WOPS? (D* e)? ')' | '{' D* (D K+ WOPS? D*)? '}'
+block: oR d*? e ')' | oR d+ k* whoops? (d* e)? ')';// | '{' D* (D K+ WOPS? D*)? '}'
 d: (dX '=')? e;
 dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';
+k: CatchKw Throw? t x e | CatchKw Throw? t UnderScore e;
+whoops: WhoopsKw t+;
 
 nudeE: e EOF;
