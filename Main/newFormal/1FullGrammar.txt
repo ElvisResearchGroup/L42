@@ -154,7 +154,7 @@ _______
   CMP/FULL.ePostfix ::= eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)*
 //no space in ePostfix(par) and \x
   CMP/FULL.par ::= e? xe*
-  CMP/FULL.eUnary   ::= Uop? ePostfix
+  CMP/FULL.eUnary   ::= Uop* ePostfix
   CMP/FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
   CMP/FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
@@ -165,8 +165,8 @@ _______
   CMP/FULL.sIf ::= if e e (else e)? | if match+ e
   CMP/FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
   CMP/FULL.sWhile::= while e e
-  CMP/FULL.sFor ::= 'for' (DX in e)* e
-  CMP/FULL.e ::= statement | e-binary3
+  CMP/FULL.sFor ::= for (DX in e)+ e
+  CMP/FULL.e ::= statement | eBinary3
 _______
 #define grammar well formedness
 * CMP/FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.
@@ -205,7 +205,7 @@ _______
     if LL.H.interface? = interface, then forall s in dom(LL), LL(s).e?=empty
     if LL(C::n)=LL' then LL' of form CORE.L
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all members of a private nested are private
-    if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.info.refined //TODO: should we cache sources of interface methods?
+    if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined //TODO: should we cache sources of interface methods?
 * The top level project LL:
     forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)} //care when '...' is expanded; while 'reuse URL' will rename the private names
@@ -224,6 +224,7 @@ _______
 //* x, P not valid DX=e
 //* CsP well formed, not Any in the middle and so on..
 //* nested class C is not a CsP with dots and not Any and..
+//* all operators are the same in an binary op sequence
 _______
 #define noBlockNeeded(CMP/FULL.e):
 * noBlockNeeded(B)

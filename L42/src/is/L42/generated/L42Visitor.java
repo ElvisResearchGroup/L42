@@ -119,6 +119,12 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitHeader(L42Parser.HeaderContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#info}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitInfo(L42Parser.InfoContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#fullMH}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -208,6 +214,78 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitEUnary(L42Parser.EUnaryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#eBinary0}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEBinary0(L42Parser.EBinary0Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#eBinary1}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEBinary1(L42Parser.EBinary1Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#eBinary2}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEBinary2(L42Parser.EBinary2Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#eBinary3}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEBinary3(L42Parser.EBinary3Context ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#statement}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStatement(L42Parser.StatementContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sIf}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSIf(L42Parser.SIfContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#match}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMatch(L42Parser.MatchContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sWhile}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSWhile(L42Parser.SWhileContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sFor}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSFor(L42Parser.SForContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sLoop}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSLoop(L42Parser.SLoopContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sThrow}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSThrow(L42Parser.SThrowContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#sUpdate}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSUpdate(L42Parser.SUpdateContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#e}.
 	 * @param ctx the parse tree

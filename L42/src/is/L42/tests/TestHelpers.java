@@ -21,6 +21,10 @@ import is.L42.generated.L42Parser.DContext;
 import is.L42.generated.L42Parser.DXContext;
 import is.L42.generated.L42Parser.DocContext;
 import is.L42.generated.L42Parser.EAtomicContext;
+import is.L42.generated.L42Parser.EBinary0Context;
+import is.L42.generated.L42Parser.EBinary1Context;
+import is.L42.generated.L42Parser.EBinary2Context;
+import is.L42.generated.L42Parser.EBinary3Context;
 import is.L42.generated.L42Parser.EContext;
 import is.L42.generated.L42Parser.EPostfixContext;
 import is.L42.generated.L42Parser.EUnaryContext;
@@ -33,16 +37,25 @@ import is.L42.generated.L42Parser.FullMWTContext;
 import is.L42.generated.L42Parser.FullMiContext;
 import is.L42.generated.L42Parser.FullNCContext;
 import is.L42.generated.L42Parser.HeaderContext;
+import is.L42.generated.L42Parser.InfoContext;
 import is.L42.generated.L42Parser.KContext;
 import is.L42.generated.L42Parser.MContext;
 import is.L42.generated.L42Parser.MOpContext;
+import is.L42.generated.L42Parser.MatchContext;
 import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.ORContext;
 import is.L42.generated.L42Parser.ParContext;
 import is.L42.generated.L42Parser.PathLitContext;
+import is.L42.generated.L42Parser.SForContext;
+import is.L42.generated.L42Parser.SIfContext;
+import is.L42.generated.L42Parser.SLoopContext;
+import is.L42.generated.L42Parser.SThrowContext;
+import is.L42.generated.L42Parser.SUpdateContext;
+import is.L42.generated.L42Parser.SWhileContext;
 import is.L42.generated.L42Parser.SlashContext;
 import is.L42.generated.L42Parser.SlashXContext;
 import is.L42.generated.L42Parser.SquareCallContext;
+import is.L42.generated.L42Parser.StatementContext;
 import is.L42.generated.L42Parser.StringContext;
 import is.L42.generated.L42Parser.TContext;
 import is.L42.generated.L42Parser.TLocalContext;
@@ -102,6 +115,19 @@ public class TestHelpers {
       @Override public String visitEPostfix(EPostfixContext ctx) {return c(ctx);}
       @Override public String visitSquareCall(SquareCallContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitEUnary(EUnaryContext ctx) {return c(ctx);}
+      @Override public String visitEBinary0(EBinary0Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
+      @Override public String visitEBinary1(EBinary1Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
+      @Override public String visitEBinary2(EBinary2Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
+      @Override public String visitEBinary3(EBinary3Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
+      @Override public String visitStatement(StatementContext ctx) {return c(ctx);}
+      @Override public String visitSIf(SIfContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitMatch(MatchContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitSWhile(SWhileContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitSFor(SForContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitSLoop(SLoopContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitSThrow(SThrowContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitSUpdate(SUpdateContext ctx) {return n(ctx)+"("+c(ctx)+")";}
+      @Override public String visitInfo(InfoContext ctx) { return "info";}
       };
     return ctx.accept(visitor).toString();
     }

@@ -148,6 +148,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({})","[|{|Header()|}|]|")
    ),new AtomicTest(()->
+   pass("({interface #norm{hey, I can write stuff here}})","[|{|Header(|)info|}|]|")
+   ),new AtomicTest(()->
+   pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(t(docP)x)info|}|]|")
+
+   ),new AtomicTest(()->
    pass("{interface mut@Foo Bar fName}","{|Header(|)FullF(t(|docP)x)|}|")
    ),new AtomicTest(()->
    pass("{interface [mut@Foo Bar] E fName}",
@@ -170,6 +175,40 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    "[|D(pathLit)D(pathLit)D(pathLit)D(pathLit)D(pathLit)D(x)D(x)D(x)D(\\)P|]|")
    ),new AtomicTest(()->
    pass("bar<:Foo","xCast(|t(P))|")
+   ),new AtomicTest(()->
+   pass("x.foo().bar()","xFCall(|m||)FCall(|m||)|")
+   ),new AtomicTest(()->
+   pass("x.foo(a b=c)","xFCall(|m|xx|x|)|")
+   ),new AtomicTest(()->
+   pass("x.bar[a;b;c=d]","xSquareCall(|m|x|x|x|x|)|")
+  ),new AtomicTest(()->
+   pass("S\"aa\"","P||")
+  ),new AtomicTest(()->
+   pass("!~!S\"aa\"","|||P||")
+  ),new AtomicTest(()->
+   pass("~12S","||P|")
+  ),new AtomicTest(()->
+   pass("~1~2!S","|||||P|")
+  ),new AtomicTest(()->
+   pass("a+b&&c","<<x|x>|x>|")
+  ),new AtomicTest(()->
+   pass("a+b&&c&d","<<x|x>|<x|x>>|")
+  ),new AtomicTest(()->
+   pass("a+b&c&&d","<<x|<x|x>>|x>|")
+  ),new AtomicTest(()->
+   pass("if a<=0N Debug(S\"hi\")","SIf(|<x||P>PFCall(|P||))|")
+  ),new AtomicTest(()->
+   pass("while a<=0N if z a.b() else c.d()",
+   "SWhile(|<x||P>SIf(|xxFCall(|m||)|xFCall(|m||)))|")
+  ),new AtomicTest(()->
+   pass("for var mut x in xs x:=x*2Num",
+   "SFor(|||x|xSUpdate(x|<x||P>))|")
+  ),new AtomicTest(()->
+   pass("loop a(C[])",
+   "SLoop(|xFCall(|PSquareCall(||)|))|")
+  ),new AtomicTest(()->
+   pass("if a&&b return X\"oh\"",
+   "SIf(|<x|x>SThrow(|P|))|")
 
      ));}
 public static void pass(String input,String output) {

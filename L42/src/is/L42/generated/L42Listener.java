@@ -188,6 +188,16 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitHeader(L42Parser.HeaderContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#info}.
+	 * @param ctx the parse tree
+	 */
+	void enterInfo(L42Parser.InfoContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#info}.
+	 * @param ctx the parse tree
+	 */
+	void exitInfo(L42Parser.InfoContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#fullMH}.
 	 * @param ctx the parse tree
 	 */
@@ -337,6 +347,126 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitEUnary(L42Parser.EUnaryContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#eBinary0}.
+	 * @param ctx the parse tree
+	 */
+	void enterEBinary0(L42Parser.EBinary0Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#eBinary0}.
+	 * @param ctx the parse tree
+	 */
+	void exitEBinary0(L42Parser.EBinary0Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#eBinary1}.
+	 * @param ctx the parse tree
+	 */
+	void enterEBinary1(L42Parser.EBinary1Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#eBinary1}.
+	 * @param ctx the parse tree
+	 */
+	void exitEBinary1(L42Parser.EBinary1Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#eBinary2}.
+	 * @param ctx the parse tree
+	 */
+	void enterEBinary2(L42Parser.EBinary2Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#eBinary2}.
+	 * @param ctx the parse tree
+	 */
+	void exitEBinary2(L42Parser.EBinary2Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#eBinary3}.
+	 * @param ctx the parse tree
+	 */
+	void enterEBinary3(L42Parser.EBinary3Context ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#eBinary3}.
+	 * @param ctx the parse tree
+	 */
+	void exitEBinary3(L42Parser.EBinary3Context ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void enterStatement(L42Parser.StatementContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#statement}.
+	 * @param ctx the parse tree
+	 */
+	void exitStatement(L42Parser.StatementContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sIf}.
+	 * @param ctx the parse tree
+	 */
+	void enterSIf(L42Parser.SIfContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sIf}.
+	 * @param ctx the parse tree
+	 */
+	void exitSIf(L42Parser.SIfContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#match}.
+	 * @param ctx the parse tree
+	 */
+	void enterMatch(L42Parser.MatchContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#match}.
+	 * @param ctx the parse tree
+	 */
+	void exitMatch(L42Parser.MatchContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sWhile}.
+	 * @param ctx the parse tree
+	 */
+	void enterSWhile(L42Parser.SWhileContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sWhile}.
+	 * @param ctx the parse tree
+	 */
+	void exitSWhile(L42Parser.SWhileContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sFor}.
+	 * @param ctx the parse tree
+	 */
+	void enterSFor(L42Parser.SForContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sFor}.
+	 * @param ctx the parse tree
+	 */
+	void exitSFor(L42Parser.SForContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sLoop}.
+	 * @param ctx the parse tree
+	 */
+	void enterSLoop(L42Parser.SLoopContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sLoop}.
+	 * @param ctx the parse tree
+	 */
+	void exitSLoop(L42Parser.SLoopContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sThrow}.
+	 * @param ctx the parse tree
+	 */
+	void enterSThrow(L42Parser.SThrowContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sThrow}.
+	 * @param ctx the parse tree
+	 */
+	void exitSThrow(L42Parser.SThrowContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#sUpdate}.
+	 * @param ctx the parse tree
+	 */
+	void enterSUpdate(L42Parser.SUpdateContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#sUpdate}.
+	 * @param ctx the parse tree
+	 */
+	void exitSUpdate(L42Parser.SUpdateContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#e}.
 	 * @param ctx the parse tree
