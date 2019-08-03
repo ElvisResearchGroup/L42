@@ -32,13 +32,13 @@ _______
     Y.onSlashX = empty
     Y.onReturn = T
 * Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
-* Y♥CsP = (Y.onPath Y.p♥CsP)
+* Y♥CsP = Y.p♥CsP<:Y.onPath
     Y.onPath of form TX
-* Y♥CsP = (class P' P')
+* Y♥CsP = P'<:class P'
     Y.onPath=classP
     P'=Y.p♥CsP
-* Y♥(T CsP) = ( Y.p♥T  Y.p♥CsP )
-* Y♥(T e) = ❪T' x≖Y[onReturn=T']♥e x ❫ //do we see an improvement using unicode?
+* Y♥CsP<:T = Y.p♥CsP<:Y.p♥T
+* Y♥e<:T = ❪T' x≖Y[onReturn=T']♥e x ❫ //do we see an improvement using unicode?
     T'=Y.p♥T
     e not of form CsP
 * Y♥'PathLit = Y♥\"PathLit"

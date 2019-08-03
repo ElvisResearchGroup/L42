@@ -2,7 +2,7 @@ _______
 #define Q |-e: T<=T 
 * Q |- void : imm Void <= T //(void)
     Q.p|-imm Void <= T
-* Q |- (class P' P): class P' <= T //(Path)
+* Q |- P<:class P' : class P' <= T //(Path)
     Q.p(P) and Q.p(P') of form CORE.L
     Q.p|-class P' <= T
     P'=Any if Q.p(P).interface?=interface or class notin Q.p(P).mhs.mdfs
@@ -107,7 +107,7 @@ _______
 _______
 #define guess(Q,xP) = P
 * guess(Q,x)=Q.G(x)
-* guess(Q,(T P))=T
+* guess(Q,P<:T)=T
 _______
 #define  mostGeneralMdf(mdfs)=mdf     generalEnough(mdfs)=mdfs'
 * mostGeneralMdf(mdfs)=mdf //the most specific generalEnough.

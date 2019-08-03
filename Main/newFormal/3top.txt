@@ -39,7 +39,7 @@ _______
 _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
-    forall (class P' P) inside e: //assert p(P) and p(P') is CORE.L
+    forall P<:class P' inside e: //assert p(P) and p(P') is CORE.L
       either P'=Any
       or coherent(p.navigate(P))
 

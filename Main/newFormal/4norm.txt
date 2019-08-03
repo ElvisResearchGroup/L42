@@ -35,8 +35,8 @@ _______
     Ps'1..Ps'n={CORE.L(Cs).Info.coherent[from This.Cs;p]| Cs in dom(CORE.L)}
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
-* collectDepsE(p;(class Any P))= P;empty
-* collectDepsE(p;(class P' P))= P',P;P
+* collectDepsE(p;P<:class Any)= P;empty
+* collectDepsE(p;P<:class P')= P',P;P
     P'!=Any
 * collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
@@ -107,7 +107,7 @@ _______
 
 * I(\) = I.onSlash.P //undefined if it is empty
 * I((Ds Ks e)) = (I[Ds](Ds) I[Ds]\dom(Ds)(Ks) I[Ds](e)) //not just I(Ks) since I[Ds] modifies I.IMap
-* I((TX P)) = (iType(I,TX) P)
+* I(P<:TX) = P<:iType(I,TX)
 * I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I1(e1) .. xn=In(en))
     P=I.IMap(I.G(xP)).P
     MWT=I.p(P)(m(x1..xn))
@@ -117,7 +117,7 @@ _______
     PAcc[I.p;GX=empty;I.CCz].selectedOption(OP, T0..Tn, xPs)=PT,s,i
     xP'1..xP'n=xP0..xPn/i
     e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
-    e=(class PT PT).#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
+    e=PT<:class PT.#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
 * I(e)=e if e in {x, void, CORE.L} 
 * I(e)=e' propagates on the structure for throw e, loop e, x := e
 _______
