@@ -14,7 +14,7 @@ _______
   CMP/FULL/CORE.H ::= interface? PL //here and above, the concrete syntax omits [] for empty Ts 
   CMP/FULL.TLocal ::= T | mdf | empty 
   CORE.e ::= xP | void | L | xP.m(x1=e1..xn=en) | loop e | throw e | x:=e | (Ds Ks e)
-  CORE.xP::= x | (T P) | a //a=address, only at runtime
+  CORE.xP::= x | P<:T | a //a=address, only at runtime
   CORE.D ::= var? T x=e
   CORE.K ::= catch throw T x e
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
@@ -39,8 +39,8 @@ _______
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
   FULL.e ::= FULL.L //combined with line below, CMP.e do not have FULL.L
-  CMP/FULL.e ::= x | CsP | void | CORE.L | \ | \x | e string | 'PathLit | OPP e
-    | e0 OP .. OP en | (T e) | e (.m)?( par ) | e (.m?)[ pars ]
+  CMP/FULL.e ::= x | CsP | void | CORE.L | \ | \x | e string | 'PathLit | Uop e
+    | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WHOOPS? Ds' e? ) | { Ds Ks WHOOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
@@ -54,8 +54,8 @@ _______
   PT ::= TX | PT.s | PT.s.i
   CC ::= PT <= PT'
   IMap ::= X1:CORE.T1 .. Xn:CORE.Tn
-  HALF.xP ::= x | (TX P)
-  HALF.e ::= xP | void | CORE.L | \ | xP.m(xes) // OPP is already desugared at this stage
+  HALF.xP ::= x | P<:TX
+  HALF.e ::= xP | void | CORE.L | \ | xP.m(xes) // Uop is already desugared at this stage
    | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.K ::= catch throw TX x e
   HALF.D ::= var? TX x = e
@@ -78,7 +78,7 @@ _______
     | (Ds Ks catch throw T x ctx Ks' e)
   FULL.ctxC::= []
     | throw ctxC | loop ctxC |ctxC(.m)?(par) 
-    | ctxC string |x updateOp ctxC | (T ctxC) 
+    | ctxC string |x updateOp ctxC | ctxC<:T 
     | if (CMP.match+ |CMP.e) ctxC (else e)?
     | CMP.e.m?(ctxC par) | CMP.e.m?(CMP.par, x=ctxC, par)
     | ctxC (.m?)[pars]
@@ -135,7 +135,7 @@ _______
   n ::= 0 | <1-9> <0-9>*
   x ::=IdLow IdChars
   m ::= (#|#$)?x(#x)* (::n)?
-  OPP ::= ! | ~ | Number  // prefix
+  Uop ::= ! | ~ | Number  // prefix
   OP0 ::= ^ | : | <- | << | & | '|' // right associative
   OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
   OP2 ::= == | != | < | > | >= | <= // unassiociative
@@ -150,11 +150,11 @@ _______
   mOp ::= empty | m | OP | ~ | !
 _______
 #define CMP/FULL Expressions priority disambiguation and other details
-  CMP/FULL.eAtomic ::= x | CsP | 'void' | LL | B | (T e) | \  | 'PathLit
-  CMP/FULL.ePostfix ::= eAtomic | ePostfix (.m)? ( par ) | \x //no space in ePostfix(par) and \x
-              | ePostfix (.m)? [ (par;)* par? ] | ePostfix string
+  CMP/FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathLit   e<:T |\x
+  CMP/FULL.ePostfix ::= eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)*
+//no space in ePostfix(par) and \x
   CMP/FULL.par ::= e? xe*
-  CMP/FULL.eUnary   ::= OPP? ePostfix
+  CMP/FULL.eUnary   ::= Uop? ePostfix
   CMP/FULL.eBinary0 ::= eUnary (OP0 eUnary)* //right associative, all ops must be the same
   CMP/FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   CMP/FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
@@ -223,6 +223,7 @@ _______
 //* FULL.L not in MWT.e and Mi.e
 //* x, P not valid DX=e
 //* CsP well formed, not Any in the middle and so on..
+//* nested class C is not a CsP with dots and not Any and..
 _______
 #define noBlockNeeded(CMP/FULL.e):
 * noBlockNeeded(B)

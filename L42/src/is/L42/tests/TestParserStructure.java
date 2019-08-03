@@ -10,176 +10,170 @@ import static org.junit.jupiter.api.Assertions.*;
  * */
 public class TestParserStructure
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   pass("foo","x")
+   pass("foo","x|")
    ),new AtomicTest(()->
-   pass("Bar.Baz","P")
+   pass("Bar.Baz","P|")
    ),new AtomicTest(()->
-   pass("Any.Foo","P")//Any/Thisn will be handled by well formedness
+   pass("Any.Foo","P|")//Any/Thisn will be handled by well formedness
    ),new AtomicTest(()->
-   pass("A(B)",
-     "E(P FCall(|Par(P)|))")   
+   pass("A(B)","PFCall(|P|)|")   
    ),new AtomicTest(()->
-   pass("A(B x=C)",
-     "E(P FCall(|Par(P X|P)|))")   
+   pass("A(B)(C)","PFCall(|P|)FCall(|P|)|")   
    ),new AtomicTest(()->
-   pass("(A)","[P]")   
+   pass("A(B x=C)","PFCall(|Px|P|)|")   
    ),new AtomicTest(()->
-   pass("(A(B))","[E(P FCall(|Par(P)|))]")   
+   pass("(A)","[|P|]|")   
    ),new AtomicTest(()->
-   pass("(A(B) C(D))","[D(E(P FCall(|Par(P)|)))E(P FCall(|Par(P)|))]")   
+   pass("(A(B))","[|PFCall(|P|)|]|")   
    ),new AtomicTest(()->
-   pass("(A (B) C(D))","[D(P)D([P])E(P FCall(|Par(P)|))]")
+   pass("(A(B) C(D))","[|D(PFCall(|P|))PFCall(|P|)|]|")   
    ),new AtomicTest(()->
-   pass("(A (B) C (D))","[D(P)D([P])D(P)[P]]")
+   pass("(A (B) C(D))","[|D(P)D([|P|])PFCall(|P|)|]|")
    ),new AtomicTest(()->
-   pass("(A x=A x)","[D(DX(TLocal(T(CsP))X)|P)x]")
+   pass("(A (B) C (D))","[|D(P)D([|P|])D(P)[|P|]|]|")
    ),new AtomicTest(()->
-   pass("( x=A x)","[D(DX(TLocal()X)|P)x]")
+   pass("(A x=A x)","[|D(t(P)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("( x=A x)","[|D(x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo @Bar A x=A x)","[D(DX(TLocal(T(Doc Doc CsP))X)|P)x]")
+   pass("(@Foo A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo{some text like a comment @Bar.foo(} A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo @Bar A x=A x)","[|D(t(docdocP)x|P)x|]|")
+   ),new AtomicTest(()->
+   pass("(@Foo{some text like a comment @Bar.foo(} A x=A x)","[|D(t(docP)x|P)x|]|")
    //here it justs stops PathLit at @Bar
    ),new AtomicTest(()->
-   pass("(@Foo{some text like a comment @Bar.foo(x,y) and more text} A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo{some text like a comment @Bar.foo(x,y) and more text} A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo.foo() A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo.foo() A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo.foo(x) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo.foo(x) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo.foo(x y) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo.foo(x y) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo.foo(x,y) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo.foo(x,y) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo(x,y) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo(x,y) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@Foo() A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@Foo() A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@foo() A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@foo() A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@foo(x) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@foo(x) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@() A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@() A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@(x) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
+   pass("(@(x) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(@(x,y) A x=A x)","[D(DX(TLocal(T(Doc CsP))X)|P)x]")
-
+   pass("(@(x,y) A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(read A x=A x)","[D(DX(TLocal(T(|CsP))X)|P)x]")
+   pass("(read A x=A x)","[|D(t(|P)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(read x=A x)","[D(DX(TLocal X)|P)x]")
+   pass("(read x=A x)","[|D(|x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(_=A x)","[D(DX(TLocal()|)|P)x]")
+   pass("(_=A x)","[|D(||P)x|]|")
    ),new AtomicTest(()->
-   pass("(imm A _=A x)","[D(DX(TLocal(T(|CsP))|)|P)x]")
+   pass("(imm A _=A x)","[|D(t(|P)||P)x|]|")
    ),new AtomicTest(()->
-   pass("(mut _=A x)","[D(DX(TLocal|)|P)x]")
+   pass("(mut _=A x)","[|D(|||P)x|]|")
    ),new AtomicTest(()->
-   pass("(fwd imm A x=A x)","[D(DX(TLocal(T(|CsP))X)|P)x]")
+   pass("(fwd imm A x=A x)","[|D(t(|P)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(fwd mut x=A x)","[D(DX(TLocal X)|P)x]")
+   pass("(fwd mut x=A x)","[|D(|x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(fwd imm A _=A x)","[D(DX(TLocal(T(|CsP))|)|P)x]")
+   pass("(fwd imm A _=A x)","[|D(t(|P)||P)x|]|")
    ),new AtomicTest(()->
-   pass("(fwd mut _=A x)","[D(DX(TLocal|)|P)x]")
+   pass("(fwd mut _=A x)","[|D(|||P)x|]|")
    ),new AtomicTest(()->
-   pass("(var A x=A x)","[D(DX(|TLocal(T(CsP))X)|P)x]")
+   pass("(var A x=A x)","[|D(|t(P)x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(A(A y, A z) x=A x)",
-   "[D(P)D([D(P)D(x)D(P)x])D(DX(TLocal()X)|P)x]")
+   pass("(A(A y, A z) x=A x)",//note the x=, thus it can not be a matching
+   "[|D(P)D([|D(P)D(x)D(P)x|])D(x|P)x|]|")
    ),new AtomicTest(()->
-   pass("((A y, A z) x=A x)","[D([D(P)D(x)D(P)x])D(DX(TLocal()X)|P)x]")
+   pass("((A y, A z) x=A x)","[|D([|D(P)D(x)D(P)x|])D(x|P)x|]|")
    ),new AtomicTest(()->
-   pass("(A(A y, A z)=A x)",
-   "[D(DX(TLocal(T(CsP))OR TLocal(T(CsP))X TLocal(T(CsP))X|)|P)x]")
+   pass("(A(A y, A z)=A x)","[|D(t(P)|t(P)xt(P)x||P)x|]|")
    ),new AtomicTest(()->
-   pass("((A y, A z)=A x)",
-   "[D(DX(TLocal()OR TLocal(T(CsP))X TLocal(T(CsP))X|)|P)x]")
+   pass("((A y, A z)=A x)","[|D(|t(P)xt(P)x||P)x|]|")
    ),new AtomicTest(()->
-   pass("((y,z)=A x)",
-   "[D(DX(TLocal()OR TLocal()X TLocal()X|)|P)x]")
+   pass("((y,z)=A x)","[|D(|xx||P)x|]|")
    ),new AtomicTest(()->
-   pass("((y)=A x)",
-   "[D(DX(TLocal()OR TLocal()X|)|P)x]")
+   pass("((y)=A x)","[|D(|x||P)x|]|")
    ),new AtomicTest(()->
-   pass("((var y)=A x)",
-   "[D(DX(TLocal()OR|TLocal()X|)|P)x]")
+   pass("((var y)=A x)","[|D(||x||P)x|]|")
    ),new AtomicTest(()->
-   pass("((z, var y)=A x)",
-   "[D(DX(TLocal()OR TLocal()X|TLocal()X|)|P)x]")
+   pass("((z, var y)=A x)","[|D(|x|x||P)x|]|")
    ),new AtomicTest(()->
-   pass("((z, var A y)=A x)",
-   "[D(DX(TLocal()OR TLocal()X|TLocal(T(CsP))X|)|P)x]")
+   pass("((z, var A y)=A x)","[|D(|x|t(P)x||P)x|]|")
    ),new AtomicTest(()->
-   pass("(A catch return A x x y)","[D(P)K(||T(CsP)X x)x]")
+   pass("(A catch return A x x y)","[|D(P)K(||t(P)xx)x|]|")
    ),new AtomicTest(()->
-   pass("(A catch return A x x)","[D(P)K(||T(CsP)X x)]")
+   pass("(A catch return A x x)","[|D(P)K(||t(P)xx)|]|")
    ),new AtomicTest(()->
-   pass("(A catch return A _ x)","[D(P)K(||T(CsP)|x)]")
+   pass("(A catch return A _ x)","[|D(P)K(||t(P)|x)|]|")
    ),new AtomicTest(()->
    pass("(A catch return A _ x catch error A x y z)",
-   "[D(P)K(||T(CsP)|x)K(||T(CsP)X x)x]")
+   "[|D(P)K(||t(P)|x)K(||t(P)xx)x|]|")
    ),new AtomicTest(()->
    pass("(A catch return A _ x catch error A x y z)",
-   "[D(P)K(||T(CsP)|x)K(||T(CsP)X x)x]")
+   "[|D(P)K(||t(P)|x)K(||t(P)xx)x|]|")
    ),new AtomicTest(()->
    pass("(A whops B C D z)",
-   "[D(P)D(x)D(P)D(P)D(P)x]")//well formedness will check for those issues
+   "[|D(P)D(x)D(P)D(P)D(P)x|]|")//well formedness will check for those issues
    ),new AtomicTest(()->
    pass("(A whoops B C D x)",
-   "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))x]")
+   "[|D(P)Whoops(|t(P)t(P)t(P))x|]|")
    ),new AtomicTest(()->
    pass("(A whoops B C D)",
-   "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))]")
+   "[|D(P)Whoops(|t(P)t(P)t(P))|]|")
    ),new AtomicTest(()->
    pass("{A whoops B C D}",
-   "[D(P)Whoops(|T(CsP)T(CsP)T(CsP))]")
+   "[|D(P)Whoops(|t(P)t(P)t(P))|]|")
    ),new AtomicTest(()->
    pass("{x=A catch T _ x y Z}",
-   "[D(DX(TLocal()X)|P)K(|T(CsP)|x)D(x)D(P)]")
+   "[|D(x|P)K(|t(P)|x)D(x)D(P)|]|")
    ),new AtomicTest(()->
-   pass("{}","{Header()}")
+   pass("{}","{|Header()|}|")
    ),new AtomicTest(()->
-   pass("{T x=void x}","[D(DX(TLocal(T(CsP))X)|E(EAtomic(VoidE)))D(x)]")
+   pass("{T x=void x}","[|D(t(P)x|void)D(x)|]|")
    ),new AtomicTest(()->
-   pass("{T x=void}","[D(DX(TLocal(T(CsP))X)|E(EAtomic(VoidE)))]")
+   pass("{T x=void}","[|D(t(P)x|void)|]|")
    ),new AtomicTest(()->
-   pass("{T x}","{Header()FullM(FullF(T(CsP)X))}")
+   pass("{T x}","{|Header()FullF(t(P)x)|}|")
    ),new AtomicTest(()->
-   pass("{T x y}","[D(P)D(x)D(x)]")
+   pass("{T x y}","[|D(P)D(x)D(x)|]|")
    ),new AtomicTest(()->
    pass("{T x T y}",
-   "{Header()FullM(FullF(T(CsP)X))FullM(FullF(T(CsP)X))}")
+   "{|Header()FullF(t(P)x)FullF(t(P)x)|}|")
    ),new AtomicTest(()->
-   pass("({})","[{Header()}]")
+   pass("({})","[|{|Header()|}|]|")
    ),new AtomicTest(()->
-   pass("{interface mut@Foo Bar fName}","{Header FullM(FullF(T(|Doc CsP)X))}")
+   pass("{interface mut@Foo Bar fName}","{|Header(|)FullF(t(|docP)x)|}|")
    ),new AtomicTest(()->
    pass("{interface [mut@Foo Bar] E fName}",
-   "{Header(||T(|Doc CsP)|)FullM(FullF(T(CsP)X))}")
+   "{|Header(||t(|docP)|)FullF(t(P)x)|}|")
    ),new AtomicTest(()->
    pass("{[mut@Foo Bar] E fName}",
-   "{Header(|T(|Doc CsP)|)FullM(FullF(T(CsP)X))}")
+   "{|Header(|t(|docP)|)FullF(t(P)x)|}|")
    ),new AtomicTest(()->
    pass("{E f method bar()=x}",
-   "{Header()FullM(FullF(T(CsP)X))FullM(FullMi(|M OR||x))}")
+   "{|Header()FullF(t(P)x)FullMi(|mOp|||x)|}|")
+   ),new AtomicTest(()->
+   pass("{method A.B bar(C.D x)=x}",
+   "{|Header()FullMH(|t(P)mOp|t(P)x|)|x|}|")
+   ),new AtomicTest(()->
+   pass("{CCc=x}","{|Header()FullNC(P|x)|}|")
+   ),new AtomicTest(()->
+   pass("(\\ void)","[|D(\\)void|]|")
+   ),new AtomicTest(()->
+   pass("('hi() 'This 'Is.A 'Series.of() 'Path.lits(x).x and a slash \\ End.Here)",
+   "[|D(pathLit)D(pathLit)D(pathLit)D(pathLit)D(pathLit)D(x)D(x)D(x)D(\\)P|]|")
+   ),new AtomicTest(()->
+   pass("bar<:Foo","xCast(|t(P))|")
 
      ));}
 public static void pass(String input,String output) {
   String res=parseStructure(parseWithException(input));
-  assertTrue(res.startsWith("NudeE("));
-  assertTrue(res.endsWith("|)"));
-  res=res.substring("NudeE(".length(),res.length()-"|)".length());
-  res=res.replace("E(EAtomic(CsP(|))))","P)").replace("E(EAtomic(X(|))))","x)");
-  res=res.replace("E(EAtomic(CsP(|)))|","P|").replace("E(EAtomic(X(|)))|","x|");
-  res=res.replace("E(EAtomic(CsP(|)))","P ").replace("E(EAtomic(X(|)))","x ");
-  res=res.replace("(|))", ")").replace("(|)|", "|").replace("(|)", " ");
-  res=res.replace("E(EAtomic(Block(OR ","[").replace("E(EAtomic(Block(|","[").replace("|)ENDBLOCK))","]");
-  res=res.replace("E(EAtomic(FullL(|","{").replace("|)ENDLIB))","}");
-  res=res.trim();
   assertEquals(output,res);
 
   }

@@ -11,11 +11,29 @@ import org.antlr.v4.runtime.tree.ParseTreeVisitor;
  */
 public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#slash}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSlash(L42Parser.SlashContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#pathLit}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitPathLit(L42Parser.PathLitContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#string}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitString(L42Parser.StringContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#slashX}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSlashX(L42Parser.SlashXContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#m}.
 	 * @param ctx the parse tree
@@ -89,6 +107,12 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFullMWT(L42Parser.FullMWTContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#fullNC}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitFullNC(L42Parser.FullNCContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#header}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -113,17 +137,29 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVoidE(L42Parser.VoidEContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42Parser#e}.
+	 * Visit a parse tree produced by {@link L42Parser#ePostfix}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitE(L42Parser.EContext ctx);
+	T visitEPostfix(L42Parser.EPostfixContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#fCall}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFCall(L42Parser.FCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#squareCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSquareCall(L42Parser.SquareCallContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#cast}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitCast(L42Parser.CastContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#oR}.
 	 * @param ctx the parse tree
@@ -166,6 +202,18 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitWhoops(L42Parser.WhoopsContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#eUnary}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitEUnary(L42Parser.EUnaryContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#e}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitE(L42Parser.EContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#nudeE}.
 	 * @param ctx the parse tree
