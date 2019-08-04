@@ -136,9 +136,9 @@ _______
   x ::=IdLow IdChars
   m ::= (#|#$)?x(#x)* (::n)?
   Uop ::= ! | ~ | Number  // prefix
-  OP0 ::= ^ | : | <- | << | & | '|' // right associative
-  OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative 
-  OP2 ::= == | != | < | > | >= | <= // unassiociative
+  OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
+  OP1 ::= + | - | * | / | >> | -> // left associative   
+  OP2 ::= == | < | > | >= | <= | in | !=  // unassiociative
   OP3 ::= => | && | '||' // right associative, will be short circuting
   OP  ::= OP0 | OP1 | OP2 | OP3 
   opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= 

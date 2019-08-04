@@ -11,7 +11,7 @@ import lombok.experimental.Wither;
   AndAnd("&&", OpKind.BoolOp, true,false),//
   OrOr("||", OpKind.BoolOp, true,false),//
 
-  OP2 ::= == | != | < | > | >= | <= // unassiociative
+   OP2 ::= == | < | > | >= | <= | in | != // unassiociative
   EqualEqual("==", OpKind.RelationalOp, false, null),//
   BangEqual("!=",OpKind.RelationalOp, false, null),//
   LT("<", OpKind.RelationalOp, false, null),//
@@ -25,17 +25,9 @@ import lombok.experimental.Wither;
   GTGT(">>",OpKind.RelationalOp, true, false,false),//
   LTLTEqual("<<=",OpKind.RelationalOp,false,true,false),//
   GTGTEqual(">>=",OpKind.RelationalOp,true,true,false),//
-  BangLTEqual("!<=", OpKind.RelationalOp, false, true,true),//
-  BangGTEqual("!>=", OpKind.RelationalOp, true, true,true),//
-  BangLT("!<", OpKind.RelationalOp, false, true,true),//
-  BangGT("!>",OpKind.RelationalOp, true,true,true),//
-  BangLTLT("!<<", OpKind.RelationalOp, false, false,true),//
-  BangGTGT("!>>",OpKind.RelationalOp, true, false,true),//
-  BangLTLTEqual("!<<=",OpKind.RelationalOp,false,true,true),//
-  BangGTGTEqual("!>>=",OpKind.RelationalOp,true,true,true),//
 
-  OP1 ::= + | - | * | / | ++ | -- | ** | >> | -> // left associative   
-  OP0 ::= ^ | : | <- | << | & | '|' // right associative
+  OP1 ::= + | - | * | / | >> | -> // left associative   
+  OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
 
   And("&", OpKind.BoolOp, true,true,false),//
   Or("|", OpKind.BoolOp, true, true,false),//
