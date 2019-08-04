@@ -21,11 +21,11 @@ public class L42Parser extends Parser {
 		OP0=10, OP1=11, OP2=12, OP3=13, OpUpdate=14, Mdf=15, VoidKW=16, VarKw=17, 
 		Info=18, CatchKw=19, InterfaceKw=20, IfKw=21, ElseKw=22, WhileKw=23, ForKw=24, 
 		InKw=25, LoopKw=26, Throw=27, WhoopsKw=28, MethodKw=29, DotDotDot=30, 
-		Slash=31, PathLit=32, ReuseURL=33, NativeURL=34, StringSingle=35, Number=36, 
+		Slash=31, PathSel=32, ReuseURL=33, NativeURL=34, StringSingle=35, Number=36, 
 		MUniqueNum=37, MHash=38, X=39, SlashX=40, CsP=41, ClassSep=42, UnderScore=43, 
 		OR=44, ORNS=45, Doc=46, BlockComment=47, LineComment=48, Whitespace=49;
 	public static final int
-		RULE_slash = 0, RULE_pathLit = 1, RULE_string = 2, RULE_slashX = 3, RULE_m = 4, 
+		RULE_slash = 0, RULE_pathSel = 1, RULE_string = 2, RULE_slashX = 3, RULE_m = 4, 
 		RULE_x = 5, RULE_doc = 6, RULE_csP = 7, RULE_t = 8, RULE_tLocal = 9, RULE_eAtomic = 10, 
 		RULE_fullL = 11, RULE_fullM = 12, RULE_fullF = 13, RULE_fullMi = 14, RULE_fullMWT = 15, 
 		RULE_fullNC = 16, RULE_header = 17, RULE_info = 18, RULE_fullMH = 19, 
@@ -37,7 +37,7 @@ public class L42Parser extends Parser {
 		RULE_sThrow = 44, RULE_sUpdate = 45, RULE_e = 46, RULE_nudeE = 47;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"slash", "pathLit", "string", "slashX", "m", "x", "doc", "csP", "t", 
+			"slash", "pathSel", "string", "slashX", "m", "x", "doc", "csP", "t", 
 			"tLocal", "eAtomic", "fullL", "fullM", "fullF", "fullMi", "fullMWT", 
 			"fullNC", "header", "info", "fullMH", "mOp", "voidE", "ePostfix", "fCall", 
 			"squareCall", "cast", "oR", "par", "block", "d", "dX", "k", "whoops", 
@@ -63,7 +63,7 @@ public class L42Parser extends Parser {
 			null, null, null, null, null, null, null, null, "CastOp", "Uop", "OP0", 
 			"OP1", "OP2", "OP3", "OpUpdate", "Mdf", "VoidKW", "VarKw", "Info", "CatchKw", 
 			"InterfaceKw", "IfKw", "ElseKw", "WhileKw", "ForKw", "InKw", "LoopKw", 
-			"Throw", "WhoopsKw", "MethodKw", "DotDotDot", "Slash", "PathLit", "ReuseURL", 
+			"Throw", "WhoopsKw", "MethodKw", "DotDotDot", "Slash", "PathSel", "ReuseURL", 
 			"NativeURL", "StringSingle", "Number", "MUniqueNum", "MHash", "X", "SlashX", 
 			"CsP", "ClassSep", "UnderScore", "OR", "ORNS", "Doc", "BlockComment", 
 			"LineComment", "Whitespace"
@@ -162,35 +162,35 @@ public class L42Parser extends Parser {
 		return _localctx;
 	}
 
-	public static class PathLitContext extends ParserRuleContext {
-		public TerminalNode PathLit() { return getToken(L42Parser.PathLit, 0); }
-		public PathLitContext(ParserRuleContext parent, int invokingState) {
+	public static class PathSelContext extends ParserRuleContext {
+		public TerminalNode PathSel() { return getToken(L42Parser.PathSel, 0); }
+		public PathSelContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_pathLit; }
+		@Override public int getRuleIndex() { return RULE_pathSel; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42Listener ) ((L42Listener)listener).enterPathLit(this);
+			if ( listener instanceof L42Listener ) ((L42Listener)listener).enterPathSel(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42Listener ) ((L42Listener)listener).exitPathLit(this);
+			if ( listener instanceof L42Listener ) ((L42Listener)listener).exitPathSel(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42Visitor ) return ((L42Visitor<? extends T>)visitor).visitPathLit(this);
+			if ( visitor instanceof L42Visitor ) return ((L42Visitor<? extends T>)visitor).visitPathSel(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final PathLitContext pathLit() throws RecognitionException {
-		PathLitContext _localctx = new PathLitContext(_ctx, getState());
-		enterRule(_localctx, 2, RULE_pathLit);
+	public final PathSelContext pathSel() throws RecognitionException {
+		PathSelContext _localctx = new PathSelContext(_ctx, getState());
+		enterRule(_localctx, 2, RULE_pathSel);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
 			setState(98);
-			match(PathLit);
+			match(PathSel);
 			}
 		}
 		catch (RecognitionException re) {
@@ -643,8 +643,8 @@ public class L42Parser extends Parser {
 		public SlashContext slash() {
 			return getRuleContext(SlashContext.class,0);
 		}
-		public PathLitContext pathLit() {
-			return getRuleContext(PathLitContext.class,0);
+		public PathSelContext pathSel() {
+			return getRuleContext(PathSelContext.class,0);
 		}
 		public SlashXContext slashX() {
 			return getRuleContext(SlashXContext.class,0);
@@ -721,7 +721,7 @@ public class L42Parser extends Parser {
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(136);
-				pathLit();
+				pathSel();
 				}
 				break;
 			case 8:
@@ -2267,7 +2267,7 @@ public class L42Parser extends Parser {
 				setState(359);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathLit) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0)) {
+				if ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathSel) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0)) {
 					{
 					setState(355);
 					_errHandler.sync(this);
@@ -2312,7 +2312,7 @@ public class L42Parser extends Parser {
 					setState(367); 
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathLit) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0) );
+				} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathSel) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0) );
 				setState(390);
 				_errHandler.sync(this);
 				switch (_input.LA(1)) {
@@ -2345,7 +2345,7 @@ public class L42Parser extends Parser {
 					setState(380);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathLit) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0)) {
+					while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathSel) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0)) {
 						{
 						{
 						setState(377);
@@ -2365,7 +2365,7 @@ public class L42Parser extends Parser {
 					setState(387);
 					_errHandler.sync(this);
 					_la = _input.LA(1);
-					while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathLit) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0)) {
+					while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << T__0) | (1L << Uop) | (1L << Mdf) | (1L << VoidKW) | (1L << VarKw) | (1L << IfKw) | (1L << WhileKw) | (1L << ForKw) | (1L << LoopKw) | (1L << Throw) | (1L << Slash) | (1L << PathSel) | (1L << Number) | (1L << X) | (1L << SlashX) | (1L << CsP) | (1L << UnderScore) | (1L << OR) | (1L << ORNS) | (1L << Doc))) != 0)) {
 						{
 						{
 						setState(384);

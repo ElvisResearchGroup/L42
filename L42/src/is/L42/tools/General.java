@@ -43,6 +43,10 @@ public class General {
       c.accept(res,a.get(i),b.get(i));
     return Collections.unmodifiableList(res);
     }
+  public static Error unreachable(){throw new Error("Postcondition violation");}
+  public static Error todo(){throw new Error("Not implemented yet");}
+  public static Error bug(){throw new Error("Precondition violation");}
+ 
   private static <T> void testL(T e) {
     List<T> x = L(e);
     List<Integer> y=L();

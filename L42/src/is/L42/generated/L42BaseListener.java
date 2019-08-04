@@ -28,13 +28,13 @@ public class L42BaseListener implements L42Listener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPathLit(L42Parser.PathLitContext ctx) { }
+	@Override public void enterPathSel(L42Parser.PathSelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPathLit(L42Parser.PathLitContext ctx) { }
+	@Override public void exitPathSel(L42Parser.PathSelContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

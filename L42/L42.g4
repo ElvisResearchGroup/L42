@@ -25,8 +25,8 @@ MethodKw: 'method';
 DotDotDot:'...';
 Slash:'\\';
 slash: Slash;
-PathLit: '\''FPathLit;
-pathLit: PathLit;
+PathSel: '\''FPathSel;
+pathSel: PathSel;
 
 fragment IdUp: '_'* ('A'..'Z'|'$');
 fragment IdLow: '_'* 'a'..'z';
@@ -60,10 +60,10 @@ fragment C: IdUp ('A'..'Z'|'$'|'a'..'z'|'0'..'9')*;
 UnderScore:'_';//need to be not earlier then here, after X and CsP
 OR:' ('| ',(' | '\n(';
 ORNS:'(';
-Doc: '@'FPathLit | '@'FPathLit?'{'DocText'}';
+Doc: '@'FPathSel | '@'FPathSel?'{'DocText'}';
 fragment FS:(MUniqueNum|MHash|X) FParXs;
 fragment FParXs: '(' ')' | '(' X ( (' '|',')X )* ')';
-fragment FPathLit: FS('.'X)? |FParXs('.'X)? | CsP( ('.'FS|FParXs)('.'X)? )?;
+fragment FPathSel: FS('.'X)? |FParXs('.'X)? | CsP( ('.'FS|FParXs)('.'X)? )?;
 fragment DocText: | CHARDocText DocText | Doc DocText | '{' DocText '}' DocText;
 doc:Doc;
 
@@ -72,13 +72,13 @@ LineComment: '//' .*? ('\n'|EOF)				-> channel(HIDDEN) ;
 Whitespace: (( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
 
 csP: CsP;
-t:Mdf? doc* csP | '\\';
+t:Mdf? doc* csP;
 tLocal: t | Mdf | ; 
 
-eAtomic: x | csP | voidE | fullL | block | slash | pathLit | slashX;//CORE.L
+eAtomic: x | csP | voidE | fullL | block | slash | pathSel | slashX;
 fullL:'{' (header | DotDotDot | ReuseURL) fullM* info? doc*'}';
 fullM: fullF | fullMi |fullMWT | fullNC;
-fullF: VarKw? t x;
+fullF: doc* VarKw? t x;
 fullMi: doc* MethodKw mOp oR x* ')' '=' e;
 fullMWT: doc* fullMH ('=' NativeURL? e)?;
 fullNC:  doc* csP '=' e;

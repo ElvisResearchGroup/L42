@@ -21,7 +21,7 @@ public class L42Lexer extends Lexer {
 		OP0=10, OP1=11, OP2=12, OP3=13, OpUpdate=14, Mdf=15, VoidKW=16, VarKw=17, 
 		Info=18, CatchKw=19, InterfaceKw=20, IfKw=21, ElseKw=22, WhileKw=23, ForKw=24, 
 		InKw=25, LoopKw=26, Throw=27, WhoopsKw=28, MethodKw=29, DotDotDot=30, 
-		Slash=31, PathLit=32, ReuseURL=33, NativeURL=34, StringSingle=35, Number=36, 
+		Slash=31, PathSel=32, ReuseURL=33, NativeURL=34, StringSingle=35, Number=36, 
 		MUniqueNum=37, MHash=38, X=39, SlashX=40, CsP=41, ClassSep=42, UnderScore=43, 
 		OR=44, ORNS=45, Doc=46, BlockComment=47, LineComment=48, Whitespace=49;
 	public static String[] channelNames = {
@@ -37,11 +37,11 @@ public class L42Lexer extends Lexer {
 			"T__0", "T__1", "T__2", "T__3", "T__4", "T__5", "T__6", "CastOp", "Uop", 
 			"OP0", "OP1", "OP2", "OP3", "OpUpdate", "Mdf", "VoidKW", "VarKw", "Info", 
 			"CatchKw", "InterfaceKw", "IfKw", "ElseKw", "WhileKw", "ForKw", "InKw", 
-			"LoopKw", "Throw", "WhoopsKw", "MethodKw", "DotDotDot", "Slash", "PathLit", 
+			"LoopKw", "Throw", "WhoopsKw", "MethodKw", "DotDotDot", "Slash", "PathSel", 
 			"IdUp", "IdLow", "IdChar", "CHAR", "CHARInStringSingle", "CharsUrl", 
 			"CHARDocText", "URL", "ReuseURL", "NativeURL", "Fn", "Fx", "StringSingle", 
 			"Number", "MUniqueNum", "MHash", "X", "SlashX", "CsP", "ClassSep", "C", 
-			"UnderScore", "OR", "ORNS", "Doc", "FS", "FParXs", "FPathLit", "DocText", 
+			"UnderScore", "OR", "ORNS", "Doc", "FS", "FParXs", "FPathSel", "DocText", 
 			"BlockComment", "LineComment", "Whitespace"
 		};
 	}
@@ -62,7 +62,7 @@ public class L42Lexer extends Lexer {
 			null, null, null, null, null, null, null, null, "CastOp", "Uop", "OP0", 
 			"OP1", "OP2", "OP3", "OpUpdate", "Mdf", "VoidKW", "VarKw", "Info", "CatchKw", 
 			"InterfaceKw", "IfKw", "ElseKw", "WhileKw", "ForKw", "InKw", "LoopKw", 
-			"Throw", "WhoopsKw", "MethodKw", "DotDotDot", "Slash", "PathLit", "ReuseURL", 
+			"Throw", "WhoopsKw", "MethodKw", "DotDotDot", "Slash", "PathSel", "ReuseURL", 
 			"NativeURL", "StringSingle", "Number", "MUniqueNum", "MHash", "X", "SlashX", 
 			"CsP", "ClassSep", "UnderScore", "OR", "ORNS", "Doc", "BlockComment", 
 			"LineComment", "Whitespace"

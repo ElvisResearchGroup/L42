@@ -45,7 +45,7 @@ import is.L42.generated.L42Parser.MatchContext;
 import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.ORContext;
 import is.L42.generated.L42Parser.ParContext;
-import is.L42.generated.L42Parser.PathLitContext;
+import is.L42.generated.L42Parser.PathSelContext;
 import is.L42.generated.L42Parser.SForContext;
 import is.L42.generated.L42Parser.SIfContext;
 import is.L42.generated.L42Parser.SLoopContext;
@@ -109,7 +109,7 @@ public class TestHelpers {
       @Override public String visitMOp(MOpContext ctx) {return "mOp";}
       @Override public String visitFullNC(FullNCContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitSlash(SlashContext ctx) {return "\\";}
-      @Override public String visitPathLit(PathLitContext ctx) {return "pathLit";}
+      @Override public String visitPathSel(PathSelContext ctx) {return "pathSel";}
       @Override public String visitCast(CastContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitSlashX(SlashXContext ctx) {return "\\x";}
       @Override public String visitEPostfix(EPostfixContext ctx) {return c(ctx);}

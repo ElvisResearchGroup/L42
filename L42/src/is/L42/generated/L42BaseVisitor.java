@@ -24,7 +24,7 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPathLit(L42Parser.PathLitContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPathSel(L42Parser.PathSelContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

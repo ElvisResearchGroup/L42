@@ -1,15 +1,13 @@
 _______
-#define p♥CoM = HALF.M //assert never happens p♥C:Full.e or p♥s e
-* p♥MH = MH
-* p♥MH CMP.e = MH Y[p=p,onSlashX=empty,onReturn=MH.T,onPath=MH.T]♥CMP.e
-    CMP.e not of form CORE.e
-* p♥CORE.MWT=CORE.MWT//can happen when checking CORE.L well formedness
-* p♥CORE.NC = CORE.NC
+#define p♥FUL.MH = CORE.MH
+* p♥(mdf FULL.Docs)? method FULL.T mOp (FULL.T1 x1..FULL.Tn xn)[FULL.Ts]
+    =(mdf p♥FULL.Docs)? method p♥FULL.T mOp (p♥FULL.T1 x1..p♥FULL.Tn xn)[p♥FULL.Ts]
 _______
 #define p♥CMP/FULL.TLocal=TX   p♥CsP=P,  p♥CMP/FULL.Docs=CORE.Docs,  p♥CMP/FULL.MH=CORE.MH
 * p♥empty=X with fresh X
-* p♥(Docs mdf CsP)=p♥Docs mdf p♥CsP
-* p♥\ = T
+* p♥(mdf? Docs CsP)=mdf p♥Docs p♥CsP
+    mdf=imm if mdf?=empty
+    mdf=mdf? otherwise
 * p♥mdf = mdf X with fresh X 
 * p♥P=p.minimize(P)//this also handles CsP starting for Any/Void/Library/Thisn
 * p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
@@ -23,14 +21,14 @@ _______
 *p♥FULL.MH propagates on the structure
 _______
 #define Y♥CMP.e = HALF.e //unicode characters to disambiguate equals and parenthesis =() ⚌❪❫ ᙿ≝≖᐀ //what is the best =?
+* Y♥CORE.e=CORE.e //this includes CORE.L
 * Y♥x = x
 * Y♥void = void
-* Y♥CORE.L = CORE.L
 * Y♥\ = \ 
     Y.onSlashX != empty
 * Y♥\ = T.P //is this already a P and not a CsP?
     Y.onSlashX = empty
-    Y.onReturn = T
+    Y.onReturn = T  //assert Y.onReturn != \
 * Y♥\x = (Y.onSlashX).x() //do we also need a 'disambiguation dot'?
 * Y♥CsP = Y.p♥CsP<:Y.onPath
     Y.onPath of form TX
@@ -41,7 +39,7 @@ _______
 * Y♥e<:T = ❪T' x≖Y[onReturn=T']♥e x ❫ //do we see an improvement using unicode?
     T'=Y.p♥T
     e not of form CsP
-* Y♥'PathLit = Y♥\"PathLit"
+* Y♥'PathSel = Y♥\"PathSel"
 * Y♥NumLit e = Y♥e"NumLit"
 * Y♥throw e = throw Y[onReturn=empty;onPath=classP]♥e //we set onReturn=empty to avoid 'return {}'
     //We can never return class Any anyway, or we could catch return class P on a non coherent P
@@ -53,7 +51,7 @@ _______
     e not of form xP
     x fresh
 * Y♥xP(.m)?(par) = Y[onPath=classP]♥xP.methName(.m?)( Y'♥par )
-    Y'=Y[onSlashX=x;onReturn=\;onPath=\]
+    Y'=Y[onSlashX=xP;onReturn=\;onPath=\]
 * Y♥e1 OP3 e2= (x=Y♥e1 Y♥x OP3 e2 )
     e1 not of form xP //OP3: &&, || and => are not static-dispatch, to have short circuit 
 * Y♥xP OP3 e= Y♥(
@@ -65,7 +63,7 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //Path=>classAny= if false err else X//shortResult=> is error, shortCircut=> false
 * Y♥e0 op .. op en = (Ds e0' op .. op en')
-    Yi = Y[onReturn=\;onPath=Xi]//TODO: would this help? using the same fresh X for many P?
+    Yi = Y[onPath=Xi]//TODO: would this help? using the same fresh X for many P?
     Ds = [xi=Yi♥ei| Yi♥ei not of form xP]
     ei' = Yi♥ei if Yi♥ei of form xP
     ei' = xi otherwise
@@ -76,12 +74,12 @@ _______
 * Y♥( DEs Ks Wops? DE DEs2 e)) = Y♥( DEs Ks Wops? (DE DEs2 e))
 * Y♥( DEs Ks wops T1..Tn e) = ( Y♥DEs Y♥Ks K1..Kn Y♥e ) 
     Ki=catch exception Y.p♥Ti xi error xi.#intoErrorAt(that={Info=empty})//so that we can recover the position   
-* Y♥{ DEs Ks Wops? DEs2 } = Y0♥(
-      (DEs Ks Wops? DEs2 void)
-      catch return Y.T x x
+* Y♥{ DEs Ks Wops? DEs2 } = (
+      Void x=Y0♥(DEs Ks Wops? DEs2 void)
+      catch return Y.onReturn x' x' //here onReturn can be \
       error void )//unreachable thanks to {return} well formedness   
     Y0=Y[onReturn=empty;onPath=classP]//and the value of onPath should never matter 
-    x fresh
+    x, x' fresh
 * Y♥e(.m)?[pars]= Y♥e.m?(squareBuilder:(if \.#shortCircutSquare() (
         b=\.#squareBuilder()     
         b.#add(par1) .. b.#add(parn)) //so \ and \x are about the builder

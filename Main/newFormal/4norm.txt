@@ -5,8 +5,8 @@ _______
     Ts0=p.minimize(p♥Ts)
     Ts'=Ts0,(collect(p,Ts0)\ Ts0) // this gets the transitively implemented interfaces (-Any)
     forall imm P in Ts'\ Ts0, P not of form Thisk._.C::n._ //private interfaces not added
-    MWTs=methods(p,This0)
-    ss=expandFields(CMs).ss    
+    MWTs=methods(p,This0) //all methods
+    ss=expandFields(CMs).ss //present methods
     MWT1..MWTn NC1..NCk=infer(p;MWTs\ss,[MWTs(s)| s in ss],[NC| NC in CMs])//NC of form CORE.NC
     Ps;Ps'=collectDeps(p;Ts') U collectDeps(p;MWT1..MWTn) U collectDeps(NC1.Docs..NCk.Docs)
     Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
@@ -15,8 +15,8 @@ _______
     Y[p;onSlash=empty,onReturn=Library,onPath=error]
     I=I[p;IMap=solve(p,PAccOf(p).CCz);G=empty;CCz;onSlash=empty]
 
-* infer(p,CoM1..CoMn)=I(p♥CoM1)..I(p♥CoMn)
-    PAcc=PAccOf(p).fixInfer(p♥CoM1..p♥CoMn)
+* infer(p,CoM1..CoMn)=I(CoM1)..I(CoMn)
+    PAcc=PAccOf(p).fixInfer(CoM1..CoMn)
     I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
 _______
 #define collectDeps(p;CORE.MWT)=Ps;Ps' collectDeps(p;T)=Ps;Ps' collectDeps(p;Doc)=Ps;Ps'
@@ -101,17 +101,20 @@ _______
 * mostSpecific(Tz) = T
     {T}={T| T in p.minimize(Tz) and p|-T<=Tz}
 _______
-#define I(HALF.M) = CORE.M,  I(HALF.e) = CORE.e
-* I(CORE.M) = CORE.M
-* I(MH = reuse[URL]? e) = MH =reuse[URL]? I[G=G^MH;onSlash=MH.T](e)
-
+#define I(CoM) = CORE.MWT/CORE.NC,  I(HALF.e) = CORE.e
+* I(CoM) = CoM if CoM of form CORE.MWT or CORE.NC
+* I(FULL.MH = reuse[URL]? CMP.e) = CORE.MH=reuse[URL]? CORE.e
+    CORE.MH=p♥FULL.MH
+    CORE.e=I(Y♥CMP.e)
+    Y=Y[p=p,onSlashX=empty,onReturn=CORE.MH.T,onPath=CORE.MH.T]
+    I[G=G^CORE.MH;onSlash=CORE.MH.T]
 * I(\) = I.onSlash.P //undefined if it is empty
 * I((Ds Ks e)) = (I[Ds](Ds) I[Ds]\dom(Ds)(Ks) I[Ds](e)) //not just I(Ks) since I[Ds] modifies I.IMap
 * I(P<:TX) = P<:iType(I,TX)
 * I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I1(e1) .. xn=In(en))
     P=I.IMap(I.G(xP)).P
     MWT=I.p(P)(m(x1..xn))
-    Ii=I[onSlash=MWT.pari[from P;I.p]]
+    Ii=I[onSlash=I.p♥MWT.pari[from P;I.p]]
 * I(xP0 OP..OP xPn)=I(e)
     Ti=I.IMap(I.G(xPi))
     PAcc[I.p;GX=empty;I.CCz].selectedOption(OP, T0..Tn, xPs)=PT,s,i

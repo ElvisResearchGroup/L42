@@ -18,15 +18,15 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitSlash(L42Parser.SlashContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42Parser#pathLit}.
+	 * Enter a parse tree produced by {@link L42Parser#pathSel}.
 	 * @param ctx the parse tree
 	 */
-	void enterPathLit(L42Parser.PathLitContext ctx);
+	void enterPathSel(L42Parser.PathSelContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42Parser#pathLit}.
+	 * Exit a parse tree produced by {@link L42Parser#pathSel}.
 	 * @param ctx the parse tree
 	 */
-	void exitPathLit(L42Parser.PathLitContext ctx);
+	void exitPathSel(L42Parser.PathSelContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#string}.
 	 * @param ctx the parse tree

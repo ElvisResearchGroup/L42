@@ -2,13 +2,13 @@ _______
 #define PAccOf(p)=PAcc
 * PAccOf(p)=PAcc[p;GX=empty;CCz=empty].fixInfer(CoMs1 .. CoMsk)
     k = max {k | p(Thisk) is defined }
-    p(Thisi)={Hi FULL.Msi FULL.Mi _}, where FULL.Mi not of form CORE.MWT or CORE.NC
-    CoMsi={CoM| CoM in FULL.Msi}[from Thisi;p]    
+    p(Thisi)={Hi FULL.Msi}//TODO: fix infer and PAccOf are broken?
+    CoMsi={FULL.MWT| FULL.MWT in FULL.Msi}[from Thisi;p]    
 _______
 #define PAcc.fixInfer(CoMs) = PAcc'
 * PAcc.fixInfer(CoM1..CoMn)=PAcc
     PAcc.add(CoM1).. .add(CoMn).CCz=PAcc.CCz
-* fixInfer(PAcc;CoM1..CoMn)=PAcc.add(CoM1).. .add(CoMn).collect().fixInfer(Ms)
+* PAcc.fixInfer(CoM1..CoMn)=PAcc.add(CoM1).. .add(CoMn).collect().fixInfer((CoM1..CoMn)
     otherwise
 _______
 #define PAcc.collect()=PAcc'
@@ -26,9 +26,9 @@ _______
 * mdf P <= PT in PAcc.collect()// since all classes are final
 	PT <= mdf P in PAcc
 	p(P).interface = empty 
-* T.s <= PT in PAcc.collect()//since they are alias of each other 
-    PT <= T.s in PAcc.collect().CCz //why noy simply in PAcc.CCz?
-    PT=PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]
+* T.s <= CORE.T in PAcc.collect()//since they are alias of each other 
+    CORE.T <= T.s in PAcc.collect().CCz //why noy simply in PAcc.CCz?
+    CORE.T=PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]//TODO: no, CORE.L(s) works but FULL.L(s) misses on FULL.F and on methods from interfaces. Should we use methods(..)?
 * T.s.i <= PT in PAcc.collect()//since method parameter types can not be refined (or since they are aliases?)
     PT <= T.s.i in PAcc.collect().CCz
     PT=PAcc.p(T.P)(s).MH.pari[from T.P;PAcc.p]
@@ -55,7 +55,11 @@ _______
 _______
 #define   PAcc.add(CoM) = PAcc'//assert never happens PAcc.add(C = FULL.L)
 * PAcc.add(FULL/CORE.MH) =PAcc
-* PAcc.add(/*FULL/CORE.*/MH /*CMP/CORE.*/e) = PAcc[G^MH].add(e:PT)[PT<=MH.T] //TODO:does work and extract useful info also on an untyped CORE.MWT?
+* PAcc.add(FULL/CORE.MH CMP/CORE.e) = PAcc[G^FULL/CORE.MH].add(HALF.e:PT)[PT<=FULL/CORE.MH.T]
+    HALF.e=Y♥CMP/CORE.e
+    CORE.MH=p♥FULL/CORE.MH
+    Y=Y[p=p,onSlashX=empty,onReturn=CORE.MH.T,onPath=CORE.MH.T]
+    //Note: I think the former lines extract useful info also on an untyped CORE.MWT
 * PAcc.add(C = CORE.L) = PAcc.add(CoM1).. .add(CoMn)
     CoM1..CoMn=CORE.L.CoMs[from This0.C;PAcc.p]
 _______

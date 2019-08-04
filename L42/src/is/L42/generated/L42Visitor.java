@@ -17,11 +17,11 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSlash(L42Parser.SlashContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42Parser#pathLit}.
+	 * Visit a parse tree produced by {@link L42Parser#pathSel}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPathLit(L42Parser.PathLitContext ctx);
+	T visitPathSel(L42Parser.PathSelContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#string}.
 	 * @param ctx the parse tree

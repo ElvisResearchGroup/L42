@@ -1,5 +1,7 @@
 package is.L42.tests;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import is.L42.tools.AtomicTest;
 import static is.L42.tests.TestHelpers.*;
@@ -41,7 +43,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("(@Foo @Bar A x=A x)","[|D(t(docdocP)x|P)x|]|")
    ),new AtomicTest(()->
    pass("(@Foo{some text like a comment @Bar.foo(} A x=A x)","[|D(t(docP)x|P)x|]|")
-   //here it justs stops PathLit at @Bar
+   //here it just stops pathSel at @Bar
    ),new AtomicTest(()->
    pass("(@Foo{some text like a comment @Bar.foo(x,y) and more text} A x=A x)","[|D(t(docP)x|P)x|]|")
    ),new AtomicTest(()->
@@ -172,7 +174,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("(\\ void)","[|D(\\)void|]|")
    ),new AtomicTest(()->
    pass("('hi() 'This 'Is.A 'Series.of() 'Path.lits(x).x and a slash \\ End.Here)",
-   "[|D(pathLit)D(pathLit)D(pathLit)D(pathLit)D(pathLit)D(x)D(x)D(x)D(\\)P|]|")
+   "[|D(pathSel)D(pathSel)D(pathSel)D(pathSel)D(pathSel)D(x)D(x)D(x)D(\\)P|]|")
    ),new AtomicTest(()->
    pass("bar<:Foo","xCast(|t(P))|")
    ),new AtomicTest(()->
@@ -214,6 +216,5 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void pass(String input,String output) {
   String res=parseStructure(parseWithException(input));
   assertEquals(output,res);
-
   }
 }
