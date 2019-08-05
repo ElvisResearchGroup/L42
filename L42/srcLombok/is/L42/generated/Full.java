@@ -45,9 +45,9 @@ public class Full {
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
   EPathSel implements Leaf{Pos pos; PathSel inner;public String toString() {return inner.toString();}}
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
-  EUoP implements Wrapper{Pos pos; boolean isBang;E inner;}//else is tilde
-
-   //Uop e| e0 OP .. OP en 
+  UoP implements Wrapper{Pos pos; Op _op;String _num;E inner;}//either _op or _num ==null
+  @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
+  BinOp implements E{Pos pos; Op op;List<E> es;}
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
   Cast implements Wrapper{Pos pos; E inner; T type;}
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
@@ -65,7 +65,7 @@ public class Full {
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
   Throw implements Wrapper{Pos pos; E inner;}
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
-  OpUpdate implements Wrapper{Pos pos; X x; E inner;}
+  OpUpdate implements Wrapper{Pos pos; X x; Op op; E inner;}
   @EqualsAndHashCode(exclude={"pos"})@ToString(exclude={"pos"})@Value @Wither public static class 
   If implements E{Pos pos; E _condition; List<D> matches; E inner; E _else;}
   //---

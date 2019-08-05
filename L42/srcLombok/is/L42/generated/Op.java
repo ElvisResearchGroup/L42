@@ -4,65 +4,72 @@ import lombok.experimental.Wither;
 
 
  public static enum Op {
-  Tilde("~", OpKind.Unary, false, null),//
-  Bang("!", OpKind.Unary, false, null),//
-  
-  EqualGT("=>", OpKind.BoolOp, true,false),//
-  AndAnd("&&", OpKind.BoolOp, true,false),//
-  OrOr("||", OpKind.BoolOp, true,false),//
+  Tilde("~", OpKind.Unary),//
+  Bang("!", OpKind.Unary),//
 
-   OP2 ::= == | < | > | >= | <= | in | != // unassiociative
-  EqualEqual("==", OpKind.RelationalOp, false, null),//
-  BangEqual("!=",OpKind.RelationalOp, false, null),//
-  LT("<", OpKind.RelationalOp, false, null),//
-  GT(">",OpKind.RelationalOp, false, null),//
-  GTEqual(">=", OpKind.RelationalOp, false, null),//
-  LTEqual("<=", OpKind.RelationalOp, false, null),//
-//HERE: I should decide; is 'in' an operator? is !> a thing?
-// should I allow both | and ||?
+  EqualGT("=>", OpKind.BoolOp),//
+  AndAnd("&&", OpKind.BoolOp),//
+  OrOr("||", OpKind.BoolOp),//
+  EqualEqual("==", OpKind.RelationalOp),//
+  LT("<", OpKind.RelationalOp),//
+  GT(">",OpKind.RelationalOp),//
+  GTEqual(">=", OpKind.RelationalOp),//
+  LTEqual("<=", OpKind.RelationalOp),//
+  In("in", OpKind.RelationalOp),//
+  BangEqual("!=",OpKind.RelationalOp),//
 
-  LTLT("<<", OpKind.RelationalOp, false, false,false),//
-  GTGT(">>",OpKind.RelationalOp, true, false,false),//
-  LTLTEqual("<<=",OpKind.RelationalOp,false,true,false),//
-  GTGTEqual(">>=",OpKind.RelationalOp,true,true,false),//
+  Plus("+",OpKind.DataLeftOp),//
+  Minus("-",OpKind.DataLeftOp),//
+  Times("*",OpKind.DataLeftOp),//
+  Divide("/",OpKind.DataLeftOp),//
+  GTGT(">>",OpKind.DataLeftOp),//
+  MinusGT("->",OpKind.DataLeftOp),//
 
-  OP1 ::= + | - | * | / | >> | -> // left associative   
-  OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
+  Hat("^",OpKind.DataRightOp),//
+  Colon(":",OpKind.DataRightOp),//
+  LTMinus("<-",OpKind.DataRightOp),//
+  LTLT("<<", OpKind.DataRightOp),//
+  PlusPlus("++",OpKind.DataRightOp),//
+  MinusMinus("--",OpKind.DataRightOp),//
+  TimesTimes("**",OpKind.DataRightOp),//
 
-  And("&", OpKind.BoolOp, true,true,false),//
-  Or("|", OpKind.BoolOp, true, true,false),//
-
-
-
-  Plus("+", OpKind.DataOp, true, true,false),//
-  Minus("-", OpKind.DataOp, true,true,false),//
-  Times("*", OpKind.DataOp, true, true,false),//
-  Divide("/", OpKind.DataOp,true, true,false),//
-  PlusPlus("++",OpKind.DataOp, true, false,false),//
-  MinusMinus("--",OpKind.DataOp, true, false,false),//
-  TimesTimes("**",OpKind.DataOp, true,false,false),//
-  BabelFishL("<><",OpKind.DataOp, true,false,false),//
-  BabelFishR("><>",OpKind.DataOp, false,false,false),//
-
-  PlusEqual("+=", OpKind.EqOp,true, true,false),//
-  MinusEqual("-=",OpKind.EqOp, true,true,false),//
-  TimesEqual("*=",OpKind.EqOp,true,true,false),//
-  DivideEqual("/=",OpKind.EqOp,true,true,false),//
-  AndEqual("&=",OpKind.EqOp,true,true,false),//
-  OrEqual("|=",OpKind.EqOp,true,true,false),//
-  PlusPlusEqual("++=",OpKind.EqOp,true,true,false),//
-  MinusMinusEqual("--=",OpKind.EqOp,true,true,false),//
-  TimesTimesEqual("**=",OpKind.EqOp,true,true,false),//
-  ColonEqual(":=",OpKind.EqOp,true,true,false),//
-  BabelFishLEqual("<><=",OpKind.EqOp, true,false,false),//
-  BabelFishREqual("><>=",OpKind.EqOp, true,false,false);//
+  ColonEqual(":=",OpKind.OpUpdate),//
+  HatEqual("^=",OpKind.OpUpdate),//
+  LTMinusEqual("<-=",OpKind.OpUpdate),//
+  LTLTEqual("<<=",OpKind.OpUpdate),//
+  PlusEqual("+=",OpKind.OpUpdate),//
+  MinusEqual("-=",OpKind.OpUpdate),//
+  TimesEqual("*=",OpKind.OpUpdate),//
+  DivideEqual("/=",OpKind.OpUpdate),//
+  PlusPlusEqual("++=",OpKind.OpUpdate),//
+  MinusMinusEqual("--=",OpKind.OpUpdate),//
+  TimesTimesEqual("**=",OpKind.OpUpdate),//
+  GTGTEqual(">>=",OpKind.OpUpdate),//
+  MinusGTEqual("->=",OpKind.OpUpdate);//
 
   public final String inner;
   public final OpKind kind;
   public final boolean shortCircuted;// false for <<,<, <=,<<=,><> etc
   public final Boolean leftAssociative;// false for ++ << >> ** ==
-  public static enum OpKind {Unary, BoolOp, RelationalOp, DataOp, EqOp}
-  Op(String inner, OpKind kind, boolean shorCircuted, Boolean leftAssociative) {
+  public static enum OpKind {
+    Unary(false,null),
+    BoolOp(true,false),
+    RelationalOp(false,null),
+    DataLeftOp(false,true),
+    DataRightOp(false,false),
+    OpUpdate(false,null);
+    public final boolean shortCircuted;
+    public final Boolean leftAssociative;
+    public boolean isShortCircuted(){return shortCircuted;}
+    public boolean isLeftAssociative(){return leftAssociative==Boolean.TRUE;}
+    public boolean isRightAssociative(){return leftAssociative==Boolean.FALSE;}
+    public boolean isUnassociative(){return leftAssociative==null;}
+    OpKind(boolean shortCircuted,Boolean leftAssociative) {
+      this.shorCircuted = shorCircuted;
+      this.leftAssociative = leftAssociative;
+      }
+    }
+  Op(String inner, OpKind kind, Boolean leftAssociative) {
    this.inner = inner;
    this.kind = kind;
    this.shorCircuted = shorCircuted;

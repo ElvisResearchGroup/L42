@@ -152,7 +152,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{hey, I can write stuff here}})","[|{|Header(|)info|}|]|")
    ),new AtomicTest(()->
-   pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(t(docP)x)info|}|]|")
+   pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(doct(P)x)info|}|]|")
+   ),new AtomicTest(()->
+   pass("({mut @Bar T f })","[|{|Header()FullF(t(|docP)x)|}|]|")
 
    ),new AtomicTest(()->
    pass("{interface mut@Foo Bar fName}","{|Header(|)FullF(t(|docP)x)|}|")
@@ -194,9 +196,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
    pass("a+b&&c","<<x|x>|x>|")
   ),new AtomicTest(()->
-   pass("a+b&&c&d","<<x|x>|<x|x>>|")
+   pass("a+b&&c:d","<<x|x>|<x|x>>|")
   ),new AtomicTest(()->
-   pass("a+b&c&&d","<<x|<x|x>>|x>|")
+   pass("a+b:c&&d","<<x|<x|x>>|x>|")
+  ),new AtomicTest(()->
+   pass("a in b && c>=d","<<x|x>|<x|x>>|")
+  ),new AtomicTest(()->
+   pass("for a in b in c x in y Foo()","SFor(|x|<x|x>x|xPFCall(||))|")
   ),new AtomicTest(()->
    pass("if a<=0N Debug(S\"hi\")","SIf(|<x||P>PFCall(|P||))|")
   ),new AtomicTest(()->

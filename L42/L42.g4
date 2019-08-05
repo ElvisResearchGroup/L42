@@ -2,11 +2,11 @@ grammar L42;
 @header {package is.L42.generated;}
 CastOp: '<:';
 Uop: '!' | '~';
-OP0: '^' | ':' | '<-' | '<<' | '&' | '|'; // right associative
-OP1: '+' | '-' | '*' | '/' | '++' | '--' | '**' | '>>' | '->'; // left associative 
-OP2: '==' | '!=' | '<' | '>' | '>=' | '<='; // unassiociative
+OP0: '^' | ':' | '<-' | '<<' | '++' | '--' | '**'; // right associative
+OP1: '+' | '-' | '*' | '/'  | '>>' | '->'; // left associative 
+OP2: '==' | '<' | '>' | '>=' | '<=' | '!='; // unassiociative //InKw need to be added in the usage sites
 OP3: '=>' | '&&' | '||'; // right associative, will be short circuting
-OpUpdate: ':=' | '^=' | '<-=' | '<<=' | '&=' | '|=' | '+=' | '-=' | '*=' | '/=' | '++=' | '--=' | '**=' | '>>=' | '->=';
+OpUpdate: ':=' | '^=' | '<-=' | '<<=' | '+=' | '-=' | '*=' | '/=' | '++=' | '--=' | '**=' | '>>=' | '->=';
 Mdf: 'fwd mut' | 'fwd imm' |'imm' | 'mut' | 'lent' | 'read' | 'capsule' | 'class';
 VoidKW:'void';
 VarKw:'var';
@@ -103,7 +103,7 @@ eUnary: (Uop|Number)* ePostfix;
 
 eBinary0: eUnary (OP0 eUnary)*;
 eBinary1: eBinary0 (OP1 eBinary0)*; //left associative, all op the same
-eBinary2: eBinary1 (OP2 eBinary1)*; //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
+eBinary2: eBinary1 ((OP2|InKw) eBinary1)*; //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
 eBinary3: eBinary2 (OP3 eBinary2)*; //left associative, all op the same
 statement: sIf | sWhile | sFor | sLoop | sThrow | sUpdate;
 sIf: IfKw e e (ElseKw e)? | IfKw match+ e;

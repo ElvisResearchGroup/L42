@@ -141,7 +141,7 @@ _______
   OP2 ::= == | < | > | >= | <= | in | !=  // unassiociative
   OP3 ::= => | && | '||' // right associative, will be short circuting
   OP  ::= OP0 | OP1 | OP2 | OP3 
-  opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= 
+  opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= //allowing OP3 could be done as an extension, is might interact with short circuit
   Cs ::=C(.C)*
   CMP/FULL/CORE.Doc ::= @PathSel | @PathSel?{docText}
   CMP/FULL.PathSel::= CsP | (CsP.)? s(.x)?
