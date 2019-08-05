@@ -1,0 +1,149 @@
+\section{Introduction}
+\label{s:intro}
+%\newpage
+%\LINE
+Class invariants are
+a useful concept when reasoning about software correctness in OO (object oriented) languages, and are predicates on the state of an object and its ROG (reachable object graph).
+They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
+In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@.
+We say that an object's invariant holds when its \Q@invariant@ method would return \Q@true@. 
+We do this, like Dafny~\cite{DBLP:conf/sigada/Leino12}, to minimise special syntactic and type-system treatment of invariants.%, making them easier to understand for users, whereas most other approaches treat invariants as a special annotation with its own syntax.
+
+Class invariants are designed to hold in most moments, but they can be (temporarily) broken and observed broken.
+%An \emph{invariant protocol}~\cite{FlexibleInvariants} specifies when invariants need to be checked, and when they can be assumed; if such checks guarantee said assumptions, the protocol is sound.
+The two main sound invariant protocols present in literature are \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Boogie/Pack-Unpack methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
+In the visible state semantics, they can be broken when a method on the object is active (that is, one of the object methods is currently in execution somewhere in the stack trace).
+Some interpretations of the visible state semantic are more permissive, requiring the invariants of receivers to hold before and after every public method call, and after constructors. 
+In pack-unpack, objects can be either packed or unpacked, and only the invariant of unpacked objects can be broken.
+
+
+
+%Object-oriented programming languages provide great flexibility through subtyping and dynamic dispatch: they
+%allow code to be adapted and specialised to behave differently in different contexts.
+%%%, which is made even more complex by dynamic class loading (supported by many mainstream OO languages).
+%However this flexibility hampers code reasoning, since OO languages typically support nearly unrestricted use of exceptions,
+%memory mutation, object aliasing, and I/O.
+
+%------------
+In this paper we propose a much stricter invariant protocol: the invariant of every observable object must hold. We formally define \emph{observable} later in the paper, but for example it requires that
+ at the point of a method call, say \Q@a.foo(b)@,
+the invariant of all the objects in the ROG of the receiver and all
+the arguments (\Q@a@ and \Q@b@) must hold.
+%In a pure OO context where every operation is mediated by a method
+%call, including object creation, field access and field update on
+%'this', this intuition covers near every case of where 
+
+Note that this is much stronger than just saying that the invariant
+should hold every time an object is actually observed (for example,
+every time a field is accessed).
+This is still more flexible that Refinement types~\cite{?}: 
+objects that are not visible in scope can be be broken;
+this of course includes objects ready for garbage collections.
+
+This stricter invariant protocol would clearly support easier reasoning; however 
+at a first glance it may look too restrictive, preventing us to express useful program behaviour.
+Consider the iconic example of a \Q@Range@ class, with a \Q@min@ and \Q@max@
+value, where the invariant requires that \Q@min<=max@.
+%We assume to be in a language where field declaration induces getters and setters.
+%We also assume a static factory method taking the fields as parameters and initializing a new object.
+\begin{lstlisting}
+class Range{
+  Int min; Int max;//assumed getters and setters
+  method Bool invariant(){return min<max;}
+  method Void set(Int min; Int max){
+    if(min>=max){return;}
+    this.min(min);//setters for min/max
+    this.max(max);
+    }
+  }
+\end{lstlisting}
+Under the visible state semantic, this code of \Q@set($\_$,$\_$)@ is ok:
+\Q@min($\_$)@ may temporarily break the invariant, that is fixed the moment
+after by \Q@max($\_$)@. It is ok to break the invariant in that point, since
+we are inside the method \Q@set($\_$,$\_$)@ of Range; thus there is an active method.
+However, under our stricter approach, we consider this code to be wrong. The moment
+\Q@this.max(max)@ is called, the invariant of \Q@this@ may be broken, and
+the invariant of an observable object can never be broken.
+
+However, we can easily adapt this code and provide a correct modified
+\Q@Range@ class with the desired client interface:
+\begin{lstlisting}
+class BoxRange{//no invariant in BoxRange
+  Int min; Int max;//assumed getters and setters
+  BoxRange(Int min,Int max){this.min=min;this.max=max;}
+  method Void set(Int min; Int max){
+    if(min>=max){return;}
+    this.min(min); this.max(max);
+    }
+  }
+class Range{ BoxRange box;
+  static mehtod Range of(Int min,Int max){
+    return new Range(new BoxRange(min,max));
+    } //factory of BoxRange
+  method Bool invariant(){return min<max;}
+  method Void set(Int min; Int max){
+    return this.box().set(min,max);
+    }
+  }
+\end{lstlisting}
+Now, the code of \Q@Range.set($\_$,$\_$)@ is correct:
+  since \Q@this@ $\notin \mathit{ROG}($\Q@this.box()@$)$, the call
+\Q@BoxRange.set($\_$,$\_$)@ works in an environment where the \Q@Range@ object is
+not observable, thus its invariant can be temporarily broken.
+
+The former example is an illustration of the \emph{box pattern}.\footnote{
+This pattern is obvious enough that we do not wish to claim it as a contribution of our work,
+but we are unable to find it referenced with a specific name in literature. Technically speaking, it is a simplification of the Decorator, but with a different goal in mind.}
+
+While in very specific situations the overhead of creating such additional box object may be unacceptable, 
+we designed our work for environments where such fine performance differences are negligible.\footnote{
+Also, many VMs and compilers allows optimizing away wrapper objects in many circumstances.\cite{help}}
+
+In the reminder of this work, we discuss how to combine runtime
+checks, object capabilities  and
+reference capabilities to create a convenient language where our
+strict invariant protocol can
+be soundly enforced; even in the presence of mutations, I/O, non
+determinism and exceptions, all under the open world assumption, when
+we only need to assume that all code is well typed.
+
+
+\subheading{Summary of our contributions}
+We have fully implemented our protocol in L42\footnote{
+Our implementation does not actually extend the core L42 language, but is implemented a meta-programming operation that
+checks that a given class conforms to our protocol, and injects invariant checks in the appropriate places.
+A suitably anonymised, experimental version of L42, supporting the protocol described in this paper, together with the full code of our case studies, is available at \url{http://l42.is/InvariantArtifact.zip}. We also believe it would be easy to implement our protocol in Pony and Gordon \etal's language.}, we used this implementation to implement and test an interactive GUI involving a class with an invariant. On a test case with $5$ objects with an invariant, 
+our protocol performed only $77$ invariant checks, whereas the visible state semantic invariant protocols of D and Eiffel perform $53$ and $14$ million checks (respectively). See Section \ref{s:case-study} for an explanation of these result.
+% \MS{The difference between D and Eiffel is an effect of Eiffel's `uniform access principle', where fields can be used to implements `interface methods', while not triggering invariant checks.}
+We also compared with Spec\#, whose invariant protocol performs the same number of checks as ours, however the annotation burden was almost $4$ times higher than ours.
+%In contrast, the pack/unpack methodology marks all objects as either \emph{packed} or \emph{unpacked}, where a packed object is one whose invariant is expected to hold.
+In pack/unpack, an object's invariant is checked only by the pack operation.
+In order for this to be sound, some form of aliasing and/or mutation control is necessary. For example, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}, which follows the pack/unpack methodology, uses a theorem prover, together with source code annotations.
+While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
+at runtime, whilst statically verifying aliasing, purity and other similar standard properties.
+This allows us to closely compare our approach with Spec\#.
+Since a case study composed by a single program is not very compelling, in the appendix we present many more case studies.
+
+
+In this paper we argue that our protocol is not only more succinct than the pack/unpack approach, but is also easier and safer to use.
+Moreover, our approach deals with more scenarios than most prior work: we allow sound catching of invariant failures and also carefully handle non-deterministic operations like I/O.
+%In our case study we show that
+%we can still encode most of the examples explored in ~\cite{???} (including for example mutable collections of immutable objects) whilst having a significantly lower annotation-burden.
+Section \ref{s:TMsAndOCs} explains the pre-existing \emph{type modifier} features we use for this work.
+Section \ref{s:protocol} explains the details of our invariant protocol, and Section \ref{s:formalism} formalises a language enforcing this protocol.
+Sections \ref{s:immutable} and \ref{s:encapsulated} explain and motivate how our protocol can handle invariants over immutable and encapsulated mutable data, respectively.
+Section \ref{s:case-study} presents our GUI case study and compares it against visible state semantics and Spec\#: they performed 5 orders of magnitude more invariant checks, and required 60\% more annotations, respectively.
+Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
+
+Appendix \ref{s:proof} provides a proof that our invariant protocol is sound.  In
+Appendix~\ref{s:hamster} we explore in the detail another case study, and we explains exactly why the 
+Spec\# encoding of those examples is so verbose.
+Appendix~\ref{s:MoreCaseStudies}, we designed a worst case scenario for our invariant protocol, where Spec\# 
+performed four times less invariant checks,
+ while D and Eiffel performed only twice as many.
+In Appendix~\ref{s:MoreCaseStudies} we also compare with examples from others work on Spec\# ~\cite{DBLP:journals/jot/BarnettDFLS04,leino2004object,DBLP:conf/mpc/BarnettN04}; we show why we cannot encode some of their examples: namely when state that an object's invariant depends on can be directly modified by other objects.
+At first glance, our approach may feel very restrictive; in Appendix~\ref{s:patterns}, we show
+programming patterns demonstrating that these restrictions do not significantly hamper expressiveness, in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around. In Appendix \ref{s:runtime-verification}, we discuss more related work on runtime verification.
+%you see this already later on... I wanted to avoid repating it
+%to perform batch operations with a single invariant check, as well as how the state of `broken' objects can be passed around.}	
+%http://www.cs.cmu.edu/~NatProg/papers/p496-coblenz-Glacier-ICSE-2017.pdf
