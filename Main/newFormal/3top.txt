@@ -73,7 +73,7 @@ _______
 * coherent(p;_;capsule method T #sx::n?(_)_;_,x;n?)
     p |- imm Void <= T //capsule methods are guaranteed to trash the object anywhay...they are also dead code
 * coherent(p;MHs;mdf method mdf' P' #sx::n?()_;_,x;n?)
-    mdf in {imm, mut, capsule, lent, read}//that is not in {class, fwd mut, fwd imm}
+    mdf != class
     forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
     coherentGetMdf(mdf',mdf,
       fieldTypes(MHs,x, mdf).mdfs,
@@ -81,7 +81,7 @@ _______
 _______
 #define mdf canAlsoBe mdf'    fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
 * capsule canAlsoBe mdf, with mdf != class
-* mut canAlsoBe mdf, with mdf != class
+* mut canAlsoBe mdf, with mdf != class//TODO: either delete mentions of "fwd" or make it defined on all mdfs for the LHS
 * lent canAlsoBe mdf, with mdf in {mut,lent, read, fwd mut}
 * read canAlsoBe mdf, with mdf in {read,imm, fwd imm}
 * imm canAlsoBe mdf, with mdf in {read,imm, fwd imm} //is ok that canAlsoBe is undefined on fwd _ and class
@@ -95,9 +95,8 @@ _______
 
 * mdf" in fieldAccessMdf(MHs, x, mdf)
     mdf' method mdf" P #sx::n?() in MHs
-    mdf' != capsule or mdf" = class // TODO: is the check 'or mdf" = class' needed r not? 
+    mdf' != capsule or mdf" = class // TODO: is the check 'or mdf" = class' needed or not? 
     mdf' canAlsoBe mdf // capsule getters ok on anything but class: another getter can never be called
-    
     
 // Note: coherentGetMdf(getterReturnMdf, receiverMdf, fieldTypeMdfs, fieldAccessMdfs)//valueMdf, getterMdf, inMdfs, outMdfs
 // Means that the value of a field accesed on a receiverMdf reference can safetly be used as a getterReturnMdf, iff its value came from a fieldTypeMdfs reference (through either a factory or setter), and since then, its value may have previousesly been accesed as a fieldAccessMdfs reference.
