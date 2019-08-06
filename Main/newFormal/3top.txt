@@ -10,8 +10,14 @@ _______
     FV(CORE.e)=empty //not implied by typing: FV check capsules used 1 or 0
     Q=Q[Flag=norm;MH?=empty;p;G=empty;Ts=empty;Ps=Any]
     Q|- CORE.e :T
-    coherentClasses(p,CORE.e)
+    coherentClasses(p,CORE.e) // ISAAC: did you mean coherent(p, CORE.e)?
     empty|adapt(CORE.e,T.P) -->p+ _|r
+    // ISAAC: is the intention that the following should work?
+    // 		{Foo = (Debug(S"Hello") Any x = {} x)}
+    // Because based on this definition it does (it will produce {Foo={}}
+    // If the intention is that it produces a type-error, and never prints "hello", (as I would expect), you should do a check here:
+    // 	T.P in {Library, Void}, or Q |- (CORE.e).#toLibrary() : mdf Library
+
     CORE.L= refreshUniqueNames(r) //fails if r not of form CORE.L, lifted as compilation error
 * {H CMs C=ctxC[LL] FULL.Ms};pTail ==> p.pop(1)   //(enter)
     LL not of form CORE.L
@@ -26,8 +32,8 @@ _______
 #define flagTyped(p)=p'    LL[Csz=Flag]=LL'
 * flagTyped(p) = p.update( p(This0)[typable(p)=typed] )
     forall Cs in typable(p):  |-p.navigate(This0.Cs)
-   
-* LL[Cs Csz = Flag]=LL[Cs.Info.Flag=Flag][Csz=Flag]
+
+* LL[Cs Csz = Flag]=LL[Cs.Info.Flag=Flag][Csz=Flag] // ISAAC: is LL[Cs.Info.Flag=Flag] defined anywhere? Or should I just use common sense to work out what it means?
 * LL[empty=Flag]=LL
 _______
 #define typable(p)=Csz
@@ -40,6 +46,7 @@ _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
     forall P<:class P' inside e: //assert p(P) and p(P') is CORE.L
+    // ISAAC: what does the P<: thing mean?
       either P'=Any
       or coherent(p.navigate(P))
 
@@ -48,6 +55,10 @@ _______
     MHs={MH | MH in CORE.L.MWTs} //thus, abstract
     either CORE.L.interface?=interface
     or class not in MHs.mdfs//no abstract class method
+		// ISAAC: the above is broken since "fwd" methods could still be called, e.g.
+		// C={fwd imm method Void foo()}
+		// X={class method X a(fwd imm C f) class method X b(fwd imm C f)=(f.foo(), a(f))}
+		// Z=(X myX=X.b(f: myC) C myC=error void)
     or exists xz  and n? such that:
       forall MH in MHs, coherent(p;MHs;MH;xz;n?)
       
@@ -58,16 +69,19 @@ _______
     T.mdf not in {class, fwd mut, fwd imm}
     if T.mdf in {imm, capsule} then mdfs subseteq {imm, fwd imm, capsule, class}
     if read or lent in mdfs then T.mdf in {read, lent}
-    if !trustedClass(p(This0)) then m is of form #$m
+    if !trustedClass(p(This0)) then m is of form #$m // ISAAC: did you mean trusted?
+    // ISAAC: I will check that this capability stuff is correct latter...
 * coherent(p;MHs;mdf' method T m::n?(_)_;_;n?) //by well formedness if n is present is the same, but it may be absent.
-    forall class method mdf _(_)_ in MHs:  !mdf canAlsoBe mdf'
+    forall class method mdf _(_)_ in MHs:  !(mdf canAlsoBe mdf')
 * coherent(p;_;mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
+	// ISAAC: why not allow multiple #'s?
     p |- imm Void <= T
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
     mdf in {lent, mut}
     if mdf = lent then mdf' != mut
-* coherent(p;_;capsule method T #?x::n?(mdf' P' that)_;_,x;n?)
-    p |- imm Void <= T //capsule setters are guaranteed to trash the object anywhay... they are also dead code
+* coherent(p;_;capsule method T #?x::n?(_)_;_,x;n?)
+    p |- imm Void <= T //capsule methods are guaranteed to trash the object anywhay...
+    // So as long as we can synthesise a return value, the rest of the method is irrevelent
 * coherent(p;MHs;mdf method mdf' P' #?x::n?()_;_,x;n?)
     mdf in {imm, mut, capsule, lent, read}//that is not in {class, fwd mut, fwd imm}
     forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
@@ -76,24 +90,28 @@ _______
       fieldAccessMdf(MHs,x, mdf))
 _______
 #define mdf canAlsoBe mdf'    fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
-* capsule canAlsoBe mdf, with mdf in {capsule,mut,lent, read, imm, fwd imm, fwd mut}
-* mut canAlsoBe mdf, with mdf in {mut,lent, read,imm,capsule, fwd imm, fwd mut}
+* capsule canAlsoBe mdf, with mdf != class
+* mut canAlsoBe mdf, with mdf != class
 * lent canAlsoBe mdf, with mdf in {mut,lent, read, fwd mut}
 * read canAlsoBe mdf, with mdf in {read,imm, fwd imm}
 * imm canAlsoBe mdf, with mdf in {read,imm, fwd imm} //is ok that canAlsoBe is undefined on fwd _ and class
+// Note that coherentGetMdf(mdf', _, {mdf, _}, _) implies mdf canAlsoBe mdf', but the converse does not hold (for example, lent canAlsoBe mut, but a lent field can never be read out as a mut.
 
 * T in fieldTypes(MHs, x, mdf)
     either class method mdf' _(_ T x _)_ in MHs
     or mdf' method _ #?x::n?(T that)_ in MHs
     mdf' != capsule //capsule setters are dead code
     mdf' canAlsoBe mdf
-    
+
 * mdf" in fieldAccessMdf(MHs, x, mdf)
     mdf' method mdf" P #?x::n?() in MHs
-    mdf' != capsule or mdf" = class//capsule getters can always return any mdf except class
+    mdf' != capsule // We don't care about capsule getters, since another getter can never be called
     mdf' canAlsoBe mdf
-
-* coherentGetMdf(class,_,{class},_)//valueMdf, getterMdf, inMdfs, outMdfs
+    
+    
+// Note: coherentGetMdf(getterReturnMdf, receiverMdf, fieldTypeMdfs, fieldAccessMdfs)
+// Means that the value of a field accesed on a receiverMdf reference can safetly be used as a getterReturnMdf, iff its value came from a fieldTypeMdfs reference (through either a factory or setter), and since then, its value may have previousesly been accesed as a fieldAccessMdfs reference.
+* coherentGetMdf(class,_,{class},_)
 * coherentGetMdf(read, _, mdfs0,_)
     class not in mdfs0
 * coherentGetMdf(imm,imm, mdfs0,_)
