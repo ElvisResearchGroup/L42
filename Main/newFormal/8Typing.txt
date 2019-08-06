@@ -1,3 +1,4 @@
+//TODO: check if it is still important that Q contains the MH?
 _______
 #define Q |-e: T<=T 
 * Q |- void : imm Void <= T //(void)
@@ -46,19 +47,19 @@ _______
 
 * Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)
     Flag; p; G; Ts; Ps |- Ks : Ts'' <= T' |Ts';Ps'
-    G'=toRead(G/dom(ds)) if error in Ks.throws
-    G'=G/dom(ds) otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
+    G'=toRead(G/dom(Ds)) if error in Ks.throws
+    G'=G/dom(Ds) otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
     Flag; p; G'[ks]; Ts U Ts'; Ps U Ps' |- Ds | G0
-    //here we have the info to capture a failure about ds and discover if
+    //here we have the info to capture a failure about Ds and discover if
     //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
     //was locked by error safety[cite the line number of the catch] 
     Flag; p; G',(G0\dom(G')); Ts; Ps |- e0 : T0 <=T'
     T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //set of Mdfs admits no single most general mdf
     // assert Q.p|-T <= T'
-_______//TODO: rename all ds in Ds
-#define Q |- ds | G0 // The resulting G0 is the enriched G containing info about ds too.
-* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  ds | G3  //(ds)
-    dom(ds) disjoint FV(e0..en)//here taking a ds in input, we keep the order. Is this needed/can it be more expressive
+_______
+#define Q |- Ds | G0 // The resulting G0 is the enriched G containing info about Ds too.
+* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
+    dom(Ds) disjoint FV(e0..en)//here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
     for i in 0..n: Flag; p; G'; Ts; Ps|-ei : T'i <= fwd% Ti
@@ -67,8 +68,8 @@ _______//TODO: rename all ds in Ds
     if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
       then G2=G0[fwd%(x0:T0..xn:Tn)]
       otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
-    Flag; p; G2; Ts; Ps|- ds | G3
-* Q |- empty | Q.G //(dsEmpty)
+    Flag; p; G2; Ts; Ps|- Ds | G3
+* Q |- empty | Q.G //(DsEmpty)
 _______
 #define Q |-k1..kn : T1..Tn <= T | Ts;Ps   Q |-k : T' <= T |Ts;Ps
 * Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
@@ -86,8 +87,8 @@ _______
    forall M in p(This0).Ms:  p |- M
 * p |- C=L  //(member nested)
    |-p.push(C)
+   if C of form _::n then coherent(p.push(C)) //an incoherent private class would be bad
 * p|-MWT //(member method)
-    //using MH.Ts to give the arguments(with or without this?) or the exceptions? 
     Q = Q[typed; MWT.MH; p; G^MWT; empty; MWT.exceptions.Ps]
     if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
     MHs={MH[from P;p] | p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract

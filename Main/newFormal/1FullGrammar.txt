@@ -134,7 +134,7 @@ _______
   IdChar ::= <a-z> |<A-Z> | $ | _ | <0-9>
   n ::= 0 | <1-9> <0-9>*
   x ::=IdLow IdChars
-  m ::= (#|#$)?x(#x)* (::n)?
+  m ::= (#$ |#+)? x(#x)* (::n)?
   Uop ::= ! | ~ | Number  // prefix
   OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
   OP1 ::= + | - | * | / | >> | -> // left associative   
