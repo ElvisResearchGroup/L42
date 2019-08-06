@@ -2,24 +2,25 @@ _______
 #define p(P)=LL //functional notation
 * (LL;pTails)(This0.Cs)=LL(Cs)
 * p(Thisn+1.Cs)=p.pop(n+1)(This0.Cs)
-* p(Any)={interface[]}
-* p(Void)=p(Library)={[]}
+* p(Any)={interface}
+* p(Void)=p(Library)={}
 _______
 #define p.pop(n)= p'
 * p.pop(0)=p
-* (LL;FULL/CORE.ctxL;pTails).pop(n+1)=(ctxL[LL];pTails).pop(n)
+* (LL;FULL/CORE.ctxL;pTails).pop(n+1)=(ctxL[LL];pTails).pop(n) // ISAAC: define ctxLL ::= FULL.ctxL | CORE.ctxL, and then use that...
 * (LL;CORE.L;pTails).pop(n+1)=(CORE.L;pTails).pop(n)
 _______
 #define p.push(C)=p'    p.push(LL)
-* (FULL/CORE.ctxL[LL];pTails).push(C)=LL;FULL/CORE.ctxL;pTails 
+* (FULL/CORE.ctxL[LL];pTails).push(C)=LL;FULL/CORE.ctxL,pTails 
     FULL/CORE.ctxL(C)=[]
 
-* (LL0;pTails).push(LL1) = LL1;LL0;pTails    
+* (LL0;pTails).push(LL1) = LL1;LL0,pTails    
 _______
 #define p.update(LL)=p'
 * (_;pTails).update(LL) = LL;pTails
 _______
-#define p.minimize(P)=P'   p.reducePath(P)=P' //assert defined only if p(This0) of form C/CORE.L
+#define p.minimize(P)=P'   p.reducePath(P)=P' //assert defined only if p(This0) of form C/CORE.L // ISAAC: why would p(This0) be a C?
+// ISAAC: where is reducePath defined?
 * p.minimize(P) = P
     P in {Any,Void,Library}
 * p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
@@ -27,6 +28,8 @@ _______
 * (CORE.L;FULL/CORE.ctxL;_).minimize(This1.C.Cs)=This0.Cs
     FULL/CORE.ctxL(C) of form FULL.ctxC or CORE.ctx //Note:ctxL(C)=[] would be more restrictive, for example
    //preventing A:Data<><{method A (..)} to be summed with a constructor returning This0.
+   //ISAAC: What about A:Rename("This", into: "B")<><Sum[{This1.A f}]<><{This0 f}
+   // Now the "This0" on the RHS is actually going to be "This0.B" not A.
 _______
 #define p.navigate(P)=p'
 * p.navigate(Thisn.C1..Ck)=p.pop(n).push(C1)...push(Ck)
@@ -36,28 +39,28 @@ _______
 * Thisn.Cs[from Thism.C1..Ck;p]=p.minimize(This(m+n-k).Cs) if n>k
 * Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
 
-* e[from P;p] propagate on the structure, and L[from P;p] = L[ from P;p;0]
+* e[from P;p] propagate on the structure, and L[from P;p] = L[ from P;p;0] // ISAAC: assert that the top of p.push(L[from P;p]) is fully minimized (or should it be p.updateTop(L[from P; p])?)
 
 * {H Ms}[from P;p;j] = {H[Ts=H.Ts[from P;p;j+1] Ms[from P;p;j+1]}
-* This(j+n).Cs0[from P;p;j]=This(j+k).Cs1 //assert This(j+k).Cs1=p.minimize(This(j+k).Cs1)//does it holds? 
+* This(j+n).Cs0[from P;p;j]=This(j+k).Cs1
     Thisn.Cs0[from P;p]=Thisk.Cs1
 * Thisn.Cs[from P;p;j]=Thisn.Cs with n<j
 * All cases for other expressions/terms propagate to submembers, including docs  
 _______
-#define MH notations, MWT notations just inherits them,
+#define MH notations, MWT notations just inherit them,
 with MH=mdf method T mOp(T1 x1..Tn xn)[Ts] 
 * MH.pars=T1..Tn
 * MH.exceptions=Ts
 * G^MH= this:mdf This0, x1:T1..xn:Tn
 * MH.pari = Ti
-* MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness for no repetition in dom reasons on MH.s
+* MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness for no repetition in dom uses MH.s
 _______
 #define name manglings
-* methName(mOp)=m//from a table
-* #m'OP'=methName(OP)m
-* methNameTrim(x)//removes any numeric pedex
+* methName(mOp)=m//from a table // ISAAC: what? m is a free variable
+* #m'OP'=methName(OP)m // ISAAC: o #foo'+' = #addfoo? why not #foo#add?
+* methNameTrim(x)//removes any numeric pedex // ISAAC: what does 'pedex' mean? I couldn't find a definition for it online, is it even a word?
 * methName(x,mdf)=x#mdf
-* methName(x,empty)=x#'default'
+* methName(x,empty)=x#'default' // Um what? why is 'default' in quotation marks, is that even valid syntax?
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -67,11 +70,12 @@ _______
     p |- P0<=P1
 
 * p |- P0<=P1  
-    P1 in P0 U (p(P0).Ts.Ps[from P0;p]) U Any //assert p.normalize(Pi)=Pi
+    P1 in {P0} U (p(P0).Ts.Ps[from P0;p]) U {Any} //assert p.normalize(Pi)=Pi // ISAAC: where is normalize defined?
 
-* capsule<=mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm
-* imm<=read,fwd%Imm,fwdImm
-* mut<=lent,fwd%Mut,read,fwdMut
+* mdf <= mdf
+* capsule<=mdf, if mdf in {mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm}
+* imm<=mdf, if mdf in {read,fwd%Imm,fwdImm}
+* mut<=mdf, if mdf in {lent,fwd%Mut,read,fwdMut}
 * lent<=read
 * fwd%Mut<=fwdMut
 * fwd%Imm<=fwdImm
@@ -91,6 +95,6 @@ _______
 _______
 #define origin(p;s;P) = P'   refine(p;s;P)
 * origin(p;s; P) = P'
-    {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
+    {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')} // ISAAC: where is collect defined?
     
 * refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
