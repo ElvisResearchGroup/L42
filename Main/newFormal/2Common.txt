@@ -88,9 +88,6 @@ _______
 
 * toRead(G)(x)=toRead(G(x))[with var?=empty] //thus single entry undefined where toRead undefined
 _______
-#define trusted(LL) //Does this need to be added to the INFO?
-* trusted(LL)= forall MWT in LL where MWT.native=native[uURL], MWT.s of form #$_(_)//trusted=untrustedsAre#$
-_______
 #define origin(p;s;P) = P'   refine(p;s;P)
 * origin(p;s; P) = P'
     {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')} // ISAAC: where is collect defined?

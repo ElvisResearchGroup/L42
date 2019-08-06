@@ -61,7 +61,8 @@ _______
 		// Z=(X myX=X.b(f: myC) C myC=error void)
     or exists xz  and n? such that:
       forall MH in MHs, coherent(p;MHs;MH;xz;n?)
-      
+	wellTrusted(L)
+
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn=xz
     p|-This0<=T.P
@@ -69,8 +70,6 @@ _______
     T.mdf not in {class, fwd mut, fwd imm}
     if T.mdf in {imm, capsule} then mdfs subseteq {imm, fwd imm, capsule, class}
     if read or lent in mdfs then T.mdf in {read, lent}
-    if !trustedClass(p(This0)) then m is of form #$m // ISAAC: did you mean trusted?
-    // ISAAC: I will check that this capability stuff is correct latter...
 * coherent(p;MHs;mdf' method T m::n?(_)_;_;n?) //by well formedness if n is present is the same, but it may be absent.
     forall class method mdf _(_)_ in MHs:  !(mdf canAlsoBe mdf')
 * coherent(p;_;mdf method T #?x::n?(mdf' P' that)_;_,x;n?)
@@ -88,6 +87,11 @@ _______
     coherentGetMdf(mdf',mdf,
       fieldTypes(MHs,x, mdf).mdfs,
       fieldAccessMdf(MHs,x, mdf))
+
+wellTrusted(L) iff forall mdf method _ m(_) _ native? = e
+    if _.#$(_) e or native?=native[uURL] then:
+      m = #$_ or,
+      mdf in {mut, lent, capsule} and forall class method mdf' m'(_)_ in L, where mdf' canAlsoBe mdf, m' = #$_
 _______
 #define mdf canAlsoBe mdf'    fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
 * capsule canAlsoBe mdf, with mdf != class

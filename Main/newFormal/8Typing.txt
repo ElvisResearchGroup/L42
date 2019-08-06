@@ -31,10 +31,6 @@ _______
     T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
     Q.p |- T <= T'
     forall i 0..n Q|- ei : T'i <= Ti //T'0 is correctly a free variable
-    if m of form #$_ then
-      either Q.MH?=empty
-      or Q.MH?.m of form #$_
-      or Q.MH.mdf in {lent,mut,capsule} and !trusted(Q.p(This0))
 * Q |- x:=e : imm Void <= T //(xUpdate)
     Q.G(x).var?=var
     Q.p|- imm Void <= T
@@ -92,9 +88,6 @@ _______
    |-p.push(C)
 * p|-MWT //(member method)
     //using MH.Ts to give the arguments(with or without this?) or the exceptions? 
-    if MWT.native[URL]?=native[uURL] then //uUrl=untrusted URL
-      either MWT.s of form #$_(_)
-      or MWT.mdf in {lent,mut,capsule}
     Q = Q[typed; MWT.MH; p; G^MWT; empty; MWT.exceptions.Ps]
     if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
     MHs={MH[from P;p] | p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
