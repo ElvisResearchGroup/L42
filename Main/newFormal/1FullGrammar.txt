@@ -186,6 +186,7 @@ _______
 * CMP/FULL/CORE.K: K.x notin bindings(K.e)
 * CMP/FULL/CORE.MWT:
     MWT =mdf method T _(T1 x1.. Tn xn)PL (=native[URL]? e)?
+    mdf notin {fwdImm,fwdMut}
     T0 = mdf This0
     if exists i: Ti.mdf=fwdImm then T.mdf in {mut, fwdMut, imm, fwdImm}
     if exists i: Ti.mdf=fwdMut then T.mdf in {mut, fwdMut}
