@@ -32,7 +32,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
       //"_.L42", // Name of a file in libTests; edit to match your file
-      "TestLambdaFullBeta.L42",
+      /*"TestLambdaFullBeta.L42",
       //"TestExpProblemScalaWayCollatedNoCast.L42",//TODO: fails now
       "TestExpProblemScalaWay.L42",
 
@@ -70,7 +70,8 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "TestUnicode.L42",
       "TestOpt.L42",
       "HamsterInvariant.L42",
-      "TestGraphInterfaces.L42",
+      "TestGraphInterfaces.L42",*/
+      "TestTraitCompostionGame.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

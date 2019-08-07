@@ -1,0 +1,59 @@
+{reuse L42.is/AdamTowel02
+
+Point:Data<><{Num x, Num y}
+
+Entity:{interface
+  read method Point point()
+  mut method Void point(Point that)
+  }
+//hash map point-> entity
+PointNotFilled: Message.$<><{ implements Guard}
+PointFilled: Message.$<><{ implements Guard}
+HM:Trait(Collections.vector(ofMut:Entity))&{
+  mut method mut Entity getE(Point that){
+    with elem in this.#vals() (
+      if elem.point()== that (return elem)
+      )
+    error PointNotFilled""
+    }
+  read method Bool hasE(Point that){
+    with elem in this.vals() (
+      if elem.point()== that (return Bool.true())
+      )
+    return Bool.false()
+    }
+  mut method Void addE(mut Entity that)(
+    if this.hasE(that.point()) (error PointFilled"")
+    this.add(right:that)
+    )
+  mut method Void removeE(Point that){
+    with i in Range(this.size()) (
+      elem=this.val(i)
+      if elem.point()== that (
+        this.remove(i)
+        return void
+        )
+      )
+    error PointNotFilled""  
+    }
+  }
+//DummyEntity:K<><{implements Entity}
+DummyEntity:K<><{implements Entity
+  var Point p
+  method point()this.p()
+  method point(that)this.p(that)
+  }
+
+Main:{
+  class DummyEntity de=DummyEntity
+  mut HM map=HM[]
+  Debug.test(map.hasE(Point(x:10Num,y:20Num)), expected:S"false")
+  map.addE(DummyEntity(p:Point(x:10Num,y:20Num)))
+  Debug.test(map.hasE(Point(x:10Num,y:20Num)), expected:S"true")
+  map.removeE(Point(x:10Num,y:20Num))
+  Debug.test(map.hasE(Point(x:10Num,y:20Num)), expected:S"false")
+  Debug.test(Bool.readableName() expected:S"Bool")
+  return ExitCode.normal()
+  }
+
+}
