@@ -20,15 +20,15 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native[URL]? e)?  
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps, refined=(P.s)s}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps, refined=(P.s)s, havePrivateStaticMethods?}
     //in concrete syntax, labels for emptys are omitted
     //friendsDep are spyed by This:
     //Paths whose unique Numbers are used either directly,
     //or in a private nested class or in an L in a method
     //usedMethDep//methods used either directly or in a private nested class or in an L in a method
     //privateImpl: interfaces implemented by a private nested class or in an L in a method
+    //havePrivateStaticMethods (since it can be casted to class P)
     //may add closed/open class (since private abstract methods may be removed if unused)
-    //may add 'have private static methods' (since it can be casted to class P)
     //may add 'free this': 'this' only used as receiver
   Flag ::= norm | typed
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
@@ -68,7 +68,7 @@ _______
   r ::= CORE.L | exception v | error v
   Obj ::= P(x1=v1..xn=vn) empty;empty| P() as1;as2 // memory objects. 'as' is the set of mut objects associated to L
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
-  Q ::= Q[Flag;MH?;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
+  Q ::= Q[Flag;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
   MethT ::= CORE.Ts->CORE.T;Ps  
   CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV //blocks manually handled in reduction
   CORE.ctx ::= []

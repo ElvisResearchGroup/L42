@@ -24,12 +24,16 @@ _______
 * adapt(CMP.e, Void) = (Void x=CMP.e {}); where x fresh
 * adapt(CMP.e, _) = (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
 _______
-#define flagTyped(p)=p'    LL[Csz=Flag]=LL'
+#define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
 * flagTyped(p) = p.update( p(This0)[typable(p)=typed] )
     forall Cs in typable(p):  |-p.navigate(This0.Cs)
 
-* LL[Cs Csz = Flag]=LL[Cs.Info.Flag=Flag][Csz=Flag]//TODO: add [Cs.Info.Flag=_] discussion in notations
+* LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
 * LL[empty=Flag]=LL
+
+* {H MWTs NC1..NCn Info}[InfoFlag=Flag]={H MWTs' NCs' Info[Flag=Flag]}
+    MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
+    NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
 _______
 #define typable(p)=Csz
 * typable(p) = Cs1..Csn
