@@ -48,7 +48,7 @@ StringSingle: '"' CHARInStringSingle* '"';
 string: StringSingle;//TODO: will also match multilineStr and interpolation
 Number : '0'..'9' ('.'|'_'|'-'|'0'..'9')*;
 MUniqueNum: Fx('#' Fx)*'::'Fn;
-MHash: '#' '$'? Fx('#' Fx)* ('::'Fn)?;
+MHash: ('#$' | '#'+)? Fx('#' Fx)* ('::'Fn)?;
 X:  Fx;
 SlashX:'\\'Fx;
 slashX:SlashX;
