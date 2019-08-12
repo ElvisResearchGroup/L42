@@ -38,6 +38,16 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitString(L42Parser.StringContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42Parser#x}.
+	 * @param ctx the parse tree
+	 */
+	void enterX(L42Parser.XContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#x}.
+	 * @param ctx the parse tree
+	 */
+	void exitX(L42Parser.XContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42Parser#slashX}.
 	 * @param ctx the parse tree
 	 */
@@ -57,16 +67,6 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitM(L42Parser.MContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link L42Parser#x}.
-	 * @param ctx the parse tree
-	 */
-	void enterX(L42Parser.XContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42Parser#x}.
-	 * @param ctx the parse tree
-	 */
-	void exitX(L42Parser.XContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#doc}.
 	 * @param ctx the parse tree
@@ -338,16 +338,6 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitWhoops(L42Parser.WhoopsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42Parser#eUnary}.
-	 * @param ctx the parse tree
-	 */
-	void enterEUnary(L42Parser.EUnaryContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42Parser#eUnary}.
-	 * @param ctx the parse tree
-	 */
-	void exitEUnary(L42Parser.EUnaryContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link L42Parser#eBinary0}.
 	 * @param ctx the parse tree
 	 */
@@ -387,16 +377,6 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitEBinary3(L42Parser.EBinary3Context ctx);
-	/**
-	 * Enter a parse tree produced by {@link L42Parser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void enterStatement(L42Parser.StatementContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42Parser#statement}.
-	 * @param ctx the parse tree
-	 */
-	void exitStatement(L42Parser.StatementContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42Parser#sIf}.
 	 * @param ctx the parse tree

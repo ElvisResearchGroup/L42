@@ -29,6 +29,12 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitString(L42Parser.StringContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42Parser#x}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitX(L42Parser.XContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42Parser#slashX}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -40,12 +46,6 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitM(L42Parser.MContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link L42Parser#x}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitX(L42Parser.XContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#doc}.
 	 * @param ctx the parse tree
@@ -209,12 +209,6 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitWhoops(L42Parser.WhoopsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42Parser#eUnary}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitEUnary(L42Parser.EUnaryContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link L42Parser#eBinary0}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -238,12 +232,6 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitEBinary3(L42Parser.EBinary3Context ctx);
-	/**
-	 * Visit a parse tree produced by {@link L42Parser#statement}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStatement(L42Parser.StatementContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42Parser#sIf}.
 	 * @param ctx the parse tree

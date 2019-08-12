@@ -46,14 +46,14 @@ fragment Fn: '0' | '1'..'9' ('0'..'9')*;
 fragment Fx: IdLow IdChar*;
 StringSingle: '"' CHARInStringSingle* '"';
 string: StringSingle;//TODO: will also match multilineStr and interpolation
-Number : '0'..'9' ('.'|'_'|'-'|'0'..'9')*;
+Number: '0'..'9' ('.'|'_'|'-'|'0'..'9')*;
 MUniqueNum: Fx('#' Fx)*'::'Fn;
-MHash: ('#$' | '#'+)? Fx('#' Fx)* ('::'Fn)?;
-X:  Fx;
+MHash: ('#$' | '#'+) Fx('#' Fx)* ('::'Fn)?;
+X: Fx;
+x: X;
 SlashX:'\\'Fx;
 slashX:SlashX;
 m: MUniqueNum|MHash|X;
-x: X;
 CsP: C(ClassSep C)*;
 ClassSep: '.';
 fragment C: IdUp ('A'..'Z'|'$'|'a'..'z'|'0'..'9')*;
@@ -88,7 +88,7 @@ info: Info;
 fullMH: (Mdf doc*)? MethodKw t mOp oR (t x)* ')' ('['t+']')?;
 mOp: | m | Uop | OP0 | OP1 | OP2 | OP3;
 voidE: VoidKW;
-ePostfix: eAtomic (fCall | squareCall | string | cast)*;
+ePostfix: (Uop|Number)* eAtomic (fCall | squareCall | string | cast)*;
 fCall: ('.'m)? ORNS par ')';
 squareCall: ('.'m)? '[' (par';')* par ']';
 cast: CastOp t;
@@ -99,13 +99,10 @@ d: (dX '=')? e;
 dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';
 k: CatchKw Throw? t x e | CatchKw Throw? t UnderScore e;
 whoops: WhoopsKw t+;
-eUnary: (Uop|Number)* ePostfix;
-
-eBinary0: eUnary (OP0 eUnary)*;
+eBinary0: ePostfix (OP0 ePostfix)*;
 eBinary1: eBinary0 (OP1 eBinary0)*; //left associative, all op the same
 eBinary2: eBinary1 ((OP2|InKw) eBinary1)*; //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
 eBinary3: eBinary2 (OP3 eBinary2)*; //left associative, all op the same
-statement: sIf | sWhile | sFor | sLoop | sThrow | sUpdate;
 sIf: IfKw e e (ElseKw e)? | IfKw match+ e;
 match: t x | t x '=' e | t? oR (t? x)+')' '=' e;
 sWhile: WhileKw e e;
@@ -113,6 +110,5 @@ sFor: ForKw (dX InKw e)+ e;
 sLoop: LoopKw e;
 sThrow:Throw e;
 sUpdate: x OpUpdate e;
-e: statement | eBinary3;
-
+e: sIf | sWhile | sFor | sLoop | sThrow | sUpdate | eBinary3;
 nudeE: e EOF;

@@ -27,7 +27,6 @@ import is.L42.generated.L42Parser.EBinary2Context;
 import is.L42.generated.L42Parser.EBinary3Context;
 import is.L42.generated.L42Parser.EContext;
 import is.L42.generated.L42Parser.EPostfixContext;
-import is.L42.generated.L42Parser.EUnaryContext;
 import is.L42.generated.L42Parser.FCallContext;
 import is.L42.generated.L42Parser.FullFContext;
 import is.L42.generated.L42Parser.FullLContext;
@@ -55,7 +54,6 @@ import is.L42.generated.L42Parser.SWhileContext;
 import is.L42.generated.L42Parser.SlashContext;
 import is.L42.generated.L42Parser.SlashXContext;
 import is.L42.generated.L42Parser.SquareCallContext;
-import is.L42.generated.L42Parser.StatementContext;
 import is.L42.generated.L42Parser.StringContext;
 import is.L42.generated.L42Parser.TContext;
 import is.L42.generated.L42Parser.TLocalContext;
@@ -114,12 +112,10 @@ public class TestHelpers {
       @Override public String visitSlashX(SlashXContext ctx) {return "\\x";}
       @Override public String visitEPostfix(EPostfixContext ctx) {return c(ctx);}
       @Override public String visitSquareCall(SquareCallContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitEUnary(EUnaryContext ctx) {return c(ctx);}
       @Override public String visitEBinary0(EBinary0Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
       @Override public String visitEBinary1(EBinary1Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
       @Override public String visitEBinary2(EBinary2Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
       @Override public String visitEBinary3(EBinary3Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
-      @Override public String visitStatement(StatementContext ctx) {return c(ctx);}
       @Override public String visitSIf(SIfContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitMatch(MatchContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitSWhile(SWhileContext ctx) {return n(ctx)+"("+c(ctx)+")";}
