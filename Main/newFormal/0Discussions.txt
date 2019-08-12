@@ -1,3 +1,41 @@
+1: 260
+2: 153
+3: 173
+4: 146
+5: 200
+7: 107
+8: 181
+
+Main concepts: FULL and CORE syntax, FULL.L and CORE.L
+relations => can go in Err and are non deterministic
+p P CCz
+CCz!p =>PR //CORE.L;pTail
+Y!FULL.e=HALF.e;_;_;_
+I.add(_)=I'
+I!e =>ER //HALF.e ->CORE.e
+
+CCz!p =>PR calls I!e
+I!e (case FULL.L) calls CCz!p =>PR back
+//may be have a top with the main definitions and a topAux instead of norm with aux def for top?
+common
+  top
+    topAux
+    toHalf
+    reduction
+    typing
+
+
+issue: the CCz obtained by Y! L1,l2,L3 can be different from the CCz obtained by Y! operators on L1,L2,L3
+
+proposal:
+top(n;CCz;p) => PR
+PR and ER have a CCz result component
+I! will have to compose all the CCz :(
+top can now accumulate the CCz[from C] and nothing need caching.
+The idea is: we acknolege and accept that he CCz would be different, but the
+CCz computed on the source code are more friendly for the programmer to manipulate.
+
+//old, before 12/08/2019
 Introduction
 The formalism for 42 is divided in files, 
 The first file, FullGrammar, contains all abstract grammars,
@@ -6,7 +44,7 @@ the concrete grammar for the full language and the well formedness criteria.
 It is important to familiarize with the CORE grammar,
 while the other grammatical forms can be understood when needed while reading
 the rest of the formalism.
-The most important difference between CORE, FULL and CMP grammars
+The most important difference between CORE and FULL grammars
 is how they handle nested classes and library literals, as explained below:
 
 CORE is a minimal grammar, a CORE.L is a library literal with

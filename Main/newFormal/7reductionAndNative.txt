@@ -1,4 +1,11 @@
 _______
+#define reduce(p,A,L) => ER
+* reduce(p,A,L) => empty;L
+* reduce(p,A,throw v) => throw(p,A,v)
+* reduce(p,A,e) => reduce(p,A',e')
+    A;e->p A';e'
+* reduce(p,A,e) => limit(p)//memory/stack overflow, timeout, loop
+_______
 #define A.rog(v)
 //obvious, but includes the as1;as2
 _______
@@ -28,7 +35,7 @@ _______
 _______
 #define A|e --> A'|e'    
 * A | x  -->p  A| A(x) //is ok that can not be applied on unresolved fwds
-* A | x := v  -->p  A[_ x=v]| void //non derministically chose the mdf that would make it work
+* A | x := v  -->p  A[_ x=v]| void //non deterministically chose the mdf that works
 * A | loop e  -->p  A | (void x=e loop e)  
 * A0 | (var? T x=e0 Ds Ks e)  -->p  A1 | (var? T x=e1 Ds Ks e)
     A0 | e0  -->p  A1 | e1
@@ -58,7 +65,7 @@ _______
     MWT=p(A0.pathOf(v'0)).m(x1..xn)[from A0.pathOf(v'0);p]
     MWT.native[Url]? = empty// or not empty but plg not applicable.
     A1=A0[MWT.mdf0 v'0]..[MWT.mdfn v'n]
-* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v //TODO: somehow is deterministic if Url of form tUrl
+* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v
     v'0..v'n=A.callByValue(v0..vn)
     MWT = p(A0.pathOf(v'0)).m(x1..xn)[from A0.pathOf(v'0);p]
     MWT.native[Url]? != empty
@@ -68,7 +75,8 @@ _______
     A = plgMuts(A1,A;Ts;v'0..v'n)
     as1 = accessibleMutAddresses(A,Ts,v'0..v'n)
     as2 = accessibleImmAddresses(A,Ts,v'0..v'n)
-    callPlugin(A1,A;MWT;v0..vn)=A1,A'|v
+    callPlugin(A1,A;MWT;v0..vn) => A1,A'|v
+    if URl of form tURL then {A0|v0 | callPlugin(A1,A;MWT;v0..vn) => A0|v0}={A1,A'|v}
     A' = A~as1;as2
     either MWT.T.mdf=mut, v in as1, v->P(_)_;_ in A and p|-P<=MWT.T.P
     or MWT.T.mdf=imm

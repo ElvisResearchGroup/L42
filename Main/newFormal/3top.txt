@@ -1,46 +1,131 @@
-_______
-#define p ==>p'
-* {reuse[URL] Ms};pTail ==> {followURL(URL),Ms};pTail  //(reuse)
-* {... Ms};pTail ==> {readFolder(pTail),Ms};pTail //(dots)//note, ... is cached 
-* {H CMs};pTail ==> flagTyped(norm({H CMs};pTail);pTail)  //(topNorm)
-* p ==> flagTyped({H CMs p♥Docs C=CORE.L Ms};pTail)  //(top)
-    p={H CMs Docs C=CMP.e Ms};pTail
-    CMP.e not of form CORE.L//e is the first point to execute
-    CORE.e=norm(p,CMP.e)
-    FV(CORE.e)=empty //not implied by typing: FV check capsules used 1 or 0
-    Q=Q[Flag=norm;MH?=empty;p;G=empty;Ts=empty;Ps=Any]
-    Q|- CORE.e :T
-    coherent(p,CORE.e)
-    empty|adapt(CORE.e,T.P) -->p+ _|r
-    either T.P in {Library, Void} or p(T.P)(#toLibrary()).T= imm Library
-    CORE.L= refreshUniqueNames(r) //fails if r not of form CORE.L, lifted as compilation error
-* {H CMs C=ctxC[LL] FULL.Ms};pTail ==> p.pop(1)   //(enter)
-    LL not of form CORE.L
-    LL;{H CMP.Ms C=ctxC FULL.Ms};pTail  ==>+  p //Note: p is one level deeper
-    p(This0) of form CORE.L // p(This0) is the result of metaprogramming LL
-_______
-#define adapt(CMP.e,P)
-* adapt(CMP.e, Library) = CMP.e
-* adapt(CMP.e, Void) = (Void x=CMP.e {}); where x fresh
-* adapt(CMP.e, _) = (T x=CMP.e x.#toLibrary()); otherwise, where x fresh
-_______
-#define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
-* flagTyped(p) = p.update( p(This0)[typable(p)=typed] )
-    forall Cs in typable(p):  |-p.navigate(This0.Cs)
+-list main concepts now
+--CCz!p calls I!e
+I!e calls back. all the circular dep need to be in the same file
 
-* LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
-* LL[empty=Flag]=LL
-
-* {H MWTs NC1..NCn Info}[InfoFlag=Flag]={H MWTs' NCs' Info[Flag=Flag]}
-    MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
-    NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
+-re read stuff
 _______
-#define typable(p)=Csz
-* typable(p) = Cs1..Csn
-    Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
-    p(This0.Csi) of form CORE.L
-    p(This0.Csi).Info.Flag=norm
-    p(This0.Csi).depTyped subset {P| p(P).Info.Flag=typed} U This0.Cs1..This0.Csn
+#define metanotation ~OR~
+predicate0 ~OR~ predicate1 predicates == (predicate0 and predicates) or ((not predicate0) and predicate1)
+//note: the simpler interpretation (predicate0 and predicates) or predicate1
+//would technically allow free variables in predicate0 to be chosen to falsify it
+_______
+#define STz notations:
+* (ST1 .. STn).s = ST1.s .. STn.s
+* (ST1 .. STn).s.i = ST1.s.i .. STn.s.i
+* (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
+_______
+#define P,s,i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
+* P,s,i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
+    i in 0..n,
+    s = methName(OP)_i(x1..xn)
+    P1 ... Pn = (G^p(Ti.P)(s)).Ts.Ps[from Ti.P;p]
+    P'1 ... P'n = (T0..Tn\i).Ps
+    P=Ti.P
+    p|-P'1<=P1 .. p|-P'1<=P1
+_______
+#define top(n,CCz,p) => PR
+* top(0,CCz,{reuse[URL] Ms};pTail) => PR //(reuse) //not well defined is also not well formed
+    {followURL(URL),Ms};pTail well defined orReturn illFormedReuse({reuse[URL],Ms};pTail)
+    top(0,CCz,{followURL(URL),Ms};pTail) => PR
+* top(0,CCz,{... Ms};pTail) => PR  //(dots)//note, ... is cached
+    {readFolder(pTail),Ms};pTail well formed ~OR~ PR=illFormedDots({reuse[URL],Ms};pTail)
+    top(n,CCz,{readFolder(pTail),Ms};pTail) => PR
+* top(n,CCz0,p) => PR  //(top)
+    p={H Ms0 Ms1 Docs C=e Ms2};pTail
+    sizeOf(Ms0)=n
+    {NC| NC in Ms0, NC.e not of form CORE.L}=empty
+    Ms1=empty or Ms1=Ms,C=CORE.L and {NC|NC in Ms}=empty
+    e not of form CORE.L//e is the first point to execute
+    CCz=I[C=empty;p;CCz0].addAll(Ms1).CCz
+    Y=Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;onReturn=imm Library;onPath=class]
+    Y!e = Half.e; _; _; _
+    I[C?=C;p;CCz]!Half.e => ER
+    ER=CCz1;CORE.e ~OR~ PR=ER
+    wellTyped(p,CORE.e)=T ~OR~ PR=illTyped(p)
+    coherent(p,CORE.e) ~OR~ PR=incoherent(p)
+    reduce(p,empty,adapt(CORE.e,T.P)) => ER'
+    ER'=empty;CORE.L ~OR~ PR=ER'
+    p'={H Ms0 Ms1 p♥Docs C=refreshUniqueNames(CORE.L) Ms2};pTail
+    flagTyped(p')=p'' ~OR~ PR=illTyped(p')
+    top(n+sizeOf(Ms1),CCz U CCz1,p'')=>PR
+* top(n,CCz,{interface? [Ts] Ms};pTail) => PR  //(topNorm)
+    {NC| NC in Ms, NC.e not of form CORE.L}=empty //assert not {reuse[URL] _},{... _},CORE.L
+    Ts0=p.minimize(p♥Ts)
+    Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any
+    forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
+    MWTs=methods(p,This0) //all methods
+    ss=expandFields(Ms).ss //present methods
+    MWT1..MWTn NC1..NCk=MWTs\ss,[MWTs(s)| s in ss],[NC| NC in Ms]//NC of form CORE.NC
+    Ps;Ps'=collectDeps(p;Ts') U collectDeps(p;MWT1..MWTn) U collectDeps(NC1.Docs..NCk.Docs)
+    Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
+    p={interface? [Ts'] MWT1..MWTn NC1..NCk};pTail
+    I[C=empty;p;G=empty;CCz].add(MWT1: MH1 e?1).. .add(MWTn: MHn e?n).add(NC1).. .add(NCk)=I'
+    //TODO: use n to reduce the number of M that are added
+    I'!e?i => ERi
+    ER1=e?'1..ERn=e?'n ~OR~ PR=firstErr(ER0..ERn)//deterministic since no FULL.L
+    CORE.L={interface? [Ts'] MH1 e?'1 .. MHn e?'n NC1 .. NCk Info}
+    PR=I.CCz;flagTyped(CORE.L;pTail) ~OR~ PR=illTyped(CORE.L;pTail)
+_______
+#define I!HALF.e?=> ER    I!HALF.D=> DR    I!HALF.K=> KR    I(HALF.T) = CORE.T
+* I!empty => empty;empty
+* I!x => empty;x
+* I!P<:STz => empty;P<:I(STz)
+* I!P<:STz => inferenceFailure(I,PTz)
+    I(STz) undefined
+* I!void => empty;void
+* I!FULL.L => ER 
+    p=I.p.push(I.C?,FULL.L)
+    top(0,I.CCz[from This1;p],p) => PR
+    ER = CCz[from I.C?;p];p(This0) if PR = CCz;p
+    ER = PR otherwise
+* I!CORE.L => CORE.L 
+* I!%STz% => I(STz).P
+* I!%STz% => inferenceFailure(I,PTz)
+    I(STz) undefined
+* I!e0.m(x1=e1..xn=en) => ER
+    I|ei=ERi //e0 is of form xP
+    ER0..ERn = CCz0;e'0..CCzn;e'n ~OR~ ER=firstErr(ER0..ERn)
+    ER=CCz0 U..U CCzn;e'0.m(x1=e'1..xn=e'n)
+* I!xP0 OP..OP xPn => ER
+    I!xPi=>ERi
+    ER0..ERn = CCz0;xP0..CCzn;xPn ~OR~ ER0..ERn = ER=firstErr(ER0..ERn)
+    ER=CCz0 U..U CCzn;I.selectedOption(OP,xP0..xPn)
+* I!e0 =>ER
+    e0 in {throw e, loop e, x:=e}
+    I!e => ER'
+    ER' = CCz;e' ~OR~ ER=ER'
+    ER = CCz;e0[e=e']
+* I!(Ds K1..Km e) => ER
+    xs=FV((K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
+    I!xs;Ds =>DsR
+    I!Ki =>KRi
+    DsR=CCz0;D1..Dn ~OR~ ER=DsR
+    I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
+    KR1..KRn,ER' = CCz1;K'1..CCzm;K'm, CCzm+1;e' ~OR~ ER=firstErr(KR1..KRn,ER)
+    ER=CCz0 U..U CCzm+1;(Ds Ks e')
+* I!empty => empty;empty
+* I!xs;var? HALF.T x=e Ds=> DsR
+    I(HALF.T)=CORE.T ~OR~ DsR=inferenceFailure(I,HALF.T)
+    I!e => ER 
+    ER=CCz';e' ~OR~ DR=ER
+    CORE.T=CORE.T0[mdf=imm] if HALF.T=STz, CORE.T.mdf=read and 
+      not exists x in FV(e') such that x in dom(G) and G(x).mdf in {read,lent,mut}
+    CORE.T'=CORE.T[mdf=mut] if HALF.T=STz, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
+    CORE.T'=CORE.T otherwise
+    I[G=I.G,x:CORE.T']!Ds=> DsR'
+    DsR'=CCz;Ds ~OR~ DsR=DsR'
+    DsR=CCz' U CCz;var? CORE.T' x=e',Ds
+
+* I!catch throw HALF.T x e => KR
+    I(HALF.T)=CORE.T ~OR~ inferenceFailure(I,HALF.T)
+    I!e => ER
+    ER=CCz';e' ~OR~ KR=ER
+    KR=CCz';catch throw CORE.T x e' //assert CORE.T =mdf or throw=return
+_______
+#define adapt(CORE.e,P)
+* adapt(e, Library) = e
+* adapt(e, Void) = (Void x=e {}); where x fresh
+* adapt(e, _) = (T x=e x.#toLibrary()); otherwise, where x fresh
 _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
@@ -103,7 +188,7 @@ _______
     mdf' canAlsoBe mdf // capsule getters ok on anything but class: another getter can never be called
     
 // Note: coherentGetMdf(getterReturnMdf, receiverMdf, fieldTypeMdfs, fieldAccessMdfs)//valueMdf, getterMdf, inMdfs, outMdfs
-// Means that the value of a field accesed on a receiverMdf reference can safetly be used as a getterReturnMdf, iff its value came from a fieldTypeMdfs reference (through either a factory or setter), and since then, its value may have previousesly been accesed as a fieldAccessMdfs reference.
+// Means that the value of a field accessed on a receiverMdf reference can safely be used as a getterReturnMdf, iff its value came from a fieldTypeMdfs reference (through either a factory or setter), and since then, its value may have previously been accessed as a fieldAccessMdfs reference.
 * coherentGetMdf(class,_,{class},_)
 * coherentGetMdf(read, _, mdfs0,_)
     class not in mdfs0

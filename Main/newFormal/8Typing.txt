@@ -1,11 +1,37 @@
 _______
+#define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
+* flagTyped(p) = p.update( p(This0)[typable(p)=typed] )
+    forall Cs in typable(p):  |-p.navigate(This0.Cs)
+
+* LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
+* LL[empty=Flag]=LL
+
+* {H MWTs NC1..NCn Info}[InfoFlag=Flag]={H MWTs' NCs' Info[Flag=Flag]}
+    MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
+    NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
+_______
+#define typable(p)=Csz
+* typable(p) = Cs1..Csn
+    Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
+    p(This0.Csi) of form CORE.L
+    p(This0.Csi).Info.Flag=norm
+    p(This0.Csi).depTyped subset {P| p(P).Info.Flag=typed} U This0.Cs1..This0.Csn
+_______
+#define wellTyped(p, CORE.e)=CORE.T
+* wellTyped(p,e)=T
+    Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
+    FV(e)=empty 
+    Q|- CORE.e :T
+    either T.P in {Library, Void} 
+    or p(T.P)(#toLibrary()).T= imm Library
+_______
 #define Q |-e: T<=T 
 * Q |- void : imm Void <= T //(void)
     Q.p|-imm Void <= T
 * Q |- P<:class P' : class P' <= T //(Path)
     Q.p(P) and Q.p(P') of form CORE.L
     Q.p|-class P' <= T
-    P'=Any if Q.p(P).interface?=interface 
+    P'=Any if Q.p(P).interface?=interface //TODO: is the interface that must have static methods or the proper class?
     or class notin Q.p(P).mhs.mdfs and not Q.p(P).Info.havePrivateStaticMethods
 * Q |- L : imm Library <= T //(library propagation)
     Q.p |- imm Library <= T
@@ -88,8 +114,8 @@ _______
    //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface 
    forall M in p(This0).Ms:  p |- M
 * p |- C=L  //(member nested)
-   |-p.push(C)
-   if C of form _::n then coherent(p.push(C)) //an incoherent private class would be bad
+   |-p.push(C,L)
+   if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
 * p|-MWT //(member method)
     Q = Q[typed; p; G^MWT; empty; MWT.exceptions.Ps]
     if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
@@ -101,14 +127,9 @@ _______
       //or error: leaked exception P is not the subtype of a declared exception
       //or  method declares an exception (P) which is not a subtype of implemented exceptions
 _______
-#define guess(Q,xP) = P    mostGeneralMdf(mdfs)=mdf     generalEnough(mdfs)=mdfs'
+#define guess(Q,xP) = P
 * guess(Q,x)=Q.G(x)
 * guess(Q,P<:T)=T
-
-* mostGeneralMdf(mdfs)=mdf //the most specific generalEnough.
-    mdf in generalEnough(mdfs)
-    forall mdf1 in generalEnough(mdfs): mdf <= mdf1
-* generalEnough(mdfs)={mdf | forall mdf1 in mdfs, mdf1 <= mdf}
 _______
 #define methTypes(p,P,s) = MethT
 * mdf0 P T1..Tn-> T';Ts.Ps in methTypes(p,P,s)  //(mBase)

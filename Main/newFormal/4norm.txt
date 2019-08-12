@@ -1,23 +1,41 @@
 _______
-#define norm(CMP/FULL.L;pTail)=CORE.L    norm(p,CMP.e)=CORE.e infer(p,FULL.Ms)=CORE.MWTs U CORE.NCs
-* norm(p) = {interface? [Ts'] MWT1..MWTn NC1..NCk Info} //ordering of members is important here
-    p={interface? [Ts] CMs};pTail//assert {reuse [URL] _}, {... _} and CORE.L never happens
-    Ts0=p.minimize(p♥Ts)
-    Ts'=Ts0,(collect(p,Ts0)\ Ts0) // this gets the transitively implemented interfaces (-Any)
-    forall imm P in Ts'\ Ts0, P not of form Thisk._.C::n._ //private interfaces not added
-    MWTs=methods(p,This0) //all methods
-    ss=expandFields(CMs).ss //present methods
-    MWT1..MWTn NC1..NCk=infer(p;MWTs\ss,[MWTs(s)| s in ss],[NC| NC in CMs])//NC of form CORE.NC
-    Ps;Ps'=collectDeps(p;Ts') U collectDeps(p;MWT1..MWTn) U collectDeps(NC1.Docs..NCk.Docs)
-    Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
-  
-* norm(p,e)=I(Y♥e)
-    Y[p;onSlash=empty,onReturn=Library,onPath=error]
-    I=I[p;IMap=solve(p,PAccOf(p).CCz);G=empty;CCz;onSlash=empty]
+#define I.add(FULL.MWT : CORE.MH HAlf.e?) = I'    I.add(CORE.NC)=I'    I.addAll(FULL.Ms)=I'
+* I.add(MWT : I.p♥MWT.MH) = I
+    MWT.e?=empty
+* I.add(MWT : I.p♥MWT.MH HALF.e)=I[CCz=I.CCz U CCz U STs<=MWT.T]
+    class?=empty if MWT.T=class Any
+    class?=class otherwise
+    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;onReturn=MWT.T;onPath=class?]
+    Y!MWT.e = Half.e; STs; empty; CCz
 
-* infer(p,CoM1..CoMn)=I(CoM1)..I(CoMn)
-    PAcc=PAccOf(p).fixInfer(CoM1..CoMn)
-    I=I[p;IMap=solve(p,PAcc.CCz);G=empty;CCz;onSlash=empty]
+* I.add(C=CORE.L) = I[CCz=I.CCz U I'.CCz[from C;I.p]]
+    CORE.L.MWTs = MWT1..MWTn
+    CORE.L.NCs = NC1..NCk
+    I[p=p.push(C,CORE.L);CCz=empty]
+      .add(MWT1:_).. .add(MWTn:_).add(NC1).. .add(NCk)=I'
+
+* I.addAll()=I
+* I.addAll(MWT,Ms)=I.add(MWT).addAll(Ms)
+* I.addAll(NC,Ms)=I.add(NC).addAll(Ms)
+* I.addAll(MI,Ms)=I.addAll(Ms)
+* I.addAll(F,Ms)=I.addAll(Ms)
+
+* I(mdf STz)=T[mdf=mdf]
+    I(STz)=T
+* I(ST1..STn)=mostGeneralMdf(Tz.mdfz) P
+    Tz=I.coreTof(ST1) U..U I.coreTof(STn)
+    {P}={T.P| T in Tz and p|-Tz.Pz<=T.P}
+
+* T in I.coreTof(T)
+* T in I.coreTof(ST)
+    ST<=ST' in I.CCz
+    T in I.coreTof(ST')
+_______
+#define I.selectedOption(OP, xPs)= xP.s(x1=xP'1..xn=xP'n)
+* I.p.selectedOption(OP,xPs) = P,m(x1..xn),i
+    {P,s,i}=I.p.opOptions(OP, I.typesOf(xPs))
+    xP'1..xP'n=xPs\i
+    xP=xPs\xP'1..xP'n
 _______
 #define collectDeps(p;CORE.MWT)=Ps;Ps' collectDeps(p;T)=Ps;Ps' collectDeps(p;Doc)=Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
@@ -69,98 +87,5 @@ _______
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
     origin(p;s1,P0)..origin(p;sn,P0) all defined
     [Mi,_]=[MWT| P in P0,Ps such that methods(p,P)(si)=MWT]
-    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
-    MWTi=p♥Mi otherwise
-_______
-#define PT in CCz
-* PT in PT<=_,CCz
-* PT in _<=PT,CCz 
-_______
-#define commonSuperT(p,Tz)=Tz'
-* commonSuperT(p,T0 .. Tn) =Tz0 intersect..intersect Tzn
-    Tzi={T| p|-Ti<=T}//computable as {mdf P | P in p(P).Pz[from T.P;p] U {T.P, Any}, T.mdf <= mdf}  
-_______
-#define solve(p, CCz) = IMap,  chooseT(CCz;Tz)=T,     mostSpecific(Tz) = T
-* solve(p, CCz) = X1:T1 .. Xn:Tn
-    X1 .. Xn = { X | X inside p(This0) }
-    Tzi = {T | T in commonSuperT(p,{T|T<=Xi in CCz}) and p |- T <= {T|Xi<=T in CCz}} //possible solutions
-    Ti = chooseT({T|Xi<=T in CCz} U {T|T<=Xi in CCz};Tzi)
-
-* chooseT(CCz;class Any,_)=class Any
-* chooseT(CCz;Tz)=mostSpecific(Tz)
-    mostSpecific(Tz)!= capsule P or capsule _ in CCz
-* chooseT(CCz;Tz)=imm P
-    mostSpecific(Tz)= capsule P
-    imm _ in CCz
-    not capsule _ in CCz
-* chooseT(CCz;Tz)=mut P 
-    mostSpecific(Tz)= capsule P
-    not imm _ in CCz
-    not capsule _ in CCzP
-
-* mostSpecific(Tz) = T
-    {T}={T| T in p.minimize(Tz) and p|-T<=Tz}
-_______
-#define I(CoM) = CORE.MWT/CORE.NC,  I(HALF.e) = CORE.e
-* I(CoM) = CoM if CoM of form CORE.MWT or CORE.NC
-* I(FULL.MH = reuse[URL]? CMP.e) = CORE.MH=reuse[URL]? CORE.e
-    CORE.MH=p♥FULL.MH
-    CORE.e=I(Y♥CMP.e)
-    Y=Y[p=p,onSlashX=empty,onReturn=CORE.MH.T,onPath=CORE.MH.T]
-    I[G=G^CORE.MH;onSlash=CORE.MH.T]
-* I(\) = I.onSlash.P //undefined if it is empty
-* I((Ds Ks e)) = (I[Ds](Ds) I[Ds]\dom(Ds)(Ks) I[Ds](e)) //not just I(Ks) since I[Ds] modifies I.IMap
-* I(P<:TX) = P<:iType(I,TX)
-* I(xP.m(x1=e1 .. xn=en)) = I(xP).m(x1=I1(e1) .. xn=In(en))
-    P=I.IMap(I.G(xP)).P
-    MWT=I.p(P)(m(x1..xn))
-    Ii=I[onSlash=I.p♥MWT.pari[from P;I.p]]
-* I(xP0 OP..OP xPn)=I(e)
-    Ti=I.IMap(I.G(xPi))
-    PAcc[I.p;GX=empty;I.CCz].selectedOption(OP, T0..Tn, xPs)=PT,s,i
-    xP'1..xP'n=xP0..xPn/i
-    e=xPi.m(x1=xP'1 .. xn=xP'n)  if s=methName(OP)_i(x1..xn)
-    e=PT<:class PT.#apply(x1=xP'1 .. xn=xP'n)  if s=#apply(x1..xn)
-* I(e)=e if e in {x, void, CORE.L} 
-* I(e)=e' propagates on the structure for throw e, loop e, x := e
-_______
-#define I[Ds] = I',  I\xs I(HALF.D) = CORE.D,  I(HALF.K) = CORE.K
-* I[]=I
-* I[TX1 x1=e1 .. TXn xn=en]=I[IMap=IMap'][D; Ds][Ds]
-    mdf1 X1..mdfk Xk={mdf X | TX1..TXn}
-    I.IMap=IMdf,X1: _ P1 .. Xk: _ Pk
-    IMap'=IMdf,X1: mdf1 P1 .. Xk: mdfk Pk
-    D,Ds=TX1[\=I.onSlash] x1=e1 .. TXn[\=I.onSlash] xn=en
-* I[TX x=e; Ds]=I[IMap=IMap,X: mdf' P][TX x=e; Ds]
-    x' in FV(e)
-    x' not in dom(I.G) //assert x' in dom(X x=e,Ds), else x not in scope
-    Ds(x').TX=X
-    I.IMap=IMap,X: mdf P
-    mdf'=imm if mdf in {read, fwd imm}    
-    mdf'=mut if mdf in {lent, fwd mut}    
-    mfd'=mdf otherwise
- otherwise
-* I[T x=e; Ds]=I[G=I.G,x:T]
-* I[X x=e; Ds]=I[G=I.G,x:I.IMap(X)]
-    I.IMap(X).mdf!=read
-* I[X x=e; Ds]=I[G=I.G,x:I.IMap(X)]
-    I.IMap(X).mdf=read
-    x' in FV(e)
-    G(x').mdf notin {imm,class,capsule}//and fwd imm?
-* I[X x=e; Ds]=I[G=I.G,x:imm P; IMap=IMap,X:imm P]
-    I.IMap=IMap,X:read P
-    forall x' in FV(e)\x,
-      if x' in dom(G) then G(x').mdf in {imm,class,capsule}//and fwd imm?
-      else IMap(Ds(x').TX).mdf in {imm,class,capsule}//and fwd imm?
-otherwise
-* I[X x=e; Ds]=I[G=I.G,x:I.IMap(X)]
-* I\xs=I[G=G\xs]
-
-* I(TX x=e) = G(x) x=I(e) //assert G(x) is defined here thanks to I[Ds] above
-
-* I(catch throw TX x e)=catch throw iType(I,TX) x I(e)
-_______
-#define iType(I,TX)=CORE.T
-* iType(I,T)=T
-* iType(I,mdf? X)=I.IMap(X)
-* iType(I,\)=I.onSlash
+    MWTi=Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
+    MWTi=Mi otherwise
