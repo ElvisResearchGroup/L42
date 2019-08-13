@@ -51,7 +51,7 @@ TraitWorld:Trait({
           return void
           )
         )
-      error PointNotFilled""  
+      error PointNotFilled""
       }
     }
   World:K<><{
@@ -76,7 +76,7 @@ TraitWorldLoader: Trait({
       Strings lines=content.splitOn(chars:S.nl()).withoutLeft()
       with s in lines.vals() (
         Strings tokens=s.splitOn(chars:S" ")
-        Debug(tokens) 
+        Debug(tokens)
         S entityTypeName=tokens.val(0Size)
         Point p=Point( x:Size.fromS(tokens.val(1Size)), y:Size.fromS(tokens.val(2Size)) )
         mut Entity e={
@@ -131,12 +131,12 @@ TraitUI: Trait({
   Main:{
     class method Strings (Actions as,mut World w) Strings[w.asText()]++Strings[
       with a in as.vals() (
-        a(w:w) 
+        a(w:w)
         use[w.asText()]
         )
       ]
-    class method Strings #$(Actions as) This(as:as, w:WorldLoader.#$(fileName:S"GameGridSaves/game-save-example.txt"))  
-    }  
+    class method Strings #$(Actions as) This(as:as, w:WorldLoader.#$(fileName:S"GameGridSaves/game-save-example.txt"))
+    }
   })
 
 Game:TraitEntities&TraitWorld&TraitWorldLoader&TraitUI&{}
