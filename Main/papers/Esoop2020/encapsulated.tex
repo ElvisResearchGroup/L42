@@ -1,49 +1,45 @@
-\section{Invariants over encapsulated state}
-\label{s:encapsulated}
+\subheading{Relaxing restrictions on capsule fields?}
+%\section{Invariants over encapsulated state}
+%\label{s:encapsulated}
+Capsule fiends allows to express invariants on mutable object graphs.
 Consider managing the shipment of items, where there is a maximum combined weight:
 \begin{lstlisting}
 class ShippingList {
   capsule Items items;
-  read method Bool invariant() {
-    return this.items.weight() <= 300; }
+  read method Bool invariant(){return this.items.weight()<=300;}
   ShippingList(capsule Items items) {
     this.items = items;
-    if (!this.invariant()) {throw Error(...);}} // injected check
+    if (!this.invariant()){throw Error(...);}}//injected check
   mut method Void addItem(Item item) {
     this.items.add(item);
-    if (!this.invariant()) {throw Error(...);}}} // injected check
+    if (!this.invariant()){throw Error(...);}}}//injected check
 \end{lstlisting}
 
-To handle this class we just inject calls to \Q@invariant@ at the end of the constructor and the \Q@addItem@ method.
+Our protocol injects \Q@invariant@ checks at the end of the constructor and the \Q@addItem@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.
 Relaxing our system to allow a \Q@mut@ modifier for
 the \Q@items@ field and the corresponding constructor parameter 
 breaks the code:
-the cargo we received in the constructor may already be compromised:
+it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
+\footnote{%
+Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
+In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.
+For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour~\cite{Bloch08}.%
+}
 %\saveSpace
 \begin{lstlisting}
 mut Items items = ...;
 mut ShippingList l = new ShippingList(items); // l is valid
 items.addItem(new HeavyItem()); // l is now invalid!
 \end{lstlisting}
-
-As you can see, it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
-\footnote{%
-Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
-In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.
-%\REVComm{
-For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour~\cite{Bloch08}.}
-%}{2}{citation to support this?}
-
-Removing our restrictions on capsule mutators 
-would break our invariant protocol.
 If we were to allow \Q@x.items@ to be seen as \Q@mut@, where \Q@x@ is not \Q@this@, then  even if the \Q@ShippingList@ has full control at initialisation time, such control may be lost later, and code unaware of the \Q@ShippingList@ could break it:
 \begin{lstlisting}
 mut ShippingList l = new ShippingList(new Items()); // l is ok
 mut Items evilAlias = l.items // here l loses control
 evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
-If we allowed a \Q@mut@ return type the following would be accepted:
+Relaxing our capsule mutators requirements
+would break our protocol: if capsule mutators could have a \Q@mut@ return type the following would be accepted:
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}
 \end{lstlisting}
@@ -61,24 +57,23 @@ we would get in the same situation as the former example.
 %\noindent  Moreover, if the used \Q!capsule! field is referenced in \validate, a \Q@this.validate()@ call is injected at the end of the method.
 
 
-Allowing \Q@this@ to be used more than once can also cause problems;
-if the following code were accepted, 
+Allowing \Q@this@ to be used more than once 
+would allows following code, where 
 \Q@this@ may be reachable from \Q@f@, thus \Q@f.hi()@ may observe an invalid object.
 \begin{lstlisting}
-mut method imm Void multiThis(C c) {
+mut method Void multiThis(C c) {
   read Foo f = c.foo(this);
   this.items.add(new HeavyItem());
-  f.hi(); } // Can `this' be observed here?
+  f.hi(); }//`this' could be observed here if it is in ROG(f)
 \end{lstlisting}
-
-In order to ensure that a second reference to \Q@this@ is not reachable through the parameters, we only accept \Q@imm@ and \Q@capsule@ parameters.
+\noindent In order to ensure that a second reference to \Q@this@ is not reachable through the parameters, we only accept \Q@imm@ and \Q@capsule@ parameters.
 Accepting a \Q@read@ parameter, as in the example below,
 would cause the same problems as before, where \Q@f@ may contain
 a reference to \Q@this@:
 \begin{lstlisting}
-mut method imm Void addHeavy(read Foo f) {
+mut method Void addHeavy(read Foo f) {
   this.items.add(new HeavyItem())
-  f.hi() } // Can 'this' be observed here?
+  f.hi(); }//`this' could be observed here if it is in ROG(f)
 ...
 mut ShippingList l = new ShippingList(new Items());
 read Foo f = new Foo(l);

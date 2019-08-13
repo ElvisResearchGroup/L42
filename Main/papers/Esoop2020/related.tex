@@ -40,7 +40,7 @@ In contrast our model has a more fine grained representation of mutability: it i
 
 \subheading{Class invariant protocols}
 Class invariants are a fundamental part of the design by contract methodology. 
-Invariant protocols differ wildly and can be unsound or complicated, particular due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified, meyer2016class}. 
+Invariant protocols differ wildly and can be unsound or complicated, particular due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified,meyer2016class}. 
 
 While invariant protocols all seem to 
 check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular sound approaches include:%
@@ -133,7 +133,6 @@ Dafny is also generally highly restrictive with its rules for mutation and objec
 
 \subheading{Specification languages}
 Using a specification language based on the mathematical metalanguage and different from the programming language's semantics may seem attractive, since it can express uncomputable concepts, has no mutation or non-determinism, and is often easier to formally reason about.
-
 However, a study~\cite{chalin2007logical} discovered that developers expect specification languages to follow the semantics of the underling language, including short-circuit semantics and arithmetic exceptions; thus for example \Q@1/0@\,\Q@||@\,\Q@2>1@ should not hold, while \Q@2>1@\,\Q@||@\,\Q@1/0@ should, thanks to short circuiting.
 This study was influential enough to convince JML to change its interpretation of logical expressions
 accordingly~\cite{chalin2008jml}.

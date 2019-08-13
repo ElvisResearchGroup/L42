@@ -40,12 +40,11 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 
 %	\setlength{\belowcaptionskip}{0.06em}
 \begin{figure}
-	\!\!\!\!
 	\begin{grammatica}
 		\produzione{e}{\x\mid l\mid\Kw{true}\mid\Kw{false}\mid e\singleDot\m\oR\es\cR\mid e\singleDot\f 
 			\mid e\singleDot\f\equals e 
 			\mid\Kw{new}\ C\oR\es\cR
-			\mid\Kw{try}\ \oC e_1\cC\ \Kw{catch}\ \oC e_2\cC
+			\mid\Kw{try}\, \oC e_1\cC\, \Kw{catch}\, \oC e_2\cC
 		}{expression}\\
 		\seguitoProduzione{
 			\mid \M{l}{e_1}{e_2}\mid\Kw{try}^{\s}\oC e_1\cC\ \Kw{catch}\ \oC e_2\cC
@@ -57,7 +56,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 			%\mid \EV\singleDot\f 
 			%\mid \EV\singleDot\f\equals\e
 			\mid v\singleDot\f\equals\EV
-		}{evaluation context}\\
+		}{eval. context}\\
 		\seguitoProduzione{
 			\mid \Kw{new}\ C\oR\Many{v}_1,\EV,\es_2\cR
 			\mid \M{l}{\EV}{e}
@@ -90,7 +89,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 		% |\E[\EG_l]}{}\\
 		\produzione{\mathit{CD}}{\Kw{class}\ C\ \Kw{implements}\ \Many{C}\oC\Many{F}\,\Many{M}\cC\mid 
 			\Kw{interface}\ C\ \Kw{implements}\ \Many{C}\oC\Many{M}\cC
-		}{class declaration}\\
+		}{class decl.}\\
 		\produzione{F}{\T\ \f\semiColon}{field}\\
 		\produzione{M}{\mdf\, \Kw{method}\, \T\ \m\oR\T_1\,\x_1,\ldots,\T_n\,\x_n\cR\ \Opt e}{method}\\
 		\produzione{\mdf}{\Kw{mut}\mid\Kw{imm}\mid\Kw{capsule}\mid\Kw{read}}{type modifier}\\
@@ -101,7 +100,7 @@ Our L42 implementation instead allows arbitrary \Q!imm! values to be thrown as e
 			\mid v_1\singleDot\f\equals v_2
 			\mid \Kw{new}\,C\oR\Many{v}\cR
 			,\quad\text{where }l\in \{v,v_1,v_2,\Many{v}\}
-		}{redex containing $l$}\\
+		}{redex with $l$}\\
 		\produzione{\error}{
 			\EV[\M{l}{v}{\Kw{false}}]
 			,\quad\text{where }

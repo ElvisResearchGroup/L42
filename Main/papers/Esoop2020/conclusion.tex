@@ -9,7 +9,7 @@
 
 \section{Conclusions and Future Work}
 \label{s:conclusion}
-Our approach follows the principles of \emph{offensive programming}
+Our approach follows the principles of \emph{offensive programming}%
 ~\cite{stephens2015beginning} where:
 no attempt to fix or recover an invalid object is performed, and
 %	\begin{itemize}
@@ -29,31 +29,9 @@ Crucially, any language already designed with such TMs
 can also support our invariant protocol with minimal added complexity.
 
 
-We demonstrated the applicability and simplicity of our approach with a GUI example.
-Our invariant protocol performs several orders of magnitude less checks than visible state semantics, and requires much less annotation 
-than Spec\#, (the system with the most comparable goals). In Section~\ref{s:formalism} we formalised our invariant protocol and in Appendix~\ref{s:proof} we prove it sound.
-%In appendix~\ref{s:formalism} we formalise our invariant protocol and prove it sound. 
-To stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more), we do not formalise any specific type system.
-
-
-% a method could be declared as taking a class whose invariant corresponds to the method's pre-condition,  and returning a class whose invariant corresponds to the pos-condition.
-
-
-% Such approach may be quite verbose, but would ensure that the precondition on the argument holds for the whole execution of the method, instead of just holding at the beginning.
-
-%It could be worthwhile formalising the minimal type system required by validation.
-
-
-
-%However the restrictions we make to ensures that \Q@validate@ is deterministic, namely those the type-system enforces due to its signature, seem quite flexible and reasonable;
-
-%%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
 
 The language we presented here restricts the forms of \Q@invariant@ and capsule mutator methods;
-such strong restrictions allow for sound and efficient injection of invariant checks. 
-
-
-In order to obtain safety, simplicity, and efficiency we traded some expressive power:
+in order to obtain safety, simplicity, and efficiency we traded some expressive power:
 the \Q@invariant@ method can only refer to immutable and encapsulated state.
 This means that while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
@@ -91,7 +69,7 @@ cannot be allowed in \Q@invariant@ methods, since they are not deterministically
 %allowing non deterministic behaviour.
 Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that enables catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap sizes.
 
-Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box pattern, as well as type modifier inference.
+%Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box pattern, as well as type modifier inference.
 
 %Our work, in comparison to previous RV techniques,
 %aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.

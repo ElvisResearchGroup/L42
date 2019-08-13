@@ -1,45 +1,22 @@
-\section{Invariants Over Immutable State}
+\section{Relaxations that would break our protocol}
 \label{s:immutable}
-In this section we consider invariants over fields of \Q@imm@ types.
-%\footnote{
-%In a real language, for conciseness one could make the \Q@imm@ modifier the default, allowing it to be omitted and our \Q@Person@ example class would only use 3 type modifiers; however we explicitly use it here for clarity.
-%}
-In the next section we detail our technique for \Q@capsule@ fields.
-
-In the following code \Q@Person@ has a single immutable (non final) field \Q@name@:
+Our sound invariant protocol relies on many different features and
+restrictions. We believe that they are all needed; in this section
+we will show how relaxing any of our requirements would break our
+protocol; sometimes in surprising ways.
+First we consider a simple case, an invariant over fields of \Q@imm@ types;
+\Q@Person@ has a single immutable (non final) field \Q@name@:
 \begin{lstlisting}
 class Person {
   read method Bool invariant() { return !name.isEmpty(); }
   private String name;//the default modifier imm is applied here
   read method String name() { return this.name; }
   mut method String name(String name) { this.name = name; }
-  Person(String name) { this.name = name; }
-}
+  Person(String name) { this.name = name; }  }
 \end{lstlisting}
-%\IODel{\Q@Person@ only has immutable fields and its constructor only uses \Q@this@ to initialise them.}
-%; we say such a class is \emph{simple}.
-%\Q@Person@, only has immutable fields and the constructor 
-%uses the parameters to directly initialize (all) the fields.
-% We say such a class is \emph{simple}.%
-%\footnote{
-%We consider only standard contractors for simplicity of exposition.
-%More complex constructors could be supported, provided that \Q@this@ is only used to access fields, we do discuss them for simplicity.}
-% The difference with respect to UML DataTypes 
-%immutable types (like UML DataTypes)
-%UML datatypes are aclass property. immutable types are often an instance one (so no final fields) 
-Note that the \Q@name@ field is not final, thus \Q@Person@ objects can change state during their lifetime. This means that the ROGs of all of \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
-%Of course UML DataTypes
-%immutable types
-%No, a type is not a class
-% are just a special case of simple classes.
-We can easily enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.%
-%\footnote{Since the constructor only initialises fields; as with the \Q@invariant@ method itself, we allow field uses since \Q@this@ is not directly reached.}
-%would require the initial/default value of \Q@this@ to be valid.}
-% If a simple class provides a \Q@invariant@ method, then validation will be enforced.
-% For \Q@Person@, intuitively, the code would behave as follow:
-%\Comment{if we made this public, all users who update the field need to call validate}%
-%There are many interpretations for your comment
-%why you deleted my code comments?
+The \Q@name@ field is not final: \Q@Person@s can change state during their lifetime. The ROGs of all of \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
+We enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.
+Such checks will be generated/injected, and not directly written by the programmer.
 \begin{lstlisting}
 class Person { .. // Same as before
   mut method String name(String name) {
@@ -47,58 +24,43 @@ class Person { .. // Same as before
     if (!this.invariant()) { throw new Error(...); }}
   Person(String name) {
     this.name = name; // check at end of constructor
-    if (!this.invariant()) { throw new Error(...); }}
-}
+    if (!this.invariant()) { throw new Error(...); }}  }
 \end{lstlisting}
-%... $\MComment{validation error}$ 
-%
-% Many programmers attempted to write similar code in mainstream languages like Java to ensure  that some property always holds. Indeed, at first look, this code seems to correctly enforce validation. Sadly, without relying on TM and OC, the former code would be broken: just making the fields private and checking the \Q@invariant@ method at the \textbf{end of the constructor} and at the \textbf{end of mutator methods} is not enough to enforce validation.
-% The trick is that our intuition relies not on statically verified properties, or on the semantics of the language, but on the expectations about `correct' behaviour of \Q@String@. We need to enforce Validation without assuming the behaviour of other objects.
+However, those checks relies on TMs If we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs and TMs with SES, those checks would not be sufficient.
 
-Such checks will be generated/injected, and not directly written by the programmer. If we were to relax (as in Rust), or even eliminate (as in Java), the support for TMs, the enforcement of our invariant protocol for the \Q@Person@ class would become harder, or even impossible. 
+\subheading{Unrestricted Access To Capability Objects?} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation by creating new capability objects or mutating existing ones, would break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
+Consider this use of person;
+where \Q@myPerson.invariant()@ may randomly fails:%
+\footnote{ For example, a method 
+\Q@mut Person make(String n)\{return new Person(n);\}@
+could be called with an \Q@EvilString@. In particular, the presence of dynamic class loading makes impossible 
+to know what the type of \Q@n@ could be.}
 
-\subheading{Unrestricted Access To Capability Objects} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation by creating new capability objects or mutating existing ones, could break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
-%\Q@invariant@ to be non-deterministic.}%
-% 
-For example consider this simple and contrived (mis)use of person:
 \begin{lstlisting}[morekeywords={assert}]
-class EvilString extends String {
-  @Override read method Bool isEmpty() {
-    // Create a new capability object out of thin air
-    return new Random().bool(); }}
-...
-method mut Person createPersons(String name) {
-  // we can not be sure that name is not an EvilString
-  mut Person schrodinger = new Person(name); // exception here?
-  assert schrodinger.invariant(); // will this fail?
-  ...}
+class EvilString extends String {//IMPOSSIBLE THANKS TO OCs
+  @Override read method Bool isEmpty() {//Creates a new
+    return new Random().bool(); }}//capability out of thin air
 \end{lstlisting}
-%//  mut Person schrodinger2 = new Person(name); // what about here?
-
-Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
-In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
-restricts their creation, the above example would be prevented.
+% Since our system allows non-determinism only through capability objects, and 
+%restricts their creation, the above example would be prevented.
  %Languages like Java, Rust and Pony, which do not require the user of object-capabilities to perform non-deterministic operations, suffer from . 
 %???
 %Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
 
-\subheading{Allowing Internal Mutation Through Back Doors}
+\subheading{Allowing Internal Mutation Through Back Doors?}
 Suppose we relax our rules by allowing interior mutability
 as in Rust and Javari, allowing the ROG of an `immutable' object to be mutated through back doors.
 Such back doors would allow the \Q@invariant@ method to store and read information about previous calls.
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
-class MagicCounter {
-  method Int increment(){
-    //Magic mutation through an imm receiver, equivalent to i++
-}}
+class MagicCounter {//IMPOSSIBLE, NO BACK DOORS IN L42
+  method Int incr(){/*internal mutability does i++*/}}
 class NastyS extends String {..
-  MagicCounter evil = new MagicCounter(0);
-  @Override read method Bool isEmpty() {
-    return this.evil.increment() != 2; }}
+  MagicCounter c = new MagicCounter(0);
+  @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
 ...
-NastyS name = new NastyS("bob"); //TMs believe name's ROG is imm
+NastyS name = new NastyS(); //TMs believe name's ROG is imm
 Person person = new Person(name); // person is valid, counter=1
 name.increment(); // counter == 2, person is now broken
 person.invariant(); // returns false!, counter == 3
@@ -163,7 +125,7 @@ without the need for back doors.
 %For Validation we need a language supporting aliasing and mutability control.
 %\end{comment}
 
-\subheading{Strong Exception Safety}
+\subheading{No Strong Exception Safety?}
 The ability to catch and recover from invariant failures allows programs to take corrective action.
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try@--\Q@catch@.
 %\REVComm{
@@ -175,11 +137,10 @@ If instead we were to not enforce strong exception safety, an invalid object cou
 \begin{lstlisting}[morekeywords={assert}]
 mut Person bob = new Person("bob");
 // Catch and ignore invariant failure:
-try { bob.name(""); } catch (Error t) { } // ill-typed in L42
+try { bob.name(""); } catch (Error t) { } // ILL-TYPED IN L42
 assert bob.invariant(); // fails!
 \end{lstlisting}
-
-As you can see, recovering from an invariant failure in this way is unsound and would break our protocol.
+%Recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
 %Since calls to \Q@invariant@ may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.
 
