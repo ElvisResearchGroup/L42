@@ -28,7 +28,7 @@ TraitWorld:Trait({
     mut method Void point(Point that)
     }
 
-  PointToEntityMap:Trait(Collections.vector(ofMut:Entity))&{
+  PointToEntityMap:Trait(Collections.vector(ofMut:Entity)) & {
     mut method mut Entity getE(Point that){
       with elem in this.#vals() (
         if elem.point()== that (return elem)
@@ -159,7 +159,7 @@ TraitUI: Trait({
     }
   })
 
-Game:TraitEntities&TraitWorld&TraitWorldLoader&TraitUI&{}
+Game:TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {}
 
 Test1:{
   mut Game.PointToEntityMap map=Game.PointToEntityMap[]
