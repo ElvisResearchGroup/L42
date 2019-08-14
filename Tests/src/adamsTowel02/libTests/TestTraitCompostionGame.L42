@@ -131,10 +131,10 @@ TraitUI: Trait({
         with x in Range(This.gameSizeInCells()) (
           Point p = Point(x: x, y: y)
           if this.player().point() == p (
-            use[S"|";this.player().representation()]
+            use[S"|"; this.player().representation()]
             )
           else if this.map().hasE(p) (
-            use[S"|";this.#map().getE(p).representation()]
+            use[S"|"; this.#map().getE(p).representation()]
             )
           else (use[S"|_"])
           )
@@ -213,7 +213,7 @@ Test3: {
     player: Game.Player(p: Point(x: 2Size, y: 1Size))
     )
   w.#map().addE(Game.RockItem(p: Point(x: 2Size, y: 3Size)))
-  Game.Actions as = Game.Actions[Game.MoveDown();Game.MoveDown();Game.MoveDown()]
+  Game.Actions as = Game.Actions[Game.MoveDown(); Game.MoveDown(); Game.MoveDown()]
   Strings ss = Game.Main(as: as, w: w)
   Debug.test(ss.val(0Size), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
@@ -243,7 +243,7 @@ Test3: {
   }
 
 Test4: {
-  Game.Actions as = Game.Actions[Game.MoveDown();Game.MoveDown();Game.MoveRight()]
+  Game.Actions as = Game.Actions[Game.MoveDown(); Game.MoveDown(); Game.MoveRight()]
   Strings ss = Game.Main.#$(as: as)
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
