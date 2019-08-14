@@ -1,13 +1,13 @@
 {reuse L42.is/AdamTowel02
 
 // Utils start
-Point:Data<><{Size x, Size y}
+Point: Data<><{Size x, Size y}
 PointNotFilled: Message.$<><{ implements Guard}
 PointFilled: Message.$<><{ implements Guard}
 // Utils end
 
-TraitEntities:Trait({
-  Entity:{interface
+TraitEntities: Trait({
+  Entity: {interface
     read method Point point()
     mut method Void point(Point that)
     read method S representation()
@@ -24,13 +24,13 @@ TraitEntities:Trait({
   AppleItem: EntityTrait & {read method S representation()S"A"}
   })
 
-TraitWorld:Trait({
-  Entity:{interface
+TraitWorld: Trait({
+  Entity: {interface
     read method Point point()
     mut method Void point(Point that)
     }
 
-  PointToEntityMap:Trait(Collections.vector(ofMut:Entity)) & {
+  PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
     mut method mut Entity getE(Point that){
       with elem in this.#vals() (
         if elem.point() == that (return elem)
@@ -47,7 +47,7 @@ TraitWorld:Trait({
 
     mut method Void addE(mut Entity that)(
       if this.hasE(that.point()) (error PointFilled"")
-      this.add(right:that)
+      this.add(right: that)
       )
 
     mut method Void removeE(Point that){
@@ -62,36 +62,36 @@ TraitWorld:Trait({
       }
     }
 
-  World:K<><{
+  World: K<><{
     mut PointToEntityMap map
     mut Player player
-    mut method Void movePlayerUp()this.#player().point(\point.with(y:\y-1Size))
-    mut method Void movePlayerDown()this.#player().point(\point.with(y:\y+1Size))
-    mut method Void movePlayerLeft()this.#player().point(\point.with(x:\x-1Size))
-    mut method Void movePlayerRight()this.#player().point(\point.with(x:\x+1Size))
+    mut method Void movePlayerUp()this.#player().point(\point.with(y: \y-1Size))
+    mut method Void movePlayerDown()this.#player().point(\point.with(y: \y+1Size))
+    mut method Void movePlayerLeft()this.#player().point(\point.with(x: \x-1Size))
+    mut method Void movePlayerRight()this.#player().point(\point.with(x: \x+1Size))
     }
   })
 
 TraitWorldLoader: Trait({
-  Entity:{interface}
+  Entity: {interface}
 
   Player: {implements Entity class method mut This (Point p)}
   RockItem: {implements Entity class method mut This (Point p)}
   AppleItem: {implements Entity class method mut This (Point p)}
 
-  WorldLoader:{
+  WorldLoader: {
     class method mut World #$(S fileName) (
-      mut World w = World(map:PointToEntityMap[], player:Player(p:Point(x:0Size,y:0Size)))
-      S content = Debug.#$readFile(fileName:fileName)
-      Strings lines = content.splitOn(chars:S.nl()).withoutLeft()
+      mut World w = World(map: PointToEntityMap[], player: Player(p: Point(x: 0Size,y: 0Size)))
+      S content = Debug.#$readFile(fileName: fileName)
+      Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
       with s in lines.vals() (
-        Strings tokens = s.splitOn(chars:S" ")
+        Strings tokens = s.splitOn(chars: S" ")
         Debug(tokens)
         S entityTypeName = tokens.val(0Size)
-        Point p = Point( x:Size.fromS(tokens.val(1Size)), y:Size.fromS(tokens.val(2Size)) )
+        Point p = Point(x: Size.fromS(tokens.val(1Size)), y: Size.fromS(tokens.val(2Size)))
         mut Entity e = {
-          if entityTypeName == S"ROCK_ITEM" ( return RockItem(p:p) )
-          if entityTypeName == S"APPLE_ITEM" ( return AppleItem(p:p) )
+          if entityTypeName == S"ROCK_ITEM" (return RockItem(p: p))
+          if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
           error X"@"[entityTypeName]"@"
           }
         w.#map().addE(e)
@@ -102,19 +102,19 @@ TraitWorldLoader: Trait({
   })
 
 TraitUI: Trait({
-  Entity:{interface
+  Entity: {interface
     read method Point point()
     read method S representation()
     }
 
   Player: {implements Entity}
 
-  PointToEntityMap:{
+  PointToEntityMap: {
     read method Bool hasE(Point that)
     mut method mut Entity getE(Point that)
     }
 
-  World:K<><{
+  World: K<><{
     mut PointToEntityMap map
     mut Player player
 
@@ -123,7 +123,7 @@ TraitUI: Trait({
     mut method S asText()S""[
       with y in Range(This.gameSizeInCells()) (
         with x in Range(This.gameSizeInCells()) (
-          Point p = Point(x:x,y:y)
+          Point p = Point(x: x,y: y)
           if this.player().point() == p (use[S"|";this.player().representation()])
           else if this.map().hasE(p) (
             use[S"|";this.#map().getE(p).representation()]
@@ -140,47 +140,47 @@ TraitUI: Trait({
     mut method Void movePlayerRight()
     }
 
-  Action:{interface method Void (mut World w)}
-  Actions:Collections.vector(of:Action)
-  MoveUp:K<><{implements Action method (w)w.movePlayerUp()}
-  MoveDown:K<><{implements Action method (w)w.movePlayerDown()}
-  MoveLeft:K<><{implements Action method (w)w.movePlayerLeft()}
-  MoveRight:K<><{implements Action method (w)w.movePlayerRight()}
+  Action: {interface method Void (mut World w)}
+  Actions: Collections.vector(of: Action)
+  MoveUp: K<><{implements Action method (w)w.movePlayerUp()}
+  MoveDown: K<><{implements Action method (w)w.movePlayerDown()}
+  MoveLeft: K<><{implements Action method (w)w.movePlayerLeft()}
+  MoveRight: K<><{implements Action method (w)w.movePlayerRight()}
 
-  Main:{
+  Main: {
     class method Strings (Actions as,mut World w) Strings[w.asText()]++Strings[
       with a in as.vals() (
-        a(w:w)
+        a(w: w)
         use[w.asText()]
         )
       ]
 
     class method Strings #$(Actions as) (
-      This(as:as, w:WorldLoader.#$(fileName:S"GameGridSaves/game-save-example.txt"))
+      This(as: as, w: WorldLoader.#$(fileName: S"GameGridSaves/game-save-example.txt"))
       )
     }
   })
 
-Game:TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {}
+Game: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {}
 
-Test1:{
+Test1: {
   mut Game.PointToEntityMap map = Game.PointToEntityMap[]
-  Debug.test(map.hasE(Point(x:10Size,y:20Size)), expected:S"false")
-  map.addE(Game.RockItem(p:Point(x:10Size,y:20Size)))
-  Debug.test(map.hasE(Point(x:10Size,y:20Size)), expected:S"true")
-  map.removeE(Point(x:10Size,y:20Size))
-  Debug.test(map.hasE(Point(x:10Size,y:20Size)), expected:S"false")
-  Debug.test(Bool.readableName() expected:S"Bool")
+  Debug.test(map.hasE(Point(x: 10Size,y: 20Size)), expected: S"false")
+  map.addE(Game.RockItem(p: Point(x: 10Size,y: 20Size)))
+  Debug.test(map.hasE(Point(x: 10Size,y: 20Size)), expected: S"true")
+  map.removeE(Point(x: 10Size,y: 20Size))
+  Debug.test(map.hasE(Point(x: 10Size,y: 20Size)), expected: S"false")
+  Debug.test(Bool.readableName() expected: S"Bool")
   return ExitCode.normal()
   }
 
-Test2:{
+Test2: {
   mut Game.World w = Game.World(
-    map:Game.PointToEntityMap[],
-    player:Game.Player(p:Point(x:2Size,y:1Size))
+    map: Game.PointToEntityMap[],
+    player: Game.Player(p: Point(x: 2Size,y: 1Size))
     )
-  w.#map().addE(Game.RockItem(p:Point(x:2Size,y:3Size)))
-  Debug.test(w.asText(), expected:S"
+  w.#map().addE(Game.RockItem(p: Point(x: 2Size,y: 3Size)))
+  Debug.test(w.asText(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -195,15 +195,15 @@ Test2:{
   return ExitCode.normal()
   }
 
-Test3:{
+Test3: {
   mut Game.World w = Game.World(
-    map:Game.PointToEntityMap[],
-    player:Game.Player(p:Point(x:2Size,y:1Size))
+    map: Game.PointToEntityMap[],
+    player: Game.Player(p: Point(x: 2Size,y: 1Size))
     )
-  w.#map().addE(Game.RockItem(p:Point(x:2Size,y:3Size)))
+  w.#map().addE(Game.RockItem(p: Point(x: 2Size,y: 3Size)))
   Game.Actions as = Game.Actions[Game.MoveDown();Game.MoveDown();Game.MoveDown()]
-  Strings ss = Game.Main(as:as, w:w)
-  Debug.test(ss.val(0Size), expected:S"
+  Strings ss = Game.Main(as: as, w: w)
+  Debug.test(ss.val(0Size), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -215,7 +215,7 @@ Test3:{
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     ")
-  Debug.test(ss.right(), expected:S"
+  Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -230,10 +230,10 @@ Test3:{
   return ExitCode.normal()
   }
 
-Test4:{
+Test4: {
   Game.Actions as = Game.Actions[Game.MoveDown();Game.MoveDown();Game.MoveRight()]
-  Strings ss = Game.Main.#$(as:as)
-    Debug.test(ss.val(0Size), expected:S"
+  Strings ss = Game.Main.#$(as: as)
+    Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -245,7 +245,7 @@ Test4:{
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     ")
-  Debug.test(ss.right(), expected:S"
+  Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
     '|_|P|_|_|_|_|_|_|_|_
