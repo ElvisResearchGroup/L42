@@ -1,10 +1,12 @@
 {reuse L42.is/AdamTowel02
 
-// Utils start
+// ****************************** Utils ******************************
+
 Point: Data<><{Size x, Size y}
 PointNotFilled: Message.$<><{implements Guard}
 PointFilled: Message.$<><{implements Guard}
-// Utils end
+
+// ****************************** Entities ******************************
 
 TraitEntities: Trait({
   Entity: {interface
@@ -72,6 +74,8 @@ TraitWorld: Trait({
     }
   })
 
+// ****************************** WorldLoader ******************************
+
 TraitWorldLoader: Trait({
   Entity: {interface}
 
@@ -100,6 +104,8 @@ TraitWorldLoader: Trait({
       )
     }
   })
+
+// ****************************** UI ******************************
 
 TraitUI: Trait({
   Entity: {interface
@@ -148,7 +154,11 @@ TraitUI: Trait({
   MoveDown: K<><{implements Action method (w)w.movePlayerDown()}
   MoveLeft: K<><{implements Action method (w)w.movePlayerLeft()}
   MoveRight: K<><{implements Action method (w)w.movePlayerRight()}
+  })
 
+// ****************************** Main ******************************
+
+Game: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {
   Main: {
     class method Strings (Actions as, mut World w) Strings[w.asText()]++Strings[
       with a in as.vals() (
@@ -161,9 +171,9 @@ TraitUI: Trait({
       This(as: as, w: WorldLoader.#$(fileName: S"GameGridSaves/game-save-example.txt"))
       )
     }
-  })
+}
 
-Game: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {}
+// ****************************** Tests ******************************
 
 Test1: {
   mut Game.PointToEntityMap map = Game.PointToEntityMap[]
