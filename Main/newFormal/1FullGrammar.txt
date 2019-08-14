@@ -60,9 +60,8 @@ _______
   ER ::= CCz;CORE.e? | Err
   DsR ::= CCz;CORE.Ds | Err
   KR ::= CCz;CORE.K | Err
-  Err ::= limit(p) | illTyped(p) | incoherent(p)
-    | headerErr(p)| implementsErr(p) | inferenceFailure(I,PTz) | throw(p,A,v)
-  R ::= PR | ER | DR | KR
+  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,PTz) | throw(p,A,v)
+  R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
   I ::= I[C?;p;G;CCz]//inference application environment

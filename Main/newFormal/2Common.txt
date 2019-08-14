@@ -1,38 +1,38 @@
 _______
-#define p(P)=LL //functional notation
-* (LL;pTails)(This0.Cs)=LL(Cs)
-* p(Thisn+1.Cs)=p.pop(n+1)(This0.Cs)
-* p(Any)={interface}
-* p(Void)=p(Library)={}
+#define p(P) = LL //functional notation
+* (LL;pTails)(This0.Cs) = LL(Cs)
+* p(Thisn+1.Cs) = p.pop(n+1)(This0.Cs)
+* p(Any) = {interface}
+* p(Void) = p(Library) = {}
 _______
-#define p.pop(n)= p'
-* p.pop(0)=p
-* (LL;C:LL';pTails).pop(n+1)=(LL'[C=LL];pTails).pop(n)
-* (LL;CORE.L;pTails).pop(n+1)=(CORE.L;pTails).pop(n)
+#define p.pop(n) = p'
+* p.pop(0) = p
+* (LL;C:LL';pTails).pop(n+1) = (LL'[C=LL];pTails).pop(n)
+* (LL;CORE.L;pTails).pop(n+1) = (CORE.L;pTails).pop(n)
 _______
-#define p.push(C,LL')=p'    p.push(LL')=p'    p.push(C)
-* (LL;pTails).push(C,LL')=LL';LL[C=[]],pTails
+#define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)
+* (LL;pTails).push(C,LL') = LL';C:LL,pTails
 
-* (CORE.L;pTails).push(LL)=LL;CORE.L,pTails
+* (CORE.L;pTails).push(LL) = LL;CORE.L,pTails
 
-* (LL;pTails).push(C)=(LL;pTails).push(C,LL')
-    LL(C)=LL'
+* (LL;pTails).push(C) = (LL;pTails).push(C,LL')
+    LL(C) = LL'
 _______
-#define p.update(LL)=p'
+#define p.update(LL) = p'
 * (_;pTails).update(LL) = LL;pTails
 _______
-#define p.minimize(P)=P'    p.minimize(STz)=STz'
+#define p.minimize(P) = P'    p.minimize(STz) = STz'  choseT(CORE.Tz) = CORE.T
 * p.minimize(P) = P
     P in {Any,Void,Library}
 * p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
-    p.pop(1).minimize(Thisn.Cs)=Thisk.Cs'
+    p.pop(1).minimize(Thisn.Cs) = Thisk.Cs'
 * (CORE.L;C:LL;_).minimize(This1.C.Cs)=This0.Cs
 
-* p.minimize(ST1..STn)=STz'
-    STz=p.minimize(ST1)=..p.minimize(STn)
-    Tz={T| T in STz}
-    STz'=mostGeneralMdf(Tz.mdfz) P if {P}={T.P| T in Tz and p|-Tz.Pz<=T.P}
-    STz'=STz otherwise //do we really want to fail here if mostGeneralMdf(Tz.mdfz) undefined?
+* p.minimize(ST1..STn) = STz'
+    STz = p.minimize(ST1)..p.minimize(STn)
+    Tz = {T| T in STz}
+    STz'=STz if choseT({T| T in STz}) undefined
+    STz' = choseT({T| T in STz}) otherwise
 * p.minimize(ST.s(.i)?)=ST'.s(.i)?
     p.minimize(ST)=ST'
     p(ST')(s) undefined
@@ -45,79 +45,81 @@ _______
 * p.minimize(op STz1..STzn)=p(P)(s).T[from P;p]
     p.minimize(STz1)=T1..p.minimize(STzn)=Tn
     {P,s,i}=p.opOptions(OP, Ts)
-_______
-#define mostGeneralMdf(mdfs)=mdf     generalEnough(mdfs)=mdfs'
-* mostGeneralMdf(mdfs)=mdf //the most specific generalEnough.
-    mdf in generalEnough(mdfs)
-    forall mdf1 in generalEnough(mdfs): mdf <= mdf1
-* generalEnough(mdfs)={mdf | forall mdf1 in mdfs, mdf1 <= mdf}
-_______
-#define p.navigate(P)=p'
-* p.navigate(Thisn.C1..Ck)=p.pop(n).push(C1)...push(Ck)
-_______
-#define P0[from P1;p]=P2 e[from P;p]=e' e[from P;p;n]=e'  CCz[from P;p]=CCz'
-* Thisn.Cs[from Thism.C1..Ck;p]=Thism.C1..C(k-n).Cs if n<=k
-* Thisn.Cs[from Thism.C1..Ck;p]=p.minimize(This(m+n-k).Cs) if n>k
-* Any[from _]=Any, Library[from _]=Library, Void[from _]=Void
 
-* e[from P;p] propagate on the structure, and L[from P;p] = L[ from P;p;0] //assert p.push(L[from P;p;0]).checkAllMinimized(L[from P;p;0]))
+*choseT(Tz) = mostGeneralMdf(Tz.mdfz) P
+  {P}={T.P| T in Tz and p|-Tz.Pz<=T.P}
+_______
+#define mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
+* mostGeneralMdf(mdfz) = mdf //the most specific generalEnough.
+    mdf in generalEnough(mdfz)
+    forall mdf1 in generalEnough(mdfz): mdf <= mdf1
+* generalEnough(mdfz) = {mdf | forall mdf1 in mdfz, mdf1 <= mdf}
+_______
+#define p.navigate(P) = p'
+* p.navigate(Thisn.C1..Ck) = p.pop(n).push(C1)...push(Ck)
+_______
+#define P0[from P1;p] = P2 e[from P;p] = e' e[from P;p;n] = e'  CCz[from P;p] = CCz'
+* Thisn.Cs[from Thism.C1..Ck;p] = Thism.C1..C(k-n).Cs if n<=k
+* Thisn.Cs[from Thism.C1..Ck;p] = p.minimize(This(m+n-k).Cs) if n>k
+* Any[from _] = Any,    Library[from _] = Library,    Void[from _] = Void
+
+* e[from P;p] propagate on the structure, and L[from P;p] = L[from P;p;0] //assert p.push(L[from P;p;0]).checkAllMinimized(L[from P;p;0]))
 
 * {H Ms}[from P;p;j] = {H[Ts=H.Ts[from P;p;j+1] Ms[from P;p;j+1]}
-* This(j+n).Cs0[from P;p;j]=This(j+k).Cs1
-    Thisn.Cs0[from P;p]=Thisk.Cs1
-* Thisn.Cs[from P;p;j]=Thisn.Cs with n<j
+* This(j+n).Cs0[from P;p;j] = This(j+k).Cs1
+    Thisn.Cs0[from P;p] = Thisk.Cs1
+* Thisn.Cs[from P;p;j] = Thisn.Cs with n<j
 * All cases for other expressions/terms propagate to submembers, including docs  
 
-* (ST1<=mdf?1 STz1..STn<=mdf?n STzn)[from P;p] = 
+* (ST1<=mdf?1 STz1..STn<=mdf?n STzn)[from P;p] =//TODO: somewhere remove CORE.T<=CORE.T' ? 
     ST1[from P;p]<=mdf?1 STz1[from P;p]..STn[from P;p]<=mdf?n STzn[from P;p]
 * ST1..STn[from P;p] = ST1[from P';p]..STn[from P';p]
 * ST.s[from P;p] = p.minimize(ST[from P;p].s)
 * ST.s.i[from P;p] = p.minimize(ST[from P;p].s.i)
-* (op STz1..STzn)[from P;p] = op STz1[from P;p]..STzn[from P;p]
+* (OP STz1..STzn)[from P;p] = OP STz1[from P;p]..STzn[from P;p]
 _______
 #define MH notations, MWT notations just inherit them,
 with MH=mdf method T mOp(T1 x1..Tn xn)[Ts] 
-* MH.pars=T1..Tn
-* MH.exceptions=Ts
-* G^MH= this:mdf This0, x1:T1..xn:Tn
+* MH.pars = T1..Tn
+* MH.exceptions = Ts
+* G^MH = this:mdf This0, x1:T1..xn:Tn
 * MH.pari = Ti
 * MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness for no repetition in dom uses MH.s
 _______
 #define name manglings
-* methName(m)=m
-* methName(Op)=m//from a table, for example methName(++)=#plusplus
-* #m'OP'=methName(OP)#m //for example  #andand#shortCircuit
+* methName(m) = m
+* methName(Op) = m//from a table, for example methName(++)=#plusplus
+* #m'OP' = methName(OP)#m //for example  #andand#shortCircuit
 * methNameTrim(x)//removes any numeric suffix, for example methNameTrim(foo1b34)=foo1b
-* methName(x,mdf)=x#mdf
-* methName(x,empty)=x#'default' // for example methName(#bar,empty)=#bar#default
+* methName(x,mdf) = x#mdf
+* methName(x,empty) = x#'default' // for example methName(#bar,empty)=#bar#default
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
 
- *p |- mdf0 P0<=mdf1 P1
-    mdf0<=mdf1
-    p |- P0<=P1
+ *p |- mdf0 P0 <= mdf1 P1
+    mdf0 <= mdf1
+    p |- P0 <= P1
 
-* p |- P0<=P1  
+* p |- P0 <= P1  
     P1 in {P0} U (p(P0).Ts.Ps[from P0;p]) U {Any} //assert p.minimize(Pi)=Pi
 
 * mdf <= mdf
-* capsule<=mdf, if mdf in {mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm}
-* imm<=mdf, if mdf in {read,fwd%Imm,fwdImm}
-* mut<=mdf, if mdf in {lent,fwd%Mut,read,fwdMut}
-* lent<=read
-* fwd%Mut<=fwdMut
-* fwd%Imm<=fwdImm
+* capsule <= mdf, if mdf in {mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm}
+* imm <= mdf, if mdf in {read,fwd%Imm,fwdImm}
+* mut <= mdf, if mdf in {lent,fwd%Mut,read,fwdMut}
+* lent <= read
+* fwd%Mut <= fwdMut
+* fwd%Imm <= fwdImm
 _______
 #define CORE.e inside CORE.e'
   e inside CORE.ctx[e]
 _______
-#define toRead(T)   toRead(G)
-//* toRead(fwdMut P)=toRead(fwd%Mut P)=toRead(fwdImm P)=toRead(fwd%Imm P)=undefined
-* toRead(lent P)=toRead(mut P)=toRead(capsule P)=read P
-* toRead(mdf P)=mdf P if mdf in {imm,read,class}
+#define toRead(T)   toRead(G) //toRead of fwd, fwd% is undefined
+* toRead(lent P) = toRead(mut P) = toRead(capsule P) = read P
+* toRead(mdf P) = mdf P if mdf in {imm,read,class}
 
-* toRead(G)(x)=toRead(G(x))[with var?=empty] //thus single entry undefined where toRead undefined
+* toRead(G)(x) = toRead(G(x))[with var?=empty] //thus single entry undefined where toRead undefined
 _______
 #define origin(p;s;P) = P'   refine(p;s;P)
 * origin(p;s; P) = P'
@@ -125,18 +127,15 @@ _______
     
 * refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
 _______
-#define p♥FULL.MH = CORE.MH
-* p♥(mdf FULL.Docs)? method FULL.T mOp (FULL.T1 x1..FULL.Tn xn)[FULL.Ts]
-    =(mdf p♥FULL.Docs)? method p♥FULL.T mOp (p♥FULL.T1 x1..p♥FULL.Tn xn)[p♥FULL.Ts]
-_______
-#define p♥FULL.TLocal=HALF.T   p♥CsP=P,  p♥FULL.Docs=CORE.Docs
-* p♥empty=X with fresh X
-* p♥(mdf? Docs CsP)=mdf p♥Docs p♥CsP
-    mdf=imm if mdf?=empty
-    mdf=mdf? otherwise
-* p♥mdf = mdf X with fresh X 
-* p♥P=p.minimize(P)//this also handles CsP starting for Any/Void/Library/Thisn
-* p♥C.Cs=p.minimize(Thisn.C.Cs) //not already minimized
+#define p♥FULL.MH = CORE.MH    p♥FULL.TLocal = CORE.T   p♥CsP = P,  p♥FULL.Docs = CORE.Docs
+* p♥(mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts]
+    =(mdf p♥Docs)? method p♥T methName(mOp)(p♥T1 x1..p♥Tn xn)[p♥Ts]
+
+* p♥(Docs CsP) = imm p♥Docs p♥CsP
+* p♥(mdf Docs CsP) = mdf p♥Docs p♥CsP
+
+* p♥P = p.minimize(P)
+* p♥C.Cs = p.minimize(Thisn.C.Cs) //not already minimized
     where n is the smallest number such that either
       C in dom(p.get(n))
       or @{__STOP_SCOPE__} in p.get(n).Docs
@@ -144,14 +143,11 @@ _______
 
 * p♥FULL.Docs =CORE.Docs
     all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
-
-* p♥FULL.MH propagates on the structure
 _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
     forall P<:class P' inside e: //assert p(P) and p(P') is CORE.L
-      either P'=Any
-      or coherent(p.navigate(P))
+      either P'=Any or coherent(p.navigate(P))
 
 * coherent(p)
     CORE.L=p(This0)
@@ -183,20 +179,19 @@ _______
     p |- imm Void <= T //capsule methods are guaranteed to trash the object anywhay...they are also dead code
 * coherent(p;MHs;mdf method mdf' P' #sx::n?()_;_,x;n?)
     mdf != class
-    forall P in fieldTypes(MHs, x, mdf).Ps:  p |- P <= P'
-    coherentGetMdf(mdf',mdf,
-      fieldTypes(MHs,x, mdf).mdfs,
-      fieldAccessMdf(MHs,x, mdf))
+    forall P in fieldTs(MHs, x, mdf).Ps:  p |- P <= P'
+    coherentGetMdf(mdf',mdf, fieldTs(MHs,x, mdf).mdfs, fieldAccessMdf(MHs,x, mdf))
 _______
-#define mdf canAlsoBe mdf'    fieldTypes(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
+#define mdf canAlsoBe mdf'    fieldTs(MHs, x, mdf)=Ts    fieldsAccessMdf(MHs, x, mdf)=mdfs    coherentGetMdf(/*value*/mdf0,/*getter*/mdf1,/*in*/mdfs0,/*out*/mdfs1)
 * capsule canAlsoBe mdf, with mdf != class
-* mut canAlsoBe mdf, with mdf != class//TODO: either delete mentions of "fwd" or make it defined on all mdfs for the LHS
+* mut canAlsoBe mdf, with mdf != class
 * lent canAlsoBe mdf, with mdf in {mut,lent, read, fwd mut}
 * read canAlsoBe mdf, with mdf in {read,imm, fwd imm}
-* imm canAlsoBe mdf, with mdf in {read,imm, fwd imm} //is ok that canAlsoBe is undefined on fwd _ and class
+* imm canAlsoBe mdf, with mdf in {read,imm, fwd imm}
+//object creaded with mdf1 canAlsoBe seen as mdf2 //undefind if mdf1 is class or fwd
 // Note that coherentGetMdf(mdf', _, {mdf, _}, _) implies mdf canAlsoBe mdf', but the converse does not hold (for example, lent canAlsoBe mut, but a lent field can never be read out as a mut.
 
-* T in fieldTypes(MHs, x, mdf)
+* T in fieldTs(MHs, x, mdf)
     either class method mdf' _(_ T x _)_ in MHs
     or mdf' method _ #sx::n?(T that)_ in MHs
     mdf' != capsule //capsule setters are dead code

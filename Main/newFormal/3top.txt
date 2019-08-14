@@ -1,11 +1,13 @@
 _______
-#define metanotation ~OR~
-predicate0 ~OR~ predicate1 predicates == (predicate0 and predicates) or ((not predicate0) and predicate1)
+#define metanotation IfNotE, IfErr, IfUndefined 
+* predicate0 IfNotE(Xs) predicate1 predicates == (predicate0 and predicates) or ((not exists Xs such that predicate0) and predicate1)
 //note: the simpler interpretation (predicate0 and predicates) or predicate1
 //would technically allow free variables in predicate0 to be chosen to falsify it
+* predicate0 IfErr(Xs) predicate1 predicates == (predicate0 and predicates) or (Err in Xs  and predicate1)
+* predicate0 IfUndefined predicate1 predicates == (predicate0 and predicates) or (predicate0 undefined and predicate1)
 _______
-#define firstErr(Rs,Err,_)=Err
-* firstErr(Rs,Err,_)=Err
+#define firstErr(Rs,Err,_) = Err
+* firstErr(Rs,Err,_) = Err
     Err not in Rs
 _______
 #define STz notations:
@@ -13,32 +15,32 @@ _______
 * (ST1 .. STn).s.i = ST1.s.i .. STn.s.i
 * (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
 _______
-#define top(CCz,p) => PR    topNC(CCz;p;Cs) => PR    sortHeader(p)=p'    sortM(p)=p'    addInfo(p)=p'   
-* top(CCz0,p0) => PR
-    p1=sortHeader(p0) ~OR~ PR=headerErr(p0)
-    MWT1..MWTn, NCs=sortMs(p1) ~OR~ PR=implementsErr(p1) //also to hearth all mwts/docs and ncs docs
-    p=p1.update(p1(This0)[Ms=MWTs, NCs])
-    topNC(CCz0,p,NCs.Cs) =>PR1
-    PR1=CCz1; p' ~OR~ PR=PR1
-    CCz1.add(p; MWT1; e?1).. .add(p; MWTn: e?n)=CCz
-    I[C=empty;p;G=empty;CCz]!e?i => ERi
-    ER1=CCz;e?'1..ERn=CCz;e?'n ~OR~ PR=firstErr(ER1..ERn)
-    p'=p.update(p(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
-    PR=CCz; flagTyped(addInfo(p'))  ~OR~ PR=illTyped(p')
+#define top(CCz,p) => PR    topNC(CCz;p;Cs) => PR    sortHeader(p) = p'    sortM(p) = p'    addInfo(p) = p'   
+* top(CCz,p) => PR
+    p0 = sortHeader(p) IfNotE(p0) PR = headerErr(p)
+    MWT1..MWTn, NCs=sortMs(p0) IfNotE(MWT1..MWTn, NCs) PR = implementsErr(p1)
+    CCz.add(p0; MWT1; e?1).. .add(p0; MWTn: e?n) = CCz1  
+    p1=p0.update(p0(This0)[Ms=MWTs, NCs])
+    topNC(CCz1,p1,NCs.Cs) => PR1
+    PR1 = CCz2; p2 IfErr(PR1) PR = PR1
+    I[C=empty;p2;G=empty;p2.minimize(CCz2)]!e?i => ERi
+    ER1 = CCz3;e?'1 .. ERn = CCz;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn)
+    p2 = p1.update(p(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
+    p3=flagTyped(addInfo(p2)) IfNotE(p3) PR=illTyped(p2)
+    PR = CCz; p3
 
 * topNC(CCz;p;empty) =>CCz;p
 * topNC(CCz;p;C,Cs) => PR
-    p(This0)(C)=e
-    Y=Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;onReturn=imm Library;onPath=class]
-    Y!e = Half.e; _; _; _
-    I[C?=C;p;CCz]!Half.e => ER
-    ER=CCz1;CORE.e ~OR~ PR=ER
-    wellTyped(p,CORE.e)=T ~OR~ PR=illTyped(p)
-    coherent(p,CORE.e) ~OR~ PR=incoherent(p)
+    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;onReturn=imm Library;onPath=class]
+    Y!p(This0)(C) = Half.e; _; _; _
+    I[C?=C;p;p.minimize(CCz)]!Half.e => ER
+    ER = CCz1;CORE.e IfErr(ER) PR = ER
+    wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
+    coherent(p,CORE.e) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T.P)) => ER'
-    ER'=empty;CORE.L ~OR~ PR=ER'
-    p'=p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
-    flagTyped(p')=p" ~OR~ PR=illTyped(p')    
+    ER' = empty;CORE.L IfErr(ER') PR = ER'
+    p' = p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
+    flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CCz1;p";Cs) => PR
     
 * sortHeader({reuse[URL] Ms};pTail) = sortHeader({followURL(URL),Ms};pTail) //note, the result must be well formed
@@ -48,27 +50,27 @@ _______
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
 
-* sortMs({interface? [Ts] Ms};pTail) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in Ms]
-    MWTs=methods(p,This0) //all methods
-    ss=expandFields(Ms).ss //present methods
+* sortMs(p) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in Ms]
+    MWTs = methods(p,This0) //all methods
+    ss = expandFields(p(This0).Ms).ss //present methods
 
 * addInfo(p)={interface? Ts MWTs NCs Info};pTail
     p={interface? Ts MWTs NCs};pTail
     Ps;Ps'=collectDeps(p;Ts) U collectDeps(p;MWTs) U collectDeps(NCs.Docss)
     Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
 _______
-#define I!HALF.e?=> ER    I!HALF.D=> DR    I!HALF.K=> KR    I(HALF.T) = CORE.T
+#define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
 * I!empty => empty;empty
 * I!x => empty;x
 * I!P<:STz => empty;P<:I(STz)
 * I!P<:STz => inferenceFailure(I,PTz)
     I(STz) undefined
 * I!void => empty;void
-* I!FULL.L => ER 
+* I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L)
-    top(0,I.CCz[from This1;p],p) => PR
-    PR = CCz;p ~OR~ ER =PR
-    ER = CCz[from I.C?;p];p(This0)//undefined if I.C?=empty 
+    top(I.CCz[from This1;p],p) => PR
+    PR = CCz';p' IfErr(PR) ER =PR
+    ER = CCz'[from I.C?;p'];p'(This0)
 * I!CORE.L => CORE.L 
 * I!%STz% => I(STz).P
 * I!%STz% => inferenceFailure(I,PTz)
@@ -94,7 +96,7 @@ _______
     I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
     KR1..KRn,ER' = CCz1;K'1..CCzm;K'm, CCzm+1;e' ~OR~ ER=firstErr(KR1..KRn,ER)
     ER=CCz0 U..U CCzm+1;(Ds Ks e')
-* I!empty => empty;empty
+* I!xs;empty => empty;empty
 * I!xs;var? HALF.T x=e Ds=> DsR
     I(HALF.T)=CORE.T ~OR~ DsR=inferenceFailure(I,HALF.T)
     I!e => ER 
@@ -127,18 +129,17 @@ _______
     P=Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1  
 _______
-#define CCz.add(FULL.MWT : CORE.MH HAlf.e?) = CCz'    I(HALF.T) = CORE.T    I.coreTof(T)=Tz
+#define CCz.add(FULL.MWT : CORE.MH HAlf.e?) = CCz'
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
 * CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
     Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;onReturn=MWT.T;onPath=class?]
     Y!MWT.e = Half.e; STs; empty; CCz
-
+_______
+#define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
 * I(mdf STz)=T[mdf=mdf]
     I(STz)=T
-* I(ST1..STn)=mostGeneralMdf(Tz.mdfz) P
-    Tz=I.coreTof(ST1) U..U I.coreTof(STn)
-    {P}={T.P| T in Tz and p|-Tz.Pz<=T.P}
+* I(ST1..STn)=choseT(I.coreTof(ST1) U..U I.coreTof(STn))
 
 * T in I.coreTof(T)
 * T in I.coreTof(ST)
