@@ -78,11 +78,17 @@ TraitWorld: Trait({
 // ****************************** WorldLoader ******************************
 
 TraitWorldLoader: Trait({
+  PointToEntityMap: {
+    class method mut This #seqBuilder()
+    class method mut This #from(mut This seqBuilder)
+    mut method Void addE(mut Entity that)
+    }
+  World: K<><{mut PointToEntityMap map, mut Player player}
+  
   Entity: {interface}
-
-  Player: {implements Entity class method mut This (Point p)}
-  RockItem: {implements Entity class method mut This (Point p)}
-  AppleItem: {implements Entity class method mut This (Point p)}
+  Player: {implements Entity class method mut This (fwd Point p)}
+  RockItem: {implements Entity class method mut This (fwd Point p)}
+  AppleItem: {implements Entity class method mut This (fwd Point p)}
 
   WorldLoader: {
     class method mut World #$(S fileName) (
@@ -121,10 +127,14 @@ TraitUI: Trait({
     mut method mut Entity getE(Point that)
     }
 
-  World: K<><{
+  World: {
     mut PointToEntityMap map
     mut Player player
-
+    class method mut World (fwd mut PointToEntityMap map, fwd mut Player player)
+    mut method Void movePlayerUp()
+    mut method Void movePlayerDown()
+    mut method Void movePlayerLeft()
+    mut method Void movePlayerRight()
     class method Size gameSizeInCells()10Size
 
     mut method S asText()S""[
@@ -142,11 +152,6 @@ TraitUI: Trait({
         use[S.nl()]
         )
       ]""
-
-    mut method Void movePlayerUp()
-    mut method Void movePlayerDown()
-    mut method Void movePlayerLeft()
-    mut method Void movePlayerRight()
     }
 
   Action: {interface method Void (mut World w)}
@@ -159,27 +164,28 @@ TraitUI: Trait({
 
 // ****************************** Main ******************************
 
-Game: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {
-  Main: {
-    class method Strings (Actions as, mut World w) Strings[w.asText()]++Strings[
-      with a in as.vals() (
-        a(w: w)
-        use[w.asText()]
-        )
-      ]
-
-    class method Strings #$(Actions as) (
-      This(as: as, w: WorldLoader.#$(fileName: S"GameGridSaves/game-save-example.txt"))
+Main: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {
+  Action: {}
+  Actions: {}
+  World: {}
+  WorldLoader: {}
+  class method Strings (Actions as, mut World w) Strings[w.asText()]++Strings[
+    with i in Range(as.size()) (//PUT BACK too use as.vals() TODO
+      as.val(i)(w: w)
+      use[w.asText()]
       )
-    }
-}
+    ]
+  class method Strings #$(Actions as) (
+    This(as: as, w: WorldLoader.#$(fileName: S"GameGridSaves/game-save-example.txt"))
+    )
+  }
 
 // ****************************** Tests ******************************
 
 Test1: {
-  mut Game.PointToEntityMap map = Game.PointToEntityMap[]
+  mut Main.PointToEntityMap map = Main.PointToEntityMap[]
   Debug.test(map.hasE(Point(x: 10Size, y: 20Size)), expected: S"false")
-  map.addE(Game.RockItem(p: Point(x: 10Size, y: 20Size)))
+  map.addE(Main.RockItem(p: Point(x: 10Size, y: 20Size)))
   Debug.test(map.hasE(Point(x: 10Size, y: 20Size)), expected: S"true")
   map.removeE(Point(x: 10Size, y: 20Size))
   Debug.test(map.hasE(Point(x: 10Size, y: 20Size)), expected: S"false")
@@ -188,11 +194,11 @@ Test1: {
   }
 
 Test2: {
-  mut Game.World w = Game.World(
-    map: Game.PointToEntityMap[],
-    player: Game.Player(p: Point(x: 2Size, y: 1Size))
+  mut Main.World w = Main.World(
+    map: Main.PointToEntityMap[],
+    player: Main.Player(p: Point(x: 2Size, y: 1Size))
     )
-  w.#map().addE(Game.RockItem(p: Point(x: 2Size, y: 3Size)))
+  w.#map().addE(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
   Debug.test(w.asText(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|_|_|_|_|_|_|_
@@ -209,13 +215,13 @@ Test2: {
   }
 
 Test3: {
-  mut Game.World w = Game.World(
-    map: Game.PointToEntityMap[],
-    player: Game.Player(p: Point(x: 2Size, y: 1Size))
+  mut Main.World w = Main.World(
+    map: Main.PointToEntityMap[],
+    player: Main.Player(p: Point(x: 2Size, y: 1Size))
     )
-  w.#map().addE(Game.RockItem(p: Point(x: 2Size, y: 3Size)))
-  Game.Actions as = Game.Actions[Game.MoveDown(); Game.MoveDown(); Game.MoveDown()]
-  Strings ss = Game.Main(as: as, w: w)
+  w.#map().addE(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
+  Main.Actions as = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveDown()]
+  Strings ss = Main(as: as, w: w)
   Debug.test(ss.val(0Size), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|_|_|_|_|_|_|_
@@ -244,8 +250,8 @@ Test3: {
   }
 
 Test4: {
-  Game.Actions as = Game.Actions[Game.MoveDown(); Game.MoveDown(); Game.MoveRight()]
-  Strings ss = Game.Main.#$(as: as)
+  Main.Actions as = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveRight()]
+  Strings ss = Main.#$(as: as)
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
