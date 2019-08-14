@@ -127,10 +127,7 @@ TraitUI: Trait({
     mut method mut Entity getE(Point that)
     }
 
-  World: {
-    mut PointToEntityMap map
-    mut Player player
-    class method mut World (fwd mut PointToEntityMap map, fwd mut Player player)
+  World: Trait(K<><{mut PointToEntityMap map, mut Player player})& {
     mut method Void movePlayerUp()
     mut method Void movePlayerDown()
     mut method Void movePlayerLeft()
