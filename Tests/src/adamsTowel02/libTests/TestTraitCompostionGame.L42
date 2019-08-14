@@ -31,6 +31,7 @@ TraitWorld: Trait({
     read method Point point()
     mut method Void point(Point that)
     }
+  Player: {implements Entity}
 
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
     mut method mut Entity getE(Point that) {
