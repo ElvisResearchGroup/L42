@@ -2,8 +2,8 @@
 
 // Utils start
 Point: Data<><{Size x, Size y}
-PointNotFilled: Message.$<><{ implements Guard}
-PointFilled: Message.$<><{ implements Guard}
+PointNotFilled: Message.$<><{implements Guard}
+PointFilled: Message.$<><{implements Guard}
 // Utils end
 
 TraitEntities: Trait({
@@ -31,14 +31,14 @@ TraitWorld: Trait({
     }
 
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
-    mut method mut Entity getE(Point that){
+    mut method mut Entity getE(Point that) {
       with elem in this.#vals() (
         if elem.point() == that (return elem)
         )
       error PointNotFilled""
       }
 
-    read method Bool hasE(Point that){
+    read method Bool hasE(Point that) {
       with elem in this.vals() (
         if elem.point() == that (return Bool.true())
         )
@@ -50,7 +50,7 @@ TraitWorld: Trait({
       this.add(right: that)
       )
 
-    mut method Void removeE(Point that){
+    mut method Void removeE(Point that) {
       with i in Range(this.size()) (
         elem = this.val(i)
         if elem.point() == that (
@@ -81,7 +81,7 @@ TraitWorldLoader: Trait({
 
   WorldLoader: {
     class method mut World #$(S fileName) (
-      mut World w = World(map: PointToEntityMap[], player: Player(p: Point(x: 0Size,y: 0Size)))
+      mut World w = World(map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size)))
       S content = Debug.#$readFile(fileName: fileName)
       Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
       with s in lines.vals() (
@@ -123,8 +123,10 @@ TraitUI: Trait({
     mut method S asText()S""[
       with y in Range(This.gameSizeInCells()) (
         with x in Range(This.gameSizeInCells()) (
-          Point p = Point(x: x,y: y)
-          if this.player().point() == p (use[S"|";this.player().representation()])
+          Point p = Point(x: x, y: y)
+          if this.player().point() == p (
+            use[S"|";this.player().representation()]
+            )
           else if this.map().hasE(p) (
             use[S"|";this.#map().getE(p).representation()]
             )
@@ -148,7 +150,7 @@ TraitUI: Trait({
   MoveRight: K<><{implements Action method (w)w.movePlayerRight()}
 
   Main: {
-    class method Strings (Actions as,mut World w) Strings[w.asText()]++Strings[
+    class method Strings (Actions as, mut World w) Strings[w.asText()]++Strings[
       with a in as.vals() (
         a(w: w)
         use[w.asText()]
@@ -165,11 +167,11 @@ Game: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {}
 
 Test1: {
   mut Game.PointToEntityMap map = Game.PointToEntityMap[]
-  Debug.test(map.hasE(Point(x: 10Size,y: 20Size)), expected: S"false")
-  map.addE(Game.RockItem(p: Point(x: 10Size,y: 20Size)))
-  Debug.test(map.hasE(Point(x: 10Size,y: 20Size)), expected: S"true")
-  map.removeE(Point(x: 10Size,y: 20Size))
-  Debug.test(map.hasE(Point(x: 10Size,y: 20Size)), expected: S"false")
+  Debug.test(map.hasE(Point(x: 10Size, y: 20Size)), expected: S"false")
+  map.addE(Game.RockItem(p: Point(x: 10Size, y: 20Size)))
+  Debug.test(map.hasE(Point(x: 10Size, y: 20Size)), expected: S"true")
+  map.removeE(Point(x: 10Size, y: 20Size))
+  Debug.test(map.hasE(Point(x: 10Size, y: 20Size)), expected: S"false")
   Debug.test(Bool.readableName() expected: S"Bool")
   return ExitCode.normal()
   }
@@ -177,9 +179,9 @@ Test1: {
 Test2: {
   mut Game.World w = Game.World(
     map: Game.PointToEntityMap[],
-    player: Game.Player(p: Point(x: 2Size,y: 1Size))
+    player: Game.Player(p: Point(x: 2Size, y: 1Size))
     )
-  w.#map().addE(Game.RockItem(p: Point(x: 2Size,y: 3Size)))
+  w.#map().addE(Game.RockItem(p: Point(x: 2Size, y: 3Size)))
   Debug.test(w.asText(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|_|_|_|_|_|_|_
@@ -198,9 +200,9 @@ Test2: {
 Test3: {
   mut Game.World w = Game.World(
     map: Game.PointToEntityMap[],
-    player: Game.Player(p: Point(x: 2Size,y: 1Size))
+    player: Game.Player(p: Point(x: 2Size, y: 1Size))
     )
-  w.#map().addE(Game.RockItem(p: Point(x: 2Size,y: 3Size)))
+  w.#map().addE(Game.RockItem(p: Point(x: 2Size, y: 3Size)))
   Game.Actions as = Game.Actions[Game.MoveDown();Game.MoveDown();Game.MoveDown()]
   Strings ss = Game.Main(as: as, w: w)
   Debug.test(ss.val(0Size), expected: S"
