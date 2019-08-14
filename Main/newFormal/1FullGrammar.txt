@@ -61,7 +61,7 @@ _______
   DsR ::= CCz;CORE.Ds | Err
   KR ::= CCz;CORE.K | Err
   Err ::= limit(p) | illTyped(p) | incoherent(p)
-    | illFormedReuse(p)| illFormedDots(p) | inferenceFailure(I,PTz) | throw(p,A,v)
+    | headerErr(p)| implementsErr(p) | inferenceFailure(I,PTz) | throw(p,A,v)
   R ::= PR | ER | DR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
@@ -76,13 +76,11 @@ _______
   CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV //blocks manually handled in reduction
   CORE.ctx ::= [] | throw ctx | loop ctx | x := ctx | xP.m(xes x=ctx xes')
     | ( Ds Ks ctx ) | (Ds T x=ctx Ds' Ks e) | (Ds Ks catch throw T x ctx Ks' e)
-  FULL.ctxL::= {H Ms1 C=[] Ms2} //note: no reuse/dots
-  CORE.ctxL ::= {H MWTs NCs1 C=[] NCs2 Info}
-  pTail::= CORE.L | CORE.ctxL | FULL.ctxL
+  pTail::= CORE.L | C:LL
   p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
   // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
 _______
-#define functional notation, update and '\' (set minus) for LL and ctxL (over the domain Ldom)
+#define functional notation, update and '\' (set minus) for LL (over the domain Ldom)
   /*...*/ //note, LL(Cs) may return an e not of form LL
 _______
 #define FULL.L[M]=FULL.L', CORE.L[MWT]=CORE.L', CORE.L[NC]=CORE.L'

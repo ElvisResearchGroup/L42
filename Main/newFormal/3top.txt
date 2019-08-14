@@ -13,20 +13,22 @@ _______
 * (ST1 .. STn).s.i = ST1.s.i .. STn.s.i
 * (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
 _______
-#define top(n,CCz,p) => PR
-* top(0,CCz,{reuse[URL] Ms};pTail) => PR //(reuse) //not well defined is also not well formed
-    {followURL(URL),Ms};pTail well defined orReturn illFormedReuse({reuse[URL],Ms};pTail)
-    top(0,CCz,{followURL(URL),Ms};pTail) => PR
-* top(0,CCz,{... Ms};pTail) => PR  //(dots)//note, ... is cached
-    {readFolder(pTail),Ms};pTail well formed ~OR~ PR=illFormedDots({reuse[URL],Ms};pTail)
-    top(n,CCz,{readFolder(pTail),Ms};pTail) => PR
-* top(n,CCz0,p) => PR  //(top)
-    p={H Ms0 Ms1 Docs C=e Ms2};pTail
-    sizeOf(Ms0)=n
-    {NC| NC in Ms0, NC.e not of form CORE.L}=empty
-    Ms1=empty or Ms1=Ms,C=CORE.L and {NC|NC in Ms}=empty
-    e not of form CORE.L//e is the first point to execute
-    CCz=I[C=empty;p;CCz0].addAll(Ms1).CCz
+#define top(CCz,p) => PR    topNC(CCz;p;Cs) => PR    sortHeader(p)=p'    sortM(p)=p'    addInfo(p)=p'   
+* top(CCz0,p0) => PR
+    p1=sortHeader(p0) ~OR~ PR=headerErr(p0)
+    MWT1..MWTn, NCs=sortMs(p1) ~OR~ PR=implementsErr(p1) //also to hearth all mwts/docs and ncs docs
+    p=p1.update(p1(This0)[Ms=MWTs, NCs])
+    topNC(CCz0,p,NCs.Cs) =>PR1
+    PR1=CCz1; p' ~OR~ PR=PR1
+    CCz1.add(p; MWT1; e?1).. .add(p; MWTn: e?n)=CCz
+    I[C=empty;p;G=empty;CCz]!e?i => ERi
+    ER1=CCz;e?'1..ERn=CCz;e?'n ~OR~ PR=firstErr(ER1..ERn)
+    p'=p.update(p(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
+    PR=CCz; flagTyped(addInfo(p'))  ~OR~ PR=illTyped(p')
+
+* topNC(CCz;p;empty) =>CCz;p
+* topNC(CCz;p;C,Cs) => PR
+    p(This0)(C)=e
     Y=Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;onReturn=imm Library;onPath=class]
     Y!e = Half.e; _; _; _
     I[C?=C;p;CCz]!Half.e => ER
@@ -35,26 +37,25 @@ _______
     coherent(p,CORE.e) ~OR~ PR=incoherent(p)
     reduce(p,empty,adapt(CORE.e,T.P)) => ER'
     ER'=empty;CORE.L ~OR~ PR=ER'
-    p'={H Ms0 Ms1 p♥Docs C=refreshUniqueNames(CORE.L) Ms2};pTail
-    flagTyped(p')=p'' ~OR~ PR=illTyped(p')
-    top(n+sizeOf(Ms1),CCz U CCz1,p'')=>PR
-* top(n,CCz,{interface? [Ts] Ms};pTail) => PR  //(topNorm)
-    {NC| NC in Ms, NC.e not of form CORE.L}=empty //assert not {reuse[URL] _},{... _},CORE.L
+    p'=p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
+    flagTyped(p')=p" ~OR~ PR=illTyped(p')    
+    topNC(CCz1;p";Cs) => PR
+    
+* sortHeader({reuse[URL] Ms};pTail) = sortHeader({followURL(URL),Ms};pTail) //note, the result must be well formed
+* sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
+* sortHeader({interface? [Ts] Ms};pTail) = {interface? [Ts'],Ms};pTail
     Ts0=p.minimize(p♥Ts)
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
+
+* sortMs({interface? [Ts] Ms};pTail) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in Ms]
     MWTs=methods(p,This0) //all methods
     ss=expandFields(Ms).ss //present methods
-    MWT1..MWTn NC1..NCk=MWTs\ss,[MWTs(s)| s in ss],[NC| NC in Ms]//NC of form CORE.NC
-    Ps;Ps'=collectDeps(p;Ts') U collectDeps(p;MWT1..MWTn) U collectDeps(NC1.Docs..NCk.Docs)
+
+* addInfo(p)={interface? Ts MWTs NCs Info};pTail
+    p={interface? Ts MWTs NCs};pTail
+    Ps;Ps'=collectDeps(p;Ts) U collectDeps(p;MWTs) U collectDeps(NCs.Docss)
     Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
-    p={interface? [Ts'] MWT1..MWTn NC1..NCk};pTail
-    I[C=empty;p;G=empty;CCz].add(MWT1: MH1 e?1).. .add(MWTn: MHn e?n).add(NC1).. .add(NCk)=I'
-    //TODO: use n to reduce the number of M that are added
-    I'!e?i => ERi
-    ER1=e?'1..ERn=e?'n ~OR~ PR=firstErr(ER0..ERn)//deterministic since no FULL.L
-    CORE.L={interface? [Ts'] MH1 e?'1 .. MHn e?'n NC1 .. NCk Info}
-    PR=I.CCz;flagTyped(CORE.L;pTail) ~OR~ PR=illTyped(CORE.L;pTail)
 _______
 #define I!HALF.e?=> ER    I!HALF.D=> DR    I!HALF.K=> KR    I(HALF.T) = CORE.T
 * I!empty => empty;empty
@@ -66,8 +67,8 @@ _______
 * I!FULL.L => ER 
     p=I.p.push(I.C?,FULL.L)
     top(0,I.CCz[from This1;p],p) => PR
-    ER = CCz[from I.C?;p];p(This0) if PR = CCz;p
-    ER = PR otherwise
+    PR = CCz;p ~OR~ ER =PR
+    ER = CCz[from I.C?;p];p(This0)//undefined if I.C?=empty 
 * I!CORE.L => CORE.L 
 * I!%STz% => I(STz).P
 * I!%STz% => inferenceFailure(I,PTz)
@@ -126,26 +127,12 @@ _______
     P=Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1  
 _______
-#define I.add(FULL.MWT : CORE.MH HAlf.e?) = I'    I.add(CORE.NC)=I'    I.addAll(FULL.Ms)=I'
-* I.add(MWT : I.p♥MWT.MH) = I
+#define CCz.add(FULL.MWT : CORE.MH HAlf.e?) = CCz'    I(HALF.T) = CORE.T    I.coreTof(T)=Tz
+* CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
-* I.add(MWT : I.p♥MWT.MH HALF.e)=I[CCz=I.CCz U CCz U STs<=MWT.T]
-    class?=empty if MWT.T=class Any
-    class?=class otherwise
+* CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
     Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;onReturn=MWT.T;onPath=class?]
     Y!MWT.e = Half.e; STs; empty; CCz
-
-* I.add(C=CORE.L) = I[CCz=I.CCz U I'.CCz[from C;I.p]]
-    CORE.L.MWTs = MWT1..MWTn
-    CORE.L.NCs = NC1..NCk
-    I[p=p.push(C,CORE.L);CCz=empty]
-      .add(MWT1:_).. .add(MWTn:_).add(NC1).. .add(NCk)=I'
-
-* I.addAll()=I
-* I.addAll(MWT,Ms)=I.add(MWT).addAll(Ms)
-* I.addAll(NC,Ms)=I.add(NC).addAll(Ms)
-* I.addAll(MI,Ms)=I.addAll(Ms)
-* I.addAll(F,Ms)=I.addAll(Ms)
 
 * I(mdf STz)=T[mdf=mdf]
     I(STz)=T
@@ -164,7 +151,7 @@ _______
     xP'1..xP'n=xPs\i
     xP=xPs\xP'1..xP'n
 _______
-#define collectDeps(p;CORE.MWT)=Ps;Ps' collectDeps(p;T)=Ps;Ps' collectDeps(p;Doc)=Ps;Ps'
+#define collectDeps(p;CORE.MWT)=Ps;Ps'    collectDeps(p;T)=Ps;Ps'    collectDeps(p;Doc)=Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
 * collectDeps(Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=
     collectDeps(Docs) U collectDeps(T0..Tn,Ts) U collectDepsE(e?)
@@ -214,8 +201,8 @@ _______
     s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
     origin(p;s1,P0)..origin(p;sn,P0) all defined
     [Mi,_]=[MWT| P in P0,Ps such that methods(p,P)(si)=MWT]
-    MWTi=Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
-    MWTi=Mi otherwise
+    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
+    MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
 
 //OLD COLLECT. Isaac, can you show me that we still need something like this? now is unused
 _______

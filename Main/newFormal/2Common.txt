@@ -7,7 +7,7 @@ _______
 _______
 #define p.pop(n)= p'
 * p.pop(0)=p
-* (LL;FULL/CORE.ctxL;pTails).pop(n+1)=(ctxL[LL];pTails).pop(n)
+* (LL;C:LL';pTails).pop(n+1)=(LL'[C=LL];pTails).pop(n)
 * (LL;CORE.L;pTails).pop(n+1)=(CORE.L;pTails).pop(n)
 _______
 #define p.push(C,LL')=p'    p.push(LL')=p'    p.push(C)
@@ -21,13 +21,12 @@ _______
 #define p.update(LL)=p'
 * (_;pTails).update(LL) = LL;pTails
 _______
-#define p.minimize(P)=P'    p.minimize(STz)=STz'    chooseT(class Any,Tz)=T
+#define p.minimize(P)=P'    p.minimize(STz)=STz'
 * p.minimize(P) = P
     P in {Any,Void,Library}
 * p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
     p.pop(1).minimize(Thisn.Cs)=Thisk.Cs'
-* (CORE.L;FULL/CORE.ctxL;_).minimize(This1.C.Cs)=This0.Cs
-    FULL/CORE.ctxL(C) = [] //now we just trash the ctx part while pushing
+* (CORE.L;C:LL;_).minimize(This1.C.Cs)=This0.Cs
 
 * p.minimize(ST1..STn)=STz'
     STz=p.minimize(ST1)=..p.minimize(STn)

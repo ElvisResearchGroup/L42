@@ -1,14 +1,15 @@
 _______
-#define GX(xP)=STz
+#define GX(xP)=STz    G^HALF.Ds   GX+GX'=GX"
 * _,x:STz,_(x)=STz
 * GX(x)=empty if x notin dom(GX) //can happen for forwards
 * GX(P<:CORE.T)=CORE.T
 * GX(P<:mdf? STz)=STz
 
-* GX^HALF.Ds = ...
+* GX^D1..Dn = D1.x:D1.T..Dn.x:Dn.T
+
 * GX+GX'=GX\dom(GX'),GX'
 _______
-#define Y!FULL.e = Half.e; STs; STs'; CCz
+#define Y!FULL.e = Half.e; STs; STs'; CCz //e, result type, returns type, constraints
 * Y!LL=LL;imm Library;empty;empty
 * Y!x = x;Y.GX(x);empty;empty
 * Y!void = void;imm Void;empty;empty
@@ -16,9 +17,8 @@ _______
 * Y!\x = (Y.onSlashX).x(); Y.p.minimize(Y.GX(Y.onSlashX).x()); empty; empty
 * Y!CsP = Y.p♥CsP<:class Y.p♥CsP;class Y.p♥CsP; empty; empty
     Y.onPath=class
-* Y!CsP = P'<:class Any; class Any; empty; empty
+* Y!CsP = Y.p♥CsP<:class Any; class Any; empty; empty
     Y.onPath=empty
-    P'=Y.p♥CsP
 * Y!CsP<:T = Y.p♥CsP<:Y.p♥T; Y.p♥T; empty; empty
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP
@@ -150,10 +150,7 @@ _______
 _______
 #define Y!FULL.D = HALF.Ds;STz;CCz    Y!FULL.K= HALF.K; STz; STz';CCz
 * Y!D= Void x=e'; STz'; CCz, STz<=imm Void
-    D=e
-    Y[onReturn=empty]!e = e'; STz; STz'; CCz
-    x fresh
- //so that ({..return void ..} {.. return void ..}) is a mistake
+    Y[onReturn=empty]!e = e'; STz; STz'; CCz//so that x=({..return void..} {..}) is a mistake
 * Y!TLocal _=e = Y!TLocal x=e 
     x fresh
 * Y!var? TLocal x=e = var? HALF.T x=e'; STz'; CCz' 
@@ -186,7 +183,7 @@ _______
 #define FULL.e[replaceUnOp DX;x0;x1]
 * DX.x updateOp e[replaceUnOp DX;x0;x1] = toBinOp(DX.x, updateOp) e' updateOf(DX,x1,x0)
     e'=e[replaceUnOp DX;x0;x1]
-* e[replaceUnOp DX;x0;x1] propagates inductively on the structure for all other cases
+* e[replaceUnOp DX;x0;x1] propagates inductively in all the other cases
 _______
 #define elemOf(DX,c,i)=e    updateOf(DX,c,i)=e
 * elemOf(DX,c,i) = c.methName('elem',mdf?)(that=i)
