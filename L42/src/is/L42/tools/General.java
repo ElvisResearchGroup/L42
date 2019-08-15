@@ -47,7 +47,7 @@ public class General {
   public static Error todo(){throw new Error("Not implemented yet");}
   public static Error bug(){throw new Error("Precondition violation");}
  
-  private static <T> void testL(T e) {
+  @SuppressWarnings("unused") private static <T> void testL(T e) {
     List<T> x = L(e);
     List<Integer> y=L();
     List<T> z=L(c->{c.add(e);c.add(e);});
