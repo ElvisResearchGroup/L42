@@ -31,7 +31,7 @@ _______
 
 * topNC(CCz;p;empty) =>CCz;p
 * topNC(CCz;p;C,Cs) => PR
-    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;onReturn=imm Library;onPath=class]
+    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;onPath=class]
     Y!p(This0)(C) = Half.e; _; _; _
     I[C?=C;p;p.minimize(CCz)]!Half.e => ER
     ER = CCz1;CORE.e IfErr(ER) PR = ER
@@ -133,7 +133,7 @@ _______
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
 * CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
-    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;onReturn=MWT.T;onPath=class?]
+    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T;onPath=class?]
     Y!MWT.e = Half.e; STs; empty; CCz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz

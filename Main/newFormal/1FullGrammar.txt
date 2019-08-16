@@ -49,7 +49,7 @@ _______
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  ST::=CORE.T | ST.s | ST.s.i | op STzs
+  ST::=CORE.T | ST.s | ST.s.i | op STzs //i=0 for receiver type?
   HALF.xP ::= x | P<:STz
   HALF.e ::= xP | void | LL | %STz% | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.K ::= catch throw HALF.T x e
@@ -65,7 +65,7 @@ _______
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
   I ::= I[C?;p;G;CCz]//inference application environment
-  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;onReturn=HALF.T?;onPath=class?]
+  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=HALF.T?;onPath=class?]
   v ::= CORE.xP | void | CORE.L
   r ::= CORE.L | exception v | error v
   Obj ::= P(x1=v1..xn=vn) empty;empty| P() as1;as2 // memory objects
