@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.PrimitiveIterator;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 
 public class General {
@@ -27,6 +28,19 @@ public class General {
   public static <T> List<T>L(Consumer<List<T>> c){
     ArrayList<T> res=new ArrayList<>();
     c.accept(res);
+    return Collections.unmodifiableList(res);
+    }
+  public static <T> List<T>L(List<T> a,Function<T,T> f){
+    int size=a.size();
+    ArrayList<T> res=new ArrayList<>(size);
+    boolean change=false;
+    for(int i=0;i<size;i++){
+      var e0=a.get(i);
+      var e=f.apply(e0);
+      change|=e0!=e;      
+      res.add(e);
+      }
+    if(!change){return a;}
     return Collections.unmodifiableList(res);
     }
   public static <A,R> List<R>L(List<A> a,BiConsumer<List<R>,A> c){

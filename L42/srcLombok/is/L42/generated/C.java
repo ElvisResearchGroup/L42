@@ -1,8 +1,14 @@
 package is.L42.generated;
 import lombok.Value;
 import lombok.experimental.Wither;
+import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.CollectorVisitor;
+import is.L42.visitors.Visitable;
+import is.L42.common.Constants;
 
-@Value @Wither public class C implements LDom{String inner;}
+@Value @Wither public class 
+C implements LDom,Visitable<C>{@Override public C accept(CloneVisitor cv){return cv.visitC(this);}@Override public void accept(CollectorVisitor cv){cv.visitC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+  String inner;}
 
 //TODO:
 /*
@@ -30,4 +36,15 @@ all wf for C/m/P... uses the parser
 
 subparse for string interpolation and docs
 for each wf criteria, make some negative tests
+
+  @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
+  ?? implements ,Visitable<??>{@Override public Visitable<??>visitable(){return this;}@Override public ?? accept(CloneVisitor cv){return cv.visit??(this);}@Override public void accept(CollectorVisitor cv){cv.visit??(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+
+@EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
+?? implements M,Visitable<??>{@Override public ?? accept(CloneVisitor cv){return cv.visit??(this);}@Override public void accept(CollectorVisitor cv){cv.visit??(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+
+@Value @Wither public static class
+?? implements Visitable<??>{@Override public ?? accept(CloneVisitor cv){return cv.visit??(this);}@Override public void accept(CollectorVisitor cv){cv.visit??(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+
+
 */

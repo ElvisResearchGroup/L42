@@ -20,7 +20,7 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native[URL]? e)?  
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps, refined=(P.s)s, havePrivateStaticMethods?}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friendsDep=Ps,usedMethDep=(P.s)s,privateImpl=Ps, refined=ss, havePrivateStaticMethods?}
     //in concrete syntax, labels for emptys are omitted
     //friendsDep are spyed by This:
     //Paths whose unique Numbers are used either directly,

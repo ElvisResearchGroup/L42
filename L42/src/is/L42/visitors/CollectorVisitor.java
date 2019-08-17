@@ -1,7 +1,8 @@
-package is.L42.generated;
+package is.L42.visitors;
 import java.util.List;
+import is.L42.generated.*;
 
-public class CollectorVisitor {
+public interface CollectorVisitor {
   void visitC(C c);
   void visitCs(List<C> cs);
   void visitMdf(Mdf mdf);
@@ -13,17 +14,18 @@ public class CollectorVisitor {
   void visitX(X x);
   void visitXs(List<X> xs);
 
-  void visitSTMeth(STMeth stMeth);
-  void visitSTMeth(STOp stOp);
+  void visitSTMeth(ST.STMeth stMeth);
+  void visitSTOp(ST.STOp stOp);
   void visitSTz(List<ST> stz);
 
-  void visitEX(Core.Ex x);
+  void visitEX(Core.EX x);
   void visitPCastT(Core.PCastT pCastT);
-  void visitEVoid(Core.Evoid eVoid);
+  void visitEVoid(Core.EVoid eVoid);
   void visitL(Core.L l);
   void visitMWT(Core.L.MWT mwt);
   void visitMWTs(List<Core.L.MWT> mwts);
   void visitNC(Core.L.NC nc);
+  void visitInfo(Core.L.Info info);
   void visitNCs(List<Core.L.NC> ncs);
   void visitMCall(Core.MCall mCall);
   void visitBlock(Core.Block block);
@@ -58,11 +60,16 @@ public class CollectorVisitor {
 
   void visitCsP(Full.CsP csP);
   void visitL(Full.L l);
+  void visitF(Full.L.F f);
+  void visitMI(Full.L.MI mi);
+  void visitMWT(Full.L.MWT mwt);
+  void visitNC(Full.L.NC nc);
+  void visitFullMs(List<Full.L.M> ms);
   void visitSlash(Full.Slash slash);
   void visitSlashX(Full.SlashX slashX);
   void visitEString(Full.EString eString);
   void visitEPathSel(Full.EPathSel ePathSel);
-  void visitUoP(Full.UOp uOp);
+  void visitUOp(Full.UOp uOp);
   void visitBinOp(Full.BinOp binOp);
   void visitCast(Full.Cast cast);
   void visitCall(Full.Call call);
