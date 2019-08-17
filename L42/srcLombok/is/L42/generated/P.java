@@ -9,7 +9,11 @@ import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 import static is.L42.tools.General.*;
 
-public class P{
+public class P implements Visitable<P>{
+  @Override public P accept(CloneVisitor cv){return cv.visitP(this);}
+  @Override public void accept(CollectorVisitor cv){cv.visitP(this);}
+  @Override public String toString(){return Constants.toS.apply(this);}
+  @Override public boolean wf(){return Constants.wf.test(this);}
   public static final P pAny=new P();
   public static final P pVoid=new P();
   public static final P pLibrary=new P();

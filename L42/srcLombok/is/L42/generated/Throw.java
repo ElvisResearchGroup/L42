@@ -5,11 +5,11 @@ public enum Throw {
   Error("error"),
   Exception("exception"),
   Return("return");
-  public final String content;
-  Throw(String content){this.content = content;}
+  public final String inner;
+  Throw(String inner){this.inner = inner;}
   public static Throw fromString(String s) {
    for (Throw t : Throw.values()) {
-    if (t.content.equals(s))return t;
+    if (t.inner.equals(s))return t;
     }
    throw bug();
   }

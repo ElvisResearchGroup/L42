@@ -7,7 +7,7 @@ import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 
-public interface ST extends HasWf{
+public interface ST extends HasWf,HasVisitable{
   Visitable<? extends ST> visitable();
   @Value @Wither public static class
   STMeth implements ST,Visitable<STMeth>{@Override public Visitable<STMeth>visitable(){return this;}@Override public STMeth accept(CloneVisitor cv){return cv.visitSTMeth(this);}@Override public void accept(CollectorVisitor cv){cv.visitSTMeth(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}

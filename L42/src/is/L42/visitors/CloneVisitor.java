@@ -79,7 +79,9 @@ public class CloneVisitor {
 
   public P visitP(P p){return p;}
 
-  public S visitS(S s){return s;}
+  public S visitS(S s){
+    return s.withXs(visitXs(s.xs()));
+    }
 
   public X visitX(X x){return x;}
 

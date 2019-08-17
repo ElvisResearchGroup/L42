@@ -19,6 +19,7 @@ public class General {
     @Override public boolean hasNext() { return current<end;}
     @Override public Integer next() {return current++;}
     }
+  public static IterableWrapper range(List<?> list) {return range(0,list.size());}
   public static IterableWrapper range(int endExclusive) {return range(0,endExclusive);}
   public static IterableWrapper range(int startInclusive,int endExclusive) {
     return new IterableWrapper(startInclusive,endExclusive);

@@ -10,7 +10,7 @@ import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 
 public class Core {
-  public static interface E extends HasPos,HasWf{Visitable<? extends E> visitable();}
+  public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}
   public static interface Leaf extends E{}
   public static interface Wrapper extends E{ E e();}
   public static interface XP extends E{Visitable<? extends XP> visitable();}

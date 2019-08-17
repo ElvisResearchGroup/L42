@@ -1,141 +1,167 @@
 package is.L42.visitors;
+import static is.L42.tools.General.range;
+
 import java.util.List;
+import java.util.function.IntConsumer;
+
 import is.L42.generated.*;
 
-public class CollectorVisitor {
-  public final void visitST(ST st){st.visitable().accept(this);}
+public class ToSVisitor extends CollectorVisitor{
+  StringBuilder result=new StringBuilder();
+  String currentIndent="";
+  void nl(){result.append("\n");result.append(currentIndent);}
+  void indent(){currentIndent+="  ";}
+  void deIndent(){currentIndent=currentIndent.substring(2);}
+  char last(){return result.charAt(result.length()-1);}
+  void c(String s){
+    assert !s.startsWith(",") || last()!='(':
+      s;
+    assert !s.startsWith(";") || ( last()!=';'&&  last()!='}'):
+      s;
+    result.append(s);
+    }
+  void sp(){result.append(" ");}
 
-  public final void visitE(Core.E e){e.visitable().accept(this);}
-  
-  public final void visitEs(List<Core.E> es){es.forEach(this::visitE);}
-
-  public final void visitXP(Core.XP xP){xP.visitable().accept(this);}
-
-  public final void visitPs(List<P> ps){ps.forEach(this::visitP);}
-
-  public final void visitSs(List<S> ss){ss.forEach(this::visitS);}
-
-  public final void visitPathSels(List<Core.PathSel> pathSels){pathSels.forEach(this::visitPathSel);}
-
-  public final void visitXPs(List<Core.XP> xPs){xPs.forEach(this::visitXP);}
-
-  public final void visitE(Full.E e){e.visitable().accept(this);}
-
-  public final void visitFullEs(List<Full.E> es){es.forEach(this::visitE);}
-
-  public final void visitM(Full.L.M m){m.visitable().accept(this);}
-
-  public final void visitE(Half.E e){e.visitable().accept(this);}
-
-  public final void visitHalfEs(List<Half.E> es){es.forEach(this::visitE);}
-
-  public final void visitXP(Half.XP xP){xP.visitable().accept(this);}
-
-  public final void visitHalfXPs(List<Half.XP> xPs){xPs.forEach(this::visitXP);}
-
-  public final void visitCs(List<C> cs){cs.forEach(this::visitC);}
-
-  public final void visitXs(List<X> xs){xs.forEach(this::visitX);}
-  
-  public final void visitSTz(List<ST> stz){stz.forEach(this::visitST);}
-
-  public final void visitMWTs(List<Core.L.MWT> mwts){mwts.forEach(this::visitMWT);}
-  
-  public final void visitNCs(List<Core.L.NC> ncs){ncs.forEach(this::visitNC);}
-  
-  public final void visitDs(List<Core.D> ds){ds.forEach(this::visitD);}
-    
-  public final void visitKs(List<Core.K> ks){ks.forEach(this::visitK);}
-
-  public final void visitTs(List<Core.T> ts){ts.forEach(this::visitT);}
-
-  public final void visitDocs(List<Core.Doc> docs){docs.forEach(this::visitDoc);}
-
-  public final void visitHalfDs(List<Half.D> ds){ds.forEach(this::visitD);}
-
-  public final void visitHalfKs(List<Half.K> ks){ks.forEach(this::visitK);}
-    
-  public final void visitHalfTs(List<Half.T> ts){ts.forEach(this::visitT);}
-
-  public final void visitFullMs(List<Full.L.M> ms){ms.forEach(this::visitM);}
-
-  public final void visitFullDs(List<Full.D> ds){ds.forEach(this::visitD);}  
-
-  public final void visitFullVarTxs(List<Full.VarTx> varTxs){varTxs.forEach(this::visitVarTx);}
-
-  public final void visitFullKs(List<Full.K> ks){ks.forEach(this::visitK);}
-
-  public final void visitFullPars(List<Full.Par> pars){pars.forEach(this::visitPar);}
-
-  public final void visitFullTs(List<Full.T> ts){ts.forEach(this::visitT);}
-
-  public final void visitFullDocs(List<Full.Doc> docs){docs.forEach(this::visitDoc);}
-
-  
-  //------------
-  
-  public void visitC(C c){}
-
-  public void visitP(P p){}
-
-  public void visitS(S s){
-    visitXs(s.xs());
+  void separeFromChar(){
+    char last=last();
+    if(Character.isLetter(last) || Character.isDigit(last) || last=='$'){
+    result.append(" ");}
     }
 
-  public void visitX(X x){}
+  private static final IntConsumer empty=i->{}; 
+  void seqHas(IntConsumer prefix, List<? extends HasVisitable> elements,String sep){
+    for(int i:range(elements)){
+      if(i!=0){c(sep);}
+      prefix.accept(i);
+      elements.get(i).visitable().accept(this);
+      }
+    }
+  
+  void seq(IntConsumer prefix, List<? extends Visitable<?>>elements,String sep){
+    for(int i:range(elements)){
+      if(i!=0){c(sep);}
+      prefix.accept(i);
+      elements.get(i).accept(this);
+      }
+    }
+
+  public void visitMdf(Mdf mdf){
+    c(mdf.inner);
+    }
+  public void visitThrow(Throw thr){
+    c(thr.inner);
+    }
+  public void visitOp(Op op){
+    c(op.inner);
+    }  
+  
+  public void visitC(C c){
+    c(c.inner());
+    if(c.hasUniqueNum()){c("::"+c.uniqueNum());}
+    }
+
+  public void visitP(P p){
+    if(p==P.pAny){c("Any");return;}
+    if(p==P.pLibrary){c("Library");return;}
+    if(p==P.pVoid){c("Void");return;}
+    var p0=p.toNCs();
+    c("This"+p0.n());
+    seq(i->c("."),p0.cs(),"");
+    }
+
+  public void visitS(S s){
+    c(s.m());
+    if(s.hasUniqueNum()){c("::"+s.uniqueNum());}
+    c("(");seq(empty,s.xs(),",");c(")");
+    }
+
+  public void visitX(X x){c(x.inner());}
 
   public void visitSTMeth(ST.STMeth stMeth){
     visitST(stMeth.st());
+    c(".");
     visitS(stMeth.s());
+    if(stMeth.i()!=-1){c("."+stMeth.i());}
     }
 
   public void visitSTOp(ST.STOp stOp){
-    stOp.stzs().forEach(this::visitSTz);
+    visitOp(stOp.op());
+    for(var stz:stOp.stzs()){
+      c("[");seqHas(empty,stz," ");c("]");
+      }
     }
 
-  public void visitEX(Core.EX x){visitX(x.x());}
+  //public void visitEX(Core.EX x){visitX(x.x());}
 
   public void visitPCastT(Core.PCastT pCastT){
     visitP(pCastT.p());
+    c("<:");
     visitT(pCastT.t());
     }
     
-  public void visitEVoid(Core.EVoid eVoid){}
+  public void visitEVoid(Core.EVoid eVoid){c("void");}
   
   public void visitL(Core.L l){
-    visitTs(l.ts());
-    visitMWTs(l.mwts());
-    visitNCs(l.ncs());
+    boolean inline=HasMultilinePart.inline(l);
+    c("{");
+    if(inline){indent();}
+    if(l.isInterface()){c("interface");}
+    if(!l.ts().isEmpty()){
+      c("[");seq(empty,l.ts(),", ");c("] ");
+      }
+    var sp=empty;
+    if(inline){sp=i->nl();}
+    seq(sp,l.mwts(),"");
+    seq(sp,l.ncs(),"");
+    sp.accept(0);
     visitInfo(l.info());
+    sp.accept(0);
     visitDocs(l.docs());
+    sp.accept(0);
+    c("}");
+    if(inline){deIndent();}
     }
     
   public void visitInfo(Core.L.Info info){
-    visitPs(info.typeDep());
-    visitPs(info.coherentDep());
-    visitPs(info.friendsDep());
-    visitPathSels(info.usedMethDep());
-    visitPs(info.privateImpl());
-    visitSs(info.refined());
+    if(info.isTyped()){c("#typed}");}
+    else {c("#norm{");}
+    infoItem("typeDep",info.typeDep());
+    infoItem("coherentDep",info.coherentDep());
+    infoItem("friendsDep",info.friendsDep());
+    infoItem("usedMethDep",info.usedMethDep());
+    infoItem("privateImpl",info.privateImpl());
+    infoItem("refined",info.refined());
+    c("}");
     }
-    
+  private void infoItem(String label,List<? extends Visitable<?>> l){
+    if(l.isEmpty()){return;}
+    c(label+"=("); seq(empty,l,", ");c(")");
+    }  
   public void visitMWT(Core.L.MWT mwt){
     visitDocs(mwt.docs());
     visitMH(mwt.mh());
     var _e0=mwt._e();
-    if(_e0!=null){visitE(_e0);}
+    if(_e0!=null){c("="); visitE(_e0);}
     }
   
   public void visitNC(Core.L.NC nc){
     visitDocs(nc.docs());
     visitC(nc.key());
+    c("="); 
     visitL(nc.l());
     }
-
+  private void cMethName(S s){
+    if(s.hasUniqueNum()){c(s.m()+"::"+s.uniqueNum());}
+    else c(s.m());
+    }
   public void visitMCall(Core.MCall mCall){
     visitXP(mCall.xP());
-    visitS(mCall.s());
-    visitEs(mCall.es());
+    c(".");
+    cMethName(mCall.s());
+    IntConsumer pName=i->{c(mCall.s().xs().get(i)+"=");};
+    c("(");
+    seqHas(pName,mCall.es(),", ");
+    c(")");
     }
     
   public void visitBlock(Core.Block block){

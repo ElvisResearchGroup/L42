@@ -10,7 +10,7 @@ import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 
 public class Full {
-  public static interface E extends HasPos,HasWf{Visitable<? extends E> visitable();}
+  public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}
   public static interface Leaf extends E{}
   public static interface Wrapper extends E{ E e();}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
@@ -19,7 +19,7 @@ public class Full {
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   L implements Leaf,Half.E,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     boolean isDots; String reuseUrl; boolean isInterface; List<T> ts; List<M>ms; List<Doc>docs;
-    public static interface M extends HasWf,HasPos{List<Doc> docs();LDom key();E _e();Visitable<? extends M> visitable();}
+    public static interface M extends HasWf,HasPos,HasVisitable{List<Doc> docs();LDom key();E _e();Visitable<? extends M> visitable();}
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     F implements M,Visitable<F>{@Override public Visitable<F>visitable(){return this;}@Override public F accept(CloneVisitor cv){return cv.visitF(this);}@Override public void accept(CollectorVisitor cv){cv.visitF(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       Pos pos; List<Doc>docs; T t; S key;
