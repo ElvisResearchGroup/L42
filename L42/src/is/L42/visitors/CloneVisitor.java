@@ -85,8 +85,8 @@ public class CloneVisitor {
 
   public ST.STMeth visitSTMeth(ST.STMeth stMeth){
     var s0=stMeth.s();
-    var s=visitS(s0);
     var st0=stMeth.st();
+    var s=visitS(s0);
     var st=visitST(st0);
     if(s==s0 && st==st0){return stMeth;}
     return new ST.STMeth(st, s, stMeth.i());
@@ -498,7 +498,7 @@ public class CloneVisitor {
     var ds0=sIf.matches();
     var then0=sIf.then();
     var _else0=sIf._else();
-    var c=visitE(c0);
+    var c=c0==null?null:visitE(c0);
     var ds=visitFullDs(ds0);
     var then=visitE(then0);
     var _else=_else0==null?null:visitE(_else0);
