@@ -3,6 +3,7 @@ import static is.L42.tools.General.range;
 
 import java.util.List;
 import java.util.function.IntConsumer;
+import java.util.stream.Collectors;
 
 import is.L42.generated.*;
 
@@ -27,6 +28,10 @@ public class ToSVisitor extends CollectorVisitor{
     if(Character.isLetter(last) || Character.isDigit(last) || last=='$'){
     result.append(" ");}
     }
+  void kw(String s){
+    separeFromChar();
+    c(s);
+  }
 
   private static final IntConsumer empty=i->{}; 
   void seqHas(IntConsumer prefix, List<? extends HasVisitable> elements,String sep){
@@ -46,21 +51,26 @@ public class ToSVisitor extends CollectorVisitor{
     }
 
   public void visitMdf(Mdf mdf){
+    separeFromChar();
     c(mdf.inner);
     }
   public void visitThrow(Throw thr){
+    separeFromChar();
     c(thr.inner);
     }
   public void visitOp(Op op){
-    c(op.inner);
+    if(op==Op.In){c(" in ");}
+    else{c(op.inner);}
     }  
   
   public void visitC(C c){
+    separeFromChar();
     c(c.inner());
     if(c.hasUniqueNum()){c("::"+c.uniqueNum());}
     }
 
   public void visitP(P p){
+    separeFromChar();
     if(p==P.pAny){c("Any");return;}
     if(p==P.pLibrary){c("Library");return;}
     if(p==P.pVoid){c("Void");return;}
@@ -70,12 +80,16 @@ public class ToSVisitor extends CollectorVisitor{
     }
 
   public void visitS(S s){
+    separeFromChar();
     c(s.m());
     if(s.hasUniqueNum()){c("::"+s.uniqueNum());}
     c("(");seq(empty,s.xs(),",");c(")");
     }
 
-  public void visitX(X x){c(x.inner());}
+  public void visitX(X x){
+    separeFromChar();
+    c(x.inner());
+    }
 
   public void visitSTMeth(ST.STMeth stMeth){
     visitST(stMeth.st());
@@ -99,7 +113,9 @@ public class ToSVisitor extends CollectorVisitor{
     visitT(pCastT.t());
     }
     
-  public void visitEVoid(Core.EVoid eVoid){c("void");}
+  public void visitEVoid(Core.EVoid eVoid){
+    kw("void");
+    }
   
   public void visitL(Core.L l){
     boolean inline=HasMultilinePart.inline(l);
@@ -117,12 +133,13 @@ public class ToSVisitor extends CollectorVisitor{
     visitInfo(l.info());
     sp.accept(0);
     visitDocs(l.docs());
-    sp.accept(0);
+    if(!l.docs().isEmpty()){sp.accept(0);}
     c("}");
-    if(inline){deIndent();}
+    if(inline){nl();deIndent();}
     }
     
   public void visitInfo(Core.L.Info info){
+    separeFromChar();
     if(info.isTyped()){c("#typed}");}
     else {c("#norm{");}
     infoItem("typeDep",info.typeDep());
@@ -141,7 +158,15 @@ public class ToSVisitor extends CollectorVisitor{
     visitDocs(mwt.docs());
     visitMH(mwt.mh());
     var _e0=mwt._e();
-    if(_e0!=null){c("="); visitE(_e0);}
+    if(_e0!=null){
+      c("=");
+      if(!mwt.nativeUrl().isEmpty()){
+        c("native[");
+        c(mwt.nativeUrl());
+        c("]");
+        }
+      visitE(_e0);
+      }
     }
   
   public void visitNC(Core.L.NC nc){
@@ -151,6 +176,7 @@ public class ToSVisitor extends CollectorVisitor{
     visitL(nc.l());
     }
   private void cMethName(S s){
+    separeFromChar();
     if(s.hasUniqueNum()){c(s.m()+"::"+s.uniqueNum());}
     else c(s.m());
     }
@@ -165,52 +191,72 @@ public class ToSVisitor extends CollectorVisitor{
     }
     
   public void visitBlock(Core.Block block){
-    visitDs(block.ds());
-    visitKs(block.ks());
+    boolean inline=HasMultilinePart.inline(block);
+    var sp=empty;
+    if(inline){sp=i->nl();}
+    c("(");
+    if(!inline){indent();}
+    seq(sp,block.ds(),", ");
+    seq(sp,block.ks(),", ");
     visitE(block.e());
+    c(")");
+    if(!inline){deIndent();nl();}
     }
     
   public void visitLoop(Core.Loop loop){
+    kw("loop");
     visitE(loop.e());
     }
     
   public void visitThrow(Core.Throw thr){
+    visitThrow(thr.thr());
     visitE(thr.e());
     }
     
   public void visitOpUpdate(Core.OpUpdate opUpdate){
     visitX(opUpdate.x());
+    c(":=");
     visitE(opUpdate.e());
     }
     
   public void visitD(Core.D d){
     visitT(d.t());
     visitX(d.x());
+    c("=");
     visitE(d.e());
     }
 
   public void visitK(Core.K k){
+    kw("catch");
+    visitThrow(k.thr());
     visitT(k.t());
     visitX(k.x());
     visitE(k.e());
     }
 
   public void visitT(Core.T t){
+    visitMdf(t.mdf());
     visitDocs(t.docs());
     visitP(t.p());
     }
       
   public void visitDoc(Core.Doc doc){
-    visitPathSel(doc.pathSel());
-    visitDocs(doc.docs());
+    c("@");
+    if(doc._pathSel()!=null){visitPathSel(doc._pathSel());}
+    if(doc.texts().isEmpty()){return;}
+    assert doc.texts().size()==doc.docs().size()+1;
+    c("{");
+    seq(i->c(doc.texts().get(i)),doc.docs(),"");
+    c(doc.texts().get(doc.texts().size()-1));
+    c("}");
     }
      
   public void visitPathSel(Core.PathSel pathSel){
     var s0=pathSel._s();
     var x0=pathSel._x();
     visitP(pathSel.p());
-    if(s0!=null){visitS(s0);}
-    if(x0!=null){visitX(x0);}
+    if(s0!=null){c(".");visitS(s0);}
+    if(x0!=null){c(".");visitX(x0);}
     }
     
   public void visitMH(Core.MH mh){
@@ -220,25 +266,31 @@ public class ToSVisitor extends CollectorVisitor{
     var pars0=mh.pars();
     var exceptions0=mh.exceptions();
     visitDocs(docs0);
+    visitMdf(mh.mdf());
+    c("method");
     visitT(t0);
-    visitS(s0);
-    visitTs(pars0);
-    visitTs(exceptions0);
+    cMethName(s0);
+    c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
+    if(exceptions0.isEmpty()){return;}
+    c("[");seq(empty,exceptions0,", ");c("]");
     }
 
   public void visitPCastT(Half.PCastT pCastT){
     var p0=pCastT.p();
     var t0=pCastT.t();
     visitP(p0);
+    c("<:");
     visitT(t0);
     }
     
   public void visitSlash(Half.Slash slash){
+    c("%");
     visitSTz(slash.stz());
+    c("%");
     }
     
   public void visitBinOp(Half.BinOp binOp){
-    visitHalfXPs(binOp.es());
+    seqHas(empty,binOp.es(),binOp.op().inner);
     }
     
   public void visitMCall(Half.MCall mCall){
@@ -246,29 +298,34 @@ public class ToSVisitor extends CollectorVisitor{
     var s0=mCall.s();
     var es0=mCall.es();
     visitXP(xP0);
-    visitS(s0);
-    visitHalfEs(es0);
+    cMethName(s0);
+    c("(");
+    seqHas(i->c(s0.xs().get(i)+"="),es0,", ");
+    c(")");
     }
     
   public void visitBlock(Half.Block block){
+    c("(");//Half stuff can be always inline, toString just for debug
     var ds0=block.ds();
     var ks0=block.ks();
     var e0=block.e();
-    visitHalfDs(ds0);
-    visitHalfKs(ks0);
+    seq(empty,ds0,", ");
+    seq(empty,ks0,", ");
     visitE(e0);
+    c(")");
     }
     
   public void visitLoop(Half.Loop loop){
-    visitE(loop.e());
+    c("loop");visitE(loop.e());
     }
   public void visitThrow(Half.Throw thr){
-    visitE(thr.e());
+    visitThrow(thr.thr());visitE(thr.e());
     }
   public void visitOpUpdate(Half.OpUpdate opUpdate){
     var x0=opUpdate.x();
     var e0=opUpdate.e();
     visitX(x0);
+    c(":=");
     visitE(e0);
     }
   public void visitD(Half.D d){
@@ -277,6 +334,7 @@ public class ToSVisitor extends CollectorVisitor{
     var e0=d.e();
     visitT(t0);
     visitX(x0);
+    c("=");
     visitE(e0);
     }
   
@@ -284,28 +342,43 @@ public class ToSVisitor extends CollectorVisitor{
     var t0=k.t();
     var x0=k.x();
     var e0=k.e();
+    c("catch");
+    visitThrow(k.thr());
     visitT(t0);
     visitX(x0);
     visitE(e0);
     }
 
   public void visitT(Half.T t){
+    if(t._mdf()!=null){visitMdf(t._mdf());}
     visitSTz(t.stz());
     }
 
   public void visitCsP(Full.CsP csP){
     if(csP.cs().isEmpty()){visitP(csP._p());return;}
     assert csP._p()==null;
-    visitCs(csP.cs());
+    seq(empty,csP.cs(),".");
     }
     
   public void visitL(Full.L l){
+      boolean inline=HasMultilinePart.inline(l);
+    c("{");
+    if(inline){indent();}
+    if(l.isInterface()){c("interface");}
     var ts0=l.ts();
     var ms0=l.ms();
     var docs0=l.docs();
-    visitFullTs(ts0);
-    visitFullMs(ms0);
+    if(!ts0.isEmpty()){
+      c("[");seq(empty,l.ts(),", ");c("] ");
+      }
+    var sp=empty;
+    if(inline){sp=i->nl();}
+    seqHas(sp,ms0,"");
+    sp.accept(0);
     visitFullDocs(docs0);
+    if(!docs0.isEmpty()){sp.accept(0);}
+    c("}");
+    if(inline){nl();deIndent();}
     }
     
   public void visitF(Full.L.F f){
@@ -314,7 +387,7 @@ public class ToSVisitor extends CollectorVisitor{
     var s0=f.key();
     visitFullDocs(docs0);
     visitT(t0);
-    visitS(s0);
+    cMethName(s0);
     }
     
   public void visitMI(Full.L.MI mi){
@@ -322,7 +395,9 @@ public class ToSVisitor extends CollectorVisitor{
     var s0=mi.key();
     var e0=mi.e();
     visitFullDocs(docs0);
+    c("method");
     visitS(s0);
+    c("=");
     visitE(e0);
     }
     
@@ -332,7 +407,15 @@ public class ToSVisitor extends CollectorVisitor{
     var _e0=mwt._e();
     visitFullDocs(docs0);
     visitMH(mh0);
-    if(_e0!=null){visitE(_e0);}
+    if(_e0!=null){
+      c("=");
+      if(!mwt.nativeUrl().isEmpty()){
+        c("native[");
+        c(mwt.nativeUrl());
+        c("]");
+        }
+      visitE(_e0);
+      }
     }
   
   public void visitNC(Full.L.NC nc){
@@ -341,78 +424,112 @@ public class ToSVisitor extends CollectorVisitor{
     var e0=nc.e();
     visitFullDocs(docs0);
     visitC(c0);
+    c("=");
     visitE(e0);
     }
     
-  public void visitSlash(Full.Slash slash){}
+  public void visitSlash(Full.Slash slash){c("\\");}
 
-  public void visitSlashX(Full.SlashX slashX){}//note, is right to not propagate on the x
+  public void visitSlashX(Full.SlashX slashX){c("\\"+slashX.x().inner());}
   
   public void visitEString(Full.EString eString){
-    visitFullEs(eString.es());
+    assert eString.es().size()==1;
+    assert eString.strings().size()==1;
+    var s=eString.strings().get(0);
+    assert !s.contains("\n");
+    visitE(eString.es().get(0));
+    c("\""+s+"\"");
     }
   
-  public void visitEPathSel(Full.EPathSel ePathSel){}
+  //public void visitEPathSel(Full.EPathSel ePathSel){visitPathSel(ePathSel.pathSel());}
 
   public void visitUOp(Full.UOp uOp){
+    if(uOp._op()!=null){visitOp(uOp._op());}
+    if(uOp._num()!=null){
+      separeFromChar();
+      c(uOp._num());
+      }
     visitE(uOp.e());
     }
 
   public void visitBinOp(Full.BinOp binOp){
-    visitFullEs(binOp.es());
+    seqHas(empty,binOp.es(),binOp.op().inner);
     }
     
   public void visitCast(Full.Cast cast){
     var e0=cast.e();
     var t0=cast.t();
     visitE(e0);
+    c("<:");
     visitT(t0);
     }
   
   public void visitCall(Full.Call call){
     var e0=call.e();
-    var s0=call.s();
+    var s0=call._s();
     var pars0=call.pars();
     visitE(e0);
-    visitS(s0);
+    if(s0!=null){
+      c(".");
+      cMethName(s0);
+      }
+    if(call.isSquare()){c("[");}else{c("(");}
+    seq(empty,pars0,"; ");
     visitFullPars(pars0);
+    if(call.isSquare()){c("]");}else{c(")");}
     }
   
   public void visitBlock(Full.Block block){
-    var ds0=block.ds();
-    var ks0=block.ks();
-    var ts0=block.whoopsed();
-    var e0=block._e();
-    visitFullDs(ds0);
-    visitFullKs(ks0);
-    visitFullTs(ts0);
-    if(e0!=null){visitE(e0);}
+    boolean inline=HasMultilinePart.inline(block);
+    var sp=empty;
+    if(inline){sp=i->nl();}
+    c("(");
+    if(!inline){indent();}
+    seq(sp,block.ds().subList(0,block.dsAfter()),", ");
+    seq(sp,block.ks(),", ");
+    if(!block.whoopsed().isEmpty()){
+      sp.accept(0);
+      c("whoops");
+      seq(empty,block.whoopsed(),", ");
+      }
+    seq(sp,block.ds().subList(block.dsAfter(),block.ds().size()),", ");
+    sp.accept(0);
+    if(block._e()!=null){visitE(block._e());sp.accept(0);}
+    c(")");
+    if(!inline){deIndent();nl();}
     }
     
   public void visitLoop(Full.Loop loop){
-    visitE(loop.e());
+    c("loop");visitE(loop.e());
     }
   public void visitWhile(Full.While sWhile){
     var c0=sWhile.condition();
     var b0=sWhile.body();
+    c("while");
     visitE(c0);
     visitE(b0);
     }
   public void visitFor(Full.For sFor){
     var ds0=sFor.ds();
     var b0=sFor.body();
-    visitFullDs(ds0);
+    c("for");
+    var es=ds0.stream().map(ds->ds._e()).collect(Collectors.toList());
+    seqHas(i->{
+      visitVarTx(ds0.get(i)._varTx());
+      c(" in ");//force spaces here
+      },es,", ");
     visitE(b0);
     }
     
   public void visitThrow(Full.Throw thr){
-    visitE(thr.e());
+    visitThrow(thr.thr());visitE(thr.e());
     }
     
   public void visitOpUpdate(Full.OpUpdate opUpdate){
     var x0=opUpdate.x();
     var e0=opUpdate.e();
     visitX(x0);
+    visitOp(opUpdate.op());
     visitE(e0);
     }
     
@@ -421,33 +538,47 @@ public class ToSVisitor extends CollectorVisitor{
     var ds0=sIf.matches();
     var then0=sIf.then();
     var _else0=sIf._else();
+    kw("if");
     if(_c0!=null){visitE(_c0);}
-    visitFullDs(ds0);
+    if(!ds0.isEmpty()){
+      seq(empty,ds0,", ");
+      }
     visitE(then0);
-    if(_else0!=null){visitE(_else0);}
+    if(_else0!=null){
+      kw("else");
+      visitE(_else0);
+      }
     }
   public void visitD(Full.D d){
     var tx0=d._varTx();
     var txs0=d.varTxs();
     var e0=d._e();
     if(tx0!=null){visitVarTx(tx0);}
-    visitFullVarTxs(txs0);
-    if(e0!=null){visitE(e0);}
+    if(!txs0.isEmpty()){
+      c("(");seq(empty,txs0,", ");c(")");
+      }
+    if(e0!=null){c("=");visitE(e0);}
     }
  
   public void visitVarTx(Full.VarTx varTx){
     var t0=varTx._t();
     var x0=varTx._x();
-    visitT(t0);
-    visitX(x0);
+    if(varTx.isVar()){kw("var");}
+    if(varTx._mdf()!=null){visitMdf(varTx._mdf());}
+    if(t0!=null){visitT(t0);}
+    if(x0!=null){visitX(x0);}
+    else{c("_");}
     }
   
   public void visitK(Full.K k){
     var t0=k.t();
     var x0=k._x();
     var e0=k.e();
+    kw("catch");
+    if(k._thr()!=null){visitThrow(k._thr());}
     visitT(t0);
     if(x0!=null){visitX(x0);}
+    else {c("_");}
     visitE(e0);
     }
     
@@ -455,32 +586,40 @@ public class ToSVisitor extends CollectorVisitor{
     var e0=par._that();
     var xs0=par.xs();
     var es0=par.es();
-    if(e0!=null){visitE(e0);}
-    visitXs(xs0);
-    visitFullEs(es0);
+    if(e0!=null){visitE(e0);}//////
+    if(!xs0.isEmpty()){
+      if(e0!=null){c(", ");}
+      seqHas(i->{visitX(xs0.get(i));c("=");},es0,", ");
+      }
     }
       
   public void visitT(Full.T t){
     var docs0=t.docs();
     var csP0=t.csP();
+    if(t._mdf()!=null){visitMdf(t._mdf());}
     visitFullDocs(docs0);
     visitCsP(csP0);
     }
     
   public void visitDoc(Full.Doc doc){
-    var pathSel0=doc.pathSel();
-    var docs0=doc.docs();
-    visitPathSel(pathSel0);
-    visitFullDocs(docs0);
+    c("@");
+    if(doc._pathSel()!=null){visitPathSel(doc._pathSel());}
+    if(doc.texts().isEmpty()){return;}
+    assert doc.texts().size()==doc.docs().size()+1;
+    c("{");
+    seq(i->c(doc.texts().get(i)),doc.docs(),"");
+    c(doc.texts().get(doc.texts().size()-1));
+    c("}");
     }
       
   public void visitPathSel(Full.PathSel pathSel){
-    var csP0=pathSel._csP();
     var s0=pathSel._s();
     var x0=pathSel._x();
+    var csP0=pathSel._csP();
     if(csP0!=null){visitCsP(csP0);}
+    if(csP0!=null && s0!=null){c(".");}
     if(s0!=null){visitS(s0);}
-    if(x0!=null){visitX(x0);}
+    if(x0!=null){assert s0!=null;c(".");visitX(x0);}
     }
     
   public void visitMH(Full.MH mh){
@@ -490,9 +629,13 @@ public class ToSVisitor extends CollectorVisitor{
     var pars0=mh.pars();
     var exceptions0=mh.exceptions();
     visitFullDocs(docs0);
+    if(mh._mdf()!=null){visitMdf(mh._mdf());}
+    c("method");
     visitT(t0);
-    visitS(s0);
-    visitFullTs(pars0);
-    visitFullTs(exceptions0);
+    if(mh._op()!=null){visitOp(mh._op());}
+    else{cMethName(s0);}
+    c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
+    if(exceptions0.isEmpty()){return;}
+    c("[");seq(empty,exceptions0,", ");c("]");
     }
   }

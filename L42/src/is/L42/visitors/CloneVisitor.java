@@ -237,9 +237,9 @@ public class CloneVisitor {
     }
       
   public Core.Doc visitDoc(Core.Doc doc){
-    var pathSel0=doc.pathSel();
+    var pathSel0=doc._pathSel();
     var docs0=doc.docs();
-    var pathSel=visitPathSel(pathSel0);
+    var pathSel=pathSel0==null?null:visitPathSel(pathSel0);
     var docs=visitDocs(docs0);
     if(docs==docs0 && pathSel==pathSel0){return doc;}
     return new Core.Doc(pathSel, doc.texts(), docs);
@@ -268,7 +268,7 @@ public class CloneVisitor {
     var pars=visitTs(pars0);
     var exceptions=visitTs(exceptions0);
     if(docs==docs0 && t==t0 && s==s0 && pars==pars0 && exceptions==exceptions0){return mh;}
-    return new Core.MH(mh._mdf(),docs,t,s,pars,exceptions);
+    return new Core.MH(mh.mdf(),docs,t,s,pars,exceptions);
     }
 
   public Half.PCastT visitPCastT(Half.PCastT pCastT){
@@ -419,7 +419,9 @@ public class CloneVisitor {
     return eString.withEs(visitFullEs(eString.es()));
     }
   
-  public Full.EPathSel visitEPathSel(Full.EPathSel ePathSel){return ePathSel;}
+  public Full.EPathSel visitEPathSel(Full.EPathSel ePathSel){
+    return ePathSel.withPathSel(ePathSel.pathSel());
+    }
 
   public Full.UOp visitUOp(Full.UOp uOp){
     return uOp.withE(visitE(uOp.e()));
@@ -440,10 +442,10 @@ public class CloneVisitor {
   
   public Full.Call visitCall(Full.Call call){
     var e0=call.e();
-    var s0=call.s();
+    var s0=call._s();
     var pars0=call.pars();
     var e=visitE(e0);
-    var s=visitS(s0);
+    var s=s0==null?null:visitS(s0);
     var pars=visitFullPars(pars0);
     if(e==e0 && s==s0 && pars==pars0){return call;}
     return new Full.Call(call.pos(),e,s,call.isSquare(),pars);
@@ -521,8 +523,8 @@ public class CloneVisitor {
   public Full.VarTx visitVarTx(Full.VarTx varTx){
     var t0=varTx._t();
     var x0=varTx._x();
-    var t=visitT(t0);
-    var x=visitX(x0);
+    var t=t0==null?null:visitT(t0);
+    var x=x0==null?null:visitX(x0);
     if(x==x0 && t==t0){return varTx;}
     return new Full.VarTx(varTx.isVar(),t,varTx._mdf(),x);
     }
@@ -535,7 +537,7 @@ public class CloneVisitor {
     var x=x0==null?null:visitX(x0);
     var e=visitE(e0);
     if(t==t0 && x==x0 && e==e0){return k;}
-    return new Full.K(k._throw(),t,x,e);
+    return new Full.K(k._thr(),t,x,e);
     }
     
   public Full.Par visitPar(Full.Par par){
@@ -559,9 +561,9 @@ public class CloneVisitor {
     }
     
   public Full.Doc visitDoc(Full.Doc doc){
-    var pathSel0=doc.pathSel();
+    var pathSel0=doc._pathSel();
     var docs0=doc.docs();
-    var pathSel=visitPathSel(pathSel0);
+    var pathSel=pathSel0==null?null:visitPathSel(pathSel0);
     var docs=visitFullDocs(docs0);
     if(pathSel==pathSel0 && docs==docs0){return doc;}
     return new Full.Doc(pathSel,doc.texts(),docs);

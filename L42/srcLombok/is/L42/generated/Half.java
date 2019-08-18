@@ -19,7 +19,7 @@ public class Half {
   PCastT implements Leaf,XP,Visitable<PCastT>{@Override public Visitable<PCastT>visitable(){return this;}@Override public PCastT accept(CloneVisitor cv){return cv.visitPCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitPCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     P p; T t;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  Slash implements Leaf,Visitable<Slash>{@Override public Visitable<Slash>visitable(){return this;}@Override public Slash accept(CloneVisitor cv){return cv.visitSlash(this);}@Override public void accept(CollectorVisitor cv){cv.visitSlash(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+  Slash implements Leaf,XP,Visitable<Slash>{@Override public Visitable<Slash>visitable(){return this;}@Override public Slash accept(CloneVisitor cv){return cv.visitSlash(this);}@Override public void accept(CollectorVisitor cv){cv.visitSlash(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     List<ST> stz;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   BinOp implements E,Visitable<BinOp>{@Override public Visitable<BinOp>visitable(){return this;}@Override public BinOp accept(CloneVisitor cv){return cv.visitBinOp(this);}@Override public void accept(CollectorVisitor cv){cv.visitBinOp(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
@@ -35,7 +35,7 @@ public class Half {
     E e;}  
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Throw implements Wrapper,Visitable<Throw>{@Override public Visitable<Throw>visitable(){return this;}@Override public Throw accept(CloneVisitor cv){return cv.visitThrow(this);}@Override public void accept(CollectorVisitor cv){cv.visitThrow(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    E e;}
+    Throw thr; E e;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   OpUpdate implements Wrapper,Visitable<OpUpdate>{@Override public Visitable<OpUpdate>visitable(){return this;}@Override public OpUpdate accept(CloneVisitor cv){return cv.visitOpUpdate(this);}@Override public void accept(CollectorVisitor cv){cv.visitOpUpdate(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     X x; E e;}

@@ -175,8 +175,10 @@ public class CollectorVisitor {
     }
       
   public void visitDoc(Core.Doc doc){
-    visitPathSel(doc.pathSel());
-    visitDocs(doc.docs());
+    var pathSel0=doc._pathSel();
+    var docs0=doc.docs();
+    if(pathSel0!=null){visitPathSel(pathSel0);}
+    visitDocs(docs0);
     }
      
   public void visitPathSel(Core.PathSel pathSel){
@@ -326,7 +328,9 @@ public class CollectorVisitor {
     visitFullEs(eString.es());
     }
   
-  public void visitEPathSel(Full.EPathSel ePathSel){}
+  public void visitEPathSel(Full.EPathSel ePathSel){
+    visitPathSel(ePathSel.pathSel());
+    }
 
   public void visitUOp(Full.UOp uOp){
     visitE(uOp.e());
@@ -345,10 +349,10 @@ public class CollectorVisitor {
   
   public void visitCall(Full.Call call){
     var e0=call.e();
-    var s0=call.s();
+    var s0=call._s();
     var pars0=call.pars();
     visitE(e0);
-    visitS(s0);
+    if(s0!=null){visitS(s0);}
     visitFullPars(pars0);
     }
   
@@ -412,8 +416,8 @@ public class CollectorVisitor {
   public void visitVarTx(Full.VarTx varTx){
     var t0=varTx._t();
     var x0=varTx._x();
-    visitT(t0);
-    visitX(x0);
+    if(t0!=null){visitT(t0);}
+    if(x0!=null){visitX(x0);}
     }
   
   public void visitK(Full.K k){
@@ -442,9 +446,9 @@ public class CollectorVisitor {
     }
     
   public void visitDoc(Full.Doc doc){
-    var pathSel0=doc.pathSel();
+    var pathSel0=doc._pathSel();
     var docs0=doc.docs();
-    visitPathSel(pathSel0);
+    if(pathSel0!=null){visitPathSel(pathSel0);}
     visitFullDocs(docs0);
     }
       

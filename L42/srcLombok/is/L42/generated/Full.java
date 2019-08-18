@@ -59,7 +59,7 @@ public class Full {
     E e; T t;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Call implements E,Visitable<Call>{@Override public Visitable<Call>visitable(){return this;}@Override public Call accept(CloneVisitor cv){return cv.visitCall(this);}@Override public void accept(CollectorVisitor cv){cv.visitCall(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    E e; S s; boolean isSquare; List<Par> pars;}
+    E e; S _s; boolean isSquare; List<Par> pars;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Block implements E,Visitable<Block>{@Override public Visitable<Block>visitable(){return this;}@Override public Block accept(CloneVisitor cv){return cv.visitBlock(this);}@Override public void accept(CollectorVisitor cv){cv.visitBlock(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     boolean isCurly; List<D> ds; int dsAfter; List<K>ks; List<T> whoopsed; E _e;}  
@@ -90,7 +90,7 @@ public class Full {
     boolean isVar; T _t; Mdf _mdf; X _x;}//mdf can be present only if _t is absent
   @Value @Wither public static class
   K implements Visitable<K>{@Override public K accept(CloneVisitor cv){return cv.visitK(this);}@Override public void accept(CollectorVisitor cv){cv.visitK(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Throw _throw; T t; X _x; E e;}
+    Throw _thr; T t; X _x; E e;}
   @Value @Wither public static class
   Par implements Visitable<Par>{@Override public Par accept(CloneVisitor cv){return cv.visitPar(this);}@Override public void accept(CollectorVisitor cv){cv.visitPar(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     E _that; List<X>xs; List<E>es;}
@@ -99,7 +99,7 @@ public class Full {
     Mdf _mdf; List<Doc> docs; CsP csP;}
   @Value @Wither public static class
   Doc implements Visitable<Doc>{@Override public Doc accept(CloneVisitor cv){return cv.visitDoc(this);}@Override public void accept(CollectorVisitor cv){cv.visitDoc(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    PathSel pathSel; List<String>texts; List<Doc> docs;}
+    PathSel _pathSel; List<String>texts; List<Doc> docs;}
   @Value @Wither public static class
   PathSel implements Visitable<PathSel>{@Override public PathSel accept(CloneVisitor cv){return cv.visitPathSel(this);}@Override public void accept(CollectorVisitor cv){cv.visitPathSel(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     CsP _csP; S _s; X _x;}
