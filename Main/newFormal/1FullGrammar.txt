@@ -38,7 +38,7 @@ _______
   FULL.MWT ::=Docs MH (= native[URL]? e)?// well formdness: no FULL.L inside e
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
-  FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | Uop e
+  FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e
     | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WHOOPS? Ds' e? ) | { Ds Ks WHOOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
@@ -46,12 +46,13 @@ _______
   FULL.D ::= (DX =)? e
   FULL.WHOOPS ::= whoops T+
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
+  FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
   ST::=CORE.T | ST.s | ST.s.i | op STzs //i=0 for receiver type?
-  HALF.xP ::= x | P<:STz
-  HALF.e ::= xP | void | LL | %STz% | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
+  HALF.xP ::= x | P<:STz | %STz%
+  HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.K ::= catch throw HALF.T x e
   HALF.D ::= var? HALF.T x = e
   Half.T::= mdf? STz
@@ -112,7 +113,7 @@ _______
   n ::= 0 | <1-9> <0-9>*
   x ::=IdLow IdChars
   m ::= (#$ |#+)? x(#x)* (::n)?
-  Uop ::= ! | ~ | Number  // prefix
+  UOp ::= ! | ~ | Number  // prefix
   OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
   OP1 ::= + | - | * | / | >> | -> // left associative   
   OP2 ::= == | < | > | >= | <= | in | !=  // unassiociative
@@ -128,7 +129,7 @@ _______
 _______
 #define FULL Expressions priority disambiguation and other details
   FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel |  e<:T |\x
-  FULL.ePostfix ::= Uop* eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)*
+  FULL.ePostfix ::= UOp* eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)*
     //no space in ePostfix(par) and \x
   FULL.par ::= e? xe*
   FULL.eBinary0 ::= ePostFix (OP0 ePostFix)* //right associative, all ops must be the same

@@ -1,18 +1,17 @@
 _______
 #define metanotation IfNotE, IfErr, IfUndefined 
-* predicate0 IfNotE(Xs) predicate1 predicates == (predicate0 and predicates) or ((not exists Xs such that predicate0) and predicate1)
 //note: the simpler interpretation (predicate0 and predicates) or predicate1
 //would technically allow free variables in predicate0 to be chosen to falsify it
+* predicate0 IfNotE(Xs) predicate1 predicates == (predicate0 and predicates) or ((not exists Xs such that predicate0) and predicate1)
 * predicate0 IfErr(Xs) predicate1 predicates == (predicate0 and predicates) or (Err in Xs  and predicate1)
 * predicate0 IfUndefined predicate1 predicates == (predicate0 and predicates) or (predicate0 undefined and predicate1)
 _______
-#define firstErr(Rs,Err,_) = Err
+#define firstErr(Rs) = Err
 * firstErr(Rs,Err,_) = Err
     Err not in Rs
 _______
 #define STz notations:
-* (ST1 .. STn).s = ST1.s .. STn.s
-* (ST1 .. STn).s.i = ST1.s.i .. STn.s.i
+* (ST1 .. STn).s(.i)? = ST1.s(.i)? .. STn.s(.i)?
 * (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
 _______
 #define top(CCz,p) => PR    topNC(CCz;p;Cs) => PR    sortHeader(p) = p'    sortM(p) = p'    addInfo(p) = p'   
@@ -24,14 +23,14 @@ _______
     topNC(CCz1,p1,NCs.Cs) => PR1
     PR1 = CCz2; p2 IfErr(PR1) PR = PR1
     I[C=empty;p2;G=empty;p2.minimize(CCz2)]!e?i => ERi
-    ER1 = CCz3;e?'1 .. ERn = CCz;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn)
-    p2 = p1.update(p(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
-    p3=flagTyped(addInfo(p2)) IfNotE(p3) PR=illTyped(p2)
-    PR = CCz; p3
+    ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
+    p3 = p2.update(p2(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
+    p4=flagTyped(addInfo(p3)) IfNotE(p4) PR=illTyped(p3)
+    PR = CCz2; p4
 
 * topNC(CCz;p;empty) =>CCz;p
 * topNC(CCz;p;C,Cs) => PR
-    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;onPath=class]
+    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library]
     Y!p(This0)(C) = Half.e; _; _; _
     I[C?=C;p;p.minimize(CCz)]!Half.e => ER
     ER = CCz1;CORE.e IfErr(ER) PR = ER
@@ -59,7 +58,7 @@ _______
     Ps;Ps'=collectDeps(p;Ts) U collectDeps(p;MWTs) U collectDeps(NCs.Docss)
     Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
 _______
-#define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
+#define I!HALF.e? => ER
 * I!empty => empty;empty
 * I!x => empty;x
 * I!P<:STz => empty;P<:I(STz)
@@ -69,51 +68,57 @@ _______
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L)
     top(I.CCz[from This1;p],p) => PR
-    PR = CCz';p' IfErr(PR) ER =PR
-    ER = CCz'[from I.C?;p'];p'(This0)
-* I!CORE.L => CORE.L 
+    PR = CCz';p' IfErr(PR) ER = PR
+    ER = CCz'[from I.C?;p'];p'(This0)//could be optimized since similar to I.CCz
+* I!CORE.L => CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
 * I!%STz% => I(STz).P
 * I!%STz% => inferenceFailure(I,PTz)
     I(STz) undefined
 * I!e0.m(x1=e1..xn=en) => ER
-    I|ei=ERi //e0 is of form xP
-    ER0..ERn = CCz0;e'0..CCzn;e'n ~OR~ ER=firstErr(ER0..ERn)
-    ER=CCz0 U..U CCzn;e'0.m(x1=e'1..xn=e'n)
+    I!ei=ERi //e0 is of form xP
+    ER0..ERn = CCz0;e'0..CCzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
+    ER = CCz0 U..U CCzn;e'0.m(x1=e'1..xn=e'n)
 * I!xP0 OP..OP xPn => ER
-    I!xPi=>ERi
-    ER0..ERn = CCz0;xP0..CCzn;xPn ~OR~ ER0..ERn = ER=firstErr(ER0..ERn)
-    ER=CCz0 U..U CCzn;I.selectedOption(OP,xP0..xPn)
-* I!e0 =>ER
+    I!xPi => ERi
+    ER0..ERn = CCz0;xP0..CCzn;xPn IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
+    Ti = class Pi if xPi = Pi
+    Ti = I.G(xi) if xPi = xi
+    {P,m(x1..xn),i}=I.p.opOptions(OP, T0..Tn)
+    xP'1..xP'n=xP0..xPn\i
+    ER = CCz0 U..U CCzn;xPi.m(x1=xP'1..xn=xP'n)
+* I!e0 => ER
     e0 in {throw e, loop e, x:=e}
     I!e => ER'
-    ER' = CCz;e' ~OR~ ER=ER'
+    ER' = CCz;e' IfErr(ER') ER = ER'
     ER = CCz;e0[e=e']
 * I!(Ds K1..Km e) => ER
-    xs=FV((K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
-    I!xs;Ds =>DsR
-    I!Ki =>KRi
-    DsR=CCz0;D1..Dn ~OR~ ER=DsR
+    xs = FV((K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
+    I!xs;Ds => DsR
+    I!Ki => KRi
+    DsR = CCz0;D1..Dn IfErr(DsR) ER = DsR
     I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
-    KR1..KRn,ER' = CCz1;K'1..CCzm;K'm, CCzm+1;e' ~OR~ ER=firstErr(KR1..KRn,ER)
-    ER=CCz0 U..U CCzm+1;(Ds Ks e')
-* I!xs;empty => empty;empty
-* I!xs;var? HALF.T x=e Ds=> DsR
-    I(HALF.T)=CORE.T ~OR~ DsR=inferenceFailure(I,HALF.T)
+    KR1..KRn,ER' = CCz1;K'1..CCzm;K'm, CCzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
+    ER = CCz0 U..U CCzm+1;(Ds Ks e')
+_______
+#define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
+* I!xs;empty => I.CCz;empty
+* I!xs;var? HALF.T x=e Ds => DsR
+    I(HALF.T) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,HALF.T)
     I!e => ER 
-    ER=CCz';e' ~OR~ DR=ER
-    CORE.T=CORE.T0[mdf=imm] if HALF.T=STz, CORE.T.mdf=read and 
+    ER = CCz';e' IfErr(ER) DR = ER
+    CORE.T = CORE.T0[mdf=imm] if HALF.T=STz, CORE.T.mdf=read and 
       not exists x in FV(e') such that x in dom(G) and G(x).mdf in {read,lent,mut}
-    CORE.T'=CORE.T[mdf=mut] if HALF.T=STz, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
-    CORE.T'=CORE.T otherwise
-    I[G=I.G,x:CORE.T']!Ds=> DsR'
-    DsR'=CCz;Ds ~OR~ DsR=DsR'
-    DsR=CCz' U CCz;var? CORE.T' x=e',Ds
+    CORE.T' = CORE.T[mdf=mut] if HALF.T=STz, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
+    CORE.T' = CORE.T otherwise
+    I[G=I.G,x:CORE.T' CCz=CCz']!Ds => DsR'
+    DsR' = CCz;Ds IfErr(DsR') DsR = DsR'
+    DsR = CCz;var? CORE.T' x=e',Ds
 
 * I!catch throw HALF.T x e => KR
-    I(HALF.T)=CORE.T ~OR~ inferenceFailure(I,HALF.T)
+    I(HALF.T)=CORE.T IfNotE(CORE.T) inferenceFailure(I,HALF.T)
     I!e => ER
-    ER=CCz';e' ~OR~ KR=ER
-    KR=CCz';catch throw CORE.T x e' //assert CORE.T =mdf or throw=return
+    ER = CCz';e' IfErr(ER) KR = ER
+    KR = CCz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
 _______
 #define adapt(CORE.e,P)
 * adapt(e, Library) = e
@@ -129,11 +134,11 @@ _______
     P=Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1  
 _______
-#define CCz.add(FULL.MWT : CORE.MH HAlf.e?) = CCz'
+#define CCz.add(FULL.MWT : HAlf.e?) = CCz'
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
 * CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
-    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T;onPath=class?]
+    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T]
     Y!MWT.e = Half.e; STs; empty; CCz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
@@ -145,12 +150,6 @@ _______
 * T in I.coreTof(ST)
     ST<=ST' in I.CCz
     T in I.coreTof(ST')
-_______
-#define I.selectedOption(OP, xPs)= xP.s(x1=xP'1..xn=xP'n)
-* I.p.selectedOption(OP,xPs) = P,m(x1..xn),i
-    {P,s,i}=I.p.opOptions(OP, I.typesOf(xPs))
-    xP'1..xP'n=xPs\i
-    xP=xPs\xP'1..xP'n
 _______
 #define collectDeps(p;CORE.MWT)=Ps;Ps'    collectDeps(p;T)=Ps;Ps'    collectDeps(p;Doc)=Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
@@ -165,7 +164,7 @@ _______
     Ps0=CORE.L.Info.typeDep
     Ps'0=CORE.L.Info.coherent
     Ps1..Psn={CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
-    Ps'1..Ps'n={CORE.L(Cs).Info.coherent[from This.Cs;p]| Cs in dom(CORE.L)}
+    Ps'1..Ps'n={CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;P<:class Any)= P;empty
