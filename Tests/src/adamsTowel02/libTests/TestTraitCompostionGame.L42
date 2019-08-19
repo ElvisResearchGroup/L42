@@ -17,13 +17,13 @@ ModuleEntities: Trait({
 
   EntityTrait: Trait(K<><{implements Entity
     var Point p
-    method point()this.p()
-    method point(that)this.p(that)
+    method point() this.p()
+    method point(that) this.p(that)
     })
 
-  Player: EntityTrait & {read method S representation()S"P"}
-  RockItem: EntityTrait & {read method S representation()S"R"}
-  AppleItem: EntityTrait & {read method S representation()S"A"}
+  Player: EntityTrait & {read method S representation() S"P"}
+  RockItem: EntityTrait & {read method S representation() S"R"}
+  AppleItem: EntityTrait & {read method S representation() S"A"}
   })
 
 ModuleWorld: Trait({
@@ -48,7 +48,7 @@ ModuleWorld: Trait({
       return Bool.false()
       }
 
-    mut method Void addEntity(mut Entity that)(
+    mut method Void addEntity(mut Entity that) (
       if this.hasItemAt(that.point()) (error PointFilled"")
       this.add(right: that)
       )
@@ -68,10 +68,10 @@ ModuleWorld: Trait({
   World: K<><{
     mut PointToEntityMap map
     mut Player player
-    mut method Void movePlayerUp()this.#player().point(\point.with(y: \y-1Size))
-    mut method Void movePlayerDown()this.#player().point(\point.with(y: \y+1Size))
-    mut method Void movePlayerLeft()this.#player().point(\point.with(x: \x-1Size))
-    mut method Void movePlayerRight()this.#player().point(\point.with(x: \x+1Size))
+    mut method Void movePlayerUp() this.#player().point(\point.with(y: \y-1Size))
+    mut method Void movePlayerDown() this.#player().point(\point.with(y: \y+1Size))
+    mut method Void movePlayerLeft() this.#player().point(\point.with(x: \x-1Size))
+    mut method Void movePlayerRight() this.#player().point(\point.with(x: \x+1Size))
     }
   })
 
@@ -137,9 +137,9 @@ ModuleUI: Trait({
     mut method Void movePlayerDown()
     mut method Void movePlayerLeft()
     mut method Void movePlayerRight()
-    class method Size gameSizeInCells()10Size
+    class method Size gameSizeInCells() 10Size
 
-    mut method S asText()S""[
+    mut method S asText() S""[
       with y in Range(This.gameSizeInCells()) (
         with x in Range(This.gameSizeInCells()) (
           Point p = Point(x: x, y: y)
@@ -158,10 +158,10 @@ ModuleUI: Trait({
 
   Action: {interface method Void (mut World world)}
   Actions: Collections.vector(of: Action)
-  MoveUp: K<><{implements Action method (world)world.movePlayerUp()}
-  MoveDown: K<><{implements Action method (world)world.movePlayerDown()}
-  MoveLeft: K<><{implements Action method (world)world.movePlayerLeft()}
-  MoveRight: K<><{implements Action method (world)world.movePlayerRight()}
+  MoveUp: K<><{implements Action method (world) world.movePlayerUp()}
+  MoveDown: K<><{implements Action method (world) world.movePlayerDown()}
+  MoveLeft: K<><{implements Action method (world) world.movePlayerLeft()}
+  MoveRight: K<><{implements Action method (world) world.movePlayerRight()}
   })
 
 // ****************************** Main ******************************
