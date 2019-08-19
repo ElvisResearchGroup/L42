@@ -8,7 +8,7 @@ PointFilled: Message.$<><{implements Guard}
 
 // ****************************** Entities ******************************
 
-TraitEntities: Trait({
+ModuleEntities: Trait({
   Entity: {interface
     read method Point point()
     mut method Void point(Point that)
@@ -26,7 +26,7 @@ TraitEntities: Trait({
   AppleItem: EntityTrait & {read method S representation()S"A"}
   })
 
-TraitWorld: Trait({
+ModuleWorld: Trait({
   Entity: {interface
     read method Point point()
     mut method Void point(Point that)
@@ -77,7 +77,7 @@ TraitWorld: Trait({
 
 // ****************************** WorldLoader ******************************
 
-TraitWorldLoader: Trait({
+ModuleWorldLoader: Trait({
   PointToEntityMap: {
     class method mut This #seqBuilder()
     class method mut This #from(mut This seqBuilder)
@@ -114,7 +114,7 @@ TraitWorldLoader: Trait({
 
 // ****************************** UI ******************************
 
-TraitUI: Trait({
+ModuleUI: Trait({
   Entity: {interface
     read method Point point()
     read method S representation()
@@ -161,7 +161,7 @@ TraitUI: Trait({
 
 // ****************************** Main ******************************
 
-Main: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {
+Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Action: {}
   Actions: {}
   World: {}
