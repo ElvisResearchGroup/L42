@@ -84,7 +84,7 @@ TraitWorldLoader: Trait({
     mut method Void addE(mut Entity that)
     }
   World: K<><{mut PointToEntityMap map, mut Player player}
-  
+
   Entity: {interface}
   Player: {implements Entity class method mut This (fwd Point p)}
   RockItem: {implements Entity class method mut This (fwd Point p)}
@@ -167,8 +167,8 @@ Main: TraitEntities & TraitWorld & TraitWorldLoader & TraitUI & {
   World: {}
   WorldLoader: {}
   class method Strings (Actions as, mut World w) Strings[w.asText()]++Strings[
-    with i in Range(as.size()) (//PUT BACK too use as.vals() TODO
-      as.val(i)(w: w)
+    with a in as.vals() (
+      a(w: w)
       use[w.asText()]
       )
     ]
