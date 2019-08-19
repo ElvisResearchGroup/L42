@@ -211,6 +211,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Actions: {}
   World: {}
   WorldLoader: {}
+
   class method Strings (Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
       with action in actions.vals() (
@@ -219,6 +220,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
         )
       ]
     )
+
   class method Strings #$(Actions actions) (
     This(
       actions: actions,
@@ -237,7 +239,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
 //
 //
 
-Test1: {
+IntegrationTest1: {
   mut Main.PointToEntityMap map = Main.PointToEntityMap[]
   Debug.test(map.hasItemAt(Point(x: 10Size, y: 20Size)), expected: S"false")
   map.addEntity(Main.RockItem(p: Point(x: 10Size, y: 20Size)))
@@ -248,7 +250,7 @@ Test1: {
   return ExitCode.normal()
   }
 
-Test2: {
+IntegrationTest2: {
   mut Main.World world = Main.World(
     map: Main.PointToEntityMap[],
     player: Main.Player(p: Point(x: 2Size, y: 1Size))
@@ -269,7 +271,7 @@ Test2: {
   return ExitCode.normal()
   }
 
-Test3: {
+IntegrationTest3: {
   mut Main.World world = Main.World(
     map: Main.PointToEntityMap[],
     player: Main.Player(p: Point(x: 2Size, y: 1Size))
@@ -304,7 +306,7 @@ Test3: {
   return ExitCode.normal()
   }
 
-Test4: {
+IntegrationTest4: {
   Main.Actions actions = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveRight()]
   Strings ss = Main.#$(actions: actions)
     Debug.test(ss.val(0Size), expected: S"
