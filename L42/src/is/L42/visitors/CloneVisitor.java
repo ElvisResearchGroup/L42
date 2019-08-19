@@ -142,7 +142,7 @@ public class CloneVisitor {
     var refined=visitSs(refined0);
     if(typeDep==typeDep0 && coherentDep==coherentDep0 && friendsDep==friendsDep0 
       && usedMethDep==usedMethDep0 && privateImpl==privateImpl0 && refined==refined0){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friendsDep,usedMethDep,privateImpl,refined,info.havePrivateStaticMethods());
+    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friendsDep,usedMethDep,privateImpl,refined,info.canBeClassAny());
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){

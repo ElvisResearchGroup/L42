@@ -42,7 +42,7 @@ public class Core {
       List<PathSel> usedMethDep;
       List<P> privateImpl;
       List<S>refined;
-      boolean havePrivateStaticMethods;
+      boolean canBeClassAny;
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
