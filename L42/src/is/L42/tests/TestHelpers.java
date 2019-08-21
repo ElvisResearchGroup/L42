@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import is.L42.common.Parse;
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
 import is.L42.generated.L42Visitor;
@@ -128,27 +129,11 @@ public class TestHelpers {
     return ctx.accept(visitor).toString();
     }
   public static NudeEContext parseWithException(String s){
-    StringBuilder errorst=new StringBuilder();
-    StringBuilder errorsp=new StringBuilder();
-    var in = CharStreams.fromString(s);
-    var l=new L42Lexer(in);
-    l.removeErrorListener(ConsoleErrorListener.INSTANCE);
-    l.addErrorListener(new FailConsole(errorst));
-    var t = new CommonTokenStream(l);
-    var p=new L42Parser(t);
-    p.removeErrorListener(ConsoleErrorListener.INSTANCE);
-    p.addErrorListener(new FailConsole(errorsp));
-    try{return p.nudeE();}
+    var res=Parse.e(s);
+    try{return res.res;}
     finally{
-      if(errorst.length()!=0)throw new RuntimeException("Tokenizer errors:\n"+errorst);
-      if(errorsp.length()!=0)throw new RuntimeException("Parsing errors:\n"+errorsp);
+      if(res.errorsTokenizer.length()!=0)throw new RuntimeException("Tokenizer errors:\n"+res.errorsTokenizer);
+      if(res.errorsParser.length()!=0)throw new RuntimeException("Parsing errors:\n"+res.errorsParser);
       }
-    }
-  }
-class FailConsole extends ConsoleErrorListener{
-  public final StringBuilder sb;
-  public FailConsole(StringBuilder sb){this.sb=sb;}
-  @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){
-    sb.append("line " + line + ":" + charPos + " " + msg);
     }
   }

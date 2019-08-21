@@ -1,26 +1,35 @@
 grammar L42Aux;
 @header {package is.L42.generated;}
-
-ThisKw: "This"Fn?;
-C:IdUp IdChar*;
-
-csP:(path|cs) EOF;
-path: ThisKw ('.'C)*;
-cs: C ('.'C)*;
-selector: m '(' (x W)* ')' 
-pathSel:path '.' selector;
+Dot: '.';
+TDStart:'@@';
+ThisKw: 'This' Fn?;
+AnyKw:'Any';
+VoidKw:'Void';
+LibraryKw:'Library';
+anyKw:AnyKw;
+voidKw:VoidKw;
+libraryKw:LibraryKw;
+thisKw:ThisKw;
+C:IdUp IdChar* ('::'Fn)?;
+c:C;
+csP:(path|cs|anyKw|voidKw|libraryKw) EOF;
+path: thisKw (Dot c)*;
+cs: c (Dot c)*;
+selector: m '(' (x W*)* ')';
+pathSel:path Dot selector;
+pathSelX:pathSel (Dot x)? ;
 
 infoNorm:'#norm{';
 infoTyped:'#typed{';
 
-info: infoNorm|infoTyped infoBody* '}';
+info: (infoNorm|infoTyped) infoBody* '}';
 infoBody: typeDep|coherentDep|friends|usedMethods|privateSubtypes|refined|canBeClassAny;
-typeDep: 'typeDep='(W path)+ W;
-coherentDep: 'coherentDep='(W path)+ W;
-friends: 'friends='(W path)+ W;
-usedMethods: 'usedMethods='(W pathSel)+ W;
-privateSubtypes: 'privateSubtypes='(W path)+ W;
-refined: 'refined='(W selector)+ W;
+typeDep: 'typeDep='(W* path)+ W*;
+coherentDep: 'coherentDep='(W* path)+ W*;
+friends: 'friends='(W* path)+ W*;
+usedMethods: 'usedMethods='(W* pathSel)+ W*;
+privateSubtypes: 'privateSubtypes='(W* path)+ W*;
+refined: 'refined='(W* selector)+ W*;
 canBeClassAny: 'canBeClassAny';
 
 
@@ -35,6 +44,7 @@ fragment CharsUrl:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
 fragment CHARDocText:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '"' | '\'' | '\n'; //no {}@
+
 fragment URL:CharsUrl+;
 
 fragment Fn: '0' | '1'..'9' ('0'..'9')*;
@@ -45,15 +55,21 @@ MHash: ('#$' | '#'+) Fx('#' Fx)* ('::'Fn)?;
 X: Fx;
 x: X;
 m: MUniqueNum|MHash|X;
-fragment C: IdUp ('A'..'Z'|'$'|'a'..'z'|'0'..'9')*;
 //UnderScore:'_';//need to be not earlier then here, after X and CsP
-//Doc: '@'FPathSel | '@'FPathSel?'{'DocText'}';
+Doc: '@'FPathSel | '@'FPathSel?'{'DocText'}';
 fragment FS:(MUniqueNum|MHash|X) FParXs;
 fragment FParXs: '(' ')' | '(' X ( (' '|',')X )* ')';
 fragment FPathSel: FS('.'X)? |FParXs('.'X)?;
 fragment DocText: | CHARDocText DocText | Doc DocText | '{' DocText '}' DocText;
-//doc:Doc;
 
-W: ( ' ' | ',' | '\n' )*;
+W: ( ' ' | ',' | '\n' );
 
-nudeE: e EOF;
+CHARInDoc:
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | '~' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '"' | '\''; //no { } . @ W
+
+charInDoc: CHARInDoc | MUniqueNum | MHash | X | Dot | ThisKw | C | AnyKw | VoidKw | LibraryKw | W; 
+
+topDoc:TDStart pathSelX EOF | TDStart pathSelX? '{' topDocText '}' EOF;
+topDocText:charInDoc* | charInDoc* doc topDocText | charInDoc* '{' topDocText '}' topDocText;
+doc:Doc;
+

@@ -56,7 +56,7 @@ slashX:SlashX;
 m: MUniqueNum|MHash|X;
 CsP: C(ClassSep C)*;
 ClassSep: '.';
-fragment C: IdUp ('A'..'Z'|'$'|'a'..'z'|'0'..'9')*;
+fragment C: IdUp IdChar* ('::'Fn)?;
 UnderScore:'_';//need to be not earlier then here, after X and CsP
 OR:' ('| ',(' | '\n(';
 ORNS:'(';

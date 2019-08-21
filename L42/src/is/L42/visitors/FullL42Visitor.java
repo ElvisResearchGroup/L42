@@ -9,11 +9,11 @@ import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
-
 import is.L42.generated.L42Parser.*;
+import is.L42.common.Parse;
 import is.L42.generated.*;
 
-public class FullL42Visitor implements L42Visitor<Object>{
+public class FullL42Visitor extends L42BaseVisitor<Object>{
   String fileName;
   Core.EVoid eVoid=new Core.EVoid(null);//will not be in the final result
   public FullL42Visitor(String fileName){this.fileName=fileName;}
@@ -24,10 +24,10 @@ public class FullL42Visitor implements L42Visitor<Object>{
   Pos pos(ParserRuleContext prc){
     return new Pos(fileName,prc.getStart().getLine(),prc.getStart().getCharPositionInLine()); 
     }
-  @Override public Void visit(ParseTree arg0) {throw bug();}
-  @Override public Void visitChildren(RuleNode arg0) {throw bug();}
-  @Override public Void visitErrorNode(ErrorNode arg0) {throw bug();}
-  @Override public Void visitTerminal(TerminalNode arg0) {throw bug();}
+//  @Override public Void visit(ParseTree arg0) {throw bug();}
+//  @Override public Void visitChildren(RuleNode arg0) {throw bug();}
+//  @Override public Void visitErrorNode(ErrorNode arg0) {throw bug();}
+//  @Override public Void visitTerminal(TerminalNode arg0) {throw bug();}
   @Override public Full.E visitE(EContext ctx) {return (Full.E)c(ctx);}
   @Override public Full.Par visitPar(ParContext ctx) {
     List<X> xs=L(ctx.x(),(c,x)->c.add(visitX(x)));
@@ -77,57 +77,77 @@ public class FullL42Visitor implements L42Visitor<Object>{
     s=s.substring(0, un);
     return new S(s,L(),n);
     }
-  @Override public String visitCsP(CsPContext ctx) {
+  @Override public Full.CsP visitCsP(CsPContext ctx) {
+    Pos pos=pos(ctx);
     String s=ctx.CsP().toString();
-    
-    return "P";
+    var res=Parse.csP(s);
+    assert !res.hasErr();
+    var csP= (Full.CsP) res.res.accept(new L42AuxBaseVisitor<Object>(){
+      @Override public Full.CsP visitCs(L42AuxParser.CsContext ctx) {
+        List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
+        return new Full.CsP(pos,cs, null);
+        }
+      @Override public Full.CsP visitPath(L42AuxParser.PathContext ctx) {
+        int n=visitThisKw(ctx.thisKw());
+        List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
+        return new Full.CsP(pos,L(),P.of(n,cs)); 
+        }
+      @Override public C visitC(L42AuxParser.CContext ctx) {
+        String s=ctx.getText();
+        int i=s.indexOf("::");
+        if(i==-1){return new C(s,-1);}
+        int u=Integer.parseInt(s.substring(i+2));
+        return new C(s.substring(0,i),u);
+        }
+      @Override public Integer visitThisKw(L42AuxParser.ThisKwContext ctx) {
+        String s=ctx.getText().substring(4);
+        if(s.isEmpty()){return 0;}
+        return Integer.parseInt(s);
+        }
+      @Override public Full.CsP visitAnyKw(L42AuxParser.AnyKwContext ctx) {
+        return new Full.CsP(pos,L(),P.pAny);
+        }
+      @Override public Full.CsP visitVoidKw(L42AuxParser.VoidKwContext ctx) {
+        return new Full.CsP(pos,L(),P.pVoid);
+        }
+      @Override public Full.CsP visitLibraryKw(L42AuxParser.LibraryKwContext ctx) {
+        return new Full.CsP(pos,L(),P.pLibrary);
+        }
+      });
+    return csP;
     }
-  public static boolean isThisn(String name) {
-    if (name.equals("This")) {return true;}
-    if (name.equals("This0")) {return true;}
-    if (!name.startsWith("This")) {return false;}
-    int firstN = "This".length();
-    char c = name.charAt(firstN);
-    // first is 1--9 and all rest is 0-9
-    if ("123456789".indexOf(c) == -1) {return false;}
-    for (int i :range(firstN + 1,name.length())) {
-      if ("0123456789".indexOf(name.charAt(i)) == -1) {return false;}
-      }
-    return true;
+  @Override public Core.EVoid visitVoidE(VoidEContext ctx) {return new Core.EVoid(pos(ctx));}
+  @Override public String visitT(TContext ctx) {throw bug();}
+  @Override public String visitTLocal(TLocalContext ctx) {throw bug();}
+  @Override public List<Full.VarTx> visitDX(DXContext ctx) {throw bug();}
+  @Override public String visitDoc(DocContext ctx) {throw bug();}
+  @Override public Full.K visitK(KContext ctx) {throw bug();}
+  @Override public List<Full.T> visitWhoops(WhoopsContext ctx) {throw bug();}
+  /*@Override public String visitFullL(FullLContext ctx) {throw bug();}
+  @Override public String visitFullM(FullMContext ctx) {throw bug();}
+  @Override public String visitFullF(FullFContext ctx) {throw bug();}
+  @Override public String visitHeader(HeaderContext ctx) {throw bug();}
+  @Override public String visitFullMi(FullMiContext ctx) {throw bug();}
+  @Override public String visitFullMWT(FullMWTContext ctx) {throw bug();}
+  @Override public String visitFullMH(FullMHContext ctx) {throw bug();}
+  @Override public String visitMOp(MOpContext ctx) {throw bug();}
+  @Override public String visitFullNC(FullNCContext ctx) {throw bug();}
+  @Override public String visitSlash(SlashContext ctx) {throw bug();}
+  @Override public String visitPathSel(PathSelContext ctx) {throw bug();}
+  @Override public String visitCast(CastContext ctx) {throw bug();}
+  @Override public String visitSlashX(SlashXContext ctx) {throw bug();}
+  @Override public String visitEPostfix(EPostfixContext ctx) {throw bug();}
+  @Override public String visitSquareCall(SquareCallContext ctx) {throw bug();}
+  @Override public String visitEBinary0(EBinary0Context ctx) {throw bug();}
+  @Override public String visitEBinary1(EBinary1Context ctx) {throw bug();}
+  @Override public String visitEBinary2(EBinary2Context ctx) {throw bug();}
+  @Override public String visitEBinary3(EBinary3Context ctx) {throw bug();}  
+  @Override public String visitSIf(SIfContext ctx) {throw bug();}
+  @Override public String visitMatch(MatchContext ctx) {throw bug();}
+  @Override public String visitSWhile(SWhileContext ctx) {throw bug();}
+  @Override public String visitSFor(SForContext ctx) {throw bug();}
+  @Override public String visitSLoop(SLoopContext ctx) {throw bug();}
+  @Override public String visitSThrow(SThrowContext ctx) {throw bug();}
+  @Override public String visitSUpdate(SUpdateContext ctx) {throw bug();}
+  @Override public String visitInfo(InfoContext ctx) {throw bug();}*/
   }
-
-      @Override public String visitVoidE(VoidEContext ctx) {return "void";}
-      @Override public String visitT(TContext ctx) {return "t("+c(ctx)+")";}
-      @Override public String visitTLocal(TLocalContext ctx) {return c(ctx);}
-      @Override public List<Full.VarTx> visitDX(DXContext ctx) {return c(ctx);}
-      @Override public String visitDoc(DocContext ctx) {return "doc";}
-      @Override public Full.K visitK(KContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public List<Full.T> visitWhoops(WhoopsContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitFullL(FullLContext ctx) {return "{"+c(ctx)+"}";}
-      @Override public String visitFullM(FullMContext ctx) {return c(ctx);}
-      @Override public String visitFullF(FullFContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitHeader(HeaderContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitFullMi(FullMiContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitFullMWT(FullMWTContext ctx) {return c(ctx);}
-      @Override public String visitFullMH(FullMHContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitMOp(MOpContext ctx) {return "mOp";}
-      @Override public String visitFullNC(FullNCContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSlash(SlashContext ctx) {return "\\";}
-      @Override public String visitPathSel(PathSelContext ctx) {return "pathSel";}
-      @Override public String visitCast(CastContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSlashX(SlashXContext ctx) {return "\\x";}
-      @Override public String visitEPostfix(EPostfixContext ctx) {return c(ctx);}
-      @Override public String visitSquareCall(SquareCallContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitEBinary0(EBinary0Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
-      @Override public String visitEBinary1(EBinary1Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
-      @Override public String visitEBinary2(EBinary2Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
-      @Override public String visitEBinary3(EBinary3Context ctx) {return (ctx.children.size()==1?"":"<")+c(ctx)+(ctx.children.size()==1?"":">");}
-      @Override public String visitSIf(SIfContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitMatch(MatchContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSWhile(SWhileContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSFor(SForContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSLoop(SLoopContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSThrow(SThrowContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitSUpdate(SUpdateContext ctx) {return n(ctx)+"("+c(ctx)+")";}
-      @Override public String visitInfo(InfoContext ctx) { return "info";}
-}

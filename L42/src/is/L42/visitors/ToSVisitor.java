@@ -2,14 +2,20 @@ package is.L42.visitors;
 import static is.L42.tools.General.range;
 
 import java.util.List;
+import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 import is.L42.generated.*;
 
 public class ToSVisitor extends CollectorVisitor{
-  StringBuilder result=new StringBuilder();
-  String currentIndent="";
+  public static String of(Visitable<?> v){
+    var tos=new ToSVisitor();
+    v.accept(tos);
+    return tos.result.toString();
+    }
+  private StringBuilder result=new StringBuilder();
+  private String currentIndent="";
   void nl(){result.append("\n");result.append(currentIndent);}
   void indent(){currentIndent+="  ";}
   void deIndent(){currentIndent=currentIndent.substring(2);}
@@ -24,6 +30,7 @@ public class ToSVisitor extends CollectorVisitor{
   void sp(){result.append(" ");}
 
   void separeFromChar(){
+    if(result.length()==0){return;}
     char last=last();
     if(Character.isLetter(last) || Character.isDigit(last) || last=='$'){
     result.append(" ");}
