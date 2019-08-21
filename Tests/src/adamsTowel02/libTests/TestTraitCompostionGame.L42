@@ -50,14 +50,14 @@ ModuleWorld: Trait({
   Player: {implements Entity}
 
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
-    mut method mut Entity getItemAt(Point that) {
+    mut method mut Entity getEntityAt(Point that) {
       with elem in this.#vals() (
         if elem.point() == that (return elem)
         )
       error PointNotFilled""
       }
 
-    read method Bool hasItemAt(Point that) {
+    read method Bool hasEntityAt(Point that) {
       with elem in this.vals() (
         if elem.point() == that (return Bool.true())
         )
@@ -65,7 +65,7 @@ ModuleWorld: Trait({
       }
 
     mut method Void addEntity(mut Entity that) (
-      if this.hasItemAt(that.point()) (error PointFilled"")
+      if this.hasEntityAt(that.point()) (error PointFilled"")
       this.add(right: that)
       )
 
@@ -116,13 +116,20 @@ ModuleWorldLoader: Trait({
 
   WorldLoader: {
     class method mut World #$(S fileName) (
+      S content = Debug.#$readFile(fileName: fileName)
+      Strings lines = content.splitOn(chars: S.nl())
+      This.loadWorld(lines: lines)
+      )
+
+    class method mut World loadWorld(Strings lines) (
       mut World world = World(
         map: PointToEntityMap[],
         player: Player(p: Point(x: 0Size, y: 0Size))
         )
-      S content = Debug.#$readFile(fileName: fileName)
-      Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
-      with s in lines.vals() (
+
+      Strings linesWithoutCommentLine = lines.withoutLeft()
+
+      with s in linesWithoutCommentLine.vals() (
         Strings tokens = s.splitOn(chars: S" ")
         S entityTypeName = tokens.val(0Size)
         Point p = Point(
@@ -140,6 +147,43 @@ ModuleWorldLoader: Trait({
       )
     }
   })
+
+/* ModuleWorldLoader_loadWorld_createsAWorld: { */
+/* // TODO  */
+  /* Strings input = Strings[S"# Comment line"] */
+  /* WorldLoader.loadWorld(lines: input) */
+  /* return ExitCode.normal() */
+  /* } */
+
+TestModuleWorldLoader: ModuleWorldLoader & {
+  PointToEntityMap: {
+    var Strings addedEntities // = Strings[] TODO: assigned this field
+
+    mut method Void addEntity(mut Entity that) {
+      addedEntities.add(right: S"TODO: replace me")
+      }
+    }
+  World: K<><{mut PointToEntityMap map}
+
+  Entity: {}
+  Player: {}
+  RockItem: {}
+  AppleItem: {}
+
+  WorldLoader: {}
+
+  class method Strings testExampleToDoRename() {
+    Strings input = Strings[S"# Comment line"; S"ROCK_ITEM 1 2"]
+    mut World world = WorldLoader.loadWorld(lines: input)
+    return world.#map().addedEntities()
+    }
+  }
+
+TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition: {
+  // TODO: finish test properly
+  TestModuleWorldLoader.testExampleToDoRename()
+  return ExitCode.normal()
+  }
 
 //
 //
@@ -160,11 +204,11 @@ ModuleUI: Trait({
   Player: {implements Entity}
 
   PointToEntityMap: {
-    read method Bool hasItemAt(Point that)
-    mut method mut Entity getItemAt(Point that)
+    read method Bool hasEntityAt(Point that)
+    mut method mut Entity getEntityAt(Point that)
     }
 
-  World: Trait(K<><{mut PointToEntityMap map, mut Player player})& {
+  World: Trait(K<><{mut PointToEntityMap map, mut Player player}) & {
     mut method Void movePlayerUp()
     mut method Void movePlayerDown()
     mut method Void movePlayerLeft()
@@ -178,8 +222,8 @@ ModuleUI: Trait({
           if this.player().point() == p (
             use[S"|"; this.player().representation()]
             )
-          else if this.map().hasItemAt(p) (
-            use[S"|"; this.#map().getItemAt(p).representation()]
+          else if this.map().hasEntityAt(p) (
+            use[S"|"; this.#map().getEntityAt(p).representation()]
             )
           else (use[S"|_"])
           )
@@ -241,11 +285,11 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
 
 IntegrationTest1: {
   mut Main.PointToEntityMap map = Main.PointToEntityMap[]
-  Debug.test(map.hasItemAt(Point(x: 10Size, y: 20Size)), expected: S"false")
+  Debug.test(map.hasEntityAt(Point(x: 10Size, y: 20Size)), expected: S"false")
   map.addEntity(Main.RockItem(p: Point(x: 10Size, y: 20Size)))
-  Debug.test(map.hasItemAt(Point(x: 10Size, y: 20Size)), expected: S"true")
+  Debug.test(map.hasEntityAt(Point(x: 10Size, y: 20Size)), expected: S"true")
   map.removeEntity(Point(x: 10Size, y: 20Size))
-  Debug.test(map.hasItemAt(Point(x: 10Size, y: 20Size)), expected: S"false")
+  Debug.test(map.hasEntityAt(Point(x: 10Size, y: 20Size)), expected: S"false")
   Debug.test(Bool.readableName() expected: S"Bool")
   return ExitCode.normal()
   }
