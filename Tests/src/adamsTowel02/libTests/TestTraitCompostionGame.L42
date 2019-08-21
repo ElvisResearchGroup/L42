@@ -13,7 +13,11 @@
 Point: Data<><{Size x, Size y}
 PointNotFilled: Message.$<><{implements Guard}
 PointFilled: Message.$<><{implements Guard}
-
+EntityTrait: Trait(K<><{
+  var Point p
+  read method Point point() this.p()
+  mut method Void point(Point that) this.p(that)
+  })
 //
 //
 // **********************************************************************
@@ -31,16 +35,20 @@ ModuleEntities: Trait({
     read method S representation()
     }
 
-  EntityTrait: Trait(K<><{implements Entity
-    var Point p
-    method point() this.p()
-    method point(that) this.p(that)
-    })
-
-  Player: EntityTrait & {read method S representation() S"P"}
-  RockItem: EntityTrait & {read method S representation() S"R"}
-  AppleItem: EntityTrait & {read method S representation() S"A"}
+  Player: EntityTrait & {implements Entity method representation() S"P"}
+  RockItem: EntityTrait & {implements Entity method representation() S"R"}
+  AppleItem: EntityTrait & {implements Entity method representation() S"A"}
   })
+
+//
+//
+// *******************************************************************
+// *******************************************************************
+// ****************************** World ******************************
+// *******************************************************************
+// *******************************************************************
+//
+//
 
 ModuleWorld: Trait({
   Entity: {interface
@@ -90,6 +98,26 @@ ModuleWorld: Trait({
     mut method Void movePlayerRight() this.#player().point(\point.with(x: \x+1Size))
     }
   })
+
+TestModuleWorld: ModuleWorld & {
+  PointToEntityMap:{}
+  Player: EntityTrait & {implements Entity}
+  World:{}
+  Entity: {interface read method Point point() mut method Void point(Point that) }
+  StubEntity: EntityTrait & {implements Entity}
+  
+  class method Void testExampleToDoRename() (
+    Point p=Point(x: 1Size, y: 2Size)
+    mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
+    w.#map().addEntity(StubEntity(p:p))
+    w.#map().addEntity(StubEntity(p:p))
+    catch error PointFilled pf void
+    error X""
+    )
+  }
+
+TestModuleWorld_loadWorld_failsWhenAddingTwoItemsToTheSamePoint:
+  TestModuleWorld.testExampleToDoRename()
 
 //
 //
@@ -156,34 +184,37 @@ ModuleWorldLoader: Trait({
   /* } */
 
 TestModuleWorldLoader: ModuleWorldLoader & {
-  PointToEntityMap: {
-    var Strings addedEntities // = Strings[] TODO: assigned this field
+  PointToEntityMap: K<><{
+    mut Strings addedEntities
+    class method mut This #seqBuilder()This(addedEntities:Strings[])
+    class method mut This #from(mut This seqBuilder)seqBuilder
 
-    mut method Void addEntity(mut Entity that) {
-      addedEntities.add(right: S"TODO: replace me")
-      }
+    mut method Void addEntity(mut Entity that) (
+      this.#addedEntities().add(right: that.toS())
+      )
     }
-  World: K<><{mut PointToEntityMap map}
+  World:{}
 
-  Entity: {}
-  Player: {}
-  RockItem: {}
-  AppleItem: {}
-
+  Entity: {interface Point p  read method S toS()}
+  Player: {implements Entity method toS()S"Player["[this.p()]"]"}
+  RockItem: {implements Entity method toS()S"RockItem["[this.p()]"]"}
+  AppleItem: {implements Entity method toS()S"AppleItem["[this.p()]"]"}
+  
   WorldLoader: {}
 
-  class method Strings testExampleToDoRename() {
-    Strings input = Strings[S"# Comment line"; S"ROCK_ITEM 1 2"]
-    mut World world = WorldLoader.loadWorld(lines: input)
-    return world.#map().addedEntities()
-    }
+  class method Void testExampleToDoRename(Strings that, S expected) (
+    mut World world = WorldLoader.loadWorld(lines: that)
+    Debug.test(world.#map().addedEntities(), expected: expected)
+    )
   }
 
-TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition: {
-  // TODO: finish test properly
-  TestModuleWorldLoader.testExampleToDoRename()
-  return ExitCode.normal()
-  }
+TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
+  TestModuleWorldLoader.testExampleToDoRename(
+    Strings[S"# Comment line"; S"ROCK_ITEM 1 2"],
+    expected: S"
+      '[RockItem[[x:"1", y:"2"]]]
+      ".withoutRight()
+    )
 
 //
 //
@@ -206,8 +237,16 @@ ModuleUI: Trait({
   PointToEntityMap: {
     read method Bool hasEntityAt(Point that)
     mut method mut Entity getEntityAt(Point that)
+    read method Size size()
+    read method read Entity val(Size that)
     }
-
+  SMap: Trait(Collections.vector(ofMut:Strings)) & {
+    mut method Void draw(S that, Size x, Size y) this.#val(y)(x, val:that)
+    class method mut This (Size width,Size height)This[
+      with y in Range(height) (
+        use[Strings[with x in Range(width) (use[S"_"])]]
+      )]
+    }
   World: Trait(K<><{mut PointToEntityMap map, mut Player player}) & {
     mut method Void movePlayerUp()
     mut method Void movePlayerDown()
@@ -215,21 +254,21 @@ ModuleUI: Trait({
     mut method Void movePlayerRight()
     class method Size gameSizeInCells() 10Size
 
-    mut method S asText() S""[
-      with y in Range(This.gameSizeInCells()) (
-        with x in Range(This.gameSizeInCells()) (
-          Point p = Point(x: x, y: y)
-          if this.player().point() == p (
-            use[S"|"; this.player().representation()]
-            )
-          else if this.map().hasEntityAt(p) (
-            use[S"|"; this.#map().getEntityAt(p).representation()]
-            )
-          else (use[S"|_"])
-          )
-        use[S.nl()]
+    mut method Void drawOnto(mut SMap map)(
+      mut PointToEntityMap m=this.#map()
+      with i in Range(m.size()) (
+        read Entity e=m.val(i)
+        
+        
+        // TODO: change entity representation to drawOnto()
+        
+        
+        map.draw(e.representation(), x:e.point().x(), y:e.point().y()) 
         )
-      ]""
+      map.draw(this.player().representation(),
+        x:this.player().point().x(),
+        y:this.player().point().y())
+      )
     }
 
   Action: {interface method Void (mut World world)}
@@ -253,9 +292,23 @@ ModuleUI: Trait({
 Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Action: {}
   Actions: {}
-  World: {}
+  World: {
+    mut method S asText() (
+      mut SMap m=SMap(width:This.gameSizeInCells() height:This.gameSizeInCells())
+      this.drawOnto(map:m)
+      m.asText()
+      )
+    }
   WorldLoader: {}
-
+  SMap:{ mut method S asText() S""[
+      with y in Range(this.size()) (
+        with x in Range(this.val(y).size()) (
+          use[S"|";this.val(y).val(x)]
+          )
+        use[S.nl()]
+        )
+      ]""
+      }
   class method Strings (Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
       with action in actions.vals() (
