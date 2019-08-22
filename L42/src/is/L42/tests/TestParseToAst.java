@@ -17,9 +17,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass(" foo ","foo")
    ),new AtomicTest(()->
    pass("Bar.Baz","Bar.Baz")
-   /*),new AtomicTest(()->
-   pass("Any.Foo","P|")//Any/Thisn will be handled by well formedness
    ),new AtomicTest(()->
+   fail("Any.Foo","Any","Error")//Any/Thisn handled now
+   ),new AtomicTest(()->
+   fail("Foo.This3","This","Error")
+   ),new AtomicTest(()->
+   fail("Void.This3","This","Void","Error")
+   /*),new AtomicTest(()->
    pass("A(B)","PFCall(|P|)|")   
    ),new AtomicTest(()->
    pass("A(B)(C)","PFCall(|P|)FCall(|P|)|")   
@@ -222,9 +226,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    */
      ));}
 public static void pass(String input,String output) {
-  var r=Parse.e(input);
+  var r=Parse.e("-dummy-",input);
   assertFalse(r.hasErr());
-  Full.E e=new FullL42Visitor("-dummy-").visitNudeE(r.res);
-  assertEquals(output,e.toString());
+  assertEquals(output,r.res.toString());
+  }
+public static void fail(String input,String ...output) {
+  var r=Parse.e("-dummy-",input);
+  assertTrue(r.hasErr());
+  String msg=r.errorsTokenizer+"\n"+r.errorsParser+"\n"+r.errorsVisitor;
+  for(var s:output){assertTrue(msg.contains(s));}
   }
 }

@@ -15,6 +15,7 @@ import is.L42.generated.*;
 
 public class FullL42Visitor extends L42BaseVisitor<Object>{
   String fileName;
+  public StringBuilder errors=new StringBuilder();
   Core.EVoid eVoid=new Core.EVoid(null);//will not be in the final result
   public FullL42Visitor(String fileName){this.fileName=fileName;}
   Object c(ParserRuleContext prc){
@@ -81,8 +82,24 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     Pos pos=pos(ctx);
     String s=ctx.CsP().toString();
     var res=Parse.csP(s);
-    assert !res.hasErr();
-    var csP= (Full.CsP) res.res.accept(new L42AuxBaseVisitor<Object>(){
+    if(res.hasErr()){
+      String msg="Error: "+s+" is not a class name";
+      if(s.contains("Any")){msg+="; a class name can not be Any";}
+      if(s.contains("Void")){msg+="; a class name can not be Void";}
+      if(s.contains("Void")){msg+="; a class name can not be Library";}
+      if(s.contains("This")){msg+="; a class name can not be This";}
+      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      return new Full.CsP(pos,L(),P.pAny);
+      }
+    return new L42AuxBaseVisitor<Object>(){
+      @Override public Full.CsP visitCsP(L42AuxParser.CsPContext ctx) {
+        if(ctx.cs()!=null){return visitCs(ctx.cs());}
+        if(ctx.path()!=null){return visitPath(ctx.path());}
+        if(ctx.anyKw()!=null){return new Full.CsP(pos,L(),P.pAny);}
+        if(ctx.cs()!=null){return new Full.CsP(pos,L(),P.pVoid);}
+        if(ctx.cs()!=null){return new Full.CsP(pos,L(),P.pLibrary);}
+        throw unreachable();
+        }
       @Override public Full.CsP visitCs(L42AuxParser.CsContext ctx) {
         List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
         return new Full.CsP(pos,cs, null);
@@ -104,17 +121,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
         if(s.isEmpty()){return 0;}
         return Integer.parseInt(s);
         }
-      @Override public Full.CsP visitAnyKw(L42AuxParser.AnyKwContext ctx) {
-        return new Full.CsP(pos,L(),P.pAny);
-        }
-      @Override public Full.CsP visitVoidKw(L42AuxParser.VoidKwContext ctx) {
-        return new Full.CsP(pos,L(),P.pVoid);
-        }
-      @Override public Full.CsP visitLibraryKw(L42AuxParser.LibraryKwContext ctx) {
-        return new Full.CsP(pos,L(),P.pLibrary);
-        }
-      });
-    return csP;
+      }.visitCsP(res.res);
     }
   @Override public Core.EVoid visitVoidE(VoidEContext ctx) {return new Core.EVoid(pos(ctx));}
   @Override public String visitT(TContext ctx) {throw bug();}
