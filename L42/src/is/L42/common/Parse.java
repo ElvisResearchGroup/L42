@@ -21,7 +21,7 @@ import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.visitors.FullL42Visitor;
 
 public class Parse {
-  static{Constants.class.getName();}
+  static{Constants.toS.getClass();}//initialize Constants class
   public static class Result<T>{
     public final String errorsTokenizer;
     public final String errorsParser;
@@ -59,6 +59,13 @@ public class Parse {
     var v=new FullL42Visitor(fileName);
     return doResult(l,p,v.errors,()->v.visitNudeE(p.nudeE()));
     }
+  public static Result<NudeEContext> ctxE(String s){
+    var l=new L42Lexer(CharStreams.fromString(s));
+    var t = new CommonTokenStream(l);
+    var p=new L42Parser(t);
+    return doResult(l,p,new StringBuilder(),()->p.nudeE());
+    }
+
   public static Result<CsPContext> csP(String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);

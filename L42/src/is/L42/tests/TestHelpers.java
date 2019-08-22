@@ -129,7 +129,7 @@ public class TestHelpers {
     return ctx.accept(visitor).toString();
     }
   public static NudeEContext parseWithException(String s){
-    var res=Parse.e(s);
+    var res=Parse.ctxE(s);
     try{return res.res;}
     finally{
       if(res.errorsTokenizer.length()!=0)throw new RuntimeException("Tokenizer errors:\n"+res.errorsTokenizer);

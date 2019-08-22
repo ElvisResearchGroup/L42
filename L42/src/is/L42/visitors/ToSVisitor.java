@@ -482,7 +482,6 @@ public class ToSVisitor extends CollectorVisitor{
       }
     if(call.isSquare()){c("[");}else{c("(");}
     seq(empty,pars0,"; ");
-    visitFullPars(pars0);
     if(call.isSquare()){c("]");}else{c(")");}
     }
   
@@ -593,7 +592,7 @@ public class ToSVisitor extends CollectorVisitor{
     var e0=par._that();
     var xs0=par.xs();
     var es0=par.es();
-    if(e0!=null){visitE(e0);}//////
+    if(e0!=null){visitE(e0);}
     if(!xs0.isEmpty()){
       if(e0!=null){c(", ");}
       seqHas(i->{visitX(xs0.get(i));c("=");},es0,", ");

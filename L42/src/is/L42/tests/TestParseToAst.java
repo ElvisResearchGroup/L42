@@ -23,9 +23,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("Foo.This3","This","Error")
    ),new AtomicTest(()->
    fail("Void.This3","This","Void","Error")
-   /*),new AtomicTest(()->
-   pass("A(B)","PFCall(|P|)|")   
    ),new AtomicTest(()->
+   pass("A(B)","A(B)")   
+   ),new AtomicTest(()->
+   pass("!A(B)","!A(B)")   
+   ),new AtomicTest(()->
+   pass("~!!A(B)","~!!A(B)")   
+   ),new AtomicTest(()->
+   pass("12N","12 N")   
+   ),new AtomicTest(()->
+   pass("~!12~N","~!12~N")   
+
+   /*),new AtomicTest(()->
    pass("A(B)(C)","PFCall(|P|)FCall(|P|)|")   
    ),new AtomicTest(()->
    pass("A(B x=C)","PFCall(|Px|P|)|")   

@@ -2,16 +2,22 @@ package is.L42.visitors;
 
 import static is.L42.tools.General.*;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
 import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
+import org.antlr.v4.runtime.tree.TerminalNodeImpl;
+
 import is.L42.generated.L42Parser.*;
 import is.L42.common.Parse;
 import is.L42.generated.*;
+import is.L42.generated.Full.UOp;
 
 public class FullL42Visitor extends L42BaseVisitor<Object>{
   String fileName;
@@ -54,7 +60,9 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     }
   @Override public X visitX(XContext ctx) {return new X(ctx.getText());}
   @Override public Full.Call visitFCall(FCallContext ctx) {
-    return new Full.Call(pos(ctx), eVoid, visitM(ctx.m()), false, L(visitPar(ctx.par())));
+    S s=null;
+    if(ctx.m()!=null){s=visitM(ctx.m());}
+    return new Full.Call(pos(ctx), eVoid, s, false, L(visitPar(ctx.par())));
     }
   @Override public Full.E visitNudeE(NudeEContext ctx) {return (Full.E)ctx.children.get(0).accept(this);}
   @Override public Full.Block visitBlock(BlockContext ctx) {
@@ -123,11 +131,44 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
         }
       }.visitCsP(res.res);
     }
-  @Override public Core.EVoid visitVoidE(VoidEContext ctx) {return new Core.EVoid(pos(ctx));}
-  @Override public String visitT(TContext ctx) {throw bug();}
-  @Override public String visitTLocal(TLocalContext ctx) {throw bug();}
-  @Override public List<Full.VarTx> visitDX(DXContext ctx) {throw bug();}
-  @Override public String visitDoc(DocContext ctx) {throw bug();}
+  @Override public Core.EVoid visitVoidE(VoidEContext ctx) {
+    return new Core.EVoid(pos(ctx));
+    }
+  @Override public Full.T visitT(TContext ctx) {
+    var csP=visitCsP(ctx.csP());
+    var mdf=ctx.Mdf()==null?null:Mdf.fromString(ctx.Mdf().getText());
+    List<Full.Doc> docs=L(ctx.doc(),(c,d)->c.add(visitDoc(d)));
+    return new Full.T(mdf, docs, csP);
+    }
+  @Override public Full.VarTx visitTLocal(TLocalContext ctx) {
+    if(ctx.Mdf()!=null){return new Full.VarTx(false,null,Mdf.fromString(ctx.Mdf().getText()),null);}
+    if(ctx.t()!=null){return new Full.VarTx(false,visitT(ctx.t()),null,null);}
+    return new Full.VarTx(false, null, null,null);
+    }
+  @Override public List<Full.VarTx> visitDX(DXContext ctx) {
+    //dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';
+    List<Full.VarTx> tLocals=L(ctx.tLocal(),(c,t)->visitTLocal(t));
+    assert ctx.oR()!=null || tLocals.size()==1;
+    if(ctx.oR()==null && ctx.UnderScore()==null){
+      X x=visitX(ctx.x(0));
+      var res=tLocals.get(0).withVar(ctx.VarKw()!=null).with_x(x);
+      return L(res);
+      }
+    if(ctx.oR()==null){ assert ctx.UnderScore()!=null;
+      return tLocals;
+      }
+    return L(c->{
+      c.add(tLocals.get(0));
+      for(int i :range(1,tLocals.size())){
+        var ti=tLocals.get(i);
+        var tL=ctx.tLocal(i);
+        int j=ctx.children.indexOf(tL);
+        boolean isVar=ctx.getChild(j-1) instanceof TerminalNode;
+        c.add(ti.withVar(isVar).with_x(visitX(ctx.x(i-1))));
+        }
+      });
+    }
+  @Override public Full.Doc visitDoc(DocContext ctx) {throw bug();}
   @Override public Full.K visitK(KContext ctx) {throw bug();}
   @Override public List<Full.T> visitWhoops(WhoopsContext ctx) {throw bug();}
   /*@Override public String visitFullL(FullLContext ctx) {throw bug();}
@@ -143,8 +184,30 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
   @Override public String visitPathSel(PathSelContext ctx) {throw bug();}
   @Override public String visitCast(CastContext ctx) {throw bug();}
   @Override public String visitSlashX(SlashXContext ctx) {throw bug();}
-  @Override public String visitEPostfix(EPostfixContext ctx) {throw bug();}
-  @Override public String visitSquareCall(SquareCallContext ctx) {throw bug();}
+  */
+  @Override public Full.E visitEPostfix(EPostfixContext ctx) {
+    var res=visitEAtomic(ctx.eAtomic());
+    var uOpList=ctx.children.stream().takeWhile(c->c instanceof TerminalNodeImpl).collect(Collectors.toList());
+    Collections.reverse(uOpList);
+    assert ctx.getChild(uOpList.size())==ctx.eAtomic();
+    for(int i: range(uOpList.size()+1,ctx.children.size())){
+      ParseTree current=ctx.getChild(i);
+      if(current instanceof FCallContext){
+        res=visitFCall((FCallContext)current).withE(res);}
+      }
+    for(var uOp:uOpList){
+      String s=uOp.getText();
+      if(s.equals("!")){res=new Full.UOp(res.pos(),Op.Bang,null,res);}
+      else if(s.equals("~")){res=new Full.UOp(res.pos(),Op.Tilde,null,res);}
+      else{
+        assert !s.contains("~");
+        assert !s.contains("!");
+        res=new Full.UOp(res.pos(),null,s,res);
+        }
+      }
+    return res;
+    }
+  /*@Override public String visitSquareCall(SquareCallContext ctx) {throw bug();}
   @Override public String visitEBinary0(EBinary0Context ctx) {throw bug();}
   @Override public String visitEBinary1(EBinary1Context ctx) {throw bug();}
   @Override public String visitEBinary2(EBinary2Context ctx) {throw bug();}
