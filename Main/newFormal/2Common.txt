@@ -31,8 +31,8 @@ _______
 * p.minimize(ST1..STn) = STz'
     STz = p.minimize(ST1)..p.minimize(STn)
     Tz = {T| T in STz}
-    STz' = STz if choseT({T| T in STz}) undefined
-    STz' = choseT({T| T in STz}) otherwise
+    STz' = STz if chooseT({T| T in STz}) undefined
+    STz' = chooseT({T| T in STz}) otherwise
 * p.minimize(ST.s(.i)?) = ST'.s(.i)?
     p.minimize(ST) = ST'
     p(ST')(s) undefined
@@ -43,10 +43,10 @@ _______
     p.minimize(ST) = CORE.T
     p(CORE.T.P)(s) = MH
 * p.minimize(op STz1..STzn) = p(P)(s).T[from P;p]
-    p.minimize(STz1) = T1..p.minimize(STzn) = Tn
-    {P,s,i} = p.opOptions(OP, Ts)
+    p.minimize(STz1) = T1, ..., p.minimize(STzn) = Tn
+    {(P,s,i)} = p.opOptions(OP, Ts)
 
-*choseT(Tz) = mostGeneralMdf(Tz.mdfz) P
+*chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
 _______
 #define mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
@@ -128,7 +128,7 @@ _______
 * refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
 _______
 #define p♥FULL.MH = CORE.MH    p♥FULL.TLocal = CORE.T   p♥CsP = P,  p♥FULL.Docs = CORE.Docs
-* p♥(mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts]
+* p♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])
     =(mdf p♥Docs)? method p♥T methName(mOp)(p♥T1 x1..p♥Tn xn)[p♥Ts]
 
 * p♥(Docs CsP) = imm p♥Docs p♥CsP
