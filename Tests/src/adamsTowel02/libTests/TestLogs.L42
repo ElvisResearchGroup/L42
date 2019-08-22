@@ -1,0 +1,15 @@
+{reuse L42.is/AdamTowel02
+
+C:{class method Void ()(
+  Debug.appendLog(S"Key",msg:S"msg1")
+  Debug.appendLog(S"Key",msg:S"msg2")
+  )}
+
+Main:{
+  C()
+  S m=Debug.#$readLog(S"Key")
+  Debug.test(m expected:S"msg1msg2")
+  return ExitCode.normal()
+  }
+
+}

@@ -13,6 +13,14 @@
     use Alu check printCounter(that.toS().#binaryRepr())
     void
 
+  class method Void appendLog(S that, S msg)
+    use Alu check appendLog(that.#binaryRepr(), msg:msg.#binaryRepr())
+    void
+
+  class method S #$readLog(S that)
+    S.#from(binaryRepr:(use Alu check #$readLog(that.#binaryRepr())
+    error void))
+
   class method
   Void (Library lib) error S"to fix in AdamTowel2"
 

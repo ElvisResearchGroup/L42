@@ -478,6 +478,10 @@ Void incrementCounter(read This1.Concept.ToS that) use This1.Alu check increment
 class method 
 Void printCounter(read This1.Concept.ToS that) use This1.Alu check printCounter(that:that.toS().#binaryRepr()) void
 class method 
+Void appendLog(This1.S that, This1.S msg) use This1.Alu check appendLog(that:that.#binaryRepr(), msg:msg.#binaryRepr()) void
+class method 
+This1.S #$readLog(This1.S that) This1.S.#from(binaryRepr:(use This1.Alu check #$readLog(that:that.#binaryRepr()) error void))
+class method 
 Void #apply(Library lib) error This1.S.#from(builder:(
   mut This1.S.SBuilder b134=This1.S.#builder()
   Void unused513=b134.#t()

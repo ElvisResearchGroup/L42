@@ -178,7 +178,27 @@ public class Plugin implements PluginType.WellKnown {
     L42.printDebug( s + ": " + counters.getOrDefault(s, 0L));
     return Resources.Void.instance;
   }
-
+  
+  
+  public static HashMap<String, StringBuffer> logs = new HashMap<>();
+  @ActionType({ActionType.NormType.Void, ActionType.NormType.Library, ActionType.NormType.Library})
+  public Resources.Void MappendLog£xthat£xmsg(Object cb1, Object cb2){
+    String s1=ensureExtractStringU(cb1);
+    String s2=ensureExtractStringU(cb2);
+    StringBuffer val=logs.get(s1);
+    if(val==null) {val=new StringBuffer();logs.put(s1,val);}
+    val.append(s2);
+    return Resources.Void.instance;
+  }
+  
+  @ActionType({ActionType.NormType.Library, ActionType.NormType.Library})
+  public Object M£h$readLog£xthat(Object cb){
+    String s = ensureExtractStringU(cb);
+    StringBuffer b=logs.getOrDefault(s, new StringBuffer());
+    logs.remove(s);
+    return b.toString();
+  }
+  
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MstringConcat£xs1£xs2(Object cb1,Object cb2){
     String s1=ensureExtractStringU(cb1);
