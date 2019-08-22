@@ -29,15 +29,25 @@ EntityTrait: Trait(K<><{
 //
 
 ModuleEntities: Trait({
+  Graphics: {
+    mut method Void draw(S that, Size x, Size y)
+    }
+
   Entity: {interface
     read method Point point()
     mut method Void point(Point that)
-    read method S representation()
+    read method Void drawOnto(mut Graphics that)
     }
 
-  Player: EntityTrait & {implements Entity method representation() S"P"}
-  RockItem: EntityTrait & {implements Entity method representation() S"R"}
-  AppleItem: EntityTrait & {implements Entity method representation() S"A"}
+  Player: EntityTrait & {implements Entity
+    method drawOnto(that) that.draw(S"P",x:this.p().x(), y:this.p().y())
+    }
+  RockItem: EntityTrait & {implements Entity
+    method drawOnto(that) that.draw(S"R",x:this.p().x(), y:this.p().y())
+    }
+  AppleItem: EntityTrait & {implements Entity
+    method drawOnto(that) that.draw(S"A",x:this.p().x(), y:this.p().y())
+    }
   })
 
 //
@@ -54,8 +64,14 @@ ModuleWorld: Trait({
   Entity: {interface
     read method Point point()
     mut method Void point(Point that)
+    read method Void drawOnto(mut Graphics that)
     }
   Player: {implements Entity}
+  
+  Graphics: {
+    mut method Void draw(S that, Size x, Size y)
+    class method mut This (Size width, Size height)
+    }
 
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
     mut method mut Entity getEntityAt(Point that) {
@@ -96,16 +112,47 @@ ModuleWorld: Trait({
     mut method Void movePlayerDown() this.#player().point(\point.with(y: \y+1Size))
     mut method Void movePlayerLeft() this.#player().point(\point.with(x: \x-1Size))
     mut method Void movePlayerRight() this.#player().point(\point.with(x: \x+1Size))
+    
+    class method Size gameSizeInCells() 10Size
+
+    mut method Void drawOnto(mut Graphics graphics) (
+      mut PointToEntityMap m = this.#map()
+      with i in Range(m.size()) (
+        read Entity e=m.val(i)
+        e.drawOnto(graphics) 
+        )
+      this.player().drawOnto(graphics)
+      )
     }
   })
 
 TestModuleWorld: ModuleWorld & {
+  Graphics: {
+    mut method Void drawOnto(mut Graphics map) (
+      void // TODO
+    )
+  }
   PointToEntityMap:{}
-  Player: EntityTrait & {implements Entity}
   World:{}
-  Entity: {interface read method Point point() mut method Void point(Point that) }
-  StubEntity: EntityTrait & {implements Entity}
-  
+  Entity: {interface 
+    read method Point point()
+    mut method Void point(Point that)
+    read method Void drawOnto(mut Graphics that)
+  }
+  HasLastDrawPoint: Trait(K <>< {implements Entity
+    var Point lastDrawPoint
+    var Point p
+
+    class method mut This (fwd Point p)
+      This(lastDrawPoint: Point(x: 99Size, y: 99Size), p: p)
+
+    method Void drawOnto(that) (
+      this.lastDrawPoint(this.p())
+      )
+    })
+  StubEntity: HasLastDrawPoint & EntityTrait & {}
+  Player: HasLastDrawPoint & {}
+
   class method Void testExampleToDoRename() (
     Point p=Point(x: 1Size, y: 2Size)
     mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
@@ -113,6 +160,15 @@ TestModuleWorld: ModuleWorld & {
     w.#map().addEntity(StubEntity(p:p))
     catch error PointFilled pf void
     error X""
+    )
+    
+      
+  class method Void testExampleToDoRename2() (
+    mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
+    w.drawOnto(graphics: Graphics(width: 10Size, height: 10Size))
+    Debug.test(w.player().lastDrawPoint(), expected: S"
+      'Point[x:"0",y:"0"]
+      ".withoutRight())
     )
   }
 
@@ -227,48 +283,21 @@ TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
 //
 
 ModuleUI: Trait({
-  Entity: {interface
-    read method Point point()
-    read method S representation()
-    }
-
-  Player: {implements Entity}
-
-  PointToEntityMap: {
-    read method Bool hasEntityAt(Point that)
-    mut method mut Entity getEntityAt(Point that)
-    read method Size size()
-    read method read Entity val(Size that)
-    }
-  SMap: Trait(Collections.vector(ofMut:Strings)) & {
-    mut method Void draw(S that, Size x, Size y) this.#val(y)(x, val:that)
-    class method mut This (Size width,Size height)This[
+  Graphics: Trait(Collections.vector(ofMut: Strings)) & {
+    mut method Void draw(S that, Size x, Size y)
+      this.#val(y)(x, val:that)
+ 
+    class method mut This (Size width, Size height) This[
       with y in Range(height) (
         use[Strings[with x in Range(width) (use[S"_"])]]
       )]
     }
-  World: Trait(K<><{mut PointToEntityMap map, mut Player player}) & {
+    
+  World: {
     mut method Void movePlayerUp()
     mut method Void movePlayerDown()
     mut method Void movePlayerLeft()
     mut method Void movePlayerRight()
-    class method Size gameSizeInCells() 10Size
-
-    mut method Void drawOnto(mut SMap map)(
-      mut PointToEntityMap m=this.#map()
-      with i in Range(m.size()) (
-        read Entity e=m.val(i)
-        
-        
-        // TODO: change entity representation to drawOnto()
-        
-        
-        map.draw(e.representation(), x:e.point().x(), y:e.point().y()) 
-        )
-      map.draw(this.player().representation(),
-        x:this.player().point().x(),
-        y:this.player().point().y())
-      )
     }
 
   Action: {interface method Void (mut World world)}
@@ -294,21 +323,24 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Actions: {}
   World: {
     mut method S asText() (
-      mut SMap m=SMap(width:This.gameSizeInCells() height:This.gameSizeInCells())
-      this.drawOnto(map:m)
+      mut Graphics m = Graphics(width:This.gameSizeInCells() height:This.gameSizeInCells())
+      this.drawOnto(graphics: m)
       m.asText()
       )
     }
+    
   WorldLoader: {}
-  SMap:{ mut method S asText() S""[
+  Graphics:{
+    mut method S asText() S""[
       with y in Range(this.size()) (
         with x in Range(this.val(y).size()) (
-          use[S"|";this.val(y).val(x)]
+          use[S"|"; this.val(y).val(x)]
           )
         use[S.nl()]
         )
       ]""
-      }
+    }
+
   class method Strings (Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
       with action in actions.vals() (
