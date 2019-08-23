@@ -67,7 +67,7 @@ ModuleWorld: Trait({
     read method Void drawOnto(mut Graphics that)
     }
   Player: {implements Entity}
-  
+
   Graphics: {
     mut method Void draw(S that, Size x, Size y)
     class method mut This (Size width, Size height)
@@ -112,14 +112,14 @@ ModuleWorld: Trait({
     mut method Void movePlayerDown() this.#player().point(\point.with(y: \y+1Size))
     mut method Void movePlayerLeft() this.#player().point(\point.with(x: \x-1Size))
     mut method Void movePlayerRight() this.#player().point(\point.with(x: \x+1Size))
-    
+
     class method Size gameSizeInCells() 10Size
 
     mut method Void drawOnto(mut Graphics graphics) (
       mut PointToEntityMap m = this.#map()
       with i in Range(m.size()) (
         read Entity e=m.val(i)
-        e.drawOnto(graphics) 
+        e.drawOnto(graphics)
         )
       this.player().drawOnto(graphics)
       )
@@ -128,29 +128,28 @@ ModuleWorld: Trait({
 
 TestModuleWorld: ModuleWorld & {
   Graphics: {
-    mut method Void drawOnto(mut Graphics map) (
-      void // TODO
-    )
+    mut method Void drawOnto(mut Graphics map) void
   }
-  PointToEntityMap:{}
-  World:{}
-  Entity: {interface 
+  PointToEntityMap: {}
+  World: {}
+
+  Entity: {interface
     read method Point point()
     mut method Void point(Point that)
     read method Void drawOnto(mut Graphics that)
   }
-  HasLastDrawPoint: Trait(K <>< {implements Entity
+  PointLogger: Trait(K <>< {implements Entity
     var Point lastDrawPoint
     var Point p
 
     class method mut This (fwd Point p)
       This(lastDrawPoint: Point(x: 99Size, y: 99Size), p: p)
 
-    method Void drawOnto(that) (
+    method drawOnto(that) (
       this.lastDrawPoint(this.p())
       )
     })
-  StubEntity: HasLastDrawPoint & EntityTrait & {}
+  StubEntity: PointLogger & EntityTrait & {}
   Player: HasLastDrawPoint & {}
 
   class method Void testExampleToDoRename() (
@@ -161,8 +160,7 @@ TestModuleWorld: ModuleWorld & {
     catch error PointFilled pf void
     error X""
     )
-    
-      
+
   class method Void testExampleToDoRename2() (
     mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
     w.drawOnto(graphics: Graphics(width: 10Size, height: 10Size))
@@ -255,7 +253,7 @@ TestModuleWorldLoader: ModuleWorldLoader & {
   Player: {implements Entity method toS()S"Player["[this.p()]"]"}
   RockItem: {implements Entity method toS()S"RockItem["[this.p()]"]"}
   AppleItem: {implements Entity method toS()S"AppleItem["[this.p()]"]"}
-  
+
   WorldLoader: {}
 
   class method Void testExampleToDoRename(Strings that, S expected) (
@@ -286,13 +284,13 @@ ModuleUI: Trait({
   Graphics: Trait(Collections.vector(ofMut: Strings)) & {
     mut method Void draw(S that, Size x, Size y)
       this.#val(y)(x, val:that)
- 
+
     class method mut This (Size width, Size height) This[
       with y in Range(height) (
         use[Strings[with x in Range(width) (use[S"_"])]]
       )]
     }
-    
+
   World: {
     mut method Void movePlayerUp()
     mut method Void movePlayerDown()
@@ -328,7 +326,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
       m.asText()
       )
     }
-    
+
   WorldLoader: {}
   Graphics:{
     mut method S asText() S""[
