@@ -13,7 +13,7 @@
 Point: Data<><{Size x, Size y}
 PointNotFilled: Message.$<><{implements Guard}
 PointFilled: Message.$<><{implements Guard}
-EntityTrait: Trait(K<><{
+HasPoint: Trait(K<><{
   var Point p
   read method Point point() this.p()
   mut method Void point(Point that) this.p(that)
@@ -39,13 +39,13 @@ ModuleEntities: Trait({
     read method Void drawOnto(mut Graphics that)
     }
 
-  Player: EntityTrait & {implements Entity
+  Player: HasPoint & {implements Entity
     method drawOnto(that) that.draw(S"P",x:this.p().x(), y:this.p().y())
     }
-  RockItem: EntityTrait & {implements Entity
+  RockItem: HasPoint & {implements Entity
     method drawOnto(that) that.draw(S"R",x:this.p().x(), y:this.p().y())
     }
-  AppleItem: EntityTrait & {implements Entity
+  AppleItem: HasPoint & {implements Entity
     method drawOnto(that) that.draw(S"A",x:this.p().x(), y:this.p().y())
     }
   })
@@ -127,30 +127,17 @@ ModuleWorld: Trait({
   })
 
 TestModuleWorld: ModuleWorld & {
-  Graphics: {
-    mut method Void drawOnto(mut Graphics map) void
-  }
+  Graphics: {}
   PointToEntityMap: {}
   World: {}
 
-  Entity: {interface
-    read method Point point()
-    mut method Void point(Point that)
-    read method Void drawOnto(mut Graphics that)
+  Entity: {interface}
+  StubEntity: HasPoint & {implements Entity
+    method drawOnto(that) Debug.appendLog(S"stubEntityDrawPoints", msg: S"a")
+    }
+  Player: HasPoint & {
+    method drawOnto(that) Debug.appendLog(S"playerDrawPoints", msg: S"a")
   }
-  PointLogger: Trait(K <>< {implements Entity
-    var Point lastDrawPoint
-    var Point p
-
-    class method mut This (fwd Point p)
-      This(lastDrawPoint: Point(x: 99Size, y: 99Size), p: p)
-
-    method drawOnto(that) (
-      this.lastDrawPoint(this.p())
-      )
-    })
-  StubEntity: PointLogger & EntityTrait & {}
-  Player: HasLastDrawPoint & {}
 
   class method Void testExampleToDoRename() (
     Point p=Point(x: 1Size, y: 2Size)

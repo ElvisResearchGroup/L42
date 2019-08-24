@@ -71,7 +71,7 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "TestOpt.L42",
       "HamsterInvariant.L42",
       "TestGraphInterfaces.L42",*/
-      "TestLogs.L42",
+      //"TestLogs.L42",
       "TestTraitCompostionGame.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
