@@ -13,6 +13,7 @@
 Point: Data<><{Size x, Size y}
 PointNotFilled: Message.$<><{implements Guard}
 PointFilled: Message.$<><{implements Guard}
+
 HasPoint: Trait(K<><{
   var Point p
   read method Point point() this.p()
@@ -40,13 +41,19 @@ ModuleEntities: Trait({
     }
 
   Player: HasPoint & {implements Entity
-    method drawOnto(that) that.draw(S"P",x:this.p().x(), y:this.p().y())
+    method drawOnto(that) (
+      that.draw(S"P",x:this.p().x(), y:this.p().y())
+      )
     }
   RockItem: HasPoint & {implements Entity
-    method drawOnto(that) that.draw(S"R",x:this.p().x(), y:this.p().y())
+    method drawOnto(that) (
+      that.draw(S"R",x:this.p().x(), y:this.p().y())
+      )
     }
   AppleItem: HasPoint & {implements Entity
-    method drawOnto(that) that.draw(S"A",x:this.p().x(), y:this.p().y())
+    method drawOnto(that) (
+      that.draw(S"A",x:this.p().x(), y:this.p().y())
+      )
     }
   })
 
@@ -70,7 +77,6 @@ ModuleWorld: Trait({
 
   Graphics: {
     mut method Void draw(S that, Size x, Size y)
-    class method mut This (Size width, Size height)
     }
 
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
@@ -127,16 +133,27 @@ ModuleWorld: Trait({
   })
 
 TestModuleWorld: ModuleWorld & {
-  Graphics: {}
+  Graphics: {
+    mut method Void draw(S that, Size x, Size y) void
+    class method mut This ()
+    }
   PointToEntityMap: {}
   World: {}
 
-  Entity: {interface}
+  Entity: {interface
+    read method Point point()
+    mut method Void point(Point that)
+    read method Void drawOnto(mut Graphics that)
+  }
   StubEntity: HasPoint & {implements Entity
-    method drawOnto(that) Debug.appendLog(S"stubEntityDrawPoints", msg: S"a")
+    method drawOnto(that) (
+      Debug.appendLog(S"stubEntityDrawPoints", msg: S"Point"[this.point()]"\n")
+      )
     }
-  Player: HasPoint & {
-    method drawOnto(that) Debug.appendLog(S"playerDrawPoints", msg: S"a")
+  Player: HasPoint & {implements Entity
+    method drawOnto(that) (
+      Debug.appendLog(S"playerDrawPoints", msg: S"Point"[this.point()]"\n")
+      )
   }
 
   class method Void testExampleToDoRename() (
@@ -148,17 +165,22 @@ TestModuleWorld: ModuleWorld & {
     error X""
     )
 
-  class method Void testExampleToDoRename2() (
+  class method Void #$testExampleToDoRename2() (
     mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
-    w.drawOnto(graphics: Graphics(width: 10Size, height: 10Size))
-    Debug.test(w.player().lastDrawPoint(), expected: S"
+    w.drawOnto(graphics: Graphics())
+    S logs = Debug.#$readLog(S"playerDrawPoints")
+    Debug.test(logs, expected: S"
       'Point[x:"0",y:"0"]
-      ".withoutRight())
+      ")
     )
   }
 
-TestModuleWorld_loadWorld_failsWhenAddingTwoItemsToTheSamePoint:
+TestModuleWorld_PointToEntityMap_addEntity_failsWhenAddingTwoItemsToTheSamePoint:
   TestModuleWorld.testExampleToDoRename()
+
+TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
+  TestModuleWorld.#$testExampleToDoRename2()
+
 
 //
 //
