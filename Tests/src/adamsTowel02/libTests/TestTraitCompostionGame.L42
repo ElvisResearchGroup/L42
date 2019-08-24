@@ -170,7 +170,7 @@ TestModuleWorld: ModuleWorld & {
     w.drawOnto(graphics: Graphics())
     S logs = Debug.#$readLog(S"playerDrawPoints")
     Debug.test(logs, expected: S"
-      'Point[x:"0",y:"0"]
+      'Point[x:"0", y:"0"]
       ")
     )
   }
