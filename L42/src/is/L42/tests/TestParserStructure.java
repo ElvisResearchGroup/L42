@@ -117,9 +117,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("(A catch return A _ x catch error A x y z)",
    "[|D(P)K(||t(P)|x)K(||t(P)xx)x|]|")
    ),new AtomicTest(()->
-   pass("(A catch return A _ x catch error A x y z)",
-   "[|D(P)K(||t(P)|x)K(||t(P)xx)x|]|")
-   ),new AtomicTest(()->
    pass("(A whops B C D z)",
    "[|D(P)D(x)D(P)D(P)D(P)x|]|")//well formedness will check for those issues
    ),new AtomicTest(()->

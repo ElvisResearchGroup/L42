@@ -56,7 +56,7 @@ public class Core {
     E e;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Throw implements Wrapper,Visitable<Throw>{@Override public Visitable<Throw>visitable(){return this;}@Override public Throw accept(CloneVisitor cv){return cv.visitThrow(this);}@Override public void accept(CollectorVisitor cv){cv.visitThrow(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    Throw thr; E e;}
+    ThrowKind thr; E e;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   OpUpdate implements Wrapper,Visitable<OpUpdate>{@Override public Visitable<OpUpdate>visitable(){return this;}@Override public OpUpdate accept(CloneVisitor cv){return cv.visitOpUpdate(this);}@Override public void accept(CollectorVisitor cv){cv.visitOpUpdate(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     X x; E e;}
@@ -66,7 +66,7 @@ public class Core {
     T t; X x; E e;}
   @Value @Wither public static class
   K implements Visitable<K>{@Override public K accept(CloneVisitor cv){return cv.visitK(this);}@Override public void accept(CollectorVisitor cv){cv.visitK(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Throw thr; T t; X x; E e;}    
+    ThrowKind thr; T t; X x; E e;}    
   @Value @Wither public static class
   T implements ST,Visitable<T>{@Override public Visitable<T>visitable(){return this;}@Override public T accept(CloneVisitor cv){return cv.visitT(this);}@Override public void accept(CollectorVisitor cv){cv.visitT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf mdf; List<Doc> docs; P p;}

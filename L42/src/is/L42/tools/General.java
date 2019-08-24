@@ -57,6 +57,12 @@ public class General {
     return new IterableWrapper(startInclusive,endExclusive);
     }
   public static <T> List<T>popL(List<T>l){return l.subList(1, l.size());}
+  public static <T> List<T>pushTopL(T e,List<T>l){
+    ArrayList<T> res=new ArrayList<>();
+    res.add(e);
+    res.addAll(l);
+    return Collections.unmodifiableList(res);
+    }
   public static <T> List<T>L(){return Collections.emptyList();}
   public static <T> List<T>L(T e){return Collections.singletonList(e);}
   public static <T> List<T>L(Consumer<List<T>> c){

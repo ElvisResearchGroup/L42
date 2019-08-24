@@ -68,6 +68,16 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitCsP(L42AuxParser.CsPContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#nudeCsP}.
+	 * @param ctx the parse tree
+	 */
+	void enterNudeCsP(L42AuxParser.NudeCsPContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#nudeCsP}.
+	 * @param ctx the parse tree
+	 */
+	void exitNudeCsP(L42AuxParser.NudeCsPContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#path}.
 	 * @param ctx the parse tree
 	 */

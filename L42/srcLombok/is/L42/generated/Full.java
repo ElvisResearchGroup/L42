@@ -74,7 +74,7 @@ public class Full {
     List<D> ds; E body;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Throw implements Wrapper,Visitable<Throw>{@Override public Visitable<Throw>visitable(){return this;}@Override public Throw accept(CloneVisitor cv){return cv.visitThrow(this);}@Override public void accept(CollectorVisitor cv){cv.visitThrow(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    Throw thr; E e;}
+    ThrowKind thr; E e;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   OpUpdate implements Wrapper,Visitable<OpUpdate>{@Override public Visitable<OpUpdate>visitable(){return this;}@Override public OpUpdate accept(CloneVisitor cv){return cv.visitOpUpdate(this);}@Override public void accept(CollectorVisitor cv){cv.visitOpUpdate(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     X x; Op op; E e;}
@@ -87,10 +87,12 @@ public class Full {
     VarTx _varTx; List<VarTx> varTxs; E _e;}
   @Value @Wither public static class
   VarTx implements Visitable<VarTx>{@Override public VarTx accept(CloneVisitor cv){return cv.visitVarTx(this);}@Override public void accept(CollectorVisitor cv){cv.visitVarTx(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    boolean isVar; T _t; Mdf _mdf; X _x;}//mdf can be present only if _t is absent
+    boolean isVar; T _t; Mdf _mdf; X _x;
+    public static final VarTx emptyInstance=new VarTx(false,null,null,null);
+    }//mdf can be present only if _t is absent
   @Value @Wither public static class
   K implements Visitable<K>{@Override public K accept(CloneVisitor cv){return cv.visitK(this);}@Override public void accept(CollectorVisitor cv){cv.visitK(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Throw _thr; T t; X _x; E e;}
+    ThrowKind _thr; T t; X _x; E e;}
   @Value @Wither public static class
   Par implements Visitable<Par>{@Override public Par accept(CloneVisitor cv){return cv.visitPar(this);}@Override public void accept(CollectorVisitor cv){cv.visitPar(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     E _that; List<X>xs; List<E>es;}

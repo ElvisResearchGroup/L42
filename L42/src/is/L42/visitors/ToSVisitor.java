@@ -16,24 +16,35 @@ public class ToSVisitor extends CollectorVisitor{
     }
   private StringBuilder result=new StringBuilder();
   private String currentIndent="";
-  void nl(){result.append("\n");result.append(currentIndent);}
+  boolean lastWasNl=false;
+  boolean lastWasNum=false;
+  boolean nextIsMatching=false;
+  void nl(){
+    if(lastWasNl){return;}
+    result.append("\n");
+    result.append(currentIndent);
+    lastWasNl=true;
+    lastWasNum=false;
+    }
   void indent(){currentIndent+="  ";}
   void deIndent(){currentIndent=currentIndent.substring(2);}
   char last(){return result.charAt(result.length()-1);}
   void c(String s){
-    assert !s.startsWith(",") || last()!='(':
-      s;
-    assert !s.startsWith(";") || ( last()!=';'&&  last()!='}'):
-      s;
+    if(s.isEmpty()){return;}
+    assert !s.startsWith(",") || last()!='(':s;
+    assert !s.startsWith(";") || ( last()!=';'&&  last()!='}'):s;
     result.append(s);
+    lastWasNl=false;
+    lastWasNum=false;
     }
-  void sp(){result.append(" ");}
 
   void separeFromChar(){
+    if(lastWasNl || lastWasNum){return;}
     if(result.length()==0){return;}
     char last=last();
-    if(Character.isLetter(last) || Character.isDigit(last) || last=='$'){
-    result.append(" ");}
+    if(Character.isLetter(last) || Character.isDigit(last) || last=='$' || last=='_'){
+      result.append(" ");
+      }
     }
   void kw(String s){
     separeFromChar();
@@ -61,7 +72,7 @@ public class ToSVisitor extends CollectorVisitor{
     separeFromChar();
     c(mdf.inner);
     }
-  public void visitThrow(Throw thr){
+  public void visitThrowKind(ThrowKind thr){
     separeFromChar();
     c(thr.inner);
     }
@@ -87,7 +98,7 @@ public class ToSVisitor extends CollectorVisitor{
     }
 
   public void visitS(S s){
-    separeFromChar();
+    if(!s.m().isEmpty()){separeFromChar();}
     c(s.m());
     if(s.hasUniqueNum()){c("::"+s.uniqueNum());}
     c("(");seq(empty,s.xs(),",");c(")");
@@ -203,9 +214,10 @@ public class ToSVisitor extends CollectorVisitor{
     if(inline){sp=i->nl();}
     c("(");
     if(!inline){indent();}
-    seq(sp,block.ds(),", ");
-    seq(sp,block.ks(),", ");
+    seq(sp,block.ds(),"");
+    seq(sp,block.ks(),"");
     visitE(block.e());
+    sp.accept(0);
     c(")");
     if(!inline){deIndent();nl();}
     }
@@ -216,7 +228,7 @@ public class ToSVisitor extends CollectorVisitor{
     }
     
   public void visitThrow(Core.Throw thr){
-    visitThrow(thr.thr());
+    visitThrowKind(thr.thr());
     visitE(thr.e());
     }
     
@@ -235,7 +247,7 @@ public class ToSVisitor extends CollectorVisitor{
 
   public void visitK(Core.K k){
     kw("catch");
-    visitThrow(k.thr());
+    visitThrowKind(k.thr());
     visitT(k.t());
     visitX(k.x());
     visitE(k.e());
@@ -262,7 +274,10 @@ public class ToSVisitor extends CollectorVisitor{
     var s0=pathSel._s();
     var x0=pathSel._x();
     visitP(pathSel.p());
-    if(s0!=null){c(".");visitS(s0);}
+    if(s0!=null){
+      if(!s0.m().isEmpty()){c(".");}
+      visitS(s0);
+      }
     if(x0!=null){c(".");visitX(x0);}
     }
     
@@ -326,7 +341,7 @@ public class ToSVisitor extends CollectorVisitor{
     c("loop");visitE(loop.e());
     }
   public void visitThrow(Half.Throw thr){
-    visitThrow(thr.thr());visitE(thr.e());
+    visitThrowKind(thr.thr());visitE(thr.e());
     }
   public void visitOpUpdate(Half.OpUpdate opUpdate){
     var x0=opUpdate.x();
@@ -350,7 +365,7 @@ public class ToSVisitor extends CollectorVisitor{
     var x0=k.x();
     var e0=k.e();
     c("catch");
-    visitThrow(k.thr());
+    visitThrowKind(k.thr());
     visitT(t0);
     visitX(x0);
     visitE(e0);
@@ -453,8 +468,10 @@ public class ToSVisitor extends CollectorVisitor{
   public void visitUOp(Full.UOp uOp){
     if(uOp._op()!=null){visitOp(uOp._op());}
     if(uOp._num()!=null){
+      lastWasNum=false;
       separeFromChar();
       c(uOp._num());
+      lastWasNum=true;
       }
     visitE(uOp.e());
     }
@@ -488,20 +505,20 @@ public class ToSVisitor extends CollectorVisitor{
   public void visitBlock(Full.Block block){
     boolean inline=HasMultilinePart.inline(block);
     var sp=empty;
-    if(inline){sp=i->nl();}
-    c("(");
+    if(!inline){sp=i->nl();}
+    if(block.isCurly()){c("{");}else{c("(");}
     if(!inline){indent();}
-    seq(sp,block.ds().subList(0,block.dsAfter()),", ");
-    seq(sp,block.ks(),", ");
+    seq(sp,block.ds().subList(0,block.dsAfter()),"");
+    seq(sp,block.ks(),"");
     if(!block.whoopsed().isEmpty()){
       sp.accept(0);
       c("whoops");
       seq(empty,block.whoopsed(),", ");
       }
-    seq(sp,block.ds().subList(block.dsAfter(),block.ds().size()),", ");
+    seq(sp,block.ds().subList(block.dsAfter(),block.ds().size()),"");
     sp.accept(0);
     if(block._e()!=null){visitE(block._e());sp.accept(0);}
-    c(")");
+    if(block.isCurly()){c("}");}else{c(")");}
     if(!inline){deIndent();nl();}
     }
     
@@ -528,7 +545,7 @@ public class ToSVisitor extends CollectorVisitor{
     }
     
   public void visitThrow(Full.Throw thr){
-    visitThrow(thr.thr());visitE(thr.e());
+    visitThrowKind(thr.thr());visitE(thr.e());
     }
     
   public void visitOpUpdate(Full.OpUpdate opUpdate){
@@ -559,11 +576,16 @@ public class ToSVisitor extends CollectorVisitor{
     var tx0=d._varTx();
     var txs0=d.varTxs();
     var e0=d._e();
-    if(tx0!=null){visitVarTx(tx0);}
+    if(tx0!=null){
+      nextIsMatching=!txs0.isEmpty();
+      visitVarTx(tx0);
+      nextIsMatching=false;
+      }
     if(!txs0.isEmpty()){
       c("(");seq(empty,txs0,", ");c(")");
       }
-    if(e0!=null){c("=");visitE(e0);}
+    if(tx0!=null && e0!=null){c("=");}
+    if(e0!=null){visitE(e0);}
     }
  
   public void visitVarTx(Full.VarTx varTx){
@@ -572,8 +594,12 @@ public class ToSVisitor extends CollectorVisitor{
     if(varTx.isVar()){kw("var");}
     if(varTx._mdf()!=null){visitMdf(varTx._mdf());}
     if(t0!=null){visitT(t0);}
+    if(nextIsMatching){
+      assert x0==null;
+      return;
+      }
     if(x0!=null){visitX(x0);}
-    else{c("_");}
+    else{separeFromChar();c("_");}
     }
   
   public void visitK(Full.K k){
@@ -581,10 +607,10 @@ public class ToSVisitor extends CollectorVisitor{
     var x0=k._x();
     var e0=k.e();
     kw("catch");
-    if(k._thr()!=null){visitThrow(k._thr());}
+    if(k._thr()!=null){visitThrowKind(k._thr());}
     visitT(t0);
     if(x0!=null){visitX(x0);}
-    else {c("_");}
+    else {separeFromChar(); c("_");}
     visitE(e0);
     }
     
@@ -623,7 +649,7 @@ public class ToSVisitor extends CollectorVisitor{
     var x0=pathSel._x();
     var csP0=pathSel._csP();
     if(csP0!=null){visitCsP(csP0);}
-    if(csP0!=null && s0!=null){c(".");}
+    if(csP0!=null && s0!=null && !s0.m().isEmpty()){c(".");}
     if(s0!=null){visitS(s0);}
     if(x0!=null){assert s0!=null;c(".");visitX(x0);}
     }

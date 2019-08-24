@@ -69,7 +69,7 @@ doc:Doc;
 
 BlockComment: '/*' (BlockComment|.)*? '*/'	-> channel(HIDDEN) ; // nesting comments allowed
 LineComment: '//' .*? ('\n'|EOF)				-> channel(HIDDEN) ;
-Whitespace: (( ' ' | ',' | '\n' )+)-> channel(HIDDEN);
+Whitespace: ( ' ' | ',' | '\n' )-> channel(HIDDEN);
 
 csP: CsP;
 t:Mdf? doc* csP;

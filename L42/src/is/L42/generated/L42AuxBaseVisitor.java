@@ -59,6 +59,13 @@ public class L42AuxBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitNudeCsP(L42AuxParser.NudeCsPContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitPath(L42AuxParser.PathContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

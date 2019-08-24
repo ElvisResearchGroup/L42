@@ -47,6 +47,12 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCsP(L42AuxParser.CsPContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#nudeCsP}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNudeCsP(L42AuxParser.NudeCsPContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#path}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

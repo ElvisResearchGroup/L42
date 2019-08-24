@@ -12,12 +12,13 @@ libraryKw:LibraryKw;
 thisKw:ThisKw;
 C:IdUp IdChar* ('::'Fn)?;
 c:C;
-csP:(path|cs|anyKw|voidKw|libraryKw) EOF;
+csP:(path|cs|anyKw|voidKw|libraryKw);
+nudeCsP: csP EOF;
 path: thisKw (Dot c)*;
 cs: c (Dot c)*;
-selector: m '(' (x W*)* ')';
-pathSel:path Dot selector;
-pathSelX:pathSel (Dot x)? ;
+selector: m? '(' (x W*)* ')';
+pathSel:csP (Dot? selector)? | selector;
+pathSelX:pathSel (Dot x)?;
 
 infoNorm:'#norm{';
 infoTyped:'#typed{';
@@ -59,7 +60,7 @@ m: MUniqueNum|MHash|X;
 Doc: '@'FPathSel | '@'FPathSel?'{'DocText'}';
 fragment FS:(MUniqueNum|MHash|X) FParXs;
 fragment FParXs: '(' ')' | '(' X ( (' '|',')X )* ')';
-fragment FPathSel: FS('.'X)? |FParXs('.'X)?;
+fragment FPathSel: FS('.'X)? |FParXs('.'X)? | C(Dot C)*( ('.'FS|FParXs)('.'X)? )?;
 fragment DocText: | CHARDocText DocText | Doc DocText | '{' DocText '}' DocText;
 
 W: ( ' ' | ',' | '\n' );
