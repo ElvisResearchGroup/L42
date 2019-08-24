@@ -273,20 +273,44 @@ TestModuleWorldLoader: ModuleWorldLoader & {
 
   WorldLoader: {}
 
-  class method Void factoryProducesCorrectItemsFor(S content, S expected) (
+  class method Void producesCorrectItems(S content, S expected) (
     mut World world = WorldLoader.loadWorld(content: content)
     Debug.test(world.#map().addedEntities(), expected: expected)
     )
   }
 
 TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
-  TestModuleWorldLoader.factoryProducesCorrectItemsFor(
+  TestModuleWorldLoader.producesCorrectItems(
     content: S"
       '# Comment line
       'ROCK_ITEM 1 2
       ",
     expected: S"
       '[RockItem[[x:"1", y:"2"]]]
+      ".withoutRight()
+    )
+
+TestModuleWorldLoader_loadWorld_addsAnAppleAtTheCorrectPosition:
+  TestModuleWorldLoader.producesCorrectItems(
+    content: S"
+      '# Comment line
+      'APPLE_ITEM 3 4
+      ",
+    expected: S"
+      '[AppleItem[[x:"3", y:"4"]]]
+      ".withoutRight()
+    )
+
+TestModuleWorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
+  TestModuleWorldLoader.producesCorrectItems(
+    content: S"
+      '# Comment line
+      'sROCK_ITEM 1 2
+      'APPLE_ITEM 3 4
+      'APPLE_ITEM 5 6
+      ",
+    expected: S"
+      '[RockItem[[x:"1", y:"2"]]; AppleItem[[x:"3", y:"4"]]; AppleItem[[x:"5", y:"6"]]]
       ".withoutRight()
     )
 
