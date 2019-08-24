@@ -42,17 +42,17 @@ ModuleEntities: Trait({
 
   Player: HasPoint & {implements Entity
     method drawOnto(that) (
-      that.draw(S"P",x:this.p().x(), y:this.p().y())
+      that.draw(S"P", x: this.p().x(), y: this.p().y())
       )
     }
   RockItem: HasPoint & {implements Entity
     method drawOnto(that) (
-      that.draw(S"R",x:this.p().x(), y:this.p().y())
+      that.draw(S"R", x: this.p().x(), y: this.p().y())
       )
     }
   AppleItem: HasPoint & {implements Entity
     method drawOnto(that) (
-      that.draw(S"A",x:this.p().x(), y:this.p().y())
+      that.draw(S"A", x: this.p().x(), y: this.p().y())
       )
     }
   })
@@ -124,7 +124,7 @@ ModuleWorld: Trait({
     mut method Void drawOnto(mut Graphics graphics) (
       mut PointToEntityMap m = this.#map()
       with i in Range(m.size()) (
-        read Entity e=m.val(i)
+        read Entity e = m.val(i)
         e.drawOnto(graphics)
         )
       this.player().drawOnto(graphics)
@@ -147,39 +147,49 @@ TestModuleWorld: ModuleWorld & {
   }
   StubEntity: HasPoint & {implements Entity
     method drawOnto(that) (
-      Debug.appendLog(S"stubEntityDrawPoints", msg: S"Point"[this.point()]"\n")
+      Debug.appendLog(
+        S"stubEntityDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+        )
       )
     }
   Player: HasPoint & {implements Entity
     method drawOnto(that) (
-      Debug.appendLog(S"playerDrawPoints", msg: S"Point"[this.point()]"\n")
+      Debug.appendLog(
+        S"playerDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+        )
       )
   }
 
-  class method Void testExampleToDoRename() (
-    Point p=Point(x: 1Size, y: 2Size)
-    mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
-    w.#map().addEntity(StubEntity(p:p))
-    w.#map().addEntity(StubEntity(p:p))
+  class method Void failsWhenAddingTwoItemsToTheSamePoint() (
+    Point p = Point(x: 1Size, y: 2Size)
+    mut World w = World(
+      map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
+      )
+    w.#map().addEntity(StubEntity(p: p))
+
+    w.#map().addEntity(StubEntity(p: p))
     catch error PointFilled pf void
     error X""
     )
 
-  class method Void #$testExampleToDoRename2() (
-    mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
+  class method Void #$drawsPlayerAtInitialPoint() (
+    mut World w = World(
+      map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
+      )
+
     w.drawOnto(graphics: Graphics())
-    S logs = Debug.#$readLog(S"playerDrawPoints")
-    Debug.test(logs, expected: S"
+
+    Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
       'Point[x:"0", y:"0"]
       ")
     )
   }
 
 TestModuleWorld_PointToEntityMap_addEntity_failsWhenAddingTwoItemsToTheSamePoint:
-  TestModuleWorld.testExampleToDoRename()
+  TestModuleWorld.failsWhenAddingTwoItemsToTheSamePoint()
 
 TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
-  TestModuleWorld.#$testExampleToDoRename2()
+  TestModuleWorld.#$drawsPlayerAtInitialPoint()
 
 
 //
@@ -208,30 +218,32 @@ ModuleWorldLoader: Trait({
   WorldLoader: {
     class method mut World #$(S fileName) (
       S content = Debug.#$readFile(fileName: fileName)
-      Strings lines = content.splitOn(chars: S.nl())
-      This.loadWorld(lines: lines)
+      This.loadWorld(content: content)
       )
 
-    class method mut World loadWorld(Strings lines) (
+    class method mut World loadWorld(S content) (
       mut World world = World(
         map: PointToEntityMap[],
         player: Player(p: Point(x: 0Size, y: 0Size))
         )
 
-      Strings linesWithoutCommentLine = lines.withoutLeft()
+      // withoutLeft() removes the comment line
+      Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
 
-      with s in linesWithoutCommentLine.vals() (
+      with s in lines.vals() (
         Strings tokens = s.splitOn(chars: S" ")
         S entityTypeName = tokens.val(0Size)
         Point p = Point(
           x: Size.fromS(tokens.val(1Size)),
           y: Size.fromS(tokens.val(2Size))
           )
+
         mut Entity e = {
           if entityTypeName == S"ROCK_ITEM" (return RockItem(p: p))
           if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
           error X"@"[entityTypeName]"@"
           }
+
         world.#map().addEntity(e)
         )
       world
@@ -239,41 +251,40 @@ ModuleWorldLoader: Trait({
     }
   })
 
-/* ModuleWorldLoader_loadWorld_createsAWorld: { */
-/* // TODO  */
-  /* Strings input = Strings[S"# Comment line"] */
-  /* WorldLoader.loadWorld(lines: input) */
-  /* return ExitCode.normal() */
-  /* } */
-
 TestModuleWorldLoader: ModuleWorldLoader & {
   PointToEntityMap: K<><{
     mut Strings addedEntities
-    class method mut This #seqBuilder()This(addedEntities:Strings[])
-    class method mut This #from(mut This seqBuilder)seqBuilder
+    class method mut This #seqBuilder() This(addedEntities: Strings[])
+    class method mut This #from(mut This seqBuilder) seqBuilder
 
     mut method Void addEntity(mut Entity that) (
       this.#addedEntities().add(right: that.toS())
       )
     }
-  World:{}
+  World: {}
 
-  Entity: {interface Point p  read method S toS()}
+  Entity: {interface
+    Point p
+    read method S toS()
+    }
   Player: {implements Entity method toS()S"Player["[this.p()]"]"}
   RockItem: {implements Entity method toS()S"RockItem["[this.p()]"]"}
   AppleItem: {implements Entity method toS()S"AppleItem["[this.p()]"]"}
 
   WorldLoader: {}
 
-  class method Void testExampleToDoRename(Strings that, S expected) (
-    mut World world = WorldLoader.loadWorld(lines: that)
+  class method Void factoryProducesCorrectItemsFor(S content, S expected) (
+    mut World world = WorldLoader.loadWorld(content: content)
     Debug.test(world.#map().addedEntities(), expected: expected)
     )
   }
 
 TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
-  TestModuleWorldLoader.testExampleToDoRename(
-    Strings[S"# Comment line"; S"ROCK_ITEM 1 2"],
+  TestModuleWorldLoader.factoryProducesCorrectItemsFor(
+    content: S"
+      '# Comment line
+      'ROCK_ITEM 1 2
+      ",
     expected: S"
       '[RockItem[[x:"1", y:"2"]]]
       ".withoutRight()
@@ -291,8 +302,9 @@ TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
 
 ModuleUI: Trait({
   Graphics: Trait(Collections.vector(ofMut: Strings)) & {
-    mut method Void draw(S that, Size x, Size y)
-      this.#val(y)(x, val:that)
+    mut method Void draw(S that, Size x, Size y) (
+      this.#val(y)(x, val: that)
+      )
 
     class method mut This (Size width, Size height) This[
       with y in Range(height) (
@@ -330,23 +342,28 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Actions: {}
   World: {
     mut method S asText() (
-      mut Graphics m = Graphics(width:This.gameSizeInCells() height:This.gameSizeInCells())
-      this.drawOnto(graphics: m)
-      m.asText()
+      mut Graphics graphics = Graphics(
+        width: This.gameSizeInCells(), height: This.gameSizeInCells()
+        )
+      this.drawOnto(graphics: graphics)
+      graphics.asText()
       )
     }
 
   WorldLoader: {}
-  Graphics:{
+  Graphics: {
     mut method S asText() S""[
       with y in Range(this.size()) (
-        with x in Range(this.val(y).size()) (
-          use[S"|"; this.val(y).val(x)]
+        row = this.val(y)
+        with x in Range(row.size()) (
+          use[S"|"; row.val(x)]
           )
         use[S.nl()]
         )
       ]""
     }
+
+  class method S defaultFileName() S"GameGridSaves/game-save-example.txt"
 
   class method Strings (Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
@@ -360,7 +377,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   class method Strings #$(Actions actions) (
     This(
       actions: actions,
-      world: WorldLoader.#$(fileName: S"GameGridSaves/game-save-example.txt")
+      world: WorldLoader.#$(fileName: This.defaultFileName())
       )
     )
   }
