@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
@@ -33,14 +34,15 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
       return visitCsP(ctx.csP());
       }
     @Override public Full.CsP visitCsP(L42AuxParser.CsPContext ctx) {
-      if(ctx.cs()!=null){return visitCs(ctx.cs());}
-      if(ctx.path()!=null){return visitPath(ctx.path());}
+      Full.CsP r;
+      if((r=opt(ctx.cs(),null,this::visitCs))!=null){return r;}
+      if((r=opt(ctx.path(),null,this::visitPath))!=null){return r;}
       if(ctx.anyKw()!=null){return new Full.CsP(pos,L(),P.pAny);}
-      if(ctx.cs()!=null){return new Full.CsP(pos,L(),P.pVoid);}
-      if(ctx.cs()!=null){return new Full.CsP(pos,L(),P.pLibrary);}
+      if(ctx.voidKw()!=null){return new Full.CsP(pos,L(),P.pVoid);}
+      if(ctx.libraryKw()!=null){return new Full.CsP(pos,L(),P.pLibrary);}
       throw unreachable();
       }
-
+      
     @Override public Full.CsP visitCs(L42AuxParser.CsContext ctx) {
       List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
       return new Full.CsP(pos,cs, null);
@@ -66,18 +68,14 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
       return Integer.parseInt(s);
       }
      @Override public Full.Doc visitTopDoc(L42AuxParser.TopDocContext ctx) {
-        Full.PathSel p=null;
-        if(ctx.pathSelX()!=null){p=visitPathSelX(ctx.pathSelX());}
+        Full.PathSel p=opt(ctx.pathSelX(),null,this::visitPathSelX);
         if(ctx.topDocText()==null){return new Full.Doc(p, L(),L());}
         return visitTopDocText(ctx.topDocText()).with_pathSel(p);
         }
       @Override public Full.PathSel visitPathSelX(L42AuxParser.PathSelXContext ctx) {
-        Full.CsP p=null;
-        if(ctx.pathSel().csP()!=null){p=visitCsP(ctx.pathSel().csP());}
-        S s=null;
-        if(ctx.pathSel().selector()!=null){s=visitSelector(ctx.pathSel().selector());}
-        X x=null;
-        if(ctx.x()!=null){x=visitX(ctx.x());}
+        Full.CsP p=opt(ctx.pathSel().csP(),null,this::visitCsP);
+        S s=opt(ctx.pathSel().selector(),null,this::visitSelector);
+        X x=opt(ctx.x(),null,this::visitX);
         return new Full.PathSel(p,s,x); 
         }
       @Override public S visitSelector(L42AuxParser.SelectorContext ctx) {
@@ -145,7 +143,9 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
 //  @Override public Void visitErrorNode(ErrorNode arg0) {throw bug();}
 //  @Override public Void visitTerminal(TerminalNode arg0) {throw bug();}
   @Override public Full.E visitE(EContext ctx) {
-    return (Full.E)c(ctx);
+    var res=c(ctx);
+    assert res!=null;
+    return (Full.E)res;
     }
   @Override public Full.Par visitPar(ParContext ctx) {
     List<X> xs=L(ctx.x(),(c,x)->c.add(visitX(x)));
@@ -159,8 +159,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return ctx.getText().substring(0,ctx.getText().length()-1);
     }
   @Override public Full.D visitD(DContext ctx) {
-    List<Full.VarTx> dx=L();
-    if(ctx.dX()!=null){dx=visitDX(ctx.dX());}
+    List<Full.VarTx> dx=opt(ctx.dX(),L(),this::visitDX);
     var e=visitE(ctx.e());
     Full.VarTx first=null;
     if(!dx.isEmpty()){
@@ -176,20 +175,16 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     }
   @Override public X visitX(XContext ctx) {return new X(ctx.getText());}
   @Override public Full.Call visitFCall(FCallContext ctx) {
-    S s=null;
-    if(ctx.m()!=null){s=visitM(ctx.m());}
+    S s=opt(ctx.m(),null,this::visitM);
     return new Full.Call(pos(ctx), eVoid, s, false, L(visitPar(ctx.par())));
     }
   @Override public Full.E visitNudeE(NudeEContext ctx) {return (Full.E)ctx.children.get(0).accept(this);}
   @Override public Full.Block visitBlock(BlockContext ctx) {
-    //oR d*? e ')' | oR d+ k* whoops? (d* e)? ')' | '{' d+ (k+ whoops? d* | whoops d*)? '}';
     boolean isCurly=ctx.oR()==null;
     List<Full.D> ds=L(ctx.d(),(c,d)->c.add(visitD(d)));
     List<Full.K> ks=L(ctx.k(),(c,k)->c.add(visitK(k)));
-    List<Full.T> whoopsed=L();
-    if(ctx.whoops()!=null){whoopsed=visitWhoops(ctx.whoops());}
-    Full.E e=null;
-    if(ctx.e()!=null){e=visitE(ctx.e());}
+    List<Full.T> whoopsed=opt(ctx.whoops(),L(),this::visitWhoops);
+    Full.E e=opt(ctx.e(),null,this::visitE);
     int dsAfter=ds.size();
     for(int i:range(ctx.children)){
       if(ctx.children.get(i) instanceof KContext){dsAfter=i-1;break;}
@@ -254,7 +249,6 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
       return L(visitTLocal(ctx.tLocal(0)));
       }
     return L(c->{
-      // tLocal oR (VarKw? tLocal x)+ ')';
       Full.VarTx tL0=Full.VarTx.emptyInstance;
       if(ctx.getChild(0)!=ctx.oR()){tL0=visitTLocal(ctx.tLocal(0));}
       c.add(tL0);
@@ -283,26 +277,47 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new AuxVisitor(pos).visitTopDoc(res.res);
     }
   @Override public Full.K visitK(KContext ctx) {
-    ThrowKind thr=null;
-    if(ctx.Throw()!=null){thr=ThrowKind.fromString(ctx.Throw().getText());}
+    ThrowKind thr=opt(ctx.Throw(),null,t->ThrowKind.fromString(t.getText()));
     Full.T t=visitT(ctx.t());
-    X x=null;
-    if(ctx.x()!=null){x=visitX(ctx.x());}
+    X x=opt(ctx.x(),null,this::visitX);
     Full.E e=visitE(ctx.e());
     return new Full.K(thr, t, x, e);
     }
   @Override public List<Full.T> visitWhoops(WhoopsContext ctx) {
     return L(ctx.t(),(c,ti)->c.add(visitT(ti)));
     }
-  //@Override public String visitFullL(FullLContext ctx) {throw bug();}
-  //@Override public String visitFullM(FullMContext ctx) {throw bug();}
-  //@Override public String visitFullF(FullFContext ctx) {throw bug();}
-  //@Override public String visitHeader(HeaderContext ctx) {throw bug();}
-  //@Override public String visitFullMi(FullMiContext ctx) {throw bug();}
-  //@Override public String visitFullMWT(FullMWTContext ctx) {throw bug();}
-  //@Override public String visitFullMH(FullMHContext ctx) {throw bug();}
-  //@Override public String visitMOp(MOpContext ctx) {throw bug();}
-  //@Override public String visitFullNC(FullNCContext ctx) {throw bug();}
+  @Override public Full.L visitFullL(FullLContext ctx) {
+    boolean isDots=ctx.DotDotDot()!=null;
+    String reuseUrl=opt(ctx.ReuseURL(),"",r->parseReuseNative(r.getText()));
+    boolean isInterface=opt(ctx.header(),false,h->h.InterfaceKw()!=null);
+    List<Full.T>empty=L();
+    List<Full.T>ts=opt(ctx.header(),empty,h->L(h.t(),(c,ti)->c.add(visitT(ti))));
+    List<Full.L.M> ms=L(ctx.fullM(),(c,mi)->visitFullM(mi));
+    List<Full.Doc> docs=L(ctx.doc(),(c,di)->visitDoc(di));
+    return new Full.L(pos(ctx), isDots, reuseUrl, isInterface, ts, ms, docs);
+    }
+  private String parseReuseNative(String s) { 
+    assert s.endsWith("]");
+    int index = s.indexOf("[");
+    assert index!=-1;
+    return s.substring(index,s.length()-1);
+    }
+  @Override public Full.L.M visitFullM(FullMContext ctx) {
+    var fi=opt(ctx.fullF(),null,(this::visitFullF));
+    throw bug();
+    }
+  static private <A,B> B opt(A a,B def,Function<A,B>f){
+    if(a==null){return def;}
+    return f.apply(a);
+    }
+    
+  @Override public Full.L.F visitFullF(FullFContext ctx) {throw bug();}
+  @Override public String visitHeader(HeaderContext ctx) {throw bug();}
+  @Override public Full.L.MI visitFullMi(FullMiContext ctx) {throw bug();}
+  @Override public Full.L.MWT visitFullMWT(FullMWTContext ctx) {throw bug();}
+  @Override public Full.MH visitFullMH(FullMHContext ctx) {throw bug();}
+  @Override public String visitMOp(MOpContext ctx) {throw bug();}
+  @Override public Full.L.NC visitFullNC(FullNCContext ctx) {throw bug();}
   //@Override public String visitSlash(SlashContext ctx) {throw bug();}
   //@Override public String visitPathSel(PathSelContext ctx) {throw bug();}
   @Override public Full.Cast visitCast(CastContext ctx) {
@@ -338,8 +353,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return res;
     }
   @Override public Full.Call visitSquareCall(SquareCallContext ctx) {
-    S s=null;
-    if(ctx.m()!=null){s=visitM(ctx.m());}
+    S s=opt(ctx.m(),null,this::visitM);
     List<Full.Par> ps=L(ctx.par(),(c,p)->c.add(visitPar(p)));
     return new Full.Call(pos(ctx), eVoid, s, true, ps);
     }

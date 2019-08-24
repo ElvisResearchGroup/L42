@@ -80,7 +80,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(\n  A(B)\n  C(D)\n  )\n")   
    ),new AtomicTest(()->
-   pass("(A (B) C(D))","(\n  A\n  (B)\n  C(D)\n  )\n")
+   pass("(A (Void) C(Library))","(\n  A\n  (Void)\n  C(Library)\n  )\n")
    ),new AtomicTest(()->
    pass("(\n  A\n  (B)\n  C(D)\n  )\n")
    ),new AtomicTest(()->
@@ -182,11 +182,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("{\n  A\n  whoops B, C, D\n  }\n")
    ),new AtomicTest(()->
    pass("{\n  x=A\n  catch T _ x\n  y\n  Z\n  }\n")
+   ),new AtomicTest(()->
+   pass("{}","{}")
+   ),new AtomicTest(()->
+   pass("{T x=void x}","{\n  T x=void\n  x\n  }\n")
    /*),new AtomicTest(()->
-   pass("{}","{|Header()|}|")
-   ),new AtomicTest(()->
-   pass("{T x=void x}","[|D(t(P)x|void)D(x)|]|")
-   ),new AtomicTest(()->
    pass("{T x=void}","[|D(t(P)x|void)|]|")
    ),new AtomicTest(()->
    pass("{T x}","{|Header()FullF(t(P)x)|}|")

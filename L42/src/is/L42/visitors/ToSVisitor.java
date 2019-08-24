@@ -138,13 +138,13 @@ public class ToSVisitor extends CollectorVisitor{
   public void visitL(Core.L l){
     boolean inline=HasMultilinePart.inline(l);
     c("{");
-    if(inline){indent();}
+    if(!inline){indent();}
     if(l.isInterface()){c("interface");}
     if(!l.ts().isEmpty()){
       c("[");seq(empty,l.ts(),", ");c("] ");
       }
     var sp=empty;
-    if(inline){sp=i->nl();}
+    if(!inline){sp=i->nl();}
     seq(sp,l.mwts(),"");
     seq(sp,l.ncs(),"");
     sp.accept(0);
@@ -153,7 +153,7 @@ public class ToSVisitor extends CollectorVisitor{
     visitDocs(l.docs());
     if(!l.docs().isEmpty()){sp.accept(0);}
     c("}");
-    if(inline){nl();deIndent();}
+    if(!inline){nl();deIndent();}
     }
     
   public void visitInfo(Core.L.Info info){
@@ -385,7 +385,7 @@ public class ToSVisitor extends CollectorVisitor{
   public void visitL(Full.L l){
       boolean inline=HasMultilinePart.inline(l);
     c("{");
-    if(inline){indent();}
+    if(!inline){indent();}
     if(l.isInterface()){c("interface");}
     var ts0=l.ts();
     var ms0=l.ms();
@@ -394,13 +394,13 @@ public class ToSVisitor extends CollectorVisitor{
       c("[");seq(empty,l.ts(),", ");c("] ");
       }
     var sp=empty;
-    if(inline){sp=i->nl();}
+    if(!inline){sp=i->nl();}
     seqHas(sp,ms0,"");
     sp.accept(0);
     visitFullDocs(docs0);
     if(!docs0.isEmpty()){sp.accept(0);}
     c("}");
-    if(inline){nl();deIndent();}
+    if(!inline){nl();deIndent();}
     }
     
   public void visitF(Full.L.F f){
