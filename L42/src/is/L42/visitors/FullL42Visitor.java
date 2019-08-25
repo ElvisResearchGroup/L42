@@ -21,7 +21,6 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import is.L42.generated.L42Parser.*;
 import is.L42.common.Parse;
 import is.L42.generated.*;
-import is.L42.generated.Full.UOp;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
 
 public class FullL42Visitor extends L42BaseVisitor<Object>{
@@ -286,16 +285,155 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
   @Override public List<Full.T> visitWhoops(WhoopsContext ctx) {
     return L(ctx.t(),(c,ti)->c.add(visitT(ti)));
     }
-  @Override public Full.L visitFullL(FullLContext ctx) {
+  @Override public Full.E visitFullL(FullLContext ctx) {
     boolean isDots=ctx.DotDotDot()!=null;
     String reuseUrl=opt(ctx.ReuseURL(),"",r->parseReuseNative(r.getText()));
     boolean isInterface=opt(ctx.header(),false,h->h.InterfaceKw()!=null);
     List<Full.T>empty=L();
     List<Full.T>ts=opt(ctx.header(),empty,h->L(h.t(),(c,ti)->c.add(visitT(ti))));
-    List<Full.L.M> ms=L(ctx.fullM(),(c,mi)->visitFullM(mi));
-    List<Full.Doc> docs=L(ctx.doc(),(c,di)->visitDoc(di));
-    return new Full.L(pos(ctx), isDots, reuseUrl, isInterface, ts, ms, docs);
+    List<Full.L.M> ms=L(ctx.fullM(),(c,mi)->c.add(visitFullM(mi)));
+    List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
+    Core.L.Info info=opt(ctx.info(),null,this::visitInfo);
+    Full.L res=new Full.L(pos(ctx), isDots, reuseUrl, isInterface, ts, ms, docs);
+    if(info!=null){return inject(res,info);}
+    return res; 
     }
+  private Core.L makeErr(Pos pos,Core.L.Info info){
+    if(info==null){return null;}
+    String err=info.toString();
+    var errRes=new Core.L(pos,false, L(),L(),L(),info,L());
+    err=err.substring(0,Math.min(6, err.length()));
+    err="line " + pos.line() + ":" + pos.column() 
+      + " Error: Extraneus token "+err;
+    this.errors.append(err);
+    return errRes;
+    }
+  private Core.L inject(Full.L res,Core.L.Info info) {
+    if(res.isDots() || !res.reuseUrl().isEmpty()){
+      return makeErr(res.pos(),info);
+      }
+    long cut=res.ms().stream()
+      .takeWhile(m->!(m instanceof Full.L.NC))
+      .count();
+    var mwts=res.ms().stream().limit(cut)
+      .filter(m->m instanceof Full.L.MWT)
+      .map(m->(Full.L.MWT)m)
+      .collect(Collectors.toList());
+    var ncs=res.ms().stream().skip(cut)
+      .filter(m->m instanceof Full.L.NC)
+      .map(m->(Full.L.NC)m)
+      .collect(Collectors.toList());
+    if(mwts.size()+ncs.size()!=res.ms().size()){
+      return makeErr(res.pos(),info);
+      }
+    List<Core.T>cts=injectTs(res.ts());
+    List<Core.L.MWT>cmwts=L(mwts,(c,mi)->c.add(inject(mi)));
+    List<Core.L.NC>cncs=L(ncs,(c,ni)->c.add(inject(ni)));
+    List<Core.Doc>cdocs=injectDocs(res.docs());
+    if(cdocs==null || cmwts==null || cncs.contains(null) || cdocs.contains(null)){
+      return makeErr(res.pos(),info);
+      }      
+    return new Core.L(res.pos(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
+    }
+  private Core.T inject(Full.T t) {
+    List<Core.Doc>docs=injectDocs(t.docs());
+    if(docs==null){return null;}
+    if(t.csP()==null || t.csP()._p()==null){return null;}
+    return new Core.T(inject(t._mdf()), docs, t.csP()._p());    
+    }
+  private Core.L.MWT inject(Full.L.MWT mwt) {
+    var docs=injectDocs(mwt.docs());
+    var mh=inject(mwt.mh());
+    if(docs==null || mh==null){return null;}
+    if(mwt._e()==null){return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),null);}
+    Core.E[]e={null};
+    mwt._e().visitable().accept(new CollectorVisitor(){
+      @Override public void visitEX(Core.EX x){e[0]=x;}
+      @Override public void visitEVoid(Core.EVoid eVoid){e[0]=eVoid;}
+      @Override public void visitL(Core.L l){e[0]=l;}
+      @Override public void visitL(Full.L l){e[0]=inject(l,null);}
+
+      @Override public void visitCast(Full.Cast cast){
+        if(!(cast.e() instanceof Full.CsP)){e[0]=null;return;}
+        P p=inject((Full.CsP)cast.e());
+        var t=inject(cast.t());
+        if(p==null || t==null){e[0]=null;return;}
+        e[0]=new Core.PCastT(cast.pos(), p, t);
+        }
+        
+      @Override public void visitCall(Full.Call mCall){
+        //visitXP(mCall.xP());
+        //visitS(mCall.s());
+        //visitEs(mCall.es());
+        }
+      @Override public void visitBlock(Full.Block block){
+        //visitDs(block.ds());
+        //visitKs(block.ks());
+        //visitE(block.e());
+        }
+      @Override public void visitLoop(Full.Loop loop){
+        visitE(loop.e());
+        }
+      @Override public void visitThrow(Full.Throw thr){
+        visitE(thr.e());
+        }
+      @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
+        visitX(opUpdate.x());
+        visitE(opUpdate.e());
+        }
+      });
+    if(e[0]==null){return null;}
+    return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),e[0]);
+    }
+  private Mdf inject(Mdf mdf) {return mdf==null?Mdf.Immutable:mdf;}
+    
+  private Core.MH inject(Full.MH mh) {
+    var docs=injectDocs(mh.docs());
+    var pars=injectTs(mh.pars());
+    var exceptions=injectTs(mh.exceptions());
+    var t=inject(mh.t());
+    if(mh.s().m().isEmpty() || mh._op()!=null || docs==null
+      || pars==null || exceptions==null){return null;}
+    return new Core.MH(inject(mh._mdf()), docs, t, mh.s(), pars, exceptions);
+    }
+
+  private Core.L.NC inject(Full.L.NC nc) {
+    var docs=injectDocs(nc.docs());
+    Core.L l=null;
+    if (nc.e() instanceof Core.L){l=(Core.L)nc.e();}
+    if (nc.e() instanceof Full.L){l=inject((Full.L)nc.e(),null);}
+    if(docs==null || l==null){return null;}
+    return new Core.L.NC(nc.pos(), docs, nc.key(),l);
+    }
+  private P inject(Full.CsP csP) {return csP._p();}
+
+  private Core.Doc inject(Full.Doc d) {
+    Core.PathSel ps=null;
+    if(d._pathSel()!=null){
+      ps=inject(d._pathSel());
+      if(ps==null){return null;}
+      }
+    var docs=injectDocs(d.docs());
+    if(docs==null){return null;}
+    return new Core.Doc(ps,d.texts(),docs);
+    }
+  private Core.PathSel inject(Full.PathSel p) {
+    P cp=inject(p._csP());
+    if(cp==null){return null;}
+    if(p._s()!=null && p._s().m().isEmpty()){return null;}
+    return new Core.PathSel(cp, p._s(),p._x());
+    }
+  private List<Core.Doc> injectDocs(List<Full.Doc> docs) {
+    List<Core.Doc>cdocs=L(docs,(c,di)->c.add(inject(di)));
+    if(cdocs.contains(null)){return null;}
+    return cdocs;
+    }
+  private List<Core.T> injectTs(List<Full.T> ts) {
+    List<Core.T>cts=L(ts,(c,ti)->c.add(inject(ti)));
+    if(cts.contains(null)){return null;}
+    return cts;
+    }
+
   private String parseReuseNative(String s) { 
     assert s.endsWith("]");
     int index = s.indexOf("[");
@@ -303,15 +441,22 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return s.substring(index,s.length()-1);
     }
   @Override public Full.L.M visitFullM(FullMContext ctx) {
-    var fi=opt(ctx.fullF(),null,(this::visitFullF));
-    throw bug();
+    Full.L.M m;
+    m=opt(ctx.fullF(),null,(this::visitFullF));
+    if(m!=null){return m;}
+    throw unreachable();
     }
   static private <A,B> B opt(A a,B def,Function<A,B>f){
     if(a==null){return def;}
     return f.apply(a);
     }
     
-  @Override public Full.L.F visitFullF(FullFContext ctx) {throw bug();}
+  @Override public Full.L.F visitFullF(FullFContext ctx) {
+    List<Full.Doc> docs = L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
+    S s = parseM(ctx.x().getText());
+    boolean isVar=ctx.VarKw()!=null;
+    return new Full.L.F(pos(ctx),docs,isVar,visitT(ctx.t()),s);
+    }
   @Override public String visitHeader(HeaderContext ctx) {throw bug();}
   @Override public Full.L.MI visitFullMi(FullMiContext ctx) {throw bug();}
   @Override public Full.L.MWT visitFullMWT(FullMWTContext ctx) {throw bug();}
@@ -375,12 +520,12 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
   @Override public Full.E visitEBinary3(EBinary3Context ctx) {return parseBinOp(pos(ctx),ctx.eBinary2(),ctx.OP3());}  
   
   
-  /*@Override public String visitSIf(SIfContext ctx) {throw bug();}
+  @Override public String visitSIf(SIfContext ctx) {throw bug();}
   @Override public String visitMatch(MatchContext ctx) {throw bug();}
   @Override public String visitSWhile(SWhileContext ctx) {throw bug();}
   @Override public String visitSFor(SForContext ctx) {throw bug();}
   @Override public String visitSLoop(SLoopContext ctx) {throw bug();}
   @Override public String visitSThrow(SThrowContext ctx) {throw bug();}
   @Override public String visitSUpdate(SUpdateContext ctx) {throw bug();}
-  @Override public String visitInfo(InfoContext ctx) {throw bug();}*/
+  @Override public Core.L.Info visitInfo(InfoContext ctx) {throw bug();}
   }

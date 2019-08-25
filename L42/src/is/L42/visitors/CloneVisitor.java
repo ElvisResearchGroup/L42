@@ -375,7 +375,7 @@ public class CloneVisitor {
     var t=visitT(t0);
     var s=visitS(s0);
     if(docs==docs0 && t==t0 && s==s0){return f;}
-    return new Full.L.F(f.pos(),docs,t,s);
+    return new Full.L.F(f.pos(),docs,f.isVar(),t,s);
     }
     
   public Full.L.MI visitMI(Full.L.MI mi){

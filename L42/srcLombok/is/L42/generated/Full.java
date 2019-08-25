@@ -22,7 +22,7 @@ public class Full {
     public static interface M extends HasWf,HasPos,HasVisitable{List<Doc> docs();LDom key();E _e();Visitable<? extends M> visitable();}
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     F implements M,Visitable<F>{@Override public Visitable<F>visitable(){return this;}@Override public F accept(CloneVisitor cv){return cv.visitF(this);}@Override public void accept(CollectorVisitor cv){cv.visitF(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      Pos pos; List<Doc>docs; T t; S key;
+      Pos pos; List<Doc>docs; boolean isVar; T t; S key;
       public E _e(){return null;}}
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     MI implements M,Visitable<MI>{@Override public Visitable<MI>visitable(){return this;}@Override public MI accept(CloneVisitor cv){return cv.visitMI(this);}@Override public void accept(CollectorVisitor cv){cv.visitMI(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}

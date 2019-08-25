@@ -186,20 +186,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("{}","{}")
    ),new AtomicTest(()->
    pass("{T x=void x}","{\n  T x=void\n  x\n  }\n")
+   ),new AtomicTest(()->
+   pass("{\n  T x=void\n  }\n")
+   ),new AtomicTest(()->
+   pass("{T x}")
+   ),new AtomicTest(()->
+   pass("{T x y}","{\n  T\n  x\n  y\n  }\n")
+   ),new AtomicTest(()->
+   pass("{T x T y}")
+   ),new AtomicTest(()->
+   pass("({})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{hey, I can write stuff here}})")
    /*),new AtomicTest(()->
-   pass("{T x=void}","[|D(t(P)x|void)|]|")
-   ),new AtomicTest(()->
-   pass("{T x}","{|Header()FullF(t(P)x)|}|")
-   ),new AtomicTest(()->
-   pass("{T x y}","[|D(P)D(x)D(x)|]|")
-   ),new AtomicTest(()->
-   pass("{T x T y}",
-   "{|Header()FullF(t(P)x)FullF(t(P)x)|}|")
-   ),new AtomicTest(()->
-   pass("({})","[|{|Header()|}|]|")
-   ),new AtomicTest(()->
-   pass("({interface #norm{hey, I can write stuff here}})","[|{|Header(|)info|}|]|")
-   ),new AtomicTest(()->
    pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(doct(P)x)info|}|]|")
    ),new AtomicTest(()->
    pass("({mut @Bar T f })","[|{|Header()FullF(t(|docP)x)|}|]|")
