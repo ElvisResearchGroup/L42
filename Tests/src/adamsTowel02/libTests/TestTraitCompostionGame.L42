@@ -160,48 +160,59 @@ TestModuleWorld: ModuleWorld & {
       )
   }
 
-  class method Void addEntity_failsWhenAddingTwoItemsToTheSamePoint() (
-    Point p = Point(x: 1Size, y: 2Size)
-    mut World w = World(
-      map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
-      )
-    w.#map().addEntity(StubEntity(p: p))
+  Tests: K <>< {
+    mut World world
 
-    w.#map().addEntity(StubEntity(p: p))
-    catch error PointFilled pf void
-    error X""
-    )
-
-  class method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
-    mut World w = World(
-      map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
-      )
-    w.#map().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
-
-    w.#map().addEntity(StubEntity(p: Point(x: 3Size, y: 4Size)))
-    )
-
-  class method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
-    mut World w = World(
-      map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
+    class method mut Tests () (
+      This(world: World(
+        map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
+        ))
       )
 
-    w.drawOnto(graphics: Graphics())
+    mut method Void addEntity_add2EntitiesToTheSamePoint() (
+      Point p = Point(x: 1Size, y: 2Size)
+      this.#world().#map().addEntity(StubEntity(p: p))
 
-    Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
-      'Point[x:"0", y:"0"]
-      ")
-    )
+      this.#world().#map().addEntity(StubEntity(p: p))
+      )
+
+    mut method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
+      this.#world().#map().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
+
+      this.#world().#map().addEntity(StubEntity(p: Point(x: 3Size, y: 4Size)))
+      )
+
+    mut method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
+      this.#world().drawOnto(graphics: Graphics())
+
+      Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
+        'Point[x:"0", y:"0"]
+        ")
+      )
+
+    mut method Void removeEntity_whenNoItemIsAtThePoint() (
+      this.#world().#map().removeEntity(Point(x: 1Size, y: 2Size))
+      )
+    }
   }
 
-TestModuleWorld_addEntity_failsWhenAddingTwoItemsToTheSamePoint:
-  TestModuleWorld.addEntity_failsWhenAddingTwoItemsToTheSamePoint()
+TestModuleWorld_addEntity_failsWhenAddingTwoItemsToTheSamePoint: (
+  TestModuleWorld.Tests().addEntity_add2EntitiesToTheSamePoint()
+  catch error PointFilled pf void
+  error X"Expected exception to be thrown"
+  )
 
 TestModuleWorld_addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints:
-  TestModuleWorld.addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
+  TestModuleWorld.Tests().addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
+
+TestModuleWorld_removeEntity_failsWhenNoItemIsAtThePoint: (
+  TestModuleWorld.Tests().removeEntity_whenNoItemIsAtThePoint()
+  catch error PointNotFilled pnf void
+  error X"Expected exception to be thrown"
+  )
 
 TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
-  TestModuleWorld.#$World_drawOnto_drawsPlayerAtInitialPoint()
+  TestModuleWorld.Tests().#$World_drawOnto_drawsPlayerAtInitialPoint()
 
 
 //
