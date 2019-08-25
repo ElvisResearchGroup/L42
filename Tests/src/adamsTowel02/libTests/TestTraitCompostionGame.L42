@@ -160,7 +160,7 @@ TestModuleWorld: ModuleWorld & {
       )
   }
 
-  class method Void failsWhenAddingTwoItemsToTheSamePoint() (
+  class method Void addEntity_failsWhenAddingTwoItemsToTheSamePoint() (
     Point p = Point(x: 1Size, y: 2Size)
     mut World w = World(
       map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
@@ -172,7 +172,16 @@ TestModuleWorld: ModuleWorld & {
     error X""
     )
 
-  class method Void #$drawsPlayerAtInitialPoint() (
+  class method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
+    mut World w = World(
+      map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
+      )
+    w.#map().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
+
+    w.#map().addEntity(StubEntity(p: Point(x: 3Size, y: 4Size)))
+    )
+
+  class method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
     mut World w = World(
       map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
       )
@@ -185,11 +194,14 @@ TestModuleWorld: ModuleWorld & {
     )
   }
 
-TestModuleWorld_PointToEntityMap_addEntity_failsWhenAddingTwoItemsToTheSamePoint:
-  TestModuleWorld.failsWhenAddingTwoItemsToTheSamePoint()
+TestModuleWorld_addEntity_failsWhenAddingTwoItemsToTheSamePoint:
+  TestModuleWorld.addEntity_failsWhenAddingTwoItemsToTheSamePoint()
+
+TestModuleWorld_addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints:
+  TestModuleWorld.addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
 
 TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
-  TestModuleWorld.#$drawsPlayerAtInitialPoint()
+  TestModuleWorld.#$World_drawOnto_drawsPlayerAtInitialPoint()
 
 
 //
@@ -241,7 +253,7 @@ ModuleWorldLoader: Trait({
         mut Entity e = {
           if entityTypeName == S"ROCK_ITEM" (return RockItem(p: p))
           if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
-          error X"@"[entityTypeName]"@"
+          error X"Unknown entityTypeName: "[entityTypeName]""
           }
 
         world.#map().addEntity(e)
@@ -305,7 +317,7 @@ TestModuleWorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
   TestModuleWorldLoader.producesCorrectItems(
     content: S"
       '# Comment line
-      'sROCK_ITEM 1 2
+      'ROCK_ITEM 1 2
       'APPLE_ITEM 3 4
       'APPLE_ITEM 5 6
       ",
@@ -332,7 +344,9 @@ ModuleUI: Trait({
 
     class method mut This (Size width, Size height) This[
       with y in Range(height) (
-        use[Strings[with x in Range(width) (use[S"_"])]]
+        use[Strings[with x in Range(width) (
+          use[S"_"]
+          )]]
       )]
     }
 
