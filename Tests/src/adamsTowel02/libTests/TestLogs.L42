@@ -9,6 +9,8 @@ Main:{
   C()
   S m=Debug.#$readLog(S"Key")
   Debug.test(m expected:S"msg1msg2")
+  S m2=Debug.#$readLog(S"Key")
+  Debug.test(m2 expected:S"")
   return ExitCode.normal()
   }
 
