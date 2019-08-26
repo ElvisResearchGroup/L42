@@ -2,6 +2,7 @@ _______
 #define metanotation IfNotE, IfErr, IfUndefined 
 //note: the simpler interpretation (predicate0 and predicates) or predicate1
 //would technically allow free variables in predicate0 to be chosen to falsify it
+// Note: the "predicates" include those on subsequent (similarlly indented) lines!
 * predicate0 IfNotE(Xs) predicate1 predicates == (predicate0 and predicates) or ((not exists Xs such that predicate0) and predicate1)
 * predicate0 IfErr(Xs) predicate1 predicates == (predicate0 and predicates) or (Err in Xs  and predicate1)
 * predicate0 IfUndefined predicate1 predicates == (predicate0 and predicates) or (predicate0 undefined and predicate1)
@@ -18,11 +19,11 @@ _______
 * top(CCz,p) => PR
     p0 = sortHeader(p) IfNotE(p0) PR = headerErr(p)
     MWT1..MWTn, NCs=sortMs(p0) IfNotE(MWT1..MWTn, NCs) PR = implementsErr(p1)
-    CCz.add(p0; MWT1; e?1).. .add(p0; MWTn: e?n) = CCz1  
-    p1=p0.update(p0(This0)[Ms=MWTs, NCs])
+    CCz.add(p0; MWT1; e?1).. .add(p0; MWTn; e?n) = CCz1
+    p1=p0.update(p0(This0)[Ms=MWT1,...,MWTn, NCs])
     topNC(CCz1,p1,NCs.Cs) => PR1
     PR1 = CCz2; p2 IfErr(PR1) PR = PR1
-    I[C=empty;p2;G=empty;p2.minimize(CCz2)]!e?i => ERi
+    forr i in 1 ... n, I[C=empty;p2;G=empty;p2.minimize(CCz2)]!e?i => ERi
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
     p3 = p2.update(p2(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
     p4=flagTyped(addInfo(p3)) IfNotE(p4) PR=illTyped(p3)
@@ -45,16 +46,24 @@ _______
 * sortHeader({reuse[URL] Ms};pTail) = sortHeader({followURL(URL),Ms};pTail) //note, the result must be well formed
 * sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
 * sortHeader({interface? [Ts] Ms};pTail) = {interface? [Ts'],Ms};pTail
-    Ts0=p.minimize(p♥Ts)
+    Ts0=p.minimize(p♥Ts) // ISAAC: Dosn't the ♥ minimise anyway?
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any
+    // ISAAC: why do you want sortHeader to put the TS0 first, but you don't want collect to?    
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
+    // ISAAC: this means the following code is erroneous? Was that the intention?
+    // A::1 = {interface}
+    // B = {interface [A::1]}
+    // C = {[B]} // because Ts'\Ts0 = A::1, even though C can access A (I think...)
 
 * sortMs(p) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in Ms]
+// ISAAC: why are you putting fields at the end of the MWTs? And why don't you get "methods" to do that for you?
+// ISAAC: is the [ ... | ... ] notation just set comprehansion, but producing an ordered list?
     MWTs = methods(p,This0) //all methods
     ss = expandFields(p(This0).Ms).ss //present methods
 
 * addInfo(p)={interface? Ts MWTs NCs Info};pTail
     p={interface? Ts MWTs NCs};pTail
+    // ISAAC: am I to assume that (Ps0; Ps0') U (Ps1; Ps1') = Ps0, Ps1; Ps0', Ps1' ?
     Ps;Ps'=collectDeps(p;Ts) U collectDeps(p;MWTs) U collectDeps(NCs.Docss)
     Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
 _______
@@ -134,7 +143,7 @@ _______
     P=Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1  
 _______
-#define CCz.add(FULL.MWT : HAlf.e?) = CCz'
+#define CCz.add(p; FULL.MWT; HAlf.e?) = CCz' // ISAAC: should it be CCz.add(p; FULL.MWT) = CCz';HALf.e?
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
 * CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
@@ -153,10 +162,10 @@ _______
 _______
 #define collectDeps(p;CORE.MWT)=Ps;Ps'    collectDeps(p;T)=Ps;Ps'    collectDeps(p;Doc)=Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
-* collectDeps(Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=
-    collectDeps(Docs) U collectDeps(T0..Tn,Ts) U collectDepsE(e?)
-* collectDeps(T)=T.P;empty U collectDeps(T.Docs)
-* collectDeps(Doc)={P| @P._ inside Doc};empty     
+* collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=
+    collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
+* collectDeps(p; T)=T.P;empty U collectDeps(p; T.Docs)
+* collectDeps(p; Doc)={P| @P._ inside Doc};empty     
 _______
 #define collectDepsE(p;CORE.e?)  //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
 * collectDepsE(p;empty)=collectDepsE(p;x)=collectDepsE(p;void)=empty;empty
@@ -165,6 +174,7 @@ _______
     Ps'0=CORE.L.Info.coherent
     Ps1..Psn={CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
     Ps'1..Ps'n={CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
+    // ISAAC: can't you make CORE.L store the deps of it's nesteds directly? Or is the problem that they need to be "frommed" properly?
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;P<:class Any)= P;empty
@@ -177,18 +187,18 @@ _______
 * expandFields(empty)=empty
 * expandFields(M,Ms)=M,expandFields(Ms) 
     M not of form F
-* expandFields(T x,Ms)=method toRead(T) x(), expandFields(Ms)
-    T.mdf not in {lent, mut, capsule}
+* expandFields(T x,Ms)=method T x(), expandFields(Ms)
+    T = toRead(T)
 * expandFields(T x,Ms)=method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
-    T.mdf in {lent, mut, capsule}
+    T != toRead(T) // ISAAC: if y is capsule would "y.#x()" (i.e. a destructive read) allow recovering the value of x as capsule?
 * expandFields(var T x,Ms)=Void x(T that), expandFields(T x,Ms)    
 _______
 #define collect(p,Ts)=Ts' //collects transitively implemented interfaces
 * collect(p,empty)=empty
-* collect(p,T0 Ts)=((p♥T0 Ts') \ collect(p,Ts)) collect(p,Ts)
+* collect(p,T0 Ts)=((p♥T0, Ts') \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface [Ts0] _}=FULL.L
     Ts'=collect(p,Ts0[from T0.P;p])
-* collect(p,T0 Ts)=((p♥T0 Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
+* collect(p,T0 Ts)=((p♥T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface Ts0 _}=CORE.L
 _______
 #define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
@@ -198,9 +208,12 @@ _______
     p(P0)=interface? Ts{ Ms0 }=FULL.L
     Ms=expandFields(Ms0)
     Ps=collect(p,Ts[from P0;p]).Ps
-    s1..sn=[ss | P in Ps, ss in p(T.P).Ms.ss].flatten().distinct()//an ordered version of {s | P in Ps, s in dom(p(P))}
+    s1..sn=[ss | P in Ps, ss = p(T.P).Ms.ss].flatten().distinct()//an ordered
+    version of {s | P in Ps, s in dom(p(P))}
+    // ISAAC: what if one of the Ps has some fields that havn't bee expanded yet?
     origin(p;s1,P0)..origin(p;sn,P0) all defined
     [Mi,_]=[MWT| P in P0,Ps such that methods(p,P)(si)=MWT]
+    // ISAAC: the above is ill-founded, since when P = P0, methods(p, P) will infinitely recur.
     MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
     MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
 

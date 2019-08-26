@@ -115,11 +115,14 @@ _______
 #define CORE.e inside CORE.e'
   e inside CORE.ctx[e]
 _______
-#define toRead(T)   toRead(G) //toRead of fwd, fwd% is undefined
+#define toRead(T)   toRead(G) capsuleToLent(T) //toRead of fwd, fwd% is undefined
 * toRead(lent P) = toRead(mut P) = toRead(capsule P) = read P
 * toRead(mdf P) = mdf P if mdf in {imm,read,class}
 
 * toRead(G)(x) = toRead(G(x))[with var?=empty] //thus single entry undefined where toRead undefined
+
+* capsuleToLent(capsule P) = lent P
+* capsuleToLent(mdf P) = mdf P, if mdf != capsule
 _______
 #define origin(p;s;P) = P'   refine(p;s;P)
 * origin(p;s; P) = P'
