@@ -21,114 +21,12 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 import is.L42.generated.L42Parser.*;
 import is.L42.common.Parse;
 import is.L42.generated.*;
-import is.L42.generated.L42AuxParser.NudeCsPContext;
+import is.L42.generated.Core.EVoid;
 
 public class FullL42Visitor extends L42BaseVisitor<Object>{
-  private final static class AuxVisitor extends L42AuxBaseVisitor<Object> {
-    private final Pos pos;
-
-    private AuxVisitor(Pos pos) { this.pos = pos; }
-
-    @Override public Full.CsP visitNudeCsP(NudeCsPContext ctx) {
-      return visitCsP(ctx.csP());
-      }
-    @Override public Full.CsP visitCsP(L42AuxParser.CsPContext ctx) {
-      Full.CsP r;
-      if((r=opt(ctx.cs(),null,this::visitCs))!=null){return r;}
-      if((r=opt(ctx.path(),null,this::visitPath))!=null){return r;}
-      if(ctx.anyKw()!=null){return new Full.CsP(pos,L(),P.pAny);}
-      if(ctx.voidKw()!=null){return new Full.CsP(pos,L(),P.pVoid);}
-      if(ctx.libraryKw()!=null){return new Full.CsP(pos,L(),P.pLibrary);}
-      throw unreachable();
-      }
-      
-    @Override public Full.CsP visitCs(L42AuxParser.CsContext ctx) {
-      List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
-      return new Full.CsP(pos,cs, null);
-      }
-
-    @Override public Full.CsP visitPath(L42AuxParser.PathContext ctx) {
-      int n=visitThisKw(ctx.thisKw());
-      List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
-      return new Full.CsP(pos,L(),P.of(n,cs)); 
-      }
-
-    @Override public C visitC(L42AuxParser.CContext ctx) {
-      String s=ctx.getText();
-      int i=s.indexOf("::");
-      if(i==-1){return new C(s,-1);}
-      int u=Integer.parseInt(s.substring(i+2));
-      return new C(s.substring(0,i),u);
-      }
-
-    @Override public Integer visitThisKw(L42AuxParser.ThisKwContext ctx) {
-      String s=ctx.getText().substring(4);
-      if(s.isEmpty()){return 0;}
-      return Integer.parseInt(s);
-      }
-     @Override public Full.Doc visitTopDoc(L42AuxParser.TopDocContext ctx) {
-        Full.PathSel p=opt(ctx.pathSelX(),null,this::visitPathSelX);
-        if(ctx.topDocText()==null){return new Full.Doc(p, L(),L());}
-        return visitTopDocText(ctx.topDocText()).with_pathSel(p);
-        }
-      @Override public Full.PathSel visitPathSelX(L42AuxParser.PathSelXContext ctx) {
-        Full.CsP p=opt(ctx.pathSel().csP(),null,this::visitCsP);
-        S s=opt(ctx.pathSel().selector(),null,this::visitSelector);
-        X x=opt(ctx.x(),null,this::visitX);
-        return new Full.PathSel(p,s,x); 
-        }
-      @Override public S visitSelector(L42AuxParser.SelectorContext ctx) {
-        List<X>xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
-        if(ctx.m()==null){return new S("",xs,-1);}
-        return parseM(ctx.m().getText()).withXs(xs);
-        }
-        
-      @Override public X visitX(L42AuxParser.XContext ctx) {
-        return new X(ctx.getText());
-        }
-
-      @Override public Full.Doc visitTopDocText(L42AuxParser.TopDocTextContext ctx) {
-        //topDocText:charInDoc* doc topDocText | charInDoc* '{' topDocText '}' topDocText;
-        if(ctx.doc()==null && ctx.topDocText().isEmpty()){ 
-          return new Full.Doc(null, L(ctx.getText()), L());
-          }
-        String firstText=ctx.charInDoc().stream()
-          .map(ci->ci.getText()).collect(Collectors.joining(""));
-        if(ctx.doc()==null){
-          assert ctx.topDocText().size()==2;
-          Full.Doc text1=visitTopDocText(ctx.topDocText(0));
-          Full.Doc text2=visitTopDocText(ctx.topDocText(1));
-          assert !text1.texts().isEmpty();
-          assert !text2.texts().isEmpty();
-          List<Full.Doc> docs=L(c->{c.addAll(text1.docs());c.addAll(text2.docs());});
-          List<String> texts=L(c->{
-            int s1=text1.texts().size();
-            int s2=text2.texts().size();
-            if(s1==1){
-              c.add(firstText+"{"+text1.texts().get(0)+"}"+text2.texts().get(0));
-              }
-            else{
-              c.add(firstText+"{"+text1.texts().get(0));
-              c.addAll(text1.texts().subList(1,s1-1));
-              c.add(text1.texts().get(s1-1)+"}"+text2.texts().get(0));
-              }
-            c.addAll(text2.texts().subList(1,s2)); 
-            });
-          return new Full.Doc(null, texts, docs);
-          }
-        assert ctx.topDocText().size()==1;
-        Full.Doc text1=visitTopDocText(ctx.topDocText(0));
-        var res=Parse.doc("@"+ctx.doc().getText());
-        assert !res.hasErr();
-        Full.Doc doc=visitTopDoc(res.res);
-        return text1
-          .withDocs(pushTopL(doc,text1.docs()))
-          .withTexts(pushTopL(firstText,text1.texts()));
-        }  
-    }
-  String fileName;
+  public String fileName;
   public StringBuilder errors=new StringBuilder();
-  Core.EVoid eVoid=new Core.EVoid(null);//will not be in the final result
+  public EVoid eVoid=new Core.EVoid(null);
   public FullL42Visitor(String fileName){this.fileName=fileName;}
   Object c(ParserRuleContext prc){
     assert prc.children.size()==1;
@@ -194,7 +92,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return parseM(ctx.getText());
     }
     
-  private static S parseM(String s) {
+  static S parseM(String s) {
     int un=s.indexOf("::");
     if(un==-1){return new S(s,L(),-1);}
     int n=Integer.parseInt(s.substring(un+2));
@@ -295,143 +193,8 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     Core.L.Info info=opt(ctx.info(),null,this::visitInfo);
     Full.L res=new Full.L(pos(ctx), isDots, reuseUrl, isInterface, ts, ms, docs);
-    if(info!=null){return inject(res,info);}
+    if(info!=null){return new InjectionToCore(errors,eVoid).inject(res,info);}
     return res; 
-    }
-  private Core.L makeErr(Pos pos,Core.L.Info info){
-    if(info==null){return null;}
-    String err=info.toString();
-    var errRes=new Core.L(pos,false, L(),L(),L(),info,L());
-    err=err.substring(0,Math.min(6, err.length()));
-    err="line " + pos.line() + ":" + pos.column() 
-      + " Error: Extraneus token "+err;
-    this.errors.append(err);
-    return errRes;
-    }
-  private Core.L inject(Full.L res,Core.L.Info info) {
-    if(res.isDots() || !res.reuseUrl().isEmpty()){
-      return makeErr(res.pos(),info);
-      }
-    long cut=res.ms().stream()
-      .takeWhile(m->!(m instanceof Full.L.NC))
-      .count();
-    var mwts=res.ms().stream().limit(cut)
-      .filter(m->m instanceof Full.L.MWT)
-      .map(m->(Full.L.MWT)m)
-      .collect(Collectors.toList());
-    var ncs=res.ms().stream().skip(cut)
-      .filter(m->m instanceof Full.L.NC)
-      .map(m->(Full.L.NC)m)
-      .collect(Collectors.toList());
-    if(mwts.size()+ncs.size()!=res.ms().size()){
-      return makeErr(res.pos(),info);
-      }
-    List<Core.T>cts=injectTs(res.ts());
-    List<Core.L.MWT>cmwts=L(mwts,(c,mi)->c.add(inject(mi)));
-    List<Core.L.NC>cncs=L(ncs,(c,ni)->c.add(inject(ni)));
-    List<Core.Doc>cdocs=injectDocs(res.docs());
-    if(cdocs==null || cmwts==null || cncs.contains(null) || cdocs.contains(null)){
-      return makeErr(res.pos(),info);
-      }      
-    return new Core.L(res.pos(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
-    }
-  private Core.T inject(Full.T t) {
-    List<Core.Doc>docs=injectDocs(t.docs());
-    if(docs==null){return null;}
-    if(t.csP()==null || t.csP()._p()==null){return null;}
-    return new Core.T(inject(t._mdf()), docs, t.csP()._p());    
-    }
-  private Core.L.MWT inject(Full.L.MWT mwt) {
-    var docs=injectDocs(mwt.docs());
-    var mh=inject(mwt.mh());
-    if(docs==null || mh==null){return null;}
-    if(mwt._e()==null){return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),null);}
-    Core.E[]e={null};
-    mwt._e().visitable().accept(new CollectorVisitor(){
-      @Override public void visitEX(Core.EX x){e[0]=x;}
-      @Override public void visitEVoid(Core.EVoid eVoid){e[0]=eVoid;}
-      @Override public void visitL(Core.L l){e[0]=l;}
-      @Override public void visitL(Full.L l){e[0]=inject(l,null);}
-
-      @Override public void visitCast(Full.Cast cast){
-        if(!(cast.e() instanceof Full.CsP)){e[0]=null;return;}
-        P p=inject((Full.CsP)cast.e());
-        var t=inject(cast.t());
-        if(p==null || t==null){e[0]=null;return;}
-        e[0]=new Core.PCastT(cast.pos(), p, t);
-        }
-        
-      @Override public void visitCall(Full.Call mCall){
-        //visitXP(mCall.xP());
-        //visitS(mCall.s());
-        //visitEs(mCall.es());
-        }
-      @Override public void visitBlock(Full.Block block){
-        //visitDs(block.ds());
-        //visitKs(block.ks());
-        //visitE(block.e());
-        }
-      @Override public void visitLoop(Full.Loop loop){
-        visitE(loop.e());
-        }
-      @Override public void visitThrow(Full.Throw thr){
-        visitE(thr.e());
-        }
-      @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
-        visitX(opUpdate.x());
-        visitE(opUpdate.e());
-        }
-      });
-    if(e[0]==null){return null;}
-    return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),e[0]);
-    }
-  private Mdf inject(Mdf mdf) {return mdf==null?Mdf.Immutable:mdf;}
-    
-  private Core.MH inject(Full.MH mh) {
-    var docs=injectDocs(mh.docs());
-    var pars=injectTs(mh.pars());
-    var exceptions=injectTs(mh.exceptions());
-    var t=inject(mh.t());
-    if(mh.s().m().isEmpty() || mh._op()!=null || docs==null
-      || pars==null || exceptions==null){return null;}
-    return new Core.MH(inject(mh._mdf()), docs, t, mh.s(), pars, exceptions);
-    }
-
-  private Core.L.NC inject(Full.L.NC nc) {
-    var docs=injectDocs(nc.docs());
-    Core.L l=null;
-    if (nc.e() instanceof Core.L){l=(Core.L)nc.e();}
-    if (nc.e() instanceof Full.L){l=inject((Full.L)nc.e(),null);}
-    if(docs==null || l==null){return null;}
-    return new Core.L.NC(nc.pos(), docs, nc.key(),l);
-    }
-  private P inject(Full.CsP csP) {return csP._p();}
-
-  private Core.Doc inject(Full.Doc d) {
-    Core.PathSel ps=null;
-    if(d._pathSel()!=null){
-      ps=inject(d._pathSel());
-      if(ps==null){return null;}
-      }
-    var docs=injectDocs(d.docs());
-    if(docs==null){return null;}
-    return new Core.Doc(ps,d.texts(),docs);
-    }
-  private Core.PathSel inject(Full.PathSel p) {
-    P cp=inject(p._csP());
-    if(cp==null){return null;}
-    if(p._s()!=null && p._s().m().isEmpty()){return null;}
-    return new Core.PathSel(cp, p._s(),p._x());
-    }
-  private List<Core.Doc> injectDocs(List<Full.Doc> docs) {
-    List<Core.Doc>cdocs=L(docs,(c,di)->c.add(inject(di)));
-    if(cdocs.contains(null)){return null;}
-    return cdocs;
-    }
-  private List<Core.T> injectTs(List<Full.T> ts) {
-    List<Core.T>cts=L(ts,(c,ti)->c.add(inject(ti)));
-    if(cts.contains(null)){return null;}
-    return cts;
     }
 
   private String parseReuseNative(String s) { 
@@ -446,7 +209,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     if(m!=null){return m;}
     throw unreachable();
     }
-  static private <A,B> B opt(A a,B def,Function<A,B>f){
+  static <A,B> B opt(A a,B def,Function<A,B>f){
     if(a==null){return def;}
     return f.apply(a);
     }
