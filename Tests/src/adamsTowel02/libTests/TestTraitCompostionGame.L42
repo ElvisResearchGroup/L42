@@ -163,7 +163,11 @@ TestModuleWorld: ModuleWorld & {
   Tests: K <>< {
     mut World world
 
-    class method mut Tests () (
+    class method mut Tests #$() (
+      // Clear logs
+      unused = Debug.#$readLog(S"playerDrawPoints")
+      unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
+
       This(world: World(
         map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
         ))
@@ -192,8 +196,6 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
-      Debug.#$emptyLog(S"playerDrawPoints")
-
       this.#world().drawOnto(graphics: Graphics())
 
       Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
@@ -202,7 +204,6 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void #$World_drawOnto_drawsItemAtProvidedPoint() (
-      Debug.#$emptyLog(S"stubEntityDrawPoints")
       this.#world().#map().addEntity(StubEntity(p: Point(x: 5Size, y: 2Size)))
 
       this.#world().drawOnto(graphics: Graphics())
@@ -213,7 +214,6 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void #$World_drawOnto_drawsPlayerAtMovedPoint() (
-      Debug.#$emptyLog(S"playerDrawPoints")
       this.#world().movePlayerDown()
       this.#world().movePlayerLeft()
 
@@ -227,34 +227,32 @@ TestModuleWorld: ModuleWorld & {
   }
 
 TestModuleWorld_addEntity_failsWhenAddingTwoItemsToTheSamePoint: (
-  TestModuleWorld.Tests().addEntity_add2EntitiesToTheSamePoint()
+  TestModuleWorld.Tests.#$().addEntity_add2EntitiesToTheSamePoint()
   catch error PointFilled pf void
   error X"Expected exception to be thrown"
   )
 
 TestModuleWorld_addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints:
-  TestModuleWorld.Tests().addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
+  TestModuleWorld.Tests.#$().addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
 
 TestModuleWorld_removeEntity_failsWhenNoItemIsAtThePoint: (
-  TestModuleWorld.Tests().removeEntity_whenNoItemIsAtThePoint()
+  TestModuleWorld.Tests.#$().removeEntity_whenNoItemIsAtThePoint()
   catch error PointNotFilled pnf void
   error X"Expected exception to be thrown"
   )
 
 TestModuleWorld_removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem: (
-  TestModuleWorld.Tests().removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem()
+  TestModuleWorld.Tests.#$().removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem()
   )
 
-// TODO NEXT: report micro bug about log not clearing
+TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
+  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsPlayerAtInitialPoint()
 
-/* TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint: */
-  /* TestModuleWorld.Tests().#$World_drawOnto_drawsPlayerAtInitialPoint() */
-
-/* TestModuleWorld_World_drawOnto_drawsItemAtProvidedPoint: */
-  /* TestModuleWorld.Tests().#$World_drawOnto_drawsItemAtProvidedPoint() */
+TestModuleWorld_World_drawOnto_drawsItemAtProvidedPoint:
+  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsItemAtProvidedPoint()
 
 TestModuleWorld_World_drawOnto_drawsPlayerAtMovedPoint:
-  TestModuleWorld.Tests().#$World_drawOnto_drawsPlayerAtMovedPoint()
+  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsPlayerAtMovedPoint()
 
 
 //
