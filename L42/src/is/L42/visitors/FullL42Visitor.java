@@ -193,7 +193,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     Core.L.Info info=opt(ctx.info(),null,this::visitInfo);
     Full.L res=new Full.L(pos(ctx), isDots, reuseUrl, isInterface, ts, ms, docs);
-    if(info!=null){return new InjectionToCore(errors,eVoid).inject(res,info);}
+    if(info!=null){return new InjectionToCore(errors,eVoid)._inject(res,info);}
     return res; 
     }
 

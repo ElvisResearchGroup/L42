@@ -448,12 +448,12 @@ public interface L42Listener extends ParseTreeListener {
 	 */
 	void exitSUpdate(L42Parser.SUpdateContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42Parser#e}.
+	 * Enter a parse tree produced by {@link L42Parser#result}.
 	 * @param ctx the parse tree
 	 */
 	void enterE(L42Parser.EContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42Parser#e}.
+	 * Exit a parse tree produced by {@link L42Parser#result}.
 	 * @param ctx the parse tree
 	 */
 	void exitE(L42Parser.EContext ctx);
