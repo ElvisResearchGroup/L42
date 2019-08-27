@@ -2,6 +2,12 @@
 \label{s:formalism}
 
 %----------------------------------
+IS THIS NEEDED?
+For simplicity, in the reminder of the paper we require 
+receivers to always be specified explicitly, and require that the receivers of field accesses and updates are always \Q!this!; that is, all fields are instance private.
+We also do not allow explicit constructor definitions, instead we assume constructors are of the standard form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$. This ensures that partially uninitialised (and likely invalid) objects are not passed around or used. 
+END OF IS THIS NEEDED?
+
 In order to model our system, we need to formalise an imperative object-oriented language
 with exceptions, object capabilities, and rich type system
 support for TMs and strong exception safety.

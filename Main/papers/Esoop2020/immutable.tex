@@ -1,8 +1,8 @@
-\section{Relaxations that would break our protocol}
+\section{Examples}
 \label{s:immutable}
 Our sound invariant protocol relies on many different features and
 restrictions. We believe that they are all needed; in this section
-we will show how relaxing any of our requirements would break our
+we will show examples of using our system, and how relaxing any of our requirements would break our
 protocol; sometimes in surprising ways.
 First we consider a simple case, an invariant over fields of \Q@imm@ types;
 \Q@Person@ has a single immutable (non final) field \Q@name@:
@@ -26,30 +26,33 @@ class Person { .. // Same as before
     this.name = name; // check at end of constructor
     if (!this.invariant()) { throw new Error(...); }}  }
 \end{lstlisting}
-However, those checks relies on TMs If we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs and TMs with SES, those checks would not be sufficient.
+Programmers often manually check for invariants by placing assertions in the same places we did in this example.
+However, if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs and RCs with SES, those checks would not be sufficient.
 
 \subheading{Unrestricted Access To Capability Objects?} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation by creating new capability objects or mutating existing ones, would break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
 Consider this use of person;
-where \Q@myPerson.invariant()@ may randomly fails:%
-\footnote{ For example, a method 
-\Q@mut Person make(String n)\{return new Person(n);\}@
-could be called with an \Q@EvilString@. In particular, the presence of dynamic class loading makes impossible 
-to know what the type of \Q@n@ could be.}
-
+where \Q@myPerson.invariant()@ may randomly fails:
 \begin{lstlisting}[morekeywords={assert}]
 class EvilString extends String {//IMPOSSIBLE THANKS TO OCs
   @Override read method Bool isEmpty() {//Creates a new
     return new Random().bool(); }}//capability out of thin air
+...
+method mut Person createPersons(String name) {
+  // we can not be sure that name is not an EvilString
+  mut Person schrodinger = new Person(name); // exception here?
+  assert schrodinger.invariant(); // will this fail?
+  ...}
 \end{lstlisting}
-% Since our system allows non-determinism only through capability objects, and 
-%restricts their creation, the above example would be prevented.
- %Languages like Java, Rust and Pony, which do not require the user of object-capabilities to perform non-deterministic operations, suffer from . 
-%???
-%Even if we disallow subtyping the same problem could still occur if we had a strange implementing of \Q@String@, or \Q@Person.validate()@ itself.
+%//  mut Person schrodinger2 = new Person(name); // what about here?
+
+Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
+In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
+restricts their creation, the above example would be prevented.
 
 \subheading{Allowing Internal Mutation Through Back Doors?}
-Suppose we relax our rules by allowing interior mutability
-as in Rust and Javari, allowing the ROG of an `immutable' object to be mutated through back doors.
+Rust and Javari 
+allows interior mutability:
+the ROG of an `immutable' object can be mutated through back doors.
 Such back doors would allow the \Q@invariant@ method to store and read information about previous calls.
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
@@ -130,7 +133,7 @@ The ability to catch and recover from invariant failures allows programs to take
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try@--\Q@catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
-	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}). In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@ methods). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
+	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable, as happens in alias burying~\cite{boyland2001alias}. In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@ methods). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
 If instead we were to not enforce strong exception safety, an invalid object could be made reachable:
 %\saveSpace

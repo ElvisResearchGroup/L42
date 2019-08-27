@@ -1,6 +1,20 @@
 \SS\section{GUI Case study}
 \label{s:case-study}
 
+to show that our work supports real world applications one of those case studies models an interactive GUI.
+In our case study, our protocol performed only $77$ invariant checks, whereas the visible state semantic invariant protocols of D and Eiffel perform $53$ and $14$ million checks (respectively). See Section \ref{s:case-study} for an explanation of these result.
+We also compare with Spec\#; in the GUI case Spec\# did $77$ checks, as our approach; however the annotation burden was almost $4$ times higher than ours.
+In pack/unpack, an object's invariant is checked only by the pack operation.
+In order for this to be sound, some form of aliasing and/or mutation control is necessary. For example, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}, which follows the pack/unpack methodology, uses a theorem prover, together with source code annotations.
+While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
+at runtime, whilst statically verifying aliasing, purity and other similar standard properties.
+This allows us to closely compare our approach with Spec\#.
+Since a case study composed by a single program is not very compelling, in the appendix we present many more case studies.
+
+
+In this paper we argue that our protocol is not only more succinct than the pack/unpack approach, but is also easier and safer to use.
+
+
 %interface Foo{ma mb}
 %
 %class Raw implements Foo{
