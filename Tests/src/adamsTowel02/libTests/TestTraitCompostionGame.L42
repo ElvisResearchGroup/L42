@@ -37,23 +37,24 @@ ModuleEntities: Trait({
   Entity: {interface
     read method Point point()
     mut method Void point(Point that)
+    read method S representation()
     read method Void drawOnto(mut Graphics that)
-    }
+  }
 
-  Player: HasPoint & {implements Entity
+  EntityBase: Trait({implements Entity
     method drawOnto(that) (
-      that.draw(S"P", x: this.p().x(), y: this.p().y())
+      that.draw(this.representation(), x: this.point().x(), y: this.point().y())
       )
+    })
+
+  Player: HasPoint & EntityBase & {
+    read method S representation() S"P"
     }
-  RockItem: HasPoint & {implements Entity
-    method drawOnto(that) (
-      that.draw(S"R", x: this.p().x(), y: this.p().y())
-      )
+  RockItem: HasPoint & EntityBase & {
+    read method S representation() S"R"
     }
-  AppleItem: HasPoint & {implements Entity
-    method drawOnto(that) (
-      that.draw(S"A", x: this.p().x(), y: this.p().y())
-      )
+  AppleItem: HasPoint & EntityBase & {
+    read method S representation() S"A"
     }
   })
 
@@ -394,6 +395,16 @@ ModuleUI: Trait({
       this.#val(y)(x, val: that)
       )
 
+    mut method S asText() S""[
+      with y in Range(this.size()) (
+        row = this.val(y)
+        with x in Range(row.size()) (
+          use[S"|"; row.val(x)]
+          )
+        use[S.nl()]
+        )
+      ]""
+
     class method mut This (Size width, Size height) This[
       with y in Range(height) (
         use[Strings[with x in Range(width) (
@@ -441,17 +452,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
     }
 
   WorldLoader: {}
-  Graphics: {
-    mut method S asText() S""[
-      with y in Range(this.size()) (
-        row = this.val(y)
-        with x in Range(row.size()) (
-          use[S"|"; row.val(x)]
-          )
-        use[S.nl()]
-        )
-      ]""
-    }
+  Graphics: {}
 
   class method S defaultFileName() S"GameGridSaves/game-save-example.txt"
 
