@@ -1,5 +1,20 @@
 {reuse L42.is/AdamTowel02
 
+T: Trait({
+  A: Trait({
+    method S s()
+    })
+  })
+C: T & {
+  A: Trait({})
+  B: A & {
+    class method B ()
+    method s() S""
+    }
+  }
+
+Main2: C.B()
+
 //
 //
 // *******************************************************************
@@ -37,26 +52,67 @@ ModuleEntities: Trait({
   Entity: {interface
     read method Point point()
     mut method Void point(Point that)
-    read method S representation()
     read method Void drawOnto(mut Graphics that)
   }
 
-  EntityBase: Trait({implements Entity
+  EntityBase: HasPoint & Trait({implements Entity
+    read method S representation()
     method drawOnto(that) (
       that.draw(this.representation(), x: this.point().x(), y: this.point().y())
       )
     })
 
-  Player: HasPoint & EntityBase & {
+  Player: EntityBase & {
     read method S representation() S"P"
     }
-  RockItem: HasPoint & EntityBase & {
+  RockItem: EntityBase & {
     read method S representation() S"R"
     }
-  AppleItem: HasPoint & EntityBase & {
+  AppleItem: EntityBase & {
     read method S representation() S"A"
     }
   })
+
+TestModuleEntities: ModuleEntities & {
+  EntityBase: Trait({})
+  StubEntity: EntityBase & {
+    read method S representation() S"S"
+    }
+
+  Graphics: {
+    method Void draw(S that, Size x, Size y) (
+      Debug.appendLog(
+        S"graphicsDrawLog",
+        msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
+        )
+      )
+    }
+
+  Tests: K <>< {
+    var Graphics graphics
+
+    class method mut Tests #$() (
+      // Clear logs
+      unused = Debug.#$readLog(S"graphicsDrawLog")
+
+      This(graphics: Graphics())
+      )
+
+    mut method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
+      StubEntity entity = StubEntity(p: Point(x: 4Size, y: 5Size))
+
+      entity.drawOnto(this.graphics())
+
+      Debug.test(Debug.#$readLog(S"graphicsDrawLog"), expected: S"
+        '[representation:"S", x:"4", y:"5"]
+        ")
+      )
+    }
+  }
+
+TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
+  TestModuleEntities.Tests.#$().#$EntityBase_drawOnto_drawsTheCorrectSquare()
+
 
 //
 //
@@ -166,7 +222,7 @@ TestModuleWorld: ModuleWorld & {
 
     class method mut Tests #$() (
       // Clear logs
-      unused = Debug.#$readLog(S"playerDrawPoints")
+      unused1 = Debug.#$readLog(S"playerDrawPoints")
       unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
 
       This(world: World(
