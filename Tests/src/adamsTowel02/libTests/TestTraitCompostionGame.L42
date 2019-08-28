@@ -1,20 +1,5 @@
 {reuse L42.is/AdamTowel02
 
-T: Trait({
-  A: Trait({
-    method S s()
-    })
-  })
-C: T & {
-  A: Trait({})
-  B: A & {
-    class method B ()
-    method s() S""
-    }
-  }
-
-Main2: C.B()
-
 //
 //
 // *******************************************************************
@@ -74,13 +59,12 @@ ModuleEntities: Trait({
   })
 
 TestModuleEntities: ModuleEntities & {
-  EntityBase: Trait({})
-  StubEntity: EntityBase & {
-    read method S representation() S"S"
-    }
+  RockItem: {}
 
   Graphics: {
-    method Void draw(S that, Size x, Size y) (
+    class method mut Graphics ()
+
+    mut method Void draw(S that, Size x, Size y) (
       Debug.appendLog(
         S"graphicsDrawLog",
         msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
@@ -89,7 +73,7 @@ TestModuleEntities: ModuleEntities & {
     }
 
   Tests: K <>< {
-    var Graphics graphics
+    mut Graphics graphics
 
     class method mut Tests #$() (
       // Clear logs
@@ -99,19 +83,34 @@ TestModuleEntities: ModuleEntities & {
       )
 
     mut method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
-      StubEntity entity = StubEntity(p: Point(x: 4Size, y: 5Size))
+      RockItem entity = RockItem(p: Point(x: 4Size, y: 5Size))
 
-      entity.drawOnto(this.graphics())
+      entity.drawOnto(this.#graphics())
 
-      Debug.test(Debug.#$readLog(S"graphicsDrawLog"), expected: S"
-        '[representation:"S", x:"4", y:"5"]
-        ")
+      Debug.test(
+        Debug.#$readLog(S"graphicsDrawLog"),
+        expected: S"[representation:R, x:4, y:5]"
+        )
+      )
+
+    mut method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      Point newItemPoint = Point(x: 1Size, y: 1Size)
+
+      item.point(newItemPoint)
+
+      Debug.test(item.point(), expected: newItemPoint)
       )
     }
   }
 
 TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
   TestModuleEntities.Tests.#$().#$EntityBase_drawOnto_drawsTheCorrectSquare()
+
+// TODO: setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint
+
+TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint()
 
 
 //
