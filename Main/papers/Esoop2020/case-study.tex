@@ -1,18 +1,6 @@
 \SS\section{GUI Case study}
 \label{s:case-study}
-
-to show that our work supports real world applications one of those case studies models an interactive GUI.
-In our case study, our protocol performed only $77$ invariant checks, whereas the visible state semantic invariant protocols of D and Eiffel perform $53$ and $14$ million checks (respectively). See Section \ref{s:case-study} for an explanation of these result.
-We also compare with Spec\#; in the GUI case Spec\# did $77$ checks, as our approach; however the annotation burden was almost $4$ times higher than ours.
-In pack/unpack, an object's invariant is checked only by the pack operation.
-In order for this to be sound, some form of aliasing and/or mutation control is necessary. For example, Spec\#~\cite{Barnett:2004:SPS:2131546.2131549}, which follows the pack/unpack methodology, uses a theorem prover, together with source code annotations.
-While Spec\# can be used for full static verification, it conveniently allows invariant checks to be performed
-at runtime, whilst statically verifying aliasing, purity and other similar standard properties.
-This allows us to closely compare our approach with Spec\#.
-Since a case study composed by a single program is not very compelling, in the appendix we present many more case studies.
-
-
-In this paper we argue that our protocol is not only more succinct than the pack/unpack approach, but is also easier and safer to use.
+%In this paper we argue that our protocol is not only more succinct than the pack/unpack approach, but is also easier and safer to use.
 
 
 %interface Foo{ma mb}
@@ -63,6 +51,9 @@ In this paper we argue that our protocol is not only more succinct than the pack
 %  validate
 %}
 Here we show that we are able to verify classes with circular mutable object graphs, that interact with the real world using I/O.
+Our case study is particularly relevant since, as for most GUI frameworks,
+it is an example of the \emph{composite} programming pattern; arguably one of the most fundamental patterns in OO.
+
 %Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
 %patterns allows to circumvent some of the apparent limitations of our system.
 % At first glance it would seem that by only being able to validate immutable and encapsulated state one could not create validated classes with complicated, mutable interconnected object graphs.
@@ -72,9 +63,9 @@ Here we show that we are able to verify classes with circular mutable object gra
 %-not overlap with anyhing else inside
 %Our containers represent boxes that completley contain other non-overlapping boxes.
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
-the \Q@SafeMovable@ class has an invariant to ensure that its children are completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ are stored in a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched, such queries are also used in \Q@SafeMovable@'s invariant.
-Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at\\ \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@ and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
-\begin{lstlisting}[mathescape=false]
+the \Q@SafeMovable@ class has an invariant to ensure that its children are graphically completely contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ are stored in a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched; such queries are also used in \Q@SafeMovable@'s invariant.
+Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@ and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
+\begin{lstlisting}
 class SafeMovable implements Widget {
   capsule Box box; Int width = 300; Int height = 300;
   @Override read method Int left() { return this.box.l; }
@@ -97,8 +88,8 @@ class MoveAction implements Action { mut Box outer;
   MoveAction(mut Box outer) { this.outer = outer; }
   mut method Void process(Event event) { this.outer.l += 1; }}
 ...
-// main expression; #$ is a capability method making a Gui object
-Gui.#$().display(new SafeMovable(...));
+// main expression; #$\$$ is a capability method making a Gui object
+Gui.#$\$$().display(new SafeMovable(...));
 \end{lstlisting}
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
 \Q@left@, \Q@top@, and \Q@children@. Also note how the ROG of \Q@Box@ is circular: since
@@ -106,11 +97,12 @@ the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box
 Even though the children of \Q@SafeMovable@s are fully encapsulated, we can still easily dispatch events to them using \Q@dispatch@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID, it will call its \Q@Action@'s \Q@process@ method. 
 
 %Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
-Our example shows that the restrictions of TMs are flexible enough to encode interactive GUI programs, where widgets may circularly reference other widgets.
-In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either our type modifier or capability system to function, demonstrating the practical usability of our restrictions.
+Our example shows that 
+a system enforcing RCs, OCs and our invariant protocol allows to encode interactive GUI programs, where widgets may circularly reference other widgets.
+In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch the events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either RCs or OCs.
 
 \subheading{The Invariant}
-\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (which is a capsule mutator). There are no other checks inserted since we never do a field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
+\Q@SafeMovable@ is the only class in our GUI that has an invariant, our system automatically checks it in two places: the end of its constructor and the end of its \Q@dispatch@ method (which is a capsule mutator). There are no other checks inserted since we never do a direct field update on a \Q@SafeMovable@. The code for the invariant is just a couple of simple nested loops:
 \begin{lstlisting}
 read method Bool invariant() {
   for(Widget w1 : this.box.c) {
@@ -120,33 +112,21 @@ read method Bool invariant() {
   return true;}
 \end{lstlisting}
 
-Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.%its \Q@width@ and \Q@height@ fields.
+Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.
 
-
-% This code is a simplified version of our first case study. In the full code the \Q@SafeMovable@ constructors take \Q@left@, \Q@top@, \Q@width@ and \Q@height@ parameters and can either take a \Q@box@ directly or will generate one with $4$ \Q@Button@s}
-% we we have $4$ buttons, each button moves in one of the $4$ cardinal directions.
 \newlength{\imglength}%
 \setlength{\imglength}{0.30\textwidth}%
 \columnsep=0.5em%
-\begin{wrapfigure}{l}{\imglength}%
+\begin{wrapfigure}{r}{\imglength}%
 	\setbox0=\hbox{\strut}%
-	\vspace{-1.6\ht0}%
+	\vspace{-3\ht0}%
     \includegraphics[width=\imglength]{GuiImg}%
-	\vspace{-1.5\ht0}%
+	\vspace{-3\ht0}%
 \end{wrapfigure}
 \SS
 \subheading{Our Experiment}
 As shown in the figure to the left, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with
 $4$ (gray) buttons each. When a button is pressed it moves the containing \Q@SafeMovable@ a small amount in the corresponding direction.
-%Each container has 4 gray buttons one for each cardinal direction.
-% In our set up
-% the top level \Q@SafeMovable@
-% contains a big red \Q@SafeMovable@
-%  containing $2$ smaller blue \Q@SafeMovable@. One of those contains a tiny black \Q@SafeMovable@.
-%Our invariant is that everything in every movable container (and the top level component) should 
-%-be inside the container 
-%-not overlap with anyhing else inside
-%Our containers represent boxes that completley contain other non-overlapping boxes.
 This set up is not overly complicated, the maximum nesting level of \Q@Widget@s is $5$.
 Our main method automatically presses each of the $16$ buttons once. In L42, using the approach of this paper, this resulted in $77$ calls to \Q@SafeMovable@'s invariant.
 
@@ -167,7 +147,10 @@ however due to the `uniform access principle'%\footnote{%
 % not relevant. To be sure, we implemented both of their strategies and obtained the same results.
 When we ran our test case following the D approach, the \Q!invariant! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times; %\footnote{%
 %We expect all (sound) runtime approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design} to produce similar results.}
-in comparison our invariant protocol only performed $77$ calls. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width! and \Q!height! are simply getters for fields, whereas the other two are non trivial \emph{methods}. % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
+in comparison our invariant protocol only performed $77$ calls. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width@, \Q@height@, \Q@left@, and \Q@top@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width! and \Q!height! are simply getters for fields, whereas the other two are non trivial \emph{methods}.
+Concluding, we shown that when an invariant check queries other other objects with invariants the visible state semantic may cause an exponential explosion in the number of checks.
+
+ % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
 % Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
 
 
@@ -185,16 +168,22 @@ in comparison our invariant protocol only performed $77$ calls. The number of ch
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
 \subheading{Spec\# Comparison}
-We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}, which like L42, statically verifies aliasing/ownership properties, as well as the admissibility of invariants.
-% To keep the Spec\# code aligned with the L42 one, 
-% we do not use a .NET GUI library, but we just simulate the behaviour of L42, without actually opening a window.
-As the back-end of the L42 GUI library is written in Java, we did not port it to Spec\#, rather we just simulated it, and don't actually display a GUI in Spec\#.
+We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}; that relies on pack/unpack; also called inhale/exhale or the boogie methodology.
+In pack/unpack, an object's invariant is checked only by the pack operation.
+In order for this to be sound, some form of aliasing and/or mutation control is necessary. Spec\# uses a theorem prover, together with source code annotations.
+While Spec\# can be used for full static verification, but it conveniently allows invariant checks to be performed at runtime, whilst statically verifying aliasing, purity and other similar standard properties.
+This allows us to closely compare our approach with Spec\#.
 
+As the back-end of the L42 GUI library is written in Java, we did not port it to Spec\#, rather we just simulated it, and don't actually display a GUI in Spec\#.
 We ran our code through the Spec\# verifier (powered by Boogie~\cite{DBLP:conf/fmco/BarnettCDJL05}), which only gave us $2$ warnings\footnote{We used \Q@assume@ statements, equivalent to Java's \Q@assert@, to dynamically check array bounds. %. and value presence.
-This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method. Like our system however, Spec\# checks the invariant
-at those two points at runtime. Thus the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.\footnote{%
+This aligns the code with L42, which also performs such checks at runtime.}: that the invariant of \Q@SafeMovable@ was not known to hold at the end of its constructor and \Q@dispatch@ method. Thus, like our system, Spec\# checks the invariant
+at those two points at runtime. Thus the code is equivalently verified in both Spec\# and L42; in particular it performed exactly the same number ($77$) of runtime invariant checks.
+
+While the same numbers of checks are performed, we do not have the same guarantee provided by our approach:  Spec\#/Boogie does not soundly handle the effect of I/O over non determinism, thus 
+it does not properly prevents us from writing unsound
+invariants that may be non deterministic.
 We also encoded our GUI in Microsoft Code Contracts~\cite{DBLP:conf/sac/FahndrichBL10}, whose unsound heuristic also calls the invariant $77$ times; however Code Contract does not enforce the
-encapsulation of \Q@children@, thus their approach would not be sound in our context.}
+encapsulation of \Q@children@, thus this approach is even less sound than Spec\#.
 
 % Assuming that Spec\#'s verifier is sound, this means that our code is equally verified in Spec\# and L42, providing a reasonable comparison.
 % Both Spec\# and L42 did the same thing:
@@ -255,15 +244,29 @@ Together these annotations can get quite long, such as the following pre-conditi
 
 % Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations.
 
-\noindent The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only strange thing we had to do in L42 was creating \Q@Box@es by using 
+\noindent The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only indirection we had to do in L42 was creating \Q@Box@es by using 
 an additional variable in a nested scope.
 This is needed to delineate scopes for promotions.
 Based on these results, we believe our system is significantly simpler and easier to use.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
-\subheading{The Box Pattern}
+We realize a case study composed by a single program is not very compelling; we used our system on many other examples, including one designed to be a worst case scenario for our approach; we also replicate many examples originally proposed by other papers.
+For space reasons, we present those examples in  Appendix~\ref{s:MoreCaseStudies}.
+
+
+\subheading{Expressive power: The Box Pattern and the Transform Pattern}
+Our experience shows us that we can encode any computable invariant relying on immutable and encapsulated state.
+We show evidence of the generality of our approach 
+in Appendix~\ref{s:TODO};
+by encoding a \Q@Graph@ library where the invariant of the various \Q@Node@s can be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s.
+This is a generalization of the example proposed by[]
+as one of the hardest problems when it comes to enforcing invariants.
+
 We have found that using an inner \Q@Box@ object, is quite a useful pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated subobject which is not exposed to users.
 % We also found natural to use the box pattern also in Spec\# requires.
-Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position. In Appendices~\ref{s:MoreCaseStudies} and~\ref{s:patterns}, we show how the box pattern can also be used to pass the state of invalid objects around, and batch together complex mutations and multiple field updates, with only a single invariant check. Appendix~\ref{s:patterns} also shows a `transformer' pattern, were we can allow the children of \Q!Widgets! to be mutated by arbitrary code, albeit with restrictions.
-% Also the implementation of the minimal GUI library (that our \Q@SaveMovable@ builds upon) has a much lower annotation burden.
-%\LINE
+Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
+The box pattern also allows to pass the state of invalid objects around (by passing the box object instead of the outer object), and to batch together complex mutations and multiple field updates with only a single invariant check (a method on the box object can perform many fields updates while the outer object is not involved in execution). We show concrete examples of those usages of boxes in Appendices~\ref{s:MoreCaseStudies} and~\ref{s:patterns}
+
+The Transformer Pattern (described in the detail in Appendix \ref{s:patterns}) consists of 
+using a lambda or another objects representing a user defined operation as a parameter for a capsule mutator.
+This allows a wide range of user defined operations to act on the encapsulated state, without the need of exposing it.

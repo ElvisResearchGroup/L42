@@ -1,13 +1,5 @@
 \section{Formal Language Model}
 \label{s:formalism}
-
-%----------------------------------
-IS THIS NEEDED?
-For simplicity, in the reminder of the paper we require 
-receivers to always be specified explicitly, and require that the receivers of field accesses and updates are always \Q!this!; that is, all fields are instance private.
-We also do not allow explicit constructor definitions, instead we assume constructors are of the standard form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$. This ensures that partially uninitialised (and likely invalid) objects are not passed around or used. 
-END OF IS THIS NEEDED?
-
 In order to model our system, we need to formalise an imperative object-oriented language
 with exceptions, object capabilities, and rich type system
 support for TMs and strong exception safety.
@@ -18,7 +10,11 @@ of its own, and indeed many such papers exist in literature%
 Thus we are going to assume that we already have an expressive and sound type system enforcing the properties we need, and instead focus on invariant checking.
 We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type system, so that any language satisfying them, such as L42, can soundly support our invariant protocol.
 
-To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01}, and assume:
+To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01};
+we model an OO language where receivers are always specified explicitly,
+ and the receivers of field accesses and updates in method bodies are always \Q!this!; that is, all fields are instance private.
+Constructors are all of the standard form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$.
+We assume the following:
 \SSI\begin{itemize}
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
 	\item Memory, $\s : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
