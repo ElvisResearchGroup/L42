@@ -66,6 +66,11 @@ AuxVisitor(Pos pos) { this.pos = pos; }
     if(ctx.topDocText()==null){return new Full.Doc(p, L(),L());}
     return visitTopDocText(ctx.topDocText()).with_pathSel(p);
     }
+  @Override public Full.PathSel visitPathSel(L42AuxParser.PathSelContext ctx) {
+    Full.CsP p=FullL42Visitor.opt(ctx.csP(),null,this::visitCsP);
+    S s=FullL42Visitor.opt(ctx.selector(),null,this::visitSelector);
+    return new Full.PathSel(p,s,null); 
+    }
   @Override public Full.PathSel visitPathSelX(L42AuxParser.PathSelXContext ctx) {
     Full.CsP p=FullL42Visitor.opt(ctx.pathSel().csP(),null,this::visitCsP);
     S s=FullL42Visitor.opt(ctx.pathSel().selector(),null,this::visitSelector);

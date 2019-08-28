@@ -227,7 +227,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
   @Override public String visitMOp(MOpContext ctx) {throw bug();}
   @Override public Full.L.NC visitFullNC(FullNCContext ctx) {throw bug();}
   //@Override public String visitSlash(SlashContext ctx) {throw bug();}
-  //@Override public String visitPathSel(PathSelContext ctx) {throw bug();}
+  @Override public Full.PathSel visitPathSel(PathSelContext ctx) {throw bug();}
   @Override public Full.Cast visitCast(CastContext ctx) {
     return new Full.Cast(pos(ctx),eVoid, visitT(ctx.t()));
     }
@@ -290,5 +290,18 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
   @Override public String visitSLoop(SLoopContext ctx) {throw bug();}
   @Override public String visitSThrow(SThrowContext ctx) {throw bug();}
   @Override public String visitSUpdate(SUpdateContext ctx) {throw bug();}
-  @Override public Core.L.Info visitInfo(InfoContext ctx) {throw bug();}
+  @Override public Core.L.Info visitInfo(InfoContext ctx) {
+    var pos=pos(ctx);
+    var s=fixPos(pos);
+    s.append(ctx.getText());
+    var r=Parse.info(s.toString());
+    return new InfoSupplier(new InjectionToCore(errors, eVoid), r, pos).get();
+    }
+  @SuppressWarnings("unused")
+  StringBuilder fixPos(Pos pos){
+    StringBuilder s=new StringBuilder();
+    for(int i :range(pos.line())){s.append("\n");}
+    for(int i :range(pos.column())){s.append(" ");}
+    return s;
+    }
   }

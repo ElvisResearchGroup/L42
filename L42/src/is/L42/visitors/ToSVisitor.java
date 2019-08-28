@@ -158,13 +158,13 @@ public class ToSVisitor extends CollectorVisitor{
     
   public void visitInfo(Core.L.Info info){
     separeFromChar();
-    if(info.isTyped()){c("#typed}");}
+    if(info.isTyped()){c("#typed{");}
     else {c("#norm{");}
     infoItem("typeDep",info.typeDep());
     infoItem("coherentDep",info.coherentDep());
-    infoItem("friendsDep",info.friendsDep());
-    infoItem("usedMethDep",info.usedMethDep());
-    infoItem("privateImpl",info.privateImpl());
+    infoItem("friends",info.friends());
+    infoItem("usedMethods",info.usedMethods());
+    infoItem("privateSubtypes",info.privateSubtypes());
     infoItem("refined",info.refined());
     c("}");
     }

@@ -38,9 +38,9 @@ public class Core {
       boolean isTyped; 
       List<P> typeDep;
       List<P> coherentDep;
-      List<P> friendsDep;
-      List<PathSel> usedMethDep;
-      List<P> privateImpl;
+      List<P> friends;
+      List<PathSel> usedMethods;
+      List<P> privateSubtypes;
       List<S>refined;
       boolean canBeClassAny;
       }

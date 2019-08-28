@@ -113,9 +113,9 @@ public class CollectorVisitor {
   public void visitInfo(Core.L.Info info){
     visitPs(info.typeDep());
     visitPs(info.coherentDep());
-    visitPs(info.friendsDep());
-    visitPathSels(info.usedMethDep());
-    visitPs(info.privateImpl());
+    visitPs(info.friends());
+    visitPathSels(info.usedMethods());
+    visitPs(info.privateSubtypes());
     visitSs(info.refined());
     }
     

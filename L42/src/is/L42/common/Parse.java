@@ -16,6 +16,7 @@ import is.L42.generated.L42AuxLexer;
 import is.L42.generated.L42AuxParser;
 import is.L42.generated.L42AuxParser.CsPContext;
 import is.L42.generated.L42AuxParser.DocContext;
+import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
 import is.L42.generated.L42AuxParser.TopDocContext;
 import is.L42.generated.L42Lexer;
@@ -87,4 +88,11 @@ public class Parse {
     var p=new L42AuxParser(t);
     return doResult(l,p,new StringBuilder(),()->p.topDoc());
     }    
+  public static Result<InfoContext> info(String s){
+    var l=new L42AuxLexer(CharStreams.fromString(s));
+    var t = new CommonTokenStream(l);
+    var p=new L42AuxParser(t);
+    return doResult(l,p,new StringBuilder(),()->p.info());
+    }    
+
   }

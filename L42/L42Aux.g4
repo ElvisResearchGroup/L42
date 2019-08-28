@@ -23,7 +23,7 @@ pathSelX:pathSel (Dot x)?;
 infoNorm:'#norm{';
 infoTyped:'#typed{';
 
-info: (infoNorm|infoTyped) infoBody* '}';
+info: W*(infoNorm|infoTyped) infoBody* '}' EOF;
 infoBody: typeDep|coherentDep|friends|usedMethods|privateSubtypes|refined|canBeClassAny;
 typeDep: 'typeDep='(W* path)+ W*;
 coherentDep: 'coherentDep='(W* path)+ W*;

@@ -197,7 +197,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({})")
    ),new AtomicTest(()->
-   pass("({interface #norm{hey, I can write stuff here}})")
+   fail("({interface #norm{hey, I can write stuff here}})","Error","expecting {'}'")
+   ),new AtomicTest(()->
+   pass("({interface #norm{}})")
+   ),new AtomicTest(()->
+   pass("({interface #typed{}})")//TODO also test canBeClassAny present
+//   ),new AtomicTest(()->
+//   pass("({interface #norm{typeDep=}})")
+
    /*),new AtomicTest(()->
    pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(doct(P)x)info|}|]|")
    ),new AtomicTest(()->

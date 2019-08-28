@@ -130,19 +130,19 @@ public class CloneVisitor {
   public Core.L.Info visitInfo(Core.L.Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
-    var friendsDep0=info.friendsDep();
-    var usedMethDep0=info.usedMethDep();
-    var privateImpl0=info.privateImpl();
+    var friends0=info.friends();
+    var usedMethods0=info.usedMethods();
+    var privateSubtypes0=info.privateSubtypes();
     var refined0=info.refined();
     var typeDep=visitPs(typeDep0);
     var coherentDep=visitPs(coherentDep0);
-    var friendsDep=visitPs(friendsDep0);
-    var usedMethDep=visitPathSels(usedMethDep0);
-    var privateImpl=visitPs(privateImpl0);
+    var friends=visitPs(friends0);
+    var usedMethods=visitPathSels(usedMethods0);
+    var privateSubtypes=visitPs(privateSubtypes0);
     var refined=visitSs(refined0);
-    if(typeDep==typeDep0 && coherentDep==coherentDep0 && friendsDep==friendsDep0 
-      && usedMethDep==usedMethDep0 && privateImpl==privateImpl0 && refined==refined0){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friendsDep,usedMethDep,privateImpl,refined,info.canBeClassAny());
+    if(typeDep==typeDep0 && coherentDep==coherentDep0 && friends==friends0 
+      && usedMethods==usedMethods0 && privateSubtypes==privateSubtypes0 && refined==refined0){return info;}
+    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friends,usedMethods,privateSubtypes,refined,info.canBeClassAny());
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){
