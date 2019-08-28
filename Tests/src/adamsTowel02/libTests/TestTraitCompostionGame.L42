@@ -13,11 +13,7 @@
 Point: Data<><{Size x, Size y}
 PointNotFilled: Message.$<><{implements Guard}
 PointFilled: Message.$<><{implements Guard}
-EntityTrait: Trait(K<><{
-  var Point p
-  read method Point point() this.p()
-  mut method Void point(Point that) this.p(that)
-  })
+
 //
 //
 // **********************************************************************
@@ -33,22 +29,104 @@ ModuleEntities: Trait({
     mut method Void draw(S that, Size x, Size y)
     }
 
+  World: {}
+
   Entity: {interface
     read method Point point()
-    mut method Void point(Point that)
+    mut method Void point(Point that, mut World world)
     read method Void drawOnto(mut Graphics that)
-    }
+  }
 
-  Player: EntityTrait & {implements Entity
-    method drawOnto(that) that.draw(S"P",x:this.p().x(), y:this.p().y())
+  PointConstructorAndGetter: Trait(K <>< {
+    var Point p
+    read method Point point() this.p()
+    })
+  EntityBase: PointConstructorAndGetter & Trait({implements Entity
+    read method S representation()
+    method drawOnto(that) (
+      that.draw(this.representation(), x: this.point().x(), y: this.point().y())
+      )
+    })
+  ItemBase: EntityBase & Trait({
+    mut method Void p(Point that)
+    mut method Void point(Point that, mut World world) (
+      this.p(that)
+      // TODO:
+      )
+    })
+
+  Player: EntityBase & {
+    mut method Void p(Point that)
+    mut method Void point(Point that, mut World world) (
+      this.p(that)
+      )
+
+    read method S representation() S"P"
     }
-  RockItem: EntityTrait & {implements Entity
-    method drawOnto(that) that.draw(S"R",x:this.p().x(), y:this.p().y())
+  RockItem: ItemBase & {
+    read method S representation() S"R"
     }
-  AppleItem: EntityTrait & {implements Entity
-    method drawOnto(that) that.draw(S"A",x:this.p().x(), y:this.p().y())
+  AppleItem: ItemBase & {
+    read method S representation() S"A"
     }
   })
+
+TestModuleEntities: ModuleEntities & {
+  World: K <>< {}
+  RockItem: {}
+
+  Graphics: K <>< {
+    mut method Void draw(S that, Size x, Size y) (
+      Debug.appendLog(
+        S"graphicsDrawLog",
+        msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
+        )
+      )
+    }
+
+  Tests: K <>< {
+    mut Graphics graphics
+    mut World world
+
+    class method mut Tests #$() (
+      // Clear logs
+      unused = Debug.#$readLog(S"graphicsDrawLog")
+
+      This(graphics: Graphics(), world: World())
+      )
+
+    mut method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
+      mut RockItem entity = RockItem(p: Point(x: 4Size, y: 5Size))
+
+      entity.drawOnto(this.#graphics())
+
+      Debug.test(
+        Debug.#$readLog(S"graphicsDrawLog"),
+        expected: S"[representation:R, x:4, y:5]"
+        )
+      )
+
+    mut method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      Point newItemPoint = Point(x: 1Size, y: 1Size)
+
+      item.point(newItemPoint, world: this.#world())
+
+      Debug.test(item.point(), expected: newItemPoint)
+      )
+    }
+  }
+
+TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
+  TestModuleEntities.Tests.#$().#$EntityBase_drawOnto_drawsTheCorrectSquare()
+
+// TODO: setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint
+/* TestModuleEntities_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint: */
+  /* TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint() */
+
+TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint()
+
 
 //
 //
@@ -61,16 +139,21 @@ ModuleEntities: Trait({
 //
 
 ModuleWorld: Trait({
+  World: {}
   Entity: {interface
     read method Point point()
-    mut method Void point(Point that)
+    mut method Void point(Point that, World world)
     read method Void drawOnto(mut Graphics that)
     }
   Player: {implements Entity}
-  
+
+  }) & Trait({
+
+  Entity: {}
+  Player: {}
+
   Graphics: {
     mut method Void draw(S that, Size x, Size y)
-    class method mut This (Size width, Size height)
     }
 
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
@@ -105,21 +188,33 @@ ModuleWorld: Trait({
       }
     }
 
-  World: K<><{
+  World: K <>< {
     mut PointToEntityMap map
     mut Player player
-    mut method Void movePlayerUp() this.#player().point(\point.with(y: \y-1Size))
-    mut method Void movePlayerDown() this.#player().point(\point.with(y: \y+1Size))
-    mut method Void movePlayerLeft() this.#player().point(\point.with(x: \x-1Size))
-    mut method Void movePlayerRight() this.#player().point(\point.with(x: \x+1Size))
-    
+
+    mut method Void movePlayerUp() (
+      this.#player().point(\point.with(y: \y-1Size), world: this)
+      )
+
+    mut method Void movePlayerDown() (
+      this.#player().point(\point.with(y: \y+1Size), world: this)
+      )
+
+    mut method Void movePlayerLeft() (
+      this.#player().point(\point.with(x: \x-1Size), world: this)
+      )
+
+    mut method Void movePlayerRight() (
+      this.#player().point(\point.with(x: \x+1Size), world: this)
+      )
+
     class method Size gameSizeInCells() 10Size
 
     mut method Void drawOnto(mut Graphics graphics) (
       mut PointToEntityMap m = this.#map()
       with i in Range(m.size()) (
-        read Entity e=m.val(i)
-        e.drawOnto(graphics) 
+        read Entity e = m.val(i)
+        e.drawOnto(graphics)
         )
       this.player().drawOnto(graphics)
       )
@@ -128,52 +223,129 @@ ModuleWorld: Trait({
 
 TestModuleWorld: ModuleWorld & {
   Graphics: {
-    mut method Void drawOnto(mut Graphics map) (
-      void // TODO
-    )
-  }
-  PointToEntityMap:{}
-  World:{}
-  Entity: {interface 
+    mut method Void draw(S that, Size x, Size y) void
+    class method mut This ()
+    }
+  PointToEntityMap: {}
+  World: {}
+
+  Entity: {interface
     read method Point point()
-    mut method Void point(Point that)
+    mut method Void point(Point that, World world)
     read method Void drawOnto(mut Graphics that)
   }
-  HasLastDrawPoint: Trait(K <>< {implements Entity
-    var Point lastDrawPoint
-    var Point p
-
-    class method mut This (fwd Point p)
-      This(lastDrawPoint: Point(x: 99Size, y: 99Size), p: p)
-
-    method Void drawOnto(that) (
-      this.lastDrawPoint(this.p())
-      )
+  HasPoint: Trait(K<><{
+    var Point point
     })
-  StubEntity: HasLastDrawPoint & EntityTrait & {}
-  Player: HasLastDrawPoint & {}
-
-  class method Void testExampleToDoRename() (
-    Point p=Point(x: 1Size, y: 2Size)
-    mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
-    w.#map().addEntity(StubEntity(p:p))
-    w.#map().addEntity(StubEntity(p:p))
-    catch error PointFilled pf void
-    error X""
-    )
-    
-      
-  class method Void testExampleToDoRename2() (
-    mut World w=World(map:PointToEntityMap[], player:Player(p:Point(x: 0Size, y: 0Size)))
-    w.drawOnto(graphics: Graphics(width: 10Size, height: 10Size))
-    Debug.test(w.player().lastDrawPoint(), expected: S"
-      'Point[x:"0",y:"0"]
-      ".withoutRight())
-    )
+  StubEntity: HasPoint & {implements Entity
+    method drawOnto(that) (
+      Debug.appendLog(
+        S"stubEntityDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+        )
+      )
+    }
+  Player: HasPoint & {implements Entity
+    method drawOnto(that) (
+      Debug.appendLog(
+        S"playerDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+        )
+      )
   }
 
-TestModuleWorld_loadWorld_failsWhenAddingTwoItemsToTheSamePoint:
-  TestModuleWorld.testExampleToDoRename()
+  Tests: K <>< {
+    mut World world
+
+    class method mut Tests #$() (
+      // Clear logs
+      unused1 = Debug.#$readLog(S"playerDrawPoints")
+      unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
+
+      This(world: World(
+        map: PointToEntityMap[], player: Player(point: Point(x: 0Size, y: 0Size))
+        ))
+      )
+
+    mut method Void addEntity_add2EntitiesToTheSamePoint() (
+      Point p = Point(x: 1Size, y: 2Size)
+      this.#world().#map().addEntity(StubEntity(point: p))
+
+      this.#world().#map().addEntity(StubEntity(point: p))
+      )
+
+    mut method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
+      this.#world().#map().addEntity(StubEntity(point: Point(x: 1Size, y: 2Size)))
+
+      this.#world().#map().addEntity(StubEntity(point: Point(x: 3Size, y: 4Size)))
+      )
+
+    mut method Void removeEntity_whenNoItemIsAtThePoint() (
+      this.#world().#map().removeEntity(Point(x: 1Size, y: 2Size))
+      )
+
+    mut method Void removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem() (
+      this.#world().#map().addEntity(StubEntity(point: Point(x: 1Size, y: 2Size)))
+      this.#world().#map().removeEntity(Point(x: 1Size, y: 2Size))
+      )
+
+    mut method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
+      this.#world().drawOnto(graphics: Graphics())
+
+      Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
+        'Point[x:"0", y:"0"]
+        ")
+      )
+
+    mut method Void #$World_drawOnto_drawsItemAtProvidedPoint() (
+      this.#world().#map().addEntity(StubEntity(point: Point(x: 5Size, y: 2Size)))
+
+      this.#world().drawOnto(graphics: Graphics())
+
+      Debug.test(Debug.#$readLog(S"stubEntityDrawPoints"), expected: S"
+        'Point[x:"5", y:"2"]
+        ")
+      )
+
+    mut method Void #$World_drawOnto_drawsPlayerAtMovedPoint() (
+      this.#world().movePlayerDown()
+      this.#world().movePlayerLeft()
+
+      this.#world().drawOnto(graphics: Graphics())
+
+      Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
+        'Point[x:"-1", y:"1"]
+        ")
+      )
+    }
+  }
+
+TestModuleWorld_addEntity_failsWhenAddingTwoItemsToTheSamePoint: (
+  TestModuleWorld.Tests.#$().addEntity_add2EntitiesToTheSamePoint()
+  catch error PointFilled pf void
+  error X"Expected exception to be thrown"
+  )
+
+TestModuleWorld_addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints:
+  TestModuleWorld.Tests.#$().addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
+
+TestModuleWorld_removeEntity_failsWhenNoItemIsAtThePoint: (
+  TestModuleWorld.Tests.#$().removeEntity_whenNoItemIsAtThePoint()
+  catch error PointNotFilled pnf void
+  error X"Expected exception to be thrown"
+  )
+
+TestModuleWorld_removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem: (
+  TestModuleWorld.Tests.#$().removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem()
+  )
+
+TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
+  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsPlayerAtInitialPoint()
+
+TestModuleWorld_World_drawOnto_drawsItemAtProvidedPoint:
+  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsItemAtProvidedPoint()
+
+TestModuleWorld_World_drawOnto_drawsPlayerAtMovedPoint:
+  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsPlayerAtMovedPoint()
+
 
 //
 //
@@ -184,6 +356,7 @@ TestModuleWorld_loadWorld_failsWhenAddingTwoItemsToTheSamePoint:
 // *************************************************************************
 //
 //
+
 
 ModuleWorldLoader: Trait({
   PointToEntityMap: {
@@ -201,30 +374,32 @@ ModuleWorldLoader: Trait({
   WorldLoader: {
     class method mut World #$(S fileName) (
       S content = Debug.#$readFile(fileName: fileName)
-      Strings lines = content.splitOn(chars: S.nl())
-      This.loadWorld(lines: lines)
+      This.loadWorld(content: content)
       )
 
-    class method mut World loadWorld(Strings lines) (
+    class method mut World loadWorld(S content) (
       mut World world = World(
         map: PointToEntityMap[],
         player: Player(p: Point(x: 0Size, y: 0Size))
         )
 
-      Strings linesWithoutCommentLine = lines.withoutLeft()
+      // withoutLeft() removes the comment line
+      Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
 
-      with s in linesWithoutCommentLine.vals() (
+      with s in lines.vals() (
         Strings tokens = s.splitOn(chars: S" ")
         S entityTypeName = tokens.val(0Size)
         Point p = Point(
           x: Size.fromS(tokens.val(1Size)),
           y: Size.fromS(tokens.val(2Size))
           )
+
         mut Entity e = {
           if entityTypeName == S"ROCK_ITEM" (return RockItem(p: p))
           if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
-          error X"@"[entityTypeName]"@"
+          error X"Unknown entityTypeName: "[entityTypeName]""
           }
+
         world.#map().addEntity(e)
         )
       world
@@ -232,43 +407,66 @@ ModuleWorldLoader: Trait({
     }
   })
 
-/* ModuleWorldLoader_loadWorld_createsAWorld: { */
-/* // TODO  */
-  /* Strings input = Strings[S"# Comment line"] */
-  /* WorldLoader.loadWorld(lines: input) */
-  /* return ExitCode.normal() */
-  /* } */
-
 TestModuleWorldLoader: ModuleWorldLoader & {
   PointToEntityMap: K<><{
     mut Strings addedEntities
-    class method mut This #seqBuilder()This(addedEntities:Strings[])
-    class method mut This #from(mut This seqBuilder)seqBuilder
+    class method mut This #seqBuilder() This(addedEntities: Strings[])
+    class method mut This #from(mut This seqBuilder) seqBuilder
 
     mut method Void addEntity(mut Entity that) (
       this.#addedEntities().add(right: that.toS())
       )
     }
-  World:{}
+  World: {}
 
-  Entity: {interface Point p  read method S toS()}
+  Entity: {interface
+    Point p
+    read method S toS()
+    }
   Player: {implements Entity method toS()S"Player["[this.p()]"]"}
   RockItem: {implements Entity method toS()S"RockItem["[this.p()]"]"}
   AppleItem: {implements Entity method toS()S"AppleItem["[this.p()]"]"}
-  
+
   WorldLoader: {}
 
-  class method Void testExampleToDoRename(Strings that, S expected) (
-    mut World world = WorldLoader.loadWorld(lines: that)
+  class method Void producesCorrectItems(S content, S expected) (
+    mut World world = WorldLoader.loadWorld(content: content)
     Debug.test(world.#map().addedEntities(), expected: expected)
     )
   }
 
 TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
-  TestModuleWorldLoader.testExampleToDoRename(
-    Strings[S"# Comment line"; S"ROCK_ITEM 1 2"],
+  TestModuleWorldLoader.producesCorrectItems(
+    content: S"
+      '# Comment line
+      'ROCK_ITEM 1 2
+      ",
     expected: S"
       '[RockItem[[x:"1", y:"2"]]]
+      ".withoutRight()
+    )
+
+TestModuleWorldLoader_loadWorld_addsAnAppleAtTheCorrectPosition:
+  TestModuleWorldLoader.producesCorrectItems(
+    content: S"
+      '# Comment line
+      'APPLE_ITEM 3 4
+      ",
+    expected: S"
+      '[AppleItem[[x:"3", y:"4"]]]
+      ".withoutRight()
+    )
+
+TestModuleWorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
+  TestModuleWorldLoader.producesCorrectItems(
+    content: S"
+      '# Comment line
+      'ROCK_ITEM 1 2
+      'APPLE_ITEM 3 4
+      'APPLE_ITEM 5 6
+      ",
+    expected: S"
+      '[RockItem[[x:"1", y:"2"]]; AppleItem[[x:"3", y:"4"]]; AppleItem[[x:"5", y:"6"]]]
       ".withoutRight()
     )
 
@@ -284,15 +482,28 @@ TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
 
 ModuleUI: Trait({
   Graphics: Trait(Collections.vector(ofMut: Strings)) & {
-    mut method Void draw(S that, Size x, Size y)
-      this.#val(y)(x, val:that)
- 
+    mut method Void draw(S that, Size x, Size y) (
+      this.#val(y)(x, val: that)
+      )
+
+    mut method S asText() S""[
+      with y in Range(this.size()) (
+        row = this.val(y)
+        with x in Range(row.size()) (
+          use[S"|"; row.val(x)]
+          )
+        use[S.nl()]
+        )
+      ]""
+
     class method mut This (Size width, Size height) This[
       with y in Range(height) (
-        use[Strings[with x in Range(width) (use[S"_"])]]
+        use[Strings[with x in Range(width) (
+          use[S"_"]
+          )]]
       )]
     }
-    
+
   World: {
     mut method Void movePlayerUp()
     mut method Void movePlayerDown()
@@ -323,23 +534,18 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Actions: {}
   World: {
     mut method S asText() (
-      mut Graphics m = Graphics(width:This.gameSizeInCells() height:This.gameSizeInCells())
-      this.drawOnto(graphics: m)
-      m.asText()
+      mut Graphics graphics = Graphics(
+        width: This.gameSizeInCells(), height: This.gameSizeInCells()
+        )
+      this.drawOnto(graphics: graphics)
+      graphics.asText()
       )
     }
-    
+
   WorldLoader: {}
-  Graphics:{
-    mut method S asText() S""[
-      with y in Range(this.size()) (
-        with x in Range(this.val(y).size()) (
-          use[S"|"; this.val(y).val(x)]
-          )
-        use[S.nl()]
-        )
-      ]""
-    }
+  Graphics: {}
+
+  class method S defaultFileName() S"GameGridSaves/game-save-example.txt"
 
   class method Strings (Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
@@ -353,7 +559,7 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   class method Strings #$(Actions actions) (
     This(
       actions: actions,
-      world: WorldLoader.#$(fileName: S"GameGridSaves/game-save-example.txt")
+      world: WorldLoader.#$(fileName: This.defaultFileName())
       )
     )
   }
