@@ -29,19 +29,25 @@ ModuleEntities: Trait({
     mut method Void draw(S that, Size x, Size y)
     }
 
-  World: {}
+  World: {
+    read method Bool hasEntityAt(Point that)
+    mut method Void addEntity(mut Entity that)
+    mut method Void removeEntity(Point that)
+    }
 
   Entity: {interface
     read method Point point()
     mut method Void point(Point that, mut World world)
     read method Void drawOnto(mut Graphics that)
+    read method S toS()
   }
 
-  PointConstructorAndGetter: Trait(K <>< {
+  EntityBase: HasPoint & Trait({implements Entity
     var Point p
     read method Point point() this.p()
-    })
-  EntityBase: PointConstructorAndGetter & Trait({implements Entity
+    
+    read method S toS() S""[this.representation()]"("[this.point()]")"
+    
     read method S representation()
     method drawOnto(that) (
       that.draw(this.representation(), x: this.point().x(), y: this.point().y())
@@ -49,19 +55,14 @@ ModuleEntities: Trait({
     })
   ItemBase: EntityBase & Trait({
     mut method Void p(Point that)
-    mut method Void point(Point that, mut World world) (
-      if (world.hasEntityAt(this.point()) && world.#getEntityAt(this.point()) != this) (
-        this.p(that)
-        )
-
-      if (world.hasEntityAt(that)) (
-        error PointFilled""
-        )
+    mut method Void point(Point that, mut World world) {
+      if world.hasEntityAt(that) (error PointFilled"")
 
       world.removeEntity(this.point())
       this.p(that)
       world.addEntity(this)
-      )
+      return void
+      }
     })
 
   Player: EntityBase & {
@@ -81,23 +82,17 @@ ModuleEntities: Trait({
   })
 
 TestModuleEntities: ModuleEntities & {
-  Entity: {interface
-    read method Point point()
-    read method S toS()
-    }
-  RockItem: {implments Entity
-    method toS() S"RockItem("[this.point()]")"
-    }
-
+  Entity: {}
+  
   World: K <>< {
     mut Strings mutations
 
     mut method Void addEntity(mut Entity that) (
-      this.#mutations().add(right: S"addEntity("[that]")")
+      this.#mutations().add(right: S"addEntity("[that.toS()]"")
       )
 
     mut method Void removeEntity(Point that) (
-      this.#mutations().add(right: S"removeEntity("[that]")")
+      this.#mutations().add(right: S"removeEntity("[that.toS()]"")
       )
     }
 
@@ -200,7 +195,7 @@ TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
 TestModuleEntities_ItemBase_setPoint_movesItselfInTheWorld:
   TestModuleEntities.Tests.#$().#$ItemBase_setPoint_movesItselfInTheWorld()
 
-TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld():
+TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld:
   TestModuleEntities.Tests.#$().#$ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld()
 
 //
