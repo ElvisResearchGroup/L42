@@ -50,8 +50,17 @@ ModuleEntities: Trait({
   ItemBase: EntityBase & Trait({
     mut method Void p(Point that)
     mut method Void point(Point that, mut World world) (
+      if (world.hasEntityAt(this.point()) && world.#getEntityAt(this.point()) != this) (
+        this.p(that)
+        )
+
+      if (world.hasEntityAt(that)) (
+        error PointFilled""
+        )
+
+      world.removeEntity(this.point())
       this.p(that)
-      // TODO:
+      world.addEntity(this)
       )
     })
 
@@ -72,8 +81,25 @@ ModuleEntities: Trait({
   })
 
 TestModuleEntities: ModuleEntities & {
-  World: K <>< {}
-  RockItem: {}
+  Entity: {interface
+    read method Point point()
+    read method S toS()
+    }
+  RockItem: {implments Entity
+    method toS() S"RockItem("[this.point()]")"
+    }
+
+  World: K <>< {
+    mut Strings mutations
+
+    mut method Void addEntity(mut Entity that) (
+      this.#mutations().add(right: S"addEntity("[that]")")
+      )
+
+    mut method Void removeEntity(Point that) (
+      this.#mutations().add(right: S"removeEntity("[that]")")
+      )
+    }
 
   Graphics: K <>< {
     mut method Void draw(S that, Size x, Size y) (
@@ -87,12 +113,17 @@ TestModuleEntities: ModuleEntities & {
   Tests: K <>< {
     mut Graphics graphics
     mut World world
+    Point newItemPoint
 
     class method mut Tests #$() (
-      // Clear logs
+      // Clear mutations
       unused = Debug.#$readLog(S"graphicsDrawLog")
 
-      This(graphics: Graphics(), world: World())
+      This(
+        graphics: Graphics(),
+        world: World(mutations: Strings[]),
+        newItemPoint: Point(x: 1Size, y: 1Size)
+        )
       )
 
     mut method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
@@ -106,13 +137,53 @@ TestModuleEntities: ModuleEntities & {
         )
       )
 
+    mut method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      mut RockItem extraItem = RockItem(p: this.newItemPoint())
+      // TODO: put in world
+
+      item.point(this.newItemPoint(), world: this.#world())
+
+      Debug.test(
+        this.#world().#mutations(),
+        expected: S"[]"
+        )
+      )
+
     mut method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
-      Point newItemPoint = Point(x: 1Size, y: 1Size)
+      // TODO: put in world
 
-      item.point(newItemPoint, world: this.#world())
+      item.point(this.newItemPoint(), world: this.#world())
 
-      Debug.test(item.point(), expected: newItemPoint)
+      Debug.test(item.point(), expected: this.newItemPoint())
+      )
+
+    mut method Void #$ItemBase_setPoint_movesItselfInTheWorld() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      // TODO: put in world
+
+      item.point(this.newItemPoint(), world: this.#world())
+
+      Debug.test(
+        this.#world().#mutations(),
+        expected: S"
+          '[removeEntity(RockItem([x:"0", y:"0"])); addEntity(RockItem([x:"1", y:"1"]))]
+          ".withoutLeft()
+        )
+      )
+
+    mut method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      mut RockItem extraItem = RockItem(p: this.newItemPoint())
+      // TODO: not in world
+
+      item.point(this.newItemPoint(), world: this.#world())
+
+      Debug.test(
+        this.#world().#mutations(),
+        expected: S"[]"
+        )
       )
     }
   }
@@ -120,13 +191,17 @@ TestModuleEntities: ModuleEntities & {
 TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
   TestModuleEntities.Tests.#$().#$EntityBase_drawOnto_drawsTheCorrectSquare()
 
-// TODO: setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint
-/* TestModuleEntities_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint: */
-  /* TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint() */
+TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint:
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint()
 
 TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
   TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint()
 
+TestModuleEntities_ItemBase_setPoint_movesItselfInTheWorld:
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_movesItselfInTheWorld()
+
+TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld():
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld()
 
 //
 //
