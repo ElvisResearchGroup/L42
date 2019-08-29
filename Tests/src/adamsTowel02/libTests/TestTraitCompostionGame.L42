@@ -139,17 +139,20 @@ TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
 //
 
 ModuleWorld: Trait({
+  Graphics: {}
   World: {}
   Entity: {interface
     read method Point point()
-    mut method Void point(Point that, World world)
+    mut method Void point(Point that, mut World world)
     read method Void drawOnto(mut Graphics that)
     }
   Player: {implements Entity}
 
   }) & Trait({
 
-  Entity: {}
+  Entity: {interface
+    read method Point point()
+    }
   Player: {}
 
   Graphics: {
@@ -231,11 +234,17 @@ TestModuleWorld: ModuleWorld & {
 
   Entity: {interface
     read method Point point()
-    mut method Void point(Point that, World world)
+    mut method Void point(Point that, mut World world)
     read method Void drawOnto(mut Graphics that)
-  }
+    }
   HasPoint: Trait(K<><{
-    var Point point
+    var Point p
+    read method Point point() (
+      this.p()
+      )
+    mut method Void point(Point that, mut World world) (
+      this.p(that)
+      )
     })
   StubEntity: HasPoint & {implements Entity
     method drawOnto(that) (
@@ -261,21 +270,21 @@ TestModuleWorld: ModuleWorld & {
       unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
 
       This(world: World(
-        map: PointToEntityMap[], player: Player(point: Point(x: 0Size, y: 0Size))
+        map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
         ))
       )
 
     mut method Void addEntity_add2EntitiesToTheSamePoint() (
       Point p = Point(x: 1Size, y: 2Size)
-      this.#world().#map().addEntity(StubEntity(point: p))
+      this.#world().#map().addEntity(StubEntity(p: p))
 
-      this.#world().#map().addEntity(StubEntity(point: p))
+      this.#world().#map().addEntity(StubEntity(p: p))
       )
 
     mut method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 1Size, y: 2Size)))
+      this.#world().#map().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
 
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 3Size, y: 4Size)))
+      this.#world().#map().addEntity(StubEntity(p: Point(x: 3Size, y: 4Size)))
       )
 
     mut method Void removeEntity_whenNoItemIsAtThePoint() (
@@ -283,7 +292,7 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem() (
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 1Size, y: 2Size)))
+      this.#world().#map().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
       this.#world().#map().removeEntity(Point(x: 1Size, y: 2Size))
       )
 
@@ -296,7 +305,7 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void #$World_drawOnto_drawsItemAtProvidedPoint() (
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 5Size, y: 2Size)))
+      this.#world().#map().addEntity(StubEntity(p: Point(x: 5Size, y: 2Size)))
 
       this.#world().drawOnto(graphics: Graphics())
 
