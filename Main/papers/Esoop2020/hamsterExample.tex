@@ -1,5 +1,4 @@
  
-\subheading{Example}
 Here we show an example illustrating our system in action. Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
 
 %
@@ -26,9 +25,6 @@ class Cage {
   mut method Void moveTo(Point p) { this.h.pos = p; }}
 \end{lstlisting}
 
-Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
-However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
-
 We use the \Q@read@ annotation on the \Q@equals@ method to express that it does not modify either its
 receiver or its parameter. In \Q@Cage@ we use 
 the \Q@capsule@ annotation to ensure
@@ -43,7 +39,7 @@ their receivers' ROG. The default annotation is always \Q@imm@, thus \Q@Cage@'s 
 % \Q@new Cage(new Hamster(new Point(..)), List.of(new Point(...))@.
 Our system performs runtime checks for the invariant
 at the end of \Q@Cage@'s constructor, \Q@moveTo@ method, and after any update to one of its fields.
-The \Q@moveTo@ method is the only one that may (directly) break the \Q@Cage@'s invariant. However, there is only a single occurrence of \Q@this@ and it is used to read the \Q@h@ field. We use the guarantees of TMs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \Q@Hamster@'s position is updated. 
+The \Q@moveTo@ method is the only one that may (directly) break the \Q@Cage@'s invariant. However, there is only a single occurrence of \Q@this@ and it is used to read the \Q@h@ field. We use the guarantees of RCs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \Q@Hamster@'s position is updated. 
 The invariant is checked at the end of the \Q@moveTo@ method, just before \Q@this@ would become visible again.
 This technique loosely corresponds to an implicit pack and unpack: we `unpack' \Q@this@ before reading the field, then we work on the field's value while the invariant of \Q@this@ is not known to hold, finally when returning, we `pack' \Q!this! and check its invariant before allowing it to be used again.
 
@@ -53,7 +49,7 @@ Note: since only \Q@Cage@ has an invariant,
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
 
-\subheading{Spec\# Example} Here we show the previous example in Spec\#, the system most similar to ours (see appendix \ref{s:hamster} for a more detailed discussion about this solution):
+\noindent We now show the hamster example in Spec\#; the system most similar to ours:
 %or \small or \footnotesize etc.
 \begin{lstlisting}[
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
@@ -78,7 +74,7 @@ class Cage {
 
 In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant: thus \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
  
-Even with all of the above annotations, we still needed special care in creating \Q@Cage@s:\vspace{-1.860px}% magic number that prevents the listings background going onto the next page
+\noindent Even with all the above annotations, we needed special care in creating \Q@Cage@s:\vspace{-1.860px}% magic number that prevents the listings background going onto the next page
 \begin{lstlisting}[
 %basicstyle=\footnotesize,
 language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]

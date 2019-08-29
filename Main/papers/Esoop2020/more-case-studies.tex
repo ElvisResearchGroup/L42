@@ -92,108 +92,6 @@
 
 \section{More Case Studies}
 \label{s:MoreCaseStudies}
-\subheading{Graph}
-
-Here we present an example where a general \Q@Graph@
-of \Q@Node@s can be defined as a library,
-and the user of the library can define personalized kinds of nodes,
-with their personalized (sub-)invariant \Q@subInvariant@.
-The library will ensure that no matter how it is used, all the 
-user defined sub invariants of the inner nodes are preserved.
-The \Q@Node@s, even if user defined, are guaranteed to be encapsulated by the \Q@Graph@.
-The \Q@Graph@ can be arbitrarily modified by user defined transformations using the Transform Pattern.
-\begin{lstlisting}
-interface Transform<T>{method read T apply(mut Nodes nodes);}
-
-interface Node{
-  read method Bool subInvariant(read Nodes nodes)
-  mut method mut Nodes directConnections()
-  }
-class Nodes{//just an ordered set of nodes 
-  mut method Void add(mut Node n){..}
-  read method Int indexOf(read Node n){..}
-  mut method Void remove(read Node n){..}
-  mut method mut Node get(Int index){..}
-  }
-class Graph{ 
-  capsule Nodes nodes; //box pattern
-  Graph(capsule Nodes nodes){..}
-  read method read Nodes getNodes(){return this.nodes;}
-  <T> mut method read T transform(Transform<T> t){
-    mut Nodes ns=this.nodes;//capsule mutator single 'this' use
-    return t.apply(ns);
-    }
-  read method Bool invariant(){
-    for(read Node n: this.nodes){
-      if(!n.subInvariant(this.nodes)){return false;}
-      }
-    return true;
-    } }
-\end{lstlisting}
-Note how there is basically no logic in the above code.
-All the logic can be freely defined by the user code, as shown below:
-
-\begin{lstlisting}
-class MyNode{
-  mut Nodes directConnections;
-  mut method mut Nodes directConnections(){
-    return this.directConnections;}
-  MyNode(mut Nodes directConnections){..}
-  read method Bool subInvariant(read Nodes nodes){
-    /*any condition on either this, nodes or the connections*/}  
-  capsule method read MyNode addToGraph(mut Graph g){..}
-  read method Void connectWith(read Node other,mut Graph g){..}
-  }
-
-mut Graph g=new Graph(new Nodes());
-read MyNode n1=new MyNode(new Nodes())).addToGraph(g);
-read MyNode n2=new MyNode(new Nodes())).addToGraph(g);
-//lets connect our two nodes
-n1.connectWith(n2,g);
-\end{lstlisting}
-Here we define a \Q@MyNode@ class, where the subinvariant can express any property over \Q@this@, or the direct connections of \Q@this@, or any other node in graph and their connections.
-
-We can define methods in \Q@MyNode@ to add our nodes
-to graphs and to connect with other nodes.
-Note that the method \Q@addToGraph@ is \Q@capsule@; this ensures that the node is not in any other graph.
-On the other side, the method \Q@connectWith@ takes a \Q@read this@, even if it clearly intend to modify the ROG of \Q@this@.
-It works by recovering a \Q@mut@ reference to \Q@this@ from the \Q@mut Graph@.
-
-We now examine the implementation of those two methods:
-\begin{lstlisting}
-  read method Void connectWith(read Node other,mut Graph g){
-    Int i1=g.getNodes().indexOf(this);
-    Int i2=g.getNodes().indexOf(other);
-    if(i1==-1 || i2==-1){throw /*error nodes not in g*/;}
-    g.transform(ns->{
-      mut Node n1=ns.get(i1);
-      mut Node n2=ns.get(i2);
-      n1.directConnections().add(n2);
-      });
-    }
-  capsule method read MyNode addToGraph(mut Graph g){
-    return g.transform(ns->{
-      mut MyNode n1=this;//single usage of capsule 'this'
-      ns.add(n1);
-      return n1;
-      });
-    }
-\end{lstlisting}
-As you can see, both methods relies on the Transform Pattern.
-
-Those transformation operations are very general since they
-can take in input the \Q@mut Nodes@ content of the graph and 
-any \Q@capsule@ or \Q@imm@ data from outside.
-Note how in \Q@connectWith@ we can not see the \Q@read this@ or the \Q@read other@
-inside the lambda, but we need to get their (immutable) indexes 
-and recover the concrete objects from the \Q@mut Nodes ns@ object.
-In this way, we also obtain more useful \Q@mut@ references to those nodes.
-On the other side, note how in \Q@addToGraph@ we can see the reference to \Q@capsule this@ inside the lambda.
-
-Concluding, our approach imposes a very defensive programming style
-that is not currently commonly used in programming practice.
-But with a little bit of experience using our system, any data structure can be defined.
-Any invariant relying only on immutable and encapsulated state can be enforced; and any transformation based on immutable and capsule input can be defined.
 
 \subheading{Family}
 The following test case was designed to produce a worst case in the number of invariant checks. We have a \Q!Family! that (indirectly) contains a list of \Q!parents! and \Q!children!. The \Q!parents! and \Q!children! are of type \Q!Person!. Both \Q!Family! and \Q!Person! have an invariant, the invariant of \Q!Family! depends on its contained \Q!Person!s.
@@ -243,7 +141,7 @@ Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
 Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay! is atomic: it updates all its contained \Q!Person!s together.
 %This capture the intention of consistently calling \Q@Person.processDay@ once for all the persons as an atomic operation.
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
-Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause problems if, for example, a child was updated before their parent.
+Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause semantic problems if, for example, a child was updated before their parent.
 
 %\loseSpace
 We have a simple test case that calls \Q!processDay! on a \Q!Family! $1{,}095$ ($3\times365$) times.
@@ -318,10 +216,10 @@ whereas integer arithmetic in L42 has the common wrap around semantics.
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
 
-The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. The \Q!Family! class was similar to our \Q!Cage! example (see Section \ref{s:intro}), however in order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
+The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. In order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
 
 
-\subheading{Spec\# Papers}
+\subheading{Encoding examples originally proposed in Spec\# Papers}
 Their are many published papers about the pack/unpack methodology used by Spec\#. To compare against their expressiveness we will consider the three mains ones that introduced their methodology and extensions:
 \SSI\begin{itemize}
 	\item \emph{Verification of Object-Oriented Programs with Invariants:}~\cite{DBLP:journals/jot/BarnettDFLS04} this paper introduces their methodology. In their examples section (pages 41--47), they show how their methodology would work in a class heirarchy with \Q!Reader! and \Q!ArrayReader! classes. The former represents something that reads characters, whereas the latter is a concrete implementation that reads from an owned array. They extend this further with a \Q!Lexer! that owns a \Q!Reader!, which it uses to read characters and parse them into tokens. They also show an example of a \Q!FileList! class that owns an array of filenames, and a \Q!DirFileList! class that extends it with a stronger invariant. All of these examples can be represented in L42\footnote{Our encodings are in the artifact.}. The most interesting considerations are as follow:
