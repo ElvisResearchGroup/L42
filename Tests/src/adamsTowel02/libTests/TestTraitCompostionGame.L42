@@ -50,8 +50,17 @@ ModuleEntities: Trait({
   ItemBase: EntityBase & Trait({
     mut method Void p(Point that)
     mut method Void point(Point that, mut World world) (
+      if (world.hasEntityAt(this.point()) && world.#getEntityAt(this.point()) != this) (
+        this.p(that)
+        )
+
+      if (world.hasEntityAt(that)) (
+        error PointFilled""
+        )
+
+      world.removeEntity(this.point())
       this.p(that)
-      // TODO:
+      world.addEntity(this)
       )
     })
 
@@ -72,8 +81,25 @@ ModuleEntities: Trait({
   })
 
 TestModuleEntities: ModuleEntities & {
-  World: K <>< {}
-  RockItem: {}
+  Entity: {interface
+    read method Point point()
+    read method S toS()
+    }
+  RockItem: {implments Entity
+    method toS() S"RockItem("[this.point()]")"
+    }
+
+  World: K <>< {
+    mut Strings mutations
+
+    mut method Void addEntity(mut Entity that) (
+      this.#mutations().add(right: S"addEntity("[that]")")
+      )
+
+    mut method Void removeEntity(Point that) (
+      this.#mutations().add(right: S"removeEntity("[that]")")
+      )
+    }
 
   Graphics: K <>< {
     mut method Void draw(S that, Size x, Size y) (
@@ -87,12 +113,17 @@ TestModuleEntities: ModuleEntities & {
   Tests: K <>< {
     mut Graphics graphics
     mut World world
+    Point newItemPoint
 
     class method mut Tests #$() (
-      // Clear logs
+      // Clear mutations
       unused = Debug.#$readLog(S"graphicsDrawLog")
 
-      This(graphics: Graphics(), world: World())
+      This(
+        graphics: Graphics(),
+        world: World(mutations: Strings[]),
+        newItemPoint: Point(x: 1Size, y: 1Size)
+        )
       )
 
     mut method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
@@ -106,13 +137,53 @@ TestModuleEntities: ModuleEntities & {
         )
       )
 
+    mut method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      mut RockItem extraItem = RockItem(p: this.newItemPoint())
+      // TODO: put in world
+
+      item.point(this.newItemPoint(), world: this.#world())
+
+      Debug.test(
+        this.#world().#mutations(),
+        expected: S"[]"
+        )
+      )
+
     mut method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
-      Point newItemPoint = Point(x: 1Size, y: 1Size)
+      // TODO: put in world
 
-      item.point(newItemPoint, world: this.#world())
+      item.point(this.newItemPoint(), world: this.#world())
 
-      Debug.test(item.point(), expected: newItemPoint)
+      Debug.test(item.point(), expected: this.newItemPoint())
+      )
+
+    mut method Void #$ItemBase_setPoint_movesItselfInTheWorld() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      // TODO: put in world
+
+      item.point(this.newItemPoint(), world: this.#world())
+
+      Debug.test(
+        this.#world().#mutations(),
+        expected: S"
+          '[removeEntity(RockItem([x:"0", y:"0"])); addEntity(RockItem([x:"1", y:"1"]))]
+          ".withoutLeft()
+        )
+      )
+
+    mut method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld() (
+      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+      mut RockItem extraItem = RockItem(p: this.newItemPoint())
+      // TODO: not in world
+
+      item.point(this.newItemPoint(), world: this.#world())
+
+      Debug.test(
+        this.#world().#mutations(),
+        expected: S"[]"
+        )
       )
     }
   }
@@ -120,13 +191,17 @@ TestModuleEntities: ModuleEntities & {
 TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
   TestModuleEntities.Tests.#$().#$EntityBase_drawOnto_drawsTheCorrectSquare()
 
-// TODO: setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint
-/* TestModuleEntities_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint: */
-  /* TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint() */
+TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint:
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_doesNotModifyTheWorldIfTryingToMoveToAnOccupiedPoint()
 
 TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
   TestModuleEntities.Tests.#$().#$ItemBase_setPoint_modifiesItemBaseInternalPoint()
 
+TestModuleEntities_ItemBase_setPoint_movesItselfInTheWorld:
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_movesItselfInTheWorld()
+
+TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld():
+  TestModuleEntities.Tests.#$().#$ItemBase_setPoint_doesNotModifyTheWorldIfNotInTheWorld()
 
 //
 //
@@ -139,18 +214,20 @@ TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
 //
 
 ModuleWorld: Trait({
-  World: {}
   Graphics: {}
+  World: {}
   Entity: {interface
     read method Point point()
-    mut method Void point(Point that, World world)
+    mut method Void point(Point that, mut World world)
     read method Void drawOnto(mut Graphics that)
     }
   Player: {implements Entity}
 
   }) & Trait({
 
-  Entity: {read method Point point()}
+  Entity: {interface
+    read method Point point()
+    }
   Player: {}
 
   Graphics: {
@@ -160,8 +237,7 @@ ModuleWorld: Trait({
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
     mut method mut Entity getEntityAt(Point that) {
       with elem in this.#vals() (
-        Point p=elem.point()
-        if p == that (return elem)
+        if elem.point() == that (return elem)
         )
       error PointNotFilled""
       }
@@ -194,6 +270,24 @@ ModuleWorld: Trait({
     mut PointToEntityMap map
     mut Player player
 
+    class method Size gameSizeInCells() 10Size
+
+    mut method mut Entity getEntityAt(Point that) (
+      this.getEntityAt(that)
+      )
+
+    read method Bool hasEntityAt(Point that) (
+      this.hasEntityAt(that)
+      )
+
+    mut method Void addEntity(mut Entity that) (
+      this.addEntity(that)
+      )
+
+    mut method Void removeEntity(Point that) (
+      this.removeEntity(that)
+      )
+
     mut method Void movePlayerUp() (
       this.#player().point(\point.with(y: \y-1Size), world: this)
       )
@@ -210,13 +304,11 @@ ModuleWorld: Trait({
       this.#player().point(\point.with(x: \x+1Size), world: this)
       )
 
-    class method Size gameSizeInCells() 10Size
-
     mut method Void drawOnto(mut Graphics graphics) (
-      mut PointToEntityMap m = this.#map()
-      with i in Range(m.size()) (
-        read Entity e = m.val(i)
-        e.drawOnto(graphics)
+      mut PointToEntityMap map = this.#map()
+      with i in Range(map.size()) (
+        read Entity entity = map.val(i)
+        entity.drawOnto(graphics)
         )
       this.player().drawOnto(graphics)
       )
@@ -233,11 +325,17 @@ TestModuleWorld: ModuleWorld & {
 
   Entity: {interface
     read method Point point()
-    mut method Void point(Point that, World world)
+    mut method Void point(Point that, mut World world)
     read method Void drawOnto(mut Graphics that)
-  }
+    }
   HasPoint: Trait(K<><{
-    var Point point
+    var Point p
+    read method Point point() (
+      this.p()
+      )
+    mut method Void point(Point that, mut World world) (
+      this.p(that)
+      )
     })
   StubEntity: HasPoint & {implements Entity
     method drawOnto(that) (
@@ -263,30 +361,30 @@ TestModuleWorld: ModuleWorld & {
       unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
 
       This(world: World(
-        map: PointToEntityMap[], player: Player(point: Point(x: 0Size, y: 0Size))
+        map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
         ))
       )
 
     mut method Void addEntity_add2EntitiesToTheSamePoint() (
       Point p = Point(x: 1Size, y: 2Size)
-      this.#world().#map().addEntity(StubEntity(point: p))
+      this.#world().addEntity(StubEntity(p: p))
 
-      this.#world().#map().addEntity(StubEntity(point: p))
+      this.#world().addEntity(StubEntity(p: p))
       )
 
     mut method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 1Size, y: 2Size)))
+      this.#world().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
 
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 3Size, y: 4Size)))
+      this.#world().addEntity(StubEntity(p: Point(x: 3Size, y: 4Size)))
       )
 
     mut method Void removeEntity_whenNoItemIsAtThePoint() (
-      this.#world().#map().removeEntity(Point(x: 1Size, y: 2Size))
+      this.#world().removeEntity(Point(x: 1Size, y: 2Size))
       )
 
     mut method Void removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem() (
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 1Size, y: 2Size)))
-      this.#world().#map().removeEntity(Point(x: 1Size, y: 2Size))
+      this.#world().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
+      this.#world().removeEntity(Point(x: 1Size, y: 2Size))
       )
 
     mut method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
@@ -298,7 +396,7 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void #$World_drawOnto_drawsItemAtProvidedPoint() (
-      this.#world().#map().addEntity(StubEntity(point: Point(x: 5Size, y: 2Size)))
+      this.#world().addEntity(StubEntity(p: Point(x: 5Size, y: 2Size)))
 
       this.#world().drawOnto(graphics: Graphics())
 
@@ -364,9 +462,12 @@ ModuleWorldLoader: Trait({
   PointToEntityMap: {
     class method mut This #seqBuilder()
     class method mut This #from(mut This seqBuilder)
+    }
+  World: K <>< {
+    mut PointToEntityMap map
+    mut Player player
     mut method Void addEntity(mut Entity that)
     }
-  World: K<><{mut PointToEntityMap map, mut Player player}
 
   Entity: {interface}
   Player: {implements Entity class method mut This (fwd Point p)}
@@ -388,21 +489,21 @@ ModuleWorldLoader: Trait({
       // withoutLeft() removes the comment line
       Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
 
-      with s in lines.vals() (
-        Strings tokens = s.splitOn(chars: S" ")
+      with line in lines.vals() (
+        Strings tokens = line.splitOn(chars: S" ")
         S entityTypeName = tokens.val(0Size)
         Point p = Point(
           x: Size.fromS(tokens.val(1Size)),
           y: Size.fromS(tokens.val(2Size))
           )
 
-        mut Entity e = {
+        mut Entity entity = {
           if entityTypeName == S"ROCK_ITEM" (return RockItem(p: p))
           if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
           error X"Unknown entityTypeName: "[entityTypeName]""
           }
 
-        world.#map().addEntity(e)
+        world.addEntity(entity)
         )
       world
       )
@@ -410,30 +511,26 @@ ModuleWorldLoader: Trait({
   })
 
 TestModuleWorldLoader: ModuleWorldLoader & {
-  PointToEntityMap: K<><{
+  World: {
     mut Strings addedEntities
-    class method mut This #seqBuilder() This(addedEntities: Strings[])
-    class method mut This #from(mut This seqBuilder) seqBuilder
-
     mut method Void addEntity(mut Entity that) (
       this.#addedEntities().add(right: that.toS())
       )
     }
-  World: {}
 
   Entity: {interface
-    Point p
+    read method Point point()
     read method S toS()
     }
-  Player: {implements Entity method toS()S"Player["[this.p()]"]"}
-  RockItem: {implements Entity method toS()S"RockItem["[this.p()]"]"}
-  AppleItem: {implements Entity method toS()S"AppleItem["[this.p()]"]"}
+  Player: {implements Entity method toS()S"Player["[this.point()]"]"}
+  RockItem: {implements Entity method toS()S"RockItem["[this.point()]"]"}
+  AppleItem: {implements Entity method toS()S"AppleItem["[this.point()]"]"}
 
   WorldLoader: {}
 
   class method Void producesCorrectItems(S content, S expected) (
     mut World world = WorldLoader.loadWorld(content: content)
-    Debug.test(world.#map().addedEntities(), expected: expected)
+    Debug.test(world.addedEntities(), expected: expected)
     )
   }
 
@@ -592,7 +689,7 @@ IntegrationTest2: {
     map: Main.PointToEntityMap[],
     player: Main.Player(p: Point(x: 2Size, y: 1Size))
     )
-  world.#map().addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
+  world.addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
   Debug.test(world.asText(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|_|_|_|_|_|_|_
@@ -613,7 +710,7 @@ IntegrationTest3: {
     map: Main.PointToEntityMap[],
     player: Main.Player(p: Point(x: 2Size, y: 1Size))
     )
-  world.#map().addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
+  world.addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
   Main.Actions actions = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveDown()]
   Strings ss = Main(actions: actions, world: world)
   Debug.test(ss.val(0Size), expected: S"
