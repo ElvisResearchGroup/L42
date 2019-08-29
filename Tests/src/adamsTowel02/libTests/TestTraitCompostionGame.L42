@@ -140,7 +140,6 @@ TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
 
 ModuleWorld: Trait({
   World: {}
-  Graphics: {}
   Entity: {interface
     read method Point point()
     mut method Void point(Point that, World world)
@@ -150,7 +149,7 @@ ModuleWorld: Trait({
 
   }) & Trait({
 
-  Entity: {read method Point point()}
+  Entity: {}
   Player: {}
 
   Graphics: {
@@ -160,8 +159,7 @@ ModuleWorld: Trait({
   PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
     mut method mut Entity getEntityAt(Point that) {
       with elem in this.#vals() (
-        Point p=elem.point()
-        if p == that (return elem)
+        if elem.point() == that (return elem)
         )
       error PointNotFilled""
       }
