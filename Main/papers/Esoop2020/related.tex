@@ -2,7 +2,7 @@
 \label{s:related}
 \footnotetext{See Appendix \ref{s:runtime-verification} for related work on runtime verification.}
 %
-\subheading{Type Modifiers}
+\subheading{Reference Capabilities}
 We rely on a combination of modifiers that are supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
 Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
@@ -15,7 +15,7 @@ Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.6519
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
 
 
-Other TMs approaches like Javari~\cite{TschantzErnst05,Boyland06}
+Other approaches like Javari~\cite{TschantzErnst05,Boyland06}
 and Rust~\cite{matsakis2014rust}
 are unsuitable;
 they model weaker properties and provide back doors which are not easily verifiable as being used properly.
@@ -35,7 +35,8 @@ immutable classes must be final with only final fields that refer to immutable c
 %Instances of immutable classes are immutable objects.
 In Joe-E, every method that only takes instances of immutable classes is pure.
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
-In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}. In our work, every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
+In contrast our model has a more fine grained representation of mutability: it is \emph{reference-based} instead of \emph{class-based}.
+Thanks to this crucial difference, in our work every method taking only \Q@read@ or \Q@imm@ \emph{references} is pure, regardless of their class type; in particular, we allow the parameter of such a method to be mutated later on by other code.
 %;both in the sense that no object visible outside of the method is mutated, but also that it is deterministic.
 
 \subheading{Class invariant protocols}
@@ -43,7 +44,7 @@ Class invariants are a fundamental part of the design by contract methodology.
 Invariant protocols differ wildly and can be unsound or complicated, particular due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified,meyer2016class}. 
 
 While invariant protocols all seem to 
-check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular sound approaches include:%
+check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular approaches include:%
 %literature on class invariant accepts that sometime the object invariant may not hold,
 %and that is exacerbated because of 
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
@@ -65,11 +66,13 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 %\url{https://en.wikipedia.org/wiki/Class_invariant}}; %\item
 %constantly maintained when the object is \textit{closed};
 %invariant can be manually opened and closed by using special operations; % Add cite here!
-\item Or, as in this work, the invariant of any object which could be \emph{involved} in execution is assumed to hold. It is checked after every modification of the object or 
-the ROG of its \Q@capsule@ fields.
 \end{itemize}\SS\LS[0.5]
 \noindent These different protocols can be deceivingly similar, and 
 some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
+
+Note that all those approaches fails our strict requirements and allows for broken object to be observed.
+
+
 % use the unsound option of assuming one protocol, but actually checking another.
 
 %DONE IN INTRO breaking class invariants = bug in class code
@@ -90,7 +93,7 @@ some approaches like JML suggest verifying a simpler approach (that method calls
 %
 %\LINE
 \subheading{Security and Scalability}
-Our approach allows verifying an object's invariant independently of the actual invariants of other objects.
+Our approach allows verifying an object's invariant independently of the execution context.
 This is in contrast to the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
 Thus, static verification proceeds like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
 This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
@@ -109,18 +112,21 @@ Our approach works both  in a library setting and with the open world assumption
 Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real-world system with dynamic class loading, and could trivially be broken by a user-defined \Q@EvilSubject@.
 
 \subheading{Static Verification}
+AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14} is a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
+
+Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid! function as the invariant and injects pre and post-conditions following visible state semantics;
+however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
+Dafny is also generally highly restrictive with its rules for mutation and object construction, it also does not provide any means of performing non deterministic I/O.
+
+
 Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts and class invariants. 
-It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This is more flexible than our approach as it also allows only part of an object's ROG to be owned/encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
+It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This 
+allows invariants to query owned mutable objects whose ROG is not fully encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
 is insufficient to modify it or call its methods.
 %tells you nothing about it, hindering
 %modification and method calls.
 Spec\# also works with existing .NET libraries by annotating them with contracts, however such annotations are not verified. Spec\#, like us, does perform runtime checks for invariants and throws unchecked exceptions on failure.  However Spec\# does not allow soundly recovering from an invariant failure, since catching unchecked exceptions in Spec\# is intentionally unsound.~\cite{Leino2004ExceptionSF}
 
-
-Another system is AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14}, a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
-Dafny~\cite{DBLP:conf/sigada/Leino12} is a new language where all code is statically verified. It supports invariants with its \Q!{:autocontracts}! annotation, which treats a class's \Q!Valid! function as the invariant and injects pre and post-conditions following visible state semantics;
-however it requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.
-Dafny is also generally highly restrictive with its rules for mutation and object construction, it also does not provide any means of performing non deterministic I/O.
 
 
 

@@ -10,7 +10,7 @@
 \section{Conclusions and Future Work}
 \label{s:conclusion}
 Our approach follows the principles of \emph{offensive programming}%
-~\cite{stephens2015beginning} where:
+~\cite{stephens2015beginning} where
 no attempt to fix or recover an invalid object is performed, and
 %	\begin{itemize}
 %\item
@@ -23,9 +23,9 @@ no attempt to fix or recover an invalid object is performed, and
 
 
 %The aim of our work is only to enforce object invariants, so we do not present complexities unnecessary for this purpose.
-Our work builds on a specific form of TMs, whose
+Our work builds on a specific form of RCs and OCs, whose
 popularity is growing, and we expect future languages to support some variation of these.
-Crucially, any language already designed with such TMs
+Crucially, any language already designed with such support
 can also support our invariant protocol with minimal added complexity.
 
 
@@ -58,7 +58,8 @@ cannot be allowed in \Q@invariant@ methods, since they are not deterministically
 %this
 %use exception catching as a non deterministic conditional choice, 
 %allowing non deterministic behaviour.
-Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that enables catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap sizes.
+Currently L42 never allows catching them, however we could also write a (native) capability method (which thus can't be used inside an invariant) that enables catching them.
+% Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap sizes.
 
 %Other directions that could be investigated to improve our work include the addition of syntax sugar to ease the burden of the box pattern, as well as type modifier inference.
 
@@ -71,7 +72,7 @@ Currently L42 never allows catching them, however we could also write a (native)
 In literature, both static and runtime verification discuss
 the correctness of common programming patterns in conventional languages.
 Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object-oriented programming.
- Here instead we build on languages using TMs and OCs to tame the use of imperative features. In this way
+ Here instead we build on languages using RCs and OCs to tame the use of imperative features. In this way
 we have a fresh start where static variables are disallowed, unchecked exceptions require care to be captured, and I/O is allowed only when an opportune capability object is reachable.
 Following those restrictions allow simpler reasoning.
 The philosophy of our approach is to be like an extended type system: 
