@@ -202,9 +202,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("({interface #norm{}})")
    ),new AtomicTest(()->
    pass("({interface #typed{}})")//TODO also test canBeClassAny present
-//   ),new AtomicTest(()->
-//   pass("({interface #norm{typeDep=}})")
-
+   ),new AtomicTest(()->
+   pass("({interface #norm{typeDep=This0.A, This2.B, This1.C}})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{coherentDep=This1.C}})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{friends=This1.C}})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{usedMethods=This1.C.foo(x,y)}})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{privateSubtypes=This1.C}})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{refined=bar(x,y)}})")
+   ),new AtomicTest(()->
+   pass("({interface #norm{friends=This1.C canBeClassAny}})")
    /*),new AtomicTest(()->
    pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(doct(P)x)info|}|]|")
    ),new AtomicTest(()->

@@ -166,11 +166,19 @@ public class ToSVisitor extends CollectorVisitor{
     infoItem("usedMethods",info.usedMethods());
     infoItem("privateSubtypes",info.privateSubtypes());
     infoItem("refined",info.refined());
+    boolInfoItem(info.canBeClassAny(),"canBeClassAny");
     c("}");
+    }
+  private void boolInfoItem(boolean flag,String text){
+    if(!flag){return;}
+    separeFromChar();
+    c(text);
     }
   private void infoItem(String label,List<? extends Visitable<?>> l){
     if(l.isEmpty()){return;}
-    c(label+"=("); seq(empty,l,", ");c(")");
+    separeFromChar();
+    c(label+"=");
+    seq(empty,l,", ");
     }  
   public void visitMWT(Core.L.MWT mwt){
     visitDocs(mwt.docs());

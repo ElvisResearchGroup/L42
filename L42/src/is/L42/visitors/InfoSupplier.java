@@ -52,15 +52,15 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     return av.visitSelector(si);
     }
 
-  <A,T>void fillInfo(String name, List<A> as, Supplier<List<T>> get, Consumer<List<T>> set,Function<A,T>f){
-    if(as==null){return;}
+  <Z,A,T>void fillInfo(String name, Z z,Function<Z,List<A>>as, Supplier<List<T>> get, Consumer<List<T>> set,Function<A,T>f){
+    if(z==null){return;}
     if(get.get()!=null){
       String msg="Error: invalid syntax for Info:"
       +"\n repeated information: "+name;
       inject.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
       result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
       }
-    set.accept(L(as,(c,ei)->c.add(f.apply(ei))));
+    set.accept(L(as.apply(z),(c,ei)->c.add(f.apply(ei))));
     if(get.get().isEmpty()){
       String msg="Error: invalid syntax for Info:"
       +"\n empty information for: "+name;
@@ -69,7 +69,8 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       }
     }
 
-  void boolFlag(String name, Supplier<Boolean> get, Consumer<Boolean> set){
+  void boolFlag(String name, Object z,Supplier<Boolean> get, Consumer<Boolean> set){
+    if(z==null){return;}    
     if(get.get()!=null){
       String msg="Error: invalid syntax for Info:"
       +"\n repeated information: "+name;
@@ -93,13 +94,13 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       }
     boolean isTyped=r.res.infoNorm()==null;
     for(var b:r.res.infoBody()){
-      fillInfo("typeDep",b.typeDep().path(),()->typeDep,v->typeDep=v,this::pf);
-      fillInfo("coherentDep",b.coherentDep().path(),()->coherentDep,v->coherentDep=v,this::pf);
-      fillInfo("friends",b.friends().path(),()->friends,v->friends=v,this::pf);
-      fillInfo("usedMethods",b.usedMethods().pathSel(),()->usedMethods,v->usedMethods=v,this::psf);
-      fillInfo("privateSubtypes",b.privateSubtypes().path(),()->privateSubtypes,v->privateSubtypes=v,this::pf);
-      fillInfo("refined",b.refined().selector(),()->refined,v->refined=v,this::sf);
-      boolFlag("canBeClassAny",()->canBeClassAny,v->canBeClassAny=v);
+      fillInfo("typeDep",b.typeDep(),z->z.path(),()->typeDep,v->typeDep=v,this::pf);
+      fillInfo("coherentDep",b.coherentDep(),z->z.path(),()->coherentDep,v->coherentDep=v,this::pf);
+      fillInfo("friends",b.friends(),z->z.path(),()->friends,v->friends=v,this::pf);
+      fillInfo("usedMethods",b.usedMethods(),z->z.pathSel(),()->usedMethods,v->usedMethods=v,this::psf);
+      fillInfo("privateSubtypes",b.privateSubtypes(),z->z.path(),()->privateSubtypes,v->privateSubtypes=v,this::pf);
+      fillInfo("refined",b.refined(),z->z.selector(),()->refined,v->refined=v,this::sf);
+      boolFlag("canBeClassAny",b.canBeClassAny(),()->canBeClassAny,v->canBeClassAny=v);
       }
     if(result!=null){return result;}
     List<P> empty=L();
