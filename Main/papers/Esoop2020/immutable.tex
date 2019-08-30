@@ -9,13 +9,13 @@ Many verification approaches take advantage of the separation between primitive/
 However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
 
 First we consider a simple case, an invariant over fields of \Q@imm@ types;
-\Q@Person@ has a single immutable (non final) field \Q@name@:
+\Q@Person@ has a single immutable (and not final) field \Q@name@:
 \begin{lstlisting}
 class Person {
   read method Bool invariant() { return !name.isEmpty(); }
   private String name;//the default modifier imm is applied here
   read method String name() { return this.name; }
-  mut method String name(String name) { this.name = name; }
+  mut method Void name(String name) { this.name = name; }
   Person(String name) { this.name = name; }  }
 \end{lstlisting}
 The \Q@name@ field is not final: \Q@Person@s can change state during their lifetime. The ROGs of all of \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
@@ -33,7 +33,7 @@ class Person { .. // Same as before
 Programmers often manually check for invariants by placing assertions in the same places we did in this example.
 However, if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs and RCs with SES, those checks would not be sufficient.
 
-\subheading{Unrestricted Access To Capability Objects?} Allowing the \Q@invariant@ method to (indirectly) perform a non deterministic operation by creating new capability objects or mutating existing ones, would break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
+\subheading{Unrestricted Access To Capability Objects?} Allowing \Q@invariant()@ to (indirectly) perform a non-deterministic operation by creating new capability objects or mutating existing ones, would break our guarantee that (manually) calling \Q@invariant()@ always returns \Q!true!.
 Consider this use of person;
 where \Q@myPerson.invariant()@ may randomly fails:
 \begin{lstlisting}[morekeywords={assert}]
@@ -49,7 +49,7 @@ method mut Person createPersons(String name) {
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
 
-Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
+Despite the code for \Q@Person.invariant()@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
 restricts their creation, the above example would be prevented.
 
@@ -57,7 +57,7 @@ restricts their creation, the above example would be prevented.
 Rust and Javari 
 allows interior mutability:
 the ROG of an `immutable' object can be mutated through back doors.
-Such back doors would allow the \Q@invariant@ method to store and read information about previous calls.
+Such back doors would allow the \Q@invariant()@ method to store and read information about previous calls.
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
@@ -137,9 +137,13 @@ The ability to catch and recover from invariant failures allows programs to take
 Since we represent invariant failures by throwing unchecked exceptions, programs can recover from them with a conventional \Q@try@--\Q@catch@.
 %\REVComm{
 %	Due to the guarantees of strong exception safety, the only trace that an invalid object existed is the exception thrown; any object that has been mutated/created during the \Q@try@ block is now unreachable (as happens in alias burying~\cite{boyland2001alias}).
-	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable, as happens in alias burying~\cite{boyland2001alias}. In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant@ methods). These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
+	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable, as happens in alias burying~\cite{boyland2001alias}.
+% In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant()@ methods).
+%NOTE the text above was pointless since the invariant method can not see 'this' directly anywhay!
+ These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
-If instead we were to not enforce strong exception safety, an invalid object could be made reachable:
+If instead we were to not enforce strong exception safety, an invalid object could be made reachable.
+The following code is ill-typed since we try to mutate \Q@bob@ in a try catch that capture all unchecked exception; thus including also invariant failures:
 %\saveSpace
 \begin{lstlisting}[morekeywords={assert}]
 mut Person bob = new Person("bob");
@@ -147,6 +151,12 @@ mut Person bob = new Person("bob");
 try { bob.name(""); } catch (Error t) { } // ILL-TYPED IN L42
 assert bob.invariant(); // fails!
 \end{lstlisting}
+This variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.
+\begin{lstlisting}[morekeywords={assert}]
+try {mut Person bob = new Person("bob");    bob.name("");} 
+catch (Error t) { }
+\end{lstlisting}
+
 %Recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
 %Since calls to \Q@invariant@ may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.

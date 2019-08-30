@@ -5,8 +5,8 @@
 Representation invariants (sometimes called class invariants or object invariants) are
 a useful concept when reasoning about software correctness in Object Oriented (OO) languages and are predicates on the state of an object and its ROG (reachable object graph).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
-In our system, a class specifies its invariant by defining a boolean method called \Q@invariant@.
-We say that an object's invariant holds when its \Q@invariant@ method would return \Q@true@. 
+In our system, a class specifies its invariant by defining a boolean method called \Q@invariant()@.
+We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@. 
 We do this, like Dafny~\cite{DBLP:conf/sigada/Leino12}, to minimise special syntactic and type-system treatment of invariants.%, making them easier to understand for users, whereas most other approaches treat invariants as a special annotation with its own syntax.
 
 Invariants are designed to hold in most moments, but 
@@ -34,10 +34,10 @@ class Range{ field min; field max;//assumed getters and setters
     this.max(max); }  }
 \end{lstlisting}
 In this first example we omit types to focus on the behaviour.
-Under the visible state semantic, this code of \Q@set@ is ok:
-\Q@min@ may temporarily break the invariant, that is fixed the moment
-after by \Q@max@. Visible state allows to break the invariant in that point, since
-we are inside the method \Q@set@ of \Q@Range@; thus there is an active method.
+Under the visible state semantic, this code of \Q@set(min,max)@ is ok:
+\Q@min(min)@ may temporarily break the invariant, that is fixed the moment
+after by \Q@max(max)@. Visible state allows to break the invariant in that point, since
+we are inside the method \Q@set(min,max)@ of \Q@Range@; thus there is an active method.
 However, under our stricter approach, we consider this code to be intrinsically wrong. The moment
 \Q@this.max(max)@ is called, the invariant of \Q@this@ may be broken, and
 the invariant of an object involved in execution can never be broken. For example, if we was to inject a call
@@ -61,7 +61,7 @@ class Range{ field box; //a BoxRange
   method set(min, max){
     return this.box().set(min,max); }  }
 \end{lstlisting}
-The code of \Q@Range.set@ does not violate our invariant protocol:
+The code of \Q@Range.set(min,max)@ does not violate our invariant protocol:
   since \Q@this@ $\notin \mathit{ROG}($\Q@this.box()@$)$, the call
 \Q@BoxRange.set@ works in an environment where the \Q@Range@ object is
 not involved in execution, thus its invariant can be temporarily broken.
@@ -73,8 +73,7 @@ Many VMs and compilers optimize away wrapper objects in many circumstances.\cite
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system, and no matter how \Q@Range@ objects are used, a broken \Q@Range@ objects will never be involved in execution.
 
 \subheading{Summary:}
-In the reminder of this work, we discuss how to combine runtime checks and Reference and Object Capabilities to create a convenient language where our strict invariant protocol is soundly enforced; even in the presence of mutations, I/O, non
-determinism and exceptions, all under the open world assumption, when
+In the reminder of this work, we discuss how to combine runtime checks and Reference and Object Capabilities to create a convenient language where our strict invariant protocol is soundly enforced; even in the presence of mutations, I/O, non-determinism and exceptions, all under the open world assumption, when
 we only need to assume that all code is well typed.
 
 We formalise our approach and (in the Appendix) prove that our protocol soundly enforce invariants.

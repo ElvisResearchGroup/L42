@@ -138,13 +138,13 @@ class Family {
 }
 \end{lstlisting}
 Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
-Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay! is atomic: it updates all its contained \Q!Person!s together.
+Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay(dayOfYear)!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay(dayOfYear)! is atomic: it updates all its contained \Q!Person!s together.
 %This capture the intention of consistently calling \Q@Person.processDay@ once for all the persons as an atomic operation.
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
 Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause semantic problems if, for example, a child was updated before their parent.
 
 %\loseSpace
-We have a simple test case that calls \Q!processDay! on a \Q!Family! $1{,}095$ ($3\times365$) times.
+We have a simple test case that calls \Q!processDay(dayOfYear)! on a \Q!Family! $1{,}095$ ($3\times365$) times.
 %$3\times365$ times ($1{,}095$ days):
 \begin{lstlisting}
 // 2 parents (one 32, the other 34), and no children
@@ -179,17 +179,17 @@ similarly, our approach prevents the exponential explosion of nested invariant c
 
 We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D and Eiffel perform $7{,}995$, and finally, Spec\# performs only $1{,}104$.
 
-Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay! and \Q!addChild! call (for both \Q!Person! and \Q!Family!). 
+Our protocol performs a single invariant check at the end of each constructor,  \Q!processDay(dayOfYear)! and \Q!addChild(child)! call (for both \Q!Person! and \Q!Family!). 
 
-The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay! and \Q!addChild!.
+The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay(dayOfYear)! and \Q!addChild(child)!.
 
 The results for Spec\# are very interesting, since it performs less checks than L42.
-This is the case since \Q!processDay! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block, which will perform a runtime invariant check. 
+This is the case since \Q!processDay(dayOfYear)! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block, which will perform a runtime invariant check. 
 
 Spec\# relies on the absence of arithmetic overflow, and performs runtime checks to ensure this%
 \footnote{%
 Runtime checks are enabled by a compilation option; when they fail, unchecked exceptions are thrown.%
-}, as such the verifier concludes that the field increment in \Q!processDay! cannot break the invariant.
+}, as such the verifier concludes that the field increment in \Q!processDay(dayOfYear)! cannot break the invariant.
 Spec\# is able to avoid some invariant checks in this case 
 by relying on all arithmetic operations performing runtime overflow checks;
 whereas integer arithmetic in L42 has the common wrap around semantics.
@@ -216,7 +216,7 @@ whereas integer arithmetic in L42 has the common wrap around semantics.
 %This static reasoning is performed under the assumption that arithmetic overflow will not occur, thus Spec\# is considering a different semantic for \Q@Int@ then L42. Spec\# can inject run-time checks to enforce such arithmetic semantic.
 
 
-The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. In order to implement the \Q!addChild! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
+The annotations we had to add in the Spec\# version\footnote{The Spec\# code is in the artifact.} were similar to our previous examples, however since the fields of \Q!Person! all have immutable classes/types, we only needed to add the invariant itself. In order to implement the \Q!addChild(child)! method we were forced to do a shallow clone of the new child (this also caused a couple of extra runtime invariant checks). Unlike L42 however, we did not need to create a box to hold the \Q!parents! and \Q!children! fields, instead we wrapped the body of the \Q!Family.processDay(dayOfYear)! method in an \Q!expose (this)! block. In total we needed 16 annotations, worth a total of 45 tokens, this is worse than the code following our approach that we showed above, which has 14 annotations and 14 tokens.
 
 
 \subheading{Encoding examples originally proposed in Spec\# Papers}
@@ -224,7 +224,7 @@ Their are many published papers about the pack/unpack methodology used by Spec\#
 \SSI\begin{itemize}
 	\item \emph{Verification of Object-Oriented Programs with Invariants:}~\cite{DBLP:journals/jot/BarnettDFLS04} this paper introduces their methodology. In their examples section (pages 41--47), they show how their methodology would work in a class heirarchy with \Q!Reader! and \Q!ArrayReader! classes. The former represents something that reads characters, whereas the latter is a concrete implementation that reads from an owned array. They extend this further with a \Q!Lexer! that owns a \Q!Reader!, which it uses to read characters and parse them into tokens. They also show an example of a \Q!FileList! class that owns an array of filenames, and a \Q!DirFileList! class that extends it with a stronger invariant. All of these examples can be represented in L42\footnote{Our encodings are in the artifact.}. The most interesting considerations are as follow:
 	\begin{itemize}
-		\item Their \Q!ArrayReader! class has a \Q!relinquishReader! method that `unpacks' the \Q!ArrayReader! and returns its owned array.
+		\item Their \Q!ArrayReader! class has a \Q!relinquishReader()! method that `unpacks' the \Q!ArrayReader! and returns its owned array.
 %This allows other code to mutate the array freely,
 %Then other code can mutate such relinquished array freely.
 The returned array can then be freely mutated and passed around by other code.
@@ -235,7 +235,7 @@ In contrast, our approach requires the invariant of all usable objects to hold.
 %In our approach we do not have any visible unusable objects. 
 We can still relinquish the array, but at the cost of making the \Q!ArrayReader! forever unreachable. This can be done by
 % However, we can
- declaring \Q!relinquishReader! as a \Q!capsule method!, this works since our type modifier system guarantees that the receiver of such a method is not aliased, and hence cannot be used again. Note that Spec\# itself cannot represent the \Q!relinquishReader! method at all, since it does not provide explicit pack and unpack operations, rather its \Q!expose! statement performs both an unpack and a pack, thus we cannot unpack an \Q!ArrayReader! without repacking it in the same method.
+ declaring \Q!relinquishReader()! as a \Q!capsule method!, this works since our type modifier system guarantees that the receiver of such a method is not aliased, and hence cannot be used again. Note that Spec\# itself cannot represent the \Q!relinquishReader()! method at all, since it does not provide explicit pack and unpack operations, rather its \Q!expose! statement performs both an unpack and a pack, thus we cannot unpack an \Q!ArrayReader! without repacking it in the same method.
 %(unless we were to throw an unchecked-exception, however this is unsound~\cite{Leino2004ExceptionSF}).
 		\item Their \Q!DirFileList! example inherits from a \Q!FileList! which has an invariant, and a final method, this is something their approach was specifically designed to handle. As L42 does not have traditional subclassing, we are unable to express this concept fully, but L42 does have code reuse via trait composition, in which case \Q!DirFileList! can essentially copy and paste the methods from \Q!FileList!, and they will automatically enforce the invariant of \Q!DirFileList!. %The disadvantage however is that if \Q!FileList! is a trait, it cannot also be a type, and so we cannot have a non-final type/class with a concrete invariant, however one can always have a final class with an invariant that wraps over a non final one. This is not an inherent limitation with our invariant protocol, but rather one of the L42 language itself.
 	\end{itemize}

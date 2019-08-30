@@ -45,8 +45,8 @@ Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q
 
 In particular, the above code demonstrates that our system can:
 \SSI\begin{itemize}
-\item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the \Q!invariant! method.
-\item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner! can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant! will only be checked at the end of the loop.
+\item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the \Q!invariant()! method.
+\item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner(ts)! can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant()! will only be checked at the end of the loop.
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before the end of the loop.
 \item Pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not its invariant: if you have an \Q!Account!, you can be sure that its \Q!income > expenses!, but not if you have an \Q!AccountBox!.
 \item Wrap normal methods over capsule mutators: \Q!transfer! is not a capsule mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
@@ -58,8 +58,8 @@ In particular, the above code demonstrates that our system can:
 Recall the GUI case study in Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \Q!Widget!.
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
-Suppose we want to allow \Q@Widget@s to be scaled, we could add \Q@mut@ setters for \Q@width@, \Q@height@, \Q@left@, and \Q@top@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
-to mention their \Q!children! in their \Q!invariant!.
+Suppose we want to allow \Q@Widget@s to be scaled, we could add \Q@mut@ setters for \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children()@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom(w)@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
+to mention their \Q!children()! in their \Q!invariant()!.
 
 % In the above \Q@SafeMovable@ we only had one capsule mutator: \Q@dispatch@. However suppose a \Q@Widget@ wants to directly mutate it's descendents, however it can't do that since \Q@Widget.children@ returns a \Q@read Widgets@, if it returned a \Q@mut Widgets@ then \Q@SafeMovable@ could not be implement, as it's children are contained inside a capsule-field. 
 % At first glance, it may seem that capsule mutators allow only very limited kinds %of mutation.
@@ -67,7 +67,7 @@ to mention their \Q!children! in their \Q!invariant!.
 % Consider the following
 % simple pattern to allow flexible use of encapsulated content: define a
 
-A simple and practical solution would be to define a \Q@transform@ method in \Q@Widget@, and a \Q@Transformer@ interface 
+A simple and practical solution would be to define a \Q@transform(t)@ method in \Q@Widget@, and a \Q@Transformer@ interface 
 like so:\footnote{A more general transformer could return a generic \Q@read R@.}
 \begin{lstlisting}[escapechar=\%]
 interface Transformer<T> { method Void apply(mut T elem); }
@@ -85,7 +85,7 @@ class SafeMovable { ...
 % Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
 %,  i.e. they can't see or update the other \Q!capsule! fields.
-The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom@ function could be simply written as:
+The \Q@transform@ method offers an expressive power similar to \Q@mut@ getters, but prevents \Q@Widgets@ from leaking out.  With a \Q@Transformer@, a \Q@zoom(w)@ function could be simply written as:
 \begin{lstlisting}
 static method Void zoom(mut Widget w) {
   w.transform(ws -> { for (wi : ws) { zoom(wi,scale); }});
@@ -122,7 +122,7 @@ Here we rely on the box and the transform patterns to encode
 a general \Q@Graph@
 of \Q@Node@s, that can be defined as a library.
 The user of the library can define personalized kinds of nodes,
-with their personalized (sub-)invariant \Q@subInvariant@.
+with their personalized (sub-)invariant \Q@subInvariant(nodes)@.
 The library will ensure that no matter how it is used, all the 
 user defined sub invariants of the inner nodes are preserved.
 The \Q@Node@s, even if user defined, are guaranteed to be encapsulated by the \Q@Graph@.
@@ -180,8 +180,8 @@ Here we define a \Q@MyNode@ class, where the subinvariant can express any proper
 
 We can define methods in \Q@MyNode@ to add our nodes
 to graphs and to connect with other nodes.
-Note that the method \Q@addToGraph@ is \Q@capsule@; this ensures that the node is not in any other graph.
-On the other side, the method \Q@connectWith@ takes a \Q@read this@, even if it clearly intend to modify the ROG of \Q@this@.
+Note that the method \Q@addToGraph(g)@ is \Q@capsule@; this ensures that the node is not in any other graph.
+On the other side, the method \Q@connectWith(other,g)@ takes a \Q@read this@, even if it clearly intend to modify the ROG of \Q@this@.
 It works by recovering a \Q@mut@ reference to \Q@this@ from the \Q@mut Graph@.
 
 We now examine the implementation of those two methods:
@@ -209,11 +209,11 @@ As you can see, both methods relies on the Transform Pattern.
 Those transformation operations are very general since they
 can take in input the \Q@mut Nodes@ content of the graph and 
 any \Q@capsule@ or \Q@imm@ data from outside.
-Note how in \Q@connectWith@ we can not see the \Q@read this@ or the \Q@read other@
+Note how in \Q@connectWith(other,g)@ we can not see the \Q@read this@ or the \Q@read other@
 inside the lambda, but we need to get their (immutable) indexes 
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.
-On the other side, note how in \Q@addToGraph@ we can see the reference to \Q@capsule this@ inside the lambda.
+On the other side, note how in \Q@addToGraph(g)@ we can see the reference to \Q@capsule this@ inside the lambda.
 
 Concluding, our approach imposes a very defensive programming style
 that is not currently commonly used in programming practice.

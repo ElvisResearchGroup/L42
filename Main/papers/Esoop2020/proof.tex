@@ -126,7 +126,7 @@ The proof is by induction: after 0 reduction steps, $e$ cannot contain a monitor
 \end{proof}
 
 \subheading{Determinism}
-We can use our object capability discipline (described in Section \ref{s:formalism}) to prove that the \Q!invariant! method is deterministic and does not mutate existing memory:%
+We can use our object capability discipline (described in Section \ref{s:formalism}) to prove that the \Q!invariant()! method is deterministic and does not mutate existing memory:%
 \SS\begin{Lemma}[Determinism]\rm If $\VS(\s, \EV[l.\invariant])$ and
 \begin{iitemize}
 \item[] $\s|\EV[l.\invariant] \rightarrow \s'|\EV[e'] \rightarrow^{+} \s''|\EV[e'']$,
@@ -138,9 +138,9 @@ We can use our object capability discipline (described in Section \ref{s:formali
 The proof will proceed by induction.
 
 \emph{Base case}: If $\s|\EV[l.\invariant] \rightarrow \s'|\EV[e']$, then the reduction was performed by \textsc{mcall}.
-By our well-formedness rules, the \Q!invariant! method takes a \Q!read! \Q!this!, so by \thm{Method Consistency} and \thm{Read Consistency}, we have that $l$ is not \muty in $e'$. By our well-formedness rules on method bodies and \textsc{mcall}, we have that no other $l'$ was introduced in $e'$, thus nothing is $\muty$ in $e'$.
+By our well-formedness rules, the \Q!invariant()! method takes a \Q!read! \Q!this!, so by \thm{Method Consistency} and \thm{Read Consistency}, we have that $l$ is not \muty in $e'$. By our well-formedness rules on method bodies and \textsc{mcall}, we have that no other $l'$ was introduced in $e'$, thus nothing is $\muty$ in $e'$.
 
-The only non-deterministic single reduction steps are for calls to \Q!mut! methods on a \Q!Cap!; however \Q!invariant! is a \Q!read! method, so even if $l$ = $c$, we have $\s|\EV[l.\invariant] \Rightarrow \s'|\EV[e']$. In addition, since \textsc{mcall} does not mutate $\s'$ with have $\s' = \s$.
+The only non-deterministic single reduction steps are for calls to \Q!mut! methods on a \Q!Cap!; however \Q!invariant()! is a \Q!read! method, so even if $l$ = $c$, we have $\s|\EV[l.\invariant] \Rightarrow \s'|\EV[e']$. In addition, since \textsc{mcall} does not mutate $\s'$ with have $\s' = \s$.
 
 \emph{Inductive case}: Consider $\s|\EV[l.\invariant] \Rightarrow^+ \s'|\EV[e'] \rightarrow \s''|\EV[e'']$. We inductively assume that $\forall l' \in \dom(\s)$, not $\muty(\s', \EV, e', l)$; thus by \thm{Mut Consistency}, each such $l'$ is not \muty in $e'$. We also inductively assume that $\s' = \s,\_$, since nothing in $\s$ was \muty: by \thm{Mut Update}, our reduction can't have modified anything in \s, i.e. $\s'' = \s,\_$. As our reduction rules never remove things from memory, $c \in \dom(\s)$, so it can't by $\muty$ in $e'$. By definition of \Q!Cap!, no other instances of \Q!Cap! exist, thus by \thm{Type Consistency}, no \Q!mut! methods of \Q!Cap! can be called; since calling such a method is the only way to get a non-deterministic reduction, we have $\s'|\EV[e'] \Rightarrow \s''|\EV[e'']$.
 \end{proof}
@@ -261,7 +261,7 @@ We will first proceed by cases on the property we need to prove, and then by the
 			\item Suppose $m$ is not a capsule mutator, by our well-formedness rules for method bodies, $e$ doesn't contain a monitor.
 			\begin{itemize}
 			\item Since $m$ is not a capsule mutator, if $e = \E[l.f]$, for some $f \in \cf(\s, l)$, we must have that $m$ was not a \Q!mut! method. So by \thm{Mut Access} and \thm{Method Consistency}, we have that $\Ss; \emptyset; \EV[\E] \nvdash l.f : \Kw{mut}\,\_$ only if $m$ was a \Q!capsule! method, which by \thm{Method Consistency}, would mean that $\Ss; \emptyset; \EV[\E[\h.f]] \vdash l : \Kw{capsule}\,\_$. So regardless of what fields $e$ accesses on $l$, we can't have broken \NCM for $l$.
-			\item Consider $l' \neq l$, since fields are instance private, and by our well-formedness rules on method bodies, $l' \notin e$, thus we can't have introduced any field accesses on $l$. As $e$ doesn't contain monitors either, we haven't broken \NCM for $l'$.
+			\item Consider $l' \neq l$, since fields are instance-private, and by our well-formedness rules on method bodies, $l' \notin e$, thus we can't have introduced any field accesses on $l$. As $e$ doesn't contain monitors either, we haven't broken \NCM for $l'$.
 		\end{itemize}
 		\item Otherwise, $e = \M{l}{e'}{l.\invariant}$. By our rules for capsule mutators, $m$ must be a \Q!mut! method with only \Q!imm! and \Q!capsule! parameters, thus by \thm{Type Consistency}, $l$ must have been \Q!mut!, and each $v_i$ must be \Q!imm! or \Q!capsule!. By \thm{Imm Consistency} and \thm{Capsule Consistency}, $l$ can't be reachable from any $v_i$. Since capsule mutators use \Q!this! only once, to access a \Q!capsule! field, $e' = \E[l.f]$, for some $f \in \cf(\s, l)$. Since $l$ is not \reach from any $v_i$, $l \notin \E$, and by our well-formedness rules for method bodies, $l$ is not \reach from any $l' \in \E$, thus \HNO now holds for $l$.
 		\end{itemize}	
@@ -335,7 +335,7 @@ Now we assume that everything reachable from the previous \VS was \valid or \mon
 	\item (\textsc{update}) $\s|\EV[l.f\equals v]\rightarrow \s'|\EV[e']$, where  $e'=\M{l}{l}{l.\invariant}$:
 	\begin{itemize}
 		\item Clearly $l$ is now $\mony$.
-		\item Consider any other $l'$, where $l \in \rog(\s,l')$ and $l'$ was \valid; now suppose we just made $l'$ not \valid. By our well-formedness criteria, \Q@invariant@ can only accesses \Q@imm@ and \Q@capsule@ fields, thus by \thm{Imm Consistency} and \thm{Mut Update}, we must have that $l$ was in the \rog of $l'.f'$, for some $f' \in \cf(\s, l')$. Since $l \neq l'$, $l'$ can't have been \WE. Thus, by \thm{Capsule Field Soundness}, $l'$ was \HNO, and $\EV = \EV'[\M{l'}{\EV''}{\_}]$:
+		\item Consider any other $l'$, where $l \in \rog(\s,l')$ and $l'$ was \valid; now suppose we just made $l'$ not \valid. By our well-formedness criteria, \Q@invariant()@ can only accesses \Q@imm@ and \Q@capsule@ fields, thus by \thm{Imm Consistency} and \thm{Mut Update}, we must have that $l$ was in the \rog of $l'.f'$, for some $f' \in \cf(\s, l')$. Since $l \neq l'$, $l'$ can't have been \WE. Thus, by \thm{Capsule Field Soundness}, $l'$ was \HNO, and $\EV = \EV'[\M{l'}{\EV''}{\_}]$:
 		\begin{itemize}
 			\item If $\EV''[l.f \equals v] = \E[l'.f']$, then by \HNO, $l'$ is not reachable from \E. The monitor must have been introduced by an \textsc{mcall}, on a capsule mutator for $l'$. Since a capsule mutator can take only \Q!imm! and \Q!capsule! parameters, by \thm{Type Consistency}, \thm{Imm Consistency}, and \thm{Capsule Consistency}, $l$ cannot be in their \rog{}s (since $l$ was in the \rog of $l'$, and $l$ is \Q!mut!). Thus the only way for the body of the monitor to access $l$ is by accessing $l'.f'$.
 			Since capsule mutators can access \Q!this! only once, and by the proof of \thm{Capsule Field Soundness}, there is no other $l'.f'$ in $\E[l'.f']$, nor was there one in a previous stage of reduction: hence $l$ is not \reach from $\E$. This is in contradiction with us having just updated $l$.
@@ -386,7 +386,7 @@ If $\VS(\s, \EV[r_l])$, then either $\valid(\s,l)$ or $\trusted(\EV,r_l)$.
 \noindent Suppose $\VS(\s, e)$, and $e = \EV[r_l]$. Suppose $l$ is not $\valid$; since $l$ is \reach, by \thm{Stronger Soundness}, $\mony(e,l)$, $e = \E[\M{l}{e_1}{e_2}]$, and either:
 \begin{iitemize}
 	\item $\EV = \E[\M{l}{\E'}{e_2}]$, that is $r_l$ (which by definition cannot equal $l$) was found inside of $e_1$, this contradicts the definition of \mony, or
-	\item $\EV = \E[\M{l}{e_1}{\E'}]$, and thus $r_l$ was found inside $e_2$. By our reduction rules, all monitor expressions start with $e_2=l.\invariant$; if this has yet to be reduced, then $\E'[r_l] = l.\invariant$, thus $r_l$ is \trusted. The next execution step will be an \textsc{mcall}, so by our well-formedness rules for \Q!invariant!, $e_2$ will only contain $l$ as the receiver of a field access; so if we just performed said \textsc{mcall}, $r_l = l.f$: hence $r_l$ is trusted. Otherwise, by \thm{Imm Not Circular}, \thm{Capsule Field Soundness}, and \HNC, no further reductions of $e_2$ could have introduced an occurrence of $l$, so we must have that $r_l$ was introduced by the \textsc{mcall} to \Q!invariant!, and so it is \trusted.
+	\item $\EV = \E[\M{l}{e_1}{\E'}]$, and thus $r_l$ was found inside $e_2$. By our reduction rules, all monitor expressions start with $e_2=l.\invariant$; if this has yet to be reduced, then $\E'[r_l] = l.\invariant$, thus $r_l$ is \trusted. The next execution step will be an \textsc{mcall}, so by our well-formedness rules for \Q!invariant()!, $e_2$ will only contain $l$ as the receiver of a field access; so if we just performed said \textsc{mcall}, $r_l = l.f$: hence $r_l$ is trusted. Otherwise, by \thm{Imm Not Circular}, \thm{Capsule Field Soundness}, and \HNC, no further reductions of $e_2$ could have introduced an occurrence of $l$, so we must have that $r_l$ was introduced by the \textsc{mcall} to \Q!invariant()!, and so it is \trusted.
 \end{iitemize}
 Thus either $l$ is $\valid$ or $r_l$ is \trusted.
 \end{proof}

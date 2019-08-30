@@ -1,13 +1,13 @@
 \section{Background on Reference and Object Capabilities}
 \label{s:TMsAndOCs}
-Reasoning about imperative object-oriented (OO) programs is a non trivial task,
+Reasoning about imperative object-oriented (OO) programs is a non-trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning;
 instead of using automated theorem proving, 
 it is becoming more popular to verify aliasing and immutability using a type system.
 For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use Reference Capabilities (RCs)\footnote{RCs are called \emph{Type Modifiers} in some other works.} and Object Capabilities (OCs) to statically ensure  deterministic parallelism and the absence of data-races.
 While studying those languages, we discovered an elegant way to enforce invariants: we use RCs and OCs to restrict how/when the result of invariant methods change; this is done by restricting I/O, and how aliasing and mutation affect the state seen by the invariant.
 % We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
-%We aim to leverage on these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
+%We aim to leverage these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
 %when the same expressive power can be expressed using (verbose) programming patterns;
 %see Appendix~\ref{s:patterns}.
 %This approach allows our sound invariant protocol to only rely on a few simple and easy to understand rules.
@@ -23,17 +23,18 @@ These projects are quite large: several million lines of code are written in Gor
 Type modifiers
  are a well known mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
  allowing static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):
-%\SSI\begin{itemize}
+%\begin{itemize}
 
 \noindent\rule{1.2ex}{1.2ex} Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased as in most imperative languages without reference capabilities.
-An object referenced as \Q!mut! is an \emph{mutable object}.
 
-\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object referenced as \Q!imm! is an \emph{immutable object}. Note: objects may be mutated and \emph{later} become immutable.
+\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object referenced as \Q!imm! is an \emph{immutable object}.
+Any other other object is a \emph{mutable object}.
+Thus, all objects are born mutable, may be mutated and \emph{later} become immutable.
 
 \noindent\rule{1.2ex}{1.2ex} Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.
 
 \noindent\rule{1.2ex}{1.2ex} Encapsulated (\Q@capsule@):
-every non-immutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.
+every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.
 
 In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (see linear/affine types~\cite{boyland2001alias}). 
 Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
@@ -57,7 +58,7 @@ ip = new Point(3, 5); // ok, ip is not final
 \end{lstlisting} 
 
 RCs influence the access to the whole ROG; not just the referred object itself, as in the full/deep interpretation of RCs~\cite{ZibinEtAl10,Potanin2013}:
-\SSI\begin{itemize}
+\begin{itemize}
   \item Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all the objects in the ROG of an immutable object are also immutable,
   \item A \Q!mut! field accessed from a \Q@read@ reference produces a \Q@read@ reference; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.
 %  \item no \emph{down}-casting is allowed between different type modifiers.
@@ -68,7 +69,7 @@ RCs influence the access to the whole ROG; not just the referred object itself, 
 Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature. In order for access to a \Q!capsule! fields to always produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
-In contrast, Pony treats \Q!capsule! fields the same as \Q!capsule! variables: it does not guarantee that they contain a \Q!capsule! reference, as it provides non-destructive reads.
+In contrast, Pony treats \Q!capsule! fields the same as \Q!capsule! variables: Pony does not guarantee that they contain a \Q!capsule! reference, as Pony provides non-destructive reads.
 %Pony treats \Q!capsule! fields in the same way as it treats local variables: reading a \Q!capsule! field creates a %non-\Q!capsule! alias to it's value, 
 %do not return a \Q!capsule!, but destructive reads do.
 %rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
@@ -111,7 +112,7 @@ This requires the absence of \Q!read! and \Q!mut! \emph{global/static} variables
 This is the main improvement on the flexibility of RCs in recent literature~\cite{ServettoEtAl13a,ServettoZucca15,GordonEtAl12,clebsch2015deny,clebsch2017orca}.
 From a usability perspective, this improvement means that
 these RCs are opt-in: a programmer can write large sections of code
-mindlessly using \Q@mut@ types and be free to have rampant aliasing. 
+simply using \Q@mut@ types and be free to have rampant aliasing. 
 Then, at a later stage, another programmer may still 
 be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ reference.
 
@@ -119,7 +120,7 @@ be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ refe
 \subheading{Exceptions}\label{s:exceptions}
 In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety} (SES)~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
-if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated.
+if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated; this prevent exposing objects whose invariant was left broken in the middle of mutations.
 %\LINE
 %\noindent{\textit{Exceptions:}}
 % M\#, L42 and Pony rely on SES for all unchecked exceptions to ensure safe and transparent parallelism,
@@ -141,15 +142,16 @@ We are not aware of how Gordon \etal handles exceptions, however in order for it
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
 }
 in the following way:\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
-\SSI\begin{itemize}
+\begin{itemize}
 \item Code inside a \Q@try@ block that captures unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 This strategy does not restrict when exceptions can be \emph{thrown}, but only restricts when unchecked exceptions can be \emph{caught}.
-SES allows us to throw invariant failures as unchecked exceptions: if an objects ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that not object mutated within a try block is visible when it catches an unchecked exception.
-For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
+SES allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that no object mutated within a try block is visible when it catches an unchecked exception.
+%For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
+
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
 
 % We think this restriction is acceptable for run time verification, other works are much more restrictive,
@@ -176,10 +178,10 @@ For the purposes of soundly catching invariant failures, it would be sufficient 
 % Intro to OCs
 
 \subheading{Object Capabilities (OCs)}
-OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{miller2003capability,noble2016abstract,karger1988improving} programming technique where access to resources are encoded as objects. When this style
+OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{miller2003capability,noble2016abstract,karger1988improving} programming technique where access rights to resources are encoded as references to objects. When this style
 is respected, code that does not possess an alias to such an object cannot use its associated resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon \etal's work, we enforce the OC pattern with RCs in order to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control
+Here, as in Gordon \etal's work, we enforce the OC pattern with RCs in order to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non-deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control
 by carefully designing their implementation. 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
 % While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.
@@ -196,12 +198,12 @@ by carefully designing their implementation.
  % In contrast, in the object capability style, one would not have-global variables but have the main por
 
 % a capability object (it has the capability to read input); however it is globally accessible: thus any code could use it, preventing reasoning about determinism.
-In contrast, if Java were to respect the object capability style, the \Q@main@ method could take a \Q@System@ parameter, as in
+In contrast, if Java were to respect the object capability style, the \Q@main(..)@ method could take a \Q@System@ parameter, as in
  \Q@main(System s)@
  \lstset{language=Java}
 \Q@{.. s.in.read() ..}@. \lstset{language=FortyTwo}%
 Calling methods on that \Q@System@ instance would be the only way to perform I/O;
-moreover, the only \Q@System@ instance would be the one created by the runtime system before calling \Q@main@. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
+moreover, the only \Q@System@ instance would be the one created by the runtime system before calling \Q@main(s)@. % would have no usable constructor, and all its I/O methods would require a mutable (\Q@mut@) receiver.
 % Other non deterministic operations would also work this.
 %may just take a \Q@mut System@ object as a parameter.
 % could also work this way.
@@ -212,7 +214,7 @@ OCs are typically not part of the type system nor do they require runtime checks
 L42 allows user code to perform foreign calls without going through a predefined standard library, 
 the OCs pattern is enforces by the type system:
 %To reason about determinism, L42 connects RCs with the OC style as follows: % style by requiring:
-\SSI\begin{itemize}
+\begin{itemize}
 \item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability operations}.%
 \item Constructors of classes declared as \emph{capability classes} are also \emph{capability operations}. Their instances are \emph{capability objects}.
 \item Capability operations can only be called by other capability operations or \Q@mut@/\Q@capsule@ methods of capability classes.
@@ -229,5 +231,5 @@ the OCs pattern is enforces by the type system:
 
 \noindent L42 capability operations are used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
-For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) could be whitelisted as `deterministic', provided they do not affect execution, such as by non deterministically throwing I/O errors.
+For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) could be whitelisted as `deterministic', provided they do not affect execution, such as by non-deterministically throwing I/O errors.
 

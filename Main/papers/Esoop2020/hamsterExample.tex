@@ -25,26 +25,26 @@ class Cage {
   mut method Void moveTo(Point p) { this.h.pos = p; }}
 \end{lstlisting}
 
-We use the \Q@read@ annotation on the \Q@equals@ method to express that it does not modify either its
+We use the \Q@read@ annotation on the \Q@equals(that)@ method to express that it does not modify either its
 receiver or its parameter. In \Q@Cage@ we use 
 the \Q@capsule@ annotation to ensure
 that the modification of the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
 of the containing \Q@Cage@. 
-We annotated the \Q@move@
-and \Q@moveTo@ methods with \Q@mut@, since they modify
+We annotated the \Q@move()@
+and \Q@moveTo(p)@ methods with \Q@mut@, since they modify
 their receivers' ROG. The default annotation is always \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.
 % Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
 % to check if the hamster position is inside the list.
 % The conventional syntax correctly instantiates a \Q@Cage@:
 % \Q@new Cage(new Hamster(new Point(..)), List.of(new Point(...))@.
 Our system performs runtime checks for the invariant
-at the end of \Q@Cage@'s constructor, \Q@moveTo@ method, and after any update to one of its fields.
-The \Q@moveTo@ method is the only one that may (directly) break the \Q@Cage@'s invariant. However, there is only a single occurrence of \Q@this@ and it is used to read the \Q@h@ field. We use the guarantees of RCs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \Q@Hamster@'s position is updated. 
-The invariant is checked at the end of the \Q@moveTo@ method, just before \Q@this@ would become visible again.
+at the end of \Q@Cage@'s constructor, \Q@moveTo(p)@ method, and after any update to one of its fields.
+The \Q@moveTo(p)@ method is the only one that may (directly) break the \Q@Cage@'s invariant. However, there is only a single occurrence of \Q@this@ and it is used to read the \Q@h@ field. We use the guarantees of RCs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \Q@Hamster@'s position is updated. 
+The invariant is checked at the end of the \Q@moveTo(p)@ method, just before \Q@this@ would become visible again.
 This technique loosely corresponds to an implicit pack and unpack: we `unpack' \Q@this@ before reading the field, then we work on the field's value while the invariant of \Q@this@ is not known to hold, finally when returning, we `pack' \Q!this! and check its invariant before allowing it to be used again.
 
 Note: since only \Q@Cage@ has an invariant,
- only \Q@Cage@ has special restrictions, allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
+ only the code of \Q@Cage@ needs to be handled carefully; allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
  This is not the case in Spec\#: all code involved in  verification needs to be designed with verification in mind~\cite{barnett2011specification}.
 % The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
 % thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
@@ -72,7 +72,7 @@ class Cage {
     expose(this) {this.h.pos = this.path[i%this.path.Count];}}}
 \end{lstlisting}
 
-In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant: thus \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals@, or even define a usable \Q@equals@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains@ or \Q@List<Point>.IndexOf@.
+In both versions, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant: thus \Q@Point@ is not an immutable class. However, doing this in Spec\# proved difficult, in particular we were unable to override \Q@Object.Equals(that)@, or even define a usable \Q@equals(that)@ method that takes a \Q@Point@, as such we could not call either \Q@List<Point>.Contains(e)@ or \Q@List<Point>.IndexOf(e)@.
  
 \noindent Even with all the above annotations, we needed special care in creating \Q@Cage@s:\vspace{-1.860px}% magic number that prevents the listings background going onto the next page
 \begin{lstlisting}[
@@ -92,7 +92,7 @@ Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
 %3 read 2 capsule 3 mut extra method moveTo
 %----
 In Spec\# we had to add $10$ different annotations, of $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $7$ simple keywords, of $3$ different kinds; however we needed to write 
-a separate \Q@moveTo@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
+a separate \Q@moveTo(p)@ method, since we do not want to burden our language with extra constructs such as Spec\#'s \Q@expose@.
 %  Moreover we had been unable to reuse 
 % \Q@Object.Equals@, \Q@List.IndexOf@ and % \Q@List.Contains@.
 % Note: we had to add a new class \Q@PureObject@, since the \Q@Objec@ constructor is not annotated as \Q@[Pure]@.
