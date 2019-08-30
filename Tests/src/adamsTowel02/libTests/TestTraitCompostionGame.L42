@@ -273,7 +273,7 @@ ModuleWorld: Trait({
     class method Size gameSizeInCells() 10Size
 
     mut method mut Entity getEntityAt(Point that) (
-      this.#map().#getEntityAt(that)
+      this.#map().getEntityAt(that)
       )
 
     read method Bool hasEntityAt(Point that) (
