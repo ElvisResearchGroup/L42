@@ -26,12 +26,14 @@ public class Full {
       public E _e(){return null;}}
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     MI implements M,Visitable<MI>{@Override public Visitable<MI>visitable(){return this;}@Override public MI accept(CloneVisitor cv){return cv.visitMI(this);}@Override public void accept(CollectorVisitor cv){cv.visitMI(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      Pos pos; List<Doc>docs; S key; E e;
-      public E _e(){return e;}}
+      Pos pos; List<Doc>docs; Op _op;int n; S s; E e;
+      public E _e(){return e;}
+      public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
+      }
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     MWT implements M,Visitable<MWT>{@Override public Visitable<MWT>visitable(){return this;}@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       Pos pos; List<Doc>docs; MH mh; String nativeUrl; E _e;
-      public S key(){return mh.s();}}
+      public S key(){return mh.key();}}
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     NC implements M,Visitable<NC>{@Override public Visitable<NC>visitable(){return this;}@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       Pos pos; List<Doc>docs; C key;  E e; public E _e(){return e;}}
@@ -107,6 +109,8 @@ public class Full {
     CsP _csP; S _s; X _x;}
   @Value @Wither public static class
   MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Mdf _mdf; List<Doc> docs; T t; Op _op; S s; List<T> pars; List<T> exceptions;}
-    //2 MH constructors: one will also fill s if _op is provided
+    Mdf _mdf; List<Doc> docs; T t; Op _op; int n; S s; List<T> pars; List<T> exceptions;
+    public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
+    }
+ 
   }

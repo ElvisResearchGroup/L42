@@ -216,23 +216,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("({interface #norm{refined=bar(x,y)}})")
    ),new AtomicTest(()->
    pass("({interface #norm{friends=This1.C canBeClassAny}})")
+   ),new AtomicTest(()->
+   pass("({@This0.Bar imm method imm This0.T f()#norm{}})")
+   ),new AtomicTest(()->
+   pass("({mut@Bar T f})")
+   ),new AtomicTest(()->
+   pass("{interface mut@Foo Bar fName}")
+   ),new AtomicTest(()->
+   pass("{interface[mut@Foo Bar]E fName}")//will fail well formedness
+   ),new AtomicTest(()->
+   pass("{[mut@Foo Bar]E fName}")
+   ),new AtomicTest(()->
+   pass("{E f method bar()=x}")
    /*),new AtomicTest(()->
-   pass("({@Bar T f #norm{hey, I can write stuff here}})","[|{|Header()FullF(doct(P)x)info|}|]|")
-   ),new AtomicTest(()->
-   pass("({mut @Bar T f })","[|{|Header()FullF(t(|docP)x)|}|]|")
-
-   ),new AtomicTest(()->
-   pass("{interface mut@Foo Bar fName}","{|Header(|)FullF(t(|docP)x)|}|")
-   ),new AtomicTest(()->
-   pass("{interface [mut@Foo Bar] E fName}",
-   "{|Header(||t(|docP)|)FullF(t(P)x)|}|")
-   ),new AtomicTest(()->
-   pass("{[mut@Foo Bar] E fName}",
-   "{|Header(|t(|docP)|)FullF(t(P)x)|}|")
-   ),new AtomicTest(()->
-   pass("{E f method bar()=x}",
-   "{|Header()FullF(t(P)x)FullMi(|mOp|||x)|}|")
-   ),new AtomicTest(()->
    pass("{method A.B bar(C.D x)=x}",
    "{|Header()FullMH(|t(P)mOp|t(P)x|)|x|}|")
    ),new AtomicTest(()->

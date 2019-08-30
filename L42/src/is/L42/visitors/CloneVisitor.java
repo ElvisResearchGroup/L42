@@ -386,7 +386,7 @@ public class CloneVisitor {
     var s=visitS(s0);
     var e=visitE(e0);
     if(docs==docs0 && s==s0 && e==e0){return mi;}
-    return new Full.L.MI(mi.pos(),docs,s,e);
+    return new Full.L.MI(mi.pos(),docs,mi._op(),mi.n(),s,e);
     }
     
   public Full.L.MWT visitMWT(Full.L.MWT mwt){
@@ -592,6 +592,6 @@ public class CloneVisitor {
     var pars=visitFullTs(pars0);
     var exceptions=visitFullTs(exceptions0);
     if(docs==docs0 && t==t0 && s==s0 && pars==pars0 && exceptions==exceptions0){return mh;}
-    return new Full.MH(mh._mdf(),docs,t,mh._op(),s,pars,exceptions);
+    return new Full.MH(mh._mdf(),docs,t,mh._op(),mh.n(),s,pars,exceptions);
     }
   }

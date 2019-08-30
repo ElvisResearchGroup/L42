@@ -297,7 +297,7 @@ public class ToSVisitor extends CollectorVisitor{
     var exceptions0=mh.exceptions();
     visitDocs(docs0);
     visitMdf(mh.mdf());
-    c("method");
+    kw("method");
     visitT(t0);
     cMethName(s0);
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
@@ -399,7 +399,7 @@ public class ToSVisitor extends CollectorVisitor{
     var ms0=l.ms();
     var docs0=l.docs();
     if(!ts0.isEmpty()){
-      c("[");seq(empty,l.ts(),", ");c("] ");
+      c("[");seq(empty,l.ts(),", ");c("]");
       }
     var sp=empty;
     if(!inline){sp=i->nl();}
@@ -425,7 +425,7 @@ public class ToSVisitor extends CollectorVisitor{
     var s0=mi.key();
     var e0=mi.e();
     visitFullDocs(docs0);
-    c("method");
+    kw("method");
     visitS(s0);
     c("=");
     visitE(e0);
@@ -531,19 +531,19 @@ public class ToSVisitor extends CollectorVisitor{
     }
     
   public void visitLoop(Full.Loop loop){
-    c("loop");visitE(loop.e());
+    kw("loop");visitE(loop.e());
     }
   public void visitWhile(Full.While sWhile){
     var c0=sWhile.condition();
     var b0=sWhile.body();
-    c("while");
+    kw("while");
     visitE(c0);
     visitE(b0);
     }
   public void visitFor(Full.For sFor){
     var ds0=sFor.ds();
     var b0=sFor.body();
-    c("for");
+    kw("for");
     var es=ds0.stream().map(ds->ds._e()).collect(Collectors.toList());
     seqHas(i->{
       visitVarTx(ds0.get(i)._varTx());
@@ -670,7 +670,7 @@ public class ToSVisitor extends CollectorVisitor{
     var exceptions0=mh.exceptions();
     visitFullDocs(docs0);
     if(mh._mdf()!=null){visitMdf(mh._mdf());}
-    c("method");
+    kw("method");
     visitT(t0);
     if(mh._op()!=null){visitOp(mh._op());}
     else{cMethName(s0);}

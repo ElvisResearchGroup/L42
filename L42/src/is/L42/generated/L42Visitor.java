@@ -275,7 +275,7 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSUpdate(L42Parser.SUpdateContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42Parser#result}.
+	 * Visit a parse tree produced by {@link L42Parser#e}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */

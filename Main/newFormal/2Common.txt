@@ -88,7 +88,7 @@ with MH=mdf method T mOp(T1 x1..Tn xn)[Ts]
 _______
 #define name manglings
 * methName(m) = m
-* methName(Op) = m//from a table, for example methName(++)=#plusplus
+* methName(Op)_i = m//from a table, for example methName(++)_3=#plusplus3
 * #m'OP' = methName(OP)#m //for example  #andand#shortCircuit
 * methNameTrim(x)//removes any numeric suffix, for example methNameTrim(foo1b34)=foo1b
 * methName(x,mdf) = x#mdf

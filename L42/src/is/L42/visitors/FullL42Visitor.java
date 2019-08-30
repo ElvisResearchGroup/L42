@@ -6,10 +6,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import org.antlr.v4.runtime.ParserRuleContext;
 import org.antlr.v4.runtime.tree.ErrorNode;
@@ -207,6 +209,12 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     Full.L.M m;
     m=opt(ctx.fullF(),null,(this::visitFullF));
     if(m!=null){return m;}
+    m=opt(ctx.fullMi(),null,(this::visitFullMi));
+    if(m!=null){return m;}
+    m=opt(ctx.fullMWT(),null,(this::visitFullMWT));
+    if(m!=null){return m;}
+    m=opt(ctx.fullNC(),null,(this::visitFullNC));
+    if(m!=null){return m;}
     throw unreachable();
     }
   static <A,B> B opt(A a,B def,Function<A,B>f){
@@ -221,10 +229,70 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new Full.L.F(pos(ctx),docs,isVar,visitT(ctx.t()),s);
     }
   @Override public String visitHeader(HeaderContext ctx) {throw bug();}
-  @Override public Full.L.MI visitFullMi(FullMiContext ctx) {throw bug();}
-  @Override public Full.L.MWT visitFullMWT(FullMWTContext ctx) {throw bug();}
-  @Override public Full.MH visitFullMH(FullMHContext ctx) {throw bug();}
-  @Override public String visitMOp(MOpContext ctx) {throw bug();}
+  @Override public Full.L.MI visitFullMi(FullMiContext ctx) {
+    //doc* MethodKw mOp oR x* ')' '=' e;
+    List<Full.Doc> docs = L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
+    List<X> xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
+    S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText()).withXs(xs));
+    var _op=visitMOp(ctx.mOp());
+    Full.E e=visitE(ctx.e());
+    Pos pos=pos(ctx);
+    int n = stringToInt(ctx.mOp().Number(), pos);
+    return new Full.L.MI(pos, docs,_op,n,s, e);
+    }
+  private int stringToInt(TerminalNode ctx, Pos pos) {
+    int n=opt(ctx,-1,n0->stringToInt(n0.getText(),()->{
+      String msg="Error: "+n0.getText()+" is not a valid number";
+      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      }));
+    return n; 
+    }
+  private int stringToInt(String n,Runnable err){
+    if(n.contains(".") || n.contains("_") || n.contains("-")){
+      err.run();
+      return -1;
+      }
+    if(n.startsWith("0")){
+      err.run();
+      return -1;
+      }
+    try{return Integer.parseInt(n);}
+    catch(NumberFormatException nfe){
+      err.run();
+      return -1;
+      }
+    }
+  @Override public Full.L.MWT visitFullMWT(FullMWTContext ctx) {
+    List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
+    Full.MH mh=visitFullMH(ctx.fullMH());
+    String nativeUrl=opt(ctx.NativeURL(),"",r->parseReuseNative(r.getText()));
+    Full.E _e=opt(ctx.e(),null,this::visitE);
+    return new Full.L.MWT(pos(ctx),docs,mh,nativeUrl,_e);
+    }
+  @Override public Full.MH visitFullMH(FullMHContext ctx) {
+    Mdf _mdf=opt(ctx.Mdf(),null,m->Mdf.fromString(m.getText()));
+    List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
+    List<Full.T> ts0=L(ctx.t(),(c,ti)->c.add(visitT(ti)));
+    Full.T t=ts0.get(0);
+    List<X> xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
+    int excStart=xs.size()+1;
+    List<Full.T> pars=ts0.subList(1, excStart);
+    List<Full.T> exceptions=ts0.subList(excStart,ts0.size());
+    S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText()).withXs(xs));
+    var _op = visitMOp(ctx.mOp());
+    assert _op==null || s.m().isEmpty();
+    int n=stringToInt(ctx.mOp().Number(), pos(ctx));
+    return new Full.MH(_mdf, docs, t, _op, n, s, pars, exceptions);
+    }
+  @Override public Op visitMOp(MOpContext ctx) {
+    Op _uop=opt(ctx.Uop(),null,o->Op.fromString(o.getText()));
+    Op _op0=opt(ctx.OP0(),null,o->Op.fromString(o.getText()));
+    Op _op1=opt(ctx.OP1(),null,o->Op.fromString(o.getText()));
+    Op _op2=opt(ctx.OP2(),null,o->Op.fromString(o.getText()));
+    Op _op3=opt(ctx.OP3(),null,o->Op.fromString(o.getText()));
+    var op=Stream.of(_uop,_op0,_op1,_op2,_op3).filter(o->o!=null).findFirst();
+    return op.orElse(null);
+    }
   @Override public Full.L.NC visitFullNC(FullNCContext ctx) {throw bug();}
   //@Override public String visitSlash(SlashContext ctx) {throw bug();}
   @Override public Full.PathSel visitPathSel(PathSelContext ctx) {throw bug();}
