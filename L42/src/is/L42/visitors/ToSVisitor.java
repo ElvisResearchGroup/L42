@@ -477,13 +477,12 @@ public class ToSVisitor extends CollectorVisitor{
       c(si);
       if(i+1<eString.es().size()){
         Full.E ei=eString.es().get(i+1);
-        c("@");
+        c("%");
         visitE(ei);
         }
       }
     c("\"");
     }
-  
   public void visitEPathSel(Full.EPathSel ePathSel){
   c("'");
   visitPathSel(ePathSel.pathSel());

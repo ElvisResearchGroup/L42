@@ -10,6 +10,7 @@ import is.L42.tools.AtomicTest;
 import is.L42.visitors.FullL42Visitor;
 
 import static is.L42.tests.TestHelpers.*;
+import static is.L42.tools.General.range;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestParseToAst
@@ -316,33 +317,45 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
    pass("S\"oh no! ( a )) [ non trivial }} string just!! ]] in Case\"")
   ),new AtomicTest(()->
-   pass("S\"@x\"")
+   passI("S\"%x\"","x")
   ),new AtomicTest(()->
-   pass("S\"aa@x bb\"")
+   pass("S\"aa%x bb\"")
   ),new AtomicTest(()->
-   pass("S\"aa@x.foo() bb\"")
+   pass("S\"aa%x.foo() bb\"")
  ),new AtomicTest(()->
-   pass("S\"aa@X.foo() bb\"")
+   pass("S\"aa%X.foo() bb\"")
  ),new AtomicTest(()->
-   pass("S\"aa@x(a, b=c .d()) bb\"")
+   passI("S\"aa%x(a, b=c.d()) bb\"","x(a, b=c.d())")
  ),new AtomicTest(()->
-   pass("S\"aa@(x)bb\"")
+   pass("S\"aa%(x)bb\"")
  ),new AtomicTest(()->
-   pass("S\"aa@(x[])bb\"")
+   pass("S\"aa%(x[])bb\"")
  ),new AtomicTest(()->
-   pass("S\"aa@x[].foo()bb\"")
+   passI("S\"aa%x[].foo()bb\"","x[].foo()")
  ),new AtomicTest(()->
-   fail("S\"aa@x[].foo().bb\"","foo")
+   fail("S\"aa%x[].foo().bb\"","ill formed string interpolation"," input '.bb'")
 
 
   ));}
 public static void pass(String input) {pass(input,input);}
-
 public static void pass(String input,String output) {
   var r=Parse.e("-dummy-",input);
   if(r.hasErr()){throw new Error(r.errorsParser+r.errorsTokenizer+r.errorsVisitor);}
   assertFalse(r.hasErr());
   assertEquals(output,r.res.toString());
+  }
+
+public static void passI(String input,String ...outputs) {
+  var r=Parse.e("-dummy-",input);
+  if(r.hasErr()){throw new Error(r.errorsParser+r.errorsTokenizer+r.errorsVisitor);}
+  assertFalse(r.hasErr());
+  assertEquals(input,r.res.toString());
+  Full.EString e=(Full.EString)r.res;
+  for(var i:range(outputs.length)){
+    var ei=e.es().get(i+1);
+    var oi=outputs[i];
+    assertEquals(oi,ei.toString());
+    }
   }
 public static void fail(String input,String ...output) {
   var r=Parse.e("-dummy-",input);

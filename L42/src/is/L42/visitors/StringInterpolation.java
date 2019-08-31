@@ -40,10 +40,12 @@ public class StringInterpolation {
   int openR=0;
   int openS=0;
   int openC=0;
-  void openClose(char c){
+  void open(char c){
     if (c=='('){openR+=1;}
     if (c=='['){openS+=1;}
     if (c=='{'){openC+=1;}
+    }
+  void close(char c){
     if (c==')'){openR-=1;}
     if (c==']'){openS-=1;}
     if (c=='}'){openC-=1;}
@@ -56,7 +58,7 @@ public class StringInterpolation {
       if(former!=')' && former!=']'){
         return terminals.indexOf(c)!=-1;
         }
-      return c=='.' || c=='(' || c=='[';
+      return c!='.' && c!='(' && c!='[';
       }
     return false;
   }
@@ -66,41 +68,42 @@ public class StringInterpolation {
     Str{public int run(StringInterpolation self,String s,int i){
       char c=s.charAt(i);
       if(!s.startsWith(self.symbol,i)){
-          self.appendChar(c);
-          return i;
-          }
-        i+=self.symbol.length()-1;
-        char next=s.charAt(Math.min(i+1,s.length()-1));
-        self.moreExp();
-        if(next=='('){self.mode=Mode.Round;}
-        else{self.mode=Mode.Expr;}
+        self.appendChar(c);
         return i;
         }
-      },
+      i+=self.symbol.length()-1;
+      char next=s.charAt(Math.min(i+1,s.length()-1));
+      self.moreExp();
+      if(next=='('){self.mode=Mode.Round;}
+      else{self.mode=Mode.Expr;}
+      return i;
+      }},
     Expr{public int run(StringInterpolation self,String s,int i){
       char c=s.charAt(i);
       char former=s.charAt(i-1);
-      self.openClose(c);
+      self.open(c);
       if(!self.isTerminal(former,c)){
         self.appendExp(c);
+        self.close(c);
         return i;
         }
-      self.appendChar(c);
       self.modeToStr();
+      self.appendChar(c);
+      self.close(c);
       return i;
-      }
-    },
+      }},
     Round{public int run(StringInterpolation self,String s,int i){
       char c=s.charAt(i);
       char former=' ';
-      self.openClose(c);
+      self.open(c);
+      self.close(c);
       if(!self.isTerminal(former,c) && self.openR!=0){
         self.appendExp(c);
         return i;
         }
+      self.modeToStr();
       if(self.openR==0){self.appendExp(c);}
       else {self.appendChar(c);}
-      self.modeToStr();
       return i;
       }    };
     abstract int run(StringInterpolation self,String s,int i);
