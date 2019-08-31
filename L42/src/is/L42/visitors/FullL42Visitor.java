@@ -73,8 +73,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     String s=ctx.getText();
     s=s.substring(1,s.length()-1);
-    //TODO: fix string desugaring and || desugaring, make norm extract class methods
-    return new Full.EString(pos(ctx), L(eVoid),L(s));
+    return new StringInterpolation(fileName,eVoid,pos(ctx),errors).supParse(s);
     }
   @Override public Full.D visitD(DContext ctx) {
     check(ctx);
@@ -540,7 +539,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     return new InfoSupplier(new InjectionToCore(errors, eVoid), r, pos).get();
     }
   @SuppressWarnings("unused")//i
-  StringBuilder fixPos(Pos pos){
+  static StringBuilder fixPos(Pos pos){
     StringBuilder s=new StringBuilder();
     for(int i :range(pos.line())){s.append("\n");}
     for(int i :range(pos.column())){s.append(" ");}

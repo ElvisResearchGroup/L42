@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
+import is.L42.common.ErrorReporting;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
@@ -26,7 +27,7 @@ public class InjectionToCore extends CollectorVisitor{
     if(info==null){return null;}
     String err=info.toString();
     var errRes=new Core.L(pos,false, L(),L(),L(),info,L());
-    err=err.substring(0,Math.min(6, err.length()));
+    err=ErrorReporting.trimExpression(err);
     err="line " + pos.line() + ":" + pos.column() 
       + " Error: Extraneus token "+err;
     errors.append(err);

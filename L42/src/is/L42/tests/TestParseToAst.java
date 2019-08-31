@@ -312,11 +312,35 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("loop a(C[])")
   ),new AtomicTest(()->
    pass("if a&&b return X\"oh\"")
+
+  ),new AtomicTest(()->
+   pass("S\"oh no! ( a )) [ non trivial }} string just!! ]] in Case\"")
+  ),new AtomicTest(()->
+   pass("S\"@x\"")
+  ),new AtomicTest(()->
+   pass("S\"aa@x bb\"")
+  ),new AtomicTest(()->
+   pass("S\"aa@x.foo() bb\"")
+ ),new AtomicTest(()->
+   pass("S\"aa@X.foo() bb\"")
+ ),new AtomicTest(()->
+   pass("S\"aa@x(a, b=c .d()) bb\"")
+ ),new AtomicTest(()->
+   pass("S\"aa@(x)bb\"")
+ ),new AtomicTest(()->
+   pass("S\"aa@(x[])bb\"")
+ ),new AtomicTest(()->
+   pass("S\"aa@x[].foo()bb\"")
+ ),new AtomicTest(()->
+   fail("S\"aa@x[].foo().bb\"","foo")
+
+
   ));}
 public static void pass(String input) {pass(input,input);}
 
 public static void pass(String input,String output) {
   var r=Parse.e("-dummy-",input);
+  if(r.hasErr()){throw new Error(r.errorsParser+r.errorsTokenizer+r.errorsVisitor);}
   assertFalse(r.hasErr());
   assertEquals(output,r.res.toString());
   }

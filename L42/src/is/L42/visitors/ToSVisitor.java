@@ -467,12 +467,21 @@ public class ToSVisitor extends CollectorVisitor{
   public void visitSlashX(Full.SlashX slashX){c("\\"+slashX.x().inner());}
   
   public void visitEString(Full.EString eString){
-    assert eString.es().size()==1;
-    assert eString.strings().size()==1;
+    assert eString.es().size()==eString.strings().size();
     var s=eString.strings().get(0);
     assert !s.contains("\n");
     visitE(eString.es().get(0));
-    c("\""+s+"\"");
+    c("\"");
+    for(var i:range(eString.es())){
+      String si=eString.strings().get(i);
+      c(si);
+      if(i+1<eString.es().size()){
+        Full.E ei=eString.es().get(i+1);
+        c("@");
+        visitE(ei);
+        }
+      }
+    c("\"");
     }
   
   public void visitEPathSel(Full.EPathSel ePathSel){
