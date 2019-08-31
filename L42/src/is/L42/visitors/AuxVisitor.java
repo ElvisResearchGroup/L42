@@ -80,6 +80,7 @@ AuxVisitor(Pos pos) { this.pos = pos; }
   @Override public S visitSelector(L42AuxParser.SelectorContext ctx) {
     List<X>xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
     if(ctx.m()==null){return new S("",xs,-1);}
+    assert !ctx.m().getText().contains("fwd ");
     return FullL42Visitor.parseM(ctx.m().getText()).withXs(xs);
     }
     

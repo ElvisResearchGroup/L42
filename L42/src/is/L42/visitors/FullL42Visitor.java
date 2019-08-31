@@ -24,42 +24,65 @@ import is.L42.generated.L42Parser.*;
 import is.L42.common.Parse;
 import is.L42.generated.*;
 import is.L42.generated.Core.EVoid;
+import is.L42.generated.Full.VarTx;
 
-public class FullL42Visitor extends L42BaseVisitor<Object>{
+@SuppressWarnings("serial") class ParserFailed extends RuntimeException{}
+
+public class FullL42Visitor implements L42Visitor<Object>{
   public String fileName;
   public StringBuilder errors=new StringBuilder();
   public EVoid eVoid=new Core.EVoid(null);
   public FullL42Visitor(String fileName){this.fileName=fileName;}
-  Object c(ParserRuleContext prc){
-    assert prc.children.size()==1;
-    return prc.children.get(0).accept(this); 
-    }
   Pos pos(ParserRuleContext prc){
     return new Pos(fileName,prc.getStart().getLine(),prc.getStart().getCharPositionInLine()); 
     }
-//  @Override public Void visit(ParseTree arg0) {throw bug();}
-//  @Override public Void visitChildren(RuleNode arg0) {throw bug();}
-//  @Override public Void visitErrorNode(ErrorNode arg0) {throw bug();}
-//  @Override public Void visitTerminal(TerminalNode arg0) {throw bug();}
+  void check(ParserRuleContext ctx){  
+    if(ctx.children!=null){return;}
+    throw new ParserFailed();
+    }
+  @Override public Void visit(ParseTree arg0) {throw bug();}
+  @Override public Void visitChildren(RuleNode arg0) {throw bug();}
+  @Override public Void visitErrorNode(ErrorNode arg0) {throw bug();}
+  @Override public Void visitTerminal(TerminalNode arg0) {throw bug();}
+  @Override public Void visitOR(ORContext ctx) {throw bug();}
+  @Override public Void visitHeader(HeaderContext ctx) {throw bug();}
+
   @Override public Full.E visitE(EContext ctx) {
-    var res=c(ctx);
-    assert res!=null;
-    return (Full.E)res;
+    check(ctx);
+    Optional<Full.E> res=Stream.of(
+      opt(ctx.sIf(),null,this::visitSIf),
+      opt(ctx.sWhile(),null,this::visitSWhile),
+      opt(ctx.sFor(),null,this::visitSFor),
+      opt(ctx.sLoop(),null,this::visitSLoop),
+      opt(ctx.sThrow(),null,this::visitSThrow),
+      opt(ctx.sUpdate(),null,this::visitSUpdate),
+      opt(ctx.eBinary3(),null,this::visitEBinary3))
+      .filter(a->a!=null)
+      .findFirst();
+    return res.get();
     }
   @Override public Full.Par visitPar(ParContext ctx) {
+    //check(ctx);//Would be wrong
     List<X> xs=L(ctx.x(),(c,x)->c.add(visitX(x)));
     List<Full.E> es=L(ctx.e(),(c,x)->c.add(visitE(x)));
     if (es.size()==xs.size()){return new Full.Par(null, xs, es);}
     assert es.size()==xs.size()+1;
     return new Full.Par(es.get(0), xs, popL(es));
     }
-  @Override public Void visitOR(ORContext ctx) {throw bug();}
-  @Override public String visitString(StringContext ctx) {
-    return ctx.getText().substring(0,ctx.getText().length()-1);
+  @Override public Full.EString visitString(StringContext ctx) {
+    check(ctx);
+    String s=ctx.getText();
+    s=s.substring(1,s.length()-1);
+    //TODO: fix string desugaring and || desugaring, make norm extract class methods
+    return new Full.EString(pos(ctx), L(eVoid),L(s));
     }
   @Override public Full.D visitD(DContext ctx) {
+    check(ctx);
     List<Full.VarTx> dx=opt(ctx.dX(),L(),this::visitDX);
     var e=visitE(ctx.e());
+    return varTxEToD(dx,e);
+    }
+  Full.D varTxEToD(List<Full.VarTx> dx,Full.E e){
     Full.VarTx first=null;
     if(!dx.isEmpty()){
       first=dx.get(0);
@@ -68,17 +91,35 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new Full.D(first,dx,e);
     }
   @Override public Full.E visitEAtomic(EAtomicContext ctx) {
-    Object inner=c(ctx);
-    if(inner instanceof X){return new Core.EX(pos(ctx), (X)inner);}
-    return (Full.E)inner;
+    check(ctx);
+    Pos pos=pos(ctx);
+    Optional<Full.E> res=Stream.of(
+      opt(ctx.x(),null,a->new Core.EX(pos,visitX(a))),
+      opt(ctx.csP(),null,this::visitCsP),
+      opt(ctx.voidE(),null,this::visitVoidE),
+      opt(ctx.fullL(),null,this::visitFullL),
+      opt(ctx.block(),null,this::visitBlock),
+      opt(ctx.slash(),null,this::visitSlash),
+      opt(ctx.pathSel(),null,this::visitPathSel),
+      opt(ctx.slashX(),null,this::visitSlashX))
+      .filter(a->a!=null).findFirst();
+    return res.get();
     }
-  @Override public X visitX(XContext ctx) {return new X(ctx.getText());}
+  @Override public X visitX(XContext ctx) {
+    check(ctx);
+    return new X(ctx.getText());
+    }
   @Override public Full.Call visitFCall(FCallContext ctx) {
+    check(ctx);
     S s=opt(ctx.m(),null,this::visitM);
     return new Full.Call(pos(ctx), eVoid, s, false, L(visitPar(ctx.par())));
     }
-  @Override public Full.E visitNudeE(NudeEContext ctx) {return (Full.E)ctx.children.get(0).accept(this);}
+  @Override public Full.E visitNudeE(NudeEContext ctx) {
+    check(ctx);
+    return visitE(ctx.e());
+    }
   @Override public Full.Block visitBlock(BlockContext ctx) {
+    check(ctx);
     boolean isCurly=ctx.oR()==null;
     List<Full.D> ds=L(ctx.d(),(c,d)->c.add(visitD(d)));
     List<Full.K> ks=L(ctx.k(),(c,k)->c.add(visitK(k)));
@@ -91,18 +132,20 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new Full.Block(pos(ctx), isCurly, ds, dsAfter, ks, whoopsed, e);
     }
   @Override public S visitM(MContext ctx) {
-    return parseM(ctx.getText());
-    }
-    
+    check(ctx);
+    appendFwdErrorOnM(ctx);
+    return parseM(ctx.getText().replace(" ",""));
+    }   
   static S parseM(String s) {
+    assert !s.contains("fwd ");
     int un=s.indexOf("::");
     if(un==-1){return new S(s,L(),-1);}
     int n=Integer.parseInt(s.substring(un+2));
     s=s.substring(0, un);
     return new S(s,L(),n); 
     }
-    
   @Override public Full.CsP visitCsP(CsPContext ctx) {
+    check(ctx);
     Pos pos=pos(ctx);
     String s=ctx.CsP().getText();
     var res=Parse.csP(s);
@@ -118,15 +161,18 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new AuxVisitor(pos).visitNudeCsP(res.res);
     }
   @Override public Core.EVoid visitVoidE(VoidEContext ctx) {
+    check(ctx);
     return new Core.EVoid(pos(ctx));
     }
   @Override public Full.T visitT(TContext ctx) {
+    check(ctx);
     var csP=visitCsP(ctx.csP());
     var mdf=ctx.Mdf()==null?null:Mdf.fromString(ctx.Mdf().getText());
     List<Full.Doc> docs=L(ctx.doc(),(c,d)->c.add(visitDoc(d)));
     return new Full.T(mdf, docs, csP);
     }
   @Override public Full.VarTx visitTLocal(TLocalContext ctx) {
+    //check(ctx);//Would be wrong
     if(ctx.Mdf()!=null){return new Full.VarTx(false,null,Mdf.fromString(ctx.Mdf().getText()),null);}
     if(ctx.t()!=null){return new Full.VarTx(false,visitT(ctx.t()),null,null);}
     return new Full.VarTx(false, null, null,null);
@@ -134,6 +180,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
   @Override public List<Full.VarTx> visitDX(DXContext ctx) {
     //sadly, tLocal can be the empty text, and 
     //ANTLR would not generate empty text nonterminals
+    check(ctx);
     if(ctx.oR()==null && ctx.UnderScore()==null){
       X x=visitX(ctx.x(0));
       boolean isVar=!ctx.VarKw().isEmpty();
@@ -165,6 +212,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
       });
     }
   @Override public Full.Doc visitDoc(DocContext ctx) {
+    check(ctx);
     String s="@"+ctx.getText();
     Pos pos=pos(ctx);
     var res=Parse.doc(s);
@@ -176,6 +224,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new AuxVisitor(pos).visitTopDoc(res.res);
     }
   @Override public Full.K visitK(KContext ctx) {
+    check(ctx);
     ThrowKind thr=opt(ctx.Throw(),null,t->ThrowKind.fromString(t.getText()));
     Full.T t=visitT(ctx.t());
     X x=opt(ctx.x(),null,this::visitX);
@@ -183,9 +232,11 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new Full.K(thr, t, x, e);
     }
   @Override public List<Full.T> visitWhoops(WhoopsContext ctx) {
+    check(ctx);
     return L(ctx.t(),(c,ti)->c.add(visitT(ti)));
     }
   @Override public Full.E visitFullL(FullLContext ctx) {
+    check(ctx);
     boolean isDots=ctx.DotDotDot()!=null;
     String reuseUrl=opt(ctx.ReuseURL(),"",r->parseReuseNative(r.getText()));
     boolean isInterface=opt(ctx.header(),false,h->h.InterfaceKw()!=null);
@@ -198,7 +249,6 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     if(info!=null){return new InjectionToCore(errors,eVoid)._inject(res,info);}
     return res; 
     }
-
   private String parseReuseNative(String s) { 
     assert s.endsWith("]");
     int index = s.indexOf("[");
@@ -206,6 +256,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return s.substring(index,s.length()-1);
     }
   @Override public Full.L.M visitFullM(FullMContext ctx) {
+    check(ctx);
     Full.L.M m;
     m=opt(ctx.fullF(),null,(this::visitFullF));
     if(m!=null){return m;}
@@ -221,19 +272,19 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     if(a==null){return def;}
     return f.apply(a);
     }
-    
   @Override public Full.L.F visitFullF(FullFContext ctx) {
+    check(ctx);
     List<Full.Doc> docs = L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     S s = parseM(ctx.x().getText());
     boolean isVar=ctx.VarKw()!=null;
     return new Full.L.F(pos(ctx),docs,isVar,visitT(ctx.t()),s);
     }
-  @Override public String visitHeader(HeaderContext ctx) {throw bug();}
   @Override public Full.L.MI visitFullMi(FullMiContext ctx) {
-    //doc* MethodKw mOp oR x* ')' '=' e;
+    check(ctx);
     List<Full.Doc> docs = L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     List<X> xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
-    S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText()).withXs(xs));
+    appendFwdErrorOnM(ctx.mOp().m());
+    S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText().replace(" " ,"")).withXs(xs));
     var _op=visitMOp(ctx.mOp());
     Full.E e=visitE(ctx.e());
     Pos pos=pos(ctx);
@@ -263,6 +314,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
       }
     }
   @Override public Full.L.MWT visitFullMWT(FullMWTContext ctx) {
+    check(ctx);
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     Full.MH mh=visitFullMH(ctx.fullMH());
     String nativeUrl=opt(ctx.NativeURL(),"",r->parseReuseNative(r.getText()));
@@ -270,6 +322,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return new Full.L.MWT(pos(ctx),docs,mh,nativeUrl,_e);
     }
   @Override public Full.MH visitFullMH(FullMHContext ctx) {
+    check(ctx);
     Mdf _mdf=opt(ctx.Mdf(),null,m->Mdf.fromString(m.getText()));
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     List<Full.T> ts0=L(ctx.t(),(c,ti)->c.add(visitT(ti)));
@@ -278,13 +331,22 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     int excStart=xs.size()+1;
     List<Full.T> pars=ts0.subList(1, excStart);
     List<Full.T> exceptions=ts0.subList(excStart,ts0.size());
-    S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText()).withXs(xs));
+    appendFwdErrorOnM(ctx.mOp().m());
+    S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText().replace(" ", "")).withXs(xs));
     var _op = visitMOp(ctx.mOp());
     assert _op==null || s.m().isEmpty();
     int n=stringToInt(ctx.mOp().Number(), pos(ctx));
     return new Full.MH(_mdf, docs, t, _op, n, s, pars, exceptions);
     }
+  private void appendFwdErrorOnM(MContext ctx) {
+    if(ctx!=null && ctx.getText().contains("fwd ")){
+      Pos pos=pos(ctx);
+      String msg="Error: "+ctx.getText()+" is not a valid method name";
+      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      }
+    }
   @Override public Op visitMOp(MOpContext ctx) {
+    //check(ctx);//Would be wrong
     Op _uop=opt(ctx.Uop(),null,o->Op.fromString(o.getText()));
     Op _op0=opt(ctx.OP0(),null,o->Op.fromString(o.getText()));
     Op _op1=opt(ctx.OP1(),null,o->Op.fromString(o.getText()));
@@ -293,15 +355,44 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     var op=Stream.of(_uop,_op0,_op1,_op2,_op3).filter(o->o!=null).findFirst();
     return op.orElse(null);
     }
-  @Override public Full.L.NC visitFullNC(FullNCContext ctx) {throw bug();}
-  //@Override public String visitSlash(SlashContext ctx) {throw bug();}
-  @Override public Full.PathSel visitPathSel(PathSelContext ctx) {throw bug();}
+  @Override public Full.L.NC visitFullNC(FullNCContext ctx) {
+    check(ctx);
+    Pos pos=pos(ctx);
+    List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
+    Full.CsP csP=visitCsP(ctx.csP());
+    Full.E e=visitE(ctx.e());
+    C c=null;
+    if(csP.cs().size()==1){c=csP.cs().get(0);}
+    if(c==null){
+      String msg="Error: "+csP+" is not a valid nested class name";
+      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      c=new C("InvalidName",-1);
+      }
+    return new Full.L.NC(pos,docs,c,e);
+    }
+  @Override public Full.Slash visitSlash(SlashContext ctx) {
+    check(ctx);
+    return new Full.Slash(pos(ctx));
+    }
+  @Override public Full.EPathSel visitPathSel(PathSelContext ctx) {
+    check(ctx);
+    Pos pos=pos(ctx);
+    String s=ctx.getText();
+    s=s.substring(1);
+    var res=Parse.pathSelX(s);
+    assert !res.hasErr();
+    Full.PathSel ps=new AuxVisitor(pos).visitPathSelX(res.res.pathSelX());
+    assert ps!=null;
+    return new Full.EPathSel(pos, ps);
+    }
   @Override public Full.Cast visitCast(CastContext ctx) {
+    check(ctx);
     return new Full.Cast(pos(ctx),eVoid, visitT(ctx.t()));
     }
-  //@Override public String visitSlashX(SlashXContext ctx) {throw bug();}
+  @Override public Full.SlashX visitSlashX(SlashXContext ctx) {throw bug();}
 
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
+    check(ctx);
     var res=visitEAtomic(ctx.eAtomic());
     var uOpList=ctx.children.stream().takeWhile(c->c instanceof TerminalNodeImpl).collect(Collectors.toList());
     Collections.reverse(uOpList);
@@ -314,7 +405,11 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
         res=visitCast((CastContext)current).withE(res);}
       if(current instanceof SquareCallContext){
         res=visitSquareCall((SquareCallContext)current).withE(res);}
-      //TODO: add other cases
+      if(current instanceof StringContext){
+        Full.EString tmp=visitString((StringContext)current);
+        Full.E fRes=res;
+        var es=L(c->{c.add(fRes);c.addAll(popL(tmp.es()));});
+        res=visitString((StringContext)current).withEs(es);}
       }
     for(var uOp:uOpList){
       String s=uOp.getText();
@@ -329,6 +424,7 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     return res;
     }
   @Override public Full.Call visitSquareCall(SquareCallContext ctx) {
+    check(ctx);
     S s=opt(ctx.m(),null,this::visitM);
     List<Full.Par> ps=L(ctx.par(),(c,p)->c.add(visitPar(p)));
     return new Full.Call(pos(ctx), eVoid, s, true, ps);
@@ -337,35 +433,113 @@ public class FullL42Visitor extends L42BaseVisitor<Object>{
     if(es0.size()==1){return (Full.E)es0.get(0).accept(this);}
     List<Full.E> es=L(es0,(c,ei)->c.add((Full.E)ei.accept(this)));
     Set<Op> ops=new LinkedHashSet<>();
-    for( var oi:ops0){ops.add(Op.fromString(oi.getText()));}
-    Op op=ops.iterator().next();
+    for(var oi:ops0){ops.add(Op.fromString(oi.getText()));}
     if (ops.size()!=1){
       String msg="Error: sequence of binary operators "+ops+" need to be disambiguated with parenthesis";
       this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
       }
+    Op op=ops.iterator().next();
     return new Full.BinOp(pos, op, es);
     }
-  @Override public Full.E visitEBinary0(EBinary0Context ctx) {return parseBinOp(pos(ctx),ctx.ePostfix(),ctx.OP0());}
-  @Override public Full.E visitEBinary1(EBinary1Context ctx) {return parseBinOp(pos(ctx),ctx.eBinary0(),ctx.OP1());}
-  @Override public Full.E visitEBinary2(EBinary2Context ctx) {return parseBinOp(pos(ctx),ctx.eBinary1(),ctx.OP2());}
-  @Override public Full.E visitEBinary3(EBinary3Context ctx) {return parseBinOp(pos(ctx),ctx.eBinary2(),ctx.OP3());}  
-  
-  
-  @Override public String visitSIf(SIfContext ctx) {throw bug();}
-  @Override public String visitMatch(MatchContext ctx) {throw bug();}
-  @Override public String visitSWhile(SWhileContext ctx) {throw bug();}
-  @Override public String visitSFor(SForContext ctx) {throw bug();}
-  @Override public String visitSLoop(SLoopContext ctx) {throw bug();}
-  @Override public String visitSThrow(SThrowContext ctx) {throw bug();}
-  @Override public String visitSUpdate(SUpdateContext ctx) {throw bug();}
+  @Override public Full.E visitEBinary0(EBinary0Context ctx) {
+    check(ctx);
+    return parseBinOp(pos(ctx),ctx.ePostfix(),ctx.OP0());
+    }
+  @Override public Full.E visitEBinary1(EBinary1Context ctx) {
+    check(ctx);
+    return parseBinOp(pos(ctx),ctx.eBinary0(),ctx.OP1());
+    }
+  @Override public Full.E visitEBinary2(EBinary2Context ctx) {
+    check(ctx);
+    List<TerminalNode> ops=L(c->{c.addAll(ctx.InKw());c.addAll(ctx.OP2());});
+    return parseBinOp(pos(ctx),ctx.eBinary1(),ops);
+    }
+  @Override public Full.E visitEBinary3(EBinary3Context ctx) {
+    return parseBinOp(pos(ctx),ctx.eBinary2(),ctx.OP3());
+    }
+  @Override public Full.If visitSIf(SIfContext ctx) {
+    check(ctx);
+    List<Full.E> es=L(ctx.e(),(c,ei)->c.add(visitE(ei)));
+    List<Full.D> matches=L(ctx.match(),(c,mi)->c.add(visitMatch(mi)));
+    Full.E _condition=null;
+    Full.E then=null;
+    Full.E _else=null;
+    if(matches.isEmpty()){
+      _condition=es.get(0);
+      then=es.get(1);
+      if(es.size()==3){_else=es.get(2);}
+      }
+    else{
+      assert es.size()==1;
+      then=es.get(0);
+      }
+    return new Full.If(pos(ctx), _condition, matches, then, _else);
+    }
+  @Override public Full.D visitMatch(MatchContext ctx) {
+    check(ctx);
+    List<Full.T> ts=L(ctx.t(),(c,ti)->c.add(visitT(ti)));
+    if(ctx.e()==null){
+      var vartx=new VarTx(false,ts.get(0),null,visitX(ctx.x(0)));
+      return new Full.D(vartx,L(),null);
+      }
+    if(ctx.oR()==null){
+      assert ctx.e()!=null;
+      var vartx=new VarTx(false,ts.get(0),null,visitX(ctx.x(0)));
+      return new Full.D(vartx,L(),visitE(ctx.e()));
+      }
+    List<VarTx> varTxs=L(ctx.x(),(c,cxi)->{
+      X xi=visitX(cxi);
+      Full.T ti=null;
+      int j=ctx.children.indexOf(cxi)-1;
+      if(ctx.getChild(j) instanceof TContext){
+        ti=visitT((TContext)ctx.getChild(j));
+        }
+      c.add(new VarTx(false,ti,null,xi));
+      });
+    VarTx first=null;
+    if(ctx.getChild(0) instanceof TContext){
+      first=new VarTx(false,visitT((TContext)ctx.getChild(0)),null,null);
+      }
+    return new Full.D(first, varTxs,visitE(ctx.e()));
+    }
+  @Override public Full.While visitSWhile(SWhileContext ctx) {
+    check(ctx);
+    return new Full.While(pos(ctx),visitE(ctx.e(0)),visitE(ctx.e(1)));
+    }
+  @Override public Full.For visitSFor(SForContext ctx) {
+    check(ctx);
+    List<Full.E> es=L(ctx.e(),(c,ei)->c.add(visitE(ei)));
+    Full.E e=es.get(es.size()-1);
+    es=es.subList(0, es.size()-1);
+    List<Full.D> ds=L(ctx.dX(),es,(c,dxi,ei)->
+      c.add(varTxEToD(visitDX(dxi),ei)));
+    return new Full.For(pos(ctx), ds, e);
+    }
+  @Override public Full.Loop visitSLoop(SLoopContext ctx) {
+    check(ctx);
+    return new Full.Loop(pos(ctx), visitE(ctx.e()));
+    }
+  @Override public Full.Throw visitSThrow(SThrowContext ctx) {
+    check(ctx);
+    return new Full.Throw(pos(ctx),
+      ThrowKind.fromString(ctx.Throw().getText()), visitE(ctx.e()));
+    }
+  @Override public Full.OpUpdate visitSUpdate(SUpdateContext ctx) {
+    check(ctx);
+    return new Full.OpUpdate(pos(ctx),
+      visitX(ctx.x()),
+      Op.fromString(ctx.OpUpdate().getText()),
+      visitE(ctx.e()));    
+    }
   @Override public Core.L.Info visitInfo(InfoContext ctx) {
+    check(ctx);
     var pos=pos(ctx);
     var s=fixPos(pos);
     s.append(ctx.getText());
     var r=Parse.info(s.toString());
     return new InfoSupplier(new InjectionToCore(errors, eVoid), r, pos).get();
     }
-  @SuppressWarnings("unused")
+  @SuppressWarnings("unused")//i
   StringBuilder fixPos(Pos pos){
     StringBuilder s=new StringBuilder();
     for(int i :range(pos.line())){s.append("\n");}

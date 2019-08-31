@@ -128,6 +128,16 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitPathSelX(L42AuxParser.PathSelXContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#nudePathSelX}.
+	 * @param ctx the parse tree
+	 */
+	void enterNudePathSelX(L42AuxParser.NudePathSelXContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#nudePathSelX}.
+	 * @param ctx the parse tree
+	 */
+	void exitNudePathSelX(L42AuxParser.NudePathSelXContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#infoNorm}.
 	 * @param ctx the parse tree
 	 */

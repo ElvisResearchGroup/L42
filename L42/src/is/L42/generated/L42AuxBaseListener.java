@@ -160,6 +160,18 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterNudePathSelX(L42AuxParser.NudePathSelXContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNudePathSelX(L42AuxParser.NudePathSelXContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterInfoNorm(L42AuxParser.InfoNormContext ctx) { }
 	/**
 	 * {@inheritDoc}

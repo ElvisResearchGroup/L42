@@ -19,6 +19,7 @@ cs: c (Dot c)*;
 selector: m? '(' (x W*)* ')';
 pathSel:csP (Dot? selector)? | selector;
 pathSelX:pathSel (Dot x)?;
+nudePathSelX:pathSelX EOF;
 
 infoNorm:'#norm{';
 infoTyped:'#typed{';

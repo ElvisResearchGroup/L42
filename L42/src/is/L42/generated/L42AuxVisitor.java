@@ -83,6 +83,12 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitPathSelX(L42AuxParser.PathSelXContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#nudePathSelX}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNudePathSelX(L42AuxParser.NudePathSelXContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#infoNorm}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

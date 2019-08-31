@@ -201,7 +201,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{}})")
    ),new AtomicTest(()->
-   pass("({interface #typed{}})")//TODO also test canBeClassAny present
+   pass("({interface #typed{}})")
    ),new AtomicTest(()->
    pass("({interface #norm{typeDep=This0.A, This2.B, This1.C}})")
    ),new AtomicTest(()->
@@ -217,6 +217,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{friends=This1.C canBeClassAny}})")
    ),new AtomicTest(()->
+   pass("({interface #norm{canBeClassAny}})")
+   ),new AtomicTest(()->
    pass("({@This0.Bar imm method imm This0.T f()#norm{}})")
    ),new AtomicTest(()->
    pass("({mut@Bar T f})")
@@ -228,58 +230,89 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("{[mut@Foo Bar]E fName}")
    ),new AtomicTest(()->
    pass("{E f method bar()=x}")
-   /*),new AtomicTest(()->
-   pass("{method A.B bar(C.D x)=x}",
-   "{|Header()FullMH(|t(P)mOp|t(P)x|)|x|}|")
    ),new AtomicTest(()->
-   pass("{CCc=x}","{|Header()FullNC(P|x)|}|")
+   pass("{method A.B bar(C.D x)=x}")
+   
    ),new AtomicTest(()->
-   pass("(\\ void)","[|D(\\)void|]|")
+   pass("{E f method+()=x}")
    ),new AtomicTest(()->
-   pass("('hi() 'This 'Is.A 'Series.of() 'Path.lits(x).x and a slash \\ End.Here)",
-   "[|D(pathSel)D(pathSel)D(pathSel)D(pathSel)D(pathSel)D(x)D(x)D(x)D(\\)P|]|")
+   pass("{method A.B+(C.D x)=x}")
+
    ),new AtomicTest(()->
-   pass("bar<:Foo","xCast(|t(P))|")
+   pass("{E f method+1()=x}")
    ),new AtomicTest(()->
-   pass("x.foo().bar()","xFCall(|m||)FCall(|m||)|")
+   pass("{method A.B+1(C.D x)=x}")
+
    ),new AtomicTest(()->
-   pass("x.foo(a b=c)","xFCall(|m|xx|x|)|")
+   fail("{E f method []()=x}","no viable alternative at input 'method [")
    ),new AtomicTest(()->
-   pass("x.bar[a;b;c=d]","xSquareCall(|m|x|x|x|x|)|")
+   fail("{method A.B Void(C.D x)=x}","no viable alternative at input 'Void'")
+
+   ),new AtomicTest(()->
+   pass("{E f method in()=x}")
+   ),new AtomicTest(()->
+   pass("{method A.B in(C.D x)=x}")
+
+   ),new AtomicTest(()->
+   pass("{E f method in1()=x}")//in1 identifier , not op 1
+   ),new AtomicTest(()->
+   pass("{method A.B in1(C.D x)=x}")
+
+   ),new AtomicTest(()->
+   pass("{E f method #in0()=x}")
+   ),new AtomicTest(()->
+   pass("{method A.B #in1(C.D x)=x}")
+   
+   ),new AtomicTest(()->
+   pass("{method A if(B x)=x.if(x)}")
+   ),new AtomicTest(()->
+   pass("{method A mut(B x)=x.imm(x)}")
+   ),new AtomicTest(()->
+   fail("{method A fwd imm(B x)=x.imm(x)}","fwd imm is not a valid method name")
+
+   ),new AtomicTest(()->
+   pass("{CCc=x}")
+   ),new AtomicTest(()->
+   pass("(\\ void)","(\n  \\\n  void\n  )\n")
+   ),new AtomicTest(()->
+   pass("(\n  'hi()\n  'This0\n  'Is.A\n  'Series.of()\n  'Path.lits(x).x\n  and\n  a\n  slash\n  \\\n  End.Here\n  )\n")
+   ),new AtomicTest(()->
+   pass("bar<:Foo")
+   ),new AtomicTest(()->
+   pass("x.foo().bar()")
+   ),new AtomicTest(()->
+   pass("x.foo(a, b=c)")
+   ),new AtomicTest(()->
+   pass("x.bar[a; b; c=d]")
   ),new AtomicTest(()->
-   pass("S\"aa\"","P||")
+   pass("S\"aa\"")
   ),new AtomicTest(()->
-   pass("!~!S\"aa\"","|||P||")
+   pass("!~!S\"aa\"")
   ),new AtomicTest(()->
-   pass("~12S","||P|")
+   pass("~12S")
   ),new AtomicTest(()->
-   pass("~1~2!S","|||||P|")
+   pass("~1~2!S")
   ),new AtomicTest(()->
-   pass("a+b&&c","<<x|x>|x>|")
+   pass("a+b&&c")
   ),new AtomicTest(()->
-   pass("a+b&&c:d","<<x|x>|<x|x>>|")
+   pass("a+b&&c:d")
   ),new AtomicTest(()->
-   pass("a+b:c&&d","<<x|<x|x>>|x>|")
+   pass("a+b:c&&d")
   ),new AtomicTest(()->
-   pass("a in b && c>=d","<<x|x>|<x|x>>|")
+   pass("a in b&&c>=d")
   ),new AtomicTest(()->
-   pass("for a in b in c x in y Foo()","SFor(|x|<x|x>x|xPFCall(||))|")
+   pass("for a in b in c, x in y Foo()")
   ),new AtomicTest(()->
-   pass("if a<=0N Debug(S\"hi\")","SIf(|<x||P>PFCall(|P||))|")
+   pass("if a<=0N Debug(S\"hi\")")
   ),new AtomicTest(()->
-   pass("while a<=0N if z a.b() else c.d()",
-   "SWhile(|<x||P>SIf(|xxFCall(|m||)|xFCall(|m||)))|")
+   pass("while a<=0N if z a.b()\nelse c.d()")
   ),new AtomicTest(()->
-   pass("for var mut x in xs x:=x*2Num",
-   "SFor(|||x|xSUpdate(x|<x||P>))|")
+   pass("for var mut x in xs x:=x*2Num")
   ),new AtomicTest(()->
-   pass("loop a(C[])",
-   "SLoop(|xFCall(|PSquareCall(||)|))|")
+   pass("loop a(C[])")
   ),new AtomicTest(()->
-   pass("if a&&b return X\"oh\"",
-   "SIf(|<x|x>SThrow(|P|))|")
-   */
-     ));}
+   pass("if a&&b return X\"oh\"")
+  ));}
 public static void pass(String input) {pass(input,input);}
 
 public static void pass(String input,String output) {
@@ -291,6 +324,7 @@ public static void fail(String input,String ...output) {
   var r=Parse.e("-dummy-",input);
   assertTrue(r.hasErr());
   String msg=r.errorsTokenizer+"\n"+r.errorsParser+"\n"+r.errorsVisitor;
+  for(var s:output){if(!msg.contains(s)){throw new Error(msg);}}
   for(var s:output){assertTrue(msg.contains(s));}
   }
 }

@@ -55,6 +55,7 @@ _______
 //    T && X= if !T F else X//shortResult&& is false, shortCircut&& is !this
 //    T || X= if T T else X//shortResult|| is true, shortCircut|| is this
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
+//    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
 * Y!xP OP e = e'.$methName(OP)_0(that=e")
     xP not of form x
@@ -88,7 +89,7 @@ _______
     HALF.T = STz' if Y.expectedT=empty
     Y[expectedT=imm Void]!(Ds Ks Whoops? Ds2 void) = e; _; STz'; CCz 
     x, x' fresh
-* Y!e(.m)?[pars]= Y!e.m?(squareBuilder:(if \.#shortCircutSquare() (
+* Y!e(.m)?[pars]= Y!e.m?(squareBuilder=(if \.#shortCircutSquare() (
         b=\.#squareBuilder()     
         e1..en //so \ and \x are about the builder
       b))
@@ -135,7 +136,7 @@ _______
 * Y!for (DX in xP)s DX in e (DX in e)s e0 = Y!(x=e for (DX in xP)s DX in x (DX in e)s e0)    
 * Y!for DX1 in xP1..DXn in xPn e = Y!( //we use c,i as xs used for iterators and indexes
       c1=xP1.iterator(); .. cn=xPn.iterator();
-      var i1=xP1.indexZero() .. var in=xPn.indexZero()
+      var i1=xP1.startIndex() .. var in=xPn.startIndex()
       while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
         DX1=elemOf(DX1,c1,i1) .. DXn=elemOf(DXn,cn,in)
         e[replaceUnOp DX1;i1;c1]..[replaceUnOp DXn;in;cn]

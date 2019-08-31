@@ -53,7 +53,7 @@ X: Fx;
 x: X;
 SlashX:'\\'Fx;
 slashX:SlashX;
-m: MUniqueNum|MHash|X;
+m: MUniqueNum|MHash|X | VoidKW | VarKw | CatchKw | InterfaceKw | IfKw | ElseKw | WhileKw | ForKw | InKw | LoopKw | Throw | WhoopsKw | MethodKw | Mdf;//filtering fwd later on
 CsP: C(ClassSep C)*;
 ClassSep: '.';
 fragment C: IdUp IdChar* ('::'Fn)?;
@@ -77,7 +77,7 @@ tLocal: t | Mdf | ;
 
 eAtomic: x | csP | voidE | fullL | block | slash | pathSel | slashX;
 fullL:'{' (header | DotDotDot | ReuseURL) fullM* info? doc*'}';
-fullM: fullF | fullMi |fullMWT | fullNC;
+fullM: fullF | fullMi | fullMWT | fullNC;
 fullF: doc* VarKw? t x;
 fullMi: doc* MethodKw mOp oR x* ')' '=' e;
 fullMWT: doc* fullMH ('=' NativeURL? e)?;

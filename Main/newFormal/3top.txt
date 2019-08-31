@@ -58,6 +58,9 @@ _______
     p={interface? Ts MWTs NCs};pTail
     Ps;Ps'=collectDeps(p;Ts) U collectDeps(p;MWTs) U collectDeps(NCs.Docss) //where (Ps0; Ps0') U (Ps1; Ps1') = Ps0, Ps1; Ps0', Ps1'
     Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
+    //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
+    //with no free variables into class methods or in the execution we optimize as 
+    //class methods all subexpressions with no free var (and not calling #$s)
 _______
 #define I!HALF.e? => ER
 * I!empty => empty;empty

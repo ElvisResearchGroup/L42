@@ -18,6 +18,7 @@ import is.L42.generated.L42AuxParser.CsPContext;
 import is.L42.generated.L42AuxParser.DocContext;
 import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
+import is.L42.generated.L42AuxParser.NudePathSelXContext;
 import is.L42.generated.L42AuxParser.TopDocContext;
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
@@ -49,7 +50,7 @@ public class Parse {
       }
     }
     
-  private static <T>Result<T> doResult(Lexer l,Parser p,StringBuilder vErr, Supplier<T> s){
+  private static <T>Result<T> doResult(Lexer l,Parser p, Supplier<T> s){
     StringBuilder errorst=new StringBuilder();
     StringBuilder errorsp=new StringBuilder();
     l.removeErrorListener(ConsoleErrorListener.INSTANCE);
@@ -57,7 +58,7 @@ public class Parse {
     p.removeErrorListener(ConsoleErrorListener.INSTANCE);
     p.addErrorListener(new FailConsole(errorsp));
     var res=s.get();
-    return new Result<>(errorst.toString(),errorsp.toString(),vErr.toString(),res);   
+    return new Result<>(errorst.toString(),errorsp.toString(),"",res);   
     }
     
   public static Result<E> e(String fileName,String s){
@@ -65,34 +66,48 @@ public class Parse {
     var t = new CommonTokenStream(l);
     var p=new L42Parser(t);
     var v=new FullL42Visitor(fileName);
-    return doResult(l,p,v.errors,()->v.visitNudeE(p.nudeE()));
+    Result<NudeEContext> res1=doResult(l,p,()->p.nudeE());
+    if(res1.hasErr()){
+      return new Result<>(res1.errorsParser,res1.errorsTokenizer,res1.errorsVisitor,null);         
+      }
+    E e=v.visitNudeE(res1.res);
+    if(v.errors.length()!=0){
+      return new Result<E>("","",v.errors.toString(),null);
+      }
+    return new Result<E>("","","",e);
     }
     
   public static Result<NudeEContext> ctxE(String s){
     var l=new L42Lexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42Parser(t);
-    return doResult(l,p,new StringBuilder(),()->p.nudeE());
+    return doResult(l,p,()->p.nudeE());
     }
 
   public static Result<NudeCsPContext> csP(String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,new StringBuilder(),()->p.nudeCsP());
+    return doResult(l,p,()->p.nudeCsP());
     }    
 
   public static Result<TopDocContext> doc(String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,new StringBuilder(),()->p.topDoc());
+    return doResult(l,p,()->p.topDoc());
     }    
   public static Result<InfoContext> info(String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,new StringBuilder(),()->p.info());
-    }    
+    return doResult(l,p,()->p.info());
+    }
+  public static Result<NudePathSelXContext> pathSelX(String s){
+    var l=new L42AuxLexer(CharStreams.fromString(s));
+    var t = new CommonTokenStream(l);
+    var p=new L42AuxParser(t);
+    return doResult(l,p,()->p.nudePathSelX());
+    } 
 
   }

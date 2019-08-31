@@ -76,9 +76,9 @@ public class ToSVisitor extends CollectorVisitor{
     separeFromChar();
     c(thr.inner);
     }
-  public void visitOp(Op op){
-    if(op==Op.In){c(" in ");}
-    else{c(op.inner);}
+  public String opRepr(Op op){
+    if(op==Op.In){return " in";}
+    else{return op.inner;}
     }  
   
   public void visitC(C c){
@@ -117,7 +117,7 @@ public class ToSVisitor extends CollectorVisitor{
     }
 
   public void visitSTOp(ST.STOp stOp){
-    visitOp(stOp.op());
+    c(opRepr(stOp.op()));
     for(var stz:stOp.stzs()){
       c("[");seqHas(empty,stz," ");c("]");
       }
@@ -320,7 +320,7 @@ public class ToSVisitor extends CollectorVisitor{
     }
     
   public void visitBinOp(Half.BinOp binOp){
-    seqHas(empty,binOp.es(),binOp.op().inner);
+    seqHas(empty,binOp.es(),opRepr(binOp.op()));
     }
     
   public void visitMCall(Half.MCall mCall){
@@ -422,11 +422,15 @@ public class ToSVisitor extends CollectorVisitor{
     
   public void visitMI(Full.L.MI mi){
     var docs0=mi.docs();
-    var s0=mi.key();
+    var s0=mi.s();
     var e0=mi.e();
     visitFullDocs(docs0);
     kw("method");
-    visitS(s0);
+    if(mi._op()!=null){
+      c(opRepr(mi._op()));
+      if(mi.n()!=-1){c(mi.n()+"");}
+      }
+    visitS(s0);//ok, if there is op, s.m() is empty
     c("=");
     visitE(e0);
     }
@@ -471,10 +475,13 @@ public class ToSVisitor extends CollectorVisitor{
     c("\""+s+"\"");
     }
   
-  //public void visitEPathSel(Full.EPathSel ePathSel){visitPathSel(ePathSel.pathSel());}
+  public void visitEPathSel(Full.EPathSel ePathSel){
+  c("'");
+  visitPathSel(ePathSel.pathSel());
+  }
 
   public void visitUOp(Full.UOp uOp){
-    if(uOp._op()!=null){visitOp(uOp._op());}
+    if(uOp._op()!=null){c(opRepr(uOp._op()));}
     if(uOp._num()!=null){
       lastWasNum=false;
       separeFromChar();
@@ -485,7 +492,7 @@ public class ToSVisitor extends CollectorVisitor{
     }
 
   public void visitBinOp(Full.BinOp binOp){
-    seqHas(empty,binOp.es(),binOp.op().inner);
+    seqHas(empty,binOp.es(),opRepr(binOp.op()));
     }
     
   public void visitCast(Full.Cast cast){
@@ -560,7 +567,7 @@ public class ToSVisitor extends CollectorVisitor{
     var x0=opUpdate.x();
     var e0=opUpdate.e();
     visitX(x0);
-    visitOp(opUpdate.op());
+    c(opRepr(opUpdate.op()));
     visitE(e0);
     }
     
@@ -576,6 +583,7 @@ public class ToSVisitor extends CollectorVisitor{
       }
     visitE(then0);
     if(_else0!=null){
+      nl();
       kw("else");
       visitE(_else0);
       }
@@ -672,7 +680,10 @@ public class ToSVisitor extends CollectorVisitor{
     if(mh._mdf()!=null){visitMdf(mh._mdf());}
     kw("method");
     visitT(t0);
-    if(mh._op()!=null){visitOp(mh._op());}
+    if(mh._op()!=null){
+      c(opRepr(mh._op()));
+      if(mh.n()!=-1){c(mh.n()+"");}
+      }
     else{cMethName(s0);}
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
     if(exceptions0.isEmpty()){return;}

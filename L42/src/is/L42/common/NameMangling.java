@@ -9,6 +9,7 @@ public class NameMangling {
     return s.withM(methName(_op,n));
     }
   public static String methName(Op op,int n){
+    if(n==-1){n=0;}
     return "#"+op.name()+"n";
     }
 }

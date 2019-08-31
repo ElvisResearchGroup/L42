@@ -125,7 +125,7 @@ _______
   CORE.PathSel::= P | P.s | P.s.x
   FULL/CORE.docText ::= empty | CHAR -- '{' -- '}' -- '@' docText 
     | Doc docText | '{' docText '}' docText
-  mOp ::= empty | m | OP | ~ | !
+  mOp ::= empty | m | OP_n | ~_n | !_n
 _______
 #define FULL Expressions priority disambiguation and other details
   FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel |  e<:T |\x
