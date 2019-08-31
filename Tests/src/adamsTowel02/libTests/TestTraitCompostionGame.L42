@@ -69,7 +69,9 @@ ModuleEntities: Trait({
       if updateWorld (
         world.removeEntity(this.point())
         )
+
       this.p(that)
+
       if updateWorld (
         world.addEntity(this)
         )
@@ -135,7 +137,7 @@ TestModuleEntities: ModuleEntities & {
 
   Tests: K <>< {
     class method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
-      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear mutations
+      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
       mut RockItem entity = RockItem(p: Point(x: 4Size, y: 5Size))
 
       entity.drawOnto(Graphics())
@@ -149,7 +151,13 @@ TestModuleEntities: ModuleEntities & {
     class method Void #$ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint() (
       mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.true())
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
-      item.point(TestModuleEntities.newItemPoint(), world: world, updateWorld: Bool.true())
+
+      item.point(
+        TestModuleEntities.newItemPoint(),
+        world: world,
+        updateWorld: Bool.true()
+        )
+
       catch error PointFilled pf void
       error X"Expected exception to be thrown"
       )
@@ -158,7 +166,11 @@ TestModuleEntities: ModuleEntities & {
       mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
-      item.point(TestModuleEntities.newItemPoint(), world: world, updateWorld: Bool.true())
+      item.point(
+        TestModuleEntities.newItemPoint(),
+        world: world,
+        updateWorld: Bool.true()
+        )
 
       Debug.test(item.point(), expected: TestModuleEntities.newItemPoint())
       )
@@ -167,7 +179,11 @@ TestModuleEntities: ModuleEntities & {
       mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
-      item.point(TestModuleEntities.newItemPoint(), world: world, updateWorld: Bool.true())
+      item.point(
+        TestModuleEntities.newItemPoint(),
+        world: world,
+        updateWorld: Bool.true()
+        )
 
       Debug.test(
         world.#mutations(),
@@ -181,7 +197,11 @@ TestModuleEntities: ModuleEntities & {
       mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
-      item.point(TestModuleEntities.newItemPoint(), world: world, updateWorld: Bool.false())
+      item.point(
+        TestModuleEntities.newItemPoint(),
+        world: world,
+        updateWorld: Bool.false()
+        )
 
       Debug.test(world.#mutations(), expected: S"[]")
       )
@@ -252,7 +272,9 @@ ModuleWorld: Trait({
       }
 
     mut method Void addEntity(mut Entity that) (
-      if this.hasEntityAt(that.point()) (error PointFilled"")
+      if this.hasEntityAt(that.point()) (
+        error PointFilled""
+        )
       this.add(right: that)
       )
 
@@ -627,12 +649,14 @@ ModuleUI: Trait({
     mut method Void movePlayerRight()
     }
 
-  Action: {interface method Void (mut World world)}
+  Action: {
+    interface method Void (mut World world)
+    }
   Actions: Collections.vector(of: Action)
-  MoveUp: K<><{implements Action method (world) world.movePlayerUp()}
-  MoveDown: K<><{implements Action method (world) world.movePlayerDown()}
-  MoveLeft: K<><{implements Action method (world) world.movePlayerLeft()}
-  MoveRight: K<><{implements Action method (world) world.movePlayerRight()}
+  MoveUp: K <>< {implements Action method (world) world.movePlayerUp()}
+  MoveDown: K <>< {implements Action method (world) world.movePlayerDown()}
+  MoveLeft: K <>< {implements Action method (world) world.movePlayerLeft()}
+  MoveRight: K <>< {implements Action method (world) world.movePlayerRight()}
   })
 
 //
