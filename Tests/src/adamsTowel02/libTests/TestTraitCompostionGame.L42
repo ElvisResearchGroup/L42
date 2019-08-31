@@ -228,7 +228,9 @@ ModuleWorld: Trait({
   Entity: {interface
     read method Point point()
     }
-  Player: {}
+  Player: {
+    class method mut Player (fwd Point p)
+    }
 
   Graphics: {
     mut method Void draw(S that, Size x, Size y)
@@ -270,6 +272,13 @@ ModuleWorld: Trait({
     mut PointToEntityMap map
     mut Player player
 
+    class method mut World () (
+      World(
+        map: PointToEntityMap[],
+        player: Player(p: Point(x: 0Size, y: 0Size))
+        )
+      )
+
     class method Size gameSizeInCells() 10Size
 
     mut method mut Entity getEntityAt(Point that) (
@@ -277,7 +286,7 @@ ModuleWorld: Trait({
       )
 
     read method Bool hasEntityAt(Point that) (
-      this.#map().hasEntityAt(that)
+      this.map().hasEntityAt(that)
       )
 
     mut method Void addEntity(mut Entity that) (
@@ -320,7 +329,6 @@ TestModuleWorld: ModuleWorld & {
     mut method Void draw(S that, Size x, Size y) void
     class method mut This ()
     }
-  PointToEntityMap: {}
   World: {}
 
   Entity: {interface
@@ -360,9 +368,7 @@ TestModuleWorld: ModuleWorld & {
       unused1 = Debug.#$readLog(S"playerDrawPoints")
       unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
 
-      This(world: World(
-        map: PointToEntityMap[], player: Player(p: Point(x: 0Size, y: 0Size))
-        ))
+      This(world: World())
       )
 
     mut method Void addEntity_add2EntitiesToTheSamePoint() (
@@ -459,20 +465,18 @@ TestModuleWorld_World_drawOnto_drawsPlayerAtMovedPoint:
 
 
 ModuleWorldLoader: Trait({
-  PointToEntityMap: {
-    class method mut This #seqBuilder()
-    class method mut This #from(mut This seqBuilder)
-    }
-  World: K <>< {
-    mut PointToEntityMap map
-    mut Player player
+  World: {
+    class method mut World ()
     mut method Void addEntity(mut Entity that)
     }
 
   Entity: {interface}
-  Player: {implements Entity class method mut This (fwd Point p)}
-  RockItem: {implements Entity class method mut This (fwd Point p)}
-  AppleItem: {implements Entity class method mut This (fwd Point p)}
+  RockItem: {implements Entity
+    class method mut This (fwd Point p)
+    }
+  AppleItem: {implements Entity
+    class method mut This (fwd Point p)
+    }
 
   WorldLoader: {
     class method mut World #$(S fileName) (
@@ -481,10 +485,7 @@ ModuleWorldLoader: Trait({
       )
 
     class method mut World loadWorld(S content) (
-      mut World world = World(
-        map: PointToEntityMap[],
-        player: Player(p: Point(x: 0Size, y: 0Size))
-        )
+      mut World world = World()
 
       // withoutLeft() removes the comment line
       Strings lines = content.splitOn(chars: S.nl()).withoutLeft()
@@ -511,20 +512,36 @@ ModuleWorldLoader: Trait({
   })
 
 TestModuleWorldLoader: ModuleWorldLoader & {
-  World: {
-    mut Strings addedEntities
-    mut method Void addEntity(mut Entity that) (
-      this.#addedEntities().add(right: that.toS())
-      )
-    }
-
   Entity: {interface
     read method Point point()
     read method S toS()
     }
-  Player: {implements Entity}
-  RockItem: {implements Entity}
-  AppleItem: {implements Entity}
+  HasPoint: Trait(K <>< {implements Entity
+    var Point p
+    method point() this.p()
+    })
+  RockItem: HasPoint & {implements Entity
+    method toS() (
+      S"RockItem("[this.point()]")"
+      )
+    }
+  AppleItem: HasPoint & {implements Entity
+    method toS() (
+      S"AppleItem("[this.point()]")"
+      )
+    }
+
+  World: K <>< {
+    mut Strings addedEntities
+
+    class method mut World () (
+      This(addedEntities: Strings[])
+      )
+
+    mut method Void addEntity(mut Entity that) (
+      this.#addedEntities().add(right: that.toS())
+      )
+    }
 
   WorldLoader: {}
 
@@ -685,14 +702,11 @@ IntegrationTest1: {
   }
 
 IntegrationTest2: {
-  mut Main.World world = Main.World(
-    map: Main.PointToEntityMap[],
-    player: Main.Player(p: Point(x: 2Size, y: 1Size))
-    )
+  mut Main.World world = Main.World()
   world.addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
   Debug.test(world.asText(), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|P|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|R|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -706,16 +720,13 @@ IntegrationTest2: {
   }
 
 IntegrationTest3: {
-  mut Main.World world = Main.World(
-    map: Main.PointToEntityMap[],
-    player: Main.Player(p: Point(x: 2Size, y: 1Size))
-    )
+  mut Main.World world = Main.World()
   world.addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
   Main.Actions actions = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveDown()]
   Strings ss = Main(actions: actions, world: world)
   Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|P|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|R|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -729,8 +740,8 @@ IntegrationTest3: {
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|R|_|_|_|_|_|_|_
-    '|_|_|P|_|_|_|_|_|_|_
+    '|P|_|R|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
