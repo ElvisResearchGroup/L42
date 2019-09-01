@@ -145,8 +145,10 @@ _______
   FULL.e ::= sIf | sWhile | sFor | loop e | throw e | x opUpdate e | eBinary3
 _______
 #define grammar well formedness
-* FULL/CORE.D: var T x=e is valid only if T not capsule or fwd.
+* FULL.DX: var TLocal x or _(_ var TLocal x _) is valid only if TLocal.mdf not capsule or fwd.
+* CORE.D: var T x=e is valid only if T not capsule or fwd.
 * s: 'this' notin xs and all x in xs are unique
+* FULL.par: 'this' notin xs and all x in xs are unique, if 'that' omitted, that notin xs
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 * C not This, Thisn, Any, Void or Library
 * FULL/CORE B:

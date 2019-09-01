@@ -214,7 +214,7 @@ public class CloneVisitor {
     var x=visitX(x0);
     var e=visitE(e0);
     if(t==t0 && x==x0 && e==e0){return d;}
-    return new Core.D(t, x, e);
+    return new Core.D(d.isVar(),t, x, e);
     }
 
   public Core.K visitK(Core.K k){

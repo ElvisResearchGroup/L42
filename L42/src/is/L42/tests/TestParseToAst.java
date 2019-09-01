@@ -334,6 +334,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    passI("S\"aa%x[].foo()bb\"","x[].foo()")
  ),new AtomicTest(()->
    fail("S\"aa%x[].foo().bb\"","ill formed string interpolation"," input '.bb'")
+ ),new AtomicTest(()->
+   passI("S\"a1%(x1)a2%(x2)a3%(x3)\"","(x1)","(x2)","(x3)")
+ ),new AtomicTest(()->
+   passI("S\"%(x1)%(x2)%(x3)\"","(x1)","(x2)","(x3)")
+ ),new AtomicTest(()->
+   passI("S\"%x1%x2%x3\"","x1","x2","x3")
+ ),new AtomicTest(()->
+   passI("S\"%x1%(x2)%x3%(x4)\"","x1","(x2)","x3","(x4)")
+ ),new AtomicTest(()->
+   passI("S\"%x1%x2.foo()[]%x3()[] ()%(x4)\"","x1","x2.foo()[]","x3()[]","(x4)")
 
 
   ));}
@@ -351,6 +361,7 @@ public static void passI(String input,String ...outputs) {
   assertFalse(r.hasErr());
   assertEquals(input,r.res.toString());
   Full.EString e=(Full.EString)r.res;
+  assertEquals(outputs.length,e.es().size()-1);
   for(var i:range(outputs.length)){
     var ei=e.es().get(i+1);
     var oi=outputs[i];

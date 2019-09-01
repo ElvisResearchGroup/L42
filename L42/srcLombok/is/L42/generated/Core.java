@@ -63,7 +63,7 @@ public class Core {
   //---
   @Value @Wither public static class
   D implements Visitable<D>{@Override public D accept(CloneVisitor cv){return cv.visitD(this);}@Override public void accept(CollectorVisitor cv){cv.visitD(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    T t; X x; E e;}
+    boolean isVar; T t; X x; E e;}
   @Value @Wither public static class
   K implements Visitable<K>{@Override public K accept(CloneVisitor cv){return cv.visitK(this);}@Override public void accept(CollectorVisitor cv){cv.visitK(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     ThrowKind thr; T t; X x; E e;}    

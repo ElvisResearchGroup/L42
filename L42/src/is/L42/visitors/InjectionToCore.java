@@ -23,13 +23,13 @@ public class InjectionToCore extends CollectorVisitor{
     this.errors = errors;
     this.eVoid = eVoid;
   }
-  private Core.L makeErr(Pos pos,Core.L.Info info){
+  private Core.L makeErr(Pos pos,Core.L.Info info, String hint){
     if(info==null){return null;}
     String err=info.toString();
     var errRes=new Core.L(pos,false, L(),L(),L(),info,L());
     err=ErrorReporting.trimExpression(err);
     err="line " + pos.line() + ":" + pos.column() 
-      + " Error: Extraneus token "+err;
+      + " Error: Extraneus token "+err+"\n"+hint;
     errors.append(err);
     return errRes;
     }
@@ -82,7 +82,7 @@ public class InjectionToCore extends CollectorVisitor{
     }
   public Core.L _inject(Full.L res,Core.L.Info info) {
     if(res.isDots() || !res.reuseUrl().isEmpty()){
-      return makeErr(res.pos(),info);
+      return makeErr(res.pos(),info,"no dots or reuse in core libraries");
       }
     long cut=res.ms().stream()
       .takeWhile(m->!(m instanceof Full.L.NC))
@@ -96,14 +96,23 @@ public class InjectionToCore extends CollectorVisitor{
       .map(m->(Full.L.NC)m)
       .collect(Collectors.toList());
     if(mwts.size()+ncs.size()!=res.ms().size()){
-      return makeErr(res.pos(),info);
+      return makeErr(res.pos(),info,"only methods with type and nested classes in core libraries");
       }
     List<Core.T>cts=_injectL(res.ts(),this::_inject);
     List<Core.L.MWT>cmwts=L(mwts,(c,mi)->c.add(_inject(mi)));
     List<Core.L.NC>cncs=L(ncs,(c,ni)->c.add(_inject(ni)));
     List<Core.Doc>cdocs=_injectL(res.docs(),this::_inject);
-    if(cdocs==null || cmwts==null || cncs.contains(null) || cdocs.contains(null)){
-      return makeErr(res.pos(),info);
+    if(cts==null){
+      return makeErr(res.pos(),info,"invalid implemented type for core library");
+      }      
+    if(cdocs==null){
+      return makeErr(res.pos(),info,"invalid docs for core library");
+      }      
+    if(cncs.contains(null)){
+      return makeErr(res.pos(),info,"invalid nested class for core library");
+      }      
+    if(cmwts.contains(null)){
+      return makeErr(res.pos(),info,"invalid method with type for core library");
       }      
     return new Core.L(res.pos(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
     }
@@ -169,7 +178,7 @@ public class InjectionToCore extends CollectorVisitor{
     var t=_inject(d._varTx()._t());
     var e=_inject(d._e());
     if(d._varTx()._x()==null || t==null || e==null){return null;}
-    return new Core.D(t, d._varTx()._x(), e);
+    return new Core.D(d._varTx().isVar(),t, d._varTx()._x(), e);
     }
   public Core.K _inject(Full.K d) {
     if(d._thr()==null || d._x()==null){return null;}

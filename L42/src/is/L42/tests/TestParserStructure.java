@@ -214,7 +214,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
    pass("if a&&b return X\"oh\"",
    "SIf(|<x|x>SThrow(|P|))|")
-
      ));}
 public static void pass(String input,String output) {
   String res=parseStructure(parseWithException(input));

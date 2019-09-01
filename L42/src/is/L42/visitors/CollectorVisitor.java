@@ -3,76 +3,41 @@ import java.util.List;
 import is.L42.generated.*;
 
 public class CollectorVisitor {
+  public void visitE(Core.E e){e.visitable().accept(this);}
+  public void visitM(Full.L.M m){m.visitable().accept(this);}
+  public void visitE(Full.E e){e.visitable().accept(this);}
+  public void visitE(Half.E e){e.visitable().accept(this);}
   public final void visitST(ST st){st.visitable().accept(this);}
-
-  public final void visitE(Core.E e){e.visitable().accept(this);}
-  
-  public final void visitEs(List<Core.E> es){es.forEach(this::visitE);}
-
   public final void visitXP(Core.XP xP){xP.visitable().accept(this);}
-
-  public final void visitPs(List<P> ps){ps.forEach(this::visitP);}
-
-  public final void visitSs(List<S> ss){ss.forEach(this::visitS);}
-
-  public final void visitPathSels(List<Core.PathSel> pathSels){pathSels.forEach(this::visitPathSel);}
-
-  public final void visitXPs(List<Core.XP> xPs){xPs.forEach(this::visitXP);}
-
-  public final void visitE(Full.E e){e.visitable().accept(this);}
-
-  public final void visitFullEs(List<Full.E> es){es.forEach(this::visitE);}
-
-  public final void visitM(Full.L.M m){m.visitable().accept(this);}
-
-  public final void visitE(Half.E e){e.visitable().accept(this);}
-
-  public final void visitHalfEs(List<Half.E> es){es.forEach(this::visitE);}
-
   public final void visitXP(Half.XP xP){xP.visitable().accept(this);}
 
+  public final void visitEs(List<Core.E> es){es.forEach(this::visitE);}
+  public final void visitPs(List<P> ps){ps.forEach(this::visitP);}
+  public final void visitSs(List<S> ss){ss.forEach(this::visitS);}
+  public final void visitPathSels(List<Core.PathSel> pathSels){pathSels.forEach(this::visitPathSel);}
+  public final void visitXPs(List<Core.XP> xPs){xPs.forEach(this::visitXP);}
+  public final void visitFullEs(List<Full.E> es){es.forEach(this::visitE);}
+  public final void visitHalfEs(List<Half.E> es){es.forEach(this::visitE);}
   public final void visitHalfXPs(List<Half.XP> xPs){xPs.forEach(this::visitXP);}
-
   public final void visitCs(List<C> cs){cs.forEach(this::visitC);}
-
   public final void visitXs(List<X> xs){xs.forEach(this::visitX);}
-  
   public final void visitSTz(List<ST> stz){stz.forEach(this::visitST);}
-
   public final void visitMWTs(List<Core.L.MWT> mwts){mwts.forEach(this::visitMWT);}
-  
   public final void visitNCs(List<Core.L.NC> ncs){ncs.forEach(this::visitNC);}
-  
   public final void visitDs(List<Core.D> ds){ds.forEach(this::visitD);}
-    
   public final void visitKs(List<Core.K> ks){ks.forEach(this::visitK);}
-
   public final void visitTs(List<Core.T> ts){ts.forEach(this::visitT);}
-
   public final void visitDocs(List<Core.Doc> docs){docs.forEach(this::visitDoc);}
-
   public final void visitHalfDs(List<Half.D> ds){ds.forEach(this::visitD);}
-
   public final void visitHalfKs(List<Half.K> ks){ks.forEach(this::visitK);}
-    
   public final void visitHalfTs(List<Half.T> ts){ts.forEach(this::visitT);}
-
   public final void visitFullMs(List<Full.L.M> ms){ms.forEach(this::visitM);}
-
   public final void visitFullDs(List<Full.D> ds){ds.forEach(this::visitD);}  
-
   public final void visitFullVarTxs(List<Full.VarTx> varTxs){varTxs.forEach(this::visitVarTx);}
-
   public final void visitFullKs(List<Full.K> ks){ks.forEach(this::visitK);}
-
   public final void visitFullPars(List<Full.Par> pars){pars.forEach(this::visitPar);}
-
   public final void visitFullTs(List<Full.T> ts){ts.forEach(this::visitT);}
-
   public final void visitFullDocs(List<Full.Doc> docs){docs.forEach(this::visitDoc);}
-
-  
-  //------------
   
   public void visitC(C c){}
 

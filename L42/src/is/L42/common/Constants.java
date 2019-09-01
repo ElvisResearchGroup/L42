@@ -4,6 +4,7 @@ import java.util.function.Predicate;
 
 import is.L42.visitors.ToSVisitor;
 import is.L42.visitors.Visitable;
+import is.L42.visitors.WellFormedness;
 
 public class Constants{
   static{
@@ -12,5 +13,5 @@ public class Constants{
     catch(AssertionError e){}
     }
   public static Function<Visitable<?>,String> toS=ToSVisitor::of;
-  public static Predicate<Visitable<?>> wf;
+  public static Predicate<Visitable<?>> wf=WellFormedness::of;
   }

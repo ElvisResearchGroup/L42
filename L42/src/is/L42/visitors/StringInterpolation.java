@@ -88,9 +88,8 @@ public class StringInterpolation {
         return i;
         }
       self.modeToStr();
-      self.appendChar(c);
       self.close(c);
-      return i;
+      return i-1;
       }},
     Round{public int run(StringInterpolation self,String s,int i){
       char c=s.charAt(i);
@@ -102,10 +101,10 @@ public class StringInterpolation {
         return i;
         }
       self.modeToStr();
-      if(self.openR==0){self.appendExp(c);}
-      else {self.appendChar(c);}
+      if(self.openR!=0){return i-1;}
+      self.appendExp(c);
       return i;
-      }    };
+      }};
     abstract int run(StringInterpolation self,String s,int i);
     };
   Mode mode=Mode.Str;
