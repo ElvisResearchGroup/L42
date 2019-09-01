@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 
 import is.L42.generated.*;
 
-public class ToSVisitor extends CollectorVisitor{
+public class ToSVisitor implements CollectorVisitor{
   public static String of(Visitable<?> v){
     var tos=new ToSVisitor();
     v.accept(tos);
@@ -123,7 +123,7 @@ public class ToSVisitor extends CollectorVisitor{
       }
     }
 
-  //public void visitEX(Core.EX x){visitX(x.x());}
+  public void visitEX(Core.EX x){visitX(x.x());}
 
   public void visitPCastT(Core.PCastT pCastT){
     visitP(pCastT.p());

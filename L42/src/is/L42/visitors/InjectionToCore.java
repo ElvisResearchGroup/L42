@@ -15,7 +15,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.Core.EVoid;
 
-public class InjectionToCore extends CollectorVisitor{
+public class InjectionToCore extends UndefinedCollectorVisitor{
   public StringBuilder errors;
   public EVoid eVoid;
   Core.E result=null;
@@ -121,6 +121,7 @@ public class InjectionToCore extends CollectorVisitor{
     }
 
   public Core.T _inject(Full.T t) {
+    if(t==null){return null;}
     List<Core.Doc>docs=_injectL(t.docs(),this::_inject);
     if(docs==null){return null;}
     if(t.csP()==null || t.csP()._p()==null){return null;}

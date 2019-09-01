@@ -153,14 +153,15 @@ _______
 * C not This, Thisn, Any, Void or Library
 * FULL/CORE B:
     no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
+    this notin dom(B.Ds.xs)
     FV(Ks) disjoint dom(B.Ds)
-    dom(B.Ds) disjoint bindings(B.Ds,Ks.es,e)
-    if B={ Ds1 Ks WHOOPS? Ds2} then returning({ Ds1 Ks WHOOPS? Ds2})
+    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e)
+    if B={ Ds1 Ks WHOOPS? Ds2} then returningBlock({ Ds1 Ks WHOOPS? Ds2})
     if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
     if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D) 
-    if B=(_ D e _), then noBlockNeeded(D.e)
-    if B=(_ K e _), then noBlockNeeded(K.e)
-* FULL/CORE.K: K.x not in bindings(K.e)
+    if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
+    if B=(_ K e _) then noBlockNeeded(K.e)
+* FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
 * FULL/CORE.MWT:
     MWT =mdf method T _(T1 x1.. Tn xn)PL (=native[URL]? e)?
@@ -232,8 +233,8 @@ _______
 * FV(void)=FV(P)=FV(LL)=empty
 * FV(throw e)=FV(e)
 * FV(loop e)=FV(e),FV(e)  //representing each variable twice is enough to make capsule tests work
-* FV(e0.m[T](x1:e1..xn:en) )=FV(e0),..,FV(en)
-* FV( (T1 x1=e1.. Tn xn=en k1..km e0[T]) )=ys,max(xs0;xs1;..;xsm)
+* FV(e0.m(x1:e1..xn:en) )=FV(e0),..,FV(en)
+* FV( (T1 x1=e1.. Tn xn=en k1..km e0) )=ys,max(xs0;xs1;..;xsm)
     ys=FV(e1),..,FV(en)\x1..xn
     xsi=FV(ki)
     xs0=FV(e0)\x1...xn
@@ -246,12 +247,14 @@ _______
 * max(x,xs;ys0,x,ys1)=x, max(xs;ys0,ys1)
 * max(xs; xs0;..;xsn) = max(max(xs;xs0);xs1;..;xsn)
 _______
-#define returning(FULL.e)
-* returning({ Ds1 Ks WHOOPS? Ds2}) iff
+#define returningBlock({Ds1 Ks WHOOPS? Ds2})    returning(FULL.e)    hasReturn(es)
+
+* returningBlock({Ds1 Ks WHOOPS? Ds2}) iff
     Ds,D=Ds1,Ds2
     returning(D.e)
     forall D' in Ds: not returning(D'.e) // would be dead code after
     forall K in Ks: returning(K.e)
+    hasReturn(Ds1.es,Ds2.es,Ks.es)
 * returning(loop e)
 * returning(throw e)
 * returning(if _ e1 else e2) iff 
@@ -259,3 +262,6 @@ _______
 * returning( (Ds1 Ks WHOOPS? Ds2 e) ) iff
     returning(e)
     forall K in Ks: returning(K.e)
+//* undefined in all the other cases
+* hasReturn(_,e,_)
+    return e' is contained inside e without traversing LL or a block with curly or another throw e'

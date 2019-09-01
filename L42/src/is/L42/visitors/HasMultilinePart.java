@@ -2,7 +2,7 @@ package is.L42.visitors;
 import java.util.List;
 import is.L42.generated.*;
 
-public class HasMultilinePart extends CollectorVisitor implements java.util.function.Function<Visitable<?>,Boolean>{
+public class HasMultilinePart extends PropagatorCollectorVisitor implements java.util.function.Function<Visitable<?>,Boolean>{
   boolean acc=false;
   @Override public void visitDoc(Core.Doc doc){
     for(var s:doc.texts()){
