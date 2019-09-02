@@ -220,6 +220,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{canBeClassAny}})")
    ),new AtomicTest(()->
+   pass("{imm method imm Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
+   ),new AtomicTest(()->
+   fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}","Error: Extraneus token #norm{}","invalid method with type for core library")
+   ),new AtomicTest(()->
    pass("({@This0.Bar imm method imm This0.T f()#norm{}})")
    ),new AtomicTest(()->
    pass("({mut@Bar T f})")

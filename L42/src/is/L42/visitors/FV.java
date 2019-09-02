@@ -92,7 +92,7 @@ public class FV extends PropagatorCollectorVisitor{
       long count=Stream.concat(ys.stream(),e.stream())
         .filter(x->x.equals(d.x())).count();
       if (count<=1){continue;}
-      throw new WellFormedness.NotWellFormed(b.pos(),"capsule binding "+d.x()+" used more then onece");
+      throw new WellFormedness.NotWellFormed(b.pos(),"capsule binding "+d.x()+" used more then once");
       }
     }
   public static List<X> max(List<List<X>> xss){

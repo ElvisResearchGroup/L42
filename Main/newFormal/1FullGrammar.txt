@@ -168,7 +168,7 @@ _______
     dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e)
 * FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
-* FULL/CORE.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
+* FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
 * FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)PL
     mdf notin {fwd imm, fwd mut}
     T0 = mdf This0
@@ -179,7 +179,7 @@ _______
     FV(e)\this,x1..xn = empty    
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
 * FULL.match of form T?(T?0 x0..T?n xn) = e; at least one Ti? is not empty
-* FULL.e: all used variables are in scope 
+* FULL.e: all used variables are in scope //to implement in MI,MWT and NC
 * FULL.e: \x only appear in a method parameter expression
 * CORE/FULL.e: all variable update are applied on var bindings
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty

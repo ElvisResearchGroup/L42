@@ -13,6 +13,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.generated.S;
 import is.L42.generated.Core.EVoid;
 
 public class InjectionToCore extends UndefinedCollectorVisitor{
@@ -53,8 +54,10 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(r==null || !(r instanceof Core.XP)){result=null;return;}
     var es=_injectL(call.pars().get(0).es(),this::_inject);
     if(es==null){result=null;return;}
-    result=new Core.MCall(call.pos(),(Core.XP)r, call._s(), es); 
+    S s=call._s().withXs(call.pars().get(0).xs());
+    result=new Core.MCall(call.pos(),(Core.XP)r, s, es); 
     }
+
   @Override public void visitBlock(Full.Block b){
     if(b.isCurly() || b.ds().size()!=b.dsAfter()){result=null;return;}
     if(b._e()==null || !b.whoopsed().isEmpty()){result=null;return;}
@@ -129,13 +132,16 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     return new Core.T(_inject(t._mdf()), docs, t._p());    
     }
   public Core.L.MWT _inject(Full.L.MWT mwt) {
-    var docs=_injectL(mwt.docs(),this::_inject);
-    var mh=_inject(mwt.mh());
-    if(docs==null || mh==null){return null;}
-    if(mwt._e()==null){return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),null);}
-    mwt._e().visitable().accept(this);
-    if(result==null){return null;}
-    return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),result);
+    try{
+      var docs=_injectL(mwt.docs(),this::_inject);
+      var mh=_inject(mwt.mh());
+      if(docs==null || mh==null){return null;}
+      if(mwt._e()==null){return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),null);}
+      mwt._e().visitable().accept(this);
+      if(result==null){return null;}
+      return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),result);
+      }
+    catch(UndefinedCase uc){return null;}
     }
   public Mdf _inject(Mdf mdf) {return mdf==null?Mdf.Immutable:mdf;}
     

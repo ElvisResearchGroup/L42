@@ -1,6 +1,7 @@
 package is.L42.visitors;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.pushTopL;
 import static is.L42.tools.General.range;
 
 import java.util.List;
@@ -193,7 +194,24 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=l.pos();
     err("Method body can not contain a full library literal");
     }
-
+  @Override public void visitMWT(Core.L.MWT mwt){
+    lastPos=mwt.pos();
+    super.visitMWT(mwt);
+    if(mwt._e()==null){return;}
+    var fv=FV.of(mwt._e().visitable());
+    var pars=pushTopL(X.thisX,mwt.mh().s().xs());
+    var extra=fv.stream().filter(x->!pars.contains(x)).findFirst();
+    if(extra.isPresent()){
+      err("Used binding is not in scope: "+extra.get());}
+    var parT=mwt.mh().parsWithThis();
+    for(var i:range(pars)){
+      if(!parT.get(i).mdf().isCapsule()){continue;}
+      var xi=pars.get(i);
+      long count=fv.stream().filter(x->x.equals(xi)).count();
+      if(count<=1){continue;}
+      err("capsule binding "+xi+" used more then once");
+      }
+    }
   @Override public void visitMH(Full.MH mh){
     super.visitMH(mh);
     if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){

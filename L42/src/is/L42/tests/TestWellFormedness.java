@@ -35,15 +35,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("(((capsule a)=y x))")
 
    ),new AtomicTest(()->
-   pass(inCore("(var mut This0 x=y x)"))
+   pass(inCore("(var mut This0 x=void x)"))
    ),new AtomicTest(()->
-   pass(inCore("(capsule This0 x=y x)"))
+   pass(inCore("(capsule This0 x=void x)"))
    ),new AtomicTest(()->
-   fail(inCore("(var capsule This0 x=y x)"),"var bindings can not be ")
+   fail(inCore("(var capsule This0 x=void x)"),"var bindings can not be ")
    ),new AtomicTest(()->
-   fail(inCore("(var fwd imm This0 x=y x)"),"var bindings can not be ")
+   fail(inCore("(var fwd imm This0 x=void x)"),"var bindings can not be ")
    ),new AtomicTest(()->
-   fail(inCore("(var fwd mut This0 x=y x)"),"var bindings can not be ")
+   fail(inCore("(var fwd mut This0 x=void x)"),"var bindings can not be ")
 
    ),new AtomicTest(()->
    fail("((a.foo(x=a,x=b)))","duplicated name in [")
@@ -119,6 +119,34 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{ method m()=(Any a={} void)}","Method body can not contain a full library literal")
    ),new AtomicTest(()->
    fail("{ class method Void m()=(Any a={} void)}","Method body can not contain a full library literal")
+   
+   ),new AtomicTest(()->
+   fail("{ fwd imm method Void m()}","method modifier can not be fwd imm or fwd mut")
+   ),new AtomicTest(()->
+   fail("{ method read Any m(fwd imm Any x)}","unusable fwd parameter given")
+   ),new AtomicTest(()->
+   fail("{ method imm Any m(fwd mut Any x)}","unusable fwd parameter given")
+   ),new AtomicTest(()->
+   fail("{ method fwd mut Any m(mut Any x)}","invalid fwd return type since there is no fwd parameter")
+
+   ),new AtomicTest(()->
+   fail("{ fwd imm method Void m() #norm{}}","method modifier can not be fwd imm or fwd mut")
+   ),new AtomicTest(()->
+   fail("{ method read Any m(fwd imm Any x) #norm{}}","unusable fwd parameter given")
+   ),new AtomicTest(()->
+   fail("{ method imm Any m(fwd mut Any x) #norm{}}","unusable fwd parameter given")
+   ),new AtomicTest(()->
+   fail("{ method fwd mut Any m(mut Any x) #norm{}}","invalid fwd return type since there is no fwd parameter")
+
+   ),new AtomicTest(()->
+   pass("{ method Any m(Any x)=Any<:class Any.meth(a=x, b=x) #norm{}}")
+
+   ),new AtomicTest(()->
+   fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x) #norm{}}","capsule binding "," used more then once")
+
+   ),new AtomicTest(()->
+   fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=z, b=x) #norm{}}","Used binding is not in scope: z")
+
 
   ));}
 public static String inCore(String s){
