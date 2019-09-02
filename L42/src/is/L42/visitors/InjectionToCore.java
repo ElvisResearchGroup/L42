@@ -124,8 +124,9 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(t==null){return null;}
     List<Core.Doc>docs=_injectL(t.docs(),this::_inject);
     if(docs==null){return null;}
-    if(t.csP()==null || t.csP()._p()==null){return null;}
-    return new Core.T(_inject(t._mdf()), docs, t.csP()._p());    
+    if(t._p()==null){return null;}
+    assert t.cs().isEmpty(); 
+    return new Core.T(_inject(t._mdf()), docs, t._p());    
     }
   public Core.L.MWT _inject(Full.L.MWT mwt) {
     var docs=_injectL(mwt.docs(),this::_inject);
@@ -169,10 +170,9 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     return new Core.Doc(ps,d.texts(),docs);
     }
   public Core.PathSel _inject(Full.PathSel p) {
-    P cp=_inject(p._csP());
-    if(cp==null){return null;}
+    if(p._p()==null){return null;}
     if(p._s()!=null && p._s().m().isEmpty()){return null;}
-    return new Core.PathSel(cp, p._s(),p._x());
+    return new Core.PathSel(p._p(), p._s(),p._x());
     }
   public Core.D _inject(Full.D d) {
     if(d._e()==null ||d._varTx()==null ||!d.varTxs().isEmpty()){return null;}

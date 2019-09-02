@@ -100,17 +100,18 @@ public class Full {
     E _that; List<X>xs; List<E>es;}
   @Value @Wither public static class
   T implements Visitable<T>{@Override public T accept(CloneVisitor cv){return cv.visitT(this);}@Override public void accept(CollectorVisitor cv){cv.visitT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Mdf _mdf; List<Doc> docs; CsP csP;}
+    Mdf _mdf; List<Doc> docs; List<C>cs; P _p;}
   @Value @Wither public static class
   Doc implements Visitable<Doc>{@Override public Doc accept(CloneVisitor cv){return cv.visitDoc(this);}@Override public void accept(CollectorVisitor cv){cv.visitDoc(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     PathSel _pathSel; List<String>texts; List<Doc> docs;}
   @Value @Wither public static class
   PathSel implements Visitable<PathSel>{@Override public PathSel accept(CloneVisitor cv){return cv.visitPathSel(this);}@Override public void accept(CollectorVisitor cv){cv.visitPathSel(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    CsP _csP; S _s; X _x;}
+    List<C>cs; P _p; S _s; X _x;}
   @Value @Wither public static class
   MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf _mdf; List<Doc> docs; T t; Op _op; int n; S s; List<T> pars; List<T> exceptions;
     public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
+    public List<T> parsWithThis(){return is.L42.tools.General.pushTopL(P.fullThis0.with_mdf(_mdf),pars);}
     }
  
   }

@@ -71,6 +71,4 @@ public class Returning extends UndefinedCollectorVisitor{
     visitE(b._e());
     visitFullKs(b.ks());
     }
-  @Override public void visitL(Full.L L){}
-  @Override public void visitL(Core.L L){}
   }

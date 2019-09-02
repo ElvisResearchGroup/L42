@@ -66,6 +66,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("((A a=y A a=z x))","duplicated name in [")
    ),new AtomicTest(()->
    fail("((A a=y (A a=z x)))","binding a is internally redefined")
+    ),new AtomicTest(()->
+   fail("(This0 a=y catch error This0 a error x x)","binding a is internally redefined")
    ),new AtomicTest(()->
    fail("((A a=y catch T x a x))","binding a used in catch; it may not be initialized")
 
@@ -93,6 +95,30 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("(a.foo() catch T x x x.foo() x)","expression need to be enclose in block to avoid ambiguities")
 
+   ),new AtomicTest(()->
+   fail(inCore("(This0 a=y This0 a=z x)"),"duplicated name in [")
+   ),new AtomicTest(()->
+   fail(inCore("(This0 a=y (This0 a=z x))"),"binding a is internally redefined")
+   ),new AtomicTest(()->
+   fail(inCore("(This0 a=y catch error This0 x a x)"),"binding a used in catch; it may not be initialized")
+
+
+    ),new AtomicTest(()->
+   fail("(This0 a=y catch error This0 b (This0 b=c void) x)","binding b is internally redefined")
+   ),new AtomicTest(()->
+   fail("(This0 a=y catch error This0 this error x x)","'this' can not be used as a name")
+   ),new AtomicTest(()->
+   fail(inCore("(This0 a=y catch error This0 b (This0 b=c void) x)"),"binding b is internally redefined")
+   ),new AtomicTest(()->
+   fail(inCore("(This0 a=y catch error This0 this error x x)"),"'this' can not be used as a name")
+
+   ),new AtomicTest(()->
+   pass("(Any a={} void)")
+
+   ),new AtomicTest(()->
+   fail("{ method m()=(Any a={} void)}","Method body can not contain a full library literal")
+   ),new AtomicTest(()->
+   fail("{ class method Void m()=(Any a={} void)}","Method body can not contain a full library literal")
 
   ));}
 public static String inCore(String s){

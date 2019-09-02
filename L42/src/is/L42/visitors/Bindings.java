@@ -23,7 +23,7 @@ public class Bindings extends PropagatorCollectorVisitor{
   //full part
   @Override public void visitK(Full.K k){
     super.visitK(k);
-    result.add(k._x());
+    if(k._x()!=null){result.add(k._x());}
     }
   @Override public void visitFor(Full.For f){
     super.visitFor(f);
@@ -41,8 +41,8 @@ public class Bindings extends PropagatorCollectorVisitor{
   //core part
   @Override public void visitL(Core.L L){}
   @Override public void visitBlock(Core.Block b){
-    result.addAll(FV.domDs(b.ds()));
     super.visitBlock(b);
+    result.addAll(FV.domDs(b.ds()));
     }
   @Override public void visitK(Core.K k){
     super.visitK(k);

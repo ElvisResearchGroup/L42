@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import is.L42.common.EndError;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
+import is.L42.generated.HasVisitable;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -73,7 +74,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitBlock(b);
     var domDs=FV.domFullDs(b.ds());
     okXs(domDs);
-    declaredVariableNotUsedInCatch(b, domDs);
+    declaredVariableNotUsedInCatch(b.ks(), domDs);
     declaredVariableNotRedeclared(b, domDs);
     if(b.isCurly()){Returning.ofBlock(b);}
     else{
@@ -112,38 +113,126 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }      
     }
   private void declaredVariableNotRedeclared(Full.Block b, List<X> domDs) {
-    var redefined=Stream.concat(Stream.concat(
+    declaredVariableNotRedeclared(Stream.concat(Stream.concat(
       b.ds().stream().map(d->d._e()),//ds
       b.ks().stream().map(k->k.e())//ks
-      ),Stream.of(b._e()))//e
-     .filter(e->e!=null)
-     .flatMap(e->Bindings.of(e.visitable()).stream())
+      ),Stream.of(b._e())),//e
+      b.ks().stream().map(k->k._x()),
+      domDs
+      );
+   }
+  private void declaredVariableNotRedeclared(Core.Block b, List<X> domDs) {
+    declaredVariableNotRedeclared(Stream.concat(Stream.concat(
+      b.ds().stream().map(d->d.e()),//ds
+      b.ks().stream().map(k->k.e())//ks
+      ),Stream.of(b.e())),//e
+      b.ks().stream().map(k->k.x()),
+      domDs
+      );
+    }
+  private void declaredVariableNotRedeclared(Stream<HasVisitable>s,Stream<X>kxs, List<X> domDs) {
+    var redefined=Stream.concat(kxs,s
+       .filter(e->e!=null)
+       .flatMap(e->Bindings.of(e.visitable()).stream())
+       )
      .filter(x->domDs.contains(x))
      .findFirst();
     if(redefined.isEmpty()){return;}
     err("binding "+redefined.get()+" is internally redefined");
     }
-    private void declaredVariableNotUsedInCatch(Full.Block b, List<X> domDs) { for(var ki:b.ks()){
-      var inside=FV.of(ki).stream().filter(x->domDs.contains(x)).findFirst();
-      if(inside.isEmpty()){continue;}
-      err("binding "+inside.get()+ " used in catch; it may not be initialized");
-      } }
-    /*
-    * FULL/CORE B:
-    no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
-    FV(Ks) disjoint dom(B.Ds)
-    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,e)
-    if B={ Ds1 Ks WHOOPS? Ds2} then returning({ Ds1 Ks WHOOPS? Ds2})
-    if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
-    if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D) 
-    if B=(_ D e _), then noBlockNeeded(D.e)
-    if B=(_ K e _), then noBlockNeeded(K.e)
-    */
-  
+
+    private void declaredVariableNotUsedInCatch(List<? extends Visitable<?>> ks, List<X> domDs) {
+      for(var ki:ks){
+        var inside=FV.of(ki).stream().filter(x->domDs.contains(x)).findFirst();
+        if(inside.isEmpty()){continue;}
+        err("binding "+inside.get()+ " used in catch; it may not be initialized");
+        }
+      }
   @Override public void visitBlock(Core.Block b){
     lastPos=b.pos();
     super.visitBlock(b);
+    var domDs=FV.domDs(b.ds());
+    okXs(domDs);
+    declaredVariableNotUsedInCatch(b.ks(), domDs);
+    declaredVariableNotRedeclared(b, domDs);
     }    
+  @Override public void visitK(Core.K k){
+    lastPos=k.e().pos();
+    super.visitK(k);
+    wfKCommon(k.e().visitable(), k.x());  
+    }
+  @Override public void visitK(Full.K k){
+    lastPos=k.e().pos();
+    super.visitK(k);
+    wfKCommon(k.e().visitable(), k._x());
+    }
+  private void wfKCommon(Visitable<?> v, X x) { var bindings=Bindings.of(v);
+  if(x==null){return;}
+  if(bindings.contains(x)){
+    err("binding "+x+" is internally redefined");
+    }
+  if(x.inner().equals("this")){
+    err("'this' can not be used as a name");
+    } }
+
+  @Override public void visitMI(Full.L.MI mi){
+    lastPos=mi.pos();
+    super.visitMI(mi);
+    var l=ContainsFullL._of(mi.e());
+    if(l==null){return;}
+    lastPos=l.pos();
+    err("Method body can not contain a full library literal");
+    }
+
+  @Override public void visitMWT(Full.L.MWT mwt){
+    lastPos=mwt.pos();
+    super.visitMWT(mwt);
+    if(mwt._e()==null){return;}
+    var l=ContainsFullL._of(mwt._e());
+    if(l==null){return;}
+    lastPos=l.pos();
+    err("Method body can not contain a full library literal");
+    }
+
+  @Override public void visitMH(Full.MH mh){
+    super.visitMH(mh);
+    if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
+      err("method modifier can not be fwd imm or fwd mut");} 
+    var ps=mh.parsWithThis();
+    var tmdf=mh.t()._mdf();
+    if(tmdf!=null && ps.stream().anyMatch(ti->ti._mdf()==Mdf.ImmutableFwd)){
+      boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.Immutable,Mdf.ImmutableFwd);
+      if(!res){err("unusable fwd parameter given return type "+mh.t()._mdf().inner);}
+      }
+    if(ps.stream().anyMatch(ti->ti._mdf()==Mdf.MutableFwd)){
+      boolean res=tmdf!=null && tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd);
+      if(!res){err("unusable fwd parameter given return type "+(tmdf==null?"imm":tmdf.inner));}
+      }
+    if(tmdf!=null && tmdf.isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){
+      if(ps.stream().noneMatch(ti->ti._mdf()!=null && ti._mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd))){
+        err("invalid fwd return type since there is no fwd parameter");}
+      }   
+    }
+  @Override public void visitMH(Core.MH mh){
+    super.visitMH(mh);
+    if(mh.mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
+      err("method modifier can not be fwd imm or fwd mut");} 
+    var ps=mh.parsWithThis();
+    var tmdf=mh.t().mdf();
+    if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.ImmutableFwd)){
+      boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.Immutable,Mdf.ImmutableFwd);
+      if(!res){err("unusable fwd parameter given return type "+mh.t().mdf().inner);}
+      }
+    if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.MutableFwd)){
+      boolean res=tmdf!=null && tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd);
+      if(!res){err("unusable fwd parameter given return type "+tmdf.inner);}
+      }
+    if(tmdf.isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){
+      if(ps.stream().noneMatch(ti->ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd))){
+        err("invalid fwd return type since there is no fwd parameter");}
+      }   
+    }
+
   
   @Override public void visitL(Full.L l){
     lastPos=l.pos();

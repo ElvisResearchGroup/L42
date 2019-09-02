@@ -69,13 +69,19 @@ AuxVisitor(Pos pos) { this.pos = pos; }
   @Override public Full.PathSel visitPathSel(L42AuxParser.PathSelContext ctx) {
     Full.CsP p=FullL42Visitor.opt(ctx.csP(),null,this::visitCsP);
     S s=FullL42Visitor.opt(ctx.selector(),null,this::visitSelector);
-    return new Full.PathSel(p,s,null); 
+    return new Full.PathSel(p.cs(),p._p(),s,null); 
     }
   @Override public Full.PathSel visitPathSelX(L42AuxParser.PathSelXContext ctx) {
     Full.CsP p=FullL42Visitor.opt(ctx.pathSel().csP(),null,this::visitCsP);
     S s=FullL42Visitor.opt(ctx.pathSel().selector(),null,this::visitSelector);
     X x=FullL42Visitor.opt(ctx.x(),null,this::visitX);
-    return new Full.PathSel(p,s,x); 
+    List<C> cs=L();
+    P _p=null;
+    if(p!=null){
+      cs=p.cs();
+      _p=p._p();
+      }
+    return new Full.PathSel(cs,_p,s,x); 
     }
   @Override public S visitSelector(L42AuxParser.SelectorContext ctx) {
     List<X>xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));

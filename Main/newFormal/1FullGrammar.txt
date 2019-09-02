@@ -151,26 +151,30 @@ _______
 * FULL.par: 'this' notin xs and all x in xs are unique, if 'that' omitted, that notin xs
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 * C not This, Thisn, Any, Void or Library
-* FULL/CORE B:
+* FULL.B:
     no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
     this notin dom(B.Ds.xs)
     FV(Ks) disjoint dom(B.Ds)
-    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e)
+    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e) U Ks.xs
     if B={ Ds1 Ks WHOOPS? Ds2} then returningBlock({ Ds1 Ks WHOOPS? Ds2})
     if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
     if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D) 
     if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
     if B=(_ K e _) then noBlockNeeded(K.e)
+* CORE.B: //less then full, to avoid issues with inlining and such
+    no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
+    this notin dom(B.Ds.xs)
+    FV(Ks) disjoint dom(B.Ds) U Ks.xs
+    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e)
 * FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
-* FULL/CORE.MWT:
-    MWT =mdf method T _(T1 x1.. Tn xn)PL (=native[URL]? e)?
+* FULL/CORE.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
+* FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)PL
     mdf notin {fwd imm, fwd mut}
     T0 = mdf This0
-    if exists i: Ti.mdf=fwd imm then T.mdf in {mut, fwd mut, imm, fwd imm}
-    if exists i: Ti.mdf=fwd mut then T.mdf in {mut, fwd mut}
+    if exists i: Ti.mdf=fwd imm then T.mdf undefined or T.mdf in {mut, fwd mut, imm, fwd imm}
+    if exists i: Ti.mdf=fwd mut then T.mdf undefined or T.mdf in {mut, fwd mut}
     if T.mdf in {fwd imm,fwd mut} then exists i: Ti.mdf in {fwd imm, fwd mut}
-    if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
 * CORE.MWT: if MWT.e?=e, then
     FV(e)\this,x1..xn = empty    
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times

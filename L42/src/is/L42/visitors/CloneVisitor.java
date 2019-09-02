@@ -553,11 +553,13 @@ public class CloneVisitor {
       
   public Full.T visitT(Full.T t){
     var docs0=t.docs();
-    var csP0=t.csP();
+    var cs0=t.cs();
+    var _p0=t._p();
     var docs=visitFullDocs(docs0);
-    var csP=visitCsP(csP0);
-    if(docs==docs0 && csP==csP0){return t;}
-    return new Full.T(t._mdf(),docs,csP);
+    var cs=visitCs(cs0);
+    var _p=_p0==null?null:visitP(_p0);
+    if(docs==docs0 && cs==cs0 && _p==_p0){return t;}
+    return new Full.T(t._mdf(),docs,cs,_p);
     }
     
   public Full.Doc visitDoc(Full.Doc doc){
@@ -570,14 +572,16 @@ public class CloneVisitor {
     }
       
   public Full.PathSel visitPathSel(Full.PathSel pathSel){
-    var csP0=pathSel._csP();
+    var cs0=pathSel.cs();
+    var _p0=pathSel._p();
     var s0=pathSel._s();
     var x0=pathSel._x();
-    var csP=csP0==null?null:visitCsP(csP0);
+    var cs=cs0=visitCs(cs0);
+    var _p=_p0==null?null:visitP(_p0);
     var s=s0==null?null:visitS(s0);
     var x=x0==null?null:visitX(x0);
-    if(csP==csP0 && s==s0 && x==x0){return pathSel;}
-    return new Full.PathSel(csP,s,x);
+    if(cs==cs0 && _p==_p0 && s==s0 && x==x0){return pathSel;}
+    return new Full.PathSel(cs,_p,s,x);
     }
     
   public Full.MH visitMH(Full.MH mh){

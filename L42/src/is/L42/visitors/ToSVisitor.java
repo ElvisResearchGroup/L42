@@ -1,4 +1,5 @@
 package is.L42.visitors;
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 
 import java.util.List;
@@ -651,10 +652,13 @@ public class ToSVisitor implements CollectorVisitor{
       
   public void visitT(Full.T t){
     var docs0=t.docs();
-    var csP0=t.csP();
+    var cs0=t.cs();
+    var _p0=t._p();
     if(t._mdf()!=null){visitMdf(t._mdf());}
     visitFullDocs(docs0);
-    visitCsP(csP0);
+    if(cs0.isEmpty()){visitP(_p0);return;}
+    assert _p0==null;
+    seq(empty,cs0,".");
     }
     
   public void visitDoc(Full.Doc doc){
@@ -671,9 +675,12 @@ public class ToSVisitor implements CollectorVisitor{
   public void visitPathSel(Full.PathSel pathSel){
     var s0=pathSel._s();
     var x0=pathSel._x();
-    var csP0=pathSel._csP();
-    if(csP0!=null){visitCsP(csP0);}
-    if(csP0!=null && s0!=null && !s0.m().isEmpty()){c(".");}
+    var cs0=pathSel.cs();
+    var _p0=pathSel._p();
+    if(!cs0.isEmpty() || _p0!=null){
+      visitT(new Full.T(null, L(), cs0, _p0));
+      }
+    if((!cs0.isEmpty() || _p0!=null) && s0!=null && !s0.m().isEmpty()){c(".");}
     if(s0!=null){visitS(s0);}
     if(x0!=null){assert s0!=null;c(".");visitX(x0);}
     }

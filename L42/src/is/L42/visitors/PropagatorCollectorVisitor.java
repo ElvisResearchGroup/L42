@@ -369,9 +369,11 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
       
   @Override public void visitT(Full.T t){
     var docs0=t.docs();
-    var csP0=t.csP();
+    var cs0=t.cs();
+    var _p0=t._p();
     visitFullDocs(docs0);
-    visitCsP(csP0);
+    visitCs(cs0);
+    visitP(_p0);
     }
     
   @Override public void visitDoc(Full.Doc doc){
@@ -382,10 +384,12 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     }
       
   @Override public void visitPathSel(Full.PathSel pathSel){
-    var csP0=pathSel._csP();
+    var cs0=pathSel.cs();
+    var _p0=pathSel._p();
     var s0=pathSel._s();
     var x0=pathSel._x();
-    if(csP0!=null){visitCsP(csP0);}
+    visitCs(cs0);
+    if(_p0!=null){visitP(_p0);}
     if(s0!=null){visitS(s0);}
     if(x0!=null){visitX(x0);}
     }

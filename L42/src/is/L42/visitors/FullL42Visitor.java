@@ -168,7 +168,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     var csP=visitCsP(ctx.csP());
     var mdf=ctx.Mdf()==null?null:Mdf.fromString(ctx.Mdf().getText());
     List<Full.Doc> docs=L(ctx.doc(),(c,d)->c.add(visitDoc(d)));
-    return new Full.T(mdf, docs, csP);
+    return new Full.T(mdf, docs, csP.cs(),csP._p());
     }
   @Override public Full.VarTx visitTLocal(TLocalContext ctx) {
     //check(ctx);//Would be wrong
