@@ -13,7 +13,9 @@ _______
   CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) PL
   FULL/CORE.H ::= interface? PL
   FULL.TLocal ::= T | mdf?
-  CORE.e ::= xP | void | L | xP.m(x1=e1..xn=en) | loop e | throw e | x:=e | (Ds Ks e)
+  xe ::= x = e // ISAAC: I've added this since it was referenced and undefined, and for consistency between FULL.e/CORE.e I'v used xes/xvs for method arguments
+  xv ::= x = v
+  CORE.e ::= xP | void | L | xP.m(xes) | loop e | throw e | x:=e | (Ds Ks e)
   CORE.xP ::= x | P<:T | a //a=address, only at runtime
   CORE.D ::= var? T x=e
   CORE.K ::= catch throw T x e
@@ -53,15 +55,15 @@ _______
   ST::=CORE.T | ST.s | ST.s.i | op STzs //i=0 for receiver type?
   HALF.xP ::= x | P<:STz | %STz%
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
-  HALF.K ::= catch throw HALF.T x e
+  HALF.K ::= catch throw HALF.T x e // ISAAC: If we define "K ::= catch throw T x e", then HALF.K will implicitly be this version, and "CORE.K" will implicitly be the one above? That way no need to define  K twice? If this makes sense?
   HALF.D ::= var? HALF.T x = e
-  Half.T::= mdf? STz
+  HALF.T::= mdf? STz // ISAAC: isn't the mdf? redundent as STzs may also contain mdfs? or does mdf (P) mean something different from (mdf P), what about mdf (mdf' P)? (where the thing in the parentheses is the STz)
   CC ::= ST<=HALF.T
   PR ::= CCz;CORE.L;pTails | Err
   ER ::= CCz;CORE.e? | Err
   DsR ::= CCz;CORE.Ds | Err
   KR ::= CCz;CORE.K | Err
-  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,PTz) | throw(p,A,v)
+  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,PTz) | throw(p,A,v) // ISAAC: What is a PTz?
   R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
@@ -69,7 +71,7 @@ _______
   Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=HALF.T?;onPath=class?]
   v ::= CORE.xP | void | CORE.L
   r ::= CORE.L | exception v | error v
-  Obj ::= P(x1=v1..xn=vn) empty;empty| P() as1;as2 // memory objects
+  Obj ::= P(xvs) empty;empty| P() as1;as2 // memory objects
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   Q ::= Q[Flag;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
   MethT ::= CORE.Ts->CORE.T;Ps  
