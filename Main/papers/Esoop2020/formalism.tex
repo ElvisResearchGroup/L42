@@ -13,13 +13,13 @@ We clearly list in Appendix \ref{s:proof} the assumptions we make on such a type
 To keep our small step semantics as conventional as possible, we follow Pierce~\cite{pierce2002types} and Featherweight Java~\cite{IgarashiEtAl01};
 we model an OO language where receivers are always specified explicitly,
  and the receivers of field accesses and updates in method bodies are always \Q!this!; that is, all fields are instance-private.
-Constructors are all of the standard form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$.
-We assume the following:
+Constructors are all of the form \Q@$C$($T_1 x_1$,$\ldots$,$T_n x_n$) {this.$f_1$=$x_1$;$\ldots$;this.$f_n$=$x_n$;}@, where the fields of $C$ are $T_1 f_1;\ldots; T_n f_n;$.
+Personalized constructors and traditional subclassing would make the proof more involved without adding any additional insight. We assume the following:
 \begin{itemize}
 	\item An implicit program/class table; we use the notation $C.m$ to get the method declaration for $m$, within class $C$, similarly we use $C.f$ to get the declaration of field $f$, and $C.i$ to get the declaration of the $i$\textsuperscript{th} field.
 	\item Memory, $\s : l\rightarrow C\{\Many{v}\}${, is} a finite map from locations, $l$, to annotated tuples, $C\{\Many{v}\}$, representing objects; where $C$ is the class name and $\Many{v}$ are the field values.
 	We use the notation $\s[l.f=v]$ to update a field of $l$, $\s[l.f]$ to access one, and $\s \setminus l$ to delete $l$.
-	\item A main expression that is reduced in the context of such a memory and program.
+	\item The main expression is reduced in the context of a memory and program.
 	\item A typing relation, $\S;\G;\E\vdash e:T$, where 
 	the expression $e$ can contain locations and free variables. The types of locations are encoded in 
 a memory environment, 
@@ -199,7 +199,7 @@ We additionally restrict the grammar with the following well-formedness criteria
 
 \subheading{Reduction rules}
 Our reduction rules are defined in Figure \ref{f:reductions}.
-They are pretty standard, except for our handling of monitor expressions. Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
+They are standard, except for our handling of monitor expressions. Monitor expressions are added after all field updates, \Q@new@ expressions, and calls to capsule mutators.
 %Our formalism of monitor expressions are only a proof device, they need not be part of the language itself, for example L42 implements our invariant protocol by generating wrapper functions over primitive setters and factory methods.
 %Monitor expressions are only a proof device, and an execution on a real hardware 
 Monitor expressions are only a proof device, they need not be implemented directly as presented.

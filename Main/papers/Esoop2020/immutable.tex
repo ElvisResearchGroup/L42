@@ -48,13 +48,12 @@ method mut Person createPersons(String name) {
   ...}
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
-
-Despite the code for \Q@Person.invariant()@ intuitively looking correct and deterministic, the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
+Despite the code for \Q@Person.invariant()@ intuitively looking correct and deterministic (\Q@!name.isEmpty()@), the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
-restricts their creation, the above example would be prevented.
+restricts their creation, the above example would be forbidden.
 
 \subheading{Allowing Internal Mutation Through Back Doors?}
-Rust and Javari 
+Rust~\cite{matsakis2014rust} and Javari~\cite{TschantzErnst05}
 allows interior mutability:
 the ROG of an `immutable' object can be mutated through back doors.
 Such back doors would allow the \Q@invariant()@ method to store and read information about previous calls.

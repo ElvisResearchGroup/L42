@@ -14,18 +14,16 @@ class ShippingList {
     this.items.add(item);
     if (!this.invariant()){throw Error(...);}}}//injected check
 \end{lstlisting}
-
 Our protocol injects \Q@invariant()@ checks at the end of the constructor and the \Q@addItem(item)@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.
 Relaxing our system to allow a \Q@mut@ modifier for
 the \Q@items@ field and the corresponding constructor parameter 
 breaks the code:
 it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
-\footnote{%
 Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters).
 In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.
-For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour~\cite{Bloch08}.%
-}
+For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.%
+
 %\saveSpace
 \begin{lstlisting}
 mut Items items = ...;

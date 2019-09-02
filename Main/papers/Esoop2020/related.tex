@@ -3,27 +3,25 @@
 \footnotetext{See Appendix \ref{s:runtime-verification} for related work on runtime verification.}
 %
 \subheading{Reference Capabilities}
-We rely on a combination of modifiers that are supported by at least 3 languages/lines of research:
+We rely on a combination of modifiers supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
 Pony~\cite{clebsch2015deny,clebsch2017orca}, and Gordon \etal~\cite{GordonEtAl12}.
 %each of these works is accompanied by proofs about the properties of those modifiers.
 %\IOComm{The Pony ones have no proofs!}
 %Since such proofs have already been done,
 %in this work we just assume the required properties.
-Those approaches all support deep/strong interpretation, without back doors.
-Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03}, which eventually enabled the work of Gordon \etal's,  does not consider promotion and 
+They all support full/deep interpretation (see page 5), without back doors.
+Former work~\cite{Boyland10,boyland2003checking,Hogg91,Smith:2000:AT:645394.651903,DBLP:conf/pldi/AikenFKT03} (which eventually enabled the work of Gordon \etal)  does not consider promotion and 
 infers uniqueness/isolation/immutability only when starting from references that have been tracked with restrictive annotations along their whole lifetime.
-
-
 Other approaches like Javari~\cite{TschantzErnst05,Boyland06}
 and Rust~\cite{matsakis2014rust}
-are unsuitable;
-they model weaker properties and provide back doors which are not easily verifiable as being used properly.
-Many approaches just try to preserve purity (as for example~\cite{pearce2011jpure}), but here we also need aliasing control.
-Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is another popular form of aliasing control that can be used as a building block for static verification~\cite{%
+provide back doors, which are not easily verifiable as being used properly.
+%Many approaches try to preserve purity ~\cite{pearce2011jpure}, but here we also need aliasing control.
+
+Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is a popular form of aliasing control often used as a building block for static verification~\cite{%
 muller2002modular,%
 barnett2011specification%
-}.
+}; but not requiring the whole ROG to be `owned' complicates restricting the data accessible by the invariant.
 
 \subheading{Object Capabilities}
 In literature, OCs are used to provide a wide range of guarantees, and many variations are present.
@@ -31,7 +29,7 @@ Object capabilities~\cite{RobustComposition}, in conjunction with type modifiers
  enforce purity of code in a modular way, without requiring the use of monads.
 L42 and Gordon use OCs simply to reason about I/O and non-determinism. This approach is best exemplified by Joe-E~\cite{finifter2008verifiable}, which is a self-contained and minimalistic language using OCs over a subset of Java in order to reason about determinism.
 However, in order for Joe-E to be a subset of Java, they leverage a simplified model of immutability:
-immutable classes must be final with only final fields that refer to immutable classes.
+immutable classes must be final and have only final fields that refer to immutable classes.
 %Instances of immutable classes are immutable objects.
 In Joe-E, every method that only takes instances of immutable classes is pure.
 Thus their model would not allow the verification of purity for invariant methods of mutable objects.
@@ -43,15 +41,14 @@ Thanks to this crucial difference, in our work every method taking only \Q@read@
 Invariants are a fundamental part of the design by contract methodology. 
 Invariant protocols differ wildly and can be unsound or complicated, particular due to re-entrancy and aliasing~\cite{leino2004object,drossopoulou2008unified,meyer2016class}. 
 
-While invariant protocols all seem to 
-check and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular approaches include:%
+While invariant protocols all checks and assume the invariant of an object after its construction, they handle invariants differently across object lifetimes; popular approaches include:%
 %literature on class invariant accepts that sometime the object invariant may not hold,
 %and that is exacerbated because of 
 %Leino, K. R. M. and Müller, P.: Object Invariants in Dynamic Contexts (ECOOP), 2004.
 %S. Drossopoulou and A. Francalanza and  P. Müller and A. J. Summers: A Unified Framework for Verification Techniques for Object Invariants ECOOP 2008. 
 %There are different options as to what object-invariants are known to hold:
 \begin{itemize}
-\item The invariants of objects in a \textit{steady} state are known to hold: that is when execution is not inside any of the objects' public methods~\cite{Gopinathan:2008:RMO:1483018.1483028}. Invariants need to be constantly maintained between calls to public methods~\cite{WikiInvariant}.
+\item The invariants of objects in a \textit{steady} state are known to hold: that is when execution is not inside any of the objects' public methods~\cite{Gopinathan:2008:RMO:1483018.1483028}. Invariants need to be constantly maintained between calls to public methods.%~\cite{WikiInvariant}.
 \item 
 %\LINE
 The invariant of the receiver before a public method call and at the end of every public method body needs to be ensured. The invariant of the receiver at the beginning of a public method body and after a public method call can be assumed~\cite{Burdy2005,drossopoulou2008unified}.  
@@ -69,7 +66,6 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 \end{itemize}\SS\LS[0.5]
 \noindent These different protocols can be deceivingly similar, and 
 some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
-
 Note that all those approaches fails our strict requirements and allows for broken object to be observed.
 
 
@@ -96,7 +92,7 @@ Note that all those approaches fails our strict requirements and allows for brok
 Our approach allows verifying an object's invariant independently of the execution context.
 This is in contrast to the main strategy of static verification: to verify a method, the system assumes the contracts of other methods, and the content of those contracts is the starting point for their proof.
 Thus, static verification proceeds like a mathematical proof: a program is valid if it is all correct, but a single error invalidates all claims. This makes it hard to perform verification on large programs, or when independently maintained third party libraries are involved.
-This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
+%This is less problematic with a type system, since its properties are more coarse grained, simpler and easier to check.
  Static verification has more flexible and fine-grained annotations and often relies on a fragile theorem prover as a backend.
 
 %\REVComm{
@@ -104,12 +100,12 @@ This is less problematic with a type system, since its properties are more coars
 %}{2}{[is this correct?] verification of reference %monitors, gradual typing, and contracts have been %explored for longer}
 To soundly verify code embedded in an untrusted environment, as in gradual typing~\cite{DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}, it is possible to 
 consider a verified core and a runtime verified boundary.
-You can see our approach as an extremely modularized	version of such system: every class is its
+One can see our approach as an extremely modularized	version of such system: every class is its
 own verified core, and the rest of the code could have Byzantine behaviour. Our formal proofs show that every class that compiles/type checks is 
 soundly handled by our protocol, independently of the behaviour of code that uses such class or any other surrounding code.
 
 Our approach works both  in a library setting and with the open world assumption.
-Consider for example the work of Parkinson~\cite{parkinson2007class}: in his short paper he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real-world system with dynamic class loading, and could trivially be broken by a user-defined \Q@EvilSubject@.
+Consider for example the work of Parkinson~\cite{parkinson2007class}: he verified a property of the \Q@Subject/Observer@ pattern. However, the proof relies on (any override of) the \Q@Subject.register(Observer)@ method respecting its contract. Such assumption is unrealistic in a real-world system with dynamic class loading, and could trivially be broken by a user-defined \Q@EvilSubject@: checking contracts at load time is impractical and is not done by any verification systems we know of.
 
 \subheading{Static Verification}
 AutoProof~\cite{DBLP:conf/fm/PolikarpovaTFM14} is a static verifier for Eiffel that also follows the Boogie methodology, but extends it with \emph{semantic collaboration} where objects keep track of their invariants' dependencies using ghost state.
@@ -119,8 +115,7 @@ however it requires objects to be newly allocated (or cloned) before another obj
 Dafny is also generally highly restrictive with its rules for mutation and object construction, it also does not provide any means of performing 
 non-deterministic I/O.
 
-
-Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#, it adds various annotations such as method contracts and class invariants. 
+Spec\#~\cite{Barnett:2004:SPS:2131546.2131549} is a language built on top of C\#. It adds various annotations such as method contracts and class invariants. 
 It primarily follows the Boogie methodology~\cite{DBLP:journals/tcs/NaumannB06} where (implicit) annotations are used to specify and modify the owner of objects and whether their invariants are required to hold. Invariants can be \emph{ownership} based~\cite{DBLP:journals/jot/BarnettDFLS04}, where an invariant only depends on objects it owns; or \emph{visibility} based~\cite{DBLP:conf/mpc/BarnettN04,DBLP:conf/ecoop/LeinoM04}, where an invariant may depend on objects it doesn't own, provided that the class of such objects know about this dependence. Unlike our approach, Spec\# does not restrict the aliases that may exist for an object, rather it restricts object mutation: an object cannot be modified if the invariant of its owner is required to hold. This 
 allows invariants to query owned mutable objects whose ROG is not fully encapsulated. However as we showed in Section \ref{s:case-study}, it can become much more difficult to work with and requires significant annotation, since merely having an alias to an object
 is insufficient to modify it or call its methods.
@@ -150,14 +145,14 @@ Ensuring determinism in a non-functional language is challenging. Spec\# recogni
 	of functions. The first approach is not scalable, the second overly restrictive and
 	the third unsound}'.
 	They recognize that many tools unsoundly use option (c), such as AsmL~\cite{barnett2003runtime}.
-Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}\\*
+Spec\# aims to follow (b) but only considers non-determinism caused by memory mutation, and allows other non deterministic operations, such as I/O and random number generation. In Spec\# the following verifies:\lstset{morekeywords={assert, bool}}
 %\saveSpace\saveSpace\begin{lstlisting}
-\indent\Q![Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}!\\*
+\Q![Pure] bool uncertain() {return new Random().Next() %$$ 2 == 0;}!\\*
 %\end{lstlisting}
 And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
 As you can see, failing to handle non-determinism jeopardises reasoning.
 
-A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}, one advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
+A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}. One advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 
 % They propose a concept of observational purity, that if completely fleshed out could possibly be a great addition to our proposed system. We speculate that some  primitive language support may be needed, for example implementing the Flyweight pattern as part of the language semantics.

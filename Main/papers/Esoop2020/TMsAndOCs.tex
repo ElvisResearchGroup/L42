@@ -97,8 +97,8 @@ To see a glimpse of this flexibility, consider the following:
 capsule Circle cc = new Circle(new Point(0, 0), 7);
     imm Circle ic = new Circle(new Point(0, 0), 7);
 \end{lstlisting}
-Here \Q@mc@, \Q@cc@, and \Q@ic@ are syntactically initialised with the same expression: \Q@new Circle(..)@. All
-\Q@new@ expressions return a \Q@mut@~\cite{clebsch2015deny,GIANNINI2019145}, so \Q@mc@ is obviously ok. The declarations of \Q@cc@ and \Q@ic@ are ok, since 
+Here \Q@mc@, \Q@cc@, and \Q@ic@ are all syntactically initialised with the same exact expression. All
+\Q@new@ expressions return a \Q@mut@~\cite{clebsch2015deny,GIANNINI2019145}, so \Q@mc@ is well typed. The declarations of \Q@cc@ and \Q@ic@ are also well typed, since 
 %\footnote{Capsules must encapsulate their entire ROG, thus a \Q@new@ expression
 %can not directly return \Q@capsule@ in the case of objects with \Q@mut@ fields.}
 any expression (not just \Q@new@ expressions) 

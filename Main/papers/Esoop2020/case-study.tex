@@ -50,7 +50,7 @@
 %  private capsule Foo inner;
 %  validate
 %}
-Here we show that we are able to verify classes with circular mutable object graphs, that interact with the real world using I/O.
+Here we show that we are able to verify classes with cyclic mutable object graphs, that interact with the real world using I/O.
 Our case study is particularly relevant since, as for most GUI frameworks,
 it is an example of the \emph{composite} programming pattern; arguably one of the most fundamental patterns in OO.
 
@@ -92,7 +92,7 @@ class MoveAction implements Action { mut Box outer;
 Gui.#$\$$().display(new SafeMovable(...));
 \end{lstlisting}
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
-\Q@left()@, \Q@top()@, and \Q@children()@. Also note how the ROG of \Q@Box@ is circular: since
+\Q@left()@, \Q@top()@, and \Q@children()@. Also note how the ROG of \Q@Box@ is cyclic: since
 the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box@ in order to move it.
 Even though the children of \Q@SafeMovable@s are fully encapsulated, we can still easily dispatch events to them using \Q@dispatch(e)@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID, it will call its \Q@Action@'s \Q@process(e)@ method. 
 
@@ -135,7 +135,7 @@ As an experiment, we set our implementation to generate invariant checks followi
 where the invariant of the receiver is instead checked at the start and end of \emph{every} 
 public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call.
 In our \Q!SafeMovable! class, all methods are public, and all calls (outside the invariant) are qualified, thus this difference is irrelevant. Neither protocol performs invariant checks on field accesses or updates,
-however due to the `uniform access principle'%\footnote{%
+however due to the `uniform access principle'\cite{?}%\footnote{%
 %L42 also follows the Eiffel uniform access principle: field accesses are the same as method calls.%
 %}
 , Eiffel allows fields to directly implement methods,
@@ -197,8 +197,8 @@ encapsulation of \Q@children()@, thus this approach is even less sound than Spec
 %\end{itemize}
 %The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 
-We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. In the following table we summarise the annotation burden\footnote{We present token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.},
-for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GUI; as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling.\footnote{We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks.}:
+We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. In the following table we summarise the annotation burden,
+for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GUI; as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling. We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks:
 \begin{center}\SS
 \begin{tabular}{ c  c  c  c  c}
  & Spec\# & Spec\# & L42 & L42 \\ 
@@ -223,7 +223,8 @@ To encode the GUI example in L42, the only annotations we needed were the 3 type
 % , for a total of 
 % $19$ annotations (one token each, $74$ characters in total).
 Our Spec\# code requires things such as, purity, immutability, ownership, method pre/post-conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
-Together these annotations can get quite long, such as the following pre-condition on \Q@SafeMovable@'s constructor: \\
+In the table we present token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.
+Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: \\
 \indent\Q@requires Owner.Same(Owner.ElementProxy(children), children);@
 
 % methods and field attributes as well as requires, ensures and modifies clauses, and finally also %explicit ownership assignment statements.
@@ -264,7 +265,7 @@ as one of the hardest problems when it comes to enforcing invariants.
 
 We have found that using an inner \Q@Box@ object, is quite a useful pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated subobject which is not exposed to users.
 % We also found natural to use the box pattern also in Spec\# requires.
-Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the circular object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
+Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the cyclic object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
 The box pattern also allows to pass the state of invalid objects around (by passing the box object instead of the outer object), and to batch together complex mutations and multiple field updates with only a single invariant check (a method on the box object can perform many fields updates while the outer object is not involved in execution). We show concrete examples of those usages of boxes in Appendices~\ref{s:MoreCaseStudies} and~\ref{s:patterns}
 
 The Transformer Pattern (described in the detail in Appendix \ref{s:patterns}) consists of 

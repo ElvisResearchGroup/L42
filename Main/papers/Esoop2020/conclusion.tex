@@ -11,10 +11,8 @@
 \label{s:conclusion}
 Our approach follows the principles of \emph{offensive programming}%
 ~\cite{stephens2015beginning} where
-no attempt to fix or recover an invalid object is performed, and
-%	\begin{itemize}
-%\item
- failures (unchecked exceptions)
+no attempt to fix or recover an invalid object is performed. 
+Failures (unchecked exceptions)
 		are raised close to their cause: at the end of constructors creating invalid objects and immediately after field updates and instance methods that invalidate their receivers.
 
 %}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.    

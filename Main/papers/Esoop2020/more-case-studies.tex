@@ -183,7 +183,7 @@ Our protocol performs a single invariant check at the end of each constructor,  
 
 The visible state semantics of both D and Eiffel perform additional invariant checks at the beginning of each call to \Q!processDay(dayOfYear)! and \Q!addChild(child)!.
 
-The results for Spec\# are very interesting, since it performs less checks than L42.
+The results for Spec\# are very interesting, since it performs fewer checks than L42.
 This is the case since \Q!processDay(dayOfYear)! in \Q!Person! just does a simple field update, which in Spec\# do not invoke runtime invariant checks. Instead, Spec\# tries to statically verify that the update cannot break the invariant; if it is unable to verify this, it requires that the update be wrapped in an \Q!expose! block, which will perform a runtime invariant check. 
 
 Spec\# relies on the absence of arithmetic overflow, and performs runtime checks to ensure this%
