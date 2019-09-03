@@ -43,10 +43,10 @@ _______
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e
     | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WHOOPS? Ds' e? ) | { Ds Ks WHOOPS? Ds' }
-    | loop e | while e0 e1 | for DX0 in e0 .. DX1 in en e
+    | loop e | while e0 e1 | for DX0 in e0 .. DXn in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   FULL.D ::= (DX =)? e
-  FULL.WHOOPS ::= whoops T+
+  FULL.WHOOPS ::= whoops T+ // ISAAC: is there a reason why this is defined here, but FULL.DX and FULL.match are defined bellow (when you give the parse form of FULL.E)?
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
   FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
@@ -132,13 +132,19 @@ _______
 #define FULL Expressions priority disambiguation and other details
   FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel |  e<:T |\x
   FULL.ePostfix ::= UOp* eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)*
+    // ISAAC: there is an ambiguity here: "x <: T" could be passed as either
+    // ePostfix(eAtomic(x) <: T), or ePostfix(eAtomic(x <: T))
     //no space in ePostfix(par) and \x
   FULL.par ::= e? xe*
   FULL.eBinary0 ::= ePostFix (OP0 ePostFix)* //right associative, all ops must be the same
   FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-  FULL.B ::= ( Ds e ) | ( D+ Ks WHOOPS? (Ds e)? ) | { D+ (K+ WHOOPS? Ds | WHOOPS Ds)? }
+  FULL.B ::= ( e ) | ( D+ Ks WHOOPS? Ds e? ) | { D+ (K+ WHOOPS? Ds | WHOOPS Ds)? }
+  // ISAAC: I modified the (Ds e) case because it is redundent with the second case when Ds != empty
+  // ISAAC: why is the e? optional if there is a catch (but required otherwise)?
+  // ISAAC: Wouldn't { D+ Ks WHOOPS? Ds } be equivalent to { D+ (K+ WHOOPS? Ds | WHOOPS Ds)? }?
+  // (except of course theres an ambiguity with {D1 D2} whether D2 is in D+ or the Ds, but this shouldn't matter)
   FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.sIf ::= if e e (else e)? | if match+ e
   FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
