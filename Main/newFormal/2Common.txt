@@ -44,7 +44,6 @@ _______
     p(CORE.T.P)(s) = MH
 * p.minimize(op STz1..STzn) = p(P)(s).T[from P;p]
     p.minimize(STz1) = T1, ..., p.minimize(STzn) = Tn
-    // ISAAC: the {P,s,i} = p.opOptions syntax is confusing, so I've changed opOptions to use dots
     {P.s.i} = p.opOptions(OP, Ts)
 
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P

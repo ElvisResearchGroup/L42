@@ -33,13 +33,11 @@ _______
 * topNC(CCz;p;C,Cs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library]
     Y!p(This0)(C) = Half.e; _; _; _
-    I[C?=C;p;G=empt;p.minimize(CCz)]!Half.e => ER
+    I[C?=C;p;G=empty;p.minimize(CCz)]!Half.e => ER
     ER = CCz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,CORE.e) IfUndefined PR = incoherent(p)
-    reduce(p,empty,adapt(CORE.e,T.P)) => ER' // ISAAC: so "C = loop e" is valid and equivalent to "C = {}" ?
-    // I can understand allowing "loop e" as a nested-class, but I see no reason why you must give it a name.
-    // Perhaps we can have NC ::= e | C = e, and the former case works with adapt (and a fresh C), whereas the latter case must return a Librarr (or #toNestedClass or something different from the #toLibrary method used by adapt)
+    reduce(p,empty,adapt(CORE.e,T.P)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
@@ -65,19 +63,19 @@ _______
     //class methods all subexpressions with no free var (and not calling #$s)
 _______
 #define I!HALF.e? => ER
-* I!empty => empty;empty // ISAAC: should this be returning I.CCz; empty instead (and ditto for the others)?
-* I!x => empty;x
-* I!P<:STz => empty;P<:I(STz)
-* I!P<:STz => inferenceFailure(I,PTz) // ISAZAC: did you mean STz?
+* I!empty => I.CCz;empty
+* I!x => I.CCz;;x
+* I!P<:STz => I.CCz;;P<:I(STz)
+* I!P<:STz => inferenceFailure(I,STz)
     I(STz) undefined
-* I!void => empty;Void
+* I!void => I.CCz;void
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L) 
     top(I.CCz[from This1;p],p) => PR
     PR = CCz';p' IfErr(PR) ER = PR
     ER = CCz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CCz
-* I!CORE.L => empty;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!%STz% => empty;I(STz).P
+* I!CORE.L => I.CCz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
+* I!%STz% => I.CCz;I(STz).P
 * I!%STz% => inferenceFailure(I,STz)
     I(STz) undefined
 * I!e0.m(x1=e1..xn=en) => ER
@@ -87,11 +85,10 @@ _______
 * I!xP0 OP..OP xPn => ER
     I!xPi => ERi
     ER0..ERn = CCz0;xP'0..CCzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
-    Ti = T'i if xP'i = Pi < T'i // ISAAC: According to you'r sytnax, xPi could be a  P<:T, not a P
-    Ti = I.G(x'i) if xP'i = x'i // ISAAC: I'm assuimg here that the xPi where meant to be the output of the the above I!xPi, and not the input
-    
+    Ti = T'i if xP'i = Pi < T'i
+    Ti = I.G(x'i) if xP'i = x'i
     {P.m(x1..xn).i}=I.p.opOptions(OP, T0..Tn)
-    xP"1..xP"n=xP0..xPn\i
+    xP"1..xP"n=xP'0..xP'n\i
     ER = CCz0 U..U CCzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER
     e0 in {throw e, loop e, x:=e}
@@ -99,31 +96,25 @@ _______
     ER' = CCz;e' IfErr(ER') ER = ER'
     ER = CCz;e0[e=e']
 * I!(Ds K1..Km e) => ER
-    xs = FV((K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
-    // ISAAC: the only thing you seem to be using xs for is to see if an otherwise-capsule variable is used multiple times, in which case, why arn't you including the FV's of Ds?
+    xs = FV((Ds K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
     I!xs;Ds => DsR
     I!Ki => KRi
     DsR = CCz0;D1..Dn IfErr(DsR) ER = DsR
     I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
     KR1..KRn,ER' = CCz1;K'1..CCzm;K'm, CCzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
-    ER = CCz0 U..U CCzm+1;(D1...Dn K1...Dn e')
+    ER = CCz0 U..U CCzm+1;(D1...Dn K'1...K'm e')
 _______
 #define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
-* I!xs;empty => I.CCz;empty // I!x above returns empty;x (i.e. with no CCz), is there a reason why this is different?
+* I!xs;empty => I.CCz;empty
 * I!xs;var? HALF.T x=e Ds => DsR
     I(HALF.T) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,HALF.T)
     I!e => ER 
     ER = CCz';e' IfErr(ER) DR = ER
-    
     CORE.T' = CORE.T[mdf=imm] if HALF.T=STz, CORE.T.mdf=read and 
-		// you are promoting a read variable to an imm one if it dosn't use any read lent or mut free-variables? But only if the user didn't specify a type modifer (right?)
       not exists x in FV(e') such that x in dom(I.G) and I.G(x).mdf in {read,lent,mut}
     CORE.T' = CORE.T[mdf=mut] if HALF.T=STz, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
-		// Promoting a capsule to a mut if the "capsule" is used multiple times, and the user didn't specify a modifier
     CORE.T' = CORE.T otherwise
-
-    I[G=I.G,x:CORE.T'; CCz=CCz']!Ds => DsR' // ISAAC: this looks like it will break with "fwd"s, since prevuise Ds won't know the type of x?
-    
+    I[G=I.G,x:CORE.T'; CCz=CCz']!Ds => DsR'
     DsR' = CCz;Ds IfErr(DsR') DsR = DsR'
     DsR = CCz;var? CORE.T' x=e',Ds
 
@@ -136,16 +127,16 @@ _______
 #define adapt(CORE.e,P)
 * adapt(e, Library) = e
 * adapt(e, Void) = (Void x=e {}); where x fresh
-* adapt(e, _) = (T x=e x.#toLibrary()); otherwise, where x fresh // ISAAC: T is a free variable?
+* adapt(e, T) = (T x=e x.#toLibrary()); otherwise, where x fresh
 _______
 #define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
 * P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
     i in 0..n,
     s = methName(OP)_i(x1..xn)
-    P1 ... Pn = (G^p(Ti.P)(s)).Ts.Ps[from Ti.P;p] // ISAAC: why the "G^" ?
+    P1 ... Pn = (G^p(Ti.P)(s)).Ts.Ps[from Ti.P;p]
     P'1 ... P'n = (T0..Tn\i).Ps
     P=Ti.P
-    p|-P'1<=P1 .. p|-P'1<=P1 // ISAAC: why are you ignoring type modifiers?
+    p|-P'1<=P1 .. p|-P'1<=P1
 _______
 #define CCz.add(p; FULL.MWT; HAlf.e?) = CCz' // both CCz' and HALf.e? are computed by this notation
 * CCz.add(p; MWT; empty) = CCz
