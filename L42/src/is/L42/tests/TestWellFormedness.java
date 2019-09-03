@@ -46,6 +46,36 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail(inCore("(var fwd mut This0 x=void x)"),"var bindings can not be ")
 
    ),new AtomicTest(()->
+   pass("{method (that,foo)=((var y=foo void), (y=foo,void.foo(y+void)) void)}")
+   ),new AtomicTest(()->
+   pass("{C=(x=void x+x)}")
+
+   ),new AtomicTest(()->
+   pass("{method Void (Void that,Void foo)=foo}")
+   ),new AtomicTest(()->
+   fail("{method Void (Void that,Void foo)=e}","Used binding is not in scope: e")
+   ),new AtomicTest(()->
+   fail("{method (that,foo)=e}","Used binding is not in scope: e")
+   ),new AtomicTest(()->
+   fail("{C=e}","Used binding is not in scope: e")
+   ),new AtomicTest(()->
+   pass("{method Void (Void that,Void foo)=foo.bar(\\x)}")
+   ),new AtomicTest(()->
+   fail("{method Void (Void that,Void foo)=\\x.foo()}","term \\x can only be used inside parameters")
+   ),new AtomicTest(()->
+   fail("{method (that,foo)=foo+\\x.foo()}","term \\x can only be used inside parameters")
+   ),new AtomicTest(()->
+   fail("{C=\\x}","term \\x can only be used inside parameters")
+   ),new AtomicTest(()->
+   pass("{method Void (Void that,Void foo)=(var y=foo, void.foo(y+=void) void)}")
+   ),new AtomicTest(()->
+   fail("{method Void (Void that,Void foo)=(y=foo, void.foo(y+=void) void)}","name y is not declared as var, thus it can not be updated")
+   ),new AtomicTest(()->
+   fail("{method (that,foo)=((var y=foo void), (y=foo,void.foo(y+=void)) void)}","name y is not declared as var, thus it can not be updated")
+   ),new AtomicTest(()->
+   fail("{C=(x=void x:=x)}","name x is not declared as var, thus it can not be updated")
+
+   ),new AtomicTest(()->
    fail("((a.foo(x=a,x=b)))","duplicated name in [")
    ),new AtomicTest(()->
    fail("((a.foo(x=a,y=b,x=c)))","duplicated name in [")
@@ -146,6 +176,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=z, b=x) #norm{}}","Used binding is not in scope: z")
+
+   ),new AtomicTest(()->
+   fail("if (x,y)=z z.foo()","invalid 'if match': no type selected in (x, y)=z")
+   ),new AtomicTest(()->
+   pass("if (x, Any y)=z z.foo()")
 
 
   ));}

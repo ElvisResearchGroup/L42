@@ -138,7 +138,7 @@ _______
   FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-  FULL.B ::= (Ds e Ks WHOOPS?) (D+ Ks WHOOPS? Ds e) | { D+ Ks WHOOPS? Ds }
+  FULL.B ::= (Ds e Ks WHOOPS?) | (D+ Ks WHOOPS? Ds e) | { D+ Ks WHOOPS? Ds }
   FULL.sIf ::= if e e (else e)? | if match+ e
   FULL.sWhile::= while e e'
   FULL.sFor ::= for (DX in e)+ e

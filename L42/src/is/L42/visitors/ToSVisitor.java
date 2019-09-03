@@ -609,7 +609,7 @@ public class ToSVisitor implements CollectorVisitor{
     if(!txs0.isEmpty()){
       c("(");seq(empty,txs0,", ");c(")");
       }
-    if(tx0!=null && e0!=null){c("=");}
+    if((tx0!=null || !txs0.isEmpty())&& e0!=null){c("=");}
     if(e0!=null){visitE(e0);}
     }
  

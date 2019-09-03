@@ -57,15 +57,16 @@ public class FV extends PropagatorCollectorVisitor{
     result=acc;
     }
   public static List<X> domFullDs(List<Full.D>ds){
-    return ds.stream()
-    .flatMap(FV::domD).collect(Collectors.toList());
+    return allVarTx(ds)
+      .map(vtx->vtx._x())
+      .filter(x->x!=null)
+      .collect(Collectors.toList());
     }
-  private static Stream<X> domD(Full.D d){
-    return Stream.concat(Stream.of(d._varTx()),d.varTxs().stream())
-    .filter(vtx->vtx!=null)
-    .map(vtx->vtx._x())
-    .filter(x->x!=null);
-    }
+  public static Stream<Full.VarTx> allVarTx(List<Full.D>ds){
+    return ds.stream().flatMap(d->Stream.concat(Stream.of(
+      d._varTx()),d.varTxs().stream()))
+     .filter(vtx->vtx!=null);
+     }
   //core part
   @Override public void visitL(Core.L L){}
   @Override public void visitBlock(Core.Block b){

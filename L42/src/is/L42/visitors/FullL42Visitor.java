@@ -120,13 +120,24 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.Block visitBlock(BlockContext ctx) {
     check(ctx);
     boolean isCurly=ctx.oR()==null;
+    //block: oR d*? e k* whoops? ')' | oR d+ k* whoops? d* e ')' | '{' d+ (k+ whoops? d* | whoops d*)? '}';
     List<Full.D> ds=L(ctx.d(),(c,d)->c.add(visitD(d)));
     List<Full.K> ks=L(ctx.k(),(c,k)->c.add(visitK(k)));
     List<Full.T> whoopsed=opt(ctx.whoops(),L(),this::visitWhoops);
     Full.E e=opt(ctx.e(),null,this::visitE);
+    assert isCurly || e!=null;
     int dsAfter=ds.size();
     for(int i:range(ctx.children)){
-      if(ctx.children.get(i) instanceof KContext){dsAfter=i-1;break;}
+      var c=ctx.children.get(i);
+      if( (c instanceof KContext) || (c instanceof WhoopsContext)){
+        dsAfter=i-1;break;
+        }
+      }
+    if (dsAfter>ds.size()){
+      assert !isCurly;
+      assert dsAfter==ds.size()+1;
+      ds=pushL(ds,new Full.D(null,L(),e));
+      e=null;
       }
     return new Full.Block(pos(ctx), isCurly, ds, dsAfter, ks, whoopsed, e);
     }
@@ -388,7 +399,10 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     return new Full.Cast(pos(ctx),eVoid, visitT(ctx.t()));
     }
-  @Override public Full.SlashX visitSlashX(SlashXContext ctx) {throw bug();}
+  @Override public Full.SlashX visitSlashX(SlashXContext ctx) {
+    String x=ctx.SlashX().getText().substring(1);
+    return new Full.SlashX(pos(ctx), new X(x));
+    }
 
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
     check(ctx);

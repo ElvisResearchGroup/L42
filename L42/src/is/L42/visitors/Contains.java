@@ -11,13 +11,13 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.X;
 
-public class ContainsFullL extends PropagatorCollectorVisitor{
-  public static Full.L _of(Full.E e){
-    ContainsFullL fv=new ContainsFullL();
-    fv.visitE(e);
-    return fv.result;
+public class Contains<T> extends PropagatorCollectorVisitor{
+  public T _of(Full.E e){
+    this.visitE(e);
+    return result;
     }
-  Full.L result=null;  
-  @Override public void visitL(Full.L l){result=l;}
+  private T result=null;
+  public void setResult(T result){this.result=result;}  
+  @Override public void visitL(Full.L l){}
   @Override public void visitL(Core.L l){}
   }

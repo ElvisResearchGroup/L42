@@ -1,22 +1,51 @@
 package is.L42.visitors;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.pushTopL;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.generated.Core;
+import is.L42.generated.Core.E;
 import is.L42.generated.Full;
+import is.L42.generated.Full.D;
 import is.L42.generated.HasVisitable;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
 
+class ContainsFullL extends Contains<Full.L>{
+  @Override public void visitL(Full.L l){setResult(l);}
+  }
+class ContainsSlashXOut extends Contains<Full.SlashX>{
+  @Override public void visitSlashX(Full.SlashX sx){setResult(sx);}
+  @Override public void visitPar(Full.Par par){}
+  }
+class ContainsIllegalVarUpdate extends Contains<Core.EX>{
+  Set<X> updatableXs=Collections.emptySet();
+  @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
+    super.visitOpUpdate(opUpdate);
+    if(updatableXs.contains(opUpdate.x())){return;}
+    setResult(new Core.EX(opUpdate.pos(),opUpdate.x()));
+    }
+  @Override public void visitBlock(Full.Block b){
+    var old=updatableXs;
+    updatableXs=Stream.concat(old.stream(),
+      FV.allVarTx(b.ds()).filter(v->v.isVar()).map(v->v._x()).filter(x->x!=null))
+      .collect(Collectors.toSet());
+    super.visitBlock(b);
+    updatableXs=old;
+    }
+  }
+  
+  
 public class WellFormedness extends PropagatorCollectorVisitor{
   @SuppressWarnings("serial")
   public static class NotWellFormed extends EndError{
@@ -179,17 +208,25 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitMI(Full.L.MI mi){
     lastPos=mi.pos();
     super.visitMI(mi);
-    var l=ContainsFullL._of(mi.e());
+    var pars=pushL(X.thisX,mi.s().xs());
+    checkTopE(mi.e(),pars);
+    var l=new ContainsFullL()._of(mi.e());
     if(l==null){return;}
     lastPos=l.pos();
     err("Method body can not contain a full library literal");
     }
-
+  @Override public void visitNC(Full.L.NC nc){
+    lastPos=nc.pos();
+    super.visitNC(nc);
+    checkTopE(nc.e(),L());
+    }
   @Override public void visitMWT(Full.L.MWT mwt){
     lastPos=mwt.pos();
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
-    var l=ContainsFullL._of(mwt._e());
+    var pars=pushL(X.thisX,mwt.mh().s().xs());
+    checkTopE(mwt._e(),pars);
+    var l=new ContainsFullL()._of(mwt._e());
     if(l==null){return;}
     lastPos=l.pos();
     err("Method body can not contain a full library literal");
@@ -198,11 +235,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=mwt.pos();
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
-    var fv=FV.of(mwt._e().visitable());
-    var pars=pushTopL(X.thisX,mwt.mh().s().xs());
-    var extra=fv.stream().filter(x->!pars.contains(x)).findFirst();
-    if(extra.isPresent()){
-      err("Used binding is not in scope: "+extra.get());}
+    var pars=pushL(X.thisX,mwt.mh().s().xs());
+    var fv = checkAllVariablesUsedInScope(mwt._e().visitable(), pars);
     var parT=mwt.mh().parsWithThis();
     for(var i:range(pars)){
       if(!parT.get(i).mdf().isCapsule()){continue;}
@@ -212,6 +246,26 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err("capsule binding "+xi+" used more then once");
       }
     }
+  private List<X> checkAllVariablesUsedInScope(Visitable<?> v, List<X> pars) {
+    var fv=FV.of(v);
+    var extra=fv.stream().filter(x->!pars.contains(x)).findFirst();
+    if(extra.isPresent()){
+      err("Used binding is not in scope: "+extra.get());
+      }
+    return fv;
+    }
+    private void checkTopE(Full.E e,List<X>pars) {
+      checkAllVariablesUsedInScope(e.visitable(), pars);
+      var x=new ContainsIllegalVarUpdate()._of(e);
+      if(x!=null){
+        lastPos=x.pos();
+        err("name "+x+" is not declared as var, thus it can not be updated");
+        }
+      var sx=new ContainsSlashXOut()._of(e);
+      if(sx==null){return;}
+      lastPos=sx.pos();
+      err("term "+sx+" can only be used inside parameters");
+      }
   @Override public void visitMH(Full.MH mh){
     super.visitMH(mh);
     if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
@@ -250,8 +304,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         err("invalid fwd return type since there is no fwd parameter");}
       }   
     }
-
-  
+  @Override public void visitIf(Full.If i){
+    lastPos=i.pos();
+    super.visitIf(i);
+    for(var d:i.matches()){validMatch(d);}
+    }
+  private void validMatch(D d) {
+    long ts=d.varTxs().stream()
+    .filter(v->v!=null && v._t()!=null)
+    .count();
+    if(ts>0){return;}
+    err("invalid 'if match': no type selected in "+d);
+    }
   @Override public void visitL(Full.L l){
     lastPos=l.pos();
     super.visitL(l);

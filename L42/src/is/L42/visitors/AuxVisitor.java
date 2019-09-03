@@ -1,7 +1,7 @@
 package is.L42.visitors;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.pushTopL;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.unreachable;
 
 import java.util.List;
@@ -128,7 +128,7 @@ AuxVisitor(Pos pos) { this.pos = pos; }
     assert !res.hasErr();
     Full.Doc doc=visitTopDoc(res.res);
     return text1
-      .withDocs(pushTopL(doc,text1.docs()))
-      .withTexts(pushTopL(firstText,text1.texts()));
+      .withDocs(pushL(doc,text1.docs()))
+      .withTexts(pushL(firstText,text1.texts()));
     }  
 }

@@ -317,6 +317,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("loop a(C[])")
   ),new AtomicTest(()->
    pass("if a&&b return X\"oh\"")
+  ),new AtomicTest(()->
+   pass("if(a, b)=c a.foo(b)")
 
   ),new AtomicTest(()->
    pass("S\"oh no! ( a )) [ non trivial }} string just!! ]] in Case\"")

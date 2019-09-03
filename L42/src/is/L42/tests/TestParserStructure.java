@@ -110,9 +110,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(A catch return A x x y)","[|D(P)K(||t(P)xx)x|]|")
    ),new AtomicTest(()->
-   pass("(A catch return A x x)","[|D(P)K(||t(P)xx)|]|")
+   pass("(A catch return A x x)","[|PK(||t(P)xx)|]|")
    ),new AtomicTest(()->
-   pass("(A catch return A _ x)","[|D(P)K(||t(P)|x)|]|")
+   pass("(A catch return A _ x)","[|PK(||t(P)|x)|]|")
    ),new AtomicTest(()->
    pass("(A catch return A _ x catch error A x y z)",
    "[|D(P)K(||t(P)|x)K(||t(P)xx)x|]|")
@@ -124,7 +124,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    "[|D(P)Whoops(|t(P)t(P)t(P))x|]|")
    ),new AtomicTest(()->
    pass("(A whoops B C D)",
-   "[|D(P)Whoops(|t(P)t(P)t(P))|]|")
+   "[|PWhoops(|t(P)t(P)t(P))|]|")
    ),new AtomicTest(()->
    pass("{A whoops B C D}",
    "[|D(P)Whoops(|t(P)t(P)t(P))|]|")
