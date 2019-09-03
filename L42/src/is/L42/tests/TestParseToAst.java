@@ -230,9 +230,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{interface mut@Foo Bar fName}")
    ),new AtomicTest(()->
-   pass("{interface[mut@Foo Bar]E fName}")//will fail well formedness
+   fail("{interface[mut@Foo Bar]E fName}","implemented and exception types can not declare a modifier")
    ),new AtomicTest(()->
-   pass("{[mut@Foo Bar]E fName}")
+   pass("{[@Foo Bar]E fName}")
    ),new AtomicTest(()->
    pass("{E f method bar()=x}")
    ),new AtomicTest(()->

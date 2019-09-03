@@ -182,6 +182,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("if (x, Any y)=z z.foo()")
 
+   ),new AtomicTest(()->
+   pass("for var z in bla, (x,y) in bla beer")
+   ),new AtomicTest(()->
+   fail("for var z in bla, (x,var y) in bla beer","nested name y is var")
+
 
   ));}
 public static String inCore(String s){

@@ -58,7 +58,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
 
   Pos lastPos;
-  private final void err(String msg){
+  private final Error err(String msg){
     throw new NotWellFormed(lastPos,msg);
     }
   @Override public void visitE(Full.E e){lastPos=e.pos();super.visitE(e);}
@@ -106,41 +106,39 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     okXs(domDs);
     declaredVariableNotUsedInCatch(b.ks(), domDs);
     declaredVariableNotRedeclared(b, domDs);
-    if(b.isCurly()){Returning.ofBlock(b);}
-    else{
-      int minus=0;
-      if(b._e()==null){
-        var last=b.ds().get(b.ds().size()-1);
-        assert last._varTx()==null && last.varTxs().isEmpty();
-        minus=1;
-        }
-      for(int i:range(b.ds().size()-minus)){
-        if(!Returning.of(b.ds().get(i)._e())){continue;}
-        lastPos=b.ds().get(i)._e().pos();
-        err("dead code after the statement "+i+" of the block");
-        }
-      for(int i:range(1,b.ds().size())){
-        var di=b.ds().get(i);
-        var dj=b.ds().get(i-1);
-        if(di._varTx()!=null || !di.varTxs().isEmpty()){continue;}
-        if(b.dsAfter()==i){continue;}
-        if(!CheckBlockNeeded.of(dj._e(),true)){continue;}
-        lastPos=dj._e().pos();
-        err("expression need to be enclose in block to avoid ambiguities");
-        }
-      if(b.ks().isEmpty()){return;}
-      if(b.ds().size()<=b.dsAfter()){
-        if(b._e()==null){return;}
-        }
-      else{  
-        Full.D firstAfter=b.ds().get(b.dsAfter());
-        if(firstAfter._varTx()!=null || !firstAfter.varTxs().isEmpty()){return;}
-        }
-      Full.K kLast=b.ks().get(b.ks().size()-1);
-      if(!CheckBlockNeeded.of(kLast.e(),false)){return;}
-      lastPos=kLast.e().pos();
+    if(b.isCurly()){Returning.ofBlock(b);return;}
+    int minus=0;
+    if(b._e()==null){
+      var last=b.ds().get(b.ds().size()-1);
+      assert last._varTx()==null && last.varTxs().isEmpty();
+      minus=1;
+      }
+    for(int i:range(b.ds().size()-minus)){
+      if(!Returning.of(b.ds().get(i)._e())){continue;}
+      lastPos=b.ds().get(i)._e().pos();
+      err("dead code after the statement "+i+" of the block");
+      }
+    for(int i:range(1,b.ds().size())){
+      var di=b.ds().get(i);
+      var dj=b.ds().get(i-1);
+      if(di._varTx()!=null || !di.varTxs().isEmpty()){continue;}
+      if(b.dsAfter()==i){continue;}
+      if(!CheckBlockNeeded.of(dj._e(),true)){continue;}
+      lastPos=dj._e().pos();
       err("expression need to be enclose in block to avoid ambiguities");
-      }      
+      }
+    if(b.ks().isEmpty()){return;}
+    if(b.ds().size()<=b.dsAfter()){
+      if(b._e()==null){return;}
+      }
+    else{  
+      Full.D firstAfter=b.ds().get(b.dsAfter());
+      if(firstAfter._varTx()!=null || !firstAfter.varTxs().isEmpty()){return;}
+      }
+    Full.K kLast=b.ks().get(b.ks().size()-1);
+    if(!CheckBlockNeeded.of(kLast.e(),false)){return;}
+    lastPos=kLast.e().pos();
+    err("expression need to be enclose in block to avoid ambiguities");
     }
   private void declaredVariableNotRedeclared(Full.Block b, List<X> domDs) {
     declaredVariableNotRedeclared(Stream.concat(Stream.concat(
@@ -209,8 +207,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=mi.pos();
     super.visitMI(mi);
     var pars=pushL(X.thisX,mi.s().xs());
-    checkTopE(mi.e(),pars);
-    var l=new ContainsFullL()._of(mi.e());
+    checkTopE(mi.e().visitable(),pars);
+    var l=new ContainsFullL()._of(mi.e().visitable());
     if(l==null){return;}
     lastPos=l.pos();
     err("Method body can not contain a full library literal");
@@ -218,15 +216,15 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitNC(Full.L.NC nc){
     lastPos=nc.pos();
     super.visitNC(nc);
-    checkTopE(nc.e(),L());
+    checkTopE(nc.e().visitable(),L());
     }
   @Override public void visitMWT(Full.L.MWT mwt){
     lastPos=mwt.pos();
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
-    checkTopE(mwt._e(),pars);
-    var l=new ContainsFullL()._of(mwt._e());
+    checkTopE(mwt._e().visitable(),pars);
+    var l=new ContainsFullL()._of(mwt._e().visitable());
     if(l==null){return;}
     lastPos=l.pos();
     err("Method body can not contain a full library literal");
@@ -236,7 +234,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
-    var fv = checkAllVariablesUsedInScope(mwt._e().visitable(), pars);
+    var fv=checkTopE(mwt._e().visitable(),pars);
     var parT=mwt.mh().parsWithThis();
     for(var i:range(pars)){
       if(!parT.get(i).mdf().isCapsule()){continue;}
@@ -254,17 +252,17 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
     return fv;
     }
-    private void checkTopE(Full.E e,List<X>pars) {
-      checkAllVariablesUsedInScope(e.visitable(), pars);
-      var x=new ContainsIllegalVarUpdate()._of(e);
+    private List<X> checkTopE(Visitable<?> v,List<X>pars) {
+      var res=checkAllVariablesUsedInScope(v, pars);
+      var x=new ContainsIllegalVarUpdate()._of(v);
       if(x!=null){
         lastPos=x.pos();
         err("name "+x+" is not declared as var, thus it can not be updated");
         }
-      var sx=new ContainsSlashXOut()._of(e);
-      if(sx==null){return;}
+      var sx=new ContainsSlashXOut()._of(v);
+      if(sx==null){return res;}
       lastPos=sx.pos();
-      err("term "+sx+" can only be used inside parameters");
+      throw err("term "+sx+" can only be used inside parameters");
       }
   @Override public void visitMH(Full.MH mh){
     super.visitMH(mh);
@@ -316,6 +314,17 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(ts>0){return;}
     err("invalid 'if match': no type selected in "+d);
     }
+    
+  @Override public void visitFor(Full.For f){
+    lastPos=f.pos();
+    super.visitFor(f);    
+    for(var d:f.ds()){
+      for(var vtx:d.varTxs()){
+        if(!vtx.isVar()){continue;}
+        err("nested name "+vtx._x()+" is var; in a 'for' match only top level names can be var");
+        }
+      }
+    }  
   @Override public void visitL(Full.L l){
     lastPos=l.pos();
     super.visitL(l);
@@ -324,5 +333,4 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=l.pos();
     super.visitL(l);
     }
-
   }

@@ -183,6 +183,8 @@ _______
 * FULL.e: \x only appear in a method parameter expression
 * CORE/FULL.e: all variable update are applied on var bindings
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty
+* CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
+* FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
 * LL:
     no repetition in LL.Ms.LDom
     Any notin LL.H.Ts
@@ -192,18 +194,18 @@ _______
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all nesteds of private nesteds are private
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
 * The top level project LL:
-    forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
-    where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)} //care when '...' is expanded; while 'reuse URL' will rename the private names
 * program p:
-  -if p.pop(1) is defined, then p.pop(1) is well formed 
+  -if p.pop(1) is defined, then p.pop(1) is well formed //else we are top level
+   else forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
+    where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)}
+//care when '...' is expanded; while 'reuse URL' will rename the private names
+
   -CORE.L;pTail is well formed iff
     FULL.L={CORE.L.H CORE.L.Ms}
     flagTyped(norm(FULL.L;pTail);pTail)=CORE.L';pTail //defined in file top
     and CORE.L'.Info<=CORE.L.Info (that is, all the dependencies are a subset, and so on)//TODO: define formally
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
-* CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
-* FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
 //CODE ONLY WELL FORMEDNESS:
 //* x, P not valid DX=e
 //* CsP well formed, not Any in the middle and so on..

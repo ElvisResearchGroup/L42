@@ -247,15 +247,16 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   @Override public Full.E visitFullL(FullLContext ctx) {
     check(ctx);
+    Pos pos=pos(ctx);
     boolean isDots=ctx.DotDotDot()!=null;
     String reuseUrl=opt(ctx.ReuseURL(),"",r->parseReuseNative(r.getText()));
     boolean isInterface=opt(ctx.header(),false,h->h.InterfaceKw()!=null);
     List<Full.T>empty=L();
-    List<Full.T>ts=opt(ctx.header(),empty,h->L(h.t(),(c,ti)->c.add(visitT(ti))));
+    List<Full.T>ts=opt(ctx.header(),empty,h->checkAllEmptyMdf(pos,L(h.t(),(c,ti)->c.add(visitT(ti)))));
     List<Full.L.M> ms=L(ctx.fullM(),(c,mi)->c.add(visitFullM(mi)));
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     Core.L.Info info=opt(ctx.info(),null,this::visitInfo);
-    Full.L res=new Full.L(pos(ctx), isDots, reuseUrl, isInterface, ts, ms, docs);
+    Full.L res=new Full.L(pos, isDots, reuseUrl, isInterface, ts, ms, docs);
     if(info!=null){return new InjectionToCore(errors,eVoid)._inject(res,info);}
     return res; 
     }
@@ -333,6 +334,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   @Override public Full.MH visitFullMH(FullMHContext ctx) {
     check(ctx);
+    Pos pos=pos(ctx);
     Mdf _mdf=opt(ctx.Mdf(),null,m->Mdf.fromString(m.getText()));
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     List<Full.T> ts0=L(ctx.t(),(c,ti)->c.add(visitT(ti)));
@@ -340,13 +342,22 @@ public class FullL42Visitor implements L42Visitor<Object>{
     List<X> xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
     int excStart=xs.size()+1;
     List<Full.T> pars=ts0.subList(1, excStart);
-    List<Full.T> exceptions=ts0.subList(excStart,ts0.size());
+    List<Full.T> exceptions=checkAllEmptyMdf(pos,ts0.subList(excStart,ts0.size()));
     appendFwdErrorOnM(ctx.mOp().m());
     S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText().replace(" ", "")).withXs(xs));
     var _op = visitMOp(ctx.mOp());
     assert _op==null || s.m().isEmpty();
-    int n=stringToInt(ctx.mOp().Number(), pos(ctx));
+    int n=stringToInt(ctx.mOp().Number(), pos);
     return new Full.MH(_mdf, docs, t, _op, n, s, pars, exceptions);
+    }
+  private List<Full.T> checkAllEmptyMdf(Pos pos, List<Full.T> ts){
+    return L(ts,ti->{
+      if(ti._mdf()!=null){
+        String msg="Error: implemented and exception types can not declare a modifier (and are implicitly imm)";
+        this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);  
+        }
+      return ti.with_mdf(Mdf.Immutable);
+      });
     }
   private void appendFwdErrorOnM(MContext ctx) {
     if(ctx!=null && ctx.getText().contains("fwd ")){

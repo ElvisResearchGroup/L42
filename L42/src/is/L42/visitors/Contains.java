@@ -12,8 +12,8 @@ import is.L42.generated.Full;
 import is.L42.generated.X;
 
 public class Contains<T> extends PropagatorCollectorVisitor{
-  public T _of(Full.E e){
-    this.visitE(e);
+  public T _of(Visitable<?> e){
+    e.accept(this);
     return result;
     }
   private T result=null;

@@ -1,5 +1,6 @@
 package is.L42.visitors;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.popL;
 import static is.L42.tools.General.range;
 
 import java.util.List;
@@ -8,6 +9,7 @@ import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
 import is.L42.generated.*;
+import is.L42.generated.Core.T;
 
 public class ToSVisitor implements CollectorVisitor{
   public static String of(Visitable<?> v){
@@ -141,9 +143,7 @@ public class ToSVisitor implements CollectorVisitor{
     c("{");
     if(!inline){indent();}
     if(l.isInterface()){c("interface");}
-    if(!l.ts().isEmpty()){
-      c("[");seq(empty,l.ts(),", ");c("] ");
-      }
+    exceptionImplements(l.ts());
     var sp=empty;
     if(!inline){sp=i->nl();}
     seq(sp,l.mwts(),"");
@@ -302,10 +302,25 @@ public class ToSVisitor implements CollectorVisitor{
     visitT(t0);
     cMethName(s0);
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
-    if(exceptions0.isEmpty()){return;}
-    c("[");seq(empty,exceptions0,", ");c("]");
+    exceptionImplements(exceptions0);
     }
-
+  private void exceptionImplementsFull(List<Full.T> ts){
+    if(ts.isEmpty()){return;}
+    c("[");seq(empty,L(ts,t->t.with_mdf(null)),", ");c("]");
+    }
+  private void exceptionImplements(List<Core.T> ts){
+    if(ts.isEmpty()){return;}
+    c("[");
+    visitDocs(ts.get(0).docs());
+    visitP(ts.get(0).p());
+    for(var t:popL(ts)){
+      c(", ");
+      visitDocs(t.docs());
+      visitP(t.p());
+      }
+    c("]");
+    }
+  
   public void visitPCastT(Half.PCastT pCastT){
     var p0=pCastT.p();
     var t0=pCastT.t();
@@ -399,9 +414,7 @@ public class ToSVisitor implements CollectorVisitor{
     var ts0=l.ts();
     var ms0=l.ms();
     var docs0=l.docs();
-    if(!ts0.isEmpty()){
-      c("[");seq(empty,l.ts(),", ");c("]");
-      }
+    exceptionImplementsFull(ts0);
     var sp=empty;
     if(!inline){sp=i->nl();}
     seqHas(sp,ms0,"");
@@ -701,7 +714,6 @@ public class ToSVisitor implements CollectorVisitor{
       }
     else{cMethName(s0);}
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
-    if(exceptions0.isEmpty()){return;}
-    c("[");seq(empty,exceptions0,", ");c("]");
+    exceptionImplementsFull(exceptions0);
     }
   }
