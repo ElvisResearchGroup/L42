@@ -13,12 +13,12 @@ _______
   CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) PL
   FULL/CORE.H ::= interface? PL
   FULL.TLocal ::= T | mdf?
-  xe ::= x = e // ISAAC: I've added this since it was referenced and undefined, and for consistency between FULL.e/CORE.e I'v used xes/xvs for method arguments
-  xv ::= x = v
+  FULL/CORE/HALF.xe ::= x = e
+  FULL/CORE/HALF.xv ::= x = v
   CORE.e ::= xP | void | L | xP.m(xes) | loop e | throw e | x:=e | (Ds Ks e)
   CORE.xP ::= x | P<:T | a //a=address, only at runtime
   CORE.D ::= var? T x=e
-  CORE.K ::= catch throw T x e
+  CORE/HALF.K ::= catch throw T x e
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native[URL]? e)?  
   CORE.NC::= Docs C = L
@@ -46,7 +46,9 @@ _______
     | loop e | while e0 e1 | for DX0 in e0 .. DXn in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   FULL.D ::= (DX =)? e
-  FULL.WHOOPS ::= whoops T+ // ISAAC: is there a reason why this is defined here, but FULL.DX and FULL.match are defined bellow (when you give the parse form of FULL.E)?
+  FULL.WHOOPS ::= whoops T+
+  FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
+  FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
   FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
@@ -55,15 +57,14 @@ _______
   ST::=CORE.T | ST.s | ST.s.i | op STzs //i=0 for receiver type?
   HALF.xP ::= x | P<:STz | %STz%
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
-  HALF.K ::= catch throw HALF.T x e // ISAAC: If we define "K ::= catch throw T x e", then HALF.K will implicitly be this version, and "CORE.K" will implicitly be the one above? That way no need to define  K twice? If this makes sense?
   HALF.D ::= var? HALF.T x = e
-  HALF.T::= mdf? STz // ISAAC: isn't the mdf? redundent as STzs may also contain mdfs? or does mdf (P) mean something different from (mdf P), what about mdf (mdf' P)? (where the thing in the parentheses is the STz)
+  HALF.T::= mdf? STz
   CC ::= ST<=HALF.T
   PR ::= CCz;CORE.L;pTails | Err
   ER ::= CCz;CORE.e? | Err
   DsR ::= CCz;CORE.Ds | Err
   KR ::= CCz;CORE.K | Err
-  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,PTz) | throw(p,A,v) // ISAAC: What is a PTz?
+  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,STz) | throw(p,A,v)
   R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
@@ -130,24 +131,15 @@ _______
   mOp ::= empty | m | OP_n | ~_n | !_n
 _______
 #define FULL Expressions priority disambiguation and other details
-  FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel |  e<:T |\x
-  FULL.ePostfix ::= UOp* eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)*
-    // ISAAC: there is an ambiguity here: "x <: T" could be passed as either
-    // ePostfix(eAtomic(x) <: T), or ePostfix(eAtomic(x <: T))
-    //no space in ePostfix(par) and \x
+  FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel | \x
+  FULL.ePostfix ::= UOp* eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)* //no space in ePostfix(par) and \x
   FULL.par ::= e? xe*
   FULL.eBinary0 ::= ePostFix (OP0 ePostFix)* //right associative, all ops must be the same
   FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
-  FULL.B ::= ( e ) | ( D+ Ks WHOOPS? Ds e? ) | { D+ (K+ WHOOPS? Ds | WHOOPS Ds)? }
-  // ISAAC: I modified the (Ds e) case because it is redundent with the second case when Ds != empty
-  // ISAAC: why is the e? optional if there is a catch (but required otherwise)?
-  // ISAAC: Wouldn't { D+ Ks WHOOPS? Ds } be equivalent to { D+ (K+ WHOOPS? Ds | WHOOPS Ds)? }?
-  // (except of course theres an ambiguity with {D1 D2} whether D2 is in D+ or the Ds, but this shouldn't matter)
-  FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
+  FULL.B ::= (Ds e Ks WHOOPS?) (D+ Ks WHOOPS? Ds e) | { D+ Ks WHOOPS? Ds }
   FULL.sIf ::= if e e (else e)? | if match+ e
-  FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
   FULL.sWhile::= while e e'
   FULL.sFor ::= for (DX in e)+ e
   FULL.e ::= sIf | sWhile | sFor | loop e | throw e | x opUpdate e | eBinary3
