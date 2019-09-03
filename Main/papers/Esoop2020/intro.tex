@@ -11,10 +11,10 @@ We do this, like Dafny~\cite{DBLP:conf/sigada/Leino12}, to minimise special synt
 
 Invariants are designed to hold in most moments, but 
 is common to knowingly violate invariants for short periods before restoring them.
-To support this behaviour the two main invariant protocols present in literature allows invariants to be (temporarily) broken and observed broken.
+To support this behaviour the two main invariant protocols present in the literature allows invariants to be (temporarily) broken and observed broken.
 They are the \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Boogie/Pack-Unpack methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
 In the visible state semantics, invariants can be broken when a method on the object is active (that is, one of the object methods is currently in execution somewhere in the stack trace).
-Some interpretations of the visible state semantic are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
+Some interpretations of the visible state semantics are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
 In pack-unpack, objects can be either packed or unpacked, and only the invariant of unpacked objects can be broken.
 
 %------------
@@ -34,7 +34,7 @@ class Range{ field min; field max;//assumed getters and setters
     this.max(max); }  }
 \end{lstlisting}
 In this first example we omit types to focus on the behaviour.
-Under the visible state semantic, this code of \Q@set(min,max)@ is ok:
+Under visible state, this code of \Q@set(min,max)@ is ok:
 \Q@min(min)@ may temporarily break the invariant, that is fixed the moment
 after by \Q@max(max)@. Visible state allows to break the invariant in that point, since
 we are inside the method \Q@set(min,max)@ of \Q@Range@; thus there is an active method.
@@ -45,8 +45,8 @@ the invariant of an object involved in execution can never be broken. For exampl
 arbitrary user code could observe a broken object.
 
 Using the \emph{box pattern}\footnote{
-This pattern is obvious enough that we do not wish to claim it as a contribution of our work,
-but we are unable to find it referenced with a specific name in literature. Technically speaking, it is a simplification of the Decorator, but with a different goal.}, we can provide a modified
+This pattern is obvious, and we do not wish to claim it as a contribution of our work.
+However we are unable to find it referenced with a specific name in the literature. Technically speaking, it is a simplification of the Decorator, but with a different goal.}, we can provide a modified
 \Q@Range@ class with the desired client interface, while respecting the principles of our strict protocol:
 \begin{lstlisting}
 class BoxRange{//no invariant in BoxRange

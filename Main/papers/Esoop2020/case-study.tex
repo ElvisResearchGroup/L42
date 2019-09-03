@@ -1,57 +1,10 @@
-\SS\section{GUI Case study}
+\SS\section{Our Case study and the GUI example}
 \label{s:case-study}
-%In this paper we argue that our protocol is not only more succinct than the pack/unpack approach, but is also easier and safer to use.
-
-
-%interface Foo{ma mb}
-%
-%class Raw implements Foo{
-%  no validate 
-%}
-%class ValidFoo1 implemens Foo{
-%  private capsule Foo inner;
-%  ma(){
-%    this.inner.ma();
-%  }
-%  validate
-%}
-%
-%
-%class Raw {
-%  mut method mut A stuff(read A a) {
-%      if a.bar() {
-%         x = ...
-%      }
-%      return new A(x)
-%  }
-%
-%  read method imm Object stuffPre(read A a) {
-%     return a.bar()
-%  }
-%  read method mut A stuffPost(imm Object o) {
-%     return new A(x)
-%  }
-%  mut method imm Object stuffInner(imm Object) {
-%      x = ...
-%  }
-%}
-%class ValidFoo1 {
-%	cpasule Raw r;
-%  mut method mut A stuff(read A a) {
-%     imm Object p = this.r.stuffPre(a);
-%     imm Object res = this.transformR(r -> r.stuffInner(p));
-%      return this.r.stuffPost(res)
-%  }
-%}
-%
-%
-%
-%class ValidFoo2 implemens Foo{
-%  private capsule Foo inner;
-%  validate
-%}
-Here we show that we are able to verify classes with cyclic mutable object graphs, that interact with the real world using I/O.
-Our case study is particularly relevant since, as for most GUI frameworks,
+To perform a compelling case study, we used our system on many examples, including one designed to be a worst case scenario for our approach. We also replicate many examples originally proposed by other papers, so that 
+not all the code examples come from the paper authors.
+For space reasons, we present those examples in  Appendix~\ref{s:MoreCaseStudies}, and we focus here on a single example of a GUI.
+This example show that we are able to verify classes with cyclic mutable object graphs, that interact with the real world using I/O.
+Our example is particularly relevant since, as for most GUI frameworks,
 it is an example of the \emph{composite} programming pattern; arguably one of the most fundamental patterns in OO.
 
 %Here we discuss how to use conventional OO programming patterns to take advantage of our system. Using those
@@ -148,7 +101,7 @@ however due to the `uniform access principle'\cite{?}%\footnote{%
 When we ran our test case following the D approach, the \Q!invariant()! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times; %\footnote{%
 %We expect all (sound) runtime approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design} to produce similar results.}
 in comparison our invariant protocol only performed $77$ calls. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width()! and \Q!height()! are simply getters for fields, whereas the other two are non-trivial \emph{methods}.
-Concluding, we shown that when an invariant check queries other other objects with invariants the visible state semantic may cause an exponential explosion in the number of checks.
+Concluding, we shown that when an invariant check queries other other objects with invariants the visible state semantics may cause an exponential explosion in the number of checks.
 
  % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
 % Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
@@ -245,20 +198,17 @@ Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: 
 
 % Moreover, in L42 we only use $3$ different kinds of annotations, while in Spec\# we use $15$ kinds of annotations.
 
-\noindent The Spec\# code also required us to deviate from the style of code we showed in our simplified version: we could not write a usable \Q@children()@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only indirection we had to do in L42 was creating \Q@Box@es by using 
+\noindent The Spec\# code also required us to deviate from the code style showed in our simplified version: we could not write a usable \Q@children()@ method in \Q@Widget@ that returns a list of children, instead we had to write \Q@children_count()@ and \Q@children(int i)@ methods; we also needed to create a trivial class with a \Q@[Pure]@ constructor (since \Q@Object@'s one is not marked as such). In contrast, the only indirection we had to do in L42 was creating \Q@Box@es by using 
 an additional variable in a nested scope.
 This is needed to delineate scopes for promotions.
 Based on these results, we believe our system is significantly simpler and easier to use.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
-We realize a case study composed by a single program is not very compelling; we used our system on many other examples, including one designed to be a worst case scenario for our approach; we also replicate many examples originally proposed by other papers.
-For space reasons, we present those examples in  Appendix~\ref{s:MoreCaseStudies}.
-
 
 \subheading{Expressive power: The Box Pattern and the Transform Pattern}
 Our experience shows us that we can encode any computable invariant relying on immutable and encapsulated state.
 We show evidence of the generality of our approach 
-in Appendix~\ref{s:TODO};
+in Appendix~\ref{s:patterns};
 by encoding a \Q@Graph@ library where the invariant of the various \Q@Node@s can be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s.
 This is a generalization of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2)
 as one of the hardest problems when it comes to enforcing invariants.

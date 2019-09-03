@@ -9,8 +9,8 @@ All classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant(
 
 Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can call methods on an object, calling \Q@invariant()@ on it is guaranteed to return \Q@true@ in a finite number of steps.
 Our system have a clear scope:
-\Q@invariant()@ methods can only access the immutable and encapsulated state of the object.
-We put restrictions in place so that they are semantically equivalent to a static method
+verifying invariants on immutable and encapsulated state.
+\Q@invariant()@ methods are restricted to be semantically equivalent to a static method
 taking in input only the values of the \Q@imm@ and \Q@capsule@ fields.
 Indeed, we could have a simpler formalism by encoding invariants using static methods, but we think an instance method is more friendly for the user.
 
@@ -27,7 +27,7 @@ Finally, since the invariant is a \Q@read@ method,
 Invariants can only refer to immutable and encapsulated state. Thus while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
 we can not do the same for a doubly linked lists of mutable elements. We do not obstacle correctly implementing such data structures, but the invariant would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
-There is a line of work in literature[] striving to allow invariants over other forms of state.
+There is a line of work in the literature~\cite{?} striving to allow invariants over other forms of state.
 It would not be technically difficult to 
 integrate the solutions of those works, but 
 it would make our system more complex and ad hoc, probably requiring numerous specialized kinds of RCs.
