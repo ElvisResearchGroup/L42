@@ -207,6 +207,6 @@ public static void fail(String input,String ...output){
     for(var s:output){assertTrue(msg.contains(s));}
     return;
     }
-  Assertions.fail();
+  Assertions.fail("error expected");
   }
 }

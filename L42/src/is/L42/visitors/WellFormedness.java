@@ -4,9 +4,12 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -16,7 +19,9 @@ import is.L42.generated.Core.E;
 import is.L42.generated.Full;
 import is.L42.generated.Full.D;
 import is.L42.generated.HasVisitable;
+import is.L42.generated.LDom;
 import is.L42.generated.Mdf;
+import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
@@ -90,14 +95,23 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(x.inner().equals("this")){err("'this' can not be used as a name, in "+xs);}
       }
     long size=xs.stream().map(X::inner).distinct().count();
-    if(size!=xs.size()){err("duplicated name in "+xs);} 
+    if(size!=xs.size()){
+      List<X> dups=dups(xs);
+      err("duplicated name: "+dups);
+      } 
     }
+  private<T> List<T> dups(List<T> es) {
+    Set<T> all=new HashSet<>(es);
+    List<T> res=new ArrayList<>(es);
+    for(T t:all) {res.remove(t);}
+    return res;
+  }
   public void visitPar(Full.Par par){
     super.visitPar(par);
     okXs(par.xs());
     if(par._that()==null){return;}
     if(par.xs().stream().map(X::inner).noneMatch(x->x.equals("that"))){return;}
-    err("duplicated name in "+par.xs()+": 'that' is already passed as first argument");
+    err("duplicated name: [that];  'that' is implicitly passed as first argument");
     }
   @Override public void visitBlock(Full.Block b){
     lastPos=b.pos();
@@ -266,6 +280,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
   @Override public void visitMH(Full.MH mh){
     super.visitMH(mh);
+    checkAllEmptyMdfFull(mh.exceptions());
     if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
       err("method modifier can not be fwd imm or fwd mut");} 
     var ps=mh.parsWithThis();
@@ -285,6 +300,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMH(Core.MH mh){
     super.visitMH(mh);
+    checkAllEmptyMdf(mh.exceptions());
     if(mh.mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
       err("method modifier can not be fwd imm or fwd mut");} 
     var ps=mh.parsWithThis();
@@ -302,6 +318,15 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         err("invalid fwd return type since there is no fwd parameter");}
       }   
     }
+  private void checkAllEmptyMdfFull(List<Full.T> ts){
+    for(var ti:ts){if(ti._mdf()!=Mdf.Immutable){
+        err("Error: implemented and exception types can not declare a modifier (and are implicitly imm)");
+    }}}
+  private void checkAllEmptyMdf(List<Core.T> ts){
+    for(var ti:ts){if(ti.mdf()!=Mdf.Immutable){
+        err("Error: implemented and exception types can not declare a modifier (and are implicitly imm)");
+    }}}
+
   @Override public void visitIf(Full.If i){
     lastPos=i.pos();
     super.visitIf(i);
@@ -328,9 +353,35 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitL(Full.L l){
     lastPos=l.pos();
     super.visitL(l);
+    checkAllEmptyMdfFull(l.ts());
+    long countM=l.ms().stream().map(m->m.key()).count();
+    if(countM<l.ms().size()) {
+      var dups=dups(l.ms().stream().map(m->m.key()).collect(Collectors.toList()));
+      err("duplicated name: "+dups);
+      }
+    long countI=l.ts().stream().map(t->t.withDocs(L())).count();
+    if(countI<l.ts().size()) {
+      var dups=dups(l.ts().stream().map(t->t.withDocs(L())).collect(Collectors.toList()));
+      err("duplicated name: "+dups);
+      }
+    for(var t:l.ts()){
+      if(!P.pAny.equals(t._p())){continue;}
+      err("duplicated name: [Any];  'Any' is implicitly present as an implemented interface");
+      }
+    //exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
+    Supplier<Stream<Integer>> privateAbstract=()->l.ms().stream()
+      .filter(m->m instanceof Full.L.MWT)
+      .map(m->(Full.L.MWT)m)
+      .filter(m->m._e()==null && m.key().hasUniqueNum())
+      .map(m->m.key().uniqueNum());
+    if(privateAbstract.get().count()>1) {
+      var dups=dups(privateAbstract.get().collect(Collectors.toList()));
+      err("Only one private state number is allowed; but the following are used "+dups);
+      }
     }
   @Override public void visitL(Core.L l){
     lastPos=l.pos();
     super.visitL(l);
+    checkAllEmptyMdf(l.ts());
     }
   }

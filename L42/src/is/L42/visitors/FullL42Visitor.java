@@ -352,10 +352,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   private List<Full.T> checkAllEmptyMdf(Pos pos, List<Full.T> ts){
     return L(ts,ti->{
-      if(ti._mdf()!=null){
-        String msg="Error: implemented and exception types can not declare a modifier (and are implicitly imm)";
-        this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);  
-        }
+      if(ti._mdf()!=null){return ti;}
       return ti.with_mdf(Mdf.Immutable);
       });
     }
