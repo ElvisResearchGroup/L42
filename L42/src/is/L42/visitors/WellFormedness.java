@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 import is.L42.generated.Full;
@@ -76,7 +77,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(d._t()!=null){_mdf=d._t()._mdf();}
     if(_mdf==null){return;}
     if(!_mdf.isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
-    err("var bindings can not be "+_mdf);
+    err(Err.varBindingCanNotBe(_mdf));
     }
   
   @Override public void visitD(Core.D d){
@@ -84,7 +85,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitD(d);
     if(!d.isVar()){return;}
     if(!d.t().mdf().isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
-    err("var bindings can not be "+d.t().mdf());    
+    err(Err.varBindingCanNotBe(d.t().mdf()));    
     }    
   @Override public void visitS(S s){
     super.visitS(s);
@@ -92,12 +93,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   private void okXs(List<X>xs) { 
     for(X x:xs){
-      if(x.inner().equals("this")){err("'this' can not be used as a name, in "+xs);}
+      if(x.inner().equals("this")){
+       err(Err.duplicatedNameThis());}
       }
     long size=xs.stream().map(X::inner).distinct().count();
     if(size!=xs.size()){
       List<X> dups=dups(xs);
-      err("duplicated name: "+dups);
+      err(Err.duplicatedName(dups));
       } 
     }
   private<T> List<T> dups(List<T> es) {
@@ -111,7 +113,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     okXs(par.xs());
     if(par._that()==null){return;}
     if(par.xs().stream().map(X::inner).noneMatch(x->x.equals("that"))){return;}
-    err("duplicated name: [that];  'that' is implicitly passed as first argument");
+    err(Err.duplicatedNameThat());
     }
   @Override public void visitBlock(Full.Block b){
     lastPos=b.pos();
@@ -130,7 +132,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     for(int i:range(b.ds().size()-minus)){
       if(!Returning.of(b.ds().get(i)._e())){continue;}
       lastPos=b.ds().get(i)._e().pos();
-      err("dead code after the statement "+i+" of the block");
+      err(Err.deadCodeAfter(i));
       }
     for(int i:range(1,b.ds().size())){
       var di=b.ds().get(i);
@@ -139,7 +141,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(b.dsAfter()==i){continue;}
       if(!CheckBlockNeeded.of(dj._e(),true)){continue;}
       lastPos=dj._e().pos();
-      err("expression need to be enclose in block to avoid ambiguities");
+      err(Err.needBlock(dj._e()));
       }
     if(b.ks().isEmpty()){return;}
     if(b.ds().size()<=b.dsAfter()){
@@ -357,16 +359,16 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     long countM=l.ms().stream().map(m->m.key()).count();
     if(countM<l.ms().size()) {
       var dups=dups(l.ms().stream().map(m->m.key()).collect(Collectors.toList()));
-      err("duplicated name: "+dups);
+      err("duplicated names: "+dups);
       }
     long countI=l.ts().stream().map(t->t.withDocs(L())).count();
     if(countI<l.ts().size()) {
       var dups=dups(l.ts().stream().map(t->t.withDocs(L())).collect(Collectors.toList()));
-      err("duplicated name: "+dups);
+      err("duplicated names: "+dups);
       }
     for(var t:l.ts()){
       if(!P.pAny.equals(t._p())){continue;}
-      err("duplicated name: [Any];  'Any' is implicitly present as an implemented interface");
+      err("duplicated names: [Any];  'Any' is implicitly present as an implemented interface");
       }
     //exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
     Supplier<Stream<Integer>> privateAbstract=()->l.ms().stream()

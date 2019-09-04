@@ -6,6 +6,7 @@ import java.util.stream.Stream;
 
 import org.junit.jupiter.api.Assertions;
 
+import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Full;
 import is.L42.tools.AtomicTest;
@@ -14,6 +15,8 @@ import is.L42.visitors.WellFormedness.NotWellFormed;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.range;
+import static is.L42.common.Err.hole;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWellFormedness
@@ -76,13 +79,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{C=(x=void x:=x)}","name x is not declared as var, thus it can not be updated")
 
    ),new AtomicTest(()->
-   fail("((a.foo(x=a,x=b)))","duplicated name in [")
+   fail("((a.foo(x=a,x=b)))",Err.duplicatedName("[x]"))
    ),new AtomicTest(()->
-   fail("((a.foo(x=a,y=b,x=c)))","duplicated name in [")
+   fail("((a.foo(x=a,y=b,x=c)))",Err.duplicatedName("[x]"))
    ),new AtomicTest(()->
-   fail("((a.foo(a,y=b,that=c)))","duplicated name in [","'that' is already passed as first argument")
+   fail("((a.foo(a,y=b,that=c)))",Err.duplicatedNameThat())
    ),new AtomicTest(()->
-   fail("{method (that,foo,that)=e}","duplicated name in [")
+   fail("{method (that,foo,that)=e}",Err.duplicatedName(hole))
    ),new AtomicTest(()->
    fail("{method (that,foo,this)=e}","'this' can not be used as a name")
    ),new AtomicTest(()->
@@ -144,7 +147,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    ),new AtomicTest(()->
    pass("(Any a={} void)")
-
+   ),new AtomicTest(()->
+   fail("{interface[mut@Foo Bar]E fName}","DDD")
    ),new AtomicTest(()->
    fail("{ method m()=(Any a={} void)}","Method body can not contain a full library literal")
    ),new AtomicTest(()->
@@ -187,7 +191,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("for var z in bla, (x,var y) in bla beer","nested name y is var")
 
-
   ));}
 public static String inCore(String s){
   return "{imm method imm Void a()="+s+" #norm{}}";
@@ -203,6 +206,11 @@ public static void fail(String input,String ...output){
   try{r.res.wf();}
   catch(NotWellFormed nwf){
     String msg=nwf.getMessage();
+    if(output.length==1){
+      msg=msg.substring(msg.indexOf("\n")+1);
+      Err.strCmp(msg, output[0]);
+      return;
+      }
     for(var s:output){if(!msg.contains(s)){throw nwf;}}
     for(var s:output){assertTrue(msg.contains(s));}
     return;

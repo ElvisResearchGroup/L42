@@ -306,17 +306,18 @@ public class ToSVisitor implements CollectorVisitor{
     }
   private void exceptionImplementsFull(List<Full.T> ts){
     if(ts.isEmpty()){return;}
-    c("[");seq(empty,L(ts,t->t.with_mdf(null)),", ");c("]");
+    c("[");seq(empty,L(ts,t->t._mdf()!=Mdf.Immutable?t:t.with_mdf(null)),", ");c("]");
     }
   private void exceptionImplements(List<Core.T> ts){
     if(ts.isEmpty()){return;}
     c("[");
-    visitDocs(ts.get(0).docs());
-    visitP(ts.get(0).p());
-    for(var t:popL(ts)){
+    var t0=ts.get(0);
+    if(t0.mdf()!=Mdf.Immutable){visitT(t0);}
+    else{ visitDocs(t0.docs()); visitP(t0.p());}
+    for(var ti:popL(ts)){
       c(", ");
-      visitDocs(t.docs());
-      visitP(t.p());
+      if(ti.mdf()!=Mdf.Immutable){visitT(ti);}
+      else{ visitDocs(ti.docs()); visitP(ti.p());}
       }
     c("]");
     }
