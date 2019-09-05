@@ -21,9 +21,9 @@ _______
 * wellTyped(p,e)=T
     Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
     FV(e)=empty 
-    Q|- CORE.e :T
-    either T.P in {Library, Void} 
-    or p(T.P)(#toLibrary()).T= imm Library
+    either Q|- CORE.e : _ <= imm Library
+    or Q|- CORE.e : _ <= imm Void
+    or Q|- CORE.e.#toLibrary() : _ <= imm Library
 _______
 #define Q |-e: T<=T 
 * Q |- void : imm Void <= T //(void)
