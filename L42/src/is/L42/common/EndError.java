@@ -13,7 +13,7 @@ public abstract class EndError extends RuntimeException{
     this.pos=pos;
     }
   @Override public String getMessage(){
-    if(msg==null){msg="line " + pos.line() + ":" + pos.column() + "\n" +msgPart+computeMsg();}
+    if(msg==null){msg=pos+msgPart+computeMsg();}
     return msg;
     }
   public String computeMsg(){return "";};//override handler

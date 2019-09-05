@@ -268,13 +268,13 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrivateSubtypes(L42AuxParser.PrivateSubtypesContext ctx) { }
+	@Override public void enterPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrivateSubtypes(L42AuxParser.PrivateSubtypesContext ctx) { }
+	@Override public void exitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -292,13 +292,13 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCanBeClassAny(L42AuxParser.CanBeClassAnyContext ctx) { }
+	@Override public void enterDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitCanBeClassAny(L42AuxParser.CanBeClassAnyContext ctx) { }
+	@Override public void exitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

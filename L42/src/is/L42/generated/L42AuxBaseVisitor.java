@@ -164,7 +164,7 @@ public class L42AuxBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitPrivateSubtypes(L42AuxParser.PrivateSubtypesContext ctx) { return visitChildren(ctx); }
+	@Override public T visitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -178,7 +178,7 @@ public class L42AuxBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCanBeClassAny(L42AuxParser.CanBeClassAnyContext ctx) { return visitChildren(ctx); }
+	@Override public T visitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

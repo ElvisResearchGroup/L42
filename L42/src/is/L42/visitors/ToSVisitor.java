@@ -165,9 +165,9 @@ public class ToSVisitor implements CollectorVisitor{
     infoItem("coherentDep",info.coherentDep());
     infoItem("friends",info.friends());
     infoItem("usedMethods",info.usedMethods());
-    infoItem("privateSubtypes",info.privateSubtypes());
+    infoItem("privateSupertypes",info.privateSupertypes());
     infoItem("refined",info.refined());
-    boolInfoItem(info.canBeClassAny(),"canBeClassAny");
+    boolInfoItem(info.declaresClassMethods(),"declaresClassMethods");
     c("}");
     }
   private void boolInfoItem(boolean flag,String text){

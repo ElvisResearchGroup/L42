@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Full;
 import is.L42.tools.AtomicTest;
@@ -23,7 +24,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("Foo.This3","This","Error")
    ),new AtomicTest(()->
-   fail("Void.This3","This","Void","Error")
+   fail("Void.This3",Err.notValidC("Void"))
    ),new AtomicTest(()->
    pass("A(B)","A(B)")   
    ),new AtomicTest(()->
@@ -212,17 +213,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{usedMethods=This1.C.foo(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{privateSubtypes=This1.C}})")
+   pass("({interface #norm{privateSupertypes=This1.C}})")
    ),new AtomicTest(()->
    pass("({interface #norm{refined=bar(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{friends=This1.C canBeClassAny}})")
+   pass("({interface #norm{friends=This1.C declaresClassMethods}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{canBeClassAny}})")
+   pass("({interface #norm{declaresClassMethods}})")
    ),new AtomicTest(()->
    pass("{imm method imm Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
    ),new AtomicTest(()->
-   fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}","Error: Extraneus token #norm{}","invalid method with type for core library")
+   fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}",Err.malformedCoreMWT(Err.hole))
    ),new AtomicTest(()->
    pass("({@This0.Bar imm method imm This0.T f()#norm{}})")
    ),new AtomicTest(()->
@@ -249,9 +250,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("{method A.B+1(C.D x)=x}")
 
    ),new AtomicTest(()->
-   fail("{E f method []()=x}","no viable alternative at input 'method [")
+   fail("{E f method []()=x}","","no viable alternative at input 'method [")
    ),new AtomicTest(()->
-   fail("{method A.B Void(C.D x)=x}","no viable alternative at input 'Void'")
+   fail("{method A.B Void(C.D x)=x}","","no viable alternative at input 'Void'")
 
    ),new AtomicTest(()->
    pass("{E f method in()=x}")
@@ -273,7 +274,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{method A mut(B x)=x.imm(x)}")
    ),new AtomicTest(()->
-   fail("{method A fwd imm(B x)=x.imm(x)}","fwd imm is not a valid method name")
+   fail("{method A fwd imm(B x)=x.imm(x)}",Err.invalidMethodName("fwd imm"))
 
    ),new AtomicTest(()->
    pass("{CCc=x}")
@@ -377,7 +378,12 @@ public static void passI(String input,String ...outputs) {
 public static void fail(String input,String ...output) {
   var r=Parse.e("-dummy-",input);
   assertTrue(r.hasErr());
-  String msg=r.errorsTokenizer+"\n"+r.errorsParser+"\n"+r.errorsVisitor;
+  String msg=r.errorsTokenizer+" "+r.errorsParser+" "+r.errorsVisitor;
+  if(output.length==1){
+    msg=msg.substring(msg.indexOf("\n")+1);
+    Err.strCmp(msg, output[0]);
+    return;
+    }
   for(var s:output){if(!msg.contains(s)){throw new Error(msg);}}
   for(var s:output){assertTrue(msg.contains(s));}
   }

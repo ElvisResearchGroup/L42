@@ -21,6 +21,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import is.L42.generated.L42Parser.*;
+import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.*;
 import is.L42.generated.Core.EVoid;
@@ -158,14 +159,14 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     Pos pos=pos(ctx);
     String s=ctx.CsP().getText();
-    var res=Parse.csP(s);
+    var res=Parse.csP(pos.fileName(),s);
     if(res.hasErr()){
-      String msg="Error: "+s+" is not a class name";
-      if(s.contains("Any")){msg+="; a class name can not be Any";}
-      if(s.contains("Void")){msg+="; a class name can not be Void";}
-      if(s.contains("Void")){msg+="; a class name can not be Library";}
-      if(s.contains("This")){msg+="; a class name can not be This";}
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      this.errors.append(pos+ Err.notValidC(
+        s.contains("Any")?"Any":
+        s.contains("Void")?"Void":        
+        s.contains("Library")?"Library":
+        s.contains("This")?"This":s
+        ));
       return new Full.CsP(pos,L(),P.pAny);
       }
     return new AuxVisitor(pos).visitNudeCsP(res.res);
@@ -225,10 +226,9 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     String s="@"+ctx.getText();
     Pos pos=pos(ctx);
-    var res=Parse.doc(s);
+    var res=Parse.doc(pos.fileName(),s);
     if (res.hasErr()){
-      String msg="Error: malformed @ in docs";
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      this.errors.append(pos+Err.malformedAtInDocs());
       return new Full.Doc(null, L(), L());
       }
     return new AuxVisitor(pos).visitTopDoc(res.res);
@@ -304,8 +304,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   private int stringToInt(TerminalNode ctx, Pos pos) {
     int n=opt(ctx,-1,n0->stringToInt(n0.getText(),()->{
-      String msg="Error: "+n0.getText()+" is not a valid number";
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      this.errors.append(pos + Err.invalidNumber(n0.getText()));
       }));
     return n; 
     }
@@ -359,8 +358,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
   private void appendFwdErrorOnM(MContext ctx) {
     if(ctx!=null && ctx.getText().contains("fwd ")){
       Pos pos=pos(ctx);
-      String msg="Error: "+ctx.getText()+" is not a valid method name";
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      this.errors.append(pos+ Err.invalidMethodName(ctx.getText()));
       }
     }
   @Override public Op visitMOp(MOpContext ctx) {
@@ -382,8 +380,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     C c=null;
     if(csP.cs().size()==1){c=csP.cs().get(0);}
     if(c==null){
-      String msg="Error: "+csP+" is not a valid nested class name";
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      this.errors.append(pos+Err.notValidC(csP));
       c=new C("InvalidName",-1);
       }
     return new Full.L.NC(pos,docs,c,e);
@@ -397,7 +394,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     Pos pos=pos(ctx);
     String s=ctx.getText();
     s=s.substring(1);
-    var res=Parse.pathSelX(s);
+    var res=Parse.pathSelX(pos.fileName(),s);
     assert !res.hasErr();
     Full.PathSel ps=new AuxVisitor(pos).visitPathSelX(res.res.pathSelX());
     assert ps!=null;
@@ -456,8 +453,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     Set<Op> ops=new LinkedHashSet<>();
     for(var oi:ops0){ops.add(Op.fromString(oi.getText()));}
     if (ops.size()!=1){
-      String msg="Error: sequence of binary operators "+ops+" need to be disambiguated with parenthesis";
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      this.errors.append(pos+Err.needBlockOps(ops));
       }
     Op op=ops.iterator().next();
     return new Full.BinOp(pos, op, es);
@@ -557,7 +553,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     var pos=pos(ctx);
     var s=fixPos(pos);
     s.append(ctx.getText());
-    var r=Parse.info(s.toString());
+    var r=Parse.info(pos.fileName(),s.toString());
     return new InfoSupplier(new InjectionToCore(errors, eVoid), r, pos).get();
     }
   @SuppressWarnings("unused")//i

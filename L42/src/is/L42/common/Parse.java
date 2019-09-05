@@ -23,6 +23,7 @@ import is.L42.generated.L42AuxParser.TopDocContext;
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
 import is.L42.generated.L42Parser.NudeEContext;
+import is.L42.generated.Pos;
 import is.L42.visitors.FullL42Visitor;
 
 public class Parse {
@@ -44,19 +45,21 @@ public class Parse {
     
   public static class FailConsole extends ConsoleErrorListener{
     public final StringBuilder sb;
-    public FailConsole(StringBuilder sb){this.sb=sb;}
+    public final String fileName;
+    public FailConsole(String fileName,StringBuilder sb){
+      this.fileName=fileName;this.sb=sb;}
     @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){
-      sb.append("line " + line + ":" + charPos + " " + msg);
+      sb.append(new Pos(fileName,line,charPos)+ msg);
       }
     }
     
-  private static <T>Result<T> doResult(Lexer l,Parser p, Supplier<T> s){
+  private static <T>Result<T> doResult(String fileName,Lexer l,Parser p, Supplier<T> s){
     StringBuilder errorst=new StringBuilder();
     StringBuilder errorsp=new StringBuilder();
     l.removeErrorListener(ConsoleErrorListener.INSTANCE);
-    l.addErrorListener(new FailConsole(errorst));
+    l.addErrorListener(new FailConsole(fileName,errorst));
     p.removeErrorListener(ConsoleErrorListener.INSTANCE);
-    p.addErrorListener(new FailConsole(errorsp));
+    p.addErrorListener(new FailConsole(fileName,errorsp));
     var res=s.get();
     return new Result<>(errorst.toString(),errorsp.toString(),"",res);   
     }
@@ -66,7 +69,7 @@ public class Parse {
     var t = new CommonTokenStream(l);
     var p=new L42Parser(t);
     var v=new FullL42Visitor(fileName);
-    Result<NudeEContext> res1=doResult(l,p,()->p.nudeE());
+    Result<NudeEContext> res1=doResult(fileName,l,p,()->p.nudeE());
     if(res1.hasErr()){
       return new Result<>(res1.errorsParser,res1.errorsTokenizer,res1.errorsVisitor,null);         
       }
@@ -77,37 +80,37 @@ public class Parse {
     return new Result<E>("","","",e);
     }
     
-  public static Result<NudeEContext> ctxE(String s){
+  public static Result<NudeEContext> ctxE(String fileName,String s){
     var l=new L42Lexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42Parser(t);
-    return doResult(l,p,()->p.nudeE());
+    return doResult(fileName,l,p,()->p.nudeE());
     }
 
-  public static Result<NudeCsPContext> csP(String s){
+  public static Result<NudeCsPContext> csP(String fileName,String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,()->p.nudeCsP());
+    return doResult(fileName,l,p,()->p.nudeCsP());
     }    
 
-  public static Result<TopDocContext> doc(String s){
+  public static Result<TopDocContext> doc(String fileName,String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,()->p.topDoc());
+    return doResult(fileName,l,p,()->p.topDoc());
     }    
-  public static Result<InfoContext> info(String s){
+  public static Result<InfoContext> info(String fileName,String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,()->p.info());
+    return doResult(fileName,l,p,()->p.info());
     }
-  public static Result<NudePathSelXContext> pathSelX(String s){
+  public static Result<NudePathSelXContext> pathSelX(String fileName,String s){
     var l=new L42AuxLexer(CharStreams.fromString(s));
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
-    return doResult(l,p,()->p.nudePathSelX());
+    return doResult(fileName,l,p,()->p.nudePathSelX());
     } 
 
   }

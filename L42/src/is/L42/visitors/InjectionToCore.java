@@ -26,12 +26,8 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
   }
   private Core.L makeErr(Pos pos,Core.L.Info info, String hint){
     if(info==null){return null;}
-    String err=info.toString();
     var errRes=new Core.L(pos,false, L(),L(),L(),info,L());
-    err=Err.trimExpression(err);
-    err="line " + pos.line() + ":" + pos.column() 
-      + " Error: Extraneus token "+err+"\n"+hint;
-    errors.append(err);
+    errors.append(pos+hint);
     return errRes;
     }
   @Override public void visitEX(Core.EX x){result=x;}
@@ -85,7 +81,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     }
   public Core.L _inject(Full.L res,Core.L.Info info) {
     if(res.isDots() || !res.reuseUrl().isEmpty()){
-      return makeErr(res.pos(),info,"no dots or reuse in core libraries");
+      return makeErr(res.pos(),info,Err.malformedCoreHeader(info));
       }
     long cut=res.ms().stream()
       .takeWhile(m->!(m instanceof Full.L.NC))
@@ -99,23 +95,23 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       .map(m->(Full.L.NC)m)
       .collect(Collectors.toList());
     if(mwts.size()+ncs.size()!=res.ms().size()){
-      return makeErr(res.pos(),info,"only methods with type and nested classes in core libraries");
+      return makeErr(res.pos(),info,Err.malformedCoreMember(info));
       }
     List<Core.T>cts=_injectL(res.ts(),this::_inject);
     List<Core.L.MWT>cmwts=L(mwts,(c,mi)->c.add(_inject(mi)));
     List<Core.L.NC>cncs=L(ncs,(c,ni)->c.add(_inject(ni)));
     List<Core.Doc>cdocs=_injectL(res.docs(),this::_inject);
     if(cts==null){
-      return makeErr(res.pos(),info,"invalid implemented type for core library");
+      return makeErr(res.pos(),info,Err.malformedCoreTs(info));
       }      
     if(cdocs==null){
-      return makeErr(res.pos(),info,"invalid docs for core library");
+      return makeErr(res.pos(),info,Err.malformedCoreDocs(info));
       }      
     if(cncs.contains(null)){
-      return makeErr(res.pos(),info,"invalid nested class for core library");
+      return makeErr(res.pos(),info,Err.malformedCoreNC(info));
       }      
     if(cmwts.contains(null)){
-      return makeErr(res.pos(),info,"invalid method with type for core library");
+      return makeErr(res.pos(),info,Err.malformedCoreMWT(info));
       }      
     return new Core.L(res.pos(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
     }

@@ -137,11 +137,11 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUsedMethods(L42AuxParser.UsedMethodsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42AuxParser#privateSubtypes}.
+	 * Visit a parse tree produced by {@link L42AuxParser#privateSupertypes}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrivateSubtypes(L42AuxParser.PrivateSubtypesContext ctx);
+	T visitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#refined}.
 	 * @param ctx the parse tree
@@ -149,11 +149,11 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRefined(L42AuxParser.RefinedContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42AuxParser#canBeClassAny}.
+	 * Visit a parse tree produced by {@link L42AuxParser#declaresClassMethods}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitCanBeClassAny(L42AuxParser.CanBeClassAnyContext ctx);
+	T visitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#x}.
 	 * @param ctx the parse tree

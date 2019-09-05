@@ -25,14 +25,14 @@ infoNorm:'#norm{';
 infoTyped:'#typed{';
 
 info: W*(infoNorm|infoTyped) infoBody* '}' EOF;
-infoBody: typeDep|coherentDep|friends|usedMethods|privateSubtypes|refined|canBeClassAny;
+infoBody: typeDep|coherentDep|friends|usedMethods|privateSupertypes|refined|declaresClassMethods;
 typeDep: 'typeDep='(W* path)+ W*;
 coherentDep: 'coherentDep='(W* path)+ W*;
 friends: 'friends='(W* path)+ W*;
 usedMethods: 'usedMethods='(W* pathSel)+ W*;
-privateSubtypes: 'privateSubtypes='(W* path)+ W*;
+privateSupertypes: 'privateSupertypes='(W* path)+ W*;
 refined: 'refined='(W* selector)+ W*;
-canBeClassAny: 'canBeClassAny';
+declaresClassMethods: 'declaresClassMethods';
 
 
 fragment IdUp: '_'* ('A'..'Z'|'$');

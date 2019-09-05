@@ -138,12 +138,11 @@ public class StringInterpolation {
     b0.append(buf);
     var res=Parse.e(fileName,b0.toString());
     if(res.hasErr()){
-      String mini=Err.trimExpression(buf.toString());
-      String msg="Error: ill formed string interpolation:"+mini+"\n";
-      if(!res.errorsTokenizer.isEmpty()){msg+=res.errorsTokenizer+"\n";}
-      if(!res.errorsParser.isEmpty()){msg+=res.errorsParser+"\n";}
-      if(!res.errorsVisitor.isEmpty()){msg+=res.errorsVisitor+"\n";}
-      this.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      String msg="";
+      if(!res.errorsTokenizer.isEmpty()){msg+="\n"+res.errorsTokenizer;}
+      if(!res.errorsParser.isEmpty()){msg+="\n"+res.errorsParser;}
+      if(!res.errorsVisitor.isEmpty()){msg+="\n"+res.errorsVisitor;}
+      this.errors.append(pos + Err.stringInterpolation(buf,msg));
       c.add(eVoid);
       return;
       }

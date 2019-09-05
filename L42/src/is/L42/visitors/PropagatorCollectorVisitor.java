@@ -44,7 +44,7 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitPs(info.coherentDep());
     visitPs(info.friends());
     visitPathSels(info.usedMethods());
-    visitPs(info.privateSubtypes());
+    visitPs(info.privateSupertypes());
     visitSs(info.refined());
     }
     

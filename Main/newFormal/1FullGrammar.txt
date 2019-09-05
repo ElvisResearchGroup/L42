@@ -22,22 +22,22 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native[URL]? e)?  
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSubtypes=Ps, refined=ss, canBeClassAny?}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSupertypes=Ps, refined=ss, declaresClassMethods?}
     //in concrete syntax, labels for emptys are omitted
-    //friendsDep are spyed by This:
+    //friends are spyed by This:
     //Paths whose unique Numbers are used either directly,
     //or in a private nested class or in an L in a method
-    //usedMethDep//methods used either directly or in a private nested class or in an L in a method
-    //privateImpl: interfaces implemented by a private nested class or in an L in a method
-    //havePrivateStaticMethods (since it can be casted to class P)
+    //usedMethods//methods used either directly or in a private nested class or in an L in a method
+    //privateSupertypes: interfaces implemented by a private nested class or in an L in a method
+    //declaresClassMethods (since it can be casted to class P)
     //may add closed/open class (since private abstract methods may be removed if unused)
     //may add 'free this': 'this' only used as receiver
   Flag ::= norm | typed
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
   FULL.M ::= F | MI | MWT | NC
   FULL.F ::= Docs var? T x
-  FULL.MI ::= Docs method s = e
-  FULL.MWT ::=Docs MH (= native[URL]? e)?// well formdness: no FULL.L inside e
+  FULL.MI ::= Docs method mOp(xs) = e // well formdness: all LL inside e are Core.L
+  FULL.MWT ::=Docs MH (= native[URL]? e)? // well formdness: all LL inside e are Core.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e
@@ -47,14 +47,14 @@ _______
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   FULL.D ::= (DX =)? e
   FULL.WHOOPS ::= whoops T+
-  FULL.match ::= T x | T x = e | T?(T?0 x0..T?n xn) = e //where at least one Ti? is not empty //correctly not TLocal
+  FULL.match ::= T x | T x = e | T?0(T?1 x0..T?n xn) = e //where at least one T?i is not empty //correctly not TLocal
   FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
   FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  ST::=CORE.T | ST.s | ST.s.i | op STzs //i=0 for receiver type?
+  ST::=CORE.T | op STzs | ST.s | ST.s.i //i=0 for receiver type?
   HALF.xP ::= x | P<:STz | %STz%
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? HALF.T x = e
@@ -178,7 +178,7 @@ _______
 * CORE.MWT: if MWT.e?=e, then
     FV(e)\this,x1..xn = empty    
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
-* FULL.match of form T?(T?0 x0..T?n xn) = e; at least one Ti? is not empty
+* FULL.match of form T?0(T?1 x0..T?n xn) = e; at least one T?i is not empty
 * FULL.e: all used variables are in scope //to implement in MI,MWT and NC
 * FULL.e: \x only appear in a method parameter expression
 * CORE/FULL.e: all variable update are applied on var bindings

@@ -218,15 +218,15 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitUsedMethods(L42AuxParser.UsedMethodsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42AuxParser#privateSubtypes}.
+	 * Enter a parse tree produced by {@link L42AuxParser#privateSupertypes}.
 	 * @param ctx the parse tree
 	 */
-	void enterPrivateSubtypes(L42AuxParser.PrivateSubtypesContext ctx);
+	void enterPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42AuxParser#privateSubtypes}.
+	 * Exit a parse tree produced by {@link L42AuxParser#privateSupertypes}.
 	 * @param ctx the parse tree
 	 */
-	void exitPrivateSubtypes(L42AuxParser.PrivateSubtypesContext ctx);
+	void exitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#refined}.
 	 * @param ctx the parse tree
@@ -238,15 +238,15 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitRefined(L42AuxParser.RefinedContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42AuxParser#canBeClassAny}.
+	 * Enter a parse tree produced by {@link L42AuxParser#declaresClassMethods}.
 	 * @param ctx the parse tree
 	 */
-	void enterCanBeClassAny(L42AuxParser.CanBeClassAnyContext ctx);
+	void enterDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42AuxParser#canBeClassAny}.
+	 * Exit a parse tree produced by {@link L42AuxParser#declaresClassMethods}.
 	 * @param ctx the parse tree
 	 */
-	void exitCanBeClassAny(L42AuxParser.CanBeClassAnyContext ctx);
+	void exitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#x}.
 	 * @param ctx the parse tree

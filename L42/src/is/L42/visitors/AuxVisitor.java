@@ -124,7 +124,7 @@ AuxVisitor(Pos pos) { this.pos = pos; }
       }
     assert ctx.topDocText().size()==1;
     Full.Doc text1=visitTopDocText(ctx.topDocText(0));
-    var res=Parse.doc("@"+ctx.doc().getText());
+    var res=Parse.doc(pos.fileName(),"@"+ctx.doc().getText());
     assert !res.hasErr();
     Full.Doc doc=visitTopDoc(res.res);
     return text1

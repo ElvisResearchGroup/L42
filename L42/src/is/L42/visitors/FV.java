@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.Err;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.X;
@@ -93,7 +94,7 @@ public class FV extends PropagatorCollectorVisitor{
       long count=Stream.concat(ys.stream(),e.stream())
         .filter(x->x.equals(d.x())).count();
       if (count<=1){continue;}
-      throw new WellFormedness.NotWellFormed(b.pos(),"capsule binding "+d.x()+" used more then once");
+      throw new WellFormedness.NotWellFormed(b.pos(),Err.capsuleBindingUsedOnce(d.x()));
       }
     }
   public static List<X> max(List<List<X>> xss){
@@ -116,4 +117,4 @@ public class FV extends PropagatorCollectorVisitor{
   public static List<X> domDs(List<Core.D>ds){
     return ds.stream().map(d->d.x()).collect(Collectors.toList());
     }
-}
+  }

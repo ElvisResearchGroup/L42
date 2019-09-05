@@ -132,17 +132,17 @@ public class CloneVisitor {
     var coherentDep0=info.coherentDep();
     var friends0=info.friends();
     var usedMethods0=info.usedMethods();
-    var privateSubtypes0=info.privateSubtypes();
+    var privateSupertypes0=info.privateSupertypes();
     var refined0=info.refined();
     var typeDep=visitPs(typeDep0);
     var coherentDep=visitPs(coherentDep0);
     var friends=visitPs(friends0);
     var usedMethods=visitPathSels(usedMethods0);
-    var privateSubtypes=visitPs(privateSubtypes0);
+    var privateSupertypes=visitPs(privateSupertypes0);
     var refined=visitSs(refined0);
     if(typeDep==typeDep0 && coherentDep==coherentDep0 && friends==friends0 
-      && usedMethods==usedMethods0 && privateSubtypes==privateSubtypes0 && refined==refined0){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friends,usedMethods,privateSubtypes,refined,info.canBeClassAny());
+      && usedMethods==usedMethods0 && privateSupertypes==privateSupertypes0 && refined==refined0){return info;}
+    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friends,usedMethods,privateSupertypes,refined,info.declaresClassMethods());
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){

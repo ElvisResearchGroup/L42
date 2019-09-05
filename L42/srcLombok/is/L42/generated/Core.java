@@ -40,9 +40,9 @@ public class Core {
       List<P> coherentDep;
       List<P> friends;
       List<PathSel> usedMethods;
-      List<P> privateSubtypes;
+      List<P> privateSupertypes;
       List<S>refined;
-      boolean canBeClassAny;
+      boolean declaresClassMethods;
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
@@ -79,6 +79,6 @@ public class Core {
   @Value @Wither public static class
   MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf mdf; List<Doc> docs; T t; S s; List<T> pars; List<T> exceptions;
-    public List<T> parsWithThis(){return is.L42.tools.General.pushTopL(P.coreThis0.withMdf(mdf),pars);}
+    public List<T> parsWithThis(){return is.L42.tools.General.pushL(P.coreThis0.withMdf(mdf),pars);}
     }
   }

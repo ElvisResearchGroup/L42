@@ -77,7 +77,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(d._t()!=null){_mdf=d._t()._mdf();}
     if(_mdf==null){return;}
     if(!_mdf.isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
-    err(Err.varBindingCanNotBe(_mdf));
+    err(Err.varBindingCanNotBe(_mdf.inner));
     }
   
   @Override public void visitD(Core.D d){
@@ -85,7 +85,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitD(d);
     if(!d.isVar()){return;}
     if(!d.t().mdf().isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
-    err(Err.varBindingCanNotBe(d.t().mdf()));    
+    err(Err.varBindingCanNotBe(d.t().mdf().inner));    
     }    
   @Override public void visitS(S s){
     super.visitS(s);
@@ -154,7 +154,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     Full.K kLast=b.ks().get(b.ks().size()-1);
     if(!CheckBlockNeeded.of(kLast.e(),false)){return;}
     lastPos=kLast.e().pos();
-    err("expression need to be enclose in block to avoid ambiguities");
+    err(Err.needBlock(kLast.e()));
     }
   private void declaredVariableNotRedeclared(Full.Block b, List<X> domDs) {
     declaredVariableNotRedeclared(Stream.concat(Stream.concat(
@@ -180,18 +180,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
        .flatMap(e->Bindings.of(e.visitable()).stream())
        )
      .filter(x->domDs.contains(x))
-     .findFirst();
+     .collect(Collectors.toList());
     if(redefined.isEmpty()){return;}
-    err("binding "+redefined.get()+" is internally redefined");
+    err(Err.redefinedName(redefined));
     }
 
-    private void declaredVariableNotUsedInCatch(List<? extends Visitable<?>> ks, List<X> domDs) {
-      for(var ki:ks){
-        var inside=FV.of(ki).stream().filter(x->domDs.contains(x)).findFirst();
-        if(inside.isEmpty()){continue;}
-        err("binding "+inside.get()+ " used in catch; it may not be initialized");
-        }
+  private void declaredVariableNotUsedInCatch(List<? extends Visitable<?>> ks, List<X> domDs) {
+    for(var ki:ks){
+      var inside=FV.of(ki).stream().filter(x->domDs.contains(x)).findFirst();
+      if(inside.isEmpty()){continue;}
+      err(Err.nameUsedInCatch(inside.get()));
       }
+    }
   @Override public void visitBlock(Core.Block b){
     lastPos=b.pos();
     super.visitBlock(b);
@@ -210,15 +210,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitK(k);
     wfKCommon(k.e().visitable(), k._x());
     }
-  private void wfKCommon(Visitable<?> v, X x) { var bindings=Bindings.of(v);
-  if(x==null){return;}
-  if(bindings.contains(x)){
-    err("binding "+x+" is internally redefined");
+  private void wfKCommon(Visitable<?> v, X x) {
+    var bindings=Bindings.of(v);
+    if(x==null){return;}
+    if(bindings.contains(x)){err(Err.redefinedName(L(x)));}
+    if(x.inner().equals("this")){err(Err.duplicatedNameThis());}
     }
-  if(x.inner().equals("this")){
-    err("'this' can not be used as a name");
-    } }
-
   @Override public void visitMI(Full.L.MI mi){
     lastPos=mi.pos();
     super.visitMI(mi);
@@ -227,7 +224,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     var l=new ContainsFullL()._of(mi.e().visitable());
     if(l==null){return;}
     lastPos=l.pos();
-    err("Method body can not contain a full library literal");
+    err(Err.noFullL(l));
     }
   @Override public void visitNC(Full.L.NC nc){
     lastPos=nc.pos();
@@ -243,7 +240,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     var l=new ContainsFullL()._of(mwt._e().visitable());
     if(l==null){return;}
     lastPos=l.pos();
-    err("Method body can not contain a full library literal");
+    err(Err.noFullL(l));
     }
   @Override public void visitMWT(Core.L.MWT mwt){
     lastPos=mwt.pos();
@@ -257,14 +254,14 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       var xi=pars.get(i);
       long count=fv.stream().filter(x->x.equals(xi)).count();
       if(count<=1){continue;}
-      err("capsule binding "+xi+" used more then once");
+      err(Err.capsuleBindingUsedOnce(xi));
       }
     }
   private List<X> checkAllVariablesUsedInScope(Visitable<?> v, List<X> pars) {
     var fv=FV.of(v);
     var extra=fv.stream().filter(x->!pars.contains(x)).findFirst();
     if(extra.isPresent()){
-      err("Used binding is not in scope: "+extra.get());
+      err(Err.nameUsedNotInScope(extra.get()));
       }
     return fv;
     }
@@ -273,60 +270,60 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       var x=new ContainsIllegalVarUpdate()._of(v);
       if(x!=null){
         lastPos=x.pos();
-        err("name "+x+" is not declared as var, thus it can not be updated");
+        err(Err.unapdatable(x));
         }
       var sx=new ContainsSlashXOut()._of(v);
       if(sx==null){return res;}
       lastPos=sx.pos();
-      throw err("term "+sx+" can only be used inside parameters");
+      throw err(Err.slashOut(sx));
       }
   @Override public void visitMH(Full.MH mh){
     super.visitMH(mh);
     checkAllEmptyMdfFull(mh.exceptions());
     if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
-      err("method modifier can not be fwd imm or fwd mut");} 
+      err(Err.methodTypeMdfNoFwd());} 
     var ps=mh.parsWithThis();
     var tmdf=mh.t()._mdf();
     if(tmdf!=null && ps.stream().anyMatch(ti->ti._mdf()==Mdf.ImmutableFwd)){
       boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.Immutable,Mdf.ImmutableFwd);
-      if(!res){err("unusable fwd parameter given return type "+mh.t()._mdf().inner);}
+      if(!res){err(Err.methodTypeNoFwdPar(mh.t()._mdf().inner));}
       }
     if(ps.stream().anyMatch(ti->ti._mdf()==Mdf.MutableFwd)){
       boolean res=tmdf!=null && tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd);
-      if(!res){err("unusable fwd parameter given return type "+(tmdf==null?"imm":tmdf.inner));}
+      if(!res){err(Err.methodTypeNoFwdPar(tmdf==null?"imm":tmdf.inner));}
       }
     if(tmdf!=null && tmdf.isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){
       if(ps.stream().noneMatch(ti->ti._mdf()!=null && ti._mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd))){
-        err("invalid fwd return type since there is no fwd parameter");}
+        err(Err.methodTypeNoFwdReturn());}
       }   
     }
   @Override public void visitMH(Core.MH mh){
     super.visitMH(mh);
     checkAllEmptyMdf(mh.exceptions());
     if(mh.mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
-      err("method modifier can not be fwd imm or fwd mut");} 
+      err(Err.methodTypeMdfNoFwd());} 
     var ps=mh.parsWithThis();
     var tmdf=mh.t().mdf();
     if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.ImmutableFwd)){
       boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.Immutable,Mdf.ImmutableFwd);
-      if(!res){err("unusable fwd parameter given return type "+mh.t().mdf().inner);}
+      if(!res){err(Err.methodTypeNoFwdPar(mh.t().mdf().inner));}
       }
     if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.MutableFwd)){
       boolean res=tmdf!=null && tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd);
-      if(!res){err("unusable fwd parameter given return type "+tmdf.inner);}
+      if(!res){err(Err.methodTypeNoFwdPar(tmdf.inner));}
       }
     if(tmdf.isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){
       if(ps.stream().noneMatch(ti->ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd))){
-        err("invalid fwd return type since there is no fwd parameter");}
+        err(Err.methodTypeNoFwdReturn());}
       }   
     }
   private void checkAllEmptyMdfFull(List<Full.T> ts){
     for(var ti:ts){if(ti._mdf()!=Mdf.Immutable){
-        err("Error: implemented and exception types can not declare a modifier (and are implicitly imm)");
+        err(Err.tsMustBeImm());
     }}}
   private void checkAllEmptyMdf(List<Core.T> ts){
     for(var ti:ts){if(ti.mdf()!=Mdf.Immutable){
-        err("Error: implemented and exception types can not declare a modifier (and are implicitly imm)");
+        err(Err.tsMustBeImm());
     }}}
 
   @Override public void visitIf(Full.If i){
@@ -335,11 +332,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     for(var d:i.matches()){validMatch(d);}
     }
   private void validMatch(D d) {
-    long ts=d.varTxs().stream()
-    .filter(v->v!=null && v._t()!=null)
+    long ts=FV.allVarTx(L(d))
+    .filter(v->v._t()!=null)
     .count();
     if(ts>0){return;}
-    err("invalid 'if match': no type selected in "+d);
+    err(Err.ifMatchNoT(d));
     }
     
   @Override public void visitFor(Full.For f){
@@ -348,7 +345,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     for(var d:f.ds()){
       for(var vtx:d.varTxs()){
         if(!vtx.isVar()){continue;}
-        err("nested name "+vtx._x()+" is var; in a 'for' match only top level names can be var");
+        err(Err.forMatchNoVar(vtx._x()));
         }
       }
     }  
@@ -359,16 +356,16 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     long countM=l.ms().stream().map(m->m.key()).count();
     if(countM<l.ms().size()) {
       var dups=dups(l.ms().stream().map(m->m.key()).collect(Collectors.toList()));
-      err("duplicated names: "+dups);
+      err(Err.duplicatedName(dups));
       }
     long countI=l.ts().stream().map(t->t.withDocs(L())).count();
     if(countI<l.ts().size()) {
       var dups=dups(l.ts().stream().map(t->t.withDocs(L())).collect(Collectors.toList()));
-      err("duplicated names: "+dups);
+      err(Err.duplicatedName(dups));
       }
     for(var t:l.ts()){
       if(!P.pAny.equals(t._p())){continue;}
-      err("duplicated names: [Any];  'Any' is implicitly present as an implemented interface");
+      err(Err.duplicatedNameAny());
       }
     //exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
     Supplier<Stream<Integer>> privateAbstract=()->l.ms().stream()
@@ -378,7 +375,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       .map(m->m.key().uniqueNum());
     if(privateAbstract.get().count()>1) {
       var dups=dups(privateAbstract.get().collect(Collectors.toList()));
-      err("Only one private state number is allowed; but the following are used "+dups);
+      err(Err.singlePrivateState(dups));
       }
     }
   @Override public void visitL(Core.L l){

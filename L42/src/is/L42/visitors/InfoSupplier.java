@@ -7,6 +7,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
+import is.L42.common.Err;
 import is.L42.common.Parse.Result;
 import is.L42.generated.Core;
 import is.L42.generated.L42AuxParser;
@@ -26,9 +27,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   List<P> coherentDep=null;
   List<P> friends=null;
   List<Core.PathSel> usedMethods=null;
-  List<P> privateSubtypes=null;
+  List<P> privateSupertypes=null;
   List<S> refined=null;
-  Boolean canBeClassAny=null;
+  Boolean declaresClassMethods=null;
   Core.L.Info result;
   AuxVisitor av;
   InjectionToCore inject;
@@ -55,16 +56,12 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   <Z,A,T>void fillInfo(String name, Z z,Function<Z,List<A>>as, Supplier<List<T>> get, Consumer<List<T>> set,Function<A,T>f){
     if(z==null){return;}
     if(get.get()!=null){
-      String msg="Error: invalid syntax for Info:"
-      +"\n repeated information: "+name;
-      inject.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      inject.errors.append(pos+ Err.repeatedInfo(name));
       result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
       }
     set.accept(L(as.apply(z),(c,ei)->c.add(f.apply(ei))));
     if(get.get().isEmpty()){
-      String msg="Error: invalid syntax for Info:"
-      +"\n empty information for: "+name;
-      inject.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      inject.errors.append(pos+Err.emptyInfo(name));
       result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
       }
     }
@@ -72,9 +69,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   void boolFlag(String name, Object z,Supplier<Boolean> get, Consumer<Boolean> set){
     if(z==null){return;}    
     if(get.get()!=null){
-      String msg="Error: invalid syntax for Info:"
-      +"\n repeated information: "+name;
-      inject.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      inject.errors.append(pos + Err.repeatedInfo(name));
       result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
       }
     set.accept(true);
@@ -86,10 +81,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
 
   @Override public Core.L.Info get(){
     if (r.hasErr()){
-      String msg="Error: invalid syntax for Info:"
-        +"\n"+r.errorsTokenizer
-        +"\n"+r.errorsParser;
-      inject.errors.append("line " + pos.line() + ":" + pos.column() + " " + msg);
+      inject.errors.append(pos + Err.malformedInfo(r.errorsTokenizer+"\n"+r.errorsParser));
       return new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
       }
     boolean isTyped=r.res.infoNorm()==null;
@@ -98,9 +90,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       fillInfo("coherentDep",b.coherentDep(),z->z.path(),()->coherentDep,v->coherentDep=v,this::pf);
       fillInfo("friends",b.friends(),z->z.path(),()->friends,v->friends=v,this::pf);
       fillInfo("usedMethods",b.usedMethods(),z->z.pathSel(),()->usedMethods,v->usedMethods=v,this::psf);
-      fillInfo("privateSubtypes",b.privateSubtypes(),z->z.path(),()->privateSubtypes,v->privateSubtypes=v,this::pf);
+      fillInfo("privateSupertypes",b.privateSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
       fillInfo("refined",b.refined(),z->z.selector(),()->refined,v->refined=v,this::sf);
-      boolFlag("canBeClassAny",b.canBeClassAny(),()->canBeClassAny,v->canBeClassAny=v);
+      boolFlag("declaresClassMethods",b.declaresClassMethods(),()->declaresClassMethods,v->declaresClassMethods=v);
       }
     if(result!=null){return result;}
     List<P> empty=L();
@@ -110,9 +102,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     nullToDef(()->coherentDep,v->coherentDep=v,empty);
     nullToDef(()->friends,v->friends=v,empty);
     nullToDef(()->usedMethods,v->usedMethods=v,emptyPs);
-    nullToDef(()->privateSubtypes,v->privateSubtypes=v,empty);
+    nullToDef(()->privateSupertypes,v->privateSupertypes=v,empty);
     nullToDef(()->refined,v->refined=v,emptyS);
-    nullToDef(()->canBeClassAny,v->canBeClassAny=v,false);
-    return new Core.L.Info(isTyped, typeDep, coherentDep, friends, usedMethods, privateSubtypes, refined, canBeClassAny);
+    nullToDef(()->declaresClassMethods,v->declaresClassMethods=v,false);
+    return new Core.L.Info(isTyped, typeDep, coherentDep, friends, usedMethods, privateSupertypes, refined, declaresClassMethods);
     }
 }

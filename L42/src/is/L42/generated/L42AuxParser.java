@@ -27,7 +27,7 @@ public class L42AuxParser extends Parser {
 		RULE_selector = 9, RULE_pathSel = 10, RULE_pathSelX = 11, RULE_nudePathSelX = 12, 
 		RULE_infoNorm = 13, RULE_infoTyped = 14, RULE_info = 15, RULE_infoBody = 16, 
 		RULE_typeDep = 17, RULE_coherentDep = 18, RULE_friends = 19, RULE_usedMethods = 20, 
-		RULE_privateSubtypes = 21, RULE_refined = 22, RULE_canBeClassAny = 23, 
+		RULE_privateSupertypes = 21, RULE_refined = 22, RULE_declaresClassMethods = 23, 
 		RULE_x = 24, RULE_m = 25, RULE_charInDoc = 26, RULE_topDoc = 27, RULE_topDocText = 28, 
 		RULE_doc = 29;
 	private static String[] makeRuleNames() {
@@ -35,8 +35,8 @@ public class L42AuxParser extends Parser {
 			"anyKw", "voidKw", "libraryKw", "thisKw", "c", "csP", "nudeCsP", "path", 
 			"cs", "selector", "pathSel", "pathSelX", "nudePathSelX", "infoNorm", 
 			"infoTyped", "info", "infoBody", "typeDep", "coherentDep", "friends", 
-			"usedMethods", "privateSubtypes", "refined", "canBeClassAny", "x", "m", 
-			"charInDoc", "topDoc", "topDocText", "doc"
+			"usedMethods", "privateSupertypes", "refined", "declaresClassMethods", 
+			"x", "m", "charInDoc", "topDoc", "topDocText", "doc"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -44,8 +44,9 @@ public class L42AuxParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'('", "')'", "'#norm{'", "'#typed{'", "'}'", "'typeDep='", "'coherentDep='", 
-			"'friends='", "'usedMethods='", "'privateSubtypes='", "'refined='", "'canBeClassAny'", 
-			"'{'", "'.'", "'@@'", null, "'Any'", "'Void'", "'Library'"
+			"'friends='", "'usedMethods='", "'privateSupertypes='", "'refined='", 
+			"'declaresClassMethods'", "'{'", "'.'", "'@@'", null, "'Any'", "'Void'", 
+			"'Library'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -1093,14 +1094,14 @@ public class L42AuxParser extends Parser {
 		public UsedMethodsContext usedMethods() {
 			return getRuleContext(UsedMethodsContext.class,0);
 		}
-		public PrivateSubtypesContext privateSubtypes() {
-			return getRuleContext(PrivateSubtypesContext.class,0);
+		public PrivateSupertypesContext privateSupertypes() {
+			return getRuleContext(PrivateSupertypesContext.class,0);
 		}
 		public RefinedContext refined() {
 			return getRuleContext(RefinedContext.class,0);
 		}
-		public CanBeClassAnyContext canBeClassAny() {
-			return getRuleContext(CanBeClassAnyContext.class,0);
+		public DeclaresClassMethodsContext declaresClassMethods() {
+			return getRuleContext(DeclaresClassMethodsContext.class,0);
 		}
 		public InfoBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -1160,7 +1161,7 @@ public class L42AuxParser extends Parser {
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(159);
-				privateSubtypes();
+				privateSupertypes();
 				}
 				break;
 			case T__10:
@@ -1174,7 +1175,7 @@ public class L42AuxParser extends Parser {
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(161);
-				canBeClassAny();
+				declaresClassMethods();
 				}
 				break;
 			default:
@@ -1596,7 +1597,7 @@ public class L42AuxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class PrivateSubtypesContext extends ParserRuleContext {
+	public static class PrivateSupertypesContext extends ParserRuleContext {
 		public List<PathContext> path() {
 			return getRuleContexts(PathContext.class);
 		}
@@ -1607,28 +1608,28 @@ public class L42AuxParser extends Parser {
 		public TerminalNode W(int i) {
 			return getToken(L42AuxParser.W, i);
 		}
-		public PrivateSubtypesContext(ParserRuleContext parent, int invokingState) {
+		public PrivateSupertypesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_privateSubtypes; }
+		@Override public int getRuleIndex() { return RULE_privateSupertypes; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterPrivateSubtypes(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterPrivateSupertypes(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitPrivateSubtypes(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitPrivateSupertypes(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitPrivateSubtypes(this);
+			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitPrivateSupertypes(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final PrivateSubtypesContext privateSubtypes() throws RecognitionException {
-		PrivateSubtypesContext _localctx = new PrivateSubtypesContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_privateSubtypes);
+	public final PrivateSupertypesContext privateSupertypes() throws RecognitionException {
+		PrivateSupertypesContext _localctx = new PrivateSupertypesContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_privateSupertypes);
 		int _la;
 		try {
 			int _alt;
@@ -1798,29 +1799,29 @@ public class L42AuxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class CanBeClassAnyContext extends ParserRuleContext {
-		public CanBeClassAnyContext(ParserRuleContext parent, int invokingState) {
+	public static class DeclaresClassMethodsContext extends ParserRuleContext {
+		public DeclaresClassMethodsContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_canBeClassAny; }
+		@Override public int getRuleIndex() { return RULE_declaresClassMethods; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterCanBeClassAny(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterDeclaresClassMethods(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitCanBeClassAny(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitDeclaresClassMethods(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitCanBeClassAny(this);
+			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitDeclaresClassMethods(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final CanBeClassAnyContext canBeClassAny() throws RecognitionException {
-		CanBeClassAnyContext _localctx = new CanBeClassAnyContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_canBeClassAny);
+	public final DeclaresClassMethodsContext declaresClassMethods() throws RecognitionException {
+		DeclaresClassMethodsContext _localctx = new DeclaresClassMethodsContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_declaresClassMethods);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
