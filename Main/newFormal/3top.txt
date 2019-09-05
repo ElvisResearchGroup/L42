@@ -35,10 +35,9 @@ _______
     Y!p(This0)(C) = Half.e; _; _; _
     I[C?=C;p;G=empty;p.minimize(CCz)]!Half.e => ER
     ER = CCz1;CORE.e IfErr(ER) PR = ER
-    wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
-    wellTyped(p,adapt(CORE.e,T.P)) = T' IfNotE(T') PR = illTyped(p) //can be implemented faster
-    coherent(p,CORE.e) IfUndefined PR = incoherent(p)
-    reduce(p,empty,adapt(CORE.e,T.P)) => ER'
+    adapt(CORE.e,T.P) = e IfNotE(e) PR = illTyped(p)
+    coherent(p,e) IfUndefined PR = incoherent(p)
+    reduce(p,empty,e) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
@@ -125,10 +124,13 @@ _______
     ER = CCz';e' IfErr(ER) KR = ER
     KR = CCz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
 _______
-#define adapt(CORE.e,P)
-* adapt(e, Library) = e
-* adapt(e, Void) = (Void x=e {}); where x fresh
-* adapt(e, T) = (T x=e x.#toLibrary()); otherwise, where x fresh
+#define adapt(p,CORE.e,T)
+* adapt(p,e,imm Library) = e
+* adapt(p,e,imm Void) = (Void x=e {}) where x fresh
+* adapt(p,e,T) = (T x=e x.#toLibrary())
+    wellTyped(p,(T x=e x.#toLibrary())) = imm Library //can be implemented faster
+    x fresh
+    
 _______
 #define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
 * P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
