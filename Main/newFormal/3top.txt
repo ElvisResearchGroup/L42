@@ -36,6 +36,7 @@ _______
     I[C?=C;p;G=empty;p.minimize(CCz)]!Half.e => ER
     ER = CCz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
+    wellTyped(p,adapt(CORE.e,T.P)) = T' IfNotE(T') PR = illTyped(p) //can be implemented faster
     coherent(p,CORE.e) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T.P)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
@@ -133,7 +134,7 @@ _______
 * P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
     i in 0..n,
     s = methName(OP)_i(x1..xn)
-    P1 ... Pn = (G^p(Ti.P)(s)).Ts.Ps[from Ti.P;p]
+    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
     P'1 ... P'n = (T0..Tn\i).Ps
     P=Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1
