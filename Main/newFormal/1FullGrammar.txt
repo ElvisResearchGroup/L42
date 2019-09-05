@@ -36,8 +36,8 @@ _______
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
   FULL.M ::= F | MI | MWT | NC
   FULL.F ::= Docs var? T x
-  FULL.MI ::= Docs method mOp(xs) = e // well formdness: all LL inside e are Core.L
-  FULL.MWT ::=Docs MH (= native[URL]? e)? // well formdness: all LL inside e are Core.L
+  FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are Core.L
+  FULL.MWT ::=Docs MH (= native[URL]? e)? // well formedness: all LL inside e are Core.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e
