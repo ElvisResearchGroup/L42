@@ -184,11 +184,11 @@ _______
 * expandFields(empty)=empty
 * expandFields(M,Ms)=M,expandFields(Ms) 
     M not of form F
-* expandFields(T x,Ms)=method T x(), expandFields(Ms)
+* expandFields(T x,Ms)=read method T x(), expandFields(Ms)
     T = toRead(T)
-* expandFields(T x,Ms)=method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
+* expandFields(T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
     T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
-* expandFields(var T x,Ms)=Void x(T that), expandFields(T x,Ms)    
+* expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)    
 _______
 #define collect(p,Ts)=Ts' //collects transitively implemented interfaces //TODO: move collect to file 2 and remove collect comment from file 2
 * collect(p,empty)=empty
