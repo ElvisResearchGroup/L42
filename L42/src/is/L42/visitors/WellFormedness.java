@@ -9,16 +9,19 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
+import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 import is.L42.generated.Full;
 import is.L42.generated.Full.D;
+import is.L42.generated.Full.L.NC;
 import is.L42.generated.HasVisitable;
 import is.L42.generated.LDom;
 import is.L42.generated.Mdf;
@@ -353,34 +356,87 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=l.pos();
     super.visitL(l);
     checkAllEmptyMdfFull(l.ts());
-    long countM=l.ms().stream().map(m->m.key()).count();
-    if(countM<l.ms().size()) {
-      var dups=dups(l.ms().stream().map(m->m.key()).collect(Collectors.toList()));
-      err(Err.duplicatedName(dups));
-      }
-    long countI=l.ts().stream().map(t->t.withDocs(L())).count();
-    if(countI<l.ts().size()) {
-      var dups=dups(l.ts().stream().map(t->t.withDocs(L())).collect(Collectors.toList()));
-      err(Err.duplicatedName(dups));
-      }
-    for(var t:l.ts()){
-      if(!P.pAny.equals(t._p())){continue;}
-      err(Err.duplicatedNameAny());
-      }
-    //exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
+    for(var m:l.ms()){
+      if(!m.key().hasUniqueNum()){continue;}
+      if(!(m instanceof Full.L.NC)){continue;}
+      validPrivateNested(m.pos(),(C)m.key(),m._e());
+      }   
+    Supplier<Stream<LDom>> dom=()->l.ms().stream().map(m->m.key());
+    Supplier<Stream<LDom>> impl=()->l.ms().stream()
+      .filter(m->!(m instanceof Full.L.NC))
+      .filter(m->m._e()!=null).map(m->m.key());
     Supplier<Stream<Integer>> privateAbstract=()->l.ms().stream()
-      .filter(m->m instanceof Full.L.MWT)
-      .map(m->(Full.L.MWT)m)
       .filter(m->m._e()==null && m.key().hasUniqueNum())
-      .map(m->m.key().uniqueNum());
-    if(privateAbstract.get().count()>1) {
-      var dups=dups(privateAbstract.get().collect(Collectors.toList()));
-      err(Err.singlePrivateState(dups));
-      }
+      .map(m->m.key().uniqueNum())
+      .distinct();
+    Supplier<Stream<Visitable<?>>> ts=()->l.ts().stream()
+      .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L()));
+    common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
   @Override public void visitL(Core.L l){
     lastPos=l.pos();
     super.visitL(l);
     checkAllEmptyMdf(l.ts());
+    for(var m:l.ncs()){
+      if(!m.key().hasUniqueNum()){continue;}
+      validPrivateNested(m.pos(),m.key(),m.l());
+      }   
+    Supplier<Stream<LDom>> dom=()->Stream.concat(l.mwts().stream()
+      .map(m->m.key()),l.ncs().stream().map(m->m.key()));
+    Supplier<Stream<LDom>> impl=()->l.mwts().stream()
+      .filter(m->m._e()!=null).map(m->m.key());
+    Supplier<Stream<Integer>> privateAbstract=()->l.mwts().stream()
+      .filter(m->m._e()==null && m.key().hasUniqueNum())
+      .map(m->m.key().uniqueNum())
+      .distinct();
+    Supplier<Stream<Visitable<?>>> ts=()->l.ts().stream().map(t->(Visitable<?>)t.p());
+    common(l.isInterface(), ts, dom, impl, privateAbstract);
+    }
+    void common(
+      boolean isInterface,
+      Supplier<Stream<Visitable<?>>> ts,
+      Supplier<Stream<LDom>> dom,
+      Supplier<Stream<LDom>> impl,
+      Supplier<Stream<Integer>> privateAbstract){
+    long countM=dom.get().distinct().count();
+    if(countM<dom.get().count()) {
+      var dups=dups(dom.get().collect(Collectors.toList()));
+      err(Err.duplicatedName(dups));
+      }
+    long countI=ts.get().distinct().count();
+    if(countI<ts.get().count()) {
+      var dups=dups(ts.get().collect(Collectors.toList()));
+      err(Err.duplicatedName(dups));
+      }
+    ts.get().forEach(t->{
+      boolean isAny=P.pAny.toString().equals(t.toString());
+      if(isAny){err(Err.duplicatedNameAny());}
+      });      
+    if(privateAbstract.get().count()>1) {
+      var uniqueNums=privateAbstract.get().collect(Collectors.toList());
+      err(Err.singlePrivateState(uniqueNums));
+      }
+    if(isInterface){
+      if(impl.get().count()!=0){
+        var mis=impl.get().collect(Collectors.toList());
+        err(Err.methodImplementedInInterface(mis));
+        }
+      }
+    }
+  private void validPrivateNested(Pos pos,C key, Full.E e) {
+    lastPos=pos;
+    if(!(e instanceof Core.L)){err(Err.privateNestedNotCore(key));}
+    var l=(Core.L)e;
+    for(var m:l.ncs()){
+      if(m.key().hasUniqueNum()){continue;}
+      lastPos=m.pos();
+      err(Err.privateNestedPrivateMember(m.key()));      
+      }   
+    for(var m:l.mwts()){
+      if(m.key().hasUniqueNum()){continue;}
+      if(l.info().refined().contains(m.key())){continue;}
+      lastPos=m.pos();
+      err(Err.privateNestedPrivateMember(m.key()));
+      }       
     }
   }

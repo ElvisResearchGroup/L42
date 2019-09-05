@@ -193,6 +193,38 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("for var z in bla, (x,var y) in bla beer",Err.forMatchNoVar("y"))
 
+   ),new AtomicTest(()->
+   fail("{method A m() method B m()}",Err.duplicatedName("[m()]"))
+   ),new AtomicTest(()->
+   fail("{A m method B m()}",Err.duplicatedName("[m()]"))
+   ),new AtomicTest(()->
+   fail("{method m()=this method B m()}",Err.duplicatedName("[m()]"))
+   ),new AtomicTest(()->
+   fail("{[A,B,A]}",Err.duplicatedName("[A]"))
+   ),new AtomicTest(()->
+   fail("{[A,B,Any]}",Err.duplicatedNameAny())
+   ),new AtomicTest(()->
+   pass("{method Void m::1() method B k::1() method B b::2()=this}")
+   ),new AtomicTest(()->
+   fail("{method Void m::1() method B k::2() method B b::2()=this}",Err.singlePrivateState("[1, 2]"))
+   ),new AtomicTest(()->
+   fail("{interface method Void m()=this method k()=this}",Err.methodImplementedInInterface("[m(), k()]"))
+   ),new AtomicTest(()->
+   pass("{C::1={#norm{}}}")
+   ),new AtomicTest(()->
+   fail("{C::1={}}",Err.privateNestedNotCore("C::1"))
+   ),new AtomicTest(()->
+   fail("{C::1={D={#norm{}} #norm{}}}",Err.privateNestedPrivateMember("D"))
+   ),new AtomicTest(()->
+   fail("{C::1={ method Void foo()=void #norm{}}}",Err.privateNestedPrivateMember("foo()"))
+   ),new AtomicTest(()->
+   pass("{C::1={ method Void foo::2()=void #norm{}}}")
+   ),new AtomicTest(()->
+   pass("{C::1={ method Void foo()=void #norm{refined=foo()}}}")
+   ),new AtomicTest(()->
+   fail("{C::1={ method Void foo()=void #norm{refined=foof()}}}",Err.privateNestedPrivateMember("foo()"))
+
+
   ));}
 public static String inCore(String s){
   return "{imm method imm Void a()="+s+" #norm{}}";

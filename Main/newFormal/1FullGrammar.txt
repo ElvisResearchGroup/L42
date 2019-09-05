@@ -194,13 +194,11 @@ _______
     if LL(C::n)=LL' then LL' of form CORE.L
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all nesteds of private nesteds are private
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
-* The top level project LL:
 * program p:
   -if p.pop(1) is defined, then p.pop(1) is well formed //else we are top level
    else forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
     where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)}
 //care when '...' is expanded; while 'reuse URL' will rename the private names
-
   -CORE.L;pTail is well formed iff
     FULL.L={CORE.L.H CORE.L.Ms}
     flagTyped(norm(FULL.L;pTail);pTail)=CORE.L';pTail //defined in file top

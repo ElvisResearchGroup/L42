@@ -136,6 +136,12 @@ public class Err {
   ;}public static String stringInterpolation(Object _1, Object _2){return
   "Error: ill formed string interpolation:"+Err.trimExpression(_1.toString())
   +_2
-  
+  ;}public static String methodImplementedInInterface(Object _1){return
+  "some methods are implemented in an interface:"+_1
+  ;}public static String privateNestedNotCore(Object _1){return
+  "private nested class "+_1+" is not defined with a core library"
+  ;}public static String privateNestedPrivateMember(Object _1){return
+  "member "+_1+" inside a private nested class is not private"
+
   ;}
 }
