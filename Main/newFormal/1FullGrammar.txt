@@ -128,7 +128,7 @@ _______
   CORE.PathSel::= P | P.s | P.s.x
   FULL/CORE.docText ::= empty | CHAR -- '{' -- '}' -- '@' docText 
     | Doc docText | '{' docText '}' docText
-  mOp ::= empty | m | OP_n | ~_n | !_n
+  mOp ::= empty | m | OP_n | ~_n | !_n // ISAAC: why do you need to specify the _n when n is 0? (the most likely case), also what is the point of the _n for the unary operators?
 _______
 #define FULL Expressions priority disambiguation and other details
   FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel | \x

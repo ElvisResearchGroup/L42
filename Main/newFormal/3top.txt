@@ -31,7 +31,7 @@ _______
 
 * topNC(CCz;p;empty) =>CCz;p
 * topNC(CCz;p;C,Cs) => PR
-    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library]
+    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=empty]
     Y!p(This0)(C) = Half.e; _; _; _
     I[C?=C;p;G=empty;p.minimize(CCz)]!Half.e => ER
     ER = CCz1;CORE.e IfErr(ER) PR = ER
@@ -132,7 +132,7 @@ _______
 #define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
 * P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
     i in 0..n,
-    s = methName(OP)_i(x1..xn)
+    s = methName(OP_i)(x1..xn)
     P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
     P'1 ... P'n = (T0..Tn\i).Ps
     P=Ti.P
@@ -142,7 +142,9 @@ _______
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
 * CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
-    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T]
+    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T;onPath=empty] // ISAAC: Is this right for onPath ?
+    // Why are you setting onSlashX to be empty?
+    // Why not alloow \x to desuagar to P.x(), where P = MWT.T.P ?
     Y!MWT.e = Half.e; STs; empty; CCz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz

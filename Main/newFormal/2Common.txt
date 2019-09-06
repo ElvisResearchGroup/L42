@@ -86,11 +86,15 @@ with MH=mdf method T mOp(T1 x1..Tn xn)[Ts]
 * MH.pari = Ti
 * MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness for no repetition in dom uses MH.s
 _______
-#define name manglings
+#define name manglings methName(mOP) = m, methNameTrim(m) = m, methName(x, mdf?) = m
 * methName(m) = m
-* methName(Op)_i = m//from a table, for example methName(++)_3=#plusplus3
+* methName(OP) = methname(OP_0) // ISAAC: is this right?
+* methName(Op_i) = mi //m is from a table, for example methName(++_3)=#plusplus3 // ISAAC: and where is this table?
+// ISAAC: I put the _i inside methname, so that methName(mOp) works properly when mOp = OP_i
 * #m'OP' = methName(OP)#m //for example  #andand#shortCircuit
-* methNameTrim(x)//removes any numeric suffix, for example methNameTrim(foo1b34)=foo1b
+    // ISAAC: am I to assume that #m'foo'
+* methNameTrim(mn) = methNameTrim(m) //removes any numeric suffix, for example methNameTrim(foo1b34)=foo1b
+* methNameTrim(m) = m, where m not of form m'n
 * methName(x,mdf) = x#mdf
 * methName(x,empty) = x#'default' // for example methName(#bar,empty)=#bar#default
 _______

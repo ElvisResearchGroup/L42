@@ -1,9 +1,10 @@
 _______
-#define GX(xP) = STz    G^HALF.Ds = G   GX+GX' = GX"
+#define GX(HALF.xP) = STz    GX^HALF.Ds = GX   GX+GX' = GX"
 * _,x:STz,_(x) = STz
 * GX(x) = empty if x notin dom(GX) //can happen for forwards
 * GX(P<:CORE.T) = CORE.T
-* GX(P<:mdf? STz) = STz
+* GX(P<: STz) = STz // P <: STz is a type of xP, P <: mdf STz is not
+* GX(%STz%) = STz // ISAAC: is this what this case should be, or was it intentially undefined?
 
 * GX^D1..Dn = D1.x:D1.T..Dn.x:Dn.T
 
@@ -15,25 +16,24 @@ _______
 * Y!void = void;imm Void;empty;empty
 * Y!\ = %Y.onSlash%; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = (Y.onSlashX).x(); Y.p.minimize(Y.GX(Y.onSlashX).x()); empty; empty
-* Y!CsP = Y.p♥CsP<:class Y.p♥CsP;class Y.p♥CsP; empty; empty
+* Y!CsP = (Y.p♥CsP)<:class (Y.p♥CsP);class (Y.p♥CsP); empty; empty
     Y.expectedT != class Any
-* Y!CsP = Y.p♥CsP<:class Any; class Any; empty; empty
-    Y.expectedT != class Any
-* Y!CsP<:T = Y.p♥CsP<:Y.p♥T; Y.p♥T; empty; empty
+* Y!CsP = (Y.p♥CsP)<:class Any; class Any; empty; empty
+    Y.expectedT = class Any
+* Y!CsP<:T = (Y.p♥CsP)<:(Y.p♥T); Y.p♥T; empty; empty
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP
 * Y!'PathSel = Y!\"PathSel"
 * Y!NumLit e = Y!e"NumLit"
-* Y!throw e = throw e'; empty; empty; CCz
-    Y[expectedT=empty]!e=e'; STz; STz'; CCz
+* Y!throw e = throw e'; empty; empty; CCz // ISAAC: TODO check the handling of the returns thing (STz')
+    Y[expectedT=empty]!e = e'; STz; STz'; CCz
 * Y!loop e = loop e'; imm Void; STz'; CCZ,STz<=imm Void
     Y[expectedT=imm Void]!e = e'; STz; STz'; CCz
-* Y!!e = Y!e.methName(!)()//Ok, the only e is the receiver, semantic of '\' is preserved 
-* Y!~e = Y!e.methName(~)()
-* Y! x updateOp e = Y!toBinOp(x, updateOp) e)
-    updateOp!= ':='
-* Y! x := e = x := e'; imm Void; STz'; CCz,STz<=Y.GX(x)
-    Y!e = e'; STz; STz'; CCz
+* Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
+* Y! x opUpdate e = Y!(toBinOp(x, opUpdate) e) // ISAAC: I changed this, because the grammer file has an opUpdate, but not an updateOp
+    opUpdate != ':='
+* Y! (x := e) = (x := e'); imm Void; STz'; CCz,STz<=Y.GX(x)
+    Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CCz
 * Y!e(.m)?(par) = Y!(x=e x(.m)?(par))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
@@ -57,7 +57,7 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!xP OP e = e'.$methName(OP)_0(that=e")
+* Y!xP OP e = e'.$methName(OP_0)(that=e")
     xP not of form x
     e'=Y!xP
     e"=Y!e//same Y, thus \ and \x keep their meaning
@@ -170,12 +170,12 @@ _______
 * Y!catch throw T x e = catch throw Y.p♥T x e'; STz; STz'; CCz
     Y[GX=Y.GX+x:T]!e = e'; STz; STz'; CCz
 _______
-#define toBinOp(x,Op=) // convenience method to desugar updateOps
+#define toBinOp(x,Op=) // convenience method to desugar opUpdates
 * toBinOp(x, :=) = x :=
 * toBinOp(x, OP=) = x := x OP 
 _______
 #define FULL.e[replaceUnOp DX;x0;x1]
-* DX.x updateOp e[replaceUnOp DX;x0;x1] = toBinOp(DX.x, updateOp) e' updateOf(DX,x1,x0)
+* DX.x opUpdate e[replaceUnOp DX;x0;x1] = toBinOp(DX.x, opUpdate) e' updateOf(DX,x1,x0)
     e' = e[replaceUnOp DX;x0;x1]
 * e[replaceUnOp DX;x0;x1] propagates inductively in all the other cases
 _______
