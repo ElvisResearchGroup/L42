@@ -89,9 +89,9 @@ _______
 #define name manglings methName(mOP) = m, methNameTrim(m) = m, methName(x, mdf?) = m
 * methName(m) = m
 * methName(UOp) = m // m is from a table
-* methName(OP) = methname(OP_0) // ISAAC: or should methName(+) and methName(+_0) be #plus and not say #plus0 ?
+* methName(OP) = methname(OP_0)
 * methName(Op_i) = mi //m is from a table, for example methName(++_3)=#plusplus3
-* #m'OP' = methName(OP)#m //for example  #andand#shortCircuit // ISAAC: how often is this used? it dosn't look to usefull to have a seperate definition for it, would could rename methname to #OP? then instead of #m'OP' we would have #OP#m ?
+* #m'OP' = methName(OP)#m
 * methNameTrim(mn) = methNameTrim(m) //removes any numeric suffix, for example methNameTrim(foo1b34)=foo1b
 * methNameTrim(m) = m, where m not of form m'n
 * methName(x,mdf) = x#mdf

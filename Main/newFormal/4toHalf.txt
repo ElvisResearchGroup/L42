@@ -4,7 +4,7 @@ _______
 * GX(x) = empty if x notin dom(GX) //can happen for forwards
 * GX(P<:CORE.T) = CORE.T
 * GX(P<: STz) = STz // P <: STz is a type of xP, P <: mdf STz is not
-* GX(%STz%) = STz // ISAAC: is this what this case should be, or was it intentially undefined?
+* GX(%STz%) = STz
 
 * GX^D1..Dn = D1.x:D1.T..Dn.x:Dn.T
 
@@ -14,19 +14,22 @@ _______
 * Y!LL = LL;imm Library;empty;empty
 * Y!x = x;Y.GX(x);empty;empty
 * Y!void = void;imm Void;empty;empty
-* Y!\ = %Y.onSlash%; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
+* Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = (Y.onSlashX).x(); Y.p.minimize(Y.GX(Y.onSlashX).x()); empty; empty
 * Y!CsP = (Y.p♥CsP)<:class (Y.p♥CsP);class (Y.p♥CsP); empty; empty
     Y.expectedT != class Any
 * Y!CsP = (Y.p♥CsP)<:class Any; class Any; empty; empty
     Y.expectedT = class Any
 * Y!CsP<:T = (Y.p♥CsP)<:(Y.p♥T); Y.p♥T; empty; empty
+* Y!\<:T = (Y.p♥\)<:(Y.p♥T); Y.p♥T; empty; empty
 * Y!e<:T = Y!(T x=e x)
-    e not of form CsP
+    e not of form CsP or \
 * Y!'PathSel = Y!\"PathSel"
 * Y!NumLit e = Y!e"NumLit"
-* Y!throw e = throw e'; empty; empty; CCz // ISAAC: TODO check the handling of the returns thing (STz')
+* Y!throw e = throw e'; empty; STz"; CCz
     Y[expectedT=empty]!e = e'; STz; STz'; CCz
+    STz"=STz' if throw !=return
+    STz"=STz',STz otherwise
 * Y!loop e = loop e'; imm Void; STz'; CCZ,STz<=imm Void
     Y[expectedT=imm Void]!e = e'; STz; STz'; CCz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
@@ -61,41 +64,26 @@ _______
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
 * Y!CsP OP e = CsP'.#apply(that=e'); STz; STz"'; CCz, STz" <= STz'
     CsP' = CsP.$methName(OP)
-    // ISAAC: so P + x will be P.$#plus(x) even if there is no P.$#plus class but there is a P.#plus method?
-    
-    // ISAAC: you previously wrote this such that it would "work" for CsP <: T, \ or \<:T
-    // however suffixing a ".$m" to any of these would be invalid syntax.
-    
-    // not just doing Y!(CsP.$methName(OP)(that=e")) since that will cause \'s to be re-interpreted.
     STz  = Y.p.minimize(CsP'.#apply(that))
     STz' = Y.p.minimize(CsP'.#apply(that).1)
     Y[expectedT=STz'] ! e = e'; STz"; STz"'; CCz
-
-// ISAAC: I changed this drastically, as I was worried because the resulting (Ds ...) wasn't being passed through Y!, so now I do it in two stages
+// not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 * Y!e0 OP .. OP en = Y!(Ds e0' OP ... OP en')
     n != 0
-    Ds = [xi=ei | ei not of form xP or ei of form \<:T]
-    // because Y!FULL.xP will produce a Y!.HALF.xP if and only xP is not of form \ <: T
+    Ds = [xi=ei | ei not of form xP]
     Ds != empty // or else the next case will apply
     ei' = ei if ei of form xP
     ei' = xi otherwise
     x1..xn fresh
-
-    // former two cases not applicable
-    e0 OP ... OP en not of form CsP OP en or e0 OP3 en
-
-* Y! xP1 OP .. OP xPn = xP'1 OP .. OP xP'i; OP STz0,..,STzn; empty; empty
+    e0 OP ... OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
+* Y! xP0 OP .. OP xPn = xP'0 OP .. OP xP'i; OP STz0,..,STzn; empty; empty
     n != 0
-    Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty // ISAAC: this will fail only if one of the xPi is of form \ <: T, but then the above case will apply
-    
-    // Not a short circuit, and not a nested class call
-    e0 OP ... OP en not of form CsP OP en or e0 OP3 en
-
+    Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty
+    xP1 OP ... OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks WHOOPS T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
-    // ISAAC: so WHOOPS won't work if #intoErrorAt isn't defined?
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CCz  //Ds is HALF.Ds
     GX = {x:Y.p♥FULL.T | FULL.T x=e in D1..Dn}//(T x,T y)=e case unneeded x,y not fwd
     GXi = Y.GX+GX+GX^Ds1+..+GX^Dsi
@@ -111,7 +99,8 @@ _______
     HALF.T = STz' if Y.expectedT=empty
     Y[expectedT=imm Void]!(Ds Ks Whoops? Ds2 void) = e; _; STz'; CCz 
     x, x' fresh
-* Y!e(.m)?[pars]= Y!e.m?(squareBuilder=(if \.#shortCircutSquare() (
+* Y!e[pars] = Y!e.#apply[pars]
+* Y!e.m[pars]= Y!e.m?(squareBuilder=(if \.#shortCircutSquare() (
         b=\.#squareBuilder()     
         e1..en //so \ and \x are about the builder
       b))

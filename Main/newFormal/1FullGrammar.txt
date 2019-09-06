@@ -38,7 +38,7 @@ _______
   FULL.F ::= Docs var? T x
   FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are Core.L
   FULL.MWT ::=Docs MH (= native[URL]? e)? // well formedness: all LL inside e are Core.L
-  FULL.NC ::= Docs C = e //FULL.L can be inside e
+  FULL.NC ::= Docs C = e //FULL.L can be inside e //TODO: $OP is desugared to the C defining the operator
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | Number e
     | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ pars ]
@@ -55,7 +55,7 @@ _______
 _______
 #define auxiliary grammars
   ST::=CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type?
-  HALF.xP ::= x | P<:STz | %STz%
+  HALF.xP ::= x | P<:HALF.T | %STz%<:HALF.T
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? HALF.T x = e
   HALF.T::= mdf? STz
