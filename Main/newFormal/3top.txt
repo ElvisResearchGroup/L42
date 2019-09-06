@@ -142,9 +142,7 @@ _______
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty
 * CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
-    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T;onPath=empty] // ISAAC: Is this right for onPath ?
-    // Why are you setting onSlashX to be empty?
-    // Why not alloow \x to desuagar to P.x(), where P = MWT.T.P ?
+    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=MWT.T.P;expectedT=MWT.T;onPath=empty] // ISAAC: Is this right for onPath ?
     Y!MWT.e = Half.e; STs; empty; CCz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz

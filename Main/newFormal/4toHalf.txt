@@ -30,26 +30,28 @@ _______
 * Y!loop e = loop e'; imm Void; STz'; CCZ,STz<=imm Void
     Y[expectedT=imm Void]!e = e'; STz; STz'; CCz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
-* Y! x opUpdate e = Y!(toBinOp(x, opUpdate) e) // ISAAC: I changed this, because the grammer file has an opUpdate, but not an updateOp
+* Y! x opUpdate e = Y!(toBinOp(x, opUpdate) e)
     opUpdate != ':='
 * Y! (x := e) = (x := e'); imm Void; STz'; CCz,STz<=Y.GX(x)
     Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CCz
-* Y!e(.m)?(par) = Y!(x=e x(.m)?(par))
+* Y!e(par) = Y!e.#apply(par)
+* Y!e.m(x,xes) = Y!e.m(that=x, xes)
+* Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
-* Y!xP(.m)?(e,xes) = Y!xP(.m)?(that=e,xes)
-* Y!xP(.m)?(x1=e1,..xn=en) = e0.methName((.m)?)(x1=e'1,..,xn=e'n); STz"; STz'; CCz
-    Y[expectedT=empty]!xP=e0; STz; STz'0; CCz0
-    STz" = Y.p.minimize(STz.methName((.m)?)(x1..xn)) //injects .s on all the elements of STz
-    STz"i = Y.p.minimize(STz0.methName((.m)?)(x1..xn).i), i in 1..n//same for STz.s.i //no hope to get more for i=0 anyway
-    Y[onSlashX=xP;expectedT=STz"i]!ei = e'i; STzi; STz'i; CCzi
+* Y!xP.m(x1=e1,..xn=en) = e0.m(x1=e'1,..,xn=e'n); STz"; STz'; CCz
+    Y[expectedT=empty]!xP = e0; STz0; STz'0; CCz0
+    STz" = Y.p.minimize(STz.m(x1..xn)) //injects .s on all the elements of STz
+    STz"i = Y.p.minimize(STz0.m(x1..xn).i), i in 1..n//same for STz.s.i //no hope to get more for i=0 anyway
+    Y[onSlashX=xP;expectedT=STz"i]!ei = e'i; STzi; STz'i; CCzi, i in 1..n
     STz' = STz'0 U..U STz'n;
-    CCz = CCz0 U..U CCzn, STz<=STz",STz1<=STz"1..,STzn<=STz"n
+    CCz = CCz0 U..U CCzn, STz1<=STz"1..,STzn<=STz"n
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
-      x=xP.#shortCircut'OP3'()  //see name mangling
-      if x x.#shortResult'OP3'() else xP.#shortProcess'OP3'(x,other=e2)
+      x = xP.#shortCircut'OP3'()  //see name mangling
+      if x x.#shortResult'OP3'()
+      else xP.#shortProcess'OP3'(x,other=e2)
       )
     x fresh  
 //    T && X= if !T F else X//shortResult&& is false, shortCircut&& is !this
@@ -57,23 +59,43 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!xP OP e = e'.$methName(OP_0)(that=e")
-    xP not of form x
-    e'=Y!xP
-    e"=Y!e//same Y, thus \ and \x keep their meaning
-* Y!e0 OP..OP en = (Ds e0" OP..OP en"); OP STz0,..,STzn;STz'0 U..U STz'n;CCZ0 U..U CCZn
-    Yi[expectedT=empty]!ei = ei'; STzi; STz'i; CCzi
-    Ds = [xi=ei'| ei' not of form xP]
-    ei" = ei' if ei' of form xP
-    ei" = xi otherwise
-    x1..xn,X1..Xn fresh
-    OP not of form OP3
-    n >= 1
-    e0 of form x or e0 not of form FULL.xP or n=!1 //former case not applicable
-* Y!( Ds Ks Whoops? Ds2) = Y!(Ds Ks Whoops? Ds2 void)
-* Y!( Ds Ks Whoops? D Ds2 e)) = Y!( Ds Ks Whoops? (D Ds2 e))
-* Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
-    Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}})//so that we can recover the position
+* Y!CsP OP e = CsP'.#apply(that=e'); STz; STz"'; CCz, STz" <= STz'
+    CsP' = CsP.$methName(OP)
+    // ISAAC: so P + x will be P.$#plus(x) even if there is no P.$#plus class but there is a P.#plus method?
+    
+    // ISAAC: you previously wrote this such that it would "work" for CsP <: T, \ or \<:T
+    // however suffixing a ".$m" to any of these would be invalid syntax.
+    
+    // not just doing Y!(CsP.$methName(OP)(that=e")) since that will cause \'s to be re-interpreted.
+    STz  = Y.p.minimize(CsP'.#apply(that))
+    STz' = Y.p.minimize(CsP'.#apply(that).1)
+    Y[expectedT=STz'] ! e = e'; STz"; STz"'; CCz
+
+// ISAAC: I changed this drastically, as I was worried because the resulting (Ds ...) wasn't being passed through Y!, so now I do it in two stages
+* Y!e0 OP .. OP en = Y!(Ds e0' OP ... OP en')
+    n != 0
+    Ds = [xi=ei | ei not of form xP or ei of form \<:T]
+    // because Y!FULL.xP will produce a Y!.HALF.xP if and only xP is not of form \ <: T
+    Ds != empty // or else the next case will apply
+    ei' = ei if ei of form xP
+    ei' = xi otherwise
+    x1..xn fresh
+
+    // former two cases not applicable
+    e0 OP ... OP en not of form CsP OP en or e0 OP3 en
+
+* Y! xP1 OP .. OP xPn = xP'1 OP .. OP xP'i; OP STz0,..,STzn; empty; empty
+    n != 0
+    Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty // ISAAC: this will fail only if one of the xPi is of form \ <: T, but then the above case will apply
+    
+    // Not a short circuit, and not a nested class call
+    e0 OP ... OP en not of form CsP OP en or e0 OP3 en
+
+* Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
+* Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
+* Y!( Ds Ks WHOOPS T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
+    Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
+    // ISAAC: so WHOOPS won't work if #intoErrorAt isn't defined?
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CCz  //Ds is HALF.Ds
     GX = {x:Y.p♥FULL.T | FULL.T x=e in D1..Dn}//(T x,T y)=e case unneeded x,y not fwd
     GXi = Y.GX+GX+GX^Ds1+..+GX^Dsi

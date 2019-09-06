@@ -40,7 +40,7 @@ _______
   FULL.MWT ::=Docs MH (= native[URL]? e)? // well formedness: all LL inside e are Core.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
-  FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e
+  FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | Number e
     | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ pars ]
     | ( Ds Ks WHOOPS? Ds' e? ) | { Ds Ks WHOOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DXn in en e
@@ -54,7 +54,7 @@ _______
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  ST::=CORE.T | op STzs | ST.s | ST.s.i //i=0 for receiver type?
+  ST::=CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type?
   HALF.xP ::= x | P<:STz | %STz%
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? HALF.T x = e
@@ -116,7 +116,7 @@ _______
   n ::= 0 | <1-9> <0-9>*
   x ::=IdLow IdChars
   m ::= (#$ |#+)? x(#x)* (::n)?
-  UOp ::= ! | ~ | Number  // prefix
+  UOp ::= ! | ~ // prefix
   OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
   OP1 ::= + | - | * | / | >> | -> // left associative   
   OP2 ::= == | < | > | >= | <= | in | !=  // unassiociative
@@ -128,11 +128,12 @@ _______
   CORE.PathSel::= P | P.s | P.s.x
   FULL/CORE.docText ::= empty | CHAR -- '{' -- '}' -- '@' docText 
     | Doc docText | '{' docText '}' docText
-  mOp ::= empty | m | OP_n | ~_n | !_n // ISAAC: why do you need to specify the _n when n is 0? (the most likely case), also what is the point of the _n for the unary operators?
+  mOp ::= empty | m | OP | OP_n | UOp
 _______
 #define FULL Expressions priority disambiguation and other details
   FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel | \x
-  FULL.ePostfix ::= UOp* eAtomic ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)* //no space in ePostfix(par) and \x
+  FULL.ePrefix ::= (UOp | Number)* eAtomic
+  FULL.ePostfix ::= ePrefix ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)* //no space in ePostfix(par) and \x
   FULL.par ::= e? xe*
   FULL.eBinary0 ::= ePostFix (OP0 ePostFix)* //right associative, all ops must be the same
   FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
