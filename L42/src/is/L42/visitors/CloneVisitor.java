@@ -1,5 +1,8 @@
 package is.L42.visitors;
 import java.util.List;
+
+import is.L42.common.PTails;
+import is.L42.common.Program;
 import is.L42.generated.*;
 import static is.L42.tools.General.*;
 
@@ -124,7 +127,7 @@ public class CloneVisitor {
     var info=visitInfo(info0);
     var docs=visitDocs(docs0);
     if(ts0==ts && mwts==mwts0 && ncs==ncs0 && info==info0 && docs==docs0){return l;}
-    return new Core.L(l.pos(),l.isInterface(),ts,mwts,ncs,info,docs);
+    return new Core.L(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
     }
     
   public Core.L.Info visitInfo(Core.L.Info info){
@@ -153,7 +156,7 @@ public class CloneVisitor {
     var mh=visitMH(mh0);
     var _e=_e0==null?null:visitE(_e0);
     if(docs==docs0 && mh==mh0 && _e==_e0){return mwt;}
-    return new Core.L.MWT(mwt.pos(),docs, mh, mwt.nativeUrl(), _e);
+    return new Core.L.MWT(mwt.poss(),docs, mh, mwt.nativeUrl(), _e);
     }
   
   public Core.L.NC visitNC(Core.L.NC nc){
@@ -164,7 +167,7 @@ public class CloneVisitor {
     var c=visitC(c0);
     var l=visitL(l0);
     if(docs==docs0 && c==c0 && l==l0){return nc;}
-    return new Core.L.NC(nc.pos(), docs, c, l);
+    return new Core.L.NC(nc.poss(), docs, c, l);
     }
 
   public Core.MCall visitMCall(Core.MCall mCall){
@@ -597,5 +600,17 @@ public class CloneVisitor {
     var exceptions=visitFullTs(exceptions0);
     if(docs==docs0 && t==t0 && s==s0 && pars==pars0 && exceptions==exceptions0){return mh;}
     return new Full.MH(mh._mdf(),docs,t,mh._op(),mh.n(),s,pars,exceptions);
+    }
+  public Program visitProgram(Program program) { 
+    LL ll=program.top.visitable().accept(this);
+    PTails pTails=program.pTails.accept(this);
+    return new Program(ll,pTails);
+    }
+  public PTails visitPTails(PTails t) {
+    if(t.isEmpty()){return t;}
+    LL ll=t.ll().visitable().accept(this);
+    PTails tail=t.tail().accept(this);
+    if(!t.hasC()){return tail.pTailSingle((Core.L)ll);}
+    return tail.pTailC(visitC(t.c()),ll);    
     }
   }

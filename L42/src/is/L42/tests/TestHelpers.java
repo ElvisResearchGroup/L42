@@ -1,5 +1,7 @@
 package is.L42.tests;
 
+import static is.L42.tools.General.bug;
+
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
 import org.antlr.v4.runtime.ConsoleErrorListener;
@@ -42,7 +44,9 @@ import is.L42.generated.L42Parser.KContext;
 import is.L42.generated.L42Parser.MContext;
 import is.L42.generated.L42Parser.MOpContext;
 import is.L42.generated.L42Parser.MatchContext;
+import is.L42.generated.L42Parser.NudeCsPContext;
 import is.L42.generated.L42Parser.NudeEContext;
+import is.L42.generated.L42Parser.NudePContext;
 import is.L42.generated.L42Parser.ORContext;
 import is.L42.generated.L42Parser.ParContext;
 import is.L42.generated.L42Parser.PathSelContext;
@@ -125,6 +129,8 @@ public class TestHelpers {
       @Override public String visitSThrow(SThrowContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitSUpdate(SUpdateContext ctx) {return n(ctx)+"("+c(ctx)+")";}
       @Override public String visitInfo(InfoContext ctx) { return "info";}
+      @Override public String visitNudeP(NudePContext ctx) { throw bug();}
+      @Override public String visitNudeCsP(NudeCsPContext ctx) { throw bug();}
       };
     return ctx.accept(visitor).toString();
     }

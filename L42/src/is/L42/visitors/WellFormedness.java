@@ -1,13 +1,16 @@
 package is.L42.visitors;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -16,6 +19,7 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
+import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
@@ -24,20 +28,21 @@ import is.L42.generated.Full.D;
 import is.L42.generated.Full.L.NC;
 import is.L42.generated.HasVisitable;
 import is.L42.generated.LDom;
+import is.L42.generated.LL;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
 
-class ContainsFullL extends Contains<Full.L>{
+class ContainsFullL extends Contains.SkipL<Full.L>{
   @Override public void visitL(Full.L l){setResult(l);}
   }
-class ContainsSlashXOut extends Contains<Full.SlashX>{
+class ContainsSlashXOut extends Contains.SkipL<Full.SlashX>{
   @Override public void visitSlashX(Full.SlashX sx){setResult(sx);}
   @Override public void visitPar(Full.Par par){}
   }
-class ContainsIllegalVarUpdate extends Contains<Core.EX>{
+class ContainsIllegalVarUpdate extends Contains.SkipL<Core.EX>{
   Set<X> updatableXs=Collections.emptySet();
   @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
     super.visitOpUpdate(opUpdate);
@@ -53,12 +58,29 @@ class ContainsIllegalVarUpdate extends Contains<Core.EX>{
     updatableXs=old;
     }
   }
-  
+class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
+  @Override public void visitL(Full.L l){
+    super.visitL(l);
+    accLL(l);
+    }
+  @Override public void visitL(Core.L l){
+    super.visitL(l);
+    accLL(l);
+    }
+  private void accLL(LL l) { for(var d:l.dom()){
+    if (!d.hasUniqueNum()){continue;}
+    int u=d.uniqueNum();
+    var val=acc().getOrDefault(u,new ArrayList<>());
+    acc().put(u, val);//in case it was new
+    val.add(l);
+    } }
+  @Override public Map<Integer, List<LL>> empty() {return new HashMap<>();}
+  }
   
 public class WellFormedness extends PropagatorCollectorVisitor{
   @SuppressWarnings("serial")
   public static class NotWellFormed extends EndError{
-    public NotWellFormed(Pos pos, String msg) { super(pos, msg);}
+    public NotWellFormed(List<Pos> poss, String msg) { super(poss, msg);}
     }
   public static boolean of(Visitable<?> v){
     var tos=new WellFormedness();
@@ -66,11 +88,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     return true;
     }
 
-  Pos lastPos;
+  List<Pos> lastPos;
   private final Error err(String msg){
     throw new NotWellFormed(lastPos,msg);
     }
-  @Override public void visitE(Full.E e){lastPos=e.pos();super.visitE(e);}
+  @Override public void visitE(Full.E e){lastPos=e.poss();super.visitE(e);}
 
   @Override public void visitVarTx(Full.VarTx d){
     assert lastPos!=null;
@@ -82,9 +104,25 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(!_mdf.isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
     err(Err.varBindingCanNotBe(_mdf.inner));
     }
-  
+  @Override public void visitD(Full.D d){
+    if(d._e()!=null){lastPos=d._e().poss();}
+    super.visitD(d);
+    if(d._e()==null){return;}
+    if(d._varTx()!=null || !d.varTxs().isEmpty()){return;}
+    boolean degenerate=
+         d._e() instanceof Core.EX 
+      || d._e() instanceof Full.CsP
+      || d._e() instanceof Core.EVoid
+      || d._e() instanceof LL
+      || d._e() instanceof Full.Slash
+      || d._e() instanceof Full.SlashX
+      || d._e() instanceof Full.EPathSel
+      || d._e() instanceof Full.Cast;
+    if(!degenerate){return;}
+    err(Err.degenerateStatement(d._e()));
+    }
   @Override public void visitD(Core.D d){
-    lastPos=d.e().pos();
+    lastPos=d.e().poss();
     super.visitD(d);
     if(!d.isVar()){return;}
     if(!d.t().mdf().isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
@@ -119,7 +157,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     err(Err.duplicatedNameThat());
     }
   @Override public void visitBlock(Full.Block b){
-    lastPos=b.pos();
+    lastPos=b.poss();
     super.visitBlock(b);
     var domDs=FV.domFullDs(b.ds());
     okXs(domDs);
@@ -134,7 +172,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
     for(int i:range(b.ds().size()-minus)){
       if(!Returning.of(b.ds().get(i)._e())){continue;}
-      lastPos=b.ds().get(i)._e().pos();
+      lastPos=b.ds().get(i)._e().poss();
       err(Err.deadCodeAfter(i));
       }
     for(int i:range(1,b.ds().size())){
@@ -143,7 +181,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(di._varTx()!=null || !di.varTxs().isEmpty()){continue;}
       if(b.dsAfter()==i){continue;}
       if(!CheckBlockNeeded.of(dj._e(),true)){continue;}
-      lastPos=dj._e().pos();
+      lastPos=dj._e().poss();
       err(Err.needBlock(dj._e()));
       }
     if(b.ks().isEmpty()){return;}
@@ -156,7 +194,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
     Full.K kLast=b.ks().get(b.ks().size()-1);
     if(!CheckBlockNeeded.of(kLast.e(),false)){return;}
-    lastPos=kLast.e().pos();
+    lastPos=kLast.e().poss();
     err(Err.needBlock(kLast.e()));
     }
   private void declaredVariableNotRedeclared(Full.Block b, List<X> domDs) {
@@ -196,7 +234,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
     }
   @Override public void visitBlock(Core.Block b){
-    lastPos=b.pos();
+    lastPos=b.poss();
     super.visitBlock(b);
     var domDs=FV.domDs(b.ds());
     okXs(domDs);
@@ -204,12 +242,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     declaredVariableNotRedeclared(b, domDs);
     }    
   @Override public void visitK(Core.K k){
-    lastPos=k.e().pos();
+    lastPos=k.e().poss();
     super.visitK(k);
     wfKCommon(k.e().visitable(), k.x());  
     }
   @Override public void visitK(Full.K k){
-    lastPos=k.e().pos();
+    lastPos=k.e().poss();
     super.visitK(k);
     wfKCommon(k.e().visitable(), k._x());
     }
@@ -220,33 +258,33 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(x.inner().equals("this")){err(Err.duplicatedNameThis());}
     }
   @Override public void visitMI(Full.L.MI mi){
-    lastPos=mi.pos();
+    lastPos=mi.poss();
     super.visitMI(mi);
     var pars=pushL(X.thisX,mi.s().xs());
     checkTopE(mi.e().visitable(),pars);
     var l=new ContainsFullL()._of(mi.e().visitable());
     if(l==null){return;}
-    lastPos=l.pos();
+    lastPos=l.poss();
     err(Err.noFullL(l));
     }
   @Override public void visitNC(Full.L.NC nc){
-    lastPos=nc.pos();
+    lastPos=nc.poss();
     super.visitNC(nc);
     checkTopE(nc.e().visitable(),L());
     }
   @Override public void visitMWT(Full.L.MWT mwt){
-    lastPos=mwt.pos();
+    lastPos=mwt.poss();
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
     checkTopE(mwt._e().visitable(),pars);
     var l=new ContainsFullL()._of(mwt._e().visitable());
     if(l==null){return;}
-    lastPos=l.pos();
+    lastPos=l.poss();
     err(Err.noFullL(l));
     }
   @Override public void visitMWT(Core.L.MWT mwt){
-    lastPos=mwt.pos();
+    lastPos=mwt.poss();
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
@@ -272,12 +310,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       var res=checkAllVariablesUsedInScope(v, pars);
       var x=new ContainsIllegalVarUpdate()._of(v);
       if(x!=null){
-        lastPos=x.pos();
+        lastPos=x.poss();
         err(Err.unapdatable(x));
         }
       var sx=new ContainsSlashXOut()._of(v);
       if(sx==null){return res;}
-      lastPos=sx.pos();
+      lastPos=sx.poss();
       throw err(Err.slashOut(sx));
       }
   @Override public void visitMH(Full.MH mh){
@@ -330,7 +368,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }}}
 
   @Override public void visitIf(Full.If i){
-    lastPos=i.pos();
+    lastPos=i.poss();
     super.visitIf(i);
     for(var d:i.matches()){validMatch(d);}
     }
@@ -343,7 +381,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
     
   @Override public void visitFor(Full.For f){
-    lastPos=f.pos();
+    lastPos=f.poss();
     super.visitFor(f);    
     for(var d:f.ds()){
       for(var vtx:d.varTxs()){
@@ -353,13 +391,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }
     }  
   @Override public void visitL(Full.L l){
-    lastPos=l.pos();
+    lastPos=l.poss();
     super.visitL(l);
     checkAllEmptyMdfFull(l.ts());
     for(var m:l.ms()){
       if(!m.key().hasUniqueNum()){continue;}
       if(!(m instanceof Full.L.NC)){continue;}
-      validPrivateNested(m.pos(),(C)m.key(),m._e());
+      validPrivateNested(m.poss(),(C)m.key(),m._e());
       }   
     Supplier<Stream<LDom>> dom=()->l.ms().stream().map(m->m.key());
     Supplier<Stream<LDom>> impl=()->l.ms().stream()
@@ -374,12 +412,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
   @Override public void visitL(Core.L l){
-    lastPos=l.pos();
+    lastPos=l.poss();
     super.visitL(l);
     checkAllEmptyMdf(l.ts());
     for(var m:l.ncs()){
       if(!m.key().hasUniqueNum()){continue;}
-      validPrivateNested(m.pos(),m.key(),m.l());
+      validPrivateNested(m.poss(),m.key(),m.l());
       }   
     Supplier<Stream<LDom>> dom=()->Stream.concat(l.mwts().stream()
       .map(m->m.key()),l.ncs().stream().map(m->m.key()));
@@ -423,20 +461,35 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         }
       }
     }
-  private void validPrivateNested(Pos pos,C key, Full.E e) {
+  private void validPrivateNested(List<Pos> pos,C key, Full.E e) {
     lastPos=pos;
     if(!(e instanceof Core.L)){err(Err.privateNestedNotCore(key));}
     var l=(Core.L)e;
     for(var m:l.ncs()){
       if(m.key().hasUniqueNum()){continue;}
-      lastPos=m.pos();
+      lastPos=m.poss();
       err(Err.privateNestedPrivateMember(m.key()));      
       }   
     for(var m:l.mwts()){
       if(m.key().hasUniqueNum()){continue;}
       if(l.info().refined().contains(m.key())){continue;}
-      lastPos=m.pos();
+      lastPos=m.poss();
       err(Err.privateNestedPrivateMember(m.key()));
       }       
     }
+  @Override public void visitProgram(Program program) {
+    //TODO: when typing is completed, there is more well formedness here
+    if(!program.pTails.isEmpty()){
+      program.pop().wf();
+      return;
+      }
+    var map=new AccumulateUnique().of(program.top.visitable());
+    for(var e:map.entrySet()){
+      if(e.getValue().size()==1){continue;}
+      lastPos=e.getValue().get(0).poss();
+      List<Pos> morePos=L(e.getValue().subList(1, e.getValue().size()),(c,li)->{
+        c.addAll(li.poss());});
+      err(Err.nonUniqueNumber(e.getKey(),morePos));
+      }
+    } 
   }

@@ -26,7 +26,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
   }
   private Core.L makeErr(Pos pos,Core.L.Info info, String hint){
     if(info==null){return null;}
-    var errRes=new Core.L(pos,false, L(),L(),L(),info,L());
+    var errRes=new Core.L(L(pos),false, L(),L(),L(),info,L());
     errors.append(pos+hint);
     return errRes;
     }
@@ -113,7 +113,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(cmwts.contains(null)){
       return makeErr(res.pos(),info,Err.malformedCoreMWT(info));
       }      
-    return new Core.L(res.pos(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
+    return new Core.L(L(res.pos()),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
     }
   public Core.E _inject(Full.E e) {
     visitE(e);return this.result;
@@ -132,10 +132,10 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       var docs=_injectL(mwt.docs(),this::_inject);
       var mh=_inject(mwt.mh());
       if(docs==null || mh==null){return null;}
-      if(mwt._e()==null){return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),null);}
+      if(mwt._e()==null){return new Core.L.MWT(L(mwt.pos()), docs, mh, mwt.nativeUrl(),null);}
       mwt._e().visitable().accept(this);
       if(result==null){return null;}
-      return new Core.L.MWT(mwt.pos(), docs, mh, mwt.nativeUrl(),result);
+      return new Core.L.MWT(L(mwt.pos()), docs, mh, mwt.nativeUrl(),result);
       }
     catch(UndefinedCase uc){return null;}
     }
@@ -157,7 +157,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if (nc.e() instanceof Core.L){l=(Core.L)nc.e();}
     if (nc.e() instanceof Full.L){l=_inject((Full.L)nc.e(),null);}
     if(docs==null || l==null){return null;}
-    return new Core.L.NC(nc.pos(), docs, nc.key(),l);
+    return new Core.L.NC(L(nc.pos()), docs, nc.key(),l);
     }
   public P _inject(Full.CsP csP) {return csP._p();}
 

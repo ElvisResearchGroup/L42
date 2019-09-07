@@ -57,12 +57,12 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     if(z==null){return;}
     if(get.get()!=null){
       inject.errors.append(pos+ Err.repeatedInfo(name));
-      result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
+      result= Core.L.Info.empty;
       }
     set.accept(L(as.apply(z),(c,ei)->c.add(f.apply(ei))));
     if(get.get().isEmpty()){
       inject.errors.append(pos+Err.emptyInfo(name));
-      result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
+      result= Core.L.Info.empty;
       }
     }
 
@@ -70,7 +70,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     if(z==null){return;}    
     if(get.get()!=null){
       inject.errors.append(pos + Err.repeatedInfo(name));
-      result= new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
+      result= Core.L.Info.empty;
       }
     set.accept(true);
     }
@@ -82,7 +82,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   @Override public Core.L.Info get(){
     if (r.hasErr()){
       inject.errors.append(pos + Err.malformedInfo(r.errorsTokenizer+"\n"+r.errorsParser));
-      return new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
+      return Core.L.Info.empty;
       }
     boolean isTyped=r.res.infoNorm()==null;
     for(var b:r.res.infoBody()){

@@ -129,15 +129,6 @@ _______
 * adapt(p,e,imm Void) = (Void x=e {}) where x fresh
 * adapt(p,e,T) = (T x=e x.#toLibrary()) otherwise, where x fresh    
 _______
-#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
-* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
-    i in 0..n,
-    s = methName(OP_i)(x1..xn)
-    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
-    P'1 ... P'n = (T0..Tn\i).Ps
-    P=Ti.P
-    p|-P'1<=P1 .. p|-P'1<=P1
-_______
 #define CCz.add(p; FULL.MWT; HAlf.e?) = CCz' // both CCz' and HALf.e? are computed by this notation
 * CCz.add(p; MWT; empty) = CCz
     MWT.e?=empty

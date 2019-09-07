@@ -2,12 +2,16 @@ package is.L42.generated;
 import lombok.Value;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Wither;
+
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
+import static is.L42.tools.General.*;
+
 
 public class Full {
   public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}
@@ -17,9 +21,29 @@ public class Full {
   CsP implements Leaf,Visitable<CsP>{@Override public Visitable<CsP>visitable(){return this;}@Override public CsP accept(CloneVisitor cv){return cv.visitCsP(this);}@Override public void accept(CollectorVisitor cv){cv.visitCsP(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     List<C> cs; P _p;}//when cs is empty, _p is not null
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  L implements Leaf,Half.E,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+  L implements LL,Leaf,Half.E,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     boolean isDots; String reuseUrl; boolean isInterface; List<T> ts; List<M>ms; List<Doc>docs;
     public static interface M extends HasWf,HasPos,HasVisitable{List<Doc> docs();LDom key();E _e();Visitable<? extends M> visitable();}
+    @Override public L withCs(List<C>cs,Function<NC,NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
+      assert !cs.isEmpty();
+      assert dom().contains(cs.get(0));
+      return this.withMs(L(ms,d->{
+        if(!d.key().equals(cs.get(0))){return d;}
+        var nc=(NC)d;
+        if(cs.size()==1){return fullF.apply(nc);}
+        return nc.withE(((LL)nc.e).withCs(popL(cs), fullF,coreF));
+        }));      
+      }
+    @Override public List<LDom> dom(){return ms.stream().map(m->m.key()).collect(Collectors.toList());}
+    @Override public L c(C c){
+      return (L)ms.stream().filter(m->m.key().equals(c))
+      .findFirst().get()._e();
+      }
+    @Override public L cs(List<C> cs){
+      assert !cs.isEmpty();
+      if(cs.size()==1){return this.c(cs.get(0));}
+      return this.c(cs.get(0)).cs(popL(cs));
+      }
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     F implements M,Visitable<F>{@Override public Visitable<F>visitable(){return this;}@Override public F accept(CloneVisitor cv){return cv.visitF(this);}@Override public void accept(CollectorVisitor cv){cv.visitF(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       Pos pos; List<Doc>docs; boolean isVar; T t; S key;
@@ -111,7 +135,7 @@ public class Full {
   MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf _mdf; List<Doc> docs; T t; Op _op; int n; S s; List<T> pars; List<T> exceptions;
     public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
-    public List<T> parsWithThis(){return is.L42.tools.General.pushL(P.fullThis0.with_mdf(_mdf),pars);}
+    public List<T> parsWithThis(){return pushL(P.fullThis0.with_mdf(_mdf),pars);}
     }
  
   }

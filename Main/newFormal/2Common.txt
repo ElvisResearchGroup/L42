@@ -21,12 +21,17 @@ _______
 #define p.update(LL) = p'
 * (_;pTails).update(LL) = LL;pTails
 _______
-#define p.minimize(P) = P'    p.minimize(STz) = STz'  choseT(CORE.Tz) = CORE.T
+#define p.minimize(P) = P'    p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
 * p.minimize(P) = P
-    P in {Any,Void,Library}
-* p.minimize(This(n+1).Cs) = p.minimize(This(k+1).Cs')
+    P in {Any,Void,Library,This0.Cs}
+* p.minimize(This(n+1).Cs) = P
     p.pop(1).minimize(Thisn.Cs) = Thisk.Cs'
+    P=p.minimize(This1.Cs')  if k=0
+    P=This(k+1).Cs'  otherwise   
 * (CORE.L;C:LL;_).minimize(This1.C.Cs)=This0.Cs
+* (CORE.L;LL;_).minimize(This1.Cs)=This1.Cs
+* (CORE.L;C:LL;_).minimize(This1.C'.Cs)=This1.C.Cs
+    C!=C'
 
 * p.minimize(ST1..STn) = STz'
     STz = p.minimize(ST1)..p.minimize(STn)
@@ -48,6 +53,15 @@ _______
 
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
+_______
+#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
+* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
+    i in 0..n,
+    s = methName(OP_i)(x1..xn)
+    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
+    P'1 ... P'n = (T0..Tn\i).Ps
+    P=Ti.P
+    p|-P'1<=P1 .. p|-P'1<=P1
 _______
 #define mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 * mostGeneralMdf(mdfz) = mdf //the most specific generalEnough.

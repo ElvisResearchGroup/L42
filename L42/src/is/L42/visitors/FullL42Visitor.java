@@ -22,7 +22,9 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import is.L42.generated.L42Parser.*;
 import is.L42.common.Err;
+import is.L42.common.PTails;
 import is.L42.common.Parse;
+import is.L42.common.Program;
 import is.L42.generated.*;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Full.VarTx;
@@ -159,7 +161,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     Pos pos=pos(ctx);
     String s=ctx.CsP().getText();
-    var res=Parse.csP(pos.fileName(),s);
+    var res=Parse.ctxCsP(pos.fileName(),s);
     if(res.hasErr()){
       this.errors.append(pos+ Err.notValidC(
         s.contains("Any")?"Any":
@@ -226,7 +228,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     String s="@"+ctx.getText();
     Pos pos=pos(ctx);
-    var res=Parse.doc(pos.fileName(),s);
+    var res=Parse.ctxDoc(pos.fileName(),s);
     if (res.hasErr()){
       this.errors.append(pos+Err.malformedAtInDocs());
       return new Full.Doc(null, L(), L());
@@ -394,7 +396,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     Pos pos=pos(ctx);
     String s=ctx.getText();
     s=s.substring(1);
-    var res=Parse.pathSelX(pos.fileName(),s);
+    var res=Parse.ctxPathSelX(pos.fileName(),s);
     assert !res.hasErr();
     Full.PathSel ps=new AuxVisitor(pos).visitPathSelX(res.res.pathSelX());
     assert ps!=null;
@@ -553,7 +555,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     var pos=pos(ctx);
     var s=fixPos(pos);
     s.append(ctx.getText());
-    var r=Parse.info(pos.fileName(),s.toString());
+    var r=Parse.ctxInfo(pos.fileName(),s.toString());
     return new InfoSupplier(new InjectionToCore(errors, eVoid), r, pos).get();
     }
   @SuppressWarnings("unused")//i
@@ -563,4 +565,26 @@ public class FullL42Visitor implements L42Visitor<Object>{
     for(int i :range(pos.column())){s.append(" ");}
     return s;
     }
+  @Override public Program visitNudeP(NudePContext ctx) {
+    Full.E e=visitFullL(ctx.fullL(0));
+    PTails tail=PTails.empty;
+    for(int i=ctx.children.size()-2;i>0;i-=1){
+      var ci=ctx.getChild(i);
+      if (!(ci instanceof FullLContext)){continue;}
+      if(ctx.getChild(i-1) instanceof FullLContext){
+        tail=tail.pTailSingle((Core.L)visitFullL((FullLContext)ci));
+        continue;
+        }
+      Full.CsP csP=visitCsP((CsPContext)ctx.getChild(i-2));
+      C c=null;
+      if(csP.cs().size()==1){c=csP.cs().get(0);}
+      if(c==null){
+        this.errors.append(e.pos()+Err.notValidC(csP));
+        c=new C("InvalidName",-1);
+        }
+      tail=tail.pTailC(c,(LL)visitFullL((FullLContext)ci));
+      }
+    return new Program((LL)e,tail);
+    }
+  @Override public Full.CsP visitNudeCsP(NudeCsPContext ctx) {return visitCsP(ctx.csP());} 
   }

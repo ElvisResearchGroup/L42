@@ -1,5 +1,8 @@
 package is.L42.visitors;
 import java.util.List;
+
+import is.L42.common.PTails;
+import is.L42.common.Program;
 import is.L42.generated.*;
 
 public interface CollectorVisitor {
@@ -103,4 +106,6 @@ public interface CollectorVisitor {
   void visitDoc(Full.Doc doc);
   void visitPathSel(Full.PathSel pathSel);
   void visitMH(Full.MH mh);
+  void visitProgram(Program program);
+  void visitPTails(PTails pTails);
   }

@@ -2,12 +2,17 @@ package is.L42.generated;
 import lombok.Value;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Wither;
+
 import java.util.List;
+import java.util.stream.Stream;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
+import static is.L42.tools.General.*;
+
 
 public class Core {
   public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}
@@ -23,16 +28,39 @@ public class Core {
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   EVoid implements Leaf,Full.Leaf,Visitable<EVoid>{@Override public Visitable<EVoid>visitable(){return this;}@Override public EVoid accept(CloneVisitor cv){return cv.visitEVoid(this);}@Override public void accept(CollectorVisitor cv){cv.visitEVoid(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     }
-  @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  L implements Leaf,Full.Leaf,Half.Leaf,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+  @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
+  L implements LL,Leaf,Half.Leaf,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+    List<Pos> poss; public Pos pos(){return poss.get(0);}
     boolean isInterface; List<T> ts; List<MWT>mwts; List<NC>ncs; Info info; List<Doc>docs;
-    @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-    MWT implements HasPos,Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      Pos pos;List<Doc>docs; MH mh; String nativeUrl;E _e;
+    @Override public L withCs(List<C>cs,Function<Full.L.NC,Full.L.NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
+      assert !cs.isEmpty();
+      assert dom().contains(cs.get(0));
+      return this.withNcs(L(ncs,nc->{
+        if(!nc.key().equals(cs.get(0))){return nc;}
+        if(cs.size()==1){return coreF.apply(nc);}
+        return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
+        }));   
+      }
+    @Override public List<LDom> dom(){return Stream.concat(
+      mwts.stream().map(m->(LDom)m.key()),
+      ncs.stream().map(m->(LDom)m.key())
+      ).collect(Collectors.toList());}
+    @Override public L c(C c){
+      return ncs.stream().filter(m->m.key().equals(c))
+      .findFirst().get().l();
+      }
+    @Override public L cs(List<C> cs){
+      assert !cs.isEmpty();
+      if(cs.size()==1){return this.c(cs.get(0));}
+      return this.c(cs.get(0)).cs(popL(cs));
+      }
+    @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
+    MWT implements Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+      List<Pos> poss;List<Doc>docs; MH mh; String nativeUrl;E _e;
       public S key(){return mh.s();}}
-    @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-    NC implements HasPos,Visitable<NC>{@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      Pos pos;List<Doc>docs; C key;  L l;}
+    @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
+    NC implements Visitable<NC>{@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+      List<Pos> poss;List<Doc>docs; C key;  L l;}
     @Value @Wither public static class
     Info implements Visitable<Info>{@Override public Info accept(CloneVisitor cv){return cv.visitInfo(this);}@Override public void accept(CollectorVisitor cv){cv.visitInfo(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       boolean isTyped; 
@@ -43,6 +71,7 @@ public class Core {
       List<P> privateSupertypes;
       List<S>refined;
       boolean declaresClassMethods;
+      public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
@@ -79,6 +108,6 @@ public class Core {
   @Value @Wither public static class
   MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf mdf; List<Doc> docs; T t; S s; List<T> pars; List<T> exceptions;
-    public List<T> parsWithThis(){return is.L42.tools.General.pushL(P.coreThis0.withMdf(mdf),pars);}
+    public List<T> parsWithThis(){return pushL(P.coreThis0.withMdf(mdf),pars);}
     }
   }

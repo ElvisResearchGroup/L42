@@ -86,7 +86,7 @@ header: InterfaceKw? ('['t+']')?;
 info: Info;
 
 fullMH: (Mdf doc*)? MethodKw t mOp oR (t x)* ')' ('['t+']')?;
-mOp: | m | (Uop | OP0 | OP1 | OP2 | OP3) Number?;//to filter 'number' to be an int
+mOp: | m | Uop | (OP0 | OP1 | OP2 | OP3) Number?;//to filter 'number' to be an int
 voidE: VoidKW;
 ePostfix: (Uop|Number)* eAtomic (fCall | squareCall | string | cast)*;
 fCall: ('.'m)? ORNS par ')';
@@ -112,3 +112,5 @@ sThrow:Throw e;
 sUpdate: x OpUpdate e;
 e: sIf | sWhile | sFor | sLoop | sThrow | sUpdate | eBinary3;
 nudeE: e EOF;
+nudeP: fullL ((csP '=')? fullL)* EOF;
+nudeCsP:csP EOF;

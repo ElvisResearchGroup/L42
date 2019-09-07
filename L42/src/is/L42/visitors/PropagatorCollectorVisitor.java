@@ -1,5 +1,8 @@
 package is.L42.visitors;
 import java.util.List;
+
+import is.L42.common.PTails;
+import is.L42.common.Program;
 import is.L42.generated.*;
 
 public class PropagatorCollectorVisitor implements CollectorVisitor{
@@ -405,5 +408,17 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitS(s0);
     visitFullTs(pars0);
     visitFullTs(exceptions0);
+    }
+
+  @Override public void visitProgram(Program program) {
+    program.top.visitable().accept(this);
+    program.pTails.accept(this);
+    }
+
+  @Override public void visitPTails(PTails pTails) {
+    if(pTails.isEmpty()){return;}
+    if(pTails.hasC()){visitC(pTails.c());}
+    pTails.ll().visitable().accept(this);
+    visitPTails(pTails.tail());
     }
   }

@@ -563,6 +563,30 @@ public class L42BaseListener implements L42Listener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNudeE(L42Parser.NudeEContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNudeP(L42Parser.NudePContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNudeP(L42Parser.NudePContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNudeCsP(L42Parser.NudeCsPContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNudeCsP(L42Parser.NudeCsPContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

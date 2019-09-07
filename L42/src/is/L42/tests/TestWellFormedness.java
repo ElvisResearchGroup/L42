@@ -107,7 +107,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("((A a=y catch T x a x))",Err.nameUsedInCatch("a"))
 
    ),new AtomicTest(()->
-   fail("{A a=y x}","last statement does not guarantee block termination")
+   fail("{A a=y x.foo()}","last statement does not guarantee block termination")
    ),new AtomicTest(()->
    fail("{A a=y error x}","curly block do not have any return statement")
    ),new AtomicTest(()->
@@ -224,6 +224,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("{C::1={ method Void foo()=void #norm{refined=foof()}}}",Err.privateNestedPrivateMember("foo()"))
 
+   ),new AtomicTest(()->
+   fail("(ok, this is degenerate)",Err.degenerateStatement(hole))
 
   ));}
 public static String inCore(String s){

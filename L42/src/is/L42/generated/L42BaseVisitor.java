@@ -333,4 +333,18 @@ public class L42BaseVisitor<T> extends AbstractParseTreeVisitor<T> implements L4
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
 	@Override public T visitNudeE(L42Parser.NudeEContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNudeP(L42Parser.NudePContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
+	@Override public T visitNudeCsP(L42Parser.NudeCsPContext ctx) { return visitChildren(ctx); }
 }

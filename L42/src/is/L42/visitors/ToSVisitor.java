@@ -8,6 +8,8 @@ import java.util.function.Function;
 import java.util.function.IntConsumer;
 import java.util.stream.Collectors;
 
+import is.L42.common.PTails;
+import is.L42.common.Program;
 import is.L42.generated.*;
 import is.L42.generated.Core.T;
 
@@ -698,7 +700,6 @@ public class ToSVisitor implements CollectorVisitor{
     if(s0!=null){visitS(s0);}
     if(x0!=null){assert s0!=null;c(".");visitX(x0);}
     }
-    
   public void visitMH(Full.MH mh){
     var docs0=mh.docs();
     var t0=mh.t();
@@ -716,5 +717,19 @@ public class ToSVisitor implements CollectorVisitor{
     else{cMethName(s0);}
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
     exceptionImplementsFull(exceptions0);
+    }
+  public void visitProgram(Program program) { 
+    program.top.visitable().accept(this);
+    nl();
+    program.pTails.accept(this);
+    }
+  public void visitPTails(PTails t) {
+    if(t.hasC()){
+      if(t.isEmpty()){return;}
+      visitC(t.c());
+      c("=");
+      }
+    t.ll().visitable().accept(this);
+    nl();
     }
   }

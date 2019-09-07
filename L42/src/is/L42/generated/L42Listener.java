@@ -467,4 +467,24 @@ public interface L42Listener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNudeE(L42Parser.NudeEContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#nudeP}.
+	 * @param ctx the parse tree
+	 */
+	void enterNudeP(L42Parser.NudePContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#nudeP}.
+	 * @param ctx the parse tree
+	 */
+	void exitNudeP(L42Parser.NudePContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42Parser#nudeCsP}.
+	 * @param ctx the parse tree
+	 */
+	void enterNudeCsP(L42Parser.NudeCsPContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42Parser#nudeCsP}.
+	 * @param ctx the parse tree
+	 */
+	void exitNudeCsP(L42Parser.NudeCsPContext ctx);
 }

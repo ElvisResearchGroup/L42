@@ -1,3 +1,8 @@
 package is.L42.generated;
 
-public interface HasPos{Pos pos();}
+import java.util.Collections;
+import java.util.List;
+
+public interface HasPos{
+  Pos pos();
+  default List<Pos>poss(){return Collections.singletonList(pos());}}

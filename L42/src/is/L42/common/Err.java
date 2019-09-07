@@ -11,6 +11,8 @@ import java.util.List;
 
 import org.opentest4j.AssertionFailedError;
 
+import is.L42.generated.Full.E;
+
 public class Err {
   public static String trimExpression(String e){
     if(e.length()<50){return e;}
@@ -142,6 +144,9 @@ public class Err {
   "private nested class "+_1+" is not defined with a core library"
   ;}public static String privateNestedPrivateMember(Object _1){return
   "member "+_1+" inside a private nested class is not private"
-
+  ;}public static String degenerateStatement(Object _1){return
+  "The following expression is not a correct statement: "+_1
+  ;}public static String nonUniqueNumber(Object _1,Object _2){return
+  "The unique number "+_1+" is in the domain of more then one library literal; others are in positions \n"+_2
   ;}
 }

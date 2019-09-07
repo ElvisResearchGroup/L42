@@ -7,6 +7,7 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
+import is.L42.common.Parse;
 import static is.L42.tools.General.*;
 
 public class P implements Visitable<P>{
@@ -20,7 +21,14 @@ public class P implements Visitable<P>{
   public static final Core.T coreThis0=new Core.T(Mdf.Immutable, L(),P.of(0,L()));
   public static final Full.T fullThis0=new Full.T(Mdf.Immutable, L(),L(),coreThis0.p());
   private P(){}
-  public static P of(int n,List<C>cs){return new NCs(n,cs);}
+  public static P.NCs of(int n,List<C>cs){return new NCs(n,cs);}
+  public static P parse(String s){
+    var csP= Parse.csP("--dummy--",s);
+    assert !csP.hasErr();
+    assert csP.res._p()!=null;
+    return csP.res._p();
+    }
+
   public NCs toNCs(){throw bug();}
   @EqualsAndHashCode(callSuper=false) @Value @Wither
   public static class NCs extends P{

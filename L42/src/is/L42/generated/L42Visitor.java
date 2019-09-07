@@ -286,4 +286,16 @@ public interface L42Visitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitNudeE(L42Parser.NudeEContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#nudeP}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNudeP(L42Parser.NudePContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42Parser#nudeCsP}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNudeCsP(L42Parser.NudeCsPContext ctx);
 }

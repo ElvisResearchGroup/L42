@@ -11,14 +11,15 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.X;
 
-public class Contains<T> extends PropagatorCollectorVisitor{
-  public T _of(Visitable<?> e){
+public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
+  public T of(Visitable<?> e){
     e.accept(this);
     return result;
     }
-  private T result=null;
-  public void setResult(T result){this.result=result;}
-  public static class SkipL<T> extends Contains<T>{
+  private T result=empty();
+  public T acc(){return this.result;}
+  public abstract T empty();  
+  public static abstract class SkipL<T> extends Accumulate<T>{
     @Override public void visitL(Full.L l){}
     @Override public void visitL(Core.L l){}
     }
