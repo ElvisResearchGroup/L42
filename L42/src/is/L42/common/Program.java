@@ -130,7 +130,7 @@ public class Program implements Visitable<Program>{
   public List<Psi> opOptions(Op op, List<T>ts){
     return L(c->{for(int i:range(ts)){
       P pi=ts.get(i).p();
-      this.of(pi).m
+      //this.methods(pi)
       }});
     }
     /*

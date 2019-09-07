@@ -35,7 +35,7 @@ _______
 
 * p.minimize(ST1..STn) = STz'
     STz = p.minimize(ST1)..p.minimize(STn)
-    Tz = {T| T in STz}
+    Tz = {T| T in STz} //CORE.T
     STz' = STz if chooseT({T| T in STz}) undefined
     STz' = chooseT({T| T in STz}) otherwise
 * p.minimize(ST.s(.i)?) = ST'.s(.i)?
@@ -43,7 +43,7 @@ _______
     p(ST')(s) undefined
 * p.minimize(ST.s) = p♥MH.T //♥ already do minimize
     p.minimize(ST) = CORE.T
-    p(CORE.T.P)(s) = MH
+    p(CORE.T.P)(s) = MH //NOPE p(T.P) may be a FULL.L //use methods? in code have a methodH that is just the method headers?
 * p.minimize(ST.s.i) = p♥MH.pari
     p.minimize(ST) = CORE.T
     p(CORE.T.P)(s) = MH
