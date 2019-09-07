@@ -168,16 +168,6 @@ _______
 * collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
 _______
-#define expandFields(Ms)=Ms' //need to keep the order
-* expandFields(empty)=empty
-* expandFields(M,Ms)=M,expandFields(Ms) 
-    M not of form F
-* expandFields(T x,Ms)=read method T x(), expandFields(Ms)
-    T = toRead(T)
-* expandFields(T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
-    T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
-* expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)    
-_______
 #define collect(p,Ts)=Ts' //collects transitively implemented interfaces //TODO: move collect to file 2 and remove collect comment from file 2
 * collect(p,empty)=empty
 * collect(p,T0 Ts)=((p♥T0, Ts') \ collect(p,Ts)) collect(p,Ts)
@@ -185,19 +175,6 @@ _______
     Ts'=collect(p,Ts0[from T0.P;p])
 * collect(p,T0 Ts)=((p♥T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface Ts0 _}=CORE.L
-_______
-#define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
-* methods(p,P0)=CORE.L.MWTs[from P0;p]
-    p(P0)=CORE.L
-* methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
-    p(P0)=interface? Ts{ Ms0 }=FULL.L
-    Ms=expandFields(Ms0)
-    Ps=collect(p,Ts[from P0;p]).Ps
-    s1..sn=[ss | P in Ps, ss = expandFields(p(T.P).Ms).ss].flatten().distinct()//an ordered version of {s | P in Ps, s in expandFields(p(P).Ms).ss}
-    origin(p;s1,P0)..origin(p;sn,P0) all defined
-    [Mi,_]=[MWT| MWT in Ms and MWT.s=si],[MWT| P in Ps such that methods(p,P)(si)=MWT]   for i in 1..n
-    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
-    MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
 
 //OLD COLLECT. Isaac, can you show me that we still need something like this? now is unused
 _______

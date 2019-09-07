@@ -54,20 +54,20 @@ _______
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
 _______
-#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
-* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
-    i in 0..n,
-    s = methName(OP_i)(x1..xn)
-    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
-    P'1 ... P'n = (T0..Tn\i).Ps
-    P=Ti.P
-    p|-P'1<=P1 .. p|-P'1<=P1
-_______
 #define mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 * mostGeneralMdf(mdfz) = mdf //the most specific generalEnough.
     mdf in generalEnough(mdfz)
     forall mdf1 in generalEnough(mdfz): mdf <= mdf1
 * generalEnough(mdfz) = {mdf | forall mdf1 in mdfz, mdf1<=mdf}
+_______
+#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
+* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
+    i in 0..n,
+    s = methName(OP_i)(x1..xn)
+    P1 ... Pn = methods(p,Ti.P)(s).pars.Ps[from Ti.P;p]
+    P'1 ... P'n = (T0..Tn\i).Ps
+    P=Ti.P
+    p|-P'1<=P1 .. p|-P'1<=P1
 _______
 #define p.navigate(P) = p'
 * p.navigate(Thisn.C1..Ck) = p.pop(n).push(C1)...push(Ck)
@@ -163,6 +163,29 @@ _______
 
 * p♥FULL.Docs = CORE.Docs
     all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
+_______
+#define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
+* methods(p,P0)=CORE.L.MWTs[from P0;p]
+    p(P0)=CORE.L
+* methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
+    p(P0)=interface? Ts{ Ms0 }=FULL.L
+    Ms=expandFields(Ms0)
+    Ps=collect(p,Ts[from P0;p]).Ps
+    s1..sn=[ss | P in Ps, ss = expandFields(p(T.P).Ms).ss].flatten().distinct()//an ordered version of {s | P in Ps, s in expandFields(p(P).Ms).ss}
+    origin(p;s1,P0)..origin(p;sn,P0) all defined
+    [Mi,_]=[MWT| MWT in Ms and MWT.s=si],[MWT| P in Ps such that methods(p,P)(si)=MWT]   for i in 1..n
+    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
+    MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
+_______
+#define expandFields(Ms)=Ms' //need to keep the order
+* expandFields(empty)=empty
+* expandFields(M,Ms)=M,expandFields(Ms) 
+    M not of form F
+* expandFields(T x,Ms)=read method T x(), expandFields(Ms)
+    T = toRead(T)
+* expandFields(T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
+    T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
+* expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)    
 _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
