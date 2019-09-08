@@ -10,7 +10,7 @@ _______
 
 * GX+GX' = GX\dom(GX'),GX'
 _______
-#define Y!FULL.e = Half.e; STs; STs'; CCz //e, result type, returns type, constraints
+#define Y!FULL.e = Half.e; STs; STs'; CTz //e, result type, returns type, constraints
 * Y!LL = LL;imm Library;empty;empty
 * Y!x = x;Y.GX(x);empty;empty
 * Y!void = void;imm Void;empty;empty
@@ -26,29 +26,29 @@ _______
     e not of form CsP or \
 * Y!'PathSel = Y!\"PathSel"
 * Y!NumLit e = Y!e"NumLit"
-* Y!throw e = throw e'; empty; STz"; CCz
-    Y[expectedT=empty]!e = e'; STz; STz'; CCz
+* Y!throw e = throw e'; empty; STz"; CTz
+    Y[expectedT=empty]!e = e'; STz; STz'; CTz
     STz"=STz' if throw !=return
     STz"=STz',STz otherwise
-* Y!loop e = loop e'; imm Void; STz'; CCZ,STz<=imm Void
-    Y[expectedT=imm Void]!e = e'; STz; STz'; CCz
+* Y!loop e = loop e'; imm Void; STz'; CTZ,STz<=imm Void
+    Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
 * Y! x opUpdate e = Y!(toBinOp(x, opUpdate) e)
     opUpdate != ':='
-* Y! (x := e) = (x := e'); imm Void; STz'; CCz,STz<=Y.GX(x)
-    Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CCz
+* Y! (x := e) = (x := e'); imm Void; STz'; CTz,STz<=Y.GX(x)
+    Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
 * Y!e(par) = Y!e.#apply(par)
 * Y!e.m(x,xes) = Y!e.m(that=x, xes)
 * Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
-* Y!xP.m(x1=e1,..xn=en) = e0.m(x1=e'1,..,xn=e'n); STz"; STz'; CCz
-    Y[expectedT=empty]!xP = e0; STz0; STz'0; CCz0
+* Y!xP.m(x1=e1,..xn=en) = e0.m(x1=e'1,..,xn=e'n); STz"; STz'; CTz
+    Y[expectedT=empty]!xP = e0; STz0; STz'0; CTz0
     STz" = Y.p.minimize(STz.m(x1..xn)) //injects .s on all the elements of STz
     STz"i = Y.p.minimize(STz0.m(x1..xn).i), i in 1..n//same for STz.s.i //no hope to get more for i=0 anyway
-    Y[onSlashX=xP;expectedT=STz"i]!ei = e'i; STzi; STz'i; CCzi, i in 1..n
+    Y[onSlashX=xP;expectedT=STz"i]!ei = e'i; STzi; STz'i; CTzi, i in 1..n
     STz' = STz'0 U..U STz'n;
-    CCz = CCz0 U..U CCzn, STz1<=STz"1..,STzn<=STz"n
+    CTz = CTz0 U..U CTzn, STz1<=STz"1..,STzn<=STz"n
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
@@ -62,11 +62,11 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!CsP OP e = CsP'.#apply(that=e'); STz; STz"'; CCz, STz" <= STz'
+* Y!CsP OP e = CsP'.#apply(that=e'); STz; STz"'; CTz, STz" <= STz'
     CsP' = CsP.$methName(OP)
     STz  = Y.p.minimize(CsP'.#apply(that))
     STz' = Y.p.minimize(CsP'.#apply(that).1)
-    Y[expectedT=STz'] ! e = e'; STz"; STz"'; CCz
+    Y[expectedT=STz'] ! e = e'; STz"; STz"'; CTz
 // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 * Y!e0 OP .. OP en = Y!(Ds e0' OP ... OP en')
     n != 0
@@ -84,20 +84,20 @@ _______
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks WHOOPS T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
-* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CCz  //Ds is HALF.Ds
+* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz  //Ds is HALF.Ds
     GX = {x:Y.p♥FULL.T | FULL.T x=e in D1..Dn}//(T x,T y)=e case unneeded x,y not fwd
     GXi = Y.GX+GX+GX^Ds1+..+GX^Dsi
-    Y[GXn]!e = e'; STz0;STz'0;CCz0
-    Y!Ki[GXn] = K'i; STzi; STz'i; CCzi//catch return do not need special treatment
-    Y[GX=GXi]!Di = Dsi; STz"i; CCz'i
+    Y[GXn]!e = e'; STz0;STz'0;CTz0
+    Y!Ki[GXn] = K'i; STzi; STz'i; CTzi//catch return do not need special treatment
+    Y[GX=GXi]!Di = Dsi; STz"i; CTz'i
     STz = STz0 U..U STzm
     STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
-    CCz = CCz0 U..U CCzm U CCz'1 U..U CCz'n
-* Y!{Ds Ks Wops? Ds2} = (Void x=e K error void); STz'; empty; CCz
+    CTz = CTz0 U..U CTzm U CTz'1 U..U CTz'n
+* Y!{Ds Ks Wops? Ds2} = (Void x=e K error void); STz'; empty; CTz
     K = catch return HALF.T x' x' //constraints on expected type are added upper in the recursion
     HALF.T = Y.expectedT if Y.expectedT!=empty
     HALF.T = STz' if Y.expectedT=empty
-    Y[expectedT=imm Void]!(Ds Ks Whoops? Ds2 void) = e; _; STz'; CCz 
+    Y[expectedT=imm Void]!(Ds Ks Whoops? Ds2 void) = e; _; STz'; CTz 
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!e.m[pars]= Y!e.m?(squareBuilder=(if \.#shortCircutSquare() (
@@ -155,31 +155,31 @@ _______
       c1.close(i1) .. cn.close(in))
     c1..cn, i1..in fresh
 _______
-#define Y!FULL.D = HALF.Ds;STz;CCz    Y!FULL.K= HALF.K; STz; STz';CCz
+#define Y!FULL.D = HALF.Ds;STz;CTz    Y!FULL.K= HALF.K; STz; STz';CTz
 * Y!D = Y!(imm Void _=D.e)
     D of form e 
 * Y!TLocal _=e = Y!TLocal x=e 
     x fresh
-* Y!var? TLocal x=e = var? HALF.T x=e'; STz'; CCz' 
+* Y!var? TLocal x=e = var? HALF.T x=e'; STz'; CTz' 
     if TLocal = FULL.T
       HALF.T = Y.p♥FULL.T
-      Y[expectedT=HALF.T]!e = e'; STz; STz'; CCz
-      CCz' = CCz,STz<=HALF.T
+      Y[expectedT=HALF.T]!e = e'; STz; STz'; CTz
+      CTz' = CTz,STz<=HALF.T
     if TLocal = mdf? //otherwise
-      Y[expectedT=empty]!e = e'; STz; STz'; CCz'
+      Y[expectedT=empty]!e = e'; STz; STz'; CTz'
       HALF.T = mdf? STz
-* Y!TLocal(var1? TLocal1 x1.. varn? TLocaln xn)=e = D0..Dn; STz0 U..U STzn; CCz0 U..U CCzn
-    Y!TLocal x=e = D0; STz0; CCz0 
-    Y!var1? TLocal1 x1=x.methNameTrim(x1)() = D1; STz1; CCz1
+* Y!TLocal(var1? TLocal1 x1.. varn? TLocaln xn)=e = D0..Dn; STz0 U..U STzn; CTz0 U..U CTzn
+    Y!TLocal x=e = D0; STz0; CTz0 
+    Y!var1? TLocal1 x1=x.methNameTrim(x1)() = D1; STz1; CTz1
     ..
-    Y!varn? TLocaln xn=x.methNameTrim(xn)() = Dn; STzn; CCzn
+    Y!varn? TLocaln xn=x.methNameTrim(xn)() = Dn; STzn; CTzn
     x fresh
 
 * Y!catch throw? T '_' e = Y!catch throw? T x e
     x fresh
 * Y!catch T x e = Y!catch exception T x e
-* Y!catch throw T x e = catch throw Y.p♥T x e'; STz; STz'; CCz
-    Y[GX=Y.GX+x:T]!e = e'; STz; STz'; CCz
+* Y!catch throw T x e = catch throw Y.p♥T x e'; STz; STz'; CTz
+    Y[GX=Y.GX+x:T]!e = e'; STz; STz'; CTz
 _______
 #define toBinOp(x,Op=) // convenience method to desugar opUpdates
 * toBinOp(x, :=) = x :=

@@ -88,7 +88,7 @@ public class CloneVisitor {
 
   public X visitX(X x){return x;}
 
-  public ST.STMeth visitSTMeth(ST.STMeth stMeth){
+  public ST visitSTMeth(ST.STMeth stMeth){//note: different ret type
     var s0=stMeth.s();
     var st0=stMeth.st();
     var s=visitS(s0);
@@ -97,7 +97,7 @@ public class CloneVisitor {
     return new ST.STMeth(st, s, stMeth.i());
     }
 
-  public ST.STOp visitSTOp(ST.STOp stOp){
+  public ST visitSTOp(ST.STOp stOp){//note: different ret type
     var zs=L(stOp.stzs(),this::visitSTz);
     return stOp.withStzs(zs);
     }

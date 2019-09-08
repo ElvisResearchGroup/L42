@@ -28,11 +28,14 @@ public class P implements Visitable<P>{
     assert csP.res._p()!=null;
     return csP.res._p();
     }
-
+  public boolean isNCs(){return false;}
   public NCs toNCs(){throw bug();}
   @EqualsAndHashCode(callSuper=false) @Value @Wither
   public static class NCs extends P{
     int n;List<C>cs;
-    @Override public NCs toNCs(){return this;}    
+    @Override public NCs toNCs(){return this;}
+    @Override public boolean isNCs(){return true;}
+    @Override public String toString(){return Constants.toS.apply(this);}
+
     }
   }

@@ -123,7 +123,6 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.Block visitBlock(BlockContext ctx) {
     check(ctx);
     boolean isCurly=ctx.oR()==null;
-    //block: oR d*? e k* whoops? ')' | oR d+ k* whoops? d* e ')' | '{' d+ (k+ whoops? d* | whoops d*)? '}';
     List<Full.D> ds=L(ctx.d(),(c,d)->c.add(visitD(d)));
     List<Full.K> ks=L(ctx.k(),(c,k)->c.add(visitK(k)));
     List<Full.T> whoopsed=opt(ctx.whoops(),L(),this::visitWhoops);

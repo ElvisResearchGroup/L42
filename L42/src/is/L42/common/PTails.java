@@ -16,7 +16,7 @@ public abstract class PTails implements Visitable<PTails>{
 @Override public String toString() {return Constants.toS.apply(this);}
 private PTails(){}
 public boolean isEmpty(){return this==empty;}
-public boolean hasC(){return false;}
+public boolean hasC(){throw bug();}
 public C c(){throw bug();}
 public Core.L coreL(){throw bug();}
 public LL ll(){return coreL();}
@@ -24,6 +24,7 @@ public PTails tail(){throw bug();}
 public static final PTails empty=new PTails(){};
 public PTails pTailSingle(Core.L l){return new PTails(){
   public Core.L coreL(){return l;}
+  public boolean hasC(){return false;}
   public PTails tail(){return PTails.this;}
   };}
 public PTails pTailC(C c, LL ll){return new PTails(){

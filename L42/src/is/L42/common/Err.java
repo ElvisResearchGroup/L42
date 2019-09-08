@@ -12,6 +12,7 @@ import java.util.List;
 import org.opentest4j.AssertionFailedError;
 
 import is.L42.generated.Full.E;
+import is.L42.generated.Pos;
 
 public class Err {
   public static String trimExpression(String e){
@@ -22,6 +23,12 @@ public class Err {
     }
   public static String hole="[###]";//not contains \.[]{}()<>*+-=!?^$|
   
+  public static String posString(List<Pos>poss){
+    String res="";
+    for(Pos pos:poss){res+=pos;}
+    return res;
+    }
+
   public static boolean strCmp(String complete,String partial){
     complete=complete.trim();
     partial=partial.trim();
@@ -132,6 +139,8 @@ public class Err {
   ;}public static String malformedCoreNC(Object info){return
   " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())  
   +"\ninvalid nested class for core library"
+ ;}public static String malformedCoreFullL(){return
+  "A full library litera is contained in a core library literal"
   ;}public static String malformedCoreMWT(Object info){return
   " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())  
   +"\ninvalid method with type for core library"
@@ -148,5 +157,6 @@ public class Err {
   "The following expression is not a correct statement: "+_1
   ;}public static String nonUniqueNumber(Object _1,Object _2){return
   "The unique number "+_1+" is in the domain of more then one library literal; others are in positions \n"+_2
+ 
   ;}
 }

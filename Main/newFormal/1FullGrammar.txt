@@ -59,16 +59,16 @@ _______
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? HALF.T x = e
   HALF.T::= mdf? STz
-  CC ::= ST<=HALF.T
-  PR ::= CCz;CORE.L;pTails | Err
-  ER ::= CCz;CORE.e? | Err
-  DsR ::= CCz;CORE.Ds | Err
-  KR ::= CCz;CORE.K | Err
+  CT ::= ST<=HALF.T
+  PR ::= CTz;CORE.L;pTails | Err
+  ER ::= CTz;CORE.e? | Err
+  DsR ::= CTz;CORE.Ds | Err
+  KR ::= CTz;CORE.K | Err
   Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,STz) | throw(p,A,v)
   R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
-  I ::= I[C?;p;G;CCz]//inference application environment
+  I ::= I[C?;p;G;CTz]//inference application environment
   Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=HALF.T?;onPath=class?]
   v ::= CORE.xP | void | CORE.L
   r ::= CORE.L | exception v | error v

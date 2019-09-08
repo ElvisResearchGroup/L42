@@ -220,6 +220,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("({interface #norm{friends=This1.C declaresClassMethods}})")
    ),new AtomicTest(()->
    pass("({interface #norm{declaresClassMethods}})")
+
+   ),new AtomicTest(()->
+   pass("({imm method imm Any m()={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   pass("({C={#norm{}}#norm{}})")
+   ),new AtomicTest(()->
+   fail("({method Any m()={} #norm{}})",Err.malformedCoreMWT(Err.hole))
+   ),new AtomicTest(()->
+   fail("({C={} #norm{}})",Err.malformedCoreNC(Err.hole))
+
    ),new AtomicTest(()->
    pass("{imm method imm Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
    ),new AtomicTest(()->

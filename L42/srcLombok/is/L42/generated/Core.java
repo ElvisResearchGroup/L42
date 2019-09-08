@@ -10,12 +10,27 @@ import java.util.stream.Collectors;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
+import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
+import is.L42.common.Parse;
+
 import static is.L42.tools.General.*;
 
 
 public class Core {
-  public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}
+  public static interface E extends HasPos,HasWf,HasVisitable{
+    Visitable<? extends E> visitable();
+    public static E parse(String s){
+      var r=Parse.e("-dummy-",s);
+      assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
+      assert r.res.wf();
+      var errors=new StringBuilder();
+      E res= new InjectionToCore(errors,new Core.EVoid(null))._inject(r.res);
+      assert errors.length() == 0:errors;
+      assert res!=null;
+      return res;
+      }
+    }
   public static interface Leaf extends E{}
   public static interface Wrapper extends E{ E e();}
   public static interface XP extends E{Visitable<? extends XP> visitable();}

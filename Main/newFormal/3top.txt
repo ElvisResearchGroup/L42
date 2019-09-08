@@ -15,33 +15,33 @@ _______
 * (ST1 .. STn).s(.i)? = ST1.s(.i)? .. STn.s(.i)?
 * (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
 _______
-#define top(CCz,p) => PR    topNC(CCz;p;Cs) => PR    sortHeader(p) = p'    sortM(p) = p'    addInfo(p) = p'   
-* top(CCz,p) => PR
+#define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    sortM(p) = p'    addInfo(p) = p'   
+* top(CTz,p) => PR
     p0 = sortHeader(p) IfNotE(p0) PR = headerErr(p)
     MWT1..MWTn, NCs=sortMs(p0) IfNotE(MWT1..MWTn, NCs) PR = implementsErr(p1)
-    CCz.add(p0; MWT1; e?1).. .add(p0; MWTn; e?n) = CCz1
+    CTz.add(p0; MWT1; e?1).. .add(p0; MWTn; e?n) = CTz1
     p1=p0.update(p0(This0)[Ms=MWT1,...,MWTn, NCs])
-    topNC(CCz1,p1,NCs.Cs) => PR1
-    PR1 = CCz2; p2 IfErr(PR1) PR = PR1
-    I[C=empty;p2;G=empty;p2.minimize(CCz2)]!e?i => ERi  for i in 1..n
+    topNC(CTz1,p1,NCs.Cs) => PR1
+    PR1 = CTz2; p2 IfErr(PR1) PR = PR1
+    I[C=empty;p2;G=empty;p2.minimize(CTz2)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
     p3 = p2.update(p2(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
     p4=flagTyped(addInfo(p3)) IfNotE(p4) PR=illTyped(p3)
-    PR = CCz2; p4
+    PR = CTz2; p4
 
-* topNC(CCz;p;empty) =>CCz;p
-* topNC(CCz;p;C,Cs) => PR
+* topNC(CTz;p;empty) =>CTz;p
+* topNC(CTz;p;C,Cs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=class]
     Y!p(This0)(C) = Half.e; _; _; _
-    I[C?=C;p;G=empty;p.minimize(CCz)]!Half.e => ER
-    ER = CCz1;CORE.e IfErr(ER) PR = ER
+    I[C?=C;p;G=empty;p.minimize(CTz)]!Half.e => ER
+    ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
-    topNC(CCz1;p";Cs) => PR
+    topNC(CTz1;p";Cs) => PR
     
 * sortHeader({reuse[URL] Ms};pTail) = sortHeader({followURL(URL),Ms};pTail) //note, the result must be well formed
 * sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
@@ -50,7 +50,7 @@ _______
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
 
-* sortMs(p) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in Ms] //[ ..|..] is like {..|..} but produces a list
+* sortMs(p) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in p(This0).Ms] //[ ..|..] is like {..|..} but produces a list
     MWTs = methods(p,This0) //all methods
     ss = expandFields(p(This0).Ms).ss //present methods, also including the expanded fields methods
 
@@ -63,78 +63,78 @@ _______
     //class methods all subexpressions with no free var (and not calling #$s)
 _______
 #define I!HALF.e? => ER
-* I!empty => I.CCz;empty
-* I!x => I.CCz;;x
-* I!P<:STz => I.CCz;;P<:I(STz)
+* I!empty => I.CTz;empty
+* I!x => I.CTz;;x
+* I!P<:STz => I.CTz;;P<:I(STz)
 * I!P<:STz => inferenceFailure(I,STz)
     I(STz) undefined
-* I!void => I.CCz;void
+* I!void => I.CTz;void
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L) 
-    top(I.CCz[from This1;p],p) => PR
-    PR = CCz';p' IfErr(PR) ER = PR
-    ER = CCz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CCz
-* I!CORE.L => I.CCz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!%STz% => I.CCz;I(STz).P
+    top(I.CTz[from This1;p],p) => PR
+    PR = CTz';p' IfErr(PR) ER = PR
+    ER = CTz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CTz
+* I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
+* I!%STz% => I.CTz;I(STz).P
 * I!%STz% => inferenceFailure(I,STz)
     I(STz) undefined
 * I!e0.m(x1=e1..xn=en) => ER
     I!ei=ERi //e0 is of form xP
-    ER0..ERn = CCz0;e'0..CCzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
-    ER = CCz0 U..U CCzn;e'0.m(x1=e'1..xn=e'n)
+    ER0..ERn = CTz0;e'0..CTzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
+    ER = CTz0 U..U CTzn;e'0.m(x1=e'1..xn=e'n)
 * I!xP0 OP..OP xPn => ER
     I!xPi => ERi
-    ER0..ERn = CCz0;xP'0..CCzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
+    ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
     Ti = T'i if xP'i = Pi < T'i
     Ti = I.G(x'i) if xP'i = x'i
     {P.m(x1..xn).i}=I.p.opOptions(OP, T0..Tn)
     xP"1..xP"n=xP'0..xP'n\i
-    ER = CCz0 U..U CCzn;xP'i.m(x1=xP"1..xn=xP"n)
+    ER = CTz0 U..U CTzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER
     e0 in {throw e, loop e, x:=e}
     I!e => ER'
-    ER' = CCz;e' IfErr(ER') ER = ER'
-    ER = CCz;e0[e=e']
+    ER' = CTz;e' IfErr(ER') ER = ER'
+    ER = CTz;e0[e=e']
 * I!(Ds K1..Km e) => ER
     xs = FV((Ds K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
     I!xs;Ds => DsR
     I!Ki => KRi
-    DsR = CCz0;D1..Dn IfErr(DsR) ER = DsR
+    DsR = CTz0;D1..Dn IfErr(DsR) ER = DsR
     I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
-    KR1..KRn,ER' = CCz1;K'1..CCzm;K'm, CCzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
-    ER = CCz0 U..U CCzm+1;(D1...Dn K'1...K'm e')
+    KR1..KRn,ER' = CTz1;K'1..CTzm;K'm, CTzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
+    ER = CTz0 U..U CTzm+1;(D1...Dn K'1...K'm e')
 _______
 #define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
-* I!xs;empty => I.CCz;empty
+* I!xs;empty => I.CTz;empty
 * I!xs;var? HALF.T x=e Ds => DsR
     I(HALF.T) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,HALF.T)
     I!e => ER 
-    ER = CCz';e' IfErr(ER) DR = ER
+    ER = CTz';e' IfErr(ER) DR = ER
     CORE.T' = CORE.T[mdf=imm] if HALF.T=STz, CORE.T.mdf=read and 
       not exists x in FV(e') such that x in dom(I.G) and I.G(x).mdf in {read,lent,mut}
     CORE.T' = CORE.T[mdf=mut] if HALF.T=STz, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
     CORE.T' = CORE.T otherwise
-    I[G=I.G,x:CORE.T'; CCz=CCz']!Ds => DsR'
-    DsR' = CCz;Ds IfErr(DsR') DsR = DsR'
-    DsR = CCz;var? CORE.T' x=e',Ds
+    I[G=I.G,x:CORE.T'; CTz=CTz']!Ds => DsR'
+    DsR' = CTz;Ds IfErr(DsR') DsR = DsR'
+    DsR = CTz;var? CORE.T' x=e',Ds
 
 * I!catch throw HALF.T x e => KR
     I(HALF.T)=CORE.T IfNotE(CORE.T) inferenceFailure(I,HALF.T)
     I!e => ER
-    ER = CCz';e' IfErr(ER) KR = ER
-    KR = CCz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
+    ER = CTz';e' IfErr(ER) KR = ER
+    KR = CTz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
 _______
 #define adapt(p,CORE.e,T)
 * adapt(p,e,imm Library) = e
 * adapt(p,e,imm Void) = (Void x=e {}) where x fresh
 * adapt(p,e,T) = (T x=e x.#toLibrary()) otherwise, where x fresh    
 _______
-#define CCz.add(p; FULL.MWT; HAlf.e?) = CCz' // both CCz' and HALf.e? are computed by this notation
-* CCz.add(p; MWT; empty) = CCz
+#define CTz.add(p; FULL.MWT; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
+* CTz.add(p; MWT; empty) = CTz
     MWT.e?=empty
-* CCz0.add(p; MWT; Half.e) = CCz0 U CCz U STs<=MWT.T
+* CTz0.add(p; MWT; Half.e) = CTz0 U CTz U STs<=MWT.T
     Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T;onPath=class]
-    Y!MWT.e = Half.e; STs; empty; CCz
+    Y!MWT.e = Half.e; STs; empty; CTz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
 * I(mdf STz)=T[mdf=mdf]
@@ -143,7 +143,7 @@ _______
 
 * T in I.coreTof(T)
 * T in I.coreTof(ST)
-    ST<=ST' in I.CCz
+    ST<=ST' in I.CTz
     T in I.coreTof(ST')
 _______
 #define collectDeps(p;CORE.MWT)=Ps;Ps'    collectDeps(p;T)=Ps;Ps'    collectDeps(p;Doc)=Ps;Ps'
@@ -167,26 +167,18 @@ _______
     P'!=Any
 * collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
-_______
-#define collect(p,Ts)=Ts' //collects transitively implemented interfaces //TODO: move collect to file 2 and remove collect comment from file 2
-* collect(p,empty)=empty
-* collect(p,T0 Ts)=((p♥T0, Ts') \ collect(p,Ts)) collect(p,Ts)
-    p(T0.P)={interface [Ts0] _}=FULL.L
-    Ts'=collect(p,Ts0[from T0.P;p])
-* collect(p,T0 Ts)=((p♥T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
-    p(T0.P)={interface Ts0 _}=CORE.L
 
 //OLD COLLECT. Isaac, can you show me that we still need something like this? now is unused
 _______
 #define PAcc.collect()=PAcc'
-* CC in PAcc.collect()
-    CC in PAcc.collect().collect())//is it needed since we have the fixpoint anyway?
-* CC in PAcc.collect()
-    CC in PAcc.CCz
+* CT in PAcc.collect()
+    CT in PAcc.collect().collect())//is it needed since we have the fixpoint anyway?
+* CT in PAcc.collect()
+    CT in PAcc.CTz
 * PT <= PT" in PAcc.collect()
     PT <= PT', PT' <= PT" in PAcc
 * PT <= PT in PAcc.collect()
-    PT in PAcc.CCz
+    PT in PAcc.CTz
 * mdf P <= mdf' P' in PAcc.collect() //TODO: explosive, can we make it more computational? can we mix it with solve? 
     p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
     P' != _ Any // Just for consistency with everything else, not important!
@@ -194,21 +186,22 @@ _______
 	PT <= mdf P in PAcc
 	p(P).interface = empty 
 * T.s <= CORE.T in PAcc.collect()//since they are alias of each other 
-    CORE.T <= T.s in PAcc.collect().CCz //why noy simply in PAcc.CCz?
+    CORE.T <= T.s in PAcc.collect().CTz //why noy simply in PAcc.CTz?
     CORE.T=PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]//TODO: no, CORE.L(s) works but FULL.L(s) misses on FULL.F and on methods from interfaces. Should we use methods(..)?
-* T.s.i <= PT in PAcc.collect()//since method parameter types can not be refined (or since they are aliases?)
-    PT <= T.s.i in PAcc.collect().CCz
+* T.s.i <= PT in PAcc.
+t()//since method parameter types can not be refined (or since they are aliases?)
+    PT <= T.s.i in PAcc.collect().CTz
     PT=PAcc.p(T.P)(s).MH.pari[from T.P;PAcc.p]
 * PT.s <= PT'.s in PAcc.collect()
-    PT <= PT' in PAcc.CCz
-    PT'.s in PAcc.CCz
+    PT <= PT' in PAcc.CTz
+    PT'.s in PAcc.CTz
 * PT'.s.i <= PT.s.i in PAcc.collect()
-    PT <= PT' in PAcc.CCz
-    PT'.s.i in PAcc.CCz
+    PT <= PT' in PAcc.CTz
+    PT'.s.i in PAcc.CTz
 * PT.s.i <= PT'.s.i in PAcc.collect()//since method parameter types can not be refined 
-    PT <= PT' in PAcc.CCz
-    PT'.s.i in PAcc.CCz
+    PT <= PT' in PAcc.CTz
+    PT'.s.i in PAcc.CTz
 * PT1' <= Origin(s, P2') in PAcc.collect()
-    PT1 <= P2', PT1 <= PT1' in PAcc.CCz
-    P2'.s in PAcc.CCz
-    PT1'.s in PAcc.CCz
+    PT1 <= P2', PT1 <= PT1' in PAcc.CTz
+    P2'.s in PAcc.CTz
+    PT1'.s in PAcc.CTz

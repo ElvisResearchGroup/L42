@@ -15,13 +15,8 @@ public abstract class EndError extends RuntimeException{
     this.poss=poss;
     }
   @Override public String getMessage(){
-    if(msg==null){msg=posString(poss)+msgPart+computeMsg();}
+    if(msg==null){msg=Err.posString(poss)+msgPart+computeMsg();}
     return msg;
-    }
-  public String posString(List<Pos>poss){
-    String res="";
-    for(Pos pos:poss){res+=pos;}
-    return res;
     }
   public String computeMsg(){return "";};//override handler
   public final List<Pos> poss;
