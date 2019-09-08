@@ -50,13 +50,18 @@ _______
 * ST.s.i[from P;p] = p.minimize(ST[from P;p].s.i)
 * (OP STz1..STzn)[from P;p] = p.minimize(OP STz1[from P;p]..STzn[from P;p])
 _______
-#define collect(p,Core.Ts)=Core.Ts' //collects transitively implemented interfaces
+#define collect(p,Core.Ts)=Core.Ts'    collect(p,P)=Core.Ts //collects transitively implemented interfaces
 * collect(p,empty)=empty
 * collect(p,T0 Ts)=((T0, Ts') \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface [Ts0] _}=FULL.L
     Ts'=collect(p,p♥Ts0[from T0.P;p])
 * collect(p,T0 Ts)=((T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface Ts0 _}=CORE.L
+* collect(p,P)=Ts[from P;p] //does not collect P
+    p(T0.P)={interface Ts _}=CORE.L
+* collect(p,P)=collect(p,p♥Ts[from P;p]) //does not collect P
+    p(T0.P)={interface Ts _}=FULL.L
+
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -80,7 +85,7 @@ _______
 * origin(p;s; P) = P'
     {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
     
-* refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
+* refine(p;s;P) iff exists T in collect(p,P) such that s in dom(p(T.P))
 _______
 #define p♥FULL.MH = CORE.MH    p♥FULL.TLocal = CORE.T   p♥CsP = P,  p♥FULL.Docs = CORE.Docs
 * p♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])

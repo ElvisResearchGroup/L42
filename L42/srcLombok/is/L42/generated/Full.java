@@ -34,10 +34,10 @@ public class Full {
         return nc.withE(((LL)nc.e).withCs(popL(cs), fullF,coreF));
         }));      
       }
-    @Override public List<LDom> dom(){return ms.stream().map(m->m.key()).collect(Collectors.toList());}
+    @Override public List<LDom> dom(){return L(ms.stream().map(m->m.key()));}
     @Override public L c(C c){
       return (L)ms.stream().filter(m->m.key().equals(c))
-      .findFirst().get()._e();
+      .reduce(toOneOr(()->bug())).get()._e();
       }
     @Override public L cs(List<C> cs){
       assert !cs.isEmpty();

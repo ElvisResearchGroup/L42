@@ -91,14 +91,12 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     long cut=res.ms().stream()
       .takeWhile(m->!(m instanceof Full.L.NC))
       .count();
-    var mwts=res.ms().stream().limit(cut)
+    var mwts=L(res.ms().stream().limit(cut)
       .filter(m->m instanceof Full.L.MWT)
-      .map(m->(Full.L.MWT)m)
-      .collect(Collectors.toList());
-    var ncs=res.ms().stream().skip(cut)
+      .map(m->(Full.L.MWT)m));
+    var ncs=L(res.ms().stream().skip(cut)
       .filter(m->m instanceof Full.L.NC)
-      .map(m->(Full.L.NC)m)
-      .collect(Collectors.toList());
+      .map(m->(Full.L.NC)m));
     if(mwts.size()+ncs.size()!=res.ms().size()){
       return makeErr(res.poss(),info,Err.malformedCoreMember(info));
       }

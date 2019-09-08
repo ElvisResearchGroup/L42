@@ -4,11 +4,13 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.todo;
 
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -23,6 +25,7 @@ import is.L42.generated.LL;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.visitors.CloneVisitor;
@@ -182,16 +185,25 @@ public class Program implements Visitable<Program>{
       default: return false;
       }
     }
-/*
-  
-    _______
-#define origin(p;s;P) = P'   refine(p;s;P)
-* origin(p;s; P) = P'
-    {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
-    
-* refine(p;s;P) iff exists P' in collect(p,P) such that s in dom(p(P'))
-    
-    */
+  @SuppressWarnings("serial")
+  public static class InvalidImplements extends EndError{
+    public InvalidImplements(List<Pos> poss, String msg) { super(poss, msg);}
+    }
+  public P origin(S s, P.NCs p) throws InvalidImplements{
+    List<T> origins=L(collect(p.toNCs()),(c,t)->{
+      if(!refine(s,t.p().toNCs())){c.add(t);}
+      });
+    if(origins.size()==1){return origins.get(0).p();}
+    throw new InvalidImplements(of(p).poss(),
+      Err.moreThenOneMethodOrigin(s,origins));
+    }
+  public boolean refine(S s, P.NCs p){
+    for(T t:collect(p)){
+      if(of(t.p()).dom().contains(s)){return true;}
+      }
+    return false;
+    }
+
   public P minimize(P path){
     if(!path.isNCs()){return path;}
     return minimize(path.toNCs());
@@ -227,9 +239,7 @@ public class Program implements Visitable<Program>{
   public T _chooseT(List<T> ts){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
-    var ps=ts.stream().map(t->t.p())
-    .filter(p->isSubtype(ts.stream().map(t->t.p()),p))
-    .collect(Collectors.toList());
+    var ps=L(ts.stream().map(t->t.p()).filter(p->isSubtype(ts.stream().map(t->t.p()),p)));
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
     }

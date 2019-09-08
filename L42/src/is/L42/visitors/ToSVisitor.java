@@ -576,7 +576,7 @@ public class ToSVisitor implements CollectorVisitor{
     var ds0=sFor.ds();
     var b0=sFor.body();
     kw("for");
-    var es=ds0.stream().map(ds->ds._e()).collect(Collectors.toList());
+    var es=L(ds0.stream().map(ds->ds._e()));
     seqHas(i->{
       visitVarTx(ds0.get(i)._varTx());
       c(" in ");//force spaces here

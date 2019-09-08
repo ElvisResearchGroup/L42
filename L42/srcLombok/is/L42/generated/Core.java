@@ -56,13 +56,12 @@ public class Core {
         return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
         }));   
       }
-    @Override public List<LDom> dom(){return Stream.concat(
+    @Override public List<LDom> dom(){return L(Stream.concat(
       mwts.stream().map(m->(LDom)m.key()),
-      ncs.stream().map(m->(LDom)m.key())
-      ).collect(Collectors.toList());}
+      ncs.stream().map(m->(LDom)m.key())));}
     @Override public L c(C c){
       return ncs.stream().filter(m->m.key().equals(c))
-      .findFirst().get().l();
+      .reduce(toOneOr(()->bug())).get().l();
       }
     @Override public L cs(List<C> cs){
       assert !cs.isEmpty();

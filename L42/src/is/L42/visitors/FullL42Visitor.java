@@ -413,7 +413,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
     check(ctx);
     var res=visitEAtomic(ctx.eAtomic());
-    var uOpList=ctx.children.stream().takeWhile(c->c instanceof TerminalNodeImpl).collect(Collectors.toList());
+    var uOpList=L(ctx.children.stream().takeWhile(c->c instanceof TerminalNodeImpl));
     Collections.reverse(uOpList);
     assert ctx.getChild(uOpList.size())==ctx.eAtomic();
     for(int i: range(uOpList.size()+1,ctx.children.size())){

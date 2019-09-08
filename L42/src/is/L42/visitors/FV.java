@@ -58,10 +58,9 @@ public class FV extends PropagatorCollectorVisitor{
     result=acc;
     }
   public static List<X> domFullDs(List<Full.D>ds){
-    return allVarTx(ds)
+    return L(allVarTx(ds)
       .map(vtx->vtx._x())
-      .filter(x->x!=null)
-      .collect(Collectors.toList());
+      .filter(x->x!=null));
     }
   public static Stream<Full.VarTx> allVarTx(List<Full.D>ds){
     return ds.stream().flatMap(d->Stream.concat(Stream.of(
@@ -115,6 +114,6 @@ public class FV extends PropagatorCollectorVisitor{
     acc(acc);
     }
   public static List<X> domDs(List<Core.D>ds){
-    return ds.stream().map(d->d.x()).collect(Collectors.toList());
+    return L(ds.stream().map(d->d.x()));
     }
   }

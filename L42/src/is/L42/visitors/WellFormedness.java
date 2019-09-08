@@ -216,12 +216,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       );
     }
   private void declaredVariableNotRedeclared(Stream<HasVisitable>s,Stream<X>kxs, List<X> domDs) {
-    var redefined=Stream.concat(kxs,s
+    var redefined=L(Stream.concat(kxs,s
        .filter(e->e!=null)
        .flatMap(e->Bindings.of(e.visitable()).stream())
        )
-     .filter(x->domDs.contains(x))
-     .collect(Collectors.toList());
+     .filter(x->domDs.contains(x)));
     if(redefined.isEmpty()){return;}
     err(Err.redefinedName(redefined));
     }
@@ -438,12 +437,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       Supplier<Stream<Integer>> privateAbstract){
     long countM=dom.get().distinct().count();
     if(countM<dom.get().count()) {
-      var dups=dups(dom.get().collect(Collectors.toList()));
+      var dups=dups(L(dom.get()));
       err(Err.duplicatedName(dups));
       }
     long countI=ts.get().distinct().count();
     if(countI<ts.get().count()) {
-      var dups=dups(ts.get().collect(Collectors.toList()));
+      var dups=dups(L(ts.get()));
       err(Err.duplicatedName(dups));
       }
     ts.get().forEach(t->{
@@ -451,12 +450,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(isAny){err(Err.duplicatedNameAny());}
       });      
     if(privateAbstract.get().count()>1) {
-      var uniqueNums=privateAbstract.get().collect(Collectors.toList());
+      var uniqueNums=L(privateAbstract.get());
       err(Err.singlePrivateState(uniqueNums));
       }
     if(isInterface){
       if(impl.get().count()!=0){
-        var mis=impl.get().collect(Collectors.toList());
+        var mis=L(impl.get());
         err(Err.methodImplementedInInterface(mis));
         }
       }

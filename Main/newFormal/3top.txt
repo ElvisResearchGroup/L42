@@ -87,7 +87,7 @@ _______
     ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
     Ti = T'i if xP'i = Pi < T'i
     Ti = I.G(x'i) if xP'i = x'i
-    {P.m(x1..xn).i}=I.p.opOptions(OP, T0..Tn)
+    {P.m(x1..xn).i}=I.p.opOptions(OP, T0..Tn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
     xP"1..xP"n=xP'0..xP'n\i
     ER = CTz0 U..U CTzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER

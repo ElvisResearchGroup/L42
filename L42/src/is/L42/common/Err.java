@@ -157,6 +157,8 @@ public class Err {
   "The following expression is not a correct statement: "+_1
   ;}public static String nonUniqueNumber(Object _1,Object _2){return
   "The unique number "+_1+" is in the domain of more then one library literal; others are in positions \n"+_2
+  ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
+  "The method "+_1+" is inherited from multiple interfaces, and do not have a single origin. Origins are "+_2
  
   ;}
 }

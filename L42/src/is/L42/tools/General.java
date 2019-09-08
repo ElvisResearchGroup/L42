@@ -8,9 +8,13 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.PrimitiveIterator;
 import java.util.function.BiConsumer;
+import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class General {
   public static final class IterableWrapper implements List<Integer>, Iterator<Integer>{
@@ -56,6 +60,10 @@ public class General {
   public static IterableWrapper range(int startInclusive,int endExclusive) {
     return new IterableWrapper(startInclusive,endExclusive);
     }
+  public static <T, E extends RuntimeException> BinaryOperator<T> toOneOr(Supplier<E> err){
+    return (element, otherElement) -> {throw err.get();};
+    }
+    
   public static <T> List<T>popL(List<T>l){return l.subList(1, l.size());}
   public static <T> List<T>pushL(T e,List<T>l){
     ArrayList<T> res=new ArrayList<>();
@@ -70,6 +78,7 @@ public class General {
     return Collections.unmodifiableList(res);
     }
 
+  public static <T> List<T>L(Stream<T> s){return s.collect(Collectors.toList());}
   public static <T> List<T>L(){return Collections.emptyList();}
   public static <T> List<T>L(T e){return Collections.singletonList(e);}
   public static <T> List<T>L(Consumer<List<T>> c){
@@ -104,9 +113,9 @@ public class General {
       c.accept(res,a.get(i),b.get(i));
     return Collections.unmodifiableList(res);
     }
-  public static Error unreachable(){throw new Error("Postcondition violation");}
-  public static Error todo(){throw new Error("Not implemented yet");}
-  public static Error bug(){throw new Error("Precondition violation");}
+  public static RuntimeException unreachable(){throw new Error("Postcondition violation");}
+  public static RuntimeException todo(){throw new Error("Not implemented yet");}
+  public static RuntimeException bug(){throw new Error("Precondition violation");}
  
   @SuppressWarnings("unused") private static <T> void testL(T e) {
     List<T> x = L(e);
