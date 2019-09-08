@@ -18,6 +18,7 @@ import java.util.stream.Stream;
 import is.L42.generated.C;
 import is.L42.generated.CT;
 import is.L42.generated.Core;
+import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
@@ -203,6 +204,53 @@ public class Program implements Visitable<Program>{
       }
     return false;
     }
+  public Core.MH toCore(Full.MH mh){
+    Mdf mdf=mh._mdf();
+    if(mdf==null){mdf=Mdf.Immutable;}
+    List<Doc> docs=L(mh.docs(),(c,d)->c.add(toCore(d)));
+    T t=toCore(mh.t());
+    S s=mh.key();
+    List<T> pars=L(mh.pars(),(c,ti)->c.add(toCore(ti)));
+    List<T> exceptions=L(mh.exceptions(),(c,ti)->c.add(toCore(ti)));
+    return new Core.MH(mdf, docs, t, s, pars, exceptions);
+    }
+  public T toCore(Full.T t){
+    Mdf mdf=t._mdf();
+    if(mdf==null){mdf=Mdf.Immutable;}
+    List<Doc> docs=L(t.docs(),(c,d)->c.add(toCore(d)));
+    if (t._p()!=null){return new T(mdf,docs,minimize(t._p()));}
+    int n=findScope(t.cs().get(0),0);
+    return new T(mdf,docs,minimize(P.of(n, t.cs())));
+    }
+    private int findScope(C c, int acc){
+      if(top.dom().contains(c)){return acc;}
+      if(pTails.isEmpty()){return acc;}
+      assert top.isFullL();
+      for(Full.Doc d:((Full.L)top).docs()){
+        if(d.texts().size()!=1){continue;}
+        if(d.texts().get(0).equals("__STOP_SCOPE__")){return acc;}
+      }
+      return pop().findScope(c, acc+1);
+      }
+  public Core.Doc toCore(Full.Doc doc){
+    List<Doc> docs=L(doc.docs(),(c,d)->c.add(toCore(d)));
+    return new Core.Doc(_toCore(doc._pathSel()),doc.texts(), docs);
+    }
+  public Core.PathSel _toCore(Full.PathSel _p){
+    if(_p==null){return null;}
+    if(_p._p()==null && _p.cs().isEmpty()){
+      return new Core.PathSel(P.coreThis0.p(),_p._s(),_p._x());
+      }
+    assert _p._p()==null ||_p.cs().isEmpty();
+    if(_p._p()!=null){
+      return new Core.PathSel(_p._p(),_p._s(),_p._x());
+      }
+    int n=findScope(_p.cs().get(0),0);   
+    return new Core.PathSel(P.of(n,_p.cs()),_p._s(),_p._x());
+    }
+
+
+
 
   public P minimize(P path){
     if(!path.isNCs()){return path;}
@@ -282,19 +330,7 @@ public class Program implements Visitable<Program>{
       //this.methods(pi)
       }});
     }
-    /*
-#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
-* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
-    i in 0..n,
-    s = methName(OP_i)(x1..xn)
-    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
-    P'1 ... P'n = (T0..Tn\i).Ps
-    P=Ti.P
-    p|-P'1<=P1 .. p|-P'1<=P1
-    
-    */
-  public T toCore(Full.T t){return null;}//TODO:
-  public Core.MH toCore(Full.MH mh){return null;}//TODO:
+
   public static Program parse(String s){
     var r=Parse.program("-dummy-",s);
     assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
