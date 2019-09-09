@@ -101,18 +101,16 @@ _______
 * p♥FULL.Docs = CORE.Docs
     all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
 _______
-#define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
+#define methods(p,P0)=CORE.MHs //methods returns a sequence with relevant order
 * methods(p,P0)=CORE.L.MWTs[from P0;p]
     p(P0)=CORE.L
-* methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
-    p(P0)=interface? Ts{ Ms0 }=FULL.L
-    Ms=expandFields(Ms0)
+* methods(p,P0)=MH1..MHn //method headers are minimized, not the body
+    p(P0)=interface? Ts{ Ms }=FULL.L
+    MHs=expandFields(Ms)
     Ps=collect(p,Ts[from P0;p]).Ps
-    s1..sn=[ss | P in Ps, ss = expandFields(p(T.P).Ms).ss].flatten().distinct()//an ordered version of {s | P in Ps, s in expandFields(p(P).Ms).ss}
+    s1..sn=[extractMHs(p,p(P).Ms).ss | P in Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p,p(P).Ms).ss}
     origin(p;s1,P0)..origin(p;sn,P0) all defined
-    [Mi,_]=[MWT| MWT in Ms and MWT.s=si],[MWT| P in Ps such that methods(p,P)(si)=MWT]   for i in 1..n
-    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
-    MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
+    [MHi,_]=[MH| MH in MHs and MH.s=si],[MH| P in Ps such that methods(p,P)(si)=MH] for i in 1..n
 _______
 #define p.minimize(P) = P'    p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
 * p.minimize(P) = P
@@ -195,12 +193,13 @@ _______
 * capsuleToLent(capsule P) = lent P
 * capsuleToLent(mdf P) = mdf P, if mdf != capsule
 _______
-#define expandFields(Ms)=Ms' //need to keep the order
-* expandFields(empty)=empty
-* expandFields(M,Ms)=M,expandFields(Ms) 
-    M not of form F
-* expandFields(T x,Ms)=read method T x(), expandFields(Ms)
+#define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
+* expandFields(p;empty)=empty
+* expandFields(p;NC,Ms)=expandFields(Ms) 
+* expandFields(p;M,Ms)=M,expandFields(Ms) 
+    M of form MWT or MI
+* expandFields(p;T x,Ms)=read method T x(), expandFields(Ms)
     T = toRead(T)
-* expandFields(T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
+* expandFields(p;T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
     T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
 * expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)    

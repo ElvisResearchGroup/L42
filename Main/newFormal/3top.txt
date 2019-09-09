@@ -15,31 +15,33 @@ _______
 * (ST1 .. STn).s(.i)? = ST1.s(.i)? .. STn.s(.i)?
 * (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
 _______
-#define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    sortM(p) = p'    addInfo(p) = p'   
+#define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
     p0 = sortHeader(p) IfNotE(p0) PR = headerErr(p)
-    MWT1..MWTn, NCs=sortMs(p0) IfNotE(MWT1..MWTn, NCs) PR = implementsErr(p1)
-    CTz.add(p0; MWT1; e?1).. .add(p0; MWTn; e?n) = CTz1
-    p1=p0.update(p0(This0)[Ms=MWT1,...,MWTn, NCs])
+    Doc1 MH1 FULL.e?1..Docn MHn FULL.e?n; NCs=sortMs(p0) IfNotE(NCs) PR = implementsErr(p1)
+    CTz.add(p0; MH1 FULL.e?1; e?1).. .add(p0; MHn FULL.e?n; e?n) = CTz1
+    p1=p0.update(p0(This0)[Ms=Doc1 MH1 .. Docn MHn, NCs])
     topNC(CTz1,p1,NCs.Cs) => PR1
     PR1 = CTz2; p2 IfErr(PR1) PR = PR1
     I[C=empty;p2;G=empty;p2.minimize(CTz2)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
-    p3 = p2.update(p2(This0)[MWT1[e?=e?'1]..MWTn[e?=e?'n]])
-    p4=flagTyped(addInfo(p3)) IfNotE(p4) PR=illTyped(p3)
-    PR = CTz2; p4
+    L=p2(This0)[Doc1 MH1 e?'1 .. Doc1 MH1 e?'1]//add the e?'i as meth bodies
+    p3 = p2.update(L)
+    p3=flagTyped(addInfo(p2.update(L))) IfNotE(p3) PR=illTyped(p2.update(L))
+    PR = CTz2; p3
 
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;C,Cs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=class]
-    Y!p(This0)(C) = Half.e; _; _; _
+    p(This0)(C) = FULL.Docs C=FULL.e
+    Y!FULL.e = Half.e; _; _; _
     I[C?=C;p;G=empty;p.minimize(CTz)]!Half.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
-    p' = p.update(p(This0)[C=refreshUniqueNames(CORE.L)])
+    p' = p.update(p(This0)[p♥FULL.Docs C=refreshUniqueNames(CORE.L)])//and p♥Docs of nested C
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1;p";Cs) => PR
     
@@ -49,10 +51,13 @@ _______
     Ts0=p♥Ts
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
-
-* sortMs(p) = MWTs\ss,[MWTs(s)| s in ss],[NC[Docs=p♥NC.Docs]| NC in p(This0).Ms] //[ ..|..] is like {..|..} but produces a list
-    MWTs = methods(p,This0) //all methods
-    ss = expandFields(p(This0).Ms).ss //present methods, also including the expanded fields methods
+_______
+#define sortMs(p) = (CORE.Docs CORE.Mh FULL.e?)s NCs
+* sortMs(p) = Docs1 MH1 e?1 .. Docsn MHn e?n; NCs
+    MH1..MHn = methods(p,This0) //all methods
+    Docsi=p♥(p(This0).Ms(MHi.s).Docs)
+    e?i=e if p(This0).Ms(MHi.s).e=e
+    e?i=empty otherwise //includes p(This0).Ms(MHi.s) undefined
 
 * addInfo(p)={interface? Ts MWTs NCs Info};pTail
     p={interface? Ts MWTs NCs};pTail

@@ -95,27 +95,37 @@ public class Program implements Visitable<Program>{
     }
   public Core.E from(Core.E e,P.NCs source){
     assert minimize(source)==source;
-    return e.visitable().accept(new CloneVisitor(){
-      @Override public P visitP(P p){return from(p,source);}
+    return fromVisitor(source).visitE(e);
+    }
+  private CloneVisitor fromVisitor(P.NCs source){
+    return new CloneVisitor(){//no need to override visitT(Half.T)
+      @Override public ST visitSTMeth(ST.STMeth stMeth){
+        return minimize(super.visitSTMeth(stMeth));
+        }
+     @Override public ST visitSTOp(ST.STOp stOp){ 
+        return minimize(super.visitSTOp(stOp));
+        }
+      @Override public Core.T visitT(Core.T  t){
+        return t.withP(from(t.p(),source));
+        }
+      @Override public P visitP(P p){
+        return from(p,source);
+        }
       @Override public Full.L visitL(Full.L l){throw bug();}
       @Override public Core.L visitL(Core.L l){
         return new From(Program.this,source,0).visitL(l);
-      }});
+        }
+      };
     }
-  public T from(T t,P.NCs source){return t.withP(from(t.p(),source));}
-  public List<T> from(List<T> ts,P.NCs source){return L(ts,t->from(t,source));}
+  public T from(T t,P.NCs source){return fromVisitor(source).visitT(t);}
+  public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
+  public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
 
   public List<CT> fromCTz(List<CT>ctz,P.NCs source){return L(ctz,ct->from(ct,source));}
   public CT from(CT ct,P.NCs source){
     assert minimize(source)==source;
-    var fromST=new CloneVisitor(){//no need to override visitT(Half.T)
-      @Override public ST visitSTMeth(ST.STMeth stMeth){
-        return minimize(super.visitSTMeth(stMeth));}
-      @Override public ST visitSTOp(ST.STOp stOp){
-        return minimize(super.visitSTOp(stOp));}
-      @Override public Core.T visitT(Core.T  t){return from(t,source);}
-      };
-    return ct.withSt(fromST.visitST(ct.st())).withT(fromST.visitT(ct.t()));
+    var v=fromVisitor(source);
+    return ct.withSt(v.visitST(ct.st())).withT(v.visitT(ct.t()));
     }
   public List<T> collect(P.NCs p){
     LL l=of(p);
@@ -249,8 +259,59 @@ public class Program implements Visitable<Program>{
     return new Core.PathSel(P.of(n,_p.cs()),_p._s(),_p._x());
     }
 
+  public List<Full.L.M>expandFields(List<Full.L.M> ms){
+    return L(ms,(c,m)->{
+      if(m instanceof Full.L.NC){return;}
+      if(!(m instanceof Full.L.F)){c.add(m);return;}
+      Full.L.F f=(Full.L.F)m;
+      Core.T t=toCore(f.t());
+      Core.T tr=TypeManipulation._toRead(t);
+      assert tr!=null;
+      //TODO:
+      });
+    }
+    /*
+_______
+#define expandFields(Ms)=Ms' //need to keep the order
+* expandFields(empty)=empty
+* expandFields(NC,Ms)=expandFields(Ms) 
+* expandFields(M,Ms)=M,expandFields(Ms) 
+    M of form MWT or MI
+* expandFields(T x,Ms)=read method T x(), expandFields(Ms)
+    T = toRead(T)
+* expandFields(T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
+    T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
+* expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)        
+*/
 
 
+  List<Core.MH> methods(P p){//bodies can be recovered later
+    if(!p.isNCs()){return L();}
+    P.NCs p0=p.toNCs();
+    LL ll=of(p0);
+    if(!ll.isFullL()){
+      return L(((Core.L)ll).mwts(),(c,m)->c.add(from(m.mh(),p0)));
+      }
+    Full.L l=(Full.L)ll;
+    
+    return L();
+    }
+/*
+_______
+#define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
+* methods(p,P0)=CORE.L.MWTs[from P0;p]
+    p(P0)=CORE.L
+* methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
+    p(P0)=interface? Ts{ Ms0 }=FULL.L
+    Ms=expandFields(Ms0)
+    Ps=collect(p,Ts[from P0;p]).Ps
+    s1..sn=[ss | P in Ps, ss = expandFields(p(T.P).Ms).ss].flatten().distinct()//an ordered version of {s | P in Ps, s in expandFields(p(P).Ms).ss}
+    origin(p;s1,P0)..origin(p;sn,P0) all defined
+    [Mi,_]=[MWT| MWT in Ms and MWT.s=si],[MWT| P in Ps such that methods(p,P)(si)=MWT]   for i in 1..n
+    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
+    MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
+
+*/
 
   public P minimize(P path){
     if(!path.isNCs()){return path;}
