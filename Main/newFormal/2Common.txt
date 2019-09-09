@@ -101,10 +101,10 @@ _______
 * p♥FULL.Docs = CORE.Docs
     all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
 _______
-#define methods(p,P0)=CORE.MHs //methods returns a sequence with relevant order
-* methods(p,P0)=CORE.L.MWTs[from P0;p]
-    p(P0)=CORE.L
-* methods(p,P0)=MH1..MHn //method headers are minimized, not the body
+#define methods(p,P0,FULL.Ms)=CORE.MHs //methods returns a sequence with relevant order
+* methods(p,P0,empty)=CORE.L.MWTs[from P0;p]
+    p(P0)=CORE.L //TODO: handle case with Ms not empty
+* methods(p,P0,empty)=MH1..MHn //method headers are minimized, not the body
     p(P0)=interface? Ts{ Ms }=FULL.L
     MHs=expandFields(Ms)
     Ps=collect(p,Ts[from P0;p]).Ps
