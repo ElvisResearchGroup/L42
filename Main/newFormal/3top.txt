@@ -17,17 +17,16 @@ _______
 _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
-    CORE.L,FULL.Ms = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
-    Doc1 MH1 FULL.e?1..Docn MHn FULL.e?n; NCs = sortMs(p,FULL.Ms)
-      IfNotE(NCs) PR = implementsErr(p1)
-    p0=p.update(p(This0)[Doc1 MH1 .. Docn MHn])//no need to update info
-    CTz.add(p0; MH1 FULL.e?1; e?1).. .add(p0; MHn FULL.e?n; e?n) = CTz0
+    CORE.L;sDe;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
+    MH1..MHn = methods(p,This0) IfNotE(MH1..MHn) PR = headerErr(p)
+    p0=p.update(updateInfo(p,MH1 .. MHn))
+    CTz.add(p0; MH1 sDe(MH1.s).e?; e?1).. .add(p0; MHn sDe(MHn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,NCs) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
     I[C=empty;p1;G=empty;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
-    L=p1(This0)[Doc1 MH1 e?'1 .. Doc1 MH1 e?'1]//add the e?'i as meth bodies
-    p2=flagTyped(updateInfo(p1,L)) IfNotE(p2) PR=illTyped(p1.update(L))
+    L=updateInfo(p1, p1♥sDe(MH1.s).Doc MH1 e?'1 .. p1♥sDe(MHn.s).Doc MH1 e?'1)//add the e?'i as meth bodies
+    p2=flagTyped(p1.update(L)) IfNotE(p2) PR=illTyped(p1.update(L))
     PR = CTz2; p2
 
 * topNC(CTz;p;empty) =>CTz;p
@@ -44,26 +43,24 @@ _______
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1;p";Cs) => PR
     
-* sortHeader({reuse[URL] Ms};pTail) = CORE.L, Ms
+* sortHeader({reuse[URL] Ms};pTail) =//wf: no Docs if reuse 
+  CORE.L;{s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
     followURL(URL)=CORE.L //with info
  //note, the result must be well formed
 * sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
-* sortHeader({interface? [Ts] Ms};pTail) = {interface? [Ts'] #norm{typeDep=Ts'.Ps}}, Ms
+* sortHeader(p) = {interface? [Ts'] #norm{typeDep=Ts'.Ps} p♥Docs};
+    {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
+    p(This0)={interface? [Ts] Ms Docs}
     Ts0=p♥Ts
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
-_______
-#define sortMs(p,FULL.Ms) = (CORE.Docs CORE.Mh FULL.e?)s FULL.NCs
-* sortMs(p,FULL.MS) = Docs1 MH1 e?1 .. Docsn MHn e?n; NCs
-    MH1..MHn = methods(p,This0,FULL.Ms) //all methods
-    Docsi=p♥(p(This0).Ms(MHi.s).Docs)
-    e?i=e if p(This0).Ms(MHi.s).e=e
-    e?i=empty otherwise //includes p(This0).Ms(MHi.s) undefined
 
-* addInfo(p)={interface? Ts MWTs NCs Info p♥FULL.Docs};pTail
-    p={interface? Ts MWTs NCs FULL.Docs};pTail
-    Ps;Ps'=collectDeps(p;Ts) U collectDeps(p;MWTs) U collectDeps(NCs.Docss) //where (Ps0; Ps0') U (Ps1; Ps1') = Ps0, Ps1; Ps0', Ps1'
-    Info=#norm{typeDep=Ps,coherentDep=Ps',friendsDep= ??Ps,usedMethDep=??(P.s)s,privateImpl=??Ps}
+* updateInfo(p,MWTs)={interface? Ts MWTs0 MWTs NCs Info0+Info}
+    p(This0)=CORE.L={interface? Ts MWTs0 NCs Info0 Docs}
+    Ps;Ps'=collectDeps(p;MWTs) U collectDeps(NCs.Docss)
+    //where (Ps0; Ps0') U (Ps1; Ps1') = Ps0, Ps1; Ps0', Ps1'
+    Info=#norm{typeDep=Ps,coherentDep=Ps',??, declaresClassMethods?}
+    declaresClassMethods?=empty iff class notin MWTs.mdfs
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)

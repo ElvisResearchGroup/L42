@@ -94,23 +94,45 @@ _______
 * p♥P = p.minimize(P)
 * p♥C.Cs = p.minimize(Thisn.C.Cs) //not already minimized
     where n is the smallest number such that either
-      C in dom(p.get(n))
+      C in dom(p(Thisn))//special care for dom of reuse or ...
       or @{__STOP_SCOPE__} in p.get(n).Docs
       or p.get(n+1) undefined
 
 * p♥FULL.Docs = CORE.Docs
     all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
 _______
-#define methods(p,P0,FULL.Ms)=CORE.MHs //methods returns a sequence with relevant order
-* methods(p,P0,empty)=CORE.L.MWTs[from P0;p]
-    p(P0)=CORE.L //TODO: handle case with Ms not empty
-* methods(p,P0,empty)=MH1..MHn //method headers are minimized, not the body
-    p(P0)=interface? Ts{ Ms }=FULL.L
-    MHs=expandFields(Ms)
+#define methods(p,P0)=CORE.MHs    methods(p,P0,FULL.L)=CORE.MHs //methods returns a sequence with relevant order
+* methods(p,P0)=CORE.L.MWTs[from P0;p]
+    p(P0)=CORE.L
+* methods(p,P0)=MHs
+    p(P0) = {reuse[URL] Ms }
+    followURL(URL) = CORE.L
+    MHs = CORE.L.MWTs.MHs,[(p.navigate(P0)♥MWT.MH)[from P0;p] | MWT in Ms]
+    no repetition in MHs.ss //else header error
+* methods(p,P0)=method(p,P0,FULL.L[Ms])
+    p(P0) = {... Ms }
+    readFolder(pTail)= FULL.L
+    dom(Full.L) disjoint dom(Ms) //else header error
+* methods(p,P0)=method(p,P0,FULL.L[Ms])
+    p(P0)={interface? Ts Ms }=FULL.L
+
+* methods(p,P0,{interface? Ts Ms })=MH1..MHn
+    MHs=extractMHs(p.navigate(P0);Ms)
     Ps=collect(p,Ts[from P0;p]).Ps
-    s1..sn=[extractMHs(p,p(P).Ms).ss | P in Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p,p(P).Ms).ss}
+    s1..sn=[extractMHs(p.navigate(P),p(P).Ms).ss | P in Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p.navigate(P),p(P).Ms).ss}
     origin(p;s1,P0)..origin(p;sn,P0) all defined
     [MHi,_]=[MH| MH in MHs and MH.s=si],[MH| P in Ps such that methods(p,P)(si)=MH] for i in 1..n
+_______
+#define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
+* extractMHs(p;empty)=empty
+* extractMHs(p;NC,Ms)=extractMHs(Ms) 
+* extractMHs(p;MI,Ms)=extractMHs(Ms) 
+* extractMHs(p;MWT,Ms)=p♥MWT.MS,extractMHs(Ms) 
+* extractMHs(p;T x,Ms)=read method p♥T x(), expandFields(Ms)
+    p♥T = toRead(p♥T)
+* extractMHs(p;T x,Ms)=mut method capsuleToLent(p♥T) #x(), extractMHs(toRead(p♥T) x,Ms)
+    p♥T != toRead(p♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
+* extractMHs(var T x,Ms)=mut method Void x(p♥T that), extractMHs(T x,Ms)    
 _______
 #define p.minimize(P) = P'    p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
 * p.minimize(P) = P
@@ -192,14 +214,3 @@ _______
 
 * capsuleToLent(capsule P) = lent P
 * capsuleToLent(mdf P) = mdf P, if mdf != capsule
-_______
-#define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
-* expandFields(p;empty)=empty
-* expandFields(p;NC,Ms)=expandFields(Ms) 
-* expandFields(p;M,Ms)=M,expandFields(Ms) 
-    M of form MWT or MI
-* expandFields(p;T x,Ms)=read method T x(), expandFields(Ms)
-    T = toRead(T)
-* expandFields(p;T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
-    T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
-* expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)    

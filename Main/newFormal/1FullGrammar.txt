@@ -29,7 +29,7 @@ _______
     //or in a private nested class or in an L in a method
     //usedMethods//methods used either directly or in a private nested class or in an L in a method
     //privateSupertypes: interfaces implemented by a private nested class or in an L in a method
-    //declaresClassMethods (since it can be casted to class P)//true if a private one is there
+    //declaresClassMethods (since it can be casted to class P)
     //may add closed/open class (since private abstract methods may be removed if unused)
     //may add 'free this': 'this' only used as receiver
   Flag ::= norm | typed
@@ -64,7 +64,7 @@ _______
   ER ::= CTz;CORE.e? | Err
   DsR ::= CTz;CORE.Ds | Err
   KR ::= CTz;CORE.K | Err
-  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| implementsErr(p) | inferenceFailure(I,STz) | throw(p,A,v)
+  Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| headerErr(p) | inferenceFailure(I,STz) | throw(p,A,v)
   R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz1 .. xn:STzn
@@ -82,9 +82,11 @@ _______
   pTail::= CORE.L | C:LL
   p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
   // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
+  sDe::= s1->FULL.Docs1,FULL.e?1 .. sn->FULL.Docsn,FULL.e?n
 _______
-#define functional notation, update and '\' (set minus) for LL (over the domain Ldom)
-  /*...*/ //note, LL(Cs) may return an e not of form LL
+#define functional notation, dom, update and '\' (set minus) for LL (over the domain Ldom)
+  /*...*/ //note, LL(Cs) may return an e not of form LL //TODO: understand below
+//special care for dom of reuse or ...; never do FULL.L(s), always use methods, error for update if reuse/dots present
 _______
 #define FULL.L[M]=FULL.L', CORE.L[MWT]=CORE.L', CORE.L[NC]=CORE.L'
   /*...*/ replace the member with the same key, or add a new one if novel
@@ -187,6 +189,7 @@ _______
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty
 * CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
+* FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L //TODO: make in code
 * LL:
     no repetition in LL.Ms.LDom
     no repetition in LL.H.Ts
