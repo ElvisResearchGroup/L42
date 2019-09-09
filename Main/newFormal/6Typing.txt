@@ -168,7 +168,7 @@ _______
 * toLent(G)(x)=toLent(G(x))[with var?=empty] otherwise //thus undefined where toLent undefined
 
 * toLent(mut P)=lent P //toLent(fwd mut P) and toLent(fwd%Mut P) undefined
-* toLent(T)=T  if T.mdf notin {lent, fwd mut, fwd%Mut}
+* toLent(T)=T  if T.mdf notin {mut, fwd mut, fwd%Mut}
 _______
 #define fwd% T = T'    fwd_or_fwd%_in Ts    noFwd T = T'    noFwd Ts=Ts'
 * fwd% imm P=fwd%Imm P

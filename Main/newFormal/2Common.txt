@@ -25,9 +25,6 @@ _______
 * p.navigate(Thisn.C1..Ck) = p.pop(n).push(C1)...push(Ck)
 _______
 #define P0[from P1;p] = P2 e[from P;p] = e' e[from P;p;n] = e'  CTz[from P;p] = CTz'
-* Thisn.Cs[from Thism.C1..Ck;p] = Thism.C1..C(k-n).Cs if n<=k
-* Thisn.Cs[from Thism.C1..Ck;p] = p.minimize(This(m+n-k).Cs) if n>k
-
 * Thisn.Cs[from Thism.C1..Ck;p] = Thism.C1..C(k-n).Cs if n<k
 * Thisn.Cs[from Thism.C1..Ck;p] = p.minimize(This(m+n-k).Cs) if n>=k
 

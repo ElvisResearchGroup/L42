@@ -55,10 +55,10 @@ _______
 _______
 #define auxiliary grammars
   ST::=CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type?
-  HALF.xP ::= x | P<:HALF.T | %STz%<:HALF.T
+  HALF.xP ::= x | P<:STz | %STz%<:STz
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? HALF.T x = e
-  HALF.T::= mdf? STz
+  HALF.T::= mdf? [STz]//TODO: update in toString
   CT ::= ST<=HALF.T
   PR ::= CTz;CORE.L;pTails | Err
   ER ::= CTz;CORE.e? | Err
