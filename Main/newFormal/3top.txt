@@ -39,7 +39,7 @@ _______
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
-    p' = p.update(p(This0)[p♥FULL.Docs C=refreshUniqueNames(CORE.L)])//and p♥Docs of nested C
+    p' = p.update(updateInfo(p,FULL.Docs C=CORE.L))refreshUniqueNames//and p♥Docs of nested C
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1;p";Cs) => PR
     
@@ -48,22 +48,24 @@ _______
     followURL(URL)=CORE.L //with info
  //note, the result must be well formed
 * sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
-* sortHeader(p) = {interface? [Ts'] #norm{typeDep=Ts'.Ps} p♥Docs};
+* sortHeader(p) = {interface? [Ts'] #norm{typeDep=Ts'.Ps U collectDeps(p♥Docs)} p♥Docs};
     {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
     p(This0)={interface? [Ts] Ms Docs}
     Ts0=p♥Ts
     Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
 
-* updateInfo(p,MWTs)={interface? Ts MWTs0 MWTs NCs Info0+Info}
+* updateInfo(p,MWTs)={interface? Ts MWTs0\dom(MWTs) MWTs NCs Info0+Info}
     p(This0)=CORE.L={interface? Ts MWTs0 NCs Info0 Docs}
-    Ps;Ps'=collectDeps(p;MWTs) U collectDeps(NCs.Docss)
-    //where (Ps0; Ps0') U (Ps1; Ps1') = Ps0, Ps1; Ps0', Ps1'
+    Ps;Ps'=collectDeps(p;MWTs)
     Info=#norm{typeDep=Ps,coherentDep=Ps',??, declaresClassMethods?}
     declaresClassMethods?=empty iff class notin MWTs.mdfs
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
+* updateInfo(p,Docs C=L)=L0[p♥Docs C=refreshUniqueNames(L)][info=L0.info+info
+    info=#norm{typeDep=collectDeps(p♥Docs)}
+    P(This0)=L0
 _______
 #define I!HALF.e? => ER
 * I!empty => I.CTz;empty
@@ -78,9 +80,9 @@ _______
     PR = CTz';p' IfErr(PR) ER = PR
     ER = CTz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CTz
 * I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!%STz% => I.CTz;I(STz).P
+* I!%STz%<: STz' => I.CTz;I(STz).P <:I(STz')
 * I!%STz% => inferenceFailure(I,STz)
-    I(STz) undefined
+    either I(STz) or I(STz') undefined
 * I!e0.m(x1=e1..xn=en) => ER
     I!ei=ERi //e0 is of form xP
     ER0..ERn = CTz0;e'0..CTzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
@@ -132,12 +134,11 @@ _______
 * adapt(p,e,imm Void) = (Void x=e {}) where x fresh
 * adapt(p,e,T) = (T x=e x.#toLibrary()) otherwise, where x fresh    
 _______
-#define CTz.add(p; FULL.MWT; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
-* CTz.add(p; MWT; empty) = CTz
-    MWT.e?=empty
-* CTz0.add(p; MWT; Half.e) = CTz0 U CTz U STs<=MWT.T
-    Y=Y[p=I.p;GX=G^MWT;onSlash=MWT.T;onSlashX=empty;expectedT=MWT.T;onPath=class]
-    Y!MWT.e = Half.e; STs; empty; CTz
+#define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
+* CTz.add(p; MH empty; empty) = CTz
+* CTz0.add(p; MH e; Half.e) = CTz0 U CTz U STs<=MH.T
+    Y=Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
+    Y!e = Half.e; STs; empty; CTz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
 * I(mdf STz)=T[mdf=mdf]
