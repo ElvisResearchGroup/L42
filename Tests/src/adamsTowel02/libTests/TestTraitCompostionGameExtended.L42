@@ -78,14 +78,45 @@ ModuleEntities: Trait({
       )
     })
 
+  OptionalEntity: Option(Entity)
+
   Player: EntityBase & {
+    var mut OptionalEntity currentItem
+
     mut method Void p(Point that)
     mut method Void point(Point that, mut World world, Bool updateWorld) (
       this.p(that)
       )
 
-    read method S representation() S"P"
+    read method S representation() (
+      if currentItem.isPresent() (S"p")
+      else (S"P")
+      )
+
+    mut method Void attemptToPickUpOrDropItem(mut World world) (
+      Bool isItemCloseToPlayer = world.hasItemAt(getPoint())
+
+      if currentItem == null & !isItemCloseToPlayer (
+        Entity itemCloseToPlayer = world.getItemAt(getPoint())
+        this.pickUpItem(item: itemCloseToPlayer, world: world)
+        )
+
+      if currentItem != null & isItemCloseToPlayer (
+        this.dropItem(world: world)
+        )
+      )
+
+    mut method Void pickUpItem(mut Entity item, mut World world) (
+      world.removeEntity(item.point())
+      currentItem = OptioN#nalEntity(item)
+      )
+
+    mut method Void dropItem(mut World world) (
+      world.addEntity(currentItem.#get())
+      currentItem = OptionalEntity()
+      )
     }
+
   RockItem: ItemBase & {
     read method S representation() S"R"
     }
@@ -250,6 +281,7 @@ ModuleWorld: Trait({
     }
   Player: {
     class method mut Player (fwd Point p)
+    mut method Void attemptToPickUpOrDropItem(mut World world)
     }
 
   Graphics: {
@@ -333,6 +365,10 @@ ModuleWorld: Trait({
 
     mut method Void movePlayerRight() (
       this.#player().point(\point.with(x: \x+1Size), world: this, updateWorld: Bool.false())
+      )
+
+    mut method Void attemptToPickUpOrDropItem() (
+      this.#player().attemptToPickUpOrDropItem(world: this)
       )
 
     mut method Void drawOnto(mut Graphics graphics) (
@@ -657,6 +693,7 @@ ModuleUI: Trait({
   MoveDown: K <>< {implements Action method (world) world.movePlayerDown()}
   MoveLeft: K <>< {implements Action method (world) world.movePlayerLeft()}
   MoveRight: K <>< {implements Action method (world) world.movePlayerRight()}
+  AttemptToPickUpOrDropItem: K <>< {implements Action method (world) world.attemptToPickUpOrDropItem()}
   })
 
 //
@@ -794,6 +831,75 @@ IntegrationTest4: {
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
     '|_|P|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  return ExitCode.normal()
+  }
+
+IntegrationTest5: {
+  Main.Actions actions = Main.Actions[
+    Main.MoveDown();
+    Main.MoveRight();
+    Main.MoveRight()
+    ]
+  Strings ss = Main.#$(actions: actions)
+    Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  Debug.test(ss.right(), expected: S"
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|P|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  return ExitCode.normal()
+  }
+
+IntegrationTest6: {
+  Main.Actions actions = Main.Actions[
+    Main.MoveDown();
+    Main.MoveRight();
+    Main.MoveRight();
+    Main.AttemptToPickUpOrDropItem()
+    ]
+  Strings ss = Main.#$(actions: actions)
+    Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  Debug.test(ss.right(), expected: S"
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|p|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|R|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
