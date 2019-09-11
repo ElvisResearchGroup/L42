@@ -33,6 +33,7 @@ ModuleEntities: Trait({
     read method Bool hasEntityAt(Point that)
     mut method Void addEntity(mut Entity that)
     mut method Void removeEntity(Point that)
+    mut method mut Entity getEntityAt(Point that)
     }
 
   Entity: {interface
@@ -82,38 +83,39 @@ ModuleEntities: Trait({
 
   Player: EntityBase & {
     var mut OptionalEntity currentItem
-
+    class method mut This (fwd Point p, fwd mut OptionalEntity currentItem)
+    class method mut This (fwd Point p) This(p:p, currentItem:OptionalEntity())
     mut method Void p(Point that)
     mut method Void point(Point that, mut World world, Bool updateWorld) (
       this.p(that)
       )
 
     read method S representation() (
-      if currentItem.isPresent() (S"p")
+      if this.currentItem().isPresent() (S"p")
       else (S"P")
       )
 
     mut method Void attemptToPickUpOrDropItem(mut World world) (
-      Bool isItemCloseToPlayer = world.hasItemAt(getPoint())
+      Bool isItemCloseToPlayer = world.hasEntityAt(this.point())
 
-      if currentItem == null & !isItemCloseToPlayer (
-        Entity itemCloseToPlayer = world.getItemAt(getPoint())
+      if !this.currentItem().isPresent() & isItemCloseToPlayer (
+        mut Entity itemCloseToPlayer = world.getEntityAt(this.point())
         this.pickUpItem(item: itemCloseToPlayer, world: world)
         )
 
-      if currentItem != null & isItemCloseToPlayer (
+      if this.currentItem().isPresent() & !isItemCloseToPlayer (
         this.dropItem(world: world)
         )
       )
 
     mut method Void pickUpItem(mut Entity item, mut World world) (
       world.removeEntity(item.point())
-      currentItem = OptioN#nalEntity(item)
+      this.currentItem(OptionalEntity(item))
       )
 
     mut method Void dropItem(mut World world) (
-      world.addEntity(currentItem.#get())
-      currentItem = OptionalEntity()
+      world.addEntity(this.#currentItem().#get())
+      this.currentItem(OptionalEntity())
       )
     }
 
@@ -144,7 +146,6 @@ TestModuleEntities: ModuleEntities & {
       if isNewItemPoint (
         return this.isNewItemPointOccupied()
         )
-
       return Bool.false()
       }
 
@@ -155,6 +156,7 @@ TestModuleEntities: ModuleEntities & {
     mut method Void removeEntity(Point that) (
       this.#mutations().add(right: S"removeEntity("[that.toS()]")")
       )
+    mut method mut Entity getEntityAt(Point that) (error X"")
     }
 
   Graphics: K <>< {
@@ -416,6 +418,7 @@ TestModuleWorld: ModuleWorld & {
         S"playerDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
         )
       )
+    mut method Void attemptToPickUpOrDropItem(mut World world) (error X"")
   }
 
   Tests: K <>< {
@@ -683,6 +686,7 @@ ModuleUI: Trait({
     mut method Void movePlayerDown()
     mut method Void movePlayerLeft()
     mut method Void movePlayerRight()
+    mut method Void attemptToPickUpOrDropItem()
     }
 
   Action: {
