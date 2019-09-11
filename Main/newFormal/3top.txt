@@ -172,6 +172,52 @@ _______
 * collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
 
+_______
+#define p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
+
+* p.minimize(ST1..STn) = STz'
+    STz = p.minimize(ST1)..p.minimize(STn)
+    Tz = {T| T in STz} //CORE.T
+    STz' = STz if chooseT({T| T in STz}) undefined
+    STz' = chooseT({T| T in STz}) otherwise
+* p.minimize(ST.s(.i)?) = ST'.s(.i)?
+    p.minimize(ST) = ST'
+    if ST' =CORE.T then methods(p,CORE.T.P)(s) undefined
+* p.minimize(ST.s) = p♥MH.T //♥ already do minimize
+    p.minimize(ST) = CORE.T
+    methods(p,CORE.T.P)(s) = MH
+* p.minimize(ST.s.i) = p♥MH.pari
+    p.minimize(ST) = CORE.T
+    methods(p,CORE.T.P)(s) = MH
+* p.minimize(op STz1..STzn) = methods(p,P)(s).T[from P;p]
+    p.minimize(STz1) = T1, ..., p.minimize(STzn) = Tn
+    {P.s.i} = p.opOptions(OP, Ts)
+
+_______
+#define chooseT(Tz) = T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
+*chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
+  {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
+
+* mostGeneralMdf(mdfz) = mdf //the most specific generalEnough.
+    mdf in generalEnough(mdfz)
+    forall mdf1 in generalEnough(mdfz): mdf <= mdf1
+
+* generalEnough(mdfz) = {mdf | forall mdf1 in mdfz, mdf1<=mdf}
+_______
+#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
+* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
+    i in 0..n,
+    s = methName(OP_i)(x1..xn)
+    P1 ... Pn = methods(p,Ti.P)(s).pars.Ps[from Ti.P;p]
+    P'1 ... P'n = (T0..Tn\i).Ps
+    P=Ti.P
+    p|-P'1<=P1 .. p|-P'1<=P1
+
+_______
+#define Info0+Info1=Info
+//#Flag+#norm=#norm; #Flag+#Flag=#Flag
+//union of all the sets; preserve all boolean flags
+
 //OLD COLLECT. Isaac, can you show me that we still need something like this? now is unused
 _______
 #define PAcc.collect()=PAcc'

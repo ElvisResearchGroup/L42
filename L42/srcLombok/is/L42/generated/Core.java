@@ -56,7 +56,7 @@ public class Core {
         return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
         }));   
       }
-    @Override public List<C> domNC(Program p){return L(ncs.stream().map(m->m.key()));}
+    @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       return ncs.stream().filter(m->m.key().equals(c))
       .reduce(toOneOr(()->new LL.NotInDom(this,c))).get().l();

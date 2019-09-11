@@ -12,6 +12,7 @@ _______
 _______
 #define typable(p)=Csz
 * typable(p) = Cs1..Csn
+    //dom(p(This0)) asserts p(This0) has no reuse/...
     Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
     p(This0.Csi) of form CORE.L
     p(This0.Csi).Info.Flag=norm

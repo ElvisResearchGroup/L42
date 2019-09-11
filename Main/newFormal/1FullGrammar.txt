@@ -84,9 +84,9 @@ _______
   // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
   sDe::= s1->FULL.Docs1,FULL.e?1 .. sn->FULL.Docsn,FULL.e?n
 _______
-#define functional notation, dom, update and '\' (set minus) for LL (over the domain Ldom)
-  /*...*/ //note, LL(Cs) may return an e not of form LL //TODO: understand below
-//special care for dom of reuse or ...; never do FULL.L(s), always use methods, error for update if reuse/dots present
+#define functional notation, dom, update and '\' (set minus) for CORE.L (over the domain Ldom), but only domNC and functional notation on Cs for LL. Those are undefined 
+if LL has dots or reuseUrl.
+//note, LL(Cs) may return an e not of form LL
 _______
 #define FULL.L[M]=FULL.L', CORE.L[MWT]=CORE.L', CORE.L[NC]=CORE.L'
   /*...*/ replace the member with the same key, or add a new one if novel
@@ -195,14 +195,14 @@ _______
     no repetition in LL.H.Ts
     Any notin LL.H.Ts
     exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
-    if LL.H.interface? = interface, then forall s in dom(LL), LL(s).e?=empty
+    if LL.H.interface? = interface, then forall s in dom(LL.Ms), LL(s).e?=empty
     if LL(C::n)=LL' then LL' of form CORE.L
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all nesteds of private nesteds are private
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
 * program p:
   -if p.pop(1) is defined, then p.pop(1) is well formed //else we are top level
    else forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
-    where nsi={n| C::n in dom(LLi) or m::n(xs) in dom(LLi)}
+    where nsi={n| C::n in dom(LLi.Ms) or m::n(xs) in dom(LLi.Ms)}
 //care when '...' is expanded; while 'reuse URL' will rename the private names
   -CORE.L;pTail is well formed iff
     FULL.L={CORE.L.H CORE.L.Ms}
