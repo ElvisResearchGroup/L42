@@ -83,11 +83,19 @@ ModuleEntities: Trait({
 
   Player: EntityBase & {
     var mut OptionalEntity currentItem
+
     class method mut This (fwd Point p, fwd mut OptionalEntity currentItem)
-    class method mut This (fwd Point p) This(p:p, currentItem:OptionalEntity())
+    class method mut This (fwd Point p) (
+      This(p: p, currentItem: OptionalEntity())
+      )
+
     mut method Void p(Point that)
     mut method Void point(Point that, mut World world, Bool updateWorld) (
       this.p(that)
+
+      if this.#currentItem().isPresent() (
+        this.#currentItem().#get().point(that, world: world, updateWorld: updateWorld)
+        )
       )
 
     read method S representation() (
@@ -156,6 +164,7 @@ TestModuleEntities: ModuleEntities & {
     mut method Void removeEntity(Point that) (
       this.#mutations().add(right: S"removeEntity("[that.toS()]")")
       )
+
     mut method mut Entity getEntityAt(Point that) (error X"")
     }
 
@@ -418,6 +427,7 @@ TestModuleWorld: ModuleWorld & {
         S"playerDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
         )
       )
+
     mut method Void attemptToPickUpOrDropItem(mut World world) (error X"")
   }
 
@@ -903,6 +913,79 @@ IntegrationTest6: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|p|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  return ExitCode.normal()
+  }
+
+IntegrationTest7: {
+  Main.Actions actions = Main.Actions[
+    Main.MoveDown();
+    Main.MoveRight();
+    Main.MoveRight();
+    Main.AttemptToPickUpOrDropItem();
+    Main.AttemptToPickUpOrDropItem()
+    ]
+  Strings ss = Main.#$(actions: actions)
+    Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  Debug.test(ss.right(), expected: S"
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|P|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  return ExitCode.normal()
+  }
+IntegrationTest8: {
+  Main.Actions actions = Main.Actions[
+    Main.MoveDown();
+    Main.MoveRight();
+    Main.MoveRight();
+    Main.AttemptToPickUpOrDropItem();
+    Main.MoveLeft();
+    Main.AttemptToPickUpOrDropItem();
+    Main.MoveLeft()
+    ]
+  Strings ss = Main.#$(actions: actions)
+    Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  Debug.test(ss.right(), expected: S"
+    '|_|_|_|_|_|_|_|_|_|_
+    '|P|R|_|A|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|R|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
