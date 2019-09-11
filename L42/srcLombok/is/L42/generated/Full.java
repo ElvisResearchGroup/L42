@@ -6,6 +6,9 @@ import lombok.experimental.Wither;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import Core.L;
+import Core.MH;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
@@ -34,11 +37,15 @@ public class Full {
         return nc.withE(((LL)nc.e).withCs(popL(cs), fullF,coreF));
         }));      
       }
-    @Override public List<LDom> dom(){return L(ms.stream().map(m->m.key()));}
+    @Override public List<C> domNC(){return L(ms.stream().filter(m->m.key() instanceof C).map(m->(C)m.key()));}
     @Override public L c(C c){
+      Supplier<RunTimeError> err;
+      if(this.isDots || !this.reuseUrl.isEmpty()) {err=()->new LL.ReuseOrDots(this,c));}
+      else {err=()->new LL.NotInDom(this,c));}
       return (L)ms.stream().filter(m->m.key().equals(c))
-      .reduce(toOneOr(()->bug())).get()._e();
+      .reduce(toOneOr(err)).get()._e();
       }
+
     @Override public L cs(List<C> cs){
       assert !cs.isEmpty();
       if(cs.size()==1){return this.c(cs.get(0));}

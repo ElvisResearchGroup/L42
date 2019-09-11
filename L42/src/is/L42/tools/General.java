@@ -93,7 +93,7 @@ public class General {
     for(int i=0;i<size;i++){
       var e0=a.get(i);
       var e=f.apply(e0);
-      change|=e0!=e;      
+      change|=e0!=e;
       res.add(e);
       }
     if(!change){return a;}

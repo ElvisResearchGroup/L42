@@ -49,19 +49,17 @@ public class Core {
     boolean isInterface; List<T> ts; List<MWT>mwts; List<NC>ncs; Info info; List<Doc>docs;
     @Override public L withCs(List<C>cs,Function<Full.L.NC,Full.L.NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
       assert !cs.isEmpty();
-      assert dom().contains(cs.get(0));
+      assert domNC().contains(cs.get(0));
       return this.withNcs(L(ncs,nc->{
         if(!nc.key().equals(cs.get(0))){return nc;}
         if(cs.size()==1){return coreF.apply(nc);}
         return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
         }));   
       }
-    @Override public List<LDom> dom(){return L(Stream.concat(
-      mwts.stream().map(m->(LDom)m.key()),
-      ncs.stream().map(m->(LDom)m.key())));}
+    @Override public List<C> domNC(Program p){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       return ncs.stream().filter(m->m.key().equals(c))
-      .reduce(toOneOr(()->bug())).get().l();
+      .reduce(toOneOr(()->new LL.NotInDom(this,c))).get().l();
       }
     @Override public L cs(List<C> cs){
       assert !cs.isEmpty();
