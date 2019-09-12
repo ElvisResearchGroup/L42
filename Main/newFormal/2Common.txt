@@ -31,7 +31,7 @@ _______
 * Any[from _] = Any,    Library[from _] = Library,    Void[from _] = Void
 
 * e[from P;p] propagate on the structure, 
-    and L[from P;p] = L[from P;p;0] //assert p.push(L[from P;p;0]).checkAllMinimized(L[from P;p;0]))
+    and L[from P;p] = L[from P;p;0] //assert p.push(L[from P;p;0]).checkAllMinimized(L[from P;p;0])) TODO: in code
     and P'[from P;p] as defined above
 
 * {H Ms}[from P;p;j] = {H[Ts=H.Ts[from P;p;j+1] Ms[from P;p;j+1]}
@@ -48,7 +48,7 @@ _______
 * (OP STz1..STzn)[from P;p] = p.minimize(OP STz1[from P;p]..STzn[from P;p])
 _______
 #define collect(p,Core.Ts)=Core.Ts'    collect(p,P)=Core.Ts //collects transitively implemented interfaces
-* collect(p,empty)=empty
+* collect(p,empty)=empty //Marco thinks that the cases of ... and reuse are unreachable
 * collect(p,T0 Ts)=((T0, Ts') \ collect(p,Ts)) collect(p,Ts)
     either p(T0.P)={interface_}=FULL.L
     or or p.navigate(T0.P)={... _};pTail and readFolder(pTail)={interface _}=FULL.L
@@ -106,7 +106,7 @@ _______
     all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
 _______
 #define methods(p,P0)=CORE.MHs    methods(p,P0,FULL.L)=CORE.MHs //methods res has relevant order
-* methods(p,P0)=CORE.L.MWTs.MHs[from P0;p]
+* methods(p,P0)=CORE.L.MWTs.MHs[from P0;p]  //Marco thinks that the cases of ... and reuse are unreachable
     p(P0)=CORE.L
 * methods(p,P0)=MHs[ftom P;p]
     p(P0) = {reuse[URL] Ms }

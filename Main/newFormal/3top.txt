@@ -18,8 +18,8 @@ _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
     CORE.L;sDe;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
-    MH1..MHn = methods(p,This0) IfNotE(MH1..MHn) PR = headerErr(p)
     p0=p.update(updateInfo(p,MH1 .. MHn))
+    MH1..MHn = methods(p0,This0) IfNotE(MH1..MHn) PR = headerErr(p0)
     CTz.add(p0; MH1 sDe(MH1.s).e?; e?1).. .add(p0; MHn sDe(MHn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,NCs) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
@@ -44,16 +44,20 @@ _______
     topNC(CTz1;p";Cs) => PR
     
 * sortHeader({reuse[URL] Ms};pTail) =//wf: no Docs if reuse 
-  CORE.L;{s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
+  CORE.L[CORE.NCs];{s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
     followURL(URL)=CORE.L //with info
+    CORE.NCs=[C={#typed{}} | C in dom(Ms)]
+    dom(CORE.L) disjoint dom(Ms)
  //note, the result must be well formed
 * sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
-* sortHeader(p) = {interface? [Ts'] #norm{typeDep=Ts'.Ps U collectDeps(p♥Docs)} p♥Docs};
-    {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
+* sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
     p(This0)={interface? [Ts] Ms Docs}
-    Ts0=p♥Ts
-    Ts'=Ts0,(collect(p,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
+    CORE.NCs=CORE.NCs=[C={#typed{}} | C in dom(Ms)]
+    p0=p.update({interface? [Ts] CORE.NCs})//to prevent looking to stuff with dots or reuse
+    Ts0=p0♥Ts
+    Ts'=Ts0,(collect(p0,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
     forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
+    CORE.L={interface? [Ts'] #norm{typeDep=Ts'.Ps U collectDeps(p0♥Docs)} CORE.NCs p0♥Docs}
 
 * updateInfo(p,MWTs)={interface? Ts MWTs0\dom(MWTs) MWTs NCs Info0+Info}
     p(This0)=CORE.L={interface? Ts MWTs0 NCs Info0 Docs}
