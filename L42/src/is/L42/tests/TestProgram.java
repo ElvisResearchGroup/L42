@@ -129,6 +129,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   fromE("{} A={A={}} B={B={A={}}}"+emptyP,"(This2.B.A x1=void This1.A x2=void This2.B x3=void This3.B.A x4=void void)",
         "This1.C",                 "(This x1=void This x2=void This1 x3=void This3.B.A x4=void void)")
+//collect
+  ),new AtomicTest(()->
+  collect("{} A={A={}} B={B={A={}}}"+emptyP,"This","[]")
+  ),new AtomicTest(()->
+  collect("{[This.B] B={interface}}"+emptyP,"This","[imm This0.B]")
+  ),new AtomicTest(()->
+  collectFail("{[This.B] B={}}"+emptyP,"This","[imm This0.B]")
+
 
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
@@ -138,6 +146,17 @@ public static String inCore(String s){
 public static void minimize(String program,String pathIn,String pathOut){
   assertEquals(Program.parse(program).minimize(P.parse(pathIn)),P.parse(pathOut));
   }
+public static void collect(String program,String pathIn,String out){
+  assertEquals(Program.parse(program).collect(P.parse(pathIn).toNCs()).toString(),out);
+  }
+public static void collectFail(String program,String pathIn,String out){
+  try{
+    Program.parse(program).collect(P.parse(pathIn).toNCs());
+    } 
+  catch(Error e){return;}
+  fail();
+    }
+
 public static void from(String program,String pathIn,String pathSource,String pathOut){
   assertEquals(Program.parse(program).from(P.parse(pathIn),P.parse(pathSource).toNCs()),P.parse(pathOut));
   }

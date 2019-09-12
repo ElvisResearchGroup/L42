@@ -67,13 +67,25 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
     super.visitL(l);
     accLL(l);
     }
-  private void accLL(LL l) { for(var d:l.dom()){
-    if (!d.hasUniqueNum()){continue;}
-    int u=d.uniqueNum();
+  private void acc(LL l,LDom key){
+    if (!key.hasUniqueNum()){return;}
+    int u=key.uniqueNum();
     var val=acc().getOrDefault(u,new ArrayList<>());
     acc().put(u, val);//in case it was new
     val.add(l);
-    } }
+    
+    }
+  private void accLL(LL ll) { 
+    if(ll.isFullL()){
+      Full.L l=(Full.L)ll;
+      for(var m:l.ms()){acc(ll,m.key());}
+      }
+    else{
+      Core.L l=(Core.L)ll;
+      for(var m:l.mwts()){acc(ll,m.key());}
+      for(var m:l.ncs()){acc(ll,m.key());}
+      }
+    }
   @Override public Map<Integer, List<LL>> empty() {return new HashMap<>();}
   }
   

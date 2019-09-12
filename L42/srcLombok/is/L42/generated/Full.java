@@ -44,7 +44,7 @@ public class Full {
       .reduce(toOneOr(()->new LL.NotInDom(this,c))).get()._e();
       }
     @Override public L cs(List<C> cs){
-      assert !cs.isEmpty();
+      if(cs.isEmpty()){return this;}
       if(cs.size()==1){return this.c(cs.get(0));}
       return this.c(cs.get(0)).cs(popL(cs));
       }

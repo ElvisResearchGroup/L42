@@ -128,8 +128,8 @@ _______
 
 * methods(p,P0,{interface? Ts Ms })=MH1..MHn
     MHs=extractMHs(p.navigate(P0);Ms)[from P0;p]
-    Ps=collect(p,Ts[from P0;p]).Ps
-    s1..sn=[extractMHs(p.navigate(P),p(P).Ms).ss | P in Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p.navigate(P),p(P).Ms).ss}
+    Ps=collect(p,p♥Ts[from P0;p]).Ps
+    s1..sn=[dom(methods(p,P)) | P in Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p.navigate(P),p(P).Ms).ss}
     origin(p;s1,P0)..origin(p;sn,P0) all defined
     [MHi,_]=[MH| MH in MHs and MH.s=si],[MH| P in Ps such that methods(p,P)(si)=MH] for i in 1..n
 _______

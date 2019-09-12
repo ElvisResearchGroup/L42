@@ -19,6 +19,7 @@ import is.L42.generated.C;
 import is.L42.generated.CT;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
+import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
@@ -29,6 +30,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
+import is.L42.generated.X;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
@@ -149,11 +151,13 @@ public class Program implements Visitable<Program>{
     if(!l.isFullL()){return from(((Core.L)l).ts(),p);}
     Full.L fl=(Full.L)l;
     if(!fl.reuseUrl().isEmpty()){
+      assert false;
       return from(Constants.readURL.apply(fl.reuseUrl()).ts(),p);
       }
     if(!fl.isDots()){
       return collect(L(fl.ts(),(c,t)->c.add(from(toCore(t),p))));
       }
+    assert false;
     Program p0=navigate(p);
     Full.L fl0=Constants.readFolder.apply(p0.pTails);
     return collect(L(fl0.ts(),(c,t)->c.add(from(toCore(t),p))));
@@ -168,6 +172,7 @@ public class Program implements Visitable<Program>{
     if(!ll.isFullL()){l=(Core.L)ll;}
     Full.L fl=(Full.L)ll;
     if(!fl.reuseUrl().isEmpty()){
+      assert false;
       l=Constants.readURL.apply(fl.reuseUrl());
       }
     if(l!=null){return L(c->{
@@ -179,6 +184,7 @@ public class Program implements Visitable<Program>{
       c.addAll(recRes);
       });}
     if(fl.isDots()){
+      assert false;
       var tail=navigate(t0.p().toNCs()).pTails;      
       fl=Constants.readFolder.apply(tail);
       }
@@ -235,7 +241,7 @@ public class Program implements Visitable<Program>{
     public InvalidImplements(List<Pos> poss, String msg) { super(poss, msg);}
     }
   public P origin(S s, P.NCs p) throws InvalidImplements{
-    List<T> origins=L(collect(p.toNCs()),(c,t)->{
+    List<T> origins=L(collect(p),(c,t)->{
       if(!refine(s,t.p().toNCs())){c.add(t);}
       });
     if(origins.size()==1){return origins.get(0).p();}
@@ -293,33 +299,29 @@ public class Program implements Visitable<Program>{
     return new Core.PathSel(P.of(n,_p.cs()),_p._s(),_p._x());
     }
 
-  public List<Full.L.M>expandFields(List<Full.L.M> ms){
+  public List<Core.MH>extractMHs(List<Full.L.M> ms){
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
-      if(!(m instanceof Full.L.F)){c.add(m);return;}
+      if(m instanceof Full.L.MI){return;}
+      if(m instanceof Full.L.MWT){
+        c.add(toCore(((Full.L.MWT)m).mh()));return;
+        }
       Full.L.F f=(Full.L.F)m;
       Core.T t=toCore(f.t());
       Core.T tr=TypeManipulation._toRead(t);
       assert tr!=null;
-      //TODO:
+      if(f.isVar()){
+        c.add(new Core.MH(Mdf.Mutable,L(), P.coreVoid, f.key().withXs(X.thatXs), L(t),L()));        
+        }
+      if(t!=tr){
+        assert !t.equals(tr);
+        c.add(new Core.MH(Mdf.Mutable,L(), TypeManipulation.capsuleToLent(t), f.key().withM("#"+f.key().m()), L(),L()));
+        }
+      c.add(new Core.MH(Mdf.Readable,L(), tr, f.key(), L(),L()));
       });
     }
-    /*
-_______
-#define expandFields(Ms)=Ms' //need to keep the order
-* expandFields(empty)=empty
-* expandFields(NC,Ms)=expandFields(Ms) 
-* expandFields(M,Ms)=M,expandFields(Ms) 
-    M of form MWT or MI
-* expandFields(T x,Ms)=read method T x(), expandFields(Ms)
-    T = toRead(T)
-* expandFields(T x,Ms)=mut method capsuleToLent(T) #x(), expandFields(toRead(T) x,Ms)
-    T != toRead(T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
-* expandFields(var T x,Ms)=mut method Void x(T that), expandFields(T x,Ms)        
-*/
-
-
-  List<Core.MH> methods(P p){//bodies can be recovered later
+ 
+  List<Core.MH> methods(P p){
     if(!p.isNCs()){return L();}
     P.NCs p0=p.toNCs();
     LL ll=of(p0);
@@ -327,26 +329,29 @@ _______
       return L(((Core.L)ll).mwts(),(c,m)->c.add(from(m.mh(),p0)));
       }
     Full.L l=(Full.L)ll;
+    assert !l.isDots();
+    assert l.reuseUrl().isEmpty();
     
-    return L();
+    return methods(p0, l);
     }
-/*
-_______
-#define methods(p,P0)=MWTs //methods returns a set: the order of the methods is not relevant
-* methods(p,P0)=CORE.L.MWTs[from P0;p]
-    p(P0)=CORE.L
-* methods(p,P0)=MWT1..MWTn //method headers are minimized, not the body
-    p(P0)=interface? Ts{ Ms0 }=FULL.L
-    Ms=expandFields(Ms0)
-    Ps=collect(p,Ts[from P0;p]).Ps
-    s1..sn=[ss | P in Ps, ss = expandFields(p(T.P).Ms).ss].flatten().distinct()//an ordered version of {s | P in Ps, s in expandFields(p(P).Ms).ss}
-    origin(p;s1,P0)..origin(p;sn,P0) all defined
-    [Mi,_]=[MWT| MWT in Ms and MWT.s=si],[MWT| P in Ps such that methods(p,P)(si)=MWT]   for i in 1..n
-    MWTi=p♥Mi[with e=e[from P0;p]] if si in p(P0) and P(P0)(s).e?=e
-    MWTi=p♥Mi otherwise //this p♥ must also handle method Docs
-
-*/
-
+  List<Core.MH> methods(P.NCs p0,Full.L l){
+    List<Core.MH> mhs=this.navigate(p0).extractMHs(l.ms());
+    List<T> ts=L(l.ts(),(c,t)->c.add(from(toCore(t),p0)));
+    List<T> ps=collect(ts);
+    List<List<MH>> methods=L(ps,(c,t)->c.add(methods(t.p())));
+    List<S> ss=L(methods.stream().flatMap(ms->ms.stream().map(m->m.s())).distinct());
+    for(S s:ss){origin(s,p0);}
+    //throws InvalidImplements
+    List<MH> res=L(ss,(c,s)->{
+      var r1=mhs.stream().filter(mh->mh.s().equals(s)).reduce(toOneOr(()->bug()));
+      if(r1.isPresent()){c.add(r1.get());return;}
+      for(var ms:methods){
+        var ri=ms.stream().filter(mh->mh.s().equals(s)).reduce(toOneOr(()->bug()));
+        if(ri.isPresent()){c.add(ri.get());return;}
+        }
+      });
+    return res;
+    }
   public P minimize(P path){
     if(!path.isNCs()){return path;}
     return minimize(path.toNCs());
@@ -373,11 +378,6 @@ _______
     }
   public List<ST> minimize(List<ST>stz){
     throw todo();//TODO:
-    //requires
-    //opOptions
-    //chooseT
-    //toCore
-    //subtype
     }
   public T _chooseT(List<T> ts){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
@@ -402,13 +402,13 @@ _______
       });
     }
 
-  public static class Psi{P p; S s; int i;}
+  /*public static class Psi{P p; S s; int i;}
   public List<Psi> opOptions(Op op, List<T>ts){
     return L(c->{for(int i:range(ts)){
       P pi=ts.get(i).p();
       //this.methods(pi)
       }});
-    }
+    }*/
 
   public static Program parse(String s){
     var r=Parse.program("-dummy-",s);
