@@ -42,7 +42,11 @@ _______
 
 * CTz[from P;p]={CT | CT' in CTz, CT=CT'[from P;p] and CT not of form CORE.T<=CORE.T'} 
     ST1[from P;p] <= mdf?1 STz1[from P;p] .. STn[from P;p] <= mdf?n STzn[from P;p]
-* ST1..STn[from P;p] = ST1[from P';p]..STn[from P';p]
+* (mdf STz)[from P;p]=CORE.T[mdf=mdf]
+    STz[from P;p]=CORE.T
+* (mdf STz)[from P;p]=STz'
+    STz[from P;p]=STz'
+* ST1..STn[from P;p] = ST1[from P';p]..STn[from P';p] //handles also empty mdf HALF.T
 * ST.s[from P;p] = p.minimize(ST[from P;p].s)
 * ST.s.i[from P;p] = p.minimize(ST[from P;p].s.i)
 * (OP STz1..STzn)[from P;p] = p.minimize(OP STz1[from P;p]..STzn[from P;p])
@@ -53,16 +57,17 @@ _______
     either p(T0.P)={interface_}=FULL.L
     or or p.navigate(T0.P)={... _};pTail and readFolder(pTail)={interface _}=FULL.L
     Ts'=collect(p,p♥FULL.L.Ts[from T0.P;p])
+
 * collect(p,T0 Ts)=((T0, CORE.L.Ts[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     either p(T0.P)={interface _}=CORE.L
-    orp(P)={reuse[URL] _} and followURL(URL)={interface _}=CORE.L
+    or p(P)={reuse[URL] _} and followURL(URL)={interface _}=CORE.L
 
 * collect(p,P)=CORE.L.Ts[from P;p] //does not collect P itself
-    either p(P)={interface_}=CORE.L
-    or p(P)={reuse[URL] _} and followURL(URL)={interface _}=CORE.L 
+    either p(P)=CORE.L//no need to be interface
+    or p(P)={reuse[URL] _} and followURL(URL)=CORE.L 
 * collect(p,P)=collect(p,p♥FULL.L.Ts[from P;p]) //does not collect P itself
-    either p(P)={interface _}=FULL.L
-    or p.navigate(P)={... _};pTail and readFolder(pTail)={interface _}=FULL.L
+    either p(P)=FULL.L
+    or p.navigate(P)={... _};pTail and readFolder(pTail)=FULL.L
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -86,7 +91,7 @@ _______
 * origin(p;s; P) = P'
     {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
     
-* refine(p;s;P) iff exists T in collect(p,P) such that s in dom(p(T.P))
+* refine(p;s;P) iff exists T in collect(p,P) such that s in dom(methods(p,T.P)
 _______
 #define p♥FULL.MH = CORE.MH    p♥FULL.TLocal = CORE.T   p♥CsP = P,  p♥FULL.Docs = CORE.Docs
 * p♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])
@@ -98,7 +103,7 @@ _______
 * p♥P = p.minimize(P)
 * p♥C.Cs = p.minimize(Thisn.C.Cs) //not already minimized
     where n is the smallest number such that either
-      C in dom(p(Thisn))//special care for dom of reuse or ...
+      C in domNC(p(Thisn))
       or @{__STOP_SCOPE__} in p(Thisn).Docs
       or p(Thisn+1) undefined
 
@@ -111,12 +116,13 @@ _______
 * methods(p,P0)=MHs[ftom P;p]
     p(P0) = {reuse[URL] Ms }
     followURL(URL) = CORE.L
+    dom(CORE.L) disjoint dom(Ms) //else header error
     MHs = CORE.L.MWTs.MHs,[(p.navigate(P0)♥MWT.MH) | MWT in Ms]
     no repetition in MHs.ss //else header error
 * methods(p,P0)=method(p,P0,FULL.L[Ms])
     p(P0) = {... Ms }
     readFolder(pTail)= FULL.L
-    dom(Full.L) disjoint dom(Ms) //else header error
+    dom(FULL.L.Ms) disjoint dom(Ms) //else header error //dom(L.Ms) is the Ms actually wrote in L, not with ... or reuse
 * methods(p,P0)=method(p,P0,FULL.L)
     p(P0)={interface? Ts Ms }=FULL.L
 
@@ -138,7 +144,7 @@ _______
     p♥T != toRead(p♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
 * extractMHs(var T x,Ms)=mut method Void x(p♥T that), extractMHs(T x,Ms)    
 _______
-#define p.minimize(P) = P'    p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
+#define p.minimize(P) = P'
 * p.minimize(P) = P
     P in {Any,Void,Library,This0.Cs}
 * p.minimize(This(n+1).Cs) = P
@@ -149,44 +155,6 @@ _______
 * (CORE.L;LL;_).minimize(This1.Cs)=This1.Cs
 * (CORE.L;C:LL;_).minimize(This1.C'.Cs)=This1.C.Cs
     C!=C'
-
-* p.minimize(ST1..STn) = STz'
-    STz = p.minimize(ST1)..p.minimize(STn)
-    Tz = {T| T in STz} //CORE.T
-    STz' = STz if chooseT({T| T in STz}) undefined
-    STz' = chooseT({T| T in STz}) otherwise
-* p.minimize(ST.s(.i)?) = ST'.s(.i)?
-    p.minimize(ST) = ST'
-    p(ST')(s) undefined
-* p.minimize(ST.s) = p♥MH.T //♥ already do minimize
-    p.minimize(ST) = CORE.T
-    p(CORE.T.P)(s) = MH //NOPE p(T.P) may be a FULL.L //use methods? in code have a methodH that is just the method headers?
-* p.minimize(ST.s.i) = p♥MH.pari
-    p.minimize(ST) = CORE.T
-    p(CORE.T.P)(s) = MH
-* p.minimize(op STz1..STzn) = p(P)(s).T[from P;p]
-    p.minimize(STz1) = T1, ..., p.minimize(STzn) = Tn
-    {P.s.i} = p.opOptions(OP, Ts)
-
-_______
-#define chooseT(Tz) = T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
-*chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
-  {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
-
-* mostGeneralMdf(mdfz) = mdf //the most specific generalEnough.
-    mdf in generalEnough(mdfz)
-    forall mdf1 in generalEnough(mdfz): mdf <= mdf1
-
-* generalEnough(mdfz) = {mdf | forall mdf1 in mdfz, mdf1<=mdf}
-_______
-#define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
-* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
-    i in 0..n,
-    s = methName(OP_i)(x1..xn)
-    P1 ... Pn = methods(p,Ti.P)(s).pars.Ps[from Ti.P;p]
-    P'1 ... P'n = (T0..Tn\i).Ps
-    P=Ti.P
-    p|-P'1<=P1 .. p|-P'1<=P1
 _______
 #define MH notations, MWT notations just inherit them,
 with MH=mdf method T mOp(T1 x1..Tn xn)[Ts] 

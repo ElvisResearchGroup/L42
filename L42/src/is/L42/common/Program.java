@@ -98,7 +98,15 @@ public class Program implements Visitable<Program>{
     return fromVisitor(source).visitE(e);
     }
   private CloneVisitor fromVisitor(P.NCs source){
-    return new CloneVisitor(){//no need to override visitT(Half.T)
+    return new CloneVisitor(){
+      @Override public Half.T visitT(Half.T t){
+        var t0=super.visitT(t);
+        if(t0._mdf()==null){return t0;}
+        if(t0.stz().size()!=1){return t0;}
+        var st=t0.stz().get(0);
+        if(!(st instanceof Core.T)){return t0;}
+        return new Half.T(null,L(((Core.T)st).withMdf(t0._mdf())));
+        }
       @Override public ST visitSTMeth(ST.STMeth stMeth){
         return minimize(super.visitSTMeth(stMeth));
         }
@@ -121,7 +129,16 @@ public class Program implements Visitable<Program>{
   public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
   public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
 
-  public List<CT> fromCTz(List<CT>ctz,P.NCs source){return L(ctz,ct->from(ct,source));}
+  public List<CT> fromCTz(List<CT>ctz,P.NCs source){
+    return L(ctz,(c,ct1)->{
+      CT ct=from(ct1,source);
+      boolean cond=ct.st() instanceof T 
+        && ct.t()._mdf()==null
+        && ct.t().stz().size()==1
+        && ct.t().stz().get(0) instanceof T;
+      if(!cond){c.add(ct);}
+      });
+    }
   public CT from(CT ct,P.NCs source){
     assert minimize(source)==source;
     var v=fromVisitor(source);
@@ -131,15 +148,29 @@ public class Program implements Visitable<Program>{
     LL l=of(p);
     if(!l.isFullL()){return from(((Core.L)l).ts(),p);}
     Full.L fl=(Full.L)l;
-    return collect(L(fl.ts(),(c,t)->c.add(from(toCore(t),p))));
+    if(!fl.reuseUrl().isEmpty()){
+      return from(Constants.readURL.apply(fl.reuseUrl()).ts(),p);
+      }
+    if(!fl.isDots()){
+      return collect(L(fl.ts(),(c,t)->c.add(from(toCore(t),p))));
+      }
+    Program p0=navigate(p);
+    Full.L fl0=Constants.readFolder.apply(p0.pTails);
+    return collect(L(fl0.ts(),(c,t)->c.add(from(toCore(t),p))));
     }   
-  public List<T> collect(List<T> ts){
+  public List<T> collect(List<T> ts){//TODO: test collect
     if(ts.isEmpty()){return ts;}
     T t0=ts.get(0);
     ts=popL(ts);
     var recRes=collect(ts);
     var ll=of(t0.p());
-    if(!ll.isFullL()){return L(c->{
+    Core.L l=null;
+    if(!ll.isFullL()){l=(Core.L)ll;}
+    Full.L fl=(Full.L)ll;
+    if(!fl.reuseUrl().isEmpty()){
+      l=Constants.readURL.apply(fl.reuseUrl());
+      }
+    if(l!=null){return L(c->{
       if(!recRes.contains(t0)){c.add(t0);}
       for(var ti:((Core.L)ll).ts()){
         T tif=from(ti,t0.p().toNCs());
@@ -147,8 +178,11 @@ public class Program implements Visitable<Program>{
         }
       c.addAll(recRes);
       });}
-    Full.L l=(Full.L)ll;
-    List<T> ts0=L(l.ts(),(c,ti)->from(toCore(ti),t0.p().toNCs()));
+    if(fl.isDots()){
+      var tail=navigate(t0.p().toNCs()).pTails;      
+      fl=Constants.readFolder.apply(tail);
+      }
+    List<T> ts0=L(fl.ts(),(c,ti)->from(toCore(ti),t0.p().toNCs()));
     List<T> ts1=collect(ts0);
     return L(c->{//is not worth to remove this 6 lines dup
       if(!recRes.contains(t0)){c.add(t0);}
@@ -210,7 +244,7 @@ public class Program implements Visitable<Program>{
     }
   public boolean refine(S s, P.NCs p){
     for(T t:collect(p)){
-      if(of(t.p()).dom().contains(s)){return true;}
+      if(methods(t.p()).stream().anyMatch(mh->mh.s().equals(s))){return true;}
       }
     return false;
     }
@@ -233,7 +267,7 @@ public class Program implements Visitable<Program>{
     return new T(mdf,docs,minimize(P.of(n, t.cs())));
     }
     private int findScope(C c, int acc){
-      if(top.dom().contains(c)){return acc;}
+      if(top.domNC().contains(c)){return acc;}
       if(pTails.isEmpty()){return acc;}
       assert top.isFullL();
       for(Full.Doc d:((Full.L)top).docs()){
@@ -353,37 +387,21 @@ _______
     return new T(_mdf,L(),ps.get(0));
     }
   private Mdf _mostGeneralMdf(Set<Mdf> mdfs){
-    if (mdfs.size()==1){return mdfs.iterator().next();}
-    if (mdfs.contains(Mdf.Class)){return null;}
-    if (mdfs.contains(Mdf.Capsule) && mdfs.size()==2){
-      var i = mdfs.iterator();
-      Mdf m=i.next();
-      if(m==Mdf.Capsule){m=i.next();}
-      assert m!=Mdf.Capsule;
-      return m;
-      }
-    if(TypeManipulation.fwd_or_fwdP_inMdfs(mdfs.stream())){
-      if (mdfs.contains(Mdf.Readable)){return null;}
-      if (mdfs.contains(Mdf.Lent)){return null;}
-      boolean mutIn=false;
-      boolean immIn=false;
-      for(Mdf m:mdfs){
-        if(Mdf.muts.contains(m)){mutIn=true;}
-        if(Mdf.imms.contains(m)){immIn=true;}
-        }
-      if (mutIn && immIn){return null;}
-      //we know: more then one, no read/lent, either all imm side or mut side
-      if(mdfs.contains(Mdf.ImmutableFwd)){return Mdf.ImmutableFwd;}
-      if(mdfs.contains(Mdf.ImmutablePFwd)){return Mdf.ImmutablePFwd;}
-      if(mdfs.contains(Mdf.MutableFwd)){return Mdf.MutableFwd;}
-      assert mdfs.contains(Mdf.MutablePFwd): mdfs;
-      return Mdf.MutablePFwd;
-      }
-    //if read in mdfs, mdf=read
-    if(mdfs.contains(Mdf.Readable)){return Mdf.Readable;}
-    if(mdfs.contains(Mdf.Immutable)){return Mdf.Readable;}
-    return Mdf.Lent;
+    var g=generalEnoughMdf(mdfs);
+    return g.stream().filter(mdf->g.stream()
+      .allMatch(mdf1->isSubtype(mdf1, mdf1)))
+      .reduce(toOneOr(()->bug())).orElse(null);
     }
+  private List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
+    return L(c->{
+      for(Mdf mdf:Mdf.values()){
+        if(mdfs.stream().allMatch(mdf1->isSubtype(mdf1,mdf))){
+          c.add(mdf);
+          }
+        }
+      });
+    }
+
   public static class Psi{P p; S s; int i;}
   public List<Psi> opOptions(Op op, List<T>ts){
     return L(c->{for(int i:range(ts)){
