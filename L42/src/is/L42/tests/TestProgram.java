@@ -136,8 +136,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   collect("{[This.B] B={interface}}"+emptyP,"This","[imm This0.B]")
   ),new AtomicTest(()->
   collectFail("{[This.B] B={}}"+emptyP,"This","[imm This0.B]")
+/*
+Ok.. problems and solutions:
+{} without Cs is PERFECT FOR CACHING
+what if:
+  -first phase of removing ... and normalizing Cs.
+  -reuse urls now must be stopping scope again
+  -if a reuse url has no #$ we expect it to be deterministic, we cache
+  it at this moment and we can give error if the Cs is not resolved in 
+  the url.
+  -WF applies only after this initial step
 
-
+*/
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 public static String inCore(String s){
