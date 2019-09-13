@@ -29,19 +29,22 @@ ModuleEntities: Trait({
     mut method Void draw(S that, Size x, Size y)
     }
 
-  World: {
-    read method Bool hasEntityAt(Point that)
-    mut method Void addEntity(mut Entity that)
-    mut method Void removeEntity(Point that)
-    mut method mut Entity getEntityAt(Point that)
-    }
+  $Player: {}
 
   Entity: {interface
     read method Point point()
     mut method Void point(Point that, mut World world, Bool updateWorld)
     read method Void drawOnto(mut Graphics that)
     read method S toS()
-  }
+    mut method Void use(mut $Player player, mut World world)
+    }
+
+  World: {
+    read method Bool hasEntityAt(Point that)
+    mut method Void addEntity(mut Entity that)
+    mut method Void removeEntity(Point that)
+    mut method mut Entity getEntityAt(Point that)
+    }
 
   HasPoint: Trait(K <>< {implements Entity
     var Point p
@@ -81,7 +84,7 @@ ModuleEntities: Trait({
 
   OptionalEntity: Option(Entity)
 
-  Player: EntityBase & {
+  Player: EntityBase & {implements Entity
     var mut OptionalEntity currentItem
 
     class method mut This (fwd Point p, fwd mut OptionalEntity currentItem)
@@ -90,7 +93,8 @@ ModuleEntities: Trait({
       )
 
     mut method Void p(Point that)
-    mut method Void point(Point that, mut World world, Bool updateWorld) (
+
+    method point(that, world, updateWorld) (
       this.p(that)
 
       if this.#currentItem().isPresent() (
@@ -116,6 +120,12 @@ ModuleEntities: Trait({
         )
       )
 
+    mut method Void attemptToUseItem(mut World world) (
+      if this.#currentItem().isPresent() (
+        this.#currentItem().#get().use(player: this, world: world)
+        )
+      )
+
     mut method Void pickUpItem(mut Entity item, mut World world) (
       world.removeEntity(item.point())
       this.currentItem(OptionalEntity(item))
@@ -125,15 +135,21 @@ ModuleEntities: Trait({
       world.addEntity(this.#currentItem().#get())
       this.currentItem(OptionalEntity())
       )
+
+    method use(player, world) (
+      error X"Cannot use Player"
+      )
     }
 
-  RockItem: ItemBase & {
+  RockItem: ItemBase & {implements Entity
     read method S representation() S"R"
+    method use(player, world) void
     }
-  AppleItem: ItemBase & {
+  AppleItem: ItemBase & {implements Entity
     read method S representation() S"A"
+    method use(player, world) void
     }
-  })
+  })"$Player"<=Path"Player"
 
 TestModuleEntities: ModuleEntities & {
   Entity: {interface
@@ -293,6 +309,7 @@ ModuleWorld: Trait({
   Player: {
     class method mut Player (fwd Point p)
     mut method Void attemptToPickUpOrDropItem(mut World world)
+    mut method Void attemptToUseItem(mut World world)
     }
 
   Graphics: {
@@ -382,6 +399,10 @@ ModuleWorld: Trait({
       this.#player().attemptToPickUpOrDropItem(world: this)
       )
 
+    mut method Void attemptToUseItem() (
+      this.#player().attemptToUseItem(world: this)
+      )
+
     mut method Void drawOnto(mut Graphics graphics) (
       mut PointToEntityMap map = this.#map()
       with i in Range(map.size()) (
@@ -429,6 +450,8 @@ TestModuleWorld: ModuleWorld & {
       )
 
     mut method Void attemptToPickUpOrDropItem(mut World world) (error X"")
+
+    mut method Void attemptToUseItem(mut World world) (error X"")
   }
 
   Tests: K <>< {
@@ -697,6 +720,7 @@ ModuleUI: Trait({
     mut method Void movePlayerLeft()
     mut method Void movePlayerRight()
     mut method Void attemptToPickUpOrDropItem()
+    mut method Void attemptToUseItem()
     }
 
   Action: {
@@ -708,6 +732,7 @@ ModuleUI: Trait({
   MoveLeft: K <>< {implements Action method (world) world.movePlayerLeft()}
   MoveRight: K <>< {implements Action method (world) world.movePlayerRight()}
   AttemptToPickUpOrDropItem: K <>< {implements Action method (world) world.attemptToPickUpOrDropItem()}
+  AttemptToUseItem: K <>< {implements Action method (world) world.attemptToUseItem()}
   })
 
 //
@@ -960,6 +985,7 @@ IntegrationTest7: {
     ")
   return ExitCode.normal()
   }
+
 IntegrationTest8: {
   Main.Actions actions = Main.Actions[
     Main.MoveDown();
@@ -986,6 +1012,42 @@ IntegrationTest8: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|P|R|_|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  return ExitCode.normal()
+  }
+
+IntegrationTest9: {
+  Main.Actions actions = Main.Actions[
+    Main.MoveDown();
+    Main.MoveRight();
+    Main.MoveRight();
+    Main.AttemptToPickUpOrDropItem();
+    Main.AttemptToUseItem()
+    ]
+  Strings ss = Main.#$(actions: actions)
+    Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  Debug.test(ss.right(), expected: S"
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|p|A|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|R|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
