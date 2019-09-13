@@ -1,3 +1,10 @@
+TOP LEVEL PROCESS:
+parsing top level LL, resolve ... and Cs into Thisn.Cs, check well formedness, apply top(empty,(LL;empty))=>PR
+p.resolve(C.Cs) = Thisn.C.Cs
+  where n is the smallest number such that either
+  C in domNC(p(Thisn))
+  or p(Thisn)={reuse[URL]...}
+//error is reported if: we try to explore an undefined p(Thisn) or URL has no #$ and C notin dom(followURL(URL)) 
 _______
 #define metanotation IfNotE, IfErr, IfUndefined 
 //note: the simpler interpretation (predicate0 and predicates) or predicate1
@@ -44,15 +51,13 @@ _______
     topNC(CTz1;p";Cs) => PR
     
 * sortHeader({reuse[URL] Ms};pTail) =//wf: no Docs if reuse 
-  CORE.L[CORE.NCs];{s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
+  CORE.L[CORE.NCs];{s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]     //or? CORE.L[CORE.NCs] and CORE.NCs=[C={#typed{}} | C in dom(Ms)]
     followURL(URL)=CORE.L //with info
-    CORE.NCs=[C={#typed{}} | C in dom(Ms)]
     dom(CORE.L) disjoint dom(Ms)
  //note, the result must be well formed
 * sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
-* sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]
+* sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms] //or? CORE.L[CORE.NCs] and CORE.NCs=[C={#typed{}} | C in dom(Ms)]
     p(This0)={interface? [Ts] Ms Docs}
-    CORE.NCs=CORE.NCs=[C={#typed{}} | C in dom(Ms)]
     p0=p.update({interface? [Ts] CORE.NCs})//to prevent looking to stuff with dots or reuse
     Ts0=p0♥Ts
     Ts'=Ts0,(collect(p0,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
