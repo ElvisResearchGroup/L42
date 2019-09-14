@@ -20,6 +20,7 @@ import java.util.stream.Stream;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
+import is.L42.common.Program.PathNotExistent;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
@@ -73,7 +74,6 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
     var val=acc().getOrDefault(u,new ArrayList<>());
     acc().put(u, val);//in case it was new
     val.add(l);
-    
     }
   private void accLL(LL ll) { 
     if(ll.isFullL()){

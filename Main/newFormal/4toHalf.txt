@@ -16,12 +16,12 @@ _______
 * Y!void = void;imm Void;empty;empty
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = (Y.onSlashX).x(); Y.p.minimize(Y.GX(Y.onSlashX).x()); empty; empty
-* Y!CsP = (Y.p♥CsP)<:class (Y.p♥CsP);class (Y.p♥CsP); empty; empty
+* Y!CsP = ♥CsP<:class ♥CsP;class ♥CsP; empty; empty
     Y.expectedT != class Any
-* Y!CsP = (Y.p♥CsP)<:class Any; class Any; empty; empty
+* Y!CsP = ♥CsP<:class Any; class Any; empty; empty
     Y.expectedT = class Any
-* Y!CsP<:T = (Y.p♥CsP)<:(Y.p♥T); Y.p♥T; empty; empty
-* Y!\<:T = (Y.p♥\)<:(Y.p♥T); Y.p♥T; empty; empty
+* Y!CsP<:T = CsP<:♥T; ♥T; empty; empty //CsP is already a P
+* Y!\<:T = \<:♥T; ♥T; empty; empty
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP or \
 * Y!'PathSel = Y!\"PathSel"
@@ -85,7 +85,7 @@ _______
 * Y!( Ds Ks WHOOPS T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz  //Ds is HALF.Ds
-    GX = {x:Y.p♥FULL.T | FULL.T x=e in D1..Dn}//(T x,T y)=e case unneeded x,y not fwd
+    GX = {x:♥FULL.T | FULL.T x=e in D1..Dn}//(T x,T y)=e case unneeded x,y not fwd
     GXi = Y.GX+GX+GX^Ds1+..+GX^Dsi
     Y[GXn]!e = e'; STz0;STz'0;CTz0
     Y!Ki[GXn] = K'i; STzi; STz'i; CTzi//catch return do not need special treatment
@@ -178,7 +178,7 @@ _______
 * Y!catch throw? T '_' e = Y!catch throw? T x e
     x fresh
 * Y!catch T x e = Y!catch exception T x e
-* Y!catch throw T x e = catch throw Y.p♥T x e'; STz; STz'; CTz
+* Y!catch throw T x e = catch throw ♥T x e'; STz; STz'; CTz
     Y[GX=Y.GX+x:T]!e = e'; STz; STz'; CTz
 _______
 #define toBinOp(x,Op=) // convenience method to desugar opUpdates

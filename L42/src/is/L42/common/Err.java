@@ -159,6 +159,14 @@ public class Err {
   "The unique number "+_1+" is in the domain of more then one library literal; others are in positions \n"+_2
   ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
   "The method "+_1+" is inherited from multiple interfaces, and do not have a single origin. Origins are "+_2
- 
+  ;}public static String notInterfaceImplemented(){return
+  "A nested class is implemented but is not an interface"
+  ;}public static String thisNumberOutOfScope(Object _1){return
+  "Path "+_1+" this number is out of the scope of the program"  
+  ;}public static String pathNotExistant(Object _1){return
+  "Path "+_1+" not existant"  
+  ;}public static String circularImplements(Object _1){return
+  "Circularity in implemented interfaces; following path "+_1  
+
   ;}
 }

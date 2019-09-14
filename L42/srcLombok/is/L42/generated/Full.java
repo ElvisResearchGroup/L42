@@ -41,7 +41,8 @@ public class Full {
     @Override public L c(C c){
       assert !this.isDots && this.reuseUrl.isEmpty();
       return (L)ms.stream().filter(m->m.key().equals(c))
-      .reduce(toOneOr(()->new LL.NotInDom(this,c))).get()._e();
+      .reduce(toOneOr(()->new LL.NotInDom(this,c)))
+      .orElseThrow(()->new LL.NotInDom(this,c))._e();
       }
     @Override public L cs(List<C> cs){
       if(cs.isEmpty()){return this;}

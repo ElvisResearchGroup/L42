@@ -1,5 +1,14 @@
 TOP LEVEL PROCESS:
 parsing top level LL, resolve ... and Cs into Thisn.Cs, check well formedness, apply top(empty,(LL;empty))=>PR
+_______
+#define init(FULL.L) = FULL.L' //with no Cs and no '...'
+  it propagates on the structure;
+    on all the FULL.L and CORE.L it grows a local program p,
+    on all the Cs applies p.minimize(p.resolve(C.Cs)).
+    on all the P applies p.minimize(P).
+    all the ... are expanded with the code retrived from the file system.
+_______
+#define p.resolve(Cs) = P
 p.resolve(C.Cs) = Thisn.C.Cs
   where n is the smallest number such that either
   C in domNC(p(Thisn))
@@ -32,7 +41,7 @@ _______
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
     I[C=empty;p1;G=empty;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
-    L=updateInfo(p1, p1♥sDe(MH1.s).Doc MH1 e?'1 .. p1♥sDe(MHn.s).Doc MH1 e?'1)//add the e?'i as meth bodies
+    L=updateInfo(p1, ♥sDe(MH1.s).Doc MH1 e?'1 .. ♥sDe(MHn.s).Doc MH1 e?'1)//add the e?'i as meth bodies
     p2=flagTyped(p1.update(L)) IfNotE(p2) PR=illTyped(p1.update(L))
     PR = CTz2; p2
 
@@ -46,7 +55,7 @@ _______
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
-    p' = p.update(updateInfo(p,FULL.Docs C=CORE.L))refreshUniqueNames//and p♥Docs of nested C
+    p' = p.update(updateInfo(p,FULL.Docs C=CORE.L))refreshUniqueNames//and ♥Docs of nested C
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1;p";Cs) => PR
     
@@ -59,9 +68,8 @@ _______
 * sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms] //or? CORE.L[CORE.NCs] and CORE.NCs=[C={#typed{}} | C in dom(Ms)]
     p(This0)={interface? [Ts] Ms Docs}
     p0=p.update({interface? [Ts] CORE.NCs})//to prevent looking to stuff with dots or reuse
-    Ts0=p0♥Ts
-    Ts'=Ts0,(collect(p0,Ts0)\Ts0)//gets the transitively implemented interfaces -Any    
-    forall imm P in Ts'\Ts0, P not of form Thisk._.C::n._//private interfaces not added
+    Ts'=♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any    
+    forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
     CORE.L={interface? [Ts'] #norm{typeDep=Ts'.Ps U collectDeps(p0♥Docs)} CORE.NCs p0♥Docs}
 
 * updateInfo(p,MWTs)={interface? Ts MWTs0\dom(MWTs) MWTs NCs Info0+Info}
@@ -72,7 +80,7 @@ _______
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
-* updateInfo(p,Docs C=L)=L0[p♥Docs C=refreshUniqueNames(L)][info=L0.info+info
+* updateInfo(p,Docs C=L)=L0[♥Docs C=refreshUniqueNames(L)][info=L0.info+info
     info=#norm{typeDep=collectDeps(p♥Docs)}
     P(This0)=L0
 _______
@@ -192,10 +200,10 @@ _______
 * p.minimize(ST.s(.i)?) = ST'.s(.i)?
     p.minimize(ST) = ST'
     if ST' =CORE.T then methods(p,CORE.T.P)(s) undefined
-* p.minimize(ST.s) = p♥MH.T //♥ already do minimize
+* p.minimize(ST.s) = MH.T //methods already minimize
     p.minimize(ST) = CORE.T
     methods(p,CORE.T.P)(s) = MH
-* p.minimize(ST.s.i) = p♥MH.pari
+* p.minimize(ST.s.i) = MH.pari
     p.minimize(ST) = CORE.T
     methods(p,CORE.T.P)(s) = MH
 * p.minimize(op STz1..STzn) = methods(p,P)(s).T[from P;p]

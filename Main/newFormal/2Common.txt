@@ -52,22 +52,17 @@ _______
 * (OP STz1..STzn)[from P;p] = p.minimize(OP STz1[from P;p]..STzn[from P;p])
 _______
 #define collect(p,Core.Ts)=Core.Ts'    collect(p,P)=Core.Ts //collects transitively implemented interfaces
-* collect(p,empty)=empty //Marco thinks that the cases of ... and reuse are unreachable
+* collect(p,empty)=empty
 * collect(p,T0 Ts)=((T0, Ts') \ collect(p,Ts)) collect(p,Ts)
-    either p(T0.P)={interface_}=FULL.L
-    or or p.navigate(T0.P)={... _};pTail and readFolder(pTail)={interface _}=FULL.L
-    Ts'=collect(p,p♥FULL.L.Ts[from T0.P;p])
-
+    p(T0.P)={interface_}=FULL.L//assert ... and reuse are unreachable
+    Ts'=collect(p,♥FULL.L.Ts[from T0.P;p])
 * collect(p,T0 Ts)=((T0, CORE.L.Ts[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
-    either p(T0.P)={interface _}=CORE.L
-    or p(P)={reuse[URL] _} and followURL(URL)={interface _}=CORE.L
+    p(T0.P)={interface _}=CORE.L
 
 * collect(p,P)=CORE.L.Ts[from P;p] //does not collect P itself
-    either p(P)=CORE.L//no need to be interface
-    or p(P)={reuse[URL] _} and followURL(URL)=CORE.L 
-* collect(p,P)=collect(p,p♥FULL.L.Ts[from P;p]) //does not collect P itself
-    either p(P)=FULL.L
-    or p.navigate(P)={... _};pTail and readFolder(pTail)=FULL.L
+    p(P)=CORE.L//no need to be interface
+* collect(p,P)=collect(p,♥FULL.L.Ts[from P;p]) //does not collect P itself
+    p(P)=FULL.L
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -89,60 +84,42 @@ _______
 _______
 #define origin(p;s;P) = P'   refine(p;s;P)
 * origin(p;s; P) = P'
-    {P'} = {P'| P' in collect(p,P) and !refine(p;s;P')}
+    {P'} = {P'| P' in P U collect(p,P) and s in dom(p(P).Ms) and !refine(p;s;P')}
     
-* refine(p;s;P) iff exists T in collect(p,P) such that s in dom(methods(p,T.P)
+* refine(p;s;P) iff exists T in collect(p,P) such that s in dom(methods(p,T.P))
 _______
-#define p♥FULL.MH = CORE.MH    p♥FULL.TLocal = CORE.T   p♥CsP = P,  p♥FULL.Docs = CORE.Docs
-* p♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])
-    =(mdf p♥Docs)? method p♥T methName(mOp)(p♥T1 x1..p♥Tn xn)[p♥Ts]
+#define ♥FULL.MH = CORE.MH    ♥FULL.TLocal = CORE.T   ♥CsP = P,  ♥FULL.Docs = CORE.Docs
+* ♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])
+    =(mdf ♥Docs)? method ♥T methName(mOp)(♥T1 x1..♥Tn xn)[♥Ts]
 
-* p♥(Docs CsP) = imm p♥Docs p♥CsP
-* p♥(mdf Docs CsP) = mdf p♥Docs p♥CsP
+* ♥(Docs CsP) = imm ♥Docs ♥CsP
+* ♥(mdf Docs CsP) = mdf ♥Docs ♥CsP
 
-* p♥P = p.minimize(P)
-* p♥C.Cs = p.minimize(Thisn.C.Cs) //not already minimized
-    where n is the smallest number such that either
-      C in domNC(p(Thisn))
-      or @{__STOP_SCOPE__} in p(Thisn).Docs
-      or p(Thisn+1) undefined
-
-* p♥FULL.Docs = CORE.Docs
-    all CsP are replaced with p♥CsP; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
+* ♥P = P // ♥C.Cs undefined
+* ♥FULL.Docs = CORE.Docs
+    all P are replaced with ♥P; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
 _______
 #define methods(p,P0)=CORE.MHs    methods(p,P0,FULL.L)=CORE.MHs //methods res has relevant order
-* methods(p,P0)=CORE.L.MWTs.MHs[from P0;p]  //Marco thinks that the cases of ... and reuse are unreachable
+* methods(p,P0)=CORE.L.MWTs.MHs[from P0;p]
     p(P0)=CORE.L
-* methods(p,P0)=MHs[ftom P;p]
-    p(P0) = {reuse[URL] Ms }
-    followURL(URL) = CORE.L
-    dom(CORE.L) disjoint dom(Ms) //else header error
-    MHs = CORE.L.MWTs.MHs,[(p.navigate(P0)♥MWT.MH) | MWT in Ms]
-    no repetition in MHs.ss //else header error
-* methods(p,P0)=method(p,P0,FULL.L[Ms])
-    p(P0) = {... Ms }
-    readFolder(pTail)= FULL.L
-    dom(FULL.L.Ms) disjoint dom(Ms) //else header error //dom(L.Ms) is the Ms actually wrote in L, not with ... or reuse
-* methods(p,P0)=method(p,P0,FULL.L)
+* methods(p,P0)=MH1..MHn//assert ... and reuse are unreachable
     p(P0)={interface? Ts Ms }=FULL.L
-
-* methods(p,P0,{interface? Ts Ms })=MH1..MHn
     MHs=extractMHs(p.navigate(P0);Ms)[from P0;p]
-    Ps=collect(p,p♥Ts[from P0;p]).Ps
+    Ps=collect(p,♥Ts[from P0;p]).Ps
     s1..sn=[dom(methods(p,P)) | P in Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p.navigate(P),p(P).Ms).ss}
     origin(p;s1,P0)..origin(p;sn,P0) all defined
-    [MHi,_]=[MH| MH in MHs and MH.s=si],[MH| P in Ps such that methods(p,P)(si)=MH] for i in 1..n
+    [MHi,_]=[MH[from P0,p]| MH in MHs and MH.s=si],[MH| P in Ps such that methods(p,P)(si)=MH] for i in 1..n
 _______
 #define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
 * extractMHs(p;empty)=empty
 * extractMHs(p;NC,Ms)=extractMHs(Ms) 
 * extractMHs(p;MI,Ms)=extractMHs(Ms) 
-* extractMHs(p;MWT,Ms)=p♥MWT.MH,extractMHs(Ms) 
-* extractMHs(p;T x,Ms)=read method p♥T x(), expandFields(Ms)
-    p♥T = toRead(p♥T)
-* extractMHs(p;T x,Ms)=mut method capsuleToLent(p♥T) #x(), extractMHs(toRead(p♥T) x,Ms)
-    p♥T != toRead(p♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
-* extractMHs(var T x,Ms)=mut method Void x(p♥T that), extractMHs(T x,Ms)    
+* extractMHs(p;MWT,Ms)=♥MWT.MH,extractMHs(Ms) 
+* extractMHs(p;T x,Ms)=read method ♥T x(), expandFields(Ms)
+    ♥T = toRead(♥T)
+* extractMHs(p;T x,Ms)=mut method capsuleToLent(♥T) #x(), extractMHs(toRead(♥T) x,Ms)
+    ♥T != toRead(♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
+* extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)    
 _______
 #define p.minimize(P) = P'
 * p.minimize(P) = P

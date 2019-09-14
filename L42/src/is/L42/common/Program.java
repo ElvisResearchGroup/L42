@@ -3,6 +3,7 @@ package is.L42.common;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.todo;
@@ -31,6 +32,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.X;
+import is.L42.top.Init;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
@@ -46,11 +48,14 @@ public class Program implements Visitable<Program>{
   public static Program flat(LL top){return new Program(top,PTails.empty);}
   public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty,L());
   public static final Core.L emptyLInterface=emptyL.withInterface(true);
-  public LL of(P path){
+  public LL of(P path,List<Pos>errs){
     if(path==P.pAny){return emptyLInterface;}
     if(path==P.pVoid){return emptyL;}
     if(path==P.pLibrary){return emptyL;}
-    return this.pop(path.toNCs().n()).top.cs(path.toNCs().cs());
+    try{return this.pop(path.toNCs().n()).top.cs(path.toNCs().cs());}
+    catch(LL.NotInDom nid){
+      throw new PathNotExistent(errs,Err.pathNotExistant(path));
+      }
     }
   public Program pop(int n){
     assert n>=0;
@@ -73,6 +78,11 @@ public class Program implements Visitable<Program>{
     Program res=this.pop(p.n());
     for(C c:p.cs()){res=res.push(c);}
     return res;
+    }
+  public int dept(){
+    int count=0;
+    for(PTails p=pTails;!p.isEmpty();p=p.tail()){count+=1;}
+    return count;
     }
   public P from(P p,P.NCs source){
     if(!p.isNCs()){return p;}
@@ -146,50 +156,55 @@ public class Program implements Visitable<Program>{
     var v=fromVisitor(source);
     return ct.withSt(v.visitST(ct.st())).withT(v.visitT(ct.t()));
     }
-  public List<T> collect(P.NCs p){
-    LL l=of(p);
-    if(!l.isFullL()){return from(((Core.L)l).ts(),p);}
-    Full.L fl=(Full.L)l;
+  public List<T> collect(P.NCs p,List<Pos> poss) throws InvalidImplements{
+    LL ll=of(p,poss);
+    if(!ll.isFullL()){
+      Core.L l=(Core.L)ll;
+      return from(l.ts(),p);
+      }
+    Full.L fl=(Full.L)ll;
     if(!fl.reuseUrl().isEmpty()){
       assert false;
       return from(Constants.readURL.apply(fl.reuseUrl()).ts(),p);
       }
     if(!fl.isDots()){
-      return collect(L(fl.ts(),(c,t)->c.add(from(toCore(t),p))));
+      return collect(L(fl.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p))),fl.poss());
       }
     assert false;
     Program p0=navigate(p);
     Full.L fl0=Constants.readFolder.apply(p0.pTails);
-    return collect(L(fl0.ts(),(c,t)->c.add(from(toCore(t),p))));
+    return collect(L(fl0.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p))),fl0.poss());
     }   
-  public List<T> collect(List<T> ts){//TODO: test collect
+  public List<T> collect(List<T> ts,List<Pos> poss)throws InvalidImplements{
+    try{return collectRec(ts,poss);}
+    catch(StackOverflowError so){
+      throw new InvalidImplements(poss,Err.circularImplements(ts));
+      }
+    }
+  private List<T> collectRec(List<T> ts,List<Pos> poss)throws InvalidImplements{
     if(ts.isEmpty()){return ts;}
     T t0=ts.get(0);
     ts=popL(ts);
-    var recRes=collect(ts);
-    var ll=of(t0.p());
-    Core.L l=null;
-    if(!ll.isFullL()){l=(Core.L)ll;}
+    var recRes=collectRec(ts,poss);
+    var ll=of(t0.p(),poss);
+    if(!ll.isFullL()){
+      Core.L l=(Core.L)ll;
+      if(!l.isInterface()){throw new InvalidImplements(l.poss(),Err.notInterfaceImplemented());}
+      return L(c->{
+        if(!recRes.contains(t0)){c.add(t0);}
+        for(var ti:((Core.L)ll).ts()){
+          T tif=from(ti,t0.p().toNCs());
+          if(!recRes.contains(tif)){c.add(tif);}        
+          }
+        c.addAll(recRes);
+        });
+      }
     Full.L fl=(Full.L)ll;
-    if(!fl.reuseUrl().isEmpty()){
-      assert false;
-      l=Constants.readURL.apply(fl.reuseUrl());
-      }
-    if(l!=null){return L(c->{
-      if(!recRes.contains(t0)){c.add(t0);}
-      for(var ti:((Core.L)ll).ts()){
-        T tif=from(ti,t0.p().toNCs());
-        if(!recRes.contains(tif)){c.add(tif);}        
-        }
-      c.addAll(recRes);
-      });}
-    if(fl.isDots()){
-      assert false;
-      var tail=navigate(t0.p().toNCs()).pTails;      
-      fl=Constants.readFolder.apply(tail);
-      }
-    List<T> ts0=L(fl.ts(),(c,ti)->from(toCore(ti),t0.p().toNCs()));
-    List<T> ts1=collect(ts0);
+    assert fl.reuseUrl().isEmpty();
+    assert !fl.isDots();
+    if(!fl.isInterface()){throw new InvalidImplements(fl.poss(),Err.notInterfaceImplemented());}
+    List<T> ts0=L(fl.ts(),(c,ti)->c.add(from(TypeManipulation.toCore(ti),t0.p().toNCs())));
+    List<T> ts1=collectRec(ts0,fl.poss());
     return L(c->{//is not worth to remove this 6 lines dup
       if(!recRes.contains(t0)){c.add(t0);}
       for(var ti:ts1){
@@ -198,17 +213,17 @@ public class Program implements Visitable<Program>{
       c.addAll(recRes);
       });
     }
-  public boolean isSubtype(Stream<P> subPs,P superP){
-    return subPs.allMatch(p->isSubtype(p, superP));
+  public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
+    return subPs.allMatch(p->isSubtype(p, superP,poss));
     }
-  public boolean isSubtype(Stream<T> subTs,T superT){
-    return subTs.allMatch(t->isSubtype(t, superT));
+  public boolean isSubtype(Stream<T> subTs,T superT,List<Pos> poss){
+    return subTs.allMatch(t->isSubtype(t, superT,poss));
     }
-  public boolean isSubtype(T subT,T superT){
+  public boolean isSubtype(T subT,T superT,List<Pos> poss){
     if(!isSubtype(subT.mdf(),superT.mdf())){return false;}
-    return isSubtype(subT.p(),superT.p());
+    return isSubtype(subT.p(),superT.p(),poss);
     }
-  public boolean isSubtype(P subP,P superP){
+  public boolean isSubtype(P subP,P superP,List<Pos> poss){
     assert minimize(subP)==subP;
     assert minimize(superP)==superP;
     if(superP==P.pAny){return true;}
@@ -216,7 +231,7 @@ public class Program implements Visitable<Program>{
     P.NCs subP0=subP.toNCs();
     if(!subP.isNCs()){return false;}
     if(!superP.isNCs()){return false;}
-    for(T ti:collect(subP0)){
+    for(T ti:collect(subP0,poss)){
       P pi=from(ti.p(),subP0);
       assert minimize(pi)==pi;
       if(pi.equals(superP)){return true;}
@@ -240,74 +255,56 @@ public class Program implements Visitable<Program>{
   public static class InvalidImplements extends EndError{
     public InvalidImplements(List<Pos> poss, String msg) { super(poss, msg);}
     }
-  public P origin(S s, P.NCs p) throws InvalidImplements{
-    List<T> origins=L(collect(p),(c,t)->{
-      if(!refine(s,t.p().toNCs())){c.add(t);}
+  @SuppressWarnings("serial")
+  public static class PathNotExistent extends EndError{
+    public PathNotExistent(List<Pos> poss, String msg) { super(poss, msg);}
+    }
+  public P origin(S s, P.NCs p,List<Pos> poss) throws InvalidImplements{
+    List<P> origins=L(c->{
+      if(!refine(s,p,poss)){c.add(p);}
+      for(var t:collect(p,poss)){
+        LL ll=this.of(t.p(),poss);
+        if(ll.isFullL() && ((Full.L)ll).ms().stream()
+          .noneMatch(m->m.key().equals(s))){continue;}
+        if(!refine(s,t.p().toNCs(),poss)){c.add(t.p());}
+        }
       });
-    if(origins.size()==1){return origins.get(0).p();}
-    throw new InvalidImplements(of(p).poss(),
+    if(origins.size()==1){return origins.get(0);}
+    throw new InvalidImplements(poss,
       Err.moreThenOneMethodOrigin(s,origins));
     }
-  public boolean refine(S s, P.NCs p){
-    for(T t:collect(p)){
-      if(methods(t.p()).stream().anyMatch(mh->mh.s().equals(s))){return true;}
+  public boolean refine(S s, P.NCs p,List<Pos> poss){
+    for(T t:collect(p,poss)){
+      if(methods(t.p(),poss).stream().anyMatch(mh->mh.s().equals(s))){return true;}
       }
     return false;
     }
-  public Core.MH toCore(Full.MH mh){
-    Mdf mdf=mh._mdf();
-    if(mdf==null){mdf=Mdf.Immutable;}
-    List<Doc> docs=L(mh.docs(),(c,d)->c.add(toCore(d)));
-    T t=toCore(mh.t());
-    S s=mh.key();
-    List<T> pars=L(mh.pars(),(c,ti)->c.add(toCore(ti)));
-    List<T> exceptions=L(mh.exceptions(),(c,ti)->c.add(toCore(ti)));
-    return new Core.MH(mdf, docs, t, s, pars, exceptions);
+  public P resolve(List<C> cs,List<Pos>poss){
+    int n=findScope(cs.get(0),0,poss);
+    return P.of(n, cs);
     }
-  public T toCore(Full.T t){
-    Mdf mdf=t._mdf();
-    if(mdf==null){mdf=Mdf.Immutable;}
-    List<Doc> docs=L(t.docs(),(c,d)->c.add(toCore(d)));
-    if (t._p()!=null){return new T(mdf,docs,minimize(t._p()));}
-    int n=findScope(t.cs().get(0),0);
-    return new T(mdf,docs,minimize(P.of(n, t.cs())));
+  private int findScope(C c, int acc,List<Pos>poss){
+    String url="";
+    if(top.isFullL()){url=((Full.L)top).reuseUrl();}
+    if(!url.isEmpty()){
+      throw bug();//will give error if the url is not #$
+      //and the retrived code do not define C c.
+      }
+    if(top.domNC().contains(c)){return acc;}
+    if(pTails.isEmpty()){
+      throw new PathNotExistent(poss, Err.pathNotExistant(c));
+      }
+    return pop().findScope(c, acc+1,poss);
     }
-    private int findScope(C c, int acc){
-      if(top.domNC().contains(c)){return acc;}
-      if(pTails.isEmpty()){return acc;}
-      assert top.isFullL();
-      for(Full.Doc d:((Full.L)top).docs()){
-        if(d.texts().size()!=1){continue;}
-        if(d.texts().get(0).equals("__STOP_SCOPE__")){return acc;}
-      }
-      return pop().findScope(c, acc+1);
-      }
-  public Core.Doc toCore(Full.Doc doc){
-    List<Doc> docs=L(doc.docs(),(c,d)->c.add(toCore(d)));
-    return new Core.Doc(_toCore(doc._pathSel()),doc.texts(), docs);
-    }
-  public Core.PathSel _toCore(Full.PathSel _p){
-    if(_p==null){return null;}
-    if(_p._p()==null && _p.cs().isEmpty()){
-      return new Core.PathSel(P.coreThis0.p(),_p._s(),_p._x());
-      }
-    assert _p._p()==null ||_p.cs().isEmpty();
-    if(_p._p()!=null){
-      return new Core.PathSel(_p._p(),_p._s(),_p._x());
-      }
-    int n=findScope(_p.cs().get(0),0);   
-    return new Core.PathSel(P.of(n,_p.cs()),_p._s(),_p._x());
-    }
-
-  public List<Core.MH>extractMHs(List<Full.L.M> ms){
+  public List<Core.MH>extractMHs(List<Full.L.M> ms,P.NCs fromSource){
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
       if(m instanceof Full.L.MI){return;}
       if(m instanceof Full.L.MWT){
-        c.add(toCore(((Full.L.MWT)m).mh()));return;
+        c.add(from(TypeManipulation.toCore(((Full.L.MWT)m).mh()),fromSource));return;
         }
       Full.L.F f=(Full.L.F)m;
-      Core.T t=toCore(f.t());
+      Core.T t=TypeManipulation.toCore(f.t());
       Core.T tr=TypeManipulation._toRead(t);
       assert tr!=null;
       if(f.isVar()){
@@ -321,30 +318,28 @@ public class Program implements Visitable<Program>{
       });
     }
  
-  List<Core.MH> methods(P p){
+  public List<Core.MH> methods(P p,List<Pos> poss){
     if(!p.isNCs()){return L();}
     P.NCs p0=p.toNCs();
-    LL ll=of(p0);
+    LL ll=of(p0,poss);
     if(!ll.isFullL()){
       return L(((Core.L)ll).mwts(),(c,m)->c.add(from(m.mh(),p0)));
       }
     Full.L l=(Full.L)ll;
     assert !l.isDots();
     assert l.reuseUrl().isEmpty();
-    
-    return methods(p0, l);
-    }
-  List<Core.MH> methods(P.NCs p0,Full.L l){
-    List<Core.MH> mhs=this.navigate(p0).extractMHs(l.ms());
-    List<T> ts=L(l.ts(),(c,t)->c.add(from(toCore(t),p0)));
-    List<T> ps=collect(ts);
-    List<List<MH>> methods=L(ps,(c,t)->c.add(methods(t.p())));
+    List<Core.MH> mhs=this.navigate(p0).extractMHs(l.ms(),p0);
+    List<T> ts=L(l.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p0)));
+    List<T> ps=collect(ts,l.poss());
+    List<List<MH>> methods=L(c->{
+      c.add(mhs);
+      for(var t: ps){
+        c.add(methods(t.p(),l.poss()));
+        }
+      });
     List<S> ss=L(methods.stream().flatMap(ms->ms.stream().map(m->m.s())).distinct());
-    for(S s:ss){origin(s,p0);}
-    //throws InvalidImplements
+    for(S s:ss){origin(s,p0,l.poss());}// it throws InvalidImplements
     List<MH> res=L(ss,(c,s)->{
-      var r1=mhs.stream().filter(mh->mh.s().equals(s)).reduce(toOneOr(()->bug()));
-      if(r1.isPresent()){c.add(r1.get());return;}
       for(var ms:methods){
         var ri=ms.stream().filter(mh->mh.s().equals(s)).reduce(toOneOr(()->bug()));
         if(ri.isPresent()){c.add(ri.get());return;}
@@ -379,10 +374,10 @@ public class Program implements Visitable<Program>{
   public List<ST> minimize(List<ST>stz){
     throw todo();//TODO:
     }
-  public T _chooseT(List<T> ts){
+  public T _chooseT(List<T> ts,List<Pos> poss){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
-    var ps=L(ts.stream().map(t->t.p()).filter(p->isSubtype(ts.stream().map(t->t.p()),p)));
+    var ps=L(ts.stream().map(t->t.p()).filter(p->isSubtype(ts.stream().map(t->t.p()),p,poss)));
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
     }
@@ -413,7 +408,8 @@ public class Program implements Visitable<Program>{
   public static Program parse(String s){
     var r=Parse.program("-dummy-",s);
     assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-    assert r.res.wf();
-    return r.res;
+    var res=Init.init(r.res);
+    assert res.wf();
+    return res;
     }
   }

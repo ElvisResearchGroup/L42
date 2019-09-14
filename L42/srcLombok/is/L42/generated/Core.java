@@ -59,7 +59,8 @@ public class Core {
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       return ncs.stream().filter(m->m.key().equals(c))
-      .reduce(toOneOr(()->new LL.NotInDom(this,c))).get().l();
+      .reduce(toOneOr(()->new LL.NotInDom(this,c)))
+      .orElseThrow(()->new LL.NotInDom(this,c)).l();
       }
     @Override public L cs(List<C> cs){
       if(cs.isEmpty()){return this;}

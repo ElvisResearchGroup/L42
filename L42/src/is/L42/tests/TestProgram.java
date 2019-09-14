@@ -7,12 +7,16 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.common.Program.InvalidImplements;
+import is.L42.common.Program.PathNotExistent;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
@@ -29,10 +33,25 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //WellFormedness
    passWF("{method Void (Void that,Void foo)=foo}")
    ),new AtomicTest(()->
-   failWF("{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("1",hole))
+   failWF(NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("1",hole))
    ),new AtomicTest(()->
-   failWF("{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("1",hole))
+   failWF(NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("1",hole))
    ),new AtomicTest(()->
+
+   passWF("{method Void a(This3.Foo f)}"+emptyP)
+   ),new AtomicTest(()->
+   passWF("{C={method Void a(This3.Foo f)}}"+emptyP)
+   ),new AtomicTest(()->
+   passWF("{C={[This3.Foo]}}"+emptyP)
+   ),new AtomicTest(()->
+
+   failWF(PathNotExistent.class,"{method Void a(This3.Foo f)}",Err.thisNumberOutOfScope("This3.Foo"))
+   ),new AtomicTest(()->
+   failWF(PathNotExistent.class,"{C={method Void a(This3.Foo f)}}",Err.thisNumberOutOfScope("This3.Foo"))
+   ),new AtomicTest(()->
+   failWF(PathNotExistent.class,"{C={[This3.Foo]}}",Err.thisNumberOutOfScope("This3.Foo"))
+   ),new AtomicTest(()->
+
 //---test minimize path
    minimize("{method Void (Void that,Void foo)=foo}","This0.Foo","This0.Foo")
    ),new AtomicTest(()->
@@ -135,7 +154,59 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   collect("{[This.B] B={interface}}"+emptyP,"This","[imm This0.B]")
   ),new AtomicTest(()->
-  collectFail("{[This.B] B={}}"+emptyP,"This","[imm This0.B]")
+  collectFail(InvalidImplements.class,"{[This.B] B={}}"+emptyP,"This",Err.notInterfaceImplemented())
+  ),new AtomicTest(()->
+  collect("{[B, B] B={interface}}"+emptyP,"This","[imm This0.B]")
+  ),new AtomicTest(()->
+  collectFail(PathNotExistent.class,"{[This.B, This.A] B={interface}}"+emptyP,"This",Err.pathNotExistant("This0.A"))
+  ),new AtomicTest(()->
+  collect("{[This.B, This.A] A={interface}B={interface[This1.A]}}"+emptyP,"This","[imm This0.B, imm This0.A]")
+  ),new AtomicTest(()->
+  collect("{[This.A, This.B] A={interface}B={interface[This1.A]}}"+emptyP,"This","[imm This0.B, imm This0.A]")//order tweaked in top
+  ),new AtomicTest(()->
+  collect("{[This.B] A={interface}B={interface[This1.A]}}"+emptyP,"This","[imm This0.B, imm This0.A]")
+  ),new AtomicTest(()->
+  collect("{[This.B] A={interface} B={interface[This2.A]}} C={C={} A={interface [C.A]}}"+emptyP,"This","[imm This0.B, imm This1.A, imm This0.A]")
+  ),new AtomicTest(()->
+  collect("{[This.A This.B] A={interface}B={interface[This2.A]}} C={C={} A={interface [C.A]}}"+emptyP,"This","[imm This0.B, imm This1.A, imm This0.A]")
+  ),new AtomicTest(()->
+  collect("{[This.B] A={interface}B={interface[This2.A, A]}} C={C={} A={interface [C.A]}}"+emptyP,"This","[imm This0.B, imm This1.A, imm This0.A]")
+  ),new AtomicTest(()->
+  collectFail(InvalidImplements.class,"{[This.A] A={interface [B]} B={interface[A]}}"+emptyP,"This",Err.circularImplements(hole))
+
+  ),new AtomicTest(()->
+  methods("{ method Void v()}"+emptyP,"This","[imm method imm Void v()]")
+  ),new AtomicTest(()->
+  methods("{ method Void v() method Any g(Any that)[Library]}"+emptyP,"This","[imm method imm Void v(), imm method imm Any g(imm Any that)[Library]]")
+  ),new AtomicTest(()->
+  methods("{[A] method Void v() A={interface method A a()}}"+emptyP,"This","[imm method imm Void v(), imm method imm This0.A a()]")
+  ),new AtomicTest(()->
+  methods("{[A,B] A={interface [C]} B={interface [C]} C={interface method A a()}}"+emptyP,"This","[imm method imm This0.A a()]")
+  ),new AtomicTest(()->
+  methods("{[A,B] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface method Any a()}}"+emptyP,"This","[imm method imm Void a()]")
+  ),new AtomicTest(()->
+  methods("{[B,A] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface method Any a()}}"+emptyP,"This","[imm method imm Any a()]")
+  ),new AtomicTest(()->
+  methodsFail(InvalidImplements.class,"{[B,A] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface}}"+emptyP,"This",Err.moreThenOneMethodOrigin("a()", hole))
+  ),new AtomicTest(()->
+  methodsFail(InvalidImplements.class,"{[B,A] A={interface method Any a()} B={interface method Any a()}}"+emptyP,"This",Err.moreThenOneMethodOrigin("a()", hole))
+ 
+ 
+  ),new AtomicTest(()->
+  methods("{}"+emptyP,"This","[]")
+  ),new AtomicTest(()->
+  methods("{I={interface method Any m()} A={[I]}}","This0.I","[imm method imm Any m()]")
+  ),new AtomicTest(()->
+  methods("{I={interface method Any m()} A={[I]}}","This0.A","[imm method imm Any m()]")
+  ),new AtomicTest(()->
+  methods("{I2={interface method Any m2()} I1={interface method Any m1()} A={[I1,I2]}}","This0.A","[imm method imm Any m1(), imm method imm Any m2()]")
+  ),new AtomicTest(()->
+  methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2()} I1={interface [I0] method Any m1()} A={[I1,I2]}}","This0.A","[imm method imm Any m1(), imm method imm Any m0(), imm method imm Any m2()]")
+  ),new AtomicTest(()->
+  methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I1,I2]}}","This0.A","[imm method imm Any m1(), imm method imm Any m0(), imm method imm Any m2()]")
+  ),new AtomicTest(()->
+  methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I2,I1]}}","This0.A","[imm method imm Any m2(), imm method imm Void m0(), imm method imm Any m1()]")
+
 /*
 Ok.. problems and solutions:
 {} without Cs is PERFECT FOR CACHING
@@ -157,15 +228,11 @@ public static void minimize(String program,String pathIn,String pathOut){
   assertEquals(Program.parse(program).minimize(P.parse(pathIn)),P.parse(pathOut));
   }
 public static void collect(String program,String pathIn,String out){
-  assertEquals(Program.parse(program).collect(P.parse(pathIn).toNCs()).toString(),out);
+  assertEquals(Program.parse(program).collect(P.parse(pathIn).toNCs(),null).toString(),out);
   }
-public static void collectFail(String program,String pathIn,String out){
-  try{
-    Program.parse(program).collect(P.parse(pathIn).toNCs());
-    } 
-  catch(Error e){return;}
-  fail();
-    }
+public static void methods(String program,String pathIn,String out){
+  assertEquals(Program.parse(program).methods(P.parse(pathIn).toNCs(),null).toString(),out);
+  }
 
 public static void from(String program,String pathIn,String pathSource,String pathOut){
   assertEquals(Program.parse(program).from(P.parse(pathIn),P.parse(pathSource).toNCs()),P.parse(pathOut));
@@ -175,25 +242,38 @@ public static void fromE(String program,String eIn,String pathSource,String eOut
   }
 
 public static void passWF(String input){
-  var r=Parse.program("-dummy-",input);
-  assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  assertTrue(r.res.wf());
+  var p=Program.parse(input);//internally calls wf
+  assertTrue(p.wf());//to be more resilient to changes above
   }
-public static void failWF(String input,String ...output){
-  var r=Parse.program("-dummy-",input);
-  assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  try{r.res.wf();}
-  catch(NotWellFormed nwf){
-    String msg=nwf.getMessage();
-    if(output.length==1){
-      msg=msg.substring(msg.indexOf("\n")+1);
-      Err.strCmp(msg, output[0]);
-      return;
+public static void checkFail(Runnable r,String [] output,Class<?> kind){
+ assert output.length>0;
+ try{r.run();}
+  catch(EndError ee){
+    if(!kind.isInstance(ee)){fail("Different kind of exception: "+ee);}
+    String msg=ee.getMessage();
+    msg=msg.substring(msg.indexOf("\n")+1);
+    Err.strCmp(msg, output[0]);
+    for(var i:range(1,output.length)){
+      if(!ee.getMessage().contains(output[i])){throw ee;}
+      assertTrue(ee.getMessage().contains(output[i]));
       }
-    for(var s:output){if(!msg.contains(s)){throw nwf;}}
-    for(var s:output){assertTrue(msg.contains(s));}
     return;
     }
-  Assertions.fail("error expected");
+  fail("error expected");
+  }
+public static void failWF(Class<?> clazz,String input,String ...output){
+  var r=Parse.program("-dummy-",input);
+  assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
+  checkFail(()->Program.parse(input),output,clazz);
+  }
+public static void collectFail(Class<?> clazz,String program,String pathIn,String... output){
+  Program p=Program.parse(program);
+  var pos=p.of(P.parse(pathIn).toNCs(),null).poss();
+  checkFail(()->p.collect(P.parse(pathIn).toNCs(),pos),output,clazz);
+  }
+public static void methodsFail(Class<?> clazz,String program,String pathIn,String... output){
+  Program p=Program.parse(program);
+  var pos=p.of(P.parse(pathIn).toNCs(),null).poss();
+  checkFail(()->p.methods(P.parse(pathIn).toNCs(),pos),output,clazz);
   }
 }
