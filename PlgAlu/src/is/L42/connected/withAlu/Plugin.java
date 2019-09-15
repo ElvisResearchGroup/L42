@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.HashMap;
+import java.util.Random;
 
 import platformSpecific.fakeInternet.ActionType;
 import platformSpecific.fakeInternet.PluginType;
@@ -40,6 +41,13 @@ public class Plugin implements PluginType.WellKnown {
     Integer i2=ensureExtractInt32(cb2);
     return i1-i2;
   }
+  //rand
+  @ActionType({ActionType.NormType.Library,ActionType.NormType.Library})
+  public  Object M£h$randomInt32£xthat(Object cb1){
+    Integer i1=ensureExtractInt32(cb1);
+    return r.nextInt(i1);
+  }
+  private static Random r=new Random();
   //&
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})
   public  Object MandInt32£xn1£xn2(Object cb1,Object cb2){

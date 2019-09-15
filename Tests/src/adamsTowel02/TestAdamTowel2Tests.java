@@ -26,8 +26,8 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       Opt.ProfilerPrintOff,//disable profiler print and final profiling computation
 
       //// big individual deployment options
-      //Opt.DeplAT1, // AdamsTowel01
-      //Opt.DeplAT2, // AdamsTowel02
+      Opt.DeplAT1, // AdamsTowel01
+      Opt.DeplAT2, // AdamsTowel02
 
       // Opt.Project, // Run the local libProject as a folder, expecting it to deploy a project towel
       //// options for deploying small things
@@ -72,8 +72,9 @@ public class TestAdamTowel2Tests extends TestRunnerPrePost{
       "HamsterInvariant.L42",
       "TestGraphInterfaces.L42",*/
       //"TestLogs.L42",
+      "TestRand.L42",
       // "TestTraitCompostionGameBase.L42",
-      "TestTraitCompostionGameExtended.L42",
+      //"TestTraitCompostionGameExtended.L42",
       //Opt.AllTests, // All files in libTests, as individual tests, in no defined order
       Opt.NOP  // Convenience option, so that all of the other options can end with a comma
     );

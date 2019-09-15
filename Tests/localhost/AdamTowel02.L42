@@ -482,6 +482,8 @@ Void appendLog(This1.S that, This1.S msg) use This1.Alu check appendLog(that:tha
 class method 
 This1.S #$readLog(This1.S that) This1.S.#from(binaryRepr:(use This1.Alu check #$readLog(that:that.#binaryRepr()) error void))
 class method 
+This1.Size #$rand(This1.Size that) This1.Size.#from(binaryRepr:(use This1.Alu check #$randomInt32(that:that.#binaryRepr()) error void))
+class method 
 Void #apply(Library lib) error This1.S.#from(builder:(
   mut This1.S.SBuilder b134=This1.S.#builder()
   Void unused513=b134.#t()

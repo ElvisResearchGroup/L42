@@ -1,0 +1,10 @@
+{reuse L42.is/AdamTowel02
+
+Main:{
+  Size r1=Debug.#$rand(10Size)
+  Size r2=Debug.#$rand(10Size)
+  Debug.test(r1==r2, expected:Bool.false())
+  return ExitCode.normal()
+  }
+
+}
