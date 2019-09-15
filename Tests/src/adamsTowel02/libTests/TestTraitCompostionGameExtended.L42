@@ -36,7 +36,7 @@ ModuleEntities: Trait({
     mut method Void point(Point that, mut World world, Bool updateWorld)
     read method Void drawOnto(mut Graphics that)
     read method S toS()
-    mut method Void use(mut $Player player, mut World world)
+    mut method Void use(mut $Player playerUsingThis, mut World world)
     }
 
   World: {
@@ -88,6 +88,7 @@ ModuleEntities: Trait({
     var mut OptionalEntity currentItem
 
     class method mut This (fwd Point p, fwd mut OptionalEntity currentItem)
+
     class method mut This (fwd Point p) (
       This(p: p, currentItem: OptionalEntity())
       )
@@ -122,7 +123,7 @@ ModuleEntities: Trait({
 
     mut method Void attemptToUseItem(mut World world) (
       if this.#currentItem().isPresent() (
-        this.#currentItem().#get().use(player: this, world: world)
+        this.#currentItem().#get().use(playerUsingThis: this, world: world)
         )
       )
 
@@ -136,19 +137,85 @@ ModuleEntities: Trait({
       this.currentItem(OptionalEntity())
       )
 
-    method use(player, world) (
+    mut method Void removeCurrentItem() (
+      if !this.#currentItem().isPresent() (
+        error X""
+        )
+
+      this.currentItem(OptionalEntity())
+      )
+
+    method use(playerUsingThis, world) (
       error X"Cannot use Player"
       )
     }
 
   RockItem: ItemBase & {implements Entity
     read method S representation() S"R"
-    method use(player, world) void
+    method use(playerUsingThis, world) void
     }
   AppleItem: ItemBase & {implements Entity
     read method S representation() S"A"
-    method use(player, world) void
+    method use(playerUsingThis, world) void
     }
+
+  Entities: Collections.vector(ofMut: Entity)
+  Points: Collections.vector(of: Point)
+
+  ItemSpawnerItem: ItemBase & {implements Entity
+    var Size semiRandomSeed
+
+    class method mut This (fwd Point p) (
+      This(p: p, semiRandomSeed: 0Size)
+      )
+
+    class method mut This (fwd Point p, fwd Size semiRandomSeed)
+
+    read method S representation() S"S"
+
+    method use(playerUsingThis, world) (
+      Entities itemsToSpawn = this.createItemsToSpawn()
+
+      if itemsToSpawn.size() == 0Size (
+        playerUsingThis.removeCurrentItem()
+
+        with item in itemsToSpawn.#vals() (
+          world.addEntity(item)
+          )
+        )
+      )
+
+    mut method Entities createItemsToSpawn(mut World world) (
+      Points neighbourPoints = this.getNeighbourPoints()
+      // NOTE: neighbourPoints should be randomly shuffled here, but randomness
+      // is not implemented in the language yet
+      mut Entities createdItems = Entities[]
+
+      with point in neighbourPoints.vals() (
+        if createdItems.size() < 3Size & !world.hasEntityAt(point) (
+          // TODO 3
+          createdItems.add(right: this.createItemAt(point))
+          )
+        )
+
+      createdItem
+      )
+
+    mut method Entity createItemAt(Point point) (
+      error X""
+      )
+
+    method Points getNeighbourPoints() (
+      Points[
+        this.point().with() // TODO
+        /* getPoint().add(new Point(1, 0)), */
+        /* getPoint().add(new Point(-1, 0)), */
+        /* getPoint().add(new Point(0, 1)), */
+        /* getPoint().add(new Point(0, -1)) */
+      ]
+      )
+    }
+
   })"$Player"<=Path"Player"
 
 TestModuleEntities: ModuleEntities & {
