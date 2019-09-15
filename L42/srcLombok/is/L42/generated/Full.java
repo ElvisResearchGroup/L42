@@ -24,7 +24,7 @@ public class Full {
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   L implements LL,Leaf,Half.E,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     boolean isDots; String reuseUrl; boolean isInterface; List<T> ts; List<M>ms; List<Doc>docs;
-    public static interface M extends HasWf,HasPos,HasVisitable{List<Doc> docs();LDom key();E _e();Visitable<? extends M> visitable();}
+    public static interface M extends LDom.HasKey,HasWf,HasPos,HasVisitable{List<Doc> docs();E _e();Visitable<? extends M> visitable();}
     @Override public L withCs(List<C>cs,Function<NC,NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
       assert !cs.isEmpty();
       assert domNC().contains(cs.get(0));
@@ -40,9 +40,9 @@ public class Full {
       return L(ms.stream().filter(m->m.key() instanceof C).map(m->(C)m.key()));}
     @Override public L c(C c){
       assert !this.isDots && this.reuseUrl.isEmpty();
-      return (L)ms.stream().filter(m->m.key().equals(c))
-      .reduce(toOneOr(()->new LL.NotInDom(this,c)))
-      .orElseThrow(()->new LL.NotInDom(this,c))._e();
+      var res=LDom._elem(ms, c);
+      if(res==null){new LL.NotInDom(this, c);}
+      return (L)res._e();
       }
     @Override public L cs(List<C> cs){
       if(cs.isEmpty()){return this;}
@@ -137,9 +137,9 @@ public class Full {
   PathSel implements Visitable<PathSel>{@Override public PathSel accept(CloneVisitor cv){return cv.visitPathSel(this);}@Override public void accept(CollectorVisitor cv){cv.visitPathSel(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     List<C>cs; P _p; S _s; X _x;}
   @Value @Wither public static class
-  MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+  MH implements LDom.HasKey, Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf _mdf; List<Doc> docs; T t; Op _op; int n; S s; List<T> pars; List<T> exceptions;
-    public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
+    @Override public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
     public List<T> parsWithThis(){return pushL(P.fullThis0.with_mdf(_mdf),pars);}
     }
  

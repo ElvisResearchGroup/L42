@@ -427,7 +427,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
       if(current instanceof StringContext){
         Full.EString tmp=visitString((StringContext)current);
         Full.E fRes=res;
-        var es=L(c->{c.add(fRes);c.addAll(popL(tmp.es()));});
+        var es=pushL(fRes,popL(tmp.es()));
         res=visitString((StringContext)current).withEs(es);}
       }
     for(var uOp:uOpList){
@@ -469,7 +469,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   @Override public Full.E visitEBinary2(EBinary2Context ctx) {
     check(ctx);
-    List<TerminalNode> ops=L(c->{c.addAll(ctx.InKw());c.addAll(ctx.OP2());});
+    List<TerminalNode> ops=merge(ctx.InKw(),ctx.OP2());
     return parseBinOp(pos(ctx),ctx.eBinary1(),ops);
     }
   @Override public Full.E visitEBinary3(EBinary3Context ctx) {

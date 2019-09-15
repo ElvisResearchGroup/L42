@@ -58,9 +58,9 @@ public class Core {
       }
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
-      return ncs.stream().filter(m->m.key().equals(c))
-      .reduce(toOneOr(()->new LL.NotInDom(this,c)))
-      .orElseThrow(()->new LL.NotInDom(this,c)).l();
+      var res=LDom._elem(ncs, c);
+      if(res==null){new LL.NotInDom(this, c);}
+      return res.l();
       }
     @Override public L cs(List<C> cs){
       if(cs.isEmpty()){return this;}
@@ -68,12 +68,13 @@ public class Core {
       return this.c(cs.get(0)).cs(popL(cs));
       }
     @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
-    MWT implements Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+    MWT implements LDom.HasKey, Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       List<Pos> poss;List<Doc>docs; MH mh; String nativeUrl;E _e;
-      public S key(){return mh.s();}}
+      @Override public S key(){return mh.s();}}
     @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
-    NC implements Visitable<NC>{@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      List<Pos> poss;List<Doc>docs; C key;  L l;}
+    NC implements LDom.HasKey, Visitable<NC>{@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+      List<Pos> poss;List<Doc>docs; C key;  L l;
+      }
     @Value @Wither public static class
     Info implements Visitable<Info>{@Override public Info accept(CloneVisitor cv){return cv.visitInfo(this);}@Override public void accept(CollectorVisitor cv){cv.visitInfo(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       boolean isTyped; 
@@ -119,8 +120,9 @@ public class Core {
   PathSel implements Visitable<PathSel>{@Override public PathSel accept(CloneVisitor cv){return cv.visitPathSel(this);}@Override public void accept(CollectorVisitor cv){cv.visitPathSel(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     P p; S _s; X _x;}
   @Value @Wither public static class
-  MH implements Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+  MH implements LDom.HasKey, Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf mdf; List<Doc> docs; T t; S s; List<T> pars; List<T> exceptions;
+    @Override public S key(){return s;}
     public List<T> parsWithThis(){return pushL(P.coreThis0.withMdf(mdf),pars);}
     }
   }

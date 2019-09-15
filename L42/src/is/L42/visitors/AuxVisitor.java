@@ -1,6 +1,7 @@
 package is.L42.visitors;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.merge;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.unreachable;
 
@@ -106,7 +107,7 @@ AuxVisitor(Pos pos) { this.pos = pos; }
       Full.Doc text2=visitTopDocText(ctx.topDocText(1));
       assert !text1.texts().isEmpty();
       assert !text2.texts().isEmpty();
-      List<Full.Doc> docs=L(c->{c.addAll(text1.docs());c.addAll(text2.docs());});
+      List<Full.Doc> docs=merge(text1.docs(),text2.docs());
       List<String> texts=L(c->{
         int s1=text1.texts().size();
         int s2=text2.texts().size();

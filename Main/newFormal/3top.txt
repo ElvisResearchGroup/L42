@@ -1,5 +1,5 @@
 TOP LEVEL PROCESS:
-parsing top level LL, resolve ... and Cs into Thisn.Cs, check well formedness, apply top(empty,(LL;empty))=>PR
+parsing top level LL, resolve ... and Cs into Thisn.Cs, check well formedness, apply top(empty,(LL;empty)) => PR
 _______
 #define init(FULL.L) = FULL.L' //with no Cs and no '...'
   it propagates on the structure;
@@ -12,7 +12,7 @@ _______
 p.resolve(C.Cs) = Thisn.C.Cs
   where n is the smallest number such that either
   C in domNC(p(Thisn))
-  or p(Thisn)={reuse[URL]...}
+  or p(Thisn) = {reuse[URL]...}
 //error is reported if: we try to explore an undefined p(Thisn) or URL has no #$ and C notin dom(followURL(URL)) 
 _______
 #define metanotation IfNotE, IfErr, IfUndefined 
@@ -34,16 +34,17 @@ _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
     CORE.L;sDe;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
-    p0=p.update(updateInfo(p,MH1 .. MHn))
-    MH1..MHn = methods(p0,This0) IfNotE(MH1..MHn) PR = headerErr(p0)
+    p0 = p.update(CORE.L)
+    MH1..MHn = CORE.L.MWTs.MHs
     CTz.add(p0; MH1 sDe(MH1.s).e?; e?1).. .add(p0; MHn sDe(MHn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,NCs) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
     I[C=empty;p1;G=empty;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
-    L=updateInfo(p1, ♥sDe(MH1.s).Doc MH1 e?'1 .. ♥sDe(MHn.s).Doc MH1 e?'1)//add the e?'i as meth bodies
-    p2=flagTyped(p1.update(L)) IfNotE(p2) PR=illTyped(p1.update(L))
-    PR = CTz2; p2
+    MWTi = ♥sDe(MHi.s).Doc MHi ♥sDe(MHi.s).nativeURL e?'i
+    L = updateInfo(p1, MWT1..MWTn)
+    p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
+    PR = CTz1; p2
 
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
@@ -55,34 +56,41 @@ _______
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
-    p' = p.update(updateInfo(p,FULL.Docs C=CORE.L))refreshUniqueNames//and ♥Docs of nested C
+    p' = p.update(updateInfo(p,♥FULL.Docs C=CORE.L))//refreshUniqueNames
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
-    topNC(CTz1;p";Cs) => PR
+    topNC(CTz1;p";NCs) => PR
     
-* sortHeader({reuse[URL] Ms};pTail) =//wf: no Docs if reuse 
-  CORE.L[CORE.NCs];{s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms]     //or? CORE.L[CORE.NCs] and CORE.NCs=[C={#typed{}} | C in dom(Ms)]
-    followURL(URL)=CORE.L //with info
-    dom(CORE.L) disjoint dom(Ms)
- //note, the result must be well formed
-* sortHeader({... Ms};pTail) = sortHeader({readFolder(pTail),Ms};pTail) //note, the result must be well formed
-* sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; [NC | NC in Ms] //or? CORE.L[CORE.NCs] and CORE.NCs=[C={#typed{}} | C in dom(Ms)]
-    p(This0)={interface? [Ts] Ms Docs}
-    p0=p.update({interface? [Ts] CORE.NCs})//to prevent looking to stuff with dots or reuse
-    Ts'=♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any    
-    forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
-    CORE.L={interface? [Ts'] #norm{typeDep=Ts'.Ps U collectDeps(p0♥Docs)} CORE.NCs p0♥Docs}
+* sortHeader({reuse[URL] Ms};pTail) = CORE.L;{s->M.Docs,M.e?| M in Ms, s=M.s}; NCs0
+    CORE.L = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
+    followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
+    dom(MWTs NCs) disjoint dom(Ms)
+    NCs0 = [NC | NC in Ms]
+    CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
 
-* updateInfo(p,MWTs)={interface? Ts MWTs0\dom(MWTs) MWTs NCs Info0+Info}
-    p(This0)=CORE.L={interface? Ts MWTs0 NCs Info0 Docs}
-    Ps;Ps'=collectDeps(p;MWTs)
-    Info=#norm{typeDep=Ps,coherentDep=Ps',??, declaresClassMethods?}
-    declaresClassMethods?=empty iff class notin MWTs.mdfs
+* sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; NCs
+    NCs = [NC | NC in Ms]
+    p(This0) = {interface? [Ts] Ms Docs}
+    p0 = p.update({interface? [Ts] Ms\NCs Docs})//to prevent looking to non core
+    Ts' = ♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any    
+    forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
+    MH1..MHn = methods(p0,This0)
+    MWTs = [♥Docs MH | MH in MH1..MHn and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
+    Ps;empty = collectDeps(p0;MWTs)
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs),??, declaresClassMethods?}
+    declaresClassMethods?=empty iff class notin MHs.mdfs
+    CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
+
+* updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info0+Info}
+    p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
+    MWTs[e?=empty] = MWTs1
+    Ps;Ps' = collectDeps(p;MWTs.es)
+    Info = #norm{typeDep=Ps,coherentDep=Ps',??}
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
-* updateInfo(p,Docs C=L)=L0[♥Docs C=refreshUniqueNames(L)][info=L0.info+info
-    info=#norm{typeDep=collectDeps(p♥Docs)}
-    P(This0)=L0
+* updateInfo(p,Docs C=L) = L0[♥Docs C=refreshUniqueNames(L)][info=L0.info+info
+    info = #norm{typeDep=collectDeps(p♥Docs)}
+    P(This0) = L0
 _______
 #define I!HALF.e? => ER
 * I!empty => I.CTz;empty
@@ -109,8 +117,8 @@ _______
     ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
     Ti = T'i if xP'i = Pi < T'i
     Ti = I.G(x'i) if xP'i = x'i
-    {P.m(x1..xn).i}=I.p.opOptions(OP, T0..Tn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
-    xP"1..xP"n=xP'0..xP'n\i
+    {P.m(x1..xn).i} = I.p.opOptions(OP, T0..Tn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
+    xP"1..xP"n = xP'0..xP'n\i
     ER = CTz0 U..U CTzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER
     e0 in {throw e, loop e, x:=e}
@@ -141,7 +149,7 @@ _______
     DsR = CTz;var? CORE.T' x=e',Ds
 
 * I!catch throw HALF.T x e => KR
-    I(HALF.T)=CORE.T IfNotE(CORE.T) inferenceFailure(I,HALF.T)
+    I(HALF.T) = CORE.T IfNotE(CORE.T) inferenceFailure(I,HALF.T)
     I!e => ER
     ER = CTz';e' IfErr(ER) KR = ER
     KR = CTz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
@@ -154,40 +162,40 @@ _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
 * CTz0.add(p; MH e; Half.e) = CTz0 U CTz U STs<=MH.T
-    Y=Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
+    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
     Y!e = Half.e; STs; empty; CTz
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
-* I(mdf STz)=T[mdf=mdf]
-    I(STz)=T
-* I(ST1..STn)=chooseT(I.coreTof(ST1) U..U I.coreTof(STn))
+* I(mdf STz) = T[mdf=mdf]
+    I(STz) = T
+* I(ST1..STn) = chooseT(I.coreTof(ST1) U..U I.coreTof(STn))
 
 * T in I.coreTof(T)
 * T in I.coreTof(ST)
     ST<=ST' in I.CTz
     T in I.coreTof(ST')
 _______
-#define collectDeps(p;CORE.MWT)=Ps;Ps'    collectDeps(p;T)=Ps;Ps'    collectDeps(p;Doc)=Ps;Ps'
+#define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
-* collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?)=
+* collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
-* collectDeps(p; T)=T.P;empty U collectDeps(p; T.Docs)
-* collectDeps(p; Doc)={P| @P._ inside Doc};empty     
+* collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
+* collectDeps(p; Doc) = {P| @P._ inside Doc};empty     
 _______
 #define collectDepsE(p;CORE.e?)  //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
-* collectDepsE(p;empty)=collectDepsE(p;x)=collectDepsE(p;void)=empty;empty
-* collectDepsE(p;CORE.L)=Ps0..Psn;Ps'0..Ps'n
-    Ps0=CORE.L.Info.typeDep
-    Ps'0=CORE.L.Info.coherent
-    Ps1..Psn={CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
-    Ps'1..Ps'n={CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
+* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty
+* collectDepsE(p;CORE.L) = Ps0..Psn;Ps'0..Ps'n
+    Ps0 = CORE.L.Info.typeDep
+    Ps'0 = CORE.L.Info.coherent
+    Ps1..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
+    Ps'1..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;P<:class Any)= P;empty
 * collectDepsE(p;P<:class P')= P',P;P
-    P'!=Any
-* collectDepsE(p; (Ds Ks e) ) =collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
-* collectDepsE(p;var? T x=e)=collectDepsE(p;catch throw T x e)= collectDeps(T) U collectDepsE(p;e)
+    P' != Any
+* collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
+* collectDepsE(p;var? T x=e) = collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e)
 
 _______
 #define p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
@@ -199,7 +207,7 @@ _______
     STz' = chooseT({T| T in STz}) otherwise
 * p.minimize(ST.s(.i)?) = ST'.s(.i)?
     p.minimize(ST) = ST'
-    if ST' =CORE.T then methods(p,CORE.T.P)(s) undefined
+    if ST'=CORE.T then methods(p,CORE.T.P)(s) undefined
 * p.minimize(ST.s) = MH.T //methods already minimize
     p.minimize(ST) = CORE.T
     methods(p,CORE.T.P)(s) = MH
@@ -227,17 +235,17 @@ _______
     s = methName(OP_i)(x1..xn)
     P1 ... Pn = methods(p,Ti.P)(s).pars.Ps[from Ti.P;p]
     P'1 ... P'n = (T0..Tn\i).Ps
-    P=Ti.P
+    P = Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1
 
 _______
-#define Info0+Info1=Info
-//#Flag+#norm=#norm; #Flag+#Flag=#Flag
+#define Info0+Info1 = Info
+//#Flag+#norm = #norm; #Flag+#Flag = #Flag
 //union of all the sets; preserve all boolean flags
 
 //OLD COLLECT. Isaac, can you show me that we still need something like this? now is unused
 _______
-#define PAcc.collect()=PAcc'
+#define PAcc.collect() = PAcc'
 * CT in PAcc.collect()
     CT in PAcc.collect().collect())//is it needed since we have the fixpoint anyway?
 * CT in PAcc.collect()
@@ -254,11 +262,11 @@ _______
 	p(P).interface = empty 
 * T.s <= CORE.T in PAcc.collect()//since they are alias of each other 
     CORE.T <= T.s in PAcc.collect().CTz //why noy simply in PAcc.CTz?
-    CORE.T=PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]//TODO: no, CORE.L(s) works but FULL.L(s) misses on FULL.F and on methods from interfaces. Should we use methods(..)?
+    CORE.T = PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]//TODO: no, CORE.L(s) works but FULL.L(s) misses on FULL.F and on methods from interfaces. Should we use methods(..)?
 * T.s.i <= PT in PAcc.
 t()//since method parameter types can not be refined (or since they are aliases?)
     PT <= T.s.i in PAcc.collect().CTz
-    PT=PAcc.p(T.P)(s).MH.pari[from T.P;PAcc.p]
+    PT = PAcc.p(T.P)(s).MH.pari[from T.P;PAcc.p]
 * PT.s <= PT'.s in PAcc.collect()
     PT <= PT' in PAcc.CTz
     PT'.s in PAcc.CTz

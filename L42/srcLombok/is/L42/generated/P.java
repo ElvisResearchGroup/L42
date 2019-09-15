@@ -18,6 +18,8 @@ public class P implements Visitable<P>{
   public static final P pAny=new P();
   public static final P pVoid=new P();
   public static final P pLibrary=new P();
+  public static final Core.T coreAny = new Core.T(Mdf.Immutable, L(), P.pAny);
+  public static final Core.T coreLibrary = new Core.T(Mdf.Immutable, L(), P.pLibrary);
   public static final Core.T coreVoid=new Core.T(Mdf.Immutable, L(),P.pVoid);
   public static final Core.T coreThis0=new Core.T(Mdf.Immutable, L(),P.of(0,L()));
   public static final Full.T fullThis0=new Full.T(Mdf.Immutable, L(),L(),coreThis0.p());

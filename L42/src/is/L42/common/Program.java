@@ -1,7 +1,9 @@
 package is.L42.common;
 
+import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
@@ -96,10 +98,7 @@ public class Program implements Visitable<Program>{
     var cs=p.cs();
     if(n>=k){return minimize(P.of(m+n-k, cs));}
     if(n==0 && cs.isEmpty()){return source;}//optimization
-    List<C> resCs=L(c->{
-      c.addAll(source.cs().subList(0, k-n));
-      c.addAll(cs);
-      });
+    List<C> resCs=merge(source.cs().subList(0, k-n),cs);
     var res=P.of(m,resCs);
     assert res==minimize(res):
       res+" "+minimize(res);
@@ -341,8 +340,8 @@ public class Program implements Visitable<Program>{
     for(S s:ss){origin(s,p0,l.poss());}// it throws InvalidImplements
     List<MH> res=L(ss,(c,s)->{
       for(var ms:methods){
-        var ri=ms.stream().filter(mh->mh.s().equals(s)).reduce(toOneOr(()->bug()));
-        if(ri.isPresent()){c.add(ri.get());return;}
+        var ri=_elem(ms,s);
+        if(ri!=null){c.add(ri);return;}
         }
       });
     return res;
@@ -371,9 +370,16 @@ public class Program implements Visitable<Program>{
   public ST minimize(ST st){
     throw todo();//TODO:
     }
-  public List<ST> minimize(List<ST>stz){
+  public List<ST> minimizeSTz(List<ST>stz){
     throw todo();//TODO:
     }
+  public CT minimize(CT ct){
+    throw todo();//TODO:
+    }
+  public List<CT> minimizeCTz(List<CT> ctz){
+    throw todo();//TODO:
+    }
+
   public T _chooseT(List<T> ts,List<Pos> poss){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}

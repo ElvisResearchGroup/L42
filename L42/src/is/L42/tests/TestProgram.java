@@ -190,8 +190,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   methodsFail(InvalidImplements.class,"{[B,A] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface}}"+emptyP,"This",Err.moreThenOneMethodOrigin("a()", hole))
   ),new AtomicTest(()->
   methodsFail(InvalidImplements.class,"{[B,A] A={interface method Any a()} B={interface method Any a()}}"+emptyP,"This",Err.moreThenOneMethodOrigin("a()", hole))
- 
- 
   ),new AtomicTest(()->
   methods("{}"+emptyP,"This","[]")
   ),new AtomicTest(()->

@@ -82,7 +82,7 @@ _______
   pTail::= CORE.L | C:LL
   p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
   // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
-  sDe::= s1->FULL.Docs1,FULL.e?1 .. sn->FULL.Docsn,FULL.e?n
+  sDe::= s1->FULL.Docs1, nativeURL?1, FULL.e?1 .. sn->FULL.Docsn, nativeURL?n, FULL.e?n
 _______
 #define functional notation, dom, update and '\' (set minus) for CORE.L (over the domain Ldom), but only domNC and functional notation on Cs for LL. Those are undefined 
 if LL has dots or reuseUrl.

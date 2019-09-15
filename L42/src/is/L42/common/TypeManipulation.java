@@ -34,23 +34,27 @@ public class TypeManipulation {
   public static Core.MH toCore(Full.MH mh){
     Mdf mdf=mh._mdf();
     if(mdf==null){mdf=Mdf.Immutable;}
-    List<Doc> docs=L(mh.docs(),(c,d)->c.add(toCore(d)));
     T t=toCore(mh.t());
     S s=mh.key();
-    List<T> pars=L(mh.pars(),(c,ti)->c.add(toCore(ti)));
-    List<T> exceptions=L(mh.exceptions(),(c,ti)->c.add(toCore(ti)));
-    return new Core.MH(mdf, docs, t, s, pars, exceptions);
+    List<T> pars=toCoreTs(mh.pars());
+    List<T> exceptions=toCoreTs(mh.exceptions());
+    return new Core.MH(mdf, toCoreDocs(mh.docs()), t, s, pars, exceptions);
     }
+  public static List<Core.Doc> toCoreDocs(List<Full.Doc> docs){
+    return L(docs,(c,d)->c.add(toCore(d)));
+    }
+  public static List<Core.T> toCoreTs(List<Full.T> ts){
+    return L(ts,(c,t)->c.add(toCore(t)));
+    }
+    
   public static T toCore(Full.T t){
     assert t.cs().isEmpty() && t._p()!=null;
     Mdf mdf=t._mdf();
     if(mdf==null){mdf=Mdf.Immutable;}
-    List<Doc> docs=L(t.docs(),(c,d)->c.add(toCore(d)));
-    return new T(mdf,docs,t._p());
+    return new T(mdf,toCoreDocs(t.docs()),t._p());
     }
   public static Core.Doc toCore(Full.Doc doc){
-    List<Doc> docs=L(doc.docs(),(c,d)->c.add(toCore(d)));
-    return new Core.Doc(_toCore(doc._pathSel()),doc.texts(), docs);
+    return new Core.Doc(_toCore(doc._pathSel()),doc.texts(), toCoreDocs(doc.docs()));
     }
   public static Core.PathSel _toCore(Full.PathSel _p){
     if(_p==null){return null;}
