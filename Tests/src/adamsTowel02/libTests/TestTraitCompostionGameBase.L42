@@ -663,13 +663,13 @@ ModuleUI: Trait({
 //
 // ******************************************************************
 // ******************************************************************
-// ****************************** Main ******************************
+// ****************************** App ******************************
 // ******************************************************************
 // ******************************************************************
 //
 //
 
-Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
+App: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   Action: {}
   Actions: {}
   World: {
@@ -715,9 +715,9 @@ Main: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
 //
 
 IntegrationTest1: {
-  mut Main.PointToEntityMap map = Main.PointToEntityMap[]
+  mut App.PointToEntityMap map = App.PointToEntityMap[]
   Debug.test(map.hasEntityAt(Point(x: 10Size, y: 20Size)), expected: S"false")
-  map.addEntity(Main.RockItem(p: Point(x: 10Size, y: 20Size)))
+  map.addEntity(App.RockItem(p: Point(x: 10Size, y: 20Size)))
   Debug.test(map.hasEntityAt(Point(x: 10Size, y: 20Size)), expected: S"true")
   map.removeEntity(Point(x: 10Size, y: 20Size))
   Debug.test(map.hasEntityAt(Point(x: 10Size, y: 20Size)), expected: S"false")
@@ -726,8 +726,8 @@ IntegrationTest1: {
   }
 
 IntegrationTest2: {
-  mut Main.World world = Main.World()
-  world.addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
+  mut App.World world = App.World()
+  world.addEntity(App.RockItem(p: Point(x: 2Size, y: 3Size)))
   Debug.test(world.asText(), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -744,10 +744,10 @@ IntegrationTest2: {
   }
 
 IntegrationTest3: {
-  mut Main.World world = Main.World()
-  world.addEntity(Main.RockItem(p: Point(x: 2Size, y: 3Size)))
-  Main.Actions actions = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveDown()]
-  Strings ss = Main(actions: actions, world: world)
+  mut App.World world = App.World()
+  world.addEntity(App.RockItem(p: Point(x: 2Size, y: 3Size)))
+  App.Actions actions = App.Actions[App.MoveDown(); App.MoveDown(); App.MoveDown()]
+  Strings ss = App(actions: actions, world: world)
   Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -776,8 +776,8 @@ IntegrationTest3: {
   }
 
 IntegrationTest4: {
-  Main.Actions actions = Main.Actions[Main.MoveDown(); Main.MoveDown(); Main.MoveRight()]
-  Strings ss = Main.#$(actions: actions)
+  App.Actions actions = App.Actions[App.MoveDown(); App.MoveDown(); App.MoveRight()]
+  Strings ss = App.#$(actions: actions)
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_

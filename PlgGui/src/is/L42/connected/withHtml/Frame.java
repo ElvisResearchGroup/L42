@@ -125,4 +125,4 @@ public class Frame extends Stage{
   public String getEventString(){return htmlFx.events.get();}
 }
 
-
+	
