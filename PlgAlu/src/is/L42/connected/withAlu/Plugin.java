@@ -47,6 +47,12 @@ public class Plugin implements PluginType.WellKnown {
     Integer i1=ensureExtractInt32(cb1);
     return r.nextInt(i1);
   }
+  @ActionType({ActionType.NormType.Void,ActionType.NormType.Library})
+  public  Resources.Void M£h$randomSetSeed£xthat(Object cb1){
+    Integer i1=ensureExtractInt32(cb1);
+    r.setSeed(i1);
+    throw Resources.notAct;
+  }
   private static Random r=new Random();
   //&
   @ActionType({ActionType.NormType.Library,ActionType.NormType.Library,ActionType.NormType.Library})

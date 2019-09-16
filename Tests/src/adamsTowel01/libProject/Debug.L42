@@ -24,6 +24,8 @@
   class method Size #$rand(Size that)
     Size.#from(binaryRepr:(use Alu check #$randomInt32(that.#binaryRepr())
     error void))
+  class method Void #$randomSetSeed(Size that)
+    use Alu check #$randomSetSeed(that.#binaryRepr()) void
 
   class method
   Void (Library lib) error S"to fix in AdamTowel2"
