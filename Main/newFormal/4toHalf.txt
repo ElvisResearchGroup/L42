@@ -13,6 +13,10 @@ _______
 #define Y!FULL.e = Half.e; STs; STs'; CTz //e, result type, returns type, constraints
 * Y!LL = LL;imm Library;empty;empty
 * Y!x = x;Y.GX(x);empty;empty
+* Y!x = x;empty;empty;empty
+    where x notin dom(Y.GX)
+    // will apply if we are typecheking the RHS of a "mdf? x = e", and x is free in e
+
 * Y!void = void;imm Void;empty;empty
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = (Y.onSlashX).x(); Y.p.minimize(Y.GX(Y.onSlashX).x()); empty; empty
