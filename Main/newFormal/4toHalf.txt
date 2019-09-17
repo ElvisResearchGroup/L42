@@ -73,18 +73,18 @@ _______
     Y[expectedT=STz'] ! e = e'; STz"; STz"'; CTz
     // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 
-* Y!e0 OP .. OP en = Y!(Ds e0' OP ... OP en')
+* Y!e0 OP..OP en = Y!(Ds e0' OP..OP en')
     n != 0
     Ds = [xi=ei | ei not of form xP]
     Ds != empty // or else the next case will apply
     ei' = ei if ei of form xP
     ei' = xi otherwise
     x1..xn fresh
-    e0 OP ... OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
-* Y! xP0 OP .. OP xPn = xP'0 OP .. OP xP'i; OP STz0,..,STzn; empty; empty
+    e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
+* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; OP STz0,..,STzn; empty; empty
     n != 0
     Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty
-    xP1 OP ... OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
+    xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks WHOOPS T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
@@ -109,18 +109,17 @@ _______
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!e.m[pars]= Y!(e.m(squareBuilder=(if \.#shortCircutSquare() (
-        b = \.#squareBuilder()
+        b=\.#squareBuilder()
         e1..en //so \ and \x are about the builder
       b)))
     b fresh
-    ei = b.#yeld(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
-    // ISAAC: can you explain the point of "yeld" to me again, also did you mean "yield"?
+    ei = b.#yield(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
     ei = b.#add(pari) otherwise
 * Y!e string = Y!(e.#from(stringLiteral=(
       b=\.#stringLiteralBuilder()
-      e1 ... en
+      e1..en
       b)))
-    string = "stringElement1 ... stringElementn"
+    string = "stringElement1..stringElementn"
 
     ei = b.charName(char), if stringElement i = char
     ei = b.charName(%), if stringElement i = %%
@@ -131,22 +130,22 @@ _______
 * Y!if e0 e1 else e2 = Y!(x = e0 if x e1 else e2 )
     e0 not of form xP
 * Y!if xP e1 else e2 = Y!(
-      Void x = xP.#if().#checkTrue()
+      Void x=xP.#if().#checkTrue()
       catch exception Void x' e2
       e1)
     x, x' fresh
-* Y!if match match+ e = Y!(if match (if match+ e))
-* Y!(if T x e) = Y!(if T x'= x e[x := x'])
+* Y!if match match+ e = Y!(if match if match+ e)
+* Y!(if T x e) = Y!(if T x'=x e[x=x'])
     x' fresh
-* Y!(if T x = e e') = Y!(x' = e, if T x = x' e')
+* Y!(if T x=e e') = Y!(x'=e, if T x=x' e')
     e not of form xP
-* Y!(if T x = xP e) = Y!(
-      T x = (return xP catch return T x' x' error void)
+* Y!(if T x=xP e) = Y!(
+      T x=(return xP catch return T x' x' error void)
       catch return T.mdf Any x' void
       e)
     x' is fresh
 
-* Y!(if T(T?1 x1 ..T?n xn) = e e') = Y!(if T x = e ((x1, ..., xn)=x e"))
+* Y!(if T(T?1 x1 ..T?n xn) = e e') = Y!(if T x = e ((x1,..,xn)=x e"))
     x fresh, Txs=[T?i xi | T?i != empty]
     e" = e'   if Txs = empty
     e" = if Txs e',  otherwise
@@ -159,36 +158,36 @@ _______
       catch exception Void _ void)
 
 * Y!for (DX in xP)s DX in e (DX in e)s e' = Y!(x=e for (DX in xP)s DX in x (DX in e)s e')
-* Y!for DX1 in xP1 ... DXn in xPn e = Y!(
-      x1 = xP1.iterator() ... xn = xPn.iterator()
-      var x'1 = xP1.startIndex() ... var x'n = xPn.startIndex()
-      while x1.hasElem(x'1) && ... && xn.hasElem(x'n) && ( x1.incomplete(x'1) || .. || xn.incomplete(x'n)) (
+* Y!for DX1 in xP1..DXn in xPn e = Y!(
+      x1 = xP1.iterator() .. xn = xPn.iterator()
+      var x'1 = xP1.startIndex() .. var x'n = xPn.startIndex()
+      while x1.hasElem(x'1) && .. && xn.hasElem(x'n) && ( x1.incomplete(x'1) || .. || xn.incomplete(x'n)) (
         mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?
         // For each DXi, exactly one of the above will be defined
 
-        x.methName('elem', mdf?1)(that = x') ... x.methName('elem', mdf?n)(that = x')
-        e[replaceOnUpdate DX1.x?; mdf?1; x1; x'1]...[replaceOnUpdate DXn.x?; mdf?n; xn; x'n]
+        x.methName('elem', mdf?1)(that = x') .. x.methName('elem', mdf?n)(that = x')
+        e[replaceOnUpdate DX1.x?; mdf?1; x1; x'1]..[replaceOnUpdate DXn.x?; mdf?n; xn; x'n]
         // Note: DXi.x? = empty if DXi is not of form var? TLocal x
-        x'1 := x'1.succ() ... xn := x'n.succ())
+        x'1 := x'1.succ() .. xn := x'n.succ())
       x1.close(x'1) .. xn.close(x'n))
-    x1...xn, x'1...x'n fresh
+    x1..xn, x'1..x'n fresh
 _______
 #define Y!FULL.D = HALF.Ds; STz; CTz
-* Y!(empty e) = Y!(imm Void _ = e)
-* Y!(TLocal _ = e) = Y!(TLocal x = e)
+* Y!(empty e) = Y!(imm Void _=e)
+* Y!(TLocal _=e) = Y!(TLocal x=e)
     x fresh
-* Y!(var? TLocal x = e) = var? HALF.T x = e'; STz'; CTz'
+* Y!(var? TLocal x=e) = var? HALF.T x=e'; STz'; CTz'
     if TLocal = FULL.T
       HALF.T = ♥FULL.T
-      Y[expectedT = HALF.T]!e = e'; STz; STz'; CTz
+      Y[expectedT=HALF.T]!e = e'; STz; STz'; CTz
       CTz' = CTz, STz<=HALF.T
     if TLocal = mdf? //otherwise
       Y[expectedT = empty]!e = e'; STz; STz'; CTz'
       HALF.T = mdf? STz
-* Y!(TLocal(var1? TLocal1 x1 ... varn? TLocaln xn) = e) = D0 ... Dn; STz0 U..U STzn; CTz0 U..U CTzn
+* Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTz0 U..U CTzn
     Y!(TLocal x = e) = D0; STz0; CTz0
     Y!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
-    ...
+    ..
     Y!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
     x fresh
 
