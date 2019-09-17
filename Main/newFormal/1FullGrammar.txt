@@ -105,7 +105,8 @@ _______
 // multiline strings can start with a sequence of %s to identify the escape sequence
 //(thus no interpolation if zero %s
 // TODO: discuss about multiline strings and allowing S".." inside interpolated expressions
-  string ::= ctxString[es] //abstract view of string literals
+  string ::= " stringElement* "
+  stringElement ::= (CHAR* -- '%') | % ePostfix // abstract view, concrete details may differ?
   Number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
   commentBody ::= CHAR* -- '/*' -- '*/' | commentBody comment commentBody
   comment ::= '//' (CHAR* -- newline) newline | '/*' commentBody '*/'
