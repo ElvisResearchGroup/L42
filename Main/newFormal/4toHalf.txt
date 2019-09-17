@@ -14,7 +14,7 @@ _______
 * Y!LL = LL;imm Library;empty;empty
 * Y!x = x;Y.GX(x);empty;empty
 * Y!x = x;empty;empty;empty
-    where x notin dom(Y.GX)
+    e x notin dom(Y.GX)
     // will apply if we are typecheking the RHS of a "mdf? x = e", and x is free in e
 
 * Y!void = void;imm Void;empty;empty
@@ -22,7 +22,7 @@ _______
 * Y!\x = Y!((Y.onSlashX).x())
 * Y!CsP = Y!(CsP <:class CsP)
     Y.expectedT != class Any
-* Y!CsP = Y!(CsP <:class Any; class Any; empty; empty
+* Y!CsP = Y!(CsP <:class Any)
     Y.expectedT = class Any
 * Y!CsP<:T = ♥CsP<:♥T; ♥T; empty; empty
 * Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; empty
@@ -34,7 +34,7 @@ _______
     Y[expectedT=empty]!e = e'; STz; STz'; CTz
     STz"=STz if throw = return
     STz"=empty, otherwise
-* Y!loop e = loop e'; imm Void; STz'; CTZ,STz<=imm Void // ISAAC: why does this have type imm Void, but throw e has type empty? This is inconsistant as neither expression will actually reduce to a value.
+* Y!loop e = loop e'; imm Void; STz'; CTZ,STz<=imm Void
     Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
 * Y! x opUpdate e = Y!(doUpdate(x, opUpdate, e))
@@ -201,7 +201,8 @@ _______
 _______
 #define doUpdate(x, opUdate, e) // convenience method to desugar opUpdates
 * doUpdate(x, :=, e) = x := e
-* doUpdate(x, OP=, e) = x := x OP e, where OP != ':'
+* doUpdate(x, OP=, e) = x := x OP e
+    OP != ':'
 _______
 #define FULL.e[replaceOnUpdate DX; x; x']
 * e[replaceOnUpdate mdf?; empty; x; x'] = e,
