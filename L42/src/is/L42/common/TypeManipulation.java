@@ -63,5 +63,8 @@ public class TypeManipulation {
       }
     assert _p._p()!=null;
     return new Core.PathSel(_p._p(),_p._s(),_p._x());
-    }  
+    }
+  public static Stream<P.NCs> skipThis0(Stream<P.NCs> s){
+    return s.filter(p->p.n()>0).map(p->p.toNCs().withN(p.n()-1));
+    }
   }

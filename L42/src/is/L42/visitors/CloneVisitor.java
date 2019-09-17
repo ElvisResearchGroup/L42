@@ -17,6 +17,8 @@ public class CloneVisitor {
 
   public final List<P> visitPs(List<P> ps){return L(ps,this::visitP);}
 
+  public final List<P.NCs> visitPNCs(List<P.NCs> ps){return L(ps,p->(P.NCs) this.visitP(p));}
+
   public final List<S> visitSs(List<S> ss){return L(ss,this::visitS);}
 
   public final List<Core.PathSel> visitPathSels(List<Core.PathSel> pathSels){return L(pathSels,this::visitPathSel);}
@@ -137,11 +139,11 @@ public class CloneVisitor {
     var usedMethods0=info.usedMethods();
     var privateSupertypes0=info.privateSupertypes();
     var refined0=info.refined();
-    var typeDep=visitPs(typeDep0);
-    var coherentDep=visitPs(coherentDep0);
-    var friends=visitPs(friends0);
+    var typeDep=visitPNCs(typeDep0);
+    var coherentDep=visitPNCs(coherentDep0);
+    var friends=visitPNCs(friends0);
     var usedMethods=visitPathSels(usedMethods0);
-    var privateSupertypes=visitPs(privateSupertypes0);
+    var privateSupertypes=visitPNCs(privateSupertypes0);
     var refined=visitSs(refined0);
     if(typeDep==typeDep0 && coherentDep==coherentDep0 && friends==friends0 
       && usedMethods==usedMethods0 && privateSupertypes==privateSupertypes0 && refined==refined0){return info;}

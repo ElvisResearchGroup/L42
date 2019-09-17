@@ -169,7 +169,8 @@ public class Err {
   "Circularity in implemented interfaces; following path "+_1  
   ;}public static String sealedInterface(Object _1,Object _2){return
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
-
+  ;}public static String invalidPathInInfo(Object _1){return
+  "Invalid path in info: "+_1  
 
   ;}
 }

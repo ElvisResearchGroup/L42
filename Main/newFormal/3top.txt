@@ -76,7 +76,7 @@ _______
     MH1..MHn = methods(p0,This0)
     MWTs = [♥Docs MH | MH in MH1..MHn and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs),??, declaresClassMethods?}
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?}
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
 
@@ -84,7 +84,7 @@ _______
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     MWTs[e?=empty] = MWTs1
     Ps;Ps' = collectDeps(p;MWTs.es)
-    Info = #norm{typeDep=Ps,coherentDep=Ps',??}
+    Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},??}
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
@@ -182,9 +182,10 @@ _______
 * collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
 * collectDeps(p; Doc) = {P| @P._ inside Doc};empty     
 _______
-#define collectDepsE(p;CORE.e?)  //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
+#define collectDepsE(p;CORE.e?)= Ps1;Ps2    Ps[skipThis0] = Ps'
+//collectDepsE(p;L) adds NCs dependencies and relies on cached Info
 * collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty
-* collectDepsE(p;CORE.L) = Ps0..Psn;Ps'0..Ps'n
+* collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0];Ps'0..Ps'n[skipThis0]
     Ps0 = CORE.L.Info.typeDep
     Ps'0 = CORE.L.Info.coherent
     Ps1..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
@@ -196,6 +197,10 @@ _______
     P' != Any
 * collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e) = collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e)
+
+* empty[skipThis0]=empty;
+* This0.Cs,Ps[skipThis0]=Ps[skipThis0]
+* Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
 
 _______
 #define p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T

@@ -29,6 +29,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
+import is.L42.visitors.Accumulate;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;
@@ -71,8 +72,8 @@ public class Top {
       assert newM.with_e(null).equals(m);
       });
     assert mwts0.size()+mwts.size()==l.mwts().size();
-    ArrayList<P> typePs=new ArrayList<>();
-    ArrayList<P> cohePs=new ArrayList<>();
+    ArrayList<P.NCs> typePs=new ArrayList<>();
+    ArrayList<P.NCs> cohePs=new ArrayList<>();
     collectDeps(p,mwts,typePs,cohePs,true);
     Info info=new Info(false,L(typePs.stream()),L(cohePs.stream()),L(),L(),L(),L(),false); 
     return new Core.L(l.poss(), l.isInterface(), l.ts(), merge(mwts0,mwts), l.ncs(),sumInfo(l.info(),info),l.docs());
@@ -89,16 +90,21 @@ public class Top {
       );
     }
   private Core.L updateInfo(Program p1, Core.L.NC nc) {
-    List<P>dep=collectDeptDocs(nc.docs());
+    List<P.NCs>dep=new ArrayList<>();
+    collectDeptDocs(nc.docs(),dep);
     Core.L l=(Core.L)p1.top;
     var info=l.info();
     info=info.withTypeDep(mergeU(info.typeDep(),dep));
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
     }
-  private List<P> collectDeptDocs(List<Doc> docs) {
-    // TODO Auto-generated method stub
-    return null; 
+  private void collectDeptDocs(List<Doc> docs, List<P.NCs> acc) {
+    for(Doc d:docs){
+      collectDeptDocs(d.docs(),acc);
+      if(d._pathSel()==null){continue;}
+      if(!d._pathSel().p().isNCs()){continue;}
+      acc.add(d._pathSel().p().toNCs());
+      }
     }
   private ER infer(I i, is.L42.generated.Half.E _ei) throws EndError{
     return null; //TODO: inject to core
@@ -149,10 +155,51 @@ public class Top {
 //    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
 //    Y!e = Half.e; STs; empty; CTz
     }
-  static void collectDeps(Program p0, List<MWT> mwts2, ArrayList<P> typePs, ArrayList<P> cohePs,boolean justBodies) {
-   // TODO Auto-generated method stub
-   }
+  static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {
+    var deps=new Accumulate<ArrayList<P.NCs>>(){
+      public ArrayList<P.NCs> empty(){return typePs;}
+      @Override public void visitL(Full.L l){throw bug();}
+      private void csAux(Program p,ArrayList<C> cs,Core.L l){
+        TypeManipulation.skipThis0(l.info().typeDep().stream()
+          .map(e->p.from(e,0, cs))).forEach(typePs::add);
+        TypeManipulation.skipThis0(l.info().coherentDep().stream()
+          .map(e->p.from(e,0, cs))).forEach(cohePs::add);
+        Program pi=p.push(l);
+        for(C c: l.domNC()){
+          cs.add(c);
+          csAux(pi,cs,l.c(c));
+          cs.remove(cs.size()-1);
+          }
+        }
+      @Override public void visitL(Core.L l){
+        TypeManipulation.skipThis0(l.info().typeDep().stream()).forEach(typePs::add);
+        TypeManipulation.skipThis0(l.info().coherentDep().stream()).forEach(cohePs::add);
+        ArrayList<C> cs=new ArrayList<>();
+        Program pi=p0.push(l);
+        for(C c: l.domNC()){//a little of code duplication removes the map on the streams
+          cs.add(c);
+          csAux(pi,cs,l.c(c));
+          cs.remove(cs.size()-1);
+          }
+        }
+        @Override public void visitP(P p){
+          if(p.isNCs()){typePs.add(p.toNCs());}
+          }
+        @Override public void visitPCastT(Core.PCastT p){
+          super.visitPCastT(p);
+          if(p.t().p()==P.pAny){return;}
+          if(p.p().isNCs()){cohePs.add(p.p().toNCs());}
+          }
+        };
+    if(!justBodies){for(var m:mwts){deps.of(m);}return;}
+    for(var m:mwts){if(m._e()!=null){deps.of(m._e().visitable());}}
+    }
+  //end class
   }
+      //Ps0 = CORE.L.Info.typeDep
+      //Ps'0 = CORE.L.Info.coherent
+      //Ps1..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
+      //Ps'1..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
 class HalfQuadruple{
   public final Half.E e;
   public HalfQuadruple(Y y, Full.E fe) { 
@@ -201,8 +248,8 @@ class SortHeader{
       var res=new Core.L.MWT(mwti.poss(), docs, mh,"",null);
       c.add(res);
       });
-    ArrayList<P> typePs=new ArrayList<>();
-    ArrayList<P> cohePs=new ArrayList<>();
+    ArrayList<P.NCs> typePs=new ArrayList<>();
+    ArrayList<P.NCs> cohePs=new ArrayList<>();
     Top.collectDeps(p0,mwts,typePs,cohePs,false);
     boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
     Info info=new Info(false,L(typePs.stream()),L(cohePs.stream()),L(),L(),L(),L(),classMeth); 

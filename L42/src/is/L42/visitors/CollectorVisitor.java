@@ -15,7 +15,7 @@ public interface CollectorVisitor {
   default void visitXP(Half.XP xP){xP.visitable().accept(this);}
 
   default void visitEs(List<Core.E> es){es.forEach(this::visitE);}
-  default void visitPs(List<P> ps){ps.forEach(this::visitP);}
+  default void visitPs(List<? extends P> ps){ps.forEach(this::visitP);}
   default void visitSs(List<S> ss){ss.forEach(this::visitS);}
   default void visitPathSels(List<Core.PathSel> pathSels){pathSels.forEach(this::visitPathSel);}
   default void visitXPs(List<Core.XP> xPs){xPs.forEach(this::visitXP);}

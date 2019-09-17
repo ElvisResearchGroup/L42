@@ -23,11 +23,11 @@ import is.L42.generated.L42AuxParser.PathContext;
 final class InfoSupplier implements Supplier<Core.L.Info> {
   private final Result<InfoContext> r;
   private final Pos pos;
-  List<P> typeDep=null;
-  List<P> coherentDep=null;
-  List<P> friends=null;
+  List<P.NCs> typeDep=null;
+  List<P.NCs> coherentDep=null;
+  List<P.NCs> friends=null;
   List<Core.PathSel> usedMethods=null;
-  List<P> privateSupertypes=null;
+  List<P.NCs> privateSupertypes=null;
   List<S> refined=null;
   Boolean declaresClassMethods=null;
   Core.L.Info result;
@@ -37,10 +37,13 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     this.inject=inject;this.r = r; this.pos = pos; av = new AuxVisitor(pos);
     }
 
-  P pf(PathContext pi){
+  P.NCs pf(PathContext pi){
     P p=inject._inject(av.visitPath(pi));
     assert p!=null;
-    return p;
+    if(!p.isNCs()){
+      inject.errors.append(Err.posString(inject.result.poss())+Err.invalidPathInInfo(p));
+      }
+    return p.toNCs();
     }
 
   Core.PathSel psf(L42AuxParser.PathSelContext pi){
@@ -95,7 +98,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       boolFlag("declaresClassMethods",b.declaresClassMethods(),()->declaresClassMethods,v->declaresClassMethods=v);
       }
     if(result!=null){return result;}
-    List<P> empty=L();
+    List<P.NCs> empty=L();
     List<Core.PathSel> emptyPs=L();
     List<S> emptyS=L();
     nullToDef(()->typeDep,v->typeDep=v,empty);

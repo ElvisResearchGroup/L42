@@ -92,13 +92,17 @@ public class Program implements Visitable<Program>{
     }
   public P.NCs from(P.NCs p,P.NCs source){
     assert minimize(source)==source;
-    int k=source.cs().size();
-    int m=source.n();
+    P.NCs res=from(p,source.n(),source.cs());
+    if(res.equals(p)){return p;}
+    if(res.equals(source)){return source;}
+    return res;
+    }
+  public P.NCs from(P.NCs p,int m,List<C>sCs){
     int n=p.n();
     var cs=p.cs();
+    int k=sCs.size();
     if(n>=k){return minimize(P.of(m+n-k, cs));}
-    if(n==0 && cs.isEmpty()){return source;}//optimization
-    List<C> resCs=merge(source.cs().subList(0, k-n),cs);
+    List<C> resCs=merge(sCs.subList(0, k-n),cs);
     var res=P.of(m,resCs);
     assert res==minimize(res):
       res+" "+minimize(res);

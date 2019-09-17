@@ -78,11 +78,11 @@ public class Core {
     @Value @Wither public static class
     Info implements Visitable<Info>{@Override public Info accept(CloneVisitor cv){return cv.visitInfo(this);}@Override public void accept(CollectorVisitor cv){cv.visitInfo(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       boolean isTyped; 
-      List<P> typeDep;
-      List<P> coherentDep;
-      List<P> friends;
+      List<P.NCs> typeDep;
+      List<P.NCs> coherentDep;
+      List<P.NCs> friends;
       List<PathSel> usedMethods;
-      List<P> privateSupertypes;
+      List<P.NCs> privateSupertypes;
       List<S>refined;
       boolean declaresClassMethods;
       public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
