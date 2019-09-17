@@ -19,12 +19,12 @@ _______
 
 * Y!void = void;imm Void;empty;empty
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
-* Y!\x = (Y.onSlashX).x(); Y.p.minimize(Y.GX(Y.onSlashX).x()); empty; empty
-* Y!CsP = ♥CsP<:class ♥CsP;class ♥CsP; empty; empty
+* Y!\x = Y!((Y.onSlashX).x())
+* Y!CsP = Y!(CsP <:class CsP)
     Y.expectedT != class Any
-* Y!CsP = ♥CsP<:class Any; class Any; empty; empty
+* Y!CsP = Y!(CsP <:class Any; class Any; empty; empty
     Y.expectedT = class Any
-* Y!CsP<:T = CsP<:♥T; ♥T; empty; empty //CsP is already a P
+* Y!CsP<:T = ♥CsP<:♥T; ♥T; empty; empty
 * Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; empty
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP or \
@@ -34,7 +34,7 @@ _______
     Y[expectedT=empty]!e = e'; STz; STz'; CTz
     STz"=STz if throw = return
     STz"=empty, otherwise
-* Y!loop e = loop e'; imm Void; STz'; CTZ,STz<=imm Void
+* Y!loop e = loop e'; imm Void; STz'; CTZ,STz<=imm Void // ISAAC: why does this have type imm Void, but throw e has type empty? This is inconsistant as neither expression will actually reduce to a value.
     Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
 * Y! x opUpdate e = Y!(doUpdate(x, opUpdate, e))
@@ -46,9 +46,9 @@ _______
 * Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
-* Y!xP.m(x1=e1,..xn=en) = e0.m(x1=e'1,..,xn=e'n); STz"; STz'; CTz
-    Y[expectedT=empty]!xP = e0; STz0; STz'0; CTz0
-    STz" = Y.p.minimize(STz.m(x1..xn)) //injects .s on all the elements of STz
+* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz"; STz'; CTz
+    Y[expectedT=empty]!xP = xP'; STz0; STz'0; CTz0 // Y!HALF.xP is always a FULL.xP
+    STz" = Y.p.minimize(STz0.m(x1..xn)) //injects .s on all the elements of STz
     STz"i = Y.p.minimize(STz0.m(x1..xn).i), i in 1..n//same for STz.s.i //no hope to get more for i=0 anyway
     Y[onSlashX=xP;expectedT=STz"i]!ei = e'i; STzi; STz'i; CTzi, i in 1..n
     STz' = STz'0 U..U STz'n;
@@ -73,7 +73,7 @@ _______
     Y[expectedT=STz'] ! e = e'; STz"; STz"'; CTz
     // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 
-* Y!e0 OP..OP en = Y!(Ds e0' OP..OP en')
+* Y!(e0 OP..OP en) = Y!(Ds e0' OP..OP en')
     n != 0
     Ds = [xi=ei | ei not of form xP]
     Ds != empty // or else the next case will apply
