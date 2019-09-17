@@ -21,19 +21,19 @@ _______
 * Y!CsP = ♥CsP<:class Any; class Any; empty; empty
     Y.expectedT = class Any
 * Y!CsP<:T = CsP<:♥T; ♥T; empty; empty //CsP is already a P
-* Y!\<:T = \<:♥T; ♥T; empty; empty
+* Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; empty
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP or \
 * Y!'PathSel = Y!\"PathSel"
 * Y!NumLit e = Y!e"NumLit"
-* Y!throw e = throw e'; empty; STz"; CTz
+* Y!throw e = throw e'; empty; STz',STz"; CTz
     Y[expectedT=empty]!e = e'; STz; STz'; CTz
-    STz"=STz' if throw !=return
-    STz"=STz',STz otherwise
+    STz"=STz if throw = return
+    STz"=empty, otherwise
 * Y!loop e = loop e'; imm Void; STz'; CTZ,STz<=imm Void
     Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
-* Y! x opUpdate e = Y!(toBinOp(x, opUpdate) e)
+* Y! x opUpdate e = Y!(doUpdate(x, opUpdate, e))
     opUpdate != ':='
 * Y! (x := e) = (x := e'); imm Void; STz'; CTz,STz<=Y.GX(x)
     Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
@@ -67,7 +67,8 @@ _______
     STz  = Y.p.minimize(CsP'.#apply(that))
     STz' = Y.p.minimize(CsP'.#apply(that).1)
     Y[expectedT=STz'] ! e = e'; STz"; STz"'; CTz
-// not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
+    // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
+
 * Y!e0 OP .. OP en = Y!(Ds e0' OP ... OP en')
     n != 0
     Ds = [xi=ei | ei not of form xP]
@@ -85,118 +86,127 @@ _______
 * Y!( Ds Ks WHOOPS T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz  //Ds is HALF.Ds
-    GX = {x:♥FULL.T | FULL.T x=e in D1..Dn}//(T x,T y)=e case unneeded x,y not fwd
-    GXi = Y.GX+GX+GX^Ds1+..+GX^Dsi
-    Y[GXn]!e = e'; STz0;STz'0;CTz0
-    Y!Ki[GXn] = K'i; STzi; STz'i; CTzi//catch return do not need special treatment
-    Y[GX=GXi]!Di = Dsi; STz"i; CTz'i
+    GX = {x : ♥FULL.T | FULL.T x = e in D1..Dn} //(T x,T y)=e case unneeded x,y not fwd
+    // ISAAC: why this special case for FULL.T x = e ? Also, what about other kinds of DX = e ?
+    GXi = Y.GX + GX + GX^Ds1 + .. + GX^Ds(i-1)
+    Y[GX=GXi]!Di = Dsi; STz'i; CTzi
+    Y[GX=GXn]!Ki = K'i; STzi; STz"i; CTz'i //catch return do not need special treatment
+    Y[GX=GXn]!e  = e'; STz'0;  STz"0; CTz'0
+
     STz = STz0 U..U STzm
-    STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
-    CTz = CTz0 U..U CTzm U CTz'1 U..U CTz'n
+    STz' = STz'1 U..U STz'n U STz"0 U..U STz"m
+    CTz = CTz1 U..U CTzn U CTz'0 U..U CTz'm
 * Y!{Ds Ks Wops? Ds2} = (Void x=e K error void); STz'; empty; CTz
-    K = catch return HALF.T x' x' //constraints on expected type are added upper in the recursion
+    // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
+    Y[expectedT=imm Void]!(Ds Ks Whoops? Ds2 void) = e; _; STz'; CTz
     HALF.T = Y.expectedT if Y.expectedT!=empty
     HALF.T = STz' if Y.expectedT=empty
-    Y[expectedT=imm Void]!(Ds Ks Whoops? Ds2 void) = e; _; STz'; CTz 
+    K = catch return HALF.T x' x' //constraints on expected type are added upper in the recursion // ISAAC: what does the comment mean?
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
-* Y!e.m[pars]= Y!e.m?(squareBuilder=(if \.#shortCircutSquare() (
-        b=\.#squareBuilder()     
+* Y!e.m[pars]= Y!(e.m(squareBuilder=(if \.#shortCircutSquare() (
+        b = \.#squareBuilder()
         e1..en //so \ and \x are about the builder
-      b))
+      b)))
     b fresh
-    ei=b.#yeld(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
-    ei=b.#add(pari) otherwise
-* Y!e StrLit = Y!e.#from(stringLiteral=(
+    ei = b.#yeld(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
+    // ISAAC: can you explain the point of "yeld" to me again, also did you mean "yield"?
+    ei = b.#add(pari) otherwise
+* Y!e string = Y!(e.#from(stringLiteral=(
       b=\.#stringLiteralBuilder()
-      b.methName(chars0)()//one call for each char
-      b.#splice(e1)
-      b.methName(chars1)()
-      ..
-      b.#splice(en)
-      b.methName(charsn)()
-      b))
-    StrLit = chars0 e1 chars1 .. en charsn
-* Y!if e0 e1 = Y!if e0 e1 else void
-* Y!if e0 e1 else e2 = Y!( x=e0 if x e1 else e2 )
+      e1 ... en
+      b)))
+    string = "stringElement1 ... stringElementn"
+
+    ei = b.charName(char), if stringElement i = char
+    ei = b.charName(%), if stringElement i = %%
+    ei = b.#splice(e'), if stringElement i = %e'
+
+    b is fresh
+* Y!if e0 e1 = Y!(if e0 e1 else void)
+* Y!if e0 e1 else e2 = Y!(x = e0 if x e1 else e2 )
     e0 not of form xP
 * Y!if xP e1 else e2 = Y!(
-      Void x=xP.#if().#checkTrue()
+      Void x = xP.#if().#checkTrue()
       catch exception Void x' e2
       e1)
     x, x' fresh
-* Y!if match match+ e = Y!if match if match+ e
-* Y!if T x e = Y!if T x'= x e[x=x']
+* Y!if match match+ e = Y!(if match (if match+ e))
+* Y!(if T x e) = Y!(if T x'= x e[x := x'])
     x' fresh
-* Y!if T x=e e' = Y!( x'=e if T x= x' e')
+* Y!(if T x = e e') = Y!(x' = e, if T x = x' e')
     e not of form xP
-* Y!if T x=xP e = Y!(
-      T x=(return xP catch return T x1 x1 error void)
-      catch return T.mdf Any x2 void
-      e)  
-    x1,x2 fresh
-* Y!if T(T?1 x1 ..T?n x1)=e e0 = Y!if T x=e ( (x1, ..., xn)=x e1)
-    x fresh, Txs=[Ti xi | T?i != empty]
-    e1 = e0   if Txs = empty
-    e1 = 'if Txs e0'  otherwise
-* Y!if (T?1 x1 .. T?2 xn)=e e0) = Y!( (x1 .. xn)=e if Tx e0)
-    Tx = [Ti xi | T?i != empty]
+* Y!(if T x = xP e) = Y!(
+      T x = (return xP catch return T x' x' error void)
+      catch return T.mdf Any x' void
+      e)
+    x' is fresh
+
+* Y!(if T(T?1 x1 ..T?n xn) = e e') = Y!(if T x = e ((x1, ..., xn)=x e"))
+    x fresh, Txs=[T?i xi | T?i != empty]
+    e" = e'   if Txs = empty
+    e" = if Txs e',  otherwise
+* Y!if (T?1 x1 .. T?2 xn)=e e0) = Y!( (x1 .. xn)=e if Txs e0)
+    Txs = [Ti xi | T?i != empty]
+    // By well formedness, Txs won't be empty
+
 * Y!while e0 e1 = Y!(
       loop (e0.#checkTrue() e1)
-      catch exception Void _)
-* Y!for (DX in xP)s DX in e (DX in e)s e0 = Y!(x=e for (DX in xP)s DX in x (DX in e)s e0)    
-* Y!for DX1 in xP1..DXn in xPn e = Y!( //we use c,i as xs used for iterators and indexes
-      c1=xP1.iterator(); .. cn=xPn.iterator();
-      var i1=xP1.startIndex() .. var in=xPn.startIndex()
-      while c1.hasElem(i1) &&..&& cn.hasElem(in) && ( c1.incomplete(i1) ||..||cn.incomplete(in)) (
-        DX1=elemOf(DX1,c1,i1) .. DXn=elemOf(DXn,cn,in)
-        e[replaceUnOp DX1;i1;c1]..[replaceUnOp DXn;in;cn]
-        i1:=i1.succ() .. in:=in.succ() )
-      c1.close(i1) .. cn.close(in))
-    c1..cn, i1..in fresh
+      catch exception Void _ void)
+
+* Y!for (DX in xP)s DX in e (DX in e)s e' = Y!(x=e for (DX in xP)s DX in x (DX in e)s e')
+* Y!for DX1 in xP1 ... DXn in xPn e = Y!(
+      x1 = xP1.iterator() ... xn = xPn.iterator()
+      var x'1 = xP1.startIndex() ... var x'n = xPn.startIndex()
+      while x1.hasElem(x'1) && ... && xn.hasElem(x'n) && ( x1.incomplete(x'1) || .. || xn.incomplete(x'n)) (
+        mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?
+        // For each DXi, exactly one of the above will be defined
+
+        x.methName('elem', mdf?1)(that = x') ... x.methName('elem', mdf?n)(that = x')
+        e[replaceOnUpdate DX1.x?; mdf?1; x1; x'1]...[replaceOnUpdate DXn.x?; mdf?n; xn; x'n]
+        // Note: DXi.x? = empty if DXi is not of form var? TLocal x
+        x'1 := x'1.succ() ... xn := x'n.succ())
+      x1.close(x'1) .. xn.close(x'n))
+    x1...xn, x'1...x'n fresh
 _______
-#define Y!FULL.D = HALF.Ds;STz;CTz    Y!FULL.K= HALF.K; STz; STz';CTz
-* Y!D = Y!(imm Void _=D.e)
-    D of form e 
-* Y!TLocal _=e = Y!TLocal x=e 
+#define Y!FULL.D = HALF.Ds; STz; CTz
+* Y!(empty e) = Y!(imm Void _ = e)
+* Y!(TLocal _ = e) = Y!(TLocal x = e)
     x fresh
-* Y!var? TLocal x=e = var? HALF.T x=e'; STz'; CTz' 
+* Y!(var? TLocal x = e) = var? HALF.T x = e'; STz'; CTz'
     if TLocal = FULL.T
-      HALF.T = Y.p♥FULL.T
-      Y[expectedT=HALF.T]!e = e'; STz; STz'; CTz
-      CTz' = CTz,STz<=HALF.T
+      HALF.T = ♥FULL.T
+      Y[expectedT = HALF.T]!e = e'; STz; STz'; CTz
+      CTz' = CTz, STz<=HALF.T
     if TLocal = mdf? //otherwise
-      Y[expectedT=empty]!e = e'; STz; STz'; CTz'
+      Y[expectedT = empty]!e = e'; STz; STz'; CTz'
       HALF.T = mdf? STz
-* Y!TLocal(var1? TLocal1 x1.. varn? TLocaln xn)=e = D0..Dn; STz0 U..U STzn; CTz0 U..U CTzn
-    Y!TLocal x=e = D0; STz0; CTz0 
-    Y!var1? TLocal1 x1=x.methNameTrim(x1)() = D1; STz1; CTz1
-    ..
-    Y!varn? TLocaln xn=x.methNameTrim(xn)() = Dn; STzn; CTzn
+* Y!(TLocal(var1? TLocal1 x1 ... varn? TLocaln xn) = e) = D0 ... Dn; STz0 U..U STzn; CTz0 U..U CTzn
+    Y!(TLocal x = e) = D0; STz0; CTz0
+    Y!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
+    ...
+    Y!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
     x fresh
 
+_______
+# define Y!FULL.K= HALF.K; STz; STz';CTz
 * Y!catch throw? T '_' e = Y!catch throw? T x e
     x fresh
 * Y!catch T x e = Y!catch exception T x e
 * Y!catch throw T x e = catch throw ♥T x e'; STz; STz'; CTz
     Y[GX=Y.GX+x:T]!e = e'; STz; STz'; CTz
 _______
-#define toBinOp(x,Op=) // convenience method to desugar opUpdates
-* toBinOp(x, :=) = x :=
-* toBinOp(x, OP=) = x := x OP 
+#define doUpdate(x, opUdate, e) // convenience method to desugar opUpdates
+* doUpdate(x, :=, e) = x := e
+* doUpdate(x, OP=, e) = x := x OP e, where OP != ':'
 _______
-#define FULL.e[replaceUnOp DX;x0;x1]
-* DX.x opUpdate e[replaceUnOp DX;x0;x1] = toBinOp(DX.x, opUpdate) e' updateOf(DX,x1,x0)
-    e' = e[replaceUnOp DX;x0;x1]
-* e[replaceUnOp DX;x0;x1] propagates inductively in all the other cases
-_______
-#define elemOf(DX,c,i) = e    updateOf(DX,c,i) = e
-* elemOf(DX,c,i) = c.methName('elem',mdf?)(that=i)
-    mdf? = DX.TLocal.mdf? if DX.TLocal.mdf? defined
-    mdf? = DX.TLocal.T.mdf? if DX.TLocal.T defined
-    mdf? = empty otherwise  
+#define FULL.e[replaceOnUpdate DX; x; x']
+* e[replaceOnUpdate mdf?; empty; x; x'] = e,
+* (x" opUpdate e)[replaceOnUpdate mdf?; x"; x; x'] = (doUpdate(x", opUpdate, e') e")
+    e' = e[replaceOnUpdate mdf?; x"; x; x']
+    e" = x.methName('update',mdf?)(that = x', val = x")
 
-* updateOf(DX,c,i) = c.methName('update',mdf?)(that=i,val=DX.x)
-    mdf? = DX.TLocal.mdf? if DX.TLocal.mdf? defined
-    mdf? = DX.TLocal.T.mdf? if DX.TLocal.T defined
-    mdf? = empty otherwise  
+* e[replaceOnUpdate x"; x; x'] propagates inductively in all the other cases
+
+#define elemOf(DX,x,x') = e    updateOf(DX, x, x') = e
+* elemeOf(DX, x, x') =

@@ -40,13 +40,12 @@ _______
 * Thisn.Cs[from P;p;j] = Thisn.Cs with n<j
 * All cases for other expressions/terms propagate to submembers, including docs  
 
-* CTz[from P;p]={CT | CT' in CTz, CT=CT'[from P;p] and CT not of form CORE.T<=CORE.T'} 
-    ST1[from P;p] <= mdf?1 STz1[from P;p] .. STn[from P;p] <= mdf?n STzn[from P;p]
-* (mdf STz)[from P;p]=CORE.T[mdf=mdf]
+* CTz[from P;p]={ST[from P; p] <= T[from P; p] | ST <= T in CTz, ST <= T not of form CORE.T<=CORE.T'}  // ISAAC: why are you removing CORE.T ?
+* (mdf[STz])[from P;p]=CORE.T[mdf=mdf]
     STz[from P;p]=CORE.T
-* (mdf STz)[from P;p]=STz'
-    STz[from P;p]=STz'
-* ST1..STn[from P;p] = ST1[from P';p]..STn[from P';p] //handles also empty mdf HALF.T
+* (mdf[STz])[from P;p]=STz'
+    STz[from P;p]=STz' // ISAAC: why are we deleting the mdf?
+* ST1..STn[from P;p] = ST1[from P';p]..STn[from P';p] //handles also empty mdf HALF.T // ISAAC: P' is a free variable?
 * ST.s[from P;p] = p.minimize(ST[from P;p].s)
 * ST.s.i[from P;p] = p.minimize(ST[from P;p].s.i)
 * (OP STz1..STzn)[from P;p] = p.minimize(OP STz1[from P;p]..STzn[from P;p])
@@ -151,6 +150,8 @@ _______
 * methNameTrim(m) = m, where m not of form m'n
 * methName(x,mdf) = x#mdf
 * methName(x,empty) = x#'default' // for example methName(#bar,empty)=#bar#default
+* charName(char) = m // m is from a table // ISAAC: should charName(~) == methName(~) ?
+// (charName is used for string literal desugaring, methName is for operator desugaring)
 _______
 #define CORE.e inside CORE.e'
   e inside CORE.ctx[e]
