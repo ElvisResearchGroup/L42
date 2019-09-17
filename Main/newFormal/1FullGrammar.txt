@@ -48,7 +48,7 @@ _______
   FULL.D ::= (DX =)? e
   FULL.WHOOPS ::= whoops T+
   FULL.match ::= T x | T x = e | T?0(T?1 x0..T?n xn) = e //where at least one T?i is not empty //correctly not TLocal
-  FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn ) // ISAAC: allow TLocal x ((var? Tlocal x)s), so that "x" can be updated inside a for loop?
+  FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
   FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
@@ -98,21 +98,18 @@ _______
 //StringInterpolation: single character% for single line strings
 // "   %foo bar %(a+b) ccc  %ff.baz() "
 // after a % symbol, any ePostfix can be parsed as an interpolation expression.
-// the first space/comma after ePostix is discarded. Not needed spaces terminates the ePostix:
-// "G%a.b(),,h" =="G"++a.b()++",h"
-// "G%a .b(),,h" =="G"++a++".b(),,h"?
-// and "G%a.b(foo .x()),,h" =="G"++a.b(foo .x())++",h" // ISAAC: so you only discard the first whitespace character? that's going to get confusing...
-// multiline strings can start with a sequence of %s to identify the escape sequence // TODO: WHAT?
-// ISAAC: allow %% to escape %'s ?
-// ISAAC: is "A%S"b"" allowed? (i.e. nested string literals?) I see no reason not to allow it
+// Not needed spaces terminates the ePostix:
+// "G%a.b(),,h" =="G"++a.b()++",,h"
+// "G%a .b(),,h" =="G"++a++" .b(),,h"
+// and "G%a.b(foo .x()),,h" =="G"++a.b(foo .x())++",,h"
+// multiline strings can start with a sequence of %s to identify the escape sequence
 //(thus no interpolation if zero %s
-  string ::= " stringElement* " // where stringElement* is matched using the maximal-munch principle
-  stringElement ::= CHAR -- % | %% | %ePostfix WhitespaceChar?
+// TODO: discuss about multiline strings and allowing S".." inside interpolated expressions
+  string ::= ctxString[es] //abstract view of string literals
   Number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
   commentBody ::= CHAR* -- '/*' -- '*/' | commentBody comment commentBody
   comment ::= '//' (CHAR* -- newline) newline | '/*' commentBody '*/'
-  WhitespaceChar ::= ' ' | newline | ','
-  Whitespace ::= WhiteSpaceChar+
+  Whitespace ::= (' ' | newline | ',')+
   tURL::= /*a trusted url*//*too boring*/
   uURL::= /*an untrusted url*//*too boring*/
   URL::=tURL|uURL
