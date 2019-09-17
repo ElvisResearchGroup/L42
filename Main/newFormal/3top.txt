@@ -39,7 +39,7 @@ _______
     CTz.add(p0; MH1 sDe(MH1.s).e?; e?1).. .add(p0; MHn sDe(MHn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,NCs) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
-    I[C=empty;p1;G=empty;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
+    I[C=empty;p1;G^MHi;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
     MWTi = ♥sDe(MHi.s).Doc MHi ♥sDe(MHi.s).nativeURL e?'i
     L = updateInfo(p1, MWT1..MWTn)
@@ -49,7 +49,7 @@ _______
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=class]
-    Y!FULL.e = Half.e; _; _; _
+    Y!FULL.e = Half.e; _; _; _ // ISAAC: why are you discarding the CTz that Y! returns?
     I[C?=C;p;G=empty;p.minimize(CTz)]!Half.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
@@ -94,8 +94,8 @@ _______
 _______
 #define I!HALF.e? => ER
 * I!empty => I.CTz;empty
-* I!x => I.CTz;;x
-* I!P<:STz => I.CTz;;P<:I(STz)
+* I!x => I.CTz;x
+* I!P<:STz => I.CTz;P<:I(STz)
 * I!P<:STz => inferenceFailure(I,STz)
     I(STz) undefined
 * I!void => I.CTz;void
@@ -161,9 +161,9 @@ _______
 _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
-* CTz0.add(p; MH e; Half.e) = CTz0 U CTz U STs<=MH.T
-    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
-    Y!e = Half.e; STs; empty; CTz
+* CTz.add(p; MH e; Half.e) = CTz U CTz' U STz<=MH.T
+    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class] // ISAAC: onPath is never used!
+    Y!e = Half.e; STz; empty; CTz' // empty because it's an error for a method body to leak any "returns"
 _______
 #define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
 * I(mdf STz) = T[mdf=mdf]
@@ -173,7 +173,7 @@ _______
 * T in I.coreTof(T)
 * T in I.coreTof(ST)
     ST<=ST' in I.CTz
-    T in I.coreTof(ST')
+    T in I.coreTof(ST') // ISAAC: what about CORE.T <= ST ?
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
