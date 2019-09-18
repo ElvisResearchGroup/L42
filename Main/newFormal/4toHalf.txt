@@ -6,13 +6,12 @@ _______
 * GX(P<: STz) = STz // P <: STz is a type of xP, P <: mdf STz is not
 * GX(%STz%) = STz
 
-* GX^(var? T x = e) = x : T // Regardless of wether T is a HALF.T, FULL.T or CORE.T
-* GX^(TLocal(var?0 TLocal0 x0 ... var? n TLocaln xn ) = e)  // ISAAC: this case may be uneeded...
-    = GX^(TLocal0 x0 = e, ..., TLocaln xn = e) // The = e part is ignored by GX^
-* GX^(var? mdf? x = e) = empty // No T for the x
-* TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
-* GX^D1..Dn = GX^D1 + GX^Dn
-
+* GX^(var? T x=e) = x : T // Regardless of wether T is a HALF.T, FULL.T or CORE.T
+* GX^(TLocal(var?0 TLocal0 x0,..,var? n TLocaln xn )=e)  // ISAAC: this case may be uneeded...
+    = GX^(TLocal0 x0=e,..,TLocaln xn=e) // The = e part is ignored by GX^
+* GX^(var? mdf? x=e) = empty // No T for the x
+* GX^(TLocal '_'=e) = empty
+* GX^D1..Dn = GX^D1,..,GX^Dn
 * GX+GX' = GX\dom(GX'),GX'
 _______
 #define Y!FULL.e = Half.e; STs; STs'; CTz //e, result type, returns type, constraints
@@ -86,7 +85,7 @@ _______
     ei' = xi otherwise
     x1..xn fresh
     e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
-* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; OP STz0,..,STzn; empty; empty
+* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; Y.p.minimize(OP STz0,..,STzn); empty; empty
     n != 0
     Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
@@ -112,10 +111,12 @@ _______
     K = catch return HALF.T x' x' //constraints on expected type are added upper in the recursion // ISAAC: what does the comment mean?
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
-* Y!e.m[pars]= Y!(e.m(squareBuilder=(if \.#shortCircutSquare() (
-        x=\.#squareBuilder()
+* Y!e.m[pars]= Y!(e.m(squareBuilder=(
+      x=\.#squareBuilder()
+      if \.#shortCircutSquare() (
         e1..en //so \ and \x are about the builder
-        x))) // ISAAC: what about the else branch?
+        )
+      x))
     x fresh
     ei = x.#yield(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
     ei = x.#add(pari) otherwise
@@ -167,14 +168,13 @@ _______
       x1 = xP1.iterator() .. xn = xPn.iterator()
       var x'1 = xP1.startIndex() .. var x'n = xPn.startIndex()
       while x1.hasElem(x'1) && .. && xn.hasElem(x'n) && ( x1.incomplete(x'1) || .. || xn.incomplete(x'n)) (
-        x.methName('elem', mdf?1)(that = x') .. x.methName('elem', mdf?n)(that = x')
+        x.methName('elem',mdf?1)(x') .. x.methName('elem',mdf?n)(x')
         e[replaceOnUpdate mdf?1; DX1.x?; x1; x'1]..[replaceOnUpdate mdf?n; DXn.x?; xn; x'n]
         // Note: DXi.x? = empty if DXi is not of form var? TLocal x
         x'1 := x'1.succ() .. xn := x'n.succ())
       x1.close(x'1) .. xn.close(x'n))
 
-    mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?
-    // For each DXi, exactly one of the above will be defined
+    mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?//only one of the two is defined
     x1..xn, x'1..x'n fresh
 _______
 #define Y!FULL.D = HALF.Ds; STz; CTz
@@ -209,11 +209,11 @@ _______
 * doUpdate(x, OP=, e) = x := x OP e
     OP != ':'
 _______
-#define FULL.e[replaceOnUpdate mdf?; x"?; x; x']
-// Make all updates to x"? (which has modifier mdf?) also tell the iterator (x) the new value, which has index (x')
+#define FULL.e[replaceOnUpdate mdf?; x?"; x; x']
+// Make all updates to x?" (which has modifier mdf?) also tell the iterator (x) the new value, which has index (x')
 * e[replaceOnUpdate mdf?; empty; x; x'] = e,
 * (x" opUpdate e)[replaceOnUpdate mdf?; x"; x; x'] = (doUpdate(x", opUpdate, e') e")
     e' = e[replaceOnUpdate mdf?; x"; x; x']
-    e" = x.methName('update',mdf?)(that = x', val = x")
+    e" = x.methName('update',mdf?)(x',val=x")
 
 * e[replaceOnUpdate mdf?; x"; x; x'] propagates inductively in all the other cases
