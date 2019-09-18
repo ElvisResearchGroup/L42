@@ -91,7 +91,7 @@ _______
 #define I!HALF.e? => ER
 * I!empty => I.CTz;empty
 * I!x => I.CTz;x
-* I!P<:T => I.CTz;P<:I(T)
+* I!P<:T => I.CTz;P<:I(class T)
 * I!P<:T => inferenceFailure(I,T)
     I(T) undefined
 * I!void => I.CTz;void
@@ -101,7 +101,7 @@ _______
     PR = CTz';p' IfErr(PR) ER = PR
     ER = CTz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CTz
 * I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!%T%<: T' => I.CTz;I(T).P <:I(T')
+* I!%T%<: T' => I.CTz;I(T).P <:I(class T')
 * I!%T%<: T' => inferenceFailure(I,T)
     either I(T) undefined
 * I!%T%<: T' => inferenceFailure(I,T')
