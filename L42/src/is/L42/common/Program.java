@@ -72,7 +72,11 @@ public class Program implements Visitable<Program>{
       );
     return new Program(newTop,pTails.tail());
     }
-  public Program push(C c,LL ll){return new Program(ll,pTails.pTailC(c, top));}
+  public Program push(C c,LL ll){
+    assert c!=null;
+    assert ll!=null;
+    return new Program(ll,pTails.pTailC(c, top));
+    }
   public Program push(LL ll){return new Program(ll,pTails.pTailSingle((Core.L)top));}
   public Program push(C c){return push(c,top.c(c));}
   public Program update(LL ll){return new Program(ll,pTails);}

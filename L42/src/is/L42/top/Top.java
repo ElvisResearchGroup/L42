@@ -35,14 +35,14 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;
 
 public class Top {
-  public PR top(PR pr)throws EndError {
-    SortHeader sorted=new SortHeader(pr.p());//progagates the right header errors
+  public PR top(List<CT> ctz, Program p)throws EndError {
+    SortHeader sorted=new SortHeader(p);//progagates the right header errors
     Core.L coreL=sorted.l;
     List<Full.L.NC> ncs=sorted.ncs;
-    Program pl=pr.p().update(coreL);
+    Program pl=p.update(coreL);
     List<MH> mh1n=L(coreL.mwts(),(c,m)->c.add(m.mh()));
-    Program p0=pr.p().update(updateInfo(pl,L(mh1n,(c,m)->c.add(sorted.mwtOf(m, null)))));
-    ArrayList<CT> ctz0=new ArrayList<>(pr.ctz());
+    Program p0=p.update(updateInfo(pl,L(mh1n,(c,m)->c.add(sorted.mwtOf(m, null)))));
+    ArrayList<CT> ctz0=new ArrayList<>(ctz);
     ArrayList<Half.E> e1n=new ArrayList<>();
     for(MH mhi:mh1n){
       ctzAdd(ctz0,p0,mhi,sorted._eOf(mhi.s()),e1n);
@@ -52,8 +52,9 @@ public class Top {
     Program p1=pr1.p();
     assert p1.top instanceof Core.L;
     List<Core.E> coreE1n=L(e1n,(c,_ei)->{
+      if(_ei==null){c.add(null);return;}
       ER eri=infer(new I(null,p1,new G(),p1.minimizeCTz(ctz1)),_ei);
-      c.add(eri._e());
+      c.add(eri.e());
       });//and propagate errors out
     List<MWT> mwt1n=L(mh1n,coreE1n,(c,mhi,_ei)->c.add(sorted.mwtOf(mhi,_ei)));
     Core.L l=updateInfo(p1,mwt1n);
@@ -106,8 +107,20 @@ public class Top {
       acc.add(d._pathSel().p().toNCs());
       }
     }
-  private ER infer(I i, is.L42.generated.Half.E _ei) throws EndError{
-    return null; //TODO: inject to core
+  private ER infer(I i,Half.E e) throws EndError{
+    if(e instanceof Core.L){return new ER(i.ctz(),(Core.L)e);}
+    if(e instanceof Full.L){
+      Full.L l=(Full.L) e;
+      Program p=i.p().push(i._c(),l); 
+      List<CT>ctz=L(i.ctz(),ct->p.from(ct,P.coreThis1.p().toNCs()));
+      PR pr=top(ctz,p);//propagate errors
+      //PR = CTz';p' IfErr(PR) ER = PR
+      P.NCs pOut= P.of(0, L(i._c()));
+      List<CT>ctz1=L(pr.ctz(),ct->pr.p().from(ct,pOut));
+      //ER = CTz'[from This0.(I.C?);p'];p'(This0)
+      return new ER(ctz1,(Core.E) pr.p().top);
+      }
+    throw bug();
     }
   private static final Half.T halfLib=new Half.T(null,L((ST)P.coreLibrary));
   private PR topNC(List<CT> ctz, Program p, List<NC> ncs)  throws EndError{
@@ -123,13 +136,13 @@ public class Top {
     I i=new I(c0,p,new G(),p.minimizeCTz(ctz));
     ER er=infer(i,he); //propagates errors
     List<CT> ctz1=er.ctz();
-    Core.E ce=er._e();
+    Core.E ce=er.e();
     assert ce!=null;
     Core.T t=wellTyped(p,ce);//propagate errors
     Core.E ce0=adapt(ce,t);
     coherent(p,ce0); //propagate errors
     ER er1=reduce(p,ce0);//propagate errors
-    Core.L l=(Core.L)er1._e();
+    Core.L l=(Core.L)er1.e();
     assert l!=null;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
@@ -137,9 +150,10 @@ public class Top {
     PR res=topNC(ctz1,p2,ncs);
     return res; 
     }
-  private ER reduce(Program p, is.L42.generated.Core.E ce0)throws EndError  {//TODO: must wrap exceptions and java exceptions
-    var res=new Core.L(L(), false, L(),L(),L(),Core.L.Info.empty,L()); 
-    return new ER(L(),res);
+  private ER reduce(Program p, is.L42.generated.Core.E ce0)throws EndError  {
+    assert ce0 instanceof Core.L;
+    //TODO: must wrap exceptions and java exceptions
+    return new ER(L(),ce0);
     }
   private void coherent(Program p, is.L42.generated.Core.E ce0)throws EndError {
     }

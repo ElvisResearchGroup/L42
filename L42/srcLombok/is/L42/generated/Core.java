@@ -67,6 +67,13 @@ public class Core {
       if(cs.size()==1){return this.c(cs.get(0));}
       return this.c(cs.get(0)).cs(popL(cs));
       }
+    public static L parse(String s) {
+      var r = is.L42.common.Parse.e("--dummy--", s);
+      assert !r.hasErr();
+      assert r.res != null;
+      return (L)r.res;
+      }
+
     @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
     MWT implements LDom.HasKey, Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       List<Pos> poss;List<Doc>docs; MH mh; String nativeUrl;E _e;

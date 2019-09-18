@@ -5,5 +5,5 @@ import java.util.List;
 
 @Value @Wither public class ER{
   List<CT> ctz;
-  Core.E _e;
+  Core.E e;
   }
