@@ -164,19 +164,29 @@ ModuleEntities: Trait({
 
   ItemSpawnerItem: ItemBase & {implements Entity
     var Size semiRandomSeed
+    Size numberOfItemsToSpawn
+
+    class method Size minimumNumberOfItemsToSpawn() 1Size
 
     class method mut This (fwd Point p) (
-      This(p: p, semiRandomSeed: 0Size)
+      error X""
       )
 
-    class method mut This (fwd Point p, fwd Size semiRandomSeed)
+    class method mut This (Point p, Size numberOfItemsToSpawn) (
+      if numberOfItemsToSpawn < This.minimumNumberOfItemsToSpawn() (
+        error X""
+        )
+      This(p: p, semiRandomSeed: 0Size, numberOfItemsToSpawn: numberOfItemsToSpawn)
+      )
 
-    read method S representation() S"S"
+    class method mut This (fwd Point p, fwd Size semiRandomSeed, fwd Size numberOfItemsToSpawn)
+
+    read method S representation() S"I"
 
     method use(playerUsingThis, world) (
-      Entities itemsToSpawn = this.createItemsToSpawn()
+      mut Entities itemsToSpawn = this.createItemsToSpawn(world: world)
 
-      if itemsToSpawn.size() == 0Size (
+      if itemsToSpawn.size() > 0Size (
         playerUsingThis.removeCurrentItem()
 
         with item in itemsToSpawn.#vals() (
@@ -185,34 +195,35 @@ ModuleEntities: Trait({
         )
       )
 
-    mut method Entities createItemsToSpawn(mut World world) (
+    mut method mut Entities createItemsToSpawn(mut World world) {
       Points neighbourPoints = this.getNeighbourPoints()
       // NOTE: neighbourPoints should be randomly shuffled here, but randomness
       // is not implemented in the language yet
       mut Entities createdItems = Entities[]
 
-      with point in neighbourPoints.vals() (
-        if createdItems.size() < 3Size & !world.hasEntityAt(point) (
-          // TODO 3
-          createdItems.add(right: this.createItemAt(point))
+      with i in Range(neighbourPoints.size()) (
+        Point point = neighbourPoints.val(i)
+        if createdItems.size() < this.numberOfItemsToSpawn() & !world.hasEntityAt(point) (
+          createdItems.add(right: this.createItemAt(point: point))
           )
         )
 
-      createdItem
+      return createdItems
+      }
+
+    mut method mut Entity createItemAt(Point point) (
+      RockItem(p: point)
+      // TODO: AFTER randomly select item
       )
 
-    mut method Entity createItemAt(Point point) (
-      error X""
-      )
-
-    method Points getNeighbourPoints() (
+    read method Points getNeighbourPoints() (
+      p = this.point()
       Points[
-        this.point().with() // TODO
-        /* getPoint().add(new Point(1, 0)), */
-        /* getPoint().add(new Point(-1, 0)), */
-        /* getPoint().add(new Point(0, 1)), */
-        /* getPoint().add(new Point(0, -1)) */
-      ]
+        Point(x: p.x() + 1Size, y: p.y());
+        Point(x: p.x() - 1Size, y: p.y());
+        Point(x: p.x(), y: p.y() + 1Size);
+        Point(x: p.x(), y: p.y() - 1Size)
+        ]
       )
     }
 
@@ -638,6 +649,9 @@ ModuleWorldLoader: Trait({
   AppleItem: {implements Entity
     class method mut This (fwd Point p)
     }
+  ItemSpawnerItem: {implements Entity
+    class method mut This (Point p, Size numberOfItemsToSpawn)
+    }
 
   WorldLoader: {
     class method mut World #$(S fileName) (
@@ -662,6 +676,10 @@ ModuleWorldLoader: Trait({
         mut Entity entity = {
           if entityTypeName == S"ROCK_ITEM" (return RockItem(p: p))
           if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
+          if entityTypeName == S"ITEM_SPAWNER_ITEM" (
+            number = Size.fromS(tokens.val(3Size))
+            return ItemSpawnerItem(p: p, numberOfItemsToSpawn: number)
+            )
           error X"Unknown entityTypeName: "[entityTypeName]""
           }
 
@@ -689,6 +707,11 @@ TestModuleWorldLoader: ModuleWorldLoader & {
   AppleItem: HasPoint & {implements Entity
     method toS() (
       S"AppleItem("[this.point()]")"
+      )
+    }
+  ItemSpawnerItem: HasPoint & {implements Entity
+    method toS() (
+      S"ItemSpawnerItem("[this.point()]")"
       )
     }
 
@@ -828,7 +851,7 @@ App: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
   WorldLoader: {}
   Graphics: {}
 
-  class method S defaultFileName() S"GameGridSaves/game-save-example.txt"
+  class method S defaultFileName() S"GameGridSaves/game-save-example-extended.txt"
 
   class method Strings (Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
@@ -924,11 +947,11 @@ IntegrationTest4: {
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -936,11 +959,11 @@ IntegrationTest4: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|P|_|_|_|_|_|_|_|_
+    '|_|P|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -958,11 +981,11 @@ IntegrationTest5: {
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -970,11 +993,11 @@ IntegrationTest5: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -993,11 +1016,11 @@ IntegrationTest6: {
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1005,11 +1028,11 @@ IntegrationTest6: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|p|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1029,11 +1052,11 @@ IntegrationTest7: {
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1041,11 +1064,11 @@ IntegrationTest7: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|P|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1067,11 +1090,11 @@ IntegrationTest8: {
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1079,11 +1102,11 @@ IntegrationTest8: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|P|R|_|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1103,11 +1126,11 @@ IntegrationTest9: {
     Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1115,11 +1138,49 @@ IntegrationTest9: {
   Debug.test(ss.right(), expected: S"
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|p|A|_|_|_|_|_|_
-    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
     '|_|_|_|_|_|R|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
+    ")
+  return ExitCode.normal()
+  }
+
+IntegrationTest10: {
+  App.Actions actions = App.Actions[
+    App.MoveDown();
+    App.MoveDown();
+    App.MoveDown();
+    App.MoveDown();
+    App.MoveRight();
+    App.AttemptToPickUpOrDropItem();
+    App.AttemptToUseItem()
+    ]
+  Strings ss = App.#$(actions: actions)
+    Debug.test(ss.val(0Size), expected: S"
+    '|P|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
+    '|_|_|_|_|_|R|_|_|_|_
+    '|_|I|_|_|_|_|_|_|_|_
+    '|_|_|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|_|_|_
+    ")
+  Debug.test(ss.right(), expected: S"
+    '|_|_|_|_|_|_|_|_|_|_
+    '|_|_|R|A|_|_|_|_|_|_
+    '|_|_|_|_|_|_|_|I|_|_
+    '|_|R|_|_|_|R|_|_|_|_
+    '|R|P|R|_|_|_|_|_|_|_
+    '|_|R|_|_|I|_|_|_|_|_
+    '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
