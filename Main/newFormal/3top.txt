@@ -27,10 +27,6 @@ _______
 * firstErr(Rs,Err,_) = Err
     Err not in Rs
 _______
-#define STz notations:
-* (ST1 .. STn).s(.i)? = ST1.s(.i)? .. STn.s(.i)?
-* (ST1 .. STn)<=HALF.T = ST1<=HALF.T .. STn<=HALF.T
-_______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
     CORE.L;sDe;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
@@ -49,8 +45,8 @@ _______
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=class]
-    Y!FULL.e = Half.e; _; _; _ // ISAAC: why are you discarding the CTz that Y! returns?
-    I[C?=C;p;G=empty;p.minimize(CTz)]!Half.e => ER
+    Y!FULL.e = Half.e; _; _; CTz0
+    I[C?=C;p;G=empty;p.minimize(CTz0)]!Half.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
@@ -95,9 +91,9 @@ _______
 #define I!HALF.e? => ER
 * I!empty => I.CTz;empty
 * I!x => I.CTz;x
-* I!P<:STz => I.CTz;P<:I(STz)
-* I!P<:STz => inferenceFailure(I,STz)
-    I(STz) undefined
+* I!P<:T => I.CTz;P<:I(T)
+* I!P<:T => inferenceFailure(I,T)
+    I(T) undefined
 * I!void => I.CTz;void
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L) 
@@ -105,9 +101,11 @@ _______
     PR = CTz';p' IfErr(PR) ER = PR
     ER = CTz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CTz
 * I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!%STz%<: STz' => I.CTz;I(STz).P <:I(STz')
-* I!%STz% => inferenceFailure(I,STz)
-    either I(STz) or I(STz') undefined
+* I!%T%<: T' => I.CTz;I(T).P <:I(T')
+* I!%T%<: T' => inferenceFailure(I,T)
+    either I(T) undefined
+* I!%T%<: T' => inferenceFailure(I,T')
+    I(T) is defined, but I(T') undefined
 * I!e0.m(x1=e1..xn=en) => ER
     I!ei=ERi //e0 is of form xP
     ER0..ERn = CTz0;e'0..CTzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
@@ -136,13 +134,13 @@ _______
 _______
 #define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
 * I!xs;empty => I.CTz;empty
-* I!xs;var? HALF.T x=e Ds => DsR
-    I(HALF.T) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,HALF.T)
+* I!xs;var? mdf? HALF.T x=e Ds => DsR
+    I(mdf? HALF.T) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,HALF.T)
     I!e => ER 
     ER = CTz';e' IfErr(ER) DR = ER
-    CORE.T' = CORE.T[mdf=imm] if HALF.T=STz, CORE.T.mdf=read and 
+    CORE.T' = CORE.T[mdf=imm] if mdf?=empty, CORE.T.mdf=read and 
       not exists x in FV(e') such that x in dom(I.G) and I.G(x).mdf in {read,lent,mut}
-    CORE.T' = CORE.T[mdf=mut] if HALF.T=STz, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
+    CORE.T' = CORE.T[mdf=mut] if mdf?=empty, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
     CORE.T' = CORE.T otherwise
     I[G=I.G,x:CORE.T'; CTz=CTz']!Ds => DsR'
     DsR' = CTz;Ds IfErr(DsR') DsR = DsR'
@@ -161,19 +159,18 @@ _______
 _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
-* CTz.add(p; MH e; Half.e) = CTz U CTz' U STz<=MH.T
+* CTz.add(p; MH e; Half.e) = CTz U CTz' U T<=MH.T
     Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class] // ISAAC: onPath is never used!
-    Y!e = Half.e; STz; empty; CTz' // empty because it's an error for a method body to leak any "returns"
+    Y!e = Half.e; T; empty; CTz' // empty because it's an error for a method body to leak any "returns"
 _______
-#define I(HALF.T) = CORE.T    I.coreTof(T)=Tz
-* I(mdf[STz]) = T[mdf=mdf]
-    I(STz) = T
+#define I(mdf? HALF.T) = CORE.T    I.coreTof(ST)=CORE.Tz
+* I(mdf T) = I(T)[mdf=mdf]
 * I(ST1..STn) = chooseT(I.coreTof(ST1) U..U I.coreTof(STn))
 
-* T in I.coreTof(T)
-* T in I.coreTof(ST)
-    ST<=ST' in I.CTz
-    T in I.coreTof(ST') // ISAAC: what about CORE.T <= ST ?
+* CORE.T in I.coreTof(CORE.T)
+* T' in I.coreTof(ST)
+    T<=(ST1...STn) in I.CTz
+    T' in I.coreTof(ST1) U ... U I.coreTof(STn)
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
@@ -203,28 +200,33 @@ _______
 * Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
 
 _______
-#define p.minimize(STz) = STz'  chooseT(CORE.Tz) = CORE.T
+#define p.minimize(HALF.T) = HALF.T', p.minimize(CTz) = CTz'
 
-* p.minimize(ST1..STn) = STz'
-    STz = p.minimize(ST1)..p.minimize(STn)
-    Tz = {T| T in STz} //CORE.T
-    STz' = STz if chooseT({T| T in STz}) undefined
-    STz' = chooseT({T| T in STz}) otherwise
-* p.minimize(ST.s(.i)?) = ST'.s(.i)?
-    p.minimize(ST) = ST'
-    if ST'=CORE.T then methods(p,CORE.T.P)(s) undefined
-* p.minimize(ST.s) = MH.T //methods already minimize
-    p.minimize(ST) = CORE.T
+* p.minimize(ST1..STn) = T'
+    T = p.minimize(ST1)..p.minimize(STn)
+    Tz = {CORE.T | CORE.T in T} //CORE.T
+    T' = T if chooseT(Tz) undefined
+    T' = chooseT(Tz) otherwise // TODO: Check this?
+* p.minimize(T.s(.i)?) = T'.s(.i)?
+    p.minimize(T) = T'
+    if T' = CORE.T then methods(p,CORE.T.P)(s) undefined
+* p.minimize(T.s) = MH.T //methods already minimize
+    p.minimize(T) = CORE.T
     methods(p,CORE.T.P)(s) = MH
-* p.minimize(ST.s.i) = MH.pari
-    p.minimize(ST) = CORE.T
+* p.minimize(T.s.i) = MH.pari
+    p.minimize(T) = CORE.T
     methods(p,CORE.T.P)(s) = MH
-* p.minimize(op STz1..STzn) = methods(p,P)(s).T[from P;p]
-    p.minimize(STz1) = T1, ..., p.minimize(STzn) = Tn
-    {P.s.i} = p.opOptions(OP, Ts)
-
+* p.minimize(OP T1..Tn) = methods(p,P)(s).T[from P;p]
+    p.minimize(T1) = T1', ..., p.minimize(Tn) = Tn'
+    {P.s.i} = p.opOptions(OP, T1' ... Tn')
+* p.minimize((ST1 ... STn) <= T, CTz) = p.minimize(ST1 <= T), ..., p.minimize(STn <= T), p.iminimize(CTz)
+* p.minimize(ST <= ST') = empty
+    p.minimize(ST) = CORE.T
+* p.minimize(ST <= ST') = p.minimize(ST) <= p.minimize(ST')
+* p.minimize(empty) = empty
+// p.minimize((STz <= HALF.T)s) is of form (ST <= HALF.T)s, where each STs is not a CORE.T
 _______
-#define chooseT(Tz) = T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
+#define chooseT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
 
