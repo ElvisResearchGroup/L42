@@ -212,7 +212,16 @@ ModuleEntities: Trait({
       }
 
     mut method mut Entity createItemAt(Point point) (
-      RockItem(p: point)
+      mut Entities possibleEntities = Entities[
+        RockItem(p: point);
+        AppleItem(p: point);
+        ItemSpawnerItem(
+          p: point,
+          numberOfItemsToSpawn: this.numberOfItemsToSpawn() // TODO: random
+          )
+        ]
+
+      possibleEntities.val(0Size)
       // TODO: AFTER randomly select item
       )
 
