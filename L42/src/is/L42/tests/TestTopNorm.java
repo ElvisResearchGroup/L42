@@ -36,11 +36,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    top("{}","{#norm{}}")
    ),new AtomicTest(()->
    top("{C={}}","{C={#norm{}}#norm{}}")
+   ),new AtomicTest(()->
+   top("{method Any foo()=void}","{method Any foo()=void #norm{}}")
 
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 
 public static void top(String program,String out){
-  assertEquals(new Top().top(L(),Program.parse(program)),Core.L.parse(out));
+  assertEquals(new Top().top(L(),Program.parse(program)).p().top,Core.L.parse(out));
   }
 }

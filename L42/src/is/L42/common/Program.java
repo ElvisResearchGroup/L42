@@ -385,7 +385,7 @@ public class Program implements Visitable<Program>{
     throw todo();//TODO:
     }
   public List<CT> minimizeCTz(List<CT> ctz){
-    throw todo();//TODO:
+    return ctz;//TODO:
     }
 
   public T _chooseT(List<T> ts,List<Pos> poss){

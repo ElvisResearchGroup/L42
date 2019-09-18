@@ -724,8 +724,8 @@ public class ToSVisitor implements CollectorVisitor{
     program.pTails.accept(this);
     }
   public void visitPTails(PTails t) {
+    if(t.isEmpty()){return;}
     if(t.hasC()){
-      if(t.isEmpty()){return;}
       visitC(t.c());
       c("=");
       }

@@ -168,6 +168,7 @@ public class Top {
 //    * CTz0.add(p; MH e; Half.e) = CTz0 U CTz U STs<=MH.T
 //    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
 //    Y!e = Half.e; STs; empty; CTz
+//TODO:
     }
   static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {
     var deps=new Accumulate<ArrayList<P.NCs>>(){

@@ -121,9 +121,10 @@ public class General {
   public static interface Consumer3<T1,T2,T3>{void accept(T1 t1,T2 t2,T3 t3);}
   public static <A,B,R> List<R>L(List<A> a,List<B> b,Consumer3<List<R>,A,B> c){
     ArrayList<R> res=new ArrayList<>();
-    if(a.size()!=b.size())throw new Error();
-    for(int i=0;i<a.size();i++)
+    if(a.size()!=b.size()){throw new Error("different sizes of \n"+a+"\n"+b);}
+    for(int i=0;i<a.size();i++){
       c.accept(res,a.get(i),b.get(i));
+      }
     return Collections.unmodifiableList(res);
     }
   public static RuntimeException unreachable(){throw new Error("Postcondition violation");}
