@@ -1,5 +1,5 @@
 _______
-#define GX^Ds = GX, GX^HALF.D = GX, GX^FULL.D, GX+GX' = GX"
+#define GX^FULL/HALF.Ds = GX, GX^FULL/HALF.D = GX
 * GX^(var? mdf? HALF.T x=e) = x : HALF.T
 * GX^(var? FULL.T x) = x : ♥FULL.T
 * GX^(var? mdf? x=e) = empty // No T for the x
@@ -45,8 +45,8 @@ _______
 * Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
-* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); T"; STz; CTz
-    Y[expectedT=empty]!xP = xP'; T0; STz0; CTz0 // Y!HALF.xP is always a FULL.xP
+* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); T'; STz; CTz
+    Y[expectedT=empty]!xP = xP'; T0; STz0; CTz0 // Y!FULL.xP is always a HALF.xP
     T' = Y.p.minimize(T0.m(x1..xn)) //injects .s on all the elements of STz
     T'i = Y.p.minimize(T0.m(x1..xn).i), i in 1..n
     Y[onSlash=T'i;onSlashX=xP;expectedT=T'i]!ei = e'i; Ti; STzi; CTzi, i in 1..n
@@ -86,7 +86,7 @@ _______
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
-* Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e ) 
+* Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e )
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); T; STz; CTz  //Ds is HALF.Ds
     GX = GX^(D1...Dn)

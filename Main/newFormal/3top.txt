@@ -203,7 +203,7 @@ _______
 #define p.minimize(HALF.T) = HALF.T', p.minimize(CTz) = CTz'
 
 * p.minimize(ST1..STn) = T'
-    T = p.minimize(ST1)..p.minimize(STn)
+    T = {p.minimize(ST1), ..., p.minimize(STn)}
     Tz = {CORE.T | CORE.T in T} //CORE.T
     T' = T if chooseT(Tz) undefined
     T' = chooseT(Tz) otherwise // TODO: Check this?
