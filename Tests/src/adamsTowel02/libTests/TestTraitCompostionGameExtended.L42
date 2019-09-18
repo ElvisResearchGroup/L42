@@ -36,7 +36,7 @@ ModuleEntities: Trait({
     mut method Void point(Point that, mut World world, Bool updateWorld)
     read method Void drawOnto(mut Graphics that)
     read method S toS()
-    mut method Void use(mut $Player playerUsingThis, mut World world)
+    mut method Void #$use(mut $Player playerUsingThis, mut World world)
     }
 
   World: {
@@ -121,9 +121,9 @@ ModuleEntities: Trait({
         )
       )
 
-    mut method Void attemptToUseItem(mut World world) (
+    mut method Void #$attemptToUseItem(mut World world) (
       if this.#currentItem().isPresent() (
-        this.#currentItem().#get().use(playerUsingThis: this, world: world)
+        this.#currentItem().#get().#$use(playerUsingThis: this, world: world)
         )
       )
 
@@ -145,18 +145,18 @@ ModuleEntities: Trait({
       this.currentItem(OptionalEntity())
       )
 
-    method use(playerUsingThis, world) (
+    method #$use(playerUsingThis, world) (
       error X"Cannot use Player"
       )
     }
 
   RockItem: ItemBase & {implements Entity
     read method S representation() S"R"
-    method use(playerUsingThis, world) void
+    method #$use(playerUsingThis, world) void
     }
   AppleItem: ItemBase & {implements Entity
     read method S representation() S"A"
-    method use(playerUsingThis, world) void
+    method #$use(playerUsingThis, world) void
     }
 
   Entities: Collections.vector(ofMut: Entity)
@@ -183,8 +183,8 @@ ModuleEntities: Trait({
 
     read method S representation() S"I"
 
-    method use(playerUsingThis, world) (
-      mut Entities itemsToSpawn = this.createItemsToSpawn(world: world)
+    method #$use(playerUsingThis, world) (
+      mut Entities itemsToSpawn = this.#$createItemsToSpawn(world: world)
 
       if itemsToSpawn.size() > 0Size (
         playerUsingThis.removeCurrentItem()
@@ -195,37 +195,36 @@ ModuleEntities: Trait({
         )
       )
 
-    mut method mut Entities createItemsToSpawn(mut World world) {
-      Points neighbourPoints = this.getNeighbourPoints()
-      // NOTE: neighbourPoints should be randomly shuffled here, but randomness
+    mut method mut Entities #$createItemsToSpawn(mut World world) {
+      Points neighbourPoints = this.neighbourPoints()
+      // TODO NEXT: neighbourPoints should be randomly shuffled here, but randomness
       // is not implemented in the language yet
       mut Entities createdItems = Entities[]
 
       with i in Range(neighbourPoints.size()) (
         Point point = neighbourPoints.val(i)
         if createdItems.size() < this.numberOfItemsToSpawn() & !world.hasEntityAt(point) (
-          createdItems.add(right: this.createItemAt(point: point))
+          createdItems.add(right: this.#$createItemAt(point: point))
           )
         )
 
       return createdItems
       }
 
-    mut method mut Entity createItemAt(Point point) (
+    mut method mut Entity #$createItemAt(Point point) (
       mut Entities possibleEntities = Entities[
         RockItem(p: point);
         AppleItem(p: point);
-        ItemSpawnerItem(
-          p: point,
-          numberOfItemsToSpawn: this.numberOfItemsToSpawn() // TODO: random
-          )
+        ItemSpawnerItem(p: point, numberOfItemsToSpawn: This.#$random(
+          startInclusive: This.minimumNumberOfItemsToSpawn(),
+          endInclusive: this.neighbourPoints().size()
+          ))
         ]
 
-      possibleEntities.val(0Size)
-      // TODO: AFTER randomly select item
+      possibleEntities.#val(Debug.#$rand(possibleEntities.size()))
       )
 
-    read method Points getNeighbourPoints() (
+    read method Points neighbourPoints() (
       p = this.point()
       Points[
         Point(x: p.x() + 1Size, y: p.y());
@@ -233,6 +232,10 @@ ModuleEntities: Trait({
         Point(x: p.x(), y: p.y() + 1Size);
         Point(x: p.x(), y: p.y() - 1Size)
         ]
+      )
+
+    class method Size #$random(Size startInclusive, Size endInclusive) (
+      endInclusive + Debug.#$rand(endInclusive - startInclusive)
       )
     }
 
@@ -396,7 +399,7 @@ ModuleWorld: Trait({
   Player: {
     class method mut Player (fwd Point p)
     mut method Void attemptToPickUpOrDropItem(mut World world)
-    mut method Void attemptToUseItem(mut World world)
+    mut method Void #$attemptToUseItem(mut World world)
     }
 
   Graphics: {
@@ -486,8 +489,8 @@ ModuleWorld: Trait({
       this.#player().attemptToPickUpOrDropItem(world: this)
       )
 
-    mut method Void attemptToUseItem() (
-      this.#player().attemptToUseItem(world: this)
+    mut method Void #$attemptToUseItem() (
+      this.#player().#$attemptToUseItem(world: this)
       )
 
     mut method Void drawOnto(mut Graphics graphics) (
@@ -538,7 +541,7 @@ TestModuleWorld: ModuleWorld & {
 
     mut method Void attemptToPickUpOrDropItem(mut World world) (error X"")
 
-    mut method Void attemptToUseItem(mut World world) (error X"")
+    mut method Void #$attemptToUseItem(mut World world) (error X"")
   }
 
   Tests: K <>< {
@@ -819,19 +822,19 @@ ModuleUI: Trait({
     mut method Void movePlayerLeft()
     mut method Void movePlayerRight()
     mut method Void attemptToPickUpOrDropItem()
-    mut method Void attemptToUseItem()
+    mut method Void #$attemptToUseItem()
     }
 
   Action: {
-    interface method Void (mut World world)
+    interface method Void #$(mut World world)
     }
   Actions: Collections.vector(of: Action)
-  MoveUp: K <>< {implements Action method (world) world.movePlayerUp()}
-  MoveDown: K <>< {implements Action method (world) world.movePlayerDown()}
-  MoveLeft: K <>< {implements Action method (world) world.movePlayerLeft()}
-  MoveRight: K <>< {implements Action method (world) world.movePlayerRight()}
-  AttemptToPickUpOrDropItem: K <>< {implements Action method (world) world.attemptToPickUpOrDropItem()}
-  AttemptToUseItem: K <>< {implements Action method (world) world.attemptToUseItem()}
+  MoveUp: K <>< {implements Action method #$(world) world.movePlayerUp()}
+  MoveDown: K <>< {implements Action method #$(world) world.movePlayerDown()}
+  MoveLeft: K <>< {implements Action method #$(world) world.movePlayerLeft()}
+  MoveRight: K <>< {implements Action method #$(world) world.movePlayerRight()}
+  AttemptToPickUpOrDropItem: K <>< {implements Action method #$(world) world.attemptToPickUpOrDropItem()}
+  AttemptToUseItem: K <>< {implements Action method #$(world) world.#$attemptToUseItem()}
   })
 
 //
@@ -862,17 +865,17 @@ App: ModuleEntities & ModuleWorld & ModuleWorldLoader & ModuleUI & {
 
   class method S defaultFileName() S"GameGridSaves/game-save-example-extended.txt"
 
-  class method Strings (Actions actions, mut World world) (
+  class method Strings #$(Actions actions, mut World world) (
     Strings[world.asText()] ++ Strings[
       with action in actions.vals() (
-        action(world: world)
+        action.#$(world: world)
         use[world.asText()]
         )
       ]
     )
 
   class method Strings #$(Actions actions) (
-    This(
+    This.#$(
       actions: actions,
       world: WorldLoader.#$(fileName: This.defaultFileName())
       )
@@ -922,7 +925,7 @@ IntegrationTest3: {
   mut App.World world = App.World()
   world.addEntity(App.RockItem(p: Point(x: 2Size, y: 3Size)))
   App.Actions actions = App.Actions[App.MoveDown(); App.MoveDown(); App.MoveDown()]
-  Strings ss = App(actions: actions, world: world)
+  Strings ss = App.#$(actions: actions, world: world)
   Debug.test(ss.val(0Size), expected: S"
     '|P|_|_|_|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
@@ -1160,6 +1163,7 @@ IntegrationTest9: {
   }
 
 IntegrationTest10: {
+  Debug.#$randomSetSeed(0Size)
   App.Actions actions = App.Actions[
     App.MoveDown();
     App.MoveDown();
