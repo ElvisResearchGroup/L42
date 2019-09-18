@@ -163,7 +163,6 @@ ModuleEntities: Trait({
   Points: Collections.vector(of: Point)
 
   ItemSpawnerItem: ItemBase & {implements Entity
-    var Size semiRandomSeed
     Size numberOfItemsToSpawn
 
     class method Size minimumNumberOfItemsToSpawn() 1Size
@@ -172,14 +171,14 @@ ModuleEntities: Trait({
       error X""
       )
 
-    class method mut This (Point p, Size numberOfItemsToSpawn) (
+    class method mut This new(Point p, Size numberOfItemsToSpawn) (
       if numberOfItemsToSpawn < This.minimumNumberOfItemsToSpawn() (
         error X""
         )
-      This(p: p, semiRandomSeed: 0Size, numberOfItemsToSpawn: numberOfItemsToSpawn)
+      This(p: p, numberOfItemsToSpawn: numberOfItemsToSpawn)
       )
 
-    class method mut This (fwd Point p, fwd Size semiRandomSeed, fwd Size numberOfItemsToSpawn)
+    class method mut This (fwd Point p, fwd Size numberOfItemsToSpawn)
 
     read method S representation() S"I"
 
@@ -196,13 +195,14 @@ ModuleEntities: Trait({
       )
 
     mut method mut Entities #$createItemsToSpawn(mut World world) {
-      Points neighbourPoints = this.neighbourPoints()
-      // TODO NEXT: neighbourPoints should be randomly shuffled here, but randomness
-      // is not implemented in the language yet
+      mut Points neighbourPoints = this.neighbourPoints()
       mut Entities createdItems = Entities[]
 
-      with i in Range(neighbourPoints.size()) (
+      with _ in Range(neighbourPoints.size()) (
+        i = Debug.#$rand(neighbourPoints.size())
         Point point = neighbourPoints.val(i)
+        neighbourPoints.remove(i)
+
         if createdItems.size() < this.numberOfItemsToSpawn() & !world.hasEntityAt(point) (
           createdItems.add(right: this.#$createItemAt(point: point))
           )
@@ -224,7 +224,7 @@ ModuleEntities: Trait({
       possibleEntities.#val(Debug.#$rand(possibleEntities.size()))
       )
 
-    read method Points neighbourPoints() (
+    read method mut Points neighbourPoints() (
       p = this.point()
       Points[
         Point(x: p.x() + 1Size, y: p.y());
@@ -662,7 +662,7 @@ ModuleWorldLoader: Trait({
     class method mut This (fwd Point p)
     }
   ItemSpawnerItem: {implements Entity
-    class method mut This (Point p, Size numberOfItemsToSpawn)
+    class method mut This new(Point p, Size numberOfItemsToSpawn)
     }
 
   WorldLoader: {
@@ -690,7 +690,7 @@ ModuleWorldLoader: Trait({
           if entityTypeName == S"APPLE_ITEM" (return AppleItem(p: p))
           if entityTypeName == S"ITEM_SPAWNER_ITEM" (
             number = Size.fromS(tokens.val(3Size))
-            return ItemSpawnerItem(p: p, numberOfItemsToSpawn: number)
+            return ItemSpawnerItem.new(p: p, numberOfItemsToSpawn: number)
             )
           error X"Unknown entityTypeName: "[entityTypeName]""
           }
@@ -1163,7 +1163,7 @@ IntegrationTest9: {
   }
 
 IntegrationTest10: {
-  Debug.#$randomSetSeed(0Size)
+  Debug.#$randomSetSeed(3Size)
   App.Actions actions = App.Actions[
     App.MoveDown();
     App.MoveDown();
@@ -1190,8 +1190,8 @@ IntegrationTest10: {
     '|_|_|_|_|_|_|_|_|_|_
     '|_|_|R|A|_|_|_|_|_|_
     '|_|_|_|_|_|_|_|I|_|_
-    '|_|R|_|_|_|R|_|_|_|_
-    '|R|P|R|_|_|_|_|_|_|_
+    '|_|A|_|_|_|R|_|_|_|_
+    '|R|P|A|_|_|_|_|_|_|_
     '|_|R|_|_|I|_|_|_|_|_
     '|_|_|_|_|_|_|I|_|_|_
     '|_|_|_|_|_|_|_|_|_|_
