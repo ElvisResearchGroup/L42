@@ -45,8 +45,8 @@ _______
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=class]
-    Y!FULL.e = Half.e; _; _; CTz0
-    I[C?=C;p;G=empty;p.minimize(CTz0)]!Half.e => ER
+    Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
+    I[C?=C;p;G=empty;p.minimize(CTz)]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)

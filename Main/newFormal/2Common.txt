@@ -54,7 +54,7 @@ _______
 * collect(p,empty)=empty
 * collect(p,T0 Ts)=((T0, Ts') \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface_}=FULL.L//assert ... and reuse are unreachable
-    Ts'=collect(p,cFULL.L.Ts[from T0.P;p])
+    Ts'=collect(p,♥FULL.L.Ts[from T0.P;p])
 * collect(p,T0 Ts)=((T0, CORE.L.Ts[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface _}=CORE.L
 
