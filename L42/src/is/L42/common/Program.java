@@ -67,8 +67,8 @@ public class Program implements Visitable<Program>{
   public Program pop(){
     if(!pTails.hasC()){return new Program(pTails.coreL(),pTails.tail());}
     var newTop=pTails.ll().withCs(L(pTails.c()),
-      nc->nc.withE(pTails.ll()),
-      nc->nc.withL((Core.L)pTails.ll())
+      nc->nc.withE(top),
+      nc->nc.withL((Core.L)top)
       );
     return new Program(newTop,pTails.tail());
     }
@@ -95,7 +95,8 @@ public class Program implements Visitable<Program>{
     return from(p.toNCs(),source);
     }
   public P.NCs from(P.NCs p,P.NCs source){
-    assert minimize(source)==source: source +" "+minimize(source);
+    assert minimize(source)==source:
+      source +" "+minimize(source);
     P.NCs res=from(p,source.n(),source.cs());
     if(res.equals(p)){return p;}
     if(res.equals(source)){return source;}
@@ -303,12 +304,12 @@ public class Program implements Visitable<Program>{
       }
     return pop().findScope(c, acc+1,poss);
     }
-  public List<Core.MH>extractMHs(List<Full.L.M> ms,P.NCs fromSource){
+  public List<Core.MH>extractMHs(List<Full.L.M> ms,Program fromP,P.NCs fromSource){
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
       if(m instanceof Full.L.MI){return;}
       if(m instanceof Full.L.MWT){
-        c.add(from(TypeManipulation.toCore(((Full.L.MWT)m).mh()),fromSource));return;
+        c.add(fromP.from(TypeManipulation.toCore(((Full.L.MWT)m).mh()),fromSource));return;
         }
       Full.L.F f=(Full.L.F)m;
       Core.T t=TypeManipulation.toCore(f.t());
@@ -335,7 +336,7 @@ public class Program implements Visitable<Program>{
     Full.L l=(Full.L)ll;
     assert !l.isDots();
     assert l.reuseUrl().isEmpty();
-    List<Core.MH> mhs=this.navigate(p0).extractMHs(l.ms(),p0);
+    List<Core.MH> mhs=this.navigate(p0).extractMHs(l.ms(),this,p0);
     List<T> ts=L(l.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p0)));
     List<T> ps=collect(ts,l.poss());
     List<List<MH>> methods=L(c->{

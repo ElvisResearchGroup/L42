@@ -28,7 +28,9 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   @Override public Full.L visitL(Full.L s) {
     if(lastCMs==null){
       assert p.top==s;
-      return super.visitL(s);
+      var res=super.visitL(s);
+      res=fullLHandler(res);
+      return res;
       }
     Program aux=p;
     var lastPos=poss;
@@ -42,12 +44,15 @@ public class CloneVisitorWithProgram extends CloneVisitor {
       }
     levels+=1;
     var res=super.visitL(s);
+    res=fullLHandler(res);
     p=aux;
     levels-=1;
     whereFromTop.remove(whereFromTop.size()-1);
     poss=lastPos;
     return res;
     }
+  public Full.L fullLHandler(Full.L l){return l;}
+  public Core.L coreLHandler(Core.L l){return l;}
   @Override public Full.L.NC visitNC(Full.L.NC s) {
     var lastPos=s.poss();
     LDom aux=lastCMs;
@@ -78,7 +83,9 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   @Override public Core.L visitL(Core.L s) {
     if(lastCMs==null){
       assert p.top==s;
-      return super.visitL(s);
+      var res=super.visitL(s);
+      res=coreLHandler(res);
+      return res;
       }
     var lastPos=s.poss();
     Program aux=p;
@@ -92,6 +99,7 @@ public class CloneVisitorWithProgram extends CloneVisitor {
       }
     levels+=1;
     var res=super.visitL(s);
+    res=coreLHandler(res);
     p=aux;
     levels-=1;
     whereFromTop.remove(whereFromTop.size()-1);

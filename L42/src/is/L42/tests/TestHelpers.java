@@ -1,6 +1,9 @@
 package is.L42.tests;
 
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.range;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import org.antlr.v4.runtime.CharStreams;
 import org.antlr.v4.runtime.CommonTokenStream;
@@ -13,6 +16,8 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
@@ -141,5 +146,21 @@ public class TestHelpers {
       if(res.errorsTokenizer.length()!=0)throw new RuntimeException("Tokenizer errors:\n"+res.errorsTokenizer);
       if(res.errorsParser.length()!=0)throw new RuntimeException("Parsing errors:\n"+res.errorsParser);
       }
+    }
+  public static void checkFail(Runnable r,String [] output,Class<?> kind){
+   assert output.length>0;
+   try{r.run();}
+    catch(EndError ee){
+      if(!kind.isInstance(ee)){fail("Different kind of exception: "+ee);}
+      String msg=ee.getMessage();
+      msg=msg.substring(msg.indexOf("\n")+1);
+      Err.strCmp(msg, output[0]);
+      for(var i:range(1,output.length)){
+        if(!ee.getMessage().contains(output[i])){throw ee;}
+        assertTrue(ee.getMessage().contains(output[i]));
+        }
+      return;
+      }
+    fail("error expected");
     }
   }

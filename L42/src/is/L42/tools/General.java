@@ -74,7 +74,14 @@ public class General {
   public static <T> List<T> mergeU(List<T>l1,List<T>l2){
     ArrayList<T> res=new ArrayList<>();
     res.addAll(l1);
-    for(T t:l2){if(l1.contains(t)){res.add(t);}}
+    for(T t:l2){if(!l1.contains(t)){res.add(t);}}
+    return Collections.unmodifiableList(res);
+    }
+  public static <T> List<T> unique(List<T>l){
+    boolean changed=false;
+    ArrayList<T> res=new ArrayList<>();
+    for(T t:l){if(!res.contains(t)){res.add(t);changed=true;}}
+    if(!changed){return l;}
     return Collections.unmodifiableList(res);
     }
   public static <T> List<T>popL(List<T>l){return l.subList(1, l.size());}

@@ -731,5 +731,6 @@ public class ToSVisitor implements CollectorVisitor{
       }
     t.ll().visitable().accept(this);
     nl();
+    t.tail().accept(this);
     }
   }

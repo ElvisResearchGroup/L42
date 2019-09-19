@@ -2,17 +2,22 @@ package is.L42.top;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.range;
 
 import java.util.List;
 
 import is.L42.common.Err;
 import is.L42.common.PTails;
 import is.L42.common.Program;
+import is.L42.generated.C;
+import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Full.CsP;
+import is.L42.generated.LDom;
 import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.generated.S;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
@@ -30,9 +35,56 @@ public class Init {
     }
   public static LL initTop(Program pStart){
     var res=pStart.top.visitable().accept(new CloneVisitorWithProgram(pStart){
-      @Override public Full.L visitL(Full.L s) {
-        if(!s.isDots()){return super.visitL(s);}
-        throw bug();
+      @Override public Full.L fullLHandler(Full.L s) {
+        if(s.isDots()){throw bug();}//TODO: will need to be handled in the visitL instead
+        var this0s=L(s.ts().stream().filter(this::invalidAfter));
+        if(this0s.isEmpty()){return s;}
+        throw new Program.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
+        }
+      @Override public Core.L coreLHandler(Core.L s) {
+        var this0s=L(s.ts().stream().filter(this::invalidAfter));
+        if(this0s.isEmpty()){return s;}
+        throw new Program.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
+        }
+      private boolean invalidAfter(Full.T t){
+        assert t._p()!=null;
+        return invalidAfter(t._p());
+        }
+      private boolean invalidAfter(Core.T t){
+        return invalidAfter(t.p());
+        }
+      private boolean invalidAfter(P p0){
+        if(!pStart.pTails.isEmpty()){return false;}
+        if(!p0.isNCs()){return false;}
+        P.NCs p=p0.toNCs();
+        if (p.n()==0){return true;}
+        if(p.cs().isEmpty()){return false;}
+        C c=p.cs().get(0);
+        LL l=this.p().pop(p.n()).top;
+        LDom d=this.whereFromTop$().get(this.whereFromTop$().size()-p.n());
+        int dn=-1;
+        int cn=-1;
+        if(l.isFullL()){
+          var fl=(Full.L)l;
+          for(int i:range(fl.ms())){
+            var ki=fl.ms().get(i).key();
+            if(ki.equals(d)){dn=i+1;}
+            if(ki.equals(c)){cn=i+1;}
+            }
+          }
+        else{
+          var cl=(Core.L)l;
+          if(d instanceof S){dn=0;}
+          for(int i:range(cl.ncs())){
+            var ki=cl.ncs().get(i).key();
+            if(ki.equals(d)){dn=i+1;}
+            if(ki.equals(c)){cn=i+1;}
+            }      
+          }
+        assert dn!=-1;
+        assert cn!=-1;
+        assert dn!=cn;
+        return dn<cn;
         }
       @Override public CsP visitCsP(CsP s) {
         if(s._p()!=null){return s.with_p(min(s._p()));}

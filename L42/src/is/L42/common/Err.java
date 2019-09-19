@@ -171,6 +171,8 @@ public class Err {
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
   ;}public static String invalidPathInInfo(Object _1){return
   "Invalid path in info: "+_1  
+  ;}public static String nestedClassesImplemented(Object _1){return
+  "some nested classes are implemented before they are defined: "+_1  
 
   ;}
 }

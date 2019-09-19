@@ -99,7 +99,7 @@ public class Top {
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
     }
-  private void collectDeptDocs(List<Doc> docs, List<P.NCs> acc) {
+  public static void collectDeptDocs(List<Doc> docs, List<P.NCs> acc) {
     for(Doc d:docs){
       collectDeptDocs(d.docs(),acc);
       if(d._pathSel()==null){continue;}
@@ -260,17 +260,28 @@ class SortHeader{
     var mh1n=p0.methods(P.coreThis0.p(),l.poss());//propagate err
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
       List<Core.Doc> docs=L();
+      List<Pos> poss=l.poss();
       var mwti=(Full.L.MWT)_elem(l.ms(),mh.key());
-      if(mwti!=null){docs=TypeManipulation.toCoreDocs(mwti.docs());}
-      var res=new Core.L.MWT(mwti.poss(), docs, mh,"",null);
+      if(mwti!=null){
+        docs=TypeManipulation.toCoreDocs(mwti.docs());
+        poss=mwti.poss();
+        }
+      var res=new Core.L.MWT(poss, docs, mh,"",null);
       c.add(res);
       });
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     Top.collectDeps(p0,mwts,typePs,cohePs,false);
-    boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
-    Info info=new Info(false,L(typePs.stream()),L(cohePs.stream()),L(),L(),L(),L(),classMeth); 
     var docs=TypeManipulation.toCoreDocs(l.docs());
+    boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
+    Info info=new Info(false,
+      unique(L(c->{
+        for(var ti:ts1){c.add(ti.p().toNCs());}
+        c.addAll(typePs);
+        Top.collectDeptDocs(docs, c);
+        })),
+      unique(L(cohePs.stream())),
+      L(),L(),L(),L(),classMeth); 
     this.l=new Core.L(l.poss(),l.isInterface(), ts1, mwts, L(), info, docs);
     this.ncs=ncs;
     this.notNC=notNC;
@@ -297,7 +308,8 @@ class SortHeader{
     return new Core.L.MWT(poss, docs, mh,url, _ei);
     }
   public Full.E _eOf(S s) {
-    Full.L.M res=_elem(notNC,s); 
+    Full.L.M res=_elem(notNC,s);
+    if(res==null){return null;}
     return res._e(); 
     }
   }

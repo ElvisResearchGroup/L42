@@ -7,7 +7,6 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
-import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.common.Program;
@@ -22,7 +21,6 @@ import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
 
 import static is.L42.tests.TestHelpers.*;
-import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 import static is.L42.common.Err.hole;
 
@@ -205,23 +203,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I2,I1]}}","This0.A","[imm method imm Any m2(), imm method imm Void m0(), imm method imm Any m1()]")
 
-/*
-Ok.. problems and solutions:
-{} without Cs is PERFECT FOR CACHING
-what if:
-  -first phase of removing ... and normalizing Cs.
-  -reuse urls now must be stopping scope again
-  -if a reuse url has no #$ we expect it to be deterministic, we cache
-  it at this moment and we can give error if the Cs is not resolved in 
-  the url.
-  -WF applies only after this initial step
+  ),new AtomicTest(()->
+  toS("{[This1.I]}\nA={A={[This1.I]}J={interface method This0 m()}I={interface[This1.J]}}\n")
+  ),new AtomicTest(()->
+  toS("{}\nA={A={}}\n")
+  ),new AtomicTest(()->
+  toS("{}\nA={A={}}\nB={B={A={}}}\n")
 
-*/
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 public static String inCore(String s){
   return "{imm method imm Void a()="+s+" #norm{}}";
   }
+public static void toS(String program){
+  assertEquals(Program.parse(program).toString(),program);
+  }
+
 public static void minimize(String program,String pathIn,String pathOut){
   assertEquals(Program.parse(program).minimize(P.parse(pathIn)),P.parse(pathOut));
   }
@@ -243,35 +240,19 @@ public static void passWF(String input){
   var p=Program.parse(input);//internally calls wf
   assertTrue(p.wf());//to be more resilient to changes above
   }
-public static void checkFail(Runnable r,String [] output,Class<?> kind){
- assert output.length>0;
- try{r.run();}
-  catch(EndError ee){
-    if(!kind.isInstance(ee)){fail("Different kind of exception: "+ee);}
-    String msg=ee.getMessage();
-    msg=msg.substring(msg.indexOf("\n")+1);
-    Err.strCmp(msg, output[0]);
-    for(var i:range(1,output.length)){
-      if(!ee.getMessage().contains(output[i])){throw ee;}
-      assertTrue(ee.getMessage().contains(output[i]));
-      }
-    return;
-    }
-  fail("error expected");
-  }
 public static void failWF(Class<?> clazz,String input,String ...output){
   var r=Parse.program("-dummy-",input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  checkFail(()->Program.parse(input),output,clazz);
+  TestHelpers.checkFail(()->Program.parse(input),output,clazz);
   }
 public static void collectFail(Class<?> clazz,String program,String pathIn,String... output){
   Program p=Program.parse(program);
   var pos=p.of(P.parse(pathIn).toNCs(),null).poss();
-  checkFail(()->p.collect(P.parse(pathIn).toNCs(),pos),output,clazz);
+  TestHelpers.checkFail(()->p.collect(P.parse(pathIn).toNCs(),pos),output,clazz);
   }
 public static void methodsFail(Class<?> clazz,String program,String pathIn,String... output){
   Program p=Program.parse(program);
   var pos=p.of(P.parse(pathIn).toNCs(),null).poss();
-  checkFail(()->p.methods(P.parse(pathIn).toNCs(),pos),output,clazz);
+  TestHelpers.checkFail(()->p.methods(P.parse(pathIn).toNCs(),pos),output,clazz);
   }
 }
