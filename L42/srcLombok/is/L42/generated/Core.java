@@ -41,7 +41,7 @@ public class Core {
   PCastT implements Leaf, XP, Half.XP,Visitable<PCastT>{@Override public Visitable<PCastT>visitable(){return this;}@Override public PCastT accept(CloneVisitor cv){return cv.visitPCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitPCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     P p; T t;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  EVoid implements Leaf,Full.Leaf,Visitable<EVoid>{@Override public Visitable<EVoid>visitable(){return this;}@Override public EVoid accept(CloneVisitor cv){return cv.visitEVoid(this);}@Override public void accept(CollectorVisitor cv){cv.visitEVoid(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+  EVoid implements Leaf,Full.Leaf,Half.Leaf,Visitable<EVoid>{@Override public Visitable<EVoid>visitable(){return this;}@Override public EVoid accept(CloneVisitor cv){return cv.visitEVoid(this);}@Override public void accept(CollectorVisitor cv){cv.visitEVoid(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     }
   @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
   L implements LL,Leaf,Half.Leaf,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
@@ -59,7 +59,7 @@ public class Core {
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       var res=LDom._elem(ncs, c);
-      if(res==null){new LL.NotInDom(this, c);}
+      if(res==null){throw new LL.NotInDom(this, c);}
       return res.l();
       }
     @Override public L cs(List<C> cs){

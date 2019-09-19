@@ -108,7 +108,7 @@ public class Top {
       }
     }
   private ER infer(I i,Half.E e) throws EndError{
-    if(e instanceof Core.L){return new ER(i.ctz(),(Core.L)e);}
+    if(e instanceof Core.E){return new ER(i.ctz(),(Core.E)e);}
     if(e instanceof Full.L){
       Full.L l=(Full.L) e;
       Program p=i.p().push(i._c(),l); 
@@ -163,12 +163,15 @@ public class Top {
   private T wellTyped(Program p, is.L42.generated.Core.E ce)  throws EndError{
     return P.coreLibrary; 
     }
-  private void ctzAdd(ArrayList<CT> ctz, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
+  private void ctzAdd(ArrayList<CT> ctz0, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
     if(_e==null){es.add(null);return;}
-//    * CTz0.add(p; MH e; Half.e) = CTz0 U CTz U STs<=MH.T
-//    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class]
-//    Y!e = Half.e; STs; empty; CTz
-//TODO:
+    Y y=new Y(p,new GX(mh),L(mh.t()),null,new Half.T(null,L(mh.t())),true);
+    var hq=new HalfQuadruple(y, _e);
+    ctz0.addAll(hq.ctz);
+    for(var st:hq.resSTz){
+      ctz0.add(new CT(st,new Half.T(null,L(mh.t()))));
+      }
+    es.add(hq.e);
     }
   static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {
     var deps=new Accumulate<ArrayList<P.NCs>>(){
@@ -217,13 +220,12 @@ public class Top {
       //Ps'1..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
 class HalfQuadruple{
   public final Half.E e;
+  public final List<ST> resSTz=L();
+  public final List<ST> retSTz=L();
+  public final List<CT> ctz=L();
+
   public HalfQuadruple(Y y, Full.E fe) { 
-    if(fe instanceof Full.L){
-      this.e=(Full.L)fe;
-      }
-    else{
-      this.e=new Full.L(fe.pos(),false,"",false,L(),L(),L());
-      }
+    this.e=(Half.E)fe;
     }
   }
 class SortHeader{

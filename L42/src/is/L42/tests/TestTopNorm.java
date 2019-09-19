@@ -38,6 +38,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    top("{C={}}","{C={#norm{}}#norm{}}")
    ),new AtomicTest(()->
    top("{method Any foo()=void}","{method Any foo()=void #norm{}}")
+   ),new AtomicTest(()->
+   top("{[I], I={interface }}","{[I], I={interface #norm{}}#norm{}}")//TODO: add error in init (and remove the todo in file 3)
+   ),new AtomicTest(()->
+   top("{[I]}A={A={} I={interface }}","{[This1.I] #norm{}}")
+   ),new AtomicTest(()->
+   top("{[I]}A={A={} J={interface } I={interface [J]}}","{[This1.I,This1.J] #norm{}}")
+   ),new AtomicTest(()->
+   top("{[I]}A={A={} J={interface method This m()} I={interface [J]}}","{[This1.I,This1.J] method This1.J m() #norm{}}")
 
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";

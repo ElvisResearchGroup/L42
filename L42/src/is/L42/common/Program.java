@@ -95,7 +95,7 @@ public class Program implements Visitable<Program>{
     return from(p.toNCs(),source);
     }
   public P.NCs from(P.NCs p,P.NCs source){
-    assert minimize(source)==source;
+    assert minimize(source)==source: source +" "+minimize(source);
     P.NCs res=from(p,source.n(),source.cs());
     if(res.equals(p)){return p;}
     if(res.equals(source)){return source;}
