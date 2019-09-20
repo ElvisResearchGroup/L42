@@ -98,12 +98,12 @@ _______
     T = T0 U..U Tm
     STz = STz1 U..U STzn U STz'0 U..U STz'm
     CTz = CTz1 U..U CTzn U CTz'0 U..U CTz'm
-* Y!{Ds Ks Wops? Ds2} = (Void x=e K error void); T; empty; CTz
+* Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
-    Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; T; CTz
-    HALF.T = Y.expectedT if Y.expectedT!=empty
-    HALF.T = T if Y.expectedT=empty
-    K = catch return HALF.T x' x' //constraints on expected type are added upper in the recursion // ISAAC: what does the comment mean?
+    Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
+    T = Y.expectedT if Y.expectedT!=empty // ISAAC: this may cause problems with inference, because C.foo({return void}) will fail if C.foo dosn't exist yet. I suggest deleting this line as I don't think it does anything useful.
+    T = STz if Y.expectedT=empty
+    K = catch return T x' x'
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!e.m[pars]= Y!(e.m(squareBuilder=(
