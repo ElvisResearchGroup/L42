@@ -245,7 +245,13 @@ TestModuleEntities: ModuleEntities & {
   Entity: {interface
     read method S toS()
     }
+  Player: {}
   RockItem: {implements Entity}
+  AppleItem: {implements Entity}
+  ItemSpawnerItem: {implements Entity}
+  OptionalEntity: {}
+
+  Points: {}
 
   class method Point newItemPoint() (
     Point(x: 1Size, y: 1Size)
@@ -253,25 +259,34 @@ TestModuleEntities: ModuleEntities & {
 
   World: K <>< {
     mut Strings mutations
-    var Bool isNewItemPointOccupied
+    Points occupiedPoints
+    Bool includeRepresentationInMutations
+
+    class method mut This (fwd Points occupiedPoints) (
+      This(
+        mutations: Strings[],
+        occupiedPoints: occupiedPoints,
+        includeRepresentationInMutations: Bool.true()
+        )
+      )
 
     read method Bool hasEntityAt(Point that) {
-      Bool isNewItemPoint = that == TestModuleEntities.newItemPoint()
-      if isNewItemPoint (
-        return this.isNewItemPointOccupied()
-        )
-      return Bool.false()
+      return this.occupiedPoints().contains(that)
       }
 
     mut method Void addEntity(mut Entity that) (
-      this.#mutations().add(right: S"addEntity("[that.toS()]")")
+      if this.includeRepresentationInMutations() (
+        this.#mutations().add(right: S"addEntity("[that.toS()]")")
+        ) else (
+        this.#mutations().add(right: S"addEntity("[that.point()]")")
+        )
       )
 
     mut method Void removeEntity(Point that) (
       this.#mutations().add(right: S"removeEntity("[that.toS()]")")
       )
 
-    mut method mut Entity getEntityAt(Point that) (error X"")
+    mut method mut Entity getEntityAt(Point that) (error X"Not used")
     }
 
   Graphics: K <>< {
@@ -297,7 +312,7 @@ TestModuleEntities: ModuleEntities & {
       )
 
     class method Void #$ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.true())
+      mut World world = World(occupiedPoints: Points[TestModuleEntities.newItemPoint()])
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
       item.point(
@@ -311,7 +326,7 @@ TestModuleEntities: ModuleEntities & {
       )
 
     class method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
+      mut World world = World(occupiedPoints: Points[])
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
       item.point(
@@ -324,7 +339,7 @@ TestModuleEntities: ModuleEntities & {
       )
 
     class method Void #$ItemBase_setPoint_movesItselfInTheWorld() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
+      mut World world = World(occupiedPoints: Points[])
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
       item.point(
@@ -342,7 +357,7 @@ TestModuleEntities: ModuleEntities & {
       )
 
     class method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
+      mut World world = World(occupiedPoints: Points[])
       mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
 
       item.point(
@@ -350,6 +365,114 @@ TestModuleEntities: ModuleEntities & {
         world: world,
         updateWorld: Bool.false()
         )
+
+      Debug.test(world.#mutations(), expected: S"[]")
+      )
+
+    class method Void #$Entity_use_checkRemoveItemFromPlayer(
+      mut Entity item, S shouldHaveItem
+      ) (
+      mut World world = World(occupiedPoints: Points[])
+      mut Player player = Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+        )
+
+      item.#$use(playerUsingThis: player, world: world)
+
+      Debug.test(player.currentItem().isPresent(), expected: shouldHaveItem)
+      )
+
+    class method Void #$ItemSpawnerItem_use_createsNItemsWhenSpecified(Size nItems) (
+      mut World world = World(occupiedPoints: Points[])
+      mut Entity item = ItemSpawnerItem.new(
+        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: nItems
+        )
+      mut Player player = Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+        )
+
+      item.#$use(playerUsingThis: player, world: world)
+
+      Debug.test(world.#mutations().size(), expected: nItems)
+      )
+
+    class method Void #$ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints() (
+      mut World world = World(
+        mutations: Strings[],
+        occupiedPoints: Points[],
+        includeRepresentationInMutations: Bool.false()
+        )
+      mut Entity item = ItemSpawnerItem.new(
+        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
+        )
+      mut Player player = Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+        )
+
+      item.#$use(playerUsingThis: player, world: world)
+
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"1", y:"0"])
+        ".withoutRight()), expected: S"true")
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"-1", y:"0"])
+        ".withoutRight()), expected: S"true")
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"0", y:"1"])
+        ".withoutRight()), expected: S"true")
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"0", y:"-1"])
+        ".withoutRight()), expected: S"true")
+      )
+
+    class method Void #$ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items() (
+      mut World world = World(
+        mutations: Strings[],
+        occupiedPoints: Points[Point(x: Size"-1", y: 0Size); Point(x: 0Size, y: 1Size)],
+        includeRepresentationInMutations: Bool.false()
+        )
+      mut Entity item = ItemSpawnerItem.new(
+        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
+        )
+      mut Player player = Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+        )
+
+      item.#$use(playerUsingThis: player, world: world)
+
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"1", y:"0"])
+        ".withoutRight()), expected: S"true")
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"-1", y:"0"])
+        ".withoutRight()), expected: S"false")
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"0", y:"1"])
+        ".withoutRight()), expected: S"false")
+      Debug.test(world.#mutations().contains(S"
+        'addEntity([x:"0", y:"-1"])
+        ".withoutRight()), expected: S"true")
+      )
+
+    class method Void #$ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable() (
+      mut World world = World(
+        mutations: Strings[],
+        occupiedPoints: Points[
+          Point(x: Size"-1", y: 0Size);
+          Point(x: 1Size, y: 0Size);
+          Point(x: 0Size, y: Size"-1");
+          Point(x: 0Size, y: 1Size)
+        ],
+        includeRepresentationInMutations: Bool.false()
+        )
+      mut Entity item = ItemSpawnerItem.new(
+        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
+        )
+      mut Player player = Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+        )
+
+      item.#$use(playerUsingThis: player, world: world)
 
       Debug.test(world.#mutations(), expected: S"[]")
       )
@@ -370,6 +493,51 @@ TestModuleEntities_ItemBase_setPoint_movesItselfInTheWorld:
 
 TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse:
   TestModuleEntities.Tests.#$ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse()
+
+TestModuleEntities_AppleItem_use_doesNotRemoveItemFromPlayer: {
+  mut TestModuleEntities.Entity item = TestModuleEntities.AppleItem(
+    p: Point(x: 0Size, y: 0Size)
+    )
+  TestModuleEntities.Tests.#$Entity_use_checkRemoveItemFromPlayer(
+    item: item, shouldHaveItem: S"true"
+    )
+  return ExitCode.normal()
+  }
+
+TestModuleEntities_RockItem_use_doesNotRemoveItemFromPlayer: {
+  mut TestModuleEntities.Entity item = TestModuleEntities.RockItem(
+    p: Point(x: 0Size, y: 0Size)
+    )
+  TestModuleEntities.Tests.#$Entity_use_checkRemoveItemFromPlayer(
+    item: item, shouldHaveItem: S"true"
+    )
+  return ExitCode.normal()
+  }
+
+TestModuleEntities_ItemSpawnerItem_use_removesItemFromPlayer: {
+  mut TestModuleEntities.Entity item = TestModuleEntities.ItemSpawnerItem.new(
+    p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 1Size
+    )
+  TestModuleEntities.Tests.#$Entity_use_checkRemoveItemFromPlayer(
+    item: item, shouldHaveItem: S"false"
+    )
+  return ExitCode.normal()
+  }
+
+TestModuleEntities_ItemSpawnerItem_use_creates1ItemWhenSpecified:
+  TestModuleEntities.Tests.#$ItemSpawnerItem_use_createsNItemsWhenSpecified(nItems: 1Size)
+
+TestModuleEntities_ItemSpawnerItem_use_creates4ItemWhenSpecified:
+  TestModuleEntities.Tests.#$ItemSpawnerItem_use_createsNItemsWhenSpecified(nItems: 4Size)
+
+TestModuleEntities_ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints:
+  TestModuleEntities.Tests.#$ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints()
+
+TestModuleEntities_ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items:
+  TestModuleEntities.Tests.#$ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items()
+
+TestModuleEntities_ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable:
+  TestModuleEntities.Tests.#$ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable()
 
 //
 //
