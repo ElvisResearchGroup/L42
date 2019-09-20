@@ -165,23 +165,23 @@ _______
     Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class] // ISAAC: onPath is never used!
     Y!e = Half.e; T; empty; CTz' // empty because it's an error for a method body to leak any "returns"
 _______
-#define I(mdf? HALF.T) = CORE.T,  I(ST) = CORE.Tz
+#define I(mdf? HALF.T) = CORE.T,  I.sup(STz) = CORE.Tz
 * I(mdf T) = I(T)[mdf=mdf]
-* I(ST1..STn) = chooseT(I(ST1) U..U I(STn)) // TODO: does chooseT interact properly with I(ST)?
+* I(T) = chooseT(I.sup(T)) // TODO: does chooseT interact properly with I(ST)?
 
 // TODO: Optimise these so they don't generate very large sets, or take lots of time to compute
-* CORE.T in I(CORE.T) // Does this need to to be p.minimized?
-* T" in I(T.s.i)
-    {T"} = {methods(I.p, T')(s).pari | T' in I(T)} // If this set is not a singleton, than the program is ill-typed anyway
-* methods(I.p, T')(s).T in I(T.s)
-    T' in I(T)
-* methods(p, P)(s).T[from P; p] in I(OP T1..Tn) =
-    T1' in I(T1), ..., Tn' in I(Tn)
-    {P.s.i} = p.opOptions(OP, T1', ... Tn')
-* T' in I(ST)
-    ST <= ST' in I.CTz
-    T' in I(ST')
+I.sup(ST1...STn) = I.sup(ST1) U ... U I.sup(STn)
+* CORE.T in I.sup(CORE.T) // Does this need to to be p.minimized?
+* T' in I(T.s.i)
+    {T'} = {methods(I.p, T'.P)(s).pari | T' in I.sup(T)} // If this set is not a singleton, than the program is ill-typed anyway
+* methods(I.p, T'.P)(s).T in I.sup(T.s)
+    T' in I.sup(T)
+* methods(p, P)(s).T[from P; p] in I.sup(OP T1..Tn) =
+    {P.s.i} = {P.s.i | P.s.i in p.opOptions(OP, T1', ... Tn') and T1' in I.sup(T1), ..., Tn' in I.sup(Tn)}
+* T' in I.sup(ST)
     ST in  {T.s, OP Ts}  // Because T.s.i corresponds to a "\" and needs to be resolved exactly, and CORE.T is allready resolved
+    ST <= ST' in I.CTz
+    T' in I.sup(ST')
 
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
@@ -210,7 +210,6 @@ _______
 * empty[skipThis0]=empty;
 * This0.Cs,Ps[skipThis0]=Ps[skipThis0]
 * Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
-
 _______
 #define p.minimize(HALF.T) = HALF.T', p.minimize(CTz) = CTz'
 
@@ -218,7 +217,7 @@ _______
     T = {p.minimize(ST1), ..., p.minimize(STn)}
     Tz = {CORE.T | CORE.T in T} //CORE.T
     T' = T if chooseT(Tz) undefined
-    T' = chooseT(Tz) otherwise // TODO: Check this?
+    T' = chooseT(Tz) otherwise // TODO: Check this?// may introduce type errors
 * p.minimize(T.s(.i)?) = T'.s(.i)?
     p.minimize(T) = T'
     if T' = CORE.T then methods(p,CORE.T.P)(s) undefined

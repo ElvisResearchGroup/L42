@@ -101,8 +101,8 @@ _______
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
     Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
-    T = Y.expectedT if Y.expectedT!=empty // ISAAC: this may cause problems with inference, because C.foo({return void}) will fail if C.foo dosn't exist yet. I suggest deleting this line as I don't think it does anything useful.
-    T = STz if Y.expectedT=empty
+    //T = Y.expectedT if Y.expectedT!=empty // ISAAC: this may cause problems with inference, because C.foo({return void}) will fail if C.foo dosn't exist yet. I suggest deleting this line as I don't think it does anything useful.
+    T = STz //if Y.expectedT=empty //can we merge expectedT and "class?" ?
     K = catch return T x' x'
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
