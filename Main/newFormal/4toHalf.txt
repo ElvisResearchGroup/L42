@@ -29,17 +29,17 @@ _______
     e not of form CsP or \
 * Y!'PathSel = Y!\"PathSel"
 * Y!NumLit e = Y!e"NumLit"
-* Y!throw e = throw e'; empty; STz'; CTz
-    Y[expectedT=empty]!e = e'; T; STz; CTz
-    STz'=STz,T if throw = return
-    STz'=STz, otherwise
-* Y!loop e = loop e'; imm Void; STz; CTz, T<=imm Void
-    Y[expectedT=imm Void]!e = e'; T; STz; CTz
+* Y!throw e = throw e'; empty; STz2; CTz
+    Y[expectedT=empty]!e = e'; STz0; STz1; CTz
+    STz2=STz0,STz1 if throw = return
+    STz2=STz1, otherwise
+* Y!loop e = loop e'; imm Void; STz'; CTz+STz<=imm Void
+    Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
 * Y! x opUpdate e = Y!(doUpdate(x, opUpdate, e))
     opUpdate != ':='
-* Y! (x := e) = (x := e'); imm Void; STz; CTz, T <= Y.GX(x)
-    Y[expectedT=Y.GX(x)]!e = e'; T; STz; CTz
+* Y! (x := e) = (x := e'); imm Void; STz'; CTz+STz <= Y.GX(x)
+    Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
 * Y!e(par) = Y!e.#apply(par)
 * Y!e.m(x,xes) = Y!e.m(that=x, xes)
 * Y!e.m(xes) = Y!(x=e x.m(xes))
@@ -65,11 +65,11 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!CsP OP e = CsP'.#apply(that=e'); T; STz; CTz, T" <= T'
+* Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz+STz2 <= STz1
     CsP' = CsP.$methName(OP)
-    T  = Y.p.minimize(CsP'.#apply(that))
-    T' = Y.p.minimize(CsP'.#apply(that).1)
-    Y[expectedT=T'] ! e = e'; T"; STz; CTz
+    STz0  = Y.p.minimize(CsP'.#apply(that))
+    STz1 = Y.p.minimize(CsP'.#apply(that).1)
+    Y[expectedT=STz1] ! e = e'; STz2; STz; CTz
     // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 
 * Y!(e0 OP..OP en) = Y!(Ds e0' OP..OP en')
@@ -88,15 +88,15 @@ _______
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e )
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
-* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); T; STz; CTz  //Ds is HALF.Ds
+* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz  //Ds is HALF.Ds
     GX = GX^(D1...Dn)
     GXi = Y.GX + GX + GX^Ds1 + .. + GX^Ds(i-1)
     Y[GX=GXi]!Di = Dsi; STzi; CTzi
-    Y[GX=GXn]!Ki = K'i; Ti; STz'i; CTz'i //catch return do not need special treatment
-    Y[GX=GXn]!e  = e'; T0;  STz'0; CTz'0
+    Y[GX=GXn]!Ki = K'i; STzi; STz'i; CTz'i //catch return do not need special treatment
+    Y[GX=GXn]!e  = e'; STz0;  STz'0; CTz'0
 
-    T = T0 U..U Tm
-    STz = STz1 U..U STzn U STz'0 U..U STz'm
+    STz = STz0 U..U STzm
+    STz' = STz1 U..U STzn U STz'0 U..U STz'm
     CTz = CTz1 U..U CTzn U CTz'0 U..U CTz'm
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
@@ -176,8 +176,8 @@ _______
     x fresh
 * Y!(var? T x=e) = var? ♥T x=e'; STz; CTz, T'<=♥T
     Y[expectedT=♥T]!e = e'; T'; STz; CTz
-* Y!(var? mdf? x=e) = var? mdf? T x=e'; STz; CTz
-      Y[expectedT = empty]!e = e'; T; STz; CTz
+* Y!(var? mdf? x=e) = var? mdf? STz x=e'; STz'; CTz
+      Y[expectedT = empty]!e = e'; STz; STz'; CTz
 * Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTz0 U..U CTzn
     Y!(TLocal x = e) = D0; STz0; CTz0
     Y!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
@@ -186,7 +186,7 @@ _______
     x fresh
 
 _______
-# define Y!FULL.K= HALF.K; T; STz;CTz
+# define Y!FULL.K= HALF.K; STz; STz';CTz
 * Y!catch throw? T '_' e = Y!catch throw? T x e
     x fresh
 * Y!catch T x e = Y!catch exception T x e
