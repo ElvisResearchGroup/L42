@@ -46,7 +46,7 @@ _______
 
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
-    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library; onPath=class]
+    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
     I[C?=C;p;G=empty;p.minimize(CTz)]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
@@ -93,9 +93,6 @@ _______
 #define I!HALF.e? => ER
 * I!empty => I.CTz;empty
 * I!x => I.CTz;x
-* I!P<:T => I.CTz;P<:I(class T)
-* I!P<:T => inferenceFailure(I,T)
-    I(T) undefined
 * I!void => I.CTz;void
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L) 
@@ -103,11 +100,12 @@ _______
     PR = CTz';p' IfErr(PR) ER = PR
     ER = CTz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CTz
 * I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!%T%<: T' => I.CTz;I(T).P <:I(class T')
-* I!%T%<: T' => inferenceFailure(I,T)
-    either I(T) undefined
-* I!%T%<: T' => inferenceFailure(I,T')
-    I(T) is defined, but I(T') undefined
+* I!P<:STz => I.CTz;P<:I(class STz)
+* I!P<:STz => inferenceFailure(I,STz)
+    I(STz) undefined
+* I!%STz%<: STz' => I.CTz;I(STz).P <:I(class STz')
+* I!%STz%<: STz' => inferenceFailure(I,STz,STz')
+    either I(STz) or I(STz') undefined
 * I!e0.m(x1=e1..xn=en) => ER
     I!ei=ERi //e0 is of form xP
     ER0..ERn = CTz0;e'0..CTzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
@@ -115,9 +113,9 @@ _______
 * I!xP0 OP..OP xPn => ER
     I!xPi => ERi
     ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
-    Ti = T'i if xP'i = Pi < T'i
-    Ti = I.G(x'i) if xP'i = x'i
-    {P.m(x1..xn).i} = I.p.opOptions(OP, T0..Tn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
+    STzi = STz'i if xP'i = _ < STz'i
+    STzi = I.G(x'i) if xP'i = x'i
+    {P.m(x1..xn).i} = I.p.opOptions(OP, STz0..STzn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
     xP"1..xP"n = xP'0..xP'n\i
     ER = CTz0 U..U CTzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER
@@ -136,8 +134,8 @@ _______
 _______
 #define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
 * I!xs;empty => I.CTz;empty
-* I!xs;var? mdf? HALF.T x=e Ds => DsR
-    I(mdf? HALF.T) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,HALF.T)
+* I!xs;var? mdf? STz x=e Ds => DsR
+    I(mdf? STz) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,STz)
     I!e => ER 
     ER = CTz';e' IfErr(ER) DR = ER
     CORE.T' = CORE.T[mdf=imm] if mdf?=empty, CORE.T.mdf=read and 
@@ -148,8 +146,8 @@ _______
     DsR' = CTz;Ds IfErr(DsR') DsR = DsR'
     DsR = CTz;var? CORE.T' x=e',Ds
 
-* I!catch throw HALF.T x e => KR
-    I(HALF.T) = CORE.T IfNotE(CORE.T) inferenceFailure(I,HALF.T)
+* I!catch throw STz x e => KR
+    I(STz) = CORE.T IfNotE(CORE.T) inferenceFailure(I,STz)
     I!e => ER
     ER = CTz';e' IfErr(ER) KR = ER
     KR = CTz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
@@ -162,32 +160,47 @@ _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
 * CTz.add(p; MH e; Half.e) = CTz U CTz' U T<=MH.T
-    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;onPath=class] // ISAAC: onPath is never used!
-    Y!e = Half.e; T; empty; CTz' // empty because it's an error for a method body to leak any "returns"
+    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T]
+    Y!e = Half.e; T; empty; CTz' // empty: error on bodies leaking returns
 _______
-#define I(mdf? HALF.T) = CORE.T,  I.sup(STz) = CORE.Tz
-* I(mdf T) = I(T)[mdf=mdf]
-* I(T) = chooseT(I.sup(T)) // TODO: does chooseT interact properly with I(ST)?
-
-// TODO: Optimise these so they don't generate very large sets, or take lots of time to compute
-I.sup(ST1...STn) = I.sup(ST1) U ... U I.sup(STn)
-* CORE.T in I.sup(CORE.T) // Does this need to to be p.minimized?
-* T' in I(T.s.i)
-    {T'} = {methods(I.p, T'.P)(s).pari | T' in I.sup(T)} // If this set is not a singleton, than the program is ill-typed anyway
-* methods(I.p, T'.P)(s).T in I.sup(T.s)
-    T' in I.sup(T)
-* methods(p, P)(s).T[from P; p] in I.sup(OP T1..Tn) =
-    {P.s.i} = {P.s.i | P.s.i in p.opOptions(OP, T1', ... Tn') and T1' in I.sup(T1), ..., Tn' in I.sup(Tn)}
-* T' in I.sup(ST)
-    ST in  {T.s, OP Ts}  // Because T.s.i corresponds to a "\" and needs to be resolved exactly, and CORE.T is allready resolved
-    ST <= ST' in I.CTz
-    T' in I.sup(ST')
-
+#define I(mdf? STz) = CORE.T
+* I(mdf STz) = I(STz)[mdf=mdf]
+* I(STz) = chooseT(I.CTz(STz)) //assuming I.CTz=I.p.minimize(I.CTz)
 _______
-#define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
+#define CTz+ST<=STz = CTz'    CTz[ST<=STz] = CTz'    CT(STz)=STz'
+* CTz+ST1..STn<=STz = CCz+ST1<=STz+..+STn<=STz
+* CTz,ST<=STz'+ST<=STz=CTz[ST<=STz],ST<=STz' U STz
+* CTz+ST<=STz=CTz[ST<=STz],ST<=STz if ST notin dom(CTz)
+
+* ST<=STz[ST'<=_] = ST<=STz
+    ST!=ST'
+* ST<=STz[ST<=STz']=ST<=STz U STz'
+
+* CT(STz)={ST' | ST in STz and ST<=ST',_ in CTz}
+_______
+#define p.minimize(CTz) = CTz'    solve(STz) = STz'
+* p.minimize(CTz) = CTz[p.minimize(CT1)]..[p.minimize(CTn)]
+    CTz=CT1..CTn
+* p.minimize(CTz,ST) = STz
+* p.minimize(CTz,ST.s(.i)?) = solve(STz.s(.i)?)
+    CTz(p.minimize(CTz,ST))=STz
+* p.minimize(CTz,ST.s) = solve(STz.s)
+    CTz(p.minimize(CTz,ST))=STz
+* p.minimize(CTz,OP STz1..STzn) = solve(OP STz)
+    CTz(p.minimize(CTz,STz1))..CTz(p.minimize(CTz,STzn))=STz
+
+* solve(ST1..STn)=solve(ST1)..solve(STn)
+* solve(CORE.T.s.i)=methods(I.p, CORE.T.P)(s).pari
+* solve(CORE.T.s)=methods(I.p, T.P)(s).T
+* solve(OP CORE.Ts)=methods(I.p, P)(s).T[from P; p]
+    {P.s.i} = p.opOptions(OP,CORE.Ts)
+* solve(ST)=ST otherwise //includes ST=CORE.T
+_______
+#define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;Core.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
+
 * collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
 * collectDeps(p; Doc) = {P| @P._ inside Doc};empty     
 _______
@@ -211,32 +224,6 @@ _______
 * This0.Cs,Ps[skipThis0]=Ps[skipThis0]
 * Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
 _______
-#define p.minimize(HALF.T) = HALF.T', p.minimize(CTz) = CTz'
-
-* p.minimize(ST1..STn) = T'
-    T = {p.minimize(ST1), ..., p.minimize(STn)}
-    Tz = {CORE.T | CORE.T in T} //CORE.T
-    T' = T if chooseT(Tz) undefined
-    T' = chooseT(Tz) otherwise // TODO: Check this?// may introduce type errors
-* p.minimize(T.s(.i)?) = T'.s(.i)?
-    p.minimize(T) = T'
-    if T' = CORE.T then methods(p,CORE.T.P)(s) undefined
-* p.minimize(T.s) = MH.T //methods already minimize
-    p.minimize(T) = CORE.T
-    methods(p,CORE.T.P)(s) = MH
-* p.minimize(T.s.i) = MH.pari
-    p.minimize(T) = CORE.T
-    methods(p,CORE.T.P)(s) = MH
-* p.minimize(OP T1..Tn) = methods(p,P)(s).T[from P;p]
-    p.minimize(T1) = T1', ..., p.minimize(Tn) = Tn'
-    {P.s.i} = p.opOptions(OP, T1' ... Tn')
-* p.minimize((ST1 ... STn) <= T, CTz) = p.minimize(ST1 <= T), ..., p.minimize(STn <= T), p.iminimize(CTz)
-* p.minimize(ST <= ST') = empty
-    p.minimize(ST) = CORE.T
-* p.minimize(ST <= ST') = p.minimize(ST) <= p.minimize(ST')
-* p.minimize(empty) = empty
-// p.minimize((STz <= HALF.T)s) is of form (ST <= HALF.T)s, where each STs is not a CORE.T
-_______
 #define chooseT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
@@ -255,46 +242,7 @@ _______
     P'1 ... P'n = (T0..Tn\i).Ps
     P = Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1
-
 _______
 #define Info0+Info1 = Info
 //#Flag+#norm = #norm; #Flag+#Flag = #Flag
 //union of all the sets; preserve all boolean flags
-
-//OLD COLLECT. Isaac, can you show me that we still need something like this? now is unused
-_______
-#define PAcc.collect() = PAcc'
-* CT in PAcc.collect()
-    CT in PAcc.collect().collect())//is it needed since we have the fixpoint anyway?
-* CT in PAcc.collect()
-    CT in PAcc.CTz
-* PT <= PT" in PAcc.collect()
-    PT <= PT', PT' <= PT" in PAcc
-* PT <= PT in PAcc.collect()
-    PT in PAcc.CTz
-* mdf P <= mdf' P' in PAcc.collect() //TODO: explosive, can we make it more computational? can we mix it with solve? 
-    p |- mdf P <= mdf' P' // I.e. every subtype relation we know about
-    P' != _ Any // Just for consistency with everything else, not important!
-* mdf P <= PT in PAcc.collect()// since all classes are final
-	PT <= mdf P in PAcc
-	p(P).interface = empty 
-* T.s <= CORE.T in PAcc.collect()//since they are alias of each other 
-    CORE.T <= T.s in PAcc.collect().CTz //why noy simply in PAcc.CTz?
-    CORE.T = PAcc.p(T.P)(s).MH.T[from T.P;PAcc.p]//TODO: no, CORE.L(s) works but FULL.L(s) misses on FULL.F and on methods from interfaces. Should we use methods(..)?
-* T.s.i <= PT in PAcc.
-t()//since method parameter types can not be refined (or since they are aliases?)
-    PT <= T.s.i in PAcc.collect().CTz
-    PT = PAcc.p(T.P)(s).MH.pari[from T.P;PAcc.p]
-* PT.s <= PT'.s in PAcc.collect()
-    PT <= PT' in PAcc.CTz
-    PT'.s in PAcc.CTz
-* PT'.s.i <= PT.s.i in PAcc.collect()
-    PT <= PT' in PAcc.CTz
-    PT'.s.i in PAcc.CTz
-* PT.s.i <= PT'.s.i in PAcc.collect()//since method parameter types can not be refined 
-    PT <= PT' in PAcc.CTz
-    PT'.s.i in PAcc.CTz
-* PT1' <= Origin(s, P2') in PAcc.collect()
-    PT1 <= P2', PT1 <= PT1' in PAcc.CTz
-    P2'.s in PAcc.CTz
-    PT1'.s in PAcc.CTz

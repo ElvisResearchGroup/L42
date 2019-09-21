@@ -1,9 +1,9 @@
 _______
 #define GX^FULL/HALF.Ds = GX, GX^FULL/HALF.D = GX
-* GX^(var? mdf? HALF.T x=e) = x : HALF.T
+* GX^(var? mdf? STz x=e) = x : STz
 * GX^(var? FULL.T x) = x : ♥FULL.T
 * GX^(var? mdf? x=e) = empty // No T for the x
-* GX^(TLocal(var?0 TLocal0 x0,..,var? n TLocaln xn )=e)  // ISAAC: this case may be uneeded...
+* GX^(TLocal(var?0 TLocal0 x0,..,var? n TLocaln xn )=e)
     = GX^(TLocal0 x0=e,..,TLocaln xn=e) // The = e part is ignored by GX^
 * GX^(TLocal '_'=e) = empty
 * GX^D1..Dn = GX^D1,..,GX^Dn
@@ -101,9 +101,7 @@ _______
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
     Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
-    //T = Y.expectedT if Y.expectedT!=empty // ISAAC: this may cause problems with inference, because C.foo({return void}) will fail if C.foo dosn't exist yet. I suggest deleting this line as I don't think it does anything useful.
-    T = STz //if Y.expectedT=empty //can we merge expectedT and "class?" ?
-    K = catch return T x' x'
+    K = catch return Y.expectedT,STz x' x'
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!e.m[pars]= Y!(e.m(squareBuilder=(
