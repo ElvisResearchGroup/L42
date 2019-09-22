@@ -45,13 +45,13 @@ _______
 * Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
-* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); T'; STz; CTz
-    Y[expectedT=empty]!xP = xP'; T0; STz0; CTz0 // Y!FULL.xP is always a HALF.xP
-    T' = Y.p.minimize(T0.m(x1..xn)) //injects .s on all the elements of STz
-    T'i = Y.p.minimize(T0.m(x1..xn).i), i in 1..n
-    Y[onSlash=T'i;onSlashX=xP;expectedT=T'i]!ei = e'i; Ti; STzi; CTzi, i in 1..n
-    STz = STz0 U..U STzn;
-    CTz = CTz0 U..U CTzn, T1<=T'1,..,Tn<=T'n
+* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz
+    Y[expectedT=empty]!xP = xP'; STz0; STz"0; CTz0 // Y!FULL.xP is always a HALF.xP
+    STz' = Y.p.minimize(STz0.m(x1..xn)) //injects .s on all the elements of STz
+    STz'i = Y.p.minimize(STz0.m(x1..xn).i), i in 1..n
+    Y[onSlash=STz'i;onSlashX=xP;expectedT=STz'i]!ei = e'i; STzi; STz"i; CTzi, i in 1..n
+    STz" = STz"0 U..U STz"n;
+    CTz = CTz0 U..U CTzn, STz1<=STz'1,..,STzn<=STz'n
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
@@ -80,9 +80,9 @@ _______
     ei' = xi otherwise
     x1..xn fresh
     e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
-* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; Y.p.minimize(OP T0,..,Tn); empty; empty
+* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; Y.p.minimize(OP STz0,..,STzn); empty; empty
     n != 0
-    Y[expectedT = empty]!xPi = xP'i; Ti; empty; empty
+    Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
@@ -91,12 +91,12 @@ _______
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz  //Ds is HALF.Ds
     GX = GX^(D1...Dn)
     GXi = Y.GX + GX + GX^Ds1 + .. + GX^Ds(i-1)
-    Y[GX=GXi]!Di = Dsi; STzi; CTzi
+    Y[GX=GXi]!Di = Dsi; STz"i; CTzi
     Y[GX=GXn]!Ki = K'i; STzi; STz'i; CTz'i //catch return do not need special treatment
     Y[GX=GXn]!e  = e'; STz0;  STz'0; CTz'0
 
     STz = STz0 U..U STzm
-    STz' = STz1 U..U STzn U STz'0 U..U STz'm
+    STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
     CTz = CTz1 U..U CTzn U CTz'0 U..U CTz'm
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
@@ -174,8 +174,8 @@ _______
 * Y!(empty e) = Y!(imm Void _=e)
 * Y!(TLocal _=e) = Y!(TLocal x=e)
     x fresh
-* Y!(var? T x=e) = var? ♥T x=e'; STz; CTz, T'<=♥T
-    Y[expectedT=♥T]!e = e'; T'; STz; CTz
+* Y!(var? T x=e) = var? ♥T x=e'; STz'; CTz, STz<=♥T
+    Y[expectedT=♥T]!e = e'; STz; STz'; CTz
 * Y!(var? mdf? x=e) = var? mdf? STz x=e'; STz'; CTz
       Y[expectedT = empty]!e = e'; STz; STz'; CTz
 * Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTz0 U..U CTzn
@@ -190,8 +190,8 @@ _______
 * Y!catch throw? T '_' e = Y!catch throw? T x e
     x fresh
 * Y!catch T x e = Y!catch exception T x e
-* Y!catch throw T x e = catch throw ♥T x e'; T'; STz; CTz
-    Y[GX=Y.GX+x:T]!e = e'; T'; STz; CTz
+* Y!catch throw T x e = catch throw ♥T x e'; STz; STz'; CTz
+    Y[GX=Y.GX+x:♥T]!e = e'; STz; STz'; CTz
 _______
 #define doUpdate(x, opUdate, e) // convenience method to desugar opUpdates
 * doUpdate(x, :=, e) = x := e

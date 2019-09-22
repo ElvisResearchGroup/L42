@@ -113,7 +113,7 @@ _______
 * I!xP0 OP..OP xPn => ER
     I!xPi => ERi
     ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
-    STzi = STz'i if xP'i = _ < STz'i
+    STzi = STz'i if xP'i = _ <: STz'i
     STzi = I.G(x'i) if xP'i = x'i
     {P.m(x1..xn).i} = I.p.opOptions(OP, STz0..STzn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
     xP"1..xP"n = xP'0..xP'n\i
@@ -167,20 +167,27 @@ _______
 * I(mdf STz) = I(STz)[mdf=mdf]
 * I(STz) = chooseT(I.CTz(STz)) //assuming I.CTz=I.p.minimize(I.CTz)
 _______
-#define CTz+ST<=STz = CTz'    CTz[ST<=STz] = CTz'    CT(STz)=STz'
+#define CTz+STz<=STz = CTz'    CTz[CT] = CTz'    CTz(STz)=STz'
 * CTz+ST1..STn<=STz = CCz+ST1<=STz+..+STn<=STz
-* CTz,ST<=STz'+ST<=STz=CTz[ST<=STz],ST<=STz' U STz
-* CTz+ST<=STz=CTz[ST<=STz],ST<=STz if ST notin dom(CTz)
+* CTz,ST<=STz'+ST<=STz=CTz[ST<=STz],ST<=(STz' U STz")
+    STz" = U{CTz(ST) | ST in STz} U STz  // ISAAC: just to be safe, otherwise we have to make sure whenever we do CTz+ST <= STz, that STz" = STz
+* CTz+ST<=STz=CTz[ST<=STz],ST<=STz'
+    STz' = U{CTz(ST) | ST in STz} U STz
+    ST notin dom(CTz)
 
-* ST<=STz[ST'<=_] = ST<=STz
-    ST!=ST'
-* ST<=STz[ST<=STz']=ST<=STz U STz'
+// ISAAC: my best guess was that CTz[ST <= STz] was meant to update CTz so it would be well-formed
+// if we added ST <= STz to it. Which is what my version does.
+* (CT1..CTn)[CT] = CT1[CT]..CTn[CT]
+* (ST<=STz)[ST'<= STz'] = ST<=STz
+    ST' not in STz
+* (ST<=STz)[ST'<=STz']=ST<=(STz U STz')
+    ST' in STz
 
-* CT(STz)={ST' | ST in STz and ST<=ST',_ in CTz}
+* CTz(STz)=U{STz | ST in STz and ST<=STz}
 _______
 #define p.minimize(CTz) = CTz'    p.solve(STz) = STz'
-* p.minimize(CTz) = CTz[p.minimize(CT1)]..[p.minimize(CTn)]
-    CTz=CT1..CTn
+ * p.minimize(CTz) = CTz[p.minimize(CT1)]..[p.minimize(CTn)]
+     CTz=CT1..CTn
 * p.minimize(CTz,ST) = STz
 * p.minimize(CTz,ST.s(.i)?) = p.solve(STz.s(.i)?)
     CTz(p.minimize(CTz,ST))=STz
@@ -196,7 +203,7 @@ _______
     {P.s.i} = p.opOptions(OP,CORE.Ts)
 * p.solve(ST)=ST otherwise //includes ST=CORE.T
 _______
-#define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;Core.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
+#define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)

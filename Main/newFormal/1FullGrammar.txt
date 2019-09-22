@@ -36,8 +36,8 @@ _______
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
   FULL.M ::= F | MI | MWT | NC
   FULL.F ::= Docs var? T x
-  FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are Core.L
-  FULL.MWT ::=Docs MH (= native[URL]? e)? // well formedness: all LL inside e are Core.L
+  FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are CORE.L
+  FULL.MWT ::=Docs MH (= native[URL]? e)? // well formedness: all LL inside e are CORE.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e //TODO: $OP is desugared to the C defining the operator
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | Number e
@@ -213,7 +213,8 @@ _______
     and CORE.L'.Info+_=CORE.L.Info (that is, all the dependencies are a subset, and so on)
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
-* CTz: if ST in CTz(ST') then every ST0 in CTz(ST) is also in CTz(ST') //TODO: add in code
+* CTz: if ST in CTz(ST') then every ST0 in CTz(ST) is also in CTz(ST') //TODO: add in code // ISAAC: what if CTz(ST) is undefined? I think this should be allowed, otherwise we have to add pointles ST <= ST (Or ST <= empty?) pairs to CTz
+* CTz: CTz not of form CTz, ST <= STz, CTz', ST <= STz', CTz" // I.e. no ST occurs twice on the LHS of a <=
 //CODE ONLY WELL FORMEDNESS:
 //* x, P not valid DX=e
 //* CsP well formed, not Any in the middle and so on..
