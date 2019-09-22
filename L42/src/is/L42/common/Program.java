@@ -66,6 +66,9 @@ public class Program implements Visitable<Program>{
     }
   public Program pop(){
     if(!pTails.hasC()){return new Program(pTails.coreL(),pTails.tail());}
+    if(!pTails.ll().domNC().contains(pTails.c())){
+      return new Program(pTails.ll(),pTails.tail());
+      }
     var newTop=pTails.ll().withCs(L(pTails.c()),
       nc->nc.withE(top),
       nc->nc.withL((Core.L)top)

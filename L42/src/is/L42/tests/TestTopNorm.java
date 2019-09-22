@@ -53,6 +53,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    top("{[I]}A={J={interface method This m()} I={interface [J] method This m()}A={}}","{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J}}")
 
+   ),new AtomicTest(()->
+   top(
+   "{J={interface method This m()} I={interface [J] method This m()} A={[I]} }",
+   "{J={interface imm method imm This0 m()#norm{typeDep=This0}}"
+   +"I={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}"
+   +"A={[This1.I, This1.J]imm method imm This1.I m()#norm{typeDep=This1.I, This1.J}}#norm{}}")
+   ),new AtomicTest(()->
+   top(
+   "{J={interface method This m()}"
+   +"I1={interface [J] method This m()}"
+   +"I2={interface [J] method This m()}"
+   +"A={[I1,I2]} }",
+   "{J={interface imm method imm This0 m()#norm{typeDep=This0}}"
+   +"I1={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}"
+   +"I2={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}"
+   +"A={[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()#norm{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}")
 
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";

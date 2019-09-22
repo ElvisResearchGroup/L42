@@ -8,6 +8,9 @@ _______
 #define p.pop(n) = p'
 * p.pop(0) = p
 * (LL;C:LL';pTails).pop(n+1) = (LL'[C=LL];pTails).pop(n)
+    if C in dom(LL'.ms)
+* (LL;C:LL';pTails).pop(n+1) = (LL';pTails).pop(n)
+    if C notin dom(LL'.ms) 
 * (LL;CORE.L;pTails).pop(n+1) = (CORE.L;pTails).pop(n)
 _______
 #define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)
@@ -91,8 +94,8 @@ _______
 * ♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])
     =(mdf ♥Docs)? method ♥T methName(mOp)(♥T1 x1..♥Tn xn)[♥Ts]
 
-* ♥(Docs CsP) = imm ♥Docs ♥CsP
 * ♥(mdf Docs CsP) = mdf ♥Docs ♥CsP
+* ♥(Docs CsP) = imm ♥Docs ♥CsP
 
 * ♥P = P // ♥C.Cs undefined
 * ♥FULL.Docs = CORE.Docs

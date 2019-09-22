@@ -32,7 +32,7 @@ _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
     CORE.L;sDe;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
-    p0 = p.update(CORE.L)
+    p0 = p.update(CORE.L) //assert all levels of p0 are CORE.L TODO: add assert in code
     MH1..MHn = CORE.L.MWTs.MHs
     CTz.add(p0; MH1 sDe(MH1.s).e?; e?1).. .add(p0; MHn sDe(MHn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,NCs) => PR1
@@ -178,23 +178,23 @@ _______
 
 * CT(STz)={ST' | ST in STz and ST<=ST',_ in CTz}
 _______
-#define p.minimize(CTz) = CTz'    solve(STz) = STz'
+#define p.minimize(CTz) = CTz'    p.solve(STz) = STz'
 * p.minimize(CTz) = CTz[p.minimize(CT1)]..[p.minimize(CTn)]
     CTz=CT1..CTn
 * p.minimize(CTz,ST) = STz
-* p.minimize(CTz,ST.s(.i)?) = solve(STz.s(.i)?)
+* p.minimize(CTz,ST.s(.i)?) = p.solve(STz.s(.i)?)
     CTz(p.minimize(CTz,ST))=STz
 * p.minimize(CTz,ST.s) = solve(STz.s)
     CTz(p.minimize(CTz,ST))=STz
 * p.minimize(CTz,OP STz1..STzn) = solve(OP STz)
     CTz(p.minimize(CTz,STz1))..CTz(p.minimize(CTz,STzn))=STz
 
-* solve(ST1..STn)=solve(ST1)..solve(STn)
-* solve(CORE.T.s.i)=methods(I.p, CORE.T.P)(s).pari
-* solve(CORE.T.s)=methods(I.p, T.P)(s).T
-* solve(OP CORE.Ts)=methods(I.p, P)(s).T[from P; p]
+* p.solve(ST1..STn)=p.solve(ST1)..p.solve(STn)
+* p.solve(CORE.T.s.i)=methods(p, CORE.T.P)(s).pari
+* p.solve(CORE.T.s)=methods(p, T.P)(s).T
+* p.solve(OP CORE.Ts)=methods(p, P)(s).T[from P; p]
     {P.s.i} = p.opOptions(OP,CORE.Ts)
-* solve(ST)=ST otherwise //includes ST=CORE.T
+* p.solve(ST)=ST otherwise //includes ST=CORE.T
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;Core.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence

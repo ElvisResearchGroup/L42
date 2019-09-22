@@ -256,3 +256,11 @@ public static void methodsFail(Class<?> clazz,String program,String pathIn,Strin
   TestHelpers.checkFail(()->p.methods(P.parse(pathIn).toNCs(),pos),output,clazz);
   }
 }
+
+interface I{static int a(){return 0;}}
+class A implements I{static int a(){return 1;}
+  static void m(){
+    A.a();
+    I.a();
+    }
+  }

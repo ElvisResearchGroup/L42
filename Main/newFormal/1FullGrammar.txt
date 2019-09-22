@@ -20,7 +20,7 @@ _______
   CORE.D ::= var? T x=e
   CORE/HALF.K ::= catch throw T x e
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
-  CORE.MWT::= Docs MH (= native[URL]? e)?  
+  CORE.MWT::= Docs MH (= native[URL]? e)?  //TODO: call it native[Code] ?
   CORE.NC::= Docs C = L
   Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSupertypes=Ps, refined=ss, declaresClassMethods?}
     //in concrete syntax, labels for emptys are omitted
@@ -112,7 +112,7 @@ _______
   comment ::= '//' (CHAR* -- newline) newline | '/*' commentBody '*/'
   Whitespace ::= (' ' | newline | ',')+
   tURL::= /*a trusted url*//*too boring*/
-  uURL::= /*an untrusted url*//*too boring*/
+  uURL::= /*an untrusted url*//*too boring*/ //TODO: consider using #$URL instead
   URL::=tURL|uURL
   IdUp ::= _* (<A-Z> | $) 
   IdLow ::= _* <a-z>

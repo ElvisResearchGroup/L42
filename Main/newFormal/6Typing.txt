@@ -204,20 +204,21 @@ _______
 _______
 #define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
-    forall P<:class P' inside e: //assert p(P) and p(P') is CORE.L
+    forall P<:class P' inside e: //assert p(P) and p(P') are of form CORE.L
       either P'=Any or coherent(p.navigate(P))
 
 * coherent(p)
     CORE.L = p(This0)
-    MHs = {MH | MH in CORE.L.MWTs} //thus, abstract
+    MHs = {MH | Docs MH in CORE.L.MWTs} //thus no e, thus abstract
     either CORE.L.interface?=interface
     or class not in MHs.mdfs//no abstract class method
     or exists xz  and n? such that:
       forall MH in MHs, coherent(p;MHs;MH;xz;n?)
     MWTs = {MWT | MWT in CORE.L.MWTs, MWT.m not of form #$_ and
-      either _.#$(_) inside MWT.e or MWT.native? of form native[uURL]}
-    forall MWT in MWTs, forall MH in {MH| MH in MHs, MH.mdf=class and MH.T.mdf canAlsoBe MWT.mdf}
-      MH.m of form #$_  and MWT.mdf in {mut, lent, capsule}
+      either _.#$_(_) inside MWT.e or MWT.native? of form native[uURL]}
+    MWTs.mdfs subsetof {mut, lent, capsule} //TODO: should it be well formedness instead
+    forall MH in MHs where MH.mdf=class: forall MWT in MWTs:
+      if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
 
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn = xz

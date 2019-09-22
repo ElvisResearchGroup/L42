@@ -322,7 +322,8 @@ public class Core {
     @Override
     public L withCs(List<C> cs, Function<Full.L.NC, Full.L.NC> fullF, Function<Core.L.NC, Core.L.NC> coreF) {
       assert !cs.isEmpty();
-      assert domNC().contains(cs.get(0)): cs;
+      assert domNC().contains(cs.get(0)): 
+      cs;
       return this.withNcs(L(ncs, nc -> {
         if (!nc.key().equals(cs.get(0))) {
           return nc;
