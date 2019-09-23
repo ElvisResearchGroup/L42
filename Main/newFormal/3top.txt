@@ -170,9 +170,9 @@ _______
 #define CTz+STz<=STz = CTz'    CTz[CT] = CTz'    CTz(STz)=STz'
 * CTz+ST1..STn<=STz = CCz+ST1<=STz+..+STn<=STz
 * CTz,ST<=STz'+ST<=STz=CTz[ST<=STz],ST<=(STz' U STz")
-    STz" = U{CTz(ST) | ST in STz} U STz  // ISAAC: just to be safe, otherwise we have to make sure whenever we do CTz+ST <= STz, that STz" = STz
+    STz" = U{CTz(ST) | ST in STz} U STz U {ST} // ISAAC: just to be safe, otherwise we have to make sure whenever we do CTz+ST <= STz, that STz" = STz
 * CTz+ST<=STz=CTz[ST<=STz],ST<=STz'
-    STz' = U{CTz(ST) | ST in STz} U STz
+    STz' = U{CTz(ST) | ST in STz} U STz U {ST}
     ST notin dom(CTz)
 
 // ISAAC: my best guess was that CTz[ST <= STz] was meant to update CTz so it would be well-formed
@@ -185,16 +185,19 @@ _______
 
 * CTz(STz)=U{STz | ST in STz and ST<=STz}
 _______
-#define p.minimize(CTz) = CTz'    p.solve(STz) = STz'
- * p.minimize(CTz) = CTz[p.minimize(CT1)]..[p.minimize(CTn)]
-     CTz=CT1..CTn
-* p.minimize(CTz,ST) = STz
-* p.minimize(CTz,ST.s(.i)?) = p.solve(STz.s(.i)?)
-    CTz(p.minimize(CTz,ST))=STz
+#define p.minimize(CTz) = CTz'   p.minimize(CTz;ST) = STz   p.solve(STz) = STz'
+ * p.minimize(CTz) = empty+p.minimize(CTz;CT1)+..+p.minimize(CTz;CTn)
+     CTz=CT1..CTn // where empty is a CTz
+
+* p.minimize(CTz;ST0<=ST1..STn) = ST0<=ST0,p.minimize(CTz;ST1)..p.minimize(CTz;STn)//make set expansion instead     
+* p.minimize(CTz;ST.s(.i)?) = p.solve(STz.s(.i)?)
+    //CTz(p.minimize(CTz,ST))=STz
+    p.minimize(CTz; CTz(ST)\CTz(ST.s(.i)?)) = STz
 * p.minimize(CTz,ST.s) = solve(STz.s)
     CTz(p.minimize(CTz,ST))=STz
-* p.minimize(CTz,OP STz1..STzn) = solve(OP STz)
-    CTz(p.minimize(CTz,STz1))..CTz(p.minimize(CTz,STzn))=STz
+* p.minimize(CTz,OP STz1..STzn) = solve(OP STz'1, ..., STz'n)
+    CTz(p.minimize(CTz,STzi)) = STz'i
+
 
 * p.solve(ST1..STn)=p.solve(ST1)..p.solve(STn)
 * p.solve(CORE.T.s.i)=methods(p, CORE.T.P)(s).pari
@@ -202,6 +205,9 @@ _______
 * p.solve(OP CORE.Ts)=methods(p, P)(s).T[from P; p]
     {P.s.i} = p.opOptions(OP,CORE.Ts)
 * p.solve(ST)=ST otherwise //includes ST=CORE.T
+
+* (ST1..STn)+.s(.i)? = ST1.s(.i)?..STn.s(.i)?
+
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
