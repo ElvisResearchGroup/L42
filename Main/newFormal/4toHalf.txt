@@ -9,7 +9,9 @@ _______
 * GX^D1..Dn = GX^D1,..,GX^Dn
 * GX+GX' = GX\dom(GX'),GX'
 _______
-#define Y!FULL.e = Half.e; STz; STs'; CTz //e, result type, returns type, constraints
+#define Y!FULL.e = Half.e; STz; STz'; CTz //e, result type, returns type, constraints
+//assert if Y!e = e'; STz; STz'; CTz, then p.minimize(CTz; STz) = STz and p.minimize(CTz; STz') = STz'
+
 * Y!LL = LL;imm Library;empty;Y.CTz
 * Y!x = x;Y.GX(x);empty;Y.CTz
 * Y!x = x;empty;empty;Y.CTz
@@ -33,12 +35,12 @@ _______
     Y[expectedT=empty]!e = e'; STz0; STz1; CTz
     STz2=STz0,STz1 if throw = return
     STz2=STz1, otherwise
-* Y!loop e = loop e'; imm Void; STz'; CTz +Y.p (STz <= imm Void)
+* Y!loop e = loop e'; imm Void; STz'; CTz <+Y.p (STz <= imm Void)
     Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
 * Y! x opUpdate e = Y!(doUpdate(x, opUpdate, e))
     opUpdate != ':='
-* Y! (x := e) = (x := e'); imm Void; STz'; CTz +Y.p (STz <= Y.GX(x))
+* Y! (x := e) = (x := e'); imm Void; STz'; CTz <+Y.p (STz <= Y.GX(x))
     Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
 * Y!e(par) = Y!e.#apply(par)
 * Y!e.m(x,xes) = Y!e.m(that=x, xes)
@@ -46,14 +48,12 @@ _______
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
 * Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz'n
-    Y[expectedT=empty]!xP = xP'; ST1 ... STk; STz"0; CTz'0 // Y!FULL.xP is always a HALF.xP
-    STz' = Y.p.minimize(CTz'0; STk.m(x1..xn), ..., STk.m(x1..xn)) //injects .s on all the elements of STz
-    for i in 1 .. n:
-        STz'i = Y.p.minimize(CTz'0; CTz'0; STk.m(x1..xn).i, ..., STk.m(x1..xn).i)
-        Y[onSlash=STz'i;onSlashX=xP;expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
-        CTz'i = CTz +Y.p (STzi <= STz'i)
+    Y[expectedT=empty]!xP = xP'; STz; STz"0; CTz'0//Y!FULL.xP is always a HALF.xP
+    STz' = Y.p.minimize(CTz'0; STz.m(x1..xn)) //injects .s on all the elements of STz
+    STz'i = Y.p.minimize(CTz'0; STz.m(x1..xn).i) //here and below, i in 1..n
+    Y[onSlash=STz'i;onSlashX=xP;expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
+    CTz'i = CTzi <+Y.p (STzi <= STz'i)
     STz" = STz"0 U..U STz"n
-
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
@@ -67,7 +67,7 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz +Y.p (STz2 <= STz1)
+* Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
     CsP' = CsP.$methName(OP)
     STz0  = Y.p.minimize(CTz; CsP'.#apply(that))
     STz1 = Y.p.minimize(CTz; CsP'.#apply(that).1)
@@ -90,19 +90,19 @@ _______
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e )
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
-* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz'm  //Ds is HALF.Ds
-    GX = GX^(D1...Dn)
-    GXi = Y.GX + GX + GX^Ds1 + .. + GX^Ds(i-1)
+* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz'm  //Dsi are HALF.Ds
+    GX = GX^(D1..Dn)
+    GXi = Y.GX + GX + GX^Ds1 +..+ GX^Ds(i-1)
     CTz0 = Y.CTz
-    for i in 1 .. n:
-        Y[GX=GXi,CTz=CTz(i-1)]!Di = Dsi; STz"i; CTzi
+    Y[GX=GX1,CTz=CTz0]!D1 = Ds1; STz"1; CTz1
+    ...
+    Y[GX=GXn,CTz=CTz(n-1)]!Dn = Dsn; STz"n; CTzn
     CTz'0 = CTzn
-    for i in 1 .. m:
-        Y[GX=GXn,CTz=CTz'(i-1)]!Ki = K'i; STzi; STz'i; CTz'i //catch return do not need special treatment
-
+    Y[GX=GXn,CTz=CTz'0]!K1 = K'1; STz1; STz'1; CTz'1 
+    ...//catch return do not need special treatment
+    Y[GX=GXn,CTz=CTz'(m-1)]!Km = K'm; STzm; STz'm; CTz'm
     Y[GX=GXn,CTz=CTz'm]!e  = e'; STz0;  STz'0; CTz'0
-
-    STz = p.miminimize(CTz'm; STz0 U..U STzm)
+    STz = p.minimize(CTz'm; STz0 U..U STzm)
     STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
@@ -180,7 +180,7 @@ _______
 * Y!(empty e) = Y!(imm Void _=e)
 * Y!(TLocal _=e) = Y!(TLocal x=e)
     x fresh
-* Y!(var? T x=e) = var? ♥T x=e'; STz'; CTz +Y.p (STz<=♥T)
+* Y!(var? T x=e) = var? ♥T x=e'; STz'; CTz <+Y.p (STz<=♥T)
     Y[expectedT=♥T]!e = e'; STz; STz'; CTz
 * Y!(var? mdf? x=e) = var? mdf? STz x=e'; STz'; CTz
       Y[expectedT = empty]!e = e'; STz; STz'; CTz

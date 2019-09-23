@@ -58,7 +58,7 @@ _______
   HALF.xP ::= x | P<:T | %T%<:T'
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? mdf? T x = e
-  CT ::= STz<=STz
+  CT ::= ST<=STz
   PR ::= CTz;CORE.L;pTails | Err
   ER ::= CTz;CORE.e? | Err
   DsR ::= CTz;CORE.Ds | Err
