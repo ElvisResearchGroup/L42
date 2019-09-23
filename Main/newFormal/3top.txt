@@ -170,43 +170,46 @@ _______
 #define CTz +p (STz<=STz) = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
 * CTz +p (empy <= STz) = CTz
 * CTz +p (ST1,STz<=STz') = CTz' +p (p.minimize(CTz'; STz) <= p.minimize(CTz'; STz'))
-    CTz' = (CCz +p (ST1<=STz)) // todo: remove the p.minimize?
+    CTz' = (CCz +p (ST1<=STz))
 
-// let's assume that P.minimize(STz) only deletes superflouse elements and resolves ST's
-* CTz <+p (CORE.T <= STz) = CTz
-    // We can't do anything with such a constraint
 * CTz,(ST <= STz')? <+p (ST <= STz) = CTz[ST <= STz"]p, (ST <= STz")
-    // assert p.minimize(ST) = ST
+    // NOTE: ST may be a CORE.T, in which case STz' may contain usefull information such as known super-interfaces
     STz" = p.minmimize(U{CTz(ST) | ST in STz} U STz U STz' U {ST})
     ST notin dom(CTz)
 
 * (CT1..CTn)[CT]p = CT1[CT]p..CTn[CT]p
 * (ST<=STz)[ST'<= STz']p = ST<=STz
     ST' not in STz
-* (ST<=STz)[ST'<=STz']p = ST <+ p.minimize(STz U STz')
+* (ST<=STz)[ST'<=STz']p = ST <+p p.minmimize(STz U STz')
     ST' in STz
 
 * dom(CTz) = {ST | ST <= STz in CTz}
-* CTz(STz)=U{STz | ST in STz and ST<=STz} // note: this implies that CTz(ST) = empty, when ST not in dom(CTz)
+* CTz(STz)=U{STz | ST in STz and ST<=STz} U STz
+
 
 _______
-#define p.minimize(CTz) = CTz'   p.minimize(CTz;ST) = STz   p.solve(STz) = STz'
- * p.minimize(CTz) = empty+p.minimize(CTz;CT1)+..+p.minimize(CTz;CTn)
-     CTz=CT1..CTn // where empty is a CTz
+#define p.minimize(CTz;STz) = STz
+* p.minimize(CTz; ST.s) = T'
+    T in CTz(ST)
+    T' = methods(p, T.P)(s).T[from T.P; p]
+    p(T.P).interface? = class, p(T'.P).interface? = class, or T = ST
 
-* p.minimize(CTz;ST0<=ST1..STn) = ST0<=ST0,p.minimize(CTz;ST1)..p.minimize(CTz;STn)
-* p.minimize(CTz; ST0..STn) = p.minimize(CTz; ST0) U ... U p.minimize(CTz; STn)
-* p.minimize(CTz;ST.s(.i)?) = p.solve(STz.s(.i)?)
-    p.minimize(CTz; CTz(ST)\CTz(ST.s(.i)?)) = STz
-* p.minimize(CTz,OP STz1..STzn) = solve(OP STz'1, ..., STz'n)
-    p.minimize(CTz; CTz(STzi)\CTz(OP STz1..STzn)) = STz'i
+* p.minimize(CTz; ST.s.i) = T'
+    T in CTz(ST)
+    T' = methods(p, T.P)(s).pari[from T.P; p]
+    // as we don't allow paramater type refining, T' must be the right type
 
-* p.solve(ST1..STn)=p.solve(ST1)..p.solve(STn)
-* p.solve(CORE.T.s.i)=methods(p, CORE.T.P)(s).pari
-* p.solve(CORE.T.s)=methods(p, T.P)(s).T
-* p.solve(OP CORE.Ts)=methods(p, P)(s).T[from P; p]
-    {P.s.i} = p.opOptions(OP,CORE.Ts)
-* p.solve(ST)=ST otherwise //includes ST=CORE.T
+* p.minimize(CTz; OP STz1 ... STzn) = methods(p, P)(s).T[from P; p]
+    Ti in CTz(STzi)
+    {P.s.i} = p.opOptions(OP, Ti..Tn)
+
+* p.minimize(CTz; T) = T
+
+* p.minimize(CTz; ST.s(.i)?) = p.minimize(CTz; ST).s(.i)?
+    otherwise
+
+* p.minimize(CTz; OP STz1 ... STzn) = OP p.minimize(CTz; STz1) ... p.minimize(CTz; STzn)
+    otherwise
 
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
