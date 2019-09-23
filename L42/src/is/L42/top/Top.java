@@ -261,10 +261,10 @@ class SortHeader{
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
       List<Core.Doc> docs=L();
       List<Pos> poss=l.poss();
-      var mwti=(Full.L.MWT)_elem(l.ms(),mh.key());
-      if(mwti!=null){
-        docs=TypeManipulation.toCoreDocs(mwti.docs());
-        poss=mwti.poss();
+      var mi=_elem(l.ms(),mh.key());
+      if(mi!=null){
+        docs=TypeManipulation.toCoreDocs(mi.docs());
+        poss=mi.poss();
         }
       var res=new Core.L.MWT(poss, docs, mh,"",null);
       c.add(res);

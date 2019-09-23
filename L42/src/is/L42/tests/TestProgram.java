@@ -204,7 +204,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I2,I1]}}","This0.A","[imm method imm Any m2(), imm method imm Void m0(), imm method imm Any m1()]")
 
   ),new AtomicTest(()->
-  toS("{[This1.I]}\nA={A={[This1.I]}J={interface method This0 m()}I={interface[This1.J]}}\n")
+  toS("{[This1.I]}\nA={J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
   ),new AtomicTest(()->
   toS("{}\nA={A={}}\n")
   ),new AtomicTest(()->
