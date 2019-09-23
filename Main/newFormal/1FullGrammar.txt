@@ -54,11 +54,11 @@ _______
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  ST ::= CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type?
+  ST ::= CORE.T | OP STzs | STz.s | STz.s.i //i=0 for receiver type?
   HALF.xP ::= x | P<:T | %T%<:T'
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? mdf? T x = e
-  CT ::= ST<=STz
+  CT ::= STz<=STz
   PR ::= CTz;CORE.L;pTails | Err
   ER ::= CTz;CORE.e? | Err
   DsR ::= CTz;CORE.Ds | Err
@@ -68,7 +68,7 @@ _______
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz .. xn:STz
   I ::= I[C?;p;G;CTz]//inference application environment
-  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?]//TODO: remove class? from code
+  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?;CTz]//TODO: remove class? from code
   v ::= CORE.xP | void | CORE.L
   r ::= CORE.L | exception v | error v
   Obj ::= P(xvs) empty;empty| P() as1;as2 // memory objects
@@ -213,7 +213,9 @@ _______
     and CORE.L'.Info+_=CORE.L.Info (that is, all the dependencies are a subset, and so on)
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
-* CTz: if ST in CTz(ST') then every ST0 in CTz(ST) is also in CTz(ST') //TODO: add in code // ISAAC: what if CTz(ST) is undefined? I think this should be allowed, otherwise we have to add pointles ST <= ST (Or ST <= empty?) pairs to CTz
+* CTz: forall ST in dom(CTz), U{CTz(ST') | ST' in CTz(ST)} U {ST} subseteq CTz(ST') //TODO: add in code
+// NOTE: CTz(ST) and dom(CTz) are defined in 3Top
+* CTz: CORE.T notin dom(CTz)
 * CTz: CTz not of form CTz, ST <= STz, CTz', ST <= STz', CTz" // I.e. no ST occurs twice on the LHS of a <=
 //CODE ONLY WELL FORMEDNESS:
 //* x, P not valid DX=e

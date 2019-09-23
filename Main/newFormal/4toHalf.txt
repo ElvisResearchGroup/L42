@@ -9,22 +9,22 @@ _______
 * GX^D1..Dn = GX^D1,..,GX^Dn
 * GX+GX' = GX\dom(GX'),GX'
 _______
-#define Y!FULL.e = Half.e; STs; STs'; CTz //e, result type, returns type, constraints
-* Y!LL = LL;imm Library;empty;empty
-* Y!x = x;Y.GX(x);empty;empty
-* Y!x = x;empty;empty;empty
+#define Y!FULL.e = Half.e; STz; STs'; CTz //e, result type, returns type, constraints
+* Y!LL = LL;imm Library;empty;Y.CTz
+* Y!x = x;Y.GX(x);empty;Y.CTz
+* Y!x = x;empty;empty;Y.CTz
     x notin dom(Y.GX)
     // will apply if we are typecheking the RHS of a "mdf? x = e", and x is free in e
 
-* Y!void = void;imm Void;empty;empty
-* Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; empty //onSlash!=expectedT, consider foo.bar(\.x())
+* Y!void = void;imm Void;empty;Y.CTz
+* Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; Y.CTz //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = Y!((Y.onSlashX).x())
 * Y!CsP = Y!(CsP <:class CsP)
     Y.expectedT != class Any
 * Y!CsP = Y!(CsP <:class Any)
     Y.expectedT = class Any
-* Y!CsP<:T = ♥CsP<:♥T; ♥T; empty; empty
-* Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; empty
+* Y!CsP<:T = ♥CsP<:♥T; ♥T; empty; Y.CTz
+* Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; Y.CTz
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP or \
 * Y!'PathSel = Y!\"PathSel"
@@ -33,25 +33,27 @@ _______
     Y[expectedT=empty]!e = e'; STz0; STz1; CTz
     STz2=STz0,STz1 if throw = return
     STz2=STz1, otherwise
-* Y!loop e = loop e'; imm Void; STz'; CTz+STz<=imm Void
+* Y!loop e = loop e'; imm Void; STz'; CTz +Y.p (STz <= imm Void)
     Y[expectedT=imm Void]!e = e'; STz; STz'; CTz
 * Y! UOp e = Y!e.methName(UOp)()//Ok, the only e is the receiver, semantic of '\' is preserved 
 * Y! x opUpdate e = Y!(doUpdate(x, opUpdate, e))
     opUpdate != ':='
-* Y! (x := e) = (x := e'); imm Void; STz'; CTz+STz <= Y.GX(x)
+* Y! (x := e) = (x := e'); imm Void; STz'; CTz +Y.p (STz <= Y.GX(x))
     Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
 * Y!e(par) = Y!e.#apply(par)
 * Y!e.m(x,xes) = Y!e.m(that=x, xes)
 * Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
-* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz
-    Y[expectedT=empty]!xP = xP'; STz0; STz"0; CTz0 // Y!FULL.xP is always a HALF.xP
-    STz' = Y.p.minimize(STz0.m(x1..xn)) //injects .s on all the elements of STz
-    STz'i = Y.p.minimize(STz0.m(x1..xn).i), i in 1..n
-    Y[onSlash=STz'i;onSlashX=xP;expectedT=STz'i]!ei = e'i; STzi; STz"i; CTzi, i in 1..n
-    STz" = STz"0 U..U STz"n;
-    CTz = CTz0 U..U CTzn, STz1<=STz'1,..,STzn<=STz'n
+* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz'n
+    Y[expectedT=empty]!xP = xP'; ST1 ... STk; STz"0; CTz'0 // Y!FULL.xP is always a HALF.xP
+    STz' = Y.p.minimize(CTz'0; STk.m(x1..xn), ..., STk.m(x1..xn)) //injects .s on all the elements of STz
+    for i in 1 .. n:
+        STz'i = Y.p.minimize(CTz'0; CTz'0; STk.m(x1..xn).i, ..., STk.m(x1..xn).i)
+        Y[onSlash=STz'i;onSlashX=xP;expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
+        CTz'i = CTz +Y.p (STzi <= STz'i)
+    STz" = STz"0 U..U STz"n
+
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
@@ -65,10 +67,10 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz+STz2 <= STz1
+* Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz +Y.p (STz2 <= STz1)
     CsP' = CsP.$methName(OP)
-    STz0  = Y.p.minimize(CsP'.#apply(that))
-    STz1 = Y.p.minimize(CsP'.#apply(that).1)
+    STz0  = Y.p.minimize(CTz; CsP'.#apply(that))
+    STz1 = Y.p.minimize(CTz; CsP'.#apply(that).1)
     Y[expectedT=STz1] ! e = e'; STz2; STz; CTz
     // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 
@@ -80,28 +82,32 @@ _______
     ei' = xi otherwise
     x1..xn fresh
     e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
-* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; Y.p.minimize(OP STz0,..,STzn); empty; empty
+* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; Y.p.minimize(OP STz0,..,STzn); empty; Y.CTz
     n != 0
-    Y[expectedT = empty]!xPi = xP'i; STzi; empty; empty
+    Y[expectedT = empty]!xPi = xP'i; STzi; empty; Y.CTz // Y!xP shouldn't introduce any new constraints
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e )
     Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
-* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz  //Ds is HALF.Ds
+* Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz'm  //Ds is HALF.Ds
     GX = GX^(D1...Dn)
     GXi = Y.GX + GX + GX^Ds1 + .. + GX^Ds(i-1)
-    Y[GX=GXi]!Di = Dsi; STz"i; CTzi
-    Y[GX=GXn]!Ki = K'i; STzi; STz'i; CTz'i //catch return do not need special treatment
-    Y[GX=GXn]!e  = e'; STz0;  STz'0; CTz'0
+    CTz0 = Y.CTz
+    for i in 1 .. n:
+        Y[GX=GXi,CTz=CTz(i-1)]!Di = Dsi; STz"i; CTzi
+    CTz'0 = CTzn
+    for i in 1 .. m:
+        Y[GX=GXn,CTz=CTz'(i-1)]!Ki = K'i; STzi; STz'i; CTz'i //catch return do not need special treatment
 
-    STz = STz0 U..U STzm
+    Y[GX=GXn,CTz=CTz'm]!e  = e'; STz0;  STz'0; CTz'0
+
+    STz = p.miminimize(CTz'm; STz0 U..U STzm)
     STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
-    CTz = CTz1 U..U CTzn U CTz'0 U..U CTz'm
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
     Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
-    K = catch return Y.expectedT,STz x' x'
+    K = catch return p.minimize(CTz; Y.expectedT,STz) x' x'
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!e.m[pars]= Y!(e.m(squareBuilder=(
@@ -174,15 +180,15 @@ _______
 * Y!(empty e) = Y!(imm Void _=e)
 * Y!(TLocal _=e) = Y!(TLocal x=e)
     x fresh
-* Y!(var? T x=e) = var? ♥T x=e'; STz'; CTz, STz<=♥T
+* Y!(var? T x=e) = var? ♥T x=e'; STz'; CTz +Y.p (STz<=♥T)
     Y[expectedT=♥T]!e = e'; STz; STz'; CTz
 * Y!(var? mdf? x=e) = var? mdf? STz x=e'; STz'; CTz
       Y[expectedT = empty]!e = e'; STz; STz'; CTz
-* Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTz0 U..U CTzn
+* Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTzn
     Y!(TLocal x = e) = D0; STz0; CTz0
-    Y!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
+    Y[CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
     ..
-    Y!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
+    Y[CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
     x fresh
 
 _______

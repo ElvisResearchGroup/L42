@@ -46,7 +46,7 @@ _______
 
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
-    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library]
+    Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
     I[C?=C;p;G=empty;p.minimize(CTz)]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
@@ -159,45 +159,47 @@ _______
 _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
-* CTz.add(p; MH e; Half.e) = CTz U CTz' U T<=MH.T
-    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T]
+* CTz.add(p; MH e; Half.e) = CTz' U T<=MH.T
+    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
     Y!e = Half.e; T; empty; CTz' // empty: error on bodies leaking returns
 _______
 #define I(mdf? STz) = CORE.T
 * I(mdf STz) = I(STz)[mdf=mdf]
 * I(STz) = chooseT(I.CTz(STz)) //assuming I.CTz=I.p.minimize(I.CTz)
 _______
-#define CTz+STz<=STz = CTz'    CTz[CT] = CTz'    CTz(STz)=STz'
-* CTz+ST1..STn<=STz = CCz+ST1<=STz+..+STn<=STz
-* CTz,ST<=STz'+ST<=STz=CTz[ST<=STz],ST<=(STz' U STz")
-    STz" = U{CTz(ST) | ST in STz} U STz U {ST} // ISAAC: just to be safe, otherwise we have to make sure whenever we do CTz+ST <= STz, that STz" = STz
-* CTz+ST<=STz=CTz[ST<=STz],ST<=STz'
-    STz' = U{CTz(ST) | ST in STz} U STz U {ST}
+#define CTz +p (STz<=STz) = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
+* CTz +p (empy <= STz) = CTz
+* CTz +p (ST1,STz<=STz') = CTz' +p (p.minimize(CTz'; STz) <= p.minimize(CTz'; STz'))
+    CTz' = (CCz +p (ST1<=STz)) // todo: remove the p.minimize?
+
+// let's assume that P.minimize(STz) only deletes superflouse elements and resolves ST's
+* CTz <+p (CORE.T <= STz) = CTz
+    // We can't do anything with such a constraint
+* CTz,(ST <= STz')? <+p (ST <= STz) = CTz[ST <= STz"]p, (ST <= STz")
+    // assert p.minimize(ST) = ST
+    STz" = p.minmimize(U{CTz(ST) | ST in STz} U STz U STz' U {ST})
     ST notin dom(CTz)
 
-// ISAAC: my best guess was that CTz[ST <= STz] was meant to update CTz so it would be well-formed
-// if we added ST <= STz to it. Which is what my version does.
-* (CT1..CTn)[CT] = CT1[CT]..CTn[CT]
-* (ST<=STz)[ST'<= STz'] = ST<=STz
+* (CT1..CTn)[CT]p = CT1[CT]p..CTn[CT]p
+* (ST<=STz)[ST'<= STz']p = ST<=STz
     ST' not in STz
-* (ST<=STz)[ST'<=STz']=ST<=(STz U STz')
+* (ST<=STz)[ST'<=STz']p = ST <+ p.minimize(STz U STz')
     ST' in STz
 
-* CTz(STz)=U{STz | ST in STz and ST<=STz}
+* dom(CTz) = {ST | ST <= STz in CTz}
+* CTz(STz)=U{STz | ST in STz and ST<=STz} // note: this implies that CTz(ST) = empty, when ST not in dom(CTz)
+
 _______
 #define p.minimize(CTz) = CTz'   p.minimize(CTz;ST) = STz   p.solve(STz) = STz'
  * p.minimize(CTz) = empty+p.minimize(CTz;CT1)+..+p.minimize(CTz;CTn)
      CTz=CT1..CTn // where empty is a CTz
 
-* p.minimize(CTz;ST0<=ST1..STn) = ST0<=ST0,p.minimize(CTz;ST1)..p.minimize(CTz;STn)//make set expansion instead     
+* p.minimize(CTz;ST0<=ST1..STn) = ST0<=ST0,p.minimize(CTz;ST1)..p.minimize(CTz;STn)
+* p.minimize(CTz; ST0..STn) = p.minimize(CTz; ST0) U ... U p.minimize(CTz; STn)
 * p.minimize(CTz;ST.s(.i)?) = p.solve(STz.s(.i)?)
-    //CTz(p.minimize(CTz,ST))=STz
     p.minimize(CTz; CTz(ST)\CTz(ST.s(.i)?)) = STz
-* p.minimize(CTz,ST.s) = solve(STz.s)
-    CTz(p.minimize(CTz,ST))=STz
 * p.minimize(CTz,OP STz1..STzn) = solve(OP STz'1, ..., STz'n)
-    CTz(p.minimize(CTz,STzi)) = STz'i
-
+    p.minimize(CTz; CTz(STzi)\CTz(OP STz1..STzn)) = STz'i
 
 * p.solve(ST1..STn)=p.solve(ST1)..p.solve(STn)
 * p.solve(CORE.T.s.i)=methods(p, CORE.T.P)(s).pari
@@ -205,8 +207,6 @@ _______
 * p.solve(OP CORE.Ts)=methods(p, P)(s).T[from P; p]
     {P.s.i} = p.opOptions(OP,CORE.Ts)
 * p.solve(ST)=ST otherwise //includes ST=CORE.T
-
-* (ST1..STn)+.s(.i)? = ST1.s(.i)?..STn.s(.i)?
 
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
