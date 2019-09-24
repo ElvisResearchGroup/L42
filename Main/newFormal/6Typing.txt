@@ -1,6 +1,6 @@
 _______
 #define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
-* flagTyped(p) = p.update( p(This0)[typable(p)=typed] )
+* flagTyped(p) = p.update( p(This0)[typable(p)=typed][Info.uniqueId=empty] )
     forall Cs in typable(p):  |-p.navigate(This0.Cs)
 
 * LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
@@ -11,8 +11,9 @@ _______
     NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
 _______
 #define typable(p)=Csz
+//TODO: This0 can be typed only if is an interface
 * typable(p) = Cs1..Csn
-    //dom(p(This0)) asserts p(This0) has no reuse/...
+    //dom(p(This0)) asserts p(This0) is CORE.L
     Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
     p(This0.Csi) of form CORE.L
     p(This0.Csi).Info.Flag=norm

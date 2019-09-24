@@ -22,7 +22,8 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native[URL]? e)?  //TODO: call it native[Code] ?
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSupertypes=Ps, refined=ss, declaresClassMethods?}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSupertypes=Ps, refined=ss,
+    declaresClassMethods?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
     //in concrete syntax, labels for emptys are omitted
     //friends are spyed by This:
     //Paths whose unique Numbers are used either directly,

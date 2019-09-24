@@ -58,26 +58,65 @@ _______
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1;p";NCs) => PR
     
+TODO: BIG: rewrite collect/methods/sortHeader/origin/refine to be much simpler as in the new formalism
+They should all become just private stuff inside sortHeader
+
 * sortHeader({reuse[URL] Ms};pTail) = CORE.L;{s->M.Docs,M.e?| M in Ms, s=M.s}; NCs0
     CORE.L = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
     dom(MWTs NCs) disjoint dom(Ms)
     NCs0 = [NC | NC in Ms]
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
+    p0=followURL(URL);pTail
+    Ps;empty = collectDeps(p0;CORE.MWTs)
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?, uniqueId=n}
+    n fresh
 
 * sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; NCs
     NCs = [NC | NC in Ms]
     p(This0) = {interface? [Ts] Ms Docs}
-    p0 = p.update({interface? [Ts] Ms\NCs Docs})//to prevent looking to non core
-    Ts' = ♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any    
+    p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
+    Ts' = ♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
+    p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
     forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
-    MH1..MHn = methods(p0,This0)
+    MH1..MHn = methods(p1,This0,collect(p0,♥Ts),Ms\NCs)
     MWTs = [♥Docs MH | MH in MH1..MHn and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
     Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?}
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
+_______
+#define collect(p,Core.Ts)=Core.Ts'
+* collect(p,empty)=empty
+* collect(p,T0 Ts)=((T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
+    p(T0.P)={interface Ts0 _}=CORE.L
+_______
+#define methods(p,P0,FULL.L)=CORE.MHs //methods res has relevant order
+* methods(p,P0,Core.Ts, Ms)=MH1..MHn//assert ... and reuse are unreachable
+    MHs=extractMHs(p.navigate(P0);Ms)[from P0;p]
+    s1..sn=[dom(methods(p,P)) | P in CORE.Ts.Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p.navigate(P),p(P).Ms).ss}
+    origin(p;s1,P0)..origin(p;sn,P0) all defined
+    [MHi,_]=[MH[from P0;p]| MH in MHs and MH.s=si],[p(P).MWTs(si).MH[from P;p]| P in CORE.Ts.Ps] for i in 1..n
+_______
+#define origin(p;s;P) = P'   refine(p;s;P)
+* origin(p;s; P) = P'
+    {P'} = {P'| P' in P U p(P).Ts.Ps[from P;p] and s in dom(p(P).Ms) and !refine(p;s;P')}
+    
+* refine(p;s;P) iff exists P' in p(P).Ts.Ps[from P;p] such that s in dom(p(P').mwts)
+  //assert P' never This0
 
+_______
+#define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
+* extractMHs(p;empty)=empty
+* extractMHs(p;NC,Ms)=extractMHs(Ms) 
+* extractMHs(p;MI,Ms)=extractMHs(Ms) 
+* extractMHs(p;MWT,Ms)=♥MWT.MH,extractMHs(Ms) 
+* extractMHs(p;T x,Ms)=read method ♥T x(), expandFields(Ms)
+    ♥T = toRead(♥T)
+* extractMHs(p;T x,Ms)=mut method capsuleToLent(♥T) #x(), extractMHs(toRead(♥T) x,Ms)
+    ♥T != toRead(♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
+* extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)    
+    
 * updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info0+Info}
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     MWTs[e?=empty] = MWTs1
@@ -193,15 +232,15 @@ _______
 * p.minimize(CTz; T) = T //T = CORE.T
 * p.minimize(CTz; ST.s) = T'
     T in CTz(ST) //T = CORE.T
-    T' = methods(p, T.P)(s).T[from T.P; p]
+    T' = p(T.P)(s).T[from T.P; p]
     either p(T.P).interface? = empty, p(T'.P).interface? = empty, or T = ST
 * p.minimize(CTz; ST.s.i) = T'
     T in CTz(ST)
-    T' = methods(p, T.P)(s).pari[from T.P; p]
+    T' = p(T.P)(s).pari[from T.P; p]
     // as we don't allow parameter type refining, T' must be the right type
 * p.minimize(CTz; ST.s(.i)?) = p.minimize(CTz; ST).s(.i)?
     otherwise
-* p.minimize(CTz; OP STz1 ... STzn) = methods(p, P)(s).T[from P; p]
+* p.minimize(CTz; OP STz1 ... STzn) = p(P)(s).T[from P; p]
     Ti in CTz(STzi)
     {P.s.i} = p.opOptions(OP, Ti..Tn)
 * p.minimize(CTz; OP STz1 ... STzn) = OP p.minimize(CTz; STz1) ... p.minimize(CTz; STzn)
@@ -249,7 +288,7 @@ _______
 * P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
     i in 0..n,
     s = methName(OP_i)(x1..xn)
-    P1 ... Pn = methods(p,Ti.P)(s).pars.Ps[from Ti.P;p]
+    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
     P'1 ... P'n = (T0..Tn\i).Ps
     P = Ti.P
     p|-P'1<=P1 .. p|-P'1<=P1
