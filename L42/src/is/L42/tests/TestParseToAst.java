@@ -226,14 +226,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({C={#norm{}}#norm{}})")
    ),new AtomicTest(()->
-   fail("({method Any m()={} #norm{}})",Err.malformedCoreMWT(Err.hole))
+   fail("({method Any m()={} #norm{}})",Err.malformedCoreMWT(Err.hole,Err.hole))
    ),new AtomicTest(()->
    fail("({C={} #norm{}})",Err.malformedCoreNC(Err.hole))
 
    ),new AtomicTest(()->
    pass("{imm method imm Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
    ),new AtomicTest(()->
-   fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}",Err.malformedCoreMWT(Err.hole))
+   fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}",Err.malformedCoreMWT(Err.hole,Err.hole))
    ),new AtomicTest(()->
    pass("({@This0.Bar imm method imm This0.T f()#norm{}})")
    ),new AtomicTest(()->

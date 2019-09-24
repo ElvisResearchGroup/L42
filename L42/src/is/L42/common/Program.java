@@ -54,7 +54,10 @@ public class Program implements Visitable<Program>{
     if(path==P.pAny){return emptyLInterface;}
     if(path==P.pVoid){return emptyL;}
     if(path==P.pLibrary){return emptyL;}
-    try{return this.pop(path.toNCs().n()).top.cs(path.toNCs().cs());}
+    return of(path.toNCs(),errs);
+    }
+  public LL of(P.NCs path,List<Pos>errs){
+    try{return this.pop(path.n()).top.cs(path.cs());}
     catch(LL.NotInDom nid){
       throw new PathNotExistent(errs,Err.pathNotExistant(path));
       }

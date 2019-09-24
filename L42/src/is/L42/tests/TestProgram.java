@@ -146,63 +146,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   fromE("{} A={A={}} B={B={A={}}}"+emptyP,"(This2.B.A x1=void This1.A x2=void This2.B x3=void This3.B.A x4=void void)",
         "This1.C",                 "(This x1=void This x2=void This1 x3=void This3.B.A x4=void void)")
-//collect
-  ),new AtomicTest(()->
-  collect("{} A={A={}} B={B={A={}}}"+emptyP,"This","[]")
-  ),new AtomicTest(()->
-  collect("{[This.B] B={interface}}"+emptyP,"This","[imm This0.B]")
-  ),new AtomicTest(()->
-  collectFail(InvalidImplements.class,"{[This.B] B={}}"+emptyP,"This",Err.notInterfaceImplemented())
-  ),new AtomicTest(()->
-  collect("{[B, B] B={interface}}"+emptyP,"This","[imm This0.B]")
-  ),new AtomicTest(()->
-  collectFail(PathNotExistent.class,"{[This.B, This.A] B={interface}}"+emptyP,"This",Err.pathNotExistant("This0.A"))
-  ),new AtomicTest(()->
-  collect("{[This.B, This.A] A={interface}B={interface[This1.A]}}"+emptyP,"This","[imm This0.B, imm This0.A]")
-  ),new AtomicTest(()->
-  collect("{[This.A, This.B] A={interface}B={interface[This1.A]}}"+emptyP,"This","[imm This0.B, imm This0.A]")//order tweaked in top
-  ),new AtomicTest(()->
-  collect("{[This.B] A={interface}B={interface[This1.A]}}"+emptyP,"This","[imm This0.B, imm This0.A]")
-  ),new AtomicTest(()->
-  collect("{[This.B] A={interface} B={interface[This2.A]}} C={C={} A={interface [C.A]}}"+emptyP,"This","[imm This0.B, imm This1.A, imm This0.A]")
-  ),new AtomicTest(()->
-  collect("{[This.A This.B] A={interface}B={interface[This2.A]}} C={C={} A={interface [C.A]}}"+emptyP,"This","[imm This0.B, imm This1.A, imm This0.A]")
-  ),new AtomicTest(()->
-  collect("{[This.B] A={interface}B={interface[This2.A, A]}} C={C={} A={interface [C.A]}}"+emptyP,"This","[imm This0.B, imm This1.A, imm This0.A]")
-  ),new AtomicTest(()->
-  collectFail(InvalidImplements.class,"{[This.A] A={interface [B]} B={interface[A]}}"+emptyP,"This",Err.circularImplements(hole))
-
-  ),new AtomicTest(()->
-  methods("{ method Void v()}"+emptyP,"This","[imm method imm Void v()]")
-  ),new AtomicTest(()->
-  methods("{ method Void v() method Any g(Any that)[Library]}"+emptyP,"This","[imm method imm Void v(), imm method imm Any g(imm Any that)[Library]]")
-  ),new AtomicTest(()->
-  methods("{[A] method Void v() A={interface method A a()}}"+emptyP,"This","[imm method imm Void v(), imm method imm This0.A a()]")
-  ),new AtomicTest(()->
-  methods("{[A,B] A={interface [C]} B={interface [C]} C={interface method A a()}}"+emptyP,"This","[imm method imm This0.A a()]")
-  ),new AtomicTest(()->
-  methods("{[A,B] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface method Any a()}}"+emptyP,"This","[imm method imm Void a()]")
-  ),new AtomicTest(()->
-  methods("{[B,A] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface method Any a()}}"+emptyP,"This","[imm method imm Any a()]")
-  ),new AtomicTest(()->
-  methodsFail(InvalidImplements.class,"{[B,A] A={interface [C] method Void a()} B={interface [C] method Any a()} C={interface}}"+emptyP,"This",Err.moreThenOneMethodOrigin("a()", hole))
-  ),new AtomicTest(()->
-  methodsFail(InvalidImplements.class,"{[B,A] A={interface method Any a()} B={interface method Any a()}}"+emptyP,"This",Err.moreThenOneMethodOrigin("a()", hole))
-  ),new AtomicTest(()->
-  methods("{}"+emptyP,"This","[]")
-  ),new AtomicTest(()->
-  methods("{I={interface method Any m()} A={[I]}}","This0.I","[imm method imm Any m()]")
-  ),new AtomicTest(()->
-  methods("{I={interface method Any m()} A={[I]}}","This0.A","[imm method imm Any m()]")
-  ),new AtomicTest(()->
-  methods("{I2={interface method Any m2()} I1={interface method Any m1()} A={[I1,I2]}}","This0.A","[imm method imm Any m1(), imm method imm Any m2()]")
-  ),new AtomicTest(()->
-  methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2()} I1={interface [I0] method Any m1()} A={[I1,I2]}}","This0.A","[imm method imm Any m1(), imm method imm Any m0(), imm method imm Any m2()]")
-  ),new AtomicTest(()->
-  methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I1,I2]}}","This0.A","[imm method imm Any m1(), imm method imm Any m0(), imm method imm Any m2()]")
-  ),new AtomicTest(()->
-  methods("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I2,I1]}}","This0.A","[imm method imm Any m2(), imm method imm Void m0(), imm method imm Any m1()]")
-
   ),new AtomicTest(()->
   toS("{[This1.I]}\nA={J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
   ),new AtomicTest(()->
@@ -222,13 +165,6 @@ public static void toS(String program){
 public static void minimize(String program,String pathIn,String pathOut){
   assertEquals(Program.parse(program).minimize(P.parse(pathIn)),P.parse(pathOut));
   }
-public static void collect(String program,String pathIn,String out){
-  assertEquals(Program.parse(program).collect(P.parse(pathIn).toNCs(),null).toString(),out);
-  }
-public static void methods(String program,String pathIn,String out){
-  assertEquals(Program.parse(program).methods(P.parse(pathIn).toNCs(),null).toString(),out);
-  }
-
 public static void from(String program,String pathIn,String pathSource,String pathOut){
   assertEquals(Program.parse(program).from(P.parse(pathIn),P.parse(pathSource).toNCs()),P.parse(pathOut));
   }
@@ -244,16 +180,6 @@ public static void failWF(Class<?> clazz,String input,String ...output){
   var r=Parse.program("-dummy-",input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   TestHelpers.checkFail(()->Program.parse(input),output,clazz);
-  }
-public static void collectFail(Class<?> clazz,String program,String pathIn,String... output){
-  Program p=Program.parse(program);
-  var pos=p.of(P.parse(pathIn).toNCs(),null).poss();
-  TestHelpers.checkFail(()->p.collect(P.parse(pathIn).toNCs(),pos),output,clazz);
-  }
-public static void methodsFail(Class<?> clazz,String program,String pathIn,String... output){
-  Program p=Program.parse(program);
-  var pos=p.of(P.parse(pathIn).toNCs(),null).poss();
-  TestHelpers.checkFail(()->p.methods(P.parse(pathIn).toNCs(),pos),output,clazz);
   }
 }
 

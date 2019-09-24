@@ -34,7 +34,7 @@ import is.L42.generated.Full.VarTx;
 public class FullL42Visitor implements L42Visitor<Object>{
   public String fileName;
   public StringBuilder errors=new StringBuilder();
-  public EVoid eVoid=new Core.EVoid(null);
+  public EVoid eVoid=new Core.EVoid(new Pos("--temp--",0,0));
   public FullL42Visitor(String fileName){this.fileName=fileName;}
   Pos pos(ParserRuleContext prc){
     return new Pos(fileName,prc.getStart().getLine(),prc.getStart().getCharPositionInLine()); 

@@ -58,9 +58,6 @@ _______
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1;p";NCs) => PR
     
-TODO: BIG: rewrite collect/methods/sortHeader/origin/refine to be much simpler as in the new formalism
-They should all become just private stuff inside sortHeader
-
 * sortHeader({reuse[URL] Ms};pTail) = CORE.L;{s->M.Docs,M.e?| M in Ms, s=M.s}; NCs0
     CORE.L = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
@@ -76,7 +73,7 @@ They should all become just private stuff inside sortHeader
     NCs = [NC | NC in Ms]
     p(This0) = {interface? [Ts] Ms Docs}
     p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
-    Ts' = ♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
+    Ts' = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
     forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
     p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
     MH1..MHn = methods(p1,Ts1,Ms)
@@ -100,9 +97,12 @@ _______
 _______
 #define origin(p;s) = P'   refine(p;s;P)
 * origin(p;s) = P
-    {P}={P |P in p(This0).Ts.Ps and !refine(p;s;P)} U {This0|!refine(p;s;This0)}
-* refine(p;s;P) iff exists P' in p(P).Ts.Ps[from P;p] such that s in dom(p(P').mwts)
-  //assert P' never This0
+    {P}={This0|!refine(p;s;This0)} U
+      {P |P in p(This0).Ts.Ps, s in dom(p(P).mwts) and !refine(p;s;P)}
+* refine(p;s;P) 
+    exists P' in p(P).Ts.Ps[from P;p] such that s in dom(p(P').mwts)
+    //assert P' never This0
+    //assert s in dom(p(P).mwts)
 _______
 #define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
 * extractMHs(p;empty)=empty

@@ -114,7 +114,9 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       return makeErr(res.poss(),info,Err.malformedCoreNC(info));
       }      
     if(cmwts.contains(null)){
-      return makeErr(res.poss(),info,Err.malformedCoreMWT(info));
+      var missing=L(mwts.stream().map(m->m.key()).filter(
+        s->cmwts.stream().noneMatch(m->m!=null &&m.key().equals(s))));
+      return makeErr(res.poss(),info,Err.malformedCoreMWT(info,missing));
       }      
     return new Core.L(res.poss(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
     }
@@ -128,7 +130,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(docs==null){return null;}
     if(t._p()==null){return null;}
     assert t.cs().isEmpty(); 
-    return new Core.T(_inject(t._mdf()), docs, t._p());    
+    return new Core.T(inject(t._mdf()), docs, t._p());    
     }
 
   public Core.L.MWT _inject(Full.L.MWT mwt) {
@@ -143,7 +145,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       }
     catch(UndefinedCase uc){return null;}
     }
-  public Mdf _inject(Mdf mdf) {return mdf==null?Mdf.Immutable:mdf;}
+  public Mdf inject(Mdf mdf) {return mdf==null?Mdf.Immutable:mdf;}
     
   public Core.MH _inject(Full.MH mh) {
     var docs=_injectL(mh.docs(),this::_inject);
@@ -151,8 +153,8 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     var exceptions=_injectL(mh.exceptions(),this::_inject);
     var t=_inject(mh.t());
     if(mh.s().m().isEmpty() || mh._op()!=null || docs==null
-      || pars==null || exceptions==null){return null;}
-    return new Core.MH(_inject(mh._mdf()), docs, t, mh.s(), pars, exceptions);
+      || pars==null || exceptions==null ||t==null){return null;}
+    return new Core.MH(inject(mh._mdf()), docs, t, mh.s(), pars, exceptions);
     }
 
   public Core.L.NC _inject(Full.L.NC nc) {

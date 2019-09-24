@@ -44,6 +44,10 @@ public class Parse {
       this.res=res;
       }
     public boolean hasErr(){return !errorsTokenizer.isEmpty() || !errorsParser.isEmpty() || !errorsVisitor.isEmpty();}
+    @Override public String toString() {
+      if (hasErr()) {return errorsTokenizer+"\n"+errorsParser+"\n"+errorsVisitor;}
+      return res.toString();
+      }
     } 
     
   public static class FailConsole extends ConsoleErrorListener{
@@ -123,5 +127,4 @@ public class Parse {
     var p=new L42AuxParser(t);
     return doResult(fileName,l,p,()->p.nudePathSelX());
     } 
-
   }

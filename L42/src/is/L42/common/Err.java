@@ -141,9 +141,9 @@ public class Err {
   +"\ninvalid nested class for core library"
  ;}public static String malformedCoreFullL(){return
   "A full library litera is contained in a core library literal"
-  ;}public static String malformedCoreMWT(Object info){return
+  ;}public static String malformedCoreMWT(Object info,Object names){return
   " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())  
-  +"\ninvalid method with type for core library"
+  +"\ninvalid method with type for core library; invalid methods are:"+names
   ;}public static String stringInterpolation(Object _1, Object _2){return
   "Error: ill formed string interpolation:"+Err.trimExpression(_1.toString())
   +_2

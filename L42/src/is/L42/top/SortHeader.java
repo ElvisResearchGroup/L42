@@ -45,7 +45,9 @@ class SortHeader{
     Program p0=p.update(l.withMs(notNC));
     var cts=TypeManipulation.toCoreTs(l.ts());
     List<Core.T> ts1=L(c->{
-      c.addAll(cts);
+      for(var ti:cts) {
+        if(!c.contains(ti)) {c.add(ti);}
+        }
       for(var ti:collect(p0,cts,l.poss())){
         if(!cts.contains(ti)){c.add(ti);}
         }
@@ -117,13 +119,7 @@ public MWT mwtOf(MH mh, Core.E _ei) {
     if(res==null){return null;}
     return res._e(); 
     }
-/*public List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
-  try{return collectRec(p,ts,poss);}
-  catch(StackOverflowError so){
-    throw new InvalidImplements(poss,Err.circularImplements(ts));
-    }
-  }*/
-  private List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
+  private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
     if(ts.isEmpty()){return ts;}
     T t0=ts.get(0);
     ts=popL(ts);
@@ -140,17 +136,18 @@ public MWT mwtOf(MH mh, Core.E _ei) {
       c.addAll(recRes);
       });
     }
-  public List<Core.MH> methods(Program p,List<Core.T>ps,List<M> ms,List<Pos> poss){
+  private static List<Core.MH> methods(Program p,List<Core.T>ps,List<M> ms,List<Pos> poss){
     List<Core.MH> mhs=p.extractMHs(ms);
     List<List<MH>> methods=L(c->{
       c.add(mhs);
       for(var t: ps){
-        var li=(Core.L)p.of(t.p(),p.top.poss());
-        c.add(L(li.mwts().stream().map(m->m.mh())));
+        P.NCs tp=t.p().toNCs();
+        var li=(Core.L)p.of(tp,p.top.poss());
+        c.add(L(li.mwts().stream().map(m->p.from(m.mh(),tp))));
         }
       });
     List<S> ss=L(methods.stream().flatMap(msi->msi.stream().map(m->m.s())).distinct());
-    for(S s:ss){origin(p,s,l.poss());}// it throws InvalidImplements
+    for(S s:ss){origin(p,s,p.top.poss());}// it throws InvalidImplements
     List<MH> res=L(ss,(c,s)->{
       for(var msi:methods){
         var ri=_elem(msi,s);
@@ -159,30 +156,31 @@ public MWT mwtOf(MH mh, Core.E _ei) {
       });
     return res;
     }
-public P origin(Program p,S s,List<Pos> poss) throws InvalidImplements{
-  List<P> origins=L(c->{
-    if(!refine(p,s,P.coreThis0.p().toNCs(),poss)){c.add(P.coreThis0.p());}
-    for(var t:((Core.L)p.top).ts()){
-      LL ll=p.of(t.p(),poss);
-      if(!refine(p,s,t.p().toNCs(),poss)){c.add(t.p());}
-      }
-    });
-  if(origins.size()==1){return origins.get(0);}
-  throw new InvalidImplements(poss,
-    Err.moreThenOneMethodOrigin(s,origins));
-  }
+  private static P origin(Program p,S s,List<Pos> poss) throws InvalidImplements{
+    List<P> origins=L(c->{
+      if(!refine(p,s,P.coreThis0.p().toNCs(),poss)){c.add(P.coreThis0.p());}
+      for(var t:((Core.L)p.top).ts()){
+        var tp=t.p().toNCs();
+        var l=(Core.L)p.of(tp,poss);
+        if(l.mwts().stream().noneMatch(m->m.key().equals(s))){continue;}
+        if(!refine(p,s,tp,poss)){c.add(tp);}
+        }
+      });
+    if(origins.size()==1){return origins.get(0);}
+    throw new InvalidImplements(poss,
+      Err.moreThenOneMethodOrigin(s,origins));
+    }
 /*
 * refine(p;s;P) iff exists P' in p(P).Ts.Ps[from P;p] such that s in dom(p(P').mwts)
   //assert P' never This0
 */
-public boolean refine(Program p,S s, P.NCs path,List<Pos> poss){
-  for(T t:((Core.L)p.of(path,poss)).ts()){
-    t=p.from(t, path);
-    var l=(Core.L)p.of(t.p(),poss);
-    if(l.mwts().stream().anyMatch(m->m.mh().s().equals(s))){return true;}
+  private static boolean refine(Program p,S s, P.NCs path,List<Pos> poss){
+    for(T t:((Core.L)p.of(path,poss)).ts()){
+      var p1=p.from(t.p(), path);
+      assert !p1.equals(P.coreThis0.p());
+      var l=(Core.L)p.of(p1,poss);
+      if(l.mwts().stream().anyMatch(m->m.mh().s().equals(s))){return true;}
+      }
+    return false;
     }
-  return false;
   }
-
-
-}
