@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.EndError;
-import is.L42.common.Err;
 import is.L42.common.G;
 import is.L42.common.GX;
 import is.L42.common.Program;
@@ -26,7 +25,6 @@ import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.PR;
 import is.L42.generated.Pos;
-import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
 import is.L42.visitors.Accumulate;
@@ -226,90 +224,5 @@ class HalfQuadruple{
 
   public HalfQuadruple(Y y, Full.E fe) { 
     this.e=(Half.E)fe;
-    }
-  }
-class SortHeader{
-  public final Core.L l;
-  public final List<Full.L.NC> ncs;
-  public final List<Full.L.M> notNC;
-  public SortHeader(Program p) throws EndError{
-    Full.L l=(Full.L)p.top;
-    if(!l.reuseUrl().isEmpty()){throw todo();}
-    List<Full.L.NC> ncs=L(l.ms(),(c,m)->{
-      if(m instanceof Full.L.NC){c.add((Full.L.NC)m);}
-      });
-    var notNC=L(l.ms().stream().filter(m->!(m instanceof Full.L.NC)));
-    Program p0=p.update(l.withMs(notNC));
-    var cts=TypeManipulation.toCoreTs(l.ts());
-    List<Core.T> ts1=L(c->{
-      c.addAll(cts);
-      for(var ti:p0.collect(cts,l.poss())){
-        if(!cts.contains(ti)){c.add(ti);}
-        }
-      });
-    for(var ti:ts1){
-      if(cts.contains(ti)){continue;}
-      assert ti.p().isNCs();
-      List<C> cs=ti.p().toNCs().cs();
-      for(C ci:cs){
-        if(ci.hasUniqueNum()){
-          throw new Program.InvalidImplements(l.poss(),Err.sealedInterface(ti,ts1));
-          }
-        }
-      }
-    var mh1n=p0.methods(P.coreThis0.p(),l.poss());//propagate err
-    List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
-      List<Core.Doc> docs=L();
-      List<Pos> poss=l.poss();
-      var mi=_elem(l.ms(),mh.key());
-      if(mi!=null){
-        docs=TypeManipulation.toCoreDocs(mi.docs());
-        poss=mi.poss();
-        }
-      var res=new Core.L.MWT(poss, docs, mh,"",null);
-      c.add(res);
-      });
-    ArrayList<P.NCs> typePs=new ArrayList<>();
-    ArrayList<P.NCs> cohePs=new ArrayList<>();
-    Top.collectDeps(p0,mwts,typePs,cohePs,false);
-    var docs=TypeManipulation.toCoreDocs(l.docs());
-    boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
-    Info info=new Info(false,
-      unique(L(c->{
-        for(var ti:ts1){c.add(ti.p().toNCs());}
-        c.addAll(typePs);
-        Top.collectDeptDocs(docs, c);
-        })),
-      unique(L(cohePs.stream())),
-      L(),L(),L(),L(),classMeth); 
-    this.l=new Core.L(l.poss(),l.isInterface(), ts1, mwts, L(), info, docs);
-    this.ncs=ncs;
-    this.notNC=notNC;
-    }
-  public MWT mwtOf(MH mh, Core.E _ei) {
-    Full.L.M res=_elem(notNC,mh.s()); 
-    List<Core.Doc> docs=L();
-    List<Pos>poss=this.l.poss();
-    String url="";
-    if(res!=null){
-      docs=TypeManipulation.toCoreDocs(res.docs());
-      poss=res.poss();
-      if(res instanceof Full.L.MWT){url=((Full.L.MWT)res).nativeUrl();}
-      }
-    else{
-      Core.L.MWT coreM=_elem(this.l.mwts(),mh.s());
-      if(coreM!=null){
-        docs=coreM.docs();
-        poss=coreM.poss();
-        url=coreM.nativeUrl();
-        }
-      }
-    assert url.isEmpty() || _ei!=null;
-    return new Core.L.MWT(poss, docs, mh,url, _ei);
-    }
-  public Full.E _eOf(S s) {
-    Full.L.M res=_elem(notNC,s);
-    if(res==null){return null;}
-    return res._e(); 
     }
   }

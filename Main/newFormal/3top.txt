@@ -77,9 +77,9 @@ They should all become just private stuff inside sortHeader
     p(This0) = {interface? [Ts] Ms Docs}
     p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
     Ts' = ♥Ts,(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
-    p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
     forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
-    MH1..MHn = methods(p1,This0,collect(p0,♥Ts),Ms\NCs)
+    p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
+    MH1..MHn = methods(p1,Ts1,Ms)
     MWTs = [♥Docs MH | MH in MH1..MHn and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
     Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?}
@@ -91,20 +91,18 @@ _______
 * collect(p,T0 Ts)=((T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
     p(T0.P)={interface Ts0 _}=CORE.L
 _______
-#define methods(p,P0,FULL.L)=CORE.MHs //methods res has relevant order
-* methods(p,P0,Core.Ts, Ms)=MH1..MHn//assert ... and reuse are unreachable
-    MHs=extractMHs(p.navigate(P0);Ms)[from P0;p]
-    s1..sn=[dom(methods(p,P)) | P in CORE.Ts.Ps].flatten().distinct()//an ordered version of {s | P in Ps, s in extractMHs(p.navigate(P),p(P).Ms).ss}
-    origin(p;s1,P0)..origin(p;sn,P0) all defined
-    [MHi,_]=[MH[from P0;p]| MH in MHs and MH.s=si],[p(P).MWTs(si).MH[from P;p]| P in CORE.Ts.Ps] for i in 1..n
+#define methods(p,Core.Ts, Full.Ms)=CORE.MHs //methods res has relevant order
+* methods(p,Core.Ts, Ms)=MH1..MHn//assert ... and reuse are unreachable
+    MHs=extractMHs(p;Ms)
+    s1..sn=[dom(p(P).MWTs) | P in CORE.Ts.Ps].flatten().distinct()
+    origin(p;s1)..origin(p;sn) all defined
+    [MHi,_]=[MH| MH in MHs and MH.s=si],[p(P).MWTs(si).MH[from P;p]| P in CORE.Ts.Ps] for i in 1..n
 _______
-#define origin(p;s;P) = P'   refine(p;s;P)
-* origin(p;s; P) = P'
-    {P'} = {P'| P' in P U p(P).Ts.Ps[from P;p] and s in dom(p(P).Ms) and !refine(p;s;P')}
-    
+#define origin(p;s) = P'   refine(p;s;P)
+* origin(p;s) = P
+    {P}={P |P in p(This0).Ts.Ps and !refine(p;s;P)} U {This0|!refine(p;s;This0)}
 * refine(p;s;P) iff exists P' in p(P).Ts.Ps[from P;p] such that s in dom(p(P').mwts)
   //assert P' never This0
-
 _______
 #define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
 * extractMHs(p;empty)=empty

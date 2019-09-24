@@ -61,7 +61,7 @@ _______
     p |- P0 <= P1
 
 * p |- P0 <= P1  
-    P1 in {P0} U (collect(p,P0)) U {Any} //assert p.minimize(Pi)=Pi
+    P1 in {P0} U p(P0).Ts[from P0;p] U {Any} //assert p.minimize(Pi)=Pi
 
 * mdf <= mdf
 * capsule <= mdf, if mdf in {mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm}

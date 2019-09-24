@@ -166,64 +166,8 @@ public class Program implements Visitable<Program>{
     assert minimize(source)==source;
     var v=fromVisitor(source);
     return ct.withSt(v.visitST(ct.st())).withT(v.visitT(ct.t()));
-    }
-  public List<T> collect(P.NCs p,List<Pos> poss) throws InvalidImplements{
-    LL ll=of(p,poss);
-    if(!ll.isFullL()){
-      Core.L l=(Core.L)ll;
-      return from(l.ts(),p);
-      }
-    Full.L fl=(Full.L)ll;
-    if(!fl.reuseUrl().isEmpty()){
-      assert false;
-      return from(Constants.readURL.apply(fl.reuseUrl()).ts(),p);
-      }
-    if(!fl.isDots()){
-      return collect(L(fl.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p))),fl.poss());
-      }
-    assert false;
-    Program p0=navigate(p);
-    Full.L fl0=Constants.readFolder.apply(p0.pTails);
-    return collect(L(fl0.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p))),fl0.poss());
-    }   
-  public List<T> collect(List<T> ts,List<Pos> poss)throws InvalidImplements{
-    try{return collectRec(ts,poss);}
-    catch(StackOverflowError so){
-      throw new InvalidImplements(poss,Err.circularImplements(ts));
-      }
-    }
-  private List<T> collectRec(List<T> ts,List<Pos> poss)throws InvalidImplements{
-    if(ts.isEmpty()){return ts;}
-    T t0=ts.get(0);
-    ts=popL(ts);
-    var recRes=collectRec(ts,poss);
-    var ll=of(t0.p(),poss);
-    if(!ll.isFullL()){
-      Core.L l=(Core.L)ll;
-      if(!l.isInterface()){throw new InvalidImplements(l.poss(),Err.notInterfaceImplemented());}
-      return L(c->{
-        if(!recRes.contains(t0)){c.add(t0);}
-        for(var ti:((Core.L)ll).ts()){
-          T tif=from(ti,t0.p().toNCs());
-          if(!recRes.contains(tif)){c.add(tif);}        
-          }
-        c.addAll(recRes);
-        });
-      }
-    Full.L fl=(Full.L)ll;
-    assert fl.reuseUrl().isEmpty();
-    assert !fl.isDots();
-    if(!fl.isInterface()){throw new InvalidImplements(fl.poss(),Err.notInterfaceImplemented());}
-    List<T> ts0=L(fl.ts(),(c,ti)->c.add(from(TypeManipulation.toCore(ti),t0.p().toNCs())));
-    List<T> ts1=collectRec(ts0,fl.poss());
-    return L(c->{//is not worth to remove this 6 lines dup
-      if(!recRes.contains(t0)){c.add(t0);}
-      for(var ti:ts1){
-        if(!recRes.contains(ti)){c.add(ti);}        
-        }
-      c.addAll(recRes);
-      });
-    }
+    }  
+  
   public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
     return subPs.allMatch(p->isSubtype(p, superP,poss));
     }
@@ -242,7 +186,8 @@ public class Program implements Visitable<Program>{
     P.NCs subP0=subP.toNCs();
     if(!subP.isNCs()){return false;}
     if(!superP.isNCs()){return false;}
-    for(T ti:collect(subP0,poss)){
+    assert minimize(subP0)==subP0;
+    for(T ti:((Core.L)of(subP0,poss)).ts()){
       P pi=from(ti.p(),subP0);
       assert minimize(pi)==pi;
       if(pi.equals(superP)){return true;}
@@ -270,26 +215,6 @@ public class Program implements Visitable<Program>{
   public static class PathNotExistent extends EndError{
     public PathNotExistent(List<Pos> poss, String msg) { super(poss, msg);}
     }
-  public P origin(S s, P.NCs p,List<Pos> poss) throws InvalidImplements{
-    List<P> origins=L(c->{
-      if(!refine(s,p,poss)){c.add(p);}
-      for(var t:collect(p,poss)){
-        LL ll=this.of(t.p(),poss);
-        if(ll.isFullL() && ((Full.L)ll).ms().stream()
-          .noneMatch(m->m.key().equals(s))){continue;}
-        if(!refine(s,t.p().toNCs(),poss)){c.add(t.p());}
-        }
-      });
-    if(origins.size()==1){return origins.get(0);}
-    throw new InvalidImplements(poss,
-      Err.moreThenOneMethodOrigin(s,origins));
-    }
-  public boolean refine(S s, P.NCs p,List<Pos> poss){
-    for(T t:collect(p,poss)){
-      if(methods(t.p(),poss).stream().anyMatch(mh->mh.s().equals(s))){return true;}
-      }
-    return false;
-    }
   public P resolve(List<C> cs,List<Pos>poss){
     int n=findScope(cs.get(0),0,poss);
     return P.of(n, cs);
@@ -307,12 +232,12 @@ public class Program implements Visitable<Program>{
       }
     return pop().findScope(c, acc+1,poss);
     }
-  public List<Core.MH>extractMHs(List<Full.L.M> ms,Program fromP,P.NCs fromSource){
+  public List<Core.MH>extractMHs(List<Full.L.M> ms){
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
       if(m instanceof Full.L.MI){return;}
       if(m instanceof Full.L.MWT){
-        c.add(fromP.from(TypeManipulation.toCore(((Full.L.MWT)m).mh()),fromSource));return;
+        c.add(TypeManipulation.toCore(((Full.L.MWT)m).mh()));return;
         }
       Full.L.F f=(Full.L.F)m;
       Core.T t=TypeManipulation.toCore(f.t());
@@ -328,36 +253,7 @@ public class Program implements Visitable<Program>{
       c.add(new Core.MH(Mdf.Readable,L(), tr, f.key(), L(),L()));
       });
     }
- 
-  public List<Core.MH> methods(P p,List<Pos> poss){
-    if(!p.isNCs()){return L();}
-    P.NCs p0=p.toNCs();
-    LL ll=of(p0,poss);
-    if(!ll.isFullL()){
-      return L(((Core.L)ll).mwts(),(c,m)->c.add(from(m.mh(),p0)));
-      }
-    Full.L l=(Full.L)ll;
-    assert !l.isDots();
-    assert l.reuseUrl().isEmpty();
-    List<Core.MH> mhs=this.navigate(p0).extractMHs(l.ms(),this,p0);
-    List<T> ts=L(l.ts(),(c,t)->c.add(from(TypeManipulation.toCore(t),p0)));
-    List<T> ps=collect(ts,l.poss());
-    List<List<MH>> methods=L(c->{
-      c.add(mhs);
-      for(var t: ps){
-        c.add(methods(t.p(),l.poss()));
-        }
-      });
-    List<S> ss=L(methods.stream().flatMap(ms->ms.stream().map(m->m.s())).distinct());
-    for(S s:ss){origin(s,p0,l.poss());}// it throws InvalidImplements
-    List<MH> res=L(ss,(c,s)->{
-      for(var ms:methods){
-        var ri=_elem(ms,s);
-        if(ri!=null){c.add(ri);return;}
-        }
-      });
-    return res;
-    }
+  
   public P minimize(P path){
     if(!path.isNCs()){return path;}
     return minimize(path.toNCs());
