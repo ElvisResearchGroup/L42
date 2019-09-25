@@ -25,7 +25,7 @@ infoNorm:'#norm{';
 infoTyped:'#typed{';
 
 info: W*(infoNorm|infoTyped) infoBody* '}' EOF;
-infoBody: typeDep|coherentDep|friends|usedMethods|privateSupertypes|refined|declaresClassMethods;
+infoBody: typeDep|coherentDep|friends|usedMethods|privateSupertypes|refined|declaresClassMethods|nativeKind|nativePar|uniqueId;
 typeDep: 'typeDep='(W* path)+ W*;
 coherentDep: 'coherentDep='(W* path)+ W*;
 friends: 'friends='(W* path)+ W*;
@@ -33,6 +33,9 @@ usedMethods: 'usedMethods='(W* pathSel)+ W*;
 privateSupertypes: 'privateSupertypes='(W* path)+ W*;
 refined: 'refined='(W* selector)+ W*;
 declaresClassMethods: 'declaresClassMethods';
+nativeKind: 'nativeKind=' W* (x|c);
+nativePar: 'nativePar='(W* path)+ W*;
+uniqueId: 'uniqueId='W* x;
 
 
 fragment IdUp: '_'* ('A'..'Z'|'$');

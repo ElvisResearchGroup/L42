@@ -248,6 +248,36 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#nativeKind}.
+	 * @param ctx the parse tree
+	 */
+	void enterNativeKind(L42AuxParser.NativeKindContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#nativeKind}.
+	 * @param ctx the parse tree
+	 */
+	void exitNativeKind(L42AuxParser.NativeKindContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#nativePar}.
+	 * @param ctx the parse tree
+	 */
+	void enterNativePar(L42AuxParser.NativeParContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#nativePar}.
+	 * @param ctx the parse tree
+	 */
+	void exitNativePar(L42AuxParser.NativeParContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#uniqueId}.
+	 * @param ctx the parse tree
+	 */
+	void enterUniqueId(L42AuxParser.UniqueIdContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#uniqueId}.
+	 * @param ctx the parse tree
+	 */
+	void exitUniqueId(L42AuxParser.UniqueIdContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#x}.
 	 * @param ctx the parse tree
 	 */

@@ -40,7 +40,7 @@ _______
     I[C=empty;p1;G^MHi;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
     MWTi = ♥sDe(MHi.s).Doc MHi ♥sDe(MHi.s).nativeURL e?'i
-    L = updateInfo(p1, MWT1..MWTn)
+    L = updateInfo(p1, MWT1..MWTn)[Info.uniqueId=empty]
     p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
     PR = CTz1; p2
 

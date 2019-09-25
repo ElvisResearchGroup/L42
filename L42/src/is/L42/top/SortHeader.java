@@ -35,7 +35,7 @@ class SortHeader{
   public final Core.L l;
   public final List<Full.L.NC> ncs;
   public final List<Full.L.M> notNC;
-  public SortHeader(Program p) throws EndError{
+  public SortHeader(Program p,int uniqueId) throws EndError{
     Full.L l=(Full.L)p.top;
     if(!l.reuseUrl().isEmpty()){throw todo();}
     List<Full.L.NC> ncs=L(l.ms(),(c,m)->{
@@ -88,7 +88,7 @@ class SortHeader{
       Top.collectDeptDocs(docs, c);
       })),
     unique(L(cohePs.stream())),
-    L(),L(),L(),L(),classMeth); 
+    L(),L(),L(),L(),classMeth,"",L(),uniqueId); 
   this.l=new Core.L(l.poss(),l.isInterface(), ts1, mwts, L(), info, docs);
   this.ncs=ncs;
   this.notNC=notNC;

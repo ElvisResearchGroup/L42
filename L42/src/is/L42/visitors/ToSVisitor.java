@@ -170,6 +170,9 @@ public class ToSVisitor implements CollectorVisitor{
     infoItem("privateSupertypes",info.privateSupertypes());
     infoItem("refined",info.refined());
     boolInfoItem(info.declaresClassMethods(),"declaresClassMethods");
+    infoElem("nativeKind",info.nativeKind(),"");
+    infoItem("nativePar",info.nativePar());
+    infoElem("uniqueId",info._uniqueId(),-1);
     c("}");
     }
   private void boolInfoItem(boolean flag,String text){
@@ -182,7 +185,13 @@ public class ToSVisitor implements CollectorVisitor{
     separeFromChar();
     c(label+"=");
     seq(empty,l,", ");
-    }  
+    }
+  private void infoElem(String label,Object o,Object empty){
+    if(o.equals(empty)){return;}
+    separeFromChar();
+    c(label+"=");
+    c(o.toString());
+    } 
   public void visitMWT(Core.L.MWT mwt){
     visitDocs(mwt.docs());
     visitMH(mwt.mh());

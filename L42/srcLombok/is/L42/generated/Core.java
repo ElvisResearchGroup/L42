@@ -105,7 +105,10 @@ public class Core {
       @NonNull List<P.NCs> privateSupertypes;
       @NonNull List<S>refined;
       boolean declaresClassMethods;
-      public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false);
+      @NonNull String nativeKind;
+      @NonNull List<P> nativePar;
+      int _uniqueId;
+      public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false,"",L(),-1);
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class

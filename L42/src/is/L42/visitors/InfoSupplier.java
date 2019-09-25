@@ -5,6 +5,7 @@ import static is.L42.tools.General.L;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import is.L42.common.Err;
@@ -14,6 +15,7 @@ import is.L42.generated.L42AuxParser;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.tools.General;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Core.L.Info;
@@ -30,6 +32,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   List<P.NCs> privateSupertypes=null;
   List<S> refined=null;
   Boolean declaresClassMethods=null;
+  String nativeKind=null;
+  List<P> nativePar=null;
+  Integer _uniqueId=null;
   Core.L.Info result;
   AuxVisitor av;
   InjectionToCore inject;
@@ -45,7 +50,12 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       }
     return p.toNCs();
     }
-
+  int toUniqueId(String s){
+    if(!s.startsWith("id")){return -1;}
+    s=s.substring(2);
+    try{return Integer.parseInt(s);}
+    catch(NumberFormatException nfe){return -1;}
+    }
   Core.PathSel psf(L42AuxParser.PathSelContext pi){
     Core.PathSel p=inject._inject(av.visitPathSel(pi));
     assert p!=null;
@@ -68,7 +78,18 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       result= Core.L.Info.empty;
       }
     }
-
+  <Z,E>void fillElem(String name, Z z,Function<Z,E>s, Supplier<E> get, Consumer<E> set,Predicate<E>empty){
+    if(z==null){return;}
+    if(get.get()!=null){
+      inject.errors.append(pos+ Err.repeatedInfo(name));
+      result= Core.L.Info.empty;
+      }
+    set.accept(s.apply(z));
+    if(empty.test(get.get())){
+      inject.errors.append(pos+Err.emptyInfo(name));
+      result= Core.L.Info.empty;
+      }
+    }
   void boolFlag(String name, Object z,Supplier<Boolean> get, Consumer<Boolean> set){
     if(z==null){return;}    
     if(get.get()!=null){
@@ -96,6 +117,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       fillInfo("privateSupertypes",b.privateSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
       fillInfo("refined",b.refined(),z->z.selector(),()->refined,v->refined=v,this::sf);
       boolFlag("declaresClassMethods",b.declaresClassMethods(),()->declaresClassMethods,v->declaresClassMethods=v);
+      fillElem("nativeKind",b.nativeKind(),z->z.x()!=null?z.x().getText():z.c().getText(),()->nativeKind,v->nativeKind=v,s->s.isEmpty());
+      fillInfo("nativePar",b.nativePar(),z->z.path(),()->nativePar,v->nativePar=v,this::pf);
+      fillElem("uniqueId",b.uniqueId(),z->toUniqueId(z.x().getText()),()->_uniqueId,v->_uniqueId=v,i->i==-1);
       }
     if(result!=null){return result;}
     List<P.NCs> empty=L();
@@ -108,6 +132,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     nullToDef(()->privateSupertypes,v->privateSupertypes=v,empty);
     nullToDef(()->refined,v->refined=v,emptyS);
     nullToDef(()->declaresClassMethods,v->declaresClassMethods=v,false);
-    return new Core.L.Info(isTyped, typeDep, coherentDep, friends, usedMethods, privateSupertypes, refined, declaresClassMethods);
+    nullToDef(()->nativeKind,v->nativeKind=v,"");
+    nullToDef(()->nativePar,v->nativePar=v,General.<P>L());
+    nullToDef(()->_uniqueId,v->_uniqueId=v,-1);
+    return new Core.L.Info(isTyped, typeDep, coherentDep, friends, usedMethods, privateSupertypes, refined, declaresClassMethods,nativeKind,nativePar,_uniqueId);
     }
 }

@@ -1,6 +1,6 @@
 _______
 #define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
-* flagTyped(p) = p.update( p(This0)[typable(p)=typed][Info.uniqueId=empty] )
+* flagTyped(p) = p.update( p(This0)[typable(p)=typed])
     forall Cs in typable(p):  |-p.navigate(This0.Cs)
 
 * LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]

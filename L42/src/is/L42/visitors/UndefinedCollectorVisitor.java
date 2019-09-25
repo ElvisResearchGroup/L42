@@ -7,7 +7,7 @@ import is.L42.generated.*;
 
 public class UndefinedCollectorVisitor implements CollectorVisitor{
   @SuppressWarnings("serial") public static class UndefinedCase extends RuntimeException{}
-  private static final UndefinedCase uc=new UndefinedCase();
+  protected static final UndefinedCase uc=new UndefinedCase();
   @Override public void visitC(C c){throw uc;}
   @Override public void visitP(P p){throw uc;}
   @Override public void visitS(S s){throw uc;}

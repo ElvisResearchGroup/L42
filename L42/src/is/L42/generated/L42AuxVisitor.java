@@ -155,6 +155,24 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#nativeKind}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNativeKind(L42AuxParser.NativeKindContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#nativePar}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitNativePar(L42AuxParser.NativeParContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#uniqueId}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitUniqueId(L42AuxParser.UniqueIdContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#x}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

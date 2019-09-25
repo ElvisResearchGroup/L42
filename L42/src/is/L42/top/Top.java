@@ -34,7 +34,7 @@ import static is.L42.tools.General.*;
 
 public class Top {
   public PR top(List<CT> ctz, Program p)throws EndError {
-    SortHeader sorted=new SortHeader(p);//progagates the right header errors
+    SortHeader sorted=new SortHeader(p,uniqueId++);//progagates the right header errors
     Core.L coreL=sorted.l;
     List<Full.L.NC> ncs=sorted.ncs;
     Program pl=p.update(coreL);
@@ -56,11 +56,13 @@ public class Top {
       });//and propagate errors out
     List<MWT> mwt1n=L(mh1n,coreE1n,(c,mhi,_ei)->c.add(sorted.mwtOf(mhi,_ei)));
     Core.L l=updateInfo(p1,mwt1n);
+    assert l.info()._uniqueId()!=-1;
+    l=l.withInfo(l.info().with_uniqueId(-1));
     Program p2=flagTyped(p1.update(l));//propagate illTyped
     return new PR(ctz1,p2);
     }
   private Program flagTyped(Program p) throws EndError {
-    return p; 
+    return p;
     }
   private Core.L updateInfo(Program p, List<MWT>mwts) {
     //p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
@@ -74,10 +76,13 @@ public class Top {
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     collectDeps(p,mwts,typePs,cohePs,true);
-    Info info=new Info(false,L(typePs.stream()),L(cohePs.stream()),L(),L(),L(),L(),false); 
+    Info info=Info.empty.withTypeDep(L(typePs.stream())).withCoherentDep(L(cohePs.stream())); 
     return new Core.L(l.poss(), l.isInterface(), l.ts(), merge(mwts0,mwts), l.ncs(),sumInfo(l.info(),info),l.docs());
     }
   private Info sumInfo(Info info1, Info info2) {
+    assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
+    assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
+    assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
     return new Info(info1.isTyped() && info2.isTyped(),
       mergeU(info1.typeDep(),info2.typeDep()),
       mergeU(info1.coherentDep(),info2.coherentDep()),
@@ -85,7 +90,10 @@ public class Top {
       mergeU(info1.usedMethods(),info2.usedMethods()),
       mergeU(info1.privateSupertypes(),info2.privateSupertypes()),
       mergeU(info1.refined(),info2.refined()),
-      info1.declaresClassMethods() || info2.declaresClassMethods()
+      info1.declaresClassMethods() || info2.declaresClassMethods(),
+      info1.nativeKind()+info2.nativeKind(),
+      info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
+      Math.max(info1._uniqueId(),info2._uniqueId())
       );
     }
   private Core.L updateInfo(Program p1, Core.L.NC nc) {
@@ -120,6 +128,7 @@ public class Top {
       }
     throw bug();
     }
+  private int uniqueId=0;
   private static final Half.T halfLib=new Half.T(null,L((ST)P.coreLibrary));
   private PR topNC(List<CT> ctz, Program p, List<NC> ncs)  throws EndError{
     if(ncs.isEmpty()){return new PR(ctz,p);}

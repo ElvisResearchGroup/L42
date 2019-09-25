@@ -149,7 +149,7 @@ J ::=[p;G; wrap=Any?]
 
 J[wrap] = J[wrap=Any]
 J[!wrap] = J[wrap=empty]
-J[ST]= J[wrap] if solve(ST)==Any
+J[ST]= J[wrap] if p.minimize(empty,ST)==Any
 J[ST]=J otherwise
 J(x) = x
   !J.nativeWrap(J.G(x))
