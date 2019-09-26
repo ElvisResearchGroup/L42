@@ -1,6 +1,8 @@
 package is.L42.translationToJava;
 
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.popL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 
@@ -8,6 +10,7 @@ import java.util.List;
 
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.generated.Core.D;
 import is.L42.generated.Core.T;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -15,7 +18,9 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.ST;
 import is.L42.generated.X;
+import is.L42.visitors.FV;
 import is.L42.visitors.ToSTrait;
+import lombok.NonNull;
 
 
 public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToSTrait{
@@ -65,9 +70,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   void wrap(Boolean b){this.wrap=b;}
   @Override public void visitEX(Core.EX x){
-    if(!nativeWrap(g(x.x()))){kw("£_"+x);return;}
+    if(!nativeWrap(g(x.x()))){kw("£x"+x);return;}
     className(g(x.x()));
-    c(".wrap(£_"+x+")");
+    c(".wrap(£x"+x+")");
     }
   @Override public void visitPCastT(Core.PCastT pCastT){
     if(pCastT.t().p()!=P.pAny){
@@ -113,15 +118,87 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c(")");
     if(nw){c(")");}
     }
-  @Override public void visitLoop(Core.Loop loop){throw uc;}
-  @Override public void visitThrow(Core.Throw thr){throw uc;}
-  @Override public void visitOpUpdate(Core.OpUpdate opUpdate){throw uc;}
-  @Override public void visitBlock(Core.Block block){throw uc;}
-  @Override public void visitD(Core.D d){throw uc;}
+  //static <K> K throwE(Error e){throw e;}
+  //static<K> L42Void toVoid(K k){return L42Void.instance;}
+  @Override public void visitLoop(Core.Loop loop){
+    kw("switchKw(0){defaultKw->{if(false)yield Wrap.throwE(null);whileKw(trueKw)");
+    var oldWrap=wrap;
+    wrap(false);
+    visitE(loop.e());
+    wrap(oldWrap);
+    c(";}}");
+    }
+  @Override public void visitThrow(Core.Throw thr){
+    kw("Wrap.throwE(");
+    var oldWrap=wrap;
+    wrap(true);
+    visitE(thr.e());
+    wrap(oldWrap);
+    c(")");
+    }
+  @Override public void visitOpUpdate(Core.OpUpdate o){
+    kw("Wrap.toVoid(£x"+o.x()+"=");
+    var oldWrap=wrap;
+    wrap(g(o.x()).p()==P.pAny);
+    visitE(o.e());
+    wrap(oldWrap);
+    c(")");
+    }
+  @Override public void visitBlock(Core.Block b){
+    if(b.ds().isEmpty() && b.ks().isEmpty()){visitE(b.e());return;}
+    indent();
+    kw("switchKw(0){defaultKw->{");
+    nl();
+    var oldG=g;
+    g=g.plusEq(b.ds());
+    dec(b.ds());
+    if(!b.ks().isEmpty()){kw("try{");}
+    visitDs(b.ds());//init
+    if(!b.ks().isEmpty()){
+      c("}");
+      visitKs(b.ks());
+      }
+    kw("yield");
+    visitE(b.e());
+    g=oldG;
+    nl();
+    deIndent();
+    }
+  private void dec(List<D> ds) {
+    List<List<X>> fvs=L(ds,(c,di)->
+      c.add(FV.of(di.e().visitable())));
+    for(var di:ds){
+      X xi=di.x();
+      boolean found=false;
+      for(var fv:fvs){if(fv.contains(xi)){found=true;}}
+      fvs=popL(fvs);
+      dec(found,di);
+      }
+    }
+  private void dec(boolean fwd, D d) {
+    typeName(d.t());
+    kw("£x"+d.x()+"=");
+    defaultFor(p.ofCore(d.t().p()).info().nativeKind());
+    c(";");
+    nl();
+    if(!fwd){return;}
+    typeName(d.t().withMdf(Mdf.ImmutableFwd));//so it can be 'Object'
+    kw("£x"+d.x()+"£fwd=");
+    className(d.t());
+    c(".NewFwd();");
+    nl();
+    }
+  private void defaultFor(String kind) {
+    if(kind.isEmpty()){kw("null");return;}
+    //TODO: more
+    }
+  @Override public void visitD(Core.D d){//init
+    throw uc;
+    }
+  
   @Override public void visitK(Core.K k){throw uc;}
-  @Override public void visitT(Core.T t){throw uc;}
+  @Override public void visitT(Core.T t){typeName(t);}
   @Override public void visitMWT(Core.L.MWT mwt){throw uc;}
   @Override public void visitMH(Core.MH mh){throw uc;}
   @Override public void visitNC(Core.L.NC nc){throw uc;}
-
   }

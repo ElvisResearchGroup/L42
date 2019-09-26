@@ -176,21 +176,24 @@ J(xP.m(x1=e1..xn=en))=je
   je=je' if !J.nativeWrap(T)
   je=J.className(T).wrap(je') otherwise
 
-J(loop e)= whileKw(trueKw){if(false){break;} J[!wrap](e);}
-J(throw e)= throwKw J(throw).of(J[wrap](e))
-J(x:=e)=x=J[J.G(x)](e)
+J(loop e)= switchKw(0){defaultKw->{
+  if(false)yield Wrap.throwE(null);
+  whileKw(trueKw) J[!wrap](e);
+  }}
+J(throw e)= Wrap.throwE(new J(throw)(J[wrap](e)))
+J(x:=e)=Wrap.toVoid(x=J[J.G(x)](e))
 J( (e) )=J(e)
 J( (Ds e) )=switchKw(0){defaultKw->{J'.dec(Ds) J'.init(Ds) yieldKw J'(e);}}
   J'=J[G+=G^Ds]
 
-J( (Ds Ks e) )=switchKw(0){defaultKw->{J'.dec(Ds) try{J.init(Ds)} J'.catch(Ks) yieldKw J'(e);}}
+J( (Ds Ks e) )=switchKw(0){defaultKw->{J'.dec(Ds) try{J'.init(Ds)} J'.catch(Ks) yieldKw J'(e);}}
   J'=J[G+=G^Ds]
 J.dec(D1..Dn) = J.dec(fwd?1,D1)..J.dec(fwd?1,Dn)
   fwd?i=fwd if Di.x inside Di.e..Dn.e
   fwd?i=empty otherwise
-J.dec(xz,var? T x=e) = 
+J.dec(fwd?,var? T x=e) = 
   J(T) x=defaultFor(J(T));
-  J(T) x£fwd=J.className(T).NewFwd(); //if fwd?=fwd
+  J(T[mdf=fwd imm]) x£fwd=J.className(T).NewFwd(); //if fwd?=fwd
 J.init(D1..Dn) = J.init(D'1)..J.init(D'n)
   D'i=Di[Di.x=Di.x£fwd .. Dn.x=Dn.x£fwd]
 J.init(var? T x=e) = x=J[J.G(x)](e);((Fwd)x£fwd).fix(x);
