@@ -13,66 +13,16 @@ import is.L42.common.Program;
 import is.L42.generated.*;
 import is.L42.generated.Core.T;
 
-public class ToSVisitor implements CollectorVisitor{
+public class ToSVisitor implements ToSTrait{
+  @Override public ToSTrait.ToSState state(){return state;}
+  ToSTrait.ToSState state= new ToSTrait.ToSState();
+  boolean nextIsMatching=false;
+
   public static String of(Visitable<?> v){
     var tos=new ToSVisitor();
     v.accept(tos);
-    return tos.result.toString();
+    return tos.result().toString();
     }
-  private StringBuilder result=new StringBuilder();
-  private String currentIndent="";
-  boolean lastWasNl=false;
-  boolean lastWasNum=false;
-  boolean nextIsMatching=false;
-  void nl(){
-    if(lastWasNl){return;}
-    result.append("\n");
-    result.append(currentIndent);
-    lastWasNl=true;
-    lastWasNum=false;
-    }
-  void indent(){currentIndent+="  ";}
-  void deIndent(){currentIndent=currentIndent.substring(2);}
-  char last(){return result.charAt(result.length()-1);}
-  void c(String s){
-    if(s.isEmpty()){return;}
-    assert !s.startsWith(",") || last()!='(':s;
-    assert !s.startsWith(";") || ( last()!=';'&&  last()!='}'):s;
-    result.append(s);
-    lastWasNl=false;
-    lastWasNum=false;
-    }
-
-  void separeFromChar(){
-    if(lastWasNl || lastWasNum){return;}
-    if(result.length()==0){return;}
-    char last=last();
-    if(Character.isLetter(last) || Character.isDigit(last) || last=='$' || last=='_'){
-      result.append(" ");
-      }
-    }
-  void kw(String s){
-    separeFromChar();
-    c(s);
-  }
-
-  private static final IntConsumer empty=i->{}; 
-  void seqHas(IntConsumer prefix, List<? extends HasVisitable> elements,String sep){
-    for(int i:range(elements)){
-      if(i!=0){c(sep);}
-      prefix.accept(i);
-      elements.get(i).visitable().accept(this);
-      }
-    }
-  
-  void seq(IntConsumer prefix, List<? extends Visitable<?>>elements,String sep){
-    for(int i:range(elements)){
-      if(i!=0){c(sep);}
-      prefix.accept(i);
-      elements.get(i).accept(this);
-      }
-    }
-
   public void visitMdf(Mdf mdf){
     separeFromChar();
     c(mdf.inner);
@@ -106,7 +56,7 @@ public class ToSVisitor implements CollectorVisitor{
     if(!s.m().isEmpty()){separeFromChar();}
     c(s.m());
     if(s.hasUniqueNum()){c("::"+s.uniqueNum());}
-    c("(");seq(empty,s.xs(),",");c(")");
+    c("(");seq(empty(),s.xs(),",");c(")");
     }
 
   public void visitX(X x){
@@ -124,7 +74,7 @@ public class ToSVisitor implements CollectorVisitor{
   public void visitSTOp(ST.STOp stOp){
     c(opRepr(stOp.op()));
     for(var stz:stOp.stzs()){
-      c("[");seqHas(empty,stz," ");c("]");
+      c("[");seqHas(empty(),stz," ");c("]");
       }
     }
 
@@ -146,7 +96,7 @@ public class ToSVisitor implements CollectorVisitor{
     if(!inline){indent();}
     if(l.isInterface()){c("interface");}
     exceptionImplements(l.ts());
-    var sp=empty;
+    var sp=empty();
     if(!inline){sp=i->nl();}
     seq(sp,l.mwts(),"");
     seq(sp,l.ncs(),"");
@@ -184,7 +134,7 @@ public class ToSVisitor implements CollectorVisitor{
     if(l.isEmpty()){return;}
     separeFromChar();
     c(label+"=");
-    seq(empty,l,", ");
+    seq(empty(),l,", ");
     }
   private void infoElem(String label,Object o,Object empty){
     if(o.equals(empty)){return;}
@@ -230,7 +180,7 @@ public class ToSVisitor implements CollectorVisitor{
     
   public void visitBlock(Core.Block block){
     boolean inline=HasMultilinePart.inline(block);
-    var sp=empty;
+    var sp=empty();
     if(inline){sp=i->nl();}
     c("(");
     if(!inline){indent();}
@@ -317,7 +267,7 @@ public class ToSVisitor implements CollectorVisitor{
     }
   private void exceptionImplementsFull(List<Full.T> ts){
     if(ts.isEmpty()){return;}
-    c("[");seq(empty,L(ts,t->t._mdf()!=Mdf.Immutable?t:t.with_mdf(null)),", ");c("]");
+    c("[");seq(empty(),L(ts,t->t._mdf()!=Mdf.Immutable?t:t.with_mdf(null)),", ");c("]");
     }
   private void exceptionImplements(List<Core.T> ts){
     if(ts.isEmpty()){return;}
@@ -348,7 +298,7 @@ public class ToSVisitor implements CollectorVisitor{
     }
     
   public void visitBinOp(Half.BinOp binOp){
-    seqHas(empty,binOp.es(),opRepr(binOp.op()));
+    seqHas(empty(),binOp.es(),opRepr(binOp.op()));
     }
     
   public void visitMCall(Half.MCall mCall){
@@ -367,8 +317,8 @@ public class ToSVisitor implements CollectorVisitor{
     var ds0=block.ds();
     var ks0=block.ks();
     var e0=block.e();
-    seq(empty,ds0,", ");
-    seq(empty,ks0,", ");
+    seq(empty(),ds0,", ");
+    seq(empty(),ks0,", ");
     visitE(e0);
     c(")");
     }
@@ -415,7 +365,7 @@ public class ToSVisitor implements CollectorVisitor{
   public void visitCsP(Full.CsP csP){
     if(csP.cs().isEmpty()){visitP(csP._p());return;}
     assert csP._p()==null;
-    seq(empty,csP.cs(),".");
+    seq(empty(),csP.cs(),".");
     }
     
   public void visitL(Full.L l){
@@ -427,7 +377,7 @@ public class ToSVisitor implements CollectorVisitor{
     var ms0=l.ms();
     var docs0=l.docs();
     exceptionImplementsFull(ts0);
-    var sp=empty;
+    var sp=empty();
     if(!inline){sp=i->nl();}
     seqHas(sp,ms0,"");
     sp.accept(0);
@@ -517,16 +467,16 @@ public class ToSVisitor implements CollectorVisitor{
   public void visitUOp(Full.UOp uOp){
     if(uOp._op()!=null){c(opRepr(uOp._op()));}
     if(uOp._num()!=null){
-      lastWasNum=false;
+      state().lastWasNum=false;
       separeFromChar();
       c(uOp._num());
-      lastWasNum=true;
+      state().lastWasNum=true;
       }
     visitE(uOp.e());
     }
 
   public void visitBinOp(Full.BinOp binOp){
-    seqHas(empty,binOp.es(),opRepr(binOp.op()));
+    seqHas(empty(),binOp.es(),opRepr(binOp.op()));
     }
     
   public void visitCast(Full.Cast cast){
@@ -547,13 +497,13 @@ public class ToSVisitor implements CollectorVisitor{
       cMethName(s0);
       }
     if(call.isSquare()){c("[");}else{c("(");}
-    seq(empty,pars0,"; ");
+    seq(empty(),pars0,"; ");
     if(call.isSquare()){c("]");}else{c(")");}
     }
   
   public void visitBlock(Full.Block block){
     boolean inline=HasMultilinePart.inline(block);
-    var sp=empty;
+    var sp=empty();
     if(!inline){sp=i->nl();}
     if(block.isCurly()){c("{");}else{c("(");}
     if(!inline){indent();}
@@ -562,7 +512,7 @@ public class ToSVisitor implements CollectorVisitor{
     if(!block.whoopsed().isEmpty()){
       sp.accept(0);
       c("whoops");
-      seq(empty,block.whoopsed(),", ");
+      seq(empty(),block.whoopsed(),", ");
       }
     seq(sp,block.ds().subList(block.dsAfter(),block.ds().size()),"");
     sp.accept(0);
@@ -613,7 +563,7 @@ public class ToSVisitor implements CollectorVisitor{
     kw("if");
     if(_c0!=null){visitE(_c0);}
     if(!ds0.isEmpty()){
-      seq(empty,ds0,", ");
+      seq(empty(),ds0,", ");
       }
     visitE(then0);
     if(_else0!=null){
@@ -632,7 +582,7 @@ public class ToSVisitor implements CollectorVisitor{
       nextIsMatching=false;
       }
     if(!txs0.isEmpty()){
-      c("(");seq(empty,txs0,", ");c(")");
+      c("(");seq(empty(),txs0,", ");c(")");
       }
     if((tx0!=null || !txs0.isEmpty())&& e0!=null){c("=");}
     if(e0!=null){visitE(e0);}
@@ -683,7 +633,7 @@ public class ToSVisitor implements CollectorVisitor{
     visitFullDocs(docs0);
     if(cs0.isEmpty()){visitP(_p0);return;}
     assert _p0==null;
-    seq(empty,cs0,".");
+    seq(empty(),cs0,".");
     }
     
   public void visitDoc(Full.Doc doc){

@@ -768,7 +768,6 @@ public class Core {
 
       @java.lang.SuppressWarnings("all")
       public Info(final boolean isTyped, @NonNull final List<P.NCs> typeDep, @NonNull final List<P.NCs> coherentDep, @NonNull final List<P.NCs> friends, @NonNull final List<PathSel> usedMethods, @NonNull final List<P.NCs> privateSupertypes, @NonNull final List<S> refined, final boolean declaresClassMethods, @NonNull final String nativeKind, @NonNull final List<P> nativePar, final int _uniqueId) {
-        assert nativePar.isEmpty();
         if (typeDep == null) {
           throw new java.lang.NullPointerException("typeDep is marked non-null but is null");
         }

@@ -361,7 +361,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(!res){err(Err.methodTypeNoFwdPar(mh.t().mdf().inner));}
       }
     if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.MutableFwd)){
-      boolean res=tmdf!=null && tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd);
+      boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd);
       if(!res){err(Err.methodTypeNoFwdPar(tmdf.inner));}
       }
     if(tmdf.isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){

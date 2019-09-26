@@ -116,21 +116,29 @@ _______
 ----------------------------------------------------------------------
 J ::=[p;G; wrap=Any?]
 
-//every L have a corresponding class name, and such name is also the key in an hash map
+//every L in meth bodies and in the main expression have a corresponding name,
+// and such name is also the key in an bidiretional hash map
 //pointing to the corresponding L, the LDoms of such L in the program and an L prefrommed
 //with respect to the point of origin of the current main
 
 * J.native(T) = J.p(T.P).Info.nativeKind!=empty
 * J.nativeWrap(T) =J.native(T) and J.wrap=Any
-    
-* J(T) = J(T.P) if T.mdf not in {class, fwd mut, fwd imm}
-* J(T) = J(T.P) if T.mdf in {fwd mut, fwd imm} and !J.native(T)
-* J(T) = Object if T.mdf in {fwd mut, fwd imm} and J.native(T)
-* J(T) = J.className(J.p.navigate(T.P)) if T.mdf==class
-* J(P) = J(J.p.navigate(P))
+
+* J(T) = J(T.P) 
+    T.P not of form Thisn.Cs
+* J(T) = J.className(J.p.navigate(T.P)) if T.mdf==class and T.P=Thisn.Cs   
+* J(T) = J(T.P) if T.mdf not in {class, fwd mut, fwd imm} and T.P=Thisn.Cs
+* J(T) = J(T.P) if T.mdf in {fwd mut, fwd imm} and !J.native(T) and T.P=Thisn.Cs
+* J(T) = Object if T.mdf in {fwd mut, fwd imm} and J.native(T) and T.P=Thisn.Cs
+* J(Any) =L42Any
+* J(Void) =L42Void
+* J(Library) =L42Library
+* J(Thisn.Cs) = J(J.p.navigate(Thisn.Cs))
 * J(p) = p(This0).Info.nativeKind<J(p(This0).Info.nativePar)>
     if p(This0).Info.NativeKind!=empty
 * J(p) = J.className(p) otherwise
+* J.className(T)=J.className(T.P)
+* J.className(P)=J.className(J.p.navigate(P))
 * J.className(p) = JC// java class name
     assert all elements in pTails are C:CORE.L
     p=L C0:L0 ..Cn Ln
@@ -156,11 +164,11 @@ J(x) = x
 J(x) = J.className(J.G(x)).wrap(x)
   J.nativeWrap(J.G(x))
 
-J(P<:class Any) = PathWrap.of(P)//J(P) would not be a defined class, but the name is still in the map
+J(P<:class Any) = Wrap.ofPath("P")//J(P) would not be a defined class, but the name is still in the map
 J(P<:class P') = J.className(P).instance //static field
   P'!= any 
-J(void) = Void.instance
-J(L)= LibWrap.of(J.p(L))// all libs can be pre wrapped and pre frommed? or is it better to cache it once?
+J(void) = L42Void.instance
+J(L)= Wrap.ofLib("Wrap.libName(L)")// all libs can be pre wrapped and pre frommed? or is it better to cache it once?
 J(xP.m(x1=e1..xn=en))=je
   s=m(x1..xn)
   je'=J.className(J.G(xP)).s(J[!wrap](xP),J[J.G(xP).s.1](e1)..J[J.G(xP).s.n](en))

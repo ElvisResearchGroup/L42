@@ -154,7 +154,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     if(un==-1){return new S(s,L(),-1);}
     int n=Integer.parseInt(s.substring(un+2));
     s=s.substring(0, un);
-    return new S(s,L(),n); 
+    return new S(s.substring(0, un),L(),n); 
     }
   @Override public Full.CsP visitCsP(CsPContext ctx) {
     check(ctx);

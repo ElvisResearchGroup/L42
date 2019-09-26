@@ -50,6 +50,11 @@ public class Program implements Visitable<Program>{
   public static Program flat(LL top){return new Program(top,PTails.empty);}
   public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty,L());
   public static final Core.L emptyLInterface=emptyL.withInterface(true);
+
+  public Core.L topCore(){return (Core.L)top;}
+  public Core.L ofCore(P path){
+    return (Core.L)of(path,null);
+    }
   public LL of(P path,List<Pos>errs){
     if(path==P.pAny){return emptyLInterface;}
     if(path==P.pVoid){return emptyL;}

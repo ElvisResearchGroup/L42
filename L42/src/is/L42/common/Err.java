@@ -125,24 +125,24 @@ public class Err {
   ;}public static String malformedInfo(Object _1){return
   "Error: invalid syntax for Info:\n"+_1
   ;}public static String malformedCoreHeader(Object info){return
-  " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())
+  " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))
   +"\nno dots or reuse in core libraries"
   ;}public static String malformedCoreMember(Object info){return
-  " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())
+  " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))
   +"\nonly methods with type and nested classes in core libraries"
   ;}public static String malformedCoreTs(Object info){return
-  " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())
+  " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))
   +"\ninvalid implemented type for core library"
   ;}public static String malformedCoreDocs(Object info){return
-  " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())
+  " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))
   +"\ninvalid docs for core library"
   ;}public static String malformedCoreNC(Object info){return
-  " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())  
+  " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))  
   +"\ninvalid nested class for core library"
  ;}public static String malformedCoreFullL(){return
   "A full library litera is contained in a core library literal"
   ;}public static String malformedCoreMWT(Object info,Object names){return
-  " Error: Extraneus token "+info==null?"":Err.trimExpression(info.toString())  
+  " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))
   +"\ninvalid method with type for core library; invalid methods are:"+names
   ;}public static String stringInterpolation(Object _1, Object _2){return
   "Error: ill formed string interpolation:"+Err.trimExpression(_1.toString())
