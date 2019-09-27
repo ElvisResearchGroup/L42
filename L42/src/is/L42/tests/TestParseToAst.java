@@ -226,7 +226,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({C={#norm{}}#norm{}})")
    ),new AtomicTest(()->
-   fail("({method Any m()={} #norm{}})",Err.malformedCoreMWT(Err.hole,Err.hole))
+   fail("({method Any m()={} #norm{}})",Err.malformedCoreFullL()+Err.hole+Err.malformedCoreMWT("#norm{}","[m()]"))
    ),new AtomicTest(()->
    fail("({C={} #norm{}})",Err.malformedCoreNC(Err.hole))
 

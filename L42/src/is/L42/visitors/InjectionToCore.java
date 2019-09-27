@@ -34,8 +34,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
   @Override public void visitEVoid(Core.EVoid eVoid){result=eVoid;}
   @Override public void visitL(Core.L l){result=l;}
   @Override public void visitL(Full.L l){
-    errors.append(Err.posString(l.poss())+Err.malformedCoreFullL());
-
+    errors.append(Err.posString(l.poss())+Err.malformedCoreFullL()+"\n");
     result=null;
     }
 
