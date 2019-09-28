@@ -20,7 +20,7 @@ _______
   CORE.D ::= var? T x=e
   CORE/HALF.K ::= catch throw T x e
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
-  CORE.MWT::= Docs MH (= native[URL]? e)?  //TODO: call it native[Code] ?
+  CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
   Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSupertypes=Ps, refined=ss,
     declaresClassMethods?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
@@ -38,7 +38,7 @@ _______
   FULL.M ::= F | MI | MWT | NC
   FULL.F ::= Docs var? T x
   FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are CORE.L
-  FULL.MWT ::=Docs MH (= native[URL]? e)? // well formedness: all LL inside e are CORE.L
+  FULL.MWT ::=Docs MH (= native{BalCurly}? e)? // well formedness: all LL inside e are CORE.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e //TODO: $OP is desugared to the C defining the operator
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | Number e
@@ -82,7 +82,8 @@ _______
   pTail::= CORE.L | C:LL
   p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
   // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
-  sDe::= s1->FULL.Docs1, nativeURL?1, FULL.e?1 .. sn->FULL.Docsn, nativeURL?n, FULL.e?n
+  sDe::= s1->FULL.Docs1, native?1, FULL.e?1 .. sn->FULL.Docsn, native?n, FULL.e?n
+  BalCurly::= /*any text with balanced curly brakets*/
 _______
 #define functional notation, dom, update and '\' (set minus) for CORE.L (over the domain Ldom), but only domNC and functional notation on Cs for LL. Those are undefined 
 if LL has dots or reuseUrl.

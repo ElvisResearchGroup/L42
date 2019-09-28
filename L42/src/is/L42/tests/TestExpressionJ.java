@@ -34,38 +34,38 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestExpressionJ
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-  j("Any<:class Any","Wrap.ofPath(\"L42Any\")")
+  je("Any<:class Any","Wrap.ofPath(\"L42Any\")")
   ),new AtomicTest(()->
-  j("Library<:class Any","Wrap.ofPath(\"L42Library\")")
+  je("Library<:class Any","Wrap.ofPath(\"L42Library\")")
   ),new AtomicTest(()->
-  j("Void<:class Any","Wrap.ofPath(\"L42Void\")")
+  je("Void<:class Any","Wrap.ofPath(\"L42Void\")")
   ),new AtomicTest(()->
-  j("This0.A<:class This0.A","£cA1.instance")
+  je("This0.A<:class This0.A","£cA1.instance")
   ),new AtomicTest(()->
-  j("This0.B<:class This0.B","£cB1.instance")
+  je("This0.B<:class This0.B","£cB1.instance")
   ),new AtomicTest(()->
-  j("This0.A<:class Any","Wrap.ofPath(\"£cA1\")")
+  je("This0.A<:class Any","Wrap.ofPath(\"£cA1\")")
   ),new AtomicTest(()->
-  j("This0.B<:class Any","Wrap.ofPath(\"£cB1\")")
+  je("This0.B<:class Any","Wrap.ofPath(\"£cB1\")")
   ),new AtomicTest(()->
-  j("void","L42Void.instance")
+  je("void","L42Void.instance")
   ),new AtomicTest(()->
-  j("{#norm{}}","Wrap.ofLib(\"1\")")
+  je("{#norm{}}","Wrap.ofLib(\"1\")")
     ),new AtomicTest(()->
-  j("{#typed{}}","Wrap.ofLib(\"1\")")
+  je("{#typed{}}","Wrap.ofLib(\"1\")")
     ),new AtomicTest(()->
-  j("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA1.£mma£xa(£cA1.instance,£cA1.£mof(£cA1.instance))")
+  je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA1.£mma£xa(£cA1.instance,£cA1.£mof(£cA1.instance))")
     ),new AtomicTest(()->
-  j("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB1.£mmb£xb(£cB1.instance,£cB1.£mof(£cB1.instance))")
+  je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB1.£mmb£xb(£cB1.instance,£cB1.£mof(£cB1.instance))")
     ),new AtomicTest(()->
-  j("loop void","switchKw(0){defaultKw->{if(false)yield Wrap.throwE(null);whileKw(trueKw)L42Void.instance;}}")
+  je("loop void","switchKw(0){defaultKw->{if(false)yield Wrap.throwE(null);whileKw(trueKw)L42Void.instance;}}")
     ),new AtomicTest(()->
-  j("return void","Wrap.throwE(new L42Return(L42Void.instance))")
+  je("return void","Wrap.throwE(new L42Return(L42Void.instance))")
   //op update needs blocks
   ),new AtomicTest(()->
-  j("(void)","L42Void.instance")
+  je("(void)","L42Void.instance")
   ),new AtomicTest(()->
-  j("(This0.A a=This0.A<:class This0.A.of() a)","""
+  je("(This0.A a=This0.A<:class This0.A.of() a)","""
     switchKw(0){defaultKw->{
       £cA1 £xa=null;
       £xa=£cA1.£mof(£cA1.instance);
@@ -73,7 +73,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->
-  j("(var This0.A a=This0.A<:class This0.A.of() a:=a)","""
+  je("(var This0.A a=This0.A<:class This0.A.of() a:=a)","""
     switchKw(0){defaultKw->{
       £cA1 £xa=null;
       £xa=£cA1.£mof(£cA1.instance);
@@ -81,7 +81,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->//template, next tests will be similar
-  j("""
+  je("""
    (var This0.A a=This0.A<:class This0.A.of()
     This0.A a0=a
     a.ma(a=a)
@@ -95,7 +95,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->//using Any for a0
-  j("""
+  je("""
    (var This0.A a=This0.A<:class This0.A.of()
     Any a0=a
     a.ma(a=a)
@@ -109,7 +109,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->//using B instead of A
-  j("""
+  je("""
    (var This0.B b=This0.B<:class This0.B.of()
     This0.B b0=b
     b.mb(b=b)
@@ -123,7 +123,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->//B instead of A, Any for b0
-  j("""
+  je("""
    (var This0.B b=This0.B<:class This0.B.of()
     Any b0=b
     b.mb(b=b)
@@ -137,7 +137,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->//throwing a B and an A
-  j("""
+  je("""
    (This0.A a=This0.A<:class This0.A.of()
     This0.B b=This0.B<:class This0.B.of()
     Void v0=error a
@@ -158,7 +158,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     """)
 
   ),new AtomicTest(()->//using fwds
-  j("""
+  je("""
    (This0.A a=This0.A<:class This0.A.of()
     This0.A a0=a.ma(a=a0)
     a0
@@ -174,7 +174,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
   ),new AtomicTest(()->//using fwds
-  j("""
+  je("""
    (This0.B b=This0.B<:class This0.B.of()
     This0.B b0=b.mb(b=b0)
     b0
@@ -189,15 +189,58 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       yield £xb0
       }}
     """)
-
+  ),new AtomicTest(()->//using fwds
+  jc("""
+     """,
+     """
+     class £cN1 implements L42Any{
+       public static int £mof(£cN1 £xthis){
+         return 0;}
+       public static int £msum£xthat(int £xthis, int £xthat){
+         return £xthis + £xthat;}
+       public static £cN1 NewFwd(){return new _Fwd();}
+       public static class _Fwd extends £cN1 implements Fwd{
+         private List<Object> os=new ArrayList<>();
+         private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
+         public List<Object> os(){return os;}
+         public List<BiConsumer<Object,Object>> fs(){return fs;}
+         }
+       public static final £cN1 Instance=new _Fwd();
+       public intunwrap;
+       public static £cN1 wrap(int that){£cN1 res=new £cN1();res.unwrap=that;return res;}
+       }
+     """,""
+)
 
   ));}
-public static void j(String e,String out){
+public static void je(String e,String out){
   String l="{ method Void m()="+e+" A={class method This0 of() method Void ma(This0 a) #norm{}} B={class method This0 of() method Void mb(This0 b) #norm{nativeKind=Foo}} #norm{uniqueId=id1}}";
   var p=Program.parse(l);
   J j=new J(p,G.empty(),false);
   j.visitE(p.topCore().mwts().get(0)._e());
   String res=j.result().toString();
   Err.strCmp(res,out);
+  }
+public static void jc(String e,String ...out){
+  String l="{ "+e+
+  """
+  N={
+    class method This0 of()
+    method This0 sum(This0 that)=native{trusted:OP+} error void
+    #norm{nativeKind=int}}
+  A={
+    class method This0 of(This1.N n)
+    method This1.N n()
+    #norm{}} 
+  #norm{uniqueId=id1}}
+  """;
+  var p=Program.parse(l);
+  List<String> res=L(p.topCore().ncs(),(c,nc)->{
+    var pi=p.push(nc.key());
+    J j=new J(pi,G.empty(),false);
+    j.mkClass();
+    c.add(j.result().toString());
+    });
+  L(res,List.of(out),(c,r,o)->c.add(o.isEmpty() || Err.strCmp(r,o)));
   }
 }

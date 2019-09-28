@@ -34,7 +34,7 @@ public class G {
 
   public T of(X x) {
     T res= xInT.get(x);
-    assert res!=null;
+    assert res!=null: x;
     return res;
     }
 

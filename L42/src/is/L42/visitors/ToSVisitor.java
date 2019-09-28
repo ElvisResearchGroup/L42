@@ -149,9 +149,9 @@ public class ToSVisitor implements ToSTrait{
     if(_e0!=null){
       c("=");
       if(!mwt.nativeUrl().isEmpty()){
-        c("native[");
+        c("native{");
         c(mwt.nativeUrl());
-        c("]");
+        c("}");
         }
       visitE(_e0);
       }
@@ -420,9 +420,9 @@ public class ToSVisitor implements ToSTrait{
     if(_e0!=null){
       c("=");
       if(!mwt.nativeUrl().isEmpty()){
-        c("native[");
+        c("native{");
         c(mwt.nativeUrl());
-        c("]");
+        c("}");
         }
       visitE(_e0);
       }

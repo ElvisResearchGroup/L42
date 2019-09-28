@@ -10,7 +10,7 @@ OpUpdate: ':=' | '^=' | '<-=' | '<<=' | '+=' | '-=' | '*=' | '/=' | '++=' | '--=
 Mdf: 'fwd mut' | 'fwd imm' |'imm' | 'mut' | 'lent' | 'read' | 'capsule' | 'class';
 VoidKW:'void';
 VarKw:'var';
-Info:('#norm{' | '#typed{') CHARDocText* '}';
+Info:('#norm{' | '#typed{') BalCurly '}';
 CatchKw: 'catch';
 InterfaceKw:'interface';
 IfKw:'if';
@@ -39,9 +39,12 @@ fragment CharsUrl:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
 fragment CHARDocText:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '"' | '\'' | '\n'; //no {}@
+fragment AuxBalCurly:
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '"' | '\'' | '\n' |'@'; //no {}
+fragment BalCurly: AuxBalCurly* ('{' BalCurly '}' BalCurly)?;
 fragment URL:CharsUrl+;
 ReuseURL:'reuse' Whitespace* '['URL']';
-NativeURL:'native' Whitespace* '['URL']';
+NativeURL:'native' Whitespace* '{'BalCurly'}';
 fragment Fn: '0' | '1'..'9' ('0'..'9')*;
 fragment Fx: IdLow IdChar*;
 StringSingle: '"' CHARInStringSingle* '"';

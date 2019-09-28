@@ -287,6 +287,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{method A fwd imm(B x)=x.imm(x)}",Err.invalidMethodName("fwd imm"))
 
    ),new AtomicTest(()->
+   pass("{method A if(B x)=native{hi this is a native}error void}")
+   ),new AtomicTest(()->
+   pass("""
+   {method A if(B x)=native{hi 
+   this is a 
+   native}error void}""")
+   ),new AtomicTest(()->
+   pass("""
+   {method A if(B x)=native{hi 
+   {t{hi}}s is{} a 
+   native}error void}""")
+
+   ),new AtomicTest(()->
    pass("{CCc=x}")
    ),new AtomicTest(()->
    pass("(\\ void)","(\n  \\\n  void\n  )\n")

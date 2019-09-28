@@ -262,10 +262,10 @@ public class FullL42Visitor implements L42Visitor<Object>{
     return res; 
     }
   private String parseReuseNative(String s) { 
-    assert s.endsWith("]");
-    int index = s.indexOf("[");
+    assert s.endsWith("}");
+    int index = s.indexOf("{");
     assert index!=-1;
-    return s.substring(index,s.length()-1);
+    return s.substring(index+1,s.length()-1);
     }
   @Override public Full.L.M visitFullM(FullMContext ctx) {
     check(ctx);

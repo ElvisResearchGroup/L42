@@ -32,6 +32,10 @@ import is.L42.visitors.FV;
 import is.L42.visitors.ToSTrait;
 import lombok.NonNull;
 
+//TODO: add the following:
+//if a (non native) class has no fields, it has a static .instance that is used
+//instead of any constructor, and instead of any placeholder variable
+//thus, variables of those types are never in fwds
 
 public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToSTrait{
   @Override public ToSTrait.ToSState state(){return state;}
@@ -102,12 +106,13 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   void wrap(Boolean b){this.wrap=b;}
   
-  @Override public void visitEX(Core.EX x){
+  @Override public void visitEX(Core.EX ex){
+    X x=ex.x();
     String tail="";
-    if(fwds.contains(x.x())){tail="£fwd";}
-    if(!nativeWrap(g(x.x()))){kw("£x"+x+tail);return;}
-    className(g(x.x()));
-    c(".wrap(£x"+x+tail+")");
+    if(fwds.contains(x)){tail="£fwd";}
+    if(!nativeWrap(g(x))){kw("£x"+x.inner()+tail);return;}
+    className(g(x));
+    c(".wrap(£x"+x.inner()+tail+")");
     }
   @Override public void visitPCastT(Core.PCastT pCastT){
     if(pCastT.t().p()!=P.pAny){
@@ -283,7 +288,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     deIndent();
      }
   @Override public void visitS(S s){
-    c("£m"+s.m());
+    kw("£m"+s.m());
     if(s.hasUniqueNum()){c("£u"+s.uniqueNum());}
     for(var x:s.xs()){c("£x"+x);}
     }
@@ -295,7 +300,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     boolean interf=p.topCore().isInterface();
     String jC = classNameStr(p);
     if(interf){kw("interface "+jC+ "extends L42Any");}
-    else{kw("class "+jC+ "implements L42Any");}
+    else{kw("class "+jC+ " implements L42Any");}
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
     visitMWTs(p.topCore().mwts());
@@ -304,7 +309,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       X xi=fields.xs.get(i);
       P pi=fields.ps.get(i);
       typeName(pi);
-      visitX(xi);
+      kw("£x"+xi.inner());
       c(";");
       nl();
       c("public static BiConsumer<Object,Object> FieldAssFor_"
@@ -324,7 +329,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("public List<Object> os(){return os;}");nl();
     c("public List<BiConsumer<Object,Object>> fs(){return fs;}");nl();
     //if is interface, implement with throw new Error() all the methods
-    c("}");nl();deIndent();
+    c("}");deIndent();nl();
     c("public static final "+jC+" Instance=new _Fwd();");nl();
     if(nativeKind(p)){
       c("public ");
@@ -352,31 +357,59 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       assert xs.size()==ps.size();
       }
     }
-  @Override public void visitMWT(Core.L.MWT mwt){
+  @Override public void visitMWT(MWT mwt){
+    refined(mwt);
+    if(p.topCore().isInterface()){return;}
     staticMethHeader(mwt.mh());
+    c("{");indent();nl();
+    methBody(mwt);
+    c("}");deIndent();nl();
+    }
+  private void methBody(MWT mwt){
     if(!mwt.nativeUrl().isEmpty()){
       assert mwt._e()!=null;
-      c("{");indent();nl();
-      handleNativeCode(p.topCore().info().nativeKind(),mwt.nativeUrl(),mwt.mh().s().xs(),mwt._e());
-      c("}");deIndent();nl();
-      handleRefined(mwt);
+      List<String>xs=L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
+      String k=p.topCore().info().nativeKind();
+      c(NativeDispatch.nativeCode(k,mwt.nativeUrl(),xs,mwt._e()));
+      return;
       }
-
+    c("return ");
+    if(mwt._e()!=null){
+      visitE(mwt._e());
+      c(";");
+      }    
     }
-  private void handleRefined(MWT mwt) {//TODO: make it equal to the formalism
-    if(!p.topCore().info().refined().contains(mwt.mh().s())){return;}
+  private void refined(MWT mwt){
+    var l=p.topCore();
     MH mh=mwt.mh();
-    c("@Override public ");
-    typeName(mh.t());
-    visitS(mh.s());
-    c("(");
-    seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
-    c("){return ");
-    className(p);
-    c(".");
-    c("}");
+    if(!l.isInterface()){
+      if(!p.topCore().info().refined().contains(mwt.mh().s())){return;}
+      c("@Override public ");
+      typeName(mh.t());
+      visitS(mh.s());
+      c("(");
+      seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
+      c("){return ");
+      className(p);
+      c(".");
+      c("}");
+      }
+    else{
+      typeName(mh.t());
+      visitS(mh.s());
+      c("(");
+      seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
+      staticMethHeader(mh);
+      c("{ return");
+      typeName(p);
+      c(".");
+      visitS(mh.s());
+      c("(this");
+      for(X xi:mh.s().xs()){visitX(xi);c("=");visitX(xi);}
+      c(");}");
+      }
     }
-  private void staticMethHeader(MH mh) { // TODO Auto-generated method stub
+  private void staticMethHeader(MH mh) {
     c("public static ");
     typeName(mh.t());
     visitS(mh.s());
@@ -386,11 +419,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     for(var i:range(mh.s().xs())){
       c(", ");
       typeName(mh.pars().get(i));
-      visitX(mh.s().xs().get(i));
+      kw("£x"+mh.s().xs().get(i).inner());
       }
     c(")");
-   }
-  private void handleNativeCode(String nativeKind, String nativeUrl, List<X> xs, E _e) { // TODO Auto-generated method stub
-   }
-  @Override public void visitMH(Core.MH mh){throw uc;}
+    }
   }

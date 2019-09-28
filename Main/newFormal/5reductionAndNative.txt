@@ -208,7 +208,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
       yieldKw J[G+=x:T][catchLev+=1](e);
       }
 
-J.class()= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
+* J.class()= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
       J.meth(MWTs) //no nested classes
       J(T1) x1;
       public static BiConsumer<Object,Object> FieldAssFor_x1=(f,o)->{(JC)o).x1=(J(T1))f;}
@@ -234,28 +234,27 @@ J.class()= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
   J.fields(J.p) = T1 x1..Tn xn
   JC = J.className(J.p)
 
-J.meth(MWT1..MWTn)=
-    J.meth(MWT1) J.handledRefined(MWT1) .. J.meth(MWTn) J.handledRefined(MWTn)
-  J.p(This0).interface? = empty
-J.meth(MWT1..MWTn)=J.handledRefined(MWT1) .. J.handledRefined(MWTn)
-  J.p(This0).interface? = interface
-J.handledRefined(MWT)=empty
-  MWT.MH.s notin p(This0).Info.refined
-  p(This0).interface?=empty
-J.handledRefined(MWT)=
+* J.meth(MWT1..MWTn)=J.refined(MWT1) J.meth(MWT1) .. J.refined(MWTn) J.meth(MWTn)
+    J.p(This0).interface? = empty
+* J.meth(MWT1..MWTn)=J.refined(MWT1) .. J.refined(MWTn)
+    J.p(This0).interface? = interface
+* J.refined(MWT)=empty
+    MWT.MH.s notin p(This0).Info.refined
+    p(This0).interface?=empty
+* J.refined(MWT)=
     public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn){returnkw J(This0).m(x1..xn)(this,x1..xn);}
-  J.p(This0).interface? = empty
-  MWT.MH.s in p(This0).Info.refined
-  MWT.MH= _ method T m(T1 x1..Tn xn)_
-J.handledRefined(MWT)=
-  public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn);
-  public static J(T) m(x1..xn) (J(J.p(This0)) £xthis, J(T1) x1..J(Tn) xn){
-    returnKw J(This0).m(x1..xn)(this,x1..xn);
-    }
-  J.p(This0).interface? = interface
-  MWT.MH= _ method T m(T1 x1..Tn xn)_
+* J.p(This0).interface? = empty
+    MWT.MH.s in p(This0).Info.refined
+    MWT.MH= _ method T m(T1 x1..Tn xn)_
+* J.refined(MWT)=
+    public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn);
+    public static J(T) m(x1..xn) (J(J.p(This0)) £xthis, J(T1) x1..J(Tn) xn){
+      returnKw J(This0).m(x1..xn)(this,x1..xn);
+      }
+    J.p(This0).interface? = interface
+    MWT.MH= _ method T m(T1 x1..Tn xn)_
 
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts] native[URL]=e) =
+J.meth(mdf method T m(T1 x1..Tn xn)[Ts] = native[URL] e) =
   public static J(T) m(x1..xn)(J(This0) £xthis,J(T1) x1,..,J(Tn) xn){
     return J(J.p(This0).Info.kind,URL,x1..xn,e);
     }
