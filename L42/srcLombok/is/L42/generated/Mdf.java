@@ -29,6 +29,7 @@ public enum Mdf {
   public boolean isIn(Mdf a,Mdf b) {return this==a || this==b;}
   public boolean isIn(Mdf a,Mdf b,Mdf c) {return this==a || this==b ||this==c;}
   public boolean isIn(Mdf a,Mdf b,Mdf c,Mdf d) {return this==a || this==b ||this==c || this==d;}
+  public boolean isIn(Mdf a,Mdf b,Mdf c,Mdf d,Mdf e) {return this==a || this==b ||this==c || this==d||this==e;}
   public static Mdf fromString(String s) {
    for (Mdf mdf : Mdf.values()) {if (mdf.inner.equals(s))return mdf;}
    throw bug();

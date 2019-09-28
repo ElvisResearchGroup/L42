@@ -114,19 +114,19 @@ _______
     a->P() as1;as2 in A
     
 ----------------------------------------------------------------------
-J ::=[p;G; wrap=Any?]
+J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 
 //every L in meth bodies and in the main expression have a corresponding name,
 // and such name is also the key in an bidiretional hash map
 //pointing to the corresponding L, the LDoms of such L in the program and an L prefrommed
 //with respect to the point of origin of the current main
-
+* J.catchVar="catchVar"+J.catchLev
 * J.native(T) = J.p(T.P).Info.nativeKind!=empty
 * J.nativeWrap(T) =J.native(T) and J.wrap=Any
 
-* J(T) = J(T.P) 
+* J(T) = J(T.P) //J extract the name as type. J.className(p) the name as class dec.
     T.P not of form Thisn.Cs
-* J(T) = J.className(J.p.navigate(T.P)) if T.mdf==class and T.P=Thisn.Cs   
+* J(T) = J.className(J.p.navigate(T.P)) if T.mdf=class and T.P=Thisn.Cs   
 * J(T) = J(T.P) if T.mdf not in {class, fwd mut, fwd imm} and T.P=Thisn.Cs
 * J(T) = J(T.P) if T.mdf in {fwd mut, fwd imm} and !J.native(T) and T.P=Thisn.Cs
 * J(T) = Object if T.mdf in {fwd mut, fwd imm} and J.native(T) and T.P=Thisn.Cs
@@ -136,85 +136,80 @@ J ::=[p;G; wrap=Any?]
 * J(Thisn.Cs) = J(J.p.navigate(Thisn.Cs))
 * J(p) = p(This0).Info.nativeKind<J(p(This0).Info.nativePar)>
     if p(This0).Info.NativeKind!=empty
+    Omit <> for empty p(This0).Info.nativePar
 * J(p) = J.className(p) otherwise
 * J.className(T)=J.className(T.P)
 * J.className(P)=J.className(J.p.navigate(P))
 * J.className(p) = JC// java class name
     assert all elements in pTails are C:CORE.L
     p=L C0:L0 ..Cn Ln
-    JC= Cn+Ln.Info.TopID+£+..+£+C0+L0.Info.TopID
+    JC= £cCn+Ln.Info.TopID+£_+..+£_+£cC0+L0.Info.TopID
   
-//top sortHeader save in info a uniqueId 
-//it get removed before top return.
-//then Cs0 is all uniqueIded
-//in this way if a main have more then 1 L, it is uniquely identified
+* J[wrap] = J[wrap=Any]
+* J[!wrap] = J[wrap=empty]
+* J[ST]= J[wrap] if p.minimize(empty,ST)=Any
+* J[ST]=J otherwise
+* J.varName(x)="£x"+x+"£fwd"
+    if x in J.fwd
+* J.varName(x)="£x"+x
+    otherwise
+* J(x) = J.varName(x)
+    !J.nativeWrap(J.G(x))
+* J(x) = J.className(J.G(x)).wrap(x)
+    J.nativeWrap(J.G(x))
+* J(P<:class Any) = Wrap.ofPath("P")//J(P) may not be a defined class, but the name is still in the map
+* J(P<:class P') = J.className(P).instance //static field
+    P'!= any 
+* J(void) = L42Void.instance
+* J(L)= Wrap.ofLib("J.libToMap(L)")// all libs can be pre wrapped and pre frommed? or is it better to cache it once?
+* J(xP.m(x1=e1..xn=en))=je
+    s=m(x1..xn)
+    je'=J.className(J.G(xP)).s(J[!wrap](xP),J[J.G(xP).s.1](e1)..J[J.G(xP).s.n](en))
+    T=solve(J.G(xP).s)
+    je=je' if !J.nativeWrap(T)
+    je=J.className(T).wrap(je') otherwise
+* J(loop e)= switchKw(0){defaultKw->{
+    if(false)yield Wrap.throwE(null);
+    whileKw(trueKw) J[!wrap](e);
+    }}
+* J(throw e)= Wrap.throwE(new J(throw)(J[wrap](e)))
+* J(x:=e)=Wrap.toVoid(x=J[J.G(x)](e))
+* J( (e) )=J(e)
+* J( (Ds e) )=switchKw(0){defaultKw->{J'.dec(Ds) J'.init(Ds) yieldKw J'(e);}}
+    J'=J[G+=G^Ds][fwd=xs]
+    Ds=D1..Dn
+    xs={Di.x| i in 1..n, Di.x inside Di.e..Dn.e}
+* J( (Ds Ks e) )=switchKw(0){defaultKw->{J'.dec(Ds) try{J'.init(Ds)} J'.catch(Ks) yieldKw J'(e);}}
+    J'=J[G+=G^Ds][fwd=J.fwd,xs]
+    Ds=D1..Dn
+    xs={Di.x| i in 1..n, Di.x inside Di.e..Dn.e}
+* J.dec(D1..Dn) = J.dec(D1)..J.dec(Dn)
+* J.init(D1..Dn) = J1.init(D1)..Jn.init(Dn)
+    Ji=J[fwd=J.fwd\D0.x..D(i-1).x]
+* J.dec(var? T x=e) = 
+    J(T) "£x"+x=defaultFor(J(T));
+    J(T[mdf=fwd imm]) "£x"+x+"£fwd"=J.className(T).NewFwd(); //if x in J.fwd
+* J.init(var? T x=e) =
+    x=J[J.G(x)](e);
+    ((Fwd)x£fwd).fix(x);//if x in J.fwd
+* J.catch(Kz) = J.catch(group(Ks1)) J.catchRet(group(Ks2)) J.catchErr(group(Ks3))
+    Ks1,Ks2,Ks3=Kz
+* group(catch throw T1 x1 e1..catch throw T1 x1 e1) = throw T1 x1 e1..Tn xn en
 
-//J extract the name -as type-. We need J.className(p) for the name as class dec.
-
-//if the top L is not interface, we MUST NOT type it.
-
-//collect/methods only see core. Can be simplified code/formalism
-
-J[wrap] = J[wrap=Any]
-J[!wrap] = J[wrap=empty]
-J[ST]= J[wrap] if p.minimize(empty,ST)==Any
-J[ST]=J otherwise
-J(x) = x
-  !J.nativeWrap(J.G(x))
-J(x) = J.className(J.G(x)).wrap(x)
-  J.nativeWrap(J.G(x))
-
-J(P<:class Any) = Wrap.ofPath("P")//J(P) would not be a defined class, but the name is still in the map
-J(P<:class P') = J.className(P).instance //static field
-  P'!= any 
-J(void) = L42Void.instance
-J(L)= Wrap.ofLib("Wrap.libName(L)")// all libs can be pre wrapped and pre frommed? or is it better to cache it once?
-J(xP.m(x1=e1..xn=en))=je
-  s=m(x1..xn)
-  je'=J.className(J.G(xP)).s(J[!wrap](xP),J[J.G(xP).s.1](e1)..J[J.G(xP).s.n](en))
-  T=solve(J.G(xP).s)
-  je=je' if !J.nativeWrap(T)
-  je=J.className(T).wrap(je') otherwise
-
-J(loop e)= switchKw(0){defaultKw->{
-  if(false)yield Wrap.throwE(null);
-  whileKw(trueKw) J[!wrap](e);
-  }}
-J(throw e)= Wrap.throwE(new J(throw)(J[wrap](e)))
-J(x:=e)=Wrap.toVoid(x=J[J.G(x)](e))
-J( (e) )=J(e)
-J( (Ds e) )=switchKw(0){defaultKw->{J'.dec(Ds) J'.init(Ds) yieldKw J'(e);}}
-  J'=J[G+=G^Ds]
-
-J( (Ds Ks e) )=switchKw(0){defaultKw->{J'.dec(Ds) try{J'.init(Ds)} J'.catch(Ks) yieldKw J'(e);}}
-  J'=J[G+=G^Ds]
-J.dec(D1..Dn) = J.dec(fwd?1,D1)..J.dec(fwd?1,Dn)
-  fwd?i=fwd if Di.x inside Di.e..Dn.e
-  fwd?i=empty otherwise
-J.dec(fwd?,var? T x=e) = 
-  J(T) x=defaultFor(J(T));
-  J(T[mdf=fwd imm]) x£fwd=J.className(T).NewFwd(); //if fwd?=fwd
-J.init(D1..Dn) = J.init(D'1)..J.init(D'n)
-  D'i=Di[Di.x=Di.x£fwd .. Dn.x=Dn.x£fwd]
-J.init(var? T x=e) = x=J[J.G(x)](e);((Fwd)x£fwd).fix(x);
-J.catch(Kz) = J.catch(group(Ks1)) J.catchRet(group(Ks2)) J.catchErr(group(Ks3))
-  Ks1,Ks2,Ks3=Kz
-group(catch throw T1 x1 e1..catch throw T1 x1 e1) = throw T1 x1 e1..Tn xn en
-
-J.catch(throw T1 x1 e1..Tn xn en) = catchKw(J(throw) J.catchVar){
+ * J.catch(throw T1 x1 e1..Tn xn en) = catchKw(J(throw) J.catchVar){
     J.catchIf(T1 x1 e1)..J.catchIf(Tn xn en)
     throw J.catchVar;
     }
 
-J.catchIf(T x e) =
+* J.catchIf(T x e) =
     if(J.catchVar.obj42() instanceof J.className(T) ){
-      J(T) x=(J(T))J.catchVar.obj42();//if J.className(T)==J(T)
-      J(T) x=((J.className(T))J.catchVar.obj42()).unwrap;//if J.className(T)!=J(T)
+      J(T) "£x"+x=(J(T))J.catchVar.obj42();//if !J.native(T)
+      J(T) "£x"+x=((J.className(T))J.catchVar.obj42()).unwrap;//if J.native(T)
       yieldKw J[G+=x:T][catchLev+=1](e);
       }
 
-J.class(p)= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
-      J[p=p].meth(MWTs) //no nested classes
+J.class()= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
+      J.meth(MWTs) //no nested classes
       J(T1) x1;
       public static BiConsumer<Object,Object> FieldAssFor_x1=(f,o)->{(JC)o).x1=(J(T1))f;}
       ...
@@ -229,88 +224,98 @@ J.class(p)= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
         //if is interface, implement with throw new Error() all the methods
         }
       public static final JC Instance=new _Fwd();//so it work also if CN is interface
-      public J(p) unwrap;//only if J(p)!=JC
-      public static JC wrap(J(p) that){JC res=new JC();res.unwrap=that;return res;}//only if J(p)!=JC
+      public J(J.p) unwrap;//only if J.native(J.p)
+      public static JC wrap(J(J.p) that){JC res=new JC();res.unwrap=that;return res;}//only if J.native(J.p)
       }
-    J.class(p.push(NC1.C,NC1.L))
+    J[p=J.p.push(NC1.C,NC1.L)].class()
     .. 
-    J.class(p.push(NC1.C,NC1.L))
-  p(This0) = {interface? Ts MWTs NC1..NCn Info}
-  J.fields(p) = T1 x1..Tn xn
-  JC = J.className(p)
+    J[p=J.p.push(NCn.C,NCn.L)].class()
+  J.p(This0) = {interface? Ts MWTs NC1..NCn Info}
+  J.fields(J.p) = T1 x1..Tn xn
+  JC = J.className(J.p)
 
-J.meth(MWT1..MWTn)=J.meth(MWT1)..J.meth(MWTn)
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts]=e)=
-  public static J(T) m(x1..xn) (J(J.p(This0)) this, J(T1) x1..J(Tn) xn){returnKw J(e);}
-  public J(T) m(x1..xn){return this.m(x1..xn);}//for interface implemented methods
-
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts])=
-  public static J(T) m(x1..xn) (J(J.p(This0)) this, J(T1) x1..J(Tn) xn){
-    returnKw this.m(x1..xn)(x1..xn);
+J.meth(MWT1..MWTn)=
+    J.meth(MWT1) J.handledRefined(MWT1) .. J.meth(MWTn) J.handledRefined(MWTn)
+  J.p(This0).interface? = empty
+J.meth(MWT1..MWTn)=J.handledRefined(MWT1) .. J.handledRefined(MWTn)
+  J.p(This0).interface? = interface
+J.handledRefined(MWT)=empty
+  MWT.MH.s notin p(This0).Info.refined
+  p(This0).interface?=empty
+J.handledRefined(MWT)=
+    public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn){returnkw J(This0).m(x1..xn)(this,x1..xn);}
+  J.p(This0).interface? = empty
+  MWT.MH.s in p(This0).Info.refined
+  MWT.MH= _ method T m(T1 x1..Tn xn)_
+J.handledRefined(MWT)=
+  public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn);
+  public static J(T) m(x1..xn) (J(J.p(This0)) £xthis, J(T1) x1..J(Tn) xn){
+    returnKw J(This0).m(x1..xn)(this,x1..xn);
     }
-  public J(T) m(x1..xn);
-  J.p(This0).interface?=interface
+  J.p(This0).interface? = interface
+  MWT.MH= _ method T m(T1 x1..Tn xn)_
+
+J.meth(mdf method T m(T1 x1..Tn xn)[Ts] native[URL]=e) =
+  public static J(T) m(x1..xn)(J(This0) £xthis,J(T1) x1,..,J(Tn) xn){
+    return J(J.p(This0).Info.kind,URL,x1..xn,e);
+    }
+J.meth(mdf method T m(T1 x1..Tn xn)[Ts]=e)=
+  public static J(T) m(x1..xn) (J(J.p(This0)) £xthis, J(T1) x1..J(Tn) xn){returnKw J(e);}
+
+J.meth(mdf method T m(T1 x1..Tn xn)[Ts])=//if method is allowed abstract
+  public static J(T) m(x1..xn)((J.p(This0)) £xthis,J(T1) x1..J(Tn) xn){
+    throw new Error();
+    }
 
 J.meth(class method T m(T1 x1..Tn xn)[Ts])=
-  public static JC m(x1..xn)(JC this,J(T1) x1,..,J(Tn) xn){
-    JC Res=new JC();
+  public static J(p(This0)) m(x1..xn)(J(p(This0)) £xthis,J(T1) x1,..,J(Tn) xn){
+    J(p(This0)) Res=new J(p(This0))();
     Res.x1=x1;..;Res.xn=xn;
     return Res;
     }
-  public JC m(x1..xn)(T1 x1..Tn xn){return JC.m(this,x1..xn)(x1..xn);} //only if MI
-  JC = J(p(This0))
   fwd _ notin {T1.mdf ..Tn.mdfs}
 
 J.meth(class method T m(T1 x1..Tn xn)[Ts])=
-  public static JC m(x1..xn)(JC this, J(T1) x1,..,J(Tn) xn){
-    JC Res=new JC();
+  public static J(p(This0)) m(x1..xn)(J(p(This0)) £xthis, J(T1) x1,..,J(Tn) xn){
+    J(p(This0)) Res=new JC();
     if(x1 instanceof Fwd){((Fwd)x1).add(Res,JC.FieldAssFor_x1);}else{Res.x1=CAST1 x1;}
     ..
     if(xn instanceof Fwd){((Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
     return Res;
     }
-  public JC m(x1..xn)(T1 x1..Tn xn) {return JC.m(x1..xn)(this,x1..xn);} //only if MI
-  JC = J(p(This0))
   fwd _ in {T1.mdf ..Tn.mdfs}
   CASTi=empty if J(Ti)!=Object
   CASTi=(J(Ti[mdf=imm]))
 
 J.meth(class method T m(T1 x1..Tn xn)[Ts])=
-  public static J(This) m(x1..xn)(J.className(This0) this, J(T1) x1,..,J(Tn) xn){
+  public static J(This) m(x1..xn)(J.className(This0) £xthis, J(T1) x1,..,J(Tn) xn){
     return J(kind,x1..xn);
     }  
   J.p(This0).Info.NativeKind=kind
 
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts])=//if method is allowed abstract
-  public static J(T) m(x1..xn)((J.p(This0)) this,J(T1) x1..J(Tn) xn){
-    throw new Error();
-    }
-  public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn){return JC.m(x1..xn)(this,x1..xn);} //only if MI
-
 J.meth(mdf method T #*x()[Ts])=//if method is a field (may instead be allowed abstract)
-  public static J(T) #*x(J(J.p(This0)) this){ return CAST this.x;}
-  public J(T) #*x(){return JC.#*x(this);} //only if MI
+  public static J(T) #*x(J(J.p(This0)) £xthis){ return CAST £xthis.x;}
     CAST=empty if T x in  J.fields(J.p)
     otherwise CAST=(J(T))
 
 J.meth(mdf method Void #*x(T that)[Ts])=//if method is a field (may instead be allowed abstract)
-  public static Void #*x(that)(J(J.p(This0)) this, J(T) that){
-    this.x=that;
+  public static Void #*x(that)(J(J.p(This0)) £xthis, J(T) that){
+    £xthis.x=that;
     return Void.instance;
     }
-  public Void #*x(that)(J(T) that){return JC.#*x(this,that);} //only if MI
 
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts] native[URL]=e) =
-  public static J(T) m(x1..xn)(J(This0) this,J(T1) x1,..,J(Tn) xn){
-    return J(J.p(This0).Info.kind,URL,x1..xn);
-    }
+fields(p)=P1 x1..Pn xn
+  n=0 if mhs=empty
+  {x1..xn}={xs| xs in mh.xss}
+  either {Pi}={mh.parsi.P | mh in mhs}
+  or Pi=Any otherwise
+  mhs={mwt.mh | mwt in p(This0).mwts, mwt.e?=empty and mwt.mdf=class}
   //guaranteed not interface implemented
 //TODO: in coherence:
 a coherent nativeKind must have private constructor and no other 'state' methods.
 All the native methods must be of the same nativeKind of the class,
 required mdfs are respected
 //TODO: 
--J.fields,
 -check when a method is allowed abstract (coherence can 'sort' them?)
 -when a field have two nativeKind types, we need to make the CAST do the unwrap too;
 and the setter/constructors would have to do the wrapping.

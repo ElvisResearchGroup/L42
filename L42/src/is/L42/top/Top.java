@@ -51,7 +51,7 @@ public class Top {
     assert p1.top instanceof Core.L;
     List<Core.E> coreE1n=L(e1n,(c,_ei)->{
       if(_ei==null){c.add(null);return;}
-      ER eri=infer(new I(null,p1,new G(),p1.minimizeCTz(ctz1)),_ei);
+      ER eri=infer(new I(null,p1,G.empty(),p1.minimizeCTz(ctz1)),_ei);
       c.add(eri.e());
       });//and propagate errors out
     List<MWT> mwt1n=L(mh1n,coreE1n,(c,mhi,_ei)->c.add(sorted.mwtOf(mhi,_ei)));
@@ -140,7 +140,7 @@ public class Top {
     Y y=new Y(p,new GX(),halfLib.stz(),null,halfLib,true);
     HalfQuadruple hq=new HalfQuadruple(y,fe);
     Half.E he=hq.e;
-    I i=new I(c0,p,new G(),p.minimizeCTz(ctz));
+    I i=new I(c0,p,G.empty(),p.minimizeCTz(ctz));
     ER er=infer(i,he); //propagates errors
     List<CT> ctz1=er.ctz();
     Core.E ce=er.e();

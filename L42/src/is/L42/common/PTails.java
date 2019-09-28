@@ -31,6 +31,10 @@ public abstract class PTails implements Visitable<PTails>{
     public boolean hasC(){return true;}
     public C c(){return c;}
     public LL ll(){return ll;}
+    public Core.L coreL(){
+      if(ll.isFullL()){throw bug();}
+      return (Core.L)ll;
+      }
     public PTails tail(){return PTails.this;}
     };}
   }

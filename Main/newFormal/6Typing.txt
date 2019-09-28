@@ -229,14 +229,14 @@ _______
     if T.mdf in {imm, capsule} then mdfs subseteq {imm, fwd imm, capsule, class}
     if read or lent in mdfs then T.mdf in {read, lent}
 * coherent(p;MHs;mdf' method T m::n?(_)_;_;n?) //by well formedness if n is present is the same, but it may be absent.
-    forall class method mdf _(_)_ in MHs:  !(mdf canAlsoBe mdf')
+    forall class method mdf _(_)_ in MHs:  !(mdf canAlsoBe mdf') //allowed abstract
 * coherent(p;_;mdf method T #sx::n?(mdf' P' that)_;_,x;n?) //Note: #sx::n? match any number of # and an x with an optional n
     p |- imm Void <= T
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
     mdf in {lent, mut}
     if mdf = lent then mdf' != mut
-* coherent(p;_;capsule method T #sx::n?(_)_;_,x;n?)
-    p |- imm Void <= T //capsule methods are guaranteed to trash the object anywhay...they are also dead code
+* coherent(p;_;capsule method T #sx::n?(_)_;_,x;n?)//TODO: this seams very wrong.
+    p |- imm Void <= T //capsule methods are guaranteed to trash the object anyway...they are also dead code
 * coherent(p;MHs;mdf method mdf' P' #sx::n?()_;_,x;n?)
     mdf != class
     forall P in fieldTs(MHs, x, mdf).Ps:  p |- P <= P'
