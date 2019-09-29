@@ -19,7 +19,8 @@ public class Coherence {
     classMhs=L(mhs.stream().filter(mh->mh.mdf().isClass()));
     }
   public boolean allowedAbstract(MH mh){
-    return classMhs.stream().allMatch(k->!canAlsoBe(k.t().mdf(),mh.mdf()));
+    return !mh.mdf().isClass() &&
+      classMhs.stream().allMatch(k->!canAlsoBe(k.t().mdf(),mh.mdf()));
     }
   public boolean canAlsoBe(Mdf mdf0, Mdf mdf){
     return switch(mdf0){

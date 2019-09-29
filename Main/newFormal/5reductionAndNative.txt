@@ -234,82 +234,81 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
   J.fields(J.p) = T1 x1..Tn xn
   JC = J.className(J.p)
 
-* J.meth(MWT1..MWTn)=J.refined(MWT1) J.meth(MWT1) .. J.refined(MWTn) J.meth(MWTn)
-    J.p(This0).interface? = empty
-* J.meth(MWT1..MWTn)=J.refined(MWT1) .. J.refined(MWTn)
-    J.p(This0).interface? = interface
+* J.staticMethHeader(mdf method T m(T1 x1..Tn xn)_) =
+    public static J(T) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
+
+* J.refineMethHeader(mdf method T m(T1 x1..Tn xn)_) =
+    public J(T) m(x1..xn) (J(T1) £xx1..J(Tn) £xxn)
+
+* J.staticMethBody(mdf method T m(T1 x1..Tn xn)_) =
+    {returnKw £xthis.m(x1..xn)(£xx1..£xxn);}
+
+* J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
+    {returnkw J.className(This0).m(x1..xn)(this,£xx1..£xxn);}
+
 * J.refined(MWT)=empty
     MWT.MH.s notin p(This0).Info.refined
     p(This0).interface?=empty
 * J.refined(MWT)=
-    public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn){returnkw J(This0).m(x1..xn)(this,x1..xn);}
-* J.p(This0).interface? = empty
+    J.refineMethHeader(MWT.MH) J.refineMethBody(MWT.MH)
+    J.p(This0).interface? = empty
     MWT.MH.s in p(This0).Info.refined
-    MWT.MH= _ method T m(T1 x1..Tn xn)_
 * J.refined(MWT)=
-    public J(T) m(x1..xn)(J(T1) x1..J(Tn) xn);
-    public static J(T) m(x1..xn) (J(J.p(This0)) £xthis, J(T1) x1..J(Tn) xn){
-      returnKw J(This0).m(x1..xn)(this,x1..xn);
-      }
+    J.refineMethHeader(MWT.MH);
+    J.staticMethHeader(MWT.MH)J.staticMethBody(MWT.MH)
     J.p(This0).interface? = interface
-    MWT.MH= _ method T m(T1 x1..Tn xn)_
 
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts] = native[URL] e) =
-  public static J(T) m(x1..xn)(J(This0) £xthis,J(T1) x1,..,J(Tn) xn){
-    return J(J.p(This0).Info.kind,URL,x1..xn,e);
-    }
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts]=e)=
-  public static J(T) m(x1..xn) (J(J.p(This0)) £xthis, J(T1) x1..J(Tn) xn){returnKw J(e);}
+* J.meth(MWT1..MWTn)=J.refined(MWT1) J.meth(MWT1) .. J.refined(MWTn) J.meth(MWTn)
+    J.p(This0).interface? = empty
+* J.meth(MWT1..MWTn)=J.refined(MWT1) .. J.refined(MWTn)
+    J.p(This0).interface? = interface
+* J.meth(MH = native[URL] e) =
+    J.staticMethHeader(MH){return J(J.p(This0).Info.kind,URL,x1..xn,e);}
+* J.meth(MH=e) =
+    J.staticMethHeader(MH){returnKw J(e);}
 
-J.meth(mdf method T m(T1 x1..Tn xn)[Ts])=//if method is allowed abstract
-  public static J(T) m(x1..xn)((J.p(This0)) £xthis,J(T1) x1..J(Tn) xn){
-    throw new Error();
-    }
+* J.meth(MH)=//if method is allowed abstract  //all cases for abs methods:
+      J.staticMethHeader(MH){throw new Error();}
+* J.meth(MH)=
+    J.staticMethHeader(MH){return J(kind,x1..xn);}  
+    J.p(This0).Info.NativeKind=kind
+    MH.mdf=class
+* J.meth(MH)=
+      J.staticMethHeader(MH){
+      J(p(This0)) Res=new J(p(This0))();
+      Res.x1=CAST1 x1;..;Res.xn=CASTn xn;
+      return Res;
+      }
+    fwd _ notin MH.pars.mdfs
+    MH.mdf=class
+    CASTi=empty if J(MH.parsi)!=Object
+    CASTi=(J(MH.parsi[mdf=imm]))
+* J.meth(MH)=
+      J.staticMethHeader(MH){
+        J(p(This0)) Res=new JC();
+        if(x1 instanceof Fwd){((Fwd)x1).add(Res,JC.FieldAssFor_x1);}else{Res.x1=CAST1 x1;}
+        ...
+        if(xn instanceof Fwd){((Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
+        return Res;
+        }
+    fwd _ in MH.pars.mdfs
+    MH.mdf=class
+    CASTi=empty if J(MH.parsi)!=Object
+    CASTi=(J(MH.parsi[mdf=imm]))
+* J.meth(mdf method T #*x()_)=//if method is a field (may instead be allowed abstract)
+      J.staticMethHeader(mdf method T #*x()_){return CAST £xthis.£xx;}
+    CAST = empty if T x in  J.fields(J.p)
+    CAST = (J(T)) otherwise 
+* J.meth(mdf method Void #*x(T that)_)=//if method is a field (may instead be allowed abstract)
+      J.staticMethHeader(mdf method Void #*x(T that)_){£xthis.£xx=that;return L42Void.instance;}
 
-J.meth(class method T m(T1 x1..Tn xn)[Ts])=
-  public static J(p(This0)) m(x1..xn)(J(p(This0)) £xthis,J(T1) x1,..,J(Tn) xn){
-    J(p(This0)) Res=new J(p(This0))();
-    Res.x1=x1;..;Res.xn=xn;
-    return Res;
-    }
-  fwd _ notin {T1.mdf ..Tn.mdfs}
-
-J.meth(class method T m(T1 x1..Tn xn)[Ts])=
-  public static J(p(This0)) m(x1..xn)(J(p(This0)) £xthis, J(T1) x1,..,J(Tn) xn){
-    J(p(This0)) Res=new JC();
-    if(x1 instanceof Fwd){((Fwd)x1).add(Res,JC.FieldAssFor_x1);}else{Res.x1=CAST1 x1;}
-    ..
-    if(xn instanceof Fwd){((Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
-    return Res;
-    }
-  fwd _ in {T1.mdf ..Tn.mdfs}
-  CASTi=empty if J(Ti)!=Object
-  CASTi=(J(Ti[mdf=imm]))
-
-J.meth(class method T m(T1 x1..Tn xn)[Ts])=
-  public static J(This) m(x1..xn)(J.className(This0) £xthis, J(T1) x1,..,J(Tn) xn){
-    return J(kind,x1..xn);
-    }  
-  J.p(This0).Info.NativeKind=kind
-
-J.meth(mdf method T #*x()[Ts])=//if method is a field (may instead be allowed abstract)
-  public static J(T) #*x(J(J.p(This0)) £xthis){ return CAST £xthis.x;}
-    CAST=empty if T x in  J.fields(J.p)
-    otherwise CAST=(J(T))
-
-J.meth(mdf method Void #*x(T that)[Ts])=//if method is a field (may instead be allowed abstract)
-  public static Void #*x(that)(J(J.p(This0)) £xthis, J(T) that){
-    £xthis.x=that;
-    return Void.instance;
-    }
-
-fields(p)=P1 x1..Pn xn
-  n=0 if mhs=empty
-  {x1..xn}={xs| xs in mh.xss}
-  either {Pi}={mh.parsi.P | mh in mhs}
-  or Pi=Any otherwise
-  mhs={mwt.mh | mwt in p(This0).mwts, mwt.e?=empty and mwt.mdf=class}
-  //guaranteed not interface implemented
+* fields(p)=P1 x1..Pn xn
+    n=0 if mhs=empty
+    {x1..xn}={xs| xs in mh.xss}
+    either {Pi}={mh.parsi.P | mh in mhs}
+    or Pi=Any otherwise
+    mhs={mwt.mh | mwt in p(This0).mwts, mwt.e?=empty and mwt.mdf=class}
+    //guaranteed not interface implemented
 //TODO: in coherence:
 a coherent nativeKind must have private constructor and no other 'state' methods.
 All the native methods must be of the same nativeKind of the class,

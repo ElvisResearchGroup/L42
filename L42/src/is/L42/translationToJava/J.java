@@ -49,6 +49,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   int catchLev=0;
   HashMap<Integer,Core.L>libs=new HashMap<>();
   Integer libsNum=0;
+  Fields fields;
   private String libToMap(Core.L l){
     libsNum+=1;
     libs.put(libsNum,l);
@@ -65,6 +66,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   boolean nativeKind(T t){return !p.ofCore(t.p()).info().nativeKind().isEmpty();}
   boolean nativeKind(Program p){return !p.topCore().info().nativeKind().isEmpty();}
   boolean nativeWrap(T t){return wrap && nativeKind(t);}
+  boolean isObjectT(T t){
+    return t.p().isNCs() && t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd,Mdf.Class) && nativeKind(t);
+    }
   void typeName(T t){
     if(!t.p().isNCs()){typeName(t.p());return;}
     if(t.mdf().isClass()){className(p.navigate(t.p().toNCs()));return;}
@@ -99,7 +103,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     String name="";
     while(!pt.isEmpty()){
       assert pt.coreL().info()._uniqueId()!=-1;
-      name="£c"+pt.c().toString()+pt.coreL().info()._uniqueId()+"£_"+name;
+      name="£c"+pt.c().toString()+"£n"+pt.coreL().info()._uniqueId()+"£_"+name;
       pt=pt.tail();
       }
     return name.substring(0,name.length()-2);
@@ -113,6 +117,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(!nativeWrap(g(x))){kw("£x"+x.inner()+tail);return;}
     className(g(x));
     c(".wrap(£x"+x.inner()+tail+")");
+    }
+  @Override public void visitX(X x){
+    kw("£x"+x.inner());
     }
   @Override public void visitPCastT(Core.PCastT pCastT){
     if(pCastT.t().p()!=P.pAny){
@@ -158,8 +165,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c(")");
     if(nw){c(")");}
     }
-  //static <K> K throwE(Error e){throw e;}
-  //static<K> L42Void toVoid(K k){return L42Void.instance;}
   @Override public void visitLoop(Core.Loop loop){
     kw("switchKw(0){defaultKw->{if(false)yield Wrap.throwE(null);whileKw(trueKw)");
     var oldWrap=wrap;
@@ -303,8 +308,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     else{kw("class "+jC+ " implements L42Any");}
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
+    this.fields=new Fields(p);
     visitMWTs(p.topCore().mwts());
-    Fields fields=new Fields(p);
     for(int i:range(fields.xs)){
       X xi=fields.xs.get(i);
       P pi=fields.ps.get(i);
@@ -334,7 +339,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(nativeKind(p)){
       c("public ");
       typeName(p);
-      c("unwrap;");nl();
+      kw("unwrap;");nl();
       c("public static "+jC+" wrap(");
       typeName(p);
       c(" that){"+jC+" res=new "+jC+"();res.unwrap=that;return res;}");nl();
@@ -344,8 +349,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   static class Fields{
     final List<X> xs;
     final List<P> ps;
+    final Coherence ch;
     Fields(Program p){
-      Coherence ch=new Coherence(p);
+      ch=new Coherence(p);
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();return;}
       xs=ch.classMhs.get(0).s().xs();
       assert ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs));
@@ -363,7 +369,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     staticMethHeader(mwt.mh());
     c("{");indent();nl();
     methBody(mwt);
-    c("}");deIndent();nl();
+    nl();c("}");deIndent();nl();
     }
   private void methBody(MWT mwt){
     if(!mwt.nativeUrl().isEmpty()){
@@ -373,48 +379,102 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(NativeDispatch.nativeCode(k,mwt.nativeUrl(),xs,mwt._e()));
       return;
       }
-    c("return ");
     if(mwt._e()!=null){
+      c("return ");
       visitE(mwt._e());
-      c(";");
-      }    
+      c(";");nl();
+      return;
+      }
+    //allowed abstract
+    assert this.fields!=null;
+    assert this.fields.ch!=null;
+    if(this.fields.ch.allowedAbstract(mwt.mh())){
+      c("throw new Error(\"unreachable method body\");");
+      return;
+      }
+    if(mwt.mh().mdf().isClass()){factoryBody(mwt.mh());return;}
+    if(mwt.mh().s().xs().isEmpty()){getterBody(mwt.mh());return;}
+    assert mwt.mh().s().xs().size()==1;
+    setterBody(mwt.mh()); 
     }
+  private void getterBody(MH mh){
+    String m=mh.s().m();
+    int i=m.lastIndexOf('#');
+    m=m.substring(i+1,m.length()); //works also for -1;
+    X x=new X(m);
+    T t=mh.t();
+    int j=fields.xs.indexOf(x);
+    boolean toCast=!fields.ps.get(j).equals(t.p());
+    kw("return ");
+    kw("£xthis.");
+    if(toCast){c("(");typeName(t);c(")");}
+    visitX(x);
+    c(";");
+    }
+  private void setterBody(MH mh){
+    String m=mh.s().m();
+    int i=m.lastIndexOf('#');
+    m=m.substring(i+1,m.length()); //works also for -1;
+    kw("£xthis.£x"+m+"=that;return L42Void.instance;");
+    }
+  private void factoryBody(MH mh){
+    String kind=p.topCore().info().nativeKind();
+    if(!kind.isEmpty()){
+      List<String>xs=L(Stream.concat(Stream.of("£xthis"), mh.s().xs().stream().map(x->"£x"+x.inner())));
+      c(NativeDispatch.nativeFactory(kind,xs));
+      return;  
+      }
+    //TODO: here we could add optimization for 0 arg constructors
+    boolean isFwd=mh.pars().stream()
+      .anyMatch(ti->ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd));
+    typeName(p);
+    kw("Res=new ");
+    typeName(p);
+    c("();");nl();
+    for(int i:range(fields.xs)){
+      X xi=fields.xs.get(i);
+      T ti=mh.pars().get(i);
+      if(isFwd){
+        kw("if(");
+        visitX(xi);
+        kw("instanceof Fwd){((Fwd)");
+        visitX(xi);
+        c(").add(Res,JC.FieldAssFor_");
+        visitX(xi);
+        c(");}else{");
+        }
+      c("Res.");
+      visitX(xi);
+      c("=");
+      if(isObjectT(ti)){c("(");typeName(ti.withMdf(Mdf.Immutable));c(")");}
+      visitX(xi);
+      c(";");
+      if(isFwd){c("}");}
+      nl();
+      }
+      c("return Res;");
+    }   
   private void refined(MWT mwt){
     var l=p.topCore();
     MH mh=mwt.mh();
-    if(!l.isInterface()){
-      if(!p.topCore().info().refined().contains(mwt.mh().s())){return;}
-      c("@Override public ");
-      typeName(mh.t());
-      visitS(mh.s());
-      c("(");
-      seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
-      c("){return ");
-      className(p);
-      c(".");
-      c("}");
-      }
-    else{
-      typeName(mh.t());
-      visitS(mh.s());
-      c("(");
-      seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
+    if(l.isInterface()){
+      refineMethHeader(mh);
       staticMethHeader(mh);
-      c("{ return");
-      typeName(p);
-      c(".");
-      visitS(mh.s());
-      c("(this");
-      for(X xi:mh.s().xs()){visitX(xi);c("=");visitX(xi);}
-      c(");}");
+      staticMethBody(mh);
+      return;
       }
+    if(!p.topCore().info().refined().contains(mwt.mh().s())){return;}
+    c("@Override");
+    refineMethHeader(mh);
+    refineMethBody(mh);
     }
   private void staticMethHeader(MH mh) {
     c("public static ");
     typeName(mh.t());
     visitS(mh.s());
     c("(");
-    typeName(p);
+    if(mh.mdf().isClass()){className(p);}
+    else{typeName(p);}
     kw("£xthis");
     for(var i:range(mh.s().xs())){
       c(", ");
@@ -422,5 +482,38 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       kw("£x"+mh.s().xs().get(i).inner());
       }
     c(")");
+    }
+  private void refineMethHeader(MH mh) {
+    c("public ");
+    typeName(mh.t());
+    visitS(mh.s());
+    c("(");
+    seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
+    c(")");
+    }
+  private void staticMethBody(MH mh) {
+    c("{");indent();nl();
+    kw("return");
+    kw("£xthis");
+    c(".");
+    visitS(mh.s());
+    c("(");
+    seq(empty(),mh.s().xs(),", ");
+    c(")");nl();
+    c("}");deIndent();nl();
+    }
+private void refineMethBody(MH mh) {
+    c("{");indent();nl();
+    kw("return");
+    className(p);
+    visitS(mh.s());
+    c("(");
+    kw("this");
+    for(X x:mh.s().xs()){
+      c(", ");
+      kw("£x"+x.inner());
+      }
+    c(")");nl();
+    c("}");deIndent();nl();
     }
   }

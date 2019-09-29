@@ -20,13 +20,25 @@ public class NativeDispatch {
     var op=TrustedOp.fromString(nativeOp);
     return op.code.get(k).apply(xs,e);
     }
+  public static String nativeFactory(String nativeKind, List<String> xs) {
+    var k=TrustedKind.fromString(nativeKind);
+    return k.factory(xs);
+    }
+
 }
 
 enum TrustedKind {
-  Int("int"),
-  String("String");
+  Int("int"){public String factory(List<String> xs){
+    assert xs.size()==1;//just this
+    return "return 0;";
+    }},
+  String("String"){public String factory(List<String> xs){
+    assert xs.size()==1;
+    return "return \"\";";
+    }};
   public final String inner;
   TrustedKind(String inner){this.inner = inner;}
+  public abstract String factory(List<String> xs);
   public static TrustedKind fromString(String s) {
    for (TrustedKind t : TrustedKind.values()) {
     if (t.inner.equals(s))return t;
