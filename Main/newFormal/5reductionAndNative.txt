@@ -191,7 +191,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     J(T[mdf=fwd imm]) "£x"+x+"£fwd"=J.className(T).NewFwd(); //if x in J.fwd
 * J.init(var? T x=e) =
     x=J[J.G(x)](e);
-    ((Fwd)x£fwd).fix(x);//if x in J.fwd
+    ((L42Fwd)x£fwd).fix(x);//if x in J.fwd
 * J.catch(Kz) = J.catch(group(Ks1)) J.catchRet(group(Ks2)) J.catchErr(group(Ks3))
     Ks1,Ks2,Ks3=Kz
 * group(catch throw T1 x1 e1..catch throw T1 x1 e1) = throw T1 x1 e1..Tn xn en
@@ -211,19 +211,19 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J.class()= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
       J.meth(MWTs) //no nested classes
       J(T1) x1;
-      public static BiConsumer<Object,Object> FieldAssFor_x1=(f,o)->{(JC)o).x1=(J(T1))f;}
+      public static BiConsumer<Object,Object> FieldAssFor_x1=(f,o)->{((JC)o).x1=(J(T1))f;};
       ...
       J(Tn) xn;
-      public static BiConsumer<Object,Object> FieldAssFor_xn=(f,o)->{(JC)o).xn=(J(Tn))f;}
+      public static BiConsumer<Object,Object> FieldAssFor_xn=(f,o)->{((JC)o).xn=(J(Tn))f;};
       public static JC NewFwd(){return new _Fwd();}
-      public static class _Fwd extends JC implements Fwd{//implements CN if CN interface
+      public static class _Fwd extends JC implements L42Fwd{//implements CN if CN interface
         private List<Object> os=new ArrayList<>();
         private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
         public List<Object> os(){return os;}
         public List<BiConsumer<Object,Object>> fs(){return fs;}
         //if is interface, implement with throw new Error() all the methods
         }
-      public static final JC Instance=new _Fwd();//so it work also if CN is interface
+      public static final JC instance=new _Fwd();//so it work also if CN is interface
       public J(J.p) unwrap;//only if J.native(J.p)
       public static JC wrap(J(J.p) that){JC res=new JC();res.unwrap=that;return res;}//only if J.native(J.p)
       }
@@ -265,7 +265,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J.meth(MH = native[URL] e) =
     J.staticMethHeader(MH){return J(J.p(This0).Info.kind,URL,x1..xn,e);}
 * J.meth(MH=e) =
-    J.staticMethHeader(MH){returnKw J(e);}
+    J.staticMethHeader(MH){returnKw J[G=G^MH][MH.T](e);}
 
 * J.meth(MH)=//if method is allowed abstract  //all cases for abs methods:
       J.staticMethHeader(MH){throw new Error();}
@@ -286,9 +286,9 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J.meth(MH)=
       J.staticMethHeader(MH){
         J(p(This0)) Res=new JC();
-        if(x1 instanceof Fwd){((Fwd)x1).add(Res,JC.FieldAssFor_x1);}else{Res.x1=CAST1 x1;}
+        if(x1 instanceof L42Fwd){((L42Fwd)x1).add(Res,JC.FieldAssFor_x1);}else{Res.x1=CAST1 x1;}
         ...
-        if(xn instanceof Fwd){((Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
+        if(xn instanceof L42Fwd){((L42Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
         return Res;
         }
     fwd _ in MH.pars.mdfs
@@ -320,7 +320,7 @@ and the setter/constructors would have to do the wrapping.
 
 ###Assumed
 ---
-interface Fwd{/*as in newReduction.Fix*/}
-interface L42Obj{}//marker interface, implemented by all 42class, Any and Void
+interface L42Fwd{/*as in newReduction.Fix*/}
+interface L42Any{}//marker interface, implemented by all 42class
 -----------------------------
 

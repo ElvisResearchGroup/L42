@@ -1,147 +1,111 @@
 package is.L42.platformSpecific.javaTranslation;
 
 import java.io.IOException;
+import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.generated.C;
+import is.L42.generated.Core;
+import is.L42.generated.Core.L;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
+import is.L42.tools.General;
+import is.L42.translationToJava.J;
+import static is.L42.tools.General.L;
 
-class ClassTable{public static ClassTable empty;}
-public class Loader {
-  public Loader(java.nio.file.Path path) {
-    this.ct = ClassTable.empty;
-    boolean isThere=updateCachePath(path);
-    if(!isThere) {
-      try {addResource();}
-      catch (ClassNotFoundException | NoSuchFieldException | IllegalAccessException | CompilationError e) {throw new Error(e);}
-      }
-    else {
-      loadCache();
-      loadResource(cl);
-      }
+class Element{
+  public Element(L l,String cIds,SourceFile source){
+    this.l=l;this.cIds=cIds;this.source=source;
     }
-  public boolean updateCachePath(java.nio.file.Path path) {
-    this.cacheFile=path;
-    if(path==null) {return false;}
-    try {
-      if(!Files.exists(path)){Files.createFile(path);}
-      if(Files.size(path)>50) {return true;}
-      }
-    catch (IOException e) {throw new Error(e);}
-    return false;
-    }
-
-private void dbgWriteJavaFiles(String className, String text) throws Error {
-  assert className.startsWith("generated."):
-    className;
-  className=className.substring(10);
-  //try{Files.write(java.nio.file.Paths.get("C:/Users/user/git/L42/Tests/src/generated/"+className+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-  //try{Files.write(java.nio.file.Paths.get("/u/staff/servetto/git/L42/Tests/src/generated/"+cdResource.getCn()+".java"), text.getBytes());}catch (IOException _e) {throw new Error(_e);}
-  assert !text.contains(";;");
+  Core.L l;
+  String cIds;
+  SourceFile source; 
   }
-  private ClassTable ct;
-  private java.nio.file.Path cacheFile=null;
-  MapClassLoader cl=new MapClassLoader(new HashMap<>(), ClassLoader.getSystemClassLoader());
-  private void javac(Map<Integer, String> dep) {
-    List<SourceFile> readyToJavac=new ArrayList<>();
-    for(int cn:dep.keySet()){
-      String cnString=dep.get(cn);
-      assert !cl.map().containsKey(cnString);//"generated." is included in cnString
-      if(cl.map().containsKey(cnString)){continue;}
-      StringBuilder j=null;//new L42FToJavaString(ct, ct.get(cn).cd).compute();//TODO: here is J
-      String text="package is.L42.metaGenerated;\n"+j;
-      SourceFile src=new SourceFile(cnString,text);
-      readyToJavac.add(src);
-      dbgWriteJavaFiles(cnString, text);
-      }
-    if (readyToJavac.isEmpty()){return;}
-    try{this.cl=InMemoryJavaCompiler.compile(cl,readyToJavac);}
-    catch(CompilationError ce){throw new Error(ce);}
-    cl.readAllStreams();
+public class Loader {
+  public String toString(){
+    String res="";
+    for(var e:loaded.values()){res+=e.cIds+"\n"+e.source+"\n\n";}
+    return res;
     }
-  public void load(Program p){
-    for(Set<Integer>ci:chunks) {
-      ci.removeAll(seen);
-      seen.addAll(ci);
-      HashMap<Integer,String> ciMap=new HashMap<>();
-      for(Integer i:ci) {ciMap.put(i,"is.L42.metaGenerated."+ct.className(i));}
-      processDep(ciMap);
-      }
-    }
-
-  public ExpCore.ClassB run(Program p, ExpCore e) {
-    currentP=p;
-    List<Program>ps=new ArrayList<>();
-    PG pg=new PG(p,G.of(Collections.emptyMap()),ps);
-    E ex = e.accept(pg);
-    assert ct.isCoherent();
-    for(Program pi:ps) {
-      int newId=pi.top().getUniqueId();
-      Element mapped = ct._get(newId);
-      if(mapped==null){
-        ct=ct.plus(new Element(pi,new CD(null,newId,null,null, null)));
-        }
-      }
-    assert ct.isCoherent();
-    assert ct.isCoherent(ex);
-    StringBuilder sJ=L42FToMiniJS.forBody(ct,ex);
-    String freshName=Functions.freshName("MainÂ£Main", L42.usedNames);
-    sJ.insert(0,"package generated;\npublic class "+freshName+"{"+
-      "public static Object execute0()");
-    sJ.append("}");
-    ct=ct.computeDeps();
-    try{return (ExpCore.ClassB)run(freshName,sJ);}
-    catch(InvocationTargetException ite) {
-      Throwable cause=ite.getCause();
-      if(cause instanceof Resources.L42Throwable){
-        Resources.cacheMessage((Resources.L42Throwable)cause);
-        System.out.println(ErrorFormatter.reportPlaceOfMetaError(p,p.top()));
-        }
-      if (cause instanceof RuntimeException) throw (RuntimeException)cause;
-      if (cause instanceof Error) throw (Error)cause;
-      throw new Error(cause);
-      }
-    catch(CompilationError| ClassNotFoundException| NoSuchMethodException| SecurityException| IllegalAccessException| IllegalArgumentException exc) {
-      throw new Error(exc);
-      }
-    catch (Throwable t) {
-      throw Assertions.codeNotReachable();
-      }
-    }
-  public Object run(String cn,StringBuilder j) throws CompilationError, ClassNotFoundException, NoSuchMethodException, SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-    List<SourceFile> files =Collections.singletonList(new SourceFile(
-      cn,j.toString()
-      ));
-    dbgWriteJavaFiles("generated."+cn, j.toString());
-    MapClassLoader clX=InMemoryJavaCompiler.compile(cl,files);//can throw, no closure possible
-    Class<?> cl0 = clX.loadClass("generated."+cn);
-    Method m0 = cl0.getDeclaredMethod("execute0");
-    Object result = m0.invoke(null);
-    return result;
-    }
-  public ExpCore.ClassB execute(Program p,Paths paths,ExpCore e){
-    this.load(p,paths); //Loader change state here
-    assert this.ct.isCoherent();
+  final HashMap<List<C>,Element> loaded=new HashMap<>();
+  final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
+  
+/*
+  map:
+    cs->elem: CORE.L, String cIds_name, source
+    cIds->bytecode 
+  loaded:
+    keep a map of all abs class names and the corresponding source and bytecode files
+    keep the class loaded loading such classes
+  
+  loadNow (p)
+    for all the typed nested classes reachable from p.top,
+      if the corresponding class name is not in the map,
+        add name->source
+      compile all the added name->source
+  runNow (p,C):
+    compile and run the expression in C*/
+  public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
+    var l=p.topCore();
+    J j=new J(p,G.empty(),false);
+    j.visitE(e);
+    String name=J.classNameStr(p)+"£c"+c;
+    String code=header+"\nclass "+name+
+      "{public static L42Library execute(){return "  
+      +j.result()+";}}";
+    var files=L(new SourceFile(metaPackage+name,code));
+    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
+    assert classes==classLoader;
     try{
-      ExpCore.ClassB res= Resources.withPDo(p.reprAsPData(),()->this.run(p,e));//Loader change state here but should be irrelevant
-      res=(ExpCore.ClassB)res.accept(new coreVisitors.CloneVisitor(){
-        public ExpCore visit(ClassB s) {
-          s=(ExpCore.ClassB)super.visit(s);
-          return s.withUniqueId(p.getFreshId());
-          }
-        });
-      return res;
+      L42Library res=(L42Library)classLoader.loadClass(name)
+        .getDeclaredMethod("execute")
+        .invoke(null);
+      return res.unwrap;
       }
-    finally{
-      this.saveCache();
-      L42.afterMainCleanUp();
-      }//keep cache up to date with the failed run expression (and the correct dependencies)
+    catch(ClassNotFoundException|IllegalAccessException|IllegalArgumentException|NoSuchMethodException|SecurityException errs){
+      throw new Error(errs);
+      }
+    }
+  public static final String metaPackage="is.L42.metaGenerated";
+  public static final String header="""
+    package is.L42.metaGenerated;
+    import is.L42.platformSpecific.javaTranslation.L42Any;
+    import is.L42.platformSpecific.javaTranslation.L42Void;
+    import is.L42.platformSpecific.javaTranslation.L42Library;
+    import is.L42.platformSpecific.javaTranslation.L42Fwd;
+    import is.L42.platformSpecific.javaTranslation.L42Throwable;
+    import is.L42.platformSpecific.javaTranslation.L42Error;
+    import is.L42.platformSpecific.javaTranslation.L42Exception;
+    import is.L42.platformSpecific.javaTranslation.L42Return;
+    import java.util.List;
+    import java.util.ArrayList;
+    import java.util.function.BiConsumer;
+    """;
+  public void loadNow(Program p) throws CompilationError{
+    List<SourceFile> files=new ArrayList<>();
+    loadRec(p,files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
+    assert classes==classLoader;    
+    }
+  void loadRec(Program p,List<SourceFile>files){
+    var l=p.topCore();
+    for(var nc:l.ncs()){loadRec(p.push(nc.key(), nc.l()),files);}
+    if(!l.info().isTyped()){return;}
+    J j=new J(p,G.empty(),false);
+    j.mkClass();
+    String name=J.classNameStr(p);
+    String code=header+j.result().toString();
+    var e=new Element(l,name,new SourceFile(metaPackage+name,code));
+    files.add(e.source);
+    loaded.put(J.classNamePath(p),e);
     }
   }

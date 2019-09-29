@@ -12,6 +12,8 @@ import java.util.stream.Collectors;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 
+import static is.L42.translationToJava.TrustedKind.*;
+
 public class NativeDispatch {
   public static String nativeCode(String nativeKind, String nativeUrl, List<String> xs, E e) {
     if(!nativeUrl.startsWith("trusted:")){throw bug();}
@@ -47,12 +49,16 @@ enum TrustedKind {
   }
  }
 enum TrustedOp {
-  Plus("OP+",Map.of(
-    TrustedKind.Int,(xs,e)->"return "+xs.get(0)+" + "+xs.get(1)+";"
+  _a("_a",Map.of(String,(xs,e)->"return "+xs.get(0)+" + \"a\";")),
+  _b("_b",Map.of(String,(xs,e)->"return "+xs.get(0)+" + \"b\";")),
+  HDebug("strDebug",Map.of(
+    TrustedKind.String,(xs,e)->"System.out.println("+xs.get(0)+"); return L42Void.instance;"
     )),
-  Mul("OP*",Map.of(
-    TrustedKind.Int,(xs,e)->""
-    ));
+  Plus("OP+",Map.of(
+    Int,(xs,e)->"return "+xs.get(0)+" + "+xs.get(1)+";",
+    String,(xs,e)->"return "+xs.get(0)+" + "+xs.get(1)+";"
+    )),
+  Mul("OP*",Map.of(Int,(xs,e)->"return "+xs.get(0)+" * "+xs.get(1)+";"));
   public final String inner;
   Map<TrustedKind,BiFunction<List<String>,Core.E,String>>code;
   TrustedOp(String inner,Map<TrustedKind,BiFunction<List<String>,Core.E,String>>code){

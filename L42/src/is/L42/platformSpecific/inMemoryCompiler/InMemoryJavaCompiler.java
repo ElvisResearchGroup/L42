@@ -27,6 +27,9 @@ public class InMemoryJavaCompiler {
       this.contents = contents;
       }
     public CharSequence getCharContent(boolean b){return contents;}
+    public String toString(){
+      return super.toString()+"\n"+contents;
+      }
     }
   @SuppressWarnings("serial")
   public static class CompilationError extends Exception{
@@ -223,7 +226,7 @@ public class InMemoryJavaCompiler {
       };
     CompilationTask compilerTask = compiler.getTask(
       /*out:*/null,classFileManager,diagnisticListenerForErrors,
-      /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","-classpath",System.getProperty("java.class.path")),
+      /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","--enable-preview","--release","13","-classpath",System.getProperty("java.class.path")),
       /*StringsClasses??:*/null,files
       );
     boolean compilationRes=compilerTask.call();

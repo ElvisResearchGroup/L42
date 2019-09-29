@@ -1,5 +1,7 @@
 package is.L42.common;
 
+import static is.L42.tools.General.range;
+
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -7,9 +9,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import is.L42.generated.Core;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
+import is.L42.generated.P;
 import is.L42.generated.X;
 import lombok.NonNull;
 
@@ -20,7 +24,16 @@ public class G {
   public static G empty() {
     return new G(Collections.emptyMap(),Collections.emptySet());
     }
-    
+  public static G of(Core.MH mh){
+    Map<X, T> xInT=new HashMap<>();
+    xInT.put(X.thisX,P.coreThis0.withMdf(mh.mdf()));
+    for(int i:range(mh.s().xs())){
+      X x=mh.s().xs().get(i);
+      T t=mh.pars().get(i);
+      xInT.put(x,t);
+      }
+    return new G(Collections.unmodifiableMap(xInT),Collections.emptySet());
+    }
   public G(Map<X, T> xInT, Set<X> vars) {
     this.xInT=xInT;
     this.vars=vars;

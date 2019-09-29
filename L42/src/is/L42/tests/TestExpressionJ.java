@@ -58,7 +58,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
   je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.instance,£cB£n1.£mof(£cB£n1.instance))")
     ),new AtomicTest(()->
-  je("loop void","switchKw(0){defaultKw->{if(false)yield Wrap.throwE(null);whileKw(trueKw)L42Void.instance;}}")
+  je("loop void","switch(0){default->{if(false)yield Wrap.throwE(null);while(true)L42Void.instance;}}")
     ),new AtomicTest(()->
   je("return void","Wrap.throwE(new L42Return(L42Void.instance))")
   //op update needs blocks
@@ -66,18 +66,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   je("(void)","L42Void.instance")
   ),new AtomicTest(()->
   je("(This0.A a=This0.A<:class This0.A.of() a)","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       £cA£n1 £xa=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
-      yield £xa
+      yield £xa;
       }}
     """)
   ),new AtomicTest(()->
   je("(var This0.A a=This0.A<:class This0.A.of() a:=a)","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       £cA£n1 £xa=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
-      yield Wrap.toVoid(£xa=£xa)
+      yield Wrap.toVoid(£xa=£xa);
       }}
     """)
   ),new AtomicTest(()->//template, next tests will be similar
@@ -86,12 +86,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     This0.A a0=a
     a.ma(a=a)
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       £cA£n1 £xa=null;
       £cA£n1 £xa0=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
       £xa0=£xa;
-      yield £cA£n1.£mma£xa(£xa,£xa)
+      yield £cA£n1.£mma£xa(£xa,£xa);
       }}
     """)
   ),new AtomicTest(()->//using Any for a0
@@ -100,12 +100,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     Any a0=a
     a.ma(a=a)
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       £cA£n1 £xa=null;
       L42Any £xa0=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
       £xa0=£xa;
-      yield £cA£n1.£mma£xa(£xa,£xa)
+      yield £cA£n1.£mma£xa(£xa,£xa);
       }}
     """)
   ),new AtomicTest(()->//using B instead of A
@@ -114,12 +114,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     This0.B b0=b
     b.mb(b=b)
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       Foo £xb=null;
       Foo £xb0=null;
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xb0=£xb;
-      yield £cB£n1.£mmb£xb(£xb,£xb)
+      yield £cB£n1.£mmb£xb(£xb,£xb);
       }}
     """)
   ),new AtomicTest(()->//B instead of A, Any for b0
@@ -128,12 +128,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     Any b0=b
     b.mb(b=b)
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       Foo £xb=null;
       L42Any £xb0=null;
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xb0=£cB£n1.wrap(£xb);
-      yield £cB£n1.£mmb£xb(£xb,£xb)
+      yield £cB£n1.£mmb£xb(£xb,£xb);
       }}
     """)
   ),new AtomicTest(()->//throwing a B and an A
@@ -144,7 +144,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     Void v1=error b
     void
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       £cA£n1 £xa=null;
       Foo £xb=null;
       L42Void £xv0=null;
@@ -153,7 +153,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xv0=Wrap.throwE(new L42Error(£xa));
       £xv1=Wrap.throwE(new L42Error(£cB£n1.wrap(£xb)));
-      yield L42Void.instance
+      yield L42Void.instance;
       }}
     """)
 
@@ -163,14 +163,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     This0.A a0=a.ma(a=a0)
     a0
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       £cA£n1 £xa=null;
       £cA£n1 £xa0=null;
       £cA£n1 £xa0£fwd=£cA£n1.NewFwd();
       £xa=£cA£n1.£mof(£cA£n1.instance);
       £xa0=£cA£n1.£mma£xa(£xa,£xa0£fwd);
-      ((Fwd)£xa0£fwd).fix(£xa0);
-      yield £xa0
+      ((L42Fwd)£xa0£fwd).fix(£xa0);
+      yield £xa0;
       }}
     """)
   ),new AtomicTest(()->//using fwds
@@ -179,14 +179,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     This0.B b0=b.mb(b=b0)
     b0
     )""","""
-    switchKw(0){defaultKw->{
+    switch(0){default->{
       Foo £xb=null;
       Foo £xb0=null;
       Object £xb0£fwd=£cB£n1.NewFwd();
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
-      ((Fwd)£xb0£fwd).fix(£xb0);
-      yield £xb0
+      ((L42Fwd)£xb0£fwd).fix(£xb0);
+      yield £xb0;
       }}
     """)
   ),new AtomicTest(()->
@@ -201,13 +201,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          return £xthis + £xthat;
          }
        public static £cN£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cN£n1 implements Fwd{
+       public static class _Fwd extends £cN£n1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          }
-       public static final £cN£n1 Instance=new _Fwd();
+       public static final £cN£n1 instance=new _Fwd();
        public int unwrap;
        public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
        }
@@ -222,18 +222,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          return £xthis.£xn;
          }
        public static L42Void £mn£xthat(£cA£n1 £xthis, int £xthat){
-         £xthis.£xn=that;return L42Void.instance;
+         £xthis.£xn=£xthat;return L42Void.instance;
          }
        int £xn;
-       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{(£cA£n1)o).n=(int)f;}
+       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£n1)o).£xn=(int)f;};
        public static £cA£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cA£n1 implements Fwd{
+       public static class _Fwd extends £cA£n1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          }
-       public static final £cA£n1 Instance=new _Fwd();
+       public static final £cA£n1 instance=new _Fwd();
        }
      """)
   ),new AtomicTest(()->
@@ -242,13 +242,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ""","""
      class £cC£n1 implements L42Any{
        public static £cC£n1 NewFwd(){return new _Fwd();}
-       public static class _Fwd extends £cC£n1 implements Fwd{
+       public static class _Fwd extends £cC£n1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          }
-       public static final £cC£n1 Instance=new _Fwd();
+       public static final £cC£n1 instance=new _Fwd();
        }
      ""","","")
   ),new AtomicTest(()->
@@ -261,22 +261,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        class £cC£n1 implements L42Any{
          public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){
            £cC£n1 Res=new £cC£n1();
-           if(£xn instanceof Fwd){((Fwd)£xn).add(Res,JC.FieldAssFor_ £xn);}else{Res.£xn=(int)£xn;}
+           if(£xn instanceof L42Fwd){((L42Fwd)£xn).add(Res,JC.FieldAssFor_ £xn);}else{Res.£xn=(int)£xn;}
            return Res;
            }
          public static int £mn(£cC£n1 £xthis){
            return £xthis.£xn;
            }
          int £xn;
-         public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{(£cC£n1)o).n=(int)f;}
+         public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
          public static £cC£n1 NewFwd(){return new _Fwd();}
-         public static class _Fwd extends £cC£n1 implements Fwd{
+         public static class _Fwd extends £cC£n1 implements L42Fwd{
            private List<Object> os=new ArrayList<>();
            private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
            public List<Object> os(){return os;}
            public List<BiConsumer<Object,Object>> fs(){return fs;}
            }
-         public static final £cC£n1 Instance=new _Fwd();
+         public static final £cC£n1 instance=new _Fwd();
          }
      ""","","")
 

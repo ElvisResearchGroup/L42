@@ -32,11 +32,6 @@ import is.L42.visitors.FV;
 import is.L42.visitors.ToSTrait;
 import lombok.NonNull;
 
-//TODO: add the following:
-//if a (non native) class has no fields, it has a static .instance that is used
-//instead of any constructor, and instead of any placeholder variable
-//thus, variables of those types are never in fwds
-
 public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToSTrait{
   @Override public ToSTrait.ToSState state(){return state;}
   ToSTrait.ToSState state= new ToSTrait.ToSState();
@@ -96,9 +91,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("L42"+p.toString());
     }
   void className(Program p){
-    kw(classNameStr(p));
+    kw(J.classNameStr(p));
     }
-  String classNameStr(Program p){
+  public static String classNameStr(Program p){
     var pt=p.pTails;
     String name="";
     while(!pt.isEmpty()){
@@ -108,6 +103,17 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     return name.substring(0,name.length()-2);
     }
+  public static List<C> classNamePath(Program p){
+    return L(c->{
+      var pt=p.pTails;
+      while(!pt.isEmpty()){
+        assert pt.coreL().info()._uniqueId()!=-1;
+        c.add(0,pt.c());
+        pt=pt.tail();
+        }
+      });
+    }
+    
   void wrap(Boolean b){this.wrap=b;}
   
   @Override public void visitEX(Core.EX ex){
@@ -166,7 +172,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(nw){c(")");}
     }
   @Override public void visitLoop(Core.Loop loop){
-    kw("switchKw(0){defaultKw->{if(false)yield Wrap.throwE(null);whileKw(trueKw)");
+    kw("switch(0){default->{if(false)yield Wrap.throwE(null);while(true)");
     var oldWrap=wrap;
     wrap(false);
     visitE(loop.e());
@@ -193,7 +199,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitBlock(Core.Block b){
     if(b.ds().isEmpty() && b.ks().isEmpty()){visitE(b.e());return;}
     indent();
-    kw("switchKw(0){defaultKw->{");
+    kw("switch(0){default->{");
     nl();
     var oldG=g;
     g=g.plusEq(b.ds());
@@ -208,6 +214,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     kw("yield");
     visitE(b.e());
+    c(";");
     g=oldG;
     nl();
     c("}}");
@@ -254,7 +261,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c(";");
     nl();
     if(fwds.contains(d.x())){
-      c("((Fwd)£x"+d.x()+"£fwd).fix(£x"+d.x()+");");
+      c("((L42Fwd)£x"+d.x()+"£fwd).fix(£x"+d.x()+");");
       nl();
       }
     wrap(oldWrap);
@@ -303,7 +310,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
 
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
-    String jC = classNameStr(p);
+    String jC = J.classNameStr(p);
     if(interf){kw("interface "+jC+ "extends L42Any");}
     else{kw("class "+jC+ " implements L42Any");}
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
@@ -318,16 +325,16 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(";");
       nl();
       c("public static BiConsumer<Object,Object> FieldAssFor_"
-        +xi+"=(f,o)->{("+jC+")o)."+xi+"=(");
+        +xi+"=(f,o)->{(("+jC+")o).£x"+xi+"=(");
       typeName(pi);
-      c(")f;}");
+      c(")f;};");
       nl();
       }
       
     c("public static "+jC+" NewFwd(){return new _Fwd();}");
     nl();
-    if(interf){c("public static class _Fwd implements "+jC+", Fwd{");}
-    else{c("public static class _Fwd extends "+jC+" implements Fwd{");}
+    if(interf){c("public static class _Fwd implements "+jC+", L42Fwd{");}
+    else{c("public static class _Fwd extends "+jC+" implements L42Fwd{");}
     indent();nl();
     c("private List<Object> os=new ArrayList<>();");nl();
     c("private List<BiConsumer<Object,Object>> fs=new ArrayList<>();");nl();
@@ -335,7 +342,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("public List<BiConsumer<Object,Object>> fs(){return fs;}");nl();
     //if is interface, implement with throw new Error() all the methods
     c("}");deIndent();nl();
-    c("public static final "+jC+" Instance=new _Fwd();");nl();
+    c("public static final "+jC+" instance=new _Fwd();");nl();
     if(nativeKind(p)){
       c("public ");
       typeName(p);
@@ -363,9 +370,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       assert xs.size()==ps.size();
       }
     }
-  @Override public void visitMWT(MWT mwt){
+  @Override public void visitMWT(MWT mwt){//J.meth
     refined(mwt);
     if(p.topCore().isInterface()){return;}
+    g=G.of(mwt.mh());
+    wrap(mwt.mh().t().p()==P.pAny);
     staticMethHeader(mwt.mh());
     c("{");indent();nl();
     methBody(mwt);
@@ -415,7 +424,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     String m=mh.s().m();
     int i=m.lastIndexOf('#');
     m=m.substring(i+1,m.length()); //works also for -1;
-    kw("£xthis.£x"+m+"=that;return L42Void.instance;");
+    kw("£xthis.£x"+m+"=£xthat;return L42Void.instance;");
     }
   private void factoryBody(MH mh){
     String kind=p.topCore().info().nativeKind();
@@ -425,6 +434,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       return;  
       }
     //TODO: here we could add optimization for 0 arg constructors
+    //if a (non native) class has no fields, it has a static .instance that is used
+    //instead of any constructor, and instead of any placeholder variable
+    //thus, variables of those types are never in fwds
+
     boolean isFwd=mh.pars().stream()
       .anyMatch(ti->ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd));
     typeName(p);
@@ -437,7 +450,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       if(isFwd){
         kw("if(");
         visitX(xi);
-        kw("instanceof Fwd){((Fwd)");
+        kw("instanceof L42Fwd){((L42Fwd)");
         visitX(xi);
         c(").add(Res,JC.FieldAssFor_");
         visitX(xi);
