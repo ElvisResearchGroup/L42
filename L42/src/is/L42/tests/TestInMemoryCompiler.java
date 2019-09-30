@@ -8,7 +8,6 @@ import org.junit.jupiter.api.Test;
 
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
-import is.L42.platformSpecific.inMemoryCompiler.RunningUtils;
 
 public class TestInMemoryCompiler {
 

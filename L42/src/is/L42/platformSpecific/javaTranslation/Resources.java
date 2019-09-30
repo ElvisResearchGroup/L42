@@ -22,8 +22,10 @@ import java.util.function.Supplier;
 import is.L42.generated.Core;
 
 public class Resources {
-  static <K> K throwE(L42Error e){throw e;}
-  static<K> L42Void toVoid(K k){return L42Void.instance;}
+  public static <K> K throwE(L42Error e){throw e;}
+  public static<K> L42Void toVoid(K k){return L42Void.instance;}
+  public static L42Library ofLib(String id){return new L42Library();}
+  public static L42Any ofPath(String id){return new L42Any(){};}
   private static final HashMap<Integer,Core.L>libs=new HashMap<>();
   private static final HashMap<Integer,L42Library>libsCached=new HashMap<>();
   public static void clearRes() {

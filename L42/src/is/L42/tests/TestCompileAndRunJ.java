@@ -1,5 +1,6 @@
 package is.L42.tests;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -34,6 +35,7 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 import static is.L42.common.Err.hole;
 
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCompileAndRunJ
@@ -56,6 +58,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{}}
   """)
+  ),new AtomicTest(()->
+  loadRun("""
+  C={
+    class method Void m()=(
+      This1.S s0=This1.S<:class This1.S.of()
+      This1.S s1=s0._a()
+      This1.S s2=s1._b()
+      s2.strDebug()
+      )
+    #typed{}}
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})")
+
   ));}
 public static void loadFail(String s){
   try{loadBase(base(s),false);fail();}
@@ -67,11 +81,14 @@ public static void load(String s){
   }
 public static void loadRun(String s,String e){
   Program p=base(s);
-  Loader l=switch(0){default->{
-    try{yield loadBase(p,true);}
-    catch(CompilationError ce){fail(ce);throw bug();}
-    }};
-  l.runNow(p, new C("Task"), p.)
+  //somehow using a switch expression makes junit fail
+  Loader l;try{l=loadBase(p,true);}
+  catch(CompilationError ce){fail(ce);throw bug();}
+  String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
+  var p2=Program.parse(code);
+  try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
+  catch (InvocationTargetException e1) {fail(e1);}
+  catch (CompilationError e1) {fail(e1);}
   }
 
 public static Program base(String s){

@@ -133,7 +133,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(".instance");
       return;
       }
-    kw("Wrap.ofPath(\"");
+    kw("Resources.ofPath(\"");
     className(pCastT.p());
     c("\")");
     }
@@ -141,7 +141,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("L42Void.instance");
     }
   @Override public void visitL(Core.L l){
-    kw("Wrap.ofLib(\""+libToMap(l)+"\")");
+    kw("Resources.ofLib(\""+libToMap(l)+"\")");
     }
 
   @Override public void visitMCall(Core.MCall m){
@@ -172,7 +172,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(nw){c(")");}
     }
   @Override public void visitLoop(Core.Loop loop){
-    kw("switch(0){default->{if(false)yield Wrap.throwE(null);while(true)");
+    kw("switch(0){default->{if(false)yield Resources.throwE(null);while(true)");
     var oldWrap=wrap;
     wrap(false);
     visitE(loop.e());
@@ -180,7 +180,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c(";}}");
     }
   @Override public void visitThrow(Core.Throw thr){
-    kw("Wrap.throwE(");
+    kw("Resources.throwE(");
     var oldWrap=wrap;
     wrap(true);
     c("new L42"+thr.thr()+"(");
@@ -189,7 +189,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("))");
     }
   @Override public void visitOpUpdate(Core.OpUpdate o){
-    kw("Wrap.toVoid(£x"+o.x()+"=");
+    kw("Resources.toVoid(£x"+o.x()+"=");
     var oldWrap=wrap;
     wrap(g(o.x()).p()==P.pAny);
     visitE(o.e());

@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.function.BiFunction;
 import java.util.stream.Collectors;
 
+
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 
@@ -16,7 +17,7 @@ import static is.L42.translationToJava.TrustedKind.*;
 
 public class NativeDispatch {
   public static String nativeCode(String nativeKind, String nativeUrl, List<String> xs, E e) {
-    if(!nativeUrl.startsWith("trusted:")){throw bug();}
+    if(!nativeUrl.startsWith("trusted:")){return untrusted(nativeKind,nativeUrl,xs,e);}
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind.fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
@@ -26,8 +27,13 @@ public class NativeDispatch {
     var k=TrustedKind.fromString(nativeKind);
     return k.factory(xs);
     }
-
-}
+  public static String untrusted(String nativeKind, String nativeUrl, List<String> xs, E e) {
+    //String[]parts=nativeUrl.split(":");
+    //example slaveName:#1.foo(#2)
+    //slaveName:ReadFile.fileName(#1)
+    throw bug();
+    }
+  }
 
 enum TrustedKind {
   Int("int"){public String factory(List<String> xs){
@@ -37,6 +43,10 @@ enum TrustedKind {
   String("String"){public String factory(List<String> xs){
     assert xs.size()==1;
     return "return \"\";";
+    }},
+  Limit("Void"){public String factory(List<String> xs){
+    assert false;
+    throw bug();
     }};
   public final String inner;
   TrustedKind(String inner){this.inner = inner;}
@@ -51,8 +61,11 @@ enum TrustedKind {
 enum TrustedOp {
   _a("_a",Map.of(String,(xs,e)->"return "+xs.get(0)+" + \"a\";")),
   _b("_b",Map.of(String,(xs,e)->"return "+xs.get(0)+" + \"b\";")),
-  HDebug("strDebug",Map.of(
-    TrustedKind.String,(xs,e)->"System.out.println("+xs.get(0)+"); return L42Void.instance;"
+  StrDebug("strDebug",Map.of(String,(xs,e)->
+    "System.out.println("+xs.get(0)+"); return L42Void.instance;"
+    )),
+  LimitTime("limitTime",Map.of(Limit,(xs,e)->
+    "System.out.println("+xs.get(0)+"); return L42Void.instance;"
     )),
   Plus("OP+",Map.of(
     Int,(xs,e)->"return "+xs.get(0)+" + "+xs.get(1)+";",

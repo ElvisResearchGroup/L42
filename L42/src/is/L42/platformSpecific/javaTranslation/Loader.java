@@ -38,35 +38,20 @@ public class Loader {
     }
   final HashMap<List<C>,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  
-/*
-  map:
-    cs->elem: CORE.L, String cIds_name, source
-    cIds->bytecode 
-  loaded:
-    keep a map of all abs class names and the corresponding source and bytecode files
-    keep the class loaded loading such classes
-  
-  loadNow (p)
-    for all the typed nested classes reachable from p.top,
-      if the corresponding class name is not in the map,
-        add name->source
-      compile all the added name->source
-  runNow (p,C):
-    compile and run the expression in C*/
   public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
     var l=p.topCore();
     J j=new J(p,G.empty(),false);
     j.visitE(e);
-    String name=J.classNameStr(p)+"£c"+c;
-    String code=header+"\nclass "+name+
+    String name="£c"+c;
+    if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
+    String code=header+"\npublic class "+name+
       "{public static L42Library execute(){return "  
       +j.result()+";}}";
     var files=L(new SourceFile(metaPackage+name,code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
     assert classes==classLoader;
     try{
-      L42Library res=(L42Library)classLoader.loadClass(name)
+      L42Library res=(L42Library)classLoader.loadClass(metaPackage+name)
         .getDeclaredMethod("execute")
         .invoke(null);
       return res.unwrap;
@@ -75,7 +60,7 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public static final String metaPackage="is.L42.metaGenerated";
+  public static final String metaPackage="is.L42.metaGenerated.";
   public static final String header="""
     package is.L42.metaGenerated;
     import is.L42.platformSpecific.javaTranslation.L42Any;
@@ -86,6 +71,7 @@ public class Loader {
     import is.L42.platformSpecific.javaTranslation.L42Error;
     import is.L42.platformSpecific.javaTranslation.L42Exception;
     import is.L42.platformSpecific.javaTranslation.L42Return;
+    import is.L42.platformSpecific.javaTranslation.Resources;
     import java.util.List;
     import java.util.ArrayList;
     import java.util.function.BiConsumer;

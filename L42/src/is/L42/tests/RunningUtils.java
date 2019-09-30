@@ -1,4 +1,4 @@
-package is.L42.platformSpecific.inMemoryCompiler;
+package is.L42.tests;
 
 import java.lang.reflect.InvocationTargetException;
 
