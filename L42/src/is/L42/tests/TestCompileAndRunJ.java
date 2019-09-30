@@ -22,6 +22,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.javaTranslation.Loader;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Top;
 import is.L42.translationToJava.J;
@@ -68,7 +69,87 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       s2.strDebug()
       )
     #typed{}}
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab")
+  ),new AtomicTest(()->
+  loadRun("""
+  C={
+    class method Void m()=(
+      This1.S s0=(error void)
+      catch error Void x x
+      void
+      )
+    #typed{}}
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
+
+  ),new AtomicTest(()-> //TODO: should pass when safecode is integrated
+  loadRun("""
+  SafeReadFile={
+    class method This1.S read(This1.S fileName)=native{
+      ioSlave{}
+      {try(//I may have messed up some of the code, 
+      java.util.stream.Stream<String>lines=java.nio.file.Files.lines(
+        java.nio.file.Paths.get(#1+".txt")))
+        {return lines.collect(java.util.stream.Collectors.joining("\n"));}
+      catch (java.io.IOException ioe) {return "";}
+      }} error void
+    #typed{}
+    }
+  C={
+    class method Void m()=(
+      This1.S s0=This1.S<:class This1.S.of()
+      This1.S s1=s0._a()
+      This1.S s2=s1._b()
+      This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.read(fileName=s2)
+      s3.strDebug()
+      )
+    #typed{}}
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello\nWorld")
+  ),new AtomicTest(()-> //TODO: should pass when safecode is integrated
+  loadRun("""
+  Safe2={
+    class method This1.S go()=native{
+      nativeSlave{
+        classPath: something
+        }
+      {
+      novelPackage.MyClass obj=new novelPackage.MyClass();
+      String res=obj.normalMeth();//returns "Hi "
+      res+=obj.nativeMeth();//returns "NativeWorld" by means of a native call
+      return res;
+      }} error void
+    #typed{}
+    }
+  C={
+    class method Void m()=(
+      This1.S s3=This1.Safe2<:class This1.Safe2.go()
+      s3.strDebug()
+      )
+    #typed{}}
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hi NativeWorld")
+  ),new AtomicTest(()-> //TODO: should pass when safecode is integrated
+  loadRunErr("""
+  Safe3={
+    class method This1.S go()=native{
+      nativeSlave{
+        timeLimit:2
+        }
+      {
+      while(true){
+        if(false){break;}
+        System.out.println("looping");
+        }
+      return "looped";
+      }} error void
+    #typed{}
+    }
+  C={
+    class method Void m()=(
+      This1.S s3=This1.Safe3<:class This1.Safe3.go()
+      s3.strDebug()
+      )
+    #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})")
+
 
   ));}
 public static void loadFail(String s){
@@ -79,18 +160,44 @@ public static void load(String s){
   try{loadBase(base(s),true);}
   catch(CompilationError ce){fail(ce);}
   }
-public static void loadRun(String s,String e){
-  Program p=base(s);
-  //somehow using a switch expression makes junit fail
-  Loader l;try{l=loadBase(p,true);}
-  catch(CompilationError ce){fail(ce);throw bug();}
-  String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
-  var p2=Program.parse(code);
-  try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
-  catch (InvocationTargetException e1) {fail(e1);}
-  catch (CompilationError e1) {fail(e1);}
-  }
 
+public static void loadRunErr(String s,String e){
+  Resources.clearRes();
+  try{
+    Program p=base(s);
+    Loader l;try{l=loadBase(p,true);}
+    catch(CompilationError ce){fail(ce);throw bug();}
+    String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
+    var p2=Program.parse(code);
+    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
+    catch (InvocationTargetException e1) {
+      if(!(e1.getCause() instanceof java.util.concurrent.CancellationException)){fail(e1.getCause());}
+      assertEquals("",Resources.out());
+      return;
+      }
+    catch (CompilationError e1) {fail(e1);}
+    fail("java.util.concurrent.CancellationException expected for timeout");
+    //TODO: is there a better unchecked exception in java to use to this aim?
+    }
+  finally{Resources.clearRes();}
+  }  
+
+public static void loadRun(String s,String e,String output){
+  Resources.clearRes();
+  try{
+    Program p=base(s);
+    //somehow using a switch expression makes junit fail
+    Loader l;try{l=loadBase(p,true);}
+    catch(CompilationError ce){fail(ce);throw bug();}
+    String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
+    var p2=Program.parse(code);
+    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
+    catch (InvocationTargetException e1) {fail(e1);}
+    catch (CompilationError e1) {fail(e1);}
+    assertEquals(output,Resources.out());
+    }
+  finally{Resources.clearRes();}
+  }
 public static Program base(String s){
   String l="{ "+s+
   """

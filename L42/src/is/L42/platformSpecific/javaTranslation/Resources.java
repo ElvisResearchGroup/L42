@@ -22,6 +22,12 @@ import java.util.function.Supplier;
 import is.L42.generated.Core;
 
 public class Resources {
+  private static StringBuffer out=new StringBuffer();//StringBuffer is the synchronized StringBuilder
+  public static String out(){return out.toString();}
+  public static void out(String s){
+    out.append(s);
+    System.out.println(s);
+    }
   public static <K> K throwE(L42Error e){throw e;}
   public static<K> L42Void toVoid(K k){return L42Void.instance;}
   public static L42Library ofLib(String id){return new L42Library();}
@@ -31,5 +37,6 @@ public class Resources {
   public static void clearRes() {
     libs.clear();
     libsCached.clear();
+    out=new StringBuffer();
     }
   }

@@ -34,33 +34,33 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestExpressionJ
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-  je("Any<:class Any","Wrap.ofPath(\"L42Any\")")
+  je("Any<:class Any","Resources.ofPath(\"L42Any\")")
   ),new AtomicTest(()->
-  je("Library<:class Any","Wrap.ofPath(\"L42Library\")")
+  je("Library<:class Any","Resources.ofPath(\"L42Library\")")
   ),new AtomicTest(()->
-  je("Void<:class Any","Wrap.ofPath(\"L42Void\")")
+  je("Void<:class Any","Resources.ofPath(\"L42Void\")")
   ),new AtomicTest(()->
   je("This0.A<:class This0.A","£cA£n1.instance")
   ),new AtomicTest(()->
   je("This0.B<:class This0.B","£cB£n1.instance")
   ),new AtomicTest(()->
-  je("This0.A<:class Any","Wrap.ofPath(\"£cA£n1\")")
+  je("This0.A<:class Any","Resources.ofPath(\"£cA£n1\")")
   ),new AtomicTest(()->
-  je("This0.B<:class Any","Wrap.ofPath(\"£cB£n1\")")
+  je("This0.B<:class Any","Resources.ofPath(\"£cB£n1\")")
   ),new AtomicTest(()->
   je("void","L42Void.instance")
   ),new AtomicTest(()->
-  je("{#norm{}}","Wrap.ofLib(\"1\")")
+  je("{#norm{}}","Resources.ofLib(\"1\")")
     ),new AtomicTest(()->
-  je("{#typed{}}","Wrap.ofLib(\"1\")")
+  je("{#typed{}}","Resources.ofLib(\"1\")")
     ),new AtomicTest(()->
   je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA£n1.£mma£xa(£cA£n1.instance,£cA£n1.£mof(£cA£n1.instance))")
     ),new AtomicTest(()->
   je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.instance,£cB£n1.£mof(£cB£n1.instance))")
     ),new AtomicTest(()->
-  je("loop void","switch(0){default->{if(false)yield Wrap.throwE(null);while(true)L42Void.instance;}}")
+  je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true)L42Void.instance;}}")
     ),new AtomicTest(()->
-  je("return void","Wrap.throwE(new L42Return(L42Void.instance))")
+  je("return void","Resources.throwE(new L42Return(L42Void.instance))")
   //op update needs blocks
   ),new AtomicTest(()->
   je("(void)","L42Void.instance")
@@ -77,7 +77,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       £cA£n1 £xa=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
-      yield Wrap.toVoid(£xa=£xa);
+      yield Resources.toVoid(£xa=£xa);
       }}
     """)
   ),new AtomicTest(()->//template, next tests will be similar
@@ -151,8 +151,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       L42Void £xv1=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
       £xb=£cB£n1.£mof(£cB£n1.instance);
-      £xv0=Wrap.throwE(new L42Error(£xa));
-      £xv1=Wrap.throwE(new L42Error(£cB£n1.wrap(£xb)));
+      £xv0=Resources.throwE(new L42Error(£xa));
+      £xv1=Resources.throwE(new L42Error(£cB£n1.wrap(£xb)));
       yield L42Void.instance;
       }}
     """)
@@ -189,6 +189,38 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       yield £xb0;
       }}
     """)
+
+  ),new AtomicTest(()->//throw
+  je("""
+   (This0.B b=This0.B<:class This0.B.of()
+    This0.B b0=b.mb(b=b0)
+    catch error This0.B x x
+    b0
+    )""","""
+    switch(0){default->{
+      Foo £xb=null;
+      Foo £xb0=null;
+      Object £xb0£fwd=£cB£n1.NewFwd();
+      try{
+        £xb=£cB£n1.£mof(£cB£n1.instance);
+        £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
+        ((L42Fwd)£xb0£fwd).fix(£xb0);
+        }
+      catch(L42Error catchVar0){
+        if(catchVar0.obj42() instanceof £cB£n1){
+          Foo £xx=((£cB£n1)catchVar0.obj42()).unwrap;
+          yield £xx;
+          }
+        throw catchVar0;
+        }
+      yield £xb0;
+      }}
+    """
+    //eclipse bug: if I put umbalanced "}" in the code literal, the parser may fails. It also fails if the same multiline string is embedded in /* */
+    )
+
+
+//jc
   ),new AtomicTest(()->
   jc("""
      """,

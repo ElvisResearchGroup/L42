@@ -196,10 +196,11 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     Ks1,Ks2,Ks3=Kz
 * group(catch throw T1 x1 e1..catch throw T1 x1 e1) = throw T1 x1 e1..Tn xn en
 
- * J.catch(throw T1 x1 e1..Tn xn en) = catchKw(J(throw) J.catchVar){
-    J.catchIf(T1 x1 e1)..J.catchIf(Tn xn en)
+ * J.catch(throw T1 x0 e0..Tn xn en) = catchKw(J(throw) J.catchVar){
+    J.catchIf(T0 x0 e0)..J.catchIf(Tn xn en)
     throw J.catchVar;
     }
+ * J.catch(throw) = empty
 
 * J.catchIf(T x e) =
     if(J.catchVar.obj42() instanceof J.className(T) ){

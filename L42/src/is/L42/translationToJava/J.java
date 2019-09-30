@@ -205,10 +205,12 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     g=g.plusEq(b.ds());
     addFwds(b.ds());    
     dec(b.ds());
-    if(!b.ks().isEmpty()){kw("try{");}
+    if(!b.ks().isEmpty()){kw("try{");indent();nl();}
     visitDs(b.ds());//init
     if(!b.ks().isEmpty()){
+      nl();
       c("}");
+      deIndent();
       nl();
       catchKs(b.ks());
       }
@@ -268,21 +270,24 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     fwds.remove(d.x());
     }  
   private void catchKs(List<Core.K> ks){
-    catchGroup(ThrowKind.Error,ks.stream().filter(k->k.thr()==ThrowKind.Error));
-    catchGroup(ThrowKind.Exception,ks.stream().filter(k->k.thr()==ThrowKind.Exception));
-    catchGroup(ThrowKind.Return,ks.stream().filter(k->k.thr()==ThrowKind.Return));
+    catchGroup(ThrowKind.Error,L(ks.stream().filter(k->k.thr()==ThrowKind.Error)));
+    catchGroup(ThrowKind.Exception,L(ks.stream().filter(k->k.thr()==ThrowKind.Exception)));
+    catchGroup(ThrowKind.Return,L(ks.stream().filter(k->k.thr()==ThrowKind.Return)));
     }
-  private void catchGroup(ThrowKind tk,Stream<Core.K> ks){
+  private void catchGroup(ThrowKind tk,List<Core.K> ks){
+    if(ks.isEmpty()){return;}
     kw("catch(L42"+tk+" "+catchVar()+"){");
+    indent();nl();
     ks.forEach(this::catchIf);
-    c("throw "+catchVar());
+    c("throw "+catchVar()+";");
+    nl();c("}");deIndent();nl();
+
     }
   private void catchIf(Core.K k){
     kw("if("+catchVar()+".obj42() instanceof ");
     className(k.t());
     c("){");
-    nl();
-    indent();
+    indent();nl();
     typeName(k.t());
     kw("£x"+k.x()+"=(");
     boolean eq=!nativeKind(k.t()); 
@@ -297,7 +302,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     this.catchLev-=1;
     c(";");
     nl();
+    c("}");
     deIndent();
+    nl();
      }
   @Override public void visitS(S s){
     kw("£m"+s.m());
