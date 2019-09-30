@@ -54,17 +54,28 @@ public class NativeDispatch {
       }
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
     int timeLimit=100;//seconds, please, show me how to set it up
-    int MemoryLimit=100;//megabites, please, show me how to set it up
+    int memoryLimit=100;//megabites, please, show me how to set it up
     String classPath="";
     String nativePath="";
     if(nativeUrl.contains("classPath:")){
       //so we can test both ways
       classPath="a local path that works for you";
       nativePath="a local path to a trivial *.so";
-      }
+    }
+    String args = "new String[] {"+(memoryLimit>0?"-Xmx="+memoryLimit+"M":"")+"}";
+        
     //return "return <YourMap>.of("+slaveName+","+toLambda+").get();";
     //the of method may also handle exceptions in some reasonable way (Marco will handle this)
-    return "return \"TODO\";";
+    return java.lang.String.format("""
+        ClassLoader cl = new java.net.URLClassLoader(java.util.Arrays.stream("%s".split(";")).map(s-> {
+          try {
+            return new java.net.URL(s);
+          } catch (java.net.MalformedURLException ex) {
+            throw new RuntimeException(ex);
+          }
+        }).toArray(java.net.URL[]::new));
+        safeNativeCode.slave.host.ProcessSlave slave = new safeNativeCode.slave.host.ProcessSlave(timeLimit, %s, cl);  
+        """,classPath,args);
     }
   }
 
