@@ -19,7 +19,6 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.generated.C;
-import is.L42.generated.CT;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.MH;
@@ -138,12 +137,6 @@ public class Program implements Visitable<Program>{
         if(!(st instanceof Core.T)){return t0;}
         return new Half.T(null,L(((Core.T)st).withMdf(t0._mdf())));
         }
-      @Override public ST visitSTMeth(ST.STMeth stMeth){
-        return minimize(super.visitSTMeth(stMeth));
-        }
-     @Override public ST visitSTOp(ST.STOp stOp){ 
-        return minimize(super.visitSTOp(stOp));
-        }
       @Override public Core.T visitT(Core.T  t){
         return t.withP(from(t.p(),source));
         }
@@ -159,22 +152,6 @@ public class Program implements Visitable<Program>{
   public T from(T t,P.NCs source){return fromVisitor(source).visitT(t);}
   public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
   public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
-
-  public List<CT> fromCTz(List<CT>ctz,P.NCs source){
-    return L(ctz,(c,ct1)->{
-      CT ct=from(ct1,source);
-      boolean cond=ct.st() instanceof T 
-        && ct.t()._mdf()==null
-        && ct.t().stz().size()==1
-        && ct.t().stz().get(0) instanceof T;
-      if(!cond){c.add(ct);}
-      });
-    }
-  public CT from(CT ct,P.NCs source){
-    assert minimize(source)==source;
-    var v=fromVisitor(source);
-    return ct.withSt(v.visitST(ct.st())).withT(v.visitT(ct.t()));
-    }  
   
   public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
     return subPs.allMatch(p->isSubtype(p, superP,poss));
@@ -283,19 +260,6 @@ public class Program implements Visitable<Program>{
     if(!pTails.c().equals(p.cs().get(0))){return p;}
     return P.of(p.n()-1,popL(p.cs()));
     }
-  public ST minimize(ST st){
-    throw todo();//TODO:
-    }
-  public List<ST> minimizeSTz(List<ST>stz){
-    throw todo();//TODO:
-    }
-  public CT minimize(CT ct){
-    throw todo();//TODO:
-    }
-  public List<CT> minimizeCTz(List<CT> ctz){
-    return ctz;//TODO:
-    }
-
   public T _chooseT(List<T> ts,List<Pos> poss){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
@@ -318,15 +282,6 @@ public class Program implements Visitable<Program>{
         }
       });
     }
-
-  /*public static class Psi{P p; S s; int i;}
-  public List<Psi> opOptions(Op op, List<T>ts){
-    return L(c->{for(int i:range(ts)){
-      P pi=ts.get(i).p();
-      //this.methods(pi)
-      }});
-    }*/
-
   public static Program parse(String s){
     var r=Parse.program("-dummy-",s);
     assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;

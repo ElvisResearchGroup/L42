@@ -21,7 +21,8 @@ import is.L42.generated.ST;
 
 public class CTz {
   private final Map<ST,ArrayList<ST>> inner=new HashMap<>();
-  boolean coherent(){
+  @Override public String toString(){return inner.toString();}
+  public boolean coherent(){
     for(var e:inner.entrySet()){
       ST st=e.getKey();
       List<ST> stz=e.getValue();
@@ -32,7 +33,7 @@ public class CTz {
       }
       return true;
     }
-  void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
+  public void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
     assert coherent();
     while(!stz.isEmpty()){
       var st=stz.get(0);
@@ -49,13 +50,14 @@ public class CTz {
        for(ST stj: stz){if(!stzi.contains(stj)){stzi.add(stj);}}
        minimize(p,stzi);
        }
+     //WRONG here, we never add the st->stz..  also.. do we need to grow the stz? check formalism
     }
-  Set<ST> dom(){return inner.keySet();}
-  List<ST> of(ST st){return L(inner.get(st).stream());}
-  List<ST> of(List<ST>stz){return L(stz,(c,sti)->c.addAll(of(sti)));}
+  public Set<ST> dom(){return inner.keySet();}
+  public List<ST> of(ST st){return L(inner.get(st).stream());}
+  public List<ST> of(List<ST>stz){return L(stz,(c,sti)->c.addAll(of(sti)));}
   void minimize(Program p,ArrayList<ST>stz){
     ArrayList<T>tz=new ArrayList<>();
-    for(int i=0;i<=stz.size();){
+    for(int i=0;i<stz.size();){
       ST st=minimize(p,stz.get(i));
       if(st instanceof T){tz.add((T)st);stz.remove(i);}
       else if(stz.contains(st)){stz.remove(i);}
@@ -113,7 +115,7 @@ public class CTz {
     assert ts.stream().distinct().count()==1;
     return ts.get(0);
     }
-  ST minimize(Program p,ST.STOp st){return st;}//TODO:
+  ST minimize(Program p,ST.STOp st){ return st;}//TODO:
   /*
 * p.minimize(CTz; OP STz1 ... STzn) = p(P)(s).T[from P; p]
     Ti in CTz(STzi)
@@ -122,4 +124,11 @@ public class CTz {
     otherwise
   
   */
+    /*public static class Psi{P p; S s; int i;}
+  public List<Psi> opOptions(Op op, List<T>ts){
+    return L(c->{for(int i:range(ts)){
+      P pi=ts.get(i).p();
+      //this.methods(pi)
+      }});
+    }*/
   }

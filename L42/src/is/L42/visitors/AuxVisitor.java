@@ -20,49 +20,43 @@ import is.L42.generated.X;
 import is.L42.generated.Full.Doc;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
 
-final class AuxVisitor extends L42AuxBaseVisitor<Object> {
-private final Pos pos;
-
-AuxVisitor(Pos pos) { this.pos = pos; }
-
-@Override public Full.CsP visitNudeCsP(NudeCsPContext ctx) {
-  return visitCsP(ctx.csP());
-  }
-@Override public Full.CsP visitCsP(L42AuxParser.CsPContext ctx) {
-  Full.CsP r;
-  if((r=FullL42Visitor.opt(ctx.cs(),null,this::visitCs))!=null){return r;}
-  if((r=FullL42Visitor.opt(ctx.path(),null,this::visitPath))!=null){return r;}
-  if(ctx.anyKw()!=null){return new Full.CsP(pos,L(),P.pAny);}
-  if(ctx.voidKw()!=null){return new Full.CsP(pos,L(),P.pVoid);}
-  if(ctx.libraryKw()!=null){return new Full.CsP(pos,L(),P.pLibrary);}
-  throw unreachable();
-  }
-  
-@Override public Full.CsP visitCs(L42AuxParser.CsContext ctx) {
-  List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
-  return new Full.CsP(pos,cs, null);
-  }
-
-@Override public Full.CsP visitPath(L42AuxParser.PathContext ctx) {
-  int n=visitThisKw(ctx.thisKw());
-  List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
-  return new Full.CsP(pos,L(),P.of(n,cs)); 
-  }
-
-@Override public C visitC(L42AuxParser.CContext ctx) {
-  String s=ctx.getText();
-  int i=s.indexOf("::");
-  if(i==-1){return new C(s,-1);}
-  int u=Integer.parseInt(s.substring(i+2));
-  return new C(s.substring(0,i),u);
-  }
-
-@Override public Integer visitThisKw(L42AuxParser.ThisKwContext ctx) {
-  String s=ctx.getText().substring(4);
-  if(s.isEmpty()){return 0;}
-  return Integer.parseInt(s);
-  }
- @Override public Full.Doc visitTopDoc(L42AuxParser.TopDocContext ctx) {
+public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
+  private final Pos pos;
+  public AuxVisitor(Pos pos) {this.pos=pos;}
+  @Override public Full.CsP visitNudeCsP(NudeCsPContext ctx) {
+    return visitCsP(ctx.csP());
+    }
+  @Override public Full.CsP visitCsP(L42AuxParser.CsPContext ctx) {
+    Full.CsP r;
+    if((r=FullL42Visitor.opt(ctx.cs(),null,this::visitCs))!=null){return r;}
+    if((r=FullL42Visitor.opt(ctx.path(),null,this::visitPath))!=null){return r;}
+    if(ctx.anyKw()!=null){return new Full.CsP(pos,L(),P.pAny);}
+    if(ctx.voidKw()!=null){return new Full.CsP(pos,L(),P.pVoid);}
+    if(ctx.libraryKw()!=null){return new Full.CsP(pos,L(),P.pLibrary);}
+    throw unreachable();
+    }
+  @Override public Full.CsP visitCs(L42AuxParser.CsContext ctx) {
+    List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
+    return new Full.CsP(pos,cs, null);
+    }
+  @Override public Full.CsP visitPath(L42AuxParser.PathContext ctx) {
+    int n=visitThisKw(ctx.thisKw());
+    List<C> cs=L(ctx.c(),(r,c)->r.add(visitC(c)));
+    return new Full.CsP(pos,L(),P.of(n,cs)); 
+    }
+  @Override public C visitC(L42AuxParser.CContext ctx) {
+    String s=ctx.getText();
+    int i=s.indexOf("::");
+    if(i==-1){return new C(s,-1);}
+    int u=Integer.parseInt(s.substring(i+2));
+    return new C(s.substring(0,i),u);
+    }
+  @Override public Integer visitThisKw(L42AuxParser.ThisKwContext ctx) {
+    String s=ctx.getText().substring(4);
+    if(s.isEmpty()){return 0;}
+    return Integer.parseInt(s);
+    }
+  @Override public Full.Doc visitTopDoc(L42AuxParser.TopDocContext ctx) {
     Full.PathSel p=FullL42Visitor.opt(ctx.pathSelX(),null,this::visitPathSelX);
     if(ctx.topDocText()==null){return new Full.Doc(p, L(),L());}
     return visitTopDocText(ctx.topDocText()).with_pathSel(p);

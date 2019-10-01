@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
+import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
@@ -211,9 +212,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 
 public static void top(String program,String out){
-  assertEquals(new Top().top(L(),Program.parse(program)).p().top,Core.L.parse(out));
+  assertEquals(new Top().top(new CTz(),Program.parse(program)).top,Core.L.parse(out));
   }
 public static void topFail(Class<?> kind,String program,String ...output){
-  checkFail(()->new Top().top(L(),Program.parse(program)), output, kind);
+  checkFail(()->new Top().top(new CTz(),Program.parse(program)), output, kind);
   }
 }

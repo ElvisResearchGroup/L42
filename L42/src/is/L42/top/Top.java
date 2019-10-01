@@ -3,27 +3,24 @@ package is.L42.top;
 import java.util.ArrayList;
 import java.util.List;
 
+import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.G;
 import is.L42.common.GX;
 import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
 import is.L42.generated.C;
-import is.L42.generated.CT;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
-import is.L42.generated.ER;
 import is.L42.generated.Full;
 import is.L42.generated.Full.L.NC;
 import is.L42.generated.Half;
-import is.L42.generated.I;
 import is.L42.generated.LL;
 import is.L42.generated.P;
-import is.L42.generated.PR;
 import is.L42.generated.Pos;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
@@ -33,7 +30,7 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;
 
 public class Top {
-  public PR top(List<CT> ctz, Program p)throws EndError {
+  public Program top(CTz ctz, Program p)throws EndError {
     SortHeader sorted=new SortHeader(p,uniqueId++);//progagates the right header errors
     Core.L coreL=sorted.l;
     List<Full.L.NC> ncs=sorted.ncs;
@@ -41,6 +38,7 @@ public class Top {
     List<MH> mh1n=L(coreL.mwts(),(c,m)->c.add(m.mh()));
     Program p0=p.update(updateInfo(pl,L(mh1n,(c,m)->c.add(sorted.mwtOf(m, null)))));
     ArrayList<CT> ctz0=new ArrayList<>(ctz);
+    //TODO: remove HALF.T and make list<ST> in the grammar instead: fix Half grammar
     ArrayList<Half.E> e1n=new ArrayList<>();
     for(MH mhi:mh1n){
       ctzAdd(ctz0,p0,mhi,sorted._eOf(mhi.s()),e1n);
@@ -51,7 +49,7 @@ public class Top {
     assert p1.top instanceof Core.L;
     List<Core.E> coreE1n=L(e1n,(c,_ei)->{
       if(_ei==null){c.add(null);return;}
-      ER eri=infer(new I(null,p1,G.empty(),p1.minimizeCTz(ctz1)),_ei);
+      ER eri=infer(new I(null,p1,G.empty(),ctz1),_ei);
       c.add(eri.e());
       });//and propagate errors out
     List<MWT> mwt1n=L(mh1n,coreE1n,(c,mhi,_ei)->c.add(sorted.mwtOf(mhi,_ei)));
