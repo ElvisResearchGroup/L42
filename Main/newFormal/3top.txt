@@ -194,15 +194,15 @@ _______
 * adapt(p,e,imm Void) = (Void x=e {}) where x fresh
 * adapt(p,e,T) = (T x=e x.#toLibrary()) otherwise, where x fresh    
 _______
+#define I(mdf? STz) = CORE.T
+* I(mdf STz) = I(STz)[mdf=mdf]
+* I(STz) = chooseT(I.CTz(STz)) //assuming I.CTz=I.p.minimize(I.CTz)
+_______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
 * CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
     Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
     Y!e = Half.e; STz; empty; CTz' // empty: error on bodies leaking returns
-_______
-#define I(mdf? STz) = CORE.T
-* I(mdf STz) = I(STz)[mdf=mdf]
-* I(STz) = chooseT(I.CTz(STz)) //assuming I.CTz=I.p.minimize(I.CTz)
 _______
 #define CTz <+p (STz<=STz') = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
 * CTz <+p (empty <= STz) = CTz
@@ -221,7 +221,6 @@ _______
 
 * dom(CTz) = {ST | ST <= STz in CTz}
 * CTz(STz)=U{STz' | ST in STz and ST<=STz' in CTz } U STz
-
 _______
 #define p.minimize(CTz;STz) = STz    p.minimize(CTz;ST) = ST
 * p.minimize(CTz; STz) = STz'\STz"
