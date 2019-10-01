@@ -215,7 +215,7 @@ _______
     and CORE.L'.Info+_=CORE.L.Info (that is, all the dependencies are a subset, and so on)
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
-* CTz: forall ST in dom(CTz), U{CTz(ST') | ST' in CTz(ST)} U {ST} subseteq CTz(ST') //TODO: add in code
+* CTz: forall ST in dom(CTz), U{CTz(ST') | ST' in CTz(ST)} U {ST} subseteq CTz(ST)
 // NOTE: CTz(ST) and dom(CTz) are defined in 3Top
 * CTz: CTz not of form CTz, ST <= STz, CTz', ST <= STz', CTz" // I.e. no ST occurs twice on the LHS of a <=
 //CODE ONLY WELL FORMEDNESS:
