@@ -1,8 +1,11 @@
 package is.L42.platformSpecific.inMemoryCompiler;
 import java.io.*;
+import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLConnection;
 import java.net.URLEncoder;
+import java.net.URLStreamHandler;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
@@ -172,6 +175,33 @@ public class InMemoryJavaCompiler {
       ClassFile jclassObject = map.get(name);
       return super.defineClass(name, jclassObject.getBytes(), 0, jclassObject.getBytes().length);
       }
+    @Override
+    public URL getResource(String name) {
+        String javaName = name.replace(".class","").replace('/', '.');
+        //If this isn't a class from this compiler, hand off to the parent
+        if (!map.containsKey(javaName)) {
+            return super.getResource(name);
+        }
+        //Return a new url, that returns our file for its input stream.
+        try {
+            return new URL(null, "string:" + javaName, new URLStreamHandler() {
+                @Override
+                protected URLConnection openConnection(URL u) {
+                    return new URLConnection(u) {
+                        public void connect() {
+                        }
+
+                        @Override
+                        public InputStream getInputStream() {
+                            return new ByteArrayInputStream(map.get(url.getPath()).getBytes());
+                        }
+                    };
+                }
+            });
+        } catch (MalformedURLException e) {
+            throw new UncheckedIOException(e);
+        }
+    }
     }
   public static MapClassLoader compile(ClassLoader env,List<SourceFile> files) throws CompilationError {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();

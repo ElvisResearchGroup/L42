@@ -39,6 +39,7 @@ public class Resources {
   public static void clearRes() {
     libs.clear();
     libsCached.clear();
+    slaves.clear();
     out=new StringBuffer();
     }
   }
