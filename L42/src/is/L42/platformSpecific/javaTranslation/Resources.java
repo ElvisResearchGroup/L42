@@ -20,6 +20,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import is.L42.generated.Core;
+import safeNativeCode.slave.Slave;
 
 public class Resources {
   private static StringBuffer out=new StringBuffer();//StringBuffer is the synchronized StringBuilder
@@ -34,6 +35,7 @@ public class Resources {
   public static L42Any ofPath(String id){return new L42Any(){};}
   private static final HashMap<Integer,Core.L>libs=new HashMap<>();
   private static final HashMap<Integer,L42Library>libsCached=new HashMap<>();
+  public static final HashMap<String,Slave>slaves=new HashMap<>();
   public static void clearRes() {
     libs.clear();
     libsCached.clear();

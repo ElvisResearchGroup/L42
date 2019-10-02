@@ -89,7 +89,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       {try(//I may have messed up some of the code, 
       java.util.stream.Stream<String>lines=java.nio.file.Files.lines(
         java.nio.file.Paths.get(#1+".txt")))
-        {return lines.collect(java.util.stream.Collectors.joining("\n"));}
+        {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
       catch (java.io.IOException ioe) {return "";}
       }} error void
     #typed{}
@@ -188,7 +188,7 @@ public static void loadRun(String s,String e,String output){
     Program p=base(s);
     //somehow using a switch expression makes junit fail
     Loader l;try{l=loadBase(p,true);}
-    catch(CompilationError ce){fail(ce);throw bug();}
+    catch(CompilationError ce){ce.printStackTrace();fail(ce);throw bug();}
     String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}

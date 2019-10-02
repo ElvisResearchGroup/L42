@@ -4,18 +4,27 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
+import is.L42.platformSpecific.javaTranslation.Resources;
+import safeNativeCode.slave.host.ProcessSlave;
 
-import static is.L42.translationToJava.TrustedKind.*;
+import static is.L42.translationToJava.NativeDispatch.TrustedKind.*;
 
 public class NativeDispatch {
   public static String nativeCode(String nativeKind, String nativeUrl, List<String> xs, E e) {
@@ -29,6 +38,13 @@ public class NativeDispatch {
     var k=TrustedKind.fromString(nativeKind);
     return k.factory(xs);
     }
+  private static String readSection(String nativeUrl, String part, String def) {
+    if (!nativeUrl.contains(part)) return def;
+    nativeUrl = nativeUrl.substring(nativeUrl.indexOf(part)+part.length()).trim();
+    int space = nativeUrl.indexOf(" ");
+    if (space == -1) return nativeUrl;
+    return nativeUrl.substring(0, space);
+  }
   public static String untrusted(String nativeKind, String nativeUrl, List<String> xs, E e) {
     //String[]parts=nativeUrl.split(":");
     //examples of possible nativeUrl strings: 
@@ -53,30 +69,45 @@ public class NativeDispatch {
       toLambda=toLambda.replaceAll("#"+i, xs.get(i));
       }
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
-    int timeLimit=100;//seconds, please, show me how to set it up
-    int memoryLimit=100;//megabites, please, show me how to set it up
-    String classPath="";
-    String nativePath="";
-    if(nativeUrl.contains("classPath:")){
-      //so we can test both ways
-      classPath="a local path that works for you";
-      nativePath="a local path to a trivial *.so";
-    }
-    String args = "new String[] {"+(memoryLimit>0?"-Xmx="+memoryLimit+"M":"")+"}";
-        
-    //return "return <YourMap>.of("+slaveName+","+toLambda+").get();";
-    //the of method may also handle exceptions in some reasonable way (Marco will handle this)
-    return java.lang.String.format("""
-        ClassLoader cl = new java.net.URLClassLoader(java.util.Arrays.stream("%s".split(";")).map(s-> {
+    //TODO: refresh slave if slave has died. It might be easier to do that inside the library instead.
+    Resources.slaves.computeIfAbsent(slaveName, sn->{
+      String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim();
+      int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
+      int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
+      String classPath="";
+      ClassLoader cl = ClassLoader.getPlatformClassLoader();
+      if(nativeUrl.contains("classPath:")){
+        //so we can test both ways
+        try {
+          classPath=new File(".").toPath().toUri().toURL().toString();
+        } catch (MalformedURLException e1) {
+          throw new RuntimeException(e1);
+        }
+        System.out.println(classPath);
+        classPath = readSection(nativeData, "classPath:", "");
+        cl = new URLClassLoader(Arrays.stream(classPath.split(";")).map(s-> {
           try {
-            return new java.net.URL(s);
+            return new URL(s);
           } catch (java.net.MalformedURLException ex) {
             throw new RuntimeException(ex);
           }
-        }).toArray(java.net.URL[]::new));
-        safeNativeCode.slave.host.ProcessSlave slave = new safeNativeCode.slave.host.ProcessSlave(timeLimit, %s, cl);  
-        """,classPath,args);
-    }
+        }).toArray(java.net.URL[]::new), null);
+      }
+      String[] args = new String[]{};
+      if (memoryLimit > 0) {
+        args = new String[]{"-Xmx"+memoryLimit+"M"};
+      }
+      return new ProcessSlave(timeLimit, args, cl);
+    });
+    return "try {"
+            + "return Resources.slaves.get(\""+slaveName+"\").call("+toLambda+").get();"
+            + "} catch (java.rmi.RemoteException ex) {"
+            + "throw new RuntimeException(ex);"
+            + "}";
+        
+    //return "return <YourMap>.of("+slaveName+","+toLambda+").get();";
+    //the of method may also handle exceptions in some reasonable way (Marco will handle this)
+    
   }
 
 enum TrustedKind {
@@ -129,5 +160,6 @@ enum TrustedOp {
    throw todo();
   }
  }
+}
 
  
