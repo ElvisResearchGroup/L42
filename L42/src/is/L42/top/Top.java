@@ -19,6 +19,7 @@ import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Full.L.NC;
 import is.L42.generated.Half;
+import is.L42.generated.I;
 import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
@@ -37,27 +38,23 @@ public class Top {
     Program pl=p.update(coreL);
     List<MH> mh1n=L(coreL.mwts(),(c,m)->c.add(m.mh()));
     Program p0=p.update(updateInfo(pl,L(mh1n,(c,m)->c.add(sorted.mwtOf(m, null)))));
-    ArrayList<CT> ctz0=new ArrayList<>(ctz);
-    //TODO: remove HALF.T and make list<ST> in the grammar instead: fix Half grammar
     ArrayList<Half.E> e1n=new ArrayList<>();
     for(MH mhi:mh1n){
-      ctzAdd(ctz0,p0,mhi,sorted._eOf(mhi.s()),e1n);
+      ctzAdd(ctz,p0,mhi,sorted._eOf(mhi.s()),e1n);
       }
-    PR pr1=topNC(ctz0,p0,ncs);//propagate exceptions
-    List<CT> ctz1=pr1.ctz();
-    Program p1=pr1.p();
+    Program p1=topNC(ctz,p0,ncs);//propagate exceptions
     assert p1.top instanceof Core.L;
     List<Core.E> coreE1n=L(e1n,(c,_ei)->{
       if(_ei==null){c.add(null);return;}
-      ER eri=infer(new I(null,p1,G.empty(),ctz1),_ei);
-      c.add(eri.e());
+      Core.E eri=infer(new I(null,p1,G.empty()),ctz,_ei);
+      c.add(eri);
       });//and propagate errors out
     List<MWT> mwt1n=L(mh1n,coreE1n,(c,mhi,_ei)->c.add(sorted.mwtOf(mhi,_ei)));
     Core.L l=updateInfo(p1,mwt1n);
     assert l.info()._uniqueId()!=-1;
     l=l.withInfo(l.info().with_uniqueId(-1));
     Program p2=flagTyped(p1.update(l));//propagate illTyped
-    return new PR(ctz1,p2);
+    return p2;
     }
   private Program flagTyped(Program p) throws EndError {
     return p;
@@ -111,54 +108,45 @@ public class Top {
       acc.add(d._pathSel().p().toNCs());
       }
     }
-  private ER infer(I i,Half.E e) throws EndError{
-    if(e instanceof Core.E){return new ER(i.ctz(),(Core.E)e);}
-    if(e instanceof Full.L){
+  private Core.E infer(I i,CTz ctz,Half.E e) throws EndError{
+    if(e instanceof Core.E){return (Core.E)e;}
+    if(e instanceof Full.L){//TODO: update
       Full.L l=(Full.L) e;
       Program p=i.p().push(i._c(),l); 
-      List<CT>ctz=L(i.ctz(),ct->p.from(ct,P.coreThis1.p().toNCs()));
-      PR pr=top(ctz,p);//propagate errors
-      //PR = CTz';p' IfErr(PR) ER = PR
-      P.NCs pOut= P.of(0, L(i._c()));
-      List<CT>ctz1=L(pr.ctz(),ct->pr.p().from(ct,pOut));
-      //ER = CTz'[from This0.(I.C?);p'];p'(This0)
-      return new ER(ctz1,(Core.E) pr.p().top);
+      Program pr=top(ctz,p);//propagate errors
+      return pr.topCore();
       }
     throw bug();
     }
   private int uniqueId=0;
-  private static final Half.T halfLib=new Half.T(null,L((ST)P.coreLibrary));
-  private PR topNC(List<CT> ctz, Program p, List<NC> ncs)  throws EndError{
-    if(ncs.isEmpty()){return new PR(ctz,p);}
+  private Program topNC(CTz ctz, Program p, List<NC> ncs)  throws EndError{
+    if(ncs.isEmpty()){return p;}
     C c0=ncs.get(0).key();
     Full.E fe=ncs.get(0).e();
     List<Full.Doc> docs=ncs.get(0).docs();
     List<Pos> poss=ncs.get(0).poss();
     ncs=popL(ncs);
-    Y y=new Y(p,new GX(),halfLib.stz(),null,halfLib,true);
+    Y y=new Y(p,new GX(),L(),null,L(),true);
     HalfQuadruple hq=new HalfQuadruple(y,fe);
     Half.E he=hq.e;
-    I i=new I(c0,p,G.empty(),p.minimizeCTz(ctz));
-    ER er=infer(i,he); //propagates errors
-    List<CT> ctz1=er.ctz();
-    Core.E ce=er.e();
+    I i=new I(c0,p,G.empty());
+    Core.E ce=infer(i,ctz,he); //propagates errors
     assert ce!=null;
     Core.T t=wellTyped(p,ce);//propagate errors
     Core.E ce0=adapt(ce,t);
     coherent(p,ce0); //propagate errors
-    ER er1=reduce(p,ce0);//propagate errors
-    Core.L l=(Core.L)er1.e();
+    Core.L l=(Core.L)reduce(p,ce0);//propagate errors
     assert l!=null;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
     Program p2=flagTyped(p1);//propagate errors    
-    PR res=topNC(ctz1,p2,ncs);
+    Program res=topNC(ctz,p2,ncs);
     return res; 
     }
-  private ER reduce(Program p, is.L42.generated.Core.E ce0)throws EndError  {
+  private Core.E reduce(Program p, is.L42.generated.Core.E ce0)throws EndError  {
     assert ce0 instanceof Core.L;
     //TODO: must wrap exceptions and java exceptions
-    return new ER(L(),ce0);
+    return ce0;
     }
   private void coherent(Program p, is.L42.generated.Core.E ce0)throws EndError {
     }
@@ -168,13 +156,13 @@ public class Top {
   private T wellTyped(Program p, is.L42.generated.Core.E ce)  throws EndError{
     return P.coreLibrary; 
     }
-  private void ctzAdd(ArrayList<CT> ctz0, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
+  private void ctzAdd(CTz ctz0, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
     if(_e==null){es.add(null);return;}
-    Y y=new Y(p,new GX(mh),L(mh.t()),null,new Half.T(null,L(mh.t())),true);
+    Y y=new Y(p,new GX(mh),L(mh.t()),null,L(mh.t()),true);
     var hq=new HalfQuadruple(y, _e);
-    ctz0.addAll(hq.ctz);
+    //ctz0.addAll(hq.ctz);//TODO: fix with new CTz ops
     for(var st:hq.resSTz){
-      ctz0.add(new CT(st,new Half.T(null,L(mh.t()))));
+    //  ctz0.add(new CT(st,L(mh.t())));
       }
     es.add(hq.e);
     }
@@ -227,8 +215,6 @@ class HalfQuadruple{
   public final Half.E e;
   public final List<ST> resSTz=L();
   public final List<ST> retSTz=L();
-  public final List<CT> ctz=L();
-
   public HalfQuadruple(Y y, Full.E fe) { 
     this.e=(Half.E)fe;
     }

@@ -42,7 +42,6 @@ public class UndefinedCollectorVisitor implements CollectorVisitor{
   @Override public void visitOpUpdate(Half.OpUpdate opUpdate){throw uc;}
   @Override public void visitD(Half.D d){throw uc;}
   @Override public void visitK(Half.K k){throw uc;}
-  @Override public void visitT(Half.T t){throw uc;}
   @Override public void visitCsP(Full.CsP csP){throw uc;}
   @Override public void visitL(Full.L l){throw uc;}
   @Override public void visitF(Full.L.F f){throw uc;}

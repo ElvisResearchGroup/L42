@@ -129,14 +129,6 @@ public class Program implements Visitable<Program>{
     }
   private CloneVisitor fromVisitor(P.NCs source){
     return new CloneVisitor(){
-      @Override public Half.T visitT(Half.T t){
-        var t0=super.visitT(t);
-        if(t0._mdf()==null){return t0;}
-        if(t0.stz().size()!=1){return t0;}
-        var st=t0.stz().get(0);
-        if(!(st instanceof Core.T)){return t0;}
-        return new Half.T(null,L(((Core.T)st).withMdf(t0._mdf())));
-        }
       @Override public Core.T visitT(Core.T  t){
         return t.withP(from(t.p(),source));
         }

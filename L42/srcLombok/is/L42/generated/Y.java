@@ -10,6 +10,6 @@ import is.L42.common.GX;
   GX g;
   List<ST> onSlash;
   Half.XP _onSlashX;
-  Half.T _expectedT;
+  List<ST> _expectedT;
   boolean onPath;
   }

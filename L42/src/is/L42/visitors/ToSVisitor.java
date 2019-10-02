@@ -285,10 +285,10 @@ public class ToSVisitor implements ToSTrait{
   
   public void visitPCastT(Half.PCastT pCastT){
     var p0=pCastT.p();
-    var t0=pCastT.t();
+    var stz0=pCastT.stz();
     visitP(p0);
     c("<:");
-    visitT(t0);
+    visitSTz(stz0);
     }
     
   public void visitSlash(Half.Slash slash){
@@ -337,29 +337,24 @@ public class ToSVisitor implements ToSTrait{
     visitE(e0);
     }
   public void visitD(Half.D d){
-    var t0=d.t();
+    var stz0=d.stz();
     var x0=d.x();
     var e0=d.e();
-    visitT(t0);
+    visitSTz(stz0);
     visitX(x0);
     c("=");
     visitE(e0);
     }
   
   public void visitK(Half.K k){
-    var t0=k.t();
+    var stz0=k.stz();
     var x0=k.x();
     var e0=k.e();
     c("catch");
     visitThrowKind(k.thr());
-    visitT(t0);
+    visitSTz(stz0);
     visitX(x0);
     visitE(e0);
-    }
-
-  public void visitT(Half.T t){
-    if(t._mdf()!=null){visitMdf(t._mdf());}
-    visitSTz(t.stz());
     }
 
   public void visitCsP(Full.CsP csP){

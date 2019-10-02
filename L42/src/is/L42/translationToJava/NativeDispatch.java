@@ -54,13 +54,13 @@ public class NativeDispatch {
       }
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
     int timeLimit=100;//seconds, please, show me how to set it up
-    int MemoryLimit=100;//megabites, please, show me how to set it up
+    int memoryLimit=100;//megabites, please, show me how to set it up
     String classPath="";
     String nativePath="";
     if(nativeUrl.contains("classPath:")){
       //so we can test both ways
       classPath="a local path that works for you";
-      nativePath="a local path to a trivial *.so";
+//      nativePath="a local path to a trivial *.so";
       }
     //return "return <YourMap>.of("+slaveName+","+toLambda+").get();";
     //the of method may also handle exceptions in some reasonable way (Marco will handle this)

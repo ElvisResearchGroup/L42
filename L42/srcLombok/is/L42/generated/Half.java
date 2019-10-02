@@ -17,7 +17,7 @@ public class Half {
   
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   PCastT implements Leaf,XP,Visitable<PCastT>{@Override public Visitable<PCastT>visitable(){return this;}@Override public PCastT accept(CloneVisitor cv){return cv.visitPCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitPCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    P p; T t;}
+    P p; List<ST> stz;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Slash implements Leaf,XP,Visitable<Slash>{@Override public Visitable<Slash>visitable(){return this;}@Override public Slash accept(CloneVisitor cv){return cv.visitSlash(this);}@Override public void accept(CollectorVisitor cv){cv.visitSlash(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     List<ST> stz;}
@@ -42,11 +42,8 @@ public class Half {
   //---
   @Value @Wither public static class
   D implements Visitable<D>{@Override public D accept(CloneVisitor cv){return cv.visitD(this);}@Override public void accept(CollectorVisitor cv){cv.visitD(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    T t; X x; E e;}
+    Mdf _mdf; List<ST> stz; X x; E e;}
   @Value @Wither public static class
   K implements Visitable<K>{@Override public K accept(CloneVisitor cv){return cv.visitK(this);}@Override public void accept(CollectorVisitor cv){cv.visitK(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    ThrowKind thr; T t; X x; E e;}
-  @Value @Wither public static class
-  T implements Visitable<T>{@Override public T accept(CloneVisitor cv){return cv.visitT(this);}@Override public void accept(CollectorVisitor cv){cv.visitT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Mdf _mdf; List<ST> stz;}
+    ThrowKind thr; List<ST> stz; X x; E e;}
   }

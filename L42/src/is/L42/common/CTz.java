@@ -45,15 +45,28 @@ public class CTz {
     assert coherent();
     }
   void plusAcc(Program p,ST st,List<ST>stz){
+    ArrayList<ST> alreadyMapped=inner.get(st);
+    ArrayList<ST>stz2=new ArrayList<>(this.of(stz));
+    stz2.add(st);
+    if(alreadyMapped!=null){
+      stz2.addAll(alreadyMapped);
+      inner.remove(st);
+      }
+    minimize(p,stz2);
     for(var stzi:inner.values()){
        if(!stzi.contains(st)){continue;}
-       for(ST stj: stz){if(!stzi.contains(stj)){stzi.add(stj);}}
+       for(ST stj: stz2){if(!stzi.contains(stj)){stzi.add(stj);}}
        minimize(p,stzi);
        }
-     //WRONG here, we never add the st->stz..  also.. do we need to grow the stz? check formalism
+    inner.put(st,stz2);
     }
   public Set<ST> dom(){return inner.keySet();}
-  public List<ST> of(ST st){return L(inner.get(st).stream());}
+  public List<ST> of(ST st){
+    var res=inner.get(st);
+    if(res==null){return L(st);}
+    assert res.contains(st);
+    return L(inner.get(st).stream());
+    }
   public List<ST> of(List<ST>stz){return L(stz,(c,sti)->c.addAll(of(sti)));}
   void minimize(Program p,ArrayList<ST>stz){
     ArrayList<T>tz=new ArrayList<>();
@@ -79,7 +92,8 @@ public class CTz {
   ST minimize(Program p,ST.STMeth st){
     List<T> ts;
     if(st.i()==-1){
-      ts=L(inner.get(st.st()),(c,sti)->{
+      var former=inner.get(st.st());
+      ts=L(former,(c,sti)->{
         if (!(sti instanceof T)){return;}
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
