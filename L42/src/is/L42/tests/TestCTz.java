@@ -39,9 +39,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCTz
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   plusAcc(List.of(),List.of(st("This")),"{}")
+   plusAcc(List.of(),List.of(st("This")),"")
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This"),"k()")),List.of(st("This")),"")
+   plusAcc(List.of(st(st("This"),"k()")),List.of(st("This"),st(st("This"),"k()")),
+   "This0.k()=[This0.k(), This0]")
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st("This"),"k()")),List.of(st("This")),
+   "This0.k()=[This0.k(), This0]")
+
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st("This"),"k(a,b,c)",3)),List.of(st("This")),
+   "This0.k(a,b,c).3=[This0.k(a,b,c).3, This0]")
+
+
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 

@@ -21,14 +21,18 @@ import is.L42.generated.ST;
 
 public class CTz {
   private final Map<ST,ArrayList<ST>> inner=new HashMap<>();
-  @Override public String toString(){return inner.toString();}
+  @Override public String toString(){
+    String res=inner.toString();
+    res=res.substring(1,res.length()-1);
+    return res.replace("imm This","This");
+    }
   public boolean coherent(){
     for(var e:inner.entrySet()){
       ST st=e.getKey();
       List<ST> stz=e.getValue();
-      assert stz.contains(st);
+      assert stz.contains(st):this;
       for(ST st1:stz){
-        assert stz.containsAll(inner.get(st1));
+        assert stz.containsAll(of(st1)):this;
         }
       }
       return true;
@@ -42,12 +46,12 @@ public class CTz {
       minimize(p,stz);
       minimize(p,stz1);
       }
-    assert coherent();
+    assert coherent(): this;
     }
   void plusAcc(Program p,ST st,List<ST>stz){
     ArrayList<ST> alreadyMapped=inner.get(st);
     ArrayList<ST>stz2=new ArrayList<>(this.of(stz));
-    stz2.add(st);
+    if(!stz2.contains(st)){stz2.add(st);}
     if(alreadyMapped!=null){
       stz2.addAll(alreadyMapped);
       inner.remove(st);
@@ -72,6 +76,7 @@ public class CTz {
     ArrayList<T>tz=new ArrayList<>();
     for(int i=0;i<stz.size();){
       ST st=minimize(p,stz.get(i));
+      stz.set(i,null);
       if(st instanceof T){tz.add((T)st);stz.remove(i);}
       else if(stz.contains(st)){stz.remove(i);}
       else{stz.set(i,st);i+=1;}
@@ -92,8 +97,7 @@ public class CTz {
   ST minimize(Program p,ST.STMeth st){
     List<T> ts;
     if(st.i()==-1){
-      var former=inner.get(st.st());
-      ts=L(former,(c,sti)->{
+      ts=L(of(st.st()),(c,sti)->{
         if (!(sti instanceof T)){return;}
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
@@ -110,7 +114,7 @@ public class CTz {
         });
       }
     else{
-      ts=L(inner.get(st.st()),(c,sti)->{
+      ts=L(of(st.st()),(c,sti)->{
         if (!(sti instanceof T)){return;}
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
