@@ -193,7 +193,7 @@ public static void loadRunErr(String s,String e){
   try{
     Program p=base(s);
     Loader l;try{l=loadBase(p,true);}
-    catch(CompilationError ce){ce.printStackTrace();fail(ce);throw bug();}
+    catch(CompilationError ce){fail(ce);throw bug();}
     String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
