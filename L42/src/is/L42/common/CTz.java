@@ -24,7 +24,7 @@ public class CTz {
   @Override public String toString(){
     String res=inner.toString();
     res=res.substring(1,res.length()-1);
-    return res.replace("imm This","This");
+    return res.replace("imm ","");
     }
   public boolean coherent(){
     for(var e:inner.entrySet()){
@@ -40,10 +40,10 @@ public class CTz {
   public void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
     assert coherent();
     while(!stz.isEmpty()){
+      minimize(p,stz);
       var st=stz.get(0);
       stz.remove(0);
       plusAcc(p,st,stz1);
-      minimize(p,stz);
       minimize(p,stz1);
       }
     assert coherent(): this;

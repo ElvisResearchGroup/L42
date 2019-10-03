@@ -41,20 +41,26 @@ public class TestCTz
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    plusAcc(List.of(),List.of(st("This")),"")
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This"),"k()")),List.of(st("This"),st(st("This"),"k()")),
+   plusAcc(List.of(st("This","k()")),List.of(st("This"),st("This","k()")),
    "This0.k()=[This0.k(), This0]")
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This"),"k()")),List.of(st("This")),
+   plusAcc(List.of(st("This","k()")),List.of(st("This")),
    "This0.k()=[This0.k(), This0]")
 
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This"),"k(a,b,c)",3)),List.of(st("This")),
+   plusAcc(List.of(st("This","k(a,b,c)",3)),List.of(st("This")),
    "This0.k(a,b,c).3=[This0.k(a,b,c).3, This0]")
+
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st("This"),"k(a,b,c)",3)),List.of(st("This","m()")),
+   "This0.k(a,b,c).3=[This0.k(a,b,c).3, Void]")
+
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st("This"),"m()")),List.of(st("This")),
+   "Void=[Void, This0]")
 
 
   ));}
-//private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
-
 static Program p=Program.parse("""
   {method Void m() #norm{}}
   """);
@@ -62,10 +68,11 @@ public static ST st(String t){
   P p=P.parse(t);
   return new Core.T(Mdf.Immutable,L(),p);
   }
-public static ST st(ST st,String s){
-  return new ST.STMeth(st,S.parse(s),-1);
-  }
+public static ST st(ST st,String s){return new ST.STMeth(st,S.parse(s),-1);}
+public static ST st(String st,String s){return st(st(st),s);}
 public static ST st(ST st,String s,int i){return new ST.STMeth(st,S.parse(s),i);}
+public static ST st(String st,String s,int i){return st(st(st),s,i);}
+
 public static ST st(Op op, List<List<ST>> stzs){return new ST.STOp(op,stzs);}
 public static void plusAcc(List<ST> stz,List<ST> stz1,String out){
   CTz ctz=new CTz();
