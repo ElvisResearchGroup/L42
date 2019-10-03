@@ -31,12 +31,12 @@ _______
 _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
-    CORE.L;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
+    CORE.L = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
     Ms=p(This0).Ms //Ms = FULL.Ms
     p0 = p.update(CORE.L) //assert all levels of p0 are CORE.L TODO: add assert in code
     MH1..MHn = CORE.L.MWTs.MHs
     CTz.add(p0; MH1 Ms(MH1.s).e?; e?1).. .add(p0; MHn Ms(MHn.s).e?; e?n) = CTz0
-    topNC(CTz0,p0,NCs) => PR1
+    topNC(CTz0,p0,[NC| NC in Ms]) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
     I[C=empty;p1;G^MHi;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
@@ -49,7 +49,7 @@ _______
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
-    I[C?=C;p;G=empty;p.minimize(CTz)]!HALF.e => ER
+    I[C?=C;p;G=empty;CTz]!HALF.e => ER //assert CTz=p.minimize(CTz)
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
@@ -57,30 +57,27 @@ _______
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(updateInfo(p,♥FULL.Docs C=CORE.L))//refreshUniqueNames
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
-    topNC(CTz1;p";NCs) => PR
+    topNC(p".minimize(CTz1);p";NCs) => PR
     
-* sortHeader({reuse[URL] Ms};pTail) = CORE.L;{s->M.Docs,M.e?| M in Ms, s=M.s}; NCs0
-    CORE.L = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
+* sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
     dom(MWTs NCs) disjoint dom(Ms)
-    NCs0 = [NC | NC in Ms]
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?, uniqueId=n}
     n fresh
 
-* sortHeader(p) = CORE.L; NCs //TODO: in code remove the Ms stuff
-    NCs = [NC | NC in Ms]
+* sortHeader(p) = CORE.L //TODO: in code remove the Ms /NCs stuff
     p(This0) = {interface? [Ts] Ms Docs}
     p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
     Ts' = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
     forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
     p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
-    MH1..MHn = methods(p1,Ts1,Ms)
-    MWTs = [♥Docs MH | MH in MH1..MHn and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
+    MWTs = [♥Docs MH | MH in methods(p1,Ts1,Ms) and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?}
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?, uniqueId=n}
+    n fresh
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
 _______

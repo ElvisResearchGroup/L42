@@ -42,7 +42,7 @@ _______
   FULL.NC ::= Docs C = e //FULL.L can be inside e //TODO: $OP is desugared to the C defining the operator
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | Number e
-    | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ pars ]
+    | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ par1;..;parn ]
     | ( Ds Ks WHOOPS? Ds' e? ) | { Ds Ks WHOOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DXn in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
