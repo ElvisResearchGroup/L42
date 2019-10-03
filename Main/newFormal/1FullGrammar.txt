@@ -47,19 +47,22 @@ _______
     | loop e | while e0 e1 | for DX0 in e0 .. DXn in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
   FULL.D ::= (DX =)? e
-  FULL.WHOOPS ::= whoops T+
-  FULL.match ::= T x | T x = e | T?0(T?1 x0..T?n xn) = e //where at least one T?i is not empty //correctly not TLocal
   FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
+  FULL.WHOOPS ::= whoops T+
+  FULL.match ::= T x | T x = e | T?0(T?1 x0..T?n xn) = e //where at least one T?i is not empty //correctly not TLocal
   FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
 _______
 #define auxiliary grammars
-  ST ::= CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type?
+  ST ::= CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type
   HALF.xP ::= x | P<:STz | %STz%<:STz'
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? mdf? STz x = e
   HALF.K ::= catch throw STz x e
+  pTail::= CORE.L | C:LL
+  p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
+  // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
   CT ::= ST<=STz
   PR ::= CTz;CORE.L;pTails | Err
   ER ::= CTz;CORE.e? | Err
@@ -68,22 +71,18 @@ _______
   Err ::= limit(p) | illTyped(p) | incoherent(p) | headerErr(p)| headerErr(p) | inferenceFailure(I,STz) | throw(p,A,v)
   R ::= PR | ER | DsR | KR
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
-  GX ::= x1:STz .. xn:STz
+  GX ::= x1:STz1 .. xn:STzn
   I ::= I[C?;p;G;CTz]//inference application environment
-  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?;CTz]
+  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?;CTz] //desugaring & constraints accumulation
   v ::= CORE.xP | void | CORE.L
   r ::= CORE.L | exception v | error v
   Obj ::= P(xvs) empty;empty| P() as1;as2 // memory objects
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
-  Q ::= Q[Flag;p;G;Ts;Ps]//Ts is returns, Ps is exceptions
+  Q ::= Q[Flag;p;G;Ts;Ps]//Ts is returns, Ps is exceptions //typing environment
   MethT ::= CORE.Ts->CORE.T;Ps  
   CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV //blocks manually handled in reduction
   CORE.ctx ::= [] | throw ctx | loop ctx | x := ctx | xP.m(xes x=ctx xes')
     | ( Ds Ks ctx ) | (Ds T x=ctx Ds' Ks e) | (Ds Ks catch throw T x ctx Ks' e)
-  pTail::= CORE.L | C:LL
-  p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
-  // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
-  sDe::= s1->FULL.Docs1, native?1, FULL.e?1 .. sn->FULL.Docsn, native?n, FULL.e?n
   BalCurly::= /*any text with balanced curly brakets*/
 _______
 #define functional notation, dom, update and '\' (set minus) for CORE.L (over the domain Ldom), but only domNC and functional notation on Cs for LL. Those are undefined 
@@ -95,7 +94,7 @@ _______
 _______
 #define Lexical Syntax
   newline ::= <0x0A> //linefeed only, normalizing away <0x0D>
-  CHAR   ::=  <0x20-0x7E> | newline//An Any printable ASCII character, or a newline
+  CHAR   ::=  <0x20-0x7E> | newline//Any printable ASCII character, or a newline
   CHARS0 ::= CHAR* -- "
 //StringInterpolation: single character% for single line strings
 // "   %foo bar %(a+b) ccc  %ff.baz() "
@@ -114,9 +113,6 @@ _______
   commentBody ::= CHAR* -- '/*' -- '*/' | commentBody comment commentBody
   comment ::= '//' (CHAR* -- newline) newline | '/*' commentBody '*/'
   Whitespace ::= (' ' | newline | ',')+
-  tURL::= /*a trusted url*//*too boring*/
-  uURL::= /*an untrusted url*//*too boring*/ //TODO: consider using #$URL instead
-  URL::=tURL|uURL
   IdUp ::= _* (<A-Z> | $) 
   IdLow ::= _* <a-z>
   IdChar ::= <a-z> |<A-Z> | $ | _ | <0-9>
@@ -133,8 +129,7 @@ _______
   FULL/CORE.Doc ::= @PathSel | @PathSel?{docText}
   FULL.PathSel::= CsP | (CsP.)? s(.x)?
   CORE.PathSel::= P | P.s | P.s.x
-  FULL/CORE.docText ::= empty | CHAR -- '{' -- '}' -- '@' docText 
-    | Doc docText | '{' docText '}' docText
+  FULL/CORE.docText ::= empty | CHAR -- '{' -- '}' -- '@' docText | Doc docText | '{' docText '}' docText
   mOp ::= empty | m | OP | OP_n | UOp
 _______
 #define FULL Expressions priority disambiguation and other details
@@ -147,7 +142,7 @@ _______
   FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
   FULL.eBinary3 ::= (eBinary2 OP3)* eBinary2 //left associative, all op the same
   FULL.B ::= (Ds e Ks WHOOPS?) | (D+ Ks WHOOPS? Ds e) | { D+ Ks WHOOPS? Ds }
-  FULL.sIf ::= if e e (else e)? | if match+ e
+  FULL.sIf ::= if e e' (else e)? | if match+ e
   FULL.sWhile::= while e e'
   FULL.sFor ::= for (DX in e)+ e
   FULL.e ::= sIf | sWhile | sFor | loop e | throw e | x opUpdate e | eBinary3

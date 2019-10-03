@@ -43,15 +43,7 @@ _______
 * Thisn.Cs[from P;p;j] = Thisn.Cs with n<j
 * All cases for other expressions/terms propagate to submembers, including docs  
 
-* CTz[from P;p]={ST[from P; p] <= T[from P; p] | ST <= T in CTz, ST <= T not of form CORE.T<=CORE.T'}  // ISAAC: why are you removing CORE.T ?
-* (mdf?[STz])[from P;p]=CORE.T[mdf=mdf]
-    STz[from P;p]=CORE.T
-* (mdf?[STz])[from P;p]=mdf?[STz']
-    STz[from P;p]=STz'
-* ST1..STn[from P;p] = ST1[from P;p]..STn[from P;p]
-* ST.s[from P;p] = p.minimize(ST[from P;p].s)
-* ST.s.i[from P;p] = p.minimize(ST[from P;p].s.i)
-* (OP STz1..STzn)[from P;p] = p.minimize(OP STz1[from P;p]..STzn[from P;p])
+* CTz[from P;p] = CTz' trivially propagates on the structure and applies P'[from P; p] on all the P' in CTz
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -71,16 +63,14 @@ _______
 * fwd%Mut <= fwdMut
 * fwd%Imm <= fwdImm
 _______
-#define ♥FULL.MH = CORE.MH    ♥FULL.TLocal = CORE.T   ♥CsP = P,  ♥FULL.Docs = CORE.Docs
+#define ♥FULL.MH = CORE.MH    ♥FULL.TLocal = CORE.T    ♥FULL.Docs = CORE.Docs
 * ♥((mdf Docs)? method T mOp (T1 x1..Tn xn)[Ts])
     =(mdf ♥Docs)? method ♥T methName(mOp)(♥T1 x1..♥Tn xn)[♥Ts]
 
 * ♥(mdf Docs CsP) = mdf ♥Docs ♥CsP
-* ♥(Docs CsP) = imm ♥Docs ♥CsP
+* ♥(Docs P) = imm ♥Docs P //undefined for CsP of form C.Cs
 
-* ♥P = P // ♥C.Cs undefined
-* ♥FULL.Docs = CORE.Docs
-    all P are replaced with ♥P; all (CsP.)? s(.x)? with empty (CsP.)? are This0.s(.x)?
+* ♥FULL.Docs = CORE.Docs where all all (CsP.)? s(.x)? with empty (CsP.)? are replaced with This0.s(.x)?
 _______
 #define p.minimize(P) = P'
 * p.minimize(P) = P
@@ -100,7 +90,7 @@ with MH=mdf method T mOp(T1 x1..Tn xn)[Ts]
 * MH.exceptions = Ts
 * G^MH = this:mdf This0, x1:T1..xn:Tn
 * MH.pari = Ti
-* MH.s=methName(mOp)(x1..xn)//LL(s) and well formedness for no repetition in dom uses MH.s
+* MH.s=methName(mOp)(x1..xn) //well formedness for no repetition in dom uses MH.s
 _______
 #define name manglings methName(mOP) = m, methNameTrim(m) = m, methName(x, mdf?) = m
 * methName(m) = m

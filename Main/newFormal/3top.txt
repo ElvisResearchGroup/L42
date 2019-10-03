@@ -31,15 +31,16 @@ _______
 _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
 * top(CTz,p) => PR
-    CORE.L;sDe;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
+    CORE.L;NCs = sortHeader(p) IfNotE(NCs) PR = headerErr(p)
+    Ms=p(This0).Ms //Ms = FULL.Ms
     p0 = p.update(CORE.L) //assert all levels of p0 are CORE.L TODO: add assert in code
     MH1..MHn = CORE.L.MWTs.MHs
-    CTz.add(p0; MH1 sDe(MH1.s).e?; e?1).. .add(p0; MHn sDe(MHn.s).e?; e?n) = CTz0
+    CTz.add(p0; MH1 Ms(MH1.s).e?; e?1).. .add(p0; MHn Ms(MHn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,NCs) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
     I[C=empty;p1;G^MHi;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
-    MWTi = ♥sDe(MHi.s).Doc MHi ♥sDe(MHi.s).nativeURL e?'i
+    MWTi = ♥Ms(MHi.s).Doc MHi ♥Ms(MHi.s).native e?'i
     L = updateInfo(p1, MWT1..MWTn)[Info.uniqueId=empty]
     p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
     PR = CTz1; p2
@@ -69,7 +70,7 @@ _______
     Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?, uniqueId=n}
     n fresh
 
-* sortHeader(p) = CORE.L; {s->M.Docs,M.e?| M in Ms, s=M.s}; NCs
+* sortHeader(p) = CORE.L; NCs //TODO: in code remove the Ms stuff
     NCs = [NC | NC in Ms]
     p(This0) = {interface? [Ts] Ms Docs}
     p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
@@ -206,9 +207,9 @@ _______
 _______
 #define CTz <+p (STz<=STz') = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
 * CTz <+p (empty <= STz) = CTz
-* CTz <+p (ST1,STz<=STz') = CTz' <+p (p.minimize(CTz'; STz) <= p.minimize(CTz'; STz'))
+* CTz <+p (ST1,STz<=STz') = CTz' <+p (p.minimize(CTz'; STz) <= p.minimize(CTz'; STz')) //TODO: fix code, now we minimize before the recursive call
     CTz' = (CCz <+p (ST1<=STz))
-* CTz,(ST <= STz')? <+p (ST <= STz) = CTz[ST <= STz"]p, (ST <= STz")
+* CTz,(ST <= STz')? <+p (ST <= STz) = CTz[ST <= STz"]p, (p.minimize(ST) <= STz")
     // NOTE: ST may be a CORE.T, in which case STz' may contain usefull information such as known super-interfaces
     STz" = p.minimize(CTz(STz) U (ST <= STz')?.STz? U {ST})
     ST notin dom(CTz)
