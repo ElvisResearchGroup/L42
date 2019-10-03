@@ -4,6 +4,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 
+import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
@@ -40,15 +41,16 @@ public class CTz {
   public void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
     assert coherent();
     while(!stz.isEmpty()){
-      minimize(p,stz);
       var st=stz.get(0);
       stz.remove(0);
       plusAcc(p,st,stz1);
+      minimize(p,stz);
       minimize(p,stz1);
       }
     assert coherent(): this;
     }
   void plusAcc(Program p,ST st,List<ST>stz){
+    st=minimize(p, st);
     ArrayList<ST> alreadyMapped=inner.get(st);
     ArrayList<ST>stz2=new ArrayList<>(this.of(stz));
     if(!stz2.contains(st)){stz2.add(st);}
@@ -102,11 +104,9 @@ public class CTz {
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
         P.NCs pi=ti.p().toNCs();
-        Optional<MWT> mwti=p.ofCore(pi).mwts().stream()
-          .filter(m->m.key().equals(st.s()))
-          .reduce(toOneOr(()->bug()));
-        if(mwti.isEmpty()){return;}
-        T t1=p.from(mwti.get().mh().t(),pi);
+        MWT mwti=_elem(p.ofCore(pi).mwts(),st.s());
+        if(mwti==null){return;}
+        T t1=p.from(mwti.mh().t(),pi);
         boolean tI=p.ofCore(pi).isInterface();
         boolean t1I=p.ofCore(t1.p()).isInterface();
         boolean tEqSt=ti.equals(st.st());
@@ -119,13 +119,11 @@ public class CTz {
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
         P.NCs pi=ti.p().toNCs();
-        Optional<MWT> mwti=p.ofCore(pi).mwts().stream()
-          .filter(m->m.key().equals(st.s()))
-          .reduce(toOneOr(()->bug()));
-        if(mwti.isEmpty()){return;}
+        MWT mwti=_elem(p.ofCore(pi).mwts(),st.s());
+        if(mwti==null){return;}
         assert st.i()!=0;
         //T t1=p.from(mwti.mh().parsWithThis().get(st.i()),pi);//if assertion above is false
-        T t1=p.from(mwti.get().mh().pars().get(st.i()-1),pi);
+        T t1=p.from(mwti.mh().pars().get(st.i()-1),pi);
         c.add(t1);
         });
     }
@@ -134,14 +132,7 @@ public class CTz {
     return ts.get(0);
     }
   ST minimize(Program p,ST.STOp st){ return st;}//TODO:
-  /*
-* p.minimize(CTz; OP STz1 ... STzn) = p(P)(s).T[from P; p]
-    Ti in CTz(STzi)
-    {P.s.i} = p.opOptions(OP, Ti..Tn)
-* p.minimize(CTz; OP STz1 ... STzn) = OP p.minimize(CTz; STz1) ... p.minimize(CTz; STzn)
-    otherwise
-  
-  */
+
     /*public static class Psi{P p; S s; int i;}
   public List<Psi> opOptions(Op op, List<T>ts){
     return L(c->{for(int i:range(ts)){

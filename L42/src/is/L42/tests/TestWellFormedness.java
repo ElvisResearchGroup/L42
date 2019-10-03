@@ -81,6 +81,26 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{C=(x=void x:=x)}","name x is not declared as var, thus it can not be updated")
 
    ),new AtomicTest(()->
+   fail("{fwd imm Void f }",Err.invalidFieldType(hole))
+
+   ),new AtomicTest(()->
+   pass("{... C={}}")
+   ),new AtomicTest(()->
+   pass("{reuse[GG] C={}}")
+   
+   ),new AtomicTest(()->
+   fail("{... Void f @{hei!}}",Err.noDocWithReuseOrDots("...", "[@{hei!}]"))
+   ),new AtomicTest(()->
+   fail("{... Void f }",Err.invalidMemberWithReuseOrDots("...", "[Void f]"))
+   ),new AtomicTest(()->
+   fail("{reuse[GG] Void f @{hei!}}",Err.noDocWithReuseOrDots(hole, "[@{hei!}]"))
+   ),new AtomicTest(()->
+   fail("{reuse[GG] Void f }",Err.invalidMemberWithReuseOrDots(hole, "[Void f]"))
+   ),new AtomicTest(()->
+   fail("{reuse[GG] method foo(x)=void }",Err.invalidMemberWithReuseOrDots(hole, hole))
+
+
+   ),new AtomicTest(()->
    fail("((a.foo(x=a,x=b)))",Err.duplicatedName("[x]"))
    ),new AtomicTest(()->
    fail("((a.foo(x=a,y=b,x=c)))",Err.duplicatedName("[x]"))

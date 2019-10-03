@@ -170,7 +170,7 @@ _______
     FV(Ks) disjoint dom(B.Ds) U Ks.xs
     dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e)
 * FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
-* FULL.F: F.t.mdf not fwd //TODO: make in code
+* FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
 * FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
 * FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)PL
@@ -189,7 +189,7 @@ _______
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty 
 * CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
-* FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L //TODO: make in code
+* FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L
 * LL:
     no repetition in LL.Ms.LDom
     no repetition in LL.H.Ts

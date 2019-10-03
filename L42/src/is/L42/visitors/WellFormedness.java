@@ -268,6 +268,14 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(bindings.contains(x)){err(Err.redefinedName(L(x)));}
     if(x.inner().equals("this")){err(Err.duplicatedNameThis());}
     }
+    
+  @Override public void visitF(Full.L.F f){
+    super.visitF(f);
+    if(f.t()._mdf()==null){return;}
+    if(!f.t()._mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
+    err(Err.invalidFieldType(f));
+    }
+
   @Override public void visitMI(Full.L.MI mi){
     lastPos=mi.poss();
     super.visitMI(mi);
@@ -404,6 +412,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitL(Full.L l){
     lastPos=l.poss();
     super.visitL(l);
+    if(l.isDots() || !l.reuseUrl().isEmpty()){
+      boolean broke=!l.docs().isEmpty() || l.ms().stream()
+        .filter(m->m instanceof Full.L.F || m instanceof Full.L.MI)
+        .count()!=0;
+      if(broke){
+        String kind="...";
+        if(!l.isDots()){kind="reuse [ _ ]";}
+        if(!l.docs().isEmpty()){err(Err.noDocWithReuseOrDots(kind,l.docs()));}
+        var invalids=L(l.ms().stream().filter(m->m instanceof Full.L.F || m instanceof Full.L.MI));
+        if(!invalids.isEmpty()){err(Err.invalidMemberWithReuseOrDots(kind,invalids));}
+        }
+      }
     checkAllEmptyMdfFull(l.ts());
     for(var m:l.ms()){
       if(!m.key().hasUniqueNum()){continue;}

@@ -1,10 +1,10 @@
 package is.L42.translationToJava;
 
+import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.toOneOr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -147,8 +147,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitMCall(Core.MCall m){
     T t=g(m.xP());
     var mwts=p.ofCore(t.p()).mwts();
-    var mh=mwts.stream().filter(mi->mi.key().equals(m.s()))
-      .reduce(toOneOr(()->bug())).get().mh();
+    var mh=_elem(mwts,m.s()).mh();
     T ret=p.from(mh.t(),t.p().toNCs());
     boolean nw=nativeWrap(ret);
     if(nw){

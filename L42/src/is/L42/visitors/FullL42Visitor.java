@@ -250,7 +250,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     Pos pos=pos(ctx);
     boolean isDots=ctx.DotDotDot()!=null;
-    String reuseUrl=opt(ctx.ReuseURL(),"",r->parseReuseNative(r.getText()));
+    String reuseUrl=opt(ctx.ReuseURL(),"",r->parseReuseNative(r.getText(),"[","]"));
     boolean isInterface=opt(ctx.header(),false,h->h.InterfaceKw()!=null);
     List<Full.T>empty=L();
     List<Full.T>ts=opt(ctx.header(),empty,h->checkAllEmptyMdf(pos,L(h.t(),(c,ti)->c.add(visitT(ti)))));
@@ -261,9 +261,9 @@ public class FullL42Visitor implements L42Visitor<Object>{
     if(info!=null){return new InjectionToCore(errors,eVoid)._inject(res,info);}
     return res; 
     }
-  private String parseReuseNative(String s) { 
-    assert s.endsWith("}");
-    int index = s.indexOf("{");
+  private String parseReuseNative(String s,String starts,String ends) { 
+    assert s.endsWith(ends):s;
+    int index = s.indexOf(starts);
     assert index!=-1;
     return s.substring(index+1,s.length()-1);
     }
@@ -328,7 +328,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     Full.MH mh=visitFullMH(ctx.fullMH());
-    String nativeUrl=opt(ctx.NativeURL(),"",r->parseReuseNative(r.getText()));
+    String nativeUrl=opt(ctx.NativeURL(),"",r->parseReuseNative(r.getText(),"{","}"));
     Full.E _e=opt(ctx.e(),null,this::visitE);
     return new Full.L.MWT(pos(ctx),docs,mh,nativeUrl,_e);
     }

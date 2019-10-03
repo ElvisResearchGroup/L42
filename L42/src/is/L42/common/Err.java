@@ -173,6 +173,12 @@ public class Err {
   "Invalid path in info: "+_1  
   ;}public static String nestedClassesImplemented(Object _1){return
   "some nested classes are implemented before they are defined: "+_1  
+  ;}public static String noDocWithReuseOrDots(Object _1, Object _2){return
+  "Docs can not be provided on library literals using "+_1+"; the provided Docs are: "+_2  
+  ;}public static String invalidMemberWithReuseOrDots(Object _1,Object _2){return
+  "Invalid member kind for a library literals using "+_1+"; the invalid members are: "+_2  
+  ;}public static String invalidFieldType(Object _1){return
+  "Invalid modifier for field: "+_1
 
   ;}
 }
