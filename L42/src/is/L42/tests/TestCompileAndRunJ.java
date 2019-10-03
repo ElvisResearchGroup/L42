@@ -199,7 +199,7 @@ public static void loadRunErr(String s,String e){
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
     catch (InvocationTargetException e1) {
       if(!(e1.getCause() instanceof java.util.concurrent.CancellationException)){fail(e1.getCause());}
-      assertEquals("",Resources.out());
+      assertEquals("loopinglooping",Resources.out());
       return;
       }
     catch (CompilationError e1) {fail(e1);}

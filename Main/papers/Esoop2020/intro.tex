@@ -7,7 +7,7 @@ a useful concept when reasoning about software correctness in Object Oriented (O
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a boolean method called \Q@invariant()@.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@. 
-We do this, like Dafny~\cite{DBLP:conf/sigada/Leino12}, to minimise special syntactic and type-system treatment of invariants.%, making them easier to understand for users, whereas most other approaches treat invariants as a special annotation with its own syntax.
+\footnote{Doing this (like Dafny~\cite{DBLP:conf/sigada/Leino12}) we minimise special treatment of invariants. Some other approaches treat invariants as a special annotation with its own syntax.}
 
 Invariants are designed to hold in most moments, but 
 is common to knowingly violate invariants for short periods before restoring them.
@@ -24,7 +24,7 @@ Thus, invariants can be broken only when the object is not involved in execution
 This stricter invariant protocol would clearly support easier reasoning; however 
 at a first glance it may look too restrictive, preventing us to express useful program behaviour.
 Consider the iconic example of a \Q@Range@ class, with a \Q@min@ and \Q@max@
-value, where the invariant requires that \Q@min<=max@.
+value, where the invariant requires that \Q@min<=max@:
 \begin{lstlisting}
 class Range{ field min; field max;//assumed getters and setters
   method invariant(){return min<max;}
@@ -75,7 +75,6 @@ With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is acc
 \subheading{Summary:}
 In the reminder of this work, we discuss how to combine runtime checks and Reference and Object Capabilities to create a convenient language where our strict invariant protocol is soundly enforced; even in the presence of mutations, I/O, non-determinism and exceptions, all under the open world assumption, when
 we only need to assume that all code is well typed.
-
 We formalise our approach and (in the Appendix) prove that our protocol soundly enforce invariants.
 
 We have fully implemented our protocol in L42\footnote{

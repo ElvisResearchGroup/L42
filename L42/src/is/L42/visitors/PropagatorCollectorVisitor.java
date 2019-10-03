@@ -136,9 +136,9 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
 
   @Override public void visitPCastT(Half.PCastT pCastT){
     var p0=pCastT.p();
-    var t0=pCastT.t();
+    var stz0=pCastT.stz();
     visitP(p0);
-    visitT(t0);
+    visitSTz(stz0);
     }
     
   @Override public void visitSlash(Half.Slash slash){
@@ -180,25 +180,21 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitE(e0);
     }
   @Override public void visitD(Half.D d){
-    var t0=d.t();
+    var stz0=d.stz();
     var x0=d.x();
     var e0=d.e();
-    visitT(t0);
+    visitSTz(stz0);
     visitX(x0);
     visitE(e0);
     }
   
   @Override public void visitK(Half.K k){
-    var t0=k.t();
+    var stz0=k.stz();
     var x0=k.x();
     var e0=k.e();
-    visitT(t0);
+    visitSTz(stz0);
     visitX(x0);
     visitE(e0);
-    }
-
-  @Override public void visitT(Half.T t){
-    visitSTz(t.stz());
     }
 
   @Override public void visitCsP(Full.CsP csP){

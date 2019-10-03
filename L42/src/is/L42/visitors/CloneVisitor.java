@@ -61,8 +61,6 @@ public class CloneVisitor {
 
   public final List<Half.K> visitHalfKs(List<Half.K> ks){return L(ks,this::visitK);}
     
-  public final List<Half.T> visitHalfTs(List<Half.T> ts){return L(ts,this::visitT);}
-
   public final List<Full.L.M> visitFullMs(List<Full.L.M> ms){return L(ms,this::visitM);}
 
   public final List<Full.D> visitFullDs(List<Full.D> ds){return L(ds,this::visitD);}  
@@ -282,11 +280,11 @@ public class CloneVisitor {
 
   public Half.PCastT visitPCastT(Half.PCastT pCastT){
     var p0=pCastT.p();
-    var t0=pCastT.t();
+    var stz0=pCastT.stz();
     var p=visitP(p0);
-    var t=visitT(t0);
-    if(p==p0 && t==t0){return pCastT;}
-    return new Half.PCastT(pCastT.pos(), p, t);
+    var stz=visitSTz(stz0);
+    if(p==p0 && stz==stz0){return pCastT;}
+    return new Half.PCastT(pCastT.pos(), p, stz);
     }
     
   public Half.Slash visitSlash(Half.Slash slash){
@@ -334,29 +332,25 @@ public class CloneVisitor {
     return new Half.OpUpdate(opUpdate.pos(),x,e);
     }
   public Half.D visitD(Half.D d){
-    var t0=d.t();
+    var stz0=d.stz();
     var x0=d.x();
     var e0=d.e();
-    var t=visitT(t0);
+    var stz=visitSTz(stz0);
     var x=visitX(x0);
     var e=visitE(e0);
-    if(t==t0 && x==x0 && e==e0){return d;}
-    return new Half.D(t, x, e);
+    if(stz==stz0 && x==x0 && e==e0){return d;}
+    return new Half.D(d._mdf(),stz, x, e);
     }
   
   public Half.K visitK(Half.K k){
-    var t0=k.t();
+    var stz0=k.stz();
     var x0=k.x();
     var e0=k.e();
-    var t=visitT(t0);
+    var stz=visitSTz(stz0);
     var x=visitX(x0);
     var e=visitE(e0);
-    if(t==t0 && e==e0){return k;}
-    return new Half.K(k.thr(),t,x,e);
-    }
-
-  public Half.T visitT(Half.T t){
-    return t.withStz(visitSTz(t.stz()));
+    if(stz==stz0 && e==e0){return k;}
+    return new Half.K(k.thr(),stz,x,e);
     }
 
   public Full.CsP visitCsP(Full.CsP csP){

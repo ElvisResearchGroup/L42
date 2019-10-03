@@ -33,7 +33,6 @@ public interface CollectorVisitor {
   default void visitDocs(List<Core.Doc> docs){docs.forEach(this::visitDoc);}
   default void visitHalfDs(List<Half.D> ds){ds.forEach(this::visitD);}
   default void visitHalfKs(List<Half.K> ks){ks.forEach(this::visitK);}
-  default void visitHalfTs(List<Half.T> ts){ts.forEach(this::visitT);}
   default void visitFullMs(List<Full.L.M> ms){ms.forEach(this::visitM);}
   default void visitFullDs(List<Full.D> ds){ds.forEach(this::visitD);}  
   default void visitFullVarTxs(List<Full.VarTx> varTxs){varTxs.forEach(this::visitVarTx);}
@@ -76,7 +75,6 @@ public interface CollectorVisitor {
   void visitOpUpdate(Half.OpUpdate opUpdate);
   void visitD(Half.D d);
   void visitK(Half.K k);
-  void visitT(Half.T t);
   void visitCsP(Full.CsP csP);
   void visitL(Full.L l);
   void visitF(Full.L.F f);

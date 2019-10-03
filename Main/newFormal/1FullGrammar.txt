@@ -18,7 +18,7 @@ _______
   CORE.e ::= xP | void | L | xP.m(xes) | loop e | throw e | x:=e | (Ds Ks e)
   CORE.xP ::= x | P<:T | a //a=address, only at runtime
   CORE.D ::= var? T x=e
-  CORE/HALF.K ::= catch throw T x e
+  CORE.K ::= catch throw T x e
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
@@ -56,9 +56,10 @@ _______
 _______
 #define auxiliary grammars
   ST ::= CORE.T | OP STzs | ST.s | ST.s.i //i=0 for receiver type?
-  HALF.xP ::= x | P<:T | %T%<:T'
+  HALF.xP ::= x | P<:STz | %STz%<:STz'
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
-  HALF.D ::= var? mdf? T x = e
+  HALF.D ::= var? mdf? STz x = e
+  HALF.K ::= catch throw STz x e
   CT ::= ST<=STz
   PR ::= CTz;CORE.L;pTails | Err
   ER ::= CTz;CORE.e? | Err
@@ -69,7 +70,7 @@ _______
   G ::= var?1 x1:CORE.T1 .. var?n xn:CORE.Tn
   GX ::= x1:STz .. xn:STz
   I ::= I[C?;p;G;CTz]//inference application environment
-  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?;CTz]//TODO: remove class? from code
+  Y ::= Y[p;GX;onSlash=STz;onSlashX=HALF.xP?;expectedT=STz?;CTz]
   v ::= CORE.xP | void | CORE.L
   r ::= CORE.L | exception v | error v
   Obj ::= P(xvs) empty;empty| P() as1;as2 // memory objects
@@ -215,7 +216,7 @@ _______
     and CORE.L'.Info+_=CORE.L.Info (that is, all the dependencies are a subset, and so on)
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
-* CTz: forall ST in dom(CTz), U{CTz(ST') | ST' in CTz(ST)} U {ST} subseteq CTz(ST') //TODO: add in code
+* CTz: forall ST in dom(CTz), U{CTz(ST') | ST' in CTz(ST)} U {ST} subseteq CTz(ST)
 // NOTE: CTz(ST) and dom(CTz) are defined in 3Top
 * CTz: CTz not of form CTz, ST <= STz, CTz', ST <= STz', CTz" // I.e. no ST occurs twice on the LHS of a <=
 //CODE ONLY WELL FORMEDNESS:

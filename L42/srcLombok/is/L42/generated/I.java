@@ -9,5 +9,4 @@ import is.L42.common.G;
   C _c;
   Program p;
   G g;
-  List<CT> ctz;
   }
