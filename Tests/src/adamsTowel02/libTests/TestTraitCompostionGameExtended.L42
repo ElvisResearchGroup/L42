@@ -814,6 +814,7 @@ ModuleWorld: Trait({
           return elem
           )
         )
+
       error PointNotFilled""
       }
 
@@ -823,6 +824,7 @@ ModuleWorld: Trait({
           return Bool.true()
           )
         )
+
       return Bool.false()
       }
 
@@ -830,6 +832,7 @@ ModuleWorld: Trait({
       if this.hasEntityAt(that.point()) (
         error PointFilled""
         )
+
       this.add(right: that)
       )
 
@@ -841,6 +844,7 @@ ModuleWorld: Trait({
           return void
           )
         )
+
       error PointNotFilled""
       }
     }
@@ -900,10 +904,12 @@ ModuleWorld: Trait({
 
     mut method Void drawOnto(mut Graphics graphics) (
       mut PointToEntityMap map = this.#map()
+
       with i in Range(map.size()) (
         read Entity entity = map.val(i)
         entity.drawOnto(graphics)
         )
+
       this.player().drawOnto(graphics)
       )
     }
@@ -1112,7 +1118,7 @@ TestModuleWorldLoader: ModuleWorldLoader & {
     read method Point point()
     read method S toS()
     }
-  HasPoint: Trait(K <>< {implements Entity
+  HasPoint: Trait({implements Entity
     var Point p
     method point() this.p()
     })
@@ -1126,11 +1132,18 @@ TestModuleWorldLoader: ModuleWorldLoader & {
       S"AppleItem("[this.point()]")"
       )
     }
-  ItemSpawnerItem: HasPoint & {implements Entity
-    method toS() (
-      S"ItemSpawnerItem("[this.point()]")"
+  ItemSpawnerItem: K <>< (HasPoint & {implements Entity
+    Size numberOfItemsToSpawn
+
+    class method mut This new(Point p, Size numberOfItemsToSpawn) (
+      This(p: p, numberOfItemsToSpawn: numberOfItemsToSpawn)
       )
-    }
+
+    method toS() (
+      S"ItemSpawnerItem("[this.point()]", numberOfItemsToSpawn:"[
+        this.numberOfItemsToSpawn()]")"
+      )
+    })
 
   World: K <>< {
     mut Strings addedEntities
@@ -1174,6 +1187,17 @@ TestModuleWorldLoader_loadWorld_addsAnAppleAtTheCorrectPosition:
       ".withoutRight()
     )
 
+TestModuleWorldLoader_loadWorld_addsAnItemSpawnerAtTheCorrectPosition:
+  TestModuleWorldLoader.producesCorrectItems(
+    content: S"
+      '# Comment line
+      'ITEM_SPAWNER_ITEM 5 6 2
+      ",
+    expected: S"
+      '[ItemSpawnerItem([x:"5", y:"6"], numberOfItemsToSpawn:2)]
+      ".withoutRight()
+    )
+
 TestModuleWorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
   TestModuleWorldLoader.producesCorrectItems(
     content: S"
@@ -1181,9 +1205,10 @@ TestModuleWorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
       'ROCK_ITEM 1 2
       'APPLE_ITEM 3 4
       'APPLE_ITEM 5 6
+      'ITEM_SPAWNER_ITEM 7 8 1
       ",
     expected: S"
-      '[RockItem([x:"1", y:"2"]); AppleItem([x:"3", y:"4"]); AppleItem([x:"5", y:"6"])]
+      '[RockItem([x:"1", y:"2"]); AppleItem([x:"3", y:"4"]); AppleItem([x:"5", y:"6"]); ItemSpawnerItem([x:"7", y:"8"], numberOfItemsToSpawn:1)]
       ".withoutRight()
     )
 
