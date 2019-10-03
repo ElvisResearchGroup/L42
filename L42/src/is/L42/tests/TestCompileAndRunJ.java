@@ -1,6 +1,7 @@
 package is.L42.tests;
 
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -28,6 +29,7 @@ import is.L42.top.Top;
 import is.L42.translationToJava.J;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
+import safeNativeCode.exceptions.SlaveException;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;
@@ -81,7 +83,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
 
-  ),new AtomicTest(()-> //TODO: should pass when safecode is integrated
+  ),new AtomicTest(()->
   loadRun("""
   SafeReadFile={
     class method This1.S read(This1.S fileName)=native{
@@ -89,7 +91,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       {try(//I may have messed up some of the code, 
       java.util.stream.Stream<String>lines=java.nio.file.Files.lines(
         java.nio.file.Paths.get(#1+".txt")))
-        {return lines.collect(java.util.stream.Collectors.joining("\n"));}
+        {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
       catch (java.io.IOException ioe) {return "";}
       }} error void
     #typed{}
@@ -104,18 +106,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello\nWorld")
-  ),new AtomicTest(()-> //TODO: should pass when safecode is integrated
+  ),new AtomicTest(()-> 
   loadRun("""
   Safe2={
     class method This1.S go()=native{
-      nativeSlave{
-        classPath: something
-        }
+      nativeSlave{}
       {
-      novelPackage.MyClass obj=new novelPackage.MyClass();
-      String res=obj.normalMeth();//returns "Hi "
-      res+=obj.nativeMeth();//returns "NativeWorld" by means of a native call
-      return res;
+      try {
+            java.net.URLClassLoader cl = new java.net.URLClassLoader(new java.net.URL[] {java.nio.file.Paths.get("testLibs/test.jar").toUri().toURL()});
+            return (String)cl.loadClass("Test").getDeclaredMethod("sayHello").invoke(null);
+        } catch (java.net.MalformedURLException | java.lang.reflect.InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
       }} error void
     #typed{}
     }
@@ -125,8 +128,32 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       s3.strDebug()
       )
     #typed{}}
-  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hi NativeWorld")
-  ),new AtomicTest(()-> //TODO: should pass when safecode is integrated
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello World!")
+  ),new AtomicTest(()-> 
+  loadRun("""
+  Safe2={
+    class method This1.S go()=native{
+      nativeSlave{}
+      {
+      try {
+            java.net.URLClassLoader cl = new java.net.URLClassLoader(new java.net.URL[] {java.nio.file.Paths.get("testLibs/native-test.jar").toUri().toURL()});
+            Class<?> c = cl.loadClass("HelloWorld");
+            return (String)c.getDeclaredMethod("print").invoke(c.newInstance());
+        } catch (java.net.MalformedURLException | java.lang.reflect.InvocationTargetException | NoSuchMethodException | IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+      }} error void
+    #typed{}
+    }
+  C={
+    class method Void m()=(
+      This1.S s3=This1.Safe2<:class This1.Safe2.go()
+      s3.strDebug()
+      )
+    #typed{}}
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello Native World")
+  ),new AtomicTest(()-> 
   loadRunErr("""
   Safe3={
     class method This1.S go()=native{
@@ -172,7 +199,7 @@ public static void loadRunErr(String s,String e){
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
     catch (InvocationTargetException e1) {
       if(!(e1.getCause() instanceof java.util.concurrent.CancellationException)){fail(e1.getCause());}
-      assertEquals("loopinglooping",Resources.out());
+//      assertEquals("loopinglooping",Resources.out());
       return;
       }
     catch (CompilationError e1) {fail(e1);}

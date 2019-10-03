@@ -4,18 +4,28 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.StringReader;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
+import is.L42.platformSpecific.javaTranslation.Resources;
+import safeNativeCode.slave.host.ProcessSlave;
 
-import static is.L42.translationToJava.TrustedKind.*;
+import static is.L42.translationToJava.NativeDispatch.TrustedKind.*;
 
 public class NativeDispatch {
   public static String nativeCode(String nativeKind, String nativeUrl, List<String> xs, E e) {
@@ -29,43 +39,38 @@ public class NativeDispatch {
     var k=TrustedKind.fromString(nativeKind);
     return k.factory(xs);
     }
+  private static String readSection(String nativeUrl, String part, String def) {
+    if (!nativeUrl.contains(part)) return def;
+    nativeUrl = nativeUrl.substring(nativeUrl.indexOf(part)+part.length()).trim();
+    int space = nativeUrl.indexOf(" ");
+    if (space == -1) return nativeUrl;
+    return nativeUrl.substring(0, space);
+  }
   public static String untrusted(String nativeKind, String nativeUrl, List<String> xs, E e) {
-    //String[]parts=nativeUrl.split(":");
-    //examples of possible nativeUrl strings: 
-    //slaveName{}\n#1.foo(#2)
-    //slaveName{}\nReadFile.fileName(#1)
-    //slaveName{
-    //  timeLimit: xxx //all entries are optional
-    //  memoryLimit: xxx
-    //  classPath: xxx //if present will be the only path visible, thus no shared .class 
-    //  nativePath: xxx//will list *.so and *.dll stuff
-    //  }
-    //ReadFile.fileName(#1)
-    
-    //IF a slave with slaveName is already active (even if with different parameters), it is just
-    //reusing the current slave instance
-    //IF a slave with slaveName is not active (either never activated or died), it is creating
-    //and caching a new slave
-    
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
     String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2); 
     for(int i:range(xs)){//it might be just this simple
       toLambda=toLambda.replaceAll("#"+i, xs.get(i));
-      }
-    String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
-    int timeLimit=100;//seconds, please, show me how to set it up
-    int memoryLimit=100;//megabites, please, show me how to set it up
-    String classPath="";
-    String nativePath="";
-    if(nativeUrl.contains("classPath:")){
-      //so we can test both ways
-      classPath="a local path that works for you";
-//      nativePath="a local path to a trivial *.so";
-      }
-    //return "return <YourMap>.of("+slaveName+","+toLambda+").get();";
-    //the of method may also handle exceptions in some reasonable way (Marco will handle this)
-    return "return \"TODO\";";
     }
+    String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
+    Resources.slaves.computeIfAbsent(slaveName, sn->{
+      String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim();
+      int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
+      int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
+      String[] args = new String[]{"--enable-preview"};
+      if (memoryLimit > 0) {
+        args = new String[]{"-Xmx"+memoryLimit+"M","--enable-preview"};
+      }
+      return new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader());
+    });
+    return java.lang.String.format("""
+    try {
+      Resources.slaves.get("%s").addClassLoader(new Object() { }.getClass().getEnclosingClass().getClassLoader());
+      return Resources.slaves.get("%s").call(%s).get();
+    } catch (java.rmi.RemoteException ex) {
+        throw new RuntimeException(ex);
+    }
+    """, slaveName, slaveName, toLambda);   
   }
 
 enum TrustedKind {
@@ -118,5 +123,6 @@ enum TrustedOp {
    throw todo();
   }
  }
+}
 
  
