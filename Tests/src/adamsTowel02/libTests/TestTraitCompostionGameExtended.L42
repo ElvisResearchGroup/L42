@@ -243,7 +243,34 @@ ModuleEntities: Trait({
 
   })"$Player"<=Path"Player"
 
-TestModuleEntities: ModuleEntities & {
+TestModuleEntities: ModuleEntities & Trait({
+  Player: {}
+  Graphics: {}
+  World: {}
+
+  Entity: {interface
+    read method Point point()
+    mut method Void point(Point that, mut World world, Bool updateWorld)
+    read method Void drawOnto(mut Graphics that)
+    read method S toS()
+    mut method Void #$use(mut Player playerUsingThis, mut World world)
+    }
+
+  StubEntity: {implements Entity
+    class method mut StubEntity ()
+
+    method point() error X""
+    method point(that, world, updateWorld) error X""
+    method drawOnto(that) error X""
+    method toS() error X""
+
+    method #$use(playerUsingThis, world) (
+      Debug.appendLog(S"StubEntityUseLog", msg: S"useWasCalled")
+      )
+    }
+
+  }) & {
+
   Entity: {interface
     read method S toS()
     }
@@ -251,6 +278,7 @@ TestModuleEntities: ModuleEntities & {
   RockItem: {implements Entity}
   AppleItem: {implements Entity}
   ItemSpawnerItem: {implements Entity}
+  StubEntity: {implements Entity}
   OptionalEntity: {}
 
   Entities: {}
@@ -625,6 +653,26 @@ TestModuleEntities: ModuleEntities & {
       catch error NoItemToRemove e void
       error X"Expected exception to be thrown"
       )
+
+    class method Void #$Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem() (
+      mut Player player = Player(p: Point(x: 0Size, y: 0Size))
+      mut World world = World(entities: Entities[])
+
+      player.#$attemptToUseItem(world: world)
+      )
+
+    class method Void #$Player_attemptToUseItem_triggersItemUseMethod() (
+      unused = Debug.#$readLog(S"StubEntityUseLog") // Clear log
+      mut Entity item = StubEntity()
+      mut Player player = Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+        )
+      mut World world = World(entities: Entities[])
+
+      player.#$attemptToUseItem(world: world)
+
+      Debug.test(Debug.#$readLog(S"StubEntityUseLog"), expected: S"useWasCalled")
+      )
     }
   }
 
@@ -718,7 +766,11 @@ TestModuleEntities_Player_removeCurrentItem_playerNoLongerHasAnItem:
 TestModuleEntities_Player_removeCurrentItem_failsWhenThePlayerHasNoItem:
   TestModuleEntities.Tests.#$Player_removeCurrentItem_failsWhenThePlayerHasNoItem()
 
+TestModuleEntities_Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem:
+  TestModuleEntities.Tests.#$Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem()
 
+TestModuleEntities_Player_attemptToUseItem_triggersItemUseMethod:
+  TestModuleEntities.Tests.#$Player_attemptToUseItem_triggersItemUseMethod()
 
 //
 //
