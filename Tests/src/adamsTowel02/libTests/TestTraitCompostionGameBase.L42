@@ -78,7 +78,6 @@ ModuleEntities: Trait({
     })
 
   Player: EntityBase & {
-    mut method Void p(Point that)
     mut method Void point(Point that, mut World world, Bool updateWorld) (
       this.p(that)
       )
