@@ -98,7 +98,7 @@ ModuleEntities: Trait({
       this.p(that)
 
       if this.#currentItem().isPresent() (
-        this.#currentItem().#get().point(that, world: world, updateWorld: updateWorld)
+        this.#currentItem().#get().point(that, world: world, updateWorld: Bool.false())
         )
       )
 
@@ -254,7 +254,7 @@ TestModuleEntities: ModuleEntities & Trait({
     }
 
   StubEntity: {implements Entity
-    class method mut StubEntity ()
+    class method mut This ()
 
     method point() error X""
     method point(that, world, updateWorld) error X""
