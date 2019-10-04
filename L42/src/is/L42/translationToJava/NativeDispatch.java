@@ -40,21 +40,19 @@ public class NativeDispatch {
     return k.factory(xs);
     }
   private static String readSection(String nativeUrl, String part, String def) {
-    if (!nativeUrl.contains(part)) return def;
+    if(!nativeUrl.contains(part)){return def;}
     nativeUrl = nativeUrl.substring(nativeUrl.indexOf(part)+part.length()).trim();
-    int space = nativeUrl.indexOf(" ");
-    if (space == -1) return nativeUrl;
-    return nativeUrl.substring(0, space);
+    int nl = nativeUrl.indexOf("\n");
+    if(nl == -1){throw bug();}
+    return nativeUrl.substring(0, nl).trim();
   }
   public static String untrusted(String nativeKind, String nativeUrl, List<String> xs, E e) {
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
     String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2); 
-    for(int i:range(xs)){//it might be just this simple
-      toLambda=toLambda.replaceAll("#"+i, xs.get(i));
-    }
+    for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
     Resources.slaves.computeIfAbsent(slaveName, sn->{
-      String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim();
+      String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim()+"\n";
       int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
       int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
       String[] args = new String[]{"--enable-preview"};
@@ -65,7 +63,7 @@ public class NativeDispatch {
     });
     return java.lang.String.format("""
     try {
-      Resources.slaves.get("%s").addClassLoader(new Object() { }.getClass().getEnclosingClass().getClassLoader());
+      Resources.slaves.get("%s").addClassLoader(new Object(){}.getClass().getEnclosingClass().getClassLoader());
       return Resources.slaves.get("%s").call(%s).get();
     } catch (java.rmi.RemoteException ex) {
         throw new RuntimeException(ex);

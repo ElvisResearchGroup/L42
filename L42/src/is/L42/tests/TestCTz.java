@@ -45,24 +45,78 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    "This0.k()=[This0.k(), This0]")
    ),new AtomicTest(()->
    plusAcc(List.of(st("This","k()")),List.of(st("This")),
-   "This0.k()=[This0.k(), This0]")
+   "This0.k()=[This0, This0.k()]")
 
    ),new AtomicTest(()->
    plusAcc(List.of(st("This","k(a,b,c)",3)),List.of(st("This")),
-   "This0.k(a,b,c).3=[This0.k(a,b,c).3, This0]")
+   "This0.k(a,b,c).3=[This0, This0.k(a,b,c).3]")
 
    ),new AtomicTest(()->
    plusAcc(List.of(st(st("This"),"k(a,b,c)",3)),List.of(st("This","m()")),
-   "This0.k(a,b,c).3=[This0.k(a,b,c).3, Void]")
+   "This0.k(a,b,c).3=[Void, This0.k(a,b,c).3]")
 
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This"),"m()")),List.of(st("This")),
-   "Void=[Void, This0]")
+   plusAcc(List.of(st("This","m()")),List.of(st("This")),
+   "Void=[This0, Void]")
+
+   ),new AtomicTest(()->
+   plusAcc(List.of(st("This","k(x)")),List.of(st("This")),
+   "This0=[This0]")
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st("This","k(x)"),"m()")),List.of(st("This")),
+   "Void=[This0, Void]")
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st(st("This","k(x)"),"k(x)"),"m()")),List.of(st("This")),
+   "Void=[This0, Void]")
+   ),new AtomicTest(()->
+   plusAcc(List.of(st(st("This","k(x)",1),"m()")),List.of(st("This")),
+   "Any.m()=[This0, Any.m()]")
+   ),new AtomicTest(()->
+   plusAcc(
+     L(st(Op.GT,List.of(L(st("This")),L(st("This"))))),
+     L(st("This")),
+   ">[This0][This0]=[This0, >[This0][This0]]")
+   ),new AtomicTest(()->
+   plusAcc(
+     L(st(Op.LT,List.of(L(st("This")),L(st("This"))))),
+     L(st("This")),
+   "Void=[This0, Void]")
+
+   ),new AtomicTest(()->
+   plusAcc(
+     L(st(Op.LT,List.of(L(st("This")),L(st("This")), L(st("Void"))))),
+     L(st("This")),
+   "Void=[This0, Void]")
+
+   ),new AtomicTest(()->
+   plusAcc(
+     L(st(Op.LT,List.of(L(st("This")),L(st("This")), L(st("Any"))))),
+     L(st("This")),
+   "<[This0][This0][Any]=[This0, <[This0][This0][Any]]")
+
+   ),new AtomicTest(()->
+   plusAcc(
+     L(st(Op.LTEqual,List.of(L(st("This")),L(st("This")), L(st("Any"))))),
+     L(st("This")),
+   "Void=[This0, Void]")
+
+   ),new AtomicTest(()->
+   plusAcc(
+     L(st(Op.LTEqual,List.of(L(st("This")),L(st("This")), L(st("Void"))))),
+     L(st("This")),
+   "Void=[This0, Void]")
 
 
   ));}
+//TODO: use handlers to check that minimize is called only the minimum amount of times
 static Program p=Program.parse("""
-  {method Void m() #norm{}}
+  {
+   method Void m()
+   method This k(Any x)
+   method Void #lt0(This a)
+   method Void #lt0(This a,Void b)
+   method Void #ltequal0(This a,Any b)
+   #norm{}}
   """);
 public static ST st(String t){
   P p=P.parse(t);

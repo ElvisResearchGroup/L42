@@ -160,6 +160,7 @@ public class Program implements Visitable<Program>{
     assert minimize(superP)==superP;
     if(superP==P.pAny){return true;}
     if(subP.equals(superP)){return true;}
+    if(!subP.isNCs()){return false;}
     P.NCs subP0=subP.toNCs();
     if(!subP.isNCs()){return false;}
     if(!superP.isNCs()){return false;}

@@ -10,6 +10,6 @@ public class NameMangling {
     }
   public static String methName(Op op,int n){
     if(n==-1){n=0;}
-    return "#"+op.name()+"n";
+    return "#"+op.name().toLowerCase()+n;
     }
 }

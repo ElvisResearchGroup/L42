@@ -177,7 +177,7 @@ public class InMemoryJavaCompiler {
       }
     @Override
     public URL getResource(String name) {
-        String javaName = name.replace(".class","").replace('/', '.');
+        String javaName = name.replace(".class","").replace(File.separatorChar/*'/'*/, '.');
         //If this isn't a class from this compiler, hand off to the parent
         if (!map.containsKey(javaName)) {
             return super.getResource(name);

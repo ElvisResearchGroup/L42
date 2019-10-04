@@ -3,21 +3,29 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.IntStream;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
+import is.L42.generated.Op;
 import is.L42.generated.P;
+import is.L42.generated.Psi;
+import is.L42.generated.S;
 import is.L42.generated.ST;
+import is.L42.generated.ST.STOp;
 
 
 public class CTz {
@@ -41,11 +49,11 @@ public class CTz {
   public void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
     assert coherent();
     while(!stz.isEmpty()){
+      minimize(p,stz1);
       var st=stz.get(0);
       stz.remove(0);
       plusAcc(p,st,stz1);
       minimize(p,stz);
-      minimize(p,stz1);
       }
     assert coherent(): this;
     }
@@ -58,7 +66,6 @@ public class CTz {
       stz2.addAll(alreadyMapped);
       inner.remove(st);
       }
-    minimize(p,stz2);
     for(var stzi:inner.values()){
        if(!stzi.contains(st)){continue;}
        for(ST stj: stz2){if(!stzi.contains(stj)){stzi.add(stj);}}
@@ -74,6 +81,7 @@ public class CTz {
     return L(inner.get(st).stream());
     }
   public List<ST> of(List<ST>stz){return L(stz,(c,sti)->c.addAll(of(sti)));}
+  List<ST> minimizeFW(Program p,List<ST>stz){return L(stz,st->minimize(p,st));}
   void minimize(Program p,ArrayList<ST>stz){
     ArrayList<T>tz=new ArrayList<>();
     for(int i=0;i<stz.size();){
@@ -96,48 +104,94 @@ public class CTz {
     if(st instanceof ST.STOp){return minimize(p,(ST.STOp)st);}
     throw bug();
     }
-  ST minimize(Program p,ST.STMeth st){
+  ST minimize(Program p,ST.STMeth stsi){
     List<T> ts;
-    if(st.i()==-1){
-      ts=L(of(st.st()),(c,sti)->{
+    ST st=minimize(p,stsi.st());
+    if(stsi.i()==-1){
+      ts=L(of(st),(c,sti)->{
         if (!(sti instanceof T)){return;}
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
         P.NCs pi=ti.p().toNCs();
-        MWT mwti=_elem(p.ofCore(pi).mwts(),st.s());
+        MWT mwti=_elem(p.ofCore(pi).mwts(),stsi.s());
         if(mwti==null){return;}
         T t1=p.from(mwti.mh().t(),pi);
         boolean tI=p.ofCore(pi).isInterface();
         boolean t1I=p.ofCore(t1.p()).isInterface();
-        boolean tEqSt=ti.equals(st.st());
+        boolean tEqSt=ti.equals(st);
         if(tI || t1I || tEqSt){c.add(t1);}
         });
       }
     else{
-      ts=L(of(st.st()),(c,sti)->{
+      ts=L(of(st),(c,sti)->{
         if (!(sti instanceof T)){return;}
         T ti=(T)sti;
         if(!ti.p().isNCs()){return;}
         P.NCs pi=ti.p().toNCs();
-        MWT mwti=_elem(p.ofCore(pi).mwts(),st.s());
+        MWT mwti=_elem(p.ofCore(pi).mwts(),stsi.s());
         if(mwti==null){return;}
-        assert st.i()!=0;
+        assert stsi.i()!=0;
         //T t1=p.from(mwti.mh().parsWithThis().get(st.i()),pi);//if assertion above is false
-        T t1=p.from(mwti.mh().pars().get(st.i()-1),pi);
+        T t1=p.from(mwti.mh().pars().get(stsi.i()-1),pi);
         c.add(t1);
         });
     }
-    if(ts.isEmpty()){return st;}
+    if(ts.isEmpty()){return stsi.withSt(st);}
     assert ts.stream().distinct().count()==1;
     return ts.get(0);
     }
-  ST minimize(Program p,ST.STOp st){ return st;}//TODO:
+  List<List<T>> tzsToTsz(List<List<T>> tzs){
+    assert !tzs.isEmpty();
+    if(tzs.size()==1){
+      return L(tzs.get(0),(c,tz)->c.add(L(tz)));
+      }
+    var inductive=tzsToTsz(popL(tzs));
+    var tz0=tzs.get(0);
+    return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
+    }
+  ST minimize(Program p,ST.STOp st){
+    List<List<ST>> minStzi=L(st.stzs(),sti->minimizeFW(p,sti));
+    List<List<T>> tzs=L(minStzi,(c,stzi)->{
+      List<ST> allStzi=of(stzi);
+      c.add(L(allStzi,(ci,sti)->{if(sti instanceof T){ci.add((T)sti);}}));
+      });
+    List<List<T>> tsz=tzsToTsz(tzs);
+    Set<Psi> options=new HashSet<>();
+    for(var ts:tsz){
+      options.addAll(opOptions(p,st.op(),ts));
+      }
+    if(options.isEmpty()){return st.withStzs(minStzi);}
+    if(options.size()>1){//on default, just do as isEmpty()
+      return handleManyOptions(options,st.withStzs(minStzi));
+      }
+    assert options.size()==1;
+    Psi psi=options.iterator().next(); 
+    return p.from(_elem(p.ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
+    }
 
-    /*public static class Psi{P p; S s; int i;}
-  public List<Psi> opOptions(Op op, List<T>ts){
+  //override it for testing
+  public ST handleManyOptions(Set<Psi> options, STOp st) {return st;}
+  public List<Psi> opOptions(Program p, Op op, List<T>ts){
     return L(c->{for(int i:range(ts)){
-      P pi=ts.get(i).p();
-      //this.methods(pi)
+      List<P> p11n=L(range(ts),(cj,j)->{if(j!=i){cj.add(ts.get(j).p());}});
+      String sName = NameMangling.methName(op,i);
+      P tmp=ts.get(i).p();
+      if(!tmp.isNCs()){continue;}
+      P.NCs tip=tmp.toNCs();
+      List<MWT> mwts=p.ofCore(tip).mwts();
+      List<MH> mhs=L(mwts.stream()
+        .map(m->m.mh())
+        .filter(m->
+          m.s().m().equals(sName) 
+          && !m.s().hasUniqueNum()
+          && m.s().xs().size()==ts.size()-1
+          ));
+      for(MH mh:mhs){
+        List<P>p1n=L(mh.pars(),(ci,ti)->ci.add(p.from(ti.p(),tip)));
+        assert p1n.size()==p11n.size(): p1n+" "+p11n;
+        boolean acceptablePaths=IntStream.range(0,p1n.size())
+          .allMatch(j->p.isSubtype(p11n.get(j),p1n.get(j),null));
+        if(acceptablePaths){c.add(new Psi(tip,mh.s(),i));}
+        }
       }});
-    }*/
-  }
+    }}

@@ -205,10 +205,10 @@ _______
 #define CTz <+p (STz<=STz') = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
 * CTz <+p (empty <= STz) = CTz
 * CTz <+p (ST1,STz<=STz') = CTz' <+p (p.minimize(CTz'; STz) <= p.minimize(CTz'; STz'))
-    CTz' = (CCz <+p (ST1<=STz))
+    CTz' = (CCz <+p (p.minimize(CTz;ST1)<=p.minimize(CTz;STz)))
 * CTz,(ST <= STz')? <+p (ST <= STz) = CTz[ST <= STz"]p, (p.minimize(ST) <= STz")
     // NOTE: ST may be a CORE.T, in which case STz' may contain usefull information such as known super-interfaces
-    STz" = p.minimize(CTz(STz) U (ST <= STz')?.STz? U {ST})
+    STz" = CTz(STz) U (ST <= STz')?.STz? U {ST}
     ST notin dom(CTz)
 
 * (CT1..CTn)[CT]p = CT1[CT]p..CTn[CT]p
@@ -226,17 +226,17 @@ _______
     STz" = {T | STz'=T,T',_ and p|-T' <=T}
 * p.minimize(CTz; T) = T //T = CORE.T
 * p.minimize(CTz; ST.s) = T'
-    T in CTz(ST) //T = CORE.T
+    T in CTz(p.minimize(ST)) //T = CORE.T
     T' = p(T.P)(s).T[from T.P; p]
     either p(T.P).interface? = empty, p(T'.P).interface? = empty, or T = ST
 * p.minimize(CTz; ST.s.i) = T'
-    T in CTz(ST)
+    T in CTz(p.minimize(ST))
     T' = p(T.P)(s).pari[from T.P; p]
     // as we don't allow parameter type refining, T' must be the right type
 * p.minimize(CTz; ST.s(.i)?) = p.minimize(CTz; ST).s(.i)?
     otherwise
 * p.minimize(CTz; OP STz1 ... STzn) = p(P)(s).T[from P; p]
-    Ti in CTz(STzi)
+    Ti in CTz(p.minimize(STzi))
     {P.s.i} = p.opOptions(OP, Ti..Tn)
 * p.minimize(CTz; OP STz1 ... STzn) = OP p.minimize(CTz; STz1) ... p.minimize(CTz; STzn)
     otherwise
