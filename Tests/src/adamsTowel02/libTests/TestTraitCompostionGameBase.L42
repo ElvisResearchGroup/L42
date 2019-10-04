@@ -60,7 +60,6 @@ ModuleEntities: Trait({
     })
 
   ItemBase: EntityBase & Trait({
-    mut method Void p(Point that)
     mut method Void point(Point that, mut World world, Bool updateWorld) (
       if world.hasEntityAt(that) (
         error PointFilled""
