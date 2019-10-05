@@ -66,7 +66,7 @@ public interface CollectorVisitor {
   void visitPathSel(Core.PathSel pathSel);
   void visitMH(Core.MH mh);
   void visitPCastT(Half.PCastT pCastT);
-  void visitSlash(Half.Slash slash);
+  void visitSlashCastT(Half.SlashCastT slash);
   void visitBinOp(Half.BinOp binOp);
   void visitMCall(Half.MCall mCall);
   void visitBlock(Half.Block block);

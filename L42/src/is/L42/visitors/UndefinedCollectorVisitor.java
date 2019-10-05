@@ -33,7 +33,7 @@ public class UndefinedCollectorVisitor implements CollectorVisitor{
   @Override public void visitPathSel(Core.PathSel pathSel){throw uc;}
   @Override public void visitMH(Core.MH mh){throw uc;}
   @Override public void visitPCastT(Half.PCastT pCastT){throw uc;}
-  @Override public void visitSlash(Half.Slash slash){throw uc;}
+  @Override public void visitSlashCastT(Half.SlashCastT slash){throw uc;}
   @Override public void visitBinOp(Half.BinOp binOp){throw uc;}
   @Override public void visitMCall(Half.MCall mCall){throw uc;}
   @Override public void visitBlock(Half.Block block){throw uc;}

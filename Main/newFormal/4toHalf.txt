@@ -50,9 +50,9 @@ _______
 * Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz'n
     Y[expectedT=empty]!xP = xP'; ST1..STk; STz"0; CTz'0//Y!FULL.xP is always a HALF.xP
     s=m(x1..xn)
-    STz' = Y.p.minimize(CTz'0; ST1.s..STk.s) //injects .s on all the elements of STz
-    STz'i = Y.p.minimize(CTz'0; ST1.s.i..STk.s.i) //here and below, i in 1..n
-    Y[onSlash=STz'i;onSlashX=xP;expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
+    STz' = ST1.s..STk.s //injects .s on all the elements of STz //no need to minimize here
+    STz'i = ST1.s.i..STk.s.i //here and below, i in 1..n
+    Y[onSlash=STz'i;onSlashX=xP';expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
     CTz'i = CTzi <+Y.p (STzi <= STz'i)
     STz" = STz"0 U..U STz"n
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)

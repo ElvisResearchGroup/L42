@@ -46,6 +46,9 @@ public class CTz {
       }
       return true;
     }
+  public void plusAccCopy(Program p,List<ST> stz,List<ST>stz1){
+    plusAcc(p,new ArrayList<>(stz),new ArrayList<>(stz1));    
+    }
   public void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
     assert coherent();
     while(!stz.isEmpty()){
@@ -58,7 +61,8 @@ public class CTz {
     assert coherent(): this;
     }
   void plusAcc(Program p,ST st,List<ST>stz){
-    st=minimize(p, st);
+    assert st==minimize(p, st);
+    assert stz==minimizeFW(p, stz);
     ArrayList<ST> alreadyMapped=inner.get(st);
     ArrayList<ST>stz2=new ArrayList<>(this.of(stz));
     if(!stz2.contains(st)){stz2.add(st);}

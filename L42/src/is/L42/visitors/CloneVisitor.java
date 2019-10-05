@@ -287,7 +287,7 @@ public class CloneVisitor {
     return new Half.PCastT(pCastT.pos(), p, stz);
     }
     
-  public Half.Slash visitSlash(Half.Slash slash){
+  public Half.SlashCastT visitSlashCastT(Half.SlashCastT slash){
     return slash.withStz(visitSTz(slash.stz()));
     }
     

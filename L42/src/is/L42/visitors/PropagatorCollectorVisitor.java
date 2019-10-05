@@ -141,8 +141,9 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitSTz(stz0);
     }
     
-  @Override public void visitSlash(Half.Slash slash){
+  @Override public void visitSlashCastT(Half.SlashCastT slash){
     visitSTz(slash.stz());
+    visitSTz(slash.stz1());
     }
     
   @Override public void visitBinOp(Half.BinOp binOp){

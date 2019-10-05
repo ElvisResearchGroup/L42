@@ -291,10 +291,11 @@ public class ToSVisitor implements ToSTrait{
     visitSTz(stz0);
     }
     
-  public void visitSlash(Half.Slash slash){
+  public void visitSlashCastT(Half.SlashCastT slash){
     c("%");
     visitSTz(slash.stz());
-    c("%");
+    c("%<:");
+    visitSTz(slash.stz1());
     }
     
   public void visitBinOp(Half.BinOp binOp){

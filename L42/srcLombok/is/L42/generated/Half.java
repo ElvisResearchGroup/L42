@@ -19,8 +19,8 @@ public class Half {
   PCastT implements Leaf,XP,Visitable<PCastT>{@Override public Visitable<PCastT>visitable(){return this;}@Override public PCastT accept(CloneVisitor cv){return cv.visitPCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitPCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     P p; List<ST> stz;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  Slash implements Leaf,XP,Visitable<Slash>{@Override public Visitable<Slash>visitable(){return this;}@Override public Slash accept(CloneVisitor cv){return cv.visitSlash(this);}@Override public void accept(CollectorVisitor cv){cv.visitSlash(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    List<ST> stz;}
+  SlashCastT implements Leaf,XP,Visitable<SlashCastT>{@Override public Visitable<SlashCastT>visitable(){return this;}@Override public SlashCastT accept(CloneVisitor cv){return cv.visitSlashCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitSlashCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+    List<ST> stz; List<ST> stz1;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   BinOp implements E,Visitable<BinOp>{@Override public Visitable<BinOp>visitable(){return this;}@Override public BinOp accept(CloneVisitor cv){return cv.visitBinOp(this);}@Override public void accept(CollectorVisitor cv){cv.visitBinOp(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     Op op;List<XP> es;}
