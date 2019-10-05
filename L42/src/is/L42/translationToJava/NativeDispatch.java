@@ -41,9 +41,11 @@ public class NativeDispatch {
     }
   private static String readSection(String nativeUrl, String part, String def) {
     if(!nativeUrl.contains(part)){return def;}
-    nativeUrl = nativeUrl.substring(nativeUrl.indexOf(part)+part.length()).trim();
+    nativeUrl = nativeUrl.substring(nativeUrl.indexOf(part)+part.length());
     int nl = nativeUrl.indexOf("\n");
-    if(nl == -1){throw bug();}
+    if(nl == -1){
+      throw bug();
+      }
     return nativeUrl.substring(0, nl).trim();
   }
   public static String untrusted(String nativeKind, String nativeUrl, List<String> xs, E e) {

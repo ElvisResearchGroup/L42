@@ -83,7 +83,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
 
-/*  ),new AtomicTest(()->
+  ),new AtomicTest(()->
   loadRun("""
   SafeReadFile={
     class method This1.S read(This1.S fileName)=native{
@@ -106,7 +106,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello\nWorld")
- */ /*  ),new AtomicTest(()-> 
+  ),new AtomicTest(()-> 
   loadRun("""
   Safe2={
     class method This1.S go()=native{
@@ -129,7 +129,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello World!")
- */ /*  ),new AtomicTest(()-> 
+  ),new AtomicTest(()-> 
   loadRun("""
   Safe2={
     class method This1.S go()=native{
@@ -153,7 +153,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello Native World")
-*/ /* ),new AtomicTest(()-> 
+  ),new AtomicTest(()-> 
   loadRunErr("""
   Safe3={
     class method This1.S go()=native{
@@ -177,7 +177,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})")
 
-*/
+
   ));}
 public static void loadFail(String s){
   try{loadBase(base(s),false);fail();}
