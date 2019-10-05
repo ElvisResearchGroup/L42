@@ -209,6 +209,7 @@ public class ToSVisitor implements ToSTrait{
     }
     
   public void visitD(Core.D d){
+    if(d.isVar()){kw("var");}
     visitT(d.t());
     visitX(d.x());
     c("=");
@@ -341,6 +342,8 @@ public class ToSVisitor implements ToSTrait{
     var stz0=d.stz();
     var x0=d.x();
     var e0=d.e();
+    if(d.isVar()){kw("var");}
+    if(d._mdf()!=null){visitMdf(d._mdf());}
     visitSTz(stz0);
     visitX(x0);
     c("=");

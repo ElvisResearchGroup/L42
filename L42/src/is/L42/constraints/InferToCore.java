@@ -1,5 +1,9 @@
 package is.L42.constraints;
 
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.popL;
+import static is.L42.tools.General.pushL;
+
 import java.util.List;
 
 import is.L42.common.CTz;
@@ -10,8 +14,12 @@ import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.I;
+import is.L42.generated.Mdf;
 import is.L42.generated.ST;
+import is.L42.generated.ThrowKind;
+import is.L42.generated.X;
 import is.L42.top.Top;
+import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
 import lombok.NonNull;
 
@@ -29,6 +37,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     return aux;
     }
   public final void commit(Core.E e){res=e;}
+  private T infer(Mdf mdf, List<ST> stz) { return null; }//TODO:
   private T infer(List<ST> stz) { return null; }//TODO:
   
   @Override public void visitEX(Core.EX x){commit(x);}
@@ -45,19 +54,72 @@ public class InferToCore extends UndefinedCollectorVisitor{
     commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(pCastT.stz())));
     }
   @Override public void visitSlashCastT(Half.SlashCastT slash){
-    commit(new Core.PCastT(slash.pos(),infer(slash.stz()).p(),infer(slash.stz1()));
+    commit(new Core.PCastT(slash.pos(),infer(slash.stz()).p(),infer(slash.stz1())));
     }
   @Override public void visitMCall(Half.MCall mCall){
-    throw uc;
+    Core.E e0=compute(mCall.xP());
+    List<Core.E> es=L(mCall.es(), (c,ei)->c.add(compute(ei)));
+    commit(new Core.MCall(mCall.pos(), (Core.XP)e0, mCall.s(), es));
     }
 
   @Override public void visitBinOp(Half.BinOp binOp){
     throw uc;//TODO:
     }
-  @Override public void visitBlock(Half.Block block){throw uc;}
-  @Override public void visitLoop(Half.Loop loop){throw uc;}
-  @Override public void visitThrow(Half.Throw thr){throw uc;}
-  @Override public void visitOpUpdate(Half.OpUpdate opUpdate){throw uc;}
+  @Override public void visitThrow(Half.Throw thr){
+    commit(new Core.Throw(thr.pos(),thr.thr(),compute(thr.e())));
+    }
+  @Override public void visitLoop(Half.Loop loop){
+    commit(new Core.Loop(loop.pos(),compute(loop.e())));
+    }
+  @Override public void visitOpUpdate(Half.OpUpdate op){
+    commit(new Core.OpUpdate(op.pos(),op.x(),compute(op.e())));
+    }
+
+
+  @Override public void visitBlock(Half.Block block){
+    List<X> fv = L(c->{
+      for(var d:block.ds()){c.addAll(FV.of(d.e().visitable()));}
+      for(var k:block.ks()){c.addAll(FV.of(k.e().visitable()));}
+      c.addAll(FV.of(block.e().visitable()));
+      });
+    List<Core.D> ds=auxDs(fv,block.ds());
+    List<Core.K> ks=L(block.ks(),(c,ki)->c.add(auxK(ki)));
+    I oldI=i;
+    i=i.withG(i.g().plusEq(ds));
+    Core.E e=compute(block.e());
+    i=oldI;
+    commit(new Core.Block(block.pos(), ds, ks, e));
+    }
+  private Core.K auxK(Half.K k) {
+    I oldI=i;
+    Core.T t=infer(k.stz());
+    i=i.withG(i.g().plusEq(k.x(),t));
+    Core.E e=compute(k.e());
+    i=oldI;
+    assert t.mdf().isImm() || k.thr()==ThrowKind.Return;
+    return new Core.K(k.thr(),t,k.x(),e);
+    }
+  private List<Core.D> auxDs(List<X> fv, List<Half.D> ds0) {
+    if(ds0.isEmpty()){return L();}
+    Half.D d=ds0.get(0);
+    List<Half.D> ds=popL(ds0);
+    Core.T t=infer(d._mdf(),d.stz());//not the final t
+    Core.E e1=compute(d.e());
+    var fvE=FV.of(e1.visitable());
+    Core.T t1=t;
+    boolean toImm=d._mdf()==null && t.mdf().isRead() && 
+      fvE.stream().noneMatch(xi->{
+        var ti=i.g()._of(xi);
+        return ti!=null && ti.mdf().isIn(Mdf.Readable,Mdf.Lent,Mdf.Mutable);
+        });
+    boolean toMut=!toImm && d._mdf()==null && t.mdf().isCapsule() && 
+      fv.stream().filter(xi->xi.equals(d.x())).count()>=2;
+    if(toImm){t1=t.withMdf(Mdf.Immutable);}
+    else if(toMut){t1=t.withMdf(Mdf.Mutable);}
+    i=i.withG(i.g().plusEq(d.x(), t1));
+    var recursive=auxDs(fv,ds);
+    return pushL(new Core.D(d.isVar(),t1,d.x(),e1),recursive); 
+    }
   @Override public void visitD(Half.D d){throw uc;}
   @Override public void visitK(Half.K k){throw uc;}
 

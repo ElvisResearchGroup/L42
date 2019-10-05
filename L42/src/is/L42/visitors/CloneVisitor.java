@@ -339,7 +339,7 @@ public class CloneVisitor {
     var x=visitX(x0);
     var e=visitE(e0);
     if(stz==stz0 && x==x0 && e==e0){return d;}
-    return new Half.D(d._mdf(),stz, x, e);
+    return new Half.D(d.isVar(),d._mdf(),stz, x, e);
     }
   
   public Half.K visitK(Half.K k){

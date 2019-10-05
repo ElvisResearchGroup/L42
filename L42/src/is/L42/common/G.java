@@ -50,6 +50,11 @@ public class G {
     assert res!=null: x;
     return res;
     }
+  public T _of(X x) {
+    T res= xInT.get(x);
+    return res;
+    }
+
 
   public G plusEq(List<D> ds) {
     if(ds.isEmpty()){return this;}

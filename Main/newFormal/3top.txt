@@ -141,31 +141,35 @@ _______
 * I!%STz%<: STz' => I.CTz;I(STz).P <:I(class STz')
 * I!%STz%<: STz' => inferenceFailure(I,STz,STz')
     either I(STz) or I(STz') undefined
-* I!e0.m(x1=e1..xn=en) => ER
-    I!ei=ERi //e0 is of form xP
+* I0!e0.m(x1=e1..xn=en) => ER
+    Ii+1 = Ii[CTz=CTzi]
+    Ii!ei = ERi //e0 is of form xP
     ER0..ERn = CTz0;e'0..CTzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
-    ER = CTz0 U..U CTzn;e'0.m(x1=e'1..xn=e'n)
-* I!xP0 OP..OP xPn => ER
-    I!xPi => ERi
+    ER = CTzn;e'0.m(x1=e'1..xn=e'n)
+* I0!xP0 OP..OP xPn => ER
+    Ii+1 = Ii[CTz=CTzi]
+    Ii!xPi => ERi
     ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
     STzi = STz'i if xP'i = _ <: STz'i
     STzi = I.G(x'i) if xP'i = x'i
     {P.m(x1..xn).i} = I.p.opOptions(OP, STz0..STzn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
     xP"1..xP"n = xP'0..xP'n\i
-    ER = CTz0 U..U CTzn;xP'i.m(x1=xP"1..xn=xP"n)
+    ER = CTzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER
     e0 in {throw e, loop e, x:=e}
     I!e => ER'
     ER' = CTz;e' IfErr(ER') ER = ER'
     ER = CTz;e0[e=e']
 * I!(Ds K1..Km e) => ER
-    xs = FV((Ds K1..Km e))//formally, FV is defined only on CORE.e. Not sure how to handle this
+    xs = FV(Ds.es K1.e..Km.e e)//formally, FV is defined only on CORE.e. This works on HALF.E in the same way
     I!xs;Ds => DsR
-    I!Ki => KRi
     DsR = CTz0;D1..Dn IfErr(DsR) ER = DsR
+    I1 = I[CTz=CTz0]
+    Ii+1 = Ii[CTz=CTzi]
+    Ii!Ki => KRi
     I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
-    KR1..KRn,ER' = CTz1;K'1..CTzm;K'm, CTzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
-    ER = CTz0 U..U CTzm+1;(D1...Dn K'1...K'm e')
+    KR1..KRm,ER' = CTz1;K'1..CTz1;K'm, CTzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
+    ER = CTzm+1;(D1...Dn K'1...K'm e')
 _______
 #define I!xs;HALF.e? => ER    I!HALF.D => DR    I!HALF.K => KR
 * I!xs;empty => I.CTz;empty
@@ -183,7 +187,7 @@ _______
 
 * I!catch throw STz x e => KR
     I(STz) = CORE.T IfNotE(CORE.T) inferenceFailure(I,STz)
-    I!e => ER
+    I[G=I.G,x:Core.T]!e => ER
     ER = CTz';e' IfErr(ER) KR = ER
     KR = CTz';catch throw CORE.T x e' //assert CORE.T.mdf=imm or throw=return
 _______
