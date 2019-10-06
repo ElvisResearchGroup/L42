@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
+import static is.L42.tools.General.typeFilter;
 
 import java.util.List;
 
@@ -47,10 +48,18 @@ public class InferToCore extends UndefinedCollectorVisitor{
     return res;
     }
   private T infer(List<ST> stz) {
-    if(stz.size()==1 && stz.get(0) instanceof T){return (T)stz.get(0);} 
-    List<T> ts=L(ctz.of(ctz.minimizeFW(i.p(),stz)),(c,sti)->{if(sti instanceof Core.T){c.add((Core.T)sti);}});
-    T res=i.p()._chooseT(ts, i.p().topCore().poss());
+    var poss=i.p().topCore().poss();
+    if(stz.size()==1 && stz.get(0) instanceof T){return (T)stz.get(0);}
+    var minStz=ctz.minimizeFW(i.p(),stz);//local var for the debugger
+    List<T> ts=L(minStz,(c,sti)->{
+      var tz=typeFilter(ctz.of(sti),T.class);
+      var speci=i.p()._chooseSpecificT(tz, poss);
+      if(speci!=null){c.add(speci);}
+      });
+    T res=i.p()._chooseGeneralT(ts, i.p().topCore().poss());
     if(res!=null){return res;}
+    assert false:
+     ts + " "+stz ;
     throw bug();//TODO:
     }
   

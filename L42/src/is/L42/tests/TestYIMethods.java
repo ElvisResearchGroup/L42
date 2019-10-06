@@ -39,19 +39,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestYIMethods
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   chooseT("Any a, Any b","imm Any")
+   chooseGeneralT("Any a, Any b","imm Any")
    ),new AtomicTest(()->
-   chooseT("Any a, Void b","imm Any")
+   chooseGeneralT("Any a, Void b","imm Any")
    ),new AtomicTest(()->
-   chooseT("Library a, Void b","null")
+   chooseGeneralT("Library a, Void b","null")
    ),new AtomicTest(()->
-   chooseT("read Any a, imm Any b","read Any")
+   chooseGeneralT("read Any a, imm Any b","read Any")
    ),new AtomicTest(()->
-   chooseT("lent Any a, mut Any b","lent Any")
+   chooseGeneralT("lent Any a, mut Any b","lent Any")
    ),new AtomicTest(()->
-   chooseT("lent Any a, imm Any b","read Any")
+   chooseGeneralT("lent Any a, imm Any b","read Any")
    ),new AtomicTest(()->
-   chooseT("capsule Void v,lent Any a, imm Any b","read Any")
+   chooseGeneralT("capsule Void v,lent Any a, imm Any b","read Any")
+   
+   ),new AtomicTest(()->
+   chooseSpecificT("Any a, Any b","imm Any")
+   ),new AtomicTest(()->
+   chooseSpecificT("Any a, Void b","imm Void")
+   ),new AtomicTest(()->
+   chooseSpecificT("Library a, Void b","null")
+   ),new AtomicTest(()->
+   chooseSpecificT("read Any a, imm Any b","imm Any")
+   ),new AtomicTest(()->
+   chooseSpecificT("lent Any a, mut Any b","mut Any")
+   ),new AtomicTest(()->
+   chooseSpecificT("lent Any a, imm Any b","capsule Any")
+   ),new AtomicTest(()->
+   chooseSpecificT("capsule Void v,lent Any a, imm Any b","capsule Void")
 
    ),new AtomicTest(()->
    pass("","")
@@ -106,9 +121,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        Any y=void catch error Void v v y)
        void)
      """)
-
-
-
    ),new AtomicTest(()->pass("""
      method Any m1(Any b)=(x=this.m1(b=this.nope()) void)
      method Void m0(Any b)=this.nope()
@@ -118,6 +130,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Void m0(Any b)=this.nope()
      method Any m2(Any a)=(Void x=this.nope() void)
      """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(Any b)=(x=this.nope() y=x.m2(a=void) void)
+     method This m0(Any b)=this.nope()
+     method Void m2(Any a)=(x=this.nope() void)
+     ""","""
+     method Any m1(Any b)=(This x=this.nope() Void y=x.m2(a=void) void)
+     method This m0(Any b)=this.nope()
+     method Void m2(Any a)=(This x=this.nope() void)
+     """)
+
+     
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 static Program p0=Program.parse("""
@@ -129,13 +152,18 @@ static Program p0=Program.parse("""
    method Void #ltequal0(This a,Any b)
    #norm{}}
   """);
-public static void chooseT(String in,String out){
+public static void chooseGeneralT(String in,String out){
   Full.L fl=(Full.L)Program.parse("{method Void m("+in+")}").top;
   var ts=((Full.L.MWT)fl.ms().get(0)).mh().pars();
-  var res=p0._chooseT(L(ts.stream().map(TypeManipulation::toCore)),L());
+  var res=p0._chooseGeneralT(L(ts.stream().map(TypeManipulation::toCore)),L());
   assertEquals(out,""+res);
   }
-  
+public static void chooseSpecificT(String in,String out){
+  Full.L fl=(Full.L)Program.parse("{method Void m("+in+")}").top;
+  var ts=((Full.L.MWT)fl.ms().get(0)).mh().pars();
+  var res=p0._chooseSpecificT(L(ts.stream().map(TypeManipulation::toCore)),L());
+  assertEquals(out,""+res);
+  }  
 public static void pass(String l,String out){
   Full.L fl=(Full.L)Program.parse("{"+l+"}").top;
   Core.L cl=Program.parse("{"+out+" #norm{}}").topCore();
@@ -157,7 +185,4 @@ public static void pass(String l,String out){
     });
   assertEquals(ces,cl.mwts()); 
   }
-//public static void topFail(Class<?> kind,String program,String ...output){
-//  checkFail(()->new Top().top(new CTz(),Program.parse(program)), output, kind);
-//  }
 }

@@ -148,8 +148,14 @@ public class Program implements Visitable<Program>{
   public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
     return subPs.allMatch(p->isSubtype(p, superP,poss));
     }
+  public boolean isSubtype(P subP,Stream<P> superPs,List<Pos> poss){
+    return superPs.allMatch(p->isSubtype(subP,p,poss));
+    }
   public boolean isSubtype(Stream<T> subTs,T superT,List<Pos> poss){
     return subTs.allMatch(t->isSubtype(t, superT,poss));
+    }
+  public boolean isSubtype(T subT,Stream<T> superTs,List<Pos> poss){
+    return superTs.allMatch(t->isSubtype(subT,t,poss));
     }
   public boolean isSubtype(T subT,T superT,List<Pos> poss){
     if(!isSubtype(subT.mdf(),superT.mdf())){return false;}
@@ -253,7 +259,7 @@ public class Program implements Visitable<Program>{
     if(!pTails.c().equals(p.cs().get(0))){return p;}
     return P.of(p.n()-1,popL(p.cs()));
     }
-  public T _chooseT(List<T> ts,List<Pos> poss){
+  public T _chooseGeneralT(List<T> ts,List<Pos> poss){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
     var ps=L(ts.stream()
@@ -279,6 +285,34 @@ public class Program implements Visitable<Program>{
         }
       });
     }
+  //-----------
+  public T _chooseSpecificT(List<T> ts,List<Pos> poss){
+    Mdf _mdf=_mostSpecificMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
+    if(_mdf==null){return null;}
+    var ps=L(ts.stream()
+      .map(ti->ti.p())
+      .filter(pi->isSubtype(pi,ts.stream().map(ti->ti.p()),poss))
+      .distinct());
+    if(ps.size()!=1){return null;}
+    return new T(_mdf,L(),ps.get(0));
+    }
+  private Mdf _mostSpecificMdf(Set<Mdf> mdfs){
+    var g=specificEnoughMdf(mdfs);
+    return g.stream().filter(mdf->g.stream()
+      .allMatch(mdf1->isSubtype(mdf1, mdf)))
+      .reduce(toOneOr(()->bug())).orElse(null);
+    }
+  private List<Mdf> specificEnoughMdf(Set<Mdf> mdfs){
+    return L(c->{
+      for(Mdf mdf:Mdf.values()){
+        if(mdf.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
+        if(mdfs.stream().allMatch(mdf1->isSubtype(mdf,mdf1))){
+          c.add(mdf);
+          }
+        }
+      });
+    }  
+  //-----------
   public static Program parse(String s){
     var r=Parse.program("-dummy-",s);
     assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;

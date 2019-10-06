@@ -271,12 +271,10 @@ _______
 _______
 #define I(mdf? STz) = CORE.T
 * I(mdf STz) = I(STz)[mdf=mdf]
-* I(STz) = chooseT({T| T in I.CTz(p.minimize(I.CTz,STz))}) //assuming I.CTz=I.p.minimize(I.CTz)
-
-* I(STz)=chooseGeneralT(Tz)//the current chooseT
+* I(STz)=chooseGeneralT(Tz)
     Tz={chooseSpecificT({T|I.CTz(ST)}) | ST in p.minimize(I.CTz,STz) }
 _______
-#define chooseT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
+#define chooseGeneralT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
 

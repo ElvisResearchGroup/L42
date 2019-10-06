@@ -12,6 +12,7 @@ import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
+import static is.L42.tools.General.typeFilter;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,8 +32,46 @@ import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.ST.STOp;
 import is.L42.generated.Y;
+/*
 
+p.solve(ST)=ST' where we try to minimize the result. 
+  NOTE: ST may contains Ps that are not in the domain of p.
+  should also p.minimize(P) and from(P;p) be resilient and do nothing? 
 
+CT well formedness: ST<=STz, ST not of form Core.T
+ 
+in any moment, CTz and p so that
+forall ST in dom or cod CTz, p.solve(ST)=ST
+
+CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
+  ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
+
+CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
+CTz <+p ST <=STz' = CTz,ST<= STz'
+  CTz(ST) undefined
+  
+I(STz)=chooseGeneralT(Tz) //assert p.sort(STz)=STz
+  Tz={chooseSpecificT(I.CTz.allTz(ST)}) | ST in STz }
+
+T in CTz.allTz(T)
+T in CTz.allTz(ST')
+  ST in CTz(ST')
+  T in CTz.allTz(ST) 
+
+//what to do when the program expands?
+p1=p.update(p.top with extra C=L)
+
+p1.update(CTz): replace all ST with p1.solve(ST), if ST in dom and now is T, remove it.
+ 
+from CTz? assert if you can not solve before from, you can not solve after  
+  
+inside topNC
+  we use I(Half.e) to get a core.e and is the only point where
+  we can get CTzs from inner FULL.Ls
+  //FALSE: those new CTzs should be irrelevant for the whole duraction of topNC
+  in the end of topNC, (thus for every C=e processed)
+  we can update the CTz with p"
+*/
 public class CTz {
   private final Map<ST,ArrayList<ST>> inner=new HashMap<>();
   @Override public String toString(){
@@ -51,13 +90,6 @@ public class CTz {
       }
       return true;
     }
-  /*
-  #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
-* CTz.add(p; MH empty; empty) = CTz
-* CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
-    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
-    Y!e = Half.e; STz; empty; CTz' // empty: error on bodies leaking returns
-  */
   public Half.E _add(Program p, Core.MH mh, Full.E _e){
     if(_e==null){return null;}
     Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
@@ -72,16 +104,16 @@ public class CTz {
   public void plusAcc(Program p,ArrayList<ST> stz,ArrayList<ST>stz1){
     assert coherent();
     while(!stz.isEmpty()){
+      minimize(p,stz);//TODO: check if this point of minimization follows the formalism
       minimize(p,stz1);
       var st=stz.get(0);
       stz.remove(0);
       plusAcc(p,st,stz1);
-      minimize(p,stz);
       }
     assert coherent(): this;
     }
   void plusAcc(Program p,ST st,List<ST>stz){
-    assert st==minimize(p, st);
+    assert st==minimize(p, st): st+" "+minimize(p, st);
     assert stz==minimizeFW(p, stz);
     ArrayList<ST> alreadyMapped=inner.get(st);
     ArrayList<ST>stz2=new ArrayList<>(this.of(stz));
@@ -118,8 +150,9 @@ public class CTz {
     while(!tz.isEmpty()){
       T t=tz.get(tz.size()-1);
       tz.remove(tz.size()-1);
-      boolean noSub=tz.stream().noneMatch(ti->p.isSubtype(ti, t,null));
-      if(noSub){stz.add(t);}
+      //boolean noSub=tz.stream().noneMatch(ti->p.isSubtype(ti, t,null));
+      //if(noSub){stz.add(t);}//TODO: what we gain from removing subtypes?
+      stz.add(t);
       }
     }
   ST minimize(Program p,ST st){
@@ -175,10 +208,7 @@ public class CTz {
     }
   ST minimize(Program p,ST.STOp st){
     List<List<ST>> minStzi=L(st.stzs(),sti->minimizeFW(p,sti));
-    List<List<T>> tzs=L(minStzi,(c,stzi)->{
-      List<ST> allStzi=of(stzi);
-      c.add(L(allStzi,(ci,sti)->{if(sti instanceof T){ci.add((T)sti);}}));
-      });
+    List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(of(stzi),T.class)));
     List<List<T>> tsz=tzsToTsz(tzs);
     Set<Psi> options=new HashSet<>();
     for(var ts:tsz){

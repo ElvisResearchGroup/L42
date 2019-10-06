@@ -64,6 +64,11 @@ public class General {
     return (element, otherElement) -> {throw err.get();};
     }
 
+  public static <A,B extends A> List<B> typeFilter(List<A> a,Class<B> clazz){
+    return a.stream()
+      .filter(clazz::isInstance).map(clazz::cast)
+      .collect(Collectors.toList());
+    }
   public static <T> List<T> merge(List<T>l1,List<T>l2){
     ArrayList<T> res=new ArrayList<>();
     res.addAll(l1);
