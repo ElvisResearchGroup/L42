@@ -256,19 +256,23 @@ public class Program implements Visitable<Program>{
   public T _chooseT(List<T> ts,List<Pos> poss){
     Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
-    var ps=L(ts.stream().map(t->t.p()).filter(p->isSubtype(ts.stream().map(t->t.p()),p,poss)));
+    var ps=L(ts.stream()
+      .map(ti->ti.p())
+      .filter(pi->isSubtype(ts.stream().map(ti->ti.p()),pi,poss))
+      .distinct());
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
     }
   private Mdf _mostGeneralMdf(Set<Mdf> mdfs){
     var g=generalEnoughMdf(mdfs);
     return g.stream().filter(mdf->g.stream()
-      .allMatch(mdf1->isSubtype(mdf1, mdf1)))
+      .allMatch(mdf1->isSubtype(mdf, mdf1)))
       .reduce(toOneOr(()->bug())).orElse(null);
     }
   private List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
     return L(c->{
       for(Mdf mdf:Mdf.values()){
+        if(mdf.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
         if(mdfs.stream().allMatch(mdf1->isSubtype(mdf1,mdf))){
           c.add(mdf);
           }

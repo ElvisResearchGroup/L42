@@ -26,7 +26,7 @@ import is.L42.visitors.UndefinedCollectorVisitor;
 import is.L42.visitors.Visitable;
 
 public class ToHalf extends UndefinedCollectorVisitor{
-  static class Res<T>{
+  public static class Res<T>{
     public final T e;
     public final List<ST> resSTz;
     public final List<ST> retSTz;
@@ -34,6 +34,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       this.e=e;this.resSTz=resSTz;this.retSTz=retSTz;
       }
     }
+  public ToHalf(Y y,CTz ctz){this.y=y;this.ctz=ctz;}
   Y y;
   CTz ctz;
   Res<Half.E> res;
@@ -162,7 +163,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       var res=auxD(d);
       ds.add(res.e);
       retST.addAll(res.retSTz); //resST is empty
-      y=y.withG(y.g().plusEq(res.e.x(),res.e.stz()));
+      y=y.withG(y.g().plusEqOver(res.e.x(),res.e.stz()));
       }
     for(Full.K k:block.ks()){
       var res=auxK(k);
@@ -171,6 +172,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
       retST.addAll(res.retSTz);
       }
     var res=compute(block._e());
+    resST.addAll(res.resSTz);
+    retST.addAll(res.retSTz);
     commit(new Half.Block(block.pos(),L(ds.stream()),L(ks.stream()),res.e),resST,retST);
     y=oldY;
     }

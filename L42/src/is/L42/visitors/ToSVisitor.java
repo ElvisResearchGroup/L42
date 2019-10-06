@@ -354,7 +354,7 @@ public class ToSVisitor implements ToSTrait{
     var stz0=k.stz();
     var x0=k.x();
     var e0=k.e();
-    c("catch");
+    kw("catch");
     visitThrowKind(k.thr());
     visitSTz(stz0);
     visitX(x0);

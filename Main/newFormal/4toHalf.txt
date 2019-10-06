@@ -21,11 +21,11 @@ _______
 * Y!void = void;imm Void;empty;Y.CTz
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; Y.CTz //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = Y!((Y.onSlashX).x())
-* Y!CsP = Y!(CsP <:class CsP)
+* Y!CsP = Y!(CsP <:class CsP)// assert CsP of form P
     Y.expectedT != class Any
 * Y!CsP = Y!(CsP <:class Any)
     Y.expectedT = class Any
-* Y!CsP<:T = ♥CsP<:♥T; ♥T; empty; Y.CTz
+* Y!P<:T = P<:♥T; ♥T; empty; Y.CTz  //undefined for CsP<:T if CsP not of form P
 * Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; Y.CTz
 * Y!e<:T = Y!(T x=e x)
     e not of form CsP or \
@@ -103,7 +103,7 @@ _______
     ...//catch return do not need special treatment
     Y[GX=GXn,CTz=CTz'(m-1)]!Km = K'm; STzm; STz'm; CTz'm
     Y[GX=GXn,CTz=CTz'm]!e  = e'; STz0;  STz'0; CTz'0
-    STz = p.minimize(CTz'm; STz0 U..U STzm)
+    STz = STz0 U..U STzm
     STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} wil ensure that the above "error void" is unreachable

@@ -196,14 +196,10 @@ _______
 * adapt(p,e,imm Void) = (Void x=e {}) where x fresh
 * adapt(p,e,T) = (T x=e x.#toLibrary()) otherwise, where x fresh    
 _______
-#define I(mdf? STz) = CORE.T
-* I(mdf STz) = I(STz)[mdf=mdf]
-* I(STz) = chooseT(I.CTz(STz)) //assuming I.CTz=I.p.minimize(I.CTz)
-_______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
 * CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
-    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
+    Y = Y[p=p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
     Y!e = Half.e; STz; empty; CTz' // empty: error on bodies leaking returns
 _______
 #define CTz <+p (STz<=STz') = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
@@ -273,6 +269,13 @@ _______
 * This0.Cs,Ps[skipThis0]=Ps[skipThis0]
 * Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
 _______
+#define I(mdf? STz) = CORE.T
+* I(mdf STz) = I(STz)[mdf=mdf]
+* I(STz) = chooseT({T| T in I.CTz(p.minimize(I.CTz,STz))}) //assuming I.CTz=I.p.minimize(I.CTz)
+
+* I(STz)=chooseGeneralT(Tz)//the current chooseT
+    Tz={chooseSpecificT({T|I.CTz(ST)}) | ST in p.minimize(I.CTz,STz) }
+_______
 #define chooseT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P
   {P} = {T.P| T in Tz and p|-Tz.Pz<=T.P}
@@ -281,7 +284,17 @@ _______
     mdf in generalEnough(mdfz)
     forall mdf1 in generalEnough(mdfz): mdf <= mdf1
 
-* generalEnough(mdfz) = {mdf | forall mdf1 in mdfz, mdf1<=mdf}
+* generalEnough(mdfz) = {mdf | mdf not in {fwd%imm,fwd%mut}, forall mdf1 in mdfz, mdf1<=mdf}
+_______
+#define chooseSpecificT(CORE.Tz) = CORE.T    mostSpecificMdf(mdfz) = mdf     specificEnough(mdfz) = mdfs'
+*chooseSpecificT(Tz) = mostSpecificMdf(Tz.mdfz) P
+  {P} = {T.P| T in Tz and p|-T.P<=Tz.Pz}
+
+* mostSpecificMdf(mdfz) = mdf //the most general specificEnough.
+    mdf in specificEnough(mdfz)
+    forall mdf1 in specificEnough(mdfz): mdf1 <= mdf
+
+* specificEnough(mdfz) = {mdf | mdf not in {fwd%imm,fwd%mut}, forall mdf1 in mdfz, mdf<=mdf1}
 _______
 #define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
 * P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar

@@ -11,5 +11,4 @@ import is.L42.common.GX;
   List<ST> onSlash;
   Half.XP _onSlashX;
   List<ST> _expectedT;
-  boolean onPath;
   }

@@ -182,11 +182,3 @@ public static void failWF(Class<?> clazz,String input,String ...output){
   TestHelpers.checkFail(()->Program.parse(input),output,clazz);
   }
 }
-
-interface I{static int a(){return 0;}}
-class A implements I{static int a(){return 1;}
-  static void m(){
-    A.a();
-    I.a();
-    }
-  }

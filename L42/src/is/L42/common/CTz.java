@@ -17,15 +17,20 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+import is.L42.constraints.ToHalf;
+import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
+import is.L42.generated.Full;
+import is.L42.generated.Half;
 import is.L42.generated.Op;
 import is.L42.generated.P;
 import is.L42.generated.Psi;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.ST.STOp;
+import is.L42.generated.Y;
 
 
 public class CTz {
@@ -45,6 +50,21 @@ public class CTz {
         }
       }
       return true;
+    }
+  /*
+  #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
+* CTz.add(p; MH empty; empty) = CTz
+* CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
+    Y = Y[p=I.p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
+    Y!e = Half.e; STz; empty; CTz' // empty: error on bodies leaking returns
+  */
+  public Half.E _add(Program p, Core.MH mh, Full.E _e){
+    if(_e==null){return null;}
+    Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
+    var res= new ToHalf(y,this).compute(_e);
+    this.plusAccCopy(p, res.resSTz,L(mh.t()));
+    assert res.retSTz.isEmpty();//may be not?
+    return res.e;
     }
   public void plusAccCopy(Program p,List<ST> stz,List<ST>stz1){
     plusAcc(p,new ArrayList<>(stz),new ArrayList<>(stz1));    
@@ -85,7 +105,7 @@ public class CTz {
     return L(inner.get(st).stream());
     }
   public List<ST> of(List<ST>stz){return L(stz,(c,sti)->c.addAll(of(sti)));}
-  List<ST> minimizeFW(Program p,List<ST>stz){return L(stz,st->minimize(p,st));}
+  public List<ST> minimizeFW(Program p,List<ST>stz){return L(stz,st->minimize(p,st));}
   void minimize(Program p,ArrayList<ST>stz){
     ArrayList<T>tz=new ArrayList<>();
     for(int i=0;i<stz.size();){

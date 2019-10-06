@@ -126,7 +126,7 @@ public class Top {
     List<Full.Doc> docs=ncs.get(0).docs();
     List<Pos> poss=ncs.get(0).poss();
     ncs=popL(ncs);
-    Y y=new Y(p,GX.empty(),L(),null,L(),true);
+    Y y=new Y(p,GX.empty(),L(),null,L());
     HalfQuadruple hq=new HalfQuadruple(y,fe);
     Half.E he=hq.e;
     I i=new I(c0,p,G.empty());
@@ -158,7 +158,7 @@ public class Top {
     }
   private void ctzAdd(CTz ctz0, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
     if(_e==null){es.add(null);return;}
-    Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()),true);
+    Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
     var hq=new HalfQuadruple(y, _e);
     //ctz0.addAll(hq.ctz);//TODO: fix with new CTz ops
     for(var st:hq.resSTz){

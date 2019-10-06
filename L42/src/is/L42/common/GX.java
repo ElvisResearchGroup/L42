@@ -54,10 +54,17 @@ public class GX {
     
   public GX plusEq(X x, List<ST> stz) {
     Map<X,List<ST>> xInT=new HashMap<>(this.xInT);
-    assert !xInT.containsKey(x);
+    assert !xInT.containsKey(x): x+"; "+xInT;
     xInT.put(x,stz);
     return new GX(Collections.unmodifiableMap(xInT)); 
     }
+  public GX plusEqOver(X x, List<ST> stz) {
+    Map<X,List<ST>> xInT=new HashMap<>(this.xInT);
+    assert !xInT.containsKey(x) || xInT.get(x).equals(stz): x+"; "+xInT;
+    xInT.putIfAbsent(x,stz);
+    return new GX(Collections.unmodifiableMap(xInT)); 
+    }
+
   public GX plusEq(List<Full.D> ds) {
     Map<X,List<ST>> xInT=new HashMap<>(this.xInT);
     FV.allVarTx(ds).filter(vx->vx._x()!=null && vx._t()!=null).forEach(vx->{

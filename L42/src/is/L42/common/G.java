@@ -1,5 +1,6 @@
 package is.L42.common;
 
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 
 import java.util.Collections;
@@ -20,7 +21,15 @@ import lombok.NonNull;
 public class G {
   final private Map<X,T> xInT;
   final private Set<X> vars;
-
+  @Override public String toString(){
+    String res="";
+    for(var x:L(xInT.keySet().stream().sorted((x1,x2)->x1.inner().compareTo(x2.inner())))){
+      if(vars.contains(x)){res+="var ";}
+      res+=x+":"+xInT.get(x);
+      
+      }
+    return res;
+    } 
   public static G empty() {
     return new G(Collections.emptyMap(),Collections.emptySet());
     }
@@ -61,7 +70,7 @@ public class G {
     Map<X,T> xInT=new HashMap<>(this.xInT);
     Set<X> vars=new HashSet<>(this.vars);
     for(D di:ds){
-      assert !xInT.containsKey(di.x());
+      assert !xInT.containsKey(di.x()):di.x()+"; "+xInT;
       assert !vars.contains(di.x());
       xInT.put(di.x(),di.t());
       if(di.isVar()){vars.add(di.x());}

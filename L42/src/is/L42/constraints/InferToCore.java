@@ -1,6 +1,7 @@
 package is.L42.constraints;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 
@@ -27,7 +28,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
   I i;
   CTz ctz;
   Core.E res; 
-  Top top; 
+  Top top;
+  public InferToCore(I i,CTz ctz,Top top){
+    this.i=i; this.ctz=ctz; this.top=top;
+    } 
   public final Core.E compute(Half.E e){
     assert res==null;
     e.visitable().accept(this);
@@ -37,8 +41,18 @@ public class InferToCore extends UndefinedCollectorVisitor{
     return aux;
     }
   public final void commit(Core.E e){res=e;}
-  private T infer(Mdf mdf, List<ST> stz) { return null; }//TODO:
-  private T infer(List<ST> stz) { return null; }//TODO:
+  private T infer(Mdf _mdf, List<ST> stz) {
+    T res=infer(stz);
+    if(_mdf!=null){res=res.withMdf(_mdf);}
+    return res;
+    }
+  private T infer(List<ST> stz) {
+    if(stz.size()==1 && stz.get(0) instanceof T){return (T)stz.get(0);} 
+    List<T> ts=L(ctz.of(ctz.minimizeFW(i.p(),stz)),(c,sti)->{if(sti instanceof Core.T){c.add((Core.T)sti);}});
+    T res=i.p()._chooseT(ts, i.p().topCore().poss());
+    if(res!=null){return res;}
+    throw bug();//TODO:
+    }
   
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
@@ -82,12 +96,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
       for(var k:block.ks()){c.addAll(FV.of(k.e().visitable()));}
       c.addAll(FV.of(block.e().visitable()));
       });
+    List<Core.K> ks=L(block.ks(),(c,ki)->c.add(auxK(ki)));//before ds, so they see the smaller I
     List<Core.D> ds=auxDs(fv,block.ds());
-    List<Core.K> ks=L(block.ks(),(c,ki)->c.add(auxK(ki)));
-    I oldI=i;
-    i=i.withG(i.g().plusEq(ds));
+    //i=i.withG(i.g().plusEq(ds)); unnneded, it already happens in ds
     Core.E e=compute(block.e());
-    i=oldI;
     commit(new Core.Block(block.pos(), ds, ks, e));
     }
   private Core.K auxK(Half.K k) {
