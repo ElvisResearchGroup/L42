@@ -8,6 +8,7 @@ import java.util.stream.IntStream;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
@@ -55,23 +56,29 @@ should also p.minimize(P) and from(P;p) be resilient and do nothing?
  
 * in any moment, CTz and p so that forall ST in dom or cod CTz, p.solve(ST)=ST
 
-CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
-  ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
+_______
+#define CTz <+p STz<=STz' = CTz'    CTz <+p ST<=STz = CTz'
+*CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
+   ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
 
-CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
-CTz <+p ST <=STz' = CTz,ST<= STz'
-  CTz(ST) undefined
+* CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
+    CTz <+p ST <=STz' = CTz,ST<= STz'
+    CTz(ST) undefined
+_______
+#define CTz.allSTz(ST) = STz    CTz.allSubSTz(ST) = STz    CTz.allTz(p,ST) = Tz
+* ST in CTz.allSTz(p,ST)
+* ST' in CTz.allSTz(p,ST) 
+    ST1..STn = CTz(ST)
+    ST' in CTz.allSTz(p,STi)
+* ST' in CTz.allSTz(p,ST.s.i?)
+    ST" in CTz.allSTz(ST)
+    ST' in  CTz.allSTz(p.sort(ST".s.i))
+ 
+ Tz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
+
   
 I(STz)=chooseGeneralT(Tz) //assert p.sort(STz)=STz
   Tz={chooseSpecificT(I.CTz.allTz(ST)) | ST in STz }
-
-CTz.allSTz(ST) = ST U CTz.allSTz(ST1) U..U CTz.allSTz(STn) U CTz.allSubSTz(ST) 
-  ST1..STn = CTz(ST)
-CTz.allSubSTz(T) = {}
-CTz.allSubSTz(ST.s.i?) = ST1.s.i?..STn.s.i?   
-  ST1..STn = allSTz(ST)
-  
-CTz.allTz(p,ST)={T | ST in CTz.allST(ST), T=p.solve(ST)}
   
 //what to do when the program expands?
 p1=p.update(p.top with extra C=L)
@@ -90,7 +97,7 @@ inside topNC
   
   */
 public class CTz {
-  private final Map<ST,ArrayList<ST>> inner=new HashMap<>();
+  private final Map<ST,List<ST>> inner=new HashMap<>();
   @Override public String toString(){
     String res=inner.toString();
     res=res.substring(1,res.length()-1);
@@ -132,15 +139,43 @@ public class CTz {
   public static ST solve(Program p,ST.STOp st){  throw bug();    }
   
   public void plusAcc(Program p,List<ST> stz,List<ST>stz1){
-    
+    stz1=L(stz1,st->solve(p,st));
+    for(ST st:stz){
+      st=solve(p,st);
+      if(st instanceof T){continue;}
+      plusAcc(p,st,stz1);
+      }
     }
-  //CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
-  //ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
-
-//CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
-//CTz <+p ST <=STz' = CTz,ST<= STz'
-//  CTz(ST) undefined
-
+  public void plusAcc(Program p,ST st,List<ST>stz1){
+    var data=inner.get(st);
+    if(data==null){
+      inner.put(st,stz1);
+      return;
+      }
+    inner.put(st,mergeU(data,stz1));    
+    }    
+  public List<ST> allSTz(ST st){
+    return L(c->{
+      c.add(st);
+      var data=inner.get(st);
+      if(data!=null){
+        for(ST sti:data){c.addAll(allSTz(sti));}
+        }
+      c.addAll(allSubSTz(st));
+      });//remove dups, visit?
+      
+     // T.s1 <= T.s1.s2
+    }
+  public List<ST> allSubSTz(ST st){
+    return L(c->{
+      
+      });
+    }
+//CTz.allSTz(ST) = ST U CTz.allSTz(ST1) U..U CTz.allSTz(STn) U CTz.allSubSTz(ST) 
+//  ST1..STn = CTz(ST)
+//CTz.allSubSTz(T) = {}
+//CTz.allSubSTz(ST.s.i?) = ST1.s.i?..STn.s.i?   
+//  ST1..STn = allSTz(ST)
   
   /*
   public boolean coherent(){
