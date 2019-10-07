@@ -499,80 +499,85 @@ ModuleWorldLoader: Trait({
     }
   })
 
-TestModuleWorldLoader: ModuleWorldLoader & {
-  Entity: {interface
-    read method Point point()
-    read method S toS()
-    }
-  HasPoint: Trait(K <>< {implements Entity
-    var Point p
-    method point() this.p()
-    })
-  RockItem: HasPoint & {implements Entity
-    method toS() (
-      S"RockItem("[this.point()]")"
+TestModuleWorldLoader: {
+  $: ModuleWorldLoader & {
+    Entity: {interface
+      read method Point point()
+      read method S toS()
+      }
+    HasPoint: Trait(K <>< {implements Entity
+      var Point p
+
+      method point() (
+        this.p()
+        )
+      })
+    RockItem: HasPoint & {implements Entity
+      method toS() (
+        S"RockItem("[this.point()]")"
+        )
+      }
+    AppleItem: HasPoint & {implements Entity
+      method toS() (
+        S"AppleItem("[this.point()]")"
+        )
+      }
+
+    World: K <>< {
+      mut Strings addedEntities
+
+      class method mut World () (
+        This(addedEntities: Strings[])
+        )
+
+      mut method Void addEntity(mut Entity that) (
+        this.#addedEntities().add(right: that.toS())
+        )
+      }
+
+    WorldLoader: {}
+
+    class method Void producesCorrectItems(S content, S expected) (
+      mut World world = WorldLoader.loadWorld(content: content)
+      Debug.test(world.addedEntities(), expected: expected)
       )
     }
-  AppleItem: HasPoint & {implements Entity
-    method toS() (
-      S"AppleItem("[this.point()]")"
+
+  WorldLoader_loadWorld_addsARockAtTheCorrectPosition:
+    $.producesCorrectItems(
+      content: S"
+        '# Comment line
+        'ROCK_ITEM 1 2
+        ",
+      expected: S"
+        '[RockItem([x:"1", y:"2"])]
+        ".withoutRight()
       )
-    }
 
-  World: K <>< {
-    mut Strings addedEntities
-
-    class method mut World () (
-      This(addedEntities: Strings[])
+  WorldLoader_loadWorld_addsAnAppleAtTheCorrectPosition:
+    $.producesCorrectItems(
+      content: S"
+        '# Comment line
+        'APPLE_ITEM 3 4
+        ",
+      expected: S"
+        '[AppleItem([x:"3", y:"4"])]
+        ".withoutRight()
       )
 
-    mut method Void addEntity(mut Entity that) (
-      this.#addedEntities().add(right: that.toS())
+  WorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
+    $.producesCorrectItems(
+      content: S"
+        '# Comment line
+        'ROCK_ITEM 1 2
+        'APPLE_ITEM 3 4
+        'APPLE_ITEM 5 6
+        ",
+      expected: S"
+        '[RockItem([x:"1", y:"2"]); AppleItem([x:"3", y:"4"]); AppleItem([x:"5", y:"6"])]
+        ".withoutRight()
       )
-    }
-
-  WorldLoader: {}
-
-  class method Void producesCorrectItems(S content, S expected) (
-    mut World world = WorldLoader.loadWorld(content: content)
-    Debug.test(world.addedEntities(), expected: expected)
-    )
   }
-
-TestModuleWorldLoader_loadWorld_addsARockAtTheCorrectPosition:
-  TestModuleWorldLoader.producesCorrectItems(
-    content: S"
-      '# Comment line
-      'ROCK_ITEM 1 2
-      ",
-    expected: S"
-      '[RockItem([x:"1", y:"2"])]
-      ".withoutRight()
-    )
-
-TestModuleWorldLoader_loadWorld_addsAnAppleAtTheCorrectPosition:
-  TestModuleWorldLoader.producesCorrectItems(
-    content: S"
-      '# Comment line
-      'APPLE_ITEM 3 4
-      ",
-    expected: S"
-      '[AppleItem([x:"3", y:"4"])]
-      ".withoutRight()
-    )
-
-TestModuleWorldLoader_loadWorld_addsMultipleItemsCorrectPositions:
-  TestModuleWorldLoader.producesCorrectItems(
-    content: S"
-      '# Comment line
-      'ROCK_ITEM 1 2
-      'APPLE_ITEM 3 4
-      'APPLE_ITEM 5 6
-      ",
-    expected: S"
-      '[RockItem([x:"1", y:"2"]); AppleItem([x:"3", y:"4"]); AppleItem([x:"5", y:"6"])]
-      ".withoutRight()
-    )
 
 //
 //
