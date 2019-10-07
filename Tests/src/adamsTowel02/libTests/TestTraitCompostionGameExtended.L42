@@ -241,10 +241,8 @@ ModuleEntities: Trait({
   })"$Player"<=Path"Player"
 
 TestingModuleEntities: {
-  $: ModuleEntities & Trait({
+  $: ModuleEntities & {
     Player: {}
-    Graphics: {}
-    World: {}
 
     Entity: {interface
       read method Point point()
@@ -267,16 +265,9 @@ TestingModuleEntities: {
         )
       }
 
-  }) & {
-
-    Entity: {interface
-      read method S toS()
-      }
-    Player: {}
     RockItem: {implements Entity}
     AppleItem: {implements Entity}
     ItemSpawnerItem: {implements Entity}
-    StubEntity: {implements Entity}
     OptionalEntity: {}
 
     Entities: {}
