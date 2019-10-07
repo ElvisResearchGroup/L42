@@ -692,21 +692,14 @@ TestingModuleEntities: {
 //
 
 ModuleWorld: Trait({
-  Graphics: {}
-  World: {}
+  $Entity: {}
+
   Entity: {interface
     read method Point point()
     mut method Void point(Point that, mut World world, Bool updateWorld)
     read method Void drawOnto(mut Graphics that)
     }
-  Player: {implements Entity}
-
-  }) & Trait({
-
-  Entity: {interface
-    read method Point point()
-    }
-  Player: {
+  Player: {implements Entity
     class method mut Player (fwd Point p)
     mut method Void attemptToPickUpOrDropItem(mut World world)
     mut method Void #$attemptToUseItem(mut World world)
@@ -716,7 +709,7 @@ ModuleWorld: Trait({
     mut method Void draw(S that, Size x, Size y)
     }
 
-  PointToEntityMap: Trait(Collections.vector(ofMut: Entity)) & {
+  PointToEntityMap: Trait(Collections.vector(ofMut: $Entity)) & {
     mut method mut Entity getEntityAt(Point that) {
       with elem in this.#vals() (
         if elem.point() == that (
@@ -822,7 +815,7 @@ ModuleWorld: Trait({
       this.player().drawOnto(graphics)
       )
     }
-  })
+  })"$Entity"<=Path"Entity"
 
 TestModuleWorld: ModuleWorld & {
   Graphics: {
