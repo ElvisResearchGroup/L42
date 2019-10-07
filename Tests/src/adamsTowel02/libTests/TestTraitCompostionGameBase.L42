@@ -92,134 +92,119 @@ ModuleEntities: Trait({
     }
   })
 
-TestModuleEntities: ModuleEntities & {
-  Entity: {interface
-    read method S toS()
-    }
-  RockItem: {implements Entity}
+TestModuleEntities: {
+  $: ModuleEntities & {
+    Entity: {interface
+      read method S toS()
+      }
+    RockItem: {implements Entity}
 
-  class method Point newItemPoint() (
-    Point(x: 1Size, y: 1Size)
-    )
+    class method Point newItemPoint() (
+      Point(x: 1Size, y: 1Size)
+      )
 
-  World: K <>< {
-    mut Strings mutations
-    var Bool isNewItemPointOccupied
+    World: K <>< {
+      mut Strings mutations
+      var Bool isNewItemPointOccupied
 
-    read method Bool hasEntityAt(Point that) {
-      Bool isNewItemPoint = that == TestModuleEntities.newItemPoint()
-      if isNewItemPoint (
-        return this.isNewItemPointOccupied()
+      read method Bool hasEntityAt(Point that) {
+        Bool isNewItemPoint = that == TestModuleEntities.newItemPoint()
+        if isNewItemPoint (
+          return this.isNewItemPointOccupied()
+          )
+
+        return Bool.false()
+        }
+
+      mut method Void addEntity(mut Entity that) (
+        this.#mutations().add(right: S"addEntity("[that.toS()]")")
         )
 
-      return Bool.false()
+      mut method Void removeEntity(Point that) (
+        this.#mutations().add(right: S"removeEntity("[that.toS()]")")
+        )
       }
 
-    mut method Void addEntity(mut Entity that) (
-      this.#mutations().add(right: S"addEntity("[that.toS()]")")
-      )
-
-    mut method Void removeEntity(Point that) (
-      this.#mutations().add(right: S"removeEntity("[that.toS()]")")
-      )
+    Graphics: K <>< {
+      mut method Void draw(S that, Size x, Size y) (
+        Debug.appendLog(
+          S"graphicsDrawLog",
+          msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
+          )
+        )
+      }
     }
 
-  Graphics: K <>< {
-    mut method Void draw(S that, Size x, Size y) (
-      Debug.appendLog(
-        S"graphicsDrawLog",
-        msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
-        )
+  EntityBase_drawOnto_drawsTheCorrectSquare: (
+    unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
+    mut $.RockItem entity = $.RockItem(p: Point(x: 4Size, y: 5Size))
+
+    entity.drawOnto($.Graphics())
+
+    Debug.test(
+      Debug.#$readLog(S"graphicsDrawLog"),
+      expected: S"[representation:R, x:4, y:5]"
       )
-    }
+    )
 
-  Tests: K <>< {
-    class method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
-      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
-      mut RockItem entity = RockItem(p: Point(x: 4Size, y: 5Size))
+  ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint: (
+    mut $.World world = $.World(mutations: Strings[], isNewItemPointOccupied: Bool.true())
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
-      entity.drawOnto(Graphics())
-
-      Debug.test(
-        Debug.#$readLog(S"graphicsDrawLog"),
-        expected: S"[representation:R, x:4, y:5]"
-        )
-      )
-
-    class method Void #$ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.true())
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
-
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.true()
-        )
-
-      catch error PointFilled pf void
-      error X"Expected exception to be thrown"
+    item.point(
+      $.newItemPoint(),
+      world: world,
+      updateWorld: Bool.true()
       )
 
-    class method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+    catch error PointFilled pf void
+    error X"Expected exception to be thrown"
+    )
 
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.true()
-        )
+  ItemBase_setPoint_modifiesItemBaseInternalPoint: (
+    mut $.World world = $.World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
-      Debug.test(item.point(), expected: TestModuleEntities.newItemPoint())
+    item.point(
+      $.newItemPoint(),
+      world: world,
+      updateWorld: Bool.true()
       )
 
-    class method Void #$ItemBase_setPoint_movesItselfInTheWorld() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+    Debug.test(item.point(), expected: $.newItemPoint())
+    )
 
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.true()
-        )
+  ItemBase_setPoint_movesItselfInTheWorld: (
+    mut $.World world = $.World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
-      Debug.test(
-        world.#mutations(),
-        expected: S"
-          '[removeEntity([x:"0", y:"0"]); addEntity(R([x:"1", y:"1"]))]
-          ".withoutRight()
-        )
+    item.point(
+      $.newItemPoint(),
+      world: world,
+      updateWorld: Bool.true()
       )
 
-    class method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse() (
-      mut World world = World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
-
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.false()
-        )
-
-      Debug.test(world.#mutations(), expected: S"[]")
+    Debug.test(
+      world.#mutations(),
+      expected: S"
+        '[removeEntity([x:"0", y:"0"]); addEntity(R([x:"1", y:"1"]))]
+        ".withoutRight()
       )
-    }
+    )
+
+  ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse: (
+    mut $.World world = $.World(mutations: Strings[], isNewItemPointOccupied: Bool.false())
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
+
+    item.point(
+      $.newItemPoint(),
+      world: world,
+      updateWorld: Bool.false()
+      )
+
+    Debug.test(world.#mutations(), expected: S"[]")
+    )
   }
-
-TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
-  TestModuleEntities.Tests.#$EntityBase_drawOnto_drawsTheCorrectSquare()
-
-TestModuleEntities_ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint()
-
-TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_modifiesItemBaseInternalPoint()
-
-TestModuleEntities_ItemBase_setPoint_movesItselfInTheWorld:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_movesItselfInTheWorld()
-
-TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse()
 
 //
 //
