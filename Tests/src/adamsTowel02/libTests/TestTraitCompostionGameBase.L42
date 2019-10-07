@@ -44,7 +44,10 @@ ModuleEntities: Trait({
 
   HasPoint: Trait(K <>< {implements Entity
     var Point p
-    method point() this.p()
+
+    method point() (
+      this.p()
+      )
     })
 
   EntityBase: HasPoint & Trait({implements Entity
@@ -108,7 +111,7 @@ TestModuleEntities: {
       var Bool isNewItemPointOccupied
 
       read method Bool hasEntityAt(Point that) {
-        Bool isNewItemPoint = that == TestModuleEntities.newItemPoint()
+        Bool isNewItemPoint = that == $.newItemPoint()
         if isNewItemPoint (
           return this.isNewItemPointOccupied()
           )
@@ -244,6 +247,7 @@ ModuleWorld: Trait({
       with elem in this.#vals() (
         if elem.point() == that (return elem)
         )
+
       error PointNotFilled""
       }
 
@@ -251,6 +255,7 @@ ModuleWorld: Trait({
       with elem in this.vals() (
         if elem.point() == that (return Bool.true())
         )
+
       return Bool.false()
       }
 
@@ -258,6 +263,7 @@ ModuleWorld: Trait({
       if this.hasEntityAt(that.point()) (
         error PointFilled""
         )
+
       this.add(right: that)
       )
 
@@ -269,6 +275,7 @@ ModuleWorld: Trait({
           return void
           )
         )
+
       error PointNotFilled""
       }
     }
@@ -320,10 +327,12 @@ ModuleWorld: Trait({
 
     mut method Void drawOnto(mut Graphics graphics) (
       mut PointToEntityMap map = this.#map()
+
       with i in Range(map.size()) (
         read Entity entity = map.val(i)
         entity.drawOnto(graphics)
         )
+
       this.player().drawOnto(graphics)
       )
     }
@@ -494,6 +503,7 @@ ModuleWorldLoader: Trait({
 
         world.addEntity(entity)
         )
+
       world
       )
     }

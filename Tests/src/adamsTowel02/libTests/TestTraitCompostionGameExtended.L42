@@ -48,7 +48,10 @@ ModuleEntities: Trait({
 
   HasPoint: Trait(K <>< {implements Entity
     var Point p
-    method point() this.p()
+
+    method point() (
+      this.p()
+      )
     })
 
   EntityBase: HasPoint & Trait({implements Entity
@@ -322,6 +325,7 @@ TestModuleEntities: {
             return entity
             )
           )
+
         error X"No entity at "[that]""
         }
       }
@@ -832,9 +836,11 @@ TestModuleWorld: {
       }
     HasPoint: Trait(K <>< {implements Entity
       var Point p
+
       method point() (
         this.p()
         )
+
       method point(that, world, updateWorld) (
         this.p(that)
         )
@@ -881,7 +887,7 @@ TestModuleWorld: {
     world.addEntity($.StubEntity(p: Point(x: 3Size, y: 4Size)))
     )
 
-  World_removeEntity_whenNoItemIsAtThePoint: (
+  World_removeEntity_failsWhenNoItemIsAtThePoint: (
     mut $.World world = $.World()
 
     world.removeEntity(Point(x: 1Size, y: 2Size))
@@ -993,6 +999,7 @@ ModuleWorldLoader: Trait({
 
         world.addEntity(entity)
         )
+
       world
       )
     }
@@ -1006,7 +1013,10 @@ TestModuleWorldLoader: {
       }
     HasPoint: Trait({implements Entity
       var Point p
-      method point() this.p()
+
+      method point() (
+        this.p()
+        )
       })
     RockItem: HasPoint & {implements Entity
       method toS() (
