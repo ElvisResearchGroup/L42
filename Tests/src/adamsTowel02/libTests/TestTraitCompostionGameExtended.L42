@@ -266,7 +266,7 @@ TestModuleEntities: ModuleEntities & Trait({
       )
     }
 
-  }) & {
+  }) & Trait({
 
   Entity: {interface
     read method S toS()
@@ -342,86 +342,97 @@ TestModuleEntities: ModuleEntities & Trait({
         )
       )
     }
+  })
 
-  Tests: K <>< {
-    class method Void #$EntityBase_drawOnto_drawsTheCorrectSquare() (
-      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
-      mut RockItem entity = RockItem(p: Point(x: 4Size, y: 5Size))
+TestingModuleEntities: {
+  $: TestModuleEntities
 
-      entity.drawOnto(Graphics())
+  EntityBase_drawOnto_drawsTheCorrectSquare: (
+    unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
+    mut $.RockItem entity = $.RockItem(p: Point(x: 4Size, y: 5Size))
 
-      Debug.test(
-        Debug.#$readLog(S"graphicsDrawLog"),
-        expected: S"[representation:R, x:4, y:5]"
-        )
+    entity.drawOnto($.Graphics())
+
+    Debug.test(
+      Debug.#$readLog(S"graphicsDrawLog"),
+      expected: S"[representation:R, x:4, y:5]"
+      )
+    )
+
+  ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint: (
+    mut $.World world = $.World(entities: $.Entities[
+      $.RockItem(p: $.TestModuleEntities.newItemPoint())
+    ])
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
+
+    item.point(
+      $.TestModuleEntities.newItemPoint(),
+      world: world,
+      updateWorld: Bool.true()
       )
 
-    class method Void #$ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint() (
-      mut World world = World(entities: Entities[
-        RockItem(p: TestModuleEntities.newItemPoint())
-      ])
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+    catch error PointFilled pf void
+    error X"Expected exception to be thrown"
+    )
 
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.true()
-        )
+  ItemBase_setPoint_modifiesItemBaseInternalPoint: (
+    mut $.World world = $.World(entities: $.Entities[])
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
-      catch error PointFilled pf void
-      error X"Expected exception to be thrown"
+    item.point(
+      $.TestModuleEntities.newItemPoint(),
+      world: world,
+      updateWorld: Bool.true()
       )
 
-    class method Void #$ItemBase_setPoint_modifiesItemBaseInternalPoint() (
-      mut World world = World(entities: Entities[])
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+    Debug.test(item.point(), expected: $.TestModuleEntities.newItemPoint())
+    )
 
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.true()
-        )
+  ItemBase_setPoint_movesItselfInTheWorld: (
+    mut $.World world = $.World(entities: $.Entities[])
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
-      Debug.test(item.point(), expected: TestModuleEntities.newItemPoint())
+    item.point(
+      $.TestModuleEntities.newItemPoint(),
+      world: world,
+      updateWorld: Bool.true()
       )
 
-    class method Void #$ItemBase_setPoint_movesItselfInTheWorld() (
-      mut World world = World(entities: Entities[])
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+    Debug.test(
+      world.#mutations(),
+      expected: S"
+        '[removeEntity([x:"0", y:"0"]); addEntity(R([x:"1", y:"1"]))]
+        ".withoutRight()
+      )
+    )
 
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.true()
-        )
+  ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse: (
+    mut $.World world = $.World(entities: $.Entities[])
+    mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
-      Debug.test(
-        world.#mutations(),
-        expected: S"
-          '[removeEntity([x:"0", y:"0"]); addEntity(R([x:"1", y:"1"]))]
-          ".withoutRight()
-        )
+    item.point(
+      $.TestModuleEntities.newItemPoint(),
+      world: world,
+      updateWorld: Bool.false()
       )
 
-    class method Void #$ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse() (
-      mut World world = World(entities: Entities[])
-      mut RockItem item = RockItem(p: Point(x: 0Size, y: 0Size))
+    Debug.test(world.#mutations(), expected: S"[]")
+    )
 
-      item.point(
-        TestModuleEntities.newItemPoint(),
-        world: world,
-        updateWorld: Bool.false()
-        )
+  MultipleEntities_use_checkRemoveItemFromPlayer: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Entities entities = $.Entities[
+      $.AppleItem(p: p);
+      $.RockItem(p: p);
+      $.ItemSpawnerItem(p: p, numberOfItemsToSpawn: 1Size)
+      ]
 
-      Debug.test(world.#mutations(), expected: S"[]")
-      )
-
-    class method Void #$Entity_use_checkRemoveItemFromPlayer(
-      mut Entity item, S shouldHaveItem
-      ) (
-      mut World world = World(entities: Entities[])
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+    with
+    ,,item in entities
+    ,,shouldHaveItem in Strings[S"true"; S"true"; S"false"] (
+      mut $.World world = $.World(entities: $.Entities[])
+      mut $.Player player = $.Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
         )
 
       item.#$use(playerUsingThis: player, world: world)
@@ -429,13 +440,17 @@ TestModuleEntities: ModuleEntities & Trait({
       Debug.test(player.currentItem().isPresent(), expected: shouldHaveItem)
       )
 
-    class method Void #$ItemSpawnerItem_use_createsNItemsWhenSpecified(Size nItems) (
-      mut World world = World(entities: Entities[])
-      mut Entity item = ItemSpawnerItem.new(
+    void
+    )
+
+  ItemSpawnerItem_use_createsNItemsWhenSpecified: (
+    with nItems in Sizes[1Size; 4Size] (
+      mut $.World world = $.World(entities: $.Entities[])
+      mut $.Entity item = $.ItemSpawnerItem.new(
         p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: nItems
         )
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
+      mut $.Player player = $.Player(
+        p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
         )
 
       item.#$use(playerUsingThis: player, world: world)
@@ -443,331 +458,237 @@ TestModuleEntities: ModuleEntities & Trait({
       Debug.test(world.#mutations().size(), expected: nItems)
       )
 
-    class method Void #$ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints() (
-      mut World world = World(
-        mutations: Strings[],
-        entities: Entities[],
-        includeRepresentationInMutations: Bool.false()
-        )
-      mut Entity item = ItemSpawnerItem.new(
-        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
-        )
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
-        )
+    void
+    )
 
-      item.#$use(playerUsingThis: player, world: world)
-
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"1", y:"0"])
-        ".withoutRight()), expected: S"true")
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"-1", y:"0"])
-        ".withoutRight()), expected: S"true")
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"0", y:"1"])
-        ".withoutRight()), expected: S"true")
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"0", y:"-1"])
-        ".withoutRight()), expected: S"true")
+  ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints: (
+    mut $.World world = $.World(
+      mutations: Strings[],
+      entities: $.Entities[],
+      includeRepresentationInMutations: Bool.false()
+      )
+    mut $.Entity item = $.ItemSpawnerItem.new(
+      p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
+      )
+    mut $.Player player = $.Player(
+      p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
       )
 
-    class method Void #$ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items() (
-      mut World world = World(
-        mutations: Strings[],
-        entities: Entities[
-          RockItem(p: Point(x: Size"-1", y: 0Size));
-          RockItem(p: Point(x: 0Size, y: 1Size))
-          ],
-        includeRepresentationInMutations: Bool.false()
-        )
-      mut Entity item = ItemSpawnerItem.new(
-        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
-        )
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
-        )
+    item.#$use(playerUsingThis: player, world: world)
 
-      item.#$use(playerUsingThis: player, world: world)
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"1", y:"0"])
+      ".withoutRight()), expected: S"true")
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"-1", y:"0"])
+      ".withoutRight()), expected: S"true")
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"0", y:"1"])
+      ".withoutRight()), expected: S"true")
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"0", y:"-1"])
+      ".withoutRight()), expected: S"true")
+    )
 
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"1", y:"0"])
-        ".withoutRight()), expected: S"true")
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"-1", y:"0"])
-        ".withoutRight()), expected: S"false")
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"0", y:"1"])
-        ".withoutRight()), expected: S"false")
-      Debug.test(world.#mutations().contains(S"
-        'addEntity([x:"0", y:"-1"])
-        ".withoutRight()), expected: S"true")
-      )
-
-    class method Void #$ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable() (
-      mut World world = World(
-        mutations: Strings[],
-        entities: Entities[
-          RockItem(p: Point(x: Size"-1", y: 0Size));
-          RockItem(p: Point(x: 1Size, y: 0Size));
-          RockItem(p: Point(x: 0Size, y: Size"-1"));
-          RockItem(p: Point(x: 0Size, y: 1Size))
+  ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items: (
+    mut $.World world = $.World(
+      mutations: Strings[],
+      entities: $.Entities[
+        $.RockItem(p: Point(x: Size"-1", y: 0Size));
+        $.RockItem(p: Point(x: 0Size, y: 1Size))
         ],
-        includeRepresentationInMutations: Bool.false()
-        )
-      mut Entity item = ItemSpawnerItem.new(
-        p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
-        )
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
-        )
-
-      item.#$use(playerUsingThis: player, world: world)
-
-      Debug.test(world.#mutations(), expected: S"[]")
+      includeRepresentationInMutations: Bool.false()
+      )
+    mut $.Entity item = $.ItemSpawnerItem.new(
+      p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
+      )
+    mut $.Player player = $.Player(
+      p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
       )
 
-    class method Void #$Player_drawOnto_drawsPWhenPlayerHasNoItem() (
-      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity()
-        )
-      mut Graphics graphics = Graphics()
+    item.#$use(playerUsingThis: player, world: world)
 
-      player.drawOnto(graphics)
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"1", y:"0"])
+      ".withoutRight()), expected: S"true")
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"-1", y:"0"])
+      ".withoutRight()), expected: S"false")
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"0", y:"1"])
+      ".withoutRight()), expected: S"false")
+    Debug.test(world.#mutations().contains(S"
+      'addEntity([x:"0", y:"-1"])
+      ".withoutRight()), expected: S"true")
+    )
 
-      Debug.test(
-        Debug.#$readLog(S"graphicsDrawLog"),
-        expected: S"[representation:P, x:0, y:0]"
-        )
+  ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable: (
+    mut $.World world = $.World(
+      mutations: Strings[],
+      entities: $.Entities[
+        $.RockItem(p: Point(x: Size"-1", y: 0Size));
+        $.RockItem(p: Point(x: 1Size, y: 0Size));
+        $.RockItem(p: Point(x: 0Size, y: Size"-1"));
+        $.RockItem(p: Point(x: 0Size, y: 1Size))
+      ],
+      includeRepresentationInMutations: Bool.false()
+      )
+    mut $.Entity item = $.ItemSpawnerItem.new(
+      p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 4Size
+      )
+    mut $.Player player = $.Player(
+      p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
       )
 
-    class method Void #$Player_drawOnto_drawsLowerCasePWhenPlayerHasAnItem() (
-      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(
-        p: p, currentItem: OptionalEntity(RockItem(p: p))
-        )
-      mut Graphics graphics = Graphics()
+    item.#$use(playerUsingThis: player, world: world)
 
-      player.drawOnto(graphics)
+    Debug.test(world.#mutations(), expected: S"[]")
+    )
 
-      Debug.test(
-        Debug.#$readLog(S"graphicsDrawLog"),
-        expected: S"[representation:p, x:0, y:0]"
-        )
+  Player_drawOnto_drawsPWhenPlayerHasNoItem: (
+    unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
+    mut $.Player player = $.Player(
+      p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity()
       )
+    mut $.Graphics graphics = $.Graphics()
 
-    class method Void #$Player_drawOnto_drawsInTheCorrectPositionAfterMoving() (
-      unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(
-        p: p, currentItem: OptionalEntity(RockItem(p: p))
-        )
-      mut Graphics graphics = Graphics()
-      mut World world = World(entities: Entities[])
-      player.point(Point(x: 1Size, y: 1Size), world: world, updateWorld: Bool.false())
+    player.drawOnto(graphics)
 
-      player.drawOnto(graphics)
-
-      Debug.test(
-        Debug.#$readLog(S"graphicsDrawLog"),
-        expected: S"[representation:p, x:1, y:1]"
-        )
+    Debug.test(
+      Debug.#$readLog(S"graphicsDrawLog"),
+      expected: S"[representation:P, x:0, y:0]"
       )
+    )
 
-    class method Void #$Player_attemptToPickupOrDropItem_picksUpItemWhenThePlayerHasNoItemAndIsOnTopOfTheItem() (
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(p: p)
-      mut World world = World(entities: Entities[AppleItem(p: p)])
-
-      player.attemptToPickUpOrDropItem(world: world)
-
-      Debug.test(player.currentItem().get().toS(), expected: S"
-        'A([x:"0", y:"0"])
-        ".withoutRight())
+  Player_drawOnto_drawsLowerCasePWhenPlayerHasAnItem: (
+    unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(
+      p: p, currentItem: $.OptionalEntity($.RockItem(p: p))
       )
+    mut $.Graphics graphics = $.Graphics()
 
-    class method Void #$Player_attemptToPickupOrDropItem_itemIsRemovedFromWorldWhenThePlayerHasNoItemAndIsOnTopOfTheItem() (
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(p: p)
-      mut World world = World(entities: Entities[AppleItem(p: p)])
+    player.drawOnto(graphics)
 
-      player.attemptToPickUpOrDropItem(world: world)
-
-      Debug.test(world.mutations(), expected: S"
-        '[removeEntity([x:"0", y:"0"])]
-        ".withoutRight())
+    Debug.test(
+      Debug.#$readLog(S"graphicsDrawLog"),
+      expected: S"[representation:p, x:0, y:0]"
       )
+    )
 
-    class method Void #$Player_attemptToPickupOrDropItem_doesNothingWhenThePlayerHasAnItemAndIsOnTopOfAnItem() (
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(p: p, currentItem: OptionalEntity(RockItem(p: p)))
-      mut Entity item = AppleItem(p: p)
-      mut World world = World(entities: Entities[item])
-
-      player.attemptToPickUpOrDropItem(world: world)
-
-      Debug.test(world.mutations(), expected: S"[]")
+  Player_drawOnto_drawsInTheCorrectPositionAfterMoving: (
+    unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(
+      p: p, currentItem: $.OptionalEntity($.RockItem(p: p))
       )
+    mut $.Graphics graphics = $.Graphics()
+    mut $.World world = $.World(entities: $.Entities[])
+    player.point(Point(x: 1Size, y: 1Size), world: world, updateWorld: Bool.false())
 
-    class method Void #$Player_attemptToPickupOrDropItem_dropsItemWhenThePlayerHasAnItemAndIsNotOnTopOfAnItem() (
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(p: p, currentItem: OptionalEntity(RockItem(p: p)))
-      mut World world = World(entities: Entities[])
+    player.drawOnto(graphics)
 
-      player.attemptToPickUpOrDropItem(world: world)
-
-      Debug.test(player.currentItem().isPresent(), expected: S"false")
+    Debug.test(
+      Debug.#$readLog(S"graphicsDrawLog"),
+      expected: S"[representation:p, x:1, y:1]"
       )
+    )
 
-    class method Void #$Player_attemptToPickupOrDropItem_itemIsPlacedInWorldWhenThePlayerDropsAnItem() (
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(p: p, currentItem: OptionalEntity(RockItem(p: p)))
-      mut World world = World(entities: Entities[])
+  Player_attemptToPickupOrDropItem_picksUpItemWhenThePlayerHasNoItemAndIsOnTopOfTheItem: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(p: p)
+    mut $.World world = $.World(entities: $.Entities[$.AppleItem(p: p)])
 
-      player.attemptToPickUpOrDropItem(world: world)
+    player.attemptToPickUpOrDropItem(world: world)
 
-      Debug.test(world.mutations(), expected: S"
-        '[addEntity(R([x:"0", y:"0"]))]
-        ".withoutRight())
+    Debug.test(player.currentItem().get().toS(), expected: S"
+      'A([x:"0", y:"0"])
+      ".withoutRight())
+    )
+
+  Player_attemptToPickupOrDropItem_itemIsRemovedFromWorldWhenThePlayerHasNoItemAndIsOnTopOfTheItem: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(p: p)
+    mut $.World world = $.World(entities: $.Entities[$.AppleItem(p: p)])
+
+    player.attemptToPickUpOrDropItem(world: world)
+
+    Debug.test(world.mutations(), expected: S"
+      '[removeEntity([x:"0", y:"0"])]
+      ".withoutRight())
+    )
+
+  Player_attemptToPickupOrDropItem_doesNothingWhenThePlayerHasAnItemAndIsOnTopOfAnItem: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(p: p, currentItem: $.OptionalEntity($.RockItem(p: p)))
+    mut $.Entity item = $.AppleItem(p: p)
+    mut $.World world = $.World(entities: $.Entities[item])
+
+    player.attemptToPickUpOrDropItem(world: world)
+
+    Debug.test(world.mutations(), expected: S"[]")
+    )
+
+  Player_attemptToPickupOrDropItem_dropsItemWhenThePlayerHasAnItemAndIsNotOnTopOfAnItem: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(p: p, currentItem: $.OptionalEntity($.RockItem(p: p)))
+    mut $.World world = $.World(entities: $.Entities[])
+
+    player.attemptToPickUpOrDropItem(world: world)
+
+    Debug.test(player.currentItem().isPresent(), expected: S"false")
+    )
+
+  Player_attemptToPickupOrDropItem_itemIsPlacedInWorldWhenThePlayerDropsAnItem: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(p: p, currentItem: $.OptionalEntity($.RockItem(p: p)))
+    mut $.World world = $.World(entities: $.Entities[])
+
+    player.attemptToPickUpOrDropItem(world: world)
+
+    Debug.test(world.mutations(), expected: S"
+      '[addEntity(R([x:"0", y:"0"]))]
+      ".withoutRight())
+    )
+
+  Player_removeCurrentItem_playerNoLongerHasAnItem: (
+    Point p = Point(x: 0Size, y: 0Size)
+    mut $.Player player = $.Player(p: p, currentItem: $.OptionalEntity($.RockItem(p: p)))
+
+    player.removeCurrentItem()
+
+    Debug.test(player.currentItem().isPresent(), expected: S"false")
+    )
+
+  Player_removeCurrentItem_failsWhenThePlayerHasNoItem: (
+    mut $.Player player = $.Player(p: Point(x: 0Size, y: 0Size))
+
+    player.removeCurrentItem()
+
+    catch error $.NoItemToRemove e void
+    error X"Expected exception to be thrown"
+    )
+
+  Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem: (
+    mut $.Player player = $.Player(p: Point(x: 0Size, y: 0Size))
+    mut $.World world = $.World(entities: $.Entities[])
+
+    player.#$attemptToUseItem(world: world)
+    )
+
+  Player_attemptToUseItem_triggersItemUseMethod: (
+    unused = Debug.#$readLog(S"StubEntityUseLog") // Clear log
+    mut $.Entity item = $.$.StubEntity()
+    mut $.Player player = $.Player(
+      p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
       )
+    mut $.World world = $.World(entities: $.Entities[])
 
-    class method Void #$Player_removeCurrentItem_playerNoLongerHasAnItem() (
-      Point p = Point(x: 0Size, y: 0Size)
-      mut Player player = Player(p: p, currentItem: OptionalEntity(RockItem(p: p)))
+    player.#$attemptToUseItem(world: world)
 
-      player.removeCurrentItem()
-
-      Debug.test(player.currentItem().isPresent(), expected: S"false")
-      )
-
-    class method Void #$Player_removeCurrentItem_failsWhenThePlayerHasNoItem() (
-      mut Player player = Player(p: Point(x: 0Size, y: 0Size))
-
-      player.removeCurrentItem()
-
-      catch error NoItemToRemove e void
-      error X"Expected exception to be thrown"
-      )
-
-    class method Void #$Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem() (
-      mut Player player = Player(p: Point(x: 0Size, y: 0Size))
-      mut World world = World(entities: Entities[])
-
-      player.#$attemptToUseItem(world: world)
-      )
-
-    class method Void #$Player_attemptToUseItem_triggersItemUseMethod() (
-      unused = Debug.#$readLog(S"StubEntityUseLog") // Clear log
-      mut Entity item = StubEntity()
-      mut Player player = Player(
-        p: Point(x: 0Size, y: 0Size), currentItem: OptionalEntity(item)
-        )
-      mut World world = World(entities: Entities[])
-
-      player.#$attemptToUseItem(world: world)
-
-      Debug.test(Debug.#$readLog(S"StubEntityUseLog"), expected: S"useWasCalled")
-      )
-    }
+    Debug.test(Debug.#$readLog(S"StubEntityUseLog"), expected: S"useWasCalled")
+    )
   }
-
-TestModuleEntities_EntityBase_drawOnto_drawsTheCorrectSquare:
-  TestModuleEntities.Tests.#$EntityBase_drawOnto_drawsTheCorrectSquare()
-
-TestModuleEntities_ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint()
-
-TestModuleEntities_ItemBase_setPoint_modifiesItemBaseInternalPoint:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_modifiesItemBaseInternalPoint()
-
-TestModuleEntities_ItemBase_setPoint_movesItselfInTheWorld:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_movesItselfInTheWorld()
-
-TestModuleEntities_ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse:
-  TestModuleEntities.Tests.#$ItemBase_setPoint_doesNotModifyTheWorldIfPassedFalse()
-
-TestModuleEntities_AppleItem_use_doesNotRemoveItemFromPlayer: {
-  mut TestModuleEntities.Entity item = TestModuleEntities.AppleItem(
-    p: Point(x: 0Size, y: 0Size)
-    )
-  TestModuleEntities.Tests.#$Entity_use_checkRemoveItemFromPlayer(
-    item: item, shouldHaveItem: S"true"
-    )
-  return ExitCode.normal()
-  }
-
-TestModuleEntities_RockItem_use_doesNotRemoveItemFromPlayer: {
-  mut TestModuleEntities.Entity item = TestModuleEntities.RockItem(
-    p: Point(x: 0Size, y: 0Size)
-    )
-  TestModuleEntities.Tests.#$Entity_use_checkRemoveItemFromPlayer(
-    item: item, shouldHaveItem: S"true"
-    )
-  return ExitCode.normal()
-  }
-
-TestModuleEntities_ItemSpawnerItem_use_removesItemFromPlayer: {
-  mut TestModuleEntities.Entity item = TestModuleEntities.ItemSpawnerItem.new(
-    p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: 1Size
-    )
-  TestModuleEntities.Tests.#$Entity_use_checkRemoveItemFromPlayer(
-    item: item, shouldHaveItem: S"false"
-    )
-  return ExitCode.normal()
-  }
-
-TestModuleEntities_ItemSpawnerItem_use_creates1ItemWhenSpecified:
-  TestModuleEntities.Tests.#$ItemSpawnerItem_use_createsNItemsWhenSpecified(nItems: 1Size)
-
-TestModuleEntities_ItemSpawnerItem_use_creates4ItemWhenSpecified:
-  TestModuleEntities.Tests.#$ItemSpawnerItem_use_createsNItemsWhenSpecified(nItems: 4Size)
-
-TestModuleEntities_ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints:
-  TestModuleEntities.Tests.#$ItemSpawnerItem_use_creates4ItemsOnTheSurroundingPoints()
-
-TestModuleEntities_ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items:
-  TestModuleEntities.Tests.#$ItemSpawnerItem_use_creates2ItemsOnTheOnlyEmptyPointsInsteadOf4Items()
-
-TestModuleEntities_ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable:
-  TestModuleEntities.Tests.#$ItemSpawnerItem_use_nothingHappensIfNoPointsAreAvailable()
-
-TestModuleEntities_Player_drawOnto_drawsPWhenPlayerHasNoItem:
-  TestModuleEntities.Tests.#$Player_drawOnto_drawsPWhenPlayerHasNoItem()
-
-TestModuleEntities_Player_drawOnto_drawsLowerCasePWhenPlayerHasAnItem:
-  TestModuleEntities.Tests.#$Player_drawOnto_drawsLowerCasePWhenPlayerHasAnItem()
-
-TestModuleEntities_Player_drawOnto_drawsInTheCorrectPositionAfterMoving:
-  TestModuleEntities.Tests.#$Player_drawOnto_drawsInTheCorrectPositionAfterMoving()
-
-TestModuleEntities_Player_attemptToPickupOrDropItem_picksUpItemWhenThePlayerHasNoItemAndIsOnTopOfTheItem:
-  TestModuleEntities.Tests.#$Player_attemptToPickupOrDropItem_picksUpItemWhenThePlayerHasNoItemAndIsOnTopOfTheItem()
-
-TestModuleEntities_Player_attemptToPickupOrDropItem_itemIsRemovedFromWorldWhenThePlayerHasNoItemAndIsOnTopOfTheItem:
-  TestModuleEntities.Tests.#$Player_attemptToPickupOrDropItem_itemIsRemovedFromWorldWhenThePlayerHasNoItemAndIsOnTopOfTheItem()
-
-TestModuleEntities_Player_attemptToPickupOrDropItem_doesNothingWhenThePlayerHasAnItemAndIsOnTopOfAnItem:
-  TestModuleEntities.Tests.#$Player_attemptToPickupOrDropItem_doesNothingWhenThePlayerHasAnItemAndIsOnTopOfAnItem()
-
-TestModuleEntities_Player_attemptToPickupOrDropItem_dropsItemWhenThePlayerHasAnItemAndIsNotOnTopOfAnItem:
-  TestModuleEntities.Tests.#$Player_attemptToPickupOrDropItem_dropsItemWhenThePlayerHasAnItemAndIsNotOnTopOfAnItem()
-
-TestModuleEntities_Player_attemptToPickupOrDropItem_itemIsPlacedInWorldWhenThePlayerDropsAnItem:
-  TestModuleEntities.Tests.#$Player_attemptToPickupOrDropItem_itemIsPlacedInWorldWhenThePlayerDropsAnItem()
-
-TestModuleEntities_Player_removeCurrentItem_playerNoLongerHasAnItem:
-  TestModuleEntities.Tests.#$Player_removeCurrentItem_playerNoLongerHasAnItem()
-
-TestModuleEntities_Player_removeCurrentItem_failsWhenThePlayerHasNoItem:
-  TestModuleEntities.Tests.#$Player_removeCurrentItem_failsWhenThePlayerHasNoItem()
-
-TestModuleEntities_Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem:
-  TestModuleEntities.Tests.#$Player_attemptToUseItem_doesNotFailIfPlayerHasNoItem()
-
-TestModuleEntities_Player_attemptToUseItem_triggersItemUseMethod:
-  TestModuleEntities.Tests.#$Player_attemptToUseItem_triggersItemUseMethod()
 
 //
 //
