@@ -329,133 +329,116 @@ ModuleWorld: Trait({
     }
   })
 
-TestModuleWorld: ModuleWorld & {
-  Graphics: {
-    mut method Void draw(S that, Size x, Size y) void
-    class method mut This ()
-    }
-  World: {}
+TestModuleWorld: {
+  $: ModuleWorld & {
+    Graphics: {
+      mut method Void draw(S that, Size x, Size y) void
+      class method mut This ()
+      }
+    World: {}
 
-  Entity: {interface
-    read method Point point()
-    mut method Void point(Point that, mut World world, Bool updateWorld)
-    read method Void drawOnto(mut Graphics that)
-    }
-  HasPoint: Trait(K <>< {implements Entity
-    var Point p
-    method point() (
-      this.p()
-      )
-    method point(that, world, updateWorld) (
-      this.p(that)
-      )
-    })
-  StubEntity: HasPoint & {implements Entity
-    method drawOnto(that) (
-      Debug.appendLog(
-        S"stubEntityDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+    Entity: {interface
+      read method Point point()
+      mut method Void point(Point that, mut World world, Bool updateWorld)
+      read method Void drawOnto(mut Graphics that)
+      }
+    HasPoint: Trait(K <>< {implements Entity
+      var Point p
+
+      method point() (
+        this.p()
         )
-      )
-    }
-  Player: HasPoint & {implements Entity
-    method drawOnto(that) (
-      Debug.appendLog(
-        S"playerDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+
+      method point(that, world, updateWorld) (
+        this.p(that)
         )
-      )
-  }
-
-  Tests: K <>< {
-    mut World world
-
-    class method mut Tests #$() (
-      // Clear logs
-      unused1 = Debug.#$readLog(S"playerDrawPoints")
-      unused2 = Debug.#$readLog(S"stubEntityDrawPoints")
-
-      This(world: World())
-      )
-
-    mut method Void addEntity_add2EntitiesToTheSamePoint() (
-      Point p = Point(x: 1Size, y: 2Size)
-      this.#world().addEntity(StubEntity(p: p))
-
-      this.#world().addEntity(StubEntity(p: p))
-      )
-
-    mut method Void addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints() (
-      this.#world().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
-
-      this.#world().addEntity(StubEntity(p: Point(x: 3Size, y: 4Size)))
-      )
-
-    mut method Void removeEntity_whenNoItemIsAtThePoint() (
-      this.#world().removeEntity(Point(x: 1Size, y: 2Size))
-      )
-
-    mut method Void removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem() (
-      this.#world().addEntity(StubEntity(p: Point(x: 1Size, y: 2Size)))
-      this.#world().removeEntity(Point(x: 1Size, y: 2Size))
-      )
-
-    mut method Void #$World_drawOnto_drawsPlayerAtInitialPoint() (
-      this.#world().drawOnto(graphics: Graphics())
-
-      Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
-        'Point[x:"0", y:"0"]
-        ")
-      )
-
-    mut method Void #$World_drawOnto_drawsItemAtProvidedPoint() (
-      this.#world().addEntity(StubEntity(p: Point(x: 5Size, y: 2Size)))
-
-      this.#world().drawOnto(graphics: Graphics())
-
-      Debug.test(Debug.#$readLog(S"stubEntityDrawPoints"), expected: S"
-        'Point[x:"5", y:"2"]
-        ")
-      )
-
-    mut method Void #$World_drawOnto_drawsPlayerAtMovedPoint() (
-      this.#world().movePlayerDown()
-      this.#world().movePlayerLeft()
-
-      this.#world().drawOnto(graphics: Graphics())
-
-      Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
-        'Point[x:"-1", y:"1"]
-        ")
-      )
+      })
+    StubEntity: HasPoint & {implements Entity
+      method drawOnto(that) (
+        Debug.appendLog(
+          S"stubEntityDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+          )
+        )
+      }
+    Player: HasPoint & {implements Entity
+      method drawOnto(that) (
+        Debug.appendLog(
+          S"playerDrawPoints", msg: S"Point"[this.point()]""[S.nl()]""
+          )
+        )
+      }
     }
+
+  World_addEntity_failsWhenAddingTwoItemsToTheSamePoint: (
+    mut $.World world = $.World()
+    Point p = Point(x: 1Size, y: 2Size)
+    world.addEntity($.StubEntity(p: p))
+
+    world.addEntity($.StubEntity(p: p))
+
+    catch error PointFilled pf void
+    error X"Expected exception to be thrown"
+    )
+
+  World_addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints: (
+    mut $.World world = $.World()
+    world.addEntity($.StubEntity(p: Point(x: 1Size, y: 2Size)))
+
+    world.addEntity($.StubEntity(p: Point(x: 3Size, y: 4Size)))
+    )
+
+  World_removeEntity_failsWhenNoItemIsAtThePoint: (
+    mut $.World world = $.World()
+
+    world.removeEntity(Point(x: 1Size, y: 2Size))
+
+    catch error PointNotFilled pnf void
+    error X"Expected exception to be thrown"
+    )
+
+  World_removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem: (
+    mut $.World world = $.World()
+    world.addEntity($.StubEntity(p: Point(x: 1Size, y: 2Size)))
+
+    world.removeEntity(Point(x: 1Size, y: 2Size))
+    )
+
+  World_drawOnto_drawsPlayerAtInitialPoint: (
+    unused = Debug.#$readLog(S"playerDrawPoints") // Clear logs
+    mut $.World world = $.World()
+
+    world.drawOnto(graphics: $.Graphics())
+
+    Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
+      'Point[x:"0", y:"0"]
+      ")
+    )
+
+  World_drawOnto_drawsItemAtProvidedPoint: (
+    unused = Debug.#$readLog(S"stubEntityDrawPoints") // Clear logs
+    mut $.World world = $.World()
+    world.addEntity($.StubEntity(p: Point(x: 5Size, y: 2Size)))
+
+    world.drawOnto(graphics: $.Graphics())
+
+    Debug.test(Debug.#$readLog(S"stubEntityDrawPoints"), expected: S"
+      'Point[x:"5", y:"2"]
+      ")
+    )
+
+  World_drawOnto_drawsPlayerAtMovedPoint: (
+    unused = Debug.#$readLog(S"playerDrawPoints") // Clear logs
+    mut $.World world = $.World()
+    world.movePlayerDown()
+    world.movePlayerLeft()
+
+    world.drawOnto(graphics: $.Graphics())
+
+    Debug.test(Debug.#$readLog(S"playerDrawPoints"), expected: S"
+      'Point[x:"-1", y:"1"]
+      ")
+    )
   }
-
-TestModuleWorld_addEntity_failsWhenAddingTwoItemsToTheSamePoint: (
-  TestModuleWorld.Tests.#$().addEntity_add2EntitiesToTheSamePoint()
-  catch error PointFilled pf void
-  error X"Expected exception to be thrown"
-  )
-
-TestModuleWorld_addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints:
-  TestModuleWorld.Tests.#$().addEntity_doesNotThrowExceptionWhenAdding2ItemsToDifferentPoints()
-
-TestModuleWorld_removeEntity_failsWhenNoItemIsAtThePoint: (
-  TestModuleWorld.Tests.#$().removeEntity_whenNoItemIsAtThePoint()
-  catch error PointNotFilled pnf void
-  error X"Expected exception to be thrown"
-  )
-
-TestModuleWorld_removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem: (
-  TestModuleWorld.Tests.#$().removeEntity_doesNotThrowExceptionWhenRemovingAnExistingItem()
-  )
-
-TestModuleWorld_World_drawOnto_drawsPlayerAtInitialPoint:
-  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsPlayerAtInitialPoint()
-
-TestModuleWorld_World_drawOnto_drawsItemAtProvidedPoint:
-  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsItemAtProvidedPoint()
-
-TestModuleWorld_World_drawOnto_drawsPlayerAtMovedPoint:
-  TestModuleWorld.Tests.#$().#$World_drawOnto_drawsPlayerAtMovedPoint()
 
 
 //
