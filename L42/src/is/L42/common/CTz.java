@@ -34,14 +34,26 @@ import is.L42.generated.ST.STOp;
 import is.L42.generated.Y;
 /*
 
-p.solve(ST)=ST' where we try to minimize the result. 
-  NOTE: ST may contains Ps that are not in the domain of p.
-  should also p.minimize(P) and from(P;p) be resilient and do nothing? 
+_______
+#define p.solve(ST)=ST' 
+* p.solve(T)=T
+* p.solve(T.s)=p(T.P).mwts(s).T
+* p.solve(T.s.i)=p(T.P).mwts(s).parsi
+* p.solve(ST.s.i?)=p.solve(T.s.i?)
+    T=p.solve(ST)
+* p.solve(ST.s.i?)=ST'.s.i?
+    ST'=p.solve(ST)
+    ST' not of form T
+* p.solve(ST.s.i?)=T.s.i?
+    T=p.solve(ST)
+    p(T.P).mwts(s) undefined
+    or p(T.P).mwts(s).parsi undefined
+NOTE: ST may contains Ps that are not in the domain of p.
+should also p.minimize(P) and from(P;p) be resilient and do nothing? 
 
-CT well formedness: ST<=STz, ST not of form Core.T
+* CT well formedness: ST<=STz, ST not of form Core.T
  
-in any moment, CTz and p so that
-forall ST in dom or cod CTz, p.solve(ST)=ST
+* in any moment, CTz and p so that forall ST in dom or cod CTz, p.solve(ST)=ST
 
 CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
   ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
@@ -51,13 +63,16 @@ CTz <+p ST <=STz' = CTz,ST<= STz'
   CTz(ST) undefined
   
 I(STz)=chooseGeneralT(Tz) //assert p.sort(STz)=STz
-  Tz={chooseSpecificT(I.CTz.allTz(ST)}) | ST in STz }
+  Tz={chooseSpecificT(I.CTz.allTz(ST)) | ST in STz }
 
-T in CTz.allTz(T)
-T in CTz.allTz(ST')
-  ST in CTz(ST')
-  T in CTz.allTz(ST) 
-
+CTz.allSTz(ST) = ST U CTz.allSTz(ST1) U..U CTz.allSTz(STn) U CTz.allSubSTz(ST) 
+  ST1..STn = CTz(ST)
+CTz.allSubSTz(T) = {}
+CTz.allSubSTz(ST.s.i?) = ST1.s.i?..STn.s.i?   
+  ST1..STn = allSTz(ST)
+  
+CTz.allTz(p,ST)={T | ST in CTz.allST(ST), T=p.solve(ST)}
+  
 //what to do when the program expands?
 p1=p.update(p.top with extra C=L)
 
@@ -71,7 +86,9 @@ inside topNC
   //FALSE: those new CTzs should be irrelevant for the whole duraction of topNC
   in the end of topNC, (thus for every C=e processed)
   we can update the CTz with p"
-*/
+  
+  
+  */
 public class CTz {
   private final Map<ST,ArrayList<ST>> inner=new HashMap<>();
   @Override public String toString(){
@@ -79,6 +96,53 @@ public class CTz {
     res=res.substring(1,res.length()-1);
     return res.replace("imm ","");
     }
+  public boolean coherent(){
+    for(var st:inner.keySet()){
+      assert !(st instanceof T):st;
+      }
+    return true;
+    }
+  public boolean coherent(Program p){
+    for(var e:inner.entrySet()){
+      assert !(e.getKey() instanceof T):e.getKey();
+      assert solve(p,e.getKey())==e.getKey():solve(p,e.getKey())+" "+e.getKey();
+      for(var st:e.getValue()){
+        assert solve(p,st)==st:solve(p,st)+" "+st;  
+        }
+      }
+    return true;
+    }
+
+  public static ST solve(Program p,ST st){//can be moved in Program if it works TODO:
+    if(st instanceof T){return st;}
+    if(st instanceof ST.STMeth){return solve(p,(ST.STMeth)st);}
+    if(st instanceof ST.STOp){return solve(p,(ST.STOp)st);}
+    throw bug();
+    }
+  public static ST solve(Program p,ST.STMeth stsi){
+    ST st=solve(p,stsi.st());
+    if(!(st instanceof T) ||!((T)st).p().isNCs()){return stsi.withSt(st);}
+    P.NCs p0=((T)st).p().toNCs();
+    var mwt= _elem(p._ofCore(p0).mwts(),stsi.s());
+    if(mwt==null){return stsi.withSt(st);}
+    if(stsi.i()==-1){return p.from(mwt.mh().t(),p0);}
+    if(stsi.i()>=mwt.mh().s().xs().size()){return stsi.withSt(st);}
+    return p.from(mwt.mh().pars().get(stsi.i()),p0);
+    }
+  public static ST solve(Program p,ST.STOp st){  throw bug();    }
+  
+  public void plusAcc(Program p,List<ST> stz,List<ST>stz1){
+    
+    }
+  //CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
+  //ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
+
+//CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
+//CTz <+p ST <=STz' = CTz,ST<= STz'
+//  CTz(ST) undefined
+
+  
+  /*
   public boolean coherent(){
     for(var e:inner.entrySet()){
       ST st=e.getKey();
@@ -248,4 +312,6 @@ public class CTz {
         if(acceptablePaths){c.add(new Psi(tip,mh.s(),i));}
         }
       }});
-    }}
+    }
+  */
+  }

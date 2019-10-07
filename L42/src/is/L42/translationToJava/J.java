@@ -58,7 +58,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   T g(X x){return g.of(x);}
   
   String catchVar(){return "catchVar"+catchLev;}
-  boolean nativeKind(T t){return !p.ofCore(t.p()).info().nativeKind().isEmpty();}
+  boolean nativeKind(T t){return !p._ofCore(t.p()).info().nativeKind().isEmpty();}
   boolean nativeKind(Program p){return !p.topCore().info().nativeKind().isEmpty();}
   boolean nativeWrap(T t){return wrap && nativeKind(t);}
   boolean isObjectT(T t){
@@ -146,7 +146,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
 
   @Override public void visitMCall(Core.MCall m){
     T t=g(m.xP());
-    var mwts=p.ofCore(t.p()).mwts();
+    var mwts=p._ofCore(t.p()).mwts();
     var mh=_elem(mwts,m.s()).mh();
     T ret=p.from(mh.t(),t.p().toNCs());
     boolean nw=nativeWrap(ret);
@@ -239,7 +239,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   private void dec(D d) {
     typeName(d.t());
     kw("£x"+d.x()+"=");
-    defaultFor(p.ofCore(d.t().p()).info().nativeKind());
+    defaultFor(p._ofCore(d.t().p()).info().nativeKind());
     c(";");
     nl();
     if(!fwds.contains(d.x())){return;}
