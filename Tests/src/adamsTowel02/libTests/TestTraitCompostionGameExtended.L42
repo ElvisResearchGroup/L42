@@ -240,112 +240,112 @@ ModuleEntities: Trait({
 
   })"$Player"<=Path"Player"
 
-TestModuleEntities: ModuleEntities & Trait({
-  Player: {}
-  Graphics: {}
-  World: {}
-
-  Entity: {interface
-    read method Point point()
-    mut method Void point(Point that, mut World world, Bool updateWorld)
-    read method Void drawOnto(mut Graphics that)
-    read method S toS()
-    mut method Void #$use(mut Player playerUsingThis, mut World world)
-    }
-
-  StubEntity: {implements Entity
-    class method mut This ()
-
-    method point() error X""
-    method point(that, world, updateWorld) error X""
-    method drawOnto(that) error X""
-    method toS() error X""
-
-    method #$use(playerUsingThis, world) (
-      Debug.appendLog(S"StubEntityUseLog", msg: S"useWasCalled")
-      )
-    }
-
-  }) & Trait({
-
-  Entity: {interface
-    read method S toS()
-    }
-  Player: {}
-  RockItem: {implements Entity}
-  AppleItem: {implements Entity}
-  ItemSpawnerItem: {implements Entity}
-  StubEntity: {implements Entity}
-  OptionalEntity: {}
-
-  Entities: {}
-
-  NoItemToRemove: {}
-
-  class method Point newItemPoint() (
-    Point(x: 1Size, y: 1Size)
-    )
-
-  World: K <>< {
-    mut Strings mutations
-    mut Entities entities
-    Bool includeRepresentationInMutations
-
-    class method mut This () (
-      This(entities: Entities[])
-      )
-
-    class method mut This (fwd mut Entities entities) (
-      This(
-        mutations: Strings[],
-        entities: entities,
-        includeRepresentationInMutations: Bool.true()
-        )
-      )
-
-    read method Bool hasEntityAt(Point that) {
-      with entity in this.entities().vals() (
-        if entity.point() == that (
-          return Bool.true()
-          )
-        )
-      return Bool.false()
-      }
-
-    mut method Void addEntity(mut Entity that) (
-      if this.includeRepresentationInMutations() (
-        this.#mutations().add(right: S"addEntity("[that.toS()]")")
-        ) else (
-        this.#mutations().add(right: S"addEntity("[that.point()]")")
-        )
-      )
-
-    mut method Void removeEntity(Point that) (
-      this.#mutations().add(right: S"removeEntity("[that.toS()]")")
-      )
-
-    mut method mut Entity getEntityAt(Point that) {
-      with entity in this.#entities().#vals() (
-        if entity.point() == that (
-          return entity
-          )
-        )
-      error X"No entity at "[that]""
-      }
-    }
-
-  Graphics: K <>< {
-    mut method Void draw(S that, Size x, Size y) (
-      Debug.appendLog(
-        S"graphicsDrawLog",
-        msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
-        )
-      )
-    }
-  })
-
 TestingModuleEntities: {
-  $: TestModuleEntities
+  $: ModuleEntities & Trait({
+    Player: {}
+    Graphics: {}
+    World: {}
+
+    Entity: {interface
+      read method Point point()
+      mut method Void point(Point that, mut World world, Bool updateWorld)
+      read method Void drawOnto(mut Graphics that)
+      read method S toS()
+      mut method Void #$use(mut Player playerUsingThis, mut World world)
+      }
+
+    StubEntity: {implements Entity
+      class method mut This ()
+
+      method point() error X""
+      method point(that, world, updateWorld) error X""
+      method drawOnto(that) error X""
+      method toS() error X""
+
+      method #$use(playerUsingThis, world) (
+        Debug.appendLog(S"StubEntityUseLog", msg: S"useWasCalled")
+        )
+      }
+
+  }) & {
+
+    Entity: {interface
+      read method S toS()
+      }
+    Player: {}
+    RockItem: {implements Entity}
+    AppleItem: {implements Entity}
+    ItemSpawnerItem: {implements Entity}
+    StubEntity: {implements Entity}
+    OptionalEntity: {}
+
+    Entities: {}
+
+    NoItemToRemove: {}
+
+    class method Point newItemPoint() (
+      Point(x: 1Size, y: 1Size)
+      )
+
+    World: K <>< {
+      mut Strings mutations
+      mut Entities entities
+      Bool includeRepresentationInMutations
+
+      class method mut This () (
+        This(entities: Entities[])
+        )
+
+      class method mut This (fwd mut Entities entities) (
+        This(
+          mutations: Strings[],
+          entities: entities,
+          includeRepresentationInMutations: Bool.true()
+          )
+        )
+
+      read method Bool hasEntityAt(Point that) {
+        with entity in this.entities().vals() (
+          if entity.point() == that (
+            return Bool.true()
+            )
+          )
+        return Bool.false()
+        }
+
+      mut method Void addEntity(mut Entity that) (
+        if this.includeRepresentationInMutations() (
+          this.#mutations().add(right: S"addEntity("[that.toS()]")")
+          ) else (
+          this.#mutations().add(right: S"addEntity("[that.point()]")")
+          )
+        )
+
+      mut method Void removeEntity(Point that) (
+        this.#mutations().add(right: S"removeEntity("[that.toS()]")")
+        )
+
+      mut method mut Entity getEntityAt(Point that) {
+        with entity in this.#entities().#vals() (
+          if entity.point() == that (
+            return entity
+            )
+          )
+        error X"No entity at "[that]""
+        }
+      }
+
+    Graphics: K <>< {
+      mut method Void draw(S that, Size x, Size y) (
+        Debug.appendLog(
+          S"graphicsDrawLog",
+          msg: S"[representation:"[that]", x:"[x]", y:"[y]"]"
+          )
+        )
+      }
+    }
+
+  Sizes: Collections.vector(of: Size)
 
   EntityBase_drawOnto_drawsTheCorrectSquare: (
     unused = Debug.#$readLog(S"graphicsDrawLog") // Clear log
@@ -361,12 +361,12 @@ TestingModuleEntities: {
 
   ItemBase_setPoint_throwsExceptionWhenTryingToMoveToAnOccupiedPoint: (
     mut $.World world = $.World(entities: $.Entities[
-      $.RockItem(p: $.TestModuleEntities.newItemPoint())
+      $.RockItem(p: $.newItemPoint())
     ])
     mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
     item.point(
-      $.TestModuleEntities.newItemPoint(),
+      $.newItemPoint(),
       world: world,
       updateWorld: Bool.true()
       )
@@ -380,12 +380,12 @@ TestingModuleEntities: {
     mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
     item.point(
-      $.TestModuleEntities.newItemPoint(),
+      $.newItemPoint(),
       world: world,
       updateWorld: Bool.true()
       )
 
-    Debug.test(item.point(), expected: $.TestModuleEntities.newItemPoint())
+    Debug.test(item.point(), expected: $.newItemPoint())
     )
 
   ItemBase_setPoint_movesItselfInTheWorld: (
@@ -393,7 +393,7 @@ TestingModuleEntities: {
     mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
     item.point(
-      $.TestModuleEntities.newItemPoint(),
+      $.newItemPoint(),
       world: world,
       updateWorld: Bool.true()
       )
@@ -411,7 +411,7 @@ TestingModuleEntities: {
     mut $.RockItem item = $.RockItem(p: Point(x: 0Size, y: 0Size))
 
     item.point(
-      $.TestModuleEntities.newItemPoint(),
+      $.newItemPoint(),
       world: world,
       updateWorld: Bool.false()
       )
@@ -428,8 +428,8 @@ TestingModuleEntities: {
       ]
 
     with
-    ,,item in entities
-    ,,shouldHaveItem in Strings[S"true"; S"true"; S"false"] (
+    ,,item in entities.#vals()
+    ,,shouldHaveItem in Strings[S"true"; S"true"; S"false"].vals() (
       mut $.World world = $.World(entities: $.Entities[])
       mut $.Player player = $.Player(
         p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
@@ -444,7 +444,7 @@ TestingModuleEntities: {
     )
 
   ItemSpawnerItem_use_createsNItemsWhenSpecified: (
-    with nItems in Sizes[1Size; 4Size] (
+    with nItems in Sizes[1Size; 4Size].vals() (
       mut $.World world = $.World(entities: $.Entities[])
       mut $.Entity item = $.ItemSpawnerItem.new(
         p: Point(x: 0Size, y: 0Size), numberOfItemsToSpawn: nItems
@@ -678,7 +678,7 @@ TestingModuleEntities: {
 
   Player_attemptToUseItem_triggersItemUseMethod: (
     unused = Debug.#$readLog(S"StubEntityUseLog") // Clear log
-    mut $.Entity item = $.$.StubEntity()
+    mut $.Entity item = $.StubEntity()
     mut $.Player player = $.Player(
       p: Point(x: 0Size, y: 0Size), currentItem: $.OptionalEntity(item)
       )
