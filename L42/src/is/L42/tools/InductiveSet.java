@@ -6,6 +6,7 @@ import java.util.function.Consumer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 public class InductiveSet<K,R> implements BiConsumer<K,InductiveSet.IRule<K,R>>{
@@ -13,6 +14,7 @@ public class InductiveSet<K,R> implements BiConsumer<K,InductiveSet.IRule<K,R>>{
   public interface IRule<K,R>{void op(R r);}
   BRule<K,R> bRule;
   public InductiveSet(BRule<K,R> bRule){this.bRule=bRule;}
+  public boolean isCached(K k){return memoizedMap.containsKey(k);}
   public Set<R> compute(K k){
     Set<R> mRes=memoizedMap.get(k);
     if(mRes!=null){return mRes;}
@@ -28,6 +30,8 @@ public class InductiveSet<K,R> implements BiConsumer<K,InductiveSet.IRule<K,R>>{
       assert !memoizedMap.containsKey(novel.getKey());
       memoizedMap.put(novel.getKey(),novel.getValue().res);
       }
+    isComputing=false;
+    progressMap.clear();
     return res.res;
     } 
   private static class Record<K,R> implements Consumer<R>{
@@ -36,12 +40,17 @@ public class InductiveSet<K,R> implements BiConsumer<K,InductiveSet.IRule<K,R>>{
     @Override public void accept(R r) {
       boolean added=res.add(r);
       if(added){
-        for(var rule:rules){rule.op(r);}
+        for(int i=0;i<rules.size();i+=1){
+          var rule=rules.get(i);//size can grow during this iteration
+          rule.op(r);
+          }
         }
       }
     public void register(IRule<K,R>iRule){
-      for(R r:res){iRule.op(r);}
       rules.add(iRule);
+      for(var r:new ArrayList<>(res)){//is a linkedhashset
+        iRule.op(r);
+        }
       }    
     }
   boolean isComputing=false;
