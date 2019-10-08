@@ -57,6 +57,11 @@ public class InductiveSet<K,R> implements BiConsumer<K,InductiveSet.IRule<K,R>>{
   Map<K,Record<K,R>> progressMap=new HashMap<>();
   Map<K,Set<R>> memoizedMap=new HashMap<>();
   @Override public void accept(K ki, IRule<K, R> iR) {
+    var cachedRes=memoizedMap.get(ki);
+    if(cachedRes!=null){
+      for(R cri:cachedRes){iR.op(cri);}
+      return;
+      }
     var res0=new Record<K,R>();
     var resi=progressMap.putIfAbsent(ki,res0);
     if(resi==null){

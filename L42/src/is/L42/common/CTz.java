@@ -41,19 +41,25 @@ import is.L42.tools.InductiveSet.IRule;
 /*
 
 _______
-#define p.solve(ST)=ST' 
-* p.solve(T)=T
-* p.solve(T.s)=p(T.P).mwts(s).T
-* p.solve(T.s.i)=p(T.P).mwts(s).parsi
-* p.solve(ST.s.i?)=p.solve(T.s.i?)
-    T=p.solve(ST)
-* p.solve(ST.s.i?)=ST'.s.i?
-    ST'=p.solve(ST)
+#define p.solve(ST) = ST' 
+* p.solve(T) = T
+* p.solve(T.s) = p(T.P).mwts(s).T
+* p.solve(T.s.i) = p(T.P).mwts(s).parsi
+* p.solve(ST.s.i?) = p.solve(T.s.i?)
+    T = p.solve(ST)
+* p.solve(ST.s.i?) = ST'.s.i?
+    ST' = p.solve(ST)
     ST' not of form T
-* p.solve(ST.s.i?)=T.s.i?
-    T=p.solve(ST)
+* p.solve(ST.s.i?) = T.s.i?
+    T = p.solve(ST)
     p(T.P).mwts(s) undefined
     or p(T.P).mwts(s).parsi undefined
+* p.solve(OP STz1..STzn) = p(P).mwts(s).T[from P;p] 
+    Tzi = {T| ST in STzi, T=p.solve(ST)}
+    Ts1..Tsn = {T1..Tn| Ti in Tzi}
+    {P.s.i} = p.opOptions(OP Ts1) U..U p.opOptions(OP Tsn)
+* p.solve(OP STz1..STzn) = OP p.solve(STz1)..p.solve(STzn)
+    otherwise    
 NOTE: ST may contains Ps that are not in the domain of p.
 should also p.minimize(P) and from(P;p) be resilient and do nothing? 
 
@@ -77,12 +83,23 @@ _______
     ST' in CTz.allSTz(p,STi)
 * ST' in CTz.allSTz(p,ST.s.i?)
     ST" in CTz.allSTz(ST)
-    ST' in  CTz.allSTz(p.sort(ST".s.i))
- 
+    ST' in  CTz.allSTz(p.solve(ST".s.i))
+* ST' in CTz.allSTz(p,OP STz1..STzn)
+    STi in STzi
+    ST'i in CTz.allSTz(STi)
+    ST' in  CTz.allSTz(p.solve(OP ST'1..ST'n))
+//note:
+    if S has 2 overloaded for + with both S->A and ToS->B, then
+    [S, ToS] y=(S x=S"" catch error ToS y y x)
+    [+[S][S],+[S][ToS]] z=myS+y //I.infers into [+[S][S],B] 
+    +[S][S] DOES NOT solve/infer to A, since also ToS->B is applicable
+    +[S][S] will stay dormient and harmless during I.infer 
+    
+   
 * CTz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
 
   
-I(STz)=chooseGeneralT(Tz) //assert p.sort(STz)=STz
+I(STz)=chooseGeneralT(Tz) //assert p.solve(STz)=STz
   Tz={chooseSpecificT(I.CTz.allTz(ST)) | ST in STz }
   
 //what to do when the program expands?
@@ -214,6 +231,7 @@ public class CTz {
       s.accept(st);//* ST in CTz.allSTz(p,ST)
       transitive(st, s, install);
       if(st instanceof ST.STMeth){onSTMeth((ST.STMeth)st,s,install);}
+      if(st instanceof ST.STOp){onSTOp((ST.STOp)st,s,install);}
       }
     private void transitive(ST st, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
       var st1n=ctz.inner.get(st);//    ST1..STn = CTz(ST)
@@ -229,6 +247,23 @@ public class CTz {
         install.accept(st3,st1->s.accept(st1));
         });
       }
+    private void onSTOp(ST.STOp stop, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
+      step(stop,s,install,L());
+      //need to accumulate the elements from the stop.stzs() 
+      }
+    private void step(ST.STOp stop, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install,List<ST> pre) {
+      var stz1n=stop.stzs();
+      int n=stz1n.size();
+      int size=pre.size();
+      if(size==n){
+        ST stSolved=solve(p,stop.withStzs(L(pre.stream().map(e->L(e)))));
+        install.accept(stSolved, st1->s.accept(st1));
+        return;}
+      List<ST> optionsSize=stz1n.get(size);
+      for(ST sti:optionsSize){
+        install.accept(sti,stzSize->step(stop,s,install,pushL(pre,stzSize)));
+        }
+      }      
     }
   
   /*

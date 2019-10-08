@@ -44,10 +44,13 @@ public class TestCTz
 extends AtomicTest.Tester{
   static ST This=st("This");
   static ST Void=st("Void");
+  static ST Library=st("Library");
   static ST Any=st("Any");
   static List<ST> lThis=l(This);
   static List<ST> lVoid=l(Void);
+  static List<ST> lLibrary=l(Library);
   static List<ST> lAny=l(Any);
+  
   static List<ST> l(ST...stz){return List.of(stz);}
   public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    plusAcc(l(),l(This),"")
@@ -112,14 +115,57 @@ extends AtomicTest.Tester{
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),Void)
    ,"""
-   imm This0.nope() = [imm This0.nope(), imm Void]
+   This0.nope() = [This0.nope(), Void]
    """)
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),This).a(st(st(This,"nope()"),"dope()"),Void)
    ,"""
-   imm This0.nope() = [imm Void, imm This0.nope()]
+   This0.nope() = [This0, This0.nope()]
+   This0.nope().dope() = [This0.dope(), This0.nope().dope(), Void]
+   """)
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(This,"nope()"),This)
+   .a(st(st(This,"nope()"),"dope()"),Void)
+   .a(st(This,"dope()"),Library)
+   ,"""
+   This0.nope() = [This0, This0.nope()]
+   This0.nope().dope() = [Library, This0.dope(), This0.nope().dope(), Void]
+   This0.dope() = [Library, This0.dope()]
+   """)
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(This,"nope()"),This)
+   .a(st(This,"dope()"),st(st(This,"nope()"),"m()"))
+   ,"""
+   This0.nope() = [This0, This0.nope()]
+   This0.dope() = [This0.dope(), This0.nope().m(), Void]
+   """)
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(This,"nope()"),This)
+   .a(st(This,"dope()"),st(st(st(This,"nope()"),"nope()"),"m()"))
+   ,"""
+   This0.nope() = [This0, This0.nope()]
+   This0.dope() = [This0.dope(), This0.nope().m(), This0.nope().nope().m(), Void]
    """)
 
+//operators         
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(Op.Plus,lThis,lVoid,lVoid),Void)
+   .a(st(Op.Plus,lThis,lThis,lThis),Library)
+   .a(st(This,"dope()"),st(st(Op.Plus,lThis,lThis,lThis),"nope()"))
+   ,"""
+   +[This0][Void][Void] = [+[This0][Void][Void], Void]
+   +[This0][This0][This0] = [+[This0][This0][This0], Library]
+   This0.dope() = [+[This0][This0][This0].nope(), Library.nope(), This0.dope()]
+   """)
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(This,"cope()"),st(Op.LT,l(st(This,"nope()")),l(st(This,"dope()"))))
+   .a(st(This,"nope()"),This)
+   .a(st(This,"dope()"),This)
+   ,"""
+   This0.cope() = [<[This0.nope()][This0.dope()], <[This0.nope()][This0], <[This0][This0.dope()], This0.cope(), Void]
+   This0.nope() = [This0, This0.nope()]
+   This0.dope() = [This0, This0.dope()]
+   """)
 
   ));}
 static Program p=Program.parse("""
@@ -161,6 +207,7 @@ public static void inferAll(CTzBuilder ctzb,String out){
     List<String> sorted=L(is.compute(st).stream().map(e->e.toString()).sorted());
     res+=sorted+"\n";
     }
+  res=res.replaceAll("imm ","");
   assertEquals(out,res);
   }
 public static void plusAcc(List<ST> stz,List<ST> stz1,String out){
