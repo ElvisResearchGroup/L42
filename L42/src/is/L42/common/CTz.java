@@ -3,6 +3,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 import java.util.stream.IntStream;
 
 import static is.L42.generated.LDom._elem;
@@ -31,8 +33,11 @@ import is.L42.generated.P;
 import is.L42.generated.Psi;
 import is.L42.generated.S;
 import is.L42.generated.ST;
+import is.L42.generated.ST.STMeth;
 import is.L42.generated.ST.STOp;
 import is.L42.generated.Y;
+import is.L42.tools.InductiveSet;
+import is.L42.tools.InductiveSet.IRule;
 /*
 
 _______
@@ -65,7 +70,7 @@ _______
     CTz <+p ST <=STz' = CTz,ST<= STz'
     CTz(ST) undefined
 _______
-#define CTz.allSTz(ST) = STz    CTz.allSubSTz(ST) = STz    CTz.allTz(p,ST) = Tz
+#define CTz.allSTz(ST) = STz    CTz.allTz(p,ST) = Tz
 * ST in CTz.allSTz(p,ST)
 * ST' in CTz.allSTz(p,ST) 
     ST1..STn = CTz(ST)
@@ -74,7 +79,7 @@ _______
     ST" in CTz.allSTz(ST)
     ST' in  CTz.allSTz(p.sort(ST".s.i))
  
- Tz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
+* CTz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
 
   
 I(STz)=chooseGeneralT(Tz) //assert p.sort(STz)=STz
@@ -119,7 +124,7 @@ public class CTz {
       }
     return true;
     }
-
+  public static List<ST> solve(Program p,List<ST> stz){return L(stz,sti->solve(p,sti));}
   public static ST solve(Program p,ST st){//can be moved in Program if it works TODO:
     if(st instanceof T){return st;}
     if(st instanceof ST.STMeth){return solve(p,(ST.STMeth)st);}
@@ -133,13 +138,57 @@ public class CTz {
     var mwt= _elem(p._ofCore(p0).mwts(),stsi.s());
     if(mwt==null){return stsi.withSt(st);}
     if(stsi.i()==-1){return p.from(mwt.mh().t(),p0);}
-    if(stsi.i()>=mwt.mh().s().xs().size()){return stsi.withSt(st);}
-    return p.from(mwt.mh().pars().get(stsi.i()),p0);
+    if(stsi.i()>mwt.mh().s().xs().size()){return stsi.withSt(st);}
+    if(stsi.i()==0){return new Core.T(mwt.mh().mdf(),mwt.mh().docs(),p0);}
+    return p.from(mwt.mh().pars().get(stsi.i()-1),p0);
     }
-  public static ST solve(Program p,ST.STOp st){  throw bug();    }
-  
+  static List<List<T>> tzsToTsz(List<List<T>> tzs){
+    assert !tzs.isEmpty();
+    if(tzs.size()==1){
+      return L(tzs.get(0),(c,tz)->c.add(L(tz)));
+      }
+    var inductive=tzsToTsz(popL(tzs));
+    var tz0=tzs.get(0);
+    return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
+    }
+  static public void opOptionsAcc(Program p,Op op, List<T>ts, int i,List<Psi>acc){
+    List<P> p11n=L(range(ts),(cj,j)->{if(j!=i){cj.add(ts.get(j).p());}});
+    String sName = NameMangling.methName(op,i);
+    P tmp=ts.get(i).p();
+    if(!tmp.isNCs()){return;}
+    P.NCs tip=tmp.toNCs();
+    List<MWT> mwts=p._ofCore(tip).mwts();
+    List<MH> mhs=L(mwts.stream()
+      .map(m->m.mh())
+      .filter(m->
+        m.s().m().equals(sName) && !m.s().hasUniqueNum() && m.s().xs().size()==ts.size()-1
+        ));
+    for(MH mh:mhs){
+      List<P>p1n=L(mh.pars(),(ci,ti)->ci.add(p.from(ti.p(),tip)));
+      assert p1n.size()==p11n.size(): p1n+" "+p11n;
+      boolean acceptablePaths=IntStream.range(0,p1n.size())
+       .allMatch(j->p.isSubtype(p11n.get(j),p1n.get(j),null));
+      if(acceptablePaths){acc.add(new Psi(tip,mh.s(),i));}
+      }  
+    }
+  static public List<Psi> opOptions(Program p, Op op, List<T>ts){
+    return L(c->{for(int i:range(ts)){opOptionsAcc(p,op,ts,i,c);}});
+    }
+  public static ST solve(Program p,ST.STOp st){
+    List<List<ST>> minStzi=L(st.stzs(),stzi->solve(p,stzi));
+    List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi,T.class)));
+    List<List<T>> tsz=tzsToTsz(tzs);
+    Set<Psi> options=new HashSet<>();
+    for(var ts:tsz){
+      options.addAll(opOptions(p,st.op(),ts));
+      }
+    if(options.size()!=1){return st.withStzs(minStzi);}
+    assert options.size()==1;
+    Psi psi=options.iterator().next();
+    return p.from(_elem(p._ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
+    }  
   public void plusAcc(Program p,List<ST> stz,List<ST>stz1){
-    stz1=L(stz1,st->solve(p,st));
+    stz1=solve(p,stz1);
     for(ST st:stz){
       st=solve(p,st);
       if(st instanceof T){continue;}
@@ -154,28 +203,33 @@ public class CTz {
       }
     inner.put(st,mergeU(data,stz1));    
     }    
-  public List<ST> allSTz(ST st){
-    return L(c->{
-      c.add(st);
-      var data=inner.get(st);
-      if(data!=null){
-        for(ST sti:data){c.addAll(allSTz(sti));}
+    
+    
+  public InductiveSet<ST,ST> allSTz(Program p){
+    return new InductiveSet<ST,ST>(new AllSTzRule(this,p));
+    }
+  private static class AllSTzRule implements InductiveSet.BRule<ST,ST>{
+    CTz ctz;Program p;AllSTzRule(CTz ctz,Program p){this.ctz=ctz;this.p=p;}
+    @Override public void op(ST st, Consumer<ST> s,BiConsumer<ST,IRule<ST,ST>>install){
+      s.accept(st);//* ST in CTz.allSTz(p,ST)
+      transitive(st, s, install);
+      if(st instanceof ST.STMeth){onSTMeth((ST.STMeth)st,s,install);}
+      }
+    private void transitive(ST st, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
+      var st1n=ctz.inner.get(st);//    ST1..STn = CTz(ST)
+      if(st1n==null){return;}
+      for(ST sti:st1n){// ST' in CTz.allSTz(p,STi)
+        install.accept(sti, st1->s.accept(st1));//* ST' in CTz.allSTz(p,ST)
         }
-      c.addAll(allSubSTz(st));
-      });//remove dups, visit?
-      
-     // T.s1 <= T.s1.s2
+      }
+    private void onSTMeth(ST.STMeth stsi, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
+      ST st=stsi.st();
+      install.accept(st,st2->{
+        ST st3=solve(p,stsi.withSt(st2));
+        install.accept(st3,st1->s.accept(st1));
+        });
+      }
     }
-  public List<ST> allSubSTz(ST st){
-    return L(c->{
-      
-      });
-    }
-//CTz.allSTz(ST) = ST U CTz.allSTz(ST1) U..U CTz.allSTz(STn) U CTz.allSubSTz(ST) 
-//  ST1..STn = CTz(ST)
-//CTz.allSubSTz(T) = {}
-//CTz.allSubSTz(ST.s.i?) = ST1.s.i?..STn.s.i?   
-//  ST1..STn = allSTz(ST)
   
   /*
   public boolean coherent(){

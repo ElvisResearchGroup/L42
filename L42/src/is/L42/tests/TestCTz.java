@@ -1,7 +1,10 @@
 package is.L42.tests;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -38,77 +41,87 @@ import static is.L42.common.Err.hole;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCTz
-extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   plusAcc(List.of(),List.of(st("This")),"")
+extends AtomicTest.Tester{
+  static ST This=st("This");
+  static ST Void=st("Void");
+  static ST Any=st("Any");
+  static List<ST> lThis=l(This);
+  static List<ST> lVoid=l(Void);
+  static List<ST> lAny=l(Any);
+  static List<ST> l(ST...stz){return List.of(stz);}
+  public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
+   plusAcc(l(),l(This),"")
    ),new AtomicTest(()->
-   plusAcc(List.of(st("This","k()")),List.of(st("This"),st("This","k()")),
-   "This0.k()=[This0.k(), This0]")
+   plusAcc(l(st(This,"k()")),l(This,st(This,"k()")),
+     "This0.k()=[This0, This0.k()]")
    ),new AtomicTest(()->
-   plusAcc(List.of(st("This","k()")),List.of(st("This")),
-   "This0.k()=[This0, This0.k()]")
+   plusAcc(l(st(This,"k()")),lThis,
+   "This0.k()=[This0]")
 
    ),new AtomicTest(()->
-   plusAcc(List.of(st("This","k(a,b,c)",3)),List.of(st("This")),
-   "This0.k(a,b,c).3=[This0, This0.k(a,b,c).3]")
+   plusAcc(l(st(This,"k(a,b,c)",3)),lThis,
+   "This0.k(a,b,c).3=[This0]")
 
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This"),"k(a,b,c)",3)),List.of(st("This","m()")),
-   "This0.k(a,b,c).3=[Void, This0.k(a,b,c).3]")
+   plusAcc(l(st(This,"k(a,b,c)",3)),l(st(This,"m()")),
+   "This0.k(a,b,c).3=[Void]")
 
    ),new AtomicTest(()->
-   plusAcc(List.of(st("This","m()")),List.of(st("This")),
-   "Void=[This0, Void]")
-
+   plusAcc(l(st(This,"m()")),lThis,
+   "")
    ),new AtomicTest(()->
-   plusAcc(List.of(st("This","k(x)")),List.of(st("This")),
-   "This0=[This0]")
+   plusAcc(l(st(This,"k(x)")),lThis,
+   "")
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This","k(x)"),"m()")),List.of(st("This")),
-   "Void=[This0, Void]")
+   plusAcc(l(st(st(This,"k(x)"),"m()")),lThis,
+   "")
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st(st("This","k(x)"),"k(x)"),"m()")),List.of(st("This")),
-   "Void=[This0, Void]")
+   plusAcc(l(st(st(st(This,"k(x)"),"k(x)"),"m()")),lThis,
+   "")
    ),new AtomicTest(()->
-   plusAcc(List.of(st(st("This","k(x)",1),"m()")),List.of(st("This")),
-   "Any.m()=[This0, Any.m()]")
+   plusAcc(l(st(st(This,"k(x)",1),"m()")),lThis,
+   "Any.m()=[This0]")
    ),new AtomicTest(()->
    plusAcc(
-     L(st(Op.GT,List.of(L(st("This")),L(st("This"))))),
-     L(st("This")),
-   ">[This0][This0]=[This0, >[This0][This0]]")
+     l(st(Op.GT,l(This),l(This))), lThis,
+   ">[This0][This0]=[This0]")
    ),new AtomicTest(()->
    plusAcc(
-     L(st(Op.LT,List.of(L(st("This")),L(st("This"))))),
-     L(st("This")),
-   "Void=[This0, Void]")
-
-   ),new AtomicTest(()->
-   plusAcc(
-     L(st(Op.LT,List.of(L(st("This")),L(st("This")), L(st("Void"))))),
-     L(st("This")),
-   "Void=[This0, Void]")
-
-   ),new AtomicTest(()->
-   plusAcc(
-     L(st(Op.LT,List.of(L(st("This")),L(st("This")), L(st("Any"))))),
-     L(st("This")),
-   "<[This0][This0][Any]=[This0, <[This0][This0][Any]]")
+     l(st(Op.LT,lThis,lThis)), lThis,
+   "")
 
    ),new AtomicTest(()->
    plusAcc(
-     L(st(Op.LTEqual,List.of(L(st("This")),L(st("This")), L(st("Any"))))),
-     L(st("This")),
-   "Void=[This0, Void]")
+     l(st(Op.GT,lThis,lThis,lVoid)), lThis,
+   ">[This0][This0][Void]=[This0]")
 
    ),new AtomicTest(()->
    plusAcc(
-     L(st(Op.LTEqual,List.of(L(st("This")),L(st("This")), L(st("Void"))))),
-     L(st("This")),
-   "Void=[This0, Void]")
+     l(st(Op.LT,lThis,lThis,lAny)), lThis,
+   "<[This0][This0][Any]=[This0]")
+
+   ),new AtomicTest(()->
+   plusAcc(
+     l(st(Op.LTEqual,lThis,lThis,lAny)), lThis,
+   "")
+
+   ),new AtomicTest(()->
+   plusAcc(
+     l(st(Op.LTEqual,lThis,lThis, lVoid)),  lThis,
+   "")
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(This,"nope()"),Void)
+   ,"""
+   imm This0.nope() = [imm This0.nope(), imm Void]
+   """)
+   ),new AtomicTest(()->inferAll(ctz()
+   .a(st(This,"nope()"),This).a(st(st(This,"nope()"),"dope()"),Void)
+   ,"""
+   imm This0.nope() = [imm Void, imm This0.nope()]
+   """)
 
 
   ));}
-//TODO: use handlers to check that minimize is called only the minimum amount of times
 static Program p=Program.parse("""
   {
    method Void m()
@@ -127,7 +140,29 @@ public static ST st(String st,String s){return st(st(st),s);}
 public static ST st(ST st,String s,int i){return new ST.STMeth(st,S.parse(s),i);}
 public static ST st(String st,String s,int i){return st(st(st),s,i);}
 
-public static ST st(Op op, List<List<ST>> stzs){return new ST.STOp(op,stzs);}
+@SafeVarargs public static ST st(Op op, List<ST>... stzs){return new ST.STOp(op,List.of(stzs));}
+
+public static class CTzBuilder{
+  CTz ctz=new CTz();
+  Set<ST> dom=new LinkedHashSet<>();
+  CTzBuilder a(ST st, ST... stz){
+    ctz.plusAcc(p,L(st),List.of(stz));
+    dom.add(st);
+    return this;
+    }
+  }
+public static CTzBuilder ctz(){return new CTzBuilder();}
+public static void inferAll(CTzBuilder ctzb,String out){
+  CTz ctz=ctzb.ctz;
+  var is=ctz.allSTz(p);
+  String res="";
+  for(var st:ctzb.dom){
+    res+=st+" = ";
+    List<String> sorted=L(is.compute(st).stream().map(e->e.toString()).sorted());
+    res+=sorted+"\n";
+    }
+  assertEquals(out,res);
+  }
 public static void plusAcc(List<ST> stz,List<ST> stz1,String out){
   CTz ctz=new CTz();
   ctz.plusAcc(p, new ArrayList<>(stz),new ArrayList<>(stz1));
