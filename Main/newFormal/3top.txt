@@ -49,15 +49,15 @@ _______
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
-    I[C?=C;p;G=empty;CTz]!HALF.e => ER //assert CTz=p.minimize(CTz)
-    ER = CTz1;CORE.e IfErr(ER) PR = ER
+    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p]]!HALF.e => ER //assert CTz=p.minimize(CTz)
+    ER = _;CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(updateInfo(p,♥FULL.Docs C=CORE.L))//refreshUniqueNames
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
-    topNC(p".minimize(CTz1);p";NCs) => PR
+    topNC(p".update(C,CTz1);p";NCs) => PR 
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
@@ -80,6 +80,13 @@ _______
     n fresh
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
+_______
+#define p.update(C,CTz) = CTz'
+* p.update(C,CTz) = CTz[from This0.C, p]
+* CTz[from P;p] = CTz' trivially propagates on the structure and applies ST[from P; p] on all the ST in CTz
+* ST[from This0.C, p]=p.solve(ST')
+  ST' = ST where all the STi inside are replaced with STi[from This0.C, p] 
+//Note: an ST that is a CORE.T is already handled by the normal from
 _______
 #define collect(p,Core.Ts)=Core.Ts'
 * collect(p,empty)=empty
@@ -131,9 +138,9 @@ _______
 * I!void => I.CTz;void
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L) 
-    top(I.CTz[from This1;p],p) => PR
+    top(I.frommedCTz,p) => PR
     PR = CTz';p' IfErr(PR) ER = PR
-    ER = CTz'[from This0.(I.C?);p'];p'(This0)//could be optimized since similar to I.CTz
+    ER = I.CTz;CTz';p'(This0) //TODO: should all ER have 2 CTzs?
 * I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
 * I!P<:STz => I.CTz;P<:I(class STz)
 * I!P<:STz => inferenceFailure(I,STz)
@@ -201,45 +208,15 @@ _______
 * CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
     Y = Y[p=p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
     Y!e = Half.e; STz; empty; CTz' // empty: error on bodies leaking returns
-_______
-#define CTz <+p (STz<=STz') = CTz'    CTz[CT] = CTz'   dom(CTz)=STz, CTz(STz)=STz'
-* CTz <+p (empty <= STz) = CTz
-* CTz <+p (ST1,STz<=STz') = CTz' <+p (p.minimize(CTz'; STz) <= p.minimize(CTz'; STz'))
-    CTz' = (CCz <+p (p.minimize(CTz;ST1)<=p.minimize(CTz;STz)))
-* CTz,(ST <= STz')? <+p (ST <= STz) = CTz[ST <= STz"]p, (p.minimize(ST) <= STz")
-    // NOTE: ST may be a CORE.T, in which case STz' may contain usefull information such as known super-interfaces
-    STz" = CTz(STz) U (ST <= STz')?.STz? U {ST}
-    ST notin dom(CTz)
 
-* (CT1..CTn)[CT]p = CT1[CT]p..CTn[CT]p
-* (ST<=STz)[ST'<= STz']p = ST<=STz
-    ST' not in STz
-* (ST<=STz)[ST'<=STz']p = ST <= p.minimize(STz U STz')
-    ST' in STz
-
-* dom(CTz) = {ST | ST <= STz in CTz}
-* CTz(STz)=U{STz' | ST in STz and ST<=STz' in CTz } U STz
 _______
-#define p.minimize(CTz;STz) = STz    p.minimize(CTz;ST) = ST
-* p.minimize(CTz; STz) = STz'\STz"
-    STz' = {p.minimize(CTz; ST) | ST in STz}
-    STz" = {T | STz'=T,T',_ and p|-T' <=T}
-* p.minimize(CTz; T) = T //T = CORE.T
-* p.minimize(CTz; ST.s) = T'
-    T in CTz(p.minimize(ST)) //T = CORE.T
-    T' = p(T.P)(s).T[from T.P; p]
-    either p(T.P).interface? = empty, p(T'.P).interface? = empty, or T = ST
-* p.minimize(CTz; ST.s.i) = T'
-    T in CTz(p.minimize(ST))
-    T' = p(T.P)(s).pari[from T.P; p]
-    // as we don't allow parameter type refining, T' must be the right type
-* p.minimize(CTz; ST.s(.i)?) = p.minimize(CTz; ST).s(.i)?
-    otherwise
-* p.minimize(CTz; OP STz1 ... STzn) = p(P)(s).T[from P; p]
-    Ti in CTz(p.minimize(STzi))
-    {P.s.i} = p.opOptions(OP, Ti..Tn)
-* p.minimize(CTz; OP STz1 ... STzn) = OP p.minimize(CTz; STz1) ... p.minimize(CTz; STzn)
-    otherwise
+#define CTz <+p STz<=STz' = CTz'    CTz <+p ST<=STz = CTz'
+*CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
+   ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
+
+* CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
+    CTz <+p ST <=STz' = CTz,ST<= STz'
+    CTz(ST) undefined
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
@@ -269,10 +246,32 @@ _______
 * This0.Cs,Ps[skipThis0]=Ps[skipThis0]
 * Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
 _______
+#define CTz.allSTz(ST) = STz    CTz.allTz(p,ST) = Tz
+* ST in CTz.allSTz(p,ST)
+* ST' in CTz.allSTz(p,ST) 
+    ST1..STn = CTz(ST)
+    ST' in CTz.allSTz(p,STi)
+* ST' in CTz.allSTz(p,ST.s.i?)
+    ST" in CTz.allSTz(ST)
+    ST' in  CTz.allSTz(p.solve(ST".s.i))
+* ST' in CTz.allSTz(p,OP STz1..STzn)
+    STi in STzi
+    ST'i in CTz.allSTz(STi)
+    ST' in  CTz.allSTz(p.solve(OP ST'1..ST'n))
+//note:
+    if S has 2 overloaded for + with both S->A and ToS->B, then
+    [S, ToS] y=(S x=S"" catch error ToS y y x)
+    [+[S][S],+[S][ToS]] z=myS+y //I.infers into [+[S][S],B] 
+    +[S][S] DOES NOT solve/infer to A, since also ToS->B is applicable
+    +[S][S] will stay dormient and harmless during I.infer 
+   
+* CTz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
+
+_______
 #define I(mdf? STz) = CORE.T
 * I(mdf STz) = I(STz)[mdf=mdf]
-* I(STz)=chooseGeneralT(Tz)
-    Tz={chooseSpecificT({T|I.CTz(ST)}) | ST in p.minimize(I.CTz,STz) }
+* I(STz)=chooseGeneralT(Tz) //assert p.solve(STz)=STz
+    Tz={chooseSpecificT(I.CTz.allTz(ST)) | ST in STz }
 _______
 #define chooseGeneralT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P

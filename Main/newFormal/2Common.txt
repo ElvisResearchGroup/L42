@@ -42,8 +42,6 @@ _______
     Thisn.Cs0[from P;p] = Thisk.Cs1
 * Thisn.Cs[from P;p;j] = Thisn.Cs with n<j
 * All cases for other expressions/terms propagate to submembers, including docs  
-
-* CTz[from P;p] = CTz' trivially propagates on the structure and applies P'[from P; p] on all the P' in CTz
 _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
@@ -83,6 +81,29 @@ _______
 * (CORE.L;LL;_).minimize(This1.Cs)=This1.Cs
 * (CORE.L;C:LL;_).minimize(This1.C'.Cs)=This1.C.Cs
     C!=C'
+_______
+#define p.solve(ST) = ST' 
+* p.solve(T) = T
+* p.solve(T.s) = p(T.P).mwts(s).T
+* p.solve(T.s.i) = p(T.P).mwts(s).parsi
+* p.solve(ST.s.i?) = p.solve(T.s.i?)
+    T = p.solve(ST)
+* p.solve(ST.s.i?) = ST'.s.i?
+    ST' = p.solve(ST)
+    ST' not of form T
+* p.solve(ST.s.i?) = T.s.i?
+    T = p.solve(ST)
+    p(T.P).mwts(s) undefined
+    or p(T.P).mwts(s).parsi undefined
+* p.solve(OP STz1..STzn) = p(P).mwts(s).T[from P;p] 
+    Tzi = {T| ST in STzi, T=p.solve(ST)}
+    Ts1..Tsn = {T1..Tn| Ti in Tzi}
+    {P.s.i} = p.opOptions(OP Ts1) U..U p.opOptions(OP Tsn)
+* p.solve(OP STz1..STzn) = OP p.solve(STz1)..p.solve(STzn)
+    otherwise    
+NOTE: ST may contains Ps that are not in the domain of p,
+      in those cases solve is the identity.
+TODO: should also p.minimize(P) and from(P;p) be resilient and do nothing?
 _______
 #define MH notations, MWT notations just inherit them,
 with MH=mdf method T mOp(T1 x1..Tn xn)[Ts] 

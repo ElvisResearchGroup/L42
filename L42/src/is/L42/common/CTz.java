@@ -39,69 +39,7 @@ import is.L42.generated.Y;
 import is.L42.tools.InductiveSet;
 import is.L42.tools.InductiveSet.IRule;
 /*
-
-_______
-#define p.solve(ST) = ST' 
-* p.solve(T) = T
-* p.solve(T.s) = p(T.P).mwts(s).T
-* p.solve(T.s.i) = p(T.P).mwts(s).parsi
-* p.solve(ST.s.i?) = p.solve(T.s.i?)
-    T = p.solve(ST)
-* p.solve(ST.s.i?) = ST'.s.i?
-    ST' = p.solve(ST)
-    ST' not of form T
-* p.solve(ST.s.i?) = T.s.i?
-    T = p.solve(ST)
-    p(T.P).mwts(s) undefined
-    or p(T.P).mwts(s).parsi undefined
-* p.solve(OP STz1..STzn) = p(P).mwts(s).T[from P;p] 
-    Tzi = {T| ST in STzi, T=p.solve(ST)}
-    Ts1..Tsn = {T1..Tn| Ti in Tzi}
-    {P.s.i} = p.opOptions(OP Ts1) U..U p.opOptions(OP Tsn)
-* p.solve(OP STz1..STzn) = OP p.solve(STz1)..p.solve(STzn)
-    otherwise    
-NOTE: ST may contains Ps that are not in the domain of p.
-should also p.minimize(P) and from(P;p) be resilient and do nothing? 
-
-* CT well formedness: ST<=STz, ST not of form Core.T
- 
-* in any moment, CTz and p so that forall ST in dom or cod CTz, p.solve(ST)=ST
-
-_______
-#define CTz <+p STz<=STz' = CTz'    CTz <+p ST<=STz = CTz'
-*CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')
-   ST1..STn={ST| ST in p.solve(STz), ST not of form Core.T}
-
-* CTz,ST<=STz <+p ST <=STz' = CTz,ST<=STz U STz'
-    CTz <+p ST <=STz' = CTz,ST<= STz'
-    CTz(ST) undefined
-_______
-#define CTz.allSTz(ST) = STz    CTz.allTz(p,ST) = Tz
-* ST in CTz.allSTz(p,ST)
-* ST' in CTz.allSTz(p,ST) 
-    ST1..STn = CTz(ST)
-    ST' in CTz.allSTz(p,STi)
-* ST' in CTz.allSTz(p,ST.s.i?)
-    ST" in CTz.allSTz(ST)
-    ST' in  CTz.allSTz(p.solve(ST".s.i))
-* ST' in CTz.allSTz(p,OP STz1..STzn)
-    STi in STzi
-    ST'i in CTz.allSTz(STi)
-    ST' in  CTz.allSTz(p.solve(OP ST'1..ST'n))
-//note:
-    if S has 2 overloaded for + with both S->A and ToS->B, then
-    [S, ToS] y=(S x=S"" catch error ToS y y x)
-    [+[S][S],+[S][ToS]] z=myS+y //I.infers into [+[S][S],B] 
-    +[S][S] DOES NOT solve/infer to A, since also ToS->B is applicable
-    +[S][S] will stay dormient and harmless during I.infer 
     
-   
-* CTz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
-
-  
-I(STz)=chooseGeneralT(Tz) //assert p.solve(STz)=STz
-  Tz={chooseSpecificT(I.CTz.allTz(ST)) | ST in STz }
-  
 //what to do when the program expands?
 p1=p.update(p.top with extra C=L)
 
