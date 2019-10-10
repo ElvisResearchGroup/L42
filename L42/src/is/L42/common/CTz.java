@@ -37,7 +37,6 @@ import is.L42.generated.ST.STMeth;
 import is.L42.generated.ST.STOp;
 import is.L42.generated.Y;
 import is.L42.tools.InductiveSet;
-import is.L42.tools.InductiveSet.IRule;
 /*
     
 //what to do when the program expands?
@@ -161,45 +160,45 @@ public class CTz {
     
     
   public InductiveSet<ST,ST> allSTz(Program p){
-    return new InductiveSet<ST,ST>(new AllSTzRule(this,p));
+    return new AllSTzRule(this,p);
     }
-  private static class AllSTzRule implements InductiveSet.BRule<ST,ST>{
+  private static class AllSTzRule extends InductiveSet<ST,ST>{
     CTz ctz;Program p;AllSTzRule(CTz ctz,Program p){this.ctz=ctz;this.p=p;}
-    @Override public void op(ST st, Consumer<ST> s,BiConsumer<ST,IRule<ST,ST>>install){
+    @Override public void rule(ST st, Consumer<ST> s){
       s.accept(st);//* ST in CTz.allSTz(p,ST)
-      transitive(st, s, install);
-      if(st instanceof ST.STMeth){onSTMeth((ST.STMeth)st,s,install);}
-      if(st instanceof ST.STOp){onSTOp((ST.STOp)st,s,install);}
+      transitive(st, s);
+      if(st instanceof ST.STMeth){onSTMeth((ST.STMeth)st,s);}
+      if(st instanceof ST.STOp){onSTOp((ST.STOp)st,s);}
       }
-    private void transitive(ST st, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
+    private void transitive(ST st, Consumer<ST> s) {
       var st1n=ctz.inner.get(st);//    ST1..STn = CTz(ST)
       if(st1n==null){return;}
       for(ST sti:st1n){// ST' in CTz.allSTz(p,STi)
-        install.accept(sti, st1->s.accept(st1));//* ST' in CTz.allSTz(p,ST)
+        install(sti, st1->s.accept(st1));//* ST' in CTz.allSTz(p,ST)
         }
       }
-    private void onSTMeth(ST.STMeth stsi, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
+    private void onSTMeth(ST.STMeth stsi, Consumer<ST> s) {
       ST st=stsi.st();
-      install.accept(st,st2->{
+      install(st,st2->{
         ST st3=solve(p,stsi.withSt(st2));
-        install.accept(st3,st1->s.accept(st1));
+        install(st3,st1->s.accept(st1));
         });
       }
-    private void onSTOp(ST.STOp stop, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install) {
-      step(stop,s,install,L());
+    private void onSTOp(ST.STOp stop, Consumer<ST> s) {
+      step(stop,s,L());
       //need to accumulate the elements from the stop.stzs() 
       }
-    private void step(ST.STOp stop, Consumer<ST> s, BiConsumer<ST, IRule<ST, ST>> install,List<ST> pre) {
+    private void step(ST.STOp stop, Consumer<ST> s,List<ST> pre) {
       var stz1n=stop.stzs();
       int n=stz1n.size();
       int size=pre.size();
       if(size==n){
         ST stSolved=solve(p,stop.withStzs(L(pre.stream().map(e->L(e)))));
-        install.accept(stSolved, st1->s.accept(st1));
+        install(stSolved, st1->s.accept(st1));
         return;}
       List<ST> optionsSize=stz1n.get(size);
       for(ST sti:optionsSize){
-        install.accept(sti,stzSize->step(stop,s,install,pushL(pre,stzSize)));
+        install(sti,stzSize->step(stop,s,pushL(pre,stzSize)));
         }
       }      
     }

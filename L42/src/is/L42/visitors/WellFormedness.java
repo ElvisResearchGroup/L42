@@ -168,6 +168,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(par.xs().stream().map(X::inner).noneMatch(x->x.equals("that"))){return;}
     err(Err.duplicatedNameThat());
     }
+  @Override public void visitThrow(Full.Throw t){
+    lastPos=t.poss();
+    if(!Returning.of(t.e())){super.visitThrow(t);return;}
+    err(Err.deadThrow(t.thr()));
+    }
   @Override public void visitBlock(Full.Block b){
     lastPos=b.poss();
     super.visitBlock(b);

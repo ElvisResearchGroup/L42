@@ -9,7 +9,9 @@ import org.opentest4j.AssertionFailedError;
 
 import is.L42.common.Err;
 import is.L42.common.Parse;
+import is.L42.generated.Core.Throw;
 import is.L42.generated.Full;
+import is.L42.generated.ThrowKind;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
@@ -133,6 +135,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("{return y A b=bb error x}","dead code after the statement 0 of the block")
    ),new AtomicTest(()->
+   fail("error error x",Err.deadThrow(ThrowKind.Error))
+   ),new AtomicTest(()->
+   fail("error exception x",Err.deadThrow(ThrowKind.Error))
+   ),new AtomicTest(()->
+   fail("exception error x",Err.deadThrow(ThrowKind.Exception))
+   ),new AtomicTest(()->
    fail("{A b=bb catch T y y error x}","catch statement 0 does not guarantee block termination")
    ),new AtomicTest(()->
    fail("(return a A a=y x)","dead code after the statement 0 of the block")
@@ -199,6 +207,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x) #norm{}}",Err.capsuleBindingUsedOnce(hole))
+
+   ),new AtomicTest(()->
+   fail("{ method capsule Any m()=(capsule Any x=this.m() capsule Any y=x x) #norm{}}",Err.capsuleBindingUsedOnce(hole))
+
+   ),new AtomicTest(()->
+   pass("{ method capsule Any m()=(capsule Any x=this.m() catch error This z this x) #norm{}}")
+
+   ),new AtomicTest(()->
+   fail("{ method capsule Any m()=(Any x=this.m() catch return capsule This y y.foo(that=y) x) #norm{}}",Err.capsuleBindingUsedOnce(hole))
+
 
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=z, b=x) #norm{}}",Err.nameUsedNotInScope("z"))

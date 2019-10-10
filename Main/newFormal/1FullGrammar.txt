@@ -1,3 +1,4 @@
+Notations: metavariables ending with s are sequences, metaviariables ending with z are sets.
 _______
 #define Abstract syntax for CORE and FULL
   mdf::= imm | mut | lent | read | capsule | fwd mut | fwd imm | class | fwd%imm | fwd%mut 
@@ -151,25 +152,26 @@ _______
 * FULL.DX: var TLocal x or _(_ var TLocal x _) is valid only if TLocal.mdf not capsule or fwd.
 * CORE.D: var T x=e is valid only if T not capsule or fwd.
 * s: 'this' notin xs and all x in xs are unique
-* FULL.par: 'this' notin xs and all x in xs are unique, if 'that' omitted, that notin xs
+* FULL.par: 'this' notin xs and all x in xs are unique, if e!=empty, 'that' notin xs
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 * C not This, Thisn, Any, Void or Library
 * FULL.B:
-    no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
-    this notin dom(B.Ds.xs)
-    FV(Ks) disjoint dom(B.Ds)
-    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e) U Ks.xs
+    no repetition in bindings(B.Ds.DXs)//B.Ds contains all of the Ds, even if divided in 2 groups in the syntax
+    this notin bindings(B.Ds.DXs)
+    FV(Ks) disjoint bindings(B.Ds.DXs)
+    bindings(B.Ds.DXs) disjoint bindings(B.Ds.es,B.Ks.es,B.e) U Ks.xs
     if B={ Ds1 Ks WHOOPS? Ds2} then returningBlock({ Ds1 Ks WHOOPS? Ds2})
     if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
     if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D) 
     if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
     if B=(_ K e _) then noBlockNeeded(K.e)
-* CORE.B: //less then full, to avoid issues with inlining and such
-    no repetition in B.Ds.xs//all of the Ds, even if divided in 2 groups
-    this notin dom(B.Ds.xs)
-    FV(Ks) disjoint dom(B.Ds) U Ks.xs
-    dom(B.Ds) disjoint bindings(B.Ds.es,B.Ks.es,B.e)
+* (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
+    no repetition in Ds.xs
+    this notin dom(Ds)
+    FV(Ks) disjoint dom(Ds)
+    dom(Ds) disjoint bindings(Ds.es,Ks.es,e) U Ks.xs
 * FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
+* throw FULL.e: not returning(Full.e)
 * FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
 * FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
@@ -225,8 +227,8 @@ _______
 * noBlockNeeded(throw e)
 * noBlockNeeded(loop e)= 
     noBlockNeeded(if match+ e)=noBlockNeeded(if e0 e)=
-    noBlockNeeded(if e0 e1 'else' e)= 
-    noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)* e)=
+    noBlockNeeded(if e0 e1 else e)= 
+    noBlockNeeded(while e0 e)=noBlockNeeded(for (DX in e)s e)=
     noBlockNeeded(e)
 _______
 #define bindings(FULL.DX) = xs    bindings(FULL.match) = xs    bindings(FULL/CORE.e) = xs
@@ -234,13 +236,13 @@ _______
 * bindings(var? TLocal _) = empty  
 * bindings(TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )) = x0..xn
 
-* bindings(T x) = x
+* bindings(T x) = x // 'T x' and the two other cases below are kinds of match (for the if)
 * bindings(T x=e) = x U bindings(e)
 * bindings(T?(T?0 x0..T?n xn)=e) = x0..xn U bindings(e)
 
 * bindings(LL)=empty
 * bindings(catch throw? T x e)=x U bindings(e)
-* propagates inductively in all the other cases
+* propagates inductively in all the other cases (including blocks)
 _______
 #define FV(CORE.e) //FV defined as sequence instead of set, and counts occurrences of xs
 * FV(x)=x
@@ -253,7 +255,9 @@ _______
     xsi=FV(ki)
     xs0=FV(e0)\x1...xn
     if Ti=capsule _ then
-      ys,FV(e0) not of form _,xi,_,xi,_//xi 0 or 1 times in ys,FV(e0)
+      FV(e0)..FV(en) not of form _,xi,_,xi,_//xi 0 or 1 times in ys,FV(e0)..FV(en)
+* FV(k)=FV(e0)\k.x
+    if k.T.mdf=capsule then  FV(e0) not of form _,k.x,_,k.x,_
 _______
 #define max(xs1;..;xsn)= zs // as many repetition of each x as in the most repetitive of xs1..xsn
 * max(ys)=max(empty,ys)=ys
@@ -262,7 +266,6 @@ _______
 * max(xs; xs0;..;xsn) = max(max(xs;xs0);xs1;..;xsn)
 _______
 #define returningBlock({Ds1 Ks WHOOPS? Ds2})    returning(FULL.e)    hasReturn(es)
-
 * returningBlock({Ds1 Ks WHOOPS? Ds2}) iff
     Ds,D=Ds1,Ds2
     returning(D.e)

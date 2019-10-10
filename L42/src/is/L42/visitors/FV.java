@@ -10,6 +10,7 @@ import java.util.stream.Stream;
 import is.L42.common.Err;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
+import is.L42.generated.Pos;
 import is.L42.generated.X;
 
 public class FV extends PropagatorCollectorVisitor{
@@ -73,7 +74,8 @@ public class FV extends PropagatorCollectorVisitor{
     var acc=store();
     var domDs=domDs(b.ds());
     visitDs(b.ds());
-    var ys=store();
+    var ysWithDomDs=store();
+    var ys=new ArrayList<>(ysWithDomDs);
     ys.removeAll(domDs);
     List<List<X>> ks=new ArrayList<>();
     for(var k: b.ks()){
@@ -81,19 +83,22 @@ public class FV extends PropagatorCollectorVisitor{
       ks.add(store());
       }
     visitE(b.e());
-    var e=result;
-    e.removeAll(domDs);
+    var e=result;//ok to not use store()
+    ysWithDomDs.addAll(e);//just before we remove the domDs
+    e.removeAll(domDs); 
     ks.add(e);
     var max=max(ks);
     acc.addAll(max);
     acc.addAll(ys);
     result=acc;
-    for(var d:b.ds()){
+    capsuleZeroOrOne(b.poss(),b.ds(),ysWithDomDs);
+    }
+  private void capsuleZeroOrOne(List<Pos> poss,List<Core.D> ds,List<X> fvs) {
+    for(var d:ds){
       if(!d.t().mdf().isCapsule()){continue;}
-      long count=Stream.concat(ys.stream(),e.stream())
-        .filter(x->x.equals(d.x())).count();
-      if (count<=1){continue;}
-      throw new WellFormedness.NotWellFormed(b.poss(),Err.capsuleBindingUsedOnce(d.x()));
+      long count=fvs.stream().filter(x->x.equals(d.x())).count();
+        if (count<=1){continue;}
+      throw new WellFormedness.NotWellFormed(poss,Err.capsuleBindingUsedOnce(d.x()));
       }
     }
   public static List<X> max(List<List<X>> xss){
@@ -110,6 +115,12 @@ public class FV extends PropagatorCollectorVisitor{
   @Override public void visitK(Core.K k){
     var acc=store();
     super.visitK(k);
+    if(k.t().mdf().isCapsule()){
+      long count=result.stream().filter(x->x.equals(k.x())).count();
+      if (count>1){
+        throw new WellFormedness.NotWellFormed(k.e().poss(),Err.capsuleBindingUsedOnce(k.x()));
+        }
+      }
     result.removeAll(L(k.x()));
     acc(acc);
     }

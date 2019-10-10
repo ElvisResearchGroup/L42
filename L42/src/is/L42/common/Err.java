@@ -77,6 +77,8 @@ public class Err {
   "var bindings can not be "+_1
   ;}public static String deadCodeAfter(Object _1){return
   "dead code after the statement "+_1+" of the block"
+  ;}public static String deadThrow(Object _1){return
+  "The "+_1+" is dead code, since the expression never terminate normally"
   ;}public static String needBlock(Object _1){return
   "expression need to be enclose in block to avoid ambiguities:\n"
   +trimExpression(_1.toString())+"\n"
