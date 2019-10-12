@@ -181,6 +181,10 @@ public class Err {
   "Invalid member kind for a library literals using "+_1+"; the invalid members are: "+_2  
   ;}public static String invalidFieldType(Object _1){return
   "Invalid modifier for field: "+_1
-
+  ;}public static String operatorNotFound(Object _1,List<?> _2){
+    if(_2.isEmpty()){return "Operator "+_1+" could not be translated in any method call";}
+    return "Operator "+_1+" could be translated in any of the following method calls: "+_2
+    
+    
   ;}
 }

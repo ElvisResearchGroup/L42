@@ -15,8 +15,6 @@ import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
 import is.L42.constraints.InferToCore;
-import is.L42.common.Program.InvalidImplements;
-import is.L42.common.Program.PathNotExistent;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -140,6 +138,24 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Void m2(Any a)=(This x=this.nope() void)
      """)
 
+
+   ),new AtomicTest(()->pass("""
+     method Void +(This that)=void     
+     method Void m()=this+this
+     ""","""
+     imm method imm Void #plus0(imm This0 that)=void
+     imm method imm Void m()=this.#plus0(that=this)
+     """)
+   ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
+     method Void *(This that)=void     
+     method Void m()=this+this
+     """,Err.operatorNotFound(hole,L()))
+   ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
+     method Void +(This that)=void
+     method Void +(Any dope)=void     
+     method Void m()=this+this
+     """,Err.operatorNotFound(hole,List.of("This0.#plus0(that)","This0.#plus0(dope)")))
+     
      
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
@@ -165,8 +181,16 @@ public static void chooseSpecificT(String in,String out){
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
-  Full.L fl=(Full.L)Program.parse("{"+l+"}").top;
   Core.L cl=Program.parse("{"+out+" #norm{}}").topCore();
+  var ces=processIn(l);
+  assertEquals(ces,cl.mwts());
+  }
+public static void fail(Class<?> kind,String l,String ...err){
+  checkFail(()->processIn(l),err, kind);
+  }
+
+public static List<Core.L.MWT> processIn(String l){
+  Full.L fl=(Full.L)Program.parse("{"+l+"}").top;
   List<Full.L.MWT> mwts=L(fl.ms(),(c,m)->{if(m instanceof Full.L.MWT){c.add((Full.L.MWT)m);}});
   CTz ctz=new CTz();
   List<Core.MH> mhs=L(mwts,(c,mi)->c.add(TypeManipulation.toCore(mi.mh())));
@@ -177,12 +201,11 @@ public static void pass(String l,String out){
   List<Half.E> hes=L(mhs,mwts,(c,mhi,mi)->{
     c.add(ctz._add(p, mhi, mi._e()));
     });
-  List<Core.L.MWT> ces=L(mhs,hes,(c,mhi,ei)->{
+  return L(mhs,hes,(c,mhi,ei)->{
     if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;} 
-    I i=new I(new C("C",-1),p,G.empty());
+    I i=new I(new C("C",-1),p,G.of(mhi));
     var cei=new InferToCore(i,ctz,null).compute(ei);
     c.add(new Core.L.MWT(L(),L(),mhi,"",cei));
-    });
-  assertEquals(ces,cl.mwts()); 
+    }); 
   }
 }

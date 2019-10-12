@@ -157,9 +157,9 @@ _______
     Ii+1 = Ii[CTz=CTzi]
     Ii!xPi => ERi
     ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
-    STzi = STz'i if xP'i = _ <: STz'i
-    STzi = I.G(x'i) if xP'i = x'i
-    {P.m(x1..xn).i} = I.p.opOptions(OP, STz0..STzn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
+    either xP'i = _ <: Ti
+    or Ti = I.G(xP'i)
+    {P.m(x1..xn).i} = I.p.opOptions(OP, T0..Tn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
     xP"1..xP"n = xP'0..xP'n\i
     ER = CTzn;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER

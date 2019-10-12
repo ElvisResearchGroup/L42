@@ -6,6 +6,7 @@ import static is.L42.tools.General.range;
 
 import java.util.List;
 
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.PTails;
 import is.L42.common.Program;
@@ -39,12 +40,12 @@ public class Init {
         if(s.isDots()){throw bug();}//TODO: will need to be handled in the visitL instead
         var this0s=L(s.ts().stream().filter(this::invalidAfter));
         if(this0s.isEmpty()){return s;}
-        throw new Program.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
+        throw new EndError.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
         }
       @Override public Core.L coreLHandler(Core.L s) {
         var this0s=L(s.ts().stream().filter(this::invalidAfter));
         if(this0s.isEmpty()){return s;}
-        throw new Program.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
+        throw new EndError.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
         }
       private boolean invalidAfter(Full.T t){
         assert t._p()!=null;
@@ -103,7 +104,7 @@ public class Init {
         if(!p.isNCs()){return p;}
         var p0=p.toNCs();
         if(p0.n()>p().dept()){
-          throw new Program.PathNotExistent(poss,Err.thisNumberOutOfScope(p));
+          throw new EndError.PathNotExistent(poss,Err.thisNumberOutOfScope(p));
           }
         return p().minimize(p0);
         }

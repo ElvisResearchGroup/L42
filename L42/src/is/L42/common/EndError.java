@@ -22,5 +22,13 @@ public abstract class EndError extends RuntimeException{
   public final List<Pos> poss;
   private final String msgPart;
   private String msg=null;
-  
-}
+  public static class InferenceFailure extends EndError{
+    public InferenceFailure(List<Pos> poss, String msg) { super(poss, msg);}
+    }
+  public static class InvalidImplements extends EndError{
+    public InvalidImplements(List<Pos> poss, String msg) { super(poss, msg);}
+    }
+  public static class PathNotExistent extends EndError{
+    public PathNotExistent(List<Pos> poss, String msg) { super(poss, msg);}
+    }
+  }

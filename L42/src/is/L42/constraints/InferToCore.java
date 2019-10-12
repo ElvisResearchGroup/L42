@@ -6,9 +6,12 @@ import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.typeFilter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.CTz;
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Core.PCastT;
@@ -17,21 +20,27 @@ import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.I;
 import is.L42.generated.Mdf;
+import is.L42.generated.Psi;
 import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
+import is.L42.tools.InductiveSet;
 import is.L42.top.Top;
 import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
 import lombok.NonNull;
+import lombok.var;
 
 public class InferToCore extends UndefinedCollectorVisitor{
   I i;
-  CTz ctz;
+  final InductiveSet<ST, ST> sets;
   Core.E res; 
-  Top top;
+  final CTz ctzFrom;
+  final Top top;
   public InferToCore(I i,CTz ctz,Top top){
-    this.i=i; this.ctz=ctz; this.top=top;
+    this.i=i; this.top=top;
+    this.sets = ctz.allSTz(i.p());
+    this.ctzFrom=ctz;//frommed=CTz[from This1;p]TODO:
     } 
   public final Core.E compute(Half.E e){
     assert res==null;
@@ -50,9 +59,9 @@ public class InferToCore extends UndefinedCollectorVisitor{
   private T infer(List<ST> stz) {
     var poss=i.p().topCore().poss();
     if(stz.size()==1 && stz.get(0) instanceof T){return (T)stz.get(0);}
-    var minStz=ctz.minimizeFW(i.p(),stz);//local var for the debugger
-    List<T> ts=L(minStz,(c,sti)->{
-      var tz=typeFilter(ctz.of(sti),T.class);
+    List<T> ts=L(stz,(c,sti)->{
+      var stzi=sets.compute(sti);
+      var tz=typeFilter(stzi.stream(),T.class);
       var speci=i.p()._chooseSpecificT(tz, poss);
       if(speci!=null){c.add(speci);}
       });
@@ -67,9 +76,9 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){
     Program p=i.p().push(i._c(),l);
-    CTz ctzFrom=ctz;//TODO: from!!!
+    //CTz ctzFrom=ctz;//TODO: from!!!
     Program pr=top.top(ctzFrom,p);//propagate errors
-    ctz=ctzFrom;//TODO: from!!
+    //ctz=ctzFrom;//TODO: from!!
     commit(pr.topCore());
     }
   @Override public void visitL(Core.L l){commit(l);}
@@ -86,7 +95,29 @@ public class InferToCore extends UndefinedCollectorVisitor{
     }
 
   @Override public void visitBinOp(Half.BinOp binOp){
-    throw uc;//TODO:
+    List<Core.XP> xps=L(binOp.es(),(c,x)->c.add((Core.XP)compute(x)));
+    List<T> ts=L(xps,(c,xpi)->{
+      if (xpi instanceof Core.EX){
+        var x=(Core.EX)xpi;
+        c.add(i.g().of(x.x()));
+        return;
+        }
+       var pct=(Core.PCastT) xpi;
+       c.add(pct.t());
+      });
+    var res=CTz.opOptions(i.p(), binOp.op(), ts);
+    //TODO: can we make a test where the former call throw some exception?
+    if(res.size()!=1){
+      var list=L(res,(c,psi)->c.add(psi.p()+"."+psi.s()));
+      String err=Err.operatorNotFound(binOp.op(),list);
+      throw new EndError.InferenceFailure(binOp.poss(),err);
+      }    
+    Psi psi=res.get(0);
+    var receiver=xps.get(psi.i());
+    List<Core.E> args=new ArrayList<>(xps);
+    args.remove(psi.i());
+    args=L(args.stream());
+    commit(new Core.MCall(binOp.pos(),receiver,psi.s(),args));
     }
   @Override public void visitThrow(Half.Throw thr){
     commit(new Core.Throw(thr.pos(),thr.thr(),compute(thr.e())));

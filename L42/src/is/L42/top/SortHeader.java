@@ -14,7 +14,7 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
-import is.L42.common.Program.InvalidImplements;
+import is.L42.common.EndError.InvalidImplements;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -58,7 +58,7 @@ class SortHeader{
       List<C> cs=ti.p().toNCs().cs();
       for(C ci:cs){
         if(ci.hasUniqueNum()){
-          throw new Program.InvalidImplements(l.poss(),Err.sealedInterface(ti,ts1));
+          throw new InvalidImplements(l.poss(),Err.sealedInterface(ti,ts1));
           }
         }
       }

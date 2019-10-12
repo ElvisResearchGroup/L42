@@ -70,7 +70,7 @@ public class Program implements Visitable<Program>{
   public LL of(P.NCs path,List<Pos>errs){
     try{return this.pop(path.n()).top.cs(path.cs());}
     catch(LL.NotInDom nid){
-      throw new PathNotExistent(errs,Err.pathNotExistant(path));
+      throw new EndError.PathNotExistent(errs,Err.pathNotExistant(path));
       }
     }
   public Program pop(int n){
@@ -198,14 +198,6 @@ public class Program implements Visitable<Program>{
       default: return false;
       }
     }
-  @SuppressWarnings("serial")
-  public static class InvalidImplements extends EndError{
-    public InvalidImplements(List<Pos> poss, String msg) { super(poss, msg);}
-    }
-  @SuppressWarnings("serial")
-  public static class PathNotExistent extends EndError{
-    public PathNotExistent(List<Pos> poss, String msg) { super(poss, msg);}
-    }
   public P resolve(List<C> cs,List<Pos>poss){
     int n=findScope(cs.get(0),0,poss);
     return P.of(n, cs);
@@ -219,7 +211,7 @@ public class Program implements Visitable<Program>{
       }
     if(top.domNC().contains(c)){return acc;}
     if(pTails.isEmpty()){
-      throw new PathNotExistent(poss, Err.pathNotExistant(c));
+      throw new EndError.PathNotExistent(poss, Err.pathNotExistant(c));
       }
     return pop().findScope(c, acc+1,poss);
     }

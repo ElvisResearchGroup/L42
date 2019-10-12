@@ -106,7 +106,9 @@ public class CTz {
     return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
     }
   static public void opOptionsAcc(Program p,Op op, List<T>ts, int i,List<Psi>acc){
-    List<P> p11n=L(range(ts),(cj,j)->{if(j!=i){cj.add(ts.get(j).p());}});
+    List<P> p11n=L(range(ts),(cj,j)->{
+      if(j!=i){cj.add(ts.get(j).p());}
+      });
     String sName = NameMangling.methName(op,i);
     P tmp=ts.get(i).p();
     if(!tmp.isNCs()){return;}
@@ -126,11 +128,12 @@ public class CTz {
       }  
     }
   static public List<Psi> opOptions(Program p, Op op, List<T>ts){
+    assert ts.stream().noneMatch(t->t==null):ts;
     return L(c->{for(int i:range(ts)){opOptionsAcc(p,op,ts,i,c);}});
     }
   public static ST solve(Program p,ST.STOp st){
     List<List<ST>> minStzi=L(st.stzs(),stzi->solve(p,stzi));
-    List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi,T.class)));
+    List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi.stream(),T.class)));
     List<List<T>> tsz=tzsToTsz(tzs);
     Set<Psi> options=new HashSet<>();
     for(var ts:tsz){
@@ -202,7 +205,14 @@ public class CTz {
         }
       }      
     }
-  
+  public Half.E _add(Program p, Core.MH mh, Full.E _e){
+    if(_e==null){return null;}
+    Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
+    var res= new ToHalf(y,this).compute(_e);
+    this.plusAcc(p, res.resSTz,L(mh.t()));
+    assert res.retSTz.isEmpty();//may be not?
+    return res.e;
+    }
   /*
   public boolean coherent(){
     for(var e:inner.entrySet()){

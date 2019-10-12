@@ -16,6 +16,7 @@ import is.L42.generated.Full;
 import is.L42.generated.Full.Par;
 import is.L42.generated.Half;
 import is.L42.generated.Op;
+import is.L42.generated.Op.OpKind;
 import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.ST;
@@ -94,7 +95,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=y.with_expectedT(P.stzCoreVoid);
     var res=compute(loop.e());
     y=oldY;
-    ctz.plusAccCopy(y.p(), res.resSTz,P.stzCoreVoid);
+    ctz.plusAcc(y.p(), res.resSTz,P.stzCoreVoid);
     commit(new Half.Loop(loop.pos(),res.e),P.stzCoreVoid,res.retSTz);
     }
   @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
@@ -103,7 +104,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=y.with_expectedT(y.g().of(opUpdate.x()));
     var res=compute(opUpdate.e());
     y=oldY;
-    ctz.plusAccCopy(y.p(), res.resSTz, y.g().of(opUpdate.x()));
+    ctz.plusAcc(y.p(), res.resSTz, y.g().of(opUpdate.x()));
     commit(new Half.Loop(opUpdate.pos(),res.e),P.stzCoreVoid,res.retSTz);        
     }  
   boolean isFullXP(Full.E e){//Can not be a marker interface since it depends on the values
@@ -121,7 +122,6 @@ public class ToHalf extends UndefinedCollectorVisitor{
       return par;
       });
     }
-  
   @Override public void visitCall(Full.Call call){
     if(call._s()==null){visitCall(call.with_s(NameMangling.hashApply()));return;}
     var pars=addThats(call.pars());
@@ -142,7 +142,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
         .with_expectedT(stz1i);
       y=yi;
       var resi=compute(par.es().get(i));
-      ctz.plusAccCopy(y.p(), resi.resSTz, stz1i); 
+      ctz.plusAcc(y.p(), resi.resSTz, stz1i); 
       es.add(resi.e);
       retST.addAll(resi.retSTz);    
       }    
@@ -189,7 +189,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=y.with_expectedT(t);
     var res=compute(d._e());
     if(t==null){t=res.resSTz;}
-    else{ctz.plusAccCopy(y.p(),res.resSTz,t);}
+    else{ctz.plusAcc(y.p(),res.resSTz,t);}
     var hd=new Half.D(d._varTx().isVar(),d._varTx()._mdf(), t, d._varTx()._x(),res.e);
     y=oldY;
     return new Res<>(hd,L(),res.retSTz);
@@ -205,7 +205,21 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=oldY;
     return new Res<>(kr,res.resSTz,res.retSTz);
     }
-  
+  @Override public void visitBinOp(Full.BinOp binOp){
+    if(binOp.op().kind==OpKind.BoolOp){throw uc;}
+    if(binOp.es().size()==2 && binOp.es().get(0) instanceof Full.CsP){throw uc;}
+    if(!binOp.es().stream().allMatch(Core.XP.class::isInstance)){throw uc;}
+    ArrayList<ST> resSTz=new ArrayList<>();
+    ArrayList<ST> retSTz=new ArrayList<>();
+    List<Half.XP> es=L(binOp.es(),(c,ei)->{
+      var ri=compute(ei);
+      c.add((Half.XP)ri.e);
+      resSTz.addAll(ri.resSTz);
+      retSTz.addAll(ri.retSTz);
+      });
+    commit(new Half.BinOp(binOp.pos(),binOp.op(), es), resSTz, retSTz);
+    }
+    
   @Override public void visitIf(Full.If sIf){throw uc;}
   @Override public void visitWhile(Full.While sWhile){throw uc;}
   @Override public void visitFor(Full.For sFor){throw uc;}
@@ -214,5 +228,4 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitEString(Full.EString eString){throw uc;}
   @Override public void visitEPathSel(Full.EPathSel ePathSel){throw uc;}
   @Override public void visitUOp(Full.UOp uOp){throw uc;}
-  @Override public void visitBinOp(Full.BinOp binOp){throw uc;}
 }

@@ -20,7 +20,6 @@ import java.util.stream.Stream;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
-import is.L42.common.Program.PathNotExistent;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;

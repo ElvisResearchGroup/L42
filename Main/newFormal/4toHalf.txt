@@ -76,15 +76,13 @@ _______
     // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 
 * Y!(e0 OP..OP en) = Y!(Ds e0' OP..OP en')
-    n != 0
     Ds = [xi=ei | ei not of form xP]
     Ds != empty // or else the next case will apply
     ei' = ei if ei of form xP
     ei' = xi otherwise
     x1..xn fresh
     e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
-* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'i; Y.p.minimize(OP STz0,..,STzn); empty; Y.CTz
-    n != 0
+* Y! xP0 OP..OP xPn = xP'0 OP..OP xP'n; OP STz0,..,STzn; empty; Y.CTz
     Y[expectedT = empty]!xPi = xP'i; STzi; empty; Y.CTz // Y!xP shouldn't introduce any new constraints
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
