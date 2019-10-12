@@ -68,7 +68,10 @@ public class FullL42Visitor implements L42Visitor<Object>{
     //check(ctx);//Would be wrong
     List<X> xs=L(ctx.x(),(c,x)->c.add(visitX(x)));
     List<Full.E> es=L(ctx.e(),(c,x)->c.add(visitE(x)));
-    if (es.size()==xs.size()){return new Full.Par(null, xs, es);}
+    if (es.size()==xs.size()){
+      if(es.isEmpty()){return Full.Par.empty;}
+      return new Full.Par(null, xs, es);
+      }
     assert es.size()==xs.size()+1;
     return new Full.Par(es.get(0), xs, popL(es));
     }
@@ -114,7 +117,11 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.Call visitFCall(FCallContext ctx) {
     check(ctx);
     S s=opt(ctx.m(),null,this::visitM);
-    return new Full.Call(pos(ctx), eVoid, s, false, L(visitPar(ctx.par())));
+    Full.Par par=visitPar(ctx.par());
+    if(par!=Full.Par.empty){
+      return new Full.Call(pos(ctx), eVoid, s, false, L(par));
+      }
+    return new Full.Call(pos(ctx), eVoid, s, false, Full.Par.emptys);    
     }
   @Override public Full.E visitNudeE(NudeEContext ctx) {
     check(ctx);

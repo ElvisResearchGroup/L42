@@ -15,6 +15,7 @@ import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
 import is.L42.constraints.InferToCore;
+import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -155,7 +156,44 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Void +(Any dope)=void     
      method Void m()=this+this
      """,Err.operatorNotFound(hole,List.of("This0.#plus0(that)","This0.#plus0(dope)")))
-     
+   ),new AtomicTest(()->pass("""
+     class method class This a(This that)=\\
+     class method This b()=\\.b()
+     class method This c()=This.a(that=\\.b())
+     ""","""
+     class method class This0 a(imm This0 that)=This0<:class This0
+     class method imm This0 b()=This0<:class This0.b()
+     class method imm This0 c()=This0<:class This0.a(that=This0<:class This0.b())
+     """)
+   ),new AtomicTest(()->pass("""
+     class method class Any a(This that)=that<:Any
+     class method class Any b(This that)=that<:Void
+     class method class Any c(This that)=void<:Void
+     ""","""
+     class method class Any a(imm This0 that)=(imm Any fresh0_casted=that fresh0_casted)
+     class method class Any b(imm This0 that)=(imm Void fresh1_casted=that fresh1_casted)
+     class method class Any c(imm This0 that)=(imm Void fresh2_casted=void fresh2_casted)
+     """)          
+   ),new AtomicTest(()->pass("""
+     class method This !()=!this
+     class method This ~()=~this
+     ""","""
+     class method imm This0 #bang0()=this.#bang0()
+     class method imm This0 #tilde0()=this.#tilde0()
+     """)
+   ),new AtomicTest(()->pass("""
+     class method Void foo1()=(var This x=this  x:=void)
+     class method Void foo2()=(var This x=this  x+=void)
+     ""","""
+     class method imm This0 #bang0()=this.#bang0()
+     class method imm This0 #tilde0()=this.#tilde0()
+     """)
+   ),new AtomicTest(()->pass("""
+     class method Void ()=This()
+     ""","""
+     class method imm Void #apply()=This0<:class This0.#apply()
+     """)
+     //TODO: assert in the Core.MH that the selector name is not empty
      
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
@@ -190,6 +228,7 @@ public static void fail(Class<?> kind,String l,String ...err){
   }
 
 public static List<Core.L.MWT> processIn(String l){
+  FreshNames fresh=new FreshNames();
   Full.L fl=(Full.L)Program.parse("{"+l+"}").top;
   List<Full.L.MWT> mwts=L(fl.ms(),(c,m)->{if(m instanceof Full.L.MWT){c.add((Full.L.MWT)m);}});
   CTz ctz=new CTz();
@@ -199,7 +238,7 @@ public static List<Core.L.MWT> processIn(String l){
     for(var mh:mhs){c.add(new Core.L.MWT(L(),L(),mh,"",null));}
     })));
   List<Half.E> hes=L(mhs,mwts,(c,mhi,mi)->{
-    c.add(ctz._add(p, mhi, mi._e()));
+    c.add(ctz._add(fresh,p, mhi, mi._e()));
     });
   return L(mhs,hes,(c,mhi,ei)->{
     if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;} 

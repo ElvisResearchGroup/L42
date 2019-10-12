@@ -38,7 +38,7 @@ public class Core {
   EX implements Leaf,Full.E,Full.Leaf, XP, Half.XP,Visitable<EX>{@Override public Visitable<EX>visitable(){return this;}@Override public EX accept(CloneVisitor cv){return cv.visitEX(this);}@Override public void accept(CollectorVisitor cv){cv.visitEX(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}@NonNull Pos pos;
     @NonNull X x;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  PCastT implements Leaf, XP, Half.XP,Visitable<PCastT>{@Override public Visitable<PCastT>visitable(){return this;}@Override public PCastT accept(CloneVisitor cv){return cv.visitPCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitPCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}@NonNull Pos pos;
+  PCastT implements Leaf, XP, Visitable<PCastT>{@Override public Visitable<PCastT>visitable(){return this;}@Override public PCastT accept(CloneVisitor cv){return cv.visitPCastT(this);}@Override public void accept(CollectorVisitor cv){cv.visitPCastT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}@NonNull Pos pos;
     @NonNull P p;
     @NonNull T t;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class

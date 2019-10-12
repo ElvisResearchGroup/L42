@@ -126,7 +126,10 @@ public class Full {
     ThrowKind _thr; T t; X _x; E e;}
   @Value @Wither public static class
   Par implements Visitable<Par>{@Override public Par accept(CloneVisitor cv){return cv.visitPar(this);}@Override public void accept(CollectorVisitor cv){cv.visitPar(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    E _that; List<X>xs; List<E>es;}
+    E _that; List<X>xs; List<E>es;
+    public static final Par empty=new Full.Par(null,L(),L());
+    public static final List<Par> emptys=L(empty);
+    }
   @Value @Wither public static class
   T implements Visitable<T>{@Override public T accept(CloneVisitor cv){return cv.visitT(this);}@Override public void accept(CollectorVisitor cv){cv.visitT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
     Mdf _mdf; List<Doc> docs; List<C>cs; P _p;}

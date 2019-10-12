@@ -83,10 +83,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
     }
   @Override public void visitL(Core.L l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){
-    commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(pCastT.stz())));
+    commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(Mdf.Class,pCastT.stz())));
     }
   @Override public void visitSlashCastT(Half.SlashCastT slash){
-    commit(new Core.PCastT(slash.pos(),infer(slash.stz()).p(),infer(slash.stz1())));
+    commit(new Core.PCastT(slash.pos(),infer(slash.stz()).p(),infer(Mdf.Class,slash.stz1())));
     }
   @Override public void visitMCall(Half.MCall mCall){
     Core.E e0=compute(mCall.xP());

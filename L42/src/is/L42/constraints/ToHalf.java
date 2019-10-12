@@ -13,11 +13,11 @@ import is.L42.common.NameMangling;
 import is.L42.common.TypeManipulation;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
-import is.L42.generated.Full.Par;
 import is.L42.generated.Half;
 import is.L42.generated.Op;
 import is.L42.generated.Op.OpKind;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
@@ -35,9 +35,14 @@ public class ToHalf extends UndefinedCollectorVisitor{
       this.e=e;this.resSTz=resSTz;this.retSTz=retSTz;
       }
     }
-  public ToHalf(Y y,CTz ctz){this.y=y;this.ctz=ctz;}
+  public ToHalf(Y y,CTz ctz,FreshNames fresh){
+    this.y=y;
+    this.ctz=ctz;
+    this.fresh=fresh;
+    }
   Y y;
   CTz ctz;
+  FreshNames fresh;
   Res<Half.E> res;
   public final Res<Half.E> compute(Full.E e){
     assert res==null;
@@ -59,11 +64,25 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitL(Full.L l){commit(l,L(P.coreLibrary),L());}
 
   @Override public void visitEX(Core.EX x){
-    commit(x,y.g().of(x.x()),L());
+    var t=y.g()._of(x.x());
+    if (t==null){commit(x,L(),L());}
+    else{commit(x,t,L());}
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
     commit(eVoid,L(P.coreVoid),L());
     }
+  @Override public void visitSlash(Full.Slash slash){
+    var res=new Half.SlashCastT(slash.pos(), y.onSlash(),y.onSlash());
+    commit(res,y.onSlash(),L());
+    }
+  @Override public void visitSlashX(Full.SlashX slashX){
+    var xp=y._onSlashX();
+    assert xp!=null;
+    var s=new S(slashX.x().inner(),L(),-1);
+    var h=new Half.MCall(slashX.pos(),xp,s,L());
+    visitMCall(h);
+    }
+    
   @Override public void visitCsP(Full.CsP csP){
     assert csP._p()!=null;
     if(expectedAny()){
@@ -74,11 +93,38 @@ public class ToHalf extends UndefinedCollectorVisitor{
     visitCast(new Full.Cast(csP.pos(),csP,t));    
     }
   @Override public void visitCast(Full.Cast cast){
-    if(!(cast.e() instanceof Full.CsP)){throw uc;} 
+    if(!(cast.e() instanceof Full.CsP)){
+      X x=new X(fresh.fresh("casted"));
+      Full.D d=makeDec(cast.t(),x,cast.e());
+      var e=new Core.EX(cast.pos(),x);
+      visitBlock(new Full.Block(cast.pos(),false, L(d),1, L(),L(),e));
+      return;
+      } 
     var csp=(Full.CsP)cast.e();
     var p=csp._p();
     var t=TypeManipulation.toCore(cast.t());
-    commit(new Core.PCastT(cast.pos(),p,t),L(t),L());
+    commit(new Half.PCastT(cast.pos(),p,L(t)),L(t),L());
+    }
+  private Full.D makeDec(Full.T t,X x, Full.E e) {
+    return new Full.D(new Full.VarTx(false,t,null,x),L(), e);
+    }
+  @Override public void visitEPathSel(Full.EPathSel p){
+    var receiver=new Full.Slash(p.pos());
+    var content=p.pathSel().toString();
+    var s=new Full.EString(p.pos(),L(receiver),L(content));
+    visitEString(s);
+    }
+  @Override public void visitUOp(Full.UOp u){
+    if(u._op()==null){
+      assert u._num()!=null;
+      var s=new Full.EString(u.pos(),L(u.e()),L(u._num()));
+      visitEString(s);
+      return;
+      }
+    String name=NameMangling.methName(u._op(),0);
+    S s=new S(name,L(),-1);
+    var m=new Full.Call(u.pos(),u.e(),s,false,Full.Par.emptys);
+    visitCall(m);
     }
   @Override public void visitThrow(Full.Throw thr){
     Y oldY=y;
@@ -99,7 +145,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     commit(new Half.Loop(loop.pos(),res.e),P.stzCoreVoid,res.retSTz);
     }
   @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
-    if(opUpdate.op()!=Op.ColonEqual){throw uc;}
+    if(opUpdate.op()!=Op.ColonEqual){opUpdate=doUpdate(opUpdate);}
     Y oldY=y;
     y=y.with_expectedT(y.g().of(opUpdate.x()));
     var res=compute(opUpdate.e());
@@ -107,6 +153,14 @@ public class ToHalf extends UndefinedCollectorVisitor{
     ctz.plusAcc(y.p(), res.resSTz, y.g().of(opUpdate.x()));
     commit(new Half.Loop(opUpdate.pos(),res.e),P.stzCoreVoid,res.retSTz);        
     }  
+  private Full.OpUpdate doUpdate(Full.OpUpdate ou) {
+    if(ou.op()==Op.ColonEqual){return ou;}
+    Pos p=ou.pos();
+    Op op=ou.op().nonEqOpVersion();
+    List<Full.E> es=List.of(new Core.EX(p,ou.x()),ou.e());
+    Full.E e=new Full.BinOp(p,op,es);
+    return new Full.OpUpdate(p,ou.x(),Op.ColonEqual,e);
+    }
   boolean isFullXP(Full.E e){//Can not be a marker interface since it depends on the values
     if(e instanceof Full.CsP || e instanceof Full.Slash ||e instanceof Core.EX){return true;}
     if(!(e instanceof Full.Cast)){return false;}
@@ -114,7 +168,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     return c.e() instanceof Full.CsP || c.e() instanceof Full.Slash;
     }
     
-  private List<Par> addThats(List<Par> pars){
+  private List<Full.Par> addThats(List<Full.Par> pars){
     return L(pars,par->{
       if(par._that()==null){return par;}
       par=par.withEs(pushL(par._that(),par.es()));
@@ -126,7 +180,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     if(call._s()==null){visitCall(call.with_s(NameMangling.hashApply()));return;}
     var pars=addThats(call.pars());
     if(pars.size()!=1){throw uc;}
-    Par par=pars.get(0);
+    Full.Par par=pars.get(0);
     if(!isFullXP(call.e())){throw uc;}
     Y oldY=y;
     y=y.with_expectedT(P.stzCoreVoid);
@@ -219,13 +273,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
       });
     commit(new Half.BinOp(binOp.pos(),binOp.op(), es), resSTz, retSTz);
     }
-    
+   
   @Override public void visitIf(Full.If sIf){throw uc;}
   @Override public void visitWhile(Full.While sWhile){throw uc;}
   @Override public void visitFor(Full.For sFor){throw uc;}
-  @Override public void visitSlash(Full.Slash slash){throw uc;}
-  @Override public void visitSlashX(Full.SlashX slashX){throw uc;}
   @Override public void visitEString(Full.EString eString){throw uc;}
-  @Override public void visitEPathSel(Full.EPathSel ePathSel){throw uc;}
-  @Override public void visitUOp(Full.UOp uOp){throw uc;}
 }

@@ -38,6 +38,11 @@ public class GX {
     assert res!=null: x;
     return res;
     }
+  public List<ST> _of(X x) {
+    List<ST> res= xInT.get(x);
+    return res;//can be null
+    }
+
 /*
   public GX plusEq(List<Full.D> ds) {
     if(ds.isEmpty()){return this;}
