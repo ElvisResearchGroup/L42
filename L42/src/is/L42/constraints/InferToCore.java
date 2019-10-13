@@ -20,6 +20,7 @@ import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.I;
 import is.L42.generated.Mdf;
+import is.L42.generated.Pos;
 import is.L42.generated.Psi;
 import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
@@ -51,25 +52,30 @@ public class InferToCore extends UndefinedCollectorVisitor{
     return aux;
     }
   public final void commit(Core.E e){res=e;}
-  private T infer(Mdf _mdf, List<ST> stz) {
-    T res=infer(stz);
+  private T infer(Mdf _mdf, List<ST> stz,List<Pos> poss) {
+    T res=infer(stz,poss);
     if(_mdf!=null){res=res.withMdf(_mdf);}
     return res;
     }
-  private T infer(List<ST> stz) {
-    var poss=i.p().topCore().poss();
+  private T infer(List<ST> stz, List<Pos> poss) {
     if(stz.size()==1 && stz.get(0) instanceof T){return (T)stz.get(0);}
+    List<T> tzErr=new ArrayList<>();
     List<T> ts=L(stz,(c,sti)->{
       var stzi=sets.compute(sti);
       var tz=typeFilter(stzi.stream(),T.class);
       var speci=i.p()._chooseSpecificT(tz, poss);
       if(speci!=null){c.add(speci);}
+      else{tzErr.addAll(tz);}
       });
-    T res=i.p()._chooseGeneralT(ts, i.p().topCore().poss());
+    T res=i.p()._chooseGeneralT(ts,poss);
     if(res!=null){return res;}
-    assert false:
-     ts + " "+stz ;
-    throw bug();//TODO:
+    if(ts.isEmpty()){
+      if(tzErr.isEmpty()){
+        throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(stz));
+        }
+      throw new EndError.InferenceFailure(poss, Err.contraddictoryInfoAbout(stz,tzErr));
+      }
+    throw new EndError.InferenceFailure(poss, Err.noCommonSupertypeAmong(stz,ts));
     }
   
   @Override public void visitEX(Core.EX x){commit(x);}
@@ -83,10 +89,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
     }
   @Override public void visitL(Core.L l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){
-    commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(Mdf.Class,pCastT.stz())));
+    commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(Mdf.Class,pCastT.stz(),pCastT.poss())));
     }
   @Override public void visitSlashCastT(Half.SlashCastT slash){
-    commit(new Core.PCastT(slash.pos(),infer(slash.stz()).p(),infer(Mdf.Class,slash.stz1())));
+    commit(new Core.PCastT(slash.pos(),infer(slash.stz(),slash.poss()).p(),infer(Mdf.Class,slash.stz1(),slash.poss())));
     }
   @Override public void visitMCall(Half.MCall mCall){
     Core.E e0=compute(mCall.xP());
@@ -137,25 +143,25 @@ public class InferToCore extends UndefinedCollectorVisitor{
       c.addAll(FV.of(block.e().visitable()));
       });
     List<Core.K> ks=L(block.ks(),(c,ki)->c.add(auxK(ki)));//before ds, so they see the smaller I
-    List<Core.D> ds=auxDs(fv,block.ds());
+    List<Core.D> ds=auxDs(fv,block.ds(),block.poss());
     //i=i.withG(i.g().plusEq(ds)); unnneded, it already happens in ds
     Core.E e=compute(block.e());
     commit(new Core.Block(block.pos(), ds, ks, e));
     }
   private Core.K auxK(Half.K k) {
     I oldI=i;
-    Core.T t=infer(k.stz());
+    Core.T t=infer(k.stz(),k.e().poss());
     i=i.withG(i.g().plusEq(k.x(),t));
     Core.E e=compute(k.e());
     i=oldI;
     assert t.mdf().isImm() || k.thr()==ThrowKind.Return;
     return new Core.K(k.thr(),t,k.x(),e);
     }
-  private List<Core.D> auxDs(List<X> fv, List<Half.D> ds0) {
+  private List<Core.D> auxDs(List<X> fv, List<Half.D> ds0,List<Pos>poss) {
     if(ds0.isEmpty()){return L();}
     Half.D d=ds0.get(0);
     List<Half.D> ds=popL(ds0);
-    Core.T t=infer(d._mdf(),d.stz());//not the final t
+    Core.T t=infer(d._mdf(),d.stz(),poss);//not the final t
     Core.E e1=compute(d.e());
     var fvE=FV.of(e1.visitable());
     Core.T t1=t;
@@ -169,7 +175,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     if(toImm){t1=t.withMdf(Mdf.Immutable);}
     else if(toMut){t1=t.withMdf(Mdf.Mutable);}
     i=i.withG(i.g().plusEq(d.x(), t1));
-    var recursive=auxDs(fv,ds);
+    var recursive=auxDs(fv,ds,poss);
     return pushL(new Core.D(d.isVar(),t1,d.x(),e1),recursive); 
     }
   @Override public void visitD(Half.D d){throw uc;}

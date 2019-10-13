@@ -7,6 +7,7 @@ import static is.L42.tools.General.range;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 import is.L42.common.CTz;
 import is.L42.common.NameMangling;
@@ -23,6 +24,8 @@ import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.generated.Y;
+import is.L42.generated.Full.Cast;
+import is.L42.generated.Full.Par;
 import is.L42.visitors.UndefinedCollectorVisitor;
 import is.L42.visitors.Visitable;
 
@@ -94,10 +97,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   @Override public void visitCast(Full.Cast cast){
     if(!(cast.e() instanceof Full.CsP)){
-      X x=new X(fresh.fresh("casted"));
+      X x=freshX("casted");
       Full.D d=makeDec(cast.t(),x,cast.e());
       var e=new Core.EX(cast.pos(),x);
-      visitBlock(new Full.Block(cast.pos(),false, L(d),1, L(),L(),e));
+      visitBlock(makeBlock(cast.pos(),L(d),e));
       return;
       } 
     var csp=(Full.CsP)cast.e();
@@ -105,8 +108,15 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var t=TypeManipulation.toCore(cast.t());
     commit(new Half.PCastT(cast.pos(),p,L(t)),L(t),L());
     }
-  private Full.D makeDec(Full.T t,X x, Full.E e) {
-    return new Full.D(new Full.VarTx(false,t,null,x),L(), e);
+  private Full.D makeDec(Full.T _t,X x, Full.E e) {
+    return new Full.D(new Full.VarTx(false,_t,null,x),L(), e);
+    }
+  private Full.D makeDec(Full.E e) {
+    return new Full.D(null,L(), e);
+    }
+
+  private Full.Block makeBlock(Pos pos,List<Full.D>ds,Full.E e){
+    return new Full.Block(pos,false, ds,ds.size(), L(),L(),e);
     }
   @Override public void visitEPathSel(Full.EPathSel p){
     var receiver=new Full.Slash(p.pos());
@@ -151,7 +161,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var res=compute(opUpdate.e());
     y=oldY;
     ctz.plusAcc(y.p(), res.resSTz, y.g().of(opUpdate.x()));
-    commit(new Half.Loop(opUpdate.pos(),res.e),P.stzCoreVoid,res.retSTz);        
+    commit(new Half.OpUpdate(opUpdate.pos(),opUpdate.x(),res.e),P.stzCoreVoid,res.retSTz);        
     }  
   private Full.OpUpdate doUpdate(Full.OpUpdate ou) {
     if(ou.op()==Op.ColonEqual){return ou;}
@@ -181,7 +191,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var pars=addThats(call.pars());
     if(pars.size()!=1){throw uc;}
     Full.Par par=pars.get(0);
-    if(!isFullXP(call.e())){throw uc;}
+    if(!isFullXP(call.e())){
+      X rec=freshX("receiver");
+      Full.D d=makeDec(null,rec,call.e());
+      Full.E c=call.withE(new Core.EX(call.pos(),rec));
+      visitBlock(makeBlock(call.pos(),L(d),c));
+      return;
+      }
     Y oldY=y;
     y=y.with_expectedT(P.stzCoreVoid);
     var resXP=compute(call.e());
@@ -259,10 +275,21 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=oldY;
     return new Res<>(kr,res.resSTz,res.retSTz);
     }
+  private X freshX(String s){return new X(fresh.fresh(s));}
   @Override public void visitBinOp(Full.BinOp binOp){
-    if(binOp.op().kind==OpKind.BoolOp){throw uc;}
+    if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
     if(binOp.es().size()==2 && binOp.es().get(0) instanceof Full.CsP){throw uc;}
-    if(!binOp.es().stream().allMatch(Core.XP.class::isInstance)){throw uc;}
+    List<Full.E> xps=new ArrayList<>();
+    List<Full.D> ds=L(binOp.es(),(c,ei)->{
+      if(isFullXP(ei)){xps.add(ei);return;}
+      X xi=freshX("op");
+      xps.add(new Core.EX(ei.pos(),xi));
+      c.add(makeDec(null, xi, ei));
+      });
+    if(!ds.isEmpty()){
+      visitBlock(makeBlock(binOp.pos(), ds, binOp.withEs(L(xps.stream()))));
+      return;
+      }
     ArrayList<ST> resSTz=new ArrayList<>();
     ArrayList<ST> retSTz=new ArrayList<>();
     List<Half.XP> es=L(binOp.es(),(c,ei)->{
@@ -273,7 +300,30 @@ public class ToHalf extends UndefinedCollectorVisitor{
       });
     commit(new Half.BinOp(binOp.pos(),binOp.op(), es), resSTz, retSTz);
     }
-   
+  private void visitBinOp3(Full.BinOp b){
+    Pos p=b.pos();
+    var e0=b.es().get(0);
+    var e1=b.es().get(1);
+    assert b.es().size()==2;
+    X x=freshX("op3");
+    var ex=new Core.EX(p,x);
+    if(!isFullXP(e0)){
+      var d=makeDec(null,x,e0);
+      visitBlock(makeBlock(p,L(d),b.withEs(List.of(ex,e1))));
+      return;
+      }
+    S sc=NameMangling.shortCircuit(b.op());
+    S sr=NameMangling.shortResult(b.op());
+    S sp=NameMangling.shortProcess(b.op());
+    var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
+    var srCall=new Full.Call(p,e0,sr,false,Par.emptys);
+    X other=new X("other");
+    Par par=new Par(ex,L(other),L(e1));
+    var spCall=new Full.Call(p,e0,sp,false,L(par));
+    var dx=makeDec(null,x,scCall);
+    var ifElse=new Full.If(p, ex,L(), srCall,spCall);
+    visitBlock(makeBlock(p, L(dx),ifElse));
+    }
   @Override public void visitIf(Full.If sIf){throw uc;}
   @Override public void visitWhile(Full.While sWhile){throw uc;}
   @Override public void visitFor(Full.For sFor){throw uc;}

@@ -2488,6 +2488,7 @@ public class Core {
       if (exceptions == null) {
         throw new java.lang.NullPointerException("exceptions is marked non-null but is null");
       }
+      assert !s.m().isEmpty();
       this.mdf = mdf;
       this.docs = docs;
       this.t = t;

@@ -177,23 +177,53 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
      class method This !()=!this
      class method This ~()=~this
+     class method This aa()=~~!~!this
      ""","""
      class method imm This0 #bang0()=this.#bang0()
      class method imm This0 #tilde0()=this.#tilde0()
+     class method imm This0 aa()=(
+       imm This0 fresh0_receiver=(
+         imm This0 fresh1_receiver=(
+           imm This0 fresh2_receiver=(
+             imm This0 fresh3_receiver=this.#bang0()
+               fresh3_receiver.#tilde0())
+             fresh2_receiver.#bang0())
+           fresh1_receiver.#tilde0())
+         fresh0_receiver.#tilde0()
+       )
      """)
    ),new AtomicTest(()->pass("""
      class method Void foo1()=(var This x=this  x:=void)
      class method Void foo2()=(var This x=this  x+=void)
+     method Void +(Void v)
      ""","""
-     class method imm This0 #bang0()=this.#bang0()
-     class method imm This0 #tilde0()=this.#tilde0()
+     class method imm Void foo1()=(var imm This0 x=this x:=void)
+     class method imm Void foo2()=(var imm This0 x=this x:=
+       (imm Void fresh0_op=void x.#plus0(v=fresh0_op))
+       )
+     imm method imm Void #plus0(imm Void v)
      """)
    ),new AtomicTest(()->pass("""
      class method Void ()=This()
      ""","""
      class method imm Void #apply()=This0<:class This0.#apply()
      """)
-     //TODO: assert in the Core.MH that the selector name is not empty
+   ),new AtomicTest(()->pass("""
+     class method Void (This that)=This(this)
+     ""","""
+     class method imm Void #apply(imm This0 that)=
+       This0<:class This0.#apply(that=this)
+     """)
+   ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
+     method Void a()=(x=this.nope() void)
+     """,Err.inferenceFailNoInfoAbout(hole))
+   ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
+     method Void a()=(Void i1=this.nope() Library i2=this.nope() x=this.nope() void)
+     """,Err.contraddictoryInfoAbout(hole,hole))
+   ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
+     method Void a(Void i1, Library i2)=( x=(Void i0=this.nope() catch error Void z i1 i2) void)
+     """,Err.noCommonSupertypeAmong(hole,hole))
+
      
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";

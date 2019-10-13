@@ -184,7 +184,12 @@ public class Err {
   ;}public static String operatorNotFound(Object _1,List<?> _2){
     if(_2.isEmpty()){return "Operator "+_1+" could not be translated in any method call";}
     return "Operator "+_1+" could be translated in any of the following method calls: "+_2
-    
-    
+  ;}public static String inferenceFailNoInfoAbout(Object _1){return
+  "The type of "+_1+" can not be inferred; no informations about it are available"
+  ;}public static String contraddictoryInfoAbout(Object _1,Object _2){return
+  "The type of "+_1+" can not be inferred; it is required to be a subtype of all the following incompatible types:"+_2
+  ;}public static String noCommonSupertypeAmong(Object _1,Object _2){return
+  "The type of "+_1+" can not be inferred; none of the following types is a subtype of all the others:"+_2
+  
   ;}
 }
