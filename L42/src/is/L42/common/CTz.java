@@ -90,7 +90,9 @@ public class CTz {
     ST st=solve(p,stsi.st());
     if(!(st instanceof T) ||!((T)st).p().isNCs()){return stsi.withSt(st);}
     P.NCs p0=((T)st).p().toNCs();
-    var mwt= _elem(p._ofCore(p0).mwts(),stsi.s());
+    var pOfP0=p._ofCore(p0);
+    if(pOfP0==null){return stsi.withSt(st);}
+    var mwt= _elem(pOfP0.mwts(),stsi.s());
     if(mwt==null){return stsi.withSt(st);}
     if(stsi.i()==-1){return p.from(mwt.mh().t(),p0);}
     if(stsi.i()>mwt.mh().s().xs().size()){return stsi.withSt(st);}

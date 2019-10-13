@@ -68,10 +68,10 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
-    CsP' = CsP.$methName(OP)
-    STz0  = Y.p.minimize(CTz; CsP'.#apply(that))
-    STz1 = Y.p.minimize(CTz; CsP'.#apply(that).1)
+* Y!CsP OP e = P<:class P.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
+    P = CsP.methName(OP)[#=$]//where # is replaced by $
+    STz0 = P.#apply(that)
+    STz1 = P.#apply(that).1
     Y[expectedT=STz1] ! e = e'; STz2; STz; CTz
     // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
 
@@ -88,7 +88,8 @@ _______
 * Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e )
-    Ki = catch exception Ti xi error xi.#intoErrorAt(that={#norm{}}) //so that we can recover the position
+    Ki = catch exception Ti xi error xi.#whoopsed(atPos={#norm{}}) //so that we can recover the position
+    x1..xn fresh
 * Y!( D1..Dn K1..Km e0) = (Ds1..Dsn K'1..K'm e'); STz; STz'; CTz'm  //Dsi are HALF.Ds
     GX = GX^(D1..Dn)
     GXi = Y.GX + GX + GX^Ds1 +..+ GX^Ds(i-1)

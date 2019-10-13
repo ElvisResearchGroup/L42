@@ -223,8 +223,58 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
      method Void a(Void i1, Library i2)=( x=(Void i0=this.nope() catch error Void z i1 i2) void)
      """,Err.noCommonSupertypeAmong(hole,hole))
-
-     
+   ),new AtomicTest(()->pass("""
+     class method Void (This that)=This+that
+     ""","""
+     class method imm Void #apply(imm This0 that)=
+       This0.$plus0<:class This0.$plus0.#apply(that=that)
+     """)
+   ),new AtomicTest(()->pass("""
+     class method Void a()=(void catch error Void z z)
+     ""","""
+     class method Void a()=(void)
+     """)
+   ),new AtomicTest(()->pass("""
+     class method Void a()=(Void v0=void catch error Void z z Void v1=void void)
+     ""","""
+     class method imm Void a()=(
+       imm Void v0=void catch error imm Void z z
+       (imm Void v1=void void))
+     """)
+   ),new AtomicTest(()->pass("""
+     class method Void a()=(Void v0=void
+       catch error Void z z
+       whoops Library
+       void)
+     ""","""
+     class method imm Void a()=(imm Void v0=void
+       catch error imm Void z z
+       catch exception imm Library fresh0_whoops
+         error fresh0_whoops.#whoopsed(atPos={#norm{}})
+       void)
+     """)
+   ),new AtomicTest(()->pass("""
+     class method Void a()=(Void v0=void
+       whoops Library
+       void)
+     ""","""
+     class method imm Void a()=(imm Void v0=void
+       catch exception imm Library fresh0_whoops
+         error fresh0_whoops.#whoopsed(atPos={#norm{}})
+       void)     """)
+   ),new AtomicTest(()->pass("""
+     class method Void a()=(Void v0=void
+       catch error Void z z
+       whoops Library, Void
+       void)
+     ""","""
+     class method imm Void a()=(imm Void v0=void
+       catch error imm Void z z
+       catch exception imm Library fresh0_whoops
+         error fresh0_whoops.#whoopsed(atPos={#norm{}})
+       catch exception imm Void fresh1_whoops
+         error fresh1_whoops.#whoopsed(atPos={#norm{}})
+       void)     """)     
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 static Program p0=Program.parse("""

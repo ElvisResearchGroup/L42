@@ -10,11 +10,15 @@ import java.util.List;
 import java.util.function.Predicate;
 
 import is.L42.common.CTz;
+import is.L42.common.EndError;
 import is.L42.common.NameMangling;
+import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
+import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
+import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.Op.OpKind;
 import is.L42.generated.P;
@@ -221,8 +225,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   @Override public void visitBlock(Full.Block block){
     if(block.isCurly()){throw uc;}
-    if(block._e()==null){throw uc;}
-    if(block.dsAfter()!=block.ds().size()){throw uc;}
+    if(block._e()==null){block=block.with_e(new Core.EVoid(block.pos()));}
+    if(block.dsAfter()!=block.ds().size()){block=splitBlock(block);}
+    if(!block.whoopsed().isEmpty()){block=expandWhoopses(block);}
     Y oldY=y;
     y=y.withG(y.g().plusEq(block.ds()));
     ArrayList<Half.D> ds=new ArrayList<>();
@@ -264,7 +269,33 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=oldY;
     return new Res<>(hd,L(),res.retSTz);
     }
-    
+  private Full.Block splitBlock(Full.Block b){
+    List<Full.D> ds0=b.ds().subList(0,b.dsAfter());
+    List<Full.D> ds1=b.ds().subList(b.dsAfter(),b.ds().size());
+    assert !b.isCurly();
+    assert !ds0.isEmpty();
+    assert !ds1.isEmpty();
+    var inner=new Full.Block(b.pos(),false,ds1,ds1.size(),L(),L(),b._e());
+    return new Full.Block(b.pos(), false, ds0, ds0.size(), b.ks(),b.whoopsed(), inner);
+    }
+  private Full.Block expandWhoopses(Full.Block b){
+    Pos p=b.pos();
+    List<Full.K> ks=L(c->{
+      c.addAll(b.ks());
+      for(Full.T w:b.whoopsed()){
+        X xi=freshX("whoops");
+        var exi=new Core.EX(p,xi);
+        var s=new S("#whoopsed",L(),-1);
+        X atPos=new X("atPos");
+        Par par=new Par(null,L(atPos),L(Program.emptyL.withPoss(L(p))));
+        //Ki = catch exception Ti xi error 
+        Full.E errE=new Full.Call(p,exi,s,false,L(par));
+        errE=new Full.Throw(p,ThrowKind.Error,errE);
+        c.add(new Full.K(ThrowKind.Exception,w, xi,errE));
+        }
+      });
+      return b.withKs(ks);
+    }
   private Res<Half.K> auxK(Full.K k){
     if(k._x()==null || k._thr()==null){throw uc;}
     Y oldY=y;
@@ -278,7 +309,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private X freshX(String s){return new X(fresh.fresh(s));}
   @Override public void visitBinOp(Full.BinOp binOp){
     if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
-    if(binOp.es().size()==2 && binOp.es().get(0) instanceof Full.CsP){throw uc;}
+    if(binOp.es().size()==2 && binOp.es().get(0) instanceof Full.CsP){
+      visitBinOpCsp(binOp);return;}
     List<Full.E> xps=new ArrayList<>();
     List<Full.D> ds=L(binOp.es(),(c,ei)->{
       if(isFullXP(ei)){xps.add(ei);return;}
@@ -324,6 +356,37 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var ifElse=new Full.If(p, ex,L(), srCall,spCall);
     visitBlock(makeBlock(p, L(dx),ifElse));
     }
+  private void visitBinOpCsp(Full.BinOp b){
+    assert b.es().get(0) instanceof Full.CsP;
+    var csp=(Full.CsP)b.es().get(0);
+    var e=b.es().get(1);
+    assert b.es().size()==2;
+    assert csp.cs().isEmpty();
+    assert csp._p().isNCs();//should be a well formedness error
+    C c=new C("$"+NameMangling.methName(b.op(),0).substring(1),-1);
+    var p=csp._p().toNCs();
+    p=p.withCs(pushL(p.cs(),c));
+    var pct=new Half.PCastT(b.pos(), p, L(new Core.T(Mdf.Class,L(),p)));
+    List<ST> stz0= L(new ST.STMeth(pct.stz().get(0),applyThat,-1));
+    List<ST> stz1= L(new ST.STMeth(pct.stz().get(0),applyThat,1));
+    var oldExpectedT=y._expectedT();
+    y=y.with_expectedT(stz1);
+    var res=compute(e);
+    y=y.with_expectedT(oldExpectedT);
+    var e1=res.e;
+    var stz2=res.resSTz;
+    var stz=res.retSTz;
+    ctz.plusAcc(y.p(), stz2, stz1);
+    Half.MCall half=new Half.MCall(b.pos(),pct,applyThat,L(e1));
+    commit(half,stz0,stz);
+    }
+    private static final S applyThat=S.parse("#apply(that)");
+  /*  
+    * Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
+    STz0  = P.#apply(that)
+    STz1 = P.#apply(that).1
+    Y[expectedT=STz1] ! e = e'; STz2; STz; CTz
+*/
   @Override public void visitIf(Full.If sIf){throw uc;}
   @Override public void visitWhile(Full.While sWhile){throw uc;}
   @Override public void visitFor(Full.For sFor){throw uc;}
