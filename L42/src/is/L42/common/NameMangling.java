@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 
 import is.L42.generated.Op;
 import is.L42.generated.S;
+import is.L42.generated.X;
 
 public class NameMangling {
   private static final S hashApply=new S("#apply",L(),-1);
@@ -25,6 +26,12 @@ public class NameMangling {
     }
   public static S shortProcess(Op op){
     return new S("#shortProcess"+op.name().toLowerCase(),L(),-1);
+    }
+  public static S methNameTrim(X x) {
+    assert x!=null;
+    String s=x.inner();
+    String base=s.replaceAll("\\d*$","");//remove all trailing digits
+    return new S(base,L(),-1);
     }
 
 }

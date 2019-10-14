@@ -36,7 +36,7 @@ class TestInductiveSet {
   }
   //e::= x| L | e e 
   //L::= (\x. e)
-  //x::= a|b|c
+  //x::= a|b
   enum Term{E,X,L}
   @Test void testLambda() {
     int limit=20;

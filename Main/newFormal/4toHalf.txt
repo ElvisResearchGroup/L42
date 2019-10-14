@@ -105,15 +105,15 @@ _______
     STz = STz0 U..U STzm
     STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
-    // Note: well formedness for {...} wil ensure that the above "error void" is unreachable
+    // Note: well formedness for {...} will ensure that the above "error void" is unreachable
     Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
-    K = catch return p.minimize(CTz; Y.expectedT,STz) x' x'
+    K = catch return Y.expectedT,STz x' x'
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!e.m[pars]= Y!(e.m(squareBuilder=(
       x=\.#squareBuilder()
       if \.#shortCircutSquare() (
-        e1..en //so \ and \x are about the builder
+        e1..en void//so \ and \x are about the builder
         )
       x))
     x fresh
@@ -186,9 +186,9 @@ _______
       Y[expectedT = empty]!e = e'; STz; STz'; CTz
 * Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTzn
     Y!(TLocal x = e) = D0; STz0; CTz0
-    Y[CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
+    Y[GX+=x:D0.STz CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
     ..
-    Y[CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
+    Y[GX+=x:D0.STz CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
     x fresh
 
 _______

@@ -308,6 +308,7 @@ public class ToSVisitor implements ToSTrait{
     var s0=mCall.s();
     var es0=mCall.es();
     visitXP(xP0);
+    c(".");
     cMethName(s0);
     c("(");
     seqHas(i->c(s0.xs().get(i)+"="),es0,", ");

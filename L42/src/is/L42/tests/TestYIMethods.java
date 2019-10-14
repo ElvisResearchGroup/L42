@@ -232,7 +232,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
      class method Void a()=(void catch error Void z z)
      ""","""
-     class method Void a()=(void)
+     class method imm Void a()=(
+       imm Void fresh0_underscore=void
+       catch error imm Void z z void)
      """)
    ),new AtomicTest(()->pass("""
      class method Void a()=(Void v0=void catch error Void z z Void v1=void void)
@@ -274,7 +276,77 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          error fresh0_whoops.#whoopsed(atPos={#norm{}})
        catch exception imm Void fresh1_whoops
          error fresh1_whoops.#whoopsed(atPos={#norm{}})
-       void)     """)     
+       void)
+       """)     
+   ),new AtomicTest(()->pass("""
+     method This foo()
+     method This x() method This y()
+     method Void a()=((x12,y2)=this.foo() x12)
+     ""","""
+     imm method imm This0 foo()
+     imm method imm This0 x()
+     imm method imm This0 y()
+     imm method imm Void a()=(
+       imm This0 fresh0_DecMatch=this.foo()
+       imm This0 x12=fresh0_DecMatch.x()
+       imm This0 y2=fresh0_DecMatch.y()
+       x12)
+     """) 
+   ),new AtomicTest(()->pass("""
+     method This foo()
+     method This x() method This y()
+     method Void a()=(This(var This x12,y2)=this.foo() x12.foo().foo())
+     ""","""
+     imm method imm This0 foo()
+     imm method imm This0 x()
+     imm method imm This0 y()
+     imm method imm Void a()=(
+       imm This0 fresh0_DecMatch=this.foo()
+       var imm This0 x12=fresh0_DecMatch.x()
+       imm This0 y2=fresh0_DecMatch.y()
+       (
+         imm This0 fresh1_receiver=x12.foo()
+         fresh1_receiver.foo()
+         )
+       )
+     """)
+   ),new AtomicTest(()->pass("""
+     method Void a()=(Void v=void catch Library _ void void)
+     ""","""
+     imm method imm Void a()=(
+       imm Void v=void
+       catch exception imm Library fresh0_underscore void
+       void)
+     """)
+   ),new AtomicTest(()->pass("""
+     method Void a()=(void catch Library _ void)
+     ""","""
+     imm method imm Void a()=(
+       imm Void fresh0_underscore=void
+       catch exception imm Library fresh1_underscore void
+       void)
+     """)
+   ),new AtomicTest(()->pass("""
+     method Void a()={ return void }
+     ""","""
+     imm method imm Void a()=(
+       imm Void fresh0_curlyX=(
+         imm Void fresh2_underscore=return void
+         void)
+       catch return imm Void fresh1_curlyX1 fresh1_curlyX1
+       error void)
+     """)
+   ),new AtomicTest(()->pass("""
+     method Void a()={ loop (void) catch Library _ return void }
+     ""","""
+     imm method imm Void a()=(
+       imm Void fresh0_curlyX=(
+         imm Void fresh2_underscore=loop(void)
+         catch exception imm Library fresh3_underscore return void
+         void)
+       catch return imm Void fresh1_curlyX1 fresh1_curlyX1
+       error void)
+     """)
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 static Program p0=Program.parse("""

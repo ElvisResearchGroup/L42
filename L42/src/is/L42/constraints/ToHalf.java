@@ -16,6 +16,7 @@ import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Core.EVoid;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.Mdf;
@@ -28,7 +29,9 @@ import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.generated.Y;
+import is.L42.generated.Full.Call;
 import is.L42.generated.Full.Cast;
+import is.L42.generated.Full.If;
 import is.L42.generated.Full.Par;
 import is.L42.visitors.UndefinedCollectorVisitor;
 import is.L42.visitors.Visitable;
@@ -193,7 +196,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitCall(Full.Call call){
     if(call._s()==null){visitCall(call.with_s(NameMangling.hashApply()));return;}
     var pars=addThats(call.pars());
-    if(pars.size()!=1){throw uc;}
+    if(pars.size()!=1){call=expandSquare(call);}
     Full.Par par=pars.get(0);
     if(!isFullXP(call.e())){
       X rec=freshX("receiver");
@@ -224,7 +227,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     commit(new Half.MCall(call.pos(), (Half.XP)resXP.e, s,L(es.stream())),stz1,L(retST.stream().distinct()));
     }
   @Override public void visitBlock(Full.Block block){
-    if(block.isCurly()){throw uc;}
+    if(block.isCurly()){curlyBlock(block);return;}
     if(block._e()==null){block=block.with_e(new Core.EVoid(block.pos()));}
     if(block.dsAfter()!=block.ds().size()){block=splitBlock(block);}
     if(!block.whoopsed().isEmpty()){block=expandWhoopses(block);}
@@ -236,9 +239,11 @@ public class ToHalf extends UndefinedCollectorVisitor{
     ArrayList<ST> retST=new ArrayList<>();
     for(Full.D d:block.ds()){
       var res=auxD(d);
-      ds.add(res.e);
+      ds.addAll(res.e);
       retST.addAll(res.retSTz); //resST is empty
-      y=y.withG(y.g().plusEqOver(res.e.x(),res.e.stz()));
+      for(var dRes:res.e){
+        y=y.withG(y.g().plusEqOver(dRes.x(),dRes.stz()));
+        }
       }
     for(Full.K k:block.ks()){
       var res=auxK(k);
@@ -252,10 +257,11 @@ public class ToHalf extends UndefinedCollectorVisitor{
     commit(new Half.Block(block.pos(),L(ds.stream()),L(ks.stream()),res.e),resST,retST);
     y=oldY;
     }
-  private Res<Half.D> auxD(Full.D d){
+  private Res<List<Half.D>> auxD(Full.D d){
     assert d._e()!=null;
-    if(d._varTx()==null || !d.varTxs().isEmpty()){throw uc;}
-    if(d._varTx()._x()==null){throw uc;}
+    if(d._varTx()==null){d=d.with_varTx(immVoid_);}
+    if( !d.varTxs().isEmpty()){ return auxMultiD(d);}
+    if(d._varTx()._x()==null){d=d.with_varTx(d._varTx().with_x(freshX("underscore")));}
     Y oldY=y;
     List<ST> t=null;
     if(d._varTx()._t()!=null){
@@ -267,8 +273,32 @@ public class ToHalf extends UndefinedCollectorVisitor{
     else{ctz.plusAcc(y.p(),res.resSTz,t);}
     var hd=new Half.D(d._varTx().isVar(),d._varTx()._mdf(), t, d._varTx()._x(),res.e);
     y=oldY;
-    return new Res<>(hd,L(),res.retSTz);
+    return new Res<>(L(hd),L(),res.retSTz);
     }
+  private Res<List<Half.D>> auxMultiD(Full.D d){
+    X x=freshX("DecMatch");
+    Core.EX ex=new Core.EX(d._e().pos(),x);
+    d.varTxs();
+    Full.D step0=d.withVarTxs(L()).with_varTx(d._varTx().with_x(x));
+    List<ST>retST=new ArrayList<>();
+    List<Half.D> ds=new ArrayList<>();
+    var res=auxD(step0);
+    ds.addAll(res.e);
+    retST.addAll(res.retSTz);
+    Y oldY=y;
+    y=y.withG(y.g().plusEq(x,res.e.get(0).stz()));
+    for(var vtx:d.varTxs()){
+      S s=NameMangling.methNameTrim(vtx._x());
+      var mCall=new Full.Call(ex.pos(),ex,s,false,Par.emptys);
+      Full.D di=new Full.D(vtx,L(),mCall);
+      var resi=auxD(di);
+      ds.addAll(resi.e);
+      retST.addAll(resi.retSTz);
+      };
+    y=oldY;
+    return new Res<>(ds,L(),retST);
+    }
+    
   private Full.Block splitBlock(Full.Block b){
     List<Full.D> ds0=b.ds().subList(0,b.dsAfter());
     List<Full.D> ds1=b.ds().subList(b.dsAfter(),b.ds().size());
@@ -277,6 +307,51 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert !ds1.isEmpty();
     var inner=new Full.Block(b.pos(),false,ds1,ds1.size(),L(),L(),b._e());
     return new Full.Block(b.pos(), false, ds0, ds0.size(), b.ks(),b.whoopsed(), inner);
+    }
+  private void curlyBlock(Full.Block b){
+    Pos p=b.pos();
+    X x=freshX("curlyX");
+    X x1=freshX("curlyX1");
+    Core.EX ex1=new Core.EX(p,x1);
+    var innerBlock=b.withCurly(false).with_e(new Core.EVoid(p));
+    Y oldY=y;
+    y=y.with_expectedT(P.stzCoreVoid);
+    var res=compute(innerBlock);
+    y=oldY;
+    var kStz=res.resSTz;
+    if(y._expectedT()!=null){kStz=mergeU(y._expectedT(),kStz);}
+    Half.K k=new Half.K(ThrowKind.Return,kStz,x1,ex1);
+    Half.D d=new Half.D(false,null,L(P.coreVoid), x,res.e);
+    Half.E end=new Half.Throw(p,ThrowKind.Error,new Core.EVoid(p));
+    commit(new Half.Block(b.pos(),L(d),L(k),end),res.resSTz,L());
+    }
+  private Full.Call expandSquare(Full.Call s){
+    Pos p=s.pos();
+    assert s.isSquare();
+    X x=freshX("builder");
+    Core.EX ex=new Core.EX(p,x);
+    var squareB=new Full.Call(p,new Full.Slash(p), squareBuilder,false,Par.emptys);
+    var decX=makeDec(null,x,squareB);
+    List<Full.D> e1n=L(s.pars(),(c,pi)->{
+      if(pi.es().isEmpty() && pi._that()!=null){
+        var e1i=pi._that();
+        if(e1i instanceof Full.If 
+         ||e1i instanceof Full.While
+         ||e1i instanceof Full.For
+         ||e1i instanceof Full.Loop
+         ||e1i instanceof Full.Block){
+          c.add(makeDec(new Full.Call(p,ex,yieldS,false,L(new Par(e1i,L(),L())))));
+          return;
+          }
+        }
+      c.add(makeDec(new Full.Call(p,ex,addS,false,L(pi))));
+      });
+    Full.E block=makeBlock(p,e1n,new Core.EVoid(p));
+    var eIf=new Full.If(p,squareB.with_s(shortCircutSquare),L(),block,null);
+    var builderBlock=makeBlock(p,L(decX),eIf);
+    var mCallPar=new Full.Par(null, squareBuilderX, L(builderBlock));
+    var mCall=new Full.Call(p,s.e(),s._s(),false,L(mCallPar));
+    return mCall;
     }
   private Full.Block expandWhoopses(Full.Block b){
     Pos p=b.pos();
@@ -297,7 +372,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
       return b.withKs(ks);
     }
   private Res<Half.K> auxK(Full.K k){
-    if(k._x()==null || k._thr()==null){throw uc;}
+    if(k._x()==null){k=k.with_x(freshX("underscore"));}
+    if(k._thr()==null){k=k.with_thr(ThrowKind.Exception);}
     Y oldY=y;
     List<ST> t=L(TypeManipulation.toCore(k.t()));
     y=y.withG(y.g().plusEq(k._x(),t));
@@ -381,6 +457,12 @@ public class ToHalf extends UndefinedCollectorVisitor{
     commit(half,stz0,stz);
     }
     private static final S applyThat=S.parse("#apply(that)");
+    private static final S squareBuilder=S.parse("#squareBuilder()");
+    private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
+    private static final S yieldS=S.parse("#yield()");
+    private static final S addS=S.parse("#add()");
+    private static final List<X> squareBuilderX=L(new X("squareBuilder"));
+    private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
   /*  
     * Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
     STz0  = P.#apply(that)
