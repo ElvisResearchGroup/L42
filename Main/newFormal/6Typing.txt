@@ -10,14 +10,19 @@ _______
     MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
     NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
 _______
-#define typable(p)=Csz
-//TODO: This0 can be typed only if is an interface
-* typable(p) = Cs1..Csn
-    //dom(p(This0)) asserts p(This0) is CORE.L
-    Cs1..Csn is the largest subset of dom(p(This0)) so that forall i:
-    p(This0.Csi) of form CORE.L
-    p(This0.Csi).Info.Flag=norm
-    p(This0.Csi).depTyped subset {P| p(P).Info.Flag=typed} U This0.Cs1..This0.Csn
+#define typable(p)=Csz untypable(p)=CTz
+* typable(p) = Cs1..Csn // asserts p(This0) is CORE.L
+    dom(p(This0))/untypable(p)
+    
+* empty in untypable(p) if p(This0).interface=empty
+* Cs in untypable(p) if p(This0.Csi).Info.Flag=typed
+* Cs in untypable(p) if 
+    P in p(This0.Csi).Info.depTyped[from This0.Cs;p]
+    P notin dom(p)
+* Cs in untypable(p) if 
+    Cs' in untypable(p)
+    not p(Cs').Info.Flag=typed //could be norm but also p(Cs') undefined
+    This0.Cs' in p(This0.Csi).Info.depTyped[from This0.Cs;p]    
 _______
 #define wellTyped(p, CORE.e)=CORE.T
 * wellTyped(p,e)=T

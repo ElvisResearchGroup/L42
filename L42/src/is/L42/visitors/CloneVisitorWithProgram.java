@@ -19,12 +19,12 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   public List<Pos> poss;
   public Program p(){return this.p;}
     protected int levels=-1;
-  private List<LDom> whereFromTop=new ArrayList<>();
-  protected List<LDom> whereFromTop$(){
+  private ArrayList<LDom> whereFromTop=new ArrayList<>();
+  protected ArrayList<LDom> whereFromTop(){
     return this.whereFromTop;
     }
   private LDom lastCMs=null;
-  public Object getLastCMs(){return lastCMs;}
+  public LDom getLastCMs(){return lastCMs;}
   @Override public Full.L visitL(Full.L s) {
     if(lastCMs==null){
       assert p.top==s;

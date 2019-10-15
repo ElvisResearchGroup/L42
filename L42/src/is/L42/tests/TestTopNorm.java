@@ -43,28 +43,28 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    topFail(InvalidImplements.class,"{B={} A={[This1.B]}}",Err.notInterfaceImplemented())
    ),new AtomicTest(()->
-   top("{B={interface} A={[B, B]}}","{B={interface #norm{}} A={[This1.B]#norm{typeDep=This1.B}}#norm{}}")
+   top("{B={interface} A={[B, B]}}","{B={interface #typed{}} A={[This1.B]#typed{typeDep=This1.B}}#norm{}}")
    ),new AtomicTest(()->
    topFail(PathNotExistent.class,"{[This1.A]}B={}",Err.pathNotExistant("This1.A"))
    ),new AtomicTest(()->
    top("{A={interface}B={interface[This1.A]}C={[This1.B, This1.A]}}","""
-     {A={interface #norm{}}
-      B={interface[This1.A]#norm{typeDep=This1.A}}
-      C={[This1.B, This1.A]#norm{typeDep=This1.B, This1.A}}
-      #norm{}
+     {A={interface #typed{}}
+      B={interface[This1.A]#typed{typeDep=This1.A}}
+      C={[This1.B, This1.A]#typed{typeDep=This1.B, This1.A}}
+      #norm{}     
       }""")
    ),new AtomicTest(()->
    top("{A={interface}B={interface[This1.A]}C={[This1.A, This1.B]}}","""
-     {A={interface #norm{}}
-      B={interface[This1.A]#norm{typeDep=This1.A}}
-      C={[This1.A, This1.B]#norm{typeDep=This1.A, This1.B}}
+     {A={interface #typed{}}
+      B={interface[This1.A]#typed{typeDep=This1.A}}
+      C={[This1.A, This1.B]#typed{typeDep=This1.A, This1.B}}
       #norm{}
       }""")
    ),new AtomicTest(()->
    top("{A={interface}B={interface[This1.A]}C={[This1.B]}}","""
-     {A={interface #norm{}}
-      B={interface[This1.A]#norm{typeDep=This1.A}}
-      C={[This1.B, This1.A]#norm{typeDep=This1.B, This1.A}}
+     {A={interface #typed{}}
+      B={interface[This1.A]#typed{typeDep=This1.A}}
+      C={[This1.B, This1.A]#typed{typeDep=This1.B, This1.A}}
       #norm{}
       }""")
     ),new AtomicTest(()->
@@ -76,33 +76,33 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     top("{ method Void v() method Any g(Any that)[Library]}",
     "{ method Void v() method Any g(Any that)[Library] #norm{}}")
     ),new AtomicTest(()->
-    top("{A={interface method A a()} C={[A] method Void v()}}","""
-     {A={interface method This a() #norm{typeDep=This0}} 
-      C={[This1.A] method Void v()
-          imm method imm This1.A a() #norm{typeDep=This1.A}
+    top("{A={interface method A a()} C={interface [A] method Void v()}}","""
+     {A={interface method This a() #typed{typeDep=This0}} 
+      C={interface [This1.A] method Void v()
+          imm method imm This1.A a() #typed{typeDep=This1.A}
           } #norm{}}
      """)
     ),new AtomicTest(()->
-    top("{C={interface method A a()} A={interface [C]} B={interface [C]} D={[A,B]}}","""
-    {C={interface method This1.A a() #norm{typeDep=This1.A}}
-     A={interface [This1.C] method This a() #norm{typeDep=This1.C, This}}
-     B={interface [This1.C] method This1.A a() #norm{typeDep=This1.C, This1.A}}
-     D={[This1.A,This1.B,This1.C]imm method imm This1.A a() #norm{typeDep=This1.A, This1.B,This1.C}}
+    top("{C={interface method A a()} A={interface [C]} B={interface [C]} D={interface[A,B]}}","""
+    {C={interface method This1.A a() #typed{typeDep=This1.A}}
+     A={interface [This1.C] method This a() #typed{typeDep=This1.C, This}}
+     B={interface [This1.C] method This1.A a() #typed{typeDep=This1.C, This1.A}}
+     D={interface[This1.A,This1.B,This1.C]imm method imm This1.A a() #typed{typeDep=This1.A, This1.B,This1.C}}
     #norm{}}""")
     ),new AtomicTest(()->
-    top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={[A,B]}}","""
-    {C={interface method Any a() #norm{}}
-     A={interface [This1.C] method Void a() #norm{typeDep=This1.C}}
-     B={interface [This1.C] method Any a() #norm{typeDep=This1.C}}
-     D={[This1.A,This1.B,This1.C]imm method imm Void a() #norm{typeDep=This1.A, This1.B,This1.C}}
+    top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={interface[A,B]}}","""
+    {C={interface method Any a() #typed{}}
+     A={interface [This1.C] method Void a() #typed{typeDep=This1.C}}
+     B={interface [This1.C] method Any a() #typed{typeDep=This1.C}}
+     D={interface[This1.A,This1.B,This1.C]imm method imm Void a() #typed{typeDep=This1.A, This1.B,This1.C}}
     #norm{}}""")
-   ),new AtomicTest(()->
-    top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={[B,A]}}","""
-    {C={interface method Any a() #norm{}}
-     A={interface [This1.C] method Void a() #norm{typeDep=This1.C}}
-     B={interface [This1.C] method Any a() #norm{typeDep=This1.C}}
-     D={[This1.B,This1.A,This1.C]imm method imm Any a() #norm{typeDep=This1.B, This1.A,This1.C}}
-    #norm{}}""")
+/*   ),new AtomicTest(()-> //TODO: when type system is available, need to test that the result is ill typed for Any<=Void
+    top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={interface[B,A]}}","""
+    {C={interface method Any a() #typed{}}
+     A={interface [This1.C] method Void a() #typed{typeDep=This1.C}}
+     B={interface [This1.C] method Any a() #typed{typeDep=This1.C}}
+     D={interface[This1.B,This1.A,This1.C]imm method imm Any a() #typed{typeDep=This1.B, This1.A,This1.C}}
+    #norm{}}""")*/
     ),new AtomicTest(()->
     topFail(InvalidImplements.class,
     "{C={interface } A={interface [C] method Void a()} B={interface [C] method Any a()} D={[B,A]}}",
@@ -110,42 +110,42 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
     topFail(InvalidImplements.class,"{A={interface method Any a()} B={interface method Any a()} C={[B,A]}}",Err.moreThenOneMethodOrigin("a()", hole))
     ),new AtomicTest(()->
-    top("{I={interface method Any m()} A={[I]}}","""
-    {I={interface method Any m()#norm{}}
-     A={[This1.I] method Any m()#norm{typeDep=This1.I}}
+    top("{I={interface method Any m()} A={interface[I]}}","""
+    {I={interface method Any m()#typed{}}
+     A={interface[This1.I] method Any m()#typed{typeDep=This1.I}}
     #norm{}}""")
     ),new AtomicTest(()->
-    top("{I2={interface method Any m2()} I1={interface method Any m1()} A={[I1,I2]}}","""
-    {I2={interface method Any m2()#norm{}}
-     I1={interface method Any m1()#norm{}}
-     A={[This1.I1,This1.I2] method Any m1() method Any m2()#norm{typeDep=This1.I1,This1.I2}}
+    top("{I2={interface method Any m2()} I1={interface method Any m1()} A={interface[I1,I2]}}","""
+    {I2={interface method Any m2()#typed{}}
+     I1={interface method Any m1()#typed{}}
+     A={interface[This1.I1,This1.I2] method Any m1() method Any m2()#typed{typeDep=This1.I1,This1.I2}}
     #norm{}}""")
     ),new AtomicTest(()->
-    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2()} I1={interface [I0] method Any m1()} A={[I1,I2]}}","""
-    {I0={interface method Any m0()#norm{}}
-     I2={interface [This1.I0] method Any m2()method Any m0()#norm{typeDep=This1.I0}}
-     I1={interface [This1.I0] method Any m1()method Any m0()#norm{typeDep=This1.I0}}
-     A={[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0()method Any m2()#norm{typeDep=This1.I1,This1.I2,This1.I0}}
+    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2()} I1={interface [I0] method Any m1()} A={interface[I1,I2]}}","""
+    {I0={interface method Any m0()#typed{}}
+     I2={interface [This1.I0] method Any m2()method Any m0()#typed{typeDep=This1.I0}}
+     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0}}
+     A={interface[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0()method Any m2()#typed{typeDep=This1.I1,This1.I2,This1.I0}}
     #norm{}}""")//TODO: is this really the method order we want? see also next test
 
+    /*),new AtomicTest(()->TODO:when type system is available, need to test that the result is ill typed for Any<=Void
+    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={interface[I1,I2]}}","""
+    {I0={interface method Any m0()#typed{}}
+     I2={interface [This1.I0] method Any m2()method Void m0()#typed{typeDep=This1.I0}}
+     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0}}
+     A={interface[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0() method Any m2()#typed{typeDep=This1.I1,This1.I2,This1.I0}}
+    #norm{}}""")*/
     ),new AtomicTest(()->
-    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I1,I2]}}","""
-    {I0={interface method Any m0()#norm{}}
-     I2={interface [This1.I0] method Any m2()method Void m0()#norm{typeDep=This1.I0}}
-     I1={interface [This1.I0] method Any m1()method Any m0()#norm{typeDep=This1.I0}}
-     A={[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0() method Any m2()#norm{typeDep=This1.I1,This1.I2,This1.I0}}
-    #norm{}}""")
-    ),new AtomicTest(()->
-    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={[I2,I1]}}","""
-    {I0={interface method Any m0()#norm{}}
-     I2={interface [This1.I0] method Any m2()method Void m0()#norm{typeDep=This1.I0}}
-     I1={interface [This1.I0] method Any m1()method Any m0()#norm{typeDep=This1.I0}}
-     A={[This1.I2,This1.I1,This1.I0] method Any m2() method Void m0() method Any m1()#norm{typeDep=This1.I2,This1.I1,This1.I0}}
+    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={interface[I2,I1]}}","""
+    {I0={interface method Any m0()#typed{}}
+     I2={interface [This1.I0] method Any m2()method Void m0()#typed{typeDep=This1.I0}}
+     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0}}
+     A={interface[This1.I2,This1.I1,This1.I0] method Any m2() method Void m0() method Any m1()#typed{typeDep=This1.I2,This1.I1,This1.I0}}
     #norm{}}""")
 
  //WellFormedness
    ),new AtomicTest(()->
-   top("{C={}}","{C={#norm{}}#norm{}}")
+   top("{C={}}","{C={#typed{}}#norm{}}")
    ),new AtomicTest(()->
    top("{method Any foo()=void}","{method Any foo()=void #norm{}}")
 
@@ -165,23 +165,23 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    ),new AtomicTest(()->
    top(
-   "{J={interface method This m()} I={interface [J] method This m()} A={[I]} }",
+   "{J={interface method This m()} I={interface [J] method This m()} A={interface[I]} }",
    """
-   {J={interface imm method imm This0 m()#norm{typeDep=This0}}
-   I={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   A={[This1.I, This1.J]imm method imm This1.I m()#norm{typeDep=This1.I, This1.J}}
+   {J={interface imm method imm This0 m()#typed{typeDep=This0}}
+   I={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+   A={interface[This1.I, This1.J]imm method imm This1.I m()#typed{typeDep=This1.I, This1.J}}
    #norm{}}
    """)
    ),new AtomicTest(()->top("""
    {J={interface method This m()}
    I1={interface [J] method This m()}
    I2={interface [J] method This m()}
-   A={[I1,I2]} }
+   A={interface[I1,I2]} }
    ""","""
-   {J={interface imm method imm This0 m()#norm{typeDep=This0}}
-   I1={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   I2={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   A={[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()#norm{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}
+   {J={interface imm method imm This0 m()#typed{typeDep=This0}}
+   I1={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+   I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+   A={interface[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()#typed{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}
    """)
 
    ),new AtomicTest(()->top("""
@@ -190,10 +190,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    I2={interface [J] method This m()}
    A={[I1,I2] method m()=this} }
    ""","""
-   {J={interface imm method imm This0 m()#norm{typeDep=This0}}
-   I1={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   I2={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   A={[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()=this #norm{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}
+   {J={interface imm method imm This0 m()#typed{typeDep=This0}}
+   I1={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+   I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+   A={[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()=this #typed{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}
    """)
    ),new AtomicTest(()->top("""
    {J={interface method This m()}
@@ -201,10 +201,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    I2={interface [J] method This m()}
    B={C={A={[I1,I2] method m()=this}}} }
    ""","""
-   {J={interface imm method imm This0 m()#norm{typeDep=This0}}
-   I1={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   I2={interface[This1.J]imm method imm This0 m()#norm{typeDep=This1.J, This0}}
-   B={C={A={[This3.I1,This3.I2 This3.J]imm method imm This3.I1 m()=this #norm{typeDep=This3.I1,This3.I2,This3.J}}#norm{}}#norm{}}#norm{}}
+   {J={interface imm method imm This0 m()#typed{typeDep=This0}}
+    I1={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+    I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
+    B={C={A={[This3.I1, This3.I2, This3.J]imm method imm This3.I1 m()=this #typed{typeDep=This3.I1, This3.I2, This3.J}}#typed{}}#typed{}}#norm{}}
    """)
 
 

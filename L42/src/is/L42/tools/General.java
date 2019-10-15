@@ -105,7 +105,7 @@ public class General {
   public static <T> List<T>L(Stream<T> s){return s.collect(Collectors.toList());}
   public static <T> List<T>L(){return Collections.emptyList();}
   public static <T> List<T>L(T e){return Collections.singletonList(e);}
-  public static <T> List<T>L(Consumer<List<T>> c){
+  public static <T> List<T>L(Consumer<ArrayList<T>> c){
     ArrayList<T> res=new ArrayList<>();
     c.accept(res);
     return Collections.unmodifiableList(res);
@@ -123,14 +123,14 @@ public class General {
     if(!change){return a;}
     return Collections.unmodifiableList(res);
     }
-  public static <A,R> List<R>L(List<A> a,BiConsumer<List<R>,A> c){
+  public static <A,R> List<R>L(List<A> a,BiConsumer<ArrayList<R>,A> c){
     ArrayList<R> res=new ArrayList<>();
     for(int i=0;i<a.size();i++)c.accept(res,a.get(i));
     return Collections.unmodifiableList(res);
     }
   @FunctionalInterface
   public static interface Consumer3<T1,T2,T3>{void accept(T1 t1,T2 t2,T3 t3);}
-  public static <A,B,R> List<R>L(List<A> a,List<B> b,Consumer3<List<R>,A,B> c){
+  public static <A,B,R> List<R>L(List<A> a,List<B> b,Consumer3<ArrayList<R>,A,B> c){
     ArrayList<R> res=new ArrayList<>();
     if(a.size()!=b.size()){throw new Error("different sizes of \n"+a+"\n"+b);}
     for(int i=0;i<a.size();i++){
@@ -146,8 +146,8 @@ public class General {
     List<T> x = L(e);
     List<Integer> y=L();
     List<T> z=L(c->{c.add(e);c.add(e);});
-    Consumer<List<T>> ec=c->{c.add(e);c.add(e);};
-    List<Consumer<List<T>>> z2=General.<Consumer<List<T>>>L(ec);
+    Consumer<ArrayList<T>> ec=c->{c.add(e);c.add(e);};
+    List<Consumer<ArrayList<T>>> z2=General.<Consumer<ArrayList<T>>>L(ec);
     //incredibly hard to call the wrong version
     List<T> xx=L(x,y,(c,ai,bi)->{
       c.add(ai);

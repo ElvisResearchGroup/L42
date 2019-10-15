@@ -41,23 +41,12 @@ import is.L42.tools.InductiveSet;
 /*
     
 //what to do when the program expands?
-p1=p.update(p.top with extra C=L)
-
-p1.update(CTz): replace all ST with p1.solve(ST), if ST in dom and now is T, remove it.
- 
 from CTz? assert if you can not solve before from, you can not solve after  
-  
-inside topNC
-  we use I(Half.e) to get a core.e and is the only point where
-  we can get CTzs from inner FULL.Ls
-  //FALSE: those new CTzs should be irrelevant for the whole duraction of topNC
-  in the end of topNC, (thus for every C=e processed)
-  we can update the CTz with p"
-  
-  
+
   */
 public class CTz {
   private final Map<ST,List<ST>> inner=new HashMap<>();
+  public Set<Map.Entry<ST,List<ST>>> entries(){return inner.entrySet();}
   @Override public String toString(){
     String res=inner.toString();
     res=res.substring(1,res.length()-1);

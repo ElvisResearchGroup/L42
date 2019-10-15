@@ -34,14 +34,14 @@ _______
     CORE.L = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
     Ms=p(This0).Ms //Ms = FULL.Ms
     p0 = p.update(CORE.L) //assert all levels of p0 are CORE.L TODO: add assert in code
-    MH1..MHn = CORE.L.MWTs.MHs
-    CTz.add(p0; MH1 Ms(MH1.s).e?; e?1).. .add(p0; MHn Ms(MHn.s).e?; e?n) = CTz0
+    MWT1..MWTn = CORE.L.MWTs
+    CTz.add(p0; MH1 Ms(MWT1.s).e?; e?1).. .add(p0; MHn Ms(MWTn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,[NC| NC in Ms]) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
-    I[C=empty;p1;G^MHi;p1.minimize(CTz1)]!e?i => ERi  for i in 1..n
+    I[C=empty;p1;G^MWTi;CTz1; frommed=empty]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
-    MWTi = ♥Ms(MHi.s).Doc MHi ♥Ms(MHi.s).native e?'i
-    L = updateInfo(p1, MWT1..MWTn)[Info.uniqueId=empty]
+    MWT'i = MWTi Ms(MWTi.s).native e?'i
+    L = updateInfo(p1, MWT'1..MWT'n)[Info.uniqueId=empty]
     p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
     PR = CTz1; p2
 
@@ -49,8 +49,8 @@ _______
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
-    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p]]!HALF.e => ER //assert CTz=p.minimize(CTz)
-    ER = _;CTz1;CORE.e IfErr(ER) PR = ER
+    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p]]!HALF.e => ER
+    ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
@@ -133,35 +133,34 @@ _______
     P(This0) = L0
 _______
 #define I!HALF.e? => ER
-* I!empty => I.CTz;empty
-* I!x => I.CTz;x
-* I!void => I.CTz;void
+* I!empty => I.frommed;empty
+* I!x => I.frommed;x
+* I!void => I.frommed;void
 * I!FULL.L => ER //undefined if I.C?=empty 
     p=I.p.push(I.C?,FULL.L) 
-    top(I.frommedCTz,p) => PR
+    top(I.frommed,p) => PR
     PR = CTz';p' IfErr(PR) ER = PR
-    ER = I.CTz;CTz';p'(This0) //TODO: should all ER have 2 CTzs?
-* I!CORE.L => I.CTz;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
-* I!P<:STz => I.CTz;P<:I(class STz)
+    ER = CTz';p'(This0)
+* I!CORE.L => I.frommed;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
+* I!P<:STz => I.frommed;P<:I(class STz)
 * I!P<:STz => inferenceFailure(I,STz)
     I(STz) undefined
-* I!%STz%<: STz' => I.CTz;I(STz).P <:I(class STz')
+* I!%STz%<: STz' => I.frommed;I(STz).P <:I(class STz')
 * I!%STz%<: STz' => inferenceFailure(I,STz,STz')
     either I(STz) or I(STz') undefined
 * I0!e0.m(x1=e1..xn=en) => ER
-    Ii+1 = Ii[CTz=CTzi]
+    Ii+1 = Ii[frommed=CTzi]
     Ii!ei = ERi //e0 is of form xP
     ER0..ERn = CTz0;e'0..CTzn;e'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
     ER = CTzn;e'0.m(x1=e'1..xn=e'n)
-* I0!xP0 OP..OP xPn => ER
-    Ii+1 = Ii[CTz=CTzi]
-    Ii!xPi => ERi
-    ER0..ERn = CTz0;xP'0..CTzn;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
+* I!xP0 OP..OP xPn => ER
+    I!xPi => ERi
+    ER0..ERn = _;xP'0.._;xP'n IfErr(ER0..ERn) ER = firstErr(ER0..ERn)
     either xP'i = _ <: Ti
     or Ti = I.G(xP'i)
     {P.m(x1..xn).i} = I.p.opOptions(OP, T0..Tn)//in code this can throw thanks to methods; ok but error will need some wrapping to ease explanation
     xP"1..xP"n = xP'0..xP'n\i
-    ER = CTzn;xP'i.m(x1=xP"1..xn=xP"n)
+    ER = I.frommed;xP'i.m(x1=xP"1..xn=xP"n)
 * I!e0 => ER
     e0 in {throw e, loop e, x:=e}
     I!e => ER'
@@ -171,8 +170,8 @@ _______
     xs = FV(Ds.es K1.e..Km.e e)//formally, FV is defined only on CORE.e. This works on HALF.E in the same way
     I!xs;Ds => DsR
     DsR = CTz0;D1..Dn IfErr(DsR) ER = DsR
-    I1 = I[CTz=CTz0]
-    Ii+1 = Ii[CTz=CTzi]
+    I1 = I[frommed=CTz0]
+    Ii+1 = Ii[frommed=CTzi]
     Ii!Ki => KRi
     I[G=I.G,D1.x:D1.T,..,Dn.x:Dn.T]!e => ER'
     KR1..KRm,ER' = CTz1;K'1..CTz1;K'm, CTzm+1;e' IfErr(KR1..KRn,ER) ER = firstErr(KR1..KRn,ER)
@@ -207,8 +206,7 @@ _______
 * CTz.add(p; MH empty; empty) = CTz
 * CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
     Y = Y[p=p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
-    Y!e = Half.e; STz; empty; CTz' // empty: error on bodies leaking returns
-
+    Y!e = Half.e; STz; _; CTz'
 _______
 #define CTz <+p STz<=STz' = CTz'    CTz <+p ST<=STz = CTz'
 *CTz<+p STz<=STz' = CTz<+p ST1<=p.solve(STz')..<+p STn<=p.solve(STz')

@@ -347,6 +347,116 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        catch return imm Void fresh1_curlyX1 fresh1_curlyX1
        error void)
      """)
+   ),new AtomicTest(()->pass("""
+     class method This #from(This stringLiteral)
+     class method This #stringLiteralBuilder()
+     method Void a()=This"a+c"
+     ""","""
+     class method imm This0 #from(imm This0 stringLiteral)
+     class method imm This0 #stringLiteralBuilder()
+     imm method imm Void a()=This0<:class This0.#from(stringLiteral=(
+       imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
+       imm Void fresh1_underscore=fresh0_builder.#a()
+       imm Void fresh2_underscore=fresh0_builder.#plus()
+       imm Void fresh3_underscore=fresh0_builder.#c()
+       fresh0_builder
+       ))
+     """)
+     ),new AtomicTest(()->pass("""
+     class method This #from(This stringLiteral)
+     class method This #stringLiteralBuilder()
+     class method Void #addAll(This that)
+     method Void a()=This"a+%this c"
+     ""","""
+     class method imm This0 #from(imm This0 stringLiteral)
+     class method imm This0 #stringLiteralBuilder()
+     class method imm Void #addAll(imm This0 that)
+     imm method imm Void a()=This0<:class This0.#from(stringLiteral=(
+       imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
+       imm Void fresh3_underscore=fresh0_builder.#addAll(that=(
+         imm This0 fresh1_builder=This0<:class This0.#stringLiteralBuilder()
+         imm Void fresh4_underscore=fresh1_builder.#a()
+         imm Void fresh5_underscore=fresh1_builder.#plus()
+         fresh1_builder))
+       imm Void fresh6_underscore=fresh0_builder.#splice(that=this)
+       imm Void fresh7_underscore=fresh0_builder.#addAll(that=(
+         imm This0 fresh2_builder=This0<:class
+         This0.#stringLiteralBuilder()
+         imm Void fresh8_underscore=fresh2_builder.#space()
+         imm Void fresh9_underscore=fresh2_builder.#c()
+         fresh2_builder))
+       fresh0_builder))
+       """)
+   ),new AtomicTest(()->pass("""
+     method This #if()
+     method This #checkTrue()
+     method This a(This b,This c)=if this b else c
+     ""","""
+     imm method imm This0 #if()
+     imm method imm This0 #checkTrue()
+     imm method imm This0 a(imm This0 b,imm This0 c)=(
+       imm Void fresh0_underscore=(
+         imm This0 fresh1_receiver=this.#if()
+         fresh1_receiver.#checkTrue())
+     catch exception imm Void fresh2_underscore c
+     b)
+     """)      
+   ),new AtomicTest(()->pass("""
+     method This #if()
+     method This #checkTrue()
+     method This a(This b,This c)=if this b
+     ""","""
+     imm method imm This0 #if()
+     imm method imm This0 #checkTrue()
+     imm method imm This0 a(imm This0 b,imm This0 c)=(
+       imm Void fresh0_underscore=(
+         imm This0 fresh1_receiver=this.#if()
+         fresh1_receiver.#checkTrue())
+     catch exception imm Void fresh2_underscore void
+     b)
+     """)
+   ),new AtomicTest(()->pass("""
+     method This #if()
+     method This #checkTrue()
+     method This a(This b,This c)=if (this) b
+     ""","""
+     imm method imm This0 #if()
+     imm method imm This0 #checkTrue()
+     imm method imm This0 a(imm This0 b,imm This0 c)=(
+       imm This0 fresh0_cond=(this)
+       ( imm Void fresh1_underscore=(
+           imm This0 fresh2_receiver=fresh0_cond.#if()
+           fresh2_receiver.#checkTrue())
+         catch exception imm Void fresh3_underscore void 
+         b))
+     """)
+   ),new AtomicTest(()->pass("""
+     method This #if()
+     method This #checkTrue()
+     method This #shortCircutSquare()
+     method This foo(This squareBuilder)
+     method This a(This b,This c)=this.foo[a;b; key=a, val=b]
+     ""","""
+     imm method imm This0 #if()
+     imm method imm This0 #checkTrue()
+     imm method imm This0 #shortCircutSquare()
+     imm method imm This0 foo(imm This0 squareBuilder)
+     imm method imm This0 a(imm This0 b, imm This0 c)=this.foo(squareBuilder=(
+       imm This0 fresh0_builder=This0<:class This0.#squareBuilder()
+       imm Void fresh1_underscore=(
+         imm This0 fresh2_cond=This0<:class This0.#shortCircutSquare()
+         ( imm Void fresh3_underscore=(
+             imm This0 fresh4_receiver=fresh2_cond.#if()
+             fresh4_receiver.#checkTrue())
+           catch exception imm Void fresh5_underscore void
+           ( imm Void fresh6_underscore=fresh0_builder.#add(that=a)
+             imm Void fresh7_underscore=fresh0_builder.#add(that=b)
+             imm Void fresh8_underscore=fresh0_builder.#add(key=a, val=b)
+             void)
+           )
+         )
+       fresh0_builder))
+     """)
   ));}
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 static Program p0=Program.parse("""

@@ -247,7 +247,7 @@ public static Program base(String s){
   }
 public static Loader loadBase(Program p,boolean print) throws CompilationError{
   Loader loader=new Loader();
-  try{loader.loadNow(p);}
+  try{loader.loadNow(p,null);}
   catch(CompilationError ce){
     if(print){System.err.println(loader);}
     throw ce;

@@ -119,26 +119,23 @@ _______
     x fresh
     ei = x.#yield(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
     ei = x.#add(pari) otherwise
-* Y!e string = Y!(e.#from(stringLiteral=(
+
+* Y!e "stringElement" = Y!(e.#from(stringLiteral=strLitPar(stringElement)))
+* Y!e "stringElement1 e1..stringElementn en stringElement(n+1)" = Y!(e.#from(stringLiteral=(
       x=\.#stringLiteralBuilder()
-      e1..en
+      e'1 e"1.. e'n e"n e(n+1)
       x)))
-    string = "stringElement1..stringElementn"
-
-    if stringElementi = CHAR1 .. CHARm
-        ei = x.addAll((x' = \.#stringLiteralBuilder() x'.charName(CHAR1) ... x'.charName(CHARm) x')),
-    if stringElementi = %e'
-        ei = x.#splice(e')
-    x, x' are fresh
-
+    e'i = x.addAll(strLitPar(stringElementi)),
+    e"i = x.#splice(ei)
+    x fresh
+    
 * Y!if e0 e1 = Y!(if e0 e1 else void)
 * Y!if e0 e1 else e2 = Y!(x = e0 if x e1 else e2 )
     e0 not of form xP
 * Y!if xP e1 else e2 = Y!(
-      Void x=xP.#if().#checkTrue()
-      catch exception Void x' e2
+      xP.#if().#checkTrue()
+      catch Void _ e2
       e1)
-    x, x' fresh
 * Y!if match match+ e = Y!(if match if match+ e)
 * Y!(if T x e) = Y!(if T x'=x e[x=x'])
     x' fresh
@@ -175,6 +172,15 @@ _______
 
     mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?//only one of the two is defined
     x1..xn, x'1..x'n fresh
+_______
+#define strLitPar(stringElement) = Full.E
+* strLitPar(CHAR1 .. CHARn)=(
+    x=\.#stringLiteralBuilder()
+    x.charName(CHAR1)
+    ..
+    x.charName(CHARm)
+    x)
+  x fresh
 _______
 #define Y!FULL.D = HALF.Ds; STz; CTz
 * Y!(empty e) = Y!(imm Void _=e)

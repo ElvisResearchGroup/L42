@@ -1,6 +1,7 @@
 package is.L42.common;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
 
 import is.L42.generated.Op;
 import is.L42.generated.S;
@@ -18,6 +19,51 @@ public class NameMangling {
     if(n==-1){n=0;}
     return "#"+op.name().toLowerCase()+n;
     }
+  public static S charName(int c){
+    boolean regular=Character.isAlphabetic(c)||Character.isDigit(c);
+    String name=regular?Character.toString(c):desugarSymbol(c);
+    return new S("#"+name,L(),-1);
+    }
+  public static String desugarSymbol(int c){
+    return switch(c){
+      case '+'->"plus";
+      case '-'->"less";
+      case '~'->"tilde";
+      case '!'->"bang";
+      case '&'->"and";
+      case '|'->"or";
+      case '<'->"left";
+      case '>'->"right";
+      case '='->"equal";
+      case '*'->"times";
+      case '/'->"divide";
+      case '('->"oRound";
+      case ')'->"cRound";
+      case '['->"oSquare";
+      case ']'->"cSquare";
+      case '{'->"oCurly";
+      case '}'->"cCurly";
+      case '\"'->"dQuote";
+      case '\''->"sQuote";
+      case '`'->"hQuote";
+      case '?'->"qMark";
+      case '^'->"hat";
+      case ','->"comma";
+      case ';'->"semicolon";
+      case ':'->"colon";
+      case '.'->"dot";
+      case '_'->"underscore";
+      case '#'->"hash";
+      case '@'->"at";
+      case '$'->"dollar";
+      case '%'->"%";
+      case '\\'->"backslash";
+      case ' '->"space";
+      case '\n'->"newline";
+      default->{throw bug();}
+      };
+    }
+
   public static S shortCircuit(Op op){
     return new S("#shortCircut"+op.name().toLowerCase(),L(),-1);
     }

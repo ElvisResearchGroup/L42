@@ -1,6 +1,7 @@
 package is.L42.constraints;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
@@ -8,6 +9,7 @@ import static is.L42.tools.General.range;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import is.L42.common.CTz;
 import is.L42.common.EndError;
@@ -194,9 +196,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
       });
     }
   @Override public void visitCall(Full.Call call){
-    if(call._s()==null){visitCall(call.with_s(NameMangling.hashApply()));return;}
+    if(call._s()==null){call=call.with_s(NameMangling.hashApply());}
+    if(call.isSquare()){call=expandSquare(call);}
     var pars=addThats(call.pars());
-    if(pars.size()!=1){call=expandSquare(call);}
+    assert !pars.isEmpty();
     Full.Par par=pars.get(0);
     if(!isFullXP(call.e())){
       X rec=freshX("receiver");
@@ -348,7 +351,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       });
     Full.E block=makeBlock(p,e1n,new Core.EVoid(p));
     var eIf=new Full.If(p,squareB.with_s(shortCircutSquare),L(),block,null);
-    var builderBlock=makeBlock(p,L(decX),eIf);
+    var builderBlock=makeBlock(p,List.of(decX,makeDec(eIf)),ex);
     var mCallPar=new Full.Par(null, squareBuilderX, L(builderBlock));
     var mCall=new Full.Call(p,s.e(),s._s(),false,L(mCallPar));
     return mCall;
@@ -456,21 +459,85 @@ public class ToHalf extends UndefinedCollectorVisitor{
     Half.MCall half=new Half.MCall(b.pos(),pct,applyThat,L(e1));
     commit(half,stz0,stz);
     }
-    private static final S applyThat=S.parse("#apply(that)");
-    private static final S squareBuilder=S.parse("#squareBuilder()");
-    private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
-    private static final S yieldS=S.parse("#yield()");
-    private static final S addS=S.parse("#add()");
-    private static final List<X> squareBuilderX=L(new X("squareBuilder"));
-    private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
-  /*  
-    * Y!CsP OP e = CsP'.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
-    STz0  = P.#apply(that)
-    STz1 = P.#apply(that).1
-    Y[expectedT=STz1] ! e = e'; STz2; STz; CTz
-*/
-  @Override public void visitIf(Full.If sIf){throw uc;}
+  @Override public void visitEString(Full.EString s){
+    Pos p=s.pos();
+    assert !s.es().isEmpty();
+    assert s.es().size()==s.strings().size();
+    Full.E block=strLitPar(p,s);
+    var mCallPar=new Full.Par(null, stringLiteralX, L(block));
+    var mCall=new Full.Call(p,s.es().get(0),fromS,false,L(mCallPar));
+    visitCall(mCall);
+    }
+  private Full.E strLitPar(Pos p,String content){
+    var strB=new Full.Call(p,new Full.Slash(p), stringLiteralBuilder,false,Par.emptys);
+    X x=freshX("builder");
+    Core.EX ex=new Core.EX(p,x);
+    var decX=makeDec(null,x,strB);
+    var e1nStream=content.chars().boxed().map(c->{
+      S sChar=NameMangling.charName(c);
+      var call=new Full.Call(p,ex,sChar,false,Par.emptys);
+      return makeDec(call);
+      });
+    List<Full.D> e0n=L(Stream.concat(Stream.of(decX),e1nStream));
+    return makeBlock(p,e0n,ex);
+    }
+  private Full.E strLitPar(Pos p,Full.EString s){
+    if(s.es().size()==1){return strLitPar(p,s.strings().get(0));}
+    var strB=new Full.Call(p,new Full.Slash(p), stringLiteralBuilder,false,Par.emptys);
+    X x=freshX("builder");
+    Core.EX ex=new Core.EX(p,x);
+    var decX=makeDec(null,x,strB);
+    List<Full.D> e0n=L(c->{
+      c.add(decX);
+      for(int i:range(s.es().size()-1)){
+        String si=s.strings().get(i);
+        Full.E ei=s.es().get(i+1);
+        var bi=strLitPar(p,si);
+        var e1i=new Full.Call(p,ex,addAllS,false,L(new Par(bi,L(),L())));
+        var e2i=new Full.Call(p,ex,spliceS,false,L(new Par(ei,L(),L())));
+        c.add(makeDec(e1i));
+        c.add(makeDec(e2i));
+        }
+      var bLast=strLitPar(p,s.strings().get(s.strings().size()-1));
+      var e1Last=new Full.Call(p,ex,addAllS,false,L(new Par(bLast,L(),L())));
+      c.add(makeDec(e1Last));
+      });
+    return makeBlock(p,e0n,ex);
+    }
+  @Override public void visitIf(Full.If sIf){
+    Pos p=sIf.pos();
+    if(sIf._else()==null){sIf=sIf.with_else(new Core.EVoid(p));}
+    if(sIf._condition()==null){throw uc;}
+    if(!isFullXP(sIf._condition())){visitBlock(ifBlock(p,sIf));return;}
+    Full.E test=new Full.Call(p,sIf._condition(),ifS,false,Par.emptys);
+    test=new Full.Call(p,test,checkTrueS,false,Par.emptys);
+    var k=new Full.K(null,immVoid_._t(),null,sIf._else());
+    var block=new Full.Block(p,false,L(makeDec(test)),1,L(k),L(),sIf.then());
+    visitBlock(block);
+    }
+  private Full.Block ifBlock(Pos p,Full.If sIf){
+    X x=freshX("cond");
+    Core.EX ex=new Core.EX(p,x);
+    var decX=makeDec(null,x,sIf._condition());
+    sIf=sIf.with_condition(ex);
+    return makeBlock(p,L(decX),sIf);
+    }
+  private static final S ifS=S.parse("#if()");
+  private static final S checkTrueS=S.parse("#checkTrue()");
+  private static final S applyThat=S.parse("#apply(that)");
+  private static final S stringLiteralBuilder=S.parse("#stringLiteralBuilder()");
+  private static final S squareBuilder=S.parse("#squareBuilder()");
+  private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
+  private static final S yieldS=S.parse("#yield()");
+  private static final S addS=S.parse("#add()");
+  private static final S addAllS=S.parse("#addAll()");
+  private static final S spliceS=S.parse("#splice()");
+  private static final S fromS=S.parse("#from()");
+  private static final List<X> squareBuilderX=L(new X("squareBuilder"));
+  private static final List<X> stringLiteralX=L(new X("stringLiteral"));
+  private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
+
   @Override public void visitWhile(Full.While sWhile){throw uc;}
   @Override public void visitFor(Full.For sFor){throw uc;}
-  @Override public void visitEString(Full.EString eString){throw uc;}
+ 
 }

@@ -32,93 +32,53 @@ import is.L42.generated.Full.L.NC;
 import is.L42.generated.P.NCs;
 
 class SortHeader{
-  public final Core.L l;
-  public final List<Full.L.NC> ncs;
-  public final List<Full.L.M> notNC;
-  public SortHeader(Program p,int uniqueId) throws EndError{
+  public static Core.L coreTop(Program p,int uniqueId) throws EndError{
     Full.L l=(Full.L)p.top;
     if(!l.reuseUrl().isEmpty()){throw todo();}
-    List<Full.L.NC> ncs=L(l.ms(),(c,m)->{
-      if(m instanceof Full.L.NC){c.add((Full.L.NC)m);}
-      });
     var notNC=L(l.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     Program p0=p.update(l.withMs(notNC));
     var cts=TypeManipulation.toCoreTs(l.ts());
     List<Core.T> ts1=L(c->{
-      for(var ti:cts) {
-        if(!c.contains(ti)) {c.add(ti);}
-        }
-      for(var ti:collect(p0,cts,l.poss())){
-        if(!cts.contains(ti)){c.add(ti);}
-        }
+      for(var ti:cts){if(!c.contains(ti)){c.add(ti);}}
+      var all=collect(p0,cts,l.poss());
+      for(var ti:all){if(!cts.contains(ti)){c.add(ti);}}
       });
     for(var ti:ts1){
       if(cts.contains(ti)){continue;}
-      assert ti.p().isNCs();
       List<C> cs=ti.p().toNCs().cs();
       for(C ci:cs){
-        if(ci.hasUniqueNum()){
-          throw new InvalidImplements(l.poss(),Err.sealedInterface(ti,ts1));
-          }
+        if(!ci.hasUniqueNum()){continue;}
+        throw new InvalidImplements(l.poss(),Err.sealedInterface(ti,ts1));
         }
       }
     var infoP1=Core.L.Info.empty.withTypeDep(L(ts1.stream().map(t->t.p().toNCs())));
     Program p1 = p.update(new Core.L(l.poss(),l.isInterface(), ts1, L(), L(), infoP1,L()));
     var mh1n=methods(p1,ts1,l.ms(),l.poss());//propagate err
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
-    List<Core.Doc> docs=L();
-    List<Pos> poss=l.poss();
-    var mi=_elem(l.ms(),mh.key());
-    if(mi!=null){
-      docs=TypeManipulation.toCoreDocs(mi.docs());
-      poss=mi.poss();
-      }
-    var res=new Core.L.MWT(poss, docs, mh,"",null);
-    c.add(res);
-    });
-  ArrayList<P.NCs> typePs=new ArrayList<>();
-  ArrayList<P.NCs> cohePs=new ArrayList<>();
-  Top.collectDeps(p1,mwts,typePs,cohePs,false);
-  var docs=TypeManipulation.toCoreDocs(l.docs());
-  boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
-  Info info=new Info(false,
-    unique(L(c->{
+      List<Core.Doc> docs=L();
+      List<Pos> poss=l.poss();
+      var mi=_elem(l.ms(),mh.key());
+      if(mi!=null){
+        docs=TypeManipulation.toCoreDocs(mi.docs());
+        poss=mi.poss();
+        }
+      var res=new Core.L.MWT(poss, docs, mh,"",null);
+      c.add(res);
+      });
+    ArrayList<P.NCs> typePs=new ArrayList<>();
+    ArrayList<P.NCs> cohePs=new ArrayList<>();
+    Top.collectDeps(p1,mwts,typePs,cohePs,false);
+    var docs=TypeManipulation.toCoreDocs(l.docs());
+    boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
+    List<P.NCs> typeDeps=unique(L(c->{
       for(var ti:ts1){c.add(ti.p().toNCs());}
       c.addAll(typePs);
       Top.collectDeptDocs(docs, c);
-      })),
-    unique(L(cohePs.stream())),
-    L(),L(),L(),L(),classMeth,"",L(),uniqueId); 
-  this.l=new Core.L(l.poss(),l.isInterface(), ts1, mwts, L(), info, docs);
-  this.ncs=ncs;
-  this.notNC=notNC;
+      }));
+    Info info=new Info(false,typeDeps,unique(L(cohePs.stream())),
+      L(),L(),L(),L(),classMeth,"",L(),uniqueId); 
+  return new Core.L(l.poss(),l.isInterface(), ts1, mwts, L(), info, docs);
   }
-public MWT mwtOf(MH mh, Core.E _ei) {
-  Full.L.M res=_elem(notNC,mh.s()); 
-  List<Core.Doc> docs=L();
-  List<Pos>poss=this.l.poss();
-  String url="";
-  if(res!=null){
-    docs=TypeManipulation.toCoreDocs(res.docs());
-    poss=res.poss();
-    if(res instanceof Full.L.MWT){url=((Full.L.MWT)res).nativeUrl();}
-    }
-  else{
-    Core.L.MWT coreM=_elem(this.l.mwts(),mh.s());
-    if(coreM!=null){
-      docs=coreM.docs();
-      poss=coreM.poss();
-      url=coreM.nativeUrl();
-      }
-    }
-  assert url.isEmpty() || _ei!=null;
-  return new Core.L.MWT(poss, docs, mh,url, _ei);
-  }
-  public Full.E _eOf(S s) {
-    Full.L.M res=_elem(notNC,s);
-    if(res==null){return null;}
-    return res._e(); 
-    }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
     if(ts.isEmpty()){return ts;}
     T t0=ts.get(0);

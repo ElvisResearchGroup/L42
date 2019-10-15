@@ -62,7 +62,7 @@ public class Init {
         if(p.cs().isEmpty()){return false;}
         C c=p.cs().get(0);
         LL l=this.p().pop(p.n()).top;
-        LDom d=this.whereFromTop$().get(this.whereFromTop$().size()-p.n());
+        LDom d=this.whereFromTop().get(this.whereFromTop().size()-p.n());
         int dn=-1;
         int cn=-1;
         if(l.isFullL()){

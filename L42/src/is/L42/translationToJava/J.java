@@ -317,7 +317,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
-    if(interf){kw("interface "+jC+ "extends L42Any");}
+    if(interf){kw("interface "+jC+ " extends L42Any");}
     else{kw("class "+jC+ " implements L42Any");}
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
@@ -346,7 +346,12 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("private List<BiConsumer<Object,Object>> fs=new ArrayList<>();");nl();
     c("public List<Object> os(){return os;}");nl();
     c("public List<BiConsumer<Object,Object>> fs(){return fs;}");nl();
-    //if is interface, implement with throw new Error() all the methods
+    if(interf){
+      for(var mwt:p.topCore().mwts()){
+        refineMethHeader(mwt.mh());
+        c("{throw new Error(\"unreachable method body\");}");        
+        }
+      }
     c("}");deIndent();nl();
     c("public static final "+jC+" instance=new _Fwd();");nl();
     if(nativeKind(p)){
@@ -378,7 +383,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   @Override public void visitMWT(MWT mwt){//J.meth
     refined(mwt);
-    if(p.topCore().isInterface()){return;}
+    if(p.topCore().isInterface()){c(";");nl();return;}
     g=G.of(mwt.mh());
     wrap(mwt.mh().t().p()==P.pAny);
     staticMethHeader(mwt.mh());
@@ -478,10 +483,13 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     MH mh=mwt.mh();
     if(l.isInterface()){
       refineMethHeader(mh);
+      c(";");nl();
       staticMethHeader(mh);
       staticMethBody(mh);
       return;
       }
+    //TODO: here a method m is not recognized as a refined one
+    kjhkjhkj
     if(!p.topCore().info().refined().contains(mwt.mh().s())){return;}
     c("@Override");
     refineMethHeader(mh);
@@ -518,7 +526,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     visitS(mh.s());
     c("(");
     seq(empty(),mh.s().xs(),", ");
-    c(")");nl();
+    c(");");nl();
     c("}");deIndent();nl();
     }
 private void refineMethBody(MH mh) {
@@ -532,7 +540,7 @@ private void refineMethBody(MH mh) {
       c(", ");
       kw("£x"+x.inner());
       }
-    c(")");nl();
+    c(");");nl();
     c("}");deIndent();nl();
     }
   }

@@ -142,6 +142,16 @@ public class Program implements Visitable<Program>{
       @Override public P visitP(P p){
         return from(p,source);
         }
+      @Override public ST visitSTMeth(ST.STMeth st){
+        var res=super.visitSTMeth(st);
+        res=CTz.solve(Program.this, res);
+        return res;
+        }
+      @Override public ST visitSTOp(ST.STOp st){
+        var res=super.visitSTOp(st);
+        res=CTz.solve(Program.this, res);
+        return res;
+        }
       @Override public Full.L visitL(Full.L l){throw bug();}
       @Override public Core.L visitL(Core.L l){
         return new From(Program.this,source,0).visitL(l);
@@ -151,6 +161,18 @@ public class Program implements Visitable<Program>{
   public T from(T t,P.NCs source){return fromVisitor(source).visitT(t);}
   public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
   public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
+  public ST from(ST st,P.NCs source){return fromVisitor(source).visitST(st);}
+  public List<ST> fromSTz(List<ST> stz,P.NCs source){return fromVisitor(source).visitSTz(stz);}
+  public CTz from(CTz ctz,P.NCs source){
+    var res=new CTz();
+    for(var e:ctz.entries()){
+      ST st=from(e.getKey(),source);
+      List<ST> stz=fromSTz(e.getValue(),source);
+      res.plusAcc(this, st, stz);
+      }
+    return res;
+    }
+  public CTz update(C c,CTz ctz){return from(ctz,P.NCs.of(0,L(c)));}
   
   public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
     return subPs.allMatch(p->isSubtype(p, superP,poss));

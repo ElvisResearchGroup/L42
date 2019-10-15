@@ -25,42 +25,45 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
+import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.visitors.Accumulate;
+import typeSystem.FlagTyped;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;
 
 public class Top {
   public Program top(CTz ctz, Program p)throws EndError {
-    SortHeader sorted=new SortHeader(p,uniqueId++);//progagates the right header errors
-    Core.L coreL=sorted.l;
-    List<Full.L.NC> ncs=sorted.ncs;
-    Program pl=p.update(coreL);
-    List<MH> mh1n=L(coreL.mwts(),(c,m)->c.add(m.mh()));
-    Program p0=p.update(updateInfo(pl,L(mh1n,(c,m)->c.add(sorted.mwtOf(m, null)))));
-    ArrayList<Half.E> e1n=new ArrayList<>();
-    for(MH mhi:mh1n){
-      ctzAdd(ctz,p0,mhi,sorted._eOf(mhi.s()),e1n);
-      }
+    Core.L coreL=SortHeader.coreTop(p, uniqueId++);//propagates the right header errors
+    List<Full.L.M> ms=((Full.L)p.top).ms();
+    List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
+    Program p0=p.update(coreL);
+    List<Half.E> e1n=L(coreL.mwts(),(c,mwti)->{
+      var memi=_elem(ms,mwti.key());
+      Full.E _ei=null;
+      if(memi!=null){_ei=memi._e();}
+      ctzAdd(ctz,p0,mwti.mh(),_ei,c);
+      });
     Program p1=topNC(ctz,p0,ncs);//propagate exceptions
     assert p1.top instanceof Core.L;
     List<Core.E> coreE1n=L(e1n,(c,_ei)->{
       if(_ei==null){c.add(null);return;}
-      Core.E eri=infer(new I(null,p1,G.empty()),ctz,_ei);
+      Core.E eri=infer(new I(null,p1,G.empty()),ctz,null,_ei);
       c.add(eri);
       });//and propagate errors out
-    List<MWT> mwt1n=L(mh1n,coreE1n,(c,mhi,_ei)->c.add(sorted.mwtOf(mhi,_ei)));
-    Core.L l=updateInfo(p1,mwt1n);
+    List<MWT> coreMWTs=L(coreL.mwts(),coreE1n,(c,mwti,_ei)->{//mwt'1..mwt'n
+      var memi=_elem(ms,mwti.key());
+      String nat="";
+      if(memi instanceof Full.L.MWT){nat=((Full.L.MWT)memi).nativeUrl();}
+      c.add(mwti.withNativeUrl(nat).with_e(_ei));
+      });
+    Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
     l=l.withInfo(l.info().with_uniqueId(-1));
-    Program p2=flagTyped(p1.update(l));//propagate illTyped
+    Program p2=FlagTyped.flagTyped(loader,p1.update(l));//propagate illTyped
     return p2;
     }
-  private Program flagTyped(Program p) throws EndError {
-    return p;
-    }
   private Core.L updateInfo(Program p, List<MWT>mwts) {
-    //p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     Core.L l=(Core.L)p.top;
     List<MWT> mwts0=L(l.mwts(),(c,m)->{
       var newM=_elem(mwts,m.key());
@@ -108,17 +111,18 @@ public class Top {
       acc.add(d._pathSel().p().toNCs());
       }
     }
-  private Core.E infer(I i,CTz ctz,Half.E e) throws EndError{
+  private Core.E infer(I i,CTz ctz,CTz frommed,Half.E e) throws EndError{
     if(e instanceof Core.E){return (Core.E)e;}
-    if(e instanceof Full.L){//TODO: update
-      Full.L l=(Full.L) e;
-      Program p=i.p().push(i._c(),l); 
-      Program pr=top(ctz,p);//propagate errors
+    if(e instanceof Full.L){
+      assert i._c()!=null;
+      Program p=i.p().push(i._c(),(Full.L)e); 
+      Program pr=top(frommed,p);//propagate errors
       return pr.topCore();
       }
     throw bug();
     }
   private int uniqueId=0;
+  private final Loader loader=new Loader();
   private Program topNC(CTz ctz, Program p, List<NC> ncs)  throws EndError{
     if(ncs.isEmpty()){return p;}
     C c0=ncs.get(0).key();
@@ -130,7 +134,8 @@ public class Top {
     HalfQuadruple hq=new HalfQuadruple(y,fe);
     Half.E he=hq.e;
     I i=new I(c0,p,G.empty());
-    Core.E ce=infer(i,ctz,he); //propagates errors
+    CTz frommedCTz=p.from(ctz,P.pThis1);
+    Core.E ce=infer(i,ctz,frommedCTz,he); //propagates errors
     assert ce!=null;
     Core.T t=wellTyped(p,ce);//propagate errors
     Core.E ce0=adapt(ce,t);
@@ -139,8 +144,8 @@ public class Top {
     assert l!=null;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
-    Program p2=flagTyped(p1);//propagate errors    
-    Program res=topNC(ctz,p2,ncs);
+    Program p2=FlagTyped.flagTyped(loader,p1);//propagate errors    
+    Program res=topNC(p2.update(c0,frommedCTz),p2,ncs);
     return res; 
     }
   private Core.E reduce(Program p, is.L42.generated.Core.E ce0)throws EndError  {
@@ -160,10 +165,7 @@ public class Top {
     if(_e==null){es.add(null);return;}
     Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
     var hq=new HalfQuadruple(y, _e);
-    //ctz0.addAll(hq.ctz);//TODO: fix with new CTz ops
-    for(var st:hq.resSTz){
-    //  ctz0.add(new CT(st,L(mh.t())));
-      }
+    ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
     es.add(hq.e);
     }
   static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {

@@ -260,7 +260,10 @@ public class InMemoryJavaCompiler {
       /*StringsClasses??:*/null,files
       );
     boolean compilationRes=compilerTask.call();
-    if(!compilationRes){ throw new CompilationError(diagnisticListenerForErrors);}
+    if(!compilationRes){
+      System.out.println(files);
+      throw new CompilationError(diagnisticListenerForErrors);
+      }
     return classLoader;
     }
   }
