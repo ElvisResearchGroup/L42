@@ -97,8 +97,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     var pt=p.pTails;
     String name="";
     while(!pt.isEmpty()){
-      assert pt.coreL().info()._uniqueId()!=-1;
-      name="£c"+pt.c().toString()+"£n"+pt.coreL().info()._uniqueId()+"£_"+name;
+      String uId="";
+      if(pt.coreL().info()._uniqueId()!=-1){uId="£n"+pt.coreL().info()._uniqueId();}
+      name="£c"+pt.c().toString()+uId+"£_"+name;
       pt=pt.tail();
       }
     return name.substring(0,name.length()-2);
@@ -107,7 +108,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     return L(c->{
       var pt=p.pTails;
       while(!pt.isEmpty()){
-        assert pt.coreL().info()._uniqueId()!=-1;
         c.add(0,pt.c());
         pt=pt.tail();
         }
@@ -488,15 +488,13 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       staticMethBody(mh);
       return;
       }
-    //TODO: here a method m is not recognized as a refined one
-    kjhkjhkj
     if(!p.topCore().info().refined().contains(mwt.mh().s())){return;}
-    c("@Override");
+    kw("@Override");
     refineMethHeader(mh);
     refineMethBody(mh);
     }
   private void staticMethHeader(MH mh) {
-    c("public static ");
+    kw("public static ");
     typeName(mh.t());
     visitS(mh.s());
     c("(");
@@ -511,7 +509,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c(")");
     }
   private void refineMethHeader(MH mh) {
-    c("public ");
+    kw("public ");
     typeName(mh.t());
     visitS(mh.s());
     c("(");
@@ -533,6 +531,7 @@ private void refineMethBody(MH mh) {
     c("{");indent();nl();
     kw("return");
     className(p);
+    c(".");
     visitS(mh.s());
     c("(");
     kw("this");

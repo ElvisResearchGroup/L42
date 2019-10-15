@@ -23,10 +23,11 @@ import is.L42.translationToJava.J;
 import static is.L42.tools.General.L;
 
 class Element{
-  public Element(L l,String cIds,SourceFile source){
-    this.l=l;this.cIds=cIds;this.source=source;
+  public Element(L l,List<C> path,String cIds,SourceFile source){
+    this.l=l;this.path=path;this.cIds=cIds;this.source=source;
     }
   Core.L l;
+  List<C> path;
   String cIds;
   SourceFile source; 
   }
@@ -36,7 +37,7 @@ public class Loader {
     for(var e:loaded.values()){res+=e.cIds+"\n"+e.source+"\n\n";}
     return res;
     }
-  final HashMap<List<C>,Element> loaded=new HashMap<>();
+  final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
   public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
     var l=p.topCore();
@@ -76,28 +77,24 @@ public class Loader {
     import java.util.ArrayList;
     import java.util.function.BiConsumer;
     """;
-  public void loadNow(Program p,List<List<C>> _toLoad) throws CompilationError{
+  public void loadNow(Program p) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
-    loadRec(p,files,_toLoad,new ArrayList<>());
+    loadRec(p,files);
     if(files.isEmpty()){return;}
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
     assert classes==classLoader;    
     }
-  void loadRec(Program p,ArrayList<SourceFile>files,List<List<C>> _toLoad,ArrayList<C> path){
+  void loadRec(Program p,ArrayList<SourceFile>files){
     var l=p.topCore();
-    for(var nc:l.ncs()){
-      path.add(nc.key());
-      loadRec(p.push(nc.key(), nc.l()),files,_toLoad,path);
-      path.remove(path.size()-1);
-      }
-    if(_toLoad==null && !l.info().isTyped()){return;}
-    if(_toLoad!=null && !_toLoad.contains(path)){return;}
+    for(var nc:l.ncs()){loadRec(p.push(nc.key(), nc.l()),files);}
+    if(!l.info().isTyped()){return;}
+    String name=J.classNameStr(p);
+    if(this.loaded.containsKey(name)){return;}
     J j=new J(p,G.empty(),false);
     j.mkClass();
-    String name=J.classNameStr(p);
     String code=header+j.result().toString();
-    var e=new Element(l,name,new SourceFile(metaPackage+name,code));
+    var e=new Element(l,J.classNamePath(p),name,new SourceFile(metaPackage+name,code));
     files.add(e.source);
-    loaded.put(J.classNamePath(p),e);
+    loaded.put(name,e);
     }
   }

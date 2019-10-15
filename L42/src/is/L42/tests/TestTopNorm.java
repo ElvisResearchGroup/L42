@@ -18,6 +18,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Top;
 import is.L42.visitors.FullL42Visitor;
@@ -79,22 +80,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     top("{A={interface method A a()} C={interface [A] method Void v()}}","""
      {A={interface method This a() #typed{typeDep=This0}} 
       C={interface [This1.A] method Void v()
-          imm method imm This1.A a() #typed{typeDep=This1.A}
+          imm method imm This1.A a() #typed{typeDep=This1.A refined=a()}
           } #norm{}}
      """)
     ),new AtomicTest(()->
     top("{C={interface method A a()} A={interface [C]} B={interface [C]} D={interface[A,B]}}","""
     {C={interface method This1.A a() #typed{typeDep=This1.A}}
-     A={interface [This1.C] method This a() #typed{typeDep=This1.C, This}}
-     B={interface [This1.C] method This1.A a() #typed{typeDep=This1.C, This1.A}}
-     D={interface[This1.A,This1.B,This1.C]imm method imm This1.A a() #typed{typeDep=This1.A, This1.B,This1.C}}
+     A={interface [This1.C] method This a() #typed{typeDep=This1.C, This refined=a()}}
+     B={interface [This1.C] method This1.A a() #typed{typeDep=This1.C, This1.A refined=a()}}
+     D={interface[This1.A,This1.B,This1.C]imm method imm This1.A a() #typed{typeDep=This1.A, This1.B,This1.C refined=a()}}
     #norm{}}""")
     ),new AtomicTest(()->
     top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={interface[A,B]}}","""
     {C={interface method Any a() #typed{}}
-     A={interface [This1.C] method Void a() #typed{typeDep=This1.C}}
-     B={interface [This1.C] method Any a() #typed{typeDep=This1.C}}
-     D={interface[This1.A,This1.B,This1.C]imm method imm Void a() #typed{typeDep=This1.A, This1.B,This1.C}}
+     A={interface [This1.C] method Void a() #typed{typeDep=This1.C refined=a()}}
+     B={interface [This1.C] method Any a() #typed{typeDep=This1.C refined=a()}}
+     D={interface[This1.A,This1.B,This1.C]imm method imm Void a() #typed{typeDep=This1.A, This1.B,This1.C refined=a()}}
     #norm{}}""")
 /*   ),new AtomicTest(()-> //TODO: when type system is available, need to test that the result is ill typed for Any<=Void
     top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={interface[B,A]}}","""
@@ -112,20 +113,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
     top("{I={interface method Any m()} A={interface[I]}}","""
     {I={interface method Any m()#typed{}}
-     A={interface[This1.I] method Any m()#typed{typeDep=This1.I}}
+     A={interface[This1.I] method Any m()#typed{typeDep=This1.I refined=m()}}
     #norm{}}""")
     ),new AtomicTest(()->
     top("{I2={interface method Any m2()} I1={interface method Any m1()} A={interface[I1,I2]}}","""
     {I2={interface method Any m2()#typed{}}
      I1={interface method Any m1()#typed{}}
-     A={interface[This1.I1,This1.I2] method Any m1() method Any m2()#typed{typeDep=This1.I1,This1.I2}}
+     A={interface[This1.I1,This1.I2] method Any m1() method Any m2()#typed{typeDep=This1.I1,This1.I2 refined=m1(),m2()}}
     #norm{}}""")
     ),new AtomicTest(()->
     top("{I0={interface method Any m0()} I2={interface [I0] method Any m2()} I1={interface [I0] method Any m1()} A={interface[I1,I2]}}","""
     {I0={interface method Any m0()#typed{}}
-     I2={interface [This1.I0] method Any m2()method Any m0()#typed{typeDep=This1.I0}}
-     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0}}
-     A={interface[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0()method Any m2()#typed{typeDep=This1.I1,This1.I2,This1.I0}}
+     I2={interface [This1.I0] method Any m2()method Any m0()#typed{typeDep=This1.I0 refined=m0()}}
+     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0 refined=m0()}}
+     A={interface[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0()method Any m2()#typed{typeDep=This1.I1,This1.I2,This1.I0 refined=m1(),m0(),m2()}}
     #norm{}}""")//TODO: is this really the method order we want? see also next test
 
     /*),new AtomicTest(()->TODO:when type system is available, need to test that the result is ill typed for Any<=Void
@@ -138,9 +139,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
     top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={interface[I2,I1]}}","""
     {I0={interface method Any m0()#typed{}}
-     I2={interface [This1.I0] method Any m2()method Void m0()#typed{typeDep=This1.I0}}
-     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0}}
-     A={interface[This1.I2,This1.I1,This1.I0] method Any m2() method Void m0() method Any m1()#typed{typeDep=This1.I2,This1.I1,This1.I0}}
+     I2={interface [This1.I0] method Any m2()method Void m0()#typed{typeDep=This1.I0 refined=m0()}}
+     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0 refined=m0()}}
+     A={interface[This1.I2,This1.I1,This1.I0] method Any m2() method Void m0() method Any m1()#typed{typeDep=This1.I2,This1.I1,This1.I0 refined=m2(),m0(),m1()}}
     #norm{}}""")
 
  //WellFormedness
@@ -159,52 +160,52 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    top("{[I]}A={J={interface #norm{}} I={interface [This1.J]#norm{}} #norm{}}","{[This1.I,This1.J] #norm{typeDep=This1.I,This1.J}}")
    ),new AtomicTest(()->
-   top("{[I]}A={J={interface method This m()#norm{}} I={interface [This1.J]#norm{}}#norm{}}","{[This1.I,This1.J] method This1.J m() #norm{typeDep=This1.I,This1.J}}")
+   top("{[I]}A={J={interface method This m()#norm{}} I={interface [This1.J]#norm{}}#norm{}}","{[This1.I,This1.J] method This1.J m() #norm{typeDep=This1.I,This1.J refined=m()}}")
    ),new AtomicTest(()->
-   top("{[I]}A={J={interface method This m()#norm{}} I={interface [This1.J] method This m()#norm{}}#norm{}}","{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J}}")
+   top("{[I]}A={J={interface method This m()#norm{}} I={interface [This1.J] method This m()#norm{}}#norm{}}","{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
 
    ),new AtomicTest(()->
    top(
    "{J={interface method This m()} I={interface [J] method This m()} A={interface[I]} }",
    """
    {J={interface imm method imm This0 m()#typed{typeDep=This0}}
-   I={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-   A={interface[This1.I, This1.J]imm method imm This1.I m()#typed{typeDep=This1.I, This1.J}}
+   I={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0 refined=m()}}
+   A={interface[This1.I, This1.J]imm method imm This1.I m()#typed{typeDep=This1.I, This1.J refined=m()}}
    #norm{}}
    """)
    ),new AtomicTest(()->top("""
    {J={interface method This m()}
-   I1={interface [J] method This m()}
+   I1={interface [J] method A m()}
    I2={interface [J] method This m()}
    A={interface[I1,I2]} }
    ""","""
    {J={interface imm method imm This0 m()#typed{typeDep=This0}}
-   I1={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-   I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-   A={interface[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()#typed{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}
+   I1={interface[This1.J]imm method imm This1.A m()#typed{typeDep=This1.J, This1.A refined=m()}}
+   I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0 refined=m()}}
+   A={interface[This1.I1,This1.I2 This1.J]imm method imm This0 m()#typed{typeDep=This1.I1,This1.I2,This1.J,This0 refined=m()}}#norm{}}
    """)
 
    ),new AtomicTest(()->top("""
    {J={interface method This m()}
-   I1={interface [J] method This m()}
+   I1={interface [J] method A m()}
    I2={interface [J] method This m()}
    A={[I1,I2] method m()=this} }
    ""","""
    {J={interface imm method imm This0 m()#typed{typeDep=This0}}
-   I1={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-   I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-   A={[This1.I1,This1.I2 This1.J]imm method imm This1.I1 m()=this #typed{typeDep=This1.I1,This1.I2,This1.J}}#norm{}}
+   I1={interface[This1.J]imm method imm This1.A m()#typed{typeDep=This1.J, This1.A refined=m()}}
+   I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0 refined=m()}}
+   A={[This1.I1,This1.I2 This1.J]imm method imm This0 m()=this #typed{typeDep=This1.I1,This1.I2,This1.J,This0 refined=m()}}#norm{}}
    """)
    ),new AtomicTest(()->top("""
    {J={interface method This m()}
-   I1={interface [J] method This m()}
+   I1={interface [J] method B.C.A m()}
    I2={interface [J] method This m()}
    B={C={A={[I1,I2] method m()=this}}} }
    ""","""
    {J={interface imm method imm This0 m()#typed{typeDep=This0}}
-    I1={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-    I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0}}
-    B={C={A={[This3.I1, This3.I2, This3.J]imm method imm This3.I1 m()=this #typed{typeDep=This3.I1, This3.I2, This3.J}}#typed{}}#typed{}}#norm{}}
+    I1={interface[This1.J]imm method imm This1.B.C.A m()#typed{typeDep=This1.J, This1.B.C.A refined=m()}}
+    I2={interface[This1.J]imm method imm This0 m()#typed{typeDep=This1.J, This0 refined=m()}}
+    B={C={A={[This3.I1, This3.I2, This3.J]imm method imm This0 m()=this #typed{typeDep=This3.I1, This3.I2, This3.J,This0 refined=m()}}#typed{}}#typed{}}#norm{}}
    """)
 
 
@@ -212,9 +213,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 
 public static void top(String program,String out){
+  Resources.clearRes();
   assertEquals(new Top().top(new CTz(),Program.parse(program)).top,Core.L.parse(out));
   }
 public static void topFail(Class<?> kind,String program,String ...output){
+  Resources.clearRes();
   checkFail(()->new Top().top(new CTz(),Program.parse(program)), output, kind);
   }
 }

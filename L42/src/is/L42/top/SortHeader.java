@@ -34,13 +34,14 @@ import is.L42.generated.P.NCs;
 class SortHeader{
   public static Core.L coreTop(Program p,int uniqueId) throws EndError{
     Full.L l=(Full.L)p.top;
+    List<Pos> poss=l.poss();
     if(!l.reuseUrl().isEmpty()){throw todo();}
     var notNC=L(l.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     Program p0=p.update(l.withMs(notNC));
     var cts=TypeManipulation.toCoreTs(l.ts());
     List<Core.T> ts1=L(c->{
       for(var ti:cts){if(!c.contains(ti)){c.add(ti);}}
-      var all=collect(p0,cts,l.poss());
+      var all=collect(p0,cts,poss);
       for(var ti:all){if(!cts.contains(ti)){c.add(ti);}}
       });
     for(var ti:ts1){
@@ -48,21 +49,21 @@ class SortHeader{
       List<C> cs=ti.p().toNCs().cs();
       for(C ci:cs){
         if(!ci.hasUniqueNum()){continue;}
-        throw new InvalidImplements(l.poss(),Err.sealedInterface(ti,ts1));
+        throw new InvalidImplements(poss,Err.sealedInterface(ti,ts1));
         }
       }
     var infoP1=Core.L.Info.empty.withTypeDep(L(ts1.stream().map(t->t.p().toNCs())));
-    Program p1 = p.update(new Core.L(l.poss(),l.isInterface(), ts1, L(), L(), infoP1,L()));
-    var mh1n=methods(p1,ts1,l.ms(),l.poss());//propagate err
+    Program p1 = p.update(new Core.L(poss,l.isInterface(), ts1, L(), L(), infoP1,L()));
+    var mh1n=methods(p1,ts1,l.ms(),poss);//propagate err
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
       List<Core.Doc> docs=L();
-      List<Pos> poss=l.poss();
+      List<Pos> possi=poss;
       var mi=_elem(l.ms(),mh.key());
       if(mi!=null){
         docs=TypeManipulation.toCoreDocs(mi.docs());
-        poss=mi.poss();
+        possi=mi.poss();
         }
-      var res=new Core.L.MWT(poss, docs, mh,"",null);
+      var res=new Core.L.MWT(possi, docs, mh,"",null);
       c.add(res);
       });
     ArrayList<P.NCs> typePs=new ArrayList<>();
@@ -75,9 +76,13 @@ class SortHeader{
       c.addAll(typePs);
       Top.collectDeptDocs(docs, c);
       }));
+    List<S> refined=L(mwts,(c,mi)->{
+      S s=mi.key();
+      if(refine(p1,s,P.pThis0,poss)){c.add(s);}
+      });
     Info info=new Info(false,typeDeps,unique(L(cohePs.stream())),
-      L(),L(),L(),L(),classMeth,"",L(),uniqueId); 
-  return new Core.L(l.poss(),l.isInterface(), ts1, mwts, L(), info, docs);
+      L(),L(),L(),refined,classMeth,"",L(),uniqueId); 
+  return new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
   }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
     if(ts.isEmpty()){return ts;}
@@ -86,7 +91,7 @@ class SortHeader{
     var recRes=collect(p,ts,poss);
     var ll=p.of(t0.p(),poss);
     Core.L l=(Core.L)ll;
-    if(!l.isInterface()){throw new InvalidImplements(l.poss(),Err.notInterfaceImplemented());}
+    if(!l.isInterface()){throw new InvalidImplements(poss,Err.notInterfaceImplemented());}
     return L(c->{
       if(!recRes.contains(t0)){c.add(t0);}
       for(var ti:((Core.L)ll).ts()){

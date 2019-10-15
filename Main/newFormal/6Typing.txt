@@ -15,10 +15,14 @@ _______
     dom(p(This0))/untypable(p)
     
 * empty in untypable(p) if p(This0).interface=empty
-* Cs in untypable(p) if p(This0.Csi).Info.Flag=typed
+* Cs in untypable(p) if p(This0.Cs).Info.Flag=typed
 * Cs in untypable(p) if 
-    P in p(This0.Csi).Info.depTyped[from This0.Cs;p]
+    P in p(This0.Cs).Info.depTyped[from This0.Cs;p]
     P notin dom(p)
+* Cs in untypable(p) if 
+    Thisn.C1..Ck in p(This0.Cs).Info.depTyped[from This0.Cs;p]
+    p(Thisn.C1..Ck).Info.Flag!=typed
+    n>=k
 * Cs in untypable(p) if 
     Cs' in untypable(p)
     not p(Cs').Info.Flag=typed //could be norm but also p(Cs') undefined

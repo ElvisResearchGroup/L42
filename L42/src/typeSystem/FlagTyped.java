@@ -24,10 +24,12 @@ import is.L42.visitors.CloneVisitorWithProgram;
 public class FlagTyped {
   public static Program flagTyped(Loader l,Program p) throws EndError{
     var typable=typable(p);
+    if(typable.isEmpty()){return p;}
+    p=p.update(flagL(typable,p));
     //TODO: check the typables are well typed.
-    try {l.loadNow(p,typable);}
+    try {l.loadNow(p);}
     catch (CompilationError e) {throw new Error(e);}
-    return p.update(flagL(typable,p));
+    return p;
     }
   private static Core.L flagL(List<List<C>> typable,Program p){
     return new CloneVisitorWithProgram(p){
@@ -45,6 +47,7 @@ public class FlagTyped {
     }
   private static List<List<C>> typable(Program p){
     var dom=new ArrayList<List<C>>();
+    dom.add(L());
     Core.L l=p.topCore();
     for(var nc:l.ncs()){
       var entry=L(nc.key());
@@ -59,12 +62,15 @@ public class FlagTyped {
     return new InductiveSet<Integer,List<C>>(){
       @Override public void rule(Integer k, Consumer<List<C>> set) {
         if(!l.isInterface()){set.accept(L());}
-        out:for( var cs:dom){
+        out:for(var cs:dom){
           var lcs=l.cs(cs);
           if(lcs.info().isTyped()){set.accept(cs);continue out;}
           var frommed=L(lcs.info().typeDep(),pi->p.from(pi,P.NCs.of(0, cs)));
           for(var p0:frommed){
-            if(p._ofCore(p0)==null){set.accept(cs);continue out;}
+            var l0=p._ofCore(p0);
+            if(l0==null){set.accept(cs);continue out;}
+            var hasUntypedOut=p0.n()>=p0.cs().size() && !l0.info().isTyped();
+            if(hasUntypedOut){set.accept(cs);continue out;}
             }
           install(0,cs1->{
             var pcs1=P.NCs.of(0,cs1);

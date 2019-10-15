@@ -41,9 +41,9 @@ _______
     I[C=empty;p1;G^MWTi;CTz1; frommed=empty]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
     MWT'i = MWTi Ms(MWTi.s).native e?'i
-    L = updateInfo(p1, MWT'1..MWT'n)[Info.uniqueId=empty]
+    L = updateInfo(p1, MWT'1..MWT'n)
     p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
-    PR = CTz1; p2
+    PR = CTz1; p2.update(p2.top()[Info.uniqueId=empty])
 
 * topNC(CTz;p;empty) =>CTz;p
 * topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR

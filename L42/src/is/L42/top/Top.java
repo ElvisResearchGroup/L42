@@ -59,9 +59,10 @@ public class Top {
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
-    l=l.withInfo(l.info().with_uniqueId(-1));
     Program p2=FlagTyped.flagTyped(loader,p1.update(l));//propagate illTyped
-    return p2;
+    l=p2.topCore();
+    l=l.withInfo(l.info().with_uniqueId(-1));
+    return p2.update(l);
     }
   private Core.L updateInfo(Program p, List<MWT>mwts) {
     Core.L l=(Core.L)p.top;
@@ -144,7 +145,8 @@ public class Top {
     assert l!=null;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
-    Program p2=FlagTyped.flagTyped(loader,p1);//propagate errors    
+    Program p2=FlagTyped.flagTyped(loader,p1);//propagate errors
+    //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)    
     Program res=topNC(p2.update(c0,frommedCTz),p2,ncs);
     return res; 
     }
