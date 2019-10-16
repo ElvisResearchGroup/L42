@@ -1,5 +1,6 @@
 package is.L42.top;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -9,6 +10,9 @@ import is.L42.common.G;
 import is.L42.common.GX;
 import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
+import is.L42.constraints.FreshNames;
+import is.L42.constraints.InferToCore;
+import is.L42.constraints.ToHalf;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
@@ -25,6 +29,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.visitors.Accumulate;
 import typeSystem.FlagTyped;
@@ -64,25 +69,25 @@ public class Top {
     l=l.withInfo(l.info().with_uniqueId(-1));
     return p2.update(l);
     }
-  private Core.L updateInfo(Program p, List<MWT>mwts) {
+  private Core.L updateInfo(Program p, List<Core.L.MWT>mwts) {
     Core.L l=(Core.L)p.top;
-    List<MWT> mwts0=L(l.mwts(),(c,m)->{
+    List<Core.L.MWT> mwts0=L(l.mwts(),(c,m)->{
       var newM=_elem(mwts,m.key());
       if(newM==null){c.add(m);return;}
-      assert newM.with_e(null).equals(m);
+      assert newM.with_e(null).withNativeUrl("").equals(m);
       });
     assert mwts0.size()+mwts.size()==l.mwts().size();
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     collectDeps(p,mwts,typePs,cohePs,true);
     Info info=Info.empty.withTypeDep(L(typePs.stream())).withCoherentDep(L(cohePs.stream())); 
-    return new Core.L(l.poss(), l.isInterface(), l.ts(), merge(mwts0,mwts), l.ncs(),sumInfo(l.info(),info),l.docs());
+    return l.withMwts(merge(mwts0,mwts)).withInfo(sumInfo(l.info(),info));
     }
   private Info sumInfo(Info info1, Info info2) {
     assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
     assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
     assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
-    return new Info(info1.isTyped() && info2.isTyped(),
+    Info res=new Info(info1.isTyped() && info2.isTyped(),
       mergeU(info1.typeDep(),info2.typeDep()),
       mergeU(info1.coherentDep(),info2.coherentDep()),
       mergeU(info1.friends(),info2.friends()),
@@ -94,6 +99,9 @@ public class Top {
       info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
       Math.max(info1._uniqueId(),info2._uniqueId())
       );
+    if(res.equals(info1)){return info1;}
+    if(res.equals(info2)){return info2;}
+    return res;
     }
   private Core.L updateInfo(Program p1, Core.L.NC nc) {
     List<P.NCs>dep=new ArrayList<>();
@@ -113,17 +121,16 @@ public class Top {
       }
     }
   private Core.E infer(I i,CTz ctz,CTz frommed,Half.E e) throws EndError{
-    if(e instanceof Core.E){return (Core.E)e;}
-    if(e instanceof Full.L){
-      assert i._c()!=null;
-      Program p=i.p().push(i._c(),(Full.L)e); 
-      Program pr=top(frommed,p);//propagate errors
-      return pr.topCore();
-      }
-    throw bug();
+    return new InferToCore(i,ctz,this).compute(e);
     }
+  private final FreshNames freshNames;
   private int uniqueId=0;
-  private final Loader loader=new Loader();
+  private final Loader loader;
+  public Top(FreshNames freshNames, int uniqueId, Loader loader) {
+    this.freshNames = freshNames;
+    this.uniqueId = uniqueId;
+    this.loader = loader;
+  }
   private Program topNC(CTz ctz, Program p, List<NC> ncs)  throws EndError{
     if(ncs.isEmpty()){return p;}
     C c0=ncs.get(0).key();
@@ -132,7 +139,7 @@ public class Top {
     List<Pos> poss=ncs.get(0).poss();
     ncs=popL(ncs);
     Y y=new Y(p,GX.empty(),L(),null,L());
-    HalfQuadruple hq=new HalfQuadruple(y,fe);
+    var  hq=toHalf(ctz,y,freshNames,fe);
     Half.E he=hq.e;
     I i=new I(c0,p,G.empty());
     CTz frommedCTz=p.from(ctz,P.pThis1);
@@ -141,7 +148,7 @@ public class Top {
     Core.T t=wellTyped(p,ce);//propagate errors
     Core.E ce0=adapt(ce,t);
     coherent(p,ce0); //propagate errors
-    Core.L l=(Core.L)reduce(p,ce0);//propagate errors
+    Core.L l=(Core.L)reduce(p,c0,ce0);//propagate errors
     assert l!=null;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
@@ -150,10 +157,12 @@ public class Top {
     Program res=topNC(p2.update(c0,frommedCTz),p2,ncs);
     return res; 
     }
-  private Core.E reduce(Program p, is.L42.generated.Core.E ce0)throws EndError  {
-    assert ce0 instanceof Core.L;
-    //TODO: must wrap exceptions and java exceptions
-    return ce0;
+  private Core.E reduce(Program p,C c,Core.E e)throws EndError  {
+    //assert e instanceof Core.L;
+    //return e;
+    try{return loader.runNow(p, c, e);}
+    catch(InvocationTargetException e1){throw new Error(e1.getCause());}
+    catch(CompilationError e1){throw new Error(e1);}
     }
   private void coherent(Program p, is.L42.generated.Core.E ce0)throws EndError {
     }
@@ -163,10 +172,13 @@ public class Top {
   private T wellTyped(Program p, is.L42.generated.Core.E ce)  throws EndError{
     return P.coreLibrary; 
     }
+  private static ToHalf.Res<Half.E> toHalf(CTz ctz,Y y, FreshNames fresh,Full.E fe){
+    return new ToHalf(y, ctz, fresh).compute(fe);
+    }
   private void ctzAdd(CTz ctz0, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
     if(_e==null){es.add(null);return;}
     Y y=new Y(p,GX.of(mh),L(mh.t()),null,L(mh.t()));
-    var hq=new HalfQuadruple(y, _e);
+    var hq=toHalf(ctz0,y,freshNames,_e);
     ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
     es.add(hq.e);
     }
@@ -210,16 +222,4 @@ public class Top {
     for(var m:mwts){if(m._e()!=null){deps.of(m._e().visitable());}}
     }
   //end class
-  }
-      //Ps0 = CORE.L.Info.typeDep
-      //Ps'0 = CORE.L.Info.coherent
-      //Ps1..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
-      //Ps'1..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
-class HalfQuadruple{
-  public final Half.E e;
-  public final List<ST> resSTz=L();
-  public final List<ST> retSTz=L();
-  public HalfQuadruple(Y y, Full.E fe) { 
-    this.e=(Half.E)fe;
-    }
   }

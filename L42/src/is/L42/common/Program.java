@@ -10,6 +10,8 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.todo;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -18,6 +20,7 @@ import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
@@ -45,7 +48,11 @@ public class Program implements Visitable<Program>{
   @Override public String toString() {return Constants.toS.apply(this);}
   public final LL top;
   public final PTails pTails;
-  public Program(LL top,PTails pTails){this.top=top;this.pTails=pTails;}
+  public Program(LL top,PTails pTails){
+    this.top=top;
+    this.pTails=pTails;
+    //assert Constants.newFwProgram(this);
+    }
   public static Program flat(LL top){return new Program(top,PTails.empty);}
   public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty,L());
   public static final Core.L emptyLInterface=emptyL.withInterface(true);
@@ -96,7 +103,10 @@ public class Program implements Visitable<Program>{
     }
   public Program push(LL ll){return new Program(ll,pTails.pTailSingle((Core.L)top));}
   public Program push(C c){return push(c,top.c(c));}
-  public Program update(LL ll){return new Program(ll,pTails);}
+  public Program update(LL ll){
+    if(ll==this.top){return this;}
+    return new Program(ll,pTails);
+    }
   public Program navigate(P.NCs p){
     Program res=this.pop(p.n());
     for(C c:p.cs()){res=res.push(c);}
@@ -106,6 +116,14 @@ public class Program implements Visitable<Program>{
     int count=0;
     for(PTails p=pTails;!p.isEmpty();p=p.tail()){count+=1;}
     return count;
+    }
+  public ArrayList<C> path(){
+    var res=new ArrayList<C>();
+    for(PTails p=pTails;!p.isEmpty();p=p.tail()){
+      if(!p.hasC()){res.add(0,null);}
+      else{res.add(0,p.c());}
+      }
+    return res;
     }
   public P from(P p,P.NCs source){
     if(!p.isNCs()){return p;}
@@ -337,7 +355,7 @@ public class Program implements Visitable<Program>{
   public static Program parse(String s){
     var r=Parse.program("-dummy-",s);
     assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-    var res=Init.init(r.res);
+    var res=Init.init(r.res,new FreshNames());
     assert res.wf();
     return res;
     }

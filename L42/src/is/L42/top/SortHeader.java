@@ -4,6 +4,7 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.todo;
+import static is.L42.tools.General.typeFilter;
 import static is.L42.tools.General.unique;
 
 import java.util.ArrayList;
@@ -37,6 +38,7 @@ class SortHeader{
     List<Pos> poss=l.poss();
     if(!l.reuseUrl().isEmpty()){throw todo();}
     var notNC=L(l.ms().stream().filter(m->!(m instanceof Full.L.NC)));
+    if(notNC.size()==l.ms().size()){notNC=l.ms();}
     Program p0=p.update(l.withMs(notNC));
     var cts=TypeManipulation.toCoreTs(l.ts());
     List<Core.T> ts1=L(c->{

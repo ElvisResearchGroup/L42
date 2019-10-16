@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
 import java.util.concurrent.ExecutionException;
@@ -19,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
+import is.L42.common.Program;
 import is.L42.generated.Core;
 import safeNativeCode.slave.Slave;
 
@@ -31,14 +33,22 @@ public class Resources {
     }
   public static <K> K throwE(L42Error e){throw e;}
   public static<K> L42Void toVoid(K k){return L42Void.instance;}
-  public static L42Library ofLib(String id){return new L42Library();}
+  public static Program currentP;
+  public static void setLibsCached(Program p,ArrayList<L42Library> libs){
+    currentP=p;
+    libsCached=libs;
+    }
+  public static L42Library ofLib(int id){
+    assert libsCached.size()>id;
+    L42Library l=libsCached.get(id);
+    l.currentProgram(currentP);
+    return l;
+    }
   public static L42Any ofPath(String id){return new L42Any(){};}
-  private static final HashMap<Integer,Core.L>libs=new HashMap<>();
-  private static final HashMap<Integer,L42Library>libsCached=new HashMap<>();
+  private static ArrayList<L42Library>libsCached;
   public static final HashMap<String,Slave>slaves=new HashMap<>();
   public static void clearRes() {
-    libs.clear();
-    libsCached.clear();
+    libsCached=null;
     slaves.clear();
     out=new StringBuffer();
     }

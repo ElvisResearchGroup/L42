@@ -26,6 +26,7 @@ import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
+import is.L42.platformSpecific.javaTranslation.L42Library;
 import is.L42.typeSystem.Coherence;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.FV;
@@ -36,19 +37,22 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public ToSTrait.ToSState state(){return state;}
   ToSTrait.ToSState state= new ToSTrait.ToSState();
 
-  public J(Program p, G g, boolean wrap) {this.p=p; this.g=g; this.wrap=wrap;}
+  public J(Program p, G g, boolean wrap,ArrayList<L42Library>libs) {
+    this.p=p;
+    this.g=g;
+    this.wrap=wrap;
+    this.libs=libs;
+    }
   Program p;
   G g;
   boolean wrap;
   ArrayList<X>fwds=new ArrayList<>();
   int catchLev=0;
-  HashMap<Integer,Core.L>libs=new HashMap<>();
-  Integer libsNum=0;
+  final ArrayList<L42Library>libs;
   Fields fields;
   private String libToMap(Core.L l){
-    libsNum+=1;
-    libs.put(libsNum,l);
-    return libsNum.toString();
+    libs.add(new L42Library(p,l));
+    return ""+(libs.size()-1);
     }
   T g(Core.XP xP){
     if(xP instanceof Core.EX){return g(((Core.EX)xP).x());}
@@ -141,7 +145,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("L42Void.instance");
     }
   @Override public void visitL(Core.L l){
-    kw("Resources.ofLib(\""+libToMap(l)+"\")");
+    kw("Resources.ofLib("+libToMap(l)+")");
     }
 
   @Override public void visitMCall(Core.MCall m){

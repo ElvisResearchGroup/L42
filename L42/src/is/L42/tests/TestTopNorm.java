@@ -12,14 +12,17 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.constraints.FreshNames;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
+import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
@@ -208,16 +211,54 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     B={C={A={[This3.I1, This3.I2, This3.J]imm method imm This0 m()=this #typed{typeDep=This3.I1, This3.I2, This3.J,This0 refined=m()}}#typed{}}#typed{}}#norm{}}
    """)
 
+   ),new AtomicTest(()->top("""
+   {A=({#norm{}})}
+   ""","""
+   {A={#typed{}}#norm{}}
+   """)
+
+
+  ),new AtomicTest(()->
+  top("""
+    {
+      S={
+        class method This0 of()
+        method This0 sum(This0 that)=native{trusted:OP+} error void
+        method This0 _a()=native{trusted:_a} error void
+        method This0 _b()=native{trusted:_b} error void
+        method Void strDebug()=native{trusted:strDebug} error void
+        #norm{nativeKind=String}
+        }
+      C=(
+        S.of()._a()._b().strDebug()
+        {#norm{}}
+        )
+      }
+    ""","""
+    {
+      S={
+        class method imm This0 of()
+        imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
+        imm method imm This0 _a()=native{trusted:_a}error void
+        imm method imm This0 _b()=native{trusted:_b}error void
+        imm method imm Void strDebug()=native{trusted:strDebug}error void
+        #typed{nativeKind=String}
+        }
+      C={#typed{}}
+      #norm{}}
+    """)
 
   ));}
-//private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
-
 public static void top(String program,String out){
   Resources.clearRes();
-  assertEquals(new Top().top(new CTz(),Program.parse(program)).top,Core.L.parse(out));
+  Init init=Init.parse(program);
+  assertEquals(init.top.top(new CTz(),init.p).top,Core.L.parse(out));
   }
 public static void topFail(Class<?> kind,String program,String ...output){
   Resources.clearRes();
-  checkFail(()->new Top().top(new CTz(),Program.parse(program)), output, kind);
+  checkFail(()->{
+    Init init=Init.parse(program);
+    init.top.top(new CTz(),init.p);
+    }, output, kind);
   }
 }

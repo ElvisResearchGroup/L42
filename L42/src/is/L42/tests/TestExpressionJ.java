@@ -1,5 +1,6 @@
 package is.L42.tests;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,9 +51,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   je("void","L42Void.instance")
   ),new AtomicTest(()->
-  je("{#norm{}}","Resources.ofLib(\"1\")")
+  je("{#norm{}}","Resources.ofLib(0)")
     ),new AtomicTest(()->
-  je("{#typed{}}","Resources.ofLib(\"1\")")
+  je("{#typed{}}","Resources.ofLib(0)")
     ),new AtomicTest(()->
   je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA£n1.£mma£xa(£cA£n1.instance,£cA£n1.£mof(£cA£n1.instance))")
     ),new AtomicTest(()->
@@ -316,7 +317,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void je(String e,String out){
   String l="{ method Void m()="+e+" A={class method This0 of() method Void ma(This0 a) #norm{}} B={class method This0 of() method Void mb(This0 b) #norm{nativeKind=Foo}} #norm{uniqueId=id1}}";
   var p=Program.parse(l);
-  J j=new J(p,G.empty(),false);
+  J j=new J(p,G.empty(),false, new ArrayList<>());
   j.visitE(p.topCore().mwts().get(0)._e());
   String res=j.result().toString();
   Err.strCmp(res,out);
@@ -338,7 +339,7 @@ public static void jc(String e,String ...out){
   var p=Program.parse(l);
   List<String> res=L(p.topCore().ncs(),(c,nc)->{
     var pi=p.push(nc.key());
-    J j=new J(pi,G.empty(),false);
+    J j=new J(pi,G.empty(),false,new ArrayList<>());
     j.mkClass();
     c.add(j.result().toString());
     });

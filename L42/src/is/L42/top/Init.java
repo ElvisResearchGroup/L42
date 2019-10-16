@@ -9,7 +9,9 @@ import java.util.List;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.PTails;
+import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -19,33 +21,56 @@ import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.X;
+import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class Init {
+  public static Init parse(String s){
+    var r=Parse.program("-dummy-",s);
+    assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
+    var res=new Init(r.res);
+    return res;
+    }
+
+  public final Top top;
+  public final Program p;
+  public Init(Full.L l){this(Program.flat(l));}
+  public Init(Program program){
+    FreshNames f=new FreshNames();
+    Loader loader=new Loader();
+    top=new Top(f,0,loader);
+    Program res=init(program,f);
+    p=res;
+    }
   //in the formalism, it is from L to L, here with p to p,
   //we can parsing initialised programs.
   //this also twist pTails with C so that the C={} have the right content
-  public static Program init(Program p){
-    var ll=initTop(p);
+  public static Program init(Program p,FreshNames f){
+    var ll=initTop(p,f);
     if(p.pTails.isEmpty()){return p.update(ll);}
     var tail=p.update(ll).pop();
-    tail=init(tail);
+    tail=init(tail,f);
     if(!p.pTails.hasC()){return tail.push(ll);}
     return tail.push(p.pTails.c(),ll);
     }
-  public static LL initTop(Program pStart){
+  public static LL initTop(Program pStart,FreshNames f){
     var res=pStart.top.visitable().accept(new CloneVisitorWithProgram(pStart){
-      @Override public Full.L fullLHandler(Full.L s) {
+      @Override public Full.L fullLHandler(Full.L s){
         if(s.isDots()){throw bug();}//TODO: will need to be handled in the visitL instead
         var this0s=L(s.ts().stream().filter(this::invalidAfter));
         if(this0s.isEmpty()){return s;}
         throw new EndError.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
         }
-      @Override public Core.L coreLHandler(Core.L s) {
+      @Override public Core.L coreLHandler(Core.L s){
         var this0s=L(s.ts().stream().filter(this::invalidAfter));
         if(this0s.isEmpty()){return s;}
         throw new EndError.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
+        }
+      @Override public X visitX(X x){
+        f.addToUsed(x);
+        return x;
         }
       private boolean invalidAfter(Full.T t){
         assert t._p()!=null;

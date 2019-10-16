@@ -69,6 +69,8 @@ public class General {
       .collect(Collectors.toList());
     }
   public static <T> List<T> merge(List<T>l1,List<T>l2){
+    if(l1.isEmpty()){return l2;}
+    if(l2.isEmpty()){return l1;}
     ArrayList<T> res=new ArrayList<>();
     res.addAll(l1);
     res.addAll(l2);
@@ -76,6 +78,8 @@ public class General {
     }
   //merge unique
   public static <T> List<T> mergeU(List<T>l1,List<T>l2){
+    if(l1.isEmpty()){return l2;}
+    if(l2.isEmpty()){return l1;}
     ArrayList<T> res=new ArrayList<>();
     res.addAll(l1);
     for(T t:l2){if(!l1.contains(t)){res.add(t);}}
@@ -111,6 +115,7 @@ public class General {
     return Collections.unmodifiableList(res);
     }
   public static <T> List<T>L(List<T> a,Function<T,T> f){
+    if(a.isEmpty()){return L();}
     int size=a.size();
     ArrayList<T> res=new ArrayList<>(size);
     boolean change=false;
@@ -124,6 +129,7 @@ public class General {
     return Collections.unmodifiableList(res);
     }
   public static <A,R> List<R>L(List<A> a,BiConsumer<ArrayList<R>,A> c){
+    if(a.isEmpty()){return L();}
     ArrayList<R> res=new ArrayList<>();
     for(int i=0;i<a.size();i++)c.accept(res,a.get(i));
     return Collections.unmodifiableList(res);
@@ -131,8 +137,9 @@ public class General {
   @FunctionalInterface
   public static interface Consumer3<T1,T2,T3>{void accept(T1 t1,T2 t2,T3 t3);}
   public static <A,B,R> List<R>L(List<A> a,List<B> b,Consumer3<ArrayList<R>,A,B> c){
-    ArrayList<R> res=new ArrayList<>();
     if(a.size()!=b.size()){throw new Error("different sizes of \n"+a+"\n"+b);}
+    if(a.isEmpty()){return L();}
+    ArrayList<R> res=new ArrayList<>();
     for(int i=0;i<a.size();i++){
       c.accept(res,a.get(i),b.get(i));
       }

@@ -1,4 +1,5 @@
 package is.L42.common;
+import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -18,5 +19,13 @@ public class Constants{
   public static Predicate<Visitable<?>> wf=WellFormedness::of;
   public static Function<PTails,Full.L> readFolder=ReadFolder::of;
   public static Function<String,Core.L> readURL=ReadURL::of;
+  private static final HashMap<String,Program> fwPrograms=new HashMap<>();
+  public static void refresh(){fwPrograms.clear();}
+  /*public static boolean newFwProgram(Program p){
+    String s=p.toString();
+    assert !fwPrograms.containsKey(s):s+"\n"+fwPrograms.keySet();
+    fwPrograms.put(s,p);
+    return true;
+    }*/
 
   }

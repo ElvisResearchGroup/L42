@@ -37,22 +37,23 @@ public class Loader {
     for(var e:loaded.values()){res+=e.cIds+"\n"+e.source+"\n\n";}
     return res;
     }
+  private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
   public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
-    var l=p.topCore();
-    J j=new J(p,G.empty(),false);
+    J j=new J(p,G.empty(),false,libs);
     j.visitE(e);
     String name="£c"+c;
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
-    String code=header+"\npublic class "+name+
+    String code=header+"\npublic class "+name+"£E"+
       "{public static L42Library execute(){return "  
       +j.result()+";}}";
-    var files=L(new SourceFile(metaPackage+name,code));
+    var files=L(new SourceFile(metaPackage+name+"£E",code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
     assert classes==classLoader;
+    Resources.setLibsCached(p,libs);
     try{
-      L42Library res=(L42Library)classLoader.loadClass(metaPackage+name)
+      L42Library res=(L42Library)classLoader.loadClass(metaPackage+name+"£E")
         .getDeclaredMethod("execute")
         .invoke(null);
       return res.unwrap;
@@ -90,7 +91,7 @@ public class Loader {
     if(!l.info().isTyped()){return;}
     String name=J.classNameStr(p);
     if(this.loaded.containsKey(name)){return;}
-    J j=new J(p,G.empty(),false);
+    J j=new J(p,G.empty(),false,libs);
     j.mkClass();
     String code=header+j.result().toString();
     var e=new Element(l,J.classNamePath(p),name,new SourceFile(metaPackage+name,code));

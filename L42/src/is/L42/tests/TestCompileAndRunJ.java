@@ -219,7 +219,7 @@ public static void loadRun(String s,String e,String output){
     String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
-    catch (InvocationTargetException e1) {fail(e1);}
+    catch (InvocationTargetException e1) {fail(e1.getCause());}
     catch (CompilationError e1) {fail(e1);}
     assertEquals(output,Resources.out());
     }

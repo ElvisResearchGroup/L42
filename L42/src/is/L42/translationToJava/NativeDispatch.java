@@ -93,6 +93,8 @@ enum TrustedKind {
    for (TrustedKind t : TrustedKind.values()) {
     if (t.inner.equals(s))return t;
     }
+   assert false:
+    s;
    throw todo();
   }
  }
