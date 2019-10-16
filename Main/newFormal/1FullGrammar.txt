@@ -61,7 +61,7 @@ _______
   HALF.e ::= xP | void | LL | xP.m(xes) | xP0 OP..OP xPn | throw e | loop e | x := e | (Ds Ks e)
   HALF.D ::= var? mdf? STz x = e
   HALF.K ::= catch throw STz x e
-  pTail::= CORE.L | C:LL
+  pTail::= LL | C:LL
   p::= LL;pTails //representing This0,...,Thisn: This0.C refers to a class bound in LL,
   // and (This1..ThisN).C to bindings in elements of pTail1.. pTailn respectively
   CT ::= ST<=STz

@@ -101,7 +101,7 @@ public class Program implements Visitable<Program>{
     assert ll!=null;
     return new Program(ll,pTails.pTailC(c, top));
     }
-  public Program push(LL ll){return new Program(ll,pTails.pTailSingle((Core.L)top));}
+  public Program push(LL ll){return new Program(ll,pTails.pTailSingle(top));}
   public Program push(C c){return push(c,top.c(c));}
   public Program update(LL ll){
     if(ll==this.top){return this;}

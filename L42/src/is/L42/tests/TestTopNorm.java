@@ -247,6 +247,33 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       C={#typed{}}
       #norm{}}
     """)
+  ),new AtomicTest(()->
+  top("""
+    {
+      B={A={
+        class method Library of()={#typed{}}
+        }}
+      C=B.A.of()
+      }
+    ""","""
+    {B={A={class method imm Library of()={#typed{}}
+       #typed{declaresClassMethods}}#typed{}}
+    C={#typed{}}#norm{}}
+    """)
+  ),new AtomicTest(()->
+  top("""
+    {
+      B={A={
+        class method Library of()={method This3.B m() #typed{typeDep=This3.B}}
+        }}
+      C=B.A.of()
+      }
+    ""","""
+    {B={A={
+      class method imm Library of()={imm method imm This2 m()#typed{typeDep=This2}}
+      #typed{typeDep=This1 declaresClassMethods}}#typed{}}
+    C={imm method imm This1.B m()#typed{typeDep=This1.B}}#norm{}}
+    """)
 
   ));}
 public static void top(String program,String out){

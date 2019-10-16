@@ -16,7 +16,7 @@ _______
 #define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)
 * (LL;pTails).push(C,LL') = LL';C:LL,pTails
 
-* (CORE.L;pTails).push(LL) = LL;CORE.L,pTails
+* (LL;pTails).push(LL') = LL';LL,pTails
 
 * (LL;pTails).push(C) = (LL;pTails).push(C,LL')
     LL(C) = LL'

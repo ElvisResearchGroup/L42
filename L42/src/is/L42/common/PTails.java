@@ -22,8 +22,8 @@ public abstract class PTails implements Visitable<PTails>{
   public LL ll(){return coreL();}
   public PTails tail(){throw bug();}
   public static final PTails empty=new PTails(){};
-  public PTails pTailSingle(Core.L l){return new PTails(){
-    public Core.L coreL(){return l;}
+  public PTails pTailSingle(LL l){return new PTails(){
+    public Core.L coreL(){return (Core.L)l;}
     public boolean hasC(){return false;}
     public PTails tail(){return PTails.this;}
     };}
