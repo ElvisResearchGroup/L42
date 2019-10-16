@@ -65,7 +65,8 @@ _______
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?, uniqueId=n}
+    ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, uniqueId=n}
     n fresh
 
 * sortHeader(p) = CORE.L //TODO: in code remove the Ms /NCs stuff
@@ -76,7 +77,8 @@ _______
     p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
     MWTs = [♥Docs MH | MH in methods(p1,Ts1,Ms) and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},??, declaresClassMethods?, uniqueId=n}
+    ss=[MWT.s| MWT in CORE.MWTs and refine(p1;s;This0)]
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, uniqueId=n}
     n fresh
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}

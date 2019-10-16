@@ -10,8 +10,6 @@ _______
 * GX+GX' = GX\dom(GX'),GX'
 _______
 #define Y!FULL.e = Half.e; STz; STz'; CTz //e, result type, returns type, constraints
-//assert if Y!e = e'; STz; STz'; CTz, then p.minimize(CTz; STz) = STz and p.minimize(CTz; STz') = STz'
-
 * Y!LL = LL;imm Library;empty;Y.CTz
 * Y!x = x;Y.GX(x);empty;Y.CTz
 * Y!x = x;empty;empty;Y.CTz
@@ -50,7 +48,7 @@ _______
 * Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz'n
     Y[expectedT=empty]!xP = xP'; ST1..STk; STz"0; CTz'0//Y!FULL.xP is always a HALF.xP
     s=m(x1..xn)
-    STz' = ST1.s..STk.s //injects .s on all the elements of STz //no need to minimize here
+    STz' = ST1.s..STk.s //injects .s on all the elements of STz
     STz'i = ST1.s.i..STk.s.i //here and below, i in 1..n
     Y[onSlash=STz'i;onSlashX=xP';expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
     CTz'i = CTzi <+Y.p (STzi <= STz'i)

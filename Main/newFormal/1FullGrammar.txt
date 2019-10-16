@@ -155,6 +155,7 @@ _______
 * FULL.par: 'this' notin xs and all x in xs are unique, if e!=empty, 'that' notin xs
 * mdf: fwd%Imm, fwd%mut not present in any term, will be used internally by the type system
 * C not This, Thisn, Any, Void or Library
+* Any OP FULL.e, Void OP FULL.e, Library OP FULL.e are not well formed 
 * FULL.B:
     no repetition in bindings(B.Ds.DXs)//B.Ds contains all of the Ds, even if divided in 2 groups in the syntax
     this notin bindings(B.Ds.DXs)
