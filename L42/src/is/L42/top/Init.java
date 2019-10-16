@@ -42,6 +42,7 @@ public class Init {
     Loader loader=new Loader();
     top=new Top(f,0,loader);
     Program res=init(program,f);
+    assert res.top.wf();
     p=res;
     }
   //in the formalism, it is from L to L, here with p to p,

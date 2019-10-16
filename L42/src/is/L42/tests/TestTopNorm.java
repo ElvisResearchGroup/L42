@@ -47,7 +47,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    topFail(InvalidImplements.class,"{B={} A={[This1.B]}}",Err.notInterfaceImplemented())
    ),new AtomicTest(()->
-   top("{B={interface} A={[B, B]}}","{B={interface #typed{}} A={[This1.B]#typed{typeDep=This1.B}}#norm{}}")
+   top("{B={interface} A={[B]}}","{B={interface #typed{}} A={[This1.B]#typed{typeDep=This1.B}}#norm{}}")
    ),new AtomicTest(()->
    topFail(PathNotExistent.class,"{[This1.A]}B={}",Err.pathNotExistant("This1.A"))
    ),new AtomicTest(()->
@@ -217,32 +217,45 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    {A={#typed{}}#norm{}}
    """)
 
-
+  //strings printing ba
   ),new AtomicTest(()->
   top("""
     {
       S={
         class method This0 of()
         method This0 sum(This0 that)=native{trusted:OP+} error void
-        method This0 _a()=native{trusted:_a} error void
-        method This0 _b()=native{trusted:_b} error void
         method Void strDebug()=native{trusted:strDebug} error void
         #norm{nativeKind=String}
         }
+      SB={
+        class method mut This0 of()
+        mut method Void _a()=native{trusted:_a} error void
+        mut method Void _b()=native{trusted:_b} error void
+        read method This1.S toS()=native{trusted:toS} error void
+        #norm{nativeKind=StringBuilder}
+        }
       C=(
-        S.of()._a()._b().strDebug()
+        mut SB sb=SB.of()
+        sb._b()
+        sb._a()
+        sb.toS().strDebug()
         {#norm{}}
         )
       }
     ""","""
     {
       S={
-        class method imm This0 of()
-        imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
-        imm method imm This0 _a()=native{trusted:_a}error void
-        imm method imm This0 _b()=native{trusted:_b}error void
-        imm method imm Void strDebug()=native{trusted:strDebug}error void
+        class method This0 of()
+        method This0 sum(This0 that)=native{trusted:OP+} error void
+        method Void strDebug()=native{trusted:strDebug} error void
         #typed{nativeKind=String}
+        }
+      SB={
+        class method mut This0 of()
+        mut method Void _a()=native{trusted:_a} error void
+        mut method Void _b()=native{trusted:_b} error void
+        read method This1.S toS()=native{trusted:toS} error void
+        #typed{nativeKind=StringBuilder}
         }
       C={#typed{}}
       #norm{}}
@@ -274,8 +287,90 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       #typed{typeDep=This1 declaresClassMethods}}#typed{}}
     C={imm method imm This1.B m()#typed{typeDep=This1.B}}#norm{}}
     """)
+ //try-catch
+  ),new AtomicTest(()->
+  top(tryCatchTest("""
+        Void v=void
+        catch error Void x (A.b())
+        A.a()
+        """),tryCatchRes("a"))
+  ),new AtomicTest(()->
+  top(tryCatchTest("""
+        Void v=A.throwErr()
+        catch error Void x (A.b())
+        A.a()
+        """),tryCatchRes("b"))
+  ),new AtomicTest(()->
+  top(tryCatchTest("""
+        Void v=void
+        catch error Void x (A.a())
+        A.b()
+        """),tryCatchRes("b"))
+  ),new AtomicTest(()->
+  top(tryCatchTest("""
+        Void v=A.throwErr()
+        catch error Void x (A.a())
+        A.b()
+        """),tryCatchRes("a"))
+
+  //a running "if", finally, after 4 months of work no stop...
+  ),new AtomicTest(()->
+  top("""
+    {
+      B={
+        class method This0 false()
+        class method This0 true()=(This false=this.false() false.not())
+        method This0 #if()=this
+        method Void #checkTrue()[Void]=native{trusted:checkTrue} error void
+        method This0 not()=native{trusted:OP!} error void
+        method This0 and(This0 that)=native{trusted:OP&} error void
+        method This0 or(This0 that)=native{trusted:OP|} error void
+        #norm{nativeKind=Bool}
+        }
+      C=if B.true().and(B.true()) {imm method imm Void a()#typed{}}
+        else {imm method imm Void b()#typed{}}
+      }
+    ""","""
+    {B={
+      class method imm This0 false()
+      class method imm This0 true()=(imm This0 false=this.false()false.not())
+      imm method imm This0 #if()=this
+      imm method imm Void #checkTrue()[Void]=native{trusted:checkTrue}error void
+      imm method imm This0 not()=native{trusted:OP!}error void
+      imm method imm This0 and(imm This0 that)=native{trusted:OP&}error void
+      imm method imm This0 or(imm This0 that)=native{trusted:OP|}error void
+      #typed{nativeKind=Bool}
+      }
+    C={imm method imm Void a()#typed{}}#norm{}}
+    """)
+
 
   ));}
+
+  private static String tryCatchTest(String s){
+    return """
+      { A={
+          class method Void throwErr()=error void
+          class method Library a()={method Void a() #typed{}}
+          class method Library b()={method Void b() #typed{}}
+          }
+        C=("""+s+"""
+          )
+        }
+        """; 
+    };
+  private static String tryCatchRes(String s){
+    return """
+      {A={
+        class method Void throwErr()=error void
+        class method imm Library a()={imm method imm Void a()#typed{}}
+        class method imm Library b()={imm method imm Void b()#typed{}}
+        #typed{declaresClassMethods}
+        }
+      C={imm method imm Void """//in Java multiline strings autotrims :-(
+      +" "+s+"() #typed{}}#norm{}}";
+   };
+
 public static void top(String program,String out){
   Resources.clearRes();
   Init init=Init.parse(program);

@@ -54,10 +54,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   load("""
   C={
     class method Void m()=(
-      This1.S s0=This1.S<:class This1.S.of()
-      This1.S s1=s0._a()
-      This1.S s2=s1._b()
-      s2.strDebug()
+      mut This1.SB sb=This1.SB<:class This1.SB.of()
+      Void u1=sb._a()
+      Void u2=sb._b()
+      This1.S s0=sb.toS()
+      s0.strDebug()
       )
     #typed{}}
   """)
@@ -65,10 +66,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   loadRun("""
   C={
     class method Void m()=(
-      This1.S s0=This1.S<:class This1.S.of()
-      This1.S s1=s0._a()
-      This1.S s2=s1._b()
-      s2.strDebug()
+      mut This1.SB sb=This1.SB<:class This1.SB.of()
+      Void u1=sb._a()
+      Void u2=sb._b()
+      This1.S s0=sb.toS()
+      s0.strDebug()
       )
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab")
@@ -231,10 +233,15 @@ public static Program base(String s){
   S={
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
-    method This0 _a()=native{trusted:_a} error void
-    method This0 _b()=native{trusted:_b} error void
     method Void strDebug()=native{trusted:strDebug} error void
     #typed{nativeKind=String}
+    }
+  SB={
+    class method mut This0 of()
+    mut method Void _a()=native{trusted:_a} error void
+    mut method Void _b()=native{trusted:_b} error void
+    read method This1.S toS()=native{trusted:toS} error void
+    #typed{nativeKind=StringBuilder}
     }
   A={
     class method mut This0 of(This1.S n)

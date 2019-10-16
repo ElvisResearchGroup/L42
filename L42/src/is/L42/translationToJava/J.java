@@ -83,7 +83,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     var info=p.topCore().info();
     String nk=info.nativeKind();
     if(nk.isEmpty()){className(p);return;}
-    kw(nk);
+    kw(TrustedKind.fromString(nk).inner);
     if(info.nativePar().isEmpty()){return;}
     c("<");
     seq(empty(),info.nativePar(),", ");
@@ -151,7 +151,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitMCall(Core.MCall m){
     T t=g(m.xP());
     var mwts=p._ofCore(t.p()).mwts();
-    var mh=_elem(mwts,m.s()).mh();
+    var elem=_elem(mwts,m.s());
+    assert elem!=null:m.s();
+    var mh=elem.mh();
     T ret=p.from(mh.t(),t.p().toNCs());
     boolean nw=nativeWrap(ret);
     if(nw){
@@ -243,7 +245,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   private void dec(D d) {
     typeName(d.t());
     kw("£x"+d.x()+"=");
-    defaultFor(p._ofCore(d.t().p()).info().nativeKind());
+    String nativeKind=p._ofCore(d.t().p()).info().nativeKind();
+    if(nativeKind.isEmpty()){c("null");}
+    else{c(TrustedKind.fromString(nativeKind).defaultVal());}
     c(";");
     nl();
     if(!fwds.contains(d.x())){return;}
@@ -252,10 +256,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     className(d.t());
     c(".NewFwd();");
     nl();
-    }
-  private void defaultFor(String kind) {
-    if(kind.equals("int")){kw("0");return;}
-    kw("null");
     }
 
   @Override public void visitD(Core.D d){//init
@@ -310,7 +310,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     nl();
      }
   @Override public void visitS(S s){
-    kw("£m"+s.m());
+    kw("£m"+(s.m().replace("#", "£h")));
     if(s.hasUniqueNum()){c("£u"+s.uniqueNum());}
     for(var x:s.xs()){c("£x"+x);}
     }

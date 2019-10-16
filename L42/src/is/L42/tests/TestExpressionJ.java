@@ -116,8 +116,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     b.mb(b=b)
     )""","""
     switch(0){default->{
-      Foo £xb=null;
-      Foo £xb0=null;
+      String £xb=null;
+      String £xb0=null;
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xb0=£xb;
       yield £cB£n1.£mmb£xb(£xb,£xb);
@@ -130,30 +130,33 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     b.mb(b=b)
     )""","""
     switch(0){default->{
-      Foo £xb=null;
+      String £xb=null;
       L42Any £xb0=null;
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xb0=£cB£n1.wrap(£xb);
       yield £cB£n1.£mmb£xb(£xb,£xb);
       }}
     """)
-  ),new AtomicTest(()->//throwing a B and an A
+  ),new AtomicTest(()->//throwing a B and an A a Void
   je("""
    (This0.A a=This0.A<:class This0.A.of()
     This0.B b=This0.B<:class This0.B.of()
     Void v0=error a
     Void v1=error b
+    Void v2=error void
     void
     )""","""
     switch(0){default->{
       £cA£n1 £xa=null;
-      Foo £xb=null;
+      String £xb=null;
       L42Void £xv0=null;
       L42Void £xv1=null;
+      L42Void £xv2=null;
       £xa=£cA£n1.£mof(£cA£n1.instance);
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xv0=Resources.throwE(new L42Error(£xa));
       £xv1=Resources.throwE(new L42Error(£cB£n1.wrap(£xb)));
+      £xv2=Resources.throwE(new L42Error(L42Void.instance));
       yield L42Void.instance;
       }}
     """)
@@ -181,8 +184,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     b0
     )""","""
     switch(0){default->{
-      Foo £xb=null;
-      Foo £xb0=null;
+      String £xb=null;
+      String £xb0=null;
       Object £xb0£fwd=£cB£n1.NewFwd();
       £xb=£cB£n1.£mof(£cB£n1.instance);
       £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
@@ -191,7 +194,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }}
     """)
 
-  ),new AtomicTest(()->//throw
+  ),new AtomicTest(()->//catch
   je("""
    (This0.B b=This0.B<:class This0.B.of()
     This0.B b0=b.mb(b=b0)
@@ -199,8 +202,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     b0
     )""","""
     switch(0){default->{
-      Foo £xb=null;
-      Foo £xb0=null;
+      String £xb=null;
+      String £xb0=null;
       Object £xb0£fwd=£cB£n1.NewFwd();
       try{
         £xb=£cB£n1.£mof(£cB£n1.instance);
@@ -209,7 +212,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       catch(L42Error catchVar0){
         if(catchVar0.obj42() instanceof £cB£n1){
-          Foo £xx=((£cB£n1)catchVar0.obj42()).unwrap;
+          String £xx=((£cB£n1)catchVar0.obj42()).unwrap;
           yield £xx;
           }
         throw catchVar0;
@@ -315,7 +318,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
   ));}
 public static void je(String e,String out){
-  String l="{ method Void m()="+e+" A={class method This0 of() method Void ma(This0 a) #norm{}} B={class method This0 of() method Void mb(This0 b) #norm{nativeKind=Foo}} #norm{uniqueId=id1}}";
+  String l="{ method Void m()="+e+" A={class method This0 of() method Void ma(This0 a) #norm{}} B={class method This0 of() method Void mb(This0 b) #norm{nativeKind=String}} #norm{uniqueId=id1}}";
   var p=Program.parse(l);
   J j=new J(p,G.empty(),false, new ArrayList<>());
   j.visitE(p.topCore().mwts().get(0)._e());
@@ -328,7 +331,7 @@ public static void jc(String e,String ...out){
   N={
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
-    #norm{nativeKind=int}}
+    #norm{nativeKind=Int}}
   A={
     class method mut This0 of(This1.N n)
     method This1.N n()
