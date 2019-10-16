@@ -31,8 +31,8 @@ import is.L42.generated.ST;
 import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.javaTranslation.Loader;
+import is.L42.typeSystem.FlagTyped;
 import is.L42.visitors.Accumulate;
-import typeSystem.FlagTyped;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;

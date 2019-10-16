@@ -1,4 +1,4 @@
-package typeSystem;
+package is.L42.typeSystem;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.pushL;
