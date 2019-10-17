@@ -1,4 +1,4 @@
-package is.L42.platformSpecific.javaTranslation;
+package is.L42.translationToJava;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
@@ -18,8 +18,10 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
+import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
-import is.L42.translationToJava.J;
+
 import static is.L42.tools.General.L;
 
 class Element{
@@ -40,7 +42,9 @@ public class Loader {
   private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
+  private boolean firstRun=true;
   public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
+    if(firstRun){loadNow(p);}
     J j=new J(p,G.empty(),false,libs);
     j.visitE(e);
     String name="£c"+c;
@@ -73,12 +77,14 @@ public class Loader {
     import is.L42.platformSpecific.javaTranslation.L42Error;
     import is.L42.platformSpecific.javaTranslation.L42Exception;
     import is.L42.platformSpecific.javaTranslation.L42Return;
+    import is.L42.platformSpecific.javaTranslation.L42TrustedIO;
     import is.L42.platformSpecific.javaTranslation.Resources;
     import java.util.List;
     import java.util.ArrayList;
     import java.util.function.BiConsumer;
     """;
   public void loadNow(Program p) throws CompilationError{
+    firstRun=false;
     ArrayList<SourceFile> files=new ArrayList<>();
     loadRec(p,files);
     if(files.isEmpty()){return;}

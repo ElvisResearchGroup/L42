@@ -9,15 +9,16 @@ import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
 import static is.L42.tools.General.*;
-
-public class P implements Visitable<P>{
-  @Override public P accept(CloneVisitor cv){return cv.visitP(this);}
-  @Override public void accept(CollectorVisitor cv){cv.visitP(this);}
-  @Override public String toString(){return Constants.toS.apply(this);}
-  @Override public boolean wf(){return Constants.wf.test(this);}
-  public static final P pAny=new P();
-  public static final P pVoid=new P();
-  public static final P pLibrary=new P();
+enum PrimitiveP implements P{Void,Library,Any;
+  public String toString(){return Constants.toS.apply(this);}
+  }
+public interface P extends Visitable<P>{
+  default public P accept(CloneVisitor cv){return cv.visitP(this);}
+  default public void accept(CollectorVisitor cv){cv.visitP(this);}
+  default public boolean wf(){return Constants.wf.test(this);}
+  public static final P pAny=PrimitiveP.Any;
+  public static final P pVoid=PrimitiveP.Void;
+  public static final P pLibrary=PrimitiveP.Library;
   public static final Core.T coreAny = new Core.T(Mdf.Immutable, L(), P.pAny);
   public static final Core.T coreLibrary = new Core.T(Mdf.Immutable, L(), P.pLibrary);
   public static final Core.T coreVoid=new Core.T(Mdf.Immutable, L(),P.pVoid);
@@ -28,7 +29,6 @@ public class P implements Visitable<P>{
   public static final Core.T coreThis1=new Core.T(Mdf.Immutable, L(),pThis0);
   public static final Full.T fullThis0=new Full.T(Mdf.Immutable, L(),L(),coreThis0.p());
   public static final Full.T fullClassAny = new Full.T(Mdf.Class, L(),L(), P.pAny);
-  private P(){}
   public static P.NCs of(int n,List<C>cs){return new NCs(n,cs);}
   public static P parse(String s){
     var csP= Parse.csP("--dummy--",s);
@@ -36,10 +36,10 @@ public class P implements Visitable<P>{
     assert csP.res._p()!=null;
     return csP.res._p();
     }
-  public boolean isNCs(){return false;}
-  public NCs toNCs(){throw bug();}
+  default boolean isNCs(){return false;}
+  default NCs toNCs(){throw bug();}
   @EqualsAndHashCode(callSuper=false) @Value @Wither
-  public static class NCs extends P{
+  public static class NCs implements P{
     int n;List<C>cs;
     @Override public NCs toNCs(){return this;}
     @Override public boolean isNCs(){return true;}

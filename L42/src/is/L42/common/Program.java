@@ -190,7 +190,7 @@ public class Program implements Visitable<Program>{
       }
     return res;
     }
-  public CTz update(C c,CTz ctz){return from(ctz,P.NCs.of(0,L(c)));}
+  public CTz update(C c,CTz ctz){return from(ctz,P.of(0,L(c)));}
   
   public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
     return subPs.allMatch(p->isSubtype(p, superP,poss));
@@ -243,13 +243,20 @@ public class Program implements Visitable<Program>{
     return P.of(n, cs);
     }
   private int findScope(C c, int acc,List<Pos>poss){
-    String url="";
-    if(top.isFullL()){url=((Full.L)top).reuseUrl();}
-    if(!url.isEmpty()){
-      throw bug();//will give error if the url is not #$
-      //and the retrived code do not define C c.
+    if(!top.isFullL()){
+      if(top.domNC().contains(c)){return acc;}
       }
-    if(top.domNC().contains(c)){return acc;}
+    else{
+      String url=((Full.L)top).reuseUrl();
+      Full.L fTop=(Full.L)top;
+      if(fTop.ms().stream().anyMatch(m->m.key().equals(c))){return acc;}
+      if(!url.isEmpty() &&!url.startsWith("#$")){
+        Core.L cTop = Constants.readURL.apply(url);
+        if(cTop.domNC().contains(c)){return acc;}
+        throw new EndError.PathNotExistent(poss,Err.pathNotExistant(c));
+        }
+      else{if(!url.isEmpty()){return acc;}}
+      }
     if(pTails.isEmpty()){
       throw new EndError.PathNotExistent(poss, Err.pathNotExistant(c));
       }

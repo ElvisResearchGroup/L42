@@ -19,11 +19,11 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
-import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Init;
 import is.L42.top.Top;
+import is.L42.translationToJava.Loader;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
 
@@ -224,8 +224,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       S={
         class method This0 of()
         method This0 sum(This0 that)=native{trusted:OP+} error void
-        method Void strDebug()=native{trusted:strDebug} error void
         #norm{nativeKind=String}
+        }
+      Debug={
+        class method Void #apply(This1.S that)=(This d=This<:class This.of() d.strDebug(that=that))
+        class method mut This0 of()        
+        method Void strDebug(This1.S that)=native{trusted:strDebug} error void
+        method Void deployLibrary(This1.S that,Library lib)=native{trusted:deployLibrary} error void
+        #norm{nativeKind=TrustedIO}        
         }
       SB={
         class method mut This0 of()
@@ -238,18 +244,28 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         mut SB sb=SB.of()
         sb._b()
         sb._a()
-        sb.toS().strDebug()
+        Debug(sb.toS())
+        Debug.of().deployLibrary(sb.toS(), lib={
+          A={
+            class method Library foo()={method Void retrived() #typed{}}
+            #typed{}}
+          #typed{}})
         {#norm{}}
         )
       }
     ""","""
-    {
-      S={
-        class method This0 of()
-        method This0 sum(This0 that)=native{trusted:OP+} error void
-        method Void strDebug()=native{trusted:strDebug} error void
+      {S={
+        class method imm This0 of()
+        imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
         #typed{nativeKind=String}
         }
+      Debug={
+         class method imm Void #apply(imm This1.S that)=(imm This0 d=This0<:class This0.of()d.strDebug(that=that))
+         class method mut This0 of()
+         imm method imm Void strDebug(imm This1.S that)=native{trusted:strDebug}error void
+         imm method imm Void deployLibrary(imm This1.S that, imm Library lib)=native{trusted:deployLibrary}error void
+         #typed{nativeKind=TrustedIO}
+         }
       SB={
         class method mut This0 of()
         mut method Void _a()=native{trusted:_a} error void
@@ -260,6 +276,21 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       C={#typed{}}
       #norm{}}
     """)
+
+  ),new AtomicTest(()->
+  top("""
+    {reuse[ba]
+     C=A.foo() 
+    }
+    ""","""
+    {
+      A={
+        class method imm Library foo()={imm method imm Void retrived()#typed{}}
+        #typed{}}
+      C={imm method imm Void retrived()#typed{}}
+      #norm{}}
+    """)
+
   ),new AtomicTest(()->
   top("""
     {

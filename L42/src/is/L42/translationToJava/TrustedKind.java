@@ -26,7 +26,11 @@ enum TrustedKind {
     assert xs.size()==1;
     return "return new StringBuilder();";
     }},
-
+  TrustedIO("L42TrustedIO"){public String factory(List<String> xs){
+    assert xs.size()==1;
+    return "return new L42TrustedIO();";
+    }},
+  
   Limit("Void"){public String factory(List<String> xs){
     assert false;
     throw bug();

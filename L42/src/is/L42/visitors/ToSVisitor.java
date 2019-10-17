@@ -47,6 +47,7 @@ public class ToSVisitor implements ToSTrait{
     if(p==P.pAny){c("Any");return;}
     if(p==P.pLibrary){c("Library");return;}
     if(p==P.pVoid){c("Void");return;}
+    assert p.isNCs();
     var p0=p.toNCs();
     c("This"+p0.n());
     seq(i->c("."),p0.cs(),"");

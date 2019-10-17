@@ -66,7 +66,7 @@ _______
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, uniqueId=n}
+    Info = #norm{typeDep=Ps\{Any,Void,Library},refine=ss, declaresClassMethods?, uniqueId=n}
     n fresh
 
 * sortHeader(p) = CORE.L //TODO: in code remove the Ms /NCs stuff

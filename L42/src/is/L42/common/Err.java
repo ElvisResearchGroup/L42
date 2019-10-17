@@ -190,6 +190,8 @@ public class Err {
   "The type of "+_1+" can not be inferred; it is required to be a subtype of all the following incompatible types:"+_2
   ;}public static String noCommonSupertypeAmong(Object _1,Object _2){return
   "The type of "+_1+" can not be inferred; none of the following types is a subtype of all the others:"+_2
+  ;}public static String reuseShadowsMember(Object _1,Object _2){return
+  "Reusing url "+_1+" shadows the following members: "+_2
   
   ;}
 }

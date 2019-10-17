@@ -17,8 +17,8 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.tools.InductiveSet;
+import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class FlagTyped {
@@ -65,7 +65,7 @@ public class FlagTyped {
         out:for(var cs:dom){
           var lcs=l.cs(cs);
           if(lcs.info().isTyped()){set.accept(cs);continue out;}
-          var frommed=L(lcs.info().typeDep(),pi->p.from(pi,P.NCs.of(0, cs)));
+          var frommed=L(lcs.info().typeDep(),pi->p.from(pi,P.of(0, cs)));
           for(var p0:frommed){
             var l0=p._ofCore(p0);
             if(l0==null){set.accept(cs);continue out;}
@@ -73,7 +73,7 @@ public class FlagTyped {
             if(hasUntypedOut){set.accept(cs);continue out;}
             }
           install(0,cs1->{
-            var pcs1=P.NCs.of(0,cs1);
+            var pcs1=P.of(0,cs1);
             var res=p._ofCore(pcs1);
             if(res!=null && res.info().isTyped()){return;}
             if(frommed.contains(pcs1)){set.accept(cs);}

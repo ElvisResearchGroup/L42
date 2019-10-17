@@ -1,6 +1,8 @@
 package is.L42.visitors;
 
-public interface Visitable<Kind>{
+import java.io.Serializable;
+
+public interface Visitable<Kind> extends Serializable{
   Kind accept(CloneVisitor v);
   void accept(CollectorVisitor v);
   boolean wf();

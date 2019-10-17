@@ -2,6 +2,7 @@ package is.L42.top;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.todo;
 import static is.L42.tools.General.typeFilter;
@@ -30,13 +31,46 @@ import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Full.L.M;
 import is.L42.generated.Full.L.NC;
+import is.L42.generated.LDom;
 import is.L42.generated.P.NCs;
 
 class SortHeader{
+  public static Core.L coreTopReuse(Program p,int uniqueId,Full.L l,List<Pos> poss)throws EndError{
+    Core.L coreL=Constants.readURL.apply(l.reuseUrl());
+    List<LDom>dups=L(l.ms().stream().map(m->m.key()).filter(k->
+      coreL.mwts().stream().anyMatch(m->k.equals(m.key()))
+      ||coreL.ncs().stream().anyMatch(m->k.equals(m.key()))
+      ));
+    if(!dups.isEmpty()){
+      throw new EndError.InvalidHeader(poss,Err.reuseShadowsMember(l.reuseUrl(), dups));
+      }
+    List<Core.L.MWT> mwts=L(l.ms(),(c,mi)->{
+      if(!(mi instanceof Full.L.MWT)){return;}
+      var mwti=(Full.L.MWT)mi;
+      var docsi=TypeManipulation.toCoreDocs(mwti.docs());
+      var mhi=TypeManipulation.toCore(mwti.mh());
+      c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",null));
+      });
+    Program p0=p.update(coreL);
+    List<P.NCs> typeDep=L(c->{
+      Top.collectDeps(p0,mwts,c,null,false);
+      });
+    List<S> ss=L(mwts,(c,mi)->{
+      if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
+      });
+    boolean declaresClassMethods=mwts.stream().anyMatch(mi->mi.mh().mdf().isClass());
+    var newInfo=Core.L.Info.empty
+      .withTypeDep(typeDep)
+      .withRefined(ss)
+      .withDeclaresClassMethods(declaresClassMethods)
+      .with_uniqueId(uniqueId);
+    newInfo=Top.sumInfo(coreL.info(),newInfo);
+    return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
+    }
   public static Core.L coreTop(Program p,int uniqueId) throws EndError{
     Full.L l=(Full.L)p.top;
     List<Pos> poss=l.poss();
-    if(!l.reuseUrl().isEmpty()){throw todo();}
+    if(!l.reuseUrl().isEmpty()){return coreTopReuse(p,uniqueId,l,poss);}
     var notNC=L(l.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     if(notNC.size()==l.ms().size()){notNC=l.ms();}
     Program p0=p.update(l.withMs(notNC));
@@ -76,7 +110,7 @@ class SortHeader{
     List<P.NCs> typeDeps=unique(L(c->{
       for(var ti:ts1){c.add(ti.p().toNCs());}
       c.addAll(typePs);
-      Top.collectDeptDocs(docs, c);
+      Top.collectDepDocs(docs, c);
       }));
     List<S> refined=L(mwts,(c,mi)->{
       S s=mi.key();

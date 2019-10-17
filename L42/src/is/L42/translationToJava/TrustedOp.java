@@ -15,36 +15,43 @@ class OpUtils{
   static Map<TrustedKind, BiFunction<List<String>, E, String>> append(String s){
     return Map.of(StringBuilder,(xs,e)->""+xs.get(0)+".append(\""+s+"\");return L42Void.instance;");
     }
+  static BiFunction<List<String>, E, String> use(String s){
+    return (xs,e)->java.lang.String.format(s,xs.toArray());
+    }
   }
 enum TrustedOp {
   //booleans
-  And("OP&",Map.of(Bool,(xs,e)->"return "+xs.get(0)+" & "+xs.get(1)+";")),
-  OR("OP|",Map.of(Bool,(xs,e)->"return "+xs.get(0)+" | "+xs.get(1)+";")),
-  NOT("OP!",Map.of(Bool,(xs,e)->"return !"+xs.get(0)+";")),
-  CheckTrue("checkTrue",Map.of(Bool,(xs,e)->
-    "if("+xs.get(0)+"){return L42Void.instance;}"+
-    "throw new L42Exception(L42Void.instance);")),
+  And("OP&",Map.of(Bool,use("return %s & %s;"))),
+  OR("OP|",Map.of(Bool,use("return %s | %s;"))),
+  NOT("OP!",Map.of(Bool,use("return !%s;"))),
+  CheckTrue("checkTrue",Map.of(Bool,use(
+    "if(%s){return L42Void.instance;}"+
+    "throw new L42Exception(L42Void.instance);"))),
   //StringBuilder
   _a("_a",append("a")),
   _b("_b",append("b")),
   //toString
   ToS("toS",Map.of(
-    StringBuilder,(xs,e)->"return "+xs.get(0)+".toString();",
-    String,(xs,e)->"return "+xs.get(0)+";",
-    Int,(xs,e)->"return "+xs.get(0)+".toString();",
-    Bool,(xs,e)->"return "+xs.get(0)+".toString();"
+    StringBuilder,use("return %s.toString();"),
+    String,use("return %s;"),
+    Int,use("return %s.toString();"),
+    Bool,use("return %s.toString();")
     )),
-  StrDebug("strDebug",Map.of(String,(xs,e)->
-    "Resources.out("+xs.get(0)+"); return L42Void.instance;"
+  //
+  StrDebug("strDebug",Map.of(
+    String,use("Resources.out(%s); return L42Void.instance;"),
+    TrustedIO,use("return %s.strDebug(%s);")
     )),
+  DeployLibrary("deployLibrary",Map.of(
+    TrustedIO,use("return %s.deployLibrary(%s,%s);"))),
   LimitTime("limitTime",Map.of(Limit,(xs,e)->
     "System.out.println("+xs.get(1)+"); return L42Void.instance;"
     )),
   Plus("OP+",Map.of(
-    Int,(xs,e)->"return "+xs.get(0)+" + "+xs.get(1)+";",
-    String,(xs,e)->"return "+xs.get(0)+" + "+xs.get(1)+";"
+    Int,use("return %s + %s;"),
+    String,use("return %s + %s;")
     )),
-  Mul("OP*",Map.of(Int,(xs,e)->"return "+xs.get(0)+" * "+xs.get(1)+";"));
+  Mul("OP*",Map.of(Int,use("return %s * %s;")));
   public final String inner;
   Map<TrustedKind,BiFunction<List<String>,Core.E,String>>code;
   TrustedOp(String inner,Map<TrustedKind,BiFunction<List<String>,Core.E,String>>code){

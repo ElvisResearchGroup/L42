@@ -30,7 +30,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.javaTranslation.Loader;
+import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.FlagTyped;
 import is.L42.visitors.Accumulate;
 
@@ -83,7 +83,7 @@ public class Top {
     Info info=Info.empty.withTypeDep(L(typePs.stream())).withCoherentDep(L(cohePs.stream())); 
     return l.withMwts(merge(mwts0,mwts)).withInfo(sumInfo(l.info(),info));
     }
-  private Info sumInfo(Info info1, Info info2) {
+  public static Info sumInfo(Info info1, Info info2) {
     assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
     assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
     assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
@@ -105,16 +105,16 @@ public class Top {
     }
   private Core.L updateInfo(Program p1, Core.L.NC nc) {
     List<P.NCs>dep=new ArrayList<>();
-    collectDeptDocs(nc.docs(),dep);
+    collectDepDocs(nc.docs(),dep);
     Core.L l=(Core.L)p1.top;
     var info=l.info();
     info=info.withTypeDep(mergeU(info.typeDep(),dep));
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
     }
-  public static void collectDeptDocs(List<Doc> docs, List<P.NCs> acc) {
+  public static void collectDepDocs(List<Doc> docs, List<P.NCs> acc) {
     for(Doc d:docs){
-      collectDeptDocs(d.docs(),acc);
+      collectDepDocs(d.docs(),acc);
       if(d._pathSel()==null){continue;}
       if(!d._pathSel().p().isNCs()){continue;}
       acc.add(d._pathSel().p().toNCs());

@@ -28,6 +28,9 @@ public abstract class EndError extends RuntimeException{
   public static class InvalidImplements extends EndError{
     public InvalidImplements(List<Pos> poss, String msg) { super(poss, msg);}
     }
+  public static class InvalidHeader extends EndError{
+    public InvalidHeader(List<Pos> poss, String msg) { super(poss, msg);}
+    }
   public static class PathNotExistent extends EndError{
     public PathNotExistent(List<Pos> poss, String msg) { super(poss, msg);}
     }

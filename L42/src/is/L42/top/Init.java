@@ -16,13 +16,13 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Full.CsP;
+import is.L42.translationToJava.Loader;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
-import is.L42.platformSpecific.javaTranslation.Loader;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
