@@ -3,9 +3,9 @@
 Reasoning about imperative object-oriented (OO) programs is a non-trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning;
 instead of using automated theorem proving, 
-it is becoming more popular to verify aliasing and immutability using a type system.
+it is becoming more popular to verify aliasing and immutability properties using a type system.
 For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use Reference Capabilities (RCs)\footnote{RCs are called \emph{Type Modifiers} in some other works.} and Object Capabilities (OCs) to statically ensure  deterministic parallelism and the absence of data-races.
-While studying those languages, we discovered an elegant way to enforce invariants: we use RCs and OCs to restrict how/when the result of invariant methods change; this is done by restricting I/O, and how aliasing and mutation affect the state seen by the invariant.
+While studying those languages, we discovered an elegant way to enforce invariants: we use RCs and OCs to restrict how/when the result of invariant methods change; this is done by restricting I/O, and how mutation through aliases can affect the state seen by invariants.
 % We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
 %We aim to leverage these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
 %when the same expressive power can be expressed using (verbose) programming patterns;
@@ -20,28 +20,27 @@ RCs, as used in this paper, are a type system feature that allows reasoning abou
 three different research languages are being independently developed relying on this new design: the language of Gordon \etal~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
 These projects are quite large: several million lines of code are written in Gordon \etal's language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the RCs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
-Type modifiers
- are a well known mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12}
- allowing static reasoning about mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following modifiers for object references (i.e. expressions and variables):
+Reference capabilities
+ are a well known mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} that 
+ allow statically reasoning about the mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following RCs for object references (i.e. expressions and variables):
 %\begin{itemize}
 
-\noindent\rule{1.2ex}{1.2ex} Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased as in most imperative languages without reference capabilities.
+\noindent\rule{1.2ex}{1.2ex} Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased, without restriction; as in most imperative languages without reference capabilities.
 
-\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object referenced as \Q!imm! is an \emph{immutable object}.
-Any other other object is a \emph{mutable object}.
-Thus, all objects are born mutable, may be mutated and \emph{later} become immutable.
+\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object},
+whereas other objects are \emph{mutable}. Note that an object that was previousesly mutated (and hence \empha{mutable}) may latter be promoted to \emph{immutable}.
 
-\noindent\rule{1.2ex}{1.2ex} Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, since \Q!read! is a supertype of both \Q!imm! and \Q!mut!.
+\noindent\rule{1.2ex}{1.2ex} Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, as \Q!read! types are super-types of both their \Q!imm! and \Q!mut! variants.
 
 \noindent\rule{1.2ex}{1.2ex} Encapsulated (\Q@capsule@):
-every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note an encapsulated reference can be freely used as either mutable or immutable, since there could have been no other references to it.
+every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to promote a capsule reference to either mutable or immutable, since there could have been no other aliases to it.
 
-In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (see linear/affine types~\cite{boyland2001alias}). 
+In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (similar to linear and affine types~\cite{boyland2001alias}). 
 Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
-Later on, we discuss \Q!capsule! fields, which behave differently with respect to \Q@capsule@ local variables.
+Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
 %\end{itemize}
 
-\noindent RCs are different to field or variable modifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
+\noindent RCs are different to field or variable qualifiers like Java's \Q@final@: RCs apply to references, whereas \Q@final@ applies to fields themselves. Unlike a variable/field of a \Q@read@ type, a \Q@final@ variable/field cannot be reassigned, it always refers to the same object, however the variable/field can still be used to mutate the referenced object.
 On the other hand, an object cannot be mutated through a \Q@read@ reference, however a \Q@read@ variable can still be reassigned.\footnote{In C, this is similar to the difference between \Q@A* const@ (like \Q@final@) and \Q@const A*@ (like \Q@read@), where \Q@const A* const@ is like \Q@final read@.}
 %\end{itemize}
 
@@ -57,7 +56,7 @@ mp.x = 5; // ok, now we can observe rp.x == 5
 ip = new Point(3, 5); // ok, ip is not final
 \end{lstlisting} 
 
-RCs influence the access to the whole ROG; not just the referred object itself, as in the full/deep interpretation of RCs~\cite{ZibinEtAl10,Potanin2013}:
+RCs influence the access to the whole ROG; not just the referenced object itself, as in the full/deep interpretation of RCs~\cite{ZibinEtAl10,Potanin2013}:
 \begin{itemize}
   \item Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all the objects in the ROG of an immutable object are also immutable,
   \item A \Q!mut! field accessed from a \Q@read@ reference produces a \Q@read@ reference; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.
@@ -66,7 +65,7 @@ RCs influence the access to the whole ROG; not just the referred object itself, 
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
-Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature. In order for access to a \Q!capsule! fields to always produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
+Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialized and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
 In contrast, Pony treats \Q!capsule! fields the same as \Q!capsule! variables: Pony does not guarantee that they contain a \Q!capsule! reference, as Pony provides non-destructive reads.
@@ -74,21 +73,21 @@ In contrast, Pony treats \Q!capsule! fields the same as \Q!capsule! variables: P
 %do not return a \Q!capsule!, but destructive reads do.
 %rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
 Pony's \Q!capsule! fields are still useful for safe parallelism, as destructive reads of a \Q!capsule! field return a \Q!capsule! reference (which can then be sent to other actors), however the ROG of a \Q!capsule! field can be mutated by the same actor, even within methods of unrelated objects.
-L42 supports a variation of \Q!capsule! fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}. 
+L42 supports another variation of \Q!capsule! fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}.
 
-These forms of \Q!capsule! fields are useful for safe parallelism but not invariant checking: Pony and L42's existing \Q!capsule! fields do not prevent representation exposure; while Gordon \etal's cannot be read non-destructively.
-In Section~\ref{s:protocol} we present a novel kind of \Q!capsule! field that does not have these problems; we added support for these fields to L42, and we believe they could be easily added to Pony and Gordon \etal's language.
-We repeat here for more clarity: 
-a capsule field is not the same concept of a capsule reference. In all approaches a capsule reference is required to initialize or update a capsule field.
-However, different languages have different behaviour when a capsule field is accessed, and not always a capsule reference is produced.
+These forms of \Q!capsule! fields are useful for safe parallelism but not invariant checking: Pony and L42's pre-existing \Q!capsule! fields do not prevent representation exposure; while Gordon \etal's cannot be read non-destructively.
+In Section~\ref{s:protocol} we present a novel kind of \Q!capsule! field that does not have these problems; we added support for these fields to L42, and believe they could be easily added to Pony and Gordon \etal's language.
+%We repeat here for more clarity: 
+%a capsule field is not the same concept of a capsule reference. 
+%However, different languages have different behaviour when a capsule field is accessed, and a capsule reference is not always produced.
 
 %None of those forms of \Q!capsule! fields are suitable for invariant checking, since they are designed to prevent  data-races. In Section \ref{s:protocol} we present a novel kind of \Q!capsule! field, designed to prevent representation exposure. We added this new kind of \Q!capsule! field to L42, and it could be easily added to Gordon \etal and Pony.
 
 \subheading{Promotion and Recovery}
-\noindent Many different techniques and type systems handle the modifiers above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
+\noindent Many different techniques and type systems handle the RCs above~\cite{ZibinEtAl10,ClarkeWrigstad03,HallerOdersky10,GordonEtAl12,ServettoZucca15}.
 The main progress in the last few years is with the flexibility of such type systems:
  where the programmer should use \Q@imm@ when  representing immutable data
-and \Q@mut@ nearly everywhere else. The system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the type modifiers, adapting them to their use context.
+and \Q@mut@ nearly everywhere else. The system will be able to transparently promote/recover~\cite{GordonEtAl12,clebsch2015deny,ServettoZucca15} the reference capability, adapting them to their use context.
 To see a glimpse of this flexibility, consider the following:
 %//the same expression can create mut, imm or capsule
 %\saveSpace
@@ -120,7 +119,7 @@ be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ refe
 \subheading{Exceptions}\label{s:exceptions}
 In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
 The concept of \emph{strong exception safety} (SES)~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
-if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated; this prevent exposing objects whose invariant was left broken in the middle of mutations.
+if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated; this prevents exposing objects whose invariant was left broken in the middle of mutations.
 %\LINE
 %\noindent{\textit{Exceptions:}}
 % M\#, L42 and Pony rely on SES for all unchecked exceptions to ensure safe and transparent parallelism,
@@ -212,7 +211,7 @@ This design has been explored by Joe-E~\cite{finifter2008verifiable}.
 
 OCs are typically not part of the type system nor do they require runtime checks or special support beyond that provided by a memory safe language. However, since
 L42 allows user code to perform foreign calls without going through a predefined standard library, 
-the OCs pattern is enforces by the type system:
+the OC pattern is enforced by the type system:
 %To reason about determinism, L42 connects RCs with the OC style as follows: % style by requiring:
 \begin{itemize}
 \item Foreign methods (which have not been whitelisted as deterministic) and methods whose names start with \texttt{\#\$} are \emph{capability operations}.%
@@ -229,7 +228,7 @@ the OCs pattern is enforces by the type system:
 %\item There are no global variables.\footnote{}
 \end{itemize}
 
-\noindent L42 capability operations are used mostly internally by capability classes, whereas user code would call normal methods on already existing capability objects.
+\noindent L42 capability operations are mostly used internally by capability classes, whereas user code would call normal methods on already existing capability objects.
 
 For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) could be whitelisted as `deterministic', provided they do not affect execution, such as by non-deterministically throwing I/O errors.
 

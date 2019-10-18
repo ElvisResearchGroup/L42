@@ -42,7 +42,7 @@ Here we assume a slight variation of the usual \thm{Subject Reduction}: a (sub) 
 	If $\VS(\s, \E[e])$, then $\Ss; \emptyset; \E \vdash e : T$.
 \end{Assumption}
 
-As we do not have a concrete type system, we need to assume some properties about its derivations. First we require that  \Q!new! expressions only have field initialisers with the appropriate type, fields are only updated with expressions of the appropriate type, methods are only called on receivers with the appropriate modifier, method parameters have the appropriate type, and method calls are typed with the return type of the method:%
+As we do not have a concrete type system, we need to assume some properties about its derivations. First we require that  \Q!new! expressions only have field initialisers with the appropriate type, fields are only updated with expressions of the appropriate type, methods are only called on receivers with the appropriate RC, method parameters have the appropriate type, and method calls are typed with the return type of the method:%
 \SS\begin{Assumption}[Type Consistency]\rm\ 
 \begin{ienumerate}
 %if S; G; E |- e.f = e' : _ C, and C.f = T', then S; G; E[e.f = []] |- e' : T'
@@ -59,7 +59,7 @@ $C.m = \mdf\,\Kw{method}\,\T\,m\oR\T_1\,\x_1,\ldots,\T_n\x_n\cR\,\_$, then:
 \end{ienumerate}
 \end{Assumption}%
 
-\noindent We also assume that any expression inside a method body can be typed with the same type modifiers as when it is expanded by our \textsc{mcall} rule:%
+\noindent We also assume that any expression inside a method body can be typed with the same reference capabilities as when it is expanded by our \textsc{mcall} rule:%
 \SS\begin{Assumption}[Method Consistency]\rm\
 If $\VS(\s, \EV[l.m\oR v_1,\ldots,v_n \cR])$ %and $\s|\EV[l.m\oR v_1,\ldots,v_n \cR] \rightarrow \s|$,
 where:
@@ -72,7 +72,7 @@ where:
 \indent then $\emptyset; \G; \E \vdash e : \mdf\,\_$ iff $\Ss; \emptyset; \EV[\E'[\Kw{this}\coloneqq l,x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]] \vdash e' : \mdf\,\_$.
 \end{Assumption}
 
-\noindent Now we define formal properties about our TMs, thus giving them meaning. First we require that an \immut object not also be \muty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut!/\Q!capsule! reference and through \Q!mut!/\Q!capsule! fields:%
+\noindent Now we define formal properties about our RCs, thus giving them meaning. First we require that an \immut object not also be \muty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut!/\Q!capsule! reference and through \Q!mut!/\Q!capsule! fields:%
 \SS\begin{Assumption}[Imm Consistency]\rm\ \\
 \indent If $\VS(\s, e)$ and $\immut(\s, e, l)$, then not $\muty(\s, \h, e, l)$.
 

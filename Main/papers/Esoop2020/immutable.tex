@@ -1,25 +1,25 @@
 \section{Examples}
 \label{s:immutable}
-Our sound invariant protocol relies on many different features and
-restrictions. We believe that they are all needed; in this section
-we will show examples of using our system, and how relaxing any of our requirements would break our
-protocol; sometimes in surprising ways.
-In our example and in L42, the reference capability \Q@imm@ is considered the default, and so it can be omitted.
+Our invariant protocol relies on many different features and
+restrictions. In this section % Don't say "We believe that they are all needed;" because we could replace them with other restrictions
+we will show examples of using our system, and how relaxing any of our requirements would break the soundness of our
+protocol.%; sometimes in surprising ways.
+In our examples and in L42, the reference capability \Q@imm@ is the default, and so it can be omitted.
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
 However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
 
 First we consider a simple case, an invariant over fields of \Q@imm@ types;
-\Q@Person@ has a single immutable (and not final) field \Q@name@:
+\Q@Person@ has a single immutable (and non final) field \Q@name@:
 \begin{lstlisting}
 class Person {
   read method Bool invariant() { return !name.isEmpty(); }
-  private String name;//the default modifier imm is applied here
+  private String name;//the default RC imm is applied here
   read method String name() { return this.name; }
   mut method Void name(String name) { this.name = name; }
   Person(String name) { this.name = name; }  }
 \end{lstlisting}
-The \Q@name@ field is not final: \Q@Person@s can change state during their lifetime. The ROGs of all of \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
-We enforce \Q@Person@'s invariant by generating checks on the result of \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.
+The \Q@name@ field is not final: \Q@Person@s can change state during their lifetime. The ROGs of all of a \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
+We enforce \Q@Person@'s invariant by generating checks on the result of calling \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.
 Such checks will be generated/injected, and not directly written by the programmer.
 \begin{lstlisting}
 class Person { .. // Same as before
@@ -30,14 +30,13 @@ class Person { .. // Same as before
     this.name = name; // check at end of constructor
     if (!this.invariant()) { throw new Error(...); }}  }
 \end{lstlisting}
-Programmers often manually check for invariants by placing assertions in the same places we did in this example.
-However, if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs and RCs with SES, those checks would not be sufficient.
+%Programmers often manually check for invariants by placing assertions in the same places we did in this example. % ISAAC: Deleted because unnecesary, and makes the next sentence misunderstandable
+If we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or SES, the above checks would not be sufficient to enforce our invariant protocol.
 
-\subheading{Unrestricted Access To Capability Objects?} Allowing \Q@invariant()@ to (indirectly) perform a non-deterministic operation by creating new capability objects or mutating existing ones, would break our guarantee that (manually) calling \Q@invariant()@ always returns \Q!true!.
-Consider this use of person;
-where \Q@myPerson.invariant()@ may randomly fails:
+\subheading{Unrestricted Access to Capability Objects?} Allowing \Q@invariant@ methods to (indirectly) perform non-deterministic operations by creating new capability objects or mutating existing ones would break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
+Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
 \begin{lstlisting}[morekeywords={assert}]
-class EvilString extends String {//IMPOSSIBLE THANKS TO OCs
+class EvilString extends String {
   @Override read method Bool isEmpty() {//Creates a new
     return new Random().bool(); }}//capability out of thin air
 ...
@@ -48,31 +47,31 @@ method mut Person createPersons(String name) {
   ...}
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
-Despite the code for \Q@Person.invariant()@ intuitively looking correct and deterministic (\Q@!name.isEmpty()@), the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
+Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic (\Q@!name.isEmpty()@), the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
-restricts their creation, the above example would be forbidden.
+restricts their creation, the above example is prevented.
 
 \subheading{Allowing Internal Mutation Through Back Doors?}
 Rust~\cite{matsakis2014rust} and Javari~\cite{TschantzErnst05}
-allows interior mutability:
+allow interior mutability:
 the ROG of an `immutable' object can be mutated through back doors.
-Such back doors would allow the \Q@invariant()@ method to store and read information about previous calls.
+Such back doors would allow \Q@invariant@ methods to store and read information about previous calls.
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
-class MagicCounter {//IMPOSSIBLE, NO BACK DOORS IN L42
-  method Int incr(){/*internal mutability does i++*/}}
+class MagicCounter {
+  method Int incr(){/*magically increment a counter*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
 ...
-NastyS name = new NastyS(); //TMs believe name's ROG is imm
+NastyS name = new NastyS(); //RCs believe name's ROG is immutable
 Person person = new Person(name); // person is valid, counter=1
 name.increment(); // counter == 2, person is now broken
-person.invariant(); // returns false!, counter == 3
+person.invariant(); // returns false, counter == 3
 person.invariant(); // returns true, counter == 4
 \end{lstlisting}
-Those back doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
+Such back doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
 discuss how a few trusted language primitives can be used to perform caching and other needed optimisations,
 without the need for back doors.
 
@@ -139,18 +138,19 @@ Since we represent invariant failures by throwing unchecked exceptions, programs
 	Due to the guarantees of strong exception safety, any object that has been mutated during a \Q@try@ block is now unreachable, as happens in alias burying~\cite{boyland2001alias}.
 % In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant()@ methods).
 %NOTE the text above was pointless since the invariant method can not see 'this' directly anywhay!
- These two properties ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
+% ISAAC: What two properties where you refering to?
+ This property ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
 If instead we were to not enforce strong exception safety, an invalid object could be made reachable.
-The following code is ill-typed since we try to mutate \Q@bob@ in a try catch that capture all unchecked exception; thus including also invariant failures:
+The following code is ill-typed since we try to mutate \Q@bob@ in a try catch that capture all unchecked exceptions; thus also including invariant failures:
 %\saveSpace
 \begin{lstlisting}[morekeywords={assert}]
 mut Person bob = new Person("bob");
 // Catch and ignore invariant failure:
-try { bob.name(""); } catch (Error t) { } // ILL-TYPED IN L42
+try { bob.name(""); } catch (Error t) { } // Violates SES
 assert bob.invariant(); // fails!
 \end{lstlisting}
-This variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.
+The following variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.
 \begin{lstlisting}[morekeywords={assert}]
 try {mut Person bob = new Person("bob");    bob.name("");} 
 catch (Error t) { }
