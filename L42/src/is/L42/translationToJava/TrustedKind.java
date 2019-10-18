@@ -19,7 +19,7 @@ enum TrustedKind {
     public String defaultVal(){return "0";}
     },
   String("String"){public String factory(List<String> xs){
-    assert xs.size()==1;
+    assert xs.size()==1:xs;
     return "return \"\";";
     }},
   StringBuilder("StringBuilder"){public String factory(List<String> xs){

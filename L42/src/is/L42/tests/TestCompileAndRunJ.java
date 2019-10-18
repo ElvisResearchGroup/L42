@@ -100,10 +100,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     }
   C={
     class method Void m()=(
-      This1.S s0=This1.S<:class This1.S.of()
-      This1.S s1=s0._a()
-      This1.S s2=s1._b()
-      This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.read(fileName=s2)
+      This1.SB sb=This1.SB<:class This1.SB.of()
+      Void u1=sb._a()
+      Void u2=sb._b()
+      This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.read(fileName=sb.toS())
       s3.strDebug()
       )
     #typed{}}

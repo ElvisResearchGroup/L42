@@ -13,6 +13,7 @@ import is.L42.generated.Core;
 
 public class ReadURL {
   public static Core.L of(String url){
+    if(url.startsWith("#$")){url=url.substring(2);}
     Core.L res;try(
       var file=new FileInputStream("localhost"+File.separator+url+".L42"); 
       var in=new ObjectInputStream(file);

@@ -42,9 +42,8 @@ public class Loader {
   private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  private boolean firstRun=true;
   public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
-    if(firstRun){loadNow(p);}
+    loadNow(p);
     J j=new J(p,G.empty(),false,libs);
     j.visitE(e);
     String name="£c"+c;
@@ -84,7 +83,6 @@ public class Loader {
     import java.util.function.BiConsumer;
     """;
   public void loadNow(Program p) throws CompilationError{
-    firstRun=false;
     ArrayList<SourceFile> files=new ArrayList<>();
     loadRec(p,files);
     if(files.isEmpty()){return;}

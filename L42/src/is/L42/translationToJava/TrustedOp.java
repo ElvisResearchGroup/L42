@@ -28,8 +28,40 @@ enum TrustedOp {
     "if(%s){return L42Void.instance;}"+
     "throw new L42Exception(L42Void.instance);"))),
   //StringBuilder
+  _q("_q",append("q")),
+  _w("_w",append("w")),
+  _e("_e",append("e")),
+  _r("_r",append("r")),
+  _t("_t",append("t")),  
+  _y("_y",append("y")),
+  _u("_u",append("u")),
+  _i("_i",append("i")),
+  _o("_o",append("o")),
+  _p("_p",append("p")),  
   _a("_a",append("a")),
-  _b("_b",append("b")),
+  _s("_s",append("s")),
+  _d("_d",append("d")),
+  _f("_f",append("f")),
+  _g("_g",append("g")),  
+  _h("_h",append("h")),
+  _j("_j",append("j")),
+  _k("_k",append("k")),
+  _l("_l",append("l")),
+  _z("_z",append("z")),  
+  _x("_x",append("x")),
+  _c("_c",append("c")),
+  _v("_v",append("v")),
+  _b("_b",append("b")),  
+  _n("_n",append("n")),
+  _m("_m",append("m")),
+  
+  
+  
+  
+  
+  
+  
+  
   //toString
   ToS("toS",Map.of(
     StringBuilder,use("return %s.toString();"),
