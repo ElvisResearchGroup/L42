@@ -53,6 +53,10 @@ _______
     Y[onSlash=STz'i;onSlashX=xP';expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
     CTz'i = CTzi <+Y.p (STzi <= STz'i)
     STz" = STz"0 U..U STz"n
+* Y!e1 OP..OP en OP e0 OP e = e1 OP..OP en OP (e0 OP e) 
+    OP of form OP0 or OP3 //right associative
+* Y!e0 OP1 e OP1 e1..OP1 en = (e0 OP1 e) OP1 e1..OP1 en //left associative 
+  
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
@@ -80,6 +84,7 @@ _______
     ei' = xi otherwise
     x1..xn fresh
     e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
+    n=1 or OP of form OP2 //unassociative
 * Y! xP0 OP..OP xPn = xP'0 OP..OP xP'n; OP STz0,..,STzn; empty; Y.CTz
     Y[expectedT = empty]!xPi = xP'i; STzi; empty; Y.CTz // Y!xP shouldn't introduce any new constraints
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable

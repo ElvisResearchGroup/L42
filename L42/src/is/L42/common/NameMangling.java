@@ -20,9 +20,10 @@ public class NameMangling {
     return "#"+op.name().toLowerCase()+n;
     }
   public static S charName(int c){
-    boolean regular=Character.isAlphabetic(c)||Character.isDigit(c);
-    String name=regular?Character.toString(c):desugarSymbol(c);
-    return new S("#"+name,L(),-1);
+    if(Character.isLowerCase(c)){return new S("#l"+Character.toString(c),L(),-1);}
+    if(Character.isUpperCase(c)){return new S("#u"+Character.toString(c),L(),-1);}
+    if(Character.isDigit(c)){return new S("#d"+Character.toString(c),L(),-1);}
+    return new S("#s"+desugarSymbol(c),L(),-1);
     }
   public static String desugarSymbol(int c){
     return switch(c){
@@ -60,7 +61,10 @@ public class NameMangling {
       case '\\'->"backslash";
       case ' '->"space";
       case '\n'->"newline";
-      default->{throw bug();}
+      default->{
+        assert false:Character.toString(c);
+        throw bug();
+        }
       };
     }
 

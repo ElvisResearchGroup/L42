@@ -387,8 +387,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private X freshX(String s){return new X(fresh.fresh(s));}
   @Override public void visitBinOp(Full.BinOp binOp){
+    if(binOp.es().size()!=2){binOp=applyAssociativity(binOp);}
     if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
-    if(binOp.es().size()==2 && binOp.es().get(0) instanceof Full.CsP){
+    if(binOp.es().get(0) instanceof Full.CsP){
       visitBinOpCsp(binOp);return;}
     List<Full.E> xps=new ArrayList<>();
     List<Full.D> ds=L(binOp.es(),(c,ei)->{
@@ -410,6 +411,17 @@ public class ToHalf extends UndefinedCollectorVisitor{
       retSTz.addAll(ri.retSTz);
       });
     commit(new Half.BinOp(binOp.pos(),binOp.op(), es), resSTz, retSTz);
+    }
+  private Full.BinOp applyAssociativity(Full.BinOp b){
+    int s=b.es().size();
+    assert s>2;
+    if(b.op().kind==OpKind.RelationalOp){return b;}
+    if(b.op().kind==OpKind.DataLeftOp){
+      var left=new Full.BinOp(b.pos(),b.op(),b.es().subList(0, 2));
+      return b.withEs(pushL(left,b.es().subList(2,s)));
+      }
+    var right=new Full.BinOp(b.pos(),b.op(),b.es().subList(s-2, s));
+    return b.withEs(pushL(b.es().subList(0,s-2),right)); 
     }
   private void visitBinOp3(Full.BinOp b){
     Pos p=b.pos();
