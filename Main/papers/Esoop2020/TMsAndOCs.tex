@@ -35,7 +35,7 @@ All objects are born mutable and may later become immutable.
 Thus, while there are only two kinds of objects (mutable and immutable), there are more kinds of RCs.
 
 \noindent\rule{1.2ex}{1.2ex} Encapsulated (\Q@capsule@):
-every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference to either mutable or immutable, since there could have been no other aliases to it.
+every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 
 In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (similar to linear and affine types~\cite{boyland2001alias}). 
 Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.

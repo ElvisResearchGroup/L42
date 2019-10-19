@@ -1,4 +1,4 @@
-\SS\section{Our Case study and the GUI example}
+\SS\section{A GUI Case Study}
 \label{s:case-study}
 To perform a compelling case study, we used our system on many examples, including one designed to be a worst case scenario for our approach. We also replicate many examples originally proposed by other papers, so that 
 not all the code examples come from us.
@@ -83,11 +83,11 @@ This set up is not overly complicated, the maximum nesting level of \Q@Widget@s 
 Our main method automatically presses each of the $16$ buttons once. In L42, using our invariant protocol, this resulted in $77$ calls to \Q@SafeMovable@'s invariant.
 
 \subheading{Comparison With Visible State Semantics}
-As an experiment, we set our implementation to generate invariant checks following the  visible state semantics approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,DRef},
+As an experiment, we set our implementation to generate invariant checks following the  visible state semantics approaches of D and Eiffel~\cite{Alexandrescu:2010:DPL:1875434,Meyer:1992:EL:129093},
 where the invariant of the receiver is instead checked at the start and end of \emph{every} 
 public (in D) and qualified\footnote{That is, the receiver is not \Q!this!.} (in Eiffel) method call.
 In our \Q!SafeMovable! class, all methods are public, and all calls (outside the invariant) are qualified, thus this difference is irrelevant. Neither protocol performs invariant checks on field accesses or updates,
-however due to the `uniform access principle'~\cite{?}%\footnote{%
+however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footnote{%
 %L42 also follows the Eiffel uniform access principle: field accesses are the same as method calls.%
 %}
 , Eiffel allows fields to directly implement methods,

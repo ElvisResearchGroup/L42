@@ -34,7 +34,7 @@ If we were to relax (as in Rust), or even eliminate (as in Java), the support fo
 \subheading{Unrestricted Access to Capability Objects?} Allowing \Q@invariant()@ methods to (indirectly) perform non-deterministic operations by creating new capability objects or mutating existing ones would break our guarantee that (manually) calling \Q@invariant()@ always returns \Q!true!.
 Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
 \begin{lstlisting}[morekeywords={assert}]
-class EvilString extends String {//Impossible, thanks to OCs
+class EvilString extends String {//INVALID EXAMPLE
   @Override read method Bool isEmpty() {//Creates a new
     return new Random().bool(); }}//capability out of thin air
 ...
@@ -57,7 +57,7 @@ Such back doors would allow \Q@invariant()@ methods to store and read informatio
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
-class MagicCounter {//Impossible, no back doors in L42
+class MagicCounter {//INVALID EXAMPLE
   method Int incr(){/*internal mutability (indirectly) does counter++*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
@@ -143,9 +143,9 @@ If instead we were to not enforce strong exception safety, an invalid object cou
 The following code is ill-typed since we try to mutate \Q@bob@ in a try catch that capture all unchecked exceptions; thus also including invariant failures:
 %\saveSpace
 \begin{lstlisting}[morekeywords={assert}]
-mut Person bob = new Person("bob");
+mut Person bob = new Person("bob");//INVALID EXAMPLE
 // Catch and ignore invariant failure:
-try { bob.name(""); } catch (Error t) { }//Ill typed in L42: violates SES
+try { bob.name(""); } catch (Error t) { }// violates SES
 assert bob.invariant(); // fails!
 \end{lstlisting}
 The following variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.

@@ -9,16 +9,16 @@ In our system, a class specifies its invariant by defining a boolean returning m
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
 
 Invariants are designed to hold most of the time, however it is commonly required to (temporarily) violate invariants while performing complex sequences of mutations.
-To support this behaviour, the invariant protocols present in the literature allow invariants to be broken and observed broken.
+To support this behaviour, most invariant protocols present in the literature allow invariants to be broken and observed broken.
 The two main protocols are the \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Pack-Unpack/Boogie methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
-In the visible state semantics, invariants can be broken when a method on the object is active (currently executing).
+In the visible state semantics, invariants can be broken when a method on the object is active (that is, currently executing).
 Some interpretations of the visible state semantics are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
 In the pack-unpack approach, objects are either in a `packed' or `unpacked' state, 
 `packed' objects are guaranteed to have their invariant hold, whereas unpacked objects can be broken.
 
 %------------
 In this paper we propose a much stricter invariant protocol: at all times, the invariant of every object involved in execution must hold; thus they can be broken when the object is not (currently) involved in execution. 
-An object is \emph{involved in execution} when it is in the ROG of any of the objects mentioned in the method call, field access or field update that is about to be reduced; we state this more formally later in the paper.
+An object is \emph{involved in execution} when it is in the ROG of any of the objects mentioned in the method call, field access, or field update that is about to be reduced; we state this more formally later in the paper.
 
 Our strict invariant protocol clearly supports easier reasoning; however 
 at first glance it may look overly restrictive, preventing useful program behaviour.
@@ -36,9 +36,10 @@ class Range{ private field min; private field max;
 In this first example we omit types to focus on the runtime semantics.
 The code of \Q@set@ cannot violate visible state semantics:
 \Q@this.min = min@ may temporarily break the invariant of \Q!this!, however it will be fixed after executing \Q@this.max = max@. Visible state allows such temporary breaking of invariants since we are inside a method on \Q!this!, and by the time it returns, the invariant will be re-established.
-However, this, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter approach. The execution of
-\Q@this.min = min@ will break the invariant of \Q@this@ and \Q@this.max = max@ would then involve a broken object. In addition, if we were to inject a call
-\Q@Do.stuff(this);@ between the two field updates, arbitrary user code could observe a broken object (adding such call is allowed by visible state semantics).
+However, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter approach. The execution of
+\Q@this.min = min@ will break the invariant of \Q@this@ and \Q@this.max = max@ would then involve a broken object. If we were to inject a call
+\Q@Do.stuff(this);@ between the two field updates, arbitrary user code could observe a broken object; 
+  adding such a call is however allowed by visible state semantics.
 
 Using the \emph{box pattern}\footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator, but with a different goal.}, we can provide a modified
 \Q@Range@ class with the desired client interface, while respecting the principles of our strict protocol:
@@ -58,18 +59,19 @@ class Range{ private field box; //box contains a BoxRange
 \end{lstlisting}
 The code of \Q@Range.set(min,max)@ does not violate our invariant protocol since \Q@this@ is not in the ROG of \Q@this.box@, \Q!min!, or \Q!max!. The call to
 \Q@BoxRange.set@ works in a context where the enclosing \Q@Range@ object is
-unreachable, and thus not involved in execution.  \Q@Range.set(min,max)@ can now temporarily break the \Q@Range@ invariant.
-Using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the \Q@Range@ is modified.
+unreachable, and thus not involved in execution. As such, \Q@Range.set(min,max)@ can now temporarily break the \Q@Range@ invariant.
+By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the \Q@Range@ is modified.
 \footnote{While in very specific situations the overhead of creating such additional box object may be unacceptable, 
 we designed our work for environments where such fine performance differences are negligible.
-Many VMs and compilers optimize away wrapper objects in many circumstances.~\cite{help}} % ISAAC: Fix citation, or delete your claim!
+Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}}
 
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
 
 \subheading{Summary}
 In the remainder of this paper, we discuss how to combine runtime checks and Reference and Object Capabilities
 to soundly enforce our strict invariant protocol.
-Our solution only requires all code to be well-typed, and works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
+Our solution only requires 
+that all code is well-typed, and works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
 
 We formalise our approach and, in Appendix~\ref{s:proof}, prove that our use of Reference and Object Capabilities soundly enforces our invariant protocol.
 

@@ -21,8 +21,8 @@ in the body of \Q!invariant()! methods are the receiver of a field access (of fo
 Invariants can only refer to immutable and encapsulated state. Thus while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
 we can not do the same for a doubly linked lists of mutable elements. We do not make it harder to correctly implement such data structures, 
-but the \Q@invariant()@ method is unable to access the list's nodes, since they contains \Q@mut@ references to shared/unencapsulated objects.
-There is a line of work in the literature~\cite{?} striving to allow invariants over other forms of state.
+but the \Q@invariant()@ method is unable to access the list's nodes, since they may contain \Q@mut@ references to shared/unencapsulated objects.
+There is a line of work in the literature~\cite{DBLP:conf/mpc/BarnettN04} striving to allow invariants over other forms of state.
 %It would not be technically difficult to 
 %integrate the solutions of those works, but 
 We have not tried to integrate such solutions into our work as we believe it would make our system more complex and ad hoc, probably requiring numerous specialized kinds of RCs.
@@ -101,16 +101,16 @@ capsule fields are handled in different ways in different approaches.
 Here we present a novel kind of \Q!capsule! field, designed
 to prevent representation exposure.\footnote{Under the similar concept of owner-as-modifier~\cite{Dietl05universes:lightweight,10.1007/978-3-540-92188-2_4}, we could consider an object to be the `owner' of all the mutable objects in the ROG of its \Q!capsule! fields.}
 \footnote{
-In L42, our new kind of \Q!capsule! can coexists with other kinds of \Q!capsule! field, such as those designed for safe parallelism~\cite{GordonEtAl12,clebsch2015deny,GIANNINI2019145}.}
+In L42, our new kind of \Q!capsule! can coexist with other kinds of \Q!capsule! fields, such as those designed for safe parallelism~\cite{GordonEtAl12,clebsch2015deny,GIANNINI2019145}.}
 
 
 
 % ISAAC: I think this paragraph should go somewhere else...
-Our \Q!capsule! fields enforce the following key properties: if a reference to an object in ROG of a capsule field $o.f$ is involved in execution as \Q!mut!, then:
-(1) no reference to $o$ is involved in execution, (2) a call to a \Q!mut! method for $o$ is above the stack frame.
+Our \Q!capsule! fields enforce the following key properties: if a reference to an object in the ROG of a capsule field $o.f$ is involved in execution as \Q!mut!, then:
+(1) no reference to $o$ is involved in execution, (2) a call to a \Q!mut! method for $o$ is above the current stack frame.
 (3) mutable references to the ROG of $o.f$ are not leaked out of such method execution, either as return value, exception value, or stored in the ROG of a parameter, or in any other field of the method's receiver.
 
-This means that when the ROG of $o.f$ is being mutated, $o$ itself cannot be seen, and all such mutations are under the control of a \Q!mut! method of $o$.
+This means the ROG of $o.f$ can only be mutated under the control of a \Q@mut@ method of $o$, and during such mutation, $o$ itself cannot be seen.
 
 To show how our \Q@capsule@ fields ensure these properties, we first define some terminology:
 \Q@x.f@ is a \emph{field access}, \Q@x.f=e@ is a \emph {field update}\footnote{Thus a field update \Q@x.f=e@ should not be read as field access followed by an assignment.}
@@ -178,8 +178,9 @@ The language runtime will automatically perform calls to \Q!invariant()!, if suc
 \noindent In Section \ref{s:formalism}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that the invariants of all objects involved in execution hold. %(except the invariant of \Q!this! when used to access fields in a runtime-generated call to the \Q!invariant()! method itself).
 
 \subheading{Traditional Constructors and Subclassing}
-L42 constructors directly initialize all fields using their parameters, and L42 does not provide traditional subclassing.
+L42 constructors directly initialize all fields using the parameters, and L42 does not provide traditional subclassing.
 This works naturally with with our invariant protocol.
-We can support traditional constructors as in Pony and Gordon \etal's language, by allowing \Q!this! to be used only as the receiver of field initialisations (in constructors bodies). 
+We can support traditional constructors as in Pony and Gordon \etal's language, 
+by requiring that constructors only use \Q@this@ as the receiver of a field initialization.
 %L42 does not support user-written constructors but allows static factory methods with equivalent behaviour.
 Subclassing can be supported by forcing that a subclasses invariant method implicitly starts with a check that \Q@super.invariant()@ returns \Q@true@. We would also perform invariant checks at end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}, and not at the end of \Q@super(..)@ constructor calls.

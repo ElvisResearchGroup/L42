@@ -37,7 +37,7 @@ mut Items evilAlias = l.items // here l loses control
 evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
 Relaxing our requirements for capsule mutators
-would break our protocol: if capsule mutators could declare a \Q@mut@ return type the following would be accepted:
+would break our protocol: if capsule mutators could have a \Q@mut@ return type the following would be accepted:
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}
 \end{lstlisting}
