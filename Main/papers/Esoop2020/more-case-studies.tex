@@ -22,7 +22,7 @@
 %Clearly the \Q@mut@ fields of \Q@List@ cannot be marked as \Q@capsule@.
 %However, only \Q@capsule@ and \Q@imm@
 %fields can be accessed in \validate.
-%Thus, \Q@.innerValidate()@ can not be the \Q@invariant@ method for \Q@List@.
+%Thus, \Q@.innerValidate()@ can not be the \Q@invariant()@ method for \Q@List@.
 %The solution is to use a `box' over our \Q@List@, and to validate our `box':
 
 %\loseSpace\loseSpace\loseSpace
@@ -35,8 +35,8 @@
 %\saveSpace
 %Encoding this example in Spec\# would be much more verbose (see case study XX) and still require
 %a \Q@ListBox@ object,
-%while the visible state semantic of Eiffel or D would cause an large amount of \Q@invariant@ checks
-%if the list had any recursive method; consider for example the \Q@size@ method:
+%while the visible state semantic of Eiffel or D would cause an large amount of \Q@invariant()@ checks
+%if the list had any recursive method; consider for example the \Q@size()@ method:
 %if there was an invariant with visible state semantic on \Q@List@, calling \Q@List.size()@ would require 
 %calling \Q@List.invariant()@ before and after the method execution. If the list has more then one element, the recursive \Q@size@ call would also call the invariant twice.
 %We would also want to create forwarding methods in \Q@ListBox@ for all public methods defined in \Q@List@. This approach allows the validation of many interesting and practically useful data-structures.

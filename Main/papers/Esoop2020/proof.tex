@@ -364,7 +364,7 @@ Now we assume that everything reachable from the previous \VS was \valid or \mon
 \end{proof}
 
 \subheading{Proof of Soundness}
-First we need to prove that an object is not reachable from one of its \Q!imm! fields; if it were, \Q!invariant! could access such a field and observe a potentially broken object:\SS
+First we need to prove that an object is not reachable from one of its \Q!imm! fields; if it were, \Q!invariant()! could access such a field and observe a potentially broken object:\SS
 \begin{Lemma}[Imm Not Circular]\rm\ \\
 \indent If $\VS(\s, e)$, $\forall f,l$, if $\reach(\s, e, l)$, $\Ss(l).f = \Kw{imm}\,\_$, then $l \notin \rog(\s, \s[l.f])$.
 \end{Lemma}\SS

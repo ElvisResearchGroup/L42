@@ -1,9 +1,7 @@
 \section{Examples}
 \label{s:immutable}
-Our invariant protocol relies on many different features and
-restrictions. In this section % Don't say "We believe that they are all needed;" because we could replace them with other restrictions
-we will show examples of using our system, and how relaxing any of our requirements would break the soundness of our
-protocol.%; sometimes in surprising ways.
+Our invariant protocol relies on many different features and requirements. In this section 
+we will show examples of using our system, and how relaxing any of our requirements would break the soundness of our protocol.
 In our examples and in L42, the reference capability \Q@imm@ is the default, and so it can be omitted.
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
 However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
@@ -33,10 +31,10 @@ class Person { .. // Same as before
 %Programmers often manually check for invariants by placing assertions in the same places we did in this example. % ISAAC: Deleted because unnecesary, and makes the next sentence misunderstandable
 If we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or SES, the above checks would not be sufficient to enforce our invariant protocol.
 
-\subheading{Unrestricted Access to Capability Objects?} Allowing \Q@invariant@ methods to (indirectly) perform non-deterministic operations by creating new capability objects or mutating existing ones would break our guarantee that (manually) calling \Q@invariant@ always returns \Q!true!.
+\subheading{Unrestricted Access to Capability Objects?} Allowing \Q@invariant()@ methods to (indirectly) perform non-deterministic operations by creating new capability objects or mutating existing ones would break our guarantee that (manually) calling \Q@invariant()@ always returns \Q!true!.
 Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
 \begin{lstlisting}[morekeywords={assert}]
-class EvilString extends String {
+class EvilString extends String {//Impossible, thanks to OCs
   @Override read method Bool isEmpty() {//Creates a new
     return new Random().bool(); }}//capability out of thin air
 ...
@@ -47,7 +45,7 @@ method mut Person createPersons(String name) {
   ...}
 \end{lstlisting}
 %//  mut Person schrodinger2 = new Person(name); // what about here?
-Despite the code for \Q@Person.invariant@ intuitively looking correct and deterministic (\Q@!name.isEmpty()@), the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
+Despite the code for \Q@Person.invariant()@ intuitively looking correct and deterministic (\Q@!name.isEmpty()@), the above call to it is not. Obviously this breaks any reasoning and would make our protocol unsound. 
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
 restricts their creation, the above example is prevented.
 
@@ -55,12 +53,12 @@ restricts their creation, the above example is prevented.
 Rust~\cite{matsakis2014rust} and Javari~\cite{TschantzErnst05}
 allow interior mutability:
 the ROG of an `immutable' object can be mutated through back doors.
-Such back doors would allow \Q@invariant@ methods to store and read information about previous calls.
+Such back doors would allow \Q@invariant()@ methods to store and read information about previous calls.
 For example \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
-class MagicCounter {
-  method Int incr(){/*magically increment a counter*/}}
+class MagicCounter {//Impossible, no back doors in L42
+  method Int incr(){/*internal mutability (indirectly) does counter++*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
@@ -78,7 +76,7 @@ without the need for back doors.
 
 %mine: yes, too strong: For validation we need the language to guarantee true deep immutability.
 %your: just points outside: It would require some powerful static or dynamic analysis to keep track of every case the ROG of \Q@Person@ could be indirectly mutated, and insert validity checks appropriately, however ensuring deep mutability trivialises this for simple classes.
-% Allowing such back-doors could also be used to break the determinism of the \Q@invariant@ method:
+% Allowing such back-doors could also be used to break the determinism of the \Q@invariant()@ method:
 % information can be stored about previous calls.
 % In this example you can see how the invariant get to be \Q@false@ and then \Q@true@ again.
 %In our simple example, \Q@Person@ objects can be mutated using the setter, and exposed using the getter.
@@ -147,7 +145,7 @@ The following code is ill-typed since we try to mutate \Q@bob@ in a try catch th
 \begin{lstlisting}[morekeywords={assert}]
 mut Person bob = new Person("bob");
 // Catch and ignore invariant failure:
-try { bob.name(""); } catch (Error t) { } // Violates SES
+try { bob.name(""); } catch (Error t) { }//Ill typed in L42: violates SES
 assert bob.invariant(); // fails!
 \end{lstlisting}
 The following variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.
@@ -158,7 +156,7 @@ catch (Error t) { }
 
 %Recovering from an invariant failure in this way is unsound and would break our protocol.
 %Strong exception safety is a useful property to enforce, but for the specific purpose of validation this could be relaxed by restricting only \Q@try-catch@ blocks that could capture unchecked exceptions.
-%Since calls to \Q@invariant@ may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.
+%Since calls to \Q@invariant()@ may only throw unchecked-exceptions, violating strong exception safety within a \Q@try-catch@ that cannot catch unchecked-exceptions would not break our protocol.
 
 
 %LATER: This means that we could relax our Strong Exception Safety to hold only on unchecked exceptions (by restricting only \Q@try-catch@ blocks that capture unchecked exceptions.

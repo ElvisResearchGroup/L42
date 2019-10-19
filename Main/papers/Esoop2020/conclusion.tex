@@ -37,7 +37,7 @@ can also support our invariant protocol with minimal added complexity.
 % and they would be unreachable from the invariant code,that starts from a \Q@read this@.
 
 % \LINE
-% The language we presented here restricts the form of \Q@invariant@ and capsule mutator methods. 
+% The language we presented here restricts the form of \Q@invariant()@ and capsule mutator methods. 
 % We have shown that such restrictions, albeit strong, allow sound and efficient injection of invariant checks. 
 % While our restrictions do not hamper writing invariants over immutable data, invariants over complex mutable % data require the box pattern.  We believe the box pattern, although verbose, is simple and understandable, but % could be improved with syntax sugar.
 
@@ -50,7 +50,7 @@ can also support our invariant protocol with minimal added complexity.
 %to better take advantage of the language.
 
 For an implementation of our work to be sound, catching exceptions like stack overflows or out of memory
-cannot be allowed in \Q@invariant@ methods, since they are not deterministically thrown.
+cannot be allowed in \Q@invariant()@ methods, since they are not deterministically thrown.
 %For an implementation of our work to be sound, non-deterministic exceptions like stack overflows or out of memory
 %errors cannot be caught in invariants.
 %this

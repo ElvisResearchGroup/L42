@@ -1,4 +1,4 @@
-\SS\section{A GUI Case Study}
+\SS\section{Our Case study and the GUI example}
 \label{s:case-study}
 To perform a compelling case study, we used our system on many examples, including one designed to be a worst case scenario for our approach. We also replicate many examples originally proposed by other papers, so that 
 not all the code examples come from us.
@@ -18,7 +18,7 @@ it is an example of the \emph{composite} programming pattern; arguably one of th
 Our case study involves a GUI with containers (\Q@SafeMovable@s) and \Q@Button@s;
 the \Q@SafeMovable@ class has an invariant to ensure that its children are graphically contained within it and do not overlap. The \Q@Button@s move their \Q@SafeMovable@ when pressed. We have a \Q@Widget@ interface which provides methods to get \Q!Widget!s' size and position as well as children (a list of \Q@Widget@s). Both \Q@SafeMovable@s and \Q@Button@s implement \Q@Widget@. Crucially, since the children of \Q@SafeMovable@ are stored in a list of \Q@Widget@s it can contain other \Q@SafeMovable@s, and all queries to their size and position are dynamically dispatched; such queries are also used in \Q@SafeMovable@'s invariant.
 Here we show a simplified version\footnote{The full version, written in L42, which uses a different syntax, is available in our artifact at \url{http://l42.is/InvariantArtifact.zip}}, where  \Q@SafeMovable@ has just one \Q@Button@ and certain sizes and positions are fixed. Note that \Q@Widgets@ is a class representing a mutable list of \Q@mut@ \Q@Widget@s.
-\begin{lstlisting}[mathescape=false]
+\begin{lstlisting}
 class SafeMovable implements Widget {
   capsule Box box; Int width = 300; Int height = 300;
   @Override read method Int left() { return this.box.l; }
@@ -41,7 +41,7 @@ class MoveAction implements Action { mut Box outer;
   MoveAction(mut Box outer) { this.outer = outer; }
   mut method Void process(Event e) { this.outer.l += 1; }}
 ...
-// main expression; #$ is a capability operation making a Gui object
+// main expression; #$\$$ is a capability operation making a Gui object
 Gui.#$\$$().display(new SafeMovable(...));
 \end{lstlisting}% ISAAC: 
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
@@ -50,7 +50,7 @@ the \Q@MoveAction@s inside \Q@Button@s need a reference to the containing \Q@Box
 Even though the children of \Q@SafeMovable@s are fully encapsulated, we can still easily dispatch events to them using \Q@dispatch(e)@. Once a \Q@Button@ receives an \Q@Event@ with a matching ID, it will call its \Q@Action@'s \Q@process(e)@ method. 
 
 %Our main function uses a capability-object to display the top-level \Q@Widget@ and its \Q@children@, as well as dispatch events to it. 
-Our example shows that the RC and OC support our invariant protocol requires, is flexible enough to allow us ton encode interactive GUI programs, where widgets may circularly reference other widgets.
+Our example shows how to encode interactive GUI programs, where widgets may circularly reference other widgets.
 In order to perform this case study we had to first implement a simple GUI Library in L42. This library uses object capabilities to draw the widgets on screen, as well as fetch and dispatch events. Importantly, neither our application, nor the underlying GUI library requires back doors, into either RCs or OCs.
 
 \subheading{The Invariant}
@@ -109,8 +109,8 @@ Concluding, we shown that when an invariant check queries other objects with inv
 % It can be surprising to see such extreme difference. We ran our example with less widgets, and our results suggest an exponential growth in the cost of the conventional approach. For example by removing 2 containers (and their 8 buttons) we get....
 % We now explain how this exponential explosion happens:
 % For the outer-most box to check its invariant, it needs to call methods \Q@left,top,height@ and \Q@with@ to all its contained widgets.
-% If one of those widget has \Q@invariant@, when such public method is called,
-% its \Q@invariant@ is checked (twice). This requires to call \Q@left,top,height@ and \Q@with@ to all its contained widgets, some of those may also have \Q@invariant@s.
+% If one of those widget has \Q@invariant()@, when such public method is called,
+% its \Q@invariant()@ is checked (twice). This requires to call \Q@left,top,height@ and \Q@with@ to all its contained widgets, some of those may also have invariants.
 
 % In literature there is attention to prevent method called from an invariant to call public methods on \Q@this@; it would cause the system to go in loop.
 % However when calling methods on other objects is allowed, if those objects have invariant, this cause the aforementioned explosion. 

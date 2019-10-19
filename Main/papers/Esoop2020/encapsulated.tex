@@ -14,13 +14,13 @@ class ShippingList {
     this.items.add(item);
     if (!this.invariant()){throw Error(...);}}}//injected check
 \end{lstlisting}
-Our protocol injects calls to \Q@invariant@ at the end of the constructor and the \Q@addItem(item)@ method.
+Our protocol injects calls to \Q@invariant()@ at the end of the constructor and the \Q@addItem(item)@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.
 Relaxing our system to allow a \Q@mut@ RC for
 the \Q@items@ field and the corresponding constructor parameter would 
 make the above checks insufficient:
 it would be possible for external code with no knowledge of the \Q@ShippingList@ to mutate its items.%
-Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters). % Isaac: I'm not sure this is correct, ownership transfer is a thing I've seen before, also freshly created objects would also be fine
+%Conventional ownership solves these problems by requiring a deep clone of all the data the constructor takes as input, as well as all exposed data (possibly through getters). % Isaac: I'm not sure this is correct, ownership transfer is a thing I've seen before, also freshly created objects would also be fine
 In order to write correct library code in mainstream languages like Java and C++, defensive cloning~\cite{Bloch08} is needed.
 For performance reasons, this is hardly done in practice and is a continuous source of bugs and unexpected behaviour.%
 
@@ -37,7 +37,7 @@ mut Items evilAlias = l.items // here l loses control
 evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
 Relaxing our requirements for capsule mutators
-would break our protocol: if capsule mutators could take a \Q@mut@ return type the following would be accepted:
+would break our protocol: if capsule mutators could declare a \Q@mut@ return type the following would be accepted:
 \begin{lstlisting}
 mut method mut Items expose(C c) {return c.foo(this.items);}
 \end{lstlisting}

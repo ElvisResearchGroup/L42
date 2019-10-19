@@ -22,18 +22,20 @@ These projects are quite large: several million lines of code are written in Gor
 
 Reference capabilities
  are a well known mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} that 
- allow statically reasoning about the mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following RCs for object references (i.e. expressions and variables):
+ allow statically reasoning about the mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following RCs for object references: %(i.e. expressions and variables):
 %\begin{itemize}
 
 \noindent\rule{1.2ex}{1.2ex} Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased, without restriction; as in most imperative languages without reference capabilities.
 
-\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object},
-whereas other objects are \emph{mutable}. Note that an object that was previousesly mutated (and hence \empha{mutable}) may latter be promoted to \emph{immutable}.
+\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
+Any other other object is a \emph{mutable object}.
+All objects are born mutable and may later become immutable.
 
 \noindent\rule{1.2ex}{1.2ex} Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can still be observed. Readonly references can refer to both mutable and immutable objects, as \Q!read! types are super-types of both their \Q!imm! and \Q!mut! variants.
+Thus, while there are only two kinds of objects (mutable and immutable), there are more kinds of RCs.
 
 \noindent\rule{1.2ex}{1.2ex} Encapsulated (\Q@capsule@):
-every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to promote a capsule reference to either mutable or immutable, since there could have been no other aliases to it.
+every mutable object in the reachable object graph (ROG) of a capsule reference (including itself) is only reachable through that reference. This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference to either mutable or immutable, since there could have been no other aliases to it.
 
 In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (similar to linear and affine types~\cite{boyland2001alias}). 
 Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
@@ -146,7 +148,7 @@ in the following way:\footnote{Transactions are another way of enforcing strong 
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
 \end{itemize} 
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
-%With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
+%With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant()@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 This strategy does not restrict when exceptions can be \emph{thrown}, but only restricts when unchecked exceptions can be \emph{caught}.
 SES allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that no object mutated within a try block is visible when it catches an unchecked exception.
 %For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
@@ -157,8 +159,8 @@ SES allows us to throw invariant failures as unchecked exceptions: if an object'
 
 
 
-%The above rules need only be enforced for catch blocks that could catch invariant-failures (including exceptions thrown within execution of \Q@invariant@) itself;
-%, and since \Q@invariant@ declares no checked exceptions, this includes all exceptions throw-able by it.
+%The above rules need only be enforced for catch blocks that could catch invariant-failures (including exceptions thrown within execution of \Q@invariant()@) itself;
+%, and since \Q@invariant()@ declares no checked exceptions, this includes all exceptions throw-able by it.
 
 % TMs are very useful in restricting the scope of mutation. 
 % Any expression that does not use any \Q@mut@ 
