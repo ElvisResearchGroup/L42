@@ -1,7 +1,6 @@
 In this paper we use pre-existing language support for both reference and object capabilities to enable sound runtime verification of representation invariants.
 Our invariant protocol is stricter than other  protocols, since it guarantees that invariants hold for all objects involved in execution.
 Any language already offering appropriate support for reference and object capabilities can support our invariant protocol with minimal added complexity.
-In our protocol, invariants are simply specified as methods whose execution is statically guaranteed to be deterministic and not access any externally mutable state.
+In our protocol, invariants are simply specified as methods whose execution is statically guaranteed to be deterministic and do not access any externally mutable state.
 We formalise our approach and prove that our protocol is sound, in the context of a language supporting mutation, dynamic dispatch, exceptions, and non-deterministic I/O.
-
 We present case studies showing that our system requires a much lower annotation burden compared to Spec\#, and performs orders of magnitude less runtime invariant checks compared to the widely used `visible state semantics' protocols of D and Eiffel.

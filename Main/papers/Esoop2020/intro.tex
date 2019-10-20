@@ -3,7 +3,7 @@
 %\newpage
 %\LINE
 Representation invariants (sometimes called class invariants or object invariants) are
-a useful concept when reasoning about software correctness in Object Oriented (OO) languages. Such invariants are predicates on the state of an object and its ROG (reachable object graph).
+a useful concept when reasoning about software correctness in OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (reachable object graph).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
 In our system, a class specifies its invariant by defining a boolean returning method called \Q@invariant()@.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
@@ -12,15 +12,16 @@ Invariants are designed to hold most of the time, however it is commonly require
 To support this behaviour, most invariant protocols present in the literature allow invariants to be broken and observed broken.
 The two main protocols are the \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Pack-Unpack/Boogie methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
 In the visible state semantics, invariants can be broken when a method on the object is active (that is, currently executing).
-Some interpretations of the visible state semantics are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
+Some interpretations of the visible state are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
 In the pack-unpack approach, objects are either in a `packed' or `unpacked' state, 
-`packed' objects are guaranteed to have their invariant hold, whereas unpacked objects can be broken.
+the invariant of `packed' objects must hold, whereas unpacked objects can be broken.
 
 %------------
 In this paper we propose a much stricter invariant protocol: at all times, the invariant of every object involved in execution must hold; thus they can be broken when the object is not (currently) involved in execution. 
 An object is \emph{involved in execution} when it is in the ROG of any of the objects mentioned in the method call, field access, or field update that is about to be reduced; we state this more formally later in the paper.
 
-Our strict invariant protocol clearly supports easier reasoning; however 
+%Our strict invariant protocol clearly supports easier reasoning; however 
+Our strict invariant protocol supports easier reasoning: an object can never be observed broken. However 
 at first glance it may look overly restrictive, preventing useful program behaviour.
 Consider the iconic example of a \Q@Range@ class, with a \Q@min@ and \Q@max@
 value, where the invariant requires that \Q@min<=max@:
@@ -33,7 +34,7 @@ class Range{ private field min; private field max;
     this.min = min;
     this.max = max; }}
 \end{lstlisting}
-In this first example we omit types to focus on the runtime semantics.
+In this example we omit types to focus on the runtime semantics.
 The code of \Q@set@ cannot violate visible state semantics:
 \Q@this.min = min@ may temporarily break the invariant of \Q!this!, however it will be fixed after executing \Q@this.max = max@. Visible state allows such temporary breaking of invariants since we are inside a method on \Q!this!, and by the time it returns, the invariant will be re-established.
 However, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter approach. The execution of
@@ -41,7 +42,7 @@ However, if \Q@min@ is $\geq$ \Q@this.max@, \Q@set@ will violate our stricter ap
 \Q@Do.stuff(this);@ between the two field updates, arbitrary user code could observe a broken object; 
   adding such a call is however allowed by visible state semantics.
 
-Using the \emph{box pattern}\footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator, but with a different goal.}, we can provide a modified
+Using the \emph{box pattern}, we can provide a modified
 \Q@Range@ class with the desired client interface, while respecting the principles of our strict protocol:
 \begin{lstlisting}
 class BoxRange{//no invariant in BoxRange
@@ -58,13 +59,12 @@ class Range{ private field box; //box contains a BoxRange
     return this.box.set(min,max); } }
 \end{lstlisting}
 The code of \Q@Range.set(min,max)@ does not violate our invariant protocol since \Q@this@ is not in the ROG of \Q@this.box@, \Q!min!, or \Q!max!. The call to
-\Q@BoxRange.set@ works in a context where the enclosing \Q@Range@ object is
+\Q@BoxRange.set(min,max)@ works in a context where the enclosing \Q@Range@ object is
 unreachable, and thus not involved in execution. As such, \Q@Range.set(min,max)@ can now temporarily break the \Q@Range@ invariant.
-By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the \Q@Range@ is modified.
-\footnote{While in very specific situations the overhead of creating such additional box object may be unacceptable, 
-we designed our work for environments where such fine performance differences are negligible.
+By using the \Q@box@ field as an extra level of indirection, we restrict the set of objects involved in execution while the state of the object \Q@Range@ is modified.%
+\footnote{Due to its simplicity and versatility, we do not claim this pattern to be a contribution of our work, as we expect others to have used it before. We have however not been able to find it referenced with a specific name in the literature, though technically speaking, it is a simplification of the Decorator, but with a different goal.
+While in very specific situations the overhead of creating such additional box object may be unacceptable, we designed our work for environments where such fine performance differences are negligible.
 Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}}
-
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
 
 \subheading{Summary}
@@ -90,8 +90,8 @@ It is important to note that unlike most prior work, we soundly handle catching 
 %Sections \ref{s:related} and \ref{s:conclusion} provide related work and conclusions.
 We describe one of our case studies in the body of the paper and explore more case studies in the Appendix.
 
-At first glance, our approach may seem very restrictive; in Appendix~\ref{s:patterns}, we show
-programming patterns demonstrating that these restrictions do not significantly hamper expressivity, in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around.
+Our approach may seem very restrictive;
+the programming patterns in Appendix~\ref{s:patterns} show how our approach does not hamper expressiveness; in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around.
 % In Appendix \ref{s:runtime-verification}, we discuss more related work on runtime verification.
 
 
