@@ -1,23 +1,60 @@
 package is.L42.translationToJava;
 
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 import static is.L42.translationToJava.TrustedKind.*;
 
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
+import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.Core.T;
 import is.L42.generated.Core.E;
+import is.L42.generated.Core.L.MWT;
+import is.L42.generated.P;
+
 import static is.L42.translationToJava.OpUtils.*;
 
+interface Generator{String of(Program p,MWT mwt);}    
 class OpUtils{
-  static Map<TrustedKind, BiFunction<List<String>, E, String>> append(String s){
-    return Map.of(StringBuilder,(xs,e)->""+xs.get(0)+".append(\""+s+"\");return L42Void.instance;");
+  static List<String>xs(MWT mwt){
+    return L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
     }
-  static BiFunction<List<String>, E, String> use(String s){
-    return (xs,e)->java.lang.String.format(s,xs.toArray());
+  static Map<TrustedKind,Generator> append(String s){
+    return Map.of(StringBuilder,(p,mwt)->{
+      var xs=xs(mwt);
+      return ""+xs.get(0)+".append(\""+s+"\");return L42Void.instance;";
+      });
     }
+  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
+  static Generator use(String s){
+    return (p,mwt)->s.formatted(xs(mwt).toArray());
+    }
+  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
+  static Generator use(String s,Class<?> errKind,int errNum,String err,int ... msgs){
+    return (p,mwt)->{
+      var xs=xs(mwt);
+      List<String>errs=L(range(msgs.length),(c,i)->{
+        var xi=xs.get(msgs[i]);
+        xi="\"+"+xi+"+\"";
+        xi="\\\""+xi+"\\\"";
+        c.add(xi);
+        });
+      String tryBody="try{"+s.formatted(xs.toArray())+"}";
+      String catchBody="catch("+errKind.getCanonicalName()+" _unusedErr){throw new L42Error(";
+      T t=mwt.mh().parsWithThis().get(errNum);
+      String name=J.classNameStr(p.navigate(t.p().toNCs()));
+      catchBody+=name+".wrap(\""+err.formatted(errs.toArray())+"\")";
+      catchBody+=");}";
+      return tryBody+catchBody;
+      };
+    }
+
   }
 enum TrustedOp {
   //booleans
@@ -127,13 +164,7 @@ enum TrustedOp {
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
   SNewLine("newLine",append("\\\\n")),
- 
-  
-  
-  
-  
-  
-  
+   
   //toString
   ToS("toS",Map.of(
     StringBuilder,use("return %s.toString();"),
@@ -142,24 +173,25 @@ enum TrustedOp {
     Bool,use("return ((Object)%s).toString();")
     )),
     
-  ToInt("toInt",Map.of(String,use("return Integer.parseInt(%s);"))),
+  ToInt("toInt",Map.of(String,use(
+    "return Integer.parseInt(%s);",
+    NumberFormatException.class,0,
+    "The string %s is not a valid number",0
+    ))),
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42Void.instance;"),
     TrustedIO,use("return %s.strDebug(%s);")
     )),
   DeployLibrary("deployLibrary",Map.of(
     TrustedIO,use("return %s.deployLibrary(%s,%s);"))),
-  LimitTime("limitTime",Map.of(Limit,(xs,e)->
-    "System.out.println("+xs.get(1)+"); return L42Void.instance;"
-    )),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;"),
     String,use("return %s + %s;")
     )),
   Mul("OP*",Map.of(Int,use("return %s * %s;")));
   public final String inner;
-  Map<TrustedKind,BiFunction<List<String>,Core.E,String>>code;
-  TrustedOp(String inner,Map<TrustedKind,BiFunction<List<String>,Core.E,String>>code){
+  Map<TrustedKind,Generator>code;
+  TrustedOp(String inner,Map<TrustedKind,Generator>code){
     this.inner = inner;
     this.code=code;
     }

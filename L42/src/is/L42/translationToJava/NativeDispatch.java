@@ -1,5 +1,6 @@
 package is.L42.translationToJava;
 
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 import static is.L42.translationToJava.TrustedKind.*;
@@ -16,23 +17,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
+import is.L42.common.Program;
+import is.L42.generated.Core;
 import is.L42.generated.Core.E;
+import is.L42.generated.Core.L.MWT;
+import is.L42.generated.P;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import safeNativeCode.slave.host.ProcessSlave;
 
 public class NativeDispatch {
-  public static String nativeCode(String nativeKind, String nativeUrl, List<String> xs, E e) {
-    if(!nativeUrl.startsWith("trusted:")){return untrusted(nativeKind,nativeUrl,xs,e);}
+  public static String nativeCode(Program p,String nativeKind,Core.L.MWT mwt){
+    String nativeUrl=mwt.nativeUrl();
+    if(!nativeUrl.startsWith("trusted:")){return untrusted(nativeKind,nativeUrl,mwt);}
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind.fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
     assert op.code.get(k)!=null:k;//type checking should avoid this
-    return op.code.get(k).apply(xs,e);
+    return op.code.get(k).of(p, mwt);
     }
-  public static String nativeFactory(String nativeKind, List<String> xs) {
+  public static String nativeFactory(Program p,String nativeKind, Core.L.MWT mwt) {
     var k=TrustedKind.fromString(nativeKind);
-    return k.factory(xs);
+    return k.factory(p,mwt);
     }
   private static String readSection(String nativeUrl, String part, String def) {
     if(!nativeUrl.contains(part)){return def;}
@@ -43,8 +50,9 @@ public class NativeDispatch {
       }
     return nativeUrl.substring(0, nl).trim();
   }
-  public static String untrusted(String nativeKind, String nativeUrl, List<String> xs, E e) {
+  public static String untrusted(String nativeKind, String nativeUrl, MWT mwt) {
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
+    List<String> xs=OpUtils.xs(mwt);
     String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2); 
     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();

@@ -398,9 +398,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   private void methBody(MWT mwt){
     if(!mwt.nativeUrl().isEmpty()){
       assert mwt._e()!=null;
-      List<String>xs=L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
       String k=p.topCore().info().nativeKind();
-      c(NativeDispatch.nativeCode(k,mwt.nativeUrl(),xs,mwt._e()));
+      c(NativeDispatch.nativeCode(p,k,mwt));
       return;
       }
     if(mwt._e()!=null){
@@ -416,7 +415,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c("throw new Error(\"unreachable method body\");");
       return;
       }
-    if(mwt.mh().mdf().isClass()){factoryBody(mwt.mh());return;}
+    if(mwt.mh().mdf().isClass()){factoryBody(mwt);return;}
     if(mwt.mh().s().xs().isEmpty()){getterBody(mwt.mh());return;}
     assert mwt.mh().s().xs().size()==1;
     setterBody(mwt.mh()); 
@@ -441,11 +440,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     m=m.substring(i+1,m.length()); //works also for -1;
     kw("£xthis.£x"+m+"=£xthat;return L42Void.instance;");
     }
-  private void factoryBody(MH mh){
+  private void factoryBody(MWT mwt){
     String kind=p.topCore().info().nativeKind();
     if(!kind.isEmpty()){
-      List<String>xs=L(Stream.concat(Stream.of("£xthis"), mh.s().xs().stream().map(x->"£x"+x.inner())));
-      c(NativeDispatch.nativeFactory(kind,xs));
+      c(NativeDispatch.nativeFactory(p,kind,mwt));
       return;  
       }
     //TODO: here we could add optimization for 0 arg constructors
@@ -453,7 +451,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     //instead of any constructor, and instead of any placeholder variable
     //thus, variables of those types are never in fwds
 
-    boolean isFwd=mh.pars().stream()
+    boolean isFwd=mwt.mh().pars().stream()
       .anyMatch(ti->ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd));
     typeName(p);
     kw("Res=new ");
@@ -461,7 +459,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("();");nl();
     for(int i:range(fields.xs)){
       X xi=fields.xs.get(i);
-      T ti=mh.pars().get(i);
+      T ti=mwt.mh().pars().get(i);
       if(isFwd){
         kw("if(");
         visitX(xi);

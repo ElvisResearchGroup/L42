@@ -5,39 +5,42 @@ import static is.L42.tools.General.todo;
 
 import java.util.List;
 
+import is.L42.common.Program;
+import is.L42.generated.Core.L.MWT;
+
 enum TrustedKind {
-  Bool("boolean"){public String factory(List<String> xs){
-    assert xs.size()==1;//just this
+  Bool("boolean"){public String factory(Program p,MWT mwt){
+    assert mwt.key().xs().isEmpty();
     return "return false;";
     }
     public String defaultVal(){return "false";}
     },
-  Int("int"){public String factory(List<String> xs){
-    assert xs.size()==1;//just this
+  Int("int"){public String factory(Program p,MWT mwt){
+    assert mwt.key().xs().isEmpty();
     return "return 0;";
     }
     public String defaultVal(){return "0";}
     },
-  String("String"){public String factory(List<String> xs){
-    assert xs.size()==1:xs;
+  String("String"){public String factory(Program p,MWT mwt){
+    assert mwt.key().xs().isEmpty();
     return "return \"\";";
     }},
-  StringBuilder("StringBuilder"){public String factory(List<String> xs){
-    assert xs.size()==1;
+  StringBuilder("StringBuilder"){public String factory(Program p,MWT mwt){
+    assert mwt.key().xs().isEmpty();
     return "return new StringBuilder();";
     }},
-  TrustedIO("L42TrustedIO"){public String factory(List<String> xs){
-    assert xs.size()==1;
+  TrustedIO("L42TrustedIO"){public String factory(Program p,MWT mwt){
+    assert mwt.key().xs().isEmpty();
     return "return new L42TrustedIO();";
     }},
   
-  Limit("Void"){public String factory(List<String> xs){
+  Limit("Void"){public String factory(Program p,MWT mwt){
     assert false;
     throw bug();
     }};
   public final String inner;
   TrustedKind(String inner){this.inner = inner;}
-  public abstract String factory(List<String> xs);
+  public abstract String factory(Program p,MWT mwt);
   public String defaultVal(){return "null";}
   public static TrustedKind fromString(String s) {
    for (TrustedKind t : TrustedKind.values()) {

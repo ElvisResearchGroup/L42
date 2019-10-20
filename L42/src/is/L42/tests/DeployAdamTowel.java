@@ -276,6 +276,8 @@ Test1={reuse[#$aaa]
     answer=half+half
     Debug(answer.toS())
     Debug(S"Hello World "++answer.toS()++S"!")
+    err=Size"oh NO!"
+    catch error S x (Debug(x) {#norm{}}) 
     {#norm{}}
     )
   }
