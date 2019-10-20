@@ -356,9 +356,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method imm This0 #stringLiteralBuilder()
      imm method imm Void a()=This0<:class This0.#from(stringLiteral=(
        imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
-       imm Void fresh1_underscore=fresh0_builder.#a()
-       imm Void fresh2_underscore=fresh0_builder.#plus()
-       imm Void fresh3_underscore=fresh0_builder.#c()
+       imm Void fresh1_underscore=fresh0_builder.#la()
+       imm Void fresh2_underscore=fresh0_builder.#splus()
+       imm Void fresh3_underscore=fresh0_builder.#lc()
        fresh0_builder
        ))
      """)
@@ -375,15 +375,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
        imm Void fresh3_underscore=fresh0_builder.#addAll(that=(
          imm This0 fresh1_builder=This0<:class This0.#stringLiteralBuilder()
-         imm Void fresh4_underscore=fresh1_builder.#a()
-         imm Void fresh5_underscore=fresh1_builder.#plus()
+         imm Void fresh4_underscore=fresh1_builder.#la()
+         imm Void fresh5_underscore=fresh1_builder.#splus()
          fresh1_builder))
        imm Void fresh6_underscore=fresh0_builder.#splice(that=this)
        imm Void fresh7_underscore=fresh0_builder.#addAll(that=(
          imm This0 fresh2_builder=This0<:class
          This0.#stringLiteralBuilder()
-         imm Void fresh8_underscore=fresh2_builder.#space()
-         imm Void fresh9_underscore=fresh2_builder.#c()
+         imm Void fresh8_underscore=fresh2_builder.#sspace()
+         imm Void fresh9_underscore=fresh2_builder.#lc()
          fresh2_builder))
        fresh0_builder))
        """)

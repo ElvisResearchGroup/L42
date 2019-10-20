@@ -235,15 +235,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       SB={
         class method mut This0 of()
-        mut method Void _a()=native{trusted:_a} error void
-        mut method Void _b()=native{trusted:_b} error void
+        mut method Void #a()=native{trusted:'a'} error void
+        mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
         #norm{nativeKind=StringBuilder}
         }
       C=(
         mut SB sb=SB.of()
-        sb._b()
-        sb._a()
+        sb.#b()
+        sb.#a()
         Debug(sb.toS())
         Debug.of().deployLibrary(sb.toS(), lib={
           A={
@@ -268,8 +268,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          }
       SB={
         class method mut This0 of()
-        mut method Void _a()=native{trusted:_a} error void
-        mut method Void _b()=native{trusted:_b} error void
+        mut method Void #a()=native{trusted:'a'} error void
+        mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
         #typed{nativeKind=StringBuilder}
         }

@@ -192,6 +192,8 @@ public class Err {
   "The type of "+_1+" can not be inferred; none of the following types is a subtype of all the others:"+_2
   ;}public static String reuseShadowsMember(Object _1,Object _2){return
   "Reusing url "+_1+" shadows the following members: "+_2
+  ;}public static String noOperatorOnPrimitive(Object _1,Object _2){return
+  "Path "+_1+" can not be used as a operator receiver for "+_2
   
   ;}
 }

@@ -56,6 +56,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("{method (that,foo)=((var y=foo void), (y=foo,void.foo(y+void)) void)}")
    ),new AtomicTest(()->
    pass("{C=(x=void x+x)}")
+   ),new AtomicTest(()->
+   fail("{C=(Void+x)}",Err.noOperatorOnPrimitive(hole,"Plus"))
 
    ),new AtomicTest(()->
    pass("{method Void (Void that,Void foo)=foo}")

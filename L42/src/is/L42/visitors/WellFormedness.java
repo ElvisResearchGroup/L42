@@ -26,6 +26,7 @@ import is.L42.generated.Core.E;
 import is.L42.generated.Full;
 import is.L42.generated.Full.D;
 import is.L42.generated.Full.L.NC;
+import is.L42.generated.Op.OpKind;
 import is.L42.generated.HasVisitable;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
@@ -89,7 +90,6 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
   }
   
 public class WellFormedness extends PropagatorCollectorVisitor{
-  @SuppressWarnings("serial")
   public static class NotWellFormed extends EndError{
     public NotWellFormed(List<Pos> poss, String msg) { super(poss, msg);}
     }
@@ -402,7 +402,26 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(ts>0){return;}
     err(Err.ifMatchNoT(d));
     }
-    
+  private boolean isAnyVoidLibrary(Full.E e){
+    if(!(e instanceof Full.CsP)){return false;}
+    var csp=(Full.CsP)e;
+    var p=csp._p();
+    return p!=null && !p.isNCs();
+    }
+  @Override public void visitBinOp(Full.BinOp binOp){
+    lastPos=binOp.poss();
+    super.visitBinOp(binOp);
+    var es=binOp.es();
+    Stream<Full.E> risks=es.stream();
+    // (a (b (c d)))//all but the last need to be checked for right associative ops
+    // ((a b) c) d)//just the first one need to be checked for left associative ops
+    if(binOp.op().kind==OpKind.DataRightOp){risks=risks.limit(es.size()-1);}
+    else{risks=risks.limit(1);}
+    var errs=L(risks.filter(this::isAnyVoidLibrary));
+    if(errs.isEmpty()){return;}
+    lastPos=binOp.poss();
+    err(Err.noOperatorOnPrimitive(errs.get(0),binOp.op()));    
+    }
   @Override public void visitFor(Full.For f){
     lastPos=f.poss();
     super.visitFor(f);    

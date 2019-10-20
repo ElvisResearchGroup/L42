@@ -55,8 +55,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   C={
     class method Void m()=(
       mut This1.SB sb=This1.SB<:class This1.SB.of()
-      Void u1=sb._a()
-      Void u2=sb._b()
+      Void u1=sb.#a()
+      Void u2=sb.#b()
       This1.S s0=sb.toS()
       s0.strDebug()
       )
@@ -67,8 +67,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   C={
     class method Void m()=(
       mut This1.SB sb=This1.SB<:class This1.SB.of()
-      Void u1=sb._a()
-      Void u2=sb._b()
+      Void u1=sb.#a()
+      Void u2=sb.#b()
       This1.S s0=sb.toS()
       s0.strDebug()
       )
@@ -101,8 +101,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   C={
     class method Void m()=(
       This1.SB sb=This1.SB<:class This1.SB.of()
-      Void u1=sb._a()
-      Void u2=sb._b()
+      Void u1=sb.#a()
+      Void u2=sb.#b()
       This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.read(fileName=sb.toS())
       s3.strDebug()
       )
@@ -238,8 +238,8 @@ public static Program base(String s){
     }
   SB={
     class method mut This0 of()
-    mut method Void _a()=native{trusted:_a} error void
-    mut method Void _b()=native{trusted:_b} error void
+    mut method Void #a()=native{trusted:'a'} error void
+    mut method Void #b()=native{trusted:'b'} error void
     read method This1.S toS()=native{trusted:toS} error void
     #typed{nativeKind=StringBuilder}
     }
