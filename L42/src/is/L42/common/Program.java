@@ -224,7 +224,7 @@ public class Program implements Visitable<Program>{
       } 
     return false;
     }
-  public boolean isSubtype(Mdf subM,Mdf superM){
+  public static boolean isSubtype(Mdf subM,Mdf superM){
     if(subM==superM){return true;}
     switch(subM){
       case Class:        return false;

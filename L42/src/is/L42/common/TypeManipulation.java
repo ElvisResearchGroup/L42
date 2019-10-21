@@ -16,9 +16,77 @@ import is.L42.generated.S;
 
 public class TypeManipulation {
 
-  public static boolean fwd_or_fwdP_inMdfs(Stream<Mdf> mdfs){
-    return mdfs.anyMatch(m->m.isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd,Mdf.MutableFwd,Mdf.MutablePFwd));
+  public static boolean fwd_or_fwdP_in(Mdf m){
+    return m.isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd,Mdf.MutableFwd,Mdf.MutablePFwd);
     }
+  public static boolean fwd_or_fwdP_inMdfs(Stream<Mdf> mdfs){
+    return mdfs.anyMatch(m->fwd_or_fwdP_in(m));
+    }
+  public static boolean fwd_or_fwdP_inTs(Stream<T> ts){
+    return ts.anyMatch(t->fwd_or_fwdP_in(t.mdf()));
+    }
+  public static T fwdP(T t){
+    Mdf m=t.mdf();
+    if(m.isImm()){return t.withMdf(Mdf.ImmutablePFwd);}
+    if(m.isMut()){return t.withMdf(Mdf.MutablePFwd);}
+    return t;
+    }
+  public static T noFwd(T t){
+    if(t.mdf().isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd)){
+      return t.withMdf(Mdf.Immutable);
+      }
+    if(t.mdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){
+      return t.withMdf(Mdf.Mutable);
+      }
+    return t;
+    }
+  public static T mutToCapsule(T t){
+    Mdf m=mutToCapsule(t.mdf());
+    assert m!=null;
+    return t.withMdf(m);
+    }
+  public static Mdf mutToCapsule(Mdf m){
+    assert !m.isIn(Mdf.MutableFwd,Mdf.MutablePFwd);
+    if(m==Mdf.Mutable){return Mdf.Capsule;}
+    return m;
+    }
+  public static T toImmOrCapsule(T t){
+    return t.withMdf(toImmOrCapsule(t.mdf()));
+    }
+  public static Mdf toImmOrCapsule(Mdf m){
+    if (m.isIn(Mdf.Lent,Mdf.Mutable,Mdf.MutableFwd,Mdf.MutablePFwd)){
+      return Mdf.Capsule;
+      }
+    if(m==Mdf.Readable){return Mdf.Immutable;}
+    return m;
+    }
+  public static T _toLent(T t){
+    if(t.mdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){return null;}
+    if(t.mdf()==Mdf.Mutable){return t.withMdf(Mdf.Lent);}
+    return t;
+    }
+  public static T mutToCapsuleAndFwdMutToFwdImm(T t){
+    return t.withMdf(mutToCapsuleAndFwdMutToFwdImm(t.mdf()));
+    }
+  public static Mdf mutToCapsuleAndFwdMutToFwdImm(Mdf m){
+    assert m!=Mdf.MutablePFwd;
+    if(m==Mdf.Mutable){return Mdf.Capsule;}
+    if(m==Mdf.MutableFwd){return Mdf.ImmutableFwd;}
+    return m;
+    }
+  public static T mutToCapsuleAndFwdToRead(T t){
+    return t.withMdf(mutToCapsuleAndFwdToRead(t.mdf()));
+    }
+  public static Mdf mutToCapsuleAndFwdToRead(Mdf m){
+    assert m!=Mdf.MutablePFwd;
+    if(m==Mdf.Mutable){return Mdf.Capsule;}
+    if(m==Mdf.MutableFwd){return Mdf.Readable;}
+    if(m==Mdf.ImmutableFwd){return Mdf.Immutable;}
+    return m;
+    }
+
+  
+
   public static Core.T capsuleToLent(Core.T t){
     if(t.mdf()==Mdf.Capsule){return t.withMdf(Mdf.Lent);}
     return t;

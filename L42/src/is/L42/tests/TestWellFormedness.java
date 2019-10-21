@@ -205,6 +205,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{ method fwd mut Any m(mut Any x) #norm{}}",Err.methodTypeNoFwdReturn())
 
    ),new AtomicTest(()->
+   pass("{ method fwd mut Any m(fwd mut Any x, mut Any y) #norm{}}")
+   ),new AtomicTest(()->
+   pass("{ method fwd imm Any m(fwd imm Any x, mut Any y) #norm{}}")
+   ),new AtomicTest(()->
+   fail("{ method fwd imm Any m(fwd mut Any x, mut Any y) #norm{}}",Err.methodTypeNoFwdPar(hole))
+
+
+   ),new AtomicTest(()->
    pass("{ method Any m(Any x)=Any<:class Any.meth(a=x, b=x) #norm{}}")
 
    ),new AtomicTest(()->

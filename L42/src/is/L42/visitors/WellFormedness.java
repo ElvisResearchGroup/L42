@@ -364,12 +364,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitMH(Core.MH mh){
     super.visitMH(mh);
     checkAllEmptyMdf(mh.exceptions());
-    if(mh.mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
+    if(mh.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd,Mdf.MutablePFwd)){
       err(Err.methodTypeMdfNoFwd());} 
     var ps=mh.parsWithThis();
     var tmdf=mh.t().mdf();
     if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.ImmutableFwd)){
-      boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.Immutable,Mdf.ImmutableFwd);
+      boolean res=tmdf.isIn(Mdf.Mutable,Mdf.MutableFwd,Mdf.MutablePFwd)
+        ||tmdf.isIn(Mdf.Immutable,Mdf.ImmutableFwd,Mdf.ImmutablePFwd);
       if(!res){err(Err.methodTypeNoFwdPar(mh.t().mdf().inner));}
       }
     if(ps.stream().anyMatch(ti->ti.mdf()==Mdf.MutableFwd)){

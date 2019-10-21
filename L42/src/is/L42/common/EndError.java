@@ -8,7 +8,7 @@ import is.L42.generated.Pos;
 @SuppressWarnings("serial")
 public abstract class EndError extends RuntimeException{
   public EndError(List<Pos> poss,String msg){
-    assert poss!=null: msg;
+    //assert poss!=null: msg;
     assert msg!=null;
     if(!msg.isEmpty() && !msg.endsWith("\n")){msg+="\n";}
     this.msgPart=msg;
