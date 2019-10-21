@@ -51,7 +51,7 @@ Many works attempt to move out of the `RV tool' philosophy to ensure RV monitors
 the study of contracts as refinements of types~\cite{findler2001contract}.
 However, such work is only interested in pre and post-conditions, not invariants.
 
-Our invariant protocol is much stronger than
+Our invariant protocol is much stricter than
 visible state semantics, and keeps the invariant under tight control.
 Gopinathan \etal's.~\cite{Gopinathan:2008:RMO:1483018.1483028} approach keeps
 a similar level of control:
@@ -66,7 +66,7 @@ with transactional memory, and so is likely to be very hard to support efficient
 %However we think roll-back this would be a 
 %\REVComm{\REVComm{terrible}{2}{It seems in poor taste to complain of ``terrible'' ideas, especially without attempting to demonstrate the improvements of the proposed approach.}}{3}{Nontechnical term. It is not a great idea to label previous work as ``terrible''}
 % ideally not only the field-update breaking the invariant should be reverted, %the roll-back should 
-Using RCs to enforce strong exception safety is a much simpler alternative, providing the same level of safety, albeit being more restrictive (namely that if the operation did succeed it is still effectively rolled back).
+Using RCs to enforce strong exception safety is a much simpler alternative, providing the same level of safety, albeit being more restrictive.
 
 %: for example
 %assume that we are moving object between two boats:

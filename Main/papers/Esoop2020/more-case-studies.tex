@@ -138,7 +138,7 @@ class Family {
 }
 \end{lstlisting}
 Note how we created a \Q!Box! class to hold the \Q!parents! and \Q!children!.
-Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay(dayOfYear)!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!Family.processDay(dayOfYear)! is atomic: it updates all its contained \Q!Person!s together.
+Thanks to this pattern, the invariant only needs to hold at the end of \Q!Family.processDay(dayOfYear)!, after all the \Q!parents! and \Q!children! have been updated. Thus \Q!processDay(dayOfYear)! is atomic: it updates all its contained \Q!Person!s together.
 %This capture the intention of consistently calling \Q@Person.processDay@ once for all the persons as an atomic operation.
 %This capture the intention of atomically and consistently calling \Q@Person.processDay@ once for all the persons.
 Had we instead made the \Q!parents! and \Q!children! \Q!capsule! fields of \Q!Family!, the invariant would be required to also hold between modifying the two lists. This could cause semantic problems if, for example, a child was updated before their parent.

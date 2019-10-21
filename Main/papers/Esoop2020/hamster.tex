@@ -46,7 +46,7 @@ class Hamster {
 }
 \end{lstlisting}
 
-If however, we did want \Q@Point@ to be an immutable/value type, the original unannotated version would not have any problems.
+%If however, we did want \Q@Point@ to be an immutable/value type, the original unannotated version would not have any problems.
 
 \subheading{The \Q@Cage@ Class} 
 The natural way to write this class in C\#, if it had native support for class invariants like Spec\#, would be:
@@ -98,7 +98,7 @@ class Point {
 However this fails in Spec\# since \Q@Object.Equals@ is annotated with \Q@[Pure]@\\*\Q@[Reads(ReadsAttribute.Reads.Nothing)]@, and of course every overload of it must also satisfy this. The \Q@Reads@ annotations specifies that the method cannot read fields of \emph{any} object, not even the receiver, this makes overloading the method useless.
 % Our best guess as to why \Q@Object.Equals@ is annotated like that is that they expect it to be the default reference-equality, annotating it like this could aid static verification as it implies that whether or not two objects are equal cannot change, even if their fields are modified.
 
-We resorted to making our own \Q@Equal@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@[Pure]@, and either annotated with\\* \Q@[Reads(ReadsAttribute.Reads.Nothing)]@ or \Q@[Reads(ReadsAttribute.Reads.Owned)]@\\* (the default, if the method is \Q@[Pure]@). The latter annotation means it can only read fields of objects owned by the \emph{receiver} of the method, so a \Q@[Pure] bool Equal(Point that)@ method can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to just pass the fields of the other point to the method:
+We resorted to making our own \Q@Equal@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@[Pure]@, and either annotated with \Q@[Reads(ReadsAttribute.Reads.Nothing)]@ or \\* \Q@[Reads(ReadsAttribute.Reads.Owned)]@ (the default, if the method is \Q@[Pure]@). The latter annotation means it can only read fields of objects owned by the \emph{receiver} of the method, so a \Q@[Pure] bool Equal(Point that)@ method can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to just pass the fields of the other point to the method:
 \begin{lstlisting}
 [Pure] bool Equal(double x, double y) {
   return x == this.x && y == this.y;}
