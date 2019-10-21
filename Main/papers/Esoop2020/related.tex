@@ -1,7 +1,5 @@
-\section[Related Work]{Related Work\protect\footnotemark{}}
+\section[Related Work]{Related Work}
 \label{s:related}
-\footnotetext{See Appendix \ref{s:runtime-verification} for related work on runtime verification.}
-%
 \subheading{Reference Capabilities}
 We rely on a combination of RCs supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
@@ -21,7 +19,7 @@ provide back doors, which are not easily verifiable as being used properly.
 Ownership~\cite{ClarkeEtAl13,ZibinEtAl10,DietlEtAl07} is a popular form of aliasing control often used as a building block for static verification~\cite{%
 muller2002modular,%
 barnett2011specification%
-}.  However, owenership does not require the whole ROG of an object to be `owned'. This complicates restricting the data accessible by invariants.
+}.  However, ownership does not require the whole ROG of an object to be `owned'. This complicates restricting the data accessible by invariants.
 
 \subheading{Object Capabilities}
 In the literature, OCs are used to provide a wide range of guarantees, and many variations are present.
@@ -64,9 +62,9 @@ JML~\cite{JML} relaxes these requirements for helper methods, whose semantics ar
 %constantly maintained when the object is \textit{closed};
 %invariant can be manually opened and closed by using special operations; % Add cite here!
 \end{itemize}\SS\LS[0.5]
-\noindent These different protocols can be deceivingly similar, and 
-some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
+\noindent These different protocols can be deceivingly similar.
 Note that all those approaches fail our strict requirements and allow for broken objects to be observed.
+Some approaches like JML suggest verifying a simpler approach (that method calls preserve the invariant of the \emph{receiver}) but assume a stronger one (the invariant of \emph{every} object, except \Q@this@, holds).
 
 
 % use the unsound option of assuming one protocol, but actually checking another.
@@ -153,6 +151,9 @@ And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails 
 As you can see, failing to handle non-determinism jeopardises reasoning.
 
 A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}. One advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
+
+Our approach also have connection with runtime verification. See Appendix \ref{s:runtime-verification} for related work on runtime verification.
+
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 
 % They propose a concept of observational purity, that if completely fleshed out could possibly be a great addition to our proposed system. We speculate that some  primitive language support may be needed, for example implementing the Flyweight pattern as part of the language semantics.

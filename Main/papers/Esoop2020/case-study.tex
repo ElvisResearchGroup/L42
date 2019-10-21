@@ -27,7 +27,7 @@ class SafeMovable implements Widget {
   @Override read method Int height() { return this.height; }
   @Override read method read Widgets children() {
     return this.box.c; }
-  @Override  mut method Void dispatch(Event e) {
+  @Override mut method Void dispatch(Event e) {
     for (Widget w:this.box.c) { w.dispatch(e); }}
   read method Bool invariant() {..}
   SafeMovable(capsule Widgets c) { this.box = makeBox(c); }
@@ -40,8 +40,8 @@ class Box { Int l; Int t; mut Widgets c;
 class MoveAction implements Action { mut Box outer;
   MoveAction(mut Box outer) { this.outer = outer; }
   mut method Void process(Event e) { this.outer.l += 1; }}
-...
-// main expression; #$\$$ is a capability operation making a Gui object
+... //main expression
+//#$\$$ is a capability operation making a Gui object
 Gui.#$\$$().display(new SafeMovable(...));
 \end{lstlisting}% ISAAC: 
 As you can see, \Q@Box@es encapsulate the state of the \Q@SafeMovable@s that can change over time:
@@ -149,12 +149,12 @@ encapsulation of \Q@children()@, thus this approach is even less sound than Spec
 %\end{itemize}
 %The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 
-We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. In the following table we summarise the annotation burden,
+We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. The following table shows the annotation burden,
 for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GUI; as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling. We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks:
 \begin{center}\SS
 \begin{tabular}{ c  c  c  c  c}
  & Spec\# & Spec\# & L42 & L42 \\ 
- & \!\!program\!\! & library & \!\!program\!\! & library \\
+ & \!\!program & library & program & library \\
 \hline
  
 \!\!\!Total number of annotations 
@@ -174,7 +174,7 @@ Characters (with minimal whitespace)
 To encode the GUI example in L42, the only annotations we needed were the 3 reference capabilities: \Q@mut@, \Q@read@, and \Q@capsule@.
 % , for a total of 
 % $19$ annotations (one token each, $74$ characters in total).
-Our Spec\# code requires things such as, purity, immutability, ownership, method pre/post-conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
+Our Spec\# code requires purity, immutability, ownership, method pre/post-conditions and method modification annotations. In addition, it requires the use of 4 different ownership functions including explicit ownership assignments. In total we used 18 different kinds of annotations in Spec\#.
 In the table we present token and character counts to compare against Spec\#'s annotations, which can be quite long and involved, whereas ours are just single keywords.
 Consider for example the Spec\# pre-condition on \Q@SafeMovable@'s constructor: \\
 \indent\Q@requires Owner.Same(Owner.ElementProxy(children), children);@
@@ -215,7 +215,7 @@ as one of the hardest problems when it comes to enforcing invariants.
 We have found that using an inner \Q@Box@ object, is quite a useful pattern in static verification: where one encapsulates all relevant mutating state into an encapsulated subobject which is not exposed to users.
 % We also found natural to use the box pattern also in Spec\# requires.
 Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the cyclic object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
-The box pattern also allows passing the state of invalid objects around (by passing the box object instead of the outer object), and to batch together complex mutations and multiple field updates with only a single invariant check (a method on the box object can perform many fields updates while the outer object is not involved in execution). We show such concrete examples of the usage of boxes in Appendices~\ref{s:MoreCaseStudies} and~\ref{s:patterns}
+The box pattern also allows passing the state of invalid objects around (by passing the box object instead of the outer object), and to batch together complex mutations and multiple field updates with only a single invariant check (a method on the box object can perform many fields updates while the outer object is not involved in execution). We show such concrete examples of the usage of boxes in Appendices~\ref{s:MoreCaseStudies} and~\ref{s:patterns}.
 
 The Transformer Pattern (described in the detail in Appendix \ref{s:patterns}) consists of 
 using a lambda or another object representing a user defined operation as a parameter for a capsule mutator.
