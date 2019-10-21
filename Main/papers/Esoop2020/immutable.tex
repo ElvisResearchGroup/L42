@@ -6,8 +6,8 @@ In our examples and in L42, the reference capability \Q@imm@ is the default, and
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
 However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
 
-First we consider a simple case, an invariant over fields of \Q@imm@ types;
-\Q@Person@ has a single immutable (and non final) field \Q@name@:
+First we consider
+\Q@Person@: it has a single immutable (and non final) field \Q@name@.
 \begin{lstlisting}
 class Person {
   read method Bool invariant() { return !name.isEmpty(); }
@@ -18,7 +18,7 @@ class Person {
 \end{lstlisting}
 The \Q@name@ field is not final: \Q@Person@s can change state during their lifetime. The ROGs of all of a \Q@Person@'s fields are immutable, but \Q@Person@s themselves may be mutable.
 We enforce \Q@Person@'s invariant by generating checks on the result of calling \Q@this.invariant()@: immediately after each field update, and at the end of the constructor.
-Such checks will be generated/injected, and not directly written by the programmer.
+Such checks are generated/injected, and not directly written by the programmer.
 \begin{lstlisting}
 class Person { .. // Same as before
   mut method String name(String name) {
@@ -29,7 +29,7 @@ class Person { .. // Same as before
     if (!this.invariant()) { throw new Error(...); }}  }
 \end{lstlisting}
 %Programmers often manually check for invariants by placing assertions in the same places we did in this example. % ISAAC: Deleted because unnecesary, and makes the next sentence misunderstandable
-If we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or SES, the above checks would not be sufficient to enforce our invariant protocol.
+We now show how if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or SES, the above checks would not be sufficient to enforce our invariant protocol.
 
 \subheading{Unrestricted Access to Capability Objects?} Allowing \Q@invariant()@ methods to (indirectly) perform non-deterministic operations by creating new capability objects or mutating existing ones would break our guarantee that (manually) calling \Q@invariant()@ always returns \Q!true!.
 Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
@@ -54,11 +54,11 @@ Rust~\cite{matsakis2014rust} and Javari~\cite{TschantzErnst05}
 allow interior mutability:
 the ROG of an `immutable' object can be mutated through back doors.
 Such back doors would allow \Q@invariant()@ methods to store and read information about previous calls.
-For example \Q@MagicCounter@ breaks determinism by
+The example class \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
 class MagicCounter {//INVALID EXAMPLE
-  method Int incr(){/*internal mutability (indirectly) does counter++*/}}
+  method Int incr(){/*internal mutability does counter++*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
