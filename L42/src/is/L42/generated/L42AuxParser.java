@@ -26,8 +26,8 @@ public class L42AuxParser extends Parser {
 		RULE_c = 4, RULE_csP = 5, RULE_nudeCsP = 6, RULE_path = 7, RULE_cs = 8, 
 		RULE_selector = 9, RULE_pathSel = 10, RULE_pathSelX = 11, RULE_nudePathSelX = 12, 
 		RULE_infoNorm = 13, RULE_infoTyped = 14, RULE_info = 15, RULE_infoBody = 16, 
-		RULE_typeDep = 17, RULE_coherentDep = 18, RULE_friends = 19, RULE_usedMethods = 20, 
-		RULE_privateSupertypes = 21, RULE_refined = 22, RULE_declaresClassMethods = 23, 
+		RULE_typeDep = 17, RULE_coherentDep = 18, RULE_watched = 19, RULE_usedMethods = 20, 
+		RULE_hiddenSupertypes = 21, RULE_refined = 22, RULE_declaresClassMethods = 23, 
 		RULE_nativeKind = 24, RULE_nativePar = 25, RULE_uniqueId = 26, RULE_x = 27, 
 		RULE_m = 28, RULE_charInDoc = 29, RULE_topDoc = 30, RULE_topDocText = 31, 
 		RULE_doc = 32;
@@ -35,8 +35,8 @@ public class L42AuxParser extends Parser {
 		return new String[] {
 			"anyKw", "voidKw", "libraryKw", "thisKw", "c", "csP", "nudeCsP", "path", 
 			"cs", "selector", "pathSel", "pathSelX", "nudePathSelX", "infoNorm", 
-			"infoTyped", "info", "infoBody", "typeDep", "coherentDep", "friends", 
-			"usedMethods", "privateSupertypes", "refined", "declaresClassMethods", 
+			"infoTyped", "info", "infoBody", "typeDep", "coherentDep", "watched", 
+			"usedMethods", "hiddenSupertypes", "refined", "declaresClassMethods", 
 			"nativeKind", "nativePar", "uniqueId", "x", "m", "charInDoc", "topDoc", 
 			"topDocText", "doc"
 		};
@@ -46,7 +46,7 @@ public class L42AuxParser extends Parser {
 	private static String[] makeLiteralNames() {
 		return new String[] {
 			null, "'('", "')'", "'#norm{'", "'#typed{'", "'}'", "'typeDep='", "'coherentDep='", 
-			"'friends='", "'usedMethods='", "'privateSupertypes='", "'refined='", 
+			"'watched='", "'usedMethods='", "'hiddenSupertypes='", "'refined='", 
 			"'declaresClassMethods'", "'nativeKind='", "'nativePar='", "'uniqueId='", 
 			"'{'", "'.'", "'@@'", null, "'Any'", "'Void'", "'Library'"
 		};
@@ -1090,14 +1090,14 @@ public class L42AuxParser extends Parser {
 		public CoherentDepContext coherentDep() {
 			return getRuleContext(CoherentDepContext.class,0);
 		}
-		public FriendsContext friends() {
-			return getRuleContext(FriendsContext.class,0);
+		public WatchedContext watched() {
+			return getRuleContext(WatchedContext.class,0);
 		}
 		public UsedMethodsContext usedMethods() {
 			return getRuleContext(UsedMethodsContext.class,0);
 		}
-		public PrivateSupertypesContext privateSupertypes() {
-			return getRuleContext(PrivateSupertypesContext.class,0);
+		public HiddenSupertypesContext hiddenSupertypes() {
+			return getRuleContext(HiddenSupertypesContext.class,0);
 		}
 		public RefinedContext refined() {
 			return getRuleContext(RefinedContext.class,0);
@@ -1158,7 +1158,7 @@ public class L42AuxParser extends Parser {
 				enterOuterAlt(_localctx, 3);
 				{
 				setState(163);
-				friends();
+				watched();
 				}
 				break;
 			case T__8:
@@ -1172,7 +1172,7 @@ public class L42AuxParser extends Parser {
 				enterOuterAlt(_localctx, 5);
 				{
 				setState(165);
-				privateSupertypes();
+				hiddenSupertypes();
 				}
 				break;
 			case T__10:
@@ -1427,7 +1427,7 @@ public class L42AuxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class FriendsContext extends ParserRuleContext {
+	public static class WatchedContext extends ParserRuleContext {
 		public List<PathContext> path() {
 			return getRuleContexts(PathContext.class);
 		}
@@ -1438,28 +1438,28 @@ public class L42AuxParser extends Parser {
 		public TerminalNode W(int i) {
 			return getToken(L42AuxParser.W, i);
 		}
-		public FriendsContext(ParserRuleContext parent, int invokingState) {
+		public WatchedContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_friends; }
+		@Override public int getRuleIndex() { return RULE_watched; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterFriends(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterWatched(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitFriends(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitWatched(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitFriends(this);
+			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitWatched(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final FriendsContext friends() throws RecognitionException {
-		FriendsContext _localctx = new FriendsContext(_ctx, getState());
-		enterRule(_localctx, 38, RULE_friends);
+	public final WatchedContext watched() throws RecognitionException {
+		WatchedContext _localctx = new WatchedContext(_ctx, getState());
+		enterRule(_localctx, 38, RULE_watched);
 		int _la;
 		try {
 			int _alt;
@@ -1629,7 +1629,7 @@ public class L42AuxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class PrivateSupertypesContext extends ParserRuleContext {
+	public static class HiddenSupertypesContext extends ParserRuleContext {
 		public List<PathContext> path() {
 			return getRuleContexts(PathContext.class);
 		}
@@ -1640,28 +1640,28 @@ public class L42AuxParser extends Parser {
 		public TerminalNode W(int i) {
 			return getToken(L42AuxParser.W, i);
 		}
-		public PrivateSupertypesContext(ParserRuleContext parent, int invokingState) {
+		public HiddenSupertypesContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_privateSupertypes; }
+		@Override public int getRuleIndex() { return RULE_hiddenSupertypes; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterPrivateSupertypes(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterHiddenSupertypes(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitPrivateSupertypes(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitHiddenSupertypes(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitPrivateSupertypes(this);
+			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitHiddenSupertypes(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final PrivateSupertypesContext privateSupertypes() throws RecognitionException {
-		PrivateSupertypesContext _localctx = new PrivateSupertypesContext(_ctx, getState());
-		enterRule(_localctx, 42, RULE_privateSupertypes);
+	public final HiddenSupertypesContext hiddenSupertypes() throws RecognitionException {
+		HiddenSupertypesContext _localctx = new HiddenSupertypesContext(_ctx, getState());
+		enterRule(_localctx, 42, RULE_hiddenSupertypes);
 		int _la;
 		try {
 			int _alt;

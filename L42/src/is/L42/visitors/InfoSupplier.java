@@ -112,9 +112,9 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     for(var b:r.res.infoBody()){
       fillInfo("typeDep",b.typeDep(),z->z.path(),()->typeDep,v->typeDep=v,this::pf);
       fillInfo("coherentDep",b.coherentDep(),z->z.path(),()->coherentDep,v->coherentDep=v,this::pf);
-      fillInfo("friends",b.friends(),z->z.path(),()->friends,v->friends=v,this::pf);
+      fillInfo("friends",b.watched(),z->z.path(),()->friends,v->friends=v,this::pf);
       fillInfo("usedMethods",b.usedMethods(),z->z.pathSel(),()->usedMethods,v->usedMethods=v,this::psf);
-      fillInfo("privateSupertypes",b.privateSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
+      fillInfo("privateSupertypes",b.hiddenSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
       fillInfo("refined",b.refined(),z->z.selector(),()->refined,v->refined=v,this::sf);
       boolFlag("declaresClassMethods",b.declaresClassMethods(),()->declaresClassMethods,v->declaresClassMethods=v);
       fillElem("nativeKind",b.nativeKind(),z->z.x()!=null?z.x().getText():z.c().getText(),()->nativeKind,v->nativeKind=v,s->s.isEmpty());

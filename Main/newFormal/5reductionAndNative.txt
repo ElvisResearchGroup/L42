@@ -116,9 +116,9 @@ _______
 ----------------------------------------------------------------------
 J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 
-//every L in meth bodies and in the main expression have a corresponding name,
-// and such name is also the key in an bidiretional hash map
-//pointing to the corresponding L, the LDoms of such L in the program and an L prefrommed
+//every L in meth bodies and in the main expression have a corresponding index,
+// and such index can be used to access the literal at run time.
+//the index stores both the L "as is" and a prefrommed version 
 //with respect to the point of origin of the current main
 * J.catchVar="catchVar"+J.catchLev
 * J.native(T) = J.p(T.P).Info.nativeKind!=empty
@@ -176,11 +176,11 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J(x:=e)=Wrap.toVoid(x=J[J.G(x)](e))
 * J( (e) )=J(e)
 * J( (Ds e) )=switchKw(0){defaultKw->{J'.dec(Ds) J'.init(Ds) yieldKw J'(e);}}
-    J'=J[G+=G^Ds][fwd=xs]
+    J'=J[G+=Ds.G][fwd=xs]
     Ds=D1..Dn
     xs={Di.x| i in 1..n, Di.x inside Di.e..Dn.e}
 * J( (Ds Ks e) )=switchKw(0){defaultKw->{J'.dec(Ds) try{J'.init(Ds)} J'.catch(Ks) yieldKw J'(e);}}
-    J'=J[G+=G^Ds][fwd=J.fwd,xs]
+    J'=J[G+=Ds.G][fwd=J.fwd,xs]
     Ds=D1..Dn
     xs={Di.x| i in 1..n, Di.x inside Di.e..Dn.e}
 * J.dec(D1..Dn) = J.dec(D1)..J.dec(Dn)
@@ -266,7 +266,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J.meth(MH = native[URL] e) =
     J.staticMethHeader(MH){return J(J.p(This0).Info.kind,URL,x1..xn,e);}
 * J.meth(MH=e) =
-    J.staticMethHeader(MH){returnKw J[G=G^MH][MH.T](e);}
+    J.staticMethHeader(MH){returnKw J[G=MH.G][MH.T](e);}
 
 * J.meth(MH)=//if method is allowed abstract  //all cases for abs methods:
       J.staticMethHeader(MH){throw new Error();}

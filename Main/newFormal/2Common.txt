@@ -109,9 +109,9 @@ _______
 with MH=mdf method T mOp(T1 x1..Tn xn)[Ts] 
 * MH.pars = T1..Tn
 * MH.exceptions = Ts
-* G^MH = this:mdf This0, x1:T1..xn:Tn
+* MH.G = this:mdf This0, x1:T1..xn:Tn
 * MH.pari = Ti
-* MH.s=methName(mOp)(x1..xn) //well formedness for no repetition in dom uses MH.s
+* MH.s=methName(mOp)(x1..xn) //well formedness for no repetition in dom(L) and dom(Ms) uses MH.s
 _______
 #define name manglings methName(mOP) = m, methNameTrim(m) = m, methName(x, mdf?) = m
 * methName(m) = m

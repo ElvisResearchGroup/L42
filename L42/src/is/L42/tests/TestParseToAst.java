@@ -209,15 +209,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{coherentDep=This1.C}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{friends=This1.C}})")
+   pass("({interface #norm{watched=This1.C}})")
    ),new AtomicTest(()->
    pass("({interface #norm{usedMethods=This1.C.foo(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{privateSupertypes=This1.C}})")
+   pass("({interface #norm{hiddenSupertypes=This1.C}})")
    ),new AtomicTest(()->
    pass("({interface #norm{refined=bar(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{friends=This1.C declaresClassMethods}})")
+   pass("({interface #norm{watched=This1.C declaresClassMethods}})")
    ),new AtomicTest(()->
    pass("({interface #norm{declaresClassMethods}})")
 

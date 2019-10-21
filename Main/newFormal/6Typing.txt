@@ -128,12 +128,12 @@ _______
    |-p.push(C,L)
    if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
 * p|-MWT //(member method)
-    Q = Q[typed; p; G^MWT; empty; MWT.exceptions.Ps]
+    Q = Q[typed; p; MWT.G; empty; MWT.exceptions.Ps]
     if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
     MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
     forall MH in MHs:
       p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
-      G^MWT=G^MH //invalid type w.r.t. implemented paramerer xi
+      MWT.G=MH.G //invalid type w.r.t. implemented paramerer xi
       forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
       //or error: leaked exception P is not the subtype of a declared exception
       //or  method declares an exception (P) which is not a subtype of implemented exceptions
@@ -244,8 +244,6 @@ _______
     mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
     mdf in {lent, mut}
     if mdf = lent then mdf' != mut
-* coherent(p;_;capsule method T #sx::n?(_)_;_,x;n?)//TODO: this seams very wrong.
-    p |- imm Void <= T //capsule methods are guaranteed to trash the object anyway...they are also dead code
 * coherent(p;MHs;mdf method mdf' P' #sx::n?()_;_,x;n?)
     mdf != class
     forall P in fieldTs(MHs, x, mdf).Ps:  p |- P <= P'

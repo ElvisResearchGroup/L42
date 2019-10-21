@@ -39,7 +39,14 @@ public class FV extends PropagatorCollectorVisitor{
   @Override public void visitIf(Full.If i){
     var acc=store();
     super.visitIf(i);
-    result.removeAll(domFullDs(i.matches()));
+    var filtered=L(i.matches().stream().filter(m->{
+      if(m._e()==null){
+        assert m._varTx()._x()!=null;
+        result.add(m._varTx()._x());
+        }
+      return m._e()!=null;}));
+    
+    result.removeAll(domFullDs(filtered));
     acc(acc);
     }
   @Override public void visitBlock(Full.Block b){

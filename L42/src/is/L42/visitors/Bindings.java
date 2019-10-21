@@ -31,7 +31,8 @@ public class Bindings extends PropagatorCollectorVisitor{
     }
   @Override public void visitIf(Full.If i){
     super.visitIf(i);
-    result.addAll(FV.domFullDs(i.matches()));
+    var filtered=L(i.matches().stream().filter(m-> m._e()!=null));
+    result.addAll(FV.domFullDs(filtered));
     }
   @Override public void visitBlock(Full.Block b){
     super.visitBlock(b);

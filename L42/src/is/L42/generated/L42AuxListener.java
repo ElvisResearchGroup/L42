@@ -198,15 +198,15 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitCoherentDep(L42AuxParser.CoherentDepContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42AuxParser#friends}.
+	 * Enter a parse tree produced by {@link L42AuxParser#watched}.
 	 * @param ctx the parse tree
 	 */
-	void enterFriends(L42AuxParser.FriendsContext ctx);
+	void enterWatched(L42AuxParser.WatchedContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42AuxParser#friends}.
+	 * Exit a parse tree produced by {@link L42AuxParser#watched}.
 	 * @param ctx the parse tree
 	 */
-	void exitFriends(L42AuxParser.FriendsContext ctx);
+	void exitWatched(L42AuxParser.WatchedContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#usedMethods}.
 	 * @param ctx the parse tree
@@ -218,15 +218,15 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitUsedMethods(L42AuxParser.UsedMethodsContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42AuxParser#privateSupertypes}.
+	 * Enter a parse tree produced by {@link L42AuxParser#hiddenSupertypes}.
 	 * @param ctx the parse tree
 	 */
-	void enterPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx);
+	void enterHiddenSupertypes(L42AuxParser.HiddenSupertypesContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link L42AuxParser#privateSupertypes}.
+	 * Exit a parse tree produced by {@link L42AuxParser#hiddenSupertypes}.
 	 * @param ctx the parse tree
 	 */
-	void exitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx);
+	void exitHiddenSupertypes(L42AuxParser.HiddenSupertypesContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#refined}.
 	 * @param ctx the parse tree

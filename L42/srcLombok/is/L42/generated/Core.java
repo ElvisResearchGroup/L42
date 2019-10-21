@@ -100,9 +100,9 @@ public class Core {
       boolean isTyped; 
       @NonNull List<P.NCs> typeDep;
       @NonNull List<P.NCs> coherentDep;
-      @NonNull List<P.NCs> friends;
+      @NonNull List<P.NCs> watched;
       @NonNull List<PathSel> usedMethods;
-      @NonNull List<P.NCs> privateSupertypes;
+      @NonNull List<P.NCs> hiddenSupertypes;
       @NonNull List<S>refined;
       boolean declaresClassMethods;
       @NonNull String nativeKind;

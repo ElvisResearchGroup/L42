@@ -45,9 +45,9 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
   @Override public void visitInfo(Core.L.Info info){
     visitPs(info.typeDep());
     visitPs(info.coherentDep());
-    visitPs(info.friends());
+    visitPs(info.watched());
     visitPathSels(info.usedMethods());
-    visitPs(info.privateSupertypes());
+    visitPs(info.hiddenSupertypes());
     visitSs(info.refined());
     }
     

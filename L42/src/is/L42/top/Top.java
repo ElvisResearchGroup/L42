@@ -90,9 +90,9 @@ public class Top {
     Info res=new Info(info1.isTyped() && info2.isTyped(),
       mergeU(info1.typeDep(),info2.typeDep()),
       mergeU(info1.coherentDep(),info2.coherentDep()),
-      mergeU(info1.friends(),info2.friends()),
+      mergeU(info1.watched(),info2.watched()),
       mergeU(info1.usedMethods(),info2.usedMethods()),
-      mergeU(info1.privateSupertypes(),info2.privateSupertypes()),
+      mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
       mergeU(info1.refined(),info2.refined()),
       info1.declaresClassMethods() || info2.declaresClassMethods(),
       info1.nativeKind()+info2.nativeKind(),
@@ -154,7 +154,7 @@ public class Top {
     Program p1 = p.update(updateInfo(p,nc));
     Program p2=FlagTyped.flagTyped(loader,p1);//propagate errors
     //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)    
-    Program res=topNC(p2.update(c0,frommedCTz),p2,ncs);
+    Program res=topNC(p2.from(frommedCTz,P.of(0,L(c0))),p2,ncs);
     return res; 
     }
   private Core.E reduce(Program p,C c,Core.E e)throws EndError  {

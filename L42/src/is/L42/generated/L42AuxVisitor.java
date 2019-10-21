@@ -125,11 +125,11 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCoherentDep(L42AuxParser.CoherentDepContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42AuxParser#friends}.
+	 * Visit a parse tree produced by {@link L42AuxParser#watched}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitFriends(L42AuxParser.FriendsContext ctx);
+	T visitWatched(L42AuxParser.WatchedContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#usedMethods}.
 	 * @param ctx the parse tree
@@ -137,11 +137,11 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitUsedMethods(L42AuxParser.UsedMethodsContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42AuxParser#privateSupertypes}.
+	 * Visit a parse tree produced by {@link L42AuxParser#hiddenSupertypes}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx);
+	T visitHiddenSupertypes(L42AuxParser.HiddenSupertypesContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#refined}.
 	 * @param ctx the parse tree

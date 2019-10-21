@@ -23,15 +23,14 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,friends=Ps,usedMethods=(P.s)s,privateSupertypes=Ps, refined=ss,
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,
     declaresClassMethods?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
-    //in concrete syntax, labels for emptys are omitted
-    //friends are spyed by This:
-    //Paths whose unique Numbers are used either directly,
-    //or in a private nested class or in an L in a method
+    //in concrete syntax, labels for empty fields must be omitted
+    //watched//Paths whose unique numbers are used either directly,
+    //    or in a private nested class or in an L in a method
     //usedMethods//methods used either directly or in a private nested class or in an L in a method
-    //privateSupertypes: interfaces implemented by a private nested class or in an L in a method
-    //declaresClassMethods (since it can be casted to class P)
+    //hiddenSupertypes//interfaces implemented by a private nested class or in an L in a method
+    //    declaresClassMethods (since it can be cast to class P)
     //may add closed/open class (since private abstract methods may be removed if unused)
     //may add 'free this': 'this' only used as receiver
   Flag ::= norm | typed
@@ -42,11 +41,12 @@ _______
   FULL.MWT ::=Docs MH (= native{BalCurly}? e)? // well formedness: all LL inside e are CORE.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e //TODO: $OP is desugared to the C defining the operator
   LL::= FULL.L | CORE.L
-  FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | Number e
+  FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | number e
     | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ par1;..;parn ]
     | ( Ds Ks WHOOPS? Ds' e? ) | { Ds Ks WHOOPS? Ds' }
     | loop e | while e0 e1 | for DX0 in e0 .. DXn in en e
     | throw e | x opUpdate e | if e0 e1 (else e2)? | if match+ e 
+  FULL.par ::= e? xe*
   FULL.D ::= (DX =)? e
   FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
@@ -110,7 +110,7 @@ _______
   string ::= " stringElement* "
   stringElement ::= (CHAR* -- '%') | % ePostfix // abstract view, concrete details may differ?
 
-  Number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
+  number ::= <0-9> ('.'|'_'|'-'|<0-9>)*
   commentBody ::= CHAR* -- '/*' -- '*/' | commentBody comment commentBody
   comment ::= '//' (CHAR* -- newline) newline | '/*' commentBody '*/'
   Whitespace ::= (' ' | newline | ',')+
@@ -135,9 +135,8 @@ _______
 _______
 #define FULL Expressions priority disambiguation and other details
   FULL.eAtomic ::= x | CsP | 'void' | LL | B | \  | 'PathSel | \x
-  FULL.ePrefix ::= (UOp | Number)* eAtomic
+  FULL.ePrefix ::= (UOp | number)* eAtomic
   FULL.ePostfix ::= ePrefix ((.m)?(par)|(.m)?[(par;)* par?]|string|<:T)* //no space in ePostfix(par) and \x
-  FULL.par ::= e? xe*
   FULL.eBinary0 ::= ePostFix (OP0 ePostFix)* //right associative, all ops must be the same
   FULL.eBinary1 ::= (eBinary0 OP1)* eBinary0 //left associative, all op the same
   FULL.eBinary2 ::= (eBinary1 OP2)* eBinary1 //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
@@ -212,6 +211,7 @@ _______
     FULL.L={CORE.L.H CORE.L.Ms}
     flagTyped(norm(FULL.L;pTail);pTail)=CORE.L';pTail //defined in file top
     and CORE.L'.Info+_=CORE.L.Info (that is, all the dependencies are a subset, and so on)
+//TODO: this does not work, since well formedness of code != well formedness of full.
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 * CTz: forall CT1,CT2 in CTz, if CT1.ST=CT2.ST then CT1=CT2
@@ -236,8 +236,8 @@ _______
 * bindings(var? TLocal x) = x
 * bindings(var? TLocal _) = empty  
 * bindings(TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )) = x0..xn
-
-* bindings(T x) = x // 'T x' and the two other cases below are kinds of match (for the if)
+//'T x' and the two other cases below are kinds of match (for the if)
+* bindings(T x) = empty //x must be already in scope 
 * bindings(T x=e) = x U bindings(e)
 * bindings(T?(T?0 x0..T?n xn)=e) = x0..xn U bindings(e)
 

@@ -116,9 +116,9 @@ public class ToSVisitor implements ToSTrait{
     else {c("#norm{");}
     infoItem("typeDep",info.typeDep());
     infoItem("coherentDep",info.coherentDep());
-    infoItem("friends",info.friends());
+    infoItem("watched",info.watched());
     infoItem("usedMethods",info.usedMethods());
-    infoItem("privateSupertypes",info.privateSupertypes());
+    infoItem("hiddenSupertypes",info.hiddenSupertypes());
     infoItem("refined",info.refined());
     boolInfoItem(info.declaresClassMethods(),"declaresClassMethods");
     infoElem("nativeKind",info.nativeKind(),"");

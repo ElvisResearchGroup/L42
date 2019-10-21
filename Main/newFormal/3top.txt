@@ -6,7 +6,7 @@ _______
     on all the FULL.L and CORE.L it grows a local program p,
     on all the Cs applies p.minimize(p.resolve(C.Cs)).
     on all the P applies p.minimize(P).
-    all the ... are expanded with the code retrived from the file system.
+    all the ... are expanded with the code retrieved from the file system.
     //error is reported if an implements list contains This0.Cs or
     //Thisn.C.Cs and C is after the current point in the program
 _______
@@ -38,7 +38,7 @@ _______
     CTz.add(p0; MH1 Ms(MWT1.s).e?; e?1).. .add(p0; MHn Ms(MWTn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,[NC| NC in Ms]) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
-    I[C=empty;p1;G^MWTi;CTz1; frommed=empty]!e?i => ERi  for i in 1..n
+    I[C=empty;p1;MWTi.G;CTz1; frommed=empty]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
     MWT'i = MWTi Ms(MWTi.s).native e?'i
     L = updateInfo(p1, MWT'1..MWT'n)
@@ -57,7 +57,7 @@ _______
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(updateInfo(p,♥FULL.Docs C=CORE.L))//refreshUniqueNames
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
-    topNC(p".update(C,CTz1);p";NCs) => PR 
+    topNC(CTz1[from This0.C,p"];p";NCs) => PR 
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
@@ -83,9 +83,9 @@ _______
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
 _______
-#define p.update(C,CTz) = CTz'
-* p.update(C,CTz) = CTz[from This0.C, p]
+#define CTz[from P;p]    ST[from P;p]
 * CTz[from P;p] = CTz' trivially propagates on the structure and applies ST[from P; p] on all the ST in CTz
+
 * ST[from This0.C, p]=p.solve(ST')
   ST' = ST where all the STi inside are replaced with STi[from This0.C, p] 
 //Note: an ST that is a CORE.T is already handled by the normal from
@@ -207,7 +207,7 @@ _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
 * CTz.add(p; MH empty; empty) = CTz
 * CTz.add(p; MH e; Half.e) = CTz'+p STz<=MH.T
-    Y = Y[p=p;GX=G^MH;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
+    Y = Y[p=p;GX=MH.G;onSlash=MH.T;onSlashX=empty;expectedT=MH.T;CTz]
     Y!e = Half.e; STz; _; CTz'
 _______
 #define CTz <+p STz<=STz' = CTz'    CTz <+p ST<=STz = CTz'

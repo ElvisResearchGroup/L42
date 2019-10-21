@@ -244,13 +244,13 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFriends(L42AuxParser.FriendsContext ctx) { }
+	@Override public void enterWatched(L42AuxParser.WatchedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFriends(L42AuxParser.FriendsContext ctx) { }
+	@Override public void exitWatched(L42AuxParser.WatchedContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -268,13 +268,13 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx) { }
+	@Override public void enterHiddenSupertypes(L42AuxParser.HiddenSupertypesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitPrivateSupertypes(L42AuxParser.PrivateSupertypesContext ctx) { }
+	@Override public void exitHiddenSupertypes(L42AuxParser.HiddenSupertypesContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

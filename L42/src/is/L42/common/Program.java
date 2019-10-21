@@ -190,7 +190,6 @@ public class Program implements Visitable<Program>{
       }
     return res;
     }
-  public CTz update(C c,CTz ctz){return from(ctz,P.of(0,L(c)));}
   
   public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
     return subPs.allMatch(p->isSubtype(p, superP,poss));

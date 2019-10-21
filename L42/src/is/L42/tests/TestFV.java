@@ -29,7 +29,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("((a,b)=c b)","c")
    ),new AtomicTest(()->
    pass("(a=c d=c catch T x (x a) d)","c")
-
+   ),new AtomicTest(()->
+   pass("if Void x void","x")
+   ),new AtomicTest(()->
+   pass("if Void x=void void")
+   ),new AtomicTest(()->
+   pass("if Void x x","x")
+   ),new AtomicTest(()->
+   pass("if Void x=void x")
+   
    ),new AtomicTest(()->
    passC("(capsule This0 a=c catch error This0 x a a)")
    ),new AtomicTest(()->

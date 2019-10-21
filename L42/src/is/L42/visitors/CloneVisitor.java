@@ -133,23 +133,23 @@ public class CloneVisitor {
   public Core.L.Info visitInfo(Core.L.Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
-    var friends0=info.friends();
+    var watched0=info.watched();
     var usedMethods0=info.usedMethods();
-    var privateSupertypes0=info.privateSupertypes();
+    var hiddenSupertypes0=info.hiddenSupertypes();
     var refined0=info.refined();
     var nativePar0=info.nativePar();
 
     var typeDep=visitPNCs(typeDep0);
     var coherentDep=visitPNCs(coherentDep0);
-    var friends=visitPNCs(friends0);
+    var watched=visitPNCs(watched0);
     var usedMethods=visitPathSels(usedMethods0);
-    var privateSupertypes=visitPNCs(privateSupertypes0);
+    var hiddenSupertypes=visitPNCs(hiddenSupertypes0);
     var refined=visitSs(refined0);
     var nativePar=visitPs(nativePar0);
 
-    if(typeDep==typeDep0 && coherentDep==coherentDep0 && friends==friends0 
-      && usedMethods==usedMethods0 && privateSupertypes==privateSupertypes0 && refined==refined0){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,friends,usedMethods,privateSupertypes,refined,info.declaresClassMethods(),info.nativeKind(),nativePar,info._uniqueId());
+    if(typeDep==typeDep0 && coherentDep==coherentDep0 && watched==watched0 
+      && usedMethods==usedMethods0 && hiddenSupertypes==hiddenSupertypes0 && refined==refined0){return info;}
+    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,usedMethods,hiddenSupertypes,refined,info.declaresClassMethods(),info.nativeKind(),nativePar,info._uniqueId());
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){
