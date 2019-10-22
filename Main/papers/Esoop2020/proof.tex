@@ -117,7 +117,7 @@ If $\VS(\s', \E[\Kw{try}^{\s_0}\oC e_0\cC\ \Kw{catch}\ \oC e_1\cC])$, then\\
 \indent $\forall l \in \dom(\s_0)$, not $\muty(\s, \E[\Kw{try}^{\s_0}\oC \h\cC\ \Kw{catch}\ \oC e_1\cC], e_0, l)$.
 \end{Assumption}
 
-We use SES to prove that locations preserved by \Q@try@ blocks are never monitored (this is important as it means that a \Q!catch! that catches a monitor failure will not be able to see the responsible object):%
+We use strong exception safety to prove that locations preserved by \Q@try@ blocks are never monitored (this is important as it means that a \Q!catch! that catches a monitor failure will not be able to see the responsible object):%
 \SS\begin{Lemma}[Unmonitored Try]\rm
 	If $\VS(\s, e)$, $\forall \E$, if $e = \E[\Kw{try}^{\s_0}\oC\E[\M{l}{\_}{\_}]\cC\,\_])$, then $l\notin\s_0$
 \end{Lemma}\SS

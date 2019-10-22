@@ -157,7 +157,7 @@ We now provide our responses to the other comments by Reviewer D.
 ---------------------
 
 In the formal calculus all errors are "unchecked exceptions".
-SES requires that if a try-catch captures an unchecked exception then the body of the try
+strong exception safety requires that if a try-catch captures an unchecked exception then the body of the try
 is type-checked using "read" instead of "mut" for all the local variables.
 To transfer this knowledge from local variables to object locations, we annotate the try with
 the set of preserved locations.

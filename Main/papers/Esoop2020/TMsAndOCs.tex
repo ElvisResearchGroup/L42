@@ -4,7 +4,7 @@ Reasoning about imperative OO programs is a non-trivial task,
 made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and exceptions. There are many ways to perform such reasoning;
 instead of using automated theorem proving, 
 it is becoming more popular to verify aliasing and immutability properties using a type system.
-For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use RCs (Reference Capabilities)\footnote{RCs are called \emph{Type Modifiers} in some other works.} and OCs (Object Capabilities) to statically ensure  deterministic parallelism and the absence of data-races.
+For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use RCs (Reference Capabilities)\footnote{RCs are called \emph{Type Modifiers} in former works on L42.} and OCs (Object Capabilities) to statically ensure  deterministic parallelism and the absence of dataraces.
 While studying those languages, we discovered an elegant way to enforce invariants: we use RCs and OCs to restrict how/when the result of invariant methods change; this is done by restricting I/O, and how mutation through aliases can affect the state seen by invariants.
 % We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
 %We aim to leverage these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
@@ -36,7 +36,7 @@ There are only two kinds of objects: mutable and immutable, but there are more k
 
 \noindent\rule{1.2ex}{1.2ex} Encapsulated (\Q@capsule@):
 every mutable object in the ROG of a capsule reference (including itself) is only reachable through that reference. 
-Immutable objects in the ROG of a capsule reference are not constrained, and can be freely referred without passing through that reference. 
+Immutable objects in the ROG of a capsule reference are not constrained, and can be freely referred to without passing through that reference. 
 
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
 
@@ -70,7 +70,7 @@ RCs influence the access to the whole ROG; not just the referenced object itself
 %  \item promotion, is a type-system feature allowing implicit and safe casting from \Q@read@ and \Q@mut@ to \Q@imm@.
 \end{itemize}
 
-Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialized and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
+Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in the literature, however they must always be initialised and updated with \Q!capsule! references. In order for access to a \Q!capsule! field to safely produce a \Q!capsule! reference, Gordon \etal only allows them to be read destructively (i.e. by replacing the field's old value with a new one, such as \Q!null!). 
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
 In contrast, 
@@ -124,8 +124,8 @@ be able to encapsulate those data structures into an \Q@imm@ or \Q@capsule@ refe
 
 %\loseSpace
 \subheading{Exceptions}\label{s:exceptions}
-In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown whilst mutating an object, what state is that object in? Does its invariant hold?
-The concept of SES (\emph{strong exception safety})~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
+In most languages exceptions may be thrown at any point; combined with mutation this complicates reasoning about the state of programs after exceptions are caught: if an exception was thrown while mutating an object, what state is that object in? Does its invariant hold?
+The concept of \emph{strong exception safety}~\cite{Abrahams2000,JOT:issue_2011_01/article1} simplifies reasoning:
 if a \Q@try@--\Q@catch@ block caught an exception, the state visible before execution of the \Q@try@ block is unchanged, and the exception object does not expose any object that was being mutated; this prevents exposing objects whose invariant was left broken in the middle of mutations.
 %\LINE
 %\noindent{\textit{Exceptions:}}
@@ -142,7 +142,7 @@ if a \Q@try@--\Q@catch@ block caught an exception, the state visible before exec
 %Other authors have identified the concept of SES as
 % a general issue when reasoning about objects state after catching an exception.
 % while we need it to soundly capture invariant failures.
-L42 enforce SES for unchecked exceptions using RCs\footnote{%
+L42 enforces strong exception safety for unchecked exceptions using RCs\footnote{%
 This is needed to support safe parallelism. Pony takes a more drastic approach and does not support exceptions in the first place. 
 We are not aware of how Gordon \etal handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.%
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
@@ -155,8 +155,8 @@ in the following way:\footnote{A formal proof of why these restriction are suffi
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant()@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 This strategy does not restrict when exceptions can be \emph{thrown}, but only restricts when unchecked exceptions can be \emph{caught}.
-SES allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that no object mutated within a try block is visible when it catches an unchecked exception.%
-\footnote{Transactions are another way of enforcing strong exception safety, but they require specialized and costly run time support.}
+Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that no object mutated within a try block is visible when it catches an unchecked exception.%
+\footnote{Transactions are another way of enforcing strong exception safety, but they require specialised and costly run time support.}
 %For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
 
 %The ability to catch and recover from such failures is extremely useful as it allows the program to take corrective action.(DUPLICATED)
@@ -188,7 +188,7 @@ SES allows us to throw invariant failures as unchecked exceptions: if an object'
 OCs, which L42, Pony, and Gordon \etal's work have, are a widely used~\cite{miller2003capability,noble2016abstract,karger1988improving} programming technique where access rights to resources are encoded as references to objects. When this style
 is respected, code that does not possess an alias to such an object cannot use its associated resource.
 %Object capabilities are programming style used to control and restrict use of operations such as access to external resources
-Here, as in Gordon \etal's work, we enforce the OC pattern with RCs in order to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non-deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead instance methods of classes whose instantiation is kept under control
+Here, as in Gordon \etal's work, we enforce the OC pattern with RCs in order to reason about determinism and I/O. To properly enforce this, the OC style needs to be respected while implementing the primitives of the standard library, and when performing foreign function calls that could be non-deterministic, such as operations that read from files or generate random numbers. Such operations would not be provided by static methods, but instead by instance methods of classes whose instantiation is kept under control
 by carefully designing their implementation. 
 % \noindent\REVComm{\textit{Object Capabilities:}}{2}{Citations here?}
 % While type modifiers are statically verified properties of references, object capabilities are run time characteristics of specific objects.

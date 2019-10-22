@@ -3,9 +3,10 @@
 %\newpage
 %\LINE
 Representation invariants (sometimes called class invariants or object invariants) are
-a useful concept when reasoning about software correctness in OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (reachable object graph).
+a useful concept when reasoning about software correctness in OO (Object Oriented) languages. Such invariants are predicates on the state of an object and its ROG (Reachable Object Graph).
 They can be presented as documentation, checked as part of static verification, or, as we do in this paper, monitored for violations using runtime verification.
-In our system, a class specifies its invariant by defining a boolean returning method called \Q@invariant()@.
+In our system, a class specifies its invariant by defining a method called \Q@invariant()@
+that returns a boolean.
 We say that an object's invariant holds when its \Q@invariant()@ method would return \Q@true@.\footnote{We do this (as in Dafny~\cite{DBLP:conf/sigada/Leino12}) to minimise the special treatment of invariants, whereas other approaches often treat invariants as a special annotation with its own syntax.}
 
 Invariants are designed to hold most of the time, however it is commonly required to (temporarily) violate invariants while performing complex sequences of mutations.

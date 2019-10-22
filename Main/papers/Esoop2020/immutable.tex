@@ -4,7 +4,8 @@ Our invariant protocol relies on many different features and requirements. In th
 we will show examples of using our system, and how relaxing any of our requirements would break the soundness of our protocol.
 In our examples and in L42, the reference capability \Q@imm@ is the default, and so it can be omitted.
 Many verification approaches take advantage of the separation between primitive/value types and objects, since the former are immutable and do not support reference equality.
-However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to underline this. Note: to save space, here and in the rest of the paper we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
+However, our approach works in a pure OO setting without such a distinction. Hence we write all type names in \Q@BoldTitleCase@ to emphasise this. 
+To save space we omit the bodies of constructors that simply initialise fields with the values of the constructor's parameters, but we show their signature in order to show any annotations.
 
 First we consider
 \Q@Person@: it has a single immutable (and non final) field \Q@name@.
@@ -29,7 +30,7 @@ class Person { .. // Same as before
     if (!this.invariant()) { throw new Error(...); }}  }
 \end{lstlisting}
 %Programmers often manually check for invariants by placing assertions in the same places we did in this example. % ISAAC: Deleted because unnecesary, and makes the next sentence misunderstandable
-We now show how if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or SES, the above checks would not be sufficient to enforce our invariant protocol.
+We now show how if we were to relax (as in Rust), or even eliminate (as in Java), the support for OCs, RCs, or strong exception safety, the above checks would not be sufficient to enforce our invariant protocol.
 
 \subheading{Unrestricted Access to Capability Objects?} Allowing \Q@invariant()@ methods to (indirectly) perform non-deterministic operations by creating new capability objects or mutating existing ones would break our guarantee that (manually) calling \Q@invariant()@ always returns \Q!true!.
 Consider this use of person; where \Q@myPerson.invariant()@ may randomly return \Q!false!:
@@ -137,15 +138,15 @@ Since we represent invariant failures by throwing unchecked exceptions, programs
 % In addition, since unchecked exceptions are immutable, they can not contain a \Q@read@ reference to any object (such as the \Q@this@ reference seen by \Q@invariant()@ methods).
 %NOTE the text above was pointless since the invariant method can not see 'this' directly anywhay!
 % ISAAC: What two properties where you refering to?
- This property ensure that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
+ This property ensures that an object whose invariant fails will be unreachable after the invariant failure has been captured. %in a \Q@catch@.	
 %}{3}{\label{SES2} [see footnote \ref{SES1}]}.
 If instead we were to not enforce strong exception safety, an invalid object could be made reachable.
-The following code is ill-typed since we try to mutate \Q@bob@ in a try catch that capture all unchecked exceptions; thus also including invariant failures:
+The following code is ill-typed since we try to mutate \Q@bob@ in a \Q@try-catch@ block that captures all unchecked exceptions; thus also including invariant failures:
 %\saveSpace
 \begin{lstlisting}[morekeywords={assert}]
 mut Person bob = new Person("bob");//INVALID EXAMPLE
 // Catch and ignore invariant failure:
-try { bob.name(""); } catch (Error t) { }// violates SES
+try { bob.name(""); } catch (Error t) { }// bob mutated
 assert bob.invariant(); // fails!
 \end{lstlisting}
 The following variant is instead well typed, since \Q@bob@ is now declared inside of the \Q@try@, it is guaranteed to be garbage collectable after the \Q@try@ is completed.
@@ -197,10 +198,10 @@ catch (Error t) { }
 %\saveSpace
 %Exposing \Q@this@ during construction is a generally recognized problem~\cite{gil2009we}.
 %A simple solution is to require all constructors to 
-%simply take a parameter for each field and to just initialize the fields.
+%simply take a parameter for each field and to just initialise the fields.
 %An advantage of such approach is syntactic brevity: constructors are implicitly defined
 %by the set of fields and thus there is no need to define them manually.
-%\textbf{Expressive initialization operations can still be performed, by following the factory pattern.}
+%\textbf{Expressive initialisation operations can still be performed, by following the factory pattern.}
 %\saveSpace
 
 

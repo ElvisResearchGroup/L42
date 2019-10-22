@@ -10,12 +10,12 @@ All classes contain a \Q@read method Bool invariant() {..}@, if no \Q!invariant(
 Our invariant protocol guarantees that the whole ROG of any object involved in execution (formally, in a redex) is \emph{valid}: if you can call methods on an object, or otherwise use it, calling \Q@invariant()@ on it is guaranteed to return \Q@true@ in a finite number of steps.
 
 %Our protocol is designed only to verify invariants over immutable and encapsulated state.
-As the \Q!invariant()! is used to determine weather \Q!this! is broken, it may receive a broken \Q@this@; however this will only occur for calls to \Q!invariant()! inserted by our runtime semantics. User written calls to \Q!invariant()! are guaranteed to receive a valid \Q!this!.
+As the \Q!invariant()! is used to determine whether \Q!this! is broken, it may receive a broken \Q@this@; however this will only occur for calls to \Q!invariant()! inserted by our approach. User written calls to \Q!invariant()! are guaranteed to receive a valid \Q!this!.
 
-We restrict \Q@invariant()@ methods so that they represent a predicate over the receivers \Q!imm! and \Q!capsule! fields. To ensure that \Q!invariant()! methods do not expose a potentially broken \Q!this! to other objects, we require that all occurrences of \Q!this!\footnote{Some languages allows the \Q@this@ receiver to be implicit. For clarity in this work we require \Q@this@ to be always used explicit.} 
+We restrict \Q@invariant()@ methods so that they represent a predicate over the receivers \Q!imm! and \Q!capsule! fields. To ensure that \Q!invariant()! methods do not expose a potentially broken \Q!this! to the other objects, we require that all occurrences of \Q!this!\footnote{Some languages allows the \Q@this@ receiver to be implicit. For clarity in this work we require \Q@this@ to be always used explicit.} 
 %(as a sub-expression) 
-in the \Q!invariant()!'s body are the receiver of a field access (of form \Q!this.f!) of an \Q!imm!/\Q!capsule! field, or the receiver of a method call (of form \Q!this.m(..)!) of a final (non-virtual) method that in turn satisfies these restrictions. No other uses of \Q!this! is allowed, such as as the RHS of a variable declaration, or an argument to a method.
-An equivalent alternative design could instead relies on static \Q@invariant(..)@ methods taking each \Q!imm! and \Q!capsule! field as a parameter.
+in the \Q!invariant()!'s body are the receiver of a field access (\Q!this.f!) of an \Q!imm!/\Q!capsule! field, or the receiver of a method call (\Q!this.m(..)!) of a final (non-virtual) method that in turn satisfies these restrictions. No other uses of \Q!this! are allowed, such as as the right hand side of a variable declaration, or an argument to a method.
+An equivalent alternative design could instead rely on static \Q@invariant(..)@ methods taking each \Q!imm! and \Q!capsule! field as a parameter.
 
 Invariants can only refer to immutable and encapsulated state. Thus while we can easily verify that a doubly linked list of immutable elements
 is correctly linked up,
@@ -24,7 +24,7 @@ but the \Q@invariant()@ method is unable to access the list's nodes, since they 
 There is a line of work~\cite{DBLP:conf/mpc/BarnettN04} striving to allow invariants over other forms of state.
 %It would not be technically difficult to 
 %integrate the solutions of those works, but 
-We have not tried to integrate such solutions into our work as we believe it would make our system more complex and ad hoc, probably requiring numerous specialized kinds of RCs.
+We have not tried to integrate such solutions into our work as we believe it would make our system more complex and ad hoc, probably requiring numerous specialised kinds of RCs.
 Thus we have traded some expressive power in order to preserve safety and simplicity.
 
 \subheading{Purity}\label{s:purity}
@@ -136,7 +136,7 @@ an \Q!imm! if the receiver is \Q!imm!, a \Q!read! if the receiver is \Q!read!, o
 \end{itemize}
 \end{itemize}	
 	
-\noindent The above rules ensure or points (1), (2) and (3):
+\noindent The above rules ensure our points (1), (2), and (3):
 $o$ will not be in the ROG of $o.f$ and
 only a capsule mutator on $o$ can see $o.f$ as \Q!mut!; this means that the only way to mutate the ROG of $o.f$ is through such methods. When a capsule mutator is not executing, no object in the ROG of $o.f$ can be seen as \Q!mut! or \Q!capsule!. %(using any sequence of field accesses on a local variable).
 If execution is (indirectly) in a capsule mutator, then $o$ is only used as the receiver of the \Q!this.f! expression in the capsule mutator.
@@ -177,9 +177,9 @@ The language runtime will automatically perform calls to \Q!invariant()!, if suc
 \noindent In Section \ref{s:formalism}, we show that these checks, together with our aforementioned restrictions, are sufficient to ensure our guarantee that the invariants of all objects involved in execution hold. %(except the invariant of \Q!this! when used to access fields in a runtime-generated call to the \Q!invariant()! method itself).
 
 \subheading{Traditional Constructors and Subclassing}
-L42 constructors directly initialize all fields using the parameters, and L42 does not provide traditional subclassing.
+L42 constructors directly initialise all the fields using the parameters, and L42 does not provide traditional subclassing.
 This works naturally with our invariant protocol.
 We can support traditional constructors as in Pony and Gordon \etal's language, 
-by requiring that constructors only use \Q@this@ as the receiver of a field initialization.
+by requiring that constructors only use \Q@this@ as the receiver of a field initialisation.
 %L42 does not support user-written constructors but allows static factory methods with equivalent behaviour.
-Subclassing can be supported by forcing that a subclass invariant method implicitly starts with a check that \Q@super.invariant()@ returns \Q@true@. We would also perform invariant checks at end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}, and not at the end of \Q@super(..)@ constructor calls.
+Subclassing can be supported by forcing that a subclass invariant method implicitly starts with a check that \Q@super.invariant()@ returns \Q@true@. We would also perform invariant checks at the end of \Q@new@ expressions, as happens in~\cite{feldman2006jose}, and not at the end of \Q@super(..)@ constructor calls.

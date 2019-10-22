@@ -14,7 +14,7 @@ class ShippingList {
     this.items.add(item);
     if (!this.invariant()){throw Error(...);}}}//injected check
 \end{lstlisting}
-We injects calls to \Q@invariant()@ at the end of the constructor and the \Q@addItem(item)@ method.
+We inject calls to \Q@invariant()@ at the end of the constructor and the \Q@addItem(item)@ method.
 This is safe since the \Q@items@ field is declared \Q@capsule@.
 Relaxing our system to allow a \Q@mut@ RC for
 the \Q@items@ field and the corresponding constructor parameter would 
