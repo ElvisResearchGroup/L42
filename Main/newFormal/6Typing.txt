@@ -1,3 +1,27 @@
+Proposal:
+We could have 2 stages of type checking:
+first we check all the paths and all the subtyping,
+Then a second round to check just the modifiers.
+-if a block capture an error, then we know that certain xs will be hidden, thus if the ds uses them
+ we can give an understendable error.
+-a k of form catch return T x e:
+  if T is class P, with P!=Any, we can check if it has the class methods. 
+-a P<:class P
+  if P!=Any, we can check if it has the class methods.
+-------------------------------------------
+Just Paths Ts
+_______
+#define Q |-e: T<=T 
+
+
+-------------------------------------------
+Mdfs Ts
+
+_______
+#define Q |= e: T<=T 
+
+-------------------------------------------
+Old all in one TS
 _______
 #define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
 * flagTyped(p) = p.update( p(This0)[typable(p)=typed])
@@ -39,58 +63,47 @@ _______
 #define Q |-e: T<=T 
 * Q |- void : imm Void <= T //(void)
     Q.p|-imm Void <= T
-* Q |- P<:class P' : class P' <= T //(Path)
-    Q.p(P) and Q.p(P') of form CORE.L
+* Q |- P<:class P' : class P' <= T //(Path) //assert Q.p(P) and Q.p(P') of form CORE.L
     Q.p|-class P' <= T
-    P'=Any if Q.p(P).interface?=interface //TODO: is the interface that must have static methods or the proper class?
-    or class notin Q.p(P).mhs.mdfs and not Q.p(P).Info.havePrivateStaticMethods
+    P'=Any if Q.p(P).interface?=interface or not Q.p(P).Info.declaresClassMethods
 * Q |- L : imm Library <= T //(library propagation)
     Q.p |- imm Library <= T
     if Q.Flag==typed |- Q.p.push(L)
 * Q |-x : Q.G(x).T <= T  //(x)
     Q.p|- Q.G(x).T <= T
-* Q |- loop e ~> loop e' : imm Void <= T //(loop)
+* Q |- loop e : imm Void <= T //(loop)
     Q.p|-imm Void <= T
     Q|- e : _ <= imm Void
 * Q |- return e : T0 <= T0 //(throw-return)
-    Q|- e : T <=fwd T1
-    exists T' in Q.Ts such that Q.p |-T <= T'
-    if T=class P then Q|- P<:class P : class P
-      Q.p(P).interface?=empty
-      class in Q.p(P).mhs.mdfs
-  //this forbids return (x:class Any): class Any is forbidden in order to prevent casting it to "class Foo" even if Foo was still not coherent
-  //we also check that is a P that could be assigned to a class P, P!=Any 
+    Q|- e : _ <= fwd T
+    T in Q.Ts
 * Q |- throw e : T0 <= T0 //(throw)
-    Q|- e : imm P <=T2
+    Q|- e : _ <=imm P
     either throw=error
-    or exists P' in Q.Ps such that Q.p |-P <= P'
+    or P in Q.Ps
 * Q |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
     P0=guess(Q,e0)//simple since e0 of form xP
     T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
     Q.p |- T <= T'
-    forall i 0..n Q|- ei : T'i <= Ti //T'0 is correctly a free variable
+    Q|- e0 : _ <= T0 .. Q|- en : _ <= Tn
 * Q |- x:=e : imm Void <= T //(xUpdate)
     Q.G(x).var?=var
     Q.p|- imm Void <= T
     Q|- e : _ <= Q.G(x).T 
-    assert not fwd_or_fwd%_in(Q.G(x).T)
-* Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <=mdf P  //(capsule promotion)
+    not fwd_or_fwd%_in(Q.G(x).T)
+* Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <= mdf P  //(capsule promotion)
     Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
     mdf in {capsule, imm, fwdImm, fwd%Imm}
-    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <=mut P
+    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <= mut P
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
 //this is another point where a variable 'x' can become undefined thanks to toLent(G)
 
-* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)
+* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
     Flag; p; G; Ts; Ps |- Ks : Ts'' <= T' |Ts';Ps'
-    dom(G) disjoint dom(Ds)
     G'=toRead(G) if error in Ks.throws
     G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
     Flag; p; G'; Ts U Ts'; Ps U Ps' |- Ds | G0
-    //here we have the info to capture a failure about Ds and discover if
-    //extant name (fwd[%]* x) was hidden by error safety or  modifiable name (capsule/mut/lent x)
-    //was locked by error safety[cite the line number of the catch] 
     Flag; p; G,(G0\dom(G)); Ts; Ps |- e0 : T0 <=T'
     T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //error if set of Mdfs admits no single most general mdf
     // assert Q.p|-T <= T'
@@ -101,7 +114,7 @@ _______
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
     G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
-    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : T'i <= fwd% Ti
+    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : T'i <= fwd% Ti //if error x undefined, it must have been hidden by error safety
     if fwd_or_fwd%_in Ts
       then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
     if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded

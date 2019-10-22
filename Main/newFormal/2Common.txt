@@ -136,3 +136,9 @@ _______
 
 * capsuleToLent(capsule P) = lent P
 * capsuleToLent(mdf P) = mdf P, if mdf != capsule
+
+_______
+#define fwd T
+* fwd imm P = fwd fwd%imm P=fwdImm P
+* fwd mut P = fwd fwd%mut P=fwdMut P
+* fwd T = T otherwise
