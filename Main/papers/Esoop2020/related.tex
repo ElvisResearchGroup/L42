@@ -1,5 +1,7 @@
+\vspace{-1ex}
 \section[Related Work]{Related Work}
 \label{s:related}
+\vspace{-1ex}
 \subheading{Reference Capabilities}
 We rely on a combination of RCs supported by at least 3 languages/lines of research:
 L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16},
@@ -149,10 +151,9 @@ Spec\# aims to follow (b) but only considers non-determinism caused by memory mu
 %\end{lstlisting}
 And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails with an exception at runtime.
 As you can see, failing to handle non-determinism jeopardises reasoning.
-
 A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}. One advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
 
-Our approach also have connection with runtime verification. See Appendix \ref{s:runtime-verification} for related work on runtime verification.
+We explore our connections with runtime verification in Appendix \ref{s:runtime-verification}.
 
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 

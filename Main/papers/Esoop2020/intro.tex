@@ -68,8 +68,19 @@ While in very specific situations the overhead of creating such additional box o
 Also note that many VMs and compilers can optimize away wrapper objects in many circumstances.~\cite{Bolz:2011:ARP:1929501.1929508}}
 With appropriate type annotations, the code of \Q@Range@ and \Q@BoxRange@ is accepted as correct by our system: no matter how \Q@Range@ objects are used, a broken \Q@Range@ object will never be involved in execution.
 
-\subheading{Summary}
-In the remainder of this paper, we discuss how to combine runtime checks and Reference and Object Capabilities
+\subheading{Contributions}
+Invariant protocols allow for objects to make necessary changes that might make their invariant temporarily broken.
+In visible state semantics any object that has an active method call anywhere on the call stacks is potentially invalid; arguably not a very useful guarantee as observed by
+Gopinathan \etal's.~\cite{Gopinathan:2008:RMO:1483018.1483028}
+On the other hand, approaches such as \textit{pack/unpack}~\cite{DBLP:journals/jot/BarnettDFLS04} encumber the type system and the syntax with features whose only purpose is to distinguish objects with broken invariants, while (at least in the case of Spec\#) still not soundly supporting I/O and exceptions.
+The core insight behind our work is that we can design a general purpose language as presented in this paper that does not require any \emph{invariant-specific} language mechanisms but instead we show how a clever use of capabilities and small number of design patterns (Decorator-like \textit{Box} and \textit{Transformer}) is sufficient to capture invariant guarantees that are comparable to the state of the art object-oriented verification systems.
+
+%Reasoning about class invariants in object-oriented verification needs to allow for objects to make necessary changes that might make their invariant temporarily broken. 
+%The state of the art ranges from \textit{visible state semantics} that makes \textit{any} object that has an active method call anywhere on the call stacks potentially \textit{invalid} --- arguably not a very useful guarantee as observed by Gopinathan et al.~\cite{Gopinathan}.
+%On the other hand, approaches such as \textit{pack/unpack}~\cite{SpecSharp} modify the type system with features that serve no general purpose other than help expose the semantics behind broken object invariants.
+%The core insight behind our work is that we can design a general purpose language as presented in this paper that does not require any \emph{invariant-specific} language mechanisms but instead we show how a clever use of capabilities and small number of design patterns (Decorator-like \textit{Box} and \textit{Transformer}) is sufficient to capture invariant guarantees that are comparable to the state of the art object-oriented verification systems.
+
+In the remainder of this paper, we discuss how to combine runtime checks and capabilities
 to soundly enforce our strict invariant protocol.
 Our solution only requires 
 that all code is well-typed, and works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.

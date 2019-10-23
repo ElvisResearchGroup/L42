@@ -5,7 +5,7 @@ made particularly difficult by mutation, aliasing, dynamic dispatch, I/O, and ex
 instead of using automated theorem proving, 
 it is becoming more popular to verify aliasing and immutability properties using a type system.
 For example, three languages: L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and the language of Gordon \etal~\cite{GordonEtAl12} use RCs (Reference Capabilities)\footnote{RCs are called \emph{Type Modifiers} in former works on L42.} and OCs (Object Capabilities) to statically ensure  deterministic parallelism and the absence of dataraces.
-While studying those languages, we discovered an elegant way to enforce invariants: we use RCs and OCs to restrict how/when the result of invariant methods change; this is done by restricting I/O, and how mutation through aliases can affect the state seen by invariants.
+While studying those languages, we discovered an elegant way to enforce invariants: we use capabilities to restrict how/when the result of invariant methods changes; this is done by restricting I/O, and how mutation through aliases can affect the state seen by invariants.
 % We use these restrictions to reason as to when an object’s invariant could have been violated, and when such object can next be used, we then inject a runtime check between these two points. See Section \ref{s:protocol} for the exact details of our invariant protocol.
 %We aim to leverage these existing TM guarantees with minimal modification and additional concepts; in particular we do not want to add new syntax, 
 %when the same expressive power can be expressed using (verbose) programming patterns;
@@ -74,15 +74,13 @@ Like \Q!capsule! variables, how \Q!capsule! fields are handled differs widely in
 %In contrast \Q!capsule! field behave differently in Pony, where 
 %In contrast, \Q!capsule! fields in Pony need not be a unique reference to an object's ROG. In pon
 In contrast, 
-%Pony treats \Q!capsule! fields the same as \Q!capsule! variables: 
-Pony does not guarantee that they contain a \Q!capsule! reference, as Pony provides non-destructive reads.
-%Pony treats \Q!capsule! fields in the same way as it treats local variables: reading a \Q!capsule! field creates a %non-\Q!capsule! alias to it's value, 
-%do not return a \Q!capsule!, but destructive reads do.
-%rather it allows \Q!iso! fields which guarantee that no \emph{variable} or \emph{field value} outside the ROG of such a fields value, has read or write access to a non-immutable object reachable from the \Q!iso! field.
-Pony's \Q!capsule! fields are still useful for safe parallelism, as destructive reads of a \Q!capsule! field return a \Q!capsule! reference (which can then be sent to other actors), however the ROG of a \Q!capsule! field can be mutated by the same actor, even within methods of unrelated objects.
-L42 supports another variation of \Q!capsule! fields similar to Pony's, but does not support destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}.
-
-These forms of \Q!capsule! fields are useful for safe parallelism but not invariant checking: Pony and L42's pre-existing \Q!capsule! fields do not prevent representation exposure; while Gordon \etal's cannot be read non-destructively.
+Pony and L42 do not guarantee that \Q@capsule@ fields contain a \Q!capsule! reference, as they provides non-destructive reads~\cite{ServettoEtAl13a,GIANNINI2019145}.
+%Pony does not guarantee that \Q@capsule@ fields %contain a \Q!capsule! reference, as Pony provides non-%destructive reads.
+%Pony's \Q!capsule! fields are still useful for safe %parallelism, as destructive reads of a \Q!capsule! %field return a \Q!capsule! reference (which can then %be sent to other actors), however the ROG of a \Q!%capsule! field can be mutated by the same actor, even %within methods of unrelated objects.
+%L42 supports another variation of \Q!capsule! fields %similar to Pony's, but does not support destructive %reads~\cite{ServettoEtAl13a,GIANNINI2019145}.
+%These forms of \Q!capsule! fields are useful for safe parallelism but not invariant checking: 
+In particular, Pony and L42's pre-existing \Q!capsule! fields do not prevent representation exposure.
+%; while Gordon \etal's cannot be read non-destructively.
 In Section~\ref{s:protocol} we present a novel kind of \Q!capsule! field that does not have these problems; we added support for these fields to L42, and believe they could be easily added to Pony and Gordon \etal's language.
 %We repeat here for more clarity: 
 %a capsule field is not the same concept of a capsule reference. 
@@ -143,11 +141,14 @@ if a \Q@try@--\Q@catch@ block caught an exception, the state visible before exec
 % a general issue when reasoning about objects state after catching an exception.
 % while we need it to soundly capture invariant failures.
 L42 enforces strong exception safety for unchecked exceptions using RCs\footnote{%
-This is needed to support safe parallelism. Pony takes a more drastic approach and does not support exceptions in the first place. 
-We are not aware of how Gordon \etal handles exceptions, however in order for it to have sound unobservable parallelism it must have some restrictions.%
+This is needed to support safe parallelism. Pony takes a drastic approach and not support exceptions. 
+We are not aware of how Gordon \etal handles exceptions, however to have sound unobservable parallelism it must have some restrictions.%
 %We do not know how M\# conciliate deterministic parallelism and unchecked exceptions, we suspect some variation of SES must be in place.
 }
-in the following way:\footnote{A formal proof of why these restriction are sufficient is presented in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.}
+in the following way:\footnote{%
+Formal proof that these restriction are sufficient
+is in the work of Lagorio~\cite{JOT:issue_2011_01/article1}.
+}
 \begin{itemize}
 \item Code inside a \Q@try@ block that captures unchecked exceptions is typed as if all \Q@mut@ variables declared outside of the block are \Q@read@.
 \item Only \Q@imm@ objects may be thrown as unchecked exceptions.
@@ -155,7 +156,7 @@ in the following way:\footnote{A formal proof of why these restriction are suffi
 %Of course this has the effect that even if no-exception is thrown, no mutation could have occured, which is an even stronger property than SES, other work is more flexible~\cite{?}, at the cost of more complicated typing rules.
 %With SES we can soundly capture invariant-failures as an exception, since any mutation that caused the invariant failure cannot be observed. However, we also need to prevent a broke-object from being reachable from the exception object; since the only way a broken-object can be seen is within the \Q@read@ \Q@invariant()@  method, it follows that if the exception-object contains no \Q@read@ references in its ROG it cannot leak a broken object. Preventing this in the-typsystem is non-trivial, so instead we simply require that:
 This strategy does not restrict when exceptions can be \emph{thrown}, but only restricts when unchecked exceptions can be \emph{caught}.
-Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since SES guarantees that no object mutated within a try block is visible when it catches an unchecked exception.%
+Strong exception safety allows us to throw invariant failures as unchecked exceptions: if an object's ROG was mutated into a broken state within a try block, when the invariant failure is caught, the mutated object will be unreachable/garbage-collectable. This works since strong exception safety guarantees that no object mutated within a try block is visible when it catches an unchecked exception.%
 \footnote{Transactions are another way of enforcing strong exception safety, but they require specialised and costly run time support.}
 %For the purposes of soundly catching invariant failures, it would be sufficient to enforce SES only when capturing exceptions caused by such failures.
 
