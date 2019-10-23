@@ -1,15 +1,41 @@
-Proposal:
-We could have 2 stages of type checking:
-first we check all the paths and all the subtyping,
-Then a second round to check just the modifiers.
--if a block capture an error, then we know that certain xs will be hidden, thus if the ds uses them
- we can give an understendable error.
--a k of form catch return T x e:
-  if T is class P, with P!=Any, we can check if it has the class methods. 
--a P<:class P
-  if P!=Any, we can check if it has the class methods.
--------------------------------------------
-Just Paths Ts
+_______
+#define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
+* flagTyped(p) = p.update( p(This0)[typable(p)=typed])
+    forall Cs in typable(p):  |-p.navigate(This0.Cs)
+
+* LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
+* LL[empty=Flag]=LL
+
+* {H MWTs NC1..NCn Info}[InfoFlag=Flag]={H MWTs' NCs' Info[Flag=Flag]}
+    MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
+    NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
+_______
+#define typable(p)=Csz    untypable(p)=CTz
+* typable(p) = Cs1..Csn // asserts p(This0) is CORE.L
+    dom(p(This0))/untypable(p)
+    
+* empty in untypable(p) if p(This0).interface=empty
+* Cs in untypable(p) if p(This0.Cs).Info.Flag=typed
+* Cs in untypable(p) if 
+    P in p(This0.Cs).Info.depTyped[from This0.Cs;p]
+    P notin dom(p)
+* Cs in untypable(p) if 
+    Thisn.C1..Ck in p(This0.Cs).Info.depTyped[from This0.Cs;p]
+    p(Thisn.C1..Ck).Info.Flag!=typed
+    n>=k
+* Cs in untypable(p) if 
+    Cs' in untypable(p)
+    not p(Cs').Info.Flag=typed //could be norm but also p(Cs') undefined
+    This0.Cs' in p(This0.Csi).Info.depTyped[from This0.Cs;p]    
+_______
+#define wellTyped(p, CORE.e)=CORE.T
+* wellTyped(p,e)=T
+    Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
+    FV(e)=empty//TODO:move out to top? where we do the rest of well formedness?
+    Q|= CORE.e : _ <= imm
+    either Q|- CORE.e : Library
+    or Q|- CORE.e : imm Void
+    or Q|- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
 _______
 #define Q |-e: P 
 * Q |- void : P //(void)
@@ -44,32 +70,25 @@ _______
     Q|- e : Q.G(x).T.P 
     not fwd_or_fwd%_in(Q.G(x).T)//TODO: should this be well formedness?
 * Flag; p; G; Ts; Ps |- (T1 x1=e1..Tn xn=en  Ks  e0) :  P //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
-    Flag; p; G; Ts; Ps |- Ks : P |Ts';Ps'    
-    Flag; p; G,x1:T1..xi:Ti; Ts U Ts'; Ps U Ps' |- ei:Ti.P  for i in 1..n 
-    Flag; p; G,x1:T1..xn:Tn; Ts; Ps |- e0 : P
+    Flag; p; G; Ts; Ps |- Ks : P |Ts';Ps'
+    G'=G,x1:T1..xn:Tn   
+    Flag; p; G' Ts U Ts'; Ps U Ps' |- ei:Ti.P  for i in 1..n 
+    Flag; p; G' Ts; Ps |- e0 : P
 TODO: I'm assuming that there was no need to remove the fwdMut!
     G'=toRead(G) if error in Ks.throws
     G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound? //if fwdMut still removed, check for error if FV(Ds) uses them
 _______
-#define Q |-k1..kn : P | Ts;Ps   Q |-k : P |Ts;Ps
-* Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
+#define Q |-ks : P | Ts;Ps    Q |-k : P |Ts;Ps
+* Q |-k1..kn : P | Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
     forall i in 1..n Q |-ki : P |Tsi;Psi
 * Q |- catch return T0 x e : P |T0;empty //(catch)
     Q[G=Q.G,x:T0] |- e : P
     if T0.mdf=class then Q|- P <: T0 : P
-* Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
+* Q |- catch throw imm P0 x e : P |empty;P0 //(catch)
     throw !=return
-    Q[G=Q.G,x:T0] |- e : P
-
-
--------------------------------------------
--------------------------------------------
--------------------------------------------
-Mdfs Ts
-
+    Q[G=Q.G,x:imm P0] |- e : P
 _______
 #define Q |= e: mdf<=mdf' 
-
 * Q |= void : imm <= mdf //(void)
     mdf in {imm,read,fwd imm}
 * Q |= P<:class P' : class <= class //(Path)
@@ -93,207 +112,73 @@ _______
     mdf in {imm,read,fwd imm}
     Q.G(x).var?=var //promotions may remove some vars? or the promotion is just not attempted if the var is needed?
     Q|= e : _ <= Q.G(x).T.mdf 
-* Flag;p;G;Ts;Ps |= (Ds Ks e):capsule <= mdf  //(capsule promotion)
+* Q |= (Ds Ks e):capsule <= mdf  //(capsule promotion)
     mdf in {capsule, imm, fwdImm, fwd%Imm}//TODO: do we still need the %s?
     Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
-    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <= mut P
-    forall x=_ inside Ds.es, toLent(G)(x).isVar 
+    Q[G=toLent(Q.G)] |-(Ds Ks e) : mut <= mut
+    forall x=_ inside (Ds Ks e), toLent(Q.G)(x).isVar
+    if x inside (Ds Ks e) then x in dom(toLent(Q.G)) //some may be removed by toLent
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
 //this is another point where a variable 'x' can become undefined thanks to toLent(G)
 
-* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
-    Flag; p; G; Ts; Ps |- Ks : Ts'' <= T' |Ts';Ps'
+* Flag; p; G; Ts; Ps |= (Ds  Ks  e0) : mostGeneralMdf(mdf,mdfs) <= mdf' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
+    Flag; p; G; Ts; Ps |= Ks : mdfs <= mdf' |Ts
     G'=toRead(G) if error in Ks.throws
-    G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
-    Flag; p; G'; Ts U Ts'; Ps U Ps' |- Ds | G0
-    Flag; p; G,(G0\dom(G)); Ts; Ps |- e0 : T0 <=T'
-    T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //error if set of Mdfs admits no single most general mdf
-    // assert Q.p|-T <= T'
+    G'=G otherwise  //TODO: toRead does not removes fwdMut any more
+    Flag; p; G'; Ts U Ts'; Ps U Ps' |= Ds | G0
+    Flag; p; G,(G0\dom(G)); Ts; Ps |= e0 : mdf <=mdf'
 _______
-#define Q |- Ds | G // The resulting G is the enriched G containing info about Ds too.
-* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
+#define Q |= Ds | G // The resulting G is the enriched G containing info about Ds too.
+* Flag; p; G0; Ts; Ps |= var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
     dom(Ds) disjoint FV(e0..en)
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
     G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
-    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : T'i <= fwd% Ti //if error x undefined, it must have been hidden by error safety
+    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : mdfi <= fwd% Ti.mdf
     if fwd_or_fwd%_in Ts
       then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
     if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
       then G2=G0[fwd%(x0:T0..xn:Tn)]
       otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
     Flag; p; G2; Ts; Ps|- Ds | G3
-* Q |- empty | Q.G //(DsEmpty)
+* Q |= empty | Q.G //(DsEmpty)
 _______
-#define Q |-k1..kn : T1..Tn <= T | Ts;Ps   Q |-k : T' <= T |Ts;Ps
-* Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
-    forall i in 1..n Q |-ki : Ti <= T |Tsi;Psi
-* Q |- catch return T0 x e : T <= T' |T0;empty //(catch)
-    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
-    if T0.mdf=class then Q|- T0.P <: T0 : T0
-* Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
-    throw !=return
-    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
-
--------------------------------------------
-Old all in one TS
-_______
-#define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
-* flagTyped(p) = p.update( p(This0)[typable(p)=typed])
-    forall Cs in typable(p):  |-p.navigate(This0.Cs)
-
-* LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
-* LL[empty=Flag]=LL
-
-* {H MWTs NC1..NCn Info}[InfoFlag=Flag]={H MWTs' NCs' Info[Flag=Flag]}
-    MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
-    NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
-_______
-#define typable(p)=Csz untypable(p)=CTz
-* typable(p) = Cs1..Csn // asserts p(This0) is CORE.L
-    dom(p(This0))/untypable(p)
-    
-* empty in untypable(p) if p(This0).interface=empty
-* Cs in untypable(p) if p(This0.Cs).Info.Flag=typed
-* Cs in untypable(p) if 
-    P in p(This0.Cs).Info.depTyped[from This0.Cs;p]
-    P notin dom(p)
-* Cs in untypable(p) if 
-    Thisn.C1..Ck in p(This0.Cs).Info.depTyped[from This0.Cs;p]
-    p(Thisn.C1..Ck).Info.Flag!=typed
-    n>=k
-* Cs in untypable(p) if 
-    Cs' in untypable(p)
-    not p(Cs').Info.Flag=typed //could be norm but also p(Cs') undefined
-    This0.Cs' in p(This0.Csi).Info.depTyped[from This0.Cs;p]    
-_______
-#define wellTyped(p, CORE.e)=CORE.T
-* wellTyped(p,e)=T
-    Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
-    FV(e)=empty 
-    either Q|- CORE.e : _ <= imm Library
-    or Q|- CORE.e : _ <= imm Void
-    or Q|- CORE.e.#toLibrary() : _ <= imm Library
-_______
-#define Q |-e: T<=T 
-* Q |- void : imm Void <= T //(void)
-    Q.p|-imm Void <= T
-* Q |- P<:class P' : class P' <= T //(Path) //assert Q.p(P) and Q.p(P') of form CORE.L
-    Q.p|-class P' <= T
-    P'=Any if Q.p(P).interface?=interface or not Q.p(P).Info.declaresClassMethods
-* Q |- L : imm Library <= T //(library propagation)
-    Q.p |- imm Library <= T
-    if Q.Flag==typed |- Q.p.push(L)
-* Q |-x : Q.G(x).T <= T  //(x)
-    Q.p|- Q.G(x).T <= T
-* Q |- loop e : imm Void <= T //(loop)
-    Q.p|-imm Void <= T
-    Q|- e : _ <= imm Void
-* Q |- return e : T0 <= T0 //(throw-return)
-    Q|- e : _ <= fwd T
-    T in Q.Ts
-* Q |- throw e : T0 <= T0 //(throw)
-    Q|- e : _ <=imm P
-    either throw=error
-    or P in Q.Ps
-* Q |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
-    P0=guess(Q,e0)//simple since e0 of form xP
-    T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
-    Q.p |- T <= T'
-    Q|- e0 : _ <= T0 .. Q|- en : _ <= Tn
-* Q |- x:=e : imm Void <= T //(xUpdate)
-    Q.G(x).var?=var
-    Q.p|- imm Void <= T
-    Q|- e : _ <= Q.G(x).T 
-    not fwd_or_fwd%_in(Q.G(x).T)
-* Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <= mdf P  //(capsule promotion)
-    Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
-    mdf in {capsule, imm, fwdImm, fwd%Imm}
-    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <= mut P
-//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
-//this rule can not be applied, since we require mut P <=mut P in the premise.
-//this is another point where a variable 'x' can become undefined thanks to toLent(G)
-
-* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
-    Flag; p; G; Ts; Ps |- Ks : Ts'' <= T' |Ts';Ps'
-    G'=toRead(G) if error in Ks.throws
-    G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
-    Flag; p; G'; Ts U Ts'; Ps U Ps' |- Ds | G0
-    Flag; p; G,(G0\dom(G)); Ts; Ps |- e0 : T0 <=T'
-    T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //error if set of Mdfs admits no single most general mdf
-    // assert Q.p|-T <= T'
-_______
-#define Q |- Ds | G // The resulting G is the enriched G containing info about Ds too.
-* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
-    dom(Ds) disjoint FV(e0..en)
-    //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
-    //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
-    G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
-    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : T'i <= fwd% Ti //if error x undefined, it must have been hidden by error safety
-    if fwd_or_fwd%_in Ts
-      then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
-    if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
-      then G2=G0[fwd%(x0:T0..xn:Tn)]
-      otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
-    Flag; p; G2; Ts; Ps|- Ds | G3
-* Q |- empty | Q.G //(DsEmpty)
-_______
-#define Q |-k1..kn : T1..Tn <= T | Ts;Ps   Q |-k : T' <= T |Ts;Ps
-* Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
-    forall i in 1..n Q |-ki : Ti <= T |Tsi;Psi
-* Q |- catch return T0 x e : T <= T' |T0;empty //(catch)
-    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
-    if T0.mdf=class then Q|- T0.P <: T0 : T0
-* Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
-    throw !=return
-    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
-
-* |- p      //(library well typed)
-   assert L.Info.Flag=norm // does it holds? 
-   //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface 
-   forall M in p(This0).Ms:  p |- M
-* p |- C=L  //(member nested)
-   |-p.push(C,L)
-   if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
-* p|-MWT //(member method)
-    Q = Q[typed; p; MWT.G; empty; MWT.exceptions.Ps]
-    if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
-    MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
-    forall MH in MHs:
-      p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
-      MWT.G=MH.G //invalid type w.r.t. implemented paramerer xi
-      forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
-      //or error: leaked exception P is not the subtype of a declared exception
-      //or  method declares an exception (P) which is not a subtype of implemented exceptions
+#define Q |=ks : mdfs <= mdf | Ts    Q |=k : mdf <= mdf' |Ts
+* Q |-k1..kn : mdf1..mdfn <= mdf |Ts1 U..U Tsn//(catchMany)
+    forall i in 1..n Q |=ki : mdfi <= mdf |Tsi
+* Q |= catch throw T0 x e : mdf <= mdf' |T0? //(catch)
+    T0?=T0 if throw=return
+    T0?=empty otherwise
+    Q[G=Q.G,x:T0] |= e : mdf <= mdf'
 _______
 #define guess(Q,xP) = P
 * guess(Q,x)=Q.G(x)
 * guess(Q,P<:T)=T
 _______
 #define methTypes(p,P,s) = MethTs
-* mdf0 P T1..Tn-> T';Ts.Ps in methTypes(p,P,s)  //(mBase)
-    (p(P)(s).MH)[from P;p]=mdf0 method T m(T1 x1,..Tn xn) Ts
-    T'=fwd% T if fwd_or_fwd%_in(Ts)
-    otherwise T'=T
-* noFwd Ts-> noFwd T;Ps in methTypes(p,P,s)  //(mNoFwd)
-    Ts->T;Ps in methTypes(p,P,s)
-* mutToCapsule(Ts)->capsule P0;Ps in methTypes(p,P,s)  //(mC)
-    Ts->mut P0;Ps in methTypes(p,P,s)
-* toImmOrCapsule(Ts)->imm P0;Ps in methTypes(p,P,s)  //(mI)
-    Ts->mdf P0;Ps in methTypes(p,P,s), mdf in {read,lent}
+* mdf0..mdfn-> mdf';Ts.Ps in methTypes(p,P,s)  //(mBase)
+    (p(P)(s).MH)[from P;p]=mdf0 method mdf P m(mdf1 P1 x1,..mdfn Pn xn)[Ts]
+    mdf'=fwd% mdf if fwd_or_fwd%_in(mdf1..mdfn)
+    otherwise mdf'=mdf
+* noFwd mdfs-> noFwd mdf in methTypes(p,P,s)  //(mNoFwd)
+    mdfs->mdf in methTypes(p,P,s)
+* mutToCapsule(mwts)->capsule in methTypes(p,P,s)  //(mC)
+    mwts->mut in methTypes(p,P,s)
+* toImmOrCapsule(mwts)->imm in methTypes(p,P,s)  //(mI)
+    mwts->mdf in methTypes(p,P,s), mdf in {read,lent}
 //the behaviour of toImmOrCapsule on fwd is not relevant since the method
 // returns a read and will be not well formed if it had fwd parameters
 //by well formedness if return type is read, not fwd_or_fwd%_in Ts
-* Ts'->toLent(T);Ps in methTypes(p,P,s) //(mVp)
-    Ts0 mut P Ts2->T;Ps in methTypes(p,P,s)
-    Ts'=mutToCapsule(Ts0) lent P mutToCapsule(Ts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
-* mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd%Imm P0;Ps in methTypes(p,P,s)  //(mImmFwd)
-    Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in fwdImm
-    fwd_or_fwd%_in(Ts)
-* mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s) //(mRead)
-    Ts->fwd%Mut P0;Ps in methTypes(p,P,s)//could be generalized to make fwdMut in read
-    fwd_or_fwd%_in(Ts)
+* mwts'->toLent(mwt);Ps in methTypes(p,P,s) //(mVp)
+    mwts0 mut mwts2->mwt in methTypes(p,P,s)
+    mwts'=mutToCapsule(wmts0) lent mutToCapsule(mwts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
+* mutToCapsuleAndFwdMutToFwdImm(mwts)->fwd%Imm in methTypes(p,P,s)  //(mImmFwd)
+    mwts->fwd%Mut in methTypes(p,P,s)//could be generalized to make fwdMut in fwdImm
+    fwd_or_fwd%_in(mwts)
+* mutToCapsuleAndFwdRead(mwts)->read in methTypes(p,P,s) //(mRead)
+    mwts->fwd%Mut in methTypes(p,P,s)//could be generalized to make fwdMut in read
+    fwd_or_fwd%_in(mwts)
 //generalization as in the comments before would be:
 //* mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd imm P0;Ps in methTypes(p,P,s)  //(mImmFwdExtended)
 //    Ts->fwd mut P0;Ps in methTypes(p,P,s)
@@ -448,3 +333,96 @@ or anyway update a read field, we have -capsule visible as read
   //mut method x(N that) //enabling this method makes #x not valid for coherence
   }
 
+-------------------------------------------
+Old all in one TS
+_______
+#define Q |-e: T<=T 
+* Q |- void : imm Void <= T //(void)
+    Q.p|-imm Void <= T
+* Q |- P<:class P' : class P' <= T //(Path) //assert Q.p(P) and Q.p(P') of form CORE.L
+    Q.p|-class P' <= T
+    P'=Any if Q.p(P).interface?=interface or not Q.p(P).Info.declaresClassMethods
+* Q |- L : imm Library <= T //(library propagation)
+    Q.p |- imm Library <= T
+    if Q.Flag==typed |- Q.p.push(L)
+* Q |-x : Q.G(x).T <= T  //(x)
+    Q.p|- Q.G(x).T <= T
+* Q |- loop e : imm Void <= T //(loop)
+    Q.p|-imm Void <= T
+    Q|- e : _ <= imm Void
+* Q |- return e : T0 <= T0 //(throw-return)
+    Q|- e : _ <= fwd T
+    T in Q.Ts
+* Q |- throw e : T0 <= T0 //(throw)
+    Q|- e : _ <=imm P
+    either throw=error
+    or P in Q.Ps
+* Q |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
+    P0=guess(Q,e0)//simple since e0 of form xP
+    T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
+    Q.p |- T <= T'
+    Q|- e0 : _ <= T0 .. Q|- en : _ <= Tn
+* Q |- x:=e : imm Void <= T //(xUpdate)
+    Q.G(x).var?=var
+    Q.p|- imm Void <= T
+    Q|- e : _ <= Q.G(x).T 
+    not fwd_or_fwd%_in(Q.G(x).T)
+* Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <= mdf P  //(capsule promotion)
+    Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
+    mdf in {capsule, imm, fwdImm, fwd%Imm}
+    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <= mut P
+//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
+//this rule can not be applied, since we require mut P <=mut P in the premise.
+//this is another point where a variable 'x' can become undefined thanks to toLent(G)
+
+* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
+    Flag; p; G; Ts; Ps |- Ks : Ts'' <= T' |Ts';Ps'
+    G'=toRead(G) if error in Ks.throws
+    G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
+    Flag; p; G'; Ts U Ts'; Ps U Ps' |- Ds | G0
+    Flag; p; G,(G0\dom(G)); Ts; Ps |- e0 : T0 <=T'
+    T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //error if set of Mdfs admits no single most general mdf
+    // assert Q.p|-T <= T'
+_______
+#define Q |- Ds | G // The resulting G is the enriched G containing info about Ds too.
+* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
+    dom(Ds) disjoint FV(e0..en)
+    //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
+    //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
+    G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
+    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : T'i <= fwd% Ti //if error x undefined, it must have been hidden by error safety
+    if fwd_or_fwd%_in Ts
+      then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
+    if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
+      then G2=G0[fwd%(x0:T0..xn:Tn)]
+      otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
+    Flag; p; G2; Ts; Ps|- Ds | G3
+* Q |- empty | Q.G //(DsEmpty)
+_______
+#define Q |-k1..kn : T1..Tn <= T | Ts;Ps   Q |-k : T' <= T |Ts;Ps
+* Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
+    forall i in 1..n Q |-ki : Ti <= T |Tsi;Psi
+* Q |- catch return T0 x e : T <= T' |T0;empty //(catch)
+    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
+    if T0.mdf=class then Q|- T0.P <: T0 : T0
+* Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
+    throw !=return
+    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
+
+* |- p      //(library well typed)
+   assert L.Info.Flag=norm // does it holds? 
+   //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface 
+   forall M in p(This0).Ms:  p |- M
+* p |- C=L  //(member nested)
+   |-p.push(C,L)
+   if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
+* p|-MWT //(member method)
+    Q = Q[typed; p; MWT.G; empty; MWT.exceptions.Ps]
+    if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
+    MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
+    forall MH in MHs:
+      p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
+      MWT.G=MH.G //invalid type w.r.t. implemented paramerer xi
+      forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
+      //or error: leaked exception P is not the subtype of a declared exception
+      //or  method declares an exception (P) which is not a subtype of implemented exceptions
