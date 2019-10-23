@@ -80,7 +80,7 @@ _______
   Obj ::= P(xvs) empty;empty| P() as1;as2 // memory objects
   A ::= empty | imm? a->Obj, A | imm? x->v, A  //order is irrelevant
   Q ::= Q[Flag;p;G;Ts;Ps]//Ts is returns, Ps is exceptions //typing environment
-  MethT ::= CORE.Ts->CORE.T;Ps  
+  MethT ::= mdfs->mdf  
   CORE.ctxV ::= xP.m(xvs x=ctxV xes) | loop ctxV | throw ctxV  | x := ctxV //blocks manually handled in reduction
   CORE.ctx ::= [] | throw ctx | loop ctx | x := ctx | xP.m(xes x=ctx xes')
     | ( Ds Ks ctx ) | (Ds T x=ctx Ds' Ks e) | (Ds Ks catch throw T x ctx Ks' e)

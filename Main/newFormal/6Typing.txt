@@ -37,6 +37,27 @@ _______
     or Q|- CORE.e : imm Void
     or Q|- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
 _______
+#define |- p    p|-C=CORE.L    p|-CORE.MWT
+* |- p      //(library well typed)
+   //assert L.Info.Flag=norm // does it holds? 
+   //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface should be from wf 
+   forall M in p(This0).Ms:  p |- M
+* p |- C=L  //(member nested)
+   |-p.push(C,L)
+   if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
+* p|-MWT //(member method)
+    Q = Q[typed; p; MWT.G; empty; MWT.exceptions.Ps]
+    if MWT.e?=e then 
+      Q |- e : MWT.T.P
+      Q |= e :_ <=fwd% MWT.T.mdf
+    MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
+    forall MH in MHs:
+      p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
+      MWT.G=MH.G //invalid type w.r.t. implemented paramerer xi
+      forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
+      //or error: leaked exception P is not the subtype of a declared exception
+      //or  method declares an exception (P) which is not a subtype of implemented exceptions
+_______
 #define Q |-e: P 
 * Q |- void : P //(void)
     P in {Void,Any}
@@ -158,7 +179,7 @@ _______
 _______
 #define methTypes(p,P,s) = MethTs
 * mdf0..mdfn-> mdf';Ts.Ps in methTypes(p,P,s)  //(mBase)
-    (p(P)(s).MH)[from P;p]=mdf0 method mdf P m(mdf1 P1 x1,..mdfn Pn xn)[Ts]
+    mdf0 method mdf P m(mdf1 P1 x1,..mdfn Pn xn)_ in p(P).MWTs
     mdf'=fwd% mdf if fwd_or_fwd%_in(mdf1..mdfn)
     otherwise mdf'=mdf
 * noFwd mdfs-> noFwd mdf in methTypes(p,P,s)  //(mNoFwd)
@@ -180,12 +201,12 @@ _______
     mwts->fwd%Mut in methTypes(p,P,s)//could be generalized to make fwdMut in read
     fwd_or_fwd%_in(mwts)
 //generalization as in the comments before would be:
-//* mutToCapsuleAndFwdMutToFwdImm(Ts)->fwd imm P0;Ps in methTypes(p,P,s)  //(mImmFwdExtended)
-//    Ts->fwd mut P0;Ps in methTypes(p,P,s)
-//    fwd_or_fwd%_in(Ts)
-//* mutToCapsuleAndFwdRead(Ts)->read P0;Ps in methTypes(p,P,s) //(mReadExtended)
-//    Ts->fwd mut P0;Ps in methTypes(p,P,s)
-//    fwd_or_fwd%_in(Ts)
+* mutToCapsuleAndFwdMutToFwdImm(mwts)->fwd imm in methTypes(p,P,s)  //(mImmFwdExtended)
+    mwts->fwd mut in methTypes(p,P,s)
+    fwd_or_fwd%_in(mwts)
+* mutToCapsuleAndFwdRead(mwts)->read in methTypes(p,P,s) //(mReadExtended)
+    mwts->fwd mut in methTypes(p,P,s)
+    fwd_or_fwd%_in(mwts)
 //TODO:  Are those two generalization sound? are they useful in any way?
 _______
 #define toLent(G)=G'    toLent(T)=T'
@@ -408,21 +429,3 @@ _______
 * Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
     throw !=return
     Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
-
-* |- p      //(library well typed)
-   assert L.Info.Flag=norm // does it holds? 
-   //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface 
-   forall M in p(This0).Ms:  p |- M
-* p |- C=L  //(member nested)
-   |-p.push(C,L)
-   if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
-* p|-MWT //(member method)
-    Q = Q[typed; p; MWT.G; empty; MWT.exceptions.Ps]
-    if MWT.e?=e then Q |- e :_ <=fwd% MWT.T
-    MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
-    forall MH in MHs:
-      p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
-      MWT.G=MH.G //invalid type w.r.t. implemented paramerer xi
-      forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
-      //or error: leaked exception P is not the subtype of a declared exception
-      //or  method declares an exception (P) which is not a subtype of implemented exceptions

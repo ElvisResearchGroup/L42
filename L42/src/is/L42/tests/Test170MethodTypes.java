@@ -22,6 +22,7 @@ import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.common.TypeManipulation;
 import is.L42.generated.Mdf;
+import static is.L42.generated.Mdf.*;
 import is.L42.generated.MethT;
 import is.L42.generated.P;
 import is.L42.generated.S;
@@ -31,22 +32,21 @@ import static is.L42.typeSystem.AlternativeMethodTypes.*;
 import static is.L42.tools.General.L;
 import static org.junit.Assert.*;
 
-public class Test212_or_170_MethodTypes {
+public class Test170MethodTypes {
  //WellFormednessCore.methodType, is ok to have a fwd res with no fwd pars?
 public static List<MethT> dataSet=new ArrayList<>();
   static{
-    T _t=P.coreAny.withMdf(Mdf.Class);
-    MethT proto=new MethT(L(),P.coreAny,L());
+    MethT proto=new MethT(L(),Immutable);
     for(Mdf p1:Mdf.values()){
-      if(p1.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
+      if(p1.isIn(ImmutablePFwd,MutablePFwd)){continue;}
       for(Mdf p2:Mdf.values()){
-        if(p2.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
+        if(p2.isIn(ImmutablePFwd,MutablePFwd)){continue;}
         for(Mdf r:Mdf.values()){
-          if(r.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
-          List<T> tsi=List.of(_t,_t.withMdf(p1),_t.withMdf(p2));
-          List<T> tsiSwap=List.of(_t,_t.withMdf(p2),_t.withMdf(p1));
-          MethT add1 = proto.withTs(tsi).withT(_t.withMdf(r));
-          MethT add2 = proto.withTs(tsiSwap).withT(_t.withMdf(r));
+          if(r.isIn(ImmutablePFwd,MutablePFwd)){continue;}
+          List<Mdf> tsi=List.of(Class,p1,p2);
+          List<Mdf> tsiSwap=List.of(Class,p2,p1);
+          MethT add1 = proto.withMdfs(tsi).withMdf(r);
+          MethT add2 = proto.withMdfs(tsiSwap).withMdf(r);
           if(!add1.wf()){continue;}
           assert add2.wf();
           if(dataSet.contains(add2)){continue;}
@@ -59,22 +59,18 @@ public static List<MethT> dataSet=new ArrayList<>();
 
   @Test
   public void test0(){
-    System.out.println(dataSet.size());
-    assert dataSet.size()==170;
-    for(var e:dataSet){
-      System.out.println(mtToS(e));
-      }
+    for(var e:dataSet){System.out.println(mtToS(e));}
+    assertEquals(170,dataSet.size());
     }
 
   @Test
   public void test1(){
     //Lent,ImmutableFwd->ImmutablePFwd
-    T t0=P.coreAny.withMdf(Mdf.Class);
-    T t=P.coreAny;
-    var ts=List.of(t0,t.withMdf(Mdf.Mutable),t.withMdf(Mdf.ImmutableFwd));
-    MethT proto=new MethT(ts,t.withMdf(Mdf.ImmutablePFwd),L());
+    var ts=List.of(Class,Mutable,ImmutableFwd);
+    MethT proto=new MethT(ts,ImmutablePFwd);
     proto=_mVp(proto,1);
-    System.out.println(mtToS(proto));
+    assertNotNull(proto);
+    //System.out.println(mtToS(proto));
     }
 
   @Test
@@ -133,6 +129,8 @@ public static List<MethT> dataSet=new ArrayList<>();
     if(tryOk(_mVp(mt,2),"mVp1",past,map)){return true;}
     if(tryOk(_mImmFwd(mt),"mImmFwd",past,map)){return true;}
     if(tryOk(_mRead(mt),"mRead",past,map)){return true;}
+    if(tryOk(_mImmFwdExtended(mt),"mImmFwdExtended",past,map)){return true;}
+    if(tryOk(_mReadExtended(mt),"mReadExtended",past,map)){return true;}
     return false;
     }
   Map<MethT,String> fixMap(MethT mt__){
@@ -192,8 +190,8 @@ public static List<MethT> dataSet=new ArrayList<>();
   }
   String mtToS(MethT mt){
     assert mt!=null;
-    assert mt.ts().get(0).mdf()==Mdf.Class;
-    return mt.ts().get(1).mdf()+","+mt.ts().get(2).mdf()+"->"+mt.t().mdf();
+    assert mt.mdfs().get(0)==Class;
+    return mt.mdfs().get(1)+","+mt.mdfs().get(2)+"->"+mt.mdf();
     }
   @Test
   public void couldSum(){
@@ -242,11 +240,11 @@ public static List<MethT> dataSet=new ArrayList<>();
     return -1;
     }
   MethT recLeft(MethT mt){
-    assert mt.ts().size()==3;
-    List<T>newTs=List.of(mt.ts().get(1),mt.ts().get(0),mt.ts().get(2));
-    Mdf mdf=newTs.get(0).mdf();
+    assert mt.mdfs().size()==3;
+    List<Mdf>newTs=List.of(mt.mdfs().get(1),mt.mdfs().get(0),mt.mdfs().get(2));
+    Mdf mdf=newTs.get(0);
     if(TypeManipulation.fwd_or_fwdP_in(mdf)){return null;}
-    return mt.withTs(newTs);
+    return mt.withMdfs(newTs);
     }
   @Test
   public void testReciverWorksAsParameter(){
@@ -293,9 +291,9 @@ public void testListGenerateInGoodOrder(){
   for(MethT mt:dataSet){
     List<MethT> list = types(mt);
     for(int i=0;i<list.size();i++){
-      Mdf ri=list.get(i).t().mdf();
+      Mdf ri=list.get(i).mdf();
       for(int j=i;j<list.size();j++){
-        Mdf rj=list.get(j).t().mdf();
+        Mdf rj=list.get(j).mdf();
         if(ri==rj){continue;}
         if(ri==Mdf.Mutable && rj==Mdf.Readable){
         //if(Functions.isSubtype(ri, rj)){
@@ -317,8 +315,6 @@ public void testListGenerateInGoodOrder(){
       for(MethT mt1:dataSet){
         if(mt0==mt1){continue;}
         if(!methMdfTSubtype(mt0,mt1)){continue;}
-        assert methTSubtype(p, mt0,mt1):
-          mtToS(mt0)+"\n"+mtToS(mt1);
         checkOne(mt0,mt1);
         }
       }

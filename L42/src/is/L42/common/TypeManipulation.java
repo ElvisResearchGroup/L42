@@ -11,39 +11,29 @@ import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
+import static is.L42.generated.Mdf.*;
 import is.L42.generated.P;
 import is.L42.generated.S;
-
 public class TypeManipulation {
 
   public static boolean fwd_or_fwdP_in(Mdf m){
-    return m.isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd,Mdf.MutableFwd,Mdf.MutablePFwd);
+    return m.isIn(ImmutableFwd,ImmutablePFwd,MutableFwd,MutablePFwd);
     }
-  public static boolean fwd_or_fwdP_inMdfs(Stream<Mdf> mdfs){
-    return mdfs.anyMatch(m->fwd_or_fwdP_in(m));
+  public static boolean fwd_or_fwdP_inMdfs(List<Mdf> mdfs){
+    return mdfs.stream().anyMatch(m->fwd_or_fwdP_in(m));
     }
   public static boolean fwd_or_fwdP_inTs(Stream<T> ts){
     return ts.anyMatch(t->fwd_or_fwdP_in(t.mdf()));
     }
-  public static T fwdP(T t){
-    Mdf m=t.mdf();
-    if(m.isImm()){return t.withMdf(Mdf.ImmutablePFwd);}
-    if(m.isMut()){return t.withMdf(Mdf.MutablePFwd);}
-    return t;
+  public static Mdf fwdP(Mdf m){
+    if(m.isImm()){return ImmutablePFwd;}
+    if(m.isMut()){return MutablePFwd;}
+    return m;
     }
-  public static T noFwd(T t){
-    if(t.mdf().isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd)){
-      return t.withMdf(Mdf.Immutable);
-      }
-    if(t.mdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){
-      return t.withMdf(Mdf.Mutable);
-      }
-    return t;
-    }
-  public static T mutToCapsule(T t){
-    Mdf m=mutToCapsule(t.mdf());
-    assert m!=null;
-    return t.withMdf(m);
+  public static Mdf noFwd(Mdf mdf){
+    if(mdf.isIn(ImmutableFwd,ImmutablePFwd)){return Immutable;}
+    if(mdf.isIn(MutableFwd,MutablePFwd)){return Mutable;}
+    return mdf;
     }
   public static Mdf mutToCapsule(Mdf m){
     assert !m.isIn(Mdf.MutableFwd,Mdf.MutablePFwd);
@@ -60,10 +50,10 @@ public class TypeManipulation {
     if(m==Mdf.Readable){return Mdf.Immutable;}
     return m;
     }
-  public static T _toLent(T t){
-    if(t.mdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){return null;}
-    if(t.mdf()==Mdf.Mutable){return t.withMdf(Mdf.Lent);}
-    return t;
+  public static Mdf _toLent(Mdf m){
+    if(m.isIn(MutableFwd,MutablePFwd)){return null;}
+    if(m.isMut()){return Lent;}
+    return m;
     }
   public static T mutToCapsuleAndFwdMutToFwdImm(T t){
     return t.withMdf(mutToCapsuleAndFwdMutToFwdImm(t.mdf()));
