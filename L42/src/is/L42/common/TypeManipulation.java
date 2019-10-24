@@ -82,12 +82,8 @@ public class TypeManipulation {
     return t;
     }
   public static Core.T _toRead(Core.T t){
-    if(t.mdf().isIn(Mdf.MutableFwd,Mdf.MutablePFwd)){return null;}
-    if(t.mdf().isIn(Mdf.ImmutableFwd,Mdf.ImmutablePFwd)){return null;}
-    if(t.mdf().isIn(Mdf.Lent,Mdf.Mutable,Mdf.Capsule)){
-      return t.withMdf(Mdf.Readable);
-      }
-    return t;//imm, read, class
+    if(!t.mdf().isIn(Lent,Mutable,Capsule)){return t;}//imm, read, class, fwd, fwd%
+    return t.withMdf(Readable);
     }  
   public static Core.MH toCore(Full.MH mh){
     Mdf mdf=mh._mdf();

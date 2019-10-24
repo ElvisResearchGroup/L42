@@ -96,8 +96,8 @@ _______
     Flag; p; G' Ts U Ts'; Ps U Ps' |- ei:Ti.P  for i in 1..n 
     Flag; p; G' Ts; Ps |- e0 : P
 TODO: I'm assuming that there was no need to remove the fwdMut!
-    G'=toRead(G) if error in Ks.throws
-    G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound? //if fwdMut still removed, check for error if FV(Ds) uses them
+//    G'=toRead(G) if error in Ks.throws
+//    G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound? //if fwdMut still removed, check for error if FV(Ds) uses them
 _______
 #define Q |-ks : P | Ts;Ps    Q |-k : P |Ts;Ps
 * Q |-k1..kn : P | Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
@@ -109,63 +109,63 @@ _______
     throw !=return
     Q[G=Q.G,x:imm P0] |- e : P
 _______
-#define Q |= e: mdf<=mdf' 
-* Q |= void : imm <= mdf //(void)
+#define p;G;Ts |= e : mdf<=mdf' 
+* p;G;mdfs |= void : imm <= mdf //(void)
     mdf in {imm,read,fwd imm}
-* Q |= P<:class P' : class <= class //(Path)
-* Q |= L : imm  <= mdf //(library propagation)
+* p;G;mdfs |= P<:class P' : class <= class //(Path)
+* p;G;mdfs |= L : imm  <= mdf //(library propagation)
     mdf in {imm,read,fwd imm}
-* Q |=x : Q.G(x).T.mdf <= mdf  //(x)
-    Q.G(x).T.mdf <= mdf
-* Q |= loop e : imm <= mdf //(loop)
+* p;G;mdfs |=x : G(x).T.mdf <= mdf  //(x)
+    G(x).T.mdf <= mdf
+* p;G;mdfs |= loop e : imm <= mdf //(loop)
     mdf in {imm,read,fwd imm}
-    Q|= e : _ <= imm
-* Q |= return e : mdf <= mdf //(throw-return)
-    Q|= e : _ <= fwdOf(mostGeneralMdf(Q.Ts.mdfs))//TODO: check if that is the right call
-* Q |= throw e : mdf <= mdf //(throw)
-    Q|= e : _ <=imm
-* Q |= e0.m(x1:e1..xn:en) : mdf <= mdf' //(mcall)
+    p;G;mdfs |= e : _ <= imm
+* p;G;mdfs |= return e : mdf <= mdf //(throw-return)
+    p;G;mdfs |= e : _ <= fwdOf(mostGeneralMdf(mdfs))//TODO: check if that is the right call
+* p;G;mdfs |= throw e : mdf <= mdf //(throw)
+    p;G;mdfs |= e : _ <=imm
+* p;G;mdfs |= e0.m(x1:e1..xn:en) : mdf <= mdf' //(mcall)
     mdf<=mdf'
     P0=guess(Q,e0)//simple since e0 of form xP
     mdf0..mdfn->mdf in methMdfs(p,P0,m(x1..xn)) //a mdf version only of multiple methTypes
-    Q|= e0 : _ <= mdf0 .. Q|- en : _ <= mdfn
-* Q |= x:=e : imm <=mdf //(xUpdate)
+    p;G;mdfs |= e0 : _ <= mdf0 .. Q|- en : _ <= mdfn
+* p;G;mdfs |= x:=e : imm <=mdf //(xUpdate)
     mdf in {imm,read,fwd imm}
-    Q.G(x).var?=var //promotions may remove some vars? or the promotion is just not attempted if the var is needed?
-    Q|= e : _ <= Q.G(x).T.mdf 
-* Q |= (Ds Ks e):capsule <= mdf  //(capsule promotion)
-    mdf in {capsule, imm, fwdImm, fwd%Imm}//TODO: do we still need the %s?
+    //assert G(x).var?=var //the promotion should be just not attempted if the var is needed?
+    p;G;mdfs |= e : _ <= G(x).T.mdf 
+* p;G;mdfs |= (Ds Ks e) : capsule <= mdf  //(capsule promotion)
+    mdf in {capsule, imm, fwdImm, fwd%Imm}
     Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
-    Q[G=toLent(Q.G)] |-(Ds Ks e) : mut <= mut
-    forall x=_ inside (Ds Ks e), toLent(Q.G)(x).isVar
+    p;toLent(G);mdfs |-(Ds Ks e) : mut <= mut
+    forall x=_ inside (Ds Ks e), toLent(G)(x).var?=var
     if x inside (Ds Ks e) then x in dom(toLent(Q.G)) //some may be removed by toLent
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
 //this is another point where a variable 'x' can become undefined thanks to toLent(G)
 
-* Flag; p; G; Ts; Ps |= (Ds  Ks  e0) : mostGeneralMdf(mdf,mdfs) <= mdf' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
-    Flag; p; G; Ts; Ps |= Ks : mdfs <= mdf' |Ts
+* p;G;mdfs' |= (Ds  Ks  e0) : mostGeneralMdf(mdf,mdfs) <= mdf' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
+    p;G;mdfs' |= Ks : mdfs <= mdf' |mdfs"
     G'=toRead(G) if error in Ks.throws
-    G'=G otherwise  //TODO: toRead does not removes fwdMut any more
-    Flag; p; G'; Ts U Ts'; Ps U Ps' |= Ds | G0
-    Flag; p; G,(G0\dom(G)); Ts; Ps |= e0 : mdf <=mdf'
+    G'=G otherwise
+    p;G';mdfs' U mdfs" |= Ds | G0
+    p;G,(G0\dom(G));mdfs' |= e0 : mdf <=mdf'
 _______
-#define Q |= Ds | G // The resulting G is the enriched G containing info about Ds too.
-* Flag; p; G0; Ts; Ps |= var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
+#define p;G;mdfs |= Ds | G // The resulting G is the enriched G containing info about Ds too.
+* p;G0;mdfs |= var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
     dom(Ds) disjoint FV(e0..en)
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
-    G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
-    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : mdfi <= fwd% Ti.mdf
+    G1 = G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
+    for i in 0..n: p;G1;mdfs |= ei : mdfi <= fwd% Ti.mdf
     if fwd_or_fwd%_in Ts
       then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
     if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
       then G2=G0[fwd%(x0:T0..xn:Tn)]
       otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
-    Flag; p; G2; Ts; Ps|- Ds | G3
-* Q |= empty | Q.G //(DsEmpty)
+    p;G2;mdfs |= Ds | G3
+* p;G;mdfs |= empty | G //(DsEmpty)
 _______
-#define Q |=ks : mdfs <= mdf | Ts    Q |=k : mdf <= mdf' |Ts
+#define p;G;mdfs' |=ks : mdfs <= mdf | mdfs    p;G;mdfs' |=k : mdf <= mdf' |mdfs
 * Q |-k1..kn : mdf1..mdfn <= mdf |Ts1 U..U Tsn//(catchMany)
     forall i in 1..n Q |=ki : mdfi <= mdf |Tsi
 * Q |= catch throw T0 x e : mdf <= mdf' |T0? //(catch)
@@ -184,30 +184,28 @@ _______
     otherwise mdf'=mdf
 * noFwd mdfs-> noFwd mdf in methTypes(p,P,s)  //(mNoFwd)
     mdfs->mdf in methTypes(p,P,s)
-* mutToCapsule(mwts)->capsule in methTypes(p,P,s)  //(mC)
-    mwts->mut in methTypes(p,P,s)
-* toImmOrCapsule(mwts)->imm in methTypes(p,P,s)  //(mI)
-    mwts->mdf in methTypes(p,P,s), mdf in {read,lent}
+* mutToCapsule(mdfs)->capsule in methTypes(p,P,s)  //(mC)
+    mdfs->mut in methTypes(p,P,s)
+* toImmOrCapsule(mdfs)->imm in methTypes(p,P,s)  //(mI)
+    mdfs->mdf in methTypes(p,P,s), mdf in {read,lent}
 //the behaviour of toImmOrCapsule on fwd is not relevant since the method
 // returns a read and will be not well formed if it had fwd parameters
 //by well formedness if return type is read, not fwd_or_fwd%_in Ts
-* mwts'->toLent(mwt);Ps in methTypes(p,P,s) //(mVp)
-    mwts0 mut mwts2->mwt in methTypes(p,P,s)
-    mwts'=mutToCapsule(wmts0) lent mutToCapsule(mwts2) //this implies not fwd_or_fwd%_in Ts0,Ts2
-* mutToCapsuleAndFwdMutToFwdImm(mwts)->fwd%Imm in methTypes(p,P,s)  //(mImmFwd)
-    mwts->fwd%Mut in methTypes(p,P,s)//could be generalized to make fwdMut in fwdImm
-    fwd_or_fwd%_in(mwts)
-* mutToCapsuleAndFwdRead(mwts)->read in methTypes(p,P,s) //(mRead)
-    mwts->fwd%Mut in methTypes(p,P,s)//could be generalized to make fwdMut in read
-    fwd_or_fwd%_in(mwts)
-//generalization as in the comments before would be:
-* mutToCapsuleAndFwdMutToFwdImm(mwts)->fwd imm in methTypes(p,P,s)  //(mImmFwdExtended)
-    mwts->fwd mut in methTypes(p,P,s)
-    fwd_or_fwd%_in(mwts)
-* mutToCapsuleAndFwdRead(mwts)->read in methTypes(p,P,s) //(mReadExtended)
-    mwts->fwd mut in methTypes(p,P,s)
-    fwd_or_fwd%_in(mwts)
-//TODO:  Are those two generalization sound? are they useful in any way?
+* mdfs'->toLent(mdf);Ps in methTypes(p,P,s) //(mVp)
+    mdfs0 mut mdfs2->mdf in methTypes(p,P,s)
+    mdfs'=mutToCapsule(mdfs0) lent mutToCapsule(mdfs2) //this implies not fwd_or_fwd%_in mdfs0,mdfs2
+* mutToCapsuleAndFwdMutToFwdImm(mdfs)->fwd%Imm in methTypes(p,P,s)  //(mImmFwd)
+    mdfs->fwd%Mut in methTypes(p,P,s)
+    fwd_or_fwd%_in(mdfs)
+* mutToCapsuleAndFwdRead(mdfs)->read in methTypes(p,P,s) //(mRead)
+    mdfs->fwd%Mut in methTypes(p,P,s)
+    fwd_or_fwd%_in(mdfs)
+* mutToCapsuleAndFwdMutToFwdImm(mdfs)->fwd imm in methTypes(p,P,s)  //(mImmFwdExtended)
+    mdfs->fwd mut in methTypes(p,P,s)
+    fwd_or_fwd%_in(mdfs)
+* mutToCapsuleAndFwdRead(mdfs)->read in methTypes(p,P,s) //(mReadExtended)
+    mdfs->fwd mut in methTypes(p,P,s)
+    fwd_or_fwd%_in(mdfs)
 _______
 #define toLent(G)=G'    toLent(T)=T'
 * toLent(G)(x)=G(x) if G(x).T.mdf=immutable
