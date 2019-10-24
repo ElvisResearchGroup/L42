@@ -1,4 +1,4 @@
-package is.L42.common;
+package is.L42.typeSystem;
 
 import static is.L42.tools.General.L;
 

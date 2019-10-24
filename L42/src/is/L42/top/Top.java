@@ -9,7 +9,6 @@ import is.L42.common.EndError;
 import is.L42.common.G;
 import is.L42.common.GX;
 import is.L42.common.Program;
-import is.L42.common.TypeManipulation;
 import is.L42.constraints.FreshNames;
 import is.L42.constraints.InferToCore;
 import is.L42.constraints.ToHalf;
@@ -32,6 +31,7 @@ import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.FlagTyped;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
 
 import static is.L42.generated.LDom._elem;

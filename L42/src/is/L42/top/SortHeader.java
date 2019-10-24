@@ -15,7 +15,6 @@ import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
-import is.L42.common.TypeManipulation;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -33,6 +32,7 @@ import is.L42.generated.Full.L.M;
 import is.L42.generated.Full.L.NC;
 import is.L42.generated.LDom;
 import is.L42.generated.P.NCs;
+import is.L42.typeSystem.TypeManipulation;
 
 class SortHeader{
   public static Core.L coreTopReuse(Program p,int uniqueId,Full.L l,List<Pos> poss)throws EndError{

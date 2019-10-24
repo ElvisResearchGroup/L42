@@ -32,24 +32,24 @@ _______
 * wellTyped(p,e)=T
     Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
     FV(e)=empty//TODO:move out to top? where we do the rest of well formedness?
-    Q|= CORE.e : _ <= imm
+    p;empty;empty|= CORE.e : _ <= imm
     either Q|- CORE.e : Library
     or Q|- CORE.e : imm Void
     or Q|- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
 _______
-#define |- p    p|-C=CORE.L    p|-CORE.MWT
+#define |- p    p|-CORE.MWT
 * |- p      //(library well typed)
    //assert L.Info.Flag=norm // does it holds? 
    //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface should be from wf 
-   forall M in p(This0).Ms:  p |- M
-* p |- C=L  //(member nested)
-   |-p.push(C,L)
-   if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
+   forall MWT in p(This0).MWTs:  p |- MWT
+   forall C=L in p(This0).NCs:
+     |-p.push(C,L)
+     if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
 * p|-MWT //(member method)
     Q = Q[typed; p; MWT.G; empty; MWT.exceptions.Ps]
     if MWT.e?=e then 
       Q |- e : MWT.T.P
-      Q |= e :_ <=fwd% MWT.T.mdf
+      p;empty;empty |= e :_ <=fwd% MWT.T.mdf
     MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
     forall MH in MHs:
       p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"

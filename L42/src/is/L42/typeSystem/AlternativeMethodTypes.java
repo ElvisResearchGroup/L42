@@ -3,19 +3,18 @@ package is.L42.typeSystem;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
+import static is.L42.typeSystem.TypeManipulation.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
-import is.L42.common.TypeManipulation;
 import is.L42.generated.Core;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.MethT;
 import is.L42.generated.P;
 import is.L42.generated.S;
-import static is.L42.common.TypeManipulation.*;
 public class AlternativeMethodTypes {
 
   static public MethT mBase(Program p, P.NCs path, S s){

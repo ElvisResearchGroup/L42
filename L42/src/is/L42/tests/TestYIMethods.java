@@ -13,7 +13,6 @@ import is.L42.common.Err;
 import is.L42.common.G;
 import is.L42.common.Parse;
 import is.L42.common.Program;
-import is.L42.common.TypeManipulation;
 import is.L42.constraints.InferToCore;
 import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
@@ -25,6 +24,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Top;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
 

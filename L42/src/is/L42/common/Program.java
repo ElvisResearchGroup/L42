@@ -37,6 +37,7 @@ import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.X;
 import is.L42.top.Init;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
