@@ -84,8 +84,8 @@ _______
 _______
 #define p.solve(ST) = ST' 
 * p.solve(T) = T
-* p.solve(T.s) = p(T.P).mwts(s).T
-* p.solve(T.s.i) = p(T.P).mwts(s).parsi
+* p.solve(T.s) = p(T.P).mwts(s).T[from T.P;p] //TODO: in code they may not be the from
+* p.solve(T.s.i) = p(T.P).mwts(s).parsi[from T.P;p] //TODO: in code they may not be the from
 * p.solve(ST.s.i?) = p.solve(T.s.i?)
     T = p.solve(ST)
 * p.solve(ST.s.i?) = ST'.s.i?
@@ -94,7 +94,7 @@ _______
 * p.solve(ST.s.i?) = T.s.i?
     T = p.solve(ST)
     p(T.P).mwts(s) undefined
-    or p(T.P).mwts(s).parsi undefined
+    or i?=i and p(T.P).mwts(s).parsi undefined
 * p.solve(OP STz1..STzn) = p(P).mwts(s).T[from P;p] 
     Tzi = {T| ST in STzi, T=p.solve(ST)}
     Ts1..Tsn = {T1..Tn| Ti in Tzi}
@@ -104,6 +104,8 @@ _______
 NOTE: ST may contains Ps that are not in the domain of p,
       in those cases solve is the identity.
 TODO: should also p.minimize(P) and from(P;p) be resilient and do nothing?
+//there are cases where p(P) is undefined and p.minimize(P) is not an identity.  EG we are in A.B. C is one of our NCs, but C.D is undefined.
+// So p(This2.A.B.C.D) is undefined and p.minimise(This2.A.B.C.D) is sensibly This0.C.D.
 _______
 #define MH notations, MWT notations just inherit them,
 with MH=mdf method T mOp(T1 x1..Tn xn)[Ts] 
