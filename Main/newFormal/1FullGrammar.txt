@@ -165,11 +165,16 @@ _______
     if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D) 
     if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
     if B=(_ K e _) then noBlockNeeded(K.e)
+    forall x in bindings(B.Ds.DXs) declared var: not x updateOp _ inside B //TODO: add this and the next in code
+    if error in Ks.throws then forall x in bindings(B.Ds.DXs) : not x updateOp _ inside B.Ds.es
 * (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
     no repetition in Ds.xs
     this notin dom(Ds)
     FV(Ks) disjoint dom(Ds)
     dom(Ds) disjoint bindings(Ds.es,Ks.es,e) U Ks.xs
+    forall D in Ds such that Ds.var?=empty: not D.x:= _ inside (CORE.Ds CORE.Ks CORE.e)
+    if error in Ks.throws then forall D in Ds: not D.x:= _ inside CORE.Ds.es
+    forall D in Ds such that Ds.var?=var: D.T.mdf not capsule or fwd//TODO: add those last 3 lines in code
 * FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
 * throw FULL.e: not returning(Full.e)
 * FULL.F: F.t.mdf not fwd
