@@ -167,6 +167,7 @@ _______
     if B=(_ K e _) then noBlockNeeded(K.e)
     forall x in bindings(B.Ds.DXs) declared var: not x updateOp _ inside B //TODO: add this and the next in code
     if error in Ks.throws then forall x in bindings(B.Ds.DXs) : not x updateOp _ inside B.Ds.es
+    //TODO: handle xs in if and for too: only x updateOp _ if declared var.
 * (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
     no repetition in Ds.xs
     this notin dom(Ds)

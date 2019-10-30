@@ -86,7 +86,7 @@ _______
 * Q |- x:=e : P //(xUpdate)   //is var is checked by the mdfs type system
     P in {Void,Any}
     Q |- e : Q.G(x).T.P 
-    not fwd_or_fwd%_in(Q.G(x).T)//TODO: should this be well formedness?
+    // assert not fwd_or_fwd%_in(Q.G(x).T)//TODO: check if this is in well formedness?
 //Now the well formeness do not check anything at all about x opUpdate,
 // not even that only vars are assigned, not even in for x in e x:=e' 
 * Flag; p; G; Ts; Ps |- (var?1 T1 x1=e1 .. var?n Tn xn=en Ks e0) :  P //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
@@ -166,9 +166,9 @@ _______
 #define p;G;mdfs' |=ks : mdfs <= mdf | mdfs    p;G;mdfs' |=k : mdf <= mdf' |mdfs
 * Q |-k1..kn : mdf1..mdfn <= mdf |Ts1 U..U Tsn//(catchMany)
     forall i in 1..n Q |=ki : mdfi <= mdf |Tsi
-* Q |= catch throw T0 x e : mdf <= mdf' |T0? //(catch)
-    T0?=T0 if throw=return
-    T0?=empty otherwise
+* Q |= catch throw T0 x e : mdf <= mdf' |mdfs //(catch)
+    mdfs=T0.mdf if throw=return
+    mdfs=empty otherwise
     Q[G=Q.G,x:T0] |= e : mdf <= mdf'
 _______
 #define guess(Q,xP) = P
