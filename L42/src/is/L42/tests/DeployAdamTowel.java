@@ -289,7 +289,7 @@ Test1={reuse[#$aaa]
   ));}
 
 public static void top(String program){
-  Init init=Init.parse("{"+program+"}");
+  Init init=new Init("{"+program+"}");
   init.top.top(new CTz(),init.p);
   assertFalse(Resources.out().isEmpty());
   }

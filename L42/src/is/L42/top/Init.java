@@ -27,20 +27,16 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class Init {
-  public static Init parse(String s){
-    var r=Parse.program("-dummy-",s);
-    assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-    var res=new Init(r.res);
-    return res;
-    }
-
+  public Init(String s){this(Parse.program("-dummy-",s).res);}
   public final Top top;
   public final Program p;
   public Init(Full.L l){this(Program.flat(l));}
+  protected Top makeTop(FreshNames f){
+    return new Top(f,0,new Loader());//but can be overridden as a testing handler
+    }
   public Init(Program program){
     FreshNames f=new FreshNames();
-    Loader loader=new Loader();
-    top=new Top(f,0,loader);
+    top=makeTop(f);
     Program res=init(program,f);
     assert res.top.wf();
     p=res;

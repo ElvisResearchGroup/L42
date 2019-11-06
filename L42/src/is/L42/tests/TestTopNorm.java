@@ -404,13 +404,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
 public static void top(String program,String out){
   Resources.clearRes();
-  Init init=Init.parse(program);
+  Init init=new Init(program);
   assertEquals(init.top.top(new CTz(),init.p).top,Core.L.parse(out));
   }
 public static void topFail(Class<?> kind,String program,String ...output){
   Resources.clearRes();
   checkFail(()->{
-    Init init=Init.parse(program);
+    Init init=new Init(program);
     init.top.top(new CTz(),init.p);
     }, output, kind);
   }

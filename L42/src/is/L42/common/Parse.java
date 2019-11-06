@@ -83,7 +83,9 @@ public class Parse {
     if(v.errors.length()!=0){
       return new Result<B>("","",v.errors.toString(),null);
       }
-    return new Result<B>("","","",e);    
+    var r=new Result<B>("","","",e);
+    assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
+    return r;    
     }
   public static Result<E> e(String fileName,String s){
     return aux(fileName,s,p->p.nudeE(),(v,eCtx)->v.visitNudeE(eCtx));

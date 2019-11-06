@@ -64,7 +64,7 @@ public class Top {
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
-    Program p2=FlagTyped.flagTyped(loader,p1.update(l));//propagate illTyped
+    Program p2=flagTyped(loader,p1.update(l));//propagate illTyped
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
     return p2.update(l);
@@ -152,12 +152,15 @@ public class Top {
     assert l!=null;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
-    Program p2=FlagTyped.flagTyped(loader,p1);//propagate errors
+    Program p2=flagTyped(loader,p1);//propagate errors
     //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)    
     Program res=topNC(p2.from(frommedCTz,P.of(0,L(c0))),p2,ncs);
     return res; 
     }
-  private Core.E reduce(Program p,C c,Core.E e)throws EndError  {
+  protected Program flagTyped(Loader loader,Program p1) throws EndError{
+    return FlagTyped.flagTyped(loader,p1);//but can be overridden as a testing handler
+    }
+  protected Core.E reduce(Program p,C c,Core.E e)throws EndError  {
     //assert e instanceof Core.L;
     //return e;
     try{return loader.runNow(p, c, e);}

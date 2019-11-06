@@ -519,7 +519,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitIf(Full.If sIf){
     Pos p=sIf.pos();
     if(sIf._else()==null){sIf=sIf.with_else(new Core.EVoid(p));}
-    if(sIf._condition()==null){throw uc;}
+    if(sIf._condition()==null){uc();}
     if(!isFullXP(sIf._condition())){visitBlock(ifBlock(p,sIf));return;}
     Full.E test=new Full.Call(p,sIf._condition(),ifS,false,Par.emptys);
     test=new Full.Call(p,test,checkTrueS,false,Par.emptys);
@@ -549,7 +549,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final List<X> stringLiteralX=L(new X("stringLiteral"));
   private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
 
-  @Override public void visitWhile(Full.While sWhile){throw uc;}
-  @Override public void visitFor(Full.For sFor){throw uc;}
+  @Override public void visitWhile(Full.While sWhile){uc();}
+  @Override public void visitFor(Full.For sFor){uc();}
  
 }

@@ -194,6 +194,24 @@ public class Err {
   "Reusing url "+_1+" shadows the following members: "+_2
   ;}public static String noOperatorOnPrimitive(Object _1,Object _2){return
   "Path "+_1+" can not be used as a operator receiver for "+_2
+  ;}public static String invalidExpectedTypeForVoidLiteral(Object _1){return
+  "\"void\" is only of type \"Void\", but the program requires it to be of type "+_1
+  ;}public static String castOnPathMustBeClass(Object _1){return
+  "cast on paths must have the class modifier, but "+_1+" is provided"
+  ;}public static String subTypeExpected(Object _1,Object _2){return
+  "the path "+_1+" is not a subtype of "+_2
+  ;}public static String castOnPathOnlyValidIfDeclaredClassMethods(Object _1){return
+  "except for Any, targets on path casts must declare class methods, but the following path does not declare any class method: "+_1
+  ;}public static String castOnPathOnlyValidIfNotInterface(Object _1){return
+  "expect for Any, path casts can not be applied on interfaces, but "+_1+" is declared as interface"
+  ;}public static String leakedThrow(Object _1){return
+  "An "+_1+" is leaked out of this expression"
+  ;}public static String leakedExceptionFromMethCall(Object _1){return
+  "An exception is leaked out of this expression ("+_1+")"
+  ;}public static String methodDoesNotExists(Object _1,Object _2){return
+  "Method "+_1+" does not exists. Existing methods are:\n"+_2+"\n"
+  
+ 
   
   ;}
 }

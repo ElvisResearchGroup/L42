@@ -34,4 +34,7 @@ public abstract class EndError extends RuntimeException{
   public static class PathNotExistent extends EndError{
     public PathNotExistent(List<Pos> poss, String msg) { super(poss, msg);}
     }
+  public static class TypeError extends EndError{
+    public TypeError(List<Pos> poss, String msg) { super(poss, msg);}
+    }
   }
