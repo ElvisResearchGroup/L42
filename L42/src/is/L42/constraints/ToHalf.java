@@ -70,7 +70,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private boolean expectedAny(){
     var et=y._expectedT();
     if(et==null || et.isEmpty()){return false;}
-    return et.stream().allMatch(e->e.equals(P.coreAny));
+    return et.stream().allMatch(e->e.equals(P.coreClassAny));
     }
   @Override public void visitL(Core.L l){commit(l,L(P.coreLibrary),L());}
   @Override public void visitL(Full.L l){commit(l,L(P.coreLibrary),L());}

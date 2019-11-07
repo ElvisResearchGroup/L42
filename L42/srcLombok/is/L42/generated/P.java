@@ -27,6 +27,7 @@ public interface P extends Visitable<P>{
   public static final P.NCs pThis1=P.of(1,L());
   public static final Core.T coreThis0=new Core.T(Mdf.Immutable, L(),pThis0);
   public static final Core.T coreThis1=new Core.T(Mdf.Immutable, L(),pThis0);
+  public static final Core.T coreClassAny = new Core.T(Mdf.Class, L(), P.pAny);
   public static final Full.T fullThis0=new Full.T(Mdf.Immutable, L(),L(),coreThis0.p());
   public static final Full.T fullClassAny = new Full.T(Mdf.Class, L(),L(), P.pAny);
   public static P.NCs of(int n,List<C>cs){return new NCs(n,cs);}

@@ -215,55 +215,60 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    """)
    ),new AtomicTest(()->fail("""
    {A={B={method class Void main()=Void}}}
-   ""","nope")
+   """,Err.castOnPathOnlyValidIfDeclaredClassMethods(hole))
+   ),new AtomicTest(()->pass("""
+   {C={class method This k()}A={B={method C main()=C.k()}}}
+   """)
+   ),new AtomicTest(()->pass("""
+   {C={class method mut This k()}A={B={method C main()=C.k()}}}
+   """)
+   ),new AtomicTest(()->pass("""
+   {C={class method mut This k()}A={B={method capsule C main()=C.k()}}}
+   """)
+   ),new AtomicTest(()->pass("""
+   {C={class method mut This k()}A={B={method read C main()=C.k()}}}
+   """)
+   ),new AtomicTest(()->pass("""
+   {C={class method mut This k()}A={B={method lent C main()=C.k()}}}
+   """)
+      ),new AtomicTest(()->pass("""
+   {C={class method mut This k()}A={B={method mut C main()=C.k()}}}
+   """)
+   ),new AtomicTest(()->fail("""
+   {C={class method mut This k()}A={B={method class C main()=C.k()}}}
+   """,Err.methCallResultIncompatibleWithExpected(hole))
+   ),new AtomicTest(()->pass("""
+   {D={class method This k()}A={B={method read Any main()=error D.k()}}}
+   """)
+   ),new AtomicTest(()->pass("""
+   {D={var D f class method This k(fwd imm D f)}
+    A={B={method read Any main()=( D x=D.k(f=x), x)}}}
+   """)
+   ),new AtomicTest(()->pass("{"+listExample+"""
+   A={B={method List main()=List.factory(N.k())}}}
+   """)
+   ),new AtomicTest(()->pass("{"+listExample+"""
+   A={B={method List main()=(
+     class List wthis=List,
+     N that=N.k(),
+     List x=wthis.factoryAux(that,top=x)
+     x
+     )}}}
+   """)
+   ),new AtomicTest(()->pass("{"+listExample+"""
+   A={B={method List main()=(
+    class List wthis=List
+    N that=N.k()
+    fwd imm List top=List.factory(N.k())
+    ( Void z=that.checkZero()
+      catch error Void  x (List.k(
+        next=List.factoryAux(that.lessOne(),top=top)
+        elem=that))
+      List.k(next=top,elem=N.k()))
+     )}}}
+   """)
 
-     /*
-       },{lineNumber(),"Library",
-         new Type(Mdf.Class,Path.Any(),Doc.empty()),
-         new Type(Mdf.Class,Path.Any(), Doc.empty()),
-         new String[]{"{ C:{class method This k()}}"}
-       },{lineNumber(),"C.k()",
-         new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
-         new Type(Mdf.Immutable,Path.parse("This0.C"), Doc.empty()),
-         new String[]{"{ C:{class method This k()}}"}
-       },{lineNumber(),"C.k()",
-         new Type(Mdf.Mutable,Path.parse("This0.C"), Doc.empty()),
-         new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-         new String[]{"{ C:{class method mut This k()}}"}
-       },{lineNumber(),"error D.k()",
-         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-         new String[]{"{ D:{class method This k()}}"}
-
-       },{lineNumber(),"( D x=D.k(f:x), x)",
-         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-         new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
-         new String[]{"{ D:{var D f, class method This k(fwd D f)} }"}
-
-       },{lineNumber(),"List.factory(N.k())",
-         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-         new Type(Mdf.Immutable,Path.parse("This0.List"), Doc.empty()),
-         new String[]{listExample}
-       },{lineNumber(),"(class List this=List, N that=N.k(), List x=this.factoryAux(that,top:x)  x)",
-         new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-         new Type(Mdf.Immutable,Path.Any(), Doc.empty()),
-         new String[]{listExample}
-       },{lineNumber(),Functions.multiLine(""
-,"(class List this=List,"
-," N that=N.k(),"
-," fwd List top=List.factory(N.k())"
-," ( Void z=that.checkZero(),"
-,"   catch error "
-,"     Void  x List.k("
-,"       next:List.factoryAux(that.lessOne(),top:top),"
-,"       elem:that)"
-,"   List.k(next:top,elem:N.k()))"
-," )"),
-       new Type(Mdf.ImmutablePFwd,Path.parse("This0.List"),Doc.empty()),
-         new Type(Mdf.ImmutablePFwd,Path.parse("This0.List"),Doc.empty()),
-         new String[]{listExample}
-
-         },{lineNumber(),"( fwd D x=D.k(f:void), x)",
+/*         },{lineNumber(),"( fwd D x=D.k(f:void), x)",
          new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
            new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
            new String[]{"{ D:{var Any f class method This k(fwd Any f)} }"}
@@ -308,21 +313,6 @@ new String[]{"{ C:{ class method This k()}, D:{class method This k()}}"}
 }});}
       //TODO: before ts after desugaring, do well formedness check!
 
-static String listExample=Functions.multiLine(
-    "{N:{class method This k() method Void checkZero() (void) method N lessOne() (this)}"
-    ,"List:{class method This k(fwd List next, N elem)"
-    ,"  class method List factory(N that) ("
-    ,"    List x=this.factoryAux(that,top:x)"
-    ,"    x"
-    ,"    )"
-    ,"class method List factoryAux(N that,fwd List top)"
-    ,"  (Void z=that.checkZero()"
-    ,"   catch error Void x"
-    ,"     List.k("
-    ,"       next:List.factoryAux(that.lessOne(),top:top),"
-    ,"       elem:that)"
-    ,"   List.k(next:top,elem:N.k())) "
-    ,"}}");
 
     @Test
     public void testType() {
@@ -870,4 +860,28 @@ public static void fail(String program,String...out){
     pass(program);
     }, out, TypeError.class);
   }
+public static String listExample="""
+  N={
+    class method This k()
+    method Void checkZero()=void 
+    method N lessOne()=this
+    }
+  List={
+    class method This k(fwd imm List next, N elem)
+    class method List factory(N that)=(
+      List x=this.factoryAux(that,top=x)
+      x
+      )
+    class method List factoryAux(N that,fwd imm List top)=(
+      Void z=that.checkZero()
+      catch error Void x (
+        List.k(
+          next=List.factoryAux(that.lessOne(),top=top)
+          elem=that
+          ))
+      List.k(next=top,elem=N.k())
+      )
+    }
+  """;
+
 }
