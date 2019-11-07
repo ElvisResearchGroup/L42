@@ -48,7 +48,7 @@ _______
 * p |- MWT //(member method)
     if MWT.e?=e then 
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P
-      p;empty;empty |= e :_ <=fwd% MWT.T.mdf
+      p;MWT.G;empty |= e :_ <=fwd% MWT.T.mdf
     MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
     forall MH in MHs:
       p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
@@ -153,9 +153,9 @@ _______
     dom(Ds) disjoint FV(e0..en)
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
-    G1 = G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
+    G1 = G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]
     for i in 0..n: p;G1;mdfs |= ei : mdfi <= fwd% Ti.mdf
-    if fwd_or_fwd%_in Ts
+    if fwd_or_fwd%_in mdfs
       then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
     if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
       then G2=G0[fwd%(x0:T0..xn:Tn)]

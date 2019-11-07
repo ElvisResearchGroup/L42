@@ -138,7 +138,9 @@ _______
 
 * capsuleToLent(capsule P) = lent P
 * capsuleToLent(mdf P) = mdf P, if mdf != capsule
-
+_______
+#define onlyMutOrImm(G)=G' 
+* onlyMutOrImm(G)={x:G(x) | G(x).mdf in {mut,imm}}//note: we correctly remove all fwd variables
 _______
 #define fwd T
 * fwd imm P = fwd fwd%imm P=fwdImm P

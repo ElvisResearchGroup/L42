@@ -24,7 +24,7 @@ public class AlternativeMethodTypes {
     }
   static public MethT mBase(MethT mt){
     if (!fwd_or_fwdP_inMdfs(mt.mdfs())){return mt;}
-    return mt.withMdf(fwdP(mt.mdf()));
+    return mt.withMdf(fwdPOf(mt.mdf()));
     }
   static public MethT mNoFwd(MethT mt){
     List<Mdf> mdfs = L(mt.mdfs(),m->noFwd(m));
@@ -101,6 +101,9 @@ public class AlternativeMethodTypes {
       for(var t:mh.pars()){c.add(t.mdf());}
       });
     return new MethT(mdfs,mh.t().mdf());
+    }
+  static public List<MethT> types(Program p, P.NCs source, S s){
+    return types(mBase(p,source,s));
     }
   static public List<MethT> types(MethT mt){
     List<MethT>res=new ArrayList<>();

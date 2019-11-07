@@ -271,7 +271,7 @@ public class Program implements Visitable<Program>{
         }
       Full.L.F f=(Full.L.F)m;
       Core.T t=TypeManipulation.toCore(f.t());
-      Core.T tr=TypeManipulation._toRead(t);
+      Core.T tr=TypeManipulation.toRead(t);
       assert tr!=null;
       if(f.isVar()){
         c.add(new Core.MH(Mdf.Mutable,L(), P.coreVoid, f.key().withXs(X.thatXs), L(t),L()));        
@@ -306,7 +306,7 @@ public class Program implements Visitable<Program>{
     return P.of(p.n()-1,popL(p.cs()));
     }
   public T _chooseGeneralT(List<T> ts,List<Pos> poss){
-    Mdf _mdf=_mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
+    Mdf _mdf=TypeManipulation._mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
     var ps=L(ts.stream()
       .map(ti->ti.p())
@@ -314,22 +314,6 @@ public class Program implements Visitable<Program>{
       .distinct());
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
-    }
-  private Mdf _mostGeneralMdf(Set<Mdf> mdfs){
-    var g=generalEnoughMdf(mdfs);
-    return g.stream().filter(mdf->g.stream()
-      .allMatch(mdf1->isSubtype(mdf, mdf1)))
-      .reduce(toOneOr(()->bug())).orElse(null);
-    }
-  private List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
-    return L(c->{
-      for(Mdf mdf:Mdf.values()){
-        if(mdf.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
-        if(mdfs.stream().allMatch(mdf1->isSubtype(mdf1,mdf))){
-          c.add(mdf);
-          }
-        }
-      });
     }
   //-----------
   public T _chooseSpecificT(List<T> ts,List<Pos> poss){

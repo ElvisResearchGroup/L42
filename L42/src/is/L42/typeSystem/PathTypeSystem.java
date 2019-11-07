@@ -3,8 +3,12 @@ package is.L42.typeSystem;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
+import static is.L42.generated.Mdf.*;
+import static is.L42.generated.ThrowKind.*;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import is.L42.generated.Core.*;
 import is.L42.generated.Core.L.MWT;
@@ -17,6 +21,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;
 import is.L42.visitors.UndefinedCollectorVisitor;
+import lombok.NonNull;
 
 public class PathTypeSystem extends UndefinedCollectorVisitor{
   public PathTypeSystem(boolean isDeep, Program p, G g, List<T> ts, List<P> ps, P expected) {
@@ -46,8 +51,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(!p.isSubtype(p1, p2, poss)){
       throw new EndError.TypeError(poss,Err.subTypeExpected(p1,p2));
       }
-    }
-  
+    }  
   @Override public void visitEVoid(EVoid e){
     errIf(expected!=P.pAny && expected!=P.pVoid,e,
       Err.invalidExpectedTypeForVoidLiteral(expected));
@@ -75,26 +79,40 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     visitExpecting(e.e(),P.pVoid);
     }
   @Override public void visitThrow(Throw e){
-    if(e.thr()==ThrowKind.Error){return;}
+    visitExpecting(e.e(),P.pAny);
+    if(e.thr()==Error){return;}
     boolean find=false;
-    if(e.thr()==ThrowKind.Exception){
-      for(P pi:ps){
-        try{visitExpecting(e.e(),pi);find=true;}
-        catch(EndError.TypeError te){}
-        }
-      }
-    else{assert e.thr()==ThrowKind.Return;
-      for(T ti:ts){
-        try{visitExpecting(e.e(),ti.p());find=true;}
-        catch(EndError.TypeError te){}
-        }
-      }
+    if(e.thr()==Exception){find=tryAlternatives(ps.stream(),e.e());}
+    else{find=tryAlternatives(ts.stream().map(t->t.p()),e.e());}
     errIf(!find,e,Err.leakedThrow(e.thr().inner));
     //TODO: we may add a flag to the TS so that we skip rechecking all the expressions that does not
     // contribute to the result (that is, meth parameters, D.es and crucially throw.e)
     }
+  private boolean tryAlternatives(Stream<P> stream,E e){
+    var oldTs=ts;
+    var oldPs=ps;
+    var oldG=g;
+    var oldExpected=expected;
+    var res=stream.anyMatch(p->{
+      try{
+        ts=oldTs;
+        ps=oldPs;
+        g=oldG;
+        expected=p;
+        visitE(e);
+        expected=oldExpected;
+        return true;
+        }
+      catch(EndError.TypeError te){return false;}    
+      });
+    ts=oldTs;
+    ps=oldPs;
+    g=oldG;
+    expected=oldExpected;
+    return res;
+    }
   @Override public void visitMCall(MCall e){
-    P p0=guess(g,e.xP());
+    P p0=TypeManipulation.guess(g,e.xP());
     var l=p._ofCore(p0);
     assert l!=null;
     MWT mwt=_elem(l.mwts(),e.s());
@@ -110,10 +128,6 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
       errIf(err,e,Err.leakedExceptionFromMethCall(ti.p()));
       }
     }
-  public static P guess(G g, XP xp){
-    if(xp instanceof EX){return g.of(((EX)xp).x()).p();}
-    return ((PCastT)xp).t().p();
-    }
   @Override public void visitOpUpdate(OpUpdate e){
     mustSubPath(P.pVoid,expected,e.poss());
     T t=g.of(e.x());
@@ -121,11 +135,34 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     assert !TypeManipulation.fwd_or_fwdP_in(t.mdf());
     }
   @Override public void visitBlock(Block e){
+    var ts1=new ArrayList<T>(ts);
+    var ps1=new ArrayList<P>(ps);
+    for(K k:e.ks()){typeK(k,ts1,ps1);}
+    var g1=g.plusEq(e.ds());
+    var oldTs=ts;
+    var oldPs=ps;
+    var oldG=g;
+    ts=ts1;
+    ps=ps1;
+    g=g1;
+    for(var di:e.ds()){visitExpecting(di.e(),di.t().p());}
+    ts=oldTs;
+    ps=oldPs;
+    visitE(e.e());
+    g=oldG;
     }
-  @Override public void visitK(K e){
+  private void typeK(K k, ArrayList<T> ts1, ArrayList<P> ps1) {
+    var t=k.t();
+    var oldG=g;
+    g=g.plusEq(k.x(),k.t());
+    visitE(k.e());
+    g=oldG;
+    if(k.thr()==Return){ts1.add(t);}
+    if(k.thr()==Exception){ps1.add(t.p());}
+    if(!t.mdf().isClass()){return;}
+    var l=p._ofCore(t.p());
+    errIf(!l.isInterface(),k.e(),Err.castOnPathOnlyValidIfNotInterface(t.p()));
+    errIf(!l.info().declaresClassMethods(),k.e(),
+      Err.castOnPathOnlyValidIfDeclaredClassMethods(t.p()));
     }
-
-
-
-
   }

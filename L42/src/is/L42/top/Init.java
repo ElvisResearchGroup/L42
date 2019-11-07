@@ -27,7 +27,7 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class Init {
-  public Init(String s){this(Parse.program("-dummy-",s).res);}
+  public Init(String s){this(Parse.sureProgram("-dummy-",s));}
   public final Top top;
   public final Program p;
   public Init(Full.L l){this(Program.flat(l));}
@@ -35,6 +35,7 @@ public class Init {
     return new Top(f,0,new Loader());//but can be overridden as a testing handler
     }
   public Init(Program program){
+    assert program!=null;
     FreshNames f=new FreshNames();
     top=makeTop(f);
     Program res=init(program,f);

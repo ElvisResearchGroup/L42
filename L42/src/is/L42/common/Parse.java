@@ -84,17 +84,22 @@ public class Parse {
       return new Result<B>("","",v.errors.toString(),null);
       }
     var r=new Result<B>("","","",e);
-    assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
     return r;    
     }
   public static Result<E> e(String fileName,String s){
     return aux(fileName,s,p->p.nudeE(),(v,eCtx)->v.visitNudeE(eCtx));
     }
+  public static Result<Full.CsP> csP(String fileName,String s){
+    return aux(fileName,s,p->p.nudeCsP(),(v,ctx)->v.visitNudeCsP(ctx));
+    }
   public static Result<Program> program(String fileName,String s){
     return aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
     }
-  public static Result<Full.CsP> csP(String fileName,String s){
-    return aux(fileName,s,p->p.nudeCsP(),(v,ctx)->v.visitNudeCsP(ctx));
+  public static Program sureProgram(String fileName,String s){
+    var res=aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
+    assert !res.hasErr(): res;
+    assert res.res!=null;
+    return res.res; 
     }
     
   public static Result<NudeEContext> ctxE(String fileName,String s){

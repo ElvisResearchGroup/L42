@@ -9,6 +9,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import is.L42.generated.Core;
 import is.L42.generated.Core.D;
@@ -16,6 +18,7 @@ import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.X;
+import is.L42.typeSystem.TypeManipulation;
 import lombok.NonNull;
 
 public class G {
@@ -53,7 +56,7 @@ public class G {
       Mdf.MutableFwd,Mdf.ImmutablePFwd)     
       );
     }
-
+  public boolean isVar(X x){return vars.contains(x);}
   public T of(X x) {
     T res= xInT.get(x);
     assert res!=null: x;
@@ -82,5 +85,55 @@ public class G {
     assert !xInT.containsKey(x);
     xInT.put(x,t);
     return new G(Collections.unmodifiableMap(xInT),vars); 
+    }
+  public G toRead(){
+    var map=new HashMap<X,T>();
+    for(var e:this.xInT.entrySet()){
+      map.put(e.getKey(),TypeManipulation.toRead(e.getValue()));
+      }
+    return new G(Collections.unmodifiableMap(map),Collections.emptySet());
+    }
+  public G toLent(){
+    var newVars=vars;
+    if(!vars.isEmpty()){newVars=new HashSet<X>();}
+    var map=new HashMap<X,T>();
+    for(var e:this.xInT.entrySet()){
+      var x=e.getKey();
+      var t=e.getValue();
+      if(t.mdf().isImm() && vars.contains(x)){newVars.add(x);}
+      var mdf=TypeManipulation._toLent(t.mdf());
+      if(mdf!=null){map.put(x,t.withMdf(mdf));}
+      }
+    return new G(Collections.unmodifiableMap(map),newVars);
+    }
+  public G plusEqMdf(G g0) {
+    var map=new HashMap<X,T>(this.xInT);
+    for(var e:g0.xInT.entrySet()){
+      map.putIfAbsent(e.getKey(),e.getValue());
+      }
+    var newVars=Stream.concat(this.vars.stream(),g0.vars.stream()).collect(Collectors.toSet());
+    return new G(Collections.unmodifiableMap(map),newVars);    
+    }
+  public G plusEqFwdOnlyMutOrImm(List<D> ds) {
+    var map=new HashMap<X,T>(this.xInT);
+    for(var d:ds){
+      assert !map.containsKey(d.x()):
+        d.x();
+      Mdf m=d.t().mdf();
+      if(!m.isIn(Mdf.Mutable, Mdf.Immutable)){continue;}
+      m=TypeManipulation.fwdOf(d.t().mdf());
+      map.put(d.x(),d.t().withMdf(m));
+      }
+    return new G(Collections.unmodifiableMap(map),vars);    
+    }
+  public G plusEqFwdP(List<D> ds) {
+    var map=new HashMap<X,T>(this.xInT);
+    for(var d:ds){
+      assert !map.containsKey(d.x());
+      Mdf m=d.t().mdf();
+      m=TypeManipulation.fwdPOf(d.t().mdf());
+      map.put(d.x(),d.t().withMdf(m));
+      }
+    return new G(Collections.unmodifiableMap(map),vars);    
     }
   }

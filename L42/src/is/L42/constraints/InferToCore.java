@@ -178,11 +178,11 @@ public class InferToCore extends UndefinedCollectorVisitor{
     var recursive=auxDs(fv,ds,poss);
     return pushL(new Core.D(d.isVar(),t1,d.x(),e1),recursive); 
     }
-  @Override public void visitD(Half.D d){throw uc;}
-  @Override public void visitK(Half.K k){throw uc;}
+  @Override public void visitD(Half.D d){uc();}
+  @Override public void visitK(Half.K k){uc();}
 
-  @Override public void visitSTMeth(ST.STMeth stMeth){throw uc;}
-  @Override public void visitSTOp(ST.STOp stOp){throw uc;}
+  @Override public void visitSTMeth(ST.STMeth stMeth){uc();}
+  @Override public void visitSTOp(ST.STOp stOp){uc();}
 
 
 }

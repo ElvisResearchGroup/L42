@@ -1,6 +1,8 @@
 package is.L42.typeSystem;
 
 import static is.L42.tools.General.L;
+
+import java.util.Collections;
 import java.util.List;
 
 import is.L42.common.G;
@@ -36,8 +38,9 @@ public class ProgramTypeSystem {
   private static void visitMethE(Program p,MH mh, E e){
     var g=G.of(mh);
     List<P> ps=L(mh.exceptions().stream().map(t->t.p()));
-    var expected=mh.t().p();
-    e.visitable().accept(new PathTypeSystem(true,p,g,L(),ps,expected));
+    e.visitable().accept(new PathTypeSystem(true,p,g,L(),ps,mh.t().p()));
+    var mdf=TypeManipulation.fwdPOf(mh.t().mdf());
+    e.visitable().accept(new MdfTypeSystem(p,g,Collections.emptySet(),mdf));
     }
 
 }

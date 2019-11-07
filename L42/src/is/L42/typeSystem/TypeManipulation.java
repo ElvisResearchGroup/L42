@@ -1,14 +1,22 @@
 package is.L42.typeSystem;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
+import static is.L42.tools.General.toOneOr;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import is.L42.common.G;
+import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
+import is.L42.generated.Core.EX;
+import is.L42.generated.Core.PCastT;
 import is.L42.generated.Core.T;
+import is.L42.generated.Core.XP;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import static is.L42.generated.Mdf.*;
@@ -19,16 +27,11 @@ public class TypeManipulation {
   public static boolean fwd_or_fwdP_in(Mdf m){
     return m.isIn(ImmutableFwd,ImmutablePFwd,MutableFwd,MutablePFwd);
     }
-  public static boolean fwd_or_fwdP_inMdfs(List<Mdf> mdfs){
+  public static boolean fwd_or_fwdP_inMdfs(Collection<Mdf> mdfs){
     return mdfs.stream().anyMatch(m->fwd_or_fwdP_in(m));
     }
   public static boolean fwd_or_fwdP_inTs(Stream<T> ts){
     return ts.anyMatch(t->fwd_or_fwdP_in(t.mdf()));
-    }
-  public static Mdf fwdP(Mdf m){
-    if(m.isImm()){return ImmutablePFwd;}
-    if(m.isMut()){return MutablePFwd;}
-    return m;
     }
   public static Mdf noFwd(Mdf mdf){
     if(mdf.isIn(ImmutableFwd,ImmutablePFwd)){return Immutable;}
@@ -81,7 +84,7 @@ public class TypeManipulation {
     if(t.mdf()==Mdf.Capsule){return t.withMdf(Mdf.Lent);}
     return t;
     }
-  public static Core.T _toRead(Core.T t){
+  public static Core.T toRead(Core.T t){
     if(!t.mdf().isIn(Lent,Mutable,Capsule)){return t;}//imm, read, class, fwd, fwd%
     return t.withMdf(Readable);
     }  
@@ -121,4 +124,35 @@ public class TypeManipulation {
   public static Stream<P.NCs> skipThis0(Stream<P.NCs> s){
     return s.filter(p->p.n()>0).map(p->p.toNCs().withN(p.n()-1));
     }
+  public static List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
+    return L(c->{
+      for(Mdf mdf:Mdf.values()){
+        if(mdf.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
+        if(mdfs.stream().allMatch(mdf1->Program.isSubtype(mdf1,mdf))){
+          c.add(mdf);
+          }
+        }
+      });
+    }
+  public static Mdf _mostGeneralMdf(Set<Mdf> mdfs){
+    var g=generalEnoughMdf(mdfs);
+    return g.stream().filter(mdf->g.stream()
+      .allMatch(mdf1->Program.isSubtype(mdf, mdf1)))
+      .reduce(toOneOr(()->bug())).orElse(null);
+    }
+  public static Mdf fwdOf(Mdf m){
+    if(m.isIn(Immutable,ImmutablePFwd)){return ImmutableFwd;}
+    if(m.isIn(Mutable,MutablePFwd)){return MutableFwd;}
+    return m;
+    }
+  public static Mdf fwdPOf(Mdf m){
+    if(m.isImm()){return ImmutablePFwd;}
+    if(m.isMut()){return MutablePFwd;}
+    return m;
+    }
+  public static P guess(G g, XP xp){
+  if(xp instanceof EX){return g.of(((EX)xp).x()).p();}
+  return ((PCastT)xp).t().p();
+  }
+    
   }
