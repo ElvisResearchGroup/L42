@@ -321,7 +321,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=y.with_expectedT(P.stzCoreVoid);
     var res=compute(innerBlock);
     y=oldY;
-    var kStz=res.resSTz;
+    var kStz=res.retSTz;
     if(y._expectedT()!=null){kStz=mergeU(y._expectedT(),kStz);}
     Half.K k=new Half.K(ThrowKind.Return,kStz,x1,ex1);
     Half.D d=new Half.D(false,null,L(P.coreVoid), x,res.e);

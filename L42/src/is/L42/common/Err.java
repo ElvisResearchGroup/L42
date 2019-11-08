@@ -212,10 +212,10 @@ public class Err {
   "Method "+_1+" does not exists. Existing methods are:\n"+_2+"\n"
   ;}public static String invalidSetOfMdfs(Object _1){return
   "Invalid set of modifiers for the expected type of a return: "+_1
-  ;}public static String methCallResultIncompatibleWithExpected(Object _1){return
-  "method call result type is incompatible with the expected modifier: "+_1
-  ;}public static String methCallNoCompatibleMdfParametersSignature(){return
-  "method call parameter signature is incompatible the parameters"
+  ;}public static String methCallResultIncompatibleWithExpected(Object _1,Object _2){return
+  "for method "+_1+", method call result type is incompatible with the expected modifier: "+_2
+  ;}public static String methCallNoCompatibleMdfParametersSignature(Object _1){return
+  "for method "+_1+", method call parameter signature is incompatible the parameters"
  ;}public static String mayLeakUnresolvedFwd(Object _1){return
   "fwd variable "+_1+" may be leaked out using a return"
  

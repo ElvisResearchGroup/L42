@@ -45,100 +45,100 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestTypeStstem
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   pass("{A={B={method Void main()=void}}}")   
+   pass("A={B={method Void main()=void}}")   
    ),new AtomicTest(()->
-   fail("{A={B={method Library main()=void}}}",Err.invalidExpectedTypeForVoidLiteral(hole))
+   fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->
-   pass("{A={class method Void v()=void B={method class A main()=A<:class A}}}")   
+   pass("A={class method Void v()=void B={method class A main()=A<:class A}}")   
    ),new AtomicTest(()->
-   fail("{A={class method Void v()=void B={method class Void main()=A<:class A}}}",Err.subTypeExpected(hole,hole))   
+   fail("A={class method Void v()=void B={method class Void main()=A<:class A}}",Err.subTypeExpected(hole,hole))   
    ),new AtomicTest(()->
-   fail("{A={class method Void v()=void B={method class Void main()=A<:class Void}}}",Err.subTypeExpected(hole,hole))
+   fail("A={class method Void v()=void B={method class Void main()=A<:class Void}}",Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->
-   fail("{A={B={method class A main()=A<:class A}}}",Err.castOnPathOnlyValidIfDeclaredClassMethods(hole))   
+   fail("A={B={method class A main()=A<:class A}}",Err.castOnPathOnlyValidIfDeclaredClassMethods(hole))   
    ),new AtomicTest(()->
-   fail("{A={interface class method Void v() B={method class A main()=A<:class A}}}",Err.castOnPathOnlyValidIfNotInterface(hole))
+   fail("A={interface class method Void v() B={method class A main()=A<:class A}}",Err.castOnPathOnlyValidIfNotInterface(hole))
    ),new AtomicTest(()->
-   pass("{A={B={method class Any main()=A<:class Any}}}")
+   pass("A={B={method class Any main()=A<:class Any}}")
    ),new AtomicTest(()->
-   pass("{A={B={method Any main()={#norm{}}}}}")
+   pass("A={B={method Any main()={#norm{}}}}")
    ),new AtomicTest(()->
-   fail("{A={B={method Void main()={#norm{}}}}}",Err.subTypeExpected(hole,hole))
+   fail("A={B={method Void main()={#norm{}}}}",Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->
-   pass("{A={B={method This main()=this}}}")
+   pass("A={B={method This main()=this}}")
    ),new AtomicTest(()->
-   pass("{A={B={method Void main()=loop this.main()}}}")
+   pass("A={B={method Void main()=loop this.main()}}")
    ),new AtomicTest(()->
-   fail("{A={B={method Library main()=loop this.main()}}}",Err.subTypeExpected(hole,hole))
+   fail("A={B={method Library main()=loop this.main()}}",Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()=error B()
      class method B()
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()=exception B()
      class method B()
-     }}}
+     }}
      """,Err.leakedThrow(hole))
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()[Void]=exception B()
      class method B()
-     }}}
+     }}
      """,Err.leakedThrow(hole))
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()[B]=exception B()
      class method B()
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()= B().main()
      class method B()
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()= this.surprise()
      class method B()
-     }}}
+     }}
      """,Err.methodDoesNotExists(hole,hole))
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()= this.leaking()
      class method B()
      method Void leaking()[B]
-     }}}
+     }}
      """,Err.leakedExceptionFromMethCall(hole))
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()[B]= B().leaking()//testing block by desugaring
      class method B()
      method Void leaking()[B]
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()= B().leaking()//testing block by desugaring
      class method B()
      method Void leaking()[B]
-     }}}
+     }}
     """,Err.leakedExceptionFromMethCall(hole))
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()[B]=(
        B b1=B()
        B b2=B()
@@ -146,11 +146,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        )
      class method B()
      method Void many(B that,B other)=void
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()=(
        B b1=B()
        B b2=B()
@@ -158,11 +158,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        )
      class method B()
      method Void many(B that,B other)=void
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    pass("""
-   {A={B={
+   A={B={
      method Void main()=(
        B b1=B()
        B b2=B()
@@ -171,21 +171,21 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        )
      class method B()
      method Void many(B that,B other)=void
-     }}}
+     }}
      """)
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()=(
        Void v0=void
        catch Void v (v<:Any)
        void
        )
-     }}}
+     }}
      """,Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->
    fail("""
-   {A={B={
+   A={B={
      method Void main()=(
        Void b1=void
        B b2=B()
@@ -193,69 +193,69 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        )
      class method B()
      method Void many(B that,B other)=void
-     }}}
+     }}
      """,Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->pass("""
-   {A={B={method read Any main()=(exception void catch exception Void  x void)}}}
+   A={B={method read Any main()=(exception void catch exception Void  x void)}}
    """)
    ),new AtomicTest(()->pass("""
-   {A={B={method Any main()[Any]=(
+   A={B={method Any main()[Any]=(
      (exception void catch exception Any x exception x)
      catch exception Void xOut (void) void)
-   }}}
+   }}
    """)
    ),new AtomicTest(()->pass("""
-   {A={B={method class Any main()=Any}}}
+   A={B={method class Any main()=Any}}
    """)
    ),new AtomicTest(()->pass("""
-   {A={B={method class Any main()=Library}}}
+   A={B={method class Any main()=Library}}
    """)
    ),new AtomicTest(()->pass("""
-   {A={B={method class Any main()=Void}}}
+   A={B={method class Any main()=Void}}
    """)
    ),new AtomicTest(()->fail("""
-   {A={B={method class Void main()=Void}}}
+   A={B={method class Void main()=Void}}
    """,Err.castOnPathOnlyValidIfDeclaredClassMethods(hole))
    ),new AtomicTest(()->pass("""
-   {C={class method This k()}A={B={method C main()=C.k()}}}
+   C={class method This k()}A={B={method C main()=C.k()}}
    """)
    ),new AtomicTest(()->pass("""
-   {C={class method mut This k()}A={B={method C main()=C.k()}}}
+   C={class method mut This k()}A={B={method C main()=C.k()}}
    """)
    ),new AtomicTest(()->pass("""
-   {C={class method mut This k()}A={B={method capsule C main()=C.k()}}}
+   C={class method mut This k()}A={B={method capsule C main()=C.k()}}
    """)
    ),new AtomicTest(()->pass("""
-   {C={class method mut This k()}A={B={method read C main()=C.k()}}}
+   C={class method mut This k()}A={B={method read C main()=C.k()}}
    """)
    ),new AtomicTest(()->pass("""
-   {C={class method mut This k()}A={B={method lent C main()=C.k()}}}
+   C={class method mut This k()}A={B={method lent C main()=C.k()}}
    """)
       ),new AtomicTest(()->pass("""
-   {C={class method mut This k()}A={B={method mut C main()=C.k()}}}
+   C={class method mut This k()}A={B={method mut C main()=C.k()}}
    """)
    ),new AtomicTest(()->fail("""
-   {C={class method mut This k()}A={B={method class C main()=C.k()}}}
-   """,Err.methCallResultIncompatibleWithExpected(hole))
+   C={class method mut This k()}A={B={method class C main()=C.k()}}
+   """,Err.methCallResultIncompatibleWithExpected(hole,hole))
    ),new AtomicTest(()->pass("""
-   {D={class method This k()}A={B={method read Any main()=error D.k()}}}
+   D={class method This k()}A={B={method read Any main()=error D.k()}}
    """)
    ),new AtomicTest(()->pass("""
-   {D={var D f class method This k(fwd imm D f)}
-    A={B={method read Any main()=( D x=D.k(f=x), x)}}}
+   D={var D f class method This k(fwd imm D f)}
+    A={B={method read Any main()=( D x=D.k(f=x), x)}}
    """)
-   ),new AtomicTest(()->pass("{"+listExample+"""
-   A={B={method List main()=List.factory(N.k())}}}
+   ),new AtomicTest(()->pass(listExample+"""
+   A={B={method List main()=List.factory(N.k())}}
    """)
-   ),new AtomicTest(()->pass("{"+listExample+"""
+   ),new AtomicTest(()->pass(listExample+"""
    A={B={method List main()=(
      class List wthis=List,
      N that=N.k(),
      List x=wthis.factoryAux(that,top=x)
      x
-     )}}}
+     )}}
    """)
-   ),new AtomicTest(()->pass("{"+listExample+"""
+   ),new AtomicTest(()->pass(listExample+"""
    A={B={method List main()=(
     class List wthis=List
     N that=N.k()
@@ -265,227 +265,209 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         next=List.factoryAux(that.lessOne(),top=top)
         elem=that))
       List.k(next=top,elem=N.k()))
-     )}}}
+     )}}
    """)
-
-/*         },{lineNumber(),"( fwd D x=D.k(f:void), x)",
-         new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
-           new Type(Mdf.ImmutableFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{var Any f class method This k(fwd Any f)} }"}
-
-         //
-         },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
-         new Type(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new Type(Mdf.MutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{var Any f class method mut This k(fwd Any f)} }"}
-         },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
-         new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{Any f, class method mut This k( fwd Any f)} }"}
-         },{lineNumber(),"( fwd D x=D.k(f:void), D.k(f:x))",
-         new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new Type(Mdf.ImmutablePFwd,Path.parse("This0.D"),Doc.empty()),
-           new String[]{"{ D:{Any f, class method This k( fwd Any f)} }"}//here no mut This
-         },{lineNumber(),"( D x=D.k(f:void), D.k(f:x))",
-           new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-           new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
-           new String[]{"{ D:{var fwd Any f class method mut This k( fwd Any f)} }"}
-        //
-         },{lineNumber(),Functions.multiLine(""
-,"("
-,"  Void unused1=("
-,"    Void unused00=exception C.k()"
-,"    catch exception "
-,"      D x return { }"
-,"    catch exception C x error void"
-,"      "
-,"    void"
-,"    )"
-,"  catch return  Library result0 ("
-,"    result0"
-,"    )"
-,"  error void"
-,"  )"),
-         new Type(Mdf.Immutable,Path.Library(), Doc.empty()),
-new Type(Mdf.Immutable,Path.Library(), Doc.empty()),
-new String[]{"{ C:{ class method This k()}, D:{class method This k()}}"}
-
-}});}
-      //TODO: before ts after desugaring, do well formedness check!
-
-
-    @Test
-    public void testType() {
-      TestHelper.configureForTest();
-      ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-      Program p=TestHelper.getProgram( program);
-      TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,true,this.typeSugg));
-      assert out.isOk():new FormattedError(out.toError());
-      Assert.assertEquals(typeExpected,out.toOk().computed);
-    }
-
-    }
-
-@RunWith(Parameterized.class)
-public static class TestStage2 {
-  @Parameter(0) public int _lineNumber;
-  @Parameter(1) public String _e;
-  @Parameter(2) public Type typeSugg;
-  @Parameter(3) public Type typeExpected;
-  @Parameter(4) public String[] program;
-  @Parameters(name = "{index}: line {0}")
-  public static List<Object[]> createData() {
-    return Arrays.asList(new Object[][] {
-      {lineNumber(), "void",
-        Type.immVoid,
-        Type.immVoid,
-      new String[]{"{ C:{}}"}
-    },{lineNumber(), "C.#mutK()",
-      new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-      new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-      new String[]{"{ C:{class method mut This #mutK()}}"}
-    },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
-      new Type(Mdf.Readable,Path.parse("This0.D"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This #mutK()}}"}
-    },{lineNumber(), "C.#mutK(f:D.#mutK()).#f()",
-      new Type(Mdf.Mutable,Path.parse("This0.D"), Doc.empty()),
-      new Type(Mdf.Capsule,Path.parse("This0.D"), Doc.empty()),
-      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This #mutK()}}"}
-    },{lineNumber(), "C.#mutK(f:D.#mutK()).f()",
-      new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.D"), Doc.empty()),
-      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This #mutK()}}"}
-
-    },{lineNumber(), "(lent Vector v=Vector.#mutK(), mut B b=B.#mutK(N.#mutK()),v.add(b.clone()))",
-      Type.immVoid,
-      Type.immVoid,
-      new String[]{cloneExample}
-    },{lineNumber(), "(A a=A.k(f:B.k(N.k()).clone()) a)",
-      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new String[]{cloneExample}
-  //is ok, clone vuole readable
-    },{lineNumber(), "(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
-      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new String[]{cloneExample}
-
-    },{lineNumber(), "(mut B b=B.k(N.k()), A a=A.k(f:b.clone()) a)",
-      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-      new String[]{cloneExample}
-
-    },{lineNumber(), " ( B bi=A.k(f:(read B b=B.k(N.k()) b).clone()).f() bi)",
-      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
-      new String[]{cloneExample}
-
-    },{lineNumber(), " (read B b=B.k(N.k()),  B bi=A.k(f:b.clone()).f() bi)",
-      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
-      new Type(Mdf.Immutable,Path.parse("This0.B"), Doc.empty()),
-      new String[]{cloneExample}
-    },{lineNumber(), " (AI any=(mut AI aI=AI.#mutK() aI) any)",
-    new Type(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
-    new Type(Mdf.Immutable,Path.parse("This0.AI"), Doc.empty()),
-    new String[]{"{ AI:{class method mut This #mutK()} }"}
-
-    },{lineNumber(), "error D.k()",//get capsule promoted
-      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      new String[]{"{ C:{var mut D f class method mut This #mutK(mut D f)} D:{class method mut This k()}}"}
-    },{lineNumber(), "( D().m(D()) )",
-      new Type(Mdf.Readable,Path.Void(),Doc.empty()),
-      Type.immVoid,
-      new String[]{"{class method This() D:{ class method mut This() mut method Void m(mut D that) error void }}"}
-    },{lineNumber(), "( mut D x=D() mut D y=D() x.m(y)  )",
-      new Type(Mdf.Readable,Path.Void(),Doc.empty()),
-      Type.immVoid,
-      new String[]{"{class method This() D:{ class method mut This() mut method Void m(mut D that) error void }}"}
- //now not well typed any more... it seams like a good thing?
-  //   },{lineNumber(), "( lent D x=D.#mutK() mut D y=D.#mutK() x.m(y)  )",//Deceiving, but it should pass! as for ( lent D x=D() ( mut D y=D() x.m(y) ) )
-  //    new NormType(Mdf.Readable,Path.Void(),Doc.empty()),
-  //    NormType.immVoid,
-  //    new String[]{"{() D:{ mut () mut method Void m(mut D that) error void }}"}
-  /// },{lineNumber(),
-      "Reader.readCustomer()",
-      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-      new String[]{"{ class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
-      +" class method capsule Customer readCustomer() (\n"
-      +"   mut Customer c=Customer()\n"
-      +"   c //ok, capsule promotion here\n"
-      +" )}}"}
-    },{lineNumber(),
-        "Reader.readCustomer()",
-        new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-        new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-        new String[]{"{class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
-        +" class method capsule Customer readCustomer() {\n"
-        +" return Customer()"
-        +" }}}"}
-    },{lineNumber(),
-      "Reader.readCustomer()",
-      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-      new String[]{"{class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
-      +" class method capsule Customer readCustomer() (\n"
-      +"   mut Customer c=Customer()\n"
-      +"   return c //ok, capsule promotion here\n"
-      +"   catch return mut Customer x x"
-      +"   error void)}}"}
-    },{lineNumber(),
-      "Reader.readCustomer()",
-      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      new Type(Mdf.Capsule,Path.parse("This0.Customer"), Doc.empty()),
-      new String[]{"{class method This() \n Customer:{ class method mut This() }\n Reader :{class method This()\n"
-      +" class method capsule Customer readCustomer() {\n"
-      +"   mut Customer c=Customer()\n"
-      +"   return c //ok, capsule promotion here\n"
-      +" }}}"}
-    }});}
-
-
-
-      @Test
-      public void testType() {
-        TestHelper.configureForTest();
-        ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-        Program p=TestHelper.getProgram(program);
-        p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
-        TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,true, this.typeSugg));
-        assert out.isOk():FormattedError.format(out.toError());
-        Assert.assertEquals(typeExpected,out.toOk().computed);
-   }
-}
-@RunWith(Parameterized.class)
-public static class TestStage3_notOk {
-  @Parameter(0) public int _lineNumber;
-  @Parameter(1) public String _e;
-  @Parameter(2) public Type typeSugg;
-  @Parameter(3) public Type typeExpected;//TODO: what is the role of this for test not ok?
-  @Parameter(4) public String[] program;
-  @Parameters(name = "{index}: line {0}")
-  public static List<Object[]> createData() {
-    return Arrays.asList(new Object[][] {
-        {lineNumber()," (mut C x=C(x) x)",
-          Type.immVoid,
-        new Type(Mdf.Capsule,Path.Void(), Doc.empty()),
-        new String[]{"{ C:{mut C that class method mut This(mut C that)}}"}
-        },{lineNumber()," (mut C x=C(x) (capsule C y=x y))",
-          new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-          new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-          new String[]{"{ C:{mut C that class method mut This(mut C that)}}"}
-
-      },{lineNumber()," (mut C x=C(x) (capsule C y=x.#that() y))",
-        new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-        new Type(Mdf.Capsule,Path.parse("This0.C"), Doc.empty()),
-        new String[]{"{ C:{mut C that class method mut This(mut C that)}}"}
-      },{lineNumber(),"(mut B b=B.k(N.k()), A a=A.k(f:b) a)",
-        new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-        new Type(Mdf.Immutable,Path.parse("This0.A"), Doc.empty()),
-        new String[]{cloneExample}
-
+   ),new AtomicTest(()->pass("""
+   D={var Any f, class method This k(fwd imm Any f)}
+   A={B={method D main()=D.k(f=( fwd imm D x=D.k(f=void), x))}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={var Any f, class method mut This k(fwd imm Any f)}
+   A={B={method D main()=D.k(f=( fwd imm D x=D.k(f=void), D.k(f=x)))}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={var Any f, class method mut This k(fwd imm Any f)}
+   A={B={method mut D main()=( fwd imm D x=D.k(f=void), D.k(f=x))}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={Any f, class method This k(fwd imm Any f)}
+   A={B={method D main()=( fwd imm D x=D.k(f=void), D.k(f=x))}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={class method mut This k(fwd imm Any f)}
+   A={B={method D main()=( D x=D.k(f=void), D.k(f=x))}}
+   """)
+   ),new AtomicTest(()->pass("""
+   C={class method This k()}
+   D={class method This k()}
+   A={B={method Library main()=(
+     Void unused1=(
+       exception C.k()
+       catch exception D x return {#norm{}}
+       catch exception C x error void
+       )
+     catch return  Library result0 (result0)
+     error void
+   )}}
+   """)
+   ),new AtomicTest(()->pass(
+   "A={B={method Void main()=void}}")
+   ),new AtomicTest(()->pass("""
+   C={class method mut This #mutK()}
+   A={B={method C main()=C.#mutK()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   C={var mut D f class method mut This #mutK(mut D f)}
+   D={class method mut This #mutK()}
+   A={B={method D main()=C.#mutK(f=D.#mutK())<:C.f()}}
+   """)//TODO: Discuss: this is easy to misread as <:(C.f()). Would [<C] be better? any other alternative?
+   ),new AtomicTest(()->pass("""
+   C={var mut D f class method mut This #mutK(mut D f)}
+   D={class method mut This #mutK()}
+   A={B={method mut D main()=C.#mutK(f=D.#mutK()).#f()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   C={var mut D f class method mut This #mutK(mut D f)}
+   D={class method mut This #mutK()}
+   A={B={method read D main()=C.#mutK(f=D.#mutK()).f()}}
+   """)
+   ),new AtomicTest(()->pass(cloneExample+"""
+   A={B={method Void main()=(
+     lent Vector v=Vector.#mutK(),
+     mut BB b=BB.#mutK(N.#mutK()),
+     v.add(b.clone())
+     )}}
+   """)
+   ),new AtomicTest(()->pass(cloneExample+"""
+   A={B={method AA main()=(
+     AA a=AA.k(f=BB.k(N.k()).clone()) a
+     )}}
+   """)
+   ),new AtomicTest(()->pass(cloneExample+"""
+   A={B={method AA main()=(
+     mut BB b=BB.k(N.k())
+     AA a=AA.k(f=b.clone())
+     a
+     )}}
+   """)
+   ),new AtomicTest(()->pass(cloneExample+"""
+   A={B={method BB main()=(
+     BB bi=AA.k(f=(read BB b=BB.k(N.k()) b).clone())<:AA.f()
+     bi
+     )}}
+   """)
+   ),new AtomicTest(()->pass(cloneExample+"""
+   A={B={method BB main()=(
+     read BB b=BB.k(N.k())
+     BB bi=AA.k(f=b.clone())<:AA.f() 
+     bi
+     )}}
+   """)
+   ),new AtomicTest(()->pass("""
+   AI={class method mut This #mutK()}
+   A={B={method AI main()=(
+     AI any=(mut AI aI=AI.#mutK() aI)//block capsule promotion 
+     any
+     )}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={class method mut This k()}
+   A={B={method read Any main()=error D.k()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={
+     class method mut This ()
+     mut method Void m(mut D that)=error void 
+     }
+   A={B={method read Void main()=D().m(D())}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={
+     class method mut This ()
+     mut method Void m(mut D that)=error void 
+     }
+   A={B={method read Void main()=(
+     mut D x=D()
+     mut D y=D()
+     x.m(y)
+     )}}
+   """)
+   ),new AtomicTest(()->pass("""
+   D={
+     class method mut This ()
+     mut method mut D m(mut D that)=error void 
+     }
+   A={B={
+     method lent D main()=(
+       lent D x=D()
+       This.doXM(x=x)
+       )
+     class method mut D doXM(mut D x)=(mut D y=D() x.m(y))
+     }}
+   """)
+   ),new AtomicTest(()->fail("""
+   D={
+     class method mut This ()
+     mut method Void m(mut D that)=error void 
+     }
+   A={B={
+     method mut D main()=(
+       lent D x=D()
+       This.doXM(x=x)
+       )
+     class method mut D doXM(mut D x)=(mut D y=D() x.m(y))
+     }}
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   ),new AtomicTest(()->pass("""
+   Customer={ class method mut This() }
+   Reader={class method This()
+     class method capsule Customer readCustomer()=(
+       mut Customer c=Customer()
+       c)}//ok, capsule promotion here
+   A={B={method capsule Customer main()=Reader.readCustomer()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   Customer={ class method mut This() }
+   Reader={class method This()
+     class method capsule Customer readCustomer()={
+       return Customer()}}
+   A={B={method capsule Customer main()=Reader.readCustomer()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   Customer={ class method mut This() }
+   Reader={class method This()
+     class method capsule Customer readCustomer()=(
+      mut Customer c=Customer()
+      return c //ok, capsule promotion here
+      catch return mut Customer x x
+      error void//TODO: this stay broken until we fix desugaring for void/error void
+      )}
+   A={B={method capsule Customer main()=Reader.readCustomer()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   Customer={ class method mut This() }
+   Reader={class method This()
+     class method capsule Customer readCustomer()={
+      mut Customer c=Customer()
+      return c //ok, capsule promotion here
+      }}
+   A={B={method capsule Customer main()=Reader.readCustomer()}}
+   """)
+   ),new AtomicTest(()->pass("""
+   C={mut C that class method mut This(fwd mut C that)}
+   A={B={method C main()=(mut C x=C(x) x)}}
+   """)
+   ),new AtomicTest(()->fail("""
+   C={mut C that class method mut This(fwd mut C that)}
+   A={B={method capsule C main()=(mut C x=C(x) (capsule C y=x y))}}
+   """,Err.subTypeExpected(hole,hole))
+   ),new AtomicTest(()->fail("""
+   C={mut C that class method mut This(fwd mut C that)}
+   A={B={method capsule C main()=(mut C x=C(x) (capsule C y=x.#that() y))}}
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   ),new AtomicTest(()->fail(cloneExample+"""
+   C={mut C that class method mut This(fwd mut C that)}
+   A={B={method capsule AA main()=(mut BB b=BB.k(N.k()), AA a=AA.k(f=b) a)}}
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   ),new AtomicTest(()->fail("""
+   A={B={
+   method This main(This that)=native{trusted:OP+} error void
+   }}
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+//this should pass, but only if ...
+//this is only for coreLs? what is the rule for fullL? fullL are not typed anyway..
+//TOOD: make the table in the TS, start with just imms ops.
+/*
       },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
           new Type(Mdf.Readable,Path.Any(),Doc.empty()),
@@ -536,19 +518,6 @@ public static class TestStage3_notOk {
 
 
 
-static String cloneExample=Functions.multiLine("{"
-    ,"  N:{class method mut This #mutK() class method mut This k() this.#mutK()}"
-    ,"  B:{var N that "
-    ,"   class method mut This #mutK(N that)"
-    ,"   class method mut This k(N that) this.#mutK(that)"
-    ,"    read method"
-    ,"    capsule B clone() (B.k(this.that()))"
-    ,"    }"
-    ,"  A:{mut B f class method mut This #mutK(mut B f)"
-    ,"   class method mut This k(mut B f) this.#mutK(f:f)}"
-    ,"  Vector:{class method mut This #mutK()"
-    ,"    mut method Void add(mut B that) (void)}"
-    ,"}");
 
 
 }
@@ -841,18 +810,19 @@ public void test8() {try{runTypeSystem(
 
 public static void pass(String program){
   Resources.clearRes();
-  Init init=new Init(program){
+  Init init=new Init("{"+program+"}"){
     protected Top makeTop(FreshNames f){
       return new Top(f,0,new Loader()){
         protected Program flagTyped(Loader loader,Program p1) throws EndError{
           return p1;
         }};
     }};
-  Core.L norm=(Core.L)init.top.top(new CTz(),init.p).top;
-  var ab=List.of(new C("A",-1),new C("B",-1));
+  Program p=init.top.top(new CTz(),init.p);
+  ProgramTypeSystem.type(true, p);
+  /*var ab=List.of(new C("A",-1),new C("B",-1));
   MWT main=_elem(norm.cs(ab).mwts(),S.parse("main()"));
   Program p=Program.flat(norm).navigate(P.of(0,ab));
-  ProgramTypeSystem.typeMWT(p,main);
+  ProgramTypeSystem.typeMWT(p,main);*/
   }
 public static void fail(String program,String...out){
   Resources.clearRes();
@@ -883,5 +853,22 @@ public static String listExample="""
       )
     }
   """;
+public static String cloneExample="""
+  N={class method mut This #mutK() class method mut This k()=this.#mutK()}
+  BB={var N that
+    class method mut This #mutK(N that)
+    class method mut This k(N that)=this.#mutK(that)
+    read method capsule BB clone()=BB.k(this.that())
+    }
+  AA={mut BB f
+    class method mut This #mutK(mut BB f)
+    class method mut This k(mut BB f)=this.#mutK(f=f)
+    }
+  Vector={
+    class method mut This #mutK()
+    mut method Void add(mut BB that)=void
+    }
+  """;
+
 
 }

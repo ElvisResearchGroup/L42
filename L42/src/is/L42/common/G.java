@@ -28,7 +28,7 @@ public class G {
     String res="";
     for(var x:L(xInT.keySet().stream().sorted((x1,x2)->x1.inner().compareTo(x2.inner())))){
       if(vars.contains(x)){res+="var ";}
-      res+=x+":"+xInT.get(x);
+      res+=x+":"+xInT.get(x)+"; ";
       
       }
     return res;

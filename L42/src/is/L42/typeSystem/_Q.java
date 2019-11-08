@@ -8,8 +8,8 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.T;
 import is.L42.generated.P;
 
-public class Q extends is.L42.visitors.UndefinedCollectorVisitor{
-  public Q(boolean typed, Program p, G g, List<T> rets, List<P> exceptions, P type) {
+public class _Q extends is.L42.visitors.UndefinedCollectorVisitor{
+  public _Q(boolean typed, Program p, G g, List<T> rets, List<P> exceptions, P type) {
     this.typed = typed;
     this.p=p;
     this.g = g;

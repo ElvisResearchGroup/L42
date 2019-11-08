@@ -80,7 +80,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     P p0=TypeManipulation.guess(g,e.xP());
     var meths=AlternativeMethodTypes.types(p,p0.toNCs(),e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected)));
-    errIf(meths.isEmpty(),e,Err.methCallResultIncompatibleWithExpected(expected));
+    errIf(meths.isEmpty(),e,Err.methCallResultIncompatibleWithExpected(e.s(),expected));
     List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});
     var oldG=g;
     var oldExpected=expected;
@@ -98,7 +98,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
         }
       catch(EndError.TypeError ignored){}
       }
-    errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature());
+    errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature(e.s()));
     }
   @Override public void visitOpUpdate(OpUpdate e){
     mustSubMdf(Immutable,expected,e.poss());
@@ -118,11 +118,14 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       var lentG=oldG.toLent();
       e.accept(new PropagatorCollectorVisitor(){
         @Override public void visitL(Core.L l){}
-        @Override public void visitX(X x){
-          if(lentG._of(x)==null){throw te;}
+        @Override public void visitEX(EX x){
+          if(oldG._of(x.x())==null){return;}
+          if(lentG._of(x.x())==null){throw te;}
           }
         @Override public void visitOpUpdate(Core.OpUpdate u){
+          if(oldG._of(u.x())==null){return;}
           if(!lentG.isVar(u.x())){throw te;}
+          super.visitOpUpdate(u);
           }
         });
       g=lentG;
@@ -195,6 +198,6 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     g=g.plusEq(k.x(),k.t());
     visitE(k.e());
     g=oldG;
-    if(k.thr()==ThrowKind.Return){mdfs.add(t.mdf());}
+    if(k.thr()==ThrowKind.Return){mdfs1.add(t.mdf());}
     }
   }

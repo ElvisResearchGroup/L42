@@ -134,9 +134,10 @@ _______
 * p;G;mdfs |= (Ds Ks e) : capsule <= mdf  //(capsule promotion)
     mdf in {capsule, imm, fwdImm, fwd%Imm}
     Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
-    p;toLent(G);mdfs |-(Ds Ks e) : mut <= mut
-    forall x:=_ inside (Ds Ks e), toLent(G)(x).var?=var
-    if x inside (Ds Ks e) then x in dom(toLent(Q.G)) //some may be removed by toLent
+    p;toLent(G);mdfs |=(Ds Ks e) : mut <= mut
+    forall x in dom(G):
+      forall x:=_ inside (Ds Ks e), toLent(G)(x).var?=var
+      if x inside (Ds Ks e) then x in dom(toLent(Q.G)) //some may be removed by toLent
 //this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
 //this rule can not be applied, since we require mut P <=mut P in the premise.
 //this is another point where a variable 'x' can become undefined thanks to toLent(G)

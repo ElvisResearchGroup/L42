@@ -14,7 +14,7 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.P;
 import is.L42.generated.Core.L.MWT;
 
-public class TypeL {
+public class _TypeL {
   public static void type(Program p){
     for(MWT mwt:p.topCore().mwts()){type(p,mwt);}
     for(NC nc:p.topCore().ncs()){
@@ -46,7 +46,7 @@ public class TypeL {
     */
     if(mwt._e()==null){return;}
     List<P> exceptions=L(mh.exceptions().stream().map(t->t.p()));
-    Q q=new Q(true,p,G.of(mh),L(),exceptions,mh.t().p());
+    _Q q=new _Q(true,p,G.of(mh),L(),exceptions,mh.t().p());
     mwt._e().visitable().accept(q);
     //Q |= e :_ <=fwd% MWT.T.mdf//TODO: add the mdf TS
     }
