@@ -459,353 +459,196 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    C={mut C that class method mut This(fwd mut C that)}
    A={B={method capsule AA main()=(mut BB b=BB.k(N.k()), AA a=AA.k(f=b) a)}}
    """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   ),new AtomicTest(()->pass("""
+   A={B={
+   method This0 main(This0 that)=native{trusted:OP+} error void
+   #norm{typeDep=This0 nativeKind=Int}
+   }}
+   """)
    ),new AtomicTest(()->fail("""
    A={B={
-   method This main(This that)=native{trusted:OP+} error void
+   method This0 main(This1 that)=native{trusted:OP+} error void
+   #norm{typeDep=This0 nativeKind=Int}
+   }}
+   """,Err.nativeParameterInvalidKind(hole,"main(that)",hole,"Int"))
+   ),new AtomicTest(()->pass("""
+   A={B={ class method This()
+   method Void main()=(
+     exception B()
+     catch exception Any x (void)     
+     )
+   }}
+   """)
+   ),new AtomicTest(()->fail("""
+   A={B={ class method mut This()  mut method Void m(mut This that)=error void
+   method read Any main()=(
+     mut B x=B() lent B y=B() x.m(y)     
+     )
    }}
    """,Err.methCallNoCompatibleMdfParametersSignature(hole))
-//this should pass, but only if ...
-//this is only for coreLs? what is the rule for fullL? fullL are not typed anyway..
-//TOOD: make the table in the TS, start with just imms ops.
-/*
-      },{lineNumber(),"use A check sumInt32(n1:void n2:{}) error void",
-          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-          new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-          new String[]{"{ A:{//@plugin\n//L42.is/connected/withAlu\n}}"}
-      //test to check that exception Any can not be captured//TODO: is now ok to capture any with the new TS?
-      //},{lineNumber(),"( exception D() catch exception Any x void void)",
-      //  Type.immVoid,
-      //  Type.immVoid,
-      //  new String[]{"{ D:{class method This() method Void m() (void)}}"}
-      },{lineNumber(),"( mut D x=D() lent D y=D() x.m(y)  )",//must fail//ok
-              new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-              Type.immVoid,
-              new String[]{"{ D:{class method mut This() mut method Void m(mut D that) error void }}"}
-      },{lineNumber(),"( mut D y=D() lent D x=D() x.m(y)  )",//must fail//ok
-              new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-              Type.immVoid,
-              new String[]{"{ D:{ class method mut This() mut method Void m(mut D that) error void }}"}
-      },{lineNumber(),"D.foo()",//must fail//ok
-        new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-        Type.immVoid,
-        new String[]{"{ D:{class method This() class method Void foo() (exception D())}}"}
+   ),new AtomicTest(()->fail("""
+   D={class method This() class method Void foo()=exception D()}
+   A={B={method read Any main()=D.foo()}}
+   """,Err.leakedThrow(hole))
+   ),new AtomicTest(()->fail("""
+   D={class method This()
+     class method Void foo()=this.bar()
+     class method Void bar()[D]=void
+     }
+   A={B={method read Any main()=D.foo()}}
+   """,Err.leakedExceptionFromMethCall(hole))
 
-      },{lineNumber(),"D.foo()",//must fail//ok
-      new Type(Mdf.Readable,Path.Any(),Doc.empty()),
-      Type.immVoid,
-      new String[]{"{ D:{class method This() "
-      + "class method Void foo() (this.bar())"
-      + "class method Void bar() exception D (void)"
-      + "}}"}
+   ),new AtomicTest(()->fail("""
+   C={
+     E={class method Void foo()=This1.foo()} 
+     class method Library foo()=D.foo()
+     }
+   D={class method Void foo()=C.E.foo()}
+   """,Err.subTypeExpected(hole,hole))
+   ),new AtomicTest(()->fail("""
+   C={
+     E={class method Void foo()=This1.foo()}
+     class method Library foo()=D.foo()
+     }
+   D={class method Void foo()=C.E.foo()}
+   """,Err.subTypeExpected(hole,hole))
+   ),new AtomicTest(()->fail("""
+  K={
+    E={class method Any foo()=This1.foo()}
+    }
+  C={class method Void foo()=D.foo()}
+  D={class method Library foo()=K.E.foo()}
+  """,Err.methodDoesNotExists(hole,hole))
+  ),new AtomicTest(()->fail("""
+  class method Any  foo()=exception void
+  """,Err.leakedThrow(hole))
+  ),new AtomicTest(()->fail("""
+  class method Any foo()[This]=exception void
+  """,Err.leakedThrow(hole))
+  ),new AtomicTest(()->fail("""
+  class method Void mayFail()=void
+  class method Any foo()[This]={return (
+    This.mayFail()
+    exception void
+    catch error Void x x
+    )}
+  """,Err.leakedThrow(hole))
+  ),new AtomicTest(()->pass("""
+  C={method Void()=void}
+  """)
+  ),new AtomicTest(()->pass("""
+  C={method Void()}
+  """)
+  ),new AtomicTest(()->fail("""
+  C={method Void()=this}
+  """,Err.subTypeExpected(hole,hole))
+  ),new AtomicTest(()->pass("""
+  C={method This()=this}
+  """)
+  ),new AtomicTest(()->pass("""
+  C={method This()=this()}
+  """)
+  ),new AtomicTest(()->fail("""
+  C={method class This()=this}
+  """,Err.subTypeExpected(hole,hole))
+  ),new AtomicTest(()->fail("""
+  C={method This()=this.foo() method Any foo()=this} 
+  """,Err.subTypeExpected(hole,hole))
+  ),new AtomicTest(()->pass("""
+  C={method D()=this() }
+  D={class method This()}
+  """)
+  ),new AtomicTest(()->pass("""
+  C={method Library()=(x=void catch error Library y (y) {#norm{}})} 
+  """)
+  ),new AtomicTest(()->pass("""
+  C={class method Void foo()=This.foo()}
+  """)
+  ),new AtomicTest(()->pass("""
+  A={
+    class method This ()
+    class method Void #next()=void
+    class method Void #checkEnd()=void
+    }
+  B={class method This ()}
+  Test={
+    class method Void foo()[B]=(
+      for class A x in A (exception B())
+      )
+    }
+  """)//TODO: fails until we finish ToHalf
+  ),new AtomicTest(()->fail("""
+  A={class method This ()}
+  B={class method This ()}
+  Test={ class method Void foo()[A]=( exception B() ) }
+  """,Err.leakedThrow(hole))
+  ),new AtomicTest(()->fail("""
+  Top={class method Library ()={
+    A={class method This k() #norm{declaresClassMethods}}
+    B={class method This k() #norm{declaresClassMethods}}
+    Test={
+      class method Void foo()[This1.A]=
+        exception This1.B<:class This1.B.k() 
+      #norm{}}
+    #norm{}}}
+  """,Err.leakedThrow(hole))
+  //TODO: in the full setting, when is the nested Library ever marked as typed?
+  ),new AtomicTest(()->pass("""
+  C={class method Void foo()=D.foo()}
+  D={class method Void foo()=(void)}
+  """)
+  ),new AtomicTest(()->pass("""
+  C={
+    E={class method Void foo()=This1.foo()}
+    class method Void foo()=D.foo()
+    }
+  D={class method Void foo()=C.E.foo()}
+  """)
+  ),new AtomicTest(()->pass("""
+  K={ E={class method Void foo()=This2.C.foo()} }
+  C={class method Void foo()=D.foo()}
+  D={class method Void foo()=K.E.foo()}
+  """)
+  ),new AtomicTest(()->pass("""
+  C={ method Void foo()=(This0 x=this void) }
+  """)
+  ),new AtomicTest(()->pass("""
+  C={ method Void foo()=(C x=this void) } 
+  """)
+  ),new AtomicTest(()->pass("""
+  K={ E={class method C foo1()=C.foo2()} }
+  C={ class method C foo2()=D.foo3() }
+  D={ class method C foo3()=K.E.foo1() } 
+  """)
+  ),new AtomicTest(()->pass("""
+  K={ E={ class method C foo1()=(D.foo3()<:C.foo2()<:C.foo2()) } }
+  C={ method C foo2()=D.foo3() }
+  D={ class method C foo3()=K.E.foo1() } 
+  """)
+  ),new AtomicTest(()->fail("""
+  K={ E={ class method C foo1()=D.foo3()<:C.foo2()<:C.foo2() } }
+  C={ class method C foo2()=D.foo3() }
+  D={ class method C foo3()=K.E.foo1() }   
+  """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+  //TODO: consider a more specific error as ErrorKind.ClassMethCalledOnNonClass
+  //in general this above is a poor error
+  ),new AtomicTest(()->pass("""
+  method This m()=this.readM(this)
+  method read This readM(read This that)=that
+  """)
+  ),new AtomicTest(()->pass("""
+  method This m()=this.readM()
+  read method read This readM()=this
+  """)
+  ),new AtomicTest(()->pass("""
+  class method mut This()
+  method This m()=This()
+  """)
+  ),new AtomicTest(()->pass("""
+  class method mut This()
+  method This m()=( mut This x=This() x) 
+  """)
 
-      }});}
-      @Test(expected=RuntimeException.class)
-      public void testFail() {
-        try{
-          TestHelper.configureForTest();
-          ExpCore e=Desugar.of(Parser.parse(null," "+_e)).accept(new InjectionOnCore());
-          Program p=TestHelper.getProgram(program);
-          p=p.updateTop(TypeSystem.instance().topTypeLib(Phase.Coherent, p));
-          TOut out=TypeSystem.instance().type(TIn.top(Phase.Typed, p, e,true, this.typeSugg));
-
-          assert !out.isOk();
-          throw new FormattedError(out.toError());//assert out.toOk().computed.equals(typeExpected);
-          }
-        catch(ParseCancellationException err){fail();}
-        }
-
-      }
-
-
-
-
-
-}
-
-     
-     
-     
-     //--------------
-       {lineNumber(),
-  "{C:{class method Void foo() (This0.foo())} }",
-  "{C:{class method Void foo() (This0.foo())}##star^## }##star^##"
-},{lineNumber(),
-  "{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",
-  "{C:{class method Void foo() (D.foo()) E:{class method Void foo() (This1.foo())}} D:{class method Void foo() (C.E.foo())}}"
-},{lineNumber(),
-  "{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",
-  "{K:{E:{class method Void foo() (This2.C.foo())}##star^##}##star ^## C:{class method Void foo() (D.foo())}##star^## D:{class method Void foo() (K.E.foo())}##star^##}##star^##"
-},{lineNumber(),
-  "{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-  "{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}"
-  //norm//NO, Norm is executed only in the extracted method
-//},{"This0.C",
-//  "{K:{E:{class method C.foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-//  "{K:{E:{class method C foo() (C.foo())}##plus^##}##plus ^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-//},{"This0.C",
-//  "{K:{E:{class method C.foo().foo() foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",
-//  "{K:{E:{class method C foo() (C.foo())}##plus^##}##plus^## C:{class method C foo() (D.foo())}##plus^## D:{class method C foo() (K.E.foo())}##plus^##}##plus^##"
-},{lineNumber(),
-  "{C:{ method Void foo() (This0 x= this void)} }",
-  "{C:{ method Void foo() (This0 x= this void)}##star^## }##star^##"
-},{lineNumber(),
-  "{C:{ method Void foo() (C x= this void)} }",
-  "{C:{ method Void foo() (C x= this void)}##star^## }##star^##"
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b)#?bin(a:a,b:b)"
-+ "A:{class method Void #bin#0a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
-+ "}",
-"{"
-+ "method Void #apply(class A a, class B b) a.#bin#0a(b:b)"
-+ "A:{class method Void #bin#0a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
-+ "}",
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b)#?bin(a:a,b:b)"
-+ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
-+ "}",
-"{"
-+ "method Void #apply(class A a, class B b) b.#bin#0b(a:a)"
-+ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(class A a)void}\n"
-+ "}",
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b)#?bin(a:a,b:b)"
-+ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(read A a)void}\n"
-+ "}",
-"{"
-+ "method Void #apply(class A a, class B b) a.#bin#1a(b:b)"
-+ "A:{class method Void #bin#1a(class B b)void} B:{class method Void #bin#0b(read A a)void}\n"
-+ "}",
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b)#?bin(a:a,b:b)"
-+ "A:{class method Void #bin#1a(read B b)void} B:{class method Void #bin#0b(read A a)void class method Void #bin#10b(class A a)void}\n"
-+ "}",
-"{"
-+ "method Void #apply(class A a, class B b) b.#bin#10b(a:a)"
-+ "A:{class method Void #bin#1a(read B b)void} B:{class method Void #bin#0b(read A a)void class method Void #bin#10b(class A a)void}\n"
-+ "}",
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b,class C c)#?m3(a:a,b:b,c:c)"
-+ "A:{class method Void #m3#0a(class B b,class C c)void}"
-+ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
-+ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
-+ "}",
-"{"
-+ "method Void (class A a, class B b,class C c) a.#m3#0a(b:b,c:c)"
-+ "A:{class method Void #m3#0a(class B b,class C c)void}"
-+ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
-+ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
-+ "}"
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b,class C c)#?m3(a:a,b:b,c:c)"
-+ "A:{class method Void #m3#0a(read B b,class C c)void}"
-+ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
-+ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
-+ "}",
-"{"
-+ "method Void (class A a, class B b,class C c) b.#m3#0b(a:a,c:c)"
-+ "A:{class method Void #m3#0a(read B b,class C c)void}"
-+ "B:{class method Void #m3#0b(class A a,class C c)void}\n"
-+ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
-+ "}"
-
-},{lineNumber(),
-"{"
-+ "method Void (class A a, class B b,class C c)#?m3(a:a,b:b,c:c)"
-+ "A:{class method Void #m3#0a(read B b,class C c)void}"
-+ "B:{class method Void #m3#0b(read A a,class C c)void}\n"
-+ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
-+ "}",
-"{"
-+ "method Void (class A a, class B b,class C c) c.#m3#0c(a:a,b:b)"
-+ "A:{class method Void #m3#0a(read B b,class C c)void}"
-+ "B:{class method Void #m3#0b(read A a,class C c)void}\n"
-+ "C:{class method Void #m3#0c(class A a,class B b)void}\n"
-+ "}"
-
-}});}
-
-    
-    
-@Test()
-public void testAllSteps() {
-  ClassB cb1=runTypeSystem(original);
-  ClassB cb2=(ClassB)Desugar.of(Parser.parse(null,annotated)).accept(new InjectionOnCore());
-  TestHelper.assertEqualExp(cb1,cb2);
-  }
-}
-
-
-public static class TesFail {
-@Test(expected=MethodNotPresent.class)
-public void test2() {runTypeSystem(
-    "{C:{class method Void foo() (D.foo())} "
-    +"D:{class method Void bar() (void)}}"
-    );}
-@Test(expected=FormattedError.class)
-public void test3() {runTypeSystem(
-   "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
-    );}
-@Test(expected=FormattedError.class)
-public void test4() {runTypeSystem(
-    "{C:{E:{class method Void foo() (This1.foo())} class method Library foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}"
-    );}
-@Test(expected=MethodNotPresent.class)
-public void test5() {runTypeSystem(
-  "{K:{E:{class method Any  foo() (This1.foo())}} C:{class method Void foo() (D.foo())} D:{class method Library foo() (K.E.foo())}}"
-   );}
-
-@Test()
-public void test6() {try{runTypeSystem(
-  "{class method Any  foo() (exception void)}"
-   );fail();}catch(FormattedError fe){assertEquals(
-  ErrorKind.MethodLeaksExceptions,
-  fe.kind);};}
-
-@Test()
-public void test7() {try{runTypeSystem(
-  "{class method Any  foo()exception This (exception void)}"
-   );fail();}catch(FormattedError fe){assertEquals(
-  ErrorKind.MethodLeaksExceptions,
-  fe.kind);};}
-
-@Test()
-public void test8() {try{runTypeSystem(
-  "{class method Any  foo()exception This "
-  + "{return (exception void {})}"
-  + "}"
-   );fail();}catch(FormattedError fe){assertEquals(
-  ErrorKind.MethodLeaksExceptions,
-  fe.kind);};}
-
-   //--------------------------------
-    
-    //----- basic attempts
-//ok
-{  lineNumber(),"{}","{C:{method Void()void}}",sameAsFormer
-//ok
-},{lineNumber(),"{}","{C:{method Void()}}",sameAsFormer
-
-//ok
-},{lineNumber(),"{}","{C:{method Void()void } D:{}}",sameAsFormer
-//err
-},{lineNumber(),"{}","{C:{method Void()this }}",ErrorKind.NotSubtypeClass
-
-//ok
-},{lineNumber(),"{}","{C:{method This()this }}",sameAsFormer
-},{lineNumber(),"{}","{C:{method This()this() }}",sameAsFormer
-//err
-},{lineNumber(),"{}","{C:{method class This()this }}",ErrorKind.NotSubtypeMdf
-},{lineNumber(),"{}","{C:{method This()this.foo() method Any foo()this }}",ErrorKind.NotSubtypeClass
-
-//ok
-},{lineNumber(),"{}","{C:{method D() this() } D:{class method This ()}}",sameAsFormer
-},{lineNumber(),"{}","{C:{method Library() (x=void catch error Library y y {} ) }}","{C:{method Library() (Void x=void catch error Library y y {} ) }}"
-},{lineNumber(),"{}","{C:{class method Void foo() (This0.foo())} }",sameAsFormer
-//err
-},{lineNumber(),"{}","{C:{method D() this() } D:{class method This ( mut This that )}}",ErrorKind.LibraryNotCoherent
-
-
-},{lineNumber(),"{}",
-"{A:{class method This ()\n"
-+ " class method Void #next()void\n"
-+ " class method Void #checkEnd()void"
-+ " }\n"+
-"B:{class method This ()}\n"+
-"Test:{\n"+
-"  class method Void foo()\n"+
-"  exception B (\n"+
-"    with class A x in A (exception B())\n"+
-"  )\n"+
-"  }}",sameAsFormer
-
-
-},{lineNumber(),"{}",
-"{A:{class method This ()}\n"+
-"B:{class method This ()}\n"+
-"Test:{\n"+
-"  class method Void foo()\n"+
-"  exception A (\n"+
-"    exception B()\n"+
-"  )\n"+
-"  }}",ErrorKind.MethodLeaksExceptions
-
-},{lineNumber(),"{}",
-"{Top:{class method Library (){A:{class method This ()}\n"+
-"B:{class method This ()}\n"+
-"Test:{\n"+
-"  class method Void foo()\n"+
-"  exception A (\n"+
-"    exception B()\n"+
-"  )\n"+
-"  }}}}",ErrorKind.MethodLeaksExceptions
-
-},{lineNumber(),"{}",
-"{A:{class method This ()}\n"+
-"B:{class method This (A that)}\n"+
-"Test:{\n"+
-"  class method Void foo()\n"+
-"  exception A {(\n"+
-"    a=void   exception on A (B)   void\n"+
-"  ) return void}\n"+
-"  }}",ErrorKind.MethodLeaksExceptions
-
-
-//fromming and calling method from other classes
-//ok
-},{lineNumber(),"{}",
-"{C:{class method Void foo() (D.foo())} D:{class method Void foo() (void)}}",sameAsFormer
-},{lineNumber(),"{}",
-"{C:{E:{class method Void foo() (This1.foo())} class method Void foo() (D.foo())} D:{class method Void foo() (C.E.foo())}}",sameAsFormer
-},{lineNumber(),"{}",
-"{K:{E:{class method Void foo() (This2.C.foo())}} C:{class method Void foo() (D.foo())} D:{class method Void foo() (K.E.foo())}}",sameAsFormer
-},{lineNumber(),"{}",
-"{K:{ E:{class method C foo() (C.foo())}} C:{class method C foo() (D.foo())} D:{class method C foo() (K.E.foo())}}",sameAsFormer
-},{lineNumber(),"{}",
-"{C:{ method Void foo() (This0 x= this void)} }",sameAsFormer
-},{lineNumber(),"{}",
-"{C:{ method Void foo() (C x= this void)} }",sameAsFormer
-},{lineNumber(),"{}",
-"{K:{ E:{class method C foo1() (C.foo2())}} C:{class method C foo2() (D.foo3())} D:{class method C foo3() (K.E.foo1())}}",sameAsFormer
-
-//method chains
-//ok
-},{lineNumber(),"{}",
-"{K:{ E:{class method C foo1() (D.foo3().foo2().foo2())}} C:{method C foo2() (D.foo3())} D:{class method C foo3() (K.E.foo1())}}",sameAsFormer
-//err
-},{lineNumber(),"{}",
-"{K:{ E:{class method C foo1() (D.foo3().foo2().foo2())}} C:{class method C foo2() (D.foo3())} D:{class method C foo3() (K.E.foo1())}}",ErrorKind.ClassMethCalledOnNonClass
-
-//method promotions
-},{lineNumber(),"{}",
-"{ method This m() this.readM(this)   method read This readM(read This that)that}",sameAsFormer
-},{lineNumber(),"{}",
-"{ method This m() this.readM()   read method read This readM()this}",sameAsFormer
-},{lineNumber(),"{}",
-"{ class method mut This() method This m() This() }",sameAsFormer
-
-//block promotion
-},{lineNumber(),"{}",
-"{ class method mut This() method This m() ( mut This x=This() x) }",sameAsFormer
-
-
-          
-   
-     
-     
-     */
-     
   ));}
 
 public static void pass(String program){
@@ -819,10 +662,6 @@ public static void pass(String program){
     }};
   Program p=init.top.top(new CTz(),init.p);
   ProgramTypeSystem.type(true, p);
-  /*var ab=List.of(new C("A",-1),new C("B",-1));
-  MWT main=_elem(norm.cs(ab).mwts(),S.parse("main()"));
-  Program p=Program.flat(norm).navigate(P.of(0,ab));
-  ProgramTypeSystem.typeMWT(p,main);*/
   }
 public static void fail(String program,String...out){
   Resources.clearRes();

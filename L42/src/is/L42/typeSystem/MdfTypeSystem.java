@@ -80,6 +80,8 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     P p0=TypeManipulation.guess(g,e.xP());
     var meths=AlternativeMethodTypes.types(p,p0.toNCs(),e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected)));
+    //TODO: use the "canAlsoBe" to further filter on the set of methods,
+    //this can also be used to give better error messages line "class method called on non class"
     errIf(meths.isEmpty(),e,Err.methCallResultIncompatibleWithExpected(e.s(),expected));
     List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});
     var oldG=g;
@@ -131,7 +133,8 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       g=lentG;
       expected=Mutable;
       mdfs=oldMdfs;
-      visitBlockDirect(e);
+      try{visitBlockDirect(e);}
+      catch(EndError.TypeError te2){throw te;}
       g=oldG;
       expected=oldExpected;      
       }

@@ -142,7 +142,7 @@ public class Top {
     var  hq=toHalf(ctz,y,freshNames,fe);
     Half.E he=hq.e;
     I i=new I(c0,p,G.empty());
-    CTz frommedCTz=p.from(ctz,P.pThis1);
+    CTz frommedCTz=p.push(Program.emptyL).from(ctz,P.pThis1);
     Core.E ce=infer(i,ctz,frommedCTz,he); //propagates errors
     assert ce!=null;
     Core.T t=wellTyped(p,ce);//propagate errors

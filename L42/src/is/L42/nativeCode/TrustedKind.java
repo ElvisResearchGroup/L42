@@ -1,4 +1,4 @@
-package is.L42.translationToJava;
+package is.L42.nativeCode;
 
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.todo;
@@ -8,7 +8,7 @@ import java.util.List;
 import is.L42.common.Program;
 import is.L42.generated.Core.L.MWT;
 
-enum TrustedKind {
+public enum TrustedKind {
   Bool("boolean"){public String factory(Program p,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return false;";

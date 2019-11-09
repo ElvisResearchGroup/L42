@@ -1,9 +1,10 @@
-package is.L42.translationToJava;
+package is.L42.nativeCode;
 
+import static is.L42.nativeCode.OpUtils.*;
+import static is.L42.nativeCode.TrustedKind.*;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
-import static is.L42.translationToJava.TrustedKind.*;
 
 import java.util.List;
 import java.util.Map;
@@ -11,34 +12,61 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.P;
-
-import static is.L42.translationToJava.OpUtils.*;
-
-interface Generator{String of(Program p,MWT mwt);}    
+import is.L42.translationToJava.J;
+import is.L42.translationToJava.NativeDispatch;
+    
 class OpUtils{
-  static List<String>xs(MWT mwt){
-    return L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
+  static void checkParCount(Program p,MWT mwt,int expected){
+    if(mwt.key().xs().size()==expected){return;}
+    throw new EndError.TypeError(mwt._e().poss(),Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),expected));
     }
-  static Map<TrustedKind,Generator> append(String s){
-    return Map.of(StringBuilder,(p,mwt)->{
-      var xs=xs(mwt);
+  static Map<TrustedKind,TrustedOp.Generator> append(String s){
+    return Map.of(StringBuilder,(type,p,mwt)->{
+      if(type){
+        checkParCount(p,mwt,0);
+        return "";
+        }
+      var xs=NativeDispatch.xs(mwt);
       return ""+xs.get(0)+".append(\""+s+"\");return L42Void.instance;";
       });
     }
-  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static Generator use(String s){
-    return (p,mwt)->s.formatted(xs(mwt).toArray());
+    
+  static boolean typingUse(TrustedKind[] kinds,Program p, MWT mwt){
+    if(kinds.length!=mwt.mh().pars().size()){
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),kinds.length));
+      }
+    for(int i:range(kinds.length)){
+      var pi=mwt.mh().pars().get(i).p();
+      var ki=kinds[i];
+      var kind=p._ofCore(pi).info().nativeKind();
+      if(kind.isEmpty() || ki!=TrustedKind.fromString(kind)){
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,ki));            
+        }
+      }
+      return true;
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static Generator use(String s,Class<?> errKind,int errNum,String err,int ... msgs){
-    return (p,mwt)->{
-      var xs=xs(mwt);
+  static TrustedOp.Generator use(String s,TrustedKind ...kinds){
+    return (type,p,mwt)->{
+      if(type && typingUse(kinds,p,mwt)){return "";}
+      return s.formatted(NativeDispatch.xs(mwt).toArray());
+      };
+    }
+  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
+  static TrustedOp.Generator use(String s,Class<?> errKind,int errNum,String err,int[] msgs,TrustedKind ...kinds){
+    return (typed,p,mwt)->{
+      if(typed && typingUse(kinds,p,mwt)){return "";}
+      var xs=NativeDispatch.xs(mwt);
       List<String>errs=L(range(msgs.length),(c,i)->{
         var xi=xs.get(msgs[i]);
         xi="\"+"+xi+"+\"";
@@ -56,11 +84,11 @@ class OpUtils{
     }
 
   }
-enum TrustedOp {
+public enum TrustedOp {
   //booleans
-  And("OP&",Map.of(Bool,use("return %s & %s;"))),
-  OR("OP|",Map.of(Bool,use("return %s | %s;"))),
-  NOT("OP!",Map.of(Bool,use("return !%s;"))),
+  And("OP&",Map.of(Bool,use("return %s & %s;",Bool))),
+  OR("OP|",Map.of(Bool,use("return %s | %s;",Bool))),
+  NOT("OP!",Map.of(Bool,use("return !%s;",Bool))),
   CheckTrue("checkTrue",Map.of(Bool,use(
     "if(%s){return L42Void.instance;}"+
     "throw new L42Exception(L42Void.instance);"))),
@@ -176,21 +204,23 @@ enum TrustedOp {
   ToInt("toInt",Map.of(String,use(
     "return Integer.parseInt(%s);",
     NumberFormatException.class,0,
-    "The string %s is not a valid number",0
+    "The string %s is not a valid number",new int[]{0}
     ))),
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42Void.instance;"),
     TrustedIO,use("return %s.strDebug(%s);")
     )),
   DeployLibrary("deployLibrary",Map.of(
-    TrustedIO,use("return %s.deployLibrary(%s,%s);"))),
+    TrustedIO,use("return %s.deployLibrary(%s,%s);",String))),
   Plus("OP+",Map.of(
-    Int,use("return %s + %s;"),
-    String,use("return %s + %s;")
+    Int,use("return %s + %s;",Int),
+    String,use("return %s + %s;",String)
     )),
-  Mul("OP*",Map.of(Int,use("return %s * %s;")));
+  Mul("OP*",Map.of(Int,use("return %s * %s;",Int)));
+  public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;
   Map<TrustedKind,Generator>code;
+  public Generator _of(TrustedKind k){return code.get(k);}
   TrustedOp(String inner,Map<TrustedKind,Generator>code){
     this.inner = inner;
     this.code=code;

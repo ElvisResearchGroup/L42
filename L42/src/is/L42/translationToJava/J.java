@@ -16,6 +16,7 @@ import is.L42.common.Program;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.C;

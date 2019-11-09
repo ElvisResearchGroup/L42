@@ -155,7 +155,7 @@ public class Program implements Visitable<Program>{
     }
   private CloneVisitor fromVisitor(P.NCs source){
     return new CloneVisitor(){
-      @Override public Core.T visitT(Core.T  t){
+      @Override public Core.T visitT(Core.T t){
         return t.withP(from(t.p(),source));
         }
       @Override public P visitP(P p){
@@ -299,7 +299,7 @@ public class Program implements Visitable<Program>{
     return tmp;
     }
   private P.NCs baseMinimize(P.NCs p) {
-    assert !pTails.isEmpty();
+    assert !pTails.isEmpty():"";
     if(p.cs().isEmpty()){return p;}
     if(!pTails.hasC()){return p;}
     if(!pTails.c().equals(p.cs().get(0))){return p;}

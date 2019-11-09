@@ -218,8 +218,13 @@ public class Err {
   "for method "+_1+", method call parameter signature is incompatible the parameters"
  ;}public static String mayLeakUnresolvedFwd(Object _1){return
   "fwd variable "+_1+" may be leaked out using a return"
- 
- 
- 
+ ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
+  "native body "+_1+" uses unrecognized receiver of kind "+_2
+ ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
+  "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
+ ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
+  "native body "+_1+" has selector "+_2+" but the parameter of type "+_3+" is not of kind "+_4
+
+
   ;}
 }

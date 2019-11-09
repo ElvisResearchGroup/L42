@@ -69,15 +69,14 @@ public class InferToCore extends UndefinedCollectorVisitor{
       });
     T res=i.p()._chooseGeneralT(ts,poss);
     if(res!=null){return res;}
-    if(ts.isEmpty()){
-      if(tzErr.isEmpty()){
-        throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(stz));
-        }
-      throw new EndError.InferenceFailure(poss, Err.contraddictoryInfoAbout(stz,tzErr));
+    if(!ts.isEmpty()){
+      throw new EndError.InferenceFailure(poss, Err.noCommonSupertypeAmong(stz,ts));
       }
-    throw new EndError.InferenceFailure(poss, Err.noCommonSupertypeAmong(stz,ts));
-    }
-  
+    if(tzErr.isEmpty()){
+      throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(stz));
+      }
+    throw new EndError.InferenceFailure(poss, Err.contraddictoryInfoAbout(stz,tzErr));
+    }  
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){
