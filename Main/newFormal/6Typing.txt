@@ -292,12 +292,14 @@ _______
 
 * T in fieldTs(MHs, x, mdf)
     either class method mdf' _(_ T x _)_ in MHs
-    or mdf' method _ #sx::n?(T that)_ in MHs
-    mdf' != capsule //capsule setters are dead code
+    or mdf' method _ #sx::n?(T that)_ in MHs and //not allowedAbstract
+       exists class method mdf" _(_)_ in MHs: (mdf" canAlsoBe mdf')
+       and mdf' != capsule //capsule setters are dead code
     mdf' canAlsoBe mdf
 
 * mdf" in fieldAccessMdf(MHs, x, mdf)
     mdf' method mdf" P #sx::n?() in MHs
+    exists class method mdf0_(_)_ in MHs: (mdf0 canAlsoBe mdf')
     mdf' != capsule or mdf" = class // TODO: is the check 'or mdf" = class' needed or not? 
     mdf' canAlsoBe mdf // capsule getters ok on anything but class: another getter can never be called
     
@@ -314,7 +316,7 @@ _______
     {mut, lent} disjoint mdfs1
 * coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
     mdfs0 subseteq {mut, fwd mut, capsule}
-    imm not in mdfs1
+    imm not in mdfs1 //note: fwd imm do no happens because is on the ret type
 * coherentGetMdf(lent,mdf,mdfs0,mdfs1)
     mdfs0 subseteq {mut, fwd mut, capsule, lent}
     mdf in {lent, mut, capsule}

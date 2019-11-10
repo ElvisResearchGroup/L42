@@ -32,6 +32,7 @@ import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.ProgramTypeSystem;
+import is.L42.typeSystem.Coherence;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness.NotWellFormed;
 
@@ -117,7 +118,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    A={B={
      method Void main()= this.leaking()
      class method B()
-     method Void leaking()[B]
+     method Void leaking()[B]=void
      }}
      """,Err.leakedExceptionFromMethCall(hole))
    ),new AtomicTest(()->
@@ -125,7 +126,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    A={B={
      method Void main()[B]= B().leaking()//testing block by desugaring
      class method B()
-     method Void leaking()[B]
+     method Void leaking()[B]=void
      }}
      """)
    ),new AtomicTest(()->
@@ -133,7 +134,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    A={B={
      method Void main()= B().leaking()//testing block by desugaring
      class method B()
-     method Void leaking()[B]
+     method Void leaking()[B]=void
      }}
     """,Err.leakedExceptionFromMethCall(hole))
    ),new AtomicTest(()->
@@ -662,6 +663,13 @@ public static void pass(String program){
     }};
   Program p=init.top.top(new CTz(),init.p);
   ProgramTypeSystem.type(true, p);
+  allCoherent(p);
+  }
+public static void allCoherent(Program p){
+  assertTrue(new Coherence(p).isCoherent());
+  for(var nc:p.topCore().ncs()){
+    allCoherent(p.navigate(P.of(0,L(nc.key()))));
+    }
   }
 public static void fail(String program,String...out){
   Resources.clearRes();
