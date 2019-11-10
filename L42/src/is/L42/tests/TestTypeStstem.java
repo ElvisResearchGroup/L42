@@ -649,6 +649,105 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   class method mut This()
   method This m()=( mut This x=This() x) 
   """)
+//cohence tests from here on
+  ),new AtomicTest(()->pass("""
+  """)
+  ),new AtomicTest(()->pass("""
+  class method mut This()
+  """)
+  ),new AtomicTest(()->pass("""
+  class method This()
+  """)
+  ),new AtomicTest(()->pass("""
+  class method read This()
+  """)
+  ),new AtomicTest(()->failC("""
+  class method class This()
+  """)
+  ),new AtomicTest(()->failC("""
+  A={}    A a
+  class method fwd imm This(fwd imm A a)
+  """)
+  ),new AtomicTest(()->failC("""
+  A={}    A a
+  class method fwd mut This(fwd imm A a)
+  """)
+  ),new AtomicTest(()->pass("""
+  A={}    A a
+  class method This(fwd imm A a)
+  """)
+  ),new AtomicTest(()->pass("""
+  mut method mut This unusable()[This]
+  """)
+  ),new AtomicTest(()->pass("""
+  A={}    A a
+  class method This(fwd imm A a)
+  mut method mut This unusable()[This]
+  """)
+  ),new AtomicTest(()->failC("""
+  A={}    A a
+  class method capsule This(A a)
+  mut method mut This unusable()[This]
+  """)
+  ),new AtomicTest(()->pass("""
+  A={} B={}   A a mut B b
+  class method mut This k1(fwd imm A a, mut B b)
+  class method mut This k2(mut B b, fwd imm A a)
+  mut method mut B ###b()
+  """)
+  ),new AtomicTest(()->failC("""
+  B={}   mut B b
+  class method This k1(mut B b)
+  """)//fails since mut B can not be used for imm result
+  ),new AtomicTest(()->failC("""
+  A={} B={}   A a mut B b
+  class method This k1(fwd imm A a, mut B b)
+  class method This k2(mut B b, fwd imm A a)
+  mut method mut A ###a()
+  """)  
+  ),new AtomicTest(()->pass("""
+  X={}
+  class method lent This foo(lent X x, lent X y)
+  mut method lent X x()
+  mut method lent X y()
+  """)
+  ),new AtomicTest(()->pass("""
+  S={} N={}
+  class method mut This a(S x)
+  class method imm This b(N x)
+  mut method S #x()
+  read method Any x()
+  //mut method Void x(N that) //enabling this method makes #x not valid for coherence
+  """)
+  ),new AtomicTest(()->failC("""
+  S={} N={}
+  class method mut This a(S x)
+  class method imm This b(N x)
+  mut method S #x()
+  read method Any x()
+  mut method Void x(N that) //enabling this method makes #x not valid for coherence
+  """)
+  ),new AtomicTest(()->pass("""
+  S={} N={}//let see what are all the accepted state methods
+  class method mut This a(S x)
+  class method imm This b(N x)
+  mut method S #x()
+  mut method Void ##x(S that)
+  mut method Any ##x()
+  read method Any x()
+  imm method Any ###x()//N would be invalid
+  """)
+  ),new AtomicTest(()->failC("""
+  S={} N={}//let see what are all the accepted state methods
+  class method mut This a(S x)
+  class method imm This b(N x)
+  mut method S #x()
+  mut method Void ##x(S that)
+  mut method Any ##x()
+  read method Any x()
+  imm method N ###x()//N would be invalid
+  """)
+
 
   ));}
 
@@ -671,8 +770,13 @@ public static void allCoherent(Program p){
     allCoherent(p.navigate(P.of(0,L(nc.key()))));
     }
   }
+public static void failC(String program,String...out){
+    try{pass(program);}
+    catch(AssertionFailedError afe){return;}
+    Assertions.fail();
+  }
+
 public static void fail(String program,String...out){
-  Resources.clearRes();
   checkFail(()->{
     pass(program);
     }, out, TypeError.class);

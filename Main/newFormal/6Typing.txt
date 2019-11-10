@@ -325,18 +325,8 @@ _______
     mdfs0 subseteq {mut, fwd mut, capsule}
     mdf in {mut, capsule}
     imm notin mdfs1
---------------------------END, examples only after this line
-/*
-class method lent This foo(lent X x, lent X y)
-mut method lent X x() // ok?
-mut method lent X y() // ok?
-*/
-
-
-lent X method evil(lent X x) = 
-    foo(x).x()
-
-    if we can have a lent collection of read objects
+--NOTE:
+if we can have a lent collection of read objects
 or anyway update a read field, we have -capsule visible as read
   lent list=.. //lent method add(read r)
   capsule a=..
@@ -344,87 +334,3 @@ or anyway update a read field, we have -capsule visible as read
    list.add(b)
    b)
   a2 and list usable
-  
-  {
-  class method mut This (S x)
-  class method imm This (N x)
-  mut method S #x()
-  read method Any x()
-  //mut method x(N that) //enabling this method makes #x not valid for coherence
-  }
-
--------------------------------------------
-Old all in one TS
-_______
-#define Q |-e: T<=T 
-* Q |- void : imm Void <= T //(void)
-    Q.p|-imm Void <= T
-* Q |- P<:class P' : class P' <= T //(Path) //assert Q.p(P) and Q.p(P') of form CORE.L
-    Q.p|-class P' <= T
-    P'=Any if Q.p(P).interface?=interface or not Q.p(P).Info.declaresClassMethods
-* Q |- L : imm Library <= T //(library propagation)
-    Q.p |- imm Library <= T
-    if Q.Flag==typed |- Q.p.push(L)
-* Q |-x : Q.G(x).T <= T  //(x)
-    Q.p|- Q.G(x).T <= T
-* Q |- loop e : imm Void <= T //(loop)
-    Q.p|-imm Void <= T
-    Q|- e : _ <= imm Void
-* Q |- return e : T0 <= T0 //(throw-return)
-    Q|- e : _ <= fwd T
-    T in Q.Ts
-* Q |- throw e : T0 <= T0 //(throw)
-    Q|- e : _ <=imm P
-    either throw=error
-    or P in Q.Ps
-* Q |- e0.m(x1:e1..xn:en) : T <= T' //(mcall)
-    P0=guess(Q,e0)//simple since e0 of form xP
-    T0..Tn->T;Ps in methTypes(p,P0,m(x1..xn))
-    Q.p |- T <= T'
-    Q|- e0 : _ <= T0 .. Q|- en : _ <= Tn
-* Q |- x:=e : imm Void <= T //(xUpdate)
-    Q.G(x).var?=var
-    Q.p|- imm Void <= T
-    Q|- e : _ <= Q.G(x).T 
-    not fwd_or_fwd%_in(Q.G(x).T)
-* Flag;p;G;Ts;Ps |- (Ds Ks e):capsule P <= mdf P  //(capsule promotion)
-    Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
-    mdf in {capsule, imm, fwdImm, fwd%Imm}
-    Flag; p; toLent(G);Ts;Ps |-(Ds Ks e) : mut P <= mut P
-//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
-//this rule can not be applied, since we require mut P <=mut P in the premise.
-//this is another point where a variable 'x' can become undefined thanks to toLent(G)
-
-* Flag; p; G; Ts; Ps |- (Ds  Ks  e0) : T <= T' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
-    Flag; p; G; Ts; Ps |- Ks : Ts'' <= T' |Ts';Ps'
-    G'=toRead(G) if error in Ks.throws
-    G'=G otherwise     //toRead removes fwdMut; if they stayed would it still be sound?
-    Flag; p; G'; Ts U Ts'; Ps U Ps' |- Ds | G0
-    Flag; p; G,(G0\dom(G)); Ts; Ps |- e0 : T0 <=T'
-    T= mostGeneralMdf({T0.mdf,Ts''.mdfs}) T'.P //error if set of Mdfs admits no single most general mdf
-    // assert Q.p|-T <= T'
-_______
-#define Q |- Ds | G // The resulting G is the enriched G containing info about Ds too.
-* Flag; p; G0; Ts; Ps |- var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
-    dom(Ds) disjoint FV(e0..en)
-    //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
-    //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
-    G1= G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]// G0 is clipped for error safety; G1 is clipped and complete
-    for i in 0..n: Flag; p; G1; Ts; Ps|-ei : T'i <= fwd% Ti //if error x undefined, it must have been hidden by error safety
-    if fwd_or_fwd%_in Ts
-      then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
-    if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
-      then G2=G0[fwd%(x0:T0..xn:Tn)]
-      otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
-    Flag; p; G2; Ts; Ps|- Ds | G3
-* Q |- empty | Q.G //(DsEmpty)
-_______
-#define Q |-k1..kn : T1..Tn <= T | Ts;Ps   Q |-k : T' <= T |Ts;Ps
-* Q |-k1..kn : T1..Tn <= T |Ts1 U..U Tsn;Ps1 U..U Psn //(catchMany)
-    forall i in 1..n Q |-ki : Ti <= T |Tsi;Psi
-* Q |- catch return T0 x e : T <= T' |T0;empty //(catch)
-    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
-    if T0.mdf=class then Q|- T0.P <: T0 : T0
-* Q |- catch throw imm P x e : T <= T' |empty;P //(catch)
-    throw !=return
-    Q[G=Q.G,x:T0] |- e : T <= T' //not well formed if x in dom(Q.G)
