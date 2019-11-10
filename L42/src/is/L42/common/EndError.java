@@ -37,4 +37,7 @@ public abstract class EndError extends RuntimeException{
   public static class TypeError extends EndError{
     public TypeError(List<Pos> poss, String msg) { super(poss, msg);}
     }
+  public static class CoherentError extends EndError{
+    public CoherentError(List<Pos> poss, String msg) { super(poss, msg);}
+    }
   }

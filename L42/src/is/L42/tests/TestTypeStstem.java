@@ -17,6 +17,7 @@ import is.L42.constraints.FreshNames;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
 import is.L42.common.EndError.TypeError;
+import is.L42.common.EndError.CoherentError;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
@@ -663,15 +664,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   """)
   ),new AtomicTest(()->failC("""
   class method class This()
-  """)
+  """,Err.nonCoherentMethod(hole))
   ),new AtomicTest(()->failC("""
   A={}    A a
   class method fwd imm This(fwd imm A a)
-  """)
+  """,Err.nonCoherentMethod(hole))
   ),new AtomicTest(()->failC("""
   A={}    A a
   class method fwd mut This(fwd imm A a)
-  """)
+  """,Err.nonCoherentMethod(hole))
   ),new AtomicTest(()->pass("""
   A={}    A a
   class method This(fwd imm A a)
@@ -688,7 +689,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   A={}    A a
   class method capsule This(A a)
   mut method mut This unusable()[This]
-  """)
+  """,Err.nonCoherentMethod("unusable()"))
   ),new AtomicTest(()->pass("""
   A={} B={}   A a mut B b
   class method mut This k1(fwd imm A a, mut B b)
@@ -698,13 +699,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->failC("""
   B={}   mut B b
   class method This k1(mut B b)
-  """)//fails since mut B can not be used for imm result
+  """,Err.nonCoherentMethod("k1(b)"))//fails since mut B can not be used for imm result
   ),new AtomicTest(()->failC("""
   A={} B={}   A a mut B b
-  class method This k1(fwd imm A a, mut B b)
-  class method This k2(mut B b, fwd imm A a)
+  class method mut This k1(fwd imm A a, mut B b)
+  class method mut This k2(mut B b, fwd imm A a)
   mut method mut A ###a()
-  """)  
+  """,Err.nonCoherentMethod("a()"))//fails for a() since ###a() can not be mut... sad error?  
   ),new AtomicTest(()->pass("""
   X={}
   class method lent This foo(lent X x, lent X y)
@@ -726,7 +727,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   mut method S #x()
   read method Any x()
   mut method Void x(N that) //enabling this method makes #x not valid for coherence
-  """)
+  """,Err.nonCoherentMethod("#x()"))
   ),new AtomicTest(()->pass("""
   S={} N={}//let see what are all the accepted state methods
   class method mut This a(S x)
@@ -746,7 +747,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   mut method Any ##x()
   read method Any x()
   imm method N ###x()//N would be invalid
-  """)
+  """,Err.nonCoherentMethod("###x()"))
 
 
   ));}
@@ -771,10 +772,9 @@ public static void allCoherent(Program p){
     }
   }
 public static void failC(String program,String...out){
-    try{pass(program);}
-    catch(AssertionFailedError afe){return;}
-    Assertions.fail();
-  }
+  checkFail(()->{
+    pass(program);
+    }, out, CoherentError.class);  }
 
 public static void fail(String program,String...out){
   checkFail(()->{

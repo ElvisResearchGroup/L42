@@ -224,6 +224,13 @@ public class Err {
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
  ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
   "native body "+_1+" has selector "+_2+" but the parameter of type "+_3+" is not of kind "+_4
+ 
+ ;}public static String nonCoherentNoSetOfFields(Object _1){return
+  "The class is not coherent. Candidate factory parameters are: "+_1
+ ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object _1){return
+  "The class is not coherent. It has private state but also abstract methods:"+_1
+;}public static String nonCoherentMethod(Object _1){return
+  "The class is not coherent. Method "+_1+" is not part of the abstract state"
 
 
   ;}

@@ -8,6 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
@@ -27,14 +29,20 @@ public class Coherence {
   public boolean isCoherent(){
     if(p.topCore().isInterface()){return true;}
     if(classMhs.isEmpty()){return true;}
+    //TODO: add isCloseState in info?
     var uniqueNums=mhs.stream()
       .map(m->m.key().uniqueNum()).distinct().count();
-    if(uniqueNums>1){return false;}
+    if(uniqueNums>1){throw new EndError.CoherentError(p.topCore().poss(),
+      Err.nonCoherentPrivateStateAndPublicAbstractMethods(
+        L(mhs.stream().filter(m->!m.key().hasUniqueNum()).map(m->m.key()))
+        ));}
     var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
-    if(xzs.size()>1){return false;}
+    if(xzs.size()>1){throw new EndError.CoherentError(p.topCore().poss(),
+        Err.nonCoherentNoSetOfFields(xzs));}
     var xz=xzs.get(0);
     for(MH mh:mhs){
-      if(!coherent(mh,xz)){return false;}
+      if(!coherent(mh,xz)){throw new EndError.CoherentError(p.topCore().poss(),
+        Err.nonCoherentMethod(mh.key()));}
       }
     return true;//TODO: the #$ checks go here or in well formedness?
     }
