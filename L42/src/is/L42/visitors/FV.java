@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -70,6 +71,15 @@ public class FV extends PropagatorCollectorVisitor{
       .map(vtx->vtx._x())
       .filter(x->x!=null));
     }
+  public static List<X> domFullDsOnlyMatchs(List<Full.D>ds){
+    return L(ds.stream().flatMap(d->d.varTxs().stream())
+      .map(vtx->vtx._x()));//elsewhere asserting they are all not null
+    }
+  public static List<X> domVarFullDs(List<Full.D>ds){
+    return L(allVarTx(ds)
+      .filter(vtx->vtx.isVar() && vtx._x()!=null)
+      .map(vtx->vtx._x()));
+    }
   public static Stream<Full.VarTx> allVarTx(List<Full.D>ds){
     return ds.stream().flatMap(d->Stream.concat(Stream.of(
       d._varTx()),d.varTxs().stream()))
@@ -105,7 +115,7 @@ public class FV extends PropagatorCollectorVisitor{
       if(!d.t().mdf().isCapsule()){continue;}
       long count=fvs.stream().filter(x->x.equals(d.x())).count();
         if (count<=1){continue;}
-      throw new WellFormedness.NotWellFormed(poss,Err.capsuleBindingUsedOnce(d.x()));
+      throw new EndError.NotWellFormed(poss,Err.capsuleBindingUsedOnce(d.x()));
       }
     }
   public static List<X> max(List<List<X>> xss){
@@ -125,7 +135,7 @@ public class FV extends PropagatorCollectorVisitor{
     if(k.t().mdf().isCapsule()){
       long count=result.stream().filter(x->x.equals(k.x())).count();
       if (count>1){
-        throw new WellFormedness.NotWellFormed(k.e().poss(),Err.capsuleBindingUsedOnce(k.x()));
+        throw new EndError.NotWellFormed(k.e().poss(),Err.capsuleBindingUsedOnce(k.x()));
         }
       }
     result.removeAll(L(k.x()));
@@ -134,4 +144,8 @@ public class FV extends PropagatorCollectorVisitor{
   public static List<X> domDs(List<Core.D>ds){
     return L(ds.stream().map(d->d.x()));
     }
+  public static List<X> domVarDs(List<Core.D>ds){
+    return L(ds.stream().filter(d->d.isVar()).map(d->d.x()));
+    }
+
   }

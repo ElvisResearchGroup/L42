@@ -35,7 +35,6 @@ import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.typeSystem.Coherence;
 import is.L42.visitors.FullL42Visitor;
-import is.L42.visitors.WellFormedness.NotWellFormed;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;

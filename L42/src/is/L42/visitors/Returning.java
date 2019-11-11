@@ -8,6 +8,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.ThrowKind;
@@ -33,24 +35,24 @@ public class Returning extends UndefinedCollectorVisitor{
     assert b.isCurly();    
     Full.E last=b.ds().get(b.ds().size()-1)._e();
     if(!Returning.of(last)){
-      throw new WellFormedness.NotWellFormed(last.poss(),
-        "last statement does not guarantee block termination");
+      throw new EndError.NotWellFormed(last.poss(),
+        Err.lastStatementDoesNotGuaranteeBlockTermination());
       }
     for(int i:range(b.ds().size()-1)){
       if(!Returning.of(b.ds().get(i)._e())){continue;}
-      throw new WellFormedness.NotWellFormed(b.ds().get(i)._e().poss(),
-        "dead code after the statement "+i+" of the block");
+      throw new EndError.NotWellFormed(b.ds().get(i)._e().poss(),
+        Err.deadCodeAfter(i));
       }
     for(int i:range(b.ks().size())){
       if(Returning.of(b.ks().get(i).e())){continue;}
-      throw new WellFormedness.NotWellFormed(b.ks().get(i).e().poss(),
-        "catch statement "+i+" does not guarantee block termination");
+      throw new EndError.NotWellFormed(b.ks().get(i).e().poss(),
+        Err.catchStatementDoesNotGuaranteeBlockTermination(i));
       }
     var res=Stream.concat(b.ds().stream().map(d->d._e()), b.ks().stream().map(k->k.e()))
     .filter(HasReturn::of).findFirst();
     if(!res.isEmpty()){return;}
-    throw new WellFormedness.NotWellFormed(b.poss(),
-      "curly block do not have any return statement");
+    throw new EndError.NotWellFormed(b.poss(),
+      Err.curlyWithNoReturn());
     }
   public static boolean of(Full.E e){
     assert e!=null;

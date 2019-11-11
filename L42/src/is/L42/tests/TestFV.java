@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.EndError;
 import is.L42.common.Parse;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -12,7 +13,7 @@ import is.L42.generated.X;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FV;
 import is.L42.visitors.FullL42Visitor;
-import is.L42.visitors.WellFormedness.NotWellFormed;
+
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.range;
@@ -65,7 +66,7 @@ public static void failC(String input,String ...output){
   var c=(Core.L)r.res;
   var e=c.mwts().get(0)._e();
   try{FV.of(e.visitable());}
-  catch(NotWellFormed nwf){
+  catch(EndError.NotWellFormed nwf){
     String msg=nwf.getMessage();
     for(var s:output){if(!msg.contains(s)){throw nwf;}}
     for(var s:output){assertTrue(msg.contains(s));}

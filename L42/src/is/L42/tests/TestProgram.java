@@ -10,6 +10,7 @@ import org.opentest4j.AssertionFailedError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.common.EndError;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
 import is.L42.generated.Core;
@@ -18,7 +19,6 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FullL42Visitor;
-import is.L42.visitors.WellFormedness.NotWellFormed;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.unreachable;
@@ -31,9 +31,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //WellFormedness
    passWF("{method Void (Void that,Void foo)=foo}")
    ),new AtomicTest(()->
-   failWF(NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("1",hole))
+   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("1",hole))
    ),new AtomicTest(()->
-   failWF(NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("1",hole))
+   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("1",hole))
    ),new AtomicTest(()->
 
    passWF("{method Void a(This3.Foo f)}"+emptyP)

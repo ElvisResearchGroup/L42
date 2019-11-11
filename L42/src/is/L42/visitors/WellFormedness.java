@@ -34,6 +34,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 
 class ContainsFullL extends Contains.SkipL<Full.L>{
@@ -42,22 +43,6 @@ class ContainsFullL extends Contains.SkipL<Full.L>{
 class ContainsSlashXOut extends Contains.SkipL<Full.SlashX>{
   @Override public void visitSlashX(Full.SlashX sx){setResult(sx);}
   @Override public void visitPar(Full.Par par){}
-  }
-class ContainsIllegalVarUpdate extends Contains.SkipL<Core.EX>{
-  Set<X> updatableXs=Collections.emptySet();
-  @Override public void visitOpUpdate(Full.OpUpdate opUpdate){
-    super.visitOpUpdate(opUpdate);
-    if(updatableXs.contains(opUpdate.x())){return;}
-    setResult(new Core.EX(opUpdate.pos(),opUpdate.x()));
-    }
-  @Override public void visitBlock(Full.Block b){
-    var old=updatableXs;
-    updatableXs=Stream.concat(old.stream(),
-      FV.allVarTx(b.ds()).filter(v->v.isVar()).map(v->v._x()).filter(x->x!=null))
-      .collect(Collectors.toSet());
-    super.visitBlock(b);
-    updatableXs=old;
-    }
   }
 class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
   @Override public void visitL(Full.L l){
@@ -90,18 +75,19 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
   }
   
 public class WellFormedness extends PropagatorCollectorVisitor{
-  public static class NotWellFormed extends EndError{
-    public NotWellFormed(List<Pos> poss, String msg) { super(poss, msg);}
-    }
   public static boolean of(Visitable<?> v){
     var tos=new WellFormedness();
     v.accept(tos);
     return true;
     }
-
+  HashSet<X> declared=new HashSet<>();
+  HashSet<X> declaredHidden=new HashSet<>();
+  HashSet<X> declaredVarFwd=new HashSet<>();
+  HashSet<X> declaredVarError=new HashSet<>();
+  HashSet<X> declaredVar=new HashSet<>();
   List<Pos> lastPos;
   private final Error err(String msg){
-    throw new NotWellFormed(lastPos,msg);
+    throw new EndError.NotWellFormed(lastPos,msg);
     }
   @Override public void visitE(Full.E e){lastPos=e.poss();super.visitE(e);}
 
@@ -174,11 +160,38 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitBlock(Full.Block b){
     lastPos=b.poss();
-    super.visitBlock(b);
     var domDs=FV.domFullDs(b.ds());
+    var domMatches=FV.domFullDsOnlyMatchs(b.ds());
+    var allVar=FV.domVarFullDs(b.ds());
     okXs(domDs);
-    declaredVariableNotUsedInCatch(b.ks(), domDs);
-    declaredVariableNotRedeclared(b, domDs);
+    for(var x: domDs){if(declared.contains(x)){
+      err(Err.redefinedName(x));
+      }}
+    declared.addAll(domDs);
+    declaredHidden.addAll(domMatches);
+    declaredVar.addAll(allVar);
+    for(var v:allVar){if(!domMatches.contains(v)){declaredVarFwd.addAll(allVar);}}
+    boolean isErr=b.ks().stream().anyMatch(k->k._thr()==ThrowKind.Error);
+    if(isErr){declaredVarError.addAll(allVar);}
+    for(var d:b.ds()){
+      visitD(d);
+      if(d._varTx()!=null && d._varTx().isVar()){
+        assert d._varTx()._x()!=null;
+        declaredVarFwd.remove(d._varTx()._x());
+        for(var vtx:d.varTxs()){
+          assert vtx._x()!=null;
+          declaredHidden.remove(vtx._x());
+          }
+        }
+      }
+    declaredHidden.addAll(domDs);
+    visitFullKs(b.ks());
+    visitFullTs(b.whoopsed());
+    declaredHidden.removeAll(domDs);
+    if(isErr){declaredVarError.removeAll(allVar);}
+    if(b._e()!=null){visitE(b._e());}
+    declared.removeAll(domDs);
+    declaredVar.removeAll(allVar);
     if(b.isCurly()){Returning.ofBlock(b);return;}
     int minus=0;
     if(b._e()==null){
@@ -204,7 +217,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(b.ds().size()<=b.dsAfter()){
       if(b._e()==null){return;}
       }
-    else{  
+    else{
       Full.D firstAfter=b.ds().get(b.dsAfter());
       if(firstAfter._varTx()!=null || !firstAfter.varTxs().isEmpty()){return;}
       }
@@ -213,78 +226,72 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=kLast.e().poss();
     err(Err.needBlock(kLast.e()));
     }
-  private void declaredVariableNotRedeclared(Full.Block b, List<X> domDs) {
-    declaredVariableNotRedeclared(Stream.concat(Stream.concat(
-      b.ds().stream().map(d->d._e()),//ds
-      b.ks().stream().map(k->k.e())//ks
-      ),Stream.of(b._e())),//e
-      b.ks().stream().map(k->k._x()),
-      domDs
-      );
-   }
-  private void declaredVariableNotRedeclared(Core.Block b, List<X> domDs) {
-    declaredVariableNotRedeclared(Stream.concat(Stream.concat(
-      b.ds().stream().map(d->d.e()),//ds
-      b.ks().stream().map(k->k.e())//ks
-      ),Stream.of(b.e())),//e
-      b.ks().stream().map(k->k.x()),
-      domDs
-      );
-    }
-  private void declaredVariableNotRedeclared(Stream<HasVisitable>s,Stream<X>kxs, List<X> domDs) {
-    var redefined=L(Stream.concat(kxs,s
-       .filter(e->e!=null)
-       .flatMap(e->Bindings.of(e.visitable()).stream())
-       )
-     .filter(x->domDs.contains(x)));
-    if(redefined.isEmpty()){return;}
-    err(Err.redefinedName(redefined));
-    }
-
-  private void declaredVariableNotUsedInCatch(List<? extends Visitable<?>> ks, List<X> domDs) {
-    for(var ki:ks){
-      var inside=FV.of(ki).stream().filter(x->domDs.contains(x)).findFirst();
-      if(inside.isEmpty()){continue;}
-      err(Err.nameUsedInCatch(inside.get()));
-      }
-    }
   @Override public void visitBlock(Core.Block b){
     lastPos=b.poss();
-    super.visitBlock(b);
     var domDs=FV.domDs(b.ds());
+    var allVar=FV.domVarDs(b.ds());
     okXs(domDs);
-    declaredVariableNotUsedInCatch(b.ks(), domDs);
-    declaredVariableNotRedeclared(b, domDs);
-    }    
+    for(var x: domDs){if(declared.contains(x)){
+      err(Err.redefinedName(x));
+      }}
+    declared.addAll(domDs);
+    declaredVar.addAll(allVar);
+    declaredVarFwd.addAll(allVar);
+    boolean isErr=b.ks().stream().anyMatch(k->k.thr()==ThrowKind.Error);
+    if(isErr){declaredVarError.addAll(allVar);}
+    for(var d:b.ds()){
+      visitD(d);
+      if(d.isVar()){declaredVarFwd.remove(d.x());}
+      }
+    declaredHidden.addAll(domDs);
+    visitKs(b.ks());
+    declaredHidden.removeAll(domDs);
+    if(isErr){declaredVarError.removeAll(allVar);}
+    visitE(b.e());
+    declared.removeAll(domDs);
+    declaredVar.removeAll(allVar);
+    }
   @Override public void visitK(Core.K k){
     lastPos=k.e().poss();
+    preDeclare(false, k.x());
     super.visitK(k);
-    wfKCommon(k.e().visitable(), k.x());  
+    postDeclare(false, k.x());  
     }
   @Override public void visitK(Full.K k){
     lastPos=k.e().poss();
+    preDeclare(false, k._x());
     super.visitK(k);
-    wfKCommon(k.e().visitable(), k._x());
+    postDeclare(false, k._x());
     }
-  private void wfKCommon(Visitable<?> v, X x) {
-    var bindings=Bindings.of(v);
+  private void preDeclare(boolean var,X x) {
     if(x==null){return;}
-    if(bindings.contains(x)){err(Err.redefinedName(L(x)));}
+    if(declared.contains(x)){err(Err.redefinedName(L(x)));}
     if(x.inner().equals("this")){err(Err.duplicatedNameThis());}
+    if(var){declaredVar.add(x);}
     }
-    
+  private void postDeclare(boolean var,X x) {
+    if(x==null){return;}
+    declared.remove(x);
+    if(var){declaredVar.remove(x);}
+    }
+  @Override public void visitEX(Core.EX ex){//is also Full
+    X x=ex.x();
+    lastPos=ex.poss();
+    if(!declared.contains(x)){err(Err.nameUsedNotInScope(x));}
+    if(declaredHidden.contains(x)){err(Err.nameUsedInCatchOrMatch(x));}
+    }    
   @Override public void visitF(Full.L.F f){
     super.visitF(f);
     if(f.t()._mdf()==null){return;}
     if(!f.t()._mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
     err(Err.invalidFieldType(f));
     }
-
   @Override public void visitMI(Full.L.MI mi){
     lastPos=mi.poss();
     super.visitMI(mi);
     var pars=pushL(X.thisX,mi.s().xs());
     checkTopE(mi.e().visitable(),pars);
+    FV.of(mi.e().visitable());
     var l=new ContainsFullL()._of(mi.e().visitable());
     if(l==null){return;}
     lastPos=l.poss();
@@ -294,6 +301,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=nc.poss();
     super.visitNC(nc);
     checkTopE(nc.e().visitable(),L());
+    FV.of(nc.e().visitable());
     }
   @Override public void visitMWT(Full.L.MWT mwt){
     lastPos=mwt.poss();
@@ -301,6 +309,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
     checkTopE(mwt._e().visitable(),pars);
+    checkCapsulesUsedOnlyOnce(mwt._e().visitable(),pars,
+      mwt.mh().parsWithThis().stream().map(t->t._mdf()));
     var l=new ContainsFullL()._of(mwt._e().visitable());
     if(l==null){return;}
     lastPos=l.poss();
@@ -311,37 +321,37 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitMWT(mwt);
     if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
-    var fv=checkTopE(mwt._e().visitable(),pars);
-    var parT=mwt.mh().parsWithThis();
-    for(var i:range(pars)){
-      if(!parT.get(i).mdf().isCapsule()){continue;}
-      var xi=pars.get(i);
+    checkTopE(mwt._e().visitable(),pars);
+    checkCapsulesUsedOnlyOnce(mwt._e().visitable(),pars,
+      mwt.mh().parsWithThis().stream().map(t->t.mdf()));
+    }
+  private void checkCapsulesUsedOnlyOnce(Visitable<?> v,List<X> pars,Stream<Mdf> parMdfs){
+    var fv = FV.of(v);
+    int[]i={-1};
+    parMdfs.forEach(mi->{
+      i[0]+=1;
+      if(mi!=Mdf.Capsule){return;} //mi may be null
+      var xi=pars.get(i[0]);
       long count=fv.stream().filter(x->x.equals(xi)).count();
-      if(count<=1){continue;}
+      if(count<=1){return;}
       err(Err.capsuleBindingUsedOnce(xi));
-      }
+      });
     }
-  private List<X> checkAllVariablesUsedInScope(Visitable<?> v, List<X> pars) {
-    var fv=FV.of(v);
-    var extra=fv.stream().filter(x->!pars.contains(x)).findFirst();
-    if(extra.isPresent()){
-      err(Err.nameUsedNotInScope(extra.get()));
-      }
-    return fv;
+  private void checkTopE(Visitable<?> v,List<X>pars) {
+    assert declared.isEmpty();
+    assert declaredHidden.isEmpty();
+    assert declaredVar.isEmpty();
+    assert declaredVarError.isEmpty();
+    assert declaredVarFwd.isEmpty();
+    declared.addAll(pars);
+    v.accept(this);
+    declared.removeAll(pars);
+    var sx=new ContainsSlashXOut()._of(v);
+    if(sx==null){return;}
+    lastPos=sx.poss();
+    throw err(Err.slashOut(sx));
     }
-    private List<X> checkTopE(Visitable<?> v,List<X>pars) {
-      var res=checkAllVariablesUsedInScope(v, pars);
-      var x=new ContainsIllegalVarUpdate()._of(v);
-      if(x!=null){
-        lastPos=x.poss();
-        err(Err.unapdatable(x));
-        }
-      var sx=new ContainsSlashXOut()._of(v);
-      if(sx==null){return res;}
-      lastPos=sx.poss();
-      throw err(Err.slashOut(sx));
-      }
-  @Override public void visitMH(Full.MH mh){
+  @Override public void visitMH(Full.MH mh){//HERE!
     super.visitMH(mh);
     checkAllEmptyMdfFull(mh.exceptions());
     if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
@@ -414,6 +424,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitBinOp(binOp);
     var es=binOp.es();
     Stream<Full.E> risks=es.stream();
+    if(binOp.op().kind==OpKind.OpUpdate){
+      var ex=(Core.EX)binOp.es().get(0);
+      var x=ex.x();
+      if(!declaredVar.contains(x)){err(Err.nonVarBindingOpUpdate(x,binOp.op().inner));}
+      if(declaredVarFwd.contains(x)){err(Err.fwdVarBindingOpUpdate(x,binOp.op().inner));}
+      if(declaredVarError.contains(x)){err(Err.errorVarBindingOpUpdate(x,binOp.op().inner));}
+      }
     // (a (b (c d)))//all but the last need to be checked for right associative ops
     // ((a b) c) d)//just the first one need to be checked for left associative ops
     if(binOp.op().kind==OpKind.DataRightOp){risks=risks.limit(es.size()-1);}

@@ -25,7 +25,6 @@ import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.FullL42Visitor;
-import is.L42.visitors.WellFormedness.NotWellFormed;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;

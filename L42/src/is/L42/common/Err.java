@@ -71,8 +71,8 @@ public class Err {
   "duplicated names: [that];  'that' is implicitly passed as first argument"
   ;}public static String duplicatedName(Object names){return
   "duplicated names: "+names
-  ;}public static String redefinedName(Object names){return
-  "redefined names: "+names+" are internally redefined"
+  ;}public static String redefinedName(Object name){return
+  "redefined name: "+name+" is internally redefined"
   ;}public static String varBindingCanNotBe(Object _1){return
   "var bindings can not be "+_1
   ;}public static String deadCodeAfter(Object _1){return
@@ -85,8 +85,8 @@ public class Err {
   ;}public static String needBlockOps(Object _1){return
   "expressions with more then one kind of binary operator need to be disambiguated with parenthesis: "+_1
 
-  ;}public static String nameUsedInCatch(Object _1){return  
-  "name "+_1+ " used in catch; it may not be initialized"
+  ;}public static String nameUsedInCatchOrMatch(Object _1){return  
+  "name "+_1+ " used in catch or in forward match; it may not be initialized"
   ;}public static String noFullL(Object _1){return    
   "Method body can not contain a full library literal:\n"
   +trimExpression(_1.toString())+"\n"
@@ -94,8 +94,6 @@ public class Err {
   "capsule name "+_1+" used more then once"
   ;}public static String nameUsedNotInScope(Object _1){return
   "Used name is not in scope: "+_1
-  ;}public static String unapdatable(Object _1){return
-  "name "+_1+" is not declared as var, thus it can not be updated"
   ;}public static String slashOut(Object _1){return
   "term "+_1+" can only be used inside parameters"
   ;}public static String methodTypeMdfNoFwd(){return  
@@ -216,22 +214,32 @@ public class Err {
   "for method "+_1+", method call result type is incompatible with the expected modifier: "+_2
   ;}public static String methCallNoCompatibleMdfParametersSignature(Object _1){return
   "for method "+_1+", method call parameter signature is incompatible the parameters"
- ;}public static String mayLeakUnresolvedFwd(Object _1){return
+  ;}public static String mayLeakUnresolvedFwd(Object _1){return
   "fwd variable "+_1+" may be leaked out using a return"
- ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
+  ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
   "native body "+_1+" uses unrecognized receiver of kind "+_2
- ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
+  ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
- ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
+  ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
   "native body "+_1+" has selector "+_2+" but the parameter of type "+_3+" is not of kind "+_4
- 
- ;}public static String nonCoherentNoSetOfFields(Object _1){return
+  ;}public static String nonCoherentNoSetOfFields(Object _1){return
   "The class is not coherent. Candidate factory parameters are: "+_1
- ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object _1){return
+  ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object _1){return
   "The class is not coherent. It has private state but also abstract methods:"+_1
-;}public static String nonCoherentMethod(Object _1){return
+  ;}public static String nonCoherentMethod(Object _1){return
   "The class is not coherent. Method "+_1+" is not part of the abstract state"
+  ;}public static String lastStatementDoesNotGuaranteeBlockTermination(){return
+  "last statement does not guarantee block termination"
+  ;}public static String catchStatementDoesNotGuaranteeBlockTermination(int i){return
+  "catch statement "+i+" does not guarantee block termination"
+  ;}public static String curlyWithNoReturn(){return
+  "curly block do not have any return statement"
+  ;}public static String nonVarBindingOpUpdate(Object x,Object op){return
+  "the operator "+op+" is used on the variable "+x+", that is not declared var"
+  ;}public static String fwdVarBindingOpUpdate(Object x,Object op){return
+  "the operator "+op+" is used on the variable "+x+", that is still uninitialized"
+  ;}public static String errorVarBindingOpUpdate(Object x,Object op){return
+  "the operator "+op+" is used on the variable "+x+", but updating it would violate strong error safety"
 
-
-  ;}
+ ;}
 }

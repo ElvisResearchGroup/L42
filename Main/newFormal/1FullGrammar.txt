@@ -158,25 +158,14 @@ _______
 * FULL.B:
     no repetition in bindings(B.Ds.DXs)//B.Ds contains all of the Ds, even if divided in 2 groups in the syntax
     this notin bindings(B.Ds.DXs)
-    FV(Ks) disjoint bindings(B.Ds.DXs)
-    bindings(B.Ds.DXs) disjoint bindings(B.Ds.es,B.Ks.es,B.e) U Ks.xs
     if B={ Ds1 Ks WHOOPS? Ds2} then returningBlock({ Ds1 Ks WHOOPS? Ds2})
     if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
-    if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D) 
+    if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D)
     if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
     if B=(_ K e _) then noBlockNeeded(K.e)
-    forall x in bindings(B.Ds.DXs) declared var: not x updateOp _ inside B //TODO: add this and the next in code
-    if error in Ks.throws then forall x in bindings(B.Ds.DXs) : not x updateOp _ inside B.Ds.es
-    //TODO: handle xs in if and for too: only x updateOp _ if declared var.
 * (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
     no repetition in Ds.xs
-    this notin dom(Ds)
-    FV(Ks) disjoint dom(Ds)
-    dom(Ds) disjoint bindings(Ds.es,Ks.es,e) U Ks.xs
-    forall D in Ds such that Ds.var?=empty: not D.x:= _ inside (CORE.Ds CORE.Ks CORE.e)
-    if error in Ks.throws then forall D in Ds: not D.x:= _ inside CORE.Ds.es
-    forall D in Ds such that Ds.var?=var: D.T.mdf not capsule or fwd//TODO: add those last 3 lines in code
-* FULL/CORE.K: K.x not in bindings(K.e); K.x!=this
+    forall D in Ds such that Ds.var?=var: D.T.mdf not capsule or fwd//TODO: add to code
 * throw FULL.e: not returning(Full.e)
 * FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
@@ -187,13 +176,8 @@ _______
     if exists i: Ti.mdf=fwd imm then T.mdf undefined or T.mdf in {mut, fwd mut, imm, fwd imm}
     if exists i: Ti.mdf=fwd mut then T.mdf undefined or T.mdf in {mut, fwd mut}
     if T.mdf in {fwd imm,fwd mut} then exists i: Ti.mdf in {fwd imm, fwd mut}
-* CORE.MWT: if MWT.e?=e, then
-    FV(e)\this,x1..xn = empty    
-    for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
 * FULL.match of form T?0(T?1 x0..T?n xn) = e; at least one T?i is not empty
-* FULL.e: all used variables are in scope //to implement in MI,MWT and NC
 * FULL.e: \x only appear in a method parameter expression
-* CORE/FULL.e: all variable update are applied on var bindings
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty 
 * CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
@@ -223,6 +207,20 @@ _______
 * CTz: forall CT1,CT2 in CTz, if CT1.ST=CT2.ST then CT1=CT2
 * CT: ST<=STz, ST not of form Core.T
 * when CTz and p are used together, forall ST anywhere in CTz, p.solve(ST)=ST
+//no binding hiding, no used binding undeclared, all x updateOp _ refers to a var binding
+* CORE/FULL.e:
+    -all used variables are in scope
+    -all variable update (:= and updateOp) are applied on var bindings
+    -no binding hiding
+* "this" can never be explicitly declared as a binding
+* FULL/CORE block: FV(Ks.es) disjoint bindings(Ds.DXs)
+  // in the catches, they are no usable but also in scope thus not redeclarable
+* FULL/CORE block where error in Ks.throws and x in bindings(Ds.DXs): not x updateOp _ inside Ds.es
+* CORE/FULL D1..Dn: if Dj.x updateOp _ inside Di.e then j<i
+* CORE.MWT: if MWT.e?=e, then //this partially duplicate the test of "all used variables are in scope" 
+    FV(e)\this,x1..xn = empty    
+    for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
+
 //CODE ONLY WELL FORMEDNESS:
 //* x, P not valid DX=e
 //* CsP well formed, not Any in the middle and so on..

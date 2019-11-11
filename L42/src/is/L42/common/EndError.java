@@ -4,8 +4,6 @@ import java.util.List;
 
 import is.L42.generated.Pos;
 
-
-@SuppressWarnings("serial")
 public abstract class EndError extends RuntimeException{
   public EndError(List<Pos> poss,String msg){
     //assert poss!=null: msg;
@@ -39,5 +37,8 @@ public abstract class EndError extends RuntimeException{
     }
   public static class CoherentError extends EndError{
     public CoherentError(List<Pos> poss, String msg) { super(poss, msg);}
+    }
+  public static class NotWellFormed extends EndError{
+    public NotWellFormed(List<Pos> poss, String msg) { super(poss, msg);}
     }
   }

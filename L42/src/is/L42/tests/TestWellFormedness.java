@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Core.Throw;
@@ -14,7 +15,6 @@ import is.L42.generated.Full;
 import is.L42.generated.ThrowKind;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FullL42Visitor;
-import is.L42.visitors.WellFormedness.NotWellFormed;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.range;
@@ -128,7 +128,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
    fail("(This0 a=y catch error This0 a error x x)",Err.redefinedName("[a]"))
    ),new AtomicTest(()->
-   fail("((A a=y catch T x a x))",Err.nameUsedInCatch("a"))
+   fail("((A a=y catch T x a x))",Err.nameUsedInCatchOrMatch("a"))
 
    ),new AtomicTest(()->
    fail("{A a=y x.foo()}","last statement does not guarantee block termination")
@@ -165,7 +165,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail(inCore("(This0 a=y (This0 a=z x))"),Err.redefinedName("[a]"))
    ),new AtomicTest(()->
-   fail(inCore("(This0 a=y catch error This0 x a x)"),Err.nameUsedInCatch(hole))
+   fail(inCore("(This0 a=y catch error This0 x a x)"),Err.nameUsedInCatchOrMatch(hole))
 
 
     ),new AtomicTest(()->
@@ -288,7 +288,7 @@ public static void fail(String input,String ...output){
   var r=Parse.e("-dummy-",input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   try{r.res.wf();}
-  catch(NotWellFormed nwf){
+  catch(EndError.NotWellFormed nwf){
     String msg=nwf.getMessage();
     if(output.length==1){
       msg=msg.substring(msg.indexOf("\n")+1);
