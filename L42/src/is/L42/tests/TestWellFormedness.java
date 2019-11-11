@@ -25,13 +25,13 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestWellFormedness
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   pass("foo")
+   pass("void")
    ),new AtomicTest(()->
-   pass("((var mut A x=y x))")
+   pass("((var mut A x=void x))")
    ),new AtomicTest(()->
-   pass("((capsule A x=y x))")
+   pass("((capsule A x=void x))")
    ),new AtomicTest(()->
-   fail("((var capsule A x=y x))",Err.varBindingCanNotBe("capsule"))
+   fail("((var capsule A x=void x))",Err.varBindingCanNotBe("capsule"))
    ),new AtomicTest(()->
    fail("((var fwd imm A x=y x))",Err.varBindingCanNotBe("fwd imm"))
    ),new AtomicTest(()->
@@ -39,8 +39,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("(((var capsule a)=y x))",Err.varBindingCanNotBe("capsule"))
    ),new AtomicTest(()->
-   pass("(((capsule a)=y x))")
-
+   pass("(((capsule a)=void void))")
    ),new AtomicTest(()->
    pass(inCore("(var mut This0 x=void x)"))
    ),new AtomicTest(()->
@@ -57,7 +56,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{C=(x=void x+x)}")
    ),new AtomicTest(()->
-   fail("{C=(Void+x)}",Err.noOperatorOnPrimitive(hole,"Plus"))
+   fail("{C=(Void+void)}",Err.noOperatorOnPrimitive(hole,"Plus"))
 
    ),new AtomicTest(()->
    pass("{method Void (Void that,Void foo)=foo}")
@@ -78,11 +77,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{method Void (Void that,Void foo)=(var y=foo, void.foo(y+=void) void)}")
    ),new AtomicTest(()->
-   fail("{method Void (Void that,Void foo)=(y=foo, void.foo(y+=void) void)}","name y is not declared as var, thus it can not be updated")
+   fail("{method Void (Void that,Void foo)=(y=foo, void.foo(y+=void) void)}",Err.nonVarBindingOpUpdate(hole, hole))
    ),new AtomicTest(()->
-   fail("{method (that,foo)=((var y=foo void), (y=foo,void.foo(y+=void)) void)}","name y is not declared as var, thus it can not be updated")
+   fail("{method (that,foo)=((var y=foo void), (y=foo,void.foo(y+=void)) void)}",Err.nonVarBindingOpUpdate(hole, hole))
    ),new AtomicTest(()->
-   fail("{C=(x=void x:=x)}","name x is not declared as var, thus it can not be updated")
+   fail("{C=(x=void x:=x)}",Err.nonVarBindingOpUpdate(hole, hole))
 
    ),new AtomicTest(()->
    fail("{fwd imm Void f }",Err.invalidFieldType(hole))
@@ -105,15 +104,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
 
    ),new AtomicTest(()->
-   fail("((a.foo(x=a,x=b)))",Err.duplicatedName("[x]"))
+   fail("((void.foo(x=void,x=void)))",Err.duplicatedName("[x]"))
    ),new AtomicTest(()->
-   fail("((a.foo(x=a,y=b,x=c)))",Err.duplicatedName("[x]"))
+   fail("((void.foo(x=void,y=void,x=void)))",Err.duplicatedName("[x]"))
    ),new AtomicTest(()->
-   fail("((a.foo(a,y=b,that=c)))",Err.duplicatedNameThat())
+   fail("((void.foo(void,y=void,that=void)))",Err.duplicatedNameThat())
    ),new AtomicTest(()->
-   fail("{method (that,foo,that)=e}",Err.duplicatedName(hole))
+   fail("{method (that,foo,that)=void}",Err.duplicatedName(hole))
    ),new AtomicTest(()->
-   fail("{method (that,foo,this)=e}",Err.duplicatedNameThis())
+   fail("{method (that,foo,this)=void}",Err.duplicatedNameThis())
    ),new AtomicTest(()->
    fail("{method Void (Void that,Void foo,Void that)=e}",Err.duplicatedName(hole))
    ),new AtomicTest(()->
@@ -122,20 +121,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("((@Foo.a(a,a,b)A a=y x))",Err.duplicatedName(hole))
 
    ),new AtomicTest(()->
-   fail("((A a=y A a=z x))",Err.duplicatedName(hole))
+   fail("((A a=void A a=void void))",Err.duplicatedName(hole))
    ),new AtomicTest(()->
-   fail("((A a=y (A a=z x)))",Err.redefinedName("[a]"))
+   fail("((A a=void (A a=void void)))",Err.redefinedName("a"))
     ),new AtomicTest(()->
-   fail("(This0 a=y catch error This0 a error x x)",Err.redefinedName("[a]"))
+   fail("(This0 a=void catch error This0 a error void void)",Err.redefinedName("a"))
    ),new AtomicTest(()->
-   fail("((A a=y catch T x a x))",Err.nameUsedInCatchOrMatch("a"))
-
+   fail("((A a=void catch T x a x))",Err.nameUsedInCatchOrMatch("a"))
    ),new AtomicTest(()->
-   fail("{A a=y x.foo()}","last statement does not guarantee block termination")
+   fail("{A a=void void.foo()}","last statement does not guarantee block termination")
    ),new AtomicTest(()->
-   fail("{A a=y error x}","curly block do not have any return statement")
+   fail("{A a=void error void}","curly block do not have any return statement")
    ),new AtomicTest(()->
-   fail("{return y A b=bb error x}","dead code after the statement 0 of the block")
+   fail("{return void A b=void error void}","dead code after the statement 0 of the block")
    ),new AtomicTest(()->
    fail("error error x",Err.deadThrow(ThrowKind.Error))
    ),new AtomicTest(()->
@@ -143,40 +141,35 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("exception error x",Err.deadThrow(ThrowKind.Exception))
    ),new AtomicTest(()->
-   fail("{A b=bb catch T y y error x}","catch statement 0 does not guarantee block termination")
+   fail("{A b=void catch T y y error void}","catch statement 0 does not guarantee block termination")
    ),new AtomicTest(()->
-   fail("(return a A a=y x)","dead code after the statement 0 of the block")
-
+   fail("(return void A a=void void)","dead code after the statement 0 of the block")
    ),new AtomicTest(()->
-   fail("(if a b catch T x x x)",Err.needBlock(hole))
+   fail("(if void void catch T x x void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(if a b c.foo() catch T x x x)",Err.needBlock(hole))
+   fail("(if void void void.foo() catch T x x void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(while a b c.foo() catch T x x x)",Err.needBlock(hole))
+   fail("(while void void void.foo() catch T x x void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(if a b else c c.foo() catch T x x x)",Err.needBlock(hole))
+   fail("(if void void else void void.foo() catch T x x void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(a.foo() catch T x x x)",Err.needBlock(hole))
+   fail("(void.foo() catch T x x void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(a.foo() catch T x x x.foo() x)",Err.needBlock(hole))
-
+   fail("(void.foo() catch T x x void.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail(inCore("(This0 a=y This0 a=z x)"),Err.duplicatedName(hole))
+   fail(inCore("(This0 a=void This0 a=void void)"),Err.duplicatedName(hole))
    ),new AtomicTest(()->
-   fail(inCore("(This0 a=y (This0 a=z x))"),Err.redefinedName("[a]"))
+   fail(inCore("(This0 a=void (This0 a=void void))"),Err.redefinedName("a"))
    ),new AtomicTest(()->
-   fail(inCore("(This0 a=y catch error This0 x a x)"),Err.nameUsedInCatchOrMatch(hole))
-
-
+   fail(inCore("(This0 a=void catch error This0 x a void)"),Err.nameUsedInCatchOrMatch(hole))
     ),new AtomicTest(()->
-   fail("(This0 a=y catch error This0 b (This0 b=c void) x)",Err.redefinedName("[b]"))
+   fail("(This0 a=void catch error This0 b (This0 b=void void) void)",Err.redefinedName("b"))
    ),new AtomicTest(()->
-   fail("(This0 a=y catch error This0 this error x x)",Err.duplicatedNameThis())
+   fail("(This0 a=void catch error This0 this error void void)",Err.duplicatedNameThis())
    ),new AtomicTest(()->
-   fail(inCore("(This0 a=y catch error This0 b (This0 b=c void) x)"),Err.redefinedName("[b]"))
+   fail(inCore("(This0 a=void catch error This0 b (This0 b=void void) void)"),Err.redefinedName("b"))
    ),new AtomicTest(()->
-   fail(inCore("(This0 a=y catch error This0 this error x x)"),Err.duplicatedNameThis())
-
+   fail(inCore("(This0 a=void catch error This0 this error x x)"),Err.redefinedName("this"))
    ),new AtomicTest(()->
    pass("(Any a={} void)")
    ),new AtomicTest(()->
@@ -185,7 +178,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{ method m()=(Any a={} void)}",Err.noFullL(hole))
    ),new AtomicTest(()->
    fail("{ class method Void m()=(Any a={} void)}",Err.noFullL(hole))
-   
    ),new AtomicTest(()->
    fail("{ fwd imm method Void m()}",Err.methodTypeMdfNoFwd())
    ),new AtomicTest(()->
@@ -194,7 +186,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{ method imm Any m(fwd mut Any x)}",Err.methodTypeNoFwdPar(hole))
    ),new AtomicTest(()->
    fail("{ method fwd mut Any m(mut Any x)}",Err.methodTypeNoFwdReturn())
-
    ),new AtomicTest(()->
    fail("{ fwd imm method Void m() #norm{}}",Err.methodTypeMdfNoFwd())
    ),new AtomicTest(()->
@@ -203,44 +194,34 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{ method imm Any m(fwd mut Any x) #norm{}}",Err.methodTypeNoFwdPar(hole))
    ),new AtomicTest(()->
    fail("{ method fwd mut Any m(mut Any x) #norm{}}",Err.methodTypeNoFwdReturn())
-
    ),new AtomicTest(()->
    pass("{ method fwd mut Any m(fwd mut Any x, mut Any y) #norm{}}")
    ),new AtomicTest(()->
    pass("{ method fwd imm Any m(fwd imm Any x, mut Any y) #norm{}}")
    ),new AtomicTest(()->
    fail("{ method fwd imm Any m(fwd mut Any x, mut Any y) #norm{}}",Err.methodTypeNoFwdPar(hole))
-
-
    ),new AtomicTest(()->
    pass("{ method Any m(Any x)=Any<:class Any.meth(a=x, b=x) #norm{}}")
-
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x) #norm{}}",Err.capsuleBindingUsedOnce(hole))
-
    ),new AtomicTest(()->
    fail("{ method capsule Any m()=(capsule Any x=this.m() capsule Any y=x x) #norm{}}",Err.capsuleBindingUsedOnce(hole))
-
    ),new AtomicTest(()->
    pass("{ method capsule Any m()=(capsule Any x=this.m() catch error This z this x) #norm{}}")
-
    ),new AtomicTest(()->
    fail("{ method capsule Any m()=(Any x=this.m() catch return capsule This y y.foo(that=y) x) #norm{}}",Err.capsuleBindingUsedOnce(hole))
 
 
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any<:class Any.meth(a=z, b=x) #norm{}}",Err.nameUsedNotInScope("z"))
-
    ),new AtomicTest(()->
-   fail("if (x,y)=z z.foo()","invalid 'if match': no type selected in (x, y)=z")
+   fail("if (x,y)=void void.foo()","invalid 'if match': no type selected in (x, y)=void")
    ),new AtomicTest(()->
-   pass("if (x, Any y)=z z.foo()")
-
+   pass("if (x, Any y)=void void.foo()")
    ),new AtomicTest(()->
-   pass("for var z in bla, (x,y) in bla beer")
+   pass("for var z in void, (x,y) in void void")
    ),new AtomicTest(()->
-   fail("for var z in bla, (x,var y) in bla beer",Err.forMatchNoVar("y"))
-
+   fail("for var z in void, (x,var y) in void void",Err.forMatchNoVar("y"))
    ),new AtomicTest(()->
    fail("{method A m() method B m()}",Err.duplicatedName("[m()]"))
    ),new AtomicTest(()->
@@ -273,7 +254,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("{C::1={ method Void foo()=void #norm{refined=foof()}}}",Err.privateNestedPrivateMember("foo()"))
 
    ),new AtomicTest(()->
-   fail("(ok, this is degenerate)",Err.degenerateStatement(hole))
+   fail("(void, void void void)",Err.degenerateStatement(hole))
 
   ));}
 public static String inCore(String s){

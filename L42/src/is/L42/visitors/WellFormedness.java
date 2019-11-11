@@ -265,14 +265,33 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   private void preDeclare(boolean var,X x) {
     if(x==null){return;}
-    if(declared.contains(x)){err(Err.redefinedName(L(x)));}
+    if(declared.contains(x)){err(Err.redefinedName(x));}
     if(x.inner().equals("this")){err(Err.duplicatedNameThis());}
+    declared.add(x);
     if(var){declaredVar.add(x);}
     }
   private void postDeclare(boolean var,X x) {
     if(x==null){return;}
     declared.remove(x);
     if(var){declaredVar.remove(x);}
+    }
+  private void preDeclare(Full.D d) {
+    var v=d._varTx();
+    var vs=d.varTxs();
+    if(v!=null && v._x()!=null){preDeclare(v.isVar(),v._x());}
+    for(var vi:vs){
+      assert vi._x()!=null;
+      preDeclare(vi.isVar(),vi._x());
+      }
+    }
+  private void postDeclare(Full.D d) {
+    var v=d._varTx();
+    var vs=d.varTxs();
+    if(v!=null && v._x()!=null){postDeclare(v.isVar(),v._x());}
+    for(var vi:vs){
+      assert vi._x()!=null;
+      postDeclare(vi.isVar(),vi._x());
+      }
     }
   @Override public void visitEX(Core.EX ex){//is also Full
     X x=ex.x();
@@ -288,8 +307,10 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMI(Full.L.MI mi){
     lastPos=mi.poss();
-    super.visitMI(mi);
     var pars=pushL(X.thisX,mi.s().xs());
+    declared.addAll(pars);    
+    super.visitMI(mi);
+    declared.removeAll(pars);
     checkTopE(mi.e().visitable(),pars);
     FV.of(mi.e().visitable());
     var l=new ContainsFullL()._of(mi.e().visitable());
@@ -305,9 +326,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMWT(Full.L.MWT mwt){
     lastPos=mwt.poss();
-    super.visitMWT(mwt);
-    if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
+    declared.addAll(pars);    
+    super.visitMWT(mwt);
+    declared.removeAll(pars);
+    if(mwt._e()==null){return;}
     checkTopE(mwt._e().visitable(),pars);
     checkCapsulesUsedOnlyOnce(mwt._e().visitable(),pars,
       mwt.mh().parsWithThis().stream().map(t->t._mdf()));
@@ -318,9 +341,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMWT(Core.L.MWT mwt){
     lastPos=mwt.poss();
-    super.visitMWT(mwt);
-    if(mwt._e()==null){return;}
     var pars=pushL(X.thisX,mwt.mh().s().xs());
+    declared.addAll(pars);
+    super.visitMWT(mwt);
+    declared.removeAll(pars);
+    if(mwt._e()==null){return;}
     checkTopE(mwt._e().visitable(),pars);
     checkCapsulesUsedOnlyOnce(mwt._e().visitable(),pars,
       mwt.mh().parsWithThis().stream().map(t->t.mdf()));
@@ -338,7 +363,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       });
     }
   private void checkTopE(Visitable<?> v,List<X>pars) {
-    assert declared.isEmpty();
+    assert declared.isEmpty():
+      declared;
     assert declaredHidden.isEmpty();
     assert declaredVar.isEmpty();
     assert declaredVarError.isEmpty();
@@ -351,7 +377,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=sx.poss();
     throw err(Err.slashOut(sx));
     }
-  @Override public void visitMH(Full.MH mh){//HERE!
+  @Override public void visitMH(Full.MH mh){
     super.visitMH(mh);
     checkAllEmptyMdfFull(mh.exceptions());
     if(mh._mdf()!=null && mh._mdf().isIn(Mdf.ImmutableFwd, Mdf.MutableFwd)){
@@ -403,8 +429,15 @@ public class WellFormedness extends PropagatorCollectorVisitor{
 
   @Override public void visitIf(Full.If i){
     lastPos=i.poss();
-    super.visitIf(i);
-    for(var d:i.matches()){validMatch(d);}
+    var _c0=i._condition();
+    if(_c0!=null){visitE(_c0);}
+    visitFullDs(i.matches());
+    for(var di:i.matches()){validMatch(di);preDeclare(di);}
+    visitE(i.then());
+    for(var di:i.matches()){postDeclare(di);}
+    var _else0=i._else();    
+    if(_else0!=null){visitE(_else0);}
+
     }
   private void validMatch(D d) {
     long ts=FV.allVarTx(L(d))
@@ -419,18 +452,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     var p=csp._p();
     return p!=null && !p.isNCs();
     }
+  @Override public void visitOpUpdate(Full.OpUpdate op){
+    var x=op.x();
+    if(!declaredVar.contains(x)){err(Err.nonVarBindingOpUpdate(x,op.op().inner));}
+    if(declaredVarFwd.contains(x)){err(Err.fwdVarBindingOpUpdate(x,op.op().inner));}
+    if(declaredVarError.contains(x)){err(Err.errorVarBindingOpUpdate(x,op.op().inner));}
+    }
   @Override public void visitBinOp(Full.BinOp binOp){
     lastPos=binOp.poss();
     super.visitBinOp(binOp);
     var es=binOp.es();
     Stream<Full.E> risks=es.stream();
-    if(binOp.op().kind==OpKind.OpUpdate){
-      var ex=(Core.EX)binOp.es().get(0);
-      var x=ex.x();
-      if(!declaredVar.contains(x)){err(Err.nonVarBindingOpUpdate(x,binOp.op().inner));}
-      if(declaredVarFwd.contains(x)){err(Err.fwdVarBindingOpUpdate(x,binOp.op().inner));}
-      if(declaredVarError.contains(x)){err(Err.errorVarBindingOpUpdate(x,binOp.op().inner));}
-      }
+    assert binOp.op().kind!=OpKind.OpUpdate;
     // (a (b (c d)))//all but the last need to be checked for right associative ops
     // ((a b) c) d)//just the first one need to be checked for left associative ops
     if(binOp.op().kind==OpKind.DataRightOp){risks=risks.limit(es.size()-1);}
@@ -442,17 +475,20 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitFor(Full.For f){
     lastPos=f.poss();
-    super.visitFor(f);    
+    visitFullDs(f.ds());
     for(var d:f.ds()){
+      preDeclare(d);
       for(var vtx:d.varTxs()){
-        if(!vtx.isVar()){continue;}
-        err(Err.forMatchNoVar(vtx._x()));
+        if(vtx.isVar()){err(Err.forMatchNoVar(vtx._x()));}
         }
       }
-    }  
+    visitE(f.body());
+    for(var di:f.ds()){postDeclare(di);}
+    }
+  public void superVisitL(Full.L l){lastPos=l.poss();super.visitL(l);}  
   @Override public void visitL(Full.L l){
     lastPos=l.poss();
-    super.visitL(l);
+    new WellFormedness().superVisitL(l);
     if(l.isDots() || !l.reuseUrl().isEmpty()){
       boolean broke=!l.docs().isEmpty() || l.ms().stream()
         .filter(m->m instanceof Full.L.F || m instanceof Full.L.MI)
@@ -483,9 +519,10 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L()));
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
+  public void superVisitL(Core.L l){lastPos=l.poss();super.visitL(l);}
   @Override public void visitL(Core.L l){
     lastPos=l.poss();
-    super.visitL(l);
+    new WellFormedness().superVisitL(l);
     checkAllEmptyMdf(l.ts());
     for(var m:l.ncs()){
       if(!m.key().hasUniqueNum()){continue;}
