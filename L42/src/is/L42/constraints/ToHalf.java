@@ -33,8 +33,12 @@ import is.L42.generated.X;
 import is.L42.generated.Y;
 import is.L42.generated.Full.Call;
 import is.L42.generated.Full.Cast;
+import is.L42.generated.Full.E;
 import is.L42.generated.Full.If;
 import is.L42.generated.Full.Par;
+import is.L42.generated.Full.VarTx;
+import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.Returning;
 import is.L42.visitors.UndefinedCollectorVisitor;
 import is.L42.visitors.Visitable;
 
@@ -231,7 +235,16 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   @Override public void visitBlock(Full.Block block){
     if(block.isCurly()){curlyBlock(block);return;}
-    if(block._e()==null){block=block.with_e(new Core.EVoid(block.pos()));}
+    if(block._e()==null){
+      assert block.dsAfter()==block.ds().size();
+      var lastD= block.ds().get(block.ds().size()-1);
+      assert lastD._e()!=null && lastD._varTx()==null && lastD.varTxs().isEmpty();
+      Full.E end=new Core.EVoid(block.pos());
+      if(Returning.of(lastD._e())){
+        end=new Full.Throw(block.pos(), ThrowKind.Error, end);
+        }
+      block=block.with_e(end);
+      }
     if(block.dsAfter()!=block.ds().size()){block=splitBlock(block);}
     if(!block.whoopsed().isEmpty()){block=expandWhoopses(block);}
     Y oldY=y;
@@ -387,6 +400,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private X freshX(String s){return new X(fresh.fresh(s));}
   @Override public void visitBinOp(Full.BinOp binOp){
+    assert binOp.es().size()>=2:binOp.es();
     if(binOp.es().size()!=2){binOp=applyAssociativity(binOp);}
     if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
     if(binOp.es().get(0) instanceof Full.CsP){
@@ -414,7 +428,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private Full.BinOp applyAssociativity(Full.BinOp b){
     int s=b.es().size();
-    assert s>2;
+    assert s>2:s;
     if(b.op().kind==OpKind.RelationalOp){return b;}
     if(b.op().kind==OpKind.DataLeftOp){
       var left=new Full.BinOp(b.pos(),b.op(),b.es().subList(0, 2));
@@ -523,7 +537,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     if(!isFullXP(sIf._condition())){visitBlock(ifBlock(p,sIf));return;}
     Full.E test=new Full.Call(p,sIf._condition(),ifS,false,Par.emptys);
     test=new Full.Call(p,test,checkTrueS,false,Par.emptys);
-    var k=new Full.K(null,immVoid_._t(),null,sIf._else());
+    var k=new Full.K(ThrowKind.Exception,immVoid_._t(),null,sIf._else());
     var block=new Full.Block(p,false,L(makeDec(test)),1,L(k),L(),sIf.then());
     visitBlock(block);
     }
@@ -534,8 +548,106 @@ public class ToHalf extends UndefinedCollectorVisitor{
     sIf=sIf.with_condition(ex);
     return makeBlock(p,L(decX),sIf);
     }
+  @Override public void visitWhile(Full.While sWhile){
+    Pos p=sWhile.pos();
+    Full.E e0=sWhile.condition();
+    e0=new Full.Call(p,e0,checkTrueS,false,Par.emptys);
+    var k=new Full.K(ThrowKind.Exception,immVoid_._t(),null,new Core.EVoid(p)); 
+    var l=new Full.Loop(p,makeBlock(p,L(makeDec(e0)),sWhile.body()));
+    visitBlock(new Full.Block(p,false,L(makeDec(l)),1,L(k),L(),null));
+    }
+  @Override public void visitFor(Full.For sFor){
+    boolean allXPs=sFor.ds().stream().allMatch(di->isFullXP(di._e()));
+    if(allXPs){visitBlock(forMain(sFor));}
+    else{visitBlock(forXPs(sFor));}
+    //System.out.println(this.res.e);
+    }
+  private Full.Block forXPs(Full.For sFor){
+    List<Full.D> newDs=new ArrayList<>();
+    List<Full.D> ds=L(sFor.ds(),(c,di)->{
+      if(isFullXP(di._e())){newDs.add(di);return;}
+      X xi=freshX("forIt");
+      newDs.add(di.with_e(new Core.EX(di._e().pos(),xi)));
+      c.add(makeDec(null, xi, di._e()));
+      });
+    var sForSolved=sFor.withDs(newDs);
+    return makeBlock(sFor.pos(), ds, forMain(sForSolved));
+    }
+  private Full.D dsElem(Pos p,String hint,Full.E e,boolean isVar,S sel,ArrayList<X> acc){
+    X x=freshX(hint);
+    acc.add(x);
+    var call=new Full.Call(p,e,sel,false,Par.emptys);
+    return new Full.D(new VarTx(isVar,null,null,x),L(),call);
+  }
+  private Full.E binMeth(Pos p,X xi,X x1i,S s){
+    var xie=new Core.EX(p,xi);
+    var x1ie=new Core.EX(p,x1i);
+    return new Full.Call(p,xie,s,false,L(new Par(x1ie,L(),L())));    
+    }
+  private Full.Block forMain(Full.For sFor){
+    Pos p=sFor.pos();
+    var xIts=new ArrayList<X>();
+    var xIndexs=new ArrayList<X>();
+    List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.iterator()..xn=xPn.iterator()
+      dsElem(p,"xIt",d._e(),false,iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
+    List<Full.D> dsStartIndexs=L(sFor.ds().stream().map(d->//var x'1 = xP1.startIndex() .. var x'n = xPn.startIndex()
+      dsElem(p,"xIndex",d._e(),true,startIndexS,xIndexs)));
+    List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.close(x'1) .. xn.close(x'n)
+      c.add(makeDec(binMeth(p,xi,x1i,closeS))));        
+    List<Full.E> orsEs=L(xIts,xIndexs,(c,xi,x1i)->//( x1.incomplete(x'1) || .. || xn.incomplete(x'n)
+      c.add(binMeth(p,xi,x1i,incompleteS)));
+    Full.E ors=orsEs.get(0);
+    if(orsEs.size()>1){ors=new Full.BinOp(p,Op.OrOr,orsEs);}
+    List<Full.E> andsEs=pushL(L(xIts,xIndexs,(c,xi,x1i)->//x1.hasElem(x'1) && .. && xn.hasElem(x'n) && ors
+      c.add(binMeth(p,xi,x1i,hasElemS))),ors);
+    var whileCond=new Full.BinOp(p,Op.AndAnd,andsEs);
+    Full.E[] e={sFor.body()};
+    List<Full.D> dsElems=L(sFor.ds(),xIts,xIndexs,(c,di,xi,x1i)->{//DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
+      var v=di._varTx();
+      X _x=null;
+      Mdf _mdfi=null;
+      if(v!=null){_mdfi=di._varTx()._mdf();_x=di._varTx()._x();}
+      if(v!=null && v._t()!=null && v._t()._mdf()!=null){_mdfi=v._t()._mdf();}
+      S s=NameMangling.methName("elem",_mdfi);
+      c.add(di.with_e(binMeth(p,xi,x1i,s)));
+      if(_x!=null && v.isVar()){e[0]=replaceOnUpdate(e[0],_mdfi,_x,xi,x1i);}
+      });
+    List<Full.D> dsSuccs=L(xIndexs,(c,xi)->{//x'1 := x'1.succ() .. xn := x'n.succ())
+      var xie=new Core.EX(p,xi);
+      var call=new Full.Call(p,xie,succS,false,Par.emptys);
+      var op=new Full.OpUpdate(p,xi,Op.ColonEqual,call);
+      c.add(makeDec(op));
+      });
+    Stream<Stream<Full.D>> allWhileDecs=Stream.of(dsElems.stream(),Stream.of(makeDec(e[0])),dsSuccs.stream());
+    List<Full.D> whileDecs=L(allWhileDecs.flatMap(s->s));
+    Full.E whileBlock=makeBlock(p,whileDecs,new Core.EVoid(p));
+    Full.While w=new Full.While(p, whileCond,whileBlock);
+    Stream<Stream<Full.D>> allTopDecs=Stream.of(dsIts.stream(),dsStartIndexs.stream(),Stream.of(makeDec(w)),dsCloses.stream());
+    List<Full.D> topDecs=L(allTopDecs.flatMap(s->s));
+    var res= makeBlock(p,topDecs,new Core.EVoid(p));
+    System.out.println(res);
+    return res;
+    }
+  private E replaceOnUpdate(Full.E e,Mdf _mdf, X x2, X x, X x1) {
+    S s=NameMangling.methName("update",_mdf);
+    return new CloneVisitor(){
+      public @Override Full.OpUpdate visitOpUpdate(Full.OpUpdate o){
+        o=super.visitOpUpdate(o);
+        if(!o.x().equals(x2)){return o;}
+        Full.Par pars=new Full.Par(new Core.EX(o.pos(), x1), valX,L(o));
+        Full.E e2=new Full.Call(o.pos(),new Core.EX(o.pos(), x),s,false,L(pars));
+        return new Full.OpUpdate(e2.pos(),x2, o.op(), e2);
+        }
+      }.visitE(e);
+    }
   private static final S ifS=S.parse("#if()");
   private static final S checkTrueS=S.parse("#checkTrue()");
+  private static final S iteratorS=S.parse("iterator()");
+  private static final S closeS=S.parse("close()");
+  private static final S succS=S.parse("succ()");
+  private static final S incompleteS=S.parse("incomplete()");
+  private static final S hasElemS=S.parse("hasElem()");
+  private static final S startIndexS=S.parse("startIndex()");
   private static final S applyThat=S.parse("#apply(that)");
   private static final S stringLiteralBuilder=S.parse("#stringLiteralBuilder()");
   private static final S squareBuilder=S.parse("#squareBuilder()");
@@ -547,9 +659,6 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S fromS=S.parse("#from()");
   private static final List<X> squareBuilderX=L(new X("squareBuilder"));
   private static final List<X> stringLiteralX=L(new X("stringLiteral"));
+  private static final List<X> valX=L(new X("val"));
   private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
-
-  @Override public void visitWhile(Full.While sWhile){uc();}
-  @Override public void visitFor(Full.For sFor){uc();}
- 
 }

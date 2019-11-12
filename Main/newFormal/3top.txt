@@ -3,10 +3,10 @@ parsing top level LL, resolve ... and Cs into Thisn.Cs, check well formedness, a
 _______
 #define init(FULL.L) = FULL.L' //with no Cs and no '...'
   it propagates on the structure;
+    all the ... are expanded with the code retrieved from the file system.
     on all the FULL.L and CORE.L it grows a local program p,
     on all the Cs applies p.minimize(p.resolve(C.Cs)).
     on all the P applies p.minimize(P).
-    all the ... are expanded with the code retrieved from the file system.
     //error is reported if an implements list contains This0.Cs or
     //Thisn.C.Cs and C is after the current point in the program
 _______
@@ -39,17 +39,18 @@ _______
     topNC(CTz0,p0,[NC| NC in Ms]) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
     I[C=empty;p1;MWTi.G;CTz1; frommed=empty]!e?i => ERi  for i in 1..n
-    ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) //novel cczs are not captured since no Full.L in e?s
+    ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) 
+    //novel CTzs are not captured since no Full.L in e?s
     MWT'i = MWTi Ms(MWTi.s).native e?'i
     L = updateInfo(p1, MWT'1..MWT'n)
     p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
     PR = CTz1; p2.update(p2.top()[Info.uniqueId=empty])
 
 * topNC(CTz;p;empty) =>CTz;p
-* topNC(CTz;p;FULL.Docs C=FULL.e, NCs) => PR
+* topNC(CTz;p;FULL.Docs C=FULL.e, Full.NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
-    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p]]!HALF.e => ER
+    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p.push({#norm{}})]]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
@@ -57,7 +58,7 @@ _______
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(updateInfo(p,♥FULL.Docs C=CORE.L))//refreshUniqueNames
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
-    topNC(CTz1[from This0.C,p"];p";NCs) => PR 
+    topNC(CTz1[from This0.C,p"];p";Full.NCs) => PR 
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
@@ -294,7 +295,7 @@ _______
 * specificEnough(mdfz) = {mdf | mdf not in {fwd%imm,fwd%mut}, forall mdf1 in mdfz, mdf<=mdf1}
 _______
 #define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
-* P.s.i in p.opOptions(OP, T0..Tn)//handled with a 'non op dispatch' desugar
+* P.s.i in p.opOptions(OP, T0..Tn)        //handled with a 'non op dispatch' desugar
     i in 0..n,
     s = methName(OP_i)(x1..xn)
     P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]

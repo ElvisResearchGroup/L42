@@ -1,7 +1,7 @@
 _______
 #define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
 * flagTyped(p) = p.update( p(This0)[typable(p)=typed])
-    forall Cs in typable(p):  |-p.navigate(This0.Cs)
+    forall Cs in typable(p):  false|-p.navigate(This0.Cs)
 
 * LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
 * LL[empty=Flag]=LL
@@ -37,12 +37,12 @@ _______
     or Q|- CORE.e : imm Void
     or Q|- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
 _______
-#define |- p    p |- CORE.MWT
-* |- p      //(library well typed)
-   //assert L.Info.Flag=norm // does it holds? 
+#define flag |- p    p |- CORE.MWT
+* flag |- p      //(library well typed)
+   //assert p(This0).Info.Flag=norm // does it holds? 
    //assert forall P in p(This0).Ts.Ps:  p(P).interface?=interface should be from wf 
    forall MWT in p(This0).MWTs:  p |- MWT
-   forall C=L in p(This0).NCs:
+   forall C=L in p(This0).NCs where C of form _::n or flag=typed:
      |-p.push(C,L)
      if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
 * p |- MWT //(member method)
@@ -67,7 +67,7 @@ _______
     or Q.p(P).interface?=empty and Q.p(P').Info.declaresClassMethods    
 * Q |- L : P //(library propagation)
     P in {Library,Any}
-    if Q.Flag==typed then |- Q.p.push(L)
+    if Q.Flag==typed then typed |- Q.p.push(L)
 * Q |- x : P  //(x)
     Q.p |- Q.G(x).T.P <= P
 * Q |- loop e : P //(loop)
@@ -87,8 +87,6 @@ _______
     P in {Void,Any}
     Q |- e : Q.G(x).T.P 
     // assert not fwd_or_fwd%_in(Q.G(x).T)//TODO: check if this is in well formedness?
-//Now the well formeness do not check anything at all about x opUpdate,
-// not even that only vars are assigned, not even in for x in e x:=e' 
 * Flag; p; G; Ts; Ps |- (var?1 T1 x1=e1 .. var?n Tn xn=en Ks e0) :  P //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
     Flag; p; G; Ts; Ps |- Ks : P | Ts';Ps'
     G' = G,x1:T1..xn:Tn   
@@ -106,48 +104,44 @@ _______
     if throw=return then T?=T0, else T?=T0
     if T0.mdf=class then Q.p(T0.P).interface?=empty and Q.p(T0.P).Info.declaresClassMethods
 _______
-#define p;G;Ts |= e : mdf <= mdf' 
-* p;G;mdfs |= void : imm <= mdf //(void)
+#define p;G;Ts |= e : mdf 
+* p;G;mdfs |= void : mdf //(void)
     imm <= mdf
-* p;G;mdfs |= P<:class P' : class <= class //(Path)
-* p;G;mdfs |= L : imm  <= mdf //(library propagation)
+* p;G;mdfs |= P<:class P' : class //(Path)
+* p;G;mdfs |= L : mdf //(library propagation)
     imm <= mdf
-* p;G;mdfs |= x : G(x).T.mdf <= mdf  //(x)
+* p;G;mdfs |= x : mdf  //(x)
     G(x).T.mdf <= mdf
-* p;G;mdfs |= loop e : imm <= mdf //(loop)
+* p;G;mdfs |= loop e : mdf //(loop)
     imm <= mdf
-    p;G;mdfs |= e : _ <= imm
-* p;G;mdfs |= return e : mdf <= mdf //(throw-return)
-    p;G;mdfs |= e : _ <= fwdOf(mostGeneralMdf(mdfs))
-* p;G;mdfs |= throw e : mdf <= mdf //(throw)
-    p;G;mdfs |= e : _ <= imm
+    p;G;mdfs |= e : imm
+* p;G;mdfs |= return e : mdf //(throw-return)
+    p;G;mdfs |= e : fwdOf(mostGeneralMdf(mdfs))
+* p;G;mdfs |= throw e : mdf //(throw)
+    p;G;mdfs |= e : imm
     throw != return
-* p;G;mdfs |= e0.m(x1=e1..xn=en) : mdf <= mdf' //(mcall)
+* p;G;mdfs |= e0.m(x1=e1..xn=en) : mdf' //(mcall)
     mdf <= mdf'
     P0 = guess(Q,e0)//simple since e0 of form xP
     mdf0..mdfn->mdf in methMdfs(p,P0,m(x1..xn))
-    p;G;mdfs |= e0 : _ <= mdf0 .. Q|- en : _ <= mdfn
-* p;G;mdfs |= x:=e : imm <=mdf //(xUpdate)
+    p;G;mdfs |= e0 : mdf0 .. p:G;mdfs|= en : mdfn
+* p;G;mdfs |= x:=e : mdf //(xUpdate)
     imm <= mdf
-    p;G;mdfs |= e : _ <= G(x).T.mdf
+    p;G;mdfs |= e : G(x).T.mdf
     //assert G(x).var?=var //the promotion should be just not attempted if the var is needed? 
-* p;G;mdfs |= (Ds Ks e) : capsule <= mdf  //(capsule promotion)
+* p;G;mdfs |= (Ds Ks e) : mdf  //(capsule promotion)
     mdf in {capsule, imm, fwdImm, fwd%Imm}
     Ds!=empty //note: e<:mut P does desugar in a way that allows this rule to work
-    p;toLent(G);mdfs |=(Ds Ks e) : mut <= mut
+    p;toLent(G);mdfs |=(Ds Ks e) : mut
     forall x in dom(G):
       forall x:=_ inside (Ds Ks e), toLent(G)(x).var?=var
       if x inside (Ds Ks e) then x in dom(toLent(Q.G)) //some may be removed by toLent
-//this rule is now "deterministic" in the sense that if typing the block give us a capsule directly,
-//this rule can not be applied, since we require mut P <=mut P in the premise.
-//this is another point where a variable 'x' can become undefined thanks to toLent(G)
-
-* p;G;mdfs' |= (Ds  Ks  e0) : mostGeneralMdf(mdf,mdfs) <= mdf' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
-    p;G;mdfs' |= Ks : mdfs <= mdf' |mdfs"
+* p;G;mdfs' |= (Ds  Ks  e0) : mdf' //(block)       //assert dom(G) disjoint dom(Ds) by well formedness
+    p;G;mdfs' |= Ks : mdf' |mdfs"
     G'=toRead(G) if error in Ks.throws
     G'=G otherwise
     p;G';mdfs' U mdfs" |= Ds | G0
-    p;G,(G0\dom(G));mdfs' |= e0 : mdf <=mdf'
+    p;G,(G0\dom(G));mdfs' |= e0 : mdf'
 _______
 #define p;G;mdfs |= Ds | G // The resulting G is the enriched G containing info about Ds too.
 * p;G0;mdfs |= var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
@@ -155,7 +149,7 @@ _______
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
     //here taking a Ds in input, we keep the order. Is this needed/can it be more expressive
     G1 = G0[ fwd( onlyMutOrImm(x0:T0..xn:Tn)) ]
-    for i in 0..n: p;G1;mdfs |= ei : mdfi <= fwd% Ti.mdf
+    for i in 0..n: p;G1;mdfs |= ei : fwd% Ti.mdf
     if fwd_or_fwd%_in mdfs
       then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
     if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
@@ -164,13 +158,13 @@ _______
     p;G2;mdfs |= Ds | G3
 * p;G;mdfs |= empty | G //(DsEmpty)
 _______
-#define p;G;mdfs' |=ks : mdfs <= mdf | mdfs    p;G;mdfs' |=k : mdf <= mdf' |mdfs
-* Q |-k1..kn : mdf1..mdfn <= mdf |Ts1 U..U Tsn//(catchMany)
-    forall i in 1..n Q |=ki : mdfi <= mdf |Tsi
-* Q |= catch throw T0 x e : mdf <= mdf' |mdfs //(catch)
+#define p;G;mdfs' |=ks : mdf | mdfs    p;G;mdfs' |=k : mdf |mdfs
+* Q |-k1..kn : mdf |Ts1 U..U Tsn//(catchMany)
+    forall i in 1..n Q |=ki : mdf |Tsi
+* Q |= catch throw T0 x e : mdf |mdfs //(catch)
     mdfs=T0.mdf if throw=return
     mdfs=empty otherwise
-    Q[G=Q.G,x:T0] |= e : mdf <= mdf'
+    Q[G=Q.G,x:T0] |= e : mdf
 _______
 #define guess(Q,xP) = P
 * guess(Q,x)=Q.G(x)
@@ -207,7 +201,7 @@ _______
     fwd_or_fwd%_in(mdfs)
 _______
 #define toLent(G)=G'    toLent(T)=T'
-* toLent(G)(x)=G(x) if G(x).T.mdf=immutable
+* toLent(G)(x)=G(x) if G(x).T.mdf=immutable //var? is preserved only for imm. Preserving a read var would expose read references inside capsules
 * toLent(G)(x)=toLent(G(x))[with var?=empty] otherwise //thus undefined where toLent undefined
 
 * toLent(mut P)=lent P //toLent(fwd mut P) and toLent(fwd%Mut P) undefined

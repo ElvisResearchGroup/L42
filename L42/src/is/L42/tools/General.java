@@ -145,6 +145,17 @@ public class General {
       }
     return Collections.unmodifiableList(res);
     }
+  @FunctionalInterface
+  public static interface Consumer4<T1,T2,T3,T4>{void accept(T1 t1,T2 t2,T3 t3,T4 t4);}
+  public static <A,B,C,R> List<R>L(List<A> a,List<B> b,List<C> c,Consumer4<ArrayList<R>,A,B,C> d){
+    if(a.size()!=b.size() || a.size()!=c.size()){throw new Error("different sizes of \n"+a+"\n"+b+"\n"+c);}
+    if(a.isEmpty()){return L();}
+    ArrayList<R> res=new ArrayList<>();
+    for(int i=0;i<a.size();i++){
+      d.accept(res,a.get(i),b.get(i),c.get(i));
+      }
+    return Collections.unmodifiableList(res);
+    }
   public static RuntimeException unreachable(){throw new Error("Postcondition violation");}
   public static RuntimeException todo(){throw new Error("Not implemented yet");}
   public static RuntimeException bug(){throw new Error("Precondition violation");}

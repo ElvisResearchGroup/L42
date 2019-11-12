@@ -294,7 +294,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   top("""
     {
       B={A={
-        class method Library of()={#typed{}}
+        class method Library of()={#norm{}}
         }}
       C=B.A.of()
       }
@@ -307,7 +307,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   top("""
     {
       B={A={
-        class method Library of()={method This3.B m() #typed{typeDep=This3.B}}
+        class method Library of()={method This3.B m() #norm{typeDep=This3.B}}
         }}
       C=B.A.of()
       }

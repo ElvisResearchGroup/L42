@@ -94,16 +94,14 @@ _______
 * p.solve(ST.s.i?) = T.s.i?
     T = p.solve(ST)
     p(T.P).mwts(s) undefined
-    or i?=i and p(T.P).mwts(s).parsi undefined
 * p.solve(OP STz1..STzn) = p(P).mwts(s).T[from P;p] 
     Tzi = {T| ST in STzi, T=p.solve(ST)}
-    Ts1..Tsn = {T1..Tn| Ti in Tzi}
-    {P.s.i} = p.opOptions(OP Ts1) U..U p.opOptions(OP Tsn)
+    {p.opOptions(OP T1..Tn)| Ti in TZi}
 * p.solve(OP STz1..STzn) = OP p.solve(STz1)..p.solve(STzn)
     otherwise    
 NOTE: ST may contains Ps that are not in the domain of p,
       in those cases solve is the identity.
-TODO: should also p.minimize(P) and from(P;p) be resilient and do nothing?
+TODO: should also p.minimize(P) and from(P;p) be resilient and do a best effort?
 //there are cases where p(P) is undefined and p.minimize(P) is not an identity.  EG we are in A.B. C is one of our NCs, but C.D is undefined.
 // So p(This2.A.B.C.D) is undefined and p.minimise(This2.A.B.C.D) is sensibly This0.C.D.
 _______
@@ -121,10 +119,10 @@ _______
 * methName(OP) = methname(OP_0)
 * methName(Op_i) = mi //m is from a table, for example methName(++_3)=#plusplus3
 * #m'OP' = methName(OP)#m
-* methNameTrim(mn) = methNameTrim(m) //removes any numeric suffix, for example methNameTrim(foo1b34)=foo1b
+* methNameTrim(mn) = methNameTrim(m) //removes any trailing digits, for example methNameTrim(foo1b34)=foo1b
 * methNameTrim(m) = m, where m not of form m'n
-* methName(x,mdf) = x#mdf
-* methName(x,empty) = x#'default' // for example methName(#bar,empty)=#bar#default
+* methName(x,mdf) = #x#mdf
+* methName(x,empty) = #x#'default' // for example methName(#bar,empty)=#bar#default
 * charName(char) = m // m is from a table
 _______
 #define CORE.e inside CORE.e'

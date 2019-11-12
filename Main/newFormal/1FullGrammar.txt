@@ -165,7 +165,7 @@ _______
     if B=(_ K e _) then noBlockNeeded(K.e)
 * (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
     no repetition in Ds.xs
-    forall D in Ds such that Ds.var?=var: D.T.mdf not capsule or fwd//TODO: add to code
+    forall D in Ds such that Ds.var?=var: D.T.mdf not capsule or fwd
 * throw FULL.e: not returning(Full.e)
 * FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L

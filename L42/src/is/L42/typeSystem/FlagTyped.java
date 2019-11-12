@@ -25,8 +25,10 @@ public class FlagTyped {
   public static Program flagTyped(Loader l,Program p) throws EndError{
     var typable=typable(p);
     if(typable.isEmpty()){return p;}
+    for(var csi:typable){
+      ProgramTypeSystem.type(false,p.navigate(P.of(0, csi)));
+      }
     p=p.update(flagL(typable,p));
-    //TODO: check the typables are well typed.
     try {l.loadNow(p);}
     catch (CompilationError e) {throw new Error(e);}
     return p;

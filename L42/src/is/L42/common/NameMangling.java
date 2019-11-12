@@ -3,6 +3,7 @@ package is.L42.common;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 
+import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.S;
 import is.L42.generated.X;
@@ -19,6 +20,11 @@ public class NameMangling {
     if(n==-1){n=0;}
     return "#"+op.name().toLowerCase()+n;
     }
+  public static S methName(String hint,Mdf _mdf){
+    if(_mdf==null){return S.parse("#"+hint+"#default()");}
+    return S.parse("#"+hint+"#"+_mdf.inner+"()");
+    }
+
   public static S charName(int c){
     if(Character.isLowerCase(c)){return new S("#l"+Character.toString(c),L(),-1);}
     if(Character.isUpperCase(c)){return new S("#u"+Character.toString(c),L(),-1);}
@@ -69,13 +75,13 @@ public class NameMangling {
     }
 
   public static S shortCircuit(Op op){
-    return new S("#shortCircut"+op.name().toLowerCase(),L(),-1);
+    return new S("#shortCircut#"+op.name().toLowerCase(),L(),-1);
     }
   public static S shortResult(Op op){
-    return new S("#shortResult"+op.name().toLowerCase(),L(),-1);
+    return new S("#shortResult#"+op.name().toLowerCase(),L(),-1);
     }
   public static S shortProcess(Op op){
-    return new S("#shortProcess"+op.name().toLowerCase(),L(),-1);
+    return new S("#shortProcess#"+op.name().toLowerCase(),L(),-1);
     }
   public static S methNameTrim(X x) {
     assert x!=null;

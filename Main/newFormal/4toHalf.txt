@@ -88,7 +88,10 @@ _______
 * Y! xP0 OP..OP xPn = xP'0 OP..OP xP'n; OP STz0,..,STzn; empty; Y.CTz
     Y[expectedT = empty]!xPi = xP'i; STzi; empty; Y.CTz // Y!xP shouldn't introduce any new constraints
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
-* Y!( Ds Ks WHOOPS? Ds') = Y!(Ds Ks WHOOPS? Ds' void)
+* Y!( Ds e Ks WHOOPS?) = Y!(Ds e Ks WHOOPS? void)
+    !returning(e)
+* Y!( Ds e Ks WHOOPS?) = Y!(Ds e Ks WHOOPS? error void)
+    returning(e)
 * Y!( Ds Ks WHOOPS? D Ds' e)) = Y!( Ds Ks WHOOPS? (D Ds' e))
 * Y!( Ds Ks whoops T1..Tn e) = Y!( Ds Ks K1..Kn e )
     Ki = catch exception Ti xi error xi.#whoopsed(atPos={#norm{}}) //so that we can recover the position
@@ -137,7 +140,7 @@ _______
     e0 not of form xP
 * Y!if xP e1 else e2 = Y!(
       xP.#if().#checkTrue()
-      catch Void _ e2
+      catch exception Void _ e2
       e1)
 * Y!if match match+ e = Y!(if match if match+ e)
 * Y!(if T x e) = Y!(if T x'=x e[x=x'])
@@ -167,11 +170,12 @@ _______
       x1 = xP1.iterator() .. xn = xPn.iterator()
       var x'1 = xP1.startIndex() .. var x'n = xPn.startIndex()
       while x1.hasElem(x'1) && .. && xn.hasElem(x'n) && ( x1.incomplete(x'1) || .. || xn.incomplete(x'n)) (
-        x.methName('elem',mdf?1)(x') .. x.methName('elem',mdf?n)(x')
+        DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
         e[replaceOnUpdate mdf?1; DX1.x?; x1; x'1]..[replaceOnUpdate mdf?n; DXn.x?; xn; x'n]
         // Note: DXi.x? = empty if DXi is not of form var? TLocal x
         x'1 := x'1.succ() .. xn := x'n.succ())
-      x1.close(x'1) .. xn.close(x'n))
+      x1.close(x'1) .. xn.close(x'n)
+      void)
 
     mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?//only one of the two is defined
     x1..xn, x'1..x'n fresh
@@ -216,8 +220,8 @@ _______
 #define FULL.e[replaceOnUpdate mdf?; x?"; x; x']
 // Make all updates to x?" (which has modifier mdf?) also tell the iterator (x) the new value, which has index (x')
 * e[replaceOnUpdate mdf?; empty; x; x'] = e,
-* (x" opUpdate e)[replaceOnUpdate mdf?; x"; x; x'] = (doUpdate(x", opUpdate, e') e")
+* (x" opUpdate e)[replaceOnUpdate mdf?; x"; x; x'] = doUpdate(x", opUpdate, e")
     e' = e[replaceOnUpdate mdf?; x"; x; x']
-    e" = x.methName('update',mdf?)(x',val=x")
+    e" = x.methName('update',mdf?)(x',val=e')
 
 * e[replaceOnUpdate mdf?; x"; x; x'] propagates inductively in all the other cases

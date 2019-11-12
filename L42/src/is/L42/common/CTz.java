@@ -84,7 +84,7 @@ public class CTz {
     var mwt= _elem(pOfP0.mwts(),stsi.s());
     if(mwt==null){return stsi.withSt(st);}
     if(stsi.i()==-1){return p.from(mwt.mh().t(),p0);}
-    if(stsi.i()>mwt.mh().s().xs().size()){return stsi.withSt(st);}
+    assert stsi.i()<=mwt.mh().s().xs().size();
     if(stsi.i()==0){return new Core.T(mwt.mh().mdf(),mwt.mh().docs(),p0);}
     return p.from(mwt.mh().pars().get(stsi.i()-1),p0);
     }

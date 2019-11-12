@@ -44,7 +44,7 @@ import static is.L42.common.Err.hole;
 import static is.L42.generated.LDom._elem;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TestTypeStstem
+public class TestTypeSystem
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    pass("A={B={method Void main()=void}}")   
    ),new AtomicTest(()->
@@ -431,7 +431,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       mut Customer c=Customer()
       return c //ok, capsule promotion here
       catch return mut Customer x x
-      error void//TODO: this stay broken until we fix desugaring for void/error void
       )}
    A={B={method capsule Customer main()=Reader.readCustomer()}}
    """)
@@ -567,17 +566,36 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   """)
   ),new AtomicTest(()->pass("""
   A={
-    class method This ()
-    class method Void #next()=void
-    class method Void #checkEnd()=void
+    class method This()
+    method A iterator()=this
+    method Void close(N that)=void
+    method B incomplete(N that)=B()
+    method N startIndex()=N()
+    method B hasElem(N that)=B()
+    method E #elem#default(N that)=E()
     }
-  B={class method This ()}
+  N={
+    class method This ()
+    method This succ()=this
+    }
+  E={
+    class method This ()
+    }
+  B={
+    class method This ()
+    method This #shortProcess#andand(This that,This other)=this
+    method This #shortResult#andand()=this
+    method This #shortCircut#andand()=this
+    method This #if()=this
+    method Void #checkTrue()[Void]=void
+    }
   Test={
     class method Void foo()[B]=(
-      for class A x in A (exception B())
+      A list=A()
+      for E x in list (exception B())
       )
     }
-  """)//TODO: fails until we finish ToHalf
+  """)
   ),new AtomicTest(()->fail("""
   A={class method This ()}
   B={class method This ()}
