@@ -24,7 +24,7 @@ nudePathSelX:pathSelX EOF;
 infoNorm:'#norm{';
 infoTyped:'#typed{';
 
-info: W*(infoNorm|infoTyped) infoBody* '}' EOF;
+info: W*(infoNorm|infoTyped)W* infoBody* W*'}' EOF;
 infoBody: typeDep|coherentDep|watched|usedMethods|hiddenSupertypes|refined|declaresClassMethods|nativeKind|nativePar|uniqueId;
 typeDep: 'typeDep='(W* path)+ W*;
 coherentDep: 'coherentDep='(W* path)+ W*;
@@ -32,7 +32,7 @@ watched: 'watched='(W* path)+ W*;
 usedMethods: 'usedMethods='(W* pathSel)+ W*;
 hiddenSupertypes: 'hiddenSupertypes='(W* path)+ W*;
 refined: 'refined='(W* selector)+ W*;
-declaresClassMethods: 'declaresClassMethods';
+declaresClassMethods: 'declaresClassMethods' W*;
 nativeKind: 'nativeKind=' W* (x|c);
 nativePar: 'nativePar='(W* path)+ W*;
 uniqueId: 'uniqueId='W* x;

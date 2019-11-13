@@ -103,7 +103,7 @@ Debug={
   class method mut This0 of()        
   method Void deployLibrary(This1.S that,Library lib)=
     native{trusted:deployLibrary} error void
-    #norm{typeDep=This0, This1.S, nativeKind=TrustedIO}        
+    #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=TrustedIO}        
   }
 SB={
   class method mut This0 of()
@@ -111,7 +111,7 @@ SB={
     native{trusted:'a'} error void
   read method This1.S toS()=
     native{trusted:toS} error void
-    #norm{typeDep=This0, This1.S, nativeKind=StringBuilder}
+    #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=StringBuilder}
   }
 DeployAAA=(
   mut SB sb=SB.of()
@@ -127,7 +127,7 @@ DeployAAA=(
       method This0 and(This0 that)=native{trusted:OP&} error void
       method This0 or(This0 that)=native{trusted:OP|} error void
       read method This1.S toS()=native{trusted:toS} error void
-      #norm{typeDep=This0, This1.S, nativeKind=Bool}
+      #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=Bool}
       }
     Size={
       class method This0 zero()
@@ -137,15 +137,15 @@ DeployAAA=(
         This1.S s=stringLiteral.toS()
         s.toInt()
         )
-      #norm{typeDep=This0, This1.S, This1.SB nativeKind=Int}
+      #norm{declaresClassMethods, typeDep=This0, This1.S, This1.SB nativeKind=Int}
       }
     S={
       method This0 #plusplus0(This0 that)=native{trusted:OP+} error void
-      read method This0 toS()=this
+      imm method This0 toS()=this//TODO: the mdf imm would not work if we implement a read method S toS from an interface
       read method This1.Size toInt()=native{trusted:toInt} error void
       method This0 sum(This0 that)=native{trusted:OP+} error void
       class method This0 #from(This1.SB stringLiteral)=stringLiteral.toS()
-      #norm{typeDep=This0, This1.Size, This1.SB, nativeKind=String}
+      #norm{declaresClassMethods, typeDep=This0, This1.Size, This1.SB, nativeKind=String}
       }
     Debug={
       class method Void #apply(This1.S that)=(
@@ -157,7 +157,7 @@ DeployAAA=(
         native{trusted:strDebug} error void
       method Void deployLibrary(This1.S that,Library lib)=
         native{trusted:deployLibrary} error void
-      #norm{typeDep=This0, This1.S, nativeKind=TrustedIO}        
+      #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=TrustedIO}        
       }
     SB={
       mut method Void #d0()=native{trusted:'0'}error void
@@ -263,7 +263,7 @@ DeployAAA=(
       class method mut This0 #stringLiteralBuilder()
       read method This1.S toS()=
         native{trusted:toS} error void
-      #norm{typeDep=This0, This1.S, nativeKind=StringBuilder}
+      #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=StringBuilder}
       }
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)

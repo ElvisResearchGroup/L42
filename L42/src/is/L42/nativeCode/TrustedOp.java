@@ -39,33 +39,47 @@ class OpUtils{
       });
     }
     
-  static boolean typingUse(TrustedKind[] kinds,Program p, MWT mwt){
-    if(kinds.length!=mwt.mh().pars().size()){
+  static boolean typingUse(TrustedKind[] kinds,Program p, MWT mwt,int libPars,int classAnyPars){
+    if(kinds.length+libPars+classAnyPars!=mwt.mh().pars().size()){
       throw new EndError.TypeError(mwt._e().poss(),
         Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),kinds.length));
       }
-    for(int i:range(kinds.length)){
+    for(int i:range(mwt.mh().pars().size())){
       var pi=mwt.mh().pars().get(i).p();
-      var ki=kinds[i];
-      var kind=p._ofCore(pi).info().nativeKind();
-      if(kind.isEmpty() || ki!=TrustedKind.fromString(kind)){
+      var mdfi=mwt.mh().pars().get(i).mdf();
+      if(i<kinds.length){
+        var ki=kinds[i];
+        var kind=p._ofCore(pi).info().nativeKind();
+        if(kind.isEmpty() || ki!=TrustedKind.fromString(kind)){
+          throw new EndError.TypeError(mwt._e().poss(),
+            Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,ki));            
+          }
+        }
+      else if(i<kinds.length+libPars){if(pi!=P.pLibrary){
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,ki));            
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Library"));            
+        }}
+      else if(pi!=P.pAny || !mdfi.isClass()){
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"class Any"));            
         }
       }
-      return true;
+    return true;
+    }
+  static TrustedOp.Generator use(String s,TrustedKind ...kinds){
+    return use(s,kinds,0,0);
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static TrustedOp.Generator use(String s,TrustedKind ...kinds){
+  static TrustedOp.Generator use(String s,TrustedKind[]kinds,int libPars,int classAnyPars){
     return (type,p,mwt)->{
-      if(type && typingUse(kinds,p,mwt)){return "";}
+      if(type && typingUse(kinds,p,mwt,libPars,classAnyPars)){return "";}
       return s.formatted(NativeDispatch.xs(mwt).toArray());
       };
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
   static TrustedOp.Generator use(String s,Class<?> errKind,int errNum,String err,int[] msgs,TrustedKind ...kinds){
     return (typed,p,mwt)->{
-      if(typed && typingUse(kinds,p,mwt)){return "";}
+      if(typed && typingUse(kinds,p,mwt,0,0)){return "";}
       var xs=NativeDispatch.xs(mwt);
       List<String>errs=L(range(msgs.length),(c,i)->{
         var xi=xs.get(msgs[i]);
@@ -88,7 +102,7 @@ public enum TrustedOp {
   //booleans
   And("OP&",Map.of(Bool,use("return %s & %s;",Bool))),
   OR("OP|",Map.of(Bool,use("return %s | %s;",Bool))),
-  NOT("OP!",Map.of(Bool,use("return !%s;",Bool))),
+  NOT("OP!",Map.of(Bool,use("return !%s;"))),
   CheckTrue("checkTrue",Map.of(Bool,use(
     "if(%s){return L42Void.instance;}"+
     "throw new L42Exception(L42Void.instance);"))),
@@ -208,10 +222,10 @@ public enum TrustedOp {
     ))),
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42Void.instance;"),
-    TrustedIO,use("return %s.strDebug(%s);")
+    TrustedIO,use("return %s.strDebug(%s);",String)
     )),
   DeployLibrary("deployLibrary",Map.of(
-    TrustedIO,use("return %s.deployLibrary(%s,%s);",String))),
+    TrustedIO,use("return %s.deployLibrary(%s,%s);",new TrustedKind[]{String},1,0))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",Int),
     String,use("return %s + %s;",String)

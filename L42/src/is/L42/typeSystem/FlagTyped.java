@@ -19,6 +19,7 @@ import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.tools.InductiveSet;
 import is.L42.translationToJava.Loader;
+import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class FlagTyped {
@@ -33,8 +34,18 @@ public class FlagTyped {
     catch (CompilationError e) {throw new Error(e);}
     return p;
     }
+  private static Core.L.MWT flagMWT(Core.L.MWT mwt){
+    if(mwt._e()==null){return mwt;}
+    return mwt.with_e(new CloneVisitor(){
+      @Override public Core.L visitL(Core.L l){
+        assert !l.info().isTyped();
+        return l.withInfo(l.info().withTyped(true));
+        }
+      }.visitE(mwt._e()));
+    }
   private static Core.L flagL(List<List<C>> typable,Program p){
     return new CloneVisitorWithProgram(p){
+      @Override public Core.L.MWT visitMWT(Core.L.MWT mwt){return mwt;}
       @Override public Core.L coreLHandler(Core.L l){
         var where=this.whereFromTop();
         List<C> cs=typeFilter(where.stream(),C.class);
@@ -42,6 +53,7 @@ public class FlagTyped {
         l=super.coreLHandler(l);
         if(!l.info().isTyped() && typable.contains(cs)){
           l=l.withInfo(l.info().withTyped(true));
+          l=l.withMwts(L(l.mwts(),mwti->flagMWT(mwti)));
           }
         return l;
         }

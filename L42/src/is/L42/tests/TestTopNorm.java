@@ -230,7 +230,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         class method mut This0 of()        
         method Void strDebug(This1.S that)=native{trusted:strDebug} error void
         method Void deployLibrary(This1.S that,Library lib)=native{trusted:deployLibrary} error void
-        #norm{nativeKind=TrustedIO}        
+        #norm{declaresClassMethods nativeKind=TrustedIO}        
         }
       SB={
         class method mut This0 of()
@@ -263,7 +263,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          class method mut This0 of()
          imm method imm Void strDebug(imm This1.S that)=native{trusted:strDebug}error void
          imm method imm Void deployLibrary(imm This1.S that, imm Library lib)=native{trusted:deployLibrary}error void
-         #typed{nativeKind=TrustedIO}
+         #typed{declaresClassMethods nativeKind=TrustedIO}
          }
       SB={
         class method mut This0 of()
@@ -381,8 +381,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     return """
       { A={
           class method Void throwErr()=error void
-          class method Library a()={method Void a() #typed{}}
-          class method Library b()={method Void b() #typed{}}
+          class method Library a()={method Void a() #norm{}}
+          class method Library b()={method Void b() #norm{}}
           }
         C=("""+s+"""
           )
