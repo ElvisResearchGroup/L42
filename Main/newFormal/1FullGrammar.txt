@@ -24,14 +24,14 @@ _______
   CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
   Info::= #Flag{typeDep=Ps,coherentDep=Ps,watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,
-    declaresClassMethods?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
+    declaresClassMethods?,closeState?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
     //in concrete syntax, labels for empty fields must be omitted
     //watched//Paths whose unique numbers are used either directly,
     //    or in a private nested class or in an L in a method
     //usedMethods//methods used either directly or in a private nested class or in an L in a method
     //hiddenSupertypes//interfaces implemented by a private nested class or in an L in a method
     //declaresClassMethods (since it can be cast to class P)
-    //may add closed/open class (since private abstract methods may be removed if unused)
+    //closedState: private abstract methods may be removed if unused
     //may add 'free this': 'this' only used as receiver
   Flag ::= norm | typed
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
@@ -182,15 +182,24 @@ _______
 * CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
 * FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L
-* LL:
+* LL: //TODO: check the well formedness for LL and Core.L is implemented. When is checked for core?
     no repetition in LL.Ms.LDom
     no repetition in LL.H.Ts
     Any notin LL.H.Ts
-    exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
+    if LL.H.interface? = empty, then exists at most one n such that exists m::n(xs) where LL(m::n(xs))=MWT, and MWT.e? is empty
     if LL.H.interface? = interface, then forall s in dom(LL.Ms), LL(s).e?=empty
     if LL(C::n)=LL' then LL' of form CORE.L
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all nesteds of private nesteds are private
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
+    if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
+    if bridge({MWT| MWT in LL})!=empty then LL of form CORE.L//works for both CORE.L and FULL.L
+* Core.L: (in addition to all the LL)
+    if !hasOpenState(L) then L.Info.closeState?=closeState
+    forall MWT in bridge(L.MWT), MWT.mds in {mut, lent, capsule}
+    MHs={MWT.MH | MWT in L.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.m of form _::n}
+    forall MWT in bridge(L.MWT), forall MH in MHs: 
+      if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
+    if MHs!=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
 * program p:
   -the n of every Thisn.Cs in p fits in the dept of the program
   -if p.pop(1) is defined, then p.pop(1) is well formed //else we are top level
@@ -287,3 +296,13 @@ _______
 //* undefined in all the other cases
 * hasReturn(_,e,_)
     return e' is contained inside e without traversing LL or a block with curly or another throw e'
+_______
+#define hasOpenState(Core.L)    hasOpenState(interface?, mwts)    bridge(MWTs) = MWTs'
+* hasOpenState({interface? MWTs NCs Info})=hasOpenState(interface?,MWTs)
+* hasOpenState(interface, _)
+* hasOpenState(empty, MWTs)
+    forall MWT in MWTs where MWT.e?=empty: MWT.m not of form _::n
+    bridge(MWTs) = empty
+
+* bridge(MWTs) = {MWT| MWT in MWTs,  MWT.m of form #$_,
+    and  _.#$_(_) inside MWT.e? or untrusted(MWT.native?)}

@@ -241,6 +241,15 @@ public class Err {
   "the operator "+op+" is used on the variable "+x+", that is still uninitialized"
   ;}public static String errorVarBindingOpUpdate(Object x,Object op){return
   "the operator "+op+" is used on the variable "+x+", but updating it would violate strong error safety"
+  ;}public static String bridgeMethodsInFullL(Object _1){return
+  "methods bridging effectful #$ non determinism need to be coded in core library literals only. But the following methods was present in a full literal: "+_1
+  ;}public static String bridgeNotMutable(Object s,Object mdf){return
+  "methods "+s+", bridging effectful #$ non determinism have modifier "+mdf+", but only {mut,lent,capsule} are allowed"
+  ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return
+  "methods "+bi+", bridging effectful #$ non determinism could be invoked through factory "+fi+", that has no #$"
+  ;}public static String mustHaveCloseState(Object fs,Object bs){return
+  "the core library literal must have close state, becouse factory methods "+fs+
+  " are present, and methods bridging effectful #$ non determinism "+bs+" are present"
 
  ;}
 }

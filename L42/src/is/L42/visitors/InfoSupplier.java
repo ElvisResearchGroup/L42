@@ -19,6 +19,7 @@ import is.L42.tools.General;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Core.L.Info;
+import is.L42.generated.L42AuxParser.InfoBodyContext;
 import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.PathContext;
 
@@ -32,6 +33,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   List<P.NCs> privateSupertypes=null;
   List<S> refined=null;
   Boolean declaresClassMethods=null;
+  Boolean closeState=null;
   String nativeKind=null;
   List<P> nativePar=null;
   Integer _uniqueId=null;
@@ -117,6 +119,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       fillInfo("privateSupertypes",b.hiddenSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
       fillInfo("refined",b.refined(),z->z.selector(),()->refined,v->refined=v,this::sf);
       boolFlag("declaresClassMethods",b.declaresClassMethods(),()->declaresClassMethods,v->declaresClassMethods=v);
+      boolFlag("closeState",b.closeState(),()->closeState,v->closeState=v);
       fillElem("nativeKind",b.nativeKind(),z->z.x()!=null?z.x().getText():z.c().getText(),()->nativeKind,v->nativeKind=v,s->s.isEmpty());
       fillInfo("nativePar",b.nativePar(),z->z.path(),()->nativePar,v->nativePar=v,this::pf);
       fillElem("uniqueId",b.uniqueId(),z->toUniqueId(z.x().getText()),()->_uniqueId,v->_uniqueId=v,i->i==-1);
@@ -132,9 +135,12 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     nullToDef(()->privateSupertypes,v->privateSupertypes=v,empty);
     nullToDef(()->refined,v->refined=v,emptyS);
     nullToDef(()->declaresClassMethods,v->declaresClassMethods=v,false);
+    nullToDef(()->closeState,v->closeState=v,false);
     nullToDef(()->nativeKind,v->nativeKind=v,"");
     nullToDef(()->nativePar,v->nativePar=v,General.<P>L());
     nullToDef(()->_uniqueId,v->_uniqueId=v,-1);
-    return new Core.L.Info(isTyped, typeDep, coherentDep, friends, usedMethods, privateSupertypes, refined, declaresClassMethods,nativeKind,nativePar,_uniqueId);
+    return new Core.L.Info(isTyped,typeDep,coherentDep,friends,usedMethods,
+      privateSupertypes,refined,declaresClassMethods,closeState,
+      nativeKind,nativePar,_uniqueId);
     }
 }

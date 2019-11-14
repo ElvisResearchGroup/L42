@@ -19,14 +19,49 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
+import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Core.Block;
+import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.E;
+import is.L42.generated.Core.EVoid;
+import is.L42.generated.Core.EX;
+import is.L42.generated.Core.K;
+import is.L42.generated.Core.L;
+import is.L42.generated.Core.Loop;
+import is.L42.generated.Core.MCall;
+import is.L42.generated.Core.MH;
+import is.L42.generated.Core.OpUpdate;
+import is.L42.generated.Core.PCastT;
+import is.L42.generated.Core.PathSel;
+import is.L42.generated.Core.Throw;
+import is.L42.generated.Core.L.Info;
+import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Full;
+import is.L42.generated.Full.Call;
+import is.L42.generated.Full.Cast;
+import is.L42.generated.Full.CsP;
 import is.L42.generated.Full.D;
+import is.L42.generated.Full.EPathSel;
+import is.L42.generated.Full.EString;
+import is.L42.generated.Full.For;
+import is.L42.generated.Full.If;
+import is.L42.generated.Full.Par;
+import is.L42.generated.Full.Slash;
+import is.L42.generated.Full.SlashX;
+import is.L42.generated.Full.UOp;
+import is.L42.generated.Full.VarTx;
+import is.L42.generated.Full.While;
+import is.L42.generated.Full.L.F;
+import is.L42.generated.Full.L.MI;
 import is.L42.generated.Full.L.NC;
+import is.L42.generated.Half.BinOp;
+import is.L42.generated.Half.SlashCastT;
 import is.L42.generated.Op.OpKind;
+import is.L42.generated.ST.STMeth;
+import is.L42.generated.ST.STOp;
 import is.L42.generated.HasVisitable;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
@@ -36,6 +71,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
+import is.L42.typeSystem.Coherence;
 
 class ContainsFullL extends Contains.SkipL<Full.L>{
   @Override public void visitL(Full.L l){setResult(l);}
@@ -399,7 +435,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMH(Core.MH mh){
     super.visitMH(mh);
-    checkAllEmptyMdf(mh.exceptions());
+    checkAllImmMdf(mh.exceptions());
     if(mh.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd,Mdf.MutablePFwd)){
       err(Err.methodTypeMdfNoFwd());} 
     var ps=mh.parsWithThis();
@@ -422,7 +458,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     for(var ti:ts){if(ti._mdf()!=Mdf.Immutable){
         err(Err.tsMustBeImm());
     }}}
-  private void checkAllEmptyMdf(List<Core.T> ts){
+  private void checkAllImmMdf(List<Core.T> ts){
     for(var ti:ts){if(ti.mdf()!=Mdf.Immutable){
         err(Err.tsMustBeImm());
     }}}
@@ -506,68 +542,92 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(!m.key().hasUniqueNum()){continue;}
       if(!(m instanceof Full.L.NC)){continue;}
       validPrivateNested(m.poss(),(C)m.key(),m._e());
-      }   
-    Supplier<Stream<LDom>> dom=()->l.ms().stream().map(m->m.key());
-    Supplier<Stream<LDom>> impl=()->l.ms().stream()
+      }
+    var bridges=bridgeFull(l.ms());
+    if(!bridges.isEmpty()){
+      err(Err.bridgeMethodsInFullL(L(bridges.stream().map(m->m.key()))));
+      }
+    //if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
+    var notHDCallsHD=L(l.ms().stream()
+      .filter(Full.L.MI.class::isInstance)
+      .map(Full.L.MI.class::cast)
+      .filter(m->isBridgeMeth(m.key().m(),"",m.e().visitable()))
+      .map(m->m.key()));
+    if(!notHDCallsHD.isEmpty()){err(Err.bridgeMethodsInFullL(notHDCallsHD));}
+    List<LDom> dom=L(l.ms().stream().map(m->m.key()));
+    List<LDom> impl=L(l.ms().stream()
       .filter(m->!(m instanceof Full.L.NC))
-      .filter(m->m._e()!=null).map(m->m.key());
-    Supplier<Stream<Integer>> privateAbstract=()->l.ms().stream()
+      .filter(m->m._e()!=null).map(m->m.key()));
+    List<Integer> privateAbstract=L(l.ms().stream()
       .filter(m->m._e()==null && m.key().hasUniqueNum())
       .map(m->m.key().uniqueNum())
-      .distinct();
-    Supplier<Stream<Visitable<?>>> ts=()->l.ts().stream()
-      .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L()));
+      .distinct());
+    List<Visitable<?>> ts=L(l.ts().stream()
+      .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L())));
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
   public void superVisitL(Core.L l){lastPos=l.poss();super.visitL(l);}
   @Override public void visitL(Core.L l){
     lastPos=l.poss();
     new WellFormedness().superVisitL(l);
-    checkAllEmptyMdf(l.ts());
+    checkAllImmMdf(l.ts());
     for(var m:l.ncs()){
       if(!m.key().hasUniqueNum()){continue;}
       validPrivateNested(m.poss(),m.key(),m.l());
-      }   
-    Supplier<Stream<LDom>> dom=()->Stream.concat(l.mwts().stream()
-      .map(m->m.key()),l.ncs().stream().map(m->m.key()));
-    Supplier<Stream<LDom>> impl=()->l.mwts().stream()
-      .filter(m->m._e()!=null).map(m->m.key());
-    Supplier<Stream<Integer>> privateAbstract=()->l.mwts().stream()
+      }
+
+    var bridges=bridge(l.mwts());
+    var classMhs=L(l.mwts().stream().filter(m->
+      m.mh().mdf().isClass() && m._e()==null && m.key().hasUniqueNum()
+      ).map(m->m.mh()));
+    if(!classMhs.isEmpty()){
+      var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
+      if(xzs.size()>1){throw new EndError.CoherentError(l.poss(),
+        Err.nonCoherentNoSetOfFields(xzs));
+        }
+      }
+    for(var mwt:bridges){
+      if(!mwt.mh().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule)){
+        err(Err.bridgeNotMutable(mwt.key(),mwt.mh().mdf()));
+        }
+      }
+    for(var bi:bridges){for(var mhj:classMhs){ 
+      if(!Coherence.canAlsoBe(mhj.t().mdf(),bi.mh().mdf())){continue;}
+      if(mhj.key().m().startsWith("#$")){continue;}
+      err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
+      }}
+    if(!hasOpenState(l,bridges)){
+      if(!l.info().closeState()){err(Err.mustHaveCloseState(
+        L(classMhs.stream().map(m->m.key())),
+        L(bridges.stream().map(m->m.key()))
+        ));}
+      } 
+    List<LDom> dom=L(Stream.concat(l.mwts().stream()
+      .map(m->m.key()),l.ncs().stream().map(m->m.key())));
+    List<LDom> impl=L(l.mwts().stream()
+      .filter(m->m._e()!=null).map(m->m.key()));
+    List<Integer> privateAbstract=L(l.mwts().stream()
       .filter(m->m._e()==null && m.key().hasUniqueNum())
       .map(m->m.key().uniqueNum())
-      .distinct();
-    Supplier<Stream<Visitable<?>>> ts=()->l.ts().stream().map(t->(Visitable<?>)t.p());
+      .distinct());
+    List<Visitable<?>> ts=L(l.ts().stream().map(t->(Visitable<?>)t.p()));
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
-    void common(
-      boolean isInterface,
-      Supplier<Stream<Visitable<?>>> ts,
-      Supplier<Stream<LDom>> dom,
-      Supplier<Stream<LDom>> impl,
-      Supplier<Stream<Integer>> privateAbstract){
-    long countM=dom.get().distinct().count();
-    if(countM<dom.get().count()) {
-      var dups=dups(L(dom.get()));
+    void common(boolean isInterface,List<Visitable<?>> ts,List<LDom> dom, List<LDom> impl,List<Integer> privateAbstract){
+    long countM=dom.stream().distinct().count();
+    if(countM<dom.size()) {
+      var dups=dups(dom);
       err(Err.duplicatedName(dups));
       }
-    long countI=ts.get().distinct().count();
-    if(countI<ts.get().count()) {
-      var dups=dups(L(ts.get()));
-      err(Err.duplicatedName(dups));
-      }
-    ts.get().forEach(t->{
+    long countI=ts.stream().distinct().count();
+    if(countI<ts.size()){err(Err.duplicatedName(dups(ts)));}
+    for(var t:ts){
       boolean isAny=P.pAny.toString().equals(t.toString());
       if(isAny){err(Err.duplicatedNameAny());}
-      });      
-    if(privateAbstract.get().count()>1) {
-      var uniqueNums=L(privateAbstract.get());
-      err(Err.singlePrivateState(uniqueNums));
-      }
+      };      
+    if(privateAbstract.size()>1) {err(Err.singlePrivateState(privateAbstract));}
     if(isInterface){
-      if(impl.get().count()!=0){
-        var mis=L(impl.get());
-        err(Err.methodImplementedInInterface(mis));
-        }
+      if(!impl.isEmpty()){err(Err.methodImplementedInInterface(impl));}
       }
     }
   private void validPrivateNested(List<Pos> pos,C key, Full.E e) {
@@ -586,6 +646,40 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err(Err.privateNestedPrivateMember(m.key()));
       }       
     }
+  private static boolean hasOpenState(Core.L l,List<Core.L.MWT>bridges){
+    return hasOpenState(l.isInterface(),l.mwts(),bridges);
+    }
+  public static boolean hasOpenState(boolean isInterface,List<Core.L.MWT>mwts, List<Core.L.MWT>bridges){
+    if(isInterface){return true;}
+    if(!bridges.isEmpty()){return false;}
+    for(var mwt:mwts){
+      if(mwt._e()==null && mwt.key().hasUniqueNum()){return false;}
+      }
+    return true;
+    }
+  private static boolean isBridgeMeth(String m,String nativeUrl,Visitable<?>e){
+    if(!m.startsWith("#$")){return false;}
+    if(!nativeUrl.startsWith("trusted:")){return true;}
+    boolean[]res={false};
+    e.accept(new PropagatorCollectorVisitor() {
+      @Override public void visitS(S s){
+        if(s.m().startsWith("#$")){res[0]=true;}
+        }});
+    return res[0];
+    }
+  public static List<Core.L.MWT> bridge(List<Core.L.MWT> mwts){
+    return L(mwts.stream().filter(m->m._e()!=null &&
+      isBridgeMeth(m.key().m(),m.nativeUrl(),m._e().visitable())));
+    }
+  private List<Full.L.MWT> bridgeFull(List<Full.L.M> ms){
+    return L(ms.stream()
+      .filter(Full.L.MWT.class::isInstance)
+      .map(Full.L.MWT.class::cast)
+      .filter(m-> m._e()!=null &&
+        isBridgeMeth(m.key().m(),m.nativeUrl(),m._e().visitable())));
+    }
+
+
   @Override public void visitProgram(Program program) {
     //TODO: when typing is completed, there is more well formedness here
     if(!program.pTails.isEmpty()){

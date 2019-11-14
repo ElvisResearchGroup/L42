@@ -304,6 +304,18 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterCloseState(L42AuxParser.CloseStateContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitCloseState(L42AuxParser.CloseStateContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNativeKind(L42AuxParser.NativeKindContext ctx) { }
 	/**
 	 * {@inheritDoc}

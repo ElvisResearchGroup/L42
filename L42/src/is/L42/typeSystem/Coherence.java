@@ -44,7 +44,7 @@ public class Coherence {
       if(!coherent(mh,xz)){throw new EndError.CoherentError(p.topCore().poss(),
         Err.nonCoherentMethod(mh.key()));}
       }
-    return true;//TODO: the #$ checks go here or in well formedness?
+    return true;
     }
   public boolean coherentClass(MH mh, Set<X> xz){
     assert mh.key().xs().containsAll(xz) && xz.containsAll(mh.key().xs());
@@ -154,7 +154,7 @@ public class Coherence {
     return !mh.mdf().isClass() &&
       classMhs.stream().allMatch(k->!canAlsoBe(k.t().mdf(),mh.mdf()));
     }
-  public boolean canAlsoBe(Mdf mdf0, Mdf mdf){
+  static public boolean canAlsoBe(Mdf mdf0, Mdf mdf){
     return switch(mdf0){
       case Capsule,Mutable-> !mdf.isClass();
       case Lent-> mdf.isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable,Mdf.MutableFwd);

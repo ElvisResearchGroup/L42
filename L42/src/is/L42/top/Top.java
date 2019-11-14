@@ -33,6 +33,7 @@ import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.FlagTyped;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
+import is.L42.visitors.WellFormedness;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;
@@ -80,8 +81,12 @@ public class Top {
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     collectDeps(p,mwts,typePs,cohePs,true);
-    Info info=Info.empty.withTypeDep(L(typePs.stream())).withCoherentDep(L(cohePs.stream())); 
-    return l.withMwts(merge(mwts0,mwts)).withInfo(sumInfo(l.info(),info));
+    Info info=Info.empty.withTypeDep(L(typePs.stream())).withCoherentDep(L(cohePs.stream()));
+    var allMwts=merge(mwts0,mwts);
+    var bridges=WellFormedness.bridge(allMwts);
+    var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
+    Info info1=sumInfo(l.info(),info).withCloseState(closeState);
+    return l.withMwts(allMwts).withInfo(info1);
     }
   public static Info sumInfo(Info info1, Info info2) {
     assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
@@ -95,6 +100,7 @@ public class Top {
       mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
       mergeU(info1.refined(),info2.refined()),
       info1.declaresClassMethods() || info2.declaresClassMethods(),
+      info1.closeState() || info2.closeState(),
       info1.nativeKind()+info2.nativeKind(),
       info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
       Math.max(info1._uniqueId(),info2._uniqueId())

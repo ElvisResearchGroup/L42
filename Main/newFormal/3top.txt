@@ -67,10 +67,10 @@ _______
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
-    Info = #norm{typeDep=Ps\{Any,Void,Library},refine=ss, declaresClassMethods?, uniqueId=n}
+    Info = #norm{typeDep=Ps\{Any,Void,Library},refine=ss, declaresClassMethods?,closeState, uniqueId=n}
     n fresh
 
-* sortHeader(p) = CORE.L //TODO: in code remove the Ms /NCs stuff
+* sortHeader(p) = CORE.L
     p(This0) = {interface? [Ts] Ms Docs}
     p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
     Ts' = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
@@ -79,7 +79,7 @@ _______
     MWTs = [♥Docs MH | MH in methods(p1,Ts1,Ms) and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p1;s;This0)]
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, uniqueId=n}
+    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, closeState, uniqueId=n}
     n fresh
     declaresClassMethods?=empty iff class notin MHs.mdfs
     CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
@@ -123,11 +123,13 @@ _______
     ♥T != toRead(♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
 * extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)    
     
-* updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info0+Info}
+* updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info1}
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     MWTs[e?=empty] = MWTs1
     Ps;Ps' = collectDeps(p;MWTs.es)
     Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},??}
+    Info1 = (Info0+Info) if hasOpenState(interface?,MWTs0 MWTs1)
+    Info1 = (Info0+Info)[closeState?=closeState] otherwise
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)

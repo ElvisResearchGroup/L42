@@ -149,7 +149,9 @@ public class CloneVisitor {
 
     if(typeDep==typeDep0 && coherentDep==coherentDep0 && watched==watched0 
       && usedMethods==usedMethods0 && hiddenSupertypes==hiddenSupertypes0 && refined==refined0){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,usedMethods,hiddenSupertypes,refined,info.declaresClassMethods(),info.nativeKind(),nativePar,info._uniqueId());
+    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,
+      usedMethods,hiddenSupertypes,refined,info.declaresClassMethods(),
+      info.closeState(),info.nativeKind(),nativePar,info._uniqueId());
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){

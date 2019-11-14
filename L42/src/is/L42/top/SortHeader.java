@@ -64,7 +64,7 @@ class SortHeader{
       .withRefined(ss)
       .withDeclaresClassMethods(declaresClassMethods)
       .with_uniqueId(uniqueId);
-    newInfo=Top.sumInfo(coreL.info(),newInfo);
+    newInfo=Top.sumInfo(coreL.info(),newInfo).withCloseState(true);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
     }
   public static Core.L coreTop(Program p,int uniqueId) throws EndError{
@@ -117,7 +117,7 @@ class SortHeader{
       if(refine(p1,s,P.pThis0,poss)){c.add(s);}
       });
     Info info=new Info(false,typeDeps,unique(L(cohePs.stream())),
-      L(),L(),L(),refined,classMeth,"",L(),uniqueId); 
+      L(),L(),L(),refined,classMeth,true,"",L(),uniqueId); 
   return new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
   }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
