@@ -53,6 +53,7 @@ _______
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
     I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p.push({#norm{}})]]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
+    //here we check CORE.e is well formed
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
@@ -134,9 +135,12 @@ _______
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
-* updateInfo(p,Docs C=L) = L0[♥Docs C=refreshUniqueNames(L)][info=L0.info+info
-    info = #norm{typeDep=collectDeps(p♥Docs)}
+* updateInfo(p,Docs C=L) = L0[♥Docs C=refreshUniqueNames(L)][Info=Info1]
+    Info = #norm{typeDep=collectDeps(p♥Docs)}
+    Info1=L0.Info+Info if C not of form _::n
+    Info1=L0.Info+Info+collectDepsE(p,L) otherwise //this provides more typeDep and coherentDep
     P(This0) = L0
+    
 _______
 #define I!HALF.e? => ER
 * I!empty => I.frommed;empty

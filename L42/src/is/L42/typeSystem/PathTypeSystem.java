@@ -7,6 +7,7 @@ import static is.L42.generated.Mdf.*;
 import static is.L42.generated.ThrowKind.*;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -31,6 +32,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     this.ts = ts;
     this.ps = ps;
     this.expected=expected;
+    this._computed=null;
   }
   boolean isDeep;
   Program p;
@@ -38,6 +40,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
   List<T> ts;
   List<P> ps;
   P expected;
+  P _computed=null;
+  public P _computed(){return _computed;}
   void visitExpecting(E e,P newExpected){
     P oldE=expected;
     expected=newExpected;
@@ -55,6 +59,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
   @Override public void visitEVoid(EVoid e){
     errIf(expected!=P.pAny && expected!=P.pVoid,e,
       Err.invalidExpectedTypeForVoidLiteral(expected));
+    _computed=P.pVoid;
     }
   @Override public void visitPCastT(PCastT e){
     errIf(!e.t().mdf().isClass(),e,Err.castOnPathMustBeClass(e.t()));
@@ -66,50 +71,35 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     errIf(l.isInterface(),e,Err.castOnPathOnlyValidIfNotInterface(e.p()));
     errIf(!l1.info().declaresClassMethods(),e,
       Err.castOnPathOnlyValidIfDeclaredClassMethods(e.t().p()));
+    _computed=e.t().p();
     }
   @Override public void visitL(L e){
     mustSubPath(P.pLibrary,expected,e.poss());
-    if(isDeep){ProgramTypeSystem.type(true,p.push(e));}    
+    if(isDeep){ProgramTypeSystem.type(false,true,p.push(e));}
+    _computed=P.pLibrary;
     }
   @Override public void visitEX(EX e){
     mustSubPath(g.of(e.x()).p(),expected,e.poss());
+    _computed=g.of(e.x()).p();
     }
   @Override public void visitLoop(Loop e){
     mustSubPath(P.pVoid,expected,e.poss());
     visitExpecting(e.e(),P.pVoid);
+    _computed=P.pVoid;
     }
   @Override public void visitThrow(Throw e){
     visitExpecting(e.e(),P.pAny);
+    var computed=_computed;
+    assert computed!=null;
     if(e.thr()==Error){return;}
     boolean find=false;
-    if(e.thr()==Exception){find=tryAlternatives(ps.stream(),e.e());}
-    else{find=tryAlternatives(ts.stream().map(t->t.p()),e.e());}
+    if(e.thr()==Exception){find=tryAlternatives(ps.stream(),computed,e.poss());}
+    else{find=tryAlternatives(ts.stream().map(t->t.p()),computed,e.poss());}
     errIf(!find,e,Err.leakedThrow(e.thr().inner));
-    //TODO: we may add a flag to the TS so that we skip rechecking all the expressions that does not
-    // contribute to the result (that is, meth parameters, D.es and crucially throw.e)
+    _computed=null;
     }
-  private boolean tryAlternatives(Stream<P> stream,E e){
-    var oldTs=ts;
-    var oldPs=ps;
-    var oldG=g;
-    var oldExpected=expected;
-    var res=stream.anyMatch(p->{
-      try{
-        ts=oldTs;
-        ps=oldPs;
-        g=oldG;
-        expected=p;
-        visitE(e);
-        expected=oldExpected;
-        return true;
-        }
-      catch(EndError.TypeError te){return false;}    
-      });
-    ts=oldTs;
-    ps=oldPs;
-    g=oldG;
-    expected=oldExpected;
-    return res;
+  private boolean tryAlternatives(Stream<P> stream,P computed,List<Pos>pos){
+    return stream.anyMatch(pi->p.isSubtype(computed, pi,pos));
     }
   @Override public void visitMCall(MCall e){
     P p0=TypeManipulation.guess(g,e.xP());
@@ -127,17 +117,20 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
       var err=ps.stream().noneMatch(pj->p.isSubtype(ti.p(),pj,e.poss()));
       errIf(err,e,Err.leakedExceptionFromMethCall(ti.p()));
       }
+    _computed=mh.t().p();
     }
   @Override public void visitOpUpdate(OpUpdate e){
     mustSubPath(P.pVoid,expected,e.poss());
     T t=g.of(e.x());
     visitExpecting(e.e(),t.p());
     assert !TypeManipulation.fwd_or_fwdP_in(t.mdf());
+    _computed=P.pVoid;
     }
   @Override public void visitBlock(Block e){
     var ts1=new ArrayList<T>(ts);
     var ps1=new ArrayList<P>(ps);
-    for(K k:e.ks()){typeK(k,ts1,ps1);}
+    var computeds=new ArrayList<P>();
+    for(K k:e.ks()){computeds.add(typeK(k,ts1,ps1));}
     var g1=g.plusEq(e.ds());
     var oldTs=ts;
     var oldPs=ps;
@@ -150,8 +143,18 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     ps=oldPs;
     visitE(e.e());
     g=oldG;
+    computeds.add(_computed);
+    var computed=new HashSet<P>();
+    var pos=e.poss();
+    for(P c1:computeds){
+      if(c1==null){continue;}
+      var superAll=computeds.stream().allMatch(c2->c2!=null && p.isSubtype(c2,c1,pos));
+      if(superAll){computed.add(c1);}
+      }
+    if(computed.size()!=1){_computed=expected;}
+    else{_computed=computed.iterator().next();}
     }
-  private void typeK(K k, ArrayList<T> ts1, ArrayList<P> ps1) {
+  private P typeK(K k, ArrayList<T> ts1, ArrayList<P> ps1) {
     var t=k.t();
     var oldG=g;
     g=g.plusEq(k.x(),k.t());
@@ -159,10 +162,11 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     g=oldG;
     if(k.thr()==Return){ts1.add(t);}
     if(k.thr()==Exception){ps1.add(t.p());}
-    if(!t.mdf().isClass()){return;}
+    if(!t.mdf().isClass()){return _computed;}
     var l=p._ofCore(t.p());
     errIf(!l.isInterface(),k.e(),Err.castOnPathOnlyValidIfNotInterface(t.p()));
     errIf(!l.info().declaresClassMethods(),k.e(),
       Err.castOnPathOnlyValidIfDeclaredClassMethods(t.p()));
+    return _computed;
     }
   }

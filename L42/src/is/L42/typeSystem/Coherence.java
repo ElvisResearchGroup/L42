@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.generated.Mdf.*;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -11,11 +12,14 @@ import java.util.Set;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
+import is.L42.generated.Core;
+import is.L42.generated.Core.E;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.X;
+import is.L42.visitors.Accumulate;
 
 public class Coherence {
   public final Program p;
@@ -163,5 +167,21 @@ public class Coherence {
       case Readable,Immutable->mdf.isIn(Mdf.Readable,Mdf.Immutable,Mdf.ImmutableFwd);
       default->false;
       };
+    }
+  static public void coherentE(Program p,E e){
+    var ps=new Accumulate.SkipL<List<P.NCs>>() {
+      @Override public List<P.NCs> empty() {return new ArrayList<P.NCs>();}
+      @Override public void visitPCastT(Core.PCastT pct){
+        assert p._ofCore(pct.p())!=null;
+        assert p._ofCore(pct.t().p())!=null;
+        if(pct.t().p()==P.pAny){return;}
+        assert pct.p().isNCs();
+        acc().add(pct.p().toNCs());
+        }
+    }.acc();
+    for(var pi:ps){
+      var p0=p.navigate(pi);
+      new Coherence(p0,false).isCoherent();
+      }
     }
   }

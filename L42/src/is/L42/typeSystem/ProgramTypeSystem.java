@@ -28,14 +28,18 @@ public class ProgramTypeSystem {
   static void errIf(boolean cond,List<Pos> poss,String msg){
     if(cond){throw new EndError.TypeError(poss,msg);}
     }
-  public static void type(boolean typed,Program p){
+  public static void type(boolean okRetype,boolean typed,Program p){
     L l=p.topCore();
-    assert !l.info().isTyped();
+    assert okRetype || !l.info().isTyped():
+     "";
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
-    for(MWT mwt:l.mwts()){typeMWT(p,mwt);}
+    for(MWT mwt:l.mwts()){
+      assert !l.info().isTyped() || switch(0){default: typeMWT(p,mwt); yield true;};
+      if(!l.info().isTyped()){typeMWT(p,mwt);}
+      }
     for(NC nc:l.ncs()){
       var pushed=p.push(nc.key(),nc.l());
-      if(typed||nc.key().hasUniqueNum()){type(typed,pushed);}
+      if(typed||nc.key().hasUniqueNum()){type(okRetype,typed,pushed);}
       if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent();}
       }
     if(l.info().closeState()){new Coherence(p,true).isCoherent();}

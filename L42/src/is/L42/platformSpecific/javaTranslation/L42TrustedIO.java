@@ -9,7 +9,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 
+import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.typeSystem.ProgramTypeSystem;
+import is.L42.visitors.CloneVisitor;
 
 public class L42TrustedIO {
   public L42Void strDebug(String s){
@@ -18,8 +21,12 @@ public class L42TrustedIO {
     }
   public L42Void deployLibrary(String s, L42Library l42Lib){
     Core.L l=l42Lib.unwrap;
-    //TODO: check it is self contained
-    //TODO: type it
+    ProgramTypeSystem.type(true,true, Program.flat(l));
+    //TODO: wrap an EndError above as a L42 exception
+    l=l.accept(new CloneVisitor(){
+      @Override public Core.L.Info visitInfo(Core.L.Info info){
+        return info.withTyped(true);
+        }});
     try(
       var file=new FileOutputStream("localhost"+File.separator+s+".L42"); 
       var out=new ObjectOutputStream(file);

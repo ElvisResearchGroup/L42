@@ -27,7 +27,7 @@ public class FlagTyped {
     var typable=typable(p);
     if(typable.isEmpty()){return p;}
     for(var csi:typable){
-      ProgramTypeSystem.type(false,p.navigate(P.of(0, csi)));
+      ProgramTypeSystem.type(false,false,p.navigate(P.of(0, csi)));
       }
     p=p.update(flagL(typable,p));
     try {l.loadNow(p);}

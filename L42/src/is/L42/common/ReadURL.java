@@ -21,7 +21,8 @@ public class ReadURL {
     catch (FileNotFoundException e) {throw todo();}
     catch (IOException e) {throw todo();}
     catch (ClassNotFoundException e) {throw bug();}
-    //TODO: check it is really well typed
+    //TODO: check it is really well typed?
+    //should well formedness be sufficient? +checking all info=typed?
     return res;
   }
   }

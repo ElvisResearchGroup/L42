@@ -30,11 +30,10 @@ _______
 #define wellTyped(p, CORE.e)=CORE.T
 * wellTyped(p,e)=T
     Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
-    FV(e)=empty//TODO:move out to top? where we do the rest of well formedness?
-    p;empty;empty|= CORE.e : _ <= imm
-    either Q|- CORE.e : Library
-    or Q|- CORE.e : imm Void
-    or Q|- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
+    p;empty;empty|= CORE.e : imm
+    either Q |- CORE.e : Library
+    or Q |- CORE.e : imm Void
+    or Q |- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
 _______
 #define flag |- p    p |- CORE.MWT
 * flag |- p      //(library well typed)

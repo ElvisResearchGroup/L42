@@ -779,7 +779,7 @@ public static void pass(String program){
         }};
     }};
   Program p=init.top.top(new CTz(),init.p);
-  ProgramTypeSystem.type(true, p);
+  ProgramTypeSystem.type(false,true, p);
   allCoherent(p);
   }
 public static void allCoherent(Program p){

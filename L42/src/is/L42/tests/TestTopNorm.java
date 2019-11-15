@@ -227,7 +227,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       Debug={
         class method Void #apply(This1.S that)=(This d=This<:class This.of() d.strDebug(that=that))
-        class method mut This0 of()        
+        class method This0 of()        
         method Void strDebug(This1.S that)=native{trusted:strDebug} error void
         method Void deployLibrary(This1.S that,Library lib)=native{trusted:deployLibrary} error void
         #norm{declaresClassMethods nativeKind=TrustedIO}        
@@ -237,7 +237,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         mut method Void #a()=native{trusted:'a'} error void
         mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
-        #norm{nativeKind=StringBuilder}
+        #norm{nativeKind=StringBuilder,declaresClassMethods}
         }
       C=(
         mut SB sb=SB.of()
@@ -246,9 +246,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         Debug(sb.toS())
         Debug.of().deployLibrary(sb.toS(), lib={
           A={
-            class method Library foo()={method Void retrived() #typed{}}
-            #typed{}}
-          #typed{}})
+            class method Library foo()={method Void retrived() #norm{}}
+            #norm{declaresClassMethods}}
+          #norm{}})
         {#norm{}}
         )
       }
@@ -260,7 +260,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       Debug={
          class method imm Void #apply(imm This1.S that)=(imm This0 d=This0<:class This0.of()d.strDebug(that=that))
-         class method mut This0 of()
+         class method imm This0 of()
          imm method imm Void strDebug(imm This1.S that)=native{trusted:strDebug}error void
          imm method imm Void deployLibrary(imm This1.S that, imm Library lib)=native{trusted:deployLibrary}error void
          #typed{declaresClassMethods nativeKind=TrustedIO}
@@ -270,7 +270,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         mut method Void #a()=native{trusted:'a'} error void
         mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
-        #typed{nativeKind=StringBuilder}
+        #typed{declaresClassMethods,nativeKind=StringBuilder}
         }
       C={#typed{}}
       #norm{}}
@@ -285,7 +285,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     {
       A={
         class method imm Library foo()={imm method imm Void retrived()#typed{}}
-        #typed{}}
+        #typed{declaresClassMethods}}
       C={imm method imm Void retrived()#typed{}}
       #norm{}}
     """)
@@ -355,7 +355,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         method This0 not()=native{trusted:OP!} error void
         method This0 and(This0 that)=native{trusted:OP&} error void
         method This0 or(This0 that)=native{trusted:OP|} error void
-        #norm{nativeKind=Bool}
+        #norm{nativeKind=Bool,declaresClassMethods}
         }
       C=if B.true().and(B.true()) {imm method imm Void a()#typed{}}
         else {imm method imm Void b()#typed{}}
@@ -369,7 +369,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       imm method imm This0 not()=native{trusted:OP!}error void
       imm method imm This0 and(imm This0 that)=native{trusted:OP&}error void
       imm method imm This0 or(imm This0 that)=native{trusted:OP|}error void
-      #typed{nativeKind=Bool}
+      #typed{nativeKind=Bool,declaresClassMethods}
       }
     C={imm method imm Void a()#typed{}}#norm{}}
     """)

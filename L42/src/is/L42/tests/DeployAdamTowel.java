@@ -100,7 +100,7 @@ top("""
 //first, the minimal infrastructure to deploy a towel
 S={#norm{nativeKind=String}}
 Debug={
-  class method mut This0 of()        
+  class method This0 of()        
   method Void deployLibrary(This1.S that,Library lib)=
     native{trusted:deployLibrary} error void
     #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=TrustedIO}        
