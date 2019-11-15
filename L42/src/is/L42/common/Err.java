@@ -250,6 +250,13 @@ public class Err {
   ;}public static String mustHaveCloseState(Object fs,Object bs){return
   "the core library literal must have close state, becouse factory methods "+fs+
   " are present, and methods bridging effectful #$ non determinism "+bs+" are present"
-
+  ;}public static String methSubTypeExpectedRet(Object s, Object _1,Object _2){return
+  "Invalid method inheritance for "+s+": the return type "+_1+" is not a subtype of the inherited type"+_2
+  ;}public static String methSubTypeExpectedMdf(Object s, Object _1,Object _2){return
+  "Invalid method inheritance for "+s+": the modifier "+_1+" is different from the inherited mdf "+_2
+  ;}public static String methSubTypeExpectedPars(Object s, Object _1,Object _2){return
+  "Invalid method inheritance for "+s+": the parameters "+_1+" are diffrent from the inherited parameters "+_2
+  ;}public static String methSubTypeExpectedExc(Object s, Object _1,Object _2){return
+  "Invalid method inheritance for "+s+": excpetion "+_1+" is not a subtype of any exception in "+_2
  ;}
 }

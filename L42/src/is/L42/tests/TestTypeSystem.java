@@ -783,7 +783,7 @@ public static void pass(String program){
   allCoherent(p);
   }
 public static void allCoherent(Program p){
-  assertTrue(new Coherence(p).isCoherent());
+  assertTrue(new Coherence(p,false).isCoherent());
   for(var nc:p.topCore().ncs()){
     allCoherent(p.navigate(P.of(0,L(nc.key()))));
     }

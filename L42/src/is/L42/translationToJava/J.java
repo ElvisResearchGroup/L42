@@ -374,7 +374,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final List<P> ps;
     final Coherence ch;
     Fields(Program p){
-      ch=new Coherence(p);
+      ch=new Coherence(p,false);
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();return;}
       xs=ch.classMhs.get(0).s().xs();
       assert ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs));

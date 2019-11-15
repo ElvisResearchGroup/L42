@@ -38,6 +38,7 @@ _______
     CTz.add(p0; MH1 Ms(MWT1.s).e?; e?1).. .add(p0; MHn Ms(MWTn.s).e?; e?n) = CTz0
     topNC(CTz0,p0,[NC| NC in Ms]) => PR1
     PR1 = CTz1; p1 IfErr(PR1) PR = PR1 //top of p1 is a CORE.L with all NCs and ok info
+    //here we check that p1(This0) is well formed
     I[C=empty;p1;MWTi.G;CTz1; frommed=empty]!e?i => ERi  for i in 1..n
     ER1 = _;e?'1 .. ERn = _;e?'n IfErr(ER1..ERn) PR = firstErr(ER1..ERn) 
     //novel CTzs are not captured since no Full.L in e?s

@@ -6,9 +6,8 @@ _______
 * LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
 * LL[empty=Flag]=LL
 
-* {H MWTs NC1..NCn Info}[InfoFlag=Flag]={H MWTs' NCs' Info[Flag=Flag]}
+* {H MWTs NCs Info}[InfoFlag=Flag]={H MWTs' NCs Info[Flag=Flag]}
     MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
-    NCs'=NC1[CORE.L=NC1.CORE.L[InfoFlag=Flag]] .. NCn[CORE.L=NCn.CORE.L[InfoFlag=Flag]]
 _______
 #define typable(p)=Csz    untypable(p)=CTz
 * typable(p) = Cs1..Csn // asserts p(This0) is CORE.L
@@ -44,11 +43,13 @@ _______
    forall MWT in p(This0).MWTs:  p |- MWT
    forall C=L in p(This0).NCs where C of form _::n or flag=typed:
      |-p.push(C,L)
-     if C of form _::n then coherent(p.push(C,L)) //an incoherent private class would be bad
+     if C of form _::n then coherent(p.push(C,L),norm) //an incoherent private class would be bad
+   if(p(This0).Info.closeState?=closeState then coherent(p,typed)
 * p |- MWT //(member method)
     if MWT.e?=e then 
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P
       p;MWT.G;empty |= e :_ <=fwd% MWT.T.mdf
+      if MWT.native?!=native then typePlugin(p;MWT)
     MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
     forall MH in MHs:
       p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
@@ -243,9 +244,9 @@ _______
     forall P<:class P' inside e: //assert p(P) and p(P') are of form CORE.L
       either P'=Any or coherent(p.navigate(P))
 
-* coherent(p)
+* coherent(p,flag)
     CORE.L = p(This0)
-    MHs = {MH | Docs MH in CORE.L.MWTs} //thus no e, thus abstract
+    MHs = {MH | Docs MH in CORE.L.MWTs either flag=norm or MH.m of form _::n} //thus no e, thus abstract
     either CORE.L.interface?=interface
     or class not in MHs.mdfs//no abstract class method
     or exists xz  and n? such that:

@@ -41,7 +41,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
   public InferToCore(I i,CTz ctz,Top top){
     this.i=i; this.top=top;
     this.sets = ctz.allSTz(i.p());
-    this.ctzFrom=ctz;//frommed=CTz[from This1;p]TODO:
+    this.ctzFrom=ctz;
     } 
   public final Core.E compute(Half.E e){
     assert res==null;

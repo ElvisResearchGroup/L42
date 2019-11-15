@@ -21,9 +21,11 @@ public class Coherence {
   public final Program p;
   public final List<MH> mhs;
   public final List<MH> classMhs;
-  public Coherence(Program p){
+  public Coherence(Program p, boolean onlyPrivate){
     this.p=p;
-    mhs=L(p.topCore().mwts(),(c,mi)->{if(mi._e()==null){c.add(mi.mh());}});
+    mhs=L(p.topCore().mwts(),(c,mi)->{
+      if(mi._e()==null && (!onlyPrivate || mi.key().hasUniqueNum())){c.add(mi.mh());}
+      });
     classMhs=L(mhs.stream().filter(mh->mh.mdf().isClass()));
     }
   public boolean isCoherent(){
