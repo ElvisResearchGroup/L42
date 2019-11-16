@@ -219,6 +219,8 @@ public class Err {
   "fwd variable "+_1+" may be leaked out using a return"
   ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
   "native body "+_1+" uses unrecognized receiver of kind "+_2
+  ;}public static String nativeReceiverMdfInvalid(Object n,Object s, Object mdf1, Object mdf2){return
+  "native body "+n+" with selector "+s+" requires a receiver with modifier "+mdf1+", but "+mdf2+" is provided"
   ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
   ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
@@ -258,5 +260,12 @@ public class Err {
   "Invalid method inheritance for "+s+": the parameters "+_1+" are diffrent from the inherited parameters "+_2
   ;}public static String methSubTypeExpectedExc(Object s, Object _1,Object _2){return
   "Invalid method inheritance for "+s+": excpetion "+_1+" is not a subtype of any exception in "+_2
+  ;}public static String invalidDotDotDotLocation(){return
+  "Invalid '...' location: no other file is identified"
+  ;}public static String dotDotDotSouceNotExistant(Object _1){return
+  "There is no source file in the location "+_1+", identified by the '...'"
+  ;}public static String dotDotDotCoreSouceWithMs(){return
+  "'...' identifying a core library literal must be of form {...}, but here other members are provided"
+
  ;}
 }

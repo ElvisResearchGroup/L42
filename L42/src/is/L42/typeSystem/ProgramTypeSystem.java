@@ -30,8 +30,7 @@ public class ProgramTypeSystem {
     }
   public static void type(boolean okRetype,boolean typed,Program p){
     L l=p.topCore();
-    assert okRetype || !l.info().isTyped():
-     "";
+    assert okRetype || !l.info().isTyped();
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
       assert !l.info().isTyped() || switch(0){default: typeMWT(p,mwt); yield true;};

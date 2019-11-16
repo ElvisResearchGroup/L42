@@ -9,12 +9,13 @@ import is.L42.generated.Full.EString;
 import is.L42.generated.Pos;
 import static is.L42.tools.General.*;
 
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 public class StringInterpolation {
-  StringInterpolation(String fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
+  StringInterpolation(Path fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
     this.fileName=fileName;
     this.eVoid=eVoid;
     this.pos=pos;
@@ -109,7 +110,7 @@ public class StringInterpolation {
     };
   Mode mode=Mode.Str;
   boolean topPar=false;
-  final String fileName;
+  final Path fileName;
   final EVoid eVoid;
   final Pos pos;
   final StringBuilder errors;

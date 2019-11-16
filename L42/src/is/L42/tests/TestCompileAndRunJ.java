@@ -154,7 +154,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello Native World")
-  ),new AtomicTest(()-> 
+  ),new AtomicTest(()-> //TODO:On Windows this passes or fails randomly...
   loadRunErr("""
   Safe3={
     class method This1.S go()=native{

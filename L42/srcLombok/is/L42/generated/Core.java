@@ -21,11 +21,11 @@ public class Core {
   public static interface E extends HasPos,HasWf,HasVisitable{
     Visitable<? extends E> visitable();
     public static E parse(String s){
-      var r=Parse.e("-dummy-",s);
+      var r=Parse.e(Constants.dummy,s);
       assert !r.hasErr():r;
       assert r.res.wf();
       var errors=new StringBuilder();
-      E res= new InjectionToCore(errors,new Core.EVoid(new Pos("--temp--",0,0)))._inject(r.res);
+      E res= new InjectionToCore(errors,new Core.EVoid(new Pos(Constants.temp.toUri(),0,0)))._inject(r.res);
       assert errors.length() == 0:errors;
       assert res!=null;
       return res;
@@ -74,7 +74,7 @@ public class Core {
       return this.c(cs.get(0)).cs(popL(cs));
       }
     public static L parse(String s) {
-      var r = is.L42.common.Parse.e("--dummy--", s);
+      var r = is.L42.common.Parse.e(Constants.dummy, s);
       assert !r.hasErr():r;
       assert r.res != null;
       return (L)r.res;

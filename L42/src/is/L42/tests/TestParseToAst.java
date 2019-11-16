@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.Constants;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Full;
@@ -379,14 +380,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ));}
 public static void pass(String input) {pass(input,input);}
 public static void pass(String input,String output) {
-  var r=Parse.e("-dummy-",input);
+  var r=Parse.e(Constants.dummy,input);
   if(r.hasErr()){throw new Error(r.errorsParser+r.errorsTokenizer+r.errorsVisitor);}
   assertFalse(r.hasErr());
   assertEquals(output,r.res.toString());
   }
 
 public static void passI(String input,String ...outputs) {
-  var r=Parse.e("-dummy-",input);
+  var r=Parse.e(Constants.dummy,input);
   if(r.hasErr()){throw new Error(r.errorsParser+r.errorsTokenizer+r.errorsVisitor);}
   assertFalse(r.hasErr());
   assertEquals(input,r.res.toString());
@@ -399,10 +400,11 @@ public static void passI(String input,String ...outputs) {
     }
   }
 public static void fail(String input,String ...output) {
-  var r=Parse.e("-dummy-",input);
+  var r=Parse.e(Constants.dummy,input);
   assertTrue(r.hasErr());
   String msg=r.errorsTokenizer+" "+r.errorsParser+" "+r.errorsVisitor;
   if(output.length==1){
+    msg=msg.substring(msg.indexOf("\n")+1);
     msg=msg.substring(msg.indexOf("\n")+1);
     Err.strCmp(msg, output[0]);
     return;

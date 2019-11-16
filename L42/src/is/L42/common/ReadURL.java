@@ -10,16 +10,20 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 
 import is.L42.generated.Core;
+import is.L42.generated.P;
 
 public class ReadURL {
   public static Core.L of(String url){
+    P.coreAny.hashCode();//preloading class P
     if(url.startsWith("#$")){url=url.substring(2);}
     Core.L res;try(
       var file=new FileInputStream("localhost"+File.separator+url+".L42"); 
       var in=new ObjectInputStream(file);
       ){res=(Core.L)in.readObject();}
     catch (FileNotFoundException e) {throw todo();}
-    catch (IOException e) {throw todo();}
+    catch (IOException e) {
+      throw todo();
+      }
     catch (ClassNotFoundException e) {throw bug();}
     //TODO: check it is really well typed?
     //should well formedness be sufficient? +checking all info=typed?

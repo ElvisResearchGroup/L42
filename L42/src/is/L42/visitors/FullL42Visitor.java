@@ -2,6 +2,8 @@ package is.L42.visitors;
 
 import static is.L42.tools.General.*;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -21,6 +23,7 @@ import org.antlr.v4.runtime.tree.TerminalNode;
 import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import is.L42.generated.L42Parser.*;
+import is.L42.common.Constants;
 import is.L42.common.Err;
 import is.L42.common.PTails;
 import is.L42.common.Parse;
@@ -32,12 +35,12 @@ import is.L42.generated.Full.VarTx;
 @SuppressWarnings("serial") class ParserFailed extends RuntimeException{}
 
 public class FullL42Visitor implements L42Visitor<Object>{
-  public String fileName;
+  public Path fileName;
   public StringBuilder errors=new StringBuilder();
-  public EVoid eVoid=new Core.EVoid(new Pos("--temp--",0,0));
-  public FullL42Visitor(String fileName){this.fileName=fileName;}
+  public EVoid eVoid=new Core.EVoid(new Pos(Constants.temp.toUri(),0,0));
+  public FullL42Visitor(Path fileName){this.fileName=fileName;}
   Pos pos(ParserRuleContext prc){
-    return new Pos(fileName,prc.getStart().getLine(),prc.getStart().getCharPositionInLine()); 
+    return new Pos(fileName.toUri(),prc.getStart().getLine(),prc.getStart().getCharPositionInLine()); 
     }
   void check(ParserRuleContext ctx){  
     if(ctx.children!=null){return;}
@@ -167,7 +170,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     Pos pos=pos(ctx);
     String s=ctx.CsP().getText();
-    var res=Parse.ctxCsP(pos.fileName(),s);
+    var res=Parse.ctxCsP(Paths.get(pos.fileName()),s);
     if(res.hasErr()){
       this.errors.append(pos+ Err.notValidC(
         s.contains("Any")?"Any":
@@ -234,7 +237,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     String s="@"+ctx.getText();
     Pos pos=pos(ctx);
-    var res=Parse.ctxDoc(pos.fileName(),s);
+    var res=Parse.ctxDoc(Paths.get(pos.fileName()),s);
     if (res.hasErr()){
       this.errors.append(pos+Err.malformedAtInDocs());
       return new Full.Doc(null, L(), L());
@@ -402,7 +405,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     Pos pos=pos(ctx);
     String s=ctx.getText();
     s=s.substring(1);
-    var res=Parse.ctxPathSelX(pos.fileName(),s);
+    var res=Parse.ctxPathSelX(Paths.get(pos.fileName()),s);
     assert !res.hasErr();
     Full.PathSel ps=new AuxVisitor(pos).visitPathSelX(res.res.pathSelX());
     assert ps!=null;
@@ -561,7 +564,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     var pos=pos(ctx);
     var s=fixPos(pos);
     s.append(ctx.getText());
-    var r=Parse.ctxInfo(pos.fileName(),s.toString());
+    var r=Parse.ctxInfo(Paths.get(pos.fileName()),s.toString());
     return new InfoSupplier(new InjectionToCore(errors, eVoid), r, pos).get();
     }
   @SuppressWarnings("unused")//i

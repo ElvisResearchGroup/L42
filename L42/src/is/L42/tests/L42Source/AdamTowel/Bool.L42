@@ -1,0 +1,9 @@
+class method This0 false()
+class method This0 true()=(This false=this.false() false.not())
+method This0 #if()=this
+method Void #checkTrue()[Void]=native{trusted:checkTrue} error void
+method This0 not()=native{trusted:OP!} error void
+method This0 and(This0 that)=native{trusted:OP&} error void
+method This0 or(This0 that)=native{trusted:OP|} error void
+read method This1.S toS()=native{trusted:toS} error void
+#norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=Bool}

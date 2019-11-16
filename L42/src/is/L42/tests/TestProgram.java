@@ -10,6 +10,7 @@ import org.opentest4j.AssertionFailedError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
@@ -177,7 +178,7 @@ public static void passWF(String input){
   assertTrue(p.wf());//to be more resilient to changes above
   }
 public static void failWF(Class<?> clazz,String input,String ...output){
-  var r=Parse.program("-dummy-",input);
+  var r=Parse.program(Constants.dummy,input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   TestHelpers.checkFail(()->Program.parse(input),output,clazz);
   }

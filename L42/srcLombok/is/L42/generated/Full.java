@@ -22,7 +22,7 @@ public class Full {
   CsP implements Leaf,Visitable<CsP>{@Override public Visitable<CsP>visitable(){return this;}@Override public CsP accept(CloneVisitor cv){return cv.visitCsP(this);}@Override public void accept(CollectorVisitor cv){cv.visitCsP(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     List<C> cs; P _p;}//when cs is empty, _p is not null
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
-  L implements LL,Leaf,Half.E,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
+  L implements LL,Leaf,Visitable<LL>{@Override public Visitable<LL>visitable(){return this;}@Override public LL accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     boolean isDots; String reuseUrl; boolean isInterface; List<T> ts; List<M>ms; List<Doc>docs;
     public static interface M extends LDom.HasKey,HasWf,HasPos,HasVisitable{List<Doc> docs();E _e();Visitable<? extends M> visitable();}
     @Override public L withCs(List<C>cs,Function<NC,NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){

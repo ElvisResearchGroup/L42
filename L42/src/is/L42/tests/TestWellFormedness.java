@@ -7,6 +7,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
+import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
@@ -261,25 +262,15 @@ public static String inCore(String s){
   return "{imm method imm Void a()="+s+" #norm{}}";
   }
 public static void pass(String input){
-  var r=Parse.e("-dummy-",input);
+  var r=Parse.e(Constants.dummy,input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   assertTrue(r.res.wf());
   }
 public static void fail(String input,String ...output){
-  var r=Parse.e("-dummy-",input);
+  var r=Parse.e(Constants.dummy,input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  try{r.res.wf();}
-  catch(EndError.NotWellFormed nwf){
-    String msg=nwf.getMessage();
-    if(output.length==1){
-      msg=msg.substring(msg.indexOf("\n")+1);
-      Err.strCmp(msg, output[0]);
-      return;
-      }
-    for(var s:output){if(!msg.contains(s)){throw nwf;}}
-    for(var s:output){assertTrue(msg.contains(s));}
-    return;
-    }
-  Assertions.fail("error expected");
+  TestHelpers.checkFail(()->r.res.wf(), output, EndError.NotWellFormed.class);
+  //for(var s:output){if(!msg.contains(s)){throw nwf;}}
+  //for(var s:output){assertTrue(msg.contains(s));}
   }
 }

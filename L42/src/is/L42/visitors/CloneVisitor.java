@@ -361,7 +361,7 @@ public class CloneVisitor {
     return csP.withCs(visitCs(csP.cs()));
     }
     
-  public Full.L visitL(Full.L l){
+  public LL visitL(Full.L l){
     var ts0=l.ts();
     var ms0=l.ms();
     var docs0=l.docs();

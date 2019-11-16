@@ -1,4 +1,6 @@
 package is.L42.common;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -21,6 +23,8 @@ public class Constants{
   public static Function<String,Core.L> readURL=ReadURL::of;
   private static final HashMap<String,Program> fwPrograms=new HashMap<>();
   public static void refresh(){fwPrograms.clear();}
+  public static Path dummy=Paths.get("localhost","dummy.txt");
+  public static Path temp=Paths.get("localhost","temp.txt");
   /*public static boolean newFwProgram(Program p){
     String s=p.toString();
     assert !fwPrograms.containsKey(s):s+"\n"+fwPrograms.keySet();

@@ -373,7 +373,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }
     C={imm method imm Void a()#typed{}}#norm{}}
     """)
-
+  ),new AtomicTest(()->
+  topFail(InvalidImplements.class,"{A={...}}",Err.dotDotDotSouceNotExistant(hole))
+  ),new AtomicTest(()->
+  top("""
+  {TestingDotDotDot={...}}
+  ""","""
+  {TestingDotDotDot={
+    imm method imm@{hei!} Void v() = void
+    AA={#typed{}@{it is there}}#typed{}}
+  #norm{}}
+  """)
 
   ));}
 

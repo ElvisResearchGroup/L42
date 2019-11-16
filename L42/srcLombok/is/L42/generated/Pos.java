@@ -1,9 +1,9 @@
 package is.L42.generated;
 import lombok.Value;
 import lombok.experimental.Wither;
-
+import java.net.URI;
 @Value @Wither public class Pos implements java.io.Serializable{
-  String fileName; int line; int column;
+  URI fileName; int line; int column;
   @Override public String toString(){
-    return "line " + line() + ":" + column() + "\n";
+    return fileName.toString()+"\nline " + line() + ":" + column() + "\n";
     }}

@@ -32,7 +32,9 @@ class OpUtils{
     return Map.of(StringBuilder,(type,p,mwt)->{
       if(type){
         checkParCount(p,mwt,0);
-        return "";
+        if(mwt.mh().mdf().isMut()){return "";}
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeReceiverMdfInvalid(mwt.nativeUrl(),mwt.key(),"mut",mwt.mh().mdf()));
         }
       var xs=NativeDispatch.xs(mwt);
       return ""+xs.get(0)+".append(\""+s+"\");return L42Void.instance;";

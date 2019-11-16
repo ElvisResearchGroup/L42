@@ -2,10 +2,17 @@ package is.L42.top;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.merge;
 import static is.L42.tools.General.range;
 
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 
+import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.PTails;
@@ -27,7 +34,7 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class Init {
-  public Init(String s){this(Parse.sureProgram("-dummy-",s));}
+  public Init(String s){this(Parse.sureProgram(Constants.dummy,s));}
   public final Top top;
   public final Program p;
   public Init(Full.L l){this(Program.flat(l));}
@@ -55,8 +62,34 @@ public class Init {
     }
   public static LL initTop(Program pStart,FreshNames f){
     var res=pStart.top.visitable().accept(new CloneVisitorWithProgram(pStart){
+      @Override public LL visitL(Full.L s){
+        if(!s.isDots()){return super.visitL(s);}
+        LDom cms=getLastCMs();
+        if(cms==null ||!(cms instanceof C)){
+          throw new EndError.InvalidImplements(s.poss(),
+            Err.invalidDotDotDotLocation());} 
+        C lastC=(C)cms;
+        Path outerPath=Paths.get(s.pos().fileName()).getParent();
+        Path path=outerPath.resolve(lastC.inner());
+        if(Files.exists(path) && Files.isDirectory(path)){
+          path=path.resolve("This.L42");
+          }
+        else if(!Files.exists(path)){path=outerPath.resolve(lastC.inner()+".L42");}
+        LL dots;try{dots=Parse.fromPath(path);}
+        catch(IOException ioe){
+          throw new EndError.InvalidImplements(s.poss(),
+            Err.dotDotDotSouceNotExistant(path));
+          }
+        if(dots.isFullL()){
+          List<Full.L.M> newMs=merge(((Full.L)dots).ms(),s.ms());
+          return super.visitL(((Full.L)dots).withMs(newMs));
+          }
+        if(s.ms().isEmpty()){return super.visitL((Core.L)dots);}
+          throw new EndError.InvalidImplements(s.poss(),
+            Err.dotDotDotCoreSouceWithMs());        
+        }
       @Override public Full.L fullLHandler(Full.L s){
-        if(s.isDots()){throw bug();}//TODO: will need to be handled in the visitL instead
+        if(s.isDots()){throw bug();}
         var this0s=L(s.ts().stream().filter(this::invalidAfter));
         if(this0s.isEmpty()){return s;}
         throw new EndError.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));

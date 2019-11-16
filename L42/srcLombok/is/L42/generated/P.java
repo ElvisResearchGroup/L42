@@ -32,7 +32,7 @@ public interface P extends Visitable<P>{
   public static final Full.T fullClassAny = new Full.T(Mdf.Class, L(),L(), P.pAny);
   public static P.NCs of(int n,List<C>cs){return new NCs(n,cs);}
   public static P parse(String s){
-    var csP= Parse.csP("--dummy--",s);
+    var csP= Parse.csP(Constants.dummy,s);
     assert !csP.hasErr();
     assert csP.res._p()!=null;
     return csP.res._p();

@@ -217,7 +217,7 @@ public class Top {
     var cmp=pts._computed();
     if(cmp==null){cmp=P.pVoid;}
     ce.visitable().accept(new MdfTypeSystem(p,g,Collections.emptySet(),Mdf.Immutable));
-    if(cmp==P.pLibrary){return cmp;}
+    if(cmp==P.pLibrary || cmp==P.pVoid){return cmp;}
     var l=p._ofCore(cmp);
     var mwt=_elem(l.mwts(),toLibraryS);
     if(mwt==null){

@@ -16,6 +16,7 @@ import org.antlr.v4.runtime.tree.ParseTree;
 import org.antlr.v4.runtime.tree.RuleNode;
 import org.antlr.v4.runtime.tree.TerminalNode;
 
+import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
@@ -140,7 +141,7 @@ public class TestHelpers {
     return ctx.accept(visitor).toString();
     }
   public static NudeEContext parseWithException(String s){
-    var res=Parse.ctxE("--dummy--",s);
+    var res=Parse.ctxE(Constants.dummy,s);
     try{return res.res;}
     finally{
       if(res.errorsTokenizer.length()!=0)throw new RuntimeException("Tokenizer errors:\n"+res.errorsTokenizer);
@@ -153,6 +154,7 @@ public class TestHelpers {
     catch(EndError ee){
       if(!kind.isInstance(ee)){fail("Different kind of exception: "+ee);}
       String msg=ee.getMessage();
+      msg=msg.substring(msg.indexOf("\n")+1);
       msg=msg.substring(msg.indexOf("\n")+1);
       Err.strCmp(msg, output[0]);
       for(var i:range(1,output.length)){

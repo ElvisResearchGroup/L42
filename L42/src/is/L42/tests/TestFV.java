@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Parse;
 import is.L42.generated.Core;
@@ -52,7 +53,7 @@ public static String inCore(String s){
   return "{imm method imm Void a()="+s+" #norm{}}";
   }
 public static void pass(String input,String ...output){
-  var r=Parse.e("-dummy-",input);
+  var r=Parse.e(Constants.dummy,input);
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   var fv=FV.of(r.res.visitable());
   var out=new HashSet<X>();
@@ -61,7 +62,7 @@ public static void pass(String input,String ...output){
   assertEquals(fv.toString(),out.toString());
   }
 public static void failC(String input,String ...output){
-  var r=Parse.e("-dummy-",inCore(input));
+  var r=Parse.e(Constants.dummy,inCore(input));
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   var c=(Core.L)r.res;
   var e=c.mwts().get(0)._e();
@@ -73,7 +74,7 @@ public static void failC(String input,String ...output){
     }
   }
 public static void passC(String input){
-  var r=Parse.e("-dummy-",inCore(input));
+  var r=Parse.e(Constants.dummy,inCore(input));
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   var c=(Core.L)r.res;
   var e=c.mwts().get(0)._e();

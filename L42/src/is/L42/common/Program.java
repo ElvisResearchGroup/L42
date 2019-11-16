@@ -10,6 +10,7 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.todo;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -344,7 +345,7 @@ public class Program implements Visitable<Program>{
     }  
   //-----------
   public static Program parse(String s){
-    var r=Parse.program("-dummy-",s);
+    var r=Parse.program(Constants.dummy,s);
     assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
     var res=Init.init(r.res,new FreshNames());
     assert res.wf();

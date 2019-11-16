@@ -8,6 +8,7 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.LDom;
+import is.L42.generated.LL;
 import is.L42.generated.Pos;
 
 public class CloneVisitorWithProgram extends CloneVisitor {
@@ -25,12 +26,12 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     }
   private LDom lastCMs=null;
   public LDom getLastCMs(){return lastCMs;}
-  @Override public Full.L visitL(Full.L s) {
+  @Override public LL visitL(Full.L s) {
     if(lastCMs==null){
       assert p.top==s;
       var res=super.visitL(s);
-      res=fullLHandler(res);
-      return res;
+      if(res.isFullL()){return fullLHandler((Full.L)res);} 
+      return coreLHandler((Core.L)res);
       }
     Program aux=p;
     var lastPos=poss;
@@ -44,7 +45,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
       }
     levels+=1;
     var res=super.visitL(s);
-    res=fullLHandler(res);
+    if(res.isFullL()){res=fullLHandler((Full.L)res);} 
+    else{res=coreLHandler((Core.L)res);}
     p=aux;
     levels-=1;
     whereFromTop.remove(whereFromTop.size()-1);

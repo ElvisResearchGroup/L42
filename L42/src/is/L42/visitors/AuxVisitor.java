@@ -5,6 +5,7 @@ import static is.L42.tools.General.merge;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.unreachable;
 
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -119,7 +120,7 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
       }
     assert ctx.topDocText().size()==1;
     Full.Doc text1=visitTopDocText(ctx.topDocText(0));
-    var res=Parse.ctxDoc(pos.fileName(),"@"+ctx.doc().getText());
+    var res=Parse.ctxDoc(Paths.get(pos.fileName()),"@"+ctx.doc().getText());
     assert !res.hasErr();
     Full.Doc doc=visitTopDoc(res.res);
     return text1
