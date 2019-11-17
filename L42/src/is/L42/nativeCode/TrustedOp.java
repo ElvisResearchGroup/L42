@@ -228,6 +228,8 @@ public enum TrustedOp {
     )),
   DeployLibrary("deployLibrary",Map.of(
     TrustedIO,use("return %s.deployLibrary(%s,%s);",new TrustedKind[]{String},1,0))),
+  SimpleRedirect("simpleRedirect",Map.of(
+    Meta,use("return %s.simpleRedirect(%s,%s,%s);",new TrustedKind[]{String},1,1))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",Int),
     String,use("return %s + %s;",String)

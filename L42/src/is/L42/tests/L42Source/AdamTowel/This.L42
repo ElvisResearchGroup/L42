@@ -24,6 +24,7 @@ DeployAAA=(
     S={...}
     Debug={...}
     StringBuilder={...}
+    Meta={...}
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )
@@ -37,5 +38,19 @@ Test1={reuse[#$aaa]
     err=Size"oh NO!"
     Debug(S"this should not be printed")
     catch error S x Debug(x) 
+    )
+  NotCoh={This field, class method This ()}
+  TestMeta=(
+    _=Meta().simpleRedirect(
+      innerPath=S"abc"
+      l42Lib={A={}}
+      classAny=Debug)
+    _=Meta().simpleRedirect(
+      innerPath=S"def"
+      l42Lib={A={}}
+      classAny=NotCoh<:class Any)
+    void
+    //TODO: two bugs to fix: should print This0.NotCoh but prints This0
+    // and without the <:class Any is not recognizing NotCoh as class Any
     )
   }

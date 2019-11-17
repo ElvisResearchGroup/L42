@@ -51,7 +51,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   int catchLev=0;
   final ArrayList<L42Library>libs;
   Fields fields;
-  private String libToMap(Core.L l){
+  private String libToMap(Core.L l){return libToMap(p,l);}
+  private String libToMap(Program p,Core.L l){
     libs.add(new L42Library(p,l));
     return ""+(libs.size()-1);
     }
@@ -138,9 +139,17 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(".instance");
       return;
       }
-    kw("Resources.ofPath(\"");
-    className(pCastT.p());
-    c("\")");
+    //kw("Resources.ofPath(\"");className(pCastT.p()); c("\")");
+    P path=pCastT.p();
+    if(path.isNCs()){
+      Program p0=p.navigate(path.toNCs());
+      kw("Resources.ofPath("+libToMap(p0.pop(),p0.topCore())+")");
+      return;
+      }
+    if(path==P.pAny){kw("Resources.ofPath(-1)");return;}
+    if(path==P.pVoid){kw("Resources.ofPath(-2)");return;}
+    assert path==P.pLibrary;
+    kw("Resources.ofPath(-2)");
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
     kw("L42Void.instance");
@@ -351,6 +360,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("private List<BiConsumer<Object,Object>> fs=new ArrayList<>();");nl();
     c("public List<Object> os(){return os;}");nl();
     c("public List<BiConsumer<Object,Object>> fs(){return fs;}");nl();
+    String myNumber=libToMap(p.pop(),p.topCore());
+    c("public L42ClassAny asPath(){return Resources.ofPath("+myNumber+");}");nl();
     if(interf){
       for(var mwt:p.topCore().mwts()){
         refineMethHeader(mwt.mh());

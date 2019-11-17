@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.P;
 import safeNativeCode.slave.Slave;
 
 public class Resources {
@@ -44,7 +45,18 @@ public class Resources {
     l.currentProgram(currentP);
     return l;
     }
-  public static L42Any ofPath(String id){return new L42Any(){};}
+  public static L42ClassAny ofPath(int id){
+    assert libsCached.size()>id;
+    if(id>=0){
+      L42Library l=libsCached.get(id);
+      l.currentProgram(currentP);
+      return new L42ClassAny(l.localPath);
+      }
+    if(id==-1){return new L42ClassAny(P.pAny);}
+    if(id==-2){return new L42ClassAny(P.pVoid);}
+    assert id==-3;
+    return new L42ClassAny(P.pLibrary);
+    }
   private static ArrayList<L42Library>libsCached;
   public static final HashMap<String,Slave>slaves=new HashMap<>();
   public static void clearRes() {

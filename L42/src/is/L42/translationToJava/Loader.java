@@ -21,6 +21,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.platformSpecific.javaTranslation.L42Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
+import is.L42.typeSystem.Coherence;
 
 import static is.L42.tools.General.L;
 
@@ -65,23 +66,6 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public static final String metaPackage="is.L42.metaGenerated.";
-  public static final String header="""
-    package is.L42.metaGenerated;
-    import is.L42.platformSpecific.javaTranslation.L42Any;
-    import is.L42.platformSpecific.javaTranslation.L42Void;
-    import is.L42.platformSpecific.javaTranslation.L42Library;
-    import is.L42.platformSpecific.javaTranslation.L42Fwd;
-    import is.L42.platformSpecific.javaTranslation.L42Throwable;
-    import is.L42.platformSpecific.javaTranslation.L42Error;
-    import is.L42.platformSpecific.javaTranslation.L42Exception;
-    import is.L42.platformSpecific.javaTranslation.L42Return;
-    import is.L42.platformSpecific.javaTranslation.L42TrustedIO;
-    import is.L42.platformSpecific.javaTranslation.Resources;
-    import java.util.List;
-    import java.util.ArrayList;
-    import java.util.function.BiConsumer;
-    """;
   public void loadNow(Program p) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
     loadRec(p,files);
@@ -93,6 +77,7 @@ public class Loader {
     var l=p.topCore();
     for(var nc:l.ncs()){loadRec(p.push(nc.key(), nc.l()),files);}
     if(!l.info().isTyped()){return;}
+    if(!new Coherence(p,false).isCoherent(true)){return;}
     String name=J.classNameStr(p);
     if(this.loaded.containsKey(name)){return;}
     J j=new J(p,G.empty(),false,libs);
@@ -102,4 +87,23 @@ public class Loader {
     files.add(e.source);
     loaded.put(name,e);
     }
+  public static final String metaPackage="is.L42.metaGenerated.";
+  public static final String header="""
+    package is.L42.metaGenerated;
+    import is.L42.platformSpecific.javaTranslation.L42Any;
+    import is.L42.platformSpecific.javaTranslation.L42Void;
+    import is.L42.platformSpecific.javaTranslation.L42Library;
+    import is.L42.platformSpecific.javaTranslation.L42ClassAny;
+    import is.L42.platformSpecific.javaTranslation.L42Fwd;
+    import is.L42.platformSpecific.javaTranslation.L42Throwable;
+    import is.L42.platformSpecific.javaTranslation.L42Error;
+    import is.L42.platformSpecific.javaTranslation.L42Exception;
+    import is.L42.platformSpecific.javaTranslation.L42Return;
+    import is.L42.platformSpecific.javaTranslation.L42TrustedIO;
+    import is.L42.meta.Meta;
+    import is.L42.platformSpecific.javaTranslation.Resources;
+    import java.util.List;
+    import java.util.ArrayList;
+    import java.util.function.BiConsumer;
+    """;
   }

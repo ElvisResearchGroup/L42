@@ -33,7 +33,10 @@ public enum TrustedKind {
     assert mwt.key().xs().isEmpty();
     return "return new L42TrustedIO();";
     }},
-  
+  Meta("Meta"){public String factory(Program p,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return new Meta();";
+    }},  
   Limit("Void"){public String factory(Program p,MWT mwt){
     assert false;
     throw bug();

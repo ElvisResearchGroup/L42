@@ -32,23 +32,29 @@ public class Coherence {
       });
     classMhs=L(mhs.stream().filter(mh->mh.mdf().isClass()));
     }
-  public boolean isCoherent(){
+  public boolean isCoherent(boolean justResult){
     if(p.topCore().isInterface()){return true;}
     if(classMhs.isEmpty()){return true;}
     //TODO: add isCloseState in info?
     var uniqueNums=mhs.stream()
       .map(m->m.key().uniqueNum()).distinct().count();
-    if(uniqueNums>1){throw new EndError.CoherentError(p.topCore().poss(),
-      Err.nonCoherentPrivateStateAndPublicAbstractMethods(
+    if(uniqueNums>1){
+      if(justResult){return false;}
+      throw new EndError.CoherentError(p.topCore().poss(),
+        Err.nonCoherentPrivateStateAndPublicAbstractMethods(
         L(mhs.stream().filter(m->!m.key().hasUniqueNum()).map(m->m.key()))
         ));}
     var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
-    if(xzs.size()>1){throw new EndError.CoherentError(p.topCore().poss(),
+    if(xzs.size()>1){
+      if(justResult){return false;}
+      throw new EndError.CoherentError(p.topCore().poss(),
         Err.nonCoherentNoSetOfFields(xzs));}
     var xz=xzs.get(0);
     for(MH mh:mhs){
-      if(!coherent(mh,xz)){throw new EndError.CoherentError(p.topCore().poss(),
-        Err.nonCoherentMethod(mh.key()));}
+      if(!coherent(mh,xz)){
+        if(justResult){return false;}
+        throw new EndError.CoherentError(p.topCore().poss(),
+          Err.nonCoherentMethod(mh.key()));}
       }
     return true;
     }
@@ -181,7 +187,7 @@ public class Coherence {
     }.acc();
     for(var pi:ps){
       var p0=p.navigate(pi);
-      new Coherence(p0,false).isCoherent();
+      new Coherence(p0,false).isCoherent(false);
       }
     }
   }

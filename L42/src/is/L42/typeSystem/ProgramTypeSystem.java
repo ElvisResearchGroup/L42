@@ -39,9 +39,9 @@ public class ProgramTypeSystem {
     for(NC nc:l.ncs()){
       var pushed=p.push(nc.key(),nc.l());
       if(typed||nc.key().hasUniqueNum()){type(okRetype,typed,pushed);}
-      if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent();}
+      if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent(false);}
       }
-    if(l.info().closeState()){new Coherence(p,true).isCoherent();}
+    if(l.info().closeState()){new Coherence(p,true).isCoherent(false);}
     }
   public static void typeMWT(Program p,MWT mwt){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
