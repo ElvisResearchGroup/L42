@@ -114,6 +114,9 @@ public class General {
     c.accept(res);
     return Collections.unmodifiableList(res);
     }
+  /**
+   Mapping from T into T with flyweight pattern. if the function return null, the element is filtered away
+   */
   public static <T> List<T>L(List<T> a,Function<T,T> f){
     if(a.isEmpty()){return L();}
     int size=a.size();
@@ -123,7 +126,7 @@ public class General {
       var e0=a.get(i);
       var e=f.apply(e0);
       change|=e0!=e;
-      res.add(e);
+      if(e!=null){res.add(e);}
       }
     if(!change){return a;}
     return Collections.unmodifiableList(res);

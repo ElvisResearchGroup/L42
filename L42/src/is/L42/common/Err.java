@@ -219,8 +219,6 @@ public class Err {
   "fwd variable "+_1+" may be leaked out using a return"
   ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
   "native body "+_1+" uses unrecognized receiver of kind "+_2
-  ;}public static String nativeReceiverMdfInvalid(Object n,Object s, Object mdf1, Object mdf2){return
-  "native body "+n+" with selector "+s+" requires a receiver with modifier "+mdf1+", but "+mdf2+" is provided"
   ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
   ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return

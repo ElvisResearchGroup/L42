@@ -42,9 +42,9 @@ public class NativeDispatch {
     assert op._of(k)!=null:k;//type checking should avoid this
     return op._of(k).of(false,p, mwt);
     }
-  public static String nativeFactory(Program p,String nativeKind, Core.L.MWT mwt) {
+  public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
     var k=TrustedKind.fromString(nativeKind);
-    return k.factory(p,mwt);
+    return k.factory(j,mwt);
     }
   private static String readSection(String nativeUrl, String part, String def) {
     if(!nativeUrl.contains(part)){return def;}

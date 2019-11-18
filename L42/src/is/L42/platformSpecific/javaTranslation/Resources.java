@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import is.L42.common.Program;
+import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.P;
 import safeNativeCode.slave.Slave;
@@ -35,8 +36,10 @@ public class Resources {
   public static <K> K throwE(L42Error e){throw e;}
   public static<K> L42Void toVoid(K k){return L42Void.instance;}
   public static Program currentP;
-  public static void setLibsCached(Program p,ArrayList<L42Library> libs){
+  public static C currentC;
+  public static void setLibsCached(Program p,C c,ArrayList<L42Library> libs){
     currentP=p;
+    currentC=c;
     libsCached=libs;
     }
   public static L42Library ofLib(int id){

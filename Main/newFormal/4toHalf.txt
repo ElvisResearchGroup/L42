@@ -20,9 +20,9 @@ _______
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; Y.CTz //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = Y!((Y.onSlashX).x())
 * Y!CsP = Y!(CsP <:class CsP)// assert CsP of form P
-    Y.expectedT != class Any
+    class Any in Y.p.solve(Y.expectedT)
 * Y!CsP = Y!(CsP <:class Any)
-    Y.expectedT = class Any
+    class Any not in Y.p.solve(Y.expectedT)
 * Y!P<:T = P<:♥T; ♥T; empty; Y.CTz  //undefined for CsP<:T if CsP not of form P
 * Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; Y.CTz
 * Y!e<:T = Y!(T x=e x)

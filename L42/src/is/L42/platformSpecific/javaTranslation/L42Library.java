@@ -1,8 +1,10 @@
 package is.L42.platformSpecific.javaTranslation;
 
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.todo;
 
 import is.L42.common.Program;
+import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.P;
 import is.L42.generated.Core.L;
@@ -11,7 +13,12 @@ public class L42Library implements L42Any{
   Program originP;
   Program currentP=null;
   L originL;
-  public L42Library(Program p, L l) {this.originP=p;this.originL=l;}
+  C originName=null;
+  public L42Library(Program p) {
+    originP=p.pop();
+    if(p.pTails.hasC()){originName=p.pTails.c();}
+    originL=p.topCore();
+    }
   void currentProgram(Program p){
     if(p==currentP){
       assert localPath!=null;
@@ -31,6 +38,8 @@ public class L42Library implements L42Any{
     //{..}[from Thisk.C1..Cn;currentP]
     localPath=P.of(pathC.size(),pathO);
     unwrap=(Core.L)currentP.from(originL,localPath);
+    if(this.originName==null){localPath=null;}
+    else{localPath=localPath.withCs(pushL(localPath.cs(),originName));}
     }
   public L unwrap;
   public P.NCs localPath;

@@ -34,19 +34,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestExpressionJ
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-  je("Any<:class Any","Resources.ofPath(\"L42Any\")")
+  je("Any<:class Any","Resources.ofPath(-1)")
   ),new AtomicTest(()->
-  je("Library<:class Any","Resources.ofPath(\"L42Library\")")
+  je("Library<:class Any","Resources.ofPath(-3)")
   ),new AtomicTest(()->
-  je("Void<:class Any","Resources.ofPath(\"L42Void\")")
+  je("Void<:class Any","Resources.ofPath(-2)")
   ),new AtomicTest(()->
   je("This0.A<:class This0.A","£cA£n1.instance")
   ),new AtomicTest(()->
   je("This0.B<:class This0.B","£cB£n1.instance")
   ),new AtomicTest(()->
-  je("This0.A<:class Any","Resources.ofPath(\"£cA£n1\")")
+  je("This0.A<:class Any","Resources.ofPath(0)")
   ),new AtomicTest(()->
-  je("This0.B<:class Any","Resources.ofPath(\"£cB£n1\")")
+  je("This0.B<:class Any","Resources.ofPath(0)")
   ),new AtomicTest(()->
   je("void","L42Void.instance")
   ),new AtomicTest(()->
@@ -241,6 +241,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
+         public L42ClassAny asPath(){return Resources.ofPath(0);}
          }
        public static final £cN£n1 instance=new _Fwd();
        public int unwrap;
@@ -267,6 +268,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
+         public L42ClassAny asPath(){return Resources.ofPath(0);}
          }
        public static final £cA£n1 instance=new _Fwd();
        }
@@ -282,6 +284,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
+         public L42ClassAny asPath(){return Resources.ofPath(0);}
          }
        public static final £cC£n1 instance=new _Fwd();
        }
@@ -310,6 +313,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
            private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
            public List<Object> os(){return os;}
            public List<BiConsumer<Object,Object>> fs(){return fs;}
+           public L42ClassAny asPath(){return Resources.ofPath(0);}
            }
          public static final £cC£n1 instance=new _Fwd();
          }

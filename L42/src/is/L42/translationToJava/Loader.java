@@ -55,7 +55,7 @@ public class Loader {
     var files=L(new SourceFile(metaPackage+name+"£E",code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
     assert classes==classLoader;
-    Resources.setLibsCached(p,libs);
+    Resources.setLibsCached(p,c,libs);
     try{
       L42Library res=(L42Library)classLoader.loadClass(metaPackage+name+"£E")
         .getDeclaredMethod("execute")

@@ -51,7 +51,7 @@ _______
 * topNC(CTz;p;FULL.Docs C=FULL.e, Full.NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
-    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p.push({#norm{}})]]!HALF.e => ER
+    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p.push(C,{#norm{}})]]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     //here we check CORE.e is well formed
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)

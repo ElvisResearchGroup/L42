@@ -40,17 +40,17 @@ Test1={reuse[#$aaa]
     catch error S x Debug(x) 
     )
   NotCoh={This field, class method This ()}
+  //ListT={...}
+  
   TestMeta=(
     _=Meta().simpleRedirect(
-      innerPath=S"abc"
-      l42Lib={A={}}
+      innerPath=S"A.B"
+      l42Lib={A={B={method Void m()}} method Void (A.B that)=void}
       classAny=Debug)
     _=Meta().simpleRedirect(
-      innerPath=S"def"
-      l42Lib={A={}}
-      classAny=NotCoh<:class Any)
+      innerPath=S"A.B"
+      l42Lib={A={B={method Void m()}} method Void (A.B that)=void}
+      classAny=NotCoh)
     void
-    //TODO: two bugs to fix: should print This0.NotCoh but prints This0
-    // and without the <:class Any is not recognizing NotCoh as class Any
     )
   }

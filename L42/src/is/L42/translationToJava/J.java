@@ -51,11 +51,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   int catchLev=0;
   final ArrayList<L42Library>libs;
   Fields fields;
-  private String libToMap(Core.L l){return libToMap(p,l);}
-  private String libToMap(Program p,Core.L l){
-    libs.add(new L42Library(p,l));
+  private String libToMap(Program p){
+    libs.add(new L42Library(p));
     return ""+(libs.size()-1);
     }
+  public Program p(){return p;}
   T g(Core.XP xP){
     if(xP instanceof Core.EX){return g(((Core.EX)xP).x());}
     var p=(Core.PCastT)xP;
@@ -77,20 +77,33 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(!nativeKind(t)){typeName(t.p());}
     else{kw("Object");}
   };
-  void typeName(P p){
-    if(p.isNCs()){typeName(this.p.navigate(p.toNCs()));return;}
-    kw("L42"+p.toString());
+  public String typeNameStr(P p){
+    if(p.isNCs()){
+      return typeNameStr(this.p.navigate(p.toNCs()));
+      }
+    return "L42"+p;
     }
-  void typeName(Program p){
+
+  void typeName(P p){
+    kw(typeNameStr(p));
+    }
+  public String typeNameStr(Program p){
     var info=p.topCore().info();
     String nk=info.nativeKind();
-    if(nk.isEmpty()){className(p);return;}
-    kw(TrustedKind.fromString(nk).inner);
-    if(info.nativePar().isEmpty()){return;}
-    c("<");
-    seq(empty(),info.nativePar(),", ");
-    c(">");
-    };
+    if(nk.isEmpty()){return classNameStr(p);}
+    String res=TrustedKind.fromString(nk).inner;
+    if(info.nativePar().isEmpty()){return res;}
+    res+="<";
+    for(P pi:info.nativePar()){
+      res+=typeNameStr(pi);
+      res+=", ";
+      }
+    res=res.substring(0,res.length()-2)+">";
+    return res;
+    }
+  void typeName(Program p){
+    kw(typeNameStr(p));
+    }
   void className(T t){className(t.p());}
   void className(P p){
     if(p.isNCs()){className(this.p.navigate(p.toNCs()));return;}
@@ -143,19 +156,19 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     P path=pCastT.p();
     if(path.isNCs()){
       Program p0=p.navigate(path.toNCs());
-      kw("Resources.ofPath("+libToMap(p0.pop(),p0.topCore())+")");
+      kw("Resources.ofPath("+libToMap(p0)+")");
       return;
       }
     if(path==P.pAny){kw("Resources.ofPath(-1)");return;}
     if(path==P.pVoid){kw("Resources.ofPath(-2)");return;}
     assert path==P.pLibrary;
-    kw("Resources.ofPath(-2)");
+    kw("Resources.ofPath(-3)");
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
     kw("L42Void.instance");
     }
   @Override public void visitL(Core.L l){
-    kw("Resources.ofLib("+libToMap(l)+")");
+    kw("Resources.ofLib("+libToMap(p.push(l))+")");
     }
 
   @Override public void visitMCall(Core.MCall m){
@@ -360,7 +373,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("private List<BiConsumer<Object,Object>> fs=new ArrayList<>();");nl();
     c("public List<Object> os(){return os;}");nl();
     c("public List<BiConsumer<Object,Object>> fs(){return fs;}");nl();
-    String myNumber=libToMap(p.pop(),p.topCore());
+    String myNumber=libToMap(p);
     c("public L42ClassAny asPath(){return Resources.ofPath("+myNumber+");}");nl();
     if(interf){
       for(var mwt:p.topCore().mwts()){
@@ -455,7 +468,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   private void factoryBody(MWT mwt){
     String kind=p.topCore().info().nativeKind();
     if(!kind.isEmpty()){
-      c(NativeDispatch.nativeFactory(p,kind,mwt));
+      c(NativeDispatch.nativeFactory(this,kind,mwt));
       return;  
       }
     //TODO: here we could add optimization for 0 arg constructors

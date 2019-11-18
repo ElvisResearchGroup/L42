@@ -1,10 +1,13 @@
 package is.L42.nativeCode;
 
 import static is.L42.nativeCode.OpUtils.*;
+import static is.L42.nativeCode.Signature.*;
 import static is.L42.nativeCode.TrustedKind.*;
+import static is.L42.nativeCode.TT.*;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
+import static is.L42.generated.Mdf.*;
 
 import java.util.List;
 import java.util.Map;
@@ -16,72 +19,138 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.Mdf;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.P;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.NativeDispatch;
+import lombok.NonNull;
     
+interface TrustedT{}
+enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4}
+class Signature{
+  Mdf methMdf;
+  Mdf retMdf;
+  TrustedT retT;
+  List<Mdf>parMdfs;
+  List<TrustedT>parTs;
+  List<TrustedT>exceptions;
+  Signature(Mdf methMdf,Mdf retMdf,TrustedT retT,List<Mdf>parMdfs,List<TrustedT>parTs,List<TrustedT>exceptions){
+    this.methMdf=methMdf;
+    this.retMdf=retMdf;
+    this.retT=retT;
+    this.parMdfs=parMdfs;
+    this.parTs=parTs;
+    this.exceptions=exceptions;
+    }
+  public static Signature sig(Mdf methMdf,Mdf retMdf,TrustedT retT){
+    return new Signature(methMdf,retMdf,retT,L(),L(),L());
+    }
+  public static Signature sig(Mdf methMdf,Mdf retMdf,TrustedT retT,Mdf p1Mdf,TrustedT p1T){
+    return new Signature(methMdf,retMdf,retT,L(p1Mdf),L(p1T),L());
+    }
+  public static Signature sig(Mdf methMdf,Mdf retMdf,TrustedT retT,Mdf p1Mdf,TrustedT p1T,Mdf p2Mdf,TrustedT p2T){
+    return new Signature(methMdf,retMdf,retT,List.of(p1Mdf,p2Mdf),List.of(p1T,p2T),L());
+    }
+  public static Signature sig(Mdf methMdf,Mdf retMdf,TrustedT retT,Mdf p1Mdf,TrustedT p1T,Mdf p2Mdf,TrustedT p2T,Mdf p3Mdf,TrustedT p3T){
+    return new Signature(methMdf,retMdf,retT,List.of(p1Mdf,p2Mdf,p3Mdf),List.of(p1T,p2T,p3T),L());
+    }
+
+  public static Signature sigI(TrustedT retT){
+    return new Signature(Immutable,Immutable,retT,L(),L(),L());
+    }
+  public static Signature sigI(TrustedT retT,TrustedT p1T){
+    return new Signature(Immutable,Immutable,retT,L(Immutable),L(p1T),L());
+    }
+  public static Signature sigI(TrustedT retT,TrustedT p1T,TrustedT p2T){
+    return new Signature(Immutable,Immutable,retT,List.of(Immutable,Immutable),List.of(p1T,p2T),L());
+    }
+
+  }
 class OpUtils{
   static void checkParCount(Program p,MWT mwt,int expected){
     if(mwt.key().xs().size()==expected){return;}
     throw new EndError.TypeError(mwt._e().poss(),Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),expected));
     }
   static Map<TrustedKind,TrustedOp.Generator> append(String s){
-    return Map.of(StringBuilder,(type,p,mwt)->{
-      if(type){
-        checkParCount(p,mwt,0);
-        if(mwt.mh().mdf().isMut()){return "";}
-        throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeReceiverMdfInvalid(mwt.nativeUrl(),mwt.key(),"mut",mwt.mh().mdf()));
-        }
-      var xs=NativeDispatch.xs(mwt);
-      return ""+xs.get(0)+".append(\""+s+"\");return L42Void.instance;";
-      });
+    String pattern="%s.append(\""+s+"\");return L42Void.instance;";
+    var u=use(pattern,sig(Mutable,Immutable,Void));
+    return Map.of(StringBuilder,u);
     }
-    
-  static boolean typingUse(TrustedKind[] kinds,Program p, MWT mwt,int libPars,int classAnyPars){
-    if(kinds.length+libPars+classAnyPars!=mwt.mh().pars().size()){
+  static boolean typingUse(Program p, MWT mwt,Signature s){
+    assert s.parMdfs.size()==s.parTs.size();
+    if(s.parTs.size()!=mwt.mh().pars().size()){
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),kinds.length));
+        Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),s.parMdfs.size()));
       }
+    checkMdf(mwt,mwt.mh().mdf(),s.methMdf);
+    var t=mwt.mh().t();
+    checkSingle(p,mwt,t.p(),t.mdf(),s.retT,s.retMdf);
     for(int i:range(mwt.mh().pars().size())){
       var pi=mwt.mh().pars().get(i).p();
       var mdfi=mwt.mh().pars().get(i).mdf();
-      if(i<kinds.length){
-        var ki=kinds[i];
-        var kind=p._ofCore(pi).info().nativeKind();
-        if(kind.isEmpty() || ki!=TrustedKind.fromString(kind)){
-          throw new EndError.TypeError(mwt._e().poss(),
-            Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,ki));            
-          }
-        }
-      else if(i<kinds.length+libPars){if(pi!=P.pLibrary){
-        throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Library"));            
-        }}
-      else if(pi!=P.pAny || !mdfi.isClass()){
-        throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"class Any"));            
-        }
+      var tti=s.parTs.get(i);
+      var tmdfi=s.parMdfs.get(i);
+      checkSingle(p,mwt,pi,mdfi,tti,tmdfi);
       }
+    //TODO: check exceptions
     return true;
     }
-  static TrustedOp.Generator use(String s,TrustedKind ...kinds){
-    return use(s,kinds,0,0);
+  private static void checkGen(int i,Program p,MWT mwt,P pi){
+    assert p.topCore().info().nativePar().size()>i;
+    var pari=p.topCore().info().nativePar().get(i);
+    if(pi.equals(pari)){return;}
+    throw new EndError.TypeError(mwt._e().poss(),
+      Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,pari));            
+    }
+  private static void checkMdf(MWT mwt,Mdf mdfi,Mdf tmdfi){
+    if(mdfi!=tmdfi){
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),mdfi,tmdfi));
+      }
+    }
+  private static void checkSingle(Program p,MWT mwt,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
+    checkMdf(mwt,mdfi,tmdfi);
+    if(tti instanceof TrustedKind){
+        var ki=(TrustedKind)tti;
+        var kind=p._ofCore(pi).info().nativeKind();
+        if(!kind.isEmpty() && ki==TrustedKind.fromString(kind)){return;}
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,ki));            
+        }
+    if(tti==Lib){
+      if(pi==P.pLibrary){return;}
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Library"));            
+      }
+    if(tti==Void){
+      if(pi==P.pVoid){return;}
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Void"));            
+      }
+    if(tti==Any){
+      if(pi==P.pAny){return;}
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Any"));            
+      }
+    if(tti==Gen1){checkGen(0,p,mwt,pi);}
+    if(tti==Gen2){checkGen(1,p,mwt,pi);}
+    if(tti==Gen3){checkGen(2,p,mwt,pi);}
+    if(tti==Gen4){checkGen(3,p,mwt,pi);}
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static TrustedOp.Generator use(String s,TrustedKind[]kinds,int libPars,int classAnyPars){
+  static TrustedOp.Generator use(String s,Signature sig){
     return (type,p,mwt)->{
-      if(type && typingUse(kinds,p,mwt,libPars,classAnyPars)){return "";}
+      if(type && typingUse(p,mwt,sig)){return "";}
       return s.formatted(NativeDispatch.xs(mwt).toArray());
       };
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static TrustedOp.Generator use(String s,Class<?> errKind,int errNum,String err,int[] msgs,TrustedKind ...kinds){
+  static TrustedOp.Generator use(String s,Signature sig,Class<?> errKind,int errNum,String err,int[] msgs){
     return (typed,p,mwt)->{
-      if(typed && typingUse(kinds,p,mwt,0,0)){return "";}
+      if(typed && typingUse(p,mwt,sig)){return "";}
       var xs=NativeDispatch.xs(mwt);
       List<String>errs=L(range(msgs.length),(c,i)->{
         var xi=xs.get(msgs[i]);
@@ -102,12 +171,12 @@ class OpUtils{
   }
 public enum TrustedOp {
   //booleans
-  And("OP&",Map.of(Bool,use("return %s & %s;",Bool))),
-  OR("OP|",Map.of(Bool,use("return %s | %s;",Bool))),
-  NOT("OP!",Map.of(Bool,use("return !%s;"))),
+  And("OP&",Map.of(Bool,use("return %s & %s;",sigI(Bool,Bool)))),
+  OR("OP|",Map.of(Bool,use("return %s | %s;",sigI(Bool,Bool)))),
+  NOT("OP!",Map.of(Bool,use("return !%s;",sigI(Bool)))),
   CheckTrue("checkTrue",Map.of(Bool,use(
     "if(%s){return L42Void.instance;}"+
-    "throw new L42Exception(L42Void.instance);"))),
+    "throw new L42Exception(L42Void.instance);",sigI(Void)))),
   //StringBuilder
   D0("'0'",append("0")),
   D1("'1'",append("1")),
@@ -204,37 +273,62 @@ public enum TrustedOp {
   SHash("'#'",append("#")),
   SAt("'@'",append("@")),
   SDollar("'$'",append("$")),
-  SPercent("'%'",append("%")),
+  SPercent("'%'",append("%%")),//%% instead of % for the stringformat
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
   SNewLine("newLine",append("\\\\n")),
    
   //toString
   ToS("toS",Map.of(
-    StringBuilder,use("return %s.toString();"),
-    String,use("return %s;"),
-    Int,use("return ((Object)%s).toString();"),
-    Bool,use("return ((Object)%s).toString();")
+    StringBuilder,use("return %s.toString();",sig(Readable,Immutable,String)),
+    String,use("return %s;",sig(Readable,Immutable,String)),
+    Int,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
+    Bool,use("return ((Object)%s).toString();",sig(Readable,Immutable,String))
     )),
     
   ToInt("toInt",Map.of(String,use(
-    "return Integer.parseInt(%s);",
+    "return Integer.parseInt(%s);",sig(Readable,Immutable,Int),
     NumberFormatException.class,0,
     "The string %s is not a valid number",new int[]{0}
     ))),
   StrDebug("strDebug",Map.of(
-    String,use("Resources.out(%s); return L42Void.instance;"),
-    TrustedIO,use("return %s.strDebug(%s);",String)
+    String,use("Resources.out(%s); return L42Void.instance;",sigI(Void)),
+    TrustedIO,use("return %s.strDebug(%s);",sigI(Void,String))
     )),
   DeployLibrary("deployLibrary",Map.of(
-    TrustedIO,use("return %s.deployLibrary(%s,%s);",new TrustedKind[]{String},1,0))),
+    TrustedIO,use("return %s.deployLibrary(%s,%s);",sigI(Void,String,Lib)))),
   SimpleRedirect("simpleRedirect",Map.of(
-    Meta,use("return %s.simpleRedirect(%s,%s,%s);",new TrustedKind[]{String},1,1))),
-  Plus("OP+",Map.of(
-    Int,use("return %s + %s;",Int),
-    String,use("return %s + %s;",String)
+    Meta,use("return %s.simpleRedirect(%s,%s,%s);",sig(Immutable,Immutable,Lib,
+      Immutable,String,  Immutable,Lib,  Class,Any))
     )),
-  Mul("OP*",Map.of(Int,use("return %s * %s;",Int)));
+  //Vector
+  IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
+  Size("size",Map.of(Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)))),
+  Val("val",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1)))),
+  //using %1$s and %2$s to avoid local variables
+  ImmVal("immVal",Map.of(Vector,use("""
+    var tmp=%1$s.get(%2$s*2+1);
+    if(tmp==null){return %1$s.get(%2$s*2);}
+    throw new Error("??");
+    """,
+    sig(Readable,Immutable,Gen1)))),
+  HashVal("#val",Map.of(Vector,use("""
+    var tmp=%1$s.get(%2$s*2+1);
+    if(tmp!=null){return tmp;}
+    throw new Error("??");
+    """,
+    sig(Readable,Mutable,Gen1)))),
+  SetImm("setImm",Map.of(Vector,use("%s.set(%s*2,%s);",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,%3$s);",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
+  AddImm("addImm",Map.of(Vector,use("%s.add(%s);%s.add(null);",sig(Mutable,Immutable,Void,Immutable,Gen1)))),
+  AddMut("addMut",Map.of(Vector,use("%s.add(%s);%s.add(%s);",sig(Mutable,Immutable,Void,Mutable,Gen1)))),
+  //TODO: handle exceptions, immVal/mutVal absent+index out ouf bound
+  //arithmetic
+  Plus("OP+",Map.of(
+    Int,use("return %s + %s;",sigI(Int,Int)),
+    String,use("return %s + %s;",sigI(String,String))
+    )),
+  Mul("OP*",Map.of(Int,use("return %s * %s;",sigI(Int,Int))));
   public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;
   Map<TrustedKind,Generator>code;
