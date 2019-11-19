@@ -309,20 +309,20 @@ public enum TrustedOp {
   //Vector
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)))),
-  Val("val",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1)))),
+  Val("val",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
   //using %1$s and %2$s to avoid local variables
   ImmVal("immVal",Map.of(Vector,use("""
     var tmp=%1$s.get(%2$s*2+1);
     if(tmp==null){return %1$s.get(%2$s*2);}
     throw new Error("??");
     """,
-    sig(Readable,Immutable,Gen1)))),
+    sig(Readable,Immutable,Gen1,Immutable,Int)))),
   HashVal("#val",Map.of(Vector,use("""
     var tmp=%1$s.get(%2$s*2+1);
     if(tmp!=null){return tmp;}
     throw new Error("??");
     """,
-    sig(Readable,Mutable,Gen1)))),
+    sig(Mutable,Mutable,Gen1,Immutable,Int)))),
   SetImm("setImm",Map.of(Vector,use("%s.set(%s*2,%s);",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,%3$s);",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
   AddImm("addImm",Map.of(Vector,use("%s.add(%s);%s.add(null);",sig(Mutable,Immutable,Void,Immutable,Gen1)))),

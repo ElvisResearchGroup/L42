@@ -27,7 +27,7 @@ public class Full {
     public static interface M extends LDom.HasKey,HasWf,HasPos,HasVisitable{List<Doc> docs();E _e();Visitable<? extends M> visitable();}
     @Override public L withCs(List<C>cs,Function<NC,NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
       assert !cs.isEmpty();
-      assert domNC().contains(cs.get(0));
+      assert inDom(cs.get(0));
       return this.withMs(L(ms,d->{
         if(!d.key().equals(cs.get(0))){return d;}
         var nc=(NC)d;

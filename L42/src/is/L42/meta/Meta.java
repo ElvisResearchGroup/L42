@@ -95,7 +95,7 @@ public class Meta {
         else{c.add(sumMWT(mi,other));}
         }
       for(var mi:b){
-        var other=_elem(b,mi.key());
+        var other=_elem(a,mi.key());
         if(other==null){c.add(mi);}
         }
       });

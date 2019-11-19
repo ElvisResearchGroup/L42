@@ -168,7 +168,7 @@ public class Full {
     @Override
     public L withCs(List<C> cs, Function<NC, NC> fullF, Function<Core.L.NC, Core.L.NC> coreF) {
       assert !cs.isEmpty();
-      assert domNC().contains(cs.get(0));
+      assert inDom(cs.get(0));
       return this.withMs(L(ms, d -> {
         if (!d.key().equals(cs.get(0))) {
           return d;

@@ -17,6 +17,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitor;
@@ -75,7 +76,7 @@ public class FlagTyped {
   private static Set<List<C>> untypable(Program p,ArrayList<List<C>> dom, L l) {
     return new InductiveSet<Integer,List<C>>(){
       @Override public void rule(Integer k, Consumer<List<C>> set) {
-        if(!l.isInterface()){set.accept(L());}
+        if(!l.isInterface()){set.accept(L());}//TODO: remove the if and just always add L() to make all Thisn non visible by introspection
         out:for(var cs:dom){
           var lcs=l.cs(cs);
           if(lcs.info().isTyped()){set.accept(cs);continue out;}
