@@ -301,6 +301,11 @@ public enum TrustedOp {
     Meta,use("return %s.simpleRedirect(%s,%s,%s);",sig(Immutable,Immutable,Lib,
       Immutable,String,  Immutable,Lib,  Class,Any))
     )),
+  SimpleSum("simpleSum",Map.of(
+    Meta,use("return %s.simpleSum(%s,%s);",sig(Immutable,Immutable,Lib,
+      Immutable,Lib,  Immutable,Lib))
+    )),
+
   //Vector
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)))),

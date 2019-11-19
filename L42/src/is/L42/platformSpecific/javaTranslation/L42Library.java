@@ -19,7 +19,7 @@ public class L42Library implements L42Any{
     if(p.pTails.hasC()){originName=p.pTails.c();}
     originL=p.topCore();
     }
-  void currentProgram(Program p){
+  public void currentProgram(Program p){
     if(p==currentP){
       assert localPath!=null;
       assert unwrap!=null;

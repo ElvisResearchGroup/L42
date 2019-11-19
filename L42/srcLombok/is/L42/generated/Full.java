@@ -35,6 +35,12 @@ public class Full {
         return nc.withE(((LL)nc.e).withCs(popL(cs), fullF,coreF));
         }));      
       }
+    @Override public boolean inDom(C c){
+      var res=ms.stream().anyMatch(m->c.equals(m.key()));
+      if(res){return res;}
+      assert !this.isDots  && this.reuseUrl.isEmpty();
+      return false;
+      }
     @Override public List<C> domNC(){
       assert !this.isDots  && this.reuseUrl.isEmpty();
       return L(ms.stream().filter(m->m.key() instanceof C).map(m->(C)m.key()));}

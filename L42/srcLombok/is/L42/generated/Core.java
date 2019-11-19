@@ -62,6 +62,9 @@ public class Core {
         return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
         }));   
       }
+    @Override public boolean inDom(C c){
+      return ncs.stream().anyMatch(m->c.equals(m.key()));
+      }
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       var res=LDom._elem(ncs, c);

@@ -175,7 +175,7 @@ public class Top {
     Core.E ce0=adapt(ce,pRes);
     coherent(p,ce0); //propagate errors
     Core.L l=(Core.L)reduce(p,c0,ce0);//propagate errors
-    assert l!=null;
+    assert l!=null:c0+" "+ce0;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
     Program p2=flagTyped(loader,p1);//propagate errors

@@ -1,21 +1,14 @@
-class method Library (class Any that)= 
-  Meta().simpleRedirect(
-    innerPath=S"Elem"
-    l42Lib=this.code()
-    classAny=that)
-
 class method Library code()={
-  Elem={}
-  read method Bool isEmpty()=native{trusted:isEmpty} error void
-  read method Size size()=native{trusted:size} error void
-  read method read Elem val(Size that)=native{trusted:val} error void
-  read method imm Elem immVal(Size that)=native{trusted:immVal} error void
-  mut method mut Elem #val(Size that)=native{trusted:#val} error void
-  mut method Void (Size that,Elem immVal)=native{trusted:setImm} error void
-  mut method Void (Size that,mut Elem mutVal)=native{trusted:setMut} error void
-  mut method Void add(Elem immVal)=native{trusted:addImm} error void
-  mut method Void add(mut Elem mutVal)=native{trusted:addMut} error void
-  
+  read method This1.Bool isEmpty()=native{trusted:isEmpty} error void
+  read method This1.Size size()=native{trusted:size} error void
+  read method read This0.Elem val(This1.Size that)=native{trusted:val} error void
+  read method imm This0.Elem immVal(This1.Size that)=native{trusted:immVal} error void
+  mut method mut This0.Elem #val(This1.Size that)=native{trusted:#val} error void
+  mut method Void #apply(This1.Size that,This0.Elem immVal)=native{trusted:setImm} error void
+  mut method Void #apply(This1.Size that,mut This0.Elem mutVal)=native{trusted:setMut} error void
+  mut method Void add(This0.Elem immVal)=native{trusted:addImm} error void
+  mut method Void add(mut This0.Elem mutVal)=native{trusted:addMut} error void
+  Elem={#norm{}}  
   #norm{declaresClassMethods, 
     typeDep=This0, This1.Size, This1.StringBuilder,
     nativeKind=Vector

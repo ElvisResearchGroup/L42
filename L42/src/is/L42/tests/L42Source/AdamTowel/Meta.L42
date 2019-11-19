@@ -1,4 +1,6 @@
 class method This #apply()
+method Library simpleSum(Library a, Library b)=
+  native{trusted:simpleSum} error void
 method Library simpleRedirect(
   This1.S innerPath,Library l42Lib,class Any classAny)=
     native{trusted:simpleRedirect} error void

@@ -40,7 +40,12 @@ Test1={reuse[#$aaa]
     catch error S x Debug(x) 
     )
   NotCoh={This field, class method This ()}
-  //ListT={...}
+  ListT=Meta().simpleSum(a={...},b={
+    class method Library (class Any that)=Meta().simpleRedirect(
+      innerPath=S"Elem"
+      l42Lib=this.code()
+      classAny=that)
+    })
   
   TestMeta=(
     _=Meta().simpleRedirect(

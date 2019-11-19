@@ -89,7 +89,7 @@ public class Program implements Visitable<Program>{
     }
   public Program pop(){
     if(!pTails.hasC()){return new Program(pTails.coreL(),pTails.tail());}
-    if(!pTails.ll().domNC().contains(pTails.c())){
+    if(!pTails.ll().inDom(pTails.c())){
       return new Program(pTails.ll(),pTails.tail());
       }
     var newTop=pTails.ll().withCs(L(pTails.c()),
@@ -243,25 +243,29 @@ public class Program implements Visitable<Program>{
     int n=findScope(cs.get(0),0,poss);
     return P.of(n, cs);
     }
-  private int findScope(C c, int acc,List<Pos>poss){
-    if(!top.isFullL()){
-      if(top.domNC().contains(c)){return acc;}
+  private int findScopeFull(C c, int acc,List<Pos>poss){
+    String url=((Full.L)top).reuseUrl();
+    Full.L fTop=(Full.L)top;
+    if(_elem(fTop.ms(),c)!=null){return acc;}
+    if(!url.isEmpty()){
+      if(url.startsWith("#$")){return acc;}
+      Core.L cTop = Constants.readURL.apply(url);
+      if(cTop.domNC().contains(c)){return acc;}
+      throw new EndError.PathNotExistent(poss,Err.pathNotExistant(c));
       }
-    else{
-      String url=((Full.L)top).reuseUrl();
-      Full.L fTop=(Full.L)top;
-      if(fTop.ms().stream().anyMatch(m->m.key().equals(c))){return acc;}
-      if(!url.isEmpty() &&!url.startsWith("#$")){
-        Core.L cTop = Constants.readURL.apply(url);
-        if(cTop.domNC().contains(c)){return acc;}
-        throw new EndError.PathNotExistent(poss,Err.pathNotExistant(c));
-        }
-      else{if(!url.isEmpty()){return acc;}}
-      }
+    assert !fTop.isDots();
     if(pTails.isEmpty()){
       throw new EndError.PathNotExistent(poss, Err.pathNotExistant(c));
       }
     return pop().findScope(c, acc+1,poss);
+    }
+  private int findScopeCore(C c, int acc,List<Pos>poss){
+    if(top.domNC().contains(c)){return acc;}
+    return pop().findScope(c, acc+1,poss);
+    }
+  private int findScope(C c, int acc,List<Pos>poss){
+    if(top.isFullL()){return findScopeFull(c,acc,poss);}
+    return findScopeCore(c,acc,poss);
     }
   public List<Core.MH>extractMHs(List<Full.L.M> ms){
     return L(ms,(c,m)->{
