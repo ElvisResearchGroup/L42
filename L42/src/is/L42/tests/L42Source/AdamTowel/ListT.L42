@@ -1,6 +1,6 @@
 class method Library code()={
-  class method This empty()
-  read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
+  class method mut This empty()
+  read method This1.Bool isEmpty()=native{trusted:isEmpty} error void
   read method This2.Size size()=native{trusted:size} error void
   read method read This0.Elem val(This2.Size that)=native{trusted:val} error void
   read method imm This0.Elem immVal(This2.Size that)=native{trusted:immVal} error void

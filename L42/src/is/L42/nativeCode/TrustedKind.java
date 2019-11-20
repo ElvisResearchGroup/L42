@@ -38,7 +38,7 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return new Meta();";
     }},  
-  Vector("Vector"){public String factory(J j,MWT mwt){
+  Vector("ArrayList"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==1;
     return "return new "+j.typeNameStr(j.p())+"();";

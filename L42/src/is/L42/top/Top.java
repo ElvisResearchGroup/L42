@@ -283,7 +283,7 @@ public class Top {
     if(!justBodies){for(var m:mwts){deps.of(m);}return;}
     for(var m:mwts){if(m._e()!=null){deps.of(m._e().visitable());}}
     }
-  static void collectDepsL(Program p0,Core.L l, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
+  static public void collectDepsL(Program p0,Core.L l, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
     var deps=deps(p0,typePs,cohePs);
     deps.of(l);
     }

@@ -1,5 +1,5 @@
 method This0 #plusplus0(This0 that)=native{trusted:OP+} error void
-imm method This0 toS()=this//TODO: the mdf imm would not work if we implement a read method S toS from an interface
+read method This0 toS()=native{trusted:toS} error void
 read method This1.Size toInt()=native{trusted:toInt} error void
 method This0 sum(This0 that)=native{trusted:OP+} error void
 class method This0 #from(This1.StringBuilder stringLiteral)=stringLiteral.toS()

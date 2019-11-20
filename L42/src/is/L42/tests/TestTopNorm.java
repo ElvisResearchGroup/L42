@@ -384,8 +384,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     AA={#typed{}@{it is there}}#typed{}}
   #norm{}}
   """)
-
-  ));}
+  ),new AtomicTest(()->
+  topFail(EndError.TypeError.class,"""
+  {A={class method This() mut method Void foo(Void v)}
+  Test=(
+    A a=A()
+    a.foo(v=void)
+    )
+  }
+  """,
+  Err.methCallNoCompatibleMdfParametersSignature(hole)
+  )));}
 
   private static String tryCatchTest(String s){
     return """

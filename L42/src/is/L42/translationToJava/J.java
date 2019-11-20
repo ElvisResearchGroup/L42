@@ -20,6 +20,7 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.C;
+import is.L42.generated.LL;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
@@ -79,7 +80,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   };
   public String typeNameStr(P p){
     if(p.isNCs()){
-      return typeNameStr(this.p.navigate(p.toNCs()));
+      try{return typeNameStr(this.p.navigate(p.toNCs()));}
+      catch(LL.NotInDom nid){throw new AssertionError("Not found "+p.toString());}
       }
     return "L42"+p;
     }

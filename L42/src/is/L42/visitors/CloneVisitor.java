@@ -146,9 +146,14 @@ public class CloneVisitor {
     var hiddenSupertypes=visitPNCs(hiddenSupertypes0);
     var refined=visitSs(refined0);
     var nativePar=visitPs(nativePar0);
-
-    if(typeDep==typeDep0 && coherentDep==coherentDep0 && watched==watched0 
-      && usedMethods==usedMethods0 && hiddenSupertypes==hiddenSupertypes0 && refined==refined0){return info;}
+    
+    if( typeDep==typeDep0 
+      &&coherentDep==coherentDep0
+      &&watched==watched0 
+      &&usedMethods==usedMethods0
+      &&hiddenSupertypes==hiddenSupertypes0
+      &&refined==refined0
+      &&nativePar==nativePar0){return info;}
     return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,
       usedMethods,hiddenSupertypes,refined,info.declaresClassMethods(),
       info.closeState(),info.nativeKind(),nativePar,info._uniqueId());

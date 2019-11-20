@@ -305,6 +305,10 @@ public enum TrustedOp {
     Meta,use("return %s.simpleSum(%s,%s);",sig(Immutable,Immutable,Lib,
       Immutable,Lib,  Immutable,Lib))
     )),
+  Resource("resource",Map.of(
+    Meta,use("return %s.resource(%s);",sig(Immutable,Immutable,Lib,
+      Immutable,Lib))
+    )),
 
   //Vector
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
@@ -323,10 +327,10 @@ public enum TrustedOp {
     throw new Error("??");
     """,
     sig(Mutable,Mutable,Gen1,Immutable,Int)))),
-  SetImm("setImm",Map.of(Vector,use("%s.set(%s*2,%s);",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,%3$s);",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  AddImm("addImm",Map.of(Vector,use("%s.add(%s);%s.add(null);",sig(Mutable,Immutable,Void,Immutable,Gen1)))),
-  AddMut("addMut",Map.of(Vector,use("%s.add(%s);%s.add(%s);",sig(Mutable,Immutable,Void,Mutable,Gen1)))),
+  SetImm("setImm",Map.of(Vector,use("%s.set(%s*2,%s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,%3$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
+  AddImm("addImm",Map.of(Vector,use("%1$s.add(%2$s);%s.add(null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)))),
+  AddMut("addMut",Map.of(Vector,use("%1$s.add(%2$s);%1$s.add(%2$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Mutable,Gen1)))),
   //TODO: handle exceptions, immVal/mutVal absent+index out ouf bound
   //arithmetic
   Plus("OP+",Map.of(

@@ -1,4 +1,6 @@
 class method This #apply()
+method Library resource(Library that)=
+  native{trusted:resource} error void
 method Library simpleSum(Library a, Library b)=
   native{trusted:simpleSum} error void
 method Library simpleRedirect(

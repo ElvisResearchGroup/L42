@@ -41,16 +41,23 @@ Test1={reuse[#$aaa]
     )
   NotCoh={This field, class method This ()}
   ListT=Meta().simpleSum(a={...},b={
-    class method Library (class Any that)=Meta().simpleRedirect(
-      innerPath=S"Elem"
-      l42Lib=this.code()
-      classAny=that)
+    //ListOps=Meta().resource({...})
+    class method Library (class Any that)=(
+      a=Meta().simpleRedirect(
+        innerPath=S"Elem"
+        l42Lib=this.code()
+        classAny=that)
+      //Meta().simpleSum(a=a,b=ListOps())
+      a
+      )
     })
   Strings=ListT(S)
   TestListT=(//If ListT code write This1.Size instead of This2.Size, no type error happens.
-    Strings s=S.empty()//Here, no type error happens even if
-    s.add(immVal=S"hi")//we add on an immutable Strings!!
-    Debug(s.val(0\))
+    mut Strings s=Strings.empty()
+    s.add(immVal=S"hi")
+    Debug(s.val(0\).toS())
+    Debug(s.size().toS())
+    //Debug(s.sizeTwo().toS())
     )
   TestMeta=(
     _=Meta().simpleRedirect(
