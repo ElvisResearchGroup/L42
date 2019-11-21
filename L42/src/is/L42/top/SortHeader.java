@@ -171,12 +171,9 @@ class SortHeader{
     throw new InvalidImplements(poss,
       Err.moreThenOneMethodOrigin(s,origins));
     }
-/*
-* refine(p;s;P) iff exists P' in p(P).Ts.Ps[from P;p] such that s in dom(p(P').mwts)
-  //assert P' never This0
-*/
-  private static boolean refine(Program p,S s, P.NCs path,List<Pos> poss){
-    for(T t:((Core.L)p.of(path,poss)).ts()){
+  private static boolean refine(Program p,S s, P.NCs path,List<Pos> poss){//Note this simplified version works only here locally
+    LL l0=p.of(path,poss);
+    for(T t:((Core.L)l0).ts()){
       var p1=p.from(t.p(), path);
       assert !p1.equals(P.coreThis0.p());
       var l=(Core.L)p.of(p1,poss);

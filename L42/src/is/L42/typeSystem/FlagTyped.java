@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
@@ -24,11 +25,19 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class FlagTyped {
+  private static Stream<Core.T> mhTs(Core.MH mh){
+    return Stream.concat(Stream.concat(Stream.of(mh.t()),
+      mh.pars().stream()),mh.exceptions().stream());    
+    }
   public static Program flagTyped(Loader l,Program p) throws EndError{
     var typable=typable(p);
     if(typable.isEmpty()){return p;}
     for(var csi:typable){
-      ProgramTypeSystem.type(false,false,p.navigate(P.of(0, csi)));
+      Program pi=p.navigate(P.of(0, csi));
+      assert pi.topCore().info().typeDep().stream().allMatch(pj->pi._ofCore(pj)!=null);
+      assert pi.topCore().mwts().stream().flatMap(m->mhTs(m.mh())).
+        allMatch(tj->!tj.p().isNCs() || pi.topCore().info().typeDep().contains(tj.p()));
+      ProgramTypeSystem.type(false,pi);
       }
     p=p.update(flagL(typable,p));
     try {l.loadNow(p);}
@@ -48,10 +57,10 @@ public class FlagTyped {
     return new CloneVisitorWithProgram(p){
       @Override public Core.L.MWT visitMWT(Core.L.MWT mwt){return mwt;}
       @Override public Core.L coreLHandler(Core.L l){
+        l=super.coreLHandler(l);
         var where=this.whereFromTop();
         List<C> cs=typeFilter(where.stream(),C.class);
         if(cs.size()!=where.size()){return l;}
-        l=super.coreLHandler(l);
         if(!l.info().isTyped() && typable.contains(cs)){
           l=l.withInfo(l.info().withTyped(true));
           l=l.withMwts(L(l.mwts(),mwti->flagMWT(mwti)));

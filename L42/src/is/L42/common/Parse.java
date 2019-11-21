@@ -104,7 +104,7 @@ public class Parse {
     if(Files.isDirectory(path)){path=path.resolve("This.L42");}
     String code=Files.readString(path,StandardCharsets.US_ASCII);
     code=code.replace("\r","");
-    Program p=Parse.sureProgram(path,"{"+code+"}");
+    Program p=Parse.sureProgram(path,"{"+code+"\n}");
     return p.top;
     }
   public static Program sureProgram(Path fileName,String s){

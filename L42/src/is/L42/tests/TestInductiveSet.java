@@ -61,8 +61,6 @@ class TestInductiveSet {
         }
       };
     var res0=is.compute(Term.E);
-//    System.out.println(res0);
-//    System.out.println(res0.size());
     assertEquals(res0.size(),3258);
   }
   //e_xs::= x_xs| L_xs | e_xs e_xs 
@@ -102,8 +100,6 @@ class TestInductiveSet {
         }
       };
     var res0=is.compute(e);
-//    System.out.println(res0);
-//    System.out.println(res0.size());
     assertEquals(res0.size(),304);
   }
 }

@@ -468,7 +468,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->fail("""
    A={B={
    method This0 main(This1 that)=native{trusted:OP+} error void
-   #norm{typeDep=This0 nativeKind=Int}
+   #norm{typeDep=This0 This1 nativeKind=Int}
    }}
    """,Err.nativeParameterInvalidKind(hole,"main(that)",hole,"Int"))
    ),new AtomicTest(()->pass("""
@@ -567,16 +567,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->pass("""
   A={
     class method This()
-    method A iterator()=this
-    method Void close(N that)=void
-    method B incomplete(N that)=B()
-    method N startIndex()=N()
-    method B hasElem(N that)=B()
+    method A #iterator()=this
+    method Void #close(N that)=void
+    method B #incomplete(N that)=B()
+    method N #startIndex()=N()
+    method B #hasElem(N that)=B()
     method E #elem#default(N that)=E()
     }
   N={
     class method This ()
-    method This succ()=this
+    method This #succ()=this
     }
   E={
     class method This ()
@@ -603,15 +603,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   """,Err.leakedThrow(hole))
   ),new AtomicTest(()->fail("""
   Top={class method Library ()={
-    A={class method This k() #norm{declaresClassMethods}}
-    B={class method This k() #norm{declaresClassMethods}}
+    A={class method This k() #norm{declaresClassMethods typeDep=This}}
+    B={class method This k() #norm{declaresClassMethods typeDep=This}}
     Test={
       class method Void foo()[This1.A]=
         exception This1.B<:class This1.B.k() 
-      #norm{}}
-    #norm{}}}
+      #norm{declaresClassMethods typeDep=This1.A This1.B coherentDep=This1.B}}
+    #norm{declaresClassMethods}}}
   """,Err.leakedThrow(hole))
-  //TODO: in the full setting, when is the nested Library ever marked as typed?
   ),new AtomicTest(()->pass("""
   C={class method Void foo()=D.foo()}
   D={class method Void foo()=(void)}
@@ -780,7 +779,7 @@ public static void pass(String program){
         }};
     }};
   Program p=init.top.top(new CTz(),init.p);
-  ProgramTypeSystem.type(false,true, p);
+  ProgramTypeSystem.type(true, p);
   allCoherent(p);
   }
 public static void allCoherent(Program p){

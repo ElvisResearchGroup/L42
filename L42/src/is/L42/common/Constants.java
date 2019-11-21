@@ -13,7 +13,6 @@ import is.L42.visitors.WellFormedness;
 
 public class Constants{
   static{
-    System.out.println("Initializing constants");
     try{assert false; throw new Error("assertions disabled");}
     catch(AssertionError e){}
     }

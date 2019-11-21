@@ -157,7 +157,7 @@ public class Err {
   ;}public static String degenerateStatement(Object _1){return
   "The following expression is not a correct statement: "+_1
   ;}public static String nonUniqueNumber(Object _1,Object _2){return
-  "The unique number "+_1+" is in the domain of more then one library literal; others are in positions \n"+_2
+  "The unique numbers "+_1+" are in the domain of more then one library literal; others are in positions \n"+_2
   ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
   "The method "+_1+" is inherited from multiple interfaces, and do not have a single origin. Origins are "+_2
   ;}public static String notInterfaceImplemented(){return
@@ -221,6 +221,10 @@ public class Err {
   "native body "+_1+" uses unrecognized receiver of kind "+_2
   ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
+  ;}public static String nativeKindParCountInvalid(Object _1,Object _2,Object _3){return
+  "native kind "+_1+" requires "+_2+" nativePar parameters, but "+_3+" are declared"
+  ;}public static String nativeKindInvalid(Object _1){return
+  "native kind "+_1+" is not recognized"
   ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
   "native body "+_1+" has selector "+_2+" but the parameter of type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
@@ -264,6 +268,20 @@ public class Err {
   "There is no source file in the location "+_1+", identified by the '...'"
   ;}public static String dotDotDotCoreSouceWithMs(){return
   "'...' identifying a core library literal must be of form {...}, but here other members are provided"
+  ;}public static String missedTypeDep(Object ps){return
+  "Core library literal do not declare all the type dependencies; the following are missing: "+ps
+  ;}public static String missedCoheDep(Object ps){return
+  "Core library literal do not declare all the coherence dependencies; the following are missing: "+ps
+  ;}public static String typeDependencyNotCore(Object p){return
+  "Typed core library literal can not depend on full core libary "+p
+  ;}public static String mismatchRefine(Object estimate,Object declared){return
+  "Core library literal declares the following refined methods :"+declared+", but the actual set of refined methods is "+estimate
+  ;}public static String missingImplementedInterface(Object missing){return
+  "Core libraries need to report all the transitive implemented interfaces, but "+missing+" is missing"
+  ;}public static String mustDeclareClassMethods(Object ss){return
+  "Core library declares class methods "+ss+"; it must set the 'declaresClassMethods' info flag"
+  ;}public static String mustDeclareClosed(Object ss){return
+  "Core library declares abstract private methods "+ss+"; it must set the 'closeState' info flag"
 
  ;}
 }

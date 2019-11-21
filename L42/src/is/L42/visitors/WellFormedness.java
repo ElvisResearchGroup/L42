@@ -137,21 +137,23 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(!_mdf.isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
     err(Err.varBindingCanNotBe(_mdf.inner));
     }
+  private static boolean degenerate(Full.E e){
+    return
+         e instanceof Core.EX 
+      || e instanceof Full.CsP
+      || e instanceof Core.EVoid
+      || e instanceof LL
+      || e instanceof Full.Slash
+      || e instanceof Full.SlashX
+      || e instanceof Full.EPathSel
+      || e instanceof Full.Cast;
+    }
   @Override public void visitD(Full.D d){
     if(d._e()!=null){lastPos=d._e().poss();}
     super.visitD(d);
     if(d._e()==null){return;}
     if(d._varTx()!=null || !d.varTxs().isEmpty()){return;}
-    boolean degenerate=
-         d._e() instanceof Core.EX 
-      || d._e() instanceof Full.CsP
-      || d._e() instanceof Core.EVoid
-      || d._e() instanceof LL
-      || d._e() instanceof Full.Slash
-      || d._e() instanceof Full.SlashX
-      || d._e() instanceof Full.EPathSel
-      || d._e() instanceof Full.Cast;
-    if(!degenerate){return;}
+    if(!degenerate(d._e())){return;}
     err(Err.degenerateStatement(d._e()));
     }
   @Override public void visitD(Core.D d){
@@ -257,7 +259,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       Full.D firstAfter=b.ds().get(b.dsAfter());
       if(firstAfter._varTx()!=null || !firstAfter.varTxs().isEmpty()){return;}
       }
+    if(!b.whoopsed().isEmpty()){return;}
     Full.K kLast=b.ks().get(b.ks().size()-1);
+    if(degenerate(kLast.e())){return;}
     if(!CheckBlockNeeded.of(kLast.e(),false)){return;}
     lastPos=kLast.e().poss();
     err(Err.needBlock(kLast.e()));
@@ -678,21 +682,4 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       .filter(m-> m._e()!=null &&
         isBridgeMeth(m.key().m(),m.nativeUrl(),m._e().visitable())));
     }
-
-
-  @Override public void visitProgram(Program program) {
-    //TODO: when typing is completed, there is more well formedness here
-    if(!program.pTails.isEmpty()){
-      program.pop().wf();
-      return;
-      }
-    var map=new AccumulateUnique().of(program.top.visitable());
-    for(var e:map.entrySet()){
-      if(e.getValue().size()==1){continue;}
-      lastPos=e.getValue().get(0).poss();
-      List<Pos> morePos=L(e.getValue().subList(1, e.getValue().size()),(c,li)->{
-        c.addAll(li.poss());});
-      err(Err.nonUniqueNumber(e.getKey(),morePos));
-      }
-    } 
   }

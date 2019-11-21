@@ -37,13 +37,13 @@ public class NativeDispatch {
     String nativeUrl=mwt.nativeUrl();
     if(!nativeUrl.startsWith("trusted:")){return untrusted(nativeKind,nativeUrl,mwt);}
     String nativeOp=nativeUrl.substring("trusted:".length());
-    var k=TrustedKind.fromString(nativeKind);
+    var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
     assert op._of(k)!=null:k;//type checking should avoid this
     return op._of(k).of(false,p, mwt);
     }
   public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
-    var k=TrustedKind.fromString(nativeKind);
+    var k=TrustedKind._fromString(nativeKind);
     return k.factory(j,mwt);
     }
   private static String readSection(String nativeUrl, String part, String def) {

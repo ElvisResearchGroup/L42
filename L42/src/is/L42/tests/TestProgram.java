@@ -32,9 +32,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //WellFormedness
    passWF("{method Void (Void that,Void foo)=foo}")
    ),new AtomicTest(()->
-   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("1",hole))
+   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("[1]",hole))
    ),new AtomicTest(()->
-   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("1",hole))
+   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("[1]",hole))
    ),new AtomicTest(()->
 
    passWF("{method Void a(This3.Foo f)}"+emptyP)

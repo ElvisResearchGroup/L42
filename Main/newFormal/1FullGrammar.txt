@@ -162,7 +162,7 @@ _______
     if B=(Ds1 Ks WHOOPS? Ds2 e) then forall D in Ds1,Ds2: not returning(D)
     if B=(Ds1 e Ks WHOOPS?) then forall D in Ds1: not returning(D)
     if B=(_ D e _) and D.e either for,if,loop,while; then noBlockNeeded(D.e)
-    if B=(_ K e _) then noBlockNeeded(K.e)
+    if B=(_ K e _) then noBlockNeeded(K.e) (only in code, allowed with no block if K.e in void, x, LL, P, ... all the cases of the degenerate DX empty)
 * (CORE.Ds CORE.Ks CORE.e): //less then full, to avoid issues with inlining and such
     no repetition in Ds.xs
     forall D in Ds such that Ds.var?=var: D.T.mdf not capsule or fwd
@@ -200,18 +200,7 @@ _______
     forall MWT in bridge(L.MWT), forall MH in MHs: 
       if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
     if MHs!=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
-* program p:
-  -the n of every Thisn.Cs in p fits in the dept of the program
-  -if p.pop(1) is defined, then p.pop(1) is well formed //else we are top level
-   else forall LL0, LL1 anywhere inside different places in LL: ns0 disjoint ns1
-    where nsi={n| C::n in dom(LLi.Ms) or m::n(xs) in dom(LLi.Ms)}
-//care when '...' is expanded; while 'reuse URL' will rename the private names
-  -CORE.L;pTail is well formed iff
-    FULL.L={CORE.L.H CORE.L.Ms}
-    flagTyped(norm(FULL.L;pTail);pTail)=CORE.L';pTail //defined in file top
-    and CORE.L'.Info+_=CORE.L.Info (that is, all the dependencies are a subset, and so on)
-//TODO: this does not work, since well formedness of code != well formedness of full.
-//Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
+
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 * CTz: forall CT1,CT2 in CTz, if CT1.ST=CT2.ST then CT1=CT2
 * CT: ST<=STz, ST not of form Core.T
@@ -231,9 +220,9 @@ _______
     for i in 0..n if Ti.mdf=capsule, xi in FV(e) 0 or 1 times
 
 //CODE ONLY WELL FORMEDNESS:
-//* x, P not valid DX=e
-//* CsP well formed, not Any in the middle and so on..
-//* nested class C is not a CsP with dots and not Any and..
+//* x, P and others not valid DX=e
+//* CsP well formed, without Any or other reserved names as a C
+//* nested class name C is not a CsP with dots and not Any or other reserved names
 //* all operators are the same in an binary op sequence
 _______
 #define noBlockNeeded(FULL.e):

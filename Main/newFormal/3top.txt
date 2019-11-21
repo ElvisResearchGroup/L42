@@ -7,8 +7,41 @@ _______
     on all the FULL.L and CORE.L it grows a local program p,
     on all the Cs applies p.minimize(p.resolve(C.Cs)).
     on all the P applies p.minimize(P).
-    //error is reported if an implements list contains This0.Cs or
-    //Thisn.C.Cs and C is after the current point in the program
+    the n of every Thisn.Cs must fit in the dept of the program
+    forall LL0, LL1 anywhere inside different places in LL0: uniqueNs(p,LL0) disjoint uniqueNs(p,LL1)
+    //TODO next
+    check that for any reached p=CORE.L;pTail:
+      either Info.Flag=Norm or Ps0 subseteq dom(p) and norm |- p 
+      Ps0 subseteq Info.typeDep
+      Ps1 subseteq Info.coherentDep 
+      ??? watched=Ps,
+      ??? usedMethods=(P.s)s,
+      ??? hiddenSupertypes=Ps,
+      either Info.declaresClassMethods?!=empty or class notin CORE.L.MWTs.mdfs
+      either Info.closeState?!=empty or CORE.L.interface?!=empty or {MH| MH in CORE.L.MWTs, MH.m of form ::n}=empty
+      Info.nativeKind recognized
+      expectedNumber(Info.nativeKind,Info.nativePar)//the number of nativePar is the expecte number for the kind of nativeKind
+    where
+      Info=CORE.L.Info
+      Ps0;Ps1=collectDeps(p;CORE.MWTs) U collectDeps(CORE.L.Docs) U CORE.L.Ts.Ps;empty 
+//Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
+//error is reported if an implements list contains This0.Cs or
+//Thisn.C.Cs and C is after the current point in the program
+_______
+#define uniqueNs(p,LL) = ns    isDefined(p,s,P)
+* n in uniqueNs(p,FULL.L) if C::n in dom(FULL.L.Ms)
+* n in uniqueNs(p,FULL.L) if m::n(xs) in dom(FULL.L.Ms) and
+    forall P in FULL.L.Ts.Ps not isDefined(p,m::n(xs),P)
+* n in uniqueNs(p,CORE.L) if C::n in dom(CORE.L.NCs)
+* n in uniqueNs(p,CORE.L) if m::n(xs) in dom(CORE.L.MWTs) and
+    forall P in FULL.L.Ts.Ps not isDefined(p,m::n(xs),P)//purposly ignoring Info.refine
+
+* isDefined(p,s,P) if s in dom(FULL.L.Ms) //ignoring reuse[URL] on purpose
+    p(P)=FULL.L
+* isDefined(p,s,P) if s in dom(CORE.L.MWTs)
+    p(P)=CORE.L
+* isDefined(p,s,P) if Pi in p(P).Ts.Ps and isDefined(p,s,Pi[from P;p])
+//ignoring the Info.reuse for the CORE.L case on purpose
 _______
 #define p.resolve(Cs) = P
 p.resolve(C.Cs) = Thisn.C.Cs
@@ -64,6 +97,7 @@ _______
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
+    //TODO: here we need to rename the private names    
     dom(MWTs NCs) disjoint dom(Ms)
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
     p0=followURL(URL);pTail
@@ -234,10 +268,10 @@ _______
 * collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
 * collectDeps(p; Doc) = {P| @P._ inside Doc};empty     
 _______
-#define collectDepsE(p;CORE.e?)= Ps1;Ps2    Ps[skipThis0] = Ps'
+#define collectDepsE(p;CORE.e?)= Ps1;Ps2    Ps[skipThis0;CORE.L] = Ps'
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
 * collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty
-* collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0];Ps'0..Ps'n[skipThis0]
+* collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0;CORE.L];Ps'0..Ps'n[skipThis0;CORE.L]
     Ps0 = CORE.L.Info.typeDep
     Ps'0 = CORE.L.Info.coherent
     Ps1..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
@@ -250,9 +284,11 @@ _______
 * collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e) = collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e)
 
-* empty[skipThis0]=empty;
-* This0.Cs,Ps[skipThis0]=Ps[skipThis0]
-* Thisn+1.Cs,Ps[skipThis0]=Thisn.Cs,Ps[skipThis0]
+* empty[skipThis0;L]=empty;
+* This0.Cs,Ps[skipThis0;L]=Ps[skipThis0;L]
+  //Note:Cs notin dom(L) the code will give an error
+  //Metaprogramming could not still add names in an L in a meth body
+* Thisn+1.Cs,Ps[skipThis0;L]=Thisn.Cs,Ps[skipThis0;L]
 _______
 #define CTz.allSTz(ST) = STz    CTz.allTz(p,ST) = Tz
 * ST in CTz.allSTz(p,ST)

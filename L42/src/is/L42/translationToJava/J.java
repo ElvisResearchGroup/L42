@@ -93,7 +93,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     var info=p.topCore().info();
     String nk=info.nativeKind();
     if(nk.isEmpty()){return classNameStr(p);}
-    String res=TrustedKind.fromString(nk).inner;
+    String res=TrustedKind._fromString(nk).inner;
     if(info.nativePar().isEmpty()){return res;}
     res+="<";
     for(P pi:info.nativePar()){
@@ -272,7 +272,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("£x"+d.x()+"=");
     String nativeKind=p._ofCore(d.t().p()).info().nativeKind();
     if(nativeKind.isEmpty()){c("null");}
-    else{c(TrustedKind.fromString(nativeKind).defaultVal());}
+    else{c(TrustedKind._fromString(nativeKind).defaultVal());}
     c(";");
     nl();
     if(!fwds.contains(d.x())){return;}

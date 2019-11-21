@@ -75,7 +75,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     }
   @Override public void visitL(L e){
     mustSubPath(P.pLibrary,expected,e.poss());
-    if(isDeep){ProgramTypeSystem.type(false,true,p.push(e));}
+    if(isDeep){ProgramTypeSystem.type(true,p.push(e));}
     _computed=P.pLibrary;
     }
   @Override public void visitEX(EX e){

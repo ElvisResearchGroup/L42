@@ -7,4 +7,4 @@ method Void strDebug(This1.S that)=
   native{trusted:strDebug} error void
 method Void deployLibrary(This1.S that,Library lib)=
   native{trusted:deployLibrary} error void
-#norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=TrustedIO}
+#norm{declaresClassMethods, typeDep=This, This1.S, coherentDep=This nativeKind=TrustedIO}

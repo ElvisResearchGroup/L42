@@ -19,11 +19,12 @@ public abstract class PTails implements Visitable<PTails>{
   public boolean hasC(){throw bug();}
   public C c(){throw bug();}
   public Core.L coreL(){throw bug();}
-  public LL ll(){return coreL();}
+  public LL ll(){throw bug();}
   public PTails tail(){throw bug();}
   public static final PTails empty=new PTails(){};
   public PTails pTailSingle(LL l){return new PTails(){
     public Core.L coreL(){return (Core.L)l;}
+    public LL ll(){return l;}
     public boolean hasC(){return false;}
     public PTails tail(){return PTails.this;}
     };}

@@ -88,7 +88,7 @@ public class Program implements Visitable<Program>{
     return this.pop().pop(n-1);
     }
   public Program pop(){
-    if(!pTails.hasC()){return new Program(pTails.coreL(),pTails.tail());}
+    if(!pTails.hasC()){return new Program(pTails.ll(),pTails.tail());}
     if(!pTails.ll().inDom(pTails.c())){
       return new Program(pTails.ll(),pTails.tail());
       }

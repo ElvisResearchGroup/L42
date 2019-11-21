@@ -12,7 +12,7 @@ _______
 #define typable(p)=Csz    untypable(p)=CTz
 * typable(p) = Cs1..Csn // asserts p(This0) is CORE.L
     dom(p(This0))/untypable(p)
-    
+    TODO:--untypableFatal in 2 places: untypable and removing 1 This
 * empty in untypable(p) if p(This0).interface=empty
 * Cs in untypable(p) if p(This0.Cs).Info.Flag=typed
 * Cs in untypable(p) if 
@@ -28,7 +28,7 @@ _______
     This0.Cs' in p(This0.Csi).Info.depTyped[from This0.Cs;p]    
 _______
 #define wellTyped(p, CORE.e)=CORE.T
-* wellTyped(p,e)=T
+* wellTyped(p,e)=T //the code will give an error here if a typeDep path is not in dom(p)
     Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
     p;empty;empty|= CORE.e : imm
     either Q |- CORE.e : Library
@@ -44,6 +44,8 @@ _______
      |-p.push(C,L)
      if C of form _::n then coherent(p.push(C,L),norm) //an incoherent private class would be bad
    if(p(This0).Info.closeState?=closeState then coherent(p,typed)
+   p(This0).Info.refined={s| P in p(This0).Ts.Ps and s in dom(p(P))}
+   forall P in p(This0).Ts.Ps, p(P).Ts.Ps subseteq p(This0).Ts.Ps
 * p |- MWT //(member method)
     if MWT.e?=e then 
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P

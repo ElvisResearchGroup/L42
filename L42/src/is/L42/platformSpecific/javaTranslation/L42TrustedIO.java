@@ -21,7 +21,7 @@ public class L42TrustedIO {
     }
   public L42Void deployLibrary(String s, L42Library l42Lib){
     Core.L l=l42Lib.unwrap;
-    ProgramTypeSystem.type(true,true, Program.flat(l));
+    ProgramTypeSystem.type(true, Program.flat(l));
     //TODO: wrap an EndError above as a L42 exception
     l=l.accept(new CloneVisitor(){
       @Override public Core.L.Info visitInfo(Core.L.Info info){

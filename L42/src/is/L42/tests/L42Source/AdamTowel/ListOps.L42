@@ -1,2 +1,17 @@
-read method This2.Size sizeTwo()=this.size()+this.size()
-read method This2.Size size()
+Elem={}
+class method mut This (mut This squareBuilder)=squareBuilder
+class method mut This #squareBuilder()=This.empty()
+class method Bool #shortCircutSquare()=Bool.true()
+mut method Void #add(Elem that)=this.add(immVal=that)
+read method read This #iterator()=this//TODO: bug if I set this method abstract
+
+class method mut This empty()
+read method Bool isEmpty()
+read method Size size()
+read method read Elem val(Size that)
+read method imm  Elem immVal(Size that)
+mut method mut Elem #val(Size that)
+mut method Void #apply(Size that,Elem immVal)
+mut method Void #apply(Size that,mut Elem mutVal)
+mut method Void add(Elem immVal)
+mut method Void add(mut Elem mutVal)

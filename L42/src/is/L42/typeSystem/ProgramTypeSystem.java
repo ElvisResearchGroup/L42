@@ -5,6 +5,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.todo;
 
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import is.L42.common.EndError;
@@ -17,6 +18,7 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.generated.S;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
 import is.L42.generated.Core.L.NC;
@@ -28,9 +30,8 @@ public class ProgramTypeSystem {
   static void errIf(boolean cond,List<Pos> poss,String msg){
     if(cond){throw new EndError.TypeError(poss,msg);}
     }
-  public static void type(boolean okRetype,boolean typed,Program p){
+  public static void type(boolean typed,Program p){
     L l=p.topCore();
-    assert okRetype || !l.info().isTyped();
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
       assert !l.info().isTyped() || switch(0){default: typeMWT(p,mwt); yield true;};
@@ -38,10 +39,22 @@ public class ProgramTypeSystem {
       }
     for(NC nc:l.ncs()){
       var pushed=p.push(nc.key(),nc.l());
-      if(typed||nc.key().hasUniqueNum()){type(okRetype,typed,pushed);}
+      if(typed||nc.key().hasUniqueNum()){type(typed,pushed);}
       if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent(false);}
       }
     if(l.info().closeState()){new Coherence(p,true).isCoherent(false);}
+    List<S> estimatedRefined=L(l.ts(),(c,ti)->{
+      var pi=ti.p().toNCs();
+      var li=p._ofCore(pi);
+      for(var m:li.mwts()){c.add(m.key());}
+      for(var tj:li.ts()){
+        var pj=p.from(tj.p(),pi);
+        var extraTj=l.ts().stream().noneMatch(tk->pj.equals(tk.p()));
+        errIf(extraTj,l.poss(),Err.missingImplementedInterface(pj));
+        }
+      });
+    var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
+    errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
     }
   public static void typeMWT(Program p,MWT mwt){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
@@ -74,7 +87,7 @@ public class ProgramTypeSystem {
     String nativeKind=p.topCore().info().nativeKind();
     if(!nativeUrl.startsWith("trusted:")){throw todo();}
     String nativeOp=nativeUrl.substring("trusted:".length());
-    var k=TrustedKind.fromString(nativeKind);
+    var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
     var g=op._of(k);
     errIf(g==null,mwt._e().poss(),

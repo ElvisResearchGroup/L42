@@ -146,17 +146,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("(return void A a=void void)","dead code after the statement 0 of the block")
    ),new AtomicTest(()->
-   fail("(if void void catch T x x void)",Err.needBlock(hole))
+   fail("(if void void catch T x x.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(if void void void.foo() catch T x x void)",Err.needBlock(hole))
+   fail("(if void void void.foo() catch T x x.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(while void void void.foo() catch T x x void)",Err.needBlock(hole))
+   fail("(while void void void.foo() catch T x x.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(if void void else void void.foo() catch T x x void)",Err.needBlock(hole))
+   fail("(if void void else void void.foo() catch T x x.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(void.foo() catch T x x void)",Err.needBlock(hole))
+   fail("(void.foo() catch T x x.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
-   fail("(void.foo() catch T x x void.foo() void)",Err.needBlock(hole))
+   fail("(void.foo() catch T x x.foo() void.foo() void)",Err.needBlock(hole))
    ),new AtomicTest(()->
    fail(inCore("(This0 a=void This0 a=void void)"),Err.duplicatedName(hole))
    ),new AtomicTest(()->

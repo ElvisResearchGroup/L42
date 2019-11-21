@@ -198,17 +198,17 @@ public class Full {
     }
 
     @Override
-    public L c(C c) {
-      assert !this.isDots && this.reuseUrl.isEmpty();
+    public LL c(C c) {
+      assert !this.isDots && this.reuseUrl.isEmpty():this.isDots +this.reuseUrl();
       var res = LDom._elem(ms, c);
       if (res == null) {
         throw new LL.NotInDom(this, c);
       }
-      return (L) res._e();
+      return (LL) res._e();
     }
 
     @Override
-    public L cs(List<C> cs) {
+    public LL cs(List<C> cs) {
       if (cs.isEmpty()) {
         return this;
       }

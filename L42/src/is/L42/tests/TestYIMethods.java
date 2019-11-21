@@ -112,11 +112,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      """)
    ),new AtomicTest(()->pass("""
      method Any m2(Any a)=(x=(
-       Any y=void catch error Void v v y)
+       Any y=void catch error Void v (v) y)
        void)
      ""","""
      method Any m2(Any a)=(Any x=(
-       Any y=void catch error Void v v y)
+       Any y=void catch error Void v (v) y)
        void)
      """)
    ),new AtomicTest(()->pass("""
@@ -220,19 +220,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Void a()=(Void i1=this.nope() Library i2=this.nope() x=this.nope() void)
      """,Err.contraddictoryInfoAbout(hole,hole))
    ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
-     method Void a(Void i1, Library i2)=( x=(Void i0=this.nope() catch error Void z i1 i2) void)
+     method Void a(Void i1, Library i2)=( x=(Void i0=this.nope() catch error Void z (i1) i2) void)
      """,Err.noCommonSupertypeAmong(hole,hole))
    ),new AtomicTest(()->pass("""
      class method Void (This that)=This+that
+     $plus0={}
      ""","""
      class method imm Void #apply(imm This0 that)=
        This0.$plus0<:class This0.$plus0.#apply(that=that)
      """)
    ),new AtomicTest(()->pass("""
-     class method Void a()=(void catch error Void z z)
+     class method Void a()=(This.a() catch error Void z z)
      ""","""
      class method imm Void a()=(
-       imm Void fresh0_underscore=void
+       imm Void fresh0_underscore=This<:class This.a()
        catch error imm Void z z void)
      """)
    ),new AtomicTest(()->pass("""
@@ -318,10 +319,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        void)
      """)
    ),new AtomicTest(()->pass("""
-     method Void a()=(void catch Library _ void)
+     method Void a()=(this.a() catch Library _ void)
      ""","""
      imm method imm Void a()=(
-       imm Void fresh0_underscore=void
+       imm Void fresh0_underscore=this.a()
        catch exception imm Library fresh1_underscore void
        void)
      """)
@@ -434,7 +435,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #checkTrue()
      method This #shortCircutSquare()
      method This foo(This squareBuilder)
-     method This a(This b,This c)=this.foo[a;b; key=a, val=b]
+     method This a(This b,This c)=this.foo[c;b; key=c, val=b]
      ""","""
      imm method imm This0 #if()
      imm method imm This0 #checkTrue()
@@ -448,16 +449,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
              imm This0 fresh4_receiver=fresh2_cond.#if()
              fresh4_receiver.#checkTrue())
            catch exception imm Void fresh5_underscore void
-           ( imm Void fresh6_underscore=fresh0_builder.#add(that=a)
+           ( imm Void fresh6_underscore=fresh0_builder.#add(that=c)
              imm Void fresh7_underscore=fresh0_builder.#add(that=b)
-             imm Void fresh8_underscore=fresh0_builder.#add(key=a, val=b)
+             imm Void fresh8_underscore=fresh0_builder.#add(key=c, val=b)
              void)
            )
          )
        fresh0_builder))
      """)
   ));}
-//private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";
 static Program p0=Program.parse("""
   {
    method Void m()
@@ -465,7 +465,7 @@ static Program p0=Program.parse("""
    method Void #lt0(This a)
    method Void #lt0(This a,Void b)
    method Void #ltequal0(This a,Any b)
-   #norm{}}
+   #norm{typeDep=This}}
   """);
 public static void chooseGeneralT(String in,String out){
   Full.L fl=(Full.L)Program.parse("{method Void m("+in+")}").top;
@@ -480,7 +480,7 @@ public static void chooseSpecificT(String in,String out){
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
-  Core.L cl=Program.parse("{"+out+" #norm{}}").topCore();
+  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 coherentDep=This This.$plus0 declaresClassMethods}}").topCore();
   var ces=processIn(l);
   assertEquals(ces,cl.mwts());
   }

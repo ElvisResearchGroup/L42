@@ -71,7 +71,7 @@ public class Meta {
     var meth=new Core.L.MWT(body.poss(),L(),mh,"",body);
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
-    Top.collectDepsL(Resources.currentP,body,typePs,cohePs);
+    Top.collectDepsE(Resources.currentP,body,typePs,cohePs);
     var i=l.info();
     var info=new Info(
       i.isTyped(),L(typePs.stream()),L(cohePs.stream()),
@@ -86,6 +86,8 @@ public class Meta {
     return wrapL(res);
     }
   public L directSum(L a, L b){
+    System.out.println("--------------");
+    System.out.println(b);
     List<MWT> mwts=sumMWTs(a.mwts(),b.mwts());
     List<NC> ncs=sumNCs(a.ncs(),b.ncs());
     Info info=Top.sumInfo(a.info(),b.info());
@@ -104,7 +106,7 @@ public class Meta {
         else{c.add(sumNC(mi,other));}
         }
       for(var mi:b){
-        var other=_elem(b,mi.key());
+        var other=_elem(a,mi.key());
         if(other==null){c.add(mi);}
         }
       });    
@@ -128,7 +130,11 @@ public class Meta {
     }
   public MWT sumMWT(MWT a,MWT b){
     if (a._e()!=null && b._e()!=null){throw todo();}
-    if(!a.mh().equals(b.mh())){throw todo();}//also check proper subtype
+    if(!a.mh().equals(b.mh())){
+      System.out.println(a.mh());
+      System.out.println(b.mh());
+      throw todo();
+      }//also check proper subtype
     var body=a._e();
     var nativeUrl=a.nativeUrl();
     if(body==null){body=b._e();nativeUrl=b.nativeUrl();}

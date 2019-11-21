@@ -174,7 +174,7 @@ static Program p=Program.parse("""
    method Void #lt0(This a)
    method Void #lt0(This a,Void b)
    method Void #ltequal0(This a,Any b)
-   #norm{}}
+   #norm{typeDep=This}}
   """);
 public static ST st(String t){
   P p=P.parse(t);

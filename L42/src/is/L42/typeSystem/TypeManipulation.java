@@ -121,8 +121,14 @@ public class TypeManipulation {
     assert _p._p()!=null;
     return new Core.PathSel(_p._p(),_p._s(),_p._x());
     }
-  public static Stream<P.NCs> skipThis0(Stream<P.NCs> s){
-    return s.filter(p->p.n()>0).map(p->p.toNCs().withN(p.n()-1));
+  public static Stream<P.NCs> skipThis0(Stream<P.NCs> s,Core.L l){
+    return s.filter(pi->{
+      if(pi.n()==0){
+        Program.flat(l).of(pi,l.poss());//propagate errors is path is not existent
+        return false;
+        }
+      return true;
+      }).map(pi->pi.toNCs().withN(pi.n()-1));
     }
   public static List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
     return L(c->{

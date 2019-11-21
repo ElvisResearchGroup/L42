@@ -35,13 +35,13 @@ import is.L42.generated.ST;
 import is.L42.generated.X;
 import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.FlagTyped;
 import is.L42.typeSystem.MdfTypeSystem;
 import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
-import is.L42.visitors.Accumulate;
 import is.L42.visitors.WellFormedness;
 
 import static is.L42.generated.LDom._elem;
@@ -129,7 +129,7 @@ public class Top {
     if(nc.key().hasUniqueNum()){
       var typePs=new ArrayList<P.NCs>();
       var cohePs=new ArrayList<P.NCs>();
-      collectDepsL(p1,nc.l(),typePs,cohePs);
+      collectDepsE(p1,nc.l(),typePs,cohePs);
       info=info.withTypeDep(mergeU(info.typeDep(),typePs));
       info=info.withCoherentDep(mergeU(info.coherentDep(),cohePs));
       //TODO: add dependencies for watched and others (also need to be done in formalism)
@@ -171,9 +171,10 @@ public class Top {
     Core.E ce=infer(i,ctz,frommedCTz,he); //propagates errors
     assert ce!=null;
     WellFormedness.of(ce.visitable());
-    P pRes=wellTyped(p,ce);//propagate errors
+    var cohePs=new ArrayList<P.NCs>();
+    P pRes=wellTyped(p,ce,cohePs,ncs);//propagate errors //ncs is passed just to provide better errors
     Core.E ce0=adapt(ce,pRes);
-    coherent(p,ce0); //propagate errors
+    coherent(p,ce0,cohePs); //propagate errors
     Core.L l=(Core.L)reduce(p,c0,ce0);//propagate errors
     assert l!=null:c0+" "+ce0;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
@@ -195,8 +196,8 @@ public class Top {
       }
     catch(CompilationError e1){throw new Error(e1);}
     }
-  private void coherent(Program p, Core.E ce0)throws EndError {
-    Coherence.coherentE(p,ce0);
+  private void coherent(Program p, Core.E ce0,ArrayList<P.NCs> cohePs)throws EndError{
+    Coherence.coherentE(p,ce0,cohePs);
     }
   private Core.E adapt(Core.E ce, P path) {
     if(path==P.pLibrary){return ce;}
@@ -209,7 +210,18 @@ public class Top {
     Core.D d=new Core.D(false,P.coreAny.withP(path),x,ce);
     return new Core.Block(ce.pos(),L(d),L(),mCall);
     }
-  private P wellTyped(Program p, is.L42.generated.Core.E ce)  throws EndError{
+  private P wellTyped(Program p, is.L42.generated.Core.E ce,ArrayList<P.NCs> cohePs,List<Full.L.NC>moreNCs)  throws EndError{
+    ArrayList<P.NCs> typePs=new ArrayList<>();
+    cohePs=new ArrayList<>();
+    var deps=new Deps(p,typePs,cohePs){@Override public void visitL(Core.L l){return;}};
+    deps.of(ce.visitable());
+    for(var pi:typePs){
+      LL ll=p.of(pi,ce.poss());//propagate errors for path not existent
+      Core.L l=(Core.L)ll;
+      if(!l.info().isTyped()){
+        new CircularityIssue(pi,l,p,ce,moreNCs).reportError();
+        }
+      }
     List<P> ps=L(P.pAny);
     var g=G.empty();
     var pts=new PathTypeSystem(false,p,g,L(),ps,P.pAny);
@@ -241,50 +253,13 @@ public class Top {
     ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
     es.add(hq.e);
     }
-  static Accumulate<ArrayList<P.NCs>> deps(Program p0, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
-    return new Accumulate<ArrayList<P.NCs>>(){
-      public ArrayList<P.NCs> empty(){return typePs;}
-      @Override public void visitL(Full.L l){throw bug();}
-      private void csAux(Program p,ArrayList<C> cs,Core.L l){
-        TypeManipulation.skipThis0(l.info().typeDep().stream()
-          .map(e->p.from(e,0, cs))).forEach(typePs::add);
-        TypeManipulation.skipThis0(l.info().coherentDep().stream()
-          .map(e->p.from(e,0, cs))).forEach(cohePs::add);
-        Program pi=p.push(l);
-        for(C c: l.domNC()){
-          cs.add(c);
-          csAux(pi,cs,l.c(c));
-          cs.remove(cs.size()-1);
-          }
-        }
-      @Override public void visitL(Core.L l){
-        TypeManipulation.skipThis0(l.info().typeDep().stream()).forEach(typePs::add);
-        TypeManipulation.skipThis0(l.info().coherentDep().stream()).forEach(cohePs::add);
-        ArrayList<C> cs=new ArrayList<>();
-        Program pi=p0.push(l);
-        for(C c: l.domNC()){//a little of code duplication removes the map on the streams
-          cs.add(c);
-          csAux(pi,cs,l.c(c));
-          cs.remove(cs.size()-1);
-          }
-        }
-      @Override public void visitP(P p){
-        if(p.isNCs()){typePs.add(p.toNCs());}
-        }
-      @Override public void visitPCastT(Core.PCastT p){
-        super.visitPCastT(p);
-        if(p.t().p()==P.pAny){return;}
-        if(p.p().isNCs()){cohePs.add(p.p().toNCs());}
-        }
-      };
-    }
   static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {
-    var deps=deps(p0,typePs,cohePs);
+    var deps=new Deps(p0,typePs,cohePs);
     if(!justBodies){for(var m:mwts){deps.of(m);}return;}
     for(var m:mwts){if(m._e()!=null){deps.of(m._e().visitable());}}
     }
-  static public void collectDepsL(Program p0,Core.L l, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
-    var deps=deps(p0,typePs,cohePs);
-    deps.of(l);
+  static public void collectDepsE(Program p0,Core.E e, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
+    var deps=new Deps(p0,typePs,cohePs);
+    deps.of(e.visitable());
     }
   }

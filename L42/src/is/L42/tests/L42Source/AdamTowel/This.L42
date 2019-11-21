@@ -41,14 +41,13 @@ Test1={reuse[#$aaa]
     )
   NotCoh={This field, class method This ()}
   ListT=Meta().simpleSum(a={...},b={
-    //ListOps=Meta().resource({...})
+    ListOps=Meta().resource({...})
     class method Library (class Any that)=(
-      a=Meta().simpleRedirect(
+      a=Meta().simpleSum(a=this.code(),b=ListOps())
+      Meta().simpleRedirect(
         innerPath=S"Elem"
-        l42Lib=this.code()
+        l42Lib=a
         classAny=that)
-      //Meta().simpleSum(a=a,b=ListOps())
-      a
       )
     })
   Strings=ListT(S)
@@ -57,7 +56,11 @@ Test1={reuse[#$aaa]
     s.add(immVal=S"hi")
     Debug(s.val(0\).toS())
     Debug(s.size().toS())
-    //Debug(s.sizeTwo().toS())
+    )
+  TestVectorOps=(
+    mut Strings ss=Strings[S"a";S"b";S"c"]
+    //for imm si in ss (Debug(si))
+    Debug(ss.size().toS())
     )
   TestMeta=(
     _=Meta().simpleRedirect(

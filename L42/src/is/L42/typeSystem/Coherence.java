@@ -174,18 +174,8 @@ public class Coherence {
       default->false;
       };
     }
-  static public void coherentE(Program p,E e){
-    var ps=new Accumulate.SkipL<List<P.NCs>>() {
-      @Override public List<P.NCs> empty() {return new ArrayList<P.NCs>();}
-      @Override public void visitPCastT(Core.PCastT pct){
-        assert p._ofCore(pct.p())!=null;
-        assert p._ofCore(pct.t().p())!=null;
-        if(pct.t().p()==P.pAny){return;}
-        assert pct.p().isNCs();
-        acc().add(pct.p().toNCs());
-        }
-    }.acc();
-    for(var pi:ps){
+  static public void coherentE(Program p,E e,ArrayList<P.NCs> cohePs){
+    for(var pi:cohePs){
       var p0=p.navigate(pi);
       new Coherence(p0,false).isCoherent(false);
       }

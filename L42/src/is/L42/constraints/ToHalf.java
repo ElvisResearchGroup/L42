@@ -561,7 +561,6 @@ public class ToHalf extends UndefinedCollectorVisitor{
     boolean allXPs=sFor.ds().stream().allMatch(di->isFullXP(di._e()));
     if(allXPs){visitBlock(forMain(sFor));}
     else{visitBlock(forXPs(sFor));}
-    //System.out.println(this.res.e);
     }
   private Full.Block forXPs(Full.For sFor){
     List<Full.D> newDs=new ArrayList<>();
@@ -589,17 +588,17 @@ public class ToHalf extends UndefinedCollectorVisitor{
     Pos p=sFor.pos();
     var xIts=new ArrayList<X>();
     var xIndexs=new ArrayList<X>();
-    List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.iterator()..xn=xPn.iterator()
+    List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.#iterator()..xn=xPn.#iterator()
       dsElem(p,"xIt",d._e(),false,iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
-    List<Full.D> dsStartIndexs=L(sFor.ds().stream().map(d->//var x'1 = xP1.startIndex() .. var x'n = xPn.startIndex()
+    List<Full.D> dsStartIndexs=L(sFor.ds().stream().map(d->//var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
       dsElem(p,"xIndex",d._e(),true,startIndexS,xIndexs)));
-    List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.close(x'1) .. xn.close(x'n)
+    List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.#close(x'1) .. xn.#close(x'n)
       c.add(makeDec(binMeth(p,xi,x1i,closeS))));        
-    List<Full.E> orsEs=L(xIts,xIndexs,(c,xi,x1i)->//( x1.incomplete(x'1) || .. || xn.incomplete(x'n)
+    List<Full.E> orsEs=L(xIts,xIndexs,(c,xi,x1i)->//( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)
       c.add(binMeth(p,xi,x1i,incompleteS)));
     Full.E ors=orsEs.get(0);
     if(orsEs.size()>1){ors=new Full.BinOp(p,Op.OrOr,orsEs);}
-    List<Full.E> andsEs=pushL(L(xIts,xIndexs,(c,xi,x1i)->//x1.hasElem(x'1) && .. && xn.hasElem(x'n) && ors
+    List<Full.E> andsEs=pushL(L(xIts,xIndexs,(c,xi,x1i)->//x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ors
       c.add(binMeth(p,xi,x1i,hasElemS))),ors);
     var whileCond=new Full.BinOp(p,Op.AndAnd,andsEs);
     Full.E[] e={sFor.body()};
@@ -626,7 +625,6 @@ public class ToHalf extends UndefinedCollectorVisitor{
     Stream<Stream<Full.D>> allTopDecs=Stream.of(dsIts.stream(),dsStartIndexs.stream(),Stream.of(makeDec(w)),dsCloses.stream());
     List<Full.D> topDecs=L(allTopDecs.flatMap(s->s));
     var res= makeBlock(p,topDecs,new Core.EVoid(p));
-    System.out.println(res);
     return res;
     }
   private E replaceOnUpdate(Full.E e,Mdf _mdf, X x2, X x, X x1) {
@@ -643,12 +641,12 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private static final S ifS=S.parse("#if()");
   private static final S checkTrueS=S.parse("#checkTrue()");
-  private static final S iteratorS=S.parse("iterator()");
-  private static final S closeS=S.parse("close()");
-  private static final S succS=S.parse("succ()");
-  private static final S incompleteS=S.parse("incomplete()");
-  private static final S hasElemS=S.parse("hasElem()");
-  private static final S startIndexS=S.parse("startIndex()");
+  private static final S iteratorS=S.parse("#iterator()");
+  private static final S closeS=S.parse("#close()");
+  private static final S succS=S.parse("#succ()");
+  private static final S incompleteS=S.parse("#incomplete()");
+  private static final S hasElemS=S.parse("#hasElem()");
+  private static final S startIndexS=S.parse("#startIndex()");
   private static final S applyThat=S.parse("#apply(that)");
   private static final S stringLiteralBuilder=S.parse("#stringLiteralBuilder()");
   private static final S squareBuilder=S.parse("#squareBuilder()");

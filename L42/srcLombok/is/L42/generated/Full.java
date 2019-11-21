@@ -44,13 +44,13 @@ public class Full {
     @Override public List<C> domNC(){
       assert !this.isDots  && this.reuseUrl.isEmpty();
       return L(ms.stream().filter(m->m.key() instanceof C).map(m->(C)m.key()));}
-    @Override public L c(C c){
+    @Override public LL c(C c){
       assert !this.isDots && this.reuseUrl.isEmpty();
       var res=LDom._elem(ms, c);
       if(res==null){throw new LL.NotInDom(this, c);}
-      return (L)res._e();
+      return (LL)res._e();
       }
-    @Override public L cs(List<C> cs){
+    @Override public LL cs(List<C> cs){
       if(cs.isEmpty()){return this;}
       if(cs.size()==1){return this.c(cs.get(0));}
       return this.c(cs.get(0)).cs(popL(cs));

@@ -44,11 +44,9 @@ public class TestCompileAndRunJ
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   load("")
   ),new AtomicTest(()->
-  load("C={method This m(This x)=this.m(x=void) #norm{}}")//ill typed, but is norm so is skipped
+  load("C={method This m(This x)=this.m(x=void) #norm{typeDep=This}}")//ill typed, but is norm so is skipped
   ),new AtomicTest(()->
-  loadFail("C={method This m(This x)=this.m(x=void) #typed{}}")
-  ),new AtomicTest(()->
-  load("C={method This m(This x)=this.m(x=this) #typed{}}")
+  load("C={method This m(This x)=this.m(x=this) #typed{typeDep=This}}")
   ),new AtomicTest(()->
   load("""
   C={
@@ -59,7 +57,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s0=sb.toS()
       s0.strDebug()
       )
-    #typed{}}
+    #typed{declaresClassMethods typeDep=This1.SB This1.S This coherentDep=This1.SB This1.S This}}
   """)
   ),new AtomicTest(()->
   loadRun("""
@@ -71,7 +69,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s0=sb.toS()
       s0.strDebug()
       )
-    #typed{}}
+    #typed{declaresClassMethods typeDep= This1.SB This1.S This coherentDep=This1.SB This1.S This}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab")
   ),new AtomicTest(()->
   loadRun("""
@@ -81,7 +79,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       catch error Void x x
       void
       )
-    #typed{}}
+    #typed{typeDep=This1.S declaresClassMethods }}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
 
   ),new AtomicTest(()->
@@ -195,7 +193,7 @@ public static void loadRunErr(String s,String e){
     Program p=base(s);
     Loader l;try{l=loadBase(p,true);}
     catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
+    String code="{ method Library m()="+e+" #norm{typeDep=This.C coherentDep=This.C uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
     catch (InvocationTargetException e1) {
@@ -217,7 +215,7 @@ public static void loadRun(String s,String e,String output){
     //somehow using a switch expression makes junit fail
     Loader l;try{l=loadBase(p,true);}
     catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library m()="+e+" #norm{uniqueId=id1}}";
+    String code="{ method Library m()="+e+" #norm{typeDep=This.C coherentDep=This.C uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
     catch (InvocationTargetException e1) {fail(e1.getCause());}
@@ -233,20 +231,20 @@ public static Program base(String s){
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
     method Void strDebug()=native{trusted:strDebug} error void
-    #typed{nativeKind=String}
+    #typed{typeDep=This This1.S declaresClassMethods nativeKind=String}
     }
   SB={
     class method mut This0 of()
     mut method Void #a()=native{trusted:'a'} error void
     mut method Void #b()=native{trusted:'b'} error void
     read method This1.S toS()=native{trusted:toS} error void
-    #typed{nativeKind=StringBuilder}
+    #typed{typeDep=This This1.S declaresClassMethods nativeKind=StringBuilder}
     }
   A={
     class method mut This0 of(This1.S n)
     method This1.S n()
     mut method Void n(This1.S that)
-    #typed{}} 
+    #typed{typeDep=This This1.S declaresClassMethods }} 
   #norm{uniqueId=id1}}
   """;
   return Program.parse(l);

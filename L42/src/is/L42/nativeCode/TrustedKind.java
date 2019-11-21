@@ -42,21 +42,21 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==1;
     return "return new "+j.typeNameStr(j.p())+"();";
-    }},  
+    }
+    public int genericNumber(){return 1;}},  
   Limit("Void"){public String factory(J j,MWT mwt){
     assert false;
     throw bug();
     }};
   public final String inner;
   TrustedKind(String inner){this.inner = inner;}
+  public int genericNumber(){return 0;}
   public abstract String factory(J j,MWT mwt);
   public String defaultVal(){return "null";}
-  public static TrustedKind fromString(String s) {
-   for (TrustedKind t : TrustedKind.values()) {
-    if (t.name().equals(s))return t;
+  public static TrustedKind _fromString(String s) {
+    for (TrustedKind t : TrustedKind.values()) {
+      if (t.name().equals(s))return t;
+      }
+    return null;
     }
-   assert false:
-    s;
-   throw todo();
   }
- }
