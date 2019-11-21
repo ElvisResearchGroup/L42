@@ -93,17 +93,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
       catch (java.io.IOException ioe) {return "";}
       }} error void
-    #typed{}
+    #typed{typeDep=This1.S declaresClassMethods}
     }
   C={
     class method Void m()=(
-      This1.SB sb=This1.SB<:class This1.SB.of()
+      mut This1.SB sb=This1.SB<:class This1.SB.of()
       Void u1=sb.#a()
       Void u2=sb.#b()
       This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.read(fileName=sb.toS())
       s3.strDebug()
       )
-    #typed{}}
+    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello\nWorld")
   ),new AtomicTest(()-> 
   loadRun("""
@@ -119,14 +119,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{}
+    #typed{typeDep=This1.S declaresClassMethods}
     }
   C={
     class method Void m()=(
       This1.S s3=This1.Safe2<:class This1.Safe2.go()
       s3.strDebug()
       )
-    #typed{}}
+    #typed{typeDep=This1.S This1.Safe2 coherentDep=This1.Safe2 declaresClassMethods}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello World!")
   ),new AtomicTest(()-> 
   loadRun("""
@@ -143,14 +143,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{}
+    #typed{typeDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}
     }
   C={
     class method Void m()=(
       This1.S s3=This1.Safe2<:class This1.Safe2.go()
       s3.strDebug()
       )
-    #typed{}}
+    #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2 declaresClassMethods}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","Hello Native World")
   ),new AtomicTest(()-> //TODO:On Windows this passes or fails randomly...
   loadRunErr("""
@@ -166,14 +166,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       return "looped";
       }} error void
-    #typed{}
+    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}
     }
   C={
     class method Void m()=(
       This1.S s3=This1.Safe3<:class This1.Safe3.go()
       s3.strDebug()
       )
-    #typed{}}
+    #typed{typeDep=This1.SB This1.S This1.Safe3 coherentDep=This1.SB This1.S This1.Safe3 declaresClassMethods}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})")
 
 

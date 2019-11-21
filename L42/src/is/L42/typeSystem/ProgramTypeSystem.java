@@ -16,6 +16,7 @@ import is.L42.generated.Core.E;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -85,7 +86,14 @@ public class ProgramTypeSystem {
   private static void typePlugin(Program p, MWT mwt) {
     String nativeUrl=mwt.nativeUrl();
     String nativeKind=p.topCore().info().nativeKind();
-    if(!nativeUrl.startsWith("trusted:")){throw todo();}
+    if(!nativeUrl.startsWith("trusted:")){
+      var mh=mwt.mh();
+      var ok=mh.mdf().isIn(Mdf.Class,Mdf.Immutable);
+      errIf(!ok,mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),mh.mdf(),"imm or class"));
+      var errs=L(mh.pars().stream().filter(t->!t.mdf().isImm()));
+      errIf(!errs.isEmpty(),mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),errs,"imm"));
+      return;
+      }
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
