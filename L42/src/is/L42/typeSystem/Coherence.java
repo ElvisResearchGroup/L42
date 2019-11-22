@@ -13,6 +13,7 @@ import java.util.function.Consumer;
 import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Program;
+import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.MH;
@@ -176,21 +177,17 @@ public class Coherence {
       default->false;
       };
     }
-  static public void coherentE(Program p,ArrayList<P.NCs> cohePs){
-    for(var pi:cohePs){
-      var p0=p.navigate(pi);
-      new Coherence(p0,false).isCoherent(false);
-      }
+  static public void coherentE(Program p,ArrayList<P.NCs> cohePs, ArrayList<HashSet<List<C>>> alreadyCoherent){
+    for(var pi:cohePs){coherentE(p,pi,alreadyCoherent);}
     }
-  static public void _coherentE(Program p,ArrayList<P.NCs> cohePs){
-    var i=new InductiveSet<P.NCs,P.NCs>(){
-      @Override public void rule(P.NCs st, Consumer<P.NCs> s){
-        //every time just ask the set of cohe needed for a single P.
-        //before(or after?) adding to the set, check if it is coherent.
-        //if you simply can create those inductive sets, one for each cohePs,
-        //the expression is coherent. You can reuse the same InductiveSet object in all the 
-        //top
-        }
-      };
+  static private void coherentE(Program p,P.NCs coheP,ArrayList<HashSet<List<C>>> alreadyCoherent){
+    var setCs=alreadyCoherent.get((alreadyCoherent.size()-1)-coheP.n());
+    if(setCs.contains(coheP.cs())){return;}
+    var p0=p.navigate(coheP);
+    new Coherence(p0,false).isCoherent(false);
+    setCs.add(coheP.cs());
+    var cohePs=p0.topCore().info().coherentDep();
+    for(P.NCs pi:cohePs){coherentE(p,p.from(pi,coheP),alreadyCoherent);}
     }
+
   }

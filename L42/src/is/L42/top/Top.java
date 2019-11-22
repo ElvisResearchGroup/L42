@@ -3,6 +3,7 @@ package is.L42.top;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import is.L42.common.CTz;
@@ -49,6 +50,8 @@ import static is.L42.tools.General.*;
 
 public class Top {
   public Program top(CTz ctz, Program p)throws EndError {
+    alreadyCoherent.add(new HashSet<>());
+    assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
     Core.L coreL=SortHeader.coreTop(p, uniqueId++);//propagates the right header errors
     List<Full.L.M> ms=((Full.L)p.top).ms();
     List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
@@ -78,6 +81,7 @@ public class Top {
     Program p2=flagTyped(loader,p1.update(l));//propagate illTyped
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
+    alreadyCoherent.remove(alreadyCoherent.size()-1);
     return p2.update(l);
     }
   private Core.L updateInfo(Program p, List<Core.L.MWT>mwts) {
@@ -149,6 +153,7 @@ public class Top {
     return new InferToCore(i,ctz,this).compute(e);
     }
   private final FreshNames freshNames;
+  private final ArrayList<HashSet<List<C>>> alreadyCoherent=new ArrayList<>();
   private int uniqueId=0;
   private final Loader loader;
   public Top(FreshNames freshNames, int uniqueId, Loader loader) {
@@ -174,7 +179,7 @@ public class Top {
     var cohePs=new ArrayList<P.NCs>();
     P pRes=wellTyped(p,ce,cohePs,ncs);//propagate errors //ncs is passed just to provide better errors
     Core.E ce0=adapt(ce,pRes);
-    coherent(p,ce0,cohePs); //propagate errors
+    coherent(p,cohePs); //propagate errors
     Core.L l=(Core.L)reduce(p,c0,ce0);//propagate errors
     assert l!=null:c0+" "+ce0;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
@@ -196,8 +201,8 @@ public class Top {
       }
     catch(CompilationError e1){throw new Error(e1);}
     }
-  private void coherent(Program p, Core.E ce0,ArrayList<P.NCs> cohePs)throws EndError{
-    Coherence.coherentE(p,ce0,cohePs);
+  private void coherent(Program p, ArrayList<P.NCs> cohePs)throws EndError{
+    Coherence.coherentE(p,cohePs,alreadyCoherent);
     }
   private Core.E adapt(Core.E ce, P path) {
     if(path==P.pLibrary){return ce;}
