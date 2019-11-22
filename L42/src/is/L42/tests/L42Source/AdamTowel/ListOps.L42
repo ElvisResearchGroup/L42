@@ -3,7 +3,7 @@ class method mut This (mut This squareBuilder)=squareBuilder
 class method mut This #squareBuilder()=This.empty()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #add(Elem that)=this.add(immVal=that)
-read method read This #iterator()=this//TODO: bug if I set this method abstract
+read method read This #iterator()=this
 
 class method mut This empty()
 read method Bool isEmpty()

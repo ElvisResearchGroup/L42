@@ -212,7 +212,6 @@ public class Top {
     }
   private P wellTyped(Program p, is.L42.generated.Core.E ce,ArrayList<P.NCs> cohePs,List<Full.L.NC>moreNCs)  throws EndError{
     ArrayList<P.NCs> typePs=new ArrayList<>();
-    cohePs=new ArrayList<>();
     var deps=new Deps(p,typePs,cohePs){@Override public void visitL(Core.L l){return;}};
     deps.of(ce.visitable());
     for(var pi:typePs){

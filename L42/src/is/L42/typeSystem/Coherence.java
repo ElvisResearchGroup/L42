@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
@@ -19,6 +20,7 @@ import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.X;
+import is.L42.tools.InductiveSet;
 import is.L42.visitors.Accumulate;
 
 public class Coherence {
@@ -174,10 +176,21 @@ public class Coherence {
       default->false;
       };
     }
-  static public void coherentE(Program p,E e,ArrayList<P.NCs> cohePs){
+  static public void coherentE(Program p,ArrayList<P.NCs> cohePs){
     for(var pi:cohePs){
       var p0=p.navigate(pi);
       new Coherence(p0,false).isCoherent(false);
       }
+    }
+  static public void _coherentE(Program p,ArrayList<P.NCs> cohePs){
+    var i=new InductiveSet<P.NCs,P.NCs>(){
+      @Override public void rule(P.NCs st, Consumer<P.NCs> s){
+        //every time just ask the set of cohe needed for a single P.
+        //before(or after?) adding to the set, check if it is coherent.
+        //if you simply can create those inductive sets, one for each cohePs,
+        //the expression is coherent. You can reuse the same InductiveSet object in all the 
+        //top
+        }
+      };
     }
   }

@@ -86,8 +86,6 @@ public class Meta {
     return wrapL(res);
     }
   public L directSum(L a, L b){
-    System.out.println("--------------");
-    System.out.println(b);
     List<MWT> mwts=sumMWTs(a.mwts(),b.mwts());
     List<NC> ncs=sumNCs(a.ncs(),b.ncs());
     Info info=Top.sumInfo(a.info(),b.info());

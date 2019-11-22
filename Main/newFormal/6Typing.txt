@@ -240,10 +240,15 @@ _______
 * toImmOrCapsule(read P)=imm P
 * toImmOrCapsule(T)=T otherwise//mdf in {class,imm,fwdImm,fwd%Imm,capsule}
 _______
-#define coherent(p,CORE.e)    coherent(p)     coherent(p;MHs;MH;xz;n?)
+#define coherent(p,CORE.e)    allCoherentDep(p,e) = Ps    coherent(p,flag)     coherent(p;MHs;MH;xz;n?)
 * coherent(p,e)
-    forall P<:class P' inside e: //assert p(P) and p(P') are of form CORE.L
-      either P'=Any or coherent(p.navigate(P))
+    forall P in allCoherentDep(p,e): coherent(p.navigate(P),norm)
+
+* P in allCoherentDep(p,e)
+    P<:class P' inside e and P'!=Any
+* P[from P';p] in allCoherentDep(p,e)
+    P' in allCoherentDep(p,e)
+    P in p(P').coherentDep   
 
 * coherent(p,flag)
     CORE.L = p(This0)
