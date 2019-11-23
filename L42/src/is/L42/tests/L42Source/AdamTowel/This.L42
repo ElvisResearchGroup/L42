@@ -57,10 +57,23 @@ Test1={reuse[#$aaa]
     Debug(s.val(0\).toS())
     Debug(s.size().toS())
     )
+  TestWhile=
+    while Bool.false() void
+  TestBoolOps=(
+    Debug((3Size<3Size).toS())
+    Debug((3Size<3Size && Bool.false()).toS())
+    )
   TestVectorOps=(
-    mut Strings ss=Strings[S"a";S"b";S"c"]
-    //for imm si in ss (Debug(si))
-    Debug(ss.size().toS())
+    mut Strings ss1=Strings[S"a";S"b";S"c"]
+    mut Strings ss2=Strings[S"1";S"2";S"3"]
+    for imm si in ss1 (Debug(si))
+    for s1 in ss1, imm s2 in ss2 (Debug(s1++s2))
+    mut Strings ss3=Strings[(\list.add(immVal=S"hi"))]
+    mut Strings ss4=Strings[for imm s1 in ss1, imm s2 in ss2 (\list.add(immVal=s1++s2))]
+    Debug(ss3.size().toS())
+    for var imm si in ss4 (si:=S"pe"++si)
+    for var si in ss4 (si:=S"No"++si)
+    for imm si in ss4 (Debug(si))
     )
   TestMeta=(
     _=Meta().simpleRedirect(

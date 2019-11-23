@@ -97,7 +97,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert xp!=null;
     var s=new S(slashX.x().inner(),L(),-1);
     var h=new Half.MCall(slashX.pos(),xp,s,L());
-    visitMCall(h);
+    List<ST> rec=null;
+    if(xp instanceof Core.EX){rec=y.g()._of(((Core.EX)xp).x());}
+    if(xp instanceof Half.PCastT){rec=((Half.PCastT)xp).stz();}
+    if(xp instanceof Half.SlashCastT){rec=((Half.SlashCastT)xp).stz();}
+    assert rec!=null;
+    List<ST> stz1=L(rec,(c,st)->c.add(new ST.STMeth(st, s, -1)));
+    commit(h,stz1,L());
     }
     
   @Override public void visitCsP(Full.CsP csP){
@@ -404,8 +410,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert binOp.es().size()>=2:binOp.es();
     if(binOp.es().size()!=2){binOp=applyAssociativity(binOp);}
     if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
-    if(binOp.es().get(0) instanceof Full.CsP){
-      visitBinOpCsp(binOp);return;}
+    if(binOp.es().get(0) instanceof Full.CsP){visitBinOpCsp(binOp);return;}
     List<Full.E> xps=new ArrayList<>();
     List<Full.D> ds=L(binOp.es(),(c,ei)->{
       if(isFullXP(ei)){xps.add(ei);return;}
@@ -417,15 +422,16 @@ public class ToHalf extends UndefinedCollectorVisitor{
       visitBlock(makeBlock(binOp.pos(), ds, binOp.withEs(L(xps.stream()))));
       return;
       }
-    ArrayList<ST> resSTz=new ArrayList<>();
+    ArrayList<List<ST>> opArgs=new ArrayList<>();
     ArrayList<ST> retSTz=new ArrayList<>();
     List<Half.XP> es=L(binOp.es(),(c,ei)->{
       var ri=compute(ei);
       c.add((Half.XP)ri.e);
-      resSTz.addAll(ri.resSTz);
+      opArgs.add(ri.resSTz);
       retSTz.addAll(ri.retSTz);
       });
-    commit(new Half.BinOp(binOp.pos(),binOp.op(), es), resSTz, retSTz);
+    var resST=new ST.STOp(binOp.op(),L(opArgs.stream()));
+    commit(new Half.BinOp(binOp.pos(),binOp.op(), es), L(resST), retSTz);
     }
   private Full.BinOp applyAssociativity(Full.BinOp b){
     int s=b.es().size();
@@ -454,7 +460,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     S sr=NameMangling.shortResult(b.op());
     S sp=NameMangling.shortProcess(b.op());
     var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
-    var srCall=new Full.Call(p,e0,sr,false,Par.emptys);
+    var srCall=new Full.Call(p,ex,sr,false,Par.emptys);
     X other=new X("other");
     Par par=new Par(ex,L(other),L(e1));
     var spCall=new Full.Call(p,e0,sp,false,L(par));
@@ -589,7 +595,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var xIts=new ArrayList<X>();
     var xIndexs=new ArrayList<X>();
     List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.#iterator()..xn=xPn.#iterator()
-      dsElem(p,"xIt",d._e(),false,iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
+      dsElem(p,"xIt",d._e(),false,d._varTx().isVar()?varIteratorS:iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
     List<Full.D> dsStartIndexs=L(sFor.ds().stream().map(d->//var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
       dsElem(p,"xIndex",d._e(),true,startIndexS,xIndexs)));
     List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.#close(x'1) .. xn.#close(x'n)
@@ -633,7 +639,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       public @Override Full.OpUpdate visitOpUpdate(Full.OpUpdate o){
         o=super.visitOpUpdate(o);
         if(!o.x().equals(x2)){return o;}
-        Full.Par pars=new Full.Par(new Core.EX(o.pos(), x1), valX,L(o));
+        Full.Par pars=new Full.Par(new Core.EX(o.pos(), x1), valX,L(o.e()));
         Full.E e2=new Full.Call(o.pos(),new Core.EX(o.pos(), x),s,false,L(pars));
         return new Full.OpUpdate(e2.pos(),x2, o.op(), e2);
         }
@@ -642,6 +648,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S ifS=S.parse("#if()");
   private static final S checkTrueS=S.parse("#checkTrue()");
   private static final S iteratorS=S.parse("#iterator()");
+  private static final S varIteratorS=S.parse("#varIterator()");
   private static final S closeS=S.parse("#close()");
   private static final S succS=S.parse("#succ()");
   private static final S incompleteS=S.parse("#incomplete()");

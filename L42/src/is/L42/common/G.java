@@ -82,7 +82,7 @@ public class G {
     }
   public G plusEq(X x, T t) {
     Map<X,T> xInT=new HashMap<>(this.xInT);
-    assert !xInT.containsKey(x);
+    assert !xInT.containsKey(x):x+" not in "+xInT;
     xInT.put(x,t);
     return new G(Collections.unmodifiableMap(xInT),vars); 
     }

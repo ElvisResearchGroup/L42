@@ -65,9 +65,9 @@ public class Top {
     Program p1=topNC(ctz,p0,ncs);//propagate exceptions
     assert p1.top instanceof Core.L;
     WellFormedness.of(p1.topCore());//Check the new core top is well formed
-    List<Core.E> coreE1n=L(e1n,(c,_ei)->{
+    List<Core.E> coreE1n=L(coreL.mwts(),e1n,(c,mwti,_ei)->{
       if(_ei==null){c.add(null);return;}
-      Core.E eri=infer(new I(null,p1,G.empty()),ctz,null,_ei);
+      Core.E eri=infer(new I(null,p1,G.of(mwti.mh())),ctz,null,_ei);
       c.add(eri);
       });//and propagate errors out
     List<MWT> coreMWTs=L(coreL.mwts(),coreE1n,(c,mwti,_ei)->{//mwt'1..mwt'n

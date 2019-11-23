@@ -1,8 +1,11 @@
-class method This0 zero()
-method This0 #plus0(This0 that)=native{trusted:OP+} error void
+class method This zero()
+method This #plus0(This that)=native{trusted:OP+} error void
+method This1.Bool #lt0(This that)=native{trusted:OP<} error void
+method This1.Bool #bangequal0(This that)=native{trusted:OP!=} error void
 read method This1.S toS()=native{trusted:toS} error void
 class method This0 #from(This1.StringBuilder stringLiteral)=(
   This1.S s=stringLiteral.toS()
   s.toInt()
   )
-#norm{declaresClassMethods, typeDep=This0, This1.S, This1.StringBuilder nativeKind=Int}
+method This #succ()=native{trusted:succ} error void
+#norm{declaresClassMethods, typeDep=This,This1.S,This1.Bool,This1.StringBuilder nativeKind=Int}

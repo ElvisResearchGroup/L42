@@ -1,9 +1,16 @@
-class method This0 false()
-class method This0 true()=(This false=this.false() false.not())
-method This0 #if()=this
+class method This false()
+class method This true()=(This false=this.false() false.not())
+method This #if()=this
 method Void #checkTrue()[Void]=native{trusted:checkTrue} error void
-method This0 not()=native{trusted:OP!} error void
-method This0 and(This0 that)=native{trusted:OP&} error void
-method This0 or(This0 that)=native{trusted:OP|} error void
+method This not()=native{trusted:OP!} error void
+method This and(This0 that)=native{trusted:OP&} error void
+method This or(This0 that)=native{trusted:OP|} error void
+method This #shortCircut#andand()=this.not()
+method This #shortResult#andand()=this.not()
+method This #shortProcess#andand(This that,This other)=other
+method This #shortResult#oror()=this
+method This #shortCircut#oror()=this
+method This #shortProcess#oror(This that,This other)=other
+  
 read method This1.S toS()=native{trusted:toS} error void
 #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=Bool}

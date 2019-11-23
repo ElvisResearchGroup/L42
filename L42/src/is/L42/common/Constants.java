@@ -13,8 +13,8 @@ import is.L42.visitors.WellFormedness;
 
 public class Constants{
   static{
-    try{assert false; throw new Error("assertions disabled");}
-    catch(AssertionError e){}
+//    try{assert false; throw new Error("assertions disabled");}
+//    catch(AssertionError e){}
     }
   public static Function<Visitable<?>,String> toS=ToSVisitor::of;
   public static Predicate<Visitable<?>> wf=WellFormedness::of;

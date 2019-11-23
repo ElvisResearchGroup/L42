@@ -12,6 +12,7 @@ import java.util.List;
 import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.Err;
+import is.L42.common.NameMangling;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Core.PCastT;
@@ -114,7 +115,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     //TODO: can we make a test where the former call throw some exception?
     if(res.size()!=1){
       var list=L(res,(c,psi)->c.add(psi.p()+"."+psi.s()));
-      String err=Err.operatorNotFound(binOp.op(),list);
+      String err=Err.operatorNotFound(binOp.op().inner+" ("+NameMangling.methName(binOp.op(),0)+")",list);
       throw new EndError.InferenceFailure(binOp.poss(),err);
       }    
     Psi psi=res.get(0);
@@ -136,6 +137,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
 
 
   @Override public void visitBlock(Half.Block block){
+    I oldI=i;
     List<X> fv = L(c->{
       for(var d:block.ds()){c.addAll(FV.of(d.e().visitable()));}
       for(var k:block.ks()){c.addAll(FV.of(k.e().visitable()));}
@@ -145,6 +147,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     List<Core.D> ds=auxDs(fv,block.ds(),block.poss());
     //i=i.withG(i.g().plusEq(ds)); unnneded, it already happens in ds
     Core.E e=compute(block.e());
+    i=oldI;
     commit(new Core.Block(block.pos(), ds, ks, e));
     }
   private Core.K auxK(Half.K k) {

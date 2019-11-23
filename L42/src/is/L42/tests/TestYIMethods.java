@@ -457,6 +457,103 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          )
        fresh0_builder))
      """)
+     ),new AtomicTest(()->pass("""
+     method Bool v(This a,This b)=(x= a!=b x)
+     method Bool #bangequal0(This that)=Bool.k()
+     Bool={}
+     ""","""
+     imm method imm This0.Bool v(imm This0 a, imm This0 b)=(
+       imm This0.Bool x=a.#bangequal0(that=b)
+       x
+       )
+     imm method imm This0.Bool #bangequal0(imm This0 that)=
+       This0.Bool<:class This0.Bool.k()     
+     Bool={#norm{}}
+     """)
+     ),new AtomicTest(()->pass("""
+     method Void v(This a,This b)=while a!=b void
+     method Bool #bangequal0(This that)=Bool.k()
+     Bool={}
+     ""","""
+     imm method imm Void v(imm This0 a, imm This0 b)=(
+       imm Void fresh0_underscore=loop(
+         imm Void fresh1_underscore=(
+           imm This0.Bool fresh2_receiver=a.#bangequal0(that=b)
+           fresh2_receiver.#checkTrue()
+           )
+         void
+         )
+       catch exception imm Void fresh3_underscore void error
+       void
+       )
+     imm method imm This0.Bool #bangequal0(imm This0 that)=
+       This0.Bool<:class This0.Bool.k()
+     Bool={#norm{}}
+     """)
+          ),new AtomicTest(()->pass("""
+     method Void v(This as)=for var imm a in as (a:=a)
+     method This #varIterator()
+     method This #startIndex()
+     method This #hasElem(This that)
+     method This #elem#imm(This that)
+     mut method Void #update#imm(This that, This val)
+     method This #if()
+     method This #shortCircut#andand()
+     method This #shortResult#andand()
+     method This #shortProcess#andand(This that,This other)
+     ""","""
+     imm method imm Void v(imm This0 as)=(
+       imm This0 fresh0_xIt=as.#varIterator()
+       var imm This0 fresh1_xIndex=as.#startIndex()
+       imm Void fresh2_underscore=(
+         imm Void fresh3_underscore=loop(
+           imm Void fresh4_underscore=(
+             imm This0 fresh5_receiver=(
+               imm This0 fresh6_op3=fresh0_xIt.#hasElem(that=fresh1_xIndex)
+               (
+                 imm This0 fresh7_op3=fresh6_op3.#shortCircut#andand()
+                 (
+                   imm Void fresh8_underscore=(
+                     imm This0 fresh9_receiver=fresh7_op3.#if()
+                     fresh9_receiver.#checkTrue()
+                     )
+                   catch exception imm Void fresh10_underscore
+                     fresh6_op3.#shortProcess#andand(
+                       that=fresh7_op3,
+                       other=fresh0_xIt.#incomplete(that=fresh1_xIndex)
+                       )
+                     fresh7_op3.#shortResult#andand()
+                   )
+                 )
+               )
+             fresh5_receiver.#checkTrue()
+             )
+           (
+             var imm This0 a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
+             imm Void fresh11_underscore=(
+               a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
+               )
+             imm Void fresh12_underscore=fresh1_xIndex:=fresh1_xIndex.#succ()
+             void
+             )
+           )
+         catch exception imm Void fresh13_underscore void
+         error void
+         )
+       imm Void fresh14_underscore=fresh0_xIt.#close(that=fresh1_xIndex)
+       void
+       )
+     imm method imm This0 #varIterator()
+     imm method imm This0 #startIndex()
+     imm method imm This0 #hasElem(imm This0 that)
+     imm method imm This0 #elem#imm(imm This0 that)
+     mut method Void #update#imm(This that, This val)
+     imm method imm This0 #if()
+     imm method imm This0 #shortCircut#andand()
+     imm method imm This0 #shortResult#andand()
+     imm method imm This0 #shortProcess#andand(imm This0 that, imm This0 other)
+     """)
+     
   ));}
 static Program p0=Program.parse("""
   {
@@ -480,7 +577,7 @@ public static void chooseSpecificT(String in,String out){
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
-  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 coherentDep=This This.$plus0 declaresClassMethods}}").topCore();
+  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool declaresClassMethods}}").topCore();
   var ces=processIn(l);
   assertEquals(ces,cl.mwts());
   }

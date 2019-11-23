@@ -50,6 +50,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   boolean wrap;
   ArrayList<X>fwds=new ArrayList<>();
   int catchLev=0;
+  int loopLev=0;
   final ArrayList<L42Library>libs;
   Fields fields;
   private String libToMap(Program p){
@@ -65,6 +66,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   T g(X x){return g.of(x);}
   
   String catchVar(){return "catchVar"+catchLev;}
+  String loopVar(){return "loopVar"+loopLev;}
   boolean nativeKind(T t){return !p._ofCore(t.p()).info().nativeKind().isEmpty();}
   boolean nativeKind(Program p){return !p.topCore().info().nativeKind().isEmpty();}
   boolean nativeWrap(T t){return wrap && nativeKind(t);}
@@ -202,12 +204,15 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(nw){c(")");}
     }
   @Override public void visitLoop(Core.Loop loop){
-    kw("switch(0){default->{if(false)yield Resources.throwE(null);while(true)");
+    this.loopLev+=1;
+    kw("switch(0){default->{if(false)yield Resources.throwE(null);while(true){");
+    c("Object "+loopVar()+"=");
     var oldWrap=wrap;
     wrap(false);
     visitE(loop.e());
     wrap(oldWrap);
-    c(";}}");
+    c(";}}}");
+    this.loopLev-=1;
     }
   @Override public void visitThrow(Core.Throw thr){
     kw("Resources.throwE(");

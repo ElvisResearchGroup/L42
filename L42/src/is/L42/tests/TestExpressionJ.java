@@ -58,7 +58,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
   je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.instance,£cB£n1.£mof(£cB£n1.instance))")
     ),new AtomicTest(()->
-  je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true)L42Void.instance;}}")
+  je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true){Object loopVar1=L42Void.instance;}}}")
     ),new AtomicTest(()->
   je("return void","Resources.throwE(new L42Return(L42Void.instance))")
   //op update needs blocks

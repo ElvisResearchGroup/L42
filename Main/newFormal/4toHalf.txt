@@ -167,7 +167,7 @@ _______
 
 * Y!for (DX in xP)s DX in e (DX in e)s e' = Y!(x=e for (DX in xP)s DX in x (DX in e)s e')
 * Y!for DX1 in xP1..DXn in xPn e = Y!(
-      x1 = xP1.#iterator() .. xn = xPn.#iterator()
+      x1 = xP1.#iterator() .. xn = xPn.#iterator()//use .#varIterator if DXi.var?=var 
       var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
       while x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)) (
         DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)

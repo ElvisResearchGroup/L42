@@ -3,7 +3,22 @@ class method mut This (mut This squareBuilder)=squareBuilder
 class method mut This #squareBuilder()=This.empty()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #add(Elem that)=this.add(immVal=that)
+mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
+mut method Void #yield(Void that)=void
+mut method mut This list()=this
 read method read This #iterator()=this
+mut method mut This #varIterator()=this
+read method Size #startIndex()=0Size
+read method Bool #hasElem(Size that)=that<this.size()
+read method Bool #incomplete(Size that)=that!=this.size()
+read method Elem #elem#imm(Size that)=this.immVal(that)
+mut method mut Elem #elem#mut(Size that)=this.#val(that)
+read method Elem #elem#default(Size that)=this.#elem#imm(that)
+mut method mut Elem #update#mut(Size that, mut Elem val)=(this(that,mutVal=val) val)
+mut method Elem #update#imm(Size that, Elem val)=(this(that,immVal=val) val)
+mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
+read method Void #close(Size that)=
+  if this.#incomplete(that) error S"multi for skipped some elements"
 
 class method mut This empty()
 read method Bool isEmpty()

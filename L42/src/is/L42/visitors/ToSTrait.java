@@ -40,7 +40,6 @@ public interface ToSTrait extends CollectorVisitor{
   default void c(String s){
     if(s.isEmpty()){return;}
     assert !s.startsWith(",") || last()!='(':s;
-    assert !s.startsWith(";") || ( last()!=';'&&  last()!='}'):s;
     state().result.append(s);
     state().lastWasNl=false;
     state().lastWasNum=false;
