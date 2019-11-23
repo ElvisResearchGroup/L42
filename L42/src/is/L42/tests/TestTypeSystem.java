@@ -408,7 +408,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        )
      class method mut D doXM(mut D x)=(mut D y=D() x.m(y))
      }}
-   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->pass("""
    Customer={ class method mut This() }
    Reader={class method This()
@@ -454,11 +454,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->fail("""
    C={mut C that class method mut This(fwd mut C that)}
    A={B={method capsule C main()=(mut C x=C(x) (capsule C y=x.#that() y))}}
-   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->fail(cloneExample+"""
    C={mut C that class method mut This(fwd mut C that)}
    A={B={method capsule AA main()=(mut BB b=BB.k(N.k()), AA a=AA.k(f=b) a)}}
-   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->pass("""
    A={B={
    method This0 main(This0 that)=native{trusted:OP+} error void
@@ -485,7 +485,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      mut B x=B() lent B y=B() x.m(y)     
      )
    }}
-   """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+   """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->fail("""
    D={class method This() class method Void foo()=exception D()}
    A={B={method read Any main()=D.foo()}}
@@ -647,7 +647,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   K={ E={ class method C foo1()=D.foo3()<:C.foo2()<:C.foo2() } }
   C={ class method C foo2()=D.foo3() }
   D={ class method C foo3()=K.E.foo1() }   
-  """,Err.methCallNoCompatibleMdfParametersSignature(hole))
+  """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
   //TODO: consider a more specific error as ErrorKind.ClassMethCalledOnNonClass
   //in general this above is a poor error
   ),new AtomicTest(()->pass("""

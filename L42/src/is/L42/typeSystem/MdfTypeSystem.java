@@ -7,6 +7,7 @@ import static is.L42.generated.Mdf.*;
 import static is.L42.generated.ThrowKind.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -87,20 +88,28 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     var oldG=g;
     var oldExpected=expected;
     var oldMdfs=mdfs;
+    HashMap<String,HashSet<Mdf>> wrongParameters=new HashMap<>();
+    String currentX=null;
+    Mdf currentMdf=null;
     for(var m:meths){
       try{
         g=oldG;
         mdfs=oldMdfs;
         for(int i:range(es)){
           expected=m.mdfs().get(i);
+          currentX=i==0?"receiver":e.s().xs().get(i-1).inner();
+          currentMdf=expected;
           visitE(es.get(i));
           }
         expected=oldExpected;
         return;     
         }
-      catch(EndError.TypeError ignored){}
+      catch(EndError.TypeError ignored){
+        var res=wrongParameters.putIfAbsent(currentX,new HashSet<>(L(currentMdf)));
+        if(res!=null){res.add(currentMdf);}        
+        }
       }
-    errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature(e.s()));
+    errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature(e.s(),wrongParameters));
     }
   @Override public void visitOpUpdate(OpUpdate e){
     mustSubMdf(Immutable,expected,e.poss());

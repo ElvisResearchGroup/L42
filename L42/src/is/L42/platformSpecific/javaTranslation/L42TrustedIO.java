@@ -34,7 +34,10 @@ public class L42TrustedIO {
       out.writeObject(l);
       }
     catch (FileNotFoundException e) {throw unreachable();}
-    catch (IOException e) {throw todo();}
+    catch (IOException e) {
+      e.printStackTrace();
+      throw todo();
+      }
     //TODO: should throw a non deterministic exception as for 
     //memory overflow/stack overflow. It should be error S,
     //the same type of the String

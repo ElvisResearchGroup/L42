@@ -12,6 +12,7 @@ import static is.L42.tools.General.todo;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -144,12 +145,18 @@ public class Program implements Visitable<Program>{
     var cs=p.cs();
     int k=sCs.size();
     if(n>=k){return minimize(P.of(m+n-k, cs));}
-    List<C> resCs=merge(sCs.subList(0, k-n),cs);
+    List<C> resCs=merge(sCs,k-n,cs);//not using General.merge; performance+non serializable sublists
     var res=P.of(m,resCs);
     assert res==minimize(res):
       res+" "+minimize(res);
     return res;
     }
+  private List<C> merge(List<C> cs1,int limit,List<C>cs2){
+    ArrayList<C> res=new ArrayList<>();
+    for(int i=0;i<limit;i+=1){res.add(cs1.get(i));}
+    res.addAll(cs2);
+    return Collections.unmodifiableList(res);
+    }    
   public Core.E from(Core.E e,P.NCs source){
     assert minimize(source)==source;
     return fromVisitor(source).visitE(e);

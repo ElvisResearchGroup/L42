@@ -393,7 +393,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     )
   }
   """,
-  Err.methCallNoCompatibleMdfParametersSignature(hole)
+  Err.methCallNoCompatibleMdfParametersSignature(hole,hole)
   )));}
 
   private static String tryCatchTest(String s){

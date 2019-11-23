@@ -92,7 +92,12 @@ public class General {
     if(!changed){return l;}
     return Collections.unmodifiableList(res);
     }
-  public static <T> List<T>popL(List<T>l){return l.subList(1, l.size());}
+  public static <T> List<T>popL(List<T>l){
+    ArrayList<T> res=new ArrayList<>(l.size()-1);
+    int size=l.size();
+    for(int i=1;i<size;i++){res.add(l.get(i));}
+    return Collections.unmodifiableList(res);
+    }
   public static <T> List<T>pushL(T e,List<T>l){
     ArrayList<T> res=new ArrayList<>();
     res.add(e);

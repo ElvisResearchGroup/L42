@@ -1,5 +1,7 @@
 package is.L42.common;
 
+import static is.L42.tools.General.L;
+
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -109,7 +111,7 @@ public class Parse {
     }
   public static Program sureProgram(Path fileName,String s){
     var res=aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
-    assert !res.hasErr(): res;
+    if (res.hasErr()){throw new EndError.NotWellFormed(L(),res.toString());}
     assert res.res!=null;
     return res.res; 
     }

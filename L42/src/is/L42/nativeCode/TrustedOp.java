@@ -339,9 +339,12 @@ public enum TrustedOp {
     Int,use("return %s + %s;",sigI(Int,Int)),
     String,use("return %s + %s;",sigI(String,String))
     )),
-  Mul("OP*",Map.of(Int,use("return %s * %s;",sigI(Int,Int)))),
+  Times("OP*",Map.of(Int,use("return %s * %s;",sigI(Int,Int)))),
+  Divide("OP/",Map.of(Int,use("return %s / %s;",sigI(Int,Int)))),
+  Minus("OP-",Map.of(Int,use("return %s - %s;",sigI(Int,Int)))),
   LT("OP<",Map.of(Int,use("return %s < %s;",sigI(Bool,Int)))),
-  BangEqual("OP!=",Map.of(Int,use("return %s != %s;",sigI(Bool,Int)))),
+  LTEqual("OP<=",Map.of(Int,use("return %s <= %s;",sigI(Bool,Int)))),
+  EqualEqual("OP==",Map.of(Int,use("return %s == %s;",sigI(Bool,Int)))),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int))));
   public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;

@@ -1,7 +1,17 @@
 class method This zero()
+
 method This #plus0(This that)=native{trusted:OP+} error void
+method This #times0(This that)=native{trusted:OP*} error void
+method This #divide0(This that)=native{trusted:OP/} error void
+method This #minus0(This that)=native{trusted:OP-} error void
+
 method This1.Bool #lt0(This that)=native{trusted:OP<} error void
-method This1.Bool #bangequal0(This that)=native{trusted:OP!=} error void
+method This1.Bool #gt0(This that)=that.#lt0(that=this)
+method This1.Bool #ltequal0(This that)=native{trusted:OP<=} error void
+method This1.Bool #gtequal0(This that)=that.#ltequal0(that=this)
+method This1.Bool #equalequal0(This that)=native{trusted:OP==} error void
+method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
+
 read method This1.S toS()=native{trusted:toS} error void
 class method This0 #from(This1.StringBuilder stringLiteral)=(
   This1.S s=stringLiteral.toS()

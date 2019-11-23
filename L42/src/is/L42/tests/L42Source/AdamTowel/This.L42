@@ -25,11 +25,31 @@ DeployAAA=(
     Debug={...}
     StringBuilder={...}
     Meta={...}
+    Trait={...}
+    Class={...}
+    Deploy={...}
+    Url={...}
+    ListT=Meta().simpleSum(a={...},b={
+      ListOps=Meta().resource({...})
+      class method Library (class Any that)=(
+        a=Meta().simpleSum(a=this.code(),b=ListOps())
+        Meta().simpleRedirect(
+          innerPath=S"Elem"
+          l42Lib=a
+          classAny=that)
+          )
+        })
+    Strings=ListT(S)
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )
-//Testing step2
-Test1={reuse[#$aaa]
+//Deploy step2:
+DeployAdamTowel={reuse[#$aaa]
+  Task=Deploy.towel(url='AdamTowel, code={reuse[#$aaa]})
+  }
+
+//Testing step2:
+Test1={reuse[#$AdamTowel]
   Task=(
     half=21Size
     answer=half+half
@@ -40,17 +60,6 @@ Test1={reuse[#$aaa]
     catch error S x Debug(x) 
     )
   NotCoh={This field, class method This ()}
-  ListT=Meta().simpleSum(a={...},b={
-    ListOps=Meta().resource({...})
-    class method Library (class Any that)=(
-      a=Meta().simpleSum(a=this.code(),b=ListOps())
-      Meta().simpleRedirect(
-        innerPath=S"Elem"
-        l42Lib=a
-        classAny=that)
-      )
-    })
-  Strings=ListT(S)
   TestListT=(//If ListT code write This1.Size instead of This2.Size, no type error happens.
     mut Strings s=Strings.empty()
     s.add(immVal=S"hi")

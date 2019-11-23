@@ -242,7 +242,7 @@ public class Top {
       }
     if(!mwt.mh().mdf().isIn(Mdf.Immutable,Mdf.Readable)){
       throw new EndError.TypeError(ce.poss(),
-        Err.methCallNoCompatibleMdfParametersSignature(toLibraryS));
+        Err.methCallNoCompatibleMdfParametersSignature(toLibraryS,"reciever not in imm,read"));
       }
     return cmp;
     }

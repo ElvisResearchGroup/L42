@@ -113,8 +113,9 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       return makeErr(res.poss(),info,Err.malformedCoreNC(info));
       }      
     if(cmwts.contains(null)){
-      var missing=L(mwts.stream().map(m->m.key()).filter(
-        s->cmwts.stream().noneMatch(m->m!=null &&m.key().equals(s))));
+      var missing=L(mwts,cmwts,(c,m,cm)->{if(cm==null){c.add(m.key());}
+        assert cm==null || m.key()==cm.key();});
+      assert !missing.isEmpty();
       return makeErr(res.poss(),info,Err.malformedCoreMWT(info,missing));
       }      
     return new Core.L(res.poss(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
