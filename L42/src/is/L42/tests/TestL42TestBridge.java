@@ -59,7 +59,7 @@ class L42Test{
   
   public String toString() { return testName + ": line " + lineNumber + " in " + fileName ; }
   public void checkPass() {
-    if(pass) { assertTrue(pass); return; }
+    if(pass || type == null) { assertTrue(pass); return; }
     switch(type) {
       case "Bool": assertTrue(pass, message);
       case "StrCompare":
