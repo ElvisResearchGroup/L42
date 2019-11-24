@@ -29,6 +29,7 @@ DeployAAA=(
     Url={...}
     Debug={...}
     StringBuilder={...}
+    Test={...}
     Meta={...}
     Name={...}
     Trait={...}
@@ -53,7 +54,8 @@ Test1={reuse[#$AdamTowel]
   Task=(
     half=21Size
     answer=half+half
-    Debug(answer.toS())
+    {}:Test"Answer is 42"(answer==42Size)"Computed answer is %answer.toS()"
+    {}:Test"Failing test"(answer==8Size)"Computed answer is %answer.toS()"
     Debug(S"Hello World "++answer.toS()++S"!")
     err=Size"oh NO!"
     Debug(S"this should not be printed")

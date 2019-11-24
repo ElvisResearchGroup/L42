@@ -135,10 +135,14 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         pt=pt.tail();
         }
       });
-    }
-    
+    }    
   void wrap(Boolean b){this.wrap=b;}
-  
+  void wrap(P p){
+    var l=this.p._ofCore(p);
+    assert l!=null:
+    p+" "+this.p;
+    if(l.isInterface()){wrap(true);}
+    }  
   @Override public void visitEX(Core.EX ex){
     X x=ex.x();
     String tail="";
@@ -197,7 +201,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     wrap(false);
     visitE(m.xP());
     for(int i:range(m.es())){
-      wrap(mh.pars().get(i).p()==P.pAny);
+      wrap(p.from(mh.pars().get(i).p(),t.p().toNCs()));
       c(",");
       visitE(m.es().get(i));
       }
@@ -228,7 +232,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitOpUpdate(Core.OpUpdate o){
     kw("Resources.toVoid(£x"+o.x()+"=");
     var oldWrap=wrap;
-    wrap(g(o.x()).p()==P.pAny);
+    wrap(g(o.x()).p());
     visitE(o.e());
     wrap(oldWrap);
     c(")");
@@ -293,7 +297,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitD(Core.D d){//init
     kw("£x"+d.x()+"=");
     var oldWrap=wrap;
-    wrap(g(d.x()).p()==P.pAny);
+    wrap(g(d.x()).p());
     visitE(d.e());
     c(";");
     nl();
@@ -423,7 +427,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     refined(mwt);
     if(p.topCore().isInterface()){c(";");nl();return;}
     g=G.of(mwt.mh());
-    wrap(mwt.mh().t().p()==P.pAny);
+    wrap(mwt.mh().t().p());
     staticMethHeader(mwt.mh());
     c("{");indent();nl();
     methBody(mwt);
