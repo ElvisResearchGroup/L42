@@ -22,7 +22,6 @@ class TestL42Bridge{
     for(String t : strings) {
       if(t.length() == 0 || t.charAt(0) != '#') { throw new Error("Each line in test descriptor should start with a '#'"); }
       t = t.substring(1);
-      System.out.println(t);
       if(isSep(t)) { tests.add(new L42Test()); continue; }
       else if(t.startsWith("Pass") || t.startsWith("Fail")) {
         tests.get(tests.size() - 1).pass = t.substring(0, 4).equals("Pass");
@@ -30,7 +29,6 @@ class TestL42Bridge{
         }
       else if(t.startsWith("line:")) {
         t = t.substring(6);
-        System.out.println(t);
         tests.get(tests.size() - 1).lineNumber = Integer.parseInt(t.substring(0, t.indexOf(' ')));
         tests.get(tests.size() - 1).fileName = t.substring(t.lastIndexOf(' ') + 1);   
         }
