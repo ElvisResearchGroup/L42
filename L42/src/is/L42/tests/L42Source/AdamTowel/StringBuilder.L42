@@ -99,7 +99,12 @@ mut method Void #sbackSlash()=native{trusted:'\'}error void
 mut method Void #sspace()=native{trusted:space}error void
 mut method Void #snewLine()=native{trusted:newLine}error void
 
+mut method Void #addAll(mut This that)=this.addAll(string=that.toS())
+mut method Void #splice(This1.HasToS that)=this.addAll(string=that.toS())
+mut method Void addAll(This1.S string)=native{trusted:addAll}error void
+
+
 class method mut This0 #stringLiteralBuilder()
 read method This1.S toS()=
   native{trusted:toS} error void
-#norm{declaresClassMethods, typeDep=This0, This1.S,This1.HasToS nativeKind=StringBuilder, refined=toS()}
+#norm{declaresClassMethods, typeDep=This0,This1.HasToS,This1.S,This1.HasToS nativeKind=StringBuilder, refined=toS()}

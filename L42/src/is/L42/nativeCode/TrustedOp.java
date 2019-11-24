@@ -61,13 +61,11 @@ class Signature{
   public static Signature sigI(TrustedT retT){
     return new Signature(Immutable,Immutable,retT,L(),L(),L());
     }
-  public static Signature sigI(TrustedT retT,TrustedT p1T){
-    return new Signature(Immutable,Immutable,retT,L(Immutable),L(p1T),L());
+  public static Signature sigI(TrustedT retT,TrustedT ...pTs){
+    var pts=List.of(pTs);
+    List<Mdf> mdfs=L(pts,(c,e)->c.add(Mdf.Immutable));
+    return new Signature(Immutable,Immutable,retT,mdfs,pts,L());
     }
-  public static Signature sigI(TrustedT retT,TrustedT p1T,TrustedT p2T){
-    return new Signature(Immutable,Immutable,retT,List.of(Immutable,Immutable),List.of(p1T,p2T),L());
-    }
-
   }
 class OpUtils{
   static void checkParCount(Program p,MWT mwt,int expected){
@@ -279,6 +277,8 @@ public enum TrustedOp {
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
   SNewLine("newLine",append("\\\\n")),
+  AddAll("addAll",Map.of(StringBuilder,use("%s.append(%s);return L42Void.instance;",
+    sig(Mutable,Immutable,Void,Immutable,String)))),
    
   //toString
   ToS("toS",Map.of(
@@ -296,6 +296,11 @@ public enum TrustedOp {
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42Void.instance;",sigI(Void)),
     TrustedIO,use("return %s.strDebug(%s);",sigI(Void,String))
+    )),
+  TestCondition("testCondition",Map.of(
+  //Library pos,This1.S name,B,This1.S message
+    TrustedIO,use("return %s.testCondition(%s,%s,%s,%s);",sigI(Void,
+      Lib,String,Bool,String))
     )),
   DeployLibrary("deployLibrary",Map.of(
     TrustedIO,use("return %s.deployLibrary(%s,%s);",sigI(Void,String,Lib)))),

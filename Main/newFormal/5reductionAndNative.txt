@@ -147,7 +147,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
   
 * J[wrap] = J[wrap=Any]
 * J[!wrap] = J[wrap=empty]
-* J[ST]= J[wrap] if p.minimize(empty,ST)=Any
+* J[ST]= J[wrap] if p(p.minimize(empty,ST)).interface?=interface
 * J[ST]=J otherwise
 * J.varName(x)="£x"+x+"£fwd"
     if x in J.fwd
@@ -315,8 +315,6 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     //guaranteed not interface implemented
 //TODO: in coherence:
 a coherent nativeKind must have private constructor and no other 'state' methods.
-All the native methods must be of the same nativeKind of the class,
-required mdfs are respected
 //TODO: 
 -check when a method is allowed abstract (coherence can 'sort' them?)
 -when a field have two nativeKind types, we need to make the CAST do the unwrap too;

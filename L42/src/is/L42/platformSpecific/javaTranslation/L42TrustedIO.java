@@ -8,15 +8,35 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.stream.Collectors;
 
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.Pos;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
 
 public class L42TrustedIO {
   public L42Void strDebug(String s){
     Resources.out(s);
+    return L42Void.instance;
+    }
+  public L42Void testCondition(L42Library hasPos,String name,boolean cond,String message){
+    Pos pos=hasPos.unwrap.pos();
+    assert !name.contains("\n");
+    assert !pos.fileName().toString().contains("\n");
+    StringBuilder sb=new StringBuilder("###################\n");
+    if(cond){sb.append("#PASS    "+name+"\n");}
+    else{sb.append("#FAIL    "+name+"\n");}
+    sb.append("#line: "+pos.line());
+    sb.append("    ");
+    sb.append(pos.fileName().toString()+"\n");
+    if(!cond){
+      message=message.lines().map(l->"#|"+l).collect(Collectors.joining());
+      sb.append(message);
+      if(!message.endsWith("\n")){sb.append("\n");}
+      }  
+    Resources.tests(sb.toString());
     return L42Void.instance;
     }
   public L42Void deployLibrary(String s, L42Library l42Lib){
