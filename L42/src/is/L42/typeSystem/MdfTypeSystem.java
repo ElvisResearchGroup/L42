@@ -104,7 +104,8 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
         expected=oldExpected;
         return;     
         }
-      catch(EndError.TypeError ignored){
+      catch(EndError.TypeError ignored){//TODO: no, this also kills any "internal errors"
+        //this means that is always the top level meth call that is blamed
         var res=wrongParameters.putIfAbsent(currentX,new HashSet<>(L(currentMdf)));
         if(res!=null){res.add(currentMdf);}        
         }

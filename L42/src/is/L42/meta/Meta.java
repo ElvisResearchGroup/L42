@@ -12,7 +12,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import is.L42.common.Constants;
 import is.L42.common.Parse;
@@ -41,6 +44,30 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class Meta {
+  private final Map<List<C>,P> redirects;
+  public Meta(){this(Map.of());}
+  public Meta(Map<List<C>,P> redirects){this.redirects=redirects;}
+  public Meta addMapP(String name,L42Any target){
+    List<C> cs=unwrapCs(name);
+    P p=unwrapPath(target);
+    var res=new HashMap<>(redirects);
+    res.merge(cs,p,(old,val)->{throw todo();});
+    return new Meta(Collections.unmodifiableMap(res));
+    }
+  public Meta mergeMap(Meta meta){
+    var res=new HashMap<>(redirects);
+    for(var e:meta.redirects.entrySet()){
+      res.merge(e.getKey(),e.getValue(),(old,val)->{throw todo();});
+      }
+    return new Meta(Collections.unmodifiableMap(res));
+    }
+  public L42Library applyMap(L42Library input){
+    assert redirects.size()==1;
+    var cs=redirects.keySet().iterator().next();
+    var t=redirects.values().iterator().next();
+    L l=input.unwrap;
+    return wrapL(simpleRedirect(l,cs, t));
+    }
   private static P unwrapPath(L42Any classAny){
     L42ClassAny cn;
     if(classAny instanceof L42ClassAny){cn=(L42ClassAny)classAny;}
@@ -139,17 +166,18 @@ public class Meta {
     return a.with_e(body).withNativeUrl(nativeUrl);
     //TODO: sum the mh docs and the pos
     }
+  private L simpleRedirect(L input, List<C> cs, P target){
+    Program p=Resources.currentP;
+    //TODO: check if source and dest are compatible with p._ofCore(path);
+    var res=replaceP(cs,target,p.push(Resources.currentC,input)).visitL(input);
+    res=res.withCs(cs, nc->{throw unreachable();},nc->null);
+    return res;
+    }
   public L42Library simpleRedirect(String innerPath, L42Library l42Lib, L42Any classAny){
     L l=l42Lib.unwrap;
     List<C> cs=unwrapCs(innerPath);
     P path=unwrapPath(classAny);
-    //var source=l.cs(cs);
-    Program p=Resources.currentP;
-    //var dest=p._ofCore(path);
-    //TODO: check if source and dest are compatible
-    var res=replaceP(cs,path,p.push(Resources.currentC,l)).visitL(l);
-    res=res.withCs(cs, nc->{throw unreachable();},nc->null);
-    return wrapL(res);
+    return wrapL(simpleRedirect(l,cs,path));
     }
   private static CloneVisitorWithProgram replaceP(List<C>cs,P dest,Program pStart){
     return new CloneVisitorWithProgram(pStart){

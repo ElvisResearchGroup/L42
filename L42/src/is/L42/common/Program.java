@@ -312,7 +312,7 @@ public class Program implements Visitable<Program>{
     return tmp;
     }
   private P.NCs baseMinimize(P.NCs p) {
-    assert !pTails.isEmpty():"";
+    assert !pTails.isEmpty():p;
     if(p.cs().isEmpty()){return p;}
     if(!pTails.hasC()){return p;}
     if(!pTails.c().equals(p.cs().get(0))){return p;}

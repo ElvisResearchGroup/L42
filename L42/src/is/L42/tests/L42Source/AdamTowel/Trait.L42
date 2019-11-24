@@ -1,5 +1,6 @@
 Lifted={interface class method Library code()}
-$colon0={class method Trait (Library that)=Trait(that)}
+ClassOperators={class method class Trait()=Trait}
+class method This #colon0(Library that)=This(that)
 Library code
 class method This(Library code)
 class method This(Library that)=This(code=that)
@@ -8,11 +9,24 @@ method This #plus1(Library lib)=This:Meta().simpleSum(a=lib,b=this.code())
 method This #plus0(class Lifted lifted)=This:Meta().simpleSum(a=this.code(),b=lifted.code())
 method This #plus1(class Lifted lifted)=This:Meta().simpleSum(a=lifted.code(),b=this.code())
 
+Acc={
+  var Meta that
+  class method mut This(Meta that)
+  class method mut Acc #squareBuilder()=Acc(Meta())
+  class method Bool #shortCircutSquare()=Bool.true()
+  mut method Void #add(Meta that)=this.that(\that.mergeMap(that)) 
+  }
+method Trait (mut Acc squareBuilder)=
+  Trait:squareBuilder.that().applyMap(this.code())
+
+
+method Library #toLibrary()=
+  Meta().simpleSum(a=Meta().resource(this.code()),b=ToLibrary())
+  
 ToLibrary=Meta().resource({[Lifted]
   class method Library ()
   class method Library code()=This()
   class method Trait #plus0(Library lib)=Trait:Meta().simpleSum(a=this.code(),b=lib)
   class method Trait #plus1(Library lib)=Trait:Meta().simpleSum(a=lib,b=this.code())
+  ClassOperators={class method Trait()=Trait:This1.code()}
   }) 
-method #toLibrary()=
-  Meta.simpleSum(a=Meta().resource(this.code()),b=ToLibrary())

@@ -304,14 +304,18 @@ public enum TrustedOp {
       Immutable,String,  Immutable,Lib,  Class,Any))
     )),
   SimpleSum("simpleSum",Map.of(
-    Meta,use("return %s.simpleSum(%s,%s);",sig(Immutable,Immutable,Lib,
-      Immutable,Lib,  Immutable,Lib))
-    )),
+    Meta,use("return %s.simpleSum(%s,%s);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
-    Meta,use("return %s.resource(%s);",sig(Immutable,Immutable,Lib,
-      Immutable,Lib))
+    Meta,use("return %s.resource(%s);",sigI(Lib,Lib)))),
+  AddMapP("addMapP",Map.of(
+    Meta,use("return %s.addMapP(%s,%s);",sig(Immutable,Immutable,Meta,
+      Immutable,String,  Class,Any))
     )),
-
+  MergeMap("mergeMap",Map.of(
+    Meta,use("return %s.mergeMap(%s);",sigI(Meta,Meta)))),
+  ApplyMap("applyMap",Map.of(
+    Meta,use("return %s.applyMap(%s);",sigI(Lib,Lib)))),
+  
   //Vector
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)))),

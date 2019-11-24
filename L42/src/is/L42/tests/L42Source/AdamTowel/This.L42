@@ -22,24 +22,21 @@ DeployAAA=(
     Bool={...}
     Size={...}
     S={...}
+    X={...}
+    Url={...}
     Debug={...}
     StringBuilder={...}
     Meta={...}
+    Name={...}
     Trait={...}
     Class={...}
-    Deploy={...}
-    Url={...}
-    ListT=Meta().simpleSum(a={...},b={
-      ListOps=Meta().resource({...})
-      class method Library (class Any that)=(
-        a=Meta().simpleSum(a=this.code(),b=ListOps())
-        Meta().simpleRedirect(
-          innerPath=S"Elem"
-          l42Lib=a
-          classAny=that)
-          )
-        })
-    Strings=ListT(S)
+    Deploy={...}   
+    ListT={
+      ListNative=Trait:{...}
+      ListOps=Trait:{...}
+      class method Trait(class Any that)=(ListOps+ListNative)['Elem>that]
+      }
+    Strings=Class:ListT(S)
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )

@@ -410,7 +410,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert binOp.es().size()>=2:binOp.es();
     if(binOp.es().size()!=2){binOp=applyAssociativity(binOp);}
     if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
-    if(binOp.es().get(0) instanceof Full.CsP){visitBinOpCsp(binOp);return;}
+    if(binOp.es().get(0) instanceof Full.CsP){binOp=visitBinOpCsp(binOp);}
     List<Full.E> xps=new ArrayList<>();
     List<Full.D> ds=L(binOp.es(),(c,ei)->{
       if(isFullXP(ei)){xps.add(ei);return;}
@@ -468,29 +468,18 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var ifElse=new Full.If(p, ex,L(), srCall,spCall);
     visitBlock(makeBlock(p, L(dx),ifElse));
     }
-  private void visitBinOpCsp(Full.BinOp b){
+  private Full.BinOp visitBinOpCsp(Full.BinOp b){
     assert b.es().get(0) instanceof Full.CsP;
     var csp=(Full.CsP)b.es().get(0);
     var e=b.es().get(1);
     assert b.es().size()==2;
     assert csp.cs().isEmpty();
     assert csp._p().isNCs();//should be a well formedness error
-    C c=new C("$"+NameMangling.methName(b.op(),0).substring(1),-1);
     var p=csp._p().toNCs();
-    p=p.withCs(pushL(p.cs(),c));
-    var pct=new Half.PCastT(b.pos(), p, L(new Core.T(Mdf.Class,L(),p)));
-    List<ST> stz0= L(new ST.STMeth(pct.stz().get(0),applyThat,-1));
-    List<ST> stz1= L(new ST.STMeth(pct.stz().get(0),applyThat,1));
-    var oldExpectedT=y._expectedT();
-    y=y.with_expectedT(stz1);
-    var res=compute(e);
-    y=y.with_expectedT(oldExpectedT);
-    var e1=res.e;
-    var stz2=res.resSTz;
-    var stz=res.retSTz;
-    ctz.plusAcc(y.p(), stz2, stz1);
-    Half.MCall half=new Half.MCall(b.pos(),pct,applyThat,L(e1));
-    commit(half,stz0,stz);
+    p=p.withCs(pushL(p.cs(),classOperators));
+    var pos=b.pos();
+    var methC=new Full.Call(pos,new Full.CsP(pos,L(),p),applyZero,false,Par.emptys);
+    return b.withEs(List.of(methC,e));
     }
   @Override public void visitEString(Full.EString s){
     Pos p=s.pos();
@@ -655,6 +644,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S hasElemS=S.parse("#hasElem()");
   private static final S startIndexS=S.parse("#startIndex()");
   private static final S applyThat=S.parse("#apply(that)");
+  private static final S applyZero=S.parse("#apply()");
   private static final S stringLiteralBuilder=S.parse("#stringLiteralBuilder()");
   private static final S squareBuilder=S.parse("#squareBuilder()");
   private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
@@ -663,8 +653,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S addAllS=S.parse("#addAll()");
   private static final S spliceS=S.parse("#splice()");
   private static final S fromS=S.parse("#from()");
+  private static final C classOperators=new C("ClassOperators",-1);
   private static final List<X> squareBuilderX=L(new X("squareBuilder"));
   private static final List<X> stringLiteralX=L(new X("stringLiteral"));
   private static final List<X> valX=L(new X("val"));
   private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
+ 
 }

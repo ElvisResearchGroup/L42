@@ -70,13 +70,7 @@ _______
 //    T => X= if !T T else X//shortResult=> is true, shortCircut=> is !this
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
-* Y!CsP OP e = P<:class P.#apply(that=e'); STz0; STz; CTz <+Y.p (STz2 <= STz1)
-    P = CsP.methName(OP)[#=$]//where # is replaced by $
-    STz0 = P.#apply(that)
-    STz1 = P.#apply(that).1
-    Y[expectedT=STz1] ! e = e'; STz2; STz; CTz
-    // not just doing Y!(CsP.$methName(OP)(that=e)) since that will cause \'s to be re-interpreted.
-
+* Y!CsP OP e = CsP.ClassOperators() OP e
 * Y!(e0 OP..OP en) = Y!(Ds e0' OP..OP en')
     Ds = [xi=ei | ei not of form xP]
     Ds != empty // or else the next case will apply

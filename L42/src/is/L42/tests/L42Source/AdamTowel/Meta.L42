@@ -1,4 +1,10 @@
 class method This #apply()
+method This addMap(This1.S name,class Any classAny)=
+  native{trusted:addMapP} error void
+method This mergeMap(This that)=
+  native{trusted:mergeMap} error void
+method Library applyMap(Library that)=
+  native{trusted:applyMap} error void
 method Library resource(Library that)=
   native{trusted:resource} error void
 method Library simpleSum(Library a, Library b)=
@@ -6,4 +12,6 @@ method Library simpleSum(Library a, Library b)=
 method Library simpleRedirect(
   This1.S innerPath,Library l42Lib,class Any classAny)=
     native{trusted:simpleRedirect} error void
-#norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=Meta}
+class method This1.Name #from(This1.StringBuilder stringLiteral)=
+  This1.Name<:class This1.Name.#from(stringLiteral=stringLiteral)
+#norm{declaresClassMethods, typeDep=This0, This1.S,This1.Name,This1.StringBuilder coherentDep=This1.Name nativeKind=Meta}
