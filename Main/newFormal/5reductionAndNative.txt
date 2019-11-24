@@ -246,7 +246,10 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 
 * J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
     {returnkw J.className(This0).m(x1..xn)(this,£xx1..£xxn);}
-
+  p(This0).Info.nativeKind=empty
+* J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
+    {returnkw J.className(This0).m(x1..xn)(this.unwrap,£xx1..£xxn);}
+  p(This0).Info.nativeKind!=empty
 * J.refined(MWT)=empty
     MWT.MH.s notin p(This0).Info.refined
     p(This0).interface?=empty

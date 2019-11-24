@@ -177,7 +177,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
 
   @Override public void visitMCall(Core.MCall m){
     T t=g(m.xP());
-    var mwts=p._ofCore(t.p()).mwts();
+    var lib=p._ofCore(t.p());
+    assert lib!=null:t;
+    var mwts=lib.mwts();
     var elem=_elem(mwts,m.s());
     assert elem!=null:m.s();
     var mh=elem.mh();
@@ -569,6 +571,7 @@ private void refineMethBody(MH mh) {
     visitS(mh.s());
     c("(");
     kw("this");
+    if(!p.topCore().info().nativeKind().isEmpty()){c(".unwrap");}
     for(X x:mh.s().xs()){
       c(", ");
       kw("£x"+x.inner());

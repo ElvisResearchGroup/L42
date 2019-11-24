@@ -1,3 +1,4 @@
+[This1.HasToS]
 class method This false()
 class method This true()=(This false=this.false() false.not())
 method This #if()=this
@@ -14,4 +15,4 @@ method This #shortCircut#oror()=this
 method This #shortProcess#oror(This that,This other)=other
   
 read method This1.S toS()=native{trusted:toS} error void
-#norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=Bool}
+#norm{declaresClassMethods, typeDep=This0,This1.S,This1.HasToS nativeKind=Bool refined=toS()}

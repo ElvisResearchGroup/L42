@@ -1,3 +1,4 @@
+[This1.HasToS]
 class method This zero()
 
 method This #plus0(This that)=native{trusted:OP+} error void
@@ -18,4 +19,4 @@ class method This0 #from(This1.StringBuilder stringLiteral)=(
   s.toInt()
   )
 method This #succ()=native{trusted:succ} error void
-#norm{declaresClassMethods, typeDep=This,This1.S,This1.Bool,This1.StringBuilder nativeKind=Int}
+#norm{declaresClassMethods, typeDep=This,This1.S,This1.Bool,This1.StringBuilder,This1.HasToS nativeKind=Int, refined=toS()}

@@ -1,3 +1,4 @@
+[This1.HasToS]
 mut method Void #d0()=native{trusted:'0'}error void
 mut method Void #d1()=native{trusted:'1'}error void
 mut method Void #d2()=native{trusted:'2'}error void
@@ -101,4 +102,4 @@ mut method Void #snewLine()=native{trusted:newLine}error void
 class method mut This0 #stringLiteralBuilder()
 read method This1.S toS()=
   native{trusted:toS} error void
-#norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=StringBuilder}
+#norm{declaresClassMethods, typeDep=This0, This1.S,This1.HasToS nativeKind=StringBuilder, refined=toS()}

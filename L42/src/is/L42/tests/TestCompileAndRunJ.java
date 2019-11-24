@@ -81,7 +81,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{typeDep=This1.S declaresClassMethods }}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
-
+  ),new AtomicTest(()->
+  loadRun("""
+    I={interface method Void i() #typed{}}
+    D={[This1.I] class method This of() method Void i()=void #typed{declaresClassMethods typeDep=This,This1.I, refined=i() nativeKind=Bool}}
+    ""","(This.D x=This.D<:class This.D.of() Void v=x.i() {#norm{}})","")
   ),new AtomicTest(()->
   loadRun("""
   SafeReadFile={
@@ -193,7 +197,7 @@ public static void loadRunErr(String s,String e){
     Program p=base(s);
     Loader l;try{l=loadBase(p,true);}
     catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library m()="+e+" #norm{typeDep=This.C coherentDep=This.C uniqueId=id1}}";
+    String code="{ method Library m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
     catch (InvocationTargetException e1) {
@@ -215,7 +219,7 @@ public static void loadRun(String s,String e,String output){
     //somehow using a switch expression makes junit fail
     Loader l;try{l=loadBase(p,true);}
     catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library m()="+e+" #norm{typeDep=This.C coherentDep=This.C uniqueId=id1}}";
+    String code="{ method Library m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
     catch (InvocationTargetException e1) {fail(e1.getCause());}
