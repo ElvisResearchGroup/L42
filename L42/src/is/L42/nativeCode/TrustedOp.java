@@ -355,7 +355,7 @@ public enum TrustedOp {
   LTEqual("OP<=",Map.of(Int,use("return %s <= %s;",sigI(Bool,Int)))),
   EqualEqual("OP==",Map.of(
     Int,use("return %s == %s;",sigI(Bool,Int)),
-    String,use("return %s == %s;",sigI(Bool,String)),
+    String,use("return %s.equals(%s);",sigI(Bool,String)),
     Bool,use("return %s == %s;",sigI(Bool,Bool))
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int))));

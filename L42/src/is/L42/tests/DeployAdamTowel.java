@@ -38,11 +38,13 @@ import static is.L42.common.Err.hole;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class DeployAdamTowel{
-  @Test public void deploy() throws IOException, URISyntaxException{
+public class DeployAdamTowel extends TestL42Bridge {
+  public static Stream<L42Test> test() throws IOException, URISyntaxException {
     Resources.clearRes();
     var res=DeployAdamTowel.class.getResource("L42Source/AdamTowel");
     Main.main(Paths.get(res.toURI()).toString());
     assertFalse(Resources.out().isEmpty());
+    //System.out.println("---------------\n"+Resources.tests()+"---------------\n");
+    return fromString(Resources.tests());
     }
   }

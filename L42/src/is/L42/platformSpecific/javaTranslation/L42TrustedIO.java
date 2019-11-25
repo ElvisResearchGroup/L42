@@ -26,15 +26,15 @@ public class L42TrustedIO {
     assert !name.contains("\n");
     assert !pos.fileName().toString().contains("\n");
     StringBuilder sb=new StringBuilder("###################\n");
-    if(cond){sb.append("#PASS    "+name+"\n");}
-    else{sb.append("#FAIL    "+name+"\n");}
+    if(cond){sb.append("#Pass    "+name+"\n");}
+    else{sb.append("#Fail    "+name+"\n");}
     sb.append("#line: "+pos.line());
     sb.append("    ");
     sb.append(pos.fileName().toString()+"\n");
     if(!cond){
       message=message.lines().map(l->"#|"+l).collect(Collectors.joining());
       sb.append(message);
-      if(!message.endsWith("\n")){sb.append("\n");}
+      if(!message.isEmpty() && !message.endsWith("\n")){sb.append("\n");}
       }  
     Resources.tests(sb.toString());
     return L42Void.instance;

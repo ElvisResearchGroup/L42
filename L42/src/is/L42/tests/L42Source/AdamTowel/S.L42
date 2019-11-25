@@ -7,5 +7,9 @@ class method This0 #from(This1.StringBuilder stringLiteral)=stringLiteral.toS()
 
 method This1.Bool #equalequal0(This that)=native{trusted:OP==} error void
 method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
-
-#norm{declaresClassMethods, typeDep=This0, This1.Size, This1.StringBuilder,This1.HasToS,This1.Bool nativeKind=String, refined=toS()}
+class method This dq()=This<:class This.#from(stringLiteral=(
+  mut This1.StringBuilder b=This1.StringBuilder<:class This1.StringBuilder.#stringLiteralBuilder()
+  Void v=b.#sdQuote()
+  b
+  ))
+#norm{declaresClassMethods, typeDep=This0, This1.Size, This1.StringBuilder,This1.HasToS,This1.Bool nativeKind=String, coherentDep=This,This1.StringBuilder refined=toS()}

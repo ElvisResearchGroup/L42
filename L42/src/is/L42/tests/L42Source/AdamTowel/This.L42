@@ -54,12 +54,16 @@ Test1={reuse[#$AdamTowel]
   Task=(
     half=21Size
     answer=half+half
-    {}:Test"Answer is 42"(answer==42Size)"Computed answer is %answer.toS()"
+    {}:Test"Sum"(answer==42Size)"Computed answer is %answer.toS()"
     {}:Test"Failing test"(answer==8Size)"Computed answer is %answer.toS()"
-    Debug(S"Hello World "++answer.toS()++S"!")
-    err=Size"oh NO!"
-    Debug(S"this should not be printed")
-    catch error S x Debug(x) 
+    {}:Test"StringConcat"(S"Hello World "++answer.toS()++S"!" == S"Hello World 42!")
+    {}:Test"StringSpliceConcat"(S"Hello World %answer!" == S"Hello World 42!")
+    (
+      err=Size"oh NO!"//throws error
+      {}:Test"InvalidParseInt"( Bool.false() )"Errors not thrown"
+      catch error S x 
+        {}:Test"InvalidParseIntError"(x==S"The string %S.dq()oh NO!%S.dq() is not a valid number")"Error is %x" 
+     )
     )
   NotCoh={This field, class method This ()}
   TestListT=(//If ListT code write This1.Size instead of This2.Size, no type error happens.

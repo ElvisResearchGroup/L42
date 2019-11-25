@@ -14,8 +14,7 @@ Condition={
     This(name=this.name(),cond=this.cond(),message=this.message()++stringLiteral.toS())
   method Void :1(Library pos)=Debug.of()<:Debug.testCondition(pos=pos,name=this.name(),cond=this.cond(),message=this.message())
   }
-
-  /*
+/*
 {}:Test"Tom is bigger then Tim"( tom.height()>tim.height() )"oh No!"
 {}:Test"Genoa and Wellington are livable"( Cityes.livable() 
   expectedIn=\[\"...Genoa...Wellington...";\"...Wellington...Genoa..."])
@@ -23,26 +22,4 @@ Testing should support Bool, 2 Strings and 2 Any, doing structural equivalence o
 expected/expectedIn for strings, not sure if it good to have expectedEqIn for Anys..
 may be expectedIn is just overkill
 my be have a contains for the strings?
-
-###############
-#Pass TestName
-#line: 12   fileName
-###############
-#Fail TestName
-#line: 12   fileName
-#Bool
-#|message
-#|
-###############
-#Fail TestName
-#line: 12   fileName
-#StrCompare
-#Actual  
-#|foo(
-#|  bar
-#|  )
-#Expected
-#|expected
-
-   */
-   
+*/
