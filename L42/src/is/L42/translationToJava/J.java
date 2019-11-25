@@ -139,9 +139,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   void wrap(Boolean b){this.wrap=b;}
   void wrap(P p){
     var l=this.p._ofCore(p);
-    assert l!=null:
-    p+" "+this.p;
-    if(l.isInterface()){wrap(true);}
+    assert l!=null:p+" "+this.p;
+    wrap(l.isInterface());
     }  
   @Override public void visitEX(Core.EX ex){
     X x=ex.x();

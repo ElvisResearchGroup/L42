@@ -43,8 +43,6 @@ public class DeployAdamTowel extends TestL42Bridge {
     Resources.clearRes();
     var res=DeployAdamTowel.class.getResource("L42Source/AdamTowel");
     Main.main(Paths.get(res.toURI()).toString());
-    assertFalse(Resources.out().isEmpty());
-    //System.out.println("---------------\n"+Resources.tests()+"---------------\n");
     return fromString(Resources.tests());
     }
   }

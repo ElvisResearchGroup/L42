@@ -324,7 +324,7 @@ public enum TrustedOp {
   //Vector
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)))),
-  Val("val",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
+  ReadVal("readVal",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
   //using %1$s and %2$s to avoid local variables
   ImmVal("immVal",Map.of(Vector,use("""
     var tmp=%1$s.get(%2$s*2+1);

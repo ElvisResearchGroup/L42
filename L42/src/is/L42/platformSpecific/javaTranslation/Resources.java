@@ -39,7 +39,7 @@ public class Resources {
     tests.append(s);
     System.out.println(s);
     }
-  public static <K> K throwE(L42Error e){throw e;}
+  public static <K> K throwE(L42Throwable e){throw e;}
   public static<K> L42Void toVoid(K k){return L42Void.instance;}
   public static Program currentP;
   public static C currentC;
