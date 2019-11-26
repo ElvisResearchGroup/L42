@@ -1,13 +1,13 @@
 Lifted={interface class method Library code()}
 ClassOperators={class method class Trait()=Trait}
-class method This #colon0(Library that)=This(that)
+class method This #colon0(Library that)=This(code=that)
 Library code
 class method This(Library code)
-class method This(Library that)=This(code=that)
-method This #plus0(Library lib)=This:Meta().simpleSum(a=this.code(),b=lib)
-method This #plus1(Library lib)=This:Meta().simpleSum(a=lib,b=this.code())
-method This #plus0(class Lifted lifted)=This:Meta().simpleSum(a=this.code(),b=lifted.code())
-method This #plus1(class Lifted lifted)=This:Meta().simpleSum(a=lifted.code(),b=this.code())
+//class method This(Library that)=This(code=that)//TODO: can just be removed
+method This +(Library lib)=This:Meta().simpleSum(a=this.code(),b=lib)
+method This +1(Library lib)=This:Meta().simpleSum(a=lib,b=this.code())
+method This +(class Lifted lifted)=This:Meta().simpleSum(a=this.code(),b=lifted.code())
+method This +1(class Lifted lifted)=This:Meta().simpleSum(a=lifted.code(),b=this.code())
 
 Acc={
   var Meta that
@@ -22,11 +22,11 @@ method Trait (mut Acc squareBuilder)=
 
 method Library #toLibrary()=
   Meta().simpleSum(a=Meta().resource(this.code()),b=ToLibrary())
-  
+
 ToLibrary=Meta().resource({[Lifted]
   class method Library ()
   class method Library code()=This()
   class method Trait #plus0(Library lib)=Trait:Meta().simpleSum(a=this.code(),b=lib)
   class method Trait #plus1(Library lib)=Trait:Meta().simpleSum(a=lib,b=this.code())
   ClassOperators={class method Trait()=Trait:This1.code()}
-  }) 
+  })

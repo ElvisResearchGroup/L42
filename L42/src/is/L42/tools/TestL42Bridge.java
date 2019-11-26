@@ -1,4 +1,4 @@
-package is.L42.tests;
+package is.L42.tools;
 
 import static is.L42.tools.General.L;
 import static org.junit.Assert.assertEquals;
@@ -11,7 +11,7 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-class TestL42Bridge{
+public class TestL42Bridge{
   static final String separator = "<<<<STRCMP>>>>";
   @MethodSource
   @ParameterizedTest(name = "{index}: {0}")
@@ -44,31 +44,28 @@ class TestL42Bridge{
       if(c != '#' && c != ' ' && c != '\n') { return false; }
       }
     return true;
-    }
-  }
-  
-class L42Test{
-  int lineNumber;
-  String type;
-  String testName;
-  String fileName;
-  String message = "";
-  boolean pass;
-  
-  L42Test() {}
-  
-  public String toString() { return testName + ": line " + lineNumber + " in " + fileName ; }
-  public void checkPass() {
-    if(pass || type == null) { assertTrue(pass); return; }
-    switch(type) {
-      case "Bool": assertTrue(pass, message);
-      case "StrCompare":
-        String[] expactual = message.split(TestL42Bridge.separator);
-        assertEquals(expactual[1], expactual[0]);
+    }  
+  public static class L42Test{
+    int lineNumber;
+    String type;
+    String testName;
+    String fileName;
+    String message = "";
+    boolean pass;  
+    L42Test() {}  
+    public String toString() { return testName + ": line " + lineNumber + " in " + fileName ; }
+    public void checkPass() {
+      if(pass || type == null) { assertTrue(pass); return; }
+      switch(type) {
+        case "Bool": assertTrue(pass, message);
+        case "StrCompare":
+          String[] expactual = message.split(TestL42Bridge.separator);
+          assertEquals(expactual[1], expactual[0]);
+        }
       }
     }
   }
-
+/*//example of use
 public class TestL42TestBridge extends TestL42Bridge {
   public static Stream<L42Test> test() {return fromString("""
 ###############
@@ -89,8 +86,8 @@ public class TestL42TestBridge extends TestL42Bridge {
 #|  bar
 #|  )
 #Expected
-#|expectedme
+#|expectede
 """);
   }
-
 }
+*/

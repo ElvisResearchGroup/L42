@@ -1,0 +1,136 @@
+Elem={}
+class method Bool equals(read Elem a,read Elem b)
+read method  read Elem left()
+method This withoutLeft()
+method This withAlsoLeft(Elem that)
+
+read method Bool contains(read Elem that)={
+  for read e in this (
+    if e==that return Bool.true()
+    )
+  return Bool.false()
+  }
+
+//################# operators
+read method Bool #in1(read Elem that)=this.contains(that)
+
+method This -(Elem right)=this.withoutAll(val:right)
+
+method This --(This right)=This[for e in this ( if !(e in right) \list.add(e))]
+
+//method This &(This right)=This[for e in this ( if e in right \list.add(e) )]
+
+//method Bool >>(This right= this >>=right & !(right>>=this)
+
+//method Bool >>=(This right)=//TODO:
+//  Bool.falseOr[{for read e in right(if !(e in this) return \true)}]
+method Bool >>=(This right)={
+  for read e in right (
+    if !(e in this) return Bool.false()
+    )
+  return Bool.true()
+  }
+//read method Bool ==(read This that)=
+//  Bool.trueAnd[{for read e1 in this, read e2 in that (if e1!=e2 return \false)
+//    catch error IterationFailure  return \false //TODO:
+//      }]
+read method Bool ==(read This that)={
+  for read e1 in this, read e2 in that (
+    if e1!=e2 return Bool.false()
+    )
+  catch error IterationFailure ( return Bool.false() )//TODO:
+  return Bool.true()
+  }
+read method Size indexOfLeft(read Elem val)={
+  size=this.size()
+  var Size pos=0Size
+  loop ( //TODO: size.range() may range from 0 to size-1, and size.inverseRange() from size-1 to 0
+    if this.val(pos)==val return pos
+    if pos>=size return Size"-1"
+    pos+=1Size
+    )
+  }
+read method Size indexOfRight(read Elem val)={
+  var Size pos=this.size()-1Size
+  loop (
+    if this.val(pos)==val return pos
+    if pos<=0Size return Size"-1"
+    pos-=1Size
+    )
+  }
+method This without(Size index) //from VectorTrait
+//TODO: HERE
+method This withoutLeft(read Elem val) {
+  pos=this.indexOfLeft(val:val)
+  if pos<0Size return this
+  return this.without(index:pos)
+  }
+
+method This withoutRight(read Elem val)={
+  pos=this.indexOfRight(val:val)
+  if pos<0Size return this
+  return this.without(index:pos)
+  }
+
+method This withoutAll(read Elem val)=This[for e in this.vals() (if e!=val \list.add(e))]
+
+mut method Void remove(Size that) //from VectorTrait
+
+mut method Void removeAll(read Elem val){
+  var Size pos=0Size
+  loop (
+    if this.val(pos)==val (this.remove(pos))
+    else (pos+=1Size)
+    if pos==this.size() (return void)
+    )
+  }
+
+mut method
+Void removeLeft(read Elem val){
+  pos=this.indexOfLeft(val:val)
+  if pos<0Size (return void)
+  return this.remove(pos)
+  }
+
+mut method
+Void removeRight(read Elem val){
+  pos=this.indexOfRight(val:val)
+  if pos<0Size (return void)
+  return this.remove(pos)
+  }
+
+
+
+
+class method mut This (mut This squareBuilder)=squareBuilder
+class method mut This #squareBuilder()=This.empty()
+class method Bool #shortCircutSquare()=Bool.true()
+mut method Void #add(Elem that)=this.add(immVal=that)
+mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
+mut method Void #yield(Void that)=void
+mut method mut This list()=this
+read method read This #iterator()=this
+mut method mut This #varIterator()=this
+read method Size #startIndex()=0Size
+read method Bool #hasElem(Size that)=that<this.size()
+read method Bool #incomplete(Size that)=that!=this.size()
+read method Elem #elem#imm(Size that)=this.val(that)
+mut method mut Elem #elem#mut(Size that)=this.#val(that)
+read method Elem #elem#default(Size that)=this.#elem#imm(that)
+mut method mut Elem #update#mut(Size that, mut Elem val)=(this(that,mutVal=val) val)
+mut method Elem #update#imm(Size that, Elem val)=(this(that,immVal=val) val)
+mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
+read method Void #close(Size that)=
+  if this.#incomplete(that) error S"multi for skipped some elements"
+mut method Void add(Elem that)=this.add(immVal=that)
+
+class method mut This empty()
+read method Bool isEmpty()
+read method Size size()
+read method read Elem readVal(Size that)
+read method imm  Elem val(Size that)
+mut method mut Elem #val(Size that)
+mut method Void #apply(Size that,Elem immVal)
+mut method Void #apply(Size that,mut Elem mutVal)
+mut method Void add(Elem immVal)
+mut method Void add(mut Elem mutVal)

@@ -12,7 +12,7 @@ Condition={
   class method This(S name,Bool cond,S message)
   method This #from(StringBuilder stringLiteral)=
     This(name=this.name(),cond=this.cond(),message=this.message()++stringLiteral.toS())
-  method Void :1(Library pos)=Debug.of()<:Debug.testCondition(pos=pos,name=this.name(),cond=this.cond(),message=this.message())
+  method Void :1(Library pos)=Debug.of().testCondition(pos=pos,name=this.name(),cond=this.cond(),message=this.message())
   }
 /*
 {}:Test"Tom is bigger then Tim"( tom.height()>tim.height() )"oh No!"
