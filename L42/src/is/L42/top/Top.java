@@ -78,7 +78,7 @@ public class Top {
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
-    Program p2=flagTyped(loader,p1.update(l));//propagate illTyped
+    Program p2=flagTyped(p1.update(l));//propagate illTyped
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
     alreadyCoherent.remove(alreadyCoherent.size()-1);
@@ -161,9 +161,11 @@ public class Top {
     this.uniqueId = uniqueId;
     this.loader = loader;
   }
+  public void loadNow(Program p)throws CompilationError {loader.loadNow(this, p);}
   private Program topNC(CTz ctz, Program p, List<NC> ncs)  throws EndError{
     if(ncs.isEmpty()){return p;}
     C c0=ncs.get(0).key();
+    System.out.println("Now considering main "+c0);
     Full.E fe=ncs.get(0).e();
     List<Full.Doc> docs=ncs.get(0).docs();
     List<Pos> poss=ncs.get(0).poss();
@@ -179,21 +181,23 @@ public class Top {
     var cohePs=new ArrayList<P.NCs>();
     P pRes=wellTyped(p,ce,cohePs,ncs);//propagate errors //ncs is passed just to provide better errors
     Core.E ce0=adapt(ce,pRes);
-    coherent(p,cohePs); //propagate errors
+    coherentAllPs(p,cohePs); //propagate errors
+    System.out.println("Now reducing main "+c0);
     Core.L l=(Core.L)reduce(p,c0,ce0);//propagate errors
+    System.out.println(c0+ " reduced");
     assert l!=null:c0+" "+ce0;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc));
-    Program p2=flagTyped(loader,p1);//propagate errors
+    Program p2=flagTyped(p1);//propagate errors
     //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)    
     Program res=topNC(p2.from(frommedCTz,P.of(0,L(c0))),p2,ncs);
     return res; 
     }
-  protected Program flagTyped(Loader loader,Program p1) throws EndError{
-    return FlagTyped.flagTyped(loader,p1);//but can be overridden as a testing handler
+  protected Program flagTyped(Program p1) throws EndError{
+    return FlagTyped.flagTyped(this,p1);//but can be overridden as a testing handler
     }
   protected Core.E reduce(Program p,C c,Core.E e)throws EndError  {
-    try{return loader.runNow(p, c, e);}
+    try{return loader.runNow(this,p, c, e);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}
             if(e1.getCause()instanceof Error){throw (Error) e1.getCause();} 
@@ -201,8 +205,8 @@ public class Top {
       }
     catch(CompilationError e1){throw new Error(e1);}
     }
-  private void coherent(Program p, ArrayList<P.NCs> cohePs)throws EndError{
-    Coherence.coherentE(p,cohePs,alreadyCoherent);
+  public void coherentAllPs(Program p, List<P.NCs> cohePs)throws EndError{
+    Coherence.coherentAllPs(p,cohePs,alreadyCoherent);
     }
   private Core.E adapt(Core.E ce, P path) {
     if(path==P.pLibrary){return ce;}

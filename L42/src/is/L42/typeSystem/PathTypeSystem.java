@@ -103,7 +103,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     }
   @Override public void visitMCall(MCall e){
     P p0=TypeManipulation.guess(g,e.xP());
-    var l=p._ofCore(p0);
+    Core.L l;try{l=p._ofCore(p0);}
+    catch(AssertionError ae){throw new AssertionError(p0.toString(),ae);}
     assert l!=null:
     "";
     MWT mwt=_elem(l.mwts(),e.s());

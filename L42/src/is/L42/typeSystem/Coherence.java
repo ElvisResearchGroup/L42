@@ -177,7 +177,7 @@ public class Coherence {
       default->false;
       };
     }
-  static public void coherentE(Program p,ArrayList<P.NCs> cohePs, ArrayList<HashSet<List<C>>> alreadyCoherent){
+  static public void coherentAllPs(Program p,List<P.NCs> cohePs, ArrayList<HashSet<List<C>>> alreadyCoherent){
     for(var pi:cohePs){coherentE(p,pi,alreadyCoherent);}
     }
   static private void coherentE(Program p,P.NCs coheP,ArrayList<HashSet<List<C>>> alreadyCoherent){

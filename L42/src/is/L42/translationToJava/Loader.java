@@ -13,6 +13,7 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
+import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
@@ -21,6 +22,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.platformSpecific.javaTranslation.L42Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
+import is.L42.top.Top;
 import is.L42.typeSystem.Coherence;
 
 import static is.L42.tools.General.L;
@@ -43,8 +45,8 @@ public class Loader {
   private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
-    loadNow(p);
+  public Core.L runNow(Top t,Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
+    loadNow(t,p);
     J j=new J(p,G.empty(),false,libs);
     j.visitE(e);
     String name="£c"+c;
@@ -66,18 +68,27 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p) throws CompilationError{
+  public void loadNow(Top t,Program p) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
-    loadRec(p,files);
+    loadRec(t,p,files);
     if(files.isEmpty()){return;}
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
     assert classes==classLoader;    
     }
-  void loadRec(Program p,ArrayList<SourceFile>files){
+  void loadRec(Top t,Program p,ArrayList<SourceFile>files){
     var l=p.topCore();
-    for(var nc:l.ncs()){loadRec(p.push(nc.key(), nc.l()),files);}
+    for(var nc:l.ncs()){loadRec(t,p.push(nc.key(), nc.l()),files);}
     if(!l.info().isTyped()){return;}
-    if(!new Coherence(p,false).isCoherent(true)){return;}
+    //if(!new Coherence(p,false).isCoherent(true)){return;}
+    //TODO: remove Top t from all loader stuff,
+    //generate non coherent classes, but they have all methods returning errors.
+    //when a non coherent P is used, we can now do the same of a coherent P
+    var cohePs=p.topCore().info().coherentDep();
+    if(t!=null){//can be null in testing :(
+      t.coherentAllPs(p,cohePs);
+      //assert cohePs.contains(P.pThis0);//correctly does not holds?
+      if(!cohePs.contains(P.pThis0)){t.coherentAllPs(p,L(P.pThis0));}
+      }
     String name=J.classNameStr(p);
     if(this.loaded.containsKey(name)){return;}
     J j=new J(p,G.empty(),false,libs);

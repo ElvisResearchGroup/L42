@@ -774,7 +774,7 @@ public static void pass(String program){
   Init init=new Init("{"+program+"}"){
     protected Top makeTop(FreshNames f){
       return new Top(f,0,new Loader()){
-        protected Program flagTyped(Loader loader,Program p1) throws EndError{
+        @Override protected Program flagTyped(Program p1) throws EndError{
           return p1;
         }};
     }};

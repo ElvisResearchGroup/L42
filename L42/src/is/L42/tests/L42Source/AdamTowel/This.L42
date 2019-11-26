@@ -46,11 +46,22 @@ DeployAAA=(
   )
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
-  Task=Deploy.towel(url='AdamTowel, code={reuse[#$aaa]})
+  AdamTowelAddOns=Deploy.towel(url='AdamTowel,
+    code=Class:(Trait:{...}+{reuse[#$aaa]})
+    ) 
   }
-
+/*
+{
+  B={method Void foo() class method This()}
+  A={class method Library(Trait that)=that['Elem<B] }
+  //here B is not required by A to be coherent, just typed
+  }
+*/
 //Testing step2:
 TestsAdamTowel={reuse[#$AdamTowel]
+//  TestSizeRange=(
+//    for i in (23Size).range() (Debug(S"hi"))
+//    )
   TestSizeInString=(
     half=21Size
     answer=half+half

@@ -20,6 +20,7 @@ import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
+import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
@@ -29,7 +30,7 @@ public class FlagTyped {
     return Stream.concat(Stream.concat(Stream.of(mh.t()),
       mh.pars().stream()),mh.exceptions().stream());    
     }
-  public static Program flagTyped(Loader l,Program p) throws EndError{
+  public static Program flagTyped(Top t,Program p) throws EndError{
     var typable=typable(p);
     if(typable.isEmpty()){return p;}
     for(var csi:typable){
@@ -40,7 +41,7 @@ public class FlagTyped {
       ProgramTypeSystem.type(false,pi);
       }
     p=p.update(flagL(typable,p));
-    try {l.loadNow(p);}
+    try {t.loadNow(p);}
     catch (CompilationError e) {throw new Error(e);}
     return p;
     }
