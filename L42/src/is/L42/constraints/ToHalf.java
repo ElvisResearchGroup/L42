@@ -581,6 +581,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private Full.Block forMain(Full.For sFor){
     Pos p=sFor.pos();
+    Full.E ev=new Core.EVoid(p);
     var xIts=new ArrayList<X>();
     var xIndexs=new ArrayList<X>();
     List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.#iterator()..xn=xPn.#iterator()
@@ -595,7 +596,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     if(orsEs.size()>1){ors=new Full.BinOp(p,Op.OrOr,orsEs);}
     List<Full.E> andsEs=pushL(L(xIts,xIndexs,(c,xi,x1i)->//x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ors
       c.add(binMeth(p,xi,x1i,hasElemS))),ors);
-    var whileCond=new Full.BinOp(p,Op.AndAnd,andsEs);
+    var cond=new Full.BinOp(p,Op.AndAnd,andsEs);
     Full.E[] e={sFor.body()};
     List<Full.D> dsElems=L(sFor.ds(),xIts,xIndexs,(c,di,xi,x1i)->{//DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
       var v=di._varTx();
@@ -613,13 +614,17 @@ public class ToHalf extends UndefinedCollectorVisitor{
       var op=new Full.OpUpdate(p,xi,Op.ColonEqual,call);
       c.add(makeDec(op));
       });
-    Stream<Stream<Full.D>> allWhileDecs=Stream.of(dsElems.stream(),Stream.of(makeDec(e[0])),dsSuccs.stream());
-    List<Full.D> whileDecs=L(allWhileDecs.flatMap(s->s));
-    Full.E whileBlock=makeBlock(p,whileDecs,new Core.EVoid(p));
-    Full.While w=new Full.While(p, whileCond,whileBlock);
-    Stream<Stream<Full.D>> allTopDecs=Stream.of(dsIts.stream(),dsStartIndexs.stream(),Stream.of(makeDec(w)),dsCloses.stream());
-    List<Full.D> topDecs=L(allTopDecs.flatMap(s->s));
-    var res= makeBlock(p,topDecs,new Core.EVoid(p));
+    Stream<Full.D> allWhileDecs=Stream.concat(
+      dsElems.stream(),Stream.concat(Stream.of(makeDec(e[0])),
+      dsSuccs.stream()));
+    Full.E ifThen=makeBlock(p,L(allWhileDecs),ev);
+    Full.E ifElse=makeBlock(p,dsCloses,new Full.Throw(p, ThrowKind.Exception,ev));
+    Full.If ifThenElse=new Full.If(p, cond,L(),ifThen,ifElse);
+    Full.K  k=new Full.K(ThrowKind.Exception,P.fullVoid,null, ev);
+    Full.D  loopDec=makeDec(new Full.Loop(p, ifThenElse));
+    Full.Block loopBlock=new Full.Block(p,false,L(loopDec),1,L(k),L(),null);
+    Stream<Full.D> allTopDecs=Stream.concat(dsIts.stream(),dsStartIndexs.stream());
+    var res= makeBlock(p,L(allTopDecs),loopBlock);
     return res;
     }
   private E replaceOnUpdate(Full.E e,Mdf _mdf, X x2, X x, X x1) {

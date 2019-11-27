@@ -30,6 +30,7 @@ public interface P extends Visitable<P>{
   public static final Core.T coreClassAny = new Core.T(Mdf.Class, L(), P.pAny);
   public static final Full.T fullThis0=new Full.T(Mdf.Immutable, L(),L(),coreThis0.p());
   public static final Full.T fullClassAny = new Full.T(Mdf.Class, L(),L(), P.pAny);
+  public static final Full.T fullVoid = new Full.T(Mdf.Immutable, L(), L(), P.pVoid);
   public static P.NCs of(int n,List<C>cs){
     assert n>=0;
     return new NCs(n,cs);

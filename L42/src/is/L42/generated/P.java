@@ -44,6 +44,7 @@ public interface P extends Visitable<P> {
   Core.T coreClassAny = new Core.T(Mdf.Class, L(), P.pAny);
   Full.T fullThis0 = new Full.T(Mdf.Immutable, L(), L(), coreThis0.p());
   Full.T fullClassAny = new Full.T(Mdf.Class, L(), L(), P.pAny);
+  Full.T fullVoid = new Full.T(Mdf.Immutable, L(), L(), P.pVoid);
 
   static P.NCs of(int n, List<C> cs) {
     assert n >= 0;

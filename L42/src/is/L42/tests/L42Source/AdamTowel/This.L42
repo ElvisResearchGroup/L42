@@ -60,8 +60,8 @@ TestsAdamTowel={reuse[#$AdamTowel]
   TestMatchSome=(
     ss=Strings[S"a";S"b";S"c"]
     (    
-      res=Match.Some[for s in ss \match(s==S"c")]//OK, the iterator get angry that does not complete the iteration
-      {}:Test"MatchSome"(res)//TODO: change the for desugaring as in the new form
+      res=Match.Some[for s in ss \match(s==S"c")]
+      {}:Test"MatchSome"(res)
       )(
       var sAcc=S""
       res=Match.Some[for s in ss (sAcc++=S"#" \match(s==S"b"))]
