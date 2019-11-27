@@ -219,8 +219,6 @@ public class Err {
   "Path "+_1+" this number is out of the scope of the program"  
   ;}public static String pathNotExistant(Object _1){return
   "Path "+_1+" not existant"  
-//  ;}public static String circularImplements(Object _1){return
-//  "Circularity in implemented interfaces; following path "+_1  
   ;}public static String sealedInterface(Object _1,Object _2){return
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
   ;}public static String invalidPathInInfo(Object _1){return

@@ -19,4 +19,5 @@ class method This0 #from(This1.StringBuilder stringLiteral)=(
   s.toInt()
   )
 method This #succ()=native{trusted:succ} error void
+method This #pred()=native{trusted:pred} error void
 #norm{declaresClassMethods, typeDep=This,This1.S,This1.Bool,This1.StringBuilder,This1.HasToS nativeKind=Int, refined=toS()}

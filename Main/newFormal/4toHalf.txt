@@ -155,22 +155,21 @@ _______
     Txs = [Ti xi | T?i != empty]
     // By well formedness, Txs won't be empty
 
-* Y!while e0 e1 = Y!(
-      loop (e0.#checkTrue() e1)
-      catch exception Void _ void)
+* Y!while e0 e1 = Y!( loop (e0.#checkTrue() e1) catch exception Void _ void)//TODO: should it be #if().#checkTrue()?
 
 * Y!for (DX in xP)s DX in e (DX in e)s e' = Y!(x=e for (DX in xP)s DX in x (DX in e)s e')
 * Y!for DX1 in xP1..DXn in xPn e = Y!(
       x1 = xP1.#iterator() .. xn = xPn.#iterator()//use .#varIterator if DXi.var?=var 
       var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
-      while x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)) (
+      (loop(if x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)) (
         DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
         e[replaceOnUpdate mdf?1; DX1.x?; x1; x'1]..[replaceOnUpdate mdf?n; DXn.x?; xn; x'n]
         // Note: DXi.x? = empty if DXi is not of form var? TLocal x
-        x'1 := x'1.#succ() .. xn := x'n.#succ())
-      x1.#close(x'1) .. xn.#close(x'n)
-      void)
-
+        x'1 := x'1.#succ() .. xn := x'n.#succ()
+        )else ( x1.#close(x'1) .. xn.#close(x'n) exception void)
+        )
+      catch exception Void _ void
+      )    
     mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?//only one of the two is defined
     x1..xn, x'1..x'n fresh
 _______

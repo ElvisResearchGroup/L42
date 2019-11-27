@@ -41,11 +41,14 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
 
   public J(Program p, G g, boolean wrap,ArrayList<L42Library>libs) {
     this.p=p;
+    this.isCoherent=precomputeCoherent();
     this.g=g;
     this.wrap=wrap;
     this.libs=libs;
     }
-  Program p;
+  public boolean precomputeCoherent(){return new Coherence(p,false).isCoherent(true);}
+  final Program p;
+  final boolean isCoherent;
   G g;
   boolean wrap;
   ArrayList<X>fwds=new ArrayList<>();
@@ -154,10 +157,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("£x"+x.inner());
     }
   @Override public void visitPCastT(Core.PCastT pCastT){
-    if(pCastT.t().p()!=P.pAny){
+    //if(pCastT.t().p()!=P.pAny){
       className(pCastT.p());
-      c(".instance");
-      return;
+      c(".pathInstance");
+    /*  return;
       }
     //kw("Resources.ofPath(\"");className(pCastT.p()); c("\")");
     P path=pCastT.p();
@@ -169,7 +172,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(path==P.pAny){kw("Resources.ofPath(-1)");return;}
     if(path==P.pVoid){kw("Resources.ofPath(-2)");return;}
     assert path==P.pLibrary;
-    kw("Resources.ofPath(-3)");
+    kw("Resources.ofPath(-3)");*/
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
     kw("L42Void.instance");
@@ -390,11 +393,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(interf){
       for(var mwt:p.topCore().mwts()){
         refineMethHeader(mwt.mh());
-        c("{throw new Error(\"unreachable method body\");}");        
+        cThrowError();        
         }
       }
     c("}");deIndent();nl();
-    c("public static final "+jC+" instance=new _Fwd();");nl();
+    c("public static final "+jC+" pathInstance=new _Fwd();");nl();
     if(nativeKind(p)){
       c("public ");
       typeName(p);
@@ -433,6 +436,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     nl();c("}");deIndent();nl();
     }
   private void methBody(MWT mwt){
+    if(!isCoherent){cThrowError();return;}
     if(!mwt.nativeUrl().isEmpty()){
       assert mwt._e()!=null;
       String k=p.topCore().info().nativeKind();
@@ -449,7 +453,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     assert this.fields!=null;
     assert this.fields.ch!=null;
     if(this.fields.ch.allowedAbstract(mwt.mh())){
-      c("throw new Error(\"unreachable method body\");");
+      cThrowError();
       return;
       }
     if(mwt.mh().mdf().isClass()){factoryBody(mwt);return;}
@@ -464,6 +468,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     X x=new X(m);
     T t=mh.t();
     int j=fields.xs.indexOf(x);
+    assert j!=-1:
+      x+" "+fields.xs+" "+mh;
     boolean toCast=!fields.ps.get(j).equals(t.p());
     kw("return ");
     kw("£xthis.");
@@ -555,7 +561,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
     c(")");
     }
+  private void cThrowError(){
+    c("{throw new Error(\"unreachable method body\");}");
+    }
   private void staticMethBody(MH mh) {
+    if(!isCoherent){cThrowError();return;}
     c("{");indent();nl();
     kw("return");
     kw("£xthis");
@@ -567,6 +577,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("}");deIndent();nl();
     }
 private void refineMethBody(MH mh) {
+    if(!isCoherent){cThrowError();return;}
     c("{");indent();nl();
     kw("return");
     className(p);

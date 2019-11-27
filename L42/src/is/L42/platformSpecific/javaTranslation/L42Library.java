@@ -14,6 +14,7 @@ public class L42Library implements L42Any{
   Program currentP=null;
   L originL;
   C originName=null;
+  public static final L42Any pathInstance=new L42ClassAny(P.pLibrary);
   public L42Library(Program p) {
     originP=p.pop();
     if(p.pTails.hasC()){originName=p.pTails.c();}

@@ -158,8 +158,8 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J(x) = J.className(J.G(x)).wrap(x)
     J.nativeWrap(J.G(x))
 * J(P<:class Any) = Wrap.ofPath("P")//J(P) may not be a defined class, but the name is still in the map
-* J(P<:class P') = J.className(P).instance //static field
-    P'!= any 
+* J(P<:class P') = J.className(P).pathInstance //static field
+    P'!= Any //TODO: no need to distinguish Any, then remove Resource.ofPath and Wrap.ofPath
 * J(void) = L42Void.instance
 * J(L)= Wrap.ofLib("J.libToMap(L)")// all libs can be pre wrapped and pre frommed? or is it better to cache it once?
 * J(xP.m(x1=e1..xn=en))=je
@@ -242,10 +242,10 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     public J(T) m(x1..xn) (J(T1) £xx1..J(Tn) £xxn)
 
 * J.staticMethBody(mdf method T m(T1 x1..Tn xn)_) =
-    {returnKw £xthis.m(x1..xn)(£xx1..£xxn);}
+    {returnKw £xthis.m(x1..xn)(£xx1..£xxn);} //but if !coherent(J.p,false) then just throw new Error();
 
 * J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
-    {returnkw J.className(This0).m(x1..xn)(this,£xx1..£xxn);}
+    {returnkw J.className(This0).m(x1..xn)(this,£xx1..£xxn);} //but if !coherent(J.p,false) then just throw new Error();
   p(This0).Info.nativeKind=empty
 * J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
     {returnkw J.className(This0).m(x1..xn)(this.unwrap,£xx1..£xxn);}
@@ -268,6 +268,8 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     J.p(This0).interface? = interface
 * J.meth(MH = native[URL] e) =
     J.staticMethHeader(MH){return J(J.p(This0).Info.kind,URL,x1..xn,e);}
+* J.meth(MH=e)=J.staticMethHeader(MH){throw new Error();}
+    if !coherent(J.p,false); the other cases are only applied if coherent(J.p,false) 
 * J.meth(MH=e) =
     J.staticMethHeader(MH){returnKw J[G=MH.G][MH.T](e);}
 

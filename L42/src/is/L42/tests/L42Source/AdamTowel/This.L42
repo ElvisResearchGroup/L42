@@ -46,22 +46,28 @@ DeployAAA=(
   )
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
-  AdamTowelAddOns=Deploy.towel(url='AdamTowel,
+  AddOns=Deploy.towel(url='AdamTowel,
     code=Class:(Trait:{...}+{reuse[#$aaa]})
     ) 
   }
-/*
-{
-  B={method Void foo() class method This()}
-  A={class method Library(Trait that)=that['Elem<B] }
-  //here B is not required by A to be coherent, just typed
-  }
-*/
 //Testing step2:
 TestsAdamTowel={reuse[#$AdamTowel]
-//  TestSizeRange=(
-//    for i in (23Size).range() (Debug(S"hi"))
-//    )
+  TestSizeRange=(
+    var sAcc=S""
+    for i in (21Size).range() (sAcc++=S"a")
+    {}:Test"range 21"(sAcc.size()==21Size)
+    )
+  TestMatchSome=(
+    ss=Strings[S"a";S"b";S"c"]
+    (    
+      res=Match.Some[for s in ss \match(s==S"c")]//OK, the iterator get angry that does not complete the iteration
+      {}:Test"MatchSome"(res)//TODO: change the for desugaring as in the new form
+      )(
+      var sAcc=S""
+      res=Match.Some[for s in ss (sAcc++=S"#" \match(s==S"b"))]
+      {}:Test"MatchSomeShortCircut"(sAcc.size()==2Size)
+      )
+    )
   TestSizeInString=(
     half=21Size
     answer=half+half

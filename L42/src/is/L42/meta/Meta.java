@@ -154,7 +154,9 @@ public class Meta {
       });
     }
   public MWT sumMWT(MWT a,MWT b){
-    if (a._e()!=null && b._e()!=null){throw todo();}
+    if (a._e()!=null && b._e()!=null){
+      assert false:a+" "+b;
+      throw todo();}
     if(!a.mh().equals(b.mh())){
       System.out.println(a.mh());
       System.out.println(b.mh());

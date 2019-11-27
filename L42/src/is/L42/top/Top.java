@@ -161,7 +161,6 @@ public class Top {
     this.uniqueId = uniqueId;
     this.loader = loader;
   }
-  public void loadNow(Program p)throws CompilationError {loader.loadNow(this, p);}
   private Program topNC(CTz ctz, Program p, List<NC> ncs)  throws EndError{
     if(ncs.isEmpty()){return p;}
     C c0=ncs.get(0).key();
@@ -194,10 +193,10 @@ public class Top {
     return res; 
     }
   protected Program flagTyped(Program p1) throws EndError{
-    return FlagTyped.flagTyped(this,p1);//but can be overridden as a testing handler
+    return FlagTyped.flagTyped(this.loader,p1);//but can be overridden as a testing handler
     }
   protected Core.E reduce(Program p,C c,Core.E e)throws EndError  {
-    try{return loader.runNow(this,p, c, e);}
+    try{return loader.runNow(p, c, e);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}
             if(e1.getCause()instanceof Error){throw (Error) e1.getCause();} 

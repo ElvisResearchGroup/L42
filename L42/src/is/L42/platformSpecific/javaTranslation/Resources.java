@@ -56,15 +56,10 @@ public class Resources {
     }
   public static L42ClassAny ofPath(int id){
     assert libsCached.size()>id;
-    if(id>=0){
-      L42Library l=libsCached.get(id);
-      l.currentProgram(currentP);
-      return new L42ClassAny(l.localPath);
-      }
-    if(id==-1){return new L42ClassAny(P.pAny);}
-    if(id==-2){return new L42ClassAny(P.pVoid);}
-    assert id==-3;
-    return new L42ClassAny(P.pLibrary);
+    assert id>=0;
+    L42Library l=libsCached.get(id);
+    l.currentProgram(currentP);
+    return new L42ClassAny(l.localPath);
     }
   private static ArrayList<L42Library>libsCached;
   public static final HashMap<String,Slave>slaves=new HashMap<>();

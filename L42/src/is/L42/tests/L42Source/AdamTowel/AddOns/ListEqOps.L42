@@ -20,7 +20,7 @@ method This --(This right)=This[for e in this ( if !(e in right) \list.add(e))]
 
 //method This &(This right)=This[for e in this ( if e in right \list.add(e) )]
 
-//method Bool >>(This right= this >>=right & !(right>>=this)
+//method Bool >>(This right)= this >>=right & !(right>>=this)
 
 //method Bool >>=(This right)=//TODO:
 //  Bool.falseOr[{for read e in right(if !(e in this) return \true)}]

@@ -30,7 +30,7 @@ public class FlagTyped {
     return Stream.concat(Stream.concat(Stream.of(mh.t()),
       mh.pars().stream()),mh.exceptions().stream());    
     }
-  public static Program flagTyped(Top t,Program p) throws EndError{
+  public static Program flagTyped(Loader l,Program p) throws EndError{
     var typable=typable(p);
     if(typable.isEmpty()){return p;}
     for(var csi:typable){
@@ -41,7 +41,7 @@ public class FlagTyped {
       ProgramTypeSystem.type(false,pi);
       }
     p=p.update(flagL(typable,p));
-    try {t.loadNow(p);}
+    try {l.loadNow(p);}
     catch (CompilationError e) {throw new Error(e);}
     return p;
     }

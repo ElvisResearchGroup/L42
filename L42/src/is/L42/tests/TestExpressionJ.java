@@ -34,19 +34,19 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestExpressionJ
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-  je("Any<:class Any","Resources.ofPath(-1)")
+  je("Any<:class Any","L42Any.pathInstance")
   ),new AtomicTest(()->
-  je("Library<:class Any","Resources.ofPath(-3)")
+  je("Library<:class Any","L42Library.pathInstance")
   ),new AtomicTest(()->
-  je("Void<:class Any","Resources.ofPath(-2)")
+  je("Void<:class Any","L42Void.pathInstance")
   ),new AtomicTest(()->
-  je("This0.A<:class This0.A","£cA£n1.instance")
+  je("This0.A<:class This0.A","£cA£n1.pathInstance")
   ),new AtomicTest(()->
-  je("This0.B<:class This0.B","£cB£n1.instance")
+  je("This0.B<:class This0.B","£cB£n1.pathInstance")
   ),new AtomicTest(()->
-  je("This0.A<:class Any","Resources.ofPath(0)")
+  je("This0.A<:class Any","£cA£n1.pathInstance")
   ),new AtomicTest(()->
-  je("This0.B<:class Any","Resources.ofPath(0)")
+  je("This0.B<:class Any","£cB£n1.pathInstance")
   ),new AtomicTest(()->
   je("void","L42Void.instance")
   ),new AtomicTest(()->
@@ -54,9 +54,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ),new AtomicTest(()->
   je("{#typed{}}","Resources.ofLib(0)")
     ),new AtomicTest(()->
-  je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA£n1.£mma£xa(£cA£n1.instance,£cA£n1.£mof(£cA£n1.instance))")
+  je("This0.A<:class This0.A.ma(a=This0.A<:class This0.A.of())","£cA£n1.£mma£xa(£cA£n1.pathInstance,£cA£n1.£mof(£cA£n1.pathInstance))")
     ),new AtomicTest(()->
-  je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.instance,£cB£n1.£mof(£cB£n1.instance))")
+  je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.pathInstance,£cB£n1.£mof(£cB£n1.pathInstance))")
     ),new AtomicTest(()->
   je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true){Object loopVar1=L42Void.instance;}}}")
     ),new AtomicTest(()->
@@ -68,7 +68,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   je("(This0.A a=This0.A<:class This0.A.of() a)","""
     switch(0){default->{
       £cA£n1 £xa=null;
-      £xa=£cA£n1.£mof(£cA£n1.instance);
+      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
       yield £xa;
       }}
     """)
@@ -76,7 +76,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   je("(var This0.A a=This0.A<:class This0.A.of() a:=a)","""
     switch(0){default->{
       £cA£n1 £xa=null;
-      £xa=£cA£n1.£mof(£cA£n1.instance);
+      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
       yield Resources.toVoid(£xa=£xa);
       }}
     """)
@@ -89,7 +89,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       £cA£n1 £xa=null;
       £cA£n1 £xa0=null;
-      £xa=£cA£n1.£mof(£cA£n1.instance);
+      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
       £xa0=£xa;
       yield £cA£n1.£mma£xa(£xa,£xa);
       }}
@@ -103,7 +103,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       £cA£n1 £xa=null;
       L42Any £xa0=null;
-      £xa=£cA£n1.£mof(£cA£n1.instance);
+      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
       £xa0=£xa;
       yield £cA£n1.£mma£xa(£xa,£xa);
       }}
@@ -117,7 +117,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       String £xb=null;
       String £xb0=null;
-      £xb=£cB£n1.£mof(£cB£n1.instance);
+      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
       £xb0=£xb;
       yield £cB£n1.£mmb£xb(£xb,£xb);
       }}
@@ -131,7 +131,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     switch(0){default->{
       String £xb=null;
       L42Any £xb0=null;
-      £xb=£cB£n1.£mof(£cB£n1.instance);
+      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
       £xb0=£cB£n1.wrap(£xb);
       yield £cB£n1.£mmb£xb(£xb,£xb);
       }}
@@ -151,8 +151,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       L42Void £xv0=null;
       L42Void £xv1=null;
       L42Void £xv2=null;
-      £xa=£cA£n1.£mof(£cA£n1.instance);
-      £xb=£cB£n1.£mof(£cB£n1.instance);
+      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
+      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
       £xv0=Resources.throwE(new L42Error(£xa));
       £xv1=Resources.throwE(new L42Error(£cB£n1.wrap(£xb)));
       £xv2=Resources.throwE(new L42Error(L42Void.instance));
@@ -170,7 +170,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       £cA£n1 £xa=null;
       £cA£n1 £xa0=null;
       £cA£n1 £xa0£fwd=£cA£n1.NewFwd();
-      £xa=£cA£n1.£mof(£cA£n1.instance);
+      £xa=£cA£n1.£mof(£cA£n1.pathInstance);
       £xa0=£cA£n1.£mma£xa(£xa,£xa0£fwd);
       ((L42Fwd)£xa0£fwd).fix(£xa0);
       yield £xa0;
@@ -186,7 +186,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       String £xb=null;
       String £xb0=null;
       Object £xb0£fwd=£cB£n1.NewFwd();
-      £xb=£cB£n1.£mof(£cB£n1.instance);
+      £xb=£cB£n1.£mof(£cB£n1.pathInstance);
       £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
       ((L42Fwd)£xb0£fwd).fix(£xb0);
       yield £xb0;
@@ -205,7 +205,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       String £xb0=null;
       Object £xb0£fwd=£cB£n1.NewFwd();
       try{
-        £xb=£cB£n1.£mof(£cB£n1.instance);
+        £xb=£cB£n1.£mof(£cB£n1.pathInstance);
         £xb0=£cB£n1.£mmb£xb(£xb,£xb0£fwd);
         ((L42Fwd)£xb0£fwd).fix(£xb0);
         }
@@ -243,7 +243,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
          }
-       public static final £cN£n1 instance=new _Fwd();
+       public static final £cN£n1 pathInstance=new _Fwd();
        public int unwrap;
        public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
        }
@@ -270,7 +270,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
          }
-       public static final £cA£n1 instance=new _Fwd();
+       public static final £cA£n1 pathInstance=new _Fwd();
        }
      """)
   ),new AtomicTest(()->
@@ -286,7 +286,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
          }
-       public static final £cC£n1 instance=new _Fwd();
+       public static final £cC£n1 pathInstance=new _Fwd();
        }
      ""","","")
   ),new AtomicTest(()->
@@ -315,7 +315,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
            public List<BiConsumer<Object,Object>> fs(){return fs;}
            public L42ClassAny asPath(){return Resources.ofPath(0);}
            }
-         public static final £cC£n1 instance=new _Fwd();
+         public static final £cC£n1 pathInstance=new _Fwd();
          }
      ""","","")
 

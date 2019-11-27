@@ -45,10 +45,12 @@ public class Loader {
   private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public Core.L runNow(Top t,Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
-    loadNow(t,p);
-    J j=new J(p,G.empty(),false,libs);
-    j.visitE(e);
+  public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
+    loadNow(p);
+    J j=new J(p,G.empty(),false,libs){
+      @Override public boolean precomputeCoherent(){return false;}
+      };
+    j.visitE(e);//the goal here is not to generate the p.top class
     String name="£c"+c;
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
     String code=header+"\npublic class "+name+"£E"+
@@ -68,27 +70,17 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Top t,Program p) throws CompilationError{
+  public void loadNow(Program p) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
-    loadRec(t,p,files);
+    loadRec(p,files);
     if(files.isEmpty()){return;}
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
     assert classes==classLoader;    
     }
-  void loadRec(Top t,Program p,ArrayList<SourceFile>files){
+  void loadRec(Program p,ArrayList<SourceFile>files){
     var l=p.topCore();
-    for(var nc:l.ncs()){loadRec(t,p.push(nc.key(), nc.l()),files);}
+    for(var nc:l.ncs()){loadRec(p.push(nc.key(), nc.l()),files);}
     if(!l.info().isTyped()){return;}
-    //if(!new Coherence(p,false).isCoherent(true)){return;}
-    //TODO: remove Top t from all loader stuff,
-    //generate non coherent classes, but they have all methods returning errors.
-    //when a non coherent P is used, we can now do the same of a coherent P
-    var cohePs=p.topCore().info().coherentDep();
-    if(t!=null){//can be null in testing :(
-      t.coherentAllPs(p,cohePs);
-      //assert cohePs.contains(P.pThis0);//correctly does not holds?
-      if(!cohePs.contains(P.pThis0)){t.coherentAllPs(p,L(P.pThis0));}
-      }
     String name=J.classNameStr(p);
     if(this.loaded.containsKey(name)){return;}
     J j=new J(p,G.empty(),false,libs);
