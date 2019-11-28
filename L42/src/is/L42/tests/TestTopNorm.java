@@ -12,6 +12,7 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.common.Constants;
 import is.L42.constraints.FreshNames;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
@@ -422,14 +423,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
 public static void top(String program,String out){
   Resources.clearRes();
-  Init init=new Init(program);
-  assertEquals(init.top.top(new CTz(),init.p).top,Core.L.parse(out));
+  Constants.testWithNoUpdatePopChecks(()->{
+    Init init=new Init(program);
+    assertEquals(init.top.top(new CTz(),init.p).top,Core.L.parse(out));
+    });
   }
 public static void topFail(Class<?> kind,String program,String ...output){
   Resources.clearRes();
-  checkFail(()->{
+  checkFail(()->Constants.testWithNoUpdatePopChecks(()->{
     Init init=new Init(program);
     init.top.top(new CTz(),init.p);
-    }, output, kind);
+    }), output, kind);
   }
 }

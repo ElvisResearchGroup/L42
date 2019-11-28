@@ -164,22 +164,29 @@ public static void toS(String program){
   }
 
 public static void minimize(String program,String pathIn,String pathOut){
-  assertEquals(Program.parse(program).minimize(P.parse(pathIn)),P.parse(pathOut));
+  Constants.testWithNoUpdatePopChecks(()->
+    assertEquals(Program.parse(program).minimize(P.parse(pathIn)),P.parse(pathOut)));
   }
 public static void from(String program,String pathIn,String pathSource,String pathOut){
-  assertEquals(Program.parse(program).from(P.parse(pathIn),P.parse(pathSource).toNCs()),P.parse(pathOut));
+  Constants.testWithNoUpdatePopChecks(()->
+    assertEquals(Program.parse(program).from(P.parse(pathIn),P.parse(pathSource).toNCs()),P.parse(pathOut)));
   }
 public static void fromE(String program,String eIn,String pathSource,String eOut){
-  assertEquals(Program.parse(program).from(Core.E.parse(eIn),P.parse(pathSource).toNCs()),Core.E.parse(eOut));
+  Constants.testWithNoUpdatePopChecks(()->
+    assertEquals(Program.parse(program).from(Core.E.parse(eIn),P.parse(pathSource).toNCs()),Core.E.parse(eOut)));
   }
 
 public static void passWF(String input){
-  var p=Program.parse(input);//internally calls wf
-  assertTrue(p.wf());//to be more resilient to changes above
+  Constants.testWithNoUpdatePopChecks(()->{
+    var p=Program.parse(input);//internally calls wf
+    assertTrue(p.wf());//to be more resilient to changes above
+    });
   }
 public static void failWF(Class<?> clazz,String input,String ...output){
-  var r=Parse.program(Constants.dummy,input);
-  assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  TestHelpers.checkFail(()->Program.parse(input),output,clazz);
+  Constants.testWithNoUpdatePopChecks(()->{
+    var r=Parse.program(Constants.dummy,input);
+    assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
+    TestHelpers.checkFail(()->Program.parse(input),output,clazz);
+    });
   }
 }

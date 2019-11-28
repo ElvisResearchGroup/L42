@@ -91,7 +91,7 @@ _______
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
-    p' = p.update(updateInfo(p,♥FULL.Docs C=CORE.L))//refreshUniqueNames
+    p' = p.update(updateInfo(p,Full.e,♥FULL.Docs C=CORE.L))//refreshUniqueNames
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1[from This0.C,p"];p";Full.NCs) => PR 
     
@@ -169,11 +169,13 @@ _______
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
-* updateInfo(p,Docs C=L) = L0[♥Docs C=refreshUniqueNames(L)][Info=Info1]
+* updateInfo(p,FULL.e,Docs C=L) = L0[♥Docs C=L'][Info=Info1]
     Info = #norm{typeDep=collectDeps(p♥Docs)}
     Info1=L0.Info+Info if C not of form _::n
     Info1=L0.Info+Info+collectDepsE(p,L) otherwise //this provides more typeDep and coherentDep
     P(This0) = L0
+    L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
+    L'=L otherwise
     
 _______
 #define I!HALF.e? => ER

@@ -107,7 +107,9 @@ public class Program implements Visitable<Program>{
     }
   public Program push(LL ll){return new Program(ll,pTails.pTailSingle(top));}
   public Program push(C c){return push(c,top.c(c));}
-  public Program update(LL ll){
+  public Program update(LL ll){return update(ll,true);}
+  public Program update(LL ll,boolean cleanPushed){
+    assert !is.L42.common.Constants.updatePopChecks() || !cleanPushed || cleanPushed(pTails);
     if(ll==this.top){return this;}
     return new Program(ll,pTails);
     }
@@ -355,7 +357,13 @@ public class Program implements Visitable<Program>{
           }
         }
       });
-    }  
+    }
+  private static boolean cleanPushed(PTails pTails){
+    if(pTails.isEmpty()){return true;}
+    if(!pTails.hasC()){return false;}
+    C c=pTails.c();
+    return pTails.ll().inDom(c) && cleanPushed(pTails.tail());
+    }
   //-----------
   public static Program parse(String s){
     var r=Parse.program(Constants.dummy,s);

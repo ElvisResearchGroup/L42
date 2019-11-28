@@ -41,7 +41,7 @@ _______
   FULL.F ::= Docs var? T x
   FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are CORE.L
   FULL.MWT ::=Docs MH (= native{BalCurly}? e)? // well formedness: all LL inside e are CORE.L
-  FULL.NC ::= Docs C = e //FULL.L can be inside e //TODO: $OP is desugared to the C defining the operator
+  FULL.NC ::= Docs C = e //FULL.L can be inside e
   LL::= FULL.L | CORE.L
   FULL.e ::= x | CsP | void | LL | \ | \x | e string | 'PathSel | UOp e | number e
     | e0 OP .. OP en | e<:T | e (.m)?( par ) | e (.m?)[ par1;..;parn ]
@@ -171,8 +171,7 @@ _______
 * throw FULL.e: not returning(Full.e)
 * FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
-* FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
-* FULL.NC: NC.C not of form _::n 
+* FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L 
 * FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)PL
     mdf notin {fwd imm, fwd mut}
     T0 = mdf This0
@@ -301,7 +300,5 @@ _______
     
 //TODO:29/11/2019-
 Changes to propagate in the code:
---rename Info.closeState in close
---new Well formedness of FULL.NC, no unique num
 --cleanPushed(pTails)
 --add the privateRefresh in updateInfo(p,NC) and in importing reuse

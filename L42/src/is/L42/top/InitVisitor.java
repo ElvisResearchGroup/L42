@@ -164,7 +164,7 @@ class InitVisitor extends CloneVisitorWithProgram{
           throw new EndError.NotWellFormed(l.poss(),Err.typeDependencyNotCore(p));
           }
         }
-      ProgramTypeSystem.type(true,p().update(l));
+      ProgramTypeSystem.type(true,p().update(l,false));
       }
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     var missedTypeDep=!l.info().typeDep().containsAll(typePs);
@@ -182,7 +182,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       List<S> clazz=L(l.mwts(),(c,m)->{if(m.mh().mdf().isClass()){c.add(m.key());}});
       if(!clazz.isEmpty()){throw new EndError.NotWellFormed(l.poss(),Err.mustDeclareClassMethods(clazz));}
       }
-    if(!l.info().closeState() && !l.isInterface()){
+    if(!l.info().close() && !l.isInterface()){
       List<S> closed=L(l.mwts(),(c,m)->{if(m._e()==null && m.key().hasUniqueNum()){c.add(m.key());}});
       if(!closed.isEmpty()){throw new EndError.NotWellFormed(l.poss(),Err.mustDeclareClosed(closed));}
       }

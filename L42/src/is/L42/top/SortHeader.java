@@ -51,7 +51,7 @@ class SortHeader{
       var mhi=TypeManipulation.toCore(mwti.mh());
       c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",null));
       });
-    Program p0=p.update(coreL);
+    Program p0=p.update(coreL,false);
     List<P.NCs> typeDep=L(c->{
       Top.collectDeps(p0,mwts,c,null,false);
       });
@@ -64,7 +64,7 @@ class SortHeader{
       .withRefined(ss)
       .withDeclaresClassMethods(declaresClassMethods)
       .with_uniqueId(uniqueId);
-    newInfo=Top.sumInfo(coreL.info(),newInfo).withCloseState(true);
+    newInfo=Top.sumInfo(coreL.info(),newInfo).withClose(true);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
     }
   public static Core.L coreTop(Program p,int uniqueId) throws EndError{
@@ -73,7 +73,7 @@ class SortHeader{
     if(!l.reuseUrl().isEmpty()){return coreTopReuse(p,uniqueId,l,poss);}
     var notNC=L(l.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     if(notNC.size()==l.ms().size()){notNC=l.ms();}
-    Program p0=p.update(l.withMs(notNC));
+    Program p0=p.update(l.withMs(notNC),false);
     var cts=TypeManipulation.toCoreTs(l.ts());
     List<Core.T> ts1=L(c->{
       for(var ti:cts){if(!c.contains(ti)){c.add(ti);}}
@@ -89,7 +89,8 @@ class SortHeader{
         }
       }
     var infoP1=Core.L.Info.empty.withTypeDep(L(ts1.stream().map(t->t.p().toNCs())));
-    Program p1 = p.update(new Core.L(poss,l.isInterface(), ts1, L(), L(), infoP1,L()));
+    var newTop=new Core.L(poss,l.isInterface(), ts1, L(), L(), infoP1,L());
+    Program p1 = p.update(newTop,false);
     var mh1n=methods(p1,ts1,l.ms(),poss);//propagate err
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
       List<Core.Doc> docs=L();

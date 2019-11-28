@@ -55,7 +55,7 @@ public class Top {
     Core.L coreL=SortHeader.coreTop(p, uniqueId++);//propagates the right header errors
     List<Full.L.M> ms=((Full.L)p.top).ms();
     List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
-    Program p0=p.update(coreL);
+    Program p0=p.update(coreL,false);
     List<Half.E> e1n=L(coreL.mwts(),(c,mwti)->{
       var memi=_elem(ms,mwti.key());
       Full.E _ei=null;
@@ -78,11 +78,11 @@ public class Top {
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
-    Program p2=flagTyped(p1.update(l));//propagate illTyped
+    Program p2=flagTyped(p1.update(l,false));//propagate illTyped
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
     alreadyCoherent.remove(alreadyCoherent.size()-1);
-    return p2.update(l);
+    return p2.update(l,false);
     }
   private Core.L updateInfo(Program p, List<Core.L.MWT>mwts) {
     Core.L l=(Core.L)p.top;
@@ -99,7 +99,7 @@ public class Top {
     var allMwts=merge(mwts0,mwts);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
-    Info info1=sumInfo(l.info(),info).withCloseState(closeState);
+    Info info1=sumInfo(l.info(),info).withClose(closeState);
     return l.withMwts(allMwts).withInfo(info1);
     }
   public static Info sumInfo(Info info1, Info info2) {
@@ -114,7 +114,7 @@ public class Top {
       mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
       mergeU(info1.refined(),info2.refined()),
       info1.declaresClassMethods() || info2.declaresClassMethods(),
-      info1.closeState() || info2.closeState(),
+      info1.close() || info2.close(),
       info1.nativeKind()+info2.nativeKind(),
       info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
       Math.max(info1._uniqueId(),info2._uniqueId())
@@ -186,7 +186,7 @@ public class Top {
     System.out.println(c0+ " reduced");
     assert l!=null:c0+" "+ce0;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
-    Program p1 = p.update(updateInfo(p,nc));
+    Program p1 = p.update(updateInfo(p,nc),false);
     Program p2=flagTyped(p1);//propagate errors
     //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)    
     Program res=topNC(p2.from(frommedCTz,P.of(0,L(c0))),p2,ncs);

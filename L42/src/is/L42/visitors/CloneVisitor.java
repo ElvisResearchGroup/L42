@@ -156,7 +156,7 @@ public class CloneVisitor {
       &&nativePar==nativePar0){return info;}
     return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,
       usedMethods,hiddenSupertypes,refined,info.declaresClassMethods(),
-      info.closeState(),info.nativeKind(),nativePar,info._uniqueId());
+      info.close(),info.nativeKind(),nativePar,info._uniqueId());
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){

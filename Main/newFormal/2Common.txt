@@ -13,20 +13,18 @@ _______
     if C notin dom(LL'.ms) 
 * (LL;CORE.L;pTails).pop(n+1) = (CORE.L;pTails).pop(n)
 _______
-#define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)    cleanPushed(pTails)
+#define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)
 * (LL;pTails).push(C,LL') = LL';C:LL,pTails
 
 * (LL;pTails).push(LL') = LL';LL,pTails
 
 * (LL;pTails).push(C) = (LL;pTails).push(C,LL')
     LL(C) = LL'
-
-* cleanPushed(empty)
-* cleanPushed(C:LL pTails) iff C in dom(LL)
 _______
 #define p.update(LL) = p'
 * (_;pTails).update(LL) = LL;pTails
-    cleanPushed(pTails)
+    //cleanPushed(pTails) holds "often"; but not in sortHeader, for example.  
+//where cleanPushed(empty) and cleanPushed(C:LL pTails) iff C in dom(LL)    
 _______
 #define p.navigate(P) = p' 
 * p.navigate(Thisn.C1..Ck) = p.pop(n).push(C1)...push(Ck)

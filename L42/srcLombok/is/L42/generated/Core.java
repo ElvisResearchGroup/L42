@@ -108,7 +108,7 @@ public class Core {
       @NonNull List<P.NCs> hiddenSupertypes;
       @NonNull List<S>refined;
       boolean declaresClassMethods;
-      boolean closeState;
+      boolean close;
       @NonNull String nativeKind;
       @NonNull List<P> nativePar;
       int _uniqueId;

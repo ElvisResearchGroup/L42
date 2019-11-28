@@ -40,7 +40,7 @@ public class FlagTyped {
         allMatch(tj->!tj.p().isNCs() || pi.topCore().info().typeDep().contains(tj.p()));
       ProgramTypeSystem.type(false,pi);
       }
-    p=p.update(flagL(typable,p));
+    p=p.update(flagL(typable,p),false);
     try {l.loadNow(p);}
     catch (CompilationError e) {throw new Error(e);}
     return p;

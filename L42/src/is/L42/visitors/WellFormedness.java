@@ -601,7 +601,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
       }}
     if(!hasOpenState(l,bridges)){
-      if(!l.info().closeState()){err(Err.mustHaveCloseState(
+      if(!l.info().close()){err(Err.mustHaveCloseState(
         L(classMhs.stream().map(m->m.key())),
         L(bridges.stream().map(m->m.key()))
         ));}

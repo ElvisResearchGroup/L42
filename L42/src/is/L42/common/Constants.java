@@ -4,6 +4,7 @@ import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -24,6 +25,12 @@ public class Constants{
   public static void refresh(){fwPrograms.clear();}
   public static Path dummy=Paths.get("localhost","dummy.txt");
   public static Path temp=Paths.get("localhost","temp.txt");
+  private static boolean updatePopChecks=true;
+  public static boolean updatePopChecks(){return updatePopChecks;}
+  public static void testWithNoUpdatePopChecks(Runnable r){
+    try{updatePopChecks=false;r.run();}
+    finally{updatePopChecks=true;}
+    }
   /*public static boolean newFwProgram(Program p){
     String s=p.toString();
     assert !fwPrograms.containsKey(s):s+"\n"+fwPrograms.keySet();
