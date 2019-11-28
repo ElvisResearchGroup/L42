@@ -98,15 +98,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     var info=p.topCore().info();
     String nk=info.nativeKind();
     if(nk.isEmpty()){return classNameStr(p);}
-    String res=TrustedKind._fromString(nk).inner;
-    if(info.nativePar().isEmpty()){return res;}
-    res+="<";
-    for(P pi:info.nativePar()){
-      res+=typeNameStr(pi);
-      res+=", ";
-      }
-    res=res.substring(0,res.length()-2)+">";
-    return res;
+    return TrustedKind._fromString(nk).typeNameStr(p,this);
     }
   void typeName(Program p){
     kw(typeNameStr(p));

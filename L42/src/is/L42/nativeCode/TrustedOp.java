@@ -9,6 +9,7 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 import static is.L42.generated.Mdf.*;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
@@ -17,6 +18,7 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
+import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
@@ -29,7 +31,7 @@ import is.L42.translationToJava.NativeDispatch;
 import lombok.NonNull;
     
 interface TrustedT{}
-enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4}
+enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class Signature{
   Mdf methMdf;
   Mdf retMdf;
@@ -139,12 +141,24 @@ class OpUtils{
     if(tti==Gen2){checkGen(1,p,mwt,pi);}
     if(tti==Gen3){checkGen(2,p,mwt,pi);}
     if(tti==Gen4){checkGen(3,p,mwt,pi);}
+    if(tti==This){
+      if(pi.equals(P.pThis0)){return;}
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"This"));            
+      }
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
   static TrustedOp.Generator use(String s,Signature sig){
     return (type,p,mwt)->{
       if(type && typingUse(p,mwt,sig)){return "";}
-      return s.formatted(NativeDispatch.xs(mwt).toArray());
+      String ss=s;
+      if(s.contains("%Gen1")){
+        J j=new J(p, G.empty(), false,new ArrayList<>());
+        P gen1=p.topCore().info().nativePar().get(0);
+        String gen1S=j.typeNameStr(gen1);
+        ss=s.replace("%Gen1",gen1S);
+        }      
+      return ss.formatted(NativeDispatch.xs(mwt).toArray());
       };
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
@@ -362,7 +376,10 @@ public enum TrustedOp {
     Bool,use("return %s == %s;",sigI(Bool,Bool))
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
-  Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int))))
+  Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
+  OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))), 
+  Get("get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"??\");",sig(Readable,Readable,Gen1)))),
+  HGet("#get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"??\");",sig(Mutable,Mutable,Gen1))))  
   ;
   public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;

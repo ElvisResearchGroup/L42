@@ -28,5 +28,7 @@ ToLibrary=Meta().resource({[Lifted]
   class method Library code()=This()
   class method Trait #plus0(Library lib)=Trait:Meta().simpleSum(a=this.code(),b=lib)
   class method Trait #plus1(Library lib)=Trait:Meta().simpleSum(a=lib,b=this.code())
+  class method Trait (mut Acc squareBuilder)=
+    Trait:squareBuilder.that().applyMap(this.code())
   ClassOperators={class method Trait()=Trait:This1.code()}
   })

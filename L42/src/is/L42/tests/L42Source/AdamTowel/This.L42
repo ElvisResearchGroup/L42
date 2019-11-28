@@ -41,6 +41,7 @@ DeployAAA=(
       class method Trait(class Any that)=(ListOps+ListNative)['Elem>that]
       }
     Strings=Class:ListT(S)
+    Opt={...}
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )
@@ -52,6 +53,12 @@ DeployAdamTowel={reuse[#$aaa]
   }
 //Testing step2:
 TestsAdamTowel={reuse[#$AdamTowel]
+  OptS=Class:Opt(S)
+  TestOpt=(
+    OptS o1=OptS()
+    OptS o2=OptS(beer=S"hi")
+    {}:Test"opt"(o2.get()==S"hi")
+    )
   TestSizeRange=(
     var sAcc=S""
     for i in (21Size).range() (sAcc++=S"a")
