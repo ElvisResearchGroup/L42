@@ -24,15 +24,17 @@ _______
   CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
   Info::= #Flag{typeDep=Ps,coherentDep=Ps,watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,
-    declaresClassMethods?,closeState?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
+    declaresClassMethods?,close?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
     //in concrete syntax, labels for empty fields must be omitted
     //watched//Paths whose unique numbers are used either directly,
     //    or in a private nested class or in an L in a method
     //usedMethods//methods used either directly or in a private nested class or in an L in a method
     //hiddenSupertypes//interfaces implemented by a private nested class or in an L in a method
     //declaresClassMethods (since it can be cast to class P)
-    //closedState: private abstract methods may be removed if unused
+    //closed: a class or interface with private abstract methods, or an interface implementing a private interface.
     //may add 'free this': 'this' only used as receiver
+    //Note: typeDep and coherentDep list also private Ps, but the "public interface" of a class only shows info on public stuff.
+    //may be typeDep and coherentDep are not part of the "public interface" at all?
   Flag ::= norm | typed
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
   FULL.M ::= F | MI | MWT | NC
@@ -170,6 +172,7 @@ _______
 * FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
 * FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L
+* FULL.NC: NC.C not of form _::n 
 * FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)PL
     mdf notin {fwd imm, fwd mut}
     T0 = mdf This0
@@ -194,7 +197,7 @@ _______
     if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
     if bridge({MWT| MWT in LL})!=empty then LL of form CORE.L//works for both CORE.L and FULL.L
 * Core.L: (in addition to all the LL)
-    if !hasOpenState(L) then L.Info.closeState?=closeState
+    if !hasOpenState(L) then L.Info.close?=close
     forall MWT in bridge(L.MWT), MWT.mds in {mut, lent, capsule}
     MHs={MWT.MH | MWT in L.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.m of form _::n}
     forall MWT in bridge(L.MWT), forall MH in MHs: 
@@ -295,3 +298,10 @@ _______
 
 * bridge(MWTs) = {MWT| MWT in MWTs,  MWT.m of form #$_,
     and  _.#$_(_) inside MWT.e? or untrusted(MWT.native?)}
+    
+//TODO:29/11/2019-
+Changes to propagate in the code:
+--rename Info.closeState in close
+--new Well formedness of FULL.NC, no unique num
+--cleanPushed(pTails)
+--add the privateRefresh in updateInfo(p,NC) and in importing reuse

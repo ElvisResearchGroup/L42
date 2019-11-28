@@ -181,7 +181,7 @@ _______
 * I!x => I.frommed;x
 * I!void => I.frommed;void
 * I!FULL.L => ER //undefined if I.C?=empty 
-    p=I.p.push(I.C?,FULL.L) 
+    p=I.p.push(I.C?,FULL.L) //here we intentionally do a push(C,L) where C not in dom(p(This0))  
     top(I.frommed,p) => PR
     PR = CTz';p' IfErr(PR) ER = PR
     ER = CTz';p'(This0)
@@ -266,7 +266,7 @@ _______
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
 
 * collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
-* collectDeps(p; Doc) = {P| @P._ inside Doc};empty     
+* collectDeps(p; Doc) = {P| @P._ inside Doc};empty    
 _______
 #define collectDepsE(p;CORE.e?)= Ps1;Ps2    Ps[skipThis0;CORE.L] = Ps'
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info

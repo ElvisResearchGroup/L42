@@ -13,16 +13,20 @@ _______
     if C notin dom(LL'.ms) 
 * (LL;CORE.L;pTails).pop(n+1) = (CORE.L;pTails).pop(n)
 _______
-#define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)
+#define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)    cleanPushed(pTails)
 * (LL;pTails).push(C,LL') = LL';C:LL,pTails
 
 * (LL;pTails).push(LL') = LL';LL,pTails
 
 * (LL;pTails).push(C) = (LL;pTails).push(C,LL')
     LL(C) = LL'
+
+* cleanPushed(empty)
+* cleanPushed(C:LL pTails) iff C in dom(LL)
 _______
 #define p.update(LL) = p'
 * (_;pTails).update(LL) = LL;pTails
+    cleanPushed(pTails)
 _______
 #define p.navigate(P) = p' 
 * p.navigate(Thisn.C1..Ck) = p.pop(n).push(C1)...push(Ck)
@@ -34,8 +38,9 @@ _______
 * Any[from _] = Any,    Library[from _] = Library,    Void[from _] = Void
 
 * e[from P;p] propagate on the structure, 
-    and L[from P;p] = L[from P;p;0] //assert p.push(L[from P;p;0]).checkAllMinimized(L[from P;p;0])) TODO: in code
-    and P'[from P;p] as defined above
+    where L[from P;p] = L[from P;p;0]
+    //assert p.push(L[from P;p;0]).checkAllMinimized(L[from P;p;0])) TODO: in code
+    where P'[from P;p] as defined above
 
 * {H Ms}[from P;p;j] = {H[Ts=H.Ts[from P;p;j+1] Ms[from P;p;j+1]}
 * This(j+n).Cs0[from P;p;j] = This(j+k).Cs1
