@@ -1057,8 +1057,16 @@ public class Core {
       this.ncs = ncs;
       this.info = info;
       this.docs = docs;
+      assert check();
     }
-
+    public boolean check(){
+      var nc=this.ncs.stream().filter(nci->nci.key().toString().contains("ElemBox")).findFirst();
+      if(nc.isPresent()){
+        var mwt=nc.get().l().mwts().stream().filter(mi->mi.key().toString().contains("##apply#")).findFirst();
+        assert !mwt.isPresent();
+        }
+      return true;
+      }
     @NonNull
     @java.lang.SuppressWarnings("all")
     public List<Pos> poss() {

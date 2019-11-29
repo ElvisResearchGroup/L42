@@ -12,7 +12,7 @@ method This +1(class Lifted lifted)=This:Meta().simpleSum(a=lifted.code(),b=this
 Acc={
   var Meta that
   class method mut This(Meta that)
-  class method mut Acc #squareBuilder()=Acc(Meta())
+  class method mut Acc ##apply#squareBuilder()=Acc(Meta())
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #add(Meta that)=this.that(\that.mergeMap(that)) 
   }

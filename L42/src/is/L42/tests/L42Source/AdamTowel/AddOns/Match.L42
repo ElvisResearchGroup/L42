@@ -5,7 +5,7 @@
 Some={
   var Bool pass
   class method mut This(Bool pass)
-  class method mut This #squareBuilder()=This(pass=Bool.false())
+  class method mut This ##apply#squareBuilder()=This(pass=Bool.false())
   class method Bool (mut This squareBuilder)=squareBuilder.pass()
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #yield(Void that)=void

@@ -1,6 +1,6 @@
 OptTrait=Trait:{
   class method mut This #apply()
-  class method mut This #apply(fwd mut This.Elem beer)=native{trusted:optK} error void
+  class method mut This #apply(fwd mut This.Elem that)=native{trusted:optK} error void
   read method read This.Elem get()=native{trusted:get}error void
   mut method mut This.Elem #get()=native{trusted:#get}error void
   Elem={#norm{}}

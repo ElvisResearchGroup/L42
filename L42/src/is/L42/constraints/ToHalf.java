@@ -353,7 +353,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert s.isSquare();
     X x=freshX("builder");
     Core.EX ex=new Core.EX(p,x);
-    var squareB=new Full.Call(p,new Full.Slash(p), squareBuilder,false,Par.emptys);
+    var squareB=new Full.Call(p,new Full.Slash(p), squareBuilder(s._s()),false,Par.emptys);
     var decX=makeDec(null,x,squareB);
     List<Full.D> e1n=L(s.pars(),(c,pi)->{
       if(pi.es().isEmpty() && pi._that()!=null){
@@ -648,10 +648,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S incompleteS=S.parse("#incomplete()");
   private static final S hasElemS=S.parse("#hasElem()");
   private static final S startIndexS=S.parse("#startIndex()");
-  private static final S applyThat=S.parse("#apply(that)");
+  //private static final S applyThat=S.parse("#apply(that)");
   private static final S applyZero=S.parse("#apply()");
   private static final S stringLiteralBuilder=S.parse("#stringLiteralBuilder()");
-  private static final S squareBuilder=S.parse("#squareBuilder()");
+  private static final S baseSquareBuilder=S.parse("#squareBuilder()");
+  private static final S squareBuilder(S m){
+    return baseSquareBuilder.withM("#"+m.m()+baseSquareBuilder.m());
+    }
   private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
   private static final S yieldS=S.parse("#yield()");
   private static final S addS=S.parse("#add()");

@@ -173,6 +173,7 @@ public class Meta {
     //TODO: check if source and dest are compatible with p._ofCore(path);
     var res=replaceP(cs,target,p.push(Resources.currentC,input)).visitL(input);
     res=res.withCs(cs, nc->{throw unreachable();},nc->null);
+    System.out.println(res);
     return res;
     }
   public L42Library simpleRedirect(String innerPath, L42Library l42Lib, L42Any classAny){
@@ -185,17 +186,15 @@ public class Meta {
     return new CloneVisitorWithProgram(pStart){
       @Override public P visitP(P path){
         int nesting=whereFromTop().size();
-        P frommed=pStart.from(path,P.of(nesting,L()));
-        if(!frommed.isNCs()){return path;}
-        var ncs=frommed.toNCs();
-        if(ncs.n()!=0){return path;}
-        var csFrommed=ncs.cs();
-        if(!cs.equals(csFrommed)){return path;}
+        if(!path.isNCs()){return path;}
+        var src=this.p().minimize(P.of(nesting,cs));
+        if(!src.equals(path)){
+          //if(path.toString().endsWith(".Elem"))System.out.println(this.whereFromTop()+"encountered "+path+", looking from "+src+" was not ==, origin"+cs+";"+nesting+this.p());
+          return path;}
         if(!dest.isNCs()){return dest;}
         var res=dest.toNCs();
         res=res.withN(res.n()+nesting+1);//because destination is relative to outside pStart.top
         return this.p().minimize(res);
-        //return this.p().minimize(P.of(levels, cs));
         }
       };
     }

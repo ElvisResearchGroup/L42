@@ -34,14 +34,14 @@ DeployAAA=(
     Name={...}
     Trait={...}
     Class={...}
-    Deploy={...}   
+    Deploy={...}
+    Opt={...}
     ListT={
       ListNative=Trait:{...}
       ListOps=Trait:{...}
       class method Trait(class Any that)=(ListOps+ListNative)['Elem>that]
       }
     Strings=Class:ListT(S)
-    Opt={...}
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )

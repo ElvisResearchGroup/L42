@@ -687,7 +687,7 @@ public class ToSVisitor implements ToSTrait{
     if(t.isEmpty()){return;}
     if(t.hasC()){
       visitC(t.c());
-      c("=");
+      c(":");
       }
     t.ll().visitable().accept(this);
     nl();

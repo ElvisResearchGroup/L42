@@ -442,7 +442,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      imm method imm This0 #shortCircutSquare()
      imm method imm This0 foo(imm This0 squareBuilder)
      imm method imm This0 a(imm This0 b, imm This0 c)=this.foo(squareBuilder=(
-       imm This0 fresh0_builder=This0<:class This0.#squareBuilder()
+       imm This0 fresh0_builder=This0<:class This0.##apply#squareBuilder()
        imm Void fresh1_underscore=(
          imm This0 fresh2_cond=This0<:class This0.#shortCircutSquare()
          ( imm Void fresh3_underscore=(
