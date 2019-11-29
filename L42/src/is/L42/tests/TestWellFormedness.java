@@ -125,8 +125,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("((A a=void A a=void void))",Err.duplicatedName(hole))
    ),new AtomicTest(()->
    fail("((A a=void (A a=void void)))",Err.redefinedName("a"))
-    ),new AtomicTest(()->
+   ),new AtomicTest(()->
    fail("(This0 a=void catch error This0 a error void void)",Err.redefinedName("a"))
+   ),new AtomicTest(()->
+   pass("(var This0 a=void a:=void catch error This0 b error void void)")
+   ),new AtomicTest(()->
+   fail("(var This0 a=void (a:=void catch error This0 b error void void))",Err.errorVarBindingOpUpdate(hole, hole))  
    ),new AtomicTest(()->
    fail("((A a=void catch T x a x))",Err.nameUsedInCatchOrMatch("a"))
    ),new AtomicTest(()->

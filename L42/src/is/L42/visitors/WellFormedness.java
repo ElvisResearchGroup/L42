@@ -205,12 +205,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     for(var x: domDs){if(declared.contains(x)){
       err(Err.redefinedName(x));
       }}
+    var oldDeclared=new ArrayList<>(declared);
     declared.addAll(domDs);
     declaredHidden.addAll(domMatches);
     declaredVar.addAll(allVar);
     for(var v:allVar){if(!domMatches.contains(v)){declaredVarFwd.addAll(allVar);}}
     boolean isErr=b.ks().stream().anyMatch(k->k._thr()==ThrowKind.Error);
-    if(isErr){declaredVarError.addAll(allVar);}
+    if(isErr){declaredVarError.addAll(oldDeclared);}
     for(var d:b.ds()){
       visitD(d);
       if(d._varTx()!=null && d._varTx().isVar()){
@@ -226,7 +227,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     visitFullKs(b.ks());
     visitFullTs(b.whoopsed());
     declaredHidden.removeAll(domDs);
-    if(isErr){declaredVarError.removeAll(allVar);}
+    if(isErr){declaredVarError.removeAll(oldDeclared);}
     if(b._e()!=null){visitE(b._e());}
     declared.removeAll(domDs);
     declaredVar.removeAll(allVar);
@@ -600,7 +601,10 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(mhj.key().m().startsWith("#$")){continue;}
       err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
       }}
-    if(!hasOpenState(l,bridges)){
+    boolean mustClose=!hasOpenState(l,bridges)
+      || (l.isInterface() && l.mwts().stream().anyMatch(m->m.key().hasUniqueNum()))
+      || (l.isInterface() && l.ts().stream().anyMatch(t->t.p().toNCs().hasUniqueNum()));
+    if(mustClose){
       if(!l.info().close()){err(Err.mustHaveCloseState(
         L(classMhs.stream().map(m->m.key())),
         L(bridges.stream().map(m->m.key()))
@@ -617,7 +621,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     List<Visitable<?>> ts=L(l.ts().stream().map(t->(Visitable<?>)t.p()));
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
-    void common(boolean isInterface,List<Visitable<?>> ts,List<LDom> dom, List<LDom> impl,List<Integer> privateAbstract){
+  void common(boolean isInterface,List<Visitable<?>> ts,List<LDom> dom, List<LDom> impl,List<Integer> privateAbstract){
     long countM=dom.stream().distinct().count();
     if(countM<dom.size()) {
       var dups=dups(dom);
@@ -662,8 +666,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     return true;
     }
   private static boolean isBridgeMeth(String m,String nativeUrl,Visitable<?>e){
-    if(!m.startsWith("#$")){return false;}
-    if(!nativeUrl.startsWith("trusted:")){return true;}
+    if(m.startsWith("#$")){return false;}
+    if(!nativeUrl.isEmpty() && !nativeUrl.startsWith("trusted:")){return true;}
     boolean[]res={false};
     e.accept(new PropagatorCollectorVisitor() {
       @Override public void visitS(S s){

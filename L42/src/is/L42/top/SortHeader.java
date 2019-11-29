@@ -82,9 +82,7 @@ class SortHeader{
       });
     for(var ti:ts1){
       if(cts.contains(ti)){continue;}
-      List<C> cs=ti.p().toNCs().cs();
-      for(C ci:cs){
-        if(!ci.hasUniqueNum()){continue;}
+      if(ti.p().toNCs().hasUniqueNum()){
         throw new InvalidImplements(poss,Err.sealedInterface(ti,ts1));
         }
       }

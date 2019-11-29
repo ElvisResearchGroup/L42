@@ -29,3 +29,9 @@ We will use s to denote sequence and z to denote sets. Thus
 xs sequence, xz set,
 []sequence, {}set
 sequence\i removes the element i from the sequence
+
+for any grammatic form the dot can be used to access subcomponens, as in
+M::= mdf method T m( T1 x1 ..Tn xn)e
+M.xs, M.mdf
+
+M[mdf=mut]=M'

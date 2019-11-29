@@ -303,7 +303,7 @@ public class Err {
   ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return
   "methods "+bi+", bridging effectful #$ non determinism could be invoked through factory "+fi+", that has no #$"
   ;}public static String mustHaveCloseState(Object fs,Object bs){return
-  "the core library literal must have close state, becouse factory methods "+fs+
+  "the core library literal must be close, is either a close interface or factory methods "+fs+
   " are present, and methods bridging effectful #$ non determinism "+bs+" are present"
   ;}public static String methSubTypeExpectedRet(Object s, Object _1,Object _2){return
   "Invalid method inheritance for "+s+": the return type "+_1+" is not a subtype of the inherited type"+_2

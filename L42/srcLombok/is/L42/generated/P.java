@@ -49,5 +49,9 @@ public interface P extends Visitable<P>{
     @Override public NCs toNCs(){return this;}
     @Override public boolean isNCs(){return true;}
     @Override public String toString(){return Constants.toS.apply(this);}
+    public boolean hasUniqueNum(){
+      for(C ci:cs){if(ci.hasUniqueNum()){return true;}}
+      return false;
+      }
     }
   }
