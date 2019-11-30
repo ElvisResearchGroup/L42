@@ -116,5 +116,5 @@ sThrow:Throw e;
 sUpdate: x OpUpdate e;
 e: sIf | sWhile | sFor | sLoop | sThrow | sUpdate | eBinary3;
 nudeE: e EOF;
-nudeP: fullL ((csP '=')? fullL)* EOF;
+nudeP: fullL ((csP '=' '=' )? fullL)* EOF;
 nudeCsP:csP EOF;

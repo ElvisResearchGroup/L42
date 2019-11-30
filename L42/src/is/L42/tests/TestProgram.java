@@ -34,7 +34,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={}}}",Err.nonUniqueNumber("[1]",hole))
    ),new AtomicTest(()->
-   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A={ A=void C::1={}}",Err.nonUniqueNumber("[1]",hole))
+   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A= ={ A=void C::1={}}",Err.nonUniqueNumber("[1]",hole))
    ),new AtomicTest(()->
 
    passWF("{method Void a(This3.Foo f)}"+emptyP)
@@ -56,15 +56,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    minimize("{method Void (Void that,Void foo)=foo}","Library","Library")
    ),new AtomicTest(()->
-   minimize("{method Void (Void that,Void foo)=foo} A={A={}}","This1.B.C","This1.B.C")
+   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}}","This1.B.C","This1.B.C")
    ),new AtomicTest(()->
-   minimize("{method Void (Void that,Void foo)=foo} A={A={}}","This1.A.C","This0.C")
+   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}}","This1.A.C","This0.C")
    ),new AtomicTest(()->
-   minimize("{method Void (Void that,Void foo)=foo} A={A={}} B={B={}}","This2.B.A.C","This0.C")
+   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}} B= ={B={}}","This2.B.A.C","This0.C")
    ),new AtomicTest(()->
-   minimize("{} A={A={}} B={B={A={}}}"+emptyP,"This2.B.A","This")
+   minimize("{} A= ={A={}} B= ={B={A={}}}"+emptyP,"This2.B.A","This")
    ),new AtomicTest(()->
-   minimize("{} A={A={}} B={B={A={}}}"+emptyP,"This1.A","This")
+   minimize("{} A= ={A={}} B= ={B={A={}}}"+emptyP,"This1.A","This")
    ),new AtomicTest(()->   
 //----testing from
    from(emptyP,"This2.A","This.B.C","This.A")
@@ -145,14 +145,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      "(This1.C.B x1=void This1.B x2=void This2.B x3=void This1.C x4=void { D={[This3.C, This1.A, This3.C.A,This3.A]#norm{}} #norm{}})")
 
   ),new AtomicTest(()->
-  fromE("{} A={A={}} B={B={A={}}}"+emptyP,"(This2.B.A x1=void This1.A x2=void This2.B x3=void This3.B.A x4=void void)",
+  fromE("{} A= ={A={}} B= ={B={A={}}}"+emptyP,"(This2.B.A x1=void This1.A x2=void This2.B x3=void This3.B.A x4=void void)",
         "This1.C",                 "(This x1=void This x2=void This1 x3=void This3.B.A x4=void void)")
   ),new AtomicTest(()->
-  toS("{[This1.I]}\nA:{J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
+  toS("{[This1.I]}\nA= ={J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
   ),new AtomicTest(()->
-  toS("{}\nA:{A={}}\n")
+  toS("{}\nA= ={A={}}\n")
   ),new AtomicTest(()->
-  toS("{}\nA:{A={}}\nB:{B={A={}}}\n")
+  toS("{}\nA= ={A={}}\nB= ={B={A={}}}\n")
 
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";

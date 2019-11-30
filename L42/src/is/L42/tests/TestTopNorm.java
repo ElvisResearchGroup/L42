@@ -41,7 +41,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    
  //collect
    ),new AtomicTest(()->
-   top("{} A={A={}} B={B={A={}}}","{#norm{}}")
+   top("{} A= ={A={}} B= ={B={A={}}}","{#norm{}}")
    ),new AtomicTest(()->
    topFail(InvalidImplements.class,"{[This.B] B={interface}}",Err.nestedClassesImplemented(hole))
    ),new AtomicTest(()->
@@ -49,7 +49,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    top("{B={interface} A={[B]}}","{B={interface #typed{}} A={[This1.B]#typed{typeDep=This1.B}}#norm{}}")
    ),new AtomicTest(()->
-   topFail(PathNotExistent.class,"{[This1.A]}B={}",Err.pathNotExistant("This1.A"))
+   topFail(PathNotExistent.class,"{[This1.A]}B= ={}",Err.pathNotExistant("This1.A"))
    ),new AtomicTest(()->
    top("{A={interface}B={interface[This1.A]}C={[This1.B, This1.A]}}","""
      {A={interface #typed{}}
@@ -159,13 +159,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    topFail(InvalidImplements.class,"{A={[I]} J={interface method This m()} I={interface [J] method This m()}}",Err.nestedClassesImplemented(hole))
 
    ),new AtomicTest(()->
-   top("{[I]}A={I={interface #norm{}} #norm{}}","{[This1.I] #norm{typeDep=This1.I}}")
+   top("{[I]}A= ={I={interface #norm{}} #norm{}}","{[This1.I] #norm{typeDep=This1.I}}")
    ),new AtomicTest(()->
-   top("{[I]}A={J={interface #norm{}} I={interface [This1.J]#norm{typeDep=This1.J}} #norm{}}","{[This1.I,This1.J] #norm{typeDep=This1.I,This1.J}}")
+   top("{[I]}A= ={J={interface #norm{}} I={interface [This1.J]#norm{typeDep=This1.J}} #norm{}}","{[This1.I,This1.J] #norm{typeDep=This1.I,This1.J}}")
    ),new AtomicTest(()->
-   top("{[I]}A={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J]#norm{typeDep=This1.J}}#norm{}}","{[This1.I,This1.J] method This1.J m() #norm{typeDep=This1.I,This1.J refined=m()}}")
+   top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J]#norm{typeDep=This1.J}}#norm{}}","{[This1.I,This1.J] method This1.J m() #norm{typeDep=This1.I,This1.J refined=m()}}")
    ),new AtomicTest(()->
-   top("{[I]}A={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J] method This m()#norm{typeDep=This1.J This}}#norm{}}","{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
+   top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J] method This m()#norm{typeDep=This1.J This}}#norm{}}","{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
 
    ),new AtomicTest(()->
    top(

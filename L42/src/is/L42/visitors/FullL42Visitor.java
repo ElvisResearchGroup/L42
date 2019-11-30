@@ -584,7 +584,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
         tail=tail.pTailSingle((Core.L)visitFullL((FullLContext)ci));
         continue;
         }
-      Full.CsP csP=visitCsP((CsPContext)ctx.getChild(i-2));
+      Full.CsP csP=visitCsP((CsPContext)ctx.getChild(i-3));
       C c=null;
       if(csP.cs().size()==1){c=csP.cs().get(0);}
       if(c==null){
