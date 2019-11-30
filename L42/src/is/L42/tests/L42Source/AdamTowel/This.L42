@@ -39,7 +39,9 @@ DeployAAA=(
     ListT={
       ListNative=Trait:{...}
       ListOps=Trait:{...}
+      ListEqOps=Trait:{...}
       class method Trait(class Any that)=(ListOps+ListNative)['Elem>that]
+      class method Trait(class Any withEq)=(ListOps+(ListNative/*+ListEqOps*/))['Elem>withEq]
       }
     Strings=Class:ListT(S)
     }
@@ -56,7 +58,7 @@ TestsAdamTowel={reuse[#$AdamTowel]
   OptS=Class:Opt(S)
   TestOpt=(
     OptS o1=OptS()
-    OptS o2=OptS(beer=S"hi")
+    OptS o2=OptS(S"hi")
     {}:Test"opt"(o2.get()==S"hi")
     )
   TestSizeRange=(
@@ -64,6 +66,24 @@ TestsAdamTowel={reuse[#$AdamTowel]
     for i in (21Size).range() (sAcc++=S"a")
     {}:Test"range 21"(sAcc.size()==21Size)
     )
+  TestMatchReduce=((
+    mut Strings ss=Strings[S"a";S"b";S"c"]
+    {}:Test"reduceWithValue"(S"DDabc"==
+      ss.reduce(S"DD")(for e in \list \res<=\acc++e))
+    )(
+    lent Strings ss=Strings[S"a";S"b";S"c"]
+    {}:Test"reduceWithValue"(S"DDabc"==
+      ss.reduce(S"DD")(for e in \list \res<=\acc++e))    
+    )(
+    read Strings ss=Strings[S"a";S"b";S"c"]
+    {}:Test"reduceWithValue"(S"DDabc"==
+      ss.reduce(S"DD")(for e in \list \res<=\acc++e))    
+    )(
+    imm Strings ss=Strings[S"a";S"b";S"c"]
+    {}:Test"reduceWithValue"(S"DDabc"==
+      ss.reduce(S"DD")(for e in \list \res<=\acc++e))    
+    ))
+
   TestMatchSome=(
     ss=Strings[S"a";S"b";S"c"]
     (    

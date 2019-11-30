@@ -25,7 +25,7 @@ public class Err {
   public static String hole="[###]";//not contains \.[]{}()<>*+-=!?^$|
   
   public static String posString(List<Pos>poss){
-    //if(poss==null){return "[no position]";}
+    if(poss==null){return "[no position]";}
     String res="";
     for(Pos pos:poss){res+=pos;}
     return res;

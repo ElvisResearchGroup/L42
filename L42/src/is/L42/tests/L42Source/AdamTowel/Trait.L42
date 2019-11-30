@@ -14,7 +14,7 @@ Acc={
   class method mut This(Meta that)
   class method mut Acc ##apply#squareBuilder()=Acc(Meta())
   class method Bool #shortCircutSquare()=Bool.true()
-  mut method Void #add(Meta that)=this.that(\that.mergeMap(that)) 
+  mut method Void #squareAdd(Meta that)=this.that(\that.mergeMap(that)) 
   }
 method Trait (mut Acc squareBuilder)=
   Trait:squareBuilder.that().applyMap(this.code())

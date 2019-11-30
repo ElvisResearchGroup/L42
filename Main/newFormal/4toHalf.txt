@@ -118,15 +118,15 @@ _______
       x))
     x fresh
     ei = x.#yield(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
-    ei = x.#add(pari) otherwise
+    ei = x.#squareAdd(pari) otherwise
 
 * Y!e "stringElement" = Y!(e.#from(stringLiteral=strLitPar(stringElement)))
 * Y!e "stringElement1 e1..stringElementn en stringElement(n+1)" = Y!(e.#from(stringLiteral=(
       x=\.#stringLiteralBuilder()
       e'1 e"1.. e'n e"n e(n+1)
       x)))
-    e'i = x.addAll(strLitPar(stringElementi)),
-    e"i = x.#splice(ei)
+    e'i = x.#stringAddAll(strLitPar(stringElementi)),
+    e"i = x.#stringAddExpr(ei)
     x fresh
     
 * Y!if e0 e1 = Y!(if e0 e1 else void)

@@ -173,7 +173,7 @@ public class Meta {
     //TODO: check if source and dest are compatible with p._ofCore(path);
     var res=replaceP(cs,target,p.push(Resources.currentC,input)).visitL(input);
     res=res.withCs(cs, nc->{throw unreachable();},nc->null);
-    System.out.println(res);
+    //System.out.println(res);
     return res;
     }
   public L42Library simpleRedirect(String innerPath, L42Library l42Lib, L42Any classAny){

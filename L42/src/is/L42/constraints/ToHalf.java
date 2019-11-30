@@ -355,7 +355,14 @@ public class ToHalf extends UndefinedCollectorVisitor{
     Core.EX ex=new Core.EX(p,x);
     var squareB=new Full.Call(p,new Full.Slash(p), squareBuilder(s._s()),false,Par.emptys);
     var decX=makeDec(null,x,squareB);
-    List<Full.D> e1n=L(s.pars(),(c,pi)->{
+    List<Par> pars=s.pars();
+    if(pars.size()>=2){
+      var last=pars.get(pars.size()-1);
+      if(last._that()==null && last.es().isEmpty()){
+        pars=pars.subList(0, pars.size()-1);
+        }
+      }
+    List<Full.D> e1n=L(pars,(c,pi)->{
       if(pi.es().isEmpty() && pi._that()!=null){
         var e1i=pi._that();
         if(e1i instanceof Full.If 
@@ -367,7 +374,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
           return;
           }
         }
-      c.add(makeDec(new Full.Call(p,ex,addS,false,L(pi))));
+      c.add(makeDec(new Full.Call(p,ex,squareAddS,false,L(pi))));
       });
     Full.E block=makeBlock(p,e1n,new Core.EVoid(p));
     var eIf=new Full.If(p,squareB.with_s(shortCircutSquare),L(),block,null);
@@ -515,13 +522,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
         String si=s.strings().get(i);
         Full.E ei=s.es().get(i+1);
         var bi=strLitPar(p,si);
-        var e1i=new Full.Call(p,ex,addAllS,false,L(new Par(bi,L(),L())));
-        var e2i=new Full.Call(p,ex,spliceS,false,L(new Par(ei,L(),L())));
+        var e1i=new Full.Call(p,ex,stringAddAllS,false,L(new Par(bi,L(),L())));
+        var e2i=new Full.Call(p,ex,stringAddExprS,false,L(new Par(ei,L(),L())));
         c.add(makeDec(e1i));
         c.add(makeDec(e2i));
         }
       var bLast=strLitPar(p,s.strings().get(s.strings().size()-1));
-      var e1Last=new Full.Call(p,ex,addAllS,false,L(new Par(bLast,L(),L())));
+      var e1Last=new Full.Call(p,ex,stringAddAllS,false,L(new Par(bLast,L(),L())));
       c.add(makeDec(e1Last));
       });
     return makeBlock(p,e0n,ex);
@@ -657,9 +664,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
   private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
   private static final S yieldS=S.parse("#yield()");
-  private static final S addS=S.parse("#add()");
-  private static final S addAllS=S.parse("#addAll()");
-  private static final S spliceS=S.parse("#splice()");
+  private static final S squareAddS=S.parse("#squareAdd()");
+  private static final S stringAddAllS=S.parse("#stringAddAll()");
+  private static final S stringAddExprS=S.parse("#stringAddExpr()");
   private static final S fromS=S.parse("#from()");
   private static final C classOperators=new C("ClassOperators",-1);
   private static final List<X> squareBuilderX=L(new X("squareBuilder"));

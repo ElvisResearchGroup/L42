@@ -365,21 +365,21 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ),new AtomicTest(()->pass("""
      class method This #from(This stringLiteral)
      class method This #stringLiteralBuilder()
-     class method Void #addAll(This that)
+     class method Void #stringAddAll(This that)
      method Void a()=This"a+%this c"
      ""","""
      class method imm This0 #from(imm This0 stringLiteral)
      class method imm This0 #stringLiteralBuilder()
-     class method imm Void #addAll(imm This0 that)
+     class method imm Void #stringAddAll(imm This0 that)
      imm method imm Void a()=This0<:class This0.#from(stringLiteral=(
        imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
-       imm Void fresh3_underscore=fresh0_builder.#addAll(that=(
+       imm Void fresh3_underscore=fresh0_builder.#stringAddAll(that=(
          imm This0 fresh1_builder=This0<:class This0.#stringLiteralBuilder()
          imm Void fresh4_underscore=fresh1_builder.#la()
          imm Void fresh5_underscore=fresh1_builder.#splus()
          fresh1_builder))
-       imm Void fresh6_underscore=fresh0_builder.#splice(that=this)
-       imm Void fresh7_underscore=fresh0_builder.#addAll(that=(
+       imm Void fresh6_underscore=fresh0_builder.#stringAddExpr(that=this)
+       imm Void fresh7_underscore=fresh0_builder.#stringAddAll(that=(
          imm This0 fresh2_builder=This0<:class
          This0.#stringLiteralBuilder()
          imm Void fresh8_underscore=fresh2_builder.#sspace()
@@ -442,16 +442,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      imm method imm This0 #shortCircutSquare()
      imm method imm This0 foo(imm This0 squareBuilder)
      imm method imm This0 a(imm This0 b, imm This0 c)=this.foo(squareBuilder=(
-       imm This0 fresh0_builder=This0<:class This0.##apply#squareBuilder()
+       imm This0 fresh0_builder=This0<:class This0.#foo#squareBuilder()
        imm Void fresh1_underscore=(
          imm This0 fresh2_cond=This0<:class This0.#shortCircutSquare()
          ( imm Void fresh3_underscore=(
              imm This0 fresh4_receiver=fresh2_cond.#if()
              fresh4_receiver.#checkTrue())
            catch exception imm Void fresh5_underscore void
-           ( imm Void fresh6_underscore=fresh0_builder.#add(that=c)
-             imm Void fresh7_underscore=fresh0_builder.#add(that=b)
-             imm Void fresh8_underscore=fresh0_builder.#add(key=c, val=b)
+           ( imm Void fresh6_underscore=fresh0_builder.#squareAdd(that=c)
+             imm Void fresh7_underscore=fresh0_builder.#squareAdd(that=b)
+             imm Void fresh8_underscore=fresh0_builder.#squareAdd(key=c, val=b)
              void)
            )
          )

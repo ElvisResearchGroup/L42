@@ -148,11 +148,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   fromE("{} A={A={}} B={B={A={}}}"+emptyP,"(This2.B.A x1=void This1.A x2=void This2.B x3=void This3.B.A x4=void void)",
         "This1.C",                 "(This x1=void This x2=void This1 x3=void This3.B.A x4=void void)")
   ),new AtomicTest(()->
-  toS("{[This1.I]}\nA={J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
+  toS("{[This1.I]}\nA:{J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
   ),new AtomicTest(()->
-  toS("{}\nA={A={}}\n")
+  toS("{}\nA:{A={}}\n")
   ),new AtomicTest(()->
-  toS("{}\nA={A={}}\nB={B={A={}}}\n")
+  toS("{}\nA:{A={}}\nB:{B={A={}}}\n")
 
   ));}
 private static String emptyP="{#norm{}}{#norm{}}{#norm{}}{#norm{}}{#norm{}}";

@@ -39,7 +39,7 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return new Meta();";
     }},  
-  Vector("ArrayList"){public String factory(J j,MWT mwt){
+  Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==1;
     return "return new "+j.typeNameStr(j.p())+"();";
@@ -51,9 +51,11 @@ public enum TrustedKind implements TrustedT{
     return "return null;";
     }
     public int genericNumber(){return 1;}
-    public String typeNameStr(Program p,J j){
+    @Override public String typeNameStr(Program p,J j){
       var info=p.topCore().info();
-      return j.typeNameStr(info.nativePar().get(0));
+      P gen1=info.nativePar().get(0);
+      if(!gen1.isNCs()){return "L42"+gen1;}
+      return j.typeNameStr(p.navigate(gen1.toNCs()));
       }
     },
   Limit("Void"){public String factory(J j,MWT mwt){
@@ -77,7 +79,8 @@ public enum TrustedKind implements TrustedT{
     if(info.nativePar().isEmpty()){return res;}
     res+="<";
     for(P pi:info.nativePar()){
-      res+=j.typeNameStr(pi);
+      if(!pi.isNCs()){return "L42"+pi;}
+      res+=j.typeNameStr(p.navigate(pi.toNCs()));
       res+=", ";
       }
     res=res.substring(0,res.length()-2)+">";

@@ -152,12 +152,16 @@ class OpUtils{
     return (type,p,mwt)->{
       if(type && typingUse(p,mwt,sig)){return "";}
       String ss=s;
+      J j=new J(p, G.empty(), false,new ArrayList<>());
+      if(s.contains("%This")){
+        String thisS=j.typeNameStr(p);
+        ss=s.replace("%This",thisS);
+        }
       if(s.contains("%Gen1")){
-        J j=new J(p, G.empty(), false,new ArrayList<>());
         P gen1=p.topCore().info().nativePar().get(0);
         String gen1S=j.typeNameStr(gen1);
         ss=s.replace("%Gen1",gen1S);
-        }      
+        }            
       return ss.formatted(NativeDispatch.xs(mwt).toArray());
       };
     }
@@ -336,6 +340,7 @@ public enum TrustedOp {
     Meta,use("return %s.applyMap(%s);",sigI(Lib,Lib)))),
   
   //Vector
+  VectorK("vectorK",Map.of(Vector,use("return new %This(%2$s);",sig(Class,Mutable,This,Immutable,Int)))),
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(
     Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)),
@@ -346,19 +351,20 @@ public enum TrustedOp {
   ImmVal("immVal",Map.of(Vector,use("""
     var tmp=%1$s.get(%2$s*2+1);
     if(tmp==null){return %1$s.get(%2$s*2);}
-    throw new Error("??");
+    throw new Error("get immVal but was mut:"+%1$s);
     """,
     sig(Readable,Immutable,Gen1,Immutable,Int)))),
   HashVal("#val",Map.of(Vector,use("""
     var tmp=%1$s.get(%2$s*2+1);
     if(tmp!=null){return tmp;}
-    throw new Error("??");
+    throw new Error("get mut val but was imm");
     """,
     sig(Mutable,Mutable,Gen1,Immutable,Int)))),
-  SetImm("setImm",Map.of(Vector,use("%s.set(%s*2,%s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  SetImm("setImm",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,%3$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  AddImm("addImm",Map.of(Vector,use("%1$s.add(%2$s);%s.add(null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)))),
-  AddMut("addMut",Map.of(Vector,use("%1$s.add(%2$s);%1$s.add(%2$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Mutable,Gen1)))),
+  AddImm("addImm",Map.of(Vector,use("%1$s.add(%2$s*2,%3$s);%s.add(%2$s*2+1,null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  AddMut("addMut",Map.of(Vector,use("%1$s.add(%2$s*2,%3$s);%1$s.add(%2$s*2+1,%3$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
+  Remove("remove",Map.of(Vector,use("%1$s.remove(%2$s*2+1);%1$s.remove(%2$s*2);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int)))),
   //TODO: handle exceptions, immVal/mutVal absent+index out ouf bound
   //arithmetic
   Plus("OP+",Map.of(
@@ -378,8 +384,8 @@ public enum TrustedOp {
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
   OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))), 
-  Get("get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"??\");",sig(Readable,Readable,Gen1)))),
-  HGet("#get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"??\");",sig(Mutable,Mutable,Gen1))))  
+  Get("get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"get null\");",sig(Readable,Readable,Gen1)))),
+  HGet("#get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"#get null\");",sig(Mutable,Mutable,Gen1))))  
   ;
   public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;

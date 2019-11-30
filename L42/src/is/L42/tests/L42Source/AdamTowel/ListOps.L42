@@ -2,8 +2,8 @@ Elem={}
 class method mut This (mut This squareBuilder)=squareBuilder
 class method mut This ##apply#squareBuilder()=This.empty()
 class method Bool #shortCircutSquare()=Bool.true()
-mut method Void #add(Elem that)=this.add(immVal=that)
-mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
+mut method Void #squareAdd(Elem that)=this.add(right=that)
+mut method Void #squareAdd(mut Elem mutVal)=this.#add(right=mutVal)
 mut method Void #yield(Void that)=void
 mut method mut This list()=this
 read method read This #iterator()=this
@@ -14,43 +14,109 @@ read method Bool #incomplete(Size that)=that!=this.size()
 read method Elem #elem#imm(Size that)=this.val(that)
 mut method mut Elem #elem#mut(Size that)=this.#val(that)
 read method Elem #elem#default(Size that)=this.#elem#imm(that)
-mut method mut Elem #update#mut(Size that, mut Elem val)=(this(that,mutVal=val) val)
-mut method Elem #update#imm(Size that, Elem val)=(this(that,immVal=val) val)
+mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#set(that,val=val) val)
+mut method Elem #update#imm(Size that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
 read method Void #close(Size that)=
   if this.#incomplete(that) error S"multi for skipped some elements"
-mut method Void add(Elem that)=this.add(immVal=that)
+mut method Void add(Elem that)=this.add(right=that)
 
 class method mut This empty()
+class method mut This empty(Size that)
 read method Bool isEmpty()
 read method Size size()
 read method read Elem readVal(Size that)
 read method imm  Elem val(Size that)
 mut method mut Elem #val(Size that)
-mut method Void #apply(Size that,Elem immVal)
-mut method Void #apply(Size that,mut Elem mutVal)
-mut method Void add(Elem immVal)
-mut method Void add(mut Elem mutVal)
+mut method Void set(Size that,Elem val)
+mut method Void #set(Size that,mut Elem val)
+mut method  Void remove(Size that)
+mut method Void add(Size that, Elem val)
+mut method Void #add(Size that, mut Elem val)
 
-OptElem=Class:Opt(Elem)
+read method Elem left()=this.val(0\)
+read method Elem right()=this.val(\size.#pred())
+mut method mut Elem #left()=this.#val(0\)
+mut method mut Elem #right()=this.#val(\size.#pred())
+read method read Elem readLeft()=this.readVal(0\)
+read method read Elem readRight()=this.readVal(\size.#pred())
+
+
+mut method  Void left(Elem that)=this.set(0\ val=that)
+mut method  Void right(Elem that)=this.set(\size.#pred() val=that)
+mut method  Void #left(mut Elem that)=this.#set(0\ val=that)
+mut method  Void #right(mut Elem that)=this.#set(\size.#pred() val=that)
+
+mut method Void add(Elem left)=this.add(0\, val=left)
+mut method Void add(Elem right)=this.add(\size, val=right)
+mut method Void #add(mut Elem left)=this.#add(0\, val=left)
+mut method Void #add(mut Elem right)=this.#add(\size, val=right)
+
+mut method  Void removeLeft()=this.remove(0\)
+mut method  Void removeRight()=this.remove(\size.#pred())
+
+
+//#################OPERATORS
+method This +(Elem right)=this.withAlso(\size,val=right)
+
+method This ++(This right)=This[
+    for e in this (\list.add(e));
+    for e in right (\list.add(e));
+    ]
+
+//#################Withs
+method This with(Size that, Elem val)=(
+  size=this.size()
+  res=This.empty(this.size())
+  var i=0Size
+  while i<that (res.add(this.val(i)) i:=i.#succ())
+  res.add(val) i:=i.#succ()
+  while i<size (res.add(this.val(i)) i:=i.#succ())
+  res
+  )
+method This withLeft(Elem that)=this.with(0\, val=that)
+method This withRight(Elem that)=this.with(\size.#pred(), val=that)
+
+method This withAlso(Size that, Elem val)=(
+  size=this.size()
+  res=This.empty(this.size())
+  var i=0Size
+  while i<that (res.add(this.val(i)) i:=i.#succ())
+  res.add(val)
+  while i<size (res.add(this.val(i)) i:=i.#succ())
+  res
+  )
+
+method This withAlsoLeft(Elem that)=this.withAlso(0\, val=that)
+method This withAlsoRight(Elem that)=this.withAlso(\size.#pred(), val=that)
+
+//skipping/filtering
+method This without(Size index)=(
+  size=this.size()
+  res=This.empty(this.size())
+  var i=0Size
+  while i<index (res.add(this.val(i)) i:=i.#succ())
+  i:=i.#succ()
+  while i<size (res.add(this.val(i)) i:=i.#succ())
+  res
+  )
+
+method This withoutLeft()=this.without(index=0\)
+
+method This withoutRight()=this.without(index=\size.#pred())
+
 ElemBox={
   read This1 list
-  var OptElem elem
-  class method lent This(read This1 list,OptElem elem)
-  lent method Void #add(Elem that)=this.elem(OptElem(that))
+  var Elem elem
+  class method lent This(read This1 list,Elem elem)
+  lent method Void #add(Elem that)=this.elem(that)
   //mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
   read method Elem (Void that)=this.acc()
-  read method Elem acc()=this.elem().get()
+  read method Elem acc()=this.elem()
   lent method lent This res()=this
-  lent method Void <=(Elem that)=this.elem(OptElem(that))
+  lent method Void <=(Elem that)=this.elem(that)
   //may still add left/right, withoutLeft/witoutRight to delegate on list ones
   }
-//myList.reduce[\left;for e in \withoutLeft \reduce(\acc+e)]
 //myList.reduce(\left)(for e in \withoutLeft \res<=\acc+e)
-read method lent ElemBox reduce()=ElemBox(list=this,elem=OptElem())
-read method lent ElemBox reduce(Elem that)
-  =ElemBox(
-   list=this,
-   elem=
-   OptElem(that)
-   )
+//read method lent ElemBox reduce()=ElemBox(list=this.withoutLeft(),elem=this.left())
+read method lent ElemBox reduce(Elem that)=ElemBox(list=this,elem=that)

@@ -87,7 +87,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(p.isNCs()){
       assert this.p().topCore().check();
       try{return typeNameStr(this.p.navigate(p.toNCs()));}
-      catch(LL.NotInDom nid){throw new AssertionError("Not found "+p.toString());}
+      catch(LL.NotInDom nid){
+        throw new AssertionError("Not found "+p.toString());
+        }
       }
     return "L42"+p;
     }

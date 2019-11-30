@@ -1,75 +1,19 @@
 class method mut This empty()
+class method mut This empty(This2.Size that)=native{trusted:vectorK} error void
 read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
 read method This2.Size size()=native{trusted:size} error void
 read method read This0.Elem readVal(This2.Size that)=native{trusted:readVal} error void
 read method imm This0.Elem val(This2.Size that)=native{trusted:immVal} error void
 mut method mut This0.Elem #val(This2.Size that)=native{trusted:#val} error void
-mut method Void #apply(This2.Size that,This0.Elem immVal)=native{trusted:setImm} error void
-mut method Void #apply(This2.Size that,mut This0.Elem mutVal)=native{trusted:setMut} error void
-mut method Void add(This0.Elem immVal)=native{trusted:addImm} error void
-mut method Void add(mut This0.Elem mutVal)=native{trusted:addMut} error void
+mut method Void set(This2.Size that,This0.Elem val)=native{trusted:setImm} error void
+mut method Void #set(This2.Size that,mut This0.Elem val)=native{trusted:setMut} error void
+mut method Void add(This2.Size that,This0.Elem val)=native{trusted:addImm} error void
+mut method Void #add(This2.Size that,mut This0.Elem val)=native{trusted:addMut} error void
+mut method Void remove(This2.Size that)=native{trusted:remove} error void
+
 Elem={#norm{}}
 #norm{declaresClassMethods, 
   typeDep=This0,This2.Size,This2.Bool, This.Elem
   nativeKind=Vector
   nativePar=This0.Elem
-  }  
-/*
-List={interface
-  read method read Elem e()
-  read method imm Elem immE()
-  mut method mut Elem #e()
-
-  mut method Void e(Elem immVal)
-  mut method Void e(mut Elem mutVal)
-
-  read method read List succ()
-  mut method mut List #succ()
-
-  read method Bool isEmpty()
-
-  read method It it()
-  read method read List indexZero()
   }
-
-ListT=Trait: {[List]
-  method e()=error X.invalidOp()
-  method immE()=error X.invalidOp()
-  method #e()=error X.invalidOp()
-  method e(immVal)=error X.invalidOp()
-  method e(mutVal)=error X.invalidOp()
-  method succ()=error X.invalidOp()
-  method #succ()=error X.invalidOp()
-  method isEmpty()=Bool.true()
-  method iterator()=It()
-  method indexZero()=this
-  }
-Empty=Class:ListT<+{class mut Empty()}
-ICell=Class:ListT<+Data:{var Elem e, mut List succ
-  method immE()=this.e()
-  method isEmpty()=Bool.false()}
-MCell=Class:ListT<+Data:{var mut Elem e, mut List succ
-  read method Bool isEmpty()=Bool.false()}
-//imm List l ->imm Elems
-//read List l ->imm Elems
-//read List l-> read Elems
-//lent List l-> lent Elems
-//mut List l-> mut Elems
-It=Class:{
-  class method ReadIt()
-  method Elem elem(read List that)=that.immE()
-  method read Elem readElem(read List that)=that.e()
-  method read Elem immElem(read List that)=that.immE()
-  method read mut Elem mutElem(mut List that)=that.#e()
-  method Bool hasElem(read List that)=that.isEmpty()
-  method Bool incomplete(read List that)=that.isEmpty()
-  method Void close(read List that)=void
-  method Void update(mut List that, imm Elem val)=that.e(immVal=val)
-  method Void immUpdate(mut List that, imm Elem val)=that.e(immVal=val)
-  method Void mutUpdate(mut List that, mut Elem val)=that.e(mutVal=val)
- }
-//TODO: should the list produce both the indexZero and the iterator?
-//TODO: the sugar call #elem instead of elem if var declared lent/mut,
-// and immElem if var declared imm
-//TODO:x1.update(x0, x), need to chose a name for parameters
-*/
