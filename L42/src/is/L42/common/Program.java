@@ -229,7 +229,8 @@ public class Program implements Visitable<Program>{
     if(!subP.isNCs()){return false;}
     if(!superP.isNCs()){return false;}
     assert minimize(subP0)==subP0;
-    for(T ti:((Core.L)of(subP0,poss)).ts()){
+    var l=(Core.L)of(subP0,top.poss());//may throw a PathNotExistant that is captured by solve STOp
+    for(T ti:l.ts()){
       P pi=from(ti.p(),subP0);
       assert minimize(pi)==pi;
       if(pi.equals(superP)){return true;}

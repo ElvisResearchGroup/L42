@@ -8,6 +8,7 @@ method This +(Library lib)=This:Meta().simpleSum(a=this.code(),b=lib)
 method This +1(Library lib)=This:Meta().simpleSum(a=lib,b=this.code())
 method This +(class Lifted lifted)=This:Meta().simpleSum(a=this.code(),b=lifted.code())
 method This +1(class Lifted lifted)=This:Meta().simpleSum(a=lifted.code(),b=this.code())
+method This +(This trait)=This:Meta().simpleSum(a=this.code(),b=trait.code())
 
 Acc={
   var Meta that

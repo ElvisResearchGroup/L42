@@ -12,4 +12,14 @@ Some={
   mut method mut This match()=this
   mut method Void (Bool that)[Void]=if that (this.pass(that) exception void)
   }
+All={
+  var Bool pass
+  class method mut This(Bool pass)
+  class method mut This ##apply#squareBuilder()=This(pass=Bool.true())
+  class method Bool (mut This squareBuilder)=squareBuilder.pass()
+  class method Bool #shortCircutSquare()=Bool.true()
+  mut method Void #yield(Void that)=void
+  mut method mut This match()=this
+  mut method Void (Bool that)[Void]=if !that (this.pass(that) exception void)
+  }
 //TODO: add match None and match All and test them

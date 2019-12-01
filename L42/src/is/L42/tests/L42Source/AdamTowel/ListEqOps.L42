@@ -16,6 +16,7 @@ read method Bool #incomplete(Size that)
 read method Elem #elem#imm(Size that)
 mut method mut Elem #elem#mut(Size that)
 read method Elem #elem#default(Size that)
+read method read Elem #elem#read(Size that)
 mut method mut Elem #update#mut(Size that, mut Elem val)
 mut method Elem #update#imm(Size that, Elem val)
 mut method Elem #update#default(Size that, Elem val)
@@ -44,6 +45,7 @@ mut method  Void #left(mut Elem that)
 mut method  Void #right(mut Elem that)
 mut method Void add(Elem left)
 mut method Void add(Elem right)
+mut method Void add(Elem that)
 mut method Void #add(mut Elem left)
 mut method Void #add(mut Elem right)
 mut method  Void removeLeft()
@@ -59,7 +61,7 @@ method This withAlsoRight(Elem that)
 method This without(Size index)
 method This withoutLeft()
 method This withoutRight()
-read method lent ElemBox reduce()
+method lent ElemBox reduce()
 read method lent ElemBox reduce(Elem that)
 ElemBox={
   read method Elem (Void that)
@@ -67,11 +69,14 @@ ElemBox={
   lent method lent This res()
   lent method Void <=(Elem that)
   }
+  
 //----------------------------
-/*
+
+method This withoutAll(read Elem val)=This[for e in this (if !This.equals(a=e,b=val) \list.add(e))]
+
 read method Bool contains(read Elem that)={
   for read e in this (
-    if this.equals(a=e,b=that) return Bool.true()
+    if This.equals(a=e,b=that) return Bool.true()
     )
   return Bool.false()
   }
@@ -79,14 +84,18 @@ read method Bool contains(read Elem that)={
 //################# operators
 read method Bool #in1(read Elem that)=this.contains(that)
 
-method This -(Elem right)=this.withoutAll(val:right)
+method This -(Elem right)=this.withoutAll(val=right)
 
 method This --(This right)=This[for e in this ( if !(e in right) \list.add(e))]
 
+/*
 //method This &(This right)=This[for e in this ( if e in right \list.add(e) )]
+//TODO: what to do here? & operator has been removed and && short circuts..
 
+//superset
 //method Bool >>(This right)= this >>=right & !(right>>=this)
 
+//supersetEq
 //method Bool >>=(This right)=//TODO:
 //  Bool.falseOr[{for read e in right(if !(e in this) return \true)}]
 method Bool >>=(This right)={
@@ -95,34 +104,32 @@ method Bool >>=(This right)={
     )
   return Bool.true()
   }
-//read method Bool ==(read This that)=
-//  Bool.trueAnd[{for read e1 in this, read e2 in that (if e1!=e2 return \false)
-//    catch error IterationFailure  return \false //TODO:
-//      }]
-read method Bool ==(read This that)={
-  for read e1 in this, read e2 in that (
-    if e1!=e2 return Bool.false()
-    )
-  catch error IterationFailure ( return Bool.false() )//TODO:
-  return Bool.true()
-  }
+*/
+
+read method Bool ==(read This that)=
+  this.size()==that.size() &&
+  Match.All[for read e1 in this, read e2 in that 
+    \match(This.equals(a=e1,b=e2))]
+
 read method Size indexOfLeft(read Elem val)={
+  //for pos in this.size().range() (//No, range is defined later so it can not be used here
+  var pos=0Size
   size=this.size()
-  var Size pos=0Size
-  loop ( //TODO: size.range() may range from 0 to size-1, and size.inverseRange() from size-1 to 0
-    if this.val(pos)==val return pos
-    if pos>=size return Size"-1"
+  loop (
+    if This.equals(a=this.val(pos) b=val) return pos
+    if pos<=0Size return Size"-1"
     pos+=1Size
     )
   }
 read method Size indexOfRight(read Elem val)={
   var Size pos=this.size()-1Size
   loop (
-    if this.val(pos)==val return pos
+    if This.equals(a=this.val(pos) b=val) return pos
     if pos<=0Size return Size"-1"
     pos-=1Size
     )
   }
+/*
 method This without(Size index) //from VectorTrait
 //TODO: HERE
 method This withoutLeft(read Elem val) {
@@ -136,8 +143,6 @@ method This withoutRight(read Elem val)={
   if pos<0Size return this
   return this.without(index:pos)
   }
-
-method This withoutAll(read Elem val)=This[for e in this.vals() (if e!=val \list.add(e))]
 
 mut method Void remove(Size that) //from VectorTrait
 

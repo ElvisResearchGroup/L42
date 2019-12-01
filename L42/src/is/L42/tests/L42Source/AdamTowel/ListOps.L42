@@ -14,6 +14,7 @@ read method Bool #incomplete(Size that)=that!=this.size()
 read method Elem #elem#imm(Size that)=this.val(that)
 mut method mut Elem #elem#mut(Size that)=this.#val(that)
 read method Elem #elem#default(Size that)=this.#elem#imm(that)
+read method read Elem #elem#read(Size that)=this.readVal(that)
 mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#set(that,val=val) val)
 mut method Elem #update#imm(Size that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
@@ -118,5 +119,6 @@ ElemBox={
   //may still add left/right, withoutLeft/witoutRight to delegate on list ones
   }
 //myList.reduce(\left)(for e in \withoutLeft \res<=\acc+e)
-//read method lent ElemBox reduce()=ElemBox(list=this.withoutLeft(),elem=this.left())
+method lent ElemBox reduce()=ElemBox(list=this.withoutLeft(),elem=this.left())
+//TODO: discuss the signature of the method above. To make it read method we need to...
 read method lent ElemBox reduce(Elem that)=ElemBox(list=this,elem=that)

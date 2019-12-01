@@ -36,14 +36,16 @@ DeployAAA=(
     Class={...}
     Deploy={...}
     Opt={...}
+    Match={...}
     ListT={
       ListNative=Trait:{...}
       ListOps=Trait:{...}
       ListEqOps=Trait:{...}
       class method Trait(class Any that)=(ListOps+ListNative)['Elem>that]
-      class method Trait(class Any withEq)=(ListOps+(ListNative/*+ListEqOps*/))['Elem>withEq]
+      class method Trait(class Any withEq)=(ListOps+ListNative+ListEqOps)['Elem>withEq]
       }
-    Strings=Class:ListT(S)
+    Strings=Class:(ListT(withEq=S)+{
+      class method Bool equals(read S a,read S b)=a==b})
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )

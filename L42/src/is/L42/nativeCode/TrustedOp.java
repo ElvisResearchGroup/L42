@@ -374,12 +374,12 @@ public enum TrustedOp {
   Times("OP*",Map.of(Int,use("return %s * %s;",sigI(Int,Int)))),
   Divide("OP/",Map.of(Int,use("return %s / %s;",sigI(Int,Int)))),
   Minus("OP-",Map.of(Int,use("return %s - %s;",sigI(Int,Int)))),
-  LT("OP<",Map.of(Int,use("return %s < %s;",sigI(Bool,Int)))),
-  LTEqual("OP<=",Map.of(Int,use("return %s <= %s;",sigI(Bool,Int)))),
+  LT("OP<",Map.of(Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)))),
+  LTEqual("OP<=",Map.of(Int,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Int)))),
   EqualEqual("OP==",Map.of(
-    Int,use("return %s == %s;",sigI(Bool,Int)),
-    String,use("return %s.equals(%s);",sigI(Bool,String)),
-    Bool,use("return %s == %s;",sigI(Bool,Bool))
+    Int,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Int)),
+    String,use("return %s.equals(%s);",sig(Readable, Immutable,Bool, Readable,String)),
+    Bool,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Bool))
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),

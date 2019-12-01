@@ -15,7 +15,7 @@ method This #shortCircut#oror()=this
 method This #shortProcess#oror(This that,This other)=other
   
 read method This1.S toS()=native{trusted:toS} error void
-method This #equalequal0(This that)=native{trusted:OP==} error void
-method This #bangequal0(This that)=(This tmp=this.#equalequal0(that=that) tmp.not())
+read method This #equalequal0(read This that)=native{trusted:OP==} error void
+read method This #bangequal0(read This that)=(This tmp=this.#equalequal0(that=that) tmp.not())
 
 #norm{declaresClassMethods, typeDep=This0,This1.S,This1.HasToS nativeKind=Bool refined=toS()}

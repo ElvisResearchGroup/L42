@@ -97,7 +97,7 @@ public class CTz {
     var tz0=tzs.get(0);
     return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
     }
-  static public void opOptionsAcc(Program p,Op op, List<T>ts, int i,List<Psi>acc){
+  static public void opOptionsAcc(Program p,Op op, List<T>ts, int i,ArrayList<Psi>acc){
     List<P> p11n=L(range(ts),(cj,j)->{
       if(j!=i){cj.add(ts.get(j).p());}
       });
@@ -105,7 +105,8 @@ public class CTz {
     P tmp=ts.get(i).p();
     if(!tmp.isNCs()){return;}
     P.NCs tip=tmp.toNCs();
-    List<MWT> mwts=p._ofCore(tip).mwts();
+    var l=(Core.L)p.of(tip,p.top.poss());//may throws a PathNotExistent that is captured by solve STOp
+    List<MWT> mwts=l.mwts();
     List<MH> mhs=L(mwts.stream()
       .map(m->m.mh())
       .filter(m->
@@ -125,16 +126,17 @@ public class CTz {
     }
   public static ST solve(Program p,ST.STOp st){
     List<List<ST>> minStzi=L(st.stzs(),stzi->solve(p,stzi));
-    List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi.stream(),T.class)));
-    List<List<T>> tsz=tzsToTsz(tzs);
-    Set<Psi> options=new HashSet<>();
-    for(var ts:tsz){
-      options.addAll(opOptions(p,st.op(),ts));
+    try{
+      List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi.stream(),T.class)));
+      List<List<T>> tsz=tzsToTsz(tzs);
+      Set<Psi> options=new HashSet<>();
+      for(var ts:tsz){options.addAll(opOptions(p,st.op(),ts));}
+      if(options.size()!=1){return st.withStzs(minStzi);}
+      assert options.size()==1;
+      Psi psi=options.iterator().next();
+      return p.from(_elem(p._ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
       }
-    if(options.size()!=1){return st.withStzs(minStzi);}
-    assert options.size()==1;
-    Psi psi=options.iterator().next();
-    return p.from(_elem(p._ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
+    catch(EndError.PathNotExistent pne){return st.withStzs(minStzi);}
     }  
   public void plusAcc(Program p,List<ST> stz,List<ST>stz1){
     stz1=solve(p,stz1);
