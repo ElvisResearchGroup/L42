@@ -367,6 +367,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       kw("£x"+xi.inner());
       c(";");
       nl();
+      assert !xi.inner().startsWith(" ");
       c("public static BiConsumer<Object,Object> FieldAssFor_"
         +xi+"=(f,o)->{(("+jC+")o).£x"+xi+"=(");
       typeName(pi);
@@ -488,9 +489,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     //if a (non native) class has no fields, it has a static .instance that is used
     //instead of any constructor, and instead of any placeholder variable
     //thus, variables of those types are never in fwds
-
-    boolean isFwd=mwt.mh().pars().stream()
-      .anyMatch(ti->ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd));
     typeName(p);
     kw("Res=new ");
     typeName(p);
@@ -498,13 +496,15 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     for(int i:range(fields.xs)){
       X xi=fields.xs.get(i);
       T ti=mwt.mh().pars().get(i);
+      boolean isFwd=ti.mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd);
       if(isFwd){
         kw("if(");
         visitX(xi);
         kw("instanceof L42Fwd){((L42Fwd)");
         visitX(xi);
-        c(").add(Res,JC.FieldAssFor_");
-        visitX(xi);
+        c(").rememberAssign(Res,");
+        typeName(p);
+        c(".FieldAssFor_"+xi.inner());
         c(");}else{");
         }
       c("Res.");

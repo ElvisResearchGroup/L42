@@ -7,7 +7,30 @@ class method Bool #shortCircutSquare()
 mut method Void #squareAdd(Elem that)
 mut method Void #squareAdd(mut Elem mutVal)
 mut method Void #yield(Void that)
-mut method mut This list()
+read method read This vals()
+mut method mut This #vals()
+mut method mut SlashRes res()
+SlashRes={mut method Void <=(Elem e)}
+
+read method lent MatchAny matchAny()
+MatchAny={
+  lent method lent This res()
+  lent method Bool (Void that)
+  lent method Void <=(Bool b)[Void]
+  }
+read method lent MatchAll matchAll()
+MatchAll={
+  lent method lent This res()
+  lent method Bool (Void that)
+  lent method Void <=(Bool b)[Void]
+  }
+read method lent MatchNone matchNone()
+MatchNone={
+  lent method lent This res()
+  lent method Bool (Void that)
+  lent method Void <=(Bool b)[Void]
+  }
+
 read method read This #iterator()
 mut method mut This #varIterator()
 read method Size #startIndex()
@@ -72,7 +95,7 @@ ElemBox={
   
 //----------------------------
 
-method This withoutAll(read Elem val)=This[for e in this (if !This.equals(a=e,b=val) \list.add(e))]
+method This withoutAll(read Elem val)=This[for e in this (if !This.equals(a=e,b=val) \res<=e)]
 
 read method Bool contains(read Elem that)={
   for read e in this (
@@ -86,10 +109,10 @@ read method Bool #in1(read Elem that)=this.contains(that)
 
 method This -(Elem right)=this.withoutAll(val=right)
 
-method This --(This right)=This[for e in this ( if !(e in right) \list.add(e))]
+method This --(This right)=This[for e in this ( if !(e in right) \res<=e)]
 
 /*
-//method This &(This right)=This[for e in this ( if e in right \list.add(e) )]
+//method This &(This right)=This[for e in this ( if e in right \res<=e )]
 //TODO: what to do here? & operator has been removed and && short circuts..
 
 //superset
@@ -108,8 +131,8 @@ method Bool >>=(This right)={
 
 read method Bool ==(read This that)=
   this.size()==that.size() &&
-  Match.All[for read e1 in this, read e2 in that 
-    \match(This.equals(a=e1,b=e2))]
+  this.matchAll()(for read e1 in this, read e2 in that 
+    \res<= This.equals(a=e1,b=e2))
 
 read method Size indexOfLeft(read Elem val)={
   //for pos in this.size().range() (//No, range is defined later so it can not be used here
@@ -178,7 +201,8 @@ class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #add(Elem that)=this.add(val=that)
 mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
 mut method Void #yield(Void that)=void
-mut method mut This list()=this
+read method read This vals()=this
+mut method mut This #vals()=this
 read method read This #iterator()=this
 mut method mut This #varIterator()=this
 read method Size #startIndex()=0Size

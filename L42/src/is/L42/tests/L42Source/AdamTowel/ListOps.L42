@@ -134,6 +134,31 @@ ElemBox={
 read method lent ElemBox reduce()=ElemBox(vals=this.vals(start=1\),elem=this.left())
 read method lent ElemBox reduce(Elem that)=ElemBox(vals=this.vals(start=0\),elem=that)
 
+read method lent MatchAny matchAny()=MatchAny(pass=Bool.false(),vals=this)
+MatchAny={
+  var Bool pass read This1 vals
+  class method lent This(Bool pass,read This1 vals)
+  lent method Bool (Void that)=this.pass()
+  lent method lent This res()=this
+  lent method Void <=(Bool b)[Void]=if b (this.pass(b) Break())
+  }
+read method lent MatchAll matchAll()=MatchAll(pass=Bool.true(),vals=this)
+MatchAll={
+  var Bool pass read This1 vals
+  class method lent This(Bool pass,read This1 vals)
+  lent method Bool (Void that)=this.pass()
+  lent method lent This res()=this
+  lent method Void <=(Bool b)[Void]=if !b (this.pass(b) Break())
+  }
+read method lent MatchNone matchNone()=MatchNone(pass=Bool.true(),vals=this)
+MatchNone={
+  var Bool pass read This1 vals
+  class method lent This(Bool pass,read This1 vals)
+  lent method Bool (Void that)=this.pass()
+  lent method lent This res()=this
+  lent method Void <=(Bool b)[Void]=if b (this.pass(!b) Break())
+  }
+
 read method read Iterator cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 mut method mut Iterator #cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 
