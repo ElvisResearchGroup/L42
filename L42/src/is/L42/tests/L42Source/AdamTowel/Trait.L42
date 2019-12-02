@@ -3,7 +3,7 @@ ClassOperators={class method class Trait()=Trait}
 class method This #colon0(Library that)=This(code=that)
 Library code
 class method This(Library code)
-//class method This(Library that)=This(code=that)//TODO: can just be removed
+class method This(Library that)=This(code=that)
 method This +(Library lib)=This:Meta().simpleSum(a=this.code(),b=lib)
 method This +1(Library lib)=This:Meta().simpleSum(a=lib,b=this.code())
 method This +(class Lifted lifted)=This:Meta().simpleSum(a=this.code(),b=lifted.code())

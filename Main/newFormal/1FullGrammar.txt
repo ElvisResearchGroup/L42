@@ -123,7 +123,7 @@ _______
   x ::=IdLow IdChars
   m ::= (#$ |#+)? x(#x)* (::n)?
   UOp ::= ! | ~ // prefix
-  OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative
+  OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative//TODO: swap OP0 and OP1 precedence? so that Class:a+b works?
   OP1 ::= + | - | * | / | >> | -> // left associative   
   OP2 ::= == | < | > | >= | <= | in | !=  // unassiociative
   OP3 ::= => | && | '||' // right associative, will be short circuting
@@ -226,7 +226,7 @@ _______
 * CORE.MWT: if MWT.e?=e, then //this partially duplicate the test of "all used variables are in scope"
     x0..xn=this,MWT.s.xs
     FV(e)\x0..xn = empty    
-    for i in 0..n if Ti.mdf=capsule, FV(e) not of form _,xi,_,xi,_
+    for i in 0..n if MWT.pari.mdf=capsule, FV(e) not of form _,xi,_,xi,_
     //FV(e) contains xi 0 or 1 times
 
 //CODE ONLY WELL FORMEDNESS:
@@ -285,14 +285,16 @@ _______
     forall D' in Ds: not returning(D'.e) // would be dead code after
     forall K in Ks: returning(K.e)
     hasReturn(Ds1.es,Ds2.es,Ks.es)
-* returning(loop e)
+
 * returning(throw e)
+* returning(loop e)
 * returning(if _ e1 else e2) iff 
     returning(e1) and returning(e2)
-* returning( (Ds1 Ks WHOOPS? Ds2 e) ) iff
+* returning( (Ds1 Ks WHOOPS? Ds2 e) ) iff //TODO: do we handle the case for (Ds e Ks WHOOPS?) ??
     returning(e)
     forall K in Ks: returning(K.e)
 //* undefined in all the other cases
+
 * hasReturn(_,e,_)
     return e' is contained inside e without traversing LL or a block with curly or another throw e'
 _______

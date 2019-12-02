@@ -2,8 +2,8 @@ _______
 #define p(P) = LL //functional notation
 * (LL;pTails)(This0.Cs) = LL(Cs)
 * p(Thisn+1.Cs) = p.pop(n+1)(This0.Cs)
-* p(Any) = {interface}
-* p(Void) = p(Library) = {}
+* p(Any) = {interface #typed{}}
+* p(Void) = p(Library) = {#typed{}}
 _______
 #define p.pop(n) = p'
 * p.pop(0) = p
@@ -11,7 +11,7 @@ _______
     if C in dom(LL'.ms)
 * (LL;C:LL';pTails).pop(n+1) = (LL';pTails).pop(n)
     if C notin dom(LL'.ms) 
-* (LL;CORE.L;pTails).pop(n+1) = (CORE.L;pTails).pop(n)
+* (LL;LL';pTails).pop(n+1) = (LL';pTails).pop(n)
 _______
 #define p.push(C,LL') = p'    p.push(LL') = p'    p.push(C)
 * (LL;pTails).push(C,LL') = LL';C:LL,pTails

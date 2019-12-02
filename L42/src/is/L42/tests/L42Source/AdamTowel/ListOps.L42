@@ -5,7 +5,8 @@ class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #squareAdd(Elem that)=this.add(right=that)
 mut method Void #squareAdd(mut Elem mutVal)=this.#add(right=mutVal)
 mut method Void #yield(Void that)=void
-mut method mut This list()=this
+read method read This vals()=this
+mut method mut This #vals()=this
 read method read This #iterator()=this
 mut method mut This #varIterator()=this
 read method Size #startIndex()=0Size
@@ -20,6 +21,7 @@ mut method Elem #update#imm(Size that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
 read method Void #close(Size that)=
   if this.#incomplete(that) error S"multi for skipped some elements"
+
 mut method Void add(Elem that)=this.add(right=that)
 
 class method mut This empty()
@@ -55,15 +57,27 @@ mut method Void #add(mut Elem right)=this.#add(\size, val=right)
 
 mut method  Void removeLeft()=this.remove(0\)
 mut method  Void removeRight()=this.remove(\size.#pred())
-
-
+mut method mut SlashRes res()=SlashRes(this)
+SlashRes=Class:(Trait({
+  class method mut This #apply()
+  class method mut This #apply(fwd mut This1 that)=native{trusted:optK} error void
+  read method read This1 get()=native{trusted:get}error void
+  mut method mut This1 #get()=native{trusted:#get}error void
+  Elem={#norm{}}
+  #norm{typeDep=This1,This declaresClassMethods nativeKind=Opt nativePar=This1}
+  })+{
+  mut method Void <=(Elem e)=this.#get()<:mut This1.add(e)
+  })
 //#################OPERATORS
 method This +(Elem right)=this.withAlso(\size,val=right)
 
 method This ++(This right)=This[
-    for e in this (\list.add(e));
-    for e in right (\list.add(e));
+    for e in this \res<=e;
+    for e in right \res<=e;
     ]
+//TODO: can not parse \#vals, also it suld be \res<=e, but... 
+//if res is the lib, then we can not make <= as comparing list for subsetEq
+//if is Box, then ok with Opt<K> native?
 
 //#################Withs
 method This with(Size that, Elem val)=(
@@ -107,18 +121,55 @@ method This withoutLeft()=this.without(index=0\)
 method This withoutRight()=this.without(index=\size.#pred())
 
 ElemBox={
-  read This1 list
+  read Iterator vals
   var Elem elem
-  class method lent This(read This1 list,Elem elem)
+  class method lent This(read Iterator vals,Elem elem)
   lent method Void #add(Elem that)=this.elem(that)
   //mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
   read method Elem (Void that)=this.acc()
   read method Elem acc()=this.elem()
   lent method lent This res()=this
   lent method Void <=(Elem that)=this.elem(that)
-  //may still add left/right, withoutLeft/witoutRight to delegate on list ones
   }
-//myList.reduce(\left)(for e in \withoutLeft \res<=\acc+e)
-method lent ElemBox reduce()=ElemBox(list=this.withoutLeft(),elem=this.left())
-//TODO: discuss the signature of the method above. To make it read method we need to...
-read method lent ElemBox reduce(Elem that)=ElemBox(list=this,elem=that)
+read method lent ElemBox reduce()=ElemBox(vals=this.vals(start=1\),elem=this.left())
+read method lent ElemBox reduce(Elem that)=ElemBox(vals=this.vals(start=0\),elem=that)
+
+read method read Iterator cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
+mut method mut Iterator #cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
+
+read method read Iterator vals(Size start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
+mut method mut Iterator #vals(Size start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
+read method read Iterator cutVals(Size start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
+mut method mut Iterator #cutVals(Size start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
+
+read method read Iterator vals(Size end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
+mut method mut Iterator #vals(Size end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
+read method read Iterator cutVals(Size end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
+mut method mut Iterator #cutVals(Size end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
+
+read method read Iterator vals(Size start,Size end)=Iterator(start=start,end=end,cut=\.false(),list=this)
+mut method mut Iterator #vals(Size start,Size end)=Iterator(start=start,end=end,cut=\.false(),list=this)
+read method read Iterator cutVals(Size start,Size end)=Iterator(start=start,end=end,cut=\.true(),list=this)
+mut method mut Iterator #cutVals(Size start,Size end)=Iterator(start=start,end=end,cut=\.true(),list=this)
+
+Iterator={
+  Size start
+  Size end
+  Bool cut
+  mut This1 list
+  class method mut This(Size start,Size end,Bool cut,fwd mut This1 list)
+  read method read This #iterator()=this
+  mut method mut This #varIterator()=this
+  read method Size #startIndex()=0Size
+  read method Bool #hasElem(Size that)=that<this.end()
+  read method Bool #incomplete(Size that)=that!=this.end()
+  read method Elem #elem#imm(Size that)=this.list().val(that)
+  mut method mut Elem #elem#mut(Size that)=this.#list().#val(that)
+  read method Elem #elem#default(Size that)=this.list().#elem#imm(that)
+  read method read Elem #elem#read(Size that)=this.list().readVal(that)
+  mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#list().#set(that,val=val) val)
+  mut method Elem #update#imm(Size that, Elem val)=(this.#list().set(that,val=val) val)
+  mut method Elem #update#default(Size that, Elem val)=this.#list().#update#imm(that,val=val)
+  read method Void #close(Size that)=
+    if this.#incomplete(that) error S"multi for skipped some elements"
+  }
