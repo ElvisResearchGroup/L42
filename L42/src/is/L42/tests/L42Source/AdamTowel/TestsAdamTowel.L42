@@ -1,0 +1,110 @@
+reuse[#$AdamTowel]
+OptS=Class:Opt(S)
+TestOpt=(
+  OptS o1=OptS()
+  OptS o2=OptS(S"hi")
+  {}:Test"opt"(o2.get()==S"hi")
+  {}:Test"optNope"(S"Optional value is empty"==(
+    error o1.get() catch error NoElementInOpt e e.text()
+    ))
+  )
+TestSizeRange=(
+  var sAcc=S""
+  for i in (21Size).range() (sAcc++=S"a")
+  {}:Test"range 21"(sAcc.size()==21Size)
+  )
+TestMatchReduce=((
+  mut Strings ss=Strings[S"a";S"b";S"c"]
+  {}:Test"reduceWithValue"(S"DDabc"==
+    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))
+  )(
+  lent Strings ss=Strings[S"a";S"b";S"c"]
+  {}:Test"reduceWithValue"(S"DDabc"==
+    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
+  )(
+  read Strings ss=Strings[S"a";S"b";S"c"]
+  {}:Test"reduceWithValue"(S"DDabc"==
+    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
+  )(
+  imm Strings ss=Strings[S"a";S"b";S"c"]
+  {}:Test"reduceWithValue"(S"DDabc"==
+    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
+  ))
+TestMatchSome=(
+  ss=Strings[S"a";S"b";S"c"]
+  (    
+    res=ss.matchAny()(for s in \vals \res<=(s==S"c"))
+    {}:Test"MatchSome"(res)
+    )(
+    var sAcc=S""
+    res=ss.matchAny()(for s in \vals (sAcc++=S"#" \res<=(s==S"b")))
+    {}:Test"MatchSomeShortCircut"(sAcc.size()==2Size)
+    )
+  )
+TestSizeInString=(
+  half=21Size
+  answer=half+half
+  {}:Test"Sum"(answer==42Size)"Computed answer is %answer.toS()"
+  //{}:Test"Failing test"(answer==8Size)"Computed answer is %answer.toS()"
+  {}:Test"StringConcat"(S"Hello World "++answer.toS()++S"!" == S"Hello World 42!")
+  {}:Test"StringSpliceConcat"(S"Hello World %answer!" == S"Hello World 42!")
+  )
+TestSizeParsing=(
+  err=Size"oh NO!"//throws error
+  {}:Test"InvalidParseInt"( Bool.false() )"Errors not thrown"
+  catch error S x 
+    {}:Test"InvalidParseIntError"(x==S"The string %S.dq()oh NO!%S.dq() is not a valid number")"Error is %x" 
+  )
+NotCoh={This field, class method This ()}
+TestMakeNotCohList=ListT(NotCoh)
+TestStrings=(
+  s=Strings.empty()
+  s.add(\"hi")
+  {}:Test"singleVal"(s.val(0Size)==S"hi")
+  {}:Test"size1"(s.size()==1Size)
+  )
+TestWhile=(
+  while Bool.true() (
+    {}:Test"while runs"(Bool.true())
+    exception void  
+    )
+  )
+TestBoolRelOps=(
+  {}:Test"Less then"(!(3Size<3Size))
+  {}:Test"Less then and false"(!(3Size<3Size && Bool.false()))
+  )
+TestVectorOps=(
+  ss1=Strings[S"a";S"b";S"c"]
+  ss2=Strings[S"1";S"2";S"3"]
+  (
+    var sAcc=S""
+    for imm si in ss1 (sAcc++=si)
+    {}:Test"Simple for"(sAcc==S"abc")
+    )(
+    var sAcc=S""
+    for s1 in ss1, imm s2 in ss2 (sAcc++=s1++s2)
+    {}:Test"Simple for"(sAcc==S"a1b2c3")
+    )(
+    ss3=Strings[(\res<=S"hi")]
+    {}:Test"justSlash"(ss3.size()==1Size)
+    )(
+    ss4=Strings[for s1 in ss1, imm s2 in ss2 (\res<=s1++s2)]
+    for var imm si in ss4 (si:=S"pe"++si)
+    for var si in ss4 (si:=S"No"++si)
+    var sAcc=S""
+    for imm si in ss4 (sAcc++=si)
+    {}:Test"Simple for"(sAcc==S"Nopea1Nopeb2Nopec3")
+    )
+  )
+TestMeta=(
+  _=Meta().simpleRedirect(
+    innerPath=S"A.B"
+    l42Lib={A={B={method Void m()}} method Void (A.B that)=void}
+    classAny=Debug)
+  _=Meta().simpleRedirect(
+    innerPath=S"A.B"
+    l42Lib={A={B={method Void m()}} method Void (A.B that)=void}
+    classAny=NotCoh)
+  {}:Test"Meta does not crash"(Bool.true())
+  //TODO:could be improved after introspection is reimplemented 
+  )

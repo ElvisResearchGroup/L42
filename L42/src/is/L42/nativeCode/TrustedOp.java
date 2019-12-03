@@ -393,7 +393,7 @@ public enum TrustedOp {
   Get("get",  Map.of(Opt,use("""
     if(%1$s!=null){return %1$s;}
     throw new L42Error(%Gen2.wrap(
-      new L42LazyMsg(\"get null\")
+      new L42LazyMsg(\"Optional value is empty\")
       ));
     """,sig(Readable,Readable,Gen1)),
     LazyMessage,use("return %s.getMsg();",sig(Readable,Immutable,String))
@@ -401,7 +401,7 @@ public enum TrustedOp {
   HGet("#get",Map.of(Opt,use("""
     if(%1$s!=null){return %1$s;}
     throw new L42Error(%Gen2.wrap(
-      new L42LazyMsg(\"get null\")
+      new L42LazyMsg(\"Optional value is empty\")
       ));
     """,sig(Mutable,Mutable,Gen1))))  
   ;
