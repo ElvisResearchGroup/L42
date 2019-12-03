@@ -148,21 +148,26 @@ class OpUtils{
       }
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static TrustedOp.Generator use(String s,Signature sig){
+  static TrustedOp.Generator use(String s0,Signature sig){
     return (type,p,mwt)->{
       if(type && typingUse(p,mwt,sig)){return "";}
-      String ss=s;
+      String s=s0;
       J j=new J(p, G.empty(), false,new ArrayList<>());
       if(s.contains("%This")){
         String thisS=j.typeNameStr(p);
-        ss=s.replace("%This",thisS);
+        s=s.replace("%This",thisS);
         }
-      if(s.contains("%Gen1")){
-        P gen1=p.topCore().info().nativePar().get(0);
-        String gen1S=j.typeNameStr(gen1);
-        ss=s.replace("%Gen1",gen1S);
-        }            
-      return ss.formatted(NativeDispatch.xs(mwt).toArray());
+      for(int i:range(p.topCore().info().nativePar())){
+        P geni=p.topCore().info().nativePar().get(i);
+        if(s.contains("%Gen"+(i+1)+".")){
+          String geniS=J.classNameStr(p.navigate(geni.toNCs()));
+          s=s.replace("%Gen"+(i+1)+".",geniS+".");
+          }
+        if(s.contains("%Gen"+(i+1))){
+          s=s.replace("%Gen"+(i+1),j.typeNameStr(geni));
+          }
+        }           
+      return s.formatted(NativeDispatch.xs(mwt).toArray());
       };
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
@@ -382,13 +387,23 @@ public enum TrustedOp {
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
-  LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new LazyMessage(%s);",sig(Class,Immutable,LazyMessage,Immutable,String)))),
+  LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new L42LazyMsg(%2$s);",sig(Class,Mutable,LazyMessage,Immutable,String)))),
   SetMsg("setMsg",Map.of(LazyMessage,use("%s.setMsg(%s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,String)))),
   OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))), 
-  Get("get",  Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new %Gen2(\"get null\");",sig(Readable,Readable,Gen1)),
-    LazyMessage,use("return %s.getMsg()",sig(Readable,Immutable,String))
+  Get("get",  Map.of(Opt,use("""
+    if(%1$s!=null){return %1$s;}
+    throw new L42Error(%Gen2.wrap(
+      new L42LazyMsg(\"get null\")
+      ));
+    """,sig(Readable,Readable,Gen1)),
+    LazyMessage,use("return %s.getMsg();",sig(Readable,Immutable,String))
     )),
-  HGet("#get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new %Gen2(\"#get null\");",sig(Mutable,Mutable,Gen1))))  
+  HGet("#get",Map.of(Opt,use("""
+    if(%1$s!=null){return %1$s;}
+    throw new L42Error(%Gen2.wrap(
+      new L42LazyMsg(\"get null\")
+      ));
+    """,sig(Mutable,Mutable,Gen1))))  
   ;
   public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;

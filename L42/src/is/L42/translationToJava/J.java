@@ -412,7 +412,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       ch=new Coherence(p,false);
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();return;}
       xs=ch.classMhs.get(0).s().xs();
-      assert ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs));
+      assert p.topCore().isInterface() || ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)):xs;
       ps=L(range(xs),(c,i)->{
         List<P> pis=L(ch.classMhs.stream().map(m->m.pars().get(i).p()).distinct());
         if(pis.size()==1){c.add(pis.get(0));}

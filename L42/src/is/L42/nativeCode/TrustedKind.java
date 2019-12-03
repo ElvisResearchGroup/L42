@@ -39,10 +39,17 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return new Meta();";
     }},  
-  LazyMessage("LazyMessage"){public String factory(J j,MWT mwt){
+  LazyMessage("L42LazyMsg"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return new LazyMessage();";
-    }},  
+    return "return new L42LazyMsg();";
+    }},
+  /*TODO:  well formed nativeKind need to be
+   -known,
+   -have the right amount of nativeGens
+   -some of those gens need to be NCs//TODO
+   -some of those gens need to point to other nativeKind//TODO
+   -constructor have no args and return imm//TODO
+  */ 
   Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==1;
