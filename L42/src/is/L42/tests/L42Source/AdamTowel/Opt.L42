@@ -4,7 +4,7 @@ OptTrait=Trait:{
   read method read This.Elem get()=native{trusted:get}error void
   mut method mut This.Elem #get()=native{trusted:#get}error void
   Elem={#norm{}}
-  #norm{typeDep=This.Elem,This declaresClassMethods nativeKind=Opt nativePar=This.Elem}}
+  #norm{typeDep=This.Elem,This declaresClassMethods nativeKind=Opt nativePar=This.Elem,This1.NoElementInOpt}}
   /*+{
   Elem={}
   class method mut This #apply()

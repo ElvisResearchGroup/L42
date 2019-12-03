@@ -49,15 +49,15 @@ _______
 #define p|-T <= Tz    p|-T0 <= T1    p|-P0 <= P1    mdf0<=mdf1
 * p|-T <= T0..Tn  iff  p|-T <= T0,..,p|-T <= Tn
 
- *p |- mdf0 P0 <= mdf1 P1
-    mdf0 <= mdf1
-    p |- P0 <= P1
+*p |- mdf0 P0 <= mdf1 P1
+   mdf0 <= mdf1
+   p |- P0 <= P1
 
 * p |- P0 <= P1  
-    P1 in {P0} U p(P0).Ts[from P0;p] U {Any} //assert p.minimize(Pi)=Pi
+   P1 in {P0} U p(P0).Ts.Ps[from P0;p] U {Any} //assert p.minimize(Pi)=Pi
 
 * mdf <= mdf
-* capsule <= mdf, if mdf in {mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm}
+* capsule <= mdf, if mdf in {mut,imm,lent,read,fwd%Mut,fwdMut,fwd%Imm, fwdImm}//that is: not class
 * imm <= mdf, if mdf in {read,fwd%Imm,fwdImm}
 * mut <= mdf, if mdf in {lent,fwd%Mut,read,fwdMut}
 * lent <= read
@@ -82,7 +82,7 @@ _______
     P=This(k+1).Cs'  otherwise   
 * (CORE.L;C:LL;_).minimize(This1.C.Cs)=This0.Cs
 * (CORE.L;LL;_).minimize(This1.Cs)=This1.Cs
-* (CORE.L;C:LL;_).minimize(This1.C'.Cs)=This1.C.Cs
+* (CORE.L;C:LL;_).minimize(This1.C'.Cs)=This1.C'.Cs
     C!=C'
 _______
 #define p.solve(ST) = ST' 

@@ -206,6 +206,11 @@ _______
     forall MWT in bridge(L.MWT), forall MH in MHs:
       if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
     if MHs!=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
+    L.Info.coherentDep subseteq L.Info.typeDep
+    either L.Info.declaresClassMethods?!=empty or class notin L.MWTs.mdfs
+    L.Info.nativeKind recognized
+    expectedNumber(L.Info.nativeKind,L.Info.nativePar)
+    //the number of nativePar is the expected number for the kind of nativeKind
 
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 * CTz: forall CT1,CT2 in CTz, if CT1.ST=CT2.ST then CT1=CT2

@@ -8,26 +8,22 @@ _______
     on all the Cs applies p.minimize(p.resolve(C.Cs)).
     on all the P applies p.minimize(P).
     the n of every Thisn.Cs must fit in the dept of the program
-    forall LL0, LL1 anywhere inside different places in LL0: uniqueNs(p,LL0) disjoint uniqueNs(p,LL1)
-    //TODO next
-    check that for any reached p=CORE.L;pTail:
-      either Info.Flag=Norm or Ps0 subseteq dom(p) and norm |- p 
-      Ps0 subseteq Info.typeDep
-      Ps1 subseteq Info.coherentDep 
+    forall LL0, LL1 anywhere inside different places: uniqueNs(p,LL0) disjoint uniqueNs(p,LL1)
+    after the p.minimize happend everywhere, check that for any reached p=CORE.L;pTail:
+      if Info.Flag=typed  then Info.typeDep subseteq dom(p) and norm |- p
       ??? watched=Ps,
       ??? usedMethods=(P.s)s,
       ??? hiddenSupertypes=Ps,
-      either Info.declaresClassMethods?!=empty or class notin CORE.L.MWTs.mdfs
-      either Info.closeState?!=empty or CORE.L.interface?!=empty or {MH| MH in CORE.L.MWTs, MH.m of form ::n}=empty
-      Info.nativeKind recognized
-      expectedNumber(Info.nativeKind,Info.nativePar)//the number of nativePar is the expecte number for the kind of nativeKind
+      Ps0 subseteq L.Info.typeDep
+      Ps1 subseteq L.Info.coherentDep
     where
       Info=CORE.L.Info
-      Ps0;Ps1=collectDeps(p;CORE.MWTs) U collectDeps(CORE.L.Docs) U CORE.L.Ts.Ps;empty 
+      Ps0;Ps1=collectDeps(p;L.MWTs) U collectDeps(L.Docs) U L.Ts.Ps;empty
+
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 //error is reported if an implements list contains This0.Cs or
 //Thisn.C.Cs and C is after the current point in the program
-_______
+_______//owned unique ns
 #define uniqueNs(p,LL) = ns    isDefined(p,s,P)
 * n in uniqueNs(p,FULL.L) if C::n in dom(FULL.L.Ms)
 * n in uniqueNs(p,FULL.L) if m::n(xs) in dom(FULL.L.Ms) and
@@ -50,7 +46,7 @@ p.resolve(C.Cs) = Thisn.C.Cs
   or p(Thisn) = {reuse[URL]...}
 //error is reported if: we try to explore an undefined p(Thisn) or URL has no #$ and C notin dom(followURL(URL)) 
 _______
-#define metanotation IfNotE, IfErr, IfUndefined 
+#define metanotation IfNotE, IfErr, IfUndefined
 //note: the simpler interpretation (predicate0 and predicates) or predicate1
 //would technically allow free variables in predicate0 to be chosen to falsify it
 // Note: the "predicates" include those on subsequent (similarlly indented) lines!
@@ -268,7 +264,7 @@ _______
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
 
 * collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
-* collectDeps(p; Doc) = {P| @P._ inside Doc};empty    
+* collectDeps(p; Doc) = {P| @P._ inside Doc};empty
 _______
 #define collectDepsE(p;CORE.e?)= Ps1;Ps2    Ps[skipThis0;CORE.L] = Ps'
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info

@@ -39,6 +39,10 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return new Meta();";
     }},  
+  LazyMessage("LazyMessage"){public String factory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return new LazyMessage();";
+    }},  
   Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==1;
@@ -47,10 +51,11 @@ public enum TrustedKind implements TrustedT{
     public int genericNumber(){return 1;}},
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    assert j.p().topCore().info().nativePar().size()==1;
+    assert j.p().topCore().info().nativePar().size()==2;
     return "return null;";
     }
-    public int genericNumber(){return 1;}
+    @Override public int genericNumber(){return 1;}
+    @Override public int genExceptionNumber(){return 1;}
     @Override public String typeNameStr(Program p,J j){
       var info=p.topCore().info();
       P gen1=info.nativePar().get(0);
@@ -65,6 +70,7 @@ public enum TrustedKind implements TrustedT{
   public final String inner;
   TrustedKind(String inner){this.inner = inner;}
   public int genericNumber(){return 0;}
+  public int genExceptionNumber(){return 0;}
   public abstract String factory(J j,MWT mwt);
   public String defaultVal(){return "null";}
   public static TrustedKind _fromString(String s) {

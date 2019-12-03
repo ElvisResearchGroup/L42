@@ -13,4 +13,10 @@ class method This dq()=This<:class This.#from(stringLiteral=(
   Void v=b.#sdQuote()
   b
   ))
+class method This nl()=This<:class This.#from(stringLiteral=(
+  mut This1.StringBuilder b=This1.StringBuilder<:class This1.StringBuilder.#stringLiteralBuilder()
+  Void v=b.#snewLine()
+  b
+  ))
+
 #norm{declaresClassMethods, typeDep=This0, This1.Size, This1.StringBuilder,This1.HasToS,This1.Bool nativeKind=String, coherentDep=This,This1.StringBuilder refined=toS()}

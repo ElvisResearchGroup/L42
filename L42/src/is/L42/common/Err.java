@@ -199,8 +199,8 @@ public class Err {
   " Error: Extraneus token "+(info==null?"":Err.trimExpression(info.toString()))
   +"\ninvalid method with type for core library; invalid methods are:"+names
   ;}public static String stringInterpolation(Object _1, Object _2){return
-  "Error: ill formed string interpolation:"+Err.trimExpression(_1.toString())
-  +_2
+  "Error: ill formed string interpolation: ["
+    +Err.trimExpression(_1.toString())+"]\n"+_2
   ;}public static String methodImplementedInInterface(Object _1){return
   "some methods are implemented in an interface:"+_1
   ;}public static String privateNestedNotCore(Object _1){return
@@ -222,7 +222,9 @@ public class Err {
   ;}public static String sealedInterface(Object _1,Object _2){return
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
   ;}public static String invalidPathInInfo(Object _1){return
-  "Invalid path in info: "+_1  
+  "Invalid path in info: "+_1
+  ;}public static String coherentPathNotInTyped(Object _1){return
+  "The following paths declared in coherentDep are not found in typeDep: "+_1   
   ;}public static String nestedClassesImplemented(Object _1){return
   "some nested classes are implemented before they are defined: "+_1  
   ;}public static String noDocWithReuseOrDots(Object _1, Object _2){return
@@ -331,8 +333,6 @@ public class Err {
   "Core libraries need to report all the transitive implemented interfaces, but "+missing+" is missing"
   ;}public static String mustDeclareClassMethods(Object ss){return
   "Core library declares class methods "+ss+"; it must set the 'declaresClassMethods' info flag"
-  ;}public static String mustDeclareClosed(Object ss){return
-  "Core library declares abstract private methods "+ss+"; it must set the 'closeState' info flag"
-
+  
  ;}
 }

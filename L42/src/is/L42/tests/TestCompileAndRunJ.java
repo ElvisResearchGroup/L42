@@ -147,7 +147,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{typeDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}
+    #typed{typeDep=This1.SB This1.S declaresClassMethods}
     }
   C={
     class method Void #$m()=(

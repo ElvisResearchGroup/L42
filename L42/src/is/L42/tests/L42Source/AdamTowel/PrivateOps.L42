@@ -1,0 +1,23 @@
+ClassName={
+  class method S (class Any that)=S"toFix"
+  class method S superInterfaces(class Any that)=S"toFix"
+  }
+MessageTrait=Trait:{[Message]
+  method toS()=
+    S"Message %(ClassName(This))(%ClassName.superInterfaces(This)):%S.nl() aa %this.that()"
+  var S that
+  class method mut This (S that) 
+  class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())  
+  }
+LazyMessageTrait=Trait:{
+  class method mut This #apply()
+  class method mut This #apply(This2.S msg)=native{trusted:laztMessageK} error void
+  read method This2.S get()=native{trusted:get}error void
+  #norm{typeDep=This,This2.S declaresClassMethods nativeKind=LazyMessage}}
+  }
+
+MessageDecorator={
+  class method Trait:(Trait t)=MessageTrait+t
+  class method Trait:(class Trait.Lifted l)=MessageTrait+l
+  class method Trait:(Library lib)=MessageTrait+lib
+  }

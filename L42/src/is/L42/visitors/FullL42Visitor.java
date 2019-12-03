@@ -570,8 +570,8 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @SuppressWarnings("unused")//i
   static StringBuilder fixPos(Pos pos){
     StringBuilder s=new StringBuilder();
-    for(int i :range(pos.line())){s.append("\n");}
-    for(int i :range(pos.column())){s.append(" ");}
+    for(int i :range(pos.line()-1)){s.append("\n");}
+    for(int i :range(pos.column()-1)){s.append(" ");}
     return s;
     }
   @Override public Program visitNudeP(NudePContext ctx) {

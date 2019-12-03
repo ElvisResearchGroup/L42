@@ -49,6 +49,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    top("{B={interface} A={[B]}}","{B={interface #typed{}} A={[This1.B]#typed{typeDep=This1.B}}#norm{}}")
    ),new AtomicTest(()->
+   top("{C={B={method This m() #norm{typeDep= This0 This1.B }}} A={}}",
+   "{C={B={imm method imm This0 m()#typed{typeDep=This0}}#typed{}}A={#typed{}}#norm{}}")
+   ),new AtomicTest(()->
+   top("{C={B={method This m() #norm{typeDep= This1.B }}} A={}}",
+   "{C={B={imm method imm This0 m()#typed{typeDep=This0}}#typed{}}A={#typed{}}#norm{}}")
+
+   ),new AtomicTest(()->
    topFail(PathNotExistent.class,"{[This1.A]}B= ={}",Err.pathNotExistant("This1.A"))
    ),new AtomicTest(()->
    top("{A={interface}B={interface[This1.A]}C={[This1.B, This1.A]}}","""

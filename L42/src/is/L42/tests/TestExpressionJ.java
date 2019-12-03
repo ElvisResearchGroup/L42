@@ -299,7 +299,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        class £cC£n1 implements L42Any{
          public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){
            £cC£n1 Res=new £cC£n1();
-           if(£xn instanceof L42Fwd){((L42Fwd)£xn).add(Res,JC.FieldAssFor_ £xn);}else{Res.£xn=(int)£xn;}
+           if(£xn instanceof L42Fwd){((L42Fwd)£xn).rememberAssign(Res,£cC£n1.FieldAssFor_n);}else{Res.£xn=(int)£xn;}
            return Res;
            }
          public static int £mn(£cC£n1 £xthis){

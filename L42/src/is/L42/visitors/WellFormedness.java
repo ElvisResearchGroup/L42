@@ -71,6 +71,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.typeSystem.Coherence;
 
 class ContainsFullL extends Contains.SkipL<Full.L>{
@@ -571,6 +572,16 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L())));
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
+    
+  @Override public void visitInfo(Core.L.Info info){
+    if(!info.typeDep().containsAll(info.coherentDep())){
+      var extraCoh=L(info.coherentDep(),(c,p)->{
+        if(!info.typeDep().contains(p)){c.add(p);}
+        });
+      throw new EndError.NotWellFormed(lastPos,
+        Err.coherentPathNotInTyped(extraCoh));
+      }
+    }
   public void superVisitL(Core.L l){lastPos=l.poss();super.visitL(l);}
   @Override public void visitL(Core.L l){
     lastPos=l.poss();
@@ -609,7 +620,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         L(classMhs.stream().map(m->m.key())),
         L(bridges.stream().map(m->m.key()))
         ));}
-      } 
+      }
+    if(!l.info().declaresClassMethods()){
+      List<S> clazz=L(l.mwts(),(c,m)->{if(m.mh().mdf().isClass()){c.add(m.key());}});
+      if(!clazz.isEmpty()){throw new EndError.NotWellFormed(l.poss(),Err.mustDeclareClassMethods(clazz));}
+      }
+    if(!l.info().nativeKind().isEmpty()){
+      var t=TrustedKind._fromString(l.info().nativeKind());
+      if(t==null){throw new EndError.NotWellFormed(l.poss(),Err.nativeKindInvalid(l.info().nativeKind()));}
+      if(t.genericNumber()+t.genExceptionNumber()!=l.info().nativePar().size()){
+        throw new EndError.NotWellFormed(l.poss(),Err.nativeKindParCountInvalid(t,t.genericNumber(),l.info().nativePar().size()));
+        }
+      }
     List<LDom> dom=L(Stream.concat(l.mwts().stream()
       .map(m->m.key()),l.ncs().stream().map(m->m.key())));
     List<LDom> impl=L(l.mwts().stream()

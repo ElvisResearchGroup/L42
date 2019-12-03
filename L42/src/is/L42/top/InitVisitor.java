@@ -21,6 +21,7 @@ import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Core.L.Info;
 import is.L42.generated.Full;
 import is.L42.generated.Full.CsP;
 import is.L42.generated.LDom;
@@ -157,15 +158,6 @@ class InitVisitor extends CloneVisitorWithProgram{
     for(var t:l.ts()){
       if(t.p().isNCs()){typePs.add(t.p().toNCs());}
       }
-    if(l.info().isTyped()){
-      for(var p:typePs){
-        var li=p().of(p,l.poss());//throw the right error if path not exists
-        if(li.isFullL()){
-          throw new EndError.NotWellFormed(l.poss(),Err.typeDependencyNotCore(p));
-          }
-        }
-      ProgramTypeSystem.type(true,p().update(l,false));
-      }
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     var missedTypeDep=!l.info().typeDep().containsAll(typePs);
     var missedCoheDep=!l.info().coherentDep().containsAll(cohePs);
@@ -177,22 +169,16 @@ class InitVisitor extends CloneVisitorWithProgram{
       cohePs.removeAll(l.info().coherentDep());
       throw new EndError.NotWellFormed(l.poss(),Err.missedCoheDep(L(cohePs.stream().distinct())));
       }
-    //TODO: ??? watched=Ps, ??? usedMethods=(P.s)s, ??? hiddenSupertypes=Ps,
-    if(!l.info().declaresClassMethods()){
-      List<S> clazz=L(l.mwts(),(c,m)->{if(m.mh().mdf().isClass()){c.add(m.key());}});
-      if(!clazz.isEmpty()){throw new EndError.NotWellFormed(l.poss(),Err.mustDeclareClassMethods(clazz));}
-      }
-    if(!l.info().close() && !l.isInterface()){
-      List<S> closed=L(l.mwts(),(c,m)->{if(m._e()==null && m.key().hasUniqueNum()){c.add(m.key());}});
-      if(!closed.isEmpty()){throw new EndError.NotWellFormed(l.poss(),Err.mustDeclareClosed(closed));}
-      }
-    if(!l.info().nativeKind().isEmpty()){
-      var t=TrustedKind._fromString(l.info().nativeKind());
-      if(t==null){throw new EndError.NotWellFormed(l.poss(),Err.nativeKindInvalid(l.info().nativeKind()));}
-      if(t.genericNumber()!=l.info().nativePar().size()){
-        throw new EndError.NotWellFormed(l.poss(),Err.nativeKindParCountInvalid(t,t.genericNumber(),l.info().nativePar().size()));
+    if(l.info().isTyped()){
+      for(var p:l.info().typeDep()){
+        var li=p().of(p,l.poss());//throw the right error if path not exists
+        if(li.isFullL()){
+          throw new EndError.NotWellFormed(l.poss(),Err.typeDependencyNotCore(p));
+          }
         }
+      ProgramTypeSystem.type(true,p().update(l,false));
       }
+    //TODO: ??? watched=Ps, ??? usedMethods=(P.s)s, ??? hiddenSupertypes=Ps,
     }
   @Override public Core.L coreLHandler(Core.L s){
     s=super.coreLHandler(s);
@@ -246,6 +232,15 @@ class InitVisitor extends CloneVisitorWithProgram{
     assert dn!=cn;
     return dn<cn;
     }
+  @Override public Info visitInfo(Info info) {
+    info=super.visitInfo(info);
+    info=info.withTypeDep(L(info.typeDep().stream().distinct()));
+    info=info.withCoherentDep(L(info.coherentDep().stream().distinct()));
+    //TODO: add also the other info fields
+    return info;
+    }
+  @Override public P visitP(P p) {return min(p);}
+  
   @Override public CsP visitCsP(CsP s) {
     if(s._p()!=null){return s.with_p(min(s._p()));}
     return new CsP(s.pos(),L(),min(p().resolve(s.cs(),s.poss())));

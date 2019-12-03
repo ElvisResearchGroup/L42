@@ -36,8 +36,15 @@ public class StringInterpolation {
     else{extraPos.append(' ');}
     }
   StringBuffer extraPos=new StringBuffer();
-  void moreExp(){es.add(new StringBuilder());}
-  void moreChar(){ss.add(new StringBuilder());}
+  void moreExp(){
+    assert es.stream().allMatch(e->e.length()>0):es+"\n"+ss;
+    es.add(new StringBuilder());
+    }
+  void moreChar(){
+    assert es.stream().allMatch(e->e.length()>0):
+    es+"\n"+ss;
+    ss.add(new StringBuilder());
+    }
   int openR=0;
   int openS=0;
   int openC=0;
@@ -67,9 +74,13 @@ public class StringInterpolation {
   String symbol="%";
   private static enum Mode{
     Str{public int run(StringInterpolation self,String s,int i){
+      assert self.openR==0: self.openR;
+      assert self.openS==0: self.openS;
+      assert self.openC==0: self.openC;
       char c=s.charAt(i);
       if(!s.startsWith(self.symbol,i)){
         self.appendChar(c);
+        assert self.openR==0: self.openR;
         return i;
         }
       i+=self.symbol.length()-1;
@@ -77,6 +88,7 @@ public class StringInterpolation {
       self.moreExp();
       if(next=='('){self.mode=Mode.Round;}
       else{self.mode=Mode.Expr;}
+      assert self.openR==0: self.openR;
       return i;
       }},
     Expr{public int run(StringInterpolation self,String s,int i){
@@ -88,8 +100,8 @@ public class StringInterpolation {
         self.close(c);
         return i;
         }
-      self.modeToStr();
       self.close(c);
+      self.modeToStr();
       return i-1;
       }},
     Round{public int run(StringInterpolation self,String s,int i){
@@ -122,6 +134,9 @@ public class StringInterpolation {
     moreChar();
     }
   public EString supParse(String s) {
+    assert openR==0: openR;
+    assert openS==0: openS;
+    assert openC==0: openC;
     for(int i=0;i<s.length();i++){
       i=mode.run(this, s, i);
       }
@@ -134,6 +149,7 @@ public class StringInterpolation {
     return new Full.EString(pos, ees,L(ss,(c,si)->c.add(si.toString())));
     }
   private void parseInterpolatedE(List<E> c, StringBuilder buf) {
+    assert buf.length()>0;
     var b0=FullL42Visitor.fixPos(pos);
     b0.append(extraPos);
     b0.append(buf);

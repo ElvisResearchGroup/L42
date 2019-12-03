@@ -347,7 +347,6 @@ public enum TrustedOp {
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
   ReadVal("readVal",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
-  //using %1$s and %2$s to avoid local variables
   ImmVal("immVal",Map.of(Vector,use("""
     var tmp=%1$s.get(%2$s*2+1);
     if(tmp==null){return %1$s.get(%2$s*2);}
@@ -383,9 +382,13 @@ public enum TrustedOp {
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
+  LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new LazyMessage(%s);",sig(Class,Immutable,LazyMessage,Immutable,String)))),
+  SetMsg("setMsg",Map.of(LazyMessage,use("%s.setMsg(%s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,String)))),
   OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))), 
-  Get("get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"get null\");",sig(Readable,Readable,Gen1)))),
-  HGet("#get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new Error(\"#get null\");",sig(Mutable,Mutable,Gen1))))  
+  Get("get",  Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new %Gen2(\"get null\");",sig(Readable,Readable,Gen1)),
+    LazyMessage,use("return %s.getMsg()",sig(Readable,Immutable,String))
+    )),
+  HGet("#get",Map.of(Opt,use("if(%1$s!=null){return %1$s;}throw new %Gen2(\"#get null\");",sig(Mutable,Mutable,Gen1))))  
   ;
   public interface Generator{String of(boolean type,Program p,MWT mwt);}
   public final String inner;
