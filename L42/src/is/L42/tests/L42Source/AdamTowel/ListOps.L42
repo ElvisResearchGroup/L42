@@ -1,6 +1,6 @@
 Elem={}
 class method mut This (mut This squareBuilder)=squareBuilder
-class method mut This ##apply#squareBuilder()=This.empty()
+class method mut This ##apply#squareBuilder()=This()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #squareAdd(Elem that)=this.add(right=that)
 mut method Void #squareAdd(mut Elem mutVal)=this.#add(right=mutVal)
@@ -23,9 +23,10 @@ read method Void #close(Size that)=
   if this.#incomplete(that) error S"multi for skipped some elements"
 
 mut method Void add(Elem that)=this.add(right=that)
+mut  method mut This (Void that)=this
 
-class method mut This empty()
-class method mut This empty(Size that)
+class method mut This ()
+class method mut This (Size capacity)
 read method Bool isEmpty()
 read method Size size()
 read method read Elem readVal(Size that)
@@ -64,7 +65,7 @@ SlashRes=Class:(Trait({
   read method read This1 get()=native{trusted:get}error void
   mut method mut This1 #get()=native{trusted:#get}error void
   Elem={#norm{}}
-  #norm{typeDep=This1,This declaresClassMethods nativeKind=Opt nativePar=This1,This3.NoElementInOpt}
+  #norm{typeDep=This1,This,This3.NoElementInOpt declaresClassMethods nativeKind=Opt nativePar=This1,This3.NoElementInOpt}
   })+{
   mut method Void <=(Elem e)=this.#get()<:mut This1.add(e)
   })
@@ -82,7 +83,7 @@ method This ++(This right)=This[
 //#################Withs
 method This with(Size that, Elem val)=(
   size=this.size()
-  res=This.empty(this.size())
+  res=This(capacity=this.size())
   var i=0Size
   while i<that (res.add(this.val(i)) i:=i.#succ())
   res.add(val) i:=i.#succ()
@@ -94,7 +95,7 @@ method This withRight(Elem that)=this.with(\size.#pred(), val=that)
 
 method This withAlso(Size that, Elem val)=(
   size=this.size()
-  res=This.empty(this.size())
+  res=This(capacity=this.size())
   var i=0Size
   while i<that (res.add(this.val(i)) i:=i.#succ())
   res.add(val)
@@ -108,7 +109,7 @@ method This withAlsoRight(Elem that)=this.withAlso(\size.#pred(), val=that)
 //skipping/filtering
 method This without(Size index)=(
   size=this.size()
-  res=This.empty(this.size())
+  res=This(capacity=this.size())
   var i=0Size
   while i<index (res.add(this.val(i)) i:=i.#succ())
   i:=i.#succ()

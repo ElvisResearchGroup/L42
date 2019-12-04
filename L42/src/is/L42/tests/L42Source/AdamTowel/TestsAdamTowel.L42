@@ -58,11 +58,18 @@ TestSizeParsing=(
 NotCoh={This field, class method This ()}
 TestMakeNotCohList=ListT(NotCoh)
 TestStrings=(
-  s=Strings.empty()
+  s=Strings()
   s.add(\"hi")
   {}:Test"singleVal"(s.val(0Size)==S"hi")
   {}:Test"size1"(s.size()==1Size)
   )
+TestMap=(
+  imm s=Strings[S"a";S"b";S"c"]
+  res=Strings()(for e in s \res<=S"Q"++e)
+  //Note: should the above be preferred wrt Strings[for e in s \res<=...] ??
+  {}:Test"mapped"(res.val(1\)==S"Qb")
+  )
+
 TestWhile=(
   while Bool.true() (
     {}:Test"while runs"(Bool.true())

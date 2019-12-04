@@ -44,8 +44,9 @@ mut method mut Elem #update#mut(Size that, mut Elem val)
 mut method Elem #update#imm(Size that, Elem val)
 mut method Elem #update#default(Size that, Elem val)
 read method Void #close(Size that)
-class method mut This empty()
-class method mut This empty(Size that)
+class method mut This ()
+class method mut This (Size capacity)
+mut  method mut This (Void that)
 read method Bool isEmpty()
 read method Size size()
 read method read Elem readVal(Size that)
@@ -196,7 +197,7 @@ Void removeRight(read Elem val){
 
 
 class method mut This (mut This squareBuilder)=squareBuilder
-class method mut This ##apply#squareBuilder()=This.empty()
+class method mut This ##apply#squareBuilder()=This()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #add(Elem that)=this.add(val=that)
 mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
@@ -218,7 +219,7 @@ read method Void #close(Size that)=
   if this.#incomplete(that) error S"multi for skipped some elements"
 mut method Void add(Elem that)=this.add(right=that)
 
-class method mut This empty()
+class method mut This ()
 read method Bool isEmpty()
 read method Size size()
 read method read Elem readVal(Size that)

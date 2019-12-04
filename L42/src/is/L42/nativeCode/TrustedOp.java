@@ -353,15 +353,29 @@ public enum TrustedOp {
     )),
   ReadVal("readVal",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
   ImmVal("immVal",Map.of(Vector,use("""
-    var tmp=%1$s.get(%2$s*2+1);
-    if(tmp==null){return %1$s.get(%2$s*2);}
-    throw new Error("get immVal but was mut:"+%1$s);
+    try{
+      var tmp=%1$s.get(%2$s*2+1);
+      if(tmp==null){return %1$s.get(%2$s*2);}
+      throw new L42Error(%Gen3.wrap(new L42LazyMsg(
+        "val called, but the element in position "+%1$s+" was inserted as mutable"
+        )));
+      }
+    catch(ArrayIndexOutOfBoundsException oob){
+      throw new L42Error(%Gen2.wrap(new L42LazyMsg(oob.getMessage())));
+      }
     """,
     sig(Readable,Immutable,Gen1,Immutable,Int)))),
   HashVal("#val",Map.of(Vector,use("""
-    var tmp=%1$s.get(%2$s*2+1);
-    if(tmp!=null){return tmp;}
-    throw new Error("get mut val but was imm");
+    try{
+      var tmp=%1$s.get(%2$s*2+1);
+      if(tmp!=null){return tmp;}
+      throw new L42Error(%Gen4.wrap(new L42LazyMsg(
+        "#val called, but the element in position "+%1$s+" was inserted as immutable"
+        )));
+      }
+    catch(ArrayIndexOutOfBoundsException oob){
+      throw new L42Error(%Gen2.wrap(new L42LazyMsg(oob.getMessage())));
+      }
     """,
     sig(Mutable,Mutable,Gen1,Immutable,Int)))),
   SetImm("setImm",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),

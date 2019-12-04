@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -572,15 +573,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L())));
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
-    
-  @Override public void visitInfo(Core.L.Info info){
-    if(!info.typeDep().containsAll(info.coherentDep())){
-      var extraCoh=L(info.coherentDep(),(c,p)->{
-        if(!info.typeDep().contains(p)){c.add(p);}
-        });
-      throw new EndError.NotWellFormed(lastPos,
-        Err.coherentPathNotInTyped(extraCoh));
+  private <PP extends P> void typedContains(Core.L.Info info,Stream<PP> others,String name){
+    var extra=L(others.filter(o->!info.typeDep().contains(o)));
+    if(!extra.isEmpty()){
+      throw new EndError.NotWellFormed(lastPos,Err.infoPathNotInTyped(name,extra));
       }
+    }
+  @Override public void visitInfo(Core.L.Info info){
+    typedContains(info,info.coherentDep().stream(),"coherentDep");
+    typedContains(info,info.hiddenSupertypes().stream(),"hiddenSupertypes");
+    typedContains(info,info.nativePar().stream(),"nativePar");
+    typedContains(info,info.usedMethods().stream().map(ps->ps.p()),"usedMethods");
+    typedContains(info,info.watched().stream(),"watched");
     }
   public void superVisitL(Core.L l){lastPos=l.poss();super.visitL(l);}
   @Override public void visitL(Core.L l){

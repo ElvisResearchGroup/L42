@@ -1,6 +1,7 @@
 package is.L42.nativeCode;
 
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
 import java.util.List;
@@ -52,10 +53,12 @@ public enum TrustedKind implements TrustedT{
   */ 
   Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    assert j.p().topCore().info().nativePar().size()==1;
+    assert j.p().topCore().info().nativePar().size()==4;
     return "return new "+j.typeNameStr(j.p())+"();";
     }
-    public int genericNumber(){return 1;}},
+    @Override public int genericNumber(){return 1;}
+    @Override public int genExceptionNumber(){return 3;}
+    },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;
@@ -91,7 +94,8 @@ public enum TrustedKind implements TrustedT{
     var info=p.topCore().info();
     if(info.nativePar().isEmpty()){return res;}
     res+="<";
-    for(P pi:info.nativePar()){
+    for(var i:range(this.genericNumber())){
+      P pi=info.nativePar().get(i);
       if(!pi.isNCs()){return "L42"+pi;}
       res+=j.typeNameStr(p.navigate(pi.toNCs()));
       res+=", ";

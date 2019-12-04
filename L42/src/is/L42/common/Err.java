@@ -223,8 +223,8 @@ public class Err {
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
   ;}public static String invalidPathInInfo(Object _1){return
   "Invalid path in info: "+_1
-  ;}public static String coherentPathNotInTyped(Object _1){return
-  "The following paths declared in coherentDep are not found in typeDep: "+_1   
+  ;}public static String infoPathNotInTyped(Object _1,Object _2){return
+  "The following paths declared in "+_1+" are not found in typeDep: "+_2   
   ;}public static String nestedClassesImplemented(Object _1){return
   "some nested classes are implemented before they are defined: "+_1  
   ;}public static String noDocWithReuseOrDots(Object _1, Object _2){return

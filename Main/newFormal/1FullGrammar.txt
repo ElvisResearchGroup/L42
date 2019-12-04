@@ -207,6 +207,8 @@ _______
       if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
     if MHs!=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
     L.Info.coherentDep subseteq L.Info.typeDep
+    ...
+    L.Info.nativePar subseteq L.Info.typeDep//same for all the fields of Info containing Ps
     either L.Info.declaresClassMethods?!=empty or class notin L.MWTs.mdfs
     L.Info.nativeKind recognized
     expectedNumber(L.Info.nativeKind,L.Info.nativePar)

@@ -1,5 +1,5 @@
-class method mut This empty()
-class method mut This empty(This2.Size that)=native{trusted:vectorK} error void
+class method mut This #apply()
+class method mut This #apply(This2.Size capacity)=native{trusted:vectorK} error void
 read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
 read method This2.Size size()=native{trusted:size} error void
 read method read This0.Elem readVal(This2.Size that)=native{trusted:readVal} error void
@@ -13,7 +13,7 @@ mut method Void remove(This2.Size that)=native{trusted:remove} error void
 
 Elem={#norm{}}
 #norm{declaresClassMethods, 
-  typeDep=This0,This2.Size,This2.Bool, This.Elem
+  typeDep=This0,This2.Size,This2.Bool, This.Elem,This2.OutOfBounds,This2.ElementNotImm,This2.ElementNotMut
   nativeKind=Vector
-  nativePar=This0.Elem
+  nativePar=This0.Elem,This2.OutOfBounds,This2.ElementNotImm,This2.ElementNotMut  
   }
