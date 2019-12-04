@@ -170,7 +170,7 @@ class OpUtils{
       return s.formatted(NativeDispatch.xs(mwt).toArray());
       };
     }
-  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
+/*  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
   static TrustedOp.Generator use(String s,Signature sig,Class<?> errKind,int errNum,String err,int[] msgs){
     return (typed,p,mwt)->{
       if(typed && typingUse(p,mwt,sig)){return "";}
@@ -189,7 +189,7 @@ class OpUtils{
       catchBody+=");}";
       return tryBody+catchBody;
       };
-    }
+    }*/
 
   }
 public enum TrustedOp {
@@ -311,10 +311,14 @@ public enum TrustedOp {
     Bool,use("return ((Object)%s).toString();",sig(Readable,Immutable,String))
     )),
     
-  ToInt("toInt",Map.of(String,use(
-    "return Integer.parseInt(%s);",sig(Readable,Immutable,Int),
-    NumberFormatException.class,0,
-    "The string %s is not a valid number",new int[]{0}
+  ToInt("toInt",Map.of(String,use("""
+    try{return Integer.parseInt(%1$s);}
+    catch(NumberFormatException nfe){
+      throw new L42Error(%Gen1.wrap(new L42LazyMsg(
+        "The string \\""+%1$s+"\\" is not a valid number"
+        )));
+      }
+    """,sig(Readable,Immutable,Int)
     ))),
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42Void.instance;",sigI(Void)),

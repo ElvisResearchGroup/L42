@@ -1,5 +1,6 @@
 //Step 1: the minimal infrastructure to deploy a towel
-S={#norm{nativeKind=String}}
+S={#norm{typeDep=This1.ParseErr nativeKind=String, nativePar=This1.ParseErr}}
+ParseErr={#norm{nativeKind=LazyMessage}}
 Debug={
   class method This of()
   method Void deployLibrary(This1.S that,Library lib)=
@@ -26,9 +27,13 @@ DeployAAA=(
     Bool={...}
     Size={...}
     S={...}
-    Message={...}
-    Guard={interface [Message]}
-    Assertion={interface[Message]}
+    ParseError={
+      class method This #apply()
+      class method mut This #apply(This1.S that)=native{trusted:lazyMessageK} error void
+      read method This1.S text()=native{trusted:get}error void
+      mut method Void text(This1.S that)=native{trusted:setMsg}error void
+      #norm{typeDep=This,This1.S, coherentDep=This declaresClassMethods nativeKind=LazyMessage}
+      }
     Url={...}
     Debug={...}
     StringBuilder={...}
@@ -37,6 +42,9 @@ DeployAAA=(
     Name={...}
     Trait={...}
     Class={...}
+    Message={...}
+    Guard={interface [Message]}
+    Assertion={interface[Message]}
     PrivateOps={...}
     X=Class:Message:{...}
     NoElementInOpt=Class:(Message.NativeTrait()+{[Guard]})

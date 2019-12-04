@@ -27,7 +27,9 @@ public enum TrustedKind implements TrustedT{
   String("String"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return \"\";";
-    }},
+    }
+    @Override public int genExceptionNumber(){return 1;}
+    },
   StringBuilder("StringBuilder"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return new StringBuilder();";
@@ -92,7 +94,7 @@ public enum TrustedKind implements TrustedT{
   public String typeNameStr(Program p,J j){
     String res=inner;
     var info=p.topCore().info();
-    if(info.nativePar().isEmpty()){return res;}
+    if(this.genericNumber()==0){return res;}
     res+="<";
     for(var i:range(this.genericNumber())){
       P pi=info.nativePar().get(i);
