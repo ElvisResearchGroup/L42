@@ -633,7 +633,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       var t=TrustedKind._fromString(l.info().nativeKind());
       if(t==null){throw new EndError.NotWellFormed(l.poss(),Err.nativeKindInvalid(l.info().nativeKind()));}
       if(t.genericNumber()+t.genExceptionNumber()!=l.info().nativePar().size()){
-        throw new EndError.NotWellFormed(l.poss(),Err.nativeKindParCountInvalid(t,t.genericNumber(),l.info().nativePar().size()));
+        throw new EndError.NotWellFormed(l.poss(),Err.nativeKindParCountInvalid(t,t.genericNumber()+t.genExceptionNumber(),l.info().nativePar().size()));
         }
       }
     List<LDom> dom=L(Stream.concat(l.mwts().stream()

@@ -21,6 +21,33 @@ public class L42TrustedIO {
     Resources.out(s);
     return L42Void.instance;
     }
+    
+  public L42Void testActualExpected(L42Library hasPos,String name, String actual, String expected,String message){
+    boolean cond=actual.equals(expected);
+    Pos pos=hasPos.unwrap.pos();
+    assert !name.contains("\n");
+    assert !pos.fileName().toString().contains("\n");
+    StringBuilder sb=new StringBuilder("###################\n");
+    if(cond){sb.append("#Pass    "+name+"\n");}
+    else{sb.append("#Fail    "+name+"\n");}
+    sb.append("#line: "+pos.line());
+    sb.append("    ");
+    sb.append(pos.fileName().toString()+"\n");
+    if(!cond){
+      sb.append("#StrCompare\n");
+      sb.append("#Actual\n");
+      actual=actual.lines().map(l->"#|"+l).collect(Collectors.joining());
+      sb.append(actual);
+      sb.append("\n#Expected\n");
+      expected=expected.lines().map(l->"#|"+l).collect(Collectors.joining());
+      sb.append(expected);
+      }  
+    Resources.tests(sb.toString());
+
+
+    return L42Void.instance;
+    }
+    
   public L42Void testCondition(L42Library hasPos,String name,boolean cond,String message){
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");

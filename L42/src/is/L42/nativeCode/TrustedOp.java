@@ -329,6 +329,10 @@ public enum TrustedOp {
     TrustedIO,use("return %s.testCondition(%s,%s,%s,%s);",sigI(Void,
       Lib,String,Bool,String))
     )),
+  TestActualExpected("testActualExpected",Map.of(
+    TrustedIO,use("return %s.testActualExpected(%s,%s,%s,%s,%s);",sigI(Void,
+      Lib,String,String,String,String))
+    )),  
   DeployLibrary("deployLibrary",Map.of(
     TrustedIO,use("return %s.deployLibrary(%s,%s);",sigI(Void,String,Lib)))),
   SimpleRedirect("simpleRedirect",Map.of(

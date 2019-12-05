@@ -52,15 +52,17 @@ TestSizeInString=(
 TestSizeParsing=(
   err=Size"oh NO!"//throws error
   {}:Test"InvalidParseInt"( Bool.false() )"Errors not thrown"
-  catch error S x 
-    {}:Test"InvalidParseIntError"(x==S"The string %S.dq()oh NO!%S.dq() is not a valid number")"Error is %x" 
+  catch error ParseError x 
+    {}:Test"InvalidParseIntError"(
+      x.text()==S"The string %S.dq()oh NO!%S.dq() is not a valid number"
+      )"Error is %x" 
   )
 NotCoh={This field, class method This ()}
 TestMakeNotCohList=ListT(NotCoh)
 TestStrings=(
   s=Strings()
   s.add(\"hi")
-  {}:Test"singleVal"(s.val(0Size)==S"hi")
+  {}:Test"singleVal"(expected=S"h44i", actual=s.val(0Size))
   {}:Test"size1"(s.size()==1Size)
   )
 TestMap=(

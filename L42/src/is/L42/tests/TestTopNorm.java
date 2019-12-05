@@ -231,8 +231,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       S={
         class method This0 of()
         method This0 sum(This0 that)=native{trusted:OP+} error void
-        #norm{nativeKind=String declaresClassMethods typeDep=This0}
+        #norm{nativeKind=String nativePar=This1.PE declaresClassMethods typeDep=This0,This1.PE}
         }
+      PE={#norm{nativeKind=LazyMessage}}
       Debug={
         class method Void #apply(This1.S that)=(This d=This<:class This.of() d.strDebug(that=that))
         class method This0 of()        
@@ -264,8 +265,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       {S={
         class method imm This0 of()
         imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
-        #typed{nativeKind=String declaresClassMethods typeDep=This0}
+        #typed{nativeKind=String nativePar=This1.PE declaresClassMethods typeDep=This0,This1.PE}
         }
+      PE={#typed{nativeKind=LazyMessage}}
       Debug={
          class method imm Void #apply(imm This1.S that)=(imm This0 d=This0<:class This0.of()d.strDebug(that=that))
          class method imm This0 of()

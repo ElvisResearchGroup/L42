@@ -93,28 +93,31 @@ _______
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
-    //TODO: here we need to rename the private names    
+    //TODO: here we need to rename the private names
     dom(MWTs NCs) disjoint dom(Ms)
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
-    Info = #norm{typeDep=Ps\{Any,Void,Library},refine=ss, declaresClassMethods?,closeState, uniqueId=n}
+    declaresClassMethods?=empty iff class notin MWTs.mdfs
+    Info0 = #norm{typeDep=Ps\{Any,Void,Library},refine=ss, declaresClassMethods?,closeState, uniqueId=n}
     n fresh
+    //Note: sortHeader remove  bodies from methdos. This basically guarantees 
+    //closeState. The close/open state is fixed later
 
 * sortHeader(p) = CORE.L
-    p(This0) = {interface? [Ts] Ms Docs}
+    p(This0) = {interface? [Ts] Ms Docs} = FULL.L
     p0 = p.update({interface? [♥Ts] #norm{typeDep=♥Ts}})//to prevent looking to non core
-    Ts' = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
-    forall imm P in Ts'\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
-    p1 = p.update({interface? [Ts'] #norm{typeDep=Ts'}})//now with correct implements    
+    Ts1 = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
+    forall imm P in Ts1\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
+    p1 = p.update({interface? [Ts1] #norm{typeDep=Ts1}})//now with correct implements    
     MWTs = [♥Docs MH | MH in methods(p1,Ts1,Ms) and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
     Ps;empty = collectDeps(p0;MWTs)
-    ss=[MWT.s| MWT in CORE.MWTs and refine(p1;s;This0)]
-    Info = #norm{typeDep=Ts'.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, closeState, uniqueId=n}
-    n fresh
+    ss=[MWT.s| MWT in MWTs and refine(p1;s;This0)]
     declaresClassMethods?=empty iff class notin MHs.mdfs
-    CORE.L = {interface? [Ts'] MWTs Info ♥Docs}
+    Info = #norm{typeDep=Ts1.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, closeState, uniqueId=n}
+    n fresh
+    CORE.L = {interface? [Ts1] MWTs Info ♥Docs}
 _______
 #define CTz[from P;p]    ST[from P;p]
 * CTz[from P;p] = CTz' trivially propagates on the structure and applies ST[from P; p] on all the ST in CTz

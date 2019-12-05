@@ -321,7 +321,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
   ));}
 public static void je(String e,String out){
-  String l="{ method Void m()="+e+" A={class method This0 of() method Void ma(This0 a) #norm{typeDep=This declaresClassMethods}} B={class method This0 of() method Void mb(This0 b) #norm{nativeKind=String typeDep=This declaresClassMethods}} #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1}}";
+  String l="{ method Void m()="+e+" "+"""
+    A={
+      class method This0 of()
+      method Void ma(This0 a)
+      #norm{typeDep=This declaresClassMethods}
+      }
+    B={
+      class method This0 of()
+      method Void mb(This0 b)
+      #norm{nativeKind=String typeDep=This,This1.PE declaresClassMethods, nativePar=This1.PE}
+      }
+    PE={#norm{nativeKind=LazyMessage}}
+    #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1}}
+    """;
   var p=Program.parse(l);
   J j=new J(p,G.empty(),false, new ArrayList<>());
   j.visitE(p.topCore().mwts().get(0)._e());

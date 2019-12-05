@@ -235,8 +235,9 @@ public static Program base(String s){
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
     method Void strDebug()=native{trusted:strDebug} error void
-    #typed{typeDep=This This1.S declaresClassMethods nativeKind=String}
+    #typed{typeDep=This This1.S This1.ParseErr declaresClassMethods nativeKind=String,nativePar=This1.ParseErr}
     }
+  ParseErr={#norm{nativeKind=LazyMessage}}
   SB={
     class method mut This0 of()
     mut method Void #a()=native{trusted:'a'} error void

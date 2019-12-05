@@ -197,5 +197,6 @@ Iterator={
   mut method Elem #update#imm(Size that, Elem val)=(this.#list().set(that,val=val) val)
   mut method Elem #update#default(Size that, Elem val)=this.#list().#update#imm(that,val=val)
   read method Void #close(Size that)=
-    if this.#incomplete(that) error S"multi for skipped some elements"
+    if this.#incomplete(that) error IterationIncomplete
+      "While iterating on multiple collections, iteration terminated abruptly. The size of the collections may have not been the same."
   }

@@ -29,7 +29,9 @@ import lombok.NonNull;
 public class ProgramTypeSystem {
   Program p;
   static void errIf(boolean cond,List<Pos> poss,String msg){
-    if(cond){throw new EndError.TypeError(poss,msg);}
+    if(cond){
+      throw new EndError.TypeError(poss,msg);
+      }
     }
   public static void type(boolean typed,Program p){
     L l=p.topCore();

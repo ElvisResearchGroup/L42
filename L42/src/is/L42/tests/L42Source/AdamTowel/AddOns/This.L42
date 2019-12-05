@@ -1,15 +1,19 @@
-HasToS={interface}
-Message={interface [HasToS]}
+HasToS={interface read method S toS()}
+Message={interface [HasToS]
+  mut method Void text(S that)
+  read method S text()
+  }
 Guard={interface [Message]}
 PrivateOps={ClassName={class method S excName(class Any that, S text)}}
 S={}
 ParseError={[HasToS,Message,Guard]
   class method This ()
+  class method mut This (S that)
   read method S text()
   class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())
   read method  S toS()=PrivateOps.ClassName.excName(This,text=this.text())
   }
-StringBuilder={}
+StringBuilder={[HasToS]}
 Bool={
   method This #if()
   class method This false()

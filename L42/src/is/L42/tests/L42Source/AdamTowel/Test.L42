@@ -3,7 +3,9 @@ class method WithName #from(StringBuilder stringLiteral)=
 WithName={
   S name
   class method This(S name)
-  method Condition(Bool that)=Condition(name=this.name(),cond=that,message=S"")
+  method Condition(Bool that)=\(name=this.name(),cond=that,message=S"")
+  method ExpectedActual(HasToS expected, HasToS actual)=
+    \(name=this.name(),expected=expected.toS(), actual=actual.toS(),message=S"")
   }
 Condition={
   S name
@@ -13,6 +15,17 @@ Condition={
   method This #from(StringBuilder stringLiteral)=
     This(name=this.name(),cond=this.cond(),message=this.message()++stringLiteral.toS())
   method Void :1(Library pos)=Debug.of().testCondition(pos=pos,name=this.name(),cond=this.cond(),message=this.message())
+  }
+ExpectedActual={
+  S name
+  S expected
+  S actual
+  S message
+  class method This(S name,S expected,S actual,S message)
+  method Void :1(Library pos)=
+    Debug.of().testActualExpected(
+      pos=pos,name=this.name(),actual=this.actual(),expected=this.expected(),message=this.message())
+  
   }
 /*
 {}:Test"Tom is bigger then Tim"( tom.height()>tim.height() )"oh No!"
