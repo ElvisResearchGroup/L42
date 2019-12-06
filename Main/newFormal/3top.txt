@@ -129,14 +129,16 @@ _______
 #define collect(p,Core.Ts)=Core.Ts'
 * collect(p,empty)=empty
 * collect(p,T0 Ts)=((T0, Ts0[from T0.P;p]) \ collect(p,Ts)) collect(p,Ts)
-    p(T0.P)={interface Ts0 _}=CORE.L
+    p(T0.P)={interface [Ts0] _}=CORE.L
 _______
 #define methods(p,Core.Ts, Full.Ms)=CORE.MHs //methods res has relevant order
-* methods(p,Core.Ts, Ms)=MH1..MHn//assert ... and reuse are unreachable
-    MHs=extractMHs(p;Ms)
-    s1..sn=[dom(p(P).MWTs) | P in CORE.Ts.Ps].flatten().distinct()
+* methods(p,imm P1..imm Pk, Ms)=MH1..MHn//assert ... and reuse are unreachable
+    MHs=[extractMHs(p;Ms)] 
+      U [p(P1).MWTs.MH[from P1;p]] U..U [p(Pk).MWTs.MH[from Pk;p]]
+    s1..sn=MHs.ss.distinct()
     origin(p;s1)..origin(p;sn) all defined
-    [MHi,_]=[MH| MH in MHs and MH.s=si],[p(P).MWTs(si).MH[from P;p]| P in CORE.Ts.Ps] for i in 1..n
+    [MHi,_]=[MH| MH in MHs and MH.s=si]
+    i in 1..n
 _______
 #define origin(p;s) = P'   refine(p;s;P)
 * origin(p;s) = P
@@ -152,7 +154,7 @@ _______
 * extractMHs(p;NC,Ms)=extractMHs(Ms) 
 * extractMHs(p;MI,Ms)=extractMHs(Ms) 
 * extractMHs(p;MWT,Ms)=♥MWT.MH,extractMHs(Ms) 
-* extractMHs(p;T x,Ms)=read method ♥T x(), expandFields(Ms)
+* extractMHs(p;T x,Ms)=read method ♥T x(), extractMHs(Ms)
     ♥T = toRead(♥T)
 * extractMHs(p;T x,Ms)=mut method capsuleToLent(♥T) #x(), extractMHs(toRead(♥T) x,Ms)
     ♥T != toRead(♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
@@ -341,7 +343,7 @@ _______
 #define P.s.i in p.opOptions(OP, CORE.Ts) //note: now the special case for Path is 
 * P.s.i in p.opOptions(OP, T0..Tn)        //handled with a 'non op dispatch' desugar
     i in 0..n,
-    s = methName(OP_i)(x1..xn)
+    s = methName(OP_i)(x1..xn)//x1..xn are free variables on purpose
     P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
     P'1 ... P'n = (T0..Tn\i).Ps
     P = Ti.P

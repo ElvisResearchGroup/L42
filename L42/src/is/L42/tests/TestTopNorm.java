@@ -223,6 +223,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ""","""
    {A={#typed{}}#norm{}}
    """)
+   
+   ),new AtomicTest(()->topFail(EndError.InvalidImplements.class,"""
+   {I={interface[This]}}
+   """,Err.nestedClassesImplemented(hole))
 
   //strings printing ba
   ),new AtomicTest(()->

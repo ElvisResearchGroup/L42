@@ -87,8 +87,8 @@ _______
 _______
 #define p.solve(ST) = ST' 
 * p.solve(T) = T
-* p.solve(T.s) = p(T.P).mwts(s).T[from T.P;p] //TODO: in code they may not be the from
-* p.solve(T.s.i) = p(T.P).mwts(s).parsi[from T.P;p] //TODO: in code they may not be the from
+* p.solve(T.s) = p(T.P).mwts(s).T[from T.P;p]
+* p.solve(T.s.i) = p(T.P).mwts(s).parsi[from T.P;p]
 * p.solve(ST.s.i?) = p.solve(T.s.i?)
     T = p.solve(ST)
 * p.solve(ST.s.i?) = ST'.s.i?
@@ -99,7 +99,7 @@ _______
     p(T.P).mwts(s) undefined
 * p.solve(OP STz1..STzn) = p(P).mwts(s).T[from P;p] 
     Tzi = {T| ST in STzi, T=p.solve(ST)}
-    {p.opOptions(OP T1..Tn)| Ti in TZi}
+    {P.s.i}={P.s.i| P.s.i in p.opOptions(OP T1..Tn) and Ti in TZi}
 * p.solve(OP STz1..STzn) = OP p.solve(STz1)..p.solve(STzn)
     otherwise    
 NOTE: ST may contains Ps that are not in the domain of p,
