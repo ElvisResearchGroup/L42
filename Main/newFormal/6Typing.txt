@@ -52,12 +52,15 @@ _______
       p;MWT.G;empty |= e :_ <=fwd% MWT.T.mdf
       if MWT.native?!=native then typePlugin(p;MWT)
     MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
-    forall MH in MHs:
-      p|-MWT.T<= MH.T //method returns a type which is not a sybtype of its ancestor "name"
-      MWT.G=MH.G //invalid type w.r.t. implemented paramerer xi
-      forall Pi in MWT.exceptions.Ps exists Pj in MH.exceptions.Ps such that p |- Pi <= Pj
-      //or error: leaked exception P is not the subtype of a declared exception
-      //or  method declares an exception (P) which is not a subtype of implemented exceptions
+    forall MH in MHs: p|- MWT.MH <=MH
+_______
+#define p |- MH1 <= MH2
+* p |- MH1 <= MH2 
+    p|-MH1.T<= MH2.T //method returns a type which is not a sybtype of its ancestor "name"
+    MH1.G=MH2.G //invalid type w.r.t. implemented paramerer xi
+    forall Pi in MH1.exceptions.Ps exists Pj in MH2.exceptions.Ps such that p |- Pi <= Pj
+    //or error: leaked exception P is not the subtype of a declared exception
+    //or  method declares an exception (P) which is not a subtype of implemented exceptions
 _______
 #define Q |- e: P 
 * Q |- void : P //(void)

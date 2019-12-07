@@ -1,41 +1,66 @@
+PLUS::=PLUS[p;topLeft;topRight;Cs]
 _______
-#define CORE.L1 +p CORE.L2 = CORE.L3
-* L1 +p L2 = L3[Cs1+=p Pz1]..[Csn+=p Pzn]
+#define p;C|-CORE.L1 + CORE.L2 = CORE.L3
+* p |- L1 + L2 = L
+    L=L3[Cs1+=p Pz1]..[Csn+=p Pzn]
+    L3=(L1 PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty] L2)
+    //Pz= growing interfaces 
+    Pz={ This0.Cs| Cs in dom(L1) intersect dom(L2) and Cs |-L2>L1 or Cs |-L2>L1}
+    //classes implementing growing interfaces
+    Cs1;Pz1 .. Csn;Pzn={Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
+    forall Cs in allPrivateImplements(L): This0.Cs not in Pz
+_______
+#define CORE.L1 PLUS CORE.L2 = CORE.L3
+* L1 PLUS L2 = L3
   Li={Hi MWTsi NCsi Doci}
-  H3=H1+H2
-  MWTs3=MWTs1+MWTs2
-  NCs3=NCs1+NCs2
-  Doc3=Doc1+Doc2
+  H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
+  LDoms=empty if L1.interface?=L2.interface?
+  LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise
+  MWTs3=L1.interface? MWTs1 PLUS L2.interface? MWTs2\LDoms
+  NCs3=NCs1 PLUS NCs2\LDoms
+  Doc3=Doc1,Doc2
   //Csz: growing interfaces 
   Pz={ This0.Cs| Cs in dom(L1) intersect dom(L2) and Cs |-L2>L1 or Cs |-L2>L1}
   //classes implementing growing interfaces
   Cs1;Pz1 .. Csn;Pzn={Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
-
-
-#allWatched(L) = Csz
-* Cs in alWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs']
-
-#define checkInterface(Cs,L1,Csz1,L2,Csz2)
-* checkInterface(Cs,L1,Csz1,L2,Csz2)=interface
-    L1.interface?=L2.interface?=interface
-* checkInterface(Cs,L1,Csz1,L2,Csz2)=checkInterface(Csz,L2,Csz2,L1,Csz1)
-    L1.interface?=interface
-* checkInterface(Cs,
-    {[_]MWTs1 NCs1 Info1},Csz1,{interface[_] MWTs2 NCs2 Info2},Csz2)=interface
-  Info1.closed undefined //thus no private abstract
-  Cs notin Csz1//no other Cs in L1 watches over current Cs
-  forall MWT in MWTs1 where MWT.e?=e, MWT.s not of form _::n(_)
-  //no public impl methods (thus since not watched, privates can be trashed)
-  Info1.hasClassMethods undefined
-
-
-Cs1 implements Csz1 in L3 and Csz1 growns
-
-A implements I1 I2
-A;I1,I2  A;I1  A;I2
-//{i,j}={1,2} and Cs|-Li>Lj
-
- 
+_______
+#define NCs1 PLUS NCs2 = NCs3
+* (Docs C=L NCs1) PLUS NCs2 = Docs C=L (NCs1 PLUS NCs2)
+    C not in dom(NCs2)
+* empty PLUS NCs2 = NCs2
+* Docs1 C=L1 NCs1 PLUS NCs Docs2 C=L2 NCs2 = Docs1,Docs2 C=L1 PLUS[Cs=PLUS.Cs,C] L2 (NCs1 PLUS NCs NCs2)
+_______
+#define interface?1 MWTs1 PLUS interface?2 MWTs2 = MWTs3
+* interface?1 (MWT MWTs1) PLUS interface?2 MWTs2 = MWT (interface?1 MWTs1 PLUS interface?2 MWTs2)
+    MWT.s not in dom(MWTs2)
+* _ empty PLUS _ MWTs2 = MWTs2
+* interface?1 MWT1 MWTs1 PLUS interface?2 MWTs MWT2 MWTs2 = MWT3 (interface?1 MWTs1 PLUS interface?2 MWTs MWTs2)
+    {i,j}={1,2}
+    p.navigate(This0.PLUS.Cs)|-MWTi.MH<=MWTj.MH
+    MWT3=MWTi with Docs obtained by the corresponding MWT1.Docs+MWT2.Docs
+    MWTj.e?=empty//implemented can not lose
+    interface?j=empty//interface can not lose
+_______
+#define allWatched(L) = Csz
+* Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs']
+_______
+#define allPrivateImplemented(L) = Csz
+* Cs in allPrivateImplemented(L) if Cs in L(Cs').Info.allPrivateImplemented[from This0.Cs']
+_______
+#define H1 PLUS H2
+* interface PLUS interface = interface
+* empty PLUS interface=interface
+    PLUS.topLeft(PLUS.Cs).Info.hasClassMethods undefined
+    PLUS.Cs notin allWatched(PLUS.topLeft)//no other Cs in topLeft watches over current Cs
+    forall MWT in PLUS.topLeft(PLUS.Cs).MWTs://all public methods are abstract
+      if MWT.s not of form _::n(_) then MWT.e?=empty
+    //no public impl methods (thus since not watched, privates can be trashed)
+* interface PLUS empty=interface//same but reversed
+    PLUS.topRight(PLUS.Cs).Info.hasClassMethods undefined
+    PLUS.Cs notin allWatched(PLUS.topRight)
+    forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
+_______ 
+#define Cs |- L2 > L1    L[Cs+=p Pz]=L'
 * Cs |- L2 > L1
   L1(Cs) is interface
   either L2(Cs).Ts\L1(Cs).Ts!=empty
@@ -43,85 +68,54 @@ A;I1,I2  A;I1  A;I2
 
 * L[Cs0+=p This0.Cs1..This0.Csn] = L[Cs0=L']
   L' = L(Cs0)[L(Cs0).MWTs+p ..+p L(Csn).MWTs]
+  
+  //renames:
+  rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
+  operations:
+    Remove+ Cs remove the methods and the interface? and the docs. If no nested, remove also the box
+    Remove- Cs remove all the implementation of the methods. Must be not watched.
+    References: Cs->P rename all the usages of Cs into P (if P is This0 is for rename, otherwise for redirect)
+    EmptyRename Cs->Cs' take Cs (no nested) from L, create another L where such content is in Cs' (properly frommed) 
+    InnerSum: apply PLUS on the tweaked L and one extracted EmptyRename L
+  This looks like can be easly done in bulk:
+  Cs=>Cs' = Remove+ Cs, EmptyRename CS->Cs', References Cs->Cs'
+  Cs->Cs' = Remove- Cs, EmptyRename CS->Cs',
+  Cs >P = Remove+ Cs, References Cs->P
+  //we have 12 options
+  1 R+ E R //full rename
+  2 R- E   //restrict
+  3 R+ R  //redirect
+  4 //R+ E (identical to R+ E R when possible)
+  5 //R+ (identical to R+ R when possible)
+  6 R- E R //strong rename but leave skeleton
+  7 R- R //redirect but leave skeleton
+  8 R- //make abstract (invoked by Cs->_)
+  9 E R//copy code and move refs
+  10 E//copy code
+  11 R//redirect but leave full source
+  12//empty op... ok
+  
+  @FlushCache
+  @Cached
+  @EagerCached
+  FlushCache={#norm{nativeKind=flushCache}}
+  
+When typing a method MWT in p with a Doc with a P
+where p(P).Info.nativeUrl=Url
+then (even if the method is abstract)
+nativeExtraTypingDecl(Url,p,MWT)
+When typing a method call e calling P.s
+  where P' in p(P)(s).Docs 
+  and p(P'[from P;p]).Info.nativeUrl=Url
+nativeExtraTypingCall(Url,p,G,e)
 
-/**<pre>#define L1 ++p L2 = L0
-  L1 ++p L2 = L0
-    with L0=L1 +(p.evilPush(L0)) L2
-    and ssv(p.evilPush(L1),p.evilPush(L2),p.evilPush(L0))
-  //note, we need to refresh the private names here
+In this way we can typeckeck invariant capsule fields: (with Url=flushCache)
+-abs methods must look like an exposer
+-implemented method are mut, use 'this' only once, par types and ret types are not mut/lent/read.
+on nativeExtraTypingCall(Url,p,G,e) for abstract methods:
+  they have a private number and the receiver is exactly 'this'
+with Url=cached or eagerCached
+-the class only have imm/caps parameters
 
-</pre>*/void compose();
-
-/**<pre>#define ssv((p1, p2)?, p0), ssv(p,e), refined(p,s,Ps)=Ps'
-//subtle subtype violation error function, p1,p2 parameters can be absent/empty
-
-ssv((p1, p2)?, p0):
-  collect(p0, p0.top().Ps) subsetEq p0.top().Ps//using p0.equiv
-  dom(p0.top().mwts) == dom(methods(p0,This0))
-  forall {i,j}={1,2}, s in dom(pi.top()) \ dom(pj.top())//TODO: discuss: we may limit this test to s that are "refine" in p0
-    ps0=refined(p0,s,p0.top().Ps),
-    psi=refined(pi,s,pi.top().Ps)
-    and ps0 subsetEq psi //using p0.equiv //that is, there is some 'surprisingly added' stuff in ps0
-  if (p1, p2)? =empty
-    int=empty,
-  otherwise
-    int=dom(p1.top()) intersection dom(p2.top())//that is, present in both p1 and p2
-
-  forall C in int:                    ssv(p1.push(C),p2.push(C),p0.push(C))
-  forall C in dom(p0.top())\int:      ssv(p0.push(C))
-  forall refine? mt e in p0.top():    ssv(p0,e)
-
-ssv(p,e):
-  forall L such that e=ctxC[L]:  ssv(p.evilPush(L))
-
-refined(p,s,Ps)={P |P in Ps and s in dom(p(P)) }
-  //note: if p(P) is undefined, then not s in dom(p(P))
-</pre>*/void ssv();
-
-/**<pre>#define L1 +p L2 = L0
-{interface?1 implements Ts mwts ncs} +p {interface?2 implements Ts' mwt1..mwtn nc1..nck}
-   ={ (interface?1 mwts + interface?2 + mwt1..mwtn)
-      implements (Ts\Ts',Ts')
-      (mwts\dom(mwt1..mwtn) mwt1[mwts] * mwt1 .. mwtn[mwts] * mwtn)
-      (ncs\dom(nc1..nck) nc1[ncs] * nc1 .. nck[ncs] * nck) }
-  with x * y=  (interface?1,x)  +p  (interface?2,y)
-</pre>*/void innerCompose();
-
-/**<pre>#define interface?,M? +p interface?1,M1 = M2
-interface?,empty +p interface?1,M = M //M is the metavariable for member, introduced in notation and grammar
-interface?1,C:L1 +p interface?2,C:L2 = C: L1 +(p.push(C)) L2
-interface?1,refine?1 mh1 e?1 +p interface?2,refine?2 mh2 e?2 = {refine?1,refine?2} mhi e?i
-//we originally chose that allowing refine+non refine sum was more evil than good,
-//but we want to implement interface methods without mentioning such interface, so we relaxed it
-  where {i,j}={1,2} such that:
-    p |- mhi<=mhj and e?j=empty,
-    if interface?j=interface then p|-mhj<=mhi//that is mhi equiv mhj
-//interface can not loose, implemented can not loose.
-</pre>*/void sumMember();
-
-
-/**<pre>#define interface?1 mwts1 + interface?2 mwts2=interface?
-interface mwts1+interface mwts2=interface
-interface?1 mwts1 + mwts2 = mwts2 + interface?1 mwts1
-mwts1 + interface mwts2=interface
-  where
-  mwts1.e?s = {empty}
-  "class" notin mwts1.mhs.mdfs
-  mwts1.mss do not have number names (that is are not of form m__n(xs) )
-mwts1 +mwts2=empty
-  with size({n| refine? mh in (mwts1,mwts2), mh.s= m__n(xs)})<=1//note, since is not "mh e" we are asking for the abstract methods only
-
-</pre>*/void isSumResultInterface();
-
-/**<pre>#define p|-mh1<=mh2  //remember that p.equiv( P,P) hold even if p( P) undefined
-p|-mh1<=mh2
-  where p|-mh1.T<=mh2.T and parameters and exceptions are equiv, and mdfs are equal
-  //similar to mh1[with T=mh2.T]=mh2
-</pre>*/void methodTypeSubtype();
-
-/**<pre>#define M[Ms]=M?
-nc[nc1..ncn]=nci if nci.C=nc.C
-mwt[mwt1..mwtn]=mwti if mwti.s=mwt.s
-otherwise=empty
-</pre>*/void selectMember();
-}
+  
+  
