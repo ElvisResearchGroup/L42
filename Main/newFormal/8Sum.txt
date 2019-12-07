@@ -2,8 +2,9 @@ PLUS::=PLUS[p;topLeft;topRight;Cs]
 _______
 #define p;C|-CORE.L1 + CORE.L2 = CORE.L3
 * p |- L1 + L2 = L
-    L=L3[Cs1+=p Pz1]..[Csn+=p Pzn]
-    L3=(L1 PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty] L2)
+    PLUS=PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty]
+    L=L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
+    L3=L1 PLUS L2
     //Pz= growing interfaces 
     Pz={ This0.Cs| Cs in dom(L1) intersect dom(L2) and Cs |-L2>L1 or Cs |-L2>L1}
     //classes implementing growing interfaces
@@ -66,8 +67,8 @@ _______
   either L2(Cs).Ts\L1(Cs).Ts!=empty
   or dom(L2(Cs).MWTs)\dom(L1(Cs).MWTs)!=empty
 
-* L[Cs0+=p This0.Cs1..This0.Csn] = L[Cs0=L']
-  L' = L(Cs0)[L(Cs0).MWTs+p ..+p L(Csn).MWTs]
+* L[Cs0 PLUS This0.Cs1..This0.Csn] = L[Cs0=L']
+  L' = L(Cs0)[L(Cs0).interface? L(Cs0).MWTs PLUS .. PLUS L(Csn).interface? L(Csn).MWTs]
   
   //renames:
   rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
@@ -94,7 +95,29 @@ _______
   10 E//copy code
   11 R//redirect but leave full source
   12//empty op... ok
+  -------
   
+  mdf method imm P methName(imm P1 x1.. imm Pn xn)=
+    native{trusted:cached}
+    methBody
+  //this will cache the result and return the cached
+  //after the first call
+  mdf method imm Void clearCache()=native{trusted:clearCache} error void
+  //this will clear all the cache for the current object
+  
+  Option 1 may work:a class with any trusted:cached method need to be with closed state
+  and with extra well formedness stuff.
+  Option 2 would not work: a class with trusted:cached just do what it said, without any guarantees
+  of correctness of the caching process. The caches introduced by Data will be correct by construction,
+  but there is no guarantee of the caches introduced in other ways (if the receiver is not imm)
+  Option 2 would allow for a function recognizing identities on imms. That in turn can be use to 
+  distinguish if a "correct" caching is returning the same or different identities.
+
+  In this way, Data can create trusted:cached;
+  correct cache invalidation and Eager caching are just a feature of data
+  calling clearCache and (possibly) recalling the cached methods directly after.
+  calling clearCache() and or 
+  ------
   @FlushCache
   @Cached
   @EagerCached
