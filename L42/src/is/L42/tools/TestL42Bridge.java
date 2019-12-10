@@ -20,14 +20,16 @@ public class TestL42Bridge{
     List<String> strings = L(s.lines());
     List<L42Test> tests = new ArrayList<>(); 
     for(String t : strings) {
-      if(t.length() == 0 || t.charAt(0) != '#') { throw new Error("Each line in test descriptor should start with a '#'"); }
+      if(t.length() == 0 || t.charAt(0) != '#') { throw new Error("Parser Exception Each line in test descriptor should start with a '#'"); }
       t = t.substring(1);
       if(isSep(t)) { tests.add(new L42Test()); continue; }
       else if(t.startsWith("Pass") || t.startsWith("Fail")) {
+        if(tests.get(tests.size() - 1).testName != null) throw new Error("Parser Exception: Repeated [Pass/Fail] [Test Name] declaration.");
         tests.get(tests.size() - 1).pass = t.substring(0, 4).equals("Pass");
         tests.get(tests.size() - 1).testName = t.substring(t.lastIndexOf(' ') + 1);      
         }
       else if(t.startsWith("line:")) {
+        if(tests.get(tests.size() - 1).fileName != null) throw new Error("Parser Exception: Repeated Line: [Line#] [File Name] declaration.");
         t = t.substring(6);
         tests.get(tests.size() - 1).lineNumber = Integer.parseInt(t.substring(0, t.indexOf(' ')));
         tests.get(tests.size() - 1).fileName = t.substring(t.lastIndexOf(' ') + 1);   
@@ -35,6 +37,8 @@ public class TestL42Bridge{
       else if(t.equals("Bool") || t.equals("StrCompare")) { tests.get(tests.size() - 1).type = t; }
       else if(t.equals("Expected")) { tests.get(tests.size() - 1).message += separator; }
       else if(t.charAt(0) == '|') { tests.get(tests.size() - 1).message += t.substring(1) + "\n";}
+      else if(t.equals("Actual")) {}
+      else { throw new Error("Parser Exception: line `" + t + "` does not conform to any known specification."); }
       }
     return tests.stream();
     }
@@ -57,10 +61,13 @@ public class TestL42Bridge{
     public void checkPass() {
       if(pass || type == null) { assertTrue(pass); return; }
       switch(type) {
-        case "Bool": assertTrue(pass, message);
+        case "Bool": assertTrue(pass, message); break;
         case "StrCompare":
           String[] expactual = message.split(TestL42Bridge.separator);
           assertEquals(expactual[1], expactual[0]);
+          break;
+        default:
+          throw new NullPointerException("Type " + type + " is invalid.");
         }
       }
     }
