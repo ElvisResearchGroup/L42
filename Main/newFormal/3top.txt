@@ -162,7 +162,7 @@ _______
     
 * updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info1}
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
-    MWTs[e?=empty] = MWTs1
+    dom(MWTs) = dom(MWTs1)
     Ps;Ps' = collectDeps(p;MWTs.es)
     Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},??}
     Info1 = (Info0+Info) if hasOpenState(interface?,MWTs0 MWTs1)
@@ -171,10 +171,10 @@ _______
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
 * updateInfo(p,FULL.e,Docs C=L) = L0[♥Docs C=L'][Info=Info1]
+    p(This0) = L0
     Info = #norm{typeDep=collectDeps(p♥Docs)}
     Info1=L0.Info+Info if C not of form _::n
     Info1=L0.Info+Info+collectDepsE(p,L) otherwise //this provides more typeDep and coherentDep
-    P(This0) = L0
     L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
     L'=L otherwise
     

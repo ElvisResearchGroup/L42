@@ -201,13 +201,26 @@ Marco and Isaac
 
 ---------------------------------------------------------
 Response:
+> Q1:
+As with Spec#, the only difference between dynamically and statically
+verifying the invariant would be that points where a dynamic check
+would be performed would instead be points were the theorem prover
+must statically verify the invariant holds.
+For our protocol to work in practice however, we would likely need to
+write pre/post conditions on most methods in order for the theorem
+prover to determine if the invariant method would return true.
+
+> Q2:
+We use the conventional interpretation, that an objects ROG includes
+itself and the ROGs of all it's fields, formally:
+  rog(sigma, l) = {l} U rog(sigma, l1) U ... U rog(sigma, ln)
+where sigma(l) = C{l1 ... ln}
+
 
 >I believe that the GUI case study as offered in section 6 does not really classify as a Composite ...
 >In your GUI example, and I think in your approach, you have a flat invariant structure: an object’s update may break the invariant of only one other object.
 
-In the GUI, an update of a single Widget may break the invariant of
-many of the outer widgets, by pushing a widget outside their
-boundaries.
+In the GUI you can break the invariant of many of the outer widgets by updating a single widget and pushing it outside their boundaries.
 
 Note: SaveMovable's invariant does not check the invariants of its
 children, our invariant protocol guarantees that they will hold before
@@ -221,10 +234,10 @@ re-establish the SafeMoveable’s invariant.
 
 The variation proposed by Rev1 is possible.
 We show and discuss the code for such variation at the end of the response.
-The shown solution is an adaptation of our solution to represent
+The given code is an adaptation of our solution to represent
 graphs with individual invariants on their nodes presented in Appendix
-C (page 47), such an approach could also be used for doubly linked
-lists.
+C (page 47); such an approach could also be used for doubly linked
+lists and many other kinds of data structures.
 
 The main idea is that the top level invariant on the graph just calls
 a subInvariant on the nodes.
@@ -244,21 +257,6 @@ reference themselves.
 Our GUI example in the paper shows a way of handling invariants over
 cyclic objects, however we show an alternative solution at the end of
 this response.
-
-> Q1:
-As with Spec#, the only difference between dynamically and statically
-verifying the invariant would be that points where a dynamic check
-would be performed would instead be points were the theorem prover
-must statically verify the invariant holds.
-For our protocol to work in practice however, we would likely need to
-write pre/post conditions on most methods in order for the theorem
-prover to determine if the invariant method would return true.
-
-> Q2:
-We use the conventional interpretation, that an objects ROG includes
-itself and the ROGs of all it's fields, formally:
-  rog(sigma, l) = {l} U rog(sigma, l1) U ... U rog(sigma, ln)
-where sigma(l) = C{l1 ... ln}
 
 
 >All previous works I know of, propose that objects’ invariants should hold upon entry and exit from a method call, but may be broken during method execution.
@@ -376,5 +374,9 @@ subInvariant of all
 }
 ... // main expression
 //#$ is a capability operation making a Gui object
-Gui.#$().display(new WidgetWithInvariant(
-  new SafeMovable(...)));
+mut Widget top=new WidgetWithInvariant(new SafeMovable(...))
+Gui.#$().display(top);
+
+We believe this code example capture the behaviour REV1 suggested; in this example
+there is no need to expose a widget reference outside of the Gui.
+However, this is not prevented: to expose "read" references to (sub-)widgets you can just call the top.children() method.
