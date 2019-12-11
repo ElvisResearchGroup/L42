@@ -320,7 +320,7 @@ interface HasSubInvariant{read method Bool subInvariant();}
 
 class SafeMovable implements Widget,HasSubInvariant {
   Int width = 300; Int height = 300;
-  Int left; Int top;    // Here we do not use the box, thus all the state
+  Int left; Int top;    // Here we do not use a box, thus all the state
   mut Widgets c;  // is in SafeMovable.
   mut Widget parent;//We add a parent field
   @Override read method Int left(){return this.left;}
@@ -377,6 +377,6 @@ subInvariant of all
 mut Widget top=new WidgetWithInvariant(new SafeMovable(...))
 Gui.#$().display(top);
 
-We believe this code example capture the behaviour REV1 suggested; in this example
-there is no need to expose a widget reference outside of the Gui.
-However, this is not prevented: to expose "read" references to (sub-)widgets you can just call the top.children() method.
+We believe this code example captures the behaviour that reviewer 1 suggested; in this example
+there is no need to expose Widget references outside of the Gui.
+However, this is not prevented: to expose "read" references to (sub-)widgets you can just call top.children().
