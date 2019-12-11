@@ -201,6 +201,19 @@ Marco and Isaac
 
 ---------------------------------------------------------
 Response:
+--------------------------------------------------
+We would like to thank all reviewers for their insightful reviews.
+
+Gopinathan et al.'s argue the importance to ensure invariants over 
+certain streaches of time, not just in the very moment the invariant is checked.
+To the best of our knowledge we are the only approach soundly enforcing
+this in the presence of I/O and captured unchecked exceptions.
+Thus, when those features are required, we are the only usable approach.
+
+We show that our approach is also practical by comparing it with other approaches that are considered practical in their different application domain:
+-Our annotation burden is less then Spec# (it enforce invariants over all Packed object, but unsoundly handle I/O and unchecked exceptions).
+-Our performance can be orders of magnitudo bettern then D/Eiffiel (they have minimal annotation burder but only enforce invariants validity in the moment of the check).
+-----------------------
 > Q1:
 As with Spec#, the only difference between dynamically and statically
 verifying the invariant would be that points where a dynamic check
@@ -215,12 +228,14 @@ We use the conventional interpretation, that an objects ROG includes
 itself and the ROGs of all it's fields, formally:
   rog(sigma, l) = {l} U rog(sigma, l1) U ... U rog(sigma, ln)
 where sigma(l) = C{l1 ... ln}
-
+Capsule references also rely on this simple and conventional ROG definition,
+thus the whole ROG is encapsulated. This is different from Flexible Ownership, where there is no requirement for the whole ROG to be owned.
 
 >I believe that the GUI case study as offered in section 6 does not really classify as a Composite ...
 >In your GUI example, and I think in your approach, you have a flat invariant structure: an object’s update may break the invariant of only one other object.
 
 In the GUI you can break the invariant of many of the outer widgets by updating a single widget and pushing it outside their boundaries.
+We will clarify this point better in the text.
 
 Note: SaveMovable's invariant does not check the invariants of its
 children, our invariant protocol guarantees that they will hold before
@@ -292,6 +307,13 @@ that the runtime inserted checks had passed. Refer to page 54, where
 we quoted Gopinathan et al.'s discussion of issues caused by visible
 state semantics being too weak.
 
+>There are more case studies in the appendix, several of which cannot be expressed in the proposed approach.
+Indeed, are noticed by REV2, we focus on supporting representation invariants:
+>REV2:"predicates on the state of the object and its reachable graphs"
+In our case studies we also compare with many examples from Spec# literature; those also aim to verify invariants about object cooperation, where there is no object whose reachable graph captures all the needed information.
+
+
+We will reorganize the content according to the suggestions of REV2 and REV3.
 
 ------------------------------------------------------
 Modified GUI code:
