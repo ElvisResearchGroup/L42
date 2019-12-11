@@ -80,14 +80,15 @@ _______
 * topNC(CTz;p;FULL.Docs C=FULL.e, Full.NCs) => PR
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
-    I[C?=C;p;G=empty;CTz; frommed=CTz[from This1;p.push(C,{#norm{}})]]!HALF.e => ER
+    CTz0 = CTz[from This1;p.push(C,{#norm{}})]
+    I[C?=C;p;G=empty;CTz; frommed=CTz0]!HALF.e => ER
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     //here we check CORE.e is well formed
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)
     coherent(p,adapt(CORE.e,T)) IfUndefined PR = incoherent(p)
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
-    p' = p.update(updateInfo(p,Full.e,♥FULL.Docs C=CORE.L))//refreshUniqueNames
+    p' = p.update(updateInfo(p,FULL.e,♥FULL.Docs C=CORE.L))//refreshUniqueNames or not depending on FULL.e
     flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
     topNC(CTz1[from This0.C,p"];p";Full.NCs) => PR 
     
