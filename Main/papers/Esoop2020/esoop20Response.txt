@@ -19,7 +19,7 @@ and that of C-sharp (they require fewer annotations).
 cannot be expressed in the proposed approach.
 
 
-All previous works I know of, propose that objects’ invariants should hold upon entry and
+All previous works I know of, propose that objects' invariants should hold upon entry and
 exit from a method call, but may be broken during method execution.
 //## No, in Pack-Unpack Packed objects are not broken
 //## thus our approach is very related with pack/unpack. Also, we would like to note that our work soundly support catching exceptions and IO. This does not happen in other Pack/Unpack.
@@ -56,18 +56,18 @@ system is powerful enough to be useful.
 //## HERE IN THE FOLLOWING IS THE BIG DEAL
 I think that the restriction on cycles is too severe; cycles appear a lot in code. But I may be
 wrong; we just ; just looking at 5 examples is not sufficient to convince the
-readers either way. Perhaps a library (eg Rust’s which avoids cycles) would provide useful case studies.
+readers either way. Perhaps a library (eg Rust's which avoids cycles) would provide useful case studies.
 I believe that the GUI case study as offered in section 6 does not really classify as a Composite
 (following the definition of the Composite pattern from the invariants literature (as in [59], eg)
 Namely, in the Composite pattern we have essentially a tree, and 1) the invariant of a Node
 Is the conjunction of the invariant of all its children separately and a property depending on the
 state of the children as well of the Node itself, 2) we allow pointers to any Node which may
 be used to modify the state of that  Node, and need to then walk up the tree and update the
-parents’ state so as to re-instate the invariant.  In your GUI example, and I think in your approach,
-you have a flat invariant structure: an object’s update may break the invariant of only one
+parents' state so as to re-instate the invariant.  In your GUI example, and I think in your approach,
+you have a flat invariant structure: an object's update may break the invariant of only one
 other object. And I think you cannot support a version of the GUI where I would have a
 pointer to a Widget, update its position, and then walk up to the SafeMoveable and,
-in turn, update the Moveable’s co-ordinates so as to re-establish the SafeMoveable’s
+in turn, update the Moveable's co-ordinates so as to re-establish the SafeMoveable's
 invariant.
 //## Such variation of the GUI is possible.
 A general approach to a graph of objects with individual invariants in the style of [59] (check) is present in the appendix C.
@@ -204,130 +204,75 @@ Response:
 --------------------------------------------------
 We would like to thank all the reviewers for their insightful reviews. We will reorganize the content according to the suggestions of REV2 and REV3.
 
-Gopinathan et al. argue the importance of ensuring invariants over 
-certain stretches of time, not just at the specific moment the invariant is checked.
-To the best of our knowledge we are the only approach soundly enforcing
-this in a language allowing I/O and the catching of unchecked exceptions, without requiring invariants to be written in a seperate specification language. Thus, when these features are required, we are the only usable approach.
+Gopinathan et al. argue the importance of ensuring invariants over certain stretches of time, not just at the specific moment the invariant is checked.
+To the best of our knowledge we are the only approach soundly enforcing this in a language allowing I/O and the catching of unchecked exceptions, without requiring invariants to be written in a separate specification language. Thus, when these features are required, we are the only usable approach.
 
 We show that our approach is also practical by comparing it with other established approaches with different goals:
--Our annotation burden is less then Spec# (which also enforces invariants over streaches of time, but it allows for unsound use of I/O and unchecked exceptions).
--Our performance can be orders of magnitude better than D and Eiffiel (they have minimal annotation burder but only enforce invariants at specific points in time).
+-Our annotation burden is less then Spec# (which also aims to enforce invariants over stretches of time, but it allows for unsound use of I/O and unchecked exceptions).
+-Our performance can be orders of magnitude better than D and Eiffel (they have minimal annotation burden but only enforce invariants at specific points in time).
 -----------------------
-> Q1:
-As with Spec#, the only difference between dynamically and statically
-verifying the invariant would be that points where a dynamic check
-would be performed would instead be points were the theorem prover
-must statically verify the invariant holds.
-For our protocol to work in practice however, we would likely need to
-write pre/post conditions on most methods in order for the theorem
-prover to determine if the invariant method would return true.
+> Rev3 Question1:
+As with Spec#, the only difference between dynamically and statically verifying the invariant would be that points where a dynamic check would be performed would instead be points were the theorem prover must statically verify the invariant holds.
+For our protocol to work in practice however, we would likely need to write pre/post conditions on most methods in order for the theorem prover to determine if the invariant method would return true.
 
-> Q2:
-We use the conventional interpretation, that an objects ROG includes
-itself and the ROGs of all it's fields, formally:
+> Rev3 Question2:
+We use the conventional interpretation, that an object's ROG includes itself and the ROGs of all it's fields, formally:
   rog(sigma, l) = {l} U rog(sigma, l1) U ... U rog(sigma, ln)
 where sigma(l) = C{l1 ... ln}
 
 >I believe that the GUI case study as offered in section 6 does not really classify as a Composite ...
->In your GUI example, and I think in your approach, you have a flat invariant structure: an object’s update may break the invariant of only one other object.
+>In your GUI example, and I think in your approach, you have a flat invariant structure: an object's update may break the invariant of only one other object.
 
 In the GUI you can break the invariant of many of the outer widgets by updating a single widget and pushing it outside their boundaries.
-We will alter our paper to more clearly express this.
+We will improve our explanation to make this more clear.
 
-Note: SaveMovable's invariant does not check the invariants of its
-children, our invariant protocol guarantees that they will hold before
-the outer object's invariant is checked.
+Note: SaveMovable's invariant does not manually check the invariants of its children, but our invariant protocol guarantees that they will hold.
 
->And I think you cannot support a version of the GUI where I would have a
-pointer to a Widget, update its position, and then walk up to the
-SafeMoveable and, in turn, update the Moveable’s co-ordinates so as to
-re-establish the SafeMoveable’s invariant.
+>And I think you cannot support a version of the GUI where I would have a pointer to a Widget, update its position, and then walk up to the SafeMoveable and, in turn, update the Moveable's coordinates so as to re-establish the SafeMoveable's invariant.
 
 The variation proposed by Rev1 is possible.
 We show and discuss the code for such variation at the end of the response.
-The given code is an adaptation of our solution to represent
-graphs with individual invariants on their nodes presented in Appendix
-C (page 47); such an approach could also be used for doubly linked
-lists and many other kinds of data structures.
-
-The main idea is that the top level invariant on the graph just calls
-a subInvariant on the nodes.
+The given code is an adaptation of our solution to represent graphs with individual invariants on their nodes presented in Appendix C (page 47); such an approach could also be used for doubly linked lists and many other kinds of data structures.
+The main idea is that the top level invariant on the graph just calls a subInvariant on the nodes.
 In such an example, we allow for a graph of Nodes and also allows Node
-pointers to be directly referenced and (using the Transformer pattern)
-modified.
-The mutation of a node can in turn modify all other reachable nodes,
-clearly supporting the kind of expressive power suggested by Rev1.
+pointers to be directly referenced and (using the Transformer pattern) modified.
+The mutation of a node can in turn modify all other reachable nodes, clearly supporting the kind of expressive power suggested by Rev1.
 
 
 >I think that the restriction on cycles is too severe;
-An object with an invariant can not be reachable from any of its imm
-or capsule fields (it might be reachable from other fields, but these
-cannot be used in the invariant). The fields of such an object can all
-reference themselves.
-
-Our GUI example in the paper shows a way of handling invariants over
-cyclic objects, however we show an alternative solution at the end of
-this response.
+An object with an invariant can not be reachable from any of its imm or capsule fields. However, cycles are allowed using mut fields. Thus, the box pattern allows for an object with invariant to express a constraint over a contained group of objects with internal cycles; as we show in the GUI (pg 18: Box contains MoveAction, MoveAction contains Box). Also the alternative GUI example shown at then of this response contains cyclic objects.
 
 
->All previous works I know of, propose that objects’ invariants should hold upon entry and exit from a method call, but may be broken during method execution.
+>All previous works I know of, propose that objects' invariants should hold upon entry and exit from a method call, but may be broken during method execution.
 
-This is not always the case. As discussed in our related work section
-on "Invariant Protocols" (Page 22), there are many variations in the
-literature, in particular the various versions of the
-Pack-Unpack/Boogie methodology requires the invariant to hold for all
-Packed objects, regardless of what methods are active.
+This is not always the case. As discussed in our related work section on "Invariant Protocols" (Page 22), there are many variations in the
+literature, in particular the various versions of the Pack-Unpack/Boogie methodology requires the invariant to hold for all Packed objects, regardless of what methods are active.
 
 
 >A simpler system can do fewer things, more succinctly and more efficiently. The question is whether the system is powerful enough to be useful.
 
 Depending on the kind of application, some systems may be unusable.
-Our GUI example shows that D/Eiffel are unusable if an invariant
-evaluation must call methods of subobjects whose invariants behave
-similarly. The checks grow exponentially with respect to the depth of
-such objects. Such a dire slow down makes the system unusable, even if
-only used for testing. In particular, running the GUI code in D/Eiffel
-mode took multiple days.
+Our GUI example shows that D/Eiffel are unusable if an invariant evaluation must call methods of sub-objects whose invariants behave similarly. The checks grow exponentially with respect to the depth of such objects. Such a dire slow down makes the system unusable, even if only used for testing. In particular, running the GUI code in D/Eiffel mode took multiple days.
 
-In addition our approach is the only one we are aware of that soundly
-allows for non-deterministic I/O and catching exceptions, making other
-approaches unusable when this is required. We discuss these
-limitations of other systems in our related work section (particularly
-pages 24 & 25), for example Dafny does not support input or
-exceptions, and Spec# is unsound when using I/O or catching unchecked
-exceptions.
-Runtime verification systems like D and Eiffel do not ensure that
-invariants are deterministic, in particular at no point in the code
-can one be sure that an invariant will hold if manually checked, only
-that the runtime inserted checks had passed. Refer to page 54, where
-we quoted Gopinathan et al.'s discussion of issues caused by visible
-state semantics being too weak.
+In addition our approach is the only one we are aware of that soundly allows for non-deterministic I/O and catching exceptions, making other approaches unusable when this is required. We discuss these limitations of other systems in our related work section (particularly pages 24 & 25), for example Dafny does not support input or exceptions, and Spec# is unsound when using I/O or catching unchecked exceptions.
+Runtime verification systems like D and Eiffel do not ensure that invariants are deterministic, in particular at no point in the code can one be sure that an invariant will hold if manually checked, only that the runtime inserted checks had passed. Refer to page 54, where we quoted Gopinathan et al.'s discussion of issues caused by visible state semantics being too weak.
+
 
 > I believe that capsule fields offer external uniqueness (as in Wrigstad&Clarke).
 
 Our capsule definition subsumes the definition of external uniqueness (no incoming references are allowed to point at the capsule object from the outside of the capsule) but also extends it further by prohibiting any references from any objects contained in the capsule to any mutable outside object - in this sense, capsules are the closest to "Islands" or full alias encapsulation approaches
 ------------------------------------------------------
 Modified GUI code:
-The main idea is to define an interface HasSubInvariant, to denote
-widgets with a subInvariant method. Then, WidgetWithInvariant is a
-decorator over a Widget; and its invariant method checks the
-subInvariant of each widget in its ROG.
+The main idea is to define an interface HasSubInvariant, to denote widgets with a subInvariant method. Then, WidgetWithInvariant is a decorator over a Widget; and its invariant method checks the subInvariant of each widget in its ROG.
 
-We define SafeMovable as a Widget with a subInvariant, since
-subInvariant methods don't have the restrictions of invariant methods,
-it allows SafeMovable to be significantly simpler than the version
-shown in the paper.
+We define SafeMovable as a Widget with a subInvariant, since subInvariant methods don't have the restrictions of invariant methods, it allows SafeMovable to be significantly simpler than the version shown in the paper.
 
-In this way, the method WidgetWithInvariant.dispatch is the only
-capsule mutator. Thus the only invariant checks will be at the end of
-WidgetWithInvariant's constructor and dispatch methods.
+In this way, the method WidgetWithInvariant.dispatch is the only capsule mutator. Thus the only invariant checks will be at the end of WidgetWithInvariant's constructor and dispatch methods.
 
-Thus only when a WidgetWithInvariant itself is directly created or
-mutated is the invariant ensured to hold. Importantly, this allows the
-graph of widgets to be cyclic and for each to freely mutate each
-other, even if such mutations (temporarily) violate their
-subInvariant's. However, as guaranteed by our system, the outer
-WidgetWithInvariant will not be reachable during such operations.
+Thus only when a WidgetWithInvariant itself is directly created or mutated is the invariant ensured to hold. Importantly, this allows the graph of widgets to be cyclic and for each to freely mutate each
+other, even if such mutations (temporarily) violate their subInvariant's.
+Thus, as the reviewer suggestion requires, a widget can access its parent, whose subInvariant may not hold; in order to reestablish it.
+ However, as guaranteed by our system, the outer WidgetWithInvariant will not be reachable during such operations, and every time the WidgetWithInvariant is reachable, then all subInvariants also holds.
 
 interface HasSubInvariant{read method Bool subInvariant();}
 
@@ -390,6 +335,5 @@ subInvariant of all
 mut Widget top=new WidgetWithInvariant(new SafeMovable(...))
 Gui.#$().display(top);
 
-We believe this code example captures the behaviour that reviewer 1 suggested; in this example
-there is no need to expose Widget references outside of the Gui.
+We believe this code example captures the behavior that reviewer 1 suggested; in this example there is no need to expose Widget references outside of the Gui.
 However, this is not prevented: to expose "read" references to (sub-)widgets you can just call top.children().
