@@ -211,11 +211,11 @@ We show that our approach is also practical by comparing it with other establish
 -Our annotation burden is less then Spec# (which also aims to enforce invariants over stretches of time, but it allows for unsound use of I/O and unchecked exceptions).
 -Our performance can be orders of magnitude better than D and Eiffel (they have minimal annotation burden but only enforce invariants at specific points in time).
 -----------------------
-> Rev3 Question1:
+> Rev1 Question1:
 As with Spec#, the only difference between dynamically and statically verifying the invariant would be that points where a dynamic check would be performed would instead be points were the theorem prover must statically verify the invariant holds.
 For our protocol to work in practice however, we would likely need to write pre/post conditions on most methods in order for the theorem prover to determine if the invariant method would return true.
 
-> Rev3 Question2:
+> Rev1 Question2:
 We use the conventional interpretation, that an object's ROG includes itself and the ROGs of all it's fields, formally:
   rog(sigma, l) = {l} U rog(sigma, l1) U ... U rog(sigma, ln)
 where sigma(l) = C{l1 ... ln}
@@ -240,7 +240,7 @@ The mutation of a node can in turn modify all other reachable nodes, clearly sup
 
 
 >I think that the restriction on cycles is too severe;
-An object with an invariant can not be reachable from any of its imm or capsule fields. However, cycles are allowed using mut fields. Thus, the box pattern allows for an object with invariant to express a constraint over a contained group of objects with internal cycles; as we show in the GUI (pg 18: Box contains MoveAction, MoveAction contains Box). Also the alternative GUI example shown at then of this response contains cyclic objects.
+An object with an invariant can not be reachable from any of its imm or capsule fields. However, cycles are allowed using mut fields. Thus, the box pattern allows for an object with an invariant to express a constraint over a contained group of objects with internal cycles; as we show in the GUI (pg 18: Box contains MoveAction, MoveAction contains Box). Also the alternative GUI example shown at then of this response contains cyclic objects.
 
 
 >All previous works I know of, propose that objects' invariants should hold upon entry and exit from a method call, but may be broken during method execution.
@@ -271,8 +271,8 @@ In this way, the method WidgetWithInvariant.dispatch is the only capsule mutator
 
 Thus only when a WidgetWithInvariant itself is directly created or mutated is the invariant ensured to hold. Importantly, this allows the graph of widgets to be cyclic and for each to freely mutate each
 other, even if such mutations (temporarily) violate their subInvariant's.
-Thus, as the reviewer suggestion requires, a widget can access its parent, whose subInvariant may not hold; in order to reestablish it.
- However, as guaranteed by our system, the outer WidgetWithInvariant will not be reachable during such operations, and every time the WidgetWithInvariant is reachable, then all subInvariants also holds.
+Thus, as required by the reviewer's suggestion, a widget can access its parent, whose subInvariant may not hold; in order to reestablish it.
+ However, as guaranteed by our system, the outer WidgetWithInvariant will not be reachable during such operations, and every time the WidgetWithInvariant is reachable, then all subInvariants hold.
 
 interface HasSubInvariant{read method Bool subInvariant();}
 
