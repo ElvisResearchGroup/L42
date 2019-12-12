@@ -1,0 +1,43 @@
+File structure
+  Folder/This.L42
+  Cache.L42Bytes  List<CacheEntry>cache;
+AssumedGlobals
+  ClassLoader{
+    Map<CN->Byte[]>
+    }
+  CurrentCache  List<CacheEntry>cache;
+  Num
+  validCache
+
+CacheEntry:
+  FULL.NC->(CTz,p,mbytecode,cbytecode)
+
+Pseudocode for topNC1// this is implementing topNC in 3top +recursive call
+CTz,p topNC1(p,FULL.NC,num,cacheStillVaid){
+  c=cache.get(num);
+  L=null;
+  if(cacheStillVaid && c.key().equals(FULL.NC)){
+    if(no#$(FULL.NC)){
+      MyClassLoader.load(c.val().cbytecode);
+      return c.val();
+      }
+    MyClassLoader.load(c.val().mbytecode)
+    L=c.val().mbytecode.execute()
+    if L==c.val().p(nc.C).L {
+      MyClassLoader.load(c.val().cbytecode);
+      return c.val();
+      }
+    }
+  cacheStillVaid=false;
+  mbytecode=c.val().mbytecode;
+  flushBadCache();
+  update or make new cache using L //care to generate a fresh Main name?
+  if(L==null){
+    CTz1,core.e=conventional full->half->core
+    L,mbytecode=reduce()
+    }
+  p1,cbytecode=flagtype(p,L)
+  AddCache(FULL.NC->(CTz1,p1,mbytecode,cbytecode));
+  return CTz1,p1
+  }
+--------------------------
