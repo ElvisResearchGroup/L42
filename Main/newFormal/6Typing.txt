@@ -1,7 +1,7 @@
 _______
 #define flagTyped(p)=p'    LL[Csz=Flag]=LL'    LL[InfoFlag=Flag]=LL'
 * flagTyped(p) = p.update( p(This0)[typable(p)=typed])
-    forall Cs in typable(p):  false|-p.navigate(This0.Cs)
+    forall Cs in typable(p):  norm|-p.navigate(This0.Cs)
 
 * LL[Cs Csz = Flag]=LL[Cs=LL(Cs)[InfoFlag=Flag]][Csz=Flag]
 * LL[empty=Flag]=LL
@@ -10,22 +10,21 @@ _______
     MWTs'=MWTs but any CORE.L inside MWTi.e? are replaced with CORE.L[InfoFlag=Flag]
 _______
 #define typable(p)=Csz    untypable(p)=CTz
-* typable(p) = Cs1..Csn // asserts p(This0) is CORE.L
-    dom(p(This0))/untypable(p)
-    TODO:--untypableFatal in 2 places: untypable and removing 1 This
-* empty in untypable(p) if p(This0).interface=empty
+* typable(p) = dom(p(This0))/untypable(p) // asserts p(This0) is CORE.L
+  TODO:--untypableFatal in 2 places: untypable and removing 1 This
+* empty in untypable(p)
 * Cs in untypable(p) if p(This0.Cs).Info.Flag=typed
 * Cs in untypable(p) if 
-    P in p(This0.Cs).Info.depTyped[from This0.Cs;p]
+    P in p(This0.Cs).Info.typeDep[from This0.Cs;p]
     P notin dom(p)
 * Cs in untypable(p) if 
-    Thisn.C1..Ck in p(This0.Cs).Info.depTyped[from This0.Cs;p]
+    Thisn.C1..Ck in p(This0.Cs).Info.typeDep[from This0.Cs;p]
     p(Thisn.C1..Ck).Info.Flag!=typed
-    n>=k
+    n!=0
 * Cs in untypable(p) if 
+    This0.Cs' in p(This0.Csi).Info.depTyped[from This0.Cs;p]
     Cs' in untypable(p)
     not p(Cs').Info.Flag=typed //could be norm but also p(Cs') undefined
-    This0.Cs' in p(This0.Csi).Info.depTyped[from This0.Cs;p]    
 _______
 #define wellTyped(p, CORE.e)=CORE.T
 * wellTyped(p,e)=T //the code will give an error here if a typeDep path is not in dom(p)

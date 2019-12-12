@@ -73,7 +73,7 @@ _______
     //novel CTzs are not captured since no Full.L in e?s
     MWT'i = MWTi Ms(MWTi.s).native e?'i
     L = updateInfo(p1, MWT'1..MWT'n)
-    p2 = flagTyped(p1.update(L)) IfNotE(p2) PR = illTyped(p1.update(L))
+    p2=p1.update(L)
     PR = CTz1; p2.update(p2.top()[Info.uniqueId=empty])
 
 * topNC(CTz;p;empty) =>CTz;p
@@ -89,7 +89,7 @@ _______
     reduce(p,empty,adapt(CORE.e,T)) => ER'
     ER' = empty;CORE.L IfErr(ER') PR = ER'
     p' = p.update(updateInfo(p,FULL.e,♥FULL.Docs C=CORE.L))//refreshUniqueNames or not depending on FULL.e
-    flagTyped(p') = p" IfNotE(p") PR = illTyped(p')    
+    flagTyped(p') = p" IfNotE(p") PR = illTyped(p')
     topNC(CTz1[from This0.C,p"];p";Full.NCs) => PR 
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
@@ -247,7 +247,7 @@ _______
 _______
 #define adapt(p,CORE.e,T)
 * adapt(p,e,imm Library) = e
-* adapt(p,e,imm Void) = (Void x=e {}) where x fresh
+* adapt(p,e,imm Void) = (imm Void x=e {}) where x fresh
 * adapt(p,e,T) = (T x=e x.#toLibrary()) otherwise, where x fresh    
 _______
 #define CTz.add(p; CORE.MH FULL.e?; HAlf.e?) = CTz' // both CTz' and HALf.e? are computed by this notation
@@ -301,7 +301,7 @@ _______
     ST' in CTz.allSTz(p,STi)
 * ST' in CTz.allSTz(p,ST.s.i?)
     ST" in CTz.allSTz(ST)
-    ST' in  CTz.allSTz(p.solve(ST".s.i))
+    ST' in  CTz.allSTz(p.solve(ST".s.i?))
 * ST' in CTz.allSTz(p,OP STz1..STzn)
     STi in STzi
     ST'i in CTz.allSTz(STi)
@@ -313,13 +313,13 @@ _______
     +[S][S] DOES NOT solve/infer to A, since also ToS->B is applicable
     +[S][S] will stay dormient and harmless during I.infer 
    
-* CTz.allTz(p,ST)={T | ST in CTz.allST(p,ST)}
+* CTz.allTz(p,ST)={T | T in CTz.allST(p,ST)}
 
 _______
 #define I(mdf? STz) = CORE.T
 * I(mdf STz) = I(STz)[mdf=mdf]
 * I(STz)=chooseGeneralT(Tz) //assert p.solve(STz)=STz
-    Tz={chooseSpecificT(I.CTz.allTz(ST)) | ST in STz }
+    Tz={chooseSpecificT(I.CTz.allTz(I.p,ST)) | ST in STz }
 _______
 #define chooseGeneralT(CORE.Tz) = CORE.T    mostGeneralMdf(mdfz) = mdf     generalEnough(mdfz) = mdfs'
 *chooseT(Tz) = mostGeneralMdf(Tz.mdfz) P

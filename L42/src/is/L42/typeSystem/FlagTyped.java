@@ -86,7 +86,7 @@ public class FlagTyped {
   private static Set<List<C>> untypable(Program p,ArrayList<List<C>> dom, L l) {
     return new InductiveSet<Integer,List<C>>(){
       @Override public void rule(Integer k, Consumer<List<C>> set) {
-        if(!l.isInterface()){set.accept(L());}//TODO: remove the if and just always add L() to make all Thisn non visible by introspection
+        set.accept(L());
         out:for(var cs:dom){
           var lcs=l.cs(cs);
           if(lcs.info().isTyped()){set.accept(cs);continue out;}
@@ -94,7 +94,8 @@ public class FlagTyped {
           for(var p0:frommed){
             var l0=p._ofCore(p0);
             if(l0==null){set.accept(cs);continue out;}
-            var hasUntypedOut=p0.n()>=p0.cs().size() && !l0.info().isTyped();
+            assert p.minimize(p0).equals(p0);
+            var hasUntypedOut=p0.n()!=0 && !l0.info().isTyped();
             if(hasUntypedOut){set.accept(cs);continue out;}
             }
           install(0,cs1->{

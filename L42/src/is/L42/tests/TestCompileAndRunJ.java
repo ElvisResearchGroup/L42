@@ -70,7 +70,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       s0.strDebug()
       )
     #typed{declaresClassMethods typeDep= This1.SB This1.S This coherentDep=This1.SB This1.S This}}
-  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab")
+  ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab\n")
   ),new AtomicTest(()->
   loadRun("""
   C={
@@ -108,7 +108,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       s3.strDebug()
       )
     #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}}
-  ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello\nWorld")
+  ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello\nWorld\n")
   ),new AtomicTest(()-> 
   loadRun("""
   Safe2={
@@ -131,7 +131,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       s3.strDebug()
       )
     #typed{typeDep=This1.S This1.Safe2 coherentDep=This1.Safe2 declaresClassMethods}}
-  ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello World!")
+  ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello World!\n")
   ),new AtomicTest(()-> 
   loadRun("""
   Safe2={
@@ -155,7 +155,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       s3.strDebug()
       )
     #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2 declaresClassMethods}}
-  ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello Native World")
+  ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello Native World\n")
 /*  ),new AtomicTest(()-> //TODO:On Windows this passes or fails randomly...
   loadRunErr("""
   Safe3={

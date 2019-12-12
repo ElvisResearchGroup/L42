@@ -40,7 +40,7 @@ public class L42TrustedIO {
       sb.append(actual);
       sb.append("\n#Expected\n");
       expected=expected.lines().map(l->"#|"+l).collect(Collectors.joining());
-      sb.append(expected);
+      sb.append(expected+"\n");
       }  
     Resources.tests(sb.toString());
 

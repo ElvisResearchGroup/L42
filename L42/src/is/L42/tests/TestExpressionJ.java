@@ -249,6 +249,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        }
      ""","""
      class £cA£n1 implements L42Any{
+       int £xn;
+       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£n1)o).£xn=(int)f;};
        public static £cA£n1 £mof£xn(£cA£n1 £xthis, int £xn){
          £cA£n1 Res=new £cA£n1();
          Res.£xn=£xn;
@@ -260,8 +262,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        public static L42Void £mn£xthat(£cA£n1 £xthis, int £xthat){
          £xthis.£xn=£xthat;return L42Void.instance;
          }
-       int £xn;
-       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£n1)o).£xn=(int)f;};
        public static £cA£n1 NewFwd(){return new _Fwd();}
        public static class _Fwd extends £cA£n1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
@@ -297,6 +297,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        #norm{typeDep=This This1.N declaresClassMethods}}
      ""","""
        class £cC£n1 implements L42Any{
+         int £xn;
+         public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
          public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){
            £cC£n1 Res=new £cC£n1();
            if(£xn instanceof L42Fwd){((L42Fwd)£xn).rememberAssign(Res,£cC£n1.FieldAssFor_n);}else{Res.£xn=(int)£xn;}
@@ -305,8 +307,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public static int £mn(£cC£n1 £xthis){
            return £xthis.£xn;
            }
-         int £xn;
-         public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
          public static £cC£n1 NewFwd(){return new _Fwd();}
          public static class _Fwd extends £cC£n1 implements L42Fwd{
            private List<Object> os=new ArrayList<>();

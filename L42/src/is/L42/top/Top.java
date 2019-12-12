@@ -78,7 +78,8 @@ public class Top {
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
-    Program p2=flagTyped(p1.update(l,false));//propagate illTyped
+    //Program p2=flagTyped(p1.update(l,false));//propagate illTyped
+    Program p2=p1.update(l,false);//propagate illTyped
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
     alreadyCoherent.remove(alreadyCoherent.size()-1);
@@ -188,7 +189,8 @@ public class Top {
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1 = p.update(updateInfo(p,nc),false);
     Program p2=flagTyped(p1);//propagate errors
-    //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)    
+    //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)
+    //that is, the last nested class would not generate usable bytecode    
     Program res=topNC(p2.from(frommedCTz,P.of(0,L(c0))),p2,ncs);
     return res; 
     }

@@ -30,14 +30,15 @@ public class Resources {
   private static StringBuffer out=new StringBuffer();//StringBuffer is the synchronized StringBuilder
   public static String out(){return out.toString();}
   public static void out(String s){
+    s+="\n";
     out.append(s);
-    System.out.println(s);
+    System.out.print(s);
     }
   private static StringBuffer tests=new StringBuffer();//StringBuffer is the synchronized StringBuilder
   public static String tests(){return tests.toString();}
   public static void tests(String s){
     tests.append(s);
-    System.out.println(s);
+    System.out.print(s);
     }
   public static <K> K throwE(L42Throwable e){throw e;}
   public static<K> L42Void toVoid(K k){return L42Void.instance;}

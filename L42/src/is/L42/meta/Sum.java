@@ -8,7 +8,7 @@ import is.L42.generated.Core.L;
 
 public class Sum {
   public static L compose(Program p,L l1, L l2){
-  
+    return null;
     }
 }
 

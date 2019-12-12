@@ -358,23 +358,24 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     else{kw("class "+jC+ " implements L42Any");}
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
-    this.fields=new Fields(p);
+    if(this.isCoherent){
+      this.fields=new Fields(p);
+      for(int i:range(fields.xs)){
+        X xi=fields.xs.get(i);
+        P pi=fields.ps.get(i);
+        typeName(pi);
+        kw("£x"+xi.inner());
+        c(";");
+        nl();
+        assert !xi.inner().startsWith(" ");
+        c("public static BiConsumer<Object,Object> FieldAssFor_"
+          +xi+"=(f,o)->{(("+jC+")o).£x"+xi+"=(");
+        typeName(pi);
+        c(")f;};");
+        nl();
+        }
+      }      
     visitMWTs(p.topCore().mwts());
-    for(int i:range(fields.xs)){
-      X xi=fields.xs.get(i);
-      P pi=fields.ps.get(i);
-      typeName(pi);
-      kw("£x"+xi.inner());
-      c(";");
-      nl();
-      assert !xi.inner().startsWith(" ");
-      c("public static BiConsumer<Object,Object> FieldAssFor_"
-        +xi+"=(f,o)->{(("+jC+")o).£x"+xi+"=(");
-      typeName(pi);
-      c(")f;};");
-      nl();
-      }
-      
     c("public static "+jC+" NewFwd(){return new _Fwd();}");
     nl();
     if(interf){c("public static class _Fwd implements "+jC+", L42Fwd{");}
@@ -412,7 +413,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       ch=new Coherence(p,false);
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();return;}
       xs=ch.classMhs.get(0).s().xs();
-      assert p.topCore().isInterface() ||!ch.isCoherent(true)||ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)):xs;
+      assert p.topCore().isInterface() ||ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)):xs;
       ps=L(range(xs),(c,i)->{
         List<P> pis=L(ch.classMhs.stream().map(m->m.pars().get(i).p()).distinct());
         if(pis.size()==1){c.add(pis.get(0));}
@@ -458,6 +459,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     setterBody(mwt.mh()); 
     }
   private void getterBody(MH mh){
+    assert this.fields!=null;
     String m=mh.s().m();
     int i=m.lastIndexOf('#');
     m=m.substring(i+1,m.length()); //works also for -1;
@@ -480,6 +482,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("£xthis.£x"+m+"=£xthat;return L42Void.instance;");
     }
   private void factoryBody(MWT mwt){
+    assert this.fields!=null;
     String kind=p.topCore().info().nativeKind();
     if(!kind.isEmpty()){
       c(NativeDispatch.nativeFactory(this,kind,mwt));
