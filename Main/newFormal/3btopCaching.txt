@@ -2,21 +2,43 @@ File structure
   Folder/This.L42
   Cache.L42Bytes  List<CacheEntry>cache;
 AssumedGlobals
-  ClassLoader{
-    Map<CN->Byte[]>
-    }
-  CurrentCache  List<CacheEntry>cache;
-  Num
-  validCache
+  ClassLoader{ Map<CN->Byte[]>  } currentClassLoader
+  List<CacheEntry>cache;
+  Int num;
+  Boolean validCache;
 
-CacheEntry:
+class CacheEntry{//where FULL.NC can be null for the reuse case?
   FULL.NC->(CTz,p,mbytecode,cbytecode)
+  }
+mbytecode,cbytecode or form Map<CN->Byte[]>
 
 Pseudocode for topNC1// this is implementing topNC in 3top +recursive call
-CTz,p topNC1(p,FULL.NC,num,cacheStillVaid){
-  c=cache.get(num);
+//topReuse is called before the topNCs if p.top have reuseUrl
+CTz,p topReuse(p,has#$){
+  num+=1;
+  if(num<cache.size()){c=cache.get(num);}
+  else{validCache=false;}
   L=null;
-  if(cacheStillVaid && c.key().equals(FULL.NC)){
+  boolean hopeToUseCache=!has#$ || p.NCs!=c.val().p.NCs;
+  if(hopeToUseCache){
+    MyClassLoader.load(c.val().cbytecode);
+    return c.val();
+    }
+  validCache=false;
+  mbytecode=c.val().mbytecode;
+  flushBadCache();
+  cbytecode=loadBytecode(p(This0).NCs);
+  p1=p;
+  AddCache(FULL.NC->(CTz1,p1,mbytecode,cbytecode));
+  return CTz1,p1
+  }
+CTz,p topNC1(p,FULL.NC){
+  num+=1;
+  if(num<cache.size()){c=cache.get(num);}
+  else{validCache=false;}
+  L=null;
+  boolean hopeToUseCache=validCache && c.key().equals(FULL.NC);
+  if(hopeToUseCache){
     if(no#$(FULL.NC)){
       MyClassLoader.load(c.val().cbytecode);
       return c.val();
@@ -27,17 +49,49 @@ CTz,p topNC1(p,FULL.NC,num,cacheStillVaid){
       MyClassLoader.load(c.val().cbytecode);
       return c.val();
       }
-    }
-  cacheStillVaid=false;
+    }//end hope of use cache 'if'
+  validCache=false;
   mbytecode=c.val().mbytecode;
   flushBadCache();
-  update or make new cache using L //care to generate a fresh Main name?
   if(L==null){
     CTz1,core.e=conventional full->half->core
     L,mbytecode=reduce()
+    //if error, save current cache on disk
     }
-  p1,cbytecode=flagtype(p,L)
+  p1,cbytecode=flagtype(p,L);
+  //if error, save current cache on disk
   AddCache(FULL.NC->(CTz1,p1,mbytecode,cbytecode));
   return CTz1,p1
   }
 --------------------------
+a.b={}
+{
+C=Deploy("a.b",{A={}})
+Task2={reuse #$a.b
+ C={ method This1.A foo()  }
+ }
+}
+//...
+{ DoSafe=JustWriteFiles.#$().doIt()
+  More={...}
+  //More={reuse #$bla}
+  //Act=More().#$().doIt()
+}
+
+{C=LON.#$().format()}
+
+
+
+
+{
+
+C={reuse aaa //Foo
+  Unused=SPECIALTOKEN
+  B=Foo().bar()
+  }
+ 
+}
+
+{expanded reuse aaa
+ Unused={}
+  }
