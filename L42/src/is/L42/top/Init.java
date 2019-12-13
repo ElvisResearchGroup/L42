@@ -46,13 +46,14 @@ public class Init {
   public final Top top;
   public final Program p;
   public Init(Full.L l){this(Program.flat(l));}
-  protected Top makeTop(FreshNames f){
-    return new Top(f,0,new Loader());//but can be overridden as a testing handler
+  protected Top makeTop(Program program, FreshNames f){
+    Path path=Paths.get(program.top.pos().fileName());
+    return new Top(f,0,new Loader(),path);//but can be overridden as a testing handler
     }
   public Init(Program program){
     assert program!=null;
     FreshNames f=new FreshNames();
-    top=makeTop(f);
+    top=makeTop(program,f);
     Program res=init(program,f);
     assert res.top.wf();
     p=res;

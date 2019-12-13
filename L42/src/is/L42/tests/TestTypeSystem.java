@@ -772,8 +772,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void pass(String program){
   Resources.clearRes();
   Init init=new Init("{"+program+"}"){
-    protected Top makeTop(FreshNames f){
-      return new Top(f,0,new Loader()){
+    @Override protected Top makeTop(Program program,FreshNames f){
+      return new Top(f,0,new Loader(),null){
         @Override protected Program flagTyped(Program p1) throws EndError{
           return p1;
         }};

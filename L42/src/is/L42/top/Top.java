@@ -1,6 +1,7 @@
 package is.L42.top;
 
 import java.lang.reflect.InvocationTargetException;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -157,10 +158,17 @@ public class Top {
   private final ArrayList<HashSet<List<C>>> alreadyCoherent=new ArrayList<>();
   private int uniqueId=0;
   private final Loader loader;
-  public Top(FreshNames freshNames, int uniqueId, Loader loader) {
-    this.freshNames = freshNames;
-    this.uniqueId = uniqueId;
-    this.loader = loader;
+  private int cacheIndex=-1;
+  private final Path initialPath;
+  private final ArrayList<CacheEntry>cache;
+  private boolean validCache=true;
+  public Top(FreshNames freshNames, int uniqueId, Loader loader,Path initialPath) {
+    this.freshNames=freshNames;
+    this.uniqueId=uniqueId;
+    this.loader=loader;
+    this.initialPath=initialPath;
+    if(initialPath!=null){this.cache=CacheEntry.loadCache(initialPath);}
+    else{this.cache=null;}
   }
   private Program topNC(CTz ctz, Program p, List<NC> ncs)  throws EndError{
     if(ncs.isEmpty()){return p;}
