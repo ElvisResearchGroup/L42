@@ -5,6 +5,7 @@ import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.typeFilter;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -17,6 +18,7 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.P;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
@@ -30,9 +32,13 @@ public class FlagTyped {
     return Stream.concat(Stream.concat(Stream.of(mh.t()),
       mh.pars().stream()),mh.exceptions().stream());    
     }
-  public static Program flagTyped(Loader l,Program p) throws EndError{
+  public static Program flagTyped(Loader l,Program p,HashMap<String,ClassFile> outMapNewBytecode) throws EndError{
     var typable=typable(p);
-    if(typable.isEmpty()){return p;}
+    if(typable.isEmpty()){
+      try {l.loadNow(p,outMapNewBytecode);}
+      catch (CompilationError e) {throw new Error(e);}
+      return p;
+      }
     for(var csi:typable){
       Program pi=p.navigate(P.of(0, csi));
       assert pi.topCore().info().typeDep().stream().allMatch(pj->pi._ofCore(pj)!=null);
@@ -41,7 +47,7 @@ public class FlagTyped {
       ProgramTypeSystem.type(false,pi);
       }
     p=p.update(flagL(typable,p),false);
-    try {l.loadNow(p);}
+    try {l.loadNow(p,outMapNewBytecode);}
     catch (CompilationError e) {throw new Error(e);}
     return p;
     }

@@ -45,8 +45,10 @@ public class Loader {
   private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public Core.L runNow(Program p,C c,Core.E e) throws CompilationError, InvocationTargetException{
-    loadNow(p);
+  public void loadByteCodeFromCache(HashMap<String,ClassFile> bytecode){
+    classLoader.map().putAll(bytecode);
+    }
+  public Core.L runNow(Program p,C c,Core.E e,HashMap<String,ClassFile> outMapNewBytecode) throws CompilationError, InvocationTargetException{
     J j=new J(p,G.empty(),false,libs){
       @Override public boolean precomputeCoherent(){return false;}
       };
@@ -57,9 +59,12 @@ public class Loader {
       "{public static L42Library execute(){return "  
       +j.result()+";}}";
     var files=L(new SourceFile(metaPackage+name+"£E",code));
-    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outMapNewBytecode);
     assert classes==classLoader;
     Resources.setLibsCached(p,c,libs);
+    return runMainName(name);
+    }
+  public Core.L runMainName(String name) throws InvocationTargetException{
     try{
       L42Library res=(L42Library)classLoader.loadClass(metaPackage+name+"£E")
         .getDeclaredMethod("execute")
@@ -70,11 +75,11 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p) throws CompilationError{
+  public void loadNow(Program p,HashMap<String,ClassFile> outMapNewBytecode) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
     loadRec(p,files);
     if(files.isEmpty()){return;}
-    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files);
+    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outMapNewBytecode);
     assert classes==classLoader;    
     }
   void loadRec(Program p,ArrayList<SourceFile>files){

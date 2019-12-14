@@ -2,6 +2,7 @@ package is.L42.tests;
 
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,6 +23,7 @@ import is.L42.generated.Full;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Top;
@@ -199,7 +201,7 @@ public static void loadRunErr(String s,String e){
     catch(CompilationError ce){fail(ce);throw bug();}
     String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
     var p2=Program.parse(code);
-    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
+    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new HashMap<>());}
     catch (InvocationTargetException e1) {
       if(!(e1.getCause() instanceof java.util.concurrent.CancellationException)){fail(e1.getCause());}
 //      assertEquals("loopinglooping",Resources.out());
@@ -221,7 +223,7 @@ public static void loadRun(String s,String e,String output){
     catch(CompilationError ce){fail(ce);throw bug();}
     String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
     var p2=Program.parse(code);
-    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e());}
+    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new HashMap<>());}
     catch (InvocationTargetException e1) {fail(e1.getCause());}
     catch (CompilationError e1) {fail(e1);}
     assertEquals(output,Resources.out());
@@ -256,7 +258,7 @@ public static Program base(String s){
   }
 public static Loader loadBase(Program p,boolean print) throws CompilationError{
   Loader loader=new Loader();
-  try{loader.loadNow(p);}
+  try{loader.loadNow(p,new HashMap<>());}
   catch(CompilationError ce){
     if(print){System.err.println(loader);}
     throw ce;

@@ -21,12 +21,12 @@ import is.L42.generated.Full.L.NC;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 public class CacheEntry implements Serializable{
   public CacheEntry(
-    NC _key,CTz ctz,Program p,HashMap<String,ClassFile> mByteCode,HashMap<String,ClassFile> cByteCode
-    ){this._key=_key;this.ctz=ctz;this.p=p;this.mByteCode=mByteCode;this.cByteCode=cByteCode;}
+    NC _key,CTz ctz,Program p,HashMap<String,ClassFile> _mByteCode,HashMap<String,ClassFile> cByteCode
+    ){this._key=_key;this.ctz=ctz;this.p=p;this._mByteCode=_mByteCode;this.cByteCode=cByteCode;}
   Full.L.NC _key;
   CTz ctz;
   Program p;
-  HashMap<String,ClassFile> mByteCode;
+  HashMap<String,ClassFile> _mByteCode;
   HashMap<String,ClassFile> cByteCode;
   
   @SuppressWarnings("unchecked")

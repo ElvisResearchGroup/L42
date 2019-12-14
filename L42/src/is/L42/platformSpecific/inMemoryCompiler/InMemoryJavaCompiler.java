@@ -203,7 +203,7 @@ public class InMemoryJavaCompiler {
         }
     }
     }
-  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files) throws CompilationError {
+  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, HashMap<String,ClassFile> outMapNewBytecode) throws CompilationError {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     if (compiler == null) throw new Error("Only JDK contains the JavaCompiler, you are running a Java JRE");
     var diagnisticListenerForErrors=new MyDiagnosticListener();
@@ -251,6 +251,7 @@ public class InMemoryJavaCompiler {
           Location location,String className, JavaFileObject.Kind kind, FileObject sibling)throws IOException{
         ClassFile classFile=new ClassFile(className, kind);
         map.put(className, classFile);
+        outMapNewBytecode.put(className, classFile);
         return classFile;
         }
       };

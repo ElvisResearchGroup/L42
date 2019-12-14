@@ -14,30 +14,23 @@ mbytecode,cbytecode or form Map<CN->Byte[]>
 
 Pseudocode for topNC1// this is implementing topNC in 3top +recursive call
 //topReuse is called before the topNCs if p.top have reuseUrl
-CTz,p topReuse(p,has#$){
+void topReuse(p,has#$){
   num+=1;
   if(num<cache.size()){c=cache.get(num);}
   else{validCache=false;}
-  L=null;
   boolean hopeToUseCache=!has#$ || p.NCs!=c.val().p.NCs;
-  if(hopeToUseCache){
-    MyClassLoader.load(c.val().cbytecode);
-    return c.val();
-    }
+  if(hopeToUseCache){MyClassLoader.load(c.val().cbytecode);return;}
   validCache=false;
-  mbytecode=c.val().mbytecode;
   flushBadCache();
   cbytecode=loadBytecode(p(This0).NCs);
-  p1=p;
-  AddCache(FULL.NC->(CTz1,p1,mbytecode,cbytecode));
-  return CTz1,p1
+  AddCache(null->(CTz1,p,null,cbytecode));
   }
 CTz,p topNC1(p,FULL.NC){
   num+=1;
   if(num<cache.size()){c=cache.get(num);}
   else{validCache=false;}
   L=null;
-  boolean hopeToUseCache=validCache && c.key().equals(FULL.NC);
+  boolean hopeToUseCache=validCache && c.p.top.uniqueId==p.top.uniqueId && c.key().equals(FULL.NC);
   if(hopeToUseCache){
     if(no#$(FULL.NC)){
       MyClassLoader.load(c.val().cbytecode);
