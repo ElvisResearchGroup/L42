@@ -33,7 +33,6 @@ import is.L42.typeSystem.Coherence;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.FV;
 import is.L42.visitors.ToSTrait;
-import lombok.NonNull;
 
 public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToSTrait{
   @Override public ToSTrait.ToSState state(){return state;}
@@ -85,7 +84,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   };
   public String typeNameStr(P p){
     if(p.isNCs()){
-      assert this.p().topCore().check();
       try{return typeNameStr(this.p.navigate(p.toNCs()));}
       catch(LL.NotInDom nid){
         throw new AssertionError("Not found "+p.toString());

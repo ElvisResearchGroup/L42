@@ -27,7 +27,6 @@ import is.L42.generated.X;
 import is.L42.visitors.FV;
 import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
-import lombok.NonNull;
 
 public class MdfTypeSystem extends UndefinedCollectorVisitor{
   public MdfTypeSystem(Program p, G g, Set<Mdf> mdfs,  Mdf expected) {
@@ -167,8 +166,8 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     if(allDs.isEmpty()){return g0;}
     var fvs=new ArrayList<X>();
     int split=splitDs(allDs,fvs);
-    var txe=allDs.subList(0, split+1);
-    var restDs=allDs.subList(split+1,allDs.size());
+    var txe=L(allDs.subList(0, split+1).stream());
+    var restDs=L(allDs.subList(split+1,allDs.size()).stream());
     G g1=g0.plusEqFwdOnlyMutOrImm(txe);
     for(var d:txe){
       g=g1;

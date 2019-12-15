@@ -24,6 +24,6 @@ public class Main {
     else if(!Files.exists(path)){path=Paths.get(name+".L42");}
     var code=Parse.fromPath(path);
     Init init=new Init((Full.L)code);
-    init.top.top(new CTz(),init.p);
+    init.top.top(init.p);
     }
 }

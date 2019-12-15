@@ -13,21 +13,28 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import is.L42.common.CTz;
 import is.L42.common.Program;
 import is.L42.generated.Full;
 import is.L42.generated.Full.L.NC;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
+import is.L42.platformSpecific.javaTranslation.L42Library;
 public class CacheEntry implements Serializable{
-  public CacheEntry(
-    NC _key,CTz ctz,Program p,HashMap<String,ClassFile> _mByteCode,HashMap<String,ClassFile> cByteCode
-    ){this._key=_key;this.ctz=ctz;this.p=p;this._mByteCode=_mByteCode;this.cByteCode=cByteCode;}
+  public CacheEntry(NC _key, 
+    CTz frommedCTz,Program p,List<L42Library> _mLibs,List<L42Library> cLibs,
+    HashMap<String,SClassFile> _mByteCode,HashMap<String,SClassFile> cByteCode
+    ){this._key=_key;this.frommedCTz=frommedCTz;this.p=p;this._mLibs=_mLibs;this.cLibs=cLibs;this._mByteCode=_mByteCode;this.cByteCode=cByteCode;}
   Full.L.NC _key;
-  CTz ctz;
+  CTz frommedCTz;
+  //TODO:Can not cache ctz: it is very big AND mutable.
+  //This would make it quadratic
   Program p;
-  HashMap<String,ClassFile> _mByteCode;
-  HashMap<String,ClassFile> cByteCode;
+  HashMap<String,SClassFile> _mByteCode;
+  HashMap<String,SClassFile> cByteCode;
+  List<L42Library> _mLibs;
+  List<L42Library> cLibs;
   
   @SuppressWarnings("unchecked")
   public static ArrayList<CacheEntry> loadCache(Path path){
@@ -38,8 +45,7 @@ public class CacheEntry implements Serializable{
     catch(FileNotFoundException e){return new ArrayList<>();}
     catch(ClassNotFoundException e){throw unreachable();}
     catch(IOException e){
-      e.printStackTrace();
-      throw todo();
+      throw new Error(e);
       }
     }
   public static void saveCache(Path path,ArrayList<CacheEntry> cache){
@@ -47,7 +53,7 @@ public class CacheEntry implements Serializable{
       var file=new FileOutputStream(path.resolve("cache.L42Bytes").toFile()); 
       var out=new ObjectOutputStream(file);
       ){out.writeObject(cache);}
-    catch (FileNotFoundException e) {throw unreachable();}
+    catch (FileNotFoundException e) {throw new Error(e);}
     catch (IOException e) {
       e.printStackTrace();
       throw todo();

@@ -12,20 +12,55 @@ class CacheEntry{//where FULL.NC can be null for the reuse case?
   }
 mbytecode,cbytecode or form Map<CN->Byte[]>
 
+//Around the top level, in a finally:save current cache on disk
+
 Pseudocode for topNC1// this is implementing topNC in 3top +recursive call
-//topReuse is called before the topNCs if p.top have reuseUrl
-void topReuse(p,has#$){
+//topStart is called before the topNCs
+CacheEntry topStart(p,has#$){
   num+=1;
   if(num<cache.size()){c=cache.get(num);}
   else{validCache=false;}
   boolean hopeToUseCache=!has#$ || p.NCs!=c.val().p.NCs;
-  if(hopeToUseCache){MyClassLoader.load(c.val().cbytecode);return;}
-  validCache=false;
-  flushBadCache();
+  if(hopeToUseCache){return oldCache(c);}
   cbytecode=loadBytecode(p(This0).NCs);
-  AddCache(null->(CTz1,p,null,cbytecode));
+  return newCache(null->(CTz1,p,null,cbytecode));
   }
-CTz,p topNC1(p,FULL.NC){
+CacheEntry newCache(c){flushBadCache();validCache=false;AddCache(c);return c;}
+CacheEntry oldCache(c){MyClassLoader.load(c.val().cbytecode);return c;}
+CacheEntry topNC1(p,FULL.NC){
+  steps=number of nested classes+Full.L in NC.e
+  c=null;
+  if validCache && there is no #$, at any dept, both in selectors and reuse url{
+    if(num+steps<cache.size()){
+      c=cache.get(num+steps);
+      if(c.key()==NC){//all good! skip steps
+        forall c' in cache(num..num+steps){oldCache(c');}
+        num+=steps+1
+        return c;//since c contains p,CTz and frommedCTz
+        }
+      }
+    }
+  CTz0=cache.get(num)
+  CTz1,e=using CTz0 full->half->core normally
+  //This will trigger all the top for all the FULL.L in FULL.NC.e and sync the cache.
+  if(!validCache || num+steps>=cache.size()){
+    L,mbytecode=reduce(e)
+    p1,cbytecode=flagtype(p,L);
+    num+=steps+1;
+    return newCache(FULL.NC->(CTz1,p1,mbytecode,cbytecode));
+    }
+  num+=steps+1;
+  c=cache.get(num);
+  if(no#$(FULL.NC)){return oldCache(c);}
+  MyClassLoader.load(c.val().mbytecode)
+  L=c.val().mbytecode.execute()
+  if L==c.val().p(nc.C).L {return oldCache(c);}
+  p1,cbytecode=flagtype(p,L);
+  return newCache(FULL.NC->(CTz1,p1,c.val().mbytecode,cbytecode));
+  }
+//-------------------------
+  Load best CTz/frommedCTz from cache.
+  _,core.e=full->half->core //there should be no new CTz discovered.
   num+=1;
   if(num<cache.size()){c=cache.get(num);}
   else{validCache=false;}

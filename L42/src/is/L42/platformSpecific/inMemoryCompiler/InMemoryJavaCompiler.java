@@ -11,6 +11,7 @@ import java.nio.file.Path;
 import java.util.*;
 import java.util.Map.Entry;
 import java.util.stream.Collectors;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 
 import javax.tools.*;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -119,6 +120,7 @@ public class InMemoryJavaCompiler {
       public static SClassFile fromCF(ClassFile from){
         SClassFile res=new SClassFile();
         res.name=from.name;
+        assert from.bytes!=null;
         res.bytes=from.bytes;
         res.kind=from.getKind();
         return res;
@@ -203,7 +205,17 @@ public class InMemoryJavaCompiler {
         }
     }
     }
-  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, HashMap<String,ClassFile> outMapNewBytecode) throws CompilationError {
+  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, HashMap<String,SClassFile> outMapNewBytecode) throws CompilationError {
+    var out=new ArrayList<ClassFile>();
+    try{return compile(env,files,out);}
+    finally{
+      for(var o:out){
+        o.cacheBytes();
+        outMapNewBytecode.put(o.name,SClassFile.fromCF(o));
+        }
+      }
+    }
+  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, List<ClassFile> outNewBytecode) throws CompilationError {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     if (compiler == null) throw new Error("Only JDK contains the JavaCompiler, you are running a Java JRE");
     var diagnisticListenerForErrors=new MyDiagnosticListener();
@@ -251,7 +263,7 @@ public class InMemoryJavaCompiler {
           Location location,String className, JavaFileObject.Kind kind, FileObject sibling)throws IOException{
         ClassFile classFile=new ClassFile(className, kind);
         map.put(className, classFile);
-        outMapNewBytecode.put(className, classFile);
+        outNewBytecode.add(classFile);
         return classFile;
         }
       };

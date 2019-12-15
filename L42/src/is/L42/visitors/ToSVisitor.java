@@ -370,9 +370,11 @@ public class ToSVisitor implements ToSTrait{
     }
     
   public void visitL(Full.L l){
-      boolean inline=HasMultilinePart.inline(l);
+    boolean inline=HasMultilinePart.inline(l);
     c("{");
     if(!inline){indent();}
+    if(l.isDots()){c("...");}
+    if(!l.reuseUrl().isEmpty()){c("reuse["+l.reuseUrl()+"]");}
     if(l.isInterface()){c("interface");}
     var ts0=l.ts();
     var ms0=l.ms();

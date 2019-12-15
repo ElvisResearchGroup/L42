@@ -2,6 +2,10 @@ package is.L42.common;
 
 import static is.L42.tools.General.bug;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.LL;
@@ -15,7 +19,8 @@ public abstract class PTails implements Visitable<PTails>{
   @Override public boolean wf() {return Constants.wf.test(this);}
   @Override public String toString() {return Constants.toS.apply(this);}
   private PTails(){}
-  public boolean isEmpty(){return this==empty;}
+  //public boolean isEmpty(){return this==empty;}//sadly, serialization/deserialzation breaks this
+  public boolean isEmpty(){return true;}
   public boolean hasC(){throw bug();}
   public C c(){throw bug();}
   public Core.L coreL(){throw bug();}
@@ -26,10 +31,12 @@ public abstract class PTails implements Visitable<PTails>{
     public Core.L coreL(){return (Core.L)l;}
     public LL ll(){return l;}
     public boolean hasC(){return false;}
+    public boolean isEmpty(){return false;}
     public PTails tail(){return PTails.this;}
     };}
   public PTails pTailC(C c, LL ll){return new PTails(){
     public boolean hasC(){return true;}
+    public boolean isEmpty(){return false;}
     public C c(){return c;}
     public LL ll(){return ll;}
     public Core.L coreL(){

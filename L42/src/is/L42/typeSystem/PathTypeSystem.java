@@ -22,7 +22,6 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;
 import is.L42.visitors.UndefinedCollectorVisitor;
-import lombok.NonNull;
 
 public class PathTypeSystem extends UndefinedCollectorVisitor{
   public PathTypeSystem(boolean isDeep, Program p, G g, List<T> ts, List<P> ps, P expected) {

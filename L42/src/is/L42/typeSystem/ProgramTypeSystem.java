@@ -24,7 +24,6 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
 import is.L42.generated.Core.L.NC;
 import is.L42.visitors.UndefinedCollectorVisitor;
-import lombok.NonNull;
 
 public class ProgramTypeSystem {
   Program p;

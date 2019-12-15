@@ -17,6 +17,9 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.typeFilter;
 
+import java.io.IOException;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -44,7 +47,7 @@ import is.L42.tools.InductiveSet;
 from CTz? assert if you can not solve before from, you can not solve after  
 
   */
-public class CTz {
+public class CTz implements Serializable{
   private final Map<ST,List<ST>> inner=new HashMap<>();
   public Set<Map.Entry<ST,List<ST>>> entries(){return inner.entrySet();}
   @Override public String toString(){

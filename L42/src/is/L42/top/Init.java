@@ -47,7 +47,7 @@ public class Init {
   public final Program p;
   public Init(Full.L l){this(Program.flat(l));}
   protected Top makeTop(Program program, FreshNames f){
-    Path path=Paths.get(program.top.pos().fileName());
+    Path path=Paths.get(program.top.pos().fileName()).getParent();
     return new Top(f,0,new Loader(),path);//but can be overridden as a testing handler
     }
   public Init(Program program){

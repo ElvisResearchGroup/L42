@@ -19,7 +19,6 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.X;
 import is.L42.typeSystem.TypeManipulation;
-import lombok.NonNull;
 
 public class G {
   final private Map<X,T> xInT;

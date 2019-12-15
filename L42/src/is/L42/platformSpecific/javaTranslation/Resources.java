@@ -50,7 +50,7 @@ public class Resources {
     libsCached=libs;
     }
   public static L42Library ofLib(int id){
-    assert libsCached.size()>id;
+    assert libsCached.size()>id: id+" "+libsCached.size();
     L42Library l=libsCached.get(id);
     l.currentProgram(currentP);
     return l;
@@ -60,7 +60,7 @@ public class Resources {
     assert id>=0;
     L42Library l=libsCached.get(id);
     l.currentProgram(currentP);
-    return new L42ClassAny(l.localPath);
+    return new L42ClassAny(l.localPath());
     }
   private static ArrayList<L42Library>libsCached;
   public static final HashMap<String,Slave>slaves=new HashMap<>();

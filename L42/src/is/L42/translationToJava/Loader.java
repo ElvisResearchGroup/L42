@@ -18,6 +18,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.platformSpecific.javaTranslation.L42Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -45,14 +46,19 @@ public class Loader {
   private final ArrayList<L42Library> libs=new ArrayList<>();
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public void loadByteCodeFromCache(HashMap<String,ClassFile> bytecode){
-    classLoader.map().putAll(bytecode);
+  public void loadByteCodeFromCache(HashMap<String,SClassFile> bytecode,List<L42Library>newLibs){
+    libs.addAll(newLibs);
+    for(var e:bytecode.entrySet()){
+      classLoader.map().put(e.getKey(),e.getValue().toCF());
+      }
     }
-  public Core.L runNow(Program p,C c,Core.E e,HashMap<String,ClassFile> outMapNewBytecode) throws CompilationError, InvocationTargetException{
+  public Core.L runNow(Program p,C c,Core.E e,HashMap<String,SClassFile> outMapNewBytecode,ArrayList<L42Library> newLibs) throws CompilationError, InvocationTargetException{
+    int oldLibNum=libs.size();
     J j=new J(p,G.empty(),false,libs){
       @Override public boolean precomputeCoherent(){return false;}
       };
     j.visitE(e);//the goal here is not to generate the p.top class
+    newLibs.addAll(libs.subList(oldLibNum,libs.size()));
     String name="£c"+c;
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
     String code=header+"\npublic class "+name+"£E"+
@@ -61,10 +67,10 @@ public class Loader {
     var files=L(new SourceFile(metaPackage+name+"£E",code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outMapNewBytecode);
     assert classes==classLoader;
-    Resources.setLibsCached(p,c,libs);
-    return runMainName(name);
+    return runMainName(p,c,name);
     }
-  public Core.L runMainName(String name) throws InvocationTargetException{
+  public Core.L runMainName(Program p, C c,String name) throws InvocationTargetException{
+    Resources.setLibsCached(p,c,libs);
     try{
       L42Library res=(L42Library)classLoader.loadClass(metaPackage+name+"£E")
         .getDeclaredMethod("execute")
@@ -75,11 +81,13 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p,HashMap<String,ClassFile> outMapNewBytecode) throws CompilationError{
+  public void loadNow(Program p,HashMap<String,SClassFile> outMapNewBytecode,List<L42Library> newLibs) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
+    int oldLibNum=libs.size();
     loadRec(p,files);
     if(files.isEmpty()){return;}
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outMapNewBytecode);
+    newLibs.addAll(libs.subList(oldLibNum,libs.size()));
     assert classes==classLoader;    
     }
   void loadRec(Program p,ArrayList<SourceFile>files){

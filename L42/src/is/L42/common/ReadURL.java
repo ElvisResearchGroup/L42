@@ -22,7 +22,7 @@ public class ReadURL {
       ){res=(Core.L)in.readObject();}
     catch (FileNotFoundException e) {throw todo();}
     catch (IOException e) {
-      throw todo();
+      throw new Error(e);
       }
     catch (ClassNotFoundException e) {throw bug();}
     //TODO: check it is really well typed?

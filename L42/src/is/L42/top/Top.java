@@ -39,6 +39,8 @@ import is.L42.generated.X;
 import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
+import is.L42.platformSpecific.javaTranslation.L42Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.Loader;
@@ -48,13 +50,23 @@ import is.L42.typeSystem.MdfTypeSystem;
 import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
+import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.WellFormedness;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.*;
 
 public class Top {
+  public Program top(Program p)throws EndError {
+    try{return top(new CTz(),p);}
+    finally{
+      CacheEntry.saveCache(initialPath, cache);
+      }
+    }
   public Program top(CTz ctz, final Program p)throws EndError {
+    String reuse=((Full.L)p.top).reuseUrl();
+    boolean isReuse=!reuse.isEmpty();
+    //TODO: should we cache alreadyCoherent??
     alreadyCoherent.add(new HashSet<>());
     assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
     Core.L coreL=SortHeader.coreTop(p, uniqueId++);//propagates the right header errors
@@ -68,9 +80,7 @@ public class Top {
       ctzAdd(ctz,p0,mwti.mh(),_ei,c);
       });
     assert p.top.isFullL();
-    String reuse=((Full.L)p.top).reuseUrl();
-    boolean isReuse=!reuse.isEmpty();
-    if(isReuse){topReuse(ctz,p0,reuse.contains("#$"));}
+    topStart(ctz,p0,reuse.contains("#$"));
     Program p1=topNC(ctz,p0,ncs);//propagate exceptions
     assert p1.top instanceof Core.L;
     WellFormedness.of(p1.topCore());//Check the new core top is well formed
@@ -165,7 +175,7 @@ public class Top {
   private final ArrayList<HashSet<List<C>>> alreadyCoherent=new ArrayList<>();
   private int uniqueId=0;
   private final Loader loader;
-  private int cacheIndex=-1;
+  private int cacheIndex=0;
   private final Path initialPath;
   private final ArrayList<CacheEntry>cache;
   private boolean validCache=true;
@@ -178,101 +188,124 @@ public class Top {
     else{this.cache=new ArrayList<>();}
   }
   private void flushBadCache(){
-    assert !validCache;
+    if(!validCache){return;}
+    assert cache.size()>=cacheIndex: cache.size()+" "+cacheIndex; 
     for(int i=cache.size()-1;i>=cacheIndex;i-=1){cache.remove(i);}
     }
-  private HashMap<String,ClassFile> loadByteCode(Program p){
-    var res=new HashMap<String,ClassFile>();
-    try{this.loader.loadNow(p,res);}
-    catch(CompilationError e){throw new Error(e);}
-    return res;
+  CacheEntry newCache(CacheEntry c){
+    System.out.println("New cache for "+c._key);
+    flushBadCache();
+    validCache=false;
+    cache.add(c);
+    return c;
     }
-  private void topReuse(CTz ctz,Program p,boolean hasHashDollar){
-    cacheIndex+=1;
+  CacheEntry oldCache(CacheEntry c){
+    System.out.println("Old cache for "+c._key);
+    if(c._mByteCode!=null){
+      loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
+      }
+    loader.loadByteCodeFromCache(c.cByteCode,c.cLibs);
+    return c;
+    }
+  private CacheEntry topStart(CTz ctz,Program p,boolean hasHashDollar){
     CacheEntry c=null;
     if(cacheIndex<cache.size()){c=cache.get(cacheIndex);}
     else{validCache=false;}
+    cacheIndex+=1;
     boolean hopeToUseCache=validCache && (!hasHashDollar || !p.topCore().ncs().equals(c.p.topCore().ncs()));
-    if(hopeToUseCache){
-      loader.loadByteCodeFromCache(c.cByteCode);
-      return;
-      }
-    validCache=false;
-    flushBadCache();
-    var cByteCode=loadByteCode(p);
-    cache.add(new CacheEntry(null,ctz,p,null,cByteCode));
+    if(hopeToUseCache){return oldCache(c);}
+    var cByteCode=new HashMap<String,SClassFile>();
+    var newCLibs=new ArrayList<L42Library>();
+    try{this.loader.loadNow(p,cByteCode,newCLibs);}
+    catch(CompilationError e){throw new Error(e);}
+    return newCache(new CacheEntry(null,null,p,null,newCLibs,null,cByteCode));
     }
   private Program topNC(CTz ctz, Program p, List<NC> ncs)throws EndError{
     if(ncs.isEmpty()){return p;}
     NC current=ncs.get(0);
     CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
-    Program p2=topNC1(ctz,p,frommedCTz,current,ncs);
+    CacheEntry c=topNC1(ctz,p,frommedCTz,current,ncs);
     ncs=popL(ncs);
-    Program res=topNC(p2.from(frommedCTz,P.of(0,L(current.key()))),p2,ncs);
+    CTz newCTz=c.p.from(c.frommedCTz,P.of(0,L(current.key())));
+    Program res=topNC(newCTz,c.p,ncs);
     return res; 
     }
-  private boolean noHashDollar(NC nc){
-    boolean[]res={false};
-    return !new Accumulate.SkipL<boolean[]>(){
-        @Override public boolean[] empty() {return res;}
-        @Override public void visitS(S s){
-          if(s.m().startsWith("#$")){acc()[0]=true;}
+    private static class HashDollarInfo extends PropagatorCollectorVisitor{
+      HashDollarInfo(NC nc){this.visitE(nc.e());}
+      int steps=0;
+      int nestedLev=0;
+      boolean hashDollar=false;
+      boolean hashDollarTop=false;
+      @Override public void visitL(Core.L l){}
+      @Override public void visitL(Full.L l){
+        steps+=1;
+        nestedLev+=1;
+        if(l.reuseUrl().contains("#$")){hashDollar=true;}
+        for(var m:l.ms()){
+          if(!(m instanceof Full.L.NC)){continue;}
+          steps+=1;
+          visitNC((Full.L.NC)m);
           }
-      }.of(nc.e().visitable())[0];
-    }
-  private Program topNC1(CTz ctz, Program p,CTz frommedCTz,NC current,List<NC>allNCs){
+        nestedLev-=1;
+        }
+      @Override public void visitS(S s){
+        if(!s.m().startsWith("#$")){return;}
+        hashDollar=true;
+        if(nestedLev==0){hashDollarTop=true;}
+        }
+      } 
+  private CacheEntry topNC1(CTz ctz, Program p,CTz frommedCTz,NC current,List<NC>allNCs){
+    //assert !validCache || ( ctz==null && frommedCTz==null);
+    //assert  validCache || ( ctz!=null && frommedCTz!=null); 
     C c0=current.key();
     System.out.println("Now considering main "+c0);
     Full.E fe=current.e();
     List<Full.Doc> docs=current.docs();
     List<Pos> poss=current.poss();
     //caching part
-    cacheIndex+=1;
+    var info=new HashDollarInfo(current);
     CacheEntry c=null;
-    if(cacheIndex<cache.size()){c=cache.get(cacheIndex);}
-    else{validCache=false;}
-    Core.L l=null;
-    assert c==null || c._key!=null;
-    boolean hopeToUseCache=validCache
-      && c.p.topCore().info()._uniqueId()==p.topCore().info()._uniqueId()
-      && c._key.equals(current);
-    if(hopeToUseCache){
-      if(noHashDollar(current)){
-        loader.loadByteCodeFromCache(c.cByteCode);
-        return c.p;//TODO:CTZ/frommedCTZ are pointless until cache runs
-        }
-      assert c._mByteCode!=null;
-      loader.loadByteCodeFromCache(c._mByteCode);
-      l=this.reduceByName(p,c0);
-      Core.L cachedL=_elem(c.p.topCore().ncs(),c0).l();
-      if(l.equals(cachedL)){
-        loader.loadByteCodeFromCache(c.cByteCode);
-        return c.p;//TODO:CTZ/frommedCTZ are pointless until cache runs
+    if(validCache && !info.hashDollar && cacheIndex+info.steps<cache.size()){
+      c=cache.get(cacheIndex+info.steps);
+      assert c._key!=null: "";
+      if(c._key.equals(current)){//all good! skip steps
+        var cachesToLoad=cache.subList(cacheIndex,cacheIndex+info.steps+1);
+        for(var ci:cachesToLoad){oldCache(ci);}
+        cacheIndex+=info.steps+1;
+        return c;//since c contains p,CTz and frommedCTz
         }
       }
-    validCache=false;
-    HashMap<String,ClassFile> mByteCode=null;
-    if(c!=null){mByteCode=c._mByteCode;}
-    assert c==null || mByteCode!=null;
-    //recover CTz??
-    flushBadCache();
-    if(l==null){
-      Core.E ce0=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,allNCs);
-      System.out.println("Now reducing main "+c0);
-      mByteCode=new HashMap<>();
-      l=reduce(p,c0,ce0,mByteCode);//propagate errors
+    Core.E e=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,allNCs);
+    if(!validCache || cacheIndex+info.steps>=cache.size()){
+      var mByteCode=new HashMap<String,SClassFile>();
+      var newMLibs=new ArrayList<L42Library>();
+      Core.L l=reduce(p,c0,e,mByteCode,newMLibs);//propagate errors
       System.out.println(c0+ " reduced");
-      assert l!=null:c0+" "+ce0;
+      assert l!=null:c0+" "+e;
+      Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
+      Program p1=p.update(updateInfo(p,nc),false);
+      //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)
+      //that is, the last nested class would not generate usable bytecode
+      var cByteCode=new HashMap<String,SClassFile>();
+      var newCLibs=new ArrayList<L42Library>();
+      p1=flagTyped(p1,cByteCode,newCLibs);//propagate errors
+      return newCache(new CacheEntry(current,frommedCTz,p1,newMLibs,newCLibs,mByteCode,cByteCode));
       }
+    c=cache.get(cacheIndex);//that is, the 'current' cache, not the next one
+    cacheIndex+=info.steps+1;
+    if(!info.hashDollarTop){return oldCache(c);}
+    assert c._mByteCode!=null;
+    loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
+    Core.L l=this.reduceByName(p,c0);
+    var cByteCode=new HashMap<String,SClassFile>();
+    var newLibs=new ArrayList<L42Library>();    
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1=p.update(updateInfo(p,nc),false);
-    //TODO: try to understand if we can avoid any bytecode generation here (is this bytecode ever usable?)
-    //that is, the last nested class would not generate usable bytecode
-    var cByteCode=new HashMap<String,ClassFile>();
-    p1=flagTyped(p1,cByteCode);//propagate errors
-    //TODO: if error, save current cache on disk
-    cache.add(new CacheEntry(current,ctz,p1,mByteCode,cByteCode));
-    return p1;  
+    p1=flagTyped(p1,cByteCode,newLibs);//propagate errors
+    Core.L newL=_elem(p1.topCore().ncs(),c0).l();//This may be typed, while l may not
+    Core.L cachedL=_elem(c.p.topCore().ncs(),c0).l();
+    if(newL.equals(cachedL)){return oldCache(c);}
+    return newCache(new CacheEntry(current,frommedCTz,p1,c._mLibs,newLibs,c._mByteCode,cByteCode));    
     }
   private Core.E toCoreTypeCohereht(CTz ctz,CTz frommedCTz,List<Pos>poss,Program p,C c0,Full.E fe,List<NC> allNCs){
       Y y=new Y(p,GX.empty(),L(),null,L());
@@ -288,11 +321,14 @@ public class Top {
       coherentAllPs(p,cohePs); //propagate errors
       return ce0;    
     }
-  protected Program flagTyped(Program p1,HashMap<String,ClassFile> cBytecode) throws EndError{
-    return FlagTyped.flagTyped(this.loader,p1,cBytecode);//but can be overridden as a testing handler
+  protected Program flagTyped(Program p1,HashMap<String,SClassFile> cBytecode,ArrayList<L42Library> newLibs) throws EndError{
+    Program p=FlagTyped.flagTyped(this.loader,p1);//but can be overridden as a testing handler
+    try {this.loader.loadNow(p,cBytecode,newLibs);}
+    catch (CompilationError e) {throw new Error(e);}
+    return p;
     }
-  protected Core.L reduce(Program p,C c,Core.E e,HashMap<String,ClassFile> outMapNewBytecode)throws EndError {
-    try{return loader.runNow(p, c, e,outMapNewBytecode);}
+  protected Core.L reduce(Program p,C c,Core.E e,HashMap<String,SClassFile> outMapNewBytecode,ArrayList<L42Library> newLibs)throws EndError {
+    try{return loader.runNow(p, c, e,outMapNewBytecode,newLibs);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}
             if(e1.getCause()instanceof Error){throw (Error) e1.getCause();} 
@@ -303,7 +339,7 @@ public class Top {
   protected Core.L reduceByName(Program p, C c)throws EndError {
     String name="£c"+c;
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
-    try{return loader.runMainName(name);}
+    try{return loader.runMainName(p,c,name);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}
             if(e1.getCause()instanceof Error){throw (Error) e1.getCause();} 

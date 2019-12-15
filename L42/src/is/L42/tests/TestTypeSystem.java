@@ -2,6 +2,7 @@ package is.L42.tests;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -28,7 +29,9 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.platformSpecific.javaTranslation.L42Library;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Init;
 import is.L42.top.Top;
@@ -776,7 +779,7 @@ public static void pass(String program){
   Init init=new Init("{"+program+"}"){
     @Override protected Top makeTop(Program program,FreshNames f){
       return new Top(f,0,new Loader(),null){
-        @Override protected Program flagTyped(Program p1,HashMap<String,ClassFile> cBytecode) throws EndError{
+        @Override protected Program flagTyped(Program p1,HashMap<String,SClassFile> cBytecode,ArrayList<L42Library>newLibs) throws EndError{
           return p1;
         }};
     }};

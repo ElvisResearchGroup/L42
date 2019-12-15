@@ -30,8 +30,6 @@ import is.L42.tools.InductiveSet;
 import is.L42.top.Top;
 import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
-import lombok.NonNull;
-import lombok.var;
 
 public class InferToCore extends UndefinedCollectorVisitor{
   I i;
@@ -82,9 +80,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){
     Program p=i.p().push(i._c(),l);
-    //CTz ctzFrom=ctz;//TODO: from!!!
     Program pr=top.top(ctzFrom,p);//propagate errors
-    //ctz=ctzFrom;//TODO: from!!
     commit(pr.topCore());
     }
   @Override public void visitL(Core.L l){commit(l);}

@@ -20,6 +20,7 @@ import is.L42.generated.Core.L;
 import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
 import is.L42.top.Top;
@@ -32,13 +33,9 @@ public class FlagTyped {
     return Stream.concat(Stream.concat(Stream.of(mh.t()),
       mh.pars().stream()),mh.exceptions().stream());    
     }
-  public static Program flagTyped(Loader l,Program p,HashMap<String,ClassFile> outMapNewBytecode) throws EndError{
+  public static Program flagTyped(Loader l,Program p) throws EndError{
     var typable=typable(p);
-    if(typable.isEmpty()){
-      try {l.loadNow(p,outMapNewBytecode);}
-      catch (CompilationError e) {throw new Error(e);}
-      return p;
-      }
+    if(typable.isEmpty()){return p;}
     for(var csi:typable){
       Program pi=p.navigate(P.of(0, csi));
       assert pi.topCore().info().typeDep().stream().allMatch(pj->pi._ofCore(pj)!=null);
@@ -47,8 +44,6 @@ public class FlagTyped {
       ProgramTypeSystem.type(false,pi);
       }
     p=p.update(flagL(typable,p),false);
-    try {l.loadNow(p,outMapNewBytecode);}
-    catch (CompilationError e) {throw new Error(e);}
     return p;
     }
   private static Core.L.MWT flagMWT(Core.L.MWT mwt){
