@@ -323,8 +323,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
     }
     
   private Full.Block splitBlock(Full.Block b){
-    List<Full.D> ds0=L(b.ds().subList(0,b.dsAfter()).stream());
-    List<Full.D> ds1=L(b.ds().subList(b.dsAfter(),b.ds().size()).stream());
+    List<Full.D> ds0=b.ds().subList(0,b.dsAfter());
+    List<Full.D> ds1=b.ds().subList(b.dsAfter(),b.ds().size());
     assert !b.isCurly();
     assert !ds0.isEmpty();
     assert !ds1.isEmpty();
@@ -359,7 +359,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     if(pars.size()>=2){
       var last=pars.get(pars.size()-1);
       if(last._that()==null && last.es().isEmpty()){
-        pars=L(pars.subList(0, pars.size()-1).stream());
+        pars=pars.subList(0, pars.size()-1);
         }
       }
     List<Full.D> e1n=L(pars,(c,pi)->{
@@ -445,10 +445,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert s>2:s;
     if(b.op().kind==OpKind.RelationalOp){return b;}
     if(b.op().kind==OpKind.DataLeftOp){
-      var left=new Full.BinOp(b.pos(),b.op(),L(b.es().subList(0, 2).stream()));
-      return b.withEs(pushL(left,L(b.es().subList(2,s).stream())));
+      var left=new Full.BinOp(b.pos(),b.op(),b.es().subList(0, 2));
+      return b.withEs(pushL(left,b.es().subList(2,s)));
       }
-    var right=new Full.BinOp(b.pos(),b.op(),L(b.es().subList(s-2, s).stream()));
+    var right=new Full.BinOp(b.pos(),b.op(),b.es().subList(s-2, s));
     return b.withEs(pushL(b.es().subList(0,s-2),right)); 
     }
   private void visitBinOp3(Full.BinOp b){

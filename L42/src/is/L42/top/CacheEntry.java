@@ -23,9 +23,14 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoa
 import is.L42.platformSpecific.javaTranslation.L42Library;
 public class CacheEntry implements Serializable{
   public CacheEntry(NC _key, 
-    CTz frommedCTz,Program p,List<L42Library> _mLibs,List<L42Library> cLibs,
+    CTz frommedCTz,Program p,
+    List<L42Library> _mLibs,List<L42Library> cLibs,int sizeWithMLibs,int sizeWithCLibs,
     HashMap<String,SClassFile> _mByteCode,HashMap<String,SClassFile> cByteCode
-    ){this._key=_key;this.frommedCTz=frommedCTz;this.p=p;this._mLibs=_mLibs;this.cLibs=cLibs;this._mByteCode=_mByteCode;this.cByteCode=cByteCode;}
+    ){
+    this._key=_key;
+    this.frommedCTz=frommedCTz;this.p=p;
+    this._mLibs=_mLibs;this.cLibs=cLibs;this.sizeWithMLibs=sizeWithMLibs;this.sizeWithCLibs=sizeWithCLibs;
+    this._mByteCode=_mByteCode;this.cByteCode=cByteCode;}
   Full.L.NC _key;
   CTz frommedCTz;
   //TODO:Can not cache ctz: it is very big AND mutable.
@@ -35,7 +40,8 @@ public class CacheEntry implements Serializable{
   HashMap<String,SClassFile> cByteCode;
   List<L42Library> _mLibs;
   List<L42Library> cLibs;
-  
+  int sizeWithMLibs;
+  int sizeWithCLibs;  
   @SuppressWarnings("unchecked")
   public static ArrayList<CacheEntry> loadCache(Path path){
     try(

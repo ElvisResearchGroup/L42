@@ -20,9 +20,9 @@ _______
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; Y.CTz //onSlash!=expectedT, consider foo.bar(\.x())
 * Y!\x = Y!((Y.onSlashX).x())
 * Y!CsP = Y!(CsP <:class CsP)// assert CsP of form P
-    class Any in Y.p.solve(Y.expectedT)
-* Y!CsP = Y!(CsP <:class Any)
     class Any not in Y.p.solve(Y.expectedT)
+* Y!CsP = Y!(CsP <:class Any)
+    class Any in Y.p.solve(Y.expectedT)
 * Y!P<:T = P<:♥T; ♥T; empty; Y.CTz  //undefined for CsP<:T if CsP not of form P
 * Y!\<:T = %Y.onSlash%<:♥T; ♥T; empty; Y.CTz
 * Y!e<:T = Y!(T x=e x)
@@ -41,7 +41,7 @@ _______
 * Y! (x := e) = (x := e'); imm Void; STz'; CTz <+Y.p (STz <= Y.GX(x))
     Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
 * Y!e(par) = Y!e.#apply(par)
-* Y!e.m(x,xes) = Y!e.m(that=x, xes)
+* Y!e.m(e,xes) = Y!e.m(that=e, xes)
 * Y!e.m(xes) = Y!(x=e x.m(xes))
     e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
     x fresh
@@ -53,10 +53,9 @@ _______
     Y[onSlash=STz'i;onSlashX=xP';expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
     CTz'i = CTzi <+Y.p (STzi <= STz'i)
     STz" = STz"0 U..U STz"n
-* Y!e1 OP..OP en OP e0 OP e = e1 OP..OP en OP (e0 OP e) 
+* Y!en OP..OP e1 OP e0 OP e = Y! en OP..OP e1 OP (e0 OP e) 
     OP of form OP0 or OP3 //right associative
-* Y!e0 OP1 e OP1 e1..OP1 en = (e0 OP1 e) OP1 e1..OP1 en //left associative 
-  
+* Y!e0 OP1 e OP1 e1..OP1 en = Y! (e0 OP1 e) OP1 e1..OP1 en //left associative 
 * Y!e1 OP3 e2 = Y!(x=e1 x OP3 e2)
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
@@ -71,7 +70,7 @@ _______
 //    Opt||Val=if Opt.present() Opt.get() else Val
 //Path=>classAny = if false err else X//shortResult=> is error, shortCircut=> false
 * Y!CsP OP e = CsP.ClassOperators() OP e
-* Y!(e0 OP..OP en) = Y!(Ds e0' OP..OP en')
+* Y! e0 OP..OP en = Y!(Ds e0' OP..OP en')
     Ds = [xi=ei | ei not of form xP]
     Ds != empty // or else the next case will apply
     ei' = ei if ei of form xP
@@ -120,11 +119,13 @@ _______
     ei = x.#yield(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
     ei = x.#squareAdd(pari) otherwise
 
-* Y!e "stringElement" = Y!(e.#from(stringLiteral=strLitPar(stringElement)))
-* Y!e "stringElement1 e1..stringElementn en stringElement(n+1)" = Y!(e.#from(stringLiteral=(
+* Y!e "stringElement" = 
+    Y!e.#from(stringLiteral=strLitPar(stringElement))
+* Y!e "stringElement1 e1..stringElementn en stringElement(n+1)" = 
+    Y!e.#from(stringLiteral=(
       x=\.#stringLiteralBuilder()
-      e'1 e"1.. e'n e"n e(n+1)
-      x)))
+      e'1 e"1.. e'n e"n e'(n+1)
+      x))
     e'i = x.#stringAddAll(strLitPar(stringElementi)),
     e"i = x.#stringAddExpr(ei)
     x fresh
@@ -142,7 +143,7 @@ _______
 * Y!(if T x=e e') = Y!(x'=e, if T x=x' e')
     e not of form xP
 * Y!(if T x=xP e) = Y!(
-      T x=(return xP catch return T x' x' error void)
+      T x=(return xP catch return T x' x')
       catch return T.mdf Any x' void
       e)
     x' is fresh

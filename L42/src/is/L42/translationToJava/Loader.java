@@ -44,6 +44,7 @@ public class Loader {
     return res;
     }
   private final ArrayList<L42Library> libs=new ArrayList<>();
+    public int libsCachedSize(){return libs.size();}//needed for double checking on caching
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
   public void loadByteCodeFromCache(HashMap<String,SClassFile> bytecode,List<L42Library>newLibs){

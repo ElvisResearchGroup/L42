@@ -166,8 +166,8 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     if(allDs.isEmpty()){return g0;}
     var fvs=new ArrayList<X>();
     int split=splitDs(allDs,fvs);
-    var txe=L(allDs.subList(0, split+1).stream());
-    var restDs=L(allDs.subList(split+1,allDs.size()).stream());
+    var txe=allDs.subList(0, split+1);
+    var restDs=allDs.subList(split+1,allDs.size());
     G g1=g0.plusEqFwdOnlyMutOrImm(txe);
     for(var d:txe){
       g=g1;

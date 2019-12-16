@@ -65,10 +65,9 @@ public class Top {
     }
   public Program top(CTz ctz, final Program p)throws EndError {
     String reuse=((Full.L)p.top).reuseUrl();
-    boolean isReuse=!reuse.isEmpty();
-    //TODO: should we cache alreadyCoherent??
     alreadyCoherent.add(new HashSet<>());
     assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
+    if(validCache && !cache.isEmpty()){uniqueId=cache.get(cacheIndex).p.topCore().info()._uniqueId();}
     Core.L coreL=SortHeader.coreTop(p, uniqueId++);//propagates the right header errors
     List<Full.L.M> ms=((Full.L)p.top).ms();
     List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
@@ -80,8 +79,8 @@ public class Top {
       ctzAdd(ctz,p0,mwti.mh(),_ei,c);
       });
     assert p.top.isFullL();
-    topStart(ctz,p0,reuse.contains("#$"));
-    Program p1=topNC(ctz,p0,ncs);//propagate exceptions
+    CacheEntry cache=topStart(ctz,p0,reuse.contains("#$"));
+    Program p1=topNC(ctz,cache.p,ncs);//propagate exceptions
     assert p1.top instanceof Core.L;
     WellFormedness.of(p1.topCore());//Check the new core top is well formed
     List<Core.E> coreE1n=L(coreL.mwts(),e1n,(c,mwti,_ei)->{
@@ -199,12 +198,20 @@ public class Top {
     cache.add(c);
     return c;
     }
-  CacheEntry oldCache(CacheEntry c){
+  CacheEntry oldCache(CacheEntry c,boolean loadLibs){
     System.out.println("Old cache for "+c._key);
-    if(c._mByteCode!=null){
-      loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
+    if(loadLibs && c._mByteCode!=null){
+        int size0=loader.libsCachedSize();
+        assert size0==c.sizeWithMLibs-c._mLibs.size():size0+" "+c.sizeWithMLibs+" "+c._mLibs.size();
+        loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
+        int size1=loader.libsCachedSize();
+        assert size0+c._mLibs.size()==size1;
       }
+    int size0=loader.libsCachedSize();
+    assert size0==c.sizeWithCLibs-c.cLibs.size(): size0+" "+c.sizeWithCLibs+" "+c.cLibs.size();
     loader.loadByteCodeFromCache(c.cByteCode,c.cLibs);
+    int size1=loader.libsCachedSize();
+    assert size0+c.cLibs.size()==size1;
     return c;
     }
   private CacheEntry topStart(CTz ctz,Program p,boolean hasHashDollar){
@@ -212,13 +219,18 @@ public class Top {
     if(cacheIndex<cache.size()){c=cache.get(cacheIndex);}
     else{validCache=false;}
     cacheIndex+=1;
-    boolean hopeToUseCache=validCache && (!hasHashDollar || !p.topCore().ncs().equals(c.p.topCore().ncs()));
-    if(hopeToUseCache){return oldCache(c);}
+    boolean useCache=validCache && (!hasHashDollar || p.topCore().equals(c.p.topCore()));
+    assert !validCache || hasHashDollar || p.topCore().equals(c.p.topCore()):p.topCore().info()._uniqueId()+" "+c.p.topCore().info()._uniqueId();
+    if(useCache){return oldCache(c,true);}
+    assert false;//TODO: remove
     var cByteCode=new HashMap<String,SClassFile>();
     var newCLibs=new ArrayList<L42Library>();
+    int size0=loader.libsCachedSize();
     try{this.loader.loadNow(p,cByteCode,newCLibs);}
     catch(CompilationError e){throw new Error(e);}
-    return newCache(new CacheEntry(null,null,p,null,newCLibs,null,cByteCode));
+    int size1=loader.libsCachedSize();
+    assert size0+newCLibs.size()==size1;
+    return newCache(new CacheEntry(null,null,p,null,newCLibs,size0,size1,null,cByteCode));
     }
   private Program topNC(CTz ctz, Program p, List<NC> ncs)throws EndError{
     if(ncs.isEmpty()){return p;}
@@ -270,7 +282,7 @@ public class Top {
       assert c._key!=null: "";
       if(c._key.equals(current)){//all good! skip steps
         var cachesToLoad=cache.subList(cacheIndex,cacheIndex+info.steps+1);
-        for(var ci:cachesToLoad){oldCache(ci);}
+        for(var ci:cachesToLoad){oldCache(ci,true);}
         cacheIndex+=info.steps+1;
         return c;//since c contains p,CTz and frommedCTz
         }
@@ -278,8 +290,11 @@ public class Top {
     Core.E e=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,allNCs);
     if(!validCache || cacheIndex+info.steps>=cache.size()){
       var mByteCode=new HashMap<String,SClassFile>();
+      int size0=loader.libsCachedSize();
       var newMLibs=new ArrayList<L42Library>();
       Core.L l=reduce(p,c0,e,mByteCode,newMLibs);//propagate errors
+      int size1=loader.libsCachedSize();
+      assert size0+newMLibs.size()==size1;
       System.out.println(c0+ " reduced");
       assert l!=null:c0+" "+e;
       Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
@@ -288,24 +303,40 @@ public class Top {
       //that is, the last nested class would not generate usable bytecode
       var cByteCode=new HashMap<String,SClassFile>();
       var newCLibs=new ArrayList<L42Library>();
+      int size2=loader.libsCachedSize();
       p1=flagTyped(p1,cByteCode,newCLibs);//propagate errors
-      return newCache(new CacheEntry(current,frommedCTz,p1,newMLibs,newCLibs,mByteCode,cByteCode));
+      int size3=loader.libsCachedSize();
+      assert size2+newCLibs.size()==size3;
+      return newCache(new CacheEntry(current,frommedCTz,p1,newMLibs,newCLibs,size1,size3,mByteCode,cByteCode));
       }
     c=cache.get(cacheIndex);//that is, the 'current' cache, not the next one
-    cacheIndex+=info.steps+1;
-    if(!info.hashDollarTop){return oldCache(c);}
+    assert c._key!=null;
+    //cacheIndex+=info.steps+1;
+    //assert info.steps==0;//info.steps is irrelevent from now on?
+    cacheIndex+=1;
+    if(!info.hashDollarTop){return oldCache(c,true);}
     assert c._mByteCode!=null;
+    int size0=loader.libsCachedSize();
+    assert size0==c.sizeWithMLibs-c._mLibs.size();
     loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
+    int size1=loader.libsCachedSize();
+    assert size0+c._mLibs.size()==size1;
+    assert size1==c.sizeWithMLibs;
     Core.L l=this.reduceByName(p,c0);
     var cByteCode=new HashMap<String,SClassFile>();
     var newLibs=new ArrayList<L42Library>();    
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1=p.update(updateInfo(p,nc),false);
+    int size2=loader.libsCachedSize();
     p1=flagTyped(p1,cByteCode,newLibs);//propagate errors
+    int size3=loader.libsCachedSize();
+    assert c.sizeWithCLibs==size3:
+      c.sizeWithCLibs+" "+size3+" "+size2+" "+newLibs.size();//TODO:remove
+    assert size2+newLibs.size()==size3;
     Core.L newL=_elem(p1.topCore().ncs(),c0).l();//This may be typed, while l may not
     Core.L cachedL=_elem(c.p.topCore().ncs(),c0).l();
-    if(newL.equals(cachedL)){return oldCache(c);}
-    return newCache(new CacheEntry(current,frommedCTz,p1,c._mLibs,newLibs,c._mByteCode,cByteCode));    
+    if(newL.equals(cachedL)){return oldCache(c,false);}
+    return newCache(new CacheEntry(current,frommedCTz,p1,c._mLibs,newLibs,size1,size3,c._mByteCode,cByteCode));    
     }
   private Core.E toCoreTypeCohereht(CTz ctz,CTz frommedCTz,List<Pos>poss,Program p,C c0,Full.E fe,List<NC> allNCs){
       Y y=new Y(p,GX.empty(),L(),null,L());
