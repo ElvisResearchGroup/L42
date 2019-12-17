@@ -123,3 +123,95 @@ C={reuse aaa //Foo
 {expanded reuse aaa
  Unused={}
   }
+
+
+
+-------------
+Res={}//CORE.L
+Res={}//Full, no nested to solve
+Res=e
+Res={
+  A1=e #$ {#$  } //example Foo.#$({reuse[#$bar] methods})
+  B1=e  {#$  }
+  C1=e #$ {  }
+  D1=e {   }
+  A2=e #$ {#$ N=e }
+  B2=e  {#$   N=e }
+  C2=e #$ {   N=e }
+  D2=e {    N=e }
+  }
+Res=e {all above}
+Res=e #$ {all above}
+Res=e #$ {#$ all above}
+Res=e {#$ all above}
+
+
+p(This0.Cs)={}
+p(This1.Cs)={}
+
+
+
+Top{
+  loadedBytecode
+  p
+  }
+
+
+classLoader, globalCtz, globalLibs, coherent
+  top(p)->libs,bt,cohe,p,ctz
+  topNC1(p,nc)->libs,bt,cohe,p,ctz
+classLoader:
+top(bt,p,ctx,libs,coherent)->bt,p,ctx,libs,coherent
+
+TopOut=bt,p,ctx,libs,coherent,sortHeadedP
+TopIn=bt,p,ctx,libs,coherent
+NCIn=bt,p,ctx,libs,coherent,nc
+NCOut=bt,p,ctx,libs,coherent,nc
+CTopE:TopIn->Res
+CTopNC1E: NCIn->Res
+
+CTop{
+  CTopE
+  List<CTopNC1> ncs
+  }
+CTopNC1{
+  List<CTop> tops
+  CTopNC1E
+  }
+
+TopOut top(topIn,ctop)=
+  if(no#$anywhere){
+    if ctop.ctope.key()==topIn (return ctop.ctope.val())
+    }
+  p1=sortHeader
+  acc CTz from methods
+  if p1!=ctop.val().sortHeaderP(validCache=false)
+  //indepdendently of possible #$ in reuse
+  for ncs topNC1(... using ctop.ncs.get(i))
+  if validCache (
+    assertion ctop.ctope.val()== what I would return otherwise
+    return ctop.ctope.val()
+    )
+  return ...
+  }
+TopNCOut topNC1(ncIn,cnc1)=
+  if(no#$anywhere){
+    if ctop.ctope.key()==topIn (return ctop.ctope.val())
+    }
+  full->half
+  coree=half->full (pass cnc1.tops)
+  if(cacheValid && no#$ in coree){return ctop.ctope.val()}
+  if(cacheValid && some#$ in coree){
+    l=reduce coree
+    if(l==cached expected l){return ctop.ctope.val()}
+    cacheValid=false;
+    p=p.update(nc.withl(l))
+    p=flagTyped(p)
+    return...
+    }
+  assert !cacheValid;
+  l=reduce coree
+  p=p.update(nc.withl(l))
+  p=flagTyped(p)
+  return... 
+  }

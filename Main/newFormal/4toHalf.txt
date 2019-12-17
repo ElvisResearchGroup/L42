@@ -156,7 +156,7 @@ _______
     Txs = [Ti xi | T?i != empty]
     // By well formedness, Txs won't be empty
 
-* Y!while e0 e1 = Y!( loop (e0.#checkTrue() e1) catch exception Void _ void)//TODO: should it be #if().#checkTrue()?
+* Y!while e0 e1 = Y!( loop (e0.#checkTrue() e1) catch exception Void _ void)//TODO: should it be e0.#if().#checkTrue()?
 
 * Y!for (DX in xP)s DX in e (DX in e)s e' = Y!(x=e for (DX in xP)s DX in x (DX in e)s e')
 * Y!for DX1 in xP1..DXn in xPn e = Y!(

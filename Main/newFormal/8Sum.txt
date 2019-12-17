@@ -1,29 +1,28 @@
 PLUS::=PLUS[p;topLeft;topRight;Cs]
+iMWT::=interface?MWT
 _______
-#define p;C|-CORE.L1 + CORE.L2 = CORE.L3
+#define p;C |- CORE.L1 + CORE.L2 = CORE.L3
 * p |- L1 + L2 = L
     PLUS=PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty]
-    L=L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
-    L3=L1 PLUS L2
+    L3 = L1 PLUS L2
+    L = L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
     //Pz= growing interfaces 
-    Pz={ This0.Cs| Cs in dom(L1) intersect dom(L2) and Cs |-L2>L1 or Cs |-L2>L1}
+    Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2) and Cs|-L2>L1 or Cs|-L1>L2}
     //classes implementing growing interfaces
-    Cs1;Pz1 .. Csn;Pzn={Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
-    forall Cs in allPrivateImplements(L): This0.Cs not in Pz
+    Cs1;Pz1 .. Csn;Pzn = {Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
+    forall Cs in allHiddenSupertypes(L): This0.Cs not in Pz
 _______
 #define CORE.L1 PLUS CORE.L2 = CORE.L3
 * L1 PLUS L2 = L3
   Li={Hi MWTsi NCsi Doci}
   H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
   LDoms=empty if L1.interface?=L2.interface?
-  LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise
-  MWTs3=L1.interface? MWTs1 PLUS L2.interface? MWTs2\LDoms
-  NCs3=NCs1 PLUS NCs2\LDoms
+  LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
+  iMWTs1=implemented(PLUS.p,PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
+  iMWTs2=implemented(PLUS.p,PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
+  MWTs3=iMWTs1 PLUS iMWTs2
+  NCs3=NCs1 PLUS NCs2
   Doc3=Doc1,Doc2
-  //Csz: growing interfaces 
-  Pz={ This0.Cs| Cs in dom(L1) intersect dom(L2) and Cs |-L2>L1 or Cs |-L2>L1}
-  //classes implementing growing interfaces
-  Cs1;Pz1 .. Csn;Pzn={Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
 _______
 #define NCs1 PLUS NCs2 = NCs3
 * (Docs C=L NCs1) PLUS NCs2 = Docs C=L (NCs1 PLUS NCs2)
@@ -31,11 +30,19 @@ _______
 * empty PLUS NCs2 = NCs2
 * Docs1 C=L1 NCs1 PLUS NCs Docs2 C=L2 NCs2 = Docs1,Docs2 C=L1 PLUS[Cs=PLUS.Cs,C] L2 (NCs1 PLUS NCs NCs2)
 _______
-#define interface?1 MWTs1 PLUS interface?2 MWTs2 = MWTs3
-* interface?1 (MWT MWTs1) PLUS interface?2 MWTs2 = MWT (interface?1 MWTs1 PLUS interface?2 MWTs2)
-    MWT.s not in dom(MWTs2)
-* _ empty PLUS _ MWTs2 = MWTs2
-* interface?1 MWT1 MWTs1 PLUS interface?2 MWTs MWT2 MWTs2 = MWT3 (interface?1 MWTs1 PLUS interface?2 MWTs MWTs2)
+#define interface?[MWTs]=iMWTs
+* interface?[MWT1..MWTn] = interface? MWT1 .. interface? MWTn
+_______
+#define iMWTs1 PLUS iMWTs2 = iMWTs3
+* interface? MWT iMWTs1 PLUS iMWTs2 = interface? MWT (iMWTs1 PLUS iMWTs2)
+    MWT.s not in dom(iMWTs2.MWTs)
+* _ empty PLUS iMWTs = iMWTs
+* interface?1 MWT1 iMWTs1 PLUS iMWTs interface?2 MWT2 iMWTs2 = 
+    (interface?1 MWT1 PLUS interface2? MWT2) (iMWTs1 PLUS iMWTs iMWTs2)
+      MWT1.s=MWT2.s
+_______
+#define interface?1 MWT1 PLUS interface?2 MWT2 = interface?3 MWT3
+* interface?1 MWT1 PLUS interface?2 MWT2 = interfacej? MWT3
     {i,j}={1,2}
     p.navigate(This0.PLUS.Cs)|-MWTi.MH<=MWTj.MH
     MWT3=MWTi with Docs obtained by the corresponding MWT1.Docs+MWT2.Docs
@@ -44,12 +51,15 @@ _______
 _______
 #define allWatched(L) = Csz
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs']
+    and Cs' not of form _._::n._
 _______
-#define allPrivateImplemented(L) = Csz
-* Cs in allPrivateImplemented(L) if Cs in L(Cs').Info.allPrivateImplemented[from This0.Cs']
+#define allHiddenSupertypes(L) = Csz
+* Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs'] and Cs' not of form _._::n._
 _______
 #define H1 PLUS H2
-* interface PLUS interface = interface
+* interface? PLUS interface? = interface?
+    either PLUS.topLeft(PLUS.Cs).Info.closed undefined
+    or PLUS.topRight(PLUS.Cs).Info.closed undefined
 * empty PLUS interface=interface
     PLUS.topLeft(PLUS.Cs).Info.hasClassMethods undefined
     PLUS.Cs notin allWatched(PLUS.topLeft)//no other Cs in topLeft watches over current Cs
@@ -61,14 +71,20 @@ _______
     PLUS.Cs notin allWatched(PLUS.topRight)
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
 _______ 
-#define Cs |- L2 > L1    L[Cs+=p Pz]=L'
+#define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(p,L,Cs)
 * Cs |- L2 > L1
   L1(Cs) is interface
   either L2(Cs).Ts\L1(Cs).Ts!=empty
   or dom(L2(Cs).MWTs)\dom(L1(Cs).MWTs)!=empty
 
 * L[Cs0 PLUS This0.Cs1..This0.Csn] = L[Cs0=L']
-  L' = L(Cs0)[L(Cs0).interface? L(Cs0).MWTs PLUS .. PLUS L(Csn).interface? L(Csn).MWTs]
+  interface?i=interface if implemented(PLUS.p,L,Csi)
+  L' = L(Cs0)[interface?0[L(Cs0).MWTs] PLUS .. PLUS interface?n[L(Csn).MWTs]]
+
+* implemented(p,L,Cs)
+    forall Cs' in dom(L):
+      Cs' not of form _._::n._, P in L(Cs').Ts.Ps This0.Cs !=P[from Cs';p]
+
   //DO NOT READ AFTER THIS POINT
   //renames:
   rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
