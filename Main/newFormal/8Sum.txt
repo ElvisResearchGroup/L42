@@ -8,7 +8,7 @@ _______
     L = L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
     //Pz= growing interfaces 
     Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2) and Cs|-L2>L1 or Cs|-L1>L2}
-    //classes implementing growing interfaces
+    //classes implementing growing interfaces, note that P0..Pn must be not empty
     Cs1;Pz1 .. Csn;Pzn = {Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
     forall Cs in allHiddenSupertypes(L): This0.Cs not in Pz
 _______
@@ -78,8 +78,10 @@ _______
   or dom(L2(Cs).MWTs)\dom(L1(Cs).MWTs)!=empty
 
 * L[Cs0 PLUS This0.Cs1..This0.Csn] = L[Cs0=L']
+  Cs0=C1..Ck
   interface?i=interface if implemented(PLUS.p,L,Csi)
-  L' = L(Cs0)[interface?0[L(Cs0).MWTs] PLUS .. PLUS interface?n[L(Csn).MWTs]]
+  iMWTsi=interface?0[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
+  L' = L(Cs0)[iMWTs0 PLUS .. PLUS iMWTsn]
 
 * implemented(p,L,Cs)
     forall Cs' in dom(L):
