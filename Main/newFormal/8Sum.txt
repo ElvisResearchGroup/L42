@@ -21,7 +21,7 @@ _______
   iMWTs1=implemented(PLUS.p,PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
   iMWTs2=implemented(PLUS.p,PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
   MWTs3=iMWTs1 PLUS iMWTs2
-  NCs3=NCs1 PLUS NCs2
+  NCs3=NCs1\LDoms PLUS NCs2\LDoms
   Doc3=Doc1,Doc2
 _______
 #define NCs1 PLUS NCs2 = NCs3
