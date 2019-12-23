@@ -157,16 +157,23 @@ Top{
   }
 
 
+----
+topCache:
+  list all bytecode
+  list all libs
+  InOut: nBytecode,nLibs,ctz,coherentList,p,_nc,_sortHeadedP 
+----
+
 classLoader, globalCtz, globalLibs, coherent
   top(p)->libs,bt,cohe,p,ctz
   topNC1(p,nc)->libs,bt,cohe,p,ctz
 classLoader:
 top(bt,p,ctx,libs,coherent)->bt,p,ctx,libs,coherent
 
-TopOut=bt,p,ctx,libs,coherent,sortHeadedP
-TopIn=bt,p,ctx,libs,coherent
-NCIn=bt,p,ctx,libs,coherent,nc
-NCOut=bt,p,ctx,libs,coherent,nc
+TopOut=bt,p,ctz,libs,coherent,sortHeadedP
+TopIn=bt,p,ctz,libs,coherent
+NCIn=bt,p,ctz,libs,coherent,nc
+NCOut=bt,p,ctz,libs,coherent,nc
 CTopE:TopIn->Res
 CTopNC1E: NCIn->Res
 

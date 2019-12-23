@@ -202,7 +202,7 @@ public static void loadRunErr(String s,String e){
     catch(CompilationError ce){fail(ce);throw bug();}
     String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
     var p2=Program.parse(code);
-    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new HashMap<>(),new ArrayList<>());}
+    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new ArrayList<>(),new ArrayList<>());}
     catch (InvocationTargetException e1) {
       if(!(e1.getCause() instanceof java.util.concurrent.CancellationException)){fail(e1.getCause());}
 //      assertEquals("loopinglooping",Resources.out());
@@ -224,7 +224,7 @@ public static void loadRun(String s,String e,String output){
     catch(CompilationError ce){fail(ce);throw bug();}
     String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
     var p2=Program.parse(code);
-    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new HashMap<>(),new ArrayList<>());}
+    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new ArrayList<>(),new ArrayList<>());}
     catch (InvocationTargetException e1) {fail(e1.getCause());}
     catch (CompilationError e1) {fail(e1);}
     assertEquals(output,Resources.out());
@@ -259,7 +259,7 @@ public static Program base(String s){
   }
 public static Loader loadBase(Program p,boolean print) throws CompilationError{
   Loader loader=new Loader();
-  try{loader.loadNow(p,new HashMap<>(),new ArrayList<>());}
+  try{loader.loadNow(p,new ArrayList<>(),new ArrayList<>());}
   catch(CompilationError ce){
     if(print){System.err.println(loader);}
     throw ce;

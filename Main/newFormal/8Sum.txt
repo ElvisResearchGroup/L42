@@ -1,3 +1,7 @@
+Note: interfaces can watch if they have private nested classes that are watching.
+Note: interfaces can be watched if they have private nested classes that are watched.
+TODO: can we remove hasClassMethods and just allow any non-interface class to be <:class X?
+and (thus) alloy any interface I to induce a class I type even if they have no class methods? 
 PLUS::=PLUS[p;topLeft;topRight;Cs]
 iMWT::=interface?MWT
 _______
@@ -14,7 +18,7 @@ _______
 _______
 #define CORE.L1 PLUS CORE.L2 = CORE.L3
 * L1 PLUS L2 = L3
-  Li={Hi MWTsi NCsi Doci}
+  Li={Hi MWTsi NCsi Doci Infoi}
   H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
   LDoms=empty if L1.interface?=L2.interface?
   LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
@@ -23,6 +27,7 @@ _______
   MWTs3=iMWTs1 PLUS iMWTs2
   NCs3=NCs1\LDoms PLUS NCs2\LDoms
   Doc3=Doc1,Doc2
+  Info3=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
 _______
 #define NCs1 PLUS NCs2 = NCs3
 * (Docs C=L NCs1) PLUS NCs2 = Docs C=L (NCs1 PLUS NCs2)
@@ -53,6 +58,11 @@ _______
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs']
     and Cs' not of form _._::n._
 _______
+#define allRequiredCoherent(L) = Csz
+* Cs in allRequiredCoherent(L) if Cs in L(Cs').Info.coherentDep[from This0.Cs']
+    and Cs' not of form _._::n._
+
+_______
 #define allHiddenSupertypes(L) = Csz
 * Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs'] and Cs' not of form _._::n._
 _______
@@ -61,14 +71,14 @@ _______
     either PLUS.topLeft(PLUS.Cs).Info.closed undefined
     or PLUS.topRight(PLUS.Cs).Info.closed undefined
 * empty PLUS interface=interface
-    PLUS.topLeft(PLUS.Cs).Info.hasClassMethods undefined
-    PLUS.Cs notin allWatched(PLUS.topLeft)//no other Cs in topLeft watches over current Cs
+    PLUS.Cs notin allRequiredCoherent(PLUS.p)
+    PLUS.Cs notin allWatched(PLUS.p)//using p instead of left/right to consider the "set of all novel interfaces"
     forall MWT in PLUS.topLeft(PLUS.Cs).MWTs://all public methods are abstract
       if MWT.s not of form _::n(_) then MWT.e?=empty
     //no public impl methods (thus since not watched, privates can be trashed)
 * interface PLUS empty=interface//same but reversed
-    PLUS.topRight(PLUS.Cs).Info.hasClassMethods undefined
-    PLUS.Cs notin allWatched(PLUS.topRight)
+    PLUS.Cs notin allRequiredCoherent(PLUS.p)
+    PLUS.Cs notin allWatched(PLUS.p)
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
 _______ 
 #define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(p,L,Cs)
@@ -81,7 +91,9 @@ _______
   Cs0=C1..Ck
   interface?i=interface if implemented(PLUS.p,L,Csi)
   iMWTsi=interface?0[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
-  L' = L(Cs0)[iMWTs0 PLUS .. PLUS iMWTsn]
+  L' = L(Cs0)[iMWTs0 PLUS .. PLUS iMWTsn][Info=L(Cs0).refined+
+  =dom(iMWTs0..iMWTsn)]
+  
 
 * implemented(p,L,Cs)
     forall Cs' in dom(L):

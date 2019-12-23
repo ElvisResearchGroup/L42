@@ -50,6 +50,11 @@ from CTz? assert if you can not solve before from, you can not solve after
 public class CTz implements Serializable{
   private final Map<ST,List<ST>> inner=new HashMap<>();
   public Set<Map.Entry<ST,List<ST>>> entries(){return inner.entrySet();}
+  public CTz copy(){
+    CTz ctz=new CTz();
+    ctz.inner.putAll(inner);
+    return ctz;
+    }
   @Override public String toString(){
     String res=inner.toString();
     res=res.substring(1,res.length()-1);

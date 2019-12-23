@@ -44,7 +44,8 @@ public class Loader {
     return res;
     }
   private final ArrayList<L42Library> libs=new ArrayList<>();
-    public int libsCachedSize(){return libs.size();}//needed for double checking on caching
+  public int libsCachedSize(){return libs.size();}//needed for double checking on caching
+  public int bytecodeSize(){return classLoader.map().size();}//needed for double checking on caching
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
   public void loadByteCodeFromCache(HashMap<String,SClassFile> bytecode,List<L42Library>newLibs){
@@ -53,20 +54,20 @@ public class Loader {
       classLoader.map().put(e.getKey(),e.getValue().toCF());
       }
     }
-  public Core.L runNow(Program p,C c,Core.E e,HashMap<String,SClassFile> outMapNewBytecode,ArrayList<L42Library> newLibs) throws CompilationError, InvocationTargetException{
+  public Core.L runNow(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),false,libs){
       @Override public boolean precomputeCoherent(){return false;}
       };
     j.visitE(e);//the goal here is not to generate the p.top class
     newLibs.addAll(libs.subList(oldLibNum,libs.size()));
-    String name="£c"+c;
+    String name="£c"+c+"£n"+p.topCore().info()._uniqueId();
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
     String code=header+"\npublic class "+name+"£E"+
       "{public static L42Library execute(){return "  
       +j.result()+";}}";
     var files=L(new SourceFile(metaPackage+name+"£E",code));
-    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outMapNewBytecode);
+    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outNewBytecode);
     assert classes==classLoader;
     return runMainName(p,c,name);
     }
@@ -82,12 +83,12 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p,HashMap<String,SClassFile> outMapNewBytecode,List<L42Library> newLibs) throws CompilationError{
+  public void loadNow(Program p,List<SClassFile> newBytecode,List<L42Library> newLibs) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
     int oldLibNum=libs.size();
     loadRec(p,files);
     if(files.isEmpty()){return;}
-    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outMapNewBytecode);
+    ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,newBytecode);
     newLibs.addAll(libs.subList(oldLibNum,libs.size()));
     assert classes==classLoader;    
     }

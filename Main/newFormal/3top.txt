@@ -81,7 +81,7 @@ _______
     Y = Y[p;GX=empty;onSlash=imm Library;onSlashX=empty;expectedT=imm Library;CTz]
     Y!FULL.e = HALF.e; _; _; _ // No need to collect CTz's, since we need e to be fully typed anyway
     CTz0 = CTz[from This1;p.push(C,{#norm{}})]
-    I[C?=C;p;G=empty;CTz; frommed=CTz0]!HALF.e => ER
+    I[C?=C;p;G=empty;CTz; frommed=CTz0]!HALF.e => ER//could we just pass empty instead of CTz?
     ER = CTz1;CORE.e IfErr(ER) PR = ER
     //here we check CORE.e is well formed
     wellTyped(p,CORE.e) = T IfNotE(T) PR = illTyped(p)

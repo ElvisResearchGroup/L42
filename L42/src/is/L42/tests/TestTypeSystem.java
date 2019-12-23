@@ -779,11 +779,11 @@ public static void pass(String program){
   Init init=new Init("{"+program+"}"){
     @Override protected Top makeTop(Program program,FreshNames f){
       return new Top(f,0,new Loader(),null){
-        @Override protected Program flagTyped(Program p1,HashMap<String,SClassFile> cBytecode,ArrayList<L42Library>newLibs) throws EndError{
+        @Override protected Program flagTyped(Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42Library>newLibs) throws EndError{
           return p1;
         }};
     }};
-  Program p=init.top.top(new CTz(),init.p);
+  Program p=init.top.top(init.p);
   ProgramTypeSystem.type(true, p);
   allCoherent(p);
   }

@@ -205,17 +205,17 @@ public class InMemoryJavaCompiler {
         }
     }
     }
-  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, HashMap<String,SClassFile> outMapNewBytecode) throws CompilationError {
+  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, List<SClassFile> newBytecode) throws CompilationError {
     var out=new ArrayList<ClassFile>();
-    try{return compile(env,files,out);}
+    try{return auxCompile(env,files,out);}
     finally{
       for(var o:out){
         o.cacheBytes();
-        outMapNewBytecode.put(o.name,SClassFile.fromCF(o));
+        newBytecode.add(SClassFile.fromCF(o));
         }
       }
     }
-  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, List<ClassFile> outNewBytecode) throws CompilationError {
+  private static MapClassLoader auxCompile(ClassLoader env,List<SourceFile> files, List<ClassFile> outNewBytecode) throws CompilationError {
     JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
     if (compiler == null) throw new Error("Only JDK contains the JavaCompiler, you are running a Java JRE");
     var diagnisticListenerForErrors=new MyDiagnosticListener();
@@ -262,7 +262,8 @@ public class InMemoryJavaCompiler {
       @Override public JavaFileObject getJavaFileForOutput(
           Location location,String className, JavaFileObject.Kind kind, FileObject sibling)throws IOException{
         ClassFile classFile=new ClassFile(className, kind);
-        map.put(className, classFile);
+        var added=map.put(className, classFile);
+        assert added==null:className;
         outNewBytecode.add(classFile);
         return classFile;
         }
