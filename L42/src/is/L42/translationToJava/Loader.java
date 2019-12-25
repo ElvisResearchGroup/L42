@@ -48,10 +48,11 @@ public class Loader {
   public int bytecodeSize(){return classLoader.map().size();}//needed for double checking on caching
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public void loadByteCodeFromCache(HashMap<String,SClassFile> bytecode,List<L42Library>newLibs){
+  public void loadByteCodeFromCache(List<SClassFile> bytecode,List<L42Library>newLibs){
     libs.addAll(newLibs);
-    for(var e:bytecode.entrySet()){
-      classLoader.map().put(e.getKey(),e.getValue().toCF());
+    for(var e:bytecode){
+      var res=classLoader.map().put(e.name,e.toCF());
+      assert res==null;
       }
     }
   public Core.L runNow(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42Library> newLibs) throws CompilationError, InvocationTargetException{

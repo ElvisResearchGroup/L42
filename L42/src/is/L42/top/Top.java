@@ -131,29 +131,88 @@ dropCache:
     boolean reuseHD=cachedTop.reuseUrl().contains("#$");
     if(allEq){
       if(!reuseHD && !ctop.hasHDDeep()){return ctop;}
-      if(!reuseHD){return reuseHeader(true,p,ctop);}
+      if(!reuseHD){return reuseHeader(true,p,ctop.hasHDDeep(),ctop);}
       if(!ctop.hasHDDeep()){return checkHeaderEq(p,ctop);}
       return stepByStep(true,p,ctop);
       }
-    if(!reuseHD){return reuseHeader(false,p,ctop);}
+    if(!reuseHD){return reuseHeader(false,p,null,ctop);}
     return stepByStep(false,p,ctop);
     }   
-  public Cache.CTop reuseHeader(boolean hope,Program p,Cache.CTop ctop){return null; 
+  public Cache.CTop reuseHeader(boolean hope,Program p,Boolean oldInfo,Cache.CTop ctop){ 
+    Core.L coreL=ctop.sortedHeader();
+    Full.L topL=(Full.L)p.top;
+    List<Full.L.M> ms=topL.ms();
+    List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
+    boolean deepHD;if(oldInfo!=null){deepHD=oldInfo;}
+    else{
+      var info=new HashDollarInfo(topL);
+      assert !info.hashDollarTop;
+      deepHD=info.hashDollarInside;
+      } 
+    var currentState=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(),ctop.in().ctz(),ctop.in().coherentList(),p);
+    var newCache=new Cache.CTop(currentState, null, null, deepHD, coreL, -1, -1);
+    Program p0=p.update(coreL,false);
+    assert p.top.isFullL();
+    var subB=cache.allByteCode().subList(loader.bytecodeSize(),ctop.nHByteCode());
+    var subL=cache.allLibs().subList(loader.libsCachedSize(),ctop.nHlibs());
+    this.loader.loadByteCodeFromCache(subB,subL);
+    ArrayList<Cache.CTopNC1> cachedNCs=topNCCache(ctop.ncs(),p0,ncs);//propagate exceptions
+    newCache.ncs(cachedNCs);
+    Program p1=cachedNCs.isEmpty()?p0:cachedNCs.get(cachedNCs.size()-1).out().p();
+    assert p1.top instanceof Core.L;
+    if(validCache){return ctop;}
+    assert !cachedNCs.isEmpty();
+    CTz ctz=cachedNCs.get(cachedNCs.size()-1).out().ctz().copy();
+    List<Half.E> e1n=L(coreL.mwts(),(c,mwti)->{//duplicated
+      var memi=_elem(ms,mwti.key());
+      Full.E _ei=null;
+      if(memi!=null){_ei=memi._e();}
+      ctzAdd(ctz,p0,mwti.mh(),_ei,c);
+      });
+    //identical to topNoCache from now on
+    WellFormedness.of(p1.topCore());//Check the new core top is well formed
+    List<Core.E> coreE1n=L(coreL.mwts(),e1n,(c,mwti,_ei)->{
+      if(_ei==null){c.add(null);return;}
+      Core.E eri=infer(new I(null,p1,G.of(mwti.mh())),ctz,null,_ei,null);
+      c.add(eri);
+      });//and propagate errors out
+    List<MWT> coreMWTs=L(coreL.mwts(),coreE1n,(c,mwti,_ei)->{//mwt'1..mwt'n
+      var memi=_elem(ms,mwti.key());
+      String nat="";
+      if(memi instanceof Full.L.MWT){nat=((Full.L.MWT)memi).nativeUrl();}
+      c.add(mwti.withNativeUrl(nat).with_e(_ei));
+      });
+    Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
+    assert l.info()._uniqueId()!=-1;
+    Program p2=p1.update(l,false);//propagate illTyped
+    l=p2.topCore();
+    l=l.withInfo(l.info().with_uniqueId(-1));
+    alreadyCoherent.remove(alreadyCoherent.size()-1);
+    Program p3=p2.update(l,false);
+    var outState=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(),ctz.copy(),cachableAlreadyCoherent(),p3);
+    newCache.out(outState);
+    return newCache;
+    //cacheIsInvalid, sortHeader; flagTyped;  topNCs;  inferMeth and Info
+
     //import header from cache, call topNCs, if validCache, just return the cached result
     //else recompute inferMeth and Info and return new cache
     }
-  public Cache.CTop checkHeaderEq(Program p,Cache.CTop ctop){return null;
+  public Cache.CTop checkHeaderEq(Program p,Cache.CTop ctop){throw todo();
     //l=sortHeader; if l==cache.sortHeader, just return the cached result
     //else cacheIsInvalid, flagTyped;  topNCs;  inferMeth and Info
     }
-  public Cache.CTop stepByStep(boolean hope,Program p,Cache.CTop ctop){return null;
+  public Cache.CTop stepByStep(boolean hope,Program p,Cache.CTop ctop){throw todo();
     //l=sortHeader; if l==cache.sortHeader, reuseHeader
     //else cacheIsInvalid, flagTyped;  topNCs;  inferMeth and Info
     }
   public Cache.CTop dropCache(Program p,Cache.CTop toDrop){
     CTz ctz;
+    alreadyCoherent.clear();
     if(toDrop==null){ctz=new CTz();}
-    else{ctz=setInvalid(toDrop.in());}
+    else{
+      ctz=setInvalid(toDrop.in());
+      for(var e:toDrop.in().coherentList()){alreadyCoherent.add(new HashSet<>(e));}
+      }    
     return topNoCache(ctz,p);
     }
   public Cache.CTop topNoCache(CTz ctz,Program p){
@@ -216,7 +275,21 @@ dropCache:
       @Override public LL visitL(Full.L l){return Program.emptyL;}
       @Override public Core.L visitL(Core.L l){return Program.emptyL;}
     };} 
-  public Cache.CTopNC1 topNC1Cache(Program p,Full.L.NC nc, Cache.CTopNC1 cnc)throws EndError {
+  public ArrayList<Cache.CTopNC1> topNCCache(ArrayList<Cache.CTopNC1> cnc,Program p,List<Full.L.NC> ncs){ 
+    var res=new ArrayList<Cache.CTopNC1>();
+    int cacheUsedUpTo=cnc.size();
+    for(var i:range(cnc)){
+      res.add(topNC1Cache(cnc.get(i),p,ncs.get(i)));
+      if(!validCache){cacheUsedUpTo=i;break;}
+      }
+    if(ncs.size()>cacheUsedUpTo){
+      var last=cnc.get(cacheUsedUpTo);
+      CTz ctz=setInvalid(last.out());
+      res.addAll(topNCNoCache(ctz,last.out().p(),ncs.subList(cacheUsedUpTo, ncs.size())));
+      }
+    return res;
+    }   
+  public Cache.CTopNC1 topNC1Cache(Cache.CTopNC1 cnc,Program p,Full.L.NC nc){
     var newNoLibs=noL().visitNC(nc);
     var cachedNoLibs=noL().visitNC(cnc.ncIn());
     boolean eqExpr=newNoLibs.equals(cachedNoLibs);
@@ -231,19 +304,19 @@ dropCache:
     if(cnc.hasHDE()){return rerunEI(false,p,nc,cnc);}
     return rerunI(false,p,nc,cnc);
     }
-  public Cache.CTopNC1 rerunE(Program p,Full.L.NC nc, Cache.CTopNC1 cnc){return null;
+  public Cache.CTopNC1 rerunE(Program p,Full.L.NC nc, Cache.CTopNC1 cnc){throw todo();
     //l=run cache.core_e, if l==cache.l just return the cached result
     //else cacheIsInvalid, flagTyped
     }
-  public Cache.CTopNC1 rerunI(boolean hope,Program p,Full.L.NC nc, Cache.CTopNC1 cnc){return null;
+  public Cache.CTopNC1 rerunI(boolean hope,Program p,Full.L.NC nc, Cache.CTopNC1 cnc){throw todo();
     //core_e=full->half->core, if cache still valid (assert core_e==cache.core_e)  just return the cached result
     //else update libs, l=run core_e (old bytecode, new libs), flagTyped
     }  
-  public Cache.CTopNC1 rerunEI(boolean hope,Program p,Full.L.NC nc, Cache.CTopNC1 cnc){return null;
+  public Cache.CTopNC1 rerunEI(boolean hope,Program p,Full.L.NC nc, Cache.CTopNC1 cnc){throw todo();
     //core_e=full->half->core, if cache still valid (assert core_e==cache.core_e) rerunE
     //else update libs, l=run core_e (old bytecode, new libs), flagTyped
     }
-  public Cache.CTopNC1 dropCacheNC1(Program p,Full.L.NC nc){return null;
+  public Cache.CTopNC1 dropCacheNC1(Program p,Full.L.NC nc){throw todo();
     //cacheIsInvalid, full->half->core;  type;  coherent;  reduce;  flagTyped
     }
   public ArrayList<Cache.CTopNC1> topNCNoCache(CTz ctz, Program p, List<Full.L.NC> ncs){
@@ -529,6 +602,7 @@ dropCache:
           if(nestedLev==0){hashDollarTop=true;}
           else{hashDollarInside=true;}
           }
+        super.visitL(l);
         nestedLev-=1;
         }
       @Override public void visitS(S s){
