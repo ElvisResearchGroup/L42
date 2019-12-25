@@ -602,7 +602,7 @@ dropCache:
           if(nestedLev==0){hashDollarTop=true;}
           else{hashDollarInside=true;}
           }
-        super.visitL(l);
+        for(var m:l.ms()){if (m instanceof Full.L.NC){visitM(m);}}
         nestedLev-=1;
         }
       @Override public void visitS(S s){

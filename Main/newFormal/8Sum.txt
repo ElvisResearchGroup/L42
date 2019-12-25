@@ -1,7 +1,8 @@
 Note: interfaces can watch if they have private nested classes that are watching.
 Note: interfaces can be watched if they have private nested classes that are watched.
 TODO: can we remove hasClassMethods and just allow any non-interface class to be <:class X?
-and (thus) alloy any interface I to induce a class I type even if they have no class methods? 
+and (thus) alloy any interface I to induce a class I type even if they have no class methods?
+TODO: watched must contains also every public root of private typeDep. 
 PLUS::=PLUS[p;topLeft;topRight;Cs]
 iMWT::=interface?MWT
 _______
