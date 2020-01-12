@@ -44,6 +44,7 @@ import lombok.AllArgsConstructor;
     boolean hasHDE;
     boolean hasHDL;
     Full.L.NC ncIn;
+    Core.E coreE;
     Core.L lOut;
     }
   @Data @AllArgsConstructor public static class InOut implements Serializable{
@@ -73,5 +74,4 @@ import lombok.AllArgsConstructor;
       throw todo();
       }
     }
-
   }

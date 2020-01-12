@@ -83,12 +83,11 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){
-    assert top.loader.bytecodeSize()==top.cache.allByteCode().size():top.loader.bytecodeSize()+" "+top.cache.allByteCode().size();
     Program p=i.p().push(i._c(),l);
     Cache.CTop res;
     var valid=top.validCache;
-    assert !valid || indexCTops<ctops.size();
-    assert valid || indexCTops==ctops.size();
+    assert !valid || indexCTops<ctops.size(): valid+" "+indexCTops+" "+ctops.size();
+    assert valid || indexCTops==ctops.size(): valid+" "+indexCTops+" "+ctops.size();
     if(valid){res=top.topCache(p, ctops.get(indexCTops));}
     else{res=top.topNoCache(ctzFrom, p);}
     if (valid!=top.validCache){ 
@@ -99,7 +98,6 @@ public class InferToCore extends UndefinedCollectorVisitor{
     indexCTops+=1;
     Program pr=res.out().p();
     commit(pr.topCore());
-    assert top.loader.bytecodeSize()==top.cache.allByteCode().size():top.loader.bytecodeSize()+" "+top.cache.allByteCode().size();
     }
   @Override public void visitL(Core.L l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){

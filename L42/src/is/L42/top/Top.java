@@ -53,7 +53,6 @@ import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
-import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.WellFormedness;
 
 import static is.L42.generated.LDom._elem;
@@ -121,6 +120,7 @@ dropCache:
 
   public Cache.CTop topCache(Program p, Cache.CTop ctop){
     assert ctop.in().p().top.isFullL();
+    System.out.println(ctop.hasHDDeep());
     var cachedTop=(Full.L)ctop.in().p().top;
     var cachedTopReuseMeth=cachedTop.withMs(L(cachedTop.ms().stream().filter(Full.L.NC.class::isInstance)));
     var newTop=(Full.L)p.top;
@@ -222,7 +222,10 @@ dropCache:
     Full.L topL=(Full.L)p.top;
     List<Full.L.M> ms=topL.ms();
     List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
-    var info=new HashDollarInfo(topL); 
+    var info=new HashDollarInfo(topL);
+    System.out.println(topL.pos());
+    System.out.println(info.hashDollarTop);
+    System.out.println(info.hashDollarInside);
     var currentState=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(),ctz.copy(),cachableAlreadyCoherent(),p);
     var newCache=new Cache.CTop(currentState, null, null, info.hashDollarInside, coreL, -1, -1);
     Program p0=p.update(coreL,false);
@@ -304,11 +307,35 @@ dropCache:
     if(cnc.hasHDE()){return rerunEI(false,p,nc,cnc);}
     return rerunI(false,p,nc,cnc);
     }
-  public Cache.CTopNC1 rerunE(Program p,Full.L.NC nc, Cache.CTopNC1 cnc){throw todo();
-    //l=run cache.core_e, if l==cache.l just return the cached result
+  public Cache.CTopNC1 rerunE(Program p,Full.L.NC nc, Cache.CTopNC1 cnc){
+    throw todo();
+    /*var subB=cache.allByteCode().subList(loader.bytecodeSize(),cnc.in().nByteCode());
+    var subL=cache.allLibs().subList(loader.libsCachedSize(),cnc.in().nLibs());
+    this.loader.loadByteCodeFromCache(subB,subL);
+    return reduceNoCache(p,nc.key(),cnc.coreE(),res,nc.docs(),nc.poss(),frommedCTz);
+    *///l=run cache.core_e, if l==cache.l just return the cached result
     //else cacheIsInvalid, flagTyped
     }
-  public Cache.CTopNC1 rerunI(boolean hope,Program p,Full.L.NC nc, Cache.CTopNC1 cnc){throw todo();
+  public Cache.CTopNC1 rerunI(boolean hope,Program p,Full.L.NC current, Cache.CTopNC1 cnc){
+    CTz ctz=cnc.in().ctz().copy();
+    CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
+    Full.E fe=current.e();
+    C c0=current.key();
+    System.out.println("RerunI for "+c0+" "+p.topCore().info()._uniqueId());
+    List<Full.Doc> docs=current.docs();
+    List<Pos> poss=current.poss();
+    var in=cnc.in();
+    var res=new Cache.CTopNC1(new ArrayList<>(cnc.tops()),in,null,cnc.hasHDE(),cnc.hasHDL(),current,null,null);
+    Core.E e=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,/*allNCs*/null,res.tops());
+    if(this.validCache){
+      assert e.equals(cnc.coreE());
+      return cnc; 
+      }
+    assert hope;
+    var subB=cache.allByteCode().subList(loader.bytecodeSize(),cnc.in().nByteCode());
+    var subL=cache.allLibs().subList(loader.libsCachedSize(),cnc.in().nLibs());
+    this.loader.loadByteCodeFromCache(subB,subL);
+    return reduceNoCache(p,c0,e,res,docs,poss,frommedCTz);
     //core_e=full->half->core, if cache still valid (assert core_e==cache.core_e)  just return the cached result
     //else update libs, l=run core_e (old bytecode, new libs), flagTyped
     }  
@@ -322,27 +349,32 @@ dropCache:
   public ArrayList<Cache.CTopNC1> topNCNoCache(CTz ctz, Program p, List<Full.L.NC> ncs){
     if(ncs.isEmpty()){return new ArrayList<>();}
     NC current=ncs.get(0);
-    CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
-    Cache.CTopNC1 c=topNC1NoCache(ctz,p,frommedCTz,current,ncs);
+    Cache.CTopNC1 c=topNC1NoCache(ctz,p,current,ncs);
     ncs=popL(ncs);
-    CTz newCTz=c.out().p().from(frommedCTz,P.of(0,L(current.key())));
+    CTz newCTz=c.out().ctz().copy();
     var res=topNCNoCache(newCTz,c.out().p(),ncs);
     res.add(0,c);
     return res; 
     }
-  public Cache.CTopNC1 topNC1NoCache(CTz ctz, Program p,CTz frommedCTz,Full.L.NC current,List<Full.L.NC> allNCs){
+  public Cache.CTopNC1 topNC1NoCache(CTz ctz, Program p,Full.L.NC current,List<Full.L.NC> allNCs){
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
+    CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
     Full.E fe=current.e();
     C c0=current.key();
     System.out.println("Now considering main "+c0+" "+p.topCore().info()._uniqueId());
     List<Full.Doc> docs=current.docs();
     List<Pos> poss=current.poss();
-    var in=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(), frommedCTz.copy(), cachableAlreadyCoherent(), p);
+    var in=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(), ctz.copy(), cachableAlreadyCoherent(), p);
     var info=new HashDollarInfo(current);
-    var res=new Cache.CTopNC1(new ArrayList<>(),in,null,info.hashDollarTop,info.hashDollarInside,current,null);
+    var res=new Cache.CTopNC1(new ArrayList<>(),in,null,info.hashDollarTop,info.hashDollarInside,current,null,null);
     Core.E e=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,allNCs,res.tops());
+    return reduceNoCache(p,c0,e,res,docs,poss,frommedCTz);
+    }
+  Cache.CTopNC1 reduceNoCache(Program p, C c0, Core.E e, Cache.CTopNC1 res, List<Full.Doc> docs, List<Pos> poss,CTz frommedCTz){
+    assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
     Core.L l=reduce(p,c0,e,cache.allByteCode(),cache.allLibs());//propagate errors
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
+    res.coreE(e);
     res.lOut(l);    
     System.out.println(c0+ " reduced");
     assert l!=null:c0+" "+e;
@@ -351,14 +383,11 @@ dropCache:
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
     p1=flagTyped(p1,cache.allByteCode(),cache.allLibs());//propagate errors
-    var out=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(), frommedCTz.copy(), cachableAlreadyCoherent(), p1);
+    CTz newCTz=p1.from(frommedCTz,P.of(0,L(c0)));
+    var out=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(), newCTz, cachableAlreadyCoherent(), p1);
     res.out(out);
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
     return res;
-    //Core.L l=this.reduceByName(p,c0);
-    //Program p1=p.update(updateInfo(p,nc),false);
-    //p1=flagTyped(p1,cByteCode,newLibs);//propagate errors
-    //return newCache(new CacheEntry(current,frommedCTz,p1,c._mLibs,newLibs,size1,size3,c._mByteCode,cByteCode));    
     }
 //-----------------
   public Program top(Program p)throws EndError {
@@ -370,7 +399,7 @@ dropCache:
       return res.out().p();
       }
     finally{
-      //Cache.saveCache(initialPath, cache);//TODO: decomment to activate cache
+      Cache.saveCache(initialPath, cache);//TODO: decomment to activate cache
       }
     }
   public CTz setInvalid(Cache.InOut in){
@@ -551,66 +580,6 @@ dropCache:
     return L(alreadyCoherent,(c,e)->c.add(Collections.unmodifiableSet(new HashSet<>(e))));
     }
   
-  /*private void flushBadCache(){
-    if(!validCache){return;}
-    assert cache.size()>=cacheIndex: cache.size()+" "+cacheIndex; 
-    for(int i=cache.size()-1;i>=cacheIndex;i-=1){cache.remove(i);}
-    }
-  CacheEntry newCache(CacheEntry c){
-    System.out.println("New cache for "+c._key);
-    flushBadCache();
-    validCache=false;
-    cache.add(c);
-    return c;
-    }
-  CacheEntry oldCache(CacheEntry c,boolean loadLibs){
-    System.out.println("Old cache for "+c._key);
-    if(loadLibs && c._mByteCode!=null){
-        int size0=loader.libsCachedSize();
-        assert size0==c.sizeWithMLibs-c._mLibs.size():size0+" "+c.sizeWithMLibs+" "+c._mLibs.size();
-        loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
-        int size1=loader.libsCachedSize();
-        assert size0+c._mLibs.size()==size1;
-      }
-    int size0=loader.libsCachedSize();
-    assert size0==c.sizeWithCLibs-c.cLibs.size(): size0+" "+c.sizeWithCLibs+" "+c.cLibs.size();
-    loader.loadByteCodeFromCache(c.cByteCode,c.cLibs);
-    int size1=loader.libsCachedSize();
-    assert size0+c.cLibs.size()==size1;
-    return c;
-    }
-  private Program topNC(CTz ctz, Program p, List<NC> ncs)throws EndError{
-    if(ncs.isEmpty()){return p;}
-    NC current=ncs.get(0);
-    CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
-    CacheEntry c=topNC1(ctz,p,frommedCTz,current,ncs);
-    ncs=popL(ncs);
-    CTz newCTz=c.p.from(c.frommedCTz,P.of(0,L(current.key())));
-    Program res=topNC(newCTz,c.p,ncs);
-    return res; 
-    }*/
-    private static class HashDollarInfo extends PropagatorCollectorVisitor{
-      HashDollarInfo(NC nc){this.visitE(nc.e());}
-      HashDollarInfo(Full.L l){nestedLev=-1;this.visitL(l);}
-      int nestedLev=0;
-      boolean hashDollarTop=false;
-      boolean hashDollarInside=false;
-      @Override public void visitL(Core.L l){}
-      @Override public void visitL(Full.L l){
-        nestedLev+=1;
-        if(l.reuseUrl().contains("#$")){
-          if(nestedLev==0){hashDollarTop=true;}
-          else{hashDollarInside=true;}
-          }
-        for(var m:l.ms()){if (m instanceof Full.L.NC){visitM(m);}}
-        nestedLev-=1;
-        }
-      @Override public void visitS(S s){
-        if(!s.m().startsWith("#$")){return;}
-        if(nestedLev==0){hashDollarTop=true;}
-        else{hashDollarInside=true;}
-        }
-      } 
   /*private CacheEntry topNC1(CTz ctz, Program p,CTz frommedCTz,NC current,List<NC>allNCs){
     //assert !validCache || ( ctz==null && frommedCTz==null);
     //assert  validCache || ( ctz!=null && frommedCTz!=null); 
@@ -684,7 +653,6 @@ dropCache:
     return newCache(new CacheEntry(current,frommedCTz,p1,c._mLibs,newLibs,size1,size3,c._mByteCode,cByteCode));    
     }*/
   private Core.E toCoreTypeCohereht(CTz ctz,CTz frommedCTz,List<Pos>poss,Program p,C c0,Full.E fe,List<NC> allNCs,ArrayList<Cache.CTop> ctops){
-      assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
       Y y=new Y(p,GX.empty(),L(),null,L());
       var  hq=toHalf(ctz,y,freshNames,fe);
       Half.E he=hq.e;
@@ -790,3 +758,41 @@ dropCache:
     deps.of(e.visitable());
     }
   }
+  /*private void flushBadCache(){
+  if(!validCache){return;}
+  assert cache.size()>=cacheIndex: cache.size()+" "+cacheIndex; 
+  for(int i=cache.size()-1;i>=cacheIndex;i-=1){cache.remove(i);}
+  }
+CacheEntry newCache(CacheEntry c){
+  System.out.println("New cache for "+c._key);
+  flushBadCache();
+  validCache=false;
+  cache.add(c);
+  return c;
+  }
+CacheEntry oldCache(CacheEntry c,boolean loadLibs){
+  System.out.println("Old cache for "+c._key);
+  if(loadLibs && c._mByteCode!=null){
+      int size0=loader.libsCachedSize();
+      assert size0==c.sizeWithMLibs-c._mLibs.size():size0+" "+c.sizeWithMLibs+" "+c._mLibs.size();
+      loader.loadByteCodeFromCache(c._mByteCode,c._mLibs);
+      int size1=loader.libsCachedSize();
+      assert size0+c._mLibs.size()==size1;
+    }
+  int size0=loader.libsCachedSize();
+  assert size0==c.sizeWithCLibs-c.cLibs.size(): size0+" "+c.sizeWithCLibs+" "+c.cLibs.size();
+  loader.loadByteCodeFromCache(c.cByteCode,c.cLibs);
+  int size1=loader.libsCachedSize();
+  assert size0+c.cLibs.size()==size1;
+  return c;
+  }
+private Program topNC(CTz ctz, Program p, List<NC> ncs)throws EndError{
+  if(ncs.isEmpty()){return p;}
+  NC current=ncs.get(0);
+  CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
+  CacheEntry c=topNC1(ctz,p,frommedCTz,current,ncs);
+  ncs=popL(ncs);
+  CTz newCTz=c.p.from(c.frommedCTz,P.of(0,L(current.key())));
+  Program res=topNC(newCTz,c.p,ncs);
+  return res; 
+  }*/
