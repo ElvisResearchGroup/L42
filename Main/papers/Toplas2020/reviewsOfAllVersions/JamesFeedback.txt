@@ -1,0 +1,245 @@
+basically: the important ideas are so swamped by much less important details
+
+if you focus in on the main idea and express it cleanly, you should go fine.
+
+
+Hi James, I changed my mind, if I start working on it now to make it
+more in journal form it would take quite long before it reaches you.
+
+I think that is absolutely the right thing for you to have done.
+
+I see no reason why the paepr couldn't go somewhere like OOPLSA or ECOOP or ETAPS or even RV
+all of which I think is likely to get more readers than a journal version.   (this is entirely up to you of course).
+
+ICSE!  ICSE Aug 23!
+
+I'm happy to help either way,  if you think that's worthwhile.
+
+Thus, here is the oopsla version. Is is basically identical to the Ecoop one.
+However, I could not resist but trying to write a "prelude", that you
+may read before reading the paper, and then decide if you think is a
+good idea to integrate it  in the future new intro or not.
+I just wrote it this morning, so the English int he following text may
+not be the best.
+Here it is
+---------------------------------
+
+I read the prelude, then the paper, then the reviews.
+
+The work we are going to present here balances on the line between
+refinement types and object/class invariants.
+
+this seems to have very little to do with refinement types,
+lots to do with invariants, particularlty dynamic invariant protocols
+
+Refinement types are more common in functional languages, and are
+predicates on the state of a value.
+However, they are established at the moment the value is constructed,
+and mutation is either disallowed or allowed only when the predicate
+is guaranteed to never be broken.
+Refinement types give great reasoning advantages and simplify proving
+correctness of programs.
+However, while suitable for deeply immutable values, they are too
+restrictive for imperative programming.
+
+except for imperative languages with refinement types, like X10.
+there is a paper on OO dependent types at ECOOP last(?) year?
+
+I woudln't bet on this not generalising --- and as with many. many things
+in this paper, you're buying a fight here that you don't need to,
+you're makng things more complex for no reason
+
+Invariants are common in OO languages, and are predicates on the state
+of an object and its ROG.
+They are designed to hold in most moments, but they can be
+(temporarily) broken and observed broken.
+*In the visible state semantic of invariant, they can be broken when a
+method on the object is active (in the language implementation sense,
+it means that one such method is present in the stack trace)
+*In the boogie methodology or pack-unpack, objects can be either
+packed or unpacked, and only the invariant of unpacked objects can be
+broken.
+Invariants can be very flexible, but it is hard to reason over them,
+since it is hard to know when they actually holds.
+
+OK so that paragraph above is good, and acutally what the paper should be about
+exept the last sentence shouljd be the second clause in the first sentence :-)
+
+
+We propose that invariants should hold every time an object is observable.
+In a pure OO context where every operation is mediated thru a method
+call (including object creation, field access and field update on
+'this'), this means that at the point of a method call, say
+'a.foo(b)',
+the invariant of all the objects in the ROG of the receiver and all
+the arguments (a and b in this example) must hold.
+
+again this is one side of the big idea
+
+Note that this is much stronger than just saying that the invariant
+should hold every time an object is actually observed (for example,
+every time a field is accessed).
+
+this may be important but it's kidn of off to the side.
+
+This is more flexible that Refinement types: not only objects ready
+for garbage collections can be broken (and stay broken)
+but objects that are not visible in scope can be broken too.
+
+who cares?  
+
+Consider the iconic example of a Range class, with a min and max
+value, where min<=max.
+We assume to be in a language where field declaration induces getters
+and setters.
+We also assume a static factory method taking the fields as parameters
+and initializing a new object.
+
+class Range{
+Int min; Int max;//assumed factory, getters and setters
+method Bool invariant(){return min<max;}
+method Void set(Int min; Int max){
+  if(min>=max){return;}
+  this.min(min);//setters for min/max
+  this.max(max);
+  }
+}
+
+so this is very good!
+
+in fact, the ***entire paper*** is about the difference between these two range examples.
+that's it. that's **ALL**. that's the idea
+anything and everything else is secondary.   getting into that secondary detail
+before having the main idea is clear means people won't understand anything. 
+
+
+
+Under the visible state semantic, this code of set(_,_) should be ok:
+min(_) may temporarily break the invariant, that is fixed the moment
+after by max(_). It is ok to break the invariant in that point, since
+we are inside the method set(_,_) of Range.
+However, under our stricter approach, this code is wrong. The moment
+this.max(max) is called, the invariant of 'this' may be broken, and
+the invariant of an observable object can never be broken.
+However, we can easily adapt this code and provide a correct modified
+Range class with the desired client interface:
+class BoxRange{//no invariant in BoxRange
+Int min; Int max;
+method Void set(Int min; Int max){
+  if(min>=max){return;}
+  this.min(min); this.max(max);
+  }
+}
+class Range{ BoxRange box;
+static mehtod Range of(Int min,Int max){
+  return Range.of(BoxRange.of(min,max));
+  } //factory of BoxRange
+method Bool invariant(){return min<max;}
+method Void set(Int min; Int max){return this.box().set(min,max);}
+
+
+yep. 
+actaully I think its better the other way around - i.e. as a proxy
+the "real" class is the inside one; the outside one could almost be automatically generated
+as a forwarding wrapper.  
+your insight is the invariant can be on the outside class, not the inside. 
+
+another way to thikn about this (I think) is that an object with an invariant has *two* selves (i..e two thises;
+if I wanted to throw in a bit of irrelevant secondary information I'd say this shows that "self" is a 
+better name for "self" than "this", but that's the kind of thing I'm suggesting you do not do!!
+
+Now, the code of Range.set(_,_) is correct:
+since 'this' not in ROG(this.box()), the call
+BoxRange.set(_,_) works in an environment where the Range object is
+not observable, thus its invariant can be temporarily broken.
+
+yeah. 
+
+In the reminder of this work, we discuss how to combine runtime
+checks, object capabilities  and
+reference capabilities to create a convenient language where our
+strict invariant protocol can
+be soundly enforced; even in the presence of mutations, I/O, non
+determinism and exceptions, all under the open world assumption, when
+we only need to assume that all code is well typed.
+
+yeah. sure. mostly anyway.
+
+We defend that such stricter invariant protocol have the same
+advantages of Refinement types when it comes to simplify reasoning.
+
+actually you don't. but anyway. 
+
+On the other side, most conventional usages of invariants can be
+encoded by using more indirect programming patterns.
+
+I quite like the "transform" pattern - it's an internal iterator which mutates, which is fine.
+then you have the box/proxy pattern - some kind of unique or owned (potentially final) reference to a mutable internal object.
+there is I bet **another** pattern too: a proxy with a non-final rference to an immutable object.
+after each mutation you swap the inner object for one with the new value...
+
+
+another way to saya half of the same thing is:
+
+Crucially, any language already designed with such TMs can also support our invariant protocol with minimal added complexity.
+
+which you do. on page 23.  Line 1092.   This shold be in the abstract!!!
+
+this is what let's you get away with the two-selves design -
+[[in fact (like e.g EJBs) you could still program this way **without** having the type enforcement...]  <== another secondary irrelevant poiint]
+
+taking the "line 1092" aprpoach lets you be a lot more **intentional** about this.
+(intentional as in characterising the guarantee rather than explaining how you get it)
+basically talk policy rather than mechanism. what guarantees do you really really need?
+I think it's that "an object owns any mutable state accessed by it's invariant"
+well that's fine, the same as JML at least, and there are any number of schemes
+that can give you that guarantee --- and the big idea doesn't depend on which one (that's the point of your line 1092)
+
+[it's even possible to structure the formalism so it has these guarantees
+**even though it never says how they are maintained**
+just that a program execution that breaces them is therefore invalid. ]
+
+
+so an object owns the mutable state 
+what else is there: the rule about invariants holding - which needs to be expressed very clearly and simply.
+I'm still not sure if this isn't just the visible state rule - 
+the point being that you then use "one more level of indirection" 
+   to **move the boundary of the visible states**  
+ if that's the case, couldn't you use the same design pattern in JML or Spec# and get the same benefits?
+ why or why not?  (it's not a proem if the answer is "yes you can:"
+
+
+from that all the rest follows. Try to avoid to much gratuitous L42ism. 
+If you like , have a section towards the end that tlaks about L42 implementation.
+ditto exsceptions - the question is orthogonal.   either you're not robust through exceptions
+or you ban them or you handle them specially.
+ditto IO and determinism. either you don't care, or you handle them in some way.
+
+
+
+finally (extra for experts)
+assuming the win here does come from the indirection - two selves -
+and that we;'re using the final-reference-to-mutable object "Box" model
+and every method on the outer object just forwards straight to the inner box
+is there a langauge design - a set of restrictions on method code or something - 
+that has the same properties as the box design, behaves the same way with
+resect to invariants and checking, but which actually can be done by only
+allocating *one* object - ie.e can the "two selves" be somehow references
+to a single actual object?  
+
+It's not a problem if there is a way to do this: 
+it is a problem if it's really easy to see and we've missed it. 
+
+
+anyway: those are my thoughs
+I markd up the document but it was on a plane and the markup is really unhelpful.
+
+the #1 comment is: express the key big idea very clearly.
+leave implememntation details, extensions, cute tricks etc til *after* that is done. 
+
+exactlty the same advice goes for Call E. 
+
+thought: I'm working with Sophia this week.
+if you like, I can try to ask her about this idea and see what she says?
+Or not, up to you
+ 
