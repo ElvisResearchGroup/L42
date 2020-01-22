@@ -119,8 +119,9 @@ dropCache:
 */
 
   public Cache.CTop topCache(Program p, Cache.CTop ctop){
+    assert p.dept()==ctop.in().p().dept();
     assert ctop.in().p().top.isFullL();
-    System.out.println(ctop.hasHDDeep());
+    assert validCache;
     var cachedTop=(Full.L)ctop.in().p().top;
     var cachedTopReuseMeth=cachedTop.withMs(L(cachedTop.ms().stream().filter(Full.L.NC.class::isInstance)));
     var newTop=(Full.L)p.top;
@@ -206,6 +207,7 @@ dropCache:
     //else cacheIsInvalid, flagTyped;  topNCs;  inferMeth and Info
     }
   public Cache.CTop dropCache(Program p,Cache.CTop toDrop){
+    assert toDrop==null||p.dept()==toDrop.in().p().dept();
     CTz ctz;
     alreadyCoherent.clear();
     if(toDrop==null){ctz=new CTz();}
@@ -217,7 +219,9 @@ dropCache:
     }
   public Cache.CTop topNoCache(CTz ctz,Program p){
     alreadyCoherent.add(new HashSet<>());
-    assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
+    assert !validCache;
+    assert p.dept()+1>=alreadyCoherent.size():
+     p.dept()+"!="+alreadyCoherent.size();
     Core.L coreL=SortHeader.coreTop(p,uniqueId++);//propagates the right header errors
     Full.L topL=(Full.L)p.top;
     List<Full.L.M> ms=topL.ms();
@@ -390,16 +394,41 @@ dropCache:
     return res;
     }
 //-----------------
+  boolean cacheOk(){
+    if(this.cache._top()==null){
+      assert this.cache.allLibs().isEmpty():this.cache.allLibs();
+      assert this.cache.allByteCode().isEmpty();
+      return true;
+      }
+    assert this.initialPath.endsWith("localhost")|| this.cache._top().in().p().dept()==0:this.initialPath +" "+this.cache._top().in().p().dept();
+    assert this.cache._top().in().coherentList().size()==1;
+    assert this.cache._top().in().ctz().coherent();
+    assert this.cache._top().in().ctz().entries().isEmpty();
+    assert this.cache._top().in().nByteCode()==0;
+    assert this.cache._top().in().nLibs()==0;
+    assert this.cache._top().in().p().dept()==this.cache._top().out().p().dept();
+    return true;
+    }
   public Program top(Program p)throws EndError {
+    assert cacheOk();
     try{
       Cache.CTop res;
-      if(this.validCache){res=topCache(p, this.cache._top());}
+      if(this.validCache){
+        assert this.cache._top()!=null;
+        res=topCache(p, this.cache._top());
+        }
       else{res=dropCache(p,null);}
+      assert res!=null;
       cache._top(res);
       return res.out().p();
       }
     finally{
-      Cache.saveCache(initialPath, cache);//TODO: decomment to activate cache
+      /*if(cache._top()!=null){//may be false if 
+      Hard problem: we want to save the cache also in case of errors/exceptions, but how we
+      update the cache? now we use return values of top/topNC methods, but.. when they throw an
+      exception, they will not get the result!
+        cacheOk();f*/
+        //Cache.saveCache(initialPath, cache);//TODO: decomment to activate cache
       }
     }
   public CTz setInvalid(Cache.InOut in){
@@ -572,6 +601,7 @@ dropCache:
     this.initialPath=initialPath;
     if(initialPath!=null){
       this.cache=Cache.loadCache(initialPath);
+      assert cacheOk();
       if(cache._top()!=null){this.validCache=true;}
       }
     else{this.cache=new Cache(new ArrayList<>(),new ArrayList<>(),null);}

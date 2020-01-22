@@ -55,6 +55,9 @@ import lombok.AllArgsConstructor;
     Program p;
     }
   public static Cache loadCache(Path path){
+    if(path.endsWith("localhost")){//TODO: good just for testing
+      return new Cache(new ArrayList<>(), new ArrayList<>(), null);
+      } 
     try(
       var file=new FileInputStream(path.resolve("cache.L42Bytes").toFile()); 
       var out=new ObjectInputStream(file);
@@ -64,6 +67,7 @@ import lombok.AllArgsConstructor;
     catch(IOException e){throw new Error(e);}
     }
   public static void saveCache(Path path,Cache cache){
+    if(path.endsWith("localhost")){return;}//TODO: good just for testing
     try(
       var file=new FileOutputStream(path.resolve("cache.L42Bytes").toFile()); 
       var out=new ObjectOutputStream(file);

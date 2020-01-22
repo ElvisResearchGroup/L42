@@ -1,0 +1,161 @@
+Tree case: GIVEN
+D::= D[I;Ds;M]
+I,M,O::= input, medium, output
+f,g::= I->gr U M,Os->R
+gr::=g|Err
+R::= R[g;O]|Err
+RR::=RR[g;Os]|Err
+#define g(D)=R
+g0(D[I,Ds,M])=g2(M,Os)
+  g1=g0(I)
+  RR[g2;Os]=g1(Ds)
+g(D[I,Ds])=Err
+  Err=g(I)
+g0(D[I,Ds])=Err
+  g1=g0(I)
+  Err=g1(Ds)
+#define g(Ds)=RR
+g(empty)=RR[g;empty]
+g0(D Ds)=RR[g2;O Os]
+  R[g1;O]=g(D)
+  RR[g2;Os]=g1(Ds)
+g(D Ds)=Err
+  Err=g(D)
+
+
+lets build a notation that behave likes g(D) but with caching
+C::= C[D;gr;Cs;R] | empty //as in, a Cs can be "as long as needed and
+padded with empty"
+#define g(C,D)= C
+g(C,D)=C
+  C.D certainEq D
+g(empty, D)= C[D;Err;empty;Err]
+  Err=g(D.I)
+g0(empty, D)= C[D;g1;Cs;Err]
+  g1=g0(D.I)
+  Cs=g1(emptys,D.Ds)
+  err(Cs.Rs)
+g0(empty, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
+  g1=g0(D.I)
+  Cs=g1(emptys,D.Ds)
+  not err(Cs.Rs)
+  Cs.Rs.gs=_,g2
+g(C, D)= C[D;Err;empty;Err]
+  g|-C.D.I!=D.I:g0
+  Err=g0(D.I)
+g0(C, D)= C[D;g1;Cs;Err]
+  g|-C.D.I!=D.I:g0
+  g1=g0(D.I)
+  g1(emptys,D.Ds)=Cs//yes,empty:C.D.I!=D.I
+  err(Cs.Rs)
+g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
+  g|-C.D.I!=D.I:g0
+  g1=g0(D.I)
+  g1(emptys,D.Ds)=Cs//yes,empty:C.D.I!=D.I
+  not err(Cs.Rs)
+  Cs.Rs.gs=_,g2
+g(C, D)= C
+  g|-C.D.I=D.I:g0
+  C.D certainEq[NoI] D
+g(C, D)= C[D;Err;empty;Err]
+  g|-C.D.I=D.I:g0
+  assert C.gr=g0(D.I)
+  C.gr=Err
+g(C, D)= C[D;g1;Cs;Err]
+  g|-C.D.I=D.I:g0
+  assert C.gr=g0(D.I)
+  C.gr=g1
+  not C.Cs.Ds certainEq D.Ds
+  Cs=g1(C.Cs,D.Ds)
+  err(Cs.Rs)
+g(C, D)= C
+  g|-C.D.I=D.I:g0
+  assert C.gr=g0(D.I)
+  C.gr=g1
+  not C.Cs.Ds certainEq D.Ds
+  Cs=g1(C.Cs,D.Ds)
+  not err(Cs.Rs)
+  Cs.Rs=C.Cs.Rs
+g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
+  g|-C.D.I=D.I:g0
+  assert C.gr=g0(D.I)
+  C.gr=g1
+  not C.Cs.Ds certainEq D.Ds
+  Cs=g1(C.Cs,D.Ds)
+  not err(Cs.Rs)
+  Cs.Rs!=C.Cs.Rs
+  Cs.Rs.gs=_,g2
+g(C, D)= C[D;g1;C.Cs;Err]
+  g|-C.D.I=D.I:g0
+  g1=C.gr
+  assert C.gr=g0(D.I)
+  C.Cs.Ds certainEq D.Ds
+  assert g1(C.Cs.Ds)=g1(D.Ds)
+  assert C.Cs=g1(C.Cs.Ds,D.Ds)
+  not C.D.M certainEq D.M
+  err(C.Cs.Rs)
+g(C, D)= C[D;g1;C.Cs;g2(D.M,Cs.Rs.Os)]
+  g|-C.D.I=D.I:g0
+  C.gr=g1
+  assert C.gr=g0(D.I)
+  C.Cs.Ds certainEq D.Ds
+  assert g1(C.Cs.Ds)=g1(D.Ds)
+  assert C.Cs=g3(C.Cs.Ds,D.Ds)
+  not err(C.Cs.Rs)
+  Cs.Rs.gs=_,g2
+  not g2|-C.D.M = D.M : g3
+g(C, D)= C
+  g|-C.D.I=D.I:g0
+  C.gr=g1
+  assert C.gr=g0(D.I)
+  C.Cs.Ds certainEq D.Ds
+  assert g1(C.Cs.Ds)=g1(D.Ds)
+  assert C.Cs=g3(C.Cs.Ds,D.Ds)
+  not err(C.Cs.Rs)
+  Cs.Rs.gs=_,g2
+  g2|-C.D.M = D.M : g3
+
+#define g(Cs;Ds)= Cs
+g(Cs;empty)=empty
+g(C,Cs;D,Ds)=Err
+  C.D certainEq D
+  C.R=Err
+g0(C,Cs;D,Ds)=C g1(Cs;Ds)
+  C.D certainEq D
+  C.R=R[g1;_]
+g0(C,Cs;D,Ds)=C'
+  C.D canNotBe  D
+  C'=g0(C,D)
+  C'.R=Err
+g0(C,Cs;D,Ds)=C',g1(emptys;Ds)
+  C.D canNotBe D
+  C'=g0(C,D)
+  g1=C'.R.g
+g0(C,Cs;D,Ds)=C'
+  not C.D canNotBe D 
+  not C.D certainEq D
+  C'=g0(C,D)
+  C'.R=Err
+g0(C,Cs;D,Ds)=C',g1(Cs;Ds)
+  not C.D canNotBe D 
+  not C.D certainEq D
+  C'=g0(C,D)
+  g1=C'.R.g  
+  C'.R = C.R
+g0(C,Cs;D,Ds)=C',g1(emptys;Ds)
+  not C.D canNotBe D 
+  not C.D certainEq D
+  C'=g0(C,D) 
+  g1=C'.R.g 
+  C'.R != C.R
+//
+I, M need to provide 3-val eq
+I,M: certainEq, canNotBe
+I,M: g|- I1=I2 :g0,  g|- I1!=I2 :g0
+C do not have a equality
+D have certainEq,canNotBe derived from I,M
+D have certainEq[NoI]
+R have equality
+O have equality
+g have equality
+---------------------
