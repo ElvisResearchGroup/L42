@@ -27,8 +27,6 @@ lets build a notation that behave likes g(D) but with caching
 C::= C[D;gr;Cs;R] | empty //as in, a Cs can be "as long as needed and
 padded with empty"
 #define g(C,D)= C
-g(C,D)=C
-  C.D certainEq D
 g(empty, D)= C[D;Err;empty;Err]
   Err=g(D.I)
 g0(empty, D)= C[D;g1;Cs;Err]
@@ -39,7 +37,7 @@ g0(empty, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
   g1=g0(D.I)
   Cs=g1(emptys,D.Ds)
   not err(Cs.Rs)
-  Cs.Rs.gs=_,g2
+  g1,Cs.Rs.gs=_,g2
 g(C, D)= C[D;Err;empty;Err]
   g|-C.D.I!=D.I:g0
   Err=g0(D.I)
@@ -53,16 +51,19 @@ g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
   g1=g0(D.I)
   g1(emptys,D.Ds)=Cs//yes,empty:C.D.I!=D.I
   not err(Cs.Rs)
-  Cs.Rs.gs=_,g2
+  g1,Cs.Rs.gs=_,g2
 g(C, D)= C
   g|-C.D.I=D.I:g0
   C.D certainEq[NoI] D
+//g(C,D)=C C.D certainEq D//subsumed by the above
 g(C, D)= C[D;Err;empty;Err]
   g|-C.D.I=D.I:g0
+  not C.D certainEq[NoI] D
   assert C.gr=g0(D.I)
   C.gr=Err
 g(C, D)= C[D;g1;Cs;Err]
   g|-C.D.I=D.I:g0
+  not C.D certainEq[NoI] D
   assert C.gr=g0(D.I)
   C.gr=g1
   not C.Cs.Ds certainEq D.Ds
@@ -70,6 +71,7 @@ g(C, D)= C[D;g1;Cs;Err]
   err(Cs.Rs)
 g(C, D)= C
   g|-C.D.I=D.I:g0
+  not C.D certainEq[NoI] D
   assert C.gr=g0(D.I)
   C.gr=g1
   not C.Cs.Ds certainEq D.Ds
@@ -84,7 +86,7 @@ g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
   Cs=g1(C.Cs,D.Ds)
   not err(Cs.Rs)
   Cs.Rs!=C.Cs.Rs
-  Cs.Rs.gs=_,g2
+  g1,Cs.Rs.gs=_,g2
 g(C, D)= C[D;g1;C.Cs;Err]
   g|-C.D.I=D.I:g0
   g1=C.gr
@@ -94,7 +96,7 @@ g(C, D)= C[D;g1;C.Cs;Err]
   assert C.Cs=g1(C.Cs.Ds,D.Ds)
   not C.D.M certainEq D.M
   err(C.Cs.Rs)
-g(C, D)= C[D;g1;C.Cs;g2(D.M,Cs.Rs.Os)]
+g(C, D)= C[D;g1;C.Cs;g3(D.M,Cs.Rs.Os)]
   g|-C.D.I=D.I:g0
   C.gr=g1
   assert C.gr=g0(D.I)
@@ -102,7 +104,7 @@ g(C, D)= C[D;g1;C.Cs;g2(D.M,Cs.Rs.Os)]
   assert g1(C.Cs.Ds)=g1(D.Ds)
   assert C.Cs=g3(C.Cs.Ds,D.Ds)
   not err(C.Cs.Rs)
-  Cs.Rs.gs=_,g2
+  g1,Cs.Rs.gs=_,g2
   not g2|-C.D.M = D.M : g3
 g(C, D)= C
   g|-C.D.I=D.I:g0
@@ -112,7 +114,7 @@ g(C, D)= C
   assert g1(C.Cs.Ds)=g1(D.Ds)
   assert C.Cs=g3(C.Cs.Ds,D.Ds)
   not err(C.Cs.Rs)
-  Cs.Rs.gs=_,g2
+  g1,Cs.Rs.gs=_,g2
   g2|-C.D.M = D.M : g3
 
 #define g(Cs;Ds)= Cs
