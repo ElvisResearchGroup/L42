@@ -1,5 +1,7 @@
  
-Here we show an example illustrating our system in action. Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
+Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
+This example is interesting since it relies on \Q@List@s and \Q@Point@ that are not designed with \Q@Hamster/Cage@s in mind.
+We show a detailed analysis on our Spec\# implementation, showing all the effort we put in trying to find better solutions.
 
 %
 % While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
@@ -28,11 +30,11 @@ class Cage {
 We use the \Q@read@ annotation on the \Q@equals(that)@ method to express that it does not modify either its
 receiver or its parameter. In \Q@Cage@ we use 
 the \Q@capsule@ annotation to ensure
-that the modification of the \Q@Hamster@'s \emph{reachable object graph} (ROG) is fully under the control
+that the modification of the \Q@Hamster@'s ROG is fully under the control
 of the containing \Q@Cage@. 
 We annotated the \Q@move()@
 and \Q@moveTo(p)@ methods with \Q@mut@, since they modify
-their receivers' ROG. The default annotation is always \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.
+their receivers' ROG. The default annotation is \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.
 % Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
 % to check if the hamster position is inside the list.
 % The conventional syntax correctly instantiates a \Q@Cage@:

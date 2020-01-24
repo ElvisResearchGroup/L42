@@ -1,9 +1,10 @@
-\SS\section{A GUI Case Study}
+\SS\section{GUI (Case Study)}
 \label{s:case-study}
 To perform a compelling case study, we used our system on many examples, including one designed to be a worst case scenario for our approach. We also replicate many examples originally proposed by other papers, so that 
 not all the code examples come from us.
-For space reasons, we present most of these examples in  Appendix~\ref{s:MoreCaseStudies}, and instead focus here on a single example of a GUI.
-This example shows that we are able to verify the invariants over cyclic mutable object graphs in a program that interacts with the real world using I/O.
+%We first present
+%most of these examples in  Appendix~\ref{s:MoreCaseStudies}, and instead focus here on a single example of a GUI.
+We start presenting the example of a GUI, showing that we are able to verify the invariants over cyclic mutable object graphs in a program that interacts with the real world using I/O.
 Our example is particularly relevant since, as for most GUI frameworks,
 it is an example of the \emph{composite} programming pattern; arguably one of the most fundamental patterns in OO.
 
@@ -149,6 +150,7 @@ encapsulation of \Q@children()@, thus this approach is even less sound than Spec
 %\end{itemize}
 %The result is the same of L42: the invariant is checked $77$ times, and in exactly the same locations of L42.
 
+Note how both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the cyclic object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
 We found it quite difficult to encode the GUI in Spec\#, due to its unintuitive and rigid ownership discipline. In particular we needed to use many more annotations, which were larger and had greater variety. The following table shows the annotation burden,
 for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GUI; as well as the \emph{library} which defines \Q@Button@s, \Q@Widget@, and event handling. We only count constructs Spec\# adds over C\# as annotations, we also do not count annotations related to array bounds or null checks:
 \begin{center}\SS
@@ -203,20 +205,3 @@ This is needed to delineate scopes for promotions.
 Based on these results, we believe our system is significantly simpler and easier to use.
 % On the basis of these results we believe  that our system is easier to use for programmers that are not experts in software verification.
 
-
-\subheading{Expressive Power: The Box Pattern and the Transform Pattern}
-Our experience shows us that we can encode any computable invariant relying on immutable and encapsulated state.
-We show evidence of the generality of our approach 
-in Appendix~\ref{s:patterns};
-by encoding a \Q@Graph@ library where the invariant of the various \Q@Node@s can be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s.
-This is a generalization of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2)
-as one of the hardest problems when it comes to enforcing invariants.
-
-We have found that using an inner \Q@Box@ object is a useful pattern in static verification: all relevant mutating state is encapsulated into a subobject which is not directly exposed to the users.
-% We also found natural to use the box pattern also in Spec\# requires.
-Both our L42 and Spec\# code required us to use the box pattern for our \Q@SafeMovable@, due to the cyclic object graph caused by the \Q@Action@s of \Q@Button@s needing to change their enclosing \Q@SafeMovable@'s position.
-The box pattern also allows passing the state of invalid objects around (by passing the box object instead of the outer object), and to batch together complex mutations and multiple field updates with only a single invariant check (a method on the box object can perform many fields updates while the outer object is not involved in execution). We show such concrete examples of the usage of boxes in Appendices~\ref{s:MoreCaseStudies} and~\ref{s:patterns}.
-
-The Transformer Pattern (described in the detail in Appendix \ref{s:patterns}) consists of 
-using a lambda or another object representing a user defined operation as a parameter for a capsule mutator.
-This allows a wide range of user defined operations to act on the encapsulated state, without the need of exposing it.

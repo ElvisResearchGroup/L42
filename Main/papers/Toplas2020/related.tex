@@ -153,7 +153,7 @@ And so \Q@assert uncertain() == uncertain();@ also verifies, but randomly fails 
 As you can see, failing to handle non-determinism jeopardises reasoning.
 A simpler and more restrictive solution to these problems is to restrict `pure' functions so that they can only read final fields and call other pure functions. This is the approach used by~\cite{Flanagan06hybridtypes}. One advantage of their approach is that invariants (which must be `pure') can read from a chain of final fields, even when they are contained in otherwise mutable objects. However their approach completely prevents invariants from mutating newly allocated objects, thus greatly restricting how computations can be performed.
 
-We explore our connections with runtime verification in Appendix \ref{s:runtime-verification}.
+%We explore our connections with runtime verification in Appendix \ref{s:runtime-verification}.
 
 %allowing mutation can cause specifications to affect the operational behaviour of code, which is against their purpose.
 
