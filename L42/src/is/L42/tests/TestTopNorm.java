@@ -227,7 +227,32 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->topFail(EndError.InvalidImplements.class,"""
    {I={interface[This]}}
    """,Err.nestedClassesImplemented(hole))
+  ),new AtomicTest(()->
+  //We had options: either (1)"return e: class Any not good" or
+  //(2)catch return class Foo only good if Foo not interface or Foo==Any
+  //and "catch return class Foo" requires Foo to be coherent (so it can not become interface with sum)
+  //We have chosen (2).
 
+  //**catch return class P ok if P==Any or p(P) not interface 
+  //**return e is always OK//nothing to change in code
+  //**path typing get simpler: all interfaces have the class I type, interfaces can still only be class Any
+  //**coherence: catch return class P x e
+  //remove hasClassMethods
+  topFail(EndError.TypeError.class,"""
+    {
+    I={interface class method Void ()}
+    A={[I]}//not coherent
+    Task=(
+      class Any a=A<:class Any
+      class I bang=(
+        return a
+        catch return class I i i
+        catch return class Any _ error void
+        )
+      bang()
+      ) 
+    }
+    """,Err.castOnPathOnlyValidIfNotInterface(hole))
   //strings printing ba
   ),new AtomicTest(()->
   top("""
@@ -235,7 +260,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       S={
         class method This0 of()
         method This0 sum(This0 that)=native{trusted:OP+} error void
-        #norm{nativeKind=String nativePar=This1.PE declaresClassMethods typeDep=This0,This1.PE}
+        #norm{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE}
         }
       PE={#norm{nativeKind=LazyMessage}}
       Debug={
@@ -243,14 +268,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         class method This0 of()        
         method Void strDebug(This1.S that)=native{trusted:strDebug} error void
         method Void deployLibrary(This1.S that,Library lib)=native{trusted:deployLibrary} error void
-        #norm{declaresClassMethods nativeKind=TrustedIO typeDep=This0 This1.S coherentDep=This0}        
+        #norm{nativeKind=TrustedIO typeDep=This0 This1.S coherentDep=This0}        
         }
       SB={
         class method mut This0 of()
         mut method Void #a()=native{trusted:'a'} error void
         mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
-        #norm{nativeKind=StringBuilder,declaresClassMethods typeDep=This0 This1.S coherentDep=This0}
+        #norm{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0}
         }
       C=(
         mut SB sb=SB.of()
@@ -260,7 +285,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         Debug.of().deployLibrary(sb.toS(), lib={
           A={
             class method Library foo()={method Void retrived() #norm{}}
-            #norm{declaresClassMethods}}
+            #norm{}}
           #norm{}})
         {#norm{}}
         )
@@ -269,7 +294,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       {S={
         class method imm This0 of()
         imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
-        #typed{nativeKind=String nativePar=This1.PE declaresClassMethods typeDep=This0,This1.PE}
+        #typed{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE}
         }
       PE={#typed{nativeKind=LazyMessage}}
       Debug={
@@ -277,14 +302,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          class method imm This0 of()
          imm method imm Void strDebug(imm This1.S that)=native{trusted:strDebug}error void
          imm method imm Void deployLibrary(imm This1.S that, imm Library lib)=native{trusted:deployLibrary}error void
-         #typed{declaresClassMethods nativeKind=TrustedIO typeDep=This0 This1.S coherentDep=This0}
+         #typed{nativeKind=TrustedIO typeDep=This0 This1.S coherentDep=This0}
          }
       SB={
         class method mut This0 of()
         mut method Void #a()=native{trusted:'a'} error void
         mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
-        #typed{nativeKind=StringBuilder,declaresClassMethods typeDep=This0 This1.S coherentDep=This0}
+        #typed{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0}
         }
       C={#typed{}}
       #norm{}}
@@ -299,7 +324,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     {
       A={
         class method imm Library foo()={imm method imm Void retrived()#typed{}}
-        #typed{declaresClassMethods}}
+        #typed{}}
       C={imm method imm Void retrived()#typed{}}
       #norm{}}
     """)
@@ -314,7 +339,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       }
     ""","""
     {B={A={class method imm Library of()={#typed{}}
-       #typed{declaresClassMethods}}#typed{}}
+       #typed{}}#typed{}}
     C={#typed{}}#norm{}}
     """)
   ),new AtomicTest(()->
@@ -328,7 +353,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     ""","""
     {B={A={
       class method imm Library of()={imm method imm This2 m()#typed{typeDep=This2}}
-      #typed{typeDep=This1 declaresClassMethods}}#typed{}}
+      #typed{typeDep=This1}}#typed{}}
     C={imm method imm This1.B m()#typed{typeDep=This1.B}}#norm{}}
     """)
  //try-catch
@@ -369,7 +394,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         method This0 not()=native{trusted:OP!} error void
         method This0 and(This0 that)=native{trusted:OP&} error void
         method This0 or(This0 that)=native{trusted:OP|} error void
-        #norm{nativeKind=Bool,declaresClassMethods typeDep=This}
+        #norm{nativeKind=Bool typeDep=This}
         }
       C=if B.true().and(B.true()) {imm method imm Void a()#typed{}}
         else {imm method imm Void b()#typed{}}
@@ -383,7 +408,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       imm method imm This0 not()=native{trusted:OP!}error void
       imm method imm This0 and(imm This0 that)=native{trusted:OP&}error void
       imm method imm This0 or(imm This0 that)=native{trusted:OP|}error void
-      #typed{typeDep=This0 nativeKind=Bool,declaresClassMethods}
+      #typed{typeDep=This0 nativeKind=Bool}
       }
     C={imm method imm Void a()#typed{}}#norm{}}
     """)
@@ -428,7 +453,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         class method Void throwErr()=error void
         class method imm Library a()={imm method imm Void a()#typed{}}
         class method imm Library b()={imm method imm Void b()#typed{}}
-        #typed{declaresClassMethods}
+        #typed{}
         }
       C={imm method imm Void """//in Java multiline strings autotrims :-(
       +" "+s+"() #typed{}}#norm{}}";

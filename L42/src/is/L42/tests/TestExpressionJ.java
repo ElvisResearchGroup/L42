@@ -294,7 +294,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      C={ 
        class method mut This0 of(fwd imm This1.N n)
        method This1.N n()
-       #norm{typeDep=This This1.N declaresClassMethods}}
+       #norm{typeDep=This This1.N}}
      ""","""
        class £cC£n1 implements L42Any{
          int £xn;
@@ -325,12 +325,12 @@ public static void je(String e,String out){
     A={
       class method This0 of()
       method Void ma(This0 a)
-      #norm{typeDep=This declaresClassMethods}
+      #norm{typeDep=This}
       }
     B={
       class method This0 of()
       method Void mb(This0 b)
-      #norm{nativeKind=String typeDep=This,This1.PE declaresClassMethods, nativePar=This1.PE}
+      #norm{nativeKind=String typeDep=This,This1.PE, nativePar=This1.PE}
       }
     PE={#norm{nativeKind=LazyMessage}}
     #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1}}
@@ -347,12 +347,12 @@ public static void jc(String e,String ...out){
   N={
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
-    #norm{nativeKind=Int typeDep=This declaresClassMethods}}
+    #norm{nativeKind=Int typeDep=This}}
   A={
     class method mut This0 of(This1.N n)
     method This1.N n()
     mut method Void n(This1.N that)
-    #norm{typeDep=This This1.N declaresClassMethods}} 
+    #norm{typeDep=This This1.N}} 
   #norm{uniqueId=id1}}
   """;
   var p=Program.parse(l);

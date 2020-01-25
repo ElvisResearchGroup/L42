@@ -149,12 +149,6 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitRefined(L42AuxParser.RefinedContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link L42AuxParser#declaresClassMethods}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
-	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#closeState}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -65,7 +65,7 @@ SlashRes=Class:(Trait({
   read method read This1 get()=native{trusted:get}error void
   mut method mut This1 #get()=native{trusted:#get}error void
   Elem={#norm{}}
-  #norm{typeDep=This1,This,This3.NoElementInOpt declaresClassMethods nativeKind=Opt nativePar=This1,This3.NoElementInOpt}
+  #norm{typeDep=This1,This,This3.NoElementInOpt nativeKind=Opt nativePar=This1,This3.NoElementInOpt}
   })+{
   mut method Void <=(Elem e)=this.#get()<:mut This1.add(e)
   })

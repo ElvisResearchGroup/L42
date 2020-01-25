@@ -9,6 +9,7 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
+import is.L42.generated.ThrowKind;
 import is.L42.generated.P.NCs;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
@@ -53,4 +54,11 @@ private void csAux(Program p,ArrayList<C> cs,Core.L l,Core.L topL){
   if(p.t().p()==P.pAny){return;}
   if(p.p().isNCs()){cohePs.add(p.p().toNCs());}
   }
+@Override public void visitK(Core.K k){
+  super.visitK(k);
+  if(k.thr()!=ThrowKind.Return){return;}
+  if(!k.t().mdf().isClass()){return;}
+  if(k.t().p().isNCs()){cohePs.add(k.t().p().toNCs());}
+  }
+
 }

@@ -61,7 +61,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("A={class method Void v()=void B={method class Void main()=A<:class Void}}",Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->
-   fail("A={B={method class A main()=A<:class A}}",Err.castOnPathOnlyValidIfDeclaredClassMethods(hole))   
+   pass("A={B={method class A main()=A<:class A}}")//we now allow A<:class A even if no class methods on A   
    ),new AtomicTest(()->
    fail("A={interface class method Void v() B={method class A main()=A<:class A}}",Err.castOnPathOnlyValidIfNotInterface(hole))
    ),new AtomicTest(()->
@@ -219,9 +219,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
    A={B={method class Any main()=Void}}
    """)
-   ),new AtomicTest(()->fail("""
-   A={B={method class Void main()=Void}}
-   """,Err.castOnPathOnlyValidIfDeclaredClassMethods(hole))
+   ),new AtomicTest(()->pass("A={B={method class Void main()=Void}}")
+   //now it is allowed to return class Void, before was prevented since Void has no class methods
    ),new AtomicTest(()->pass("""
    C={class method This k()}A={B={method C main()=C.k()}}
    """)
@@ -608,13 +607,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   """,Err.leakedThrow(hole))
   ),new AtomicTest(()->fail("""
   Top={class method Library ()={
-    A={class method This k() #norm{declaresClassMethods typeDep=This}}
-    B={class method This k() #norm{declaresClassMethods typeDep=This}}
+    A={class method This k() #norm{typeDep=This}}
+    B={class method This k() #norm{typeDep=This}}
     Test={
       class method Void foo()[This1.A]=
         exception This1.B<:class This1.B.k() 
-      #norm{declaresClassMethods typeDep=This1.A This1.B coherentDep=This1.B}}
-    #norm{declaresClassMethods}}}
+      #norm{typeDep=This1.A This1.B coherentDep=This1.B}}
+    #norm{}}}
   """,Err.leakedThrow(hole))
   ),new AtomicTest(()->pass("""
   C={class method Void foo()=D.foo()}

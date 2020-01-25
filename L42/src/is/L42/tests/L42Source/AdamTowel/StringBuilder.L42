@@ -107,4 +107,4 @@ mut method Void addAll(This1.S string)=native{trusted:addAll}error void
 class method mut This0 #stringLiteralBuilder()
 read method This1.S toS()=
   native{trusted:toS} error void
-#norm{declaresClassMethods, typeDep=This0,This1.HasToS,This1.S,This1.HasToS nativeKind=StringBuilder, refined=toS()}
+#norm{typeDep=This0,This1.HasToS,This1.S,This1.HasToS nativeKind=StringBuilder, refined=toS()}

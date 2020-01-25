@@ -12,4 +12,4 @@ method Void testActualExpected(Library pos,This1.S name,This1.S actual,This1.S e
 method Void testCondition(Library pos,This1.S name,This1.Bool cond,This1.S message)=
   native{trusted:testCondition} error void
   
-#norm{declaresClassMethods, typeDep=This,This1.HasToS,This1.S,This1.Bool coherentDep=This nativeKind=TrustedIO}
+#norm{typeDep=This,This1.HasToS,This1.S,This1.Bool coherentDep=This nativeKind=TrustedIO}

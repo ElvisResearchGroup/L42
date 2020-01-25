@@ -60,7 +60,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s0=sb.toS()
       s0.strDebug()
       )
-    #typed{declaresClassMethods typeDep=This1.SB This1.S This coherentDep=This1.SB This1.S This}}
+    #typed{typeDep=This1.SB This1.S This coherentDep=This1.SB This1.S This}}
   """)
   ),new AtomicTest(()->
   loadRun("""
@@ -72,7 +72,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s0=sb.toS()
       s0.strDebug()
       )
-    #typed{declaresClassMethods typeDep= This1.SB This1.S This coherentDep=This1.SB This1.S This}}
+    #typed{typeDep= This1.SB This1.S This coherentDep=This1.SB This1.S This}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab\n")
   ),new AtomicTest(()->
   loadRun("""
@@ -82,13 +82,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       catch error Void x x
       void
       )
-    #typed{typeDep=This1.S declaresClassMethods }}
+    #typed{typeDep=This1.S}}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
   ),new AtomicTest(()->
   loadRun("""
     I={interface method Void i() #typed{}}
-    D={[This1.I] class method This of() method Void i()=void #typed{declaresClassMethods typeDep=This,This1.I, refined=i() nativeKind=Bool}}
+    D={[This1.I] class method This of() method Void i()=void #typed{typeDep=This,This1.I, refined=i() nativeKind=Bool}}
     ""","(This.D x=This.D<:class This.D.of() Void v=x.i() {#norm{}})","")
+//slaves
   ),new AtomicTest(()->
   loadRun("""
   SafeReadFile={
@@ -100,7 +101,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
       catch (java.io.IOException ioe) {return "";}
       }} error void
-    #typed{typeDep=This1.S declaresClassMethods}
+    #typed{typeDep=This1.S}
     }
   C={
     class method Void #$m()=(
@@ -110,7 +111,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.#$read(fileName=sb.toS())
       s3.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}}
+    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile}}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello\nWorld\n")
   ),new AtomicTest(()-> 
   loadRun("""
@@ -126,14 +127,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{typeDep=This1.S declaresClassMethods}
+    #typed{typeDep=This1.S}
     }
   C={
     class method Void #$m()=(
       This1.S s3=This1.Safe2<:class This1.Safe2.#$go()
       s3.strDebug()
       )
-    #typed{typeDep=This1.S This1.Safe2 coherentDep=This1.Safe2 declaresClassMethods}}
+    #typed{typeDep=This1.S This1.Safe2 coherentDep=This1.Safe2}}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello World!\n")
   ),new AtomicTest(()-> 
   loadRun("""
@@ -150,14 +151,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{typeDep=This1.SB This1.S declaresClassMethods}
+    #typed{typeDep=This1.SB This1.S}
     }
   C={
     class method Void #$m()=(
       This1.S s3=This1.Safe2<:class This1.Safe2.#$go()
       s3.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2 declaresClassMethods}}
+    #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2}}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello Native World\n")
 /*  ),new AtomicTest(()-> //TODO:On Windows this passes or fails randomly...
   loadRunErr("""
@@ -173,14 +174,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       return "looped";
       }} error void
-    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile declaresClassMethods}
+    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile}
     }
   C={
     class method Void #$m()=(
       This1.S s3=This1.Safe3<:class This1.Safe3.#$go()
       s3.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This1.Safe3 coherentDep=This1.SB This1.S This1.Safe3 declaresClassMethods}}
+    #typed{typeDep=This1.SB This1.S This1.Safe3 coherentDep=This1.SB This1.S This1.Safe3}}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})")
 
 */
@@ -238,7 +239,7 @@ public static Program base(String s){
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
     method Void strDebug()=native{trusted:strDebug} error void
-    #typed{typeDep=This This1.S This1.ParseErr declaresClassMethods nativeKind=String,nativePar=This1.ParseErr}
+    #typed{typeDep=This This1.S This1.ParseErr nativeKind=String,nativePar=This1.ParseErr}
     }
   ParseErr={#norm{nativeKind=LazyMessage}}
   SB={
@@ -246,13 +247,13 @@ public static Program base(String s){
     mut method Void #a()=native{trusted:'a'} error void
     mut method Void #b()=native{trusted:'b'} error void
     read method This1.S toS()=native{trusted:toS} error void
-    #typed{typeDep=This This1.S declaresClassMethods nativeKind=StringBuilder}
+    #typed{typeDep=This This1.S nativeKind=StringBuilder}
     }
   A={
     class method mut This0 of(This1.S n)
     method This1.S n()
     mut method Void n(This1.S that)
-    #typed{typeDep=This This1.S declaresClassMethods }} 
+    #typed{typeDep=This This1.S}} 
   #norm{uniqueId=id1}}
   """;
   return Program.parse(l);

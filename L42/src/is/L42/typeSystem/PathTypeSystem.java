@@ -66,10 +66,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     mustSubPath(e.t().p(),expected,e.poss());
     if(e.t().p()==P.pAny){return;}
     L l=p._ofCore(e.p());
-    L l1=p._ofCore(e.t().p());
-    errIf(l.isInterface(),e,Err.castOnPathOnlyValidIfNotInterface(e.p()));
-    errIf(!l1.info().declaresClassMethods(),e,
-      Err.castOnPathOnlyValidIfDeclaredClassMethods(e.t().p()));
+    boolean ok=e.t().p()==P.pAny || !l.isInterface();
+    errIf(!ok,e,Err.castOnPathOnlyValidIfNotInterface(e.p()));
     _computed=e.t().p();
     }
   @Override public void visitL(L e){
@@ -165,9 +163,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(k.thr()==Exception){ps1.add(t.p());}
     if(!t.mdf().isClass()){return _computed;}
     var l=p._ofCore(t.p());
-    errIf(!l.isInterface(),k.e(),Err.castOnPathOnlyValidIfNotInterface(t.p()));
-    errIf(!l.info().declaresClassMethods(),k.e(),
-      Err.castOnPathOnlyValidIfDeclaredClassMethods(t.p()));
+    boolean anyOrNotInterface=t.p()==P.pAny ||!l.isInterface();
+    errIf(!anyOrNotInterface,k.e(),Err.castOnPathOnlyValidIfNotInterface(t.p()));
     return _computed;
     }
   }

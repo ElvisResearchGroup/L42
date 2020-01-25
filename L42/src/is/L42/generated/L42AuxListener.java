@@ -238,16 +238,6 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitRefined(L42AuxParser.RefinedContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link L42AuxParser#declaresClassMethods}.
-	 * @param ctx the parse tree
-	 */
-	void enterDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link L42AuxParser#declaresClassMethods}.
-	 * @param ctx the parse tree
-	 */
-	void exitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx);
-	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#closeState}.
 	 * @param ctx the parse tree
 	 */

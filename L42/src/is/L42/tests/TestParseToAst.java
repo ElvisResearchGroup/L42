@@ -218,9 +218,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #norm{refined=bar(x,y)}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{watched=This1.C declaresClassMethods}})")
+   pass("({interface #norm{watched=This1.C}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{declaresClassMethods}})")
+   pass("({interface #norm{}})")
 
    ),new AtomicTest(()->
    pass("({imm method imm Any m()={#norm{}}#norm{}})")

@@ -66,9 +66,9 @@ _______
     P in {Void,Any}
 * Q |- P<:class P' : P" //(Path) //assert Q.p(P) and Q.p(P') of form CORE.L
     Q.p |- P <= P'
-    Q.p |- P' <= P"    
+    Q.p |- P' <= P"
     either P'=Any
-    or Q.p(P).interface?=empty and Q.p(P').Info.declaresClassMethods    
+    or Q.p(P).interface?=empty    
 * Q |- L : P //(library propagation)
     P in {Library,Any}
     if Q.Flag==typed then typed |- Q.p.push(L)
@@ -105,8 +105,8 @@ _______
 * Q |- catch throw T0 x e : P | T?; P? //(catch)
     Q[G=Q.G,x:T0] |- e : P
     if throw=exception then P?=T0.P, else P?=empty
-    if throw=return then T?=T0, else T?=T0
-    if T0.mdf=class then Q.p(T0.P).interface?=empty and Q.p(T0.P).Info.declaresClassMethods
+    if throw=return then T?=T0, else T?=empty
+    if T0.mdf=class then either T0.P=Any or Q.p(T0.P).interface?=empty
 _______
 #define p;G;Ts |= e : mdf 
 * p;G;mdfs |= void : mdf //(void)
@@ -163,8 +163,8 @@ _______
 * p;G;mdfs |= empty | G //(DsEmpty)
 _______
 #define p;G;mdfs' |=ks : mdf | mdfs    p;G;mdfs' |=k : mdf |mdfs
-* Q |-k1..kn : mdf |Ts1 U..U Tsn//(catchMany)
-    forall i in 1..n Q |=ki : mdf |Tsi
+* Q |-k1..kn : mdf |mdfs1 U..U mdfsn//(catchMany)
+    forall i in 1..n Q |=ki : mdf |mdfsi
 * Q |= catch throw T0 x e : mdf |mdfs //(catch)
     mdfs=T0.mdf if throw=return
     mdfs=empty otherwise

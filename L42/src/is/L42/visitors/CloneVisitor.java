@@ -155,7 +155,7 @@ public class CloneVisitor {
       &&refined==refined0
       &&nativePar==nativePar0){return info;}
     return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,
-      usedMethods,hiddenSupertypes,refined,info.declaresClassMethods(),
+      usedMethods,hiddenSupertypes,refined,
       info.close(),info.nativeKind(),nativePar,info._uniqueId());
     }
     

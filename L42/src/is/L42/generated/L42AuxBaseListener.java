@@ -292,18 +292,6 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDeclaresClassMethods(L42AuxParser.DeclaresClassMethodsContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterCloseState(L42AuxParser.CloseStateContext ctx) { }
 	/**
 	 * {@inheritDoc}

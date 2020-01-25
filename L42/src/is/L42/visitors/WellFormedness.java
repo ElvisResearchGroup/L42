@@ -625,10 +625,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         L(bridges.stream().map(m->m.key()))
         ));}
       }
-    if(!l.info().declaresClassMethods()){
-      List<S> clazz=L(l.mwts(),(c,m)->{if(m.mh().mdf().isClass()){c.add(m.key());}});
-      if(!clazz.isEmpty()){throw new EndError.NotWellFormed(l.poss(),Err.mustDeclareClassMethods(clazz));}
-      }
     if(!l.info().nativeKind().isEmpty()){
       var t=TrustedKind._fromString(l.info().nativeKind());
       if(t==null){throw new EndError.NotWellFormed(l.poss(),Err.nativeKindInvalid(l.info().nativeKind()));}

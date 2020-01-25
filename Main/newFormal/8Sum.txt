@@ -1,13 +1,11 @@
 Note: interfaces can watch if they have private nested classes that are watching.
 Note: interfaces can be watched if they have private nested classes that are watched.
-TODO: can we remove hasClassMethods and just allow any non-interface class to be <:class X?
-and (thus) alloy any interface I to induce a class I type even if they have no class methods?
-TODO: watched must contains also every public root of private typeDep. 
+TODO: sum class+interface, ok if class not in coherent of anything in the bubble
 PLUS::=PLUS[p;topLeft;topRight;Cs]
 iMWT::=interface?MWT
 _______
 #define p;C |- CORE.L1 + CORE.L2 = CORE.L3
-* p |- L1 + L2 = L
+* p |- L1 + L2 = L//TODO: is p or p;C? see line above
     PLUS=PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty]
     L3 = L1 PLUS L2
     L = L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
@@ -95,7 +93,6 @@ _______
   L' = L(Cs0)[iMWTs0 PLUS .. PLUS iMWTsn][Info=L(Cs0).refined+
   =dom(iMWTs0..iMWTsn)]
   
-
 * implemented(p,L,Cs)
     forall Cs' in dom(L):
       Cs' not of form _._::n._, P in L(Cs').Ts.Ps This0.Cs !=P[from Cs';p]

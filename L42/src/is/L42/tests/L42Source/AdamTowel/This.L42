@@ -5,7 +5,7 @@ Debug={
   class method This of()
   method Void deployLibrary(This1.S that,Library lib)=
     native{trusted:deployLibrary} error void
-    #norm{declaresClassMethods, typeDep=This, This1.S, nativeKind=TrustedIO}        
+    #norm{typeDep=This, This1.S, nativeKind=TrustedIO}        
   }
 StringBuilder={
   class method mut This of()
@@ -13,7 +13,7 @@ StringBuilder={
     native{trusted:'a'} error void
   read method This1.S toS()=
     native{trusted:toS} error void
-    #norm{declaresClassMethods, typeDep=This0, This1.S, nativeKind=StringBuilder}
+    #norm{typeDep=This0, This1.S, nativeKind=StringBuilder}
   }
 //Step 2: barely usable Strings, booleans and Size
 DeployAAA=(
@@ -32,7 +32,7 @@ DeployAAA=(
       class method mut This #apply(This1.S that)=native{trusted:lazyMessageK} error void
       read method This1.S text()=native{trusted:get}error void
       mut method Void text(This1.S that)=native{trusted:setMsg}error void
-      #norm{typeDep=This,This1.S, coherentDep=This declaresClassMethods nativeKind=LazyMessage}
+      #norm{typeDep=This,This1.S, coherentDep=This nativeKind=LazyMessage}
       }
     Url={...}
     Debug={...}

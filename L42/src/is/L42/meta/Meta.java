@@ -103,7 +103,7 @@ public class Meta {
     var info=new Info(
       i.isTyped(),L(typePs.stream()),L(cohePs.stream()),
       /*watched,usedMethods,hiddenSupertypes,*/L(),L(),L(),//TODO: to fix those 3 fields
-      L(),true,false,"",L(),-1
+      L(),false,"",L(),-1
       );
     var res=new Core.L(body.poss(), false, L(), L(meth), L(), info,L());
     return wrapL(res);

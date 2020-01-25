@@ -18,4 +18,4 @@ read method This1.S toS()=native{trusted:toS} error void
 read method This #equalequal0(read This that)=native{trusted:OP==} error void
 read method This #bangequal0(read This that)=(This tmp=this.#equalequal0(that=that) tmp.not())
 
-#norm{declaresClassMethods, typeDep=This0,This1.S,This1.HasToS nativeKind=Bool refined=toS()}
+#norm{typeDep=This0,This1.S,This1.HasToS nativeKind=Bool refined=toS()}

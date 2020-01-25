@@ -252,10 +252,8 @@ public class Err {
   "cast on paths must have the class modifier, but "+_1+" is provided"
   ;}public static String subTypeExpected(Object _1,Object _2){return
   "the path "+_1+" is not a subtype of "+_2
-  ;}public static String castOnPathOnlyValidIfDeclaredClassMethods(Object _1){return
-  "except for Any, targets on path casts must declare class methods, but the following path does not declare any class method: "+_1
   ;}public static String castOnPathOnlyValidIfNotInterface(Object _1){return
-  "expect for Any, path casts can not be applied on interfaces, but "+_1+" is declared as interface"
+  "except for Any, path casts can not be applied on interfaces, but "+_1+" is declared as interface"
   ;}public static String leakedThrow(Object _1){return
   "An "+_1+" is leaked out of this expression"
   ;}public static String leakedExceptionFromMethCall(Object _1){return
@@ -331,8 +329,6 @@ public class Err {
   "Core library literal declares the following refined methods :"+declared+", but the actual set of refined methods is "+estimate
   ;}public static String missingImplementedInterface(Object missing){return
   "Core libraries need to report all the transitive implemented interfaces, but "+missing+" is missing"
-  ;}public static String mustDeclareClassMethods(Object ss){return
-  "Core library declares class methods "+ss+"; it must set the 'declaresClassMethods' info flag"
   
  ;}
 }

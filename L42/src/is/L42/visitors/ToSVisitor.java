@@ -120,7 +120,7 @@ public class ToSVisitor implements ToSTrait{
     infoItem("usedMethods",info.usedMethods());
     infoItem("hiddenSupertypes",info.hiddenSupertypes());
     infoItem("refined",info.refined());
-    boolInfoItem(info.declaresClassMethods(),"declaresClassMethods");
+    boolInfoItem(info.close(),"close");
     infoElem("nativeKind",info.nativeKind(),"");
     infoItem("nativePar",info.nativePar());
     infoElem("uniqueId",info._uniqueId(),-1);

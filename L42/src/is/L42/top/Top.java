@@ -548,7 +548,6 @@ dropCache:
       mergeU(info1.usedMethods(),info2.usedMethods()),
       mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
       mergeU(info1.refined(),info2.refined()),
-      info1.declaresClassMethods() || info2.declaresClassMethods(),
       info1.close() || info2.close(),
       info1.nativeKind()+info2.nativeKind(),
       info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),

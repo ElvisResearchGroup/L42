@@ -100,8 +100,7 @@ _______
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
-    declaresClassMethods?=empty iff class notin MWTs.mdfs
-    Info0 = #norm{typeDep=Ps\{Any,Void,Library},refine=ss, declaresClassMethods?,closeState, uniqueId=n}
+    Info0 = #norm{typeDep=Ps\{Any,Void,Library},refine=ss,closeState, uniqueId=n}
     n fresh
     //Note: sortHeader remove  bodies from methdos. This basically guarantees 
     //closeState. The close/open state is fixed later
@@ -276,18 +275,18 @@ _______
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
 * collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty
 * collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0;CORE.L];Ps'0..Ps'n[skipThis0;CORE.L]
-    Ps0 = CORE.L.Info.typeDep
-    Ps'0 = CORE.L.Info.coherent
-    Ps1..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}
-    Ps'1..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
+    Ps0..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}//Note: This0 in dom(Core.L)
+    Ps'0..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;P<:class Any)= P;empty
 * collectDepsE(p;P<:class P')= P',P;P
     P' != Any
 * collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
-* collectDepsE(p;var? T x=e) = collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e)
-
+* collectDepsE(p;var? T x=e) = collectDeps(T) U collectDepsE(p;e)
+* collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e) U empty;P?
+    P?=T.P if throw=return, T.mdf=class and T.P notin {Any,Void,Library}
+    P?=empty otherwise
 * empty[skipThis0;L]=empty;
 * This0.Cs,Ps[skipThis0;L]=Ps[skipThis0;L]
   //Note:Cs notin dom(L) the code will give an error

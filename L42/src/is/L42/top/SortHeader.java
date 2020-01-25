@@ -58,11 +58,9 @@ class SortHeader{
     List<S> ss=L(mwts,(c,mi)->{
       if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
       });
-    boolean declaresClassMethods=mwts.stream().anyMatch(mi->mi.mh().mdf().isClass());
     var newInfo=Core.L.Info.empty
       .withTypeDep(typeDep)
       .withRefined(ss)
-      .withDeclaresClassMethods(declaresClassMethods)
       .with_uniqueId(uniqueId);
     newInfo=Top.sumInfo(coreL.info(),newInfo).withClose(true);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
@@ -116,7 +114,7 @@ class SortHeader{
       if(refine(p1,s,P.pThis0,poss)){c.add(s);}
       });
     Info info=new Info(false,typeDeps,unique(L(cohePs.stream())),
-      L(),L(),L(),refined,classMeth,true,"",L(),uniqueId); 
+      L(),L(),L(),refined,true,"",L(),uniqueId); 
   return new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
   }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{

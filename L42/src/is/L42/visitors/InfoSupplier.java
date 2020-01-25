@@ -32,7 +32,6 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   List<Core.PathSel> usedMethods=null;
   List<P.NCs> privateSupertypes=null;
   List<S> refined=null;
-  Boolean declaresClassMethods=null;
   Boolean closeState=null;
   String nativeKind=null;
   List<P> nativePar=null;
@@ -118,7 +117,6 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       fillInfo("usedMethods",b.usedMethods(),z->z.pathSel(),()->usedMethods,v->usedMethods=v,this::psf);
       fillInfo("privateSupertypes",b.hiddenSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
       fillInfo("refined",b.refined(),z->z.selector(),()->refined,v->refined=v,this::sf);
-      boolFlag("declaresClassMethods",b.declaresClassMethods(),()->declaresClassMethods,v->declaresClassMethods=v);
       boolFlag("closeState",b.closeState(),()->closeState,v->closeState=v);
       fillElem("nativeKind",b.nativeKind(),z->z.x()!=null?z.x().getText():z.c().getText(),()->nativeKind,v->nativeKind=v,s->s.isEmpty());
       fillInfo("nativePar",b.nativePar(),z->z.path(),()->nativePar,v->nativePar=v,this::pf);
@@ -134,13 +132,12 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     nullToDef(()->usedMethods,v->usedMethods=v,emptyPs);
     nullToDef(()->privateSupertypes,v->privateSupertypes=v,empty);
     nullToDef(()->refined,v->refined=v,emptyS);
-    nullToDef(()->declaresClassMethods,v->declaresClassMethods=v,false);
     nullToDef(()->closeState,v->closeState=v,false);
     nullToDef(()->nativeKind,v->nativeKind=v,"");
     nullToDef(()->nativePar,v->nativePar=v,General.<P>L());
     nullToDef(()->_uniqueId,v->_uniqueId=v,-1);
     return new Core.L.Info(isTyped,typeDep,coherentDep,friends,usedMethods,
-      privateSupertypes,refined,declaresClassMethods,closeState,
+      privateSupertypes,refined,closeState,
       nativeKind,nativePar,_uniqueId);
     }
 }

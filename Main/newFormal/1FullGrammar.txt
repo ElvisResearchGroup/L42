@@ -23,14 +23,17 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,
-    declaresClassMethods?,close?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,close?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
     //in concrete syntax, labels for empty fields must be omitted
     //watched//Paths whose unique numbers are used either directly,
     //    or in a private nested class or in an L in a method
+    P in  watched if p(P) or p(P.C::k._) owns n and either//TODO: add in code
+      _._::n._ in p(This0).typeDep
+      _._::n._ in p(This0.C::k._).typeDep//is this already included in the former case?
+      _.m::n(_) inside p(This0)(s).e
+      _.m::n(_) inside p(This0.C::k._)(s).e
     //usedMethods//methods used either directly or in a private nested class or in an L in a method
     //hiddenSupertypes//interfaces implemented by a private nested class or in an L in a method
-    //declaresClassMethods (since it can be cast to class P)
     //closed: a class or interface with private abstract methods, or an interface implementing a private interface.
     //may add 'free this': 'this' only used as receiver
     //Note: typeDep and coherentDep list also private Ps, but the "public interface" of a class only shows info on public stuff.
@@ -212,7 +215,6 @@ _______
     L.Info.coherentDep subseteq L.Info.typeDep
     ...
     L.Info.nativePar subseteq L.Info.typeDep//same for all the fields of Info containing Ps
-    either L.Info.declaresClassMethods?!=empty or class notin L.MWTs.mdfs
     L.Info.nativeKind recognized
     expectedNumber(L.Info.nativeKind,L.Info.nativePar)
     //the number of nativePar is the expected number for the kind of nativeKind
