@@ -233,6 +233,23 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   //and "catch return class Foo" requires Foo to be coherent (so it can not become interface with sum)
   //We have chosen (2).
 
+//when catches are collected, in the Ts, if class Any is in the set,
+// then for any other class P, P must be p(P).interface?=empty
+//1either, we cut Any off if some P is interface
+//2we cut the non interfaces P if there is Any
+//3we look to ks: if ks captures class Any we remove the interface class Ps from the Ts.
+// otherwise we remove the class Any from the Ts.
+//4we just give error instead of autofixing it
+//-check desugar for cast/if: if we avoid Any for the failed cast state, it would be more expressive
+//-think what is the effect in nested {}s
+
+//when collecting coherent, catch class P cause P to be required coherent only
+//if p(P).interface?=empty
+
+//Ok, we can say that when a catch block catches return class T
+//we can either allow catching class Any+ class P for non interface P
+//or catch any kind of class P except class Any.
+
   //**catch return class P ok if P==Any or p(P) not interface 
   //**return e is always OK//nothing to change in code
   //**path typing get simpler: all interfaces have the class I type, interfaces can still only be class Any
