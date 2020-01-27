@@ -5,7 +5,7 @@ PLUS::=PLUS[p;topLeft;topRight;Cs]
 iMWT::=interface?MWT
 _______
 #define p;C |- CORE.L1 + CORE.L2 = CORE.L3
-* p |- L1 + L2 = L//TODO: is p or p;C? see line above
+* p;C |- L1 + L2 = L
     PLUS=PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty]
     L3 = L1 PLUS L2
     L = L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
@@ -80,7 +80,7 @@ _______
     PLUS.Cs notin allWatched(PLUS.p)
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
 _______ 
-#define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(p,L,Cs)
+#define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(p,L,Cs)=interface?
 * Cs |- L2 > L1
   L1(Cs) is interface
   either L2(Cs).Ts\L1(Cs).Ts!=empty
@@ -88,15 +88,15 @@ _______
 
 * L[Cs0 PLUS This0.Cs1..This0.Csn] = L[Cs0=L']
   Cs0=C1..Ck
-  interface?i=interface if implemented(PLUS.p,L,Csi)
-  iMWTsi=interface?0[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
+  interface?i=implemented(PLUS.p,L,Csi)
+  iMWTsi=interface?i[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
   L' = L(Cs0)[iMWTs0 PLUS .. PLUS iMWTsn][Info=L(Cs0).refined+
-  =dom(iMWTs0..iMWTsn)]
+  =dom(iMWTs1..iMWTsn)]
   
-* implemented(p,L,Cs)
+* implemented(p,L,Cs)=empty
     forall Cs' in dom(L):
       Cs' not of form _._::n._, P in L(Cs').Ts.Ps This0.Cs !=P[from Cs';p]
-
+* implemented(p,L,Cs)=interface otherwise
   //DO NOT READ AFTER THIS POINT
   //renames:
   rename only names not nesteds; to request renaming also nested, use 'Foo* or similar

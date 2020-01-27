@@ -33,8 +33,9 @@ public class RootCache {
 	 * @param class_ The class object representing the type
 	 * @param cache The relevant cache object
 	 */
-	public static <T> void addCacheableType(Class<T> class_, Cache<T> cache) {
+	public static <T> Cache<T> addCacheableType(Class<T> class_, Cache<T> cache) {
 		commander.put(class_, cache);
+		return cache;
 		}
 	
 	@SuppressWarnings("unchecked")

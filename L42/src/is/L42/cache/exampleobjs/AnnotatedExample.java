@@ -5,7 +5,7 @@ import is.L42.cache.ForeignObject;
 import is.L42.cache.ForeignObjectCache;
 import is.L42.cache.RootCache;
 import is.L42.tools.General;
-
+//UserDefinedCachable=Foreign
 public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
   
   /*
@@ -16,14 +16,10 @@ public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
    * Store the cache statically for later retrieval by myCache() 
    */
   
-  private static final Cache<AnnotatedExample> myCache;
-  
-  static
-  {
-    //The call to .addCacheableType is necessary, as the cache
-    //map is sometimes used as a fallback mechanism
-    RootCache.addCacheableType(AnnotatedExample.class, (Cache<AnnotatedExample>) (myCache = new ForeignObjectCache<AnnotatedExample>()));
-  }
+  private static final Cache<AnnotatedExample> myCache=
+    RootCache.addCacheableType(AnnotatedExample.class,new ForeignObjectCache<AnnotatedExample>());
+  //The call to .addCacheableType is necessary, as the cache
+  //map is sometimes used as a fallback mechanism
   
   //Some field declarations
   String myString;
