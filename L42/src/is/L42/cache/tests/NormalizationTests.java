@@ -69,6 +69,21 @@ public class NormalizationTests {
       });
     }
   
+  @Test
+  public void testLongShortCircleEQ() {
+    testBiProperties(() -> {
+      R1 r1 = new R1(null);
+      R1 r2 = new R1(r1);
+      R1 r3 = new R1(r2);
+      r1.referenced = r3;
+      return r1;
+      }, () -> {
+      R1 r1 = new R1(null);
+      r1.referenced = r1;
+      return r1;
+      });
+    }
+  
   private static void testSelfProperties(Supplier<Object> supplier) {
     testBiProperties(supplier, supplier);
     }
@@ -76,6 +91,7 @@ public class NormalizationTests {
   private static void testBiProperties(Supplier<Object> supplier1, Supplier<Object> supplier2) {
     Object n1 = supplier1.get();
     Object n2 = supplier2.get();
+    assertTrue(n1 != n2);
     assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false));
     n1 = normalize(n1);
     n2 = normalize(n2);
@@ -83,6 +99,8 @@ public class NormalizationTests {
     testDeepFieldEQ(n1, n2, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
     assertEquals(getKey(n1, false), getKey(n2, false));
     assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false));
+    assertEquals(getKey(n1, true), getKey(n2, true));
+    assertEquals(expandedKey(n1, true, true), expandedKey(n2, true, true));
     }
   
   @SuppressWarnings({ "rawtypes", "unchecked" }) 

@@ -59,6 +59,20 @@ public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
         throw General.unreachable();
       }
     }
+  
+  @Override
+  public Object getField(int i) {
+    switch(i) {
+      case 0:
+        return myString;
+      case 1: 
+        return myInt;
+      case 2:
+        return myReference;
+      default:
+        throw new ArrayIndexOutOfBoundsException();
+    }
+  }
 
   @Override 
   public Cache<AnnotatedExample> myCache() { 

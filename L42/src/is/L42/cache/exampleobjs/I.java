@@ -20,10 +20,14 @@ public class I implements ForeignObject<I> {
 		return new Object[0];
 	}
 
-	public void setField(int i, Object o) 
-	{
+	public void setField(int i, Object o) {
 		throw new ArrayIndexOutOfBoundsException();	
-	}
+	  }
+	
+	@Override
+  public Object getField(int i) {
+	  throw new ArrayIndexOutOfBoundsException();
+    }
 
 	@Override
 	public Cache<I> myCache() {
