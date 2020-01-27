@@ -49,8 +49,9 @@ class Algo1 implements Fun{
     return this;
     }
   Fun former;
-  int acc;Algo1(Fun former,int n){this.former=former;acc=n;}
-  @Override public boolean eq(Fun f) {return this.getClass()==f.getClass() && acc==((Algo1)f).acc;}
+  int acc;
+  Algo1(Fun former,int n){this.former=former;acc=n;}
+  @Override public boolean eq(Fun f) {return this.getClass()==f.getClass() && acc==((Algo1)f).acc;}//TODO: should also check former is the same?
   @Override public Fun apply(I i) {return new Algo1(this,num(i));}
   @Override public R apply(M m, List<O> os) {
     int res=this.acc+os.stream().mapToInt(oi->num(oi)).sum();

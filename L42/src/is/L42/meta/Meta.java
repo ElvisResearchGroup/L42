@@ -215,4 +215,7 @@ public class Meta {
         }
       };
     }
+    public String pathName(L42Any target){
+      return "hi";
+      }
   }

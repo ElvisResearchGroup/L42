@@ -14,4 +14,8 @@ method Library simpleRedirect(
     native{trusted:simpleRedirect} error void
 class method This1.Name #from(This1.StringBuilder stringLiteral)=
   This1.Name<:class This1.Name.#from(stringLiteral=stringLiteral)
+  
+method This1.S pathName(class Any that)=
+  native{trusted:pathName} error void
+  
 #norm{typeDep=This0, This1.S,This1.Name,This1.StringBuilder coherentDep=This1.Name nativeKind=Meta}

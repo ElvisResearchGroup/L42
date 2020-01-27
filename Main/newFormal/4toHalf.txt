@@ -144,7 +144,7 @@ _______
     e not of form xP
 * Y!(if T x=xP e) = Y!(
       T x=(return xP catch return T x' x')
-      catch return T.mdf Any x' void
+      catch return T.mdf Any x' void //TODO: what about using catch return T.mdf Y.GX(xP).P x' void 
       e)
     x' is fresh
 

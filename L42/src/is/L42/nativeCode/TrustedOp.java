@@ -350,7 +350,10 @@ public enum TrustedOp {
     Meta,use("return %s.mergeMap(%s);",sigI(Meta,Meta)))),
   ApplyMap("applyMap",Map.of(
     Meta,use("return %s.applyMap(%s);",sigI(Lib,Lib)))),
-  
+  PathName("pathName",Map.of(
+    Meta,use("return %s.pathName(%s);",sig(Immutable,Immutable,String,
+      Class,Any))
+    )),  
   //Vector
   VectorK("vectorK",Map.of(Vector,use("return new %This(%2$s);",sig(Class,Mutable,This,Immutable,Int)))),
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),

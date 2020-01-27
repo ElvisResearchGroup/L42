@@ -186,7 +186,7 @@ Iterator={
   class method mut This(Size start,Size end,Bool cut,fwd mut This1 list)
   read method read This #iterator()=this
   mut method mut This #varIterator()=this
-  read method Size #startIndex()=0Size
+  read method Size #startIndex()=this.start()
   read method Bool #hasElem(Size that)=that<this.end()
   read method Bool #incomplete(Size that)=that!=this.end()
   read method Elem #elem#imm(Size that)=this.list().val(that)

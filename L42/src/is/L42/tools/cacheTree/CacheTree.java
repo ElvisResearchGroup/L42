@@ -10,9 +10,7 @@ import is.L42.common.EndError;
 public interface CacheTree {
   interface I{Boolean mayBeEq(I i);}
   interface M{Boolean mayBeEq(M m);}
-  interface O{
-    boolean eq(O f);
-    }
+  interface O{boolean eq(O f);}
   class R{Fun _g; O _o; EndError _err;
     //either only _err==null or only _g and _o ==null
     public R(Fun _g,O _o,EndError _err){this._g=_g;this._o=_o;this._err=_err;}

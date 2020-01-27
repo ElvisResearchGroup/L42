@@ -1,0 +1,36 @@
+reuse[AdamTowel]
+
+MyTrait=Trait:{class method Void foo()=Debug(S"foo")}
+//MyCode=Class:MyTrait
+//MyCode2=Class:MyTrait+{  ..}
+//MyCode3=Class:MyTrait+{ .. }
+//Task=MyCode.foo()
+
+Point={Size x Size y  class method This(Size x Size y)
+  read method Bool ==(read Point that)=
+    this.x()==that.x() && this.y()==that.y()
+  }
+//Points=Class:ListT(Point)
+//Points=Class:(ListT(withEq=Point)+{
+//      class method Bool equals(read Point a,read Point b)=a==b})
+
+PointEquality=Trait:{class method Bool equals(read Point a,read Point b)=a==b}
+Points=Class:(ListT(withEq=Point)+PointEquality)
+
+
+Test1=(
+  points=Points[\(x=3\ y=5\)]
+  {}:Test"basicPoints=="(points==points)
+  
+  ss=Strings[S"hello";S" ";S"world"]
+  {}:Test"basic0: showcasing == test style"(S"hello world"==
+    ss.reduce()(for e in \vals \res<=\acc++e)
+    )
+  {}:Test"basic:reduce from empty string"(expected=S"-hello world" 
+    actual=ss.reduce(S"-")(for e in \vals \res<=\acc++e)
+    )
+  {}:Test"basic: reduce from left value"(expected=S"hello world" 
+    actual=ss.reduce()(for e in \vals \res<=\acc++e)
+    )
+  
+  )
