@@ -97,9 +97,7 @@ public class LoopCache {
 					circleobjects.put(entry.getKey(), entry.getValue().replaceNN(replacements));
 					}
 				}
-			break;
 		} while(true);
-		return null;
 	}
 	
 	private static KeyNorm2D keyFromCircleObject(Object circleobj, Map<Object, CircleObject> circleobjects)
