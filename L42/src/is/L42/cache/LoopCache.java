@@ -21,7 +21,7 @@ public class LoopCache {
 	 * @param circle Set of all objects in the circle
 	 * @return the normalized variant of o
 	 */
-	@SuppressWarnings({ "unchecked" })
+	@SuppressWarnings({ "unchecked", "rawtypes" })
 	public static <T> T normalizeCircle(Object desired, Set<Object> circle) {
 		//TODO: Break this up into smaller parts
 		Map<Object, CircleObject> circleobjects = new HashMap<>();
@@ -47,7 +47,9 @@ public class LoopCache {
 			if(replacements.size() == 0) {
 				if(!circularIndex.containsKey(retKey)) {
 					for(Map.Entry<KeyNorm2D, Object> entry : tempKeyMap.entrySet()) {
+					  Cache cache = RootCache.getCacheObject(entry.getValue());
 						circularIndex.put(entry.getKey(), entry.getValue());
+						cache.addObjectOverride(simpleKeyFromChonker(entry.getValue(), entry.getKey()), entry.getValue());
 						}
 					}
 				return (T) circularIndex.get(retKey);
@@ -109,6 +111,20 @@ public class LoopCache {
 		for(int i = 0; i < lines.length; i++) { lines[i] = (circleobjects.get(order.get(i))).toKey(varnames); }
 		return new KeyNorm2D(lines);
 	}
+	
+	@SuppressWarnings({ "rawtypes", "unchecked" }) 
+	private static KeyNorm2D simpleKeyFromChonker(Object obj, KeyNorm2D key) {
+	  Cache cache = RootCache.getCacheObject(obj);
+	  Object[] ln1 = key.lines()[0];
+	  Object[] ln1cpy = new Object[ln1.length];
+	  System.arraycopy(ln1, 0, ln1cpy, 0, ln1.length);
+	  for(int i = 1; i < ln1.length; i++) {
+	    if(ln1[i] instanceof £KeyVarID) {
+	      ln1cpy[i] = cache.f(obj, i - 1);
+	      }
+	    }
+	  return new KeyNorm2D(new Object[][] { ln1cpy });
+	  }
 	
 	protected static class Field {	
 		boolean isNorm;

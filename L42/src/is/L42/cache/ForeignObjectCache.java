@@ -16,6 +16,11 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
 		t.norm(true);
 		}
 	
+	 @Override 
+	 public void addObjectOverride(KeyNorm2D key, T value) {
+	   normMap.put(key, value);
+     }
+	
 	@Override
 	public T normalize(T t) {
 		NormResult<T> res = normalizeInner(t, new ArrayList<Object>());

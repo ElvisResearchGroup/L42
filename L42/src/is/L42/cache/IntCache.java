@@ -4,6 +4,9 @@ import java.util.List;
 
 public class IntCache implements Cache<Integer> {
 
+  @Override 
+  public void addObjectOverride(KeyNorm2D key, Integer value) {}
+  
 	@Override
 	public Integer normalize(Integer t) { return t; }
 	
@@ -36,7 +39,7 @@ public class IntCache implements Cache<Integer> {
 
 	@Override
 	public String typename(Integer t) {
-		return "�nativeint";
+		return "£nativeint";
 		}
 
 	@Override

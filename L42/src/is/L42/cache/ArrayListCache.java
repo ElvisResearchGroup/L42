@@ -19,6 +19,13 @@ public class ArrayListCache implements Cache<ArrayList> {
 		normMap.put(key, t);
 		normSet.add(new WeakReference<>(t));
 		}
+	
+	@Override 
+  public void addObjectOverride(KeyNorm2D key, ArrayList value) {
+    normMap.put(key, value);
+    normSet.add(new WeakReference<>(value));
+    }
+	
 
 	@Override
 	public ArrayList normalize(ArrayList t) {

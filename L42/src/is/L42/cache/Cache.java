@@ -80,6 +80,12 @@ public interface Cache<T> {
 	NormResult<T> computeKeyNNInner(T t, List<Object> chain);
 	
 	/**
+	 * Adds an object with the specified key, without doing
+	 * any checks with respect to the structure of the cache
+	 */
+	void addObjectOverride(KeyNorm2D key, T obj);
+	
+	/**
 	 * Returns whether a given object has already been
 	 * normalized
 	 * 
