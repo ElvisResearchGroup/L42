@@ -1,10 +1,11 @@
 package is.L42.cache.exampleobjs;
 
 import is.L42.cache.Cache;
+import is.L42.cache.ForeignObject;
 import is.L42.cache.ForeignObjectCache;
 import is.L42.cache.RootCache;
 
-public class R2 implements is.L42.cache.ForeignObject<R2> {
+public class R2 implements ForeignObject<R2> {
 	
 	private static final Cache<R2> myCache;
 	
