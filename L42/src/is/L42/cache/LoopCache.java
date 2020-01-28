@@ -140,13 +140,7 @@ public class LoopCache {
     
     public Object toKeyObject(Map<Object, Integer> varmap) {
       if(isNorm) { return value; }
-      else { try {return new £KeyVarID(varmap.get(this.value)); } catch(Throwable e) {
-        System.out.println(varmap);
-        System.out.println(this.value);
-        e.printStackTrace();
-        return null;
-      }
-      }
+      else { return new £KeyVarID(varmap.get(this.value)); }
       }
     
     public void replaceNN(Map<Object, Object> replacements) {

@@ -128,6 +128,7 @@ public class RootCache {
     addNewObject.apply(obj);
     for(int i = 0; i < nkeylist.size(); i++) {
       Object[] line = nkeylist.get(i);
+      if(((Cache<?>) line[0]).isValueType()) { continue; }
       for(int j = 1; j < line.length; j++) {
         if(!(line[j] instanceof £KeyVarID)) {
           if(done.containsKey(line[j])) {

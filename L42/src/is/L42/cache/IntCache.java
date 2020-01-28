@@ -62,6 +62,17 @@ public class IntCache implements Cache<Integer> {
   @SuppressWarnings("rawtypes") 
   @Override 
   public Cache rawFieldCache(int i) {
-    throw General.unreachable(); 
+    return this;
+    }
+  
+  @Override
+  public KeyNorm2D simpleKey(Integer t) {
+    Object[][] key = new Object[][] {{ this, t.intValue()}};
+    return new KeyNorm2D(key);
+    }
+  
+  @Override
+  public boolean isValueType() {
+    return true;
     }
   }

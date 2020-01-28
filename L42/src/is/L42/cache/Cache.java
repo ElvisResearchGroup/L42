@@ -196,6 +196,11 @@ public interface Cache<T> {
    */
   String typename(T t);
   
+  default boolean isValueType()
+  {
+    return false;
+  }
+  
   /**
    * Produces a key as though this object contained no circular references. 
    * For internal use.
