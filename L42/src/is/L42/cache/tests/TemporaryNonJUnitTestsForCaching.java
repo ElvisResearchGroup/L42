@@ -7,6 +7,7 @@ import is.L42.cache.Cache;
 import is.L42.cache.ForeignObject;
 import is.L42.cache.ForeignObjectCache;
 import is.L42.cache.KeyNorm2D;
+import is.L42.cache.NormResult;
 import is.L42.cache.RootCache;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
@@ -14,9 +15,7 @@ import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
 
 public class TemporaryNonJUnitTestsForCaching {
-	
-	public static final void main(String[] args)
-	{
+	public static final void main(String[] args){
 		I i1 = new I();
 		I i2 = new I();
 		i1 = RootCache.normalize(i1);
@@ -56,10 +55,9 @@ public class TemporaryNonJUnitTestsForCaching {
 		r2 = RootCache.normalize(r2);
 		r3 = RootCache.normalize(r3);
 
-//    assert r1==r2;
-//    assert r1==r3;
-//    assert r2==r3;
-
+    assert r1==r2;
+    assert r1==r3;
+    assert r2==r3;
 
 		R1 r11 = new R1(null);
 		R1 r21 = new R1(r11);
@@ -127,29 +125,67 @@ public class TemporaryNonJUnitTestsForCaching {
   	IntBox box1=new IntBox(30000);
   	IntBox box2=new IntBox(30000);
   	assert box1!=box2;
-  	box1=RootCache.normalize(box1);
+  	box1=RootCache.normalize(box1);//not calling RootCache.expandedKey(box1,false,true);
   	box2=RootCache.normalize(box2);
   	assert box1==box2;
-  	}
+  	}{
+  	IntBox box1=new IntBox(30000);
+    IntBox box2=new IntBox(320000);
+  	KeyNorm2D box1Key=RootCache.expandedKey(box1,true,false);
+  	KeyNorm2D box2Key=RootCache.expandedKey(box2,true,false);
+  	assert box1Key.equals(box2Key);//BUG
+  	System.out.println(box1Key.toString());//TODO
+    }{
+    R1 r=new R1(null);
+    r.referenced=r;
+    KeyNorm2D rKey=RootCache.expandedKey(r,true,false);
+    assert rKey.equals(rKey);
+    }{
+    R2 r=new R2(null,null);
+    r.referenced=r;
+    r.referenced2=r;
+    KeyNorm2D rKey=RootCache.expandedKey(r,true,false);
+    assert rKey.equals(rKey);
+    }{
+    R2 r=new R2(null,null);
+    R1 rr=new R1(r);
+    r.referenced=rr;
+    r.referenced2=rr;
+    KeyNorm2D rKey=RootCache.expandedKey(r,true,false);
+    assert rKey.equals(rKey);
+    }
   	
 		KeyNorm2D key = RootCache.getCacheObject(B).computeKeyNN(B);
 		KeyNorm2D key2 = RootCache.getCacheObject(list2).computeKeyNN(list2);
 		KeyNorm2D key3 = RootCache.expandedKey(A2, true, false);
 		
 		System.out.println("All tests succeeded");
-		
 	}
 
 }
 
+/*
+ Probably, for all nativeKinds:
+ either we can reuse the behaviour of Integer/String
+ or we can just implement ForeignObject on all the 
+ custom defined nativeKinds like Meta and TrustedIO?
+ Could there be an opminized cache for objects like I(), that are all the same?
+ //could we also optimize the case of "wrapper objects with only one field"
+  
+  
+ */
+
 class IntBox implements ForeignObject<IntBox> {
-  private static final Cache<IntBox> myCache=
-    RootCache.addCacheableType(IntBox.class,new ForeignObjectCache<IntBox>());
+  private static final ForeignObjectCache<IntBox> myCache=(ForeignObjectCache<IntBox>)
+    RootCache.addCacheableType(IntBox.class,new ForeignObjectCache<IntBox>("IntBox"));
+  static{myCache.lateInitialize(int.class);}
+  //setted up to work transparantly for both int.class and Integer.class
   int f;IntBox(int f){this.f=f;}
   @Override public Object[] allFields() {return new Object[]{f};}
   @Override public void setField(int i, Object o) { this.f=(Integer)o;}
   @Override public Cache<IntBox> myCache() {return myCache;}
-  @Override public String typename() {return "IntBox";}
+  @Override public String typename() {return "IntBox";}//deprecated
   private boolean norm = false;
-  @Override public boolean norm(boolean set) {return norm |= set;}
+  @Override public boolean norm(boolean set){return norm |= set;}
+  @Override public Object getField(int i){return f;}
   }
