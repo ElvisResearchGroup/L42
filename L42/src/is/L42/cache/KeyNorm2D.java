@@ -27,14 +27,23 @@ public class KeyNorm2D {
 		return hc;
 		}
 	
+	@SuppressWarnings("unchecked") 
 	public boolean equals(Object o) {
 		if(o instanceof KeyNorm2D) {
 			KeyNorm2D key = (KeyNorm2D) o;
 			if(key.lines.length == this.lines.length) {
 				for(int i = 0; i < lines.length; i++) {
-					if(!Arrays.equals(key.lines[i], this.lines[i])) {
-						return false;
-						}
+				  if(lines[i].length != key.lines[i].length) { return false; }
+				  Cache<?> cache = (Cache<?>) lines[i][0];
+					for(int j = 1; j < lines[i].length; j++) {
+					  if(lines[i][j] instanceof £KeyVarID) {
+					    if(!lines[i][j].equals(key.lines[i][j])) {
+					      return false;
+					      }
+					  } else if(!cache.fieldCache(lines[i][j], j - 1).identityEquals(lines[i][j], key.lines[i][j])) {
+					    return false;
+					    }
+					  }
 					}
 				return true;
 				}

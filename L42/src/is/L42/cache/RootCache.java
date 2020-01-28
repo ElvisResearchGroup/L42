@@ -49,6 +49,15 @@ public class RootCache {
     return (Cache<T>) commander.get(class_);
     }
   
+  @SuppressWarnings({ "rawtypes", "unchecked" }) 
+  public static Cache[] getCacheArray(Class ... classes) {
+    Cache[] caches = new Cache[classes.length];
+    for(int i = 0; i < classes.length; i++) {
+      caches[i] = getCacheObject(classes[i]);
+      }
+    return caches;
+    }
+  
   @SuppressWarnings("unchecked")
   public static <T> Cache<T> getCacheObject(T o) {
     if(o instanceof ForeignObject) { return ((ForeignObject<T>) o).myCache(); }

@@ -107,10 +107,15 @@ public class ArrayListCache implements Cache<ArrayList> {
     }
 
   @Override
-  public boolean structurallyEqual(ArrayList t1, ArrayList t2) {
+  public boolean structurallyEquals(ArrayList t1, ArrayList t2) {
     t1 = normalize(t1);
     t2 = normalize(t2);
     return t1 == t2;
+    }
+  
+  @Override 
+  public boolean identityEquals(ArrayList t1, ArrayList t2) {
+    return t1 == t2; 
     }
   
   @Override
@@ -131,7 +136,12 @@ public class ArrayListCache implements Cache<ArrayList> {
   
   @Override
   public String typename(ArrayList t) {
-    return "�ArrayList";
+    return "£ArrayList";
+    }
+  
+  @Override 
+  public Cache rawFieldCache(int i) {
+    return null; 
     }
   
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)

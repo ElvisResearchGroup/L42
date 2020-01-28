@@ -16,11 +16,15 @@ public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
    * Store the cache statically for later retrieval by myCache() 
    */
   
-  private static final Cache<AnnotatedExample> myCache=
-    RootCache.addCacheableType(AnnotatedExample.class,new ForeignObjectCache<AnnotatedExample>());
-  //The call to .addCacheableType is necessary, as the cache
-  //map is sometimes used as a fallback mechanism
+  public static final Class<AnnotatedExample> _class = AnnotatedExample.class;
+  private static final ForeignObjectCache<AnnotatedExample> myCache;
   
+  static {
+    //The call to .addCacheableType is necessary, as the cache
+    //map is sometimes used as a fallback mechanism
+    RootCache.addCacheableType(AnnotatedExample.class, myCache = new ForeignObjectCache<AnnotatedExample>("AnnotatedExample"));
+    myCache.lateInitialize(String.class, int.class, Object.class);
+    }
   //Some field declarations
   String myString;
   int myInt;

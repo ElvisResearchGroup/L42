@@ -159,7 +159,6 @@ public class LoopCache {
   
   protected static class CircleObject  {
     private final Object obj;
-    private final String typename;
     private final Field[] params;
     
     @SuppressWarnings("rawtypes")
@@ -167,15 +166,13 @@ public class LoopCache {
     
     @SuppressWarnings({ "unchecked" })
     public CircleObject(Object obj) {
-      Class<?> class_ = obj.getClass();
-      cache = RootCache.getCacheObject(class_);
+      cache = RootCache.getCacheObject(obj);
       Object[] rawfields = cache.f(obj);
       Field[] fields = new Field[rawfields.length];
       for(int i = 0; i < rawfields.length; i++) {
         fields[i] = new Field(rawfields[i], RootCache.isNorm(rawfields[i]));
         }
       this.obj = obj;
-      this.typename = class_.getSimpleName();
       this.params = fields;
       }
     
@@ -204,11 +201,12 @@ public class LoopCache {
           amap.get(f.value).constructVarMap(varmap, order, amap, i);
       }
     
+    @SuppressWarnings("unchecked") 
     public String toString(Map<Object, Integer> map) {
       StringBuilder builder = new StringBuilder();
       builder.append(map.get(this.obj));
       builder.append("=n ");
-      builder.append(typename);
+      builder.append(cache.typename(this.obj));
       builder.append("(");
       for(int i = 0; i < params.length; i++) {
         builder.append(params[i].toString(map));
@@ -220,7 +218,7 @@ public class LoopCache {
     
     public Object[] toKey(Map<Object, Integer> map) {
       Object[] line = new Object[this.params.length + 1];
-      line[0] = this.typename;
+      line[0] = this.cache;
       for(int i = 0; i < this.params.length; i++) {
         line[i + 1] = this.params[i].toKeyObject(map);
         }

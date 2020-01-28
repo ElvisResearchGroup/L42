@@ -107,7 +107,27 @@ public interface Cache<T> {
    * @return <code>true</code> if they are structurally
    * equal, <code>false</code> otherwise.
    */
-  boolean structurallyEqual(T t1, T t2);
+  boolean structurallyEquals(T t1, T t2);
+  
+  /**
+   * Compares two objects and returns whether they have the
+   * same identity. For foreign objects, this is usually simple
+   * pointer equality, but for native objects this may be byte
+   * equality.                                                 <br>
+   *                                                           <br>
+   * If two objects are identity equals, they will behave in 
+   * the same way, just like classes that are structurally 
+   * equal. It also means that the two objects can share the
+   * same cache for their methods and not result in any
+   * non-deterministic behavior. For almost all objects, it
+   * means that they reside in the same place in memory, but
+   * for strings this can sometimes not be the case.
+   * 
+   * @param t1 Object 1
+   * @param t2 Object 2
+   * @return if they're identity equals.
+   */
+  boolean identityEquals(T t1, T t2);
   
   /**
    * Given an object of type T, returns an array of 
@@ -142,6 +162,30 @@ public interface Cache<T> {
    * @param i The index of the field
    */
   void f(T t, Object o, int i);
+  
+  @SuppressWarnings("rawtypes") 
+  /**
+   * Returns the cache object for the relevant subfield. Returns
+   * <code>null</code> if the field is an interface.
+   * 
+   * @param i The index of the field
+   * @return The cache for that field, or null
+   */
+  Cache rawFieldCache(int i);
+  
+  /**
+   * Returns the cache object for the relevant subfield. Always 
+   * succeeds, even if the field type is an interface
+   * 
+   * @param t The object you're trying to find the cache for
+   * @param i The index of the field
+   * @return The cache for the object
+   */
+  @SuppressWarnings("rawtypes") 
+  default Cache fieldCache(Object t, int i) {
+    Cache raw = this.rawFieldCache(i);
+    return raw == null ? RootCache.getCacheObject(t) : raw;
+  }
   
   /**
    * Given an object of type T, returns it's canonical

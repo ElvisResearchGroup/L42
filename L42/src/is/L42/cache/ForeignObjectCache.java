@@ -9,6 +9,19 @@ import java.util.Set;
 
 public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> {
   
+  private final String typename;
+  @SuppressWarnings("rawtypes") 
+  private Cache[] caches;
+  
+  public ForeignObjectCache(String typename) {
+    this.typename = typename;   
+    }
+  
+  @SuppressWarnings("rawtypes") 
+  public void lateInitialize(Class ... classes) {
+    caches = RootCache.getCacheArray(classes);
+  }
+  
   private final Map<KeyNorm2D, Object> normMap = RootCache.newNormMap();
   
   private void add(KeyNorm2D key, T t) {
@@ -101,10 +114,15 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
   public boolean isNorm(T t) { return t.norm(false); }
 
   @Override
-  public boolean structurallyEqual(T t1, T t2) {
+  public boolean structurallyEquals(T t1, T t2) {
     t1 = normalize(t1);
     t2 = normalize(t2);
     return t1 == t2;
+    }
+  
+  @Override 
+  public boolean identityEquals(T t1, T t2) {
+    return t1 == t2; 
     }
   
   @Override
@@ -123,13 +141,15 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
     return set;
     }
   
-  //TODO: Find a more robust way to do this
-  private String typename;
-  
   @Override
   public String typename(T t) {
-    if(typename == null) { typename = t.typename(); }
     return typename;
+    }
+
+  @SuppressWarnings("rawtypes") 
+  @Override 
+  public Cache rawFieldCache(int i) { 
+    return caches[i]; 
     }
   
 }

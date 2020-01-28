@@ -7,11 +7,12 @@ import is.L42.cache.RootCache;
 
 public class I implements ForeignObject<I> {
 	
+  public static final Class<I> _class = I.class;
 	private static final Cache<I> myCache;
 	
 	static
 	{
-		RootCache.addCacheableType(I.class, (Cache<I>) (myCache = new ForeignObjectCache<I>()));
+		RootCache.addCacheableType(I.class, (Cache<I>) (myCache = new ForeignObjectCache<I>("I")));
 	}
 	
 

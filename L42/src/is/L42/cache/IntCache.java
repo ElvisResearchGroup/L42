@@ -2,6 +2,8 @@ package is.L42.cache;
 
 import java.util.List;
 
+import is.L42.tools.General;
+
 public class IntCache implements Cache<Integer> {
 
   @Override 
@@ -19,7 +21,12 @@ public class IntCache implements Cache<Integer> {
   public boolean isNorm(Integer t) { return true; }
 
   @Override
-  public boolean structurallyEqual(Integer t1, Integer t2) {
+  public boolean structurallyEquals(Integer t1, Integer t2) {
+    return t1.intValue() == t2.intValue();
+    }
+  
+  @Override
+  public boolean identityEquals(Integer t1, Integer t2) {
     return t1.intValue() == t2.intValue();
     }
 
@@ -50,5 +57,11 @@ public class IntCache implements Cache<Integer> {
   @Override
   public NormResult<Integer> computeKeyNNInner(Integer t, List<Object> chain) {
     return new NormResult<Integer>(t);
+    }
+
+  @SuppressWarnings("rawtypes") 
+  @Override 
+  public Cache rawFieldCache(int i) {
+    throw General.unreachable(); 
     }
   }
