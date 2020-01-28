@@ -163,7 +163,7 @@ public interface Cache<T> {
   {
     Object[] fields = this.f(t);
     Object[][] key = new Object[1][fields.length + 1];
-    key[0][0] = this.typename(t);
+    key[0][0] = this;
     System.arraycopy(fields, 0, key[0], 1, fields.length);
     return new KeyNorm2D(key);
   }

@@ -104,7 +104,7 @@ public class LoopCache {
   {
     Map<Object, Integer> varnames = new HashMap<>();
     List<Object> order = new ArrayList<>();
-    circleobjects.get(circleobj).constructVarMap(varnames, order, circleobjects, new AtomicInteger(0));
+    circleobjects.get(circleobj).constructVarMap(varnames, order, circleobjects, new MyInteger(0));
     Object[][] lines = new Object[order.size()][];
     for(int i = 0; i < lines.length; i++) { lines[i] = (circleobjects.get(order.get(i))).toKey(varnames); }
     return new KeyNorm2D(lines);
@@ -140,7 +140,13 @@ public class LoopCache {
     
     public Object toKeyObject(Map<Object, Integer> varmap) {
       if(isNorm) { return value; }
-      else { return new £KeyVarID(varmap.get(this.value)); }
+      else { try {return new £KeyVarID(varmap.get(this.value)); } catch(Throwable e) {
+        System.out.println(varmap);
+        System.out.println(this.value);
+        e.printStackTrace();
+        return null;
+      }
+      }
       }
     
     public void replaceNN(Map<Object, Object> replacements) {
@@ -190,8 +196,8 @@ public class LoopCache {
       return this;
       }
     
-    public void constructVarMap(Map<Object, Integer> varmap, List<Object> order, Map<Object, CircleObject> amap, AtomicInteger i) {
-      varmap.put(this.obj, i.getAndAdd(1));
+    public void constructVarMap(Map<Object, Integer> varmap, List<Object> order, Map<Object, CircleObject> amap, MyInteger i) {
+      varmap.put(this.obj, i.getAndIncrement());
       order.add(this.obj);
       for(Field f : params)
         if(!varmap.containsKey(f.value) && amap.containsKey(f.value))
@@ -221,5 +227,19 @@ public class LoopCache {
       return line;
       }
     }
+  
+  protected static class MyInteger {
+    
+    private int value;
+    
+    public MyInteger(int value) {
+      this.value = value;
+      }
+    
+    public int getAndIncrement() {
+      return value++;
+      }
+    
+    }
 
-}
+  }
