@@ -51,4 +51,21 @@ public class KeyNorm2D {
 		return false;
 		}
 	
+	@Override
+	public String toString() {
+	  StringBuilder builder = new StringBuilder();
+	  for(int i = 0; i < lines.length; i++) {
+	    Object[] line = lines[i];
+	    builder.append('v');
+	    builder.append(i);
+	    builder.append(" : ");
+	    builder.append(((Cache<?>) line[0]).typename(null));
+	    for(int j = 1; j < line.length; j++)
+	      builder.append(line[j].toString().replace('\n', ' '));
+	    builder.append('\n');
+	    }
+	  builder.delete(builder.length() - 1, builder.length());
+	  return builder.toString();
+	}
+	
 }
