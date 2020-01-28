@@ -1,0 +1,103 @@
+Data and friends:
+
+Data: adds
+  //using Traits
+  -read conventional structural equals//need a wrapper if the type of the argument is not This0?
+  -read conventional structural toString
+  -read niceToString
+  -read hashCode from conventional string?
+  -read lift toLibrary capsule val?
+  //using field informations
+  -imm wither
+  -constructor with as many fwds as possible
+  Do not close state, do not handle invariant
+  Return a library, not a Trait
+
+TODO:-add withers to abstract state operation: avoid exponential expolosion for
+ multiple withers and simplify Data. Withers takes imm receiver.
+  Note that they can not be added on class with close state (as usual)
+   so we gain the same advantage of var? for encapsulation purposes.
+In this way the wither decorator need to just add the wither methods... should it be the field sugar?
+
+Traits adding the following, and just compose them to get Data:
+  -read conventional structural equals
+  -read conventional structural toString
+  -read niceToString
+  -read hashCode from conventional string?
+  -read lift toLibrary capsule val?
+Traits adding more stuff not included in Data:
+  -mut reference==??
+  -imm reference==??// should be call "sameness"? is also identical to structural equals
+
+  
+Box: like data + handle invariant and close state; only imm/caps fields
+  -add constructor with only imm/capsule parameters
+  a class method with parameters named after fields may be annotated @Invariant
+  a class method with the first (mut) parameter named after a capsule field may be
+  annotated as @CapsuleMutator
+  -for any @Invariant class method Void methName(T1 x1..Tn xn)=e :
+    read method Void fresh(methName)::0()= tag{eagerCache}(T1 x1=this.x1::0()..Tn xn=this.xn::0() e)
+  -for any @Invariant class method Bool methName(T1 x1..Tn xn)=e :
+    read method Void fresh(methName)::0()= tag{eagerCache}X[(T1 x1=this.x1::0()..Tn xn=this.xn::0() e)] 
+  -for any @CapsuleMutator class method T methName(T0 x0..Tn xn)=e :
+    mut method T methodName(T1 x1..Tn xn)=(T0 x0=this.x0::0() e)//likely to be summed with an existing abstract method 
+
+Close:
+  close is implemented as adding methods and delegate,
+  not as "renaming to foo::0(); in this way we can ensure this/privatness
+  close will use mut method mut P x::0() for a capsule fields that is getting closed
+  Note: all the existing ::0 methods may have to be renamed before close takes place, since other
+  expansions may relies on the exact name of the field without the ::0
+  Some methods may be annotated with   
+  tag{eagerCache}, tag{cache}, tag{parallelCache}, tag{parallelBlock} and tag{parallelLoop.
+  Close will need to check that is ok to close the class (that is, well formedness do not get angry).
+    
+  TODO: -capsule fields desugar exposer as capsule->mut
+  
+  //we can not just use a read invariant method because we could have
+  //this.beer().see(this); return !this.isEmpty() and now beer see a possibly broken this. 
+
+
+Class: check that the library is consistent (and may extract from a trait)
+  Both Data and Box subsume Class.
+
+As a special case, Box will allow classes with no fields, in this
+case it would make an Imm constructor, but it would be deceiving to allow Data on no fields.
+Box would also add an operator == even if no fields... is this transparent with structural checks?
+
+Action: on code with only 1 abs method named #apply, it mark them as interfaces
+  on code implementing an Action method behave as Class and then close
+all the state an make all but the interface methods private
+Organize: will rename A$B in A.B and so on; will mark as private
+methods not annotated as @Exported
+Unit
+Alphanumeric
+
+------------
+-tag{(eager)cache}: well formedness: if state is closed then only
+imm/caps fields
+if state is public, the tagged method must be public, so that the
+close operation can give error if the state would have mut methods but
+there are tags.
+
+-tag/native:
+we can make so that cache/eagercache is semantically only active on closed state classes; thus
+we can make the well formedn)ess be ok when is placed on open classes (and avoid issues with well formedness if closed classes are mostly made by metaprogramming. Moreover if "close" is implemented as adding methods and delegate, not as "renaming to foo::0(), we can ensure this/privatness)
+In this way tags can cover the whole range of things: cache, invariants and parallelism, with
+tag{parallelBlock} and tag{parallelLoop}
+where parallel loop would work on the for sugar as the following:
+1 mut/imm collections have their imm elements extracted;//sequential
+2 the imm elements are transformed,//parallel
+3 the transformed elements are added to the mut/capsule resulting collection(s?).//sequential
+Note that errors in step 2 may have to "override" errors in step 1, so an error in step 1 must not be propagated out instantly.
+special care must be took to support 
+  list.reduce()(for a in \vals, b in other (x=e1 \res<=e[a,b,x,\acc]))
+
+-Recover the other appunti from the ariplaneflight
+
+
+-Introspection:
+  -some of the toStringStuff
+  -check equality of two class Any (we will need this to generate a decent == operator)
+  -I would also need to get the methods and the method types... so... basically all the introspecation
+  Conclusion: no need to hurry up introspection, we will have a more poor == until than!

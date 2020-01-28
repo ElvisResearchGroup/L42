@@ -201,7 +201,10 @@ _______
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
     if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
     if bridge({MWT| MWT in LL})!=empty then LL of form CORE.L//works for both CORE.L and FULL.L
-    if _ native{trusted:cachable} _ in L.MWT then LL of form CORE.L//TODO: in code
+    in {"trusted:cachable","trusted:eagerCachable"}
+    if _ native{trusted:cachable} _ in L.MWT or_ native{trusted:eagerCachable} _ in L.MWT
+     then LL of form CORE.L and LL.Info.nativeKind=empty//TODO: in code
+    
 * Core.L: (in addition to all the LL)
     if !hasOpenState(L)
       or L.interface?=interface, _.C._ in L.Ts and C of form _::n
