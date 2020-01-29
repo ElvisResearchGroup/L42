@@ -16,6 +16,7 @@ import is.L42.common.Constants;
 import is.L42.constraints.FreshNames;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
+import is.L42.common.EndError.TypeError;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
@@ -107,13 +108,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      B={interface [This1.C] method Any a() #typed{typeDep=This1.C refined=a()}}
      D={interface[This1.A,This1.B,This1.C]imm method imm Void a() #typed{typeDep=This1.A, This1.B,This1.C refined=a()}}
     #norm{}}""")
-/*   ),new AtomicTest(()-> //TODO: when type system is available, need to test that the result is ill typed for Any<=Void
-    top("{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={interface[B,A]}}","""
-    {C={interface method Any a() #typed{}}
-     A={interface [This1.C] method Void a() #typed{typeDep=This1.C}}
-     B={interface [This1.C] method Any a() #typed{typeDep=This1.C}}
-     D={interface[This1.B,This1.A,This1.C]imm method imm Any a() #typed{typeDep=This1.B, This1.A,This1.C}}
-    #norm{}}""")*/
+   ),new AtomicTest(()->
+    topFail(TypeError.class,"{C={interface method Any a()} A={interface [C] method Void a()} B={interface [C] method Any a()} D={interface[B,A]}}",
+      Err.methSubTypeExpectedRet(hole, hole, hole))
     ),new AtomicTest(()->
     topFail(InvalidImplements.class,
     "{C={interface } A={interface [C] method Void a()} B={interface [C] method Any a()} D={[B,A]}}",
@@ -137,15 +134,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I2={interface [This1.I0] method Any m2()method Any m0()#typed{typeDep=This1.I0 refined=m0()}}
      I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0 refined=m0()}}
      A={interface[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0()method Any m2()#typed{typeDep=This1.I1,This1.I2,This1.I0 refined=m1(),m0(),m2()}}
-    #norm{}}""")//TODO: is this really the method order we want? see also next test
+    #norm{}}""")
 
-    /*),new AtomicTest(()->TODO:when type system is available, need to test that the result is ill typed for Any<=Void
-    top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={interface[I1,I2]}}","""
-    {I0={interface method Any m0()#typed{}}
-     I2={interface [This1.I0] method Any m2()method Void m0()#typed{typeDep=This1.I0}}
-     I1={interface [This1.I0] method Any m1()method Any m0()#typed{typeDep=This1.I0}}
-     A={interface[This1.I1,This1.I2,This1.I0] method Any m1() method Any m0() method Any m2()#typed{typeDep=This1.I1,This1.I2,This1.I0}}
-    #norm{}}""")*/
+    ),new AtomicTest(()->
+    topFail(TypeError.class,
+    "{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={interface[I1,I2]}}",
+    Err.methSubTypeExpectedRet(hole,hole,hole))
     ),new AtomicTest(()->
     top("{I0={interface method Any m0()} I2={interface [I0] method Any m2() method Void m0()} I1={interface [I0] method Any m1()} A={interface[I2,I1]}}","""
     {I0={interface method Any m0()#typed{}}

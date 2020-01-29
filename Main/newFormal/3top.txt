@@ -9,9 +9,9 @@ _______
     on all the P applies p.minimize(P).
     the n of every Thisn.Cs must fit in the dept of the program
     forall LL0, LL1 anywhere inside different places: uniqueNs(p,LL0)\0 disjoint uniqueNs(p,LL1)\0
-    after the p.minimize happend everywhere, check that for any reached p=CORE.L;pTail:
+    after the p.minimize happened everywhere, check that for any reached p=CORE.L;pTail:
       if Info.Flag=typed  then Info.typeDep subseteq dom(p) and norm |- p
-      ??? watched=Ps,
+      Ps2 subseteq Info.watched,
       ??? usedMethods=(P.s)s,
       ??? hiddenSupertypes=Ps,
       Ps0 subseteq L.Info.typeDep
@@ -19,6 +19,8 @@ _______
     where
       Info=CORE.L.Info
       Ps0;Ps1=collectDeps(p;L.MWTs) U collectDeps(L.Docs) U L.Ts.Ps;empty
+      P in Ps2 if P.C::k._ is anywhere in CORE.L
+      P in Ps2 if xP.m::k(_) is anywhere in CORE.L and G(xP)=P //G is computed during the traversal      
 
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 //error is reported if an implements list contains This0.Cs or
@@ -100,10 +102,10 @@ _______
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
-    Info0 = #norm{typeDep=Ps\{Any,Void,Library},refine=ss,closeState, uniqueId=n}
+    Info0 = #norm{typeDep=Ps\{Any,Void,Library},refine=ss,watched=Ps2,uniqueId=n}
+    P in Ps2 if P.C::k._ is anywhere in CORE.L
+    //Not needed, since no expressions? P in Ps2 if xP.m::k(_) is anywhere in CORE.L and G(xP)=P //G is computed during the traversal 
     n fresh
-    //Note: sortHeader remove  bodies from methdos. This basically guarantees 
-    //closeState. The close/open state is fixed later
 
 * sortHeader(p) = CORE.L
     p(This0) = {interface? [Ts] Ms Docs} = FULL.L
@@ -115,7 +117,8 @@ _______
     Ps;empty = collectDeps(p0;MWTs)
     ss=[MWT.s| MWT in MWTs and refine(p1;s;This0)]
     declaresClassMethods?=empty iff class notin MHs.mdfs
-    Info = #norm{typeDep=Ts1.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, closeState, uniqueId=n}
+    Info = #norm{typeDep=Ts1.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, watched=Ps2, uniqueId=n}
+    P in Ps2 if P.C::k._ is anywhere in CORE.L
     n fresh
     CORE.L = {interface? [Ts1] MWTs Info ♥Docs}
 _______
@@ -164,9 +167,11 @@ _______
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     dom(MWTs) = dom(MWTs1)
     Ps;Ps' = collectDeps(p;MWTs.es)
-    Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},??}
+    Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},watched=Ps2,??}
     Info1 = (Info0+Info) if hasOpenState(interface?,MWTs0 MWTs1)
     Info1 = (Info0+Info)[closeState?=closeState] otherwise
+    P in Ps2 if P.C::k._ is anywhere in MWTs
+    P in Ps2 if xP.m::k(_) is anywhere in MWTs.es and G(xP)=P //G is computed during the traversal 
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
@@ -174,10 +179,9 @@ _______
     p(This0) = L0
     Info = #norm{typeDep=collectDeps(p♥Docs)}
     Info1=L0.Info+Info if C not of form _::n
-    Info1=L0.Info+Info+collectDepsE(p,L) otherwise //this provides more typeDep and coherentDep
+    Info1=L0.Info+Info+collectDepsE(p,L)+L.Info.watched[skipThis0;L] otherwise
     L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
-    L'=L otherwise
-    
+    L'=L otherwise    
 _______
 #define I!HALF.e? => ER
 * I!empty => I.frommed;empty
