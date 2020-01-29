@@ -49,6 +49,10 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
       Object[] fields = t.allFields();
       Set<Object> circle = null;   
       for(int i = 0; i < fields.length; i++) {
+        if(fields[i] == null) { 
+          if(this.rawFieldCache(i) == null) { throw new NullPointerException("Cannot have null field with an interface type."); } 
+          continue; 
+          }
         if(prevs.contains(fields[i])) {
           List<Object> sl = prevs.subList(prevs.indexOf(fields[i]), prevs.size());
           if(circle == null) { circle = new HashSet<Object>(sl); }
@@ -90,6 +94,10 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
     Object[] fields = t.allFields();
     Set<Object> circle = null;   
     for(int i = 0; i < fields.length; i++) {
+      if(fields[i] == null) { 
+        if(this.rawFieldCache(i) == null) { throw new NullPointerException("Cannot have null field with an interface type."); } 
+        continue; 
+        }
       if(prevs.contains(fields[i])) {
         List<Object> sl = prevs.subList(prevs.indexOf(fields[i]), prevs.size());
         if(circle == null) { circle = new HashSet<Object>(sl); }
@@ -97,7 +105,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
         inCircle = true;
         continue;
         }
-      Cache cache = RootCache.getCacheObject(fields[i].getClass());
+      Cache cache = RootCache.getCacheObject(fields[i]);
       NormResult<T> res = cache.computeKeyNNInner(fields[i], new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(t)) {
         inCircle = true;

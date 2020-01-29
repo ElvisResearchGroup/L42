@@ -5,7 +5,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.concurrent.atomic.AtomicInteger;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
+import com.google.common.collect.MapMaker;
 
 public class LoopCache {
   
@@ -29,15 +32,15 @@ public class LoopCache {
     do {  
       KeyNorm2D retKey = null;
       Map<KeyNorm2D, Object> tempKeyMap = new HashMap<>();
-      Map<Object, Object> replacements = new HashMap<>();
+      ReplacementMap replacements = new ReplacementMap();
       for(Object circleobj : circle) {
         KeyNorm2D key = keyFromCircleObject(circleobj, circleobjects);
         if(circleobj == desired) { retKey = key; }
         if(tempKeyMap.containsKey(key)) {
           if(circleobj != desired) {
-            replacements.put(circleobj, tempKeyMap.get(key));
+            replacements.add(circleobj, tempKeyMap.get(key));
             } else {
-            replacements.put(tempKeyMap.get(key), circleobj);
+            replacements.add(tempKeyMap.get(key), circleobj);
             tempKeyMap.put(key, circleobj);
             }
           } else {
@@ -54,32 +57,32 @@ public class LoopCache {
           }
         return (T) circularIndex.get(retKey);
         } else {
-        for(Object key : replacements.keySet()) {
+        for(Object key : replacements.underlyingMap().keySet()) {
           circleobjects.remove(key);
           circle.remove(key);
           }
         for(Map.Entry<Object, CircleObject> entry : circleobjects.entrySet()) {
-          circleobjects.put(entry.getKey(), entry.getValue().replace(replacements));
+          circleobjects.put(entry.getKey(), entry.getValue().replace(replacements.underlyingMap()));
           }
         }
       } while(true);
     }
   
-  public static KeyNorm2D getKeyCircleNN(Object desired, Set<Object> circle) {
+  public static KeyNorm2D getKeyCircleNN(Object desired, Set<Object> circle) {    
     Map<Object, CircleObject> circleobjects = new HashMap<>();
     for(Object circleobj : circle) { circleobjects.put(circleobj, new CircleObject(circleobj)); }
     do {  
       KeyNorm2D retKey = null;
       Map<KeyNorm2D, Object> tempKeyMap = new HashMap<>();
-      Map<Object, Object> replacements = new HashMap<>();
+      ReplacementMap replacements = new ReplacementMap();
       for(Object circleobj : circle) {
         KeyNorm2D key = keyFromCircleObject(circleobj, circleobjects);
         if(circleobj == desired) { retKey = key; }
         if(tempKeyMap.containsKey(key)) {
           if(circleobj != desired) {
-            replacements.put(circleobj, tempKeyMap.get(key));
+            replacements.add(circleobj, tempKeyMap.get(key));
             } else {
-            replacements.put(tempKeyMap.get(key), circleobj);
+            replacements.add(tempKeyMap.get(key), circleobj);
             tempKeyMap.put(key, circleobj);
             }
           } else {
@@ -89,12 +92,12 @@ public class LoopCache {
       if(replacements.size() == 0) {
         return retKey;
         } else {
-        for(Object key : replacements.keySet()) {
+        for(Object key : replacements.underlyingMap().keySet()) {
           circleobjects.remove(key);
           circle.remove(key);
           }
         for(Map.Entry<Object, CircleObject> entry : circleobjects.entrySet()) {
-          circleobjects.put(entry.getKey(), entry.getValue().replaceNN(replacements));
+          circleobjects.put(entry.getKey(), entry.getValue().replaceNN(replacements.underlyingMap()));
           }
         }
     } while(true);
@@ -233,5 +236,41 @@ public class LoopCache {
       }
     
     }
+  
+  protected static class ReplacementMap
+  {
+    Map<Object, Object> replacements = new HashMap<>();
+    Map<Object, List<Object>> invReplacements = new HashMap<>();
+    
+    private void addToInv(Object to, Object from) {
+      if(!invReplacements.containsKey(to)) {
+        invReplacements.put(to, new ArrayList<>()); 
+        }   
+      invReplacements.get(to).add(from);
+      }
+    
+    public void add(Object from, Object to) {
+      replacements.put(from, to);                     //Add relation f->t
+      if(invReplacements.containsKey(from)) {         //Check if any relation exists such that x->f
+        List<Object> list = invReplacements.get(from);
+        for(Object o : list) {                        //For each x->f, replace f with t
+          replacements.put(o, to);
+          }
+        }
+      addToInv(to, from);                             //Add inverse relation
+      }
+    
+    public int size() {
+      return replacements.size();
+      }
+    
+    public Set<Map.Entry<Object, Object>> entrySet() {
+      return replacements.entrySet();
+      }
+    
+    public Map<Object, Object> underlyingMap() {
+      return replacements;
+      }
+  }
 
   }

@@ -7,6 +7,12 @@ import java.util.function.Function;
 
 import com.google.common.cache.CacheBuilder;
 
+import is.L42.cache.nativecache.ArrayListCache;
+import is.L42.cache.nativecache.BoolCache;
+import is.L42.cache.nativecache.FloatCache;
+import is.L42.cache.nativecache.IntCache;
+import is.L42.cache.nativecache.StringCache;
+
 public class RootCache {
   
   //TODO: Change to string to get rid of reflection maybe?
@@ -19,6 +25,11 @@ public class RootCache {
     commander = new HashMap<>();
     commander.put(int.class, new IntCache());
     commander.put(Integer.class, commander.get(int.class));
+    commander.put(boolean.class, new BoolCache());
+    commander.put(Boolean.class, commander.get(boolean.class));
+    commander.put(float.class, new FloatCache());
+    commander.put(Float.class, commander.get(float.class));
+    commander.put(String.class, new StringCache());
     commander.put(ArrayList.class, new ArrayListCache());
     }
   
@@ -71,9 +82,16 @@ public class RootCache {
   
   @SuppressWarnings("rawtypes")
   public static <T> boolean isNorm(T t) {
+    if(t == null) { return true; }
     if(t instanceof ForeignObject) { return ((ForeignObject) t).norm(false); }
     Cache<T> cache = getCacheObject(t);
     return cache.isNorm(t);
+    }
+  
+  public static <T> boolean identityEquals(T t1, T t2) {
+    if(t1 instanceof ForeignObject) { return t1 == t2; }
+    Cache<T> cache = getCacheObject(t1);
+    return cache.identityEquals(t1, t2);
     }
   
   /**
@@ -133,7 +151,7 @@ public class RootCache {
         if(!(line[j] instanceof £KeyVarID)) {
           if(done.containsKey(line[j])) {
             line[j] = done.get(line[j]);
-            } else {
+            } else if(line[j] != null) {
             line[j] = addNewObject.apply(line[j]);
             }
           }

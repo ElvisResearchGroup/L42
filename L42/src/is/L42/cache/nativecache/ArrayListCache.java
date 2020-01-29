@@ -1,4 +1,4 @@
-package is.L42.cache;
+package is.L42.cache.nativecache;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -7,6 +7,12 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import is.L42.cache.Cache;
+import is.L42.cache.KeyNorm2D;
+import is.L42.cache.LoopCache;
+import is.L42.cache.NormResult;
+import is.L42.cache.RootCache;
 
 @SuppressWarnings("rawtypes")
 public class ArrayListCache implements Cache<ArrayList> {
