@@ -26,6 +26,7 @@ import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.Core.Doc;
@@ -40,6 +41,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Top;
 import is.L42.typeSystem.ProgramTypeSystem;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
@@ -100,11 +102,15 @@ public class Meta {
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     Top.collectDepsE(Resources.currentP,body,typePs,cohePs);
     var i=l.info();
+    List<P.NCs> watched=L(c->TypeManipulation.skipThis0(i.watched(),l,
+      pi->pi,(p1,p2)->c.add(p2)));
+    List<PathSel> usedMethods=L(c->TypeManipulation.skipThis0(i.usedMethods(),l,
+      ps->ps.p().toNCs(),(ps,p)->c.add(ps.withP(p))));
+    List<P.NCs> hidden=L(c->TypeManipulation.skipThis0(i.hiddenSupertypes(),l,
+      pi->pi,(p1,p2)->c.add(p2)));      
     var info=new Info(
       i.isTyped(),L(typePs.stream()),L(cohePs.stream()),
-      /*watched,usedMethods,hiddenSupertypes,*/L(),L(),L(),//TODO: to fix those 3 fields
-      L(),false,"",L(),-1
-      );
+      watched,usedMethods,hidden,L(),false,"",L(),-1);
     var res=new Core.L(body.poss(), false, L(), L(meth), L(), info,L());
     return wrapL(res);
     }

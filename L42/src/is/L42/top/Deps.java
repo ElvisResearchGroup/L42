@@ -24,10 +24,8 @@ public Deps(Program p0, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs){
 public ArrayList<P.NCs> empty(){return typePs;}
 @Override public void visitL(Full.L l){throw bug();}
 private void csAux(Program p,ArrayList<C> cs,Core.L l,Core.L topL){
-  TypeManipulation.skipThis0(l.info().typeDep().stream()
-    .map(e->p.from(e,0, cs)),topL).forEach(typePs::add);
-  TypeManipulation.skipThis0(l.info().coherentDep().stream()
-    .map(e->p.from(e,0, cs)),topL).forEach(cohePs::add);
+  TypeManipulation.skipThis0(l.info().typeDep(),topL,e->p.from(e,0, cs),(p0,p1)->typePs.add(p1));
+  TypeManipulation.skipThis0(l.info().coherentDep(),topL,e->p.from(e,0, cs),(p0,p1)->cohePs.add(p1));
   Program pi=p.push(l);
   for(C c: l.domNC()){
     cs.add(c);
@@ -36,8 +34,8 @@ private void csAux(Program p,ArrayList<C> cs,Core.L l,Core.L topL){
     }
   }
 @Override public void visitL(Core.L l){
-  TypeManipulation.skipThis0(l.info().typeDep().stream(),l).forEach(typePs::add);
-  TypeManipulation.skipThis0(l.info().coherentDep().stream(),l).forEach(cohePs::add);
+  TypeManipulation.skipThis0(l.info().typeDep(),l,p->p,(p,p1)->typePs.add(p1));
+  TypeManipulation.skipThis0(l.info().coherentDep(),l,p->p,(p,p1)->cohePs.add(p1));
   ArrayList<C> cs=new ArrayList<>();
   Program pi=p0.push(l);
   for(C c: l.domNC()){//a little of code duplication removes the map on the streams

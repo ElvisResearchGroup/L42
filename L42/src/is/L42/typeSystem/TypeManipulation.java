@@ -7,6 +7,9 @@ import static is.L42.tools.General.toOneOr;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.function.BiConsumer;
+import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.stream.Stream;
 
 import is.L42.common.G;
@@ -121,14 +124,18 @@ public class TypeManipulation {
     assert _p._p()!=null;
     return new Core.PathSel(_p._p(),_p._s(),_p._x());
     }
-  public static Stream<P.NCs> skipThis0(Stream<P.NCs> s,Core.L l){
-    return s.filter(pi->{
-      if(pi.n()==0){
-        Program.flat(l).of(pi,l.poss());//propagate errors is path is not existent
-        return false;
-        }
-      return true;
-      }).map(pi->pi.toNCs().withN(pi.n()-1));
+  public static P.NCs _skipThis0(P.NCs pi,Core.L l){
+    if(pi.n()==0){
+      Program.flat(l).of(pi,l.poss());//propagate errors is path is not existent
+      return null;
+      }
+    return pi.toNCs().withN(pi.n()-1);
+    }
+  public static<E> void skipThis0(List<E> es ,Core.L l,Function<E,P.NCs> in,BiConsumer<E,P.NCs>c){
+    for(var e:es){
+      var res=_skipThis0(in.apply(e),l);
+      if(res!=null){c.accept(e,res);}
+      };
     }
   public static List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
     return L(c->{
