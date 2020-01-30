@@ -131,10 +131,15 @@ public class TemporaryNonJUnitTestsForCaching {
   	}{
   	IntBox box1=new IntBox(30000);
     IntBox box2=new IntBox(320000);
+    IntBox box3=new IntBox(320000);
   	KeyNorm2D box1Key=RootCache.expandedKey(box1,true,false);
   	KeyNorm2D box2Key=RootCache.expandedKey(box2,true,false);
-  	//assert box1Key.equals(box2Key);//BUG
-  	System.out.println(box1Key.toString());//TODO
+  	KeyNorm2D box3Key=RootCache.expandedKey(box3,true,false);
+  	assert !box1Key.equals(box2Key);
+  	assert box2Key.equals(box3Key);
+  	System.out.println(box1Key.toString());
+  	System.out.println(box1.times2());
+  	System.out.println(box1.times2());
     }{
     R1 r=new R1(null);
     r.referenced=r;
@@ -184,8 +189,19 @@ class IntBox implements ForeignObject<IntBox> {
   @Override public Object[] allFields() {return new Object[]{f};}
   @Override public void setField(int i, Object o) { this.f=(Integer)o;}
   @Override public Cache<IntBox> myCache() {return myCache;}
-  @Override public String typename() {return "IntBox";}//deprecated
-  private boolean norm = false;
-  @Override public boolean norm(boolean set){return norm |= set;}
+  private IntBox norm;
   @Override public Object getField(int i){return f;}
+  @Override public void setNorm(IntBox t) {this.norm=t;}
+  @Override public IntBox myNorm() {return this.norm;}
+  //int times2(){ return f*2; }
+  boolean isTimes2=false;
+  int times2=0;
+  int auxTimes2(){ 
+    System.out.println("double computing");
+    return f*2; }
+  int times2(){
+    if(norm==null){norm=myCache.normalize(this);}
+    if(!norm.isTimes2){norm.times2=auxTimes2(); norm.isTimes2=true;}
+    return norm.times2;
+    }
   }
