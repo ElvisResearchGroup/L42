@@ -689,7 +689,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   private static boolean isBridgeMeth(String m,String nativeUrl,Visitable<?>e){
     if(m.startsWith("#$")){return false;}
-    if(!nativeUrl.isEmpty() && !nativeUrl.startsWith("trusted:")){return true;}
+    boolean trustedHD=nativeUrl.startsWith("trusted:#$");
+    boolean trusted=!trustedHD && nativeUrl.startsWith("trusted:");
+    if(!nativeUrl.isEmpty() && !trusted){return true;}
     boolean[]res={false};
     e.accept(new PropagatorCollectorVisitor() {
       @Override public void visitS(S s){

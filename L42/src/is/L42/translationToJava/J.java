@@ -435,7 +435,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(!mwt.nativeUrl().isEmpty()){
       assert mwt._e()!=null;
       String k=p.topCore().info().nativeKind();
-      c(NativeDispatch.nativeCode(p,k,mwt));
+      NativeDispatch.nativeCode(k,mwt,this);
       return;
       }
     if(mwt._e()!=null){

@@ -1,0 +1,18 @@
+read method This1.S name::0()
+class method mut This #$of::0(This1.S name)
+class method mut This #$of(This1.S that)=This<:class This.#$of::0(name=that)
+mut method This1.S read()=(
+  This1.Debug d=This1.Debug<:class This1.Debug.of()
+  d.#$readLog(logName=this.name())
+  )
+mut method This immWriter()=This<:class This.#$of(name=this.name())
+method Void #ltequals(This1.S text)=(
+  This1.Debug d=This1.Debug<:class This1.Debug.of()
+  d.addToLog(logName=this.name(),text=text)
+  )
+method Void clear()=(
+  This1.Debug d=This1.Debug<:class This1.Debug.of()
+  d.clearLog(logName=this.name())
+  )
+
+#norm{typeDep=This0,This1.S,This1.Debug, coherentDep=This0,This1.Debug,This1.S}

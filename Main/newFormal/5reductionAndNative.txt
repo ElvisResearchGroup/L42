@@ -315,6 +315,8 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     or Pi=Any otherwise
     mhs={mwt.mh | mwt in p(This0).mwts, mwt.e?=empty and mwt.mdf=class}
     //guaranteed not interface implemented
+//TODO:? if we make so that all assignament to imm from mut/capsule are wrapped in a normalize(e), we
+//would trash many duplicated imm object early
 //TODO: in coherence:
 a coherent nativeKind must have private constructor and no other 'state' methods.
 //TODO: 

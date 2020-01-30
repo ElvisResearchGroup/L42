@@ -22,6 +22,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
+import is.L42.translationToJava.J;
 import is.L42.generated.Core.L.NC;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
@@ -101,7 +102,7 @@ public class ProgramTypeSystem {
     var g=op._of(k);
     errIf(g==null,mwt._e().poss(),
       Err.nativeReceiverInvalid(mwt.nativeUrl(),nativeKind));
-    g.of(true, p, mwt);
+    g.of(true,mwt,new J(p,null,false,null));
     }
   private static void typeMethE(Program p,MH mh, E e){
     var g=G.of(mh);

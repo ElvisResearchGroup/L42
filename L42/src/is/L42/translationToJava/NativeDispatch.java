@@ -33,14 +33,14 @@ public class NativeDispatch {
   public static List<String>xs(MWT mwt){
     return L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
     }
-  public static String nativeCode(Program p,String nativeKind,Core.L.MWT mwt){
+  public static void nativeCode(String nativeKind,Core.L.MWT mwt,J j){
     String nativeUrl=mwt.nativeUrl();
-    if(!nativeUrl.startsWith("trusted:")){return untrusted(nativeKind,nativeUrl,mwt);}
+    if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);}
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
     assert op._of(k)!=null:k;//type checking should avoid this
-    return op._of(k).of(false,p, mwt);
+    op._of(k).of(false, mwt,j);
     }
   public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
     var k=TrustedKind._fromString(nativeKind);
@@ -55,7 +55,7 @@ public class NativeDispatch {
       }
     return nativeUrl.substring(0, nl).trim();
   }
-  public static String untrusted(String nativeKind, String nativeUrl, MWT mwt) {
+  public static void untrusted(String nativeKind, String nativeUrl, MWT mwt,J j) {
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
     List<String> xs=xs(mwt);
     String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2); 
@@ -71,13 +71,13 @@ public class NativeDispatch {
       }
       return new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader());
     });
-    return java.lang.String.format("""
+    j.c(java.lang.String.format("""
     try {
       Resources.slaves.get("%s").addClassLoader(new Object(){}.getClass().getEnclosingClass().getClassLoader());
       return Resources.slaves.get("%s").call(%s).get();
     } catch (java.rmi.RemoteException ex) {
         throw new RuntimeException(ex);
     }
-    """, slaveName, slaveName, toLambda);   
+    """, slaveName, slaveName, toLambda));   
   }
 }

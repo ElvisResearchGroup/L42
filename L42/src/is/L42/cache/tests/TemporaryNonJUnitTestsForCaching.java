@@ -186,7 +186,8 @@ public class TemporaryNonJUnitTestsForCaching {
 
 //ForeignObject = L42Cachable
 //ForeignObjectCache = L42StandardCache
-//RootCache, Cache = L42Cache
+//RootCache,= L42CacheMap
+//Cache = L42Cache
 
 class IntBox implements ForeignObject<IntBox> {
   static final Class<IntBox> _class=IntBox.class;

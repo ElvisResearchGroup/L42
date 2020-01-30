@@ -9,9 +9,13 @@ import java.util.List;
 import is.L42.common.Program;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.P;
+import is.L42.tools.General;
 import is.L42.translationToJava.J;
 
 public enum TrustedKind implements TrustedT{
+  AnyKind(""){public String factory(J j,MWT mwt){throw bug();}
+    public String defaultVal(){throw bug();}
+    },    
   Bool("boolean"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return false;";
@@ -61,6 +65,7 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 3;}
     },
+  //TODO: how Opt work on int/float/String?
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;
@@ -86,6 +91,7 @@ public enum TrustedKind implements TrustedT{
   public abstract String factory(J j,MWT mwt);
   public String defaultVal(){return "null";}
   public static TrustedKind _fromString(String s) {
+    if(s.isEmpty()){return AnyKind;}
     for (TrustedKind t : TrustedKind.values()) {
       if (t.name().equals(s))return t;
       }

@@ -148,10 +148,10 @@ class OpUtils{
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
   static TrustedOp.Generator use(String s0,Signature sig){
-    return (type,p,mwt)->{
-      if(type && typingUse(p,mwt,sig)){return "";}
+    return (type,mwt,j)->{
+      Program p=j.p();
+      if(type && typingUse(p,mwt,sig)){j.c("");return;}
       String s=s0;
-      J j=new J(p, G.empty(), false,new ArrayList<>());
       if(s.contains("%This")){
         String thisS=j.typeNameStr(p);
         s=s.replace("%This",thisS);
@@ -166,7 +166,7 @@ class OpUtils{
           s=s.replace("%Gen"+(i+1),j.typeNameStr(geni));
           }
         }           
-      return s.formatted(NativeDispatch.xs(mwt).toArray());
+      j.c(s.formatted(NativeDispatch.xs(mwt).toArray()));
       };
     }
 /*  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
@@ -323,6 +323,15 @@ public enum TrustedOp {
     String,use("Resources.out(%s); return L42Void.instance;",sigI(Void)),
     TrustedIO,use("return %s.strDebug(%s);",sigI(Void,String))
     )),
+  AddToLog("addToLog",Map.of(
+    TrustedIO,use("return %s.addToLog(%s,%s);",sigI(Void,String,String))
+    )),
+  ClearLog("clearLog",Map.of(
+    TrustedIO,use("return %s.clearLog(%s);",sigI(Void,String))
+    )),
+  ReadLog("#$readLog",Map.of(
+    TrustedIO,use("return %s.readLog(%s);",sigI(String,String))
+    )),
   TestCondition("testCondition",Map.of(
   //Library pos,This1.S name,B,This1.S message
     TrustedIO,use("return %s.testCondition(%s,%s,%s,%s);",sigI(Void,
@@ -427,12 +436,17 @@ public enum TrustedOp {
     throw new L42Error(%Gen2.wrap(
       new L42LazyMsg(\"Optional value is empty\")
       ));
-    """,sig(Mutable,Mutable,Gen1))))  
+    """,sig(Mutable,Mutable,Gen1)))),
+  LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),
+  EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator()))
   ;
-  public interface Generator{String of(boolean type,Program p,MWT mwt);}
+  public interface Generator{void of(boolean type,MWT mwt,J j);}
   public final String inner;
   Map<TrustedKind,Generator>code;
-  public Generator _of(TrustedKind k){return code.get(k);}
+  public Generator _of(TrustedKind k){
+    assert k!=null;
+    return code.get(k);
+    }
   TrustedOp(String inner,Map<TrustedKind,Generator>code){
     this.inner = inner;
     this.code=code;

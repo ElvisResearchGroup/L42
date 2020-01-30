@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 import is.L42.common.Program;
@@ -21,7 +22,20 @@ public class L42TrustedIO {
     Resources.out(s);
     return L42Void.instance;
     }
-    
+  private static HashMap<String,String> logs=new HashMap<>();
+  public L42Void addToLog(String logName,String text){
+    String oldText=logs.putIfAbsent(logName,text);
+    if(oldText!=null){logs.put(logName,oldText+text);}
+    return L42Void.instance;
+    }
+  public L42Void clearLog(String logName){
+    logs.remove(logName);
+    return L42Void.instance;
+    }
+  public String readLog(String logName){
+    String res=logs.get(logName);
+    return res==null?"":res;
+    }    
   public L42Void testActualExpected(L42Library hasPos,String name, String actual, String expected,String message){
     boolean cond=actual.equals(expected);
     Pos pos=hasPos.unwrap.pos();
