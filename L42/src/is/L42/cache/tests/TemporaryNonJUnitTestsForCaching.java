@@ -140,6 +140,8 @@ public class TemporaryNonJUnitTestsForCaching {
   	System.out.println(box1Key.toString());
   	System.out.println(box1.times2());
   	System.out.println(box1.times2());
+  	IntBox boxF=new IntBox(20);
+  	System.out.println(boxF.fibonacci());
     }{
     R1 r=new R1(null);
     r.referenced=r;
@@ -180,9 +182,18 @@ public class TemporaryNonJUnitTestsForCaching {
   
  */
 
+
+
+//ForeignObject = L42Cachable
+//ForeignObjectCache = L42StandardCache
+//RootCache, Cache = L42Cache
+
 class IntBox implements ForeignObject<IntBox> {
+  static final Class<IntBox> _class=IntBox.class;
   private static final ForeignObjectCache<IntBox> myCache=(ForeignObjectCache<IntBox>)
-    RootCache.addCacheableType(IntBox.class,new ForeignObjectCache<IntBox>("IntBox"));
+    RootCache.addCacheableType(IntBox._class,new ForeignObjectCache<IntBox>("IntBox"));
+  //private static final ForeignObjectCache<IntBox> myCache=//desired
+  //  new ForeignObjectCache<IntBox>("IntBox",IntBox._class);
   static{myCache.lateInitialize(int.class);}
   //setted up to work transparantly for both int.class and Integer.class
   int f;IntBox(int f){this.f=f;}
@@ -193,6 +204,7 @@ class IntBox implements ForeignObject<IntBox> {
   @Override public Object getField(int i){return f;}
   @Override public void setNorm(IntBox t) {this.norm=t;}
   @Override public IntBox myNorm() {return this.norm;}
+
   //int times2(){ return f*2; }
   boolean isTimes2=false;
   int times2=0;
@@ -203,5 +215,18 @@ class IntBox implements ForeignObject<IntBox> {
     if(norm==null){norm=myCache.normalize(this);}
     if(!norm.isTimes2){norm.times2=auxTimes2(); norm.isTimes2=true;}
     return norm.times2;
+    }
+  //int fibonacci(){..}  
+  int auxFibonacci(){
+    System.out.println("fibonacci computing");
+    if(f==0|| f==1){return 1;}
+    return new IntBox(f-1).fibonacci()+new IntBox(f-2).fibonacci();
+    }
+  boolean isFibonacci;
+  int fibonacci;
+  int fibonacci(){
+    if(norm==null){norm=myCache.normalize(this);}
+    if(!norm.isFibonacci){norm.fibonacci=auxFibonacci(); norm.isFibonacci=true;}
+    return norm.fibonacci;    
     }
   }
