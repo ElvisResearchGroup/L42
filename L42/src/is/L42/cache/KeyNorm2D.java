@@ -25,7 +25,7 @@ public class KeyNorm2D {
 		int i = 1;
 		for(Object[] line : lines) {
 			for(Object o : line) {
-			  if(o instanceof £KeyVarID || o instanceof String) {
+			  if(o instanceof £KeyVarID || o instanceof String || o instanceof Integer || o instanceof Float || o instanceof Byte || o instanceof Character || o instanceof Short || o instanceof Long || o instanceof Double) {
 			    hc += i++ * o.hashCode();
 			    } else {
 			    hc += i++ * System.identityHashCode(o);  
