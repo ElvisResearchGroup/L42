@@ -7,7 +7,7 @@ import is.L42.tools.General;
 public class StringCache extends ValueCache<String> {
 
   @Override 
-  public String typename(String t) { 
+  public String typename() { 
     return "£nativestring"; 
     }
 

@@ -83,26 +83,18 @@ public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
     return myCache; 
     }
 
-  @Override 
-  public String typename() {
-    /*
-     * The typename should be unchanging, and unique. Colliding typenames
-     * will result in key collisions.
-     */
-    return "AnnotatedExample";  
-    }
-  
   /*
    * Whether this object is the canonical version of itself,
    * both a setter and a getter
-   * TODO: Discuss interactions with proposed norm field
    */
   
-  private boolean norm = false;
-
-  @Override 
-  public boolean norm(boolean set) { 
-    return norm |= set;
-    }
-
+  private AnnotatedExample myNorm = null;
+  
+  public AnnotatedExample myNorm() {
+    return myNorm;
+  }
+  
+  public void setNorm(AnnotatedExample norm) {
+    this.myNorm = norm;
+  }
   }

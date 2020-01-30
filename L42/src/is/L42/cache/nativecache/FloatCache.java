@@ -7,7 +7,7 @@ import is.L42.tools.General;
 public class FloatCache extends ValueCache<Float> {
 
   @Override 
-  public String typename(Float t) { 
+  public String typename() { 
     return "£nativefloat"; 
     }
 

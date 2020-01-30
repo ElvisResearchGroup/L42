@@ -22,8 +22,16 @@ public class KeyNorm2D {
 	
 	public int hashCode() {
 		int hc = 0;
-		for(Object[] line : lines)
-			hc += Arrays.hashCode(line);
+		int i = 1;
+		for(Object[] line : lines) {
+			for(Object o : line) {
+			  if(o instanceof £KeyVarID || o instanceof String) {
+			    hc += i++ * o.hashCode();
+			    } else {
+			    hc += i++ * System.identityHashCode(o);  
+			    }
+			  }
+		  }
 		return hc;
 		}
 	
@@ -35,6 +43,7 @@ public class KeyNorm2D {
 				for(int i = 0; i < lines.length; i++) {
 				  if(lines[i].length != key.lines[i].length) { return false; }
 				  Cache<?> cache = (Cache<?>) lines[i][0];
+				  if(cache != key.lines[i][0]) { return false; }
 					for(int j = 1; j < lines[i].length; j++) {
 					  if(lines[i][j] instanceof £KeyVarID) {
 					    if(!lines[i][j].equals(key.lines[i][j])) {
@@ -59,7 +68,7 @@ public class KeyNorm2D {
 	    builder.append('v');
 	    builder.append(i);
 	    builder.append(" : ");
-	    builder.append(((Cache<?>) line[0]).typename(null));
+	    builder.append(((Cache<?>) line[0]).typename());
 	    for(int j = 1; j < line.length; j++) {
 	      builder.append(' ');
 	      builder.append(line[j].toString().replace('\n', ' '));

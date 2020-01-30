@@ -47,9 +47,10 @@ public class ArrayListCache implements Cache<ArrayList> {
       boolean inCircle = false;
       Set<Object> circle = null;   
       for(int i = 0; i < list.size(); i++) {
-        if(prevs.contains(list.get(i))) {
+        final int j = 0;
+        if(prevs.stream().anyMatch((o) -> { return o == list.get(j); })) {
           List<Object> sl = prevs.subList(prevs.indexOf(list.get(i)), prevs.size());
-          if(circle == null) { circle = new HashSet<Object>(sl); }
+          if(circle == null) { circle = RootCache.identityHashSet(); circle.addAll(sl); }
           else { circle = union(circle, sl); }
           inCircle = true;
           continue;
@@ -87,9 +88,10 @@ public class ArrayListCache implements Cache<ArrayList> {
     boolean inCircle = false;
     Set<Object> circle = null;   
     for(int i = 0; i < list.size(); i++) {
-      if(prevs.contains(list.get(i))) {
+      final int j = i;
+      if(prevs.stream().anyMatch((o) -> { return o == list.get(j); })) {
         List<Object> sl = prevs.subList(prevs.indexOf(list.get(i)), prevs.size());
-        if(circle == null) { circle = new HashSet<Object>(sl); }
+        if(circle == null) { circle = RootCache.identityHashSet(); circle.addAll(sl); }
         else { circle = union(circle, sl); }
         inCircle = true;
         continue;
@@ -141,7 +143,7 @@ public class ArrayListCache implements Cache<ArrayList> {
     }
   
   @Override
-  public String typename(ArrayList t) {
+  public String typename() {
     return "£ArrayList";
     }
   
@@ -150,9 +152,10 @@ public class ArrayListCache implements Cache<ArrayList> {
     return null; 
     }
   
+  @SuppressWarnings("unchecked") 
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)
   {
-    Set<T> set = new HashSet<T>();
+    Set<T> set = (Set<T>) RootCache.identityHashSet();
     set.addAll(l1);
     set.addAll(l2);
     return set;

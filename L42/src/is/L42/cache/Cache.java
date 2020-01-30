@@ -191,10 +191,9 @@ public interface Cache<T> {
    * Given an object of type T, returns it's canonical
    * typename.
    * 
-   * @param t An object of type T.
    * @return The canonical type name
    */
-  String typename(T t);
+  String typename();
   
   default boolean isValueType()
   {

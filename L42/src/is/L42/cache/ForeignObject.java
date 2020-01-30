@@ -29,20 +29,21 @@ public interface ForeignObject<T> {
    */
   Cache<T> myCache();
   
+  default boolean isNorm() {
+    return myNorm() != null;
+    }
+
   /**
-   * @return The canonical type name of this object. 
-   * Assumed to be unique.
+   * Sets the norm version of this object
+   * 
+   * @param t
    */
-  String typename();
+  void setNorm(T t);
   
   /**
-   * Can either silently read whether an object is normalized by passing
-   * <code>false</code>, or set the object as normalized by passing <code>true</code>
-   * 
-   * @param set Whether or not you want to mark this object as normalized.
-   * @return whether this object is normalized or not.
+   * @return The normalized version of this object, or
+   * <code>null</code> if there is none.
    */
-  boolean norm(boolean set);
-  //There is no need to set norm to false, as all norm objects are imm
-
+  T myNorm();
+  
 }

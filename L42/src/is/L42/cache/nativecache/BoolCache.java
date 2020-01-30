@@ -7,7 +7,7 @@ import is.L42.tools.General;
 public class BoolCache extends ValueCache<Boolean> {
 
   @Override 
-  public String typename(Boolean t) { 
+  public String typename() { 
     return "£nativeboolean"; 
     }
 

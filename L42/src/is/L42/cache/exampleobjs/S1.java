@@ -1,6 +1,9 @@
-package is.L42.cache;
+package is.L42.cache.exampleobjs;
 
-import is.L42.cache.exampleobjs.R1;
+import is.L42.cache.Cache;
+import is.L42.cache.ForeignObject;
+import is.L42.cache.ForeignObjectCache;
+import is.L42.cache.RootCache;
 
 public class S1 implements ForeignObject<S1> {
   
@@ -50,16 +53,14 @@ public class S1 implements ForeignObject<S1> {
     return myCache;
     }
 
-  @Override 
-  public String typename() {
-    return "S1";
-    }
+  private S1 myNorm = null;
   
-  private boolean norm;
-
-  @Override 
-  public boolean norm(boolean set) {
-    return norm |= set;
-    }
+  public S1 myNorm() {
+    return myNorm;
+  }
+  
+  public void setNorm(S1 norm) {
+    this.myNorm = norm;
+  }
 
 }

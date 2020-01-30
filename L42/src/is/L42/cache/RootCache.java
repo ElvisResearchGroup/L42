@@ -1,8 +1,11 @@
 package is.L42.cache;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.IdentityHashMap;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 
 import com.google.common.cache.CacheBuilder;
@@ -83,7 +86,7 @@ public class RootCache {
   @SuppressWarnings("rawtypes")
   public static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
-    if(t instanceof ForeignObject) { return ((ForeignObject) t).norm(false); }
+    if(t instanceof ForeignObject) { return ((ForeignObject) t).isNorm(); }
     Cache<T> cache = getCacheObject(t);
     return cache.isNorm(t);
     }
@@ -112,7 +115,7 @@ public class RootCache {
   
   @SuppressWarnings({"rawtypes", "unchecked" })
   public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
-    final Map<Object, Integer> done = new HashMap<>();
+    final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
     class A { £KeyVarID apply(int offset, Object toAdd, int toAddIndex, Object[][] subkey) {
       £KeyVarID ourId = new £KeyVarID(offset + toAddIndex);
@@ -163,6 +166,10 @@ public class RootCache {
     for(int i = 0; i < narr.length; i++) { narr[i] = nkeylist.get(i); }
     return new KeyNorm2D(narr);
   }
+  
+  public static Set<Object> identityHashSet() {
+    return Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+    }
   
   /**
    * Produces a map that has the desired behavior of entries

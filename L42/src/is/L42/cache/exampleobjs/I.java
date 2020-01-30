@@ -35,16 +35,14 @@ public class I implements ForeignObject<I> {
 		return myCache;
 	}
 
-	@Override
-	public String typename() {
-		return "I";
-	}
-	
-	private boolean norm = false;
-
-	@Override
-	public boolean norm(boolean set) {
-		return norm |= set;
-	}
+	private I myNorm = null;
+  
+  public I myNorm() {
+    return myNorm;
+  }
+  
+  public void setNorm(I norm) {
+    this.myNorm = norm;
+  }
 
 }

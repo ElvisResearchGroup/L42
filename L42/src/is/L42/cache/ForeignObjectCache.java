@@ -26,7 +26,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
   
   private void add(KeyNorm2D key, T t) {
     normMap.put(key, t);
-    t.norm(true);
+    t.setNorm(t);
     }
   
    @Override 
@@ -73,10 +73,14 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
         }
       if(inCircle) { return new NormResult(circle); }
       KeyNorm2D key = this.simpleKey(t);
-      if(normMap.containsKey(key)) { return new NormResult(normMap.get(key)); }
+      if(normMap.containsKey(key)) { 
+        T t2 = (T) normMap.get(key);
+        t.setNorm(t2);
+        return new NormResult(t2); 
+        }
       this.add(key, t);
       return new NormResult<T>(t);      
-      } else { return new NormResult<T>(t); }
+      } else { return new NormResult<T>(t.myNorm()); }
     }
   
   @Override
@@ -119,7 +123,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
     }
 
   @Override
-  public boolean isNorm(T t) { return t.norm(false); }
+  public boolean isNorm(T t) { return t.isNorm(); }
 
   @Override
   public boolean structurallyEquals(T t1, T t2) {
@@ -150,7 +154,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
     }
   
   @Override
-  public String typename(T t) {
+  public String typename() {
     return typename;
     }
 

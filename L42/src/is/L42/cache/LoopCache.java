@@ -2,13 +2,11 @@ package is.L42.cache;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import com.google.common.collect.BiMap;
-import com.google.common.collect.HashBiMap;
-import com.google.common.collect.MapMaker;
 
 public class LoopCache {
   
@@ -27,33 +25,47 @@ public class LoopCache {
   @SuppressWarnings({ "unchecked", "rawtypes" })
   public static <T> T normalizeCircle(Object desired, Set<Object> circle) {
     //TODO: Break this up into smaller parts
-    Map<Object, CircleObject> circleobjects = new HashMap<>();
+    Map<Object, CircleObject> circleobjects = new IdentityHashMap<>();
     for(Object circleobj : circle) { circleobjects.put(circleobj, new CircleObject(circleobj)); }
+    ReplacementMap replacements = new ReplacementMap();
     do {  
       KeyNorm2D retKey = null;
       Map<KeyNorm2D, Object> tempKeyMap = new HashMap<>();
-      ReplacementMap replacements = new ReplacementMap();
+      int nreplacements = 0;
       for(Object circleobj : circle) {
         KeyNorm2D key = keyFromCircleObject(circleobj, circleobjects);
         if(circleobj == desired) { retKey = key; }
         if(tempKeyMap.containsKey(key)) {
           if(circleobj != desired) {
-            replacements.add(circleobj, tempKeyMap.get(key));
+            replacements.add(circleobj, tempKeyMap.get(key)); nreplacements++;
             } else {
-            replacements.add(tempKeyMap.get(key), circleobj);
+            replacements.add(tempKeyMap.get(key), circleobj); nreplacements++;
             tempKeyMap.put(key, circleobj);
             }
           } else {
           tempKeyMap.put(key, circleobj);
           }
         }
-      if(replacements.size() == 0) {
+      if(nreplacements == 0) {
         if(!circularIndex.containsKey(retKey)) {
           for(Map.Entry<KeyNorm2D, Object> entry : tempKeyMap.entrySet()) {
+            if(entry.getValue() instanceof ForeignObject) ((ForeignObject) entry.getValue()).setNorm(entry.getValue());
             Cache cache = RootCache.getCacheObject(entry.getValue());
             circularIndex.put(entry.getKey(), entry.getValue());
             cache.addObjectOverride(simpleKeyFromChonker(entry.getValue(), entry.getKey()), entry.getValue());
             }
+          for(Map.Entry<Object, Object> entry : replacements.entrySet()) {
+            if(entry.getKey() instanceof ForeignObject) ((ForeignObject) entry.getKey()).setNorm(entry.getValue());
+            }
+          } else {
+            for(Map.Entry<KeyNorm2D, Object> entry : tempKeyMap.entrySet()) {
+              Object repl = circularIndex.get(entry.getKey());
+              if(entry.getValue() instanceof ForeignObject) ((ForeignObject) entry.getValue()).setNorm(repl);
+              replacements.add(entry.getValue(), repl);
+              }
+            for(Map.Entry<Object, Object> entry : replacements.entrySet()) {
+              if(entry.getKey() instanceof ForeignObject) ((ForeignObject) entry.getKey()).setNorm(entry.getValue());
+              }
           }
         return (T) circularIndex.get(retKey);
         } else {
@@ -69,7 +81,7 @@ public class LoopCache {
     }
   
   public static KeyNorm2D getKeyCircleNN(Object desired, Set<Object> circle) {    
-    Map<Object, CircleObject> circleobjects = new HashMap<>();
+    Map<Object, CircleObject> circleobjects = new IdentityHashMap<>();
     for(Object circleobj : circle) { circleobjects.put(circleobj, new CircleObject(circleobj)); }
     do {  
       KeyNorm2D retKey = null;
@@ -105,7 +117,7 @@ public class LoopCache {
   
   private static KeyNorm2D keyFromCircleObject(Object circleobj, Map<Object, CircleObject> circleobjects)
   {
-    Map<Object, Integer> varnames = new HashMap<>();
+    Map<Object, Integer> varnames = new IdentityHashMap<>();
     List<Object> order = new ArrayList<>();
     circleobjects.get(circleobj).constructVarMap(varnames, order, circleobjects, new MyInteger(0));
     Object[][] lines = new Object[order.size()][];
@@ -198,12 +210,11 @@ public class LoopCache {
           amap.get(f.value).constructVarMap(varmap, order, amap, i);
       }
     
-    @SuppressWarnings("unchecked") 
     public String toString(Map<Object, Integer> map) {
       StringBuilder builder = new StringBuilder();
       builder.append(map.get(this.obj));
       builder.append("=n ");
-      builder.append(cache.typename(this.obj));
+      builder.append(cache.typename());
       builder.append("(");
       for(int i = 0; i < params.length; i++) {
         builder.append(params[i].toString(map));
@@ -239,12 +250,12 @@ public class LoopCache {
   
   protected static class ReplacementMap
   {
-    Map<Object, Object> replacements = new HashMap<>();
-    Map<Object, List<Object>> invReplacements = new HashMap<>();
+    Map<Object, Object> replacements = new IdentityHashMap<>();
+    Map<Object, Set<Object>> invReplacements = new IdentityHashMap<>();
     
     private void addToInv(Object to, Object from) {
       if(!invReplacements.containsKey(to)) {
-        invReplacements.put(to, new ArrayList<>()); 
+        invReplacements.put(to, RootCache.identityHashSet()); 
         }   
       invReplacements.get(to).add(from);
       }
@@ -252,10 +263,12 @@ public class LoopCache {
     public void add(Object from, Object to) {
       replacements.put(from, to);                     //Add relation f->t
       if(invReplacements.containsKey(from)) {         //Check if any relation exists such that x->f
-        List<Object> list = invReplacements.get(from);
+        Set<Object> list = invReplacements.get(from);
         for(Object o : list) {                        //For each x->f, replace f with t
           replacements.put(o, to);
+          addToInv(to, o);
           }
+        invReplacements.remove(from);
         }
       addToInv(to, from);                             //Add inverse relation
       }

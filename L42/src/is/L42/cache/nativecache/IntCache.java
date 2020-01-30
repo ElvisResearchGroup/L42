@@ -7,7 +7,7 @@ import is.L42.tools.General;
 public class IntCache extends ValueCache<Integer> {
 
   @Override 
-  public String typename(Integer t) { 
+  public String typename() { 
     return "£nativeint"; 
     }
 

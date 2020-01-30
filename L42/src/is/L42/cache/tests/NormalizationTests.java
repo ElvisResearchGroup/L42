@@ -8,8 +8,10 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Test;
@@ -17,11 +19,12 @@ import org.junit.Test;
 import com.google.common.base.Supplier;
 
 import is.L42.cache.Cache;
-import is.L42.cache.S1;
+import is.L42.cache.ForeignObject;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
+import is.L42.cache.exampleobjs.S1;
 
 public class NormalizationTests {
   
@@ -112,6 +115,9 @@ public class NormalizationTests {
     assertTrue(r1 == normalize(r2));
     assertTrue(r1 == normalize(r3));
     assertTrue(r1 == normalize(new R1(r3)));
+    assertTrue(r1 == r1.myNorm());
+    assertTrue(r1 == r2.myNorm());
+    assertTrue(r1 == r3.myNorm());
     }
   
   @Test
@@ -153,14 +159,50 @@ public class NormalizationTests {
     }
   
   @SuppressWarnings({ "rawtypes", "unchecked" }) 
+  @Test
+  public void testALCircle() {
+    testSelfProperties(() -> {
+      List l1 = new ArrayList();
+      List l2 = new ArrayList();
+      List l3 = new ArrayList();
+      l1.add(l2);
+      l2.add(l3);
+      l3.add(l1);
+      return l1;
+      });
+    }
+  
+  @SuppressWarnings({ "rawtypes", "unchecked" }) 
+  @Test
+  public void testParialALCircle() {
+    testSelfProperties(() -> {
+      List l1 = new ArrayList();
+      List l2 = new ArrayList();
+      List l3 = new ArrayList();
+      l1.add(l2);
+      l2.add(l3);
+      R1 r1 = new R1(l1);
+      R1 r2 = new R1(r1);
+      R1 r3 = new R1(r2);
+      l3.add(r3);
+      return l1;
+      });
+    }
+  
+  @SuppressWarnings({ "rawtypes", "unchecked" }) 
   private static void testBiProperties(Supplier<Object> supplier1, Supplier<Object> supplier2) {
-    Object n1 = supplier1.get();
-    Object n2 = supplier2.get();
+    Object n1old, n2old;
+    Object n1 = n1old = supplier1.get();
+    Object n2 = n2old = supplier2.get();
     Cache cache = getCacheObject(n1);
     assertTrue(n1 != n2);
     assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false));
     n1 = normalize(n1);
     n2 = normalize(n2);
+    if(n1old instanceof ForeignObject) {
+      assertTrue(((ForeignObject) n1old).myNorm() == n1);
+      assertTrue(((ForeignObject) n2old).myNorm() == n1);
+      }
     assertTrue(cache.identityEquals(n1, n2));
     testDeepFieldEQ(n1, n2, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
     assertEquals(getKey(n1, false), getKey(n2, false));

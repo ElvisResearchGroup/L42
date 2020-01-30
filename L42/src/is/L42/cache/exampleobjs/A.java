@@ -75,18 +75,14 @@ public class A implements ForeignObject<A> {
     return myCache;
   }
   
-  @Override
-  public String typename()
-  {
-    return "A";
+  private A myNorm = null;
+  
+  public A myNorm() {
+    return myNorm;
   }
   
-  
-  private boolean norm = false;
-
-  @Override
-  public boolean norm(boolean set) {
-    return norm |= set;
+  public void setNorm(A norm) {
+    this.myNorm = norm;
   }
 
 }

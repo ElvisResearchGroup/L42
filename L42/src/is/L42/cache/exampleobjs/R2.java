@@ -58,18 +58,14 @@ public class R2 implements ForeignObject<R2> {
     return myCache;
   }
   
-  @Override
-  public String typename()
-  {
-    return "R2";
+  private R2 myNorm = null;
+  
+  public R2 myNorm() {
+    return myNorm;
   }
   
-  
-  private boolean norm = false;
-
-  @Override
-  public boolean norm(boolean set) {
-    return norm |= set;
+  public void setNorm(R2 norm) {
+    this.myNorm = norm;
   }
   
 }
