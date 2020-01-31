@@ -35,7 +35,7 @@ public class NativeDispatch {
     }
   public static void nativeCode(String nativeKind,Core.L.MWT mwt,J j){
     String nativeUrl=mwt.nativeUrl();
-    if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);}
+    if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);return;}
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);

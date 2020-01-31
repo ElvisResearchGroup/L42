@@ -455,7 +455,8 @@ public enum TrustedOp {
    for (TrustedOp t : TrustedOp.values()) {
     if (t.inner.equals(s))return t;
     }
-   assert false:"#"+s+"#";
+   assert false:
+   "#"+s+"#";
    throw todo();
   }
  }

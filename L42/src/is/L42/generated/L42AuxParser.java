@@ -27,7 +27,7 @@ public class L42AuxParser extends Parser {
 		RULE_selector = 9, RULE_pathSel = 10, RULE_pathSelX = 11, RULE_nudePathSelX = 12, 
 		RULE_infoNorm = 13, RULE_infoTyped = 14, RULE_info = 15, RULE_infoBody = 16, 
 		RULE_typeDep = 17, RULE_coherentDep = 18, RULE_watched = 19, RULE_usedMethods = 20, 
-		RULE_hiddenSupertypes = 21, RULE_refined = 22, RULE_closeState = 23, RULE_nativeKind = 24, 
+		RULE_hiddenSupertypes = 21, RULE_refined = 22, RULE_close = 23, RULE_nativeKind = 24, 
 		RULE_nativePar = 25, RULE_uniqueId = 26, RULE_x = 27, RULE_m = 28, RULE_charInDoc = 29, 
 		RULE_topDoc = 30, RULE_topDocText = 31, RULE_doc = 32;
 	private static String[] makeRuleNames() {
@@ -35,7 +35,7 @@ public class L42AuxParser extends Parser {
 			"anyKw", "voidKw", "libraryKw", "thisKw", "c", "csP", "nudeCsP", "path", 
 			"cs", "selector", "pathSel", "pathSelX", "nudePathSelX", "infoNorm", 
 			"infoTyped", "info", "infoBody", "typeDep", "coherentDep", "watched", 
-			"usedMethods", "hiddenSupertypes", "refined", "closeState", "nativeKind", 
+			"usedMethods", "hiddenSupertypes", "refined", "close", "nativeKind", 
 			"nativePar", "uniqueId", "x", "m", "charInDoc", "topDoc", "topDocText", 
 			"doc"
 		};
@@ -46,8 +46,8 @@ public class L42AuxParser extends Parser {
 		return new String[] {
 			null, "'('", "')'", "'#norm{'", "'#typed{'", "'}'", "'typeDep='", "'coherentDep='", 
 			"'watched='", "'usedMethods='", "'hiddenSupertypes='", "'refined='", 
-			"'closeState'", "'nativeKind='", "'nativePar='", "'uniqueId='", "'{'", 
-			"'.'", "'@@'", null, "'Any'", "'Void'", "'Library'"
+			"'close'", "'nativeKind='", "'nativePar='", "'uniqueId='", "'{'", "'.'", 
+			"'@@'", null, "'Any'", "'Void'", "'Library'"
 		};
 	}
 	private static final String[] _LITERAL_NAMES = makeLiteralNames();
@@ -1129,8 +1129,8 @@ public class L42AuxParser extends Parser {
 		public RefinedContext refined() {
 			return getRuleContext(RefinedContext.class,0);
 		}
-		public CloseStateContext closeState() {
-			return getRuleContext(CloseStateContext.class,0);
+		public CloseContext close() {
+			return getRuleContext(CloseContext.class,0);
 		}
 		public NativeKindContext nativeKind() {
 			return getRuleContext(NativeKindContext.class,0);
@@ -1213,7 +1213,7 @@ public class L42AuxParser extends Parser {
 				enterOuterAlt(_localctx, 7);
 				{
 				setState(179);
-				closeState();
+				close();
 				}
 				break;
 			case T__12:
@@ -1774,29 +1774,29 @@ public class L42AuxParser extends Parser {
 		return _localctx;
 	}
 
-	public static class CloseStateContext extends ParserRuleContext {
-		public CloseStateContext(ParserRuleContext parent, int invokingState) {
+	public static class CloseContext extends ParserRuleContext {
+		public CloseContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
 		}
-		@Override public int getRuleIndex() { return RULE_closeState; }
+		@Override public int getRuleIndex() { return RULE_close; }
 		@Override
 		public void enterRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterCloseState(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).enterClose(this);
 		}
 		@Override
 		public void exitRule(ParseTreeListener listener) {
-			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitCloseState(this);
+			if ( listener instanceof L42AuxListener ) ((L42AuxListener)listener).exitClose(this);
 		}
 		@Override
 		public <T> T accept(ParseTreeVisitor<? extends T> visitor) {
-			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitCloseState(this);
+			if ( visitor instanceof L42AuxVisitor ) return ((L42AuxVisitor<? extends T>)visitor).visitClose(this);
 			else return visitor.visitChildren(this);
 		}
 	}
 
-	public final CloseStateContext closeState() throws RecognitionException {
-		CloseStateContext _localctx = new CloseStateContext(_ctx, getState());
-		enterRule(_localctx, 46, RULE_closeState);
+	public final CloseContext close() throws RecognitionException {
+		CloseContext _localctx = new CloseContext(_ctx, getState());
+		enterRule(_localctx, 46, RULE_close);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{

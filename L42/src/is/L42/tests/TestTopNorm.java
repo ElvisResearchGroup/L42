@@ -15,6 +15,7 @@ import is.L42.common.Program;
 import is.L42.common.Constants;
 import is.L42.constraints.FreshNames;
 import is.L42.common.EndError.InvalidImplements;
+import is.L42.common.EndError.NotWellFormed;
 import is.L42.common.EndError.PathNotExistent;
 import is.L42.common.EndError.TypeError;
 import is.L42.generated.Core;
@@ -39,7 +40,38 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestTopNorm
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    top("{}","{#norm{}}")
-   
+   //tops
+   ),new AtomicTest(()->
+   top("{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}")
+   ),new AtomicTest(()->
+   top("{A={} B=({})}","{A={#typed{}}B={#typed{}}#norm{}}")
+   ),new AtomicTest(()->
+   top("{A={class method This() method Library #toLibrary()={#norm{}}} B=A()}","""
+     {
+     A={
+       class method imm This0 #apply()
+       imm method imm Library #toLibrary()={#typed{}}
+       #typed{typeDep=This0}}
+     B={#typed{}}#norm{}}
+     """)
+//   ),new AtomicTest(()->//TODO: fix, so that also a class expression can be a top level toLibrary?
+//   top("{A={class method Library #toLibrary()={#norm{}}} B=(class A a=A<:class A a)}","{A={#typed{}}B={#typed{}}#norm{}}")
+
+   //privates
+   ),new AtomicTest(()->
+   top("{A={class method This foo::1()} B=void}",
+   "{A={class method imm This0 foo::1() #typed{typeDep=This0 close}} B={#typed{}}#norm{}}")
+
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"{A={class method This foo::1()} B={class method This foo::1()} C=void}",
+   Err.nonUniqueNumber(hole,hole))
+
+   ),new AtomicTest(()->
+   top("{A={class method This foo::0()} B={class method This foo::0()} C=void}",
+   "{A={class method imm This0 foo::0()#typed{typeDep=This0 close}}B={class method imm This0 foo::0()#typed{typeDep=This0 close}}C={#typed{}}#norm{}}")
+
+//also check refined methods are not included
+
  //collect
    ),new AtomicTest(()->
    top("{} A= ={A={}} B= ={B={A={}}}","{#norm{}}")

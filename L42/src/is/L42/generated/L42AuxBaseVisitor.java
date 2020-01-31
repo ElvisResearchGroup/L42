@@ -178,7 +178,7 @@ public class L42AuxBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
-	@Override public T visitCloseState(L42AuxParser.CloseStateContext ctx) { return visitChildren(ctx); }
+	@Override public T visitClose(L42AuxParser.CloseContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}
 	 *

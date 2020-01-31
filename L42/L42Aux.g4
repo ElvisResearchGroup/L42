@@ -25,14 +25,14 @@ infoNorm:'#norm{';
 infoTyped:'#typed{';
 
 info: W*(infoNorm|infoTyped)W* (infoBody W*)*'}' EOF;
-infoBody: typeDep|coherentDep|watched|usedMethods|hiddenSupertypes|refined|closeState|nativeKind|nativePar|uniqueId;
+infoBody: typeDep|coherentDep|watched|usedMethods|hiddenSupertypes|refined|close|nativeKind|nativePar|uniqueId;
 typeDep: 'typeDep='(W* path)+;
 coherentDep: 'coherentDep='(W* path)+;
 watched: 'watched='(W* path)+;
 usedMethods: 'usedMethods='(W* pathSel)+;
 hiddenSupertypes: 'hiddenSupertypes='(W* path)+;
 refined: 'refined='(W* selector)+;
-closeState: 'closeState';
+close: 'close';
 nativeKind: 'nativeKind=' W* (x|c);
 nativePar: 'nativePar='(W* path)+;
 uniqueId: 'uniqueId='W* x;

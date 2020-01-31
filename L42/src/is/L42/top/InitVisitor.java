@@ -108,7 +108,7 @@ class InitVisitor extends CloneVisitorWithProgram{
           });
         throw new EndError.NotWellFormed(pos,Err.nonUniqueNumber(ns,morePos));
         }
-      for(var n:ns){uniqueNs.put(n,pos);}
+      for(var n:ns){uniqueNs.put(n,pos);uniqueNs.remove(0);}
       }
   void checkUniqueNs(Core.L l){
     var pos=l.poss();

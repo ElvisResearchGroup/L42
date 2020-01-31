@@ -130,7 +130,7 @@ Foo={Size inner,class method This of(Size inner)
       this.inner()*3Size
       )
   }  
-TestLog=(
+TestLog=(//Nope, log immWriter must be always generable, and should have a #$writer() method
   mut Log log=Log.#$of(S"Foo")
   Log iLog=log.immWriter()
   iLog<=S"Hello"

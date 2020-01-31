@@ -29,6 +29,7 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   @Override public LL visitL(Full.L s) {
     if(lastCMs==null){
       assert p.top==s;
+      //return fullLHandler(s);//TODO: was doing double iterations before... ? mah
       var res=super.visitL(s);
       if(res.isFullL()){return fullLHandler((Full.L)res);} 
       return coreLHandler((Core.L)res);
@@ -53,8 +54,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     poss=lastPos;
     return res;
     }
-  public LL fullLHandler(Full.L l){return super.visitL(l);}
-  public Core.L coreLHandler(Core.L l){return super.visitL(l);}
+  public LL fullLHandler(Full.L l){return l;/*super.visitL(l);*/}//visitL already calls super.visitL
+  public Core.L coreLHandler(Core.L l){return l;/*super.visitL(l);*/}
   @Override public Full.L.NC visitNC(Full.L.NC s) {
     var lastPos=s.poss();
     LDom aux=lastCMs;
@@ -100,7 +101,7 @@ public class CloneVisitorWithProgram extends CloneVisitor {
       whereFromTop.add(lastCMs);
       }
     levels+=1;
-    var res=coreLHandler(s);
+    var res=coreLHandler(super.visitL(s));
     p=aux;
     levels-=1;
     whereFromTop.remove(whereFromTop.size()-1);

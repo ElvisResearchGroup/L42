@@ -95,7 +95,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   SafeReadFile={
     class method This1.S #$read(This1.S fileName)=native{
       ioSlave{}
-      {try(//I may have messed up some of the code, 
+      {try( 
       java.util.stream.Stream<String>lines=java.nio.file.Files.lines(
         java.nio.file.Paths.get(#1+".txt")))
         {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
