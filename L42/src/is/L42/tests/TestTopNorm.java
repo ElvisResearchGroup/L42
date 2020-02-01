@@ -110,7 +110,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    {B={D::1={}}
     A={
       method This1.B.D::1 b() 
-      #norm{typeDep=This1.B.D::1}}
+      #norm{typeDep=This1.B,This1.B.D::1}}
     C=void}
     """,
    Err.missedWatched("[This1.B]"))
@@ -150,6 +150,102 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     C=void}
     """,
    Err.missedWatched("[This1.B]"))
+//computing watched
+   ),new AtomicTest(()->
+   top("""
+   {B={D::1={#norm{}} #norm{}}
+    A={
+      method This1.B.D::1 b() 
+      }
+    C=void}
+    ""","""
+    {B={D::1={#typed{}}#typed{}}
+     A={imm method imm This1.B.D::1 b()
+       #typed{typeDep=This1.B.D::1, This1.B watched=This1.B}}
+     C={#typed{}}#norm{}}
+    """)
+   ),new AtomicTest(()->
+   top("""
+   {B={class method Void foo::1()=void}
+    A={
+      method Void b()=This1.B<:class This1.B.foo::1() 
+      }
+    C=void}
+    ""","""
+    {B={class method imm Void foo::1()=void #typed{}}
+     A={imm method imm Void b()=This1.B<:class This1.B.foo::1()
+       #typed{typeDep=This1.B coherentDep=This1.B watched=This1.B}}
+     C={#typed{}}#norm{}}
+    """)
+   ),new AtomicTest(()->
+   top("""
+   {B={class method Void foo::1()=void}
+    A={
+      method Void b()=(class This1.B bb=This1.B<:class This1.B   bb.foo::1())
+      }
+    C=void}
+    ""","""
+    {B={class method imm Void foo::1()=void #typed{}}
+     A={imm method imm Void b()=(
+         class This1.B bb=This1.B<:class This1.B
+         bb.foo::1())
+       #typed{typeDep=This1.B coherentDep=This1.B watched=This1.B}}
+       C={#typed{}}#norm{}}
+    """)
+   ),new AtomicTest(()->
+   top("""
+   {B={}
+    A={
+      method Library b()={#norm{typeDep=This2.B watched=This2.B}}
+      }
+    C=void}
+    ""","""
+    {B={#typed{}}
+     A={
+       imm method imm Library b()={
+         #typed{typeDep=This2.B watched=This2.B}}
+       #typed{typeDep=This1.B watched=This1.B}}
+     C={#typed{}}#norm{}}
+     """)
+   ),new AtomicTest(()->
+   top("""
+   {B={}
+    A={
+      DD={#norm{typeDep=This2.B watched=This2.B}}
+      }
+    C=void}
+    ""","""
+    {B={#typed{}}
+     A={DD={#typed{typeDep=This2.B watched=This2.B}}
+     #typed{}}
+     C={#typed{}}#norm{}}
+     """)
+   ),new AtomicTest(()->
+   top("""
+   {B={}
+    A={
+      DD::2={#norm{typeDep=This2.B watched=This2.B}}
+      }
+    C=void}
+    ""","""
+    {B={#typed{}}
+     A={DD::2={#typed{typeDep=This2.B watched=This2.B}}
+     #typed{typeDep=This1.B watched=This1.B}}
+     C={#typed{}}#norm{}}
+     """)
+   ),new AtomicTest(()->
+   top("""
+   {B={D::1={#norm{}} #norm{}}
+    A={@B.D::1}
+    C=void}
+    ""","""
+    {B={D::1={#typed{}} #typed{}}
+     A={
+       #typed{typeDep=This1.B.D::1,This1.B watched=This1.B}
+       @This1.B.D::1}
+     C={#typed{}}#norm{}}
+     """)
+
  //collect
    ),new AtomicTest(()->
    top("{} A= ={A={}} B= ={B={A={}}}","{#norm{}}")

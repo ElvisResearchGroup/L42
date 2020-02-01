@@ -5,6 +5,7 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.unique;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -238,7 +239,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       retST.addAll(resi.retSTz);    
       }    
     y=oldY;
-    commit(new Half.MCall(call.pos(), (Half.XP)resXP.e, s,L(es.stream())),stz1,L(retST.stream().distinct()));
+    commit(new Half.MCall(call.pos(), (Half.XP)resXP.e, s,L(es.stream())),stz1,unique(retST));
     }
   @Override public void visitBlock(Full.Block block){
     if(block.isCurly()){curlyBlock(block);return;}

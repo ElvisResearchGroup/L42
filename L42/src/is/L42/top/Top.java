@@ -531,7 +531,10 @@ dropCache:
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     collectDeps(p,mwts,typePs,cohePs,true);
-    Info info=Info.empty.withTypeDep(L(typePs.stream())).withCoherentDep(L(cohePs.stream()));
+    Info info=Info.empty
+      .withTypeDep(unique(L(typePs.stream())))
+      .withCoherentDep(unique(L(cohePs.stream())))
+      .withWatched(unique(L(c->Top.collectWatched(mwts,c))));
     var allMwts=merge(mwts0,mwts);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
@@ -560,7 +563,7 @@ dropCache:
     }
   private Core.L updateInfo(Program p1, Core.L.NC nc) {
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
-    List<P.NCs>dep=new ArrayList<>();
+    ArrayList<P.NCs>dep=new ArrayList<>();
     collectDepDocs(nc.docs(),dep);
     Core.L l=(Core.L)p1.top;
     var info=l.info();
@@ -568,21 +571,26 @@ dropCache:
     if(nc.key().hasUniqueNum()){
       var typePs=new ArrayList<P.NCs>();
       var cohePs=new ArrayList<P.NCs>();
+      var watched=new ArrayList<P.NCs>();
       collectDepsE(p1,nc.l(),typePs,cohePs);
+      Top.collectWatchedDocs(nc.docs(), watched);
+      var oldW=nc.l().info().watched();
+      TypeManipulation.skipThis0(oldW,nc.l(),p->p,(p0,p2)->watched.add(p2));
       info=info.withTypeDep(mergeU(info.typeDep(),typePs));
       info=info.withCoherentDep(mergeU(info.coherentDep(),cohePs));
-      //TODO: add dependencies for watched and others (also need to be done in formalism)
+      info=info.withWatched(mergeU(info.watched(),watched));
       }
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
     }
-  public static void collectDepDocs(List<Doc> docs, List<P.NCs> acc) {
+  public static void collectDepDocs(List<Doc> docs, ArrayList<P.NCs> acc) {
     for(Doc d:docs){
       collectDepDocs(d.docs(),acc);
       if(d._pathSel()==null){continue;}
       if(!d._pathSel().p().isNCs()){continue;}
       acc.add(d._pathSel().p().toNCs());
       }
+    addPublicRoots(acc);
     }
   private Core.E infer(I i,CTz ctz,CTz frommed,Half.E e,ArrayList<Cache.CTop> ctops) throws EndError{
     return new InferToCore(i,ctz,this,ctops).compute(e);
@@ -780,15 +788,56 @@ dropCache:
     }
   static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {
     var deps=new Deps(p0,typePs,cohePs);
-    if(!justBodies){for(var m:mwts){deps.of(m);}return;}
+    if(!justBodies){
+      for(var m:mwts){deps.of(m);}
+      addPublicRoots(typePs);
+      addPublicRoots(cohePs);
+      return;
+      }
     for(var m:mwts){if(m._e()!=null){deps.of(m._e().visitable());}}
+    addPublicRoots(typePs);
+    addPublicRoots(cohePs);
+    }
+  private static void addPublicRoots(ArrayList<P.NCs> _ps) {
+    if(_ps==null){return;}
+    int sizeT=_ps.size();
+    for(int i=0;i<sizeT;i++){//ps will grow during this cycle
+      var pi=_ps.get(i);
+      var cs=L(pi.cs().stream().takeWhile(c->!c.hasUniqueNum()));
+      if(pi.cs().size()==cs.size()){continue;}
+      _ps.add(pi.withCs(cs));
+      }
     }
   static public void collectDepsE(Program p0,Core.E e, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
     var deps=new Deps(p0,typePs,cohePs);
     deps.of(e.visitable());
+    addPublicRoots(typePs);
+    addPublicRoots(cohePs);
+    }
+  static public void collectWatched(List<MWT> mwts,ArrayList<P.NCs> watched){
+    var acc=accWatched(watched);
+    for(var mwti:mwts){acc.of(mwti);}
+    watched.removeAll(L(P.pThis0));
+    }
+  static public void collectWatchedDocs(List<Doc> docs,ArrayList<P.NCs> watched){
+    var acc=accWatched(watched);
+    for(var di:docs){acc.of(di);}
+    watched.removeAll(L(P.pThis0));
     }
   static public void collectWatched(Core.L l,ArrayList<P.NCs> watched){
-    var acc= new Accumulate.WithCoreG<ArrayList<P.NCs>>(){
+    var acc=accWatched(watched);
+    for(var ti:l.ts()){acc.of(ti);}
+    for(var di: l.docs()){acc.of(di);}
+    for(var mwti:l.mwts()){acc.of(mwti);}
+    for(var nci:l.ncs()){
+      Info info=nci.l().info();
+      TypeManipulation.skipThis0(info.watched(),nci.l(),p->p,(p0,p1)->watched.add(p1));
+      for(var di: nci.docs()){acc.of(di);}
+      }
+    watched.removeAll(L(P.pThis0));
+    }
+  static public Accumulate<?> accWatched(ArrayList<P.NCs> watched){
+    return new Accumulate.WithCoreG<ArrayList<P.NCs>>(){
       @Override public ArrayList<P.NCs> empty() {return watched;}
       @Override public void visitMCall(Core.MCall mc){
         if(!mc.s().hasUniqueNum()){return;}
@@ -808,15 +857,6 @@ dropCache:
         watched.add(pi.withCs(csCut));
         }
       };
-    for(var ti:l.ts()){acc.of(ti);}
-    for(var di: l.docs()){acc.of(di);}
-    for(var mwti:l.mwts()){acc.of(mwti);}
-    for(var nci:l.ncs()){
-      Info info=nci.l().info();
-      TypeManipulation.skipThis0(info.watched(),nci.l(),p->p,(p0,p1)->watched.add(p1));
-      for(var di: nci.docs()){acc.of(di);}
-      }
-    watched.removeAll(L(P.pThis0));
     }
   }
   /*private void flushBadCache(){

@@ -52,16 +52,16 @@ class SortHeader{
       c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",null));
       });
     Program p0=p.update(coreL,false);
-    List<P.NCs> typeDep=L(c->{
-      Top.collectDeps(p0,mwts,c,null,false);
-      });
+    List<P.NCs> typeDep=L(c->Top.collectDeps(p0,mwts,c,null,false));
     List<S> ss=L(mwts,(c,mi)->{
       if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
       });
+    List<P.NCs> watched=L(c->Top.collectWatched(mwts,c));
     var newInfo=Core.L.Info.empty
       .withTypeDep(typeDep)
       .withRefined(ss)
-      .with_uniqueId(uniqueId);
+      .with_uniqueId(uniqueId)
+      .withWatched(watched);
     newInfo=Top.sumInfo(coreL.info(),newInfo).withClose(true);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
     }
@@ -103,19 +103,20 @@ class SortHeader{
     ArrayList<P.NCs> cohePs=new ArrayList<>();
     Top.collectDeps(p1,mwts,typePs,cohePs,false);
     var docs=TypeManipulation.toCoreDocs(l.docs());
-    boolean classMeth=mh1n.stream().anyMatch(m->m.mdf().isClass());
-    List<P.NCs> typeDeps=unique(L(c->{
+    List<P.NCs> typeDeps=L(c->{
       for(var ti:ts1){c.add(ti.p().toNCs());}
       c.addAll(typePs);
       Top.collectDepDocs(docs, c);
-      }));
+      });
     List<S> refined=L(mwts,(c,mi)->{
       S s=mi.key();
       if(refine(p1,s,P.pThis0,poss)){c.add(s);}
       });
-    Info info=new Info(false,typeDeps,unique(L(cohePs.stream())),
+    Info info=new Info(false,unique(typeDeps),unique(cohePs),
       L(),L(),L(),refined,true,"",L(),uniqueId); 
-  return new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
+  var res=new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
+  List<P.NCs> watched=L(c->Top.collectWatched(res,c));
+  return res.withInfo(res.info().withWatched(unique(watched)));
   }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
     if(ts.isEmpty()){return ts;}

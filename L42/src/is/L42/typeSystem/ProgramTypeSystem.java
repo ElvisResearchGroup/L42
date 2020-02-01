@@ -45,7 +45,8 @@ public class ProgramTypeSystem {
       if(typed||nc.key().hasUniqueNum()){type(typed,pushed);}
       if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent(false);}
       }
-    if(l.info().close()){new Coherence(p,true).isCoherent(false);}
+    if(l.info().close()){
+      new Coherence(p,true).isCoherent(false);}
     List<S> estimatedRefined=L(l.ts(),(c,ti)->{
       var pi=ti.p().toNCs();
       var li=p._ofCore(pi);

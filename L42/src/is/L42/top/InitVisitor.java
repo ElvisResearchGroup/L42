@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.unique;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -169,15 +170,15 @@ class InitVisitor extends CloneVisitorWithProgram{
     var missedWatched=!l.info().watched().containsAll(watchedPs);
     if(missedTypeDep){
       typePs.removeAll(l.info().typeDep());
-      throw new EndError.NotWellFormed(l.poss(),Err.missedTypeDep(L(typePs.stream().distinct())));
+      throw new EndError.NotWellFormed(l.poss(),Err.missedTypeDep(unique(typePs)));
       }
     if(missedCoheDep){
       cohePs.removeAll(l.info().coherentDep());
-      throw new EndError.NotWellFormed(l.poss(),Err.missedCoheDep(L(cohePs.stream().distinct())));
+      throw new EndError.NotWellFormed(l.poss(),Err.missedCoheDep(unique(cohePs)));
       }
    if(missedWatched){
       watchedPs.removeAll(l.info().watched());
-      throw new EndError.NotWellFormed(l.poss(),Err.missedWatched(L(watchedPs.stream().distinct())));
+      throw new EndError.NotWellFormed(l.poss(),Err.missedWatched(unique(watchedPs)));
       }
     if(l.info().isTyped()){
       for(var p:l.info().typeDep()){
@@ -245,12 +246,12 @@ class InitVisitor extends CloneVisitorWithProgram{
     }
   @Override public Info visitInfo(Info info) {
     info=super.visitInfo(info);
-    info=info.withTypeDep(L(info.typeDep().stream().distinct()));
-    info=info.withCoherentDep(L(info.coherentDep().stream().distinct()));
-    info=info.withWatched(L(info.watched().stream().distinct()));
-    info=info.withHiddenSupertypes(L(info.hiddenSupertypes().stream().distinct()));
-    info=info.withRefined(L(info.refined().stream().distinct()));
-    info=info.withUsedMethods(L(info.usedMethods().stream().distinct()));
+    info=info.withTypeDep(unique(info.typeDep()));
+    info=info.withCoherentDep(unique(info.coherentDep()));
+    info=info.withWatched(unique(info.watched()));
+    info=info.withHiddenSupertypes(unique(info.hiddenSupertypes()));
+    info=info.withRefined(unique(info.refined()));
+    info=info.withUsedMethods(unique(info.usedMethods()));
     return info;
     }
   @Override public P visitP(P p) {return min(p);}

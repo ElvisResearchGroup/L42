@@ -130,7 +130,7 @@ _______
     Ps;empty = collectDeps(p0;MWTs)
     ss=[MWT.s| MWT in MWTs and refine(p1;s;This0)]
     declaresClassMethods?=empty iff class notin MHs.mdfs
-    Info = #norm{typeDep=Ts1.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, watched=mustWatch({interface? [Ts1] MWTs ♥Docs}), uniqueId=n}
+    Info = #norm{typeDep=Ts1.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, watched=mustWatch(CORE.L), uniqueId=n}
     P in Ps2 if P.C::k._ is anywhere in CORE.L
     n fresh
     CORE.L = {interface? [Ts1] MWTs Info ♥Docs}
@@ -280,6 +280,7 @@ _______
 _______
 #define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
 //collectDeps(sequence)=union of the results of elements of the sequence
+//all collectDeps/collectDepsE finally adds {P| P.C::k._ in collectDeps(_,_) and P not of form _.C'::n._}
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
 
