@@ -1,18 +1,20 @@
 read method This1.S name::0()
+class method This immOf::0(This1.S name)
+class method This #apply(This1.S that)=this.immOf::0(name=that)
+class method This #from(This1.StringBuilder stringLiteral)=this.#apply(that=stringLiteral.toS())
 class method mut This #$of::0(This1.S name)
-class method mut This #$of(This1.S that)=This<:class This.#$of::0(name=that)
 mut method This1.S read()=(
   This1.Debug d=This1.Debug<:class This1.Debug.of()
   d.#$readLog(logName=this.name::0())
   )
-mut method This immWriter()=This<:class This.#$of::0(name=this.name::0())
-method Void #ltequal0(This1.S text)=(
+read method mut This #$reader()=This<:class This.#$of::0(name=this.name::0())
+read method Void write(This1.S that)=(
   This1.Debug d=This1.Debug<:class This1.Debug.of()
-  d.addToLog(logName=this.name::0(),text=text)
+  d.addToLog(logName=this.name::0(),text=that)
   )
-method Void clear()=(
+read method Void clear()=(
   This1.Debug d=This1.Debug<:class This1.Debug.of()
   d.clearLog(logName=this.name::0())
   )
 
-#norm{typeDep=This0,This1.S,This1.Debug, coherentDep=This0,This1.Debug,This1.S,close}
+#norm{typeDep=This0,This1.S,This1.Debug,This1.StringBuilder, coherentDep=This0,This1.Debug,This1.S,close}

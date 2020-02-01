@@ -72,6 +72,84 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
 //also check refined methods are not included
 
+  //top level init well formedness
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,
+   "{B={} A={ method This1.B b() #norm{}} C=void}",
+   Err.missedTypeDep(hole))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,
+   "{B={} A={ method Void b()=This1.B<:class Any #norm{}} C=void}",
+   Err.missedTypeDep(hole))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={}
+    A={
+      method Void b()=This1.B<:class This1.B
+      #norm{typeDep=This1.B}
+      } C=void}
+   """,
+   Err.missedCoheDep(hole))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={}
+    A={
+      method Void b()=(Void x=void catch return class This1.B y y x)
+      #norm{typeDep=This1.B}
+      } C=void}
+   """,
+   Err.missedCoheDep(hole))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {A={#norm{watched=This0}}
+    C=void}
+    """,
+   Err.noSelfWatch())
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={D::1={}}
+    A={
+      method This1.B.D::1 b() 
+      #norm{typeDep=This1.B.D::1}}
+    C=void}
+    """,
+   Err.missedWatched("[This1.B]"))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={}
+    A={
+      method Void b()=This1.B<:class This1.B.foo::1() 
+      #norm{typeDep=This1.B coherentDep=This1.B}}
+    C=void}
+    """,
+   Err.missedWatched("[This1.B]"))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={}
+    A={
+      method Void b()=(class This1.B bb=This1.B<:class This1.B   bb.foo::1())
+      #norm{typeDep=This1.B coherentDep=This1.B}}
+    C=void}
+    """,
+   Err.missedWatched("[This1.B]"))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={}
+    A={
+      method Void b()={#norm{typeDep=This2.B watched=This2.B}}
+      #norm{typeDep=This1.B}}
+    C=void}
+    """,
+   Err.missedWatched("[This1.B]"))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {B={}
+    A={
+      DD={#norm{typeDep=This2.B watched=This2.B}}
+      #norm{typeDep=This1.B}}
+    C=void}
+    """,
+   Err.missedWatched("[This1.B]"))
  //collect
    ),new AtomicTest(()->
    top("{} A= ={A={}} B= ={B={A={}}}","{#norm{}}")

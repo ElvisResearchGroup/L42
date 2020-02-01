@@ -34,6 +34,7 @@ import is.L42.generated.I;
 import is.L42.generated.LL;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
+import is.L42.generated.P.NCs;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
@@ -785,6 +786,37 @@ dropCache:
   static public void collectDepsE(Program p0,Core.E e, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
     var deps=new Deps(p0,typePs,cohePs);
     deps.of(e.visitable());
+    }
+  static public void collectWatched(Core.L l,ArrayList<P.NCs> watched){
+    var acc= new Accumulate.WithCoreG<ArrayList<P.NCs>>(){
+      @Override public ArrayList<P.NCs> empty() {return watched;}
+      @Override public void visitMCall(Core.MCall mc){
+        if(!mc.s().hasUniqueNum()){return;}
+        var t=g(mc.xP());
+        if(!t.p().isNCs()){return;}
+        watched.add(t.p().toNCs());
+        }
+      @Override public void visitL(Core.L l){
+        TypeManipulation.skipThis0(l.info().watched(),l,p->p,(p0,p1)->watched.add(p1));
+        }
+      @Override public void visitP(P p){
+        if(!p.isNCs()){return;}
+        P.NCs pi=p.toNCs();
+        var cs=pi.cs();
+        var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
+        if(cs.size()==csCut.size()){return;}
+        watched.add(pi.withCs(csCut));
+        }
+      };
+    for(var ti:l.ts()){acc.of(ti);}
+    for(var di: l.docs()){acc.of(di);}
+    for(var mwti:l.mwts()){acc.of(mwti);}
+    for(var nci:l.ncs()){
+      Info info=nci.l().info();
+      TypeManipulation.skipThis0(info.watched(),nci.l(),p->p,(p0,p1)->watched.add(p1));
+      for(var di: nci.docs()){acc.of(di);}
+      }
+    watched.removeAll(L(P.pThis0));
     }
   }
   /*private void flushBadCache(){

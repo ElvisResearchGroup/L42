@@ -117,32 +117,33 @@ TestMeta=(
   {}:Test"Meta does not crash"(Bool.true())
   //TODO:could be improved after introspection is reimplemented 
   )
-
+TestLog=(
+  Log iLog=Log(S"Foo")
+  mut Log mLog=iLog.#$reader()
+  iLog.write(S"Hello")
+  iLog.write(S" ")
+  iLog.write(S"World")
+  {}:Test"logTest"(expected=S"Hello World", actual=mLog.read())
+  iLog.clear()
+  )
 Foo={Size inner,class method This of(Size inner)
   imm method Size times2()=
     native{trusted:cachable} (
-      Debug(S"should print only once -times2")
+      Log"Foo".write(S"2")//Discuss: how this scale when closed subexpressions can be cached?
       this.inner()*2Size
       )
   imm method Size times3Eager()=
     native{trusted:eagerCachable} (
-      Debug(S"should print only once -times3")
+      Log"Foo".write(S"3")
       this.inner()*3Size
       )
   }  
-TestLog=(//Nope, log immWriter must be always generable, and should have a #$writer() method
-  mut Log log=Log.#$of(S"Foo")
-  Log iLog=log.immWriter()
-  iLog<=S"Hello"
-  iLog<=S" "
-  iLog<=S"World"
-  {}:Test"logTest"(expected=S"Hello World", actual=log.read())
-  iLog.clear()
-  )
 TestCache=(
+  Log"Foo".clear()
   Foo foo=Foo.of(inner=5Size)
   {}:Test"cacheResult"(expected=10Size, actual=foo.times2())
   {}:Test"cacheResultAgain"(expected=10Size, actual=foo.times2())
   {}:Test"cacheResultEager"(expected=15Size, actual=foo.times3Eager())
   {}:Test"cacheResultEagerAgain"(expected=15Size, actual=foo.times3Eager())
+  {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())
   )

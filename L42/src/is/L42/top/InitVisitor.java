@@ -151,16 +151,22 @@ class InitVisitor extends CloneVisitorWithProgram{
     return s;        
     }
   void checkInfo(Core.L l){
+    if(l.info().watched().contains(P.pThis0)){
+      throw new EndError.NotWellFormed(l.poss(),Err.noSelfWatch());
+      }
     ArrayList<P.NCs>typePs=new ArrayList<>(); 
     ArrayList<P.NCs>cohePs=new ArrayList<>();
     Top.collectDeps(p(), l.mwts(), typePs, cohePs, false);
     Top.collectDepDocs(l.docs(),typePs);
+    ArrayList<P.NCs> watchedPs=new ArrayList<>();
+    Top.collectWatched(l, watchedPs);
     for(var t:l.ts()){
       if(t.p().isNCs()){typePs.add(t.p().toNCs());}
       }
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     var missedTypeDep=!l.info().typeDep().containsAll(typePs);
     var missedCoheDep=!l.info().coherentDep().containsAll(cohePs);
+    var missedWatched=!l.info().watched().containsAll(watchedPs);
     if(missedTypeDep){
       typePs.removeAll(l.info().typeDep());
       throw new EndError.NotWellFormed(l.poss(),Err.missedTypeDep(L(typePs.stream().distinct())));
@@ -168,6 +174,10 @@ class InitVisitor extends CloneVisitorWithProgram{
     if(missedCoheDep){
       cohePs.removeAll(l.info().coherentDep());
       throw new EndError.NotWellFormed(l.poss(),Err.missedCoheDep(L(cohePs.stream().distinct())));
+      }
+   if(missedWatched){
+      watchedPs.removeAll(l.info().watched());
+      throw new EndError.NotWellFormed(l.poss(),Err.missedWatched(L(watchedPs.stream().distinct())));
       }
     if(l.info().isTyped()){
       for(var p:l.info().typeDep()){
@@ -178,6 +188,7 @@ class InitVisitor extends CloneVisitorWithProgram{
         }
       ProgramTypeSystem.type(true,p().update(l,false));
       }
+        
     //TODO: ??? watched=Ps, ??? usedMethods=(P.s)s, ??? hiddenSupertypes=Ps,
     }
   @Override public Core.L coreLHandler(Core.L s){
@@ -236,7 +247,10 @@ class InitVisitor extends CloneVisitorWithProgram{
     info=super.visitInfo(info);
     info=info.withTypeDep(L(info.typeDep().stream().distinct()));
     info=info.withCoherentDep(L(info.coherentDep().stream().distinct()));
-    //TODO: add also the other info fields
+    info=info.withWatched(L(info.watched().stream().distinct()));
+    info=info.withHiddenSupertypes(L(info.hiddenSupertypes().stream().distinct()));
+    info=info.withRefined(L(info.refined().stream().distinct()));
+    info=info.withUsedMethods(L(info.usedMethods().stream().distinct()));
     return info;
     }
   @Override public P visitP(P p) {return min(p);}

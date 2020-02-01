@@ -224,7 +224,7 @@ public class Err {
   ;}public static String invalidPathInInfo(Object _1){return
   "Invalid path in info: "+_1
   ;}public static String infoPathNotInTyped(Object _1,Object _2){return
-  "The following paths declared in "+_1+" are not found in typeDep: "+_2   
+  "The following paths listed in "+_1+" are not found in typeDep: "+_2   
   ;}public static String nestedClassesImplemented(Object _1){return
   "some nested classes are implemented before they are defined: "+_1  
   ;}public static String noDocWithReuseOrDots(Object _1, Object _2){return
@@ -323,6 +323,10 @@ public class Err {
   "Core library literal do not declare all the type dependencies; the following are missing: "+ps
   ;}public static String missedCoheDep(Object ps){return
   "Core library literal do not declare all the coherence dependencies; the following are missing: "+ps
+  ;}public static String missedWatched(Object ps){return
+  "Core library literal do not declare all the watched; the following are missing: "+ps
+  ;}public static String noSelfWatch(){return
+  "Core library literal can not watch This0" 
   ;}public static String typeDependencyNotCore(Object p){return
   "Typed core library literal can not depend on full core libary "+p
   ;}public static String mismatchRefine(Object estimate,Object declared){return

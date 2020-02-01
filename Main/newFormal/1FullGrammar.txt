@@ -27,11 +27,6 @@ _______
     //in concrete syntax, labels for empty fields must be omitted
     //watched//Paths whose unique numbers are used either directly,
     //    or in a private nested class or in an L in a method
-    P in  watched if p(P) or p(P.C::k._) owns n and either//TODO: add in code
-      _._::n._ in p(This0).typeDep
-      _._::n._ in p(This0.C::k._).typeDep//is this already included in the former case?
-      _.m::n(_) inside p(This0)(s).e
-      _.m::n(_) inside p(This0.C::k._)(s).e
     //usedMethods//methods used either directly or in a private nested class or in an L in a method
     //hiddenSupertypes//interfaces implemented by a private nested class or in an L in a method
     //closed: a class or interface with private abstract methods, or an interface implementing a private interface.
