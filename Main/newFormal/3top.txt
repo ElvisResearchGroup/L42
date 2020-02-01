@@ -14,7 +14,7 @@ _______
       mustWatch(L) subseteq Info.watched,
       This0 not in Info.watched
       ??? usedMethods=(P.s)s,
-      ??? hiddenSupertypes=Ps,
+      mustHidden(L) subseteq Info.hiddenSupertypes,
       Ps0 subseteq L.Info.typeDep
       Ps1 subseteq L.Info.coherentDep
     where
@@ -36,6 +36,15 @@ _______
     T inside e and P in mustWatch(T)//just local var dec or cast?
     L0 inside e and P in L0.Info.watched[skipThis0;L0]
     xP.m::k(_) inside e and G(xP)=P //G is computed during the traversal
+
+_______
+#define mustHidden(CORE.L) = Ps
+* P in mustHidden(L) if
+    either MWT e in L, L0 inside e
+    or C::k = L0 in L    
+    Cs has no unique number
+    either P in L0(Cs).Ts[from This0.Cs;{}][skipThis0;L0]//the p={} will never be used anyway
+    or P in L0(Cs).info.hiddenSupertypes[from This0.Cs;{}][skipThis0;L0]
     
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 //error is reported if an implements list contains This0.Cs or
@@ -180,7 +189,7 @@ _______
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     dom(MWTs) = dom(MWTs1)
     Ps;Ps' = collectDeps(p;MWTs.es)
-    Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},watched=mustWatch({MWTs}),??}
+    Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},watched=mustWatch({MWTs}),hiddenSupertypes=mustHidden({MWTs}),??}
     Info1 = (Info0+Info) if hasOpenState(interface?,MWTs0 MWTs1)
     Info1 = (Info0+Info)[closeState?=closeState] otherwise
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
@@ -190,7 +199,10 @@ _______
     p(This0) = L0
     Info = #norm{typeDep=collectDeps(p♥Docs)}
     Info1=L0.Info+Info if C not of form _::n
-    Info1=L0.Info+Info+collectDepsE(p,L)+{watched=L.Info.watched[skipThis0;L]+mustWatch(Docs)} otherwise
+    Info1=L0.Info+Info+Info[
+      typeDep/coherentDep=collectDepsE(p,L),
+      watched=L.Info.watched[skipThis0;L] U mustWatch(Docs),
+      hiddenSupertypes=mustHidden({C=L})] otherwise
     L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
     L'=L otherwise    
 _______

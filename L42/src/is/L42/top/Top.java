@@ -54,6 +54,7 @@ import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.WellFormedness;
 
 import static is.L42.generated.LDom._elem;
@@ -534,7 +535,8 @@ dropCache:
     Info info=Info.empty
       .withTypeDep(unique(L(typePs.stream())))
       .withCoherentDep(unique(L(cohePs.stream())))
-      .withWatched(unique(L(c->Top.collectWatched(mwts,c))));
+      .withWatched(unique(L(c->Top.collectWatched(mwts,c))))
+      .withHiddenSupertypes(unique(L(mwts,(c,mwt)->Top.collectHidden(mwt, c))));
     var allMwts=merge(mwts0,mwts);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
@@ -572,13 +574,16 @@ dropCache:
       var typePs=new ArrayList<P.NCs>();
       var cohePs=new ArrayList<P.NCs>();
       var watched=new ArrayList<P.NCs>();
+      var hidden=new ArrayList<P.NCs>();
       collectDepsE(p1,nc.l(),typePs,cohePs);
       Top.collectWatchedDocs(nc.docs(), watched);
+      Top.collectHidden(nc, hidden);
       var oldW=nc.l().info().watched();
       TypeManipulation.skipThis0(oldW,nc.l(),p->p,(p0,p2)->watched.add(p2));
       info=info.withTypeDep(mergeU(info.typeDep(),typePs));
       info=info.withCoherentDep(mergeU(info.coherentDep(),cohePs));
       info=info.withWatched(mergeU(info.watched(),watched));
+      info=info.withHiddenSupertypes(mergeU(info.hiddenSupertypes(),hidden));
       }
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
@@ -813,6 +818,35 @@ dropCache:
     deps.of(e.visitable());
     addPublicRoots(typePs);
     addPublicRoots(cohePs);
+    }
+  static public void collectHidden(Core.L l,ArrayList<P.NCs> hidden){
+    for(var mwt:l.mwts()){collectHidden(mwt,hidden);}
+    for(var nc:l.ncs()){collectHidden(nc,hidden);}
+    }
+  static public void collectHidden(MWT mwt,ArrayList<P.NCs> hidden){
+    if(mwt._e()==null){return;}
+    var acc=new PropagatorCollectorVisitor(){
+      @Override public void visitL(Core.L l){collectHiddenAux(l,l,hidden,new ArrayList<>());}
+      };
+    acc.visitE(mwt._e());
+    }
+  static public void collectHidden(Core.L.NC nc,ArrayList<P.NCs> hidden){
+    if(!nc.key().hasUniqueNum()){return;}
+    collectHiddenAux(nc.l(),nc.l(),hidden,new ArrayList<>());
+    }
+  static private Program emptyP=Program.flat(Program.emptyL);
+  static private void collectHiddenAux(Core.L l,Core.L l0,ArrayList<P.NCs> hidden,List<C>cs){
+    //l0 is in l(Cs)
+    var pCs=P.of(0, cs);
+    TypeManipulation.skipThis0(l0.ts(),l,
+      ti->emptyP.from(ti.p(),pCs).toNCs(),(p0,p1)->hidden.add(p1));
+    TypeManipulation.skipThis0(l0.info().hiddenSupertypes(),l,
+      pi->emptyP.from(pi,pCs).toNCs(),(p0,p1)->hidden.add(p1));
+    for(var nci:l0.ncs()){
+      if(nci.key().hasUniqueNum()){continue;}
+      var newCs=pushL(cs,nci.key());
+      collectHiddenAux(l,nci.l(),hidden,newCs);
+      }
     }
   static public void collectWatched(List<MWT> mwts,ArrayList<P.NCs> watched){
     var acc=accWatched(watched);

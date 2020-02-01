@@ -31,7 +31,8 @@ _______
 _______
 #define P0[from P1;p] = P2 e[from P;p] = e' e[from P;p;n] = e'  CTz[from P;p] = CTz'
 * Thisn.Cs[from Thism.C1..Ck;p] = Thism.C1..C(k-n).Cs if n<k
-* Thisn.Cs[from Thism.C1..Ck;p] = p.minimize(This(m+n-k).Cs) if n>=k
+* Thisn.Cs[from This0.C1..Ck;p] = This(n-k).Cs if n>=k
+* Thisn.Cs[from Thism.C1..Ck;p] = p.minimize(This(m+n-k).Cs) if n>=k and m>0
 
 * Any[from _] = Any,    Library[from _] = Library,    Void[from _] = Void
 

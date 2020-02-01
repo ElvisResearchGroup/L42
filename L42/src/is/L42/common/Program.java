@@ -147,7 +147,11 @@ public class Program implements Visitable<Program>{
     int n=p.n();
     var cs=p.cs();
     int k=sCs.size();
-    if(n>=k){return minimize(P.of(m+n-k, cs));}
+    if(n>=k){
+      var res=P.of(m+n-k, cs);
+      if(m==0){return res;}
+      return minimize(res);
+      }
     List<C> resCs=merge(sCs,k-n,cs);//not using General.merge; performance+non serializable sublists
     var res=P.of(m,resCs);
     assert res==minimize(res):

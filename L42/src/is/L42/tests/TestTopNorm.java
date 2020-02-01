@@ -28,6 +28,7 @@ import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.FullL42Visitor;
+import is.L42.visitors.WellFormedness;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;
@@ -245,7 +246,42 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        @This1.B.D::1}
      C={#typed{}}#norm{}}
      """)
-
+//hidden supertypes
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {I={interface}
+    A={B::1={[This2.I]#norm{typeDep=This2.I}} #norm{typeDep=This1.I}}
+    C=void}
+    """,Err.missedHiddenSupertypes("[This1.I]"))
+   ),new AtomicTest(()->
+   topFail(NotWellFormed.class,"""
+   {I={interface}
+    A={ class method Library foo()={[This2.I]#norm{typeDep=This2.I}} #norm{typeDep=This1.I}}
+    C=void}
+    """,Err.missedHiddenSupertypes("[This1.I]"))
+   ),new AtomicTest(()->
+   top("""
+   {I={interface}
+    A={B::1={[This2.I]#norm{typeDep=This2.I}}}
+    C=void}
+    ""","""
+    {I={interface #typed{}}
+     A={B::1={[This2.I]#typed{typeDep=This2.I}}
+       #typed{typeDep=This1.I hiddenSupertypes=This1.I}}
+     C={#typed{}}#norm{}}
+    """)
+   ),new AtomicTest(()->
+   top("""
+   {I={interface}
+    A={ class method Library foo()={[This2.I]#norm{typeDep=This2.I}}}
+    C=void}
+    ""","""
+    {I={interface #typed{}}
+     A={class method imm Library foo()=
+         {[This2.I]#typed{typeDep=This2.I}}
+       #typed{typeDep=This1.I hiddenSupertypes=This1.I}}
+     C={#typed{}}#norm{}}
+    """)
  //collect
    ),new AtomicTest(()->
    top("{} A= ={A={}} B= ={B={A={}}}","{#norm{}}")

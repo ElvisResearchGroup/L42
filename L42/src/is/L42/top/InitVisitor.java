@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
@@ -151,6 +152,13 @@ class InitVisitor extends CloneVisitorWithProgram{
     checkUniqueNs(s);
     return s;        
     }
+  <T>void checkMissing(List<T> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
+    var missed=!setSome.containsAll(setAll);
+    if(missed){
+      setAll.removeAll(setSome);
+      throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
+      }
+    }
   void checkInfo(Core.L l){
     if(l.info().watched().contains(P.pThis0)){
       throw new EndError.NotWellFormed(l.poss(),Err.noSelfWatch());
@@ -159,27 +167,18 @@ class InitVisitor extends CloneVisitorWithProgram{
     ArrayList<P.NCs>cohePs=new ArrayList<>();
     Top.collectDeps(p(), l.mwts(), typePs, cohePs, false);
     Top.collectDepDocs(l.docs(),typePs);
-    ArrayList<P.NCs> watchedPs=new ArrayList<>();
-    Top.collectWatched(l, watchedPs);
     for(var t:l.ts()){
       if(t.p().isNCs()){typePs.add(t.p().toNCs());}
       }
+    ArrayList<P.NCs> watchedPs=new ArrayList<>();
+    Top.collectWatched(l, watchedPs);
+    ArrayList<P.NCs> hiddenPs=new ArrayList<>();
+    Top.collectHidden(l, hiddenPs);    
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
-    var missedTypeDep=!l.info().typeDep().containsAll(typePs);
-    var missedCoheDep=!l.info().coherentDep().containsAll(cohePs);
-    var missedWatched=!l.info().watched().containsAll(watchedPs);
-    if(missedTypeDep){
-      typePs.removeAll(l.info().typeDep());
-      throw new EndError.NotWellFormed(l.poss(),Err.missedTypeDep(unique(typePs)));
-      }
-    if(missedCoheDep){
-      cohePs.removeAll(l.info().coherentDep());
-      throw new EndError.NotWellFormed(l.poss(),Err.missedCoheDep(unique(cohePs)));
-      }
-   if(missedWatched){
-      watchedPs.removeAll(l.info().watched());
-      throw new EndError.NotWellFormed(l.poss(),Err.missedWatched(unique(watchedPs)));
-      }
+    checkMissing(typePs,l.info().typeDep(),l.poss(),Err::missedTypeDep);
+    checkMissing(cohePs,l.info().coherentDep(),l.poss(),Err::missedCoheDep);
+    checkMissing(watchedPs,l.info().watched(),l.poss(),Err::missedWatched);
+    checkMissing(hiddenPs,l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
     if(l.info().isTyped()){
       for(var p:l.info().typeDep()){
         var li=p().of(p,l.poss());//throw the right error if path not exists
