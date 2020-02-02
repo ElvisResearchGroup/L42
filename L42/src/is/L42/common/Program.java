@@ -143,6 +143,7 @@ public class Program implements Visitable<Program>{
     if(res.equals(source)){return source;}
     return res;
     }
+  public P.NCs from(P.NCs p,List<C>sCs){return from(p,0,sCs);}
   public P.NCs from(P.NCs p,int m,List<C>sCs){
     int n=p.n();
     var cs=p.cs();

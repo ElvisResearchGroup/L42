@@ -24,8 +24,8 @@ public Deps(Program p0, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs){
 public ArrayList<P.NCs> empty(){return typePs;}
 @Override public void visitL(Full.L l){throw bug();}
 private void csAux(Program p,ArrayList<C> cs,Core.L l,Core.L topL){
-  TypeManipulation.skipThis0(l.info().typeDep(),topL,e->p.from(e,0, cs),(p0,p1)->typePs.add(p1));
-  TypeManipulation.skipThis0(l.info().coherentDep(),topL,e->p.from(e,0, cs),(p0,p1)->cohePs.add(p1));
+  TypeManipulation.skipThis0(l.info().typeDep(),topL,e->p.from(e,cs),(p0,p1)->typePs.add(p1));
+  TypeManipulation.skipThis0(l.info().coherentDep(),topL,e->p.from(e,cs),(p0,p1)->cohePs.add(p1));
   Program pi=p.push(l);
   for(C c: l.domNC()){
     cs.add(c);

@@ -64,6 +64,17 @@ public class Core {
     @Override public boolean inDom(C c){
       return ncs.stream().anyMatch(m->c.equals(m.key()));
       }
+    public L _cs(List<C> cs){
+      if(cs.isEmpty()){return this;}
+      C c=cs.get(0);
+      var res=LDom._elem(ncs, c);
+      if(res==null){return null;}
+      return res.l()._cs(popL(cs));
+      }
+    public boolean inDom(List<C> cs){
+      if(cs.isEmpty()){return true;}
+      return c(cs.get(0)).inDom(popL(cs));
+      }
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       var res=LDom._elem(ncs, c);
@@ -81,7 +92,24 @@ public class Core {
       assert r.res != null;
       return (L)r.res;
       }
-
+    public void visitInnerL(InnerLAction a){a.start(this);}
+    public void visitInnerLNoPrivate(InnerLActionNoPrivate a){a.start(this);}
+    public static interface InnerLAction{
+      void innerL(Core.L li,List<C> cs);
+      default void start(Core.L l){step(l,L());}
+      default boolean filterOut(Core.L.NC nc){return false;}
+      default void step(Core.L li,List<C> cs){
+        innerL(li,cs);
+        for(var ncj:li.ncs()){
+          if(filterOut(ncj)){continue;}
+          var newCs=pushL(cs,ncj.key());
+          step(ncj.l(),newCs);
+          }
+        }
+      }
+    public static interface InnerLActionNoPrivate extends InnerLAction{
+      default boolean filterOut(Core.L.NC nc){return nc.key().hasUniqueNum();}
+      }
     @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
     MWT implements LDom.HasKey, Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
       List<Pos> poss;

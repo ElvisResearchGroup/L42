@@ -823,31 +823,27 @@ dropCache:
     for(var mwt:l.mwts()){collectHidden(mwt,hidden);}
     for(var nc:l.ncs()){collectHidden(nc,hidden);}
     }
+  static private void collectHiddenAux(Core.L l,ArrayList<P.NCs> hidden){
+    l.visitInnerLNoPrivate((l0,cs)->{
+      var pCs=P.of(0, cs);
+      TypeManipulation.skipThis0(l0.ts(),l,
+        ti->emptyP.from(ti.p(),pCs).toNCs(),(p0,p1)->hidden.add(p1));
+      TypeManipulation.skipThis0(l0.info().hiddenSupertypes(),l,
+        pi->emptyP.from(pi,pCs).toNCs(),(p0,p1)->hidden.add(p1));
+      });
+    }
   static public void collectHidden(MWT mwt,ArrayList<P.NCs> hidden){
     if(mwt._e()==null){return;}
     var acc=new PropagatorCollectorVisitor(){
-      @Override public void visitL(Core.L l){collectHiddenAux(l,l,hidden,new ArrayList<>());}
+      @Override public void visitL(Core.L l){collectHiddenAux(l,hidden);}
       };
     acc.visitE(mwt._e());
     }
   static public void collectHidden(Core.L.NC nc,ArrayList<P.NCs> hidden){
     if(!nc.key().hasUniqueNum()){return;}
-    collectHiddenAux(nc.l(),nc.l(),hidden,new ArrayList<>());
+    collectHiddenAux(nc.l(),hidden);
     }
   static private Program emptyP=Program.flat(Program.emptyL);
-  static private void collectHiddenAux(Core.L l,Core.L l0,ArrayList<P.NCs> hidden,List<C>cs){
-    //l0 is in l(Cs)
-    var pCs=P.of(0, cs);
-    TypeManipulation.skipThis0(l0.ts(),l,
-      ti->emptyP.from(ti.p(),pCs).toNCs(),(p0,p1)->hidden.add(p1));
-    TypeManipulation.skipThis0(l0.info().hiddenSupertypes(),l,
-      pi->emptyP.from(pi,pCs).toNCs(),(p0,p1)->hidden.add(p1));
-    for(var nci:l0.ncs()){
-      if(nci.key().hasUniqueNum()){continue;}
-      var newCs=pushL(cs,nci.key());
-      collectHiddenAux(l,nci.l(),hidden,newCs);
-      }
-    }
   static public void collectWatched(List<MWT> mwts,ArrayList<P.NCs> watched){
     var acc=accWatched(watched);
     for(var mwti:mwts){acc.of(mwti);}
