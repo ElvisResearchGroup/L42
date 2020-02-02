@@ -2,7 +2,7 @@ package is.L42.cache;
 
 import java.util.List;
 
-public interface Cache<T> {
+public interface L42Cache<T> {
   
   /**
    * Produces the normalized version of this object, such that
@@ -171,7 +171,7 @@ public interface Cache<T> {
    * @param i The index of the field
    * @return The cache for that field, or null
    */
-  Cache rawFieldCache(int i);
+  L42Cache rawFieldCache(int i);
   
   /**
    * Returns the cache object for the relevant subfield. Always 
@@ -182,9 +182,9 @@ public interface Cache<T> {
    * @return The cache for the object
    */
   @SuppressWarnings("rawtypes") 
-  default Cache fieldCache(Object t, int i) {
-    Cache raw = this.rawFieldCache(i);
-    return raw == null ? RootCache.getCacheObject(t) : raw;
+  default L42Cache fieldCache(Object t, int i) {
+    L42Cache raw = this.rawFieldCache(i);
+    return raw == null ? L42CacheMap.getCacheObject(t) : raw;
   }
   
   /**

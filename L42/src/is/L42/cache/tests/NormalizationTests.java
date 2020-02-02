@@ -1,9 +1,9 @@
 package is.L42.cache.tests;
 
-import static is.L42.cache.RootCache.expandedKey;
-import static is.L42.cache.RootCache.getCacheObject;
-import static is.L42.cache.RootCache.getKey;
-import static is.L42.cache.RootCache.normalize;
+import static is.L42.cache.L42CacheMap.expandedKey;
+import static is.L42.cache.L42CacheMap.getCacheObject;
+import static is.L42.cache.L42CacheMap.getKey;
+import static is.L42.cache.L42CacheMap.normalize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -18,8 +18,8 @@ import org.junit.Test;
 
 import com.google.common.base.Supplier;
 
-import is.L42.cache.Cache;
-import is.L42.cache.ForeignObject;
+import is.L42.cache.L42Cache;
+import is.L42.cache.L42Cachable;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
@@ -101,7 +101,7 @@ public class NormalizationTests {
       R1 r1 = new R1(null);
       r1.referenced = r1;
       return r1;
-      });
+      }, false);
     }
   
   @Test 
@@ -154,10 +154,6 @@ public class NormalizationTests {
     assertThrows(NullPointerException.class, () -> { expandedKey(r1null, true, false); });
     }
   
-  private static void testSelfProperties(Supplier<Object> supplier) {
-    testBiProperties(supplier, supplier);
-    }
-  
   @SuppressWarnings({ "rawtypes", "unchecked" }) 
   @Test
   public void testALCircle() {
@@ -189,19 +185,23 @@ public class NormalizationTests {
       });
     }
   
+  private static void testSelfProperties(Supplier<Object> supplier) {
+    testBiProperties(supplier, supplier, true);
+    }
+  
   @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  private static void testBiProperties(Supplier<Object> supplier1, Supplier<Object> supplier2) {
+  private static void testBiProperties(Supplier<Object> supplier1, Supplier<Object> supplier2, boolean readEQ) {
     Object n1old, n2old;
     Object n1 = n1old = supplier1.get();
     Object n2 = n2old = supplier2.get();
-    Cache cache = getCacheObject(n1);
+    L42Cache cache = getCacheObject(n1);
     assertTrue(n1 != n2);
-    assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false));
+    if(readEQ) { assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false)); }
     n1 = normalize(n1);
     n2 = normalize(n2);
-    if(n1old instanceof ForeignObject) {
-      assertTrue(((ForeignObject) n1old).myNorm() == n1);
-      assertTrue(((ForeignObject) n2old).myNorm() == n1);
+    if(n1old instanceof L42Cachable) {
+      assertTrue(((L42Cachable) n1old).myNorm() == n1);
+      assertTrue(((L42Cachable) n2old).myNorm() == n1);
       }
     assertTrue(cache.identityEquals(n1, n2));
     testDeepFieldEQ(n1, n2, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
@@ -215,7 +215,7 @@ public class NormalizationTests {
   private static void testDeepFieldEQ(Object n1, Object n2, Set<Object> alreadyChecked) {
     if(alreadyChecked.contains(n1) && alreadyChecked.contains(n2)) { return; };
     if(n1 == null) { assertTrue(n2 == null); return; }
-    Cache cache = getCacheObject(n1);
+    L42Cache cache = getCacheObject(n1);
     assertTrue(cache.identityEquals(n1, n2));
     alreadyChecked.add(n1);
     Object[] n1f = cache.f(n1);

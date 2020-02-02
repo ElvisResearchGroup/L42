@@ -12,14 +12,19 @@ import com.google.common.cache.CacheBuilder;
 
 import is.L42.cache.nativecache.ArrayListCache;
 import is.L42.cache.nativecache.BoolCache;
+import is.L42.cache.nativecache.ByteCache;
+import is.L42.cache.nativecache.CharCache;
+import is.L42.cache.nativecache.DoubleCache;
 import is.L42.cache.nativecache.FloatCache;
 import is.L42.cache.nativecache.IntCache;
+import is.L42.cache.nativecache.LongCache;
+import is.L42.cache.nativecache.ShortCache;
 import is.L42.cache.nativecache.StringCache;
 
-public class RootCache {
+public class L42CacheMap {
   
   //TODO: Change to string to get rid of reflection maybe?
-  private static final Map<Class<?>, Cache<?>> commander;
+  private static final Map<Class<?>, L42Cache<?>> commander;
   
   @SuppressWarnings({ "unchecked", "rawtypes" })
   private static final CacheBuilder<KeyNorm2D,Object> builder = (CacheBuilder<KeyNorm2D,Object>) ((CacheBuilder) CacheBuilder.newBuilder().softValues()); 
@@ -32,6 +37,16 @@ public class RootCache {
     commander.put(Boolean.class, commander.get(boolean.class));
     commander.put(float.class, new FloatCache());
     commander.put(Float.class, commander.get(float.class));
+    commander.put(double.class, new DoubleCache());
+    commander.put(Double.class, commander.get(double.class));
+    commander.put(long.class, new LongCache());
+    commander.put(Long.class, commander.get(long.class));
+    commander.put(short.class, new ShortCache());
+    commander.put(Short.class, commander.get(short.class));
+    commander.put(byte.class, new ByteCache());
+    commander.put(Byte.class, commander.get(byte.class));
+    commander.put(char.class, new CharCache());
+    commander.put(Character.class, commander.get(char.class));
     commander.put(String.class, new StringCache());
     commander.put(ArrayList.class, new ArrayListCache());
     }
@@ -47,7 +62,7 @@ public class RootCache {
    * @param class_ The class object representing the type
    * @param cache The relevant cache object
    */
-  public static <T> Cache<T> addCacheableType(Class<T> class_, Cache<T> cache) {
+  public static <T> L42Cache<T> addCacheableType(Class<T> class_, L42Cache<T> cache) {
     commander.put(class_, cache);
     return cache;
     }
@@ -59,13 +74,13 @@ public class RootCache {
    * @param class_
    * @return
    */
-  public static <T> Cache<T> getCacheObject(Class<T> class_) {
-    return (Cache<T>) commander.get(class_);
+  public static <T> L42Cache<T> getCacheObject(Class<T> class_) {
+    return (L42Cache<T>) commander.get(class_);
     }
   
   @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  public static Cache[] getCacheArray(Class ... classes) {
-    Cache[] caches = new Cache[classes.length];
+  public static L42Cache[] getCacheArray(Class ... classes) {
+    L42Cache[] caches = new L42Cache[classes.length];
     for(int i = 0; i < classes.length; i++) {
       caches[i] = getCacheObject(classes[i]);
       }
@@ -73,27 +88,27 @@ public class RootCache {
     }
   
   @SuppressWarnings("unchecked")
-  public static <T> Cache<T> getCacheObject(T o) {
-    if(o instanceof ForeignObject) { return ((ForeignObject<T>) o).myCache(); }
+  public static <T> L42Cache<T> getCacheObject(T o) {
+    if(o instanceof L42Cachable) { return ((L42Cachable<T>) o).myCache(); }
     return getCacheObject((Class<T>) o.getClass());
     }
   
   public static <T> T normalize(T t) {
-    Cache<T> cache = getCacheObject(t);
+    L42Cache<T> cache = getCacheObject(t);
     return cache.normalize(t);
     }
   
   @SuppressWarnings("rawtypes")
   public static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
-    if(t instanceof ForeignObject) { return ((ForeignObject) t).isNorm(); }
-    Cache<T> cache = getCacheObject(t);
+    if(t instanceof L42Cachable) { return ((L42Cachable) t).isNorm(); }
+    L42Cache<T> cache = getCacheObject(t);
     return cache.isNorm(t);
     }
   
   public static <T> boolean identityEquals(T t1, T t2) {
-    if(t1 instanceof ForeignObject) { return t1 == t2; }
-    Cache<T> cache = getCacheObject(t1);
+    if(t1 instanceof L42Cachable) { return t1 == t2; }
+    L42Cache<T> cache = getCacheObject(t1);
     return cache.identityEquals(t1, t2);
     }
   
@@ -108,7 +123,7 @@ public class RootCache {
    * @return The object's key
    */
   public static <T> KeyNorm2D getKey(T t, boolean norm) {
-    Cache<T> cache = getCacheObject(t);
+    L42Cache<T> cache = getCacheObject(t);
     t = norm ? cache.normalize(t) : t;
     return cache.computeKeyNN(t);
   }
@@ -117,19 +132,19 @@ public class RootCache {
   public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
-    class A { £KeyVarID apply(int offset, Object toAdd, int toAddIndex, Object[][] subkey) {
-      £KeyVarID ourId = new £KeyVarID(offset + toAddIndex);
+    class A { KeyVarID apply(int offset, Object toAdd, int toAddIndex, Object[][] subkey) {
+      KeyVarID ourId = new KeyVarID(offset + toAddIndex);
         done.put(toAdd, ourId.value());
-        Cache cache = getCacheObject(toAdd);
+        L42Cache cache = getCacheObject(toAdd);
         for(int i = 1; i < subkey[toAddIndex].length; i++) {
-          if(subkey[toAddIndex][i] instanceof £KeyVarID) {
-            £KeyVarID oldId = (£KeyVarID) subkey[toAddIndex][i];
+          if(subkey[toAddIndex][i] instanceof KeyVarID) {
+            KeyVarID oldId = (KeyVarID) subkey[toAddIndex][i];
             Object field = cache.f(toAdd, i - 1);
             if(!done.containsKey(field)) {
-              £KeyVarID newId = this.apply(offset, field, oldId.value(), subkey);
+              KeyVarID newId = this.apply(offset, field, oldId.value(), subkey);
               subkey[toAddIndex][i] = newId;
               } else {
-              £KeyVarID newId = new £KeyVarID(done.get(field)); 
+              KeyVarID newId = new KeyVarID(done.get(field)); 
               subkey[toAddIndex][i] = newId;
               }
             }
@@ -142,16 +157,16 @@ public class RootCache {
       KeyNorm2D subkey = getKey(theObj, norm);
       Object[][] subkeylines = subkey.lines();
       int offset = nkeylist.size();
-      £KeyVarID nid = subkeyProcessor.apply(offset, theObj, 0, subkeylines);
+      KeyVarID nid = subkeyProcessor.apply(offset, theObj, 0, subkeylines);
       for(Object[] o : subkeylines) { nkeylist.add(o); }
       return nid;
       };
     addNewObject.apply(obj);
     for(int i = 0; i < nkeylist.size(); i++) {
       Object[] line = nkeylist.get(i);
-      if(((Cache<?>) line[0]).isValueType()) { continue; }
+      if(((L42Cache<?>) line[0]).isValueType()) { continue; }
       for(int j = 1; j < line.length; j++) {
-        if(!(line[j] instanceof £KeyVarID)) {
+        if(!(line[j] instanceof KeyVarID)) {
           if(done.containsKey(line[j])) {
             line[j] = done.get(line[j]);
             } else if(line[j] != null) {

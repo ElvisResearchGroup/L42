@@ -8,16 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import is.L42.cache.Cache;
+import is.L42.cache.L42Cache;
 import is.L42.cache.KeyNorm2D;
 import is.L42.cache.LoopCache;
 import is.L42.cache.NormResult;
-import is.L42.cache.RootCache;
+import is.L42.cache.L42CacheMap;
 
 @SuppressWarnings("rawtypes")
-public class ArrayListCache implements Cache<ArrayList> {
+public class ArrayListCache implements L42Cache<ArrayList> {
 
-  private final Map<KeyNorm2D, Object> normMap = RootCache.newNormMap();
+  private final Map<KeyNorm2D, Object> normMap = L42CacheMap.newNormMap();
   //TODO: This doesn't seem like a good way to do this.
   private final Set<WeakReference<Object>> normSet = new HashSet<WeakReference<Object>>();
   
@@ -47,15 +47,16 @@ public class ArrayListCache implements Cache<ArrayList> {
       boolean inCircle = false;
       Set<Object> circle = null;   
       for(int i = 0; i < list.size(); i++) {
+        if(list.get(i) == null) { continue; }
         final int j = 0;
         if(prevs.stream().anyMatch((o) -> { return o == list.get(j); })) {
           List<Object> sl = prevs.subList(prevs.indexOf(list.get(i)), prevs.size());
-          if(circle == null) { circle = RootCache.identityHashSet(); circle.addAll(sl); }
+          if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
           else { circle = union(circle, sl); }
           inCircle = true;
           continue;
           }
-        Cache cache = RootCache.getCacheObject(list.get(i));
+        L42Cache cache = L42CacheMap.getCacheObject(list.get(i));
         NormResult res = cache.normalizeInner(list.get(i), new ArrayList<Object>(prevs));
         if(res.hasResult()) { list.set(i, res.result()); }
         else if(!res.circle().contains(list)) {  list.set(i, LoopCache.normalizeCircle(list.get(i), res.circle())); }
@@ -88,15 +89,16 @@ public class ArrayListCache implements Cache<ArrayList> {
     boolean inCircle = false;
     Set<Object> circle = null;   
     for(int i = 0; i < list.size(); i++) {
+      if(list.get(i) == null) { continue; }
       final int j = i;
       if(prevs.stream().anyMatch((o) -> { return o == list.get(j); })) {
         List<Object> sl = prevs.subList(prevs.indexOf(list.get(i)), prevs.size());
-        if(circle == null) { circle = RootCache.identityHashSet(); circle.addAll(sl); }
+        if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
         else { circle = union(circle, sl); }
         inCircle = true;
         continue;
         }
-      Cache cache = RootCache.getCacheObject(list.get(i));
+      L42Cache cache = L42CacheMap.getCacheObject(list.get(i));
       NormResult res = cache.computeKeyNNInner(list.get(i), new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(list)) {
         inCircle = true;
@@ -148,14 +150,14 @@ public class ArrayListCache implements Cache<ArrayList> {
     }
   
   @Override 
-  public Cache rawFieldCache(int i) {
+  public L42Cache rawFieldCache(int i) {
     return null; 
     }
   
   @SuppressWarnings("unchecked") 
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)
   {
-    Set<T> set = (Set<T>) RootCache.identityHashSet();
+    Set<T> set = (Set<T>) L42CacheMap.identityHashSet();
     set.addAll(l1);
     set.addAll(l2);
     return set;

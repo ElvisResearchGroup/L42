@@ -1,12 +1,12 @@
 package is.L42.cache.exampleobjs;
 
-import is.L42.cache.Cache;
-import is.L42.cache.ForeignObject;
-import is.L42.cache.ForeignObjectCache;
-import is.L42.cache.RootCache;
+import is.L42.cache.L42Cachable;
+import is.L42.cache.L42StandardCache;
+import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
 import is.L42.tools.General;
 //UserDefinedCachable=Foreign
-public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
+public class AnnotatedExample implements L42Cachable<AnnotatedExample> {
   
   /*
    * Create and add the cache to the index in a static initializer,
@@ -17,12 +17,12 @@ public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
    */
   
   public static final Class<AnnotatedExample> _class = AnnotatedExample.class;
-  private static final ForeignObjectCache<AnnotatedExample> myCache;
+  private static final L42StandardCache<AnnotatedExample> myCache;
   
   static {
     //The call to .addCacheableType is necessary, as the cache
     //map is sometimes used as a fallback mechanism
-    RootCache.addCacheableType(AnnotatedExample.class, myCache = new ForeignObjectCache<AnnotatedExample>("AnnotatedExample"));
+    L42CacheMap.addCacheableType(AnnotatedExample.class, myCache = new L42StandardCache<AnnotatedExample>("AnnotatedExample"));
     myCache.lateInitialize(String.class, int.class, Object.class);
     }
   //Some field declarations
@@ -79,7 +79,7 @@ public class AnnotatedExample implements ForeignObject<AnnotatedExample> {
   }
 
   @Override 
-  public Cache<AnnotatedExample> myCache() { 
+  public L42Cache<AnnotatedExample> myCache() { 
     return myCache; 
     }
 

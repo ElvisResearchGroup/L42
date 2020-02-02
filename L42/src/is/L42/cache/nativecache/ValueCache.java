@@ -2,12 +2,12 @@ package is.L42.cache.nativecache;
 
 import java.util.List;
 
-import is.L42.cache.Cache;
+import is.L42.cache.L42Cache;
 import is.L42.cache.KeyNorm2D;
 import is.L42.cache.NormResult;
 import is.L42.tools.General;
 
-public abstract class ValueCache<Type> implements Cache<Type> {
+public abstract class ValueCache<Type> implements L42Cache<Type> {
 
   @Override 
   public void addObjectOverride(KeyNorm2D key, Type value) {}
@@ -61,7 +61,7 @@ public abstract class ValueCache<Type> implements Cache<Type> {
 
   @SuppressWarnings("rawtypes") 
   @Override 
-  public Cache rawFieldCache(int i) {
+  public L42Cache rawFieldCache(int i) {
     return this;
     }
   

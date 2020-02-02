@@ -1,18 +1,18 @@
 package is.L42.cache.exampleobjs;
 
-import is.L42.cache.Cache;
-import is.L42.cache.ForeignObject;
-import is.L42.cache.ForeignObjectCache;
-import is.L42.cache.RootCache;
+import is.L42.cache.L42Cachable;
+import is.L42.cache.L42StandardCache;
+import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
 
-public class R1 implements ForeignObject<R1> 
+public class R1 implements L42Cachable<R1> 
 {  
   public static final Class<R1> _class = R1.class;
-  private static final ForeignObjectCache<R1> myCache;
+  private static final L42StandardCache<R1> myCache;
   
   static
   {
-    RootCache.addCacheableType(R1.class, (Cache<R1>) (myCache = new ForeignObjectCache<R1>("R1")));
+    L42CacheMap.addCacheableType(R1.class, (L42Cache<R1>) (myCache = new L42StandardCache<R1>("R1")));
     myCache.lateInitialize(Object.class);
   }
   
@@ -47,7 +47,7 @@ public class R1 implements ForeignObject<R1>
   }
 
   @Override
-  public Cache<R1> myCache() {
+  public L42Cache<R1> myCache() {
     return myCache;
   }
   

@@ -1,6 +1,6 @@
 package is.L42.cache;
 
-public interface ForeignObject<T> {
+public interface L42Cachable<T> {
   
   Object[] allFields();
   
@@ -27,7 +27,7 @@ public interface ForeignObject<T> {
   /**
    * @return A reference to my cache object
    */
-  Cache<T> myCache();
+  L42Cache<T> myCache();
   
   default boolean isNorm() {
     return myNorm() != null;

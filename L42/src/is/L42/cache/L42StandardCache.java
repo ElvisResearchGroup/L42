@@ -7,22 +7,22 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> {
+public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   
   private final String typename;
   @SuppressWarnings("rawtypes") 
-  private Cache[] caches;
+  private L42Cache[] caches;
   
-  public ForeignObjectCache(String typename) {
+  public L42StandardCache(String typename) {
     this.typename = typename;   
     }
   
   @SuppressWarnings("rawtypes") 
   public void lateInitialize(Class ... classes) {
-    caches = RootCache.getCacheArray(classes);
+    caches = L42CacheMap.getCacheArray(classes);
   }
   
-  private final Map<KeyNorm2D, Object> normMap = RootCache.newNormMap();
+  private final Map<KeyNorm2D, Object> normMap = L42CacheMap.newNormMap();
   
   private void add(KeyNorm2D key, T t) {
     normMap.put(key, t);
@@ -60,7 +60,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
           inCircle = true;
           continue;
           }
-        Cache cache = RootCache.getCacheObject(fields[i].getClass());
+        L42Cache cache = L42CacheMap.getCacheObject(fields[i].getClass());
         NormResult res = cache.normalizeInner(fields[i], new ArrayList<Object>(prevs));
         if(res.hasResult()) {
           t.setField(i, fields[i] = res.result());
@@ -109,7 +109,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
         inCircle = true;
         continue;
         }
-      Cache cache = RootCache.getCacheObject(fields[i]);
+      L42Cache cache = L42CacheMap.getCacheObject(fields[i]);
       NormResult<T> res = cache.computeKeyNNInner(fields[i], new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(t)) {
         inCircle = true;
@@ -160,7 +160,7 @@ public class ForeignObjectCache<T extends ForeignObject<T>> implements Cache<T> 
 
   @SuppressWarnings("rawtypes") 
   @Override 
-  public Cache rawFieldCache(int i) { 
+  public L42Cache rawFieldCache(int i) { 
     return caches[i]; 
     }
   
