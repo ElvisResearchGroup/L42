@@ -10,9 +10,9 @@ _______
     L3 = L1 PLUS L2
     L = L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
     //Pz= growing interfaces 
-    Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2) and Cs|-L2>L1 or Cs|-L1>L2}
+    Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2), Cs has no unique ns and (Cs|-L2>L1 or Cs|-L1>L2)}
     //classes implementing growing interfaces, note that P0..Pn must be not empty
-    Cs1;Pz1 .. Csn;Pzn = {Cs;P0..Pn | Cs in dom(L3) and P0..Pn = L3(Cs).Ts.Ps intersect Pz}
+    Cs1;Pz1 .. Csn;Pzn = {Cs;P0..Pn | Cs in dom(L3), Cs has no unique ns and P0..Pn = L3(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz}
     forall Cs in allHiddenSupertypes(L): This0.Cs not in Pz
 _______
 #define CORE.L1 PLUS CORE.L2 = CORE.L3
@@ -54,16 +54,13 @@ _______
     interface?j=empty//interface can not lose
 _______
 #define allWatched(L) = Csz
-* Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs']
-    and Cs' not of form _._::n._
+* Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs';{}] and Cs' not of form _._::n._
 _______
 #define allRequiredCoherent(L) = Csz
-* Cs in allRequiredCoherent(L) if Cs in L(Cs').Info.coherentDep[from This0.Cs']
-    and Cs' not of form _._::n._
-
+* Cs in allRequiredCoherent(L) if Cs in L(Cs').Info.coherentDep[from This0.Cs';{}] and Cs' not of form _._::n._
 _______
 #define allHiddenSupertypes(L) = Csz
-* Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs'] and Cs' not of form _._::n._
+* Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs';{}] and Cs' not of form _._::n._
 _______
 #define H1 PLUS H2
 * interface? PLUS interface? = interface?

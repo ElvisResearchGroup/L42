@@ -91,7 +91,7 @@ public class FlagTyped {
         out:for(var cs:dom){
           var lcs=l.cs(cs);
           if(lcs.info().isTyped()){set.accept(cs);continue out;}
-          var frommed=L(lcs.info().typeDep(),pi->p.from(pi,P.of(0, cs)));
+          var frommed=L(lcs.info().typeDep(),pi->p.from(pi,cs));
           for(var p0:frommed){
             var l0=p._ofCore(p0);
             if(l0==null){set.accept(cs);continue out;}
