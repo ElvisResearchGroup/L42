@@ -12,7 +12,7 @@ public class A implements L42Cachable<A> {
   
   static
   {
-    L42CacheMap.addCacheableType(A.class, (L42Cache<A>) (myCache = new L42StandardCache<A>("A")));
+    myCache = new L42StandardCache<A>("A", A.class);
     myCache.lateInitialize(int.class, int.class);
   }
   

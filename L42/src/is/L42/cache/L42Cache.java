@@ -187,6 +187,9 @@ public interface L42Cache<T> {
     return raw == null ? L42CacheMap.getCacheObject(t) : raw;
   }
   
+  T getMyNorm(T me);
+  void setMyNorm(T me, T norm);
+  
   /**
    * Given an object of type T, returns it's canonical
    * typename.

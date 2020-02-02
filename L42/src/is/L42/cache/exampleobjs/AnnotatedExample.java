@@ -22,7 +22,7 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample> {
   static {
     //The call to .addCacheableType is necessary, as the cache
     //map is sometimes used as a fallback mechanism
-    L42CacheMap.addCacheableType(AnnotatedExample.class, myCache = new L42StandardCache<AnnotatedExample>("AnnotatedExample"));
+    myCache = new L42StandardCache<AnnotatedExample>("AnnotatedExample", AnnotatedExample.class);
     myCache.lateInitialize(String.class, int.class, Object.class);
     }
   //Some field declarations

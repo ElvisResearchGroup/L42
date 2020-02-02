@@ -75,4 +75,12 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   public boolean isValueType() {
     return true;
     }
+  
+  @Override
+  public Type getMyNorm(Type me) {
+    return me;
+    }
+  
+  @Override 
+  public void setMyNorm(Type me, Type norm) {}
   }

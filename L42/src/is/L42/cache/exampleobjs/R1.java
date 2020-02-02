@@ -12,7 +12,7 @@ public class R1 implements L42Cachable<R1>
   
   static
   {
-    L42CacheMap.addCacheableType(R1.class, (L42Cache<R1>) (myCache = new L42StandardCache<R1>("R1")));
+    myCache = new L42StandardCache<R1>("R1", R1.class);
     myCache.lateInitialize(Object.class);
   }
   

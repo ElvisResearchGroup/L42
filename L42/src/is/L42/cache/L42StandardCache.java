@@ -13,8 +13,9 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   @SuppressWarnings("rawtypes") 
   private L42Cache[] caches;
   
-  public L42StandardCache(String typename) {
+  public L42StandardCache(String typename, Class<T> myClass) {
     this.typename = typename;   
+    L42CacheMap.addCacheableType(myClass, this);
     }
   
   @SuppressWarnings("rawtypes") 
@@ -163,5 +164,15 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   public L42Cache rawFieldCache(int i) { 
     return caches[i]; 
     }
+
+  @Override
+  public T getMyNorm(T me) {
+    return me.myNorm(); 
+    }
+
+  @Override 
+  public void setMyNorm(T me, T norm) { 
+    me.setNorm(norm);
+     }
   
 }
