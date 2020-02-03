@@ -20,8 +20,8 @@ enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
   static String vectorGet(boolean mut){ 
     return vectorExc2("""
-      var tmp=%1$s.get(%2$s*2+3);
-      if(tmp==is.L42.nativeCode.TrustedOp.Flags."""+(mut?"MutElem":"ImmElem")+"""
+      Object tmp=((ArrayList)%1$s).get(%2$s*2+3);
+      if(tmp==is.L42.nativeCode.Flags."""+(mut?"MutElem":"ImmElem")+"""
         ){return %1$s.get(%2$s*2+2);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
       .wrap(new L42LazyMsg(
@@ -29,7 +29,7 @@ class OpUtils{
         )));
     """);}
     static String vectorOp(String op,boolean mut){
-      return vectorExc2("%1$s."+op+"(%2$s*2+2,%3$s);%1$s."+op+"(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags."+(mut?"MutElem":"ImmElem")+");return L42Void.instance;");
+      return vectorExc2("%1$s."+op+"(%2$s*2+2,%3$s);((ArrayList)%1$s)."+op+"(%2$s*2+3,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")+");return L42Void.instance;");
       }
     static String vectorOpRemove(){
       return vectorExc2("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42Void.instance;");
@@ -55,7 +55,7 @@ class OpUtils{
       return wrapperT+".myCache.rawFieldCache(0)";
       }
     static Generator vectorKs(){return (type,mwt,j)->{
-      Signature sig0=null;//sig(Class,Mutable,This,Immutable,Int);
+      Signature sig0=Signature.sig(Mdf.Class,Mdf.Mutable,This,Mdf.Immutable,TrustedKind.Int);
       if(type && typingUse(j.p(),mwt,sig0)){j.c("");return;}//TODO: here and in use: why j.c("")??
       String s=OpUtils.makeVector(j,"%2$s");
       s=s.formatted(NativeDispatch.xs(mwt).toArray());
@@ -76,6 +76,7 @@ class OpUtils{
       return Map.of(TrustedKind.StringBuilder,u);
       }
     static boolean typingUse(Program p, MWT mwt,Signature s){
+      assert s!=null;
       assert s.parMdfs.size()==s.parTs.size();
       if(s.parTs.size()!=mwt.mh().pars().size()){
         throw new EndError.TypeError(mwt._e().poss(),

@@ -112,7 +112,6 @@ public class Parse {
     return p.top;
     }
   public static Program sureProgram(Path fileName,String s){
-    System.out.println("parsing program and"+List.of(TrustedOp.values()));
     var res=aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
     if (res.hasErr()){throw new EndError.NotWellFormed(L(),res.toString());}
     assert res.res!=null;

@@ -4,6 +4,7 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 
 import java.util.ArrayList;
@@ -354,28 +355,34 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     return f+".class";
     }
   private void addCachableMethods(String jC){
+     List<String> ps=fields.psJ;
+     List<String> xs=L(fields.xs,(c,xi)->c.add("£x"+xi.inner()));
+     if(nativeKind(p)){
+       ps=pushL(ps,typeNameStr(p));
+       xs=pushL(xs,"unwrap");
+       }
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
     c("public static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
     c("static{myCache.lateInitialize(");
-    seq(fields.psJ,f->addDotClass(f),",");
+    seq(ps,f->addDotClass(f),",");
     c(");}");nl();
-    c("@Override public L42Cache<"+jC+"> myCache() {return myCache;}");nl();
+    c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("private "+jC+" norm;");nl();
     c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
     c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
-    c("@Override public int numFields() {return "+fields.xs.size()+";}");nl();
+    c("@Override public int numFields(){return "+xs.size()+";}");nl();
     c("@Override public Object[] allFields() {return new Object[]{");
-    seq(fields.xs,x->"£x"+x.inner(),",");
+    seq(xs,x->x,",");
     c("};}");nl();
-    c("@Override public void setField(int i, Object o) {switch(i){");indent();nl();
-      for(int i:range(fields.xs)){
-        c("case "+i+":£x"+fields.xs.get(i)+"=("+fields.psJ.get(i)+")o;return;");nl();
+    c("@Override public void setField(int i, Object o){switch(i){");indent();nl();
+      for(int i:range(xs)){
+        c("case "+i+":"+xs.get(i)+"=("+ps.get(i)+")o;return;");nl();
         }
       c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
     c("}}");nl();
     c("@Override public Object getField(int i) {switch(i){");indent();nl();
-      for(int i:range(fields.xs)){
-        c("case "+i+":return £x"+fields.xs.get(i)+";");nl();
+      for(int i:range(xs)){
+        c("case "+i+":return "+xs.get(i)+";");nl();
         }
       c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
     c("}}");nl();    

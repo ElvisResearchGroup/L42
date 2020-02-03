@@ -85,10 +85,7 @@ public enum TrustedKind implements TrustedT{
     throw bug();
     }};
   public final String inner;
-  TrustedKind(String inner){
-    System.out.println("TrustedKind initializing "+inner);
-    this.inner = inner;
-    }
+  TrustedKind(String inner){this.inner = inner;}
   public int genericNumber(){return 0;}
   public int genExceptionNumber(){return 0;}
   public abstract String factory(J j,MWT mwt);

@@ -258,9 +258,7 @@ public enum TrustedOp {
     assert k!=null;
     return code.get(k);
     }
-  static{ System.out.println("TrustedOp initialized"+List.of(TrustedOp.values())+List.of(TrustedKind.values()));}
   TrustedOp(String inner,Map<TrustedKind,Generator>code){
-    System.out.println("TrustedOp initializing "+inner);
     this.inner = inner;
     this.code=code;
     }
