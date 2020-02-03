@@ -56,7 +56,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
           }
         if(prevs.contains(fields[i])) {
           List<Object> sl = prevs.subList(prevs.indexOf(fields[i]), prevs.size());
-          if(circle == null) { circle = new HashSet<Object>(sl); }
+          if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
           else { circle = union(circle, sl); }
           inCircle = true;
           continue;
@@ -105,7 +105,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
         }
       if(prevs.contains(fields[i])) {
         List<Object> sl = prevs.subList(prevs.indexOf(fields[i]), prevs.size());
-        if(circle == null) { circle = new HashSet<Object>(sl); }
+        if(circle == null) {  circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
         else { circle = union(circle, sl); }
         inCircle = true;
         continue;

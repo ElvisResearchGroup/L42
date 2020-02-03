@@ -64,9 +64,11 @@ public class NormalizationTests {
   
   @Test
   public void testA() {
-    int i1 = (int) (Math.random() * 100);
-    int i2 = (int) (Math.random() * 100);
-    testSelfProperties(() -> { return new A(i1, i2); });
+    int i1 = (int) (Math.random() * 100000);
+    int i2 = (int) (Math.random() * 100000);
+    A a = testSelfProperties(() -> { return new A(i1, i2); });
+    assertEquals(i1, a.getI1());
+    assertEquals(i2, a.getI2());
     }
   
   @Test 
@@ -94,18 +96,19 @@ public class NormalizationTests {
   
   @Test
   public void testLongerCircle() {
-    testSelfProperties(() -> {
+    R1 myR = testSelfProperties(() -> {
       R1 r1 = new R1(null);
       R1 r2 = new R1(r1);
       R1 r3 = new R1(r2);
       r1.referenced = r3;
       return r1;
       });
+    assertTrue(myR == myR.referenced);
     }
   
   @Test
   public void testEvenLongerCircle() {
-    testSelfProperties(() -> {
+    R1 myR = testSelfProperties(() -> {
       R1 r1 = new R1(null);
       R1 r2 = new R1(r1);
       R1 r3 = new R1(r2);
@@ -116,6 +119,7 @@ public class NormalizationTests {
       r1.referenced = r7;
       return r1;
       });
+    assertTrue(myR == myR.referenced);
     }
   
   @Test
@@ -263,23 +267,22 @@ public class NormalizationTests {
       });
     }
   
-  private static void testSelfProperties(Supplier<Object> supplier) {
-    testBiProperties(supplier, supplier, true);
+  private static <T> T testSelfProperties(Supplier<T> supplier) {
+    return testBiProperties(supplier, supplier, true);
     }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  private static void testBiProperties(Supplier<Object> supplier1, Supplier<Object> supplier2, boolean readEQ) {
-    Object n1old, n2old;
-    Object n1 = n1old = supplier1.get();
-    Object n2 = n2old = supplier2.get();
-    L42Cache cache = getCacheObject(n1);
+  private static <T> T testBiProperties(Supplier<T> supplier1, Supplier<T> supplier2, boolean readEQ) {
+    T n1old, n2old;
+    T n1 = n1old = supplier1.get();
+    T n2 = n2old = supplier2.get();
+    L42Cache<T> cache = getCacheObject(n1);
     assertTrue(n1 != n2);
     if(readEQ) { assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false)); }
     n1 = normalize(n1);
     n2 = normalize(n2);
-    if(n1old instanceof L42Cachable) {
-      assertTrue(((L42Cachable) n1old).myNorm() == n1);
-      assertTrue(((L42Cachable) n2old).myNorm() == n1);
+    if(!cache.isValueType()) {
+      assertTrue(cache.getMyNorm(n1old) == n1);
+      assertTrue(cache.getMyNorm(n2old) == n1);
       }
     assertTrue(cache.identityEquals(n1, n2));
     testDeepFieldEQ(n1, n2, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
@@ -287,6 +290,7 @@ public class NormalizationTests {
     assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false));
     assertEquals(getKey(n1, true), getKey(n2, true));
     assertEquals(expandedKey(n1, true, true), expandedKey(n2, true, true));
+    return n2;
     }
   
   @SuppressWarnings({ "rawtypes", "unchecked" }) 

@@ -8,7 +8,7 @@ import is.L42.cache.L42CacheMap;
 public class S1 implements L42Cachable<S1> {
   
   public static final Class<S1> _class = S1.class;
-  private static final L42StandardCache<S1> myCache;
+  public static final L42StandardCache<S1> myCache;
   
   static
   {

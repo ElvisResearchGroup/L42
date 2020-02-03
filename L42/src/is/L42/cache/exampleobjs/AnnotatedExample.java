@@ -17,7 +17,7 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample> {
    */
   
   public static final Class<AnnotatedExample> _class = AnnotatedExample.class;
-  private static final L42StandardCache<AnnotatedExample> myCache;
+  public static final L42StandardCache<AnnotatedExample> myCache;
   
   static {
     //The call to .addCacheableType is necessary, as the cache

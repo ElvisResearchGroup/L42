@@ -20,35 +20,27 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
   protected final Map<KeyNorm2D, Object> normMap;
   protected final Map<Object, L42Cache<ArrayList<Object>>> types;
-  //TODO: This doesn't seem like a good way to do this.
-  protected final Set<WeakReference<Object>> normSet;
   
   protected ArrayListCache(Map<KeyNorm2D, Object> normMap,  
-                           Map<Object, L42Cache<ArrayList<Object>>> types, 
-                           Set<WeakReference<Object>> normSet) {
+                           Map<Object, L42Cache<ArrayList<Object>>> types) {
     this.normMap = normMap;
     this.types = types;
-    this.normSet = normSet;
     }
   
   public ArrayListCache() {
     normMap = L42CacheMap.newNormMap();
     types = new IdentityHashMap<>();
-    normSet = new HashSet<WeakReference<Object>>();
     }
   
   private void add(KeyNorm2D key, ArrayList<Object> t) {
     normMap.put(key, t);
-    normSet.add(new WeakReference<>(t));
+    this.setMyNorm(t, t);
     }
   
   @Override 
   public void addObjectOverride(KeyNorm2D key, ArrayList<Object> value) {
     normMap.put(key, value);
-    normSet.add(new WeakReference<>(value));
     }
-  
-
   @Override
   public ArrayList<Object> normalize(ArrayList<Object> t) {
     NormResult<ArrayList<Object>> res = normalizeInner(t, new ArrayList<Object>());
@@ -84,7 +76,11 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
         }
       if(inCircle) { return new NormResult(circle); }
       KeyNorm2D key = this.simpleKey(list);
-      if(normMap.containsKey(key)) { return new NormResult(normMap.get(key)); }
+      if(normMap.containsKey(key)) { 
+        ArrayList t2 = (ArrayList) normMap.get(key);
+        this.setMyNorm(list, t2);
+        return new NormResult(t2); 
+        }
       this.add(key, list);
       return new NormResult<ArrayList<Object>>(list);      
     } else {
@@ -124,13 +120,15 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
       }
     if(inCircle) { return new NormResult(circle); }
     KeyNorm2D key = this.simpleKey(list);
-    if(normMap.containsKey(key)) { return new NormResult(normMap.get(key)); }
-    else { return new NormResult<ArrayList<Object>>(list);  }  
+    if(normMap.containsKey(key)) { 
+      ArrayList t2 = (ArrayList) normMap.get(key);
+      return new NormResult(t2); 
+       } else { return new NormResult<ArrayList<Object>>(list);  }  
     }
   
   @Override
   public boolean isNorm(ArrayList<Object> t) { 
-    return normSet.contains(new WeakReference<>(t));
+    return t.get(1) != null;
     }
 
   @Override
@@ -194,8 +192,8 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
   @Override 
   public void setMyNorm(ArrayList<Object> me, ArrayList<Object> norm) { 
-   me.add(norm);
-   }
+    me.set(1, norm);
+    }
   
   @Override
   public L42Cache<ArrayList<Object>> refine(ArrayList<Object> t) {
@@ -224,7 +222,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     L42Cache<?> type;
     
     public ArrayListCacheForType(ArrayListCache owner, L42Cache<?> type) {
-      super(owner.normMap, owner.types, owner.normSet);
+      super(owner.normMap, owner.types);
       this.type = type;
       }
     
