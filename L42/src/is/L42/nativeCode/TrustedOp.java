@@ -26,6 +26,7 @@ import is.L42.generated.Core.T;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.P;
+import is.L42.nativeCode.TrustedOp.Generator;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.NativeDispatch;
     
@@ -69,6 +70,29 @@ class Signature{
     }
   }
 class OpUtils{
+  static String vectorGet(boolean mut){ 
+    return vectorExc2("""
+      var tmp=%1$s.get(%2$s*2+3);
+      if(tmp==is.L42.nativeCode.TrustedOp.Flags."""+(mut?"MutElem":"ImmElem")+"""
+        ){return %1$s.get(%2$s*2+2);}
+      throw new L42Error(%Gen"""+(mut?"4":"3")+"""
+      .wrap(new L42LazyMsg(
+        "#val called, but the element in position "+%1$s+" was inserted as immutable"
+        )));
+    """);}
+    static String vectorOp(String op,boolean mut){
+      return vectorExc2("%1$s."+op+"(%2$s*2+2,%3$s);%1$s."+op+"(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags."+(mut?"MutElem":"ImmElem")+");return L42Void.instance;");
+      }
+    static String vectorOpRemove(){
+      return vectorExc2("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42Void.instance;");
+      }
+    static String vectorReadGet(){
+      return vectorExc2("return %s.get(%s*2+2);");
+      }
+    static private final String vectorExc2(String body){
+      return "try{"+body+"}"+
+        "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42LazyMsg(oob.getMessage())));}";
+      }
     static private String vectorCache(J j){
       P pGen=j.p().topCore().info().nativePar().get(0);
       if(pGen==P.pAny){return "null";}
@@ -82,54 +106,62 @@ class OpUtils{
       String wrapperT=J.classNameStr(pOfGen);
       return wrapperT+".myCache.rawFieldCache(0)";
       }
-  static public String makeVector(J j,String size){
+    static Generator vectorKs(){return (type,mwt,j)->{
+      Signature sig0=null;//sig(Class,Mutable,This,Immutable,Int);
+      if(type && typingUse(j.p(),mwt,sig0)){j.c("");return;}//TODO: here and in use: why j.c("")??
+      String s=OpUtils.makeVector(j,"%2$s");
+      s=s.formatted(NativeDispatch.xs(mwt).toArray());
+      j.c(s);
+      };}
+    static public String makeVector(J j,String size){
       return "var res=new "+j.typeNameStr(j.p())+"("+size+"+2); "+
-      "res.add("+vectorCache(j)+");res.add(null); return res;";
+        "var res0=(ArrayList)res; "+
+        "res0.add("+vectorCache(j)+");res0.add(null); return res;";
       }
-  static void checkParCount(Program p,MWT mwt,int expected){
-    if(mwt.key().xs().size()==expected){return;}
-    throw new EndError.TypeError(mwt._e().poss(),Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),expected));
-    }
-  static Map<TrustedKind,TrustedOp.Generator> append(String s){
-    String pattern="%s.append(\""+s+"\");return L42Void.instance;";
-    var u=use(pattern,sig(Mutable,Immutable,Void));
-    return Map.of(StringBuilder,u);
-    }
-  static boolean typingUse(Program p, MWT mwt,Signature s){
-    assert s.parMdfs.size()==s.parTs.size();
-    if(s.parTs.size()!=mwt.mh().pars().size()){
+    static void checkParCount(Program p,MWT mwt,int expected){
+      if(mwt.key().xs().size()==expected){return;}
+      throw new EndError.TypeError(mwt._e().poss(),Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),expected));
+      }
+    static Map<TrustedKind,TrustedOp.Generator> append(String s){
+      String pattern="%s.append(\""+s+"\");return L42Void.instance;";
+      var u=use(pattern,sig(Mutable,Immutable,Void));
+      return Map.of(StringBuilder,u);
+      }
+    static boolean typingUse(Program p, MWT mwt,Signature s){
+      assert s.parMdfs.size()==s.parTs.size();
+      if(s.parTs.size()!=mwt.mh().pars().size()){
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),s.parMdfs.size()));
+        }
+      checkMdf(mwt,mwt.mh().mdf(),s.methMdf);
+      var t=mwt.mh().t();
+      checkSingle(p,mwt,t.p(),t.mdf(),s.retT,s.retMdf);
+      for(int i:range(mwt.mh().pars().size())){
+        var pi=mwt.mh().pars().get(i).p();
+        var mdfi=mwt.mh().pars().get(i).mdf();
+        var tti=s.parTs.get(i);
+        var tmdfi=s.parMdfs.get(i);
+        checkSingle(p,mwt,pi,mdfi,tti,tmdfi);
+        }
+      //TODO: check exceptions
+      return true;
+      }
+    private static void checkGen(int i,Program p,MWT mwt,P pi){
+      assert p.topCore().info().nativePar().size()>i;
+      var pari=p.topCore().info().nativePar().get(i);
+      if(pi.equals(pari)){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),s.parMdfs.size()));
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,pari));            
       }
-    checkMdf(mwt,mwt.mh().mdf(),s.methMdf);
-    var t=mwt.mh().t();
-    checkSingle(p,mwt,t.p(),t.mdf(),s.retT,s.retMdf);
-    for(int i:range(mwt.mh().pars().size())){
-      var pi=mwt.mh().pars().get(i).p();
-      var mdfi=mwt.mh().pars().get(i).mdf();
-      var tti=s.parTs.get(i);
-      var tmdfi=s.parMdfs.get(i);
-      checkSingle(p,mwt,pi,mdfi,tti,tmdfi);
+    private static void checkMdf(MWT mwt,Mdf mdfi,Mdf tmdfi){
+      if(mdfi!=tmdfi){
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),mdfi,tmdfi));
+        }
       }
-    //TODO: check exceptions
-    return true;
-    }
-  private static void checkGen(int i,Program p,MWT mwt,P pi){
-    assert p.topCore().info().nativePar().size()>i;
-    var pari=p.topCore().info().nativePar().get(i);
-    if(pi.equals(pari)){return;}
-    throw new EndError.TypeError(mwt._e().poss(),
-      Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,pari));            
-    }
-  private static void checkMdf(MWT mwt,Mdf mdfi,Mdf tmdfi){
-    if(mdfi!=tmdfi){
-      throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),mdfi,tmdfi));
-      }
-    }
-  private static void checkSingle(Program p,MWT mwt,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
-    checkMdf(mwt,mdfi,tmdfi);
-    if(tti instanceof TrustedKind){
+    private static void checkSingle(Program p,MWT mwt,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
+      checkMdf(mwt,mdfi,tmdfi);
+      if(tti instanceof TrustedKind){
         var ki=(TrustedKind)tti;
         var li=p._ofCore(pi);
         assert li!=null: pi+" "+p.pop().topCore();
@@ -360,54 +392,20 @@ public enum TrustedOp {
       Class,Any))
     )),  
   //Vector
-  @SuppressWarnings("removal") VectorK("vectorK",Map.of(Vector,
-  (type,mwt,j)->{
-      if(type && typingUse(j.p(),mwt,sig(Class,Mutable,This,Immutable,Int))){j.c("");return;}//TODO: here and in use: why j.c("")??
-      j.c(OpUtils.makeVector(j,"%2$s").formatted(NativeDispatch.xs(mwt).toArray()));})),
+  VectorK("vectorK",Map.of(Vector,vectorKs())),
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(
     Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
-  ReadVal("readVal",Map.of(Vector,use("return %s.get(%s*2+2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
-  ImmVal("immVal",Map.of(Vector,use("""
-    try{
-      var tmp=%1$s.get(%2$s*2+3);
-      if(tmp==is.L42.nativeCode.TrustedOp.Flags.ImmElem){return %1$s.get(%2$s*2+2);}
-      throw new L42Error(%Gen3.wrap(new L42LazyMsg(
-        "val called, but the element in position "+%1$s+" was inserted as mutable"
-        )));
-      }
-    catch(ArrayIndexOutOfBoundsException oob){
-      throw new L42Error(%Gen2.wrap(new L42LazyMsg(oob.getMessage())));
-      }
-    """,
-    sig(Readable,Immutable,Gen1,Immutable,Int)))),
-  HashVal("#val",Map.of(Vector,use("""
-    try{
-      var tmp=%1$s.get(%2$s*2+3);
-      if(tmp==is.L42.nativeCode.TrustedOp.Flags.MutElem){return %1$s.get(%2$s*2+2);}
-      throw new L42Error(%Gen4.wrap(new L42LazyMsg(
-        "#val called, but the element in position "+%1$s+" was inserted as immutable"
-        )));
-      }
-    catch(ArrayIndexOutOfBoundsException oob){
-      throw new L42Error(%Gen2.wrap(new L42LazyMsg(oob.getMessage())));
-      }
-    """,
-    sig(Mutable,Mutable,Gen1,Immutable,Int)))),
-  SetImm("setImm",Map.of(Vector,use("%1$s.set(%2$s*2+2,%3$s);%1$s.set(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.ImmElem);return L42Void.instance;",
-    sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2+2,%3$s);%1$s.set(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.MutElem);return L42Void.instance;",
-    sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  AddImm("addImm",Map.of(Vector,use("%1$s.add(%2$s*2+2,%3$s);%s.add(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.ImmElem);return L42Void.instance;",
-    sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  AddMut("addMut",Map.of(Vector,use("%1$s.add(%2$s*2+2,%3$s);%1$s.add(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.MutElem);return L42Void.instance;",
-    sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),  
-  Remove("remove",Map.of(Vector,use("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42Void.instance;",
-    sig(Mutable,Immutable,Void,Immutable,Int)))),
-  //TODO: handle exceptions, immVal/mutVal absent+index out ouf bound
-  //arithmetic
+  ReadVal("readVal",Map.of(Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)))),
+  ImmVal("immVal",Map.of(Vector,use(vectorGet(false),sig(Readable,Immutable,Gen1,Immutable,Int)))),
+  HashVal("#val",Map.of(Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)))),
+  SetImm("setImm",Map.of(Vector,use(vectorOp("set",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  SetMut("setMut",Map.of(Vector,use(vectorOp("set",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
+  AddImm("addImm",Map.of(Vector,use(vectorOp("add",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  AddMut("addMut",Map.of(Vector,use(vectorOp("add",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),  
+  Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),
     String,use("return %s + %s;",sigI(String,String))

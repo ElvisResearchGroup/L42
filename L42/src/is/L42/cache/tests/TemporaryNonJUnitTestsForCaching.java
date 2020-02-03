@@ -240,4 +240,5 @@ class IntBox implements L42Cachable<IntBox>,Box{
     if(!norm.isFibonacci){norm.fibonacci=auxFibonacci(); norm.isFibonacci=true;}
     return norm.fibonacci;    
     }
+  @Override public int numFields(){return 1;}
   }
