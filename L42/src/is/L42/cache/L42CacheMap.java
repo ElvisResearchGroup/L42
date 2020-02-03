@@ -21,7 +21,7 @@ import is.L42.cache.nativecache.IntCache;
 import is.L42.cache.nativecache.LongCache;
 import is.L42.cache.nativecache.ShortCache;
 import is.L42.cache.nativecache.StringCache;
-import is.L42.nativeCode.TrustedOp;
+import is.L42.nativeCode.Flags;
 
 public class L42CacheMap {
   
@@ -49,7 +49,7 @@ public class L42CacheMap {
     commander.put(Byte.class, commander.get(byte.class));
     commander.put(char.class, new CharCache());
     commander.put(Character.class, commander.get(char.class));
-    commander.put(TrustedOp.Flags.class, new FlagsCache());
+    commander.put(Flags.class, new FlagsCache());
     commander.put(String.class, new StringCache());
     commander.put(ArrayList.class, new ArrayListCache());
     }

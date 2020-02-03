@@ -2,10 +2,10 @@ package is.L42.cache.nativecache;
 
 import java.util.List;
 
-import is.L42.nativeCode.TrustedOp;
+import is.L42.nativeCode.Flags;
 import is.L42.tools.General;
 
-public class FlagsCache extends ValueCache<TrustedOp.Flags> {
+public class FlagsCache extends ValueCache<Flags> {
 
   @Override 
   public String typename() { 
@@ -13,7 +13,7 @@ public class FlagsCache extends ValueCache<TrustedOp.Flags> {
     }
 
   @Override 
-  protected boolean valueCompare(TrustedOp.Flags t1, TrustedOp.Flags t2) { 
+  protected boolean valueCompare(Flags t1, Flags t2) { 
     return t1 == t2;
     }
 

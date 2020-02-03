@@ -14,7 +14,7 @@ import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.LoopCache;
 import is.L42.cache.NormResult;
-import is.L42.nativeCode.TrustedOp;
+import is.L42.nativeCode.Flags;
 
 public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
@@ -162,7 +162,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
   @Override
   public void f(ArrayList<Object> t, Object o, int i) {
     if((i & 1) == 1) {
-      assert o instanceof TrustedOp.Flags;
+      assert o instanceof Flags;
       assert t.get(i + 2).equals(o);
       return;
       }
@@ -220,7 +220,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
   public static  class ArrayListCacheForType extends ArrayListCache {
     
-    L42Cache<?> flag = L42CacheMap.getCacheObject(TrustedOp.Flags.class);
+    L42Cache<?> flag = L42CacheMap.getCacheObject(Flags.class);
     L42Cache<?> type;
     
     public ArrayListCacheForType(ArrayListCache owner, L42Cache<?> type) {

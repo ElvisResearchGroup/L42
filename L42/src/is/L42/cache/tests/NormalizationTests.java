@@ -7,8 +7,8 @@ import static is.L42.cache.L42CacheMap.normalize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static is.L42.nativeCode.TrustedOp.Flags.ImmElem;
-import static is.L42.nativeCode.TrustedOp.Flags.MutElem;
+import static is.L42.nativeCode.Flags.ImmElem;
+import static is.L42.nativeCode.Flags.MutElem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -28,7 +28,7 @@ import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
 import is.L42.cache.exampleobjs.S1;
-import is.L42.nativeCode.TrustedOp;
+import is.L42.nativeCode.Flags;
 
 public class NormalizationTests {
   
@@ -48,13 +48,13 @@ public class NormalizationTests {
     assertThrows(NullPointerException.class, () -> { list.getMut(0); });
     assert list.getUnderlyingList().size() == 4;
     assert list.getUnderlyingList().get(2).equals("I am imm");
-    assert ((TrustedOp.Flags) ((Object) list.getUnderlyingList().get(3))) == ImmElem;
+    assert ((Flags) ((Object) list.getUnderlyingList().get(3))) == ImmElem;
     list.addAsMut("I am mut");
     assert list.getMut(1).equals("I am mut");
     assertThrows(NullPointerException.class, () -> { list.getImm(1); });
     assert list.getUnderlyingList().size() == 6;
     assert list.getUnderlyingList().get(4).equals("I am mut");
-    assert ((TrustedOp.Flags) ((Object) list.getUnderlyingList().get(5))) == MutElem;
+    assert ((Flags) ((Object) list.getUnderlyingList().get(5))) == MutElem;
     }
   
   @Test

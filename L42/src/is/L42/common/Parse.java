@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,6 +35,7 @@ import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.NudePContext;
 import is.L42.generated.LL;
 import is.L42.generated.Pos;
+import is.L42.nativeCode.TrustedOp;
 import is.L42.visitors.FullL42Visitor;
 
 public class Parse {
@@ -110,6 +112,7 @@ public class Parse {
     return p.top;
     }
   public static Program sureProgram(Path fileName,String s){
+    System.out.println("parsing program and"+List.of(TrustedOp.values()));
     var res=aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
     if (res.hasErr()){throw new EndError.NotWellFormed(L(),res.toString());}
     assert res.res!=null;

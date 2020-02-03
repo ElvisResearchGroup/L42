@@ -9,7 +9,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.Core.L.MWT;
 import is.L42.translationToJava.J;
 
-public class LazyCacheGenerator implements TrustedOp.Generator{
+public class LazyCacheGenerator implements Generator{
   @Override public void of(boolean type, MWT mwt, J j) {
     if(type){return;}
     if(!mwt.mh().mdf().isImm()){throw todo();}
