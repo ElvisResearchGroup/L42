@@ -355,16 +355,20 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     return f+".class";
     }
   private void addCachableMethods(String jC){
-     List<String> ps=fields.psJ;
+     List<Boolean> is0=L(fields.ps,(c,pi)->c.add(p._ofCore(pi).isInterface()));
+     List<String> ps0=fields.psJ;
      List<String> xs=L(fields.xs,(c,xi)->c.add("£x"+xi.inner()));
      if(nativeKind(p)){
-       ps=pushL(ps,typeNameStr(p));
+       is0=pushL(is0,false);
+       ps0=pushL(ps0,typeNameStr(p));
        xs=pushL(xs,"unwrap");
        }
+     List<Boolean>is=is0;
+     List<String>ps=ps0;
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
     c("public static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
     c("static{myCache.lateInitialize(");
-    seq(ps,f->addDotClass(f),",");
+    seq(range(ps),i->is.get(i)?"null":addDotClass(ps.get(i)),",");
     c(");}");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("private "+jC+" norm;");nl();
