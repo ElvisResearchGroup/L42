@@ -54,7 +54,7 @@ public class LoopCache {
           List<Object> f1 = circleFields.get(o);
           List<Object> f2 = circleFields.get(o2);
           for(int i = 0; i < f1.size(); i++) {
-            if(Collections.disjoint(equivClasses.get(f1.get(i)), equivClasses.get(f2.get(i)))) {
+            if(i >= f2.size() || Collections.disjoint(equivClasses.get(f1.get(i)), equivClasses.get(f2.get(i)))) {
               toRemove.add(o2);
               equivClasses.get(o2).remove(o);
               repl++;

@@ -276,6 +276,24 @@ public class NormalizationTests {
       });
     }
   
+  @Test
+  public void testSubCircle() {
+    R2 res = testSelfProperties(() -> {
+      R1 r1 = new R1(null);
+      R1 r2 = new R1(r1);
+      R1 r3 = new R1(r2);
+      r1.referenced = r3;
+      R2 r21 = new R2(null, r1);
+      R2 r22 = new R2(null, r21);
+      R2 r23 = new R2(r22, r21);
+      r22.referenced = r23;
+      r21.referenced = r22;
+      return r21;
+      });
+    assertTrue(((R1) res.referenced2).referenced == ((R1) ((R1) res.referenced2).referenced).referenced);
+    assertTrue(((R2) res.referenced).referenced == res.referenced);
+    }
+  
   private static <T> T testSelfProperties(Supplier<T> supplier) {
     return testBiProperties(supplier, supplier, true);
     }
