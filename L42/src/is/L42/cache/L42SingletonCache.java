@@ -92,4 +92,7 @@ public class L42SingletonCache<T extends L42Cachable<T>> implements L42Cache<T> 
     return this.typename; 
     }
 
-}
+  @Override
+  public void clear() {}
+  
+  }

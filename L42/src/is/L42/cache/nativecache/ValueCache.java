@@ -86,4 +86,7 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   
   @Override 
   public void setMyNorm(Type me, Type norm) {}
+  
+  @Override
+  public void clear() {}
   }

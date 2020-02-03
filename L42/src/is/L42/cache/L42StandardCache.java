@@ -150,6 +150,11 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   @Override 
   public int fn(T t) { return t.numFields(); }
   
+  @Override
+  public void clear() {
+    normMap.clear();
+    }
+  
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2) {
     Set<T> set = new HashSet<T>();
     set.addAll(l1);
