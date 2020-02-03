@@ -77,6 +77,9 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample> {
         throw new ArrayIndexOutOfBoundsException();
     }
   }
+  
+  @Override
+  public int numFields() { return 3; }
 
   @Override 
   public L42Cache<AnnotatedExample> myCache() { 

@@ -14,13 +14,28 @@ import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.LoopCache;
 import is.L42.cache.NormResult;
+import is.L42.nativeCode.TrustedOp;
 
 public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
-  private final Map<KeyNorm2D, Object> normMap = L42CacheMap.newNormMap();
-  private final Map<Object, L42Cache<ArrayList<Object>>> types = new IdentityHashMap<>();
+  protected final Map<KeyNorm2D, Object> normMap;
+  protected final Map<Object, L42Cache<ArrayList<Object>>> types;
   //TODO: This doesn't seem like a good way to do this.
-  private final Set<WeakReference<Object>> normSet = new HashSet<WeakReference<Object>>();
+  protected final Set<WeakReference<Object>> normSet;
+  
+  protected ArrayListCache(Map<KeyNorm2D, Object> normMap,  
+                           Map<Object, L42Cache<ArrayList<Object>>> types, 
+                           Set<WeakReference<Object>> normSet) {
+    this.normMap = normMap;
+    this.types = types;
+    this.normSet = normSet;
+    }
+  
+  public ArrayListCache() {
+    normMap = L42CacheMap.newNormMap();
+    types = new IdentityHashMap<>();
+    normSet = new HashSet<WeakReference<Object>>();
+    }
   
   private void add(KeyNorm2D key, ArrayList<Object> t) {
     normMap.put(key, t);
@@ -48,20 +63,20 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
       prevs.add(list);
       boolean inCircle = false;
       Set<Object> circle = null;   
-      for(int i = 0; i < list.size(); i++) {
-        if(list.get(i) == null) { continue; }
-        final int j = 0;
-        if(prevs.stream().anyMatch((o) -> { return o == list.get(j); })) {
-          List<Object> sl = prevs.subList(prevs.indexOf(list.get(i)), prevs.size());
+      for(int i = 0; i < fn(list); i++) {
+        if(f(list, i) == null) { assert this.rawFieldCache(i) != null; continue; }
+        final int j = i;
+        if(prevs.stream().anyMatch((o) -> { return o == f(list, j); })) { 
+          List<Object> sl = prevs.subList(indexOf(prevs, f(list, i)), prevs.size());
           if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
           else { circle = union(circle, sl); }
           inCircle = true;
           continue;
           }
-        L42Cache cache = L42CacheMap.getCacheObject(list.get(i));
-        NormResult res = cache.normalizeInner(list.get(i), new ArrayList<Object>(prevs));
-        if(res.hasResult()) { list.set(i, res.result()); }
-        else if(!res.circle().contains(list)) {  list.set(i, LoopCache.normalizeCircle(list.get(i), res.circle())); }
+        L42Cache cache = L42CacheMap.getCacheObject(f(list, i));
+        NormResult res = cache.normalizeInner(f(list, i), new ArrayList<Object>(prevs));
+        if(res.hasResult()) { f(list, res.result(), i); }
+        else if(!res.circle().contains(list)) {  f(list, LoopCache.normalizeCircle(f(list, i), res.circle()), i); }
         else {
           inCircle = true;
           circle = circle == null ? res.circle() : union(circle, res.circle());
@@ -90,18 +105,18 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     prevs.add(list);
     boolean inCircle = false;
     Set<Object> circle = null;   
-    for(int i = 0; i < list.size(); i++) {
-      if(list.get(i) == null) { continue; }
+    for(int i = 0; i < fn(list); i++) {
+      if(f(list, i) == null) { assert this.rawFieldCache(i) != null; continue; }
       final int j = i;
-      if(prevs.stream().anyMatch((o) -> { return o == list.get(j); })) {
-        List<Object> sl = prevs.subList(prevs.indexOf(list.get(i)), prevs.size());
+      if(prevs.stream().anyMatch((o) -> { return o == f(list, j); })) {
+        List<Object> sl = prevs.subList(indexOf(prevs, f(list, i)), prevs.size());
         if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
         else { circle = union(circle, sl); }
         inCircle = true;
         continue;
         }
-      L42Cache cache = L42CacheMap.getCacheObject(list.get(i));
-      NormResult res = cache.computeKeyNNInner(list.get(i), new ArrayList<Object>(prevs));
+      L42Cache cache = L42CacheMap.getCacheObject(f(list, i));
+      NormResult res = cache.computeKeyNNInner(f(list, i), new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(list)) {
         inCircle = true;
         circle = circle == null ? res.circle() : union(circle, res.circle());
@@ -132,17 +147,31 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
   
   @Override
   public Object[] f(ArrayList<Object> t) {
-    return t.toArray();
+    final int len = fn(t);
+    Object[] arr = new Object[len];
+    for(int i = 0; i < len; i++)
+      arr[i] = t.get(i + 2);
+    return arr;
     }
   
   @Override
   public Object f(ArrayList<Object> t, int i) {
-    return t.get(i);
+    return t.get(i + 2);
     }
   
   @Override
   public void f(ArrayList<Object> t, Object o, int i) {
-    t.set(i, o);
+    if((i & 1) == 1) {
+      assert o instanceof TrustedOp.Flags;
+      assert t.get(i + 2).equals(o);
+      return;
+      }
+    t.set(i + 2, o);
+    }
+  
+  @Override 
+  public int fn(ArrayList<Object> t) {
+    return t.size() - 2;
     }
   
   @Override
@@ -168,6 +197,13 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
    me.add(norm);
    }
   
+  @Override
+  public L42Cache<ArrayList<Object>> refine(ArrayList<Object> t) {
+    if(!types.containsKey((L42Cache<?>) t.get(0)))
+      types.put((L42Cache<?>) t.get(0), new ArrayListCacheForType(this, (L42Cache<?>) t.get(0)));
+    return types.get((L42Cache<?>) t.get(0));
+    }
+  
   @SuppressWarnings("unchecked") 
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)
   {
@@ -176,91 +212,26 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     set.addAll(l2);
     return set;
   }
+  
+  public static <T> int indexOf(List<T> list, T t) {
+    for(int i = 0; i < list.size(); i++) { if(list.get(i) == t) { return i; } }
+    return -1;
+    }
 
-  public final class ArrayListCacheForType implements L42Cache<ArrayList<Object>> {
+  public static  class ArrayListCacheForType extends ArrayListCache {
     
+    L42Cache<?> flag = L42CacheMap.getCacheObject(TrustedOp.Flags.class);
     L42Cache<?> type;
     
-    public ArrayListCacheForType(L42Cache<?> type) {
+    public ArrayListCacheForType(ArrayListCache owner, L42Cache<?> type) {
+      super(owner.normMap, owner.types, owner.normSet);
       this.type = type;
       }
     
     @SuppressWarnings("rawtypes") 
     @Override 
     public L42Cache rawFieldCache(int i) {
-      return type; 
-      //TODO: Fix this
-      }
-
-    @Override 
-    public ArrayList<Object> normalize(ArrayList<Object> t) { 
-      return ArrayListCache.this.normalize(t);
-      }
-
-    @Override 
-    public NormResult<ArrayList<Object>> normalizeInner(ArrayList<Object> t, List<Object> chain) {
-      return ArrayListCache.this.normalizeInner(t, chain); 
-      }
-
-    @Override 
-    public KeyNorm2D computeKeyNN(ArrayList<Object> t) { 
-      return ArrayListCache.this.computeKeyNN(t);
-      }
-
-    @Override 
-    public NormResult<ArrayList<Object>> computeKeyNNInner(ArrayList<Object> t, List<Object> chain) {
-      return ArrayListCache.this.computeKeyNNInner(t, chain);
-      }
-
-    @Override
-    public void addObjectOverride(KeyNorm2D key, ArrayList<Object> obj) { 
-      ArrayListCache.this.addObjectOverride(key, obj);
-      }
-
-    @Override 
-    public boolean isNorm(ArrayList<Object> t) { 
-      return ArrayListCache.this.isNorm(t);
-      }
-
-    @Override 
-    public boolean structurallyEquals(ArrayList<Object> t1, ArrayList<Object> t2) { 
-      return ArrayListCache.this.structurallyEquals(t1, t2); 
-      }
-
-    @Override 
-    public boolean identityEquals(ArrayList<Object> t1, ArrayList<Object> t2) { 
-      return ArrayListCache.this.identityEquals(t1, t2); 
-      }
-
-    @Override 
-    public Object[] f(ArrayList<Object> t) {
-      return ArrayListCache.this.f(t); 
-      }
-
-    @Override 
-    public Object f(ArrayList<Object> t, int i) {
-      return ArrayListCache.this.f(t, i); 
-      }
-
-    @Override 
-    public void f(ArrayList<Object> t, Object o, int i) { 
-      ArrayListCache.this.f(t, o, i);
-      }
-
-    @Override 
-    public ArrayList<Object> getMyNorm(ArrayList<Object> me) {
-      return ArrayListCache.this.getMyNorm(me); 
-      }
-
-    @Override
-    public void setMyNorm(ArrayList<Object> me, ArrayList<Object> norm) { 
-      ArrayListCache.this.setMyNorm(me, norm);
-      }
-
-    @Override 
-    public String typename() { 
-      return ArrayListCache.this.typename();
+      return ((i & 1) == 0) ? type : flag; 
       }
     }
-
-}
+  }

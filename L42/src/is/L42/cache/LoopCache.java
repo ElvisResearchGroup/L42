@@ -268,7 +268,7 @@ public class LoopCache {
       }
     
     public Object toKeyObject(Map<Object, Integer> varmap) {
-      if(isNorm) { return value; }
+      if(!varmap.containsKey(value)) { return value; }
       else { return new KeyVarID(varmap.get(this.value)); }
       }
     

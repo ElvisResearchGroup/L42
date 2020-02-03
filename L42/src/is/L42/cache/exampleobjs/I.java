@@ -29,6 +29,9 @@ public class I implements L42Cachable<I> {
   public Object getField(int i) {
 	  throw new ArrayIndexOutOfBoundsException();
     }
+	
+	@Override
+  public int numFields() { return 0; }
 
 	@Override
 	public L42Cache<I> myCache() {

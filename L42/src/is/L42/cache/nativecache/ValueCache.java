@@ -48,6 +48,9 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   public void f(Type t, Object o, int i) {
     throw new ArrayIndexOutOfBoundsException();
     }
+  
+  @Override
+  public int fn(Type t) { return 0; }
 
   @Override
   public KeyNorm2D computeKeyNN(Type t) {

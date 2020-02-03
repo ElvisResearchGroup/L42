@@ -24,6 +24,11 @@ public interface L42Cachable<T> {
    */
   Object getField(int i);
   
+  /** 
+   * @return The number of accessible fields this class contains
+   */
+  int numFields();
+  
   /**
    * @return A reference to my cache object
    */

@@ -15,11 +15,13 @@ import is.L42.cache.nativecache.BoolCache;
 import is.L42.cache.nativecache.ByteCache;
 import is.L42.cache.nativecache.CharCache;
 import is.L42.cache.nativecache.DoubleCache;
+import is.L42.cache.nativecache.FlagsCache;
 import is.L42.cache.nativecache.FloatCache;
 import is.L42.cache.nativecache.IntCache;
 import is.L42.cache.nativecache.LongCache;
 import is.L42.cache.nativecache.ShortCache;
 import is.L42.cache.nativecache.StringCache;
+import is.L42.nativeCode.TrustedOp;
 
 public class L42CacheMap {
   
@@ -47,6 +49,7 @@ public class L42CacheMap {
     commander.put(Byte.class, commander.get(byte.class));
     commander.put(char.class, new CharCache());
     commander.put(Character.class, commander.get(char.class));
+    commander.put(TrustedOp.Flags.class, new FlagsCache());
     commander.put(String.class, new StringCache());
     commander.put(ArrayList.class, new ArrayListCache());
     }
@@ -90,7 +93,7 @@ public class L42CacheMap {
   @SuppressWarnings("unchecked")
   public static <T> L42Cache<T> getCacheObject(T o) {
     if(o instanceof L42Cachable) { return ((L42Cachable<T>) o).myCache(); }
-    return getCacheObject((Class<T>) o.getClass());
+    return getCacheObject((Class<T>) o.getClass()).refine(o);
     }
   
   public static <T> T normalize(T t) {
@@ -168,7 +171,7 @@ public class L42CacheMap {
       for(int j = 1; j < line.length; j++) {
         if(!(line[j] instanceof KeyVarID)) {
           if(done.containsKey(line[j])) {
-            line[j] = done.get(line[j]);
+            line[j] = new KeyVarID(done.get(line[j]));
             } else if(line[j] != null) {
             line[j] = addNewObject.apply(line[j]);
             }

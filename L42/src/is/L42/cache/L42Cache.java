@@ -163,6 +163,11 @@ public interface L42Cache<T> {
    */
   void f(T t, Object o, int i);
   
+  /**
+   * @return The number of fields for this object
+   */
+  int fn(T t);
+  
   @SuppressWarnings("rawtypes") 
   /**
    * Returns the cache object for the relevant subfield. Returns
@@ -218,5 +223,8 @@ public interface L42Cache<T> {
     System.arraycopy(fields, 0, key[0], 1, fields.length);
     return new KeyNorm2D(key);
   }
-
-}
+  
+  default L42Cache<T> refine(T t) {
+    return this;
+  }
+  }

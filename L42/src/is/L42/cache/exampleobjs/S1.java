@@ -48,6 +48,9 @@ public class S1 implements L42Cachable<S1> {
       }
     }
 
+  @Override
+  public int numFields() { return 1; }
+  
   @Override 
   public L42Cache<S1> myCache() { 
     return myCache;

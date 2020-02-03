@@ -63,6 +63,9 @@ public class A implements L42Cachable<A> {
         throw new ArrayIndexOutOfBoundsException();
     }
   }
+  
+  @Override
+  public int numFields() { return 2; }
 
   @Override
   public String toString() {

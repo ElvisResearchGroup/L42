@@ -7,6 +7,8 @@ import static is.L42.cache.L42CacheMap.normalize;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static is.L42.nativeCode.TrustedOp.Flags.immElem;
+import static is.L42.nativeCode.TrustedOp.Flags.mutElem;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,14 +21,41 @@ import org.junit.Test;
 import com.google.common.base.Supplier;
 
 import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42Cachable;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
 import is.L42.cache.exampleobjs.S1;
+import is.L42.nativeCode.TrustedOp;
 
 public class NormalizationTests {
+  
+  enum Donut { spy, bread };
+  
+  @Test
+  public void __testL42List() {
+    L42List<String> list = new L42List<String>(String.class);
+    assert list.length() == 0;
+    assert list.size() == 0;
+    assertThrows(IndexOutOfBoundsException.class, () -> { list.getImm(0); });
+    assertThrows(IndexOutOfBoundsException.class, () -> { list.getMut(0); });
+    assert list.getUnderlyingList().size() == 2;
+    list.addAsImm("I am imm");
+    assert list.length() == 1;
+    assert list.getImm(0).equals("I am imm");
+    assertThrows(NullPointerException.class, () -> { list.getMut(0); });
+    assert list.getUnderlyingList().size() == 4;
+    assert list.getUnderlyingList().get(2).equals("I am imm");
+    assert ((TrustedOp.Flags) ((Object) list.getUnderlyingList().get(3))) == immElem;
+    list.addAsMut("I am mut");
+    assert list.getMut(1).equals("I am mut");
+    assertThrows(NullPointerException.class, () -> { list.getImm(1); });
+    assert list.getUnderlyingList().size() == 6;
+    assert list.getUnderlyingList().get(4).equals("I am mut");
+    assert ((TrustedOp.Flags) ((Object) list.getUnderlyingList().get(5))) == mutElem;
+    }
   
   @Test
   public void identityTest() {
@@ -154,34 +183,83 @@ public class NormalizationTests {
     assertThrows(NullPointerException.class, () -> { expandedKey(r1null, true, false); });
     }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
   @Test
-  public void testALCircle() {
+  public void testALWork() {
     testSelfProperties(() -> {
-      List l1 = new ArrayList();
-      List l2 = new ArrayList();
-      List l3 = new ArrayList();
-      l1.add(l2);
-      l2.add(l3);
-      l3.add(l1);
-      return l1;
+      L42List<String> l1 = new L42List<String>(String.class);
+      l1.addAsImm("Hello");
+      l1.addAsMut("Goodbye");
+      return l1.getUnderlyingList();
       });
     }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
+  @Test
+  public void testALWork2() {
+    testSelfProperties(() -> {
+      L42List<R1> l1 = new L42List<R1>(R1._class);
+      R1 r1 = new R1(null);
+      R1 r2 = new R1(r1);
+      R1 r3 = new R1(r2);
+      r1.referenced = r3;
+      l1.addAsImm(r1);
+      l1.addAsMut(r2);
+      return l1.getUnderlyingList();
+      });
+    }
+  
+  @Test
+  public void testALWork3() {
+    testSelfProperties(() -> {
+      L42List<Object> l1 = new L42List<Object>(Object.class);
+      R1 r1 = new R1(null);
+      R1 r2 = new R1(r1);
+      R1 r3 = new R1(r2);
+      r1.referenced = r3;
+      l1.addAsImm(r1);
+      l1.addAsMut(r2);
+      return l1.getUnderlyingList();
+      });
+    }
+  
+  
+  @SuppressWarnings({ "rawtypes" }) 
+  @Test
+  public void testALCircle() {
+    testSelfProperties(() -> {
+      L42List<ArrayList> l1 = new L42List<ArrayList>(ArrayList.class);
+      L42List<ArrayList> l2 = new L42List<ArrayList>(ArrayList.class);
+      L42List<ArrayList> l3 = new L42List<ArrayList>(ArrayList.class);
+      l1.addAsImm(l2.getUnderlyingList());
+      l2.addAsImm(l3.getUnderlyingList());
+      l3.addAsImm(l1.getUnderlyingList());
+      return l1.getUnderlyingList();
+      });
+    }
+  
   @Test
   public void testParialALCircle() {
     testSelfProperties(() -> {
-      List l1 = new ArrayList();
-      List l2 = new ArrayList();
-      List l3 = new ArrayList();
-      l1.add(l2);
-      l2.add(l3);
-      R1 r1 = new R1(l1);
+      L42List<Object> l1 = new L42List<Object>(Object.class);
+      L42List<Object> l2 = new L42List<Object>(Object.class);
+      L42List<Object> l3 = new L42List<Object>(Object.class);
+      l1.addAsImm(l2.getUnderlyingList());
+      l2.addAsImm(l3.getUnderlyingList());
+      R1 r1 = new R1(l1.getUnderlyingList());
       R1 r2 = new R1(r1);
       R1 r3 = new R1(r2);
-      l3.add(r3);
-      return l1;
+      l3.addAsImm(r3);
+      return l1.getUnderlyingList();
+      });
+    }
+  
+  @Test
+  public void testAnnoying() {
+    testSelfProperties(() -> {
+      L42List<R1> l1 = new L42List<R1>(R1._class);
+      l1.addAsImm(new R1(l1.getUnderlyingList()));
+      l1.addAsImm(new R1(new I()));
+      l1.addAsMut(null);
+      return l1.getUnderlyingList();
       });
     }
   
@@ -221,6 +299,65 @@ public class NormalizationTests {
     Object[] n1f = cache.f(n1);
     Object[] n2f = cache.f(n2);
     for(int i = 0; i < n1f.length; i++) { testDeepFieldEQ(n1f[i], n2f[i], alreadyChecked); }
+    }
+  
+  private static final class L42List<T> {
+    private final ArrayList<Object> underlying = new ArrayList<>();
+    
+    public L42List(Class<T> myClass) {
+      underlying.add(L42CacheMap.getCacheObject(myClass));
+      underlying.add(null);
+    }
+    
+    public int length() {
+      return (underlying.size() - 2) / 2;
+      }
+    
+    public int size() {
+      return this.length();
+      }
+    
+    public void addAsImm(T t) {
+      underlying.add(t);
+      underlying.add(immElem);
+      }
+    
+    public void addAsMut(T t) {
+      underlying.add(t);
+      underlying.add(mutElem);
+      }
+    
+    public boolean isImm(int pos) {
+      pos *= 2;
+      pos += 2;
+      return underlying.get(pos + 1) == immElem;
+      }
+    
+    @SuppressWarnings("unchecked") 
+    public T getImm(int pos) {
+      if(isImm(pos)) {
+        pos *= 2;
+        pos += 2;
+        return (T) underlying.get(pos);
+        } else {
+        throw new NullPointerException();
+        }
+      }
+    
+    @SuppressWarnings("unchecked") 
+    public T getMut(int pos) {
+      if(!isImm(pos)) {
+        pos *= 2;
+        pos += 2;
+        return (T) underlying.get(pos);
+        } else {
+        throw new NullPointerException();
+        }
+      }
+    
+    @SuppressWarnings("unchecked") 
+    public ArrayList<T> getUnderlyingList() { return (ArrayList<T>) underlying; }
+    
     }
 
 }
