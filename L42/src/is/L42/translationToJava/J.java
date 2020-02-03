@@ -342,37 +342,79 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
      }
   @Override public void visitS(S s){
     kw("£m"+(s.m().replace("#", "£h")));
-    if(s.hasUniqueNum()){c("£u"+s.uniqueNum());}
+    if(s.hasUniqueNum()){c("£n"+s.uniqueNum());}
     for(var x:s.xs()){c("£x"+x);}
     }
   @Override public void visitT(Core.T t){typeName(t);}
   
   //EXPRESSION PART FINISH, CLASS PART START
-
+  private String addDotClass(String f){
+    if(f.endsWith(">")){f=f.substring(0,f.indexOf("<"));}
+    if(f.contains("£")){return f+"._class";}
+    return f+".class";
+    }
+  private void addCachableMethods(String jC){
+    c("static final Class<"+jC+"> _class="+jC+".class;");nl();
+    c("private static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
+    c("static{myCache.lateInitialize(");
+    seq(fields.psJ,f->addDotClass(f),",");
+    c(");}");nl();
+    c("@Override public L42Cache<"+jC+"> myCache() {return myCache;}");nl();
+    c("private "+jC+" norm;");nl();
+    c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
+    c("@Override public "+jC+" myNorm(){return this.norm;}");nl();    
+    c("@Override public Object[] allFields() {return new Object[]{");
+    seq(fields.xs,x->"£x"+x.inner(),",");
+    c("};}");nl();
+    c("@Override public void setField(int i, Object o) {switch(i){");indent();nl();
+      for(int i:range(fields.xs)){
+        c("case "+i+":£x"+fields.xs.get(i)+"=("+fields.psJ.get(i)+")o;return;");nl();
+        }
+      c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
+    c("}}");nl();
+    c("@Override public Object getField(int i) {switch(i){");indent();nl();
+      for(int i:range(fields.xs)){
+        c("case "+i+":return £x"+fields.xs.get(i)+";");nl();
+        }
+      c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
+    c("}}");nl();    
+    }
+  private void addCachableMethodsNoFields(String jC){
+    c("static final Class<"+jC+"> _class="+jC+".class;");nl();
+    c("private static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
+    c("static{myCache.lateInitialize();}");nl();
+    c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
+    c("@Override public void setNorm("+jC+" t){}");nl();
+    c("@Override public "+jC+" myNorm(){return this;}");nl();    
+    c("@Override public Object[] allFields(){return new Object[]{};}");nl();
+    c("@Override public void setField(int i,Object o){};");nl();
+    c("@Override public Object getField(int i){throw new ArrayIndexOutOfBoundsException();}");nl();
+    }
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
     if(interf){kw("interface "+jC+ " extends L42Any");}
-    else{kw("class "+jC+ " implements L42Any");}
+    else{kw("class "+jC+ " implements L42Any,L42Cachable<"+jC+">");}
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
+    if(!this.isCoherent){addCachableMethodsNoFields(jC);}
     if(this.isCoherent){
-      this.fields=new Fields(p);
+      this.fields=new Fields();
+      if(!interf){addCachableMethods(jC);}
       for(int i:range(fields.xs)){
         X xi=fields.xs.get(i);
-        P pi=fields.ps.get(i);
-        typeName(pi);
+        kw(fields.psJ.get(i));
         kw("£x"+xi.inner());
         c(";");
         nl();
         assert !xi.inner().startsWith(" ");
         c("public static BiConsumer<Object,Object> FieldAssFor_"
           +xi+"=(f,o)->{(("+jC+")o).£x"+xi+"=(");
-        typeName(pi);
+        c(fields.psJ.get(i));
         c(")f;};");
         nl();
         }
-      }      
+      }
     visitMWTs(p.topCore().mwts());
     c("public static "+jC+" NewFwd(){return new _Fwd();}");
     nl();
@@ -403,13 +445,14 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     c("}");deIndent();nl();
     }  
-  static class Fields{
+  class Fields{
     final List<X> xs;
     final List<P> ps;
+    final List<String> psJ;
     final Coherence ch;
-    Fields(Program p){
+    Fields(){
       ch=new Coherence(p,false);
-      if(ch.classMhs.isEmpty()){ xs=L(); ps=L();return;}
+      if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}
       xs=ch.classMhs.get(0).s().xs();
       assert p.topCore().isInterface() ||ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)):xs;
       ps=L(range(xs),(c,i)->{
@@ -417,6 +460,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         if(pis.size()==1){c.add(pis.get(0));}
         else{c.add(P.pAny);}
         });
+      psJ=L(ps,(c,pi)->c.add(typeNameStr(pi)));
       assert xs.size()==ps.size();
       }
     }

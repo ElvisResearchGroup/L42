@@ -70,4 +70,10 @@ public interface ToSTrait extends CollectorVisitor{
       elements.get(i).accept(this);
       }
     }
+  default <E>void seq(List<E> elements,Function<E,String> map,String sep){
+    for(int i:range(elements)){
+      if(i!=0){c(sep);}
+      c(map.apply(elements.get(i)));
+      }
+    }
   }

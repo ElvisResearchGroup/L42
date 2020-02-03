@@ -440,6 +440,7 @@ public enum TrustedOp {
   LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),
   EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator()))
   ;
+  public static enum Flags{immElem,mutElem}
   public interface Generator{void of(boolean type,MWT mwt,J j);}
   public final String inner;
   Map<TrustedKind,Generator>code;

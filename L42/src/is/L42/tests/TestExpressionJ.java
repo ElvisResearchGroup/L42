@@ -33,7 +33,7 @@ import static is.L42.common.Err.hole;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestExpressionJ
-extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
+extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   je("Any<:class Any","L42Any.pathInstance")
   ),new AtomicTest(()->
   je("Library<:class Any","L42Library.pathInstance")
@@ -228,7 +228,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   jc("""
      """,
      """
-     class £cN£n1 implements L42Any{
+     class £cN£n1 implements L42Any,L42Cachable<£cN£n1>{
+       [###]
        public static int £mof(£cN£n1 £xthis){
          return 0;
          }
@@ -248,7 +249,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
        }
      ""","""
-     class £cA£n1 implements L42Any{
+     class £cA£n1 implements L42Any,L42Cachable<£cA£n1>{
+       [###]
        int £xn;
        public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£n1)o).£xn=(int)f;};
        public static £cA£n1 £mof£xn(£cA£n1 £xthis, int £xn){
@@ -277,7 +279,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   jc("""
      C={ #norm{}}
      ""","""
-     class £cC£n1 implements L42Any{
+     class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
+       [###]
        public static £cC£n1 NewFwd(){return new _Fwd();}
        public static class _Fwd extends £cC£n1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();
@@ -296,7 +299,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        method This1.N n()
        #norm{typeDep=This This1.N}}
      ""","""
-       class £cC£n1 implements L42Any{
+       class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
+         [###]
          int £xn;
          public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
          public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){

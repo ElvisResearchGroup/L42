@@ -199,12 +199,12 @@ public class TemporaryNonJUnitTestsForCaching {
 //RootCache,= L42CacheMap
 //Cache = L42Cache
 
-class IntBox implements L42Cachable<IntBox> {
+interface Box{}
+
+class IntBox implements L42Cachable<IntBox>,Box{
   static final Class<IntBox> _class=IntBox.class;
   private static final L42StandardCache<IntBox> myCache=
-    L42CacheMap.addCacheableType(IntBox._class,new L42StandardCache<IntBox>("IntBox"));
-  //private static final ForeignObjectCache<IntBox> myCache=//desired
-  //  new ForeignObjectCache<IntBox>("IntBox",IntBox._class);
+    new L42StandardCache<IntBox>("IntBox",IntBox._class);
   static{myCache.lateInitialize(int.class);}
   //setted up to work transparantly for both int.class and Integer.class
   int f;IntBox(int f){this.f=f;}

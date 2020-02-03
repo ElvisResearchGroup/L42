@@ -196,7 +196,6 @@ _______
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
     if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
     if bridge({MWT| MWT in LL})!=empty then LL of form CORE.L//works for both CORE.L and FULL.L
-    in {"trusted:cachable","trusted:eagerCachable"}
     if _ native{trusted:cachable} _ in L.MWT or_ native{trusted:eagerCachable} _ in L.MWT
      then LL of form CORE.L and LL.Info.nativeKind=empty//TODO: in code
     
@@ -218,7 +217,7 @@ _______
     //the number of nativePar is the expected number for the kind of nativeKind
     forall MWT in L.MWTs where MWT.nativeUrl in {"trusted:cachable","trusted:eagerCachable"}://TODO: add in code
       L.Info.close defined
-      if MWT.nativeUrl="trusted:eagerCachable" then MWT.pars=empty
+      if MWT.nativeUrl="trusted:eagerCachable" then MWT.pars=empty and MWT.mdf=read
       all MHs.s of form _::0(_)
       MWT.pars.mdfs subseteq {imm,class}
       MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
