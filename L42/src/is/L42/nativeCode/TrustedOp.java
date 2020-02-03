@@ -69,6 +69,23 @@ class Signature{
     }
   }
 class OpUtils{
+    static private String vectorCache(J j){
+      P pGen=j.p().topCore().info().nativePar().get(0);
+      if(pGen==P.pAny){return "null";}
+      if(pGen==P.pVoid){return "L42Void.myCache";}
+      if(pGen==P.pLibrary){return "L42Library.myCache";}
+      Program pOfGen=j.p().navigate(pGen.toNCs());
+      var l=pOfGen.topCore();
+      String genT=j.typeNameStr(pOfGen);
+      if(l.isInterface()){return "null";}
+      if(l.info().nativeKind().isEmpty()){return genT+".myCache";}
+      String wrapperT=J.classNameStr(pOfGen);
+      return wrapperT+".myCache.rawFieldCache(0)";
+      }
+  static public String makeVector(J j,String size){
+      return "var res=new "+j.typeNameStr(j.p())+"("+size+"+2); "+
+      "res.add("+vectorCache(j)+");res.add(null); return res;";
+      }
   static void checkParCount(Program p,MWT mwt,int expected){
     if(mwt.key().xs().size()==expected){return;}
     throw new EndError.TypeError(mwt._e().poss(),Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),expected));
@@ -169,27 +186,6 @@ class OpUtils{
       j.c(s.formatted(NativeDispatch.xs(mwt).toArray()));
       };
     }
-/*  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
-  static TrustedOp.Generator use(String s,Signature sig,Class<?> errKind,int errNum,String err,int[] msgs){
-    return (typed,p,mwt)->{
-      if(typed && typingUse(p,mwt,sig)){return "";}
-      var xs=NativeDispatch.xs(mwt);
-      List<String>errs=L(range(msgs.length),(c,i)->{
-        var xi=xs.get(msgs[i]);
-        xi="\"+"+xi+"+\"";
-        xi="\\\""+xi+"\\\"";
-        c.add(xi);
-        });
-      String tryBody="try{"+s.formatted(xs.toArray())+"}";
-      String catchBody="catch("+errKind.getCanonicalName()+" _unusedErr){throw new L42Error(";
-      T t=mwt.mh().parsWithThis().get(errNum);
-      String name=J.classNameStr(p.navigate(t.p().toNCs()));
-      catchBody+=name+".wrap(\""+err.formatted(errs.toArray())+"\")";
-      catchBody+=");}";
-      return tryBody+catchBody;
-      };
-    }*/
-
   }
 public enum TrustedOp {
   //booleans
@@ -364,17 +360,20 @@ public enum TrustedOp {
       Class,Any))
     )),  
   //Vector
-  VectorK("vectorK",Map.of(Vector,use("return new %This(%2$s);",sig(Class,Mutable,This,Immutable,Int)))),
-  IsEmpty("isEmpty",Map.of(Vector,use("return %s.isEmpty();",sig(Readable,Immutable,Bool)))),
+  @SuppressWarnings("removal") VectorK("vectorK",Map.of(Vector,
+  (type,mwt,j)->{
+      if(type && typingUse(j.p(),mwt,sig(Class,Mutable,This,Immutable,Int))){j.c("");return;}//TODO: here and in use: why j.c("")??
+      j.c(OpUtils.makeVector(j,"%2$s").formatted(NativeDispatch.xs(mwt).toArray()));})),
+  IsEmpty("isEmpty",Map.of(Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(
-    Vector,use("return %s.size()/2;",sig(Readable,Immutable,Int)),
+    Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
-  ReadVal("readVal",Map.of(Vector,use("return %s.get(%s*2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
+  ReadVal("readVal",Map.of(Vector,use("return %s.get(%s*2+2);",sig(Readable,Readable,Gen1,Immutable,Int)))),
   ImmVal("immVal",Map.of(Vector,use("""
     try{
-      var tmp=%1$s.get(%2$s*2+1);
-      if(tmp==null){return %1$s.get(%2$s*2);}
+      var tmp=%1$s.get(%2$s*2+3);
+      if(tmp==is.L42.nativeCode.TrustedOp.Flags.ImmElem){return %1$s.get(%2$s*2+2);}
       throw new L42Error(%Gen3.wrap(new L42LazyMsg(
         "val called, but the element in position "+%1$s+" was inserted as mutable"
         )));
@@ -386,8 +385,8 @@ public enum TrustedOp {
     sig(Readable,Immutable,Gen1,Immutable,Int)))),
   HashVal("#val",Map.of(Vector,use("""
     try{
-      var tmp=%1$s.get(%2$s*2+1);
-      if(tmp!=null){return tmp;}
+      var tmp=%1$s.get(%2$s*2+3);
+      if(tmp==is.L42.nativeCode.TrustedOp.Flags.MutElem){return %1$s.get(%2$s*2+2);}
       throw new L42Error(%Gen4.wrap(new L42LazyMsg(
         "#val called, but the element in position "+%1$s+" was inserted as immutable"
         )));
@@ -397,11 +396,16 @@ public enum TrustedOp {
       }
     """,
     sig(Mutable,Mutable,Gen1,Immutable,Int)))),
-  SetImm("setImm",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2,%3$s);%1$s.set(%2$s*2+1,%3$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  AddImm("addImm",Map.of(Vector,use("%1$s.add(%2$s*2,%3$s);%s.add(%2$s*2+1,null);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  AddMut("addMut",Map.of(Vector,use("%1$s.add(%2$s*2,%3$s);%1$s.add(%2$s*2+1,%3$s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  Remove("remove",Map.of(Vector,use("%1$s.remove(%2$s*2+1);%1$s.remove(%2$s*2);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,Int)))),
+  SetImm("setImm",Map.of(Vector,use("%1$s.set(%2$s*2+2,%3$s);%1$s.set(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.ImmElem);return L42Void.instance;",
+    sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  SetMut("setMut",Map.of(Vector,use("%1$s.set(%2$s*2+2,%3$s);%1$s.set(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.MutElem);return L42Void.instance;",
+    sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
+  AddImm("addImm",Map.of(Vector,use("%1$s.add(%2$s*2+2,%3$s);%s.add(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.ImmElem);return L42Void.instance;",
+    sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
+  AddMut("addMut",Map.of(Vector,use("%1$s.add(%2$s*2+2,%3$s);%1$s.add(%2$s*2+3,is.L42.nativeCode.TrustedOp.Flags.MutElem);return L42Void.instance;",
+    sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),  
+  Remove("remove",Map.of(Vector,use("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42Void.instance;",
+    sig(Mutable,Immutable,Void,Immutable,Int)))),
   //TODO: handle exceptions, immVal/mutVal absent+index out ouf bound
   //arithmetic
   Plus("OP+",Map.of(
@@ -440,7 +444,7 @@ public enum TrustedOp {
   LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),
   EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator()))
   ;
-  public static enum Flags{immElem,mutElem}
+  public static enum Flags{ImmElem,MutElem}
   public interface Generator{void of(boolean type,MWT mwt,J j);}
   public final String inner;
   Map<TrustedKind,Generator>code;

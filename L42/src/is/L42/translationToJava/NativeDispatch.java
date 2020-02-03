@@ -34,6 +34,7 @@ public class NativeDispatch {
     return L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
     }
   public static void nativeCode(String nativeKind,Core.L.MWT mwt,J j){
+    assert j!=null;
     String nativeUrl=mwt.nativeUrl();
     if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);return;}
     String nativeOp=nativeUrl.substring("trusted:".length());

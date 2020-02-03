@@ -60,7 +60,7 @@ public enum TrustedKind implements TrustedT{
   Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==4;
-    return "return new "+j.typeNameStr(j.p())+"();";
+    return OpUtils.makeVector(j,"0");      
     }
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 3;}

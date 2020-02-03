@@ -348,21 +348,22 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitT(Core.T t){typeName(t);}
   
   //EXPRESSION PART FINISH, CLASS PART START
-  private String addDotClass(String f){
+  public String addDotClass(String f){
     if(f.endsWith(">")){f=f.substring(0,f.indexOf("<"));}
     if(f.contains("£")){return f+"._class";}
     return f+".class";
     }
   private void addCachableMethods(String jC){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("private static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
+    c("public static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
     c("static{myCache.lateInitialize(");
     seq(fields.psJ,f->addDotClass(f),",");
     c(");}");nl();
     c("@Override public L42Cache<"+jC+"> myCache() {return myCache;}");nl();
     c("private "+jC+" norm;");nl();
     c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
-    c("@Override public "+jC+" myNorm(){return this.norm;}");nl();    
+    c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
+    c("@Override public int numFields() {return "+fields.xs.size()+";}");nl();
     c("@Override public Object[] allFields() {return new Object[]{");
     seq(fields.xs,x->"£x"+x.inner(),",");
     c("};}");nl();
@@ -385,7 +386,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("static{myCache.lateInitialize();}");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("@Override public void setNorm("+jC+" t){}");nl();
-    c("@Override public "+jC+" myNorm(){return this;}");nl();    
+    c("@Override public "+jC+" myNorm(){return this;}");nl();
+    c("@Override public int numFields() {return 0;}");nl();    
     c("@Override public Object[] allFields(){return new Object[]{};}");nl();
     c("@Override public void setField(int i,Object o){};");nl();
     c("@Override public Object getField(int i){throw new ArrayIndexOutOfBoundsException();}");nl();

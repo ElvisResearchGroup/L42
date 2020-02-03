@@ -216,19 +216,21 @@ _______
     expectedNumber(L.Info.nativeKind,L.Info.nativePar)
     //the number of nativePar is the expected number for the kind of nativeKind
     forall MWT in L.MWTs where MWT.nativeUrl in {"trusted:cachable","trusted:eagerCachable"}://TODO: add in code
+      //should be eagerCache and not eagerCachable since caching eager change the semantic in case of errors
       L.Info.close defined
-      if MWT.nativeUrl="trusted:eagerCachable" then MWT.pars=empty and MWT.mdf=read
+      if MWT.nativeUrl="trusted:eagerCachable" then
+        MWT.pars=empty and MWT.mdf=read and this only used to access fields (this avoids recursion)
       all MHs.s of form _::0(_)
       MWT.pars.mdfs subseteq {imm,class}
       MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
       MWT.mdf in {imm,class}
       or MWT.mdf=read and
         fields(L) are only imm/capsule//TODO: define formally
-        forall MWT in L.MWT where this.m() inside MWT.e and m is capsule exposer: 
+        forall MWT in L.MWT where this.m() inside MWT.e and m is capsule mutator: 
           MWT.e use 'this' only one time
           MWT.nativeUrl ="trusted:clearCache"
           MWT.exceptions=empty
-          MWT.T.mdf in {imm,read,class,capsule}//TODO: could be mut if capsule exposer return a lent?
+          MWT.T.mdf in {imm,read,class,capsule}//TODO: could be mut if capsule mutator return a lent?
         field updates are used only one time in L, in a delegation pattern
           with a method annotated with native{trusted:clearCache}      
     
