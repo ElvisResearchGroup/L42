@@ -28,6 +28,7 @@ import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
 import is.L42.cache.exampleobjs.S1;
+import is.L42.cache.exampleobjs.Singleton;
 import is.L42.nativeCode.Flags;
 
 public class NormalizationTests {
@@ -90,6 +91,14 @@ public class NormalizationTests {
     testSelfProperties(() -> {
       R1 r1 = new R1(null);
       r1.referenced = r1;
+      return r1;
+      });
+    }
+  
+  @Test
+  public void testSingleton() {
+    testSelfProperties(() -> {
+      R1 r1 = new R1(Singleton.construct());
       return r1;
       });
     }

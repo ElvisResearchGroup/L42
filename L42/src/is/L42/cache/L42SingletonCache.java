@@ -7,9 +7,10 @@ public class L42SingletonCache<T extends L42Cachable<T>> implements L42Cache<T> 
   private final String typename;
   private final KeyNorm2D key;
   
-  public L42SingletonCache(String typename) {
+  public L42SingletonCache(String typename, Class<T> myClass) {
     this.typename = typename;
     this.key = new KeyNorm2D(new Object[][] { { this } });
+    L42CacheMap.addCacheableType(myClass, this);
     }
   
   @Override 
@@ -54,7 +55,7 @@ public class L42SingletonCache<T extends L42Cachable<T>> implements L42Cache<T> 
 
   @Override 
   public Object[] f(T t) { 
-    throw new IndexOutOfBoundsException(); 
+    return t.allFields();
     }
 
   @Override 
