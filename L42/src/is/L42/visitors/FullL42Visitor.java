@@ -151,6 +151,16 @@ public class FullL42Visitor implements L42Visitor<Object>{
       ds=pushL(ds,new Full.D(null,L(),e));
       e=null;
       }
+    if(e!=null && e instanceof Full.Block && ks.isEmpty() && whoopsed.isEmpty() && !isCurly){
+      //make sure that '(A a=A()(c)   )' does not get parsed as '(A a=A()  (c))'
+      int lineOR=ctx.e().start.getLine();
+      int posOR=ctx.e().start.getCharPositionInLine();
+      int lineDs=ctx.d(ctx.d().size()-1).stop.getLine();
+      int posDs=ctx.d(ctx.d().size()-1).stop.getCharPositionInLine();
+      if(lineOR==lineDs && posOR<=posDs+3){//now it ask for 4 spaces to make clear is not an #apply
+        throw todo();//make a better parsing error here
+        }
+      }
     return new Full.Block(pos(ctx), isCurly, ds, dsAfter, ks, whoopsed, e);
     }
   @Override public S visitM(MContext ctx) {
