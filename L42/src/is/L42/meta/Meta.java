@@ -17,6 +17,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import is.L42.cache.L42CacheMap;
+import is.L42.cache.L42SingletonCache;
+import is.L42.cache.nativecache.ValueCache;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
 import is.L42.common.Program;
@@ -37,6 +40,7 @@ import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
 import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42Singleton;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Top;
@@ -45,10 +49,15 @@ import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
-public class Meta {
+public class Meta extends L42Singleton<Meta>{
   private final Map<List<C>,P> redirects;
+  private final String toString;
   public Meta(){this(Map.of());}
-  public Meta(Map<List<C>,P> redirects){this.redirects=redirects;}
+  public Meta(Map<List<C>,P> redirects){
+    this.redirects=redirects;
+    this.toString=redirects.toString();
+    }
+  public boolean eq(Meta meta){return toString.equals(meta.toString);}
   public Meta addMapP(String name,L42Any target){
     List<C> cs=unwrapCs(name);
     P p=unwrapPath(target);
@@ -224,4 +233,12 @@ public class Meta {
     public String pathName(L42Any target){
       return "hi";
       }
+  public static final Class<Meta> _class=Meta.class;
+  public static final MetaCache myCache=new MetaCache();
+  static{L42CacheMap.addCacheableType(Meta.class,myCache);}
+  @Override public MetaCache myCache(){return myCache;}
+  }
+class MetaCache extends ValueCache<Meta>{
+  @Override public String typename() {return "Meta";}
+  @Override protected boolean valueCompare(Meta t1, Meta t2) {return t1.eq(t2);}
   }

@@ -151,22 +151,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("£x"+x.inner());
     }
   @Override public void visitPCastT(Core.PCastT pCastT){
-    //if(pCastT.t().p()!=P.pAny){
       className(pCastT.p());
       c(".pathInstance");
-    /*  return;
-      }
-    //kw("Resources.ofPath(\"");className(pCastT.p()); c("\")");
-    P path=pCastT.p();
-    if(path.isNCs()){
-      Program p0=p.navigate(path.toNCs());
-      kw("Resources.ofPath("+libToMap(p0)+")");
-      return;
-      }
-    if(path==P.pAny){kw("Resources.ofPath(-1)");return;}
-    if(path==P.pVoid){kw("Resources.ofPath(-2)");return;}
-    assert path==P.pLibrary;
-    kw("Resources.ofPath(-3)");*/
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
     kw("L42Void.instance");

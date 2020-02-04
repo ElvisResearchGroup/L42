@@ -104,8 +104,8 @@ public enum TrustedKind implements TrustedT{
     res+="<";
     for(var i:range(this.genericNumber())){
       P pi=info.nativePar().get(i);
-      if(!pi.isNCs()){return "L42"+pi;}
-      res+=j.typeNameStr(p.navigate(pi.toNCs()));
+      if(!pi.isNCs()){res+="L42"+pi;}
+      else{res+=j.typeNameStr(p.navigate(pi.toNCs()));}
       res+=", ";
       }
     res=res.substring(0,res.length()-2)+">";

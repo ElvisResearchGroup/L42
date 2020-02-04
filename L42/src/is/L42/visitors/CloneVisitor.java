@@ -17,7 +17,7 @@ public class CloneVisitor {
 
   public final List<P> visitPs(List<P> ps){return L(ps,this::visitP);}
 
-  public final List<P.NCs> visitPNCs(List<P.NCs> ps){return L(ps,p->(P.NCs) this.visitP(p));}
+  public final List<P.NCs> visitPNCs(List<P.NCs> ps){return L(ps,p->this.visitP(p).toNCs());}
 
   public final List<S> visitSs(List<S> ss){return L(ss,this::visitS);}
 
@@ -129,7 +129,12 @@ public class CloneVisitor {
     if(ts0==ts && mwts==mwts0 && ncs==ncs0 && info==info0 && docs==docs0){return l;}
     return new Core.L(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
     }
-    
+  public final List<P.NCs> visitInfoPNCs(List<P.NCs> ps){
+    return L(ps,(c,p)->{
+      var pp=this.visitP(p);
+      if(pp.isNCs()){c.add(pp.toNCs());}
+      });
+    }
   public Core.L.Info visitInfo(Core.L.Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
@@ -139,21 +144,21 @@ public class CloneVisitor {
     var refined0=info.refined();
     var nativePar0=info.nativePar();
 
-    var typeDep=visitPNCs(typeDep0);
-    var coherentDep=visitPNCs(coherentDep0);
-    var watched=visitPNCs(watched0);
+    var typeDep=visitInfoPNCs(typeDep0);
+    var coherentDep=visitInfoPNCs(coherentDep0);
+    var watched=visitInfoPNCs(watched0);
     var usedMethods=visitPathSels(usedMethods0);
-    var hiddenSupertypes=visitPNCs(hiddenSupertypes0);
+    var hiddenSupertypes=visitInfoPNCs(hiddenSupertypes0);
     var refined=visitSs(refined0);
     var nativePar=visitPs(nativePar0);
     
-    if( typeDep==typeDep0 
-      &&coherentDep==coherentDep0
-      &&watched==watched0 
-      &&usedMethods==usedMethods0
-      &&hiddenSupertypes==hiddenSupertypes0
-      &&refined==refined0
-      &&nativePar==nativePar0){return info;}
+    if(typeDep.equals(typeDep0)
+      &&coherentDep.equals(coherentDep0)
+      &&watched.equals(watched0) 
+      &&usedMethods.equals(usedMethods0)
+      &&hiddenSupertypes.equals(hiddenSupertypes0)
+      &&refined.equals(refined0)
+      &&nativePar.equals(nativePar0)){return info;}
     return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,
       usedMethods,hiddenSupertypes,refined,
       info.close(),info.nativeKind(),nativePar,info._uniqueId());

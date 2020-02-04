@@ -4,7 +4,7 @@ import is.L42.cache.L42Cache;
 import is.L42.cache.L42SingletonCache;
 import is.L42.generated.P;
 
-public class L42Void extends L42Singleton<L42Void>{
+public class L42Void extends L42Singleton<L42Void> implements L42Any{
   private L42Void(){}
   public static final L42Any pathInstance=new L42ClassAny(P.pVoid);
   public static final L42Void instance=new L42Void();

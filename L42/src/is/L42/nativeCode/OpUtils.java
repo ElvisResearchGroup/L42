@@ -62,7 +62,8 @@ class OpUtils{
       j.c(s);
       };}
     static public String makeVector(J j,String size){
-      return "var res=new "+j.typeNameStr(j.p())+"("+size+"+2); "+
+      String typeName=j.typeNameStr(j.p());
+      return "var res=new "+typeName+"("+size+"+2); "+
         "var res0=(ArrayList)res; "+
         "res0.add("+vectorCache(j)+");res0.add(null); return res;";
       }

@@ -574,7 +574,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     common(l.isInterface(), ts, dom, impl, privateAbstract);
     }
   private <PP extends P> void typedContains(Core.L.Info info,Stream<PP> others,String name){
-    var extra=L(others.filter(o->!info.typeDep().contains(o)));
+    var extra=L(others.filter(o->o.isNCs() && !info.typeDep().contains(o)));
     if(!extra.isEmpty()){
       throw new EndError.NotWellFormed(lastPos,Err.infoPathNotInTyped(name,extra));
       }
