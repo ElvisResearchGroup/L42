@@ -5,6 +5,10 @@ import static is.L42.tools.General.todo;
 
 import java.io.Serializable;
 
+import is.L42.cache.L42Cachable;
+import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
+import is.L42.cache.nativecache.ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -24,6 +28,10 @@ public class L42Library implements L42Any,Serializable{
     originP=p.pop();
     if(p.pTails.hasC()){originName=p.pTails.c();}
     originL=p.topCore();
+    }
+  public boolean eq(L42Library l){
+    boolean res=originName==l.originName || (originName!=null && originName.equals(l.originName));
+    return res && originP.equals(l.originP) && originL.equals(originL);
     }
   public void currentProgram(Program p){
     assert p!=null;
@@ -48,4 +56,16 @@ public class L42Library implements L42Any,Serializable{
     if(this.originName==null){localPath=null;}
     else{localPath=localPath.withCs(pushL(localPath.cs(),originName));}
     }
+  /*public static final Class<L42Void> _class=L42Void.class;
+  public static final L42SingletonCache<L42Void> myCache=new L42SingletonCache<L42Void>("L42Void", L42Void._class);
+  @Override public L42Cache<L42Void> myCache(){return myCache;}
+  @Override public L42Cache<L42Library> myCache() { // TODO Auto-generated method stub
+  return null; }*/
+  static{L42CacheMap.addCacheableType(L42Library.class,new LibraryCache());}
   }
+  class LibraryCache extends ValueCache<L42Library>{
+    @Override public String typename() {return "L42Library";}
+    @Override protected boolean valueCompare(L42Library t1, L42Library t2) {
+      return t1.eq(t2);
+      }
+    }
