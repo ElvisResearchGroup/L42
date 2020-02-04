@@ -24,6 +24,7 @@ import org.antlr.v4.runtime.tree.TerminalNodeImpl;
 
 import is.L42.generated.L42Parser.*;
 import is.L42.common.Constants;
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.PTails;
 import is.L42.common.Parse;
@@ -151,14 +152,14 @@ public class FullL42Visitor implements L42Visitor<Object>{
       ds=pushL(ds,new Full.D(null,L(),e));
       e=null;
       }
-    if(e!=null && e instanceof Full.Block && ks.isEmpty() && whoopsed.isEmpty() && !isCurly){
+    if(e!=null && !ds.isEmpty() && e instanceof Full.Block && ks.isEmpty() && whoopsed.isEmpty() && !isCurly){
       //make sure that '(A a=A()(c)   )' does not get parsed as '(A a=A()  (c))'
       int lineOR=ctx.e().start.getLine();
       int posOR=ctx.e().start.getCharPositionInLine();
       int lineDs=ctx.d(ctx.d().size()-1).stop.getLine();
       int posDs=ctx.d(ctx.d().size()-1).stop.getCharPositionInLine();
       if(lineOR==lineDs && posOR<=posDs+3){//now it ask for 4 spaces to make clear is not an #apply
-        throw todo();//make a better parsing error here
+        throw new EndError.NotWellFormed(e.poss(),Err.parserAmbiguityBlockTerminator());
         }
       }
     return new Full.Block(pos(ctx), isCurly, ds, dsAfter, ks, whoopsed, e);

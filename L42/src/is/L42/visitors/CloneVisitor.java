@@ -17,8 +17,6 @@ public class CloneVisitor {
 
   public final List<P> visitPs(List<P> ps){return L(ps,this::visitP);}
 
-  public final List<P.NCs> visitPNCs(List<P.NCs> ps){return L(ps,p->this.visitP(p).toNCs());}
-
   public final List<S> visitSs(List<S> ss){return L(ss,this::visitS);}
 
   public final List<Core.PathSel> visitPathSels(List<Core.PathSel> pathSels){return L(pathSels,this::visitPathSel);}

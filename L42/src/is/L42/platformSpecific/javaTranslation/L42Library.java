@@ -36,7 +36,7 @@ public class L42Library implements L42Any,Serializable{
   public void currentProgram(Program p){
     assert p!=null;
     if(p==currentP){
-      assert localPath!=null;
+      //assert localPath!=null;
       assert unwrap!=null;
       return;
       }

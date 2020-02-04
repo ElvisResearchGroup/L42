@@ -453,11 +453,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    """)
    ),new AtomicTest(()->fail("""
    C={mut C that class method mut This(fwd mut C that)}
-   A={B={method capsule C main()=(mut C x=C(x) (capsule C y=x y))}}
+   A={B={method capsule C main()=(mut C x=C(x)\n(capsule C y=x y))}}
    """,Err.subTypeExpected(hole,hole))
    ),new AtomicTest(()->fail("""
    C={mut C that class method mut This(fwd mut C that)}
-   A={B={method capsule C main()=(mut C x=C(x) (capsule C y=x.#that() y))}}
+   A={B={method capsule C main()=(mut C x=C(x)\n(capsule C y=x.#that() y))}}
    """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->fail(cloneExample+"""
    C={mut C that class method mut This(fwd mut C that)}

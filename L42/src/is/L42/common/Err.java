@@ -335,6 +335,8 @@ public class Err {
   "Core library literal declares the following refined methods :"+declared+", but the actual set of refined methods is "+estimate
   ;}public static String missingImplementedInterface(Object missing){return
   "Core libraries need to report all the transitive implemented interfaces, but "+missing+" is missing"
-  
+
+  ;}public static String parserAmbiguityBlockTerminator(){return
+  "Round parenthesis block seams to terminate without a resulting expression."  
  ;}
 }
