@@ -56,12 +56,9 @@ public class L42Library implements L42Any,Serializable{
     if(this.originName==null){localPath=null;}
     else{localPath=localPath.withCs(pushL(localPath.cs(),originName));}
     }
-  /*public static final Class<L42Void> _class=L42Void.class;
-  public static final L42SingletonCache<L42Void> myCache=new L42SingletonCache<L42Void>("L42Void", L42Void._class);
-  @Override public L42Cache<L42Void> myCache(){return myCache;}
-  @Override public L42Cache<L42Library> myCache() { // TODO Auto-generated method stub
-  return null; }*/
-  static{L42CacheMap.addCacheableType(L42Library.class,new LibraryCache());}
+  public static final Class<L42Library> _class = L42Library.class;
+  public static final LibraryCache myCache = new LibraryCache();
+  static{L42CacheMap.addCacheableType(L42Library.class, myCache);}
   }
   class LibraryCache extends ValueCache<L42Library>{
     @Override public String typename() {return "L42Library";}
