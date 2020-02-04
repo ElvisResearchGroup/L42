@@ -1,4 +1,4 @@
-package is.L42.cache.tests;
+package is.L42.tests;
 
 import static is.L42.cache.L42CacheMap.expandedKey;
 import static is.L42.cache.L42CacheMap.getCacheObject;
