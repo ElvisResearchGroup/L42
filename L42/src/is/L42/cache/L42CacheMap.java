@@ -203,5 +203,11 @@ public class L42CacheMap {
   {
     return builder.build().asMap();
   }
+  
+  public static void clearAllCaches() {
+    for(L42Cache<?> cache : commander.values()) {
+      cache.clear();
+      }
+    }
 
 }

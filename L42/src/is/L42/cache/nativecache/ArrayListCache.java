@@ -202,6 +202,12 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     return types.get((L42Cache<?>) t.get(0));
     }
   
+  @Override
+  public void clear() {
+    normMap.clear();
+    types.clear();
+    }
+  
   @SuppressWarnings("unchecked") 
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)
   {

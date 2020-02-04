@@ -59,13 +59,20 @@ TestACache=(
   imm method S firstE()=
     native{trusted:cachable} (
       Log"Foo".write(S"firstEcalled2")
-      this.that().val(0Size)<:HasToS.toS()
+      this.that().val(0\).toS()
       )
   }
   
 TestBCache=(
   Log"Foo".clear()
   B b = B(HasToSs[S"Hello";S"Goodbye"])
+  B b2 = B(HasToSs[S"Hello";S"Goodbye"])
+  {}:Test"cacheBResult"(expected=S"Hello", actual=b.firstE())
+  {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b.firstE())
+  {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
+  {}:Test"cacheBResult"(expected=S"Hello", actual=b2.firstE())
+  {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b2.firstE())
+  {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
   void
   )
 

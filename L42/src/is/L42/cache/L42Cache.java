@@ -227,4 +227,6 @@ public interface L42Cache<T> {
   default L42Cache<T> refine(T t) {
     return this;
   }
+  
+  void clear();
   }
