@@ -18,14 +18,14 @@ class Transfer{Int money;
   method Void execute(mut AccountBox that){
     // Gain some money, or lose some money
     if(this.money>0){that.income+=money;}
-    else{that.expenses-=money;}
+    else{that.expenses-=(-money);}
   }}
 
 class AccountBox{
   UInt income=0; UInt expenses=0;
-  read method Bool subInvariant(){return this.income>this.expenses;}
+  read method Bool subInvariant(){return this.income>=this.expenses;}
   // An `AccountBox' is like a `potentially invalid Account':
-  // we may observe income > expenses
+  // we may observe income >= expenses
   }
 class Account{
   capsule AccountBox box; mut Person holder;
@@ -51,54 +51,55 @@ Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q
 As you can see, adding support for features like \Q!invalid! and \Q!expose! is unnecessary, and would likely require making the type system significantly more complicated as well as burdening the language with more core syntactic forms.
 
 In particular, the above code demonstrates that our system can:
-\SSI\begin{itemize}
+\begin{itemize}
 \item Have useful objects that are not entirely encapsulated: the \Q!Person holder! is a \Q!mut! field; this is fine since it is not mentioned in the \Q!invariant()! method.
 \item Wrap normal methods over capsule mutators: \Q!transfer! is not a capsule mutator, so it can use \Q!this! multiple times and take a \Q!mut! parameter.
 \item Perform multiple state updates with only a single invariant check: the loop in \Q!transferInner(ts)! can perform multiple field updates of \Q!income! and \Q!expenses!, however the \Q!invariant()! will only be checked at the end of the loop.
 \item Temporarily break an invariant: it is fine if during the \Q!for! loop, \Q!expenses > income!, provided that this is fixed before the end of the loop.
-\item And finally, pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not the invariant method.
+\item Pass the state of an `invalid' object around, in a safe manner: an \Q!AccountBox! contains the state of \Q!Account!, but not the invariant method.
 \end{itemize}
 
 Under our strict invariant protocol, the invariant holds for all reachable objects.
-The subInvariant pattern allows to control when an object is required to be valid;
-Instead, other protocols strive to allows the invariant to be observed broken in certain controlled conditions defined by the protocol itself.
+The \Q@subInvariant@ pattern allows to control when an object is required to be valid.
+Instead, other protocols strive to allow the invariant to be observed broken in certain controlled conditions defined by the protocol itself.
 
-The subInvariant pattern offer interesting guarantees:
-any object \Q@a@ with a \Q@subInvariant()@ method that is checked by the \Q@invariant@ method of \Q@b@
-will respect its subInvariant in all the context where \Q@b@ is involved in execution.
-This holds because if \Q@b@ is involved in execution, then \Q@b@ invariant holds.
-However, the subInvariant is likely to hold even when there is no reachable reference to \Q@b@ in the current stack frame.
-Indeed, a subInvariant can be observed false only if a capsule mutator of \Q@b@ is currently active (being executed).
+The \Q@subInvariant@ pattern offers interesting guarantees:
+any object `\Q@a@' with a \Q@subInvariant()@ method that is checked by the \Q@invariant@ method of an object `\Q@b@'
+will respect its \Q@subInvariant@ in all contexts where that `\Q@b@' is involved in execution.
+This is because whenever `\Q@b@' is involved in execution, its invariant holds.
+%However, the \Q@subInvariant@ is likely to hold even when there is no reachable reference to \Q@b@ in the current stack frame. % No! We have no reasom to assume this, as programmars could apply the subInvariant pattern in may different ways
+In particular, a \Q@subInvariant@ can be observed as \Q@false@ only if a capsule mutator of `\Q@b@' is currently active (that is, being executed).
 
 In the former example, this means that
-if you have an \Q!Account!, you can be sure that its \Q!income > expenses!;
-if you have an \Q!AccountBox! then you can be sure that either \Q!income > expenses! or 
+if you have an \Q!Account!, you can be sure that its \Q!income >= expenses!;
+if you have an \Q!AccountBox! then you can be sure that either \Q!income >= expenses! or 
 a capsule mutator of the corresponding \Q@Account@ object is currently active.
 This closely resemble some visible state semantic protocols, aiming to ensure that  
-either the invariant holds, or a method of the object is currently active.
+either an object's invariant holds, or one of its methods is currently active.
 
 
-Another interesting and natural application of the subInvariant pattern would be to support a version of the GUI where when a Widget position is updated, such widget can then walk up to the parent node and, in turn, update the coordinates in order to re-establish the invariant.
-This would also make the GUI follow the versions of the composite pattern where a \Q@parent@ node is present.
+Another interesting and natural application of the \Q@subInvariant@ pattern would be to support a version of the GUI such that when a \Q@Widget@s position is updated, the \Q@Widget@ can in turn update the coordinates of its parent \Q@Widget@s, in order to re-establish their \Q@subInvariants@.
+This would also make the GUI follow the versions of the composite pattern were objects have references to their `parent' nodes.
 
-The main idea is to define an interface \Q@HasSubInvariant@, to denote widgets with a \Q@subInvariant()@ method. Then, \Q@WidgetWithInvariant@ is a decorator over a \Q@Widget@; and its invariant method checks the subInvariant of each widget in its ROG.
+The main idea is to define an interface \Q@HasSubInvariant@, that denotes \Q@Widgets@ with a \Q@subInvariant()@ method. Then, \Q@WidgetWithInvariant@ is a decorator over a \Q@Widget@; the invariant method of a \Q@WidgetWithInvariant@ checks the \Q@subInvariant@ of each widget in its ROG.
 
-We define \Q@SafeMovable@ as a \Q@Widget@ with a subInvariant, since subInvariant methods don't have the restrictions of invariant methods, it allows SafeMovable to be significantly simpler than the version shown before.
+We define \Q@SafeMovable@ as a \Q@Widget@ with a \Q@subInvariant@, since \Q@subInvariant@ methods don't have the restrictions of invariant methods, it allows \Q@SafeMovable\@ to be significantly simpler than the version shown before in Section~\ref{s:case-study}.
 
-In this way, the method \Q@WidgetWithInvariant.dispatch()@ is the only capsule mutator. Thus the only invariant checks will be at the end of \Q@WidgetWithInvariant@'s constructor and dispatch methods.
+In this way, the method \Q@WidgetWithInvariant.dispatch()@ is the only capsule mutator, hence the only invariant checks will be at the end of \Q@WidgetWithInvariant@'s constructor and dispatch methods.
 
-Thus only when a \Q@WidgetWithInvariant@ itself is directly created or mutated is the invariant ensured to hold. Importantly, this allows the graph of widgets to be cyclic and for each to freely mutate each
-other, even if such mutations (temporarily) violate their subInvariant's.
-In this way a widget can access its parent, whose subInvariant may not hold; in order to reestablish it.
+Importantly, this allows the graph of widgets to be cyclic and for each to freely mutate each
+other, even if such mutations (temporarily) violate their \Q@subInvariant@'s.
+In this way a widget can access its parent (whose \Q@subInvariant@ may not hold) in order to reestablish it.
 Note that this trade off is logically unavoidable:
-In order to manipulate the parent in order to fix it, the parent must be reachable, but
-by mutating a widget position, its parent may become invalid.
-Thus if widgets encodes their validity into an \Q@invariant()@ method they can not reach their parents.
-By encoding their validity using the subInvariant pattern,
-they can access invalid widgets, but this comes to a cost: the programmer 
-and can not assume the validity of those widgets to hold all of the time, but
-need to keep in mind the semantic of subInvariants, whose complexity is similar to the one of visible state semantic (as discussed before).
+in order to manipulate a parent in order to fix it, the parent must be reachable, but
+by mutating a \Q@Widget@'s position, its parent may become invalid.
+Thus if \Q@Widget@s where to encode their validity in their \Q@invariant@ methods they could not have access to their parents.
+Instead, by encoding their validity in a \Q@subInvariant@ method,
+they can access invalid widgets, but this comes at a cost: the programmer 
+cannot assume that those \Q@Widgets@ ar elways valid, instead they
+need to reason over the semantics of the \Q@subInvariant@ pattern, whose complexity is similar to the visible state semantics (as discussed above). \IOComm{I'm not sure I get what this last part is trying to say}
 
+\IOComm{Move the code up/merge into the discussion above?}
 \begin{lstlisting}
 interface HasSubInvariant{read method Bool subInvariant();}
 
@@ -159,7 +160,7 @@ Gui.#$\$$().display(top);
 \end{lstlisting}
 
 \subheading{The Transform Pattern}
-Recall the GUI case study in Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \Q!Widget!.
+Recall the GUI case study from Section~\ref{s:case-study}, where we had a \Q!Widget! interface and a \Q!SafeMovable! (with an invariant) that implements \Q!Widget!.
 % A capsule mutator method is essentially a mutation of a field, which is guaranteed to not see the \Q@this@ object.
 % Thus, if \Q@this@ is made invalid during  the method's execution, we could not observe it until after the method completes.
 Suppose we want to allow \Q@Widget@s to be scaled, we could add \Q@mut@ setters for \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ in the \Q@Widget@ interface. However, if we also wish to scale its children we have a problem, since \Q@Widget.children()@ returns a \Q@read Widgets@, which does not allow mutation. We could of course add a \Q@mut@ method \Q@zoom(w)@ to the \Q@Widget@ interface, however this does not scale if more operations are desired. If instead \Q@Widget.children@ returned a \Q@mut Widgets@, it would be difficult for \Q@Widget@ implementations, such as \Q@SafeMovable@, 
@@ -219,16 +220,15 @@ static method Void zoom(mut Widget w) {
 %as if it was atomic.%
 %,  i.e. they can't see or update the other \Q!capsule! fields.
 
-\subheading{Putting all together: A general and flexible Graph class}
+\subheading{Using Patterns Together: A general and flexible Graph class}
 
-Here we rely on all the patterns shown above to encode a general \Q@Graph@
-of \Q@Node@s, that can be defined as a library.
-The user of the library can define personalized kinds of nodes,
-with their personalized (sub-)invariant \Q@subInvariant(nodes)@.
-The library will ensure that no matter how it is used, all the 
-user defined sub invariants of the inner nodes are preserved.
-The \Q@Node@s, even if user defined, are guaranteed to be encapsulated by the \Q@Graph@.
-The \Q@Graph@ can be arbitrarily modified by user defined transformations using the Transform Pattern.
+Here we rely on all the patterns shown above to encode a general library for \Q@Graph@s
+of \Q@Node@s.
+Users of this library can define personalised kinds of nodes,
+with their own personalised \Q@subInvariant@.
+The library will ensure that no matter how the libary is used, for any accessible \Q@Graph@, each user defined \Q@subInvariant@ of its \Q@Node@s holds.
+
+The \Q@Node@s are guaranteed to be encapsulated by the \Q@Graph@, however they can be arbitrarily modified by user defined transformations using the Transform Pattern.
 \begin{lstlisting}
 interface Transform<T>{method read T apply(mut Nodes nodes);}
 
@@ -247,7 +247,7 @@ class Graph{
   Graph(capsule Nodes nodes){..}
   read method read Nodes getNodes(){return this.nodes;}
   <T> mut method read T transform(Transform<T> t){
-    mut Nodes ns=this.nodes;//capsule mutator single 'this' use
+    mut Nodes ns=this.nodes;//capsule mutator with a single use of 'this'
     return t.apply(ns);
     }
   read method Bool invariant(){
@@ -257,8 +257,10 @@ class Graph{
     return true;
     } }
 \end{lstlisting}
-Note how there is basically no logic in the above code.
-All the logic can be freely defined by the user code, as shown below:
+We now show how our \Q@Graph@ library allows the invariant of the various \Q@Node@s can be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s. This is a generalization of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2) as one of the hardest problems when it comes to enforcing invariants.
+
+Note how there are only a minimal set of operations defined in the above code, % In English something has "no logic" is like saying it's stupid or dumb (i.e. don't say it unless your intent is to insult)
+others can be freely defined by the user code, as demonstrated below:
 
 \begin{lstlisting}
 class MyNode{
@@ -267,9 +269,9 @@ class MyNode{
     return this.directConnections;}
   MyNode(mut Nodes directConnections){..}
   read method Bool subInvariant(read Nodes nodes){
-    /*any condition on either this, nodes or the connections*/}  
+    /* any condition on this or nodes */}  
   capsule method read MyNode addToGraph(mut Graph g){..}
-  read method Void connectWith(read Node other,mut Graph g){..}
+  read method Void connectWith(read Node other, mut Graph g){..}
   }
 
 mut Graph g=new Graph(new Nodes());
@@ -278,15 +280,15 @@ read MyNode n2=new MyNode(new Nodes())).addToGraph(g);
 //lets connect our two nodes
 n1.connectWith(n2,g);
 \end{lstlisting}
-Here we define a \Q@MyNode@ class, where the subinvariant can express any property over \Q@this@, or the direct connections of \Q@this@, or any other node in graph and their connections.
+Here we define a \Q@MyNode@ class, where the \Q@subInvariant@ can express any property over \Q@this@ and \Q@nodes@, such as properties over their direct connections, or any other reachable node.
 
 We can define methods in \Q@MyNode@ to add our nodes
-to graphs and to connect with other nodes.
-Note that the method \Q@addToGraph(g)@ is \Q@capsule@; this ensures that the node is not in any other graph.
-On the other side, the method \Q@connectWith(other,g)@ takes a \Q@read this@, even if it clearly intend to modify the ROG of \Q@this@.
+to graphs and to connect them with other nodes.
+Note that the method \Q@addToGraph(g)@ is marked as \Q@capsule@; this ensures that the node is not in any other graph.
+In contrast, the method \Q@connectWith(other, g)@ is marked as \Q@read@, even though it is clearly intend to modify the ROG of \Q@this@.
 It works by recovering a \Q@mut@ reference to \Q@this@ from the \Q@mut Graph@.
 
-We now examine the implementation of those two methods:
+These methods can be implemented like this:
 \begin{lstlisting}
   read method Void connectWith(read Node other,mut Graph g){
     Int i1=g.getNodes().indexOf(this);
@@ -306,21 +308,17 @@ We now examine the implementation of those two methods:
       });
     }
 \end{lstlisting}
-As you can see, both methods relies on the Transform Pattern.
+As you can see, both methods rely on the transform pattern.
 
-Those transformation operations are very general since they
-can take in input the \Q@mut Nodes@ content of the graph and 
+These transformation operations are very general since they
+can access the \Q@mut Nodes@ of the \Q@Graph@ and 
 any \Q@capsule@ or \Q@imm@ data from outside.
-Note how in \Q@connectWith(other,g)@ we can not see the \Q@read this@ or the \Q@read other@
-inside the lambda, but we need to get their (immutable) indexes 
+Note how in the lambda in \Q@connectWith(other,g)@, we can neither see the \Q@read@ @this@ nor the \Q@read other@, but we get their (immutable) indexes 
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.
-On the other side, note how in \Q@addToGraph(g)@ we can see the reference to \Q@capsule this@ inside the lambda.
+On the other hand, note how in \Q@addToGraph(g)@ we use the reference to the \Q@capsule this@ within the lambda.
 
-In this example we shown how to encode a \Q@Graph@ library where the invariant of the various \Q@Node@s can be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s.
-This is a generalization of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2)
-as one of the hardest problems when it comes to enforcing invariants.
-
+%In this example we show how to encode a \Q@Graph@ 
 
 \subheading{Expressive Power: minimal features + programming patterns}
 %Our experience shows us that we can encode any computable invariant relying on immutable and encapsulated state.
@@ -328,9 +326,11 @@ as one of the hardest problems when it comes to enforcing invariants.
 %in Appendix~\ref{s:patterns};
 
 Our examples, especially the last one, shows that our approach imposes a very defensive programming style
-that is not currently commonly used in programming practice.
-Our goal is not to verify existing code and existing programming patterns, but to create a novel programming environment, where with bit of experience, any data structure can be defined.
-Any invariant relying only on immutable and encapsulated state can be enforced; and any transformation based on immutable and capsule input can be defined.
+that is not commonly used in programming.
+Our goal is not to verify existing code or existing programming patterns, but to create a novel programming environment, where with a bit of experience, any data structure can be defined. \IOComm{Um what? Any languages allow "any data structure to be defined", and simply wanting a "novel programming environment" isn't really a goal}
+Any invariant relying only on immutable and encapsulated state can be enforced; and any transformation based on immutable and capsule input can be defined. \IOComm{put this whole paragraph in the introduction and/or conclusion}
+\IOComm{I'm very confused actually, we should discuss this in person as it seems to be quite different to what you've always tried to say: you want soundness and a "simple" language}
+
 
 %Our approach is the only one we are aware of that soundly allows for non-deterministic I/O and catching exceptions, making other approaches unusable when this is required. For example Dafny does not support input or exceptions, and Spec# is unsound when using I/O or catching unchecked exceptions.
 %Runtime verification systems like D and Eiffel do not ensure that invariants are deterministic, in particular at no point in the code can one be sure that an invariant will hold if manually checked, only that the runtime inserted checks had passed.
