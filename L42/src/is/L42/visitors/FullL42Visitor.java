@@ -152,13 +152,17 @@ public class FullL42Visitor implements L42Visitor<Object>{
       ds=pushL(ds,new Full.D(null,L(),e));
       e=null;
       }
-    if(e!=null && !ds.isEmpty() && e instanceof Full.Block && ks.isEmpty() && whoopsed.isEmpty() && !isCurly){
+    boolean parserAmbiguity=true;
+    parserAmbiguity &=e!=null && e instanceof Full.Block && !ctx.e().start.getText().contains("\n");
+    parserAmbiguity &=ks.isEmpty() && whoopsed.isEmpty() && !isCurly;
+    parserAmbiguity &=!ds.isEmpty() && ds.get(ds.size()-1)._varTx()!=null;
+    if(parserAmbiguity){
       //make sure that '(A a=A()(c)   )' does not get parsed as '(A a=A()  (c))'
       int lineOR=ctx.e().start.getLine();
       int posOR=ctx.e().start.getCharPositionInLine();
       int lineDs=ctx.d(ctx.d().size()-1).stop.getLine();
       int posDs=ctx.d(ctx.d().size()-1).stop.getCharPositionInLine();
-      if(lineOR==lineDs && posOR<=posDs+3){//now it ask for 4 spaces to make clear is not an #apply
+      if(lineOR==lineDs && posOR<=posDs+3 && posOR>=posDs){//now it ask for 4 spaces to make clear is not an #apply
         throw new EndError.NotWellFormed(e.poss(),Err.parserAmbiguityBlockTerminator());
         }
       }

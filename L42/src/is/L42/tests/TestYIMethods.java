@@ -504,7 +504,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ""","""
      imm method imm Void v(imm This0 as)=(
        imm This0 fresh0_xIt=as.#varIterator()
-       var imm This0 fresh1_xIndex=as.#startIndex()(
+       var imm This0 fresh1_xIndex=as.#startIndex(),,,,(
          imm Void fresh2_underscore=loop(
            imm This0 fresh3_cond=(
              imm This0 fresh4_op3=fresh0_xIt.#hasElem(that=fresh1_xIndex)
@@ -522,7 +522,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
                  fresh5_op3.#shortResult#andand()
                  )
                )
-             )(
+             ),,,,(
                imm Void fresh9_underscore=(
                  imm This0 fresh10_receiver=fresh3_cond.#if()
                  fresh10_receiver.#checkTrue()

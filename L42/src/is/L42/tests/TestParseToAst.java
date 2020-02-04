@@ -4,7 +4,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.Assert;
+
 import is.L42.common.Constants;
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Full;
@@ -100,6 +103,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("(@Foo A x=A x)","(\n  @Foo A x=A\n  x\n  )\n")
    ),new AtomicTest(()->
    pass("(\n  @Foo@Bar A x=A\n  x\n  )\n")
+   ),new AtomicTest(()->
+   {try{pass("(A a=A()(B))");Assert.fail();}catch(EndError.NotWellFormed nwf){}}
+   ),new AtomicTest(()->
+   {try{pass("(A a=A() (B))");Assert.fail();}catch(EndError.NotWellFormed nwf){}}
+   ),new AtomicTest(()->
+   pass("(A a=A()    (B))","(\n  A a=A()\n  (B)\n  )\n")
    ),new AtomicTest(()->
    fail("(\n  @Foo{some text like a comment @Bar.foo(} A x=A\n  x\n  )\n","Error","doc")
    ),new AtomicTest(()->
