@@ -63,6 +63,17 @@ TestACache=(
       )
   }
   
+BBox={
+  B that
+  class method This innerCon(B that)
+  class method This (HasToSs that)=This.innerCon(B(that))
+  imm method S firstE()=
+    native{trusted:cachable} (
+      this.that().firstE()
+      )
+  
+}
+  
 TestBCache=(
   Log"Foo".clear()
   B b = B(HasToSs[S"Hello";S"Goodbye"])
@@ -73,8 +84,32 @@ TestBCache=(
   {}:Test"cacheBResult"(expected=S"Hello", actual=b2.firstE())
   {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b2.firstE())
   {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
+  BBox b3 = BBox(HasToSs[S"Hello";S"Goodbye"])
+  {}:Test"cacheBResult"(expected=S"Hello", actual=b3.firstE())
+  {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b3.firstE())
+  {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
   void
   )
+  
+AnyList = Class:ListT(Any)
+
+C={
+  Strings that
+  AnyList myList
+  class method This (Strings that, AnyList myList)
+  imm method S firstE()=
+    native{trusted:cachable} (
+      Log"Foo".write(S"firstEcalled3")
+      this.that().val(0\)
+      )
+  }
+  
+TestAnyVoidLibrary=(
+  Log"Foo".clear()
+  C c = C(that=Strings[S"Hello";S"Hi"], 
+          myList=AnyList[{imm method Void foo()=void};void;S"bar"])
+  void
+)
 
   /*
   MAKE A DEDICATED TEST FILE //follow TestList
