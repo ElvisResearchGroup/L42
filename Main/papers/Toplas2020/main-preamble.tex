@@ -97,7 +97,10 @@
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
 \renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
-\lstset{morekeywords={assert, expose, iso, isolated, baloon}}
+\lstset{
+  basicstyle=\ttfamilywithbold\color{darkRed},
+  morekeywords={assert, expose, iso, isolated, baloon}
+  }
 \newcommand{\thm}[1]{\textsf{#1}}
 
 %\HideNotes
