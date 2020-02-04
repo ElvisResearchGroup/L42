@@ -1,5 +1,5 @@
 reuse[AdamTowel]
-
+/*
 Foo={Size inner,class method This of(Size inner)
   imm method Size times2()=
     native{trusted:cachable} (
@@ -90,7 +90,7 @@ TestBCache=(
   {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
   void
   )
-  
+  */
 AnyList = Class:ListT(Any)
 
 C={
@@ -104,10 +104,20 @@ C={
       )
   }
   
+MyTrait=Trait:{imm method Void foo()=void}
+  
 TestAnyVoidLibrary=(
   Log"Foo".clear()
   C c = C(that=Strings[S"Hello";S"Hi"], 
-          myList=AnyList[{imm method Void foo()=void};void;S"bar"])
+          myList=AnyList[MyTrait.code();void;S"bar"])
+  C c2 = C(that=Strings[S"Hello";S"Hi"], 
+          myList=AnyList[MyTrait.code();void;S"bar"])
+  {}:Test"cacheCResult"(expected=S"Hello", actual=c.firstE())
+  {}:Test"cacheCResultAgain"(expected=S"Hello", actual=c.firstE())
+  {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
+  {}:Test"cacheCResult"(expected=S"Hello", actual=c2.firstE())
+  {}:Test"cacheCResultAgain"(expected=S"Hello", actual=c2.firstE())
+  {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
   void
 )
 
