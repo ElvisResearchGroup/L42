@@ -46,7 +46,4 @@ public class Singleton implements L42Cachable<Singleton> {
   public Singleton myNorm() { 
     return this; 
     }
-  
-  
-
-}
+  }
