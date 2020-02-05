@@ -196,8 +196,9 @@ _______
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
     if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
     if bridge({MWT| MWT in LL})!=empty then LL of form CORE.L//works for both CORE.L and FULL.L
-    if _ native{trusted:cachable} _ in L.MWT or_ native{trusted:eagerCachable} _ in L.MWT
-     then LL of form CORE.L and LL.Info.nativeKind=empty//TODO: in code
+    //We do not enforce the next point, instead we make it not coherent if cache+open
+    //if _ native{trusted:cachable} _ in L.MWT or_ native{trusted:eagerCachable} _ in L.MWT
+     then LL of form CORE.L and LL.Info.nativeKind=empty
     
 * Core.L: (in addition to all the LL)
     if !hasOpenState(L)
@@ -215,9 +216,9 @@ _______
     L.Info.nativeKind recognized
     expectedNumber(L.Info.nativeKind,L.Info.nativePar)
     //the number of nativePar is the expected number for the kind of nativeKind
-    forall MWT in L.MWTs where MWT.nativeUrl in {"trusted:cachable","trusted:eagerCachable"}://TODO: add in code
+    //Note: if L.Info.close not defined, then the class is not consistent
+    if L.Info.close defined, then forall MWT in L.MWTs where MWT.nativeUrl in {"trusted:cachable","trusted:eagerCachable"}://TODO: add in code
       //should be eagerCache and not eagerCachable since caching eager change the semantic in case of errors
-      L.Info.close defined
       if MWT.nativeUrl="trusted:eagerCachable" then
         MWT.pars=empty and MWT.mdf=read and this only used to access fields (this avoids recursion)
       all MHs.s of form _::0(_)

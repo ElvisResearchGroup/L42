@@ -97,8 +97,10 @@
 \let\origMapsTo=\mapsto % put proper spacing arround the mapsto arrow
 \renewcommand{\mapsto}{\mathrel{\origMapsTo\!}}
 \newcommand{\invariant}{\Kw{invariant}\oR\cR}
+\renewcommand\ttfamilywithbold\ttfamily
 \lstset{
-  basicstyle=\ttfamilywithbold\color{darkRed},
+%  basicstyle=\ttfamilywithbold,
+%  keywordstyle=\small\ttfamily\bfseries\color{darkRed},
   morekeywords={assert, expose, iso, isolated, baloon}
   }
 \newcommand{\thm}[1]{\textsf{#1}}

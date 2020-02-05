@@ -59,16 +59,16 @@ The example class \Q@MagicCounter@ breaks determinism by
 remotely breaking the invariant of \Q@person@ without any interaction with the \Q@person@ object itself:
 \begin{lstlisting}
 class MagicCounter {//INVALID EXAMPLE
-  method Int incr(){/*internal mutability does counter++*/}}
+  method Int incr(){/*return counter++; using internal mutability*/}}
 class NastyS extends String {..
   MagicCounter c = new MagicCounter(0);
   @Override read method Bool isEmpty(){return this.c.incr()!=2;}}
 ...
 NastyS name = new NastyS(); //RCs believe name's ROG is immutable
 Person person = new Person(name); // person is valid, counter=1
-name.increment(); // counter == 2, person is now broken
+name.incr(); // counter == 2, person is now broken
 person.invariant(); // returns false, counter == 3
-person.invariant(); // returns true, counter == 4
+person.invariant(); // returns false, counter == 4
 \end{lstlisting}
 Such back doors are usually motivated by performance reasons, however in~\cite{GordonEtAl12} they
 discuss how a few trusted language primitives can be used to perform caching and other needed optimisations,

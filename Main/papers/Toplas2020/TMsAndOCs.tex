@@ -17,29 +17,33 @@ While studying those languages, we discovered an elegant way to enforce invarian
 
 \subheading{Reference Capabilities}
 RCs, as used in this paper, are a type system feature that allows reasoning about aliasing and mutation. Recently a new design for them has emerged that radically improves their usability;
-three different research languages are being independently developed relying on this new design: the language of Gordon \etal~\cite{GordonEtAl12}, Pony~\cite{clebsch2015deny,clebsch2017orca}, and L42~\cite{ServettoZucca15,ServettoEtAl13a,JOT:issue_2011_01/article1,GianniniEtAl16}.
+three different research languages are being independently developed relying on this new design: the language of Gordon \etal, Pony, and L42.
 These projects are quite large: several million lines of code are written in Gordon \etal's language and are used by a large private Microsoft project; Pony and L42 have large libraries and are active open source projects. In particular the RCs of these languages are used to provide automatic and correct parallelism~\cite{GordonEtAl12,clebsch2015deny,clebsch2017orca,ServettoEtAl13a}.
 
 Reference capabilities
  are a well known mechanism~\cite{TschantzErnst05,BirkaErnst04,OstlundEtAl08,clebsch2015deny,GianniniEtAl16,GordonEtAl12} that 
  allow statically reasoning about the mutability and aliasing properties of objects. Here we refer to the interpretation of~\cite{GordonEtAl12}, that introduced the concept of recovery/promotion. This concept is the basis for L42, Pony, and Gordon \etal's type systems~\cite{GordonEtAl12,ServettoEtAl13a,ServettoZucca15,clebsch2015deny,clebsch2017orca}. With slightly different names and semantics, those languages all support the following RCs for object references: %(i.e. expressions and variables):
-%\begin{itemize}
+\begin{itemize}
 
-\noindent\rule{1.2ex}{1.2ex} Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased without restriction; as in most imperative languages without reference capabilities.
+%\noindent\rule{1.2ex}{1.2ex}
+\item Mutable (\Q@mut@): the referenced object can be mutated and shared/aliased without restriction; as in most imperative languages without reference capabilities.
 
-\noindent\rule{1.2ex}{1.2ex} Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
+%\noindent\rule{1.2ex}{1.2ex}
+\item Immutable (\Q@imm@): the referenced object cannot mutate, not even through other aliases. An object with any \Q!imm! aliases is an \emph{immutable object}.
 Any other object is a \emph{mutable object}.
 All objects are born mutable and may later become immutable.
 
-\noindent\rule{1.2ex}{1.2ex} Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can be observed. Readonly references can refer to both mutable and immutable objects, as \Q!read! types are supertypes of both their \Q!imm! and \Q!mut! variants.
+%\noindent\rule{1.2ex}{1.2ex}
+\item Readonly (\Q@read@): the referenced object cannot be mutated by such references, but there may also be mutable aliases to the same object, thus mutation can be observed. Readonly references can refer to both mutable and immutable objects, as \Q!read! types are supertypes of both their \Q!imm! and \Q!mut! variants.
 There are only two kinds of objects: mutable and immutable, but there are more kinds of RCs.
 
-\noindent\rule{1.2ex}{1.2ex} Encapsulated (\Q@capsule@):
+%\noindent\rule{1.2ex}{1.2ex}
+\item Encapsulated (\Q@capsule@):
 every mutable object in the ROG of a capsule reference (including itself) is only reachable through that reference. 
 Immutable objects in the ROG of a capsule reference are not constrained, and can be freely referred to without passing through that reference. 
-
+\end{itemize}
 %This means that if a capsule reference $r$ is usable in the same expression as a reference $r'$, then either $r'$ does not refer to an object reachable from $r$, or $r'$ refers to an immutable object. Note that it is safe to use a capsule reference as either mutable or immutable, since there could have been no other aliases to it.
-
+\noindent
 In L42, a \Q!capsule! local variable always holds a \Q!capsule! reference: this is ensured by allowing them to be used only once (similar to linear and affine types~\cite{boyland2001alias}). 
 Pony and Gordon \etal follow a more complicated approach: \Q!capsule! variables can be accessed multiple times, however the result will not be a \Q!capsule! reference and can only be used in limited ways. Pony and Gordon also provide destructive reads, where the variable's old value is returned as \Q!capsule!.
 Later on, we discuss \Q!capsule! fields, which behave differently to \Q@capsule@ local variables.
@@ -61,7 +65,7 @@ mp.x = 5; // ok, now we can observe rp.x == 5
 ip = new Point(3, 5); // ok, ip is not final
 \end{lstlisting} 
 
-RCs influence the access to the whole ROG; not just the referenced object itself, as in the full/deep interpretation of RCs~\cite{ZibinEtAl10,Potanin2013}:
+RCs influence the access to the whole ROG; not just the referenced object itself, as in the full/deep interpretation of type modifiers~\cite{ZibinEtAl10,Potanin2013}:
 \begin{itemize}
   \item Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all the objects in the ROG of an immutable object are also immutable,
   \item A \Q!mut! field accessed from a \Q@read@ reference produces a \Q@read@ reference; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.

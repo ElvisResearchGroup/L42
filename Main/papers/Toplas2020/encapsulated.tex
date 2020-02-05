@@ -34,7 +34,7 @@ If we were to allow \Q@x.items@ to be seen as \Q@mut@, where \Q@x@ is not \Q@thi
 \begin{lstlisting}
 //INVALID EXAMPLE: l.items can be exposed as mut
 mut ShippingList l = new ShippingList(new Items()); // l is ok
-mut Items evilAlias = l.items // here l loses control
+mut Items evilAlias = l.items; // here l loses control
 evilAlias.addItem(new HeavyItem()); // now l is invalid!
 \end{lstlisting}
 Relaxing our requirements for capsule mutators
@@ -72,7 +72,7 @@ would cause the same problems as before, where \Q@f@ may contain
 a reference to \Q@this@:
 \begin{lstlisting}
 mut method Void addHeavy(read Foo f) {//INVALID EXAMPLE
-  this.items.add(new HeavyItem())
+  this.items.add(new HeavyItem());
   f.hi(); }//`this' could be observed here if it is in ROG(f)
 ...
 mut ShippingList l = new ShippingList(new Items());
