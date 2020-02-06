@@ -28,8 +28,8 @@ public class L42CacheMap {
   //TODO: Change to string to get rid of reflection maybe?
   private static final Map<Class<?>, L42Cache<?>> commander;
   
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  private static final CacheBuilder<KeyNorm2D,Object> builder = (CacheBuilder<KeyNorm2D,Object>) ((CacheBuilder) CacheBuilder.newBuilder().softValues()); 
+  @SuppressWarnings({ "unchecked" })
+  private static final CacheBuilder<KeyNorm2D,Object> builder = (CacheBuilder<KeyNorm2D,Object>) ((CacheBuilder<?,?>) CacheBuilder.newBuilder().softValues()); 
   
   static {    
     commander = new HashMap<>();
@@ -81,9 +81,8 @@ public class L42CacheMap {
     return (L42Cache<T>) commander.get(class_);
     }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  public static L42Cache[] getCacheArray(Class ... classes) {
-    L42Cache[] caches = new L42Cache[classes.length];
+  public static L42Cache<?>[] getCacheArray(Class<?> ... classes) {
+    L42Cache<?>[] caches = new L42Cache<?>[classes.length];
     for(int i = 0; i < classes.length; i++) {
       caches[i] = getCacheObject(classes[i]);
       }
@@ -101,10 +100,10 @@ public class L42CacheMap {
     return cache.normalize(t);
     }
   
-  @SuppressWarnings("rawtypes")
+  @SuppressWarnings("unchecked") 
   public static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
-    if(t instanceof L42Cachable) { return ((L42Cachable) t).isNorm(); }
+    if(t instanceof L42Cachable) { return ((L42Cachable<T>) t).isNorm(); }
     L42Cache<T> cache = getCacheObject(t);
     return cache.isNorm(t);
     }
@@ -131,14 +130,13 @@ public class L42CacheMap {
     return cache.computeKeyNN(t);
   }
   
-  @SuppressWarnings({"rawtypes", "unchecked" })
   public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
-    class A { KeyVarID apply(int offset, Object toAdd, int toAddIndex, Object[][] subkey) {
+    class A { <T> KeyVarID apply(int offset, T toAdd, int toAddIndex, Object[][] subkey) {
       KeyVarID ourId = new KeyVarID(offset + toAddIndex);
         done.put(toAdd, ourId.value());
-        L42Cache cache = getCacheObject(toAdd);
+        L42Cache<T> cache = getCacheObject(toAdd);
         for(int i = 1; i < subkey[toAddIndex].length; i++) {
           if(subkey[toAddIndex][i] instanceof KeyVarID) {
             KeyVarID oldId = (KeyVarID) subkey[toAddIndex][i];
@@ -199,10 +197,9 @@ public class L42CacheMap {
    * are strong references and the references to the values
    * are weak references.
    */
-  public static Map<KeyNorm2D, Object> newNormMap()
-  {
+  public static Map<KeyNorm2D, Object> newNormMap() {
     return builder.build().asMap();
-  }
+    }
   
   public static void clearAllCaches() {
     for(L42Cache<?> cache : commander.values()) {

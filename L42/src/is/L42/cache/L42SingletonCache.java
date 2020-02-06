@@ -72,10 +72,9 @@ public class L42SingletonCache<T extends L42Cachable<T>> implements L42Cache<T> 
   public int fn(T t) { 
     return 0; 
     }
-
-  @SuppressWarnings("rawtypes") 
+  
   @Override 
-  public L42Cache rawFieldCache(int i) {
+  public L42Cache<?> rawFieldCache(int i) {
     throw new IndexOutOfBoundsException(); 
     }
 

@@ -18,17 +18,18 @@ import is.L42.nativeCode.Flags;
 
 public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
-  protected final Map<KeyNorm2D, Object> normMap;
+  protected final Map<KeyNorm2D, ArrayList<Object>> normMap;
   protected final Map<Object, L42Cache<ArrayList<Object>>> types;
   
-  protected ArrayListCache(Map<KeyNorm2D, Object> normMap,  
+  protected ArrayListCache(Map<KeyNorm2D, ArrayList<Object>> normMap,  
                            Map<Object, L42Cache<ArrayList<Object>>> types) {
     this.normMap = normMap;
     this.types = types;
     }
   
+  @SuppressWarnings("unchecked") 
   public ArrayListCache() {
-    normMap = L42CacheMap.newNormMap();
+    normMap = (Map<KeyNorm2D, ArrayList<Object>>) ((Map<?, ?>) L42CacheMap.newNormMap());
     types = new IdentityHashMap<>();
     }
   
@@ -41,6 +42,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
   public void addObjectOverride(KeyNorm2D key, ArrayList<Object> value) {
     normMap.put(key, value);
     }
+  
   @Override
   public ArrayList<Object> normalize(ArrayList<Object> t) {
     NormResult<ArrayList<Object>> res = normalizeInner(t, new ArrayList<Object>());
@@ -49,7 +51,6 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     }
 
   @Override
-  @SuppressWarnings({ "unchecked", "rawtypes" })
   public NormResult<ArrayList<Object>> normalizeInner(ArrayList<Object> list, List<Object> prevs) {
     if(!isNorm(list)) {
       prevs.add(list);
@@ -65,8 +66,8 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
           inCircle = true;
           continue;
           }
-        L42Cache cache = L42CacheMap.getCacheObject(f(list, i));
-        NormResult res = cache.normalizeInner(f(list, i), new ArrayList<Object>(prevs));
+        L42Cache<Object> cache = L42CacheMap.getCacheObject(f(list, i));
+        NormResult<Object> res = cache.normalizeInner(f(list, i), new ArrayList<Object>(prevs));
         if(res.hasResult()) { f(list, res.result(), i); }
         else if(!res.circle().contains(list)) {  f(list, LoopCache.normalizeCircle(f(list, i), res.circle()), i); }
         else {
@@ -74,12 +75,12 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
           circle = circle == null ? res.circle() : union(circle, res.circle());
           }
         }
-      if(inCircle) { return new NormResult(circle); }
+      if(inCircle) { return new NormResult<ArrayList<Object>>(circle); }
       KeyNorm2D key = this.simpleKey(list);
       if(normMap.containsKey(key)) { 
-        ArrayList t2 = (ArrayList) normMap.get(key);
+        ArrayList<Object> t2 = normMap.get(key);
         this.setMyNorm(list, t2);
-        return new NormResult(t2); 
+        return new NormResult<ArrayList<Object>>(t2); 
         }
       this.add(key, list);
       return new NormResult<ArrayList<Object>>(list);      
@@ -94,8 +95,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     if(res.hasResult()) { return this.simpleKey(res.result()); }
     else { return LoopCache.getKeyCircleNN(t, res.circle()); }
     }
-
-  @SuppressWarnings({ "unchecked", "rawtypes" })
+  
   @Override
   public NormResult<ArrayList<Object>> computeKeyNNInner(ArrayList<Object> list, List<Object> prevs) {
     prevs.add(list);
@@ -111,18 +111,18 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
         inCircle = true;
         continue;
         }
-      L42Cache cache = L42CacheMap.getCacheObject(f(list, i));
-      NormResult res = cache.computeKeyNNInner(f(list, i), new ArrayList<Object>(prevs));
+      L42Cache<Object> cache = L42CacheMap.getCacheObject(f(list, i));
+      NormResult<Object> res = cache.computeKeyNNInner(f(list, i), new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(list)) {
         inCircle = true;
         circle = circle == null ? res.circle() : union(circle, res.circle());
         }
       }
-    if(inCircle) { return new NormResult(circle); }
+    if(inCircle) { return new NormResult<ArrayList<Object>>(circle); }
     KeyNorm2D key = this.simpleKey(list);
     if(normMap.containsKey(key)) { 
-      ArrayList t2 = (ArrayList) normMap.get(key);
-      return new NormResult(t2); 
+      ArrayList<Object> t2 = (ArrayList<Object>) normMap.get(key);
+      return new NormResult<ArrayList<Object>>(t2); 
        } else { return new NormResult<ArrayList<Object>>(list);  }  
     }
   
@@ -177,11 +177,9 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     return "£ArrayList";
     }
   
-  @SuppressWarnings("rawtypes") 
   @Override 
-  public L42Cache rawFieldCache(int i) {
+  public L42Cache<?> rawFieldCache(int i) {
     return null; 
-    //TODO: Fix this
     }
   
   @SuppressWarnings("unchecked")
@@ -224,7 +222,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
   public static  class ArrayListCacheForType extends ArrayListCache {
     
-    L42Cache<?> flag = L42CacheMap.getCacheObject(Flags.class);
+    static L42Cache<?> flag = L42CacheMap.getCacheObject(Flags.class);
     L42Cache<?> type;
     
     public ArrayListCacheForType(ArrayListCache owner, L42Cache<?> type) {
@@ -232,9 +230,8 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
       this.type = type;
       }
     
-    @SuppressWarnings("rawtypes") 
     @Override 
-    public L42Cache rawFieldCache(int i) {
+    public L42Cache<?> rawFieldCache(int i) {
       return ((i & 1) == 0) ? type : flag; 
       }
     }

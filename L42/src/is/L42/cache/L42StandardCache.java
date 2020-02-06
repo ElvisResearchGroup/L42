@@ -9,21 +9,20 @@ import java.util.Set;
 
 public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   
+  @SuppressWarnings("unchecked") 
+  private final Map<KeyNorm2D, T> normMap = (Map<KeyNorm2D, T>) L42CacheMap.newNormMap();
+  
   private final String typename;
-  @SuppressWarnings("rawtypes") 
-  private L42Cache[] caches;
+  private L42Cache<?>[] caches;
   
   public L42StandardCache(String typename, Class<T> myClass) {
     this.typename = typename;   
     L42CacheMap.addCacheableType(myClass, this);
     }
   
-  @SuppressWarnings("rawtypes") 
-  public void lateInitialize(Class ... classes) {
+  public void lateInitialize(Class<?> ... classes) {
     caches = L42CacheMap.getCacheArray(classes);
   }
-  
-  private final Map<KeyNorm2D, Object> normMap = L42CacheMap.newNormMap();
   
   private void add(KeyNorm2D key, T t) {
     normMap.put(key, t);
@@ -41,8 +40,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     if(res.hasResult()) { return res.result(); }
     else { return LoopCache.normalizeCircle(t, res.circle()); }
     }
-
-  @SuppressWarnings({"unchecked", "rawtypes"})
+  
   public NormResult<T> normalizeInner(T t, List<Object> prevs) {
     if(!this.isNorm(t)) {
       prevs.add(t);
@@ -61,8 +59,8 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
           inCircle = true;
           continue;
           }
-        L42Cache cache = L42CacheMap.getCacheObject(fields[i].getClass());
-        NormResult res = cache.normalizeInner(fields[i], new ArrayList<Object>(prevs));
+        L42Cache<Object> cache = L42CacheMap.getCacheObject(fields[i]);
+        NormResult<Object> res = cache.normalizeInner(fields[i], new ArrayList<Object>(prevs));
         if(res.hasResult()) {
           t.setField(i, fields[i] = res.result());
           } else if(!res.circle().contains(t)) {
@@ -72,12 +70,12 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
           circle = circle == null ? res.circle() : union(circle, res.circle());
           }
         }
-      if(inCircle) { return new NormResult(circle); }
+      if(inCircle) { return new NormResult<T>(circle); }
       KeyNorm2D key = this.simpleKey(t);
       if(normMap.containsKey(key)) { 
-        T t2 = (T) normMap.get(key);
+        T t2 = normMap.get(key);
         t.setNorm(t2);
-        return new NormResult(t2); 
+        return new NormResult<T>(t2); 
         }
       this.add(key, t);
       return new NormResult<T>(t);      
@@ -90,8 +88,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     if(res.hasResult()) { return this.simpleKey(res.result()); }
     else { return LoopCache.getKeyCircleNN(t, res.circle()); }
     }
-
-  @SuppressWarnings({ "rawtypes", "unchecked" })
+  
   @Override
   public NormResult<T> computeKeyNNInner(T t, List<Object> prevs) {
     prevs.add(t);
@@ -110,16 +107,16 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
         inCircle = true;
         continue;
         }
-      L42Cache cache = L42CacheMap.getCacheObject(fields[i]);
-      NormResult<T> res = cache.computeKeyNNInner(fields[i], new ArrayList<Object>(prevs));
+      L42Cache<Object> cache = L42CacheMap.getCacheObject(fields[i]);
+      NormResult<Object> res = cache.computeKeyNNInner(fields[i], new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(t)) {
         inCircle = true;
         circle = circle == null ? res.circle() : union(circle, res.circle());
         }
       }
-    if(inCircle) { return new NormResult(circle); }
+    if(inCircle) { return new NormResult<T>(circle); }
     KeyNorm2D key = this.simpleKey(t);
-    if(normMap.containsKey(key)) { return new NormResult(normMap.get(key)); }
+    if(normMap.containsKey(key)) { return new NormResult<T>(normMap.get(key)); }
     else { return new NormResult<T>(t);  }    
     }
 
@@ -166,10 +163,9 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   public String typename() {
     return typename;
     }
-
-  @SuppressWarnings("rawtypes") 
+  
   @Override 
-  public L42Cache rawFieldCache(int i) { 
+  public L42Cache<?> rawFieldCache(int i) { 
     return caches[i]; 
     }
 

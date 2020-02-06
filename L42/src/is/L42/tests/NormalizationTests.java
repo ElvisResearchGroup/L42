@@ -294,8 +294,61 @@ public class NormalizationTests {
     assertTrue(((R2) res.referenced).referenced == res.referenced);
     }
   
+  @SuppressWarnings({ "unchecked", "rawtypes" }) 
+  @Test
+  public void testFivePointedStar() {
+    for(int k = 0; k < 100; k++) {
+      ArrayList<ArrayList<?>> al = testSelfProperties(() -> {
+        List<L42List<ArrayList<?>>> rlist = new ArrayList<>();
+        for(int i = 0; i < 5; i++) {
+          rlist.add((L42List<ArrayList<?>>) new L42List(ArrayList.class));
+          }
+        List<L42List<ArrayList<?>>> rlist2 = List.copyOf(rlist);
+        for(int i = 0; i < 5; i++) {
+          Collections.shuffle(rlist);
+          for(int j = 0; j < 5; j++) {
+            rlist2.get(i).addAsImm(rlist.get(j).getUnderlyingList());
+            }
+          }
+        return rlist.get(0).getUnderlyingList();
+        }, false);
+      for(int i = 2; i < al.size(); i += 2) {
+        assert al.get(i) == al;
+        }
+      }
+    }
+  
+  @Test
+  public void testMarcosCase() {
+    testBiProperties(() -> {
+      R1 r1 = new R1(null);
+      R1 r2 = new R1(null);
+      R2 r3 = new R2(r1, null);
+      R2 r4 = new R2(r2, r3);
+      r3.referenced2 = r4;
+      r1.referenced = r3;
+      r2.referenced = r4;
+      R1 r5 = new R1(r4);
+      return r5;
+      }, () -> {
+      R1 r1 = new R1(null);
+      R1 r2 = new R1(null);
+      R2 r3 = new R2(r1, null);
+      R2 r4 = new R2(r2, r3);
+      r3.referenced2 = r4;
+      r1.referenced = r3;
+      r2.referenced = r3;
+      R1 r5 = new R1(r4);
+      return r5;
+      }, false);
+  }
+  
   private static <T> T testSelfProperties(Supplier<T> supplier) {
     return testBiProperties(supplier, supplier, true);
+    }
+  
+  private static <T> T testSelfProperties(Supplier<T> supplier, boolean readEQ) {
+    return testBiProperties(supplier, supplier, readEQ);
     }
   
   private static <T> T testBiProperties(Supplier<T> supplier1, Supplier<T> supplier2, boolean readEQ) {
@@ -320,11 +373,10 @@ public class NormalizationTests {
     return n2;
     }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  private static void testDeepFieldEQ(Object n1, Object n2, Set<Object> alreadyChecked) {
+  private static <T> void testDeepFieldEQ(T n1, T n2, Set<Object> alreadyChecked) {
     if(alreadyChecked.contains(n1) && alreadyChecked.contains(n2)) { return; };
     if(n1 == null) { assertTrue(n2 == null); return; }
-    L42Cache cache = getCacheObject(n1);
+    L42Cache<T> cache = getCacheObject(n1);
     assertTrue(cache.identityEquals(n1, n2));
     alreadyChecked.add(n1);
     Object[] n1f = cache.f(n1);

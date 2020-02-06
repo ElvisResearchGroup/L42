@@ -168,7 +168,6 @@ public interface L42Cache<T> {
    */
   int fn(T t);
   
-  @SuppressWarnings("rawtypes") 
   /**
    * Returns the cache object for the relevant subfield. Returns
    * <code>null</code> if the field is an interface.
@@ -176,7 +175,7 @@ public interface L42Cache<T> {
    * @param i The index of the field
    * @return The cache for that field, or null
    */
-  L42Cache rawFieldCache(int i);
+  L42Cache<?> rawFieldCache(int i);
   
   /**
    * Returns the cache object for the relevant subfield. Always 
@@ -186,10 +185,10 @@ public interface L42Cache<T> {
    * @param i The index of the field
    * @return The cache for the object
    */
-  @SuppressWarnings("rawtypes") 
-  default L42Cache fieldCache(Object t, int i) {
-    L42Cache raw = this.rawFieldCache(i);
-    return raw == null ? L42CacheMap.getCacheObject(t) : raw;
+  @SuppressWarnings({ "unchecked" }) 
+  default <R> L42Cache<R> fieldCache(R t, int i) {
+    L42Cache<?> raw = this.rawFieldCache(i);
+    return raw == null ? L42CacheMap.getCacheObject(t) : (L42Cache<R>) raw;
   }
   
   T getMyNorm(T me);

@@ -61,10 +61,9 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   public NormResult<Type> computeKeyNNInner(Type t, List<Object> chain) {
     return new NormResult<Type>(t);
     }
-
-  @SuppressWarnings("rawtypes") 
+  
   @Override 
-  public L42Cache rawFieldCache(int i) {
+  public L42Cache<?> rawFieldCache(int i) {
     return this;
     }
   

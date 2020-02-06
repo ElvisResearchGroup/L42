@@ -25,7 +25,7 @@ public class KeyNorm2D {
 		int i = 1;
 		for(Object[] line : lines) {
 			for(Object o : line) {
-			  if(o instanceof KeyVarID || o instanceof String || o instanceof Integer || o instanceof Float || o instanceof Byte || o instanceof Character || o instanceof Short || o instanceof Long || o instanceof Double) {
+			  if(o instanceof KeyVarID || o instanceof String || o instanceof Number || o instanceof Character || o instanceof Boolean) {
 			    hc += i++ * o.hashCode();
 			    } else {
 			    hc += i++ * System.identityHashCode(o);  
@@ -35,7 +35,6 @@ public class KeyNorm2D {
 		return hc;
 		}
 	
-	@SuppressWarnings("unchecked") 
 	public boolean equals(Object o) {
 		if(o instanceof KeyNorm2D) {
 			KeyNorm2D key = (KeyNorm2D) o;

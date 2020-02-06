@@ -3,11 +3,11 @@ package is.L42.cache;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 public class LoopCache {
   
@@ -16,20 +16,20 @@ public class LoopCache {
   
   private static final Map<KeyNorm2D, Object> circularIndex = L42CacheMap.newNormMap();
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  public static <T> T normalizeCircle2(Object desired, Set<Object> circle) 
+  @SuppressWarnings({  "unchecked" }) 
+  public static <T> T normalizeCircle(T desired, Set<Object> circle) 
   {
     Map<Object, Set<Object>> equivClasses = new IdentityHashMap<>();
     Map<Object, List<Object>> circleFields = new IdentityHashMap<>();
     Map<Object, Object[]> fields = new IdentityHashMap<>();
-    Map<Object, L42Cache> types = new IdentityHashMap<>();
+    Map<Object, L42Cache<Object>> types = new IdentityHashMap<>();
     for(Object o : circle) { 
       equivClasses.put(o, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
       circleFields.put(o, new ArrayList<>()); 
       types.put(o, L42CacheMap.getCacheObject(o));
       }
     for(Object o : circle) {
-      L42Cache myType = types.get(o);
+      L42Cache<Object> myType = types.get(o);
       for(Object o2 : circle) {
         if(myType == types.get(o2)) {
           equivClasses.get(o).add(o2);
@@ -79,7 +79,7 @@ public class LoopCache {
         }
       }
     for(Object o : circle) {
-      L42Cache cache = types.get(o);
+      L42Cache<Object> cache = types.get(o);
       Object[] f = fields.get(o);
       for(int i = 0; i < f.length; i++) {
         if(replacements.containsKey(f[i])) {
@@ -99,10 +99,10 @@ public class LoopCache {
         }
       for(Object o : circle) {
         if(!types.get(o).isValueType()) { 
-          L42Cache cache = types.get(o);
+          L42Cache<Object> cache = types.get(o);
           cache.setMyNorm(o, replacements.get(cache.getMyNorm(o)));
           }
-        L42Cache cache = types.get(o);
+        L42Cache<Object> cache = types.get(o);
         Object[] f = fields.get(o);
         for(int i = 0; i < f.length; i++) {
           if(replacements.containsKey(f[i])) {
@@ -122,111 +122,10 @@ public class LoopCache {
       }
     }
   
-  /**
-   * Normalizes a circle via progressive approximation, first creating keys for each object, then phasing
-   * out duplicates. Ones no more approximations can be done, the keys are entered into the lookup table
-   * to discover if the circle already exists in memory. If it does, the version in memory is returned.
-   * Otherwise, the given circle is entered into memory and returned.
-   * 
-   * @param desired The object the caller wants returned as a normalized variant
-   * @param circle Set of all objects in the circle
-   * @return the normalized variant of o
-   */
-  @SuppressWarnings({ "unchecked", "rawtypes" })
-  public static <T> T normalizeCircle(Object desired, Set<Object> circle) {
-    if(USE_DFA_MINIMIZATION)
-      return normalizeCircle2(desired, circle);
-    Map<Object, CircleObject> circleobjects = new IdentityHashMap<>();
-    for(Object circleobj : circle) { circleobjects.put(circleobj, new CircleObject(circleobj)); }
-    ReplacementMap replacements = new ReplacementMap();
-    do {  
-      KeyNorm2D retKey = null;
-      Map<KeyNorm2D, Object> tempKeyMap = new HashMap<>();
-      int nreplacements = 0;
-      for(Object circleobj : circle) {
-        KeyNorm2D key = keyFromCircleObject(circleobj, circleobjects);
-        if(circleobj == desired) { retKey = key; }
-        if(tempKeyMap.containsKey(key)) {
-          if(circleobj != desired) {
-            replacements.add(circleobj, tempKeyMap.get(key)); nreplacements++;
-            } else {
-            replacements.add(tempKeyMap.get(key), circleobj); nreplacements++;
-            tempKeyMap.put(key, circleobj);
-            }
-          } else {
-          tempKeyMap.put(key, circleobj);
-          }
-        }
-      if(nreplacements == 0) {
-        if(!circularIndex.containsKey(retKey)) {
-          for(Map.Entry<KeyNorm2D, Object> entry : tempKeyMap.entrySet()) {
-            if(entry.getValue() instanceof L42Cachable) ((L42Cachable) entry.getValue()).setNorm(entry.getValue());
-            L42Cache cache = L42CacheMap.getCacheObject(entry.getValue());
-            circularIndex.put(entry.getKey(), entry.getValue());
-            cache.addObjectOverride(simpleKeyFromChonker(entry.getValue(), entry.getKey()), entry.getValue());
-            }
-          for(Map.Entry<Object, Object> entry : replacements.entrySet()) {
-            if(entry.getKey() instanceof L42Cachable) ((L42Cachable) entry.getKey()).setNorm(entry.getValue());
-            }
-          } else {
-            for(Map.Entry<KeyNorm2D, Object> entry : tempKeyMap.entrySet()) {
-              Object repl = circularIndex.get(entry.getKey());
-              if(entry.getValue() instanceof L42Cachable) ((L42Cachable) entry.getValue()).setNorm(repl);
-              replacements.add(entry.getValue(), repl);
-              }
-            for(Map.Entry<Object, Object> entry : replacements.entrySet()) {
-              if(entry.getKey() instanceof L42Cachable) ((L42Cachable) entry.getKey()).setNorm(entry.getValue());
-              }
-          }
-        return (T) circularIndex.get(retKey);
-        } else {
-        for(Object key : replacements.underlyingMap().keySet()) {
-          circleobjects.remove(key);
-          circle.remove(key);
-          }
-        for(Map.Entry<Object, CircleObject> entry : circleobjects.entrySet()) {
-          circleobjects.put(entry.getKey(), entry.getValue().replace(replacements.underlyingMap()));
-          }
-        }
-      } while(true);
-    }
-  
   public static KeyNorm2D getKeyCircleNN(Object desired, Set<Object> circle) {    
     Map<Object, CircleObject> circleobjects = new IdentityHashMap<>();
     for(Object circleobj : circle) { circleobjects.put(circleobj, new CircleObject(circleobj)); }
-    if(NO_MINIMIZE_ON_READ) {
-      return keyFromCircleObject(desired, circleobjects);
-      }
-    do {  
-      KeyNorm2D retKey = null;
-      Map<KeyNorm2D, Object> tempKeyMap = new HashMap<>();
-      ReplacementMap replacements = new ReplacementMap();
-      for(Object circleobj : circle) {
-        KeyNorm2D key = keyFromCircleObject(circleobj, circleobjects);
-        if(circleobj == desired) { retKey = key; }
-        if(tempKeyMap.containsKey(key)) {
-          if(circleobj != desired) {
-            replacements.add(circleobj, tempKeyMap.get(key));
-            } else {
-            replacements.add(tempKeyMap.get(key), circleobj);
-            tempKeyMap.put(key, circleobj);
-            }
-          } else {
-          tempKeyMap.put(key, circleobj);
-          }
-        }
-      if(replacements.size() == 0) {
-        return retKey;
-        } else {
-        for(Object key : replacements.underlyingMap().keySet()) {
-          circleobjects.remove(key);
-          circle.remove(key);
-          }
-        for(Map.Entry<Object, CircleObject> entry : circleobjects.entrySet()) {
-          circleobjects.put(entry.getKey(), entry.getValue().replaceNN(replacements.underlyingMap()));
-          }
-        }
-    } while(true);
+    return keyFromCircleObject(desired, circleobjects);
   }
   
   private static KeyNorm2D keyFromCircleObject(Object circleobj, Map<Object, CircleObject> circleobjects)
@@ -239,9 +138,8 @@ public class LoopCache {
     return new KeyNorm2D(lines);
   }
   
-  @SuppressWarnings({ "rawtypes", "unchecked" }) 
-  private static KeyNorm2D simpleKeyFromChonker(Object obj, KeyNorm2D key) {
-    L42Cache cache = L42CacheMap.getCacheObject(obj);
+  private static <T> KeyNorm2D simpleKeyFromChonker(T obj, KeyNorm2D key) {
+    L42Cache<T> cache = L42CacheMap.getCacheObject(obj);
     Object[] ln1 = key.lines()[0];
     Object[] ln1cpy = new Object[ln1.length];
     System.arraycopy(ln1, 0, ln1cpy, 0, ln1.length);
@@ -284,10 +182,8 @@ public class LoopCache {
     private final Object obj;
     private final Field[] params;
     
-    @SuppressWarnings("rawtypes")
-    private final L42Cache cache;
+    private final L42Cache<Object> cache;
     
-    @SuppressWarnings({ "unchecked" })
     public CircleObject(Object obj) {
       cache = L42CacheMap.getCacheObject(obj);
       Object[] rawfields = cache.f(obj);
@@ -301,7 +197,6 @@ public class LoopCache {
     
     public Object getUnderlyingObject() { return this.obj; }
     
-    @SuppressWarnings("unchecked")
     public CircleObject replace(Map<Object, Object> replacements) {
       //TODO: Optimize this
       Object[] fields = cache.f(obj);
@@ -361,43 +256,5 @@ public class LoopCache {
       }
     
     }
-  
-  protected static class ReplacementMap
-  {
-    Map<Object, Object> replacements = new IdentityHashMap<>();
-    Map<Object, Set<Object>> invReplacements = new IdentityHashMap<>();
-    
-    private void addToInv(Object to, Object from) {
-      if(!invReplacements.containsKey(to)) {
-        invReplacements.put(to, L42CacheMap.identityHashSet()); 
-        }   
-      invReplacements.get(to).add(from);
-      }
-    
-    public void add(Object from, Object to) {
-      replacements.put(from, to);                     //Add relation f->t
-      if(invReplacements.containsKey(from)) {         //Check if any relation exists such that x->f
-        Set<Object> list = invReplacements.get(from);
-        for(Object o : list) {                        //For each x->f, replace f with t
-          replacements.put(o, to);
-          addToInv(to, o);
-          }
-        invReplacements.remove(from);
-        }
-      addToInv(to, from);                             //Add inverse relation
-      }
-    
-    public int size() {
-      return replacements.size();
-      }
-    
-    public Set<Map.Entry<Object, Object>> entrySet() {
-      return replacements.entrySet();
-      }
-    
-    public Map<Object, Object> underlyingMap() {
-      return replacements;
-      }
-  }
 
   }
