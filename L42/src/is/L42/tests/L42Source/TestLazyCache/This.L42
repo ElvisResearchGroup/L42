@@ -1,5 +1,24 @@
 reuse[AdamTowel]
-/*
+
+/*This test need to use the organizer decorator, in turn requiring full path rename.
+Scope1 ={
+  A = {
+    mut Bs bs class method This(mut Bs bs)
+    imm method Size ok()=native{trusted:eagerCachable} 3Size
+    }
+  B = {mut A a class method This(mut A a)}
+  Bs = Class:ListT(B)
+  LateCacheLoadingTask=(
+    imm A ia=(
+      mut Bs bs=Bs()
+      mut A a=A(Bs)
+      bs.add(a)
+      )
+    _=ia.ok()
+    void
+    )
+  }
+  */
 Foo={Size inner,class method This of(Size inner)
   imm method Size times2()=
     native{trusted:cachable} (
@@ -11,17 +30,18 @@ Foo={Size inner,class method This of(Size inner)
       Log"Foo".write(S"3")
       this.inner()*3Size
       )
-  }  
+  }
 TestCache=(
   Log"Foo".clear()
   Foo foo=Foo.of(inner=5Size)
+//  {}:Test"pass"(Bool.true())
   {}:Test"cacheResult"(expected=10Size, actual=foo.times2())
-  {}:Test"cacheResultAgain"(expected=10Size, actual=foo.times2())
+/*  {}:Test"cacheResultAgain"(expected=10Size, actual=foo.times2())
   {}:Test"cacheResultEager"(expected=15Size, actual=foo.times3Eager())
   {}:Test"cacheResultEagerAgain"(expected=15Size, actual=foo.times3Eager())
-  {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())
+  {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())*/
   )
-  
+/*  
 A={
   Strings that
   class method This (Strings that)
@@ -90,7 +110,7 @@ TestBCache=(
   {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
   void
   )
-  */
+  
 AnyList = Class:ListT(Any)
 VoidList = Class:ListT(Void)
 LibList = Class:ListT(Library)
@@ -143,7 +163,7 @@ TestCircular=(
   {}:Test"cacheCResultAgain"(expected=S"Hello", actual=d2.firstE())
   {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
   )
-
+*/
   /*
   MAKE A DEDICATED TEST FILE //follow TestList
   create b after using a

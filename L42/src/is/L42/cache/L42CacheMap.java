@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -78,6 +79,8 @@ public class L42CacheMap {
    * @return
    */
   public static <T> L42Cache<T> getCacheObject(Class<T> class_) {
+    System.out.println("Cache map lookup for"+class_);
+    assert List.of(Thread.currentThread().getStackTrace()).toString().contains(".lateInitialize(");
     return (L42Cache<T>) commander.get(class_);
     }
   
