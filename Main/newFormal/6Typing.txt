@@ -147,7 +147,7 @@ _______
     p;G';mdfs' U mdfs" |= Ds | G0
     p;G,(G0\dom(G));mdfs' |= e0 : mdf'
 _______
-#define p;G;mdfs |= Ds | G // The resulting G is the enriched G containing info about Ds too.
+#define p;G;mdfs |= Ds | G' // The resulting G' is the enriched G containing info about Ds too.
 * p;G0;mdfs |= var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)
     dom(Ds) disjoint FV(e0..en)
     //selecting the smallest set of D in Ds so that Ds=D1..Dn,Ds' and FV(D1.e,..Dn.e) disjoint dom(Ds')
@@ -156,7 +156,7 @@ _______
     for i in 0..n: p;G1;mdfs |= ei : fwd% Ti.mdf
     if fwd_or_fwd%_in mdfs
       then x0..xn disjoint FV(e0..en)//returning unresolved items from cycles is prohibited
-    if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded
+    if fwd_or_fwd%_in { G0(x) | x in FV(e0..en) } // x0..xn already excluded (note, G0(x) can be undefined=not in the set)
       then G2=G0[fwd%(x0:T0..xn:Tn)]
       otherwise G2=G0[x0:var?0 T0 ..xn:var?n Tn]
     p;G2;mdfs |= Ds | G3

@@ -182,10 +182,12 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       assert txe.size()==1;//TODO: if this is true we can optimize above, avoiding streams
       }
     G g2;
-    List<Mdf>freeMdfs=L(fvs.stream().map(xi->g0.of(xi).mdf()));
-    if(TypeManipulation.fwd_or_fwdP_inMdfs(freeMdfs)){
-      g2=g0.plusEqFwdP(txe);
-      }
+    boolean fwdInFreeMdfs=fvs.stream().anyMatch(xi->{
+      var ti=g0._of(xi);
+      if(ti==null){return false;}
+      return TypeManipulation.fwd_or_fwdP_in(ti.mdf());
+      });
+    if(fwdInFreeMdfs){g2=g0.plusEqFwdP(txe);}
     else{g2=g0.plusEq(txe);}
     return typeDs(g2,restDs,mdfs); 
     }
