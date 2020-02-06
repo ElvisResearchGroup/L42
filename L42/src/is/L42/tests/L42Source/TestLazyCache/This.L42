@@ -122,6 +122,28 @@ TestAnyVoidLibrary=(
   {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
   void
 )
+D={
+  Strings that
+  Any myAny
+  class method This (Strings that,fwd imm Any myAny)
+  imm method S firstE()=
+    native{trusted:cachable} (
+      Log"Foo".write(S"firstEcalled3")
+      this.that().val(0\)
+      )
+  }
+TestCircular=(
+  Log"Foo".clear()
+  D d1 = D(Strings[S"Hello"],myAny=d2)
+  D d2 = D(Strings[S"Goodbye"],myAny=d1)  
+  {}:Test"cacheCResult"(expected=S"Hello", actual=d1.firstE())
+  {}:Test"cacheCResultAgain"(expected=S"Hello", actual=d1.firstE())
+  {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+  //{}:Test"cacheCResult"(expected=S"Hello", actual=c2.firstE())
+  //{}:Test"cacheCResultAgain"(expected=S"Hello", actual=c2.firstE())
+  //{}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
+  void
+  )
 
   /*
   MAKE A DEDICATED TEST FILE //follow TestList
