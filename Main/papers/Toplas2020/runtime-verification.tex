@@ -10,7 +10,7 @@ In practice, this means that the logic, instrumentation, and implementation end 
 a specific instrumentation strategy is only good to test certain logic properties in certain applications.
 No guarantee is given that the implemented instrumentation strategy is able to support the required logic in the monitored application.
 Some of these tools are designed to support class invariants: for example InvTS~\cite{gorbovitski08efficient} lets you write Python conditions that are verified on a set of Python objects, but the programmer needs to be able
-to predict which objects are in need of being checked and to use a simpler domain specific language to target them. Hence if a programmer makes a mistake while using this domain specific language, invariant checking
+to predict which objects are in need of being checked and to use a simple domain specific language to target them. Hence if a programmer makes a mistake while using this domain specific language, invariant checking
 will not be triggered.
 Some tools are intentionally unsound and just perform invariant checking following some heuristic that is expected to catch most failures: such as jmlrac~\cite{Burdy2005} and Microsoft Code Contracts~\cite{fahndrich2010embedded}.
 
@@ -88,7 +88,7 @@ to work on general purpose predicates, where
 values can be wrapped to ensure an invariant holds.
 This technique is very powerful and can be used to enforce pre and post-conditions by wrapping function arguments and return values.
 This technique however does not monitor the effects of aliasing, as such they may notice if a contract has been broken, but not when or why. In addition, due to the difficulty of performing static analysis in weakly typed languages, they need to inject runtime checking code around every user-facing operation.
-Aspect oriented systems like Jose~\cite{feldman2006jose}, similarly wrap invariant checks around method bodies.
+%Aspect oriented systems like Jose~\cite{feldman2006jose}, similarly wrap invariant checks around method bodies.
 %
 %One of the advantages of their system is that is transparent to the user. 
 %\LINE

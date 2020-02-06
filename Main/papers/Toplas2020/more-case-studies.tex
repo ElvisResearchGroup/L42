@@ -175,7 +175,9 @@ The idea is that everything we do with the \Q!Family! is a mutation; the \Q!fam.
 This is a worst case scenario for our approach compared to visible state semantics since it reduces our advantages:
 our approach avoids invariant checks when objects are not mutated
 but in this example most operations are mutations; 
-similarly, our approach prevents the exponential explosion of nested invariant checks\footnote{As happened in our GUI case study, see Section \ref{s:case-study}.} when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
+similarly, our approach prevents the exponential explosion of nested invariant checks
+%\footnote{As happened in our GUI case study, see Section \ref{s:case-study}.}
+when deep object graphs are involved, but in this example the object graph of \Q!fam! is very shallow.
 %\loseSpace
 
 We ran this test case using several different languages: L42 (using our protocol) performs $4{,}000$ checks, D and Eiffel perform $7{,}995$, and finally, Spec\# performs only $1{,}104$.
