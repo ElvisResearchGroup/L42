@@ -36,12 +36,12 @@ TestCache=(
   Foo foo=Foo.of(inner=5Size)
 //  {}:Test"pass"(Bool.true())
   {}:Test"cacheResult"(expected=10Size, actual=foo.times2())
-/*  {}:Test"cacheResultAgain"(expected=10Size, actual=foo.times2())
+  {}:Test"cacheResultAgain"(expected=10Size, actual=foo.times2())
   {}:Test"cacheResultEager"(expected=15Size, actual=foo.times3Eager())
   {}:Test"cacheResultEagerAgain"(expected=15Size, actual=foo.times3Eager())
-  {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())*/
+  {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())
   )
-/*  
+
 A={
   Strings that
   class method This (Strings that)
@@ -142,6 +142,7 @@ TestAnyVoidLibrary=(
   {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
   void
 )
+/*
 D={
   Strings that
   Any myAny

@@ -188,7 +188,7 @@ public interface L42Cache<T> {
   @SuppressWarnings({ "unchecked" }) 
   default <R> L42Cache<R> fieldCache(R t, int i) {
     L42Cache<?> raw = this.rawFieldCache(i);
-    return raw == null ? L42CacheMap.getCacheObject(t) : (L42Cache<R>) raw;
+    return raw == null ? L42CacheMap.getCacheObject(t) : ((L42Cache<R>) raw).refine(t);
   }
   
   T getMyNorm(T me);

@@ -61,7 +61,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
           inCircle = true;
           continue;
           }
-        L42Cache<Object> cache = L42CacheMap.getCacheObject(fields[i]);
+        L42Cache<Object> cache = this.fieldCache(fields[i], i);
         NormResult<Object> res = cache.normalizeInner(fields[i], new ArrayList<Object>(prevs));
         if(res.hasResult()) {
           t.setField(i, fields[i] = res.result());
@@ -109,7 +109,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
         inCircle = true;
         continue;
         }
-      L42Cache<Object> cache = L42CacheMap.getCacheObject(fields[i]);
+      L42Cache<Object> cache = this.fieldCache(fields[i], i);
       NormResult<Object> res = cache.computeKeyNNInner(fields[i], new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(t)) {
         inCircle = true;

@@ -66,7 +66,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
           inCircle = true;
           continue;
           }
-        L42Cache<Object> cache = L42CacheMap.getCacheObject(f(list, i));
+        L42Cache<Object> cache = this.fieldCache(f(list, i), i);
         NormResult<Object> res = cache.normalizeInner(f(list, i), new ArrayList<Object>(prevs));
         if(res.hasResult()) { f(list, res.result(), i); }
         else if(!res.circle().contains(list)) {  f(list, LoopCache.normalizeCircle(f(list, i), res.circle()), i); }
@@ -111,7 +111,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
         inCircle = true;
         continue;
         }
-      L42Cache<Object> cache = L42CacheMap.getCacheObject(f(list, i));
+      L42Cache<Object> cache = this.fieldCache(f(list, i), i);
       NormResult<Object> res = cache.computeKeyNNInner(f(list, i), new ArrayList<Object>(prevs));
       if(!res.hasResult() && res.circle().contains(list)) {
         inCircle = true;
