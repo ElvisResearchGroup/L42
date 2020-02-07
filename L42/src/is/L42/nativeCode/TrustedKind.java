@@ -38,17 +38,17 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return new StringBuilder();";
     }},
-  TrustedIO("L42TrustedIO"){public String factory(J j,MWT mwt){
+  TrustedIO("L42£TrustedIO"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return new L42TrustedIO();";
+    return "return new L42£TrustedIO();";
     }},
-  Meta("Meta"){public String factory(J j,MWT mwt){
+  Meta("L42£Meta"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return new Meta();";
+    return "return new L42£Meta();";
     }},  
-  LazyMessage("L42LazyMsg"){public String factory(J j,MWT mwt){
+  LazyMessage("L42£LazyMsg"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return new L42LazyMsg();";
+    return "return new L42£LazyMsg();";
     }},
   /*TODO:  well formed nativeKind need to be
    -known,
@@ -76,7 +76,7 @@ public enum TrustedKind implements TrustedT{
     @Override public String typeNameStr(Program p,J j){
       var info=p.topCore().info();
       P gen1=info.nativePar().get(0);
-      if(!gen1.isNCs()){return "L42"+gen1;}
+      if(!gen1.isNCs()){return J.primitivePToString(gen1);}
       return j.typeNameStr(p.navigate(gen1.toNCs()));
       }
     },
@@ -104,7 +104,7 @@ public enum TrustedKind implements TrustedT{
     res+="<";
     for(var i:range(this.genericNumber())){
       P pi=info.nativePar().get(i);
-      if(!pi.isNCs()){res+="L42"+pi;}
+      if(!pi.isNCs()){res+=J.primitivePToString(pi);}
       else{res+=j.typeNameStr(p.navigate(pi.toNCs()));}
       res+=", ";
       }

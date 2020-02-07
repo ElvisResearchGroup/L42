@@ -29,7 +29,7 @@ import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.typeSystem.Coherence;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.FV;
@@ -39,7 +39,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public ToSTrait.ToSState state(){return state;}
   ToSTrait.ToSState state= new ToSTrait.ToSState();
 
-  public J(Program p, G g, boolean wrap,ArrayList<L42Library>libs) {
+  public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs) {
     this.p=p;
     this.isCoherent=precomputeCoherent();
     this.g=g;
@@ -54,10 +54,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   ArrayList<X>fwds=new ArrayList<>();
   int catchLev=0;
   int loopLev=0;
-  final ArrayList<L42Library>libs;
+  final ArrayList<L42£Library>libs;
   Fields fields;
   private String libToMap(Program p){
-    libs.add(new L42Library(p));
+    libs.add(new L42£Library(p));
     return ""+(libs.size()-1);
     }
   public Program p(){return p;}
@@ -90,7 +90,13 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         throw new AssertionError("Not found "+p.toString());
         }
       }
-    return "L42"+p;
+    return primitivePToString(p);
+    }
+  public static String primitivePToString(P p){
+    if(p==P.pAny){return "L42Any";}
+    if(p==P.pVoid){return "L42£Void";}
+    if(p==P.pLibrary){return "L42£Library";}
+    throw bug(); 
     }
 
   void typeName(P p){
@@ -108,7 +114,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   void className(T t){className(t.p());}
   void className(P p){
     if(p.isNCs()){className(this.p.navigate(p.toNCs()));return;}
-    kw("L42"+p.toString());
+    kw(primitivePToString(p));
     }
   void className(Program p){
     kw(J.classNameStr(p));
@@ -155,7 +161,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(".pathInstance");
     }
   @Override public void visitEVoid(Core.EVoid eVoid){
-    kw("L42Void.instance");
+    kw("L42£Void.instance");
     }
   @Override public void visitL(Core.L l){
     kw("Resources.ofLib("+libToMap(p.push(l))+")");
@@ -520,7 +526,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     String m=mh.s().m();
     int i=m.lastIndexOf('#');
     m=m.substring(i+1,m.length()); //works also for -1;
-    kw("£xthis.£x"+m+"=£xthat;return L42Void.instance;");
+    kw("£xthis.£x"+m+"=£xthat;return L42£Void.instance;");
     }
   private void factoryBody(MWT mwt){
     assert this.fields!=null;

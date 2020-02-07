@@ -22,7 +22,6 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     }
   
   public void lateInitialize(Class<?> ... classes) {
-    System.out.println("Late initialize for "+this.typename+" with "+Arrays.asList(classes));
     caches = L42CacheMap.getCacheArray(classes);
   }
   

@@ -39,7 +39,7 @@ import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.L42Singleton;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
@@ -49,30 +49,30 @@ import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
-public class Meta extends L42Singleton<Meta>{
+public class L42£Meta extends L42Singleton<L42£Meta>{
   private final Map<List<C>,P> redirects;
   private final String toString;
-  public Meta(){this(Map.of());}
-  public Meta(Map<List<C>,P> redirects){
+  public L42£Meta(){this(Map.of());}
+  public L42£Meta(Map<List<C>,P> redirects){
     this.redirects=redirects;
     this.toString=redirects.toString();
     }
-  public boolean eq(Meta meta){return toString.equals(meta.toString);}
-  public Meta addMapP(String name,L42Any target){
+  public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
+  public L42£Meta addMapP(String name,L42Any target){
     List<C> cs=unwrapCs(name);
     P p=unwrapPath(target);
     var res=new HashMap<>(redirects);
     res.merge(cs,p,(old,val)->{throw todo();});
-    return new Meta(Collections.unmodifiableMap(res));
+    return new L42£Meta(Collections.unmodifiableMap(res));
     }
-  public Meta mergeMap(Meta meta){
+  public L42£Meta mergeMap(L42£Meta meta){
     var res=new HashMap<>(redirects);
     for(var e:meta.redirects.entrySet()){
       res.merge(e.getKey(),e.getValue(),(old,val)->{throw todo();});
       }
-    return new Meta(Collections.unmodifiableMap(res));
+    return new L42£Meta(Collections.unmodifiableMap(res));
     }
-  public L42Library applyMap(L42Library input){
+  public L42£Library applyMap(L42£Library input){
     assert redirects.size()==1;
     var cs=redirects.keySet().iterator().next();
     var t=redirects.values().iterator().next();
@@ -94,15 +94,15 @@ public class Meta extends L42Singleton<Meta>{
     assert path0.isNCs() && path0.toNCs().n()==0;
     return path0.toNCs().cs();
     }
-  private static L42Library wrapL(L res){
-    var res0=new L42Library(Resources.currentP.push(Resources.currentC,res));
+  private static L42£Library wrapL(L res){
+    var res0=new L42£Library(Resources.currentP.push(Resources.currentC,res));
     assert res0.unwrap==null;
     res0.currentProgram(Resources.currentP);
     assert res0.unwrap!=null;
     return res0;
     }
   private static S applyS=S.parse("#apply()");
-  public L42Library resource(L42Library that){
+  public L42£Library resource(L42£Library that){
     L l=that.unwrap;
     L body=addThis1().visitL(l);
     var mh=new Core.MH(Mdf.Class,L(),P.coreLibrary,applyS,L(),L());
@@ -123,7 +123,7 @@ public class Meta extends L42Singleton<Meta>{
     var res=new Core.L(body.poss(), false, L(), L(meth), L(), info,L());
     return wrapL(res);
     }
-  public L42Library simpleSum(L42Library a, L42Library b){
+  public L42£Library simpleSum(L42£Library a, L42£Library b){
     L res=directSum(a.unwrap,b.unwrap);
     return wrapL(res);
     }
@@ -191,7 +191,7 @@ public class Meta extends L42Singleton<Meta>{
     //System.out.println(res);
     return res;
     }
-  public L42Library simpleRedirect(String innerPath, L42Library l42Lib, L42Any classAny){
+  public L42£Library simpleRedirect(String innerPath, L42£Library l42Lib, L42Any classAny){
     L l=l42Lib.unwrap;
     List<C> cs=unwrapCs(innerPath);
     P path=unwrapPath(classAny);
@@ -233,12 +233,12 @@ public class Meta extends L42Singleton<Meta>{
     public String pathName(L42Any target){
       return "hi";
       }
-  public static final Class<Meta> _class=Meta.class;
+  public static final Class<L42£Meta> _class=L42£Meta.class;
   public static final MetaCache myCache=new MetaCache();
-  static{L42CacheMap.addCacheableType(Meta.class,myCache);}
+  static{L42CacheMap.addCacheableType(L42£Meta.class,myCache);}
   @Override public MetaCache myCache(){return myCache;}
   }
-class MetaCache extends ValueCache<Meta>{
+class MetaCache extends ValueCache<L42£Meta>{
   @Override public String typename() {return "Meta";}
-  @Override protected boolean valueCompare(Meta t1, Meta t2) {return t1.eq(t2);}
+  @Override protected boolean valueCompare(L42£Meta t1, L42£Meta t2) {return t1.eq(t2);}
   }

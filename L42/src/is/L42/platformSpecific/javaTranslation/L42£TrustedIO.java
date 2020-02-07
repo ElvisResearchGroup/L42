@@ -11,32 +11,36 @@ import java.io.ObjectOutputStream;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
+import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
+import is.L42.cache.L42SingletonCache;
+import is.L42.cache.nativecache.ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
 
-public class L42TrustedIO {
-  public L42Void strDebug(String s){
+public class L42£TrustedIO extends L42Singleton<L42£TrustedIO>{
+  public L42£Void strDebug(String s){
     Resources.out(s);
-    return L42Void.instance;
+    return L42£Void.instance;
     }
   private static HashMap<String,String> logs=new HashMap<>();
-  public L42Void addToLog(String logName,String text){
+  public L42£Void addToLog(String logName,String text){
     String oldText=logs.putIfAbsent(logName,text);
     if(oldText!=null){logs.put(logName,oldText+text);}
-    return L42Void.instance;
+    return L42£Void.instance;
     }
-  public L42Void clearLog(String logName){
+  public L42£Void clearLog(String logName){
     logs.remove(logName);
-    return L42Void.instance;
+    return L42£Void.instance;
     }
   public String readLog(String logName){
     String res=logs.get(logName);
     return res==null?"":res;
     }    
-  public L42Void testActualExpected(L42Library hasPos,String name, String actual, String expected,String message){
+  public L42£Void testActualExpected(L42£Library hasPos,String name, String actual, String expected,String message){
     boolean cond=actual.equals(expected);
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");
@@ -59,10 +63,10 @@ public class L42TrustedIO {
     Resources.tests(sb.toString());
 
 
-    return L42Void.instance;
+    return L42£Void.instance;
     }
     
-  public L42Void testCondition(L42Library hasPos,String name,boolean cond,String message){
+  public L42£Void testCondition(L42£Library hasPos,String name,boolean cond,String message){
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");
     assert !pos.fileName().toString().contains("\n");
@@ -78,9 +82,9 @@ public class L42TrustedIO {
       if(!message.isEmpty() && !message.endsWith("\n")){sb.append("\n");}
       }  
     Resources.tests(sb.toString());
-    return L42Void.instance;
+    return L42£Void.instance;
     }
-  public L42Void deployLibrary(String s, L42Library l42Lib){
+  public L42£Void deployLibrary(String s, L42£Library l42Lib){
     Core.L l=l42Lib.unwrap;
     ProgramTypeSystem.type(true, Program.flat(l));
     //TODO: wrap an EndError above as a L42 exception
@@ -102,6 +106,9 @@ public class L42TrustedIO {
     //TODO: should throw a non deterministic exception as for 
     //memory overflow/stack overflow. It should be error S,
     //the same type of the String
-    return L42Void.instance;
+    return L42£Void.instance;
     }
+  public static final Class<L42£TrustedIO> _class = L42£TrustedIO.class;
+  public static final L42SingletonCache<L42£TrustedIO> myCache=new L42SingletonCache<L42£TrustedIO>("L42£TrustedIO",L42£TrustedIO._class);
+  @Override public L42Cache<L42£TrustedIO> myCache(){return myCache;}
   }

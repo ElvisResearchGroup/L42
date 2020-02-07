@@ -20,7 +20,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.Compilation
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Top;
@@ -43,19 +43,19 @@ public class Loader {
     for(var e:loaded.values()){res+=e.cIds+"\n"+e.source+"\n\n";}
     return res;
     }
-  private final ArrayList<L42Library> libs=new ArrayList<>();
+  private final ArrayList<L42£Library> libs=new ArrayList<>();
   public int libsCachedSize(){return libs.size();}//needed for double checking on caching
   public int bytecodeSize(){return classLoader.map().size();}//needed for double checking on caching
   final HashMap<String,Element> loaded=new HashMap<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public void loadByteCodeFromCache(List<SClassFile> bytecode,List<L42Library>newLibs){
+  public void loadByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
     libs.addAll(newLibs);
     for(var e:bytecode){
       var res=classLoader.map().put(e.name,e.toCF());
       assert res==null;
       }
     }
-  public Core.L runNow(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42Library> newLibs) throws CompilationError, InvocationTargetException{
+  public Core.L runNow(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),false,libs){
       @Override public boolean precomputeCoherent(){return false;}
@@ -65,7 +65,7 @@ public class Loader {
     String name="£c"+c.inner()+"£n"+p.topCore().info()._uniqueId();
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
     String code=header+"\npublic class "+name+"£E"+
-      "{public static L42Library execute(){return "  
+      "{public static L42£Library execute(){return "  
       +j.result()+";}}";
     var files=L(new SourceFile(metaPackage+name+"£E",code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outNewBytecode);
@@ -75,7 +75,7 @@ public class Loader {
   public Core.L runMainName(Program p, C c,String name) throws InvocationTargetException{
     Resources.setLibsCached(p,c,libs);
     try{
-      L42Library res=(L42Library)classLoader.loadClass(metaPackage+name+"£E")
+      L42£Library res=(L42£Library)classLoader.loadClass(metaPackage+name+"£E")
         .getDeclaredMethod("execute")
         .invoke(null);
       return res.unwrap;
@@ -84,7 +84,7 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p,List<SClassFile> newBytecode,List<L42Library> newLibs) throws CompilationError{
+  public void loadNow(Program p,List<SClassFile> newBytecode,List<L42£Library> newLibs) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
     int oldLibNum=libs.size();
     loadRec(p,files);
@@ -110,20 +110,20 @@ public class Loader {
   public static final String header="""
     package is.L42.metaGenerated;
     import is.L42.platformSpecific.javaTranslation.L42Any;
-    import is.L42.platformSpecific.javaTranslation.L42Void;
-    import is.L42.platformSpecific.javaTranslation.L42Library;
+    import is.L42.platformSpecific.javaTranslation.L42£Void;
+    import is.L42.platformSpecific.javaTranslation.L42£Library;
     import is.L42.platformSpecific.javaTranslation.L42ClassAny;
     import is.L42.platformSpecific.javaTranslation.L42Fwd;
     import is.L42.platformSpecific.javaTranslation.L42Throwable;
     import is.L42.platformSpecific.javaTranslation.L42Error;
     import is.L42.platformSpecific.javaTranslation.L42Exception;
     import is.L42.platformSpecific.javaTranslation.L42Return;
-    import is.L42.platformSpecific.javaTranslation.L42TrustedIO;
-    import is.L42.platformSpecific.javaTranslation.L42LazyMsg;
+    import is.L42.platformSpecific.javaTranslation.L42£TrustedIO;
+    import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
     import is.L42.cache.L42Cache;
     import is.L42.cache.L42Cachable;
     import is.L42.cache.L42StandardCache;
-    import is.L42.meta.Meta;
+    import is.L42.meta.L42£Meta;
     import is.L42.platformSpecific.javaTranslation.Resources;
     import java.util.List;
     import java.util.ArrayList;

@@ -35,8 +35,8 @@ public enum TrustedOp {
   OR("OP|",Map.of(Bool,use("return %s | %s;",sigI(Bool,Bool)))),
   NOT("OP!",Map.of(Bool,use("return !%s;",sigI(Bool)))),
   CheckTrue("checkTrue",Map.of(Bool,use(
-    "if(%s){return L42Void.instance;}"+
-    "throw new L42Exception(L42Void.instance);",sigI(Void)))),
+    "if(%s){return L42£Void.instance;}"+
+    "throw new L42Exception(L42£Void.instance);",sigI(Void)))),
   //StringBuilder
   D0("'0'",append("0")),
   D1("'1'",append("1")),
@@ -137,7 +137,7 @@ public enum TrustedOp {
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
   SNewLine("newLine",append("\\\\n")),
-  AddAll("addAll",Map.of(StringBuilder,use("%s.append(%s);return L42Void.instance;",
+  AddAll("addAll",Map.of(StringBuilder,use("%s.append(%s);return L42£Void.instance;",
     sig(Mutable,Immutable,Void,Immutable,String)))),
    
   //toString
@@ -151,14 +151,14 @@ public enum TrustedOp {
   ToInt("toInt",Map.of(String,use("""
     try{return Integer.parseInt(%1$s);}
     catch(NumberFormatException nfe){
-      throw new L42Error(%Gen1.wrap(new L42LazyMsg(
+      throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
         "The string \\""+%1$s+"\\" is not a valid number"
         )));
       }
     """,sig(Readable,Immutable,Int)
     ))),
   StrDebug("strDebug",Map.of(
-    String,use("Resources.out(%s); return L42Void.instance;",sigI(Void)),
+    String,use("Resources.out(%s); return L42£Void.instance;",sigI(Void)),
     TrustedIO,use("return %s.strDebug(%s);",sigI(Void,String))
     )),
   AddToLog("addToLog",Map.of(
@@ -232,13 +232,13 @@ public enum TrustedOp {
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
-  LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new L42LazyMsg(%2$s);",sig(Class,Mutable,LazyMessage,Immutable,String)))),
-  SetMsg("setMsg",Map.of(LazyMessage,use("%s.setMsg(%s);return L42Void.instance;",sig(Mutable,Immutable,Void,Immutable,String)))),
+  LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new L42£LazyMsg(%2$s);",sig(Class,Mutable,LazyMessage,Immutable,String)))),
+  SetMsg("setMsg",Map.of(LazyMessage,use("%s.setMsg(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,String)))),
   OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))), 
   Get("get",  Map.of(Opt,use("""
     if(%1$s!=null){return %1$s;}
     throw new L42Error(%Gen2.wrap(
-      new L42LazyMsg(\"Optional value is empty\")
+      new L42£LazyMsg(\"Optional value is empty\")
       ));
     """,sig(Readable,Readable,Gen1)),
     LazyMessage,use("return %s.getMsg();",sig(Readable,Immutable,String))
@@ -246,7 +246,7 @@ public enum TrustedOp {
   HGet("#get",Map.of(Opt,use("""
     if(%1$s!=null){return %1$s;}
     throw new L42Error(%Gen2.wrap(
-      new L42LazyMsg(\"Optional value is empty\")
+      new L42£LazyMsg(\"Optional value is empty\")
       ));
     """,sig(Mutable,Mutable,Gen1)))),
   LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),

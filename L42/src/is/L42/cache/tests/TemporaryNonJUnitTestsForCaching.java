@@ -185,7 +185,7 @@ public class TemporaryNonJUnitTestsForCaching {
  Probably, for all nativeKinds:
  either we can reuse the behaviour of Integer/String
  or we can just implement ForeignObject on all the 
- custom defined nativeKinds like Meta and TrustedIO?
+ custom defined nativeKinds like L42£Meta and TrustedIO?
  Could there be an opminized cache for objects like I(), that are all the same?
  //could we also optimize the case of "wrapper objects with only one field"
   

@@ -15,7 +15,7 @@ import is.L42.generated.Core;
 import is.L42.generated.P;
 import is.L42.generated.Core.L;
 
-public class L42Library implements L42Any,Serializable{
+public class L42£Library extends L42Singleton<L42£Library> implements L42Any,Serializable{
   Program originP;
   private Program currentP=null;
   public L unwrap=null;
@@ -24,12 +24,12 @@ public class L42Library implements L42Any,Serializable{
   L originL;
   C originName=null;
   public static final L42Any pathInstance=new L42ClassAny(P.pLibrary);
-  public L42Library(Program p) {
+  public L42£Library(Program p) {
     originP=p.pop();
     if(p.pTails.hasC()){originName=p.pTails.c();}
     originL=p.topCore();
     }
-  public boolean eq(L42Library l){
+  public boolean eq(L42£Library l){
     boolean res=originName==l.originName || (originName!=null && originName.equals(l.originName));
     return res && originP.equals(l.originP) && originL.equals(originL);
     }
@@ -56,13 +56,14 @@ public class L42Library implements L42Any,Serializable{
     if(this.originName==null){localPath=null;}
     else{localPath=localPath.withCs(pushL(localPath.cs(),originName));}
     }
-  public static final Class<L42Library> _class = L42Library.class;
+  public static final Class<L42£Library> _class = L42£Library.class;
   public static final LibraryCache myCache = new LibraryCache();
-  static{L42CacheMap.addCacheableType(L42Library.class, myCache);}
+  static{L42CacheMap.addCacheableType(L42£Library.class, myCache);}
+  @Override public L42Cache<L42£Library> myCache(){return myCache;}
   }
-  class LibraryCache extends ValueCache<L42Library>{
-    @Override public String typename() {return "L42Library";}
-    @Override protected boolean valueCompare(L42Library t1, L42Library t2) {
-      return t1.eq(t2);
-      }
+class LibraryCache extends ValueCache<L42£Library>{
+  @Override public String typename() {return "L42£Library";}
+  @Override protected boolean valueCompare(L42£Library t1, L42£Library t2) {
+    return t1.eq(t2);
     }
+  }

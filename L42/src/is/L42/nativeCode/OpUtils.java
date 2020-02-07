@@ -24,28 +24,28 @@ class OpUtils{
       if(tmp==is.L42.nativeCode.Flags."""+(mut?"MutElem":"ImmElem")+"""
         ){return %1$s.get(%2$s*2+2);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
-      .wrap(new L42LazyMsg(
+      .wrap(new L42£LazyMsg(
         "#val called, but the element in position "+%1$s+" was inserted as immutable"
         )));
     """);}
     static String vectorOp(String op,boolean mut){
-      return vectorExc2("%1$s."+op+"(%2$s*2+2,%3$s);((ArrayList)%1$s)."+op+"(%2$s*2+3,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")+");return L42Void.instance;");
+      return vectorExc2("%1$s."+op+"(%2$s*2+2,%3$s);((ArrayList)%1$s)."+op+"(%2$s*2+3,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")+");return L42£Void.instance;");
       }
     static String vectorOpRemove(){
-      return vectorExc2("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42Void.instance;");
+      return vectorExc2("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42£Void.instance;");
       }
     static String vectorReadGet(){
       return vectorExc2("return %s.get(%s*2+2);");
       }
     static private final String vectorExc2(String body){
       return "try{"+body+"}"+
-        "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42LazyMsg(oob.getMessage())));}";
+        "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
       }
     static private String vectorCache(J j){
       P pGen=j.p().topCore().info().nativePar().get(0);
       if(pGen==P.pAny){return "null";}
-      if(pGen==P.pVoid){return "L42Void.myCache";}
-      if(pGen==P.pLibrary){return "L42Library.myCache";}
+      if(pGen==P.pVoid){return "L42£Void.myCache";}
+      if(pGen==P.pLibrary){return "L42£Library.myCache";}
       Program pOfGen=j.p().navigate(pGen.toNCs());
       var l=pOfGen.topCore();
       String genT=j.typeNameStr(pOfGen);
@@ -72,7 +72,7 @@ class OpUtils{
       throw new EndError.TypeError(mwt._e().poss(),Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),expected));
       }
     static Map<TrustedKind,Generator> append(String s){
-      String pattern="%s.append(\""+s+"\");return L42Void.instance;";
+      String pattern="%s.append(\""+s+"\");return L42£Void.instance;";
       var u=use(pattern,Signature.sig(Mdf.Mutable,Mdf.Immutable,Void));
       return Map.of(TrustedKind.StringBuilder,u);
       }

@@ -41,28 +41,28 @@ public class Resources {
     System.out.print(s);
     }
   public static <K> K throwE(L42Throwable e){throw e;}
-  public static<K> L42Void toVoid(K k){return L42Void.instance;}
+  public static<K> L42£Void toVoid(K k){return L42£Void.instance;}
   public static Program currentP;
   public static C currentC;
-  public static void setLibsCached(Program p,C c,ArrayList<L42Library> libs){
+  public static void setLibsCached(Program p,C c,ArrayList<L42£Library> libs){
     currentP=p;
     currentC=c;
     libsCached=libs;
     }
-  public static L42Library ofLib(int id){
+  public static L42£Library ofLib(int id){
     assert libsCached.size()>id: id+" "+libsCached.size();
-    L42Library l=libsCached.get(id);
+    L42£Library l=libsCached.get(id);
     l.currentProgram(currentP);
     return l;
     }
   public static L42ClassAny ofPath(int id){
     assert libsCached.size()>id;
     assert id>=0;
-    L42Library l=libsCached.get(id);
+    L42£Library l=libsCached.get(id);
     l.currentProgram(currentP);
     return new L42ClassAny(l.localPath());
     }
-  private static ArrayList<L42Library>libsCached;
+  private static ArrayList<L42£Library>libsCached;
   public static final HashMap<String,Slave>slaves=new HashMap<>();
   public static void clearRes() {
     libsCached=null;

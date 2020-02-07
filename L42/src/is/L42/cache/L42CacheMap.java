@@ -79,11 +79,17 @@ public class L42CacheMap {
    * @return
    */
   public static <T> L42Cache<T> getCacheObject(Class<T> class_) {
-    System.out.println("Cache map lookup for"+class_);
-    assert List.of(Thread.currentThread().getStackTrace()).toString().contains(".lateInitialize(");
+    assert cacheUnderControl();
     return (L42Cache<T>) commander.get(class_);
     }
-  
+  private static boolean cacheUnderControl(){
+    String s=List.of(Thread.currentThread().getStackTrace()).toString();
+    assert s.contains(".lateInitialize(") 
+      || s.contains("ArrayListCacheForType")
+      || s.contains(".NormalizationTests.");
+    return true;    
+    }
+    
   public static L42Cache<?>[] getCacheArray(Class<?> ... classes) {
     L42Cache<?>[] caches = new L42Cache<?>[classes.length];
     for(int i = 0; i < classes.length; i++) {

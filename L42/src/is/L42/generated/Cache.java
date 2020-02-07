@@ -20,10 +20,10 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 
 public class Cache implements Serializable {
-  ArrayList<L42Library> allLibs;
+  ArrayList<L42£Library> allLibs;
   ArrayList<SClassFile> allByteCode;
   CTop _top;
 
@@ -512,7 +512,7 @@ public class Cache implements Serializable {
   }
 
   @java.lang.SuppressWarnings("all")
-  public ArrayList<L42Library> allLibs() {
+  public ArrayList<L42£Library> allLibs() {
     return this.allLibs;
   }
 
@@ -527,7 +527,7 @@ public class Cache implements Serializable {
   }
 
   @java.lang.SuppressWarnings("all")
-  public Cache allLibs(final ArrayList<L42Library> allLibs) {
+  public Cache allLibs(final ArrayList<L42£Library> allLibs) {
     this.allLibs = allLibs;
     return this;
   }
@@ -589,7 +589,7 @@ public class Cache implements Serializable {
   }
 
   @java.lang.SuppressWarnings("all")
-  public Cache(final ArrayList<L42Library> allLibs, final ArrayList<SClassFile> allByteCode, final CTop _top) {
+  public Cache(final ArrayList<L42£Library> allLibs, final ArrayList<SClassFile> allByteCode, final CTop _top) {
     this.allLibs = allLibs;
     this.allByteCode = allByteCode;
     this._top = _top;

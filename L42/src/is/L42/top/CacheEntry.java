@@ -20,11 +20,11 @@ import is.L42.common.Program;
 import is.L42.generated.Full;
 import is.L42.generated.Full.L.NC;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 public class CacheEntry implements Serializable{
   public CacheEntry(NC _key, 
     CTz frommedCTz,Program p,
-    List<L42Library> _mLibs,List<L42Library> cLibs,int sizeWithMLibs,int sizeWithCLibs,
+    List<L42£Library> _mLibs,List<L42£Library> cLibs,int sizeWithMLibs,int sizeWithCLibs,
     HashMap<String,SClassFile> _mByteCode,HashMap<String,SClassFile> cByteCode
     ){
     this._key=_key;
@@ -38,8 +38,8 @@ public class CacheEntry implements Serializable{
   Program p;
   HashMap<String,SClassFile> _mByteCode;
   HashMap<String,SClassFile> cByteCode;
-  List<L42Library> _mLibs;
-  List<L42Library> cLibs;
+  List<L42£Library> _mLibs;
+  List<L42£Library> cLibs;
   int sizeWithMLibs;
   int sizeWithCLibs;  
   @SuppressWarnings("unchecked")

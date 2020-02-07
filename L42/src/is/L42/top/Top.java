@@ -43,7 +43,7 @@ import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.Loader;
@@ -229,9 +229,9 @@ dropCache:
     List<Full.L.M> ms=topL.ms();
     List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
     var info=new HashDollarInfo(topL);
-    System.out.println(topL.pos());
-    System.out.println(info.hashDollarTop);
-    System.out.println(info.hashDollarInside);
+    //System.out.println(topL.pos());
+    //System.out.println(info.hashDollarTop);
+    //System.out.println(info.hashDollarInside);
     var currentState=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(),ctz.copy(),cachableAlreadyCoherent(),p);
     var newCache=new Cache.CTop(currentState, null, null, info.hashDollarInside, coreL, -1, -1);
     Program p0=p.update(coreL,false);
@@ -709,13 +709,13 @@ dropCache:
       coherentAllPs(p,cohePs); //propagate errors
       return ce0;    
     }
-  protected Program flagTyped(Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42Library> newLibs) throws EndError{
+  protected Program flagTyped(Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42£Library> newLibs) throws EndError{
     Program p=FlagTyped.flagTyped(this.loader,p1);//but can be overridden as a testing handler
     try {this.loader.loadNow(p,cBytecode,newLibs);}
     catch (CompilationError e) {throw new Error(e);}
     return p;
     }
-  protected Core.L reduce(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42Library> newLibs)throws EndError {
+  protected Core.L reduce(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42£Library> newLibs)throws EndError {
     try{return loader.runNow(p, c, e,outNewBytecode,newLibs);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}

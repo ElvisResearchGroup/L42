@@ -36,9 +36,9 @@ public class TestExpressionJ
 extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   je("Any<:class Any","L42Any.pathInstance")
   ),new AtomicTest(()->
-  je("Library<:class Any","L42Library.pathInstance")
+  je("Library<:class Any","L42£Library.pathInstance")
   ),new AtomicTest(()->
-  je("Void<:class Any","L42Void.pathInstance")
+  je("Void<:class Any","L42£Void.pathInstance")
   ),new AtomicTest(()->
   je("This0.A<:class This0.A","£cA£n1.pathInstance")
   ),new AtomicTest(()->
@@ -48,7 +48,7 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
   ),new AtomicTest(()->
   je("This0.B<:class Any","£cB£n1.pathInstance")
   ),new AtomicTest(()->
-  je("void","L42Void.instance")
+  je("void","L42£Void.instance")
   ),new AtomicTest(()->
   je("{#norm{}}","Resources.ofLib(0)")
     ),new AtomicTest(()->
@@ -58,12 +58,12 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
     ),new AtomicTest(()->
   je("This0.B<:class This0.B.mb(b=This0.B<:class This0.B.of())","£cB£n1.£mmb£xb(£cB£n1.pathInstance,£cB£n1.£mof(£cB£n1.pathInstance))")
     ),new AtomicTest(()->
-  je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true){Object loopVar1=L42Void.instance;}}}")
+  je("loop void","switch(0){default->{if(false)yield Resources.throwE(null);while(true){Object loopVar1=L42£Void.instance;}}}")
     ),new AtomicTest(()->
-  je("return void","Resources.throwE(new L42Return(L42Void.instance))")
+  je("return void","Resources.throwE(new L42Return(L42£Void.instance))")
   //op update needs blocks
   ),new AtomicTest(()->
-  je("(void)","L42Void.instance")
+  je("(void)","L42£Void.instance")
   ),new AtomicTest(()->
   je("(This0.A a=This0.A<:class This0.A.of() a)","""
     switch(0){default->{
@@ -148,15 +148,15 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
     switch(0){default->{
       £cA£n1 £xa=null;
       String £xb=null;
-      L42Void £xv0=null;
-      L42Void £xv1=null;
-      L42Void £xv2=null;
+      L42£Void £xv0=null;
+      L42£Void £xv1=null;
+      L42£Void £xv2=null;
       £xa=£cA£n1.£mof(£cA£n1.pathInstance);
       £xb=£cB£n1.£mof(£cB£n1.pathInstance);
       £xv0=Resources.throwE(new L42Error(£xa));
       £xv1=Resources.throwE(new L42Error(£cB£n1.wrap(£xb)));
-      £xv2=Resources.throwE(new L42Error(L42Void.instance));
-      yield L42Void.instance;
+      £xv2=Resources.throwE(new L42Error(L42£Void.instance));
+      yield L42£Void.instance;
       }}
     """)
 
@@ -261,8 +261,8 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
        public static int £mn(£cA£n1 £xthis){
          return £xthis.£xn;
          }
-       public static L42Void £mn£xthat(£cA£n1 £xthis, int £xthat){
-         £xthis.£xn=£xthat;return L42Void.instance;
+       public static L42£Void £mn£xthat(£cA£n1 £xthis, int £xthat){
+         £xthis.£xn=£xthat;return L42£Void.instance;
          }
        public static £cA£n1 NewFwd(){return new _Fwd();}
        public static class _Fwd extends £cA£n1 implements L42Fwd{

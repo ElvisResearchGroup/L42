@@ -21,11 +21,11 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
-import is.L42.platformSpecific.javaTranslation.L42Library;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 import lombok.Data;
 import lombok.AllArgsConstructor;
 @Data @AllArgsConstructor public class Cache implements Serializable{
-  ArrayList<L42Library> allLibs;
+  ArrayList<L42£Library> allLibs;
   ArrayList<SClassFile> allByteCode;
   CTop _top;
   @Data @AllArgsConstructor public static class CTop implements Serializable{
