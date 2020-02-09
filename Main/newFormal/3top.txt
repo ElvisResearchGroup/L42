@@ -22,11 +22,11 @@ _______
       Ps0;Ps1=collectDeps(p;L.MWTs) U collectDeps(L.Docs) U L.Ts.Ps;empty      
 _______
 #define mustWatch(CORE.L) = Ps    mustWatch(T) = Ps     mustWatch(MWT) = Ps
-//Note: even if not handled below, This0 is never contained in mustWatch(CORE.L)
-//All P in mustWatch must have no private number inside//TODO: is it already like this in code? 
+//Note: even if not handled below, Any,Void,Library and This0 are never contained in mustWatch(CORE.L)
+//All P in mustWatch must have no private number inside 
 * P in mustWatch(L) if P in mustWatch(T) and T in L.Ts
 * P in mustWatch(L) if P.C::k._ in L.Docs.Ps U L.NCs.Docs.Ps U L.MWTs.Docs.Ps
-* P in mustWatch(L) if P in L0.Info.watched[skipThis0;L0] and L(C::k)=L0//TODO: there was not ::k, check in code
+* P in mustWatch(L) if P in L0.Info.watched[skipThis0;L0] and L(C::k)=L0
 * P in mustWatch(L) if P in mustWatch(L(s))
 
 * P in mustWatch(T) if P.C::k._ in T.P U T.Docs.Ps

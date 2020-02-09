@@ -21,9 +21,9 @@ _______
   H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
   LDoms=empty if L1.interface?=L2.interface?
   LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
-  iMWTs1=implemented(PLUS.p,PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
-  iMWTs2=implemented(PLUS.p,PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
-  MWTs3=iMWTs1 PLUS iMWTs2
+  iMWTs1=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
+  iMWTs2=implemented(PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
+  MWTs3=(iMWTs1 PLUS iMWTs2).MWTs
   NCs3=NCs1\LDoms PLUS NCs2\LDoms
   Doc3=Doc1,Doc2
   Info3=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
@@ -49,9 +49,10 @@ _______
 * interface?1 MWT1 PLUS interface?2 MWT2 = interfacej? MWT3
     {i,j}={1,2}
     p.navigate(This0.PLUS.Cs)|-MWTi.MH<=MWTj.MH
-    MWT3=MWTi with Docs obtained by the corresponding MWT1.Docs+MWT2.Docs
+    MWT3=MWTi with Docs obtained by the corresponding MWT1.Docs+MWT2.Docs (also sum pars,ret,exceptions docs)
     MWTj.e?=empty//implemented can not lose
-    interface?j=empty//interface can not lose
+    either interface?j=empty //interface can not lose
+    or p.navigate(This0.PLUS.Cs)|-MWTj.MH<=MWTi.MH
 _______
 #define allWatched(L) = Csz
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs';{}] and Cs' not of form _._::n._
@@ -77,7 +78,7 @@ _______
     PLUS.Cs notin allWatched(PLUS.p)
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
 _______ 
-#define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(p,L,Cs)=interface?
+#define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(L,Cs)=interface?
 * Cs |- L2 > L1
   L1(Cs) is interface
   either L2(Cs).Ts\L1(Cs).Ts!=empty
@@ -87,13 +88,13 @@ _______
   Cs0=C1..Ck
   interface?i=implemented(PLUS.p,L,Csi)
   iMWTsi=interface?i[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
-  L' = L(Cs0)[iMWTs0 PLUS .. PLUS iMWTsn][Info=L(Cs0).refined+
-  =dom(iMWTs1..iMWTsn)]
+  L' = L(Cs0)[(iMWTs0 PLUS .. PLUS iMWTsn).MWTs][Info=L(Cs0).refined+
+  =dom((iMWTs1..iMWTsn).MWTs)]
   
-* implemented(p,L,Cs)=empty
+* implemented(L,Cs)=empty
     forall Cs' in dom(L):
-      Cs' not of form _._::n._, P in L(Cs').Ts.Ps This0.Cs !=P[from Cs';p]
-* implemented(p,L,Cs)=interface otherwise
+      Cs' not of form _._::n._, P in L(Cs').Ts.Ps This0.Cs !=P[from This0.Cs';{}]
+* implemented(L,Cs)=interface otherwise
   //DO NOT READ AFTER THIS POINT
   //renames:
   rename only names not nesteds; to request renaming also nested, use 'Foo* or similar

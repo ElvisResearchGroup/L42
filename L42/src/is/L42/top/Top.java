@@ -861,8 +861,9 @@ dropCache:
     for(var mwti:l.mwts()){acc.of(mwti);}
     for(var nci:l.ncs()){
       Info info=nci.l().info();
-      TypeManipulation.skipThis0(info.watched(),nci.l(),p->p,(p0,p1)->watched.add(p1));
       for(var di: nci.docs()){acc.of(di);}
+      if(!nci.key().hasUniqueNum()){continue;}
+      TypeManipulation.skipThis0(info.watched(),nci.l(),p->p,(p0,p1)->watched.add(p1));
       }
     watched.removeAll(L(P.pThis0));
     }

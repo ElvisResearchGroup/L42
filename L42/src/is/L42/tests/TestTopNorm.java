@@ -146,11 +146,25 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    topFail(NotWellFormed.class,"""
    {B={}
     A={
-      DD={#norm{typeDep=This2.B watched=This2.B}}
+      DD::5={#norm{typeDep=This2.B watched=This2.B}}
       #norm{typeDep=This1.B}}
     C=void}
     """,
    Err.missedWatched("[This1.B]"))
+   ),new AtomicTest(()->
+   top("""
+   {B={}
+    A={
+      DD={#norm{typeDep=This2.B watched=This2.B}}
+      #norm{typeDep=This1.B}}
+    C=void}
+    ""","""
+   {B={#typed{}}
+    A={
+      DD={#typed{typeDep=This2.B watched=This2.B}}
+      #typed{typeDep=This1.B}}
+    C={#typed{}}#norm{}}
+    """)
 //computing watched
    ),new AtomicTest(()->
    top("""
