@@ -142,6 +142,31 @@ TestAnyVoidLibrary=(
   {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
   void
 )
+
+ClassBox={
+  class Any myClass
+  class method This(class Any myClass)
+  imm method Void printOut()=
+    native{trusted:cachable} (
+      Log"Foo".write(S"ClassBoxPrint")
+      void
+      )
+}
+
+TestClassBox=(
+  ClassBox b1 = ClassBox(myClass=S)
+  ClassBox b2 = ClassBox(myClass=S)
+  ClassBox b3 = ClassBox(myClass=HasToS)
+  ClassBox b4 = ClassBox(myClass=HasToS)
+  b1.printOut()
+  b2.printOut()
+  {}:Test"ClassBox works the same"(expected=S"ClassBoxPrint", actual=Log"Foo".#$reader().read())
+  b3.printOut()
+  b4.printOut()
+  {}:Test"ClassBox works the same"(expected=S"ClassBoxPrintClassBoxPrint", actual=Log"Foo".#$reader().read())
+  void
+)
+
 /*
 D={
   Strings that
