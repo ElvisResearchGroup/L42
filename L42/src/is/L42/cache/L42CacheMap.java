@@ -139,6 +139,21 @@ public class L42CacheMap {
     return cache.computeKeyNN(t);
   }
   
+  public static <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
+    if(obj1 == null) { return obj2 == null; }
+    return expandedKey(obj1, true, false).equals(expandedKey(obj2, true, false));
+    }
+  
+  public static <T> boolean structurallyEqualNorm(T obj1, T obj2) {
+    obj1 = normalize(obj1);
+    obj2 = normalize(obj2);
+    return L42CacheMap.identityEquals(obj1, obj2);
+    }
+  
+  public static String objToString(Object obj) {
+    return expandedKey(obj, true, false).toString();
+    }
+  
   public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
