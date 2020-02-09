@@ -2,7 +2,7 @@ package is.L42.cache;
 
 import java.util.List;
 
-public class L42SingletonCache<T extends L42Cachable<T>> implements L42Cache<T> {
+public class L42SingletonCache<T> implements L42Cache<T> {
   
   private final String typename;
   private final KeyNorm2D key;
@@ -55,7 +55,7 @@ public class L42SingletonCache<T extends L42Cachable<T>> implements L42Cache<T> 
 
   @Override 
   public Object[] f(T t) { 
-    return t.allFields();
+    return new Object[0];
     }
 
   @Override 
