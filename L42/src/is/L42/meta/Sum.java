@@ -167,15 +167,24 @@ class Plus{
       A  B->C  D->E
       m
       
-      Cs1;Pz1 .. Csn;Pzn = {Cs;collect(L1,L2,Cs) | Cs in dom(L1)U dom(L2),
-        Ts=L1(Cs).Ts,L2(Cs).Ts\L1(Cs).Ts //just one side if undefined on the other side
-        Cs has no unique ns and
-        L1(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz
-        or 
-        L2(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz
+      Cs1;Pz1 .. Csn;Pzn = {Cs;Cs/collect(L1,L2,Cs) |
+        Cs in dom(L1)U dom(L2), collect(L1,L2,Cs)!=empty
         }
+
+      Cs" in collect(L1,L2,Cs)
+        This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] disjoint Pz
+        This0.Cs" in Lj(Cs').Ts.Ps[from This0.Cs;{}]
+        i in {1,2}  j in {1,2}
+      Cs" in collect(L1,L2,Cs)
+        This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] disjoint Pz
+        Cs" in collect(L1,L2,Cs')
+        i in {1,2}
       
-      
+      Cs.C._/This0.Cs0.C1..Cn=Thisn.C1..Cn
+        C!=C1
+      L = L1 PLUS[Cs1;Pz1 .. Csn;Pzn] L3
+      where the Pzi is used to grow the Ts (in the bottom, no docs)
+      and topLeft(Pzi).mwts U topRight(Pzi) are plussed to the mwts (without the docs)
       {Exp={interface} Lit={Exp} method Lit foo()=e}
       +
       {Exp={interface[HasToS] method HasToS foo()}}
