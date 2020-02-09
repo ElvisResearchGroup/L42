@@ -359,9 +359,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
      List<String>ps=ps0;
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
     c("public static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
-    c("static{myCache.lateInitialize(");
+    c("static{myCache.lateInitialize(new Class<?>[]{");
     seq(range(ps),i->is.get(i)?"null":addDotClass(ps.get(i)),",");
-    c(");}");nl();
+    c("});}");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("private "+jC+" norm;");nl();
     c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
@@ -423,7 +423,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     visitMWTs(p.topCore().mwts());
     c("public static "+jC+" NewFwd(){return new _Fwd();}");
     nl();
-    if(interf){c("public static class _Fwd implements "+jC+", L42Fwd{");}
+    if(interf){c("public static class _Fwd extends L42Singleton<"+jC+"> implements "+jC+", L42Fwd{");}
     else{c("public static class _Fwd extends "+jC+" implements L42Fwd{");}
     indent();nl();
     c("private List<Object> os=new ArrayList<>();");nl();
@@ -438,8 +438,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         cThrowError();        
         }
       }
+    c("@Override public L42Cache<"+jC+"> myCache() {return mySCache;}");
     c("}");deIndent();nl();
     c("public static final "+jC+" pathInstance=new _Fwd();");nl();
+    c("static final L42Cache<"+jC+"> mySCache=new L42SingletonCache<>(\""+jC+"£Class\", pathInstance.getClass());");nl();
     if(nativeKind(p)){
       c("public ");
       typeName(p);

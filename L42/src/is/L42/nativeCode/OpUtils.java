@@ -15,7 +15,6 @@ import is.L42.generated.P;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.NativeDispatch;
 
-interface TrustedT{}
 enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
   static String vectorGet(boolean mut){ 
@@ -76,41 +75,41 @@ class OpUtils{
       var u=use(pattern,Signature.sig(Mdf.Mutable,Mdf.Immutable,Void));
       return Map.of(TrustedKind.StringBuilder,u);
       }
-    static boolean typingUse(Program p, MWT mwt,Signature s){
-      assert s!=null;
-      assert s.parMdfs.size()==s.parTs.size();
-      if(s.parTs.size()!=mwt.mh().pars().size()){
+    static boolean typingUse(Program p, MWT mwt,Signature sig){
+      assert sig!=null;
+      assert sig.parMdfs.size()==sig.parTs.size();
+      if(sig.parTs.size()!=mwt.mh().pars().size()){
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),s.parMdfs.size()));
+          Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),sig.parMdfs.size()));
         }
-      checkMdf(mwt,mwt.mh().mdf(),s.methMdf);
+      checkMdf(mwt,sig,mwt.mh().mdf(),sig.methMdf);
       var t=mwt.mh().t();
-      checkSingle(p,mwt,t.p(),t.mdf(),s.retT,s.retMdf);
+      checkSingle(p,mwt,sig,t.p(),t.mdf(),sig.retT,sig.retMdf);
       for(int i:range(mwt.mh().pars().size())){
         var pi=mwt.mh().pars().get(i).p();
         var mdfi=mwt.mh().pars().get(i).mdf();
-        var tti=s.parTs.get(i);
-        var tmdfi=s.parMdfs.get(i);
-        checkSingle(p,mwt,pi,mdfi,tti,tmdfi);
+        var tti=sig.parTs.get(i);
+        var tmdfi=sig.parMdfs.get(i);
+        checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi);
         }
       //TODO: check exceptions
       return true;
       }
-    private static void checkGen(int i,Program p,MWT mwt,P pi){
+    private static void checkGen(int i,Program p,MWT mwt,Signature sig,P pi){
       assert p.topCore().info().nativePar().size()>i;
       var pari=p.topCore().info().nativePar().get(i);
       if(pi.equals(pari)){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,pari));            
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,pari));            
       }
-    private static void checkMdf(MWT mwt,Mdf mdfi,Mdf tmdfi){
+    private static void checkMdf(MWT mwt,Signature sig,Mdf mdfi,Mdf tmdfi){
       if(mdfi!=tmdfi){
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),mdfi,tmdfi));
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,mdfi,tmdfi));
         }
       }
-    private static void checkSingle(Program p,MWT mwt,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
-      checkMdf(mwt,mdfi,tmdfi);
+    private static void checkSingle(Program p,MWT mwt,Signature sig,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
+      checkMdf(mwt,sig,mdfi,tmdfi);
       if(tti instanceof TrustedKind){
         var ki=(TrustedKind)tti;
         var li=p._ofCore(pi);
@@ -118,31 +117,31 @@ class OpUtils{
         var kind=li.info().nativeKind();
         if(!kind.isEmpty() && ki==TrustedKind._fromString(kind)){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,ki));            
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,ki));            
         }
     if(tti==Lib){
       if(pi==P.pLibrary){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Library"));            
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Library"));            
       }
     if(tti==Void){
       if(pi==P.pVoid){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Void"));            
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Void"));            
       }
     if(tti==Any){
       if(pi==P.pAny){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"Any"));            
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Any"));            
       }
-    if(tti==Gen1){checkGen(0,p,mwt,pi);}
-    if(tti==Gen2){checkGen(1,p,mwt,pi);}
-    if(tti==Gen3){checkGen(2,p,mwt,pi);}
-    if(tti==Gen4){checkGen(3,p,mwt,pi);}
+    if(tti==Gen1){checkGen(0,p,mwt,sig,pi);}
+    if(tti==Gen2){checkGen(1,p,mwt,sig,pi);}
+    if(tti==Gen3){checkGen(2,p,mwt,sig,pi);}
+    if(tti==Gen4){checkGen(3,p,mwt,sig,pi);}
     if(tti==This){
       if(pi.equals(P.pThis0)){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),pi,"This"));            
+        Err.nativeParameterInvalidKind(mwt.nativeUrl(),sig,mwt.key(),pi,"This"));            
       }
     }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings

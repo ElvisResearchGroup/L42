@@ -126,3 +126,16 @@ TestLog=(
   {}:Test"logTest"(expected=S"Hello World", actual=mLog.read())
   iLog.clear()
   )
+
+Person=Class:(Class.MutReferenceEquality+{
+  var S name
+  var Size age
+  class method mut This(S name,Size age)
+  })
+TestEqualities=(
+  mut Person p1=Person(name=S"bob",age=23Size)
+  mut Person p2=Person(name=S"bob",age=23Size)
+  {}:Test"RefEq1"(!p1.mutReferenceEquality(p2))
+  {}:Test"RefEq2"(p1.mutReferenceEquality(p1))
+  {}:Test"RefEq3"(p2.mutReferenceEquality(p2))
+  )

@@ -299,9 +299,9 @@ _______
 
 * mdf" in fieldAccessMdf(MHs, x, mdf)
     mdf' method mdf" P #sx::n?() in MHs
-    exists class method mdf0_(_)_ in MHs: (mdf0 canAlsoBe mdf')
-    mdf' != capsule or mdf" = class // TODO: is the check 'or mdf" = class' needed or not? 
     mdf' canAlsoBe mdf // capsule getters ok on anything but class: another getter can never be called
+    exists class method mdf0_(_)_ in MHs: (mdf0 canAlsoBe mdf')
+    mdf' != capsule or mdf" = class// Note: it seams like 'or mdf" = class' is actually needed?? 
     
 // Note: coherentGetMdf(getterReturnMdf, receiverMdf, fieldTypeMdfs, fieldAccessMdfs)//valueMdf, getterMdf, inMdfs, outMdfs
 // Means that the value of a field accessed on a receiverMdf reference can safely be used as a getterReturnMdf, iff its value came from a fieldTypeMdfs reference (through either a factory or setter), and since then, its value may have previously been accessed as a fieldAccessMdfs reference.

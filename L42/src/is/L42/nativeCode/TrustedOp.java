@@ -250,7 +250,15 @@ public enum TrustedOp {
       ));
     """,sig(Mutable,Mutable,Gen1)))),
   LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),
-  EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator()))
+  EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator())),
+  MutReferenceEquality("mutReferenceEquality",Map.of(AnyKind,use(
+    "return %1$s==%2$s;",sig(Mutable,Immutable,Bool,Mutable,This)))),
+  MutStructuralEquality("mutStructuralEquality",Map.of(AnyKind,use(
+    "return L42CacheMap.structurallyEqualNoNorm(%1$s,%2$s);",sig(Mutable,Immutable,Bool,Mutable,This)))),
+  ImmEquality("immEquality",Map.of(AnyKind,use(
+    "return L42CacheMap.structurallyEqualNorm(%1$s,%2$s);",sig(Immutable,Immutable,Bool,Immutable,This)))),
+  MutToString("mutToString",Map.of(AnyKind,use(
+    "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,Bool))))    
   ;
   public final String inner;
   Map<TrustedKind,Generator>code;

@@ -66,7 +66,7 @@ public class L42CacheMap {
    * @param class_ The class object representing the type
    * @param cache The relevant cache object
    */
-  public static <T,C extends L42Cache<T>> C addCacheableType(Class<T> class_, C cache) {
+  public static <T,C extends L42Cache<T>> C addCacheableType(Class<? extends T> class_, C cache) {
     commander.put(class_, cache);
     return cache;
     }

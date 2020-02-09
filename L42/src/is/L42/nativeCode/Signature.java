@@ -1,6 +1,7 @@
 package is.L42.nativeCode;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.range;
 
 import java.util.List;
 
@@ -20,6 +21,13 @@ class Signature{
     this.parMdfs=parMdfs;
     this.parTs=parTs;
     this.exceptions=exceptions;
+    }
+  public String toString(){
+    String pars="";
+    for(int i:range(parMdfs)){
+      pars+=" "+parMdfs.get(i)+" "+parTs.get(i);
+      }
+    return methMdf.inner+" method "+retMdf.inner+" "+retT+"("+pars+")";
     }
   public static Signature sig(Mdf methMdf,Mdf retMdf,TrustedT retT){
     return new Signature(methMdf,retMdf,retT,L(),L(),L());

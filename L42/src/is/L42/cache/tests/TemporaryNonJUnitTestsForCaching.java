@@ -12,10 +12,12 @@ import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
 import is.L42.cache.LoopCache;
 import is.L42.cache.L42CacheMap;
+import is.L42.cache.L42SingletonCache;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
+import is.L42.platformSpecific.javaTranslation.L42Singleton;
 
 public class TemporaryNonJUnitTestsForCaching {
 	public static final void main(String[] args){
@@ -201,13 +203,33 @@ public class TemporaryNonJUnitTestsForCaching {
 
 interface Box{}
 
+interface Foo{
+  class Bar extends L42Singleton<Foo> implements Foo{
+    @Override public L42Cache<Foo> myCache() { // TODO Auto-generated method stub
+    return null; }
+    }
+  static Bar instance=new Bar();
+  static final L42Cache<Foo> mySCache=new L42SingletonCache<Foo>("FooClass", instance.getClass());
+  }
+
 class IntBox implements L42Cachable<IntBox>,Box{
+  static final IntBox instance=new IntBox(0){
+    //@Override public int numFields(){return 0;}
+    //@Override public Object[] allFields() {return new Object[]{};}
+    //@Override public void setField(int i, Object o) {throw new Error();}    
+    @Override public L42Cache<IntBox> myCache() {return mySCache;}
+    //@Override public Object getField(int i){throw new Error();}
+    //@Override public void setNorm(IntBox t) {throw new Error();}
+    //@Override public IntBox myNorm() {return this;}  
+    };
+  static final L42Cache<IntBox> mySCache=new L42SingletonCache<>("IntBoxClass", instance.getClass());
   static final Class<IntBox> _class=IntBox.class;
   private static final L42StandardCache<IntBox> myCache=
     new L42StandardCache<IntBox>("IntBox",IntBox._class);
   static{myCache.lateInitialize(int.class);}
   //setted up to work transparantly for both int.class and Integer.class
   int f;IntBox(int f){this.f=f;}
+  @Override public int numFields(){return 1;}
   @Override public Object[] allFields() {return new Object[]{f};}
   @Override public void setField(int i, Object o) { this.f=(Integer)o;}
   @Override public L42Cache<IntBox> myCache() {return myCache;}
@@ -240,5 +262,4 @@ class IntBox implements L42Cachable<IntBox>,Box{
     if(!norm.isFibonacci){norm.fibonacci=auxFibonacci(); norm.isFibonacci=true;}
     return norm.fibonacci;    
     }
-  @Override public int numFields(){return 1;}
   }

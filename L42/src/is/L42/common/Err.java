@@ -276,8 +276,8 @@ public class Err {
   "native kind "+_1+" requires "+_2+" nativePar parameters, but "+_3+" are declared"
   ;}public static String nativeKindInvalid(Object _1){return
   "native kind "+_1+" is not recognized"
-  ;}public static String nativeParameterInvalidKind(Object _1,Object _2,Object _3,Object _4){return
-  "native body "+_1+" has selector "+_2+" but the parameter of type "+_3+" is not of kind "+_4
+  ;}public static String nativeParameterInvalidKind(Object _1,Object mh,Object sig,Object _3,Object _4){return
+  "native body "+_1+" has selector "+mh+"; required "+sig+" but the parameter of type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
   "The class is not coherent. Candidate factory parameters are: "+_1
   ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object _1){return

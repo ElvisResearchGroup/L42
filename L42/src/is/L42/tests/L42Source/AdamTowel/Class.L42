@@ -1,3 +1,13 @@
 ClassOperators={class method class This1()=This1}
 class method Library #colon0(Trait that)=that.code()
 class method Library #colon0(class Trait.Lifted lifted)=lifted.code()
+
+MutReferenceEquality=Trait:{
+  mut method Bool mutReferenceEquality(mut This that)=native{trusted:mutReferenceEquality} error void
+  }
+MutStructuralEquality=Trait:{
+  mut method Bool mutStructuralEquality(mut This that)=native{trusted:mutStructuralEquality} error void
+  }
+ImmEquality=Trait:{
+  method Bool immEquality(This that)=native{trusted:immEquality} error void
+  }

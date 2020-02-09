@@ -92,9 +92,9 @@ public class ProgramTypeSystem {
     if(!nativeUrl.startsWith("trusted:")){
       var mh=mwt.mh();
       var ok=mh.mdf().isIn(Mdf.Class,Mdf.Immutable);
-      errIf(!ok,mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),mh.mdf(),"imm or class"));
+      errIf(!ok,mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),"imm or class",mh.mdf(),"imm or class"));
       var errs=L(mh.pars().stream().filter(t->!t.mdf().isImm()));
-      errIf(!errs.isEmpty(),mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),errs,"imm"));
+      errIf(!errs.isEmpty(),mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),"imm",mwt.key(),errs,"imm"));
       return;
       }
     String nativeOp=nativeUrl.substring("trusted:".length());

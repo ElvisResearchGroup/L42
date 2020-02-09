@@ -126,9 +126,8 @@ public class Coherence {
       X xi=fieldName(mh);
       if(!xi.equals(x)){return;}
       if(allowedAbstract(mh)){return;}
-      if(mh.mdf().isCapsule()){return;}
-      assert !mh.t().mdf().isClass();// TODO: is the check 'or mdf" = class' needed or not?, when we know, remove todo for file 6
       if(!canAlsoBe(mh.mdf(),mdf)){return;}
+      if(mh.mdf().isCapsule() && !mh.t().mdf().isClass()){return;}
       c.add(mh.t().mdf());
       });
     }
