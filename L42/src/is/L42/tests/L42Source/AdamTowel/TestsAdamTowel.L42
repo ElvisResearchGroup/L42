@@ -170,6 +170,6 @@ TestEqualities=(
   {}:Test"ImmEq3"(!immCouple3.immEquality(immCouple4))
   I i1 = I()
   I i2 = I()
-  {}:Test"ImmEq4"(!i1.immEquality(i2))
+  {}:Test"ImmEq4"(i1.immEquality(i2))
   void
   )
