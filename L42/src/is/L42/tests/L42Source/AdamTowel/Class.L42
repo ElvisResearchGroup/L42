@@ -22,3 +22,6 @@ ReadEquality=Trait:{
   read method imm This readClone()
   method Bool immEquality(This that)
   }
+ImmNorm=Trait:{
+  imm method This immNorm()=native{trusted:immNorm} error void
+  }

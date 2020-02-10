@@ -251,6 +251,7 @@ public enum TrustedOp {
     """,sig(Mutable,Mutable,Gen1)))),
   LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),
   EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator())),
+  ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
   MutReferenceEquality("mutReferenceEquality",Map.of(AnyKind,use(
     "return %1$s==%2$s;",sig(Mutable,Immutable,Bool,Mutable,This)))),
   MutStructuralEquality("mutStructuralEquality",Map.of(AnyKind,use(
@@ -261,6 +262,8 @@ public enum TrustedOp {
     "return L42CacheMap.dup(%1$s);",sig(Mutable,Capsule,This)))),
   ReadClone("readClone",Map.of(AnyKind,use(
     "return L42CacheMap.normalize(L42CacheMap.dup(%1$s));",sig(Readable,Immutable,This)))),  
+  ImmNorm("immNorm",Map.of(AnyKind,use(
+    "return L42CacheMap.normalize(%1$s);",sig(Immutable,Immutable,This)))),    
   MutToString("mutToString",Map.of(AnyKind,use(
     "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,String)))),
   ImmToString("immToString",Map.of(AnyKind,use(

@@ -364,6 +364,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("});}");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("private "+jC+" norm;");nl();
+    c("public "+jC+"(){}");nl();
     c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
     c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
     c("@Override public int numFields(){return "+xs.size()+";}");nl();

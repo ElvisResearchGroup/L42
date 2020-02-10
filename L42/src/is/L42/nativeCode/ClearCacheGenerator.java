@@ -9,29 +9,9 @@ import is.L42.generated.Mdf;
 import is.L42.generated.Core.L.MWT;
 import is.L42.translationToJava.J;
 
-public class LazyCacheGenerator implements Generator{
-  void typeCache(MWT mwt, J j){
-    /*assert sig.parMdfs.size()==sig.parTs.size();
-      if(sig.parTs.size()!=mwt.mh().pars().size()){
-        throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),sig.parMdfs.size()));
-        }
-      checkMdf(mwt,sig,mwt.mh().mdf(),sig.methMdf);
-      var t=mwt.mh().t();
-      checkSingle(p,mwt,sig,t.p(),t.mdf(),sig.retT,sig.retMdf);
-      for(int i:range(mwt.mh().pars().size())){
-        var pi=mwt.mh().pars().get(i).p();
-        var mdfi=mwt.mh().pars().get(i).mdf();
-        var tti=sig.parTs.get(i);
-        var tmdfi=sig.parMdfs.get(i);
-        checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi);
-        }
-      //TODO: check exceptions
-      return true;*/
-    }
+public class ClearCacheGenerator implements Generator{
   @Override public void of(boolean type, MWT mwt, J j) {
-    if(type){typeCache(mwt,j); return;
-      }
+    if(type){return;}
     //if(!mwt.mh().mdf().isImm()){throw todo();}
     assert mwt.key().xs().isEmpty();
     String retT=j.typeNameStr(mwt.mh().t().p());
