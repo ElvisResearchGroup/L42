@@ -51,4 +51,9 @@ public interface L42Cachable<T> {
    */
   T myNorm();
   
+  /**
+   * @return a new, blank instance of this class with no initialized fields
+   */
+  T newInstance();
+  
 }

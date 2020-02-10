@@ -1,6 +1,7 @@
 package is.L42.cache.nativecache;
 
 import java.util.List;
+import java.util.Map;
 
 import is.L42.cache.L42Cache;
 import is.L42.cache.KeyNorm2D;
@@ -88,4 +89,10 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   
   @Override
   public void clear() {}
+
+  @Override
+  public Type dup(Type that, Map<Object, Object> map) {
+    return that;
+    }
+  
   }

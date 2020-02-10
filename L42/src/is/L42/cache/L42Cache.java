@@ -236,22 +236,6 @@ public interface L42Cache<T> extends Serializable {
     return this.dup(that, new IdentityHashMap<>());
     }
   
-  @SuppressWarnings("unchecked") 
-  default T dup(T that, Map<Object, Object> map) {
-    if(that == null || isNorm(that)) { return that; }
-    try {
-      T nObj = (T) that.getClass().getConstructor().newInstance();
-      map.put(that, nObj);
-      for(int i = 0; i < this.fn(that); i++) {
-        Object field = this.f(that, i);
-        L42Cache<Object> fieldcache = this.fieldCache(field, i);
-        if(!map.containsKey(field)) { map.put(field, fieldcache.dup(field, map)); }
-        this.f(nObj, map.get(field), i);
-        }
-      return nObj;
-      } catch (Exception e) {
-        throw new Error(e);
-      }
-    }
+  T dup(T that, Map<Object, Object> map);
   
   }

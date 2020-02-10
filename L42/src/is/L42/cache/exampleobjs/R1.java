@@ -20,7 +20,7 @@ public class R1 implements L42Cachable<R1>, Serializable
   
   public Object referenced;
   
-  public R1() {}
+  private R1() {}
   
   public R1(Object ref)
   {
@@ -67,5 +67,10 @@ public class R1 implements L42Cachable<R1>, Serializable
   public void setNorm(R1 norm) {
     this.myNorm = norm;
   }
+
+  @Override 
+  public R1 newInstance() {
+    return new R1();
+    }
   
 }

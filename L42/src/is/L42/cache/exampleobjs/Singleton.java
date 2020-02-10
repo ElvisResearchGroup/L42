@@ -48,4 +48,9 @@ public class Singleton implements L42Cachable<Singleton>, Serializable {
   public Singleton myNorm() { 
     return this; 
     }
+
+  @Override 
+  public Singleton newInstance() { 
+    throw new NullPointerException(); 
+    }
   }

@@ -217,6 +217,9 @@ interface Foo{
   class Bar extends L42NoFields<Foo> implements Foo{
     @Override public L42Cache<Foo> myCache() { // TODO Auto-generated method stub
     return null; }
+
+    @Override public Foo newInstance() { // TODO Auto-generated method stub
+    return null; }
     }
   static Bar instance=new Bar();
   static final L42Cache<Foo> mySCache=new L42SingletonCache<Foo>("FooClass", instance.getClass());
@@ -272,4 +275,6 @@ class IntBox implements L42Cachable<IntBox>,Box{
     if(!norm.isFibonacci){norm.fibonacci=auxFibonacci(); norm.isFibonacci=true;}
     return norm.fibonacci;    
     }
+  @Override public IntBox newInstance() { // TODO Auto-generated method stub
+  return null; }
   }

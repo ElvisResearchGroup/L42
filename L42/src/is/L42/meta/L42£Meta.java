@@ -237,6 +237,10 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
   public static final MetaCache myCache=new MetaCache();
   static{L42CacheMap.addCacheableType(L42£Meta.class,myCache);}
   @Override public MetaCache myCache(){return myCache;}
+  @Override 
+  public L42£Meta newInstance() { 
+    throw General.unreachable(); 
+    }
   }
 class MetaCache extends ValueCache<L42£Meta>{
   @Override public String typename() {return "Meta";}

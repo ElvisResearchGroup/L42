@@ -7,7 +7,7 @@ import is.L42.cache.L42StandardCache;
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.tools.General;
-//UserDefinedCachable=Foreign
+
 public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializable {
   
   /*
@@ -102,4 +102,9 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializ
   public void setNorm(AnnotatedExample norm) {
     this.myNorm = norm;
   }
+
+  @Override 
+  public AnnotatedExample newInstance() { 
+    return new AnnotatedExample(); 
+    }
   }

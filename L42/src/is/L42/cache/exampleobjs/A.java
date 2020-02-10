@@ -19,7 +19,7 @@ public class A implements L42Cachable<A>, Serializable {
   
   int i1, i2;
   
-  public A() {}
+  private A() {}
 
   public A(int i1, int i2) {
     super();
@@ -90,5 +90,10 @@ public class A implements L42Cachable<A>, Serializable {
   public void setNorm(A norm) {
     this.myNorm = norm;
   }
+
+  @Override 
+  public A newInstance() { 
+    return new A(); 
+    }
 
 }

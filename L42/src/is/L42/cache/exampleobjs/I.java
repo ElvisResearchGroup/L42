@@ -50,4 +50,9 @@ public class I implements L42Cachable<I>, Serializable {
     this.myNorm = norm;
   }
 
+  @Override 
+  public I newInstance() { 
+    return new I(); 
+    }
+
 }

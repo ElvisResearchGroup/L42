@@ -20,7 +20,7 @@ public class S1 implements L42Cachable<S1>, Serializable {
   
   String myString;
 
-  public S1() {}
+  private S1() {}
   
   public S1(String s) { 
     this.myString = s;
@@ -69,5 +69,10 @@ public class S1 implements L42Cachable<S1>, Serializable {
   public void setNorm(S1 norm) {
     this.myNorm = norm;
   }
+
+  @Override 
+  public S1 newInstance() {
+    return new S1(); 
+    }
 
 }

@@ -4,6 +4,7 @@ import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
 import is.L42.cache.nativecache.ValueCache;
 import is.L42.generated.P;
+import is.L42.tools.General;
 
 public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {
   final public P unwrap;  
@@ -39,5 +40,9 @@ public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {
   @Override 
   public void setNorm(L42ClassAny t) {}
   @Override public L42ClassAny myNorm() { return null; }
+  @Override 
+  public L42ClassAny newInstance() {
+    throw General.unreachable();
+    }
   
   }

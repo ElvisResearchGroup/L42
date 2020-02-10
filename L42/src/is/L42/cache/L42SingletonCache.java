@@ -1,6 +1,7 @@
 package is.L42.cache;
 
 import java.util.List;
+import java.util.Map;
 
 public class L42SingletonCache<T> implements L42Cache<T> {
   
@@ -93,5 +94,10 @@ public class L42SingletonCache<T> implements L42Cache<T> {
 
   @Override
   public void clear() {}
+
+  @Override 
+  public T dup(T that, Map<Object, Object> map) { 
+    return that;
+    }
   
   }
