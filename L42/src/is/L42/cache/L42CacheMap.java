@@ -7,7 +7,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 
 import com.google.common.cache.CacheBuilder;
 
@@ -154,19 +154,18 @@ public class L42CacheMap {
     return expandedKey(obj, true, false).toString();
     }
   
-  public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
+  @SuppressWarnings("unchecked") public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
-    class A { <T> KeyVarID apply(int offset, T toAdd, int toAddIndex, Object[][] subkey) {
+    class A { <T> KeyVarID apply(int offset, L42Cache<T> cache, T toAdd, int toAddIndex, Object[][] subkey) {
       KeyVarID ourId = new KeyVarID(offset + toAddIndex);
         done.put(toAdd, ourId.value());
-        L42Cache<T> cache = getCacheObject(toAdd);
         for(int i = 1; i < subkey[toAddIndex].length; i++) {
           if(subkey[toAddIndex][i] instanceof KeyVarID) {
             KeyVarID oldId = (KeyVarID) subkey[toAddIndex][i];
             Object field = cache.f(toAdd, i - 1);
             if(!done.containsKey(field)) {
-              KeyVarID newId = this.apply(offset, field, oldId.value(), subkey);
+              KeyVarID newId = this.apply(offset, cache.fieldCache(field, i - 1), field, oldId.value(), subkey);
               subkey[toAddIndex][i] = newId;
               } else {
               KeyVarID newId = new KeyVarID(done.get(field)); 
@@ -177,25 +176,28 @@ public class L42CacheMap {
         return ourId;
         }}
     A subkeyProcessor = new A();
-    Function<Object, Object> addNewObject = (theObj) -> {
-      if(isNorm(theObj) && !entireROG) { return theObj; }
-      KeyNorm2D subkey = getKey(theObj, norm);
+    BiFunction<L42Cache<Object>, Object, Object> addNewObject = (theCache, theObj) -> {
+      if(theCache == null) { theCache = getCacheObject(theObj); }
+      if(!entireROG && theCache.isNorm(theObj) ) { return theObj; }
+      theObj = norm ? theCache.normalize(theObj) : theObj;
+      KeyNorm2D subkey = theCache.computeKeyNN(theObj);
       Object[][] subkeylines = subkey.lines();
       int offset = nkeylist.size();
-      KeyVarID nid = subkeyProcessor.apply(offset, theObj, 0, subkeylines);
+      KeyVarID nid = subkeyProcessor.apply(offset, theCache, theObj, 0, subkeylines);
       for(Object[] o : subkeylines) { nkeylist.add(o); }
       return nid;
       };
-    addNewObject.apply(obj);
+    addNewObject.apply(null, obj);
     for(int i = 0; i < nkeylist.size(); i++) {
       Object[] line = nkeylist.get(i);
-      if(((L42Cache<?>) line[0]).isValueType()) { continue; }
+      L42Cache<Object> lineCache = (L42Cache<Object>) line[0];
+      if(lineCache.isValueType()) { continue; }
       for(int j = 1; j < line.length; j++) {
         if(!(line[j] instanceof KeyVarID)) {
           if(done.containsKey(line[j])) {
             line[j] = new KeyVarID(done.get(line[j]));
             } else if(line[j] != null) {
-            line[j] = addNewObject.apply(line[j]);
+            line[j] = addNewObject.apply((L42Cache<Object>) lineCache.rawFieldCache(j - 1), line[j]);
             }
           }
         }

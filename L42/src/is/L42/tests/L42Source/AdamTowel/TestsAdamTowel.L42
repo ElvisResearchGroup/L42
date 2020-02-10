@@ -1,5 +1,5 @@
 reuse[#$AdamTowel]
-OptS=Class:Opt(S)
+/*OptS=Class:Opt(S)
 TestOpt=(
   OptS o1=OptS()
   OptS o2=OptS(S"hi")
@@ -125,17 +125,45 @@ TestLog=(
   iLog.write(S"World")
   {}:Test"logTest"(expected=S"Hello World", actual=mLog.read())
   iLog.clear()
-  )
+  )*/
 
-Person=Class:(Class.MutReferenceEquality+{
+Person=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
   var S name
   var Size age
   class method mut This(S name,Size age)
+  read method capsule This clone()=This(name=this.name(),age=this.age())
+  })
+Couple=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
+  var Person p1
+  var Person p2
+  class method mut This(Person p1, Person p2)
+  imm method Void normMe()=native{trusted:cachable} (void)
   })
 TestEqualities=(
-  mut Person p1=Person(name=S"bob",age=23Size)
-  mut Person p2=Person(name=S"bob",age=23Size)
-  {}:Test"RefEq1"(!p1.mutReferenceEquality(p2))
-  {}:Test"RefEq2"(p1.mutReferenceEquality(p1))
-  {}:Test"RefEq3"(p2.mutReferenceEquality(p2))
+  Person immPerson = (
+    mut Person p1=Person(name=S"bob",age=23Size)
+    mut Person p2=Person(name=S"bob",age=23Size)
+    {}:Test"RefEq1"(!p1.mutReferenceEquality(p2))
+    {}:Test"RefEq2"(p1.mutReferenceEquality(p1))
+    {}:Test"RefEq3"(p2.mutReferenceEquality(p2))
+    {}:Test"StructEq1"(p1.mutStructuralEquality(p2))
+    p1.age(24Size)
+    {}:Test"StructEq2"(!p1.mutStructuralEquality(p2))
+    mut Person p3 = p1.clone()
+    {}:Test"StructEq3"(p1.mutStructuralEquality(p3))
+    p1
+    )
+  Couple immCouple = (
+    mut Couple c1 = Couple(p1=immPerson, p2=immPerson)
+    mut Couple c2 = Couple(p1=immPerson, p2=immPerson.clone())
+    {}:Test"StructEq4"(!c1.mutStructuralEquality(c2))
+    c2
+    )
+  Couple immCouple2 = Couple(p1=immPerson, p2=immPerson)
+  Couple immCouple3 = Couple(p1=immPerson.clone(), p2=immPerson.clone())
+  Couple immCouple4 = Couple(p1=immPerson, p2=Person(name=S"Claire",age=20Size))
+  {}:Test"ImmEq1"(immCouple.immEquality(immCouple2))
+  {}:Test"ImmEq2"(immCouple2.immEquality(immCouple3))
+  {}:Test"ImmEq3"(!immCouple3.immEquality(immCouple4))
+  void
   )
