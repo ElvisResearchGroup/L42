@@ -139,6 +139,9 @@ Couple=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEq
   class method mut This(Person p1, Person p2)
   imm method Void normMe()=native{trusted:cachable} (void)
   })
+I=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
+  class method mut This()
+  })
 TestEqualities=(
   Person immPerson = (
     mut Person p1=Person(name=S"bob",age=23Size)
@@ -165,5 +168,8 @@ TestEqualities=(
   {}:Test"ImmEq1"(immCouple.immEquality(immCouple2))
   {}:Test"ImmEq2"(immCouple2.immEquality(immCouple3))
   {}:Test"ImmEq3"(!immCouple3.immEquality(immCouple4))
+  I i1 = I()
+  I i2 = I()
+  {}:Test"ImmEq4"(!i1.immEquality(i2))
   void
   )
