@@ -206,13 +206,18 @@ TestCircular=(
   {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
   )
 */
-  /*
-  MAKE A DEDICATED TEST FILE //follow TestList
-  create b after using a
-  
-  test interfaces: A may have a HasToS and an Any
-  and all permutations with NotQuiteStrings List of Any and List of HasToS
-  
-  test circular objects
-  
-  */
+
+TestClassCache={
+  A={
+    class method Size const()=native{trusted:cachable} (
+      Log"Foo".write(S"ACT.")
+      42Size
+      )
+    }
+  Task=(
+    Log"Foo".clear()
+    {}:Test"res1"(expected=42Size, actual=A.const())
+    {}:Test"res2"(expected=42Size, actual=A.const())
+    {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    )
+  }

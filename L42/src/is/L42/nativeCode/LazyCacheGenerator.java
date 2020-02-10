@@ -12,16 +12,17 @@ import is.L42.translationToJava.J;
 public class LazyCacheGenerator implements Generator{
   @Override public void of(boolean type, MWT mwt, J j) {
     if(type){return;}
-    if(!mwt.mh().mdf().isImm()){throw todo();}
+    //if(!mwt.mh().mdf().isImm()){throw todo();}
     assert mwt.key().xs().isEmpty();
     String retT=j.typeNameStr(mwt.mh().t().p());
     String thisT=j.typeNameStr(j.p());
     String name="£k"+mwt.key().m();//other used letters: x _ f c n h E
     if(mwt.key().hasUniqueNum()){name+="£k"+mwt.key().uniqueNum();}
+    if(mwt.mh().mdf().isClass()){classCache(j,name);}
     if(mwt.mh().mdf().isImm()){immCache(j,name);}
     if(mwt.mh().mdf().isRead()){readCache(j,name);}
     fieldAndAuxMethod(j,name,retT,thisT,mwt._e());
-    if(!mwt.mh().mdf().isIn(Mdf.Readable,Mdf.Immutable)){throw bug();}
+    if(!mwt.mh().mdf().isIn(Mdf.Readable,Mdf.Immutable,Mdf.Class)){throw bug();}
     }
   void immCache(J j,String name){
     j.c("if(£xthis.norm==null){£xthis.norm=£xthis.myCache.normalize(£xthis);}");j.nl();
@@ -35,6 +36,13 @@ public class LazyCacheGenerator implements Generator{
     j.c("return £xthis."+name+";");j.nl();j.deIndent();    
     j.c("}");j.nl();
     j.c("boolean is"+name+";");j.nl();
+    }
+  void classCache(J j,String name){
+    j.c("if(!is"+name+"){"+name+"="+name+"(£xthis); is"+name+"=true;}");j.nl();
+    j.c("return "+name+";");j.nl();j.deIndent();    
+    j.c("}");j.nl();
+    j.c("static boolean is"+name+";");j.nl();
+    j.c("static ");//evil but works, since fieldAndAuxMethod is called directly after
     }
   void fieldAndAuxMethod(J j,String name,String retT,String thisT,Core.E e){
     j.c(retT+" "+name+";");j.nl();
