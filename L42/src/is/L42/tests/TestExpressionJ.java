@@ -33,7 +33,7 @@ import static is.L42.common.Err.hole;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestExpressionJ
-extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
+extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   je("Any<:class Any","L42Any.pathInstance")
   ),new AtomicTest(()->
   je("Library<:class Any","L42£Library.pathInstance")
@@ -281,8 +281,10 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
   jc("""
      C={ #norm{}}
      ""","""
-     class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
-       [###]
+     class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
+       static final Class<£cC£n1> _class=£cC£n1.class;
+       private static final L42Cache<£cC£n1> myCache=new L42SingletonCache<£cC£n1>("£cC£n1",£cC£n1._class);
+       @Override public L42Cache<£cC£n1> myCache(){return myCache;}
        public static £cC£n1 NewFwd(){return new _Fwd();}
        public static class _Fwd extends £cC£n1 implements L42Fwd{
          private List<Object> os=new ArrayList<>();

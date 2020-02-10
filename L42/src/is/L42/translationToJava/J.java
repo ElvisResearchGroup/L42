@@ -554,6 +554,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     //if a (non native) class has no fields, it has a static .instance that is used
     //instead of any constructor, and instead of any placeholder variable
     //thus, variables of those types are never in fwds
+    if(fields.xs.isEmpty()){c("return pathInstance;");}
+    else{newAndFwd(mwt);}
+    }
+  private void newAndFwd(MWT mwt){
     typeName(p);
     kw("Res=new ");
     typeName(p);
@@ -581,7 +585,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       if(isFwd){c("}");}
       nl();
       }
-      c("return Res;");
+    c("return Res;"); 
     }   
   private void refined(MWT mwt){
     var l=p.topCore();
