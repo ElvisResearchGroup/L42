@@ -693,8 +693,46 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     )
   }
   """,
-  Err.methCallNoCompatibleMdfParametersSignature(hole,hole)
-  )));}
+  Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
+  ),new AtomicTest(()->
+  topFail(EndError.TypeError.class,"""
+  {A={imm method This foo()=native{trusted:cachable} void}
+  Test=void
+  }
+  """,
+  Err.invalidExpectedTypeForVoidLiteral(hole))
+  ),new AtomicTest(()->
+  top("""
+  {A={imm method This foo()=native{trusted:cachable} error void}
+  Test=void
+  }
+  ""","""
+  {A={imm method This foo()=native{trusted:cachable} error void #typed{typeDep=This0}}
+  Test={#typed{}}
+  #norm{}}
+  """)
+  ),new AtomicTest(()->
+  topFail(EndError.TypeError.class,"""
+  {A={imm method mut This foo()=native{trusted:cachable} error void}
+  Test=void
+  }
+  """,
+  Err.nativeParameterInvalidKind(hole,hole,hole,hole,hole))
+  ),new AtomicTest(()->
+  topFail(EndError.TypeError.class,"""
+  {A={capsule method This foo()=native{trusted:cachable} error void}
+  Test=void
+  }
+  """,
+  Err.nativeParameterInvalidKind(hole,hole,hole,hole,hole))
+  ),new AtomicTest(()->
+  topFail(EndError.TypeError.class,"""
+  {A={method This foo(Any that)=native{trusted:cachable} error void}
+  Test=void
+  }
+  """,
+  Err.nativeParameterCountInvalid(hole,hole,hole))
+  ));}
 
   private static String tryCatchTest(String s){
     return """

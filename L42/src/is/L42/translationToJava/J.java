@@ -55,7 +55,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   int catchLev=0;
   int loopLev=0;
   final ArrayList<L42£Library>libs;
-  Fields fields;
+  public Fields fields;
   private String libToMap(Program p){
     libs.add(new L42£Library(p));
     return ""+(libs.size()-1);
@@ -466,11 +466,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     c("}");deIndent();nl();
     }  
-  class Fields{
-    final List<X> xs;
-    final List<P> ps;
-    final List<String> psJ;
-    final Coherence ch;
+  public class Fields{
+    final public List<X> xs;
+    final public List<P> ps;
+    final public List<String> psJ;
+    final public Coherence ch;
     Fields(){
       ch=new Coherence(p,false);
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}

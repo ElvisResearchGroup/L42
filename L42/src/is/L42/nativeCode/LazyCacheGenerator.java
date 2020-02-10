@@ -3,31 +3,32 @@ package is.L42.nativeCode;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.todo;
 
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MH;
 import is.L42.translationToJava.J;
 
 public class LazyCacheGenerator implements Generator{
   void typeCache(MWT mwt, J j){
-    /*assert sig.parMdfs.size()==sig.parTs.size();
-      if(sig.parTs.size()!=mwt.mh().pars().size()){
-        throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),sig.parMdfs.size()));
-        }
-      checkMdf(mwt,sig,mwt.mh().mdf(),sig.methMdf);
+  //TODO:try to test if the normal type checking is also called
+    MH mh=mwt.mh();
+    if(!mh.pars().isEmpty()){
+      throw new EndError.TypeError(mwt._e().poss(),
+        Err.nativeParameterCountInvalid(mwt.nativeUrl(),mwt.key(),0));
+      }
+    if(!mh.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class)){
+      throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),"immutable, readable or class methods",mh.mdf(),"immutable, readable or class"));
+      }
       var t=mwt.mh().t();
-      checkSingle(p,mwt,sig,t.p(),t.mdf(),sig.retT,sig.retMdf);
-      for(int i:range(mwt.mh().pars().size())){
-        var pi=mwt.mh().pars().get(i).p();
-        var mdfi=mwt.mh().pars().get(i).mdf();
-        var tti=sig.parTs.get(i);
-        var tmdfi=sig.parMdfs.get(i);
-        checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi);
-        }
-      //TODO: check exceptions
-      return true;*/
+      if(!t.mdf().isIn(Mdf.Immutable,Mdf.Class)){
+      throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),"immutable or class return type",mh.mdf(),"immutable or class"));
+      }
     }
   @Override public void of(boolean type, MWT mwt, J j) {
     if(type){typeCache(mwt,j); return;
@@ -45,6 +46,7 @@ public class LazyCacheGenerator implements Generator{
     if(!mwt.mh().mdf().isIn(Mdf.Readable,Mdf.Immutable,Mdf.Class)){throw bug();}
     }
   void immCache(J j,String name){
+    if(j.fields.xs.isEmpty()){readCache(j,name);return;}
     j.c("if(£xthis.norm==null){£xthis.norm=£xthis.myCache.normalize(£xthis);}");j.nl();
     j.c("if(!£xthis.norm.is"+name+"){£xthis.norm."+name+"="+name+"(£xthis.norm); £xthis.norm.is"+name+"=true;}");j.nl();
     j.c("return £xthis.norm."+name+";");j.nl();j.deIndent();    
