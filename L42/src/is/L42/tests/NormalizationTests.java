@@ -355,6 +355,7 @@ public class NormalizationTests {
     T n1old, n2old;
     T n1 = n1old = supplier1.get();
     T n2 = n2old = supplier2.get();
+    String oldstr = L42CacheMap.readObjToString(n1);
     L42Cache<T> cache = getCacheObject(n1);
     assertTrue(n1 != n2);
     if(readEQ) { assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false)); }

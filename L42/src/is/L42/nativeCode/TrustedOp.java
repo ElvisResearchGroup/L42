@@ -258,7 +258,9 @@ public enum TrustedOp {
   ImmEquality("immEquality",Map.of(AnyKind,use(
     "return L42CacheMap.structurallyEqualNorm(%1$s,%2$s);",sig(Immutable,Immutable,Bool,Immutable,This)))),
   MutToString("mutToString",Map.of(AnyKind,use(
-    "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,Bool))))    
+    "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,Bool)))),
+  ImmToString("immToString",Map.of(AnyKind,use(
+      "return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,Bool))))    
   ;
   public final String inner;
   Map<TrustedKind,Generator>code;

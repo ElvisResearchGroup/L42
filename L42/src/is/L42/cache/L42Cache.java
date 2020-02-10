@@ -1,8 +1,9 @@
 package is.L42.cache;
 
+import java.io.Serializable;
 import java.util.List;
 
-public interface L42Cache<T> {
+public interface L42Cache<T> extends Serializable {
   
   /**
    * Produces the normalized version of this object, such that

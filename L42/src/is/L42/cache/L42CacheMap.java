@@ -1,5 +1,11 @@
 package is.L42.cache;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -148,6 +154,25 @@ public class L42CacheMap {
     obj1 = normalize(obj1);
     obj2 = normalize(obj2);
     return L42CacheMap.identityEquals(obj1, obj2);
+    }
+  
+  public static String readObjToString(Object o) {
+    if(isNorm(o)) { return objToString(o); }
+    try {
+      ByteArrayOutputStream baos = new ByteArrayOutputStream(1024); 
+      try(ObjectOutputStream oos = new ObjectOutputStream(baos)) {
+        oos.writeObject(o);
+        }
+      byte[] bytes = baos.toByteArray();
+      try(ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
+        o = ois.readObject();
+        } catch (ClassNotFoundException e) {
+          throw new Error(e);
+        }
+      } catch (IOException e) {
+      throw new UncheckedIOException(e);
+      }
+    return objToString(o);
     }
   
   public static String objToString(Object obj) {

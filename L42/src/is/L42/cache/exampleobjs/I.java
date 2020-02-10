@@ -1,11 +1,13 @@
 package is.L42.cache.exampleobjs;
 
+import java.io.Serializable;
+
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42StandardCache;
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 
-public class I implements L42Cachable<I> {
+public class I implements L42Cachable<I>, Serializable {
 	
   public static final Class<I> _class = I.class;
   public static final L42Cache<I> myCache;

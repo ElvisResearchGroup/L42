@@ -1,12 +1,14 @@
 package is.L42.cache.exampleobjs;
 
+import java.io.Serializable;
+
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42StandardCache;
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.tools.General;
 //UserDefinedCachable=Foreign
-public class AnnotatedExample implements L42Cachable<AnnotatedExample> {
+public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializable {
   
   /*
    * Create and add the cache to the index in a static initializer,
