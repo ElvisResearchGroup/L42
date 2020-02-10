@@ -257,10 +257,14 @@ public enum TrustedOp {
     "return L42CacheMap.structurallyEqualNoNorm(%1$s,%2$s);",sig(Mutable,Immutable,Bool,Mutable,This)))),
   ImmEquality("immEquality",Map.of(AnyKind,use(
     "return L42CacheMap.structurallyEqualNorm(%1$s,%2$s);",sig(Immutable,Immutable,Bool,Immutable,This)))),
+  MutClone("mutClone",Map.of(AnyKind,use(
+    "return L42CacheMap.dup(%1$s);",sig(Mutable,Capsule,This)))),
+  ReadClone("readClone",Map.of(AnyKind,use(
+    "return L42CacheMap.dup(%1$s);",sig(Readable,Immutable,This)))),  
   MutToString("mutToString",Map.of(AnyKind,use(
-    "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,Bool)))),
+    "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,String)))),
   ImmToString("immToString",Map.of(AnyKind,use(
-      "return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,Bool))))    
+      "return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,String))))    
   ;
   public final String inner;
   Map<TrustedKind,Generator>code;

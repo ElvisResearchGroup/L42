@@ -1,5 +1,6 @@
 package is.L42.cache.tests;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.IdentityHashMap;
@@ -21,7 +22,16 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public class TemporaryNonJUnitTestsForCaching {
 	public static final void main(String[] args){
-	  
+	  R2 a = new R2(null,null);
+	  R2 b1 = new R2(12,a);
+    R2 b2 = new R2(8,a);
+    a.referenced = b1;
+    a.referenced2 = b2;
+    System.out.println(L42CacheMap.expandedKey(a,true,false));
+    //L42CacheMap.prettyPrint(a,cacheName->str)
+	  }
+	public static final void oldMain(String[] args){
+
 		I i1 = new I();
 		I i2 = new I();
 		i1 = L42CacheMap.normalize(i1);

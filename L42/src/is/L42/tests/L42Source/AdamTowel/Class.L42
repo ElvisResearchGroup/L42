@@ -11,3 +11,9 @@ MutStructuralEquality=Trait:{
 ImmEquality=Trait:{
   method Bool immEquality(This that)=native{trusted:immEquality} error void
   }
+MutClone=Trait:{
+  mut method capsule This mutClone()=native{trusted:mutClone} error void
+  }
+ReadClone=Trait:{
+  read method imm This readClone()=native{trusted:readClone} error void
+  }
