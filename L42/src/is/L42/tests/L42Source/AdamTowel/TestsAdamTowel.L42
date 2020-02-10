@@ -127,19 +127,22 @@ TestLog=(
   iLog.clear()
   )
 
-Person=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
+ClassUtils = Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+Class.MutClone+Class.ReadClone+Class.ReadEquality
+
+Person=Class:(ClassUtils+{
   var S name
   var Size age
   class method mut This(S name,Size age)
   read method capsule This clone()=This(name=this.name(),age=this.age())
   })
-Couple=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
+Couple=Class:(ClassUtils+{
   var Person p1
   var Person p2
   class method mut This(Person p1, Person p2)
+  read method capsule This clone()=This(p1=this.p1(),p2=this.p2())
   imm method Void normMe()=native{trusted:cachable} (void)
   })
-I=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
+I=Class:(ClassUtils+{
   class method mut This()
   })
 TestEqualities=(
@@ -171,5 +174,10 @@ TestEqualities=(
   I i1 = I()
   I i2 = I()
   {}:Test"ImmEq4"(i1.immEquality(i2))
+  
+  mut Couple mutCouple = Couple(p1=immPerson, p2=immPerson)
+  {}:Test"MutClone1"(!mutCouple.mutReferenceEquality(mutCouple.mutClone()))
+  {}:Test"MutClone2"(mutCouple.mutStructuralEquality(mutCouple.mutClone()))
+  {}:Test"ReadClone1"(mutCouple.readClone().immEquality(mutCouple.readClone()))
   void
   )
