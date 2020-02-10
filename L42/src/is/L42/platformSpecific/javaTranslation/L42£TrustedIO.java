@@ -21,7 +21,7 @@ import is.L42.generated.Pos;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
 
-public class L42£TrustedIO extends L42Singleton<L42£TrustedIO>{
+public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
   public L42£Void strDebug(String s){
     Resources.out(s);
     return L42£Void.instance;

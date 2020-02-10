@@ -17,7 +17,7 @@ import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
 import is.L42.cache.exampleobjs.R2;
-import is.L42.platformSpecific.javaTranslation.L42Singleton;
+import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public class TemporaryNonJUnitTestsForCaching {
 	public static final void main(String[] args){
@@ -204,7 +204,7 @@ public class TemporaryNonJUnitTestsForCaching {
 interface Box{}
 
 interface Foo{
-  class Bar extends L42Singleton<Foo> implements Foo{
+  class Bar extends L42NoFields<Foo> implements Foo{
     @Override public L42Cache<Foo> myCache() { // TODO Auto-generated method stub
     return null; }
     }

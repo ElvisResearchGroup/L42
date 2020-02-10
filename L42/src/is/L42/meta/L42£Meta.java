@@ -40,7 +40,7 @@ import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
-import is.L42.platformSpecific.javaTranslation.L42Singleton;
+import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Top;
@@ -49,7 +49,7 @@ import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
-public class L42£Meta extends L42Singleton<L42£Meta>{
+public class L42£Meta extends L42NoFields<L42£Meta>{
   private final Map<List<C>,P> redirects;
   private final String toString;
   public L42£Meta(){this(Map.of());}

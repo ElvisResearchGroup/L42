@@ -385,27 +385,40 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   private void addCachableMethodsNoFields(String jC){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("private static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
-    c("static{myCache.lateInitialize();}");nl();
+    c("private static final L42Cache<"+jC+"> myCache=new L42SingletonCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
-    c("@Override public void setNorm("+jC+" t){}");nl();
-    c("@Override public "+jC+" myNorm(){return this;}");nl();
-    c("@Override public int numFields() {return 0;}");nl();    
-    c("@Override public Object[] allFields(){return new Object[]{};}");nl();
-    c("@Override public void setField(int i,Object o){};");nl();
-    c("@Override public Object getField(int i){throw new ArrayIndexOutOfBoundsException();}");nl();
+    //c("@Override public void setNorm("+jC+" t){}");nl();
+    //c("@Override public "+jC+" myNorm(){return this;}");nl();
+    //c("@Override public int numFields() {return 0;}");nl();    
+    //c("@Override public Object[] allFields(){return new Object[]{};}");nl();
+    //c("@Override public void setField(int i,Object o){};");nl();
+    //c("@Override public Object getField(int i){throw new ArrayIndexOutOfBoundsException();}");nl();
+    }
+  public void header(boolean interf,String jC){
+    if(interf){
+      kw("interface "+jC+ " extends L42Any");
+      return;
+      }
+    if(this.isCoherent && (!this.fields.xs.isEmpty() || nativeKind(p))){
+      kw("class "+jC+ " implements L42Any,L42Cachable<"+jC+">");
+      return;
+      }
+    kw("class "+jC+ " extends L42NoFields<"+jC+"> implements L42Any");
     }
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
-    if(interf){kw("interface "+jC+ " extends L42Any");}
-    else{kw("class "+jC+ " implements L42Any,L42Cachable<"+jC+">");}
+    if(this.isCoherent){this.fields=new Fields();}
+    header(interf,jC);
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
-    if(!this.isCoherent){addCachableMethodsNoFields(jC);}
+    if(!interf){
+      if(this.isCoherent && (!this.fields.xs.isEmpty() || nativeKind(p))){
+      addCachableMethods(jC);
+      }
+      else{addCachableMethodsNoFields(jC);}
+      }
     if(this.isCoherent){
-      this.fields=new Fields();
-      if(!interf){addCachableMethods(jC);}
       for(int i:range(fields.xs)){
         X xi=fields.xs.get(i);
         kw(fields.psJ.get(i));
@@ -423,7 +436,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     visitMWTs(p.topCore().mwts());
     c("public static "+jC+" NewFwd(){return new _Fwd();}");
     nl();
-    if(interf){c("public static class _Fwd extends L42Singleton<"+jC+"> implements "+jC+", L42Fwd{");}
+    if(interf){c("public static class _Fwd extends L42NoFields<"+jC+"> implements "+jC+", L42Fwd{");}
     else{c("public static class _Fwd extends "+jC+" implements L42Fwd{");}
     indent();nl();
     c("private List<Object> os=new ArrayList<>();");nl();

@@ -15,7 +15,7 @@ import is.L42.generated.Core;
 import is.L42.generated.P;
 import is.L42.generated.Core.L;
 
-public class L42£Library extends L42Singleton<L42£Library> implements L42Any,Serializable{
+public class L42£Library extends L42NoFields<L42£Library> implements L42Any,Serializable{
   Program originP;
   private Program currentP=null;
   public L unwrap=null;
