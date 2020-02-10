@@ -260,7 +260,7 @@ public enum TrustedOp {
   MutClone("mutClone",Map.of(AnyKind,use(
     "return L42CacheMap.dup(%1$s);",sig(Mutable,Capsule,This)))),
   ReadClone("readClone",Map.of(AnyKind,use(
-    "return L42CacheMap.dup(%1$s);",sig(Readable,Immutable,This)))),  
+    "return L42CacheMap.normalize(L42CacheMap.dup(%1$s));",sig(Readable,Immutable,This)))),  
   MutToString("mutToString",Map.of(AnyKind,use(
     "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,String)))),
   ImmToString("immToString",Map.of(AnyKind,use(

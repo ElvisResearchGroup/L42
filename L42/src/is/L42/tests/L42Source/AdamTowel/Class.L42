@@ -16,4 +16,10 @@ MutClone=Trait:{
   }
 ReadClone=Trait:{
   read method imm This readClone()=native{trusted:readClone} error void
+  read method Bool readEquality(read This that)=this.readClone()
+  }
+ReadEquality=Trait:{
+  read method Bool readEquality(read This that)=this.readClone().immEquality(that.readClone())
+  read method imm This readClone()
+  method Bool immEquality(This that)
   }
