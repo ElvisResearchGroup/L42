@@ -243,8 +243,9 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         }
+         @Override public L42Cache<£cN£n1> myCache() {return mySCache;}}
        public static final £cN£n1 pathInstance=new _Fwd();
+       static final L42Cache<£cN£n1> mySCache=new L42SingletonCache<>("£cN£n1£Class", pathInstance.getClass());
        public int unwrap;
        public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
        }
@@ -271,8 +272,9 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         }
+         @Override public L42Cache<£cA£n1> myCache() {return mySCache;}}
        public static final £cA£n1 pathInstance=new _Fwd();
+       static final L42Cache<£cA£n1> mySCache=new L42SingletonCache<>("£cA£n1£Class", pathInstance.getClass());
        }
      """)
   ),new AtomicTest(()->
@@ -288,8 +290,9 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
          public List<Object> os(){return os;}
          public List<BiConsumer<Object,Object>> fs(){return fs;}
          public L42ClassAny asPath(){return Resources.ofPath(0);}
-         }
+         @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
        public static final £cC£n1 pathInstance=new _Fwd();
+       static final L42Cache<£cC£n1> mySCache=new L42SingletonCache<>("£cC£n1£Class", pathInstance.getClass());
        }
      ""","","")
   ),new AtomicTest(()->
@@ -318,8 +321,9 @@ extends AtomicTest.Tester{@SuppressWarnings("removal") public static Stream<Atom
            public List<Object> os(){return os;}
            public List<BiConsumer<Object,Object>> fs(){return fs;}
            public L42ClassAny asPath(){return Resources.ofPath(0);}
-           }
+           @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
          public static final £cC£n1 pathInstance=new _Fwd();
+         static final L42Cache<£cC£n1> mySCache=new L42SingletonCache<>("£cC£n1£Class", pathInstance.getClass());
          }
      ""","","")
 
