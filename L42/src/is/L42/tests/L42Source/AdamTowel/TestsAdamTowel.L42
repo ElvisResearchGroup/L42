@@ -1,5 +1,5 @@
 reuse[#$AdamTowel]
-/*OptS=Class:Opt(S)
+OptS=Class:Opt(S)
 TestOpt=(
   OptS o1=OptS()
   OptS o2=OptS(S"hi")
@@ -125,7 +125,7 @@ TestLog=(
   iLog.write(S"World")
   {}:Test"logTest"(expected=S"Hello World", actual=mLog.read())
   iLog.clear()
-  )*/
+  )
 
 Person=Class:(Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+{
   var S name
