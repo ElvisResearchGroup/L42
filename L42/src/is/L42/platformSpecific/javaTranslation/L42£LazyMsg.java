@@ -20,7 +20,7 @@ import is.L42.generated.Pos;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
 
-public class L42£LazyMsg extends L42Singleton<L42£LazyMsg>{
+public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
   private static Supplier<String> base=()->"";
   public String getMsg(){
     if(msg!=null){return msg;}
