@@ -21,6 +21,8 @@ public class R2 implements L42Cachable<R2>, Serializable{
   public Object referenced;
   public Object referenced2;
   
+  public R2() {}
+  
   public R2(Object ref, Object ref2)
   {
     this.referenced = ref;

@@ -18,6 +18,8 @@ public class A implements L42Cachable<A>, Serializable {
   }
   
   int i1, i2;
+  
+  public A() {}
 
   public A(int i1, int i2) {
     super();

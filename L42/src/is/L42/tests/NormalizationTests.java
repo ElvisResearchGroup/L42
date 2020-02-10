@@ -355,12 +355,17 @@ public class NormalizationTests {
     T n1old, n2old;
     T n1 = n1old = supplier1.get();
     T n2 = n2old = supplier2.get();
-    String oldstr = L42CacheMap.readObjToString(n1);
     L42Cache<T> cache = getCacheObject(n1);
+    T dup1 = cache.dup(n1);
+    T dup2 = cache.dup(n2);
+    //String str = L42CacheMap.readObjToString(n1);
+    assertEquals(expandedKey(dup1, true, false), expandedKey(n1, true, false));
+    assertEquals(expandedKey(dup2, true, false), expandedKey(n2, true, false));
     assertTrue(n1 != n2);
     if(readEQ) { assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false)); }
     n1 = normalize(n1);
     n2 = normalize(n2);
+    //assertEquals(str, L42CacheMap.objToString(n1));
     if(!cache.isValueType()) {
       assertTrue(cache.getMyNorm(n1old) == n1);
       assertTrue(cache.getMyNorm(n2old) == n1);

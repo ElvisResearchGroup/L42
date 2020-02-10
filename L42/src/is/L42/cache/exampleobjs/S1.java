@@ -20,6 +20,8 @@ public class S1 implements L42Cachable<S1>, Serializable {
   
   String myString;
 
+  public S1() {}
+  
   public S1(String s) { 
     this.myString = s;
     }

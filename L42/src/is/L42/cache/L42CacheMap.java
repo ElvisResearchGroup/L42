@@ -1,11 +1,5 @@
 package is.L42.cache;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.io.UncheckedIOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -17,6 +11,7 @@ import java.util.function.BiFunction;
 
 import com.google.common.cache.CacheBuilder;
 
+import is.L42.cache.exampleobjs.I;
 import is.L42.cache.nativecache.ArrayListCache;
 import is.L42.cache.nativecache.BoolCache;
 import is.L42.cache.nativecache.ByteCache;
@@ -145,6 +140,11 @@ public class L42CacheMap {
     return cache.computeKeyNN(t);
   }
   
+  public static <T> T dup(T t) {
+    L42Cache<T> cache = getCacheObject(t);
+    return cache.dup(t);
+    }
+  
   public static <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
     if(obj1 == null) { return obj2 == null; }
     return expandedKey(obj1, true, false).equals(expandedKey(obj2, true, false));
@@ -158,21 +158,7 @@ public class L42CacheMap {
   
   public static String readObjToString(Object o) {
     if(isNorm(o)) { return objToString(o); }
-    try {
-      ByteArrayOutputStream baos = new ByteArrayOutputStream(1024); 
-      try(ObjectOutputStream oos = new ObjectOutputStream(baos)) {
-        oos.writeObject(o);
-        }
-      byte[] bytes = baos.toByteArray();
-      try(ObjectInputStream ois = new ObjectInputStream(new ByteArrayInputStream(bytes))) {
-        o = ois.readObject();
-        } catch (ClassNotFoundException e) {
-          throw new Error(e);
-        }
-      } catch (IOException e) {
-      throw new UncheckedIOException(e);
-      }
-    return objToString(o);
+    return objToString(normalize(getCacheObject(o).dup(o)));
     }
   
   public static String objToString(Object obj) {

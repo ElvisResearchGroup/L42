@@ -20,6 +20,8 @@ public class R1 implements L42Cachable<R1>, Serializable
   
   public Object referenced;
   
+  public R1() {}
+  
   public R1(Object ref)
   {
     this.referenced = ref;

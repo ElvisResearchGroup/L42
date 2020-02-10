@@ -15,6 +15,7 @@ import is.L42.cache.L42CacheMap;
 import is.L42.cache.LoopCache;
 import is.L42.cache.NormResult;
 import is.L42.nativeCode.Flags;
+import is.L42.tools.General;
 
 public class ArrayListCache implements L42Cache<ArrayList<Object>> {
 
@@ -206,6 +207,9 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     types.clear();
     }
   
+  @Override
+  public ArrayList<Object> dup(ArrayList<Object> obj, Map<Object, Object> map) { throw General.unreachable(); }
+  
   @SuppressWarnings("unchecked") 
   public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)
   {
@@ -219,8 +223,8 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     for(int i = 0; i < list.size(); i++) { if(list.get(i) == t) { return i; } }
     return -1;
     }
-
-  public static  class ArrayListCacheForType extends ArrayListCache {
+  
+  public static class ArrayListCacheForType extends ArrayListCache {
     
     static L42Cache<?> flag = L42CacheMap.getCacheObject(Flags.class);
     L42Cache<?> type;
@@ -233,6 +237,26 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     @Override 
     public L42Cache<?> rawFieldCache(int i) {
       return ((i & 1) == 0) ? type : flag; 
+      }
+    
+    @Override
+    public ArrayList<Object> dup(ArrayList<Object> that, Map<Object, Object> map) { 
+      if(that == null || isNorm(that)) { return that; }
+      try {
+        ArrayList<Object> nObj = new ArrayList<Object>(that.size());
+        nObj.add(that.get(0));
+        nObj.add(null);
+        map.put(that, nObj);
+        for(int i = 0; i < this.fn(that); i++) {
+          Object field = this.f(that, i);
+          L42Cache<Object> fieldcache = this.fieldCache(field, i);
+          if(!map.containsKey(field)) { map.put(field, fieldcache.dup(field, map)); }
+          nObj.add(i + 2, map.get(field));
+          }
+        return nObj;
+        } catch (Exception e) {
+          throw new Error(e);
+        }
       }
     }
   }
