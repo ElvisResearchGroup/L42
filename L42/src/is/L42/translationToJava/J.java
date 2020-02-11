@@ -382,18 +382,26 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         c("case "+i+":return "+xs.get(i)+";");nl();
         }
       c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
-    c("}}");nl();    
+    c("}}");nl();
+    if(!fields.xs.isEmpty() && fields.readLazy.size()+fields.eager.size()!=0){generateClearCache();}
     }
+  private void generateClearCache() { 
+    c("public void clearCache(){");indent();nl();
+    for(MWT mwti:fields.readLazy){
+      String name="£k"+mwti.key().m();
+      c("this.is"+name+"=false;");nl();
+      }
+    for(MWT mwti:fields.eager){
+      String name="£k"+mwti.key().m();
+      c("this."+name+"="+name+"(this);");nl();
+      }
+    c("}");deIndent();nl();
+
+   }
   private void addCachableMethodsNoFields(String jC){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
     c("private static final L42Cache<"+jC+"> myCache=new L42SingletonCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
-    //c("@Override public void setNorm("+jC+" t){}");nl();
-    //c("@Override public "+jC+" myNorm(){return this;}");nl();
-    //c("@Override public int numFields() {return 0;}");nl();    
-    //c("@Override public Object[] allFields(){return new Object[]{};}");nl();
-    //c("@Override public void setField(int i,Object o){};");nl();
-    //c("@Override public Object getField(int i){throw new ArrayIndexOutOfBoundsException();}");nl();
     }
   public void header(boolean interf,String jC){
     if(interf){
@@ -471,6 +479,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public List<P> ps;
     final public List<String> psJ;
     final public Coherence ch;
+    final public ArrayList<MWT> readLazy=new ArrayList<>();
+    final public ArrayList<MWT> eager=new ArrayList<>();
     Fields(){
       ch=new Coherence(p,false);
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}
@@ -483,6 +493,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         });
       psJ=L(ps,(c,pi)->c.add(typeNameStr(pi)));
       assert xs.size()==ps.size();
+      for(MWT mwti:p.topCore().mwts()){
+        if(mwti.nativeUrl().isEmpty()){continue;}
+        if(mwti.nativeUrl().equals("trusted:cachable") && mwti.mh().mdf().isRead()){readLazy.add(mwti);}
+        if(mwti.nativeUrl().equals("trusted:eagerCachable")){eager.add(mwti); assert mwti.mh().mdf().isRead();}
+        }
       }
     }
   @Override public void visitMWT(MWT mwt){//J.meth
@@ -551,10 +566,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(NativeDispatch.nativeFactory(this,kind,mwt));
       return;  
       }
-    //TODO: here we could add optimization for 0 arg constructors
-    //if a (non native) class has no fields, it has a static .instance that is used
-    //instead of any constructor, and instead of any placeholder variable
-    //thus, variables of those types are never in fwds
     if(fields.xs.isEmpty()){c("return pathInstance;");}
     else{newAndFwd(mwt);}
     }
@@ -586,6 +597,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       if(isFwd){c("}");}
       nl();
       }
+    for(MWT mwti:fields.eager){
+      String name="£k"+mwti.key().m();
+      c("Res."+name+"="+name+"(Res);");nl();
+      }     
     c("return Res;"); 
     }   
   private void refined(MWT mwt){

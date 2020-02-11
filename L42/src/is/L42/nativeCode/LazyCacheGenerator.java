@@ -14,7 +14,6 @@ import is.L42.translationToJava.J;
 
 public class LazyCacheGenerator implements Generator{
   void typeCache(MWT mwt, J j){
-  //TODO:try to test if the normal type checking is also called
     MH mh=mwt.mh();
     if(!mh.pars().isEmpty()){
       throw new EndError.TypeError(mwt._e().poss(),
@@ -31,9 +30,7 @@ public class LazyCacheGenerator implements Generator{
       }
     }
   @Override public void of(boolean type, MWT mwt, J j) {
-    if(type){typeCache(mwt,j); return;
-      }
-    //if(!mwt.mh().mdf().isImm()){throw todo();}
+    if(type){typeCache(mwt,j); return;}
     assert mwt.key().xs().isEmpty();
     String retT=j.typeNameStr(mwt.mh().t().p());
     String thisT=j.typeNameStr(j.p());

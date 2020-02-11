@@ -25,7 +25,7 @@ Foo={Size inner,class method This of(Size inner)
       Log"Foo".write(S"2")//Discuss: how this scale when closed subexpressions can be cached?
       this.inner()*2Size
       )
-  imm method Size times3Eager()=
+  read method Size times3Eager()=
     native{trusted:eagerCachable} (
       Log"Foo".write(S"3")
       this.inner()*3Size
@@ -223,9 +223,11 @@ TestClassCache={
   }
 TestReadCache={
   A={
-    var Size that
+    read method Size that()
+    mut method Void that(Size that)
+    mut method Void update(Size that)=native{trusted:clearCache} this.that(that)
     class method mut A(Size that)
-    read method Size m()=native{trusted:cachable} (
+    read method Size m()=native{trusted:eagerCachable} (
       Log"Foo".write(S"ACT.")
       this.that()
       )
@@ -237,7 +239,7 @@ TestReadCache={
     {}:Test"res2"(expected=42Size, actual=a.m())
     {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
     //more, with update
-    a.that(0\)
+    a.update(0\)
     {}:Test"res3"(expected=0Size, actual=a.m())
     )
   }
