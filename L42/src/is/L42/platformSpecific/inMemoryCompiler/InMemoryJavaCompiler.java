@@ -189,12 +189,10 @@ public class InMemoryJavaCompiler {
     public URL getResource(String name) {
         String javaName = name.replace(".class","").replace(File.separatorChar/*'/'*/, '.');
         //If this isn't a class from this compiler, hand off to the parent
-        if(!map.containsKey(javaName))
-          javaName = javaName.replace('/', '.');
-        
-        if (!map.containsKey(javaName)) {
-            return super.getResource(name);
-        }
+        if(!map.containsKey(javaName)){javaName = name.replace(".class","").replace('/', '.');}
+        //if(!map.containsKey(javaName)){javaName = javaName.replace('/', '.');}
+        //NOTE: probably there is a bug in safeNativeCode, where '/' is used instead of File.separatorChar
+        if (!map.containsKey(javaName)){return super.getResource(name);}
         //Return a new url, that returns our file for its input stream.
         try {
             return new URL(null, "string:" + javaName, new URLStreamHandler() {
