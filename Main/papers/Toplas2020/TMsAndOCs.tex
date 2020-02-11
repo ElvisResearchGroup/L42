@@ -65,7 +65,7 @@ mp.x = 5; // ok, now we can observe rp.x == 5
 ip = new Point(3, 5); // ok, ip is not final
 \end{lstlisting} 
 
-RCs influence the access to the whole ROG; not just the referenced object itself, as in the full/deep interpretation of type modifiers~\cite{ZibinEtAl10,Potanin2013}: \IOComm{Why did you change this from `RCs'?}
+RCs influence the access to the whole ROG; not just the referenced object itself, as in the full/deep interpretation of type modifiers~\cite{ZibinEtAl10,Potanin2013}:
 \begin{itemize}
   \item Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus all the objects in the ROG of an immutable object are also immutable,
   \item A \Q!mut! field accessed from a \Q@read@ reference produces a \Q@read@ reference; thus a \Q!read! reference cannot be used to mutate the ROG of the referenced object.
@@ -244,5 +244,5 @@ the OC pattern is enforced by the type system:
 
 \noindent L42 capability operations are mostly used internally by capability classes, whereas user code would call normal methods on already existing OCs.
 
-For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) could be whitelisted as `deterministic', provided they do not affect execution, such as by non-deterministically throwing I/O errors.
+For the purposes of invariant checking, we only care about the effects that methods could have on the running program and heap. As such, \emph{output} methods (such as a \Q@print@ method) could be white listed as `deterministic', provided they do not affect execution, such as by non-deterministically throwing I/O errors.
 

@@ -14,18 +14,15 @@ We showed how the box pattern can be used to write invariants over cyclic mutabl
  Suppose we want to pass a temporarily `broken' object to other code as well as perform multiple field updates with a single invariant check. 
 Instead of adding new features to the language, like an \Q!invalid! modifier (denoting an object whose invariant need not hold), and an \Q!expose! statement like Spec\#, we can use a `box' class and a capsule mutator to the same effect:
 \begin{lstlisting}
-interface Person{mut method Bool accept(read Account a, read Transaction t);}
-
+interface Person{mut method Bool accept(read Account a,read Transaction t);}
 interface Transaction{mut method ImmList<Transfer> compute();}
 //Here ImmList<T> represents a list of immutable Ts.
-
 class Transfer{Int money;
   method Void execute(mut AccountBox that){
     // Gain some money, or lose some money
     if(this.money>0){that.income+=money;}
     else{that.expenses-=money;}
   }}
-
 class AccountBox{
   UInt income=0; UInt expenses=0;
   read method Bool subInvariant(){return this.income>=this.expenses;}
@@ -35,20 +32,16 @@ class AccountBox{
 class Account{
   capsule AccountBox box; mut Person holder;
   read method Bool invariant(){return this.box.subInvariant();}
-
-  // `h' could be aliased elsewehere in the program    
+  // `h' could be aliased elsewhere in the program    
   Account(mut Person h){this.holder=h; this.box=new AccountBox();}
-
   mut method Void transfer(mut Transaction ts){
     if(this.holder.accept(this, ts)){this.transferInner(ts.compute());}}
-
   // capsule mutator, like an `expose(this)' statement
   private mut method Void transferInner(ImmList<Transfer> ts){
      mut AccountBox b = this.box;
      for (Transfer t : ts) { t.execute(b); }
      // check the invariant here
-  }
-}
+  }}
 \end{lstlisting}
 The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each transfer in the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we don't want an entire \Q!Transaction! to do this. 
 Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q!expose! block: during its body (the \Q!for! loop) we don't know or care if \Q!this.invariant()! is \Q!true!, but at the end it will be checked. For this to make sense, we make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!: it cannot assume that the invariant of \Q!Account! holds, and it is allowed to modify the fields of \Q!that! without needing to check it. Though capsule mutators can be used to perform batch operations like the above, they can only take immutable and capsule objects. This means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such a batch operation.
@@ -112,17 +105,15 @@ class SafeMovable implements Widget,HasSubInvariant {
     this.top=5;
     this.parent=parent;
     c.add(new Button(0,0,10,10,new MoveAction(this));
-    }
-  }
+  }}
 class MoveAction implements Action{
   mut SafeMovable o;
   MoveAction(mut SafeMovable o){this.o=o;}
   mut method Void process(Event e){
     this.o.left+=1;
     Widget p = this.o.parent;
-    ... // mutate p to reestablish its subInvariant
-  }
-}
+    ... // mutate p to re-establish its subInvariant
+  }}
 class WidgetWithInvariant implements Widget{
   capsule Widget w;
   @Override read method Int left(){return this.w.left;}
@@ -131,10 +122,10 @@ class WidgetWithInvariant implements Widget{
   @Override read method Int height(){return this.w.height;}
   @Override read method read Widgets children(){return this.w.c;}
   @Override mut method Void dispatch(Event e){w.dispatch(e);}
-  @Override read method Bool invariant(){return this.wInvariant(w);}
-  read method Bool wInvariant(read Widget w){
+  @Override read method Bool invariant(){return wInvariant(w);}
+  static method Bool wInvariant(read Widget w){
     for(read Widget wi:w.children()){        //Check that the subInvariant of
-      if(!this.wInvariant(wi)){return false;}//all of w's descendants holds
+      if(!wInvariant(wi)){return false;}//all of w's descendants holds
     }
     if(!(w instanceof HasSubInvariant)){return true;}
     HasSubInvariant si=(HasSubInvariant)w;
@@ -151,7 +142,7 @@ In this way, the method \Q@WidgetWithInvariant.dispatch()@ is the only capsule m
 
 Importantly, this allows the graph of widgets to be cyclic and for each to freely mutate each
 other, even if such mutations (temporarily) violate their \Q@subInvariant@'s.
-In this way a widget can access its parent (whose \Q@subInvariant()@ may not hold) in order to reestablish it.
+In this way a widget can access its parent (whose \Q@subInvariant()@ may not hold) in order to re-establish it.
 Note that this trade off is logically unavoidable:
 in order to manipulate a parent in order to fix it, the parent must be reachable, but
 by mutating a \Q@Widget@'s position, its parent may become invalid.
@@ -182,11 +173,9 @@ interface Widget { ...
   // transformer for possibly encapsulated data
   mut method read Void transform(Transformer<Widgets> t);
 }
-
 class SafeMovable { ...
   // A well typed capsule mutator
-  mut method Void transform(Transformer<Widgets> t) {
-    t.apply(this.box.c); }}
+  mut method Void transform(Transformer<Widgets> t) {t.apply(this.box.c);}}
 \end{lstlisting}
 % Note that the code above does not access a \Q!capsule! field but merely calls a method that does; thus  it is \emph{not} a capsule mutator method, so it is not constrained by the restrictions on them. Code like the above would also allow one to mutate multiple \Q!capsule! fields in one method.
 %Our pattern cooperates with the language’s restrictions to ensure each mutation is completed as a separate operation, that is perceived by the rest of the system %as if it was atomic.%
@@ -236,13 +225,13 @@ interface Transform<T>{method read T apply(mut Nodes nodes);}
 interface Node{
   read method Bool subInvariant(read Nodes nodes)
   mut method mut Nodes directConnections()
-  }
+}
 class Nodes{//just an ordered set of nodes 
   mut method Void add(mut Node n){..}
   read method Int indexOf(read Node n){..}
   mut method Void remove(read Node n){..}
   mut method mut Node get(Int index){..}
-  }
+}
 class Graph{ 
   capsule Nodes nodes; //box pattern
   Graph(capsule Nodes nodes){..}
@@ -250,17 +239,18 @@ class Graph{
   <T> mut method read T transform(Transform<T> t){
     mut Nodes ns=this.nodes;//capsule mutator with a single use of 'this'
     return t.apply(ns);
-    }
+  }
   read method Bool invariant(){
     for(read Node n: this.nodes){
       if(!n.subInvariant(this.nodes)){return false;}
-      }
+    }
     return true;
-    } }
+  } 
+}
 \end{lstlisting}
 We now show how our \Q@Graph@ library allows the invariant of the various \Q@Node@s to be customized by the library user, and arbitrary transformations can be performed on the \Q@Graph@s. This is a generalization of the example proposed by~\cite{Summers:2009:NFO:1562154.1562160}(section 4.2) as one of the hardest problems when it comes to enforcing invariants.
 
-Note how there are only a minimal set of operations defined in the above code, % In English something has "no logic" is like saying it's stupid or dumb (i.e. don't say it unless your intent is to insult)
+Note how there are only a minimal set of operations defined in the above code, 
 others can be freely defined by the user code, as demonstrated below:
 
 \begin{lstlisting}
@@ -272,8 +262,8 @@ class MyNode{
     /* any condition on this or nodes */}  
   capsule method read MyNode addToGraph(mut Graph g){..}
   read method Void connectWith(read Node other, mut Graph g){..}
-  }
-
+}
+...
 mut Graph g=new Graph(new Nodes());
 read MyNode n1=new MyNode(new Nodes())).addToGraph(g);
 read MyNode n2=new MyNode(new Nodes())).addToGraph(g);
@@ -298,15 +288,15 @@ These methods can be implemented like this:
       mut Node n1=ns.get(i1);
       mut Node n2=ns.get(i2);
       n1.directConnections().add(n2);
-      });
-    }
+    });
+  }
   capsule method read MyNode addToGraph(mut Graph g){
     return g.transform(ns->{
       mut MyNode n1=this;//single usage of capsule 'this'
       ns.add(n1);
       return n1;
-      });
-    }
+    });
+  }
 \end{lstlisting}
 As you can see, both methods rely on the transform pattern.
 
@@ -317,6 +307,3 @@ Note how in the lambda in \Q@connectWith(other,g)@, we can neither see the \Q@re
 and recover the concrete objects from the \Q@mut Nodes ns@ object.
 In this way, we also obtain more useful \Q@mut@ references to those nodes.
 On the other hand, note how in \Q@addToGraph(g)@ we use the reference to the \Q@capsule this@ within the lambda.
-
-%In this example we show how to encode a \Q@Graph@ 
-

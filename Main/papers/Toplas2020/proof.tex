@@ -185,8 +185,8 @@ Now we define and prove important properties about our novel \Q!capsule! fields.
 \item not $\reach(\s, e', l)$.
 \end{iitemize}
 
-\noindent Now we formally state the core propties of our \Q!capsule! fields (informally described in \ref{s:protocol}):%
-\SS\begin{theorem}[Capsule Field Soundnes]\rm
+\noindent Now we formally state the core properties of our \Q!capsule! fields (informally described in \ref{s:protocol}):%
+\SS\begin{theorem}[Capsule Field Soundness]\rm
 If $\VS(\s, e)$ then $\forall l$, if $\reach(\s, e, l)$, then:\\
 \indent $\HNC(\s, l)$ and either:
 \begin{iitemize}
@@ -227,7 +227,7 @@ We will first proceed by cases on the property we need to prove, and then by the
 	\item (\textsc{access}) $\s|\EV[l.f]\rightarrow \s|\EV[\s[l.f]]$:
 	\begin{itemize}
 		\item Suppose $l$ was \HNO, then $\EV = \EV'[\M{l}{\E[l.f]}{\_}]$, with $l$ not \reach from $\E$, and $l.f$ is an access to a \Q!capsule! field. By \HNC, $l$ is not in the \rog of $\s[l.f]$, and so $l$ is not \reach from $\E[\s[l.f]]$, and so \HNO still holds.
-		\item Clearly this reduction cannot have made any $l'$ \reach in a sub-expression where it wasn't allready \reach, so we can't have violated \HNO for any other $l'$.
+		\item Clearly this reduction cannot have made any $l'$ \reach in a sub-expression where it wasn't already \reach, so we can't have violated \HNO for any other $l'$.
 	\end{itemize}
 
 

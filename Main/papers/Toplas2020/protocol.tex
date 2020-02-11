@@ -29,7 +29,7 @@ Thus we have traded some expressive power in order to preserve safety and simpli
 
 \subheading{Purity}\label{s:purity}
 L42s enforcement of RCs and OCs statically guarantees that any method with only \Q!read! or \Q!imm! parameters (including the receiver) is \emph{pure}; we define pure
-as being deterministic and not mutating existing memory. This holds because % ISAAC: define pure earlier on in the paper so we don't have to say "deterministic and does not mutate pre-existing memory" all the time? %Marco: I checked, this is the first point where we use determinism in this sense.
+as being deterministic and not mutating existing memory. This holds because
 (1) the ROG of the parameters (including \Q!this!) is only accessible as \Q@read@ (or \Q@imm@), thus it cannot be mutated\footnote{This is even true in the concurrent environments of Pony and Gordon \etal, since they ensure that no other thread/actor has access to a \Q@mut@/\Q@capsule@ alias of \Q@this@. 
 	Thus, since such methods do not write to memory accessible by another thread, nor read memory that could be mutated by another thread, they are atomic.};
 (2) if a capability object is in the ROG of any of the arguments (including the receiver), then it can only be accessed as \Q@read@, preventing calling any 
@@ -145,7 +145,7 @@ Since such mutation could invalidate the invariant of $o$, we call the \Q@invari
 
 %As the expression is \Q!capsule!, we can be sure that the object being initialised/updated will have the only external alias to the ROG of the field's new value. In addition, since the reference was \Q!capsule!, the initialised/updated object could not already alias it, thus after the initialisation/update, the initilised/updated \Q!capsule! field will not alias the object.
 
-These properties are \emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!capsule! field, and we do allow arbitrary \Q!mut! aliases  to exist during the execution of a capsule mutator. In particular, our rules allow unrestricted readonly access to \Q!capsule! fields.
+These properties are \emph{weaker} than those of \Q!capsule! \emph{references}: we do not need to prevent arbitrary \Q!read! aliases to the ROG of a \Q!capsule! field, and we do allow arbitrary \Q!mut! aliases  to exist during the execution of a capsule mutator. In particular, our rules allow unrestricted read only access to \Q!capsule! fields.
 
 %In particular, unrestricted readonly access to \Q!capsule! fields can be allowed by writing getters of the form \Q!read method read C f() { return this.f; }!. Such getters are already fundamental in L42~\cite{DBLP:journals/programming/AroraSO19}. Such a method can be called on a \Q!mut! \Q!this!, without making the method a capsule mutator. % ISAAC: WRong since you've now made capsule fields non-instance private
 
