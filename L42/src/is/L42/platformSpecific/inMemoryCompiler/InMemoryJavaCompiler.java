@@ -177,10 +177,21 @@ public class InMemoryJavaCompiler {
       ClassFile jclassObject = map.get(name);
       return super.defineClass(name, jclassObject.getBytes(), 0, jclassObject.getBytes().length);
       }
+    @Override 
+    public Class<?> loadClass(String name)throws ClassNotFoundException {
+      if(!map.containsKey(name)){
+        return super.loadClass(name);
+        }
+      ClassFile jclassObject = map.get(name);
+      return super.defineClass(name, jclassObject.getBytes(), 0, jclassObject.getBytes().length);
+      }
     @Override
     public URL getResource(String name) {
         String javaName = name.replace(".class","").replace(File.separatorChar/*'/'*/, '.');
         //If this isn't a class from this compiler, hand off to the parent
+        if(!map.containsKey(javaName))
+          javaName = javaName.replace('/', '.');
+        
         if (!map.containsKey(javaName)) {
             return super.getResource(name);
         }

@@ -16,11 +16,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import safeNativeCode.slave.host.ProcessSlave;
 
-public class MyTempMain {
-
-  public static void main(String[] args) throws InvocationTargetException, CompilationError {
-    new MyTempMain().doThing();
-  }
+public class TestNativeCodeNonL42 {
   
   @Test
   public void doThing() throws InvocationTargetException, CompilationError
@@ -43,40 +39,27 @@ public class MyTempMain {
     catch (java.io.IOException ioe) {return "";}
     }""";
     String s = untrusted(nativeKind, nativeURL, toLambda);
-    //System.out.println("--------------------------");
-    //System.out.println(s);
-    //System.out.println("--------------------------");
     subDoThing(s);
-    //System.out.println(myMethod("ab"));
   }
   
   public static void subDoThing(String code) throws CompilationError, InvocationTargetException
   {
-    if(System.getSecurityManager() == null) {
-      System.setSecurityManager(new SecurityManager() {
-        @Override
-        public void checkPermission(Permission p) {}
-      });
-    }
-    if(System.getSecurityManager() == null) {
-      throw General.bug();
-    }
     String bigcode =  "package is.L42.metaGenerated;\n\n"
         + "public class SlaveDoThing2 {\n"
         + "  public String myUntrustedMethod(String £xfileName) {\n "
-        + "     System.out.println(\"Dothething2\");\n"
-  //      + code + "\n"
-        + "     try {\n"
-        + "       safeNativeCode.slave.Slave sl = is.L42.platformSpecific.javaTranslation.Resources.slaves.get(\"ioSlave\");\n"
-        + "       sl.addClassLoader(java.lang.ClassLoader.getPlatformClassLoader());\n"
-        + "       sl.addClassLoader(java.lang.ClassLoader.getSystemClassLoader());\n"
-        + "       sl.addClassLoader(is.L42.platformSpecific.javaTranslation.Resources.class.getClassLoader());\n"
-        + "       System.out.println(sl);\n"
-        + "       return sl.call(() -> { return \"\"; }).get();\n"
-        + "     } catch (java.rmi.RemoteException ex) {\n" 
-        + "       throw new RuntimeException(ex);\n" 
-        + "     }\n" 
-        + "     //return null;\n"
+   //     + "     System.out.println(\"Dothething2\");\n"
+        + code + "\n"
+//        + "     try {\n"
+//        + "       safeNativeCode.slave.Slave sl = is.L42.platformSpecific.javaTranslation.Resources.slaves.get(\"ioSlave\");\n"
+//        + "       //sl.addClassLoader(java.lang.ClassLoader.getPlatformClassLoader());\n"
+//        + "       //sl.addClassLoader(java.lang.ClassLoader.getSystemClassLoader());\n"
+//        + "       sl.addClassLoader(SlaveDoThing2.class.getClassLoader());\n"
+//        + "       System.out.println(sl);\n"
+//        + "       return sl.call(() -> { return \"\"; }).get();\n"
+//        + "     } catch (java.rmi.RemoteException ex) {\n" 
+//        + "       throw new RuntimeException(ex);\n" 
+//        + "     }\n" 
+//        + "     //return null;\n"
         + "  }\n" 
         + "}";
     SourceFile file = new SourceFile("is.L42.metaGenerated.SlaveDoThing2", bigcode);
@@ -84,17 +67,12 @@ public class MyTempMain {
         "package is.L42.metaGenerated;"
         + "public class SlaveDoThing { "
         + "  public static void main(String[] args) { "
-        + "    if(System.getSecurityManager() == null) {"
-        + "      System.out.println(\"hiiiiiiiiiiiiiiiiiiiiiiiiiiiiiii\");"
-        + "      throw new RuntimeException();"
-        + "    }"
-        + "    System.out.println(\"Dothething\");"
         + "    new SlaveDoThing2().myUntrustedMethod(\"ab\");"
         + "  } "
         + "} ");
     List<SourceFile> files = List.of(file, file2);
     ClassLoader classes = InMemoryJavaCompiler.compile(Resources.class.getClassLoader(), files,new ArrayList<>());
-    RunningUtils.runMain(classes, "is.L42.metaGenerated.SlaveDoThing");
+      RunningUtils.runMain(classes, "is.L42.metaGenerated.SlaveDoThing");
   }
   
   public static String myMethod(String £xfileName)
@@ -122,7 +100,7 @@ public class MyTempMain {
       if (memoryLimit > 0) {
         args = new String[]{"-Xmx"+memoryLimit+"M","--enable-preview"};
       }
-      return new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader(), ClassLoader.getSystemClassLoader(), Resources.class.getClassLoader());
+      return new ProcessSlave(timeLimit, args, Resources.class.getClassLoader());
     });
     
     return java.lang.String.format("""
