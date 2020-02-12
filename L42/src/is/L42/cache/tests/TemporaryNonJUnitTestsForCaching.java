@@ -6,6 +6,10 @@ import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.CompletionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 
 import is.L42.cache.L42StandardCache;
 import is.L42.cache.KeyNorm2D;
@@ -28,6 +32,9 @@ public class TemporaryNonJUnitTestsForCaching {
     a.referenced = b1;
     a.referenced2 = b2;
     System.out.println(L42CacheMap.expandedKey(a,true,false));
+    IntBox ib1=new IntBox(42);
+    //IntBox ib2=new IntBox(45);
+    System.out.println(ib1.future());
     //L42CacheMap.prettyPrint(a,cacheName->str)
 	  }
 	public static final void oldMain(String[] args){
@@ -248,7 +255,6 @@ class IntBox implements L42Cachable<IntBox>,Box{
   @Override public L42Cache<IntBox> myCache() {return myCache;}
   private IntBox norm;
   @Override public Object getField(int i){return f;}
-  @Override public void setNorm(IntBox t) {this.norm=t;}
   @Override public IntBox myNorm() {return this.norm;}
 
   //int times2(){ return f*2; }
@@ -258,7 +264,7 @@ class IntBox implements L42Cachable<IntBox>,Box{
     System.out.println("double computing");
     return f*2; }
   int times2(){
-    if(norm==null){norm=myCache.normalize(this);}
+    if(norm==null){myCache.normalize(this);}
     if(!norm.isTimes2){norm.times2=auxTimes2(); norm.isTimes2=true;}
     return norm.times2;
     }
@@ -271,10 +277,40 @@ class IntBox implements L42Cachable<IntBox>,Box{
   boolean isFibonacci;
   int fibonacci;
   int fibonacci(){
-    if(norm==null){norm=myCache.normalize(this);}
+    if(norm==null){myCache.normalize(this);}
     if(!norm.isFibonacci){norm.fibonacci=auxFibonacci(); norm.isFibonacci=true;}
     return norm.fibonacci;    
     }
-  @Override public IntBox newInstance() { // TODO Auto-generated method stub
-  return null; }
+  @Override public IntBox newInstance() { return new IntBox(0); }
+  static <T>T myJoin(CompletableFuture<T> t){
+    try{return t.join();}
+    catch(CompletionException ce){throw (Error)ce.getCause();}    
+    }
+  //int future(){..}
+  int auxFuture(){
+    System.out.println("auxFuture "+f);
+    if(f>300){return f+new IntBox(0).future();}
+    return this.f+new IntBox(f+1).future();
+    }
+  boolean started=false;
+  CompletableFuture<Integer> future;
+  int future(){
+    if(norm==null){return myCache.normalize(this).future();}
+    return myJoin(norm.future);
+    }
+  @Override public void setNorm(IntBox t) {
+    System.out.println("norming "+t.f);
+    if(t==this){
+      if(started){throw new StackOverflowError();}
+      started=true;
+      future=CompletableFuture.supplyAsync(this::auxFuture);
+      CompletableFuture.allOf(future).thenAccept(a->this.norm=t);
+      }
+    else{
+      System.out.println("not norm "+t.f);
+      this.norm=t;
+      }
+    }
+  //private static Executor exe=Executors.newCachedThreadPool();
   }
+  

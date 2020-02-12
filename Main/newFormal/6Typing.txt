@@ -97,7 +97,7 @@ _______
     Flag; p; G' Ts U Ts'; Ps U Ps' |- ei:Ti.P  for i in 1..n 
     Flag; p; G' Ts; Ps |- e0 : P
 //TODO: I'm assuming that there was no need to remove the fwdMut!
-//toRead used to removes fwdMut; now that they stay, is it still be sound?
+//toRead used to removes fwdMut; now that they stay, is it still sound?
 _______
 #define Q |- ks : P | Ts; Ps    Q |-k : P | Ts; Ps
 * Q |- k1..kn : P | Ts1 U..U Tsn; Ps1 U..U Psn //(catchMany)

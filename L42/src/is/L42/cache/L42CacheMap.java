@@ -84,10 +84,10 @@ public class L42CacheMap {
     return (L42Cache<T>) commander.get(class_);
     }
   private static boolean cacheUnderControl(){
-    String s=List.of(Thread.currentThread().getStackTrace()).toString();
+    /*String s=List.of(Thread.currentThread().getStackTrace()).toString();
     assert s.contains(".lateInitialize(") 
       || s.contains("ArrayListCacheForType")
-      || s.contains(".NormalizationTests.");
+      || s.contains(".NormalizationTests.");*/
     return true;    
     }
     
