@@ -58,7 +58,7 @@ public class L42£Library extends L42NoFields<L42£Library> implements L42Any,Se
     }
   public static final Class<L42£Library> _class = L42£Library.class;
   public static final LibraryCache myCache = new LibraryCache();
-  static{L42CacheMap.addCacheableType(L42£Library.class, myCache);}
+  static{L42CacheMap.addCachableType_synchronized(L42£Library.class, myCache);}
   @Override public L42Cache<L42£Library> myCache(){return myCache;}
   }
 class LibraryCache extends ValueCache<L42£Library>{

@@ -16,7 +16,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   private final String typename;
   private L42Cache<?>[] caches;
   
-  public L42StandardCache(String typename, Class<T> myClass) {
+  L42StandardCache(String typename, Class<? extends T> myClass) {
     this.typename = typename;   
     L42CacheMap.addCacheableType(myClass, this);
     }
@@ -43,7 +43,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     }
   
   public NormResult<T> normalizeInner(T t, List<Object> prevs) {
-    if(!this.isNorm(t)) {
+    if(!this.isNorm(t)) { 
       prevs.add(t);
       boolean inCircle = false;
       Object[] fields = t.allFields();

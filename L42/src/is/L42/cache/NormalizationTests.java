@@ -1,4 +1,4 @@
-package is.L42.tests;
+package is.L42.cache;
 
 import static is.L42.cache.L42CacheMap.expandedKey;
 import static is.L42.cache.L42CacheMap.getCacheObject;
@@ -20,9 +20,6 @@ import org.junit.Test;
 
 import com.google.common.base.Supplier;
 
-import is.L42.cache.L42Cache;
-import is.L42.cache.L42CacheMap;
-import is.L42.cache.L42Cachable;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;

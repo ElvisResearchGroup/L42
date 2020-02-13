@@ -109,6 +109,6 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     return L42£Void.instance;
     }
   public static final Class<L42£TrustedIO> _class = L42£TrustedIO.class;
-  public static final L42SingletonCache<L42£TrustedIO> myCache=new L42SingletonCache<L42£TrustedIO>("L42£TrustedIO",L42£TrustedIO._class);
+  public static final L42SingletonCache<L42£TrustedIO> myCache=L42CacheMap.newSingletonCache("L42£TrustedIO",L42£TrustedIO._class);
   @Override public L42Cache<L42£TrustedIO> myCache(){return myCache;}
   }

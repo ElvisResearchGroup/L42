@@ -4,15 +4,12 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
 
 import com.google.common.cache.CacheBuilder;
 
-import is.L42.cache.exampleobjs.I;
-import is.L42.cache.nativecache.ArrayListCache;
 import is.L42.cache.nativecache.BoolCache;
 import is.L42.cache.nativecache.ByteCache;
 import is.L42.cache.nativecache.CharCache;
@@ -67,7 +64,7 @@ public class L42CacheMap {
    * @param class_ The class object representing the type
    * @param cache The relevant cache object
    */
-  public static <T,C extends L42Cache<T>> C addCacheableType(Class<? extends T> class_, C cache) {
+  static <T,C extends L42Cache<T>> C addCacheableType(Class<? extends T> class_, C cache) {
     commander.put(class_, cache);
     return cache;
     }
@@ -79,10 +76,11 @@ public class L42CacheMap {
    * @param class_
    * @return
    */
-  public static <T> L42Cache<T> getCacheObject(Class<T> class_) {
+  static <T> L42Cache<T> getCacheObject(Class<T> class_) {
     assert cacheUnderControl();
     return (L42Cache<T>) commander.get(class_);
     }
+  
   private static boolean cacheUnderControl(){
     /*String s=List.of(Thread.currentThread().getStackTrace()).toString();
     assert s.contains(".lateInitialize(") 
@@ -91,7 +89,7 @@ public class L42CacheMap {
     return true;    
     }
     
-  public static L42Cache<?>[] getCacheArray(Class<?> ... classes) {
+  static L42Cache<?>[] getCacheArray(Class<?> ... classes) {
     L42Cache<?>[] caches = new L42Cache<?>[classes.length];
     for(int i = 0; i < classes.length; i++) {
       caches[i] = getCacheObject(classes[i]);
@@ -100,25 +98,25 @@ public class L42CacheMap {
     }
   
   @SuppressWarnings("unchecked")
-  public static <T> L42Cache<T> getCacheObject(T o) {
+  static <T> L42Cache<T> getCacheObject(T o) {
     if(o instanceof L42Cachable) { return ((L42Cachable<T>) o).myCache(); }
     return getCacheObject((Class<T>) o.getClass()).refine(o);
     }
   
-  public static <T> T normalize(T t) {
+  public synchronized static <T> T normalize(T t) {
     L42Cache<T> cache = getCacheObject(t);
     return cache.normalize(t);
     }
   
   @SuppressWarnings("unchecked") 
-  public static <T> boolean isNorm(T t) {
+  static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
     if(t instanceof L42Cachable) { return ((L42Cachable<T>) t).isNorm(); }
     L42Cache<T> cache = getCacheObject(t);
     return cache.isNorm(t);
     }
   
-  public static <T> boolean identityEquals(T t1, T t2) {
+  static <T> boolean identityEquals(T t1, T t2) {
     if(t1 instanceof L42Cachable) { return t1 == t2; }
     L42Cache<T> cache = getCacheObject(t1);
     return cache.identityEquals(t1, t2);
@@ -134,38 +132,39 @@ public class L42CacheMap {
    * 
    * @return The object's key
    */
-  public static <T> KeyNorm2D getKey(T t, boolean norm) {
+  static <T> KeyNorm2D getKey(T t, boolean norm) {
     L42Cache<T> cache = getCacheObject(t);
     t = norm ? cache.normalize(t) : t;
     return cache.computeKeyNN(t);
   }
   
-  public static <T> T dup(T t) {
+  static <T> T dup(T t) {
     L42Cache<T> cache = getCacheObject(t);
     return cache.dup(t);
     }
   
-  public static <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
+  static <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
     if(obj1 == null) { return obj2 == null; }
     return expandedKey(obj1, true, false).equals(expandedKey(obj2, true, false));
     }
   
-  public static <T> boolean structurallyEqualNorm(T obj1, T obj2) {
+  static <T> boolean structurallyEqualNorm(T obj1, T obj2) {
     obj1 = normalize(obj1);
     obj2 = normalize(obj2);
     return L42CacheMap.identityEquals(obj1, obj2);
     }
   
-  public static String readObjToString(Object o) {
+  static String readObjToString(Object o) {
     if(isNorm(o)) { return objToString(o); }
     return objToString(normalize(getCacheObject(o).dup(o)));
     }
   
-  public static String objToString(Object obj) {
+  static String objToString(Object obj) {
     return expandedKey(obj, true, false).toString();
     }
   
-  @SuppressWarnings("unchecked") public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
+  @SuppressWarnings("unchecked") 
+  static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
     class A { <T> KeyVarID apply(int offset, L42Cache<T> cache, T toAdd, int toAddIndex, Object[][] subkey) {
@@ -243,5 +242,30 @@ public class L42CacheMap {
       cache.clear();
       }
     }
+  
+  public static synchronized <T> L42SingletonCache<T> newSingletonCache(String name, Class<? extends T> class_) {
+    return new L42SingletonCache<T>(name, class_);
+    }
+  
+  public static synchronized <T extends L42Cachable<T>> L42StandardCache<T> newStandardCache(String name, Class<? extends T> class_) {
+    return new L42StandardCache<T>(name, class_);
+    }
+  
+  public static synchronized <T extends L42Cachable<T>> void lateInitialize(L42StandardCache<T> cache, Class<?> ... classes) {
+    cache.lateInitialize(classes);
+    }
+  
+  public static synchronized <T, C extends L42Cache<T>> void addCachableType_synchronized(Class<? extends T> class_, C cache) {
+    addCacheableType(class_, cache);
+    }
+  
+  public static synchronized <T> T normalizeAndDup(T t) {
+    t = normalize(t);
+    return dup(t);
+    }
+  
+  public static synchronized <T extends L42Cachable<T>> T normalizeCachable(T t) {
+    return ((L42Cachable<T>) t).myCache().normalize(t);
+  }
 
 }

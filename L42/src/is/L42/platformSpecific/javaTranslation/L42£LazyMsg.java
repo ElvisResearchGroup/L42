@@ -48,7 +48,7 @@ public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
     }
   public static final Class<L42£LazyMsg> _class = L42£LazyMsg.class;
   public static final LazyMsgCache myCache = new LazyMsgCache();
-  static{L42CacheMap.addCacheableType(L42£LazyMsg.class, myCache);}
+  static{L42CacheMap.addCachableType_synchronized(L42£LazyMsg.class, myCache);}
   @Override public L42Cache<L42£LazyMsg> myCache(){return myCache;}
   }
 class LazyMsgCache extends ValueCache<L42£LazyMsg>{
