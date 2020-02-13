@@ -358,12 +358,12 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
      List<Boolean>is=is0;
      List<String>ps=ps0;
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("public static final L42StandardCache<"+jC+"> myCache=new L42StandardCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
-    c("static{myCache.lateInitialize(new Class<?>[]{");
+    c("public static final L42StandardCache<"+jC+"> myCache=L42CacheMap.newStandardCache(\""+jC+"\","+jC+"._class);");nl();
+    c("static{L42CacheMap.lateInitialize(myCache,new Class<?>[]{");
     seq(range(ps),i->is.get(i)?"null":addDotClass(ps.get(i)),",");
     c("});}");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
-    c("private "+jC+" norm;");nl();
+    c("private volatile "+jC+" norm;");nl();
     c("@Override public "+jC+" newInstance(){ return new " + jC + "();}");nl();
     c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
     c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
@@ -400,7 +400,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
    }
   private void addCachableMethodsNoFields(String jC){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("private static final L42Cache<"+jC+"> myCache=new L42SingletonCache<"+jC+">(\""+jC+"\","+jC+"._class);");nl();
+    c("private static final L42Cache<"+jC+"> myCache=L42CacheMap.newSingletonCache(\""+jC+"\","+jC+"._class);");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     }
   public void header(boolean interf,String jC){
@@ -463,7 +463,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("@Override public L42Cache<"+jC+"> myCache() {return mySCache;}");
     c("}");deIndent();nl();
     c("public static final "+jC+" pathInstance=new _Fwd();");nl();
-    c("static final L42Cache<"+jC+"> mySCache=new L42SingletonCache<>(\""+jC+"£Class\", pathInstance.getClass());");nl();
+    c("static final L42Cache<"+jC+"> mySCache=L42CacheMap.newSingletonCache(\""+jC+"£Class\", pathInstance.getClass());");nl();
     if(nativeKind(p)){
       c("public ");
       typeName(p);

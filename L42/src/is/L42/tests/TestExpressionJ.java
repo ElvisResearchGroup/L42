@@ -245,7 +245,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public L42ClassAny asPath(){return Resources.ofPath(0);}
          @Override public L42Cache<£cN£n1> myCache() {return mySCache;}}
        public static final £cN£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cN£n1> mySCache=new L42SingletonCache<>("£cN£n1£Class", pathInstance.getClass());
+       static final L42Cache<£cN£n1> mySCache=[###]
        public int unwrap;
        public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
        }
@@ -274,7 +274,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public L42ClassAny asPath(){return Resources.ofPath(0);}
          @Override public L42Cache<£cA£n1> myCache() {return mySCache;}}
        public static final £cA£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cA£n1> mySCache=new L42SingletonCache<>("£cA£n1£Class", pathInstance.getClass());
+       static final L42Cache<£cA£n1> mySCache=[###]
        }
      """)
   ),new AtomicTest(()->
@@ -283,7 +283,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ""","""
      class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
        static final Class<£cC£n1> _class=£cC£n1.class;
-       private static final L42Cache<£cC£n1> myCache=new L42SingletonCache<£cC£n1>("£cC£n1",£cC£n1._class);
+       private static final L42Cache<£cC£n1> myCache=[###]
        @Override public L42Cache<£cC£n1> myCache(){return myCache;}
        public static £cC£n1 NewFwd(){return new _Fwd();}
        public static class _Fwd extends £cC£n1 implements L42Fwd{
@@ -294,7 +294,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          public L42ClassAny asPath(){return Resources.ofPath(0);}
          @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
        public static final £cC£n1 pathInstance=new _Fwd();
-       static final L42Cache<£cC£n1> mySCache=new L42SingletonCache<>("£cC£n1£Class", pathInstance.getClass());
+       static final L42Cache<£cC£n1> mySCache=[###]
        }
      ""","","")
   ),new AtomicTest(()->
@@ -325,7 +325,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
            public L42ClassAny asPath(){return Resources.ofPath(0);}
            @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
          public static final £cC£n1 pathInstance=new _Fwd();
-         static final L42Cache<£cC£n1> mySCache=new L42SingletonCache<>("£cC£n1£Class", pathInstance.getClass());
+         static final L42Cache<£cC£n1> mySCache=[###]
          }
      ""","","")
 

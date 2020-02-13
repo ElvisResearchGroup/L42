@@ -12,10 +12,16 @@ import is.L42.translationToJava.J;
 public class ClearCacheGenerator implements Generator{
   @Override public void of(boolean type, MWT mwt, J j) {
     if(type){return;}
+    if(j.fields.xs.isEmpty()){
+      j.c("return "); 
+      j.visitE(mwt._e());
+      j.c(";");
+      return; 
+      }
     j.c("var Res=");
     j.visitE(mwt._e());
     j.c(";");    
-    if(!j.fields.xs.isEmpty()){j.c("£xthis.clearCache();");}
+    j.c("£xthis.clearCache();");
     j.c("return Res;");
     }
   }

@@ -44,27 +44,27 @@ public class LazyCacheGenerator implements Generator{
     }
   void immCache(J j,String name){
     if(j.fields.xs.isEmpty()){readCache(j,name);return;}
-    j.c("if(£xthis.norm==null){£xthis.myCache.normalize(£xthis);}");j.nl();
+    j.c("if(£xthis.norm==null){L42CacheMap.normalizeCachable(£xthis);}");j.nl();
     j.c("if(!£xthis.norm.is"+name+"){£xthis.norm."+name+"="+name+"(£xthis.norm); £xthis.norm.is"+name+"=true;}");j.nl();
     j.c("return £xthis.norm."+name+";");j.nl();j.deIndent();    
     j.c("}");j.nl();
-    j.c("boolean is"+name+";");j.nl();
+    j.c("volatile boolean is"+name+";");j.nl();
     }
   void readCache(J j,String name){
     j.c("if(!£xthis.is"+name+"){£xthis."+name+"="+name+"(£xthis); £xthis.is"+name+"=true;}");j.nl();
     j.c("return £xthis."+name+";");j.nl();j.deIndent();    
     j.c("}");j.nl();
-    j.c("boolean is"+name+";");j.nl();
+    j.c("volatile boolean is"+name+";");j.nl();
     }
   void classCache(J j,String name){
     j.c("if(!is"+name+"){"+name+"="+name+"(£xthis); is"+name+"=true;}");j.nl();
     j.c("return "+name+";");j.nl();j.deIndent();    
     j.c("}");j.nl();
-    j.c("static boolean is"+name+";");j.nl();
+    j.c("static volatile boolean is"+name+";");j.nl();
     j.c("static ");//evil but works, since fieldAndAuxMethod is called directly after
     }
   void fieldAndAuxMethod(J j,String name,String retT,String thisT,Core.E e){
-    j.c(retT+" "+name+";");j.nl();
+    j.c("volatile "+retT+" "+name+";");j.nl();
     j.c("private static "+retT+" "+name+"("+thisT+" £xthis){");j.indent();j.nl();
     j.c("return ");
     j.visitE(e);
