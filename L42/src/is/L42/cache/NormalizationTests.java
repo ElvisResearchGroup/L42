@@ -3,7 +3,7 @@ package is.L42.cache;
 import static is.L42.cache.L42CacheMap.expandedKey;
 import static is.L42.cache.L42CacheMap.getCacheObject;
 import static is.L42.cache.L42CacheMap.getKey;
-import static is.L42.cache.L42CacheMap.normalize;
+import static is.L42.cache.L42CacheMap.normalize_internal;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -149,11 +149,11 @@ public class NormalizationTests {
     R1 r2 = new R1(r1);
     R1 r3 = new R1(r2);
     r1.referenced = r3;
-    r1 = normalize(r1);
-    assertTrue(r1 == normalize(new R1(r1)));
-    assertTrue(r1 == normalize(r2));
-    assertTrue(r1 == normalize(r3));
-    assertTrue(r1 == normalize(new R1(r3)));
+    r1 = normalize_internal(r1);
+    assertTrue(r1 == normalize_internal(new R1(r1)));
+    assertTrue(r1 == normalize_internal(r2));
+    assertTrue(r1 == normalize_internal(r3));
+    assertTrue(r1 == normalize_internal(new R1(r3)));
     assertTrue(r1 == r1.myNorm());
     assertTrue(r1 == r2.myNorm());
     assertTrue(r1 == r3.myNorm());
@@ -188,7 +188,7 @@ public class NormalizationTests {
   @Test
   public void testNullObjectField() {
     R1 r1null = new R1(null);
-    assertThrows(NullPointerException.class, () -> { normalize(r1null); });
+    assertThrows(NullPointerException.class, () -> { normalize_internal(r1null); });
     assertThrows(NullPointerException.class, () -> { getKey(r1null, false); });
     assertThrows(NullPointerException.class, () -> { expandedKey(r1null, true, false); });
     }
@@ -360,8 +360,8 @@ public class NormalizationTests {
     assertEquals(expandedKey(dup2, true, false), expandedKey(n2, true, false));
     assertTrue(n1 != n2);
     if(readEQ) { assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false)); }
-    n1 = normalize(n1);
-    n2 = normalize(n2);
+    n1 = normalize_internal(n1);
+    n2 = normalize_internal(n2);
     //assertEquals(str, L42CacheMap.objToString(n1));
     if(!cache.isValueType()) {
       assertTrue(cache.getMyNorm(n1old) == n1);

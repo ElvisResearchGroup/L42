@@ -103,7 +103,7 @@ public class L42CacheMap {
     return getCacheObject((Class<T>) o.getClass()).refine(o);
     }
   
-  public synchronized static <T> T normalize(T t) {
+  static <T> T normalize_internal(T t) {
     L42Cache<T> cache = getCacheObject(t);
     return cache.normalize(t);
     }
@@ -143,20 +143,20 @@ public class L42CacheMap {
     return cache.dup(t);
     }
   
-  static <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
+  public static synchronized <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
     if(obj1 == null) { return obj2 == null; }
     return expandedKey(obj1, true, false).equals(expandedKey(obj2, true, false));
     }
   
-  static <T> boolean structurallyEqualNorm(T obj1, T obj2) {
-    obj1 = normalize(obj1);
-    obj2 = normalize(obj2);
+  public static synchronized <T> boolean structurallyEqualNorm(T obj1, T obj2) {
+    obj1 = normalize_internal(obj1);
+    obj2 = normalize_internal(obj2);
     return L42CacheMap.identityEquals(obj1, obj2);
     }
   
   static String readObjToString(Object o) {
     if(isNorm(o)) { return objToString(o); }
-    return objToString(normalize(getCacheObject(o).dup(o)));
+    return objToString(normalize_internal(getCacheObject(o).dup(o)));
     }
   
   static String objToString(Object obj) {
@@ -260,12 +260,16 @@ public class L42CacheMap {
     }
   
   public static synchronized <T> T normalizeAndDup(T t) {
-    t = normalize(t);
+    t = normalize_internal(t);
     return dup(t);
     }
   
   public static synchronized <T extends L42Cachable<T>> T normalizeCachable(T t) {
     return ((L42Cachable<T>) t).myCache().normalize(t);
   }
+  
+  public static synchronized <T> T normalize(T t) {
+    return normalize_internal(t);
+    }
 
 }
