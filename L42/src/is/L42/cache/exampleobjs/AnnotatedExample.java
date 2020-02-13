@@ -24,7 +24,7 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializ
   static {
     //The call to .addCacheableType is necessary, as the cache
     //map is sometimes used as a fallback mechanism
-    myCache = new L42StandardCache<AnnotatedExample>("AnnotatedExample", AnnotatedExample.class);
+    myCache = L42CacheMap.newStandardCache("AnnotatedExample", AnnotatedExample.class);
     myCache.lateInitialize(String.class, int.class, Object.class);
     }
   //Some field declarations
@@ -93,7 +93,7 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializ
    * both a setter and a getter
    */
   
-  private AnnotatedExample myNorm = null;
+  private volatile AnnotatedExample myNorm = null;
   
   public AnnotatedExample myNorm() {
     return myNorm;

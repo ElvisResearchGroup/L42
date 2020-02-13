@@ -4,6 +4,7 @@ import java.io.Serializable;
 
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42StandardCache;
 
 public class A implements L42Cachable<A>, Serializable {
@@ -13,7 +14,7 @@ public class A implements L42Cachable<A>, Serializable {
   
   static
   {
-    myCache = new L42StandardCache<A>("A", A.class);
+    myCache = L42CacheMap.newStandardCache("A", A.class);
     myCache.lateInitialize(int.class, int.class);
   }
   
@@ -81,7 +82,7 @@ public class A implements L42Cachable<A>, Serializable {
     return myCache;
   }
   
-  private A myNorm = null;
+  private volatile A myNorm = null;
   
   public A myNorm() {
     return myNorm;

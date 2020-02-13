@@ -13,7 +13,7 @@ public class R2 implements L42Cachable<R2>, Serializable{
   
   static
   {
-    myCache = new L42StandardCache<R2>("R2", R2.class);
+    myCache = L42CacheMap.newStandardCache("R2", R2.class);
     myCache.lateInitialize(Object.class, Object.class);
   }
   
@@ -65,7 +65,7 @@ public class R2 implements L42Cachable<R2>, Serializable{
     return myCache;
   }
   
-  private R2 myNorm = null;
+  private volatile R2 myNorm = null;
   
   public R2 myNorm() {
     return myNorm;
