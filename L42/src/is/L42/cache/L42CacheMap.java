@@ -138,7 +138,7 @@ public class L42CacheMap {
     return cache.computeKeyNN(t);
   }
   
-  static <T> T dup(T t) {
+  public synchronized static <T> T dup(T t) {
     L42Cache<T> cache = getCacheObject(t);
     return cache.dup(t);
     }
