@@ -17,6 +17,7 @@ import is.L42.common.Program;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
+import is.L42.nativeCode.EagerCacheGenerator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
@@ -41,14 +42,17 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
 
   public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs) {
     this.p=p;
+    this.ch=new Coherence(p,false);
     this.isCoherent=precomputeCoherent();
     this.g=g;
     this.wrap=wrap;
     this.libs=libs;
     }
-  public boolean precomputeCoherent(){return new Coherence(p,false).isCoherent(true);}
+  public boolean precomputeCoherent(){return ch.isCoherent(true);}
   final Program p;
   final boolean isCoherent;
+  public final Coherence ch;
+  public boolean cachedClearCacheGood=false;
   G g;
   boolean wrap;
   ArrayList<X>fwds=new ArrayList<>();
@@ -478,11 +482,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public List<X> xs;
     final public List<P> ps;
     final public List<String> psJ;
-    final public Coherence ch;
     final public ArrayList<MWT> readLazy=new ArrayList<>();
     final public ArrayList<MWT> eager=new ArrayList<>();
-    Fields(){
-      ch=new Coherence(p,false);
+    public Fields(){
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}
       xs=ch.classMhs.get(0).s().xs();
       assert p.topCore().isInterface() ||ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)):xs;
@@ -518,6 +520,14 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       NativeDispatch.nativeCode(k,mwt,this);
       return;
       }
+    if(EagerCacheGenerator.isCapsuleMutator(mwt,this)){
+      c("var Res=");
+      visitE(mwt._e());
+      c(";");    
+      c("£xthis.clearCache();");
+      c("return Res;");
+      return;
+      }    
     if(mwt._e()!=null){
       c("return ");
       visitE(mwt._e());
@@ -526,8 +536,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     //allowed abstract
     assert this.fields!=null;
-    assert this.fields.ch!=null;
-    if(this.fields.ch.allowedAbstract(mwt.mh())){
+    assert this.ch!=null;
+    if(this.ch.allowedAbstract(mwt.mh())){
       cThrowError();
       return;
       }
@@ -557,7 +567,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     String m=mh.s().m();
     int i=m.lastIndexOf('#');
     m=m.substring(i+1,m.length()); //works also for -1;
-    kw("£xthis.£x"+m+"=£xthat;return L42£Void.instance;");
+    if(!fields.xs.isEmpty() && fields.readLazy.size()+fields.eager.size()!=0){
+      kw("£xthis.£x"+m+"=£xthat;£xthis.clearCache();return L42£Void.instance;");
+      }
+    else{kw("£xthis.£x"+m+"=£xthat;return L42£Void.instance;");}    
     }
   private void factoryBody(MWT mwt){
     assert this.fields!=null;

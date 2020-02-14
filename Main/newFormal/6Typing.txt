@@ -49,7 +49,7 @@ _______
     if MWT.e?=e then 
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P
       p;MWT.G;empty |= e :_ <=fwd% MWT.T.mdf
-      if MWT.native?!=native then typePlugin(p;MWT)
+      if MWT.native?!=empty then typePlugin(p;MWT)
     MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
     forall MH in MHs: p|- MWT.MH <=MH
 _______

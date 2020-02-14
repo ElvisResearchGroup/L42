@@ -620,7 +620,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       || (l.isInterface() && l.mwts().stream().anyMatch(m->m.key().hasUniqueNum()))
       || (l.isInterface() && l.ts().stream().anyMatch(t->t.p().toNCs().hasUniqueNum()));
     if(mustClose){
-      if(!l.info().close()){err(Err.mustHaveCloseState(
+      if(!l.info().close()){err(Err.mustHaveCloseStateBridge(
         L(classMhs.stream().map(m->m.key())),
         L(bridges.stream().map(m->m.key()))
         ));}

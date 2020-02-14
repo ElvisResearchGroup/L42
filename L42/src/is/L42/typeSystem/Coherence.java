@@ -20,6 +20,7 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
+import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.tools.InductiveSet;
 import is.L42.visitors.Accumulate;
@@ -101,12 +102,12 @@ public class Coherence {
       }
     return coherentGetMdf(mdf1,mh.mdf(),fieldTs,fieldAccessMdf(x,mh.mdf()));
     }
-  private List<T> fieldTs(X x,Mdf mdf){
+  public List<T> fieldTs(X x,Mdf mdf){
     return L(mhs,(c,mh)->{
       if(mh.mdf().isClass()){//factory
         if(!canAlsoBe(mh.t().mdf(),mdf)){return;}
         int index=mh.key().xs().indexOf(x);
-        assert index!=-1;
+        assert index!=-1: x+" "+mh;
         c.add(mh.pars().get(index));
         return;
         }//else is setter
@@ -152,8 +153,9 @@ public class Coherence {
       default: return false;
       }
     }  
-  private X fieldName(MH mh){
-    String x=mh.key().m();
+  public static X fieldName(MH mh){return fieldName(mh.key());}
+  public static X fieldName(S s){
+    String x=s.m();
     while(x.startsWith("#")){x=x.substring(1);}
     return new X(x);
     }

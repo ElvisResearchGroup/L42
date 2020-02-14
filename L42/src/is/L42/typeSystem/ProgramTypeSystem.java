@@ -35,10 +35,11 @@ public class ProgramTypeSystem {
     }
   public static void type(boolean typed,Program p){
     L l=p.topCore();
+    J j=new J(p,null,false,null){{fields=new Fields();}};
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
-      assert !l.info().isTyped() || switch(0){default: typeMWT(p,mwt); yield true;};
-      if(!l.info().isTyped()){typeMWT(p,mwt);}
+      assert !l.info().isTyped() || switch(0){default: typeMWT(p,mwt,j); yield true;};
+      if(!l.info().isTyped()){typeMWT(p,mwt,j);}
       }
     for(NC nc:l.ncs()){
       var pushed=p.push(nc.key(),nc.l());
@@ -60,9 +61,9 @@ public class ProgramTypeSystem {
     var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
     errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
     }
-  public static void typeMWT(Program p,MWT mwt){
+  public static void typeMWT(Program p,MWT mwt,J j){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
-    if(!mwt.nativeUrl().isEmpty()){typePlugin(p,mwt);}
+    if(!mwt.nativeUrl().isEmpty()){typePlugin(p,mwt,j);}
     List<MH> mhs=L(p.topCore().ts(),(c,ti)->{
       var pi=ti.p().toNCs();
       var l=p._ofCore(pi);
@@ -86,7 +87,7 @@ public class ProgramTypeSystem {
       errIf(cond,pos,Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions()));  
       }    
     }
-  private static void typePlugin(Program p, MWT mwt) {
+  private static void typePlugin(Program p, MWT mwt,J j) {
     String nativeUrl=mwt.nativeUrl();
     String nativeKind=p.topCore().info().nativeKind();
     if(!nativeUrl.startsWith("trusted:")){
@@ -103,7 +104,7 @@ public class ProgramTypeSystem {
     var g=op._of(k);
     errIf(g==null,mwt._e().poss(),
       Err.nativeReceiverInvalid(mwt.nativeUrl(),nativeKind));
-    g.of(true,mwt,new J(p,null,false,null));
+    g.of(true,mwt,j);
     }
   private static void typeMethE(Program p,MH mh, E e){
     var g=G.of(mh);

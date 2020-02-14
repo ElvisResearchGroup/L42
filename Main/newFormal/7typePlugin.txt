@@ -1,0 +1,46 @@
+In this file we define the typing constrants for some of the plugins.
+_______
+#define typePlugin(p;MWT)    typePlugin(p;MWT;balCurly)
+* typePlugin(p;MWT)=typePlugin(p;MWT;MWT.nativeUrl)
+
+* typePlugin(p;MWT;cache)
+    MWT.mdf in {imm,class}
+    MWT.T.mdf in {imm,class}
+    MWT.pars=empty
+    //MWT.exceptions=empty//Note, would this be needed?
+
+* typePlugin(p;MWT;eager)
+    MHs={MWT.MH| MWT in p(This0).MWTs, MWT.e?=empty}
+    MWT.mdf=read
+    MWT.T.mdf in {imm,class}
+    MWT.pars=empty
+    //MWT.exceptions=empty//Note, would this be needed?
+    forall ctx such that MWT.e=ctx[this],exists ctx' such that
+      ctx=ctx'[[].m::0()] and immOrCapsule(MHs,m::0)
+    clearCacheGood(p(This0),MHs)
+_______
+#define immOrCapsule(MHs,m)    clearCacheGood(L,MHs)
+* immOrCapsule(MHs,#sx::0)
+    fieldTs(MHs, x, mut).mdfs={imm} //Note: here using mut or read is the same
+* immOrCapsule(p,#sx::0)
+    fieldTs(MHs, x, mut).mdfs={capsule}
+
+* clearCacheGood(L,MHs)  
+    L.Info is closed state, with zero
+    forall MWT in L.MWTs:
+      if isCapsuleMutator(MWT,MHs) then validCapsuleMutator(MWT,MHs)
+_______
+#define isCapsuleMutator(MWT,MHs)    validCapsuleMutator(MWT,MHs)
+* isCapsuleMutator(MWT,MHs)
+    MWT.mdf in {mut,lent}
+    this.#sx::0() inside MWT.e
+    fieldTs(MHs,x,mut).mdfs={capsule}
+    either mdf method mut P #sx::0() in MHs
+      or  mdf method lent P #sx::0() in MHs
+
+* validCapsuleMutator(MWT,MHs)
+    MWT.exceptions=empty
+    MWT.T.mdf notin {mut,lent}
+    MWT.pars.mdfs notin {read,lent,mut}
+    MWT.e=ctx[this]
+    not this inside ctx[void]//only one occurence of this

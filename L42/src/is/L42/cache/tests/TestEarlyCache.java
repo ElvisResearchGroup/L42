@@ -5,6 +5,7 @@ import java.util.concurrent.CompletionException;
 
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42StandardCache;
 
 public class TestEarlyCache {
@@ -25,7 +26,7 @@ class SBox implements L42Cachable<SBox>{
   String _methName2(){return this.s+this.s/*+new SBox(s).methName1()*/;}
   //generated to be normalizable
   static final Class<SBox> _class=SBox.class;
-  private static final L42StandardCache<SBox> myCache=new L42StandardCache<>("SBox",SBox._class);
+  private static final L42StandardCache<SBox> myCache=L42CacheMap.newStandardCache("SBox",SBox._class);
   static{myCache.lateInitialize(String.class);}
   private SBox norm;
   boolean out=false;

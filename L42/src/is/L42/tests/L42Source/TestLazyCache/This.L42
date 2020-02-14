@@ -19,16 +19,19 @@ Scope1 ={
     )
   }
   */
-Foo={Size inner,class method This of(Size inner)
+Foo={
+  read method Size inner::0()
+  class method This of::0(Size inner)
+  class method This of(Size inner)=this.of::0(inner=inner)
   imm method Size times2()=
     native{trusted:cachable} (
       Log"Foo".write(S"2")//Discuss: how this scale when closed subexpressions can be cached?
-      this.inner()*2Size
+      this.inner::0()*2Size
       )
   read method Size times3Eager()=
     native{trusted:eagerCachable} (
       Log"Foo".write(S"3")
-      this.inner()*3Size
+      this.inner::0()*3Size
       )
   }
 TestCache=(
@@ -223,13 +226,14 @@ TestClassCache={
   }
 TestReadCache={
   A={
-    read method Size that()
-    mut method Void that(Size that)
-    mut method Void update(Size that)=native{trusted:clearCache} this.that(that)
-    class method mut A(Size that)
+    read method Size that::0()
+    mut method Void that::0(Size that)
+    mut method Void update(Size that)=this.that::0(that)
+    class method mut A of::0(Size that)
+    class method mut A(Size that)=this.of::0(that)
     read method Size m()=native{trusted:eagerCachable} (
       Log"Foo".write(S"ACT.")
-      this.that()
+      this.that::0()
       )
     }
   Task=(

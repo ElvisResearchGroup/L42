@@ -276,6 +276,12 @@ public class Err {
   "native kind "+_1+" requires "+_2+" nativePar parameters, but "+_3+" are declared"
   ;}public static String nativeKindInvalid(Object _1){return
   "native kind "+_1+" is not recognized"
+  ;}public static String nativeBodyInvalidThis(Object _1,Object mh){return
+  "native body "+_1+" has selector "+mh+"; uses this for more then just accesses a imm/capsule field"
+  ;}public static String nativeBodyInvalidThisCount(Object _1,Object mh){return
+  "native body "+_1+" has selector "+mh+"; uses this more then 1 time"
+  ;}public static String nativeBodyInvalidExceptions(Object _1,Object mh){return
+  "native body "+_1+" has selector "+mh+"; this method must have an empty throw exception clause"
   ;}public static String nativeParameterInvalidKind(Object _1,Object mh,Object sig,Object _3,Object _4){return
   "native body "+_1+" has selector "+mh+"; required "+sig+" but the parameter of type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
@@ -302,8 +308,10 @@ public class Err {
   "methods "+s+", bridging effectful #$ non determinism have modifier "+mdf+", but only {mut,lent,capsule} are allowed"
   ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return
   "methods "+bi+", bridging effectful #$ non determinism could be invoked through factory "+fi+", that has no #$"
-  ;}public static String mustHaveCloseState(Object fs,Object bs){return
-  "the core library literal must be close, is either a close interface or factory methods "+fs+
+  ;}public static String mustHaveCloseState(){return
+  "the core library literal must be a close class. Caused by eager cache methods"
+  ;}public static String mustHaveCloseStateBridge(Object fs,Object bs){return
+  "the core library literal must be a close class; it is either a close interface or factory methods "+fs+
   " are present, and methods bridging effectful #$ non determinism "+bs+" are present"
   ;}public static String methSubTypeExpectedRet(Object s, Object _1,Object _2){return
   "Invalid method inheritance for "+s+": the return type "+_1+" is not a subtype of the inherited type"+_2
