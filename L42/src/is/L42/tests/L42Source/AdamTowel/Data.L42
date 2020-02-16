@@ -101,3 +101,24 @@ special care must be took to support
   -check equality of two class Any (we will need this to generate a decent == operator)
   -I would also need to get the methods and the method types... so... basically all the introspecation
   Conclusion: no need to hurry up introspection, we will have a more poor == until than!
+  
+  
+  Data and caching:
+  
+Person=Close:{
+  S name
+  capsule Strings allergies
+  @Cache imm method S description()=
+    S"Person[%this.name();%this.allergies()]"
+  @Property class method Void add(mut Strings allergies,S allergy)=
+    allergies.add(allergy)
+  @Cache read method S currentDescription()=
+    S"Person[%this.name();%this.allergies()]"
+  @Property class method Void ok(S name,read Strings allergies)=
+    if name.isEmpty() || allergies.size()>200Size 
+      error X"InvalidPerson"
+  @Property class method S title(S name)=
+     S"Dr. %name of 42"
+  }
+  
+  

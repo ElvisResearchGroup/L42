@@ -57,7 +57,7 @@ public class Loader {
     }
   public Core.L runNow(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
-    J j=new J(p,G.empty(),false,libs){
+    J j=new J(p,G.empty(),false,libs,false){
       @Override public boolean precomputeCoherent(){return false;}
       };
     j.visitE(e);//the goal here is not to generate the p.top class
@@ -99,7 +99,7 @@ public class Loader {
     if(!l.info().isTyped()){return;}
     String name=J.classNameStr(p);
     if(this.loaded.containsKey(name)){return;}
-    J j=new J(p,G.empty(),false,libs);
+    J j=new J(p,G.empty(),false,libs,false);
     j.mkClass();
     String code=header+j.result().toString();
     var e=new Element(l,J.classNamePath(p),name,new SourceFile(metaPackage+name,code));

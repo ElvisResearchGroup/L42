@@ -136,7 +136,7 @@ public enum TrustedOp {
   SPercent("'%'",append("%%")),//%% instead of % for the stringformat
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
-  SNewLine("newLine",append("\\\\n")),
+  SNewLine("newLine",append("\\n")),
   AddAll("addAll",Map.of(StringBuilder,use("%s.append(%s);return L42£Void.instance;",
     sig(Mutable,Immutable,Void,Immutable,String)))),
    
@@ -189,6 +189,8 @@ public enum TrustedOp {
     Meta,use("return %s.simpleSum(%s,%s);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
     Meta,use("return %s.resource(%s);",sigI(Lib,Lib)))),
+  Close("close",Map.of(
+    Meta,use("return %s.close(%s,%Gen1::wrap);",sigI(Lib,Lib)))),
   AddMapP("addMapP",Map.of(
     Meta,use("return %s.addMapP(%s,%s);",sig(Immutable,Immutable,Meta,
       Immutable,String,  Class,Any))
@@ -216,6 +218,9 @@ public enum TrustedOp {
   AddImm("addImm",Map.of(Vector,use(vectorOp("add",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   AddMut("addMut",Map.of(Vector,use(vectorOp("add",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),  
   Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
+  StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
+  EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
+  SubString("subString",Map.of(String,use("return %s.substring(%s,%s);",sigI(String,Int,Int)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),
     String,use("return %s + %s;",sigI(String,String))

@@ -42,10 +42,13 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return new L42£TrustedIO();";
     }},
-  Meta("L42£Meta"){public String factory(J j,MWT mwt){
-    assert mwt.key().xs().isEmpty();
-    return "return new L42£Meta();";
-    }},  
+  Meta("L42£Meta"){
+    public String factory(J j,MWT mwt){
+      assert mwt.key().xs().isEmpty();
+      return "return new L42£Meta();";
+      }
+    @Override public int genExceptionNumber(){return 5;}
+    },  
   LazyMessage("L42£LazyMsg"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return new L42£LazyMsg();";

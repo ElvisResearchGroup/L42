@@ -93,6 +93,7 @@ class OpUtils{
         checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi);
         }
       //TODO: check exceptions
+      //TODO: check that exceptional Gens are native lazyMsg
       return true;
       }
     private static void checkGen(int i,Program p,MWT mwt,Signature sig,P pi){
@@ -119,31 +120,31 @@ class OpUtils{
         throw new EndError.TypeError(mwt._e().poss(),
           Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,ki));            
         }
-    if(tti==Lib){
-      if(pi==P.pLibrary){return;}
-      throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Library"));            
+      if(tti==Lib){
+        if(pi==P.pLibrary){return;}
+        throw new EndError.TypeError(mwt._e().poss(),
+         Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Library"));            
+        }
+      if(tti==Void){
+        if(pi==P.pVoid){return;}
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Void"));            
+        }
+      if(tti==Any){
+        if(pi==P.pAny){return;}
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Any"));            
+        }
+      if(tti==Gen1){checkGen(0,p,mwt,sig,pi);}
+      if(tti==Gen2){checkGen(1,p,mwt,sig,pi);}
+      if(tti==Gen3){checkGen(2,p,mwt,sig,pi);}
+      if(tti==Gen4){checkGen(3,p,mwt,sig,pi);}
+      if(tti==This){
+        if(pi.equals(P.pThis0)){return;}
+        throw new EndError.TypeError(mwt._e().poss(),
+          Err.nativeParameterInvalidKind(mwt.nativeUrl(),sig,mwt.key(),pi,"This"));            
+        }
       }
-    if(tti==Void){
-      if(pi==P.pVoid){return;}
-      throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Void"));            
-      }
-    if(tti==Any){
-      if(pi==P.pAny){return;}
-      throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Any"));            
-      }
-    if(tti==Gen1){checkGen(0,p,mwt,sig,pi);}
-    if(tti==Gen2){checkGen(1,p,mwt,sig,pi);}
-    if(tti==Gen3){checkGen(2,p,mwt,sig,pi);}
-    if(tti==Gen4){checkGen(3,p,mwt,sig,pi);}
-    if(tti==This){
-      if(pi.equals(P.pThis0)){return;}
-      throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),sig,mwt.key(),pi,"This"));            
-      }
-    }
   @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
   static Generator use(String s0,Signature sig){
     return (type,mwt,j)->{
@@ -159,6 +160,10 @@ class OpUtils{
         if(s.contains("%Gen"+(i+1)+".")){
           String geniS=J.classNameStr(p.navigate(geni.toNCs()));
           s=s.replace("%Gen"+(i+1)+".",geniS+".");
+          }
+        if(s.contains("%Gen"+(i+1)+"::")){
+          String geniS=J.classNameStr(p.navigate(geni.toNCs()));
+          s=s.replace("%Gen"+(i+1)+"::",geniS+"::");
           }
         if(s.contains("%Gen"+(i+1))){
           s=s.replace("%Gen"+(i+1),j.typeNameStr(geni));

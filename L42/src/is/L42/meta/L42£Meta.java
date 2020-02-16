@@ -16,6 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42SingletonCache;
@@ -41,6 +42,7 @@ import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
+import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Top;
@@ -57,6 +59,11 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     this.redirects=redirects;
     this.toString=redirects.toString();
     }
+  public L42£Library close(L42£Library input,Function<L42£LazyMsg,L42Any>wrap){
+    L l=input.unwrap;
+    //? TODO: should we first add constructors and after make @Property stuff private?
+    return wrapL(new Close().close(Resources.currentP.push(Resources.currentC,l),wrap));    
+    } 
   public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
   public L42£Meta addMapP(String name,L42Any target){
     List<C> cs=unwrapCs(name);

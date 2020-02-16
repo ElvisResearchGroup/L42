@@ -346,7 +346,7 @@ public static void je(String e,String out){
     #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1}}
     """;
   var p=Program.parse(l);
-  J j=new J(p,G.empty(),false, new ArrayList<>());
+  J j=new J(p,G.empty(),false, new ArrayList<>(),false);
   j.visitE(p.topCore().mwts().get(0)._e());
   String res=j.result().toString();
   Err.strCmp(res,out);
@@ -368,7 +368,7 @@ public static void jc(String e,String ...out){
   var p=Program.parse(l);
   List<String> res=L(p.topCore().ncs(),(c,nc)->{
     var pi=p.push(nc.key());
-    J j=new J(pi,G.empty(),false,new ArrayList<>());
+    J j=new J(pi,G.empty(),false,new ArrayList<>(),false);
     j.mkClass();
     c.add(j.result().toString());
     });

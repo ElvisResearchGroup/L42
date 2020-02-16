@@ -236,7 +236,7 @@ TestReadCache={
       this.that::0()
       )
     }
-  Task=(
+  Task1=(
     Log"Foo".clear()
     mut A a=A(42\)
     {}:Test"res1"(expected=42Size, actual=a.m())
@@ -246,5 +246,70 @@ TestReadCache={
     a.update(0\)
     {}:Test"res3"(expected=0Size, actual=a.m())
     )
+  B={
+    read method read Strings that::0()
+    mut method mut Strings #that::0()
+    class method mut This of::0(capsule Strings that)
+    mut method Void addOne()=this.#that::0().add(S"hi")
+    read method Size m()=native{trusted:eagerCachable} (
+      Log"Foo".write(S"ACT.")
+      this.that::0().size()
+      )
+    }
+  Task2=(
+    Log"Foo".clear()
+    mut B a=B.of::0(Strings[\"hello"])
+    {}:Test"res1"(expected=1Size, actual=a.m())
+    {}:Test"res2"(expected=1Size, actual=a.m())
+    {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    //more, with update
+    a.addOne()
+    {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"res3"(expected=2Size, actual=a.m())
+    )
+  Person=Close:{
+    S name
+    capsule Strings allergies
+    class method mut This(S name, capsule Strings allergies)
+    @Cache method S description()=(
+      Log"Foo".write(S"description()")
+      S"Person[%this.name();%this.allergies().size()]"
+      )
+    @Property class method Void add(mut Strings allergies,S allergy)=(
+      Log"Foo".write(S"add()")  
+      allergies.add(allergy)
+      )
+    @Property class method Void ok(S name,read Strings allergies)=(
+      Log"Foo".write(S"ok()")
+      if name==S"" || allergies.size()>200Size error X"InvalidPerson"
+      )
+    @Property class method S title(S name)=(
+       Log"Foo".write(S"title()")
+       S"Dr. %name of 42"
+       )
+    }
+  Task3=(
+    Log"Foo".clear()
+    imm Person i=(
+      mut Person a=Person(name=S"bob",allergies=Strings[S"dust"])
+      {}:Test"cacheRepeating"(expected=S"ok()title()",actual=Log"Foo".#$reader().read())
+      {}:Test"readProperty1"(expected=S"Dr. bob of 42", actual=a.title())
+      {}:Test"cacheRepeating"(expected=S"ok()title()",actual=Log"Foo".#$reader().read())
+      //more, with update
+      a.add(allergy=S"pollen")
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()",actual=Log"Foo".#$reader().read())
+      {}:Test"readProperty2"(expected=S"Dr. bob of 42", actual=a.title())
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()",actual=Log"Foo".#$reader().read())
+      a
+      )
+      {}:Test"immCache1"(expected=S"Person[bob;2]", actual=i.description())
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
+      {}:Test"immCache2"(expected=S"Person[bob;2]", actual=i.description())
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
+    )
+    //questo deve diventare un class method?
+    //@Class.Cache read method S currentDescription()=
+    //  S"Person[%this.name();%this.allergies().size()]"
+    //or... Cache.Transient ?    
   }
   

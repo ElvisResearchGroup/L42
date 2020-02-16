@@ -40,10 +40,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public ToSTrait.ToSState state(){return state;}
   ToSTrait.ToSState state= new ToSTrait.ToSState();
 
-  public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs) {
+  public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs,boolean forTs) {
     this.p=p;
     this.ch=new Coherence(p,false);
     this.isCoherent=precomputeCoherent();
+    if(this.isCoherent){this.fields=new Fields(forTs);}
     this.g=g;
     this.wrap=wrap;
     this.libs=libs;
@@ -387,8 +388,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         }
       c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
     c("}}");nl();
-    if(!fields.xs.isEmpty() && fields.readLazy.size()+fields.eager.size()!=0){generateClearCache();}
+    if(needClearCache()){generateClearCache();}
     }
+  private boolean needClearCache(){return !fields.xs.isEmpty() && fields.readLazy.size()+fields.eager.size()!=0;}
   private void generateClearCache() { 
     c("public void clearCache(){");indent();nl();
     for(MWT mwti:fields.readLazy){
@@ -421,7 +423,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
-    if(this.isCoherent){this.fields=new Fields();}
     header(interf,jC);
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
@@ -484,16 +485,17 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public List<String> psJ;
     final public ArrayList<MWT> readLazy=new ArrayList<>();
     final public ArrayList<MWT> eager=new ArrayList<>();
-    public Fields(){
+    public Fields(boolean forTs){
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}
       xs=ch.classMhs.get(0).s().xs();
-      assert p.topCore().isInterface() ||ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)):xs;
+      assert forTs || p.topCore().isInterface() || ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)) : xs +" "+ch.classMhs;
       ps=L(range(xs),(c,i)->{
         List<P> pis=L(ch.classMhs.stream().map(m->m.pars().get(i).p()).distinct());
         if(pis.size()==1){c.add(pis.get(0));}
         else{c.add(P.pAny);}
         });
-      psJ=L(ps,(c,pi)->c.add(typeNameStr(pi)));
+      if(!forTs){psJ=L(ps,(c,pi)->c.add(typeNameStr(pi)));}
+      else{psJ=null;}
       assert xs.size()==ps.size();
       for(MWT mwti:p.topCore().mwts()){
         if(mwti.nativeUrl().isEmpty()){continue;}
@@ -520,7 +522,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       NativeDispatch.nativeCode(k,mwt,this);
       return;
       }
-    if(EagerCacheGenerator.isCapsuleMutator(mwt,this)){
+    if(EagerCacheGenerator.isCapsuleMutator(mwt,this) && needClearCache()){
       c("var Res=");
       visitE(mwt._e());
       c(";");    
@@ -567,7 +569,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     String m=mh.s().m();
     int i=m.lastIndexOf('#');
     m=m.substring(i+1,m.length()); //works also for -1;
-    if(!fields.xs.isEmpty() && fields.readLazy.size()+fields.eager.size()!=0){
+    if(needClearCache()){
       kw("£xthis.£x"+m+"=£xthat;£xthis.clearCache();return L42£Void.instance;");
       }
     else{kw("£xthis.£x"+m+"=£xthat;return L42£Void.instance;");}    
