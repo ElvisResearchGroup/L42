@@ -44,7 +44,7 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     boolean cond=actual.equals(expected);
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");
-    assert !pos.fileName().toString().contains("\n");
+    assert !pos.fileName().toString().contains("\n"):"|"+pos.fileName().toString()+"|";
     StringBuilder sb=new StringBuilder("###################\n");
     if(cond){sb.append("#Pass    "+name+"\n");}
     else{sb.append("#Fail    "+name+"\n");}
@@ -54,15 +54,14 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     if(!cond){
       sb.append("#StrCompare\n");
       sb.append("#Actual\n");
-      actual=actual.lines().map(l->"#|"+l).collect(Collectors.joining());
-      sb.append(actual);
+      if(actual.isEmpty()){sb.append("#|");}
+      else{sb.append(actual.lines().map(l->"#|"+l).collect(Collectors.joining()));}
       sb.append("\n#Expected\n");
-      expected=expected.lines().map(l->"#|"+l).collect(Collectors.joining());
-      sb.append(expected+"\n");
+      if(expected.isEmpty()){sb.append("#|");}
+      else{sb.append(expected.lines().map(l->"#|"+l).collect(Collectors.joining()));}
+      sb.append("\n");
       }  
     Resources.tests(sb.toString());
-
-
     return L42£Void.instance;
     }
     

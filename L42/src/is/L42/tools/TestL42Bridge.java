@@ -19,26 +19,41 @@ public class TestL42Bridge{
   public static Stream<L42Test> fromString(String s) { 
     List<String> strings = L(s.lines());
     List<L42Test> tests = new ArrayList<>(); 
-    for(String t : strings) {
-      if(t.length() == 0 || t.charAt(0) != '#') { throw new Error("Parser Exception Each line in test descriptor should start with a '#'"); }
+    for(String t : strings){
+      assert t.length()!=0 && t.startsWith("#"):
+        "InvalidTestOutput\nInvalid line `"+t+"`.\nEach line in test descriptor should start with a '#'"; 
       t = t.substring(1);
-      if(isSep(t)) { tests.add(new L42Test()); continue; }
-      else if(t.startsWith("Pass") || t.startsWith("Fail")) {
-        if(tests.get(tests.size() - 1).testName != null) throw new Error("Parser Exception: Repeated [Pass/Fail] [Test Name] declaration.");
-        tests.get(tests.size() - 1).pass = t.substring(0, 4).equals("Pass");
-        tests.get(tests.size() - 1).testName = t.substring(t.lastIndexOf(' ') + 1);      
+      if(isSep(t)){tests.add(new L42Test());continue;}
+      var current=tests.get(tests.size() - 1);
+      if(t.startsWith("Pass") || t.startsWith("Fail")){
+        assert current.testName == null:
+          "InvalidTestOutput\nRepeated [Pass/Fail] [Test Name] declaration:"+t;
+        current.pass = t.startsWith("Pass");
+        current.testName = t.substring(t.lastIndexOf(' ') + 1);
+        continue;    
         }
-      else if(t.startsWith("line:")) {
-        if(tests.get(tests.size() - 1).fileName != null) throw new Error("Parser Exception: Repeated Line: [Line#] [File Name] declaration.");
+      if(t.startsWith("line:")) {
+        assert current.fileName == null:
+          "InvalidTestOutput\nRepeated Line: [Line#] [File Name] declaration.";
         t = t.substring(6);
-        tests.get(tests.size() - 1).lineNumber = Integer.parseInt(t.substring(0, t.indexOf(' ')));
-        tests.get(tests.size() - 1).fileName = t.substring(t.lastIndexOf(' ') + 1);   
+        current.lineNumber = Integer.parseInt(t.substring(0, t.indexOf(' ')));
+        current.fileName = t.substring(t.lastIndexOf(' ') + 1);
+        continue;
         }
-      else if(t.equals("Bool") || t.equals("StrCompare")) { tests.get(tests.size() - 1).type = t; }
-      else if(t.equals("Expected")) { tests.get(tests.size() - 1).message += separator; }
-      else if(t.charAt(0) == '|') { tests.get(tests.size() - 1).message += t.substring(1) + "\n";}
-      else if(t.equals("Actual")) {}
-      else { throw new Error("Parser Exception: line `" + t + "` does not conform to any known specification."); }
+      if(t.equals("Bool") || t.equals("StrCompare")){
+        current.type = t;
+        continue;
+        }
+      if(t.equals("Expected")){
+        current.message += separator;
+        continue;
+        }
+      if(t.charAt(0) == '|'){
+        current.message += t.substring(1) + "\n";
+        continue;
+        }
+      assert t.equals("Actual"):
+        "InvalidTestOutput\nline `" + t + "` does not conform to any known specification.";
       }
     return tests.stream();
     }

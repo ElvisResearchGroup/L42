@@ -181,8 +181,8 @@ _______
 * extractMHs(p;MWT,Ms)=♥MWT.MH,extractMHs(Ms) 
 * extractMHs(p;T x,Ms)=read method ♥T x(), extractMHs(Ms)
     ♥T = toRead(♥T)
-* extractMHs(p;T x,Ms)=mut method capsuleToLent(♥T) #x(), extractMHs(toRead(♥T) x,Ms)
-    ♥T != toRead(♥T) // TODO: should we use capsuleToMut(T) instead? I'm really on the fence
+* extractMHs(p;T x,Ms)=extractMHs(toRead(♥T) x,Ms)
+    ♥T != toRead(♥T) // NOTE: before was also doing mut method capsuleToLent(♥T) #x()
 * extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)    
     
 * updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info1}

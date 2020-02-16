@@ -7,6 +7,8 @@ method Library applyMap(Library that)=
   native{trusted:applyMap} error void
 method Library resource(Library that)=
   native{trusted:resource} error void
+method Library close(Library that)=
+  native{trusted:close} error void
 method Library simpleSum(Library a, Library b)=
   native{trusted:simpleSum} error void
 method Library simpleRedirect(

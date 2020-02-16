@@ -34,6 +34,7 @@ public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
   public L42£LazyMsg(){this.lazy=base;}
   public L42£LazyMsg(Supplier<String>lazy){this.msg=null;this.lazy=lazy;}
   public L42£LazyMsg(String msg){this.msg=msg;this.lazy=null;}
+  @Override public String toString(){return getMsg();}
   public boolean eq(L42£LazyMsg other){
     if(lazy==null && other.lazy==null){
       assert msg!=null;

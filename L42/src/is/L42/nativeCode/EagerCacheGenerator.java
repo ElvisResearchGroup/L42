@@ -54,7 +54,7 @@ public class EagerCacheGenerator extends LazyCacheGenerator{
     throw new EndError.TypeError(forErr._e().poss(),
       Err.nativeBodyInvalidThis(forErr.nativeUrl(),forErr.mh()));
     }
-  void clearCacheGood(J j){
+  public void clearCacheGood(J j){
     if(j.cachedClearCacheGood){return;}
     Core.L l=j.p().topCore();
     if(!l.info().close()){
@@ -101,7 +101,7 @@ public class EagerCacheGenerator extends LazyCacheGenerator{
       if(t.mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable)){
         throw new EndError.TypeError(mwt._e().poss(),
             Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),
-              "not mutable, lent or read",mwt.mh().t(),"not mutable, lent or read"));
+              "not mutable, lent or read",t,"not mutable, lent or read"));
         }
       }
     var thises=new Accumulate.SkipL<int[]>(){

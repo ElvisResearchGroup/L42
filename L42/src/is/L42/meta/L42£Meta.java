@@ -57,6 +57,11 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     this.redirects=redirects;
     this.toString=redirects.toString();
     }
+  public L42£Library close(L42£Library input){
+    L l=input.unwrap;
+    //? TODO: should we first add constructors and after make @Property stuff private?
+    return wrapL(new Close().close(Resources.currentP.push(Resources.currentC,l)));    
+    } 
   public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
   public L42£Meta addMapP(String name,L42Any target){
     List<C> cs=unwrapCs(name);

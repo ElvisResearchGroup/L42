@@ -109,7 +109,7 @@ public class Program implements Visitable<Program>{
   public Program push(C c){return push(c,top.c(c));}
   public Program update(LL ll){return update(ll,true);}
   public Program update(LL ll,boolean cleanPushed){
-    assert !is.L42.common.Constants.updatePopChecks() || !cleanPushed || cleanPushed(pTails);
+    assert !is.L42.common.Constants.updatePopChecks() || !cleanPushed || cleanPushed(pTails):pTails.printCs();
     if(ll==this.top){return this;}
     return new Program(ll,pTails);
     }
@@ -299,7 +299,9 @@ public class Program implements Visitable<Program>{
         }
       if(t!=tr){
         assert !t.equals(tr);
-        c.add(new Core.MH(Mdf.Mutable,L(), TypeManipulation.capsuleToLent(t), f.key().withM("#"+f.key().m()), L(),L()));
+        if(!t.mdf().isCapsule()){
+          c.add(new Core.MH(Mdf.Mutable,L(),t, f.key().withM("#"+f.key().m()), L(),L()));
+          }
         }
       c.add(new Core.MH(Mdf.Readable,L(), tr, f.key(), L(),L()));
       });
