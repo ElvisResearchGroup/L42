@@ -7,8 +7,6 @@ method Library applyMap(Library that)=
   native{trusted:applyMap} error void
 method Library resource(Library that)=
   native{trusted:resource} error void
-method Library close(Library that)=
-  native{trusted:close} error void
 method Library simpleSum(Library a, Library b)=
   native{trusted:simpleSum} error void
 method Library simpleRedirect(
@@ -20,4 +18,9 @@ class method This1.Name #from(This1.StringBuilder stringLiteral)=
 method This1.S pathName(class Any that)=
   native{trusted:pathName} error void
   
-#norm{typeDep=This0, This1.S,This1.Name,This1.StringBuilder coherentDep=This1.Name nativeKind=Meta}
+#norm{
+  nativeKind=Meta
+  typeDep=This0, This1.S,This1.Name,This1.StringBuilder
+  coherentDep=This1.Name
+  nativePar= This0 This0 This0 This0 This0
+  }

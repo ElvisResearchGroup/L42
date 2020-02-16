@@ -2,12 +2,6 @@ ClassOperators={class method class This1()=This1}
 class method Library #colon0(Trait that)=that.code()
 class method Library #colon0(class Trait.Lifted lifted)=lifted.code()
 
-Close={
-  ClassOperators={class method class This1()=This1}
-  class method Library :(Library that)=Meta().close(that)
-  }
-Cache={@{cache}}
-Property={@{property}}
 MutReferenceEquality=Trait:{
   mut method Bool mutReferenceEquality(mut This that)=native{trusted:mutReferenceEquality} error void
   }

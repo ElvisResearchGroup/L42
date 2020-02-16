@@ -267,27 +267,23 @@ TestReadCache={
     {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
     {}:Test"res3"(expected=2Size, actual=a.m())
     )
-  Person=Class.Close:{
+  Person=Close:{
     S name
     capsule Strings allergies
     class method mut This(S name, capsule Strings allergies)
-    @Class.Cache imm method S description()=(
+    @Cache method S description()=(
       Log"Foo".write(S"description()")
       S"Person[%this.name();%this.allergies().size()]"
       )
-    @Class.Property class method Void add(mut Strings allergies,S allergy)=(
+    @Property class method Void add(mut Strings allergies,S allergy)=(
       Log"Foo".write(S"add()")  
       allergies.add(allergy)
       )
-    //questo deve diventare un class method?
-    //@Class.Cache read method S currentDescription()=
-    //  S"Person[%this.name();%this.allergies().size()]"
-    //or... Cache.Transient ?
-    @Class.Property class method Void ok(S name,read Strings allergies)=(
-      Log"Foo".write(S"ok()") 
+    @Property class method Void ok(S name,read Strings allergies)=(
+      Log"Foo".write(S"ok()")
       if name==S"" || allergies.size()>200Size error X"InvalidPerson"
       )
-    @Class.Property class method S title(S name)=(
+    @Property class method S title(S name)=(
        Log"Foo".write(S"title()")
        S"Dr. %name of 42"
        )
@@ -311,6 +307,9 @@ TestReadCache={
       {}:Test"immCache2"(expected=S"Person[bob;2]", actual=i.description())
       {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
     )
-    
+    //questo deve diventare un class method?
+    //@Class.Cache read method S currentDescription()=
+    //  S"Person[%this.name();%this.allergies().size()]"
+    //or... Cache.Transient ?    
   }
   

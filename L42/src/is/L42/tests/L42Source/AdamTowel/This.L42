@@ -49,11 +49,13 @@ DeployAAA=(
     Assertion={interface[Message]}
     PrivateOps={...}
     X=Class:Message:{...}
+    
     IterationIncomplete=Class:Message:{[Guard]}
     NoElementInOpt=Class:(Message.NativeTrait()+{[Guard]})
     OutOfBounds=Class:(Message.NativeTrait()+{[Guard]})
     ElementNotImm=Class:(Message.NativeTrait()+{[Guard]})
     ElementNotMut=Class:(Message.NativeTrait()+{[Guard]})
+    
     Opt={...}
     ListT={
       ListNative=Trait:{...}
@@ -64,6 +66,21 @@ DeployAAA=(
       }
     Strings=Class:(ListT(withEq=S)+{
       class method Bool equals(read S a,read S b)=a==b})
+
+    Close$Fail=Class:(Message.NativeTrait()+{[Guard]})      
+    Close$Meta={
+      class method This #apply()
+      method Library close(Library that)=native{trusted:close} error void
+      #norm{nativeKind=Meta,
+        typeDep=This0 This1.Close$Fail,
+        nativePar=This1.Close$Fail This0 This0 This0 This0
+        }}
+    Close={
+      ClassOperators={class method class This1()=This1}
+      class method Library :(Library that)=Close$Meta().close(that)
+      }
+    Cache={@{cache}}
+    Property={@{property}}
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )

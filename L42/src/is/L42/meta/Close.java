@@ -9,6 +9,8 @@ import static is.L42.tools.General.todo;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
@@ -24,6 +26,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.nativeCode.EagerCacheGenerator;
+import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.tools.General;
@@ -34,13 +37,15 @@ public class Close {
   J j;
   HashMap<X,MH> capsMuts=new HashMap<>();
   ArrayList<MWT> c=new ArrayList<>();
-  public L close(Program p){
+  Function<L42£LazyMsg,L42Any>wrap;
+  public L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
     System.out.println(p.pTails.printCs());
     L l=p.topCore();
     j=new J(p,null,false,null,true);
+    this.wrap=wrap;
     checkCoherence();
     noZero(l);
-    if(l.info().close()){throw todo();}
+    if(l.info().close()){throwErr("Class is already close");}
     for(var m:l.mwts()){process(m);}
     List<MWT> newMWT=General.L(c.stream());
     l= l.withMwts(newMWT).withInfo(l.info().withClose(true));
@@ -49,12 +54,19 @@ public class Close {
         .clearCacheGood(new J(p.update(l,false),null,false,null,true));
       }
     catch(EndError ee){
-      var lazy=new L42£LazyMsg(ee.getMessage());
       ee.printStackTrace();
-      throw new L42Error(lazy);
+      throwErr(ee.getMessage());
       }
     System.out.println(l);
     return l;
+    }
+  public RuntimeException throwErr(String msg){
+    var lazy=new L42£LazyMsg(msg);
+    throw new L42Error(wrap.apply(lazy));
+    }
+  public RuntimeException throwErr(Supplier<String> msg){
+    var lazy=new L42£LazyMsg(msg);
+    throw new L42Error(wrap.apply(lazy));
     }
   public void process(MWT m){
     if(m._e()==null){
@@ -67,7 +79,9 @@ public class Close {
       }
     if(match("cache",m)){processCache(m);return;}
     if(!match("property",m)){processBase(m);return;}
-    if(!m.mh().mdf().isClass()){throw todo();}
+    if(!m.mh().mdf().isClass()){
+      throwErr("Property annotation must go on class methods, but is placed on "+m.mh()+"\n"+m.poss());
+      }
     if(m.mh().pars().stream().anyMatch(t->t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd))){throw todo();}
     if(m.mh().pars().stream().anyMatch(t->t.mdf().isIn(Mdf.Mutable,Mdf.Lent))){processProperyMut(m);return;}
     processPropertyImm(m);
@@ -102,10 +116,18 @@ public class Close {
     var rec=this0.withPos(pos);
     return new Core.MCall(pos,rec,mh.key(),General.L());
     }
+  String errMsgMoreThenOne(X x,Mdf recMdf1,Mdf recMdf2){
+    return "More then one candidate getter/exposer with"
+      +recMdf1+" "+recMdf2+" in:"+
+      General.L(j.ch.mhs.stream().filter(m->
+        m.mdf().isIn(recMdf1,recMdf2) 
+        && Coherence.fieldName(m).equals(x)));
+    }  
   public Core.E fAcc(Pos pos,X x,Mdf recMdf1,Mdf recMdf2){
     var mh=j.ch.mhs.stream().filter(m->
       m.mdf().isIn(recMdf1,recMdf2) 
-      && Coherence.fieldName(m).equals(x)).reduce(toOneOr(()->{throw todo();}));
+      && Coherence.fieldName(m).equals(x)
+      ).reduce(toOneOr(()->throwErr(()->errMsgMoreThenOne(x,recMdf1,recMdf2))));
     assert mh.isPresent();
     var rec=this0.withPos(pos);
     return new Core.MCall(pos,rec,mh.get().key().withUniqueNum(0),General.L());
@@ -125,7 +147,7 @@ public class Close {
   public void processGetter(MWT m){processState(m);}
   public void processSetter(MWT m){processState(m);}
   public void processCache(MWT m){
-    if(!m.nativeUrl().isEmpty()){throw todo();}
+    if(!m.nativeUrl().isEmpty()){throwErr("Method can not be annotated as Cache, since it is already native: "+m.nativeUrl());}
     c.add(m.withNativeUrl("trusted:cachable"));
     }
   public void processProperyMut(MWT m){
@@ -168,7 +190,7 @@ public class Close {
   public void noZero(L l){
     for(var m:l.mwts()){
       if(!m.key().hasUniqueNum() || m.key().uniqueNum()!=0){continue;}
-      throw todo();
+      throwErr("Class already uses the uniue number 0");
       }
     }
   public void checkCoherence(){

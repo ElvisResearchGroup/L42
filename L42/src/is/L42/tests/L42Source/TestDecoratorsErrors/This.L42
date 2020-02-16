@@ -1,0 +1,23 @@
+reuse[AdamTowel]
+TestClose={
+  class method Void (Library that,S expected)=(
+    _=Close:that
+    catch error Close$Fail f (
+      cut = expected.size()<f.toS().size()
+      size =(if cut expected else f.toS()).size()        
+      S part=f.toS().subString(start=0\ end=size)
+      that:Test"ExpectedExeption"(expected=expected actual=part)
+      )
+    void//that:Test"ExpectedExeptionMissed"(Bool.false())
+    )
+  }
+TestClose1=(
+  TestClose({
+    Size n
+    class method mut This(Size n)
+    @Property read method Size double()=this.n()+this.n()
+    },expected=S
+"Message toFix(toFix):%S.nl()Property annotation must go on class methods, but is placed on read method")
+  )
+
+   
