@@ -238,9 +238,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("{[A,B,Any]}",Err.duplicatedNameAny())
    ),new AtomicTest(()->
-   pass("{method Void m::1() method B k::1() method B b::2()=this}")
+   pass("{method Void m::0() method B k::0() method B b::2()=this}")
    ),new AtomicTest(()->
-   fail("{method Void m::1() method B k::2() method B b::2()=this}",Err.singlePrivateState("[1, 2]"))
+   fail("{method Void m::1() method B k::1() method B b::2()=this}",Err.zeroPrivateState("1"))
    ),new AtomicTest(()->
    fail("{interface method Void m()=this method k()=this}",Err.methodImplementedInInterface("[m(), k()]"))
    ),new AtomicTest(()->

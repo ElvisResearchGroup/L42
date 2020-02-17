@@ -24,4 +24,8 @@ class method This nl()=This<:class This.#from(stringLiteral=(
   b
   ))
 
-#norm{typeDep=This0, This1.Size, This1.StringBuilder,This1.HasToS,This1.Bool,This1.ParseError nativeKind=String,nativePar=This1.ParseError coherentDep=This,This1.StringBuilder refined=toS()}
+#norm{nativeKind=String,nativePar=This1.ParseError
+  typeDep=This0, This1.Size, This1.StringBuilder,This1.HasToS,This1.Bool,This1.ParseError 
+  coherentDep=This,This1.StringBuilder,This1.ParseError
+  refined=toS()
+  }

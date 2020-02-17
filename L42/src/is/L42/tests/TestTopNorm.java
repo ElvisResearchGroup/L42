@@ -60,8 +60,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    //privates
    ),new AtomicTest(()->
-   top("{A={class method This foo::1()} B=void}",
-   "{A={class method imm This0 foo::1() #typed{typeDep=This0 close}} B={#typed{}}#norm{}}")
+   top("{A={class method This foo::0()} B=void}",
+   "{A={class method imm This0 foo::0() #typed{typeDep=This0 close}} B={#typed{}}#norm{}}")
 
    ),new AtomicTest(()->
    topFail(NotWellFormed.class,"{A={class method This foo::1()} B={class method This foo::1()} C=void}",
@@ -521,7 +521,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       S={
         class method This0 of()
         method This0 sum(This0 that)=native{trusted:OP+} error void
-        #norm{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE}
+        #norm{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE}
         }
       PE={#norm{nativeKind=LazyMessage}}
       Debug={
@@ -555,7 +555,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       {S={
         class method imm This0 of()
         imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
-        #typed{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE}
+        #typed{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE}
         }
       PE={#typed{nativeKind=LazyMessage}}
       Debug={
@@ -696,38 +696,38 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
   ),new AtomicTest(()->
   topFail(EndError.TypeError.class,"""
-  {A={imm method This foo()=native{trusted:cachable} void}
+  {A={imm method This foo()=native{trusted:lazyCache} void}
   Test=void
   }
   """,
   Err.invalidExpectedTypeForVoidLiteral(hole))
   ),new AtomicTest(()->
   top("""
-  {A={imm method This foo()=native{trusted:cachable} error void}
+  {A={imm method This foo()=native{trusted:lazyCache} error void}
   Test=void
   }
   ""","""
-  {A={imm method This foo()=native{trusted:cachable} error void #typed{typeDep=This0}}
+  {A={imm method This foo()=native{trusted:lazyCache} error void #typed{typeDep=This0}}
   Test={#typed{}}
   #norm{}}
   """)
   ),new AtomicTest(()->
   topFail(EndError.TypeError.class,"""
-  {A={imm method mut This foo()=native{trusted:cachable} error void}
+  {A={imm method mut This foo()=native{trusted:lazyCache} error void}
   Test=void
   }
   """,
   Err.nativeParameterInvalidKind(hole,hole,hole,hole,hole))
   ),new AtomicTest(()->
   topFail(EndError.TypeError.class,"""
-  {A={capsule method This foo()=native{trusted:cachable} error void}
+  {A={capsule method This foo()=native{trusted:lazyCache} error void}
   Test=void
   }
   """,
   Err.nativeParameterInvalidKind(hole,hole,hole,hole,hole))
   ),new AtomicTest(()->
   topFail(EndError.TypeError.class,"""
-  {A={method This foo(Any that)=native{trusted:cachable} error void}
+  {A={method This foo(Any that)=native{trusted:lazyCache} error void}
   Test=void
   }
   """,

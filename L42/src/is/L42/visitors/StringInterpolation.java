@@ -15,7 +15,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class StringInterpolation {
-  StringInterpolation(Path fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
+  StringInterpolation(int escapeSize,Path fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
+    this.escapeSize=escapeSize;
     this.fileName=fileName;
     this.eVoid=eVoid;
     this.pos=pos;
@@ -122,6 +123,7 @@ public class StringInterpolation {
     };
   Mode mode=Mode.Str;
   boolean topPar=false;
+  final int escapeSize;
   final Path fileName;
   final EVoid eVoid;
   final Pos pos;
@@ -137,6 +139,8 @@ public class StringInterpolation {
     assert openR==0: openR;
     assert openS==0: openS;
     assert openC==0: openC;
+    if (escapeSize==0){return new Full.EString(pos, L(eVoid),L(s));}
+    assert escapeSize==1;//TODO: still to handle if there is more then on %
     for(int i=0;i<s.length();i++){
       i=mode.run(this, s, i);
       }

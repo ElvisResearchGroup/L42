@@ -12,8 +12,7 @@ mut method Void #add(This2.Size that,mut This0.Elem val)=native{trusted:addMut} 
 mut method Void remove(This2.Size that)=native{trusted:remove} error void
 
 Elem={#norm{}}
-#norm{
+#norm{nativeKind=Vector, nativePar=This0.Elem,This2.OutOfBounds,This2.ElementNotImm,This2.ElementNotMut  
   typeDep=This0,This2.Size,This2.Bool, This.Elem,This2.OutOfBounds,This2.ElementNotImm,This2.ElementNotMut
-  nativeKind=Vector
-  nativePar=This0.Elem,This2.OutOfBounds,This2.ElementNotImm,This2.ElementNotMut  
+  coherentDep=This2.OutOfBounds,This2.ElementNotImm,This2.ElementNotMut  
   }

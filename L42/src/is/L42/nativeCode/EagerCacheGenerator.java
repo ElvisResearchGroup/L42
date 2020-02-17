@@ -92,7 +92,7 @@ public class EagerCacheGenerator extends LazyCacheGenerator{
     if(!mwt.mh().exceptions().isEmpty()){
       throw new EndError.TypeError(mwt._e().poss(),Err.nativeBodyInvalidExceptions("capsuleMutator",mwt.mh()));
       } 
-    if(mwt.mh().t().mdf().isIn(Mdf.Mutable,Mdf.Lent)){
+    if(mwt.mh().t().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.MutableFwd)){
       throw new EndError.TypeError(mwt._e().poss(),
           Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),
             "not mutable or lent",mwt.mh().t(),"not mutable or lent"));

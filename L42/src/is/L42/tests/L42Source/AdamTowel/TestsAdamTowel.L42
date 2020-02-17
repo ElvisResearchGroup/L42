@@ -140,7 +140,7 @@ Couple=Class:(ClassUtils+{
   var Person p2
   class method mut This(Person p1, Person p2)
   read method capsule This clone()=This(p1=this.p1(),p2=this.p2())
-  imm method Void normMe()=native{trusted:cachable} (void)
+  imm method Void normMe()=native{trusted:lazyCache} (void)
   })
 I=Class:(ClassUtils+{
   class method mut This()

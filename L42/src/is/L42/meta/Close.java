@@ -44,7 +44,6 @@ public class Close {
     j=new J(p,null,false,null,true);
     this.wrap=wrap;
     checkCoherence();
-    noZero(l);
     if(l.info().close()){throwErr("Class is already close");}
     for(var m:l.mwts()){process(m);}
     List<MWT> newMWT=General.L(c.stream());
@@ -77,14 +76,26 @@ public class Close {
       if(m.key().xs().size()==1){processSetter(m);return;}
       throw bug();
       }
-    if(match("cache",m)){processCache(m);return;}
-    if(!match("property",m)){processBase(m);return;}
+    if(match("lazyCache",m)){processCache(m);return;}
+    var stage=match("invalidateCache",m);
+    var eager=match("readEagerCache",m);
+    if(!stage &&!eager){processBase(m);return;}
     if(!m.mh().mdf().isClass()){
-      throwErr("Property annotation must go on class methods, but is placed on "+m.mh()+"\n"+m.poss());
+      throwErr("@Eager annotation must go on class methods, but is placed on "+m.mh()+"\n"+m.poss());
       }
     if(m.mh().pars().stream().anyMatch(t->t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd))){throw todo();}
-    if(m.mh().pars().stream().anyMatch(t->t.mdf().isIn(Mdf.Mutable,Mdf.Lent))){processProperyMut(m);return;}
-    processPropertyImm(m);
+    if(stage){
+      if(m.key().xs().isEmpty()){throw todo();}
+      Mdf first=m.mh().pars().get(0).mdf();
+      if(!first.isIn(Mdf.Mutable,Mdf.Lent)){throw todo();}
+      if(!m.mh().pars().stream().skip(1).allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class))){throw todo();}
+      processStage(m);return;
+      }
+    if(eager){
+      if(!m.mh().pars().stream().allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class))){throw todo();}
+      processEager(m);return;      
+      }
+    assert false;
     }
   public static Core.PCastT This0=new Core.PCastT(null,P.pThis0,P.coreThis0.withMdf(Mdf.Class));
   public static Core.EX this0=new Core.EX(null,X.thisX);
@@ -148,9 +159,9 @@ public class Close {
   public void processSetter(MWT m){processState(m);}
   public void processCache(MWT m){
     if(!m.nativeUrl().isEmpty()){throwErr("Method can not be annotated as Cache, since it is already native: "+m.nativeUrl());}
-    c.add(m.withNativeUrl("trusted:cachable"));
+    c.add(m.withNativeUrl("trusted:lazyCache"));
     }
-  public void processProperyMut(MWT m){
+  public void processStage(MWT m){
     var pos=m._e().pos();
     S s=m.key();
     assert !s.xs().isEmpty();
@@ -169,7 +180,7 @@ public class Close {
     c.add(m1);
     c.add(m);
     }
-  public void processPropertyImm(MWT m){
+  public void processEager(MWT m){
     var s=m.key();
     var s1=s.withXs(General.L());
     assert !s.hasUniqueNum();
@@ -182,17 +193,11 @@ public class Close {
     var m1=m.withMh(mh1);//m1: the no arg meth calling the static method s
     List<Core.E> exs1=General.L(s.xs(),(ci,xi)->ci.add(fAcc(m._e().pos(),xi,Mdf.Immutable,Mdf.Readable)));
     m1=m1.with_e(new Core.MCall(rec.pos(),rec,s,exs1));
-    c.add(m1.withNativeUrl("trusted:eagerCachable"));
+    c.add(m1.withNativeUrl("trusted:readEagerCache"));
     c.add(m);    
     }
   public void processAllowedAbs(MWT m){/*empty on purpose*/}
   public void processBase(MWT m){c.add(m);}
-  public void noZero(L l){
-    for(var m:l.mwts()){
-      if(!m.key().hasUniqueNum() || m.key().uniqueNum()!=0){continue;}
-      throwErr("Class already uses the uniue number 0");
-      }
-    }
   public void checkCoherence(){
     boolean coh=j.ch.isCoherent(true);
     if(coh){return;}

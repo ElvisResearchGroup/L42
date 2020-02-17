@@ -162,8 +162,8 @@ public class Err {
   "invalid 'if match': no type selected in "+trimExpression(_1.toString())
   ;}public static String forMatchNoVar(Object _1){return
   "nested name "+_1+" is var; in a 'for' match only top level names can be var"
-  ;}public static String singlePrivateState(Object _1){return
-  "Only one private state number is allowed; but the following are used "+_1
+  ;}public static String zeroPrivateState(Object _1){return
+  "Only zero is allowed for private state, but the following is used "+_1
   ;}public static String notValidC(Object _1){return
   "Error: "+_1+" is not a valid class name"
   ;}public static String malformedAtInDocs(){return
@@ -209,6 +209,8 @@ public class Err {
   "member "+_1+" inside a private nested class is not private"
   ;}public static String degenerateStatement(Object _1){return
   "The following expression is not a correct statement: "+_1
+  ;}public static String zeroNumberForC(Object _1){return
+  "The unique number 0 can not be used on class names, but is used in "+_1
   ;}public static String nonUniqueNumber(Object _1,Object _2){return
   "The unique numbers "+_1+" are in the domain of more then one library literal; others are in positions \n"+_2
   ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
@@ -221,6 +223,8 @@ public class Err {
   "Path "+_1+" not existant"  
   ;}public static String sealedInterface(Object _1,Object _2){return
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
+  ;}public static String importingInterfacePrivateMethod(Object _1){return
+  "Implemented interface declare method "+_1+" that is not declared in the heir. Methods with unique numbers need to be manually declared"
   ;}public static String invalidPathInInfo(Object _1){return
   "Invalid path in info: "+_1
   ;}public static String infoPathNotInTyped(Object _1,Object _2){return
@@ -268,6 +272,11 @@ public class Err {
   "for method "+_1+", method call parameter signature is incompatible with the parameters: "+_2
   ;}public static String mayLeakUnresolvedFwd(Object _1){return
   "fwd variable "+_1+" may be leaked out using a return"
+  ;}public static String nativeExceptionNotLazyMessage(Object _1,Object _2){return
+  "class of native kind "+_1+" uses as error path "+_2+", that is not of nativeKind LazyMsg"  
+  ;}public static String nativeExceptionNotCoherentDep(Object _1,Object _2){return
+  "class of native kind "+_1+" uses as error path "+_2+", that is not in coherentDep" 
+
   ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
   "native body "+_1+" uses unrecognized receiver of kind "+_2
   ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
@@ -276,6 +285,8 @@ public class Err {
   "native kind "+_1+" requires "+_2+" nativePar parameters, but "+_3+" are declared"
   ;}public static String nativeKindInvalid(Object _1){return
   "native kind "+_1+" is not recognized"
+  ;}public static String nativeKindInvalidSelector(Object _1,Object _2){return
+  "native kind "+_1+" can not be applied on #$ method "+_2
   ;}public static String nativeBodyInvalidThis(Object _1,Object mh){return
   "native body "+_1+" has selector "+mh+"; uses this for more then just accesses a imm/capsule field"
   ;}public static String nativeBodyInvalidThisCount(Object _1,Object mh){return

@@ -160,7 +160,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2}}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello Native World\n")
-/*  ),new AtomicTest(()-> //TODO:On Windows this passes or fails randomly...
+  ),new AtomicTest(()-> 
   loadRunErr("""
   Safe3={
     class method This1.S #$go()=native{
@@ -174,7 +174,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
       return "looped";
       }} error void
-    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile}
+    #typed{typeDep=This1.SB This1.S coherentDep=This1.SB This1.S}
     }
   C={
     class method Void #$m()=(
@@ -184,7 +184,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     #typed{typeDep=This1.SB This1.S This1.Safe3 coherentDep=This1.SB This1.S This1.Safe3}}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})")
 
-*/
+
   ));}
 public static void loadFail(String s){
   try{loadBase(base(s),false);fail();}
@@ -239,7 +239,10 @@ public static Program base(String s){
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
     method Void strDebug()=native{trusted:strDebug} error void
-    #typed{typeDep=This This1.S This1.ParseErr nativeKind=String,nativePar=This1.ParseErr}
+    #typed{nativeKind=String,nativePar=This1.ParseErr
+      typeDep=This This1.S This1.ParseErr
+      coherentDep=This1.ParseErr
+      }
     }
   ParseErr={#norm{nativeKind=LazyMessage}}
   SB={

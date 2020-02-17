@@ -175,7 +175,7 @@ _______
     if exists i: Ti.mdf=fwd imm then T.mdf undefined or T.mdf in {mut, fwd mut, imm, fwd imm}
     if exists i: Ti.mdf=fwd mut then T.mdf undefined or T.mdf in {mut, fwd mut}
     if T.mdf in {fwd imm,fwd mut} then exists i: Ti.mdf in {fwd imm, fwd mut}
-//In the Type system, something used to break if I allow read/lent return type with fwd imm. Where that it was?
+//If we allow lent/read return type and a fwd parameter, we may return a fwd%mut as an usable lent/read
 * FULL.match of form T?0(T?1 x0..T?n xn) = e; at least one T?i is not empty
 * FULL.e: \x only appear in a method parameter expression
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty 
@@ -183,7 +183,8 @@ _______
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
 * FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L
 * C::n n!=0//TODO: in code
-* e.m::0(_) and e::0.m[_]: e=='this' or e=='This0'//TODO: in code 
+* e.m::0(_) and e::0.m[_]: e in {'this','This0'}//TODO: in code
+* FULL.MWT/CORE.MWT if MWT.e?=empty and MWT.s of form m::n(_) then n=0
 * LL: //TODO: check the well formedness for LL and Core.L is implemented.
 //When is checked for core?
     no repetition in LL.Ms.LDom
@@ -206,7 +207,7 @@ _______
       or L.interface?=interface and m::n(xs) in dom(L)
       then L.Info.close?=close
     forall MWT in bridge(L.MWT), MWT.mds in {mut, lent, capsule}
-    MHs={MWT.MH | MWT in L.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.m of form _::n}
+    MHs={MWT.MH | MWT in L.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.s of form _::0(_)}
     forall MWT in bridge(L.MWT), forall MH in MHs:
       if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
     if MHs!=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
@@ -216,24 +217,6 @@ _______
     L.Info.nativeKind recognized
     expectedNumber(L.Info.nativeKind,L.Info.nativePar)
     //the number of nativePar is the expected number for the kind of nativeKind
-    //Note: if L.Info.close not defined, then the class is not consistent
-    if L.Info.close defined, then forall MWT in L.MWTs where MWT.nativeUrl in {"trusted:cachable","trusted:eagerCachable"}://TODO: add in code
-      //should be eagerCache and not eagerCachable since caching eager change the semantic in case of errors
-      if MWT.nativeUrl="trusted:eagerCachable" then
-        MWT.pars=empty and MWT.mdf=read and this only used to access fields (this avoids recursion)
-      all MHs.s of form _::0(_)
-      MWT.pars.mdfs subseteq {imm,class}
-      MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
-      MWT.mdf in {imm,class}
-      or MWT.mdf=read and
-        fields(L) are only imm/capsule//TODO: define formally
-        forall MWT in L.MWT where this.m() inside MWT.e and m is capsule mutator: 
-          MWT.e use 'this' only one time
-          MWT.nativeUrl ="trusted:clearCache"
-          MWT.exceptions=empty
-          MWT.T.mdf in {imm,read,class,capsule}//TODO: could be mut if capsule mutator return a lent?
-        field updates are used only one time in L, in a delegation pattern
-          with a method annotated with native{trusted:clearCache}      
     
 * G: var x capsule _ or var x fwd _ or var x fwd% _ not in G
 * CTz: forall CT1,CT2 in CTz, if CT1.ST=CT2.ST then CT1=CT2

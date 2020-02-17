@@ -23,6 +23,7 @@ import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.ThrowKind;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
@@ -49,7 +50,12 @@ class SortHeader{
       var mwti=(Full.L.MWT)mi;
       var docsi=TypeManipulation.toCoreDocs(mwti.docs());
       var mhi=TypeManipulation.toCore(mwti.mh());
-      c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",null));
+      Core.E body=null;
+      if(mi._e()!=null){
+        var pos=mi._e().pos();
+        body=new Core.Throw(pos,ThrowKind.Error,new Core.EVoid(pos));
+        }
+      c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",body));
       });
     Program p0=p.update(coreL,false);
     List<P.NCs> typeDep=L(c->Top.collectDeps(p0,mwts,c,null,false));
@@ -96,7 +102,15 @@ class SortHeader{
         docs=TypeManipulation.toCoreDocs(mi.docs());
         possi=mi.poss();
         }
-      var res=new Core.L.MWT(possi, docs, mh,"",null);
+      Core.E body=null;
+      if(mi==null && mh.key().hasUniqueNum()){
+        throw new InvalidImplements(poss,Err.importingInterfacePrivateMethod(mh));
+        }
+      if(mi!=null && mi._e()!=null){
+        var pos=mi._e().pos();
+        body=new Core.Throw(pos,ThrowKind.Error,new Core.EVoid(pos));
+        }
+      var res=new Core.L.MWT(possi, docs, mh,"",body);
       c.add(res);
       });
     ArrayList<P.NCs> typePs=new ArrayList<>();

@@ -4,7 +4,7 @@ reuse[AdamTowel]
 Scope1 ={
   A = {
     mut Bs bs class method This(mut Bs bs)
-    imm method Size ok()=native{trusted:eagerCachable} 3Size
+    imm method Size ok()=native{trusted:readEagerCache} 3Size
     }
   B = {mut A a class method This(mut A a)}
   Bs = Class:ListT(B)
@@ -24,12 +24,12 @@ Foo={
   class method This of::0(Size inner)
   class method This of(Size inner)=this.of::0(inner=inner)
   imm method Size times2()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       Log"Foo".write(S"2")//Discuss: how this scale when closed subexpressions can be cached?
       this.inner::0()*2Size
       )
   read method Size times3Eager()=
-    native{trusted:eagerCachable} (
+    native{trusted:readEagerCache} (
       Log"Foo".write(S"3")
       this.inner::0()*3Size
       )
@@ -49,7 +49,7 @@ A={
   Strings that
   class method This (Strings that)
   imm method S firstE()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       Log"Foo".write(S"firstEcalled")
       this.that().val(0\)
       )
@@ -80,7 +80,7 @@ TestACache=(
   HasToSs that
   class method This (HasToSs that)
   imm method S firstE()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       Log"Foo".write(S"firstEcalled2")
       this.that().val(0\).toS()
       )
@@ -91,7 +91,7 @@ BBox={
   class method This innerCon(B that)
   class method This (HasToSs that)=This.innerCon(B(that))
   imm method S firstE()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       this.that().firstE()
       )
   
@@ -123,7 +123,7 @@ C={
   AnyList myList
   class method This (Strings that, AnyList myList)
   imm method S firstE()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       Log"Foo".write(S"firstEcalled3")
       this.that().val(0\)
       )
@@ -150,7 +150,7 @@ ClassBox={
   class Any myClass
   class method This(class Any myClass)
   imm method Void printOut()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       Log"Foo".write(S"ClassBoxPrint")
       void
       )
@@ -192,7 +192,7 @@ D={
   Any myAny
   class method This (Strings that,fwd imm Any myAny)
   imm method S firstE()=
-    native{trusted:cachable} (
+    native{trusted:lazyCache} (
       Log"Foo".write(S"ACT.")
       this.that().val(0\)
       )
@@ -212,7 +212,7 @@ TestCircular=(
 
 TestClassCache={
   A={
-    class method Size const()=native{trusted:cachable} (
+    class method Size const()=native{trusted:lazyCache} (
       Log"Foo".write(S"ACT.")
       42Size
       )
@@ -231,7 +231,7 @@ TestReadCache={
     mut method Void update(Size that)=this.that::0(that)
     class method mut A of::0(Size that)
     class method mut A(Size that)=this.of::0(that)
-    read method Size m()=native{trusted:eagerCachable} (
+    read method Size m()=native{trusted:readEagerCache} (
       Log"Foo".write(S"ACT.")
       this.that::0()
       )
@@ -251,7 +251,7 @@ TestReadCache={
     mut method mut Strings #that::0()
     class method mut This of::0(capsule Strings that)
     mut method Void addOne()=this.#that::0().add(S"hi")
-    read method Size m()=native{trusted:eagerCachable} (
+    read method Size m()=native{trusted:readEagerCache} (
       Log"Foo".write(S"ACT.")
       this.that::0().size()
       )
@@ -275,15 +275,15 @@ TestReadCache={
       Log"Foo".write(S"description()")
       S"Person[%this.name();%this.allergies().size()]"
       )
-    @Property class method Void add(mut Strings allergies,S allergy)=(
+    @Stage class method Void add(mut Strings allergies,S allergy)=(
       Log"Foo".write(S"add()")  
       allergies.add(allergy)
       )
-    @Property class method Void ok(S name,read Strings allergies)=(
+    @Eager class method Void ok(S name,read Strings allergies)=(
       Log"Foo".write(S"ok()")
       if name==S"" || allergies.size()>200Size error X"InvalidPerson"
       )
-    @Property class method S title(S name)=(
+    @Eager class method S title(S name)=(
        Log"Foo".write(S"title()")
        S"Dr. %name of 42"
        )
@@ -307,7 +307,6 @@ TestReadCache={
       {}:Test"immCache2"(expected=S"Person[bob;2]", actual=i.description())
       {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
     )
-    //questo deve diventare un class method?
     //@Class.Cache read method S currentDescription()=
     //  S"Person[%this.name();%this.allergies().size()]"
     //or... Cache.Transient ?    

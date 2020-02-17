@@ -34,7 +34,9 @@ fragment IdChar: 'a'..'z' | 'A'..'Z' | '$' | '_' | '0'..'9';
 fragment CHAR:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '"' | '\'' | '\n';
 fragment CHARInStringSingle:
-'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' |         '\'';//no \n and "
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' |       '\'';//no \n and "
+fragment CHARInStringMulti:
+'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '[' | ']' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\' | '{' | '}' | '"' | '\'';//no \n
 fragment CharsUrl:
 'A'..'Z'|'a'..'z'|'0'..'9' | '(' | ')' | '<' | '>' |'&'|'|'|'*'|'+'|'-'|'=' | '/' | '!' | '?' | ';' | ':' | ',' | '.' | ' ' | '~' | '@' | '#' | '$' | '%' | '`' | '^' | '_' | '\\'  ;
 fragment CHARDocText:
@@ -47,8 +49,12 @@ ReuseURL:'reuse' Whitespace* '['URL']';
 NativeURL:'native' Whitespace* '{'BalCurly'}';
 fragment Fn: '0' | '1'..'9' ('0'..'9')*;
 fragment Fx: IdLow IdChar*;
+fragment StringMultiOpen:'"""' '%'* '\n';
+fragment StringMultiClose:(' ' | ',')* '"""';
+fragment StringMultiLine:(' ' | ',')* '|' CHARInStringMulti* '\n';
+StringMulti: StringMultiOpen StringMultiLine+ StringMultiClose;
 StringSingle: '"' CHARInStringSingle* '"';
-string: StringSingle;//TODO: will also match multilineStr and interpolation
+string: StringMulti|StringSingle;
 Number: '0'..'9' ('.'|'_'|'-'|'0'..'9')*;
 MUniqueNum: Fx('#' Fx)*'::'Fn;
 MHash: ('#$' | '#'+) Fx('#' Fx)* ('::'Fn)?;
@@ -97,7 +103,8 @@ squareCall: ('.'m)? '[' (par';')* par ']';
 cast: CastOp t;
 oR: OR |ORNS;
 par: e? (x'='e)*;
-block: oR d*? e k* whoops? ')' | oR d+ k* whoops? d* e ')' 
+//Note, just writing [oR d+ k* whoops? d* e ')'] was causing parsing of ( a b+c(d)) as ( a b+c  (d))  
+block: oR d*? e k* whoops? ')' | oR d+ k* whoops? e ')' | oR d+ k* whoops? d* e ')'
   | '{' d+ (k+ whoops? d* | whoops d*)? '}';
 d: (dX '=')? e;
 dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';

@@ -257,10 +257,7 @@ _______
     MHs = {MH | Docs MH in CORE.L.MWTs either flag=norm or MH.m of form _::n} //thus no e, thus abstract
     either CORE.L.interface?=interface
     or class not in MHs.mdfs//no abstract class method
-    or (exists xz  and n? such that: forall MH in MHs, coherent(p;MHs;MH;xz;n?)
-        and either CORE.L.Info.closed defined
-        or CORE.L.MWTs.nativeUrls disjoint {"trusted:clearCache","trusted:cachable","trusted:eagerCachable"}://TODO: add in code
-        )
+    or exists xz  and n? such that: forall MH in MHs, coherent(p;MHs;MH;xz;n?)
 
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn = xz

@@ -1,5 +1,7 @@
 //Step 1: the minimal infrastructure to deploy a towel
-S={#norm{typeDep=This1.ParseErr nativeKind=String, nativePar=This1.ParseErr}}
+S={#norm{nativeKind=String, nativePar=This1.ParseErr
+  typeDep=This1.ParseErr,coherentDep=This1.ParseErr,
+  }}
 ParseErr={#norm{nativeKind=LazyMessage}}
 Debug={
   class method This of()
@@ -73,14 +75,16 @@ DeployAAA=(
       method Library close(Library that)=native{trusted:close} error void
       #norm{nativeKind=Meta,
         typeDep=This0 This1.Close$Fail,
-        nativePar=This1.Close$Fail This0 This0 This0 This0
+        coherentDep=This1.Close$Fail,
+        nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
         }}
     Close={
       ClassOperators={class method class This1()=This1}
       class method Library :(Library that)=Close$Meta().close(that)
       }
-    Cache={@{cache}}
-    Property={@{property}}
+    Cache={@{lazyCache}}
+    Eager={@{readEagerCache}}
+    Stage={@{invalidateCache}}
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )

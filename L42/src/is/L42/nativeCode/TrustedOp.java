@@ -254,8 +254,8 @@ public enum TrustedOp {
       new L42£LazyMsg(\"Optional value is empty\")
       ));
     """,sig(Mutable,Mutable,Gen1)))),
-  LazyCache("cachable",Map.of(AnyKind,new LazyCacheGenerator())),
-  EagerCache("eagerCachable",Map.of(AnyKind,new EagerCacheGenerator())),
+  LazyCache("lazyCache",Map.of(AnyKind,new LazyCacheGenerator())),
+  EagerCache("readEagerCache",Map.of(AnyKind,new EagerCacheGenerator())),
   //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
   MutReferenceEquality("mutReferenceEquality",Map.of(AnyKind,use(
     "return %1$s==%2$s;",sig(Mutable,Immutable,Bool,Mutable,This)))),

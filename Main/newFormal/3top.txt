@@ -122,7 +122,8 @@ _______
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
     //TODO: here we need to rename the private names
     dom(MWTs NCs) disjoint dom(Ms)
-    CORE.MWTs = [♥MWT.Docs ♥MWT.MH |MWT in Ms]
+    CORE.MWTs = [♥MWT.Docs ♥MWT.MH e?|MWT in Ms, e?=empty, either e?=MWT.e?=empty or e?=error void otherwise]
+    //we use error void to avoid triggering not well formedness of the result for unique num!=0
     p0=followURL(URL);pTail
     Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
@@ -135,7 +136,10 @@ _______
     Ts1 = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
     forall imm P in Ts1\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
     p1 = p.update({interface? [Ts1] #norm{typeDep=Ts1}})//now with correct implements    
-    MWTs = [♥Docs MH | MH in methods(p1,Ts1,Ms) and either Docs=Ms(MH.s).Docs or Docs=empty otherwise]
+    MWTs = [♥Docs MH e?| MH in methods(p1,Ts1,Ms) and 
+      either Docs=Ms(MH.s).Docs or Docs=empty otherwise
+      either e?=Ms(MH.s).e?=empty or Ms(MH.s).e?=e and e?=error void otherwise]//error if Ms(MH.s) undefined and MH.s have private number
+      //private imported by interface need to be explicitly declared
     Ps;empty = collectDeps(p0;MWTs)
     ss=[MWT.s| MWT in MWTs and refine(p1;s;This0)]
     declaresClassMethods?=empty iff class notin MHs.mdfs

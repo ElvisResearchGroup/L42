@@ -93,6 +93,7 @@ public class General {
     return Collections.unmodifiableList(res);
     }
   public static <T> List<T>popL(List<T>l){
+    assert !l.isEmpty();
     ArrayList<T> res=new ArrayList<>(l.size()-1);
     int size=l.size();
     for(int i=1;i<size;i++){res.add(l.get(i));}

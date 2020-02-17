@@ -33,7 +33,7 @@ import is.L42.generated.*;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Full.VarTx;
 
-@SuppressWarnings("serial") class ParserFailed extends RuntimeException{}
+class ParserFailed extends RuntimeException{}
 
 public class FullL42Visitor implements L42Visitor<Object>{
   public Path fileName;
@@ -82,8 +82,20 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.EString visitString(StringContext ctx) {
     check(ctx);
     String s=ctx.getText();
-    s=s.substring(1,s.length()-1);
-    return new StringInterpolation(fileName,eVoid,pos(ctx),errors).supParse(s);
+    boolean multi=s.startsWith("\"\"\"");
+    int escapeSize=1;
+    if(multi){
+      int i=3;while(s.startsWith("%",i)){i+=1;}
+      escapeSize=i-3;
+      assert s.startsWith("\n",i);
+      int last=s.lastIndexOf("\n");
+      assert last>i;
+      s=s.substring(i+1,last);
+      s=s.lines().map(l->l.substring(l.indexOf("|")+1)).collect(Collectors.joining("\n"))+"\n";
+      }
+    else{s=s.substring(1,s.length()-1);}
+    
+    return new StringInterpolation(escapeSize,fileName,eVoid,pos(ctx),errors).supParse(s);
     }
   @Override public Full.D visitD(DContext ctx) {
     check(ctx);
@@ -158,6 +170,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     parserAmbiguity &=!ds.isEmpty() && ds.get(ds.size()-1)._varTx()!=null;
     if(parserAmbiguity){
       //make sure that '(A a=A()(c)   )' does not get parsed as '(A a=A()  (c))'
+      //also care about '(A a=A(c)   )' and '(A a=A""(c)   )' 
       int lineOR=ctx.e().start.getLine();
       int posOR=ctx.e().start.getCharPositionInLine();
       int lineDs=ctx.d(ctx.d().size()-1).stop.getLine();

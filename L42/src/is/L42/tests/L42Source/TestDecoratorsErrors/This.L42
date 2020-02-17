@@ -4,20 +4,35 @@ TestClose={
     _=Close:that
     catch error Close$Fail f (
       cut = expected.size()<f.toS().size()
-      size =(if cut expected else f.toS()).size()        
+      size =if cut expected.size()-1Size else f.toS().size()//remove the last \n on expected        
       S part=f.toS().subString(start=0\ end=size)
       that:Test"ExpectedExeption"(expected=expected actual=part)
       )
-    void//that:Test"ExpectedExeptionMissed"(Bool.false())
+    that:Test"ExpectedExeptionMissed"(Bool.false())
     )
   }
 TestClose1=(
   TestClose({
     Size n
     class method mut This(Size n)
-    @Property read method Size double()=this.n()+this.n()
-    },expected=S
-"Message toFix(toFix):%S.nl()Property annotation must go on class methods, but is placed on read method")
+    @Eager read method Size double()=this.n()+this.n()
+    },expected=S"""
+      |Message toFix(toFix):
+      |@Eager annotation must go on class methods, but is placed on read method
+      """
+    )
+  TestClose({
+    read method Size n::0()
+    class method mut This of::0(Size n)
+    },expected=S"""
+      |Message toFix(toFix):
+      |Class is already close
+      """
+    )
+  /*
+    new names; lazyCache should be just lazyCache, to include imm,class and read
+    add callSiteCache
+  */ 
   )
 
    

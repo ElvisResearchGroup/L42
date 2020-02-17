@@ -150,6 +150,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       || e instanceof Full.EPathSel
       || e instanceof Full.Cast;
     }
+  @Override public void visitC(C c){
+    if(c.hasUniqueNum() && c.uniqueNum()==0){
+      err(Err.zeroNumberForC(c));
+      }
+    }
   @Override public void visitD(Full.D d){
     if(d._e()!=null){lastPos=d._e().poss();}
     super.visitD(d);
@@ -369,6 +374,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMWT(Full.L.MWT mwt){
     lastPos=mwt.poss();
+    if(mwt.key().hasUniqueNum() && mwt.key().uniqueNum()!=0 && mwt._e()==null){
+      err(Err.zeroPrivateState(mwt.key().uniqueNum()));
+      }
     var pars=pushL(X.thisX,mwt.mh().s().xs());
     declared.addAll(pars);    
     super.visitMWT(mwt);
@@ -384,6 +392,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMWT(Core.L.MWT mwt){
     lastPos=mwt.poss();
+    if(mwt.key().hasUniqueNum() && mwt.key().uniqueNum()!=0 && mwt._e()==null){
+      err(Err.zeroPrivateState(mwt.key().uniqueNum()));
+      }
     var pars=pushL(X.thisX,mwt.mh().s().xs());
     declared.addAll(pars);
     super.visitMWT(mwt);
@@ -565,13 +576,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     List<LDom> impl=L(l.ms().stream()
       .filter(m->!(m instanceof Full.L.NC))
       .filter(m->m._e()!=null).map(m->m.key()));
-    List<Integer> privateAbstract=L(l.ms().stream()
-      .filter(m->m._e()==null && m.key().hasUniqueNum())
-      .map(m->m.key().uniqueNum())
-      .distinct());
     List<Visitable<?>> ts=L(l.ts().stream()
       .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L())));
-    common(l.isInterface(), ts, dom, impl, privateAbstract);
+    common(l.isInterface(), ts, dom, impl);
     }
   private <PP extends P> void typedContains(Core.L.Info info,Stream<PP> others,String name){
     var extra=L(others.filter(o->o.isNCs() && !info.typeDep().contains(o)));
@@ -636,14 +643,10 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       .map(m->m.key()),l.ncs().stream().map(m->m.key())));
     List<LDom> impl=L(l.mwts().stream()
       .filter(m->m._e()!=null).map(m->m.key()));
-    List<Integer> privateAbstract=L(l.mwts().stream()
-      .filter(m->m._e()==null && m.key().hasUniqueNum())
-      .map(m->m.key().uniqueNum())
-      .distinct());
     List<Visitable<?>> ts=L(l.ts().stream().map(t->(Visitable<?>)t.p()));
-    common(l.isInterface(), ts, dom, impl, privateAbstract);
+    common(l.isInterface(), ts, dom, impl);
     }
-  void common(boolean isInterface,List<Visitable<?>> ts,List<LDom> dom, List<LDom> impl,List<Integer> privateAbstract){
+  void common(boolean isInterface,List<Visitable<?>> ts,List<LDom> dom, List<LDom> impl){
     long countM=dom.stream().distinct().count();
     if(countM<dom.size()) {
       var dups=dups(dom);
@@ -655,7 +658,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       boolean isAny=P.pAny.toString().equals(t.toString());
       if(isAny){err(Err.duplicatedNameAny());}
       };      
-    if(privateAbstract.size()>1) {err(Err.singlePrivateState(privateAbstract));}
     if(isInterface){
       if(!impl.isEmpty()){err(Err.methodImplementedInInterface(impl));}
       }

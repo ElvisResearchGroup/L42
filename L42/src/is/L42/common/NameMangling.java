@@ -66,7 +66,7 @@ public class NameMangling {
       case '%'->"%";
       case '\\'->"backslash";
       case ' '->"space";
-      case '\n'->"newline";
+      case '\n'->"newLine";
       default->{
         assert false:Character.toString(c);
         throw bug();

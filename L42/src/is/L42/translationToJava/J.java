@@ -499,8 +499,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       assert xs.size()==ps.size();
       for(MWT mwti:p.topCore().mwts()){
         if(mwti.nativeUrl().isEmpty()){continue;}
-        if(mwti.nativeUrl().equals("trusted:cachable") && mwti.mh().mdf().isRead()){readLazy.add(mwti);}
-        if(mwti.nativeUrl().equals("trusted:eagerCachable")){eager.add(mwti); assert mwti.mh().mdf().isRead();}
+        if(mwti.nativeUrl().equals("trusted:lazyCache") && mwti.mh().mdf().isRead()){readLazy.add(mwti);}
+        if(mwti.nativeUrl().equals("trusted:readEagerCache")){eager.add(mwti); assert mwti.mh().mdf().isRead();}
         }
       }
     }

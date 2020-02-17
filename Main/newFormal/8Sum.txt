@@ -97,6 +97,9 @@ _______
 * implemented(L,Cs)=interface otherwise
   //DO NOT READ AFTER THIS POINT
   //renames:
+  renaming an interface method in private:
+    if it was state and implemented is public: error: the class must be close first
+    if implemented is private, state was already private, thus, the interface meth is not state anyway
   rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
   operations:
     Remove+ Cs remove the methods and the interface? and the docs. If no nested, remove also the box

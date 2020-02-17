@@ -8,6 +8,7 @@ _______
     MWT.T.mdf in {imm,class}
     MWT.pars=empty
     //MWT.exceptions=empty//Note, would this be needed?
+    MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent//TODO: add in code
 
 * typePlugin(p;MWT;eager)
     MHs={MWT.MH| MWT in p(This0).MWTs, MWT.e?=empty}
@@ -15,6 +16,7 @@ _______
     MWT.T.mdf in {imm,class}
     MWT.pars=empty
     //MWT.exceptions=empty//Note, would this be needed?
+    MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent//TODO: add in code
     forall ctx such that MWT.e=ctx[this],exists ctx' such that
       ctx=ctx'[[].m::0()] and immOrCapsule(MHs,m::0)
     clearCacheGood(p(This0),MHs)
@@ -40,7 +42,7 @@ _______
 
 * validCapsuleMutator(MWT,MHs)
     MWT.exceptions=empty
-    MWT.T.mdf notin {mut,lent}
+    MWT.T.mdf notin {mut,lent,fwd mut}//TODO: if capsule mutator returns a lent then only lent would be excluded
     MWT.pars.mdfs notin {read,lent,mut}
     MWT.e=ctx[this]
     not this inside ctx[void]//only one occurence of this

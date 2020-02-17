@@ -526,7 +526,6 @@ dropCache:
     List<Core.L.MWT> mwts0=L(l.mwts(),(c,m)->{
       var newM=_elem(mwts,m.key());
       if(newM==null){c.add(m);return;}
-      assert newM.with_e(null).withNativeUrl("").equals(m);
       });
     assert mwts0.size()+mwts.size()==l.mwts().size();
     ArrayList<P.NCs> typePs=new ArrayList<>();

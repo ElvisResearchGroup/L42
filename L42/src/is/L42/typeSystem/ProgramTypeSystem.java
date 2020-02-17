@@ -2,6 +2,7 @@ package is.L42.typeSystem;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
 import java.util.Collections;
@@ -16,6 +17,7 @@ import is.L42.generated.Core.E;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
@@ -35,6 +37,7 @@ public class ProgramTypeSystem {
     }
   public static void type(boolean typed,Program p){
     L l=p.topCore();
+    checkNativeExceptions(p);
     J j=new J(p,null,false,null,true);
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
@@ -60,6 +63,23 @@ public class ProgramTypeSystem {
       });
     var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
     errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
+    }
+  public static void checkNativeExceptions(Program p){
+    var l=p.topCore();
+    var info=l.info();
+    if(info.nativeKind().isEmpty()){return;}
+    var nk=TrustedKind._fromString(info.nativeKind());
+    assert nk!=null;
+    for(int i:range(nk.genericNumber(),nk.genExceptionNumber())){
+      P pi=info.nativePar().get(i);
+      errIf(!info.coherentDep().contains(pi),
+        l.poss(),Err.nativeExceptionNotCoherentDep(info.nativeKind(),pi)
+        );
+      var li=p.of(pi,l.poss());
+      errIf(li.isFullL() || !((Core.L)li).info().nativeKind().equals("LazyMessage"),
+        l.poss(),Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi)
+        );
+      }
     }
   public static void typeMWT(Program p,MWT mwt,J j){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
