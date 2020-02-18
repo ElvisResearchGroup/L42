@@ -103,8 +103,6 @@ public class Close {
       }
     assert false;
     }
-  public static Core.PCastT This0=new Core.PCastT(null,P.pThis0,P.coreThis0.withMdf(Mdf.Class));
-  public static Core.EX this0=new Core.EX(null,X.thisX);
   public Core.E fCapsExposer(MWT mErr,Pos pos,X x,T t){
     MH mh=this.capsMuts.get(x);
     if(mh==null){
@@ -131,8 +129,7 @@ public class Close {
     if(!mh.t().equals(t)){
       err.throwErr(mErr,"first does not correspond to a capsule field; ambiguous field type: "+mh.t()+" or "+t);
       }
-    var rec=this0.withPos(pos);
-    return new Core.MCall(pos,rec,mh.key(),General.L());
+    return Utils.thisCall(pos,mh.key(),General.L());
     }
   String errMsgMoreThenOne(X x,Mdf recMdf1,Mdf recMdf2){
     return "More then one candidate getter/exposer with"
@@ -147,17 +144,16 @@ public class Close {
       && Coherence.fieldName(m).equals(x)
       ).reduce(toOneOr(()->err.throwErr(mErr,()->errMsgMoreThenOne(x,recMdf1,recMdf2))));
     assert mh.isPresent();
-    var rec=this0.withPos(pos);
-    return new Core.MCall(pos,rec,mh.get().key().withUniqueNum(0),General.L());
+    return Utils.thisCall(pos,mh.get().key().withUniqueNum(0),General.L());
     }
   public void processState(MWT m){
     var s=m.key();
     var s2=s.withUniqueNum(0);
     assert !s.hasUniqueNum();
     var m2=m.withMh(m.mh().withS(s2));
-    var rec=this0.withPos(m.poss().get(0));
-    List<Core.E> exs=General.L(s.xs(),(ci,xi)->ci.add(new Core.EX(rec.pos(),xi)));
-    m=m.with_e(new Core.MCall(rec.pos(),rec,s2,exs));
+    Pos pos=m.poss().get(0);
+    List<Core.E> exs=General.L(s.xs(),(ci,xi)->ci.add(new Core.EX(pos,xi)));
+    m=m.with_e(Utils.thisCall(pos,s2,exs));
     c.add(m);
     c.add(m2);
     }
@@ -183,9 +179,9 @@ public class Close {
       ci.add(fCapsExposer(m,pos,x,t));
       for(var xi:xs1){ci.add(new Core.EX(pos,xi));}
       });
-    var mh1=m.mh().withMdf(Mdf.Mutable).withS(s1).withPars(ts1);
+    var mh1=new MH(Mdf.Mutable,m.mh().docs(),m.mh().t(),s1,ts1,m.mh().exceptions());
     var m1=m.withMh(mh1);
-    m1=m1.with_e(new Core.MCall(pos,This0.withPos(pos),s,exs1));
+    m1=m1.with_e(Utils.ThisCall(pos,s,exs1));
     c.add(m1);
     c.add(m);
     }
@@ -193,15 +189,14 @@ public class Close {
     var s=m.key();
     var s1=s.withXs(General.L());
     assert !s.hasUniqueNum();
-    var rec=This0.withPos(m.poss().get(0));
     var old=_elem(j.p().topCore().mwts(),s1);
     if(old!=null){
       assert false: s1+" "+s+" "+old;
       throw todo();/*make sum*/}
-    var mh1=m.mh().withMdf(Mdf.Readable).withS(s1).withPars(General.L());
+    var mh1=new MH(Mdf.Readable,m.mh().docs(),m.mh().t(),s1,General.L(),General.L());
     var m1=m.withMh(mh1);//m1: the no arg meth calling the static method s
     List<Core.E> exs1=General.L(s.xs(),(ci,xi)->ci.add(fAcc(m,m._e().pos(),xi,Mdf.Immutable,Mdf.Readable)));
-    m1=m1.with_e(new Core.MCall(rec.pos(),rec,s,exs1));
+    m1=m1.with_e(Utils.ThisCall(m.poss().get(0),s,exs1));
     c.add(m1.withNativeUrl("trusted:readEagerCache"));
     c.add(m);    
     }

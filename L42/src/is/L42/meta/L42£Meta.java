@@ -59,6 +59,11 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     this.redirects=redirects;
     this.toString=redirects.toString();
     }
+  public L42£Library wither(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
+    L l=input.unwrap;
+    var pIn=Resources.currentP.push(Resources.currentC,l);
+    return wrapL(new Wither().wither(pIn,unwrapCs(cs),wrap,immK));
+    }
   public L42£Library addConstructors(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
