@@ -66,7 +66,7 @@ public class Wither {
     if(_elem(c,s)!=null){throw todo();}//do sum
     MH mh=new MH(Mdf.Immutable,L(),P.coreThis0,s,L(t),L());
     List<Core.E>es=L(k.key().xs(),(ci,xi)->ci.add(kPar(xi,x)));
-    Core.E body=Utils.ThisCall(pos, s, es);
+    Core.E body=Utils.ThisCall(pos, k.key(), es);
     MWT mwt=new MWT(k.poss(),L(),mh,"",body);
     c.add(mwt);
     }

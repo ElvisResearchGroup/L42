@@ -193,6 +193,8 @@ public enum TrustedOp {
     Meta,use("return %s.close(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String)))),
   AddConstructors("addConstructors",Map.of(
     Meta,use("return %s.addConstructors(%s,%s,%Gen1::wrap,%s,%s);",sigI(Lib,Lib,String,String,String)))),
+  Wither("wither",Map.of(
+    Meta,use("return %s.wither(%s,%s,%Gen1::wrap,%s);",sigI(Lib,Lib,String,String)))),
   AddMapP("addMapP",Map.of(
     Meta,use("return %s.addMapP(%s,%s);",sig(Immutable,Immutable,Meta,
       Immutable,String,  Class,Any))

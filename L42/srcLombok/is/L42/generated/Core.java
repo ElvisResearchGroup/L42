@@ -145,7 +145,10 @@ public class Core {
   MCall implements E,Visitable<MCall>{@Override public Visitable<MCall>visitable(){return this;}@Override public MCall accept(CloneVisitor cv){return cv.visitMCall(this);}@Override public void accept(CollectorVisitor cv){cv.visitMCall(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     XP xP;
     S s;
-    List<E> es;}
+    List<E> es;
+    public MCall(Pos pos,XP xP,S s,List<E> es){this.pos=pos;this.xP=xP;this.s=s;this.es=es;
+      assert s.xs().size()==es.size();
+      }}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   Block implements E,Visitable<Block>{@Override public Visitable<Block>visitable(){return this;}@Override public Block accept(CloneVisitor cv){return cv.visitBlock(this);}@Override public void accept(CollectorVisitor cv){cv.visitBlock(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     List<D> ds;

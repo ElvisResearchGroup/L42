@@ -16,6 +16,26 @@ AddConstructors={
   method Trait :(class Trait.Lifted l)=this:l.code()
   method Trait :(Library that)=Trait:AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
   }
+
+Wither$Fail=Class:(Message.NativeTrait()+{[Guard]})      
+Wither$Meta={
+  class method This #apply()
+  method Library wither(Library that,This2.S name,This2.S immK)=native{trusted:wither} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Wither$Fail,This2.S
+    coherentDep=This1.Wither$Fail,
+    nativePar=This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail
+    }}
+Wither={
+  Name that
+  class method This(Name that)
+  class method This()=This('This0)
+  ClassOperators={class method This1()=This1()}
+  method Trait :(Trait t)=this:t.code()
+  method Trait :(class Trait.Lifted l)=this:l.code()
+  method Trait :(Library that)=Trait:Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK")
+  }
+
 ClassOperators={class method This1()=This1()}
 Operations=
   Class.MutReferenceEquality+
@@ -33,6 +53,7 @@ method Library :(Library lib)=this:Trait:lib
 method Library :(Trait that)=(
   var Trait acc=that
   acc:=AddConstructors:acc
+  acc:=Wither:acc
   acc:=Cache.Close:acc
   acc:=Operations+acc
   //TODO: make some stuff private?
