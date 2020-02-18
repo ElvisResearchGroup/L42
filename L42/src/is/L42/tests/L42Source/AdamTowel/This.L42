@@ -69,22 +69,8 @@ DeployAAA=(
     Strings=Class:(ListT(withEq=S)+{
       class method Bool equals(read S a,read S b)=a==b})
 
-    Close$Fail=Class:(Message.NativeTrait()+{[Guard]})      
-    Close$Meta={
-      class method This #apply()
-      method Library close(Library that)=native{trusted:close} error void
-      #norm{nativeKind=Meta,
-        typeDep=This0 This1.Close$Fail,
-        coherentDep=This1.Close$Fail,
-        nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
-        }}
-    Close={
-      ClassOperators={class method class This1()=This1}
-      class method Library :(Library that)=Close$Meta().close(that)
-      }
-    Cache={@{lazyCache}}
-    Eager={@{readEagerCache}}
-    Stage={@{invalidateCache}}
+    Cache={...}
+    Data={...}
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )

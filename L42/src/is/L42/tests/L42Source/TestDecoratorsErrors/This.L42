@@ -1,8 +1,9 @@
 reuse[AdamTowel]
+
 TestClose={
   class method Void (Library that,S expected)=(
-    _=Close:that
-    catch error Close$Fail f (
+    _=Cache.Close:that
+    catch error Cache.Close$Fail f (
       cut = expected.size()<f.toS().size()
       size =if cut expected.size()-1Size else f.toS().size()//remove the last \n on expected        
       S part=f.toS().subString(start=0\ end=size)
@@ -15,10 +16,12 @@ TestClose1=(
   TestClose({
     Size n
     class method mut This(Size n)
-    @Eager read method Size double()=this.n()+this.n()
+    @Cache.Now read method Size double()=this.n()+this.n()
     },expected=S"""
       |Message toFix(toFix):
-      |@Eager annotation must go on class methods, but is placed on read method
+      |Invalid @This1.Cache.Now read method imm This1.Size double()=(..)
+      |must be a class method
+      |[file:
       """
     )
   TestClose({
@@ -26,12 +29,37 @@ TestClose1=(
     class method mut This of::0(Size n)
     },expected=S"""
       |Message toFix(toFix):
+      |Invalid class literal {}
       |Class is already close
+      |[file:
+      """
+    )
+  TestClose({
+    capsule Strings that
+    class method mut This(capsule Strings that)
+    @Cache.Now class method Size size(read Strings that)=that.size()
+    @Cache.Clear class method Size append1(mut Strings thaat)=(
+      thaat.add(S"1")
+      thaat.size()
+      )
+    },expected=S"""
+      |Message toFix(toFix):
+      |Invalid @This1.Cache.Clear class method imm This1.Size append1(mut This1.Strings thaat)=(..)
+      |first parameter does not correspond to a capsule field: the parameter name is not a field
+      |[file:
       """
     )
   /*
-    new names; lazyCache should be just lazyCache, to include imm,class and read
-    add callSiteCache
+    should it be Cache.Lazy, Cache.Eager(parallel) Cache.Now?
+    and then Cache.Clear
+    -error messages
+    -make introspection print className/interface names, so we can print the right error
+    -add sum and complete the last todo in Close!
+    -constructor
+    -standard to string
+    -standard code
+    -multiline string %% support
+    -add callSiteCache?
   */ 
   )
 

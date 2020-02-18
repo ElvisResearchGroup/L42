@@ -147,15 +147,13 @@ public class ToSVisitor implements ToSTrait{
     visitDocs(mwt.docs());
     visitMH(mwt.mh());
     var _e0=mwt._e();
-    if(_e0!=null){
-      c("=");
-      if(!mwt.nativeUrl().isEmpty()){
-        c("native{");
-        c(mwt.nativeUrl());
-        c("}");
-        }
-      visitE(_e0);
+    if(_e0!=null ||!mwt.nativeUrl().isEmpty()){c("=");}
+    if(!mwt.nativeUrl().isEmpty()){
+      c("native{");
+      c(mwt.nativeUrl());
+      c("}");
       }
+    if(_e0!=null){visitE(_e0);}
     }
   
   public void visitNC(Core.L.NC nc){
@@ -420,15 +418,13 @@ public class ToSVisitor implements ToSTrait{
     var _e0=mwt._e();
     visitFullDocs(docs0);
     visitMH(mh0);
-    if(_e0!=null){
-      c("=");
-      if(!mwt.nativeUrl().isEmpty()){
-        c("native{");
-        c(mwt.nativeUrl());
-        c("}");
-        }
-      visitE(_e0);
+    if(_e0!=null ||!mwt.nativeUrl().isEmpty()){c("=");}
+    if(!mwt.nativeUrl().isEmpty()){
+      c("native{");
+      c(mwt.nativeUrl());
+      c("}");
       }
+    if(_e0!=null){visitE(_e0);}
     }
   
   public void visitNC(Full.L.NC nc){
@@ -447,21 +443,49 @@ public class ToSVisitor implements ToSTrait{
   
   public void visitEString(Full.EString eString){
     assert eString.es().size()==eString.strings().size();
-    var s=eString.strings().get(0);
-    assert !s.contains("\n");
+    var s=eString.strings().get(eString.strings().size()-1);
     visitE(eString.es().get(0));
+    if(!s.contains("\n")){visitSingleLineString(eString);}
+    else{visitMultiLineString(eString);}
+    }
+  private void visitSingleLineString(Full.EString eString) { 
     c("\"");
     for(var i:range(eString.es())){
-      String si=eString.strings().get(i);
-      c(si);
-      if(i+1<eString.es().size()){
-        Full.E ei=eString.es().get(i+1);
-        c("%");
-        visitE(ei);
-        }
+    String si=eString.strings().get(i);
+    c(si);
+    if(i+1<eString.es().size()){
+      Full.E ei=eString.es().get(i+1);
+      c("%");
+      visitE(ei);
       }
-    c("\"");
     }
+  c("\""); 
+  }
+  private void visitMultiLineString(Full.EString eString) { 
+    c("\"\"\"");
+    c("%".repeat(eString.escapeSize()));
+    indent();
+    nl();
+    c("|");
+    for(var i:range(eString.es())){
+    String si=eString.strings().get(i);
+    int nl=si.indexOf("\n");
+    while(nl!=-1){
+      c(si.substring(0,nl));
+      si=si.substring(nl+1,si.length());
+      nl=si.indexOf("\n");
+      nl();
+      if(eString.es().size()!=i+1 || nl!=-1){c("|");}
+      }
+    c(si);
+    if(i+1<eString.es().size()){
+      Full.E ei=eString.es().get(i+1);
+      c("%");
+      visitE(ei);
+      }
+    }
+  c("\"\"\"");deIndent(); 
+  }
   public void visitEPathSel(Full.EPathSel ePathSel){
   c("'");
   visitPathSel(ePathSel.pathSel());

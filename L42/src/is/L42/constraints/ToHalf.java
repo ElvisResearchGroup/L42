@@ -142,13 +142,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitEPathSel(Full.EPathSel p){
     var receiver=new Full.Slash(p.pos());
     var content=p.pathSel().toString();
-    var s=new Full.EString(p.pos(),L(receiver),L(content));
+    var s=new Full.EString(p.pos(),0,L(receiver),L(content));
     visitEString(s);
     }
   @Override public void visitUOp(Full.UOp u){
     if(u._op()==null){
       assert u._num()!=null;
-      var s=new Full.EString(u.pos(),L(u.e()),L(u._num()));
+      var s=new Full.EString(u.pos(),0,L(u.e()),L(u._num()));
       visitEString(s);
       return;
       }

@@ -267,23 +267,23 @@ TestReadCache={
     {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
     {}:Test"res3"(expected=2Size, actual=a.m())
     )
-  Person=Close:{
+  Person=Class:Cache.Close:{
     S name
     capsule Strings allergies
     class method mut This(S name, capsule Strings allergies)
-    @Cache method S description()=(
+    @Cache.Lazy method S description()=(
       Log"Foo".write(S"description()")
       S"Person[%this.name();%this.allergies().size()]"
       )
-    @Stage class method Void add(mut Strings allergies,S allergy)=(
+    @Cache.Clear class method Void add(mut Strings allergies,S allergy)=(
       Log"Foo".write(S"add()")  
       allergies.add(allergy)
       )
-    @Eager class method Void ok(S name,read Strings allergies)=(
+    @Cache.Now class method Void ok(S name,read Strings allergies)=(
       Log"Foo".write(S"ok()")
       if name==S"" || allergies.size()>200Size error X"InvalidPerson"
       )
-    @Eager class method S title(S name)=(
+    @Cache.Now class method S title(S name)=(
        Log"Foo".write(S"title()")
        S"Dr. %name of 42"
        )
@@ -311,4 +311,19 @@ TestReadCache={
     //  S"Person[%this.name();%this.allergies().size()]"
     //or... Cache.Transient ?    
   }
+  NestedClose=Class:Cache.Close('A.B):{
+  A={
+    B={
+      class method This()
+      @Cache.Lazy method S foo()=(Log"Foo".write('Foo) S"Hi")
+      }
+    }
+  }
+NestedCloseTest=(
+  Log"Foo".clear()
+  b=NestedClose.A.B()
+  {}:Test"NestedClose1"(expected=S"Hi" actual=b.foo())
+  {}:Test"NestedClose2"(expected=S"Hi" actual=b.foo())
+  {}:Test"NestedCloseLog"(expected=S"Foo" actual=Log"Foo".#$reader().read())
+  )
   

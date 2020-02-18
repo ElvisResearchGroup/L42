@@ -332,6 +332,30 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
    pass("~1~2!S")
   ),new AtomicTest(()->
+   pass("""
+     S"aa"
+     """.trim())
+     ),new AtomicTest(()->
+   pass("""
+     S\"""
+       |aa
+       \"""
+     """.trim())
+     ),new AtomicTest(()->
+   pass("""
+     S\"""%
+       |aa
+       |bbb
+       \"""
+     """.trim())
+     ),new AtomicTest(()->
+   pass("""
+     S\"""%
+       |aa%foo cc
+       |bbb %a.b() dd
+       \"""
+     """.trim())
+  ),new AtomicTest(()->
    pass("a+b&&c")
   ),new AtomicTest(()->
    pass("a+b&&c:d")

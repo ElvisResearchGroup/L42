@@ -1,0 +1,21 @@
+Close$Fail=Class:(Message.NativeTrait()+{[Guard]})      
+Close$Meta={
+  class method This #apply()
+  method Library close(Library that,This2.S name)=native{trusted:close} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Close$Fail,This2.S
+    coherentDep=This1.Close$Fail,
+    nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
+    }}
+Close={
+  Name that
+  class method This(Name that)
+  class method This()=This('This0)
+  ClassOperators={class method This1()=This1()}
+  method Trait :(Trait t)=this:t.code()
+  method Trait :(class Trait.Lifted l)=this:l.code()
+  method Trait :(Library that)=Trait:Close$Meta().close(that,name=this.that().toS())
+  }
+Lazy={@{lazyCache}}
+Now={@{readEagerCache}}
+Clear={@{invalidateCache}}

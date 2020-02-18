@@ -81,7 +81,7 @@ public class Full {
     X x;}
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   EString implements E,Visitable<EString>{@Override public Visitable<EString>visitable(){return this;}@Override public EString accept(CloneVisitor cv){return cv.visitEString(this);}@Override public void accept(CollectorVisitor cv){cv.visitEString(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
-    List<E> es;List<String> strings;}//es(0) is the receiver
+    int escapeSize;List<E> es;List<String> strings;}//es(0) is the receiver
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
   EPathSel implements Leaf,Visitable<EPathSel>{@Override public Visitable<EPathSel>visitable(){return this;}@Override public EPathSel accept(CloneVisitor cv){return cv.visitEPathSel(this);}@Override public void accept(CollectorVisitor cv){cv.visitEPathSel(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     PathSel pathSel;}

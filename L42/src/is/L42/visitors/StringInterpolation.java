@@ -139,7 +139,7 @@ public class StringInterpolation {
     assert openR==0: openR;
     assert openS==0: openS;
     assert openC==0: openC;
-    if (escapeSize==0){return new Full.EString(pos, L(eVoid),L(s));}
+    if (escapeSize==0){return new Full.EString(pos,0,L(eVoid),L(s));}
     assert escapeSize==1;//TODO: still to handle if there is more then on %
     for(int i=0;i<s.length();i++){
       i=mode.run(this, s, i);
@@ -150,7 +150,7 @@ public class StringInterpolation {
       c.add(eVoid);
       for(var buf:es){parseInterpolatedE(c, buf);}
       });
-    return new Full.EString(pos, ees,L(ss,(c,si)->c.add(si.toString())));
+    return new Full.EString(pos,escapeSize, ees,L(ss,(c,si)->c.add(si.toString())));
     }
   private void parseInterpolatedE(List<E> c, StringBuilder buf) {
     assert buf.length()>0;

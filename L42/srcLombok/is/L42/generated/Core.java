@@ -198,6 +198,10 @@ public class Core {
     S s; 
     List<T> pars; 
     List<T> exceptions;
+    public MH(Mdf mdf,List<Doc> docs,T t,S s,List<T> pars,List<T> exceptions){
+      this.mdf=mdf;this.docs=docs;this.t=t;this.s=s;this.pars=pars;this.exceptions=exceptions;
+      assert s.xs().size()==pars.size();
+      }
     @Override public S key(){return s;}
     public List<T> parsWithThis(){return pushL(P.coreThis0.withMdf(mdf),pars);}
     }

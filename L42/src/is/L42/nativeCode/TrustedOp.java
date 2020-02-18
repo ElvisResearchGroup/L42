@@ -190,7 +190,9 @@ public enum TrustedOp {
   Resource("resource",Map.of(
     Meta,use("return %s.resource(%s);",sigI(Lib,Lib)))),
   Close("close",Map.of(
-    Meta,use("return %s.close(%s,%Gen1::wrap);",sigI(Lib,Lib)))),
+    Meta,use("return %s.close(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String)))),
+  AddConstructors("addConstructors",Map.of(
+    Meta,use("return %s.addConstructors(%s,%s,%Gen1::wrap,%s,%s);",sigI(Lib,Lib,String,String,String)))),
   AddMapP("addMapP",Map.of(
     Meta,use("return %s.addMapP(%s,%s);",sig(Immutable,Immutable,Meta,
       Immutable,String,  Class,Any))

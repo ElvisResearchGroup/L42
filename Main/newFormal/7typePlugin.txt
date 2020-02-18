@@ -1,4 +1,5 @@
 In this file we define the typing constrants for some of the plugins.
+
 _______
 #define typePlugin(p;MWT)    typePlugin(p;MWT;balCurly)
 * typePlugin(p;MWT)=typePlugin(p;MWT;MWT.nativeUrl)
@@ -20,6 +21,9 @@ _______
     forall ctx such that MWT.e=ctx[this],exists ctx' such that
       ctx=ctx'[[].m::0()] and immOrCapsule(MHs,m::0)
     clearCacheGood(p(This0),MHs)
+//Note:we can not just use a read invariant method with no constraints, because we could have
+//this.beer().see(this); return !this.isEmpty() and now beer see a possibly broken this. 
+    
 _______
 #define immOrCapsule(MHs,m)    clearCacheGood(L,MHs)
 * immOrCapsule(MHs,#sx::0)
