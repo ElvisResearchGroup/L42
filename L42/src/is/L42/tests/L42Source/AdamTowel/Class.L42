@@ -25,3 +25,12 @@ ReadEquality=Trait:{
 ImmNorm=Trait:{
   imm method This immNorm()=native{trusted:immNorm} error void
   }
+ImmToString=Trait:{
+  imm method S immToString()=native{trusted:immToString} error void
+  }
+ReadToString=Trait:{
+  read method S readToString()=this.readClone().immToString()
+  read method imm This readClone()
+  method S immToString()
+  }
+  

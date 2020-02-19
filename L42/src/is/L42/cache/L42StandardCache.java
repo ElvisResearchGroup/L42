@@ -13,10 +13,10 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   @SuppressWarnings("unchecked") 
   private final Map<KeyNorm2D, T> normMap = (Map<KeyNorm2D, T>) L42CacheMap.newNormMap();
   
-  private final String typename;
+  private final Object typename;
   private L42Cache<?>[] caches;
   
-  L42StandardCache(String typename, Class<? extends T> myClass) {
+  L42StandardCache(Object typename, Class<? extends T> myClass) {
     this.typename = typename;   
     L42CacheMap.addCacheableType(myClass, this);
     }
@@ -161,7 +161,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     }
   
   @Override
-  public String typename() {
+  public Object typename() {
     return typename;
     }
   

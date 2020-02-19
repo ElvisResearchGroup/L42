@@ -44,9 +44,12 @@ Operations=
   Class.ReadClone+
   Class.MutClone+
   Class.ReadEquality+
-  Class.ImmNorm+{
+  Class.ImmToString+
+  Class.ReadToString+
+  Class.ImmNorm+{[HasToS]
     method Bool ==(This that)=this.immEquality(that)
     method Bool !=(This that)=!(this==that)
+    method toS()=this.readToString()
     }
 class method This()
 method Library :(Library lib)=this:Trait:lib

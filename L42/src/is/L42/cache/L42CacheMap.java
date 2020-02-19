@@ -138,13 +138,16 @@ public class L42CacheMap {
     return cache.computeKeyNN(t);
   }
   
-  static String readObjToString(Object o) {
-    if(isNorm(o)) { return objToString(o); }
-    return objToString(normalize_internal(getCacheObject(o).dup(o)));
+  public static synchronized String readObjToString(Object o) {
+    if(isNorm(o)) { return objToString_internal(o); }
+    return objToString_internal(normalize_internal(getCacheObject(o).dup(o)));
     }
-  
-  static String objToString(Object obj) {
-    return expandedKey(obj, true, false).toString();
+  public static synchronized String objToString(Object obj) {
+    return objToString_internal(obj);
+    }
+  static String objToString_internal(Object obj) {
+    //return expandedKey(obj, true, false).toString();
+    return new L42StandardToString().format(expandedKey(obj, true, false));
     }
   
   @SuppressWarnings("unchecked") 
@@ -227,11 +230,11 @@ public class L42CacheMap {
       }
     }
   
-  public static synchronized <T> L42SingletonCache<T> newSingletonCache(String name, Class<? extends T> class_) {
+  public static synchronized <T> L42SingletonCache<T> newSingletonCache(Object name, Class<? extends T> class_) {
     return new L42SingletonCache<T>(name, class_);
     }
   
-  public static synchronized <T extends L42Cachable<T>> L42StandardCache<T> newStandardCache(String name, Class<? extends T> class_) {
+  public static synchronized <T extends L42Cachable<T>> L42StandardCache<T> newStandardCache(Object name, Class<? extends T> class_) {
     return new L42StandardCache<T>(name, class_);
     }
   

@@ -5,10 +5,10 @@ import java.util.Map;
 
 public class L42SingletonCache<T> implements L42Cache<T> {
   
-  private final String typename;
+  private final Object typename;
   private final KeyNorm2D key;
   
-  L42SingletonCache(String typename, Class<? extends T> myClass) {
+  L42SingletonCache(Object typename, Class<? extends T> myClass) {
     this.typename = typename;
     this.key = new KeyNorm2D(new Object[][] { { this } });
     L42CacheMap.addCacheableType(myClass, this);
@@ -88,7 +88,7 @@ public class L42SingletonCache<T> implements L42Cache<T> {
   public void setMyNorm(T me, T norm) {}
 
   @Override 
-  public String typename() {
+  public Object typename() {
     return this.typename; 
     }
 

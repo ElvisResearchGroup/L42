@@ -10,7 +10,12 @@ TestDataBase={
     {}:Test"pointEq2"(p1!=p3)
     {}:Test"pointEqWithy"(p1!=p2.with(y=0\))
     {}:Test"pointEqWithxy"(p1==p3.with(y=p1.y()).with(x=p1.x()))
-    )
-  }
-
-   
+    {}:Test"pointToS"(expected=p1, actual=p1)
+    {}:Test"pointToS"(expected=S"Point(x=8, y=42)", actual=p1)
+    )}
+TestDataList={
+  Person=Data:{Strings names}
+  TestPerson=(
+    p1=Person(names=\['Bob;'Alice;'Charles])
+    {}:Test"personToS"(expected=S"Point(x=8, y=42)", actual=p1)
+    )}

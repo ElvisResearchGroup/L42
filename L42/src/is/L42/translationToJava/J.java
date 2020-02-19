@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import is.L42.common.G;
+import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.E;
@@ -351,19 +352,19 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(f.contains("£")){return f+"._class";}
     return f+".class";
     }
-  private void addCachableMethods(String jC){
-     List<Boolean> is0=L(fields.ps,(c,pi)->c.add(p._ofCore(pi).isInterface()));
-     List<String> ps0=fields.psJ;
-     List<String> xs=L(fields.xs,(c,xi)->c.add("£x"+xi.inner()));
-     if(nativeKind(p)){
-       is0=pushL(is0,false);
-       ps0=pushL(ps0,typeNameStr(p));
-       xs=pushL(xs,"unwrap");
-       }
-     List<Boolean>is=is0;
-     List<String>ps=ps0;
+  private void addCachableMethods(String jC,String jCName){
+    List<Boolean> is0=L(fields.ps,(c,pi)->c.add(p._ofCore(pi).isInterface()));
+    List<String> ps0=fields.psJ;
+    List<String> xs=L(fields.xs,(c,xi)->c.add("£x"+xi.inner()));
+    if(nativeKind(p)){
+      is0=pushL(is0,false);
+      ps0=pushL(ps0,typeNameStr(p));
+      xs=pushL(xs,"unwrap");
+      }
+    List<Boolean>is=is0;
+    List<String>ps=ps0;
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("public static final L42StandardCache<"+jC+"> myCache=L42CacheMap.newStandardCache(\""+jC+"\","+jC+"._class);");nl();
+    c("public static final L42StandardCache<"+jC+"> myCache=L42CacheMap.newStandardCache("+jCName+","+jC+"._class);");nl();
     c("static{L42CacheMap.lateInitialize(myCache,new Class<?>[]{");
     seq(range(ps),i->is.get(i)?"null":addDotClass(ps.get(i)),",");
     c("});}");nl();
@@ -377,16 +378,16 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     seq(xs,x->x,",");
     c("};}");nl();
     c("@Override public void setField(int i, Object o){switch(i){");indent();nl();
-      for(int i:range(xs)){
-        c("case "+i+":"+xs.get(i)+"=("+ps.get(i)+")o;return;");nl();
-        }
-      c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
+    for(int i:range(xs)){
+      c("case "+i+":"+xs.get(i)+"=("+ps.get(i)+")o;return;");nl();
+      }
+    c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
     c("}}");nl();
     c("@Override public Object getField(int i) {switch(i){");indent();nl();
-      for(int i:range(xs)){
-        c("case "+i+":return "+xs.get(i)+";");nl();
-        }
-      c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
+    for(int i:range(xs)){
+      c("case "+i+":return "+xs.get(i)+";");nl();
+      }
+    c("default:throw new ArrayIndexOutOfBoundsException();");nl();deIndent();
     c("}}");nl();
     if(needClearCache()){generateClearCache();}
     }
@@ -404,9 +405,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("}");deIndent();nl();
 
    }
-  private void addCachableMethodsNoFields(String jC){
+  private void addCachableMethodsNoFields(String jC,String jCName){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("private static final L42Cache<"+jC+"> myCache=L42CacheMap.newSingletonCache(\""+jC+"\","+jC+"._class);");nl();
+    c("private static final L42Cache<"+jC+"> myCache=L42CacheMap.newSingletonCache("+jCName+","+jC+"._class);");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     }
   public void header(boolean interf,String jC){
@@ -420,17 +421,23 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     kw("class "+jC+ " extends L42NoFields<"+jC+"> implements L42Any");
     }
+  public String jCName(PTails p){
+    if(p.isEmpty()){return "";}
+    return jCName(p.tail())+", \""+p.c()+"\"";
+    }
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
+    String jCName="new String[]{"+jCName(p.pTails).substring(1)+"}";
+    
     header(interf,jC);
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
     if(!interf){
       if(this.isCoherent && (!this.fields.xs.isEmpty() || nativeKind(p))){
-      addCachableMethods(jC);
+      addCachableMethods(jC,jCName);
       }
-      else{addCachableMethodsNoFields(jC);}
+      else{addCachableMethodsNoFields(jC,jCName);}
       }
     if(this.isCoherent){
       for(int i:range(fields.xs)){

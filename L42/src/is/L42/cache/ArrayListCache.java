@@ -10,6 +10,7 @@ import java.util.Map;
 import java.util.Set;
 
 import is.L42.nativeCode.Flags;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
 public class ArrayListCache implements L42Cache<ArrayList<Object>> {
@@ -169,8 +170,8 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     }
   
   @Override
-  public String typename() {
-    return "£ArrayList";
+  public Object typename() {
+    return TrustedKind.Vector;
     }
   
   @Override 

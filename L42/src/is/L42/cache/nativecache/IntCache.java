@@ -2,13 +2,14 @@ package is.L42.cache.nativecache;
 
 import java.util.List;
 
+import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
 public class IntCache extends ValueCache<Integer> {
 
   @Override 
-  public String typename() { 
-    return "£nativeint"; 
+  public Object typename() { 
+    return TrustedKind.Int; 
     }
 
   @Override 

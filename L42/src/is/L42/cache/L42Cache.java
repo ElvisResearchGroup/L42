@@ -203,7 +203,7 @@ public interface L42Cache<T> extends Serializable {
    * 
    * @return The canonical type name
    */
-  String typename();
+  Object typename();
   
   default boolean isValueType()
   {
