@@ -8,6 +8,7 @@ import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
+import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.todo;
 
 import java.util.List;
@@ -239,14 +240,14 @@ class Plus{
       for(var mi:a){
         var other=b.stream()
           .filter(mj->mj.mwt.key().equals(mi.mwt.key()))
-          .reduce(toOneOr(()->bug()));
+          .reduce(toOneOrBug());
         if(other.isEmpty()){c.add(mi);}
         else{c.add(plus(mi,other.get()));}
         }
       for(var mi:b){
         var other=a.stream()
           .filter(mj->mj.mwt.key().equals(mi.mwt.key()))
-          .reduce(toOneOr(()->bug()));
+          .reduce(toOneOrBug());
         if(other.isEmpty()){c.add(mi);}
         }
       });    

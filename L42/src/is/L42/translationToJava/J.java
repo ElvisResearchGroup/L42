@@ -43,7 +43,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
 
   public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs,boolean forTs){
     this.p=p;
-    this.ch=new Coherence(p,false);
+    boolean close=p.topCore().info().close();
+    this.ch=new Coherence(p,close);
     this.isCoherent=precomputeCoherent();
     if(this.isCoherent){this.fields=new Fields(forTs);}
     this.g=g;

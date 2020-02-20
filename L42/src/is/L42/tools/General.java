@@ -63,6 +63,9 @@ public class General {
   public static <T, E extends RuntimeException> BinaryOperator<T> toOneOr(Supplier<E> err){
     return (element, otherElement) -> {throw err.get();};
     }
+  public static <T, E extends RuntimeException> BinaryOperator<T> toOneOrBug(){
+    return toOneOr(()->bug());
+    }
 
   public static <A,B extends A> List<B> typeFilter(Stream<A> a,Class<B> clazz){
     return a.filter(clazz::isInstance).map(clazz::cast)

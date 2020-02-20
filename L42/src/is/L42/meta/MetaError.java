@@ -65,5 +65,9 @@ public class MetaError{
     var lazy=new L42£LazyMsg(msg2);
     throw new L42Error(wrap.apply(lazy));
     }
-
-}
+  public RuntimeException throwErr(Supplier<Object>fault,Supplier<String> msg){
+    Supplier<String> msg2=()->intro(fault.get())+msg.get()+"\n"+pos(fault);
+    var lazy=new L42£LazyMsg(msg2);
+    throw new L42Error(wrap.apply(lazy));
+    }
+  }

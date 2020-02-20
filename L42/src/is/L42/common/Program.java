@@ -8,6 +8,7 @@ import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
+import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.todo;
 
 import java.nio.file.Paths;
@@ -354,7 +355,7 @@ public class Program implements Visitable<Program>{
     var g=specificEnoughMdf(mdfs);
     return g.stream().filter(mdf->g.stream()
       .allMatch(mdf1->isSubtype(mdf1, mdf)))
-      .reduce(toOneOr(()->bug())).orElse(null);
+      .reduce(toOneOrBug()).orElse(null);
     }
   private List<Mdf> specificEnoughMdf(Set<Mdf> mdfs){
     return L(c->{

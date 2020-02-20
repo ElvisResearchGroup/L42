@@ -53,12 +53,7 @@ import is.L42.typeSystem.Coherence;
        -imm fields are fwd iff not used by any readCache 
        (may need to be more general if we add more kinds of cache)
      */
-public class K {
-  MetaError err;
-  Map<X,List<MWT>> getters=new LinkedHashMap<>();
-  Set<X> fieldsUsedInReadCache=new HashSet<>();
-  boolean gettersNoMut=true;
-  Map<X,List<MWT>> setters=new LinkedHashMap<>();
+public class K extends GuessFields{
   public Core.L k(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     err=new MetaError(wrap);
     if(cs.isEmpty()){return k(p,wrap,mutK,immK);}
@@ -73,13 +68,7 @@ public class K {
     try{S.parse(mutK+"()");S.parse(immK+"()");}
     catch(EndError ee){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
     if(mutK.equals(immK)){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
-    List<MWT> abs=L(l.mwts(),(c,m)->{
-      if(m._e()==null){c.add(m);}
-      if(Utils.match(p, err, "readEagerCache",m)){//||Utils.match(p, err, "readLazyCache",m)//TODO: add it when we make the readLazyCache too...
-        this.fieldsUsedInReadCache.addAll(m.key().xs());
-        }
-      });
-    for(var m:abs){addGettersSetters(m);}
+    addGettersSetters(p);
     boolean veryImm=gettersNoMut && setters.isEmpty();
     List<X> xs=L(getters.keySet().stream());//deterministic: it is a LinkedHashMap
     List<T> mutTs=L(xs,(c,x)->c.add(forgeT(x)));
@@ -135,22 +124,5 @@ public class K {
       return false;
       }
     return mustFound;
-    }
-  void addGettersSetters(MWT m){      
-    if(m.key().xs().size()>1){return;}
-    X x=Coherence.fieldName(m.mh());
-    if(m.key().xs().size()==1){
-      if(!m.key().xs().get(0).equals(X.thatX)){return;}
-      if(!m.mh().t().equals(P.coreVoid)){return;}
-      if(!m.mh().mdf().isIn(Mdf.Mutable, Mdf.Lent)){return;}
-      var list=setters.getOrDefault(x,new ArrayList<>());
-      list.add(m);
-      setters.putIfAbsent(x, list);
-      }
-    if(!m.mh().mdf().isIn(Mdf.Mutable, Mdf.Lent,Mdf.Immutable,Mdf.Readable)){return;}
-    var list=getters.getOrDefault(x,new ArrayList<>());
-    list.add(m);
-    if(!m.mh().t().mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class)){gettersNoMut=false;}
-    getters.putIfAbsent(x, list);
     } 
   }

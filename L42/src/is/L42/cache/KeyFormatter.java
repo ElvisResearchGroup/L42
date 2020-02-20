@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
+import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
@@ -57,7 +58,7 @@ class Format42 implements FormatKind{
       .filter(m->m._e()==null && m.mh().mdf().isClass())
       .map(m->m.key().xs())
       .distinct()
-      .reduce(toOneOr(()->bug())).get();
+      .reduce(toOneOrBug()).get();
     Object[] fields=f.k.lines()[lineN];
     int estimateSize=xs.size()*7+name.length();    
     StringBuilder res=new StringBuilder(name+"(");

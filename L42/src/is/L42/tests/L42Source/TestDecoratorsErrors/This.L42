@@ -13,17 +13,17 @@ TestClose={
     )
   }
 TestClose1=(
-  /*TestClose({
+  TestClose({
     Size n
     class method mut This(Size n)
     @Cache.Clear class method Size double(mut Size n)=error void
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid @This1.Cache.Now read method imm This1.Size double()=(..)
-      |must be a class method
+      |Invalid @This1.Cache.Clear class method imm This1.Size double(mut This1.Size n)=(..)
+      |first parameter does not correspond to a capsule field; constructor class method mut This0 #apply(imm This1.Size n) initializes it as imm This1.Size
       |[file:
       """
-    )*/
+    )
   TestClose({
     Size n
     class method mut This(Size n)
@@ -60,33 +60,33 @@ TestClose1=(
       |[file:
       """
     )
-    /*
   TestClose({
     Size n
     class method mut This(Size n)
     @Cache.Now class method Size double(Size nn)=nn+nn
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid @This1.Cache.Now read method imm This1.Size double()=(..)
-      |must be a class method
+      |Invalid @This1.Cache.Now class method imm This1.Size double(imm This1.Size nn)=(..)
+      |No candidate getter/exposer with name nn and method modifier Immutable or Readable
       |[file:
       """
     )
-   
-  CLOSE IS BROKEN like sum, works in some good cases.
-  In particular, it needs to work for non coherent classes
-  and needs to receive the names of the fields to identify the state.
-  AddConstructor is adding the constructos, thus deciding the fields, and may pass the info...
-  but how? can we use introspection to extract them from a constructor name?
-    should it be Cache.Lazy, Cache.Eager(parallel) Cache.Now?
-    and then Cache.Clear
-    -error messages
+  TestClose({
+    Size n
+    class method mut This(fwd imm Size n)
+    @Cache.Now class method Size double(Size n)=n+n
+    },expected=S"""
+      |Message toFix(toFix):
+      |Invalid @This1.Cache.Now class method imm This1.Size double(imm This1.Size n)=(..)
+      |parameter n is initialized with fwd in the constructor class method mut This0 #apply(fwd imm This1.Size n)
+      |[file:
+      """
+    )
+   /*
     -make introspection print className/interface names, so we can print the right error
     -add sum and complete the last todo in Close!
     -standard code
     -multiline string %% support
     -add callSiteCache?
   */ 
-  )
-
-   
+  )   

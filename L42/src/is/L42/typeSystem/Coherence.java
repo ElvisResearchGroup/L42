@@ -62,8 +62,7 @@ public class Coherence {
       }
     return true;
     }
-  public boolean coherentClass(MH mh, Set<X> xz){
-    assert mh.key().xs().containsAll(xz) && xz.containsAll(mh.key().xs());
+  public static boolean validConstructorSignature(Program p,MH mh){
     Mdf mdf=mh.t().mdf();
     if(!p.isSubtype(P.pThis0,mh.t().p(),p.topCore().poss())){return false;}
     if(mdf.isIn(Class,MutableFwd,ImmutableFwd)){return false;}
@@ -78,6 +77,10 @@ public class Coherence {
         }
       }
     return true;
+    }
+  public boolean coherentClass(MH mh, Set<X> xz){
+    assert mh.key().xs().containsAll(xz) && xz.containsAll(mh.key().xs());
+    return validConstructorSignature(p,mh);
     }
   public boolean coherentSetter(MH mh, Set<X> xz){
     if(!p.isSubtype(P.coreVoid,mh.t(),p.topCore().poss())){return false;}
@@ -116,7 +119,7 @@ public class Coherence {
       if(!canAlsoBe(mh.mdf(),mdf)){return;}
       X xi=fieldName(mh);
       if(!xi.equals(x)){return;}      
-      if(allowedAbstract(mh)){return;}//TODO: we could cached allowedAbstracts
+      if(allowedAbstract(mh)){return;}//note: caching allowedAbstracts may only have a minor impact
       c.add(mh.pars().get(0));
       });
     }
@@ -166,9 +169,13 @@ public class Coherence {
     if(mh.key().xs().isEmpty()){return coherentGetter(mh,xz);}
     return false;
     }
-  public boolean allowedAbstract(MH mh){
+  public static boolean allowedAbstract(MH mh,List<MH> classMhs){
     return !mh.mdf().isClass() &&
       classMhs.stream().allMatch(k->!canAlsoBe(k.t().mdf(),mh.mdf()));
+      //it is not relevant to use this or the more specific constructor signature    
+    }
+  public boolean allowedAbstract(MH mh){
+    return allowedAbstract(mh,classMhs);
     }
   static public boolean canAlsoBe(Mdf mdf0, Mdf mdf){
     return switch(mdf0){

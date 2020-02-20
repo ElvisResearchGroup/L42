@@ -3,6 +3,7 @@ package is.L42.typeSystem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.toOneOr;
+import static is.L42.tools.General.toOneOrBug;
 
 import java.util.Collection;
 import java.util.List;
@@ -151,7 +152,7 @@ public class TypeManipulation {
     var g=generalEnoughMdf(mdfs);
     return g.stream().filter(mdf->g.stream()
       .allMatch(mdf1->Program.isSubtype(mdf, mdf1)))
-      .reduce(toOneOr(()->bug())).orElse(null);
+      .reduce(toOneOrBug()).orElse(null);
     }
   public static Mdf fwdOf(Mdf m){
     if(m.isIn(Immutable,ImmutablePFwd)){return ImmutableFwd;}
