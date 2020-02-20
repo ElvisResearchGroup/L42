@@ -13,6 +13,17 @@ TestClose={
     )
   }
 TestClose1=(
+  /*TestClose({
+    Size n
+    class method mut This(Size n)
+    @Cache.Clear class method Size double(mut Size n)=error void
+    },expected=S"""
+      |Message toFix(toFix):
+      |Invalid @This1.Cache.Now read method imm This1.Size double()=(..)
+      |must be a class method
+      |[file:
+      """
+    )*/
   TestClose({
     Size n
     class method mut This(Size n)
@@ -49,14 +60,29 @@ TestClose1=(
       |[file:
       """
     )
-  /*
+    /*
+  TestClose({
+    Size n
+    class method mut This(Size n)
+    @Cache.Now class method Size double(Size nn)=nn+nn
+    },expected=S"""
+      |Message toFix(toFix):
+      |Invalid @This1.Cache.Now read method imm This1.Size double()=(..)
+      |must be a class method
+      |[file:
+      """
+    )
+   
+  CLOSE IS BROKEN like sum, works in some good cases.
+  In particular, it needs to work for non coherent classes
+  and needs to receive the names of the fields to identify the state.
+  AddConstructor is adding the constructos, thus deciding the fields, and may pass the info...
+  but how? can we use introspection to extract them from a constructor name?
     should it be Cache.Lazy, Cache.Eager(parallel) Cache.Now?
     and then Cache.Clear
     -error messages
     -make introspection print className/interface names, so we can print the right error
     -add sum and complete the last todo in Close!
-    -constructor
-    -standard to string
     -standard code
     -multiline string %% support
     -add callSiteCache?

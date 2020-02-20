@@ -78,6 +78,7 @@ public class EagerCacheGenerator extends LazyCacheGenerator{
     for(var mci:thises){
       if(!mci.s().hasUniqueNum() || mci.s().uniqueNum()!=0){continue;}
       X x=Coherence.fieldName(mci.s());
+      assert j.fields!=null;
       if(!j.fields.xs.contains(x)){continue;}
       boolean caps=ch.fieldTs(x,Mdf.Mutable).stream().allMatch(t->t.mdf().isCapsule());
       if(!caps){continue;}

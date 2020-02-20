@@ -15,7 +15,10 @@ import is.L42.translationToJava.J;
 public enum TrustedKind implements TrustedT{
   AnyKind(""){public String factory(J j,MWT mwt){throw bug();}
     public String defaultVal(){throw bug();}
-    },    
+    },
+  AnyNativeKind(""){public String factory(J j,MWT mwt){throw bug();}
+    public String defaultVal(){throw bug();}
+    },
   Bool("boolean"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return false;";

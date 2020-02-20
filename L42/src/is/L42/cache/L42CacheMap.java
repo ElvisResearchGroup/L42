@@ -147,7 +147,7 @@ public class L42CacheMap {
     }
   static String objToString_internal(Object obj) {
     //return expandedKey(obj, true, false).toString();
-    return new L42StandardToString().format(expandedKey(obj, true, false));
+    return KeyFormatter.start(expandedKey(obj, true, false));
     }
   
   @SuppressWarnings("unchecked") 

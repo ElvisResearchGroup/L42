@@ -32,42 +32,7 @@ import is.L42.nativeCode.TrustedKind;
 public class NormalizationTests {
   
   enum Donut { spy, bread };
-    public static class Base extends KeyFormatter<Object>{
-    Object cacheKind(L42Cache<?> c){return c.typename().toString();}
-    String specialS(Object t,int lineN){
-      if(t.equals(TrustedKind.Int)){return k.lines()[lineN][1].toString();}
-      if(t.equals(TrustedKind.String)){return k.lines()[lineN][1].toString();}
-      return null;
-      }
-    String[] stringParts(boolean isInterface,Object t){
-      if(t.equals("R1")){return new String[]{"R1(f1=",")"};}
-      if(t.equals("R2")){return new String[]{"R2(f1=",", f2=",")"};}
-      assert false:t;
-      return null;
-      }
-    boolean[] interfaceFields(Object t){
-      if(t.equals("R1")){return new boolean[]{true};}
-      if(t.equals("R2")){return new boolean[]{true,true};}
-      assert false:t;
-      return null;
-      }
-    String varName(Object t){return "a"+t;}
-    }
-  @Test
-  public void testToString() {
-      R1 r0=new R1(null);r0.referenced=r0;
-      normalize_internal(r0);
-      R1 r1=new R1(null);
-      R2 r2=new R2(r0,"Hello");
-      r1.referenced=r2;
-      assertEquals("""
-        R1(f1=R2(f1=R1(f1=aR14), f2=Hello))
-        aR14=R1(f1=aR14)
-        """.trim(),
-       new Base().format(expandedKey(r1, true, false))
-       );
-    }
-  
+    
   @Test
   public void __testL42List() {
     L42List<String> list = new L42List<String>(String.class);

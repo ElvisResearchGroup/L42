@@ -35,7 +35,7 @@ import is.L42.tools.General;
 import is.L42.translationToJava.J;
 import is.L42.typeSystem.Coherence;
 
-public class Close {
+public class Close{
   J j;
   HashMap<X,MH> capsMuts=new HashMap<>();
   ArrayList<MWT> c=new ArrayList<>();
@@ -48,7 +48,6 @@ public class Close {
     return pIn._ofCore(P.of(cs.size(),General.L()));
     }
   public L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
-    System.out.println(p.pTails.printCs());
     L l=p.topCore();
     j=new J(p,null,false,null,true);
     this.err=new MetaError(wrap);
@@ -118,7 +117,7 @@ public class Close {
         return m.mdf().isIn(Mdf.Mutable,Mdf.Lent);
         }));
       if(!mh1.isEmpty()){
-        err.throwErr(mErr,"first does not correspond to a capsule field: the field is exposed by "+mh);
+        err.throwErr(mErr,"first parameter does not correspond to a capsule field: the field is exposed by "+mh);
         }
       String hs="#".repeat(countHs[0]+1);
       S s=new S(hs+x.inner(),General.L(),0);
@@ -127,7 +126,7 @@ public class Close {
       this.c.add(new MWT(General.L(pos),General.L(),mh,"",null));
       }
     if(!mh.t().equals(t)){
-      err.throwErr(mErr,"first does not correspond to a capsule field; ambiguous field type: "+mh.t()+" or "+t);
+      err.throwErr(mErr,"first parameter does not correspond to a capsule field; ambiguous field type: "+mh.t()+" or "+t);
       }
     return Utils.thisCall(pos,mh.key(),General.L());
     }
@@ -212,19 +211,5 @@ public class Close {
       });
     throw new L42Error(lazy);
     }
-  public boolean match(String target,MWT m){
-    for( var d:m.docs()){
-      if(d._pathSel()==null){continue;}
-      L ld=j.p()._ofCore(d._pathSel().p());
-      if(ld==null){ 
-        err.throwErr(m,"annotation "+d._pathSel().p()+"not existent");
-        }
-      for(var di:ld.docs()){
-        System.out.println(di.texts());
-        if(di.texts().size()!=1){continue;}
-        if(di.texts().get(0).equals(target)){return true;}
-        }
-      }
-    return false;
-    }
-}
+  public boolean match(String target,MWT m){return Utils.match(j.p(),err,target,m);}
+  }

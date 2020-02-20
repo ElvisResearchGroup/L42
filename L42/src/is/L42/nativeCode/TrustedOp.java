@@ -273,16 +273,23 @@ public enum TrustedOp {
     "return L42CacheMap.normalizeAndDup(%1$s);",sig(Readable,Immutable,This)))),  
   ImmNorm("immNorm",Map.of(AnyKind,use(
     "return L42CacheMap.normalize(%1$s);",sig(Immutable,Immutable,This)))),    
-  MutToString("mutToString",Map.of(AnyKind,use(
-    "return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,String)))),
-  ImmToString("immToString",Map.of(AnyKind,use(
-      "return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,String))))    
+  MutToString("mutToString",Map.of(
+    AnyKind,use("return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,String)),
+    AnyNativeKind,use("return L42CacheMap.objToString(%This.wrap(%1$s));",sig(Mutable,Immutable,String))
+    )),
+  ImmToString("immToString",Map.of(
+    AnyKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,String)),
+    AnyNativeKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%This.wrap(%1$s)));",sig(Immutable,Immutable,String))
+    ))    
   ;
   public final String inner;
   Map<TrustedKind,Generator>code;
   public Generator _of(TrustedKind k){
     assert k!=null;
-    return code.get(k);
+    var res=code.get(k);
+    if(res==null){res=code.get(TrustedKind.AnyNativeKind);}
+    if(res==null){res=code.get(TrustedKind.AnyKind);}
+    return res;
     }
   TrustedOp(String inner,Map<TrustedKind,Generator>code){
     this.inner = inner;

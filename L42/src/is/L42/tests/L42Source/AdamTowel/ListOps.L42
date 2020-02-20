@@ -1,3 +1,4 @@
+[HasToS]
 Elem={}
 class method mut This (mut This squareBuilder)=squareBuilder
 class method mut This ##apply#squareBuilder()=This()
@@ -37,6 +38,9 @@ mut method Void #set(Size that,mut Elem val)
 mut method  Void remove(Size that)
 mut method Void add(Size that, Elem val)
 mut method Void #add(Size that, mut Elem val)
+read method S readToString()
+
+method toS()=this.readToString()
 
 read method Elem left()=this.val(0\)
 read method Elem right()=this.val(\size.#pred())

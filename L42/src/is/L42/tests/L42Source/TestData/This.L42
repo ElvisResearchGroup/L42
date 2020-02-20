@@ -1,5 +1,7 @@
 reuse[AdamTowel]
-
+/*
+TODO: Close and AddConstructor do nothing about fwd parameters in ks!!
+*/
 TestDataBase={
   Point=Data:{Size x, Size y}
   TestPoint=(
@@ -12,10 +14,33 @@ TestDataBase={
     {}:Test"pointEqWithxy"(p1==p3.with(y=p1.y()).with(x=p1.x()))
     {}:Test"pointToS"(expected=p1, actual=p1)
     {}:Test"pointToS"(expected=S"Point(x=8, y=42)", actual=p1)
-    )}
-TestDataList={
+    )
   Person=Data:{Strings names}
+  Box=Data:{Any f1,Any f2}
+  Anys=Class:ListT(Any)
   TestPerson=(
     p1=Person(names=\['Bob;'Alice;'Charles])
-    {}:Test"personToS"(expected=S"Point(x=8, y=42)", actual=p1)
+    {}:Test"personToS"(expected=S"""
+      |Person(names=["Bob"; "Alice"; "Charles"])
+      """, actual=p1.toS()++S.nl())
+    b1=Box(f1=p1,f2=Box(f1=S"hi",f2=Strings()))
+    {}:Test"personToS"(expected=S"""
+      |Box(f1=Person(names=["Bob"; "Alice"; "Charles"]), f2=Box(f1=S"hi", f2=Strings[]))
+      """, actual=b1.toS()++S.nl())
+    Anys bs=Anys[3Size]
+    HasToS interf=bs
+    HasToS interfS=S"hi"
+    HasToS interfP=Point(x=1\,y=2\)
+    {}:Test"anys1"(expected=S"""
+      |Anys[3Size]
+      """, actual=bs.toS()++S.nl())
+    {}:Test"anys2"(expected=S"""
+      |Anys[3Size]
+      """, actual=interf.toS()++S.nl())
+    {}:Test"anys3"(expected=S"""
+      |hi
+      """, actual=interfS.toS()++S.nl())
+    {}:Test"anys4"(expected=S"""
+      |Point(x=1, y=2)
+      """, actual=interfP.toS()++S.nl())    
     )}

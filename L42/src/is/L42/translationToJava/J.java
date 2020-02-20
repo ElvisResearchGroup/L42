@@ -41,7 +41,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public ToSTrait.ToSState state(){return state;}
   ToSTrait.ToSState state= new ToSTrait.ToSState();
 
-  public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs,boolean forTs) {
+  public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs,boolean forTs){
     this.p=p;
     this.ch=new Coherence(p,false);
     this.isCoherent=precomputeCoherent();
@@ -50,7 +50,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     this.wrap=wrap;
     this.libs=libs;
     }
-  public boolean precomputeCoherent(){return ch.isCoherent(true);}
+  public boolean precomputeCoherent(){return ch.isCoherent(true);}//Can be overridden for testing
   final Program p;
   final boolean isCoherent;
   public final Coherence ch;

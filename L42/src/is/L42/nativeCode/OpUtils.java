@@ -151,25 +151,26 @@ class OpUtils{
       Program p=j.p();
       if(type && typingUse(p,mwt,sig)){j.c("");return;}
       String s=s0;
-      if(s.contains("%This")){
-        String thisS=j.typeNameStr(p);
-        s=s.replace("%This",thisS);
-        }
+      s = replaceGen(j,p,s,P.pThis0,"%This");
       for(int i:range(p.topCore().info().nativePar())){
         P geni=p.topCore().info().nativePar().get(i);
-        if(s.contains("%Gen"+(i+1)+".")){
-          String geniS=J.classNameStr(p.navigate(geni.toNCs()));
-          s=s.replace("%Gen"+(i+1)+".",geniS+".");
-          }
-        if(s.contains("%Gen"+(i+1)+"::")){
-          String geniS=J.classNameStr(p.navigate(geni.toNCs()));
-          s=s.replace("%Gen"+(i+1)+"::",geniS+"::");
-          }
-        if(s.contains("%Gen"+(i+1))){
-          s=s.replace("%Gen"+(i+1),j.typeNameStr(geni));
-          }
+        s = replaceGen(j, p, s, geni,"%Gen"+(i+1));
         }           
       j.c(s.formatted(NativeDispatch.xs(mwt).toArray()));
       };
+    }
+  private static String replaceGen(J j,Program p,String s,P geni,String genName) {
+    if(s.contains(genName+".")){
+      String geniS=J.classNameStr(p.navigate(geni.toNCs()));
+      s=s.replace(genName+".",geniS+".");
+      }
+    if(s.contains(genName+"::")){
+      String geniS=J.classNameStr(p.navigate(geni.toNCs()));
+      s=s.replace(genName+"::",geniS+"::");
+      }
+    if(s.contains(genName)){
+      s=s.replace(genName,j.typeNameStr(geni));
+      } 
+    return s; 
     }
   }

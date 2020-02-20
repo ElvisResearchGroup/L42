@@ -6,9 +6,11 @@ import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -37,7 +39,7 @@ import is.L42.typeSystem.Coherence;
      if there is already a class method mdf This named mutK or immK with parameters as
        dom(getters), then do the sum
      if setters=empty and mdfList ={imm,read,class}, generate two imm constructors
-     
+          
      xs: dom(getters)
      Ps: getters and setters must agree on the P, otherwise error.
      Mdfs: for each x collect all getters/setters mdf:
@@ -46,12 +48,15 @@ import is.L42.typeSystem.Coherence;
        if {mut,read?,imm?,lent?} {mut?,capsule?} then mut
        if {read?,imm?} {capsule?} then capsule
        error if a mdf can not be found
-     Mdfs: all imm/class for the imm constructor      
-     
+     Mdfs: all imm/class for the imm constructor
+       -mut fields are always fwd mut in the constructor
+       -imm fields are fwd iff not used by any readCache 
+       (may need to be more general if we add more kinds of cache)
      */
 public class K {
   MetaError err;
   Map<X,List<MWT>> getters=new LinkedHashMap<>();
+  Set<X> fieldsUsedInReadCache=new HashSet<>();
   boolean gettersNoMut=true;
   Map<X,List<MWT>> setters=new LinkedHashMap<>();
   public Core.L k(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
@@ -68,12 +73,17 @@ public class K {
     try{S.parse(mutK+"()");S.parse(immK+"()");}
     catch(EndError ee){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
     if(mutK.equals(immK)){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
-    List<MWT> abs=L(l.mwts(),(c,m)->{if(m._e()==null){c.add(m);}});
+    List<MWT> abs=L(l.mwts(),(c,m)->{
+      if(m._e()==null){c.add(m);}
+      if(Utils.match(p, err, "readEagerCache",m)){//||Utils.match(p, err, "readLazyCache",m)//TODO: add it when we make the readLazyCache too...
+        this.fieldsUsedInReadCache.addAll(m.key().xs());
+        }
+      });
     for(var m:abs){addGettersSetters(m);}
     boolean veryImm=gettersNoMut && setters.isEmpty();
     List<X> xs=L(getters.keySet().stream());//deterministic: it is a LinkedHashMap
-    List<T> mutTs=L(xs,(c,m)->c.add(forgeT(m)));
-    List<T> immTs=L(mutTs,t->t.mdf().isIn(Mdf.Class,Mdf.Immutable)?t:t.withMdf(Mdf.Immutable));
+    List<T> mutTs=L(xs,(c,x)->c.add(forgeT(x)));
+    List<T> immTs=L(mutTs,this::forgeTImm);
     S mutS=new S(mutK,xs,-1);
     S immS=new S(immK,xs,-1);
     var immMh=new Core.MH(Mdf.Class,L(),P.coreThis0,immS,immTs,L());
@@ -90,6 +100,10 @@ public class K {
       });
     return l.withMwts(newMWT);
     }
+  public T forgeTImm(T t){
+    if(t.mdf().isFwdMut()){return t;}
+    return t.withMdf(Mdf.ImmutableFwd);    
+    }    
   public T forgeT(X x){
     List<P> options=L(getters.get(x).stream().map(m->m.mh().t().p()).distinct());
     if(options.size()!=1){
@@ -103,9 +117,12 @@ public class K {
     var clazz=match(Mdf.Class,L(),optionsGet) && match(null,L(Mdf.Class),optionsSet);
     if(clazz){return new T(Mdf.Class,L(),p);}
     var imm=match(null,List.of(Mdf.Immutable,Mdf.Readable),optionsGet) && match(null,L(Mdf.Immutable),optionsSet);
-    if(imm){return new T(Mdf.Immutable,L(),p);}
+    if(imm){
+      if(fieldsUsedInReadCache.contains(x)){return new T(Mdf.Immutable,L(),p);}
+      return new T(Mdf.ImmutableFwd,L(),p);
+      }
     var mut=match(Mdf.Mutable,List.of(Mdf.Readable,Mdf.Immutable,Mdf.Lent),optionsGet) &&  match(null,List.of(Mdf.Mutable,Mdf.Capsule),optionsSet);
-    if(mut){return new T(Mdf.Mutable,L(),p);}
+    if(mut){return new T(Mdf.MutableFwd,L(),p);}
     var caps=match(null,List.of(Mdf.Readable,Mdf.Immutable),optionsGet) &&  match(null,L(Mdf.Capsule),optionsSet);
     if(caps){return new T(Mdf.Capsule,L(),p);}
     throw err.throwErr(getters.get(x).get(0),"ambiguous field modifier; can not be neither class, mut, imm or capsule");

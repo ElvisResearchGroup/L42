@@ -40,7 +40,7 @@ public class NativeDispatch {
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
-    assert op._of(k)!=null:k;//type checking should avoid this
+    assert op._of(k)!=null:k+" "+op;//type checking should avoid this
     op._of(k).of(false, mwt,j);
     }
   public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {

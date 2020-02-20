@@ -63,6 +63,7 @@ public interface P extends Visitable<P> {
   }
 
   default NCs toNCs() {
+    assert false:this;
     throw bug();
   }
 

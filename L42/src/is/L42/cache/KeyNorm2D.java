@@ -70,7 +70,6 @@ public class KeyNorm2D {
 	    builder.append(((L42Cache<?>) line[0]).typename());
 	    for(int j = 1; j < line.length; j++) {
 	      builder.append(' ');
-	      System.out.println(line[j].getClass());
 	      builder.append(line[j] == null ? "null" : line[j].toString().replace('\n', ' '));
 	    }
 	    builder.append('\n');
