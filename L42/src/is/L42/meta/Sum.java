@@ -163,32 +163,55 @@ class Plus{
   private boolean typeEq(T a, T b){return a.p().equals(b.p()) && a.mdf()==b.mdf();}
   private boolean typeSub(T subT, T superT){
     /*
-     
+     ------
       A->B  C->D  E
       A  B->C  D->E
       m
-      
-      Cs1;Pz1 .. Csn;Pzn = {Cs;Cs/collect(L1,L2,Cs) |
-        Cs in dom(L1)U dom(L2), collect(L1,L2,Cs)!=empty
-        }
-
-      Cs" in collect(L1,L2,Cs)
+    _______//collects the "novel" transitive implementations of Cs
+    #define p,map,cs,L1,L2|-P<=P'
+      * p,map,cs,L1,L2|-P<=P'
+          
+    _______//collects the "novel" transitive implementations of Cs
+    #define collect(Pz,L1,L2,Cs)=Cs' //Pz is This0 starting growing interfaces
+      Cs" in collect(Pz,L1,L2,Cs)
         This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] disjoint Pz
         This0.Cs" in Lj(Cs').Ts.Ps[from This0.Cs;{}]
         i in {1,2}  j in {1,2}
-      Cs" in collect(L1,L2,Cs)
+      Cs" in collect(Pz,L1,L2,Cs)
         This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] disjoint Pz
-        Cs" in collect(L1,L2,Cs')
+        Cs" in collect(Pz,L1,L2,Cs')
         i in {1,2}
-      
-      Cs.C._/This0.Cs0.C1..Cn=Thisn.C1..Cn
-        C!=C1
-      L = L1 PLUS[Cs1;Pz1 .. Csn;Pzn] L3
-      where the Pzi is used to grow the Ts (in the bottom, no docs)
+    _______
+    #define Cs/P=P'// make P as it should be when minimized in Cs?
+      * Cs.C._/This0.Cs0.C1..Cn=Thisn.C1..Cn
+          C!=C1, shorter n possible?
+        
+    Cs1;Pz1 .. Csn;Pzn = {Cs;collect(L1,L2,Cs) | Cs in dom(L1)U dom(L2), collect(L1,L2,Cs)!=empty}
+    L = L1 PLUS[Cs1;Pz1 .. Csn;Pzn] L2
+      where the Cs/Pzi is used to grow the Ts (in the bottom, no docs)
       and topLeft(Pzi).mwts U topRight(Pzi) are plussed to the mwts (without the docs)
+      
       {Exp={interface} Lit={Exp} method Lit foo()=e}
       +
       {Exp={interface[HasToS] method HasToS foo()}}
+     
+      //example1:
+      Compute={//case 1 and case 2
+        class method Library()={ B={interface[C]} C={interface} } //OR { B={interface} C={interface[B]} }
+        }
+      A=Compute()
+      Res={method A.B foo()} + {method A.C foo()}
+      //what should Res be?  {method A.B foo()} in case 1 and {method A.C foo()} in case 2?
+      ---------
+      //example2:
+      Compute={//case 1 and case 2
+        class method Library()={ B={interface[C]} C={interface} } //OR { B={interface} C={interface[B]} }
+        }
+      Res={method A.B foo()} + {method A.C foo()}
+      A=Compute()//now A is computed later
+      //what should Res be? we have no idea what Compute would do. Both solution are ok w.r.t. meta level soundness
+      
+     
      
       for all public Cs, compute the L.Ts and put in map Cs->Ts
       then compute L3 using map, both for subtype and to save in the headers

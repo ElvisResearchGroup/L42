@@ -88,8 +88,7 @@ _______
   Cs0=C1..Ck
   interface?i=implemented(PLUS.p,L,Csi)
   iMWTsi=interface?i[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
-  L' = L(Cs0)[(iMWTs0 PLUS .. PLUS iMWTsn).MWTs][Info=L(Cs0).refined+
-  =dom((iMWTs1..iMWTsn).MWTs)]
+  L' = L(Cs0)[MWTs=(iMWTs0 PLUS .. PLUS iMWTsn).MWTs][Info=L(Cs0).refined+=dom((iMWTs1..iMWTsn).MWTs)]
   
 * implemented(L,Cs)=empty
     forall Cs' in dom(L):
