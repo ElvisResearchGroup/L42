@@ -37,7 +37,7 @@ import is.L42.typeSystem.Coherence;
      mdfList list of all T.Mdf in getters
      setters=map X-> MHs of form mut/lent method Void #*x(T that)
      if there is already a class method mdf This named mutK or immK with parameters as
-       dom(getters), then do the sum
+       dom(getters), then skip the generation of such new abstract method
      if setters=empty and mdfList ={imm,read,class}, generate two imm constructors
           
      xs: dom(getters)
@@ -82,10 +82,8 @@ public class K extends GuessFields{
     MWT mutM=new MWT(l.poss(),L(),mutMh,"",null);
     List<MWT> newMWT=L(c->{
       c.addAll(l.mwts());
-      if(_elem(l.mwts(),immS)!=null){throw todo();}
-      if(_elem(l.mwts(),mutS)!=null){throw todo();}
-      c.add(immM);
-      c.add(mutM);
+      if(_elem(l.mwts(),immS)==null){c.add(immM);}
+      if(_elem(l.mwts(),mutS)==null){c.add(mutM);}
       });
     return l.withMwts(newMWT);
     }

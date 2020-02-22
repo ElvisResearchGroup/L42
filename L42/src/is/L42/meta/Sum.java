@@ -167,10 +167,17 @@ class Plus{
       A->B  C->D  E
       A  B->C  D->E
       m
-    _______//collects the "novel" transitive implementations of Cs
-    #define p,map,cs,L1,L2|-P<=P'
-      * p,map,cs,L1,L2|-P<=P'
-          
+    _______
+    #define MWT1 PLUS MWT2=MWT3
+    * L1.m+L2.m=L1.m
+        L1.m==L2.m
+        L1.m.e?=L2.m.e?=empty
+    * L1.m+L2.m=Li.m 
+        {i,j}={1,2}
+        Lj.m can lose
+        either Li.m.mh==Lj.m.mh
+        or Li.m.mh extends Li.m' and Li.m'.mh==Lj.m.mh
+           
     _______//collects the "novel" transitive implementations of Cs
     #define collect(Pz,L1,L2,Cs)=Cs' //Pz is This0 starting growing interfaces
       Cs" in collect(Pz,L1,L2,Cs)

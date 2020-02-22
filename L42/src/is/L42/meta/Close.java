@@ -43,6 +43,7 @@ public class Close extends GuessFields{
   ArrayList<MH> ks=new ArrayList<>();
   HashSet<X> fieldNames=new HashSet<>();
   ArrayList<MWT> newMWTs=new ArrayList<>();
+  ArrayList<MWT> toSkip=new ArrayList<>();
   public Core.L close(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
     if(cs.isEmpty()){return close(p,wrap);}
     var pIn=p.navigate(P.of(0, cs));
@@ -67,7 +68,8 @@ public class Close extends GuessFields{
       if(k.key().xs().size()!=fieldNames.size()){errorAmbiguousK(l,k);}
       }
     for(var m:l.mwts()){process(m);}
-    l= l.withMwts(L(this.newMWTs.stream())).withInfo(l.info().withClose(true));
+    newMWTs.removeAll(toSkip);
+    l= l.withMwts(L(newMWTs.stream())).withInfo(l.info().withClose(true));
     J newJ=new J(p.update(l,false),null,false,null,true);
     assert newJ.fields!=null:
     "";
@@ -238,16 +240,22 @@ public class Close extends GuessFields{
     var s=m.key();
     var s1=s.withXs(General.L());
     assert !s.hasUniqueNum();
+    var mh1=new MH(Mdf.Readable,m.mh().docs(),m.mh().t(),s1,General.L(),General.L());
     var old=_elem(p.topCore().mwts(),s1);
     if(old!=null){
-      assert false: s1+" "+s+" "+old;
-      throw todo();/*make sum*/}
-    var mh1=new MH(Mdf.Readable,m.mh().docs(),m.mh().t(),s1,General.L(),General.L());
+      if(old._e()!=null){
+        newMWTs.add(m);
+        return;//Do nothing if the method s1 is already present and implemented
+        }
+      boolean eq=Utils.equalMH(old.mh(),mh1);
+      if(!eq){err.throwErr(old,"Generated method "+mh1+" would conflict with existent abstract method "+old.mh());}
+      toSkip.add(old);
+      }
     var m1=m.withMh(mh1);//m1: the no arg meth calling the static method s
     List<Core.E> exs1=General.L(s.xs(),(ci,xi)->ci.add(fAcc(m,m._e().pos(),xi,Mdf.Immutable,Mdf.Readable)));
     m1=m1.with_e(Utils.ThisCall(m.poss().get(0),s,exs1));
     newMWTs.add(m1.withNativeUrl("trusted:readEagerCache"));
-    newMWTs.add(m);    
+    newMWTs.add(m);
     }
   public void processAllowedAbs(MWT m){newMWTs.add(m);}
   public void processBase(MWT m){newMWTs.add(m);}

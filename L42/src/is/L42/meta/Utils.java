@@ -1,5 +1,7 @@
 package is.L42.meta;
 
+import static is.L42.tools.General.range;
+
 import java.util.List;
 
 import is.L42.common.Program;
@@ -7,6 +9,8 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MH;
+import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
@@ -36,4 +40,20 @@ public class Utils {
     }
   return false;
   }
+  public static boolean equalT(T t1, T t2){
+    return t1.p().equals(t2.p()) && t1.mdf().equals(t2.mdf());
+    }
+  public static boolean equalMH(MH mh1, MH mh2) {
+    if(!equalT(mh1.t(),mh2.t()) || mh1.mdf()!=mh2.mdf() 
+      ||mh1.pars().size()!=mh2.pars().size()
+      ||mh1.exceptions().size()!=mh2.exceptions().size()
+      ){return false;}
+    for(int i:range(mh1.pars())){
+      if(!equalT(mh1.pars().get(i),mh2.pars().get(i))){return false;}
+      }
+    for(int i:range(mh1.exceptions())){
+      if(!equalT(mh1.exceptions().get(i),mh2.exceptions().get(i))){return false;}
+      }
+    return true;
+    }
   }

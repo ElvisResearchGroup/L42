@@ -1,19 +1,37 @@
 Note: interfaces can watch if they have private nested classes that are watching.
 Note: interfaces can be watched if they have private nested classes that are watched.
 TODO: sum class+interface, ok if class not in coherent of anything in the bubble
-PLUS::=PLUS[p;topLeft;topRight;Cs]
+PLUS::=PLUS[topLeft;topRight;Cs;Cs1->Pz1..Czn->Pzn]
 iMWT::=interface?MWT
 _______
 #define p;C |- CORE.L1 + CORE.L2 = CORE.L3
 * p;C |- L1 + L2 = L
-    PLUS=PLUS[p.push(C,L);topLeft=L1;topRight=L2;empty]
-    L3 = L1 PLUS L2
-    L = L3[Cs1 PLUS Pz1]..[Csn PLUS Pzn]
     //Pz= growing interfaces 
-    Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2), Cs has no unique ns and (Cs|-L2>L1 or Cs|-L1>L2)}
-    //classes implementing growing interfaces, note that P0..Pn must be not empty
-    Cs1;Pz1 .. Csn;Pzn = {Cs;P0..Pn | Cs in dom(L3), Cs has no unique ns and P0..Pn = L3(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz}
+    Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2), Cs has no unique ns and (L2(Cs)>L1(Cs) or L1(Cs)>L2(Cs))}
+    //classes implementing growing interfaces, note that any Pzi must be not empty
+    Cs1->Pz1 .. Csn->Pzn = 
+      {Cs->collect(L1,L2,Cs) | Cs in dom(L1)U dom(L2), collect(L1,L2,Cs)!=empty}
+    PLUS=PLUS[topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
+    L = L1 PLUS L2
+    //  where the Cs/Pzi is used to grow the Ts (in the bottom, no docs)
+    //  and topLeft(Pzi).mwts U topRight(Pzi) are plussed to the mwts (without the docs)
     forall Cs in allHiddenSupertypes(L): This0.Cs not in Pz
+_______//collects the "novel" transitive implementations of Cs
+#define collect(Pz,L1,L2,Cs)=Cs' //Pz is This0 starting growing interfaces
+* Cs" in collect(Pz,L1,L2,Cs)
+    This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz// assert Cs' has no unique ns (since intersect Pz)
+    This0.Cs" in Lj(Cs').Ts.Ps[from This0.Cs;{}] \ Li(Cs).Ts.Ps[from This0.Cs;{}]
+    i in {1,2}
+    j in {1,2}
+    Cs" has no unique ns
+* Cs" in collect(Pz,L1,L2,Cs)
+    This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz
+    Cs" in collect(Pz,L1,L2,Cs')
+    i in {1,2}
+_______
+#define Cs/P=P'// make P as it should be when minimized in Cs
+* Cs.C._/This0.Cs.C'.C1..Cn= This(n+1).C'.C1..Cn
+    C!=C' 
 _______
 #define CORE.L1 PLUS CORE.L2 = CORE.L3
 * L1 PLUS L2 = L3
@@ -23,10 +41,14 @@ _______
   LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
   iMWTs1=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
   iMWTs2=implemented(PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
-  MWTs3=(iMWTs1 PLUS iMWTs2).MWTs
+  PLUS(PLUS.Cs)=This0.Cs3..This0.Csn
+  iMWTsi=empty[PLUS.topLeft(Csi).MWTs U PLUS.topRight(Csi).MWTs] //topXX(Cs).MWTs=empty if undefined
+  //iMWTs3..iMWTsn are stripped from their docs
+  MWTs3=(iMWTs1 PLUS .. PLUS iMWTsn).MWTs
   NCs3=NCs1\LDoms PLUS NCs2\LDoms
   Doc3=Doc1,Doc2
-  Info3=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
+  Info=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
+  Info3=Info[refined+=dom((iMWTs3..iMWTsn).MWTs)]
 _______
 #define NCs1 PLUS NCs2 = NCs3
 * (Docs C=L NCs1) PLUS NCs2 = Docs C=L (NCs1 PLUS NCs2)
@@ -46,13 +68,20 @@ _______
       MWT1.s=MWT2.s
 _______
 #define interface?1 MWT1 PLUS interface?2 MWT2 = interface?3 MWT3
-* interface?1 MWT1 PLUS interface?2 MWT2 = interfacej? MWT3
+_______
+#define interface?1 MWT1 PLUS interface?2 MWT2 = interface?3 MWT3
+* interface?1 MWT1 PLUS interface?2 MWT2 = {interface?1,interface?2} MWT1[accDocs MWT2]
+    MWT1==MWT2 //except docs
+    MWT1.e?=MWT2.e?=empty
+* interface?1 MWT1 PLUS interface?2 MWT2 =interface?i MWTi[accDocs MWTj]//assert {interface?1,interface?2}=interface?1
     {i,j}={1,2}
-    p.navigate(This0.PLUS.Cs)|-MWTi.MH<=MWTj.MH
-    MWT3=MWTi with Docs obtained by the corresponding MWT1.Docs+MWT2.Docs (also sum pars,ret,exceptions docs)
     MWTj.e?=empty//implemented can not lose
-    either interface?j=empty //interface can not lose
-    or p.navigate(This0.PLUS.Cs)|-MWTj.MH<=MWTi.MH
+    interface?j=empty //interface can not lose
+    either MWTi.MH==MWTj.MH //except docs
+    or MWTi.S in PLUS.topLeft(Cs).Info.refined,
+       This0.Cs' in PLUS.topLeft(Cs).Ts.Ps[from This0.Cs;{}]
+       PLUS.topLeft(Cs')(MWTi.S).MH==MWTj.MH //exept docs
+    or ...the same for PLUS.topRight...
 _______
 #define allWatched(L) = Csz
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs';{}] and Cs' not of form _._::n._
@@ -68,32 +97,28 @@ _______
     either PLUS.topLeft(PLUS.Cs).Info.closed undefined
     or PLUS.topRight(PLUS.Cs).Info.closed undefined
 * empty PLUS interface=interface
-    PLUS.Cs notin allRequiredCoherent(PLUS.p)
-    PLUS.Cs notin allWatched(PLUS.p)//using p instead of left/right to consider the "set of all novel interfaces"
+    PLUS.Cs notin allRequiredCoherent(PLUS.topLeft)
+    PLUS.Cs notin allWatched(PLUS.topLeft)
     forall MWT in PLUS.topLeft(PLUS.Cs).MWTs://all public methods are abstract
       if MWT.s not of form _::n(_) then MWT.e?=empty
     //no public impl methods (thus since not watched, privates can be trashed)
 * interface PLUS empty=interface//same but reversed
-    PLUS.Cs notin allRequiredCoherent(PLUS.p)
-    PLUS.Cs notin allWatched(PLUS.p)
+    PLUS.Cs notin allRequiredCoherent(PLUS.topRight)
+    PLUS.Cs notin allWatched(PLUS.topRight)
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
 _______ 
-#define Cs |- L2 > L1    L[Cs PLUS Pz]=L'    implemented(L,Cs)=interface?
-* Cs |- L2 > L1
-  L1(Cs) is interface
-  either L2(Cs).Ts\L1(Cs).Ts!=empty
-  or dom(L2(Cs).MWTs)\dom(L1(Cs).MWTs)!=empty
-
-* L[Cs0 PLUS This0.Cs1..This0.Csn] = L[Cs0=L']
-  Cs0=C1..Ck
-  interface?i=implemented(PLUS.p,L,Csi)
-  iMWTsi=interface?i[L(Csi).MWTs[from PLUS.p.minimize(Thisk.Csi);PLUS.p]]
-  L' = L(Cs0)[MWTs=(iMWTs0 PLUS .. PLUS iMWTsn).MWTs][Info=L(Cs0).refined+=dom((iMWTs1..iMWTsn).MWTs)]
+#define L1 > L2    implemented(L,Cs)=interface?
+* L2 > L1
+  L1 is interface
+  either L2.Ts\L1.Ts!=empty
+  or dom(L2.MWTs)\dom(L1.MWTs)!=empty
   
-* implemented(L,Cs)=empty
-    forall Cs' in dom(L):
-      Cs' not of form _._::n._, P in L(Cs').Ts.Ps This0.Cs !=P[from This0.Cs';{}]
+* implemented(L,Cs)=empty //all public Cs' do not implement Cs
+    forall Cs' in dom(L) where Cs' not of form _._::n._:
+      This0.Cs notin L(Cs').Ts.Ps[from This0.Cs';{}]
+      This0.Cs notin L(Cs').Info.hiddenSupertypes[from This0.Cs';{}]
 * implemented(L,Cs)=interface otherwise
+
   //DO NOT READ AFTER THIS POINT
   //renames:
   renaming an interface method in private:
