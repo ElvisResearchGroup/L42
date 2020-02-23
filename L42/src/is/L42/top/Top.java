@@ -24,6 +24,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.Block;
 import is.L42.generated.Core.Doc;
+import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
@@ -887,6 +888,23 @@ dropCache:
         watched.add(pi.withCs(csCut));
         }
       };
+    }
+  public static void collectRefined(Program p, ArrayList<S> refined) {
+    for(T t:p.topCore().ts()){
+      LL ll=p.of(t.p(),p.topCore().poss());
+      if(ll.isFullL()){
+        for(var m:((Full.L)ll).ms()){
+          if(m.key().hasUniqueNum()){continue;}
+          if(m.key() instanceof S){refined.add((S)m.key());} 
+          }
+        }
+      else{
+        for(var m:((Core.L)ll).mwts()){
+          if(m.key().hasUniqueNum()){continue;}
+          refined.add(m.key());
+          }
+        }
+      }
     }
   }
   /*private void flushBadCache(){

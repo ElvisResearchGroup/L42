@@ -43,7 +43,7 @@ _______
      |-p.push(C,L)
      if C of form _::n then coherent(p.push(C,L),norm) //an incoherent private class would be bad
    if(p(This0).Info.closeState?=closeState then coherent(p,typed)
-   p(This0).Info.refined={s| P in p(This0).Ts.Ps and s in dom(p(P))}
+   assert p(This0).Info.refined={s| P in p(This0).Ts.Ps and s in dom(p(P))}//should be already true for well formedness
    forall P in p(This0).Ts.Ps, p(P).Ts.Ps subseteq p(This0).Ts.Ps
 * p |- MWT //(member method)
     if MWT.e?=e then 

@@ -4,31 +4,30 @@ TODO: sum class+interface, ok if class not in coherent of anything in the bubble
 PLUS::=PLUS[topLeft;topRight;Cs;Cs1->Pz1..Czn->Pzn]
 iMWT::=interface?MWT
 _______
-#define p;C |- CORE.L1 + CORE.L2 = CORE.L3
-* p;C |- L1 + L2 = L
-    //Pz= growing interfaces 
-    Pz = { This0.Cs | Cs in dom(L1) intersect dom(L2), Cs has no unique ns and (L2(Cs)>L1(Cs) or L1(Cs)>L2(Cs))}
-    //classes implementing growing interfaces, note that any Pzi must be not empty
-    Cs1->Pz1 .. Csn->Pzn = 
-      {Cs->collect(L1,L2,Cs) | Cs in dom(L1)U dom(L2), collect(L1,L2,Cs)!=empty}
+#define |- CORE.L1 + CORE.L2 = CORE.L3
+* |- L1 + L2 = L
+    Cs1->Csz1 .. Csn->Cszn =transitiveMap(L1,L2) 
     PLUS=PLUS[topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
     L = L1 PLUS L2
-    //  where the Cs/Pzi is used to grow the Ts (in the bottom, no docs)
-    //  and topLeft(Pzi).mwts U topRight(Pzi) are plussed to the mwts (without the docs)
-    forall Cs in allHiddenSupertypes(L): This0.Cs not in Pz
-_______//collects the "novel" transitive implementations of Cs
-#define collect(Pz,L1,L2,Cs)=Cs' //Pz is This0 starting growing interfaces
-* Cs" in collect(Pz,L1,L2,Cs)
-    This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz// assert Cs' has no unique ns (since intersect Pz)
-    This0.Cs" in Lj(Cs').Ts.Ps[from This0.Cs;{}] \ Li(Cs).Ts.Ps[from This0.Cs;{}]
-    i in {1,2}
-    j in {1,2}
-    Cs" has no unique ns
-* Cs" in collect(Pz,L1,L2,Cs)
-    This0.Cs' in Li(Cs).Ts.Ps[from This0.Cs;{}] intersect Pz
-    Cs" in collect(Pz,L1,L2,Cs')
-    i in {1,2}
+    forall Cs in allHiddenSupertypes(L1): L2(Cs)>L1(Cs) does not hold
+    forall Cs in allHiddenSupertypes(L2): L1(Cs)>L2(Cs) does not hold
 _______
+#define singleMap(L1,L2)=Cs->Csz    transitiveMap(L1,L2)=Cs->Csz
+  * Cs' in singleMap(L1,L2)(Cs)
+    Cs and Cs' has no unique n
+    {1,2}={i,j}
+    Cs in dom(Li)
+    Cs notin dom(Lj)
+    This0.Cs' in Li(Cs).Ts.Ps[from Cs;{}]
+    Lj(Cs')>Li(Cs')
+
+  * Cs' in transitiveMap(L1,L2)(Cs)
+      Cs' in singleMap(L1,L2)(Cs)
+  * Cs" in transitiveMap(L1,L2)(Cs)
+      Cs' in transitiveMap(L1,L2)(Cs)
+      Cs" in singleMap(L1,L2)(Cs')
+
+_______//UNUSED?
 #define Cs/P=P'// make P as it should be when minimized in Cs
 * Cs.C._/This0.Cs.C'.C1..Cn= This(n+1).C'.C1..Cn
     C!=C' 
@@ -38,17 +37,19 @@ _______
   Li={Hi MWTsi NCsi Doci Infoi}
   H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
   LDoms=empty if L1.interface?=L2.interface?
-  LDoms={LDom| i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
-  iMWTs1=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
-  iMWTs2=implemented(PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
-  PLUS(PLUS.Cs)=This0.Cs3..This0.Csn
-  iMWTsi=empty[PLUS.topLeft(Csi).MWTs U PLUS.topRight(Csi).MWTs] //topXX(Cs).MWTs=empty if undefined
-  //iMWTs3..iMWTsn are stripped from their docs
-  MWTs3=(iMWTs1 PLUS .. PLUS iMWTsn).MWTs
+  LDoms={LDom | i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
+  PLUS.map(PLUS.Cs)=This0.Cs1..This0.Csn
+  iMWTs=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
+    U implemented(PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
+    U PLUS.topLeft(Cs1).MWTs U PLUS.topRight(Cs1).MWTs//removing all the docs
+    ..
+    U PLUS.topLeft(Csn).MWTs U PLUS.topRight(Csn).MWTs//removing all the docs
+  MWTs3=PLUS(iMWTs)
   NCs3=NCs1\LDoms PLUS NCs2\LDoms
   Doc3=Doc1,Doc2
   Info=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
   Info3=Info[refined+=dom((iMWTs3..iMWTsn).MWTs)]
+  //TODO:also, check well formedness of refine relation, implicit in formalism but TODO: in code
 _______
 #define NCs1 PLUS NCs2 = NCs3
 * (Docs C=L NCs1) PLUS NCs2 = Docs C=L (NCs1 PLUS NCs2)
@@ -59,15 +60,12 @@ _______
 #define interface?[MWTs]=iMWTs
 * interface?[MWT1..MWTn] = interface? MWT1 .. interface? MWTn
 _______
-#define iMWTs1 PLUS iMWTs2 = iMWTs3
-* interface? MWT iMWTs1 PLUS iMWTs2 = interface? MWT (iMWTs1 PLUS iMWTs2)
+#define PLUS(iMWTs) = MWTs3
+* PLUS(interface? MWT, iMWTs)= MWT PLUS(iMWTs)
     MWT.s not in dom(iMWTs2.MWTs)
-* _ empty PLUS iMWTs = iMWTs
-* interface?1 MWT1 iMWTs1 PLUS iMWTs interface?2 MWT2 iMWTs2 = 
-    (interface?1 MWT1 PLUS interface2? MWT2) (iMWTs1 PLUS iMWTs iMWTs2)
-      MWT1.s=MWT2.s
-_______
-#define interface?1 MWT1 PLUS interface?2 MWT2 = interface?3 MWT3
+* PLUS(iMWT1, iMWTs1, iMWT2, iMWTs2)= PLUS(iMWT, iMWTs1, iMWTs2)
+    iMWT1.s=iMWT2.s
+    iMWT=iMWT1 PLUS iMWT2
 _______
 #define interface?1 MWT1 PLUS interface?2 MWT2 = interface?3 MWT3
 * interface?1 MWT1 PLUS interface?2 MWT2 = {interface?1,interface?2} MWT1[accDocs MWT2]
@@ -76,12 +74,23 @@ _______
 * interface?1 MWT1 PLUS interface?2 MWT2 =interface?i MWTi[accDocs MWTj]//assert {interface?1,interface?2}=interface?1
     {i,j}={1,2}
     MWTj.e?=empty//implemented can not lose
-    interface?j=empty //interface can not lose
     either MWTi.MH==MWTj.MH //except docs
-    or MWTi.S in PLUS.topLeft(Cs).Info.refined,
-       This0.Cs' in PLUS.topLeft(Cs).Ts.Ps[from This0.Cs;{}]
-       PLUS.topLeft(Cs')(MWTi.S).MH==MWTj.MH //exept docs
-    or ...the same for PLUS.topRight...
+    or interface?j=empty and loseSafeUnique(PLUS.topLeft,PLUS.topRight,Cs,MWTi,MWTj)//interface can not lose
+_______
+#define PLUS.loseSafeUnique(iMWT,MH)    loseSafe(L,Cs,MWT,MH)    
+* PLUS.loseSafeUnique(iMWT,MH)
+    loseSafe(PLUS.topLeft,PLUS.Cs,iMWT.S,MH) or loseSafe(PLUS.topRight,PLUS.Cs,iMWT.S,MH)
+    iMWT.e?!=empty or iMWT.interface?!=empty//implemented or interface can not lose
+* PLUS.loseSafeUnique(iMWT,MH)
+    loseSafe(PLUS.topLeft,PLUS.Cs,iMWT.S,MH) or loseSafe(PLUS.topRight,PLUS.Cs,iMWT.S,MH)
+    iMWT.e?=empty and iMWT.interface?=empty
+    not loseSafe(PLUS.topLeft,PLUS.Cs,MH.S,iMWT.MH)
+    not loseSafe(PLUS.topRight,PLUS.Cs,MH.S,iMWT.MH)
+    
+* loseSafe(L,Cs,S,MH)
+    S in L(Cs).Info.refined,
+    This0.Cs' in L(Cs).Ts.Ps[from This0.Cs;{}]
+    L(Cs')(S).MH==MH //exept docs
 _______
 #define allWatched(L) = Csz
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs';{}] and Cs' not of form _._::n._

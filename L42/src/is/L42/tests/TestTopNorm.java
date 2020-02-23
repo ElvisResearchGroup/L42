@@ -420,9 +420,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    top("{[I]}A= ={J={interface #norm{}} I={interface [This1.J]#norm{typeDep=This1.J}} #norm{}}","{[This1.I,This1.J] #norm{typeDep=This1.I,This1.J}}")
    ),new AtomicTest(()->
-   top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J]#norm{typeDep=This1.J}}#norm{}}","{[This1.I,This1.J] method This1.J m() #norm{typeDep=This1.I,This1.J refined=m()}}")
-   ),new AtomicTest(()->
-   top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J] method This m()#norm{typeDep=This1.J This}}#norm{}}","{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
+   top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J] method This m() #norm{typeDep=This1.J This refined=m()}}#norm{}}",
+   "{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
 
    ),new AtomicTest(()->
    top(

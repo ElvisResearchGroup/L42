@@ -15,11 +15,16 @@ _______
       This0 not in Info.watched
       ??? usedMethods=(P.s)s,
       mustHidden(L) subseteq Info.hiddenSupertypes,
+      Info.refine=mustRefine(p)
+      Info.refine subseteq dom(L)
       Ps0 subseteq L.Info.typeDep
       Ps1 subseteq L.Info.coherentDep
     where
       Info=CORE.L.Info
       Ps0;Ps1=collectDeps(p;L.MWTs) U collectDeps(L.Docs) U L.Ts.Ps;empty      
+_______
+#define mustRefine(p) = Ss
+* S in mustRefine(p) iff P in p(This0).Ts.Ps, S in dom(p(P)) and S have no unique n
 _______
 #define mustWatch(CORE.L) = Ps    mustWatch(T) = Ps     mustWatch(MWT) = Ps
 //Note: even if not handled below, Any,Void,Library and This0 are never contained in mustWatch(CORE.L)

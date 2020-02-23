@@ -153,11 +153,10 @@ class InitVisitor extends CloneVisitorWithProgram{
     return s;        
     }
   <T>void checkMissing(List<T> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
-    var missed=!setSome.containsAll(setAll);
-    if(missed){
-      setAll.removeAll(setSome);
-      throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
-      }
+    var allGood=setSome.containsAll(setAll);
+    if(allGood){return;}
+    setAll.removeAll(setSome);
+    throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
     }
   void checkInfo(Core.L l){
     if(l.info().watched().contains(P.pThis0)){
@@ -173,12 +172,20 @@ class InitVisitor extends CloneVisitorWithProgram{
     ArrayList<P.NCs> watchedPs=new ArrayList<>();
     Top.collectWatched(l, watchedPs);
     ArrayList<P.NCs> hiddenPs=new ArrayList<>();
-    Top.collectHidden(l, hiddenPs);    
+    Top.collectHidden(l, hiddenPs);
+    ArrayList<S> refined=new ArrayList<>();
+    Top.collectRefined(p(),refined);
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     checkMissing(typePs,l.info().typeDep(),l.poss(),Err::missedTypeDep);
     checkMissing(cohePs,l.info().coherentDep(),l.poss(),Err::missedCoheDep);
     checkMissing(watchedPs,l.info().watched(),l.poss(),Err::missedWatched);
     checkMissing(hiddenPs,l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
+    checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);
+    boolean refinedExact=l.info().refined().containsAll(refined) && refined.containsAll(l.info().refined());
+    if(!refinedExact){
+      throw new EndError.NotWellFormed(l.poss(),Err.mismatchRefine(
+        L(refined.stream().distinct()),l.info().refined()));
+      }
     if(l.info().isTyped()){
       for(var p:l.info().typeDep()){
         var li=p().of(p,l.poss());//throw the right error if path not exists
@@ -189,7 +196,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       ProgramTypeSystem.type(true,p().update(l,false));
       }
         
-    //TODO: ??? watched=Ps, ??? usedMethods=(P.s)s, ??? hiddenSupertypes=Ps,
+    //TODO: ??? usedMethods=(P.s)s,
     }
   @Override public Core.L coreLHandler(Core.L s){
     s=super.coreLHandler(s);

@@ -346,6 +346,8 @@ public class Err {
   "Core library literal do not declare all the watched; the following are missing: "+ps
   ;}public static String missedHiddenSupertypes(Object ps){return
   "Core library literal do not declare all the hidden supertypes; the following are missing: "+ps
+  ;}public static String missedRefined(Object ss){return
+  "Core library literal do not declare all the refined methods; the following are missing: "+ss
   ;}public static String noSelfWatch(){return
   "Core library literal can not watch This0" 
   ;}public static String typeDependencyNotCore(Object p){return

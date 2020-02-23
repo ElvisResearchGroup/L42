@@ -61,8 +61,10 @@ public class ProgramTypeSystem {
         errIf(extraTj,l.poss(),Err.missingImplementedInterface(pj));
         }
       });
-    var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
-    errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
+    assert new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
+    //should hold for well formedness
+    //var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
+    //errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
     }
   public static void checkNativeExceptions(Program p){
     var l=p.topCore();
