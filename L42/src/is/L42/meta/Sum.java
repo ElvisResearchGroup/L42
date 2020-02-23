@@ -224,7 +224,7 @@ public class Sum {
       boolean abs2=imwt2.mwt._e()==null;
       boolean oneInterf=imwt1.isInterface || imwt2.isInterface;
       if(eqMH && abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));} 
-      if(!abs1 && !abs2){throw todo();}//sum conflicting impl
+      if(!abs1 && !abs2){errM.throwErr(imwt1.mwt,"Conflicting implementation: the method is implemented on both side of the sum");}
       if(eqMH && /*abs1 &&*/ abs2){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));} 
       if(eqMH && abs1){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt).with_e(imwt2.mwt._e()));} 
       boolean loseSafeLeftiIs1=loseSafe(topLeft,cs,l1,imwt1.mwt.key(),imwt2.mwt.mh());

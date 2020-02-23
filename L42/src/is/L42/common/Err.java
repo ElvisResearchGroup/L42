@@ -34,14 +34,11 @@ public class Err {
   public static boolean strCmp(String cmp1, String cmp2) {
     cmp1 = cmp1.trim();
     cmp2 = cmp2.trim();
-    
-    try {
-      assertTrue(strCmpAux(cmp1, cmp2));
-      } catch(AssertionFailedError e) {
+    try{assertTrue(strCmpAux(cmp1, cmp2));}
+    catch(AssertionFailedError e){
       assertEquals(cmp1, cmp2);
       throw unreachable();
       }
-    
     return true;
     }
   
