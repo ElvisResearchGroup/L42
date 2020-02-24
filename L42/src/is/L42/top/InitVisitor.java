@@ -228,15 +228,18 @@ class InitVisitor extends CloneVisitorWithProgram{
     LDom d=this.whereFromTop().get(this.whereFromTop().size()-p.n());
     int dn=-1;
     int cn=-1;
-    if(l.isFullL()){
-      var fl=(Full.L)l;
-      for(int i:range(fl.ms())){
-        var ki=fl.ms().get(i).key();
-        if(ki.equals(d)){dn=i+1;}
-        if(ki.equals(c)){cn=i+1;}
+    if(!l.isFullL()){return false;}
+    var fl=(Full.L)l;
+    for(int i:range(fl.ms())){
+      var ki=fl.ms().get(i).key();
+      if(ki.equals(d)){dn=i;}
+      if(ki.equals(c)){
+        var nci=(Full.L.NC)fl.ms().get(i);
+        if(nci._e() instanceof Core.L){cn=-2;}
+        else{cn=i;}
         }
       }
-    else{
+    /*else{
       var cl=(Core.L)l;
       if(d instanceof S){dn=0;}
       for(int i:range(cl.ncs())){
@@ -244,7 +247,7 @@ class InitVisitor extends CloneVisitorWithProgram{
         if(ki.equals(d)){dn=i+1;}
         if(ki.equals(c)){cn=i+1;}
         }      
-      }
+      }*/
     assert dn!=-1;
     assert cn!=-1;
     assert dn!=cn;

@@ -7,17 +7,16 @@ _______
 #define |- CORE.L1 + CORE.L2 = CORE.L3
 * |- L1 + L2 = L
     Cs1->Csz1 .. Csn->Cszn =transitiveMap(L1,L2) 
-    PLUS=PLUS[topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
-    L = L1 PLUS L2
     forall Cs in allHiddenSupertypes(L1): L2(Cs)>L1(Cs) does not hold
     forall Cs in allHiddenSupertypes(L2): L1(Cs)>L2(Cs) does not hold
+    PLUS=PLUS[topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
+    L = L1 PLUS L2
 _______
 #define singleMap(L1,L2)=Cs->Csz    transitiveMap(L1,L2)=Cs->Csz
   * Cs' in singleMap(L1,L2)(Cs)
     Cs and Cs' has no unique n
     {1,2}={i,j}
     Cs in dom(Li)
-    Cs notin dom(Lj)
     This0.Cs' in Li(Cs).Ts.Ps[from Cs;{}]
     Lj(Cs')>Li(Cs')
 
@@ -32,13 +31,14 @@ _______//UNUSED?
 * Cs.C._/This0.Cs.C'.C1..Cn= This(n+1).C'.C1..Cn
     C!=C' 
 _______
-#define CORE.L1 PLUS CORE.L2 = CORE.L3
+#define CORE.L1 PLUS CORE.L2 = CORE.L3    Ts1+Ts2=Ts3
 * L1 PLUS L2 = L3
+  PLUS.map(PLUS.Cs)=This0.Cs1..This0.Csn //empty if map undefined for Cs
   Li={Hi MWTsi NCsi Doci Infoi}
   H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
+  H3=(H1 PLUS H2) H1.Ts + H2.Ts + topLeft(Cs1).Ts + topRight(Cs1).Ts +..+topLeft(Csn).Ts + topRight(Csn).Ts
   LDoms=empty if L1.interface?=L2.interface?
   LDoms={LDom | i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
-  PLUS.map(PLUS.Cs)=This0.Cs1..This0.Csn
   iMWTs=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
     U implemented(PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
     U PLUS.topLeft(Cs1).MWTs U PLUS.topRight(Cs1).MWTs//removing all the docs
@@ -50,12 +50,30 @@ _______
   Info=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
   Info3=Info[refined+=dom((iMWTs3..iMWTsn).MWTs)]
   //TODO:also, check well formedness of refine relation, implicit in formalism but TODO: in code
+
+*  Ts1 + Ts2= Ts1,Ts2/Ts1 //using T.P for set minus removal
 _______
-#define NCs1 PLUS NCs2 = NCs3
-* (Docs C=L NCs1) PLUS NCs2 = Docs C=L (NCs1 PLUS NCs2)
+#define NCs1 PLUS NCs2 = NCs3    PLUS(L)=L'    paths(L)=Ps
+* (Docs C=L NCs1) PLUS NCs2 = Docs C=PLUS[Cs=PLUS.Cs,C](PLUS.topLeft,L) (NCs1 PLUS NCs2)
     C not in dom(NCs2)
-* empty PLUS NCs2 = NCs2
+* empty PLUS NC1..NCn =NC1'..NCn' 
+    NCi'[L=PLUS[Cs=PLUS.Cs,NCi.C](PLUS.topRight,NCi.L)]
 * Docs1 C=L1 NCs1 PLUS NCs Docs2 C=L2 NCs2 = Docs1,Docs2 C=L1 PLUS[Cs=PLUS.Cs,C] L2 (NCs1 PLUS NCs NCs2)
+
+* PLUS(L0,L) = L
+    PLUS.Cs notin dom(PLUS.map)
+* PLUS(L0,L) = L[Ts=Ts,MWTs=PLUS(iMWTs) info.typeDep+=Ps]//TODO: how to adapt typeDep?
+    PLUS.map(PLUS.Cs)=Cs1..Csn
+    Ps=paths(topLeft(C1),topRight(C1),..topLeft(Cn),topRight(Cn))
+    Ts=L.Ts+PLUS.topLeft(Cs1).Ts+PLUS.topRight(Cs1)+..+PLUS.topLeft(Csn).Ts+PLUS.topRight(Csn)
+    implemented(L0,PLUS.Cs)[L.MWTs]
+    U PLUS.topLeft(Cs1).MWTs U PLUS.topRight(Cs1).MWTs//removing all the docs
+    ..
+    U PLUS.topLeft(Csn).MWTs U PLUS.topRight(Csn).MWTs//removing all the docs
+
+* P in paths(L) if P in L.Ts.Ps
+* P in paths(L) if P in (T0..Tn,Ts).Ps and mdf method T0 m(T1 x1..Tn xn)[Ts] in L//and docs
+//TODO: what happens for interfaces with both private and public methods?
 _______
 #define interface?[MWTs]=iMWTs
 * interface?[MWT1..MWTn] = interface? MWT1 .. interface? MWTn
@@ -101,7 +119,7 @@ _______
 #define allHiddenSupertypes(L) = Csz
 * Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs';{}] and Cs' not of form _._::n._
 _______
-#define H1 PLUS H2
+#define interface?1 PLUS interface?2 = interface?3
 * interface? PLUS interface? = interface?
     either PLUS.topLeft(PLUS.Cs).Info.closed undefined
     or PLUS.topRight(PLUS.Cs).Info.closed undefined
@@ -117,10 +135,10 @@ _______
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
 _______ 
 #define L1 > L2    implemented(L,Cs)=interface?
-* L2 > L1
-  L1 is interface
-  either L2.Ts\L1.Ts!=empty
-  or dom(L2.MWTs)\dom(L1.MWTs)!=empty
+* L1 > L2
+  L2 is interface
+  either L1.Ts\L2.Ts!=empty
+  or dom(L1.MWTs)\dom(L2.MWTs)!=empty
   
 * implemented(L,Cs)=empty //all public Cs' do not implement Cs
     forall Cs' in dom(L) where Cs' not of form _._::n._:

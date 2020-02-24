@@ -109,10 +109,33 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*expected lib after this line*/"""
      I={interface method This2.D.B m() #norm{typeDep=This2.D.B,This2.D.K}}
    #norm{}}"""/*next test after this line*/)   
-   //Need to not have any coherentDep or watched!
+   ),new AtomicTest(()->pass("""
+     I={interface method Void m() #norm{}}
+     B={[This1.I] method Void m() #norm{typeDep=This1.I refined=m()}}
+   #norm{}}""",/*second lib after this line*/"""
+     C={interface #norm{}}
+     I={interface[This1.C] method Void m() #norm{typeDep=This1.C}}
+   #norm{}}""",/*expected lib after this line*/"""
+     I={interface[This1.C] method Void m() #norm{typeDep=This1.C}}
+     B={[This1.I,This1.C] method Void m() #norm{typeDep=This1.I This1.C refined=m()}}
+     C={interface #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     I={interface method Void m() #norm{}}
+     B={[This1.I] method Void m() #norm{typeDep=This1.I refined=m()}}
+   #norm{}}""",/*second lib after this line*/"""
+     C={interface #norm{}}
+     I={interface[This1.C] method Void m() #norm{typeDep=This1.C}}
+     B={method Void m() #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     I={interface[This1.C] method Void m() #norm{typeDep=This1.C}}
+     B={[This1.I,This1.C] method Void m() #norm{typeDep=This1.I This1.C refined=m()}}
+     C={interface #norm{}}
+   #norm{}}"""/*next test after this line*/)
+    
    //TODO: test that grown interface can induce new implements
    //test that refined relation is not broken by sum
-   
+   //test that type+norm=norm, how this relates with growing interfaces
 
    
 

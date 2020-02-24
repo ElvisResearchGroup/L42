@@ -38,6 +38,7 @@ import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.tools.General;
 import is.L42.top.Top;
+import is.L42.visitors.Accumulate;
 
 public class Sum {
   static final Program emptyP=Program.flat(Program.emptyL);
@@ -60,12 +61,16 @@ public class Sum {
     topRight=l2;
     allHiddenSupertypesLeft=_allHiddenSupertypes(l1);
     allHiddenSupertypesRight=_allHiddenSupertypes(l2);
+    allWatchedLeft=_allWatched(l1);
+    allWatchedRight=_allWatched(l2);
+    allRequiredCoherentLeft=_allRequiredCoherent(l1);
+    allRequiredCoherentRight=_allRequiredCoherent(l2);
     singleMap(topLeft,topRight);
     transitiveMap();
-    Plus plus=new Plus(L());
-    Core.L l=plus.plus(l1, l2);
     for(var cs:allHiddenSupertypesLeft){growHiddenError(l1,l2,cs);}
     for(var cs:allHiddenSupertypesRight){growHiddenError(l2,l1,cs);}
+    Plus plus=new Plus(L());
+    Core.L l=plus.plus(l1, l2);
     return l;
     }
   private static void growHiddenError(Core.L l1, Core.L l2, List<C> cs) {
@@ -77,16 +82,24 @@ public class Sum {
   public static List<List<C>> allProp(Core.L l,Function<Info,List<P.NCs>> f){return L(c->{
     l.visitInnerLNoPrivate((li,csi)->{
       for(var w:f.apply(li.info())){
-        var pi=emptyP.from(w,csi).toNCs();
-        assert pi.n()==0;
-        c.add(pi.cs());
+        var cs=_publicCsOfP(w, csi);
+        if(cs!=null){c.add(cs);}
         }
       });
     });}
   private static List<List<C>> _allWatched(Core.L l){return allProp(l,i->i.watched());}
   private static List<List<C>> _allRequiredCoherent(Core.L l){return allProp(l,i->i.coherentDep());}
   private static List<List<C>> _allHiddenSupertypes(Core.L l){return allProp(l,i->i.hiddenSupertypes());}
-  public static boolean moreThen(Core.L l1,Core.L l2){throw todo();}
+  public static boolean moreThen(Core.L l1,Core.L l2){
+    if(!l2.isInterface()){return false;}
+    for(T t1:l1.ts()){
+      if(l2.ts().stream().noneMatch(t2->t2.p().equals(t1.p()))){return true;}
+      }
+    for(MWT m1:l1.mwts()){
+      if(l2.mwts().stream().noneMatch(m2->m2.key().equals(m1.key()))){return true;}
+      }
+    return false;
+    }
   public static boolean implemented(Core.L l,List<C> cs){
     boolean[]wasIn={false};
     l.visitInnerLNoPrivate((li,csi)->{//could short circut to be faster
@@ -126,9 +139,12 @@ public class Sum {
     return pi.cs();
     }
   public void singleMapOne(Core.L lInner,Core.L lTopThis,Core.L lTopOther,List<C>cs){
-    if(lTopOther._cs(cs)!=null){return;}
-    assert !map.containsKey(cs);
-    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
+    //NO if(lTopOther._cs(cs)!=null){return;}
+    LinkedHashSet<List<C>> res=map.get(cs);
+    if(res==null){
+      res=new LinkedHashSet<>();
+      map.put(cs, res);
+      }
     for(T t:lInner.ts()){
       var cst=_publicCsOfP(t.p(),cs);
       if(cst==null){continue;}
@@ -136,7 +152,7 @@ public class Sum {
       if(liCs==null){continue;}
       Core.L ljCs=lTopOther._cs(cst);
       if(ljCs==null){continue;}
-      if(Sum.moreThen(ljCs,liCs)){res.add(cst);}
+      if(Sum.moreThen(ljCs,liCs)){res.add(cst);}//we could cache growing interfaces
       }
     if(!res.isEmpty()){map.put(cs, res);}
     }  
@@ -160,8 +176,9 @@ public class Sum {
     List<C> cs;
     Plus addC(C c){return new Plus(this,c);}
     Core.L plus(Core.L l1,Core.L l2){
-      boolean isInterface3=plusInterface(l1.isInterface(),l2.isInterface());
-      List<T> ts3=mergeU(l1.ts(),l2.ts());
+      boolean isInterface3=plusInterface(l1.isInterface(),l2.isInterface(),l1,l2);
+      ArrayList<T> ts3=new ArrayList<>(l1.ts());
+      plusEqualTs(ts3,l2.ts());
       var mwts1=l1.mwts();
       var mwts2=l2.mwts();
       var ncs1=l1.ncs();
@@ -181,20 +198,36 @@ public class Sum {
       ArrayList<IMWT> imwts=new ArrayList<>();
       for(var m:mwts1){imwts.add(new IMWT(i1,m));}
       for(var m:mwts2){imwts.add(new IMWT(i2,m));}
+      Info info1=l1.info();
+      Info info2=l2.info();
+      if(isInterface3&&!l1.isInterface()){info1=info1.withWatched(L()).withCoherentDep(L());}
+      if(isInterface3&&!l2.isInterface()){info2=info2.withWatched(L()).withCoherentDep(L());}
+      Info info3=Top.sumInfo(info1,info2);
+      ArrayList<P.NCs> typeDep=new ArrayList<>(info3.typeDep());
       var mapped=map.get(cs);
       if(mapped!=null){for(var csi:mapped){
         var left=topLeft._cs(csi);
-        if(left!=null){for(var m:left.mwts()){imwts.add(new IMWT(false,m));}}
+        if(left!=null){
+          for(var m:left.mwts()){imwts.add(new IMWT(false,m));}
+          plusEqualTs(ts3,left.ts());
+          paths(typeDep,left);
+          }
         var right=topRight._cs(csi);
-        if(right!=null){for(var m:right.mwts()){imwts.add(new IMWT(false,m));}}
+        if(right!=null){
+          for(var m:right.mwts()){imwts.add(new IMWT(false,m));}
+          plusEqualTs(ts3,right.ts());
+          paths(typeDep,right);
+          }
         }}
+      info3=info3.withTypeDep(typeDep);
       List<MWT>mwts3=plusIMWTs(imwts,l1,l2);
       List<NC> ncs3=plusNCs(ncs1, ncs2);
       List<Doc> doc3=mergeU(l1.docs(),l2.docs());
-      Info info3=Top.sumInfo(l1.info(),l2.info());
-      //TODO: but if one header is made interface the watched and the coherentDep from that side are discarded
       List<Pos> pos=mergeU(l1.poss(),l2.poss());
-      return new Core.L(pos, isInterface3, ts3, mwts3, ncs3, info3, doc3);
+      return new Core.L(pos, isInterface3, L(ts3.stream()), mwts3, ncs3, info3, doc3);
+      }
+    private void plusEqualTs(ArrayList<T> ts3, List<T> ts){
+      for(T t:ts){if(ts3.stream().noneMatch(t3->t3.p().equals(t.p()))){ts3.add(t);}}
       }
     void addAllFromCsi(Core.L top,List<C> csi,ArrayList<IMWT> imwts){
        var in=top._cs(csi);
@@ -279,14 +312,54 @@ public class Sum {
       return L(c->{
         for(var mi:a){
           var other=_elem(b,mi.key());
-          if(other==null){c.add(mi);}
+          if(other==null){
+            c.add(mi.withL(addC(mi.key()).plusOnlyMap(topLeft,mi.l())));}
           else{c.add(plus(mi,other));}
           }
         for(var mi:b){
           var other=_elem(a,mi.key());
-          if(other==null){c.add(mi);}
+          if(other==null){c.add(mi.withL(addC(mi.key()).plusOnlyMap(topRight,mi.l())));}
           }
         });    
+      }
+    private Core.L plusOnlyMap(Core.L top, Core.L l) {
+      var mapped=map.get(cs);
+      if(mapped==null){return l;}
+      ArrayList<T> ts=new ArrayList<>(l.ts());
+      boolean i=Sum.implemented(top,cs);
+      ArrayList<IMWT> imwts=new ArrayList<>();
+      for(var m:l.mwts()){imwts.add(new IMWT(i,m));}
+      ArrayList<P.NCs> typeDep=new ArrayList<>(l.info().typeDep());
+      for(var csi:mapped){
+        var left=topLeft._cs(csi);
+        var right=topRight._cs(csi);
+        if(left!=null){
+          plusEqualTs(ts,left.ts());
+          for(var m:left.mwts()){imwts.add(new IMWT(false,m));}
+          paths(typeDep,left);
+          }
+        if(right!=null){
+          plusEqualTs(ts,right.ts());
+          for(var m:right.mwts()){imwts.add(new IMWT(false,m));}
+          paths(typeDep,right);
+          }
+        }
+      List<MWT>mwts=plusIMWTs(imwts,l,l);
+      Info info=l.info().withTypeDep(L(typeDep.stream()));
+      return l.withTs(ts).withMwts(mwts).withInfo(info);
+      }
+    void paths(ArrayList<P.NCs> c,Core.L l){
+      assert l.isInterface(); 
+      l.withNcs(L()).accept(new Accumulate<Void>() {        
+        @Override public Void empty(){return null;}
+        @Override public void visitP(P p){
+          if(!p.isNCs()){return;}
+          if(!c.contains(p)){c.add(p.toNCs());}
+          }
+        @Override public void visitMWT(MWT m){
+          if(!m.key().hasUniqueNum()){super.visitMWT(m);}
+          }
+        });
       }
     List<MWT> plusIMWTs(ArrayList<IMWT> that,Core.L l1,Core.L l2){return L(c->plusIMWTs(c,that,l1,l2));}
     void plusIMWTs(ArrayList<MWT> c,ArrayList<IMWT> that,Core.L l1,Core.L l2){
@@ -310,7 +383,7 @@ public class Sum {
         c.add(current.mwt);
         }
       }
-    boolean plusInterface(boolean interface1,boolean interface2){
+    boolean plusInterface(boolean interface1,boolean interface2,Core.L topLeftCs,Core.L topRightCs){
       if(interface1==interface2){
         var leftClose=topLeft.cs(cs).info().close();
         var rightClose=topRight.cs(cs).info().close();
@@ -318,9 +391,19 @@ public class Sum {
         throw todo();
         }
       if(!interface1 && interface2){
-        throw todo();
+        return differentInterfaces(allRequiredCoherentLeft,allWatchedLeft,topLeftCs);  
         }
-      throw todo();
+      assert interface1 && !interface2;
+      return differentInterfaces(allRequiredCoherentRight,allWatchedRight,topRightCs);
+      }
+    boolean differentInterfaces(List<List<C>> coherents,List<List<C>> watcheds, Core.L topCs){
+      boolean required=coherents.contains(cs);
+      if(required){throw todo();}
+      boolean watched=watcheds.contains(cs);        
+      if(watched){throw todo();}
+      boolean absPublic=topCs.mwts().stream().allMatch(m->m._e()==null||m.key().hasUniqueNum());
+      if(!absPublic){throw todo();}
+      return true;
       }
     }
   }  
