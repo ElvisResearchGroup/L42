@@ -13,6 +13,7 @@ import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -71,12 +72,34 @@ public class Sum {
     for(var cs:allHiddenSupertypesRight){growHiddenError(l2,l1,cs);}
     Plus plus=new Plus(L());
     Core.L l=plus.plus(l1, l2);
+    wellFormedRefine(l);
     return l;
     }
-  private static void growHiddenError(Core.L l1, Core.L l2, List<C> cs) {
+  private void wellFormedRefine(Core.L l){
+    l.visitInnerLNoPrivate((li,csi)->{
+      if(li.ts().size()<=1){return;}
+      HashMap<S,P>nonRefined=new HashMap<>();
+      for(T t:li.ts()){
+        var csj=_publicCsOfP(t.p(), csi);
+        if(csj==null){continue;}
+        var lj=l.cs(csj);
+        for(var m:lj.mwts()){
+          if(lj.info().refined().contains(m.key())){continue;}
+          var wrong=nonRefined.get(m.key());
+          if(wrong==null){nonRefined.put(m.key(),t.p());continue;}
+          errC.throwErr(csi,li,"No unique source for "+m.key()+"; it originates from both "+t.p()+" and "+wrong);
+          }
+        }
+      });
+    }
+  private void growHiddenError(Core.L l1, Core.L l2, List<C> cs) {
     var l2cs=l2._cs(cs);
     if(l2cs==null){return;}
-    if(moreThen(l2cs,l1.cs(cs))){todo();}//use err.throwErr
+    var l1cs=l1.cs(cs);
+    if(moreThen(l2cs,l1cs)){
+      errC.throwErr(cs,l1cs,"This interface is privately implemented "
+        +" but the summed version is larger: "+errC.intro(l2cs,false).stripTrailing());
+      }
     }
   
   public static List<List<C>> allProp(Core.L l,Function<Info,List<P.NCs>> f){return L(c->{
@@ -269,7 +292,9 @@ public class Sum {
       if(!abs2){return loseSafeUniqueRes(imwt2,imwt1,
         loseSafeLeftiIs2 || loseSafeRightiIs2,!loseSafeLeftiIs1 &&!loseSafeRightiIs1);}//i=2
       assert abs1 && abs2;
-      if(imwt1.isInterface && imwt2.isInterface){throw todo();}
+      if(imwt1.isInterface && imwt2.isInterface){
+        errM.throwErr(imwt1.mwt,"Both versions of this method are implemented, but the other have a different header:\n"+errM.intro(imwt2.mwt,false).stripTrailing());
+        }
       if(imwt1.isInterface){return loseSafeUniqueRes(imwt1,imwt2,
         loseSafeLeftiIs1 || loseSafeRightiIs1,!loseSafeLeftiIs2 &&!loseSafeRightiIs2);}//i=1
       if(imwt2.isInterface){return loseSafeUniqueRes(imwt2,imwt1,
@@ -283,14 +308,19 @@ public class Sum {
       if(iIs2){return new IMWT(oneInterf,accDoc(imwt2.mwt,imwt1.mwt));}
       assert !iIs1 && !iIs2;
       if(loseSafeLeftiIs1 || loseSafeRightiIs1 || loseSafeLeftiIs2 || loseSafeRightiIs2){
-        throw todo();//inconsistent refinement between the sum arguments mwt1,mwt2
+        errM.throwErr(imwt1.mwt,"The other method have a different signature:\n"
+          +errM.intro(imwt2.mwt,false)+"But there is ambiguous refinement between those two signatures");
         }
-      throw todo();//no pre accepted refinement available
+      throw errM.throwErr(imwt1.mwt,"The other method have a different signature:\n"
+        +errM.intro(imwt2.mwt,false)+"But there is no local refinement between those two signatures");
       }
     IMWT loseSafeUniqueRes(IMWT imwt,IMWT imwtLose,boolean canWin,boolean otherCanNot){
       MH mh=imwtLose.mwt.mh();
       var ok=loseSafeUnique(imwt,mh,canWin,otherCanNot);
-      if(!ok){throw todo();}
+      if(!ok){
+        errM.throwErr(imwt.mwt,"The other method have a different signature:\n"
+        +errM.intro(imwtLose.mwt,false)+"But there is no local refinement between those two signatures");
+        }
       return new IMWT(imwt.isInterface||imwtLose.isInterface,accDoc(imwt.mwt,imwtLose.mwt));
       }
     boolean loseSafeUnique(IMWT imwt,MH mh,boolean canWin,boolean otherCanNot){

@@ -88,7 +88,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      @{bar}method Void m()=void
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid @{foo}imm method imm Void m()=(..)
+   Invalid method @{foo}imm method imm Void m()=(..)
    Conflicting implementation: the method is implemented on both side of the sum
    [file:[###]
    """/*next test after this line*/)
@@ -132,16 +132,84 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      B={[This1.I,This1.C] method Void m() #norm{typeDep=This1.I This1.C refined=m()}}
      C={interface #norm{}}
    #norm{}}"""/*next test after this line*/)
-    
-   //TODO: test that grown interface can induce new implements
-   //test that refined relation is not broken by sum
+   ),new AtomicTest(()->fail("""
+     I={interface method Void m() #norm{}}
+     B={[This1.I] method Void m() #norm{typeDep=This1.I refined=m()}}
+   #norm{}}""",/*second lib after this line*/"""
+     J={interface method Void m() #norm{}}
+     B={[This1.J] method Void m() #norm{typeDep=This1.J refined=m()}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid nested class B={ [ This1.I This1.J ] m() }
+     No unique source for m(); it originates from both This1.J and This1.I
+     [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void m() #norm{}}
+     B={[This1.I] method Void m() #norm{typeDep=This1.I refined=m() hiddenSupertypes=This1.I}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={method Void k() #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid nested class I={interface m() }
+     This interface is privately implemented  but the summed version is larger: { k() }
+     [file:[###]"""/*next test after this line*/)    
+   ),new AtomicTest(()->fail("""
+     I={interface method Void m() #norm{}}
+     B={[This1.I] method Void m() #norm{typeDep=This1.I refined=m()}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={interface method Any m() #norm{}}
+     C={[This1.I] method Any m() #norm{typeDep=This1.I refined=m()}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid method imm method imm Void m()
+     Both versions of this method are implemented, but the other have a different header:
+     imm method imm Any m()
+     [file:[###]"""/*next test after this line*/)    
+   ),new AtomicTest(()->fail("""
+     I={interface method Void m() #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={interface method Library m() #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid method imm method imm Void m()
+     The other method have a different signature:
+     imm method imm Library m()
+     But there is no local refinement between those two signatures
+     [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     E={interface #norm{}} R={interface #norm{}}
+     I3={[This1.I2] method This1.E m() #norm{typeDep=This1.I2 This1.E refined=m()}}
+     I1={interface method Any m() #norm{}}
+     I2={interface [This1.I1] method This1.R m() #norm{typeDep=This1.I1 This1.R refined=m()}}      
+   #norm{}}""",/*second lib after this line*/"""
+     E={interface #norm{}} R={interface #norm{}}
+     I3={[This1.I0] method This1.R m() #norm{typeDep=This1.I0 This1.R refined=m()}}
+     I0={interface method This1.E m() #norm{typeDep=This1.E}}
+     I2={interface method This1.E m() #norm{typeDep=This1.E}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid method imm method imm This1.E m()
+     The other method have a different signature:
+     imm method imm This1.R m()
+     But there is ambiguous refinement between those two signatures
+     [file:[###]"""/*next test after this line*/)
+//TODO: the case above trigger a difficoult to trigger error.
+//But only because of smart line orderings. Can we find a test that trigger it for any line order?
+//See below for different line ordering and different result 
+   ),new AtomicTest(()->fail("""
+     E={interface #norm{}} R={interface #norm{}}
+     I1={interface method Any m() #norm{}}
+     I2={interface [This1.I1] method This1.R m() #norm{typeDep=This1.I1 This1.R refined=m()}}
+     I3={[This1.I2] method This1.E m() #norm{typeDep=This1.I2 This1.E refined=m()}}      
+   #norm{}}""",/*second lib after this line*/"""
+     E={interface #norm{}} R={interface #norm{}}
+     I0={interface method This1.E m() #norm{typeDep=This1.E}}
+     I2={interface method This1.E m() #norm{typeDep=This1.E}}
+     I3={[This1.I0] method This1.R m() #norm{typeDep=This1.I0 This1.R refined=m()}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid method imm method imm This1.R m()
+     The other method have a different signature:
+     imm method imm This1.E m()
+     But there is no local refinement between those two signatures
+     [file:[###]"""/*next test after this line*/)
+   //TODO:
    //test that type+norm=norm, how this relates with growing interfaces
 
-   
-
-   //topFail(EndError."{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}")
-   //),new AtomicTest(()->
-   //fail(EndError."{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}")
    ));}
 public static void pass(String sl1,String sl2,String sl3){
   Resources.clearRes();
