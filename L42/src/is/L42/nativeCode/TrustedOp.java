@@ -145,9 +145,9 @@ public enum TrustedOp {
     StringBuilder,use("return %s.toString();",sig(Readable,Immutable,String)),
     String,use("return %s;",sig(Readable,Immutable,String)),
     Int,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
-    Bool,use("return ((Object)%s).toString();",sig(Readable,Immutable,String))
+    Bool,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
+    BigRational,use("return ((Object)%s).toString();",sig(Readable,Immutable,String))
     )),
-    
   ToInt("toInt",Map.of(String,use("""
     try{return Integer.parseInt(%1$s);}
     catch(NumberFormatException nfe){
@@ -156,6 +156,15 @@ public enum TrustedOp {
         )));
       }
     """,sig(Readable,Immutable,Int)
+    ))),
+  ToNum("toNum",Map.of(String,use("""
+    try{return L42£BigRational.from(%1$s);}
+    catch(NumberFormatException nfe){
+      throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+        "The string \\""+%1$s+"\\" is not a valid number"
+        )));
+      }
+    """,sig(Readable,Immutable,BigRational)
     ))),
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42£Void.instance;",sigI(Void)),
@@ -227,17 +236,34 @@ public enum TrustedOp {
   SubString("subString",Map.of(String,use("return %s.substring(%s,%s);",sigI(String,Int,Int)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),
+    BigRational,use("return %s.sum(%s);",sigI(BigRational,BigRational)),
     String,use("return %s + %s;",sigI(String,String))
     )),
-  Times("OP*",Map.of(Int,use("return %s * %s;",sigI(Int,Int)))),
-  Divide("OP/",Map.of(Int,use("return %s / %s;",sigI(Int,Int)))),
-  Minus("OP-",Map.of(Int,use("return %s - %s;",sigI(Int,Int)))),
-  LT("OP<",Map.of(Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)))),
-  LTEqual("OP<=",Map.of(Int,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Int)))),
+  Times("OP*",Map.of(
+    Int,use("return %s * %s;",sigI(Int,Int)),
+    BigRational,use("return %s.multiply(%s);",sigI(BigRational,BigRational))
+    )),
+  Divide("OP/",Map.of(
+    Int,use("return %s / %s;",sigI(Int,Int)),
+    BigRational,use("return %s.divide(%s);",sigI(BigRational,BigRational))
+    )),
+  Minus("OP-",Map.of(
+    Int,use("return %s - %s;",sigI(Int,Int)),
+    BigRational,use("return %s.subtract(%s);",sigI(BigRational,BigRational))
+    )),
+  LT("OP<",Map.of(
+    Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)),
+    BigRational,use("return %s.compareTo(%s)==-1;",sig(Readable,Immutable,Bool,Readable,BigRational))
+    )),
+  LTEqual("OP<=",Map.of(
+    Int,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Int)),
+    BigRational,use("return %s.compareTo(%s)!=1;",sig(Readable,Immutable,Bool,Readable,BigRational))
+    )),
   EqualEqual("OP==",Map.of(
     Int,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Int)),
     String,use("return %s.equals(%s);",sig(Readable, Immutable,Bool, Readable,String)),
-    Bool,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Bool))
+    Bool,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Bool)),
+    BigRational,use("return %s.equals(%s);",sig(Readable,Immutable,Bool,Readable,BigRational))
     )),
   Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),

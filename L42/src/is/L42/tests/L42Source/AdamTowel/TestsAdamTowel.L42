@@ -1,4 +1,16 @@
 reuse[#$AdamTowel]
+TestNum=(
+  {}:Test"zero"(0Num+0Num==0Num)
+  {}:Test"one+"(1Num+1Num==2Num)
+  {}:Test"one*"(1Num*1Num==1Num)
+  {}:Test"two+"(2Num+2Num==4Num)
+  {}:Test"two*"(2Num*2Num==4Num)
+  {}:Test"zero"(Num"25/30"+Num"11/60"==Num"61/60")
+  {}:Test"zero"(Num"25/30"+Num"-11/60"==Num"39/60")
+  {}:Test"zero"(Num"25/30"*Num"11/10"==Num"275/300")
+  {}:Test"zero"(Num"25/30"*Num"-11/10"==Num"-275/300")
+  )
+
 OptS=Class:Opt(S)
 TestOpt=(
   OptS o1=OptS()

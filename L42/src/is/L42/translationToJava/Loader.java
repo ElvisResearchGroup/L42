@@ -120,6 +120,7 @@ public class Loader {
     import is.L42.platformSpecific.javaTranslation.L42Return;
     import is.L42.platformSpecific.javaTranslation.L42£TrustedIO;
     import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
+    import is.L42.numbers.L42£BigRational;
     import is.L42.cache.L42Cache;
     import is.L42.cache.L42CacheMap;
     import is.L42.cache.L42Cachable;

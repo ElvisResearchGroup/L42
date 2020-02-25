@@ -194,7 +194,7 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
       };
     }
     public String pathName(L42Any target){
-      return "hi";
+      throw todo();//or bug???
       }
   public static final Class<L42£Meta> _class=L42£Meta.class;
   public static final MetaCache myCache=new MetaCache();

@@ -261,3 +261,35 @@ public class Close extends GuessFields{
   public void processBase(MWT m){newMWTs.add(m);}
   public boolean match(String target,MWT m){return Utils.match(p,err,target,m);}
   }
+  /*
+   To add multi arg imm/class methods:
+    @Cache.Lazy method S name(S par1,Size par2)=e
+ //becomes
+ @Cache.Lazy method S name(S par1,Size par2)=e
+ method S name(S par1,Size par2)=
+   FreshCachedName(fresh=this,par1=par1,par2=par2)()
+ FreshCachedName={
+   read method This1 fresh()
+   read method S par1()
+   read method S par2()
+   class method This (This1 fresh,S par1,S par2)
+   S ()=
+     native{trusted:immLazyCache}
+     this.fresh().name(par1=this.par1(),par2=this.par2())
+   }
+ //and
+ @Cache.Lazy class method S name(S par1,Size par2)=e
+ //becomes
+ @Cache.Lazy class method S name(S par1,Size par2)=e
+ class method S name(S par1,Size par2)=
+   FreshCachedName(par1=par1,par2=par2)()
+ FreshCachedName={
+   read method S par1()
+   read method S par2()
+   class method This (S par1,S par2)
+   S ()=
+     native{trusted:immLazyCache}
+     This1.name(par1=this.par1(),par2=this.par2())
+   }
+  
+  */

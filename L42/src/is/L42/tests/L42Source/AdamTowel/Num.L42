@@ -1,0 +1,21 @@
+[This1.HasToS]
+class method This zero()
+
+method This #plus0(This that)=native{trusted:OP+} error void
+method This #times0(This that)=native{trusted:OP*} error void
+method This #divide0(This that)=native{trusted:OP/} error void
+method This #minus0(This that)=native{trusted:OP-} error void
+
+read method This1.Bool #lt0(read This that)=native{trusted:OP<} error void
+read method This1.Bool #gt0(read This that)=that.#lt0(that=this)
+read method This1.Bool #ltequal0(read This that)=native{trusted:OP<=} error void
+read method This1.Bool #gtequal0(read This that)=that.#ltequal0(that=this)
+read method This1.Bool #equalequal0(read This that)=native{trusted:OP==} error void
+read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
+
+read method This1.S toS()=native{trusted:toS} error void
+class method This0 #from(This1.StringBuilder stringLiteral)=(
+  This1.S s=stringLiteral.toS()
+  s.toNum()
+  )
+#norm{typeDep=This,This1.S,This1.Bool,This1.StringBuilder,This1.HasToS nativeKind=BigRational, refined=toS()}
