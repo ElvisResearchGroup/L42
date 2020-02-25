@@ -5,14 +5,15 @@ public enum Op {
   Tilde("~", OpKind.Unary),//
   Bang("!", OpKind.Unary),//
 
-  EqualGT("=>", OpKind.BoolOp),//
   AndAnd("&&", OpKind.BoolOp),//
   OrOr("||", OpKind.BoolOp),//
+  MinusGT("->",OpKind.BoolOp),//
   EqualEqual("==", OpKind.RelationalOp),//
   LT("<", OpKind.RelationalOp),//
   GT(">",OpKind.RelationalOp),//
   GTEqual(">=", OpKind.RelationalOp),//
   LTEqual("<=", OpKind.RelationalOp),//
+  EqualGT("=>", OpKind.RelationalOp),//
   In("in", OpKind.RelationalOp),//
   BangEqual("!=",OpKind.RelationalOp),//
 
@@ -21,11 +22,9 @@ public enum Op {
   Times("*",OpKind.DataLeftOp),//
   Divide("/",OpKind.DataLeftOp),//
   GTGT(">>",OpKind.DataLeftOp),//
-  MinusGT("->",OpKind.DataLeftOp),//
 
   Hat("^",OpKind.DataRightOp),//
   Colon(":",OpKind.DataRightOp),//
-  LTMinus("<-",OpKind.DataRightOp),//
   LTLT("<<", OpKind.DataRightOp),//
   PlusPlus("++",OpKind.DataRightOp),//
   MinusMinus("--",OpKind.DataRightOp),//
@@ -33,7 +32,6 @@ public enum Op {
 
   ColonEqual(":=",OpKind.OpUpdate),//
   HatEqual("^=",OpKind.OpUpdate),//
-  LTMinusEqual("<-=",OpKind.OpUpdate),//
   LTLTEqual("<<=",OpKind.OpUpdate),//
   PlusEqual("+=",OpKind.OpUpdate),//
   MinusEqual("-=",OpKind.OpUpdate),//
@@ -42,8 +40,7 @@ public enum Op {
   PlusPlusEqual("++=",OpKind.OpUpdate),//
   MinusMinusEqual("--=",OpKind.OpUpdate),//
   TimesTimesEqual("**=",OpKind.OpUpdate),//
-  GTGTEqual(">>=",OpKind.OpUpdate),//
-  MinusGTEqual("->=",OpKind.OpUpdate);//
+  GTGTEqual(">>=",OpKind.OpUpdate);//
 
   public final String inner;
   public final OpKind kind;

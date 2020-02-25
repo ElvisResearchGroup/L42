@@ -207,7 +207,9 @@ public class Err {
   ;}public static String degenerateStatement(Object _1){return
   "The following expression is not a correct statement: "+_1
   ;}public static String zeroNumberForC(Object _1){return
-  "The unique number 0 can not be used on class names, but is used in "+_1
+  "The unique number 0 can not be used on class names, but it is used in "+_1
+  ;}public static String zeroNumberForNonThis(Object _1){return
+  "The unique number 0 can only be used to call methods on 'this', but it is used in "+_1
   ;}public static String nonUniqueNumber(Object _1,Object _2){return
   "The unique numbers "+_1+" are in the domain of more then one library literal; others are in positions \n"+_2
   ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
@@ -237,8 +239,8 @@ public class Err {
   ;}public static String operatorNotFound(Object _1,List<?> _2){
     if(_2.isEmpty()){return "Operator "+_1+" could not be translated in any method call";}
     return "Operator "+_1+" could be translated in any of the following method calls: "+_2
-  ;}public static String inferenceFailNoInfoAbout(Object _1){return
-  "The type of "+_1+" can not be inferred; no informations about it are available"
+  ;}public static String inferenceFailNoInfoAbout(Object _1,String hints){return
+  "The type of "+_1+" can not be inferred; no informations about it are available"+hints
   ;}public static String contraddictoryInfoAbout(Object _1,Object _2){return
   "The type of "+_1+" can not be inferred; it is required to be a subtype of all the following incompatible types:"+_2
   ;}public static String noCommonSupertypeAmong(Object _1,Object _2){return

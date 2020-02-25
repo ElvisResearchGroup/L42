@@ -27,6 +27,7 @@ import is.L42.generated.Psi;
 import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
+import is.L42.meta.MetaError;
 import is.L42.tools.InductiveSet;
 import is.L42.top.Top;
 import is.L42.visitors.FV;
@@ -76,7 +77,18 @@ public class InferToCore extends UndefinedCollectorVisitor{
       throw new EndError.InferenceFailure(poss, Err.noCommonSupertypeAmong(CTz.solve(i.p(), stz),ts));
       }
     if(tzErr.isEmpty()){
-      throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(CTz.solve(i.p(), stz)));
+      var st=CTz.solve(i.p(), stz);
+      String hints="";
+      for(var sti:st){
+        if(!(sti instanceof ST.STMeth)){continue;}
+        var meth=(ST.STMeth)sti;
+        if(!(meth.st() instanceof Core.T)){continue;}
+        var t=(Core.T)meth.st();
+        var l=i.p()._ofCore(t.p());
+        if(l==null){continue;}
+        hints+="\nThe available methods for "+t.p()+" are "+L(l.mwts().stream().map(m->m.key()));
+        }
+      throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(st,hints));
       }
     throw new EndError.InferenceFailure(poss, Err.contraddictoryInfoAbout(CTz.solve(i.p(), stz),tzErr));
     }  

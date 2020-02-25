@@ -215,7 +215,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      """)
    ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
      method Void a()=(x=this.nope() void)
-     """,Err.inferenceFailNoInfoAbout(hole))
+     """,Err.inferenceFailNoInfoAbout(hole,hole))
    ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
      method Void a()=(Void i1=this.nope() Library i2=this.nope() x=this.nope() void)
      """,Err.contraddictoryInfoAbout(hole,hole))

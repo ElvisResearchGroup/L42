@@ -108,7 +108,6 @@ _______
 // and "G%a.b(foo .x()),,h" =="G"++a.b(foo .x())++",,h"
 // multiline strings can start with a sequence of %s to identify the escape sequence
 //(thus no interpolation if zero %s
-// TODO: discuss about multiline strings and allowing S".." inside interpolated expressions
   string ::= " stringElement* "
   stringElement ::= (CHAR* -- '%') | % ePostfix // abstract view, concrete details may differ?
 
@@ -123,10 +122,10 @@ _______
   x ::=IdLow IdChars
   m ::= (#$ |#+)? x(#x)* (::n)?
   UOp ::= ! | ~ // prefix
-  OP0 ::= ^ | : | <- | << | ++ | -- | **   // right associative//TODO: swap OP0 and OP1 precedence? so that Class:a+b works?
-  OP1 ::= + | - | * | / | >> | -> // left associative   
-  OP2 ::= == | < | > | >= | <= | in | !=  // unassiociative
-  OP3 ::= => | && | '||' // right associative, will be short circuting
+  OP0 ::= ^ | : | << | ++ | -- | **   // right associative
+  OP1 ::= + | - | * | / | >>  // left associative   
+  OP2 ::= == | < | > | >= | <= | => | in | !=  // unassiociative
+  OP3 ::= -> | && | '||' // right associative, will be short circuting
   OP  ::= OP0 | OP1 | OP2 | OP3 
   opUpdate ::=  ':=' | (OP0 -- ':')= | OP1= //allowing OP3 could be done as an extension, it might interact with short circuit
   FULL/CORE.Doc ::= @PathSel | @PathSel?{docText}
@@ -184,10 +183,10 @@ _______
 * CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
 * FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
 * FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L
-* C::n n!=0//TODO: in code
-* e.m::0(_) and e::0.m[_]: e in {'this','This0'}//TODO: in code
+* C::n n!=0
+* e.m::0(_) and e::0.m[_]: e in {'this','This0'}
 * FULL.MWT/CORE.MWT if MWT.e?=empty and MWT.s of form m::n(_) then n=0
-* LL: //TODO: check the well formedness for LL and Core.L is implemented.
+* LL: //TODO in code: check when the well formedness for LL and Core.L is called
 //When is checked for core?
     no repetition in LL.Ms.LDom
     no repetition in LL.H.Ts

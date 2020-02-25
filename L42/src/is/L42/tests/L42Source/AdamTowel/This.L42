@@ -64,21 +64,20 @@ DeployAAA=(
     X=Class:Message:{...}
     
     IterationIncomplete=Class:Message:{[Guard]}
-    NoElementInOpt=Class:(Message.NativeTrait()+{[Guard]})
-    OutOfBounds=Class:(Message.NativeTrait()+{[Guard]})
-    ElementNotImm=Class:(Message.NativeTrait()+{[Guard]})
-    ElementNotMut=Class:(Message.NativeTrait()+{[Guard]})
+    NoElementInOpt=Class:Message.Native:{[Guard]}
+    OutOfBounds=Class:Message.Native:{[Guard]}
+    ElementNotImm=Class:Message.Native:{[Guard]}
+    ElementNotMut=Class:Message.Native:{[Guard]}
     
     Opt={...}
     ListT={
       ListNative=Trait:{...}
       ListOps=Trait:{...}+Class.ReadToString+Class.ImmToString+Class.ReadClone
       ListEqOps=Trait:{...}
-      class method Trait(class Any that)=(ListOps+ListNative)['Elem>that]
-      class method Trait(class Any withEq)=(ListOps+ListNative+ListEqOps)['Elem>withEq]
+      class method Trait(class Any that)=(ListOps+ListNative)['Elem=>that]
+      class method Trait(class Any withEq)=(ListOps+ListNative+ListEqOps)['Elem=>withEq]
       }
-    Strings=Class:(ListT(withEq=S)+{
-      class method Bool equals(read S a,read S b)=a==b})
+    Strings=Class:ListT(withEq=S):{class method Bool equals(read S a,read S b)=a==b}
 
     Cache={...}
     Data={...}

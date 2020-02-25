@@ -2,11 +2,11 @@ grammar L42;
 @header {package is.L42.generated;}
 CastOp: '<:';
 Uop: '!' | '~';
-OP0: '^' | ':' | '<-' | '<<' | '++' | '--' | '**'; // right associative
-OP1: '+' | '-' | '*' | '/'  | '>>' | '->'; // left associative 
-OP2: '==' | '<' | '>' | '>=' | '<=' | '!='; // unassiociative //InKw need to be added in the usage sites
-OP3: '=>' | '&&' | '||'; // right associative, will be short circuting
-OpUpdate: ':=' | '^=' | '<-=' | '<<=' | '+=' | '-=' | '*=' | '/=' | '++=' | '--=' | '**=' | '>>=' | '->=';
+OP0: '^' | ':' | '<<' | '++' | '--' | '**'; // right associative
+OP1: '+' | '-' | '*' | '/'  | '>>'; // left associative 
+OP2: '==' | '<' | '>' | '>=' | '<=' | '=>' | '!='; // unassiociative //InKw need to be added in the usage sites
+OP3: '->' | '&&' | '||'; // right associative, will be short circuting
+OpUpdate: ':=' | '^=' | '<<=' | '+=' | '-=' | '*=' | '/=' | '++=' | '--=' | '**=' | '>>=';
 Mdf: 'fwd mut' | 'fwd imm' |'imm' | 'mut' | 'lent' | 'read' | 'capsule' | 'class';
 VoidKW:'void';
 VarKw:'var';

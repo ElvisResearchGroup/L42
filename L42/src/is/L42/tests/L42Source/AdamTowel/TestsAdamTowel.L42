@@ -10,7 +10,10 @@ TestNum=(
   {}:Test"zero"(Num"25/30"*Num"11/10"==Num"275/300")
   {}:Test"zero"(Num"25/30"*Num"-11/10"==Num"-275/300")
   )
-
+TestQuote=(
+  ss=Strings['hi()]
+  {}:Test"quote"(S"hi()"==ss.left())
+  )
 OptS=Class:Opt(S)
 TestOpt=(
   OptS o1=OptS()
@@ -141,22 +144,22 @@ TestLog=(
 
 ClassUtils = Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+Class.MutClone+Class.ReadClone+Class.ReadEquality
 
-Person=Class:(ClassUtils+{
+Person=Class:ClassUtils:{
   var S name
   var Size age
   class method mut This(S name,Size age)
   read method capsule This clone()=This(name=this.name(),age=this.age())
-  })
-Couple=Class:(ClassUtils+{
+  }
+Couple=Class:ClassUtils:{
   var Person p1
   var Person p2
   class method mut This(Person p1, Person p2)
   read method capsule This clone()=This(p1=this.p1(),p2=this.p2())
   imm method Void normMe()=native{trusted:lazyCache} (void)
-  })
-I=Class:(ClassUtils+{
+  }
+I=Class:ClassUtils:{
   class method mut This()
-  })
+  }
 TestEqualities=(
   Person immPerson = (
     mut Person p1=Person(name=S"bob",age=23Size)

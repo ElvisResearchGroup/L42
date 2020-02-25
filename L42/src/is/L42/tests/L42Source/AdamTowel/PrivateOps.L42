@@ -21,9 +21,3 @@ LazyMessageTrait=Trait:{
   class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())
   method toS()=ClassName.excName(This,text=this.text())
   }
-
-MessageDecorator={
-  class method Trait:(Trait t)=MessageTrait+t
-  class method Trait:(class Trait.Lifted l)=MessageTrait+l
-  class method Trait:(Library lib)=MessageTrait+lib
-  }

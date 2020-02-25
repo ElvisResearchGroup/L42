@@ -481,6 +481,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         err(Err.tsMustBeImm());
     }}}
 
+  @Override public void visitMCall(Core.MCall m){
+    super.visitMCall(m);
+    var rec=m.xP();
+    boolean wrong=m.s().hasUniqueNum() && m.s().uniqueNum()==0
+      && rec instanceof Core.EX && !((Core.EX)rec).x().equals(X.thisX); 
+    if(wrong){err(Err.zeroNumberForNonThis(m));}
+    }
   @Override public void visitIf(Full.If i){
     lastPos=i.poss();
     var _c0=i._condition();

@@ -1,4 +1,7 @@
 interface [HasToS]
 var S text 
-ClassOperators={class method class PrivateOps.MessageDecorator()=PrivateOps.MessageDecorator}
-NativeTrait={class method class Trait.Lifted ()=PrivateOps.LazyMessageTrait}
+ClassOperators={class method Trait()=PrivateOps.MessageTrait.ClassOperators()}
+Native={
+  class method Trait ()=PrivateOps.LazyMessageTrait.ClassOperators()
+  ClassOperators={class method Trait()=PrivateOps.LazyMessageTrait.ClassOperators()}
+  }

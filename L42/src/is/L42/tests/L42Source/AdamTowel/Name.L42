@@ -2,7 +2,7 @@
 S that
 class method This of(S that) 
 class method This #from(StringBuilder stringLiteral)=this.of(stringLiteral.toS())
-// => strong rename; -> weak rename, source stays; > redirect: source disappear
-method Meta >(class Any target)=
+// => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;
+method Meta =>(class Any target)=
   Meta().addMap(name=this.toS(),classAny=target)
 //whoops... should I merge maps instead? 

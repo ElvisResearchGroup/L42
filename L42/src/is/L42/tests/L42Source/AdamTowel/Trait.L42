@@ -3,16 +3,18 @@ Lifted={interface
   class method Trait +(Library lib)
   class method Trait +1(Library lib)
   }
-ClassOperators={class method class Trait()=Trait}
-class method This :(Library that)=This(code=that)
+ClassOperators={class method Trait()=Trait(code={#norm{}})}
 Library code
 class method This(Library code)
 class method This(Library that)=This(code=that)
-method This +(Library lib)=This:Meta().simpleSum(a=this.code(),b=lib)
-method This +1(Library lib)=This:Meta().simpleSum(a=lib,b=this.code())
-method This +(class Lifted lifted)=This:Meta().simpleSum(a=this.code(),b=lifted.code())
-method This +1(class Lifted lifted)=This:Meta().simpleSum(a=lifted.code(),b=this.code())
-method This +(This trait)=This:Meta().simpleSum(a=this.code(),b=trait.code())
+method This :(Library lib)=This(code=Meta().simpleSum(a=this.code(),b=lib))
+method This :(class Lifted lifted)=This(code=Meta().simpleSum(a=this.code(),b=lifted.code()))
+method This :(This trait)=This(code=Meta().simpleSum(a=this.code(),b=trait.code()))
+method This +(Library lib)=This(code=Meta().simpleSum(a=this.code(),b=lib))
+method This +1(Library lib)=This(code=Meta().simpleSum(a=lib,b=this.code()))
+method This +(class Lifted lifted)=This(code=Meta().simpleSum(a=this.code(),b=lifted.code()))
+method This +1(class Lifted lifted)=This(code=Meta().simpleSum(a=lifted.code(),b=this.code()))
+method This +(This trait)=This(code=Meta().simpleSum(a=this.code(),b=trait.code()))
 
 Acc={
   var Meta that
@@ -21,8 +23,8 @@ Acc={
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #squareAdd(Meta that)=this.that(\that.mergeMap(that)) 
   }
-method Trait (mut Acc squareBuilder)=
-  Trait:squareBuilder.that().applyMap(this.code())
+method This (mut Acc squareBuilder)=
+  This(code=squareBuilder.that().applyMap(this.code()))
 
 
 method Library #toLibrary()=
@@ -31,9 +33,9 @@ method Library #toLibrary()=
 ToLibrary=Meta().resource({[Lifted]
   class method Library ()
   method code()=This()
-  method +(lib)=Trait:Meta().simpleSum(a=this.code(),b=lib)
-  method +1(lib)=Trait:Meta().simpleSum(a=lib,b=this.code())
+  method +(lib)=Trait(code=Meta().simpleSum(a=this.code(),b=lib))
+  method +1(lib)=Trait(code=Meta().simpleSum(a=lib,b=this.code()))
   class method Trait (mut Acc squareBuilder)=
-    Trait:squareBuilder.that().applyMap(this.code())
-  ClassOperators={class method Trait()=Trait:This1.code()}
+    Trait(code=squareBuilder.that().applyMap(this.code()))
+  ClassOperators={class method Trait()=Trait(code=This1.code())}
   })

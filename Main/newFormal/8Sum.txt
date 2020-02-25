@@ -149,6 +149,11 @@ _______
 * implemented(L,Cs)=interface otherwise
 
   //DO NOT READ AFTER THIS POINT
+  
+  Redirect and undefined Ps:
+the target P was typed, thus all the reachable Ps are typed.
+If a P in the source does not exists, we can just 'accept is a good subtype\supertype for the corresponding P in the destination
+  
   //renames:
   renaming an interface method in private:
     if it was state and implemented is public: error: the class must be close first

@@ -1,4 +1,4 @@
-AddConstructors$Fail=Class:(Message.NativeTrait()+{[Guard]})      
+AddConstructors$Fail=Class:Message.Native:{[Guard]}      
 AddConstructors$Meta={
   class method This #apply()
   method Library addConstructors(Library that,This2.S name,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
@@ -17,7 +17,7 @@ AddConstructors={
   method Trait :(Library that)=Trait:AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
   }
 
-Wither$Fail=Class:(Message.NativeTrait()+{[Guard]})      
+Wither$Fail=Class:Message.Native:{[Guard]}      
 Wither$Meta={
   class method This #apply()
   method Library wither(Library that,This2.S name,This2.S immK)=native{trusted:wither} error void
@@ -78,41 +78,12 @@ Data: adds
   Do not close state, do not handle invariant
   Return a library, not a Trait
 
-TODO:-add withers to abstract state operation: avoid exponential expolosion for
- multiple withers and simplify Data. Withers takes imm receiver.
-  Note that they can not be added on class with close state (as usual)
-   so we gain the same advantage of var? for encapsulation purposes.
-In this way the wither decorator need to just add the wither methods... should it be the field sugar?
-
-Traits adding the following, and just compose them to get Data:
-  -read conventional structural equals
-  -read conventional structural toString
-  -read niceToString
-  -read hashCode from conventional string?
-  -read lift toLibrary capsule val?
-Traits adding more stuff not included in Data:
-  -mut reference==??
-  -imm reference==??// should be call "sameness"? is also identical to structural equals
-  
-Box: like data + handle invariant and close state; only imm/caps fields
-  -add constructor with only imm/capsule parameters
-  a class method with parameters named after fields may be annotated @Invariant
-  a class method with the first (mut) parameter named after a capsule field may be
-  annotated as @CapsuleMutator
-  -for any @Invariant class method Void methName(T1 x1..Tn xn)=e :
-    read method Void fresh(methName)::0()= tag{eagerCache}(T1 x1=this.x1::0()..Tn xn=this.xn::0() e)
-  -for any @Invariant class method Bool methName(T1 x1..Tn xn)=e :
-    read method Void fresh(methName)::0()= tag{eagerCache}X[(T1 x1=this.x1::0()..Tn xn=this.xn::0() e)] 
-  -for any @CapsuleMutator class method T methName(T0 x0..Tn xn)=e :
-    mut method T methodName(T1 x1..Tn xn)=(T0 x0=this.x0::0() e)//likely to be summed with an existing abstract method 
-
-
 Class: check that the library is consistent (and may extract from a trait)
-  Both Data and Box subsume Class.
+  Both Data subsume Class.
 
-As a special case, Box will allow classes with no fields, in this
-case it would make an Imm constructor, but it would be deceiving to allow Data on no fields.
-Box would also add an operator == even if no fields... is this transparent with structural checks?
+Do we need special treatement for classes with no fields?
+in this case it would make an Imm constructor, but it would be deceiving to allow Data on no fields.
+Would also add an operator == even if no fields... is this transparent with structural checks?
 
 Action: on code with only 1 abs method named #apply, it mark them as interfaces
   on code implementing an Action method behave as Class and then close
