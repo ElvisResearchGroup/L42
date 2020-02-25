@@ -531,10 +531,12 @@ dropCache:
     assert mwts0.size()+mwts.size()==l.mwts().size();
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
-    collectDeps(p,mwts,typePs,cohePs,true);
+    ArrayList<P.NCs> metaCohePs=new ArrayList<>();
+    collectDeps(p,mwts,typePs,cohePs,metaCohePs,true);
     Info info=Info.empty
       .withTypeDep(unique(L(typePs.stream())))
       .withCoherentDep(unique(L(cohePs.stream())))
+      .withMetaCoherentDep(unique(L(metaCohePs.stream())))
       .withWatched(unique(L(c->Top.collectWatched(mwts,c))))
       .withHiddenSupertypes(unique(L(mwts,(c,mwt)->Top.collectHidden(mwt, c))));
     var allMwts=merge(mwts0,mwts);
@@ -550,6 +552,7 @@ dropCache:
     Info res=new Info(info1.isTyped() && info2.isTyped(),
       mergeU(info1.typeDep(),info2.typeDep()),
       mergeU(info1.coherentDep(),info2.coherentDep()),
+      mergeU(info1.metaCoherentDep(),info2.metaCoherentDep()),
       mergeU(info1.watched(),info2.watched()),
       mergeU(info1.usedMethods(),info2.usedMethods()),
       mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
@@ -573,15 +576,17 @@ dropCache:
     if(nc.key().hasUniqueNum()){
       var typePs=new ArrayList<P.NCs>();
       var cohePs=new ArrayList<P.NCs>();
+      var metaCohePs=new ArrayList<P.NCs>();
       var watched=new ArrayList<P.NCs>();
       var hidden=new ArrayList<P.NCs>();
-      collectDepsE(p1,nc.l(),typePs,cohePs);
+      collectDepsE(p1,nc.l(),typePs,cohePs,metaCohePs);
       Top.collectWatchedDocs(nc.docs(), watched);
       Top.collectHidden(nc, hidden);
       var oldW=nc.l().info().watched();
       TypeManipulation.skipThis0(oldW,nc.l(),p->p,(p0,p2)->watched.add(p2));
       info=info.withTypeDep(mergeU(info.typeDep(),typePs));
       info=info.withCoherentDep(mergeU(info.coherentDep(),cohePs));
+      info=info.withCoherentDep(mergeU(info.metaCoherentDep(),metaCohePs));
       info=info.withWatched(mergeU(info.watched(),watched));
       info=info.withHiddenSupertypes(mergeU(info.hiddenSupertypes(),hidden));
       }
@@ -704,7 +709,8 @@ dropCache:
       assert ce!=null;
       WellFormedness.of(ce.visitable());
       var cohePs=new ArrayList<P.NCs>();
-      P pRes=wellTyped(p,ce,cohePs,allNCs);//propagate errors //ncs is passed just to provide better errors
+      var metaCohePs=new ArrayList<P.NCs>();//correctly unused here
+      P pRes=wellTyped(p,ce,cohePs,metaCohePs,allNCs);//propagate errors //ncs is passed just to provide better errors
       Core.E ce0=adapt(ce,pRes);
       coherentAllPs(p,cohePs); //propagate errors
       return ce0;    
@@ -749,9 +755,9 @@ dropCache:
     Core.D d=new Core.D(false,P.coreAny.withP(path),x,ce);
     return new Core.Block(ce.pos(),L(d),L(),mCall);
     }
-  private P wellTyped(Program p, is.L42.generated.Core.E ce,ArrayList<P.NCs> cohePs,List<Full.L.NC>moreNCs)  throws EndError{
+  private P wellTyped(Program p, is.L42.generated.Core.E ce,ArrayList<P.NCs> cohePs,ArrayList<P.NCs> metaCohePs,List<Full.L.NC>moreNCs)  throws EndError{
     ArrayList<P.NCs> typePs=new ArrayList<>();
-    var deps=new Deps(p,typePs,cohePs){@Override public void visitL(Core.L l){return;}};
+    var deps=new Deps(p,typePs,cohePs,metaCohePs){@Override public void visitL(Core.L l){return;}};
     deps.of(ce.visitable());
     for(var pi:typePs){
       LL ll=p.of(pi,ce.poss());//propagate errors for path not existent
@@ -791,8 +797,8 @@ dropCache:
     ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
     es.add(hq.e);
     }
-  static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,boolean justBodies) {
-    var deps=new Deps(p0,typePs,cohePs);
+  static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,ArrayList<P.NCs> metaCohePs,boolean justBodies) {
+    var deps=new Deps(p0,typePs,cohePs,metaCohePs);
     if(!justBodies){
       for(var m:mwts){deps.of(m);}
       addPublicRoots(typePs);
@@ -813,8 +819,8 @@ dropCache:
       _ps.add(pi.withCs(cs));
       }
     }
-  static public void collectDepsE(Program p0,Core.E e, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs) {
-    var deps=new Deps(p0,typePs,cohePs);
+  static public void collectDepsE(Program p0,Core.E e, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs, ArrayList<P.NCs> metaCohePs) {
+    var deps=new Deps(p0,typePs,cohePs,metaCohePs);
     deps.of(e.visitable());
     addPublicRoots(typePs);
     addPublicRoots(cohePs);

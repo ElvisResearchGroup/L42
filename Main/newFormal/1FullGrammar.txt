@@ -23,7 +23,9 @@ _______
   CORE.L ::= {H MWTs NCs Info Docs} //sadly, Docs at the end to avoid ambiguity
   CORE.MWT::= Docs MH (= native{BalCurly}? e)?
   CORE.NC::= Docs C = L
-  Info::= #Flag{typeDep=Ps,coherentDep=Ps,watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,close?,nativeKind=URL,nativePar=Ps,uniqueId=n?}
+  Info::= #Flag{typeDep=Ps,coherentDep=Ps,metaCoherentDep=Ps
+    watched=Ps,usedMethods=(P.s)s,hiddenSupertypes=Ps, refined=ss,close?,
+    nativeKind=URL,nativePar=Ps,uniqueId=n?}
     //in concrete syntax, labels for empty fields must be omitted
     //watched//Paths whose unique numbers are used either directly,
     //    or in a private nested class or in an L in a method

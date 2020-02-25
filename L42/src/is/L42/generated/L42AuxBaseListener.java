@@ -244,6 +244,18 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMetaCoherentDep(L42AuxParser.MetaCoherentDepContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMetaCoherentDep(L42AuxParser.MetaCoherentDepContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterWatched(L42AuxParser.WatchedContext ctx) { }
 	/**
 	 * {@inheritDoc}

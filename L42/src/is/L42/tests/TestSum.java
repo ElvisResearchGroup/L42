@@ -207,9 +207,81 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      imm method imm This1.E m()
      But there is no local refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
-   //TODO:
-   //test that type+norm=norm, how this relates with growing interfaces
+   ),new AtomicTest(()->fail("""
+     E::1={interface #norm{}}
+     I1={interface [This1.E::1] method Any m() #norm{close typeDep=This1.E::1 This1, watched=This1}}
+   #norm{}}""",/*second lib after this line*/"""
+     R::1={interface #norm{}}
+     I1={interface [This1.R::1] method Any m() #norm{close typeDep=This1.R::1 This1, watched=This1}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid nested class I1={interface [ This1.E::1 ] m() }
+     The two nested classes are both closed, thus can not be composed.
+     [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     E::1={interface #norm{}}
+     I1={interface [This1.E::1] method Any m() #norm{close typeDep=This1.E::1 This1, watched=This1}}
+   #norm{}}""",/*second lib after this line*/"""
+     R={interface #norm{}}
+     I1={interface [This1.R] method Any m() #norm{typeDep=This1.R}}
+   #norm{}}""",/*expected lib after this line*/"""
+     E::1={interface #norm{}}
+     I1={interface[This1.E::1, This1.R] imm method imm Any m()#norm{typeDep=This1.E::1, This1, This1.R watched=This1 close}}
+     R={interface #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={ #norm{}}
+     C={ #norm{typeDep=This1.I watched=This1.I}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid nested class I={ }
+     The nested class can not be turned into an interface; since its privates are used by other code (is watched)
+     [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={ #norm{}}
+     C={ #norm{typeDep=This1.I coherentDep=This1.I}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid nested class I={ }
+     The nested class can not be turned into an interface, since it is used with 'class' modifier (is required coherent)
+     [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={ method Void v()=void #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     Invalid nested class I={ v()=(..) }
+     The nested class can not be turned into an interface; some public methods are implemented
+     [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={#typed{}}
+     B={#typed{}}
+     C={#norm{}}
+     D={#norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={#typed{}}
+     B={#norm{}}
+     C={#typed{}}
+     D={#norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     A={#typed{}}
+     B={#norm{}}
+     C={#norm{}}
+     D={#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     B={ method Void foo::1()=void #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     B={ method Void foo::1()=error void #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     B={
+       method Void foo::1()=void
+       method Void foo::2()=error void
+       #norm{}}
+   #norm{}}"""/*next test after this line*/)
 
+//TODO: normalize privates in sum right!
    ));}
 public static void pass(String sl1,String sl2,String sl3){
   Resources.clearRes();

@@ -588,6 +588,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitInfo(Core.L.Info info){
     typedContains(info,info.coherentDep().stream(),"coherentDep");
+    typedContains(info,info.metaCoherentDep().stream(),"metaCoherentDep");
     typedContains(info,info.hiddenSupertypes().stream(),"hiddenSupertypes");
     typedContains(info,info.nativePar().stream(),"nativePar");
     typedContains(info,info.usedMethods().stream().map(ps->ps.p()),"usedMethods");

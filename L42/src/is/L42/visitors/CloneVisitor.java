@@ -136,6 +136,7 @@ public class CloneVisitor {
   public Core.L.Info visitInfo(Core.L.Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
+    var metaCoherentDep0=info.metaCoherentDep();
     var watched0=info.watched();
     var usedMethods0=info.usedMethods();
     var hiddenSupertypes0=info.hiddenSupertypes();
@@ -144,6 +145,7 @@ public class CloneVisitor {
 
     var typeDep=visitInfoPNCs(typeDep0);
     var coherentDep=visitInfoPNCs(coherentDep0);
+    var metaCoherentDep=visitInfoPNCs(metaCoherentDep0);
     var watched=visitInfoPNCs(watched0);
     var usedMethods=visitPathSels(usedMethods0);
     var hiddenSupertypes=visitInfoPNCs(hiddenSupertypes0);
@@ -152,12 +154,13 @@ public class CloneVisitor {
     
     if(typeDep.equals(typeDep0)
       &&coherentDep.equals(coherentDep0)
+      &&metaCoherentDep.equals(metaCoherentDep0)
       &&watched.equals(watched0) 
       &&usedMethods.equals(usedMethods0)
       &&hiddenSupertypes.equals(hiddenSupertypes0)
       &&refined.equals(refined0)
       &&nativePar.equals(nativePar0)){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,watched,
+    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched,
       usedMethods,hiddenSupertypes,refined,
       info.close(),info.nativeKind(),nativePar,info._uniqueId());
     }

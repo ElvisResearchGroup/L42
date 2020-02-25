@@ -17,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
+import java.util.stream.Stream;
 
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42SingletonCache;
@@ -126,7 +127,8 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     var meth=new Core.L.MWT(body.poss(),L(),mh,"",body);
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
-    Top.collectDepsE(Resources.currentP,body,typePs,cohePs);
+    ArrayList<P.NCs> metaCohePs=new ArrayList<>();
+    Top.collectDepsE(Resources.currentP,body,typePs,cohePs,metaCohePs);
     var i=l.info();
     List<P.NCs> watched=L(c->TypeManipulation.skipThis0(i.watched(),l,
       pi->pi,(p1,p2)->c.add(p2)));
@@ -135,7 +137,7 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     List<P.NCs> hidden=L(c->TypeManipulation.skipThis0(i.hiddenSupertypes(),l,
       pi->pi,(p1,p2)->c.add(p2)));      
     var info=new Info(
-      i.isTyped(),L(typePs.stream()),L(cohePs.stream()),
+      i.isTyped(),L(typePs.stream()),L(),mergeU(cohePs,metaCohePs),
       watched,usedMethods,hidden,L(),false,"",L(),-1);
     var res=new Core.L(body.poss(), false, L(), L(meth), L(), info,L());
     return wrapL(res);

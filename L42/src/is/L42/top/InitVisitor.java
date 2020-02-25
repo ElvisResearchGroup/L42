@@ -164,7 +164,8 @@ class InitVisitor extends CloneVisitorWithProgram{
       }
     ArrayList<P.NCs>typePs=new ArrayList<>(); 
     ArrayList<P.NCs>cohePs=new ArrayList<>();
-    Top.collectDeps(p(), l.mwts(), typePs, cohePs, false);
+    ArrayList<P.NCs>metaCohePs=new ArrayList<>();
+    Top.collectDeps(p(), l.mwts(), typePs, cohePs, metaCohePs,false);
     Top.collectDepDocs(l.docs(),typePs);
     for(var t:l.ts()){
       if(t.p().isNCs()){typePs.add(t.p().toNCs());}
@@ -178,6 +179,7 @@ class InitVisitor extends CloneVisitorWithProgram{
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     checkMissing(typePs,l.info().typeDep(),l.poss(),Err::missedTypeDep);
     checkMissing(cohePs,l.info().coherentDep(),l.poss(),Err::missedCoheDep);
+    checkMissing(metaCohePs,l.info().metaCoherentDep(),l.poss(),Err::missedMetaCoheDep);
     checkMissing(watchedPs,l.info().watched(),l.poss(),Err::missedWatched);
     checkMissing(hiddenPs,l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
     checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);

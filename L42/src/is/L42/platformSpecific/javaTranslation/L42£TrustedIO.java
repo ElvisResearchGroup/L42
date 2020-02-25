@@ -17,9 +17,11 @@ import is.L42.cache.L42SingletonCache;
 import is.L42.cache.nativecache.ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.CloneVisitorWithProgram;
 
 public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
   public L42£Void strDebug(String s){
@@ -89,7 +91,19 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     }
   public L42£Void deployLibrary(String s, L42£Library l42Lib){
     Core.L l=l42Lib.unwrap;
-    ProgramTypeSystem.type(true, Program.flat(l));
+    Program p=Program.flat(l);
+    l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient
+      @Override public P visitP(P p){
+        boolean open=p.isNCs() && (p.toNCs().n()>p().dept() || this.p()._ofCore(p)==null);
+        if(open){
+          System.err.println("Path "+p+" not defined inside of deployed code");
+          throw todo();
+          //TODO: replace it with a 42 error for deploy non selfcontained library 
+          }
+        return p;
+        }
+      });
+    ProgramTypeSystem.type(true, p);
     //TODO: wrap an EndError above as a L42 exception
     l=l.accept(new CloneVisitor(){
       @Override public Core.L.Info visitInfo(Core.L.Info info){

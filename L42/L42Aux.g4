@@ -25,9 +25,10 @@ infoNorm:'#norm{';
 infoTyped:'#typed{';
 
 info: W*(infoNorm|infoTyped)W* (infoBody W*)*'}' EOF;
-infoBody: typeDep|coherentDep|watched|usedMethods|hiddenSupertypes|refined|close|nativeKind|nativePar|uniqueId;
+infoBody: typeDep|coherentDep|metaCoherentDep|watched|usedMethods|hiddenSupertypes|refined|close|nativeKind|nativePar|uniqueId;
 typeDep: 'typeDep='(W* path)+;
 coherentDep: 'coherentDep='(W* path)+;
+metaCoherentDep: 'metaCoherentDep='(W* path)+;
 watched: 'watched='(W* path)+;
 usedMethods: 'usedMethods='(W* pathSel)+;
 hiddenSupertypes: 'hiddenSupertypes='(W* path)+;

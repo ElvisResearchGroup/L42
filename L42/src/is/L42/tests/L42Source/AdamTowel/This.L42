@@ -29,7 +29,7 @@ DeployAAA=(
     Bool={...}
     Size={...}
     S={...}
-    ParseError={
+    ParseError={//can not use BaseErrorTrait() since circular dependence from S
       class method This #apply()
       class method mut This #apply(This1.S that)=native{trusted:lazyMessageK} error void
       read method This1.S text()=native{trusted:get}error void
@@ -38,7 +38,17 @@ DeployAAA=(
       }
     Url={...}
     Debug={...}
-    StringBuilder={...}
+    StringBuilder={...}//end of circular dependency for S
+    BaseErrorTrait={class method Library()={
+      class method This #apply()
+      class method mut This #apply(This2.S that)=native{trusted:lazyMessageK} error void
+      read method This2.S text()=native{trusted:get}error void
+      mut method Void text(This2.S that)=native{trusted:setMsg}error void
+      #norm{typeDep=This,This2.S, coherentDep=This nativeKind=LazyMessage}
+      }}
+    MethodClash=BaseErrorTrait()
+    ClassClash=BaseErrorTrait()
+    
     Test={...}
     Log={...}
     Meta={...}

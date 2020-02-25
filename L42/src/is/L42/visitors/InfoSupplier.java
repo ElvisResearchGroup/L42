@@ -28,6 +28,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   private final Pos pos;
   List<P.NCs> typeDep=null;
   List<P.NCs> coherentDep=null;
+  List<P.NCs> metaCoherentDep=null;
   List<P.NCs> friends=null;
   List<Core.PathSel> usedMethods=null;
   List<P.NCs> privateSupertypes=null;
@@ -113,6 +114,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     for(var b:r.res.infoBody()){
       fillInfo("typeDep",b.typeDep(),z->z.path(),()->typeDep,v->typeDep=v,this::pf);
       fillInfo("coherentDep",b.coherentDep(),z->z.path(),()->coherentDep,v->coherentDep=v,this::pf);
+      fillInfo("metaCoherentDep",b.metaCoherentDep(),z->z.path(),()->metaCoherentDep,v->metaCoherentDep=v,this::pf);
       fillInfo("friends",b.watched(),z->z.path(),()->friends,v->friends=v,this::pf);
       fillInfo("usedMethods",b.usedMethods(),z->z.pathSel(),()->usedMethods,v->usedMethods=v,this::psf);
       fillInfo("privateSupertypes",b.hiddenSupertypes(),z->z.path(),()->privateSupertypes,v->privateSupertypes=v,this::pf);
@@ -128,6 +130,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     List<S> emptyS=L();
     nullToDef(()->typeDep,v->typeDep=v,empty);
     nullToDef(()->coherentDep,v->coherentDep=v,empty);
+    nullToDef(()->metaCoherentDep,v->metaCoherentDep=v,empty);
     nullToDef(()->friends,v->friends=v,empty);
     nullToDef(()->usedMethods,v->usedMethods=v,emptyPs);
     nullToDef(()->privateSupertypes,v->privateSupertypes=v,empty);
@@ -136,7 +139,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     nullToDef(()->nativeKind,v->nativeKind=v,"");
     nullToDef(()->nativePar,v->nativePar=v,General.<P>L());
     nullToDef(()->_uniqueId,v->_uniqueId=v,-1);
-    return new Core.L.Info(isTyped,typeDep,coherentDep,friends,usedMethods,
+    return new Core.L.Info(isTyped,typeDep,coherentDep,metaCoherentDep,friends,usedMethods,
       privateSupertypes,refined,close,
       nativeKind,nativePar,_uniqueId);
     }

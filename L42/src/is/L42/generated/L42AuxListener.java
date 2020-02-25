@@ -198,6 +198,16 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitCoherentDep(L42AuxParser.CoherentDepContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#metaCoherentDep}.
+	 * @param ctx the parse tree
+	 */
+	void enterMetaCoherentDep(L42AuxParser.MetaCoherentDepContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#metaCoherentDep}.
+	 * @param ctx the parse tree
+	 */
+	void exitMetaCoherentDep(L42AuxParser.MetaCoherentDepContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#watched}.
 	 * @param ctx the parse tree
 	 */

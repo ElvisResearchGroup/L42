@@ -58,7 +58,7 @@ class SortHeader{
       c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",body));
       });
     Program p0=p.update(coreL,false);
-    List<P.NCs> typeDep=L(c->Top.collectDeps(p0,mwts,c,null,false));
+    List<P.NCs> typeDep=L(c->Top.collectDeps(p0,mwts,c,null,null,false));
     List<S> ss=L(mwts,(c,mi)->{
       if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
       });
@@ -115,7 +115,8 @@ class SortHeader{
       });
     ArrayList<P.NCs> typePs=new ArrayList<>();
     ArrayList<P.NCs> cohePs=new ArrayList<>();
-    Top.collectDeps(p1,mwts,typePs,cohePs,false);
+    ArrayList<P.NCs> metaCohePs=new ArrayList<>();
+    Top.collectDeps(p1,mwts,typePs,cohePs,metaCohePs,false);
     var docs=TypeManipulation.toCoreDocs(l.docs());
     List<P.NCs> typeDeps=L(c->{
       for(var ti:ts1){c.add(ti.p().toNCs());}
@@ -126,7 +127,7 @@ class SortHeader{
       S s=mi.key();
       if(refine(p1,s,P.pThis0,poss)){c.add(s);}
       });
-    Info info=new Info(false,unique(typeDeps),unique(cohePs),
+    Info info=new Info(false,unique(typeDeps),unique(cohePs),unique(metaCohePs),
       L(),L(),L(),refined,true,"",L(),uniqueId); 
   var res=new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
   List<P.NCs> watched=L(c->Top.collectWatched(res,c));

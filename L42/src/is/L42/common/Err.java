@@ -339,6 +339,8 @@ public class Err {
   "Core library literal do not declare all the type dependencies; the following are missing: "+ps
   ;}public static String missedCoheDep(Object ps){return
   "Core library literal do not declare all the coherence dependencies; the following are missing: "+ps
+  ;}public static String missedMetaCoheDep(Object ps){return
+  "Core library literal do not declare all the meta coherence dependencies; the following are missing: "+ps
   ;}public static String missedWatched(Object ps){return
   "Core library literal do not declare all the watched; the following are missing: "+ps
   ;}public static String missedHiddenSupertypes(Object ps){return

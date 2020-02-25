@@ -150,6 +150,13 @@ public class L42AuxBaseVisitor<T> extends AbstractParseTreeVisitor<T> implements
 	 * <p>The default implementation returns the result of calling
 	 * {@link #visitChildren} on {@code ctx}.</p>
 	 */
+	@Override public T visitMetaCoherentDep(L42AuxParser.MetaCoherentDepContext ctx) { return visitChildren(ctx); }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation returns the result of calling
+	 * {@link #visitChildren} on {@code ctx}.</p>
+	 */
 	@Override public T visitWatched(L42AuxParser.WatchedContext ctx) { return visitChildren(ctx); }
 	/**
 	 * {@inheritDoc}

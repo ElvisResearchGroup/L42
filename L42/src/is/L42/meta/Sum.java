@@ -9,7 +9,6 @@ import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
-import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -40,6 +39,7 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.tools.General;
 import is.L42.top.Top;
 import is.L42.visitors.Accumulate;
+import is.L42.visitors.CloneVisitor;
 
 public class Sum {
   static final Program emptyP=Program.flat(Program.emptyL);
@@ -58,6 +58,7 @@ public class Sum {
   public Core.L compose(Core.L l1, Core.L l2,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     errC=new MetaError(wrapC);
     errM=new MetaError(wrapM);
+    l2=normalizePrivates(l2,otherNs(l1));
     topLeft=l1;
     topRight=l2;
     allHiddenSupertypesLeft=_allHiddenSupertypes(l1);
@@ -74,6 +75,41 @@ public class Sum {
     Core.L l=plus.plus(l1, l2);
     wellFormedRefine(l);
     return l;
+    }
+  private static HashSet<Integer> otherNs(Core.L other){
+    return new Accumulate<HashSet<Integer>>(){
+      @Override public HashSet<Integer>empty(){return new HashSet<>();}
+      @Override public void visitMWT(MWT mwt){
+        super.visitMWT(mwt);
+        if(mwt.key().hasUniqueNum()){acc().add(mwt.key().uniqueNum());}
+        }
+      @Override public void visitNC(NC nc){
+        super.visitNC(nc);
+        if(nc.key().hasUniqueNum()){acc().add(nc.key().uniqueNum());}
+        }
+      }.of(other);
+    }
+  private static Core.L normalizePrivates(Core.L l,HashSet<Integer>otherNs) {
+    HashMap<Integer,Integer>next=new HashMap<>();
+    for(int i:otherNs){
+      int nextI=i+1;
+      while(otherNs.contains(nextI)){nextI+=1;}
+      next.put(i, nextI);
+      }
+    return l.accept(new CloneVisitor(){
+      @Override public C visitC(C c){
+        if(!c.hasUniqueNum()){return c;}
+        Integer n=next.get(c.uniqueNum());
+        if(n==null){return c;}
+        return c.withUniqueNum(n);
+        }
+      @Override public S visitS(S s){
+        if(!s.hasUniqueNum()){return s;}
+        Integer n=next.get(s.uniqueNum());
+        if(n==null){return s;}
+        return s.withUniqueNum(n);
+        }
+      });
     }
   private void wellFormedRefine(Core.L l){
     l.visitInnerLNoPrivate((li,csi)->{
@@ -111,7 +147,11 @@ public class Sum {
       });
     });}
   private static List<List<C>> _allWatched(Core.L l){return allProp(l,i->i.watched());}
-  private static List<List<C>> _allRequiredCoherent(Core.L l){return allProp(l,i->i.coherentDep());}
+  private static List<List<C>> _allRequiredCoherent(Core.L l){return allProp(l,i->{
+    var all=new ArrayList<>(i.coherentDep());
+    all.addAll(i.metaCoherentDep());
+    return all;
+    });}
   private static List<List<C>> _allHiddenSupertypes(Core.L l){return allProp(l,i->i.hiddenSupertypes());}
   public static boolean moreThen(Core.L l1,Core.L l2){
     if(!l2.isInterface()){return false;}
@@ -415,10 +455,10 @@ public class Sum {
       }
     boolean plusInterface(boolean interface1,boolean interface2,Core.L topLeftCs,Core.L topRightCs){
       if(interface1==interface2){
-        var leftClose=topLeft.cs(cs).info().close();
-        var rightClose=topRight.cs(cs).info().close();
+        var leftClose=topLeftCs.info().close();
+        var rightClose=topRightCs.info().close();
         if(!leftClose || !rightClose){return interface1;}
-        throw todo();
+        errC.throwErr(cs,topLeftCs,"The two nested classes are both closed, thus can not be composed.");
         }
       if(!interface1 && interface2){
         return differentInterfaces(allRequiredCoherentLeft,allWatchedLeft,topLeftCs);  
@@ -428,11 +468,17 @@ public class Sum {
       }
     boolean differentInterfaces(List<List<C>> coherents,List<List<C>> watcheds, Core.L topCs){
       boolean required=coherents.contains(cs);
-      if(required){throw todo();}
+      if(required){
+        errC.throwErr(cs, topCs,"The nested class can not be turned into an interface, since it is used with 'class' modifier (is required coherent)");
+        }
       boolean watched=watcheds.contains(cs);        
-      if(watched){throw todo();}
+      if(watched){
+        errC.throwErr(cs, topCs,"The nested class can not be turned into an interface; since its privates are used by other code (is watched)");
+        }
       boolean absPublic=topCs.mwts().stream().allMatch(m->m._e()==null||m.key().hasUniqueNum());
-      if(!absPublic){throw todo();}
+      if(!absPublic){
+        errC.throwErr(cs, topCs,"The nested class can not be turned into an interface; some public methods are implemented");
+        }
       return true;
       }
     }

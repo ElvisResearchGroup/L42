@@ -130,6 +130,7 @@ public class Core {
       boolean isTyped; 
       List<P.NCs> typeDep;
       List<P.NCs> coherentDep;
+      List<P.NCs> metaCoherentDep;
       List<P.NCs> watched;
       List<PathSel> usedMethods;
       List<P.NCs> hiddenSupertypes;
@@ -138,7 +139,7 @@ public class Core {
       String nativeKind;
       List<P> nativePar;
       int _uniqueId;
-      public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),false,"",L(),-1);
+      public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),L(),false,"",L(),-1);
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class

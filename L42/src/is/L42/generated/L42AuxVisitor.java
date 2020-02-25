@@ -125,6 +125,12 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCoherentDep(L42AuxParser.CoherentDepContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#metaCoherentDep}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMetaCoherentDep(L42AuxParser.MetaCoherentDepContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#watched}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

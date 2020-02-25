@@ -114,7 +114,9 @@ _______
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs';{}] and Cs' not of form _._::n._
 _______
 #define allRequiredCoherent(L) = Csz
-* Cs in allRequiredCoherent(L) if Cs in L(Cs').Info.coherentDep[from This0.Cs';{}] and Cs' not of form _._::n._
+* Cs in allRequiredCoherent(L) if 
+    Cs in L(Cs').Info.coherentDep[from This0.Cs';{}] U L(Cs').Info.metaCoherentDep[from This0.Cs';{}] 
+    and Cs' not of form _._::n._
 _______
 #define allHiddenSupertypes(L) = Csz
 * Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs';{}] and Cs' not of form _._::n._

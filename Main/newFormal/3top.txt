@@ -209,7 +209,7 @@ _______
     Info = #norm{typeDep=collectDeps(p♥Docs)}
     Info1=L0.Info+Info if C not of form _::n
     Info1=L0.Info+Info+Info[
-      typeDep/coherentDep=collectDepsE(p,L),
+      typeDep/coherentDep/metaCoherentDep=collectDepsE(p,L),
       watched=L.Info.watched[skipThis0;L] U mustWatch(Docs),
       hiddenSupertypes=mustHidden({C=L})] otherwise
     L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
@@ -299,29 +299,30 @@ _______
     CTz <+p ST <=STz' = CTz,ST<= STz'
     CTz(ST) undefined
 _______
-#define collectDeps(p;CORE.MWT) = Ps;Ps'    collectDeps(p;CORE.T) = Ps;Ps'    collectDeps(p;Doc) = Ps;Ps'
+#define collectDeps(p;CORE.MWT) = Ps;Ps';Ps"    collectDeps(p;CORE.T) = Ps;Ps';Ps"    collectDeps(p;Doc) = Ps;Ps';Ps"
 //collectDeps(sequence)=union of the results of elements of the sequence
 //all collectDeps/collectDepsE finally adds {P| P.C::k._ in collectDeps(_,_) and P not of form _.C'::n._}
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
     collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
 
-* collectDeps(p; T) = T.P;empty U collectDeps(p; T.Docs)
-* collectDeps(p; Doc) = {P| @P._ inside Doc};empty
+* collectDeps(p; T) = T.P;empty;empty U collectDeps(p; T.Docs)
+* collectDeps(p; Doc) = {P| @P._ inside Doc};empty;empty
 _______
-#define collectDepsE(p;CORE.e?)= Ps1;Ps2    Ps[skipThis0;CORE.L] = Ps'
+#define collectDepsE(p;CORE.e?)= Ps1;Ps2;Ps3    Ps[skipThis0;CORE.L] = Ps'
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
-* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty
-* collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0;CORE.L];Ps'0..Ps'n[skipThis0;CORE.L]
+* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty;empty
+* collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0;CORE.L];empty;Ps'0..Ps'k,Ps"0..Ps"j[skipThis0;CORE.L]
     Ps0..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}//Note: This0 in dom(Core.L)
-    Ps'0..Ps'n = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
+    Ps'0..Ps'k = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
+    Ps"0..Ps"j = {CORE.L(Cs).Info.metaCoherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
-* collectDepsE(p;P<:class Any)= P;empty
-* collectDepsE(p;P<:class P')= P',P;P
+* collectDepsE(p;P<:class Any)= P;empty;empty
+* collectDepsE(p;P<:class P')= P',P;P;empty
     P' != Any
 * collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
 * collectDepsE(p;var? T x=e) = collectDeps(T) U collectDepsE(p;e)
-* collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e) U empty;P?
+* collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e) U empty;P?;empty
     P?=T.P if throw=return, T.mdf=class and T.P notin {Any,Void,Library}
     P?=empty otherwise
 * empty[skipThis0;L]=empty;
