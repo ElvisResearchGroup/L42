@@ -20,7 +20,7 @@ method This1.S pathName(class Any that)=
   
 #norm{
   nativeKind=Meta
-  typeDep=This0, This1.S,This1.Name,This1.StringBuilder,This1.ParseError
-  coherentDep=This1.Name This1.ParseError
-  nativePar= This1.ParseError This1.ParseError This1.ParseError This1.ParseError This1.ParseError
+  typeDep=This0, This1.S,This1.Name,This1.StringBuilder,This1.ParseError,This1.MethodClash,This1.ClassClash
+  coherentDep=This1.Name This1.ParseError,This1.MethodClash,This1.ClassClash
+  nativePar= This1.MethodClash This1.ClassClash This1.ParseError This1.ParseError This1.ParseError
   }

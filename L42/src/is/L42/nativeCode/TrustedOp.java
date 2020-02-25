@@ -186,7 +186,7 @@ public enum TrustedOp {
       Immutable,String,  Immutable,Lib,  Class,Any))
     )),
   SimpleSum("simpleSum",Map.of(
-    Meta,use("return %s.simpleSum(%s,%s);",sigI(Lib,Lib,Lib)))),
+    Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
     Meta,use("return %s.resource(%s);",sigI(Lib,Lib)))),
   Close("close",Map.of(

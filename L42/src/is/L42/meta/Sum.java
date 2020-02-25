@@ -322,7 +322,11 @@ public class Sum {
       if(eqMH && abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));} 
       if(!abs1 && !abs2){errM.throwErr(imwt1.mwt,"Conflicting implementation: the method is implemented on both side of the sum");}
       if(eqMH && /*abs1 &&*/ abs2){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));} 
-      if(eqMH && abs1){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt).with_e(imwt2.mwt._e()));} 
+      if(eqMH && abs1){
+        return new IMWT(oneInterf,
+          accDoc(imwt1.mwt,imwt2.mwt).with_e(imwt2.mwt._e()).withNativeUrl(imwt2.mwt.nativeUrl())
+          );
+        } 
       boolean loseSafeLeftiIs1=loseSafe(topLeft,cs,l1,imwt1.mwt.key(),imwt2.mwt.mh());
       boolean loseSafeRightiIs1=loseSafe(topRight,cs,l2,imwt1.mwt.key(),imwt2.mwt.mh());
       boolean loseSafeLeftiIs2=loseSafe(topLeft,cs,l1,imwt2.mwt.key(),imwt1.mwt.mh());
@@ -376,7 +380,8 @@ public class Sum {
       List<T> ts=L(a.mh().pars(),b.mh().pars(),merger);
       List<T> excs=L(a.mh().exceptions(),b.mh().exceptions(),merger);
       MH mh=new MH(a.mh().mdf(),mhDoc,a.mh().t().withDocs(tDoc),a.key(),ts,excs);
-      return a.withDocs(totDoc).withMh(mh);
+      List<Pos> pos=mergeU(a.poss(),b.poss());
+      return a.withPoss(pos).withDocs(totDoc).withMh(mh);
       }
     List<NC> plusNCs(List<NC> a,List<NC> b){
       return L(c->{

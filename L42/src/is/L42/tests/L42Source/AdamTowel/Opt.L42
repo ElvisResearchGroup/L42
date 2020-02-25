@@ -5,11 +5,4 @@ OptTrait=Trait:{
   mut method mut This.Elem #get()=native{trusted:#get}error void
   Elem={#norm{}}
   #norm{typeDep=This.Elem,This,This2.NoElementInOpt nativeKind=Opt nativePar=This.Elem,This2.NoElementInOpt}}
-  /*+{
-  Elem={}
-  class method mut This #apply()
-  class method mut This(fwd mut Elem that)
-  read method read Elem get()
-  mut method mut Elem #get()
-  }*/
 class method Trait (class Any that)=OptTrait['Elem>that]

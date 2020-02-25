@@ -142,65 +142,9 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     var res=new Core.L(body.poss(), false, L(), L(meth), L(), info,L());
     return wrapL(res);
     }
-  public L42£Library simpleSum(L42£Library a, L42£Library b){
-    L res=directSum(a.unwrap,b.unwrap);
+  public L42£Library simpleSum(L42£Library a, L42£Library b,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+    L res=new Sum().compose(a.unwrap, b.unwrap, wrapC, wrapM);
     return wrapL(res);
-    }
-  public L directSum(L a, L b){
-    List<MWT> mwts=sumMWTs(a.mwts(),b.mwts());
-    List<NC> ncs=sumNCs(a.ncs(),b.ncs());
-    Info info=Top.sumInfo(a.info(),b.info());
-    boolean interf=a.isInterface() || b.isInterface();
-    List<T> ts=mergeU(a.ts(),b.ts());
-    List<Pos> pos=mergeU(a.poss(),b.poss());
-    List<Doc> docs=mergeU(a.docs(),b.docs());
-    return new Core.L(pos, interf, ts, mwts, ncs, info, docs);
-    }
-
-  public List<NC> sumNCs(List<NC> a,List<NC> b){
-    return L(c->{
-      for(var mi:a){
-        var other=_elem(b,mi.key());
-        if(other==null){c.add(mi);}
-        else{c.add(sumNC(mi,other));}
-        }
-      for(var mi:b){
-        var other=_elem(a,mi.key());
-        if(other==null){c.add(mi);}
-        }
-      });    
-    }
-  public NC sumNC(NC a,NC b){
-    return a.withL(directSum(a.l(), b.l()));
-    //TODO: sum the docs and the pos
-    }
-  public List<MWT> sumMWTs(List<MWT> a,List<MWT> b){
-    return L(c->{
-      for(var mi:a){
-        var other=_elem(b,mi.key());
-        if(other==null){c.add(mi);}
-        else{c.add(sumMWT(mi,other));}
-        }
-      for(var mi:b){
-        var other=_elem(a,mi.key());
-        if(other==null){c.add(mi);}
-        }
-      });
-    }
-  public MWT sumMWT(MWT a,MWT b){
-    if (a._e()!=null && b._e()!=null){
-      assert false:a+" "+b;
-      throw todo();}
-    if(!a.mh().equals(b.mh())){
-      System.out.println(a.mh());
-      System.out.println(b.mh());
-      throw todo();
-      }//also check proper subtype
-    var body=a._e();
-    var nativeUrl=a.nativeUrl();
-    if(body==null){body=b._e();nativeUrl=b.nativeUrl();}
-    return a.with_e(body).withNativeUrl(nativeUrl);
-    //TODO: sum the mh docs and the pos
     }
   private L simpleRedirect(L input, List<C> cs, P target){
     Program p=Resources.currentP;
