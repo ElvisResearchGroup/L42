@@ -481,7 +481,7 @@ public class ToSVisitor implements ToSTrait{
     c(si);
     if(i+1<eString.es().size()){
       Full.E ei=eString.es().get(i+1);
-      c("%");
+      c("%".repeat(eString.escapeSize()));
       visitE(ei);
       }
     }

@@ -1,14 +1,17 @@
 reuse[AdamTowel]
 
+TestMsg={
+  class method Void (Library that,Message msg,S expected)=(
+    cut = expected.size()<msg.toS().size()
+    size =if cut expected.size()-1Size else msg.toS().size()//remove the last \n on expected        
+    S part=msg.toS().subString(start=0\ end=size)
+    that:Test"ExpectedExeption"(expected=expected actual=part)
+    )
+  }
 TestClose={
   class method Void (Library that,S expected)=(
     _=Cache.Close:that
-    catch error Cache.Close$Fail f (
-      cut = expected.size()<f.toS().size()
-      size =if cut expected.size()-1Size else f.toS().size()//remove the last \n on expected        
-      S part=f.toS().subString(start=0\ end=size)
-      that:Test"ExpectedExeption"(expected=expected actual=part)
-      )
+    catch error Cache.Close$Fail f (TestMsg(that,msg=f,expected=expected))
     that:Test"ExpectedExeptionMissed"(Bool.false())
     )
   }
@@ -84,11 +87,44 @@ TestClose1=(
     )
    /*
     -make introspection print className/interface names, so we can print the right error
-    -add sum and complete the last todo in Close!
     -standard code
-    -multiline string %% support
     -add callSiteCache?
     -add lazyReadCache?
     -add multi args cache for imm/class?
   */ 
-  )   
+  )
+TestSum={
+  class method Void classClash(Library l1,Library l2,S expected)=(
+    _=(Trait:l1)+l2
+    catch error ClassClash f (TestMsg(l1,msg=f,expected=expected))
+    l1:Test"ExpectedExeptionMissed"(Bool.false())
+    )
+  class method Void methodClash(Library l1,Library l2,S expected)=(
+    _=(Trait:l1)+l2
+    catch error MethodClash f (TestMsg(l1,msg=f,expected=expected))
+    l1:Test"ExpectedExeptionMissed"(Bool.false())
+    )
+  }
+TestSum1=(
+  TestSum.methodClash(l1={
+    method Void foo()=void
+    },l2={
+    method Void foo()=void
+    },expected=S"""
+    |Message toFix(toFix):
+    |Invalid method imm method imm Void foo()=(..)
+    |Conflicting implementation: the method is implemented on both side of the sum
+    |[file:
+    """)
+  TestSum.classClash(l1={interface
+    method Void foo()
+    },l2={
+    method Void foo()=void
+    },expected=S"""
+    |Message toFix(toFix):
+    |Invalid nested class This0={ foo()=(..) }
+    |The nested class can not be turned into an interface; some public methods are implemented
+    |[file:
+    """)
+  )
+  

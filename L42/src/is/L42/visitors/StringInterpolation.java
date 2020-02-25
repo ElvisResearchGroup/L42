@@ -17,6 +17,7 @@ import java.util.List;
 public class StringInterpolation {
   StringInterpolation(int escapeSize,Path fileName, EVoid eVoid, Pos pos, StringBuilder errors){  
     this.escapeSize=escapeSize;
+    this.symbol="%".repeat(escapeSize);
     this.fileName=fileName;
     this.eVoid=eVoid;
     this.pos=pos;
@@ -72,7 +73,7 @@ public class StringInterpolation {
     return false;
   }
   private final String terminals=" , \n !~\"%&/=?'^*-@><;:";
-  String symbol="%";
+  final String symbol;
   private static enum Mode{
     Str{public int run(StringInterpolation self,String s,int i){
       assert self.openR==0: self.openR;
@@ -140,7 +141,6 @@ public class StringInterpolation {
     assert openS==0: openS;
     assert openC==0: openC;
     if (escapeSize==0){return new Full.EString(pos,0,L(eVoid),L(s));}
-    assert escapeSize==1;//TODO: still to handle if there is more then on %
     for(int i=0;i<s.length();i++){
       i=mode.run(this, s, i);
       }

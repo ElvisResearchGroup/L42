@@ -26,7 +26,8 @@ public class MetaError{
     if(fault instanceof List){
       @SuppressWarnings("unchecked") var cs=(List<C>)fault;
       assert cs.stream().noneMatch(c->c.hasUniqueNum());
-      elem+=cs.stream().map(c->c.toString()).collect(Collectors.joining("."));
+      if(cs.isEmpty()){elem+="This0";}
+      else{elem+=cs.stream().map(c->c.toString()).collect(Collectors.joining("."));}
       }
     return "Invalid nested class "+elem+"=";
     }
@@ -40,7 +41,8 @@ public class MetaError{
     if(fault instanceof List){
       @SuppressWarnings("unchecked") var cs=(List<C>)fault;
       assert cs.stream().noneMatch(c->c.hasUniqueNum());
-      elem+="nested class "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"\n";
+      if(cs.isEmpty()){elem+="nested class This0\n";}
+      else{elem+="nested class "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"\n";}
       }
     if(fault instanceof Core.L.MWT){
       var mwt=(Core.L.MWT)fault;

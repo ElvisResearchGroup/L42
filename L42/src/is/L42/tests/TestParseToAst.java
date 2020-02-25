@@ -355,6 +355,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        |bbb %a.b() dd
        \"""
      """.trim())
+     ),new AtomicTest(()->
+   pass("""
+     S\"""%%%
+       |aa%%%foo cc
+       |bbb %%%a.b() dd
+       |bbb %%a.b() dd
+       |bbb %a.b() dd
+       |bbb a.b() dd
+       \"""
+     """.trim())
   ),new AtomicTest(()->
    pass("a+b&&c")
   ),new AtomicTest(()->
