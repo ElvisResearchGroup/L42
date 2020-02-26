@@ -1,12 +1,3 @@
-operations:
-  1 close with invariant
-  2 multi rename
-  3 sum
-  
-  what if all private nested must be already closed, not just coherent?
-  
-=> rename
-->move (move implementation)
 R::= Cs(.s)? -> Cs'(.s)?' |Cs(.s)? -> trash | //move, toAbstract
      Cs(.s)? => Cs'(.s)?' |Cs(.s)? => trash | //rename, hide
      Cs(.s)? => P(.s)?'                   //redirect
@@ -44,7 +35,7 @@ Instance method
                L(Cs.s)not class and not refine
   -> leave the abstract signature in place;
      sum to L(Cs') the method
-  => as for -> but also rename all the refernece to Cs.s
+  => as for -> but also rename all the references to Cs.s
      Remove the abstract signature in Cs.s
 --
  *a refine method can not be renamed '=>'

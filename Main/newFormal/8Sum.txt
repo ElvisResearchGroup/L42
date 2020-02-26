@@ -161,71 +161,98 @@ If a P in the source does not exists, we can just 'accept is a good subtype\supe
   rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
   operations:
     Remove+ Cs remove the methods and the interface? and the docs. If no nested, remove also the box
-    Remove- Cs remove all the implementation of the methods. Must be not watched.
-    References: Cs->P rename all the usages of Cs into P (if P is This0 is for rename, otherwise for redirect)
+    Remove- Cs remove all the implementation of the methods and all the private stuff. Must be not watched.
+    References: Cs->P rename all the usages of Cs into P (if P is This0.Cs' is for rename, otherwise for redirect)
     EmptyRename Cs->Cs' take Cs (no nested) from L, create another L where such content is in Cs' (properly frommed) 
     InnerSum: apply PLUS on the tweaked L and one extracted EmptyRename L
   This looks like can be easly done in bulk:
   Cs=>Cs' = Remove+ Cs, EmptyRename CS->Cs', References Cs->Cs'
   Cs->Cs' = Remove- Cs, EmptyRename CS->Cs',
-  Cs >P = Remove+ Cs, References Cs->P
+  Cs=>P = Remove+ Cs, References Cs->P
   //we have 12 options
-  1 R+ E R //full rename
-  2 R- E   //restrict
-  3 R+ R  //redirect
+  1 R+ E R //full rename  =>
+  2 R- E   //restrict (or super)  ->
+  3 R+ R  //redirect  =>
   4 //R+ E (identical to R+ E R when possible)
   5 //R+ (identical to R+ R when possible)
   6 R- E R //strong rename but leave skeleton
   7 R- R //redirect but leave skeleton
-  8 R- //make abstract (invoked by Cs->_)
+  8 R- //make abstract (invoked by Cs->_)  ->_
   9 E R//copy code and move refs
   10 E//copy code
   11 R//redirect but leave full source
   12//empty op... ok
   -------
+  More formally
   
-  mdf method imm P methName(imm P1 x1.. imm Pn xn)=
-    native{trusted:cached}
-    methBody
-  //this will cache the result and return the cached
-  //after the first call
-  mdf method imm Void clearCache()=native{trusted:clearCache} error void
-  //this will clear all the cache for the current object
-  
-  Option 1 may work:a class with any trusted:cached method need to be with closed state
-  and with extra well formedness stuff.
-  Option 2 would not work: a class with trusted:cached just do what it said, without any guarantees
-  of correctness of the caching process. The caches introduced by Data will be correct by construction,
-  but there is no guarantee of the caches introduced in other ways (if the receiver is not imm)
-  Option 2 would allow for a function recognizing identities on imms. That in turn can be use to 
-  distinguish if a "correct" caching is returning the same or different identities.
+L[Remove+ Csz,Remove- Csz',References (Cs->P)z]=L0
+L[MovedContent (Cs->Cs')z,References (Cs->P)z]=L1,..Ln //EmptyRename
+Sum L0+..+Ln //normal sum? but the input is broken
+check refine single
 
-  In this way, Data can create trusted:cached;
-  correct cache invalidation and Eager caching are just a feature of data
-  calling clearCache and (possibly) recalling the cached methods directly after.
-  calling clearCache() and or 
-  ------
-  @FlushCache
-  @Cached
-  @EagerCached
-  FlushCache={#norm{nativeKind=flushCache}}
-  
-When typing a method MWT in p with a Doc with a P
-where p(P).Info.nativeUrl=Url
-then (even if the method is abstract)
-nativeExtraTypingDecl(Url,p,MWT)
-When typing a method call e calling P.s
-  where P' in p(P)(s).Docs 
-  and p(P'[from P;p]).Info.nativeUrl=Url
-nativeExtraTypingCall(Url,p,G,e)
+Split+Sum
+Split:
+  L[References (Cs->P)z,MovedContent (Cs->Cs')z,Remove+ Csz,Remove- Csz']=L0,L1
+Sum=L0+L1 and can be normal sum? can skip normalizing unique numbers
 
-In this way we can typeckeck invariant capsule fields: (with Url=flushCache)
--abs methods must look like an exposer
--implemented method are mut, use 'this' only once, par types and ret types are not mut/lent/read.
-on nativeExtraTypingCall(Url,p,G,e) for abstract methods:
-  they have a private number and the receiver is exactly 'this'
-with Url=cached or eagerCached
--the class only have imm/caps parameters
+Split is a cloneVisitorWithProgram, that also collects a map from Cs->L and Cs.s->MWT
+//Should we merge the map directly without a sum? could be a performance optimization later
 
+Source dom is a tree
+Dest dom is a tree (except for Thisn+1.Csz)
+
+MovedContent map:
+  Cs in dom/cod, then Cs.m not in dom/cod
+  Cs->Cs' in map, then Cs"->Cs' not in map //same for Cs.m
+  Cs->Cs' in map, then Cs->Cs" not in map //same for Cs.m
+Remove set:
+  +/-Csz, +/-Cs.sz
+  if Cs in Csz, then Cs.s not in Cs.sz
+Reference map:
+  Cs->P is a map with Cs domain
+-----
+rename meth:
+ -no refine
+ -if moves between classes, must use a delegation pattern to avoid exposing ::0
+ -if not class, then either
+    -extra arg and becomes class
+    -argument swap (exactly one arg MUST have a different name)
+ -if is class, then either
+    -same arg and stay class
+    -argument less and get embedded
+growing maps:
+  for rename meth =>: add all the refined version of this. Note: is ok if it is privately implemented, but need some care
+    In particular, if is implemented in a library literal in a meth body
+hide meth:
+ -no abstract methods
+abs class, or just Cs->Cs'
+ -no watched
+-In all the cases is an error if Cs(.s)? do not exists or is private
+
+N::=Cs|P|Cs.s|empty
+|>::=-> | =>
+Map::=N1|>N1'..Nn|>Nn'  
+
+applyMap:
+  collect all watched
+  make a map for all renamed interface methods
+  all individual mappings are ok
+    -methods maps in methods, Cs maps in Cs or P//E
+    -no private names//E
+    -all dom(map) exists in dom(L)//L
+    -no hide abs methods//L
+    -no abstr or -> watched Cs//E
+    -no rename=> of refined methods//L
+    -no rename-> of interface methods//L
+    -meth rename=> follow one of the 4+1 patterns. Only the base pattern is ok with interface methods//E+L
+    -meth rename-> can follow one of the 4+1 patterns and is not an interface method//E+L
+  global mapping is ok:
+    -redirected stuff is all transitivelly redirected//E or L? 
+    -redirected stuff is redirected to OK targets//L, just before trashing such class?
+    -Cs in dom(map) U cod(map), then Cs.m not in dom(map) U cod(map)//E
+    -Cs|>Cs' in map, then Cs"|>Cs' not in map//E
+    -Cs.s|>Cs'.s' in map, then Cs".s"|>Cs'.s' not in map//E
+    -is a map, thus no two tuples with the same key//E
+  //what to test early? what to test late? what to test again for better error message in the lazyMsg?
   
-  
+method renamed in the same class can be directly sum, while method renamed outside will be placed in the map N->body
