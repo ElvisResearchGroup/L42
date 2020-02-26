@@ -71,13 +71,13 @@ public class InferToCore extends UndefinedCollectorVisitor{
       if(speci!=null){c.add(speci);}
       else{tzErr.addAll(tz);}
       });
-    T res=i.p()._chooseGeneralT(ts,poss);
+    T res=i.p()._chooseGeneralT(ts);
     if(res!=null){return res;}
     if(!ts.isEmpty()){
-      throw new EndError.InferenceFailure(poss, Err.noCommonSupertypeAmong(CTz.solve(i.p(), stz),ts));
+      throw new EndError.InferenceFailure(poss, Err.noCommonSupertypeAmong(i.p().solve(stz),ts));
       }
     if(tzErr.isEmpty()){
-      var st=CTz.solve(i.p(), stz);
+      var st=i.p().solve(stz);
       String hints="";
       for(var sti:st){
         if(!(sti instanceof ST.STMeth)){continue;}
@@ -90,7 +90,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
         }
       throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(st,hints));
       }
-    throw new EndError.InferenceFailure(poss, Err.contraddictoryInfoAbout(CTz.solve(i.p(), stz),tzErr));
+    throw new EndError.InferenceFailure(poss, Err.contraddictoryInfoAbout(i.p().solve(stz),tzErr));
     }  
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
@@ -135,8 +135,8 @@ public class InferToCore extends UndefinedCollectorVisitor{
        var pct=(Core.PCastT) xpi;
        c.add(pct.t());
       });
-    var res=CTz.opOptions(i.p(), binOp.op(), ts);
-    //TODO: can we make a test where the former call throw some exception?
+    var res=i.p()._opOptions(binOp.op(), ts);
+    //TODO: can we make a test where the former call return null?
     if(res.size()!=1){
       var list=L(res,(c,psi)->c.add(psi.p()+"."+psi.s()));
       String err=Err.operatorNotFound(binOp.op().inner+" ("+NameMangling.methName(binOp.op(),0)+")",list);

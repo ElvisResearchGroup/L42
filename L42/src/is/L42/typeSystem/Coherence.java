@@ -64,7 +64,7 @@ public class Coherence {
     }
   public static boolean validConstructorSignature(Program p,MH mh){
     Mdf mdf=mh.t().mdf();
-    if(!p.isSubtype(P.pThis0,mh.t().p(),p.topCore().poss())){return false;}
+    if(!p._isSubtype(P.pThis0,mh.t().p())){return false;}
     if(mdf.isIn(Class,MutableFwd,ImmutableFwd)){return false;}
     if(mdf.isIn(Immutable,Capsule)){
       for(T t:mh.pars()){
@@ -83,7 +83,7 @@ public class Coherence {
     return validConstructorSignature(p,mh);
     }
   public boolean coherentSetter(MH mh, Set<X> xz){
-    if(!p.isSubtype(P.coreVoid,mh.t(),p.topCore().poss())){return false;}
+    if(!p._isSubtype(P.coreVoid,mh.t())){return false;}
     Mdf mdf=mh.mdf();
     T parT=mh.pars().get(0);
     Mdf mdf1=parT.mdf();
@@ -101,7 +101,7 @@ public class Coherence {
     if(!xz.contains(x)){return false;}
     List<T> fieldTs=fieldTs(x,mh.mdf());
     for(T ti:fieldTs){
-      if(!p.isSubtype(ti.p(), p1,p.topCore().poss())){return false;}
+      if(!p._isSubtype(ti.p(), p1)){return false;}
       }
     return coherentGetMdf(mdf1,mh.mdf(),fieldTs,fieldAccessMdf(x,mh.mdf()));
     }

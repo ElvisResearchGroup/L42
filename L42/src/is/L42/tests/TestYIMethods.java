@@ -569,7 +569,7 @@ static Program p0=Program.parse("""
 public static void chooseGeneralT(String in,String out){
   Full.L fl=(Full.L)Program.parse("{method Void m("+in+")}").top;
   var ts=((Full.L.MWT)fl.ms().get(0)).mh().pars();
-  var res=p0._chooseGeneralT(L(ts.stream().map(TypeManipulation::toCore)),L());
+  var res=p0._chooseGeneralT(L(ts.stream().map(TypeManipulation::toCore)));
   assertEquals(out,""+res);
   }
 public static void chooseSpecificT(String in,String out){

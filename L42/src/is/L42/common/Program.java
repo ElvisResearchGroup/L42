@@ -10,23 +10,27 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.todo;
+import static is.L42.tools.General.typeFilter;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
+import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
@@ -36,6 +40,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.generated.Psi;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.X;
@@ -179,14 +184,10 @@ public class Program implements Visitable<Program>{
         return from(p,source);
         }
       @Override public ST visitSTMeth(ST.STMeth st){
-        var res=super.visitSTMeth(st);
-        res=CTz.solve(Program.this, res);
-        return res;
+        return solve(super.visitSTMeth(st));
         }
       @Override public ST visitSTOp(ST.STOp st){
-        var res=super.visitSTOp(st);
-        res=CTz.solve(Program.this, res);
-        return res;
+        return solve(super.visitSTOp(st));
         }
       @Override public Full.L visitL(Full.L l){throw bug();}
       @Override public Core.L visitL(Core.L l){
@@ -209,23 +210,23 @@ public class Program implements Visitable<Program>{
     return res;
     }
   
-  public boolean isSubtype(Stream<P> subPs,P superP,List<Pos> poss){
-    return subPs.allMatch(p->isSubtype(p, superP,poss));
+  public boolean isSubtype(Stream<P> subPs,P superP){
+    return subPs.allMatch(p->_isSubtype(p, superP));
     }
-  public boolean isSubtype(P subP,Stream<P> superPs,List<Pos> poss){
-    return superPs.allMatch(p->isSubtype(subP,p,poss));
+  public boolean isSubtype(P subP,Stream<P> superPs){
+    return superPs.allMatch(p->_isSubtype(subP,p));
     }
-  public boolean isSubtype(Stream<T> subTs,T superT,List<Pos> poss){
-    return subTs.allMatch(t->isSubtype(t, superT,poss));
+  public boolean isSubtype(Stream<T> subTs,T superT){
+    return subTs.allMatch(t->_isSubtype(t, superT));
     }
-  public boolean isSubtype(T subT,Stream<T> superTs,List<Pos> poss){
-    return superTs.allMatch(t->isSubtype(subT,t,poss));
+  public boolean isSubtype(T subT,Stream<T> superTs){
+    return superTs.allMatch(t->_isSubtype(subT,t));
     }
-  public boolean isSubtype(T subT,T superT,List<Pos> poss){
+  public Boolean _isSubtype(T subT,T superT){
     if(!isSubtype(subT.mdf(),superT.mdf())){return false;}
-    return isSubtype(subT.p(),superT.p(),poss);
+    return _isSubtype(subT.p(),superT.p());
     }
-  public boolean isSubtype(P subP,P superP,List<Pos> poss){
+  public Boolean _isSubtype(P subP,P superP){//return null if path do not exists as core
     assert minimize(subP)==subP;
     assert minimize(superP)==superP;
     if(superP==P.pAny){return true;}
@@ -235,7 +236,8 @@ public class Program implements Visitable<Program>{
     if(!subP.isNCs()){return false;}
     if(!superP.isNCs()){return false;}
     assert minimize(subP0)==subP0;
-    var l=(Core.L)of(subP0,top.poss());//may throw a PathNotExistant that is captured by solve STOp
+    var l=_ofCore(subP0);
+    if(l==null){return null;}
     for(T ti:l.ts()){
       P pi=from(ti.p(),subP0);
       assert minimize(pi)==pi;
@@ -330,12 +332,12 @@ public class Program implements Visitable<Program>{
     if(!pTails.c().equals(p.cs().get(0))){return p;}
     return P.of(p.n()-1,popL(p.cs()));
     }
-  public T _chooseGeneralT(List<T> ts,List<Pos> poss){
+  public T _chooseGeneralT(List<T> ts){
     Mdf _mdf=TypeManipulation._mostGeneralMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
     if(_mdf==null){return null;}
     var ps=L(ts.stream()
       .map(ti->ti.p())
-      .filter(pi->isSubtype(ts.stream().map(ti->ti.p()),pi,poss))
+      .filter(pi->isSubtype(ts.stream().map(ti->ti.p()),pi))
       .distinct());
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
@@ -346,7 +348,7 @@ public class Program implements Visitable<Program>{
     if(_mdf==null){return null;}
     var ps=L(ts.stream()
       .map(ti->ti.p())
-      .filter(pi->isSubtype(pi,ts.stream().map(ti->ti.p()),poss))
+      .filter(pi->isSubtype(pi,ts.stream().map(ti->ti.p())))
       .distinct());
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
@@ -373,6 +375,93 @@ public class Program implements Visitable<Program>{
     C c=pTails.c();
     return pTails.ll().inDom(c) && cleanPushed(pTails.tail());
     }
+  public List<ST> solve(List<ST> stz){return L(stz,sti->solve(sti));}
+  public ST solve(ST st){
+    if(st instanceof T){return st;}
+    if(st instanceof ST.STMeth){return solve((ST.STMeth)st);}
+    if(st instanceof ST.STOp){return solve((ST.STOp)st);}
+    throw bug();
+    }
+  public ST solve(ST.STMeth stsi){
+    ST st=solve(stsi.st());
+    if(!(st instanceof T) ||!((T)st).p().isNCs()){return stsi.withSt(st);}
+    P.NCs p0=((T)st).p().toNCs();
+    var pOfP0=_ofCore(p0);
+    if(pOfP0==null){return stsi.withSt(st);}
+    var mwt= _elem(pOfP0.mwts(),stsi.s());
+    if(mwt==null){return stsi.withSt(st);}
+    if(stsi.i()==-1){return from(mwt.mh().t(),p0);}
+    assert stsi.i()<=mwt.mh().s().xs().size();
+    if(stsi.i()==0){return new Core.T(mwt.mh().mdf(),mwt.mh().docs(),p0);}
+    return from(mwt.mh().pars().get(stsi.i()-1),p0);
+    }
+  public ST solve(ST.STOp st){
+    List<List<ST>> minStzi=L(st.stzs(),stzi->solve(stzi));
+    List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi.stream(),T.class)));
+    List<List<T>> tsz=tzsToTsz(tzs);
+    Set<Psi> options=new HashSet<>();
+    for(var ts:tsz){
+      var res=_opOptions(st.op(),ts);
+      if(res!=null){options.addAll(res);continue;}
+      return st.withStzs(minStzi);
+      }
+    if(options.size()!=1){return st.withStzs(minStzi);}
+    assert options.size()==1;
+    Psi psi=options.iterator().next();
+    return from(_elem(_ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
+    }
+  static List<List<T>> tzsToTsz(List<List<T>> tzs){
+    assert !tzs.isEmpty();
+    if(tzs.size()==1){
+      return L(tzs.get(0),(c,tz)->c.add(L(tz)));
+      }
+    var inductive=tzsToTsz(popL(tzs));
+    var tz0=tzs.get(0);
+    return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
+    }
+  private boolean _opOptionsAcc(Op op, List<T>ts, int i,ArrayList<Psi>acc){
+    List<P> p11n=L(range(ts),(cj,j)->{
+      if(j!=i){cj.add(ts.get(j).p());}
+      });
+    String sName = NameMangling.methName(op,i);
+    P tmp=ts.get(i).p();
+    if(!tmp.isNCs()){return true;}
+    P.NCs tip=tmp.toNCs();
+    var l=_ofCore(tip);
+    if(l==null){return false;}
+    List<MWT> mwts=l.mwts();
+    List<MH> mhs=L(mwts.stream()
+      .map(m->m.mh())
+      .filter(m->
+        m.s().m().equals(sName) && !m.s().hasUniqueNum() && m.s().xs().size()==ts.size()-1
+        ));
+    for(MH mh:mhs){
+      List<P>p1n=L(mh.pars(),(ci,ti)->ci.add(from(ti.p(),tip)));
+      assert p1n.size()==p11n.size(): p1n+" "+p11n;
+      boolean acceptablePaths=true;
+      for(int j:range(p1n)){
+        P p1j=p11n.get(j);
+        P pj=p1n.get(j);
+        Boolean res=_isSubtype(p1j,pj);
+        if(res==null){return false;}
+        if(!res){acceptablePaths=false;}//Do not break, so the return false above can be triggered
+        }
+      if(acceptablePaths){acc.add(new Psi(tip,mh.s(),i));}
+      }
+    return true;  
+    }
+  public List<Psi> _opOptions(Op op, List<T>ts){
+    assert ts.stream().noneMatch(t->t==null):ts;
+    boolean[]flag={true};
+    List<Psi> res=L(c->{
+      for(int i:range(ts)){
+        flag[0]&=_opOptionsAcc(op,ts,i,c);
+        if(!flag[0]){return;}
+        }
+      });
+    if(flag[0]){return res;}
+    return null;
+    }    
   //-----------
   public static Program parse(String s){
     var r=Parse.program(Constants.dummy,s);

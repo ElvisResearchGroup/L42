@@ -69,87 +69,17 @@ public class CTz implements Serializable{
   public boolean coherent(Program p){
     for(var e:inner.entrySet()){
       assert !(e.getKey() instanceof T):e.getKey();
-      assert solve(p,e.getKey())==e.getKey():solve(p,e.getKey())+" "+e.getKey();
+      assert p.solve(e.getKey())==e.getKey():p.solve(e.getKey())+" "+e.getKey();
       for(var st:e.getValue()){
-        assert solve(p,st)==st:solve(p,st)+" "+st;  
+        assert p.solve(st)==st:p.solve(st)+" "+st;  
         }
       }
     return true;
     }
-  public static List<ST> solve(Program p,List<ST> stz){return L(stz,sti->solve(p,sti));}
-  public static ST solve(Program p,ST st){//can be moved in Program if it works TODO:
-    if(st instanceof T){return st;}
-    if(st instanceof ST.STMeth){return solve(p,(ST.STMeth)st);}
-    if(st instanceof ST.STOp){return solve(p,(ST.STOp)st);}
-    throw bug();
-    }
-  public static ST solve(Program p,ST.STMeth stsi){
-    ST st=solve(p,stsi.st());
-    if(!(st instanceof T) ||!((T)st).p().isNCs()){return stsi.withSt(st);}
-    P.NCs p0=((T)st).p().toNCs();
-    var pOfP0=p._ofCore(p0);
-    if(pOfP0==null){return stsi.withSt(st);}
-    var mwt= _elem(pOfP0.mwts(),stsi.s());
-    if(mwt==null){return stsi.withSt(st);}
-    if(stsi.i()==-1){return p.from(mwt.mh().t(),p0);}
-    assert stsi.i()<=mwt.mh().s().xs().size();
-    if(stsi.i()==0){return new Core.T(mwt.mh().mdf(),mwt.mh().docs(),p0);}
-    return p.from(mwt.mh().pars().get(stsi.i()-1),p0);
-    }
-  static List<List<T>> tzsToTsz(List<List<T>> tzs){
-    assert !tzs.isEmpty();
-    if(tzs.size()==1){
-      return L(tzs.get(0),(c,tz)->c.add(L(tz)));
-      }
-    var inductive=tzsToTsz(popL(tzs));
-    var tz0=tzs.get(0);
-    return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
-    }
-  static public void opOptionsAcc(Program p,Op op, List<T>ts, int i,ArrayList<Psi>acc){
-    List<P> p11n=L(range(ts),(cj,j)->{
-      if(j!=i){cj.add(ts.get(j).p());}
-      });
-    String sName = NameMangling.methName(op,i);
-    P tmp=ts.get(i).p();
-    if(!tmp.isNCs()){return;}
-    P.NCs tip=tmp.toNCs();
-    var l=(Core.L)p.of(tip,p.top.poss());//may throws a PathNotExistent that is captured by solve STOp
-    List<MWT> mwts=l.mwts();
-    List<MH> mhs=L(mwts.stream()
-      .map(m->m.mh())
-      .filter(m->
-        m.s().m().equals(sName) && !m.s().hasUniqueNum() && m.s().xs().size()==ts.size()-1
-        ));
-    for(MH mh:mhs){
-      List<P>p1n=L(mh.pars(),(ci,ti)->ci.add(p.from(ti.p(),tip)));
-      assert p1n.size()==p11n.size(): p1n+" "+p11n;
-      boolean acceptablePaths=IntStream.range(0,p1n.size())
-       .allMatch(j->p.isSubtype(p11n.get(j),p1n.get(j),null));
-      if(acceptablePaths){acc.add(new Psi(tip,mh.s(),i));}
-      }  
-    }
-  static public List<Psi> opOptions(Program p, Op op, List<T>ts){
-    assert ts.stream().noneMatch(t->t==null):ts;
-    return L(c->{for(int i:range(ts)){opOptionsAcc(p,op,ts,i,c);}});
-    }
-  public static ST solve(Program p,ST.STOp st){
-    List<List<ST>> minStzi=L(st.stzs(),stzi->solve(p,stzi));
-    try{
-      List<List<T>> tzs=L(minStzi,(c,stzi)->c.add(typeFilter(stzi.stream(),T.class)));
-      List<List<T>> tsz=tzsToTsz(tzs);
-      Set<Psi> options=new HashSet<>();
-      for(var ts:tsz){options.addAll(opOptions(p,st.op(),ts));}
-      if(options.size()!=1){return st.withStzs(minStzi);}
-      assert options.size()==1;
-      Psi psi=options.iterator().next();
-      return p.from(_elem(p._ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
-      }
-    catch(EndError.PathNotExistent pne){return st.withStzs(minStzi);}
-    }  
   public void plusAcc(Program p,List<ST> stz,List<ST>stz1){
-    stz1=solve(p,stz1);
+    stz1=p.solve(stz1);
     for(ST st:stz){
-      st=solve(p,st);
+      st=p.solve(st);
       if(st instanceof T){continue;}
       plusAcc(p,st,stz1);
       }
@@ -185,7 +115,7 @@ public class CTz implements Serializable{
     private void onSTMeth(ST.STMeth stsi, Consumer<ST> s) {
       ST st=stsi.st();
       install(st,st2->{
-        ST st3=solve(p,stsi.withSt(st2));
+        ST st3=p.solve(stsi.withSt(st2));
         install(st3,st1->s.accept(st1));
         });
       }
@@ -198,7 +128,7 @@ public class CTz implements Serializable{
       int n=stz1n.size();
       int size=pre.size();
       if(size==n){
-        ST stSolved=solve(p,stop.withStzs(L(pre.stream().map(e->L(e)))));
+        ST stSolved=p.solve(stop.withStzs(L(pre.stream().map(e->L(e)))));
         install(stSolved, st1->s.accept(st1));
         return;}
       List<ST> optionsSize=stz1n.get(size);

@@ -51,7 +51,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(cond){throw new EndError.TypeError(e.poss(),msg);}
     }
   void mustSubPath(P p1,P p2,List<Pos>poss){
-    if(!p.isSubtype(p1, p2, poss)){
+    if(!p._isSubtype(p1, p2)){
       throw new EndError.TypeError(poss,Err.subTypeExpected(p1,p2));
       }
     }  
@@ -90,13 +90,13 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     assert computed!=null;
     if(e.thr()==Error){return;}
     boolean find=false;
-    if(e.thr()==Exception){find=tryAlternatives(ps.stream(),computed,e.poss());}
-    else{find=tryAlternatives(ts.stream().map(t->t.p()),computed,e.poss());}
+    if(e.thr()==Exception){find=tryAlternatives(ps.stream(),computed);}
+    else{find=tryAlternatives(ts.stream().map(t->t.p()),computed);}
     errIf(!find,e,Err.leakedThrow(e.thr().inner));
     _computed=null;
     }
-  private boolean tryAlternatives(Stream<P> stream,P computed,List<Pos>pos){
-    return stream.anyMatch(pi->p.isSubtype(computed, pi,pos));
+  private boolean tryAlternatives(Stream<P> stream,P computed){
+    return stream.anyMatch(pi->p._isSubtype(computed, pi));
     }
   @Override public void visitMCall(MCall e){
     P p0=TypeManipulation.guess(g,e.xP());
@@ -113,7 +113,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
       visitExpecting(e.es().get(i),mh.pars().get(i).p());
       }
     for(T ti:mh.exceptions()){
-      var err=ps.stream().noneMatch(pj->p.isSubtype(ti.p(),pj,e.poss()));
+      var err=ps.stream().noneMatch(pj->p._isSubtype(ti.p(),pj));
       errIf(err,e,Err.leakedExceptionFromMethCall(ti.p()));
       }
     _computed=mh.t().p();
@@ -147,7 +147,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     var pos=e.poss();
     for(P c1:computeds){
       if(c1==null){continue;}
-      var superAll=computeds.stream().allMatch(c2->c2!=null && p.isSubtype(c2,c1,pos));
+      var superAll=computeds.stream().allMatch(c2->c2!=null && p._isSubtype(c2,c1));
       if(superAll){computed.add(c1);}
       }
     if(computed.size()!=1){_computed=expected;}

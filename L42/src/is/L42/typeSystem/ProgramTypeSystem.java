@@ -99,13 +99,13 @@ public class ProgramTypeSystem {
     for(MH mh:mhs){ typeMHSubtype(p,mh,mwt.mh(),mwt.poss());}
     }
   private static void typeMHSubtype(Program p,MH mhI, MH mhC,List<Pos>pos) {
-    errIf(!p.isSubtype(mhC.t(), mhI.t(),pos),pos,
+    errIf(!p._isSubtype(mhC.t(), mhI.t()),pos,
       Err.methSubTypeExpectedRet(mhC.key(),mhC.t(), mhI.t())); 
     errIf(mhC.mdf()!=mhI.mdf(),pos,Err.methSubTypeExpectedMdf(mhC.key(),mhC.mdf(),mhI.mdf()));
     errIf(!mhI.pars().equals(mhC.pars()),pos,
       Err.methSubTypeExpectedPars(mhC.key(),mhC.pars(),mhI.pars()));
     for( var eC:mhC.exceptions()){
-      boolean cond=mhI.exceptions().stream().anyMatch(eI->p.isSubtype(eC,eI, pos));
+      boolean cond=mhI.exceptions().stream().anyMatch(eI->p._isSubtype(eC,eI));
       errIf(cond,pos,Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions()));  
       }    
     }
