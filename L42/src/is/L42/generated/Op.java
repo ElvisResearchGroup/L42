@@ -5,9 +5,9 @@ public enum Op {
   Tilde("~", OpKind.Unary),//
   Bang("!", OpKind.Unary),//
 
+  MinusGT("->",OpKind.BoolOp),//
   AndAnd("&&", OpKind.BoolOp),//
   OrOr("||", OpKind.BoolOp),//
-  MinusGT("->",OpKind.BoolOp),//
   EqualEqual("==", OpKind.RelationalOp),//
   LT("<", OpKind.RelationalOp),//
   GT(">",OpKind.RelationalOp),//
@@ -32,6 +32,7 @@ public enum Op {
 
   ColonEqual(":=",OpKind.OpUpdate),//
   HatEqual("^=",OpKind.OpUpdate),//
+  LTMinusEqual("<-=",OpKind.OpUpdate),//
   LTLTEqual("<<=",OpKind.OpUpdate),//
   PlusEqual("+=",OpKind.OpUpdate),//
   MinusEqual("-=",OpKind.OpUpdate),//
@@ -40,7 +41,8 @@ public enum Op {
   PlusPlusEqual("++=",OpKind.OpUpdate),//
   MinusMinusEqual("--=",OpKind.OpUpdate),//
   TimesTimesEqual("**=",OpKind.OpUpdate),//
-  GTGTEqual(">>=",OpKind.OpUpdate);//
+  GTGTEqual(">>=",OpKind.OpUpdate),//
+  MinusGTEqual("->=",OpKind.OpUpdate);//
 
   public final String inner;
   public final OpKind kind;

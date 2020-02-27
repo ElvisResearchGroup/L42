@@ -47,6 +47,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    top("{A={} B=({})}","{A={#typed{}}B={#typed{}}#norm{}}")
    ),new AtomicTest(()->
+   topFail(EndError.TypeError.class,"""
+    {A={interface[This1.B] #norm{typeDep=This1.B}}
+     B={interface[This1.C] #norm{typeDep=This1.C}}
+     C={interface #norm{}} 
+     D=({})
+     }""",Err.missingImplementedInterface(hole))
+   ),new AtomicTest(()->
+   topFail(EndError.NotWellFormed.class,"""
+    {A={interface[This] #norm{typeDep=This}}
+     D=({})
+     }""",Err.interfaceImplementsItself(hole))
+   ),new AtomicTest(()->
    top("{A={class method This() method Library #toLibrary()={#norm{}}} B=A()}","""
      {
      A={
@@ -64,7 +76,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    "{A={class method imm This0 foo::0() #typed{typeDep=This0 close}} B={#typed{}}#norm{}}")
 
    ),new AtomicTest(()->
-   topFail(NotWellFormed.class,"{A={class method This foo::1()} B={class method This foo::1()} C=void}",
+   topFail(NotWellFormed.class,"{A={class method This foo::1()=error void} B={class method This foo::1()=error void} C=void}",
    Err.nonUniqueNumber(hole,hole))
 
    ),new AtomicTest(()->
@@ -102,13 +114,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    Err.missedCoheDep(hole))
    ),new AtomicTest(()->
    topFail(NotWellFormed.class,"""
-   {A={#norm{watched=This0}}
+   {A={#norm{typeDep=This0, watched=This0}}
     C=void}
     """,
    Err.noSelfWatch())
    ),new AtomicTest(()->
    topFail(NotWellFormed.class,"""
-   {B={D::1={}}
+   {B={D::1={#norm{}}#norm{}}
     A={
       method This1.B.D::1 b() 
       #norm{typeDep=This1.B,This1.B.D::1}}
@@ -472,10 +484,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ""","""
    {A={#typed{}}#norm{}}
    """)
-   
-   ),new AtomicTest(()->topFail(EndError.InvalidImplements.class,"""
+   ),new AtomicTest(()->topFail(EndError.NotWellFormed.class,"""
    {I={interface[This]}}
-   """,Err.nestedClassesImplemented(hole))
+   """,Err.interfaceImplementsItself(hole))
+   ),new AtomicTest(()->top("""
+   {I={interface[This.A] A={interface #norm{}}#norm{typeDep=This.A}} B=void}
+   ""","""
+   {I={interface[This.A] A={interface #typed{}}#typed{typeDep=This.A}} B={#typed{}} #norm{}}
+   """)
   ),new AtomicTest(()->
 //For catch class P to be sound we need to be careful: we do not "cast up" a non coherent class P
 //We had various options here, for now, we implemented (2)

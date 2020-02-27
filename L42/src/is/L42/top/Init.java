@@ -71,6 +71,7 @@ public class Init {
     return tail.push(p.pTails.c(),ll);
     }
   public static LL initTop(Program pStart,FreshNames f){
+    pStart.top.wf();
     return pStart.top.visitable().accept(new InitVisitor(f,pStart));
     }
 }

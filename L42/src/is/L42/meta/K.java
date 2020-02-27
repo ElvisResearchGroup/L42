@@ -57,7 +57,7 @@ public class K extends GuessFields{
   public Core.L k(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     err=new MetaError(wrap);
     if(cs.isEmpty()){return k(p,wrap,mutK,immK);}
-    var pIn=p.navigate(P.of(0, cs));
+    var pIn=p.navigate(cs);
     var l=k(pIn,wrap,mutK,immK);
     pIn=pIn.update(l,false);
     return pIn._ofCore(P.of(cs.size(),L()));

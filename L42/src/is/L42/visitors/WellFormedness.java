@@ -654,7 +654,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     List<Visitable<?>> ts=L(l.ts().stream().map(t->(Visitable<?>)t.p()));
     common(l.isInterface(), ts, dom, impl);
     }
+  private static boolean isThis0(String s){return s.equals("This") || s.equals("This0");}
   void common(boolean isInterface,List<Visitable<?>> ts,List<LDom> dom, List<LDom> impl){
+    if(ts.stream().anyMatch(t->isThis0(t.toString()))){err(Err.interfaceImplementsItself(ts));}
     long countM=dom.stream().distinct().count();
     if(countM<dom.size()) {
       var dups=dups(dom);

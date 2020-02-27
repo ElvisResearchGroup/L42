@@ -5,6 +5,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.junit.Test;
 import org.junit.jupiter.api.Assertions;
 import org.opentest4j.AssertionFailedError;
 
@@ -280,16 +281,122 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        method Void foo::2()=error void
        #norm{}}
    #norm{}}"""/*next test after this line*/)
-
-//TODO: normalize privates in sum right!
+   ),new AtomicTest(()->pass("""
+     B={[This2.E] method This self() #norm{typeDep=This,This2.E refined=self()}}
+   #norm{}} E={interface method This self() #norm{typeDep=This}}
+   """,/*second lib after this line*/"""
+     B={[This2.E] method This2.E self() #norm{typeDep=This,This2.E refined=self()}}
+   #norm{}} E={interface method This self() #norm{typeDep=This}}
+   """,/*expected lib after this line*/"""
+     B={[This2.E] method This self() #norm{typeDep=This,This2.E refined=self()}}
+   #norm{}} E={interface method This self() #norm{typeDep=This}}
+   """/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     B={#norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     C={#norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     B={#norm{}} C={#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+   #norm{}}""",/*second lib after this line*/"""
+     B={#norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     B={#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     B::1={#norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+   #norm{}}""",/*expected lib after this line*/"""
+     B::1={#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     B::1={#norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     B::1={#norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     B::1={#norm{}} B::2={#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     B::1={#norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     B::1={#norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     B::1={#norm{}} B::2={#norm{}}
+   #norm{}}"""/*next test after this line*/)//twice the same test to check that is a determinitic rename and no counter is statically shared
+   ),new AtomicTest(()->fail("""
+     B={method Void m() #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     B={method This m() #norm{typeDep=This}}
+   #norm{}}""",/*expected lib after this line*/"""
+   Invalid method imm method imm Void m()
+   The other method have a different signature:
+   imm method imm This0 m()
+   But there is no local refinement between those two signatures
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     B={method Void m() #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={interface method Void m()#norm{}} B={[This1.I] method Void m() #norm{typeDep=This,This1.I refined=m()}}
+   #norm{}}""",/*expected lib after this line*/"""
+     B={[This1.I] method Void m() #norm{typeDep=This,This1.I refined=m()}}
+     I={interface method Void m()#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     J={interface method Void m()#norm{}} B={[This1.J] method Void m() #norm{typeDep=This,This1.J refined=m()}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={interface method Void m()#norm{}} B={[This1.I] method Void m() #norm{typeDep=This,This1.I refined=m()}}
+   #norm{}}""",/*expected lib after this line*/"""
+   Invalid nested class B={ [ This1.J This1.I ] m() }
+   No unique source for m(); it originates from both This1.I and This1.J
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I1={interface[This1.I2] #norm{typeDep=This1.I2}} I2={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I2={interface[This1.I1] #norm{typeDep=This1.I1}} I1={interface #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+   Invalid nested class I1={interface [ This1.I2 This0 ] }
+   The sum would induce a circular interface implemntation for [imm This1.I2, imm This0]
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={interface #norm{}}
+     B={interface[This1.A] #norm{typeDep=This1.A}}
+     C={interface #norm{}}
+     D={interface[This1.C] #norm{typeDep=This1.C}}
+     E={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={interface #norm{}}
+     B={interface #norm{}}
+     C={interface[This1.B] #norm{typeDep=This1.B}}
+     D={interface #norm{}}
+     E={interface[This1.D] #norm{typeDep=This1.D}}     
+   #norm{}}""",/*expected lib after this line*/"""
+     A={interface #norm{}}
+     B={interface[This1.A] #norm{typeDep=This1.A}}
+     C={interface[This1.B,This1.A] #norm{typeDep=This1.B,This1.A}}
+     D={interface[This1.C,This1.B,This1.A] #norm{typeDep=This1.C,This1.B,This1.A}}
+     E={interface[This1.D,This1.C,This1.B,This1.A] #norm{typeDep=This1.D,This1.C,This1.B,This1.A}}
+   #norm{}}"""/*next test after this line*/)
+      
    ));}
+   @Test public void test2(){
+     miniFrom("A.B","A.B.C","This0.C");
+     miniFrom("A.B.D.E","A.B.C","This2.C");
+     miniFrom("A.B.C.D.E","A.B","This3");
+     }
+   void miniFrom(String into,String that,String res){
+     P pThat=P.parse("This0."+that);
+     P pInto=P.parse("This0."+into);
+     P pRes=P.parse(res);
+     assertEquals(pRes,Sum.miniFrom(pInto.toNCs().cs(),pThat.toNCs().cs()));
+     }
 public static void pass(String sl1,String sl2,String sl3){
   Resources.clearRes();
   Init init1=new Init("{A={"+sl1+"}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
   Init init2=new Init("{A={"+sl2+"}");
   Core.L l2=init2.p._ofCore(P.of(0,List.of(new C("A",-1))));
-  Core.L l3Actual=new Sum().compose(l1, l2,null,null);
+  Core.L l3Actual=new Sum().compose(init1.p,new C("A",-1),l1, l2,null,null);
   Init init3=new Init("{A={"+sl3+"}");
   Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(new C("A",-1))));
   assertEquals(l3Expected, l3Actual);
@@ -303,7 +410,7 @@ public static void fail(String sl1,String sl2,String err){
   Init init2=new Init("{A={"+sl2+"}");
   Core.L l2=init2.p._ofCore(P.of(0,List.of(new C("A",-1))));
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
-  try{new Sum().compose(l1, l2,wrap,wrap);Assertions.fail();}
+  try{new Sum().compose(init1.p,new C("A",-1),l1,l2,wrap,wrap);Assertions.fail();}
   catch(FailErr fe){}
   Err.strCmp(msg[0],err);
   }

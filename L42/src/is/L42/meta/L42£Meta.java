@@ -143,7 +143,7 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     return wrapL(res);
     }
   public L42£Library simpleSum(L42£Library a, L42£Library b,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
-    L res=new Sum().compose(a.unwrap, b.unwrap, wrapC, wrapM);
+    L res=new Sum().compose(Resources.currentP,Resources.currentC,a.unwrap, b.unwrap, wrapC, wrapM);
     return wrapL(res);
     }
   private L simpleRedirect(L input, List<C> cs, P target){

@@ -789,7 +789,7 @@ public static void pass(String program){
 public static void allCoherent(Program p){
   assertTrue(new Coherence(p,false).isCoherent(false));
   for(var nc:p.topCore().ncs()){
-    allCoherent(p.navigate(P.of(0,L(nc.key()))));
+    allCoherent(p.navigate(L(nc.key())));
     }
   }
 public static void failC(String program,String...out){

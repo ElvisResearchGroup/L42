@@ -5,7 +5,7 @@ public enum Op {
   Tilde("~", OpKind.Unary),//
   Bang("!", OpKind.Unary),//
 
-  EqualGT("=>", OpKind.BoolOp),//
+  MinusGT("->",OpKind.BoolOp),//
   AndAnd("&&", OpKind.BoolOp),//
   OrOr("||", OpKind.BoolOp),//
   EqualEqual("==", OpKind.RelationalOp),//
@@ -13,6 +13,7 @@ public enum Op {
   GT(">",OpKind.RelationalOp),//
   GTEqual(">=", OpKind.RelationalOp),//
   LTEqual("<=", OpKind.RelationalOp),//
+  EqualGT("=>", OpKind.RelationalOp),//
   In("in", OpKind.RelationalOp),//
   BangEqual("!=",OpKind.RelationalOp),//
 
@@ -21,11 +22,9 @@ public enum Op {
   Times("*",OpKind.DataLeftOp),//
   Divide("/",OpKind.DataLeftOp),//
   GTGT(">>",OpKind.DataLeftOp),//
-  MinusGT("->",OpKind.DataLeftOp),//
 
   Hat("^",OpKind.DataRightOp),//
   Colon(":",OpKind.DataRightOp),//
-  LTMinus("<-",OpKind.DataRightOp),//
   LTLT("<<", OpKind.DataRightOp),//
   PlusPlus("++",OpKind.DataRightOp),//
   MinusMinus("--",OpKind.DataRightOp),//

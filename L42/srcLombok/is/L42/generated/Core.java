@@ -71,10 +71,7 @@ public class Core {
       if(res==null){return null;}
       return res.l()._cs(popL(cs));
       }
-    public boolean inDom(List<C> cs){
-      if(cs.isEmpty()){return true;}
-      return c(cs.get(0)).inDom(popL(cs));
-      }
+    public boolean inDom(List<C> cs){return _cs(cs)!=null;}
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
     @Override public L c(C c){
       var res=LDom._elem(ncs, c);

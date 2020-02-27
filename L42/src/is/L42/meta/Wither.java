@@ -37,7 +37,7 @@ public class Wither {
   public Core.L wither(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
     err=new MetaError(wrap);
     if(cs.isEmpty()){return wither(p,wrap,immK);}
-    var pIn=p.navigate(P.of(0, cs));
+    var pIn=p.navigate(cs);
     var l=wither(pIn,wrap,immK);
     pIn=pIn.update(l,false);
     return pIn._ofCore(P.of(cs.size(),L()));

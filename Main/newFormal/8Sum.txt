@@ -1,55 +1,61 @@
 Note: interfaces can watch if they have private nested classes that are watching.
 Note: interfaces can be watched if they have private nested classes that are watched.
-TODO: sum class+interface, ok if class not in coherent of anything in the bubble
-PLUS::=PLUS[topLeft;topRight;Cs;Cs1->Pz1..Czn->Pzn]
+
+PLUS::=PLUS[p;C;topLeft;topRight;Cs;Cs1->Pz1..Czn->Pzn]
 iMWT::=interface?MWT
 _______
-#define |- CORE.L1 + CORE.L2 = CORE.L3
-* |- L1 + L2 = L
+#define p;C|- CORE.L1 + CORE.L2 = CORE.L3
+* p;C|- L1 + L2 = L
     Cs1->Csz1 .. Csn->Cszn =transitiveMap(L1,L2) 
     forall Cs in allHiddenSupertypes(L1): L2(Cs)>L1(Cs) does not hold
     forall Cs in allHiddenSupertypes(L2): L1(Cs)>L2(Cs) does not hold
-    PLUS=PLUS[topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
+    PLUS=PLUS[p;C;topLeft=L1;topRight=L2;Cs1->Pz1 .. Csn->Pzn]
     L = L1 PLUS L2
 _______
 #define singleMap(L1,L2)=Cs->Csz    transitiveMap(L1,L2)=Cs->Csz
-  * Cs' in singleMap(L1,L2)(Cs)
+* Cs' in singleMap(L1,L2)(Cs)
     Cs and Cs' has no unique n
     {1,2}={i,j}
     Cs in dom(Li)
     This0.Cs' in Li(Cs).Ts.Ps[from Cs;{}]
     Lj(Cs')>Li(Cs')
+* Cs" in singleMap(L1,L2)(Cs)
+    Cs' in singleMap(L1,L2)(Cs)
+    This0.Cs" in L1(Cs').Ts.Ps[from Cs;{}] U L2(Cs').Ts.Ps[from Cs;{}]
 
-  * Cs' in transitiveMap(L1,L2)(Cs)
-      Cs' in singleMap(L1,L2)(Cs)
-  * Cs" in transitiveMap(L1,L2)(Cs)
-      Cs' in transitiveMap(L1,L2)(Cs)
-      Cs" in singleMap(L1,L2)(Cs')
-
-_______//UNUSED?
-#define Cs/P=P'// make P as it should be when minimized in Cs
-* Cs.C._/This0.Cs.C'.C1..Cn= This(n+1).C'.C1..Cn
-    C!=C' 
+* Cs' in transitiveMap(L1,L2)(Cs)
+    Cs' in singleMap(L1,L2)(Cs)
+* Cs" in transitiveMap(L1,L2)(Cs)
+    Cs' in transitiveMap(L1,L2)(Cs)
+    Cs" in singleMap(L1,L2)(Cs')
+_______
+#define Cs/Cs'=P// make Cs' as it should be when minimized into Cs
+* Cs.C1..Cn/Cs = Thisn
+* Cs/Cs.C1..Cn = This0.C1..Cn
+* Cs.C1..Cn/Cs.C'1..C'k = Thisn.C'1..C'k
+    C1!=C'1 
 _______
 #define CORE.L1 PLUS CORE.L2 = CORE.L3    Ts1+Ts2=Ts3
 * L1 PLUS L2 = L3
-  PLUS.map(PLUS.Cs)=This0.Cs1..This0.Csn //empty if map undefined for Cs
+  PLUS.map(PLUS.Cs)=Cs1..Csn //empty if map undefined for Cs
   Li={Hi MWTsi NCsi Doci Infoi}
-  H3=(H1 PLUS H2) H1.Ts,(H2.Ts\H1.Ts)
-  H3=(H1 PLUS H2) H1.Ts + H2.Ts + topLeft(Cs1).Ts + topRight(Cs1).Ts +..+topLeft(Csn).Ts + topRight(Csn).Ts
+  H3=(H1 PLUS H2) H1.Ts + H2.Ts+PLUS.Cs/Cs1+..+PLUS.Cs/Csn 
   LDoms=empty if L1.interface?=L2.interface?
   LDoms={LDom | i in {1,2}, Li.interface?=empty LDom in dom(Li) and LDom have uniqueNum} otherwise//private domain of the non interface Li
   iMWTs=implemented(PLUS.topLeft,PLUS.Cs)[MWTs1\LDoms]
     U implemented(PLUS.topRight,PLUS.Cs)[MWTs2\LDoms]
-    U PLUS.topLeft(Cs1).MWTs U PLUS.topRight(Cs1).MWTs//removing all the docs
-    ..
-    U PLUS.topLeft(Csn).MWTs U PLUS.topRight(Csn).MWTs//removing all the docs
+    U MWTs1 U MWTs'1 U..U MWTsn U MWTs'n
+  p=PLUS.p.push(PLUS.C,PLUS.topLeft).navigate(Cs) or PLUS.p.push(PLUS.C,PLUS.topRight).navigate(Cs)
+  Cs=C1..Ck
+  MWTsi=PLUS.topLeft(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
+  MWTs'i=PLUS.topRight(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
   MWTs3=PLUS(iMWTs)
   NCs3=NCs1\LDoms PLUS NCs2\LDoms
   Doc3=Doc1,Doc2
   Info=Info1+Info2 but if one header is made interface the watched and the coherentDep from that side are discarded
-  Info3=Info[refined+=dom((iMWTs3..iMWTsn).MWTs)]
-  //TODO:also, check well formedness of refine relation, implicit in formalism but TODO: in code
+  Info3=Info[refined+=dom((iMWTs3..iMWTsn).MWTs) typeDep+=Ps]
+  Ps=paths(PLUS.topLeft(Cs1),..,PLUS.topLeft(Csn))[from p.minimize(Thisk.Csn);p],
+       paths(PLUS.topRight(Cs1),..,PLUS.topEight(Csn))[from p.minimize(Thisk.Csn);p]
 
 *  Ts1 + Ts2= Ts1,Ts2/Ts1 //using T.P for set minus removal
 _______
@@ -62,15 +68,17 @@ _______
 
 * PLUS(L0,L) = L
     PLUS.Cs notin dom(PLUS.map)
-* PLUS(L0,L) = L[Ts=Ts,MWTs=PLUS(iMWTs) info.typeDep+=Ps]//TODO: how to adapt typeDep?
+* PLUS(L0,L) = L[Ts=Ts,MWTs=PLUS(iMWTs) info.typeDep+=Ps]
     PLUS.map(PLUS.Cs)=Cs1..Csn
-    Ps=paths(topLeft(C1),topRight(C1),..topLeft(Cn),topRight(Cn))
-    Ts=L.Ts+PLUS.topLeft(Cs1).Ts+PLUS.topRight(Cs1)+..+PLUS.topLeft(Csn).Ts+PLUS.topRight(Csn)
-    implemented(L0,PLUS.Cs)[L.MWTs]
-    U PLUS.topLeft(Cs1).MWTs U PLUS.topRight(Cs1).MWTs//removing all the docs
-    ..
-    U PLUS.topLeft(Csn).MWTs U PLUS.topRight(Csn).MWTs//removing all the docs
-
+    p=either PLUS.p.push(PLUS.C,PLUS.topLeft).navigate(Cs) or PLUS.p.push(PLUS.C,PLUS.topRight).navigate(Cs)
+    //at least one of the two is defined, and they would both from identically 
+    Cs=C1..Ck
+    Ps=paths(PLUS.topLeft(Cs1),..,PLUS.topLeft(Csn))[from p.minimize(Thisk.Csn);p],
+         paths(PLUS.topRight(Cs1),..,PLUS.topEight(Csn))[from p.minimize(Thisk.Csn);p]
+    Ts=L.Ts+PLUS.Cs/Cs1+..+PLUS.Cs/Csn
+    iMWTs=implemented(L0,PLUS.Cs)[L.MWTs] U MWTs1 U MWTs'1 U..U MWTsn U MWTs'n
+    MWTsi=PLUS.topLeft(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
+    MWTs'i=PLUS.topRight(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
 * P in paths(L) if P in L.Ts.Ps
 * P in paths(L) if P in (T0..Tn,Ts).Ps and mdf method T0 m(T1 x1..Tn xn)[Ts] in L//and docs
 //TODO: what happens for interfaces with both private and public methods?
@@ -97,18 +105,20 @@ _______
 _______
 #define PLUS.loseSafeUnique(iMWT,MH)    loseSafe(L,Cs,MWT,MH)    
 * PLUS.loseSafeUnique(iMWT,MH)
-    loseSafe(PLUS.topLeft,PLUS.Cs,iMWT.S,MH) or loseSafe(PLUS.topRight,PLUS.Cs,iMWT.S,MH)
+    loseSafe(PLUS.topLeft,PLUS.Cs,iMWT.S,MH) or loseSafe(PLUS.topRight,iMWT.S,MH)
     iMWT.e?!=empty or iMWT.interface?!=empty//implemented or interface can not lose
 * PLUS.loseSafeUnique(iMWT,MH)
-    loseSafe(PLUS.topLeft,PLUS.Cs,iMWT.S,MH) or loseSafe(PLUS.topRight,PLUS.Cs,iMWT.S,MH)
+    loseSafe(PLUS.topLeft,PLUS.Cs,iMWT.S,MH) or PLUS.loseSafe(PLUS.topRight,iMWT.S,MH)
     iMWT.e?=empty and iMWT.interface?=empty
-    not loseSafe(PLUS.topLeft,PLUS.Cs,MH.S,iMWT.MH)
-    not loseSafe(PLUS.topRight,PLUS.Cs,MH.S,iMWT.MH)
+    not PLUS.loseSafe(PLUS.topLeft,MH.S,iMWT.MH)
+    not PLUS.loseSafe(PLUS.topRight,MH.S,iMWT.MH)
     
-* loseSafe(L,Cs,S,MH)
-    S in L(Cs).Info.refined,
-    This0.Cs' in L(Cs).Ts.Ps[from This0.Cs;{}]
-    L(Cs')(S).MH==MH //exept docs
+* PLUS.loseSafe(L,S,MH)
+    S in L(PLUS.Cs).Info.refined,
+    P in L(PLUS.Cs).Ts.Ps
+    p=PLUS.p.push(PLUS.C,L).navigate(PLUS.Cs)
+    L'=p(P)
+    L'(S).MH[from P;p]==MH //exept docs
 _______
 #define allWatched(L) = Csz
 * Cs in allWatched(L) if Cs in L(Cs').Info.watched[from This0.Cs';{}] and Cs' not of form _._::n._

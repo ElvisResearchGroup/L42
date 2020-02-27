@@ -120,8 +120,11 @@ public class Program implements Visitable<Program>{
     return new Program(ll,pTails);
     }
   public Program navigate(P.NCs p){
-    Program res=this.pop(p.n());
-    for(C c:p.cs()){res=res.push(c);}
+    return this.pop(p.n()).navigate(p.cs());
+    }
+  public Program navigate(List<C> cs){
+    Program res=this;
+    for(C c:cs){res=res.push(c);}
     return res;
     }
   public int dept(){

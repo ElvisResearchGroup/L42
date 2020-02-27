@@ -223,7 +223,12 @@ class InitVisitor extends CloneVisitorWithProgram{
     if(!pStart.pTails.isEmpty()){return false;}
     if(!p0.isNCs()){return false;}
     P.NCs p=p0.toNCs();
-    if(p.n()==0){return true;}
+    if(p.n()==0){
+      LL ll=this.p().top;
+      if(!ll.isFullL()){return false;}
+      try{return ll.cs(p.cs()).isFullL();}
+      catch(ClassCastException cce){return true;}
+      }
     if(p.cs().isEmpty()){return false;}
     C c=p.cs().get(0);
     LL l=this.p().pop(p.n()).top;

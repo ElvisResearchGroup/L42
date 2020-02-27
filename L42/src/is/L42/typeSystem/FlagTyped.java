@@ -37,7 +37,7 @@ public class FlagTyped {
     var typable=typable(p);
     if(typable.isEmpty()){return p;}
     for(var csi:typable){
-      Program pi=p.navigate(P.of(0, csi));
+      Program pi=p.navigate(csi);
       assert pi.topCore().info().typeDep().stream().allMatch(pj->pi._ofCore(pj)!=null);
       assert pi.topCore().mwts().stream().flatMap(m->mhTs(m.mh())).
         allMatch(tj->!tj.p().isNCs() || pi.topCore().info().typeDep().contains(tj.p()));

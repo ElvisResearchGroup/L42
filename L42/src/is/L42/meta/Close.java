@@ -46,7 +46,7 @@ public class Close extends GuessFields{
   ArrayList<MWT> toSkip=new ArrayList<>();
   public Core.L close(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
     if(cs.isEmpty()){return close(p,wrap);}
-    var pIn=p.navigate(P.of(0, cs));
+    var pIn=p.navigate(cs);
     var l=close(pIn,wrap);
     pIn=pIn.update(l,false);
     return pIn._ofCore(P.of(cs.size(),General.L()));
