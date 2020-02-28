@@ -1,3 +1,14 @@
+Motivation for the current design: since A.B,A.C may still be in need of being resolved,
+Consider the  following:
+  Res={method A.B foo()} + {method A.C foo()}
+  A=Something.foo()
+What should Res be?  {method A.B foo()} or {method A.C foo()}?
+Both solution are ok w.r.t. meta level soundness.
+But if we swap the line, then we would have either A.B>A.C or vice versa (or error)
+thus swapping the line may change the result of the sum, and I do not like that.
+Thus,we do not even look in A.B/A.C; and if a method is already beating another type, then it is
+ok to chose the more refined version. But only using this local reasoning inside the bubble.
+
 Note: interfaces can watch if they have private nested classes that are watching.
 Note: interfaces can be watched if they have private nested classes that are watched.
 

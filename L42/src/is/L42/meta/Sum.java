@@ -275,17 +275,18 @@ public class Sum {
       if(isInterface3&&!l1.isInterface()){info1=info1.withWatched(L()).withCoherentDep(L());}
       if(isInterface3&&!l2.isInterface()){info2=info2.withWatched(L()).withCoherentDep(L());}
       Info info3=Top.sumInfo(info1,info2);
+      LinkedHashSet<S> refineds=new LinkedHashSet<>(info3.refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(info3.typeDep());
       var mapped=map.get(cs);
-      if(mapped!=null){useMapped(ts3, imwts, typeDep, mapped);}
-      info3=info3.withTypeDep(typeDep);
+      if(mapped!=null){useMapped(ts3,refineds, imwts, typeDep, mapped);}
+      info3=info3.withTypeDep(L(typeDep.stream())).withRefined(L(refineds.stream()));
       List<MWT>mwts3=plusIMWTs(imwts,l1,l2);
       List<NC> ncs3=plusNCs(ncs1, ncs2);
       List<Doc> doc3=mergeU(l1.docs(),l2.docs());
       List<Pos> pos=mergeU(l1.poss(),l2.poss());
       return new Core.L(pos, isInterface3, L(ts3.stream()), mwts3, ncs3, info3, doc3);
       }
-    private void useMapped(ArrayList<T> ts3, ArrayList<IMWT> imwts, ArrayList<P.NCs> typeDep,LinkedHashSet<List<C>> mapped){
+    private void useMapped(ArrayList<T> ts3,LinkedHashSet<S> refineds, ArrayList<IMWT> imwts, ArrayList<P.NCs> typeDep,LinkedHashSet<List<C>> mapped){
       Program p;
       if(!topLeft.inDom(cs)){p=pOut.push(cOut,topRight).navigate(cs);}
       else{p=pOut.push(cOut,topLeft).navigate(cs);}
@@ -294,9 +295,10 @@ public class Sum {
         P.NCs path=p.minimize(P.of(cs.size(),csi)).toNCs();
         var left=topLeft._cs(csi);
         if(left!=null){
-          for(var m:left.mwts()){//TODO: test if the comments are stripped sometime otherwise add it here
-            MWT mi=m.withMh(p.from(m.mh(),path));
+          for(var m:left.mwts()){
+            MWT mi=m.withMh(p.from(stripDocs(m.mh()),path));
             imwts.add(new IMWT(false,mi));
+            refineds.add(mi.key());
             }
           paths(typeDep,left,p,path);
           }
@@ -305,11 +307,18 @@ public class Sum {
           for(var m:right.mwts()){
             MWT mi=m.withMh(p.from(m.mh(),path));
             imwts.add(new IMWT(false,mi));
+            refineds.add(mi.key());
             }
           paths(typeDep,right,p,path);
           }
         }
     }
+    private MH stripDocs(MH mh) {
+      return new MH(mh.mdf(),L(),mh.t().withDocs(L()),mh.key(),
+        L(mh.pars(),t->t.withDocs(L())),
+        L(mh.exceptions(),t->t.withDocs(L()))
+        );
+      }
     private void plusEqualTs(ArrayList<T> ts3, T t){
       if(ts3.stream().noneMatch(t3->t3.p().equals(t.p()))){ts3.add(t);}
       }
@@ -441,10 +450,11 @@ public class Sum {
       boolean i=Sum.implemented(top,cs);
       ArrayList<IMWT> imwts=new ArrayList<>();
       for(var m:l.mwts()){imwts.add(new IMWT(i,m));}
+      LinkedHashSet<S> refineds=new LinkedHashSet<>(l.info().refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(l.info().typeDep());
-      useMapped(ts,imwts,typeDep,mapped);
+      useMapped(ts,refineds,imwts,typeDep,mapped);
       List<MWT>mwts=plusIMWTs(imwts,l,l);
-      Info info=l.info().withTypeDep(L(typeDep.stream()));
+      Info info=l.info().withTypeDep(L(typeDep.stream())).withRefined(L(refineds.stream()));
       return l.withTs(ts).withMwts(mwts).withInfo(info);
       }
     void paths(ArrayList<P.NCs> c,Core.L l,Program p0,P.NCs source){
@@ -521,34 +531,3 @@ class IMWT{
     return L(mwts,(c,m)->c.add(new IMWT(isInterface,m)));
     }
   }
-  //TODO: in PLUS() modify Ts with /  and iMWTs. In l PLUS l modify Ts and iMWTs
-//TODO: extract examples for testing from below
-    //todo: can we be sure to chose one of the two now?
-    //in case of ill formed a,b can be unclear: 
-    //{I1={method A m()} I2={[I1] method B m()} I3={[I2,I1] method A m()} }
-    // +
-    //{                   I2={ method A m()}    I3={method B m()} }
-    //=???
-    //{I1={method A m()} I2={[I1] method B m()} I3={[I2,I1] method ?? m()} }
-    /*
-    
-    In a program where A,B are still to be resolved with metaprogramming, what should the following sum produce?
-{I1={interface method Any m()} I2={interface [I1] method B m()} I3={[I2] method A m()} } //first library
- +
-{I0={interface method A m()}     I2={interface method A m()}        I3={[I0] method B m()} }//second library
-=
-{I1={interface method A m()} I2={interface [I1] method B m()} I3={[I2,I1] method ?? m()} }Should the ?? be A or B? both are "ok" decisions...in particular, if the first library is to be correct, then A,B will resolve so that A>
-    
-What happens in this example? is m() coming from two different interfaces now?
-
-    { A={interface method Void m()} C={[A] method Void m()}}
-    +
-    { B={interface method Void m()} C={[B] method Void m()}}
-    We need to add to L(Cs).Ts also map(Cs) AND
-    add the new Info.refined and
-    check that the new refined shape is still valid
-    This is also a new point where commutative/associative may fail,
-    since if I add { I={interface method Void m()} A={[I]} B={[I]}}
-    before the sum, than there would be no problem
-    
-    */

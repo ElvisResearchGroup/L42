@@ -377,6 +377,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      D={interface[This1.C,This1.B,This1.A] #norm{typeDep=This1.C,This1.B,This1.A}}
      E={interface[This1.D,This1.C,This1.B,This1.A] #norm{typeDep=This1.D,This1.C,This1.B,This1.A}}
    #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={interface method @{bar} Void foo() #norm{}}
+     B={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={interface #norm{}}
+     B={interface[This1.A] #norm{typeDep=This1.A}}     
+   #norm{}}""",/*expected lib after this line*/"""
+     A={interface method @{bar} Void foo() #norm{}}
+     B={interface[This1.A] method Void foo() #norm{typeDep=This1.A refined=foo()}}
+   #norm{}}"""/*next test after this line*/)
       
    ));}
    @Test public void test2(){
