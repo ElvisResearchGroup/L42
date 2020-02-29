@@ -900,13 +900,13 @@ dropCache:
       LL ll=p.of(t.p(),p.topCore().poss());
       if(ll.isFullL()){
         for(var m:((Full.L)ll).ms()){
-          if(m.key().hasUniqueNum()){continue;}
+          //if(m.key().hasUniqueNum()){continue;}
           if(m.key() instanceof S){refined.add((S)m.key());} 
           }
         }
       else{
         for(var m:((Core.L)ll).mwts()){
-          if(m.key().hasUniqueNum()){continue;}
+          //if(m.key().hasUniqueNum()){continue;}
           refined.add(m.key());
           }
         }

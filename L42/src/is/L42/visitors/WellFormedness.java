@@ -124,6 +124,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   HashSet<X> declaredVarError=new HashSet<>();
   HashSet<X> declaredVar=new HashSet<>();
   List<Pos> lastPos;
+  boolean lastIsInterface;
   private final Error err(String msg){
     throw new EndError.NotWellFormed(lastPos,msg);
     }
@@ -392,8 +393,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   @Override public void visitMWT(Core.L.MWT mwt){
     lastPos=mwt.poss();
-    if(mwt.key().hasUniqueNum() && mwt.key().uniqueNum()!=0 && mwt._e()==null){
-      err(Err.zeroPrivateState(mwt.key().uniqueNum()));
+    boolean privateState=mwt.key().hasUniqueNum() && mwt._e()==null;
+    if(privateState && lastIsInterface){
+      if(mwt.key().uniqueNum()==0){err(Err.zeroInterfaceMethod(mwt.key()));}
+      }
+    if(privateState && !lastIsInterface){
+      if(mwt.key().uniqueNum()!=0){err(Err.zeroPrivateState(mwt.key()));}
       }
     var pars=pushL(X.thisX,mwt.mh().s().xs());
     declared.addAll(pars);
@@ -546,7 +551,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     visitE(f.body());
     for(var di:f.ds()){postDeclare(di);}
     }
-  public void superVisitL(Full.L l){lastPos=l.poss();super.visitL(l);}  
+  public void superVisitL(Full.L l){
+    lastPos=l.poss();
+    lastIsInterface=l.isInterface();
+    super.visitL(l);
+    }
   @Override public void visitL(Full.L l){
     lastPos=l.poss();
     new WellFormedness().superVisitL(l);
@@ -601,7 +610,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     typedContains(info,info.usedMethods().stream().map(ps->ps.p()),"usedMethods");
     typedContains(info,info.watched().stream(),"watched");
     }
-  public void superVisitL(Core.L l){lastPos=l.poss();super.visitL(l);}
+  public void superVisitL(Core.L l){
+    lastPos=l.poss();
+    lastIsInterface=l.isInterface();
+    super.visitL(l);
+    }
   @Override public void visitL(Core.L l){
     lastPos=l.poss();
     new WellFormedness().superVisitL(l);

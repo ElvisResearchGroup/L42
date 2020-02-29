@@ -159,6 +159,8 @@ public class Err {
   "invalid 'if match': no type selected in "+trimExpression(_1.toString())
   ;}public static String forMatchNoVar(Object _1){return
   "nested name "+_1+" is var; in a 'for' match only top level names can be var"
+  ;}public static String zeroInterfaceMethod(Object _1){return
+  "Zero is not allowed for interface methods, but the following is used "+_1
   ;}public static String zeroPrivateState(Object _1){return
   "Only zero is allowed for private state, but the following is used "+_1
   ;}public static String notValidC(Object _1){return

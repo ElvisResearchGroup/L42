@@ -215,18 +215,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      R::1={interface #norm{}}
      I1={interface [This1.R::1] method Any m() #norm{close typeDep=This1.R::1 This1, watched=This1}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid nested class I1={interface [ This1.E::1 ] m() }
-     The two nested classes are both closed, thus can not be composed.
-     [file:[###]"""/*next test after this line*/)
+   Invalid nested class I1={interface m() }
+   One of the two interfaces in nested class I1
+   is close (have private methods or implements private interfaces). Only open interfaces can be composed
+   [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      E::1={interface #norm{}}
-     I1={interface [This1.E::1] method Any m() #norm{close typeDep=This1.E::1 This1, watched=This1}}
+     I1={interface [This1.E::1] method Any k() #norm{close typeDep=This1.E::1 This1, watched=This1}}
    #norm{}}""",/*second lib after this line*/"""
      R={interface #norm{}}
-     I1={interface [This1.R] method Any m() #norm{typeDep=This1.R}}
+     I1={[This1.R] method Any m() #norm{typeDep=This1.R}}
    #norm{}}""",/*expected lib after this line*/"""
      E::1={interface #norm{}}
-     I1={interface[This1.E::1, This1.R] imm method imm Any m()#norm{typeDep=This1.E::1, This1, This1.R watched=This1 close}}
+     I1={interface[This1.E::1, This1.R] method Any k() method Any m() #norm{typeDep=This1.E::1, This1, This1.R watched=This1 close}}
      R={interface #norm{}}
    #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -387,7 +388,40 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      A={interface method @{bar} Void foo() #norm{}}
      B={interface[This1.A] method Void foo() #norm{typeDep=This1.A refined=foo()}}
    #norm{}}"""/*next test after this line*/)
-      
+   ),new AtomicTest(()->fail("""
+     A={interface method Void m::1()  method Void k() #norm{close}}
+     B={[This1.A] method Void m::1()=void  method Void k()=void 
+       #norm{typeDep=This1.A refined=m::1() k()}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={interface #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+   Invalid nested class A={interface k() }
+   One of the two interfaces in nested class A
+   is close (have private methods or implements private interfaces). Only open interfaces can be composed
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={interface  method Void k() #norm{}}
+     B={[This1.A]  method Void k()=void 
+       #norm{typeDep=This1.A refined= k()}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={interface method Void m::1() #norm{close}}
+   #norm{}}""",/*expected lib after this line*/"""
+   Invalid nested class A={interface k() }
+   One of the two interfaces in nested class A
+   is close (have private methods or implements private interfaces). Only open interfaces can be composed
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={interface  method Void k() #norm{}}
+     B={[This1.A]  method Void k()=void 
+       #norm{typeDep=This1.A refined= k()}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={interface method Void m::1() method Void k() #norm{close}}
+   #norm{}}""",/*expected lib after this line*/"""
+   Invalid nested class A={interface k() }
+   One of the two interfaces in nested class A
+   is close (have private methods or implements private interfaces). Only open interfaces can be composed 
+   [file:[###]"""/*next test after this line*/)
+   //TODO: sum open+close interface and close+close for both reasons of being close   
    ));}
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This0.C");

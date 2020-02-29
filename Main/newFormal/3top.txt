@@ -24,7 +24,7 @@ _______
       Ps0;Ps1=collectDeps(p;L.MWTs) U collectDeps(L.Docs) U L.Ts.Ps;empty      
 _______
 #define mustRefine(p) = Ss
-* S in mustRefine(p) iff P in p(This0).Ts.Ps, S in dom(p(P)) and S have no unique n
+* S in mustRefine(p) iff P in p(This0).Ts.Ps, S in dom(p(P))/*and S have no unique n*///TODO: for now I'm keeping the private ones. What is the right decision?
 _______
 #define mustWatch(CORE.L) = Ps    mustWatch(T) = Ps     mustWatch(MWT) = Ps
 //Note: even if not handled below, Any,Void,Library and This0 are never contained in mustWatch(CORE.L)

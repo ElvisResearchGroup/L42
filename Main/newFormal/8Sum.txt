@@ -16,7 +16,7 @@ PLUS::=PLUS[p;C;topLeft;topRight;Cs;Cs1->Pz1..Czn->Pzn]
 iMWT::=interface?MWT
 _______
 #define p;C|- CORE.L1 + CORE.L2 = CORE.L3
-* p;C|- L1 + L2 = L
+* p;C|- L1 + L2 = L  //note: implicitly requires well formedness of the resulting L
     Cs1->Csz1 .. Csn->Cszn =transitiveMap(L1,L2) 
     forall Cs in allHiddenSupertypes(L1): L2(Cs)>L1(Cs) does not hold
     forall Cs in allHiddenSupertypes(L2): L1(Cs)>L2(Cs) does not hold
@@ -143,9 +143,12 @@ _______
 * Cs in allHiddenSupertypes(L) if Cs in L(Cs').Info.hiddenSupertypes[from This0.Cs';{}] and Cs' not of form _._::n._
 _______
 #define interface?1 PLUS interface?2 = interface?3
-* interface? PLUS interface? = interface?
+* empty PLUS empty = empty
     either PLUS.topLeft(PLUS.Cs).Info.closed undefined
     or PLUS.topRight(PLUS.Cs).Info.closed undefined
+* interface PLUS interface = interface
+    PLUS.topLeft(PLUS.Cs).Info.closed undefined
+    PLUS.topRight(PLUS.Cs).Info.closed undefined
 * empty PLUS interface=interface
     PLUS.Cs notin allRequiredCoherent(PLUS.topLeft)
     PLUS.Cs notin allWatched(PLUS.topLeft)

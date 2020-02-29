@@ -47,12 +47,12 @@ public class Sum {
   MetaError errC;
   MetaError errM;
   LinkedHashMap<List<C>,LinkedHashSet<List<C>>> map=new LinkedHashMap<>();
-  List<List<C>> allWatchedRight;
-  List<List<C>> allRequiredCoherentRight;
-  List<List<C>> allHiddenSupertypesRight;
-  List<List<C>> allWatchedLeft;
-  List<List<C>> allRequiredCoherentLeft;
-  List<List<C>> allHiddenSupertypesLeft;
+  LinkedHashSet<List<C>> allWatchedRight;
+  LinkedHashSet<List<C>> allRequiredCoherentRight;
+  LinkedHashSet<List<C>> allHiddenSupertypesRight;
+  LinkedHashSet<List<C>> allWatchedLeft;
+  LinkedHashSet<List<C>> allRequiredCoherentLeft;
+  LinkedHashSet<List<C>> allHiddenSupertypesLeft;
   Core.L topLeft;
   Core.L topRight;
   Program pOut;
@@ -66,12 +66,12 @@ public class Sum {
     l2=normalizePrivates(l2,otherNs(l1));
     topLeft=l1;
     topRight=l2;
-    allHiddenSupertypesLeft=_allHiddenSupertypes(l1);
-    allHiddenSupertypesRight=_allHiddenSupertypes(l2);
-    allWatchedLeft=_allWatched(l1);
-    allWatchedRight=_allWatched(l2);
-    allRequiredCoherentLeft=_allRequiredCoherent(l1);
-    allRequiredCoherentRight=_allRequiredCoherent(l2);
+    allHiddenSupertypesLeft=allHiddenSupertypes(l1);
+    allHiddenSupertypesRight=allHiddenSupertypes(l2);
+    allWatchedLeft=allWatched(l1);
+    allWatchedRight=allWatched(l2);
+    allRequiredCoherentLeft=allRequiredCoherent(l1);
+    allRequiredCoherentRight=allRequiredCoherent(l2);
     singleMap(topLeft,topRight);
     transitiveMap();
     for(var cs:allHiddenSupertypesLeft){growHiddenError(l1,l2,cs);}
@@ -79,6 +79,7 @@ public class Sum {
     Plus plus=new Plus(L());
     Core.L l=plus.plus(l1, l2);
     wellFormedRefineAndNoCircularImplements(l);
+    assert l.wf();
     return l;
     }
   private static HashSet<Integer> otherNs(Core.L other){
@@ -140,27 +141,37 @@ public class Sum {
     var l2cs=l2._cs(cs);
     if(l2cs==null){return;}
     var l1cs=l1.cs(cs);
-    if(moreThen(l2cs,l1cs)){
-      errC.throwErr(cs,l1cs,"This interface is privately implemented "
-        +" but the summed version is larger: "+errC.intro(l2cs,false).stripTrailing());
-      }
+    if(!moreThen(l2cs,l1cs)){return;}
+    assert !l1cs.info().close();
+    errC.throwErr(cs,l1cs,"This interface is privately implemented "
+      +" but the summed version is larger: "+errC.intro(l2cs,false).stripTrailing());
     }
-  
-  public static List<List<C>> allProp(Core.L l,Function<Info,List<P.NCs>> f){return L(c->{
+  private static LinkedHashSet<List<C>> allWatched(Core.L l){
+    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
     l.visitInnerLNoPrivate((li,csi)->{
-      for(var w:f.apply(li.info())){
-        var cs=_publicCsOfP(w, csi);
-        if(cs!=null){c.add(cs);}
-        }
+      for(var w:li.info().watched()){addPublicCsOfP(w,csi,res);}
       });
-    });}
-  private static List<List<C>> _allWatched(Core.L l){return allProp(l,i->i.watched());}
-  private static List<List<C>> _allRequiredCoherent(Core.L l){return allProp(l,i->{
-    var all=new ArrayList<>(i.coherentDep());
-    all.addAll(i.metaCoherentDep());
-    return all;
-    });}
-  private static List<List<C>> _allHiddenSupertypes(Core.L l){return allProp(l,i->i.hiddenSupertypes());}
+    return res;
+    }
+  private static LinkedHashSet<List<C>> allRequiredCoherent(Core.L l){
+    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
+    l.visitInnerLNoPrivate((li,csi)->{
+      for(var w:li.info().coherentDep()){addPublicCsOfP(w,csi,res);}
+      for(var w:li.info().metaCoherentDep()){addPublicCsOfP(w,csi,res);}
+      });
+    return res;
+    }
+  private static LinkedHashSet<List<C>> allHiddenSupertypes(Core.L l){
+    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
+    l.visitInnerLNoPrivate((li,csi)->{
+      for(var w:li.info().hiddenSupertypes()){addPublicCsOfP(w,csi,res);}
+      });
+    return res;
+    }
+  private static void addPublicCsOfP(P.NCs p,List<C>csi,LinkedHashSet<List<C>> c){
+    var cs=_publicCsOfP(p, csi);
+    if(cs!=null){c.add(cs);}
+    }
   public static boolean moreThen(Core.L l1,Core.L l2){
     if(!l2.isInterface()){return false;}
     for(T t1:l1.ts()){
@@ -494,7 +505,14 @@ public class Sum {
         }
       }
     boolean plusInterface(boolean interface1,boolean interface2,Core.L topLeftCs,Core.L topRightCs){
-      if(interface1==interface2){
+      if(interface1 && interface2){
+        if(!topLeftCs.info().close() && !topRightCs.info().close()){return true;}
+        errC.throwErr(cs,topLeftCs,"One of the two interfaces in "+errC.intro(cs,false)
+          +"is close (have private methods or implements private interfaces)."
+          +" Only open interfaces can be composed"
+          );
+        }
+      if(!interface1 && !interface2){
         var leftClose=topLeftCs.info().close();
         var rightClose=topRightCs.info().close();
         if(!leftClose || !rightClose){return interface1;}
@@ -506,7 +524,7 @@ public class Sum {
       assert interface1 && !interface2;
       return differentInterfaces(allRequiredCoherentRight,allWatchedRight,topRightCs);
       }
-    boolean differentInterfaces(List<List<C>> coherents,List<List<C>> watcheds, Core.L topCs){
+    boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, Core.L topCs){
       boolean required=coherents.contains(cs);
       if(required){
         errC.throwErr(cs, topCs,"The nested class can not be turned into an interface, since it is used with 'class' modifier (is required coherent)");

@@ -1,5 +1,7 @@
 package is.L42.meta;
 
+import static is.L42.tools.General.L;
+
 import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -31,7 +33,7 @@ public class MetaError{
       }
     return "Invalid nested class "+elem+"=";
     }
-  public String intro(Object fault,boolean top){
+    public String intro(Object fault,boolean top){
     String elem="";
     if(fault instanceof P){
       var p=(P)fault;
@@ -56,9 +58,11 @@ public class MetaError{
     if(fault instanceof Core.L){
       var l=(Core.L)fault;
       elem="{"+(l.isInterface()?"interface ":" ");
-      if(!l.ts().isEmpty()){
+      var publicImpls=L(l.ts().stream().filter(
+        t->!t.p().isNCs() ||t.p().toNCs().cs().stream().noneMatch(ci->ci.hasUniqueNum())));
+      if(!publicImpls.isEmpty()){
         elem+="[ ";
-        for(var t:l.ts()){elem+=t.p()+" ";}
+        for(var t:publicImpls){elem+=t.p()+" ";}
         elem+="] ";
         }
       for(var mwt:l.mwts()){

@@ -185,7 +185,8 @@ _______
 * FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L
 * C::n n!=0
 * e.m::0(_) and e::0.m[_]: e in {'this','This0'}
-* FULL.MWT/CORE.MWT if MWT.e?=empty and MWT.s of form m::n(_) then n=0
+* FULL.MWT/CORE.MWT if MWT.e?=empty and MWT.s of form m::n(_) 
+    then either n=0 xor the method is contained in an interface //exclusive or
 * LL: //TODO in code: check when the well formedness for LL and Core.L is called
 //When is checked for core?
     LL.ts do not contains This/This0
