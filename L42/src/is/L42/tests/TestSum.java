@@ -420,8 +420,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    Invalid nested class A={interface k() }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed 
-   [file:[###]"""/*next test after this line*/)
-   //TODO: sum open+close interface and close+close for both reasons of being close   
+   [file:[###]"""/*next test after this line*/)   
    ));}
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This0.C");

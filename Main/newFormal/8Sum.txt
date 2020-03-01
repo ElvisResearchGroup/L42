@@ -172,7 +172,116 @@ _______
       This0.Cs notin L(Cs').Info.hiddenSupertypes[from This0.Cs';{}]
 * implemented(L,Cs)=interface otherwise
 
-  //DO NOT READ AFTER THIS POINT
+-------------------------------------------------------
+  Rename MAP
+-------------------------------------------------------
+N::= Cs|P|Cs.s|empty
+|>::= -> | =>
+Map::= N1|>N1'..Nn|>Nn'  
+_______
+#define earlyCheck(Core.L,Map)  earlyCheck(Core.L,N|>N')
+* earlyCheck(L,Map)
+    forall N|>N' in Map, earlyCheck(L,N|>N')
+    if  Cs=>P in Map, s in dom(L(Cs)) and s has no unique n
+      then L(Cs)(s).e?=empty
+    if  Cs=>P in Map, s has no unique n and This0.Cs' in collectDeps({};L(Cs)(s))[from Cs;{}] //L(Cs)(s) is abstract from the check above
+      then Cs'=>P' in Map
+    if  Cs1=>P1..Csn=>Pn in Map 
+      then none of Cs1..Csn in allWatched(L\Cs1..Csn)//all watched without considering Cs1..Csn
+    if Cs in dom(map) U cod(map)
+      then Cs.s not in dom(map) U cod(map)
+    if Cs|>Cs' in map
+      then Cs"|>Cs' not in map
+    if Cs.s|>Cs'.s' in map
+      then Cs".s"|>Cs'.s' not in map
+    Map is a map, thus no two tuples with the same key
+    
+* earlyCheck(L,N|>N')
+    N not of form empty
+    if N of Cs.s then N' of form Cs.s or empty
+    if N of Cs then N' of form Cs or P or empty
+    N,N' do not have unique numbers
+    if N|>N'of form Cs->_
+      then Cs not in allWatched(L) 
+    if N of form Cs, then  Cs in dom(L)
+    if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
+    if N|>N'of form Cs.s->empty
+      then L(Cs)(s).e?!=empty
+    if N|>N'of form Cs.s=>_
+      then s notin L(Cs).info.refined
+    if N|>N'of form Cs.s->_
+      then L(Cs).interface?=empty
+    if N|>N'of form Cs.s|>Cs'.s'
+      then patternOk(L,Cs.s,Cs'.s')
+    if N|>N'of form Cs.s=>Cs'.s', and either Cs!=Cs' or size(s.xs)!=size(s'.xs)
+      then L(Cs).interface=empty//may be this can be relaxed, and with the double delegate the interface may be closed.
+    if N|>N'of form Cs.s->Cs'.s' and then L(Cs').interface=interface  
+      then L(Cs)(s).e?=empty
+
+* applyMap(L,Map)= L0+L1 //simpler then normal sum, at least can skip normaizing unique numbers
+    earlyCheck(L,Map)
+    L[Map L0]=L1
+
+* L[Map L0]=L1
+    ...
+    
+      
+//Double delegate pattern: to move a call to another class:
+original(a,b,c)->destination(b,c,a)
+original(a,b,c)=e--> original::1(a,b,c)=e//needed only if original not abstract
+                 --> original::2(a,b,c)=destination(b=b,c=c,a=a)//needed only if there are usages
+                 --> destination(b,c,a)=original::1(a=a,b=b,c=c)//body needed only if original not abstract
+//In patterns: if parNum equal, then is rename, no shuffling
+//if parNum +1 then is lifting with shuffling
+//if parNum -1 then is embedding with shuffling
+* patternOk(_,Cs.m(x1..xn),Cs.m'(x'1...x'n))
+//example A.foo(a,b)=>A.bar(c,d); the method is renamed and body is adapted to use new par names
+* patternOk(_,Cs.m(x1..xn),Cs'.m'(x'1...x'n))
+    Cs!=Cs'
+    L(Cs)(m(x1..xn)).mdf=class
+//example A.foo(a,b)=>B.bar(c,d); now B watches A
+//delegate B.bar(c,d)=A.foo::1(a=c,b=d), double delegate for usages
+//example A.foo(a,b)=>B.bar(a,c); now B watches A 
+//delegate B.bar(a,c)=c.foo::1(a=a,b=this)    foo::2(a,b)=b.bar(a=a,c=this) 
+* patternOk(L,Cs.m(x1..xn),Cs'.m'(xs))
+    reorder(xs)=x,x1..xn
+//example A.foo(a,b)=>B.bar(a,self,b); now B watches A
+//delegate B.bar(a,self,b)=self.foo::1(a=a,b=b)    foo::2(a,b)=B.bar(a=a,self=this,b=b)    
+* patternOk(L,Cs.m(x1..xn),Cs'.m'(xs))
+    reorder(x1..xn)=xi,xs //xi will become the new 'this'
+    Cs'=L(Cs)(m(x1..xn)).pari.P[from Cs;{}]
+    L(Cs)(m(x1..xn)).mdf==class
+//example A.foo(a,self,b)=>B.bar(a,b); now B watches A
+//delegate B.bar(a,b)=A.foo::1(a=a,self=this,b=b)    foo::2(a,self,b)=self.bar(a=a,b=b)    
+
+/*NOPE,* patternOk(_,Cs.m(x1..xn),Cs'.m'(xs))//Shuffling need to be implemented with delegation, otherwise may be unsound wrt multi method types
+    reorder(xi,xs)=x0 x1..xn //xi is the new 'this' and x0 is the old 'this'
+    //HARD!!how to distinguish this from first/second case? 
+*/
+
+applyMap:
+  collect all watched
+  make a map for all renamed interface methods
+  all individual mappings are ok
+    -methods maps in methods, Cs maps in Cs or P//E
+    -no private names//E
+    -all dom(map) exists in dom(L)//L
+    -no hide abs methods//L
+    -no abstr or -> watched Cs//E
+    -no rename=> of refined methods//L
+    -no rename-> of interface methods//L
+    -meth rename=> follow one of the 4+1 patterns. Only the base pattern is ok with interface methods//E+L
+    -meth rename-> can follow one of the 4+1 patterns and is not an interface method//E+L
+  global mapping is ok:
+    -redirected stuff is all transitivelly redirected//E or L? 
+    -redirected stuff is redirected to OK targets//L, just before trashing such class?
+    -Cs in dom(map) U cod(map), then Cs.m not in dom(map) U cod(map)//E
+    -Cs|>Cs' in map, then Cs"|>Cs' not in map//E
+    -Cs.s|>Cs'.s' in map, then Cs".s"|>Cs'.s' not in map//E
+    -is a map, thus no two tuples with the same key//E
+  //what to test early? what to test late? what to test again for better error message in the lazyMsg?
+  
+method renamed in the same class can be directly sum, while method renamed outside will be placed in the map N->body
   
   Redirect and undefined Ps:
 the target P was typed, thus all the reachable Ps are typed.
@@ -253,30 +362,3 @@ abs class, or just Cs->Cs'
  -no watched
 -In all the cases is an error if Cs(.s)? do not exists or is private
 
-N::=Cs|P|Cs.s|empty
-|>::=-> | =>
-Map::=N1|>N1'..Nn|>Nn'  
-
-applyMap:
-  collect all watched
-  make a map for all renamed interface methods
-  all individual mappings are ok
-    -methods maps in methods, Cs maps in Cs or P//E
-    -no private names//E
-    -all dom(map) exists in dom(L)//L
-    -no hide abs methods//L
-    -no abstr or -> watched Cs//E
-    -no rename=> of refined methods//L
-    -no rename-> of interface methods//L
-    -meth rename=> follow one of the 4+1 patterns. Only the base pattern is ok with interface methods//E+L
-    -meth rename-> can follow one of the 4+1 patterns and is not an interface method//E+L
-  global mapping is ok:
-    -redirected stuff is all transitivelly redirected//E or L? 
-    -redirected stuff is redirected to OK targets//L, just before trashing such class?
-    -Cs in dom(map) U cod(map), then Cs.m not in dom(map) U cod(map)//E
-    -Cs|>Cs' in map, then Cs"|>Cs' not in map//E
-    -Cs.s|>Cs'.s' in map, then Cs".s"|>Cs'.s' not in map//E
-    -is a map, thus no two tuples with the same key//E
-  //what to test early? what to test late? what to test again for better error message in the lazyMsg?
-  
-method renamed in the same class can be directly sum, while method renamed outside will be placed in the map N->body
