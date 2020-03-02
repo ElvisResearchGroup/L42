@@ -218,13 +218,55 @@ _______
     if N|>N'of form Cs.s->Cs'.s' and then L(Cs').interface=interface  
       then L(Cs)(s).e?=empty
 
-* applyMap(L,Map)= L0+L1 //simpler then normal sum, at least can skip normaizing unique numbers
-    earlyCheck(L,Map)
-    L[Map L0]=L1
+AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
+Rename::=Rename[p;Cs;Map]
 
-* L[Map L0]=L1
-    ...
+* LOf(AddMap)=...
+
+* applyMap(p;Map)= L'+LOf(AddMap) //simpler then normal sum, at least can skip normaizing unique numbers
+    earlyCheck(p.top,Map)
+    Rename[p;empty;Map] => L';AddMap
+
+* Rename[p;Cs;Map] => L';AddMap,AddMap',AddMap1..AddMapn //both L0 and L1 get produced
+    p.top(Cs)={interface? Ts mwts ncs info}
+    C1..Cn in dom(p.top(Cs))
+    Rename[p;Cs.C1;Map]=>L'1;AddMap1..Rename[p;Cs.Cn;Map]=>L'n;AddMapn
+    Rename mwts => mwts';AddMap
+    Rename ncs => ncs';AddMap'
+    L'={interface? Ts mwts' ncs' info}//info??
+
+* Rename empty => empty;empty
+* Rename(mwt mwts) => mwts' mwts";AddMap,AddMap'
+    Rename mwt => mwts';AddMap
+    Rename mwts => mwts";AddMap'
+* Rename(nc ncs)=> ncs' ncs";AddMap,AddMap'
+    Rename nc => ncs';AddMap
+    Rename ncs => ncs";AddMap'
+* Rename mwt => (Rename usages mwt);empty
+    Cs.(mwt.s) notin dom(Map)
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) |>Cs'.s' in Map
+    ....
+
+* Rename C=L = C=(Rename[Cs=Cs.C] usages L);empty
+    Cs.C notin dom(Map)
+* Rename Docs C=L = Docs C=L[toAbstract];Cs'-> C'=(Rename[Cs=Cs.C] usages L[noNesteds])[from Cs;p]
+    Cs.C -> Cs'.C' in Map
+    p=Rename.p.navigate(Cs'.C)//Cs' may not be in dom(p)
+    Cs.C notin allWatched(L)    
+* Rename Docs C=L = Docs C=L[toAbstract];empty
+    Cs.C -> empty in Map
+    Cs.C notin allWatched(L)    
+* Rename Docs C=L = (C=L)[onlyNesteds];Cs'-> Docs C'=(Rename[Cs=Cs.C] usages L[noNesteds])[from Cs;p]
+    p=Rename.p.navigate(Cs'.C)//Cs' may not be in dom(p)
+    Cs.C => Cs'.C' in Map
+* Rename Docs C=L = (C=L)[onlyNesteds],Docs C::1=(Rename[Cs=Cs.C] usages L[noNesteds]);empty
+    Cs.C => empty in Map
+* Rename C=L = (C=L)[onlyNesteds];empty
+    Cs.C => P in Map
+
     
+      
       
 //Double delegate pattern: to move a call to another class:
 original(a,b,c)->destination(b,c,a)
@@ -361,4 +403,70 @@ hide meth:
 abs class, or just Cs->Cs'
  -no watched
 -In all the cases is an error if Cs(.s)? do not exists or is private
+
+
+-------------------
+ThreadPool{
+  method void computeTasksUntil(lock x) {
+    while(!x.tryLock()){
+      Task t=this.tryTask();//find a more efficient version
+      if(t!=null){t.compute();}//can loop on lazy if another Eager loops :(
+      }
+  ThreadPool(int size){
+    class Worker extends Thread{
+      public void run(){while (true){tp.getTask().compute();}}
+      }
+    for(i in size){new Worker().start();}
+    }
+  }
+
+@Catch.Lazy method T y() = e//L42 version
+T y(){//Java version
+    Object localy = this.y
+    if(localy instanceof Lock){
+      tp.computeTasksUntil((Lock)localy);
+      //rentrant non blocking
+      try{if(y instanceof Lock){y=e;}}
+      catch(L42Throwable t){y=t;}
+      finally{localy.release();}
+      }
+    return returnOrThrow(y);
+    }
+Foo(){
+  this.fff=ff//is this safe to read in e?//ok if submit is syncronized?
+  tp.submit(()->y()) // for eagers
+  }
+---------------------------------------------
+original Isaac below
+---------------------------------------------------
+
+
+
+
+method granbAndComputeTast(lock x) {
+      Task t=tp.giveMeATaskOrGotReady(x);
+      if(t==null){break;}
+      try{t.set(t.compute());}//if this is another Eager that loops, the semantic changes
+      catch(L42Throwable err){t.set(err);}
+}
+
+@Catch.Lazy m y() = e
+  y(){
+    localy = this.y
+    if(localy instanceof Lock){
+      // someone could compute y here...
+      while (!localy.tryLock()){ tp.grabAndComputeTask(localy);}
+      //rentrant non blocking
+      if (y instanceof Lock) {y = catch_throwable(e)}
+      localy.release(); 
+      }
+    return or throw y
+    }
+Foo(){
+  this.fff=ff//is this safe to read in e?
+  tp.submit(()->y()) // for eagers
+  }
+
+// have several ranbdom threads just doing:
+while (true) { tp.grabAndComputeTask(null) }
 
