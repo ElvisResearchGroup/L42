@@ -437,36 +437,62 @@ Foo(){
   tp.submit(()->y()) // for eagers
   }
 ---------------------------------------------
-original Isaac below
+Another solution, that repeats some tasks
 ---------------------------------------------------
 
-
-
-
-method granbAndComputeTast(lock x) {
-      Task t=tp.giveMeATaskOrGotReady(x);
-      if(t==null){break;}
-      try{t.set(t.compute());}//if this is another Eager that loops, the semantic changes
-      catch(L42Throwable err){t.set(err);}
-}
-
-@Catch.Lazy m y() = e
-  y(){
-    localy = this.y
-    if(localy instanceof Lock){
-      // someone could compute y here...
-      while (!localy.tryLock()){ tp.grabAndComputeTask(localy);}
-      //rentrant non blocking
-      if (y instanceof Lock) {y = catch_throwable(e)}
-      localy.release(); 
-      }
-    return or throw y
-    }
-Foo(){
-  this.fff=ff//is this safe to read in e?
-  tp.submit(()->y()) // for eagers
+assumptions:
+every lazy/eager have an associated FutureLock(FL) with the following methods:
+-isReady():Bool //true only after a tryPerfom was successfull
+-getOrThrow():T or throws //and may throw an invalid usage if not isReady()
+-tryPerform():Bool
+  //either sequentially do the job in the local worker and res=true or 
+  //the job is being done by another worker and res=false
+-beingDone():Bool //true if tryPerform has ever been called
+-perform():Void //run the lambda, 
+  //lambda exceptions would be stored and not progragated
+-join():T //top level method
+----
+tryPerform(){ //see ct:CT=current thread and tp:TP=thread pool
+  //if this in ct.current error self circular?
+  if this.ready() {return true;}
+  if this.beingDone() {return false;}
+  ct.current.add(this)
+  try{this.beingDone=true;this.perform();this.read=true;}
+  catch(Suppressed s){if(s.fl!=this){throw s;}}//completed by others
+  ct.current.remove()//this can throw a Suppressed if the caller contex 
+  //has been already resolved with repetition
+  return true;
   }
 
-// have several ranbdom threads just doing:
-while (true) { tp.grabAndComputeTask(null) }
+join(){
+  ct.current.addDep([fl]);
+  fl.countRequested++;
+  while !fl.tryPerform() {
+    if tp.hasFreeWorkers {wait; continue;}
+    fl0=tasks.tryAcquire()
+    if(fl0!=null){unused=fl0.join();}
+    if ct.current matches _,fl[fl1],fl1,_,
+      where fl1.isReady() and fl.isRequested() {
+      throw new Suppressed(fl1)
+      }
+    else{
+      flRepeatable=tp.getRepeatable()//select an fl near the start of
+      //a CT.current queue where the corresponding [fl'] is already computed
+      //such [fl'] is changed to throw a new Suppressed(flRepeatable) when 
+      //the stack goes back to such ct.current.remove()
+      if(flRepeatable==null){wait;continue;}
+      {unused=flRepeatable.join();}
+      }
+    if(tp.leastBusy!=ct){wait;continue;}
+    }
+  fl.countRequested--;
+  ct.current.RemoveDep();
+  return fl.getOrThrow()
+  }
 
+
+S::=FL|FL[FL']
+Current::=S*,FL
+CT={Current current;}
+
+-----------------------------
