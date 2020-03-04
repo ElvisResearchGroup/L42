@@ -244,88 +244,48 @@ Rename::=Rename[p;Cs;Map]
     Rename ncs => ncs";AddMap'
 * Rename mwt => (Rename usages mwt);empty
     Cs.(mwt.s) notin dom(Map)
----
-* Rename mwt = mwts;AddMap
-    Cs.(mwt.s) ->Cs'.s' in Map
-    p(Cs).interface?=interface
+---//on interface methods, -> is never allowed; everywhere when we write Cs we mean Rename.Cs
+* Rename mwt =mwt[n1], mwts[n2]; Cs'->delegate(mwt,s',Cs,n1)
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=interface//assert Cs' not interface
     size(s.xs)=size(s'.xs)+1
     n1,n2=freshPrivate(p)
-    mwts=mwt[n1]...
     TODO somehow the interface info becomes close
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->_ in Map
-    p(Cs).interface?=interface
+* Rename mwt =mwt[n1], mwts[n2,Cs'.s']; empty//if mwt was implemented, n2 must delegate to Cs'.s.
+    Cs0.(mwt.s) =>Cs'.s' in Map
+    This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
     size(s.xs)=size(s'.xs)+1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>Cs'.s' in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)+1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>_ in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)+1
-    TODO**
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->Cs'.s' in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)-1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->_ in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)-1
-    TODO
+    n1,n2=freshPrivate(p)//must be the same of the former rule.. so connected with the map entry?
+    TODO somehow is Cs is interface, the info becomes close
+    //the patter: a becomes a::1=e? a::2=dest? and dest->a::1
+    
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) =>Cs'.s' in Map
     p(Cs).interface?=interface
     size(s.xs)=size(s'.xs)-1
-    TODO
+    TODO//embed a method in an interface? thus all the implementations do the same thing?
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>_ in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)-1
-    TODO**--
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->Cs'.s' in Map
+    Cs.(mwt.s) =>empty in Map
     p(Cs).interface?=interface
     size(s.xs)=size(s'.xs)
-    Cs!=Cs'
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->_ in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>Cs'.s' in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)
-    Cs!=Cs'
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>_ in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)
-    TODO**--**
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->Cs.s' in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)
-    TODO
+    TODO**--**//make an interface method private
 * Rename mwt = empty;Cs->(Rename usages mwt[s=s'])
     Cs.(mwt.s) =>Cs.s' in Map
     p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)//TODO: we need to add all the renames for anyone refining this method
-    TODO **********//simplest interface case  //mwt[s=s'] also changes the local variable usages
+    size(s.xs)=size(s'.xs)
+    //simplest interface case  //mwt[s=s'] also changes the local variable usages
+* Rename mwt = empty;Cs->(Rename usages mwt[s=s'])
+    Cs'.(mwt.s) =>Cs'.s' in Map
+    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+    size(s.xs)=size(s'.xs)
+ ------------------
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) ->Cs'.s' in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)+1
     TODO
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->_ in Map
+    Cs.(mwt.s) ->empty in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)+1
     TODO
@@ -335,7 +295,7 @@ Rename::=Rename[p;Cs;Map]
     size(s.xs)=size(s'.xs)+1
     TODO
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>_ in Map
+    Cs.(mwt.s) =>empty in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)+1
     TODO**
@@ -345,7 +305,7 @@ Rename::=Rename[p;Cs;Map]
     size(s.xs)=size(s'.xs)-1
     TODO
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->_ in Map
+    Cs.(mwt.s) ->empty in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)-1
     TODO
@@ -355,7 +315,7 @@ Rename::=Rename[p;Cs;Map]
     size(s.xs)=size(s'.xs)-1
     TODO
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>_ in Map
+    Cs.(mwt.s) =>empty in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)-1
     TODO**--
@@ -366,7 +326,7 @@ Rename::=Rename[p;Cs;Map]
     Cs!=Cs'
     TODO
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->_ in Map
+    Cs.(mwt.s) ->empty in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)
     TODO
@@ -377,7 +337,7 @@ Rename::=Rename[p;Cs;Map]
     Cs!=Cs'
     TODO
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>_ in Map
+    Cs.(mwt.s) =>empty in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)
     TODO**--**
