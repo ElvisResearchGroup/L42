@@ -244,10 +244,154 @@ Rename::=Rename[p;Cs;Map]
     Rename ncs => ncs";AddMap'
 * Rename mwt => (Rename usages mwt);empty
     Cs.(mwt.s) notin dom(Map)
+---
+* Rename mwt = mwts;AddMap
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)+1
+    n1,n2=freshPrivate(p)
+    mwts=mwt[n1]...
+    TODO somehow the interface info becomes close
 * Rename mwt = ??;AddMap
-    Cs.(mwt.s) |>Cs'.s' in Map
-    ....
-
+    Cs.(mwt.s) ->_ in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)+1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)+1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>_ in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)+1
+    TODO**
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)-1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->_ in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)-1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)-1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>_ in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)-1
+    TODO**--
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)
+    Cs!=Cs'
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->_ in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)
+    Cs!=Cs'
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>_ in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)
+    TODO**--**
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)
+    TODO
+* Rename mwt = empty;Cs->(Rename usages mwt[s=s'])
+    Cs.(mwt.s) =>Cs.s' in Map
+    p(Cs).interface?=interface
+    size(s.xs)=size(s'.xs)//TODO: we need to add all the renames for anyone refining this method
+    TODO **********//simplest interface case  //mwt[s=s'] also changes the local variable usages
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)+1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->_ in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)+1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)+1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>_ in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)+1
+    TODO**
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)-1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->_ in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)-1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)-1
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>_ in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)-1
+    TODO**--
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)
+    Cs!=Cs'
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->_ in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs'.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)
+    Cs!=Cs'
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>_ in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)
+    TODO**--**
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) ->Cs.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)
+    TODO
+* Rename mwt = ??;AddMap
+    Cs.(mwt.s) =>Cs.s' in Map
+    p(Cs).interface?=empty
+    size(s.xs)=size(s'.xs)
+    TODO **********
+----
 * Rename C=L = C=(Rename[Cs=Cs.C] usages L);empty
     Cs.C notin dom(Map)
 * Rename Docs C=L = Docs C=L[toAbstract];Cs'-> C'=(Rename[Cs=Cs.C] usages L[noNesteds])[from Cs;p]
