@@ -244,7 +244,9 @@ Rename::=Rename[p;Cs;Map]
     Rename ncs => ncs";AddMap'
 * Rename mwt => (Rename usages mwt);empty
     Cs.(mwt.s) notin dom(Map)
+    forall This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}], Cs0.(mwt.s) notin dom(Map)
 ---//on interface methods, -> is never allowed; everywhere when we write Cs we mean Rename.Cs
+//1:  lift an interface method, and the interface becomes close
 * Rename mwt =mwt[n1], mwts[n2]; Cs'->delegate(mwt,s',Cs,n1)
     Cs.(mwt.s) =>Cs'.s' in Map
     p(Cs).interface?=interface//assert Cs' not interface
@@ -258,17 +260,19 @@ Rename::=Rename[p;Cs;Map]
     n1,n2=freshPrivate(p)//must be the same of the former rule.. so connected with the map entry?
     TODO somehow is Cs is interface, the info becomes close
     //the patter: a becomes a::1=e? a::2=dest? and dest->a::1
-    
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>Cs'.s' in Map
-    p(Cs).interface?=interface
-    size(s.xs)=size(s'.xs)-1
-    TODO//embed a method in an interface? thus all the implementations do the same thing?
-* Rename mwt = ??;AddMap
+//2:  make an interface method private and the interface becomes close    
+* Rename mwt = mwt[n1];empty
     Cs.(mwt.s) =>empty in Map
     p(Cs).interface?=interface
     size(s.xs)=size(s'.xs)
-    TODO**--**//make an interface method private
+    n1=freshPrivate(p)
+* Rename mwt = mwt[n1];empty
+    Cs0.(mwt.s) =>empty in Map
+    This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
+    size(s.xs)=size(s'.xs)
+    n1=freshPrivate(p)//must be the same of the former rule.. so connected with the map entry?
+    TODO somehow the interface info becomes close
+//3: simple interface method rename    
 * Rename mwt = empty;Cs->(Rename usages mwt[s=s'])
     Cs.(mwt.s) =>Cs.s' in Map
     p(Cs).interface?=interface
@@ -278,47 +282,69 @@ Rename::=Rename[p;Cs;Map]
     Cs'.(mwt.s) =>Cs'.s' in Map
     This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
     size(s.xs)=size(s'.xs)
+//TODO: now making abstract an interface method is an error. alternativelly, it could be a no op
  ------------------
-* Rename mwt = ??;AddMap
+//4: lift method implementation (super)
+* Rename mwt = mwt[e?=empty] mwt[n1]; Cs'->delegate(mwt,s',Cs,n1)
     Cs.(mwt.s) ->Cs'.s' in Map
     p(Cs).interface?=empty
     size(s.xs)=size(s'.xs)+1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->empty in Map
-    p(Cs).interface?=empty
-    size(s.xs)=size(s'.xs)+1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>Cs'.s' in Map
-    p(Cs).interface?=empty
-    size(s.xs)=size(s'.xs)+1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>empty in Map
-    p(Cs).interface?=empty
-    size(s.xs)=size(s'.xs)+1
-    TODO**
-* Rename mwt = ??;AddMap
+    n1=freshPrivate(p)
+   
+//-> is basically default implementation? what to do if already specified?
+//what if -> always just "avoid messing it up" if the target is already there implemented or is there with the wrong type?
+//5: embed method implementation in an interface (default implementation?)
+//this may cause more then one method for s' to be in the AddMap /is it for -> or =>? should add the other version
+* Rename mwt = mwt[e?=e] mwt[n1];Cs'->mwt[s']
     Cs.(mwt.s) ->Cs'.s' in Map
     p(Cs).interface?=empty
+    p(Cs').interface?=interface
     size(s.xs)=size(s'.xs)-1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) ->empty in Map
+    n1=freshPrivate(p)
+* Rename mwt = mwt[s'];empty
+    Cs0.(mwt.s) ->Cs'.s' in Map
+    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+    size(s.xs)=size(s'.xs)-1
+    p(Cs).interface?=interface
+* Rename mwt = delegate(mwt[s'],Cs0.s[n1]);empty
+    Cs0.(mwt.s) ->Cs'.s' in Map
+    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+    size(s.xs)=size(s'.xs)-1
+    n1=freshPrivate(p)
     p(Cs).interface?=empty
+
+//6: embed a method implementation in a class
+* Rename mwt = mwt[e?=empty] mwt[n1];Cs'->delegate(mwt[s'],Cs.s[n1])
+    Cs.(mwt.s) ->Cs'.s' in Map
+    p(Cs).interface?=empty
+    p(Cs').interface?=empty
     size(s.xs)=size(s'.xs)-1
-    TODO
-* Rename mwt = ??;AddMap
+    n1=freshPrivate(p)
+
+//TODO: a ton of (Rename usages mwt[s=s']) are missing. Should we find a way to abstract them away?
+//7: embed method in interface
+* Rename mwt = mwt[n1] delegate(mwt[n2],Cs'.s');Cs'->mwt[s']
     Cs.(mwt.s) =>Cs'.s' in Map
     p(Cs).interface?=empty
+    p(Cs').interface?=interface
     size(s.xs)=size(s'.xs)-1
-    TODO
-* Rename mwt = ??;AddMap
-    Cs.(mwt.s) =>empty in Map
+    n1,n2=freshPrivate(p)
+* Rename mwt = mwt[s'];empty //is it identical to the case above?
+    Cs0.(mwt.s) =>Cs'.s' in Map
+    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+    size(s.xs)=size(s'.xs)-1
+    p(Cs).interface?=interface
+* Rename mwt = delegate(mwt[s'],Cs0.s[n1]);empty  //is it identical to the case above?
+    Cs0.(mwt.s) =>Cs'.s' in Map
+    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+    size(s.xs)=size(s'.xs)-1
+    n1=freshPrivate(p)
     p(Cs).interface?=empty
-    size(s.xs)=size(s'.xs)-1
-    TODO**--
+//8: method toAbstract
+* Rename mwt = mwt[e?=empty];empty
+    Cs.(mwt.s) ->empty in Map
+    p(Cs).interface?=empty
+
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) ->Cs'.s' in Map
     p(Cs).interface?=empty
@@ -328,7 +354,6 @@ Rename::=Rename[p;Cs;Map]
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) ->empty in Map
     p(Cs).interface?=empty
-    size(s.xs)=size(s'.xs)
     TODO
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) =>Cs'.s' in Map
@@ -339,7 +364,6 @@ Rename::=Rename[p;Cs;Map]
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) =>empty in Map
     p(Cs).interface?=empty
-    size(s.xs)=size(s'.xs)
     TODO**--**
 * Rename mwt = ??;AddMap
     Cs.(mwt.s) ->Cs.s' in Map
