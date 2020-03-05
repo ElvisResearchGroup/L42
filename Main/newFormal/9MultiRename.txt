@@ -43,14 +43,29 @@ Instance method
  *If an instance method is specified, but Cs!=Cs', then
  automatic lifting is applied:
  the method body is tweeked so that is turned in a class method that takes 'this' as first argument. The class method is then handled as before.
- *if an interface is specified, some issues may arise and are solved as follow:
+ *if an interface source is specified, some issues may arise and are solved as follow:
  -> does not makes sense. If it was allowed it would add an abstract
     method to the interface, thus making private nested classes
     implementing it non coherent, thus ill formed.
- => propagate the rename to all the classes and interfaces implementing it. If a class have another implemented method in place of the destination, such method is first hidden.
- if another interface method is in place of the destination,
- implementations of such method are discarded (a reasoning on contracts may justify this controversial design)
- *if an interface method need to be lifted at the class level,
+ => propagate the rename to all the classes and interfaces implementing it.
+  Ok only if interface is not privately implemented.
+  in the propagation, when non interface classes are reached, they are threated
+  differently: the old method (implemented or abstract) stays in place, and a new method
+  is added (always implemented), soft delegating to the old one//thus if the method was
+  already present in the destination, it keeps the former body
+ => empty == make private:
+  This is ok even if interface is privately implemented.
+  again for  non interface classes the orphan method survives in place.
+  If a class have another implemented method in place of the destination,
+   such method is first hidden.
+When embeddng a static method onto an interface method,
+  an abstract method is added in the interfaces, and the implementing classes
+  soft delegate to the static method
+  
+  NOPE: If another interface method is in place of the destination,
+   implementations of such method are discarded 
+   (a reasoning on contracts may justify this controversial design)
+ *NOPE: If an interface method need to be lifted at the class level,
   a body can be syntetised by collecting in a switch all the bodies
   of the classes implementing it. Then a last method work as a default. For example
   {
@@ -474,3 +489,24 @@ Option1:
 
 Option2: 
 {B: {TAF+TBF bar, TAB+TBB foo}}
+
+
+
+
+
+
+--------------
+//rename on privatly implemented (nesteds) may be ok, since all other methods have private names
+Trait({
+  I={interface method Void foo()}
+  B::1={[I] method Void foo()=void  method Void bar::1()=void}
+  method Library a()={[I] method Void foo()=void  method Library bar()}
+  })['I.foo()=>'I.bar()]
+=
+{
+  I={interface method Void bar()}
+  B={[I]
+    method Void bar()=void
+    }
+  }
+'stuff == \"stuff"
