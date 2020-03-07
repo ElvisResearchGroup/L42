@@ -1,3 +1,395 @@
+N::= Cs | P | Cs.s | empty
+|>::= -> | =>
+Map::= N1|>N1'.. Nn|>Nn'
+AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
+Rename::=Rename[p;Cs;Map]
+
+_______
+#define applyMap(p;Map)    replaceEmpty(ns,p,Map)=Map
+* applyMap(p;Map)= L'+LOf(AddMap) //simpler then normal sum, at least can skip normalizing unique numbers
+    earlyCheck(p.top,Map)
+    Map'=replaceEmpty(existingNs,p,Map)
+    Rename[p;empty;Map'] p(This0) = L';AddMap
+
+* replaceEmpty(ns,p,Cs.C=>empty)=Cs.C=>Cs.C::n,replaceEmpty(ns,p,Map)
+    n= firstPrivateOf(p(Cs))
+* replaceEmpty(ns,p,Cs.C=>empty)=Cs.C=>Cs.C::n,replaceEmpty(ns n,p,Map)
+    undefined firstPrivateOf(p(Cs))
+    n notin ns
+* replaceEmpty(ns,p,Cs.m(xs)=>empty)=Cs.m(xs)=>Cs.m::n(xs),replaceEmpty(ns,p,Map)
+    n= firstPrivateOf(p(Cs))
+* replaceEmpty(ns,p,Cs.m(xs)=>empty)=Cs.m(xs)=>Cs.m::n(xs),replaceEmpty(ns n,p,Map)
+    undefined firstPrivateOf(p(Cs))
+    n notin ns
+* replaceEmpty(ns,p,N=>N',Map)=N=>N',replaceEmpty(ns,p,Map)
+    otherwise
+_______
+#define allWatched(Core.L,Map)
+* allWatched(L,Map)=allWatched(L\Csz)//all watched without considering Cs1..Csn
+  Csz={Cs| Cs->empty in Map or Cs=>P in Map}
+_______
+#define earlyCheck(Core.L,Map)  earlyCheck(Core.L,N|>N')
+* earlyCheck(L,Map)
+    forall N|>N' in Map, earlyCheck(L,N|>N')
+    if  Cs=>P in Map, s has no unique n and This0.Cs' in collectDeps({};L(Cs)(s))[from Cs;{}] //L(Cs)(s) is abstract from the check above
+      then Cs'=>P' in Map
+    if Cs in dom(map) U cod(map)
+      then Cs.s not in dom(map) U cod(map)
+    if Cs|>Cs' in map
+      then Cs"|>Cs' not in map
+    if Cs.s|>Cs'.s' in map
+      then Cs".s"|>Cs'.s' not in map
+    Map is a map, thus no two tuples with the same key
+    
+* earlyCheck(L,N|>N')
+    N not of form empty
+    if N = Cs.s then N' in{Cs.s',empty}, s!=s'
+    if N = Cs then N' in{Cs',empty} Cs!=Cs'
+    N,N' do not have unique numbers
+    if N|>N'of form Cs=>P, s in dom(L(Cs)) and s has no unique n
+      then L(Cs)(s).e?=empty
+    if N|>N'of form Cs=>P 
+      then Cs notin allWatched(L,Map)
+    if N|>N'of form Cs->_
+      then Cs not in allWatched(L,Map) 
+    if N of form Cs, then  Cs in dom(L)
+    if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
+    if N|>N'of form Cs.s|>Cs'.s'
+      then Cs=Cs' and size(s.xs)=size(s'.xs)
+      
+* LOf(AddMap) =
+    create a lib containing all the AddMap entries.
+    The constraints on the Map make so that if Cs->L in map,
+    methods of Cs are not added any more, just nested classes
+
+* mwt[s=s'] = mwt[mh=mwt.mh[s=s']][e?=mwt.e?[mwt.xs=s'.xs]]
+
+* Rename usages mwt = mwt'
+    recursively enters in the subterms, keeping track of the additional nesting in Ls, and
+    if P is found, and P=>P' in Rename.Map, P' is returned
+    if P is found, and P.s=>P.s' in Rename.Map, s' is returned
+_______
+#define Rename(L) = L;AddMap    Rename(ncs) = ncs;AddMap    Rename(mwts) = mwts;AddMap    Rename(Info) = Info
+* Rename[p;Cs;Map] L = L";AddMap,AddMap',AddMap1..AddMapn //both L0 and L1 get produced
+    assert p(Cs)=L
+    L={interface? Ts mwts ncs Info}
+    C1..Cn in dom(L)
+    Rename[p;Cs.C1;Map] L(C1) = L'1;AddMap1..Rename[p;Cs.Cn;Map] L(Cn) =L'n;AddMapn
+    Rename mwts => mwts';AddMap
+    Rename ncs => ncs';AddMap'
+    L'={interface? Ts mwts' ncs' Rename Info}
+    Rename usages L'=L"//only renames Ts, Info and NC docs, the rest already happended
+* Rename(Info) = Info'
+    add close if L is interface and exists a method hiding on p(Cs)
+    if Cs'.m(xs) in Info.usedMethod and Cs'.m(xs)=>Cs'.m::n(xs) in Rename.Map
+      Info' removes the usedMethod and add watched
+    if Cs'.C in Info.typeDep and Cs'.C=>Cs'.C::n in Rename.Map
+      Info' adds the watched
+* Rename empty = empty;empty
+* Rename(mwt mwts) = mwts' mwts";AddMap,AddMap'
+    Rename (Rename usages mwt) = mwts';AddMap
+    Rename mwts = mwts";AddMap'
+* Rename(Docs C=L ncs) = ncs' ncs";AddMap,AddMap',AddMap"
+    Rename[Cs+=C] L = L',AddMap'
+    Rename(Docs C=L') = ncs';AddMap
+    Rename ncs = ncs";AddMap"
+* Rename(mwt) = mwt;empty
+    Rename.Cs.(mwt.s) notin dom(Map)
+    forall This0.Cs0 in p(Rename.Cs).Ts.Ps[from Rename.Cs;{}],
+      Cs0.(mwt.s) notin dom(Map)
+* Rename(nc) = nc;empty
+    (Rename.Cs).(nc.C) notin dom(Map)
+---//everywhere when we write Cs we mean Rename.Cs
+//1:  make an interface method private and the interface becomes close    
+* Rename(mwt) = mwt[s'];empty
+    Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+    s' has private number
+    Rename.p(Rename.Cs).interface?=interface
+    Cs notin allPrivatlyImplemented(p.top)
+    s notin Rename.p(Rename.Cs).Info.refined
+* Rename(mwt) = mwt[s'];empty
+    Cs0.(mwt.s)=>Rename.Cs.s' in Map
+    s' has private number
+    This0.Cs0 in p(Rename.Cs).Ts.Ps[from Rename.Cs;{}]
+    assert s in p(Rename.Cs).Info.refined
+//2: simple interface method rename
+* Rename(mwt) = empty;Rename.Cs->mwt[s=s']
+    Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+    Rename.p(Rename.Cs).interface?=interface
+    s notin Rename.p(Rename.Cs).Info.refined
+    Rename.Cs notin allPrivatlyImplemented(p.top)
+* Rename(mwt) = empty;Rename.Cs->mwt[s=s']
+    Cs'.(mwt.s)=>Cs'.s' in Map
+    assert s in p(Rename.Cs).Info.refined
+    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+//3: method toAbstract
+* Rename(mwt) = mwt[e?=empty];empty
+    Cs.(mwt.s)->empty in Map
+    mwt.e?=e//assert p(Cs).interface?=empty    
+//4: method super
+* Rename(mwt) = mwt[e?=empty];Cs->mwt[s']
+    Cs.(mwt.s)->Cs.s' in Map
+    mwt.e?=e//assert p(Cs).interface?=empty
+//5: method rename
+* Rename(mwt) = empty;Cs->mwt[s']
+    Cs.(mwt.s)=>Cs.s' in Map
+    mwt.e?=e//assert p(Cs).interface?=empty
+    s notin p(Rename.Cs).Info.refined
+//6:method hide
+* Rename(mwt) = mwt[n1];empty
+    Cs.(mwt.s)=>Rename.Cs.s' in Map
+    s' has private number
+    mwt.e?=e//assert p(Cs).interface?=empty
+    s notin p(Rename.Cs).Info.refined
+    n1=freshPrivate(p)
+//7: nested super
+* Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L[noNesteds][from Cs;p]
+    Cs.C->Cs'.C' in Map
+    p=Rename.p.navigate(Cs'.C)//Cs' may not be in dom(p)
+    Cs.C notin allWatched(L)
+//8:nested toAbstract
+* Rename(Docs C=L) = Docs C=L[toAbstract];empty
+    Cs.C->empty in Map
+    Cs.C notin allWatched(L,Map)
+//9:nested rename
+* Rename(Docs C=L) = (C=L)[onlyNesteds];Cs'-> Docs C'=L[noNesteds][from Cs;p]
+    p=Rename.p.navigate(Cs'.C)//Cs' may not be in dom(p)
+    Rename.Cs.C => Cs'.C' in Map
+//10:nested hide
+* Rename(Docs C=L) = (C=L)[onlyNesteds],Docs C::1=L[noNesteds];empty
+    Rename.Cs.C => Rename.Cs.C::n in Map
+//11:nested redirect
+* Rename(C=L) = (C=L)[onlyNesteds];empty
+    Cs.C => P in Map
+//another operator could be "delegate Cs.s->Cs'.s',
+//generating in Cs.s a method body that is just a call for Cs'.s'
+//this would support scrambling args and or lifting/embedding.
+//complex lift/embed can be obtained by delegate+->+hiding
+//+introspection to find all implemented versions
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+OLD NOTES AFTER THIS POINT
+* patternOk(_,Cs.m(x1..xn),Cs.m'(x'1...x'n))
+//example A.foo(a,b)=>A.bar(c,d); the method is renamed and body is adapted to use new par names
+* patternOk(_,Cs.m(x1..xn),Cs'.m'(x'1...x'n))
+    Cs!=Cs'
+    L(Cs)(m(x1..xn)).mdf=class
+//example A.foo(a,b)=>B.bar(c,d); now B watches A
+//delegate B.bar(c,d)=A.foo::1(a=c,b=d), double delegate for usages
+//example A.foo(a,b)=>B.bar(a,c); now B watches A 
+//delegate B.bar(a,c)=c.foo::1(a=a,b=this)    foo::2(a,b)=b.bar(a=a,c=this) 
+* patternOk(L,Cs.m(x1..xn),Cs'.m'(xs))
+    reorder(xs)=x,x1..xn
+//example A.foo(a,b)=>B.bar(a,self,b); now B watches A
+//delegate B.bar(a,self,b)=self.foo::1(a=a,b=b)    foo::2(a,b)=B.bar(a=a,self=this,b=b)    
+* patternOk(L,Cs.m(x1..xn),Cs'.m'(xs))
+    reorder(x1..xn)=xi,xs //xi will become the new 'this'
+    Cs'=L(Cs)(m(x1..xn)).pari.P[from Cs;{}]
+    L(Cs)(m(x1..xn)).mdf==class
+//example A.foo(a,self,b)=>B.bar(a,b); now B watches A
+//delegate B.bar(a,b)=A.foo::1(a=a,self=this,b=b)    foo::2(a,self,b)=self.bar(a=a,b=b)    
+
+/*NOPE,* patternOk(_,Cs.m(x1..xn),Cs'.m'(xs))//Shuffling need to be implemented with delegation, otherwise may be unsound wrt multi method types
+    reorder(xi,xs)=x0 x1..xn //xi is the new 'this' and x0 is the old 'this'
+    //HARD!!how to distinguish this from first/second case? 
+*/
+
+applyMap:
+  collect all watched
+  make a map for all renamed interface methods
+  all individual mappings are ok
+    -methods maps in methods, Cs maps in Cs or P//E
+    -no private names//E
+    -all dom(map) exists in dom(L)//L
+    -no hide abs methods//L
+    -no abstr or -> watched Cs//E
+    -no rename=> of refined methods//L
+    -no rename-> of interface methods//L
+    -meth rename=> follow one of the 4+1 patterns. Only the base pattern is ok with interface methods//E+L
+    -meth rename-> can follow one of the 4+1 patterns and is not an interface method//E+L
+  global mapping is ok:
+    -redirected stuff is all transitivelly redirected//E or L? 
+    -redirected stuff is redirected to OK targets//L, just before trashing such class?
+    -Cs in dom(map) U cod(map), then Cs.m not in dom(map) U cod(map)//E
+    -Cs|>Cs' in map, then Cs"|>Cs' not in map//E
+    -Cs.s|>Cs'.s' in map, then Cs".s"|>Cs'.s' not in map//E
+    -is a map, thus no two tuples with the same key//E
+  //what to test early? what to test late? what to test again for better error message in the lazyMsg?
+  
+method renamed in the same class can be directly sum, while method renamed outside will be placed in the map N->body
+  
+  Redirect and undefined Ps:
+the target P was typed, thus all the reachable Ps are typed.
+If a P in the source does not exists, we can just 'accept is a good subtype\supertype for the corresponding P in the destination
+  
+  //renames:
+  renaming an interface method in private:
+    if it was state and implemented is public: error: the class must be close first
+    if implemented is private, state was already private, thus, the interface meth is not state anyway
+  rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
+  operations:
+    Remove+ Cs remove the methods and the interface? and the docs. If no nested, remove also the box
+    Remove- Cs remove all the implementation of the methods and all the private stuff. Must be not watched.
+    References: Cs->P rename all the usages of Cs into P (if P is This0.Cs' is for rename, otherwise for redirect)
+    EmptyRename Cs->Cs' take Cs (no nested) from L, create another L where such content is in Cs' (properly frommed) 
+    InnerSum: apply PLUS on the tweaked L and one extracted EmptyRename L
+  This looks like can be easly done in bulk:
+  Cs=>Cs' = Remove+ Cs, EmptyRename CS->Cs', References Cs->Cs'
+  Cs->Cs' = Remove- Cs, EmptyRename CS->Cs',
+  Cs=>P = Remove+ Cs, References Cs->P
+  //we have 12 options
+  1 R+ E R //full rename  =>
+  2 R- E   //restrict (or super)  ->
+  3 R+ R  //redirect  =>
+  4 //R+ E (identical to R+ E R when possible)
+  5 //R+ (identical to R+ R when possible)
+  6 R- E R //strong rename but leave skeleton
+  7 R- R //redirect but leave skeleton
+  8 R- //make abstract (invoked by Cs->_)  ->_
+  9 E R//copy code and move refs
+  10 E//copy code
+  11 R//redirect but leave full source
+  12//empty op... ok
+  -------
+  More formally
+  
+L[Remove+ Csz,Remove- Csz',References (Cs->P)z]=L0
+L[MovedContent (Cs->Cs')z,References (Cs->P)z]=L1,..Ln //EmptyRename
+Sum L0+..+Ln //normal sum? but the input is broken
+check refine single
+
+Split+Sum
+Split:
+  L[References (Cs->P)z,MovedContent (Cs->Cs')z,Remove+ Csz,Remove- Csz']=L0,L1
+Sum=L0+L1 and can be normal sum? can skip normalizing unique numbers
+
+Split is a cloneVisitorWithProgram, that also collects a map from Cs->L and Cs.s->MWT
+//Should we merge the map directly without a sum? could be a performance optimization later
+
+Source dom is a tree
+Dest dom is a tree (except for Thisn+1.Csz)
+
+MovedContent map:
+  Cs in dom/cod, then Cs.m not in dom/cod
+  Cs->Cs' in map, then Cs"->Cs' not in map //same for Cs.m
+  Cs->Cs' in map, then Cs->Cs" not in map //same for Cs.m
+Remove set:
+  +/-Csz, +/-Cs.sz
+  if Cs in Csz, then Cs.s not in Cs.sz
+Reference map:
+  Cs->P is a map with Cs domain
+-----
+rename meth:
+ -no refine
+ -if moves between classes, must use a delegation pattern to avoid exposing ::0
+ -if not class, then either
+    -extra arg and becomes class
+    -argument swap (exactly one arg MUST have a different name)
+ -if is class, then either
+    -same arg and stay class
+    -argument less and get embedded
+growing maps:
+  for rename meth =>: add all the refined version of this. Note: is ok if it is privately implemented, but need some care
+    In particular, if is implemented in a library literal in a meth body
+hide meth:
+ -no abstract methods
+abs class, or just Cs->Cs'
+ -no watched
+-In all the cases is an error if Cs(.s)? do not exists or is private
+
+
+-------------------
+ThreadPool{
+  method void computeTasksUntil(lock x) {
+    while(!x.tryLock()){
+      Task t=this.tryTask();//find a more efficient version
+      if(t!=null){t.compute();}//can loop on lazy if another Eager loops :(
+      }
+  ThreadPool(int size){
+    class Worker extends Thread{
+      public void run(){while (true){tp.getTask().compute();}}
+      }
+    for(i in size){new Worker().start();}
+    }
+  }
+
+@Catch.Lazy method T y() = e//L42 version
+T y(){//Java version
+    Object localy = this.y
+    if(localy instanceof Lock){
+      tp.computeTasksUntil((Lock)localy);
+      //rentrant non blocking
+      try{if(y instanceof Lock){y=e;}}
+      catch(L42Throwable t){y=t;}
+      finally{localy.release();}
+      }
+    return returnOrThrow(y);
+    }
+Foo(){
+  this.fff=ff//is this safe to read in e?//ok if submit is syncronized?
+  tp.submit(()->y()) // for eagers
+  }
+---------------------------------------------
+Another solution, that repeats some tasks
+---------------------------------------------------
+
+assumptions:
+every lazy/eager have an associated FutureLock(FL) with the following methods:
+-isReady():Bool //true only after a tryPerfom was successfull
+-getOrThrow():T or throws //and may throw an invalid usage if not isReady()
+-tryPerform():Bool
+  //either sequentially do the job in the local worker and res=true or 
+  //the job is being done by another worker and res=false
+-beingDone():Bool //true if tryPerform has ever been called
+-perform():Void //run the lambda, 
+  //lambda exceptions would be stored and not progragated
+-join():T //top level method
+----
+tryPerform(){ //see ct:CT=current thread and tp:TP=thread pool
+  //if this in ct.current error self circular?
+  if this.ready() {return true;}
+  if this.beingDone() {return false;}
+  ct.current.add(this)
+  try{this.beingDone=true;this.perform();this.read=true;}
+  catch(Suppressed s){if(s.fl!=this){throw s;}}//completed by others
+  ct.current.remove()//this can throw a Suppressed if the caller contex 
+  //has been already resolved with repetition
+  return true;
+  }
+
+join(){
+  ct.current.addDep([fl]);
+  fl.countRequested++;
+  while !fl.tryPerform() {
+    if tp.hasFreeWorkers {wait; continue;}
+    fl0=tasks.tryAcquire()
+    if(fl0!=null){unused=fl0.join();}
+    if ct.current matches _,fl[fl1],fl1,_,
+      where fl1.isReady() and fl.isRequested() {
+      throw new Suppressed(fl1)
+      }
+    else{
+      flRepeatable=tp.getRepeatable()//select an fl near the start of
+      //a CT.current queue where the corresponding [fl'] is already computed
+      //such [fl'] is changed to throw a new Suppressed(flRepeatable) when 
+      //the stack goes back to such ct.current.remove()
+      if(flRepeatable==null){wait;continue;}
+      {unused=flRepeatable.join();}
+      }
+    if(tp.leastBusy!=ct){wait;continue;}
+    }
+  fl.countRequested--;
+  ct.current.RemoveDep();
+  return fl.getOrThrow()
+  }
+
+
+S::=FL|FL[FL']
+Current::=S*,FL
+CT={Current current;}
+
+-----------------------------
+
 R::= Cs(.s)? -> Cs'(.s)?' |Cs(.s)? -> trash | //move, toAbstract
      Cs(.s)? => Cs'(.s)?' |Cs(.s)? => trash | //rename, hide
      Cs(.s)? => P(.s)?'                   //redirect
@@ -492,9 +884,35 @@ Option2:
 
 
 
+what if -> is a soft delegate(error on wrong type but can skip the implementation) 
+and multiple -> from the same source can go on different targets?
+could be ok on interfaces too,
+just -> with abstract body is valid only on publicly implemented interfaces
+can be-> + =>, and will be a soft delegate rename
 
+rename=> can not be on privately implemented interface methods
+hide can be on privately implemented interface methods
+---------------
+method rename ->, method rename => or method sum all can not touch a privatly implemented
+interface.
+rename-> of class interface makes no sense
+rename=> of class interface is ok even for hide (and we autohide all the methods in a "special"
+way that can not be done step by step by the user).
+method rename => works on all the subtyping chunk, and is ok only on the method source
+method rename -> works only on implemented class methods
+and move the implementation away
+class rename -> is ok only on non interface non close class
+and just copy the content of the methods in the new place; thus
+a candidate factory would just be an abstract class method returning NOT This0.
 
+all the various lifting/embedding/delegate are not done with -> and =>
+but are other operators (may be still part of the map)
 
+----------
+3 directions:
+rename=> do not change semantic (violated by soft delegates)
+rename=> is very similar to hide //sacrified
+hide interface always possible 
 --------------
 //rename on privatly implemented (nesteds) may be ok, since all other methods have private names
 Trait({
