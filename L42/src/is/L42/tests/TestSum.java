@@ -89,7 +89,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      @{bar}method Void m()=void
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid method @{foo}imm method imm Void m()=(..)
+   method @{foo}imm method imm Void m()=(..)
    Conflicting implementation: the method is implemented on both side of the sum
    [file:[###]
    """/*next test after this line*/)
@@ -140,7 +140,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      J={interface method Void m() #norm{}}
      B={[This1.J] method Void m() #norm{typeDep=This1.J refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid nested class B={ [ This1.I This1.J ] m() }
+     nested class B={ [ This1.I This1.J ] m() }
      No unique source for m(); it originates from both This1.J and This1.I
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -149,7 +149,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      I={method Void k() #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid nested class I={interface m() }
+     nested class I={interface m() }
      This interface is privately implemented  but the summed version is larger: { k() }
      [file:[###]"""/*next test after this line*/)    
    ),new AtomicTest(()->fail("""
@@ -159,7 +159,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I={interface method Any m() #norm{}}
      C={[This1.I] method Any m() #norm{typeDep=This1.I refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid method imm method imm Void m()
+     method imm method imm Void m()
      Both versions of this method are implemented, but the other have a different header:
      imm method imm Any m()
      [file:[###]"""/*next test after this line*/)    
@@ -168,7 +168,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      I={interface method Library m() #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid method imm method imm Void m()
+     method imm method imm Void m()
      The other method have a different signature:
      imm method imm Library m()
      But there is no local refinement between those two signatures
@@ -184,7 +184,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I0={interface method This1.E m() #norm{typeDep=This1.E}}
      I2={interface method This1.E m() #norm{typeDep=This1.E}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid method imm method imm This1.E m()
+     method imm method imm This1.E m()
      The other method have a different signature:
      imm method imm This1.R m()
      But there is ambiguous refinement between those two signatures
@@ -203,7 +203,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I2={interface method This1.E m() #norm{typeDep=This1.E}}
      I3={[This1.I0] method This1.R m() #norm{typeDep=This1.I0 This1.R refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid method imm method imm This1.R m()
+     method imm method imm This1.R m()
      The other method have a different signature:
      imm method imm This1.E m()
      But there is no local refinement between those two signatures
@@ -215,7 +215,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      R::1={interface #norm{}}
      I1={interface [This1.R::1] method Any m() #norm{close typeDep=This1.R::1 This1, watched=This1}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid nested class I1={interface m() }
+   nested class I1={interface m() }
    One of the two interfaces in nested class I1
    is close (have private methods or implements private interfaces). Only open interfaces can be composed
    [file:[###]"""/*next test after this line*/)
@@ -236,7 +236,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I={ #norm{}}
      C={ #norm{typeDep=This1.I watched=This1.I}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid nested class I={ }
+     nested class I={ }
      The nested class can not be turned into an interface; since its privates are used by other code (is watched)
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -245,7 +245,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I={ #norm{}}
      C={ #norm{typeDep=This1.I coherentDep=This1.I}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid nested class I={ }
+     nested class I={ }
      The nested class can not be turned into an interface, since it is used with 'class' modifier (is required coherent)
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -253,7 +253,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      I={ method Void v()=void #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-     Invalid nested class I={ v()=(..) }
+     nested class I={ v()=(..) }
      The nested class can not be turned into an interface; some public methods are implemented
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
@@ -330,7 +330,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      B={method This m() #norm{typeDep=This}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid method imm method imm Void m()
+   method imm method imm Void m()
    The other method have a different signature:
    imm method imm This0 m()
    But there is no local refinement between those two signatures
@@ -348,7 +348,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      I={interface method Void m()#norm{}} B={[This1.I] method Void m() #norm{typeDep=This,This1.I refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid nested class B={ [ This1.J This1.I ] m() }
+   nested class B={ [ This1.J This1.I ] m() }
    No unique source for m(); it originates from both This1.I and This1.J
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -356,7 +356,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      I2={interface[This1.I1] #norm{typeDep=This1.I1}} I1={interface #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid nested class I1={interface [ This1.I2 This0 ] }
+   nested class I1={interface [ This1.I2 This0 ] }
    The sum would induce a circular interface implemntation for [imm This1.I2, imm This0]
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
@@ -395,7 +395,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      A={interface #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid nested class A={interface k() }
+   nested class A={interface k() }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed
    [file:[###]"""/*next test after this line*/)
@@ -406,7 +406,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      A={interface method Void m::1() #norm{close}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid nested class A={interface k() }
+   nested class A={interface k() }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed
    [file:[###]"""/*next test after this line*/)
@@ -417,7 +417,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      A={interface method Void m::1() method Void k() #norm{close}}
    #norm{}}""",/*expected lib after this line*/"""
-   Invalid nested class A={interface k() }
+   nested class A={interface k() }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed 
    [file:[###]"""/*next test after this line*/)   
@@ -435,12 +435,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      }
 public static void pass(String sl1,String sl2,String sl3){
   Resources.clearRes();
-  Init init1=new Init("{A={"+sl1+"}");
+  Init init1=new Init("{A={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
-  Init init2=new Init("{A={"+sl2+"}");
+  Init init2=new Init("{A={"+sl2+"#norm{}}");
   Core.L l2=init2.p._ofCore(P.of(0,List.of(new C("A",-1))));
-  Core.L l3Actual=new Sum().compose(init1.p,new C("A",-1),l1, l2,null,null);
-  Init init3=new Init("{A={"+sl3+"}");
+  Core.L l3Actual=new Sum().compose(init1.p,new C("A",-1),l1, l2,(Function<L42£LazyMsg,L42Any>)null,null);
+  Init init3=new Init("{A={"+sl3+"#norm{}}");
   Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(new C("A",-1))));
   assertEquals(l3Expected, l3Actual);
   }
@@ -448,9 +448,9 @@ static class FailErr extends Error{}
 public static void fail(String sl1,String sl2,String err){
   Resources.clearRes();
   String[]msg={null};
-  Init init1=new Init("{A={"+sl1+"}");
+  Init init1=new Init("{A={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
-  Init init2=new Init("{A={"+sl2+"}");
+  Init init2=new Init("{A={"+sl2+"#norm{}}");
   Core.L l2=init2.p._ofCore(P.of(0,List.of(new C("A",-1))));
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
   try{new Sum().compose(init1.p,new C("A",-1),l1,l2,wrap,wrap);Assertions.fail();}

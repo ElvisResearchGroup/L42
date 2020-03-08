@@ -57,13 +57,17 @@ public class Sum {
   Core.L topRight;
   Program pOut;
   C cOut;
-
   public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+    l2=normalizePrivates(l2,otherNs(l1));
+    MetaError errC=new MetaError(wrapC);
+    MetaError errM=new MetaError(wrapM);
+    return compose(pOut,cOut,l1,l2,errC,errM);
+    }
+  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
     this.pOut=pOut;
     this.cOut=cOut;
-    errC=new MetaError(wrapC);
-    errM=new MetaError(wrapM);
-    l2=normalizePrivates(l2,otherNs(l1));
+    this.errC=errC;
+    this.errM=errM;  
     topLeft=l1;
     topRight=l2;
     allHiddenSupertypesLeft=allHiddenSupertypes(l1);
@@ -168,7 +172,7 @@ public class Sum {
       });
     return res;
     }
-  private static void addPublicCsOfP(P.NCs p,List<C>csi,LinkedHashSet<List<C>> c){
+  static void addPublicCsOfP(P.NCs p,List<C>csi,LinkedHashSet<List<C>> c){
     var cs=_publicCsOfP(p, csi);
     if(cs!=null){c.add(cs);}
     }

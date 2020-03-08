@@ -11,6 +11,7 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.HasPos;
 import is.L42.generated.P;
+import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -31,8 +32,15 @@ public class MetaError{
       if(cs.isEmpty()){elem+="This0";}
       else{elem+=cs.stream().map(c->c.toString()).collect(Collectors.joining("."));}
       }
-    return "Invalid nested class "+elem+"=";
+    return "nested class "+elem+"=";
     }
+    public String intro(List<C> cs,S s){
+      String elem="";
+      assert cs.stream().noneMatch(c->c.hasUniqueNum());
+      if(cs.isEmpty()){elem+="method This0."+s+"\n";}
+      else{elem+="method "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"."+s+"\n";}
+      return elem;
+      }
     public String intro(Object fault,boolean top){
     String elem="";
     if(fault instanceof P){
@@ -78,8 +86,8 @@ public class MetaError{
       elem=elem+"}\n";
       }     
     if(!top){return elem;}  
-    if(elem.startsWith("{")){return "Invalid nested class "+elem;}
-    return "Invalid method "+elem; 
+    if(elem.startsWith("{")){return "nested class "+elem;}
+    return "method "+elem; 
     }
   public String pos(Object fault){
     if(fault instanceof Core.L){

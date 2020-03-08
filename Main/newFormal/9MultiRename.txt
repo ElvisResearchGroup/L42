@@ -5,7 +5,7 @@ AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
 Rename::=Rename[p;Cs;Map]
 
 _______
-#define applyMap(p;Map)    replaceEmpty(ns,p,Map)=Map
+#define applyMap(p;Map)=L    replaceEmpty(ns,p,Map)=Map
 * applyMap(p;Map)= L'+LOf(AddMap) //simpler then normal sum, at least can skip normalizing unique numbers
     earlyCheck(p.top,Map)
     Map'=replaceEmpty(existingNs,p,Map)
@@ -28,34 +28,33 @@ _______
 * allWatched(L,Map)=allWatched(L\Csz)//all watched without considering Cs1..Csn
   Csz={Cs| Cs->empty in Map or Cs=>P in Map}
 _______
-#define earlyCheck(Core.L,Map)  earlyCheck(Core.L,N|>N')
+#define earlyCheck(Core.L,Map)  earlyCheck(Core.L,Map,N|>N')
 * earlyCheck(L,Map)
-    forall N|>N' in Map, earlyCheck(L,N|>N')
-    if  Cs=>P in Map, s has no unique n and This0.Cs' in collectDeps({};L(Cs)(s))[from Cs;{}] //L(Cs)(s) is abstract from the check above
-      then Cs'=>P' in Map
+    forall N|>N' in Map, earlyCheck(L,Map,N|>N') //N not of form empty (implicit by the cases below)
     if Cs in dom(map) U cod(map)
       then Cs.s not in dom(map) U cod(map)
-    if Cs|>Cs' in map
-      then Cs"|>Cs' not in map
-    if Cs.s|>Cs'.s' in map
-      then Cs".s"|>Cs'.s' not in map
-    Map is a map, thus no two tuples with the same key
-    
-* earlyCheck(L,N|>N')
-    N not of form empty
-    if N = Cs.s then N' in{Cs.s',empty}, s!=s'
-    if N = Cs then N' in{Cs',empty} Cs!=Cs'
-    N,N' do not have unique numbers
-    if N|>N'of form Cs=>P, s in dom(L(Cs)) and s has no unique n
-      then L(Cs)(s).e?=empty
-    if N|>N'of form Cs=>P 
-      then Cs notin allWatched(L,Map)
-    if N|>N'of form Cs->_
-      then Cs not in allWatched(L,Map) 
+    Map is a map, thus no two tuples with the same Cs(.s?) key
+
+* earlyCheck(L,Map,N|>N')
     if N of form Cs, then  Cs in dom(L)
     if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
+    N,N' do not have unique numbers
+    if N|>N'= Cs=>P then 
+      Cs notin allWatched(L,Map)
+      forall s in dom(L(Cs)) where s has no unique n
+        L(Cs)(s).e?=empty
+        if This0.Cs' in (L(Cs)(s).T,L(Cs)(s).pars,L(Cs)(s).exceptions)[from Cs;{}]
+        then Cs'=>P' in Map
+    if N = Cs.s then N' in{Cs.s',empty}, s!=s'
+    if N = Cs then N' in{Cs',P,empty} Cs!=Cs'
+    if N|>N'of form Cs->_
+      then Cs not in allWatched(L,Map) 
     if N|>N'of form Cs.s|>Cs'.s'
       then Cs=Cs' and size(s.xs)=size(s'.xs)
+    if N|>N' = Cs|>Cs'
+      then Cs"|>Cs' not in map
+    if N|>N' = Cs.s|>Cs'.s'
+      then Cs".s"|>Cs'.s' not in map
       
 * LOf(AddMap) =
     create a lib containing all the AddMap entries.
