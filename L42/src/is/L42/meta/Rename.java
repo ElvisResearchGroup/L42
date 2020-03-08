@@ -40,6 +40,7 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.X;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -81,7 +82,7 @@ public class Rename {
     earlyCheck();
     replaceEmpty();
     L l1=renameL(p.topCore());
-    L l2=lOfAddMap();
+    L l2=lOfAddMap(L());
     return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
     }
   void replaceEmpty(){
@@ -258,8 +259,27 @@ public class Rename {
         }
       }
     }
-  L lOfAddMap(){throw todo();}
-  MWT mwtOf(S s1){throw todo();}
+  private static final L emptyL=new L(L(),false,L(),L(),L(),L.Info.empty,L());
+  L lOfAddMap(List<C> cs){
+    L l=addMapLs.get(cs);
+    if(l==null){l=emptyL;}
+    throw todo();
+    }
+  MWT mwtOf(MWT mwt,S s1){
+    assert mwt.key().xs().size()==s1.xs().size();
+    MH mh=mwt.mh().withS(s1);
+    if(mwt._e()==null || mwt.key().xs().equals(s1.xs())){return mwt.withMh(mh);}
+    HashMap<X,X> varMap=new HashMap<>();
+    for(int i:range(s1.xs())){varMap.put(mwt.key().xs().get(i),s1.xs().get(i));}
+    Core.E e=mwt._e().visitable().accept(new CloneVisitor(){
+      public X visitX(X x){
+        X xx=varMap.get(x);
+        if(xx==null){return x;}
+        return xx;
+        }
+      });
+    return mwt.withMh(mh).with_e(e);
+    }
   MWT renameUsages(MWT mwt){throw todo();}
   L renameL(L l){throw todo();}//and adds to AddMap
   List<NC> renameNCs(List<NC> ncs){throw todo();}//and adds to AddMap
