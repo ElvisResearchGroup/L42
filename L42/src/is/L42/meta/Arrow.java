@@ -8,6 +8,7 @@ import is.L42.generated.P;
 import is.L42.generated.S;
 
 public final class Arrow{
+  public Arrow(List<C> cs, S _s) {this(cs,_s,false,null,null,null);}
   public Arrow(List<C> cs, S _s, boolean full, P _path, List<C> _cs, S _sOut) {
     this.cs = cs;
     this._s = _s;

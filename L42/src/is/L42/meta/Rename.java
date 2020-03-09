@@ -50,8 +50,9 @@ import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 
 public class Rename {
-  HashMap<List<C>,Core.L> addMapLs=new HashMap<>();
-  HashMap<List<C>,Core.L.MWT> addMapMWTs=new HashMap<>();
+  HashMap<List<C>,List<MWT>> addMapMWTs=new HashMap<>();//mutable, so should be ArrayList, but need List for the default emptyList
+  HashMap<List<C>,List<NC>> addMapNCs=new HashMap<>();
+  L addMapTop=emptyL;
   LinkedHashMap<Arrow,Arrow> map;
   HashSet<Integer> existingNs=new HashSet<>();
   int allBusyUpTo=0;//TODO: both need to be recover from environment
@@ -81,8 +82,9 @@ public class Rename {
   L applyMap(){
     earlyCheck();
     replaceEmpty();
+    cs=L();
     L l1=renameL(p.topCore());
-    L l2=lOfAddMap(L());
+    L l2=lOfAddMap();
     return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
     }
   void replaceEmpty(){
@@ -125,7 +127,7 @@ public class Rename {
   LinkedHashSet<List<C>> allWatched(L l){//uses the map
     LinkedHashSet<List<C>> res=new LinkedHashSet<>();
       l.visitInnerLNoPrivate((li,csi)->{
-      var arrow=new Arrow(csi,null,false,null,null,null);
+      var arrow=new Arrow(csi,null);
       var a=map.get(arrow);
       if(a!=null && (a.isEmpty() || a.isP())){return;}
       for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,res);}
@@ -135,7 +137,7 @@ public class Rename {
   List<C> watchedBy(L l,List<C> cs){//uses the map
       Object[] res={null};
       l.visitInnerLNoPrivate((li,csi)->{
-      var arrow=new Arrow(csi,null,false,null,null,null);
+      var arrow=new Arrow(csi,null);
       var a=map.get(arrow);
       if(a!=null && (a.isEmpty() || a.isP())){return;}
       for(var w:li.info().watched()){
@@ -164,7 +166,7 @@ public class Rename {
     for(var a:map.values()){
       if(a._s==null){domCodom.add(a.cs);}
       if(a.isMeth()){
-        var k=new Arrow(a._cs,a._sOut,false,null,null,null);
+        var k=new Arrow(a._cs,a._sOut);
         if(codMeth.contains(k)){err(errFail,"Rename can not map two methods on the same method: "+errFail.intro(k.cs,k._s));}
         codMeth.add(k);
         }
@@ -251,7 +253,7 @@ public class Rename {
         if(!t.p().isNCs()){continue;}
         var pi=emptyP.from(t.p().toNCs(),that.cs);
         if(pi.n()!=0){continue;}
-        var arrow=new Arrow(pi.cs(),null,false,null,null,null);
+        var arrow=new Arrow(pi.cs(),null);
         var a=map.get(arrow);
         if(a==null || !a.isP()){
           err(errFail,"Also "+errFail.intro(pi.cs(),false)+"need to be redirected to an outer path");
@@ -259,11 +261,26 @@ public class Rename {
         }
       }
     }
+  private List<C> addC(C c) {
+    var old=this.cs;
+    this.cs=pushL(this.cs,c);
+    return old;
+    }
   private static final L emptyL=new L(L(),false,L(),L(),L(),L.Info.empty,L());
-  L lOfAddMap(List<C> cs){
-    L l=addMapLs.get(cs);
-    if(l==null){l=emptyL;}
-    throw todo();
+  L lOfAddMap(){return lOfAddMapAux(addMapTop,L());}
+  L lOfAddMapAux(L l,List<C> cs){//if A.B.C in the map, then A.B is also in the map, and a nested class for C=_ is present. It may point just to emptyL
+    List<MWT> mwts=L(c->{
+      c.addAll(l.mwts());
+      c.addAll(addMapMWTs.getOrDefault(cs,L()));
+      });
+    List<NC> ncs=L(c->{
+      c.addAll(l.ncs());
+      for(NC nci:addMapNCs.getOrDefault(L(),L())){
+        L li=lOfAddMapAux(nci.l(),pushL(cs,nci.key()));
+        c.add(nci.withL(li));
+        }
+      });
+    return l.withMwts(mwts).withNcs(ncs);
     }
   MWT mwtOf(MWT mwt,S s1){
     assert mwt.key().xs().size()==s1.xs().size();
@@ -281,15 +298,46 @@ public class Rename {
     return mwt.withMh(mh).with_e(e);
     }
   MWT renameUsages(MWT mwt){throw todo();}
-  L renameL(L l){throw todo();}//and adds to AddMap
-  List<NC> renameNCs(List<NC> ncs){throw todo();}//and adds to AddMap
-  List<MWT> renameMWTs(List<MWT> mwt){throw todo();}//and adds to AddMap
-  NC renameNC(NC nc){throw todo();}//and adds to AddMap
-  MWT renameMWT(MWT mwt){throw todo();}//and adds to AddMap
-  Info renameInfo(L l){throw todo();}//and adds to AddMap
+  List<Doc> renameUsagesDocs(List<Doc> docs){throw todo();}
+  List<T> renameUsagesTs(List<T> ts){throw todo();}
+  Info renameUsagesInfo(Info info){throw todo();}
+  L renameL(L l){
+    assert p._ofCore(cs)==l;
+    var mwts1=renameMWTs(l.mwts());
+    var ncs1=renameNCs(l.ncs());
+    List<T> ts1=renameUsagesTs(l.ts());
+    Info info1=renameUsagesInfo(l.info());
+    List<Doc> docs1=renameUsagesDocs(l.docs());
+    return new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,info1,docs1);    
+    }
+  List<NC> renameNCs(List<NC> ncs){return L(ncs,(c,nci)->{
+    var oldCs=this.addC(nci.key());
+    L li=this.renameL(nci.l());
+    this.cs=oldCs;
+    List<Doc> docs=renameUsagesDocs(nci.docs());
+    c.addAll(renameNC(nci.withL(li).withDocs(docs)));    
+    });}
+  List<MWT> renameMWTs(List<MWT> mwts){return L(mwts,(c,mwti)->{
+    var mwt=renameUsages(mwti);
+    c.addAll(renameMWT(mwt));
+    });}
+  List<NC> renameNC(NC nc){
+    Arrow e=map.get(new Arrow(pushL(cs,nc.key()),null));
+    if(e==null){return L(nc);}
+    throw todo();    
+    }
+  List<MWT> renameMWT(MWT mwt){
+    Arrow e=map.get(new Arrow(cs,mwt.key()));
+    if(e==null){return L(mwt);}
+    if(!e.full || e.isEmpty()){return L(rename3(mwt));}
+    throw todo();
+    }
   MWT rename1(MWT mwt){throw todo();}//and adds to AddMap
   MWT rename2(MWT mwt){throw todo();}//and adds to AddMap
-  MWT rename3(MWT mwt){throw todo();}//and adds to AddMap
+  MWT rename3(MWT mwt){
+    if(mwt._e()!=null){err(errFail,"");}
+    return mwt.with_e(null);
+    }
   MWT rename4(MWT mwt){throw todo();}//and adds to AddMap
   MWT rename5(MWT mwt){throw todo();}//and adds to AddMap
   MWT rename6(MWT mwt){throw todo();}//and adds to AddMap

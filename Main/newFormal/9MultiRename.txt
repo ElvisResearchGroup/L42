@@ -72,10 +72,10 @@ _______
 * Rename[p;Cs;Map] L = L";AddMap,AddMap',AddMap1..AddMapn //both L0 and L1 get produced
     assert p(Cs)=L
     L={interface? Ts mwts ncs Info}
-    C1..Cn in dom(L)
-    Rename[p;Cs.C1;Map] L(C1) = L'1;AddMap1..Rename[p;Cs.Cn;Map] L(Cn) =L'n;AddMapn
     Rename mwts => mwts';AddMap
-    Rename ncs => ncs';AddMap'
+    C1..Cn = dom(ncs)
+    Rename[p;Cs.C1;Map] L(C1) = L'1;AddMap1..Rename[p;Cs.Cn;Map] L(Cn) =L'n;AddMapn
+    Rename ncs[L'1..L'n] => ncs';AddMap'
     L'={interface? Ts mwts' ncs' Rename Info}
     Rename usages L'=L"//only renames Ts, Info and NC docs, the rest already happended
 * Rename(Info) = Info'
@@ -90,7 +90,7 @@ _______
     Rename mwts = mwts";AddMap'
 * Rename(Docs C=L ncs) = ncs' ncs";AddMap,AddMap',AddMap"
     Rename[Cs+=C] L = L',AddMap'
-    Rename(Docs C=L') = ncs';AddMap
+    Rename(Docs C=L') = ncs';AddMap//The code renameUsage of Docs here
     Rename ncs = ncs";AddMap"
 * Rename(mwt) = mwt;empty
     Rename.Cs.(mwt.s) notin dom(Map)

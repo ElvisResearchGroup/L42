@@ -51,9 +51,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRename
 extends AtomicTest.Tester{
-  public static void pass(String sl1,String sl2,String sl3){
-  Resources.clearRes();//TODO:
-  }
 public static LinkedHashMap<Arrow,Arrow> map(String s){
   LinkedHashMap<Arrow,Arrow>map=new LinkedHashMap<>();
   Stream.of(s.strip().split(Pattern.quote("|"))).forEach(arr->{
@@ -88,7 +85,7 @@ static Arrow fromS(String s){
   S _s=null;
   s=s.substring(i+1);
   if(!s.isEmpty()){_s=S.parse(s);}
-  return new Arrow(cs,_s,false,null,null,null);
+  return new Arrow(cs,_s);
   }
 static class FailErr extends Error{}
 public static void fail(String sl1,String s2,String err){
@@ -100,6 +97,15 @@ public static void fail(String sl1,String s2,String err){
   try{new Rename().apply(init1.p,new C("A",-1),l1,map(s2),wrap,wrap,wrap,wrap);Assertions.fail();}
   catch(FailErr fe){}
   Err.strCmp(msg[0],err);
+  }
+public static void pass(String sl1,String s2,String sl3){
+  Resources.clearRes();//TODO:
+  Init init1=new Init("{A={"+sl1+"#norm{}}");
+  Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
+  Core.L l3Actual=new Rename().apply(init1.p,new C("A",-1),l1,map(s2),null,null,null,null);
+  Init init3=new Init("{A={"+sl3+"#norm{}}");
+  Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(new C("A",-1))));
+  assertEquals(l3Expected, l3Actual);
   }
 public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    //pass("#norm{}}","#norm{}}","#norm{}}")

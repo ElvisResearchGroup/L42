@@ -22,7 +22,7 @@ TestClose1=(
     @Cache.Clear class method Size double(mut Size n)=error void
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid method @This1.Cache.Clear class method imm This1.Size double(mut This1.Size n)=(..)
+      |method @This1.Cache.Clear class method imm This1.Size double(mut This1.Size n)=(..)
       |first parameter does not correspond to a capsule field; constructor class method mut This0 #apply(imm This1.Size n) initializes it as imm This1.Size
       |[file:
       """
@@ -33,7 +33,7 @@ TestClose1=(
     @Cache.Now read method Size double()=this.n()+this.n()
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid method @This1.Cache.Now read method imm This1.Size double()=(..)
+      |method @This1.Cache.Now read method imm This1.Size double()=(..)
       |must be a class method
       |[file:
       """
@@ -43,7 +43,7 @@ TestClose1=(
     class method mut This of::0(Size n)
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid nested class { }
+      |nested class { }
       |Class is already close
       |[file:
       """
@@ -58,7 +58,7 @@ TestClose1=(
       )
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid method @This1.Cache.Clear class method imm This1.Size append1(mut This1.Strings thaat)=(..)
+      |method @This1.Cache.Clear class method imm This1.Size append1(mut This1.Strings thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
       |[file:
       """
@@ -69,7 +69,7 @@ TestClose1=(
     @Cache.Now class method Size double(Size nn)=nn+nn
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid method @This1.Cache.Now class method imm This1.Size double(imm This1.Size nn)=(..)
+      |method @This1.Cache.Now class method imm This1.Size double(imm This1.Size nn)=(..)
       |No candidate getter/exposer with name nn and method modifier Immutable or Readable
       |[file:
       """
@@ -80,7 +80,7 @@ TestClose1=(
     @Cache.Now class method Size double(Size n)=n+n
     },expected=S"""
       |Message toFix(toFix):
-      |Invalid method @This1.Cache.Now class method imm This1.Size double(imm This1.Size n)=(..)
+      |method @This1.Cache.Now class method imm This1.Size double(imm This1.Size n)=(..)
       |parameter n is initialized with fwd in the constructor class method mut This0 #apply(fwd imm This1.Size n)
       |[file:
       """
@@ -112,7 +112,7 @@ TestSum1=(
     method Void foo()=void
     },expected=S"""
     |Message toFix(toFix):
-    |Invalid method imm method imm Void foo()=(..)
+    |method imm method imm Void foo()=(..)
     |Conflicting implementation: the method is implemented on both side of the sum
     |[file:
     """)
@@ -122,7 +122,7 @@ TestSum1=(
     method Void foo()=void
     },expected=S"""
     |Message toFix(toFix):
-    |Invalid nested class This0={ foo()=(..) }
+    |nested class This0={ foo()=(..) }
     |The nested class can not be turned into an interface; some public methods are implemented
     |[file:
     """)
