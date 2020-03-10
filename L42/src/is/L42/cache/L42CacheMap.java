@@ -102,7 +102,6 @@ public class L42CacheMap {
     if(o instanceof L42Cachable) { return ((L42Cachable<T>) o).myCache(); }
     return getCacheObject((Class<T>) o.getClass()).refine(o);
     }
-  
   static <T> T normalize_internal(T t) {
     L42Cache<T> cache = getCacheObject(t);
     return cache.normalize(t);

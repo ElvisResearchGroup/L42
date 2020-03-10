@@ -25,8 +25,14 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     caches = L42CacheMap.getCacheArray(classes);
   }
   
+  private static final class Publisher{
+    @SuppressWarnings("unused") final Object o; Publisher(Object o){this.o=o;}
+    //See https://stackoverflow.com/questions/6457109/java-concurrency-is-final-field-initialized-in-constructor-thread-safe
+    //--Storing a reference to it into a final field of a properly constructed object;
+    }
   private void add(KeyNorm2D key, T t) {
     normMap.put(key, t);
+    new Publisher(t);
     t.setNorm(t);
     }
   
@@ -75,6 +81,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
       KeyNorm2D key = this.simpleKey(t);
       if(normMap.containsKey(key)) { 
         T t2 = normMap.get(key);
+        new Publisher(t2);
         t.setNorm(t2);
         return new NormResult<T>(t2); 
         }
@@ -176,9 +183,10 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     }
 
   @Override 
-  public void setMyNorm(T me, T norm) { 
+  public void setMyNorm(T me, T norm) {
+    new Publisher(norm); 
     me.setNorm(norm);
-     }
+    }
   
   @Override
   public T dup(T that, Map<Object, Object> map) {
