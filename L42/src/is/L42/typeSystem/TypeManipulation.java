@@ -164,9 +164,5 @@ public class TypeManipulation {
     if(m.isMut()){return MutablePFwd;}
     return m;
     }
-  public static P guess(G g, XP xp){
-  if(xp instanceof EX){return g.of(((EX)xp).x()).p();}
-  return ((PCastT)xp).t().p();
-  }
-    
+  public static P guess(G g, XP xp){return g.of(xp).p();}
   }

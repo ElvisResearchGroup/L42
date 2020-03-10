@@ -3,6 +3,7 @@ package is.L42.visitors;
 import java.util.ArrayList;
 import java.util.List;
 
+import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -125,5 +126,39 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     lastCMs=aux;
     poss=lastPos;
     return res;
+    }
+  public static class WithG extends CloneVisitorWithProgram{
+    public WithG(Program p, G g){
+      super(p);
+      this.g=g;
+      }
+    public G g;
+    @Override public Core.Block visitBlock(Core.Block block) {
+      var ds0=block.ds();
+      var ks0=block.ks();
+      var e0=block.e();
+      var ks=visitKs(ks0);
+      var old=g;
+      g=g.plusEq(ds0);
+      var ds=visitDs(ds0);
+      var e=visitE(e0);
+      g=old;
+      if(ds==ds0 && ks==ks0 && e==e0){return block;}
+      return new Core.Block(block.pos(), ds, ks, e);
+      }
+    @Override public Core.K visitK(Core.K s) {
+      G old=g;
+      g=old.plusEq(s.x(),s.t());
+      var res=super.visitK(s);
+      g=old;
+      return res;
+      }
+    @Override public Core.L.MWT visitMWT(Core.L.MWT s) {
+      var old=g;
+      g=G.of(s.mh());
+      var res=super.visitMWT(s);
+      g=old;
+      return res;
+      }
     }
   }

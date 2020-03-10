@@ -26,14 +26,17 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
+import is.L42.generated.P;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.MH;
@@ -48,6 +51,7 @@ import is.L42.tools.General;
 import is.L42.top.Top;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.CloneVisitorWithProgram;
 
 public class Rename {
   HashMap<List<C>,List<MWT>> addMapMWTs=new HashMap<>();//mutable, so should be ArrayList, but need List for the default emptyList
@@ -77,12 +81,12 @@ public class Rename {
     this.errM=new MetaError(wrapM);
     //allHiddenSupertypes=allHiddenSupertypes(l1);
     allWatched=allWatched(l);
+    cs=L();
     return applyMap();
     }
   L applyMap(){
     earlyCheck();
     replaceEmpty();
-    cs=L();
     L l1=renameL(p.topCore());
     L l2=lOfAddMap();
     return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
@@ -297,10 +301,14 @@ public class Rename {
       });
     return mwt.withMh(mh).with_e(e);
     }
-  MWT renameUsages(MWT mwt){throw todo();}
-  List<Doc> renameUsagesDocs(List<Doc> docs){throw todo();}
-  List<T> renameUsagesTs(List<T> ts){throw todo();}
-  Info renameUsagesInfo(Info info){throw todo();}
+  MWT renameUsages(MWT mwt){return mwt.accept(new CloneRenameUsages(this));}
+  private final CloneVisitor simpleRename=new CloneVisitor(){
+      @Override public P visitP(P path){return renamedPath(map,cs,p.navigate(cs),path);}
+      @Override public S visitS(S s){throw todo();}
+      };
+    List<T> renameUsagesTs(List<T> ts){return simpleRename.visitTs(ts);}
+  List<Doc> renameUsagesDocs(List<Doc> docs){return simpleRename.visitDocs(docs);}
+  Info renameUsagesInfo(Info info){return info.accept(simpleRename);}
   L renameL(L l){
     assert p._ofCore(cs)==l;
     var mwts1=renameMWTs(l.mwts());
@@ -324,7 +332,7 @@ public class Rename {
   List<NC> renameNC(NC nc){
     Arrow e=map.get(new Arrow(pushL(cs,nc.key()),null));
     if(e==null){return L(nc);}
-    throw todo();    
+    throw todo();   
     }
   List<MWT> renameMWT(MWT mwt){
     Arrow e=map.get(new Arrow(cs,mwt.key()));
@@ -335,7 +343,7 @@ public class Rename {
   MWT rename1(MWT mwt){throw todo();}//and adds to AddMap
   MWT rename2(MWT mwt){throw todo();}//and adds to AddMap
   MWT rename3(MWT mwt){
-    if(mwt._e()!=null){err(errFail,"");}
+    if(mwt._e()==null){err(errFail,errFail.intro(cs,mwt.key())+"is already abstract");}
     return mwt.with_e(null);
     }
   MWT rename4(MWT mwt){throw todo();}//and adds to AddMap
@@ -346,4 +354,44 @@ public class Rename {
   NC rename9(NC nc){throw todo();}//and adds to AddMap
   NC rename10(NC nc){throw todo();}//and adds to AddMap
   //7+
+  static P renamedPath(LinkedHashMap<Arrow,Arrow> map,List<? extends LDom> whereFromTop,Program p,P path){
+    int nesting=whereFromTop.size();
+    if(!path.isNCs()){return path;}
+    List<C> currentP=_topCs(whereFromTop,path.toNCs());
+    if(currentP==null){return path;}
+    Arrow a=map.get(new Arrow(currentP,null));
+    if(a==null || !a.full){return path;}
+    if(a.isCs()){return p.minimize(P.of(nesting,a._cs));}
+    assert a.isP();
+    if(!a._path.isNCs()){return a._path;}
+    var res=a._path.toNCs();
+    res=res.withN(nesting+res.n()+1);//because destination is relative to outside pStart.top
+    assert p.minimize(res)==res;
+    return res;
+    }  
+  static List<C> _topCs(List<? extends LDom> ldoms,P.NCs p){//the result is not wrapped in an unmodifiable list
+    if(p.n()>ldoms.size()){return null;}
+    if(p.n()==ldoms.size()){return p.cs();}
+    ArrayList<C> res=new ArrayList<>();
+    for(LDom li:ldoms.subList(0,ldoms.size()-p.n())){
+      if(!(li instanceof C)){return null;}
+      res.add((C)li);
+      }
+    res.addAll(p.cs());
+    return res;
+    }
+  static class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
+    CloneRenameUsages(Rename r){
+      super(r.p.navigate(r.cs),G.empty());
+      this.r=r;
+      this.whereFromTop().addAll(r.cs);
+      }
+    Rename r;
+    @Override public P visitP(P path){return renamedPath(r.map,whereFromTop(),this.p(),path);}
+    @Override public MCall visitMCall(MCall mcall){
+      g.of((X)null);
+      throw todo();
+      }
+      //return renamedPath(r.map,whereFromTop(),this.p(),path);
+    }
   }

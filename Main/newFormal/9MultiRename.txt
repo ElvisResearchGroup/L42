@@ -65,8 +65,19 @@ _______
 
 * Rename usages mwt = mwt'
     recursively enters in the subterms, keeping track of the additional nesting in Ls, and
-    if P is found, and P=>P' in Rename.Map, P' is returned
+    if P found in LDoms, Cs = LDoms++P and Cs => Cs' in Rename.Map
+      replace it with p.minimize(This_dept.Cs')
+    if P found in LDoms, Cs = LDoms++P and Cs => Thisn.Cs' in Rename.Map
+      replace it with This_dept+n.Cs' //or with the primitive P if C => P, P in {Any,Void,Library}     
     if P is found, and P.s=>P.s' in Rename.Map, s' is returned
+_______
+#define LDoms++P = Cs    LDoms++Cs
+* LDoms,LDom1..LDomn++Thisn.Cs =LDoms++Cs
+* Cs++Cs'=Cs.Cs'
+* LDoms++Cs undefined otherwise (there is some LDom not form C)
+
+
+//TODO: below, we need a lot of [from], every time we move stuff around
 _______
 #define Rename(L) = L;AddMap    Rename(ncs) = ncs;AddMap    Rename(mwts) = mwts;AddMap    Rename(Info) = Info
 * Rename[p;Cs;Map] L = L";AddMap,AddMap',AddMap1..AddMapn //both L0 and L1 get produced

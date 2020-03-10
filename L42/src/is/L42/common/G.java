@@ -65,8 +65,14 @@ public class G {
     T res= xInT.get(x);
     return res;
     }
-
-
+  public T _of(Core.XP xp){
+    if(xp instanceof Core.EX){return _of(((Core.EX)xp).x());}
+    return ((Core.PCastT)xp).t();
+    }
+  public T of(Core.XP xp){
+    if(xp instanceof Core.EX){return of(((Core.EX)xp).x());}
+    return ((Core.PCastT)xp).t();
+    }
   public G plusEq(List<D> ds) {
     if(ds.isEmpty()){return this;}
     Map<X,T> xInT=new HashMap<>(this.xInT);

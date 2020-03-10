@@ -108,9 +108,23 @@ public static void pass(String sl1,String s2,String sl3){
   assertEquals(l3Expected, l3Actual);
   }
 public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   //pass("#norm{}}","#norm{}}","#norm{}}")
-   //),new AtomicTest(()->
-   pass("A={#norm{}}#norm{}}","A.=>B.","B={#norm{}}#norm{}}")
+   //pass("A={#norm{}}#norm{}}","A.=>B.","B={#norm{}}#norm{}}")
+   //pass("A={ method Void foo(Void x)=x #norm{}}#norm{}}",
+   //  "A.foo(x)=>A.bar(y)",
+   //  "A={ method Void bar(Void y)=y #norm{}}#norm{}}")
+   pass("A={ method Void foo(Void x)=x #norm{}}#norm{}}",
+     "A.foo(x)-><empty>",
+     "A={ method Void foo(Void x) #norm{}}#norm{}}")
+   ),new AtomicTest(()->fail("""
+     A={ method Void foo(Void x) #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)-><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   method A.foo(x)
+   is already abstract
+   Full mapping:A.foo(x)-><empty>
+   [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}}
    #norm{}}""",/*rename map after this line*/"""

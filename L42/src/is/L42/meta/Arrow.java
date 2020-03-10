@@ -40,6 +40,7 @@ public final class Arrow{
     if(_s!=null){res+="."+_s;}
     if(full){res+="=>";}
     else{res+="->";}
+    if(isEmpty()){res+="<empty>";}
     if(_sOut!=null && _sOut.hasUniqueNum()){res+="<empty>";}
     else{
       res+=toStringCs(_cs);

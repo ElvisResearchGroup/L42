@@ -67,14 +67,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     libs.add(new L42£Library(p));
     return ""+(libs.size()-1);
     }
-  public Program p(){return p;}
-  T g(Core.XP xP){
-    if(xP instanceof Core.EX){return g(((Core.EX)xP).x());}
-    var p=(Core.PCastT)xP;
-    return p.t();    
-    }
-  T g(X x){return g.of(x);}
-  
+  public Program p(){return p;}  
   String catchVar(){return "catchVar"+catchLev;}
   String loopVar(){return "loopVar"+loopLev;}
   boolean nativeKind(T t){return !p._ofCore(t.p()).info().nativeKind().isEmpty();}
@@ -156,8 +149,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     X x=ex.x();
     String tail="";
     if(fwds.contains(x)){tail="£fwd";}
-    if(!nativeWrap(g(x))){kw("£x"+x.inner()+tail);return;}
-    className(g(x));
+    if(!nativeWrap(g.of(x))){kw("£x"+x.inner()+tail);return;}
+    className(g.of(x));
     c(".wrap(£x"+x.inner()+tail+")");
     }
   @Override public void visitX(X x){
@@ -175,7 +168,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
 
   @Override public void visitMCall(Core.MCall m){
-    T t=g(m.xP());
+    T t=g.of(m.xP());
     var lib=p._ofCore(t.p());
     assert lib!=null:t;
     var mwts=lib.mwts();
@@ -227,7 +220,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitOpUpdate(Core.OpUpdate o){
     kw("Resources.toVoid(£x"+o.x()+"=");
     var oldWrap=wrap;
-    wrap(g(o.x()).p());
+    wrap(g.of(o.x()).p());
     visitE(o.e());
     wrap(oldWrap);
     c(")");
@@ -292,7 +285,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitD(Core.D d){//init
     kw("£x"+d.x()+"=");
     var oldWrap=wrap;
-    wrap(g(d.x()).p());
+    wrap(g.of(d.x()).p());
     visitE(d.e());
     c(";");
     nl();

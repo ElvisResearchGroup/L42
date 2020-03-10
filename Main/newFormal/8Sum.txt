@@ -6,7 +6,7 @@ What should Res be?  {method A.B foo()} or {method A.C foo()}?
 Both solution are ok w.r.t. meta level soundness.
 But if we swap the line, then we would have either A.B>A.C or vice versa (or error)
 thus swapping the line may change the result of the sum, and I do not like that.
-Thus,we do not even look in A.B/A.C; and if a method is already beating another type, then it is
+Thus,we do not even look in A.B or A.C; and if a method is already beating another type, then it is
 ok to chose the more refined version. But only using this local reasoning inside the bubble.
 
 Note: interfaces can watch if they have private nested classes that are watching.
@@ -40,10 +40,10 @@ _______
     Cs' in transitiveMap(L1,L2)(Cs)
     Cs" in singleMap(L1,L2)(Cs')
 _______
-#define Cs/Cs'=P// make Cs' as it should be when minimized into Cs
-* Cs.C1..Cn/Cs = Thisn
-* Cs/Cs.C1..Cn = This0.C1..Cn
-* Cs.C1..Cn/Cs.C'1..C'k = Thisn.C'1..C'k
+#define Cs\Cs'=P// make Cs' as it should be when minimized into Cs
+* Cs.C1..Cn\Cs = Thisn
+* Cs\Cs.C1..Cn = This0.C1..Cn
+* Cs.C1..Cn\Cs.C'1..C'k = Thisn.C'1..C'k
     C1!=C'1 
 _______
 #define CORE.L1 PLUS CORE.L2 = CORE.L3    Ts1+Ts2=Ts3
@@ -68,7 +68,7 @@ _______
   Ps=paths(PLUS.topLeft(Cs1),..,PLUS.topLeft(Csn))[from p.minimize(Thisk.Csn);p],
        paths(PLUS.topRight(Cs1),..,PLUS.topEight(Csn))[from p.minimize(Thisk.Csn);p]
 
-*  Ts1 + Ts2= Ts1,Ts2/Ts1 //using T.P for set minus removal
+*  Ts1 + Ts2= Ts1,Ts2\Ts1 //using T.P for set minus removal
 _______
 #define NCs1 PLUS NCs2 = NCs3    PLUS(L)=L'    paths(L)=Ps
 * (Docs C=L NCs1) PLUS NCs2 = Docs C=PLUS[Cs=PLUS.Cs,C](PLUS.topLeft,L) (NCs1 PLUS NCs2)
@@ -86,7 +86,7 @@ _______
     Cs=C1..Ck
     Ps=paths(PLUS.topLeft(Cs1),..,PLUS.topLeft(Csn))[from p.minimize(Thisk.Csn);p],
          paths(PLUS.topRight(Cs1),..,PLUS.topEight(Csn))[from p.minimize(Thisk.Csn);p]
-    Ts=L.Ts+PLUS.Cs/Cs1+..+PLUS.Cs/Csn
+    Ts=L.Ts+PLUS.Cs\Cs1+..+PLUS.Cs\Csn
     iMWTs=implemented(L0,PLUS.Cs)[L.MWTs] U MWTs1 U MWTs'1 U..U MWTsn U MWTs'n
     MWTsi=PLUS.topLeft(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs
     MWTs'i=PLUS.topRight(Csn).MWTs[from p.minimize(Thisk.Csn);p]//and removing all the docs

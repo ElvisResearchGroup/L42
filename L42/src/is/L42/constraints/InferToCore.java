@@ -126,15 +126,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
 
   @Override public void visitBinOp(Half.BinOp binOp){
     List<Core.XP> xps=L(binOp.es(),(c,x)->c.add((Core.XP)compute(x)));
-    List<T> ts=L(xps,(c,xpi)->{
-      if (xpi instanceof Core.EX){
-        var x=(Core.EX)xpi;
-        c.add(i.g().of(x.x()));
-        return;
-        }
-       var pct=(Core.PCastT) xpi;
-       c.add(pct.t());
-      });
+    List<T> ts=L(xps,(c,xpi)->c.add(i.g().of(xpi)));
     var res=i.p()._opOptions(binOp.op(), ts);
     //TODO: can we make a test where the former call return null?
     if(res.size()!=1){
