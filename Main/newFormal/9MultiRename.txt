@@ -95,6 +95,7 @@ _______
       Info' removes the usedMethod and add watched
     if Cs'.C in Info.typeDep and Cs'.C=>Cs'.C::n in Rename.Map
       Info' adds the watched
+    Then remove from usedMethods all the domain of watched
 * Rename empty = empty;empty
 * Rename(mwt mwts) = mwts' mwts";AddMap,AddMap'
     Rename (Rename usages mwt) = mwts';AddMap
@@ -112,26 +113,21 @@ _______
 ---//everywhere when we write Cs we mean Rename.Cs
 //1:  make an interface method private and the interface becomes close    
 * Rename(mwt) = mwt[s'];empty
-    Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
     s' has private number
-    Rename.p(Rename.Cs).interface?=interface
-    Cs notin allPrivatlyImplemented(p.top)
-    s notin Rename.p(Rename.Cs).Info.refined
-* Rename(mwt) = mwt[s'];empty
-    Cs0.(mwt.s)=>Rename.Cs.s' in Map
-    s' has private number
-    This0.Cs0 in p(Rename.Cs).Ts.Ps[from Rename.Cs;{}]
-    assert s in p(Rename.Cs).Info.refined
+    either Cs0.(mwt.s)=>Cs0.s' in Map and This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
+    or Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+       s notin Rename.p(Rename.Cs).Info.refined
+       Cs notin allHiddenSupertypes(p.top)//Reason: if it was implemented in an L inside a meth body, we may turn an abstract method private
+       and Rename.p(Rename.Cs).interface?=interface 
+    if Rename.p(Rename.Cs).interface?=interface
+    then mwt.e?!=empty
 //2: simple interface method rename
 * Rename(mwt) = empty;Rename.Cs->mwt[s=s']
-    Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
-    Rename.p(Rename.Cs).interface?=interface
-    s notin Rename.p(Rename.Cs).Info.refined
-    Rename.Cs notin allPrivatlyImplemented(p.top)
-* Rename(mwt) = empty;Rename.Cs->mwt[s=s']
-    Cs'.(mwt.s)=>Cs'.s' in Map
-    assert s in p(Rename.Cs).Info.refined
-    This0.Cs' in p(Cs).Ts.Ps[from Cs;{}]
+    either Cs0.(mwt.s)=>Cs0.s' in Map and This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
+    or Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+       s notin Rename.p(Rename.Cs).Info.refined
+       Rename.Cs notin allHiddenSupertypes(p.top)//allHiddenSupertypes excludes redirected and abstracted members
+       and Rename.p(Rename.Cs).interface?=interface
 //3: method toAbstract
 * Rename(mwt) = mwt[e?=empty];empty
     Cs.(mwt.s)->empty in Map
@@ -143,7 +139,7 @@ _______
 //5: method rename
 * Rename(mwt) = empty;Cs->mwt[s']
     Cs.(mwt.s)=>Cs.s' in Map
-    mwt.e?=e//assert p(Cs).interface?=empty
+    p(Cs).interface?=empty
     s notin p(Rename.Cs).Info.refined
 //6:method hide
 * Rename(mwt) = mwt[n1];empty
@@ -151,7 +147,6 @@ _______
     s' has private number
     mwt.e?=e//assert p(Cs).interface?=empty
     s notin p(Rename.Cs).Info.refined
-    n1=freshPrivate(p)
 //7: nested super
 * Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L[noNesteds][from Cs;p]
     Cs.C->Cs'.C' in Map

@@ -125,6 +125,206 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already abstract
    Full mapping:A.foo(x)-><empty>
    [file:[###]"""/*next test after this line*/)
+
+   ),new AtomicTest(()->pass("""
+     A={ method Void foo(Void x)=x #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)->A.bar(y)
+   """,/*expected after this line*/"""
+     A={ method Void foo(Void x) method Void bar(Void y)=y #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ method Void foo(Void x)=x method Void bar(Void y) #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)->A.bar(y)
+   """,/*expected after this line*/"""
+     A={ method Void foo(Void x) method Void bar(Void y)=y #norm{}}
+   #norm{}}"""/*next test after this line*/)
+      
+   ),new AtomicTest(()->fail("""
+     A={ method Void foo(Void x)=x method Void bar(Void y)=y #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)->A.bar(y)
+   """,/*expected after this line*/"""
+   method imm method imm Void bar(imm Void y)=(..)
+   Conflicting implementation: the method is implemented on both side of the sum
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z) #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=>A.bar(y)
+   """,/*expected after this line*/"""
+     A={ method Void user(Void z)=this.bar(y=z) method Void bar(Void y)=y #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void foo(Void x) #norm{}}
+     A={[This1.I] method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z)
+         #norm{typeDep=This1.I, refined=foo(x)}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=>A.bar(y)
+   """,/*expected after this line*/"""
+   nested class { I={..} A={..} }
+   refined method method A.foo(x)
+   can not be directly renamed
+   Full mapping:A.foo(x)=>A.bar(y)
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z) #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+     A={
+       method Void foo::1(Void x)=x
+       method Void user(Void z)=this.foo::1(x=z) #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={ method Void foo(Void x) method Void user(Void z)=this.foo(x=z) #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   method A.foo(x)
+   is abstract, thus it can not be hidden
+   Full mapping:A.foo(x)=><empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void foo(Void x) #norm{}}
+     A={[This1.I] method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z)
+         #norm{typeDep=This1.I, refined=foo(x)}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+   nested class { I={..} A={..} }
+   refined method method A.foo(x)
+   can not be directly renamed
+   Full mapping:A.foo(x)=><empty>
+   [file:[###]"""/*next test after this line*/)
+
+//TODO: test that used methods are from the non refined root, or our algorithm may fail
+//Also, as well formedness, dom(usedMethods) must be disjoing with dom(watched), since when is watched there is no need of usedMethods
+   ),new AtomicTest(()->pass("""
+     A={interface method Void foo(Void x) method Void bar() #norm{}}
+     D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
+     DC={[This1.D,This1.A] method Void foo(Void x)=x method Void bar() #norm{typeDep=This1.D,This1.A refined=foo(x) bar()}}
+     B={#norm{typeDep=This1.A This1.C usedMethods=This1.A.foo(x) This1.A.bar() This1.C.c()}}
+     C={method Void c() #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+     A={interface
+       method Void foo::1(Void x) 
+       method Void bar()
+       #norm{close}}
+     D={interface [This1.A] method Void foo::1(Void x) method Void bar() #norm{typeDep=This1.A refined=foo::1(x) bar() close}}
+     DC={[This1.D,This1.A] method Void foo::1(Void x)=x method Void bar() #norm{typeDep=This1.D,This1.A refined=foo::1(x) bar()}}
+     B={#norm{typeDep=This1.A This1.C 
+       watched=This1.A
+       usedMethods=This1.C.c()
+       }}
+     C={method Void c() #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={interface method Void foo(Void x) method Void bar() #norm{}}
+     D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
+     DC={[This1.D,This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.D,This1.A refined=foo(x) bar()}}
+     B={#norm{typeDep=This1.A This1.C usedMethods=This1.A.foo(x) This1.A.bar() This1.C.c()}}
+     C={method Void c() #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} D={..} DC={..} B={..} C={..} }
+   method DC.foo(x)
+   is abstract, thus it can not be hidden
+   Full mapping:A.foo(x)=><empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={interface method Void foo(Void x) #norm{}}
+     B={#norm{typeDep=This1.A hiddenSupertypes=This1.A}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} }
+   The method A.foo(x)
+   can not be made private since is implemented by private parts of nested class B
+   Full mapping:A.foo(x)=><empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void foo(Void x) #norm{}}
+     A={interface [This1.I] method Void foo(Void x)
+         #norm{typeDep=This1.I, refined=foo(x)}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=><empty>
+   """,/*expected after this line*/"""
+   nested class { I={..} A={..} }
+   refined method method A.foo(x)
+   can not be directly renamed
+   Full mapping:A.foo(x)=><empty>
+   [file:[###]"""/*next test after this line*/)
+   //now again but rename instead of hide
+   ),new AtomicTest(()->pass("""
+     A={interface method Void foo(Void x) method Void bar() #norm{}}
+     D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
+     DC={[This1.D,This1.A] method Void foo(Void x)=x method Void bar() #norm{typeDep=This1.D,This1.A refined=foo(x) bar()}}
+     B={#norm{typeDep=This1.A This1.C usedMethods=This1.A.foo(x) This1.A.bar() This1.C.c()}}
+     C={method Void c() #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=>A.beer(y)
+   """,/*expected after this line*/"""
+     A={interface
+       method Void bar()
+       method Void beer(Void y)
+       #norm{}}
+     D={interface [This1.A] method Void bar() method Void beer(Void y) #norm{typeDep=This1.A refined=beer(y) bar()}}
+     DC={[This1.D,This1.A] method Void bar() method Void beer(Void y)=y #norm{typeDep=This1.D,This1.A refined=beer(y) bar()}}
+     B={#norm{typeDep=This1.A This1.C 
+       usedMethods=This1.A.beer(y) This1.A.bar() This1.C.c()
+       }}
+     C={method Void c() #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={interface method Void foo(Void x) method Void bar() #norm{}}
+     D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
+     DC={[This1.D,This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.D,This1.A refined=foo(x) bar()}}
+     B={#norm{typeDep=This1.A This1.C usedMethods=This1.A.foo(x) This1.A.bar() This1.C.c()}}
+     C={method Void c() #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=>A.beer(y)
+   """,/*expected after this line*/"""
+     A={interface
+       method Void bar()
+       method Void beer(Void y)
+       #norm{}}
+     D={interface [This1.A] method Void bar() method Void beer(Void y) #norm{typeDep=This1.A refined=beer(y) bar()}}
+     DC={[This1.D,This1.A] method Void bar() method Void beer(Void y) #norm{typeDep=This1.D,This1.A refined=beer(y) bar()}}
+     B={#norm{typeDep=This1.A This1.C 
+       usedMethods=This1.A.beer(y) This1.A.bar() This1.C.c()
+       }}
+     C={method Void c() #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={interface method Void foo(Void x) #norm{}}
+     B={#norm{typeDep=This1.A hiddenSupertypes=This1.A}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=>A.beer(y)
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} }
+   The method A.foo(x)
+   can not be renamed since is implemented by private parts of nested class B
+   Full mapping:A.foo(x)=>A.beer(y)
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void foo(Void x) #norm{}}
+     A={interface [This1.I] method Void foo(Void x)
+         #norm{typeDep=This1.I, refined=foo(x)}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.foo(x)=>A.beer(y)
+   """,/*expected after this line*/"""
+   nested class { I={..} A={..} }
+   refined method method A.foo(x)
+   can not be directly renamed
+   Full mapping:A.foo(x)=>A.beer(y)
+   [file:[###]"""/*next test after this line*/)
+//---
    ),new AtomicTest(()->fail("""
      A={#norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -200,7 +400,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.->B.
    """,/*expected after this line*/"""
    nested class { A={..} C={..} }
-   The nested class nested class A
+   The nested class A
    can not be made abstract since is watched by nested class C
    Full mapping:A->B
    [file:[###]"""/*next test after this line*/)

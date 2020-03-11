@@ -19,6 +19,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 
 import is.L42.common.Program;
@@ -70,12 +71,19 @@ public class Sum {
     this.errM=errM;  
     topLeft=l1;
     topRight=l2;
-    allHiddenSupertypesLeft=allHiddenSupertypes(l1);
-    allHiddenSupertypesRight=allHiddenSupertypes(l2);
-    allWatchedLeft=allWatched(l1);
-    allWatchedRight=allWatched(l2);
-    allRequiredCoherentLeft=allRequiredCoherent(l1);
-    allRequiredCoherentRight=allRequiredCoherent(l2);
+    General.Consumer3<LinkedHashSet<List<C>>,Core.L,List<C>> f;//needed for type inference
+    f=(c,li,csi)->{for(var w:li.info().hiddenSupertypes()){addPublicCsOfP(w,csi,c);}};
+    allHiddenSupertypesLeft=allFromInfo(l1,f);
+    allHiddenSupertypesRight=allFromInfo(l2,f);
+    f=(c,li,csi)->{for(var w:li.info().watched()){addPublicCsOfP(w,csi,c);}};
+    allWatchedLeft=allFromInfo(l1,f);
+    allWatchedRight=allFromInfo(l2,f);
+    f=(c,li,csi)->{
+      for(var w:li.info().coherentDep()){addPublicCsOfP(w,csi,c);}
+      for(var w:li.info().metaCoherentDep()){addPublicCsOfP(w,csi,c);}
+      };
+    allRequiredCoherentLeft=allFromInfo(l1,f);
+    allRequiredCoherentRight=allFromInfo(l2,f);
     singleMap(topLeft,topRight);
     transitiveMap();
     for(var cs:allHiddenSupertypesLeft){growHiddenError(l1,l2,cs);}
@@ -150,26 +158,17 @@ public class Sum {
     errC.throwErr(cs,l1cs,"This interface is privately implemented "
       +" but the summed version is larger: "+errC.intro(l2cs,false).stripTrailing());
     }
-  private static LinkedHashSet<List<C>> allWatched(Core.L l){
-    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
+  public  static List<C> culpritFromInfo(Core.L l,BiFunction<Core.L,List<C>,List<C>> f){
+    Object[] res={null};
     l.visitInnerLNoPrivate((li,csi)->{
-      for(var w:li.info().watched()){addPublicCsOfP(w,csi,res);}
+      if(res[0]==null){res[0]=f.apply(li,csi);}
       });
-    return res;
+    @SuppressWarnings("unchecked") var list = (List<C>)res[0];
+    return list;    
     }
-  private static LinkedHashSet<List<C>> allRequiredCoherent(Core.L l){
+  public static LinkedHashSet<List<C>> allFromInfo(Core.L l,General.Consumer3<LinkedHashSet<List<C>>,Core.L,List<C>> f){
     LinkedHashSet<List<C>> res=new LinkedHashSet<>();
-    l.visitInnerLNoPrivate((li,csi)->{
-      for(var w:li.info().coherentDep()){addPublicCsOfP(w,csi,res);}
-      for(var w:li.info().metaCoherentDep()){addPublicCsOfP(w,csi,res);}
-      });
-    return res;
-    }
-  private static LinkedHashSet<List<C>> allHiddenSupertypes(Core.L l){
-    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
-    l.visitInnerLNoPrivate((li,csi)->{
-      for(var w:li.info().hiddenSupertypes()){addPublicCsOfP(w,csi,res);}
-      });
+    l.visitInnerLNoPrivate((li,csi)->f.accept(res,li,csi));
     return res;
     }
   static void addPublicCsOfP(P.NCs p,List<C>csi,LinkedHashSet<List<C>> c){
@@ -473,7 +472,8 @@ public class Sum {
       return l.withTs(ts).withMwts(mwts).withInfo(info);
       }
     void paths(ArrayList<P.NCs> c,Core.L l,Program p0,P.NCs source){
-      assert l.isInterface(); 
+      //Can be false when called under rename, since emptyLs are added 
+      //assert l.isInterface(); 
       l.withNcs(L()).accept(new Accumulate<Void>() {        
         @Override public Void empty(){return null;}
         @Override public void visitP(P p){

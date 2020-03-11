@@ -22,6 +22,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -56,6 +57,49 @@ import is.L42.visitors.CloneVisitorWithProgram;
 public class Rename {
   HashMap<List<C>,List<MWT>> addMapMWTs=new HashMap<>();//mutable, so should be ArrayList, but need List for the default emptyList
   HashMap<List<C>,List<NC>> addMapNCs=new HashMap<>();
+  void addMapMWTs(MWT mwt){
+    var val=addMapMWTs.get(cs);
+    if(val!=null){val.add(mwt);return;}
+    mayAdd(cs);
+    val=new ArrayList<>();
+    val.add(mwt);
+    addMapMWTs.put(cs,val);
+    }
+  void addMapNCs(NC nc){
+    var val=addMapNCs.get(cs);
+    if(val==null){
+      mayAdd(cs);
+      val=new ArrayList<>();
+      val.add(nc);
+      addMapNCs.put(cs,val);
+      return;
+      }
+    C c=nc.key();
+    for(int i:range(val)){
+      var vi=val.get(i);
+      if(!vi.key().equals(c)){continue;}
+      assert vi.l()==emptyL;
+      val.set(i,nc);
+      return;
+      }
+    val.add(nc);
+    }
+  void mayAdd(List<C> cs){
+    int i=cs.size()-1;
+    if(i>=0){mayAdd(cs.subList(0,i),cs.get(i));}
+    }
+  void mayAdd(List<C> cs,C c){
+    var val=addMapNCs.get(cs);
+    if(val!=null){
+      if(_elem(val, c)!=null){return;}
+      val.add(new L.NC(L(),L(), c,emptyL));
+      return;
+      }
+    mayAdd(cs);
+    val=new ArrayList<>();
+    val.add(new L.NC(L(),L(), c,emptyL));
+    addMapNCs.put(cs,val);
+    }
   L addMapTop=emptyL;
   LinkedHashMap<Arrow,Arrow> map;
   HashSet<Integer> existingNs=new HashSet<>();
@@ -80,7 +124,14 @@ public class Rename {
     this.errC=new MetaError(wrapC);
     this.errM=new MetaError(wrapM);
     //allHiddenSupertypes=allHiddenSupertypes(l1);
-    allWatched=allWatched(l);
+    allWatched=Sum.allFromInfo(l,(c,li,csi)->{
+      if(isDeleted(csi)){return;}
+      for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,c);}
+      });
+    allHiddenSupertypes=Sum.allFromInfo(l,(c,li,csi)->{
+      if(isDeleted(csi)){return;}
+      for(var w:li.info().hiddenSupertypes()){Sum.addPublicCsOfP(w,csi,c);}
+      });
     cs=L();
     return applyMap();
     }
@@ -128,28 +179,20 @@ public class Rename {
     existingNs.add(allBusyUpTo);
     return allBusyUpTo;
     }
-  LinkedHashSet<List<C>> allWatched(L l){//uses the map
-    LinkedHashSet<List<C>> res=new LinkedHashSet<>();
-      l.visitInnerLNoPrivate((li,csi)->{
-      var arrow=new Arrow(csi,null);
-      var a=map.get(arrow);
-      if(a!=null && (a.isEmpty() || a.isP())){return;}
-      for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,res);}
-      });
-    return res;
-    }
-  List<C> watchedBy(L l,List<C> cs){//uses the map
-      Object[] res={null};
-      l.visitInnerLNoPrivate((li,csi)->{
-      var arrow=new Arrow(csi,null);
-      var a=map.get(arrow);
-      if(a!=null && (a.isEmpty() || a.isP())){return;}
-      for(var w:li.info().watched()){
-        if(cs.equals(Sum._publicCsOfP(w, csi))){res[0]=csi;}        
+  List<C> culpritOf(L l,List<C> cs,Function<L,List<P.NCs>>f){//uses the map
+    return Sum.culpritFromInfo(l,(li,csi)->{
+      if(isDeleted(csi)){return null;}
+      for(var w:f.apply(li)){
+        if(cs.equals(Sum._publicCsOfP(w, csi))){return csi;}        
         }
+      return null;
       });
-    @SuppressWarnings("unchecked") var list = (List<C>)res[0];
-    return list;
+    }
+  List<C> watchedBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().watched());}
+  List<C> hiddenBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().hiddenSupertypes());}
+  boolean isDeleted(List<C>csi){
+    var a=map.get(new Arrow(csi,null));
+    return a!=null && (a.isEmpty() || a.isP());
     }
   String mapToS(){
     return map.values().stream().map(e->e.toStringErr()).collect(Collectors.joining(";"));
@@ -219,7 +262,7 @@ public class Rename {
       }
     if(!that.full && that._s==null){
       if(allWatched.contains(that.cs)){
-        err(errFail,()->"The nested class "+errFail.intro(that.cs,false)
+        err(errFail,()->"The "+errFail.intro(that.cs,false)
           +"can not be made abstract since is watched by "+errFail.intro(watchedBy(p.topCore(),that.cs),false));
         }
       }
@@ -279,7 +322,7 @@ public class Rename {
       });
     List<NC> ncs=L(c->{
       c.addAll(l.ncs());
-      for(NC nci:addMapNCs.getOrDefault(L(),L())){
+      for(NC nci:addMapNCs.getOrDefault(cs,L())){
         L li=lOfAddMapAux(nci.l(),pushL(cs,nci.key()));
         c.add(nci.withL(li));
         }
@@ -303,18 +346,68 @@ public class Rename {
     }
   MWT renameUsages(MWT mwt){return mwt.accept(new CloneRenameUsages(this));}
   private final CloneVisitor simpleRename=new CloneVisitor(){
-      @Override public P visitP(P path){return renamedPath(map,cs,p.navigate(cs),path);}
-      @Override public S visitS(S s){throw todo();}
+      @Override public P visitP(P path){
+        return renamedPath(map,cs,p.navigate(cs),path);
+        }
+      @Override public S visitS(S s){
+        Program p0=p.navigate(cs);
+        for(var t:p0.topCore().ts()){
+          L l=p0._ofCore(t.p());
+          if(l.info().refined().contains(s)){continue;}
+          if(_elem(l.mwts(),s)==null){continue;}
+          return renamedS(map, cs, p0, t.p().toNCs(), s);
+          }
+        return s;
+        }
+      @Override public PathSel visitPathSel(PathSel s){
+        assert s._s()!=null;
+        Program p0=p.navigate(cs);
+        var path=s.p().toNCs();
+        P p2=renamedPath(map,cs,p0,path);
+        S s2=renamedS(map, cs, p0, path, s._s());
+        return s.withP(p2).with_s(s2);
+        }
       };
     List<T> renameUsagesTs(List<T> ts){return simpleRename.visitTs(ts);}
   List<Doc> renameUsagesDocs(List<Doc> docs){return simpleRename.visitDocs(docs);}
-  Info renameUsagesInfo(Info info){return info.accept(simpleRename);}
+  Info renameUsagesInfo(boolean isInterface,List<MWT>mwts,Info info){
+    Info res=info;
+    if(isInterface && !res.close()){
+      boolean priv=mwts.stream().anyMatch(m->m.key().hasUniqueNum());
+      if(priv){res=res.withClose(true);}
+      }
+    ArrayList<P.NCs>newWatched=new ArrayList<>();
+    for(var ps:res.usedMethods()){
+      List<C> csi=Sum._publicCsOfP(ps.p(),cs);
+      assert ps._s()!=null;
+      if(csi==null){continue;}
+      Arrow a=map.get(new Arrow(csi,ps._s()));
+      if(a==null || !a.full){continue;}
+      if(a._sOut.hasUniqueNum()){
+        newWatched.add(ps.p().toNCs());
+        }
+      }
+    for(var p:res.typeDep()){
+      List<C> csi=Sum._publicCsOfP(p,cs);
+      if(csi==null){continue;}
+      Arrow a=map.get(new Arrow(csi,null));
+      if(a==null || !a.full){continue;}
+      int i=a._cs.size();
+      if(i==0){continue;}
+      if(a._cs.get(i-1).hasUniqueNum()){newWatched.add(p);}
+      }
+    res=res.withWatched(mergeU(res.watched(),newWatched));
+    var ums=res.usedMethods();
+    ums=L(ums.stream().filter(ps->!newWatched.contains(ps.p())));
+    res=res.withUsedMethods(ums);
+    return res.accept(simpleRename);
+    }
   L renameL(L l){
     assert p._ofCore(cs)==l;
     var mwts1=renameMWTs(l.mwts());
     var ncs1=renameNCs(l.ncs());
     List<T> ts1=renameUsagesTs(l.ts());
-    Info info1=renameUsagesInfo(l.info());
+    Info info1=renameUsagesInfo(l.isInterface(),mwts1,l.info());
     List<Doc> docs1=renameUsagesDocs(l.docs());
     return new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,info1,docs1);    
     }
@@ -336,19 +429,72 @@ public class Rename {
     }
   List<MWT> renameMWT(MWT mwt){
     Arrow e=map.get(new Arrow(cs,mwt.key()));
-    if(e==null){return L(mwt);}
-    if(!e.full || e.isEmpty()){return L(rename3(mwt));}
-    throw todo();
+    if(e==null){return notDirectlyRenamed(mwt);}
+    if(!e.full){
+      if(mwt._e()==null){err(errFail,errFail.intro(cs,mwt.key())+"is already abstract");}
+      if(e.isEmpty()){return L(rename3restrict(mwt));}
+      assert e.isMeth();
+      return L(rename4Super(mwt,e._sOut));
+      }
+    assert e.isMeth();
+    L l=p._ofCore(e.cs);
+    assert l!=null;
+    if(l.info().refined().contains(mwt.key())){
+      err(errFail,"refined method "+errFail.intro(cs,mwt.key())+"can not be directly renamed");
+      }
+    if(l.isInterface()){
+      if(e._sOut.hasUniqueNum()){return L(rename1hideInterfaceMeth(l,mwt,e._sOut));}
+      return rename2interfaceMeth(mwt,e._sOut);
+      }
+    if(e._sOut.hasUniqueNum()){return L(rename6Hide(mwt,e._sOut));}
+    return rename5meth(mwt,e._sOut);
     }
-  MWT rename1(MWT mwt){throw todo();}//and adds to AddMap
-  MWT rename2(MWT mwt){throw todo();}//and adds to AddMap
-  MWT rename3(MWT mwt){
-    if(mwt._e()==null){err(errFail,errFail.intro(cs,mwt.key())+"is already abstract");}
+  List<MWT> notDirectlyRenamed(MWT mwt){
+    L l=p._ofCore(cs);
+    assert l!=null;
+    for(T t:l.ts()){
+      List<C> cs0=Sum._publicCsOfP(t.p(), cs);
+      if(cs0==null){continue;}
+      var a=map.get(new Arrow(cs0,mwt.key()));
+      if(a==null){continue;}
+      if(a._sOut.hasUniqueNum()){return L(rename1hideInterfaceMeth(l,mwt, a._sOut));}
+      return rename2interfaceMeth(mwt,a._sOut);
+      }
+    return L(mwt);
+    }
+  MWT rename1hideInterfaceMeth(L l,MWT mwt,S s1){
+    if(allHiddenSupertypes.contains(cs)){
+      err(errFail,()->"The "+errFail.intro(cs,mwt.key())
+          +"can not be made private since is implemented by private parts of "
+          +errFail.intro(hiddenBy(p.topCore(),cs),false));
+        }
+    if(!l.isInterface() && mwt._e()==null){
+      err(errFail,errFail.intro(cs,mwt.key())+"is abstract, thus it can not be hidden");
+      }
+    return mwtOf(mwt,s1);
+    }
+  List<MWT> rename2interfaceMeth(MWT mwt,S s1){
+    if(allHiddenSupertypes.contains(cs)){
+      err(errFail,()->"The "+errFail.intro(cs,mwt.key())
+          +"can not be renamed since is implemented by private parts of "
+          +errFail.intro(hiddenBy(p.topCore(),cs),false));
+        }
+    addMapMWTs(mwtOf(mwt,s1));
+    return L();
+    }
+  MWT rename3restrict(MWT mwt){return mwt.with_e(null);}
+  MWT rename4Super(MWT mwt,S s1){
+    addMapMWTs(mwtOf(mwt,s1));
     return mwt.with_e(null);
     }
-  MWT rename4(MWT mwt){throw todo();}//and adds to AddMap
-  MWT rename5(MWT mwt){throw todo();}//and adds to AddMap
-  MWT rename6(MWT mwt){throw todo();}//and adds to AddMap
+  List<MWT> rename5meth(MWT mwt,S s1){
+    addMapMWTs(mwtOf(mwt,s1));
+    return L();
+    }
+  MWT rename6Hide(MWT mwt,S s1){
+    if(mwt._e()==null){err(errFail,errFail.intro(cs,mwt.key())+"is abstract, thus it can not be hidden");}
+    return mwtOf(mwt,s1);    
+    }
   NC rename7(NC nc){throw todo();}//and adds to AddMap
   NC rename8(NC nc){throw todo();}//and adds to AddMap
   NC rename9(NC nc){throw todo();}//and adds to AddMap
@@ -368,6 +514,14 @@ public class Rename {
     res=res.withN(nesting+res.n()+1);//because destination is relative to outside pStart.top
     assert p.minimize(res)==res;
     return res;
+    }
+  static S renamedS(LinkedHashMap<Arrow,Arrow> map,List<? extends LDom> whereFromTop,Program p,P.NCs path,S s){
+    List<C> currentP=_topCs(whereFromTop,path);
+    if(currentP==null){return s;}
+    Arrow a=map.get(new Arrow(currentP,s));
+    if(a==null || !a.full){return s;}
+    assert a._sOut!=null;
+    return a._sOut;
     }  
   static List<C> _topCs(List<? extends LDom> ldoms,P.NCs p){//the result is not wrapped in an unmodifiable list
     if(p.n()>ldoms.size()){return null;}
@@ -389,9 +543,12 @@ public class Rename {
     Rename r;
     @Override public P visitP(P path){return renamedPath(r.map,whereFromTop(),this.p(),path);}
     @Override public MCall visitMCall(MCall mcall){
-      g.of((X)null);
-      throw todo();
+      var t=g._of(mcall.xP());
+      if(t==null){return mcall;}
+      var path=t.p();
+      if(!path.isNCs()){return mcall;}
+      var s2=renamedS(r.map,whereFromTop(),this.p(),path.toNCs(),mcall.s());
+      return mcall.withS(s2);    
       }
-      //return renamedPath(r.map,whereFromTop(),this.p(),path);
     }
   }
