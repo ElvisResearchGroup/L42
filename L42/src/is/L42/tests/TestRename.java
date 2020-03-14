@@ -91,20 +91,20 @@ static class FailErr extends Error{}
 public static void fail(String sl1,String s2,String err){
   Resources.clearRes();
   String[]msg={null};
-  Init init1=new Init("{A={"+sl1+"#norm{}}");
-  Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
+  Init init1=new Init("{Outer={"+sl1+"#norm{}}");
+  Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
-  try{new Rename().apply(init1.p,new C("A",-1),l1,map(s2),wrap,wrap,wrap,wrap);Assertions.fail();}
+  try{new Rename().apply(init1.p,new C("Outer",-1),l1,map(s2),wrap,wrap,wrap,wrap);Assertions.fail();}
   catch(FailErr fe){}
   Err.strCmp(msg[0],err);
   }
 public static void pass(String sl1,String s2,String sl3){
-  Resources.clearRes();//TODO:
-  Init init1=new Init("{A={"+sl1+"#norm{}}");
-  Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
-  Core.L l3Actual=new Rename().apply(init1.p,new C("A",-1),l1,map(s2),null,null,null,null);
-  Init init3=new Init("{A={"+sl3+"#norm{}}");
-  Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(new C("A",-1))));
+  Resources.clearRes();
+  Init init1=new Init("{Outer={"+sl1+"#norm{}}");
+  Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
+  Core.L l3Actual=new Rename().apply(init1.p,new C("Outer",-1),l1,map(s2),null,null,null,null);
+  Init init3=new Init("{Outer={"+sl3+"#norm{}}");
+  Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
   assertEquals(l3Expected, l3Actual);
   }
 public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
@@ -484,5 +484,97 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    need to be redirected to an outer path
    Full mapping:A=>This1.K
    [file:[###]"""/*next test after this line*/)
+   //nested classes
+    ),new AtomicTest(()->pass("""
+     A={
+       method This1.B s(This1.B x)=x
+       method This1.B s::1(This1.B x)=this.s(x=x)
+       C={#norm{}}
+       D::2={#norm{}}
+       #norm{typeDep=This1.B This.C}}
+     B={#norm{}}
+   #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+     A.-><empty>
+   """,/*expected after this line*/"""
+     A={
+       method This1.B s(This1.B x)
+       C={#norm{}}
+       #norm{typeDep=This1.B}}
+     B={#norm{}}
+     #norm{}}"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     A={
+       method This1.B s(This1.B x)=x
+       method This1.B s::1(This1.B x)=this.s(x=x)
+       C={#norm{typeDep=This1 watched=This1}}
+       D::2={#norm{}}
+       #norm{typeDep=This1.B}}
+     B={#norm{}}
+   #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+     A.-><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} }
+   The nested class A
+   can not be made abstract since is watched by nested class A.C
+   Full mapping:A-><empty>
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     AA={
+       method This1.B s(This1.B x, This.C c)=x
+       method This1.B s::1(This1.B x This.C c)=this.s(x=x,c=c)
+       C={#norm{}}
+       D::2={#norm{}}
+       #norm{typeDep=This1.B This.C}}
+     B={#norm{}}
+   #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+     AA.->C.
+   """,/*expected after this line*/"""
+   AA={
+     method This1.B s(This1.B x,This0.C c)
+     C={#norm{}}
+     #norm{typeDep=This1.B, This0.C}}
+   B={#norm{}}
+   C={
+     method This1.B s(This1.B x,This1.AA.C c)=x
+     method This1.B s::1(This1.B x,This1.AA.C c)=this.s(x=x, c=c)
+     D::2={#norm{}}
+     #norm{typeDep=This1.B, This1.AA.C}}
+     #norm{}}"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     A={
+       method This1.B s(This1.B x)=x
+       method This1.B s::1(This1.B x)=this.s(x=x)
+       C={#norm{typeDep=This1 watched=This1}}
+       D::2={#norm{}}
+       #norm{typeDep=This1.B}}
+     B={#norm{typeDep=This1.K}}
+     K={#norm{typeDep=This1.A}}
+   #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+     A.->C.
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} K={..} }
+   The nested class A
+   can not be made abstract since is watched by nested class A.C
+   Full mapping:A->C
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     A={
+       method This1.B s(This1.B x)=x
+       method This1.B s::1(This1.B x)=this.s(x=x)
+       D::2={#norm{}}
+       #norm{typeDep=This1.B}}
+     B={#norm{typeDep=This1.K}}
+     K={#norm{typeDep=This1.A}}
+   #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+     A.->C.
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} K={..} }
+   nested class A
+   Code can not be extracted since is circularly depended from
+   B
+   K
+   Full mapping:A->C
+   [file:[###]"""/*next test after this line*/)
    ));}
+   //TODO: test rename with empty target
 }

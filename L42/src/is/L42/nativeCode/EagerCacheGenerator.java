@@ -31,7 +31,6 @@ public class EagerCacheGenerator extends LazyCacheGenerator{
       }
     super.typeCache(mwt, j);
     mwt._e().visitable().accept(new Accumulate.SkipL<Void>(){
-      @Override public Void empty(){return null;}
       @Override public void visitMCall(Core.MCall m){
         if(isThisCall(m)){immOrCapsule(mwt,j,m.s());return;}
         super.visitMCall(m);//only pass if 0 args, thus no need of super

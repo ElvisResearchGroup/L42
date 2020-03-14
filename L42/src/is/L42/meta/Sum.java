@@ -255,7 +255,21 @@ public class Sum {
         }//we could cache growing interfaces
       }
     if(!inMap && !res.isEmpty()){map.put(cs, res);}
-    }  
+    }
+  public static void paths(ArrayList<P.NCs> c,Core.L l,Program p0,P.NCs source){
+      //Can be false when called under rename, since emptyLs are added 
+      //assert l.isInterface(); 
+      l.withNcs(L()).accept(new Accumulate<Void>(){
+        @Override public void visitP(P p){
+          if(!p.isNCs()){return;}
+          P pp=p0.from(p,source);
+          if(!c.contains(pp)){c.add(pp.toNCs());}
+          }
+        @Override public void visitMWT(MWT m){
+          if(!m.key().hasUniqueNum()){super.visitMWT(m);}
+          }
+        });
+      }
   class Plus{
     public Plus(Plus other, C c) {this.cs=pushL(other.cs, c);}
     public Plus(List<C> cs) {this.cs=cs;}
@@ -470,21 +484,6 @@ public class Sum {
       List<MWT>mwts=plusIMWTs(imwts,l,l);
       Info info=l.info().withTypeDep(L(typeDep.stream())).withRefined(L(refineds.stream()));
       return l.withTs(ts).withMwts(mwts).withInfo(info);
-      }
-    void paths(ArrayList<P.NCs> c,Core.L l,Program p0,P.NCs source){
-      //Can be false when called under rename, since emptyLs are added 
-      //assert l.isInterface(); 
-      l.withNcs(L()).accept(new Accumulate<Void>() {        
-        @Override public Void empty(){return null;}
-        @Override public void visitP(P p){
-          if(!p.isNCs()){return;}
-          P pp=p0.from(p,source);
-          if(!c.contains(pp)){c.add(pp.toNCs());}
-          }
-        @Override public void visitMWT(MWT m){
-          if(!m.key().hasUniqueNum()){super.visitMWT(m);}
-          }
-        });
       }
     List<MWT> plusIMWTs(ArrayList<IMWT> that,Core.L l1,Core.L l2){return L(c->plusIMWTs(c,that,l1,l2));}
     void plusIMWTs(ArrayList<MWT> c,ArrayList<IMWT> that,Core.L l1,Core.L l2){

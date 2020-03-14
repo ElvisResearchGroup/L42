@@ -36,6 +36,7 @@ _______
     Map is a map, thus no two tuples with the same Cs(.s?) key
 
 * earlyCheck(L,Map,N|>N')
+    N|> N' not in {empty=><empty>,empty=>P} //TODO: add in code
     if N of form Cs, then  Cs in dom(L)
     if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
     N,N' do not have unique numbers
@@ -75,20 +76,34 @@ _______
 * LDoms,LDom1..LDomn++Thisn.Cs =LDoms++Cs
 * Cs++Cs'=Cs.Cs'
 * LDoms++Cs undefined otherwise (there is some LDom not form C)
-
-
-//TODO: below, we need a lot of [from], every time we move stuff around
 _______
 #define Rename(L) = L;AddMap    Rename(ncs) = ncs;AddMap    Rename(mwts) = mwts;AddMap    Rename(Info) = Info
-* Rename[p;Cs;Map] L = L";AddMap,AddMap',AddMap1..AddMapn //both L0 and L1 get produced
+* Rename[p;Cs;Map] L = L2;AddMap,AddMap',AddMap1..AddMapn,AddMap0
     assert p(Cs)=L
     L={interface? Ts mwts ncs Info}
     Rename mwts => mwts';AddMap
     C1..Cn = dom(ncs)
     Rename[p;Cs.C1;Map] L(C1) = L'1;AddMap1..Rename[p;Cs.Cn;Map] L(Cn) =L'n;AddMapn
     Rename ncs[L'1..L'n] => ncs';AddMap'
-    L'={interface? Ts mwts' ncs' Rename Info}
-    Rename usages L'=L"//only renames Ts, Info and NC docs, the rest already happended
+    L0={interface? Ts mwts' ncs' Rename Info}
+    Rename usages L0=L1//only renames Ts, Info and NC docs, the rest already happended
+    if empty->Cs' in Map:
+      empty notin allWatched(L,Map)
+      n=sizeOf(Cs')
+      L2=L1[toAbstract]
+      C1=fresh
+      AddMap0=L1[noNesteds][pushThis0Out C1][from p.minimize(Thisn);p.navigate(Cs')][Thisn.C1.Cs=This(n-1).Cs]
+      for no This0.Cs1 in L1.Info.typeDep circular(p;Cs1;empty)
+    if empty-><empty> in Map:
+      empty notin allWatched(L,Map)
+      L2=L1[toAbstract], AddMap0=empty
+    if empty=>Cs' in Map:
+      n=sizeOf(Cs')
+      L2={ncs}//and empty info
+      AddMap0 = L1[noNesteds][from p.minimize(Thisn);p.navigate(Cs')]
+    otherwise L2=L1, AddMap0=empty
+    TODO: add ifs in code
+
 * Rename(Info) = Info'
     add close if L is interface and exists a method hiding on p(Cs)
     if Cs'.m(xs) in Info.usedMethod and Cs'.m(xs)=>Cs'.m::n(xs) in Rename.Map
@@ -130,16 +145,16 @@ _______
        and Rename.p(Rename.Cs).interface?=interface
 //3: method toAbstract
 * Rename(mwt) = mwt[e?=empty];empty
-    Cs.(mwt.s)->empty in Map
-    mwt.e?=e//assert p(Cs).interface?=empty    
+    Rename.Cs.(mwt.s)->empty in Map
+    mwt.e?=e//assert Rename.p(Rename.Cs).interface?=empty    
 //4: method super
 * Rename(mwt) = mwt[e?=empty];Cs->mwt[s']
-    Cs.(mwt.s)->Cs.s' in Map
-    mwt.e?=e//assert p(Cs).interface?=empty
+    Rename.Cs.(mwt.s)->Rename.Cs.s' in Map
+    mwt.e?=e//assert Rename.p(Rename.Cs).interface?=empty
 //5: method rename
 * Rename(mwt) = empty;Cs->mwt[s']
-    Cs.(mwt.s)=>Cs.s' in Map
-    p(Cs).interface?=empty
+    Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+    Rename.p(Rename.Cs).interface?=empty
     s notin p(Rename.Cs).Info.refined
 //6:method hide
 * Rename(mwt) = mwt[n1];empty
@@ -148,32 +163,88 @@ _______
     mwt.e?=e//assert p(Cs).interface?=empty
     s notin p(Rename.Cs).Info.refined
 //7: nested super
-* Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L[noNesteds][from Cs;p]
-    Cs.C->Cs'.C' in Map
-    p=Rename.p.navigate(Cs'.C)//Cs' may not be in dom(p)
-    Cs.C notin allWatched(L)
+* Rename(Docs C=L) = Docs C=L[toAbstract];empty -> L' //TODO: modify AddMap so that can also accept this
+    Rename.Cs.C->empty in Map
+    Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
+    L'=L[noNesteds][pushThis0Out C][from This0.(Rename.Cs);{}]
+    for no This0.Cs1 in L.Info.typeDep[from This0.(Rename.Cs).C;{}]
+      circular(p;Cs1;Rename.Cs)
+* Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L'
+    Rename.Cs.C->Cs'.C' in Rename.Map
+    Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
+    n=sizeOf(Cs')
+    p=Rename.p.navigate(Cs')//Cs' may not be in dom(p), see forcedNavigate in the code
+    L'=L[noNesteds][pushThis0Out C][from p.minimize(Thisn.(Rename.Cs));p]
+    noCircular(p;L;(Rename.Cs).C);
+   //TODO: here: lets implements stuff above this line FIRST
 //8:nested toAbstract
 * Rename(Docs C=L) = Docs C=L[toAbstract];empty
-    Cs.C->empty in Map
-    Cs.C notin allWatched(L,Map)
+    Rename.Cs.C-><empty> in Rename.Map
+    Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
 //9:nested rename
-* Rename(Docs C=L) = (C=L)[onlyNesteds];Cs'-> Docs C'=L[noNesteds][from Cs;p]
-    p=Rename.p.navigate(Cs'.C)//Cs' may not be in dom(p)
+* Rename(Docs C=L) = (C=L)[onlyNesteds];Cs'-> Docs C'=L'
     Rename.Cs.C => Cs'.C' in Map
+    n=sizeOf(Rename.Cs)
+    p=Rename.p.navigate(Cs')//Cs' may not be in dom(p)
+    L'=L[noNesteds][pushThis0Out C][from p.minimize(Thisn.(Rename.Cs));p]
 //10:nested hide
-* Rename(Docs C=L) = (C=L)[onlyNesteds],Docs C::1=L[noNesteds];empty
+* Rename(Docs C=L) = (C=L)[onlyNesteds],Docs C::1=L';empty
     Rename.Cs.C => Rename.Cs.C::n in Map
+    L'=L[noNesteds][pushThis0Out]
 //11:nested redirect
 * Rename(C=L) = (C=L)[onlyNesteds];empty
     Cs.C => P in Map
+    //Cs.C notin allWatched(Rename.p(This0),Rename.Map)//checked already before?
 //another operator could be "delegate Cs.s->Cs'.s',
 //generating in Cs.s a method body that is just a call for Cs'.s'
 //this would support scrambling args and or lifting/embedding.
 //complex lift/embed can be obtained by delegate+->+hiding
 //+introspection to find all implemented versions
+_______
+#define noCircular(p;L;Cs)    circular(p;Cs;Cs0)    L[toAbstract]=L'    nc[onlyNested]=nc?    L[noNested]=L'    L[pushThis0Out]=L'
+* noCircular(p;L;Cs)
+    for no public This0.Cs1 in L.Info.typeDep[from This0.Cs;{}]\Cs
+      circular(p;Cs1;Cs)
+
+* circular(p;Cs;Cs)
+* circular(p;Cs1;Cs0)
+    Cs1!=Cs0
+    This0.Cs2=p(Cs1).Info.typeDep[from This0.Cs1;{}]
+    circular(p;Cs2;Cs0)
+* L[toAbstract] = L' removes all the private nested classes/methods, and make all the methods abstract.
+    The nested classes are left untouched.
+    The info get recomputed as just the typeDep of the set of types used in the methods
+* nc[onlyNested] = nc? returns just a box with the public nested classes,
+    or empty if there is no public nested class.
+* L[noNested] = L' removes all the public nested classes
+* L[pushThis0Out C] = L' propagate recursively, keeping the nesting level n, and
+    forall Thisn.C0.Cs, where C0 not of form C'::n'
+      replace it with Thisn+1.C0.Cs
+//Note: pushThis0Out and [from ..] could be merged for optimization
 --------------------------------------------------------------------
 --------------------------------------------------------------------
 OLD NOTES AFTER THIS POINT
+
+      /*  Cs.C ->Cs'.C'   but there is also the case empty->Cs and Cs->empty
+        p=p.forceNavigate(Cs') //p=p.pop() if ->empty
+        from p.normalize(This(size(Cs')).Cs) 
+        // This0.topC.Cs if ->empty
+        // This(size(Cs')+1) if empty->
+        A.B.C into A.B.D   A.B    from This0
+        A.B.C into A.B     A      from This0.B
+        A.B.C into A       0      from This0.A.B
+        A.B.C into A.D     A      from This0.B
+        A.B.C into A.B.C.D A.B.C  from This1
+        A.B.C into A.B.E.F A.B.E  from This1.C
+        
+        A.B.C into A.B.D   A.B.D,  from This0
+        A.B.C into A.B     A.B     from This0.C
+        A.B.C into A       A       from This0.B.C
+        A.B.C into A.D     A.D     from This1.B.C
+        A.B.C into A.B.C.D A.B.C.D from This1   //3.A.B ==
+        A.B.C into A.B.E.F A.B.E.F from This2.C //3.A.B        
+       */
+
 * patternOk(_,Cs.m(x1..xn),Cs.m'(x'1...x'n))
 //example A.foo(a,b)=>A.bar(c,d); the method is renamed and body is adapted to use new par names
 * patternOk(_,Cs.m(x1..xn),Cs'.m'(x'1...x'n))
@@ -219,7 +290,6 @@ applyMap:
     -Cs|>Cs' in map, then Cs"|>Cs' not in map//E
     -Cs.s|>Cs'.s' in map, then Cs".s"|>Cs'.s' not in map//E
     -is a map, thus no two tuples with the same key//E
-  //what to test early? what to test late? what to test again for better error message in the lazyMsg?
   
 method renamed in the same class can be directly sum, while method renamed outside will be placed in the map N->body
   
