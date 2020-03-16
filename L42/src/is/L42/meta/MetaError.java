@@ -50,7 +50,7 @@ public class MetaError{
       }
     if(fault instanceof List){
       @SuppressWarnings("unchecked") var cs=(List<C>)fault;
-      assert cs.stream().noneMatch(c->c.hasUniqueNum());
+      //assert cs.stream().noneMatch(c->c.hasUniqueNum());//reported for exposed numbers
       if(cs.isEmpty()){elem+="nested class This0\n";}
       else{elem+="nested class "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"\n";}
       }

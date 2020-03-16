@@ -27,6 +27,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import is.L42.common.From;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
@@ -114,7 +115,12 @@ public class Rename {
   LinkedHashSet<List<C>> allWatched;
   LinkedHashSet<List<C>> allHiddenSupertypes;
   C cOut;
-
+  
+  void allWatchedAbstractErr(List<C> cs0){
+    if(!allWatched.contains(cs0)){return;}
+    err(errFail,()->"The "+errFail.intro(cs0,false)
+      +"can not be made abstract since is watched by "+errFail.intro(watchedBy(p.topCore(),cs0),false));
+    }
   public Core.L apply(Program pOut,C cOut,Core.L l,LinkedHashMap<Arrow,Arrow>map,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     this.p=pOut.push(cOut,l);
     this.cOut=cOut;
@@ -137,7 +143,7 @@ public class Rename {
   L applyMap(){
     earlyCheck();
     replaceEmpty();
-    L l1=renameL(p.topCore());
+    L l1=renameTop();
     L l2=lOfAddMap();
     return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
     }
@@ -187,52 +193,6 @@ public class Rename {
       return null;
       });
     }
-  class NoCircular{
-    void onErr(L l,List<C>cs0){
-      err(errFail,()->{
-        NoCircularErr e=new NoCircularErr();
-        e.noCircular(l,cs0);
-        return errFail.intro(cs0,false)+"Code can not be extracted since is circularly depended from\n"+e.error;
-        });
-      }
-    void noCircular(L l,List<C>cs0){
-      var visited=new HashSet<List<C>>();
-      for(var pi:l.info().typeDep()){
-        var cs2=Sum._publicCsOfP(pi, cs0);
-        if(cs2.equals(cs0) || !circular(cs2,visited,cs0)){continue;}
-        onErr(l,cs0);
-        return; 
-        }
-      }
-    boolean circular(List<C> cs1,HashSet<List<C>>visited,List<C> cs0){
-      if(cs1.equals(cs0)){return true;}
-      if(visited.contains(cs1)){return false;}
-      visited.add(cs1);
-      L l=p._ofCore(cs1);
-      if(l==null){return false;}
-      for(var pi:l.info().typeDep()){
-        var cs2=Sum._publicCsOfP(pi, cs1);
-        if(circular(cs2,visited,cs0)){return true;}
-        }
-      return false;
-      }
-    }
-  class NoCircularErr extends NoCircular{
-    StringBuilder error=new StringBuilder();
-    List<List<C>> visitOrder=new ArrayList<>();
-    @Override void onErr(L l,List<C>cs0){}
-    @Override boolean circular(List<C> cs1,HashSet<List<C>>visited,List<C> cs0){
-      visitOrder.add(cs1);
-      var res=super.circular(cs1,visited,cs0);
-      visitOrder.remove(visitOrder.size()-1);
-      if(error.length()!=0 || !res){return res;}
-      for(var csi:visitOrder){
-        String si=csi.stream().map(c->c.toString()).collect(Collectors.joining("."));
-        error.append(si+"\n");
-        }
-      return true;
-      }
-    }   
   List<C> watchedBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().watched());}
   List<C> hiddenBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().hiddenSupertypes());}
   boolean isDeleted(List<C>csi){
@@ -305,12 +265,7 @@ public class Rename {
         err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class on itself");
         }
       }
-    if(!that.full && that._s==null){
-      if(allWatched.contains(that.cs)){
-        err(errFail,()->"The "+errFail.intro(that.cs,false)
-          +"can not be made abstract since is watched by "+errFail.intro(watchedBy(p.topCore(),that.cs),false));
-        }
-      }
+    if(!that.full && that._s==null){allWatchedAbstractErr(that.cs);}
     if(that._s!=null && !that.isEmpty()){
       assert that.isMeth();
       if(!that._cs.equals(that.cs)){
@@ -404,10 +359,10 @@ public class Rename {
         return s;
         }
       @Override public PathSel visitPathSel(PathSel s){
-        assert s._s()!=null;
         Program p0=p.navigate(cs);
         var path=s.p().toNCs();
         P p2=renamedPath(map,cs,p0,path);
+        if(s._s()==null){return s.withP(p2);}
         S s2=renamedS(map, cs, p0, path, s._s());
         return s.withP(p2).with_s(s2);
         }
@@ -446,6 +401,47 @@ public class Rename {
     res=res.withUsedMethods(ums);
     return res.accept(simpleRename);
     }
+  L renameTop(){
+    L l1=renameL(p.topCore());
+    Arrow a=map.get(new Arrow(L(),null));
+    if(a==null){return l1;}
+    if(a.isMeth()){return l1;}
+    if(!a.full){
+      allWatchedAbstractErr(L());
+      noExposeUniqueN(l1);
+      }
+    if(!a.full && a.isCs()){
+      noCircular(l1,L());
+      int n=a._cs.size();
+      P.NCs src=P.of(n,L());
+      C c1=freshC(p.pop().topCore().ncs(),0);
+      L l=noNesteds(l1);
+      l=fromAndPushThis0Out(forcedNavigate(p,a._cs),l,src,c1,true);
+      int last=a._cs.size()-1;
+      addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
+      return toAbstract(l1);
+      }
+    if(!a.full && a.isEmpty()){return toAbstract(l1);}
+    return l1;
+    }
+  static L fromAndPushThis0Out(Program prg,L l,P.NCs src,C c1,boolean removeC1){
+    return (L)new From(prg,src,-1){
+      @Override public P visitP(P p){
+        if(!p.isNCs()){return super.visitP(p);}
+        var pp=p.toNCs();
+        if(pp.n()!=j()){return super.visitP(p);}
+        pp=P.of(pp.n()+1,pushL(c1,pp.cs()));
+        pp=(P.NCs)super.visitP(pp);
+        if(!removeC1){return pp;}
+        return program().minimize(P.of(pp.n()-1,popL(pp.cs())));
+        }
+      }.visitL(l);
+    }
+  C freshC(List<NC> ncs,int num){
+    C res=new C("Fresh"+num,-1);
+    if(ncs.stream().noneMatch(e->e.key().equals(res))){return res;}
+    return freshC(ncs,num+1);
+    }
   L renameL(L l){
     assert p._ofCore(cs)==l;
     var mwts1=renameMWTs(l.mwts());
@@ -474,10 +470,17 @@ public class Rename {
       if(allWatched.contains(csc)){err(errFail,errFail.intro(csc,false)
         +"The implementation can not be removed since the class is watched by "
         +errFail.intro(watchedBy(p.topCore(),csc),false));}
-      if(e.isEmpty()){return L(rename8restrictNC(nc,csc));}
+      if(e.isEmpty()){return L(rename8restrictNC(nc));}
       return L(rename7superNC(nc,csc,e));
       }
-    throw todo();
+    if(e.isP()){rename11reidrectNested(nc);return L();}
+    assert e.isCs();
+    int size=e._cs.size();
+    var hide=size!=0 && e._cs.get(size-1).hasUniqueNum();
+    if(hide){return rename10hideNested(nc,e);}
+    NC res=_rename9nested(nc,e);
+    if(res==null){return L();}
+    return L(res);
     }
   List<MWT> renameMWT(MWT mwt){
     Arrow e=map.get(new Arrow(cs,mwt.key()));
@@ -548,12 +551,14 @@ public class Rename {
     return mwtOf(mwt,s1);    
     }
   NC rename7superNC(NC nc,List<C> csc,Arrow a){
-    new NoCircular().noCircular(nc.l(),csc);
+    noCircular(nc.l(),csc);
+    noExposeUniqueN(nc.l());
     if(a._cs.isEmpty()){
       L l1=nc.l();
       l1=noNesteds(l1);
-      l1=pushThis0Out(l1,nc.key());
-      l1=(L)emptyP.from(l1,P.of(0,cs));
+      l1=fromAndPushThis0Out(emptyP,l1,P.of(0,a.cs),nc.key(),false);
+      //l1=pushThis0Out(l1,nc.key());
+      //l1=(L)new From(emptyP,P.of(0,a.cs),-1).visitL(l1);
       addMapTop=l1;
       }
     else{
@@ -562,38 +567,97 @@ public class Rename {
       Program p=forcedNavigate(this.p,cs1);
       L l1=nc.l();
       l1=noNesteds(l1);
-      l1=pushThis0Out(l1,nc.key());
-      l1=(L)p.from(l1,p.minimize(P.of(n,cs)));
+      l1=fromAndPushThis0Out(p,l1,p.minimize(P.of(n,cs)),nc.key(),false);
+      //l1=pushThis0Out(l1,nc.key());
+      //l1=(L)p.from(l1,p.minimize(P.of(n,cs)));//Note: now is instead doing the new From(_ _ -1)
       NC newNC=new NC(nc.poss(),L(),a._cs.get(n),l1);
       addMapNCs(cs1,newNC);
       }
-    return rename8restrictNC(nc, csc);
+    return nc.withL(toAbstract(nc.l()));
     }
-  NC rename8restrictNC(NC nc,List<C> csc){
-    List<MWT> mwts=L(nc.l().mwts(),(c,m)->{
+  NC rename8restrictNC(NC nc){
+    noExposeUniqueN(nc.l());
+    return nc.withL(toAbstract(nc.l()));
+    }
+  NC _rename9nested(NC nc,Arrow a){
+    int n=cs.size();
+    int last=a._cs.size()-1;
+    var cs1=a._cs.subList(0, last);
+    Program p=forcedNavigate(this.p,cs1);
+    P.NCs src=p.minimize(P.of(n,cs));
+    L l=noNesteds(nc.l());
+    l=fromAndPushThis0Out(p,l,src,nc.key(),false);
+    var docs=p.fromDocs(nc.docs(),src);
+    addMapNCs(cs1, new NC(nc.poss(),docs,a._cs.get(last),l));
+    return _onlyNested(nc);
+    }
+  List<NC> rename10hideNested(NC nc,Arrow a){
+    var nc1=_onlyNested(nc);
+    var l2=noNesteds(nc.l());
+    l2=pushThis0Out(l2, nc.key());
+    int last=a._cs.size()-1;
+    var nc2=new NC(nc.poss(),nc.docs(),a._cs.get(last),l2);
+    if(nc1==null){return L(nc2);}
+    return List.of(nc1,nc2);
+    }
+
+  void rename11reidrectNested(NC nc){throw todo();}
+
+  L toAbstract(L l0){
+    List<MWT> mwts=L(l0.mwts(),(c,m)->{
       if(m.key().hasUniqueNum()){return;}
       c.add(m.with_e(null));
       });
-    List<NC> ncs=L(nc.l().ncs(),(c,n)->{
+    List<NC> ncs=L(l0.ncs(),(c,n)->{
       if(n.key().hasUniqueNum()){return;}
       c.add(n);
       });
-    L l=new L(nc.l().poss(),nc.l().isInterface(),nc.l().ts(),mwts,L(),Info.empty,nc.l().docs());
+    L l=new L(l0.poss(),l0.isInterface(),l0.ts(),mwts,L(),Info.empty,l0.docs());
     List<P.NCs> typeDep=L(c->l.accept(new Accumulate<Void>(){
       @Override public void visitP(P p){
         if(p.isNCs() && !c.contains(p)){c.add(p.toNCs());}
         }
       }));
-    Info i=nc.l().info();    
+    Info i=l0.info();    
     i=new Info(i.isTyped(),typeDep,L(),L(),L(),L(),L(),i.refined(),false, "",L(), -1);
-    return nc.withL(l.withNcs(ncs).withInfo(i));
-    }
-  NC rename9(NC nc){throw todo();}//and adds to AddMap
-  NC rename10(NC nc){throw todo();}//and adds to AddMap
-  
+    return l.withNcs(ncs).withInfo(i);
+    } 
   Program forcedNavigate(Program p,List<C> cs){
     for(C c:cs){p=p.push(c,Program.emptyL);}
     return p;
+    }
+  void noCircular(L l,List<C>cs0){
+    for(var pi:l.info().typeDep()){
+      var csi=Sum._publicCsOfP(pi, cs0);
+      if(csi==null){continue;}
+      L li=p._ofCore(csi);
+      if(csi.equals(cs0)){continue;}
+      if(li==null){continue;}
+      for(var pj:li.info().typeDep()){
+        var csj=Sum._publicCsOfP(pj, csi);
+        if(!cs0.equals(csj)){continue;}//covers also the csj==null case
+        err(errFail,errFail.intro(cs0,false)
+          +"Code can not be extracted since is circularly depended from "
+          +errFail.intro(csi,false));
+        }
+      }
+    }
+  void noExposeUniqueN(L l){
+    l.accept(new Accumulate<Void>(){
+      @Override public void visitMWT(MWT mwt){
+        super.visitMWT(mwt.with_e(null));
+        }
+      @Override public void visitNC(NC nc){}
+      @Override public void visitP(P path){
+        if(!path.isNCs()){return;}
+        var p=path.toNCs();
+        if(p.n()!=0 || p.cs().isEmpty()){return;}
+        if(!p.cs().get(0).hasUniqueNum()){return;}
+        err(errFail,errFail.intro(cs,false)
+          +"Code can not be extracted since it exposes uniquely numbered path "
+          +errFail.intro(p.cs(),false));
+        }
+      });
     }
   NC _onlyNested(NC nc){
     List<NC> ncs=L(nc.l().ncs(),(c,nci)->{
@@ -601,7 +665,7 @@ public class Rename {
       });
     if(ncs.isEmpty()){return null;}
     L l=Program.emptyL.withNcs(ncs).withPoss(nc.poss());//purposely trashing the pos of the L inside the nc
-    return nc.withL(l);
+    return nc.withL(l).withDocs(L());
     }
   L noNesteds(L l){
     List<NC> ncs=L(l.ncs(),(c,nci)->{
@@ -609,7 +673,8 @@ public class Rename {
       });
     return l.withNcs(ncs);
     }
-  L pushThis0Out(L l,C c){return l.accept(new CloneVisitor(){
+  
+  abstract class TweakPs extends CloneVisitor{
     int level=-1;
     @Override public L visitL(L l){
       level+=1;
@@ -620,12 +685,19 @@ public class Rename {
     @Override public P visitP(P p){
       if(!p.isNCs()){return p;}
       var pp=p.toNCs();
-      if(pp.n()!=level || pp.cs().isEmpty()){return p;}
+      if(pp.cs().isEmpty()){return p;}
       C c0=pp.cs().get(0);
       if(c0.hasUniqueNum()){return p;}
-      return P.of(level+1,pushL(c,pp.cs()));
+      return tweakP(pp);
       }
-    });}
+    abstract P tweakP(P.NCs p);
+    }  
+  L pushThis0Out(L l,C c){return l.accept(new TweakPs(){    
+    P tweakP(P.NCs p){
+      if(p.n()!=level){return p;}
+      return P.of(level+1,pushL(c,p.cs()));
+      }});
+    }
   static P renamedPath(LinkedHashMap<Arrow,Arrow> map,List<? extends LDom> whereFromTop,Program p,P path){
     int nesting=whereFromTop.size();
     if(!path.isNCs()){return path;}
@@ -678,3 +750,55 @@ public class Rename {
       }
     }
   }
+  /*
+   * 
+   *   class NoCircular{
+    void onErr(L l,List<C>cs0){
+      err(errFail,()->{
+        NoCircularErr e=new NoCircularErr();
+        e.noCircular(l,cs0);
+        return errFail.intro(cs0,false)+"Code can not be extracted since is circularly depended from\n"+e.error;
+        });
+      }
+    void noCircular(L l,List<C>cs0){
+      var visited=new HashSet<List<C>>();
+      for(var pi:l.info().typeDep()){
+        var cs2=Sum._publicCsOfP(pi, cs0);
+        if(cs2.equals(cs0) || !circular(cs2,visited,cs0)){continue;}
+        onErr(l,cs0);
+        return; 
+        }
+      }
+    boolean circular(List<C> cs1,HashSet<List<C>>visited,List<C> cs0){
+      if(cs1.equals(cs0)){return true;}
+      if(visited.contains(cs1)){return false;}
+      visited.add(cs1);
+      L l=p._ofCore(cs1);
+      if(l==null){return false;}
+      for(var pi:l.info().typeDep()){
+        var cs2=Sum._publicCsOfP(pi, cs1);
+        if(circular(cs2,visited,cs0)){return true;}
+        }
+      return false;
+      }
+    }
+  class NoCircularErr extends NoCircular{
+    StringBuilder error=new StringBuilder();
+    List<List<C>> visitOrder=new ArrayList<>();
+    @Override void onErr(L l,List<C>cs0){}
+    @Override boolean circular(List<C> cs1,HashSet<List<C>>visited,List<C> cs0){
+      visitOrder.add(cs1);
+      var res=super.circular(cs1,visited,cs0);
+      visitOrder.remove(visitOrder.size()-1);
+      if(error.length()!=0 || !res){return res;}
+      for(var csi:visitOrder){
+        String si=csi.stream().map(c->c.toString()).collect(Collectors.joining("."));
+        error.append(si+"\n");
+        }
+      return true;
+      }
+    } 
+
+  
+  
+  */

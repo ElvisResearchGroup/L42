@@ -12,6 +12,8 @@ public class From extends CloneVisitor{
     this.program=program; this.source=source; this.j=j; 
     }
   Program program; P.NCs source; int j;
+  public int j(){return j;}
+  public Program program(){return program;}
   @Override public Full.L visitL(Full.L l){throw bug();}
   @Override public Core.L visitL(Core.L l){
     int oldJ=j;

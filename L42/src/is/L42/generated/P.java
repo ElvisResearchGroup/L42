@@ -53,7 +53,8 @@ public interface P extends Visitable<P> {
 
   static P parse(String s) {
     var csP = Parse.csP(Constants.dummy, s);
-    assert !csP.hasErr():s;
+    assert !csP.hasErr():
+      s;
     assert csP.res._p() != null;
     return csP.res._p();
   }

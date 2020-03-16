@@ -80,10 +80,10 @@ public static LinkedHashMap<Arrow,Arrow> map(String s){
   }
 static Arrow fromS(String s){
   int i=s.lastIndexOf(".");
-  assert i!=-1;
-  var cs=P.parse("This0."+s.substring(0,i)).toNCs().cs();
+  List<C> cs=L();
+  if(i!=-1){cs=P.parse("This0."+s.substring(0,i).trim()).toNCs().cs();}
   S _s=null;
-  s=s.substring(i+1);
+  s=s.substring(i+1).trim();//also works for -1; pure coincidence
   if(!s.isEmpty()){_s=S.parse(s);}
   return new Arrow(cs,_s);
   }
@@ -108,10 +108,12 @@ public static void pass(String sl1,String s2,String sl3){
   assertEquals(l3Expected, l3Actual);
   }
 public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   //pass("A={#norm{}}#norm{}}","A.=>B.","B={#norm{}}#norm{}}")
-   //pass("A={ method Void foo(Void x)=x #norm{}}#norm{}}",
-   //  "A.foo(x)=>A.bar(y)",
-   //  "A={ method Void bar(Void y)=y #norm{}}#norm{}}")
+   pass("A={#norm{}}#norm{}}","A.=>B.","B={#norm{}}#norm{}}")
+   ),new AtomicTest(()->
+   pass("A={ method Void foo(Void x)=x #norm{}}#norm{}}",
+     "A.foo(x)=>A.bar(y)",
+     "A={ method Void bar(Void y)=y #norm{}}#norm{}}")
+   ),new AtomicTest(()->
    pass("A={ method Void foo(Void x)=x #norm{}}#norm{}}",
      "A.foo(x)-><empty>",
      "A={ method Void foo(Void x) #norm{}}#norm{}}")
@@ -559,22 +561,233 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      A={
-       method This1.B s(This1.B x)=x
-       method This1.B s::1(This1.B x)=this.s(x=x)
-       D::2={#norm{}}
+       method Void s(This1.B x)=x.a(a=this)
        #norm{typeDep=This1.B}}
-     B={#norm{typeDep=This1.K}}
-     K={#norm{typeDep=This1.A}}
-   #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+     B={method Void a(This1.A a)=void #norm{typeDep=This1.K,This1.A}}
+   #norm{}}""",/*rename map after this line*/"""
      A.->C.
    """,/*expected after this line*/"""
-   nested class { A={..} B={..} K={..} }
+   nested class { A={..} B={..} }
    nested class A
-   Code can not be extracted since is circularly depended from
-   B
-   K
+   Code can not be extracted since is circularly depended from nested class B
    Full mapping:A->C
    [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     A={
+       method This.D::2 s()=this.s()
+       D::2={#norm{}}
+       #norm{typeDep=This,This.D::2}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.->C.
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   nested class This0
+   Code can not be extracted since it exposes uniquely numbered path nested class D::2
+   Full mapping:A->C
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     B={
+       method This1.C s(This1.C c)=c
+       method This1.C s::1(This1.C c)=this.s(c=c)
+       #norm{typeDep=This1.C}
+       }
+     C={#norm{}}
+     #norm{}
+     }""",/*rename map after this line*/"""
+     B.->
+   """,/*expected after this line*/"""
+     method This.C s(This.C c)=c
+     method This.C s::1(This.C c)=this.s(c=c)
+     B={
+       method This1.C s(This1.C c)
+       #norm{typeDep=This1.C}
+       }
+     C={#norm{}}
+     #norm{typeDep=This.C}
+     }"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     B={
+       method This1.C s(This.KK c)=this.s(c=c)
+       method This1.C s::1(This.KK c)=this.s(c=c)
+       KK={#norm{}}
+       #norm{typeDep=This1.C, This.KK}
+       }
+     C={#norm{}}
+     #norm{}
+     }""",/*rename map after this line*/"""
+     B.->
+   """,/*expected after this line*/"""
+   method This.C s(This.B.KK c)=this.s(c=c)
+   method This.C s::1(This.B.KK c)=this.s(c=c)
+   B={
+     method This1.C s(This.KK c)
+     KK={#norm{}}
+     #norm{typeDep=This1.C, This0.KK}}
+   C={#norm{}}
+   #norm{typeDep=This0.C, This0.B.KK}
+   }"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     B={
+       method This1.C s(This1.C c)=c
+       #norm{typeDep=This1.C}
+       }
+     C={#norm{ typeDep=This1.B}}
+     #norm{}
+     }""",/*rename map after this line*/"""
+     B.->
+   """,/*expected after this line*/"""
+   nested class { B={..} C={..} }
+   nested class B
+   Code can not be extracted since is circularly depended from nested class C
+   Full mapping:B->This0
+   [file:[###]"""/*next test after this line*/)
+
+    ),new AtomicTest(()->pass("""
+     method This.C s(This.C c)=c
+     method This.C s::1(This.C c)=this.s(c=c)
+     C={#norm{}}
+     #norm{typeDep=This.C}
+     }""",/*rename map after this line*/"""
+     ->C.
+   """,/*expected after this line*/"""
+    method This.C s(This.C c)
+    C={
+      method This1.C s(This1.C c)=c
+      method This1.C s::1(This1.C c)=this.s(c=c)
+      #norm{typeDep=This1.C}
+      }
+    #norm{typeDep=This.C}
+    }"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     method This.D::2 s(This.D::2 x, This.C c)=x
+     method This.D::2 s::1(This.D::2 x This.C c)=this.s(x=x,c=c)
+     C={#norm{}}//Should fail: exposes private names, can not be made abstract
+     D::2={#norm{}}
+     #norm{typeDep=This,This.C, This.D::2}
+     }""",/*rename map after this line*/"""
+     ->C.
+   """,/*expected after this line*/"""
+   nested class { s(x,c)=(..) C={..} }
+   nested class This0
+   Code can not be extracted since it exposes uniquely numbered path nested class D::2
+   Full mapping:This0->C
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     method This.C s(This.C x)=x
+     C={#norm{typeDep=This1 watched=This1}}
+     #norm{typeDep=This.C}}""",/*rename map after this line*/"""
+     ->C.
+   """,/*expected after this line*/"""
+   nested class { s(x)=(..) C={..} }
+   The nested class This0
+   can not be made abstract since is watched by nested class C
+   Full mapping:This0->C
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     method Void v()
+     B={#norm{typeDep=This1}}
+     #norm{typeDep=This.B}}""",/*rename map after this line*/"""
+     ->C.
+   """,/*expected after this line*/"""
+   nested class { v() B={..} }
+   nested class This0
+   Code can not be extracted since is circularly depended from nested class B
+   Full mapping:This0->C
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     method Void v()=void
+     method Void v::2()=void
+     B={method Void b()=void #norm{}}
+     C::2={#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     -><empty>
+   """,/*expected after this line*/"""
+     method Void v()
+     B={method Void b()=void #norm{}}
+     #norm{}}"""/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     method Void v()=void
+     method Void v::2()=void
+     B={method Void b()=void #norm{typeDep=This1 watched=This1}}
+     C::2={#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     -><empty>
+   """,/*expected after this line*/"""
+   nested class { v()=(..) B={..} }
+   The nested class This0
+   can not be made abstract since is watched by nested class B
+   Full mapping:This0-><empty>
+   [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     @This.A A={
+       method Void v()=void
+       B={#norm{}}
+       D::2={#norm{}}
+       #norm{}}
+     C={method Void b()=void
+       #norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.=>C.D.E.
+   """,/*expected after this line*/"""
+     A={
+       B={#norm{}}
+       #norm{}}
+     C={
+       method Void b()=void 
+       D={
+         @This.C.D.E E={
+           method Void v()=void
+           D::2={#norm{}}
+           #norm{}}
+         #norm{}}
+       #norm{}}
+     #norm{typeDep=This.C.D.E}}
+     """/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     @This.A A={
+       method Void v()=void
+       B={#norm{}}
+       D::2={#norm{}}
+       #norm{}}
+     C={method Void b()=void
+       #norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.=>C.D.E. | A.B.=>C.D.E.B.
+   """,/*expected after this line*/"""
+   C={method Void b()=void
+     D={
+       @This0.C.D.E E={
+         method Void v()=void
+         D::2={#norm{}}
+         B={#norm{}}
+       #norm{}}
+     #norm{}}
+   #norm{}}
+ #norm{typeDep=This0.C.D.E}}"""/*next test after this line*/)    
+//    ),new AtomicTest(()->pass("""
+//     @This.A A={
+//       method Void v()=void
+//       B={#norm{}}
+//       D::2={#norm{}}
+//       #norm{}}
+//     C={method Void b()=void
+//       #norm{}}
+//     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+//     A.=><empty>
+//   """,/*expected after this line*/"""
+//     ANOPE={
+//       NOPEB={#norm{}}
+//       #norm{}}
+//     C={
+//       method Void b()=void 
+//       D={
+//         @This.C.D.E E={
+//           method Void v()=void
+//           D::2={#norm{}}
+//           #norm{}}
+//         #norm{}}
+//       #norm{}}
+//     #norm{typeDep=This.C.D.E}}
+//     """/*next test after this line*/)
    ));}
-   //TODO: test rename with empty target
 }

@@ -199,6 +199,7 @@ public class Program implements Visitable<Program>{
   public T from(T t,P.NCs source){return fromVisitor(source).visitT(t);}
   public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
   public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
+  public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source).visitDocs(docs);}
   public ST from(ST st,P.NCs source){return fromVisitor(source).visitST(st);}
   public List<ST> fromSTz(List<ST> stz,P.NCs source){return fromVisitor(source).visitSTz(stz);}
   public CTz from(CTz ctz,P.NCs source){
