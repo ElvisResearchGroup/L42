@@ -6,6 +6,7 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
+import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.toOneOr;
@@ -393,8 +394,13 @@ public class Rename {
       if(a==null || !a.full){continue;}
       int i=a._cs.size();
       if(i==0){continue;}
-      if(a._cs.get(i-1).hasUniqueNum()){newWatched.add(p);}
+      if(!a._cs.get(i-1).hasUniqueNum()){continue;}
+      if(p.cs().isEmpty()){newWatched.add(p.withN(p.n()+1));continue;}
+      if(p.cs().size()==1 && p.n()==0){continue;}//do not watch This0
+      //what happens if we was typeDep of This2 and This2 becomes private? we watch This3!
+      newWatched.add(p.withCs(popLRight(p.cs())));
       }
+    assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
     res=res.withWatched(mergeU(res.watched(),newWatched));
     var ums=res.usedMethods();
     ums=L(ums.stream().filter(ps->!newWatched.contains(ps.p())));

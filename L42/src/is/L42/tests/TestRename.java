@@ -764,30 +764,26 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      #norm{}}
    #norm{}}
  #norm{typeDep=This0.C.D.E}}"""/*next test after this line*/)    
-//    ),new AtomicTest(()->pass("""
-//     @This.A A={
-//       method Void v()=void
-//       B={#norm{}}
-//       D::2={#norm{}}
-//       #norm{}}
-//     C={method Void b()=void
-//       #norm{}}
-//     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
-//     A.=><empty>
-//   """,/*expected after this line*/"""
-//     ANOPE={
-//       NOPEB={#norm{}}
-//       #norm{}}
-//     C={
-//       method Void b()=void 
-//       D={
-//         @This.C.D.E E={
-//           method Void v()=void
-//           D::2={#norm{}}
-//           #norm{}}
-//         #norm{}}
-//       #norm{}}
-//     #norm{typeDep=This.C.D.E}}
-//     """/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     A={
+       method Void v::0()=void
+       B={#norm{}}
+       D::2={#norm{}}
+       #norm{}}
+     C={method Void b()=void
+       #norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.=><empty>
+   """,/*expected after this line*/"""
+   A={
+     B={#norm{}}
+     #norm{}}
+   A::1={
+     method Void v::0()=void
+     D::2={#norm{}}
+     #norm{}}
+   C={method Void b()=void #norm{}}
+   #norm{typeDep=This.A::1}}
+   """/*next test after this line*/)//watched=This0.A::1 NOPE
    ));}
 }

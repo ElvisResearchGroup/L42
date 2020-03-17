@@ -43,6 +43,11 @@ public interface P extends Visitable<P>{
     }
   default boolean isNCs(){return false;}
   default NCs toNCs(){throw bug();}
+  default boolean hasUniqueNum(){
+    if(!isNCs()){return false;}
+    var p=toNCs();
+    return p.cs.stream().anyMatch(c->c.hasUniqueNum());
+    }
   @EqualsAndHashCode(callSuper=false) @Value @Wither
   public static class NCs implements P{
     int n;List<C>cs;

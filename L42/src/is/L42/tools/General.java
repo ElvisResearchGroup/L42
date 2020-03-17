@@ -102,6 +102,13 @@ public class General {
     for(int i=1;i<size;i++){res.add(l.get(i));}
     return Collections.unmodifiableList(res);
     }
+  public static <T> List<T>popLRight(List<T>l){
+    assert !l.isEmpty();
+    ArrayList<T> res=new ArrayList<>(l.size()-1);
+    int size=l.size()-1;
+    for(int i=0;i<size;i++){res.add(l.get(i));}
+    return Collections.unmodifiableList(res);
+    }
   public static <T> List<T>pushL(T e,List<T>l){
     ArrayList<T> res=new ArrayList<>();
     res.add(e);

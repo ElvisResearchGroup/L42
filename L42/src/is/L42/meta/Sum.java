@@ -196,7 +196,7 @@ public class Sum {
       for(var pi:li.info().hiddenSupertypes()){
         P.NCs pj=Sum.emptyP.from(pi,csi);
         if(pj.n()!=0){continue;}
-        assert pj.cs().stream().noneMatch(c->c.hasUniqueNum());
+        assert !pj.hasUniqueNum();
         if(cs.equals(pj.cs())){
           wasIn[0]=true;}
         }
@@ -220,7 +220,7 @@ public class Sum {
     if(!p.isNCs()){return null;}//not the place to give error for implements Void
     P.NCs pi=Sum.emptyP.from(p.toNCs(),cs);
     if(pi.n()!=0){return null;}
-    if(pi.cs().stream().anyMatch(c->c.hasUniqueNum())){return null;}
+    if(pi.hasUniqueNum()){return null;}
     return pi.cs();
     }
   public static P miniFrom(List<C> into,List<C> that){

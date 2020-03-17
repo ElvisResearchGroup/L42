@@ -23,7 +23,7 @@ public class MetaError{
     String elem="";
     if(fault instanceof P){
       var p=(P)fault;
-      assert p.toNCs().cs().stream().noneMatch(c->c.hasUniqueNum());
+      assert !p.hasUniqueNum();
       elem+=p;
       }
     if(fault instanceof List){
@@ -45,7 +45,7 @@ public class MetaError{
     String elem="";
     if(fault instanceof P){
       var p=(P)fault;
-      assert p.toNCs().cs().stream().noneMatch(c->c.hasUniqueNum());
+      assert !p.hasUniqueNum();
       elem+=p+"\n";
       }
     if(fault instanceof List){
@@ -67,7 +67,7 @@ public class MetaError{
       var l=(Core.L)fault;
       elem="{"+(l.isInterface()?"interface ":" ");
       var publicImpls=L(l.ts().stream().filter(
-        t->!t.p().isNCs() ||t.p().toNCs().cs().stream().noneMatch(ci->ci.hasUniqueNum())));
+        t->!t.p().isNCs() ||!t.p().hasUniqueNum()));
       if(!publicImpls.isEmpty()){
         elem+="[ ";
         for(var t:publicImpls){elem+=t.p()+" ";}
