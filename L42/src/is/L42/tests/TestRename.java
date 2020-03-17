@@ -784,6 +784,76 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      #norm{}}
    C={method Void b()=void #norm{}}
    #norm{typeDep=This.A::1}}
-   """/*next test after this line*/)//watched=This0.A::1 NOPE
+   """/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     A={
+       method Void v1()=void
+       method Void v2()=void
+       B={#norm{}}
+       D::2={#norm{}}
+       #norm{}}
+     C={method Void b()=void
+       #norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.=><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} C={..} }
+   nested class A
+   can not be hidden since some methods are still public:
+   method A.v1()
+   method A.v2()
+   Full mapping:A=><empty>
+   [file:[###]"""/*next test after this line*/)
+
+
+    ),new AtomicTest(()->pass("""
+     method This.B aa(This.A a)=a.a()     
+     A={
+       method This1.B a()
+       #norm{typeDep=This1.B}}
+     B={method This1.A b()
+       #norm{typeDep=This1.A}}
+     C={ method This1.A bb(This1.B b)=b.b() 
+       #norm{typeDep=This1.A,This1.B}}
+     #norm{typeDep=This.A,This.B}}
+   EA={
+     method This1.EB a()
+     #norm{typeDep=This1.EB}}
+   EB={method This1.EA b()
+     #norm{typeDep=This1.EA}}
+   """,/*rename map after this line*/"""
+   A.=>#This.EA | B.=>#This.EB
+   """,/*expected after this line*/"""
+   method This1.EB aa(This1.EA a)=a.a()
+   C={
+     method This2.EA bb(This2.EB b)=b.b()
+     #norm{typeDep=This2.EA,This2.EB}}
+   #norm{typeDep=This1.EA,This1.EB}}
+   """/*next test after this line*/)
+    ),new AtomicTest(()->fail("""
+     method This.B aa(This.A a)=a.a()     
+     A={
+       method This1.B a()
+       #norm{typeDep=This1.B}}
+     B={method This1.A b()
+       #norm{typeDep=This1.A}}
+     C={ method This1.A bb(This1.B b)=b.b() 
+       #norm{typeDep=This1.A,This1.B}}
+     #norm{typeDep=This.A,This.B}}
+   EA={
+     method This1.EB a()
+     #norm{typeDep=This1.EB}}
+   EB={method Void b()
+     #norm{typeDep=This1.EA}}
+   """,/*rename map after this line*/"""
+   A.=>#This.EA | B.=>#This.EB
+   """,/*expected after this line*/"""
+   nested class { A={..} C={..} }
+   nested class A
+   can not be hidden since some methods are still public:
+   method A.v1()
+   method A.v2()
+   Full mapping:A=><empty>
+   [file:[###]"""/*next test after this line*/)
    ));}
 }

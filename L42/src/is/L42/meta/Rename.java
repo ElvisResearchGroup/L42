@@ -391,7 +391,7 @@ public class Rename {
       List<C> csi=Sum._publicCsOfP(p,cs);
       if(csi==null){continue;}
       Arrow a=map.get(new Arrow(csi,null));
-      if(a==null || !a.full){continue;}
+      if(a==null || !a.full || a.isP()){continue;}
       int i=a._cs.size();
       if(i==0){continue;}
       if(!a._cs.get(i-1).hasUniqueNum()){continue;}
@@ -469,22 +469,26 @@ public class Rename {
     c.addAll(renameMWT(mwt));
     });}
   List<NC> renameNC(NC nc){
-    Arrow e=map.get(new Arrow(pushL(cs,nc.key()),null));
-    if(e==null){return L(nc);}
+    Arrow a=map.get(new Arrow(pushL(cs,nc.key()),null));
+    if(a==null){return L(nc);}
     List<C> csc=pushL(cs,nc.key());
-    if(!e.full){//either 7 or 8
+    if(!a.full){//either 7 or 8
       if(allWatched.contains(csc)){err(errFail,errFail.intro(csc,false)
         +"The implementation can not be removed since the class is watched by "
         +errFail.intro(watchedBy(p.topCore(),csc),false));}
-      if(e.isEmpty()){return L(rename8restrictNC(nc));}
-      return L(rename7superNC(nc,csc,e));
+      if(a.isEmpty()){return L(rename8restrictNC(nc));}
+      return L(rename7superNC(nc,csc,a));
       }
-    if(e.isP()){rename11reidrectNested(nc);return L();}
-    assert e.isCs();
-    int size=e._cs.size();
-    var hide=size!=0 && e._cs.get(size-1).hasUniqueNum();
-    if(hide){return rename10hideNested(nc,e);}
-    NC res=_rename9nested(nc,e);
+    if(a.isP()){
+      NC res=_rename11reidrectNested(nc,a);
+      if(res==null){return L();}
+      return L(res);
+      }
+    assert a.isCs();
+    int size=a._cs.size();
+    var hide=size!=0 && a._cs.get(size-1).hasUniqueNum();
+    if(hide){return rename10hideNested(nc,a);}
+    NC res=_rename9nested(nc,a);
     if(res==null){return L();}
     return L(res);
     }
@@ -598,6 +602,11 @@ public class Rename {
     return _onlyNested(nc);
     }
   List<NC> rename10hideNested(NC nc,Arrow a){
+    var prv=nc.l().mwts().stream().anyMatch(m->!m.key().hasUniqueNum());
+    if(prv){err(errFail,()->errFail.intro(pushL(cs,nc.key()),false)
+      +"can not be hidden since some methods are still public:\n"
+      +nc.l().mwts().stream().filter(m->!m.key().hasUniqueNum())
+      .map(m->errFail.intro(pushL(cs,nc.key()),m.key())).collect(Collectors.joining()));}
     var nc1=_onlyNested(nc);
     var l2=noNesteds(nc.l());
     l2=pushThis0Out(l2, nc.key());
@@ -607,7 +616,10 @@ public class Rename {
     return List.of(nc1,nc2);
     }
 
-  void rename11reidrectNested(NC nc){throw todo();}
+   NC _rename11reidrectNested(NC nc,Arrow a){
+    assert !allWatched.contains(a.cs);
+    return _onlyNested(nc);
+    }
 
   L toAbstract(L l0){
     List<MWT> mwts=L(l0.mwts(),(c,m)->{
