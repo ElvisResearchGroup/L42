@@ -848,12 +848,13 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*rename map after this line*/"""
    A.=>#This.EA | B.=>#This.EB
    """,/*expected after this line*/"""
-   nested class { A={..} C={..} }
-   nested class A
-   can not be hidden since some methods are still public:
-   method A.v1()
-   method A.v2()
-   Full mapping:A=><empty>
+   nested class { aa(a)=(..) A={..} B={..} C={..} }
+   nested class B
+   can not be redirected, the target This0.EB
+   does not expose a compatible method method B.b()
+   Invalid method inheritance for b():
+   the return type imm Void is not a subtype of the inherited type imm This2.EA
+   Full mapping:A=>This0.EA;B=>This0.EB
    [file:[###]"""/*next test after this line*/)
    ));}
 }

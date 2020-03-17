@@ -239,7 +239,8 @@ public class Program implements Visitable<Program>{
     if(!superP.isNCs()){return false;}
     assert minimize(subP0)==subP0;
     var l=_ofCore(subP0);
-    if(l==null){return null;}
+    if(l==null){
+      return null;}
     for(T ti:l.ts()){
       P pi=from(ti.p(),subP0);
       assert minimize(pi)==pi;

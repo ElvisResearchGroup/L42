@@ -98,16 +98,19 @@ public class ProgramTypeSystem {
       });
     for(MH mh:mhs){ typeMHSubtype(p,mh,mwt.mh(),mwt.poss());}
     }
-  private static void typeMHSubtype(Program p,MH mhI, MH mhC,List<Pos>pos) {
-    errIf(!p._isSubtype(mhC.t(), mhI.t()),pos,
-      Err.methSubTypeExpectedRet(mhC.key(),mhC.t(), mhI.t())); 
-    errIf(mhC.mdf()!=mhI.mdf(),pos,Err.methSubTypeExpectedMdf(mhC.key(),mhC.mdf(),mhI.mdf()));
-    errIf(!mhI.pars().equals(mhC.pars()),pos,
-      Err.methSubTypeExpectedPars(mhC.key(),mhC.pars(),mhI.pars()));
+  private static void typeMHSubtype(Program p,MH mhI, MH mhC,List<Pos>pos){
+    String msg=_typeMHSubtypeErrMsg(p, mhI, mhC);
+    errIf(msg!=null,pos,msg);
+    }
+  public static String _typeMHSubtypeErrMsg(Program p,MH mhI, MH mhC){
+    if(!p._isSubtype(mhC.t(), mhI.t())){return Err.methSubTypeExpectedRet(mhC.key(),mhC.t(), mhI.t());} 
+    if(mhC.mdf()!=mhI.mdf()){return Err.methSubTypeExpectedMdf(mhC.key(),mhC.mdf(),mhI.mdf());}
+    if(!mhI.pars().equals(mhC.pars())){return Err.methSubTypeExpectedPars(mhC.key(),mhC.pars(),mhI.pars());}
     for( var eC:mhC.exceptions()){
       boolean cond=mhI.exceptions().stream().anyMatch(eI->p._isSubtype(eC,eI));
-      errIf(cond,pos,Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions()));  
-      }    
+      if(cond){return Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions());}  
+      }
+    return null;    
     }
   private static void typePlugin(Program p, MWT mwt,J j) {
     String nativeUrl=mwt.nativeUrl();

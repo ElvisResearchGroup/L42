@@ -52,6 +52,7 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Top;
+import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
@@ -618,7 +619,26 @@ public class Rename {
 
    NC _rename11reidrectNested(NC nc,Arrow a){
     assert !allWatched.contains(a.cs);
+    if(nc.l().mwts().isEmpty()){return _onlyNested(nc);}
+    if(!a._path.isNCs()){errRedirect(a.cs, a._path,nc.l().mwts().get(0),"the method does not exists");}
+    P.NCs path=a._path.toNCs();
+    path=path.withN(path.n()+1);
+    Program p=this.p.navigate(a.cs);
+    L l=this.p._ofCore(path);
+    path=P.of(path.n()+a.cs.size(),path.cs());
+    for(MWT mwt:nc.l().mwts()){
+      MWT mwtOut=_elem(l.mwts(),mwt.key());
+      if(mwtOut==null){errRedirect(a.cs,a._path,mwt,"the method does not exists");}
+      var mhOut=p.from(mwtOut.mh(),path);
+      String msg=ProgramTypeSystem._typeMHSubtypeErrMsg(p,mwt.mh(),mhOut);
+      if(msg!=null){errRedirect(a.cs,a._path,mwt,msg);} 
+      }
     return _onlyNested(nc);
+    }
+  void errRedirect(List<C> cs,P path,MWT mwt,String extraMsg){
+    err(errFail,errFail.intro(cs,false)+"can not be redirected, the target "+errFail.intro(path, false)
+      +"does not expose a compatible method "+errFail.intro(cs,mwt.key())
+      +extraMsg);
     }
 
   L toAbstract(L l0){

@@ -198,17 +198,25 @@ _______
     p=Rename.p.navigate(Cs')//Cs' may not be in dom(p)
     L'=L[noNesteds][pushThis0Out C][from p.minimize(Thisn.(Rename.Cs));p;-1]
 //10:nested hide
-//TODO: ok... this need to somehow add to the rename all the transitive hides for all
-//the sub members...
-//In the same way, we need to investigate how to rename a class and all its nesteds.
+//TODO: We need to add a transitive private and transitive rename/redirect
 * Rename(Docs C=L) = (C=L)[onlyNesteds],Docs C::1=L';empty
     Rename.Cs.C => Rename.Cs.C::n in Map
     L'=L[noNesteds][pushThis0Out]
 //11:nested redirect
 * Rename(C=L) = (C=L)[onlyNesteds];empty
     Cs.C => P in Map
-    //Cs.C notin allWatched(Rename.p(This0),Rename.Map)//checked already before?
-//another operator could be "delegate Cs.s->Cs'.s',
+    P in {Any,Void,Library}
+    L.MWTs=empty
+    assert Cs.C notin allWatched(Rename.p(This0),Rename.Map)//checked already before?
+* Rename(C=L) = (C=L)[onlyNesteds];empty
+    Cs.C => Thisn.Cs' in Map
+    assert Cs.C notin allWatched(Rename.p(This0),Rename.Map)//checked already before?
+    P=This(n+sizeOf(Cs.C)).Cs'
+    p=Rename.p.navigate(Cs.C)
+    forall MWT in L.MWTs://they should have been already "internally renamed"
+      p|- p(P)(MWT.s).MH[from P;p]<=MWT.MH
+
+//TODO: another operator could be "delegate Cs.s->Cs'.s',
 //generating in Cs.s a method body that is just a call for Cs'.s'
 //this would support scrambling args and or lifting/embedding.
 //complex lift/embed can be obtained by delegate+->+hiding

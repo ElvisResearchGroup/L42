@@ -144,7 +144,6 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     g=oldG;
     computeds.add(_computed);
     var computed=new HashSet<P>();
-    var pos=e.poss();
     for(P c1:computeds){
       if(c1==null){continue;}
       var superAll=computeds.stream().allMatch(c2->c2!=null && p._isSubtype(c2,c1));
