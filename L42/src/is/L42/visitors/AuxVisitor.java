@@ -20,6 +20,7 @@ import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.generated.Full.Doc;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
+import is.L42.generated.L42AuxParser.NudePathSelXContext;
 
 public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
   private final Pos pos;

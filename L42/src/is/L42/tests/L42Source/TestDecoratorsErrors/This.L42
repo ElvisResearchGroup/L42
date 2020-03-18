@@ -127,4 +127,31 @@ TestSum1=(
     |[file:
     """)
   )
-  
+//TODO: all errors, they should be exceptions?
+Action={interface class method read Any()[Message]}
+ErrorToS=Trait:{
+  T={[Message]}
+  class method S (class Action that)[Message]=(
+    _=that()
+    catch error T f (f.toS())
+    S""
+    )
+  }
+ClassClashToS=Class:ErrorToS['T=>ClassClash]
+MethodClashToS=Class:ErrorToS['T=>MethodClash]
+InvalidNameToS=Class:ErrorToS['T=>InvalidName]
+InvalidMapToS=Class:ErrorToS['T=>InvalidMap]
+Code=Trait:{
+  A={method Void foo()=void}
+  B={method Any foo()=void}
+  }
+//A=Data:{[Action] method()=Code['A=>'B]}
+//TODO: somehow it fails to recognize the "other" method is the right to call
+//TODO: now that we use Err.hole to compare expected/actual it crashes with "" expected
+A={[Action] method()=Code['A.#equalgt0(other='B)]}
+TestRename={
+  TestMethodClash=(
+    {}:Test""(expected=S"" actual=MethodClashToS(A))
+    void
+    )
+  }

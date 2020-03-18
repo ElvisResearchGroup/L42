@@ -123,14 +123,19 @@ public class Rename {
     err(errFail,()->"The "+errFail.intro(cs0,false)
       +"can not be made abstract since is watched by "+errFail.intro(watchedBy(p.topCore(),cs0),false));
     }
-  public Core.L apply(Program pOut,C cOut,Core.L l,LinkedHashMap<Arrow,Arrow>map,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+  public Core.L apply(Program pOut,C cOut,Core.L l,List<Arrow>list,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     this.p=pOut.push(cOut,l);
     this.cOut=cOut;
-    this.map=map;
     this.errName=new MetaError(wrapName);
     this.errFail=new MetaError(wrapFail);
     this.errC=new MetaError(wrapC);
     this.errM=new MetaError(wrapM);
+    this.map=new LinkedHashMap<Arrow,Arrow>();
+    for(var a:list){
+      var key=new Arrow(a.cs,a._s);
+      if(map.containsKey(key)){err(errFail,"Rename map contains two entries for "+key.toStringErr());}
+      map.put(new Arrow(a.cs,a._s),a);
+      }    
     allWatched=Sum.allFromInfo(l,(c,li,csi)->{
       if(isDeleted(csi)){return;}
       for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,c);}
@@ -140,7 +145,8 @@ public class Rename {
       for(var w:li.info().hiddenSupertypes()){Sum.addPublicCsOfP(w,csi,c);}
       });
     cs=L();
-    return applyMap();
+    L res=applyMap();
+    return res;
     }
   L applyMap(){
     earlyCheck();
@@ -779,6 +785,7 @@ public class Rename {
     Rename r;
     @Override public P visitP(P path){return renamedPath(r.map,whereFromTop(),this.p(),path);}
     @Override public MCall visitMCall(MCall mcall){
+      mcall=super.visitMCall(mcall);
       var t=g._of(mcall.xP());
       if(t==null){return mcall;}
       var path=t.p();

@@ -5,4 +5,10 @@ class method This #from(StringBuilder stringLiteral)=this.of(stringLiteral.toS()
 // => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;
 method Meta =>(class Any target)=
   Meta().addMap(name=this.toS(),classAny=target)
-//whoops... should I merge maps instead? 
+method Meta =>(Name other)=
+  Meta().addMapDoubleArrow(a=this.toS(),b=other.toS())
+//method Meta ->(Name other)= /*this is a short circuted operator, so is defined as below*/
+method Bool #shortCircut#minusgt()=Bool.false()
+method This #shortResult#minusgt()=error void
+method Meta #shortProcess#minusgt(Bool that,This other)=
+  Meta().addMapDoubleArrow(a=this.toS(),b=other.toS())

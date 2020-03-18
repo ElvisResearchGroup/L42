@@ -1,5 +1,6 @@
 package is.L42.tests;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.function.Function;
@@ -45,14 +46,13 @@ import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
-import static is.L42.common.Err.hole;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestRename
 extends AtomicTest.Tester{
-public static LinkedHashMap<Arrow,Arrow> map(String s){
-  LinkedHashMap<Arrow,Arrow>map=new LinkedHashMap<>();
+public static List<Arrow> map(String s){
+  List<Arrow>map=new ArrayList<>();
   Stream.of(s.strip().split(Pattern.quote("|"))).forEach(arr->{
     int fullNo=arr.indexOf("->");
     int fullYes=arr.indexOf("=>");
@@ -63,19 +63,17 @@ public static LinkedHashMap<Arrow,Arrow> map(String s){
     String b=arr.substring(pos+2,arr.length());
     var key=fromS(a);
     var arrow=new Arrow(key.cs,key._s,fullYes!=-1,null,null,null);
-    if(b.equals("<empty>")){map.put(key,arrow);return;}
+    if(b.equals("<empty>")){map.add(arrow);return;}
     if(b.startsWith("#")){
       arrow._path=P.parse(b.substring(1));
-      assert !map.containsKey(key);
-      map.put(key,arrow);return;
+      map.add(arrow);return;
       }
     var rest=fromS(b);
     arrow._cs=rest.cs;
     arrow._sOut=rest._s;
-    assert !map.containsKey(key);
-    map.put(key,arrow);
+    map.add(arrow);
     });  
-  System.out.println(map.values());
+  System.out.println(map);
   return map;
   }
 static Arrow fromS(String s){
@@ -804,8 +802,6 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method A.v2()
    Full mapping:A=><empty>
    [file:[###]"""/*next test after this line*/)
-
-
     ),new AtomicTest(()->pass("""
      method This.B aa(This.A a)=a.a()     
      A={
@@ -830,6 +826,42 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      #norm{typeDep=This2.EA,This2.EB}}
    #norm{typeDep=This1.EA,This1.EB}}
    """/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     method This.B aa(This.A a)=(
+       This.A a2=this.aa(a=( 
+         This.A a3=a
+         a3
+         ))
+       catch error This.A ea (ea.a())
+       a2.a())     
+     A={
+       method This1.B a()
+       #norm{typeDep=This1.B}}
+     B={method This1.A b()
+       #norm{typeDep=This1.A}}
+     C={ method This1.A bb(This1.B b)=b.b() 
+       #norm{typeDep=This1.A,This1.B}}
+     #norm{typeDep=This.A,This.B}}
+   EA={
+     method This1.EB a()
+     #norm{typeDep=This1.EB}}
+   EB={method This1.EA b()
+     #norm{typeDep=This1.EA}}
+   """,/*rename map after this line*/"""
+   A.=>#This.EA | B.=>#This.EB
+   """,/*expected after this line*/"""
+   method This1.EB aa(This1.EA a)=(
+     This1.EA a2=this.aa(a=(This1.EA a3=a a3))
+     catch error This1.EA ea (ea.a())
+     a2.a())
+   C={
+     method This2.EA bb(This2.EB b)=b.b()
+     #norm{typeDep=This2.EA,This2.EB}}
+   #norm{typeDep=This1.EA,This1.EB}}
+   """/*next test after this line*/)
+
+
+
     ),new AtomicTest(()->fail("""
      method This.B aa(This.A a)=a.a()     
      A={

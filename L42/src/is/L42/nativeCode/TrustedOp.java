@@ -185,15 +185,11 @@ public enum TrustedOp {
       Lib,String,Bool,String))
     )),
   TestActualExpected("testActualExpected",Map.of(
-    TrustedIO,use("return %s.testActualExpected(%s,%s,%s,%s,%s);",sigI(Void,
-      Lib,String,String,String,String))
+    TrustedIO,use("return %s.testActualExpected(%s,%s,%s,%s,%s,%s);",sigI(Void,
+      Lib,String,String,String,String,String))
     )),  
   DeployLibrary("deployLibrary",Map.of(
     TrustedIO,use("return %s.deployLibrary(%s,%s);",sigI(Void,String,Lib)))),
-  SimpleRedirect("simpleRedirect",Map.of(
-    Meta,use("return %s.simpleRedirect(%s,%s,%s);",sig(Immutable,Immutable,Lib,
-      Immutable,String,  Immutable,Lib,  Class,Any))
-    )),
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
@@ -208,10 +204,15 @@ public enum TrustedOp {
     Meta,use("return %s.addMapP(%s,%s);",sig(Immutable,Immutable,Meta,
       Immutable,String,  Class,Any))
     )),
+  AddMapDoubleArrow("addMapDoubleArrow",Map.of(
+    Meta,use("return %s.addMapDoubleArrow(%s,%s);",sigI(Meta,String,String)))),
+  AddMapSingleArrow("addMapSingleArrow",Map.of(
+    Meta,use("return %s.addMapSingleArrow(%s,%s);",sigI(Meta,String,String)))),
+
   MergeMap("mergeMap",Map.of(
     Meta,use("return %s.mergeMap(%s);",sigI(Meta,Meta)))),
   ApplyMap("applyMap",Map.of(
-    Meta,use("return %s.applyMap(%s);",sigI(Lib,Lib)))),
+    Meta,use("return %s.applyMap(%s,%Gen3::wrap,%Gen4::wrap,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib)))),
   PathName("pathName",Map.of(
     Meta,use("return %s.pathName(%s);",sig(Immutable,Immutable,String,
       Class,Any))

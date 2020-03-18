@@ -20,6 +20,8 @@ public class TestHoleComparator extends AtomicTest.Tester
 {  
   public static Stream<AtomicTest> test() {
     return Stream.of(
+        cmp("teststring123", "", false),
+        cmp("teststring123", Err.hole, true),
         cmp("teststring123", "teststring123", true),
         cmp("teststring123", "test" + Err.hole + "123", true),
         cmp("teststring123", "teststring" + Err.hole , true),

@@ -30,73 +30,56 @@ public class Err {
     for(Pos pos:poss){res+=pos;}
     return res;
     }
-
-  public static boolean strCmp(String cmp1, String cmp2) {
+  public static boolean strCmp(String cmp1, String cmp2){
     cmp1 = cmp1.trim();
     cmp2 = cmp2.trim();
-    try{assertTrue(strCmpAux(cmp1, cmp2));}
+    try{assertTrue(strCmpAux(cmp1, cmp2,Err.hole));}
     catch(AssertionFailedError e){
       assertEquals(cmp1, cmp2);
       throw unreachable();
       }
     return true;
-    }
-  
-  private static boolean strCmpAux(String cmp1, String cmp2) {
+    }  
+  public static boolean strCmpAux(String cmp1, String cmp2,String stringHole) {
     List<String> split = new ArrayList<String>(Arrays.asList(cmp2.split("\\[\\#\\#\\#\\]")));
     for(int i = 0; i < split.size(); i++) { if(split.get(i).length() == 0) split.remove(i--); }
-    boolean beginswith = cmp2.startsWith(Err.hole);
-    boolean endswith = cmp2.endsWith(Err.hole);
-    
-    int holes = (beginswith ? 1 : 0) + (endswith ? 1 : 0) + split.size() - 1;
-    
+    boolean beginswith = cmp2.startsWith(stringHole);
+    boolean endswith = cmp2.endsWith(stringHole);    
+    int holes = (beginswith ? 1 : 0) + (endswith ? 1 : 0) + split.size() - 1;    
     //Trivial
-    if(holes == 0) { return cmp1.equals(cmp2); }
-    
+    if(holes == 0) { return cmp1.equals(cmp2); }    
     //If we didn't start with a hole, compare everything up to the hole
     if(!beginswith) {
-      String startCmp2 = split.get(0);
-      
+      String startCmp2 = split.get(0);      
       //The thing before the hole is bigger than the entire string!
-      if(startCmp2.length() > cmp1.length()) { return false; }
-      
-      String startCmp1 = cmp1.substring(0, startCmp2.length());
-      
-      if(!startCmp1.equals(startCmp2)) { return false; }
-      
+      if(startCmp2.length() > cmp1.length()) { return false; }      
+      String startCmp1 = cmp1.substring(0, startCmp2.length());      
+      if(!startCmp1.equals(startCmp2)) { return false; }      
       cmp1 = cmp1.substring(startCmp2.length());
       split.remove(0);
-      }
-    
+      }    
     //If we didn't start with a hole, compare everything up to the hole
     if(!endswith) {
-      String endCmp2 = split.get(split.size() - 1);
-      
+      String endCmp2 = split.get(split.size() - 1);      
       //The thing after the hole is bigger than the entire (remaining) string!
-      if(endCmp2.length() > cmp1.length()) { return false; }
-      
-      String endCmp1 = cmp1.substring(cmp1.length() - endCmp2.length(), cmp1.length());
-      
-      if(!endCmp1.equals(endCmp2)) { return false; }
-      
+      if(endCmp2.length() > cmp1.length()) { return false; }      
+      String endCmp1 = cmp1.substring(cmp1.length() - endCmp2.length(), cmp1.length());      
+      if(!endCmp1.equals(endCmp2)) { return false; }      
       cmp1 = cmp1.substring(0, cmp1.length() - endCmp2.length());
       split.remove(split.size() - 1);
-      }
-    
+      }    
     //Everything on both sides of the hole matches, therefore the hole matches everything in the center
     //Or, alternatively, the single hole was at the end, and therefore everything but the whole matched the beginning or the end of cmp1
-    if(holes == 1) { return true; }
-    
+    if(holes == 1) { return true; }    
     //We have a string in between two holes, and all text outside the holes has been removed from both cmp1 and cmp2
     //Check that the middle text exists within cmp1. If it does, all outer text can be considered part of the holes and we have a match
     if(holes == 2) { return cmp1.contains(split.get(0)); }
-    
     if(holes > 2) {
       //Guess how much space the first hole takes up by iteratively searching for the middle text
       int index = 0;
       while((index = cmp1.indexOf(split.get(0))) > -1) {
         cmp1 = cmp1.substring(index);
-        if(strCmpAux(cmp1, reconstituteRight(split))) { return true; }
+        if(strCmpAux(cmp1, reconstituteRight(split,stringHole),stringHole)) { return true; }
         cmp1 = cmp1.substring(split.get(0).length());
         }
       }
@@ -104,11 +87,11 @@ public class Err {
     return false;
     }
   
-  private static String reconstituteRight(List<String> list) {
+  private static String reconstituteRight(List<String> list,String stringHole) {
     StringBuilder builder = new StringBuilder();
     for(int i = 0; i < list.size(); i++) {
       builder.append(list.get(i));
-      builder.append(Err.hole);
+      builder.append(stringHole);
       }
     return builder.toString();
     }
@@ -334,7 +317,7 @@ public class Err {
   ;}public static String methSubTypeExpectedPars(Object s, Object _1,Object _2){return
   "Invalid method inheritance for "+s+": the parameters "+_1+" are diffrent from the inherited parameters "+_2
   ;}public static String methSubTypeExpectedExc(Object s, Object _1,Object _2){return
-  "Invalid method inheritance for "+s+": excpetion "+_1+" is not a subtype of any exception in "+_2
+  "Invalid method inheritance for "+s+": exception "+_1+" is not a subtype of any exception in "+_2
   ;}public static String invalidDotDotDotLocation(){return
   "Invalid '...' location: no other file is identified"
   ;}public static String dotDotDotSouceNotExistant(Object _1){return

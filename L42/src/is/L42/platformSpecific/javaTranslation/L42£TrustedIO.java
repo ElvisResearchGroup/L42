@@ -15,6 +15,7 @@ import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42SingletonCache;
 import is.L42.cache.nativecache.ValueCache;
+import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.P;
@@ -42,12 +43,12 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     String res=logs.get(logName);
     return res==null?"":res;
     }    
-  public L42£Void testActualExpected(L42£Library hasPos,String name, String actual, String expected,String message){
+  public L42£Void testActualExpected(L42£Library hasPos,String name, String actual, String expected,String message,String hole){
     System.out.println("testActualExpected");
     System.out.println(name);
     System.out.println(actual);
     System.out.println(expected);
-    boolean cond=actual.equals(expected);
+    boolean cond=hole.isEmpty()?actual.equals(expected):Err.strCmpAux(actual,expected,hole);
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");
     assert !pos.fileName().toString().contains("\n"):"|"+pos.fileName().toString()+"|";

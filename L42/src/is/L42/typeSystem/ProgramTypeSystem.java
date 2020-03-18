@@ -108,7 +108,7 @@ public class ProgramTypeSystem {
     if(!mhI.pars().equals(mhC.pars())){return Err.methSubTypeExpectedPars(mhC.key(),mhC.pars(),mhI.pars());}
     for( var eC:mhC.exceptions()){
       boolean cond=mhI.exceptions().stream().anyMatch(eI->p._isSubtype(eC,eI));
-      if(cond){return Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions());}  
+      if(!cond){return Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions());}  
       }
     return null;    
     }

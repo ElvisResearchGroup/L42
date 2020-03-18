@@ -23,8 +23,6 @@ import is.L42.visitors.FullL42Visitor;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.unreachable;
-import static is.L42.common.Err.hole;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestProgram
@@ -32,7 +30,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //WellFormedness
    passWF("{method Void (Void that,Void foo)=foo}")
    ),new AtomicTest(()->
-   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={#norm{}} #norm{}}}",Err.nonUniqueNumber("[1]",hole))
+   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo D={C::1={#norm{}} #norm{}}}",Err.nonUniqueNumber("[1]",Err.hole))
 //   ),new AtomicTest(()->//can not be tested now, since we can not have C::1 in a metaprogramming context
 //   failWF(EndError.NotWellFormed.class,"{method Void a::1(Void that,Void foo)=foo} A= ={ A=void C::1={#norm{}}#norm{}}",Err.nonUniqueNumber("[1]",hole))
    ),new AtomicTest(()->

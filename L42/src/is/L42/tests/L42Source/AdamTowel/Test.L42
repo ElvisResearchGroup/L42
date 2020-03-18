@@ -1,5 +1,6 @@
 class method WithName #from(StringBuilder stringLiteral)=
   WithName(name=stringLiteral.toS())
+class method S hole()=S"[###]"
 WithName={
   S name
   class method This(S name)
@@ -24,6 +25,5 @@ ExpectedActual={
   class method This(S name,S expected,S actual,S message)
   method Void :1(Library pos)=
     Debug.of().testActualExpected(
-      pos=pos,name=this.name(),actual=this.actual(),expected=this.expected(),message=this.message())
-  
+      pos=pos,name=this.name(),actual=this.actual(),expected=this.expected(),message=this.message(),hole=This1.hole())
   }

@@ -246,18 +246,10 @@ class InitVisitor extends CloneVisitorWithProgram{
         else{cn=i;}
         }
       }
-    /*else{
-      var cl=(Core.L)l;
-      if(d instanceof S){dn=0;}
-      for(int i:range(cl.ncs())){
-        var ki=cl.ncs().get(i).key();
-        if(ki.equals(d)){dn=i+1;}
-        if(ki.equals(c)){cn=i+1;}
-        }      
-      }*/
-    assert dn!=-1;
-    assert cn!=-1;
-    assert dn!=cn;
+    assert dn!=-1:p0+"\n"+l;
+    //assert cn!=-1:p0+"\n"+l;//No, it can be hidden behind a reuse url
+    if(cn==-1){return false;}
+    assert dn!=cn:p0+"\n"+l;
     return dn<cn;
     }
   @Override public Info visitInfo(Info info) {

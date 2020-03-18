@@ -7,7 +7,7 @@ method Void strDebug(This1.S that)=
   native{trusted:strDebug} error void
 method Void deployLibrary(This1.S that,Library lib)=
   native{trusted:deployLibrary} error void
-method Void testActualExpected(Library pos,This1.S name,This1.S actual,This1.S expected,This1.S message)=
+method Void testActualExpected(Library pos,This1.S name,This1.S actual,This1.S expected,This1.S message,This1.S hole)=
   native{trusted:testActualExpected} error void
 method Void testCondition(Library pos,This1.S name,This1.Bool cond,This1.S message)=
   native{trusted:testCondition} error void

@@ -120,18 +120,6 @@ TestVectorOps=(
     {}:Test"Simple for"(sAcc==S"Nopea1Nopeb2Nopec3")
     )
   )
-TestMeta=(
-  _=Meta().simpleRedirect(
-    innerPath=S"A.B"
-    l42Lib={A={B={method Void m()}} method Void (A.B that)=void}
-    classAny=Debug)
-  _=Meta().simpleRedirect(
-    innerPath=S"A.B"
-    l42Lib={A={B={method Void m()}} method Void (A.B that)=void}
-    classAny=NotCoh)
-  {}:Test"Meta does not crash"(Bool.true())
-  //TODO:could be improved after introspection is reimplemented 
-  )
 TestLog=(
   Log iLog=Log(S"Foo")
   mut Log mLog=iLog.#$reader()

@@ -35,8 +35,6 @@ import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
-import static is.L42.common.Err.hole;
-
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestCTz

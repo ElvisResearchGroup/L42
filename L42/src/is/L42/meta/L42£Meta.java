@@ -5,6 +5,7 @@ import static is.L42.tools.General.unreachable;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.mergeU;
+import static is.L42.tools.General.pushL;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -14,6 +15,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -33,6 +35,7 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
+import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.P;
@@ -53,12 +56,12 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class L42£Meta extends L42NoFields<L42£Meta>{
-  private final Map<List<C>,P> redirects;
+  private final List<Arrow> renames;
   private final String toString;
-  public L42£Meta(){this(Map.of());}
-  public L42£Meta(Map<List<C>,P> redirects){
-    this.redirects=redirects;
-    this.toString=redirects.toString();
+  public L42£Meta(){this(L());}
+  public L42£Meta(List<Arrow> renames){
+    this.renames=renames;
+    this.toString=renames.toString();
     }
   public L42£Library wither(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
     L l=input.unwrap;
@@ -76,26 +79,33 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     return wrapL(new Close().close(pIn,unwrapCs(cs),wrap));    
     } 
   public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
+  
   public L42£Meta addMapP(String name,L42Any target){
-    List<C> cs=unwrapCs(name);
+    Full.PathSel pathSel=unwrapPathSel(name);
     P p=unwrapPath(target);
-    var res=new HashMap<>(redirects);
-    res.merge(cs,p,(old,val)->{throw todo();});
-    return new L42£Meta(Collections.unmodifiableMap(res));
+    var a=new Arrow(pathSel.cs(),pathSel._s(),true,p,null,null);
+    return new L42£Meta(pushL(renames,a));
+    }
+  public L42£Meta addMapDoubleArrow(String name1,String name2){
+    Full.PathSel p1=unwrapPathSel(name1);
+    Full.PathSel p2=unwrapPathSel(name2);
+    var a=new Arrow(p1.cs(),p1._s(),true,null,p2.cs(),p2._s());
+    return new L42£Meta(pushL(renames,a));
+    }
+  public L42£Meta addMapSingleArrow(String name1,String name2){
+    Full.PathSel p1=unwrapPathSel(name1);
+    Full.PathSel p2=unwrapPathSel(name2);
+    var a=new Arrow(p1.cs(),p1._s(),false,null,p2.cs(),p2._s());
+    return new L42£Meta(pushL(renames,a));
     }
   public L42£Meta mergeMap(L42£Meta meta){
-    var res=new HashMap<>(redirects);
-    for(var e:meta.redirects.entrySet()){
-      res.merge(e.getKey(),e.getValue(),(old,val)->{throw todo();});
-      }
-    return new L42£Meta(Collections.unmodifiableMap(res));
+    return new L42£Meta(mergeU(renames,meta.renames));
     }
-  public L42£Library applyMap(L42£Library input){
-    assert redirects.size()==1;
-    var cs=redirects.keySet().iterator().next();
-    var t=redirects.values().iterator().next();
+  public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     L l=input.unwrap;
-    return wrapL(simpleRedirect(l,cs, t));
+    L res=new Rename().apply(Resources.currentP,Resources.currentC,l,
+      renames, wrapName, wrapFail, wrapC, wrapM);
+    return wrapL(res);
     }
   private static P unwrapPath(L42Any classAny){
     L42ClassAny cn;
@@ -103,10 +113,13 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     else{cn=((L42Fwd)classAny).asPath();}
     return cn.unwrap;
     }
+  private static Full.PathSel unwrapPathSel(String s){
+    return Parse.pathSel(Constants.dummy, s);
+    }
   private static List<C> unwrapCs(String s){
     var csP = Parse.csP(Constants.dummy, s);
     assert !csP.hasErr();
-    var res=csP.res;
+    Full.CsP res=csP.res;
     if(!res.cs().isEmpty()){return res.cs();}
     var path0=res._p();
     assert path0.isNCs() && path0.toNCs().n()==0;
@@ -145,36 +158,6 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
   public L42£Library simpleSum(L42£Library a, L42£Library b,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     L res=new Sum().compose(Resources.currentP,Resources.currentC,a.unwrap, b.unwrap, wrapC, wrapM);
     return wrapL(res);
-    }
-  private L simpleRedirect(L input, List<C> cs, P target){
-    Program p=Resources.currentP;
-    //TODO: check if source and dest are compatible with p._ofCore(path);
-    var res=replaceP(cs,target,p.push(Resources.currentC,input)).visitL(input);
-    res=res.withCs(cs, nc->{throw unreachable();},nc->null);
-    //System.out.println(res);
-    return res;
-    }
-  public L42£Library simpleRedirect(String innerPath, L42£Library l42Lib, L42Any classAny){
-    L l=l42Lib.unwrap;
-    List<C> cs=unwrapCs(innerPath);
-    P path=unwrapPath(classAny);
-    return wrapL(simpleRedirect(l,cs,path));
-    }
-  private static CloneVisitorWithProgram replaceP(List<C>cs,P dest,Program pStart){
-    return new CloneVisitorWithProgram(pStart){
-      @Override public P visitP(P path){
-        int nesting=whereFromTop().size();
-        if(!path.isNCs()){return path;}
-        var src=this.p().minimize(P.of(nesting,cs));
-        if(!src.equals(path)){
-          //if(path.toString().endsWith(".Elem"))System.out.println(this.whereFromTop()+"encountered "+path+", looking from "+src+" was not ==, origin"+cs+";"+nesting+this.p());
-          return path;}
-        if(!dest.isNCs()){return dest;}
-        var res=dest.toNCs();
-        res=res.withN(res.n()+nesting+1);//because destination is relative to outside pStart.top
-        return this.p().minimize(res);
-        }
-      };
     }
   private static CloneVisitor addThis1(){
     return new CloneVisitor(){

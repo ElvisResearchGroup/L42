@@ -36,6 +36,7 @@ import is.L42.generated.L42Parser.NudePContext;
 import is.L42.generated.LL;
 import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedOp;
+import is.L42.visitors.AuxVisitor;
 import is.L42.visitors.FullL42Visitor;
 
 public class Parse {
@@ -101,6 +102,12 @@ public class Parse {
   public static Result<Full.CsP> csP(Path fileName,String s){
     return aux(fileName,s,p->p.nudeCsP(),(v,ctx)->v.visitNudeCsP(ctx));
     }
+  public static Full.PathSel pathSel(Path fileName,String s){
+    var res = ctxPathSelX(Constants.dummy, s);
+    assert !res.hasErr();
+    return new AuxVisitor(null).visitPathSelX(res.res.pathSelX());
+    }
+
   public static Result<Program> program(Path fileName,String s){
     return aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
     }
