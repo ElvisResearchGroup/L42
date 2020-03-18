@@ -13,7 +13,7 @@ read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equaleq
 method This subString(This1.Size start,This1.Size end)=native{trusted:subString}error void
 method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
 method This1.Bool endsWith(This that)=native{trusted:endsWith}error void
-
+method This trim()=native{trusted:trim}error void
 class method This dq()=This<:class This.#from(stringLiteral=(
   mut This1.StringBuilder b=This1.StringBuilder<:class This1.StringBuilder.#stringLiteralBuilder()
   Void v=b.#sdQuote()

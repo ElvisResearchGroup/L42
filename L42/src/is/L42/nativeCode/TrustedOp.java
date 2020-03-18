@@ -235,6 +235,7 @@ public enum TrustedOp {
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
   SubString("subString",Map.of(String,use("return %s.substring(%s,%s);",sigI(String,Int,Int)))),
+  Trim("trim",Map.of(String,use("return %s.trim();",sigI(String)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),
     BigRational,use("return %s.sum(%s);",sigI(BigRational,BigRational)),

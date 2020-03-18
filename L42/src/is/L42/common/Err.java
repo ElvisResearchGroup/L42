@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.opentest4j.AssertionFailedError;
 
@@ -41,7 +42,8 @@ public class Err {
     return true;
     }  
   public static boolean strCmpAux(String cmp1, String cmp2,String stringHole) {
-    List<String> split = new ArrayList<String>(Arrays.asList(cmp2.split("\\[\\#\\#\\#\\]")));
+    if(cmp2.isEmpty()){return cmp1.isEmpty();}
+    List<String> split = new ArrayList<String>(Arrays.asList(cmp2.split(Pattern.quote(stringHole))));
     for(int i = 0; i < split.size(); i++) { if(split.get(i).length() == 0) split.remove(i--); }
     boolean beginswith = cmp2.startsWith(stringHole);
     boolean endswith = cmp2.endsWith(stringHole);    
@@ -83,10 +85,8 @@ public class Err {
         cmp1 = cmp1.substring(split.get(0).length());
         }
       }
-    
     return false;
     }
-  
   private static String reconstituteRight(List<String> list,String stringHole) {
     StringBuilder builder = new StringBuilder();
     for(int i = 0; i < list.size(); i++) {

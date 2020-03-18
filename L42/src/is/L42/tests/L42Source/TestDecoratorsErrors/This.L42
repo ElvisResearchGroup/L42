@@ -128,10 +128,62 @@ TestSum1=(
     """)
   )
 //TODO: all errors, they should be exceptions?
-Action={interface class method read Any()[Message]}
-ErrorToS=Trait:{
+TestError=Trait:{
   T={[Message]}
-  class method S (class Action that)[Message]=(
+  class method This of()
+  method Any()[Message]
+  method S expected()
+  class method Void :1(Library that)[Message]=(
+    s=(This.of().expected()++Test.hole()).trim()
+    (_=This.of()()
+    catch error T f (that:Test"ErrorMessage"(expected=s,actual=f.toS()))
+    that:Test"ErrorExpected"(Bool.false())
+    ))
+  }
+Code=Trait:{
+  A={method Void foo()=void}
+  B={method Any foo()=void}
+  }
+TestMethodClash1={A=Class:TestError['T=>MethodClash]:{
+  method Any()[Message]=
+    Code['A.#equalgt0(other='B)]
+  method S expected()=S"""
+    |Message toFix(toFix):
+    |method imm method imm Any foo()=(..)
+    |Conflicting implementation: the method is implemented on both side of the sum
+    |[file:[###]
+    """  
+  }B={}:A}
+/*
+TestMethodClash1={A=TestError>MethodClash>{
+  method Any()[Message]=
+    Code['A.#equalgt0(other='B)]
+  method S expected()=S"""
+    |Message toFix(toFix):
+    |method imm method imm Any foo()=(..)
+    |Conflicting implementation: the method is implemented on both side of the sum
+    |[file:[###]
+    """
+  } B={}:A}
+TestMethodClash1={}:TestError""(
+  actual=MethodClash<:Code['A.#equalgt0(other='B)]
+  expected=S"""
+   |...
+   """)
+TestMethodClash1={}:Test""(
+  actual=(_=Code['A.#equalgt0(other='B)]
+    catch MethodClash x x X"")
+  expected=S"""
+   |...
+   """)
+
+
+Test
+Action={interface class method read Any()[Message]}
+Trigger={interface class method S (class Action that)[Message]}
+ErrorToS=Trait:{[Trigger]
+  T={[Message]}
+  method(that)=(
     _=that()
     catch error T f (f.toS())
     S""
@@ -141,17 +193,19 @@ ClassClashToS=Class:ErrorToS['T=>ClassClash]
 MethodClashToS=Class:ErrorToS['T=>MethodClash]
 InvalidNameToS=Class:ErrorToS['T=>InvalidName]
 InvalidMapToS=Class:ErrorToS['T=>InvalidMap]
-Code=Trait:{
-  A={method Void foo()=void}
-  B={method Any foo()=void}
-  }
 //A=Data:{[Action] method()=Code['A=>'B]}
 //TODO: somehow it fails to recognize the "other" method is the right to call
-//TODO: now that we use Err.hole to compare expected/actual it crashes with "" expected
+
 A={[Action] method()=Code['A.#equalgt0(other='B)]}
 TestRename={
   TestMethodClash=(
-    {}:Test""(expected=S"" actual=MethodClashToS(A))
+    {}:Test""(expected=S"""
+      |Message toFix(toFix):
+      |method imm method imm Any foo()=(..)
+      |Conflicting implementation: the method is implemented on both side of the sum
+      |[file:[###]
+      """.trim() actual=MethodClashToS(A))
     void
     )
-  }
+    
+  }*/
