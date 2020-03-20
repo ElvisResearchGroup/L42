@@ -60,7 +60,7 @@ _______
     e1 not of form xP //&&,||,=> are not static-dispatch to have short circuit 
 * Y!xP OP3 e = Y!(
       x = xP.#shortCircut'OP3'()  //see name mangling
-      if x x.#shortResult'OP3'()
+      if x xP.#shortResult'OP3'(x)
       else xP.#shortProcess'OP3'(x,other=e)
       )
     x fresh  

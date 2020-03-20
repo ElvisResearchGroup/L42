@@ -35,6 +35,7 @@ import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitorWithProgram;
+import is.L42.visitors.WellFormedness;
 
 class InitVisitor extends CloneVisitorWithProgram{
   public InitVisitor(FreshNames f,Program p) {super(p);this.f=f;this.pStart=p;}
@@ -152,54 +153,7 @@ class InitVisitor extends CloneVisitorWithProgram{
     checkUniqueNs(s);
     return s;        
     }
-  <T>void checkMissing(List<T> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
-    var allGood=setSome.containsAll(setAll);
-    if(allGood){return;}
-    setAll.removeAll(setSome);
-    throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
-    }
-  void checkInfo(Core.L l){
-    if(l.info().watched().contains(P.pThis0)){
-      throw new EndError.NotWellFormed(l.poss(),Err.noSelfWatch());
-      }
-    ArrayList<P.NCs>typePs=new ArrayList<>(); 
-    ArrayList<P.NCs>cohePs=new ArrayList<>();
-    ArrayList<P.NCs>metaCohePs=new ArrayList<>();
-    Top.collectDeps(p(), l.mwts(), typePs, cohePs, metaCohePs,false);
-    Top.collectDepDocs(l.docs(),typePs);
-    for(var t:l.ts()){
-      if(t.p().isNCs()){typePs.add(t.p().toNCs());}
-      }
-    ArrayList<P.NCs> watchedPs=new ArrayList<>();
-    Top.collectWatched(l, watchedPs);
-    ArrayList<P.NCs> hiddenPs=new ArrayList<>();
-    Top.collectHidden(l, hiddenPs);
-    ArrayList<S> refined=new ArrayList<>();
-    Top.collectRefined(p(),refined);
-    //l can be different from p().top because all nested stuff has been inited in l and not in p().top
-    checkMissing(typePs,l.info().typeDep(),l.poss(),Err::missedTypeDep);
-    checkMissing(cohePs,l.info().coherentDep(),l.poss(),Err::missedCoheDep);
-    checkMissing(metaCohePs,l.info().metaCoherentDep(),l.poss(),Err::missedMetaCoheDep);
-    checkMissing(watchedPs,l.info().watched(),l.poss(),Err::missedWatched);
-    checkMissing(hiddenPs,l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
-    checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);
-    boolean refinedExact=l.info().refined().containsAll(refined) && refined.containsAll(l.info().refined());
-    if(!refinedExact){
-      throw new EndError.NotWellFormed(l.poss(),Err.mismatchRefine(
-        L(refined.stream().distinct()),l.info().refined()));
-      }
-    if(l.info().isTyped()){
-      for(var p:l.info().typeDep()){
-        var li=p().of(p,l.poss());//throw the right error if path not exists
-        if(li.isFullL()){
-          throw new EndError.NotWellFormed(l.poss(),Err.typeDependencyNotCore(p));
-          }
-        }
-      ProgramTypeSystem.type(true,p().update(l,false));
-      }
-        
-    //TODO: ??? usedMethods=(P.s)s,
-    }
+  void checkInfo(Core.L l){WellFormedness.checkInfo(p(),l);}
   @Override public Core.L coreLHandler(Core.L s){
     s=super.coreLHandler(s);
     checkUniqueNs(s);

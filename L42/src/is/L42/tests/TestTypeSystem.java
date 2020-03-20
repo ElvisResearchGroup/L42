@@ -588,7 +588,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   B={
     class method This ()
     method This #shortProcess#andand(This that,This other)=this
-    method This #shortResult#andand()=this
+    method This #shortResult#andand(This that)=this
     method This #shortCircut#andand()=this
     method This #if()=this
     method Void #checkTrue()[Void]=void

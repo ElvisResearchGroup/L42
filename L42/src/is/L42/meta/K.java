@@ -2,6 +2,7 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
@@ -85,7 +86,9 @@ public class K extends GuessFields{
       if(_elem(l.mwts(),immS)==null){c.add(immM);}
       if(_elem(l.mwts(),mutS)==null){c.add(mutM);}
       });
-    return l.withMwts(newMWT);
+    var i=l.info();
+    if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
+    return l.withMwts(newMWT).withInfo(i);
     }
   public T forgeTImm(T t){
     if(t.mdf().isFwdMut()){return t;}

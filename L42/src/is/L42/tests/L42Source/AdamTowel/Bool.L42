@@ -8,11 +8,14 @@ method This #bang0()=this.not()
 method This and(This0 that)=native{trusted:OP&} error void
 method This or(This0 that)=native{trusted:OP|} error void
 method This #shortCircut#andand()=this.not()
-method This #shortResult#andand()=this.not()
+method This #shortResult#andand(This that)=this
 method This #shortProcess#andand(This that,This other)=other
-method This #shortResult#oror()=this
 method This #shortCircut#oror()=this
+method This #shortResult#oror(This that)=this
 method This #shortProcess#oror(This that,This other)=other
+method This #shortCircut#minusgt()=this.not()
+method This #shortResult#minusgt(This that)=that
+method This #shortProcess#minusgt(This that,This other)=other
   
 read method This1.S toS()=native{trusted:toS} error void
 read method This #equalequal0(read This that)=native{trusted:OP==} error void

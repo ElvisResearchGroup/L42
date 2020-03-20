@@ -519,7 +519,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
                    fresh4_op3.#shortProcess#andand(that=fresh5_op3,
                      other=fresh0_xIt.#incomplete(that=fresh1_xIndex)
                      )
-                 fresh5_op3.#shortResult#andand()
+                 fresh4_op3.#shortResult#andand(that=fresh5_op3)
                  )
                )
              ),,,,(

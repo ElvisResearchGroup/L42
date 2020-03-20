@@ -76,8 +76,20 @@ DeployAAA=(
       ListNative=Trait:{...}
       ListOps=Trait:{...}+Class.ReadToString+Class.ImmToString+Class.ReadClone
       ListEqOps=Trait:{...}
-      class method Trait(class Any that)=(ListOps+ListNative)['Elem=>that]
-      class method Trait(class Any withEq)=(ListOps+ListNative+ListEqOps)['Elem=>withEq]
+      class method Trait(class Any that)[InvalidMap]={
+        return (ListOps+ListNative)['Elem=>that]
+        //whoops InvalidName,ClassClash,MethodClash//will be enabled later
+        catch InvalidName e error e
+        catch ClassClash e error e
+        catch MethodClash e error e
+        }
+      class method Trait(class Any withEq)[InvalidMap]={
+        return (ListOps+ListNative+ListEqOps)['Elem=>withEq]
+        //whoops InvalidName,ClassClash,MethodClash//will be enabled later
+        catch InvalidName e error e
+        catch ClassClash e error e
+        catch MethodClash e error e
+        }
       }
     Strings=Class:ListT(withEq=S):{class method Bool equals(read S a,read S b)=a==b}
 

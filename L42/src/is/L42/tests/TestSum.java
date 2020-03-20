@@ -419,6 +419,17 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed 
    [file:[###]"""/*next test after this line*/)   
+   ),new AtomicTest(()->fail("""
+     method Library lib()=
+       {[This1.A]  method Void foo()= void #norm{typeDep=This1.A refined=foo()}}
+     A={interface method Void foo() #norm{}}
+     B={[This1.A]  method Void foo()= void #norm{typeDep=This1.A refined=foo()}}
+   #norm{typeDep=This.A hiddenSupertypes=This.A}}""",/*second lib after this line*/"""
+     A={interface method Void bar() #norm{}}     
+   #norm{}}""",/*expected lib after this line*/"""
+   nested class A={interface foo() }
+   This interface is privately implemented  but the summed version is larger: {interface bar() }
+   [file:[###]"""/*next test after this line*/)
    ));}
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This0.C");

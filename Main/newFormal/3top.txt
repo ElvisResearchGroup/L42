@@ -382,10 +382,12 @@ _______
 * P.s.i in p.opOptions(OP, T0..Tn)        //handled with a 'non op dispatch' desugar
     i in 0..n,
     s = methName(OP_i)(x1..xn)//x1..xn are free variables on purpose
-    P1 ... Pn = p(Ti.P)(s).pars.Ps[from Ti.P;p]
-    P'1 ... P'n = (T0..Tn\i).Ps
+    T1 ... Tn = p(Ti.P)(s).pars[from Ti.P;p]
+    T'1 ... T'n = (T0..Tn\i)
     P = Ti.P
-    p|-P'1<=P1 .. p|-P'1<=P1
+    p|-T'1.P<=T1.P .. p|-T'1.P<=T1
+    forall i in 1..n: Ti.mdf=class <=> T'i.mdf=class //either both class or none class
+    
 _______
 #define Info0+Info1 = Info
 //#Flag+#norm = #norm; #Flag+#Flag = #Flag

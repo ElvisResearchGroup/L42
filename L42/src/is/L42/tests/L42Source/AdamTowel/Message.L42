@@ -1,5 +1,6 @@
 interface [HasToS]
-var S text 
+var S text
+method This #whoopsed(Library atPos)
 ClassOperators={class method Trait()=PrivateOps.MessageTrait.ClassOperators()}
 Native={
   class method Trait ()=PrivateOps.LazyMessageTrait.ClassOperators()

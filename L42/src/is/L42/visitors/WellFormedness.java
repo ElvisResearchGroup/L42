@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.unique;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -73,7 +74,9 @@ import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.top.Top;
 import is.L42.typeSystem.Coherence;
+import is.L42.typeSystem.ProgramTypeSystem;
 
 class ContainsFullL extends Contains.SkipL<Full.L>{
   @Override public void visitL(Full.L l){setResult(l);}
@@ -113,6 +116,54 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
   }
   
 public class WellFormedness extends PropagatorCollectorVisitor{
+  static <T>void checkMissing(List<T> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
+    var allGood=setSome.containsAll(setAll);
+    if(allGood){return;}
+    setAll.removeAll(setSome);
+    throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
+    }
+  public static boolean checkInfo(Program p,Core.L l){
+    if(l.info().watched().contains(P.pThis0)){
+      throw new EndError.NotWellFormed(l.poss(),Err.noSelfWatch());
+      }
+    ArrayList<P.NCs>typePs=new ArrayList<>(); 
+    ArrayList<P.NCs>cohePs=new ArrayList<>();
+    ArrayList<P.NCs>metaCohePs=new ArrayList<>();
+    Top.collectDeps(p, l.mwts(), typePs, cohePs, metaCohePs,false);
+    Top.collectDepDocs(l.docs(),typePs);
+    for(var t:l.ts()){
+      if(t.p().isNCs()){typePs.add(t.p().toNCs());}
+      }
+    ArrayList<P.NCs> watchedPs=new ArrayList<>();
+    Top.collectWatched(l, watchedPs);
+    ArrayList<P.NCs> hiddenPs=new ArrayList<>();
+    Top.collectHidden(l, hiddenPs);
+    ArrayList<S> refined=new ArrayList<>();
+    Top.collectRefined(p,refined);
+    //l can be different from p().top because all nested stuff has been inited in l and not in p().top
+    checkMissing(typePs,l.info().typeDep(),l.poss(),Err::missedTypeDep);
+    checkMissing(cohePs,l.info().coherentDep(),l.poss(),Err::missedCoheDep);
+    checkMissing(metaCohePs,l.info().metaCoherentDep(),l.poss(),Err::missedMetaCoheDep);
+    checkMissing(watchedPs,l.info().watched(),l.poss(),Err::missedWatched);
+    checkMissing(hiddenPs,l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
+    checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);
+    boolean refinedExact=l.info().refined().containsAll(refined) && refined.containsAll(l.info().refined());
+    if(!refinedExact){
+      throw new EndError.NotWellFormed(l.poss(),Err.mismatchRefine(
+        L(refined.stream().distinct()),l.info().refined()));
+      }
+    if(l.info().isTyped()){
+      for(var pi:l.info().typeDep()){
+        var li=p.of(pi,l.poss());//throw the right error if path not exists
+        if(li.isFullL()){
+          throw new EndError.NotWellFormed(l.poss(),Err.typeDependencyNotCore(p));
+          }
+        }
+      ProgramTypeSystem.type(true,p.update(l,false));
+      }
+    //TODO: ??? usedMethods=(P.s)s,
+    return true;
+    }
   public static boolean of(Visitable<?> v){
     var tos=new WellFormedness();
     v.accept(tos);

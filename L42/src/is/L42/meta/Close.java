@@ -4,6 +4,7 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.todo;
@@ -23,6 +24,7 @@ import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
@@ -69,7 +71,13 @@ public class Close extends GuessFields{
       }
     for(var m:l.mwts()){process(m);}
     newMWTs.removeAll(toSkip);
-    l= l.withMwts(L(newMWTs.stream())).withInfo(l.info().withClose(true));
+    Info i=l.info();
+    i=i.withClose(true);
+    if(mustAddThis0Coherence && !i.coherentDep().contains(P.pThis0)){
+      i=i.withCoherentDep(pushL(i.coherentDep(),P.pThis0));
+      if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
+      }
+    l= l.withMwts(L(newMWTs.stream())).withInfo(i);
     J newJ=new J(p.update(l,false),null,false,null,true);
     assert newJ.fields!=null:
     "";
@@ -206,6 +214,7 @@ public class Close extends GuessFields{
     newMWTs.add(m.withNativeUrl("trusted:lazyCache"));
     }
   public void processInvalidate(MWT m){
+    mustAddThis0Coherence=true;//will use This0
     if(m.key().xs().isEmpty()){
       err.throwErr(m,"first parameter must refer to a capsule field as mut or lent");
       }
@@ -234,7 +243,9 @@ public class Close extends GuessFields{
     newMWTs.add(m1);
     newMWTs.add(m);
     }
+  private boolean mustAddThis0Coherence=false;
   public void processEager(MWT m){
+    mustAddThis0Coherence=true;//will use This0
     var ok=m.mh().pars().stream().allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class));
     if(!ok){err.throwErr(m,"all parameters must be imm, readable or class");}
     var s=m.key();

@@ -42,6 +42,7 @@ import is.L42.tools.General;
 import is.L42.top.Top;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.WellFormedness;
 
 public class Sum {
   static final Program emptyP=Program.flat(Program.emptyL);
@@ -65,6 +66,10 @@ public class Sum {
     return compose(pOut,cOut,l1,l2,errC,errM);
     }
   public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
+    assert l1.wf();
+    assert l2.wf();
+    assert WellFormedness.checkInfo(pOut.push(cOut,l1),l1): " "+l1+"\n\n"+l2;
+    assert WellFormedness.checkInfo(pOut.push(cOut,l2),l2);
     this.pOut=pOut;
     this.cOut=cOut;
     this.errC=errC;

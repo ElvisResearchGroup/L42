@@ -2,6 +2,7 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
@@ -52,12 +53,19 @@ public class Wither {
     if(candidateKs.size()!=1){err.throwErr(l,"provided constructor name "+immK+" is ambiguos:"+candidateKs);}
     MWT k=candidateKs.get(0);
     pos=k.poss().get(0);
+    if(k.key().xs().isEmpty()){return l;}
     List<MWT> newMWT=L(c->{
       //may have to transform them while inserting them, to match the multi-withers
       c.addAll(l.mwts());
       for(int i:range(k.key().xs())){witherX(i,k,c);}
       });
-    return l.withMwts(newMWT);
+    var i=l.info();
+    if(i.coherentDep().contains(P.pThis0)){return l.withMwts(newMWT);}
+    i=i.withCoherentDep(pushL(i.coherentDep(),P.pThis0));
+    if(!i.typeDep().contains(P.pThis0)){
+      i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));
+      }
+    return l.withMwts(newMWT).withInfo(i);
     }
   public void witherX(int i, MWT k,ArrayList<MWT>c){
     X x=k.key().xs().get(i);

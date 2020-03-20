@@ -8,7 +8,8 @@ MessageTrait=Trait:{[Message]
   var S text
   class method mut This (S text)
   class method mut This (S that)=This(text=that) 
-  class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())  
+  class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())
+  method Message #whoopsed(Library atPos)=this//TODO: toFix when introspection is available  
   }
 LazyMessageTrait=Trait:{
   class method This #apply()
@@ -20,4 +21,5 @@ LazyMessageTrait=Trait:{
   read method S text()
   class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())
   method toS()=ClassName.excName(This,text=this.text())
+  method Message #whoopsed(Library atPos)=this//TODO: toFix when introspection is available
   }

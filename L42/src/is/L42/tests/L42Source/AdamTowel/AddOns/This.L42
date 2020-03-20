@@ -2,18 +2,19 @@ HasToS={interface read method S toS()}
 Message={interface [HasToS]
   mut method Void text(S that)
   read method S text()
+  method This #whoopsed(Library atPos)
   }
 Guard={interface [Message]}
 PrivateOps={ClassName={class method S excName(class Any that, S text)}}
 S={}
 StringBuilder={[HasToS]}
-BaseErrorTraitAddOns=Meta().resource({//can not run since the coherentDep (ClassName) is propagated out
-  [HasToS,Message,Guard]  //we never wanted this, but the sum now relyies on it. Lets change coherentDep?
+BaseErrorTraitAddOns=Meta().resource({[HasToS,Message,Guard]
   class method This ()
   class method mut This (S that)
   read method S text()
   class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())
   read method S toS()=PrivateOps.ClassName.excName(This,text=this.text())
+  method Message #whoopsed(Library atPos)=this
   })
 ParseError=BaseErrorTraitAddOns()
 MethodClash=BaseErrorTraitAddOns()

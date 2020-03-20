@@ -423,8 +423,8 @@ public class Program implements Visitable<Program>{
     return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
     }
   private boolean _opOptionsAcc(Op op, List<T>ts, int i,ArrayList<Psi>acc){
-    List<P> p11n=L(range(ts),(cj,j)->{
-      if(j!=i){cj.add(ts.get(j).p());}
+    List<T> t11n=L(range(ts),(cj,j)->{
+      if(j!=i){cj.add(ts.get(j));}
       });
     String sName = NameMangling.methName(op,i);
     P tmp=ts.get(i).p();
@@ -439,14 +439,15 @@ public class Program implements Visitable<Program>{
         m.s().m().equals(sName) && !m.s().hasUniqueNum() && m.s().xs().size()==ts.size()-1
         ));
     for(MH mh:mhs){
-      List<P>p1n=L(mh.pars(),(ci,ti)->ci.add(from(ti.p(),tip)));
-      assert p1n.size()==p11n.size(): p1n+" "+p11n;
+      List<T>t1n=L(mh.pars(),(ci,ti)->ci.add(from(ti,tip)));
+      assert t1n.size()==t11n.size(): t1n+" "+t11n;
       boolean acceptablePaths=true;
-      for(int j:range(p1n)){
-        P p1j=p11n.get(j);
-        P pj=p1n.get(j);
+      for(int j:range(t1n)){
+        P p1j=t11n.get(j).p();
+        P pj=t1n.get(j).p();
         Boolean res=_isSubtype(p1j,pj);
         if(res==null){return false;}
+        res&=(t11n.get(j).mdf()==Mdf.Class)==(t1n.get(j).mdf()==Mdf.Class);
         if(!res){acceptablePaths=false;}//Do not break, so the return false above can be triggered
         }
       if(acceptablePaths){acc.add(new Psi(tip,mh.s(),i));}

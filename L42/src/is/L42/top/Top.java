@@ -230,9 +230,6 @@ dropCache:
     List<Full.L.M> ms=topL.ms();
     List<Full.L.NC> ncs=typeFilter(ms.stream(),Full.L.NC.class);
     var info=new HashDollarInfo(topL);
-    //System.out.println(topL.pos());
-    //System.out.println(info.hashDollarTop);
-    //System.out.println(info.hashDollarInside);
     var currentState=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(),ctz.copy(),cachableAlreadyCoherent(),p);
     var newCache=new Cache.CTop(currentState, null, null, info.hashDollarInside, coreL, -1, -1);
     Program p0=p.update(coreL,false);
@@ -256,7 +253,7 @@ dropCache:
     newCache.ncs(cachedNCs);
     Program p1=cachedNCs.isEmpty()?p0:cachedNCs.get(cachedNCs.size()-1).out().p();
     assert p1.top instanceof Core.L;
-    WellFormedness.of(p1.topCore());//Check the new core top is well formed
+    assert p1.topCore().wf();//Check the new core top is well formed
     List<Core.E> coreE1n=L(coreL.mwts(),e1n,(c,mwti,_ei)->{
       if(_ei==null){c.add(null);return;}
       Core.E eri=infer(new I(null,p1,G.of(mwti.mh())),ctz,null,_ei,null);
@@ -797,7 +794,7 @@ dropCache:
     ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
     es.add(hq.e);
     }
-  static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,ArrayList<P.NCs> metaCohePs,boolean justBodies) {
+  public static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,ArrayList<P.NCs> metaCohePs,boolean justBodies) {
     var deps=new Deps(p0,typePs,cohePs,metaCohePs);
     if(!justBodies){
       for(var m:mwts){deps.of(m);}

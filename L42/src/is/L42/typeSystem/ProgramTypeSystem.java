@@ -61,7 +61,7 @@ public class ProgramTypeSystem {
         errIf(extraTj,l.poss(),Err.missingImplementedInterface(pj));
         }
       });
-    assert new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
+    assert new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined())):estimatedRefined+" "+l.info().refined()+" "+l.poss();
     //should hold for well formedness
     //var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
     //errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));

@@ -464,14 +464,16 @@ public class ToHalf extends UndefinedCollectorVisitor{
       visitBlock(makeBlock(p,L(d),b.withEs(List.of(ex,e1))));
       return;
       }
+    //from here, e0 is xP, and x is x
     S sc=NameMangling.shortCircuit(b.op());
     S sr=NameMangling.shortResult(b.op());
     S sp=NameMangling.shortProcess(b.op());
-    var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
-    var srCall=new Full.Call(p,ex,sr,false,Par.emptys);
     X other=new X("other");
-    Par par=new Par(ex,L(other),L(e1));
-    var spCall=new Full.Call(p,e0,sp,false,L(par));
+    Par par1=new Par(ex,L(),L());
+    Par par2=new Par(ex,L(other),L(e1));
+    var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
+    var srCall=new Full.Call(p,e0,sr,false,L(par1));
+    var spCall=new Full.Call(p,e0,sp,false,L(par2));
     var dx=makeDec(null,x,scCall);
     var ifElse=new Full.If(p, ex,L(), srCall,spCall);
     visitBlock(makeBlock(p, L(dx),ifElse));

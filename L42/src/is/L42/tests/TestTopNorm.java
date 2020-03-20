@@ -70,6 +70,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 //   ),new AtomicTest(()->//TODO: fix, so that also a class expression can be a top level toLibrary?
 //   top("{A={class method Library #toLibrary()={#norm{}}} B=(class A a=A<:class A a)}","{A={#typed{}}B={#typed{}}#norm{}}")
 
+   //private implements
+   ),new AtomicTest(()->
+   top("{I={interface} A={class method Library foo()={[This2.I] #norm{typeDep=This2.I}}} B=void}",
+   """
+   {I={interface #typed{}}
+   A={class method Library foo()={[This2.I]#typed{typeDep=This2.I}}
+   #typed{typeDep=This1.I hiddenSupertypes=This1.I}}
+   B={#typed{}}#norm{}}""")
    //privates
    ),new AtomicTest(()->
    top("{A={class method This foo::0()} B=void}",
