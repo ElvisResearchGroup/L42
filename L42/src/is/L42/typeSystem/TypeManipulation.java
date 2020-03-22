@@ -125,19 +125,6 @@ public class TypeManipulation {
     assert _p._p()!=null;
     return new Core.PathSel(_p._p(),_p._s(),_p._x());
     }
-  public static P.NCs _skipThis0(P.NCs pi,Core.L l){
-    if(pi.n()==0){
-      Program.flat(l).of(pi,l.poss());//propagate errors is path is not existent
-      return null;
-      }
-    return pi.toNCs().withN(pi.n()-1);
-    }
-  public static<E> void skipThis0(List<E> es ,Core.L l,Function<E,P.NCs> in,BiConsumer<E,P.NCs>c){
-    for(var e:es){
-      var res=_skipThis0(in.apply(e),l);
-      if(res!=null){c.accept(e,res);}
-      };
-    }
   public static List<Mdf> generalEnoughMdf(Set<Mdf> mdfs){
     return L(c->{
       for(Mdf mdf:Mdf.values()){

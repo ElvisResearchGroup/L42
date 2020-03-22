@@ -125,7 +125,6 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already abstract
    Full mapping:A.foo(x)-><empty>
    [file:[###]"""/*next test after this line*/)
-
    ),new AtomicTest(()->pass("""
      A={ method Void foo(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -381,9 +380,119 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.s(x)=>A.s(y)|A.s(z)=>A.s(y)
    """,/*expected after this line*/"""
    nested class { A={..} }
-   Rename can not map two methods on the same method: method A.s(y)
+   Two different methods are renamed into method A.s(y)
    Full mapping:A.s(x)=>A.s(y);A.s(z)=>A.s(y)
    [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={method Void s(Void x)=x method Void s(Void z)=z #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)->A.s(y)|A.s(z)->A.s(y)
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   Two different methods are renamed into method A.s(y)
+   Full mapping:A.s(x)->A.s(y);A.s(z)->A.s(y)
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={method Void s(Void x)=x #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)=>A.s(y)|A.s(x)=>A.s(k)
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   Rename map contains two entries for A.s(x)
+   Full mapping:A.s(x)=>A.s(y);A.s(x)=>A.s(k)
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={method Void s(Void x)=x #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)->A.s(y)|A.s(x)=>A.s(k)
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   Rename map contains two entries for A.s(x)
+   Full mapping:A.s(x)->A.s(y);A.s(x)=>A.s(k)
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={method Void s(Void x)=x #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)=>A.s(y)|A.s(x)->A.s(k)
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   Rename map contains two entries for A.s(x)
+   Full mapping:A.s(x)=>A.s(y);A.s(x)->A.s(k)
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method Void s(Void x)=x method Void s(Void y) 
+      method Void userY()=this.s(y=void) 
+      method Void userX()=this.s(x=void)
+      #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)=>A.s(y)|A.s(y)=>A.s(x)
+   """,/*expected after this line*/"""
+     A={
+       method Void userY()=this.s(x=void)
+       method Void userX()=this.s(y=void)
+       method Void s(Void y)=y
+       method Void s(Void x) 
+       #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method Void a() #norm{}}
+     B={method Void b() #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.=>B.|B.=>A.
+   """,/*expected after this line*/"""
+     B={imm method imm Void a()#norm{}}
+     A={imm method imm Void b()#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method Void s(Void x)=x method Void s(Void y)=y method Void s(Void z)=z 
+      method Void userY()=this.s(y=void) 
+      method Void userX()=this.s(x=void)
+      method Void userZ()=this.s(z=void)
+      #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)=>A.s(y)|A.s(y)=>A.s(z)|A.s(z)=>A.s(x)
+   """,/*expected after this line*/"""
+     A={
+       method Void userY()=this.s(z=void)
+       method Void userX()=this.s(y=void)
+       method Void userZ()=this.s(x=void)
+       method Void s(Void y)=y
+       method Void s(Void z)=z
+       method Void s(Void x)=x
+       #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={
+      method Void s(Void x)=(@{1}Void v=void x)
+      method Void s(Void y)=(@{2}Void v=void y)
+      method Void s(Void z)=(@{3}Void v=void z)
+      method Void userY()=this.s(y=void) 
+      method Void userX()=this.s(x=void)
+      method Void userZ()=this.s(z=void)
+      #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.s(x)->A.s(y)|A.s(y)->A.s(z)|A.s(z)->A.s(x)
+   """,/*expected after this line*/"""
+     A={
+       method Void s(Void x)=(@{3}Void v=void x)
+       method Void s(Void y)=(@{1}Void v=void y)
+       method Void s(Void z)=(@{2}Void v=void z)
+       method Void userY()=this.s(y=void)
+       method Void userX()=this.s(x=void)
+       method Void userZ()=this.s(z=void)
+       #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method Void a() #norm{}}
+     B={method Void b() #norm{}}
+     C={method Void c() #norm{}}
+   #norm{}}""",/*rename map after this line*/"""
+     A.=>B.|B.=>C.|C.=>A. 
+   """,/*expected after this line*/"""
+     B={imm method imm Void a()#norm{}}
+     C={imm method imm Void b()#norm{}}
+     A={imm method imm Void c()#norm{}}
+   #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -560,7 +669,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     ),new AtomicTest(()->fail("""
      A={
        method Void s(This1.B x)=x.a(a=this)
-       #norm{typeDep=This1.B}}
+       #norm{typeDep=This1.B usedMethods=This1.B.a(a)}}
      B={method Void a(This1.A a)=void #norm{typeDep=This1.K,This1.A}}
    #norm{}}""",/*rename map after this line*/"""
      A.->C.
@@ -733,11 +842,11 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      C={
        method Void b()=void 
        D={
-         @This.C.D.E E={
+         @This.E E={
            method Void v()=void
            D::2={#norm{}}
            #norm{}}
-         #norm{}}
+         #norm{typeDep=This.E}}
        #norm{}}
      #norm{typeDep=This.C.D.E}}
      """/*next test after this line*/)
@@ -754,14 +863,14 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    C={method Void b()=void
      D={
-       @This0.C.D.E E={
+       @This.E E={
          method Void v()=void
          D::2={#norm{}}
          B={#norm{}}
        #norm{}}
-     #norm{}}
+     #norm{typeDep=This.E}}
    #norm{}}
- #norm{typeDep=This0.C.D.E}}"""/*next test after this line*/)    
+ #norm{typeDep=This.C.D.E}}"""/*next test after this line*/)    
     ),new AtomicTest(()->pass("""
      A={
        method Void v::0()=void
@@ -803,15 +912,15 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    Full mapping:A=><empty>
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
-     method This.B aa(This.A a)=a.a()     
+     method This.B aa(This.A a)=a.a()
      A={
        method This1.B a()
        #norm{typeDep=This1.B}}
      B={method This1.A b()
        #norm{typeDep=This1.A}}
      C={ method This1.A bb(This1.B b)=b.b() 
-       #norm{typeDep=This1.A,This1.B}}
-     #norm{typeDep=This.A,This.B}}
+       #norm{typeDep=This1.A,This1.B usedMethods=This1.B.b()}}
+     #norm{typeDep=This.A,This.B usedMethods=This.A.a()}}
    EA={
      method This1.EB a()
      #norm{typeDep=This1.EB}}
@@ -823,8 +932,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method This1.EB aa(This1.EA a)=a.a()
    C={
      method This2.EA bb(This2.EB b)=b.b()
-     #norm{typeDep=This2.EA,This2.EB}}
-   #norm{typeDep=This1.EA,This1.EB}}
+     #norm{typeDep=This2.EA,This2.EB usedMethods=This2.EB.b()}}
+   #norm{typeDep=This1.EA,This1.EB usedMethods=This1.EA.a()}}
    """/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      method This.B aa(This.A a)=(
@@ -840,8 +949,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      B={method This1.A b()
        #norm{typeDep=This1.A}}
      C={ method This1.A bb(This1.B b)=b.b() 
-       #norm{typeDep=This1.A,This1.B}}
-     #norm{typeDep=This.A,This.B}}
+       #norm{typeDep=This1.A,This1.B usedMethods=This1.B.b()}}
+     #norm{typeDep=This.A,This.B usedMethods=This.A.a()}}
    EA={
      method This1.EB a()
      #norm{typeDep=This1.EB}}
@@ -856,12 +965,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      a2.a())
    C={
      method This2.EA bb(This2.EB b)=b.b()
-     #norm{typeDep=This2.EA,This2.EB}}
-   #norm{typeDep=This1.EA,This1.EB}}
+     #norm{typeDep=This2.EA,This2.EB usedMethods=This2.EB.b()}}
+   #norm{typeDep=This1.EA,This1.EB usedMethods=This1.EA.a()}}
    """/*next test after this line*/)
-
-
-
     ),new AtomicTest(()->fail("""
      method This.B aa(This.A a)=a.a()     
      A={
@@ -870,8 +976,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      B={method This1.A b()
        #norm{typeDep=This1.A}}
      C={ method This1.A bb(This1.B b)=b.b() 
-       #norm{typeDep=This1.A,This1.B}}
-     #norm{typeDep=This.A,This.B}}
+       #norm{typeDep=This1.A,This1.B usedMethods=This1.B.b()}}
+     #norm{typeDep=This.A,This.B usedMethods=This.A.a()}}
    EA={
      method This1.EB a()
      #norm{typeDep=This1.EB}}
@@ -888,5 +994,53 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    the return type imm Void is not a subtype of the inherited type imm This2.EA
    Full mapping:A=>This0.EA;B=>This0.EB
    [file:[###]"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+    method Void a(This.A a)=void
+    A={method Void foo()=void #norm{}}
+    B={method Any foo()=void #norm{}}
+    C={method Void a(This1.A a)=a.foo() #norm{typeDep=This1.A usedMethods=This1.A.foo()}}
+    #norm{typeDep=This.A}}
+    """,/*rename map after this line*/"""
+   A.=>
+   """,/*expected after this line*/"""
+   method Void a(This a)=void
+   method Void foo()=void
+   B={method Any foo()=void #norm{}}
+   C={method Void a(imm This1 a)=a.foo()#norm{typeDep=This1 usedMethods=This1.foo()}}
+   #norm{typeDep=This}}"""/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+    method Void a(This0.A a)=void
+    A={method Void foo::1()=void #typed{}}
+    B={method Any foo()=void #typed{}}
+    C={method Void a(imm This1.A a)=a.foo::1()
+      #typed{typeDep=This1.A watched=This1.A}}
+    #typed{typeDep=This0.A}}
+    """,/*rename map after this line*/"""
+   A.=><empty>
+   """,/*expected after this line*/"""
+   method Void a(imm This.A::1 a)=void
+   A::1={method Void foo::1()=void #typed{}}
+   B={method Any foo()=void #typed{}}
+   C={method Void a(This1.A::1 a)=a.foo::1()
+     #typed{typeDep=This1.A::1, This1 watched=This1.A::1, This1}}
+   #norm{typeDep=This0.A::1}}
+   """/*next test after this line*/)
+       ),new AtomicTest(()->pass("""
+    method Void a(This0.A a)=void
+    A={method Void foo::1()=void #typed{}}
+    B={method Any foo()=void #typed{}}
+    C={method Void a(imm This1.A a)=a.foo::1()
+      #typed{typeDep=This1.A watched=This1.A}}
+    #typed{typeDep=This0.A}}
+    """,/*rename map after this line*/"""
+   A.-><empty>
+   """,/*expected after this line*/"""
+   method Void a(imm This.A::1 a)=void
+   A::1={method Void foo::1()=void #typed{}}
+   B={method Any foo()=void #typed{}}
+   C={method Void a(This1.A::1 a)=a.foo::1()
+     #typed{typeDep=This1.A::1, This1 watched=This1.A::1, This1}}
+   #norm{typeDep=This0.A::1}}
+   """/*next test after this line*/)
    ));}
 }

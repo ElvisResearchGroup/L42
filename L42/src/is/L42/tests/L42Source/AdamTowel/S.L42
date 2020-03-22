@@ -29,4 +29,5 @@ class method This nl()=This<:class This.#from(stringLiteral=(
   typeDep=This0, This1.Size,This1.Num, This1.StringBuilder,This1.HasToS,This1.Bool,This1.ParseError 
   coherentDep=This,This1.StringBuilder,This1.ParseError
   refined=toS()
+  usedMethods=This1.StringBuilder.toS(), This1.Bool.not(), This1.StringBuilder.#stringLiteralBuilder(), This1.StringBuilder.#sdQuote(), This1.StringBuilder.#snewLine()
   }

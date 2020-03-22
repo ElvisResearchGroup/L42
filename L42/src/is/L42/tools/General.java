@@ -88,8 +88,9 @@ public class General {
     for(T t:l2){if(!l1.contains(t)){res.add(t);}}
     return Collections.unmodifiableList(res);
     }
-  public static <T> List<T> unique(List<T>l){
-    boolean changed=false;
+  public static <T> List<T> unique(List<T>l){return unique(l,false);}
+  public static <T> List<T> uniqueWrap(List<T>l){return unique(l,true);}
+  private static <T> List<T> unique(List<T>l,boolean changed){
     ArrayList<T> res=new ArrayList<>();
     for(T t:l){if(!res.contains(t)){res.add(t);changed=true;}}
     if(!changed){return l;}

@@ -341,7 +341,8 @@ public static void je(String e,String out){
       #norm{nativeKind=String typeDep=This,This1.PE, nativePar=This1.PE}
       }
     PE={#norm{nativeKind=LazyMessage}}
-    #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1}}
+    #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1
+      usedMethods=This0.A.of(),This0.A.ma(a),This0.B.of(),This0.B.mb(b)}}
     """;
   var p=Program.parse(l);
   J j=new J(p,G.empty(),false, new ArrayList<>(),false);

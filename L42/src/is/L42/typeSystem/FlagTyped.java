@@ -50,7 +50,6 @@ public class FlagTyped {
     if(mwt._e()==null){return mwt;}
     return mwt.with_e(new CloneVisitor(){
       @Override public Core.L visitL(Core.L l){
-        assert !l.info().isTyped();
         return l.withInfo(l.info().withTyped(true));
         }
       }.visitE(mwt._e()));

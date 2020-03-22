@@ -74,6 +74,7 @@ import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.top.Deps;
 import is.L42.top.Top;
 import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.ProgramTypeSystem;
@@ -119,6 +120,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   static <T>void checkMissing(List<T> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
     var allGood=setSome.containsAll(setAll);
     if(allGood){return;}
+    setAll=new ArrayList<T>(setAll);
     setAll.removeAll(setSome);
     throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
     }
@@ -126,26 +128,20 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(l.info().watched().contains(P.pThis0)){
       throw new EndError.NotWellFormed(l.poss(),Err.noSelfWatch());
       }
-    ArrayList<P.NCs>typePs=new ArrayList<>(); 
-    ArrayList<P.NCs>cohePs=new ArrayList<>();
-    ArrayList<P.NCs>metaCohePs=new ArrayList<>();
-    Top.collectDeps(p, l.mwts(), typePs, cohePs, metaCohePs,false);
-    Top.collectDepDocs(l.docs(),typePs);
-    for(var t:l.ts()){
-      if(t.p().isNCs()){typePs.add(t.p().toNCs());}
-      }
-    ArrayList<P.NCs> watchedPs=new ArrayList<>();
-    Top.collectWatched(l, watchedPs);
-    ArrayList<P.NCs> hiddenPs=new ArrayList<>();
-    Top.collectHidden(l, hiddenPs);
+    Deps deps=new Deps().collectDeps(p,l.mwts());
+    deps.collectDepsNCs(p,l.ncs());    
+    deps.collectDocs(l.docs());
+    deps.collectTs(l.ts());
     ArrayList<S> refined=new ArrayList<>();
-    Top.collectRefined(p,refined);
+    Deps.collectRefined(p,refined);
+    Info i=deps.toInfo();
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
-    checkMissing(typePs,l.info().typeDep(),l.poss(),Err::missedTypeDep);
-    checkMissing(cohePs,l.info().coherentDep(),l.poss(),Err::missedCoheDep);
-    checkMissing(metaCohePs,l.info().metaCoherentDep(),l.poss(),Err::missedMetaCoheDep);
-    checkMissing(watchedPs,l.info().watched(),l.poss(),Err::missedWatched);
-    checkMissing(hiddenPs,l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
+    checkMissing(i.typeDep(),l.info().typeDep(),l.poss(),Err::missedTypeDep);
+    checkMissing(i.coherentDep(),l.info().coherentDep(),l.poss(),Err::missedCoheDep);
+    checkMissing(i.metaCoherentDep(),l.info().metaCoherentDep(),l.poss(),Err::missedMetaCoheDep);
+    checkMissing(i.watched(),l.info().watched(),l.poss(),Err::missedWatched);
+    checkMissing(i.hiddenSupertypes(),l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
+    checkMissing(i.usedMethods(),l.info().usedMethods(),l.poss(),Err::missedUsedMethods);
     checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);
     boolean refinedExact=l.info().refined().containsAll(refined) && refined.containsAll(l.info().refined());
     if(!refinedExact){
@@ -161,7 +157,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         }
       ProgramTypeSystem.type(true,p.update(l,false));
       }
-    //TODO: ??? usedMethods=(P.s)s,
     return true;
     }
   public static boolean of(Visitable<?> v){

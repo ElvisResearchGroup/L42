@@ -58,17 +58,12 @@ class SortHeader{
       c.add(new Core.L.MWT(mwti.poss(),docsi,mhi,"",body));
       });
     Program p0=p.update(coreL,false);
-    List<P.NCs> typeDep=L(c->Top.collectDeps(p0,mwts,c,null,null,false));
+    Deps deps=new Deps().collectDeps(p0, mwts);
     List<S> ss=L(mwts,(c,mi)->{
       if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
       });
-    List<P.NCs> watched=L(c->Top.collectWatched(mwts,c));
-    var newInfo=Core.L.Info.empty
-      .withTypeDep(typeDep)
-      .withRefined(ss)
-      .with_uniqueId(uniqueId)
-      .withWatched(watched);
-    newInfo=Top.sumInfo(coreL.info(),newInfo).withClose(true);
+    var newInfo=deps.toInfo().withRefined(ss).with_uniqueId(uniqueId).withClose(true);
+    newInfo=Top.sumInfo(coreL.info(),newInfo);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
     }
   public static Core.L coreTop(Program p,int uniqueId) throws EndError{
@@ -113,26 +108,17 @@ class SortHeader{
       var res=new Core.L.MWT(possi, docs, mh,"",body);
       c.add(res);
       });
-    ArrayList<P.NCs> typePs=new ArrayList<>();
-    ArrayList<P.NCs> cohePs=new ArrayList<>();
-    ArrayList<P.NCs> metaCohePs=new ArrayList<>();
-    Top.collectDeps(p1,mwts,typePs,cohePs,metaCohePs,false);
+    Deps deps=new Deps().collectDeps(p1,mwts);
+    deps.collectTs(ts1);
+    deps.collectDocs(TypeManipulation.toCoreDocs(l.docs()));
     var docs=TypeManipulation.toCoreDocs(l.docs());
-    List<P.NCs> typeDeps=L(c->{
-      for(var ti:ts1){c.add(ti.p().toNCs());}
-      c.addAll(typePs);
-      Top.collectDepDocs(docs, c);
-      });
     List<S> refined=L(mwts,(c,mi)->{
       S s=mi.key();
       if(refine(p1,s,P.pThis0,poss)){c.add(s);}
       });
-    Info info=new Info(false,unique(typeDeps),unique(cohePs),unique(metaCohePs),
-      L(),L(),L(),refined,true,"",L(),uniqueId); 
-  var res=new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
-  List<P.NCs> watched=L(c->Top.collectWatched(res,c));
-  return res.withInfo(res.info().withWatched(unique(watched)));
-  }
+    Info info=deps.toInfo().withRefined(refined).withClose(true).with_uniqueId(uniqueId); 
+    return new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
+    }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{
     if(ts.isEmpty()){return ts;}
     T t0=ts.get(0);

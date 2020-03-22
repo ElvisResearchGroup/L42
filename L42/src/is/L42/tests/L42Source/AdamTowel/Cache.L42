@@ -14,7 +14,7 @@ Close={
   ClassOperators={class method This1()=This1()}
   method Trait :(Trait t)=this:t.code()
   method Trait :(class Trait.Lifted l)=this:l.code()
-  method Trait :(Library that)=Trait:Close$Meta().close(that,name=this.that().toS())
+  method Trait :(Library that)=Trait(Close$Meta().close(that,name=this.that().toS()))
   }
 Lazy={@{lazyCache}}
 Now={@{readEagerCache}}

@@ -115,9 +115,9 @@ _______
 * Rename(Info) = Info'
     add close if L is interface and exists a method hiding on p(Cs)
     if Cs'.m(xs) in Info.usedMethod and Cs'.m(xs)=>Cs'.m::n(xs) in Rename.Map
-      Info' removes the usedMethod and add watched (still, never watch This0)
+      Info' removes the usedMethod and add watched+typeDep (still, never watch This0)
     if Cs'.C in Info.typeDep and Cs'.C=>Cs'.C::n in Rename.Map
-      Info' adds the watched Cs'  (still, never watch This0)
+      Info' adds the watched+typeDep Cs'  (still, never watch This0)
     Then remove from usedMethods all the domain of watched
 * Rename empty = empty;empty
 * Rename(mwt mwts) = mwts' mwts";AddMap,AddMap'
@@ -192,6 +192,10 @@ _______
     Rename.Cs.C-><empty> in Rename.Map
     Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
 //9:nested rename
+* Rename(Docs C=L) = (C=L)[onlyNesteds];empty->L'
+    Rename.Cs.C => empty in Map
+    n=sizeOf(Rename.Cs)
+    L'=L[noNesteds][pushThis0Out C][from This0.(Rename.Cs.C);{};-1]//NOTE THE -1, it is not the normal from!
 * Rename(Docs C=L) = (C=L)[onlyNesteds];Cs'-> Docs C'=L'//also the Docs need to be frommed
     Rename.Cs.C => Cs'.C' in Map
     n=sizeOf(Rename.Cs)

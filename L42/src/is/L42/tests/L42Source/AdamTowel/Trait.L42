@@ -1,20 +1,27 @@
 Lifted={interface
   class method Library code()
-  class method Trait +(Library lib)
-  class method Trait +1(Library lib)
+  class method Trait +(Library lib)[ClassClash,MethodClash]
+  class method Trait +1(Library lib)[ClassClash,MethodClash]
   }
 ClassOperators={class method Trait()=Trait(code={#norm{}})}
 Library code
 class method This(Library code)
 class method This(Library that)=This(code=that)
-method This :(Library lib)=This(code=Meta().simpleSum(a=this.code(),b=lib))
-method This :(class Lifted lifted)=This(code=Meta().simpleSum(a=this.code(),b=lifted.code()))
-method This :(This trait)=This(code=Meta().simpleSum(a=this.code(),b=trait.code()))
-method This +(Library lib)=This(code=Meta().simpleSum(a=this.code(),b=lib))
-method This +1(Library lib)=This(code=Meta().simpleSum(a=lib,b=this.code()))
-method This +(class Lifted lifted)=This(code=Meta().simpleSum(a=this.code(),b=lifted.code()))
-method This +1(class Lifted lifted)=This(code=Meta().simpleSum(a=lifted.code(),b=this.code()))
-method This +(This trait)=This(code=Meta().simpleSum(a=this.code(),b=trait.code()))
+
+class method This sum::0(Library a,Library b)[ClassClash,MethodClash]={
+  return This(code=Meta().simpleSum(a=a,b=b))
+  catch error ClassClash e exception e
+  catch error MethodClash e exception e
+  } 
+method This +(Library lib)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lib)
+method This +1(Library lib)[ClassClash,MethodClash]=This.sum::0(a=lib,b=this.code())
+method This +(class Lifted lifted)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
+method This +1(class Lifted lifted)[ClassClash,MethodClash]=This.sum::0(a=lifted.code(),b=this.code())
+method This +(This trait)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=trait.code())
+method This :(Library lib)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lib)
+method This :(class Lifted lifted)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
+method This :(This trait)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=trait.code())
+
 
 Acc={
   var Meta that
@@ -38,9 +45,9 @@ method Library #toLibrary()=
 ToLibrary=Meta().resource({[Lifted]
   class method Library ()
   method code()=This()
-  method +(lib)=Trait(code=Meta().simpleSum(a=this.code(),b=lib))
-  method +1(lib)=Trait(code=Meta().simpleSum(a=lib,b=this.code()))
-  class method Trait (mut Acc squareBuilder)=
-    Trait(code=squareBuilder.that().applyMap(this.code()))
+  method +(lib)=ClassOperators()+lib
+  method +1(lib)=lib+ClassOperators()
+  class method Trait (mut Acc squareBuilder)[InvalidName,InvalidMap,ClassClash,MethodClash]=
+    ClassOperators()(squareBuilder=squareBuilder)
   ClassOperators={class method Trait()=Trait(code=This1.code())}
   })

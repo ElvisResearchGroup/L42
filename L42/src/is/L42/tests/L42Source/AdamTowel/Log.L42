@@ -17,4 +17,5 @@ read method Void clear()=(
   d.clearLog(logName=this.name::0())
   )
 
-#norm{typeDep=This0,This1.S,This1.Debug,This1.StringBuilder, coherentDep=This0,This1.Debug,This1.S,close}
+#norm{typeDep=This0,This1.S,This1.Debug,This1.StringBuilder, coherentDep=This0,This1.Debug,This1.S,close
+  usedMethods=This1.StringBuilder.toS(), This1.Debug.of(), This1.Debug.#$readLog(logName), This1.Debug.addToLog(logName,text), This1.Debug.clearLog(logName)}

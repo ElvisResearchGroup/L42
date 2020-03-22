@@ -94,14 +94,14 @@ TestClose1=(
   */ 
   )
 TestSum={
-  class method Void classClash(Library l1,Library l2,S expected)=(
+  class method Void classClash(Library l1,Library l2,S expected)[MethodClash]=(
     _=(Trait:l1)+l2
-    catch error ClassClash f (TestMsg(l1,msg=f,expected=expected))
+    catch ClassClash f (TestMsg(l1,msg=f,expected=expected))
     l1:Test"ExpectedExeptionMissed"(Bool.false())
     )
-  class method Void methodClash(Library l1,Library l2,S expected)=(
+  class method Void methodClash(Library l1,Library l2,S expected)[ClassClash]=(
     _=(Trait:l1)+l2
-    catch error MethodClash f (TestMsg(l1,msg=f,expected=expected))
+    catch MethodClash f (TestMsg(l1,msg=f,expected=expected))
     l1:Test"ExpectedExeptionMissed"(Bool.false())
     )
   }
@@ -130,10 +130,12 @@ TestSum1=(
 Code=Trait:{
   A={method Void foo()=void}
   B={method Any foo()=void}
+  C={method Void a(A a)=a.foo()}
+  method Void a(A a)=void
   }
 TestRename=(
   {}:Test"MethodClash=>"(
-    actual={error Code['A=>'B] catch error MethodClash x return x}
+    actual={error Code['A=>'B] catch MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
       |method imm method imm Any foo()=(..)
@@ -141,7 +143,7 @@ TestRename=(
       |[file:[###]
       """.trim())
   {}:Test"MethodClash->"(
-    actual={error Code['A->'B] catch error MethodClash x return x}
+    actual={error Code['A->'B] catch MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
       |method imm method imm Any foo()=(..)
@@ -149,8 +151,44 @@ TestRename=(
       |[file:[###]
       """.trim())
   )
+TestRename2=(
+  {}:Test"MethodClash->"(
+    actual={error Code['C->'This] catch MethodClash x return x}
+    expected=S"""
+      |Message toFix(toFix):
+      |method imm method imm Any foo()=(..)
+      |Conflicting implementation: the method is implemented on both side of the sum
+      |[file:[###]
+      """.trim())
+  {}:Test"InvalidMap->"(
+    actual={error Code['A.foo()=>Name""]['A->Name""] catch InvalidMap x return x}
+    expected=S"""
+      |Message toFix(toFix):
+      |method imm method imm Any foo()=(..)
+      |Conflicting implementation: the method is implemented on both side of the sum
+      |[file:[###]
+      """.trim())
+  )
+//TODO: now somehow the Info is always declassed to "norm" :-(
+/*
+AAA={
+  method Void a(This0.A a)=void
+  A={method Void foo::1()=void #typed{}}
+  B={method Any foo()=void #typed{}}
+  C={method Void a(imm This1.A a)=a.foo::1()
+     #typed{typeDep=This1.A watched=This1.A}}
+  #typed{typeDep=This0.A}}
 
-//TODO: all errors, they should be exceptions?
+AAA={
+  method Void a(This.A::1 a)=void
+  A::1={method Void foo::1()=void #typed{}}
+  B={method Any foo()=void #typed{}}
+  C={method Void a(This1.A::1 a)=a.foo::1() 
+     #typed{typeDep=This1.A::1 watched=This1.A::1, This1}}
+  #norm{typeDep=This0.A::1}}
+  */
+//TODO: Data & co must also throw exception instead of error 
+
 //Testing a funkyer way to test
 TestError=Trait:{
   T={[Message]}
@@ -160,7 +198,7 @@ TestError=Trait:{
   class method Void :1(Library that)[Message]=(
     s=(This.of().expected()++Test.hole()).trim()
     (_=This.of()()
-    catch error T f (that:Test"ErrorMessage"(expected=s,actual=f.toS()))
+    catch T f (that:Test"ErrorMessage"(expected=s,actual=f.toS()))
     that:Test"ErrorExpected"(Bool.false())
     ))
   }

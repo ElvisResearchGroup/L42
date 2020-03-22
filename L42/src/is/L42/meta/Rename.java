@@ -51,11 +51,13 @@ import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
+import is.L42.top.Deps;
 import is.L42.top.Top;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
+import is.L42.visitors.WellFormedness;
 
 public class Rename {
   HashMap<List<C>,List<MWT>> addMapMWTs=new HashMap<>();//mutable, so should be ArrayList, but need List for the default emptyList
@@ -108,6 +110,7 @@ public class Rename {
   HashSet<Integer> existingNs=new HashSet<>();
   int allBusyUpTo=0;//TODO: both need to be recover from environment
   Program p;//includes the top level L
+  List<Arrow>list;
   List<C> cs;
   static final Program emptyP=Program.flat(Program.emptyL);
   MetaError errName;
@@ -124,6 +127,7 @@ public class Rename {
       +"can not be made abstract since is watched by "+errFail.intro(watchedBy(p.topCore(),cs0),false));
     }
   public Core.L apply(Program pOut,C cOut,Core.L l,List<Arrow>list,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+    this.list=list;
     this.p=pOut.push(cOut,l);
     this.cOut=cOut;
     this.errName=new MetaError(wrapName);
@@ -131,9 +135,13 @@ public class Rename {
     this.errC=new MetaError(wrapC);
     this.errM=new MetaError(wrapM);
     this.map=new LinkedHashMap<Arrow,Arrow>();
+    assert l.wf();
+    assert WellFormedness.checkInfo(p,l): ""+l;
     for(var a:list){
       var key=new Arrow(a.cs,a._s);
-      if(map.containsKey(key)){err(errFail,"Rename map contains two entries for "+key.toStringErr());}
+      if(map.containsKey(key)){
+        err(errFail,"Rename map contains two entries for "+key.toStringKey());
+        }
       map.put(new Arrow(a.cs,a._s),a);
       }    
     allWatched=Sum.allFromInfo(l,(c,li,csi)->{
@@ -146,6 +154,9 @@ public class Rename {
       });
     cs=L();
     L res=applyMap();
+    System.out.println("renamed lib");
+    System.out.println(res);
+    System.out.println("---------------");
     return res;
     }
   L applyMap(){
@@ -208,7 +219,7 @@ public class Rename {
     return a!=null && (a.isEmpty() || a.isP());
     }
   String mapToS(){
-    return map.values().stream().map(e->e.toStringErr()).collect(Collectors.joining(";"));
+    return list.stream().map(e->e.toStringErr()).collect(Collectors.joining(";"));
     }
   Error err(MetaError err,String s){throw err(err, ()->s);}
   Error err(MetaError err,Supplier<String> ss){
@@ -227,7 +238,7 @@ public class Rename {
       if(a._s==null){domCodom.add(a.cs);}
       if(a.isMeth()){
         var k=new Arrow(a._cs,a._sOut);
-        if(codMeth.contains(k)){err(errFail,"Rename can not map two methods on the same method: "+errFail.intro(k.cs,k._s));}
+        if(codMeth.contains(k)){err(errFail,"Two different methods are renamed into "+errFail.intro(k.cs,k._s));}
         codMeth.add(k);
         }
       if(a.isCs()){
@@ -334,7 +345,10 @@ public class Rename {
         c.add(nci.withL(li));
         }
       });
-    return l.withMwts(mwts).withNcs(ncs);
+    Deps deps=new Deps();
+    for(var nc:ncs){deps.collectDocs(nc.docs());}
+    Info i=Top.sumInfo(l.info(),deps.toInfo());
+    return l.withMwts(mwts).withNcs(ncs).withInfo(i);
     }
   MWT mwtOf(MWT mwt,S s1){
     assert mwt.key().xs().size()==s1.xs().size();
@@ -408,7 +422,7 @@ public class Rename {
       newWatched.add(p.withCs(popLRight(p.cs())));
       }
     assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
-    res=res.withWatched(mergeU(res.watched(),newWatched));
+    res=res.withTypeDep(mergeU(res.typeDep(),newWatched)).withWatched(mergeU(res.watched(),newWatched));
     var ums=res.usedMethods();
     ums=L(ums.stream().filter(ps->!newWatched.contains(ps.p())));
     res=res.withUsedMethods(ums);
@@ -571,12 +585,8 @@ public class Rename {
     noCircular(nc.l(),csc);
     noExposeUniqueN(nc.l());
     if(a._cs.isEmpty()){
-      L l1=nc.l();
-      l1=noNesteds(l1);
-      l1=fromAndPushThis0Out(emptyP,l1,P.of(0,a.cs),nc.key(),false);
-      //l1=pushThis0Out(l1,nc.key());
-      //l1=(L)new From(emptyP,P.of(0,a.cs),-1).visitL(l1);
-      addMapTop=l1;
+      L l1=noNesteds(nc.l());
+      addMapTop=fromAndPushThis0Out(emptyP,l1,P.of(0,a.cs),nc.key(),false);
       }
     else{
       var cs1=popL(a._cs);
@@ -585,8 +595,6 @@ public class Rename {
       L l1=nc.l();
       l1=noNesteds(l1);
       l1=fromAndPushThis0Out(p,l1,p.minimize(P.of(n,cs)),nc.key(),false);
-      //l1=pushThis0Out(l1,nc.key());
-      //l1=(L)p.from(l1,p.minimize(P.of(n,cs)));//Note: now is instead doing the new From(_ _ -1)
       NC newNC=new NC(nc.poss(),L(),a._cs.get(n),l1);
       addMapNCs(cs1,newNC);
       }
@@ -597,15 +605,20 @@ public class Rename {
     return nc.withL(toAbstract(nc.l()));
     }
   NC _rename9nested(NC nc,Arrow a){
-    int n=cs.size();
-    int last=a._cs.size()-1;
-    var cs1=a._cs.subList(0, last);
-    Program p=forcedNavigate(this.p,cs1);
-    P.NCs src=p.minimize(P.of(n,cs));
-    L l=noNesteds(nc.l());
-    l=fromAndPushThis0Out(p,l,src,nc.key(),false);
-    var docs=p.fromDocs(nc.docs(),src);
-    addMapNCs(cs1, new NC(nc.poss(),docs,a._cs.get(last),l));
+    if(a._cs.isEmpty()){//exactly as in 7? should we reuse the code?
+      L l1=noNesteds(nc.l());
+      addMapTop=fromAndPushThis0Out(emptyP,l1,P.of(0,a.cs),nc.key(),false);
+      }
+    else{
+      int last=a._cs.size()-1;
+      var cs1=a._cs.subList(0, last);
+      Program p=forcedNavigate(this.p,cs1);
+      P.NCs src=p.minimize(P.of(cs1.size(),cs));
+      L l=noNesteds(nc.l());
+      l=fromAndPushThis0Out(p,l,src,nc.key(),false);
+      var docs=p.fromDocs(nc.docs(),src);
+      addMapNCs(cs1, new NC(nc.poss(),docs,a._cs.get(last),l));
+      }
     return _onlyNested(nc);
     }
   List<NC> rename10hideNested(NC nc,Arrow a){
@@ -795,55 +808,3 @@ public class Rename {
       }
     }
   }
-  /*
-   * 
-   *   class NoCircular{
-    void onErr(L l,List<C>cs0){
-      err(errFail,()->{
-        NoCircularErr e=new NoCircularErr();
-        e.noCircular(l,cs0);
-        return errFail.intro(cs0,false)+"Code can not be extracted since is circularly depended from\n"+e.error;
-        });
-      }
-    void noCircular(L l,List<C>cs0){
-      var visited=new HashSet<List<C>>();
-      for(var pi:l.info().typeDep()){
-        var cs2=Sum._publicCsOfP(pi, cs0);
-        if(cs2.equals(cs0) || !circular(cs2,visited,cs0)){continue;}
-        onErr(l,cs0);
-        return; 
-        }
-      }
-    boolean circular(List<C> cs1,HashSet<List<C>>visited,List<C> cs0){
-      if(cs1.equals(cs0)){return true;}
-      if(visited.contains(cs1)){return false;}
-      visited.add(cs1);
-      L l=p._ofCore(cs1);
-      if(l==null){return false;}
-      for(var pi:l.info().typeDep()){
-        var cs2=Sum._publicCsOfP(pi, cs1);
-        if(circular(cs2,visited,cs0)){return true;}
-        }
-      return false;
-      }
-    }
-  class NoCircularErr extends NoCircular{
-    StringBuilder error=new StringBuilder();
-    List<List<C>> visitOrder=new ArrayList<>();
-    @Override void onErr(L l,List<C>cs0){}
-    @Override boolean circular(List<C> cs1,HashSet<List<C>>visited,List<C> cs0){
-      visitOrder.add(cs1);
-      var res=super.circular(cs1,visited,cs0);
-      visitOrder.remove(visitOrder.size()-1);
-      if(error.length()!=0 || !res){return res;}
-      for(var csi:visitOrder){
-        String si=csi.stream().map(c->c.toString()).collect(Collectors.joining("."));
-        error.append(si+"\n");
-        }
-      return true;
-      }
-    } 
-
-  
-  
-  */

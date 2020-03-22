@@ -27,7 +27,7 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
     @Override public void visitL(Full.L l){}
     @Override public void visitL(Core.L l){}
     }
-  public static abstract class WithCoreG<T> extends SkipL<T>{
+  public static abstract class WithG<T> extends SkipL<T>{
     private final HashMap<X,Core.T> g=new HashMap<>();
     @Override public void visitMWT(Core.L.MWT mwt){
       assert g.isEmpty();
@@ -52,7 +52,7 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
       }
     public Core.T g(X x){
       Core.T res=g.get(x);
-      assert res!=null;
+      assert res!=null:x;
       return res;
       }
     public void commitG(X x,Core.T t){

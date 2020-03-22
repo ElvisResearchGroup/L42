@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 
+import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -63,13 +64,13 @@ public class Sum {
     l2=normalizePrivates(l2,otherNs(l1));
     MetaError errC=new MetaError(wrapC);
     MetaError errM=new MetaError(wrapM);
-    return compose(pOut,cOut,l1,l2,errC,errM);
-    }
-  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
     assert l1.wf();
     assert l2.wf();
     assert WellFormedness.checkInfo(pOut.push(cOut,l1),l1): " "+l1+"\n\n"+l2;
     assert WellFormedness.checkInfo(pOut.push(cOut,l2),l2);
+    return compose(pOut,cOut,l1,l2,errC,errM);
+    }
+  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
     this.pOut=pOut;
     this.cOut=cOut;
     this.errC=errC;
@@ -96,7 +97,11 @@ public class Sum {
     Plus plus=new Plus(L());
     Core.L l=plus.plus(l1, l2);
     wellFormedRefineAndNoCircularImplements(l);
-    assert l.wf();
+    try{assert l.wf();}
+    catch(EndError ee){
+      System.out.println("Ill formed result of sum:"+l);
+      throw ee;
+      }
     return l;
     }
   private static HashSet<Integer> otherNs(Core.L other){

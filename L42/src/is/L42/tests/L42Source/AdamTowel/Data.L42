@@ -14,7 +14,7 @@ AddConstructors={
   ClassOperators={class method This1()=This1()}
   method Trait :(Trait t)=this:t.code()
   method Trait :(class Trait.Lifted l)=this:l.code()
-  method Trait :(Library that)=Trait:AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
+  method Trait :(Library that)=Trait(AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK"))
   }
 
 Wither$Fail=Class:Message.Native:{[Guard]}      
@@ -33,7 +33,7 @@ Wither={
   ClassOperators={class method This1()=This1()}
   method Trait :(Trait t)=this:t.code()
   method Trait :(class Trait.Lifted l)=this:l.code()
-  method Trait :(Library that)=Trait:Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK")
+  method Trait :(Library that)=Trait(Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK"))
   }
 
 ClassOperators={class method This1()=This1()}
@@ -52,13 +52,17 @@ Operations=
     method toS()=this.readToString()
     }
 class method This()
-method Library :(Library lib)=this:Trait:lib
+method Library :(Library lib)=this:Trait(lib)
 method Library :(Trait that)=(
   var Trait acc=that
   acc:=AddConstructors:acc
   acc:=Wither:acc
   acc:=Cache.Close:acc
   acc:=Operations+acc
+  catch MethodClash x error x
+  catch ClassClash x error x
+  //TODO: handle errors for Close,AddConstructors and so on
+  //declare a common Data.Fail interface/wrapper and Data will throw exception Data.Fail
   //TODO: make some stuff private?
   //TODO: add toString and standard code to Operations, and wither!
   Class:acc

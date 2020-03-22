@@ -11,45 +11,21 @@ _______
     forall LL0, LL1 anywhere inside different places: uniqueNs(p,LL0)\0 disjoint uniqueNs(p,LL1)\0
     after the p.minimize happened everywhere, check that for any reached p=CORE.L;pTail:
       if Info.Flag=typed  then Info.typeDep subseteq dom(p) and norm |- p
-      mustWatch(L) subseteq Info.watched,
+      Info0.watched subseteq Info.watched,
       This0 not in Info.watched
       ??? usedMethods=(P.s)s,
-      mustHidden(L) subseteq Info.hiddenSupertypes,
+      Info0.hiddenSupertypes subseteq Info.hiddenSupertypes,
       Info.refine=mustRefine(p)
       Info.refine subseteq dom(L)
-      Ps0 subseteq L.Info.typeDep
-      Ps1 subseteq L.Info.coherentDep
+      Info0.typeDep subseteq Info.typeDep
+      Info0.coherentDep subseteq Info.coherentDep
+      Info0.metaCoherentDep subseteq Info.metaCoherentDep
     where
       Info=CORE.L.Info
-      Ps0;Ps1=collectDeps(p;L.MWTs) U collectDeps(L.Docs) U L.Ts.Ps;empty      
+      Info0=collectDeps(p;L.MWTs)+collectDeps(p;L.NCs)+collectDeps(L.Docs)+Info[typeDep=L.Ts.Ps]      
 _______
 #define mustRefine(p) = Ss
 * S in mustRefine(p) iff P in p(This0).Ts.Ps, S in dom(p(P))/*and S have no unique n*///TODO: for now I'm keeping the private ones. What is the right decision?
-_______
-#define mustWatch(CORE.L) = Ps    mustWatch(T) = Ps     mustWatch(MWT) = Ps
-//Note: even if not handled below, Any,Void,Library and This0 are never contained in mustWatch(CORE.L)
-//All P in mustWatch must have no private number inside 
-* P in mustWatch(L) if P in mustWatch(T) and T in L.Ts
-* P in mustWatch(L) if P.C::k._ in L.Docs.Ps U L.NCs.Docs.Ps U L.MWTs.Docs.Ps
-* P in mustWatch(L) if P in L0.Info.watched[skipThis0;L0] and L(C::k)=L0
-* P in mustWatch(L) if P in mustWatch(L(s))
-
-* P in mustWatch(T) if P.C::k._ in T.P U T.Docs.Ps
-
-* P in mustWatch(MWT) if P.C::k._ in MWT.Ts U MWT.exceptions U MWT.T
-* P in mustWatch(MWT) if MWT.e?=e and either 
-    P.C::k._ inside e
-    T inside e and P in mustWatch(T)//just local var dec or cast?
-    L0 inside e and P in L0.Info.watched[skipThis0;L0]
-    xP.m::k(_) inside e and G(xP)=P //G is computed during the traversal
-_______
-#define mustHidden(CORE.L) = Ps
-* P in mustHidden(L) if
-    either MWT e in L, L0 inside e
-    or C::k = L0 in L    
-    Cs has no unique number
-    either P in L0(Cs).Ts[from This0.Cs;{}][skipThis0;L0]//the p={} will never be used anyway
-    or P in L0(Cs).info.hiddenSupertypes[from This0.Cs;{}][skipThis0;L0]
     
 //Note, when we import a url we should check if the corresponding CORE.L;empty is well formed
 //error is reported if an implements list contains This0.Cs or
@@ -130,9 +106,8 @@ _______
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH e?|MWT in Ms, e?=empty, either e?=MWT.e?=empty or e?=error void otherwise]
     //we use error void to avoid triggering not well formedness of the result for unique num!=0
     p0=followURL(URL);pTail
-    Ps;empty = collectDeps(p0;CORE.MWTs)
     ss=[MWT.s| MWT in CORE.MWTs and refine(p0;s;This0)]
-    Info0 = #norm{typeDep=Ps\{Any,Void,Library},refine=ss,watched=mustWatch({CORE.MWTs}),uniqueId=n}
+    Info0 = collectDeps(p0;CORE.MWTs)+#norm{refine=ss,close,uniqueId=n}
     n fresh
 
 * sortHeader(p) = CORE.L
@@ -145,10 +120,9 @@ _______
       either Docs=Ms(MH.s).Docs or Docs=empty otherwise
       either e?=Ms(MH.s).e?=empty or Ms(MH.s).e?=e and e?=error void otherwise]//error if Ms(MH.s) undefined and MH.s have private number
       //private imported by interface need to be explicitly declared
-    Ps;empty = collectDeps(p0;MWTs)
     ss=[MWT.s| MWT in MWTs and refine(p1;s;This0)]
     declaresClassMethods?=empty iff class notin MHs.mdfs
-    Info = #norm{typeDep=Ts1.Ps U Ps U collectDeps(♥Docs)\{Any,Void,Library},refine=ss, declaresClassMethods?, watched=mustWatch(CORE.L), uniqueId=n}
+    Info = collectDeps(p0;MWTs)+#norm{typeDep=Ts1.Ps U collectDeps(♥Docs),refine=ss, declaresClassMethods?, uniqueId=n}
     P in Ps2 if P.C::k._ is anywhere in CORE.L
     n fresh
     CORE.L = {interface? [Ts1] MWTs Info ♥Docs}
@@ -197,23 +171,16 @@ _______
 * updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info1}
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}
     dom(MWTs) = dom(MWTs1)
-    Ps;Ps' = collectDeps(p;MWTs.es)
-    Info = #norm{typeDep=Ps\{Any,Void,Library},coherentDep=Ps'\{Any,Void,Library},watched=mustWatch({MWTs}),hiddenSupertypes=mustHidden({MWTs}),??}
+    Info = collectDeps(p;MWTs.es)
     Info1 = (Info0+Info) if hasOpenState(interface?,MWTs0 MWTs1)
     Info1 = (Info0+Info)[closeState?=closeState] otherwise
     //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
     //with no free variables into class methods or in the execution we optimize as 
     //class methods all subexpressions with no free var (and not calling #$s)
-* updateInfo(p,FULL.e,Docs C=L) = L0[♥Docs C=L'][Info=Info1]
+* updateInfo(p,FULL.e,Docs C=L) = L0[♥Docs C=L'][Info+=collectDeps(p,Docs C=L)]
     p(This0) = L0
-    Info = #norm{typeDep=collectDeps(p♥Docs)}
-    Info1=L0.Info+Info if C not of form _::n
-    Info1=L0.Info+Info+Info[
-      typeDep/coherentDep/metaCoherentDep=collectDepsE(p,L),
-      watched=L.Info.watched[skipThis0;L] U mustWatch(Docs),
-      hiddenSupertypes=mustHidden({C=L})] otherwise
     L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
-    L'=L otherwise    
+    L'=L otherwise
 _______
 #define I!HALF.e? => ER
 * I!empty => I.frommed;empty
@@ -299,37 +266,55 @@ _______
     CTz <+p ST <=STz' = CTz,ST<= STz'
     CTz(ST) undefined
 _______
-#define collectDeps(p;CORE.MWT) = Ps;Ps';Ps"    collectDeps(p;CORE.T) = Ps;Ps';Ps"    collectDeps(p;Doc) = Ps;Ps';Ps"
-//collectDeps(sequence)=union of the results of elements of the sequence
-//all collectDeps/collectDepsE finally adds {P| P.C::k._ in collectDeps(_,_) and P not of form _.C'::n._}
+#define collectDeps(p;CORE.MWT) = Info    collectDeps(p,FULL/CORE Docs C=Core.L)=Info    collectDeps(p;CORE.T) = Info    collectDeps(p;Doc) = Info
+* collectDeps(sequence)=sum of all the Infos
+//all collectDeps/collectDepsE implicitly manages the public roots:
+// for all P.C::k._ in typeDep, where P not of form _.C'::n._: 
+//   add P to typeDep and to watched
+//and we never put This0 in watched 
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
-    collectDeps(p; Docs) U collectDeps(p; T0..Tn,Ts) U collectDepsE(p; e?)
+    collectDeps(p; Docs) + collectDeps(p; T0..Tn,Ts) + collectDepsE(p; e?)
 
-* collectDeps(p; T) = T.P;empty;empty U collectDeps(p; T.Docs)
-* collectDeps(p; Doc) = {P| @P._ inside Doc};empty;empty
+* collectDeps(p,Docs C=L)= collectDeps(p♥Docs)
+    C not of form _::n
+* collectDeps(p,Docs C::n=L)= collectDeps(p♥Docs)+collectDepsE(p,L)
+
+* collectDeps(p; T) =  Info[typeDep=T.P] + collectDeps(p; T.Docs)
+* collectDeps(p; Doc) = Info[typeDep={P| @P._ inside Doc}]
 _______
-#define collectDepsE(p;CORE.e?)= Ps1;Ps2;Ps3    Ps[skipThis0;CORE.L] = Ps'
+#define collectDepsE(p;CORE.e?)= Info    Ps[skipThis0;Cs;CORE.L] = Ps'
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
-* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = empty;empty;empty
-* collectDepsE(p;CORE.L) = Ps0..Psn[skipThis0;CORE.L];empty;Ps'0..Ps'k,Ps"0..Ps"j[skipThis0;CORE.L]
-    Ps0..Psn = {CORE.L(Cs).Info.typeDep[from This.Cs;p]| Cs in dom(CORE.L)}//Note: This0 in dom(Core.L)
-    Ps'0..Ps'k = {CORE.L(Cs).Info.coherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
-    Ps"0..Ps"j = {CORE.L(Cs).Info.metaCoherentDep[from This.Cs;p]| Cs in dom(CORE.L)}
-* collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) U..U collectDepsE(p;en) 
+* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = Info[empty]
+* collectDepsE(p;CORE.L) = Info1+..+Infon 
+    Cs1..Csn=dom(CORE.L)//Note: This0 in dom(Core.L)
+    Li=CORE.L(Csi)
+    Infoi=Info[
+      typeDep=Li.Info.typeDep[skipThis0;Csi;CORE.L]
+      metaCoherentDep=(Li.Info.coherentDep U Li.Info.metaCoherentDep)[skipThis0;Csi;CORE.L]
+      watched=Li.Info.watched[skipThis0;Csi;CORE.L]
+      usedMethods=Li.Info.usedMethods[skipThis0;Csi;CORE.L] //trivially propagating the "s" part
+      hiddenSupertypes=(Li.Ts.Ps U Li.Info.hiddenSupertypes)[skipThis0;Csi;CORE.L]      
+      ]
+* collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) +..+ collectDepsE(p;en)+Info[watched=P? usedMethods=(P.s)?]
+    e0=xP,
+    P=G(xP)
+    either P has private numbers, and P?=(P.s)?=empty
+    or m has private numbers and P?=G(xP), (P.s)?=empty //G is computed during the traversal
+    or P?=empty and (P.s)?=G(xP).m(x1..xn)
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
-* collectDepsE(p;P<:class Any)= P;empty;empty
-* collectDepsE(p;P<:class P')= P',P;P;empty
+* collectDepsE(p;P<:class Any)= Info[typeDep=P] //only if P not Any/Void/Library
+* collectDepsE(p;P<:class P')= Info[typeDep=P',P;coherentDep=P]
     P' != Any
-* collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) U collectDepsE(p;Ks) U collectDepsE(p;e)
-* collectDepsE(p;var? T x=e) = collectDeps(T) U collectDepsE(p;e)
-* collectDepsE(p;catch throw T x e) = collectDeps(T) U collectDepsE(p;e) U empty;P?;empty
+* collectDepsE(p; (Ds Ks e) ) = collectDepsE(p;Ds) + collectDepsE(p;Ks) + collectDepsE(p;e)
+* collectDepsE(p;var? T x=e) = collectDeps(T) + collectDepsE(p;e)
+* collectDepsE(p;catch throw T x e) = collectDeps(T) + collectDepsE(p;e) +Info[coherentDep=P?]
     P?=T.P if throw=return, T.mdf=class and T.P notin {Any,Void,Library}
     P?=empty otherwise
-* empty[skipThis0;L]=empty;
-* This0.Cs,Ps[skipThis0;L]=Ps[skipThis0;L]
-  //Note:Cs notin dom(L) the code will give an error
-  //Metaprogramming could not still add names in an L in a meth body
-* Thisn+1.Cs,Ps[skipThis0;L]=Thisn.Cs,Ps[skipThis0;L]
+* empty[skipThis0;Cs;L]=empty;
+* Thisn.Cs,Ps[skipThis0;Cs0.C1..Cn;L]=Ps[skipThis0;Cs0.C1..Cn;L]
+    Cs0.Cs in dom(L)//Note: otherwise the code will give an error
+* This(k+n+1).Cs,Ps[skipThis0;C1..Ck;L]=Thisn.Cs,Ps[skipThis0;C1..Ck;L]
+
 _______
 #define CTz.allSTz(ST) = STz    CTz.allTz(p,ST) = Tz
 * ST in CTz.allSTz(p,ST)

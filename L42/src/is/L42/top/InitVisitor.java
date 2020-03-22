@@ -103,15 +103,7 @@ class InitVisitor extends CloneVisitorWithProgram{
         boolean refined=isDefined((S)key,ps,pos);
         if(!refined){c.add(key.uniqueNum());}
         });
-      //check they are not seen already
-      if(!Collections.disjoint(uniqueNs.keySet(),ns)){
-        List<Pos> morePos=L(ns,(c,ni)->{
-          var posi=uniqueNs.get(ni);
-          if(posi!=null){c.addAll(posi);}
-          });
-        throw new EndError.NotWellFormed(pos,Err.nonUniqueNumber(ns,morePos));
-        }
-      for(var n:ns){uniqueNs.put(n,pos);uniqueNs.remove(0);}
+      checkUniqueNsCommon(pos, ns);
       }
   void checkUniqueNs(Core.L l){
     var pos=l.poss();
@@ -127,7 +119,10 @@ class InitVisitor extends CloneVisitorWithProgram{
         if(!refined){c.add(key.uniqueNum());}
         }
       });
-    //check they are not seen already
+    checkUniqueNsCommon(pos, ns);
+    }
+  private void checkUniqueNsCommon(List<Pos> pos, List<Integer> ns) { //check they are not seen already
+    assert !uniqueNs.containsKey(0);
     if(!Collections.disjoint(uniqueNs.keySet(),ns)){
       List<Pos> morePos=L(ns,(c,ni)->{
         var posi=uniqueNs.get(ni);
@@ -135,7 +130,7 @@ class InitVisitor extends CloneVisitorWithProgram{
         });
       throw new EndError.NotWellFormed(pos,Err.nonUniqueNumber(ns,morePos));
       }
-    for(var n:ns){uniqueNs.put(n,pos);}
+    for(var n:ns){if(n!=0){uniqueNs.put(n,pos);}} 
     }
   @Override public LL visitL(Full.L s){
     if(!s.isDots()){return super.visitL(s);}

@@ -579,7 +579,7 @@ public static void chooseSpecificT(String in,String out){
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
-  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool}}").topCore();
+  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool usedMethods=This0.Bool.k(),This0.Bool.#checkTrue()}}").topCore();
   var ces=processIn(l);
   assertEquals(ces,cl.mwts());
   }

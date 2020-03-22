@@ -612,7 +612,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     Test={
       class method Void foo()[This1.A]=
         exception This1.B<:class This1.B.k() 
-      #norm{typeDep=This1.A This1.B coherentDep=This1.B}}
+      #norm{typeDep=This1.A This1.B coherentDep=This1.B usedMethods=This1.B.k()}}
     #norm{}}}
   """,Err.leakedThrow(hole))
   ),new AtomicTest(()->pass("""

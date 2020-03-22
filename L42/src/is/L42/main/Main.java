@@ -33,10 +33,13 @@ public class Main {
       Init init=new Init((Full.L)code);    
       init.top.top(init.p);
       }
-    catch(L42Throwable ee){printError(ee.unbox); throw ee;}
+    catch(L42Throwable ee){
+      System.out.println("L42 terminated with "+ee.getClass().getCanonicalName());
+      printError(ee.unbox);
+      throw ee;
+      }
     }
   private static void printError(Object o){
-    System.out.println("L42 Error message:");
     Class<?> c=o.getClass(); 
     System.out.println(c.getCanonicalName());
     try{System.out.println(c.getMethod("£mtoS").invoke(o).toString());return;}

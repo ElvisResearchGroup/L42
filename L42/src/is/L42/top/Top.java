@@ -526,16 +526,8 @@ dropCache:
       if(newM==null){c.add(m);return;}
       });
     assert mwts0.size()+mwts.size()==l.mwts().size();
-    ArrayList<P.NCs> typePs=new ArrayList<>();
-    ArrayList<P.NCs> cohePs=new ArrayList<>();
-    ArrayList<P.NCs> metaCohePs=new ArrayList<>();
-    collectDeps(p,mwts,typePs,cohePs,metaCohePs,true);
-    Info info=Info.empty
-      .withTypeDep(unique(L(typePs.stream())))
-      .withCoherentDep(unique(L(cohePs.stream())))
-      .withMetaCoherentDep(unique(L(metaCohePs.stream())))
-      .withWatched(unique(L(c->Top.collectWatched(mwts,c))))
-      .withHiddenSupertypes(unique(L(mwts,(c,mwt)->Top.collectHidden(mwt, c))));
+    Deps collected=new Deps().collectDeps(p,mwts);
+    Info info=collected.toInfo();
     var allMwts=merge(mwts0,mwts);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
@@ -565,39 +557,13 @@ dropCache:
     }
   private Core.L updateInfo(Program p1, Core.L.NC nc) {
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
-    ArrayList<P.NCs>dep=new ArrayList<>();
-    collectDepDocs(nc.docs(),dep);
     Core.L l=(Core.L)p1.top;
     var info=l.info();
-    info=info.withTypeDep(mergeU(info.typeDep(),dep));
-    if(nc.key().hasUniqueNum()){
-      var typePs=new ArrayList<P.NCs>();
-      var cohePs=new ArrayList<P.NCs>();
-      var metaCohePs=new ArrayList<P.NCs>();
-      var watched=new ArrayList<P.NCs>();
-      var hidden=new ArrayList<P.NCs>();
-      collectDepsE(p1,nc.l(),typePs,cohePs,metaCohePs);
-      Top.collectWatchedDocs(nc.docs(), watched);
-      Top.collectHidden(nc, hidden);
-      var oldW=nc.l().info().watched();
-      TypeManipulation.skipThis0(oldW,nc.l(),p->p,(p0,p2)->watched.add(p2));
-      info=info.withTypeDep(mergeU(info.typeDep(),typePs));
-      info=info.withCoherentDep(mergeU(info.coherentDep(),cohePs));
-      info=info.withCoherentDep(mergeU(info.metaCoherentDep(),metaCohePs));
-      info=info.withWatched(mergeU(info.watched(),watched));
-      info=info.withHiddenSupertypes(mergeU(info.hiddenSupertypes(),hidden));
-      }
+    Deps deps=new Deps().collectDocs(nc.docs());
+    if(nc.key().hasUniqueNum()){deps.collectDepsE(p1, nc.l());}
+    info=Top.sumInfo(info,deps.toInfo());
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
-    }
-  public static void collectDepDocs(List<Doc> docs, ArrayList<P.NCs> acc) {
-    for(Doc d:docs){
-      collectDepDocs(d.docs(),acc);
-      if(d._pathSel()==null){continue;}
-      if(!d._pathSel().p().isNCs()){continue;}
-      acc.add(d._pathSel().p().toNCs());
-      }
-    addPublicRoots(acc);
     }
   private Core.E infer(I i,CTz ctz,CTz frommed,Half.E e,ArrayList<Cache.CTop> ctops) throws EndError{
     return new InferToCore(i,ctz,this,ctops).compute(e);
@@ -705,11 +671,10 @@ dropCache:
       Core.E ce=infer(i,ctz,frommedCTz,he,ctops); //propagates errors
       assert ce!=null;
       WellFormedness.of(ce.visitable());
-      var cohePs=new ArrayList<P.NCs>();
-      var metaCohePs=new ArrayList<P.NCs>();//correctly unused here
-      P pRes=wellTyped(p,ce,cohePs,metaCohePs,allNCs);//propagate errors //ncs is passed just to provide better errors
+      Deps deps=new Deps();
+      P pRes=wellTyped(p,ce,deps,allNCs);//propagate errors //ncs is passed just to provide better errors
       Core.E ce0=adapt(ce,pRes);
-      coherentAllPs(p,cohePs); //propagate errors
+      coherentAllPs(p,deps.cohePs); //propagate errors
       return ce0;    
     }
   protected Program flagTyped(Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42£Library> newLibs) throws EndError{
@@ -752,11 +717,10 @@ dropCache:
     Core.D d=new Core.D(false,P.coreAny.withP(path),x,ce);
     return new Core.Block(ce.pos(),L(d),L(),mCall);
     }
-  private P wellTyped(Program p, is.L42.generated.Core.E ce,ArrayList<P.NCs> cohePs,ArrayList<P.NCs> metaCohePs,List<Full.L.NC>moreNCs)  throws EndError{
-    ArrayList<P.NCs> typePs=new ArrayList<>();
-    var deps=new Deps(p,typePs,cohePs,metaCohePs){@Override public void visitL(Core.L l){return;}};
-    deps.of(ce.visitable());
-    for(var pi:typePs){
+  private P wellTyped(Program p, Core.E ce,Deps deps,List<Full.L.NC>moreNCs)  throws EndError{
+    var depsV=deps.new DepsV(p){@Override public void visitL(Core.L l){return;}};
+    depsV.of(ce.visitable());
+    for(var pi:deps.typePs){
       LL ll=p.of(pi,ce.poss());//propagate errors for path not existent
       Core.L l=(Core.L)ll;
       if(!l.info().isTyped()){
@@ -793,121 +757,6 @@ dropCache:
     var hq=toHalf(ctz0,y,freshNames,_e);
     ctz0.plusAcc(p,hq.resSTz, L(mh.t()));
     es.add(hq.e);
-    }
-  public static void collectDeps(Program p0, List<MWT> mwts, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs,ArrayList<P.NCs> metaCohePs,boolean justBodies) {
-    var deps=new Deps(p0,typePs,cohePs,metaCohePs);
-    if(!justBodies){
-      for(var m:mwts){deps.of(m);}
-      addPublicRoots(typePs);
-      addPublicRoots(cohePs);
-      return;
-      }
-    for(var m:mwts){if(m._e()!=null){deps.of(m._e().visitable());}}
-    addPublicRoots(typePs);
-    addPublicRoots(cohePs);
-    }
-  private static void addPublicRoots(ArrayList<P.NCs> _ps) {
-    if(_ps==null){return;}
-    int sizeT=_ps.size();
-    for(int i=0;i<sizeT;i++){//ps will grow during this cycle
-      var pi=_ps.get(i);
-      var cs=L(pi.cs().stream().takeWhile(c->!c.hasUniqueNum()));
-      if(pi.cs().size()==cs.size()){continue;}
-      _ps.add(pi.withCs(cs));
-      }
-    }
-  static public void collectDepsE(Program p0,Core.E e, ArrayList<P.NCs> typePs, ArrayList<P.NCs> cohePs, ArrayList<P.NCs> metaCohePs) {
-    var deps=new Deps(p0,typePs,cohePs,metaCohePs);
-    deps.of(e.visitable());
-    addPublicRoots(typePs);
-    addPublicRoots(cohePs);
-    }
-  static public void collectHidden(Core.L l,ArrayList<P.NCs> hidden){
-    for(var mwt:l.mwts()){collectHidden(mwt,hidden);}
-    for(var nc:l.ncs()){collectHidden(nc,hidden);}
-    }
-  static private void collectHiddenAux(Core.L l,ArrayList<P.NCs> hidden){
-    l.visitInnerLNoPrivate((l0,cs)->{
-      var pCs=P.of(0, cs);
-      TypeManipulation.skipThis0(l0.ts(),l,
-        ti->emptyP.from(ti.p(),pCs).toNCs(),(p0,p1)->hidden.add(p1));
-      TypeManipulation.skipThis0(l0.info().hiddenSupertypes(),l,
-        pi->emptyP.from(pi,pCs).toNCs(),(p0,p1)->hidden.add(p1));
-      });
-    }
-  static public void collectHidden(MWT mwt,ArrayList<P.NCs> hidden){
-    if(mwt._e()==null){return;}
-    var acc=new PropagatorCollectorVisitor(){
-      @Override public void visitL(Core.L l){collectHiddenAux(l,hidden);}
-      };
-    acc.visitE(mwt._e());
-    }
-  static public void collectHidden(Core.L.NC nc,ArrayList<P.NCs> hidden){
-    if(!nc.key().hasUniqueNum()){return;}
-    collectHiddenAux(nc.l(),hidden);
-    }
-  static private Program emptyP=Program.flat(Program.emptyL);
-  static public void collectWatched(List<MWT> mwts,ArrayList<P.NCs> watched){
-    var acc=accWatched(watched);
-    for(var mwti:mwts){acc.of(mwti);}
-    watched.removeAll(L(P.pThis0));
-    }
-  static public void collectWatchedDocs(List<Doc> docs,ArrayList<P.NCs> watched){
-    var acc=accWatched(watched);
-    for(var di:docs){acc.of(di);}
-    watched.removeAll(L(P.pThis0));
-    }
-  static public void collectWatched(Core.L l,ArrayList<P.NCs> watched){
-    var acc=accWatched(watched);
-    for(var ti:l.ts()){acc.of(ti);}
-    for(var di: l.docs()){acc.of(di);}
-    for(var mwti:l.mwts()){acc.of(mwti);}
-    for(var nci:l.ncs()){
-      Info info=nci.l().info();
-      for(var di: nci.docs()){acc.of(di);}
-      if(!nci.key().hasUniqueNum()){continue;}
-      TypeManipulation.skipThis0(info.watched(),nci.l(),p->p,(p0,p1)->watched.add(p1));
-      }
-    watched.removeAll(L(P.pThis0));
-    }
-  static public Accumulate<?> accWatched(ArrayList<P.NCs> watched){
-    return new Accumulate.WithCoreG<ArrayList<P.NCs>>(){
-      @Override public ArrayList<P.NCs> empty() {return watched;}
-      @Override public void visitMCall(Core.MCall mc){
-        if(!mc.s().hasUniqueNum()){return;}
-        var t=g(mc.xP());
-        if(!t.p().isNCs()){return;}
-        watched.add(t.p().toNCs());
-        }
-      @Override public void visitL(Core.L l){
-        TypeManipulation.skipThis0(l.info().watched(),l,p->p,(p0,p1)->watched.add(p1));
-        }
-      @Override public void visitP(P p){
-        if(!p.isNCs()){return;}
-        P.NCs pi=p.toNCs();
-        var cs=pi.cs();
-        var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
-        if(cs.size()==csCut.size()){return;}
-        watched.add(pi.withCs(csCut));
-        }
-      };
-    }
-  public static void collectRefined(Program p, ArrayList<S> refined) {
-    for(T t:p.topCore().ts()){
-      LL ll=p.of(t.p(),p.topCore().poss());
-      if(ll.isFullL()){
-        for(var m:((Full.L)ll).ms()){
-          //if(m.key().hasUniqueNum()){continue;}
-          if(m.key() instanceof S){refined.add((S)m.key());} 
-          }
-        }
-      else{
-        for(var m:((Core.L)ll).mwts()){
-          //if(m.key().hasUniqueNum()){continue;}
-          refined.add(m.key());
-          }
-        }
-      }
     }
   }
   /*private void flushBadCache(){

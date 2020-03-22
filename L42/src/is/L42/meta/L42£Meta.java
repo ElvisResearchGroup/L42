@@ -50,6 +50,7 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
+import is.L42.top.Deps;
 import is.L42.top.Top;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
@@ -89,8 +90,12 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     }
   public L42£Meta addMapDoubleArrow(String name1,String name2){
     Full.PathSel p1=unwrapPathSel(name1);
-    Full.PathSel p2=unwrapPathSel(name2);
-    var a=new Arrow(p1.cs(),p1._s(),true,null,p2.cs(),p2._s());
+    Full.PathSel p2=null;
+    if(!name2.isEmpty()){p2=unwrapPathSel(name2);}
+    List<C> _cs2=null;
+    S _s2=null;
+    if(p2!=null){_cs2=p2.cs();_s2=p2._s();}
+    var a=new Arrow(p1.cs(),p1._s(),true,null,_cs2,_s2);
     return new L42£Meta(pushL(renames,a));
     }
   public L42£Meta addMapSingleArrow(String name1,String name2){
@@ -115,7 +120,12 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     return cn.unwrap;
     }
   private static Full.PathSel unwrapPathSel(String s){
-    return Parse.pathSel(Constants.dummy, s);
+    var res=Parse.pathSel(Constants.dummy, s);
+    if(res._p()!=null){
+      assert res._p().toNCs().n()==0;
+      res=res.with_p(null).withCs(res._p().toNCs().cs());
+      }
+    return res;
     }
   private static List<C> unwrapCs(String s){
     var csP = Parse.csP(Constants.dummy, s);
@@ -138,23 +148,8 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     L l=addThis1().visitL(that.unwrap);
     var mh=new Core.MH(Mdf.Class,L(),P.coreLibrary,applyS,L(),L());
     var meth=new Core.L.MWT(l.poss(),L(),mh,"",l);
-    ArrayList<P.NCs> typePs=new ArrayList<>();
-    ArrayList<P.NCs> cohePs=new ArrayList<>();
-    ArrayList<P.NCs> metaCohePs=new ArrayList<>();
-    Top.collectDepsE(Resources.currentP,l,typePs,cohePs,metaCohePs);
-    var i=l.info();
-    List<P.NCs> watched=L(c->TypeManipulation.skipThis0(i.watched(),l,
-      pi->pi,(p1,p2)->c.add(p2)));
-    List<PathSel> usedMethods=L(c->TypeManipulation.skipThis0(i.usedMethods(),l,
-      ps->ps.p().toNCs(),(ps,p)->c.add(ps.withP(p))));
-    List<P.NCs> hidden=L(c->{
-      TypeManipulation.skipThis0(i.hiddenSupertypes(),l,pi->pi,(p1,p2)->c.add(p2));
-      TypeManipulation.skipThis0(l.ts(),l,ti->ti.p().toNCs(),(p1,p2)->{if(!c.contains(p2)){c.add(p2);}});
-      });      
-    var info=new Info(
-      i.isTyped(),L(typePs.stream()),L(),mergeU(cohePs,metaCohePs),
-      watched,usedMethods,hidden,L(),false,"",L(),-1);
-    var res=new Core.L(l.poss(), false, L(), L(meth), L(), info,L());
+    Deps deps=new Deps().collectDepsE(Resources.currentP,l);
+    var res=new Core.L(l.poss(), false, L(), L(meth), L(), deps.toInfo(),L());
     return wrapL(res);
     }
   public L42£Library simpleSum(L42£Library a, L42£Library b,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){

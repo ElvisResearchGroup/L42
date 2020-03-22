@@ -49,6 +49,11 @@ public final class Arrow{
     if(_path!=null){res+=_path;}//TODO: may have to add +1 on the this number
     return res;
     }
+  public String toStringKey() {
+    String res=toStringCs(cs);
+    if(_s!=null){res+="."+_s;}
+    return res;
+    }
   boolean isP(){return _path!=null;}
   boolean isMeth(){return _sOut!=null;}
   boolean isCs(){return _cs!=null && _sOut==null;}

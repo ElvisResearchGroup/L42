@@ -57,7 +57,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s0=sb.toS()
       s0.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This coherentDep=This1.SB This1.S This}}
+    #typed{typeDep=This1.SB This1.S This coherentDep=This1.SB This1.S This
+      usedMethods=This1.SB.of(), This1.SB.#a(), This1.SB.#b(), This1.SB.toS(), This1.S.strDebug()
+      }}
   """)
   ),new AtomicTest(()->
   loadRun("""
@@ -69,7 +71,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s0=sb.toS()
       s0.strDebug()
       )
-    #typed{typeDep= This1.SB This1.S This coherentDep=This1.SB This1.S This}}
+    #typed{typeDep= This1.SB This1.S This coherentDep=This1.SB This1.S This
+      usedMethods=This1.SB.of(), This1.SB.#a(), This1.SB.#b(), This1.SB.toS(), This1.S.strDebug()
+      }}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","ab\n")
   ),new AtomicTest(()->
   loadRun("""
@@ -79,7 +83,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       catch error Void x x
       void
       )
-    #typed{typeDep=This1.S}}
+    #typed{typeDep=This1.S }}
   ""","(Void x=This0.C<:class This0.C.m() {#norm{}})","")
   ),new AtomicTest(()->
   loadRun("""
@@ -108,7 +112,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s3=This1.SafeReadFile<:class This1.SafeReadFile.#$read(fileName=sb.toS())
       s3.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile}}
+    #typed{typeDep=This1.SB This1.S This1.SafeReadFile coherentDep=This1.SB This1.S This1.SafeReadFile
+      usedMethods=This1.SB.of(), This1.SB.#a(), This1.SB.#b(), This1.SB.toS(), This1.SafeReadFile.#$read(fileName), This1.S.strDebug()
+      }}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello\nWorld\n")
   ),new AtomicTest(()-> 
   loadRun("""
@@ -131,7 +137,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s3=This1.Safe2<:class This1.Safe2.#$go()
       s3.strDebug()
       )
-    #typed{typeDep=This1.S This1.Safe2 coherentDep=This1.Safe2}}
+    #typed{typeDep=This1.S This1.Safe2 coherentDep=This1.Safe2
+      usedMethods=This1.Safe2.#$go(), This1.S.strDebug()
+      }}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello World!\n")
   ),new AtomicTest(()-> 
   loadRun("""
@@ -155,7 +163,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s3=This1.Safe2<:class This1.Safe2.#$go()
       s3.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2}}
+    #typed{typeDep=This1.SB This1.S This1.Safe2 coherentDep=This1.SB This1.S This1.Safe2
+      usedMethods=This1.Safe2.#$go(), This1.S.strDebug()
+      }}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})","Hello Native World\n")
   ),new AtomicTest(()-> 
   loadRunErr("""
@@ -178,7 +188,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       This1.S s3=This1.Safe3<:class This1.Safe3.#$go()
       s3.strDebug()
       )
-    #typed{typeDep=This1.SB This1.S This1.Safe3 coherentDep=This1.SB This1.S This1.Safe3}}
+    #typed{typeDep=This1.SB This1.S This1.Safe3 coherentDep=This1.SB This1.S This1.Safe3
+      usedMethods=This1.Safe3.#$go(), This1.S.strDebug()
+      }}
   ""","(Void x=This0.C<:class This0.C.#$m() {#norm{}})")
 
 
@@ -198,7 +210,7 @@ public static void loadRunErr(String s,String e){
     Program p=base(s);
     Loader l;try{l=loadBase(p,true);}
     catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
+    String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1 usedMethods=This.C.m(),This.D.of(),This.D.i(),This0.C.#$m()}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new ArrayList<>(),new ArrayList<>());}
     catch (InvocationTargetException e1) {
@@ -220,7 +232,7 @@ public static void loadRun(String s,String e,String output){
     //somehow using a switch expression makes junit fail
     Loader l;try{l=loadBase(p,true);}
     catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1}}";
+    String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C usedMethods=This.C.m(),This.D.of(),This.D.i(),This0.C.#$m() uniqueId=id1}}";
     var p2=Program.parse(code);
     try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new ArrayList<>(),new ArrayList<>());}
     catch (InvocationTargetException e1) {fail(e1.getCause());}
