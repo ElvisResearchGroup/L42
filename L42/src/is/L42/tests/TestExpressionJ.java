@@ -302,29 +302,29 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        method This1.N n()
        #norm{typeDep=This This1.N}}
      ""","""
-       class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
-         [###]
-         int £xn;
-         public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
-         public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){
-           £cC£n1 Res=new £cC£n1();
-           if(£xn instanceof L42Fwd){((L42Fwd)£xn).rememberAssign(Res,£cC£n1.FieldAssFor_n);}else{Res.£xn=(int)£xn;}
-           return Res;
-           }
-         public static int £mn(£cC£n1 £xthis){
-           return £xthis.£xn;
-           }
-         public static £cC£n1 NewFwd(){return new _Fwd();}
-         public static class _Fwd extends £cC£n1 implements L42Fwd{
-           private List<Object> os=new ArrayList<>();
-           private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
-           public List<Object> os(){return os;}
-           public List<BiConsumer<Object,Object>> fs(){return fs;}
-           public L42ClassAny asPath(){return Resources.ofPath(0);}
-           @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
-         public static final £cC£n1 pathInstance=new _Fwd();
-         static final L42Cache<£cC£n1> mySCache=[###]
+     class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
+       [###]
+       int £xn;
+       public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};
+       public static £cC£n1 £mof£xn(£cC£n1 £xthis, Object £xn){
+         £cC£n1 Res=new £cC£n1();
+         if(£xn instanceof L42Fwd){((L42Fwd)£xn).rememberAssign(Res,£cC£n1.FieldAssFor_n);}else{Res.£xn=(int)£xn;}
+         return Res;
          }
+       public static int £mn(£cC£n1 £xthis){
+         return £xthis.£xn;
+         }
+       public static £cC£n1 NewFwd(){return new _Fwd();}
+       public static class _Fwd extends £cC£n1 implements L42Fwd{
+         private List<Object> os=new ArrayList<>();
+         private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
+         public List<Object> os(){return os;}
+         public List<BiConsumer<Object,Object>> fs(){return fs;}
+         public L42ClassAny asPath(){return Resources.ofPath(0);}
+         @Override public L42Cache<£cC£n1> myCache() {return mySCache;}}
+       public static final £cC£n1 pathInstance=new _Fwd();
+       static final L42Cache<£cC£n1> mySCache=[###]
+       }
      ""","","")
 
   ));}
