@@ -156,7 +156,7 @@ TestRename2=(
     actual={error Code['C->'This] catch MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
-      |method imm method imm Any foo()=(..)
+      |method imm method imm Void a(imm This0.A a)=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
       """.trim())
@@ -164,29 +164,24 @@ TestRename2=(
     actual={error Code['A.foo()=>Name""]['A->Name""] catch InvalidMap x return x}
     expected=S"""
       |Message toFix(toFix):
-      |method imm method imm Any foo()=(..)
-      |Conflicting implementation: the method is implemented on both side of the sum
+      |nested class { a(a)=(..) A={..} B={..} C={..} }
+      |The nested class A
+      |can not be made abstract since is watched by nested class C
+      |Full mapping:A-><empty>
+      |[file:[###]
+      """.trim())
+  {}:Test"InvalidMap->"(
+    actual={error Code[hide='A.foo()][clear='A] catch InvalidMap x return x}
+    expected=S"""
+      |Message toFix(toFix):
+      |nested class { a(a)=(..) A={..} B={..} C={..} }
+      |The nested class A
+      |can not be made abstract since is watched by nested class C
+      |Full mapping:A-><empty>
       |[file:[###]
       """.trim())
   )
 //TODO: now somehow the Info is always declassed to "norm" :-(
-/*
-AAA={
-  method Void a(This0.A a)=void
-  A={method Void foo::1()=void #typed{}}
-  B={method Any foo()=void #typed{}}
-  C={method Void a(imm This1.A a)=a.foo::1()
-     #typed{typeDep=This1.A watched=This1.A}}
-  #typed{typeDep=This0.A}}
-
-AAA={
-  method Void a(This.A::1 a)=void
-  A::1={method Void foo::1()=void #typed{}}
-  B={method Any foo()=void #typed{}}
-  C={method Void a(This1.A::1 a)=a.foo::1() 
-     #typed{typeDep=This1.A::1 watched=This1.A::1, This1}}
-  #norm{typeDep=This0.A::1}}
-  */
 //TODO: Data & co must also throw exception instead of error 
 
 //Testing a funkyer way to test

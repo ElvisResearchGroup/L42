@@ -42,6 +42,7 @@ public class Resources {
     }
   public static <K> K throwE(L42Throwable e){throw e;}
   public static<K> L42£Void toVoid(K k){return L42£Void.instance;}
+  public static HashSet<Integer> usedUniqueNs=new HashSet<>();
   public static Program currentP;
   public static C currentC;
   public static void setLibsCached(Program p,C c,ArrayList<L42£Library> libs){
@@ -67,6 +68,7 @@ public class Resources {
   public static void clearRes() {
     libsCached=null;
     slaves.clear();
+    usedUniqueNs.clear();
     out=new StringBuffer();
     tests=new StringBuffer();
     }

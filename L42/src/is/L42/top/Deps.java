@@ -39,14 +39,18 @@ public class Deps{
   ArrayList<P.NCs> watched=new ArrayList<>();
   ArrayList<PathSel> usedMethods=new ArrayList<>();
   ArrayList<P.NCs> hiddenSupertypes=new ArrayList<>();
+  public static P.NCs _publicRoot(P.NCs pi){
+    var cs=pi.cs();
+    var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
+    if(cs.size()==csCut.size()){return null;}
+    return pi.withCs(csCut);
+    }
   void addP(P p){
     if(!p.isNCs()){return;}
     var pi=p.toNCs();
     typePs.add(pi);
-    var cs=pi.cs();
-    var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
-    if(cs.size()==csCut.size()){return;}
-    pi=pi.withCs(csCut);
+    pi=_publicRoot(pi);
+    if(pi==null){return;}
     typePs.add(pi);
     watched.add(pi);
     }

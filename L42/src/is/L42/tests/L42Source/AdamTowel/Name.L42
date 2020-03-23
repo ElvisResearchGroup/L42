@@ -11,4 +11,4 @@ method Meta =>(Name other)=
 method Bool #shortCircut#minusgt()=Bool.false()
 method Meta #shortResult#minusgt(Bool that)=error void
 method Meta #shortProcess#minusgt(Bool that,This other)=
-  Meta().addMapDoubleArrow(a=this.toS(),b=other.toS())
+  Meta().addMapSingleArrow(a=this.toS(),b=other.toS())

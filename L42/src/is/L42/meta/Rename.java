@@ -29,14 +29,12 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import is.L42.common.From;
-import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
-import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
 import is.L42.generated.P;
@@ -56,7 +54,6 @@ import is.L42.top.Top;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
-import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.WellFormedness;
 
 public class Rename {
@@ -107,7 +104,7 @@ public class Rename {
     }
   L addMapTop=Program.emptyL;
   LinkedHashMap<Arrow,Arrow> map;
-  HashSet<Integer> existingNs=new HashSet<>();
+  HashSet<Integer> existingNs=Resources.usedUniqueNs;
   int allBusyUpTo=0;//TODO: both need to be recover from environment
   Program p;//includes the top level L
   List<Arrow>list;
@@ -154,7 +151,7 @@ public class Rename {
       });
     cs=L();
     L res=applyMap();
-    System.out.println("renamed lib");
+    System.out.println("renamed lib: "+this.mapToS());
     System.out.println(res);
     System.out.println("---------------");
     return res;
@@ -365,69 +362,6 @@ public class Rename {
       });
     return mwt.withMh(mh).with_e(e);
     }
-  MWT renameUsages(MWT mwt){return mwt.accept(new CloneRenameUsages(this));}
-  private final CloneVisitor simpleRename=new CloneVisitor(){
-      @Override public P visitP(P path){
-        return renamedPath(map,cs,p.navigate(cs),path);
-        }
-      @Override public S visitS(S s){
-        Program p0=p.navigate(cs);
-        for(var t:p0.topCore().ts()){
-          L l=p0._ofCore(t.p());
-          if(l.info().refined().contains(s)){continue;}
-          if(_elem(l.mwts(),s)==null){continue;}
-          return renamedS(map, cs, p0, t.p().toNCs(), s);
-          }
-        return s;
-        }
-      @Override public PathSel visitPathSel(PathSel s){
-        Program p0=p.navigate(cs);
-        var path=s.p().toNCs();
-        P p2=renamedPath(map,cs,p0,path);
-        if(s._s()==null){return s.withP(p2);}
-        S s2=renamedS(map, cs, p0, path, s._s());
-        return s.withP(p2).with_s(s2);
-        }
-      };
-    List<T> renameUsagesTs(List<T> ts){return simpleRename.visitTs(ts);}
-  List<Doc> renameUsagesDocs(List<Doc> docs){return simpleRename.visitDocs(docs);}
-  Info renameUsagesInfo(boolean isInterface,List<MWT>mwts,Info info){
-    Info res=info;
-    if(isInterface && !res.close()){
-      boolean priv=mwts.stream().anyMatch(m->m.key().hasUniqueNum());
-      if(priv){res=res.withClose(true);}
-      }
-    ArrayList<P.NCs>newWatched=new ArrayList<>();
-    for(var ps:res.usedMethods()){
-      List<C> csi=Sum._publicCsOfP(ps.p(),cs);
-      assert ps._s()!=null;
-      if(csi==null){continue;}
-      Arrow a=map.get(new Arrow(csi,ps._s()));
-      if(a==null || !a.full){continue;}
-      if(a._sOut.hasUniqueNum()){
-        newWatched.add(ps.p().toNCs());
-        }
-      }
-    for(var p:res.typeDep()){
-      List<C> csi=Sum._publicCsOfP(p,cs);
-      if(csi==null){continue;}
-      Arrow a=map.get(new Arrow(csi,null));
-      if(a==null || !a.full || a.isP()){continue;}
-      int i=a._cs.size();
-      if(i==0){continue;}
-      if(!a._cs.get(i-1).hasUniqueNum()){continue;}
-      if(p.cs().isEmpty()){newWatched.add(p.withN(p.n()+1));continue;}
-      if(p.cs().size()==1 && p.n()==0){continue;}//do not watch This0
-      //what happens if we was typeDep of This2 and This2 becomes private? we watch This3!
-      newWatched.add(p.withCs(popLRight(p.cs())));
-      }
-    assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
-    res=res.withTypeDep(mergeU(res.typeDep(),newWatched)).withWatched(mergeU(res.watched(),newWatched));
-    var ums=res.usedMethods();
-    ums=L(ums.stream().filter(ps->!newWatched.contains(ps.p())));
-    res=res.withUsedMethods(ums);
-    return res.accept(simpleRename);
-    }
   L renameTop(){
     L l1=renameL(p.topCore());
     Arrow a=map.get(new Arrow(L(),null));
@@ -469,25 +403,13 @@ public class Rename {
     if(ncs.stream().noneMatch(e->e.key().equals(res))){return res;}
     return freshC(ncs,num+1);
     }
-  L renameL(L l){
-    assert p._ofCore(cs)==l;
-    var mwts1=renameMWTs(l.mwts());
-    var ncs1=renameNCs(l.ncs());
-    List<T> ts1=renameUsagesTs(l.ts());
-    Info info1=renameUsagesInfo(l.isInterface(),mwts1,l.info());
-    List<Doc> docs1=renameUsagesDocs(l.docs());
-    return new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,info1,docs1);    
-    }
-  List<NC> renameNCs(List<NC> ncs){return L(ncs,(c,nci)->{
+  L renameL(L l){return new CloneRenameUsages(this).visitL(l);}
+  List<NC> renameNCs(CloneRenameUsages r,List<NC> ncs){return L(ncs,(c,nci)->{
     var oldCs=this.addC(nci.key());
     L li=this.renameL(nci.l());
     this.cs=oldCs;
-    List<Doc> docs=renameUsagesDocs(nci.docs());
+    List<Doc> docs=r.visitDocs(nci.docs());
     c.addAll(renameNC(nci.withL(li).withDocs(docs)));    
-    });}
-  List<MWT> renameMWTs(List<MWT> mwts){return L(mwts,(c,mwti)->{
-    var mwt=renameUsages(mwti);
-    c.addAll(renameMWT(mwt));
     });}
   List<NC> renameNC(NC nc){
     Arrow a=map.get(new Arrow(pushL(cs,nc.key()),null));
@@ -729,8 +651,7 @@ public class Rename {
       if(nci.key().hasUniqueNum()){c.add(nci);}
       });
     return l.withNcs(ncs);
-    }
-  
+    }  
   abstract class TweakPs extends CloneVisitor{
     int level=-1;
     @Override public L visitL(L l){
@@ -754,57 +675,5 @@ public class Rename {
       if(p.n()!=level){return p;}
       return P.of(level+1,pushL(c,p.cs()));
       }});
-    }
-  static P renamedPath(LinkedHashMap<Arrow,Arrow> map,List<? extends LDom> whereFromTop,Program p,P path){
-    int nesting=whereFromTop.size();
-    if(!path.isNCs()){return path;}
-    List<C> currentP=_topCs(whereFromTop,path.toNCs());
-    if(currentP==null){return path;}
-    Arrow a=map.get(new Arrow(currentP,null));
-    if(a==null || !a.full){return path;}
-    if(a.isCs()){return p.minimize(P.of(nesting,a._cs));}
-    assert a.isP();
-    if(!a._path.isNCs()){return a._path;}
-    var res=a._path.toNCs();
-    res=res.withN(nesting+res.n()+1);//because destination is relative to outside pStart.top
-    assert p.minimize(res)==res;
-    return res;
-    }
-  static S renamedS(LinkedHashMap<Arrow,Arrow> map,List<? extends LDom> whereFromTop,Program p,P.NCs path,S s){
-    List<C> currentP=_topCs(whereFromTop,path);
-    if(currentP==null){return s;}
-    Arrow a=map.get(new Arrow(currentP,s));
-    if(a==null || !a.full){return s;}
-    assert a._sOut!=null;
-    return a._sOut;
     }  
-  static List<C> _topCs(List<? extends LDom> ldoms,P.NCs p){//the result is not wrapped in an unmodifiable list
-    if(p.n()>ldoms.size()){return null;}
-    if(p.n()==ldoms.size()){return p.cs();}
-    ArrayList<C> res=new ArrayList<>();
-    for(LDom li:ldoms.subList(0,ldoms.size()-p.n())){
-      if(!(li instanceof C)){return null;}
-      res.add((C)li);
-      }
-    res.addAll(p.cs());
-    return res;
-    }
-  static class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
-    CloneRenameUsages(Rename r){
-      super(r.p.navigate(r.cs),G.empty());
-      this.r=r;
-      this.whereFromTop().addAll(r.cs);
-      }
-    Rename r;
-    @Override public P visitP(P path){return renamedPath(r.map,whereFromTop(),this.p(),path);}
-    @Override public MCall visitMCall(MCall mcall){
-      mcall=super.visitMCall(mcall);
-      var t=g._of(mcall.xP());
-      if(t==null){return mcall;}
-      var path=t.p();
-      if(!path.isNCs()){return mcall;}
-      var s2=renamedS(r.map,whereFromTop(),this.p(),path.toNCs(),mcall.s());
-      return mcall.withS(s2);    
-      }
-    }
   }

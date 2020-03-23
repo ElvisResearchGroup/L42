@@ -22,7 +22,7 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   public Program p(){return this.p;}
     protected int levels=-1;
   private ArrayList<LDom> whereFromTop=new ArrayList<>();
-  protected ArrayList<LDom> whereFromTop(){
+  public ArrayList<LDom> whereFromTop(){
     return this.whereFromTop;
     }
   private LDom lastCMs=null;

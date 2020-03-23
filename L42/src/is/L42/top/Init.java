@@ -38,8 +38,10 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
+import is.L42.visitors.PropagatorCollectorVisitor;
 
 public class Init {
   public Init(String s){this(Parse.sureProgram(Constants.dummy,s));}
@@ -53,11 +55,22 @@ public class Init {
   public Init(Program program){
     assert program!=null;
     FreshNames f=new FreshNames();
+    collectAllUniqueNs(program,Resources.usedUniqueNs);   
     top=makeTop(program,f);
     assert top.cacheOk();
     Program res=init(program,f);
     assert res.top.wf();
     p=res;
+    }
+  private void collectAllUniqueNs(Program p,HashSet<Integer> c){
+    p.top.visitable().accept(new PropagatorCollectorVisitor(){
+      @Override public void visitS(S s){
+        if(s.hasUniqueNum()){c.add(s.uniqueNum());}
+        }
+      @Override public void visitC(C s){
+        if(s.hasUniqueNum()){c.add(s.uniqueNum());}
+        }        
+      });
     }
   //in the formalism, it is from L to L, here with p to p,
   //we can parsing initialised programs.

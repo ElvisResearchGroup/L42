@@ -104,7 +104,7 @@ public class Parse {
     }
   public static Full.PathSel pathSel(Path fileName,String s){
     var res = ctxPathSelX(Constants.dummy, s);
-    assert !res.hasErr();
+    assert !res.hasErr():s;
     return new AuxVisitor(null).visitPathSelX(res.res.pathSelX());
     }
 

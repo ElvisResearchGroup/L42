@@ -28,7 +28,9 @@ Acc={
   class method mut This(Meta that)
   class method mut Acc ##apply#squareBuilder()=Acc(Meta())
   class method Bool #shortCircutSquare()=Bool.true()
-  mut method Void #squareAdd(Meta that)=this.that(\that.mergeMap(that)) 
+  mut method Void #squareAdd(Meta that)=this.that(\that.mergeMap(that))
+  mut method Void #squareAdd(Name hide)=this.#squareAdd(hide=>Name"")
+  mut method Void #squareAdd(Name clear)=this.#squareAdd(clear->Name"")
   }
 method This (mut Acc squareBuilder)[InvalidName,InvalidMap,ClassClash,MethodClash]=This(code={
   return squareBuilder.that().applyMap(this.code())

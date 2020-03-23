@@ -88,20 +88,21 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     var a=new Arrow(pathSel.cs(),pathSel._s(),true,p,null,null);
     return new L42£Meta(pushL(renames,a));
     }
-  public L42£Meta addMapDoubleArrow(String name1,String name2){
+  public Arrow unwrapArrow(String name1,String name2,boolean full){
     Full.PathSel p1=unwrapPathSel(name1);
     Full.PathSel p2=null;
     if(!name2.isEmpty()){p2=unwrapPathSel(name2);}
     List<C> _cs2=null;
     S _s2=null;
     if(p2!=null){_cs2=p2.cs();_s2=p2._s();}
-    var a=new Arrow(p1.cs(),p1._s(),true,null,_cs2,_s2);
+    return new Arrow(p1.cs(),p1._s(),full,null,_cs2,_s2);
+    }
+  public L42£Meta addMapDoubleArrow(String name1,String name2){
+    var a=unwrapArrow(name1, name2,true);
     return new L42£Meta(pushL(renames,a));
     }
   public L42£Meta addMapSingleArrow(String name1,String name2){
-    Full.PathSel p1=unwrapPathSel(name1);
-    Full.PathSel p2=unwrapPathSel(name2);
-    var a=new Arrow(p1.cs(),p1._s(),false,null,p2.cs(),p2._s());
+    var a=unwrapArrow(name1, name2,false);
     return new L42£Meta(pushL(renames,a));
     }
   public L42£Meta mergeMap(L42£Meta meta){

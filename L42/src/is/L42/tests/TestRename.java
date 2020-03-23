@@ -890,7 +890,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      D::2={#norm{}}
      #norm{}}
    C={method Void b()=void #norm{}}
-   #norm{typeDep=This.A::1}}
+   #norm{typeDep=This,This.A::1}}
    """/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      A={
@@ -1018,14 +1018,14 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """,/*rename map after this line*/"""
    A.=><empty>
    """,/*expected after this line*/"""
-   method Void a(imm This.A::1 a)=void
-   A::1={method Void foo::1()=void #typed{}}
+   method Void a(imm This.A::2 a)=void
+   A::2={method Void foo::1()=void #typed{}}
    B={method Any foo()=void #typed{}}
-   C={method Void a(This1.A::1 a)=a.foo::1()
-     #typed{typeDep=This1.A::1, This1 watched=This1.A::1, This1}}
-   #norm{typeDep=This0.A::1}}
+   C={method Void a(This1.A::2 a)=a.foo::1()
+     #typed{typeDep=This1,This1.A::2 watched=This1.A::2, This1}}
+   #norm{typeDep=This,This.A::2}}
    """/*next test after this line*/)
-       ),new AtomicTest(()->pass("""
+       ),new AtomicTest(()->fail("""
     method Void a(This0.A a)=void
     A={method Void foo::1()=void #typed{}}
     B={method Any foo()=void #typed{}}
@@ -1035,12 +1035,10 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """,/*rename map after this line*/"""
    A.-><empty>
    """,/*expected after this line*/"""
-   method Void a(imm This.A::1 a)=void
-   A::1={method Void foo::1()=void #typed{}}
-   B={method Any foo()=void #typed{}}
-   C={method Void a(This1.A::1 a)=a.foo::1()
-     #typed{typeDep=This1.A::1, This1 watched=This1.A::1, This1}}
-   #norm{typeDep=This0.A::1}}
-   """/*next test after this line*/)
+   nested class { a(a)=(..) A={..} B={..} C={..} }
+   The nested class A
+   can not be made abstract since is watched by nested class C
+   Full mapping:A-><empty>
+   [file:[###]"""/*next test after this line*/)
    ));}
 }
