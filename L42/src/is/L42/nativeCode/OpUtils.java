@@ -17,13 +17,16 @@ import is.L42.translationToJava.NativeDispatch;
 
 enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
-  static String vectorGet(boolean mut){ 
+  static String vectorGet(boolean mut){
+    //Note: on different systems multiline strings are composed differenlty!
+    //the "non indented" .wrap is needed, otherwise we would patter match
+    // ""Gen3."" on some systems and ""Gen3  ."" on some others  
     return vectorExc2("""
       Object tmp=((ArrayList)%1$s).get(%2$s*2+3);
       if(tmp==is.L42.nativeCode.Flags."""+(mut?"MutElem":"ImmElem")+"""
         ){return %1$s.get(%2$s*2+2);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
-      .wrap(new L42£LazyMsg(
+    .wrap(new L42£LazyMsg(
         "#val called, but the element in position "+%1$s+" was inserted as immutable"
         )));
     """);}
