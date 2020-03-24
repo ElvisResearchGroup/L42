@@ -54,7 +54,7 @@ public class Deps{
     typePs.add(pi);
     watched.add(pi);
     }
-  public Info toInfo(){
+  public Info toInfo(boolean typed){
     for(var pi:typePs){
       var cs=pi.cs();
       var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
@@ -62,7 +62,7 @@ public class Deps{
       watched.add(pi.withCs(csCut));
       }
     watched.removeAll(L(P.pThis0));
-    return new Info(false,
+    return new Info(typed,
       /*typeDep*/ uniqueWrap(typePs),
       /*coherentDep*/ uniqueWrap(cohePs),
       /*metaCoherentDep*/ uniqueWrap(metaCohePs),

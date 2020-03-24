@@ -51,6 +51,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Deps;
 import is.L42.top.Top;
+import is.L42.top.UniqueNsRefresher;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
@@ -104,8 +105,7 @@ public class Rename {
     }
   L addMapTop=Program.emptyL;
   LinkedHashMap<Arrow,Arrow> map;
-  HashSet<Integer> existingNs=Resources.usedUniqueNs;
-  int allBusyUpTo=0;//TODO: both need to be recover from environment
+  UniqueNsRefresher fresh=new UniqueNsRefresher();
   Program p;//includes the top level L
   List<Arrow>list;
   List<C> cs;
@@ -154,6 +154,7 @@ public class Rename {
     System.out.println("renamed lib: "+this.mapToS());
     System.out.println(res);
     System.out.println("---------------");
+    assert l.info().isTyped()==res.info().isTyped();
     return res;
     }
   L applyMap(){
@@ -164,41 +165,19 @@ public class Rename {
     return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
     }
   void replaceEmpty(){
-    //TODO; we really need to compute the used ns globally and to normalize them over library reuse and end of topNC
     for(Arrow a:map.values()){
       if(!a.full || !a.isEmpty()){continue;}
       if(a._s!=null){
-        int n=firstPrivateOf(p._ofCore(a.cs));
+        int n=fresh.firstPrivateOf(p._ofCore(a.cs));
         a._cs=a.cs;
         a._sOut=a._s.withUniqueNum(n);
         continue;
         }
       var popped=a.cs.subList(0,a.cs.size()-1);
-      int n=firstPrivateOf(p._ofCore(popped));
+      int n=fresh.firstPrivateOf(p._ofCore(popped));
       C top=a.cs.get(a.cs.size()-1);
       a._cs=pushL(popped,top.withUniqueNum(n));
       }
-    }
-  int firstPrivateOf(L l){
-    int count=0;
-    int res=Integer.MAX_VALUE;
-    for(var nci:l.ncs()){
-      if(nci.key().hasUniqueNum()){
-        count+=1;
-        res=Math.min(nci.key().uniqueNum(),res);
-        }
-      }
-    for(var mwti:l.mwts()){
-      if(mwti.key().hasUniqueNum() &&mwti.key().uniqueNum()!=0){
-        count+=1;
-        res=Math.min(mwti.key().uniqueNum(),res);
-        }
-      }
-    if(count!=0){return res;}
-    allBusyUpTo+=1;
-    while(existingNs.contains(allBusyUpTo)){allBusyUpTo+=1;}
-    existingNs.add(allBusyUpTo);
-    return allBusyUpTo;
     }
   List<C> culpritOf(L l,List<C> cs,Function<L,List<P.NCs>>f){//uses the map
     return Sum.culpritFromInfo(l,(li,csi)->{
@@ -344,7 +323,7 @@ public class Rename {
       });
     Deps deps=new Deps();
     for(var nc:ncs){deps.collectDocs(nc.docs());}
-    Info i=Top.sumInfo(l.info(),deps.toInfo());
+    Info i=Top.sumInfo(l.info(),deps.toInfo(true));
     return l.withMwts(mwts).withNcs(ncs).withInfo(i);
     }
   MWT mwtOf(MWT mwt,S s1){

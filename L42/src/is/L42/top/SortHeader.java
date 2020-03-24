@@ -37,7 +37,8 @@ import is.L42.typeSystem.TypeManipulation;
 
 class SortHeader{
   public static Core.L coreTopReuse(Program p,int uniqueId,Full.L l,List<Pos> poss)throws EndError{
-    Core.L coreL=Constants.readURL.apply(l.reuseUrl());
+    Core.L coreL=new UniqueNsRefresher().refreshUniqueNs(
+      Constants.readURL.apply(l.reuseUrl()));
     List<LDom>dups=L(l.ms().stream().map(m->m.key()).filter(k->
       coreL.mwts().stream().anyMatch(m->k.equals(m.key()))
       ||coreL.ncs().stream().anyMatch(m->k.equals(m.key()))
@@ -62,7 +63,7 @@ class SortHeader{
     List<S> ss=L(mwts,(c,mi)->{
       if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
       });
-    var newInfo=deps.toInfo().withRefined(ss).with_uniqueId(uniqueId).withClose(true);
+    var newInfo=deps.toInfo(false).withRefined(ss).with_uniqueId(uniqueId).withClose(true);
     newInfo=Top.sumInfo(coreL.info(),newInfo);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
     }
@@ -116,7 +117,7 @@ class SortHeader{
       S s=mi.key();
       if(refine(p1,s,P.pThis0,poss)){c.add(s);}
       });
-    Info info=deps.toInfo().withRefined(refined).withClose(true).with_uniqueId(uniqueId); 
+    Info info=deps.toInfo(false).withRefined(refined).withClose(true).with_uniqueId(uniqueId); 
     return new Core.L(poss,l.isInterface(), ts1, mwts, L(), info, docs);
     }
   private static List<T> collect(Program p,List<T> ts,List<Pos> poss)throws InvalidImplements{

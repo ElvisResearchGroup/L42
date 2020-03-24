@@ -63,7 +63,7 @@ public class Program implements Visitable<Program>{
     //assert Constants.newFwProgram(this);
     }
   public static Program flat(LL top){return new Program(top,PTails.empty);}
-  public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty,L());
+  public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty.withTyped(true),L());
   public static final Core.L emptyLInterface=emptyL.withInterface(true);
 
   public Core.L topCore(){return (Core.L)top;}

@@ -376,7 +376,13 @@ dropCache:
     }
   Cache.CTopNC1 reduceNoCache(Program p, C c0, Core.E e, Cache.CTopNC1 res, List<Full.Doc> docs, List<Pos> poss,CTz frommedCTz){
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
-    Core.L l=reduce(p,c0,e,cache.allByteCode(),cache.allLibs());//propagate errors
+    
+    Core.L l=null;
+    if(e instanceof Core.L){l=(Core.L)e;}
+    else{
+      l=reduce(p,c0,e,cache.allByteCode(),cache.allLibs());//propagate errors
+      l=new UniqueNsRefresher().refreshUniqueNs(l);
+      }
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
     res.coreE(e);
     res.lOut(l);    
@@ -527,7 +533,7 @@ dropCache:
       });
     assert mwts0.size()+mwts.size()==l.mwts().size();
     Deps collected=new Deps().collectDeps(p,mwts);
-    Info info=collected.toInfo();
+    Info info=collected.toInfo(true);
     var allMwts=merge(mwts0,mwts);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
@@ -561,7 +567,7 @@ dropCache:
     var info=l.info();
     Deps deps=new Deps().collectDocs(nc.docs());
     if(nc.key().hasUniqueNum()){deps.collectDepsE(p1, nc.l());}
-    info=Top.sumInfo(info,deps.toInfo());
+    info=Top.sumInfo(info,deps.toInfo(true));
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
     }

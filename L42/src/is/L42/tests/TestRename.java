@@ -838,7 +838,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
      A={
        B={#norm{}}
-       #norm{}}
+       #typed{}}
      C={
        method Void b()=void 
        D={
@@ -846,7 +846,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
            method Void v()=void
            D::2={#norm{}}
            #norm{}}
-         #norm{typeDep=This.E}}
+         #typed{typeDep=This.E}}
        #norm{}}
      #norm{typeDep=This.C.D.E}}
      """/*next test after this line*/)
@@ -868,7 +868,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
          D::2={#norm{}}
          B={#norm{}}
        #norm{}}
-     #norm{typeDep=This.E}}
+     #typed{typeDep=This.E}}
    #norm{}}
  #norm{typeDep=This.C.D.E}}"""/*next test after this line*/)    
     ),new AtomicTest(()->pass("""
@@ -884,7 +884,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    A={
      B={#norm{}}
-     #norm{}}
+     #typed{}}
    A::1={
      method Void v::0()=void
      D::2={#norm{}}
@@ -1023,7 +1023,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    B={method Any foo()=void #typed{}}
    C={method Void a(This1.A::2 a)=a.foo::1()
      #typed{typeDep=This1,This1.A::2 watched=This1.A::2, This1}}
-   #norm{typeDep=This,This.A::2}}
+   #typed{typeDep=This,This.A::2}}
    """/*next test after this line*/)
        ),new AtomicTest(()->fail("""
     method Void a(This0.A a)=void

@@ -134,7 +134,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     deps.collectTs(l.ts());
     ArrayList<S> refined=new ArrayList<>();
     Deps.collectRefined(p,refined);
-    Info i=deps.toInfo();
+    Info i=deps.toInfo(false);
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     checkMissing(i.typeDep(),l.info().typeDep(),l.poss(),Err::missedTypeDep);
     checkMissing(i.coherentDep(),l.info().coherentDep(),l.poss(),Err::missedCoheDep);

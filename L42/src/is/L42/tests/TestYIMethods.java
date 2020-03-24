@@ -252,7 +252,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method imm Void a()=(imm Void v0=void
        catch error imm Void z z
        catch exception imm Library fresh0_whoops
-         error fresh0_whoops.#whoopsed(atPos={#norm{}})
+         error fresh0_whoops.#whoopsed(atPos={#typed{}})
        void)
      """)
    ),new AtomicTest(()->pass("""
@@ -262,7 +262,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ""","""
      class method imm Void a()=(imm Void v0=void
        catch exception imm Library fresh0_whoops
-         error fresh0_whoops.#whoopsed(atPos={#norm{}})
+         error fresh0_whoops.#whoopsed(atPos={#typed{}})
        void)     """)
    ),new AtomicTest(()->pass("""
      class method Void a()=(Void v0=void
@@ -273,9 +273,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method imm Void a()=(imm Void v0=void
        catch error imm Void z z
        catch exception imm Library fresh0_whoops
-         error fresh0_whoops.#whoopsed(atPos={#norm{}})
+         error fresh0_whoops.#whoopsed(atPos={#typed{}})
        catch exception imm Void fresh1_whoops
-         error fresh1_whoops.#whoopsed(atPos={#norm{}})
+         error fresh1_whoops.#whoopsed(atPos={#typed{}})
        void)
        """)     
    ),new AtomicTest(()->pass("""

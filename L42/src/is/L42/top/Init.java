@@ -54,12 +54,12 @@ public class Init {
     }
   public Init(Program program){
     assert program!=null;
-    FreshNames f=new FreshNames();
-    collectAllUniqueNs(program,Resources.usedUniqueNs);   
+    FreshNames f=new FreshNames();   
     top=makeTop(program,f);
     assert top.cacheOk();
     Program res=init(program,f);
     assert res.top.wf();
+    collectAllUniqueNs(res,Resources.usedUniqueNs);
     p=res;
     }
   private void collectAllUniqueNs(Program p,HashSet<Integer> c){

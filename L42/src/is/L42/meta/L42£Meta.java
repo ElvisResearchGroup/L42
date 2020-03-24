@@ -150,7 +150,7 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     var mh=new Core.MH(Mdf.Class,L(),P.coreLibrary,applyS,L(),L());
     var meth=new Core.L.MWT(l.poss(),L(),mh,"",l);
     Deps deps=new Deps().collectDepsE(Resources.currentP,l);
-    var res=new Core.L(l.poss(), false, L(), L(meth), L(), deps.toInfo(),L());
+    var res=new Core.L(l.poss(), false, L(), L(meth), L(), deps.toInfo(l.info().isTyped()),L());
     return wrapL(res);
     }
   public L42£Library simpleSum(L42£Library a, L42£Library b,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
