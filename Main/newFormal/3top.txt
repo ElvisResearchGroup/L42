@@ -297,7 +297,8 @@ _______
       ]
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) +..+ collectDepsE(p;en)+Info[watched=P? usedMethods=(P.s)?]
     e0=xP,
-    P=G(xP)
+    P'=G(xP)
+    P=origin(p.navigate(P'),m(x1..xn))[from P';p]//if P!=P', it may also be added in typeDep
     either P has private numbers, and P?=(P.s)?=empty
     or m has private numbers and P?=G(xP), (P.s)?=empty //G is computed during the traversal
     or P?=empty and (P.s)?=G(xP).m(x1..xn)

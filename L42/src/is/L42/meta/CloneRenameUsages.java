@@ -123,7 +123,9 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     if(t==null){return mcall;}
     var path=t.p();
     if(!path.isNCs()){return mcall;}
-    var s2=renamedS(path.toNCs(),mcall.s());
+    var originPath=Deps._origin(p(),path.toNCs(),mcall.s(),mcall.poss());
+    if(originPath==null){originPath=path.toNCs();}
+    var s2=renamedS(originPath,mcall.s());
     return mcall.withS(s2);    
     }
   @Override public Info visitInfo(Info i){return infoRename.visitInfo(i);}

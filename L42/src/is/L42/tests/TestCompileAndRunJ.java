@@ -27,6 +27,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.Compilation
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
+import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.Loader;
@@ -207,43 +208,25 @@ public static void load(String s){
 public static void loadRunErr(String s,String e){
   Resources.clearRes();
   try{
-    Program p=base(s);
-    Loader l;try{l=loadBase(p,true);}
-    catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C uniqueId=id1 usedMethods=This.C.m(),This.D.of(),This.D.i(),This0.C.#$m()}}";
-    var p2=Program.parse(code);
-    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new ArrayList<>(),new ArrayList<>());}
-    catch (InvocationTargetException e1) {
-      if(!(e1.getCause() instanceof java.util.concurrent.CancellationException)){fail(e1.getCause());}
-//      assertEquals("loopinglooping",Resources.out());
-      return;
-      }
-    catch (CompilationError e1) {fail(e1);}
+    String p="{"+baseStr+s+"Task="+e+"}";
+    Init init=new Init(p);
+    init.top.top(init.p);
+    }
+  catch (java.util.concurrent.CancellationException e1) {
+    return;
+    }
     fail("java.util.concurrent.CancellationException expected for timeout");
     //TODO: is there a better unchecked exception in java to use to this aim?
-    }
-  finally{Resources.clearRes();}
   }  
 
 public static void loadRun(String s,String e,String output){
   Resources.clearRes();
-  try{
-    Program p=base(s);
-    //somehow using a switch expression makes junit fail
-    Loader l;try{l=loadBase(p,true);}
-    catch(CompilationError ce){fail(ce);throw bug();}
-    String code="{ method Library #$m()="+e+" #norm{typeDep=This.D This.C coherentDep=This.D This.C usedMethods=This.C.m(),This.D.of(),This.D.i(),This0.C.#$m() uniqueId=id1}}";
-    var p2=Program.parse(code);
-    try {l.runNow(p, new C("Task",-1),p2.topCore().mwts().get(0)._e(),new ArrayList<>(),new ArrayList<>());}
-    catch (InvocationTargetException e1) {fail(e1.getCause());}
-    catch (CompilationError e1) {fail(e1);}
-    assertEquals(output,Resources.out());
-    }
-  finally{Resources.clearRes();}
+  String p="{"+baseStr+s+"Task="+e+"}";
+  Init init=new Init(p);
+  init.top.top(init.p);
+  assertEquals(output,Resources.out());
   }
-public static Program base(String s){
-  String l="{ "+s+
-  """
+public static String baseStr="""
   S={
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
@@ -266,8 +249,9 @@ public static Program base(String s){
     method This1.S n()
     mut method Void n(This1.S that)
     #typed{typeDep=This This1.S}} 
-  #norm{uniqueId=id1}}
   """;
+public static Program base(String s){
+  String l="{ "+s+baseStr+"#norm{uniqueId=id1}}";
   return Program.parse(l);
   }
 public static Loader loadBase(Program p,boolean print) throws CompilationError{

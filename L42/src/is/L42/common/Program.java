@@ -74,7 +74,7 @@ public class Program implements Visitable<Program>{
     return _ofCore(path.toNCs());    
     }
   public Core.L _ofCore(P.NCs path){return this.pop(path.n())._ofCore(path.cs());}
-  public Core.L _ofCore(List<C> path){return ((Core.L)top)._cs(path);}
+  public Core.L _ofCore(List<C> path){return (Core.L)top._cs(path);}
   public LL of(P path,List<Pos>errs){
     if(path==P.pAny){return emptyLInterface;}
     if(path==P.pVoid){return emptyL;}

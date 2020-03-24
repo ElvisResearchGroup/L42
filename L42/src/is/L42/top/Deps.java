@@ -11,6 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
+import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -26,6 +27,7 @@ import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
 import is.L42.generated.P.NCs;
+import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
@@ -39,6 +41,11 @@ public class Deps{
   ArrayList<P.NCs> watched=new ArrayList<>();
   ArrayList<PathSel> usedMethods=new ArrayList<>();
   ArrayList<P.NCs> hiddenSupertypes=new ArrayList<>();
+  public static P.NCs _origin(Program p0,P.NCs path,S s,List<Pos>poss){
+    try{return p0.from(SortHeader.origin(p0.navigate(path),s,poss),path);}
+    catch(LL.NotInDom | EndError ee){return null;}//can be more efficencent rewriting the above to avoid the exception.
+    //we need the null because when adding usedMethods for methods that are not declared, we need to "guess" that they are not refined...
+    }
   public static P.NCs _publicRoot(P.NCs pi){
     var cs=pi.cs();
     var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
@@ -152,11 +159,15 @@ public class Deps{
       }
     @Override public void visitP(P p){addP(p);}
     @Override public void visitMCall(Core.MCall mc){
+      System.out.println(mc);
       super.visitMCall(mc);
       var t=g(mc.xP());
       if(!t.p().isNCs()){return;}
-      var pi=t.p().toNCs();
-      if(pi.hasUniqueNum()){return;}
+      var pi1=t.p().toNCs();
+      var pi=_origin(p0,pi1,mc.s(),mc.poss());
+      if(pi==null){pi=pi1;}
+      if(!pi.equals(pi1)){addP(pi);}
+      if(pi.hasUniqueNum()){assert mc.s().hasUniqueNum();return;}
       if(pi.equals(P.pThis0)){return;}
       if(mc.s().hasUniqueNum()){watched.add(pi);return;}
       usedMethods.add(new PathSel(pi, mc.s(),null));

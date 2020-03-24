@@ -50,10 +50,26 @@ public class Full {
       if(res==null){throw new LL.NotInDom(this, c);}
       return (LL)res._e();
       }
+    public LL _c(C c){
+      assert !this.isDots;
+      assert this.reuseUrl.isEmpty();
+      for(var m:this.ms){
+        if(!(m instanceof NC)){continue;}
+        var nc=(NC)m;
+        if(!nc.key.equals(c)){continue;} 
+        if(nc.e instanceof LL){return (LL)nc.e;}
+        }
+      return null;
+      }
+    @Override public LL _cs(List<C> cs){
+      if(cs.isEmpty()){return this;}
+      if(cs.size()==1){return this._c(cs.get(0));}
+      return this._c(cs.get(0))._cs(cs.subList(1,cs.size()));
+      }
     @Override public LL cs(List<C> cs){
       if(cs.isEmpty()){return this;}
       if(cs.size()==1){return this.c(cs.get(0));}
-      return this.c(cs.get(0)).cs(popL(cs));
+      return this.c(cs.get(0)).cs(cs.subList(1,cs.size()));
       }
     @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class
     F implements M,Visitable<F>{@Override public Visitable<F>visitable(){return this;}@Override public F accept(CloneVisitor cv){return cv.visitF(this);}@Override public void accept(CollectorVisitor cv){cv.visitF(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}

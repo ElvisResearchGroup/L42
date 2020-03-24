@@ -17,6 +17,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.tools.General;
 import is.L42.generated.Core.PathSel;
+import is.L42.generated.Full;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.L42AuxParser.InfoBodyContext;
@@ -43,7 +44,6 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   InfoSupplier(InjectionToCore inject, Result<InfoContext> r, Pos pos) {
     this.inject=inject;this.r = r; this.pos = pos; av = new AuxVisitor(pos);
     }
-
   P.NCs pf(PathContext pi){
     P p=inject._inject(av.visitPath(pi));
     assert p!=null;
@@ -59,15 +59,15 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     catch(NumberFormatException nfe){return -1;}
     }
   Core.PathSel psf(L42AuxParser.PathSelContext pi){
-    Core.PathSel p=inject._inject(av.visitPathSel(pi));
-    assert p!=null;
-    return p;
+    Full.PathSel tmp=av.visitPathSel(pi);
+    Core.PathSel p=inject._inject(tmp);
+    if(p!=null){return p;}
+    inject.errors.append(L(pos)+Err.invalidPathInInfo(tmp));
+    return new Core.PathSel(P.pThis0,tmp._s(),tmp._x());
     }
-
   S sf(L42AuxParser.SelectorContext si){
     return av.visitSelector(si);
     }
-
   <Z,A,T>void fillInfo(String name, Z z,Function<Z,List<A>>as, Supplier<List<T>> get, Consumer<List<T>> set,Function<A,T>f){
     if(z==null){return;}
     if(get.get()!=null){

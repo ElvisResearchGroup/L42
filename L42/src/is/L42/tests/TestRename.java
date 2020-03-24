@@ -158,7 +158,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    ),new AtomicTest(()->fail("""
      I={interface method Void foo(Void x) #norm{}}
      A={[This1.I] method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z)
-         #norm{typeDep=This1.I, refined=foo(x)}}
+         #norm{typeDep=This1.I, refined=foo(x) usedMethods=This1.I.foo(x)}}
    #norm{}}""",/*rename map after this line*/"""
      A.foo(x)=>A.bar(y)
    """,/*expected after this line*/"""
@@ -189,7 +189,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    ),new AtomicTest(()->fail("""
      I={interface method Void foo(Void x) #norm{}}
      A={[This1.I] method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z)
-         #norm{typeDep=This1.I, refined=foo(x)}}
+         #norm{typeDep=This1.I, refined=foo(x), usedMethods=This1.I.foo(x)}}
    #norm{}}""",/*rename map after this line*/"""
      A.foo(x)=><empty>
    """,/*expected after this line*/"""
@@ -198,9 +198,23 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    can not be directly renamed
    Full mapping:A.foo(x)=><empty>
    [file:[###]"""/*next test after this line*/)
-
-//TODO: test that used methods are from the non refined root, or our algorithm may fail
-//Also, as well formedness, dom(usedMethods) must be disjoing with dom(watched), since when is watched there is no need of usedMethods
+//TODO: as well formedness, dom(usedMethods) must be disjoing with dom(watched), since when is watched there is no need of usedMethods
+   ),new AtomicTest(()->pass("""
+     A={interface method Void bar() #norm{}}
+     D={interface [This1.A] method Void bar() #norm{typeDep=This1.A refined=bar()}}
+     B={
+       method Void user(This1.D d)=d.bar()
+       #norm{typeDep=This1.D,This1.A usedMethods=This1.A.bar()}
+       }
+   #norm{}}""",/*rename map after this line*/"""
+     A.bar()=><empty>
+   """,/*expected after this line*/"""
+   A={interface imm method imm Void bar::1()#norm{close}}
+   D={interface[This1.A]imm method imm Void bar::1()
+     #norm{typeDep=This1.A refined=bar::1()close}}
+   B={imm method imm Void user(imm This1.D d)=d.bar::1()
+     #norm{typeDep=This1.D, This1.A watched=This1.A}}
+   #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={interface method Void foo(Void x) method Void bar() #norm{}}
      D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
@@ -934,6 +948,11 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      method This2.EA bb(This2.EB b)=b.b()
      #norm{typeDep=This2.EA,This2.EB usedMethods=This2.EB.b()}}
    #norm{typeDep=This1.EA,This1.EB usedMethods=This1.EA.a()}}
+   EA={
+     method This1.EB a()
+     #norm{typeDep=This1.EB}}
+   EB={method This1.EA b()
+     #norm{typeDep=This1.EA}}
    """/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      method This.B aa(This.A a)=(
@@ -967,6 +986,11 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      method This2.EA bb(This2.EB b)=b.b()
      #norm{typeDep=This2.EA,This2.EB usedMethods=This2.EB.b()}}
    #norm{typeDep=This1.EA,This1.EB usedMethods=This1.EA.a()}}
+   EA={
+     method This1.EB a()
+     #norm{typeDep=This1.EB}}
+   EB={method This1.EA b()
+     #norm{typeDep=This1.EA}}
    """/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      method This.B aa(This.A a)=a.a()     

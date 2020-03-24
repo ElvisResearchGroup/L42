@@ -69,7 +69,7 @@ public class Core {
       C c=cs.get(0);
       var res=LDom._elem(ncs, c);
       if(res==null){return null;}
-      return res.l()._cs(popL(cs));
+      return res.l()._cs(cs.subList(1,cs.size()));
       }
     public boolean inDom(List<C> cs){return _cs(cs)!=null;}
     @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
@@ -81,7 +81,7 @@ public class Core {
     @Override public L cs(List<C> cs){
       if(cs.isEmpty()){return this;}
       if(cs.size()==1){return this.c(cs.get(0));}
-      return this.c(cs.get(0)).cs(popL(cs));
+      return this.c(cs.get(0)).cs(cs.subList(1,cs.size()));
       }
     public static L parse(String s) {
       var r = is.L42.common.Parse.e(Constants.dummy, s);

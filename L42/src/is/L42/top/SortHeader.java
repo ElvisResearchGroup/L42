@@ -10,6 +10,7 @@ import static is.L42.tools.General.unique;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 import is.L42.common.Constants;
 import is.L42.common.EndError;
@@ -157,28 +158,36 @@ class SortHeader{
       });
     return res;
     }
-  private static P origin(Program p,S s,List<Pos> poss) throws InvalidImplements{
-    List<P> origins=L(c->{
-      if(!refine(p,s,P.coreThis0.p().toNCs(),poss)){c.add(P.coreThis0.p());}
-      for(var t:((Core.L)p.top).ts()){
-        var tp=t.p().toNCs();
-        var l=(Core.L)p.of(tp,poss);
-        if(l.mwts().stream().noneMatch(m->m.key().equals(s))){continue;}
+  static P.NCs origin(Program p,S s,List<Pos> poss) throws InvalidImplements{
+    List<P.NCs> origins=L(c->{
+      if(!refine(p,s,P.pThis0,poss)){c.add(P.pThis0);}
+      implemented(p.top).forEach(tp->{
+        if(!hasMeth(p.of(tp,poss),s)){return;}
         if(!refine(p,s,tp,poss)){c.add(tp);}
-        }
+        });
       });
     if(origins.size()==1){return origins.get(0);}
     throw new InvalidImplements(poss,
       Err.moreThenOneMethodOrigin(s,origins));
     }
+  private static Stream<P.NCs> implemented(LL l0){
+    if(l0.isFullL()){
+      return ((Full.L)l0).ts().stream().map(t->t._p().toNCs());
+      }
+    return ((Core.L)l0).ts().stream().map(t->t.p().toNCs());
+    }
+  private static boolean hasMeth(LL l0,S s){
+    if(l0.isFullL()){
+      return ((Full.L)l0).ms().stream().anyMatch(m->m.key().equals(s));
+      }
+    return ((Core.L)l0).mwts().stream().anyMatch(m->m.mh().s().equals(s));
+    }
   private static boolean refine(Program p,S s, P.NCs path,List<Pos> poss){//Note this simplified version works only here locally
     LL l0=p.of(path,poss);
-    for(T t:((Core.L)l0).ts()){
-      var p1=p.from(t.p(), path);
-      assert !p1.equals(P.coreThis0.p());
-      var l=(Core.L)p.of(p1,poss);
-      if(l.mwts().stream().anyMatch(m->m.mh().s().equals(s))){return true;}
-      }
-    return false;
+    return implemented(l0).anyMatch(pi->{
+      var p1=p.from(pi, path);
+      assert !p1.equals(P.pThis0);
+      return hasMeth(p.of(p1,poss), s);      
+      });
     }
   }
