@@ -379,17 +379,14 @@ dropCache:
     
     Core.L l=null;
     if(e instanceof Core.L){l=(Core.L)e;}
-    else{
-      l=reduce(p,c0,e,cache.allByteCode(),cache.allLibs());//propagate errors
-      l=new UniqueNsRefresher().refreshUniqueNs(l);
-      }
+    else{l=reduce(p,c0,e,cache.allByteCode(),cache.allLibs());}//propagate errors
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
     res.coreE(e);
     res.lOut(l);    
     System.out.println(c0+ " reduced");
     assert l!=null:c0+" "+e;
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
-    Program p1=p.update(updateInfo(p,nc),false);
+    Program p1=p.update(updateInfo(p,e,nc),false);
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
     p1=flagTyped(p1,cache.allByteCode(),cache.allLibs());//propagate errors
@@ -561,9 +558,12 @@ dropCache:
     if(res.equals(info2)){return info2;}
     return res;
     }
-  private Core.L updateInfo(Program p1, Core.L.NC nc) {
+  private Core.L updateInfo(Program p1,Core.E source, Core.L.NC nc) {
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
     Core.L l=(Core.L)p1.top;
+    if(!(source instanceof LL)){
+      nc=nc.withL(new UniqueNsRefresher().refreshUniqueNs(nc.l()));
+      }
     var info=l.info();
     Deps deps=new Deps().collectDocs(nc.docs());
     if(nc.key().hasUniqueNum()){deps.collectDepsE(p1, nc.l());}

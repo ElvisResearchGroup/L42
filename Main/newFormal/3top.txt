@@ -101,7 +101,7 @@ _______
     
 * sortHeader({reuse[URL] Ms};pTail) = {interface? Ts MWTs,CORE.MWTs NCs Info+Info0 Docs}
     followURL(URL) = {interface? Ts MWTs NCs Info Docs} //with info
-    //TODO: here we need to rename the private names
+    //here we rename the private names
     dom(MWTs NCs) disjoint dom(Ms)
     CORE.MWTs = [♥MWT.Docs ♥MWT.MH e?|MWT in Ms, e?=empty, either e?=MWT.e?=empty or e?=error void otherwise]
     //we use error void to avoid triggering not well formedness of the result for unique num!=0
@@ -179,7 +179,7 @@ _______
     //class methods all subexpressions with no free var (and not calling #$s)
 * updateInfo(p,FULL.e,Docs C=L) = L0[♥Docs C=L'][Info+=collectDeps(p,Docs C=L)]
     p(This0) = L0
-    L'=refreshUniqueNames(L) if FULL.e not of form LL //TODO: may be need to be CORE.L instead of LL?
+    L'=refreshUniqueNames(L) if FULL.e not of form LL
     L'=L otherwise
 _______
 #define I!HALF.e? => ER
