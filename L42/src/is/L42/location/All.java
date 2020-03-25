@@ -1,6 +1,78 @@
 package is.L42.location;
 
-class Doc extends Location.LocationImpl<Ast.Doc,Location>{
+import java.util.List;
+
+import is.L42.common.Program;
+import is.L42.generated.C;
+import is.L42.generated.P;
+import is.L42.location.Location.LocationImpl;
+import is.L42.generated.Core.L;
+/*
+Doc
+Lib
+Method
+Path
+  all have root Lib and pathsel
+
+Pos
+AbsolutePath/ClassAny
+  do not?
+  
+Lib: isBinded, rootLib, pathFromRoot
+  fromClassAny+Cs, fromLibrary+Cs, fromType+Cs
+  nesteds
+  methods
+  infoXX
+  ...
+  infoXX
+  isInterface
+  implemented
+  infoImplementsPrivate
+  Doc
+  ListPos
+  isEnsuredCoherent ?? 
+*/
+class Util{ 
+  static TypeRefTo refTo(Program p,P path,List<C> location,L root) {
+    if(!path.isNCs()){return new TypeRefTo.Binded(path);}
+    var whereP=P.of(0,location);
+    var p0=p.from(path.toNCs(),whereP);
+    if (p0.n()==0){return new TypeRefTo.Lib(root,path);}
+    p0=p0.n(p0.n()-1);
+    return null;/*
+    try{
+      ClassB cb=p.extractClassB(path);
+      if(cb.getPhase().subtypeEq(Phase.Typed)){//typed,coherent
+        return new TypeRefTo.Binded(path);
+        }
+  //else, phase is none but cb available and not typed yet
+  return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not typed yet.");
+  }
+catch(ErrorMessage.PathMetaOrNonExistant pne){
+  if (pne.isMeta()){return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not generated yet.");}
+  return new TypeRefTo.Missing(path.toString());
+  }*/
+  }
+  
+}
+//should reuse core Pos and Doc?
+class Origin {
+  public Origin(String fileName, int line,  int column) {
+    this.fileName = fileName;
+    this.line = line;
+    this.column = column;
+    }
+  //public boolean equalequal(Object that){return this.equals(that);}
+  public String toS(){
+    return "Origin:"+fileName+"\nline " + line+ "; colum " + column;
+    }
+  final String fileName;
+  final int line;
+  final int column;
+  }
+
+class Doc{
+  
   public Doc(Ast.Doc inner,Location location) {super(inner,location);}
   public int annotationSize(){return inner.getAnnotations().size();}
   
@@ -236,103 +308,7 @@ class Doc extends Location.LocationImpl<Ast.Doc,Location>{
   @Override public int hashCode() {return primitive.hashCode();}
   }
   
-  public interface Location {
-  static TypeRefTo refTo(Program p,Path path,List<Ast.C> location,Lib root) {
-  Path whereP=Path.outer(0,location);
-  path=From.fromP(path,whereP);
-  if(path.isPrimitive()){
-    return new TypeRefTo.Binded(path);
-    }
-  if (path.outerNumber()==0){
-    return new TypeRefTo.Lib(root,path);
-    }
-  path=path.setNewOuter(path.outerNumber()-1);
-  try{
-    ClassB cb=p.extractClassB(path);
-    if(cb.getPhase().subtypeEq(Phase.Typed)){//typed,coherent
-      return new TypeRefTo.Binded(path);
-      }
-    //else, phase is none but cb available and not typed yet
-    return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not typed yet.");
-    }
-  catch(ErrorMessage.PathMetaOrNonExistant pne){
-    if (pne.isMeta()){return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not generated yet.");}
-    return new TypeRefTo.Missing(path.toString());
-    }
-  }
-
-  
-  static <T> T listAccess(List<T> list, int that) throws NotAvailable{
-    try{return list.get(that);}
-    catch(IndexOutOfBoundsException e){throw new RefactorErrors.NotAvailable();}
-    }
-  Location location();
-  Doc doc();
-  //boolean equalequal(Object that);
-  //String toS();//complicated relation with toS of Type
-  Cacher<List<Origin>> protectedOrigins();
-  static abstract class LocationImpl<T extends Expression.HasPos, L extends Location> implements Location{
-    protected Cacher<List<Origin>> protectedOrigins;
-    T inner;
-    L location;
-    @Override
-    public L location() {return location;}
-    public LocationImpl(T inner, L location){
-      this.inner=inner;
-      this.location=location;
-      this.protectedOrigins=new Cacher<List<Origin>>(){
-        public List<Origin> cache(){
-          List<Origin> origins=new ArrayList<>();
-          Position pi=inner.getP();
-          while(true){
-            if (pi==null || pi==Position.noInfo){return origins;}
-            origins.add(new Origin(pi.getFile(),pi.getLine1(),pi.getLine2(),pi.getPos1(),pi.getPos2()));
-            pi=pi.get_next();
-            }}};}
-    @Override public Cacher<List<Origin>> protectedOrigins(){return protectedOrigins;}
-    @Override
-    public int hashCode() {
-    final int prime = 31;
-    int result = 1;
-    result = prime * result + ((inner == null) ? 0 : inner.hashCode());
-    result = prime * result + ((location == null) ? 0 : location.hashCode());
-    return result;
-    }
-    @Override//Note, not just self generated
-    public boolean equals(Object obj) {
-    if (this == obj){return true;}
-    if (obj == null){return false;}
-    if (getClass() != obj.getClass()){return false;}
-    LocationImpl<?, ?> other = (LocationImpl<?, ?>) obj;
-    if (inner == null) {
-      if (other.inner != null){return false;}
-    }
-    else if (!inner.equals(other.inner)){return false;}
-    if (location == null) {
-      if (other.location != null){return false;}
-    }
-    else if(location==this && other.location==other){return true;}
-    else if (!location.equals(other.location)){return false;}
-    return true;
-    }
-    
-    }
-  default int originSize() {
-    return protectedOrigins().get().size();
-    }
-  default Origin origin(int that) throws NotAvailable{
-    return Location.listAccess(protectedOrigins().get(), that);
-    }
-  default String formatOrigins(){
-    String res="";
-    for(int i=0;i<originSize();i++){
-      try {res+=origin(i).toS();}
-      catch (NotAvailable e) {throw new Error(e);}
-      }
-    return res;
-    }
-  }
-public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
+  public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   public Method(MethodWithType inner, Lib location) {
     super(inner, location);
     }
@@ -379,105 +355,7 @@ public class Method extends Location.LocationImpl<ClassB.MethodWithType, Lib>{
   //@Override public boolean equalequal(Object that) {return this.equals(that);}
   }
 
-  public class Origin {
-  public String fileName() {
-    return fileName;
-    }
-  public void fileName(String fileName) {
-    this.fileName = fileName;
-    }
-  public int lineStart() {
-    return lineStart;
-    }
-  public void lineStart(int line) {
-    this.lineStart = line;
-    }
-  public int columnStart() {
-    return columnStart;
-    }
-  public void columnStart(int column) {
-    this.columnStart = column;
-    }
-  public int lineEnd() {
-    return lineEnd;
-    }
-  public void lineEnd(int line) {
-    this.lineEnd = line;
-    }
-  public int columnEnd() {
-    return columnEnd;
-    }
-  public void columnEnd(int column) {
-    this.columnEnd = column;
-    }
-
-  public Origin(String fileName, int lineStart, int lineEnd, int columnStart, int columnEnd) {
-    super();
-    this.fileName = fileName;
-    this.lineStart = lineStart;
-    this.lineEnd = lineEnd;
-    this.columnStart = columnStart;
-    this.columnEnd = columnEnd;
-    }
-  //public boolean equalequal(Object that){return this.equals(that);}
-  public String toS(){
-    String name = "<programUnderTest>";
-    if(L42.root!=null) {name=L42.root.toString();}
-    String f=this.fileName();
-    if(f==null){f=name;}
-    if(f.startsWith(name)){
-      f=f.substring(name.length(), f.length());
-      }
-    return "Origin:"+f+
-            "\nlines " + lineStart +
-            " to " + lineEnd +
-            "; colums " + columnStart +
-            " to " + columnEnd;
-    }
-  String fileName;
-  int lineStart;
-  int lineEnd;
-  int columnStart;
-  int columnEnd;
-  //---Generated
-  @Override
-public int hashCode() {
-final int prime = 31;
-int result = 1;
-result = prime * result + columnEnd;
-result = prime * result + columnStart;
-result = prime * result + ((fileName == null) ? 0 : fileName.hashCode());
-result = prime * result + lineEnd;
-result = prime * result + lineStart;
-return result;
-}
-@Override
-public boolean equals(Object obj) {
-if (this == obj)
-    return true;
-if (obj == null)
-    return false;
-if (getClass() != obj.getClass())
-    return false;
-Origin other = (Origin) obj;
-if (columnEnd != other.columnEnd)
-    return false;
-if (columnStart != other.columnStart)
-    return false;
-if (fileName == null) {
-if (other.fileName != null)
-    return false;
-} else if (!fileName.equals(other.fileName))
-    return false;
-if (lineEnd != other.lineEnd)
-    return false;
-if (lineStart != other.lineStart)
-    return false;
-return true;
-}
-}
-
-public interface Type extends Location{
+  public interface Type extends Location{
   Ast.Type type();
   Lib locationLib();
   default TypeRefTo refTo(PData pData) {
