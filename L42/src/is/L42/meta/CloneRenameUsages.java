@@ -2,6 +2,7 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popLRight;
 
@@ -76,7 +77,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       }
     ArrayList<P.NCs>newWatched=new ArrayList<>();
     ArrayList<P.NCs>newTypeDep=new ArrayList<>();
-    for(var p:res.typeDep()){//again; and also do the new public roots for typeDep
+    for(var p:res.typeDep()){
       if(newTypeDep.contains(p)){continue;}
       var pp=Deps._publicRoot(p);
       if(pp!=null && !newTypeDep.contains(p)){
@@ -96,8 +97,9 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       }
     ArrayList<PathSel>newUsedMethods=new ArrayList<>();
     for(var ps:res.usedMethods()){
-      if(ps.p().equals(P.pThis0)){continue;}
+      if(ps.p().equals(P.pThis0) || ps.p().hasUniqueNum()){continue;}
       if(newWatched.contains(ps.p())){continue;}
+      if(ps._s().hasUniqueNum()){newWatched.add(ps.p().toNCs());continue;}
       if(!newUsedMethods.contains(ps)){newUsedMethods.add(ps);}
       }
     assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
@@ -123,12 +125,12 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     if(t==null){return mcall;}
     var path=t.p();
     if(!path.isNCs()){return mcall;}
-    var originPath=Deps._origin(p(),path.toNCs(),mcall.s(),mcall.poss());
+    var originPath=Deps._origin(p(),path.toNCs(),mcall.s());
     if(originPath==null){originPath=path.toNCs();}
     var s2=renamedS(originPath,mcall.s());
     return mcall.withS(s2);    
     }
-  @Override public Info visitInfo(Info i){return infoRename.visitInfo(i);}
+  @Override public Info visitInfo(Info i){throw bug();}  
   private final CloneVisitor infoRename=new CloneVisitor(){
     @Override public P visitP(P path){return CloneRenameUsages.this.visitP(path);}
     @Override public S visitS(S s){//for how we use this, we can assume it is inside an Info.refined
@@ -144,14 +146,16 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     @Override public PathSel visitPathSel(PathSel s){//for how we use this, we can assume it is inside an Info.usedMethods or Docs
       var path=s.p().toNCs();
       P p2=renamedPath(path);
-      if(s._s()==null){return s.withP(p2);}
-      S s2=renamedS(path,s._s());
+      if(s._s()==null ||!p2.equals(path)){return s.withP(p2);}//never rename meth and class at the same time
+      var pathOrigin=Deps._origin(p(), path, s._s());
+      if(pathOrigin==null){return s;}
+      S s2=renamedS(pathOrigin,s._s());
       X x2=null;
       if(s._x()!=null){
         int i=s._s().xs().indexOf(s._x());
         if(i!=-1){x2=s2.xs().get(i);}
         }
-      return new PathSel(p2,s2,x2);
+      return new PathSel(p2,s2,x2);//we do not need to "watch the origin ever" so we can keep the simpler usedMethods p2
       }
     };
   }

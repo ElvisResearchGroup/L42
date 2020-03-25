@@ -41,9 +41,9 @@ public class Deps{
   ArrayList<P.NCs> watched=new ArrayList<>();
   ArrayList<PathSel> usedMethods=new ArrayList<>();
   ArrayList<P.NCs> hiddenSupertypes=new ArrayList<>();
-  public static P.NCs _origin(Program p0,P.NCs path,S s,List<Pos>poss){
-    try{return p0.from(SortHeader.origin(p0.navigate(path),s,poss),path);}
-    catch(LL.NotInDom | EndError ee){return null;}//can be more efficencent rewriting the above to avoid the exception.
+  public static P.NCs _origin(Program p0,P.NCs path,S s){
+    try{return p0.from(SortHeader.origin(p0.navigate(path),s,L()),path);}
+    catch(LL.NotInDom | EndError ee){return null;}//can be more efficent rewriting the above to avoid the exception.
     //we need the null because when adding usedMethods for methods that are not declared, we need to "guess" that they are not refined...
     }
   public static P.NCs _publicRoot(P.NCs pi){
@@ -159,16 +159,12 @@ public class Deps{
       }
     @Override public void visitP(P p){addP(p);}
     @Override public void visitMCall(Core.MCall mc){
-      System.out.println(mc);
       super.visitMCall(mc);
       var t=g(mc.xP());
       if(!t.p().isNCs()){return;}
-      var pi1=t.p().toNCs();
-      var pi=_origin(p0,pi1,mc.s(),mc.poss());
-      if(pi==null){pi=pi1;}
-      if(!pi.equals(pi1)){addP(pi);}
-      if(pi.hasUniqueNum()){assert mc.s().hasUniqueNum();return;}
-      if(pi.equals(P.pThis0)){return;}
+      var pi=t.p().toNCs();
+      if(pi.equals(P.pThis0)||pi.hasUniqueNum()){return;}//mc.s() can be public if is implemented
+      //it is irrelevant to watch or not interface methods, since interfaces can not be made abstract anyway
       if(mc.s().hasUniqueNum()){watched.add(pi);return;}
       usedMethods.add(new PathSel(pi, mc.s(),null));
       }

@@ -30,29 +30,37 @@ _______
 #define allWatched(Core.L,Map)
 * allWatched(L,Map)=allWatched(L\Csz)//all watched without considering Cs1..Csn
   Csz={Cs| Cs->empty in Map or Cs=>P in Map}
+
+* makeAbstractOk(p,Cs,L?,L,Map)
+    Cs not in allWatched(L,Map)
+    openImplements(p.navigate(Cs))
+    L?=empty or L?.interface?=empty
+    
 _______
 #define earlyCheck(Core.L,Map)  earlyCheck(Core.L,Map,N|>N')
 * earlyCheck(L,Map)
     forall N|>N' in Map, earlyCheck(L,Map,N|>N') //N not of form empty (implicit by the cases below)
     if Cs in dom(map) U cod(map)
       then Cs.s not in dom(map) U cod(map)
+    if Cs.s in dom(Map) and L(Cs).interface?=interface
+      forall C1..Cn in dom(map) U cod(map)
+        This0.Cs not in L(C1..Cn).Ts.Ps[from C1..Cn;{}]
     Map is a map, thus no two tuples with the same Cs(.s?) key
 
-* earlyCheck(L,Map,N|>N')
+* earlyCheck(p,L,Map,N|>N')//p(This0)=L
     N|> N' not in {empty=><empty>,empty=>P} //TODO: add in code
     if N of form Cs, then  Cs in dom(L)
     if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
     N,N' do not have unique numbers
     if N|>N'= Cs=>P then 
-      Cs notin allWatched(L,Map)
+      makeAbstractOk(p,Cs,empty,L,Map)
       forall s in dom(L(Cs)) where s has no unique n
         L(Cs)(s).e?=empty
         if This0.Cs' in (L(Cs)(s).T,L(Cs)(s).pars,L(Cs)(s).exceptions)[from Cs;{}]
         then Cs'=>P' in Map
-    if N = Cs.s then N' in{Cs.s',empty}, s!=s'
-    if N = Cs then N' in{Cs',P,empty} Cs!=Cs'
-    if N|>N'of form Cs->_
-      then Cs not in allWatched(L,Map) 
+    if N = Cs.s then N' in {Cs.s',empty}, s!=s'
+    if N = Cs then N' in {Cs',P,empty} Cs!=Cs'
+    if N|>N'of form Cs->_ then makeAbstractOk(p,Cs,empty,L,Map) 
     if N|>N'of form Cs.s|>Cs'.s'
       then Cs=Cs' and size(s.xs)=size(s'.xs)
     if N|>N' = Cs|>Cs'
@@ -84,7 +92,6 @@ _______
 * rename(p;Map) = L2;AddMap,AddMap0
     Rename[p;cs=empty;Map] p(This0) = L1;AddMap        
     if empty->Cs' in Map:
-      empty notin allWatched(L,Map)
       noCircular(p;L;empty)
       noExposeUniqueN(L)
       n=sizeOf(Cs')
@@ -94,7 +101,6 @@ _______
       //NOTE: the code select a "not so fresh C1, thus removing C1 is a little harder
       //anyway, to be faster we do the 3 operations in one.
     if empty-><empty> in Map:
-      empty notin allWatched(L,Map)
       noExposeUniqueN(L)      
       L2=L1[toAbstract], AddMap0=empty
     if empty=>Cs' in Map:
@@ -114,7 +120,7 @@ _______
     Rename usages L0=L1//only renames Ts, Info and NC docs, the rest already happended
 * Rename(Info) = Info'
     add close if L is interface and exists a method hiding on p(Cs)
-    if Cs'.m(xs) in Info.usedMethod and Cs'.m(xs)=>Cs'.m::n(xs) in Rename.Map
+    if Cs'.m(xs) in Info.usedMethod and origin(Cs'.m(xs)).m(xs)=>Cs'.m::n(xs) in Rename.Map
       Info' removes the usedMethod and add watched+typeDep (still, never watch This0)
     if Cs'.C in Info.typeDep and Cs'.C=>Cs'.C::n in Rename.Map
       Info' adds the watched+typeDep Cs'  (still, never watch This0)
@@ -141,16 +147,16 @@ _______
     or Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
        s notin Rename.p(Rename.Cs).Info.refined
        Cs notin allHiddenSupertypes(p.top)//Reason: if it was implemented in an L inside a meth body, we may turn an abstract method private
-       and Rename.p(Rename.Cs).interface?=interface 
-    if Rename.p(Rename.Cs).interface?=interface
-    then mwt.e?!=empty
+       Rename.p(Rename.Cs).interface?=interface 
+    if Rename.p(Rename.Cs).interface?=interface then mwt.e?!=empty
 //2: simple interface method rename
 * Rename(mwt) = empty;Rename.Cs->mwt[s=s']
     either Cs0.(mwt.s)=>Cs0.s' in Map and This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
     or Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
        s notin Rename.p(Rename.Cs).Info.refined
        Rename.Cs notin allHiddenSupertypes(p.top)//allHiddenSupertypes excludes redirected and abstracted members
-       and Rename.p(Rename.Cs).interface?=interface
+       Rename.p(Rename.Cs).interface?=interface
+       
 //3: method toAbstract
 * Rename(mwt) = mwt[e?=empty];empty
     Rename.Cs.(mwt.s)->empty in Map
@@ -172,14 +178,12 @@ _______
     s notin p(Rename.Cs).Info.refined
 //7: nested super
 * Rename(Docs C=L) = Docs C=L[toAbstract];empty -> L'
-    Rename.Cs.C->empty in Map
-    Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
+    Rename.Cs.C->empty in Rename.Map //bringing at top level
     L'=L[noNesteds][pushThis0Out C][from This0.(Rename.Cs.C);{};-1]//NOTE THE -1, it is not the normal from!
     noCircular(p;L;(Rename.Cs).C)
     noExposeUniqueN(L)
 * Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L'
     Rename.Cs.C->Cs'.C' in Rename.Map
-    Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
     n=sizeOf(Cs')
     p=Rename.p.navigate(Cs')//Cs' may not be in dom(p), see forcedNavigate in the code
     L'=L[noNesteds][pushThis0Out C][from p.minimize(Thisn.(Rename.Cs));p;-1]//NOTE THE -1, it is not the normal from!
@@ -190,7 +194,6 @@ _______
 * Rename(Docs C=L) = Docs C=L[toAbstract];empty
     noExposeUniqueN(L)
     Rename.Cs.C-><empty> in Rename.Map
-    Rename.Cs.C notin allWatched(Rename.p(This0),Rename.Map)
 //9:nested rename
 * Rename(Docs C=L) = (C=L)[onlyNesteds];empty->L'
     Rename.Cs.C => empty in Map
@@ -211,10 +214,8 @@ _______
     Cs.C => P in Map
     P in {Any,Void,Library}
     L.MWTs=empty
-    assert Cs.C notin allWatched(Rename.p(This0),Rename.Map)//checked already before?
 * Rename(C=L) = (C=L)[onlyNesteds];empty
     Cs.C => Thisn.Cs' in Map
-    assert Cs.C notin allWatched(Rename.p(This0),Rename.Map)//checked already before?
     P=This(n+sizeOf(Cs.C)).Cs'
     p=Rename.p.navigate(Cs.C)
     forall MWT in L.MWTs://they should have been already "internally renamed"

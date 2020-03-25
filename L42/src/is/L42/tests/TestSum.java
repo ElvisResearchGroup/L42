@@ -244,7 +244,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      C={ #norm{typeDep=This1.I coherentDep=This1.I}}
    #norm{}}""",/*expected lib after this line*/"""
      nested class I={ }
-     The nested class can not be turned into an interface, since it is used with 'class' modifier (is required coherent)
+     The nested class can not be turned into an interface; since it is used with 'class' modifier (is required coherent)
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      I={interface #norm{}}
@@ -429,6 +429,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*expected lib after this line*/"""
    nested class A={interface foo() }
    This interface is privately implemented  but the summed version is larger: {interface bar() }
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void foo::1() #norm{close}}
+     A={[This1.I] method Void foo::1()=void #norm{typeDep=This1.I refined=foo::1()}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={interface #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+   nested class A={ [ This1.I ] }
+   The nested class can not be turned into an interface; a close interface is implemented
    [file:[###]"""/*next test after this line*/)
    ));}
    @Test public void test2(){

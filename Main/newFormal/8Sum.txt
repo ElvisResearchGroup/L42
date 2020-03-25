@@ -152,13 +152,19 @@ _______
 * empty PLUS interface=interface
     PLUS.Cs notin allRequiredCoherent(PLUS.topLeft)
     PLUS.Cs notin allWatched(PLUS.topLeft)
+    openImplements(PLUS.p.push(PLUS.cOut,topLeft).navigate(PLUS.Cs))
     forall MWT in PLUS.topLeft(PLUS.Cs).MWTs://all public methods are abstract
       if MWT.s not of form _::n(_) then MWT.e?=empty
     //no public impl methods (thus since not watched, privates can be trashed)
 * interface PLUS empty=interface//same but reversed
     PLUS.Cs notin allRequiredCoherent(PLUS.topRight)
     PLUS.Cs notin allWatched(PLUS.topRight)
+    openImplements(PLUS.p.push(PLUS.cOut,topRight).navigate(PLUS.Cs))
     forall MWT in PLUS.topRight(PLUS.Cs).MWTs: if MWT.s not of form _::n(_) then MWT.e?=empty
+* openImplements(p)//also used by Rename 
+    forall P in p(This0).Ts.Ps
+      P do not have unique numbers
+      p(P).Info.closed = undefined //thus, the interface exists as CORE.L and is not closed
 _______ 
 #define L1 > L2    implemented(L,Cs)=interface?
 * L1 > L2
@@ -171,3 +177,15 @@ _______
       This0.Cs notin L(Cs').Ts.Ps[from This0.Cs';{}]
       This0.Cs notin L(Cs').Info.hiddenSupertypes[from This0.Cs';{}]
 * implemented(L,Cs)=interface otherwise
+
+-info update in rename becomes harder
+
+NOTE: is irrelevant to watch or not interface methods
+ -An interrface must be watched if the private nesteds are used
+ -Irrelevant if watched or not because private method are used, since interfaces can not be made abstract anyway
+
+//TODO in well formed, if an interface implements a closed interface, it must also be closed.
+//not true now just because close interface is overapproximation :)
+//also, interface must be closed if implements private interface!
+//TODO: as well formedness, dom(usedMethods) must be disjoing with dom(watched),
+// since when is watched there is no need of usedMethods

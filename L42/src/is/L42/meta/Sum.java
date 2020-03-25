@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import is.L42.common.EndError;
@@ -31,6 +32,7 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
+import is.L42.generated.LL;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.MH;
 import is.L42.generated.P;
@@ -267,19 +269,28 @@ public class Sum {
     if(!inMap && !res.isEmpty()){map.put(cs, res);}
     }
   public static void paths(ArrayList<P.NCs> c,Core.L l,Program p0,P.NCs source){
-      //Can be false when called under rename, since emptyLs are added 
-      //assert l.isInterface(); 
-      l.withNcs(L()).accept(new Accumulate<Void>(){
-        @Override public void visitP(P p){
-          if(!p.isNCs()){return;}
-          P pp=p0.from(p,source);
-          if(!c.contains(pp)){c.add(pp.toNCs());}
-          }
-        @Override public void visitMWT(MWT m){
-          if(!m.key().hasUniqueNum()){super.visitMWT(m);}
-          }
-        });
+    //Can be false when called under rename, since emptyLs are added 
+    //assert l.isInterface(); 
+    l.withNcs(L()).accept(new Accumulate<Void>(){
+      @Override public void visitP(P p){
+        if(!p.isNCs()){return;}
+        P pp=p0.from(p,source);
+        if(!c.contains(pp)){c.add(pp.toNCs());}
+        }
+      @Override public void visitMWT(MWT m){
+        if(!m.key().hasUniqueNum()){super.visitMWT(m);}
+        }
+      });
+    }
+  public static void openImplements(Program p,Consumer<String> err){
+    for(T t:p.topCore().ts()){
+      var path=t.p().toNCs();
+      if(path.hasUniqueNum()){err.accept("a private interface is implemented");}
+      LL l=p.pop(path.n()).top._cs(path.cs());
+      if(l==null || l.isFullL()){err.accept("an undefined interface is implemented");}
+      if(((Core.L)l).info().close()){err.accept("a close interface is implemented");}
       }
+    }
   class Plus{
     public Plus(Plus other, C c) {this.cs=pushL(other.cs, c);}
     public Plus(List<C> cs) {this.cs=cs;}
@@ -532,24 +543,23 @@ public class Sum {
         errC.throwErr(cs,topLeftCs,"The two nested classes are both closed, thus can not be composed.");
         }
       if(!interface1 && interface2){
-        return differentInterfaces(allRequiredCoherentLeft,allWatchedLeft,topLeftCs);  
+        Program pCs=pOut.push(cOut,topLeft).navigate(cs);
+        return differentInterfaces(allRequiredCoherentLeft,allWatchedLeft,topLeftCs,pCs);  
         }
       assert interface1 && !interface2;
-      return differentInterfaces(allRequiredCoherentRight,allWatchedRight,topRightCs);
+      Program pCs=pOut.push(cOut,topRight).navigate(cs);
+      return differentInterfaces(allRequiredCoherentRight,allWatchedRight,topRightCs,pCs);
       }
-    boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, Core.L topCs){
-      boolean required=coherents.contains(cs);
-      if(required){
-        errC.throwErr(cs, topCs,"The nested class can not be turned into an interface, since it is used with 'class' modifier (is required coherent)");
-        }
-      boolean watched=watcheds.contains(cs);        
-      if(watched){
-        errC.throwErr(cs, topCs,"The nested class can not be turned into an interface; since its privates are used by other code (is watched)");
-        }
+    boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, Core.L topCs,Program pCs){
+      var errBase="The nested class can not be turned into an interface; "; 
+      var errCoherent=errBase+"since it is used with 'class' modifier (is required coherent)";
+      if(coherents.contains(cs)){errC.throwErr(cs, topCs,errCoherent);}
+      var errWatched=errBase+"since its privates are used by other code (is watched)";
+      if(watcheds.contains(cs)){errC.throwErr(cs, topCs,errWatched);}
+      var errImplemented=errBase+"some public methods are implemented";
       boolean absPublic=topCs.mwts().stream().allMatch(m->m._e()==null||m.key().hasUniqueNum());
-      if(!absPublic){
-        errC.throwErr(cs, topCs,"The nested class can not be turned into an interface; some public methods are implemented");
-        }
+      if(!absPublic){errC.throwErr(cs, topCs,errImplemented);}
+      openImplements(pCs,s->errC.throwErr(cs,topCs,errBase+s));
       return true;
       }
     }

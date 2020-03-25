@@ -297,11 +297,13 @@ _______
       ]
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) +..+ collectDepsE(p;en)+Info[watched=P? usedMethods=(P.s)?]
     e0=xP,
-    P'=G(xP)
-    P=origin(p.navigate(P'),m(x1..xn))[from P';p]//if P!=P', it may also be added in typeDep
+    P=G(xP)
     either P has private numbers, and P?=(P.s)?=empty
-    or m has private numbers and P?=G(xP), (P.s)?=empty //G is computed during the traversal
-    or P?=empty and (P.s)?=G(xP).m(x1..xn)
+    otherwise m has private numbers and P?=G(xP), (P.s)?=empty //G is computed during the traversal
+    otherwise P?=empty and (P.s)?=G(xP).m(x1..xn)
+    NOTE: is irrelevant to watch or not interface methods
+    -An interrface must be watched if the private nesteds are used
+    -Irrelevant if watched or not because private method are used, since interfaces can not be made abstract anyway
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;P<:class Any)= Info[typeDep=P] //only if P not Any/Void/Library
 * collectDepsE(p;P<:class P')= Info[typeDep=P',P;coherentDep=P]

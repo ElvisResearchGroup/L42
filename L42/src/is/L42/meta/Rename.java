@@ -118,10 +118,14 @@ public class Rename {
   LinkedHashSet<List<C>> allHiddenSupertypes;
   C cOut;
   
-  void allWatchedAbstractErr(List<C> cs0){
-    if(!allWatched.contains(cs0)){return;}
-    err(errFail,()->"The "+errFail.intro(cs0,false)
-      +"can not be made abstract since is watched by "+errFail.intro(watchedBy(p.topCore(),cs0),false));
+  void makeAbstractOk(L _l,List<C> cs){
+    if(allWatched.contains(cs)){err(errFail,errFail.intro(cs,false)
+      +"The implementation can not be removed since the class is watched by "
+      +errFail.intro(watchedBy(p.topCore(),cs),false));}
+    if(_l!=null && _l.isInterface()){err(errFail,errFail.intro(cs,false)
+      +"The implementation can not be removed since the class is an interface");}
+    Sum.openImplements(p.navigate(cs),
+      s->err(errFail,errFail.intro(cs,false)+"The implementation can not be removed; "+s));
     }
   public Core.L apply(Program pOut,C cOut,Core.L l,List<Arrow>list,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     this.list=list;
@@ -228,10 +232,22 @@ public class Rename {
       }
     assert !domCodom.contains(null);
     for(var a:map.values()){
-      if(a.isMeth()){
-        assert a.cs.equals(a._cs);
-        if(domCodom.contains(a.cs)){
-          err(errFail,errFail.intro(a.cs,false)+"is already involved in the rename; thus "+errFail.intro(a.cs,a._s)+"can not be renamed");
+      if(!a.isMeth()){continue;}
+      assert a.cs.equals(a._cs);
+      if(domCodom.contains(a.cs)){
+        err(errFail,errFail.intro(a.cs,false)+"is already involved in the rename; thus "+errFail.intro(a.cs,a._s)+"can not be renamed");
+        }
+      L l=p._ofCore(a.cs);
+      assert l!=null;
+      if(!l.isInterface()){continue;}
+      for(var cs:domCodom){
+        L li=p._ofCore(cs);
+        if(li==null){continue;}
+        for(T t:li.ts()){
+          List<C> cs0=Sum._publicCsOfP(t.p(), cs);
+          if(!cs0.equals(a.cs)){continue;}
+          err(errFail,errFail.intro(cs,false)+"is already involved in the rename; thus "
+            +errFail.intro(a.cs,a._s)+"can not be renamed: is an interface method refined by such nested class");
           }
         }
       }
@@ -260,7 +276,7 @@ public class Rename {
         err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class on itself");
         }
       }
-    if(!that.full && that._s==null){allWatchedAbstractErr(that.cs);}
+    if(!that.full && that._s==null){makeAbstractOk(l,that.cs);}
     if(that._s!=null && !that.isEmpty()){
       assert that.isMeth();
       if(!that._cs.equals(that.cs)){
@@ -279,13 +295,12 @@ public class Rename {
     if(priv){err(errFail,"A mapping using unique numbers was attempted");}//Should it be prevented before
     }
   private void earlyCheckP(Arrow that, L l){
-    if(allWatched.contains(that.cs)){
-      err(errFail,"Redirected classes need to be fully abstract and not watched, but is watched by "+errFail.intro(watchedBy(p.topCore(), that.cs),false));
-      }
+    makeAbstractOk(null,that.cs);
     for(var mwt:l.mwts()){
       if(mwt.key().hasUniqueNum()){return;}
       if(mwt._e()!=null){
-        err(errFail,"Redirected classes need to be fully abstract and not watched, but the following mapping is present: "+that.toStringErr()+"\nand "+errFail.intro(mwt,false)+"is implemented");
+        err(errFail,errFail.intro(that.cs,false)+
+          "Redirected classes need to be fully abstract and "+errFail.intro(mwt,false)+"is implemented");
         }
       var ts=new ArrayList<T>();
       ts.add(mwt.mh().t());
@@ -346,10 +361,7 @@ public class Rename {
     Arrow a=map.get(new Arrow(L(),null));
     if(a==null){return l1;}
     if(a.isMeth()){return l1;}
-    if(!a.full){
-      allWatchedAbstractErr(L());
-      noExposeUniqueN(l1);
-      }
+    if(!a.full){noExposeUniqueN(l1);}
     if(!a.full && a.isCs()){
       noCircular(l1,L());
       int n=a._cs.size();
@@ -395,9 +407,6 @@ public class Rename {
     if(a==null){return L(nc);}
     List<C> csc=pushL(cs,nc.key());
     if(!a.full){//either 7 or 8
-      if(allWatched.contains(csc)){err(errFail,errFail.intro(csc,false)
-        +"The implementation can not be removed since the class is watched by "
-        +errFail.intro(watchedBy(p.topCore(),csc),false));}
       if(a.isEmpty()){return L(rename8restrictNC(nc));}
       return L(rename7superNC(nc,csc,a));
       }

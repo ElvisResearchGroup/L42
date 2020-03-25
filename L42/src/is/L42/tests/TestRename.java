@@ -198,13 +198,12 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    can not be directly renamed
    Full mapping:A.foo(x)=><empty>
    [file:[###]"""/*next test after this line*/)
-//TODO: as well formedness, dom(usedMethods) must be disjoing with dom(watched), since when is watched there is no need of usedMethods
    ),new AtomicTest(()->pass("""
      A={interface method Void bar() #norm{}}
      D={interface [This1.A] method Void bar() #norm{typeDep=This1.A refined=bar()}}
      B={
        method Void user(This1.D d)=d.bar()
-       #norm{typeDep=This1.D,This1.A usedMethods=This1.A.bar()}
+       #norm{typeDep=This1.D usedMethods=This1.D.bar()}
        }
    #norm{}}""",/*rename map after this line*/"""
      A.bar()=><empty>
@@ -213,9 +212,35 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    D={interface[This1.A]imm method imm Void bar::1()
      #norm{typeDep=This1.A refined=bar::1()close}}
    B={imm method imm Void user(imm This1.D d)=d.bar::1()
-     #norm{typeDep=This1.D, This1.A watched=This1.A}}
+     #norm{typeDep=This1.D watched=This1.D}}
    #norm{}}"""/*next test after this line*/)
-   ),new AtomicTest(()->pass("""
+   ),new AtomicTest(()->fail("""
+   A={interface imm method imm Void bar::1()#norm{close}}
+   D={interface[This1.A]imm method imm Void bar::1()
+     #norm{typeDep=This1.A refined=bar::1()close}}
+   B={imm method imm Void user(imm This1.D d)=d.bar::1()
+     #norm{typeDep=This1.D watched=This1.D}}
+   #norm{}}""",/*rename map after this line*/"""
+     D.-><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} D={..} B={..} }
+   nested class D
+   The implementation can not be removed since the class is watched by nested class B
+   Full mapping:D-><empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+   A={interface imm method imm Void bar::1()#norm{close}}
+   D={[This1.A]imm method imm Void bar::1()=void
+     #norm{typeDep=This1.A refined=bar::1()}}
+   #norm{}}""",/*rename map after this line*/"""
+     D.-><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} D={..} }
+   nested class D
+   The implementation can not be removed; a close interface is implemented
+   Full mapping:D-><empty>
+   [file:[###]"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
      A={interface method Void foo(Void x) method Void bar() #norm{}}
      D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
      DC={[This1.D,This1.A] method Void foo(Void x)=x method Void bar() #norm{typeDep=This1.D,This1.A refined=foo(x) bar()}}
@@ -523,8 +548,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.->B.
    """,/*expected after this line*/"""
    nested class { A={..} C={..} }
-   The nested class A
-   can not be made abstract since is watched by nested class C
+   nested class A
+   The implementation can not be removed since the class is watched by nested class C
    Full mapping:A->B
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -583,8 +608,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.=>#This1.K
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
-   Redirected classes need to be fully abstract and not watched, but the following mapping is present: A=>This1.K
-   and imm method imm This1.B s(imm This1.B x)=(..)
+   nested class A
+   Redirected classes need to be fully abstract and imm method imm This1.B s(imm This1.B x)=(..)
    is implemented
    Full mapping:A=>This1.K
    [file:[###]"""/*next test after this line*/)
@@ -594,7 +619,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.=>#This1.K
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
-   Redirected classes need to be fully abstract and not watched, but is watched by nested class B
+   nested class A
+   The implementation can not be removed since the class is watched by nested class B
    Full mapping:A=>This1.K
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -637,8 +663,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.-><empty>
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
-   The nested class A
-   can not be made abstract since is watched by nested class A.C
+   nested class A
+   The implementation can not be removed since the class is watched by nested class A.C
    Full mapping:A-><empty>
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
@@ -676,8 +702,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.->C.
    """,/*expected after this line*/"""
    nested class { A={..} B={..} K={..} }
-   The nested class A
-   can not be made abstract since is watched by nested class A.C
+   nested class A
+   The implementation can not be removed since the class is watched by nested class A.C
    Full mapping:A->C
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
@@ -800,8 +826,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      ->C.
    """,/*expected after this line*/"""
    nested class { s(x)=(..) C={..} }
-   The nested class This0
-   can not be made abstract since is watched by nested class C
+   nested class This0
+   The implementation can not be removed since the class is watched by nested class C
    Full mapping:This0->C
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
@@ -835,8 +861,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      -><empty>
    """,/*expected after this line*/"""
    nested class { v()=(..) B={..} }
-   The nested class This0
-   can not be made abstract since is watched by nested class B
+   nested class This0
+   The implementation can not be removed since the class is watched by nested class B
    Full mapping:This0-><empty>
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
@@ -1060,9 +1086,22 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    A.-><empty>
    """,/*expected after this line*/"""
    nested class { a(a)=(..) A={..} B={..} C={..} }
-   The nested class A
-   can not be made abstract since is watched by nested class C
+   nested class A
+   The implementation can not be removed since the class is watched by nested class C
    Full mapping:A-><empty>
+   [file:[###]"""/*next test after this line*/)
+       ),new AtomicTest(()->fail("""
+    A={interface method Void foo() #typed{}}
+    B={[This1.A] method Void foo()=void #typed{typeDep=This1.A refined=foo()}}
+    #typed{}}
+    """,/*rename map after this line*/"""
+   A.foo()=>A.bar() | B.=>C.
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} }
+   nested class B
+   is already involved in the rename; thus method A.foo()
+   can not be renamed: is an interface method refined by such nested class
+   Full mapping:A.foo()=>A.bar();B=>C
    [file:[###]"""/*next test after this line*/)
    ));}
 }

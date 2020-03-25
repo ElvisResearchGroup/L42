@@ -165,8 +165,8 @@ TestRename2=(
     expected=S"""
       |Message toFix(toFix):
       |nested class { a(a)=(..) A={..} B={..} C={..} }
-      |The nested class A
-      |can not be made abstract since is watched by nested class C
+      |nested class A
+      |The implementation can not be removed since the class is watched by nested class C
       |Full mapping:A-><empty>
       |[file:[###]
       """.trim())
@@ -175,8 +175,8 @@ TestRename2=(
     expected=S"""
       |Message toFix(toFix):
       |nested class { a(a)=(..) A={..} B={..} C={..} }
-      |The nested class A
-      |can not be made abstract since is watched by nested class C
+      |nested class A
+      |The implementation can not be removed since the class is watched by nested class C
       |Full mapping:A-><empty>
       |[file:[###]
       """.trim())
