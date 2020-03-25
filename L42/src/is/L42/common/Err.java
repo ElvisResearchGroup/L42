@@ -215,6 +215,8 @@ public class Err {
   "Invalid path in info: "+_1
   ;}public static String infoPathNotInTyped(Object _1,Object _2){return
   "The following paths listed in "+_1+" are not found in typeDep: "+_2   
+  ;}public static String infoWatchedUsedDisjoint(Object _1){return
+  "Path "+_1+" is listed as both watched and usedMethods"   
   ;}public static String nestedClassesImplemented(Object _1){return
   "some nested classes are implemented before they are defined: "+_1  
   ;}public static String noDocWithReuseOrDots(Object _1, Object _2){return

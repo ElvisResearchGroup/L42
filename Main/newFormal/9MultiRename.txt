@@ -48,7 +48,7 @@ _______
     Map is a map, thus no two tuples with the same Cs(.s?) key
 
 * earlyCheck(p,L,Map,N|>N')//p(This0)=L
-    N|> N' not in {empty=><empty>,empty=>P} //TODO: add in code
+    N|> N' not in {empty=><empty>,empty=>P}
     if N of form Cs, then  Cs in dom(L)
     if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
     N,N' do not have unique numbers
@@ -108,7 +108,6 @@ _______
       L2={ncs}//and empty info
       AddMap0 = L1[noNesteds][from p.minimize(Thisn);p.navigate(Cs')]
     otherwise L2=L1, AddMap0=empty
-    TODO: add ifs in code
 * Rename[p;Cs;Map] L = L1;AddMap,AddMap',AddMap1..AddMapn
     assert p(Cs)=L
     L={interface? Ts mwts ncs Info}

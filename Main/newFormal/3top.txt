@@ -11,6 +11,8 @@ _______
     forall LL0, LL1 anywhere inside different places: uniqueNs(p,LL0)\0 disjoint uniqueNs(p,LL1)\0
     after the p.minimize happened everywhere, check that for any reached p=CORE.L;pTail:
       if Info.Flag=typed  then Info.typeDep subseteq dom(p) and norm |- p
+      //NO, a closed interface can be implemented by an open one, no problem.
+      //NOPE if CORE.L.interface?=interface and not Info.close then none of p(CORE.L).ts().ps() are closed
       Info0.watched subseteq Info.watched,
       This0 not in Info.watched
       ??? usedMethods=(P.s)s,

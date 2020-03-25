@@ -261,6 +261,10 @@ public class Rename {
       if(mwt==null){err(errName,errName.intro(that.cs,that._s)+"does not exists");}
       }
     earlyCheckNoUniqueNum(that);
+    if(that.full && that.cs.isEmpty()){
+      if(that.isP()){err(errFail,"'This' can not be redirected away");}
+      if(that.isEmpty()){err(errFail,"'This' can not be hidden");}
+      }
     if(that.isP()){earlyCheckP(that, l);}
     if(that._s!=null){
       if(!that.isEmpty() &&!that.isMeth()){

@@ -1090,7 +1090,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    The implementation can not be removed since the class is watched by nested class C
    Full mapping:A-><empty>
    [file:[###]"""/*next test after this line*/)
-       ),new AtomicTest(()->fail("""
+   ),new AtomicTest(()->fail("""
     A={interface method Void foo() #typed{}}
     B={[This1.A] method Void foo()=void #typed{typeDep=This1.A refined=foo()}}
     #typed{}}
@@ -1102,6 +1102,27 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already involved in the rename; thus method A.foo()
    can not be renamed: is an interface method refined by such nested class
    Full mapping:A.foo()=>A.bar();B=>C
+   [file:[###]"""/*next test after this line*/)
+   
+  ),new AtomicTest(()->fail("""
+    A={method Void foo() #typed{}}
+    #typed{}}
+    """,/*rename map after this line*/"""
+   =><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   'This' can not be hidden
+   Full mapping:This0=><empty>
+   [file:[###]"""/*next test after this line*/)
+  ),new AtomicTest(()->fail("""
+    A={method Void foo() #typed{}}
+    #typed{}}
+    """,/*rename map after this line*/"""
+   =>#Any
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   'This' can not be redirected away
+   Full mapping:This0=>Any
    [file:[###]"""/*next test after this line*/)
    ));}
 }

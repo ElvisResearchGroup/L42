@@ -125,9 +125,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
     }
   public static boolean checkInfo(Program p,Core.L l){
-    if(l.info().watched().contains(P.pThis0)){
-      throw new EndError.NotWellFormed(l.poss(),Err.noSelfWatch());
-      }
     Deps deps=new Deps().collectDeps(p,l.mwts());
     deps.collectDepsNCs(p,l.ncs());    
     deps.collectDocs(l.docs());
@@ -655,6 +652,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     typedContains(info,info.nativePar().stream(),"nativePar");
     typedContains(info,info.usedMethods().stream().map(ps->ps.p()),"usedMethods");
     typedContains(info,info.watched().stream(),"watched");
+    for(var p:info.watched()){
+      if(p.equals(P.pThis0)){throw new EndError.NotWellFormed(lastPos,Err.noSelfWatch());}
+      for(var ps:info.usedMethods()){
+        if(!p.equals(ps.p())){continue;}
+        throw new EndError.NotWellFormed(lastPos,Err.infoWatchedUsedDisjoint(p));
+        }
+      }
     }
   public void superVisitL(Core.L l){
     lastPos=l.poss();
@@ -669,7 +673,6 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(!m.key().hasUniqueNum()){continue;}
       validPrivateNested(m.poss(),m.key(),m.l());
       }
-
     var bridges=bridge(l.mwts());
     var classMhs=L(l.mwts().stream().filter(m->
       m.mh().mdf().isClass() && m._e()==null && m.key().hasUniqueNum()
@@ -690,9 +693,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(mhj.key().m().startsWith("#$")){continue;}
       err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
       }}
-    boolean mustClose=!hasOpenState(l,bridges)
-      || (l.isInterface() && l.mwts().stream().anyMatch(m->m.key().hasUniqueNum()))
-      || (l.isInterface() && l.ts().stream().anyMatch(t->t.p().toNCs().hasUniqueNum()));
+    boolean mustClose=!hasOpenState(l,bridges);
+    if(!mustClose && l.isInterface()){
+       mustClose= l.mwts().stream().anyMatch(m->m.key().hasUniqueNum())
+        || l.ts().stream().anyMatch(t->t.p().hasUniqueNum());
+      }
     if(mustClose){
       if(!l.info().close()){err(Err.mustHaveCloseStateBridge(
         L(classMhs.stream().map(m->m.key())),
