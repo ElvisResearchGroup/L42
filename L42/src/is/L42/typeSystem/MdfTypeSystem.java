@@ -47,7 +47,8 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     expected=oldE;
     }
   void errIf(boolean cond,E e,String msg){
-    if(cond){throw new EndError.TypeError(e.poss(),msg);}
+    if(cond){
+    throw new EndError.TypeError(e.poss(),msg);}
     }
   void mustSubMdf(Mdf m1,Mdf m2,List<Pos> poss){
     if(!Program.isSubtype(m1, m2)){

@@ -1,0 +1,80 @@
+package is.L42.meta;
+
+import static is.L42.tools.General.L;
+
+import java.util.List;
+import java.util.stream.Collectors;
+
+import is.L42.cache.L42CacheMap;
+import is.L42.cache.nativecache.ValueCache;
+import is.L42.common.Constants;
+import is.L42.common.Parse;
+import is.L42.generated.C;
+import is.L42.generated.P;
+import is.L42.generated.S;
+import is.L42.generated.X;
+import is.L42.platformSpecific.javaTranslation.L42NoFields;
+import is.L42.visitors.AuxVisitor;
+
+public class L42£Name extends L42NoFields<L42£Name>{
+  private L42£Name(String toString,List<C> cs,S _s,X _x){
+    this.toString=toString;this.cs=cs;this._s=_s;this._x=_x;
+    if(_x==null){return;}
+    if(_s==null){throw new NumberFormatException();}
+    if(!_x.equals(X.thisX) && !_s.xs().contains(_x)){throw new NumberFormatException();} 
+    }
+  private final String toString;
+  final List<C> cs;
+  final S _s;
+  final X _x;
+  private static String cs(List<C> cs){
+    if(cs.isEmpty()){return "This";}
+    return cs.stream().map(c->c.toString()).collect(Collectors.joining("."));
+    }
+  private static String norm(List<C> cs,S _s, X _x){
+    assert _s!=null|| _x==null;
+    if(_s==null){return cs(cs);}
+    if(_x==null){return cs(cs)+"."+_s;}
+    return cs(cs)+"."+_s+"."+_x;
+    }
+  private static L42£Name res(List<C> cs,S _s, X _x){
+    String norm=norm(cs,_s,_x);
+    return new L42£Name(norm,cs,_s,_x).myNorm();
+    }
+  public static L42£Name parse(String s){
+    if(s.isEmpty()){return instance;}
+    if(s.equals("This")){return empty;}
+    var res0 = Parse.ctxPathSelX(Constants.dummy, s);
+    if(res0.hasErr()){throw new NumberFormatException();}
+    var res=new AuxVisitor(null).visitPathSelX(res0.res.pathSelX());
+    if(res._p()!=null){
+      if(res._p().toNCs().n()!=0){throw new NumberFormatException();}
+      res=res.with_p(null).withCs(res._p().toNCs().cs());
+      }
+    if(res.cs().stream().anyMatch(c->c.hasUniqueNum())){throw new NumberFormatException();}
+    if(res._s()!=null && res._s().hasUniqueNum()){throw new NumberFormatException();}
+    return res(res.cs(),res._s(),res._x());
+    }
+  public String x(){return _x==null?"":_x.toString();}
+  public String selector(){return _s==null?"":_s.toString();}
+  public String path(){return cs(cs);}
+  public L42£Name withPath(String cs){return res(parse(cs+".a()").cs,_s,_x);}
+  public L42£Name withSelector(String s){
+    try{return res(cs,parse("A."+s+".this")._s,_x);}
+    catch(NumberFormatException nfe){return res(cs,parse("A."+s+".this")._s,null);}
+    }
+  public L42£Name withX(String x){return res(cs,_s,parse("A.a("+x+")."+x)._x);}
+  @Override public String toString(){return toString;}
+  public boolean eq(L42£Name name){return toString.equals(name.toString);}
+  public static final Class<L42£Name> _class=L42£Name.class;
+  public static final NameCache myCache=new NameCache();
+  static{L42CacheMap.addCachableType_synchronized(L42£Name.class,myCache);}
+  @Override public NameCache myCache(){return myCache;}
+  static L42£Name instance=new L42£Name("<hidden name>",L(),null,null).myNorm();//parse("");//private name
+  static L42£Name empty=new L42£Name("This",L(),null,null).myNorm();//parse("This");
+  @Override public L42£Name newInstance(){return instance;}
+  }
+class NameCache extends ValueCache<L42£Name>{
+  @Override public String typename() {return "Name";}
+  @Override protected boolean valueCompare(L42£Name t1, L42£Name t2) {return t1.eq(t2);}
+  }

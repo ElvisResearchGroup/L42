@@ -1,14 +1,22 @@
-[HasToS] method toS()=this.that()
-S that
-class method This of(S that) 
-class method This #from(StringBuilder stringLiteral)=this.of(stringLiteral.toS())
+[HasToS]
+NativeName that
+class method This of(NativeName that)
+method toS()=this.that().toS()
+method S x()=this.that().x()
+method S selector()=this.that().selector()
+method S path()=this.that().path()
+method This with(S x)=\.of(this.that().with(x=x))
+method This with(S selector)=\.of(this.that().with(selector=selector))
+method This with(S path)=\.of(this.that().with(path=path))
+class method This (S that)=\.of(that.toName()) 
+class method This #from(StringBuilder stringLiteral)=\(stringLiteral.toS())
 // => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;
 method Meta =>(class Any target)=
-  Meta().addMap(name=this.toS(),classAny=target)
+  Meta().addMap(name=this.that(),classAny=target)
 method Meta =>(Name other)=
-  Meta().addMapDoubleArrow(a=this.toS(),b=other.toS())
+  Meta().addMapDoubleArrow(a=this.that(),b=other.that())
 //method Meta ->(Name other)= /*this is a short circuted operator, so is defined as below*/
 method Bool #shortCircut#minusgt()=Bool.false()
 method Meta #shortResult#minusgt(Bool that)=error void
 method Meta #shortProcess#minusgt(Bool that,This other)=
-  Meta().addMapSingleArrow(a=this.toS(),b=other.toS())
+  Meta().addMapSingleArrow(a=this.that(),b=other.that())

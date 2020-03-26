@@ -1,13 +1,51 @@
 package is.L42.location;
 
-import java.util.List;
-
-import is.L42.common.Program;
-import is.L42.generated.C;
-import is.L42.generated.P;
-import is.L42.location.Location.LocationImpl;
-import is.L42.generated.Core.L;
 /*
+
+    d.root
+    d.nameFromOrigin
+    d.docs
+    d.hasAnnotation
+    d.isBinded
+      d.annotatedClassAny : class Any
+      d.annotatedName : Name
+    d.selector
+    d.x
+    d.texts
+    
+    L.from(class=,name=)  L.from(library=,name=)
+      fromClassAny+Cs, fromLibrary+Cs
+    l.nested: libs
+    l.methods: methods
+    l.infoXX: docs
+    l.infoImplementsPrivate:Bool
+    l.isInterface  
+    l.implemented: types
+    l.root : l
+    l.nameFromOrigin
+    l.docs : docs
+    l.docsOfNested:docs
+    l.pos:poss
+    l.isBinded : Bool
+      l.classAny : class Any
+
+    m.parameters: types
+    m.return: type
+    m.exceptions:types
+    m.root : l
+    m.nameFromOrigin
+    m.docs : docs
+    m.pos:poss
+
+    t.mdf:Mdf
+    f.docs: docs
+    t.refTo: l
+
+    pos, doc, l,m,t
+    poss docs ls, ms,ts
+    name implemented as native pathSel?
+      
+
 Doc
 Lib
 Method
@@ -31,7 +69,7 @@ Lib: isBinded, rootLib, pathFromRoot
   Doc
   ListPos
   isEnsuredCoherent ?? 
-*/
+
 class Util{ 
   static TypeRefTo refTo(Program p,P path,List<C> location,L root) {
     if(!path.isNCs()){return new TypeRefTo.Binded(path);}
@@ -39,7 +77,6 @@ class Util{
     var p0=p.from(path.toNCs(),whereP);
     if (p0.n()==0){return new TypeRefTo.Lib(root,path);}
     p0=p0.n(p0.n()-1);
-    return null;/*
     try{
       ClassB cb=p.extractClassB(path);
       if(cb.getPhase().subtypeEq(Phase.Typed)){//typed,coherent
@@ -51,7 +88,7 @@ class Util{
 catch(ErrorMessage.PathMetaOrNonExistant pne){
   if (pne.isMeta()){return new TypeRefTo.Unavailable("Unavailable path: "+path+"; code not generated yet.");}
   return new TypeRefTo.Missing(path.toString());
-  }*/
+  }
   }
   
 }
@@ -74,7 +111,8 @@ class Origin {
 class Doc{
   
   public Doc(Ast.Doc inner,Location location) {super(inner,location);}
-  public int annotationSize(){return inner.getAnnotations().size();}
+  public int annotationSize(){
+    return inner.getAnnotations().size();}
   
   public Annotation annotation(PData pData,int that) throws NotAvailable{
     Object titleObj = Location.listAccess(inner.getAnnotations(), that);
@@ -300,7 +338,7 @@ class Doc{
   public Lib root(){return this;}
   public List<ast.Ast.C> path(){return Collections.emptyList();}
   public Doc nestedDoc(){return new Doc(Ast.Doc.empty(),this);}
-  public String toS() {return "{/*PrimitivePath:"+primitive+"*/}";}
+  public String toS() {return "{/ *PrimitivePath:"+primitive+"* /}";}
   @Override public boolean equals(Object that) {
     if(this.getClass()!=that.getClass()){return false;}
     return this.primitive==((LibPrimitive)that).primitive;
@@ -671,3 +709,4 @@ public interface TypeRefTo {
     //also, if an (nested) Uncompiled is resolved not existing..        
     }
   }
+*/

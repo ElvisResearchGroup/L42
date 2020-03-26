@@ -1,6 +1,7 @@
 //Step 1: the minimal infrastructure to deploy a towel
 S={#norm{nativeKind=String, nativePar=This1.ParseErr
-  typeDep=This1.ParseErr,coherentDep=This1.ParseErr,
+  typeDep=This1.ParseErr
+  coherentDep=This1.ParseErr
   }}
 ParseErr={#norm{nativeKind=LazyMessage}}
 Debug={
@@ -30,6 +31,18 @@ DeployAAA=(
     Size={...}
     Num={...}
     S={...}
+    NativeName={
+      read method This1.S toS()=native{trusted:toS} error void
+      read method This1.S x()=native{trusted:x} error void
+      read method This1.S selector()=native{trusted:selector} error void
+      read method This1.S path()=native{trusted:path} error void
+      read method This with(This1.S x)=native{trusted:withX} error void
+      read method This with(This1.S selector)=native{trusted:withSelector} error void
+      read method This with(This1.S path)=native{trusted:withPath} error void
+      #norm{nativeKind=Name,nativePar=This1.ParseError
+        typeDep=This,This1.S,This1.ParseError 
+        coherentDep=This,This1.ParseError    
+        }}    
     ParseError={//can not use BaseErrorTrait() since circular dependence from S
       class method This #apply()
       class method mut This #apply(This1.S that)=native{trusted:lazyMessageK} error void

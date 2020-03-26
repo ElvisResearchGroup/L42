@@ -128,6 +128,7 @@ public class Loader {
     import is.L42.cache.L42SingletonCache;
     import is.L42.platformSpecific.javaTranslation.L42NoFields;
     import is.L42.meta.L42£Meta;
+    import is.L42.meta.L42£Name;
     import is.L42.platformSpecific.javaTranslation.Resources;
     import java.util.List;
     import java.util.ArrayList;

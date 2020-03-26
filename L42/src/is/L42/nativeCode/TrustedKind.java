@@ -90,6 +90,12 @@ public enum TrustedKind implements TrustedT{
       return j.typeNameStr(p.navigate(gen1.toNCs()));
       }
     },
+  Name("L42£Name"){public String factory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return L42£Name.parse(\"This\");";
+    }
+    @Override public int genExceptionNumber(){return 1;}
+    },
   Limit("Void"){public String factory(J j,MWT mwt){
     assert false;
     throw bug();

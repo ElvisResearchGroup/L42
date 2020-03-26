@@ -1,9 +1,9 @@
 class method This #apply()
-method This addMap(This1.S name,class Any classAny)=
+method This addMap(This1.NativeName name,class Any classAny)=
   native{trusted:addMapP} error void
-method This addMapDoubleArrow(This1.S a,This1.S b)=
+method This addMapDoubleArrow(This1.NativeName a,This1.NativeName b)=
   native{trusted:addMapDoubleArrow} error void
-method This addMapSingleArrow(This1.S a,This1.S b)=
+method This addMapSingleArrow(This1.NativeName a,This1.NativeName b)=
   native{trusted:addMapSingleArrow} error void
 method This mergeMap(This that)=
   native{trusted:mergeMap} error void
@@ -21,7 +21,7 @@ method This1.S pathName(class Any that)=
   
 #norm{
   nativeKind=Meta
-  typeDep=This0, This1.S,This1.Name,This1.StringBuilder,This1.ParseError,This1.MethodClash,This1.ClassClash,This1.InvalidName,This1.InvalidMap
+  typeDep=This0, This1.S,This1.Name,This1.StringBuilder,This1.ParseError,This1.MethodClash,This1.ClassClash,This1.InvalidName,This1.InvalidMap,This1.NativeName
   coherentDep=This1.Name This1.ParseError,This1.MethodClash,This1.ClassClash,This1.InvalidName,This1.InvalidMap
   nativePar= This1.ClassClash This1.MethodClash This1.InvalidName This1.InvalidMap This1.ParseError
   usedMethods=This1.Name.#from(stringLiteral)

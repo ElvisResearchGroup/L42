@@ -146,7 +146,8 @@ public enum TrustedOp {
     String,use("return %s;",sig(Readable,Immutable,String)),
     Int,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
     Bool,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
-    BigRational,use("return ((Object)%s).toString();",sig(Readable,Immutable,String))
+    Name,use("return %s.toString();",sig(Readable,Immutable,String)),
+    BigRational,use("return %s.toString();",sig(Readable,Immutable,String))
     )),
   ToInt("toInt",Map.of(String,use("""
     try{return Integer.parseInt(%1$s);}
@@ -166,6 +167,21 @@ public enum TrustedOp {
       }
     """,sig(Readable,Immutable,BigRational)
     ))),
+  ToName("toName",Map.of(String,use("""
+    try{return L42£Name.parse(%1$s);}
+    catch(NumberFormatException nfe){
+      throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+        "The string \\""+%1$s+"\\" is not a valid name"
+        )));
+      }
+    """,sig(Readable,Immutable,Name)
+    ))),
+  X("x",Map.of(Name,use("return %s.x();",sig(Readable,Immutable,String)))),
+  Selector("selector",Map.of(Name,use("return %s.selector();",sig(Readable,Immutable,String)))),
+  Path("path",Map.of(Name,use("return %s.path();",sig(Readable,Immutable,String)))),
+  WithPath("withPath",Map.of(Name,use("return %s.withPath(%s);",sig(Readable,Immutable,Name,Immutable,String)))),
+  WithSelector("withSelector",Map.of(Name,use("return %s.withSelector(%s);",sig(Readable,Immutable,Name,Immutable,String)))),
+  WithX("withX",Map.of(Name,use("return %s.withX(%s);",sig(Readable,Immutable,Name,Immutable,String)))),
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42£Void.instance;",sigI(Void)),
     TrustedIO,use("return %s.strDebug(%s);",sigI(Void,String))
@@ -202,12 +218,12 @@ public enum TrustedOp {
     Meta,use("return %s.wither(%s,%s,%Gen1::wrap,%s);",sigI(Lib,Lib,String,String)))),
   AddMapP("addMapP",Map.of(
     Meta,use("return %s.addMapP(%s,%s);",sig(Immutable,Immutable,Meta,
-      Immutable,String,  Class,Any))
+      Immutable,Name,Class,Any))
     )),
   AddMapDoubleArrow("addMapDoubleArrow",Map.of(
-    Meta,use("return %s.addMapDoubleArrow(%s,%s);",sigI(Meta,String,String)))),
+    Meta,use("return %s.addMapDoubleArrow(%s,%s);",sigI(Meta,Name,Name)))),
   AddMapSingleArrow("addMapSingleArrow",Map.of(
-    Meta,use("return %s.addMapSingleArrow(%s,%s);",sigI(Meta,String,String)))),
+    Meta,use("return %s.addMapSingleArrow(%s,%s);",sigI(Meta,Name,Name)))),
 
   MergeMap("mergeMap",Map.of(
     Meta,use("return %s.mergeMap(%s);",sigI(Meta,Meta)))),

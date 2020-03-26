@@ -82,26 +82,22 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     } 
   public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
   
-  public L42£Meta addMapP(String name,L42Any target){
-    Full.PathSel pathSel=unwrapPathSel(name);
+  public L42£Meta addMapP(L42£Name name,L42Any target){
     P p=unwrapPath(target);
-    var a=new Arrow(pathSel.cs(),pathSel._s(),true,p,null,null);
+    var a=new Arrow(name.cs,name._s,true,p,null,null);
     return new L42£Meta(pushL(renames,a));
     }
-  public Arrow unwrapArrow(String name1,String name2,boolean full){
-    Full.PathSel p1=unwrapPathSel(name1);
-    Full.PathSel p2=null;
-    if(!name2.isEmpty()){p2=unwrapPathSel(name2);}
+  public Arrow unwrapArrow(L42£Name name1,L42£Name name2,boolean full){
     List<C> _cs2=null;
     S _s2=null;
-    if(p2!=null){_cs2=p2.cs();_s2=p2._s();}
-    return new Arrow(p1.cs(),p1._s(),full,null,_cs2,_s2);
+    if(name2!=L42£Name.instance){_cs2=name2.cs;_s2=name2._s;}
+    return new Arrow(name1.cs,name1._s,full,null,_cs2,_s2);
     }
-  public L42£Meta addMapDoubleArrow(String name1,String name2){
+  public L42£Meta addMapDoubleArrow(L42£Name name1,L42£Name name2){
     var a=unwrapArrow(name1, name2,true);
     return new L42£Meta(pushL(renames,a));
     }
-  public L42£Meta addMapSingleArrow(String name1,String name2){
+  public L42£Meta addMapSingleArrow(L42£Name name1,L42£Name name2){
     var a=unwrapArrow(name1, name2,false);
     return new L42£Meta(pushL(renames,a));
     }
@@ -120,7 +116,7 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     else{cn=((L42Fwd)classAny).asPath();}
     return cn.unwrap;
     }
-  private static Full.PathSel unwrapPathSel(String s){
+  public static Full.PathSel unwrapPathSel(String s){
     var res=Parse.pathSel(Constants.dummy, s);
     if(res._p()!=null){
       assert res._p().toNCs().n()==0;
