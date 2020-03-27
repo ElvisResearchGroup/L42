@@ -109,7 +109,6 @@ public class Rename {
   Program p;//includes the top level L
   List<Arrow>list;
   List<C> cs;
-  static final Program emptyP=Program.flat(Program.emptyL);
   MetaError errName;
   MetaError errFail;
   MetaError errC;
@@ -312,7 +311,7 @@ public class Rename {
       ts.addAll(mwt.mh().exceptions());
       for(T t:ts){
         if(!t.p().isNCs()){continue;}
-        var pi=emptyP.from(t.p().toNCs(),that.cs);
+        var pi=Program.emptyP.from(t.p().toNCs(),that.cs);
         if(pi.n()!=0){continue;}
         var arrow=new Arrow(pi.cs(),null);
         var a=map.get(arrow);
@@ -500,7 +499,7 @@ public class Rename {
     noExposeUniqueN(nc.l());
     if(a._cs.isEmpty()){
       L l1=noNesteds(nc.l());
-      addMapTop=fromAndPushThis0Out(emptyP,l1,P.of(0,a.cs),nc.key(),false);
+      addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(0,a.cs),nc.key(),false);
       }
     else{
       var cs1=popL(a._cs);
@@ -521,7 +520,7 @@ public class Rename {
   NC _rename9nested(NC nc,Arrow a){
     if(a._cs.isEmpty()){//exactly as in 7? should we reuse the code?
       L l1=noNesteds(nc.l());
-      addMapTop=fromAndPushThis0Out(emptyP,l1,P.of(0,a.cs),nc.key(),false);
+      addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(0,a.cs),nc.key(),false);
       }
     else{
       int last=a._cs.size()-1;

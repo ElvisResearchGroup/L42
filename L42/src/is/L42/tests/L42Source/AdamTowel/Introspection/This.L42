@@ -1,0 +1,52 @@
+NativeNested={
+  class method This fromClass(class Any that)=native{trusted:fromClass}error void
+  class method This fromLibrary(Library that)=native{trusted:fromLibrary}error void
+  method This nestedByName(This2.NativeName name)=native{trusted:nestedByName}error void
+  method This2.S outerName()=native{trusted:outerName}error void
+  method This outer()=native{trusted:outer}error void
+  method This1.NativeDoc outerDoc()=native{trusted:outerDoc}error void
+  method This1.NativeDoc innerDoc()=native{trusted:innerDoc}error void
+  method This2.Size nestedNum()=native{trusted:nestedNum}error void
+  method This nestedIn(This2.Size that)=native{trusted:nestedIn}error void
+  //method This2.Size methodNum()=native{trusted:methodNum}error void
+  //method This1.NativeMethod methodIn(This2.Size that)=native{trusted:methodIn}error void
+  method This2.Size implementedNum()=native{trusted:implementedNum}error void
+  method This1.NativeType implementedIn(This2.Size that)=native{trusted:implementedIn}error void
+  method This2.Bool hasOuter()=native{trusted:hasOuter}error void
+  method This2.Bool hasHiddenImplements()=native{trusted:hasHiddenImplements}error void
+  method This2.Bool isClose()=native{trusted:isClose}error void
+  method This2.Bool isInterface()=native{trusted:isInterface}error void
+  method This2.Bool isBinded()=native{trusted:isBinded}error void
+  method This root()=native{trusted:root}error void  
+  method This2.NativeName nameFromRoot()=native{trusted:nameFromRoot}error void
+  method This2.S position()=native{trusted:position}error void
+  method class Any classAny()=native{trusted:classAny}error void
+  
+  #norm{nativeKind=Nested,nativePar=This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt
+    typeDep=
+      This,This2.Bool,This2.S,This2.Size,This2.NativeName,
+      This1.NativeType,This1.NativeDoc,
+      This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
+    coherentDep=This,This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt    
+    }}    
+NativeType={
+  class method This fromClass(This2.S mdf,This1.NativeDoc doc,class Any classAny)=native{trusted:fromClass}error void
+  class method This fromLibrary(This2.S mdf,This1.NativeDoc doc,This2.NativeName name)=native{trusted:fromLibrary}error void
+
+  method This2.S mdf()=native{trusted:mdf}error void
+  method This1.NativeDoc doc()=native{trusted:doc}error void
+  method This1.NativeNested nested()=native{trusted:nested}error void
+
+  #norm{nativeKind=Type
+    typeDep=This,This2.S,
+       This1.NativeDoc,This1.NativeNested,
+       This2.NativeName
+    coherentDep=This
+    }}
+
+NativeDoc={
+
+  #norm{nativeKind=Doc,nativePar=This2.OutOfBounds
+    typeDep=This,This2.S,This2.OutOfBounds
+    coherentDep=This,This2.OutOfBounds    
+    }}

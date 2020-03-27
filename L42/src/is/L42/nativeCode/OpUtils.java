@@ -2,6 +2,8 @@ package is.L42.nativeCode;
 
 import static is.L42.tools.General.range;
 
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import static is.L42.nativeCode.TT.*;
@@ -42,6 +44,28 @@ class OpUtils{
     static private final String vectorExc2(String body){
       return "try{"+body+"}"+
         "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
+      }
+    static final Map<TrustedKind,Generator>nested(String s,Signature sig){
+      return Map.of(TrustedKind.Nested,use("return "+s+";",sig));
+      }
+    static final Map<TrustedKind,Generator>nested(String s,Signature sig,int num){
+      return Map.of(TrustedKind.Nested,use(exc("return "+s+";",num,"ArrayIndexOutOfBoundsException"),sig));
+      }
+    static final String exc(String body,int num,String exc){
+      return "try{"+body+"}"+
+        "catch("+exc+" o_O){throw new L42Error(%Gen"+num+".wrap(new L42£LazyMsg(o_O.getMessage())));}";
+      }
+    static final Map<TrustedKind,Generator> useToS(TrustedKind ... kinds){
+      var gen=use("return ((Object)%s).toString();",Signature.sig(Mdf.Readable,Mdf.Immutable,TrustedKind.String));
+      var res=new HashMap<TrustedKind,Generator>();
+      res.put(TrustedKind.String,use("return %s;",Signature.sig(Mdf.Readable,Mdf.Immutable,TrustedKind.String)));
+      for(var tk:kinds){res.put(tk,gen);}
+      return Collections.unmodifiableMap(res);
+      }
+    @SafeVarargs static final Map<TrustedKind,Generator> all(Map<TrustedKind,Generator> ... maps){
+      var res=new HashMap<TrustedKind,Generator>();
+      for(var m:maps){res.putAll(m);}
+      return Collections.unmodifiableMap(res);
       }
     static private String vectorCache(J j){
       P pGen=j.p().topCore().info().nativePar().get(0);

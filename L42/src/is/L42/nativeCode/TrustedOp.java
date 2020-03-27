@@ -141,14 +141,7 @@ public enum TrustedOp {
     sig(Mutable,Immutable,Void,Immutable,String)))),
    
   //toString
-  ToS("toS",Map.of(
-    StringBuilder,use("return %s.toString();",sig(Readable,Immutable,String)),
-    String,use("return %s;",sig(Readable,Immutable,String)),
-    Int,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
-    Bool,use("return ((Object)%s).toString();",sig(Readable,Immutable,String)),
-    Name,use("return %s.toString();",sig(Readable,Immutable,String)),
-    BigRational,use("return %s.toString();",sig(Readable,Immutable,String))
-    )),
+  ToS("toS",useToS(StringBuilder,Int,Bool,Name,Nested,Doc,Type,BigRational)),//String is pre added
   ToInt("toInt",Map.of(String,use("""
     try{return Integer.parseInt(%1$s);}
     catch(NumberFormatException nfe){
@@ -206,6 +199,7 @@ public enum TrustedOp {
     )),  
   DeployLibrary("deployLibrary",Map.of(
     TrustedIO,use("return %s.deployLibrary(%s,%s);",sigI(Void,String,Lib)))),
+  //####META####
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
@@ -224,7 +218,6 @@ public enum TrustedOp {
     Meta,use("return %s.addMapDoubleArrow(%s,%s);",sigI(Meta,Name,Name)))),
   AddMapSingleArrow("addMapSingleArrow",Map.of(
     Meta,use("return %s.addMapSingleArrow(%s,%s);",sigI(Meta,Name,Name)))),
-
   MergeMap("mergeMap",Map.of(
     Meta,use("return %s.mergeMap(%s);",sigI(Meta,Meta)))),
   ApplyMap("applyMap",Map.of(
@@ -233,7 +226,46 @@ public enum TrustedOp {
     Meta,use("return %s.pathName(%s);",sig(Immutable,Immutable,String,
       Class,Any))
     )),  
-  //Vector
+  //####Nested####
+  FromClass("fromClass",all(
+    nested("L42£Nested.fromClass(%2$s)",sig(Class,Immutable,Nested,Class,Any))
+    ,Map.of(Type,use("return L42£Type.fromClass(%2$s,%3$s,%4$s);",
+       sig(Class,Immutable,Type,Immutable,String,Immutable,Doc,Class,Any)))
+    )),
+  FromLibrary("fromLibrary",all(
+    nested("L42£Nested.fromLibrary(%2$s)",sig(Class,Immutable,Nested,Immutable,Lib))
+    ,Map.of(Type,use("return L42£Type.fromLibrary(%2$s,%3$s,%4$s);",
+       sig(Class,Immutable,Type,Immutable,String,Immutable,Doc,Immutable,Name)))
+    )),
+  NestedByName("nestedByName",nested("%s.nestedByName(%s)",sigI(Nested,Name),1)),
+  HasOuter("hasOuter",nested("%s.hasOuter()",sigI(Bool))),
+  OuterC("outerName",nested("%s.outerName()",sigI(String),3)),
+  Outer("outer",nested("%s.outer()",sigI(Nested),3)),
+  OuterDoc("outerDoc",nested("%s.outerDoc()",sigI(Doc),3)),
+  InnerDoc("innerDoc",nested("%s.innerDoc()",sigI(Doc))),
+  NestedNum("nestedNum",nested("%s.nestedNum()",sigI(Int))),
+  NestedIn("nestedIn",nested("%s.nestedIn(%s)",sigI(Nested,Int),2)),
+  MethodNum("methodNum",nested("%s.methodNum()",sigI(Int))),
+  ImplementedNum("implementedNum",nested("%s.implementedNum()",sigI(Int))),
+  ImplementedIn("implementedIn",nested("%s.implementedIn(%s)",sigI(Type,Int),2)),
+  HasHiddenImplements("hasHiddenImplements",nested("%s.hasHiddenImplements()",sigI(Bool))),
+  IsClose("isClose",nested("%s.isClose()",sigI(Bool))),
+  IsInterface("isInterface",nested("%s.isInterface()",sigI(Bool))),
+  IsBinded("isBinded",nested("%s.isBinded()",sigI(Bool))),
+  Root("root",nested("%s.root()",sigI(Nested))),
+  NameFromRoot("nameFromRoot",nested("%s.nameFromRoot()",sigI(Name))),
+  Position("position",nested("%s.position()",sigI(String))),
+  ClassAny("classAny",nested("%s.classAny()",sig(Immutable,Class,Any),3)),
+  //####Type####
+  Mdf("mdf",Map.of(Type,use("return %s.mdf();",sigI(String)))),
+  DocOp("doc",Map.of(Type,use("return %s.doc();",sigI(Doc)))),
+  NestedOp("nested",Map.of(Type,use("return %s.nested();",sigI(Nested)))),
+  //####Doc####
+  //TODO: doc operations
+  //####Method####
+  //TODO: method operations
+
+  //####VECTOR####
   VectorK("vectorK",Map.of(Vector,vectorKs())),
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)))),
   Size("size",Map.of(

@@ -48,7 +48,6 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.WellFormedness;
 
 public class Sum {
-  static final Program emptyP=Program.flat(Program.emptyL);
   MetaError errC;
   MetaError errM;
   LinkedHashMap<List<C>,LinkedHashSet<List<C>>> map=new LinkedHashMap<>();
@@ -206,7 +205,7 @@ public class Sum {
           wasIn[0]=true;}
         }
       for(var pi:li.info().hiddenSupertypes()){
-        P.NCs pj=Sum.emptyP.from(pi,csi);
+        P.NCs pj=Program.emptyP.from(pi,csi);
         if(pj.n()!=0){continue;}
         assert !pj.hasUniqueNum();
         if(cs.equals(pj.cs())){
@@ -230,7 +229,7 @@ public class Sum {
     }
   public static List<C> _publicCsOfP(P p,List<C> cs){
     if(!p.isNCs()){return null;}//not the place to give error for implements Void
-    P.NCs pi=Sum.emptyP.from(p.toNCs(),cs);
+    P.NCs pi=Program.emptyP.from(p.toNCs(),cs);
     if(pi.n()!=0){return null;}
     if(pi.hasUniqueNum()){return null;}
     return pi.cs();

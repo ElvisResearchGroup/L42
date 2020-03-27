@@ -110,7 +110,7 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
       renames, wrapName, wrapFail, wrapC, wrapM);
     return wrapL(res);
     }
-  private static P unwrapPath(L42Any classAny){
+  public static P unwrapPath(L42Any classAny){
     L42ClassAny cn;
     if(classAny instanceof L42ClassAny){cn=(L42ClassAny)classAny;}
     else{cn=((L42Fwd)classAny).asPath();}

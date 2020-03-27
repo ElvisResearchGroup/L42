@@ -65,6 +65,7 @@ public class Program implements Visitable<Program>{
   public static Program flat(LL top){return new Program(top,PTails.empty);}
   public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty.withTyped(true),L());
   public static final Core.L emptyLInterface=emptyL.withInterface(true);
+  public static final Program emptyP=Program.flat(Program.emptyL);
 
   public Core.L topCore(){return (Core.L)top;}
   public Core.L _ofCore(P path){

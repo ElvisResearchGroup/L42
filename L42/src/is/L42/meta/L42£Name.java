@@ -24,9 +24,9 @@ public class L42£Name extends L42NoFields<L42£Name>{
     if(!_x.equals(X.thisX) && !_s.xs().contains(_x)){throw new NumberFormatException();} 
     }
   private final String toString;
-  final List<C> cs;
-  final S _s;
-  final X _x;
+  final public List<C> cs;
+  final public S _s;
+  final public X _x;
   private static String cs(List<C> cs){
     if(cs.isEmpty()){return "This";}
     return cs.stream().map(c->c.toString()).collect(Collectors.joining("."));
@@ -40,6 +40,15 @@ public class L42£Name extends L42NoFields<L42£Name>{
   private static L42£Name res(List<C> cs,S _s, X _x){
     String norm=norm(cs,_s,_x);
     return new L42£Name(norm,cs,_s,_x).myNorm();
+    }
+  public L42£Name onlyCs(){
+    if(_s==null){return this;}
+    return fromCs(cs);
+    }
+  public static L42£Name fromCs(List<C> cs){
+    if(cs.isEmpty()){return instance;}
+    assert cs.stream().noneMatch(c->c.hasUniqueNum());
+    return new L42£Name(cs(cs),cs,null,null).myNorm();
     }
   public static L42£Name parse(String s){
     if(s.isEmpty()){return instance;}
@@ -65,13 +74,15 @@ public class L42£Name extends L42NoFields<L42£Name>{
     }
   public L42£Name withX(String x){return res(cs,_s,parse("A.a("+x+")."+x)._x);}
   @Override public String toString(){return toString;}
+  
+  
   public boolean eq(L42£Name name){return toString.equals(name.toString);}
   public static final Class<L42£Name> _class=L42£Name.class;
   public static final NameCache myCache=new NameCache();
   static{L42CacheMap.addCachableType_synchronized(L42£Name.class,myCache);}
   @Override public NameCache myCache(){return myCache;}
-  static L42£Name instance=new L42£Name("<hidden name>",L(),null,null).myNorm();//parse("");//private name
-  static L42£Name empty=new L42£Name("This",L(),null,null).myNorm();//parse("This");
+  static public L42£Name instance=new L42£Name("<hidden name>",L(),null,null).myNorm();//parse("");//private name
+  static public L42£Name empty=new L42£Name("This",L(),null,null).myNorm();//parse("This");
   @Override public L42£Name newInstance(){return instance;}
   }
 class NameCache extends ValueCache<L42£Name>{

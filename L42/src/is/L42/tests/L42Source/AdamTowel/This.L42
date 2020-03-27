@@ -64,7 +64,6 @@ DeployAAA=(
     ClassClash=BaseErrorTrait()
     InvalidName=BaseErrorTrait()
     InvalidMap=BaseErrorTrait()
-    
     Test={...}
     Log={...}
     Meta={...}
@@ -77,13 +76,11 @@ DeployAAA=(
     Assertion={interface[Message]}
     PrivateOps={...}
     X=Class:Message:{...}
-    
     IterationIncomplete=Class:Message:{[Guard]}
     NoElementInOpt=Class:Message.Native:{[Guard]}
     OutOfBounds=Class:Message.Native:{[Guard]}
     ElementNotImm=Class:Message.Native:{[Guard]}
-    ElementNotMut=Class:Message.Native:{[Guard]}
-    
+    ElementNotMut=Class:Message.Native:{[Guard]}    
     Opt={...}
     ListT={
       ListNative=Trait:{...}
@@ -105,7 +102,7 @@ DeployAAA=(
         }
       }
     Strings=Class:ListT(withEq=S):{class method Bool equals(read S a,read S b)=a==b}
-
+    Introspection={...}
     Cache={...}
     Data={...}
     }
