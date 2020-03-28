@@ -1,0 +1,52 @@
+NativeNested i
+class method This(NativeNested that)=\(i=that)
+
+class method This from(class Any classAny)=\(\.fromClass(classAny))
+  
+class method This from(Library library)=\(\.fromLibrary(library))
+  
+method This nestedByName(NativeName name)=\(this.i().nestedByName(name=name))
+
+method S outerName()=this.i().outerName()
+
+method This outer()=\(this.i().outer())
+
+method Doc outerDoc()=\(this.i().outerDoc())
+
+method Doc innerDoc()=\(this.i().innerDoc())
+
+method Nesteds nesteds()=\()((
+  size=this.i().nestedNum()
+  var i=0Size
+  while i<size (\res<=Nested$(this.i().nestedIn(i)))
+  i+=1Size//sadly, range will be added later
+  ))
+//method This2.Size methodNum()=native{trusted:methodNum}error void
+//method This1.NativeMethod methodIn(This2.Size that)=native{trusted:methodIn}error void
+
+method Types implements()=\()((
+  size=this.i().implementedNum()
+  var i=0Size
+  while i<size (\res<=Type$(this.i().implementedIn(i)))
+  i+=1Size//sadly, range will be added later
+  ))
+method Bool hasOuter()=this.i().hasOuter()
+
+method Bool hasHiddenImplements()=this.i().hasHiddenImplements()
+
+method Bool isClose()=this.i().isClose()
+
+method Bool isInterface()=this.i().isInterface()
+
+method Bool isBinded()=this.i().isBinded()
+
+method This root()=\(this.i().root())  
+
+method Name nameFromRoot()=\.of(this.i().nameFromRoot())
+
+method S position()=this.i().position()
+
+method class Any classAny()=this.i().classAny()
+
+read method S toS()=this.i().toS()
+  

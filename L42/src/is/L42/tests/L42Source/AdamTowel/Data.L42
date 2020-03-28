@@ -45,12 +45,16 @@ Operations=
   Class.MutClone+
   Class.ReadEquality+
   Class.ImmToString+
-  Class.ReadToString+
-  Class.ImmNorm+{[HasToS]
+  Class.ImmNorm
+AddEqOp=Trait:{
+    method Bool immEquality(This that)
     method Bool ==(This that)=this.immEquality(that)
     method Bool !=(This that)=!(this==that)
+    }
+AddHasToS=Class.ReadToString+{[HasToS]
     method toS()=this.readToString()
     }
+
 class method This()
 method Library :(Library lib)=this:Trait(lib)
 method Library :(Trait that)=(
@@ -65,6 +69,8 @@ method Library :(Trait that)=(
   //declare a common Data.Fail interface/wrapper and Data will throw exception Data.Fail
   //TODO: make some stuff private?
   //TODO: add toString and standard code to Operations, and wither!
+  (acc:=AddHasToS:acc catch Any _ void)
+  (acc:=AddEqOp:acc catch Any _ void)
   Class:acc
   )
   

@@ -401,7 +401,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
    }
   private void addCachableMethodsNoFields(String jC,String jCName){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("private static final L42Cache<"+jC+"> myCache=L42CacheMap.newSingletonCache("+jCName+","+jC+"._class);");nl();
+    c("public static final L42Cache<"+jC+"> myCache=L42CacheMap.newSingletonCache("+jCName+","+jC+"._class);");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     }
   public void header(boolean interf,String jC){

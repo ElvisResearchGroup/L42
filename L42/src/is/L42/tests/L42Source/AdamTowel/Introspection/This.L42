@@ -21,6 +21,7 @@ NativeNested={
   method This2.NativeName nameFromRoot()=native{trusted:nameFromRoot}error void
   method This2.S position()=native{trusted:position}error void
   method class Any classAny()=native{trusted:classAny}error void
+  read method This2.S toS()=native{trusted:toS}error void
   
   #norm{nativeKind=Nested,nativePar=This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt
     typeDep=
@@ -36,7 +37,8 @@ NativeType={
   method This2.S mdf()=native{trusted:mdf}error void
   method This1.NativeDoc doc()=native{trusted:doc}error void
   method This1.NativeNested nested()=native{trusted:nested}error void
-
+  read method This2.S toS()=native{trusted:toS}error void
+  
   #norm{nativeKind=Type
     typeDep=This,This2.S,
        This1.NativeDoc,This1.NativeNested,
@@ -45,8 +47,25 @@ NativeType={
     }}
 
 NativeDoc={
-
+  read method This2.S toS()=native{trusted:toS}error void
+  
   #norm{nativeKind=Doc,nativePar=This2.OutOfBounds
     typeDep=This,This2.S,This2.OutOfBounds
     coherentDep=This,This2.OutOfBounds    
     }}
+
+Nested$={class method This(NativeNested that) read method Bool readEquality(read This that)}
+Nesteds=ListT(Nested$)
+Type$={class method This(NativeType that) read method Bool readEquality(read This that)}
+Types=ListT(Type$)
+Doc$={class method This(NativeDoc that) read method Bool readEquality(read This that)}
+Docs=ListT(Doc$)
+Nested=Data:{...}
+Type=Data:{...}
+Doc=Data:{...}
+/*
+read method imm This2.Bool readEquality(read This0 that)=(..)
+read method imm This2.Bool readEquality(read This1.Nested that)
+whe we get this error? why the only position reported is the one in data?
+there should be at least 2!
+*/

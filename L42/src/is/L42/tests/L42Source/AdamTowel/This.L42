@@ -86,8 +86,12 @@ DeployAAA=(
       ListNative=Trait:{...}
       ListOps=Trait:{...}+Class.ReadToString+Class.ImmToString+Class.ReadClone
       ListEqOps=Trait:{...}
-      class method Trait(class Any that)[InvalidMap]={
-        return (ListOps+ListNative)['Elem=>that]
+      EqBase=Trait:{
+        Elem={read method Bool readEquality(read This that)}
+        class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
+        }
+      class method Trait(class Any withNoEq)[InvalidMap]={
+        return (ListOps+ListNative)['Elem=>withNoEq]
         //whoops InvalidName,ClassClash,MethodClash//will be enabled later
         catch InvalidName e error e
         catch ClassClash e error e
@@ -95,16 +99,23 @@ DeployAAA=(
         }
       class method Trait(class Any withEq)[InvalidMap]={
         return (ListOps+ListNative+ListEqOps)['Elem=>withEq]
-        //whoops InvalidName,ClassClash,MethodClash//will be enabled later
+        catch InvalidName e error e
+        catch ClassClash e error e
+        catch MethodClash e error e
+        }
+      class method Library (class Any that)[InvalidMap]={
+        return Class:(ListOps+ListNative+ListEqOps+EqBase)['Elem=>that]
         catch InvalidName e error e
         catch ClassClash e error e
         catch MethodClash e error e
         }
       }
     Strings=Class:ListT(withEq=S):{class method Bool equals(read S a,read S b)=a==b}
-    Introspection={...}
     Cache={...}
     Data={...}
+    Introspection=Class:Trait({...})[
+      'Nested$=>'Nested;'Type$=>'Type;'Doc$=>'Doc
+      ]
     }
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )
