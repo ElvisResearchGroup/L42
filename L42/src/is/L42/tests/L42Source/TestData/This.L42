@@ -1,7 +1,16 @@
 reuse[AdamTowel]
 /*
 TODO: Close and AddConstructor do nothing about fwd parameters in ks!!
-*/
+*/ /*
+TestDataFwd={
+  A=Data:{mut B b,var S name}
+  B=Data:{mut A a,var S name}
+  Test=(
+    mut A a=A(b=b,name=S"myA")
+    mut B b=B(a=a,name=S"myB")
+    {}:Test"toS"(expected=S"Point(x=8, y=42)", actual=a)
+    )
+  }*/
 TestDataBase={
   Point=Data:{Size x, Size y}
   TestPoint=(
@@ -17,7 +26,7 @@ TestDataBase={
     )
   Person=Data:{Strings names}
   Box=Data:{Any f1,Any f2}
-  Anys=Class:ListT(Any)
+  Anys=Class:ListT(withNoEq=Any)
   TestPerson=(
     p1=Person(names=\['Bob;'Alice;'Charles])
     {}:Test"personToS"(expected=S"""

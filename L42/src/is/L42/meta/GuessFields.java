@@ -42,6 +42,7 @@ public class GuessFields {
       var list=setters.getOrDefault(x,new ArrayList<>());
       list.add(m);
       setters.putIfAbsent(x, list);
+      return;
       }
     if(!m.mh().mdf().isIn(Mdf.Mutable, Mdf.Lent,Mdf.Immutable,Mdf.Readable)){return;}
     var list=getters.getOrDefault(x,new ArrayList<>());

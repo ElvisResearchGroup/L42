@@ -22,6 +22,7 @@ import java.util.Map.Entry;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
@@ -39,6 +40,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
+import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
@@ -105,6 +107,19 @@ public class Sum {
       }
     return l;
     }
+  RuntimeException err(IMWT fault1,IMWT fault2,Supplier<String> ss){
+    Supplier<String> msg=()->ss.get()+"\n"+errM.pos(fault2.mwt)+"\n-----\n";
+    return errM.throwErr(fault1.mwt,msg);
+    }
+  RuntimeException err(List<C> f1,Core.L l1,Core.L l2,Supplier<String> ss){
+    Supplier<String> msg=()->
+      errC.introName(f1)+errC.intro(l1,false)
+      +(l2==null?"":errC.introName(f1)+errC.intro(l2,false))
+      +ss.get()
+      +"\n"+errC.pos(l1)+"\n-----\n"+"\n"+errC.pos(l2);
+    var lazy=new L42£LazyMsg(msg);
+    throw new L42Error(errC.wrap.apply(lazy));
+    }
   private static HashSet<Integer> otherNs(Core.L other){
     return new Accumulate<HashSet<Integer>>(){
       @Override public HashSet<Integer>empty(){return new HashSet<>();}
@@ -148,14 +163,14 @@ public class Sum {
         var csj=_publicCsOfP(t.p(), csi);
         if(csj==null){continue;}
         if(t.p().equals(P.pThis0)){
-          errC.throwErr(csi,li,"The sum would induce a circular interface implemntation for "+li.ts());
+          err(csi,li,null,()->"The sum would induce a circular interface implementation for "+li.ts());
           }
         var lj=l.cs(csj);
         for(var m:lj.mwts()){
           if(lj.info().refined().contains(m.key())){continue;}
           var wrong=nonRefined.get(m.key());
           if(wrong==null){nonRefined.put(m.key(),t.p());continue;}
-          errC.throwErr(csi,li,"No unique source for "+m.key()+"; it originates from both "+t.p()+" and "+wrong);
+          err(csi,li,null,()->"No unique source for "+m.key()+"; it originates from both "+t.p()+" and "+wrong);
           }
         }
       });
@@ -166,7 +181,7 @@ public class Sum {
     var l1cs=l1.cs(cs);
     if(!moreThen(l2cs,l1cs)){return;}
     assert !l1cs.info().close();
-    errC.throwErr(cs,l1cs,"This interface is privately implemented "
+    err(cs,l1cs,l2cs,()->"This interface is privately implemented "
       +" but the summed version is larger: "+errC.intro(l2cs,false).stripTrailing());
     }
   public  static List<C> culpritFromInfo(Core.L l,BiFunction<Core.L,List<C>,List<C>> f){
@@ -393,48 +408,42 @@ public class Sum {
         );
       }
     IMWT plus(IMWT imwt1,IMWT imwt2,Core.L l1,Core.L l2){
+      var errConflict="Conflicting implementation: the method is implemented on both side of the sum";
       boolean eqMH=Utils.equalMH(imwt1.mwt.mh(),imwt2.mwt.mh());
       boolean abs1=imwt1.mwt._e()==null;
       boolean abs2=imwt2.mwt._e()==null;
       boolean oneInterf=imwt1.isInterface || imwt2.isInterface;
-      if(eqMH && abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));} 
-      if(!abs1 && !abs2){errM.throwErr(imwt1.mwt,"Conflicting implementation: the method is implemented on both side of the sum");}
-      if(eqMH && /*abs1 &&*/ abs2){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));} 
-      if(eqMH && abs1){
-        return new IMWT(oneInterf,
-          accDoc(imwt1.mwt,imwt2.mwt).with_e(imwt2.mwt._e()).withNativeUrl(imwt2.mwt.nativeUrl())
-          );
+      if(!abs1 && !abs2){err(imwt1,imwt2,()->errConflict);}
+      if(eqMH){
+        if(abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1,imwt2));} 
+        if(abs2){return new IMWT(oneInterf,accDoc(imwt1,imwt2));} 
+        var mwt=accDoc(imwt1,imwt2).with_e(imwt2.mwt._e()).withNativeUrl(imwt2.mwt.nativeUrl());
+        return new IMWT(oneInterf,mwt);
         } 
       boolean loseSafeLeftiIs1=loseSafe(topLeft,l1,imwt1.mwt.key(),imwt2.mwt.mh());
       boolean loseSafeRightiIs1=loseSafe(topRight,l2,imwt1.mwt.key(),imwt2.mwt.mh());
       boolean loseSafeLeftiIs2=loseSafe(topLeft,l1,imwt2.mwt.key(),imwt1.mwt.mh());
       boolean loseSafeRightiIs2=loseSafe(topRight,l2,imwt2.mwt.key(),imwt1.mwt.mh());
-      if(!abs1){return loseSafeUniqueRes(imwt1,imwt2,
-        loseSafeLeftiIs1 || loseSafeRightiIs1,!loseSafeLeftiIs2 &&!loseSafeRightiIs2);}//i=1
-      if(!abs2){return loseSafeUniqueRes(imwt2,imwt1,
-        loseSafeLeftiIs2 || loseSafeRightiIs2,!loseSafeLeftiIs1 &&!loseSafeRightiIs1);}//i=2
+      var safe1=loseSafeLeftiIs1 || loseSafeRightiIs1;//i=1
+      var safe2=loseSafeLeftiIs2 || loseSafeRightiIs2;//i=2
+      if(!abs1){return loseSafeUniqueRes(imwt1,imwt2,safe1,!safe2);}
+      if(!abs2){return loseSafeUniqueRes(imwt2,imwt1,safe2,!safe1);}
       assert abs1 && abs2;
       if(imwt1.isInterface && imwt2.isInterface){
-        errM.throwErr(imwt1.mwt,"Both versions of this method are implemented, but the other have a different header:\n"+errM.intro(imwt2.mwt,false).stripTrailing());
+        err(imwt1,imwt2,()->"The two headers are incompatible:\n"+errM.intro(imwt2.mwt,false).stripTrailing());
         }
-      if(imwt1.isInterface){return loseSafeUniqueRes(imwt1,imwt2,
-        loseSafeLeftiIs1 || loseSafeRightiIs1,!loseSafeLeftiIs2 &&!loseSafeRightiIs2);}//i=1
-      if(imwt2.isInterface){return loseSafeUniqueRes(imwt2,imwt1,
-        loseSafeLeftiIs2 || loseSafeRightiIs2,!loseSafeLeftiIs1 &&!loseSafeRightiIs1);}//i=2
-      boolean iIs1=loseSafeUnique(imwt1,imwt2.mwt.mh(),
-        loseSafeLeftiIs1 || loseSafeRightiIs1,!loseSafeLeftiIs2 &&!loseSafeRightiIs2);
-      boolean iIs2=loseSafeUnique(imwt2,imwt1.mwt.mh(),
-        loseSafeLeftiIs2 || loseSafeRightiIs2,!loseSafeLeftiIs1 &&!loseSafeRightiIs1);
+      if(imwt1.isInterface){return loseSafeUniqueRes(imwt1,imwt2,safe1,!safe2);}//i=1
+      if(imwt2.isInterface){return loseSafeUniqueRes(imwt2,imwt1,safe2,!safe1);}//i=2
+      boolean iIs1=loseSafeUnique(imwt1,imwt2.mwt.mh(),safe1,!safe2);
+      boolean iIs2=loseSafeUnique(imwt2,imwt1.mwt.mh(),safe2,!safe1);
       assert !(iIs1 && iIs2);
-      if(iIs1){return new IMWT(oneInterf,accDoc(imwt1.mwt,imwt2.mwt));}
-      if(iIs2){return new IMWT(oneInterf,accDoc(imwt2.mwt,imwt1.mwt));}
+      if(iIs1){return new IMWT(oneInterf,accDoc(imwt1,imwt2));}
+      if(iIs2){return new IMWT(oneInterf,accDoc(imwt2,imwt1));}
       assert !iIs1 && !iIs2;
-      if(loseSafeLeftiIs1 || loseSafeRightiIs1 || loseSafeLeftiIs2 || loseSafeRightiIs2){
-        errM.throwErr(imwt1.mwt,"The other method have a different signature:\n"
-          +errM.intro(imwt2.mwt,false)+"But there is ambiguous refinement between those two signatures");
-        }
-      throw errM.throwErr(imwt1.mwt,"The other method have a different signature:\n"
-        +errM.intro(imwt2.mwt,false)+"But there is no local refinement between those two signatures");
+      var msg="The methods have different signatures:\n"+errM.intro(imwt2.mwt,false)
+        +((safe1||safe2)?"But there is ambiguous refinement between those two signatures"
+          :"But there is no local refinement between those two signatures");
+      throw err(imwt1,imwt2,()->msg);
       }
     boolean loseSafe(Core.L l,Core.L lCs,S s,MH mh){
       Program p=pOut.push(cOut,l);
@@ -453,20 +462,20 @@ public class Sum {
       return false;
       }    
     IMWT loseSafeUniqueRes(IMWT imwt,IMWT imwtLose,boolean canWin,boolean otherCanNot){
-      MH mh=imwtLose.mwt.mh();
-      var ok=loseSafeUnique(imwt,mh,canWin,otherCanNot);
-      if(!ok){
-        errM.throwErr(imwt.mwt,"The other method have a different signature:\n"
-        +errM.intro(imwtLose.mwt,false)+"But there is no local refinement between those two signatures");
-        }
-      return new IMWT(imwt.isInterface||imwtLose.isInterface,accDoc(imwt.mwt,imwtLose.mwt));
+      var ok=loseSafeUnique(imwt,imwtLose.mwt.mh(),canWin,otherCanNot);
+      if(ok){return new IMWT(imwt.isInterface||imwtLose.isInterface,accDoc(imwt,imwtLose));}
+      throw err(imwt,imwtLose,
+        ()->"The methods have different signatures:\n"+errM.intro(imwtLose.mwt,false)
+        +"But there is no local refinement between those two signatures");
       }
     boolean loseSafeUnique(IMWT imwt,MH mh,boolean canWin,boolean otherCanNot){
       if(!canWin){return false;}
       if(imwt.mwt._e()!=null || imwt.isInterface){return true;}
       return otherCanNot;
       }
-    MWT accDoc(MWT a,MWT b){
+    MWT accDoc(IMWT ia,IMWT ib){
+      MWT a=ia.mwt; 
+      MWT b=ib.mwt;
       var totDoc=mergeU(a.docs(),b.docs());
       var mhDoc=mergeU(a.mh().docs(),b.mh().docs());
       var tDoc=merge(a.mh().t().docs(),b.mh().t().docs());
@@ -530,7 +539,7 @@ public class Sum {
     boolean plusInterface(boolean interface1,boolean interface2,Core.L topLeftCs,Core.L topRightCs){
       if(interface1 && interface2){
         if(!topLeftCs.info().close() && !topRightCs.info().close()){return true;}
-        errC.throwErr(cs,topLeftCs,"One of the two interfaces in "+errC.intro(cs,false)
+        err(cs,topLeftCs,topRightCs,()->"One of the two interfaces in "+errC.intro(cs,false)
           +"is close (have private methods or implements private interfaces)."
           +" Only open interfaces can be composed"
           );
@@ -539,7 +548,7 @@ public class Sum {
         var leftClose=topLeftCs.info().close();
         var rightClose=topRightCs.info().close();
         if(!leftClose || !rightClose){return interface1;}
-        errC.throwErr(cs,topLeftCs,"The two nested classes are both closed, thus can not be composed.");
+        err(cs,topLeftCs,topRightCs,()->"The two nested classes are both closed, thus can not be composed.");
         }
       if(!interface1 && interface2){
         Program pCs=pOut.push(cOut,topLeft).navigate(cs);
@@ -552,13 +561,13 @@ public class Sum {
     boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, Core.L topCs,Program pCs){
       var errBase="The nested class can not be turned into an interface; "; 
       var errCoherent=errBase+"since it is used with 'class' modifier (is required coherent)";
-      if(coherents.contains(cs)){errC.throwErr(cs, topCs,errCoherent);}
+      if(coherents.contains(cs)){err(cs,topCs,null,()->errCoherent);}
       var errWatched=errBase+"since its privates are used by other code (is watched)";
-      if(watcheds.contains(cs)){errC.throwErr(cs, topCs,errWatched);}
+      if(watcheds.contains(cs)){err(cs, topCs,null,()->errWatched);}
       var errImplemented=errBase+"some public methods are implemented";
       boolean absPublic=topCs.mwts().stream().allMatch(m->m._e()==null||m.key().hasUniqueNum());
-      if(!absPublic){errC.throwErr(cs, topCs,errImplemented);}
-      openImplements(pCs,s->errC.throwErr(cs,topCs,errBase+s));
+      if(!absPublic){err(cs,topCs,null,()->errImplemented);}
+      openImplements(pCs,s->err(cs,topCs,null,()->errBase+s));
       return true;
       }
     }

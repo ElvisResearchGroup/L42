@@ -106,7 +106,8 @@ _______
     if empty=>Cs' in Map:
       n=sizeOf(Cs')
       L2={ncs}//and empty info
-      AddMap0 = L1[noNesteds][from p.minimize(Thisn);p.navigate(Cs')]
+      C1=fresh //need the pushThis0Out so that references to nested classes can stay in place
+      AddMap0=Cs'->L1[noNesteds][pushThis0Out C1][from Thisn;p.navigate(Cs')][Thisn.C1.Cs=This(n-1).Cs]//and reminimize
     otherwise L2=L1, AddMap0=empty
 * Rename[p;Cs;Map] L = L1;AddMap,AddMap',AddMap1..AddMapn
     assert p(Cs)=L

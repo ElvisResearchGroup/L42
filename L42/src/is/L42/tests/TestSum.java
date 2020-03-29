@@ -148,6 +148,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I={method Void k() #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
      nested class I={interface m() }
+     nested class I={ k() }
      This interface is privately implemented  but the summed version is larger: { k() }
      [file:[###]"""/*next test after this line*/)    
    ),new AtomicTest(()->fail("""
@@ -158,7 +159,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      C={[This1.I] method Any m() #norm{typeDep=This1.I refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
      method imm method imm Void m()
-     Both versions of this method are implemented, but the other have a different header:
+     The two headers are incompatible:
      imm method imm Any m()
      [file:[###]"""/*next test after this line*/)    
    ),new AtomicTest(()->fail("""
@@ -167,7 +168,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I={interface method Library m() #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
      method imm method imm Void m()
-     The other method have a different signature:
+     The methods have different signatures:
      imm method imm Library m()
      But there is no local refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
@@ -183,7 +184,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I2={interface method This1.E m() #norm{typeDep=This1.E}}
    #norm{}}""",/*expected lib after this line*/"""
      method imm method imm This1.E m()
-     The other method have a different signature:
+     The methods have different signatures:
      imm method imm This1.R m()
      But there is ambiguous refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
@@ -202,7 +203,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I3={[This1.I0] method This1.R m() #norm{typeDep=This1.I0 This1.R refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
      method imm method imm This1.R m()
-     The other method have a different signature:
+     The methods have different signatures:
      imm method imm This1.E m()
      But there is no local refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
@@ -213,6 +214,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      R::1={interface #norm{}}
      I1={interface [This1.R::1] method Any m() #norm{close typeDep=This1.R::1 This1, watched=This1}}
    #norm{}}""",/*expected lib after this line*/"""
+   nested class I1={interface m() }
    nested class I1={interface m() }
    One of the two interfaces in nested class I1
    is close (have private methods or implements private interfaces). Only open interfaces can be composed
@@ -329,7 +331,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      B={method This m() #norm{typeDep=This}}
    #norm{}}""",/*expected lib after this line*/"""
    method imm method imm Void m()
-   The other method have a different signature:
+   The methods have different signatures:
    imm method imm This0 m()
    But there is no local refinement between those two signatures
    [file:[###]"""/*next test after this line*/)
@@ -355,7 +357,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I2={interface[This1.I1] #norm{typeDep=This1.I1}} I1={interface #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
    nested class I1={interface [ This1.I2 This0 ] }
-   The sum would induce a circular interface implemntation for [imm This1.I2, imm This0]
+   The sum would induce a circular interface implementation for [imm This1.I2, imm This0]
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={interface #norm{}}
@@ -394,6 +396,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      A={interface #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
    nested class A={interface k() }
+   nested class A={interface }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed
    [file:[###]"""/*next test after this line*/)
@@ -405,6 +408,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      A={interface method Void m::1() #norm{close}}
    #norm{}}""",/*expected lib after this line*/"""
    nested class A={interface k() }
+   nested class A={interface }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed
    [file:[###]"""/*next test after this line*/)
@@ -415,6 +419,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      A={interface method Void m::1() method Void k() #norm{close}}
    #norm{}}""",/*expected lib after this line*/"""
+   nested class A={interface k() }
    nested class A={interface k() }
    One of the two interfaces in nested class A
    is close (have private methods or implements private interfaces). Only open interfaces can be composed 
@@ -428,6 +433,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      A={interface method Void bar() #norm{}}     
    #norm{}}""",/*expected lib after this line*/"""
    nested class A={interface foo() }
+   nested class A={interface bar() }
    This interface is privately implemented  but the summed version is larger: {interface bar() }
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -440,6 +446,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    The nested class can not be turned into an interface; a close interface is implemented
    [file:[###]"""/*next test after this line*/)
    ));}
+   
+   //TODO: test A{ Void m()} I{interface Any m()} + A={I} I={}
+   //TODO: test A{ Any m()} I{interface Any m()} + A={I} I={}
+   
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This0.C");
      miniFrom("A.B.D.E","A.B.C","This2.C");

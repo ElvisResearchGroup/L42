@@ -281,7 +281,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      ""","""
      class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
        static final Class<£cC£n1> _class=£cC£n1.class;
-       private static final L42Cache<£cC£n1> myCache=[###]
+       public static final L42Cache<£cC£n1> myCache=[###]
        @Override public L42Cache<£cC£n1> myCache(){return myCache;}
        public static £cC£n1 NewFwd(){return new _Fwd();}
        public static class _Fwd extends £cC£n1 implements L42Fwd{

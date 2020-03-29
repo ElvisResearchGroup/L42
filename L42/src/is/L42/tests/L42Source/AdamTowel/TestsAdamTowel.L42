@@ -73,7 +73,7 @@ TestSizeParsing=(
       )"Error is %x" 
   )
 NotCoh={This field, class method This ()}
-TestMakeNotCohList=ListT(NotCoh)
+TestMakeNotCohList=ListT(withNoEq=NotCoh)
 TestStrings=(
   s=Strings()
   s.add(\"hi")

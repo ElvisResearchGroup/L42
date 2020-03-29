@@ -365,26 +365,27 @@ public class Rename {
     if(a==null){return l1;}
     if(a.isMeth()){return l1;}
     if(!a.full){noExposeUniqueN(l1);}
-    if(!a.full && a.isCs()){
-      noCircular(l1,L());
-      int n=a._cs.size();
-      P.NCs src=P.of(n,L());
-      C c1=freshC(p.pop().topCore().ncs(),0);
-      L l=noNesteds(l1);
-      l=fromAndPushThis0Out(forcedNavigate(p,a._cs),l,src,c1,true);
-      int last=a._cs.size()-1;
-      addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
-      return toAbstract(l1);
-      }
     if(!a.full && a.isEmpty()){return toAbstract(l1);}
-    return l1;
+    assert a.isCs();
+    if(!a.full){noCircular(l1,L());}
+    int n=a._cs.size();
+
+    P.NCs src=P.of(n,L());
+    L l=noNesteds(l1);
+    C c1=freshC(p.pop().topCore().ncs(),0);
+    l=fromAndPushThis0Out(forcedNavigate(p,a._cs),l,src,c1,true);
+    int last=a._cs.size()-1;
+    addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
+    if(!a.full){return toAbstract(l1);}
+    return Program.emptyL.withNcs(l1.ncs());
+    //TODO: discuss, should the label by #typed, #norm or something else?
     }
   static L fromAndPushThis0Out(Program prg,L l,P.NCs src,C c1,boolean removeC1){
     return (L)new From(prg,src,-1){
       @Override public P visitP(P p){
         if(!p.isNCs()){return super.visitP(p);}
         var pp=p.toNCs();
-        if(pp.n()!=j()){return super.visitP(p);}
+        if(pp.n()!=j()){return program().minimize(super.visitP(p));}
         pp=P.of(pp.n()+1,pushL(c1,pp.cs()));
         pp=(P.NCs)super.visitP(pp);
         if(!removeC1){return pp;}
@@ -494,23 +495,32 @@ public class Rename {
     if(mwt._e()==null){err(errFail,errFail.intro(cs,mwt.key())+"is abstract, thus it can not be hidden");}
     return mwtOf(mwt,s1);    
     }
-  NC rename7superNC(NC nc,List<C> csc,Arrow a){
-    noCircular(nc.l(),csc);
-    noExposeUniqueN(nc.l());
+  void nestedInNewPosition(NC nc,Arrow a,boolean moveDocs){
     if(a._cs.isEmpty()){
       L l1=noNesteds(nc.l());
       addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(0,a.cs),nc.key(),false);
+      return;
       }
-    else{
-      var cs1=popL(a._cs);
-      int n=cs1.size();
-      Program p=forcedNavigate(this.p,cs1);
-      L l1=nc.l();
-      l1=noNesteds(l1);
-      l1=fromAndPushThis0Out(p,l1,p.minimize(P.of(n,cs)),nc.key(),false);
-      NC newNC=new NC(nc.poss(),L(),a._cs.get(n),l1);
-      addMapNCs(cs1,newNC);
+    var cs1=popLRight(a._cs);
+    int n=cs1.size();
+    Program p=forcedNavigate(this.p,a._cs);
+    L l1=nc.l();
+    l1=noNesteds(l1);
+    var src=p.minimize(P.of(n,cs));//not n+1 because of the -1 in from?
+    l1=fromAndPushThis0Out(p,l1,src,nc.key(),false);
+    List<Doc> docs=L();
+    if(moveDocs){
+      var p0=p.pop();
+      var src0=p0.minimize(P.of(n,cs));
+      docs=p0.fromDocs(nc.docs(),src0);
       }
+    NC newNC=new NC(nc.poss(),docs,a._cs.get(n),l1);
+    addMapNCs(cs1,newNC);
+    }
+  NC rename7superNC(NC nc,List<C> csc,Arrow a){
+    noCircular(nc.l(),csc);
+    noExposeUniqueN(nc.l());
+    nestedInNewPosition(nc,a,false);
     return nc.withL(toAbstract(nc.l()));
     }
   NC rename8restrictNC(NC nc){
@@ -518,20 +528,7 @@ public class Rename {
     return nc.withL(toAbstract(nc.l()));
     }
   NC _rename9nested(NC nc,Arrow a){
-    if(a._cs.isEmpty()){//exactly as in 7? should we reuse the code?
-      L l1=noNesteds(nc.l());
-      addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(0,a.cs),nc.key(),false);
-      }
-    else{
-      int last=a._cs.size()-1;
-      var cs1=a._cs.subList(0, last);
-      Program p=forcedNavigate(this.p,cs1);
-      P.NCs src=p.minimize(P.of(cs1.size(),cs));
-      L l=noNesteds(nc.l());
-      l=fromAndPushThis0Out(p,l,src,nc.key(),false);
-      var docs=p.fromDocs(nc.docs(),src);
-      addMapNCs(cs1, new NC(nc.poss(),docs,a._cs.get(last),l));
-      }
+    nestedInNewPosition(nc,a,true);
     return _onlyNested(nc);
     }
   List<NC> rename10hideNested(NC nc,Arrow a){

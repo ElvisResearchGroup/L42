@@ -7,7 +7,7 @@ Scope1 ={
     imm method Size ok()=native{trusted:readEagerCache} 3Size
     }
   B = {mut A a class method This(mut A a)}
-  Bs = Class:ListT(B)
+  Bs = Class:ListT(withNoEq=B)
   LateCacheLoadingTask=(
     imm A ia=(
       mut Bs bs=Bs()
@@ -74,7 +74,7 @@ TestACache=(
   {}:Test"cacheEnsureRepeatOnce"(expected=S"firstEcalledfirstEcalled",actual=Log"Foo".#$reader().read())
   )
   
- HasToSs = Class:ListT(HasToS)
+ HasToSs = Class:ListT(withNoEq=HasToS)
  
  B={
   HasToSs that
@@ -114,9 +114,9 @@ TestBCache=(
   void
   )
   
-AnyList = Class:ListT(Any)
-VoidList = Class:ListT(Void)
-LibList = Class:ListT(Library)
+AnyList = Class:ListT(withNoEq=Any)
+VoidList = Class:ListT(withNoEq=Void)
+LibList = Class:ListT(withNoEq=Library)
 
 C={
   Strings that

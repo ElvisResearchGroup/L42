@@ -865,53 +865,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    The implementation can not be removed since the class is watched by nested class B
    Full mapping:This0-><empty>
    [file:[###]"""/*next test after this line*/)
-    ),new AtomicTest(()->pass("""
-     @This.A A={
-       method Void v()=void
-       B={#norm{}}
-       D::2={#norm{}}
-       #norm{}}
-     C={method Void b()=void
-       #norm{}}
-     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
-     A.=>C.D.E.
-   """,/*expected after this line*/"""
-     A={
-       B={#norm{}}
-       #typed{}}
-     C={
-       method Void b()=void 
-       D={
-         @This.E E={
-           method Void v()=void
-           D::2={#norm{}}
-           #norm{}}
-         #typed{typeDep=This.E}}
-       #norm{}}
-     #norm{typeDep=This.C.D.E}}
-     """/*next test after this line*/)
-    ),new AtomicTest(()->pass("""
-     @This.A A={
-       method Void v()=void
-       B={#norm{}}
-       D::2={#norm{}}
-       #norm{}}
-     C={method Void b()=void
-       #norm{}}
-     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
-     A.=>C.D.E. | A.B.=>C.D.E.B.
-   """,/*expected after this line*/"""
-   C={method Void b()=void
-     D={
-       @This.E E={
-         method Void v()=void
-         D::2={#norm{}}
-         B={#norm{}}
-       #norm{}}
-     #typed{typeDep=This.E}}
-   #norm{}}
- #norm{typeDep=This.C.D.E}}"""/*next test after this line*/)    
-    ),new AtomicTest(()->pass("""
+   ),new AtomicTest(()->pass("""
      A={
        method Void v::0()=void
        B={#norm{}}
@@ -1124,5 +1078,109 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    'This' can not be redirected away
    Full mapping:This0=>Any
    [file:[###]"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
+     A={method This foo() #typed{typeDep=This}}
+     B={method This foo() #typed{typeDep=This}}
+     #typed{}}""",/*rename map after this line*/"""
+   A.=>B.
+   """,/*expected after this line*/"""
+     B={method This foo() #typed{typeDep=This}}
+     #typed{}}"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
+     method This foo()
+     B={method This foo() #typed{typeDep=This}}
+     #typed{typeDep=This}}""",/*rename map after this line*/"""
+   =>B.
+   """,/*expected after this line*/"""
+     B={method This foo() #typed{typeDep=This}}
+     #typed{}}"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
+     method This foo()
+     B={method This foo() #typed{typeDep=This}}
+     #typed{typeDep=This}}""",/*rename map after this line*/"""
+   B.=>
+   """,/*expected after this line*/"""
+     method This foo()
+     #typed{typeDep=This}}"""/*next test after this line*/)
+  ),/*test78*/new AtomicTest(()->pass("""
+     method This foo()
+     B={C={method This foo() #typed{typeDep=This}}#typed{}}
+     #typed{typeDep=This}}""",/*rename map after this line*/"""
+   =>B.C.
+   """,/*expected after this line*/"""
+     B={C={method This foo() #typed{typeDep=This}}#typed{}}
+     #typed{}}"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
+     method This foo()
+     B={C={method This foo() #typed{typeDep=This}}#typed{}}
+     #typed{typeDep=This}}""",/*rename map after this line*/"""
+   B.C.=>
+   """,/*expected after this line*/"""
+     method This foo()
+     B={#typed{}}
+     #typed{typeDep=This}}"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
+     A={C={method This foo() #typed{typeDep=This}}#typed{}}
+     B={method This foo() #typed{typeDep=This}}
+     #typed{}}""",/*rename map after this line*/"""
+   A.C.=>B.
+   """,/*expected after this line*/"""
+     A={#typed{}}
+     B={method This foo() #typed{typeDep=This}}
+     #typed{}}"""/*next test after this line*/)
+  ),new AtomicTest(()->pass("""
+     A={method This foo() #typed{typeDep=This}}
+     B={C={method This foo() #typed{typeDep=This}}#typed{}}
+     #typed{}}""",/*rename map after this line*/"""
+   A.=>B.C.
+   """,/*expected after this line*/"""
+     B={C={method This foo() #typed{typeDep=This}}#typed{}}
+     #typed{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     @This.A A={
+       method Void v()=void
+       B={#norm{}}
+       D::2={#norm{}}
+       #norm{}}
+     C={method Void b()=void
+       #norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.=>C.D.E.
+   """,/*expected after this line*/"""
+     A={
+       B={#norm{}}
+       #typed{}}
+     C={
+       method Void b()=void 
+       D={
+         @This.E E={
+           method Void v()=void
+           D::2={#norm{}}
+           #norm{}}
+         #typed{typeDep=This.E}}
+       #norm{}}
+     #norm{typeDep=This.C.D.E}}
+     """/*next test after this line*/)
+    ),new AtomicTest(()->pass("""
+     @This.A A={
+       method Void v()=void
+       B={#norm{}}
+       D::2={#norm{}}
+       #norm{}}
+     C={method Void b()=void
+       #norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.=>C.D.E. | A.B.=>C.D.E.B.
+   """,/*expected after this line*/"""
+   C={method Void b()=void
+     D={
+       @This.E E={
+         method Void v()=void
+         D::2={#norm{}}
+         B={#norm{}}
+       #norm{}}
+     #typed{typeDep=This.E}}
+   #norm{}}
+ #norm{typeDep=This.C.D.E}}"""/*next test after this line*/)
    ));}
 }
