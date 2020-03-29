@@ -17,6 +17,7 @@ import is.L42.cache.nativecache.ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
 
@@ -53,7 +54,7 @@ public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
   @Override public L42Cache<L42£LazyMsg> myCache(){return myCache;}
   }
 class LazyMsgCache extends ValueCache<L42£LazyMsg>{
-  @Override public String typename() {return "L42£LazyMsg";}
+  @Override public Object typename() {return TrustedKind.LazyMessage;}
   @Override protected boolean valueCompare(L42£LazyMsg t1, L42£LazyMsg t2) {
     return t1.eq(t2);
     }

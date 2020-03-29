@@ -1,16 +1,19 @@
 reuse[AdamTowel]
-/*
-TODO: Close and AddConstructor do nothing about fwd parameters in ks!!
-*/ /*
 TestDataFwd={
   A=Data:{mut B b,var S name}
   B=Data:{mut A a,var S name}
-  Test=(
+  Task1=(
     mut A a=A(b=b,name=S"myA")
     mut B b=B(a=a,name=S"myB")
-    {}:Test"toS"(expected=S"Point(x=8, y=42)", actual=a)
+    {}:Test"name"(expected=S"myB",actual=a.b().name())
+    //TODO: test and fix toS for circular objects
+    /*{}:Test"toS"(expected=S"""
+      b1=B(a=a1, name="myB")
+      a1=A(b=b1, name="myA")
+      a1
+      """.trim(),actual=a)*/
     )
-  }*/
+  }
 TestDataBase={
   Point=Data:{Size x, Size y}
   TestPoint=(

@@ -64,7 +64,7 @@ public class NameMangling {
       case '@'->"at";
       case '$'->"dollar";
       case '%'->"%";
-      case '\\'->"backslash";
+      case '\\'->"backSlash";
       case ' '->"space";
       case '\n'->"newLine";
       default->{

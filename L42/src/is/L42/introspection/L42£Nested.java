@@ -26,6 +26,7 @@ import is.L42.generated.Pos;
 import is.L42.meta.L42£Meta;
 import is.L42.meta.L42£Name;
 import is.L42.meta.MetaError;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
@@ -91,7 +92,6 @@ public class L42£Nested extends L42NoFields<L42£Nested>{
     if(path.cs().size()<=1){throw new ArrayIndexOutOfBoundsException();}
     return L42£Nested.fromClass(path.withCs(popLRight(path.cs())));
     }
-
   public L42£Doc outerDoc(){
     var c=_outerC();
     if(c==null){throw new ArrayIndexOutOfBoundsException();}
@@ -178,6 +178,6 @@ public class L42£Nested extends L42NoFields<L42£Nested>{
   @Override public L42£Nested newInstance(){return instanceVoid;}
   }
 class NestedCache extends ValueCache<L42£Nested>{
-  @Override public String typename() {return "Nested";}
+  @Override public Object typename() {return TrustedKind.Nested;}
   @Override protected boolean valueCompare(L42£Nested t1, L42£Nested t2) {return t1.eq(t2);}
   }

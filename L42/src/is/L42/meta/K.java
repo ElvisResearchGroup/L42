@@ -87,11 +87,12 @@ public class K extends GuessFields{
       if(_elem(l.mwts(),mutS)==null){c.add(mutM);}
       });
     var i=l.info();
-    if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
+    if(i.typeDep().contains(P.pThis0)){return l.withMwts(newMWT);}
+    i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));
     return l.withMwts(newMWT).withInfo(i);
     }
   public T forgeTImm(T t){
-    if(t.mdf().isFwdMut()){return t;}
+    if(!t.mdf().isFwdMut()){return t;}
     return t.withMdf(Mdf.ImmutableFwd);    
     }    
   public T forgeT(X x){

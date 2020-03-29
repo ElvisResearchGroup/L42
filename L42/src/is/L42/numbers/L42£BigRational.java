@@ -15,6 +15,7 @@ import java.util.Set;
 
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.nativecache.ValueCache;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public final class L42£BigRational extends L42NoFields<L42£BigRational> implements Comparable<L42£BigRational>{
@@ -190,12 +191,12 @@ public final class L42£BigRational extends L42NoFields<L42£BigRational> implem
      return num.bitLength()+den.bitLength()+toAdd;
      }
   public static final Class<L42£BigRational> _class=L42£BigRational.class;
-  public static final MetaCache myCache=new MetaCache();
+  public static final RationalCache myCache=new RationalCache();
   static{L42CacheMap.addCachableType_synchronized(L42£BigRational.class,myCache);}
-  @Override public MetaCache myCache(){return myCache;}
+  @Override public RationalCache myCache(){return myCache;}
   @Override public L42£BigRational newInstance(){throw unreachable();}
   }
-class MetaCache extends ValueCache<L42£BigRational>{
-  @Override public String typename() {return "Meta";}
+class RationalCache extends ValueCache<L42£BigRational>{
+  @Override public Object typename() {return TrustedKind.BigRational;}
   @Override protected boolean valueCompare(L42£BigRational t1, L42£BigRational t2) {return t1.eq(t2);}
   }

@@ -100,7 +100,7 @@ class FormatTrusted implements FormatKind{
   @Override public String specialS(){
     String res= f.k.lines()[lineN][1].toString();
     if(!res.isEmpty() && res.matches("[0-9]+")){return res;}
-    res.replace("\"", "\\dq").replace("\n","\\nl");
+    res=res.replace("\"", "\\dq").replace("\n","\\n");
     return "\""+res+"\"";
     }
   }
@@ -150,8 +150,8 @@ class KeyFormatter{
     if(special!=null){return special;}
     String name=varName(k.path())+id;
     if(visited.contains(id)){return name;}
-    if(size<50){return k.format(isInterface,size);}
     visited.add(id);
+    if(size<50){return k.format(isInterface,size);}
     expanded.put(id,name+"="+k.format(true,size));
     return name;    
     }

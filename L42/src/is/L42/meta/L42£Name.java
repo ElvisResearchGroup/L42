@@ -13,6 +13,7 @@ import is.L42.generated.C;
 import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.visitors.AuxVisitor;
 
@@ -86,6 +87,6 @@ public class L42£Name extends L42NoFields<L42£Name>{
   @Override public L42£Name newInstance(){return instance;}
   }
 class NameCache extends ValueCache<L42£Name>{
-  @Override public String typename() {return "Name";}
+  @Override public Object typename() {return TrustedKind.Name;}
   @Override protected boolean valueCompare(L42£Name t1, L42£Name t2) {return t1.eq(t2);}
   }

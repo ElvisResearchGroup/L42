@@ -8,9 +8,7 @@ import is.L42.tools.General;
 public class StringCache extends ValueCache<String> {
 
   @Override 
-  public Object typename() { 
-    return TrustedKind.String; 
-    }
+  public Object typename(){return TrustedKind.String;}
 
   @Override 
   protected boolean valueCompare(String t1, String t2) { 

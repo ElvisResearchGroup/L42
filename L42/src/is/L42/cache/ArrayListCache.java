@@ -170,9 +170,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     }
   
   @Override
-  public Object typename() {
-    return TrustedKind.Vector;
-    }
+  public Object typename(){return TrustedKind.Vector;}
   
   @Override 
   public L42Cache<?> rawFieldCache(int i) {

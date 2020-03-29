@@ -8,9 +8,7 @@ import is.L42.tools.General;
 public class BoolCache extends ValueCache<Boolean> {
 
   @Override 
-  public Object typename() { 
-    return TrustedKind.Bool; 
-    }
+  public Object typename() {return TrustedKind.Bool;}
 
   @Override 
   protected boolean valueCompare(Boolean t1, Boolean t2) { 

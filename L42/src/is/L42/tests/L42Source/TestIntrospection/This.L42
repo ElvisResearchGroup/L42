@@ -1,0 +1,31 @@
+reuse[AdamTowel]
+
+TestFromLib=(
+  lib={method Void foo(S that)=void @{hi} B={method Void foo(S that)=void}}
+  {}:Test"1"(
+    actual=Introspection.Nested.from(library=lib)
+    expected=S"""
+      |{ foo(that)=(..) B={..} }
+      |
+      |File name:[###]/TestIntrospection/This.L42
+      |Line:[###]
+      |Column:[###]
+      """.trim())
+  n=Introspection.Nested.from(library=lib).nesteds().val(0Size)      
+  {}:Test"2"(actual=n
+    expected=S"""
+      |{ foo(that)=(..) }
+      |
+      |File name:[###]/TestIntrospection/This.L42
+      |Line:[###]
+      |Column:[###]
+      """.trim())
+  {}:Test"3"(actual=Introspection.Nested.from(library=lib).nesteds(),
+    expected=S"""
+      |Introspection.Nesteds[Introspection.Nested(i="{ foo(that)=(..) }\n\nFile name:[###]")]
+      """.trim())
+  {}:Test"4"(actual=n.outerName(), expected=S"B")
+  {}:Test"5"(actual=n.outerDoc(), expected=S"""
+    |Introspection.Doc(i="@{@{hi}}")
+    """.trim())
+  )

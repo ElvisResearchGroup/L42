@@ -42,6 +42,7 @@ import is.L42.generated.Core.Doc;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
@@ -183,6 +184,6 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     }
   }
 class MetaCache extends ValueCache<L42£Meta>{
-  @Override public String typename() {return "Meta";}
+  @Override public Object typename(){return TrustedKind.Meta;}
   @Override protected boolean valueCompare(L42£Meta t1, L42£Meta t2) {return t1.eq(t2);}
   }

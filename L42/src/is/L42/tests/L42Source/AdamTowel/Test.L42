@@ -5,9 +5,9 @@ WithName={
   S name
   class method This(S name)
   method Condition(Bool that)=\(name=this.name(),cond=that,message=S"")
-  method ExpectedActual(HasToS expected, HasToS actual)=
+  method ExpectedActual(read HasToS expected, read HasToS actual)=
     \(name=this.name(),expected=expected.toS(), actual=actual.toS(),message=S"")
-  method ExpectedActual(HasToS actual, HasToS expected)=this(expected=expected,actual=actual)
+  method ExpectedActual(read HasToS actual, read HasToS expected)=this(expected=expected,actual=actual)
   }
 Condition={
   S name

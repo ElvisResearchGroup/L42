@@ -5,6 +5,7 @@ import is.L42.cache.nativecache.ValueCache;
 import is.L42.generated.P;
 import is.L42.meta.L42£Meta;
 import is.L42.meta.L42£Name;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
@@ -53,6 +54,6 @@ public class L42£Type extends L42NoFields<L42£Type>{
   @Override public L42£Type newInstance(){return instance;}
   }
 class TypeCache extends ValueCache<L42£Type>{
-  @Override public String typename() {return "Type";}
+  @Override public Object typename() {return TrustedKind.Type;}
   @Override protected boolean valueCompare(L42£Type t1, L42£Type t2) {return t1.eq(t2);}
   }
