@@ -228,15 +228,13 @@ public enum TrustedOp {
     )),  
   //####Nested####
   FromClass("fromClass",all(
-    nested("L42£Nested.fromClass(%2$s)",sig(Class,Immutable,Nested,Class,Any))
-    ,Map.of(Type,use("return L42£Type.fromClass(%2$s,%3$s,%4$s);",
-       sig(Class,Immutable,Type,Immutable,String,Immutable,Doc,Class,Any)))
+    nested("L42£Nested.fromClass(%2$s)",sig(Class,Immutable,Nested,Class,Any)),
+    type("L42£Type.fromClass(%2$s,%3$s,%4$s)",sig(Class,Immutable,Type,Immutable,String,Immutable,Doc,Class,Any))
     )),
   FromLibrary("fromLibrary",all(
-    nested("L42£Nested.fromLibrary(%2$s)",sig(Class,Immutable,Nested,Immutable,Lib))
-    ,Map.of(Type,use("return L42£Type.fromLibrary(%2$s,%3$s,%4$s);",
-       sig(Class,Immutable,Type,Immutable,String,Immutable,Doc,Immutable,Name)))
-    )),
+    nested("L42£Nested.fromLibrary(%2$s)",sig(Class,Immutable,Nested,Immutable,Lib)),
+    type("L42£Type.fromLibrary(%2$s,%3$s,%4$s)",sig(Class,Immutable,Type,Immutable,String,Immutable,Doc,Immutable,Name)))
+    ),
   NestedByName("nestedByName",nested("%s.nestedByName(%s)",sigI(Nested,Name),1)),
   HasOuter("hasOuter",nested("%s.hasOuter()",sigI(Bool))),
   OuterC("outerName",nested("%s.outerName()",sigI(String),3)),
@@ -252,16 +250,29 @@ public enum TrustedOp {
   IsClose("isClose",nested("%s.isClose()",sigI(Bool))),
   IsInterface("isInterface",nested("%s.isInterface()",sigI(Bool))),
   IsBinded("isBinded",nested("%s.isBinded()",sigI(Bool))),
-  Root("root",nested("%s.root()",sigI(Nested))),
-  NameFromRoot("nameFromRoot",nested("%s.nameFromRoot()",sigI(Name))),
+  Root("root",all(
+    nested("%s.root()",sigI(Nested)),
+    doc("%s.root()",sigI(Nested))
+    )),
+  NameFromRoot("nameFromRoot",all(
+    nested("%s.nameFromRoot()",sigI(Name)),
+    doc("%s.nameFromRoot()",sigI(Name))
+    )),  
   Position("position",nested("%s.position()",sigI(String))),
   ClassAny("classAny",nested("%s.classAny()",sig(Immutable,Class,Any),3)),
   //####Type####
-  Mdf("mdf",Map.of(Type,use("return %s.mdf();",sigI(String)))),
-  DocOp("doc",Map.of(Type,use("return %s.doc();",sigI(Doc)))),
-  NestedOp("nested",Map.of(Type,use("return %s.nested();",sigI(Nested)))),
+  Mdf("mdf",type("%s.mdf()",sigI(String))),
+  DocOp("doc",type("%s.doc()",sigI(Doc))),
+  NestedOp("nested",all(
+    type("%s.nested()",sigI(Nested)),
+    doc("%s.nested()",sigI(Nested),2)
+    )),
   //####Doc####
-  //TODO: doc operations
+  DocNum("docNum",doc("%s.docNum()",sigI(Int))),
+  DocIn("docIn",doc("%s.docIn(%s)",sigI(Doc,Int),1)),
+  TextIn("textIn",doc("%s.textIn(%s)",sigI(String,Int),1)),
+  HasAnnotation("hasAnnotation",doc("%s.hasAnnotation()",sigI(Bool))),
+  NameOp("name",doc("%s.name()",sigI(Name),2)),
   //####Method####
   //TODO: method operations
 
@@ -356,7 +367,7 @@ public enum TrustedOp {
   ImmToString("immToString",Map.of(
     AnyKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,String)),
     AnyNativeKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%This.wrap(%1$s)));",sig(Immutable,Immutable,String))
-    ))    
+    ))
   ;
   public final String inner;
   Map<TrustedKind,Generator>code;

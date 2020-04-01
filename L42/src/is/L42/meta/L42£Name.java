@@ -47,7 +47,7 @@ public class L42£Name extends L42NoFields<L42£Name>{
     return fromCs(cs);
     }
   public static L42£Name fromCs(List<C> cs){
-    if(cs.isEmpty()){return instance;}
+    if(cs.isEmpty()){return empty;}
     assert cs.stream().noneMatch(c->c.hasUniqueNum());
     return new L42£Name(cs(cs),cs,null,null).myNorm();
     }

@@ -8,25 +8,41 @@ import java.util.List;
 
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.nativecache.ValueCache;
+import is.L42.common.Program;
 import is.L42.generated.Core.Doc;
+import is.L42.generated.P;
 import is.L42.meta.L42£Name;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public class L42£Doc extends L42NoFields<L42£Doc>{
     public L42£Nested root(){return root;}
-    /*TODO: insert them all, then lift them as TrustedOp, then propagate them (twice) to AdamTowel
-    d.root
-    d.nameFromOrigin
-    d.docs
-    d.hasAnnotation
-    d.isBinded
-      d.annotatedClassAny : class Any
-      d.annotatedName : Name
-    d.selector
-    d.x
-    d.texts
-    */
+    public L42£Name nameFromRoot(){return nameFromRoot;}
+    public int docNum(){return doc.docs().size();}
+    public L42£Doc docIn(int that){return fromDoc(root,nameFromRoot,doc.docs().get(that));}
+    public String textIn(int that){return doc.texts().get(that);}//textNum==docNum+1
+    public boolean hasAnnotation(){return doc._pathSel()!=null;}
+    public L42£Nested nested(){
+      if(doc._pathSel()==null){throw new IndexOutOfBoundsException();}
+      P p=doc._pathSel().p();
+      if(root.isBinded()){return L42£Nested.fromClass(p);}
+      var p0=p.toNCs();
+      if(p0.n()>nameFromRoot.cs.size()){
+        p0=p0.withN(p0.n()-(nameFromRoot.cs.size()+1));
+        return L42£Nested.fromClass(p0);
+        }
+      var pTop=Program.emptyP.from(p0,nameFromRoot.cs);
+      assert pTop.n()==0;
+      return root.nestedByName(L42£Name.fromCs(pTop.cs()));
+      }
+    public L42£Name name(){
+      var res=nested().nameFromRoot;
+      var ps=doc._pathSel();
+      if(ps._s()!=null){res=res.withSelector(ps._s().toString());}
+      if(ps._x()!=null){res=res.withX(ps._x().toString());}
+      return res;
+      }
+    /*TODO: insert them all, then lift them as TrustedOp, then propagate them (twice) to AdamTowel */
 
 
   static Doc normalize(List<Doc> docs){
@@ -35,9 +51,11 @@ public class L42£Doc extends L42NoFields<L42£Doc>{
     return new Doc(null,Collections.nCopies(docs.size()+1,""),docs);
     }
   static L42£Doc fromDoc(L42£Nested rootL,L42£Name nameFromRoot,Doc doc){
-    return new L42£Doc(rootL,nameFromRoot,doc);
+    return new L42£Doc(rootL,nameFromRoot,doc).myNorm();
     }
   private L42£Doc(L42£Nested root,L42£Name nameFromRoot,Doc doc){
+    assert nameFromRoot!=L42£Name.instance:
+    "";
     this.root=root;this.nameFromRoot=nameFromRoot;this.doc=doc;
     }
   final L42£Nested root;

@@ -1,5 +1,14 @@
 reuse[AdamTowel]
 
+ExampleAnn={@{exampleAnn}}
+
+TestAnn=(
+  lib={ @ExampleAnn B={method Void foo(S that)=void}}
+  n=Introspection.Nested.from(library=lib).nesteds().val(0Size)
+  clazz=n.outerDoc().docs().left().nested()
+  s=clazz.innerDoc().docs().left().texts().left()
+  {}:Test"0"(expected=S"exampleAnn", actual=s)
+  )
 TestFromLib=(
   lib={method Void foo(S that)=void @{hi} B={method Void foo(S that)=void}}
   {}:Test"1"(
@@ -25,7 +34,5 @@ TestFromLib=(
       |Introspection.Nesteds[Introspection.Nested(i="{ foo(that)=(..) }\n\nFile name:[###]")]
       """.trim())
   {}:Test"4"(actual=n.outerName(), expected=S"B")
-  {}:Test"5"(actual=n.outerDoc(), expected=S"""
-    |Introspection.Doc(i="@{@{hi}}")
-    """.trim())
+  {}:Test"5"(actual=n.outerDoc(), expected=S"@{@{hi}}")
   )

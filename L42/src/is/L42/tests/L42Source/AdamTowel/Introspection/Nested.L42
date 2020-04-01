@@ -29,8 +29,9 @@ method Nesteds nesteds()=\()((
 method Types implements()=\()((
   size=this.i().implementedNum()
   var i=0Size
-  while i<size (\res<=Type$(this.i().implementedIn(i))
-  i+=1Size//sadly, range will be added later
+  while i<size (
+    \res<=Type$(this.i().implementedIn(i))
+    i+=1Size//sadly, range will be added later
   )))
 method Bool hasOuter()=this.i().hasOuter()
 

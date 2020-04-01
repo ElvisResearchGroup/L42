@@ -110,7 +110,7 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     return "return L42£Doc.newInstance()";
     }
-    @Override public int genExceptionNumber(){return 1;}//OutOfBound
+    @Override public int genExceptionNumber(){return 2;}//OutOfBound,OptNotPresent
     },
   Limit("Void"){public String factory(J j,MWT mwt){
     assert false;

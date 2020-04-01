@@ -47,11 +47,21 @@ NativeType={
     }}
 
 NativeDoc={
+  method This1.NativeNested root()=native{trusted:root}error void
+  method This2.NativeName nameFromRoot()=native{trusted:nameFromRoot}error void
+  method This2.Size docNum()=native{trusted:docNum}error void
+  method This docIn(This2.Size that)=native{trusted:docIn}error void
+  method This2.S textIn(This2.Size that)=native{trusted:textIn}error void
+  method This2.Bool hasAnnotation()=native{trusted:hasAnnotation}error void
+  method This1.NativeNested nested()=native{trusted:nested}error void
+  method This2.NativeName name()=native{trusted:name}error void
+      
   read method This2.S toS()=native{trusted:toS}error void
   
-  #norm{nativeKind=Doc,nativePar=This2.OutOfBounds
-    typeDep=This,This2.S,This2.OutOfBounds
-    coherentDep=This,This2.OutOfBounds    
+  #norm{nativeKind=Doc,nativePar=This2.OutOfBounds,This2.NoElementInOpt
+    typeDep=This,This1.NativeNested,
+      This2.S,This2.Bool,This2.Size,This2.NativeName,This2.OutOfBounds,This2.NoElementInOpt
+    coherentDep=This,This2.OutOfBounds,This2.NoElementInOpt
     }}
 
 Nested$={class method This(NativeNested that) read method Bool readEquality(read This that)}
@@ -63,9 +73,3 @@ Docs=ListT(Doc$)
 Nested=Data:{...}
 Type=Data:{...}
 Doc=Data:{...}
-/*
-read method imm This2.Bool readEquality(read This0 that)=(..)
-read method imm This2.Bool readEquality(read This1.Nested that)
-whe we get this error? why the only position reported is the one in data?
-there should be at least 2!
-*/

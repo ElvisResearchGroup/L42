@@ -45,6 +45,12 @@ public class L42£Nested extends L42NoFields<L42£Nested>{
     return fromClass(L42£Meta.unwrapPath(clazz));
     }
   static public L42£Nested fromClass(P clazz){
+    if(clazz==P.pAny){return instanceAny;}
+    if(clazz==P.pVoid){return instanceVoid;}
+    if(clazz==P.pLibrary){return instanceLibrary;}
+    return fromClass(clazz.toNCs());
+    }
+  static public L42£Nested fromClass(P.NCs clazz){
     L l=Resources.currentP._ofCore(clazz);
     assert l!=null;
     return new L42£Nested(posStr(l.poss()),l,l,L42£Name.empty,clazz).myNorm();
@@ -56,6 +62,8 @@ public class L42£Nested extends L42NoFields<L42£Nested>{
     return new L42£Nested(posStr(l.poss()),l,l,L42£Name.empty,null).myNorm();
     }
   public L42£Nested nestedByName(L42£Name name){
+    assert name!=L42£Name.instance:
+    "";
     L l=rootL._cs(name.cs);
     if(l==null){throw new ArrayIndexOutOfBoundsException();}//throw err name invalid
     if(_classAny==null || !_classAny.isNCs()){

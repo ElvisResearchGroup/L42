@@ -154,9 +154,9 @@ public class Rename {
       });
     cs=L();
     L res=applyMap();
-    System.out.println("renamed lib: "+this.mapToS());
-    System.out.println(res);
-    System.out.println("---------------");
+    //System.out.println("renamed lib: "+this.mapToS());
+    //System.out.println(res);
+    //System.out.println("---------------");
     assert l.info().isTyped()==res.info().isTyped();
     return res;
     }
