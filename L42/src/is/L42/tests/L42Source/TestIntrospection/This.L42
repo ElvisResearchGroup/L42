@@ -2,6 +2,18 @@ reuse[AdamTowel]
 
 ExampleAnn={@{exampleAnn}}
 
+TestMeth=(
+  lib={ method Void foo(S that)=void  method B bar() B={}}
+  n=Introspection.Nested.from(library=lib)
+  b=n.nesteds().val(0Size)
+  foo=n.methods().val(0\)
+  bar=n.methods().val(1\)
+  b2=bar.returnType().nested()
+  {}:Test"self1String"(expected=b actual=b2)
+  //{}:Test"self1"(b.nameFromRoot()==b2.nameFromRoot())
+  {}:Test"self1"(b==b2)
+  {}:Test"self2"(n!=b2)
+  )
 TestAnn=(
   lib={ @ExampleAnn B={method Void foo(S that)=void}}
   n=Introspection.Nested.from(library=lib).nesteds().val(0Size)

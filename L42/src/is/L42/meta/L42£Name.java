@@ -92,5 +92,6 @@ public class L42£Name extends L42NoFields<L42£Name>{
   }
 class NameCache extends ValueCache<L42£Name>{
   @Override public Object typename() {return TrustedKind.Name;}
-  @Override protected boolean valueCompare(L42£Name t1, L42£Name t2) {return t1.eq(t2);}
+  @Override protected boolean valueCompare(L42£Name t1, L42£Name t2) {
+  return t1.eq(t2);}
   }

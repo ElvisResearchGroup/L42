@@ -1,2 +1,7 @@
+[HasToS]
 NativeType i
 class method This(NativeType that)=\(i=that)
+method S mdf()=this.i().mdf()
+method Doc doc()=\(this.i().doc())
+method Nested nested()=\(this.i().nested())
+read method S toS()=this.i().toS()

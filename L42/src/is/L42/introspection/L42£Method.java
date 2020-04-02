@@ -19,6 +19,7 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
@@ -69,8 +70,13 @@ public class L42£Method extends L42NoFields<L42£Method>{
     this.position=position;
     this.nested=nested;
     assert name._s!=null;
-    this.mwt=_elem(nested.currentL.mwts(),name._s);
-    assert this.mwt!=null;
+    var mwt=_elem(nested.currentL.mwts(),name._s);
+    if(mwt==null){
+      assert name.cs.isEmpty() && name.selector().equals("#apply()");
+      var mh=new MH(Mdf.Immutable,L(),P.coreAny,name._s,L(),L());
+      mwt=new MWT(nested.currentL.poss(),L(), mh,"",null);
+      }
+    this.mwt=mwt;
     this.nameFromRoot=name.withX(null);
     assert nested.nameFromRoot.equals(name.onlyCs());
     } 
@@ -88,7 +94,7 @@ public class L42£Method extends L42NoFields<L42£Method>{
   public static final MethodCache myCache=new MethodCache();
   static{L42CacheMap.addCachableType_synchronized(L42£Method.class,myCache);}
   @Override public MethodCache myCache(){return myCache;}
-  static public L42£Method instance=new L42£Method("",L42£Nested.instanceVoid,L42£Name.empty.withPath("#apply()")).myNorm();//TODO: invalid method??
+  static public L42£Method instance=new L42£Method("",L42£Nested.instanceVoid,L42£Name.empty.withSelector("#apply()")).myNorm();//TODO: invalid method??
   @Override public L42£Method newInstance(){return instance;}
   }
 class MethodCache extends ValueCache<L42£Method>{
