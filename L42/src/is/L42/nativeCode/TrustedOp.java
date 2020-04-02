@@ -141,7 +141,7 @@ public enum TrustedOp {
     sig(Mutable,Immutable,Void,Immutable,String)))),
    
   //toString
-  ToS("toS",useToS(StringBuilder,Int,Bool,Name,Nested,Doc,Type,BigRational)),//String is pre added
+  ToS("toS",useToS(StringBuilder,Int,Bool,Name,Nested,Doc,Type,Method,BigRational)),//String is pre added
   ToInt("toInt",Map.of(String,use("""
     try{return Integer.parseInt(%1$s);}
     catch(NumberFormatException nfe){
@@ -244,6 +244,7 @@ public enum TrustedOp {
   NestedNum("nestedNum",nested("%s.nestedNum()",sigI(Int))),
   NestedIn("nestedIn",nested("%s.nestedIn(%s)",sigI(Nested,Int),2)),
   MethodNum("methodNum",nested("%s.methodNum()",sigI(Int))),
+  MethodIn("methodIn",nested("%s.methodIn(%s)",sigI(Method,Int))),
   ImplementedNum("implementedNum",nested("%s.implementedNum()",sigI(Int))),
   ImplementedIn("implementedIn",nested("%s.implementedIn(%s)",sigI(Type,Int),2)),
   HasHiddenImplements("hasHiddenImplements",nested("%s.hasHiddenImplements()",sigI(Bool))),
@@ -256,16 +257,24 @@ public enum TrustedOp {
     )),
   NameFromRoot("nameFromRoot",all(
     nested("%s.nameFromRoot()",sigI(Name)),
-    doc("%s.nameFromRoot()",sigI(Name))
+    doc("%s.nameFromRoot()",sigI(Name)),
+    method("%s.nameFromRoot()",sigI(Name))
     )),  
-  Position("position",nested("%s.position()",sigI(String))),
+  Position("position",all(
+    nested("%s.position()",sigI(String)),
+    method("%s.position()",sigI(String))    
+    )),
   ClassAny("classAny",nested("%s.classAny()",sig(Immutable,Class,Any),3)),
   //####Type####
   Mdf("mdf",type("%s.mdf()",sigI(String))),
-  DocOp("doc",type("%s.doc()",sigI(Doc))),
+  DocOp("doc",all(
+    type("%s.doc()",sigI(Doc)),
+    method("%s.doc()",sigI(Doc))
+    )),
   NestedOp("nested",all(
     type("%s.nested()",sigI(Nested)),
-    doc("%s.nested()",sigI(Nested),2)
+    doc("%s.nested()",sigI(Nested),2),
+    method("%s.nested()",sigI(Nested))
     )),
   //####Doc####
   DocNum("docNum",doc("%s.docNum()",sigI(Int))),
@@ -274,8 +283,13 @@ public enum TrustedOp {
   HasAnnotation("hasAnnotation",doc("%s.hasAnnotation()",sigI(Bool))),
   NameOp("name",doc("%s.name()",sigI(Name),2)),
   //####Method####
-  //TODO: method operations
-
+  ReturnType("returnType",method("%s.returnType()",sigI(Type))),
+  ParNum("parNum",method("%s.parNum()",sigI(Int))),
+  ParIn("parIn",method("%s.parIn(%s)",sigI(Type,Int),1)),
+  ExcNum("excNum",method("%s.excNum()",sigI(Int))),
+  ExcIn("excIn",method("%s.excIn(%s)",sigI(Type,Int),1)),
+  IsRefined("isRefined",method("%s.isRefined()",sigI(Bool))),
+  IsAbstract("isAbstract",method("%s.isAbstract()",sigI(Bool))),
   //####VECTOR####
   VectorK("vectorK",Map.of(Vector,vectorKs())),
   IsEmpty("isEmpty",Map.of(Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)))),

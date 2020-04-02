@@ -176,6 +176,7 @@ public class Loader {
     import is.L42.introspection.L42£Nested;
     import is.L42.introspection.L42£Type;
     import is.L42.introspection.L42£Doc;
+    import is.L42.introspection.L42£Method;
     import is.L42.meta.L42£Name;
     import is.L42.platformSpecific.javaTranslation.Resources;
     import java.util.List;

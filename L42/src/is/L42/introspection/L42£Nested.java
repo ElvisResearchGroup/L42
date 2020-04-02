@@ -115,18 +115,14 @@ public class L42£Nested extends L42NoFields<L42£Nested>{
     return fromLibrary(rootL).nestedByName(L42£Name.fromCs(cs));
     }
   public int methodNum(){return publicMWTs.size();}
-  /*L42£Nested method(int i){
+  public L42£Method methodIn(int i){
     var mwt=publicMWTs.get(i);//correctly propagates ArrayOutOfBound
-    }*/
+    return L42£Method.fromNested(posStr(mwt.poss()),this,nameFromRoot.withSelector(mwt.key().toString())); 
+    }
   public int implementedNum(){return publicNCs.size();}
   public L42£Type implementedIn(int i){
     var t=publicTs.get(i);//correctly propagates ArrayOutOfBound
-    var resDoc=L42£Doc.fromDoc(root(),nameFromRoot(),L42£Doc.normalize(t.docs()));
-    var pi=t.p().toNCs();
-    if(_classAny!=null){return L42£Type.fromClass("imm",resDoc, pi);}
-    P.NCs pj=Program.emptyP.from(pi,nameFromRoot.cs);
-    if(pj.n()!=0){return L42£Type.fromClass("imm",resDoc, pj);}
-    return L42£Type.fromLibrary("imm",resDoc,L42£Name.fromCs(pj.cs()));
+    return L42£Type.fromType(t,root(),nameFromRoot());
     }
   //Doc infoTypeDep(){}//have a list of docs inside; the L42 version may just unwrap the docs
   /*..*/

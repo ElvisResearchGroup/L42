@@ -70,10 +70,14 @@ public class L42£Name extends L42NoFields<L42£Name>{
   public String path(){return cs(cs);}
   public L42£Name withPath(String cs){return res(parse(cs+".a()").cs,_s,_x);}
   public L42£Name withSelector(String s){
+    if(s==null || s.isEmpty()){return onlyCs();}
     try{return res(cs,parse("A."+s+".this")._s,_x);}
     catch(NumberFormatException nfe){return res(cs,parse("A."+s+".this")._s,null);}
     }
-  public L42£Name withX(String x){return res(cs,_s,parse("A.a("+x+")."+x)._x);}
+  public L42£Name withX(String x){
+    if(x==null || x.isEmpty()){return res(cs,_s,null);}
+    return res(cs,_s,parse("A.a("+x+")."+x)._x);
+    }
   @Override public String toString(){return toString;}
   
   

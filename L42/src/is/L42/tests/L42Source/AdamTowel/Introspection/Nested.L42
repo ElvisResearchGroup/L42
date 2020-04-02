@@ -23,9 +23,13 @@ method Nesteds nesteds()=\()((
     \res<=Nested$(this.i().nestedIn(i))
     i+=1Size//sadly, range will be added later
     )))
-//method This2.Size methodNum()=native{trusted:methodNum}error void
-//method This1.NativeMethod methodIn(This2.Size that)=native{trusted:methodIn}error void
-
+method Methods methods()=\()((
+  size=this.i().methodNum()
+  var i=0Size
+  while i<size (
+    \res<=Method$(this.i().methodIn(i))
+    i+=1Size
+    )))
 method Types implements()=\()((
   size=this.i().implementedNum()
   var i=0Size

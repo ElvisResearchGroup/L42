@@ -60,6 +60,12 @@ class OpUtils{
     static final Map<TrustedKind,Generator>doc(String s,Signature sig,int num){
       return Map.of(TrustedKind.Doc,use(exc("return "+s+";",num,"ArrayIndexOutOfBoundsException"),sig));
       }
+    static final Map<TrustedKind,Generator>method(String s,Signature sig){
+      return Map.of(TrustedKind.Method,use("return "+s+";",sig));
+      }
+    static final Map<TrustedKind,Generator>method(String s,Signature sig,int num){
+      return Map.of(TrustedKind.Method,use(exc("return "+s+";",num,"ArrayIndexOutOfBoundsException"),sig));
+      }
     static final String exc(String body,int num,String exc){
       return "try{"+body+"}"+
         "catch("+exc+" o_O){throw new L42Error(%Gen"+num+".wrap(new L42£LazyMsg(o_O.getMessage())));}";

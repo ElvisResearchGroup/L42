@@ -2,6 +2,8 @@ package is.L42.introspection;
 
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.nativecache.ValueCache;
+import is.L42.common.Program;
+import is.L42.generated.Core.T;
 import is.L42.generated.P;
 import is.L42.meta.L42£Meta;
 import is.L42.meta.L42£Name;
@@ -17,8 +19,16 @@ public class L42£Type extends L42NoFields<L42£Type>{
     var refTo=L42£Nested.fromClass(clazz);
     return new L42£Type(mdf,doc,refTo);
     }
+  static public L42£Type fromType(T t,L42£Nested root, L42£Name nameFromRoot){
+    var resDoc=L42£Doc.fromDoc(root,nameFromRoot,L42£Doc.normalize(t.docs()));
+    var pi=t.p().toNCs();
+    if(root.isBinded()){return L42£Type.fromClass(t.mdf().inner,resDoc, pi);}
+    P.NCs pj=Program.emptyP.from(pi,nameFromRoot.cs);
+    if(pj.n()!=0){return L42£Type.fromClass(t.mdf().inner,resDoc, pj);}
+    return L42£Type.fromLibrary(t.mdf().inner,resDoc,L42£Name.fromCs(pj.cs()));
+    }
   static public L42£Type fromLibrary(String mdf,L42£Doc doc,L42£Name name){
-    return new L42£Type(mdf,doc,doc.root.nestedByName(name));
+    return new L42£Type(mdf,doc,doc.root.nestedByName(name)).myNorm();
     }
   public String mdf(){return mdf;}
   public L42£Doc doc(){return doc;}

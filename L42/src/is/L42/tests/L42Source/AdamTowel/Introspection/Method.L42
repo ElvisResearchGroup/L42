@@ -1,0 +1,29 @@
+[HasToS]
+NativeMethod i
+class method This(NativeMethod that)=\(i=that)
+
+method Doc doc()=\(this.i().doc())
+
+method Type returnType()=\(this.i().returnType())
+
+method Types parameters()=\()((
+  size=this.i().parNum()
+  var i=0Size
+  while i<size (
+    \res<=Type$(this.i().parIn(i))
+    i+=1Size
+    )))
+method Types exceptions()=\()((
+  size=this.i().excNum()
+  var i=0Size
+  while i<size (
+    \res<=Type$(this.i().excIn(i))
+    i+=1Size
+    )))
+method Bool isRefined()=this.i().isRefined()
+method Bool isAbstract()=this.i().isAbstract()
+method Nested nested()=\(this.i().nested())
+method Name nameFromRoot()=\.of(this.i().nameFromRoot())
+method S position()=this.i().position()
+
+read method S toS()=this.i().toS()

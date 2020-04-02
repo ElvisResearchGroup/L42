@@ -98,19 +98,25 @@ public enum TrustedKind implements TrustedT{
     },
   Nested("L42£Nested"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return L42£Nested.newInstance()";
+    return "return L42£Nested.instance;";
     }
     @Override public int genExceptionNumber(){return 3;}//InvalidName, OutOfBound,OptNotPresent 
     },
   Type("L42£Type"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return L42£Type.newInstance()";
+    return "return L42£Type.instance;";
     }},
   Doc("L42£Doc"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return L42£Doc.newInstance()";
+    return "return L42£Doc.instance;";
     }
     @Override public int genExceptionNumber(){return 2;}//OutOfBound,OptNotPresent
+    },
+  Method("L42£Method"){public String factory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return L42£Method.instance;";
+    }
+    @Override public int genExceptionNumber(){return 1;}//OutOfBound
     },
   Limit("Void"){public String factory(J j,MWT mwt){
     assert false;
