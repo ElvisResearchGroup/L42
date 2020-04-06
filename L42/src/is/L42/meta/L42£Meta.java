@@ -85,14 +85,14 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
   
   public L42£Meta addMapP(L42£Name name,L42Any target){
     P p=unwrapPath(target);
-    var a=new Arrow(name.cs,name._s,true,p,null,null);
+    var a=new Arrow(name.cs,name._s,true,false,p,null,null);
     return new L42£Meta(pushL(renames,a));
     }
   public Arrow unwrapArrow(L42£Name name1,L42£Name name2,boolean full){
     List<C> _cs2=null;
     S _s2=null;
     if(name2!=L42£Name.instance){_cs2=name2.cs;_s2=name2._s;}
-    return new Arrow(name1.cs,name1._s,full,null,_cs2,_s2);
+    return new Arrow(name1.cs,name1._s,full,false,null,_cs2,_s2);
     }
   public L42£Meta addMapDoubleArrow(L42£Name name1,L42£Name name2){
     var a=unwrapArrow(name1, name2,true);

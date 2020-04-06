@@ -56,13 +56,15 @@ public static List<Arrow> map(String s){
   Stream.of(s.strip().split(Pattern.quote("|"))).forEach(arr->{
     int fullNo=arr.indexOf("->");
     int fullYes=arr.indexOf("=>");
+    boolean starYes=arr.contains("=>*");
     assert fullNo!=-1 || fullYes!=-1;
     assert !(fullNo!=-1 && fullYes!=-1);
     int pos=Math.max(fullNo, fullYes);
     String a=arr.substring(0,pos);
-    String b=arr.substring(pos+2,arr.length());
+    int size=starYes?3:2;
+    String b=arr.substring(pos+size,arr.length());
     var key=fromS(a);
-    var arrow=new Arrow(key.cs,key._s,fullYes!=-1,null,null,null);
+    var arrow=new Arrow(key.cs,key._s,fullYes!=-1,starYes,null,null,null);
     if(b.equals("<empty>")){map.add(arrow);return;}
     if(b.startsWith("#")){
       arrow._path=P.parse(b.substring(1));
@@ -585,6 +587,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.=>C.|A.s(x)=>A.s(y)
    """,/*expected after this line*/"""
    nested class { A={..} }
+   mapping: A.s(x)=>A.s(y)
    nested class A
    is already involved in the rename; thus method A.s(x)
    can not be renamed
@@ -596,6 +599,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      B.=>A.|A.s(x)=>A.s(y)
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
+   mapping: A.s(x)=>A.s(y)
    nested class A
    is already involved in the rename; thus method A.s(x)
    can not be renamed
@@ -1182,5 +1186,100 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      #typed{typeDep=This.E}}
    #norm{}}
  #norm{typeDep=This.C.D.E}}"""/*next test after this line*/)
-   ));}
+   ),new AtomicTest(()->pass("""
+     A={
+       method Void vb()=This.B::2<:class This.B::2.v::3()
+       method Void vc()=This.C<:class This.C.vc()
+       B::2={ class method Void v::3()=void #norm{}}
+       C={ class method Void vc()=void #norm{}}       
+       #norm{
+         typeDep=This,This.B::2,This.C
+         coherentDep=This,This.B::2,This.C
+         usedMethods=This.C.vc()
+         }}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>D.
+   """,/*expected after this line*/"""
+   A={
+     C={class method imm Void vc()=void #norm{}}
+     #typed{}}
+   D={
+     imm method imm Void vb()=This.B::2<:class This.B::2.v::3()
+     imm method imm Void vc()=This1.A.C<:class This1.A.C.vc()
+     B::2={class method imm Void v::3()=void #norm{}}
+     #norm{
+       typeDep=This0, This1.A, This.B::2, This1.A.C
+       coherentDep=This0, This.B::2, This1.A.C
+       usedMethods=This1.A.C.vc()}
+     }
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={B={#norm{}}#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*D. | A.B.=>K.
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   mapping: A=>*D
+   nested class A.B
+   is already involved in the rename; thus nested class A
+   can not be renamed
+   Full mapping:A=>*D;A.B=>K
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={B={#norm{}}#norm{}}
+     K={#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*D. | K.=>D.B.
+   """,/*expected after this line*/"""
+   nested class { A={..} K={..} }
+   mapping: A=>*D
+   Two different nested class are renamed into nested class D.B
+   Full mapping:A=>*D;K=>D.B
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={method Void foo()=void B={#norm{}}#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.foo()=>*D.bar()
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   transitive rename only applicable on nested classes
+   Full mapping:A.foo()=>*D.bar()
+   [file:[###]"""/*next test after this line*/)   
+   ),new AtomicTest(()->fail("""
+     A={method Void foo() B={#norm{}}#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*#Void
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   mapping: A=>*Void
+   nested class A.B
+   can not be redirected on a nested of Void
+   Full mapping:A=>*Void
+   [file:[###]"""/*next test after this line*/)   
+   ),new AtomicTest(()->pass("""
+     A={B={#norm{}}#norm{}}
+     K={#norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*D. | K.=>D.G.
+   """,/*expected after this line*/"""
+     D={B={#norm{}}G={#norm{}} #norm{} }
+     #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ method Void foo()=void #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+     A::1={method Void foo::2()=void #norm{}}
+     #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ method Void a()=void 
+       B={ method Void b()=void #norm{}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>A1.|A.B.=>B1.
+   """,/*expected after this line*/"""
+     B1={method Void b()=void #norm{}}
+     A1={method Void a()=void #norm{}}
+     #norm{}}"""/*next test after this line*/)
+));}
 }

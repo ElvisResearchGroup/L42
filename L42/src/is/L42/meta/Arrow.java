@@ -8,11 +8,12 @@ import is.L42.generated.P;
 import is.L42.generated.S;
 
 public final class Arrow{
-  public Arrow(List<C> cs, S _s) {this(cs,_s,false,null,null,null);}
-  public Arrow(List<C> cs, S _s, boolean full, P _path, List<C> _cs, S _sOut) {
+  public Arrow(List<C> cs, S _s) {this(cs,_s,false,false,null,null,null);}
+  public Arrow(List<C> cs, S _s, boolean full,boolean star, P _path, List<C> _cs, S _sOut) {
     this.cs = cs;
     this._s = _s;
     this.full = full;
+    this.star=star;
     this._path = _path;
     this._cs = _cs;
     this._sOut = _sOut;
@@ -24,6 +25,7 @@ public final class Arrow{
     if(_s!=null){res+="."+_s;}
     if(full){res+="=>";}
     else{res+="->";}
+    if(star){res+="*";}
     if(_cs!=null){res+=_cs;}
     if(_path!=null){res+=_path;}
     if(_sOut!=null){res+="."+_sOut;}
@@ -40,13 +42,14 @@ public final class Arrow{
     if(_s!=null){res+="."+_s;}
     if(full){res+="=>";}
     else{res+="->";}
+    if(star){res+="*";}
     if(isEmpty()){res+="<empty>";}
     if(_sOut!=null && _sOut.hasUniqueNum()){res+="<empty>";}
     else{
       res+=toStringCs(_cs);
       if(_sOut!=null){res+="."+_sOut;}
       }
-    if(_path!=null){res+=_path;}//TODO: may have to add +1 on the this number
+    if(_path!=null){res+=_path;}
     return res;
     }
   public String toStringKey() {
@@ -67,6 +70,7 @@ public final class Arrow{
     result = prime * result + ((_sOut == null) ? 0 : _sOut.hashCode());
     result = prime * result + cs.hashCode();
     result = prime * result + (full ? 1231 : 1237);
+    result = prime * result + (star ? 1231 : 1237);
     return result;
     }
   @Override public boolean equals(Object obj) {
@@ -81,11 +85,12 @@ public final class Arrow{
     if(_sOut == null){if(other._sOut != null){return false;}}
     else if(!_sOut.equals(other._sOut)){return false;}
     if(!cs.equals(other.cs)){return false;}
-    return full == other.full;
+    return full == other.full && star==other.star;
     }
   public List<C> cs;
   public S _s;
   public boolean full;
+  public boolean star;
   public P _path;
   public List<C> _cs;
   public S _sOut;
