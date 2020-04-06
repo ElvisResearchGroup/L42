@@ -17,7 +17,7 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.visitors.AuxVisitor;
 
-public class L42£Name extends L42NoFields<L42£Name>{
+public class L42£Name extends L42NoFields.Eq<L42£Name>{
   private L42£Name(String toString,List<C> cs,S _s,X _x){
     this.toString=toString;this.cs=cs;this._s=_s;this._x=_x;
     if(_x==null){return;}
@@ -25,6 +25,7 @@ public class L42£Name extends L42NoFields<L42£Name>{
     if(!_x.equals(X.thisX) && !_s.xs().contains(_x)){throw new NumberFormatException();} 
     }
   private final String toString;
+  @Override public String toString(){return toString;}
   final public List<C> cs;
   final public S _s;
   final public X _x;
@@ -78,20 +79,12 @@ public class L42£Name extends L42NoFields<L42£Name>{
     if(x==null || x.isEmpty()){return res(cs,_s,null);}
     return res(cs,_s,parse("A.a("+x+")."+x)._x);
     }
-  @Override public String toString(){return toString;}
-  
-  
-  public boolean eq(L42£Name name){return toString.equals(name.toString);}
+  @Override public boolean eq(L42£Name name){return toString.equals(name.toString);}
   public static final Class<L42£Name> _class=L42£Name.class;
-  public static final NameCache myCache=new NameCache();
+  public static final EqCache<L42£Name> myCache=new EqCache<>(TrustedKind.Name);
+  @Override public EqCache<L42£Name> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£Name.class,myCache);}
-  @Override public NameCache myCache(){return myCache;}
   static public L42£Name instance=new L42£Name("<hidden name>",L(),null,null).myNorm();//parse("");//private name
   static public L42£Name empty=new L42£Name("This",L(),null,null).myNorm();//parse("This");
   @Override public L42£Name newInstance(){return instance;}
-  }
-class NameCache extends ValueCache<L42£Name>{
-  @Override public Object typename() {return TrustedKind.Name;}
-  @Override protected boolean valueCompare(L42£Name t1, L42£Name t2) {
-  return t1.eq(t2);}
   }

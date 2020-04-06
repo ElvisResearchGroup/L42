@@ -25,6 +25,8 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
 public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
+  private L42£TrustedIO(){}
+  public static L42£TrustedIO instance=new L42£TrustedIO();
   public L42£Void strDebug(String s){
     Resources.out(s);
     return L42£Void.instance;

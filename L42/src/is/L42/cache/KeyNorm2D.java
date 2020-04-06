@@ -1,5 +1,6 @@
 package is.L42.cache;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
@@ -25,11 +26,8 @@ public class KeyNorm2D {
 		int i = 1;
 		for(Object[] line : lines) {
 			for(Object o : line) {
-			  if(o instanceof KeyVarID || o instanceof String || o instanceof Number || o instanceof Character || o instanceof Boolean) {
-			    hc += i++ * o.hashCode();
-			    } else {
-			    hc += i++ * System.identityHashCode(o);  
-			    }
+			  if(o instanceof ArrayList){hc += i++ * System.identityHashCode(o);}
+			  else{hc += i++ * o.hashCode();}
 			  }
 		  }
 		return hc;

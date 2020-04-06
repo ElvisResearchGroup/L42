@@ -43,7 +43,7 @@ public enum TrustedKind implements TrustedT{
     }},
   TrustedIO("L42£TrustedIO"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    return "return new L42£TrustedIO();";
+    return "return L42£TrustedIO.instance;";
     }},
   BigRational("L42£BigRational"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();

@@ -15,7 +15,7 @@ import is.L42.meta.L42£Name;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
-public class L42£Doc extends L42NoFields<L42£Doc>{
+public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
     public L42£Nested root(){return root;}
     public L42£Name nameFromRoot(){return nameFromRoot;}
     public int docNum(){return doc.docs().size();}
@@ -60,22 +60,19 @@ public class L42£Doc extends L42NoFields<L42£Doc>{
     }
   final L42£Nested root;
   final L42£Name nameFromRoot;
-  final Doc doc;  
-  public boolean eq(L42£Doc that){
+  final Doc doc;
+  
+  @Override public boolean eq(L42£Doc that){
     return root.eq(that.root)
       && nameFromRoot.eq(that.nameFromRoot)
       && doc.equals(that.doc);
     }
   public String toString(){return doc.toString();}
   public static final Class<L42£Doc> _class=L42£Doc.class;
-  public static final DocCache myCache=new DocCache();
+  public static final EqCache<L42£Doc> myCache=new EqCache<>(TrustedKind.Doc);
+  @Override public EqCache<L42£Doc> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£Doc.class,myCache);}
-  @Override public DocCache myCache(){return myCache;}
   static Doc emptyDoc=new Doc(null,L(),L());
   static public L42£Doc instance=new L42£Doc(L42£Nested.instanceVoid,L42£Name.empty,emptyDoc).myNorm();
   @Override public L42£Doc newInstance(){return instance;}
-  }
-class DocCache extends ValueCache<L42£Doc>{
-  @Override public Object typename(){return TrustedKind.Doc;}
-  @Override protected boolean valueCompare(L42£Doc t1, L42£Doc t2) {return t1.eq(t2);}
   }

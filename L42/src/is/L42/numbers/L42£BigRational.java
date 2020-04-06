@@ -18,16 +18,12 @@ import is.L42.cache.nativecache.ValueCache;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
-public final class L42£BigRational extends L42NoFields<L42£BigRational> implements Comparable<L42£BigRational>{
+public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> implements Comparable<L42£BigRational>{
   @Override public int hashCode() {
     int result =31 + den.hashCode();
     return 31 * result + num.hashCode();
     }
-  @Override public boolean equals(Object obj) {
-    if(getClass()!=obj.getClass()){return false;}
-    return eq((L42£BigRational) obj);
-    }
-  public boolean eq(L42£BigRational other){
+  @Override public boolean eq(L42£BigRational other){
     if(this==other){return true;}
     if(!den.equals(other.den)){return false;}
     if(!num.equals(other.num)){return false;}
@@ -191,12 +187,8 @@ public final class L42£BigRational extends L42NoFields<L42£BigRational> implem
      return num.bitLength()+den.bitLength()+toAdd;
      }
   public static final Class<L42£BigRational> _class=L42£BigRational.class;
-  public static final RationalCache myCache=new RationalCache();
+  public static final EqCache<L42£BigRational> myCache=new EqCache<>(TrustedKind.BigRational);
+  @Override public EqCache<L42£BigRational> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£BigRational.class,myCache);}
-  @Override public RationalCache myCache(){return myCache;}
   @Override public L42£BigRational newInstance(){throw unreachable();}
-  }
-class RationalCache extends ValueCache<L42£BigRational>{
-  @Override public Object typename() {return TrustedKind.BigRational;}
-  @Override protected boolean valueCompare(L42£BigRational t1, L42£BigRational t2) {return t1.eq(t2);}
   }

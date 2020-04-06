@@ -19,7 +19,7 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
   protected final Map<Object, L42Cache<ArrayList<Object>>> types;
   
   protected ArrayListCache(Map<KeyNorm2D, ArrayList<Object>> normMap,  
-                           Map<Object, L42Cache<ArrayList<Object>>> types) {
+      Map<Object, L42Cache<ArrayList<Object>>> types) {
     this.normMap = normMap;
     this.types = types;
     }

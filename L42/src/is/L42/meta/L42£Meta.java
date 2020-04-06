@@ -58,7 +58,7 @@ import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 
-public class L42£Meta extends L42NoFields<L42£Meta>{
+public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
   private final List<Arrow> renames;
   private final String toString;
   public L42£Meta(){this(L());}
@@ -81,7 +81,8 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new Close().close(pIn,unwrapCs(cs),wrap));    
     } 
-  public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
+  @Override public String toString(){return toString;}
+  @Override public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}
   
   public L42£Meta addMapP(L42£Name name,L42Any target){
     P p=unwrapPath(target);
@@ -174,16 +175,9 @@ public class L42£Meta extends L42NoFields<L42£Meta>{
     public String pathName(L42Any target){
       throw todo();//or bug???
       }
+
   public static final Class<L42£Meta> _class=L42£Meta.class;
-  public static final MetaCache myCache=new MetaCache();
+  public static final EqCache<L42£Meta> myCache=new EqCache<>(TrustedKind.Meta);
+  @Override public EqCache<L42£Meta> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£Meta.class,myCache);}
-  @Override public MetaCache myCache(){return myCache;}
-  @Override 
-  public L42£Meta newInstance() { 
-    throw General.unreachable(); 
-    }
-  }
-class MetaCache extends ValueCache<L42£Meta>{
-  @Override public Object typename(){return TrustedKind.Meta;}
-  @Override protected boolean valueCompare(L42£Meta t1, L42£Meta t2) {return t1.eq(t2);}
   }

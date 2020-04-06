@@ -21,7 +21,7 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitor;
 
-public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
+public class L42£LazyMsg extends L42NoFields.Eq<L42£LazyMsg>{
   private static Supplier<String> base=()->"";
   public String getMsg(){
     if(msg!=null){return msg;}
@@ -36,7 +36,7 @@ public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
   public L42£LazyMsg(Supplier<String>lazy){this.msg=null;this.lazy=lazy;}
   public L42£LazyMsg(String msg){this.msg=msg;this.lazy=null;}
   @Override public String toString(){return getMsg();}
-  public boolean eq(L42£LazyMsg other){
+  @Override public boolean eq(L42£LazyMsg other){
     if(lazy==null && other.lazy==null){
       assert msg!=null;
       assert other.msg!=null;
@@ -48,14 +48,12 @@ public class L42£LazyMsg extends L42NoFields<L42£LazyMsg>{
       }
     return false;
     }
-  public static final Class<L42£LazyMsg> _class = L42£LazyMsg.class;
-  public static final LazyMsgCache myCache = new LazyMsgCache();
-  static{L42CacheMap.addCachableType_synchronized(L42£LazyMsg.class, myCache);}
-  @Override public L42Cache<L42£LazyMsg> myCache(){return myCache;}
-  }
-class LazyMsgCache extends ValueCache<L42£LazyMsg>{
-  @Override public Object typename() {return TrustedKind.LazyMessage;}
-  @Override protected boolean valueCompare(L42£LazyMsg t1, L42£LazyMsg t2) {
-    return t1.eq(t2);
+  @Override public int hashCode(){
+    if(lazy==null){return msg.hashCode();}      
+    return lazy.hashCode();
     }
+  public static final Class<L42£LazyMsg> _class = L42£LazyMsg.class;
+  public static final EqCache<L42£LazyMsg> myCache=new EqCache<>(TrustedKind.LazyMessage);
+  @Override public EqCache<L42£LazyMsg> myCache(){return myCache;}
+  static{L42CacheMap.addCachableType_synchronized(L42£LazyMsg.class, myCache);}
   }

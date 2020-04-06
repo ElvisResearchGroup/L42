@@ -35,7 +35,7 @@ import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 
-public class L42£Method extends L42NoFields<L42£Method>{
+public class L42£Method extends L42NoFields.Eq<L42£Method>{
   static public L42£Method fromNested(String pos,L42£Nested nested,L42£Name name){
     return new L42£Method(pos,nested,name).myNorm();
     }
@@ -85,19 +85,15 @@ public class L42£Method extends L42NoFields<L42£Method>{
   @Override public String toString(){
     return new MetaError(null).intro(mwt,false)+"\n"+position;
     }
-  public boolean eq(L42£Method that){
+  @Override public boolean eq(L42£Method that){
     return position.equals(that.position)
       && nested.eq(that.nested)
       && nameFromRoot._s.equals(that.nameFromRoot._s);
     }
   public static final Class<L42£Method> _class=L42£Method.class;
-  public static final MethodCache myCache=new MethodCache();
+  public static final EqCache<L42£Method> myCache=new EqCache<>(TrustedKind.Method);
+  @Override public EqCache<L42£Method> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£Method.class,myCache);}
-  @Override public MethodCache myCache(){return myCache;}
   static public L42£Method instance=new L42£Method("",L42£Nested.instanceVoid,L42£Name.empty.withSelector("#apply()")).myNorm();//TODO: invalid method??
   @Override public L42£Method newInstance(){return instance;}
-  }
-class MethodCache extends ValueCache<L42£Method>{
-  @Override public Object typename() {return TrustedKind.Nested;}
-  @Override protected boolean valueCompare(L42£Method t1, L42£Method t2) {return t1.eq(t2);}
   }

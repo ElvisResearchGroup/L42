@@ -11,7 +11,7 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
-public class L42£Type extends L42NoFields<L42£Type>{
+public class L42£Type extends L42NoFields.Eq<L42£Type>{
   static public L42£Type fromClass(String mdf,L42£Doc doc,L42Any clazz){
     return fromClass(mdf,doc,L42£Meta.unwrapPath(clazz));
     }
@@ -47,23 +47,15 @@ public class L42£Type extends L42NoFields<L42£Type>{
       }
     return mdf+" "+doc+" "+nested.nameFromRoot;
     }
-  //TODO: what should be the equals in 42? for name? for nested? for type?
-  //equals for nested would leak private informations!
-  
-  
-  public boolean eq(L42£Type that){
+  @Override public boolean eq(L42£Type that){
     if(!mdf.equals(that.mdf)){return false;}
     if(doc.eq(that.doc)){return false;}
     return nested.eq(that.nested);
     }
   public static final Class<L42£Nested> _class=L42£Nested.class;
-  public static final TypeCache myCache=new TypeCache();
+  public static final EqCache<L42£Type> myCache=new EqCache<>(TrustedKind.Type);
+  @Override public EqCache<L42£Type> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£Type.class,myCache);}
-  @Override public TypeCache myCache(){return myCache;}
   static public L42£Type instance=new L42£Type("imm",L42£Doc.instance,L42£Nested.instanceVoid).myNorm();
   @Override public L42£Type newInstance(){return instance;}
-  }
-class TypeCache extends ValueCache<L42£Type>{
-  @Override public Object typename() {return TrustedKind.Type;}
-  @Override protected boolean valueCompare(L42£Type t1, L42£Type t2) {return t1.eq(t2);}
   }

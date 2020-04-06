@@ -34,7 +34,7 @@ import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 
-public class L42£Nested extends L42NoFields<L42£Nested>{
+public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
   static String posStr(List<Pos> poss){
     return poss.stream().map(L42£Nested::posStr).collect(Collectors.joining("\n"));
     }
@@ -166,22 +166,18 @@ public class L42£Nested extends L42NoFields<L42£Nested>{
   @Override public String toString(){
     return new MetaError(null).intro(currentL,false)+"\n"+position;
     }
-  public boolean eq(L42£Nested that){
+  @Override public boolean eq(L42£Nested that){
     if(_classAny!=null){return _classAny.equals(that._classAny);}
     return this.position.equals(that.position) 
       && this.nameFromRoot.equals(that.nameFromRoot) 
       && this.rootL.equals(that.rootL);
     }
   public static final Class<L42£Nested> _class=L42£Nested.class;
-  public static final NestedCache myCache=new NestedCache();
+  public static final EqCache<L42£Nested> myCache=new EqCache<>(TrustedKind.Nested);
+  @Override public EqCache<L42£Nested> myCache(){return myCache;}
   static{L42CacheMap.addCachableType_synchronized(L42£Nested.class,myCache);}
-  @Override public NestedCache myCache(){return myCache;}
   static public L42£Nested instanceAny=new L42£Nested("",Program.emptyL,Program.emptyLInterface,L42£Name.empty,P.pAny).myNorm();
   static public L42£Nested instanceLibrary=new L42£Nested("",Program.emptyL,Program.emptyL,L42£Name.empty,P.pVoid).myNorm();
   static public L42£Nested instanceVoid=new L42£Nested("",Program.emptyL,Program.emptyL,L42£Name.empty,P.pLibrary).myNorm();
   @Override public L42£Nested newInstance(){return instanceVoid;}
-  }
-class NestedCache extends ValueCache<L42£Nested>{
-  @Override public Object typename() {return TrustedKind.Nested;}
-  @Override protected boolean valueCompare(L42£Nested t1, L42£Nested t2) {return t1.eq(t2);}
   }
