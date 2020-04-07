@@ -89,22 +89,26 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var a=new Arrow(name.cs,name._s,true,false,p,null,null);
     return new L42£Meta(pushL(renames,a));
     }
-  public Arrow unwrapArrow(L42£Name name1,L42£Name name2,boolean full){
+  public Arrow unwrapArrow(L42£Name name1,L42£Name name2,boolean full,boolean star){
     List<C> _cs2=null;
     S _s2=null;
     if(name2!=L42£Name.instance){_cs2=name2.cs;_s2=name2._s;}
-    return new Arrow(name1.cs,name1._s,full,false,null,_cs2,_s2);
+    return new Arrow(name1.cs,name1._s,full,star,null,_cs2,_s2);
     }
   public L42£Meta addMapDoubleArrow(L42£Name name1,L42£Name name2){
-    var a=unwrapArrow(name1, name2,true);
+    var a=unwrapArrow(name1, name2,true,false);
     return new L42£Meta(pushL(renames,a));
     }
   public L42£Meta addMapSingleArrow(L42£Name name1,L42£Name name2){
-    var a=unwrapArrow(name1, name2,false);
+    var a=unwrapArrow(name1, name2,false,false);
     return new L42£Meta(pushL(renames,a));
     }
   public L42£Meta mergeMap(L42£Meta meta){
     return new L42£Meta(mergeU(renames,meta.renames));
+    }
+  public L42£Meta mergeMapDeep(L42£Meta meta){
+    var tmp=meta.renames.stream().map(a->new Arrow(a.cs,a._s,a.full,a._s==null,a._path,a._cs,a._sOut));
+    return new L42£Meta(mergeU(renames,L(tmp)));
     }
   public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     L l=input.unwrap;

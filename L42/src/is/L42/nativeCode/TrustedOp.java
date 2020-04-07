@@ -220,6 +220,8 @@ public enum TrustedOp {
     Meta,use("return %s.addMapSingleArrow(%s,%s);",sigI(Meta,Name,Name)))),
   MergeMap("mergeMap",Map.of(
     Meta,use("return %s.mergeMap(%s);",sigI(Meta,Meta)))),
+  MergeMapDeep("mergeMapDeep",Map.of(
+    Meta,use("return %s.mergeMapDeep(%s);",sigI(Meta,Meta)))),
   ApplyMap("applyMap",Map.of(
     Meta,use("return %s.applyMap(%s,%Gen3::wrap,%Gen4::wrap,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib)))),
   PathName("pathName",Map.of(

@@ -7,6 +7,8 @@ method This addMapSingleArrow(This1.NativeName a,This1.NativeName b)=
   native{trusted:addMapSingleArrow} error void
 method This mergeMap(This that)=
   native{trusted:mergeMap} error void
+method This mergeMap(This deep)=
+  native{trusted:mergeMapDeep} error void
 method Library applyMap(Library that)=
   native{trusted:applyMap} error void
 method Library resource(Library that)=
