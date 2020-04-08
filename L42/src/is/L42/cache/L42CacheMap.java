@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.IdentityHashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.BiFunction;
@@ -26,9 +27,8 @@ public class L42CacheMap {
   
   //TODO: Change to string to get rid of reflection maybe?
   private static final Map<Class<?>, L42Cache<?>> commander;
-  
-  @SuppressWarnings({ "unchecked" })
-  private static final CacheBuilder<KeyNorm2D,Object> builder = (CacheBuilder<KeyNorm2D,Object>) ((CacheBuilder<?,?>) CacheBuilder.newBuilder().softValues()); 
+  private static final L42Cache<?> arrayListCache;  
+  private static final CacheBuilder<Object,Object> builder = CacheBuilder.newBuilder().softValues(); 
   
   static {    
     commander = new HashMap<>();
@@ -48,9 +48,10 @@ public class L42CacheMap {
     commander.put(Byte.class, commander.get(byte.class));
     commander.put(char.class, new CharCache());
     commander.put(Character.class, commander.get(char.class));
-    commander.put(Flags.class, new FlagsCache());
     commander.put(String.class, new StringCache());
-    commander.put(ArrayList.class, new ArrayListCache());
+    arrayListCache=new ArrayListCache();
+    commander.put(Flags.class, Flags.cache);
+    commander.put(ArrayList.class,arrayListCache);
     }
   
   /**
@@ -69,23 +70,25 @@ public class L42CacheMap {
     return cache;
     }
   
-  @SuppressWarnings("unchecked")
   /**
    * Given a class object, retrieves the 
    * @param <T>
    * @param class_
    * @return
    */
-  static <T> L42Cache<T> getCacheObject(Class<T> class_) {
+  @SuppressWarnings("unchecked")
+  public static <T> L42Cache<T> getCacheObject(Class<T> class_) {//NOTE: public only for testing
+    if(class_==ArrayList.class){return (L42Cache<T>) arrayListCache;}
     assert cacheUnderControl();
     return (L42Cache<T>) commander.get(class_);
     }
   
   private static boolean cacheUnderControl(){
-    /*String s=List.of(Thread.currentThread().getStackTrace()).toString();
+    String s=List.of(Thread.currentThread().getStackTrace()).toString();
     assert s.contains(".lateInitialize(") 
-      || s.contains("ArrayListCacheForType")
-      || s.contains(".NormalizationTests.");*/
+      //|| s.contains("ArrayListCacheForType")
+      || s.contains(".NormalizationTests."):
+      s;
     return true;    
     }
     
@@ -97,12 +100,12 @@ public class L42CacheMap {
     return caches;
     }
   
-  @SuppressWarnings("unchecked")
-  static <T> L42Cache<T> getCacheObject(T o) {
-    if(o instanceof L42Cachable) { return ((L42Cachable<T>) o).myCache(); }
+  @SuppressWarnings("unchecked") //NOTE: public only for testing
+  public static <T> L42Cache<T> getCacheObject(T o) {
+    if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache();}
     return getCacheObject((Class<T>) o.getClass()).refine(o);
     }
-  static <T> T normalize_internal(T t) {
+  public static <T> T normalize_internal(T t) {//NOTE: public only for testing
     L42Cache<T> cache = getCacheObject(t);
     return cache.normalize(t);
     }
@@ -131,7 +134,7 @@ public class L42CacheMap {
    * 
    * @return The object's key
    */
-  static <T> KeyNorm2D getKey(T t, boolean norm) {
+  public static <T> KeyNorm2D getKey(T t, boolean norm) {//NOTE: public only for testing
     L42Cache<T> cache = getCacheObject(t);
     t = norm ? cache.normalize(t) : t;
     return cache.computeKeyNN(t);
@@ -145,12 +148,70 @@ public class L42CacheMap {
     return objToString_internal(obj);
     }
   static String objToString_internal(Object obj) {
-    //return expandedKey(obj, true, false).toString();
-    return KeyFormatter.start(expandedKey(obj, true, false));
+    return KeyFormatter.start(new KeyExpander(obj,true,false).expandedKey());
     }
-  
-  @SuppressWarnings("unchecked") 
-  static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
+  //public just for testing
+  static public class KeyExpander {
+    Object obj;
+    boolean entireROG;
+    boolean norm;
+    public KeyExpander(Object obj, boolean entireROG, boolean norm){this.obj=obj;this.entireROG=entireROG;this.norm=norm;}
+    final Map<Object, Integer> done = new IdentityHashMap<>();
+    final ArrayList<Object[]> nkeylist = new ArrayList<>();
+    <T> KeyVarID apply(int offset, L42Cache<T> cache, T toAdd, int toAddIndex, Object[][] subkey){
+      KeyVarID res = new KeyVarID(offset + toAddIndex);
+      done.put(toAdd, res.value());
+      var key=subkey[toAddIndex];
+      for(int i = 1; i < key.length; i++){
+        if(!(key[i] instanceof KeyVarID)){continue;}
+        var oldId = (KeyVarID)key[i];
+        Object field = cache.f(toAdd, i - 1);
+        if(done.containsKey(field)){key[i]=new KeyVarID(done.get(field));continue;}
+        var fCache=cache.fieldCache(field, i - 1); 
+        key[i]=apply(offset, fCache, field, oldId.value(), subkey);
+        }
+      return res;
+      }
+    <T>Object addNewObject(L42Cache<T> theCache, T theObj){
+      if(theCache==null){theCache=getCacheObject(theObj);}
+      if(!entireROG && theCache.isNorm(theObj) ) { return theObj; }
+      theObj = norm ? theCache.normalize(theObj) : theObj;
+      KeyNorm2D subkey = theCache.refine(theObj).computeKeyNN(theObj);
+      Object[][] subkeylines = subkey.lines();
+      int offset = nkeylist.size();
+      KeyVarID nid = apply(offset, theCache, theObj, 0, subkeylines);
+      for(Object[] o : subkeylines){nkeylist.add(o);}
+      return nid;
+      }
+    public KeyNorm2D expandedKey(){
+      addNewObject(null, obj);
+      for(int i = 0; i < nkeylist.size(); i++){addI(i);}
+      //Note: the above add lines while working, thus size changes
+      Object[][] narr = new Object[nkeylist.size()][];
+      for(int i = 0; i < narr.length; i++) { narr[i] = nkeylist.get(i);}
+      return new KeyNorm2D(narr);
+      }
+    void addI(int i){
+      Object[] line=nkeylist.get(i);
+      L42Cache<?> c = (L42Cache<?>) line[0];
+      if(c.isValueType()){return;}
+      for(int j = 1; j < line.length; j++) {forBody(c,j,line);}
+      }
+    <T>void forBody(L42Cache<?> lineCache,int j,Object[] line){
+      if(line[j] instanceof KeyVarID){return;}
+      if(done.containsKey(line[j])){
+        line[j] = new KeyVarID(done.get(line[j]));
+        return;
+        }
+      if(line[j]==null){return;}
+      @SuppressWarnings("unchecked") var cache=(L42Cache<T>)lineCache.rawFieldCache(j - 1);
+      @SuppressWarnings("unchecked") var value=(T)line[j];
+      line[j] = addNewObject(cache,value);
+      }
+    }
+ //---------------
+  /*
+  public static KeyNorm2D expandedKey(final Object obj, final boolean entireROG, final boolean norm) {
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
     class A { <T> KeyVarID apply(int offset, L42Cache<T> cache, T toAdd, int toAddIndex, Object[][] subkey) {
@@ -203,10 +264,10 @@ public class L42CacheMap {
     Object[][] narr = new Object[nkeylist.size()][];
     for(int i = 0; i < narr.length; i++) { narr[i] = nkeylist.get(i); }
     return new KeyNorm2D(narr);
-  }
-  
-  public static Set<Object> identityHashSet() {
-    return Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+  }*/  
+  //---------------
+  public static <T>Set<T> identityHashSet() {
+    return Collections.newSetFromMap(new IdentityHashMap<T, Boolean>());
     }
   
   /**
@@ -219,8 +280,8 @@ public class L42CacheMap {
    * are strong references and the references to the values
    * are weak references.
    */
-  public static Map<KeyNorm2D, Object> newNormMap() {
-    return builder.build().asMap();
+  public static <T>Map<KeyNorm2D, T> newNormMap() {
+    return builder.<KeyNorm2D,T>build().asMap();
     }
   
   public static void clearAllCaches() {
@@ -265,7 +326,9 @@ public class L42CacheMap {
   
   public static synchronized <T> boolean structurallyEqualNoNorm(T obj1, T obj2) {
     if(obj1 == null) { return obj2 == null; }
-    return expandedKey(obj1, true, false).equals(expandedKey(obj2, true, false));
+    var k1=new KeyExpander(obj1,true,false).expandedKey();
+    var k2=new KeyExpander(obj2,true,false).expandedKey();
+    return k1.equals(k2);
     }
   
   public static synchronized <T> boolean structurallyEqualNorm(T obj1, T obj2) {

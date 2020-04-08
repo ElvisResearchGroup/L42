@@ -9,12 +9,14 @@ import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.function.Supplier;
 
+import is.L42.cache.L42CacheMap;
+
 public class LockResolvingFuture<T> {
 
   private static final Map<Thread, LockResolvingFuture<?>> futureMap = new IdentityHashMap<>();
   
   private volatile boolean amIStuck = false;
-  private final Set<Thread> peopleWhoAreWaitingOnMe = Collections.newSetFromMap(new IdentityHashMap<Thread, Boolean>());
+  private final Set<Thread> peopleWhoAreWaitingOnMe = L42CacheMap.identityHashSet();
   private final CompletableFuture<T> fut;
   
   private LockResolvingFuture(CompletableFuture<T> fut) {
@@ -92,7 +94,7 @@ public class LockResolvingFuture<T> {
     }
   
   private static Set<LockResolvingFuture<?>> getNewIDSet() {
-    return Collections.newSetFromMap(new IdentityHashMap<LockResolvingFuture<?>, Boolean>());
+    return L42CacheMap.identityHashSet();
     }
   
   public static <T> LockResolvingFuture<T> supplyAsync(Supplier<T> sup) {

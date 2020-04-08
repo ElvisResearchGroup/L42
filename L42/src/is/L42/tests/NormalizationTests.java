@@ -1,12 +1,11 @@
-package is.L42.cache;
+package is.L42.tests;
 
-import static is.L42.cache.L42CacheMap.expandedKey;
 import static is.L42.cache.L42CacheMap.getCacheObject;
 import static is.L42.cache.L42CacheMap.getKey;
 import static is.L42.cache.L42CacheMap.normalize_internal;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static is.L42.nativeCode.Flags.ImmElem;
 import static is.L42.nativeCode.Flags.MutElem;
 
@@ -20,6 +19,9 @@ import org.junit.Test;
 
 import com.google.common.base.Supplier;
 
+import is.L42.cache.KeyNorm2D;
+import is.L42.cache.L42Cache;
+import is.L42.cache.L42CacheMap;
 import is.L42.cache.exampleobjs.A;
 import is.L42.cache.exampleobjs.I;
 import is.L42.cache.exampleobjs.R1;
@@ -191,7 +193,7 @@ public class NormalizationTests {
     R1 r1null = new R1(null);
     assertThrows(NullPointerException.class, () -> { normalize_internal(r1null); });
     assertThrows(NullPointerException.class, () -> { getKey(r1null, false); });
-    assertThrows(NullPointerException.class, () -> { expandedKey(r1null, true, false); });
+    assertThrows(NullPointerException.class, () -> { eKey(r1null, true, false); });
     }
   
   @Test
@@ -348,7 +350,9 @@ public class NormalizationTests {
   private static <T> T testSelfProperties(Supplier<T> supplier, boolean readEQ) {
     return testBiProperties(supplier, supplier, readEQ);
     }
-  
+  private static KeyNorm2D eKey(Object o,boolean all,boolean norm){
+    return new L42CacheMap.KeyExpander(o,all,norm).expandedKey();
+    }
   private static <T> T testBiProperties(Supplier<T> supplier1, Supplier<T> supplier2, boolean readEQ) {
     T n1old, n2old;
     T n1 = n1old = supplier1.get();
@@ -356,24 +360,24 @@ public class NormalizationTests {
     L42Cache<T> cache = getCacheObject(n1);
     T dup1 = cache.dup(n1);
     T dup2 = cache.dup(n2);
-    //String str = L42CacheMap.readObjToString(n1);
-    assertEquals(expandedKey(dup1, true, false), expandedKey(n1, true, false));
-    assertEquals(expandedKey(dup2, true, false), expandedKey(n2, true, false));
+    assertEquals(eKey(dup1,true,false), eKey(n1,true,false));
+    assertEquals(eKey(dup2,true,false), eKey(n2,true,false));
     assertTrue(n1 != n2);
-    if(readEQ) { assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false)); }
+    if(readEQ) { assertEquals(eKey(n1, true, false), eKey(n2, true, false)); }
     n1 = normalize_internal(n1);
     n2 = normalize_internal(n2);
-    //assertEquals(str, L42CacheMap.objToString(n1));
     if(!cache.isValueType()) {
-      assertTrue(cache.getMyNorm(n1old) == n1);
-      assertTrue(cache.getMyNorm(n2old) == n1);
+      var c1=cache.getMyNorm(n1old);
+      var c2=cache.getMyNorm(n2old);
+      assertTrue(c1== n1);
+      assertTrue(c2==n1);
       }
     assertTrue(cache.identityEquals(n1, n2));
-    testDeepFieldEQ(n1, n2, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
+    testDeepFieldEQ(n1, n2, L42CacheMap.identityHashSet()); 
     assertEquals(getKey(n1, false), getKey(n2, false));
-    assertEquals(expandedKey(n1, true, false), expandedKey(n2, true, false));
+    assertEquals(eKey(n1, true, false), eKey(n2, true, false));
     assertEquals(getKey(n1, true), getKey(n2, true));
-    assertEquals(expandedKey(n1, true, true), expandedKey(n2, true, true));
+    assertEquals(eKey(n1, true, true), eKey(n2, true, true));
     return n2;
     }
   

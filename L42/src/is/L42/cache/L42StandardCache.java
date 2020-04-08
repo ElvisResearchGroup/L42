@@ -45,7 +45,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
   public T normalize(T t) {
     NormResult<T> res = normalizeInner(t, new ArrayList<Object>());
     if(res.hasResult()) { return res.result(); }
-    else { return LoopCache.normalizeCircle(t, res.circle()); }
+    return LoopCache.normalizeCircle(t, res.circle());
     }
   
   public NormResult<T> normalizeInner(T t, List<Object> prevs) {
@@ -160,7 +160,7 @@ public class L42StandardCache<T extends L42Cachable<T>> implements L42Cache<T> {
     normMap.clear();
     }
   
-  public static <T> Set<T> union(Collection<T> l1, Collection<T> l2) {
+  private static <T> Set<T> union(Collection<T> l1, Collection<T> l2) {//TODO: fix as for ArrayCache
     Set<T> set = new HashSet<T>();
     set.addAll(l1);
     set.addAll(l2);

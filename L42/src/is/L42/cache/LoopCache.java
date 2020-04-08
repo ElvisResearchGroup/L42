@@ -24,14 +24,14 @@ public class LoopCache {
     Map<Object, Object[]> fields = new IdentityHashMap<>();
     Map<Object, L42Cache<Object>> types = new IdentityHashMap<>();
     for(Object o : circle) { 
-      equivClasses.put(o, Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>())); 
+      equivClasses.put(o,L42CacheMap.identityHashSet()); 
       circleFields.put(o, new ArrayList<>()); 
       types.put(o, L42CacheMap.getCacheObject(o));
       }
     for(Object o : circle) {
       L42Cache<Object> myType = types.get(o);
       for(Object o2 : circle) {
-        if(myType == types.get(o2)) {
+        if(myType.equals(types.get(o2))) {
           equivClasses.get(o).add(o2);
           }
         }
@@ -43,7 +43,7 @@ public class LoopCache {
           }
         }
       }
-    Set<Object> toRemove = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+    Set<Object> toRemove =L42CacheMap.identityHashSet();
     int repl = 0;
     do {
       repl = 0;
@@ -66,8 +66,8 @@ public class LoopCache {
         }
       } while(repl > 0);
     Map<Object, Object> replacements = new IdentityHashMap<>();
-    Set<Object> used = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
-    Set<Object> nircle = Collections.newSetFromMap(new IdentityHashMap<Object, Boolean>());
+    Set<Object> used = L42CacheMap.identityHashSet();
+    Set<Object> nircle = L42CacheMap.identityHashSet();
     for(Set<Object> equiv : equivClasses.values()) {
       if(!used.containsAll(equiv)) {
         used.addAll(equiv);

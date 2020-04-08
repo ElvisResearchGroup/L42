@@ -1,5 +1,7 @@
 package is.L42.cache;
 
+import static is.L42.tools.General.unreachable;
+
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,135 +15,107 @@ import is.L42.nativeCode.Flags;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
-public class ArrayListCache implements L42Cache<ArrayList<Object>> {
+public class ArrayListCache implements L42Cache<ArrayList<?>> {
 
-  protected final Map<KeyNorm2D, ArrayList<Object>> normMap;
-  protected final Map<Object, L42Cache<ArrayList<Object>>> types;
+  protected final Map<KeyNorm2D, ArrayList<?>> normMap;
   
-  protected ArrayListCache(Map<KeyNorm2D, ArrayList<Object>> normMap,  
-      Map<Object, L42Cache<ArrayList<Object>>> types) {
-    this.normMap = normMap;
-    this.types = types;
-    }
+  protected ArrayListCache(Map<KeyNorm2D, ArrayList<?>> normMap){this.normMap = normMap;}
+   
+  public ArrayListCache(){normMap =L42CacheMap.newNormMap();}
   
-  @SuppressWarnings("unchecked") 
-  public ArrayListCache() {
-    normMap = (Map<KeyNorm2D, ArrayList<Object>>) ((Map<?, ?>) L42CacheMap.newNormMap());
-    types = new IdentityHashMap<>();
-    }
-  
-  private void add(KeyNorm2D key, ArrayList<Object> t) {
+  private void add(KeyNorm2D key, ArrayList<?> t) {
     normMap.put(key, t);
     this.setMyNorm(t, t);
     }
   
   @Override 
-  public void addObjectOverride(KeyNorm2D key, ArrayList<Object> value) {
+  public void addObjectOverride(KeyNorm2D key, ArrayList<?> value) {
     normMap.put(key, value);
     }
   
   @Override
-  public ArrayList<Object> normalize(ArrayList<Object> t) {
-    NormResult<ArrayList<Object>> res = normalizeInner(t, new ArrayList<Object>());
+  public ArrayList<?> normalize(ArrayList<?> t) {
+    NormResult<ArrayList<?>> res = normalizeInner(t, new ArrayList<>());
     if(res.hasResult()) { return res.result(); }
     else { return LoopCache.normalizeCircle(t, res.circle()); }
     }
 
   @Override
-  public NormResult<ArrayList<Object>> normalizeInner(ArrayList<Object> list, List<Object> prevs) {
-    if(!isNorm(list)) {
-      prevs.add(list);
-      boolean inCircle = false;
-      Set<Object> circle = null;   
-      for(int i = 0; i < fn(list); i++) {
-        if(f(list, i) == null) { assert this.rawFieldCache(i) != null; continue; }
-        final int j = i;
-        if(prevs.stream().anyMatch((o) -> { return o == f(list, j); })) { 
-          List<Object> sl = prevs.subList(indexOf(prevs, f(list, i)), prevs.size());
-          if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
-          else { circle = union(circle, sl); }
-          inCircle = true;
-          continue;
-          }
-        L42Cache<Object> cache = this.fieldCache(f(list, i), i);
-        NormResult<Object> res = cache.normalizeInner(f(list, i), new ArrayList<Object>(prevs));
-        if(res.hasResult()) { f(list, res.result(), i); }
-        else if(!res.circle().contains(list)) {  f(list, LoopCache.normalizeCircle(f(list, i), res.circle()), i); }
-        else {
-          inCircle = true;
-          circle = circle == null ? res.circle() : union(circle, res.circle());
-          }
-        }
-      if(inCircle) { return new NormResult<ArrayList<Object>>(circle); }
-      KeyNorm2D key = this.simpleKey(list);
-      if(normMap.containsKey(key)) { 
-        ArrayList<Object> t2 = normMap.get(key);
-        this.setMyNorm(list, t2);
-        return new NormResult<ArrayList<Object>>(t2); 
-        }
-      this.add(key, list);
-      return new NormResult<ArrayList<Object>>(list);      
-    } else {
-      return new NormResult<ArrayList<Object>>(list);
+  public NormResult<ArrayList<?>> normalizeInner(ArrayList<?> list, List<Object> prevs) {
+    if(isNorm(list)){return new NormResult<>(list);}
+    prevs.add(list);
+    Set<Object> circle = _computeCircle(list,prevs,true);
+    if(circle!=null){return new NormResult<>(circle);}
+    KeyNorm2D key = this.simpleKey(list);
+    if(normMap.containsKey(key)) { 
+      ArrayList<?> t2 = normMap.get(key);
+      this.setMyNorm(list, t2);
+      return new NormResult<>(t2); 
       }
+    this.add(key, list);
+    return new NormResult<>(list);
     }
-
   @Override
-  public KeyNorm2D computeKeyNN(ArrayList<Object> t) {
-    NormResult<ArrayList<Object>> res = computeKeyNNInner(t, new ArrayList<Object>());
+  public KeyNorm2D computeKeyNN(ArrayList<?> t) {
+    NormResult<ArrayList<?>> res = computeKeyNNInner(t, new ArrayList<>());
     if(res.hasResult()) { return this.simpleKey(res.result()); }
     else { return LoopCache.getKeyCircleNN(t, res.circle()); }
     }
-  
-  @Override
-  public NormResult<ArrayList<Object>> computeKeyNNInner(ArrayList<Object> list, List<Object> prevs) {
-    prevs.add(list);
-    boolean inCircle = false;
-    Set<Object> circle = null;   
-    for(int i = 0; i < fn(list); i++) {
-      if(f(list, i) == null) { assert this.rawFieldCache(i) != null; continue; }
-      final int j = i;
-      if(prevs.stream().anyMatch((o) -> { return o == f(list, j); })) {
-        List<Object> sl = prevs.subList(indexOf(prevs, f(list, i)), prevs.size());
-        if(circle == null) { circle = L42CacheMap.identityHashSet(); circle.addAll(sl); }
-        else { circle = union(circle, sl); }
-        inCircle = true;
+
+  private Set<Object> _computeCircle(ArrayList<?> list, List<Object> prevs,boolean norm){
+    Set<Object> circle = null;
+    int size=fn(list);
+    for(int i = 0; i < size; i++) {
+      var vali=f(list, i);
+      if(vali==null){assert this.rawFieldCache(i)!=null; continue;}
+      if(prevs.stream().anyMatch(o->o==vali)){
+        List<Object> sl = prevs.subList(indexOf(prevs,vali), prevs.size());
+        circle=addCircle(circle,sl);
         continue;
         }
-      L42Cache<Object> cache = this.fieldCache(f(list, i), i);
-      NormResult<Object> res = cache.computeKeyNNInner(f(list, i), new ArrayList<Object>(prevs));
+      L42Cache<Object> cache =i%2==0?this.fieldCache(vali,i):Flags.cache;
+      NormResult<Object> res=norm?
+        cache.normalizeInner(vali, new ArrayList<>(prevs)):
+        cache.computeKeyNNInner(vali,new ArrayList<>(prevs));
+      if(norm && res.hasResult()){f(list, res.result(), i);continue;}
       if(!res.hasResult() && res.circle().contains(list)) {
-        inCircle = true;
-        circle = circle == null ? res.circle() : union(circle, res.circle());
+        circle = circle==null ? res.circle() : addCircle(circle, res.circle());
+        continue;
         }
+      if(norm){f(list, LoopCache.normalizeCircle(vali, res.circle()), i);}
       }
-    if(inCircle) { return new NormResult<ArrayList<Object>>(circle); }
-    KeyNorm2D key = this.simpleKey(list);
-    if(normMap.containsKey(key)) { 
-      ArrayList<Object> t2 = (ArrayList<Object>) normMap.get(key);
-      return new NormResult<ArrayList<Object>>(t2); 
-       } else { return new NormResult<ArrayList<Object>>(list);  }  
+    return circle;
     }
-  
   @Override
-  public boolean isNorm(ArrayList<Object> t) { 
+  public NormResult<ArrayList<?>> computeKeyNNInner(ArrayList<?> list, List<Object> prevs) {
+    prevs.add(list);
+    Set<Object> circle = _computeCircle(list,prevs,false);
+    if(circle!=null){return new NormResult<>(circle);}
+    KeyNorm2D key = this.simpleKey(list);
+    if(!normMap.containsKey(key)){return new NormResult<>(list);}
+    var t2 = normMap.get(key);
+    return new NormResult<>(t2); 
+    }
+      
+  @Override
+  public boolean isNorm(ArrayList<?> t) { 
     return t.get(1) != null;
     }
 
   @Override
-  public boolean structurallyEquals(ArrayList<Object> t1, ArrayList<Object> t2) {
+  public boolean structurallyEquals(ArrayList<?> t1, ArrayList<?> t2) {
     t1 = normalize(t1);
     t2 = normalize(t2);
     return t1 == t2;
     }
   
   @Override 
-  public boolean identityEquals(ArrayList<Object> t1, ArrayList<Object> t2) {
+  public boolean identityEquals(ArrayList<?> t1, ArrayList<?> t2) {
     return t1 == t2; 
     }
   
   @Override
-  public Object[] f(ArrayList<Object> t) {
+  public Object[] f(ArrayList<?> t) {
     final int len = fn(t);
     Object[] arr = new Object[len];
     for(int i = 0; i < len; i++)
@@ -150,22 +124,22 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     }
   
   @Override
-  public Object f(ArrayList<Object> t, int i) {
+  public Object f(ArrayList<?> t, int i) {
     return t.get(i + 2);
     }
   
-  @Override
-  public void f(ArrayList<Object> t, Object o, int i) {
+  @SuppressWarnings("unchecked") @Override
+  public void f(ArrayList<?> t, Object o, int i) {
     if((i & 1) == 1) {
       assert o instanceof Flags;
       assert t.get(i + 2).equals(o);
       return;
       }
-    t.set(i + 2, o);
+    ((ArrayList<Object>)t).set(i + 2, o);
     }
   
   @Override 
-  public int fn(ArrayList<Object> t) {
+  public int fn(ArrayList<?> t) {
     return t.size() - 2;
     }
   
@@ -174,44 +148,36 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
   
   @Override 
   public L42Cache<?> rawFieldCache(int i) {
-    return null; 
+    if(i%2!=0){return Flags.cache;}
+    return null;
     }
   
-  @SuppressWarnings("unchecked")
   @Override 
-  public ArrayList<Object> getMyNorm(ArrayList<Object> me) { 
-    return (ArrayList<Object>) me.get(1);
+  public ArrayList<?> getMyNorm(ArrayList<?> me) { 
+    return (ArrayList<?>) me.get(1);
     }
 
-  @Override 
-  public void setMyNorm(ArrayList<Object> me, ArrayList<Object> norm) { 
-    me.set(1, norm);
+  @SuppressWarnings("unchecked") @Override 
+  public void setMyNorm(ArrayList<?> me, ArrayList<?> norm) { 
+    ((ArrayList<Object>)me).set(1, norm);
     }
   
   @Override
-  public L42Cache<ArrayList<Object>> refine(ArrayList<Object> t) {
-    if(!types.containsKey((L42Cache<?>) t.get(0)))
-      types.put((L42Cache<?>) t.get(0), new ArrayListCacheForType(this, (L42Cache<?>) t.get(0)));
-    return types.get((L42Cache<?>) t.get(0));
+  public L42Cache<ArrayList<?>> refine(ArrayList<?> t) {
+    return new ArrayListCacheForType(this, (L42Cache<?>) t.get(0));
     }
   
+  @Override public void clear(){normMap.clear();}
+  
   @Override
-  public void clear() {
-    normMap.clear();
-    types.clear();
+  public ArrayList<?> dup(ArrayList<?> obj, Map<Object, Object> map){throw unreachable();}
+  
+  private static <T> Set<T> addCircle(Set<T> _circle, Collection<T> more){
+    Set<T> res=L42CacheMap.identityHashSet();
+    if(_circle != null){res.addAll(_circle);}
+    res.addAll(more);
+    return res;
     }
-  
-  @Override
-  public ArrayList<Object> dup(ArrayList<Object> obj, Map<Object, Object> map) { throw General.unreachable(); }
-  
-  @SuppressWarnings("unchecked") 
-  public static <T> Set<T> union(Collection<T> l1, Collection<T> l2)
-  {
-    Set<T> set = (Set<T>) L42CacheMap.identityHashSet();
-    set.addAll(l1);
-    set.addAll(l2);
-    return set;
-  }
   
   public static <T> int indexOf(List<T> list, T t) {
     for(int i = 0; i < list.size(); i++) { if(list.get(i) == t) { return i; } }
@@ -219,38 +185,43 @@ public class ArrayListCache implements L42Cache<ArrayList<Object>> {
     }
   
   public static class ArrayListCacheForType extends ArrayListCache {
-    
-    static L42Cache<?> flag = L42CacheMap.getCacheObject(Flags.class);
-    L42Cache<?> type;
-    
+    L42Cache<?> type;    
     public ArrayListCacheForType(ArrayListCache owner, L42Cache<?> type) {
-      super(owner.normMap, owner.types);
+      super(owner.normMap);
+      //assert type!=null;//can be null if it is an interface
       this.type = type;
       }
-    
+    @Override public int hashCode(){
+      if(type==null){return 0;}
+      if(type==this){return 1;}
+      return type.hashCode();
+      }
+    @Override public boolean equals(Object o){
+      if(this==o){return true;}
+      if(!(o instanceof ArrayListCacheForType)){return false;}
+      var otype=((ArrayListCacheForType)o).type;
+      if(type==null){return otype==null;}
+      return type.equals(otype);
+      }
     @Override 
     public L42Cache<?> rawFieldCache(int i) {
-      return ((i & 1) == 0) ? type : flag; 
-      }
-    
+      if(i%2!=0){return Flags.cache;}
+      return type; 
+      }    
     @Override
-    public ArrayList<Object> dup(ArrayList<Object> that, Map<Object, Object> map) { 
-      if(that == null || isNorm(that)) { return that; }
-      try {
-        ArrayList<Object> nObj = new ArrayList<Object>(that.size());
-        nObj.add(that.get(0));
-        nObj.add(null);
-        map.put(that, nObj);
-        for(int i = 0; i < this.fn(that); i++) {
-          Object field = this.f(that, i);
-          L42Cache<Object> fieldcache = this.fieldCache(field, i);
-          if(!map.containsKey(field)) { map.put(field, fieldcache.dup(field, map)); }
-          nObj.add(i + 2, map.get(field));
-          }
-        return nObj;
-        } catch (Exception e) {
-          throw new Error(e);
+    public ArrayList<?> dup(ArrayList<?> that, Map<Object,Object> map){ 
+      if(that==null || isNorm(that)){return that;}
+      ArrayList<Object> nObj = new ArrayList<Object>(that.size());
+      nObj.add(that.get(0));
+      nObj.add(null);
+      map.put(that, nObj);
+      for(int i = 0; i < this.fn(that); i++) {
+        Object field = this.f(that, i);
+        L42Cache<Object> fieldcache = this.fieldCache(field, i);
+        if(!map.containsKey(field)){map.put(field, fieldcache.dup(field, map));}
+        nObj.add(i + 2, map.get(field));
         }
+      return nObj;
       }
     }
   }
