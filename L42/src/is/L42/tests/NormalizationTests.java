@@ -191,9 +191,9 @@ public class NormalizationTests {
   @Test
   public void testNullObjectField() {
     R1 r1null = new R1(null);
-    assertThrows(NullPointerException.class, () -> { normalize_internal(r1null); });
-    assertThrows(NullPointerException.class, () -> { getKey(r1null, false); });
-    assertThrows(NullPointerException.class, () -> { eKey(r1null, true, false); });
+    assertThrows(AssertionError.class, () -> { normalize_internal(r1null); });
+    assertThrows(AssertionError.class, () -> { getKey(r1null, false); });
+    assertThrows(AssertionError.class, () -> { eKey(r1null, true, false); });
     }
   
   @Test
