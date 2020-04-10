@@ -310,7 +310,15 @@ public enum TrustedOp {
   Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
-  SubString("subString",Map.of(String,use("return %s.substring(%s,%s);",sigI(String,Int,Int)))),
+  SubString("subString",Map.of(String,use("""
+    try{return %1$s.substring(%2$s,%3$s);}
+    catch(StringIndexOutOfBoundsException nfe){
+      throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+        "SubString out of bound: start="+%2$s+", end="+%2$s+", size="+%1$s.length()
+        )));
+      }
+    """,sigI(String,Int,Int)
+    ))),  
   Contains("contains",Map.of(String,use("return %s.contains(%s);",sigI(Bool,String)))),
   Replace("replace",Map.of(String,use("return %s.replace(%s,%s);",sigI(String,String,String)))),
   Trim("trim",Map.of(String,use("return %s.trim();",sigI(String)))),
