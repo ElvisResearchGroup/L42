@@ -81,7 +81,7 @@ public static List<Arrow> map(String s){
 static Arrow fromS(String s){
   int i=s.lastIndexOf(".");
   List<C> cs=L();
-  if(i!=-1){cs=P.parse("This0."+s.substring(0,i).trim()).toNCs().cs();}
+  if(i!=-1){cs=P.parse("This."+s.substring(0,i).trim()).toNCs().cs();}
   S _s=null;
   s=s.substring(i+1).trim();//also works for -1; pure coincidence
   if(!s.isEmpty()){_s=S.parse(s);}
@@ -147,7 +147,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    #norm{}}""",/*rename map after this line*/"""
      A.foo(x)->A.bar(y)
    """,/*expected after this line*/"""
-   method imm method imm Void bar(imm Void y)=(..)
+   method Void bar(Void y)=(..)
    Conflicting implementation: the method is implemented on both side of the sum
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
@@ -210,17 +210,17 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    #norm{}}""",/*rename map after this line*/"""
      A.bar()=><empty>
    """,/*expected after this line*/"""
-   A={interface imm method imm Void bar::1()#norm{close}}
-   D={interface[This1.A]imm method imm Void bar::1()
+   A={interface method Void bar::1()#norm{close}}
+   D={interface[This1.A] method  Void bar::1()
      #norm{typeDep=This1.A refined=bar::1()close}}
-   B={imm method imm Void user(imm This1.D d)=d.bar::1()
+   B={method Void user(This1.D d)=d.bar::1()
      #norm{typeDep=This1.D watched=This1.D}}
    #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
-   A={interface imm method imm Void bar::1()#norm{close}}
-   D={interface[This1.A]imm method imm Void bar::1()
+   A={interface method Void bar::1()#norm{close}}
+   D={interface[This1.A] method Void bar::1()
      #norm{typeDep=This1.A refined=bar::1()close}}
-   B={imm method imm Void user(imm This1.D d)=d.bar::1()
+   B={method Void user(This1.D d)=d.bar::1()
      #norm{typeDep=This1.D watched=This1.D}}
    #norm{}}""",/*rename map after this line*/"""
      D.-><empty>
@@ -231,8 +231,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    Full mapping:D-><empty>
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
-   A={interface imm method imm Void bar::1()#norm{close}}
-   D={[This1.A]imm method imm Void bar::1()=void
+   A={interface method Void bar::1()#norm{close}}
+   D={[This1.A]method Void bar::1()=void
      #norm{typeDep=This1.A refined=bar::1()}}
    #norm{}}""",/*rename map after this line*/"""
      D.-><empty>
@@ -481,8 +481,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    #norm{}}""",/*rename map after this line*/"""
      A.=>B.|B.=>A.
    """,/*expected after this line*/"""
-     B={imm method imm Void a()#norm{}}
-     A={imm method imm Void b()#norm{}}
+     B={method Void a()#norm{}}
+     A={method Void b()#norm{}}
    #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={method Void s(Void x)=x method Void s(Void y)=y method Void s(Void z)=z 
@@ -530,9 +530,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    #norm{}}""",/*rename map after this line*/"""
      A.=>B.|B.=>C.|C.=>A. 
    """,/*expected after this line*/"""
-     B={imm method imm Void a()#norm{}}
-     C={imm method imm Void b()#norm{}}
-     A={imm method imm Void c()#norm{}}
+     B={method Void a()#norm{}}
+     C={method Void b()#norm{}}
+     A={method Void c()#norm{}}
    #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}}
@@ -613,7 +613,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
    nested class A
-   Redirected classes need to be fully abstract and imm method imm This1.B s(imm This1.B x)=(..)
+   Redirected classes need to be fully abstract and method This1.B s(This1.B x)=(..)
    is implemented
    Full mapping:A=>This1.K
    [file:[###]"""/*next test after this line*/)
@@ -683,9 +683,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      AA.->C.
    """,/*expected after this line*/"""
    AA={
-     method This1.B s(This1.B x,This0.C c)
+     method This1.B s(This1.B x,This.C c)
      C={#norm{}}
-     #norm{typeDep=This1.B, This0.C}}
+     #norm{typeDep=This1.B, This.C}}
    B={#norm{}}
    C={
      method This1.B s(This1.B x,This1.AA.C c)=x
@@ -732,7 +732,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.->C.
    """,/*expected after this line*/"""
    nested class { A={..} }
-   nested class This0
+   nested class This
    Code can not be extracted since it exposes uniquely numbered path nested class D::2
    Full mapping:A->C
    [file:[###]"""/*next test after this line*/)
@@ -773,9 +773,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    B={
      method This1.C s(This.KK c)
      KK={#norm{}}
-     #norm{typeDep=This1.C, This0.KK}}
+     #norm{typeDep=This1.C, This.KK}}
    C={#norm{}}
-   #norm{typeDep=This0.C, This0.B.KK}
+   #norm{typeDep=This.C, This.B.KK}
    }"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      B={
@@ -790,7 +790,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { B={..} C={..} }
    nested class B
    Code can not be extracted since is circularly depended from nested class C
-   Full mapping:B->This0
+   Full mapping:B->This
    [file:[###]"""/*next test after this line*/)
 
     ),new AtomicTest(()->pass("""
@@ -819,9 +819,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      ->C.
    """,/*expected after this line*/"""
    nested class { s(x,c)=(..) C={..} }
-   nested class This0
+   nested class This
    Code can not be extracted since it exposes uniquely numbered path nested class D::2
-   Full mapping:This0->C
+   Full mapping:This->C
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      method This.C s(This.C x)=x
@@ -830,9 +830,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      ->C.
    """,/*expected after this line*/"""
    nested class { s(x)=(..) C={..} }
-   nested class This0
+   nested class This
    The implementation can not be removed since the class is watched by nested class C
-   Full mapping:This0->C
+   Full mapping:This->C
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      method Void v()
@@ -841,9 +841,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      ->C.
    """,/*expected after this line*/"""
    nested class { v() B={..} }
-   nested class This0
+   nested class This
    Code can not be extracted since is circularly depended from nested class B
-   Full mapping:This0->C
+   Full mapping:This->C
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
      method Void v()=void
@@ -865,9 +865,9 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      -><empty>
    """,/*expected after this line*/"""
    nested class { v()=(..) B={..} }
-   nested class This0
+   nested class This
    The implementation can not be removed since the class is watched by nested class B
-   Full mapping:This0-><empty>
+   Full mapping:This-><empty>
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={
@@ -996,11 +996,11 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    nested class { aa(a)=(..) A={..} B={..} C={..} }
    nested class B
-   can not be redirected, the target This0.EB
+   can not be redirected, the target This.EB
    does not expose a compatible method method B.b()
    Invalid method inheritance for b():
-   the return type imm Void is not a subtype of the inherited type imm This2.EA
-   Full mapping:A=>This0.EA;B=>This0.EB
+   the return type Void is not a subtype of the inherited type This2.EA
+   Full mapping:A=>This.EA;B=>This.EB
    [file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
     method Void a(This.A a)=void
@@ -1014,19 +1014,19 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method Void a(This a)=void
    method Void foo()=void
    B={method Any foo()=void #norm{}}
-   C={method Void a(imm This1 a)=a.foo()#norm{typeDep=This1 usedMethods=This1.foo()}}
+   C={method Void a(This1 a)=a.foo()#norm{typeDep=This1 usedMethods=This1.foo()}}
    #norm{typeDep=This}}"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
-    method Void a(This0.A a)=void
+    method Void a(This.A a)=void
     A={method Void foo::1()=void #typed{}}
     B={method Any foo()=void #typed{}}
-    C={method Void a(imm This1.A a)=a.foo::1()
+    C={method Void a(This1.A a)=a.foo::1()
       #typed{typeDep=This1.A watched=This1.A}}
-    #typed{typeDep=This0.A}}
+    #typed{typeDep=This.A}}
     """,/*rename map after this line*/"""
    A.=><empty>
    """,/*expected after this line*/"""
-   method Void a(imm This.A::2 a)=void
+   method Void a(This.A::2 a)=void
    A::2={method Void foo::1()=void #typed{}}
    B={method Any foo()=void #typed{}}
    C={method Void a(This1.A::2 a)=a.foo::1()
@@ -1034,12 +1034,12 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    #typed{typeDep=This,This.A::2}}
    """/*next test after this line*/)
        ),new AtomicTest(()->fail("""
-    method Void a(This0.A a)=void
+    method Void a(This.A a)=void
     A={method Void foo::1()=void #typed{}}
     B={method Any foo()=void #typed{}}
-    C={method Void a(imm This1.A a)=a.foo::1()
+    C={method Void a(This1.A a)=a.foo::1()
       #typed{typeDep=This1.A watched=This1.A}}
-    #typed{typeDep=This0.A}}
+    #typed{typeDep=This.A}}
     """,/*rename map after this line*/"""
    A.-><empty>
    """,/*expected after this line*/"""
@@ -1070,7 +1070,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    nested class { A={..} }
    'This' can not be hidden
-   Full mapping:This0=><empty>
+   Full mapping:This=><empty>
    [file:[###]"""/*next test after this line*/)
   ),new AtomicTest(()->fail("""
     A={method Void foo() #typed{}}
@@ -1080,7 +1080,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    nested class { A={..} }
    'This' can not be redirected away
-   Full mapping:This0=>Any
+   Full mapping:This=>Any
    [file:[###]"""/*next test after this line*/)
   ),new AtomicTest(()->pass("""
      A={method This foo() #typed{typeDep=This}}
@@ -1201,15 +1201,15 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.=>D.
    """,/*expected after this line*/"""
    A={
-     C={class method imm Void vc()=void #norm{}}
+     C={class method Void vc()=void #norm{}}
      #typed{}}
    D={
-     imm method imm Void vb()=This.B::2<:class This.B::2.v::3()
-     imm method imm Void vc()=This1.A.C<:class This1.A.C.vc()
-     B::2={class method imm Void v::3()=void #norm{}}
+     method Void vb()=This.B::2<:class This.B::2.v::3()
+     method Void vc()=This1.A.C<:class This1.A.C.vc()
+     B::2={class method Void v::3()=void #norm{}}
      #norm{
-       typeDep=This0, This1.A, This.B::2, This1.A.C
-       coherentDep=This0, This.B::2, This1.A.C
+       typeDep=This, This1.A, This.B::2, This1.A.C
+       coherentDep=This, This.B::2, This1.A.C
        usedMethods=This1.A.C.vc()}
      }
    #norm{}}"""/*next test after this line*/)

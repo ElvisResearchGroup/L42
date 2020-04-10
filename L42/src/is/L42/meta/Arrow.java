@@ -34,7 +34,7 @@ public final class Arrow{
   public String toStringCs(List<C> cs){
     if(cs==null){return "";}
     if(cs.stream().anyMatch(c->c.hasUniqueNum())){return "<empty>";}
-    if(cs.isEmpty()){return "This0";}
+    if(cs.isEmpty()){return "This";}
     return cs.stream().map(c->c.toString()).collect(Collectors.joining("."));
     }
   public String toStringErr() {

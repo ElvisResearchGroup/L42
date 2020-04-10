@@ -474,7 +474,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    method This0 main(This1 that)=native{trusted:OP+} error void
    #norm{typeDep=This0 This1 nativeKind=Int}
    }}
-   """,Err.nativeParameterInvalidKind(hole,"imm method imm This0 main(imm This1 that)",hole,hole,"Int"))
+   """,Err.nativeParameterInvalidKind(hole,"method This main(This1 that)",hole,hole,"Int"))
    ),new AtomicTest(()->pass("""
    A={B={ class method This()
    method Void main()=(

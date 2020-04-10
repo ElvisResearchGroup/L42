@@ -29,7 +29,7 @@ public class MetaError{
     if(fault instanceof List){
       @SuppressWarnings("unchecked") var cs=(List<C>)fault;
       assert cs.stream().noneMatch(c->c.hasUniqueNum());
-      if(cs.isEmpty()){elem+="This0";}
+      if(cs.isEmpty()){elem+="This";}
       else{elem+=cs.stream().map(c->c.toString()).collect(Collectors.joining("."));}
       }
     return "nested class "+elem+"=";
@@ -37,7 +37,7 @@ public class MetaError{
     public String intro(List<C> cs,S s){
       String elem="";
       assert cs.stream().noneMatch(c->c.hasUniqueNum());
-      if(cs.isEmpty()){elem+="method This0."+s+"\n";}
+      if(cs.isEmpty()){elem+="method This."+s+"\n";}
       else{elem+="method "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"."+s+"\n";}
       return elem;
       }
@@ -51,7 +51,7 @@ public class MetaError{
     if(fault instanceof List){
       @SuppressWarnings("unchecked") var cs=(List<C>)fault;
       //assert cs.stream().noneMatch(c->c.hasUniqueNum());//reported for exposed numbers
-      if(cs.isEmpty()){elem+="nested class This0\n";}
+      if(cs.isEmpty()){elem+="nested class This\n";}
       else{elem+="nested class "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"\n";}
       }
     if(fault instanceof Core.L.MWT){
@@ -87,7 +87,7 @@ public class MetaError{
       }     
     if(!top){return elem;}  
     if(elem.startsWith("{")){return "nested class "+elem;}
-    return "method "+elem; 
+    return elem; 
     }
   public String pos(Object fault){
     if(fault instanceof Core.L){

@@ -87,7 +87,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      @{bar}method Void m()=void
    #norm{}}""",/*expected lib after this line*/"""
-   method @{foo}imm method imm Void m()=(..)
+   @{foo}method Void m()=(..)
    Conflicting implementation: the method is implemented on both side of the sum
    [file:[###]
    """/*next test after this line*/)
@@ -158,18 +158,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I={interface method Any m() #norm{}}
      C={[This1.I] method Any m() #norm{typeDep=This1.I refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
-     method imm method imm Void m()
+     method Void m()
      The two headers are incompatible:
-     imm method imm Any m()
+     method Any m()
      [file:[###]"""/*next test after this line*/)    
    ),new AtomicTest(()->fail("""
      I={interface method Void m() #norm{}}
    #norm{}}""",/*second lib after this line*/"""
      I={interface method Library m() #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-     method imm method imm Void m()
+     method Void m()
      The methods have different signatures:
-     imm method imm Library m()
+     method Library m()
      But there is no local refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -183,9 +183,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I0={interface method This1.E m() #norm{typeDep=This1.E}}
      I2={interface method This1.E m() #norm{typeDep=This1.E}}
    #norm{}}""",/*expected lib after this line*/"""
-     method imm method imm This1.E m()
+     method This1.E m()
      The methods have different signatures:
-     imm method imm This1.R m()
+     method This1.R m()
      But there is ambiguous refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
 //TODO: the case above trigger a difficoult to trigger error.
@@ -202,9 +202,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      I2={interface method This1.E m() #norm{typeDep=This1.E}}
      I3={[This1.I0] method This1.R m() #norm{typeDep=This1.I0 This1.R refined=m()}}
    #norm{}}""",/*expected lib after this line*/"""
-     method imm method imm This1.R m()
+     method This1.R m()
      The methods have different signatures:
-     imm method imm This1.E m()
+     method This1.E m()
      But there is no local refinement between those two signatures
      [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -330,9 +330,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      B={method This m() #norm{typeDep=This}}
    #norm{}}""",/*expected lib after this line*/"""
-   method imm method imm Void m()
+   method Void m()
    The methods have different signatures:
-   imm method imm This0 m()
+   method This m()
    But there is no local refinement between those two signatures
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
@@ -356,8 +356,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*second lib after this line*/"""
      I2={interface[This1.I1] #norm{typeDep=This1.I1}} I1={interface #norm{}}
    #norm{}}""",/*expected lib after this line*/"""
-   nested class I1={interface [ This1.I2 This0 ] }
-   The sum would induce a circular interface implementation for [imm This1.I2, imm This0]
+   nested class I1={interface [ This1.I2 This ] }
+   The sum would induce a circular interface implementation for [This1.I2, This]
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={interface #norm{}}
@@ -451,13 +451,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    //TODO: test A{ Any m()} I{interface Any m()} + A={I} I={}
    
    @Test public void test2(){
-     miniFrom("A.B","A.B.C","This0.C");
+     miniFrom("A.B","A.B.C","This.C");
      miniFrom("A.B.D.E","A.B.C","This2.C");
      miniFrom("A.B.C.D.E","A.B","This3");
      }
    void miniFrom(String into,String that,String res){
-     P pThat=P.parse("This0."+that);
-     P pInto=P.parse("This0."+into);
+     P pThat=P.parse("This."+that);
+     P pInto=P.parse("This."+into);
      P pRes=P.parse(res);
      assertEquals(pRes,Sum.miniFrom(pInto.toNCs().cs(),pThat.toNCs().cs()));
      }

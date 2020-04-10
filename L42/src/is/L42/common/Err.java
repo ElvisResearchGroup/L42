@@ -206,7 +206,7 @@ public class Err {
   ;}public static String pathNotExistant(Object _1){return
   "Path "+_1+" not existant"  
   ;}public static String interfaceImplementsItself(Object ts){return
-  "Interfaces can not implement This0 (self implement); but the current interface implements "+ts
+  "Interfaces can not implement This (self implement); but the current interface implements "+ts
   ;}public static String sealedInterface(Object _1,Object _2){return
   "Implemented interfaces includes a selad interface: "+_1+"; all the implemented interfaces are: "+_2
   ;}public static String importingInterfacePrivateMethod(Object _1){return
@@ -341,7 +341,7 @@ public class Err {
   ;}public static String missedRefined(Object ss){return
   "Core library literal do not declare all the refined methods; the following are missing: "+ss
   ;}public static String noSelfWatch(){return
-  "Core library literal can not watch This0" 
+  "Core library literal can not watch This" 
   ;}public static String typeDependencyNotCore(Object p){return
   "Typed core library literal can not depend on full core libary "+p
   ;}public static String mismatchRefine(Object estimate,Object declared){return

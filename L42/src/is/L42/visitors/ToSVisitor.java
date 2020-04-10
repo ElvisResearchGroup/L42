@@ -24,6 +24,7 @@ public class ToSVisitor implements ToSTrait{
     return tos.result().toString();
     }
   public void visitMdf(Mdf mdf){
+    if(mdf==Mdf.Immutable){return;}
     separeFromChar();
     c(mdf.inner);
     }
@@ -49,7 +50,8 @@ public class ToSVisitor implements ToSTrait{
     if(p==P.pVoid){c("Void");return;}
     assert p.isNCs();
     var p0=p.toNCs();
-    c("This"+p0.n());
+    if(p0.n()==0){c("This");}
+    else{c("This"+p0.n());}
     seq(i->c("."),p0.cs(),"");
     }
 
@@ -107,7 +109,7 @@ public class ToSVisitor implements ToSTrait{
     visitDocs(l.docs());
     if(!l.docs().isEmpty()){sp.accept(0);}
     c("}");
-    if(!inline){nl();deIndent();}
+    if(!inline){deIndent();nl();}
     }
     
   public void visitInfo(Core.L.Info info){
@@ -127,18 +129,18 @@ public class ToSVisitor implements ToSTrait{
     infoElem("uniqueId",info._uniqueId(),-1);
     c("}");
     }
-  private void boolInfoItem(boolean flag,String text){
+  public void boolInfoItem(boolean flag,String text){
     if(!flag){return;}
     separeFromChar();
     c(text);
     }
-  private void infoItem(String label,List<? extends Visitable<?>> l){
+  public void infoItem(String label,List<? extends Visitable<?>> l){
     if(l.isEmpty()){return;}
     separeFromChar();
     c(label+"=");
     seq(empty(),l,", ");
     }
-  private void infoElem(String label,Object o,Object empty){
+  public void infoElem(String label,Object o,Object empty){
     if(o.equals(empty)){return;}
     separeFromChar();
     c(label+"=");
@@ -266,11 +268,11 @@ public class ToSVisitor implements ToSTrait{
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
     exceptionImplements(exceptions0);
     }
-  private void exceptionImplementsFull(List<Full.T> ts){
+  public void exceptionImplementsFull(List<Full.T> ts){
     if(ts.isEmpty()){return;}
     c("[");seq(empty(),L(ts,t->t._mdf()!=Mdf.Immutable?t:t.with_mdf(null)),", ");c("]");
     }
-  private void exceptionImplements(List<Core.T> ts){
+  public void exceptionImplements(List<Core.T> ts){
     if(ts.isEmpty()){return;}
     c("[");
     var t0=ts.get(0);
@@ -657,7 +659,10 @@ public class ToSVisitor implements ToSTrait{
     var docs0=t.docs();
     var cs0=t.cs();
     var _p0=t._p();
-    if(t._mdf()!=null){visitMdf(t._mdf());}
+    if(t._mdf()!=null){
+      if(cs0.isEmpty() &&_p0==null){separeFromChar();c(t._mdf().inner);}//Prints also imm
+      else{visitMdf(t._mdf());}
+      }
     visitFullDocs(docs0);
     if(cs0.isEmpty()){visitP(_p0);return;}
     assert _p0==null;

@@ -47,6 +47,8 @@ method Bool isInterface()=this.i().isInterface()
 
 method Bool isBinded()=this.i().isBinded()
 
+method S toFullS()=this.i().toFullString()
+
 method This root()=\(this.i().root())  
 
 method Name nameFromRoot()=\.of(this.i().nameFromRoot())

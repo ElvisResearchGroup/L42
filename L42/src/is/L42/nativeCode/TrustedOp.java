@@ -253,6 +253,7 @@ public enum TrustedOp {
   IsClose("isClose",nested("%s.isClose()",sigI(Bool))),
   IsInterface("isInterface",nested("%s.isInterface()",sigI(Bool))),
   IsBinded("isBinded",nested("%s.isBinded()",sigI(Bool))),
+  ToFullString("toFullString",nested("%s.toFullString()",sigI(String))),
   Root("root",all(
     nested("%s.root()",sigI(Nested)),
     doc("%s.root()",sigI(Nested))
@@ -310,6 +311,8 @@ public enum TrustedOp {
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
   SubString("subString",Map.of(String,use("return %s.substring(%s,%s);",sigI(String,Int,Int)))),
+  Contains("contains",Map.of(String,use("return %s.contains(%s);",sigI(Bool,String)))),
+  Replace("replace",Map.of(String,use("return %s.replace(%s,%s);",sigI(String,String,String)))),
   Trim("trim",Map.of(String,use("return %s.trim();",sigI(String)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),

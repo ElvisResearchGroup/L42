@@ -53,18 +53,18 @@ extends AtomicTest.Tester{
    plusAcc(l(),l(This),"")
    ),new AtomicTest(()->
    plusAcc(l(st(This,"k()")),l(This,st(This,"k()")),
-     "This0.k()=[This0, This0.k()]")
+     "This.k()=[This, This.k()]")
    ),new AtomicTest(()->
    plusAcc(l(st(This,"k()")),lThis,
-   "This0.k()=[This0]")
+   "This.k()=[This]")
 
    ),new AtomicTest(()->
    plusAcc(l(st(This,"k(a,b,c)",3)),lThis,
-   "This0.k(a,b,c).3=[This0]")
+   "This.k(a,b,c).3=[This]")
 
    ),new AtomicTest(()->
    plusAcc(l(st(This,"k(a,b,c)",3)),l(st(This,"m()")),
-   "This0.k(a,b,c).3=[Void]")
+   "This.k(a,b,c).3=[Void]")
 
    ),new AtomicTest(()->
    plusAcc(l(st(This,"m()")),lThis,
@@ -80,11 +80,11 @@ extends AtomicTest.Tester{
    "")
    ),new AtomicTest(()->
    plusAcc(l(st(st(This,"k(x)",1),"m()")),lThis,
-   "Any.m()=[This0]")
+   "Any.m()=[This]")
    ),new AtomicTest(()->
    plusAcc(
      l(st(Op.GT,l(This),l(This))), lThis,
-   ">[This0][This0]=[This0]")
+   ">[This][This]=[This]")
    ),new AtomicTest(()->
    plusAcc(
      l(st(Op.LT,lThis,lThis)), lThis,
@@ -93,12 +93,12 @@ extends AtomicTest.Tester{
    ),new AtomicTest(()->
    plusAcc(
      l(st(Op.GT,lThis,lThis,lVoid)), lThis,
-   ">[This0][This0][Void]=[This0]")
+   ">[This][This][Void]=[This]")
 
    ),new AtomicTest(()->
    plusAcc(
      l(st(Op.LT,lThis,lThis,lAny)), lThis,
-   "<[This0][This0][Any]=[This0]")
+   "<[This][This][Any]=[This]")
 
    ),new AtomicTest(()->
    plusAcc(
@@ -112,36 +112,36 @@ extends AtomicTest.Tester{
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),Void)
    ,"""
-   This0.nope() = [This0.nope(), Void]
+   This.nope() = [This.nope(), Void]
    """)
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),This).a(st(st(This,"nope()"),"dope()"),Void)
    ,"""
-   This0.nope() = [This0, This0.nope()]
-   This0.nope().dope() = [This0.dope(), This0.nope().dope(), Void]
+   This.nope() = [This, This.nope()]
+   This.nope().dope() = [This.dope(), This.nope().dope(), Void]
    """)
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),This)
    .a(st(st(This,"nope()"),"dope()"),Void)
    .a(st(This,"dope()"),Library)
    ,"""
-   This0.nope() = [This0, This0.nope()]
-   This0.nope().dope() = [Library, This0.dope(), This0.nope().dope(), Void]
-   This0.dope() = [Library, This0.dope()]
+   This.nope() = [This, This.nope()]
+   This.nope().dope() = [Library, This.dope(), This.nope().dope(), Void]
+   This.dope() = [Library, This.dope()]
    """)
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),This)
    .a(st(This,"dope()"),st(st(This,"nope()"),"m()"))
    ,"""
-   This0.nope() = [This0, This0.nope()]
-   This0.dope() = [This0.dope(), This0.nope().m(), Void]
+   This.nope() = [This, This.nope()]
+   This.dope() = [This.dope(), This.nope().m(), Void]
    """)
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"nope()"),This)
    .a(st(This,"dope()"),st(st(st(This,"nope()"),"nope()"),"m()"))
    ,"""
-   This0.nope() = [This0, This0.nope()]
-   This0.dope() = [This0.dope(), This0.nope().m(), This0.nope().nope().m(), Void]
+   This.nope() = [This, This.nope()]
+   This.dope() = [This.dope(), This.nope().m(), This.nope().nope().m(), Void]
    """)
 
 //operators         
@@ -150,18 +150,18 @@ extends AtomicTest.Tester{
    .a(st(Op.Plus,lThis,lThis,lThis),Library)
    .a(st(This,"dope()"),st(st(Op.Plus,lThis,lThis,lThis),"nope()"))
    ,"""
-   +[This0][Void][Void] = [+[This0][Void][Void], Void]
-   +[This0][This0][This0] = [+[This0][This0][This0], Library]
-   This0.dope() = [+[This0][This0][This0].nope(), Library.nope(), This0.dope()]
+   +[This][Void][Void] = [+[This][Void][Void], Void]
+   +[This][This][This] = [+[This][This][This], Library]
+   This.dope() = [+[This][This][This].nope(), Library.nope(), This.dope()]
    """)
    ),new AtomicTest(()->inferAll(ctz()
    .a(st(This,"cope()"),st(Op.LT,l(st(This,"nope()")),l(st(This,"dope()"))))
    .a(st(This,"nope()"),This)
    .a(st(This,"dope()"),This)
    ,"""
-   This0.cope() = [<[This0.nope()][This0.dope()], <[This0.nope()][This0], <[This0][This0.dope()], This0.cope(), Void]
-   This0.nope() = [This0, This0.nope()]
-   This0.dope() = [This0, This0.dope()]
+   This.cope() = [<[This.nope()][This.dope()], <[This.nope()][This], <[This][This.dope()], This.cope(), Void]
+   This.nope() = [This, This.nope()]
+   This.dope() = [This, This.dope()]
    """)
 
   ));}

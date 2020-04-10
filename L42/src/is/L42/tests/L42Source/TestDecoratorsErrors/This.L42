@@ -1,54 +1,45 @@
 reuse[AdamTowel]
 
-TestMsg={
-  class method Void (Library that,Message msg,S expected)=(
-    cut = expected.size()<msg.toS().size()
-    size =if cut expected.size()-1Size else msg.toS().size()//remove the last \n on expected        
-    S part=msg.toS().subString(start=0\ end=size)
-    that:Test"ExpectedExeption"(expected=expected actual=part)
-    )
-  }
-TestClose={
-  class method Void (Library that,S expected)=(
-    _=Cache.Close:that
-    catch error Cache.Close$Fail f (TestMsg(that,msg=f,expected=expected))
-    that:Test"ExpectedExeptionMissed"(Bool.false())
-    )
-  }
 TestClose1=(
-  TestClose({
+  code={
     Size n
     class method mut This(Size n)
     @Cache.Clear class method Size double(mut Size n)=error void
-    },expected=S"""
+    }
+  {}:Test"Close1"(
+    actual={error Cache.Close:code catch error Cache.Close$Fail x return x}
+    expected=S"""
       |Message toFix(toFix):
-      |method @This1.Cache.Clear class method imm This1.Size double(mut This1.Size n)=(..)
-      |first parameter does not correspond to a capsule field; constructor class method mut This0 #apply(imm This1.Size n) initializes it as imm This1.Size
-      |[file:
-      """
-    )
-  TestClose({
+      |@This1.Cache.Clear class method This1.Size double(mut This1.Size n)=(..)
+      |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.Size n) initializes it as This1.Size
+      |[file:[###]
+      """.trim())
+  code2={
     Size n
     class method mut This(Size n)
     @Cache.Now read method Size double()=this.n()+this.n()
-    },expected=S"""
+    }
+  {}:Test"Close2"(
+    actual={error Cache.Close:code2 catch error Cache.Close$Fail x return x}
+    expected=S"""
       |Message toFix(toFix):
-      |method @This1.Cache.Now read method imm This1.Size double()=(..)
+      |@This1.Cache.Now read method This1.Size double()=(..)
       |must be a class method
-      |[file:
-      """
-    )
-  TestClose({
+      |[file:[###]
+      """.trim())
+  code3={
     read method Size n::0()
     class method mut This of::0(Size n)
-    },expected=S"""
+    }
+  {}:Test"Close3"(
+    actual={error Cache.Close:code3 catch error Cache.Close$Fail x return x}
+    expected=S"""
       |Message toFix(toFix):
       |nested class { }
       |Class is already close
-      |[file:
-      """
-    )
-  TestClose({
+      |[file:[###]
+      """.trim())
+  code4={
     capsule Strings that
     class method mut This(capsule Strings that)
     @Cache.Now class method Size size(read Strings that)=that.size()
@@ -56,76 +47,70 @@ TestClose1=(
       thaat.add(S"1")
       thaat.size()
       )
-    },expected=S"""
+    }
+  {}:Test"Close4"(
+    actual={error Cache.Close:code4 catch error Cache.Close$Fail x return x}
+    expected=S"""
       |Message toFix(toFix):
-      |method @This1.Cache.Clear class method imm This1.Size append1(mut This1.Strings thaat)=(..)
+      |@This1.Cache.Clear class method This1.Size append1(mut This1.Strings thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
-      |[file:
-      """
-    )
-  TestClose({
+      |[file:[###]
+      """.trim())
+  code5={
     Size n
     class method mut This(Size n)
     @Cache.Now class method Size double(Size nn)=nn+nn
-    },expected=S"""
+    }
+  {}:Test"Close5"(
+    actual={error Cache.Close:code5 catch error Cache.Close$Fail x return x}
+    expected=S"""
       |Message toFix(toFix):
-      |method @This1.Cache.Now class method imm This1.Size double(imm This1.Size nn)=(..)
+      |@This1.Cache.Now class method This1.Size double(This1.Size nn)=(..)
       |No candidate getter/exposer with name nn and method modifier Immutable or Readable
-      |[file:
-      """
-    )
-  TestClose({
+      |[file:[###]
+      """.trim())
+  code6={
     Size n
     class method mut This(fwd imm Size n)
     @Cache.Now class method Size double(Size n)=n+n
-    },expected=S"""
+    }
+  {}:Test"Close6"(
+    actual={error Cache.Close:code6 catch error Cache.Close$Fail x return x}
+    expected=S"""
       |Message toFix(toFix):
-      |method @This1.Cache.Now class method imm This1.Size double(imm This1.Size n)=(..)
-      |parameter n is initialized with fwd in the constructor class method mut This0 #apply(fwd imm This1.Size n)
-      |[file:
-      """
+      |@This1.Cache.Now class method This1.Size double(This1.Size n)=(..)
+      |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.Size n)
+      |[file:[###]
+      """.trim())
     )
    /*
-    -make introspection print className/interface names, so we can print the right error
+    -TODO:make introspection print className/interface names, so we can print the right error
     -standard code
     -add callSiteCache?
     -add lazyReadCache?
     -add multi args cache for imm/class?
   */ 
-  )
-TestSum={
-  class method Void classClash(Library l1,Library l2,S expected)[MethodClash]=(
-    _=(Trait:l1)+l2
-    catch ClassClash f (TestMsg(l1,msg=f,expected=expected))
-    l1:Test"ExpectedExeptionMissed"(Bool.false())
-    )
-  class method Void methodClash(Library l1,Library l2,S expected)[ClassClash]=(
-    _=(Trait:l1)+l2
-    catch MethodClash f (TestMsg(l1,msg=f,expected=expected))
-    l1:Test"ExpectedExeptionMissed"(Bool.false())
-    )
-  }
 TestSum1=(
-  TestSum.methodClash(l1={
-    method Void foo()=void
-    },l2={
-    method Void foo()=void
-    },expected=S"""
+  code1a={method Void foo()=void}
+  code1b={method Void foo()=void}
+  {}:Test"Sum1"(
+    actual={error (Trait:code1a)+code1b catch MethodClash x return x}
+    expected=S"""
     |Message toFix(toFix):
-    |method imm method imm Void foo()=(..)
+    |method Void foo()=(..)
     |Conflicting implementation: the method is implemented on both side of the sum
-    |[file:
-    """)
-  TestSum.classClash(l1={interface
-    method Void foo()
-    },l2={
-    method Void foo()=void
-    },expected=S"""
+    |[file:[###]
+    """.trim())
+  code2a={interface method Void foo()}
+  code2b={method Void foo()=void }
+  {}:Test"Sum2"(
+    actual={error (Trait:code2a)+code2b catch ClassClash x return x}
+    expected=S"""
     |Message toFix(toFix):
-    |nested class This0={ foo()=(..) }
+    |nested class This={ foo()=(..) }
     |The nested class can not be turned into an interface; some public methods are implemented
-    |[file:
-    """)
+    |[file:[###]
+    """.trim())
   )
 Code=Trait:{
   A={method Void foo()=void}
@@ -138,7 +123,7 @@ TestRename=(
     actual={error Code['A=>'B] catch MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
-      |method imm method imm Any foo()=(..)
+      |method Any foo()=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
       """.trim())
@@ -146,7 +131,7 @@ TestRename=(
     actual={error Code['A->'B] catch MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
-      |method imm method imm Any foo()=(..)
+      |method Any foo()=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
       """.trim())
@@ -156,7 +141,7 @@ TestRename2=(
     actual={error Code['C->'This] catch MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
-      |method imm method imm Void a(imm This0.A a)=(..)
+      |method Void a(This.A a)=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
       """.trim())
@@ -203,7 +188,7 @@ TestMethodClashFunky={A=Class:TestError['T=>MethodClash]:{
     //Code['A.#equalgt0(other='B)]
   method S expected()=S"""
     |Message toFix(toFix):
-    |method imm method imm Any foo()=(..)
+    |method Any foo()=(..)
     |Conflicting implementation: the method is implemented on both side of the sum
     |[file:[###]
     """  

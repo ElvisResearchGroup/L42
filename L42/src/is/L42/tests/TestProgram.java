@@ -50,15 +50,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
 
 //---test minimize path
-   minimize("{method Void (Void that,Void foo)=foo}","This0.Foo","This0.Foo")
+   minimize("{method Void (Void that,Void foo)=foo}","This.Foo","This.Foo")
    ),new AtomicTest(()->
    minimize("{method Void (Void that,Void foo)=foo}","Library","Library")
    ),new AtomicTest(()->
    minimize("{method Void (Void that,Void foo)=foo} A= ={A={}}","This1.B.C","This1.B.C")
    ),new AtomicTest(()->
-   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}}","This1.A.C","This0.C")
+   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}}","This1.A.C","This.C")
    ),new AtomicTest(()->
-   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}} B= ={B={}}","This2.B.A.C","This0.C")
+   minimize("{method Void (Void that,Void foo)=foo} A= ={A={}} B= ={B={}}","This2.B.A.C","This.C")
    ),new AtomicTest(()->
    minimize("{} A= ={A={}} B= ={B={A={}}}"+emptyP,"This2.B.A","This")
    ),new AtomicTest(()->
@@ -69,7 +69,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    from(emptyP,"This2.A","This.B.C","This.A")
    ),new AtomicTest(()->
-   from(emptyP,"This1.C", "This0.C","This0.C")
+   from(emptyP,"This1.C", "This.C","This.C")
    ),new AtomicTest(()->
    from(emptyP,"This1.Foo.Bar", "This3.Beer.Baz","This3.Beer.Foo.Bar")
    ),new AtomicTest(()->
@@ -79,23 +79,23 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    from(emptyP,"This2.A.B", "This2.C.D","This2.A.B")
    ),new AtomicTest(()->
-   from(emptyP,"This0.A.B.C.D.E", "This0.A1.B1.C2.D1","This0.A1.B1.C2.D1.A.B.C.D.E")
+   from(emptyP,"This.A.B.C.D.E", "This.A1.B1.C2.D1","This.A1.B1.C2.D1.A.B.C.D.E")
    ),new AtomicTest(()->
-   from(emptyP,"This0.A.B.C.D.E", "This1.A1.B1.C2.D1","This1.A1.B1.C2.D1.A.B.C.D.E")
+   from(emptyP,"This.A.B.C.D.E", "This1.A1.B1.C2.D1","This1.A1.B1.C2.D1.A.B.C.D.E")
    ),new AtomicTest(()->
-   from(emptyP,"This0.A.B.C.D.E", "This2.A1.B1.C2.D1","This2.A1.B1.C2.D1.A.B.C.D.E")
+   from(emptyP,"This.A.B.C.D.E", "This2.A1.B1.C2.D1","This2.A1.B1.C2.D1.A.B.C.D.E")
    ),new AtomicTest(()->
-   from(emptyP,"This1.A.B.C.D.E", "This0.A1.B1.C2.D1","This0.A1.B1.C2.A.B.C.D.E")
+   from(emptyP,"This1.A.B.C.D.E", "This.A1.B1.C2.D1","This.A1.B1.C2.A.B.C.D.E")
    ),new AtomicTest(()->
-   from(emptyP,"This2.A.B.C.D.E", "This0.A1.B1.C2.D1","This0.A1.B1.A.B.C.D.E")
+   from(emptyP,"This2.A.B.C.D.E", "This.A1.B1.C2.D1","This.A1.B1.A.B.C.D.E")
    ),new AtomicTest(()->
-   from(emptyP,"This3.A.B.C.D.E", "This0.A1.B1.C2.D1","This0.A1.A.B.C.D.E")
+   from(emptyP,"This3.A.B.C.D.E", "This.A1.B1.C2.D1","This.A1.A.B.C.D.E")
    ),new AtomicTest(()->
    from(emptyP,"This3.A.B.C.D.E", "This1.A1.B1.C2.D1","This1.A1.A.B.C.D.E")
    ),new AtomicTest(()->
    from(emptyP,"This3.A.B.C.D.E", "This2.A1.B1.C2.D1","This2.A1.A.B.C.D.E")
    ),new AtomicTest(()->
-   from(emptyP,"This0", "This1","This1")
+   from(emptyP,"This", "This1","This1")
    ),new AtomicTest(()->
    from(emptyP,"This2.B","This1.C.A","This1.B")
    ),new AtomicTest(()->
@@ -113,7 +113,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     "This10.B","{ C={ method Any m()=This1.A<:This.m() #norm{}} #norm{}}")
   ),new AtomicTest(()->
   fromE(emptyP,"{ C={ method Any m()=This1.A<:This.m() #norm{}} #norm{}}",
-    "This0.B","{ C={ method Any m()=This1.A<:This.m() #norm{}} #norm{}}")
+    "This.B","{ C={ method Any m()=This1.A<:This.m() #norm{}} #norm{}}")
   ),new AtomicTest(()->
   fromE(emptyP,"{method This2.B #apply() #norm{}}",
     "This1.C.A","{method This2.C.B #apply() #norm{}}")
@@ -121,24 +121,24 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   fromE(emptyP,"{ method Void m()[Void]= void #norm{}}", "This2.B",
   "{ method Void m()[Void]= void  #norm{}}")
   ),new AtomicTest(()->
-  fromE(emptyP,"This0<:Any.foo(bar={[This1] #norm{}})","This0.C",
-               "This0.C<:Any.foo(bar={[This1.C] #norm{}})")
+  fromE(emptyP,"This<:Any.foo(bar={[This1] #norm{}})","This.C",
+               "This.C<:Any.foo(bar={[This1.C] #norm{}})")
   ),new AtomicTest(()->
   fromE(emptyP,"This2.B<:This2.B", "This1.C.A","This1.B<:This1.B")
   ),new AtomicTest(()->
-  fromE(emptyP,"(This0.B x1=void,This1.B x2=void,This2.B x3=void,This0 x4=void, {[This1, This0.A, This1.A,This2.A]#norm{}})",
-   "This0.C",//as in D:C.m()  C={ m { implements This1.A,This2.A }}
-   "(This0.C.B x1=void,This0.B x2=void,This1.B x3=void,This0.C x4=void, {[This1.C, This0.A, This1.C.A,This1.A]#norm{}})")
+  fromE(emptyP,"(This.B x1=void,This1.B x2=void,This2.B x3=void,This x4=void, {[This1, This.A, This1.A,This2.A]#norm{}})",
+   "This.C",//as in D:C.m()  C={ m { implements This1.A,This2.A }}
+   "(This.C.B x1=void,This.B x2=void,This1.B x3=void,This.C x4=void, {[This1.C, This.A, This1.C.A,This1.A]#norm{}})")
   ),new AtomicTest(()->
-  fromE(emptyP,"(This0.B x1=void This1.B x2=void This2.B x3=void This0 x4=void { D={[This2, This1.A, This2.A,This3.A] #norm{}} #norm{}})",
-    "This0.C",//as in D:C.m()  C={ m { implements This1.A,This2.A }}
-    "(This0.C.B x1=void This0.B x2=void This1.B x3=void This0.C x4=void { D={[This2.C, This1.A, This2.C.A,This2.A] #norm{}} #norm{}})")
+  fromE(emptyP,"(This.B x1=void This1.B x2=void This2.B x3=void This x4=void { D={[This2, This1.A, This2.A,This3.A] #norm{}} #norm{}})",
+    "This.C",//as in D:C.m()  C={ m { implements This1.A,This2.A }}
+    "(This.C.B x1=void This.B x2=void This1.B x3=void This.C x4=void { D={[This2.C, This1.A, This2.C.A,This2.A] #norm{}} #norm{}})")
   ),new AtomicTest(()->
-  fromE(emptyP,"(This0.B x1=void This1.B x2=void This2.B x3=void This0 x4=void {[This1, This0.A, This1.A,This2.A]#norm{}})",
+  fromE(emptyP,"(This.B x1=void This1.B x2=void This2.B x3=void This x4=void {[This1, This.A, This1.A,This2.A]#norm{}})",
     "This1.C",//as in D:This1.C.m()  C={ m { implements This1.A,This2.A }}
-    "(This1.C.B x1=void This1.B x2=void This2.B x3=void This1.C x4=void {[This2.C, This0.A, This2.C.A,This2.A]#norm{}})")
+    "(This1.C.B x1=void This1.B x2=void This2.B x3=void This1.C x4=void {[This2.C, This.A, This2.C.A,This2.A]#norm{}})")
   ),new AtomicTest(()->
-  fromE(emptyP,"(This0.B x1=void This1.B x2=void This2.B x3=void This0 x4=void { D={[This2, This1.A, This2.A,This3.A]#norm{}} #norm{}})",
+  fromE(emptyP,"(This.B x1=void This1.B x2=void This2.B x3=void This x4=void { D={[This2, This1.A, This2.A,This3.A]#norm{}} #norm{}})",
      "This1.C",//as in D:This1.C.m()  C={ m { implements This1.A,This2.A }}
      "(This1.C.B x1=void This1.B x2=void This2.B x3=void This1.C x4=void { D={[This3.C, This1.A, This3.C.A,This3.A]#norm{}} #norm{}})")
 
@@ -146,7 +146,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   fromE("{} A= ={A={}} B= ={B={A={}}}"+emptyP,"(This2.B.A x1=void This1.A x2=void This2.B x3=void This3.B.A x4=void void)",
         "This1.C",                 "(This x1=void This x2=void This1 x3=void This3.B.A x4=void void)")
   ),new AtomicTest(()->
-  toS("{[This1.I]}\nA= ={J={interface method This0 m()}I={interface[This1.J]}A={[This1.I]}}\n")
+  toS("{[This1.I]}\nA= ={J={interface method This m()}I={interface[This1.J]}A={[This1.I]}}\n")
   ),new AtomicTest(()->
   toS("{}\nA= ={A={}}\n")
   ),new AtomicTest(()->

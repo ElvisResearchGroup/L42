@@ -235,13 +235,11 @@ public class Program implements Visitable<Program>{
     if(superP==P.pAny){return true;}
     if(subP.equals(superP)){return true;}
     if(!subP.isNCs()){return false;}
-    P.NCs subP0=subP.toNCs();
-    if(!subP.isNCs()){return false;}
     if(!superP.isNCs()){return false;}
+    P.NCs subP0=subP.toNCs();
     assert minimize(subP0)==subP0;
     var l=_ofCore(subP0);
-    if(l==null){
-      return null;}
+    if(l==null){return null;}
     for(T ti:l.ts()){
       P pi=from(ti.p(),subP0);
       assert minimize(pi)==pi;
@@ -341,8 +339,9 @@ public class Program implements Visitable<Program>{
     if(_mdf==null){return null;}
     var ps=L(ts.stream()
       .map(ti->ti.p())
-      .filter(pi->isSubtype(ts.stream().map(ti->ti.p()),pi))
-      .distinct());
+      .filter(pi->ts.stream().allMatch(//ti.p() may not exist as code, and _isSubtype may return null
+        ti->Boolean.FALSE!=_isSubtype(ti.p(), pi)))//checking for !=false does not discard those cases 
+      .distinct());//so we can return null at the line after
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
     }

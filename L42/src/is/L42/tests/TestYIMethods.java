@@ -37,34 +37,34 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestYIMethods
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   chooseGeneralT("Any a, Any b","imm Any")
+   chooseGeneralT("Any a, Any b","Any")
    ),new AtomicTest(()->
-   chooseGeneralT("Any a, Void b","imm Any")
+   chooseGeneralT("Any a, Void b","Any")
    ),new AtomicTest(()->
    chooseGeneralT("Library a, Void b","null")
    ),new AtomicTest(()->
-   chooseGeneralT("read Any a, imm Any b","read Any")
+   chooseGeneralT("read Any a, Any b","read Any")
    ),new AtomicTest(()->
    chooseGeneralT("lent Any a, mut Any b","lent Any")
    ),new AtomicTest(()->
-   chooseGeneralT("lent Any a, imm Any b","read Any")
+   chooseGeneralT("lent Any a, Any b","read Any")
    ),new AtomicTest(()->
-   chooseGeneralT("capsule Void v,lent Any a, imm Any b","read Any")
+   chooseGeneralT("capsule Void v,lent Any a, Any b","read Any")
    
    ),new AtomicTest(()->
-   chooseSpecificT("Any a, Any b","imm Any")
+   chooseSpecificT("Any a, Any b","Any")
    ),new AtomicTest(()->
-   chooseSpecificT("Any a, Void b","imm Void")
+   chooseSpecificT("Any a, Void b","Void")
    ),new AtomicTest(()->
    chooseSpecificT("Library a, Void b","null")
    ),new AtomicTest(()->
-   chooseSpecificT("read Any a, imm Any b","imm Any")
+   chooseSpecificT("read Any a, Any b","Any")
    ),new AtomicTest(()->
    chooseSpecificT("lent Any a, mut Any b","mut Any")
    ),new AtomicTest(()->
-   chooseSpecificT("lent Any a, imm Any b","capsule Any")
+   chooseSpecificT("lent Any a, Any b","capsule Any")
    ),new AtomicTest(()->
-   chooseSpecificT("capsule Void v,lent Any a, imm Any b","capsule Void")
+   chooseSpecificT("capsule Void v,lent Any a, Any b","capsule Void")
 
    ),new AtomicTest(()->
    pass("","")
@@ -143,8 +143,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Void +(This that)=void     
      method Void m()=this+this
      ""","""
-     imm method imm Void #plus0(imm This0 that)=void
-     imm method imm Void m()=this.#plus0(that=this)
+     method Void #plus0(This that)=void
+     method Void m()=this.#plus0(that=this)
      """)
    ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
      method Void *(This that)=void     
@@ -154,37 +154,37 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Void +(This that)=void
      method Void +(Any dope)=void     
      method Void m()=this+this
-     """,Err.operatorNotFound(hole,List.of("This0.#plus0(that)","This0.#plus0(dope)")))
+     """,Err.operatorNotFound(hole,List.of("This.#plus0(that)","This.#plus0(dope)")))
    ),new AtomicTest(()->pass("""
      class method class This a(This that)=\\
      class method This b()=\\.b()
      class method This c()=This.a(that=\\.b())
      ""","""
-     class method class This0 a(imm This0 that)=This0<:class This0
-     class method imm This0 b()=This0<:class This0.b()
-     class method imm This0 c()=This0<:class This0.a(that=This0<:class This0.b())
+     class method class This a(This that)=This<:class This
+     class method This b()=This<:class This.b()
+     class method This c()=This<:class This.a(that=This<:class This.b())
      """)
    ),new AtomicTest(()->pass("""
      class method class Any a(This that)=that<:Any
      class method class Any b(This that)=that<:Void
      class method class Any c(This that)=void<:Void
      ""","""
-     class method class Any a(imm This0 that)=(imm Any fresh0_casted=that fresh0_casted)
-     class method class Any b(imm This0 that)=(imm Void fresh1_casted=that fresh1_casted)
-     class method class Any c(imm This0 that)=(imm Void fresh2_casted=void fresh2_casted)
+     class method class Any a(This that)=(Any fresh0_casted=that fresh0_casted)
+     class method class Any b(This that)=(Void fresh1_casted=that fresh1_casted)
+     class method class Any c(This that)=(Void fresh2_casted=void fresh2_casted)
      """)          
    ),new AtomicTest(()->pass("""
      class method This !()=!this
      class method This ~()=~this
      class method This aa()=~~!~!this
      ""","""
-     class method imm This0 #bang0()=this.#bang0()
-     class method imm This0 #tilde0()=this.#tilde0()
-     class method imm This0 aa()=(
-       imm This0 fresh0_receiver=(
-         imm This0 fresh1_receiver=(
-           imm This0 fresh2_receiver=(
-             imm This0 fresh3_receiver=this.#bang0()
+     class method This #bang0()=this.#bang0()
+     class method This #tilde0()=this.#tilde0()
+     class method This aa()=(
+       This fresh0_receiver=(
+         This fresh1_receiver=(
+           This fresh2_receiver=(
+             This fresh3_receiver=this.#bang0()
                fresh3_receiver.#tilde0())
              fresh2_receiver.#bang0())
            fresh1_receiver.#tilde0())
@@ -196,22 +196,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method Void foo2()=(var This x=this  x+=void)
      method Void +(Void v)
      ""","""
-     class method imm Void foo1()=(var imm This0 x=this x:=void)
-     class method imm Void foo2()=(var imm This0 x=this x:=
-       (imm Void fresh0_op=void x.#plus0(v=fresh0_op))
+     class method Void foo1()=(var This x=this x:=void)
+     class method Void foo2()=(var This x=this x:=
+       (Void fresh0_op=void x.#plus0(v=fresh0_op))
        )
-     imm method imm Void #plus0(imm Void v)
+     method Void #plus0(Void v)
      """)
    ),new AtomicTest(()->pass("""
      class method Void ()=This()
      ""","""
-     class method imm Void #apply()=This0<:class This0.#apply()
+     class method Void #apply()=This<:class This.#apply()
      """)
    ),new AtomicTest(()->pass("""
      class method Void (This that)=This(this)
      ""","""
-     class method imm Void #apply(imm This0 that)=
-       This0<:class This0.#apply(that=this)
+     class method Void #apply(This that)=
+       This<:class This.#apply(that=this)
      """)
    ),new AtomicTest(()->fail(EndError.InferenceFailure.class,"""
      method Void a()=(x=this.nope() void)
@@ -232,16 +232,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
      class method Void a()=(This.a() catch error Void z z)
      ""","""
-     class method imm Void a()=(
-       imm Void fresh0_underscore=This<:class This.a()
-       catch error imm Void z z void)
+     class method Void a()=(
+       Void fresh0_underscore=This<:class This.a()
+       catch error Void z z void)
      """)
    ),new AtomicTest(()->pass("""
      class method Void a()=(Void v0=void catch error Void z z Void v1=void void)
      ""","""
-     class method imm Void a()=(
-       imm Void v0=void catch error imm Void z z
-       (imm Void v1=void void))
+     class method Void a()=(
+       Void v0=void catch error Void z z
+       (Void v1=void void))
      """)
    ),new AtomicTest(()->pass("""
      class method Void a()=(Void v0=void
@@ -249,9 +249,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        whoops Library
        void)
      ""","""
-     class method imm Void a()=(imm Void v0=void
-       catch error imm Void z z
-       catch exception imm Library fresh0_whoops
+     class method Void a()=(Void v0=void
+       catch error Void z z
+       catch exception Library fresh0_whoops
          error fresh0_whoops.#whoopsed(atPos={#typed{}})
        void)
      """)
@@ -260,8 +260,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        whoops Library
        void)
      ""","""
-     class method imm Void a()=(imm Void v0=void
-       catch exception imm Library fresh0_whoops
+     class method Void a()=(Void v0=void
+       catch exception Library fresh0_whoops
          error fresh0_whoops.#whoopsed(atPos={#typed{}})
        void)     """)
    ),new AtomicTest(()->pass("""
@@ -270,11 +270,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        whoops Library, Void
        void)
      ""","""
-     class method imm Void a()=(imm Void v0=void
-       catch error imm Void z z
-       catch exception imm Library fresh0_whoops
+     class method Void a()=(Void v0=void
+       catch error Void z z
+       catch exception Library fresh0_whoops
          error fresh0_whoops.#whoopsed(atPos={#typed{}})
-       catch exception imm Void fresh1_whoops
+       catch exception Void fresh1_whoops
          error fresh1_whoops.#whoopsed(atPos={#typed{}})
        void)
        """)     
@@ -283,13 +283,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This x() method This y()
      method Void a()=((x12,y2)=this.foo() x12)
      ""","""
-     imm method imm This0 foo()
-     imm method imm This0 x()
-     imm method imm This0 y()
-     imm method imm Void a()=(
-       imm This0 fresh0_DecMatch=this.foo()
-       imm This0 x12=fresh0_DecMatch.x()
-       imm This0 y2=fresh0_DecMatch.y()
+     method This foo()
+     method This x()
+     method This y()
+     method Void a()=(
+       This fresh0_DecMatch=this.foo()
+       This x12=fresh0_DecMatch.x()
+       This y2=fresh0_DecMatch.y()
        x12)
      """) 
    ),new AtomicTest(()->pass("""
@@ -297,15 +297,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This x() method This y()
      method Void a()=(This(var This x12,y2)=this.foo() x12.foo().foo())
      ""","""
-     imm method imm This0 foo()
-     imm method imm This0 x()
-     imm method imm This0 y()
-     imm method imm Void a()=(
-       imm This0 fresh0_DecMatch=this.foo()
-       var imm This0 x12=fresh0_DecMatch.x()
-       imm This0 y2=fresh0_DecMatch.y()
+     method This foo()
+     method This x()
+     method This y()
+     method Void a()=(
+       This fresh0_DecMatch=this.foo()
+       var This x12=fresh0_DecMatch.x()
+       This y2=fresh0_DecMatch.y()
        (
-         imm This0 fresh1_receiver=x12.foo()
+         This fresh1_receiver=x12.foo()
          fresh1_receiver.foo()
          )
        )
@@ -313,38 +313,38 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
      method Void a()=(Void v=void catch Library _ void void)
      ""","""
-     imm method imm Void a()=(
-       imm Void v=void
-       catch exception imm Library fresh0_underscore void
+     method Void a()=(
+       Void v=void
+       catch exception Library fresh0_underscore void
        void)
      """)
    ),new AtomicTest(()->pass("""
      method Void a()=(this.a() catch Library _ void)
      ""","""
-     imm method imm Void a()=(
-       imm Void fresh0_underscore=this.a()
-       catch exception imm Library fresh1_underscore void
+     method Void a()=(
+       Void fresh0_underscore=this.a()
+       catch exception Library fresh1_underscore void
        void)
      """)
    ),new AtomicTest(()->pass("""
      method Void a()={ return void }
      ""","""
-     imm method imm Void a()=(
-       imm Void fresh0_curlyX=(
-         imm Void fresh2_underscore=return void
+     method Void a()=(
+       Void fresh0_curlyX=(
+         Void fresh2_underscore=return void
          void)
-       catch return imm Void fresh1_curlyX1 fresh1_curlyX1
+       catch return Void fresh1_curlyX1 fresh1_curlyX1
        error void)
      """)
    ),new AtomicTest(()->pass("""
      method Void a()={ loop (void) catch Library _ return void }
      ""","""
-     imm method imm Void a()=(
-       imm Void fresh0_curlyX=(
-         imm Void fresh2_underscore=loop(void)
-         catch exception imm Library fresh3_underscore return void
+     method Void a()=(
+       Void fresh0_curlyX=(
+         Void fresh2_underscore=loop(void)
+         catch exception Library fresh3_underscore return void
          void)
-       catch return imm Void fresh1_curlyX1 fresh1_curlyX1
+       catch return Void fresh1_curlyX1 fresh1_curlyX1
        error void)
      """)
    ),new AtomicTest(()->pass("""
@@ -352,13 +352,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method This #stringLiteralBuilder()
      method Void a()=This"a+c"
      ""","""
-     class method imm This0 #from(imm This0 stringLiteral)
-     class method imm This0 #stringLiteralBuilder()
-     imm method imm Void a()=This0<:class This0.#from(stringLiteral=(
-       imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
-       imm Void fresh1_underscore=fresh0_builder.#la()
-       imm Void fresh2_underscore=fresh0_builder.#splus()
-       imm Void fresh3_underscore=fresh0_builder.#lc()
+     class method This #from(This stringLiteral)
+     class method This #stringLiteralBuilder()
+     method Void a()=This<:class This.#from(stringLiteral=(
+       This fresh0_builder=This<:class This.#stringLiteralBuilder()
+       Void fresh1_underscore=fresh0_builder.#la()
+       Void fresh2_underscore=fresh0_builder.#splus()
+       Void fresh3_underscore=fresh0_builder.#lc()
        fresh0_builder
        ))
      """)
@@ -368,22 +368,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method Void #stringAddAll(This that)
      method Void a()=This"a+%this c"
      ""","""
-     class method imm This0 #from(imm This0 stringLiteral)
-     class method imm This0 #stringLiteralBuilder()
-     class method imm Void #stringAddAll(imm This0 that)
-     imm method imm Void a()=This0<:class This0.#from(stringLiteral=(
-       imm This0 fresh0_builder=This0<:class This0.#stringLiteralBuilder()
-       imm Void fresh3_underscore=fresh0_builder.#stringAddAll(that=(
-         imm This0 fresh1_builder=This0<:class This0.#stringLiteralBuilder()
-         imm Void fresh4_underscore=fresh1_builder.#la()
-         imm Void fresh5_underscore=fresh1_builder.#splus()
+     class method This #from(This stringLiteral)
+     class method This #stringLiteralBuilder()
+     class method Void #stringAddAll(This that)
+     method Void a()=This<:class This.#from(stringLiteral=(
+       This fresh0_builder=This<:class This.#stringLiteralBuilder()
+       Void fresh3_underscore=fresh0_builder.#stringAddAll(that=(
+         This fresh1_builder=This<:class This.#stringLiteralBuilder()
+         Void fresh4_underscore=fresh1_builder.#la()
+         Void fresh5_underscore=fresh1_builder.#splus()
          fresh1_builder))
-       imm Void fresh6_underscore=fresh0_builder.#stringAddExpr(that=this)
-       imm Void fresh7_underscore=fresh0_builder.#stringAddAll(that=(
-         imm This0 fresh2_builder=This0<:class
-         This0.#stringLiteralBuilder()
-         imm Void fresh8_underscore=fresh2_builder.#sspace()
-         imm Void fresh9_underscore=fresh2_builder.#lc()
+       Void fresh6_underscore=fresh0_builder.#stringAddExpr(that=this)
+       Void fresh7_underscore=fresh0_builder.#stringAddAll(that=(
+         This fresh2_builder=This<:class
+         This.#stringLiteralBuilder()
+         Void fresh8_underscore=fresh2_builder.#sspace()
+         Void fresh9_underscore=fresh2_builder.#lc()
          fresh2_builder))
        fresh0_builder))
        """)
@@ -392,13 +392,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #checkTrue()
      method This a(This b,This c)=if this b else c
      ""","""
-     imm method imm This0 #if()
-     imm method imm This0 #checkTrue()
-     imm method imm This0 a(imm This0 b,imm This0 c)=(
-       imm Void fresh0_underscore=(
-         imm This0 fresh1_receiver=this.#if()
+     method This #if()
+     method This #checkTrue()
+     method This a(This b,This c)=(
+       Void fresh0_underscore=(
+         This fresh1_receiver=this.#if()
          fresh1_receiver.#checkTrue())
-     catch exception imm Void fresh2_underscore c
+     catch exception Void fresh2_underscore c
      b)
      """)      
    ),new AtomicTest(()->pass("""
@@ -406,13 +406,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #checkTrue()
      method This a(This b,This c)=if this b
      ""","""
-     imm method imm This0 #if()
-     imm method imm This0 #checkTrue()
-     imm method imm This0 a(imm This0 b,imm This0 c)=(
-       imm Void fresh0_underscore=(
-         imm This0 fresh1_receiver=this.#if()
+     method This #if()
+     method This #checkTrue()
+     method This a(This b,This c)=(
+       Void fresh0_underscore=(
+         This fresh1_receiver=this.#if()
          fresh1_receiver.#checkTrue())
-     catch exception imm Void fresh2_underscore void
+     catch exception Void fresh2_underscore void
      b)
      """)
    ),new AtomicTest(()->pass("""
@@ -420,14 +420,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #checkTrue()
      method This a(This b,This c)=if (this) b
      ""","""
-     imm method imm This0 #if()
-     imm method imm This0 #checkTrue()
-     imm method imm This0 a(imm This0 b,imm This0 c)=(
-       imm This0 fresh0_cond=(this)
-       ( imm Void fresh1_underscore=(
-           imm This0 fresh2_receiver=fresh0_cond.#if()
+     method This #if()
+     method This #checkTrue()
+     method This a(This b,This c)=(
+       This fresh0_cond=(this)
+       ( Void fresh1_underscore=(
+           This fresh2_receiver=fresh0_cond.#if()
            fresh2_receiver.#checkTrue())
-         catch exception imm Void fresh3_underscore void 
+         catch exception Void fresh3_underscore void 
          b))
      """)
    ),new AtomicTest(()->pass("""
@@ -437,21 +437,21 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This foo(This squareBuilder)
      method This a(This b,This c)=this.foo[c;b; key=c, val=b]
      ""","""
-     imm method imm This0 #if()
-     imm method imm This0 #checkTrue()
-     imm method imm This0 #shortCircutSquare()
-     imm method imm This0 foo(imm This0 squareBuilder)
-     imm method imm This0 a(imm This0 b, imm This0 c)=this.foo(squareBuilder=(
-       imm This0 fresh0_builder=This0<:class This0.#foo#squareBuilder()
-       imm Void fresh1_underscore=(
-         imm This0 fresh2_cond=This0<:class This0.#shortCircutSquare()
-         ( imm Void fresh3_underscore=(
-             imm This0 fresh4_receiver=fresh2_cond.#if()
+     method This #if()
+     method This #checkTrue()
+     method This #shortCircutSquare()
+     method This foo(This squareBuilder)
+     method This a(This b, This c)=this.foo(squareBuilder=(
+       This fresh0_builder=This<:class This.#foo#squareBuilder()
+       Void fresh1_underscore=(
+         This fresh2_cond=This<:class This.#shortCircutSquare()
+         ( Void fresh3_underscore=(
+             This fresh4_receiver=fresh2_cond.#if()
              fresh4_receiver.#checkTrue())
-           catch exception imm Void fresh5_underscore void
-           ( imm Void fresh6_underscore=fresh0_builder.#squareAdd(that=c)
-             imm Void fresh7_underscore=fresh0_builder.#squareAdd(that=b)
-             imm Void fresh8_underscore=fresh0_builder.#squareAdd(key=c, val=b)
+           catch exception Void fresh5_underscore void
+           ( Void fresh6_underscore=fresh0_builder.#squareAdd(that=c)
+             Void fresh7_underscore=fresh0_builder.#squareAdd(that=b)
+             Void fresh8_underscore=fresh0_builder.#squareAdd(key=c, val=b)
              void)
            )
          )
@@ -462,12 +462,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Bool #bangequal0(This that)=Bool.k()
      Bool={}
      ""","""
-     imm method imm This0.Bool v(imm This0 a, imm This0 b)=(
-       imm This0.Bool x=a.#bangequal0(that=b)
+     method This.Bool v(This a, This b)=(
+       This.Bool x=a.#bangequal0(that=b)
        x
        )
-     imm method imm This0.Bool #bangequal0(imm This0 that)=
-       This0.Bool<:class This0.Bool.k()     
+     method This.Bool #bangequal0(This that)=
+       This.Bool<:class This.Bool.k()     
      Bool={#norm{}}
      """)
      ),new AtomicTest(()->pass("""
@@ -475,19 +475,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Bool #bangequal0(This that)=Bool.k()
      Bool={}
      ""","""
-     imm method imm Void v(imm This0 a, imm This0 b)=(
-       imm Void fresh0_underscore=loop(
-         imm Void fresh1_underscore=(
-           imm This0.Bool fresh2_receiver=a.#bangequal0(that=b)
+     method Void v(This a, This b)=(
+       Void fresh0_underscore=loop(
+         Void fresh1_underscore=(
+           This.Bool fresh2_receiver=a.#bangequal0(that=b)
            fresh2_receiver.#checkTrue()
            )
          void
          )
-       catch exception imm Void fresh3_underscore void error
+       catch exception Void fresh3_underscore void error
        void
        )
-     imm method imm This0.Bool #bangequal0(imm This0 that)=
-       This0.Bool<:class This0.Bool.k()
+     method This.Bool #bangequal0(This that)=
+       This.Bool<:class This.Bool.k()
      Bool={#norm{}}
      """)
           ),new AtomicTest(()->pass("""
@@ -502,20 +502,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #shortResult#andand()
      method This #shortProcess#andand(This that,This other)
      ""","""
-     imm method imm Void v(imm This0 as)=(
-       imm This0 fresh0_xIt=as.#varIterator()
-       var imm This0 fresh1_xIndex=as.#startIndex(),,,,(
-         imm Void fresh2_underscore=loop(
-           imm This0 fresh3_cond=(
-             imm This0 fresh4_op3=fresh0_xIt.#hasElem(that=fresh1_xIndex)
+     method Void v(This as)=(
+       This fresh0_xIt=as.#varIterator()
+       var This fresh1_xIndex=as.#startIndex(),,,,(
+         Void fresh2_underscore=loop(
+           This fresh3_cond=(
+             This fresh4_op3=fresh0_xIt.#hasElem(that=fresh1_xIndex)
              (
-               imm This0 fresh5_op3=fresh4_op3.#shortCircut#andand()
+               This fresh5_op3=fresh4_op3.#shortCircut#andand()
                (
-                 imm Void fresh6_underscore=(
-                   imm This0 fresh7_receiver=fresh5_op3.#if()
+                 Void fresh6_underscore=(
+                   This fresh7_receiver=fresh5_op3.#if()
                    fresh7_receiver.#checkTrue()
                    )
-                 catch exception imm Void fresh8_underscore
+                 catch exception Void fresh8_underscore
                    fresh4_op3.#shortProcess#andand(that=fresh5_op3,
                      other=fresh0_xIt.#incomplete(that=fresh1_xIndex)
                      )
@@ -523,37 +523,37 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
                  )
                )
              ),,,,(
-               imm Void fresh9_underscore=(
-                 imm This0 fresh10_receiver=fresh3_cond.#if()
+               Void fresh9_underscore=(
+                 This fresh10_receiver=fresh3_cond.#if()
                  fresh10_receiver.#checkTrue()
                  )
-               catch exception imm Void fresh11_underscore(
-                 imm Void fresh12_underscore=fresh0_xIt.#close(that=fresh1_xIndex)
+               catch exception Void fresh11_underscore(
+                 Void fresh12_underscore=fresh0_xIt.#close(that=fresh1_xIndex)
                  exception void
                  )
                (
-                 var imm This0 a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
-                 imm Void fresh13_underscore=(
+                 var This a=fresh0_xIt.#elem#imm(that=fresh1_xIndex)
+                 Void fresh13_underscore=(
                    a:=fresh0_xIt.#update#imm(that=fresh1_xIndex, val=a)
                    )
-                 imm Void fresh14_underscore=fresh1_xIndex:=fresh1_xIndex.#succ()
+                 Void fresh14_underscore=fresh1_xIndex:=fresh1_xIndex.#succ()
                  void
                  )
                )
              )
-           catch exception imm Void fresh15_underscore void
+           catch exception Void fresh15_underscore void
            error void
            )
          )
-     imm method imm This0 #varIterator()
-     imm method imm This0 #startIndex()
-     imm method imm This0 #hasElem(imm This0 that)
-     imm method imm This0 #elem#imm(imm This0 that)
+     method This #varIterator()
+     method This #startIndex()
+     method This #hasElem(This that)
+     method This #elem#imm(This that)
      mut method Void #update#imm(This that, This val)
-     imm method imm This0 #if()
-     imm method imm This0 #shortCircut#andand()
-     imm method imm This0 #shortResult#andand()
-     imm method imm This0 #shortProcess#andand(imm This0 that, imm This0 other)
+     method This #if()
+     method This #shortCircut#andand()
+     method This #shortResult#andand()
+     method This #shortProcess#andand(This that, This other)
      """)
      
   ));}
@@ -579,7 +579,7 @@ public static void chooseSpecificT(String in,String out){
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
-  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool usedMethods=This0.Bool.k(),This0.Bool.#checkTrue()}}").topCore();
+  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool usedMethods=This.Bool.k(),This.Bool.#checkTrue()}}").topCore();
   var ces=processIn(l);
   assertEquals(ces,cl.mwts());
   }

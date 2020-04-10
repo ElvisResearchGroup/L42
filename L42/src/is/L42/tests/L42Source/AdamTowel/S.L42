@@ -10,7 +10,8 @@ class method This0 #from(This1.StringBuilder stringLiteral)=stringLiteral.toS()
 
 read method This1.Bool #equalequal0(read This that)=native{trusted:OP==} error void
 read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
-
+method This1.Bool contains(This that)=native{trusted:contains}error void
+method This replace(This that,This with)=native{trusted:replace}error void
 method This subString(This1.Size start,This1.Size end)=native{trusted:subString}error void
 method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
 method This1.Bool endsWith(This that)=native{trusted:endsWith}error void

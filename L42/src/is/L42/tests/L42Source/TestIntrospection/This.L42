@@ -1,6 +1,6 @@
 reuse[AdamTowel]
 
-/*
+
 Public={}
 CloseAll={
   class method Trait (Library that)=(
@@ -9,77 +9,107 @@ CloseAll={
     )
   class method Trait (Trait that,Introspection.Nested n)=(
     var res=that
-    for ni in n.nesteds() (res:=This(res,ni))
-    if !n.isInterface() && !n.isClose()
-      Cache.Close(n.nameFromRoot()):res
+    for ni in n.nesteds() (res:=This(res,n=ni))
+    if !n.isInterface() && !n.isClose() (res:=Cache.Close(n.nameFromRoot()):res)
+    res
     )
   }
 Organize={
-  class Size maxLev(Introspection.Nested n)=(
+  ClassOperators={class method class This1()=This1}
+  class method Size maxLev(Introspection.Nested that)=(
     var res=0Size
-    for ni in n.nesteds() (
-      tmp=maxLev(ni)+1Size
+    for ni in that.nesteds() (
+      tmp=this.maxLev(ni)
       if res<tmp res:=tmp
       )
-    res
+    res+1Size
     )
-  class method Library :(Library that)=(
+  class method Trait :(Trait trait)=This:trait.code()
+  class method Trait :(Library that)=(
     var res=CloseAll(that)
-    max=this.maxLev(n=Introspection.Nested.from(library=that))
+    max=this.maxLev(Introspection.Nested.from(library=that))
     for lev in max.range() (
       i=Introspection.Nested.from(library=res.code())
-      res:=res(squareBuilder=this.mapRename$(Trait.Acc[],n=i,level=max-lev))
+      res:=res(squareBuilder=this.mapRename$(Trait.Acc(Meta()),n=i,level=max-lev))
       j=Introspection.Nested.from(library=res.code())
-      res:=res(squareBuilder=this.mapHide(Trait.Acc[],n=j,level=max-lev))
+      res:=res(squareBuilder=this.mapHide(Trait.Acc(Meta()),n=j,level=max-lev))
+      whoops Guard
       )
     res
     )
-  class method Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size level,Bool mustHide)={
-    if level==0 return this.mapHide(that,mustHide=mustHide,n=n)
-    isHiding=(there is some member annotate @Public)
-    for ni in n.nesteds() (
-      if mustHide (
-        _=this.mapRename$(that,n=ni,mustHide=mustHideNow,level=level-1\)
-        void
-        )
-      else(
-        mustHideNow=isHiding && !ni.outerDoc().annotatedAs(Public)
-        _=this.mapRename$(that,n=ni,mustHide=mustHideNow,level=level-1\)
-        void
-        )
+  IsPublicNC={class method Bool (Introspection.Nested that)=that.outerDoc().annotatedAs(Public)}
+  IsPublicM={class method Bool (Introspection.Method that)=that.doc().annotatedAs(Public)}
+  class method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size level)={
+    ncs=n.nesteds()
+    if level!=0Size (
+      for ni in ncs (_=this.mapHide(that,n=ni,level=level-1\) void)
+      return that
       )
+    ms=n.methods()
+    var isHiding=Bool.false()
+    for ni in ncs (isHiding:= isHiding || IsPublicNC(ni))
+    for mi in ms (isHiding:= isHiding || IsPublicM(mi))
+    if !isHiding return that
+    for ni in ncs (if !IsPublicNC(ni) (that.#squareAdd(hide=ni.nameFromRoot())))
+    for mi in ms (if !IsPublicM(mi) (that.#squareAdd(hide=mi.nameFromRoot())))
     return that
     }
-  class method Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n,Bool mustHide)={
-    assert nested content should have been hidden already
-    if any member is annotated @Public, hide the ones not annotated public    
-    return that
-    }
-  class method Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size level)={
-    if level==0 return this.mapRename$(that,n=n)
-    for ni in n.nesteds() (
-      _=this.mapRename$(that,n=ni,level=level-1\)
+  class method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size level)={
+    ncs=n.nesteds()
+    if level!=0Size (
+      for ni in ncs (_=this.mapRename$(that,n=ni,level=level-1\) void)
+      return that
       )
-    return that
-    }
-  class method Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n)=(
     outName=n.nameFromRoot().toS()
     outSize=outName.size()
-    for ni in n.nesteds() {
-      inName=n.nameFromRoot().toS()
-      var inC=inName.substring(outSize,\size)
-      if inC.contains("$$") return void
-      if !inC.contains("$") return void
-      if inC.endsWith("$") (inc:=inC.substring(0\, \size-1\)
-      inC:=inC.replace("$",".")
-      if inC.startsWith(".") return void
-      return that.add(inName=>outName+inC)
+    for ni in ncs {
+      inName=n.nameFromRoot().toS() //A.B$C$   A.$
+      var inC=inName.subString(start=outSize,end=\size) //.B$C$   .$
+      if inC.contains(\"$$") return void
+      if !inC.contains(\"$") return void
+      if inC.endsWith(\"$") (inC:=inC.subString(start=0\, end=\size-1\)) //.B$C   . 
+      inC:=inC.replace(\"$" with=\".") //.B.C    .
+      if inC==S"." (inC:=S"")
+      return that.#squareAdd(Name(inName)=>Name(outName++inC))  //A.B$C$ =>A.B.C
       }
-    that
-    )
+    return that
+    }
   }
-*/
+
 //---------------------------
+Full={class method S (Trait that)=
+  Introspection.Nested.from(library=that.code()).toFullS()
+  }
+TestFullS=(
+  {}:Test"fullS"(actual=Full(Trait:{ method Void foo(S that)=void  method B bar() B={}})
+  expected=S"""
+    |{
+    |  method Void foo(This1.S that)=(..)
+    |  method This.B bar()
+    |  B={#typed{}}
+    |  #norm{}
+    |  }
+    """)
+  {}:Test"sum"(actual=Full(
+    Trait:{ method Void foo(S that)=void  method B bar() B={}}
+    +{B={method Void beer()}}
+    )
+  expected=S"""
+    |{
+    |  method Void foo(This1.S that)=(..)
+    |  method This.B bar()
+    |  B={method Void beer()#typed{}}
+    |  #norm{}
+    |  }
+    """)
+  {}:Test"renameDeep"(actual=Full(
+    Trait({ B={method Any b() C={method Any c()}}})
+    [deep='B=>'A.C])
+  expected=S"""
+    |{A={C={method Any b()C={method Any c()#typed{}}#typed{}}#typed{}}#norm{}}
+    """)
+
+  )
 
 ExampleAnn={@{exampleAnn}}
 

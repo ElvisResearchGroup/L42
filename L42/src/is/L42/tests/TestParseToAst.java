@@ -144,7 +144,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(\n  _=A\n  x\n  )\n")
    ),new AtomicTest(()->
-   pass("(\n  imm A _=A\n  x\n  )\n")
+   pass("(\n  A _=A\n  x\n  )\n")
    ),new AtomicTest(()->
    pass("(\n  mut _=A\n  x\n  )\n")
    ),new AtomicTest(()->
@@ -215,7 +215,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("({interface #typed{}})")
    ),new AtomicTest(()->
-   pass("({interface #norm{typeDep=This0.A, This2.B, This1.C}})")
+   pass("({interface #norm{typeDep=This.A, This2.B, This1.C}})")
    ),new AtomicTest(()->
    pass("({interface #norm{coherentDep=This1.C}})")
    ),new AtomicTest(()->
@@ -232,7 +232,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass("({interface #norm{}})")
 
    ),new AtomicTest(()->
-   pass("({imm method imm Any m()={#norm{}}#norm{}})")
+   pass("({method Any m()={#norm{}}#norm{}})")
    ),new AtomicTest(()->
    pass("({C={#norm{}}#norm{}})")
    ),new AtomicTest(()->
@@ -241,11 +241,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail("({C={} #norm{}})",Err.malformedCoreNC(Err.hole))
 
    ),new AtomicTest(()->
-   pass("{imm method imm Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
+   pass("{method Any m(capsule Any x)=Any<:class Any.meth(a=x, b=x)#norm{}}")
    ),new AtomicTest(()->
    fail("{ method Any m(capsule Any x)=Any.meth(a=x, b=x) #norm{}}",Err.malformedCoreMWT(Err.hole,Err.hole))
    ),new AtomicTest(()->
-   pass("({@This0.Bar imm method imm This0.T f()#norm{}})")
+   pass("({@This.Bar method This.T f()#norm{}})")
    ),new AtomicTest(()->
    pass("({mut@Bar T f})")
    ),new AtomicTest(()->
@@ -314,7 +314,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(\\ void)","(\n  \\\n  void\n  )\n")
    ),new AtomicTest(()->
-   pass("(\n  'hi()\n  'This0\n  'Is.A\n  'Series.of()\n  'Path.lits(x).x\n  and\n  a\n  slash\n  \\\n  End.Here\n  )\n")
+   pass("(\n  'hi()\n  'This\n  'Is.A\n  'Series.of()\n  'Path.lits(x).x\n  and\n  a\n  slash\n  \\\n  End.Here\n  )\n")
    ),new AtomicTest(()->
    pass("bar<:Foo")
    ),new AtomicTest(()->
