@@ -1,4 +1,5 @@
 NativeNested={
+  class method This instance()
   class method This fromClass(class Any that)=native{trusted:fromClass}error void
   class method This fromLibrary(Library that)=native{trusted:fromLibrary}error void
   method This nestedByName(This2.NativeName name)=native{trusted:nestedByName}error void
@@ -29,9 +30,13 @@ NativeNested={
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
       This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
-    coherentDep=This,This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt    
+    coherentDep=
+      This,This2.Bool,This2.S,This2.Size,This2.NativeName,
+      This1.NativeType,This1.NativeDoc,This1.NativeMethod
+      This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
     }}    
 NativeType={
+  class method This instance()
   class method This fromClass(This2.S mdf,This1.NativeDoc doc,class Any classAny)=native{trusted:fromClass}error void
   class method This fromLibrary(This2.S mdf,This1.NativeDoc doc,This2.NativeName name)=native{trusted:fromLibrary}error void
 
@@ -41,13 +46,12 @@ NativeType={
   read method This2.S toS()=native{trusted:toS}error void
   
   #norm{nativeKind=Type
-    typeDep=This,This2.S,
-       This1.NativeDoc,This1.NativeNested,
-       This2.NativeName
-    coherentDep=This
+    typeDep=This,This2.S,This1.NativeDoc,This1.NativeNested,This2.NativeName
+    coherentDep=This,This2.S,This1.NativeDoc,This1.NativeNested,This2.NativeName
     }}
 
 NativeDoc={
+  class method This instance()
   method This1.NativeNested root()=native{trusted:root}error void
   method This2.NativeName nameFromRoot()=native{trusted:nameFromRoot}error void
   method This2.Size docNum()=native{trusted:docNum}error void
@@ -60,12 +64,11 @@ NativeDoc={
   read method This2.S toS()=native{trusted:toS}error void
   
   #norm{nativeKind=Doc,nativePar=This2.OutOfBounds,This2.NoElementInOpt
-    typeDep=This,This1.NativeNested,
-      This2.S,This2.Bool,This2.Size,This2.NativeName,This2.OutOfBounds,This2.NoElementInOpt
-    coherentDep=This,This2.OutOfBounds,This2.NoElementInOpt
+    typeDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.OutOfBounds,This2.NoElementInOpt
+    coherentDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.OutOfBounds,This2.NoElementInOpt
     }}
 NativeMethod={
-  class method This empty()
+  class method This instance()
   method This1.NativeDoc doc()=native{trusted:doc}error void
   method This1.NativeType returnType()=native{trusted:returnType}error void
   method This2.Size parNum()=native{trusted:parNum}error void
@@ -80,12 +83,15 @@ NativeMethod={
   read method This2.S toS()=native{trusted:toS}error void
     
   #norm{nativeKind=Method,nativePar=This2.NoElementInOpt
-    typeDep=This,This2.S,This2.Size,This2.Bool,
+    typeDep=
+       This,This2.S,This2.Size,This2.Bool,
        This1.NativeDoc,This1.NativeNested,This1.NativeType,
        This2.NativeName,This2.NoElementInOpt
-    coherentDep=This,This2.NoElementInOpt
+    coherentDep=
+       This,This2.S,This2.Size,This2.Bool,
+       This1.NativeDoc,This1.NativeNested,This1.NativeType,
+       This2.NativeName,This2.NoElementInOpt
     }}
-    
 Nested$={class method This(NativeNested that) read method Bool readEquality(read This that)}
 Nesteds=ListT(Nested$)
 Type$={class method This(NativeType that) read method Bool readEquality(read This that)}

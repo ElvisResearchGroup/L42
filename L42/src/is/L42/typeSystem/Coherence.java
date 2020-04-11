@@ -22,6 +22,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.InductiveSet;
 import is.L42.visitors.Accumulate;
 
@@ -36,9 +37,16 @@ public class Coherence {
       });
     classMhs=L(mhs.stream().filter(mh->mh.mdf().isClass()));
     }
+    
   public boolean isCoherent(boolean justResult){
     if(p.topCore().isInterface()){return true;}
-    if(classMhs.isEmpty()){return true;}
+    if(classMhs.isEmpty()){
+      boolean emptyNative=p.topCore().info().nativeKind().isEmpty();
+      if(emptyNative || justResult){return emptyNative;}
+      throw new EndError.CoherentError(p.topCore().poss(),
+        Err.nativeFactoryAbsent(p.topCore().info().nativeKind())
+        );
+      }
     //TODO: add isCloseState in info?
     var uniqueNums=mhs.stream()
       .map(m->m.key().uniqueNum()).distinct().count();
@@ -76,7 +84,10 @@ public class Coherence {
         if(t.mdf().isIn(Readable,Lent)){return false;}
         }
       }
-    return true;
+    var nat=p.topCore().info().nativeKind();
+    TrustedKind tk=null;
+    if(!nat.isEmpty()){tk=TrustedKind._fromString(nat);}
+    return tk==null || tk.typePluginK(p,mh);
     }
   public boolean coherentClass(MH mh, Set<X> xz){
     assert mh.key().xs().containsAll(xz) && xz.containsAll(mh.key().xs());

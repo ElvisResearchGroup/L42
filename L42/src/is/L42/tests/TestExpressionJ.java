@@ -338,7 +338,7 @@ public static void je(String e,String out){
     B={
       class method This0 of()
       method Void mb(This0 b)
-      #norm{nativeKind=String typeDep=This,This1.PE, nativePar=This1.PE}
+      #norm{nativeKind=String typeDep=This,This1.PE, nativePar=This1.PE, coherentDep=This1.PE}
       }
     PE={#norm{nativeKind=LazyMessage}}
     #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1
@@ -356,7 +356,7 @@ public static void jc(String e,String ...out){
   N={
     class method This0 of()
     method This0 sum(This0 that)=native{trusted:OP+} error void
-    #norm{nativeKind=Int typeDep=This}}
+    #norm{nativeKind=Int typeDep=This coherentDep=This}}
   A={
     class method mut This0 of(This1.N n)
     method This1.N n()

@@ -20,5 +20,9 @@ class method This0 #from(This1.StringBuilder stringLiteral)=(
   )
 method This #succ()=native{trusted:succ} error void
 method This #pred()=native{trusted:pred} error void
-#norm{typeDep=This,This1.S,This1.Bool,This1.StringBuilder,This1.HasToS nativeKind=Int, refined=toS()
-  usedMethods=This1.Bool.not(), This1.StringBuilder.toS(), This1.S.toInt()}
+#norm{nativeKind=Int
+  typeDep=This,This1.S,This1.Bool,This1.StringBuilder,This1.HasToS
+  coherentDep=This0,This1.Bool,This1.S 
+  usedMethods=This1.Bool.not(), This1.StringBuilder.toS(), This1.S.toInt()
+  refined=toS()
+  }

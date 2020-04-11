@@ -92,7 +92,12 @@ public class Deps{
   public Deps collectDeps(Program p0, List<MWT> mwts){
     var deps=new DepsV(p0);
     //TODO: we had addPublicRoots(cohePs); but I think it was wrong, it would limit the sum interface+class if the class have a non watched private nested class (that would disapper otherwise...)
-    for(var m:mwts){deps.of(m);}
+    for(var m:mwts){
+      deps.of(m);
+      if(m.nativeUrl().isEmpty()){continue;}
+      P p=m.mh().t().p();
+      if(p.isNCs()){cohePs.add(p.toNCs());}
+      }
     return this;
     }
   public Deps collectDepsNCs(Program p0, List<NC> ncs){

@@ -117,10 +117,10 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
   }
   
 public class WellFormedness extends PropagatorCollectorVisitor{
-  static <T>void checkMissing(List<T> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
+  static <ST, T extends ST>void checkMissing(List<ST> setAll,List<T> setSome,List<Pos> pos,Function<Object,String>err){
     var allGood=setSome.containsAll(setAll);
     if(allGood){return;}
-    setAll=new ArrayList<T>(setAll);
+    setAll=new ArrayList<ST>(setAll);
     setAll.removeAll(setSome);
     throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
     }
@@ -140,6 +140,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     checkMissing(i.hiddenSupertypes(),l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
     checkMissing(i.usedMethods(),l.info().usedMethods(),l.poss(),Err::missedUsedMethods);
     checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);
+    checkMissing(l.info().nativePar(),l.info().coherentDep(),l.poss(),Err::missedCoheDep);
     boolean refinedExact=l.info().refined().containsAll(refined) && refined.containsAll(l.info().refined());
     if(!refinedExact){
       throw new EndError.NotWellFormed(l.poss(),Err.mismatchRefine(

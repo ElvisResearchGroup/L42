@@ -465,14 +465,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    """,Err.methCallNoCompatibleMdfParametersSignature(hole,hole))
    ),new AtomicTest(()->pass("""
    A={B={
+   class method This of()
    method This0 main(This0 that)=native{trusted:OP+} error void
-   #norm{typeDep=This0 nativeKind=Int}
+   #norm{typeDep=This0 coherentDep=This nativeKind=Int}
    }}
    """)
    ),new AtomicTest(()->fail("""
    A={B={
+   class method This of()
    method This0 main(This1 that)=native{trusted:OP+} error void
-   #norm{typeDep=This0 This1 nativeKind=Int}
+   #norm{typeDep=This0 This1 coherentDep=This nativeKind=Int}
    }}
    """,Err.nativeParameterInvalidKind(hole,"method This main(This1 that)",hole,hole,"Int"))
    ),new AtomicTest(()->pass("""

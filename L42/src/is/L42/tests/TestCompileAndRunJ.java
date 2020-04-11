@@ -103,7 +103,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
       catch (java.io.IOException ioe) {return "";}
       }} error void
-    #typed{typeDep=This1.S}
+    #typed{typeDep=This1.S coherentDep=This1.S}
     }
   C={
     class method Void #$m()=(
@@ -131,7 +131,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{typeDep=This1.S}
+    #typed{typeDep=This1.S coherentDep=This1.S}
     }
   C={
     class method Void #$m()=(
@@ -157,7 +157,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         }
         return null;
       }} error void
-    #typed{typeDep=This1.SB This1.S}
+    #typed{typeDep=This1.SB This1.S coherentDep=This1.S}
     }
   C={
     class method Void #$m()=(
@@ -233,16 +233,16 @@ public static String baseStr="""
     method Void strDebug()=native{trusted:strDebug} error void
     #typed{nativeKind=String,nativePar=This1.ParseErr
       typeDep=This This1.S This1.ParseErr
-      coherentDep=This1.ParseErr
+      coherentDep=This,This1.ParseErr
       }
     }
-  ParseErr={#norm{nativeKind=LazyMessage}}
+  ParseErr={class method This of() #norm{nativeKind=LazyMessage typeDep=This}}
   SB={
     class method mut This0 of()
     mut method Void #a()=native{trusted:'a'} error void
     mut method Void #b()=native{trusted:'b'} error void
     read method This1.S toS()=native{trusted:toS} error void
-    #typed{typeDep=This This1.S nativeKind=StringBuilder}
+    #typed{typeDep=This This1.S nativeKind=StringBuilder coherentDep=This1.S}
     }
   A={
     class method mut This0 of(This1.S n)

@@ -1,4 +1,5 @@
 [This1.HasToS]
+class method This0 empty()
 method This0 #plusplus0(This0 that)=native{trusted:OP+} error void
 read method This0 toS()=native{trusted:toS} error void
 read method This1.Size size()=native{trusted:size} error void
@@ -27,9 +28,9 @@ class method This nl()=This<:class This.#from(stringLiteral=(
   b
   ))
 
-#norm{nativeKind=String,nativePar=This1.ParseError
+#norm{nativeKind=String, nativePar=This1.ParseError
   typeDep=This0, This1.Size,This1.Num, This1.StringBuilder,This1.HasToS,This1.Bool,This1.ParseError,This1.NativeName 
-  coherentDep=This,This1.StringBuilder,This1.ParseError
-  refined=toS()
+  coherentDep=This,This1.StringBuilder,This1.ParseError,This1.Size,This1.Num,This1.Bool,This1.NativeName
   usedMethods=This1.StringBuilder.toS(), This1.Bool.not(), This1.StringBuilder.#stringLiteralBuilder(), This1.StringBuilder.#sdQuote(), This1.StringBuilder.#snewLine()
+  refined=toS()
   }

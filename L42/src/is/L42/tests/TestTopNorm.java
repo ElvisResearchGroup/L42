@@ -544,9 +544,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       S={
         class method This0 of()
         method This0 sum(This0 that)=native{trusted:OP+} error void
-        #norm{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE}
+        #norm{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE,This}
         }
-      PE={#norm{nativeKind=LazyMessage}}
+      PE={class method This0 of() #norm{nativeKind=LazyMessage typeDep=This}}
       Debug={
         class method Void #apply(This1.S that)=(This d=This<:class This.of() d.strDebug(that=that))
         class method This0 of()        
@@ -559,7 +559,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         mut method Void #a()=native{trusted:'a'} error void
         mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
-        #norm{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0}
+        #norm{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0,This1.S}
         }
       C=(
         mut SB sb=SB.of()
@@ -578,9 +578,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       {S={
         class method imm This0 of()
         imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
-        #typed{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE}
+        #typed{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE,This}
         }
-      PE={#typed{nativeKind=LazyMessage}}
+      PE={class method This0 of() #typed{nativeKind=LazyMessage typeDep=This}}
       Debug={
          class method imm Void #apply(imm This1.S that)=(imm This0 d=This0<:class This0.of()d.strDebug(that=that))
          class method imm This0 of()
@@ -593,7 +593,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         mut method Void #a()=native{trusted:'a'} error void
         mut method Void #b()=native{trusted:'b'} error void
         read method This1.S toS()=native{trusted:toS} error void
-        #typed{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0}
+        #typed{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0,This1.S}
         }
       C={#typed{}}
       #norm{}}
@@ -678,7 +678,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         method This0 not()=native{trusted:OP!} error void
         method This0 and(This0 that)=native{trusted:OP&} error void
         method This0 or(This0 that)=native{trusted:OP|} error void
-        #norm{nativeKind=Bool typeDep=This}
+        #norm{nativeKind=Bool typeDep=This coherentDep=This}
         }
       C=if B.true().and(B.true()) {imm method imm Void a()#typed{}}
         else {imm method imm Void b()#typed{}}
@@ -692,7 +692,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       imm method imm This0 not()=native{trusted:OP!}error void
       imm method imm This0 and(imm This0 that)=native{trusted:OP&}error void
       imm method imm This0 or(imm This0 that)=native{trusted:OP|}error void
-      #typed{typeDep=This0 nativeKind=Bool}
+      #typed{typeDep=This0 nativeKind=Bool coherentDep=This}
       }
     C={imm method imm Void a()#typed{}}#norm{}}
     """)
@@ -730,7 +730,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   Test=void
   }
   ""","""
-  {A={imm method This foo()=native{trusted:lazyCache} error void #typed{typeDep=This0}}
+  {A={imm method This foo()=native{trusted:lazyCache} error void #typed{typeDep=This0 coherentDep=This}}
   Test={#typed{}}
   #norm{}}
   """)

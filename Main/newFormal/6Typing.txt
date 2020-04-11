@@ -261,7 +261,7 @@ _______
     CORE.L = p(This0)
     MHs = {MH | Docs MH in CORE.L.MWTs either flag=norm or MH.m of form _::n} //thus no e, thus abstract
     either CORE.L.interface?=interface
-    or class not in MHs.mdfs//no abstract class method
+    or class not in MHs.mdfs and CORE.L.Info.native=empty//no abstract class method
     or exists xz  and n? such that: forall MH in MHs, coherent(p;MHs;MH;xz;n?)
 
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
@@ -271,6 +271,7 @@ _______
     T.mdf not in {class, fwd mut, fwd imm}
     if T.mdf in {imm, capsule} then mdfs subseteq {imm, fwd imm, capsule, class}
     if read or lent in mdfs then T.mdf in {read, lent}
+    p(This0).Info.native!= empty then typePluginK(p;MWT) 
 * coherent(p;MHs;mdf' method T m::n?(_)_;_;n?) //by well formedness if n is present is the same, but it may be absent.
     forall class method mdf _(_)_ in MHs:  !(mdf canAlsoBe mdf') //allowed abstract
 * coherent(p;_;mdf method T #sx::n?(mdf' P' that)_;_,x;n?) //Note: #sx::n? match any number of # and an x with an optional n

@@ -4,7 +4,10 @@ OptTrait=Trait:{
   read method read This.Elem get()=native{trusted:get}error void
   mut method mut This.Elem #get()=native{trusted:#get}error void
   Elem={#norm{}}
-  #norm{typeDep=This.Elem,This,This2.NoElementInOpt nativeKind=Opt nativePar=This.Elem,This2.NoElementInOpt}}
+  #norm{nativeKind=Opt nativePar=This.Elem,This2.NoElementInOpt
+    typeDep=This.Elem,This,This2.NoElementInOpt
+    coherentDep=This.Elem,This,This2.NoElementInOpt  
+    }}
 class method Trait (class Any that)={
   return OptTrait['Elem=>that]
   catch InvalidName e error e

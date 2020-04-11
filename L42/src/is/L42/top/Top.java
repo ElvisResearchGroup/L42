@@ -330,7 +330,7 @@ dropCache:
     List<Pos> poss=current.poss();
     var in=cnc.in();
     var res=new Cache.CTopNC1(new ArrayList<>(cnc.tops()),in,null,cnc.hasHDE(),cnc.hasHDL(),current,null,null);
-    Core.E e=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,/*allNCs*/null,res.tops());
+    Core.E e=toCoreTypeCoherent(ctz,frommedCTz,poss,p,c0,fe,/*allNCs*/null,res.tops());
     if(this.validCache){
       assert e.equals(cnc.coreE());
       return cnc; 
@@ -371,7 +371,7 @@ dropCache:
     var in=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(), ctz.copy(), cachableAlreadyCoherent(), p);
     var info=new HashDollarInfo(current);
     var res=new Cache.CTopNC1(new ArrayList<>(),in,null,info.hashDollarTop,info.hashDollarInside,current,null,null);
-    Core.E e=toCoreTypeCohereht(ctz,frommedCTz,poss,p,c0,fe,allNCs,res.tops());
+    Core.E e=toCoreTypeCoherent(ctz,frommedCTz,poss,p,c0,fe,allNCs,res.tops());
     return reduceNoCache(p,c0,e,res,docs,poss,frommedCTz);
     }
   Cache.CTopNC1 reduceNoCache(Program p, C c0, Core.E e, Cache.CTopNC1 res, List<Full.Doc> docs, List<Pos> poss,CTz frommedCTz){
@@ -669,7 +669,7 @@ dropCache:
     if(newL.equals(cachedL)){return oldCache(c,false);}
     return newCache(new CacheEntry(current,frommedCTz,p1,c._mLibs,newLibs,size1,size3,c._mByteCode,cByteCode));    
     }*/
-  private Core.E toCoreTypeCohereht(CTz ctz,CTz frommedCTz,List<Pos>poss,Program p,C c0,Full.E fe,List<NC> allNCs,ArrayList<Cache.CTop> ctops){
+  private Core.E toCoreTypeCoherent(CTz ctz,CTz frommedCTz,List<Pos>poss,Program p,C c0,Full.E fe,List<NC> allNCs,ArrayList<Cache.CTop> ctops){
       Y y=new Y(p,GX.empty(),L(),null,L());
       var  hq=toHalf(ctz,y,freshNames,fe);
       Half.E he=hq.e;

@@ -16,5 +16,7 @@ method Void addToLog(This1.S logName,This1.S text)=native{trusted:addToLog} erro
 method Void clearLog(This1.S logName)=native{trusted:clearLog} error void
 method This1.S #$readLog(This1.S logName)=native{trusted:#$readLog} error void
   
-#norm{typeDep=This,This1.HasToS,This1.S,This1.Bool coherentDep=This nativeKind=TrustedIO
+#norm{nativeKind=TrustedIO
+  typeDep=This,This1.HasToS,This1.S,This1.Bool
+  coherentDep=This,This1.S 
   usedMethods=This1.HasToS.toS()}

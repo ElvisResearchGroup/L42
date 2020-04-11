@@ -287,6 +287,8 @@ public class Err {
   "The class is not coherent. Candidate factory parameters are: "+_1
   ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object _1){return
   "The class is not coherent. It has private state but also abstract methods:"+_1
+  ;}public static String nativeFactoryAbsent(Object _1){return
+  "The class is not coherent. It is declared with native kind "+_1+" but has no factory method"  
   ;}public static String nonCoherentMethod(Object _1){return
   "The class is not coherent. Method "+_1+" is not part of the abstract state"
   ;}public static String lastStatementDoesNotGuaranteeBlockTermination(){return
