@@ -1,4 +1,4 @@
-class method WithName #from(StringBuilder stringLiteral)=
+class method WithName #from(S$StringBuilder stringLiteral)=
   WithName(name=stringLiteral.toS())
 class method S hole()=S"[###]"
 WithName={
@@ -14,7 +14,7 @@ Condition={
   Bool cond
   S message
   class method This(S name,Bool cond,S message)
-  method This #from(StringBuilder stringLiteral)=
+  method This #from(S$StringBuilder stringLiteral)=
     This(name=this.name(),cond=this.cond(),message=this.message()++stringLiteral.toS())
   method Void :1(Library pos)=Debug.of().testCondition(pos=pos,name=this.name(),cond=this.cond(),message=this.message())
   }

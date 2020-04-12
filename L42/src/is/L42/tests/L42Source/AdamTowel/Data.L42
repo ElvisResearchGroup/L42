@@ -1,4 +1,21 @@
-AddConstructors$Fail=Class:Message.Native:{[Guard]}      
+@Public Close$Fail=Class:Message.Native:{[Message$Guard]}      
+Close$Meta={
+  class method This #apply()
+  method Library close(Library that,This2.S name)=native{trusted:close} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Close$Fail,This2.S
+    coherentDep=This1.Close$Fail,
+    nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
+    }}
+@Public Close={
+  Name that
+  @Public class method This(Name that)
+  @Public ClassOperators={class method This1()=This1('This)}
+  @Public method Trait :(Trait t)=this:t.code()
+  @Public method Trait :(class Trait.Lifted l)=this:l.code()
+  @Public method Trait :(Library that)=Trait(Close$Meta().close(that,name=this.that().toS()))
+  }
+@Public AddConstructors$Fail=Class:Message.Native:{[Message$Guard]}      
 AddConstructors$Meta={
   class method This #apply()
   method Library addConstructors(Library that,This2.S name,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
@@ -7,17 +24,16 @@ AddConstructors$Meta={
     coherentDep=This1.AddConstructors$Fail,
     nativePar=This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail
     }}
-AddConstructors={
+@Public AddConstructors={
   Name that
-  class method This(Name that)
-  class method This()=This('This0)
-  ClassOperators={class method This1()=This1()}
-  method Trait :(Trait t)=this:t.code()
-  method Trait :(class Trait.Lifted l)=this:l.code()
-  method Trait :(Library that)=Trait(AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK"))
+  @Public class method This(Name that)
+  @Public ClassOperators={class method This1()=This1('This)}
+  @Public method Trait :(Trait t)=this:t.code()
+  @Public method Trait :(class Trait.Lifted l)=this:l.code()
+  @Public method Trait :(Library that)=Trait(AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK"))
   }
 
-Wither$Fail=Class:Message.Native:{[Guard]}      
+@Public Wither$Fail=Class:Message.Native:{[Message$Guard]}      
 Wither$Meta={
   class method This #apply()
   method Library wither(Library that,This2.S name,This2.S immK)=native{trusted:wither} error void
@@ -26,17 +42,15 @@ Wither$Meta={
     coherentDep=This1.Wither$Fail,
     nativePar=This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail
     }}
-Wither={
+@Public Wither={
   Name that
-  class method This(Name that)
-  class method This()=This('This0)
-  ClassOperators={class method This1()=This1()}
-  method Trait :(Trait t)=this:t.code()
-  method Trait :(class Trait.Lifted l)=this:l.code()
-  method Trait :(Library that)=Trait(Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK"))
+  @Public class method This(Name that)
+  @Public ClassOperators={class method This1()=This1('This)}
+  @Public method Trait :(Trait t)=this:t.code()
+  @Public method Trait :(class Trait.Lifted l)=this:l.code()
+  @Public method Trait :(Library that)=Trait(Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK"))
   }
-
-ClassOperators={class method This1()=This1()}
+@Public ClassOperators={class method This1()=This1()}
 Operations=
   Class.MutReferenceEquality+
   Class.MutStructuralEquality+
@@ -54,17 +68,16 @@ AddEqOp=Trait:{
 AddHasToS=Class.ReadToString+{[HasToS]
     method toS()=this.readToString()
     }
-
-class method This()
-method Library :(Library lib)=this:Trait(lib)
-method Library :(Trait that)=(
+@Public class method This()
+@Public method Library :(Library lib)=this:Trait(lib)
+@Public method Library :(Trait that)=(
   var Trait acc=that
   acc:=AddConstructors:acc
   acc:=Wither:acc
-  acc:=Cache.Close:acc
+  acc:=Close:acc
   acc:=Operations+acc
-  catch MethodClash x error x
-  catch ClassClash x error x
+  catch Trait$MethodClash x error x
+  catch Trait$ClassClash x error x
   //TODO: handle errors for Close,AddConstructors and so on
   //declare a common Data.Fail interface/wrapper and Data will throw exception Data.Fail
   //TODO: make some stuff private?
@@ -99,7 +112,7 @@ Action: on code with only 1 abs method named #apply, it mark them as interfaces
   on code implementing an Action method behave as Class and then close
 all the state an make all but the interface methods private
 Organize: will rename A$B in A.B and so on; will mark as private
-methods not annotated as @Exported
+methods not annotated as @Public
 Unit
 Alphanumeric
 */

@@ -12,7 +12,7 @@ Debug={
     native{trusted:deployLibrary} error void
     #norm{typeDep=This, This1.S, nativeKind=TrustedIO}        
   }
-StringBuilder={
+S$StringBuilder={
   class method mut This of()
   mut method Void _a()=
     native{trusted:'a'} error void
@@ -26,119 +26,70 @@ StringBuilder={
 //Step 2: Base towel, all the main functionalities are there
 // but miss some details and do not have encapsulation
 DeployAAA=(
-  lib={//now, deploying aaa: Strings, booleans and Size
-    HasToS={interface read method S toS()}
+  lib={
+    Public={}
+    @Public HasToS={interface read method S toS()}
     //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.
     //List can take a class method Boolean equals(Elem e1,Elem e2)
-    Break={class method Void ()[Void]=exception void}
-    Public={}
-    Bool={...}
-    Size={...}
-    Num={...}
-    S={...}
-    NativeName={
-      class method This empty()
-      read method This1.S toS()=native{trusted:toS} error void
-      read method This1.S x()=native{trusted:x} error void
-      read method This1.S selector()=native{trusted:selector} error void
-      read method This1.S path()=native{trusted:path} error void
-      read method This with(This1.S x)=native{trusted:withX} error void
-      read method This with(This1.S selector)=native{trusted:withSelector} error void
-      read method This with(This1.S path)=native{trusted:withPath} error void
-      #norm{nativeKind=Name,nativePar=This1.ParseError
-        typeDep=This,This1.S,This1.ParseError 
-        coherentDep=This,This1.ParseError,This1.S    
-        }}    
-    ParseError={//can not use BaseErrorTrait() since circular dependence from S
-      class method This #apply()
-      class method mut This #apply(This1.S that)=native{trusted:lazyMessageK} error void
-      read method This1.S text()=native{trusted:get}error void
-      mut method Void text(This1.S that)=native{trusted:setMsg}error void
-      #norm{nativeKind=LazyMessage
-        typeDep=This,This1.S,
-        coherentDep=This,This1.S, 
-        }
-      }
-    Url={...}
-    Debug={...}
-    StringBuilder={...}//end of circular dependency for S
-    BaseErrorTrait={class method Library()={
-      class method This #apply()
-      class method mut This #apply(This2.S that)=native{trusted:lazyMessageK} error void
-      read method This2.S text()=native{trusted:get}error void
-      mut method Void text(This2.S that)=native{trusted:setMsg}error void
-      #norm{nativeKind=LazyMessage
-        typeDep=This,This2.S,
-        coherentDep=This,This2.S
-        }
-      }}
-    MethodClash=BaseErrorTrait()
-    ClassClash=BaseErrorTrait()
-    InvalidName=BaseErrorTrait()
-    InvalidMap=BaseErrorTrait()
-    Test={...}
-    Log={...}
+    @Public Break={class method Void ()[Void]=exception void}
+    @Public Bool={...}
+    @Public Size={...}
+    @Public Num={...}
+    @Public S={...}
+    NativeName={...}
+    S$ParseError={...}//can not use BaseErrorTrait() since circular dependence from S
+    @Public Url={...}
+    @Public Debug={...}
+    S$StringBuilder={...}//end of circular dependency for S
+    BaseErrorTrait={...}
+    @Public Trait$MethodClash=BaseErrorTrait()
+    @Public Trait$ClassClash=BaseErrorTrait()
+    @Public Trait$InvalidName=BaseErrorTrait()
+    @Public Trait$InvalidMap=BaseErrorTrait()
+    @Public Test={...}
+    @Public Log={...}
     Meta={...}
-    Name={...}
-    Trait={...}
-    Class={...}
-    Deploy={...}
-    Message={...}
-    Guard={interface [Message]}
-    Assertion={interface[Message]}
-    PrivateOps={...}
-    X=Class:Message:{...}
-    IterationIncomplete=Class:Message:{[Guard]}
-    NoElementInOpt=Class:Message.Native:{[Guard]}
-    OutOfBounds=Class:Message.Native:{[Guard]}
-    ElementNotImm=Class:Message.Native:{[Guard]}
-    ElementNotMut=Class:Message.Native:{[Guard]}    
-    Opt={...}
-    ListT={
-      ListNative=Trait:{...}
-      ListOps=Trait:{...}+Class.ReadToString+Class.ImmToString+Class.ReadClone
-      ListEqOps=Trait:{...}
-      EqBase=Trait:{
-        Elem={read method Bool readEquality(read This that)}
-        class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
-        }
-      class method Trait(class Any withNoEq)[InvalidMap]={
-        return (ListOps+ListNative)['Elem=>withNoEq]
-        //whoops InvalidName,ClassClash,MethodClash//will be enabled later
-        catch InvalidName e error e
-        catch ClassClash e error e
-        catch MethodClash e error e
-        }
-      class method Trait(class Any withEq)[InvalidMap]={
-        return (ListOps+ListNative+ListEqOps)['Elem=>withEq]
-        catch InvalidName e error e
-        catch ClassClash e error e
-        catch MethodClash e error e
-        }
-      class method Library (class Any that)[InvalidMap]={
-        return Class:(ListOps+ListNative+ListEqOps+EqBase)['Elem=>that]
-        catch InvalidName e error e
-        catch ClassClash e error e
-        catch MethodClash e error e
-        }
+    @Public Name={...}
+    @Public Trait={...}
+    @Public Class={...}
+    @Public Deploy={...}
+    @Public Message={...}
+      @Public Message$Guard={interface [Message]}
+      @Public Message$Assertion={interface[Message]}
+    ClassName={
+      class method S (class Any that)=S"toFix"
+      class method S superInterfaces(class Any that)=S"toFix"
+      class method S excName(class Any that, S text)=S"Message %(This(that))(%This.superInterfaces(that)):%S.nl()%text"
       }
-    Strings=Class:ListT(withEq=S):{class method Bool equals(read S a,read S b)=a==b}
-    Cache={...}
-    Data={...}
-    Introspection=Class:Trait({...})[
+    MessageTrait=Trait:{...}
+    LazyMessageTrait={...}
+    @Public X=Class:Message:{...}
+    @Public IterationIncomplete=Class:Message:{[Message$Guard]}
+    @Public NoElementInOpt=Class:Message.Native:{[Message$Guard]}
+    @Public OutOfBounds=Class:Message.Native:{[Message$Guard]}
+    @Public ElementNotImm=Class:Message.Native:{[Message$Guard]}
+    @Public ElementNotMut=Class:Message.Native:{[Message$Guard]}    
+    @Public Opt={...}
+    @Public Collection={...}
+    @Public Strings=Class:Collection.listEqTrait()['Elem=>S]:{
+      class method Bool equals(read S a,read S b)=a==b
+      }
+    @Public Cache={...}
+    @Public Data={...}
+    @Public Introspection=Class:Trait({...})[
       'Nested$=>'Nested;'Type$=>'Type;'Doc$=>'Doc;'Method$=>'Method
       ]
     DelayTyping={}
-    Organize={...}
+    @Public Organize={...}
     }
-  mut StringBuilder sb=StringBuilder.of()
+  mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()
   Debug.of().deployLibrary(sb.toS(),lib=lib)
   )
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
   AddOns=Deploy.towel(url='AdamTowel,
-    code=Class:(Trait:{...}+{reuse[#$aaa]})
+    code=Class:/*Organize:*/(Trait:{...}+{reuse[#$aaa]})
     ) 
   }
 //Testing step2:

@@ -29,7 +29,7 @@ TestDataBase={
     )
   Person=Data:{Strings names}
   Box=Data:{Any f1,Any f2}
-  Anys=Class:ListT(withNoEq=Any)
+  Anys=Class:Collection.listTrait()['Elem=>Any]
   TestPerson=(
     p1=Person(names=\['Bob;'Alice;'Charles])
     {}:Test"personToS"(expected=S"""

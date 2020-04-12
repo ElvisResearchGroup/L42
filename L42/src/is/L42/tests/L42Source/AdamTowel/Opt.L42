@@ -10,8 +10,8 @@ OptTrait=Trait:{
     }}
 class method Trait (class Any that)={
   return OptTrait['Elem=>that]
-  catch InvalidName e error e
-  catch InvalidMap e error e
-  catch ClassClash e error e
-  catch MethodClash e error e
+  catch Trait$InvalidName e error e
+  catch Trait$InvalidMap e error e
+  catch Trait$ClassClash e error e
+  catch Trait$MethodClash e error e
   }

@@ -15,7 +15,7 @@ method Library resource(Library that)=
   native{trusted:resource} error void
 method Library simpleSum(Library a, Library b)=
   native{trusted:simpleSum} error void
-class method This1.Name #from(This1.StringBuilder stringLiteral)=
+class method This1.Name #from(This1.S$StringBuilder stringLiteral)=
   This1.Name<:class This1.Name.#from(stringLiteral=stringLiteral)
   
 method This1.S pathName(class Any that)=
@@ -23,8 +23,8 @@ method This1.S pathName(class Any that)=
   
 #norm{
   nativeKind=Meta
-  typeDep=This0, This1.S,This1.Name,This1.StringBuilder,This1.ParseError,This1.MethodClash,This1.ClassClash,This1.InvalidName,This1.InvalidMap,This1.NativeName
-  coherentDep=This0, This1.Name This1.ParseError,This1.MethodClash,This1.ClassClash,This1.InvalidName,This1.InvalidMap,This1.S
-  nativePar= This1.ClassClash This1.MethodClash This1.InvalidName This1.InvalidMap This1.ParseError
+  typeDep=This0, This1.S,This1.Name,This1.S$StringBuilder,This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.NativeName
+  coherentDep=This0, This1.Name This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.S
+  nativePar= This1.Trait$ClassClash This1.Trait$MethodClash This1.Trait$InvalidName This1.Trait$InvalidMap This1.S$ParseError
   usedMethods=This1.Name.#from(stringLiteral)
   }

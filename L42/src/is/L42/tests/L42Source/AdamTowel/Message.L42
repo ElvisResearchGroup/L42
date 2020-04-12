@@ -1,8 +1,8 @@
 interface [HasToS]
-var S text
-method This #whoopsed(Library atPos)
-ClassOperators={class method Trait()=PrivateOps.MessageTrait.ClassOperators()}
+@Public var S text
+@Public method This #whoopsed(Library atPos)
+@Public ClassOperators={class method Trait()=MessageTrait.ClassOperators()}
 Native={
-  class method Trait ()=PrivateOps.LazyMessageTrait.ClassOperators()
-  ClassOperators={class method Trait()=PrivateOps.LazyMessageTrait.ClassOperators()}
+  class method Trait()=LazyMessageTrait.$.ClassOperators()
+  ClassOperators={class method Trait()=This1()}
   }

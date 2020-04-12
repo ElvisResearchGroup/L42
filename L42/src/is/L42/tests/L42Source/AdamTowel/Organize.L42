@@ -6,7 +6,7 @@ CloseAll={
   class method Trait (Trait that,Introspection.Nested n)=(
     var res=that
     for ni in n.nesteds() (res:=This(res,n=ni))
-    if !n.isInterface() && !n.isClose() (res:=Cache.Close(n.nameFromRoot()):res)
+    if !n.isInterface() && !n.isClose() (res:=Data.Close(n.nameFromRoot()):res)
     res
     )
   }
@@ -19,9 +19,9 @@ class method Size maxLev(Introspection.Nested that)=(
     )
   res+1Size
   )
-class method Trait :(Library that)[InvalidName,InvalidMap,ClassClash,MethodClash]=
+class method Trait :(Library that)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
   This:Trait(that)
-class method Trait :(Trait trait)[InvalidName,InvalidMap,ClassClash,MethodClash]=(
+class method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
   max=this.maxLev(Introspection.Nested.from(library=trait.code()))
   var res=trait
   (var lev=0Size while lev<max (//range will come later

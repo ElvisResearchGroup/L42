@@ -14,15 +14,15 @@ read method This1.Bool #equalequal0(read This that)=native{trusted:OP==} error v
 read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
 read method This1.S toS()=native{trusted:toS} error void
-class method This0 #from(This1.StringBuilder stringLiteral)=(
+class method This0 #from(This1.S$StringBuilder stringLiteral)=(
   This1.S s=stringLiteral.toS()
   s.toInt()
   )
 method This #succ()=native{trusted:succ} error void
 method This #pred()=native{trusted:pred} error void
 #norm{nativeKind=Int
-  typeDep=This,This1.S,This1.Bool,This1.StringBuilder,This1.HasToS
+  typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS
   coherentDep=This0,This1.Bool,This1.S 
-  usedMethods=This1.Bool.not(), This1.StringBuilder.toS(), This1.S.toInt()
+  usedMethods=This1.Bool.not(), This1.S$StringBuilder.toS(), This1.S.toInt()
   refined=toS()
   }

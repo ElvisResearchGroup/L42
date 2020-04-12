@@ -1,7 +1,7 @@
 read method This1.S name::0()
 class method This immOf::0(This1.S name)
 class method This #apply(This1.S that)=this.immOf::0(name=that)
-class method This #from(This1.StringBuilder stringLiteral)=this.#apply(that=stringLiteral.toS())
+class method This #from(This1.S$StringBuilder stringLiteral)=this.#apply(that=stringLiteral.toS())
 class method mut This #$of::0(This1.S name)
 mut method This1.S read()=(
   This1.Debug d=This1.Debug<:class This1.Debug.of()
@@ -17,5 +17,5 @@ read method Void clear()=(
   d.clearLog(logName=this.name::0())
   )
 
-#norm{typeDep=This0,This1.S,This1.Debug,This1.StringBuilder, coherentDep=This0,This1.Debug,This1.S,close
-  usedMethods=This1.StringBuilder.toS(), This1.Debug.of(), This1.Debug.#$readLog(logName), This1.Debug.addToLog(logName,text), This1.Debug.clearLog(logName)}
+#norm{typeDep=This0,This1.S,This1.Debug,This1.S$StringBuilder, coherentDep=This0,This1.Debug,This1.S,close
+  usedMethods=This1.S$StringBuilder.toS(), This1.Debug.of(), This1.Debug.#$readLog(logName), This1.Debug.addToLog(logName,text), This1.Debug.clearLog(logName)}

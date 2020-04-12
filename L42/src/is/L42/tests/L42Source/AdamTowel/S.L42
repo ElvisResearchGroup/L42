@@ -7,7 +7,7 @@ read method This1.Size toInt()=native{trusted:toInt} error void
 read method This1.Num toNum()=native{trusted:toNum} error void
 read method This1.NativeName toName()=native{trusted:toName} error void
 method This0 sum(This0 that)=native{trusted:OP+} error void
-class method This0 #from(This1.StringBuilder stringLiteral)=stringLiteral.toS()
+class method This0 #from(This1.S$StringBuilder stringLiteral)=stringLiteral.toS()
 
 read method This1.Bool #equalequal0(read This that)=native{trusted:OP==} error void
 read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
@@ -18,19 +18,19 @@ method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
 method This1.Bool endsWith(This that)=native{trusted:endsWith}error void
 method This trim()=native{trusted:trim}error void
 class method This dq()=This<:class This.#from(stringLiteral=(
-  mut This1.StringBuilder b=This1.StringBuilder<:class This1.StringBuilder.#stringLiteralBuilder()
+  mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void v=b.#sdQuote()
   b
   ))
 class method This nl()=This<:class This.#from(stringLiteral=(
-  mut This1.StringBuilder b=This1.StringBuilder<:class This1.StringBuilder.#stringLiteralBuilder()
+  mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
   Void v=b.#snewLine()
   b
   ))
 
-#norm{nativeKind=String, nativePar=This1.ParseError
-  typeDep=This0, This1.Size,This1.Num, This1.StringBuilder,This1.HasToS,This1.Bool,This1.ParseError,This1.NativeName 
-  coherentDep=This,This1.StringBuilder,This1.ParseError,This1.Size,This1.Num,This1.Bool,This1.NativeName
-  usedMethods=This1.StringBuilder.toS(), This1.Bool.not(), This1.StringBuilder.#stringLiteralBuilder(), This1.StringBuilder.#sdQuote(), This1.StringBuilder.#snewLine()
+#norm{nativeKind=String, nativePar=This1.S$ParseError
+  typeDep=This0, This1.Size,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.Bool,This1.S$ParseError,This1.NativeName 
+  coherentDep=This,This1.S$StringBuilder,This1.S$ParseError,This1.Size,This1.Num,This1.Bool,This1.NativeName
+  usedMethods=This1.S$StringBuilder.toS(), This1.Bool.not(), This1.S$StringBuilder.#stringLiteralBuilder(), This1.S$StringBuilder.#sdQuote(), This1.S$StringBuilder.#snewLine()
   refined=toS()
   }

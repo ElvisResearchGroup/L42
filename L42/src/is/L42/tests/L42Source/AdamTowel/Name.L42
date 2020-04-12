@@ -9,7 +9,7 @@ method This with(S x)=\.of(this.that().with(x=x))
 method This with(S selector)=\.of(this.that().with(selector=selector))
 method This with(S path)=\.of(this.that().with(path=path))
 class method This (S that)=\.of(that.toName()) 
-class method This #from(StringBuilder stringLiteral)=\(stringLiteral.toS())
+class method This #from(S$StringBuilder stringLiteral)=\(stringLiteral.toS())
 // => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;
 method Meta =>(class Any target)=
   Meta().addMap(name=this.that(),classAny=target)

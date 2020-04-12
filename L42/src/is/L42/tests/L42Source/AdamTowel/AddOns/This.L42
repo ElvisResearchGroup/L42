@@ -4,23 +4,23 @@ Message={interface [HasToS]
   read method S text()
   method This #whoopsed(Library atPos)
   }
-Guard={interface [Message]}
-PrivateOps={ClassName={class method S excName(class Any that, S text)}}
+Message$Guard={interface [Message]}
+ClassName={class method S excName(class Any that, S text)}
 S={}
-StringBuilder={[HasToS]}
-BaseErrorTraitAddOns=Meta().resource({[HasToS,Message,Guard]
+S$StringBuilder={[HasToS]}
+BaseErrorTraitAddOns=Meta().resource({[HasToS,Message,Message$Guard]
   class method This ()
   class method mut This (S that)
   read method S text()
-  class method This #from(StringBuilder stringLiteral)=This(stringLiteral.toS())
-  read method S toS()=PrivateOps.ClassName.excName(This,text=this.text())
+  class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
+  read method S toS()=ClassName.excName(This,text=this.text())
   method Message #whoopsed(Library atPos)=this
   })
-ParseError=BaseErrorTraitAddOns()
-MethodClash=BaseErrorTraitAddOns()
-ClassClash=BaseErrorTraitAddOns()
-InvalidName=BaseErrorTraitAddOns()
-InvalidMap=BaseErrorTraitAddOns()
+S$ParseError=BaseErrorTraitAddOns()
+Trait$MethodClash=BaseErrorTraitAddOns()
+Trait$ClassClash=BaseErrorTraitAddOns()
+Trait$InvalidName=BaseErrorTraitAddOns()
+Trait$InvalidMap=BaseErrorTraitAddOns()
 Bool={
   method This #if()
   class method This false()

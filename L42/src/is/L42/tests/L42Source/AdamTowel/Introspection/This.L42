@@ -25,15 +25,15 @@ NativeNested={
   method class Any classAny()=native{trusted:classAny}error void
   read method This2.S toS()=native{trusted:toS}error void
   
-  #norm{nativeKind=Nested,nativePar=This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt
+  #norm{nativeKind=Nested,nativePar=This2.Trait$InvalidName,This2.OutOfBounds,This2.NoElementInOpt
     typeDep=
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
-      This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
+      This2.Trait$InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
     coherentDep=
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
-      This2.InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
+      This2.Trait$InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
     }}    
 NativeType={
   class method This instance()
@@ -93,13 +93,13 @@ NativeMethod={
        This2.NativeName,This2.NoElementInOpt
     }}
 Nested$={class method This(NativeNested that) read method Bool readEquality(read This that)}
-Nesteds=ListT(Nested$)
+Nesteds=Collection.list(Nested$)
 Type$={class method This(NativeType that) read method Bool readEquality(read This that)}
-Types=ListT(Type$)
+Types=Collection.list(Type$)
 Doc$={class method This(NativeDoc that) read method Bool readEquality(read This that)}
-Docs=ListT(Doc$)
+Docs=Collection.list(Doc$)
 Method$={class method This(NativeMethod that) read method Bool readEquality(read This that)}
-Methods=ListT(Method$)
+Methods=Collection.list(Method$)
 Nested=Data:{...}
 Type=Data:{...}
 Doc=Data:{...}

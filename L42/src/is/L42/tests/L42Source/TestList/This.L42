@@ -15,7 +15,7 @@ Point={Size x Size y  class method This(Size x Size y)
 //      class method Bool equals(read Point a,read Point b)=a==b})
 
 PointEquality=Trait:{class method Bool equals(read Point a,read Point b)=a==b}
-Points=Class:(ListT(withEq=Point)+PointEquality)
+Points=Class:Collection.listEqTrait()['Elem=>Point]:PointEquality
 
 
 Test1=(

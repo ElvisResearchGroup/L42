@@ -7,7 +7,7 @@ Scope1 ={
     imm method Size ok()=native{trusted:readEagerCache} 3Size
     }
   B = {mut A a class method This(mut A a)}
-  Bs = Class:ListT(withNoEq=B)
+  Bs = Class:Collection.listTrait()['Elem=>B]
   LateCacheLoadingTask=(
     imm A ia=(
       mut Bs bs=Bs()
@@ -93,7 +93,7 @@ TestACache=(
   {}:Test"cacheEnsureRepeatOnce"(expected=S"firstEcalledfirstEcalled",actual=Log"Foo".#$reader().read())
   )
   
- HasToSs = Class:ListT(withNoEq=HasToS)
+ HasToSs = Class:Collection.listTrait()['Elem=>HasToS<:class Any]
  
  B={
   HasToSs that
@@ -133,9 +133,9 @@ TestBCache=(
   void
   )
   
-AnyList = Class:ListT(withNoEq=Any)
-VoidList = Class:ListT(withNoEq=Void)
-LibList = Class:ListT(withNoEq=Library)
+AnyList = Class:Collection.listTrait()['Elem=>Any]
+VoidList = Class:Collection.listTrait()['Elem=>Void]
+LibList = Class:Collection.listTrait()['Elem=>Library]
 
 C={
   Strings that
@@ -286,7 +286,7 @@ TestReadCache={
     {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
     {}:Test"res3"(expected=2Size, actual=a.m())
     )
-  Person=Class:Cache.Close:{
+  Person=Class:Data.Close:{
     S name
     capsule Strings allergies
     class method mut This(S name, capsule Strings allergies)
@@ -330,7 +330,7 @@ TestReadCache={
     //  S"Person[%this.name();%this.allergies().size()]"
     //or... Cache.Transient ?    
   }
-  NestedClose=Class:Cache.Close('A.B):{
+  NestedClose=Class:Data.Close('A.B):{
   A={
     B={
       class method This()

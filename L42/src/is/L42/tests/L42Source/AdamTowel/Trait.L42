@@ -1,26 +1,26 @@
 Lifted={interface
   class method Library code()
-  class method Trait +(Library lib)[ClassClash,MethodClash]
-  class method Trait +1(Library lib)[ClassClash,MethodClash]
+  class method Trait +(Library lib)[Trait$ClassClash,Trait$MethodClash]
+  class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
   }
 ClassOperators={class method Trait()=Trait(code={#norm{}})}
 Library code
 class method This(Library code)
 class method This(Library that)=This(code=that)
 
-class method This sum::0(Library a,Library b)[ClassClash,MethodClash]={
+class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
   return This(code=Meta().simpleSum(a=a,b=b))
-  catch error ClassClash e exception e
-  catch error MethodClash e exception e
+  catch error Trait$ClassClash e exception e
+  catch error Trait$MethodClash e exception e
   } 
-method This +(Library lib)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lib)
-method This +1(Library lib)[ClassClash,MethodClash]=This.sum::0(a=lib,b=this.code())
-method This +(class Lifted lifted)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
-method This +1(class Lifted lifted)[ClassClash,MethodClash]=This.sum::0(a=lifted.code(),b=this.code())
-method This +(This trait)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=trait.code())
-method This :(Library lib)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lib)
-method This :(class Lifted lifted)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
-method This :(This trait)[ClassClash,MethodClash]=This.sum::0(a=this.code(),b=trait.code())
+method This +(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
+method This +1(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=lib,b=this.code())
+method This +(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
+method This +1(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=lifted.code(),b=this.code())
+method This +(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
+method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
+method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
+method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
 
 
 Acc={
@@ -34,12 +34,12 @@ Acc={
   mut method Void #squareAdd(Meta deep)=this.that(\that.mergeMap(deep=deep))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
   }
-method This (mut Acc squareBuilder)[InvalidName,InvalidMap,ClassClash,MethodClash]=This(code={
+method This (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
   return squareBuilder.that().applyMap(this.code())
-  catch error InvalidName e exception e
-  catch error InvalidMap e exception e
-  catch error ClassClash e exception e
-  catch error MethodClash e exception e
+  catch error Trait$InvalidName e exception e
+  catch error Trait$InvalidMap e exception e
+  catch error Trait$ClassClash e exception e
+  catch error Trait$MethodClash e exception e
   })
 
 
@@ -51,7 +51,7 @@ ToLibrary=Meta().resource({[Lifted]
   method code()=This()
   method +(lib)=ClassOperators()+lib
   method +1(lib)=lib+ClassOperators()
-  class method Trait (mut Acc squareBuilder)[InvalidName,InvalidMap,ClassClash,MethodClash]=
+  class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
     ClassOperators()(squareBuilder=squareBuilder)
   ClassOperators={class method Trait()=Trait(code=This1.code())}
   })
