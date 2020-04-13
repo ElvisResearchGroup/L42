@@ -441,7 +441,8 @@ public class Rename {
     //TODO: discuss, should the label by #typed, #norm or something else?
     }
   static L fromAndPushThis0Out(Program prg,L l,P.NCs src,C c1,boolean removeC1){
-    return (L)new From(prg,src,-1){
+    return new From(prg,src,0){
+      L start(L l){return superVisitL(l);}
       @Override public P visitP(P p){
         if(!p.isNCs()){return super.visitP(p);}
         var pp=p.toNCs();
@@ -453,7 +454,7 @@ public class Rename {
         if(!removeC1){return pp;}
         return program().minimize(P.of(pp.n()-1,popL(pp.cs())));
         }
-      }.visitL(l);
+      }.start(l);
     }
   C freshC(List<NC> ncs,int num){
     C res=new C("Fresh"+num,-1);

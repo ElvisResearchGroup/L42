@@ -30,7 +30,6 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   @Override public LL visitL(Full.L s) {
     if(lastCMs==null){
       assert p.top==s;
-      //return fullLHandler(s);//TODO: was doing double iterations before... ? mah
       var res=super.visitL(s);
       if(res.isFullL()){return fullLHandler((Full.L)res);} 
       return coreLHandler((Core.L)res);
@@ -87,8 +86,7 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   @Override public Core.L visitL(Core.L s) {
     if(lastCMs==null){
       assert p.top==s;
-      var res=super.visitL(s);
-      res=coreLHandler(res);
+      var res=coreLHandler(super.visitL(s));
       return res;
       }
     var lastPos=s.poss();

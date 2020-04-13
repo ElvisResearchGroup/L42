@@ -157,7 +157,9 @@ public class Deps{
       for(var p:li.info().watched()){skipAct(p, csi, l,watched::add);}
       for(var pathSel:li.info().usedMethods()){
         var p=pathSel.p().toNCs();
-        skipAct(p, csi, l,pi->usedMethods.add(pathSel.withP(pi)));
+        skipAct(p, csi, l,pi->{
+          if(!pi.equals(P.pThis0)){usedMethods.add(pathSel.withP(pi));}
+          });
         }
       for(var p:li.info().hiddenSupertypes()){skipAct(p, csi, l,hiddenSupertypes::add);}
       for(var t:li.ts()){skipAct(t.p().toNCs(), csi, l,hiddenSupertypes::add);}
@@ -171,7 +173,7 @@ public class Deps{
       if(pi.equals(P.pThis0)||pi.hasUniqueNum()){return;}//mc.s() can be public if is implemented
       //it is irrelevant to watch or not interface methods, since interfaces can not be made abstract anyway
       if(mc.s().hasUniqueNum()){watched.add(pi);return;}
-      usedMethods.add(new PathSel(pi, mc.s(),null));
+      if(!pi.equals(P.pThis0)){usedMethods.add(new PathSel(pi, mc.s(),null));}
       }
     @Override public void visitPCastT(Core.PCastT p){
       super.visitPCastT(p);

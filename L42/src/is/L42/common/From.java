@@ -15,12 +15,26 @@ public class From extends CloneVisitor{
   public int j(){return j;}
   public Program program(){return program;}
   @Override public Full.L visitL(Full.L l){throw bug();}
+  public Core.L superVisitL(Core.L l){return super.visitL(l);}//Needed for code reuse
   @Override public Core.L visitL(Core.L l){
     int oldJ=j;
+    Program oldP=program;
     j+=1;
+    program=program.push(l);
     var res=super.visitL(l);
     j=oldJ;
+    program=oldP;
     return res;
+    }
+  @Override public Core.L.NC visitNC(Core.L.NC nc){
+    int oldJ=j;
+    Program oldP=program;
+    j+=1;
+    program=program.push(nc.key(),nc.l());
+    var res=super.visitL(nc.l());
+    j=oldJ;
+    program=oldP;
+    return nc.withL(res);
     }
   @Override public P visitP(P p){
     if(!p.isNCs()){return p;}

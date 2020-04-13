@@ -1281,5 +1281,49 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      B1={method Void b()=void #norm{}}
      A1={method Void a()=void #norm{}}
      #norm{}}"""/*next test after this line*/)
+//now with coreL inside methods
+   ),new AtomicTest(()->pass("""
+     A={
+       method Library a()={#norm{}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>B.
+   """,/*expected after this line*/"""
+     B={
+       method Library a()={#norm{}}
+       #norm{}}
+     #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={
+       method Library a(This that)=(This e=that {
+          method Library i(This1 that)=that.a()
+          #norm{typeDep=This1 usedMethods=This1.a()}})
+       #norm{typeDep=This}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>B.
+   """,/*expected after this line*/"""
+     B={
+       method Library a(This that)=(This e=that {
+         method Library i(This1 that)=that.a()
+         #norm{typeDep=This1 usedMethods=This1.a()}})
+       #norm{typeDep=This}}
+     #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     @This.A.a() K={#norm{}}
+     A={
+       method Library a()={
+          method Library i(This1 that)=that.a()
+          #norm{typeDep=This1 usedMethods=This1.a()}}
+       #norm{typeDep=This}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     A.a()=>A.foo()
+   """,/*expected after this line*/"""
+     @This.A.foo() K={#norm{}}
+     A={
+       method Library foo()={
+         method Library i(This1 that)=that.foo()
+         #norm{typeDep=This1 usedMethods=This1.foo()}}
+       #norm{typeDep=This}}
+     #norm{typeDep=This.A}}"""/*next test after this line*/)
 ));}
 }

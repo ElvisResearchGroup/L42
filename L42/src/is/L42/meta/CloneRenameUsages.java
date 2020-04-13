@@ -109,6 +109,11 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       .withUsedMethods(L(newUsedMethods.stream()));
     }
   @Override public L visitL(L l){
+    var key=getLastCMs();
+    if(key!=null && !(key instanceof C)){
+      assert r.p._ofCore(r.cs)!=l;
+      return super.visitL(l);
+      }
     assert r.p._ofCore(r.cs)==l;
     List<MWT> mwts1=L(l.mwts(),(c,mwti)->
       c.addAll(r.renameMWT(visitMWT(mwti))));
@@ -119,6 +124,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     return new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,info1,docs1);    
     }
   @Override public P visitP(P path){return renamedPath(path);}
+  @Override public Doc visitDoc(Doc doc){return infoRename.visitDoc(doc);}
   @Override public MCall visitMCall(MCall mcall){
     mcall=super.visitMCall(mcall);
     var t=g._of(mcall.xP());
@@ -130,7 +136,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     var s2=renamedS(originPath,mcall.s());
     return mcall.withS(s2);    
     }
-  @Override public Info visitInfo(Info i){throw bug();}  
+  @Override public Info visitInfo(Info i){return i.accept(infoRename);}
   private final CloneVisitor infoRename=new CloneVisitor(){
     @Override public P visitP(P path){return CloneRenameUsages.this.visitP(path);}
     @Override public S visitS(S s){//for how we use this, we can assume it is inside an Info.refined

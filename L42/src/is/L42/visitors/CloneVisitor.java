@@ -17,10 +17,6 @@ public class CloneVisitor {
 
   public final List<P> visitPs(List<P> ps){return L(ps,this::visitP);}
 
-  public final List<S> visitSs(List<S> ss){return L(ss,this::visitS);}
-
-  public final List<Core.PathSel> visitPathSels(List<Core.PathSel> pathSels){return L(pathSels,this::visitPathSel);}
-
   public final List<Core.XP> visitXPs(List<Core.XP> xPs){return L(xPs,this::visitXP);}
 
   public final Full.E visitE(Full.E e){return e.visitable().accept(this);}
@@ -130,9 +126,24 @@ public class CloneVisitor {
   public final List<P.NCs> visitInfoPNCs(List<P.NCs> ps){
     return L(ps,(c,p)->{
       var pp=this.visitP(p);
-      if(pp.isNCs()){c.add(pp.toNCs());}
+      if(!pp.isNCs() || c.contains(pp)){return;}
+      c.add(pp.toNCs());
       });
     }
+  public final List<Core.PathSel> visitInfoPathSels(List<Core.PathSel> pathSels){
+    return L(pathSels,(c,p)->{
+      var pp=this.visitPathSel(p);
+      if(c.contains(pp)){return;}
+      c.add(pp);
+      });
+    }
+  public final List<S> visitInfoSs(List<S> ss){
+    return L(ss,(c,s)->{
+      var s0=this.visitS(s);
+      if(c.contains(s0)){return;}
+      c.add(s0);
+      });
+    }    
   public Core.L.Info visitInfo(Core.L.Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
@@ -147,22 +158,15 @@ public class CloneVisitor {
     var coherentDep=visitInfoPNCs(coherentDep0);
     var metaCoherentDep=visitInfoPNCs(metaCoherentDep0);
     var watched=visitInfoPNCs(watched0);
-    var usedMethods=visitPathSels(usedMethods0);
+    var usedMethods=visitInfoPathSels(usedMethods0);
     var hiddenSupertypes=visitInfoPNCs(hiddenSupertypes0);
-    var refined=visitSs(refined0);
-    var nativePar=visitPs(nativePar0);
-    
-    if(typeDep.equals(typeDep0)
-      &&coherentDep.equals(coherentDep0)
-      &&metaCoherentDep.equals(metaCoherentDep0)
-      &&watched.equals(watched0) 
-      &&usedMethods.equals(usedMethods0)
-      &&hiddenSupertypes.equals(hiddenSupertypes0)
-      &&refined.equals(refined0)
-      &&nativePar.equals(nativePar0)){return info;}
-    return new Core.L.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched,
+    var refined=visitInfoSs(refined0);
+    var nativePar=visitPs(nativePar0);    
+    var res=new Core.L.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched,
       usedMethods,hiddenSupertypes,refined,
       info.close(),info.nativeKind(),nativePar,info._uniqueId());
+    if(res.equals(info)){return info;}
+    return res;
     }
     
   public Core.L.MWT visitMWT(Core.L.MWT mwt){
