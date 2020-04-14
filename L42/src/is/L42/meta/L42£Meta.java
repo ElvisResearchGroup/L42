@@ -177,7 +177,8 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       };
     }
     public String pathName(L42Any target){
-      throw todo();//or bug???
+      P p=unwrapPath(target);
+      return p.toString();
       }
 
   public static final Class<L42£Meta> _class=L42£Meta.class;

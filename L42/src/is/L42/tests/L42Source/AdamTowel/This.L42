@@ -38,9 +38,14 @@ DeployAAA=(
     @Public S={...}
     NativeName={...}
     S$ParseError={...}//can not use BaseErrorTrait() since circular dependence from S
-    @Public Url={...}
     @Public Debug={...}
     S$StringBuilder={...}//end of circular dependency for S
+    Introspection$Nested={
+      class method This from(Library library)=error void
+      class method This from(class Any classAny)=error void
+      method S excName(S text)=error void
+      }
+    @Public Url={...}
     BaseErrorTrait={...}
     @Public Trait$MethodClash=BaseErrorTrait()
     @Public Trait$ClassClash=BaseErrorTrait()
@@ -56,11 +61,6 @@ DeployAAA=(
     @Public Message={...}
       @Public Message$Guard={interface [Message]}
       @Public Message$Assertion={interface[Message]}
-    ClassName={
-      class method S (class Any that)=S"toFix"
-      class method S superInterfaces(class Any that)=S"toFix"
-      class method S excName(class Any that, S text)=S"Message %(This(that))(%This.superInterfaces(that)):%S.nl()%text"
-      }
     MessageTrait=Trait:{...}
     LazyMessageTrait={...}
     @Public X=Class:Message:{...}
@@ -88,9 +88,16 @@ DeployAAA=(
   )
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
-  AddOns=Deploy.towel(url='AdamTowel,
-    code=Class:Organize:(Trait:{...}+{reuse[#$aaa]})
-    ) 
+  AddOns=(
+    base=Trait({reuse[#$aaa]})[
+      clear='Introspection$Nested.excName(text);
+      clear='Introspection$Nested.from(library);
+      clear='Introspection$Nested.from(classAny);
+      ]
+    added=Trait:{...}
+    res=Class:Organize:(base+added)
+    Deploy.towel(url='AdamTowel,code=res)    
+    )
   }
 //Testing step2:
 TestsAdamTowel={...}

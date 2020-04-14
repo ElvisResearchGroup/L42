@@ -5,7 +5,10 @@ Message={interface [HasToS]
   method This #whoopsed(Library atPos)
   }
 Message$Guard={interface [Message]}
-ClassName={class method S excName(class Any that, S text)}
+Introspection$Nested={
+  class method This from(class Any classAny)
+  method S excName(S text)
+  }
 S={}
 S$StringBuilder={[HasToS]}
 BaseErrorTraitAddOns=Meta().resource({[HasToS,Message,Message$Guard]
@@ -13,7 +16,7 @@ BaseErrorTraitAddOns=Meta().resource({[HasToS,Message,Message$Guard]
   class method mut This (S that)
   read method S text()
   class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
-  read method S toS()=ClassName.excName(This,text=this.text())
+  read method S toS()=Introspection$Nested.from(classAny=This).excName(text=this.text())
   method Message #whoopsed(Library atPos)=this
   })
 S$ParseError=BaseErrorTraitAddOns()

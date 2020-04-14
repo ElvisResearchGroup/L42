@@ -1,6 +1,6 @@
 [Message]
-method toS()=ClassName.excName(This,text=this.text())
 var S text
+method toS()=Introspection$Nested.from(classAny=This).excName(text=this.text())
 class method mut This (S text)
 class method mut This (S that)=This(text=that) 
 class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())

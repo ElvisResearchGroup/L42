@@ -10,6 +10,7 @@ import is.L42.meta.L42£Name;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
+import is.L42.platformSpecific.javaTranslation.Resources;
 
 public class L42£Type extends L42NoFields.Eq<L42£Type>{
   static public L42£Type fromClass(String mdf,L42£Doc doc,L42Any clazz){
@@ -21,8 +22,13 @@ public class L42£Type extends L42NoFields.Eq<L42£Type>{
     }
   static public L42£Type fromType(T t,L42£Nested root, L42£Name nameFromRoot){
     var resDoc=L42£Doc.fromDoc(root,nameFromRoot,L42£Doc.normalize(t.docs()));
-    var pi=t.p().toNCs();
-    if(root.isBinded()){return L42£Type.fromClass(t.mdf().inner,resDoc, pi);}
+    if(!t.p().isNCs()){return L42£Type.fromClass(t.mdf().inner,resDoc, t.p());}
+    P.NCs pi=t.p().toNCs();
+    if(root.isBinded()){
+      if(!root._classAny.isNCs()){return L42£Type.fromClass(t.mdf().inner,resDoc, t.p());}
+      pi=Resources.currentP.from(pi,root._classAny.toNCs());
+      return L42£Type.fromClass(t.mdf().inner,resDoc, pi);
+      }
     P.NCs pj=Program.emptyP.from(pi,nameFromRoot.cs);
     if(pj.n()!=0){return L42£Type.fromClass(t.mdf().inner,resDoc, pj);}
     return L42£Type.fromLibrary(t.mdf().inner,resDoc,L42£Name.fromCs(pj.cs()));

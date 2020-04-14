@@ -2,6 +2,7 @@ Lifted={interface
   class method Library code()
   class method Trait +(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
+  class method Introspection$Nested nested()
   }
 ClassOperators={class method Trait()=Trait(code={#norm{}})}
 Library code
@@ -21,7 +22,7 @@ method This +(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this
 method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
 method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
 method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
-
+method Introspection$Nested nested()=Introspection$Nested.from(library=this.code())
 
 Acc={
   var Meta that
@@ -54,4 +55,5 @@ ToLibrary=Meta().resource({[Lifted]
   class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
     ClassOperators()(squareBuilder=squareBuilder)
   ClassOperators={class method Trait()=Trait(code=This1.code())}
+  method nested()=ClassOperators().nested()
   })

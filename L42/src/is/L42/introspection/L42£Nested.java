@@ -122,7 +122,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     var mwt=publicMWTs.get(i);//correctly propagates ArrayOutOfBound
     return L42£Method.fromNested(posStr(mwt.poss()),this,nameFromRoot.withSelector(mwt.key().toString())); 
     }
-  public int implementedNum(){return publicNCs.size();}
+  public int implementedNum(){return publicTs.size();}
   public L42£Type implementedIn(int i){
     var t=publicTs.get(i);//correctly propagates ArrayOutOfBound
     return L42£Type.fromType(t,root(),nameFromRoot());

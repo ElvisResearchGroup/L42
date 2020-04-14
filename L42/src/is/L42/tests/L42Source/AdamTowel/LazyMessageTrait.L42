@@ -10,6 +10,6 @@ $=Trait:{
   }+{[Message]
   read method S text()
   class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
-  method toS()=ClassName.excName(This,text=this.text())
+  method toS()=Introspection$Nested.from(classAny=This).excName(text=this.text())
   method Message #whoopsed(Library atPos)=this//TODO: toFix when introspection is available
   }

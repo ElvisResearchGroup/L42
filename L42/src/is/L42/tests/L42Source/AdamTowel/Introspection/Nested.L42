@@ -58,4 +58,14 @@ method S position()=this.i().position()
 method class Any classAny()=this.i().classAny()
 
 read method S toS()=this.i().toS()
-  
+
+method S excName(S text)=
+  S"Message %(Meta().pathName(this.classAny()))%this.superInterfaces():%S.nl()%text"
+method S className()=Meta().pathName(this.classAny())
+method S superInterfaces()={
+  i=this.implements()
+  if i.isEmpty() return S""
+  var res=S"("++i.left().nested()<:This.className()
+  for t in i.withoutLeft() (res++=S", "++t.nested()<:This.className())
+  return res++S")"
+  }  
