@@ -56,7 +56,8 @@ public class L42£Name extends L42NoFields.Eq<L42£Name>{
     if(s.isEmpty()){return instance;}
     if(s.equals("This")){return empty;}
     var res0 = Parse.ctxPathSelX(Constants.dummy, s);
-    if(res0.hasErr()){throw new NumberFormatException();}
+    if(res0.hasErr()){
+      throw new NumberFormatException(s);}
     var res=new AuxVisitor(null).visitPathSelX(res0.res.pathSelX());
     if(res._p()!=null){
       if(res._p().toNCs().n()!=0){throw new NumberFormatException();}

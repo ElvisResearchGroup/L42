@@ -89,7 +89,7 @@ DeployAAA=(
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
   AddOns=Deploy.towel(url='AdamTowel,
-    code=Class:/*Organize:*/(Trait:{...}+{reuse[#$aaa]})
+    code=Class:Organize:(Trait:{...}+{reuse[#$aaa]})
     ) 
   }
 //Testing step2:

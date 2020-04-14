@@ -67,7 +67,7 @@ TestSizeInString=(
 TestSizeParsing=(
   err=Size"oh NO!"//throws error
   {}:Test"InvalidParseInt"( Bool.false() )"Errors not thrown"
-  catch error S$ParseError x 
+  catch error S.ParseError x 
     {}:Test"InvalidParseIntError"(
       x.text()==S"The string %S.dq()oh NO!%S.dq() is not a valid number"
       )"Error is %x" 

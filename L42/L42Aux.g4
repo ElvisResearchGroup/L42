@@ -59,8 +59,8 @@ fragment Number: '0'..'9' ('.'|'_'|'-'|'0'..'9')*;
 MUniqueNum: Fx('#' Fx)*'::'Fn;
 MHash: ('#$' | '#'+) Fx('#' Fx)* ('::'Fn)?;
 X: Fx;
-x: X;
-m: MUniqueNum|MHash|X;
+x: X|close;
+m: MUniqueNum|MHash|X|close;
 //UnderScore:'_';//need to be not earlier then here, after X and CsP
 Doc: '@'FPathSel | '@'FPathSel?'{'DocText'}';
 fragment FS:(MUniqueNum|MHash|X) FParXs;

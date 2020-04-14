@@ -85,7 +85,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
         if(!(meth.st() instanceof Core.T)){continue;}
         var t=(Core.T)meth.st();
         var l=i.p()._ofCore(t.p());
-        if(l==null){continue;}
+        if(l==null){
+          hints+="\nThe class "+t.p()+" does not exists";          
+          continue;
+          }
         hints+="\nThe available methods for "+t.p()+" are "+L(l.mwts().stream().map(m->m.key()));
         }
       throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(st,hints));

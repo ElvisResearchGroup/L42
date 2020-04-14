@@ -110,11 +110,13 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     }
   @Override public L visitL(L l){
     var key=getLastCMs();
-    if(key!=null && !(key instanceof C)){
+    var inner=key instanceof S || this.whereFromTop().stream().anyMatch(k->k instanceof S);
+    if(inner){
       assert r.p._ofCore(r.cs)!=l;
       return super.visitL(l);
       }
-    assert r.p._ofCore(r.cs)==l;
+    assert r.p._ofCore(r.cs)==l:
+    "";
     List<MWT> mwts1=L(l.mwts(),(c,mwti)->
       c.addAll(r.renameMWT(visitMWT(mwti))));
     var ncs1=r.renameNCs(this,l.ncs());

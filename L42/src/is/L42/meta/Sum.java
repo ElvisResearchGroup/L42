@@ -178,7 +178,8 @@ public class Sum {
   private void growHiddenError(Core.L l1, Core.L l2, List<C> cs) {
     var l2cs=l2._cs(cs);
     if(l2cs==null){return;}
-    var l1cs=l1.cs(cs);
+    var l1cs=l1._cs(cs);
+    if(l1cs==null){return;}
     if(!moreThen(l2cs,l1cs)){return;}
     assert !l1cs.info().close();
     err(cs,l1cs,l2cs,()->"This interface is privately implemented "

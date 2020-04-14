@@ -7,7 +7,7 @@ TestClose1=(
     @Cache.Clear class method Size double(mut Size n)=error void
     }
   {}:Test"Close1"(
-    actual={error Data.Close:code catch error Data.Close$Fail x return x}
+    actual={error Data.Close:code catch error Data.Close.Fail x return x}
     expected=S"""
       |Message toFix(toFix):
       |@This1.Cache.Clear class method This1.Size double(mut This1.Size n)=(..)
@@ -20,7 +20,7 @@ TestClose1=(
     @Cache.Now read method Size double()=this.n()+this.n()
     }
   {}:Test"Close2"(
-    actual={error Data.Close:code2 catch error Data.Close$Fail x return x}
+    actual={error Data.Close:code2 catch error Data.Close.Fail x return x}
     expected=S"""
       |Message toFix(toFix):
       |@This1.Cache.Now read method This1.Size double()=(..)
@@ -32,7 +32,7 @@ TestClose1=(
     class method mut This of::0(Size n)
     }
   {}:Test"Close3"(
-    actual={error Data.Close:code3 catch error Data.Close$Fail x return x}
+    actual={error Data.Close:code3 catch error Data.Close.Fail x return x}
     expected=S"""
       |Message toFix(toFix):
       |nested class { }
@@ -49,7 +49,7 @@ TestClose1=(
       )
     }
   {}:Test"Close4"(
-    actual={error Data.Close:code4 catch error Data.Close$Fail x return x}
+    actual={error Data.Close:code4 catch error Data.Close.Fail x return x}
     expected=S"""
       |Message toFix(toFix):
       |@This1.Cache.Clear class method This1.Size append1(mut This1.Strings thaat)=(..)
@@ -62,7 +62,7 @@ TestClose1=(
     @Cache.Now class method Size double(Size nn)=nn+nn
     }
   {}:Test"Close5"(
-    actual={error Data.Close:code5 catch error Data.Close$Fail x return x}
+    actual={error Data.Close:code5 catch error Data.Close.Fail x return x}
     expected=S"""
       |Message toFix(toFix):
       |@This1.Cache.Now class method This1.Size double(This1.Size nn)=(..)
@@ -75,7 +75,7 @@ TestClose1=(
     @Cache.Now class method Size double(Size n)=n+n
     }
   {}:Test"Close6"(
-    actual={error Data.Close:code6 catch error Data.Close$Fail x return x}
+    actual={error Data.Close:code6 catch error Data.Close.Fail x return x}
     expected=S"""
       |Message toFix(toFix):
       |@This1.Cache.Now class method This1.Size double(This1.Size n)=(..)
@@ -94,7 +94,7 @@ TestSum1=(
   code1a={method Void foo()=void}
   code1b={method Void foo()=void}
   {}:Test"Sum1"(
-    actual={error (Trait:code1a)+code1b catch Trait$MethodClash x return x}
+    actual={error (Trait:code1a)+code1b catch Trait.MethodClash x return x}
     expected=S"""
     |Message toFix(toFix):
     |method Void foo()=(..)
@@ -104,7 +104,7 @@ TestSum1=(
   code2a={interface method Void foo()}
   code2b={method Void foo()=void }
   {}:Test"Sum2"(
-    actual={error (Trait:code2a)+code2b catch Trait$ClassClash x return x}
+    actual={error (Trait:code2a)+code2b catch Trait.ClassClash x return x}
     expected=S"""
     |Message toFix(toFix):
     |nested class This={ foo()=(..) }
@@ -120,7 +120,7 @@ Code=Trait:{
   }
 TestRename=(
   {}:Test"MethodClash=>"(
-    actual={error Code['A=>'B] catch Trait$MethodClash x return x}
+    actual={error Code['A=>'B] catch Trait.MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
       |method Any foo()=(..)
@@ -128,7 +128,7 @@ TestRename=(
       |[file:[###]
       """.trim())
   {}:Test"MethodClash->"(
-    actual={error Code['A->'B] catch Trait$MethodClash x return x}
+    actual={error Code['A->'B] catch Trait.MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
       |method Any foo()=(..)
@@ -138,7 +138,7 @@ TestRename=(
   )
 TestRename2=(
   {}:Test"MethodClash->"(
-    actual={error Code['C->'This] catch Trait$MethodClash x return x}
+    actual={error Code['C->'This] catch Trait.MethodClash x return x}
     expected=S"""
       |Message toFix(toFix):
       |method Void a(This.A a)=(..)
@@ -146,7 +146,7 @@ TestRename2=(
       |[file:[###]
       """.trim())
   {}:Test"InvalidMap->"(
-    actual={error Code['A.foo()=>Name""]['A->Name""] catch Trait$InvalidMap x return x}
+    actual={error Code['A.foo()=>Name""]['A->Name""] catch Trait.InvalidMap x return x}
     expected=S"""
       |Message toFix(toFix):
       |nested class { a(a)=(..) A={..} B={..} C={..} }
@@ -156,7 +156,7 @@ TestRename2=(
       |[file:[###]
       """.trim())
   {}:Test"InvalidMap->"(
-    actual={error Code[hide='A.foo()][clear='A] catch Trait$InvalidMap x return x}
+    actual={error Code[hide='A.foo()][clear='A] catch Trait.InvalidMap x return x}
     expected=S"""
       |Message toFix(toFix):
       |nested class { a(a)=(..) A={..} B={..} C={..} }
@@ -182,7 +182,7 @@ TestError=Trait:{
     that:Test"ErrorExpected"(Bool.false())
     ))
   }
-TestMethodClashFunky={A=Class:TestError['T=>Trait$MethodClash]:{
+TestMethodClashFunky={A=Class:TestError['T=>Trait.MethodClash]:{
   method Any()[Message]=
     Code['A=>'B]
     //Code['A.#equalgt0(other='B)]
