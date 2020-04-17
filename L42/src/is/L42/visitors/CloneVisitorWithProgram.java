@@ -27,6 +27,27 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     }
   private LDom lastCMs=null;
   public LDom getLastCMs(){return lastCMs;}
+  public Core.L pushedOp(Core.L s) {return null;}//for overriding
+  public Core.L doPushedOp(Core.L s){
+    if(lastCMs==null){return pushedOp(s);}
+    Program aux=p;
+    var lastPos=poss;
+    if(lastCMs instanceof C){
+      p=p.push((C)lastCMs,s);
+      whereFromTop.add(lastCMs);
+      }
+    else{
+      p=p.push(s);
+      whereFromTop.add(lastCMs);
+      }
+    levels+=1;
+    var res=pushedOp(s);
+    p=aux;
+    levels-=1;
+    whereFromTop.remove(whereFromTop.size()-1);
+    poss=lastPos;
+    return res;
+    }
   @Override public LL visitL(Full.L s) {
     if(lastCMs==null){
       assert p.top==s;

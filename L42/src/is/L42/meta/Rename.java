@@ -61,6 +61,7 @@ import is.L42.visitors.WellFormedness;
 public class Rename {
   HashMap<List<C>,List<MWT>> addMapMWTs=new HashMap<>();//mutable, so should be ArrayList, but need List for the default emptyList
   HashMap<List<C>,List<NC>> addMapNCs=new HashMap<>();
+  public Rename(UniqueNsRefresher fresh){this.fresh=fresh;}
   void addMapMWTs(MWT mwt){
     var val=addMapMWTs.get(cs);
     if(val!=null){val.add(mwt);return;}
@@ -106,7 +107,7 @@ public class Rename {
     }
   L addMapTop=Program.emptyL;
   LinkedHashMap<Arrow,Arrow> map;
-  UniqueNsRefresher fresh=new UniqueNsRefresher();
+  final UniqueNsRefresher fresh;
   Program p;//includes the top level L
   List<Arrow>list;
   List<C> cs;
@@ -138,19 +139,7 @@ public class Rename {
     this.map=new LinkedHashMap<>();
     assert l.wf();
     assert WellFormedness.checkInfo(p,l): ""+l;
-    for(var a:list){
-      var key=new Arrow(a.cs,a._s);
-      if(map.containsKey(key)){
-        err(errFail,"Rename map contains two entries for "+key.toStringKey());
-        }
-      if(!a.star){map.put(new Arrow(a.cs,a._s),a);}
-      else{
-        ArrayList<C> csPart=new ArrayList<>();
-        for(C c:a.cs){
-          csPart.add(c);
-          map.put(new Arrow(L(csPart.stream()),a._s),a);
-        }}
-      }    
+    for(var a:list){miniAddMap(new Arrow(a.cs,a._s),a);}    
     allWatched=Sum.allFromInfo(l,(c,li,csi)->{
       if(isDeleted(csi)){return;}
       for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,c);}
@@ -168,58 +157,70 @@ public class Rename {
     return res;
     }
   L applyMap(){
+    expandMap();
     earlyCheck();
     completeMap();
     L l1=renameTop();
     L l2=lOfAddMap();
     return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
-    }    
+    }
+  void miniAddMap(Arrow key,Arrow val){
+    if(map.containsKey(key)){
+      err(errFail,"Rename map contains two entries for "+key.toStringKey());
+      }
+    map.put(key,val);
+    }
   void addedArrow(Arrow a,Arrow src,List<C>csi,L li,Map<Arrow,Arrow> map){
     if(a.isEmpty()){
-      map.put(src,new Arrow(src.cs,null,a.full,false,null,null,null));
+      miniAddMap(src,new Arrow(src.cs,null,a.full,false,null,null,null));
       for(var m:li.mwts()){
         if(m.key().hasUniqueNum()){continue;}
         if(li.info().refined().contains(m.key())){continue;}
-        map.put(new Arrow(src.cs,m.key()),new Arrow(src.cs,m.key(),a.full,false,null,null,null));
+        miniAddMap(new Arrow(src.cs,m.key()),new Arrow(src.cs,m.key(),a.full,false,null,null,null));
         }
+      return;
       }
     if(a.isCs()){
-      map.put(src,new Arrow(src.cs,null,a.full,false,null,merge(a._cs,csi),null));
+      miniAddMap(src,new Arrow(src.cs,null,a.full,false,null,merge(a._cs,csi),null));
       return;
       }
     if(csi.isEmpty()){
-      map.put(src,new Arrow(src.cs,null,a.full,false,a._path,null,null));
+      miniAddMap(src,new Arrow(src.cs,null,a.full,false,a._path,null,null));
       return;
       }
+    assert a._path!=null:a;
     if(!a._path.isNCs()){err(errFail,"mapping: "+a.toStringErr()+"\n"
       +errFail.intro(merge(a.cs,csi),false)
       +"can not be redirected on a nested of "+a._path);}
     var p=a._path.toNCs();
     p=p.withCs(merge(p.cs(),csi));
-    map.put(src,new Arrow(src.cs,null,a.full,false,p,null,null));
+    miniAddMap(src,new Arrow(src.cs,null,a.full,false,p,null,null));
     }
-  void completeMap(){
+  void expandMap(){
     var old=map;
     map=new LinkedHashMap<>();
     for(var e:old.entrySet()){
       Arrow a=e.getValue();
-      if(!a.star){map.put(e.getKey(),a);continue;}
+      if(a.star && a._s!=null){err(errFail,"transitive rename only applicable on nested classes");}
+      if(!a.star){miniAddMap(e.getKey(),a);continue;}
       p._ofCore(a.cs).visitInnerLNoPrivate((li,csi)->{
         var src=new Arrow(merge(a.cs,csi),null);
         addedArrow(a,src,csi,li,map);
         });
       }
+    }
+  void completeMap(){
     for(Arrow a:map.values()){
       if(!a.full || !a.isEmpty()){continue;}
       if(a._s!=null){
-        int n=fresh.firstPrivateOf(p._ofCore(a.cs));
+        int n=fresh.firstPrivateOf(p._ofCore(a.cs),a._s);
         a._cs=a.cs;
         a._sOut=a._s.withUniqueNum(n);
         continue;
         }
       var popped=a.cs.subList(0,a.cs.size()-1);
-      int n=fresh.firstPrivateOf(p._ofCore(popped));
       C top=a.cs.get(a.cs.size()-1);
+      int n=fresh.firstPrivateOf(p._ofCore(popped),top);
       a._cs=pushL(popped,top.withUniqueNum(n));
       }
     }
@@ -273,9 +274,6 @@ public class Rename {
     assert !domCodom.contains(null);
     for(var a:map.values()){
       L l=p._ofCore(a.cs);
-      if(a.star && a.isCs()){
-        l.visitInnerLNoPrivate((li,csi)->codCheckStar(a,csi,codCs));
-        }
       if(!a.isMeth()){continue;}
       assert a.cs.equals(a._cs);
       if(domCodom.contains(a.cs)){errAlreadyInvolved(a, a.cs,errFail.intro(a.cs,a._s));}
@@ -297,17 +295,6 @@ public class Rename {
     err(errFail,"mapping: "+a.toStringErr()+"\n"+errFail.intro(involved,false)
       +"is already involved in the rename; thus "+elem+"can not be renamed");
     }
-  void codCheckStar(Arrow a,List<C> csi, HashSet<List<C>> codCs){
-    if(csi.isEmpty()){return;}
-    var csCs0=merge(a.cs,csi);
-    var cs1Cs0=merge(a._cs,csi);
-    Arrow a0=map.get(new Arrow(csCs0,null));
-    if(a0!=null){errAlreadyInvolved(a, csCs0, errFail.intro(a.cs,false));}
-    if(codCs.contains(cs1Cs0)){
-      err(errFail,"mapping: "+a.toStringErr()+"\n"+
-        "Two different nested class are renamed into "+errFail.intro(cs1Cs0,false));
-      }
-    }
   void earlyCheck(Arrow that){
     L l=p._ofCore(that.cs);
     if(l==null){err(errName,errName.intro(that.cs,false)+"does not exists");}
@@ -321,8 +308,7 @@ public class Rename {
       if(that.isP()){err(errFail,"'This' can not be redirected away");}
       if(that.isEmpty()){err(errFail,"'This' can not be hidden");}
       }
-    if(that.star && that._s!=null){err(errFail,"transitive rename only applicable on nested classes");}
-    if(that.isP()){earlyCheckP(that, l);}
+    if(that.isP()){earlyCheckPOne(that.cs, l);}
     if(that._s!=null){
       if(!that.isEmpty() &&!that.isMeth()){
         err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a method into a nested class");
@@ -355,10 +341,6 @@ public class Rename {
     if(that._cs!=null){priv&=that._cs.stream().anyMatch(c->c.hasUniqueNum());}
     if(priv){err(errFail,"A mapping using unique numbers was attempted");}//Should it be prevented before
     }
-  private void earlyCheckP(Arrow that, L l){
-    if(!that.star){earlyCheckPOne(that.cs, l);return;}
-    l.visitInnerLNoPrivate((li,csi)->earlyCheckPOne(merge(that.cs,csi),li));
-    }
   private void earlyCheckPOne(List<C> cs, L l){
     makeAbstractOk(null,cs);
     for(var mwt:l.mwts()){
@@ -377,7 +359,7 @@ public class Rename {
     var pi=Program.emptyP.from(t.p().toNCs(),cs);
     if(pi.n()!=0){return;}
     var arrow=new Arrow(pi.cs(),null);
-    var a=map.get(arrow);//ok because the map have many entries for the star arrows
+    var a=map.get(arrow);
     if(a!=null && a.isP()){return;}
     err(errFail,"Also "+errFail.intro(pi.cs(),false)+"need to be redirected to an outer path");
     }

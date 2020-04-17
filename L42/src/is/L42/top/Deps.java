@@ -41,6 +41,7 @@ public class Deps{
   ArrayList<P.NCs> watched=new ArrayList<>();
   ArrayList<PathSel> usedMethods=new ArrayList<>();
   ArrayList<P.NCs> hiddenSupertypes=new ArrayList<>();
+  public boolean isEmpty(){return typePs.isEmpty();}
   public static P.NCs _origin(Program p0,P.NCs path,S s){
     try{return p0.from(SortHeader.origin(p0.navigate(path),s,L()),path);}
     catch(LL.NotInDom | EndError ee){return null;}//can be more efficent rewriting the above to avoid the exception.
@@ -162,7 +163,9 @@ public class Deps{
           });
         }
       for(var p:li.info().hiddenSupertypes()){skipAct(p, csi, l,hiddenSupertypes::add);}
-      for(var t:li.ts()){skipAct(t.p().toNCs(), csi, l,hiddenSupertypes::add);}
+      for(var t:li.ts()){
+        if(!t.p().hasUniqueNum()){skipAct(t.p().toNCs(), csi, l,hiddenSupertypes::add);}
+        }
       }
     @Override public void visitP(P p){addP(p);}
     @Override public void visitMCall(Core.MCall mc){

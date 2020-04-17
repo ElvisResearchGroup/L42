@@ -1,38 +1,41 @@
 N::= Cs | P | Cs.s | empty
-|>::= -> | => | =>*
+|>::= -> | ->* | => | =>*
 Map::= N1|>N1'.. Nn|>Nn'
 Rename::=Rename[p;Cs;Map]
 AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
 //Note: we will write Cs1->C=L to formally mean Cs1.C-> L
 //indeed the code keeps a map to ncs 
 _______
-#define applyMap(p;Map)=L    completeMap(ns,p,Map)=Map
-* applyMap(p;Map)= L'+LOf(AddMap) //simpler then normal sum, at least can skip normalizing unique numbers
-    earlyCheck(p.top,Map)
-    Map'=completeMap(existingNs,p,Map)
-    rename(p;Map';p(This0)) = L';AddMap
+#define applyMap(p;Map)=L    completeMap(ns,p,Map)=Map    extendMap(ns,p,Map)=Map
+* applyMap(p;Map0)= L'+LOf(AddMap) //simpler then normal sum, at least can skip normalizing unique numbers
+    Map1=extendMap(p,empty,Map0)
+    earlyCheck(p.top,Map1)
+    Map2=completeMap(existingNs,p,Map1)
+    rename(p;Map2;p(This0)) = L';AddMap
 
 * completeMap(ns,p,Cs.C=>empty,Map)=Cs.C=>Cs.C::n,completeMap(ns,p,Map)
-    n= firstPrivateOf(p(Cs))
+    n= firstPrivateOf(p(Cs),C)//The second parameter is an LDom to ignore (to avoid creating C::3 if 3 was the lowest private number and C::3 was already there)
 * completeMap(ns,p,Cs.C=>empty,Map)=Cs.C=>Cs.C::n,completeMap(ns n,p,Map)
-    undefined firstPrivateOf(p(Cs))
+    undefined firstPrivateOf(p(Cs),C)
     n notin ns
 * completeMap(ns,p,Cs.m(xs)=>empty,Map)=Cs.m(xs)=>Cs.m::n(xs),completeMap(ns,p,Map)
-    n= firstPrivateOf(p(Cs))
+    n= firstPrivateOf(p(Cs),m(xs))
 * completeMap(ns,p,Cs.m(xs)=>empty,Map)=Cs.m(xs)=>Cs.m::n(xs),completeMap(ns n,p,Map)
-    undefined firstPrivateOf(p(Cs))
+    undefined firstPrivateOf(p(Cs),m(xs))
     n notin ns
-* completeMap(ns,p,Cs=>*empty) = completeMap(ns,p,Map0 Map1..Mapn Map)
+
+* extendMap(p, N|>N' Map)=N|>N',extendMap(p,Map)
+    |> notin {=>*,->*}
+* extendMap(p,Cs=>*empty,Map) = Map0 Map1..Mapn extendMap(p,Map)
     Cs1..Csn=domNC(p(This.Cs))
     Map0=Cs.Cs1=>empty..,Cs.Csn=>empty
     Si1..Sik=domS(p(This.Cs.Csi))/p(This.Cs.Csi).Info.refine
     Mapi=Cs.Csi.Si1=>empty..,Cs.Csi.Sin=>empty
-* completeMap(ns,p,Cs=>*P,Map) = completeMap(ns,p,Cs.Cs1=>P.Cs1..,Cs.Csn=>P.Csn,Map)
+* extendMap(p,Cs=>*P,Map) = Cs.Cs1=>P.Cs1..Cs.Csn=>P.Csn extendMap(p,Map)
     Cs1..Csn=dom(p(This.Cs))//thus error if P is Any/Void/Library and Cs1..Csn is not empty
-* completeMap(ns,p,Cs=>*Cs',Map) = completeMap(ns,p,Cs.Cs1=>Cs'.Cs1..,Cs.Csn=>Cs'.Csn,Map)
+* extendMap(p,Cs=>*Cs',Map) = Cs.Cs1=>Cs'.Cs1..Cs.Csn=>Cs'.Csn extendMap(p,Map)
     Cs1..Csn=dom(p(This.Cs))
-* completeMap(ns,p,N=>N',Map)=N=>N',completeMap(ns,p,Map)
-    otherwise 
+* extendMap(p,empty)=empty
 _______
 #define allWatched(Core.L,Map)
 * allWatched(L,Map)=allWatched(L\Csz)//all watched without considering Cs1..Csn
@@ -47,24 +50,25 @@ _______
 #define earlyCheck(Core.L,Map)  earlyCheck(Core.L,Map,N|>N')
 * earlyCheck(L,Map)
     forall N|>N' in Map, earlyCheck(L,Map,N|>N') //N not of form empty (implicit by the cases below)
-    if Cs in dom(map) U cod(map)
-      then Cs.s not in dom(map) U cod(map)
+    if Cs in dom(Map) U cod(Map)
+      then Cs.s|> Cs.s' not in Map
+      
     if Cs.s in dom(Map) and L(Cs).interface?=interface
       forall Cs0 in dom(Map) U cod(Map)
         This0.Cs not in L(Cs0).Ts.Ps[from Cs0;{}]
     Map is a map, thus no two tuples with the same Cs(.s?) key
 
 * earlyCheck(p,L,Map,N|>N')//p(This0)=L
-    N|> N' not in {empty=><empty>,empty=>P,empty=>*<empty>,empty=>*P,Cs.s=>*_}
+    N|> N' not in {empty=><empty>,empty=>P}
     if N of form Cs, then  Cs in dom(L)
     if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
     N,N' do not have unique numbers
-    if N|>N'= Cs=>P or (Cs=Cs0.Cs1, N|>N'=Cs0=>*P and Cs1 in dom(L(Cs0)) then //Cs1 without privates
+    if N|>N'= Cs=>P then
       makeAbstractOk(p,Cs,empty,L,Map)
       forall s in dom(L(Cs)) where s has no unique n
         L(Cs)(s).e?=empty
         if This0.Cs' in (L(Cs)(s).T,L(Cs)(s).pars,L(Cs)(s).exceptions)[from Cs;{}]
-        then Cs'=>P' in Map or Cs0=>*P' in Map and Cs0._=Cs' 
+        then Cs'=>P' in Map 
     if N = Cs.s then N' in {Cs.s',empty}, s!=s'
     if N = Cs then N' in {Cs',P,empty} Cs!=Cs'
     if N|>N'of form Cs->_ then makeAbstractOk(p,Cs,empty,L,Map) 
@@ -72,9 +76,6 @@ _______
       then Cs=Cs' and size(s.xs)=size(s'.xs)
     if N|>N' = Cs|>Cs'
       then Cs"|>Cs' not in Map
-    if N|>N' = Cs=>*Cs' and Cs0 in dom(L(Cs)) then //Cs0 not private
-      - Cs"|>Cs'.Cs0 not in Map
-      - Cs.Cs0 not in dom(Map)
     if N|>N' = Cs.s|>Cs'.s'
       then Cs".s"|>Cs'.s' not in map
       
@@ -92,6 +93,8 @@ _______
     if P found in LDoms, Cs = LDoms++P and Cs =>Thisn.Cs' in Rename.Map
       replace it with This_dept+n.Cs' //or with the primitive P if C => P, P in {Any,Void,Library}     
     if P found in LDoms, Cs = LDoms++P and Cs.s =>Cs.s' in Rename.Map, then s' is returned
+    if L is a subterm, then keep recursivelly entering in all the subterms,
+      and the new info will be Rename(Info)
 _______
 #define LDoms++P = Cs    LDoms++Cs
 * LDoms,LDom1..LDomn++Thisn.Cs =LDoms++Cs
@@ -122,19 +125,24 @@ _______
 * Rename[p;Cs;Map] L = L1;AddMap,AddMap',AddMap1..AddMapn
     assert p(Cs)=L
     L={interface? Ts mwts ncs Info}
-    Rename mwts => mwts';AddMap
+    Rename(mwts) = mwts';AddMap
     C1..Cn = dom(ncs)
-    Rename[p;Cs.C1;Map] L(C1) = L'1;AddMap1..Rename[p;Cs.Cn;Map] L(Cn) =L'n;AddMapn
-    Rename ncs[L'1..L'n] => ncs';AddMap'
-    L0={interface? Ts mwts' ncs' Rename Info}
+    Rename[p;Cs.C1;Map](L(C1)) = L'1;AddMap1
+    ..
+    Rename[p;Cs.Cn;Map](L(Cn)) =L'n;AddMapn
+    Rename(ncs[L'1..L'n]) = ncs';AddMap'
+    L1..Lk= subset(L'1..L'n) such that Ci::n in dom(ncs') and !Ci in dom(ncs)//is private but was public
+    p'=p.navigate(Cs)//forceNavigate?
+    L0={interface? Ts mwts' ncs' Rename Info+collectDepsE(p',L1)+..+collectDepsE(p',Ln)}
     Rename usages L0=L1//only renames Ts, Info and NC docs, the rest already happended
 * Rename(Info) = Info'
     add close if L is interface and exists a method hiding on p(Cs)
     if Cs'.m(xs) in Info.usedMethod and origin(Cs'.m(xs)).m(xs)=>Cs'.m::n(xs) in Rename.Map
-      Info' removes the usedMethod and add watched+typeDep (still, never watch This0)
+      Info' removes the usedMethod and add watched (still, never watch This0)
     if Cs'.C in Info.typeDep and Cs'.C=>Cs'.C::n in Rename.Map
       Info' adds the watched+typeDep Cs'  (still, never watch This0)
-    Then remove from usedMethods all the domain of watched
+    remove from usedMethods all the domain of watched
+    remove from hiddenSupertypes all the now private interfaces
 * Rename empty = empty;empty
 * Rename(mwt mwts) = mwts' mwts";AddMap,AddMap'
     Rename (Rename usages mwt) = mwts';AddMap

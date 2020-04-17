@@ -6,6 +6,7 @@ import java.util.HashSet;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
+import is.L42.generated.LDom;
 import is.L42.generated.S;
 import is.L42.meta.Arrow;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -39,17 +40,21 @@ public class UniqueNsRefresher extends CloneVisitor{
     if(!s.hasUniqueNum() || s.uniqueNum()==0){return s;}
     return s.withUniqueNum(updatedFor(s.uniqueNum()));
     }
-  public int firstPrivateOf(L l){
+  public int firstPrivateOf(L l,LDom name){
     int count=0;
     int res=Integer.MAX_VALUE;
     for(var nci:l.ncs()){
-      if(nci.key().hasUniqueNum()){
+      var k=nci.key();
+      if(k.hasUniqueNum()){
+        if(k.withUniqueNum(-1).equals(name)){continue;}
         count+=1;
         res=Math.min(nci.key().uniqueNum(),res);
         }
       }
     for(var mwti:l.mwts()){
-      if(mwti.key().hasUniqueNum() &&mwti.key().uniqueNum()!=0){
+      var k=mwti.key();
+      if(k.hasUniqueNum() && k.uniqueNum()!=0){
+        if(k.withUniqueNum(-1).equals(name)){continue;}
         count+=1;
         res=Math.min(mwti.key().uniqueNum(),res);
         }

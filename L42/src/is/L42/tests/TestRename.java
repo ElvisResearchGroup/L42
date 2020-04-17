@@ -38,6 +38,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Init;
 import is.L42.top.Top;
+import is.L42.top.UniqueNsRefresher;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness;
@@ -56,13 +57,14 @@ public static List<Arrow> map(String s){
   Stream.of(s.strip().split(Pattern.quote("|"))).forEach(arr->{
     int fullNo=arr.indexOf("->");
     int fullYes=arr.indexOf("=>");
-    boolean starYes=arr.contains("=>*");
+    boolean starYes=arr.contains(">*");
     assert fullNo!=-1 || fullYes!=-1;
     assert !(fullNo!=-1 && fullYes!=-1);
     int pos=Math.max(fullNo, fullYes);
     String a=arr.substring(0,pos);
     int size=starYes?3:2;
     String b=arr.substring(pos+size,arr.length());
+    b=b.trim();
     var key=fromS(a);
     var arrow=new Arrow(key.cs,key._s,fullYes!=-1,starYes,null,null,null);
     if(b.equals("<empty>")){map.add(arrow);return;}
@@ -94,7 +96,7 @@ public static void fail(String sl1,String s2,String err){
   Init init1=new Init("{Outer={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
-  try{new Rename().apply(init1.p,new C("Outer",-1),l1,map(s2),wrap,wrap,wrap,wrap);Assertions.fail();}
+  try{new Rename(new UniqueNsRefresher()).apply(init1.p,new C("Outer",-1),l1,map(s2),wrap,wrap,wrap,wrap);Assertions.fail();}
   catch(FailErr fe){}
   Err.strCmp(msg[0],err);
   }
@@ -102,7 +104,7 @@ public static void pass(String sl1,String s2,String sl3){
   Resources.clearRes();
   Init init1=new Init("{Outer={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
-  Core.L l3Actual=new Rename().apply(init1.p,new C("Outer",-1),l1,map(s2),null,null,null,null);
+  Core.L l3Actual=new Rename(new UniqueNsRefresher()).apply(init1.p,new C("Outer",-1),l1,map(s2),null,null,null,null);
   Init init3=new Init("{Outer={"+sl3+"#norm{}}");
   Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
   assertEquals(l3Expected, l3Actual);
@@ -888,7 +890,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      D::2={#norm{}}
      #norm{}}
    C={method Void b()=void #norm{}}
-   #norm{typeDep=This,This.A::1}}
+   #norm{typeDep=This.A::1,This}}
    """/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      A={
@@ -1030,8 +1032,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    A::2={method Void foo::1()=void #typed{}}
    B={method Any foo()=void #typed{}}
    C={method Void a(This1.A::2 a)=a.foo::1()
-     #typed{typeDep=This1,This1.A::2 watched=This1.A::2, This1}}
-   #typed{typeDep=This,This.A::2}}
+     #typed{typeDep=This1.A::2,This1 watched=This1.A::2, This1}}
+   #typed{typeDep=This.A::2,This}}
    """/*next test after this line*/)
        ),new AtomicTest(()->fail("""
     method Void a(This.A a)=void
@@ -1208,21 +1210,18 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      method Void vc()=This1.A.C<:class This1.A.C.vc()
      B::2={class method Void v::3()=void #norm{}}
      #norm{
-       typeDep=This, This1.A, This.B::2, This1.A.C
-       coherentDep=This, This.B::2, This1.A.C
+       typeDep=This,This.B::2,This1.A,This1.A.C
+       coherentDep=This,This.B::2,This1.A.C
        usedMethods=This1.A.C.vc()}
      }
    #norm{}}"""/*next test after this line*/)
-   ),new AtomicTest(()->fail("""
+   ),/*test 85*/new AtomicTest(()->fail("""
      A={B={#norm{}}#norm{}}
      #norm{}}""",/*rename map after this line*/"""
      A.=>*D. | A.B.=>K.
    """,/*expected after this line*/"""
    nested class { A={..} }
-   mapping: A=>*D
-   nested class A.B
-   is already involved in the rename; thus nested class A
-   can not be renamed
+   Rename map contains two entries for A.B
    Full mapping:A=>*D;A.B=>K
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
@@ -1232,7 +1231,6 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.=>*D. | K.=>D.B.
    """,/*expected after this line*/"""
    nested class { A={..} K={..} }
-   mapping: A=>*D
    Two different nested class are renamed into nested class D.B
    Full mapping:A=>*D;K=>D.B
    [file:[###]"""/*next test after this line*/)
@@ -1264,7 +1262,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
      D={B={#norm{}}G={#norm{}} #norm{} }
      #norm{}}"""/*next test after this line*/)
-   ),new AtomicTest(()->pass("""
+   ),/*test 90*/new AtomicTest(()->pass("""
      A={ method Void foo()=void #norm{}}
      #norm{}}""",/*rename map after this line*/"""
      A.=>*<empty>
@@ -1325,5 +1323,157 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
          #norm{typeDep=This1 usedMethods=This1.foo()}}
        #norm{typeDep=This}}
      #norm{typeDep=This.A}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={method Void foo()=void #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.foo()=>A.bar() | A.=><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} }
+   mapping: A.foo()=>A.bar()
+   nested class A
+   is already involved in the rename; thus method A.foo()
+   can not be renamed
+   Full mapping:A.foo()=>A.bar();A=><empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method Void foo()=void #norm{}}
+     C={method Void a(This1.A a)=a.foo() 
+       #norm{typeDep=This1.A, usedMethods=This1.A.foo()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.foo()=><empty> | A.=>B.
+   """,/*expected after this line*/"""
+     C={method Void a(This1.B a)=a.foo::1()
+       #norm{typeDep=This1.B watched=This1.B}}
+     B={method Void foo::1()=void #norm{}}
+     #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method Void foo()=void #norm{}}
+     C={method Void a(This1.A a)=a.foo() 
+       #norm{typeDep=This1.A, usedMethods=This1.A.foo()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.foo()=><empty>
+   """,/*expected after this line*/"""
+     A={method Void foo::1()=void #norm{}}
+     C={method Void a(This1.A a)=a.foo::1()
+       #norm{typeDep=This1.A watched=This1.A}}
+     #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     O={#norm{}}
+     A={method Void foo()=void #norm{typeDep=This1.O watched=This1.O}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.foo()=><empty> | A.=><empty>
+   """,/*expected after this line*/"""
+     O={#norm{}}
+     A::2={method Void foo::1()=void #norm{typeDep=This1.O watched=This1.O}}
+     #norm{typeDep=This.O watched=This.O}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     D={#norm{}}
+     A={ 
+       B={
+         C={#norm{typeDep=This3.D watched=This3.D}}
+         #norm{}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.C.=><empty>|A.B.=>K.
+   """,/*expected after this line*/"""
+   D={#norm{}}
+   A={#norm{}}
+   K={
+     C::1={#norm{typeDep=This2.D watched=This2.D}}
+     #norm{typeDep=This1.D watched=This1.D}}
+   #norm{}}"""/*next test after this line*/)
+      ),new AtomicTest(()->pass("""
+     D={#norm{}}
+     A={ 
+       B={
+         C={#norm{typeDep=This3.D watched=This3.D}}
+         #norm{}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.C.=><empty>
+   """,/*expected after this line*/"""
+   D={#norm{}}
+   A={
+     B={
+       C::1={#norm{typeDep=This3.D watched=This3.D}}
+       #norm{typeDep=This2.D watched=This2.D}}
+     #norm{}}
+   #norm{}}"""/*next test after this line*/)
+      ),new AtomicTest(()->pass("""
+     D={#norm{}}
+     A={ 
+       B={
+         C={#norm{typeDep=This3.D watched=This3.D}}
+         #norm{}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.C.->A.K.
+   """,/*expected after this line*/"""
+     D={#norm{}}
+     A={
+       B={ C={#norm{}} #norm{}}
+       K={#norm{typeDep=This2.D watched=This2.D}}
+       #norm{}}
+     #norm{}}"""/*next test after this line*/)
+      ),new AtomicTest(()->pass("""
+     D={#norm{}}
+     A={ 
+       B={
+         C={method Void a::2()=void #norm{}}
+         C::1={method Void b::3()=void #norm{}}
+         #norm{}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.C.=><empty>
+   """,/*expected after this line*/"""
+   D={#norm{}}
+   A={
+     B={
+       C::4={method Void a::2()=void #norm{}}
+       C::1={method Void b::3()=void #norm{}}
+       #norm{}}
+     #norm{}}   
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     J1={interface #norm{}}
+     J2={interface method Void a() #norm{}}
+     A={
+       method Library a()={
+         I1={interface [This3.J1] #norm{typeDep=This3.J1}}
+         I2={interface [This3.J2] method Void a() #norm{typeDep=This3.J2 refined=a()}}
+         C={ method Void c(This3.J2 j)=j.a() #norm{typeDep=This3.J2 usedMethods=This3.J2.a()}}
+         #norm{}}
+       #norm{typeDep=This1.J1,This1.J2 hiddenSupertypes=This1.J1,This1.J2 usedMethods=This1.J2.a()}}
+     #norm{}}""",/*rename map after this line*/"""
+     J1.=><empty>|J2.a()=><empty>
+   """,/*expected after this line*/"""
+   nested class { J1={..} J2={..} A={..} }
+   The method J2.a()
+   can not be made private since is implemented by private parts of nested class A
+   Full mapping:J1=><empty>;J2.a()=><empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     J1={interface #norm{}}
+     J2={interface method Void a() #norm{}}
+     A={
+       method Library a()={
+         I1={interface [This3.J1] #norm{typeDep=This3.J1}}
+         C={ method Void c(This3.J2 j)=j.a() #norm{typeDep=This3.J2 usedMethods=This3.J2.a()}}
+         #norm{}}
+       #norm{typeDep=This1.J1,This1.J2 hiddenSupertypes=This1.J1 usedMethods=This1.J2.a()}}
+     #norm{}}""",/*rename map after this line*/"""
+     J1.=><empty>|J2.a()=><empty>
+   """,/*expected after this line*/"""
+   J1::1={interface #norm{}}
+   J2={interface method Void a::2()#norm{close}}
+   A={method Library a()={
+       I1={interface[This3.J1::1]
+         #norm{typeDep=This3.J1::1, This3 watched=This3 close}}
+       C={
+         method Void c(This3.J2 j)=j.a::2()
+         #norm{typeDep=This3.J2 watched=This3.J2}}
+       #norm{}}
+     #norm{typeDep=This1.J1::1, This1, This1.J2 watched=This1, This1.J2}}
+   #norm{}}"""/*next test after this line*/)
 ));}
 }

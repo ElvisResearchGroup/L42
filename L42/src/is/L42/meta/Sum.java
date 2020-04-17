@@ -223,7 +223,7 @@ public class Sum {
       for(var pi:li.info().hiddenSupertypes()){
         P.NCs pj=Program.emptyP.from(pi,csi);
         if(pj.n()!=0){continue;}
-        assert !pj.hasUniqueNum();
+        assert !pj.hasUniqueNum():pj;
         if(cs.equals(pj.cs())){
           wasIn[0]=true;}
         }

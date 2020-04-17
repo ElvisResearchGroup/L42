@@ -53,6 +53,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Deps;
 import is.L42.top.Top;
+import is.L42.top.UniqueNsRefresher;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
@@ -112,7 +113,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     }
   public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     L l=input.unwrap;
-    L res=new Rename().apply(Resources.currentP,Resources.currentC,l,
+    L res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
       renames, wrapName, wrapFail, wrapC, wrapM);
     return wrapL(res);
     }

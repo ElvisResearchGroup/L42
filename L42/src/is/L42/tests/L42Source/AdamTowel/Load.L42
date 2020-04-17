@@ -1,0 +1,24 @@
+TODO:
+- remove unused code
+- abstract* 
+-Adam towel will have an empty AbstractTowel nested 
+Load
+  takes a Library with a nested AbstractTowel
+    for every nested in abstract towel: there is a @AbstractTowel/This{id}
+    in the outer Towel there are nesteds with @AbstractTowel{id'}
+  for ni in input.AbstractTowel
+    for nj in towel.annotated?? (simply a list of Nested, the user can add to?)
+      if ni match nj redirect ni=>*nj
+DeployLibrary
+  takes a Library l and a Name n
+  l=removeUnusedCode(l,n)
+  forall nested !=n:
+    if nested not labeled make it private
+    else rename in AbstractTowel
+  abstract* AbstractTowel
+  rename n=>This 
+  
+  
+Then caching top level
+
+Then IDE

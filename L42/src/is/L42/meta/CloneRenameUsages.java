@@ -5,6 +5,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popLRight;
+import static is.L42.tools.General.unreachable;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -16,11 +17,13 @@ import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.top.Deps;
+import is.L42.top.Top;
 import is.L42.generated.C;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
@@ -69,61 +72,34 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     res.addAll(p.cs());
     return res;
     }
-  Info renameUsagesInfo(boolean isInterface,List<MWT>mwts,Info info){
-    Info res=info.accept(infoRename);
-    if(isInterface && !res.close()){
-      boolean priv=mwts.stream().anyMatch(m->m.key().hasUniqueNum());
-      if(priv){res=res.withClose(true);}
-      }
-    ArrayList<P.NCs>newWatched=new ArrayList<>();
-    ArrayList<P.NCs>newTypeDep=new ArrayList<>();
-    for(var p:res.typeDep()){
-      if(newTypeDep.contains(p)){continue;}
-      var pp=Deps._publicRoot(p);
-      if(pp!=null && !newTypeDep.contains(p)){
-        newTypeDep.add(pp);
-        if(!pp.equals(P.pThis0)){newWatched.add(pp);}
-        }
-      newTypeDep.add(p);
-      }
-    for(var ps:res.usedMethods()){
-      var pi=ps.p().toNCs();
-      if(pi.equals(P.pThis0)){continue;}
-      if(pi.hasUniqueNum()){
-        assert newWatched.contains(pi);
-        continue;
-        }
-      if(ps._s().hasUniqueNum()){newWatched.add(pi);continue;}
-      }
-    ArrayList<PathSel>newUsedMethods=new ArrayList<>();
-    for(var ps:res.usedMethods()){
-      if(ps.p().equals(P.pThis0) || ps.p().hasUniqueNum()){continue;}
-      if(newWatched.contains(ps.p())){continue;}
-      if(ps._s().hasUniqueNum()){newWatched.add(ps.p().toNCs());continue;}
-      if(!newUsedMethods.contains(ps)){newUsedMethods.add(ps);}
-      }
-    assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
-    return res
-      .withTypeDep(L(newTypeDep.stream()))
-      .withWatched(mergeU(res.watched(),newWatched))
-      .withUsedMethods(L(newUsedMethods.stream()));
-    }
+    
+  @Override public L pushedOp(L l) {return infoRename.renameUsageInfo(l);}
   @Override public L visitL(L l){
     var key=getLastCMs();
     var inner=key instanceof S || this.whereFromTop().stream().anyMatch(k->k instanceof S);
     if(inner){
       assert r.p._ofCore(r.cs)!=l;
-      return super.visitL(l);
+      return doPushedOp(super.visitL(l));
       }
     assert r.p._ofCore(r.cs)==l:
     "";
     List<MWT> mwts1=L(l.mwts(),(c,mwti)->
       c.addAll(r.renameMWT(visitMWT(mwti))));
     var ncs1=r.renameNCs(this,l.ncs());
+    Info i=infoForNewPrivateNesteds(l.ncs(),ncs1,l.info());
     List<T> ts1=visitTs(l.ts());
-    Info info1=renameUsagesInfo(l.isInterface(),mwts1,l.info());
     List<Doc> docs1=visitDocs(l.docs());
-    return new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,info1,docs1);    
+    return doPushedOp(new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,i,docs1));    
+    }
+  Info infoForNewPrivateNesteds(List<NC> ncs0,List<NC> ncs1,Info former){
+    Deps d=new Deps();
+    for(NC nc:ncs1){
+      if(!nc.key().hasUniqueNum()){continue;}
+      if(_elem(ncs0, nc.key())!=null){continue;}
+      d.collectDepsE(p(),nc.l());
+      }
+    if (d.isEmpty()){return former;}
+    return Top.sumInfo(former,d.toInfo(true));
     }
   @Override public P visitP(P path){return renamedPath(path);}
   @Override public Doc visitDoc(Doc doc){return infoRename.visitDoc(doc);}
@@ -138,8 +114,59 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     var s2=renamedS(originPath,mcall.s());
     return mcall.withS(s2);    
     }
-  @Override public Info visitInfo(Info i){return i.accept(infoRename);}
-  private final CloneVisitor infoRename=new CloneVisitor(){
+  @Override public Info visitInfo(Info i){return i;}//it is handled later by infoRename.renameUsageInfo 
+  private final InfoCloneVisitor infoRename=new InfoCloneVisitor();
+  private class InfoCloneVisitor extends CloneVisitor{
+    public L renameUsageInfo(L l){
+      Info res=l.info().accept(this);
+      boolean close=res.close();
+      if(l.isInterface() && !close){
+        close=l.mwts().stream().anyMatch(m->m.key().hasUniqueNum());
+        if(!close){
+        close=l.ts().stream().anyMatch(t->t.p().hasUniqueNum());}
+        }
+      ArrayList<P.NCs>newWatched=new ArrayList<>();
+      ArrayList<P.NCs>newTypeDep=new ArrayList<>();
+      for(var p:res.typeDep()){
+        if(newTypeDep.contains(p)){continue;}//even if already without duplicated, we may add it as a public root below
+        newTypeDep.add(p);
+        var pp=Deps._publicRoot(p);
+        if(pp!=null && !newTypeDep.contains(pp)){
+          newTypeDep.add(pp);
+          if(!pp.equals(P.pThis0)){newWatched.add(pp);}
+          }
+        }
+      for(var ps:res.usedMethods()){//two iterations to first collect all the newWatched
+        var pi=ps.p().toNCs();
+        if(pi.equals(P.pThis0)){continue;}
+        if(pi.hasUniqueNum()){
+          assert newWatched.contains(pi);
+          continue;
+          }
+        if(ps._s().hasUniqueNum() && !newWatched.contains(pi)){newWatched.add(pi);}
+        }
+      ArrayList<PathSel>newUsedMethods=new ArrayList<>();
+      for(var ps:res.usedMethods()){
+        if(ps.p().equals(P.pThis0) || ps.p().hasUniqueNum()){continue;}
+        if(newWatched.contains(ps.p())){continue;}
+        assert !newUsedMethods.contains(ps);//dups already removed by CloneVisitor
+        newUsedMethods.add(ps);
+        }
+      assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
+      res=new Info(res.isTyped(),L(newTypeDep.stream()),
+        res.coherentDep(),res.metaCoherentDep(),
+        mergeU(res.watched(),newWatched),L(newUsedMethods.stream()),
+        L(res.hiddenSupertypes().stream().filter(p->!p.hasUniqueNum())),
+        res.refined(),
+        close,
+        res.nativeKind(),res.nativePar(),res._uniqueId()
+        );
+      return l.withInfo(res);
+      }
+    @Override public L visitL(L l){
+      throw unreachable();
+      //return renameUsageInfo(super.visitL(l));
+      }
     @Override public P visitP(P path){return CloneRenameUsages.this.visitP(path);}
     @Override public S visitS(S s){//for how we use this, we can assume it is inside an Info.refined
       var p0=CloneRenameUsages.this.p();
@@ -154,7 +181,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     @Override public PathSel visitPathSel(PathSel s){//for how we use this, we can assume it is inside an Info.usedMethods or Docs
       var path=s.p().toNCs();
       P p2=renamedPath(path);
-      if(s._s()==null ||!p2.equals(path)){return s.withP(p2);}//never rename meth and class at the same time
+      if(s._s()==null ||!p2.isNCs()){return s.withP(p2);}
       var pathOrigin=Deps._origin(p(), path, s._s());
       if(pathOrigin==null){return s;}
       S s2=renamedS(pathOrigin,s._s());

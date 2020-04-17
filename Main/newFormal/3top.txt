@@ -298,7 +298,7 @@ _______
       metaCoherentDep=(Li.Info.coherentDep U Li.Info.metaCoherentDep)[skipThis0;Csi;CORE.L]
       watched=Li.Info.watched[skipThis0;Csi;CORE.L]
       usedMethods=Li.Info.usedMethods[skipThis0;Csi;CORE.L] //trivially propagating the "s" part
-      hiddenSupertypes=(Li.Ts.Ps U Li.Info.hiddenSupertypes)[skipThis0;Csi;CORE.L]      
+      hiddenSupertypes=(Li.Ts.Ps.filterUniqueNumbers U Li.Info.hiddenSupertypes)[skipThis0;Csi;CORE.L]      
       ]
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) +..+ collectDepsE(p;en)+Info[watched=P? usedMethods=(P.s)?]
     e0=xP,
