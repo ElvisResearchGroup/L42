@@ -6,7 +6,7 @@ class method This from(class Any classAny)=\(\.fromClass(classAny))
   
 class method This from(Library library)=\(\.fromLibrary(library))
   
-method This nestedByName(NativeName name)=\(this.i().nestedByName(name=name))
+method This nested(Name name)=\(this.i().nestedByName(name=name.that()))
 
 method S outerName()=this.i().outerName()
 

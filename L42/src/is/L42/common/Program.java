@@ -386,6 +386,8 @@ public class Program implements Visitable<Program>{
     throw bug();
     }
   public ST solve(ST.STMeth stsi){
+    assert stsi.toString().length()<500:
+    "";
     ST st=solve(stsi.st());
     if(!(st instanceof T) ||!((T)st).p().isNCs()){return stsi.withSt(st);}
     P.NCs p0=((T)st).p().toNCs();

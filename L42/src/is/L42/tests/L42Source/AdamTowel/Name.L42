@@ -2,12 +2,18 @@
 NativeName that
 class method This of(NativeName that)
 method toS()=this.that().toS()
+read method Bool ==(read This that)=this.toS()==that.toS()
 method S x()=this.that().x()
 method S selector()=this.that().selector()
 method S path()=this.that().path()
 method This with(S x)=\.of(this.that().with(x=x))
 method This with(S selector)=\.of(this.that().with(selector=selector))
 method This with(S path)=\.of(this.that().with(path=path))
+method This ++1(S prefix)={
+  p=this.path()
+  if p==S"This" return this.with(path=prefix)
+  return this.with(path=prefix++S"."++p)
+  }
 class method This (S that)=\.of(that.toName()) 
 class method This #from(S$StringBuilder stringLiteral)=\(stringLiteral.toS())
 // => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;

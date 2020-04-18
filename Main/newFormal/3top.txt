@@ -326,10 +326,10 @@ _______
 _______
 #define CTz.allSTz(ST) = STz    CTz.allTz(p,ST) = Tz
 * ST in CTz.allSTz(p,ST)
-* ST' in CTz.allSTz(p,ST) 
+* ST' in CTz.allSTz(p,ST)//careful with coding: this and the next can loop 
     ST1..STn = CTz(ST)
     ST' in CTz.allSTz(p,STi)
-* ST' in CTz.allSTz(p,ST.s.i?)
+* ST' in CTz.allSTz(p,ST.s.i?)//we can have like a->a.foo() and starts to generate a.foo().foo()...foo()
     ST" in CTz.allSTz(ST)
     ST' in  CTz.allSTz(p.solve(ST".s.i?))
 * ST' in CTz.allSTz(p,OP STz1..STzn)

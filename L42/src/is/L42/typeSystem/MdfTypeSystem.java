@@ -145,8 +145,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       mdfs=oldMdfs;
       try{visitBlockDirect(e);}
       catch(EndError.TypeError te2){throw te;}
-      g=oldG;
-      expected=oldExpected;      
+      finally{g=oldG;expected=oldExpected;}      
       }
     }
   private void visitBlockDirect(Block e){

@@ -32,6 +32,7 @@ Acc={
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #squareAdd(Meta that)=this.that(\that.mergeMap(that))
   mut method Void #squareAdd(Name clear)=this.#squareAdd(clear->Name"")
+  mut method Void #squareAdd(Name deepClear)=this.#squareAdd(deep=deepClear->Name"")
   mut method Void #squareAdd(Meta deep)=this.that(\that.mergeMap(deep=deep))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
   }

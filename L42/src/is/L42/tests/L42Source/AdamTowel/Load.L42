@@ -1,6 +1,41 @@
+AbstractTowel={}
+Load={
+  Introspection.Nesteds deps
+  
+  class method This(Introspection.Nesteds deps)
+  
+  class method This()=\(deps=this.baseDeps())
+  
+  class method mut Introspection.Nesteds baseDeps()=\[
+    S;Size;Bool;Debug/*..*/
+    ]
+    
+  Acc=Data:{
+    Introspection.Nested i
+    mut Trait.Acc acc
+    
+    method S id(Introspection.Nested that)=
+      that.outerDoc().annotation(nested=this.i()).get().texts().left()
+
+    method mut Trait.Acc ()=(
+      for nci in i.nesteds() (this(nci))
+      this.acc()
+      )
+    method Void (Introspection.Nested that)=
+      for ncj in this.that()
+        if this.match(src=this.id(that),dest=this.id(ncj))
+          this.add().#squareAdd(that.nameFromRoot()=>this.classAny())
+    }
+    
+  Library :(Library that)=(
+    top=Introspection.Nested.from(library=that)
+    i=top.nested(name='AbstractTowel)
+    Class:Trait(that)(squareBuilder=Acc(i=i,acc=Meta())())
+    )
+  } 
+/*
 TODO:
 - remove unused code
-- abstract* 
 -Adam towel will have an empty AbstractTowel nested 
 Load
   takes a Library with a nested AbstractTowel
@@ -22,3 +57,4 @@ DeployLibrary
 Then caching top level
 
 Then IDE
+*/

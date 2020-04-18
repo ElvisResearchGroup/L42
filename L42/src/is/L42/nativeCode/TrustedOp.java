@@ -372,6 +372,7 @@ public enum TrustedOp {
       new L42£LazyMsg(\"Optional value is empty\")
       ));
     """,sig(Mutable,Mutable,Gen1)))),
+  IsPresent("isPresent",Map.of(Opt,use("return %1$s!=null;",sig(Readable,Immutable,Bool)))),
   LazyCache("lazyCache",Map.of(AnyKind,new LazyCacheGenerator())),
   EagerCache("readEagerCache",Map.of(AnyKind,new EagerCacheGenerator())),
   //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),

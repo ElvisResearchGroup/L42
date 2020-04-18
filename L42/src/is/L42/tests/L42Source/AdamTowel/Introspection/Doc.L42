@@ -28,6 +28,16 @@ read method S toS()=this.i().toS()
 method Bool annotatedAs(class Any that)=this.annotatedAs(nested=\.from(classAny=that))
 method Bool annotatedAs(Nested nested)={
   @DelayTyping Void _=void//delays typing so Doc$ do not get typed before is merged
-  if this.hasAnnotation() && this.nested() == nested (return Bool.true())
+  if this.hasAnnotation() && this.nested()==nested return Bool.true()
   return this.docs().matchAny()(for d in \vals \res<=d.annotatedAs(nested=nested)<:Bool)
+  }
+method Doc$Opt annotation(class Any that)=this.annotation(nested=\.from(classAny=that))
+method Doc$Opt annotation(Nested nested)={
+  if this.hasAnnotation() && this.nested()==nested 
+    return Doc$Opt(this)<:Doc$Opt//TODO: should we tweak the TS since this was known from the block?
+  for d in this.docs() (
+    tmp=d.annotation(nested=nested)<:Doc$Opt
+    if tmp return tmp
+    )
+  return Doc$Opt()<:Doc$Opt
   }

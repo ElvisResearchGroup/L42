@@ -115,6 +115,7 @@ public class CTz implements Serializable{
     private void onSTMeth(ST.STMeth stsi, Consumer<ST> s) {
       ST st=stsi.st();
       install(st,st2->{
+        if(st2.equals(stsi)){return;}//to avoid growing a.foo().foo()...foo()
         ST st3=p.solve(stsi.withSt(st2));
         install(st3,st1->s.accept(st1));
         });
