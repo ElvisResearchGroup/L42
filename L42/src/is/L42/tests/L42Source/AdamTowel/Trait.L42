@@ -36,7 +36,7 @@ Acc={
   mut method Void #squareAdd(Meta deep)=this.that(\that.mergeMap(deep=deep))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
   }
-method This (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
+method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
   return squareBuilder.that().applyMap(this.code())
   catch error Trait$InvalidName e exception e
   catch error Trait$InvalidMap e exception e

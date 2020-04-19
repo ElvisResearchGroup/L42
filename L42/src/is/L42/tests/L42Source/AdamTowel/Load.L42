@@ -1,38 +1,37 @@
-AbstractTowel={}
-Load={
-  Introspection.Nesteds deps
-  
-  class method This(Introspection.Nesteds deps)
-  
-  class method This()=\(deps=this.baseDeps())
-  
-  class method mut Introspection.Nesteds baseDeps()=\[
-    S;Size;Bool;Debug/*..*/
-    ]
-    
-  Acc=Data:{
-    Introspection.Nested i
-    mut Trait.Acc acc
-    
-    method S id(Introspection.Nested that)=
-      that.outerDoc().annotation(nested=this.i()).get().texts().left()
+ClassOperators={class method This1()=This1()}
 
-    method mut Trait.Acc ()=(
-      for nci in i.nesteds() (this(nci))
-      this.acc()
+Introspection.Nesteds deps
+  
+class method This(Introspection.Nesteds deps)
+  
+class method This()=\(deps=this.baseDeps())
+  
+N={//To shorten the creation of the list baseDeps
+  ClassOperators={class method class This1()=This1}
+  class method Introspection.Nested:(class Any a)=\.from(classAny=a)
+  }
+class method mut Introspection.Nesteds baseDeps()=\[
+  N:S;N:Size;N:Bool;N:Debug/*..*/
+  ]
+method Trait.Acc collect(Library that)=(
+  at=Introspection.Nested.from(library=that).nested(name='AbstractTowel)
+  acc=Trait.Acc(Meta())
+  for nci in at.nesteds() (
+    src=nci.outerDoc().annotation(nested=at).get().texts().left()
+    name=nci.nameFromRoot()
+    for ncj in this.deps() (
+      dest=ncj.outerDoc().annotation(nested=at).get().texts().left()
+      matches=this.match(src=src,dest=dest)
+      if matches acc.#squareAdd(name=>ncj.classAny())
       )
-    method Void (Introspection.Nested that)=
-      for ncj in this.that()
-        if this.match(src=this.id(that),dest=this.id(ncj))
-          this.add().#squareAdd(that.nameFromRoot()=>this.classAny())
-    }
-    
-  Library :(Library that)=(
-    top=Introspection.Nested.from(library=that)
-    i=top.nested(name='AbstractTowel)
-    Class:Trait(that)(squareBuilder=Acc(i=i,acc=Meta())())
     )
-  } 
+  acc
+  )
+method Library :(Library that)
+  [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
+  =Class:Trait(that)(squareBuilder=this.collect(that))
+  
+method Bool match(S src,S dest)=src==dest//To be overridden
 /*
 TODO:
 - remove unused code
