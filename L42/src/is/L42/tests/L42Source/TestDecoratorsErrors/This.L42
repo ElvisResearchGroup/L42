@@ -40,10 +40,10 @@ TestClose1=(
       |[file:[###]
       """.trim())
   code4={
-    capsule Strings that
-    class method mut This(capsule Strings that)
-    @Cache.Now class method Size size(read Strings that)=that.size()
-    @Cache.Clear class method Size append1(mut Strings thaat)=(
+    capsule S.List that
+    class method mut This(capsule S.List that)
+    @Cache.Now class method Size size(read S.List that)=that.size()
+    @Cache.Clear class method Size append1(mut S.List thaat)=(
       thaat.add(S"1")
       thaat.size()
       )
@@ -52,7 +52,7 @@ TestClose1=(
     actual={error Data.Close:code4 catch error Data.Close.Fail x return x}
     expected=S"""
       |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
-      |@This1.Cache.Clear class method This1.Size append1(mut This1.Strings thaat)=(..)
+      |@This1.Cache.Clear class method This1.Size append1(mut This1.S.List thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
       |[file:[###]
       """.trim())

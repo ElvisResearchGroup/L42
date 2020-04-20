@@ -27,63 +27,64 @@ S$StringBuilder={
 // but miss some details and do not have encapsulation
 DeployAAA=(
   lib={
-    Public={}
-    @Public HasToS={interface read method S toS()}
+    AbstractTowel={}
+    Public$={}
+    @Public$ @AbstractTowel{public}Public={}    
+    @Public @AbstractTowel{hasToS}HasToS={interface read method S toS()}
     //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.
     //List can take a class method Boolean equals(Elem e1,Elem e2)
-    @Public Break={class method Void ()[Void]=exception void}
-    @Public Bool={...}
-    @Public Size={...}
-    @Public Num={...}
-    @Public S={...}
+    @Public @AbstractTowel{break}Break={class method Void ()[Void]=exception void}
+    @Public @AbstractTowel{bool}Bool={...}
+    @Public @AbstractTowel{size}Size={...}
+    @Public @AbstractTowel{num}Num={...}
+    @Public @AbstractTowel{s}S={...}
     NativeName={...}
     S$ParseError={...}//can not use BaseErrorTrait() since circular dependence from S
-    @Public Debug={...}
+    @Public @AbstractTowel{debug}Debug={...}
     S$StringBuilder={...}//end of circular dependency for S
     Introspection$Nested={
       class method This from(Library library)=error void
       class method This from(class Any classAny)=error void
       method S excName(S text)=error void
       }
-    @Public Url={...}
+    @Public @AbstractTowel{url}Url={...}
     BaseErrorTrait={...}
     @Public Trait$MethodClash=BaseErrorTrait()
     @Public Trait$ClassClash=BaseErrorTrait()
     @Public Trait$InvalidName=BaseErrorTrait()
     @Public Trait$InvalidMap=BaseErrorTrait()
-    @Public Test={...}
-    @Public Log={...}
+    @Public @AbstractTowel{test}Test={...}
+    @Public @AbstractTowel{log}Log={...}
     Meta={...}
-    @Public Name={...}
-    @Public Trait={...}
-    @Public Class={...}
-    @Public Deploy={...}
-    @Public Message={...}
-      @Public Message$Guard={interface [Message]}
-      @Public Message$Assertion={interface[Message]}
+    @Public @AbstractTowel{name}Name={...}
+    @Public @AbstractTowel{trait}Trait={...}
+    @Public @AbstractTowel{class}Class={...}
+    @Public @AbstractTowel{deploy}Deploy={...}
+    @Public @AbstractTowel{message}Message={...}
+    @Public Message$Guard={interface [Message]}
+    @Public Message$Assertion={interface[Message]}
     MessageTrait=Trait:{...}
     LazyMessageTrait={...}
-    @Public X=Class:Message:{...}
-    @Public IterationIncomplete=Class:Message:{[Message$Guard]}
-    @Public NoElementInOpt=Class:Message.Native:{[Message$Guard]}
-    @Public OutOfBounds=Class:Message.Native:{[Message$Guard]}
-    @Public ElementNotImm=Class:Message.Native:{[Message$Guard]}
-    @Public ElementNotMut=Class:Message.Native:{[Message$Guard]}    
-    @Public Opt={...}
-    @Public Collection={...}
-    @Public Strings=Class:Collection.listEqTrait()['Elem=>S]:{
+    @Public @AbstractTowel{x}X=Class:Message:{...}
+    @Public Collection$IterationIncomplete=Class:Message:{[Message$Guard]}
+    @Public Collection$NoElementInOpt=Class:Message.Native:{[Message$Guard]}
+    @Public Collection$OutOfBounds=Class:Message.Native:{[Message$Guard]}
+    @Public Collection$ElementNotImm=Class:Message.Native:{[Message$Guard]}
+    @Public Collection$ElementNotMut=Class:Message.Native:{[Message$Guard]}    
+    @Public @AbstractTowel{collection}Collection={...}
+     S$List=Class:Collection.listEqTrait()['Elem=>S]:{
       class method Bool equals(read S a,read S b)=a==b
       }
-    @Public Cache={...}
-    @Public Data={...}
-    @Public Introspection=Class:Trait({...})[
+    @Public @AbstractTowel{cache}Cache={...}
+    @Public @AbstractTowel{data}Data={...}
+    @Public @AbstractTowel{introspection}Introspection=Class:Trait({...})[
       'Nested$=>'Nested;'Type$=>'Type;'Doc$=>'Doc;'Method$=>'Method
       ]
     DelayTyping={}
-    @Public Organize={...}
-    $Deploy={...}
-    AbstractTowel={}
-    Load={...}
+    @Public @AbstractTowel{organize}Organize={...}
+    Deploy$={...}
+    Load$={}
+    @Public @AbstractTowel{load} Load={...}    
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()
@@ -92,11 +93,7 @@ DeployAAA=(
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
   AddOns=(
-    base=Trait({reuse[#$aaa]})[
-      clear='Introspection$Nested.excName(text);
-      clear='Introspection$Nested.from(library);
-      clear='Introspection$Nested.from(classAny);
-      ]
+    base=Trait({reuse[#$aaa]})[clear='Introspection$Nested]
     added=Trait:{...}
     res=Class:Organize:(base+added)
     Deploy.towel(url='AdamTowel,code=res)    

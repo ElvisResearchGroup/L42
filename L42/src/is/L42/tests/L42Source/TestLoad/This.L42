@@ -1,0 +1,26 @@
+reuse[AdamTowel]
+
+Base=Trait:{
+  reuse[AdamTowel]
+  Main={class method S hello()=S"hello world"}
+  }
+Deployed=Load:Deploy.module(Base.code(),n=Name"Main")<:Trait.code()
+
+Test1=(
+  {}:Test"BaseLocal"(
+    expected=S"hello world"
+    actual=Deployed.hello()
+    )
+  )
+  
+  /*
+TODO:
+- remove unused code in load
+- load must throw error if the map can not be completed
+- organize must be buggy, there is no way the internal Public is recognized
+as Public for the outer organize??
+  
+Then caching top level
+
+Then IDE
+*/

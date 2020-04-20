@@ -1,3 +1,23 @@
+OptTrait=Trait:{
+  class method mut This #apply()
+  class method mut This #apply(fwd mut This.Elem that)=native{trusted:optK} error void
+  read method read This.Elem get()=native{trusted:get}error void
+  mut method mut This.Elem #get()=native{trusted:#get}error void
+  read method This2.Bool #if()=native{trusted:isPresent}error void
+  Elem={#norm{}}
+  #norm{nativeKind=Opt nativePar=This.Elem,This2.Collection$NoElementInOpt
+    typeDep=This.Elem,This,This2.Collection$NoElementInOpt,This2.Bool
+    coherentDep=This.Elem,This,This2.Collection$NoElementInOpt ,This2.Bool 
+    }}
+@Public class method Trait optionalTrait()=Trait(OptTrait())    
+@Public class method Library optional(class Any that)={
+  return Class:OptTrait['Elem=>that]
+  catch Trait$InvalidName e error e
+  catch Trait$InvalidMap e error e
+  catch Trait$ClassClash e error e
+  catch Trait$MethodClash e error e
+  }
+
 ListNative=Trait:{...}
 ListOps=ListNative + {...} + Class.ReadToString+Class.ImmToString+Class.ReadClone
 @Public class method Trait listTrait()=Trait(ListOps())//TODO: Meta.resource need to take a NativeName, so that Trait.Lifted() may return a Trait

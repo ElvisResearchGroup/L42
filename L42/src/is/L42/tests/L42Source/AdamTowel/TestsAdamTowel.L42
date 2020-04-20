@@ -11,16 +11,16 @@ TestNum=(
   {}:Test"zero"(Num"25/30"*Num"-11/10"==Num"-275/300")
   )
 TestQuote=(
-  ss=Strings['hi()]
+  ss=S.List['hi()]
   {}:Test"quote"(S"hi()"==ss.left())
   )
-OptS=Class:Opt(S)
+OptS=Collection.optional(S)
 TestOpt=(
   OptS o1=OptS()
   OptS o2=OptS(S"hi")
   {}:Test"opt"(o2.get()==S"hi")
   {}:Test"optNope"(S"Optional value is empty"==(
-    error o1.get() catch error NoElementInOpt e e.text()
+    error o1.get() catch error Collection.NoElementInOpt e e.text()
     ))
   )
 TestSizeRange=(
@@ -29,24 +29,24 @@ TestSizeRange=(
   {}:Test"range 21"(sAcc.size()==21Size)
   )
 TestMatchReduce=((
-  mut Strings ss=Strings[S"a";S"b";S"c"]
+  mut S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
     ss.reduce(S"DD")(for e in \vals \res<=\acc++e))
   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-  lent Strings ss=Strings[S"a";S"b";S"c"]
+  lent S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
     ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-  read Strings ss=Strings[S"a";S"b";S"c"]
+  read S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
     ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-  imm Strings ss=Strings[S"a";S"b";S"c"]
+  imm S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
     ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
   ))
 TestMatchSome=(
-  ss=Strings[S"a";S"b";S"c"]
+  ss=S.List[S"a";S"b";S"c"]
   (    
     res=ss.matchAny()(for s in \vals \res<=(s==S"c"))
     {}:Test"MatchSome"(res)
@@ -74,16 +74,16 @@ TestSizeParsing=(
   )
 NotCoh={This field, class method This ()}
 TestMakeNotCohList=Class:Collection.listTrait()['Elem=>NotCoh<:class Any]
-TestStrings=(
-  s=Strings()
+TestSList=(
+  s=S.List()
   s.add(\"hi")
   {}:Test"singleVal"(expected=S"hi", actual=s.val(0Size))
   {}:Test"size1"(s.size()==1Size)
   )
 TestMap=(
-  imm s=Strings[S"a";S"b";S"c"]
-  res=Strings()(for e in s \res<=S"Q"++e)
-  //Note: should the above be preferred wrt Strings[for e in s \res<=...] ??
+  imm s=S.List[S"a";S"b";S"c"]
+  res=S.List()(for e in s \res<=S"Q"++e)
+  //Note: should the above be preferred wrt S.List[for e in s \res<=...] ??
   {}:Test"mapped"(res.val(1\)==S"Qb")
   )
 
@@ -98,8 +98,8 @@ TestBoolRelOps=(
   {}:Test"Less then and false"(!(3Size<3Size && Bool.false()))
   )
 TestVectorOps=(
-  ss1=Strings[S"a";S"b";S"c"]
-  ss2=Strings[S"1";S"2";S"3"]
+  ss1=S.List[S"a";S"b";S"c"]
+  ss2=S.List[S"1";S"2";S"3"]
   (
     var sAcc=S""
     for imm si in ss1 (sAcc++=si)
@@ -109,10 +109,10 @@ TestVectorOps=(
     for s1 in ss1, imm s2 in ss2 (sAcc++=s1++s2)
     {}:Test"Simple for"(sAcc==S"a1b2c3")
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-    ss3=Strings[(\res<=S"hi")]
+    ss3=S.List[(\res<=S"hi")]
     {}:Test"justSlash"(ss3.size()==1Size)
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-    ss4=Strings[for s1 in ss1, imm s2 in ss2 (\res<=s1++s2)]
+    ss4=S.List[for s1 in ss1, imm s2 in ss2 (\res<=s1++s2)]
     for var imm si in ss4 (si:=S"pe"++si)
     for var si in ss4 (si:=S"No"++si)
     var sAcc=S""

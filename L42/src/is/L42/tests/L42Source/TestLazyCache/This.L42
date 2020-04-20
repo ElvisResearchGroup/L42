@@ -65,8 +65,8 @@ TestCache=(
   )
 
 A={
-  Strings that
-  class method This (Strings that)
+  S.List that
+  class method This (S.List that)
   imm method S firstE()=
     native{trusted:lazyCache} (
       Log"Foo".write(S"firstEcalled")
@@ -75,19 +75,19 @@ A={
   }
 TestACache=(
   Log"Foo".clear()
-  A a=A(Strings[S"Hello";S"Hi"])
-  A b=A(Strings[S"Hello";S"Hi"])
+  A a=A(S.List[S"Hello";S"Hi"])
+  A b=A(S.List[S"Hello";S"Hi"])
   {}:Test"cacheAResult"(expected=S"Hello", actual=a.firstE())
   {}:Test"cacheAResultAgain"(expected=S"Hello", actual=a.firstE())
   {}:Test"cacheAvoidRepeating"(expected=S"firstEcalled",actual=Log"Foo".#$reader().read())
   {}:Test"cacheAResult"(expected=S"Hello", actual=b.firstE())
   {}:Test"cacheAResultAgain"(expected=S"Hello", actual=b.firstE())
   {}:Test"cacheAvoidRepeating"(expected=S"firstEcalled",actual=Log"Foo".#$reader().read())
-  A c=A(Strings[S"Hello";S"Hi"])
+  A c=A(S.List[S"Hello";S"Hi"])
   {}:Test"cacheAResult"(expected=S"Hello", actual=c.firstE())
   {}:Test"cacheAResultAgain"(expected=S"Hello", actual=c.firstE())
   {}:Test"cacheAvoidRepeating"(expected=S"firstEcalled",actual=Log"Foo".#$reader().read())
-  A d=A(Strings[S"Hello";S"Hi";S"donut"])
+  A d=A(S.List[S"Hello";S"Hi";S"donut"])
   {}:Test"cacheDResult"(expected=S"Hello", actual=d.firstE())
   {}:Test"cacheDResultAgain"(expected=S"Hello", actual=d.firstE())
   {}:Test"cacheEnsureRepeatOnce"(expected=S"firstEcalledfirstEcalled",actual=Log"Foo".#$reader().read())
@@ -138,9 +138,9 @@ VoidList = Class:Collection.listTrait()['Elem=>Void]
 LibList = Class:Collection.listTrait()['Elem=>Library]
 
 C={
-  Strings that
+  S.List that
   AnyList myList
-  class method This (Strings that, AnyList myList)
+  class method This (S.List that, AnyList myList)
   imm method S firstE()=
     native{trusted:lazyCache} (
       Log"Foo".write(S"firstEcalled3")
@@ -152,9 +152,9 @@ MyTrait=Trait:{imm method Void foo()=void}
   
 TestAnyVoidLibrary=(
   Log"Foo".clear()
-  C c = C(that=Strings[S"Hello";S"Hi"], 
+  C c = C(that=S.List[S"Hello";S"Hi"], 
           myList=AnyList[MyTrait.code();void;S"bar"])
-  C c2 = C(that=Strings[S"Hello";S"Hi"], 
+  C c2 = C(that=S.List[S"Hello";S"Hi"], 
           myList=AnyList[MyTrait.code();void;S"bar"])
   {}:Test"cacheCResult"(expected=S"Hello", actual=c.firstE())
   {}:Test"cacheCResultAgain"(expected=S"Hello", actual=c.firstE())
@@ -207,9 +207,9 @@ TestClassBox=(
 
 /*
 D={
-  Strings that
+  S.List that
   Any myAny
-  class method This (Strings that,fwd imm Any myAny)
+  class method This (S.List that,fwd imm Any myAny)
   imm method S firstE()=
     native{trusted:lazyCache} (
       Log"Foo".write(S"ACT.")
@@ -218,8 +218,8 @@ D={
   }
 TestCircular=(
   Log"Foo".clear()
-  D d1 = D(Strings[S"Hello"],myAny=d2)
-  D d2 = D(Strings[S"Goodbye"],myAny=d1)  
+  D d1 = D(S.List[S"Hello"],myAny=d2)
+  D d2 = D(S.List[S"Goodbye"],myAny=d1)  
   {}:Test"cacheCResult"(expected=S"Hello", actual=d1.firstE())
   {}:Test"cacheCResultAgain"(expected=S"Hello", actual=d1.firstE())
   {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
@@ -266,9 +266,9 @@ TestReadCache={
     {}:Test"res3"(expected=0Size, actual=a.m())
     )
   B={
-    read method read Strings that::0()
-    mut method mut Strings #that::0()
-    class method mut This of::0(capsule Strings that)
+    read method read S.List that::0()
+    mut method mut S.List #that::0()
+    class method mut This of::0(capsule S.List that)
     mut method Void addOne()=this.#that::0().add(S"hi")
     read method Size m()=native{trusted:readEagerCache} (
       Log"Foo".write(S"ACT.")
@@ -277,7 +277,7 @@ TestReadCache={
     }
   Task2=(
     Log"Foo".clear()
-    mut B a=B.of::0(Strings[\"hello"])
+    mut B a=B.of::0(S.List[\"hello"])
     {}:Test"res1"(expected=1Size, actual=a.m())
     {}:Test"res2"(expected=1Size, actual=a.m())
     {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
@@ -288,17 +288,17 @@ TestReadCache={
     )
   Person=Class:Data.Close:{
     S name
-    capsule Strings allergies
-    class method mut This(S name, capsule Strings allergies)
+    capsule S.List allergies
+    class method mut This(S name, capsule S.List allergies)
     @Cache.Lazy method S description()=(
       Log"Foo".write(S"description()")
       S"Person[%this.name();%this.allergies().size()]"
       )
-    @Cache.Clear class method Void add(mut Strings allergies,S allergy)=(
+    @Cache.Clear class method Void add(mut S.List allergies,S allergy)=(
       Log"Foo".write(S"add()")  
       allergies.add(allergy)
       )
-    @Cache.Now class method Void ok(S name,read Strings allergies)=(
+    @Cache.Now class method Void ok(S name,read S.List allergies)=(
       Log"Foo".write(S"ok()")
       if name==S"" || allergies.size()>200Size error X"InvalidPerson"
       )
@@ -310,7 +310,7 @@ TestReadCache={
   Task3=(
     Log"Foo".clear()
     imm Person i=(
-      mut Person a=Person(name=S"bob",allergies=Strings[S"dust"])
+      mut Person a=Person(name=S"bob",allergies=S.List[S"dust"])
       {}:Test"cacheRepeating"(expected=S"ok()title()",actual=Log"Foo".#$reader().read())
       {}:Test"readProperty1"(expected=S"Dr. bob of 42", actual=a.title())
       {}:Test"cacheRepeating"(expected=S"ok()title()",actual=Log"Foo".#$reader().read())

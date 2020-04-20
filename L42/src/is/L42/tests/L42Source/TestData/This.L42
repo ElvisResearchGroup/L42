@@ -27,7 +27,7 @@ TestDataBase={
     {}:Test"pointToS"(expected=p1, actual=p1)
     {}:Test"pointToS"(expected=S"Point(x=8, y=42)", actual=p1)
     )
-  Person=Data:{Strings names}
+  Person=Data:{S.List names}
   Box=Data:{Any f1,Any f2}
   Anys=Class:Collection.listTrait()['Elem=>Any]
   TestPerson=(
@@ -35,9 +35,9 @@ TestDataBase={
     {}:Test"personToS"(expected=S"""
       |Person(names=["Bob"; "Alice"; "Charles"])
       """, actual=p1.toS()++S.nl())
-    b1=Box(f1=p1,f2=Box(f1=S"hi",f2=Strings()))
+    b1=Box(f1=p1,f2=Box(f1=S"hi",f2=S.List()))
     {}:Test"personToS"(expected=S"""
-      |Box(f1=Person(names=["Bob"; "Alice"; "Charles"]), f2=Box(f1=S"hi", f2=Strings[]))
+      |Box(f1=Person(names=["Bob"; "Alice"; "Charles"]), f2=Box(f1=S"hi", f2=S.List[]))
       """, actual=b1.toS()++S.nl())
     Anys bs=Anys[3Size]
     HasToS interf=bs

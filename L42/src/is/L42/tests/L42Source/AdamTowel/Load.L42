@@ -11,7 +11,29 @@ N={//To shorten the creation of the list baseDeps
   class method Introspection.Nested:(class Any a)=\.from(classAny=a)
   }
 class method mut Introspection.Nesteds baseDeps()=\[
-  N:S;N:Size;N:Bool;N:Debug/*..*/
+  N:Public;
+  N:(HasToS<:class Any);
+  N:Break;
+  N:Bool;
+  N:Size;
+  N:Num;
+  N:S;
+  N:Debug;
+  N:Url;
+  N:Test;
+  N:Log;
+  N:Name;
+  N:Trait;
+  N:Class;
+  N:Deploy;
+  N:(Message<:class Any);
+  N:X;
+  N:Collection;
+  N:Cache;
+  N:Data;
+  N:Introspection;
+  N:Organize;
+  N:Load$;
   ]
 method Trait.Acc collect(Library that)=(
   at=Introspection.Nested.from(library=that).nested(name='AbstractTowel)
@@ -32,28 +54,3 @@ method Library :(Library that)
   =Class:Trait(that)(squareBuilder=this.collect(that))
   
 method Bool match(S src,S dest)=src==dest//To be overridden
-/*
-TODO:
-- remove unused code
--Adam towel will have an empty AbstractTowel nested 
-Load
-  takes a Library with a nested AbstractTowel
-    for every nested in abstract towel: there is a @AbstractTowel/This{id}
-    in the outer Towel there are nesteds with @AbstractTowel{id'}
-  for ni in input.AbstractTowel
-    for nj in towel.annotated?? (simply a list of Nested, the user can add to?)
-      if ni match nj redirect ni=>*nj
-DeployLibrary
-  takes a Library l and a Name n
-  l=removeUnusedCode(l,n)
-  forall nested !=n:
-    if nested not labeled make it private
-    else rename in AbstractTowel
-  abstract* AbstractTowel
-  rename n=>This 
-  
-  
-Then caching top level
-
-Then IDE
-*/

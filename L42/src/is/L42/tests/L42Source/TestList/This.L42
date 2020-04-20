@@ -22,7 +22,7 @@ Test1=(
   points=Points[\(x=3\ y=5\)]
   {}:Test"basicPoints=="(points==points)
   
-  ss=Strings[S"hello";S" ";S"world"]
+  ss=S.List[S"hello";S" ";S"world"]
   {}:Test"basic0: showcasing == test style"(S"hello world"==
     ss.reduce()(for e in \vals \res<=\acc++e)
     )

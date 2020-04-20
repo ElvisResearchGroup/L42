@@ -772,7 +772,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     boolean trusted=!trustedHD && nativeUrl.startsWith("trusted:");
     if(!nativeUrl.isEmpty() && !trusted){return true;}
     boolean[]res={false};
-    e.accept(new PropagatorCollectorVisitor() {
+    e.accept(new Accumulate.SkipL<Void>(){
       @Override public void visitS(S s){
         if(s.m().startsWith("#$")){res[0]=true;}
         }});

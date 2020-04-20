@@ -25,15 +25,15 @@ NativeNested={
   method class Any classAny()=native{trusted:classAny}error void
   read method This2.S toS()=native{trusted:toS}error void
   
-  #norm{nativeKind=Nested,nativePar=This2.Trait$InvalidName,This2.OutOfBounds,This2.NoElementInOpt
+  #norm{nativeKind=Nested,nativePar=This2.Trait$InvalidName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
     typeDep=
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
-      This2.Trait$InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
+      This2.Trait$InvalidName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt 
     coherentDep=
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
-      This2.Trait$InvalidName,This2.OutOfBounds,This2.NoElementInOpt 
+      This2.Trait$InvalidName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt 
     }}    
 NativeType={
   class method This instance()
@@ -63,9 +63,9 @@ NativeDoc={
       
   read method This2.S toS()=native{trusted:toS}error void
   
-  #norm{nativeKind=Doc,nativePar=This2.OutOfBounds,This2.NoElementInOpt
-    typeDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.OutOfBounds,This2.NoElementInOpt
-    coherentDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.OutOfBounds,This2.NoElementInOpt
+  #norm{nativeKind=Doc,nativePar=This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
+    typeDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
+    coherentDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
     }}
 NativeMethod={
   class method This instance()
@@ -82,22 +82,22 @@ NativeMethod={
   method This2.S position()=native{trusted:position}error void
   read method This2.S toS()=native{trusted:toS}error void
     
-  #norm{nativeKind=Method,nativePar=This2.NoElementInOpt
+  #norm{nativeKind=Method,nativePar=This2.Collection$NoElementInOpt
     typeDep=
        This,This2.S,This2.Size,This2.Bool,
        This1.NativeDoc,This1.NativeNested,This1.NativeType,
-       This2.NativeName,This2.NoElementInOpt
+       This2.NativeName,This2.Collection$NoElementInOpt
     coherentDep=
        This,This2.S,This2.Size,This2.Bool,
        This1.NativeDoc,This1.NativeNested,This1.NativeType,
-       This2.NativeName,This2.NoElementInOpt
+       This2.NativeName,This2.Collection$NoElementInOpt
     }}
 Nested$={class method This(NativeNested that) read method Bool readEquality(read This that)}
 Nesteds=Collection.list(Nested$)
 Type$={class method This(NativeType that) read method Bool readEquality(read This that)}
 Types=Collection.list(Type$)
 Doc$={class method This(NativeDoc that) read method Bool readEquality(read This that)}
-Doc$Opt=Class:Opt(Doc$)
+Doc$Opt=Collection.optional(Doc$)
 Docs=Collection.list(Doc$)
 Method$={class method This(NativeMethod that) read method Bool readEquality(read This that)}
 Methods=Collection.list(Method$)
