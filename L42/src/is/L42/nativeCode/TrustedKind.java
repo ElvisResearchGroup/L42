@@ -175,7 +175,7 @@ public enum TrustedKind implements TrustedT{
     for(var i:range(this.genericNumber())){
       P pi=info.nativePar().get(i);
       if(!pi.isNCs()){res+=J.primitivePToString(pi);}
-      else{res+=j.typeNameStr(p.navigate(pi.toNCs()));}
+      else{res+=J.boxed(j.typeNameStr(p.navigate(pi.toNCs())));}
       res+=", ";
       }
     res=res.substring(0,res.length()-2)+">";

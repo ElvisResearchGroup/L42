@@ -10,8 +10,12 @@ CloseAll={
     res
     )
   }
-ClassOperators={class method class This1()=This1}
-class method Size maxLev(Introspection.Nested that)=(
+ClassOperators={class method This1()=This1()}
+Introspection.Nested public
+class method This (Introspection.Nested public)
+class method This()=\(public=\.from(classAny=Public)) 
+
+method Size maxLev(Introspection.Nested that)=(
   var res=0Size
   for ni in that.nesteds() (
     tmp=this.maxLev(ni)
@@ -19,43 +23,46 @@ class method Size maxLev(Introspection.Nested that)=(
     )
   res+1Size
   )
-class method Trait :(Library that)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
-  This:Trait(that)
-class method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
+method Trait :(Library that)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
+  this:Trait(that)
+  
+method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
   max=this.maxLev(Introspection.Nested.from(library=trait.code()))
   var res=trait
   (var lev=0Size while lev<max (//range will come later
     lev+=1Size
-    i=Introspection.Nested.from(library=res.code())
+    i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapRename$(Trait.Acc(Meta()),n=i,level=max-lev))
     ))
   res:=CloseAll(res)
   (var lev=0Size while lev<max (//range will come later
     lev+=1Size
-    i=Introspection.Nested.from(library=res.code())
+    i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapHide(Trait.Acc(Meta()),n=i,level=max-lev))
     ))
   res
   )
-IsPublicNC={class method Bool (Introspection.Nested that)=that.outerDoc().annotatedAs(Public)}
-IsPublicM={class method Bool (Introspection.Method that)=that.doc().annotatedAs(Public)}
+
 EmptyOnThis={class method S (S that)=if that==S"This" S"" else that}
-class method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size level)={
+
+method Bool isPrivate(Introspection.Doc that)=!that.annotatedAs(nested=this.public())
+
+method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size level)={
   ncs=n.nesteds()
   if level!=0Size (
     for ni in ncs (_=this.mapHide(that,n=ni,level=level-1\) void)
     return that
     )
   ms=n.methods()
-  var isHiding=Bool.false()
-  for ni in ncs (isHiding:= isHiding || IsPublicNC(ni))
-  for mi in ms (isHiding:= isHiding || IsPublicM(mi))
-  if !isHiding return that
-  for ni in ncs (if !IsPublicNC(ni) (that.#squareAdd(hide=ni.nameFromRoot())))
-  for mi in ms (if !IsPublicM(mi) (that.#squareAdd(hide=mi.nameFromRoot())))
+  privates=Name$List()((
+    for e in ncs (if this.isPrivate(e.outerDoc()) \res<=e.nameFromRoot())
+    for e in ms (if this.isPrivate(e.doc()) \res<=e.nameFromRoot())
+    ))
+  somePublic=privates.size()!=ms.size()+ncs.size()
+  if somePublic (for name in privates that.#squareAdd(hide=name))
   return that
   }
-class method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size level)={
+method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size level)={
   ncs=n.nesteds()
   if level!=0Size (
     for ni in ncs (_=this.mapRename$(that,n=ni,level=level-1\) void)

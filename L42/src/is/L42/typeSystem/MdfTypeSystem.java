@@ -91,6 +91,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     HashMap<String,HashSet<Mdf>> wrongParameters=new HashMap<>();
     String currentX=null;
     Mdf currentMdf=null;
+    EndError.TypeError lastErr=null;
     for(var m:meths){
       try{
         g=oldG;
@@ -104,12 +105,13 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
         expected=oldExpected;
         return;     
         }
-      catch(EndError.TypeError ignored){//TODO: no, this also kills any "internal errors"
-        //this means that is always the top level meth call that is blamed
+      catch(EndError.TypeError toSave){
+        lastErr=toSave;
         var res=wrongParameters.putIfAbsent(currentX,new HashSet<>(L(currentMdf)));
         if(res!=null){res.add(currentMdf);}        
         }
       }
+    if(lastErr.msgPart().startsWith("Incompatible modifiers for method call")){throw lastErr;}
     errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature(e.s(),wrongParameters));
     }
   @Override public void visitOpUpdate(OpUpdate e){

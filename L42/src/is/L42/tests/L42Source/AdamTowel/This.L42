@@ -72,9 +72,18 @@ DeployAAA=(
     @Public Collection$ElementNotImm=Class:Message.Native:{[Message$Guard]}
     @Public Collection$ElementNotMut=Class:Message.Native:{[Message$Guard]}    
     @Public @AbstractTowel{collection}Collection={...}
-     S$List=Class:Collection.listEqTrait()['Elem=>S]:{
+    S$List=Class:Collection.listEqTrait()['Elem=>S]:{
       class method Bool equals(read S a,read S b)=a==b
       }
+    Name$List=Class:Collection.listEqTrait()['Elem=>Name]:{
+      class method Bool equals(read Name a,read Name b)=a==b
+      }
+    Size$List=Class:Collection.listEqTrait()['Elem=>Size]:{
+      class method Bool equals(read Size a,read Size b)=a==b
+      }
+    Num$List=Class:Collection.listEqTrait()['Elem=>Num]:{
+      class method Bool equals(read Num a,read Num b)=a==b
+      }    
     @Public @AbstractTowel{cache}Cache={...}
     @Public @AbstractTowel{data}Data={...}
     @Public @AbstractTowel{introspection}Introspection=Class:Trait({...})[
@@ -95,8 +104,9 @@ DeployAdamTowel={reuse[#$aaa]
   AddOns=(
     base=Trait({reuse[#$aaa]})[clear='Introspection$Nested]
     added=Trait:{...}
-    res=Class:Organize:(base+added)
-    Deploy.towel(url='AdamTowel,code=res)    
+    tot=base+added
+    organize=Organize(public=\.from(library=tot.code()).nested(name='Public))
+    Deploy.towel(url='AdamTowel,code=Class:organize:tot)
     )
   }
 //Testing step2:

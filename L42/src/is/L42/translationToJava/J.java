@@ -689,4 +689,17 @@ private void refineMethBody(MH mh) {
     c(");");nl();
     c("}");deIndent();nl();
     }
+public static String boxed(String name) {
+    switch(name){
+      case "float":return "Float";
+      case "double":return "Double";
+      case "boolean":return "Boolean";
+      case "char":return "Char";
+      case "byte":return "Byte";
+      case "short":return "Short";
+      case "int":return "Integer";
+      case "long":return "Long";
+      }
+    return name;
+    }
   }
