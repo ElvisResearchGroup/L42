@@ -105,7 +105,8 @@ DeployAdamTowel={reuse[#$aaa]
     base=Trait({reuse[#$aaa]})[clear='Introspection$Nested]
     added=Trait:{...}
     tot=base+added
-    organize=Organize(public='Public)
+    //organize=Organize(public='Public)
+    organize=Organize()
     Deploy.towel(url='AdamTowel,code=Class:organize:tot)
     )
   }
