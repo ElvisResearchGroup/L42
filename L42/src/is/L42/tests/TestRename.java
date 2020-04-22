@@ -1475,5 +1475,92 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        #norm{}}
      #norm{typeDep=This1.J1::1, This1, This1.J2 watched=This1, This1.J2}}
    #norm{}}"""/*next test after this line*/)
-));}
+   ),new AtomicTest(()->pass("""
+     J1={interface method Void a() #norm{}}
+     J2={interface[This1.J1] method Void a() #norm{typeDep=This1.J1 refined=a()}}
+     A={[This1.J2,This1.J1]method Void a()=void #norm{typeDep=This1.J2,This1.J1 refined=a()}}
+     #norm{}}""",/*rename map after this line*/"""
+     J1.=>J0.|J1.a()=><empty>
+   """,/*expected after this line*/"""
+   J2={interface[This1.J0]method Void a::1()
+     #norm{typeDep=This1.J0 refined=a::1()close}}
+   A={[This1.J2, This1.J0]method Void a::1()=void
+     #norm{typeDep=This1.J2, This1.J0 refined=a::1()}}
+   J0={interface method Void a::1()#norm{close}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     J1={interface method Void a() #norm{}}
+     J2={interface[This1.J1] method Void a() #norm{typeDep=This1.J1 refined=a()}}
+     A={[This1.J2,This1.J1]method Void a()=void #norm{typeDep=This1.J2,This1.J1 refined=a()}}
+     #norm{}}""",/*rename map after this line*/"""
+     J1.=><empty>|J1.a()=><empty>
+   """,/*expected after this line*/"""
+   J1::1={interface method Void a::2()#norm{close}}
+   J2={interface[This1.J1::1]method Void a::2()
+     #norm{typeDep=This1.J1::1, This1 watched=This1 refined=a::2()close}}
+   A={[This1.J2, This1.J1::1]method Void a::2()=void
+     #norm{typeDep=This1.J2, This1.J1::1, This1 watched=This1 refined=a::2()}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     J1={interface method Void a() #norm{}}
+     J2={interface[This1.J1] method Void a() #norm{typeDep=This1.J1 refined=a()}}
+     A={[This1.J2,This1.J1]method Void b()=void method Void a()=void #norm{typeDep=This1.J2,This1.J1 refined=a()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   J1={interface method Void a()#norm{}}
+   J2={interface[This1.J1]method Void a()
+     #norm{typeDep=This1.J1 refined=a()}}
+   A::1={[This1.J2, This1.J1]
+     method Void b::2()=void
+     method Void a()=void
+     #norm{typeDep=This1.J2, This1.J1 refined=a()}
+     }
+   #norm{typeDep=This.J2, This.J1 hiddenSupertypes=This.J2, This.J1}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={method This a()=this #norm{typeDep=This}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   A::1={method This a::2()=this
+     #norm{typeDep=This, This1 watched=This1}}
+   #norm{typeDep=This}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(/*this show the former was failing only for privates*/"""
+     A={method This a()=this #norm{typeDep=This}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*B.
+   """,/*expected after this line*/"""
+   B={method This a()=this #norm{typeDep=This}}
+   #norm{}}"""/*next test after this line*/)
+   ),//TODO: Ideally, I would like a::2 below
+   new AtomicTest(()->pass("""
+     A={
+       method Void v()=void
+       method Library a()={ method Void m(This1 a)=a.v() #norm{typeDep=This1 usedMethods=This1.v()}}
+       #norm{typeDep=This}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   A::1={
+     method Void v::2()=void
+     method Library a::2()={
+       method Void m(This1 a)=a.v::2()
+       #norm{typeDep=This1, This2 watched=This2}}
+     #norm{typeDep=This, This1 watched=This1}}
+   #norm{typeDep=This}}"""/*next test after this line*/)
+   
+   ),new AtomicTest(()->pass("""
+     A={
+       method Void v(This.B b)=b.b()       
+       B={ method Void b()=void #norm{}} 
+       #norm{typeDep=This.B usedMethods=This.B.b()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   A::1={
+     method Void v::2(This.B::3 b)=b.b::4()
+     B::3={method Void b::4()=void #norm{}}
+     #norm{typeDep=This.B::3, This}}
+   #norm{}}"""/*next test after this line*/)
+   ));}
 }

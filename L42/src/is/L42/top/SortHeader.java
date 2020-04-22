@@ -94,7 +94,13 @@ class SortHeader{
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
       List<Core.Doc> docs=L();
       List<Pos> possi=poss;
-      var mi=_elem(l.ms(),mh.key());
+      Full.L.M mi=null;
+      var key=mh.key();
+      for(var m:l.ms()){
+        if(m.key().equals(key) ||
+          (m instanceof Full.L.F && p1.fieldMs((Full.L.F)m).contains(key))
+          ){mi=m;break;}
+        }
       if(mi!=null){
         docs=TypeManipulation.toCoreDocs(mi.docs());
         possi=mi.poss();
@@ -111,8 +117,8 @@ class SortHeader{
       c.add(res);
       });
     Deps deps=new Deps().collectDeps(p1,mwts);
-    deps.collectTs(ts1);
-    deps.collectDocs(TypeManipulation.toCoreDocs(l.docs()));
+    deps.collectTs(p1,ts1);
+    deps.collectDocs(p1,TypeManipulation.toCoreDocs(l.docs()));
     var docs=TypeManipulation.toCoreDocs(l.docs());
     List<S> refined=L(mwts,(c,mi)->{
       S s=mi.key();

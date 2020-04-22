@@ -137,7 +137,7 @@ public class CloneVisitor {
       c.add(pp);
       });
     }
-  public final List<S> visitInfoSs(List<S> ss){
+  public List<S> visitInfoSs(List<S> ss){
     return L(ss,(c,s)->{
       var s0=this.visitS(s);
       if(c.contains(s0)){return;}

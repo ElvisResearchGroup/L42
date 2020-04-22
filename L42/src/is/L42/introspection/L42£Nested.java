@@ -127,7 +127,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     var t=publicTs.get(i);//correctly propagates ArrayOutOfBound
     return L42£Type.fromType(t,root(),nameFromRoot());
     }
-  //Doc infoTypeDep(){}//have a list of docs inside; the L42 version may just unwrap the docs
+  //TODO: Doc infoTypeDep(){}//have a list of docs inside; the L42 version may just unwrap the docs
   /*..*/
   public boolean hasHiddenImplements(){return publicTs.size()!=currentL.ts().size();}
   public boolean isClose(){return currentL.info().close();}

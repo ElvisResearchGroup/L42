@@ -288,20 +288,27 @@ public class Program implements Visitable<Program>{
     if(top.isFullL()){return findScopeFull(c,acc,poss);}
     return findScopeCore(c,acc,poss);
     }
+  public List<S> fieldMs(Full.L.F f){
+    return L(c->{
+      if(f.isVar()){c.add(f.key().withXs(X.thatXs));}
+      Core.T t=TypeManipulation.toCore(f.t());
+      Core.T tr=TypeManipulation.toRead(t);
+      if(t!=tr){
+        assert !t.equals(tr);
+        if(!t.mdf().isCapsule()){c.add(f.key().withM("#"+f.key().m()));}
+        }
+      });
+    }
   public List<Core.MH>extractMHs(List<Full.L.M> ms){
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
       if(m instanceof Full.L.MI){return;}
-      if(m instanceof Full.L.MWT){
-        c.add(TypeManipulation.toCore(((Full.L.MWT)m).mh()));return;
-        }
+      if(m instanceof Full.L.MWT){c.add(TypeManipulation.toCore(((Full.L.MWT)m).mh()));return;}
       Full.L.F f=(Full.L.F)m;
       Core.T t=TypeManipulation.toCore(f.t());
       Core.T tr=TypeManipulation.toRead(t);
       assert tr!=null;
-      if(f.isVar()){
-        c.add(new Core.MH(Mdf.Mutable,L(), P.coreVoid, f.key().withXs(X.thatXs), L(t),L()));        
-        }
+      if(f.isVar()){c.add(new Core.MH(Mdf.Mutable,L(), P.coreVoid, f.key().withXs(X.thatXs), L(t),L()));}
       if(t!=tr){
         assert !t.equals(tr);
         if(!t.mdf().isCapsule()){
@@ -475,5 +482,9 @@ public class Program implements Visitable<Program>{
     var res=Init.init(r.res,new FreshNames());
     assert res.wf();
     return res;
+    }
+  public boolean inPrivate(){
+    if(pTails.isEmpty()){return false;}
+    return pTails.hasC() && pTails.c().hasUniqueNum();
     }
   }

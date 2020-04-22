@@ -139,6 +139,7 @@ public class Rename {
     this.map=new LinkedHashMap<>();
     assert l.wf();
     assert WellFormedness.checkInfo(p,l): ""+l;
+    assert WellFormedness.allMinimized(pOut,cOut,l);
     for(var a:list){miniAddMap(new Arrow(a.cs,a._s),a);}    
     allWatched=Sum.allFromInfo(l,(c,li,csi)->{
       if(isDeleted(csi)){return;}
@@ -154,6 +155,9 @@ public class Rename {
     //System.out.println(res);
     //System.out.println("---------------");
     assert l.info().isTyped()==res.info().isTyped();
+    assert res.wf();
+    assert WellFormedness.allMinimized(pOut,cOut,res);
+    assert WellFormedness.checkInfo(pOut.push(cOut,res),res);
     return res;
     }
   L applyMap(){
@@ -382,7 +386,7 @@ public class Rename {
         }
       });
     Deps deps=new Deps();
-    for(var nc:ncs){deps.collectDocs(nc.docs());}
+    for(var nc:ncs){deps.collectDocs(forcedNavigate(p, cs),nc.docs());}
     Info i=Top.sumInfo(l.info(),deps.toInfo(true));
     return l.withMwts(mwts).withNcs(ncs).withInfo(i);
     }
@@ -411,7 +415,6 @@ public class Rename {
     assert a.isCs();
     if(!a.full){noCircular(l1,L());}
     int n=a._cs.size();
-
     P.NCs src=P.of(n,L());
     L l=noNesteds(l1);
     C c1=freshC(p.pop().topCore().ncs(),0);
@@ -429,11 +432,12 @@ public class Rename {
         if(!p.isNCs()){return super.visitP(p);}
         var pp=p.toNCs();
         if(pp.n()!=j()){return program().minimize(super.visitP(p));}
-        if(pp.cs().isEmpty() || !pp.cs().get(0).hasUniqueNum()){ 
+        var normalStart=pp.cs().isEmpty() ||!pp.cs().get(0).hasUniqueNum();
+        if(normalStart){ 
           pp=P.of(pp.n()+1,pushL(c1,pp.cs()));
           }
         pp=(P.NCs)super.visitP(pp);
-        if(!removeC1){return pp;}
+        if(!normalStart || !removeC1){return pp;}
         return program().minimize(P.of(pp.n()-1,popL(pp.cs())));
         }
       }.start(l);
@@ -590,7 +594,10 @@ public class Rename {
       }
     var nc1=_onlyNested(nc);
     var l2=noNesteds(nc.l());
-    l2=pushThis0Out(l2, nc.key());
+    int n=a._cs.size()-1;
+    Program p=forcedNavigate(this.p,a._cs);
+    var src=p.minimize(P.of(n,cs));
+    l2=fromAndPushThis0Out(p,l2,src,nc.key(),true);
     int last=a._cs.size()-1;
     var nc2=new NC(nc.poss(),nc.docs(),a._cs.get(last),l2);
     if(nc1==null){return L(nc2);}
@@ -708,11 +715,5 @@ public class Rename {
       return tweakP(pp);
       }
     abstract P tweakP(P.NCs p);
-    }  
-  L pushThis0Out(L l,C c){return l.accept(new TweakPs(){    
-    P tweakP(P.NCs p){
-      if(p.n()!=level){return p;}
-      return P.of(level+1,pushL(c,p.cs()));
-      }});
     }  
   }

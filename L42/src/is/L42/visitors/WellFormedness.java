@@ -127,8 +127,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   public static boolean checkInfo(Program p,Core.L l){
     Deps deps=new Deps().collectDeps(p,l.mwts());
     deps.collectDepsNCs(p,l.ncs());    
-    deps.collectDocs(l.docs());
-    deps.collectTs(l.ts());
+    deps.collectDocs(p,l.docs());
+    deps.collectTs(p,l.ts());
     ArrayList<S> refined=new ArrayList<>();
     Deps.collectRefined(p,refined);
     Info i=deps.toInfo(false);
@@ -162,6 +162,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   public static boolean of(Visitable<?> v){
     var tos=new WellFormedness();
     v.accept(tos);
+    return true;
+    }
+  public static boolean allMinimized(Program p,LDom _last,Core.L l){
+    if (_last==null || _last instanceof S){p=p.push(l);}
+    else{ p=p.push((C)_last,l);}
+    new CloneVisitorWithProgram(p){
+      @Override public P visitP(P path){
+        assert p().minimize(path)==path:
+        path+" "+p().minimize(path);
+        return path;
+        }
+      }.visitL(p.topCore());
     return true;
     }
   HashSet<X> declared=new HashSet<>();
@@ -656,7 +668,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     typedContains(info,info.usedMethods().stream().map(ps->ps.p()),"usedMethods");
     typedContains(info,info.watched().stream(),"watched");
     for(var p:info.watched()){
-      if(p.equals(P.pThis0)){throw new EndError.NotWellFormed(lastPos,Err.noSelfWatch());}
+      if(p.equals(P.pThis0)){
+      throw new EndError.NotWellFormed(lastPos,Err.noSelfWatch());}
       for(var ps:info.usedMethods()){
         if(!p.equals(ps.p())){continue;}
         throw new EndError.NotWellFormed(lastPos,Err.infoWatchedUsedDisjoint(p));
@@ -677,26 +690,28 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       validPrivateNested(m.poss(),m.key(),m.l());
       }
     var bridges=bridge(l.mwts());
+    boolean mustClose=!hasOpenState(l,bridges);
     var classMhs=L(l.mwts().stream().filter(m->
-      m.mh().mdf().isClass() && m._e()==null && m.key().hasUniqueNum()
-      ).map(m->m.mh()));
-    if(!classMhs.isEmpty()){
-      var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
-      if(xzs.size()>1){throw new EndError.CoherentError(l.poss(),
-        Err.nonCoherentNoSetOfFields(xzs));
-        }
-      }
+        m.mh().mdf().isClass() && m._e()==null && m.key().hasUniqueNum()
+        ).map(m->m.mh()));
     for(var mwt:bridges){
       if(!mwt.mh().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule)){
         err(Err.bridgeNotMutable(mwt.key(),mwt.mh().mdf()));
         }
       }
-    for(var bi:bridges){for(var mhj:classMhs){ 
-      if(!Coherence.canAlsoBe(mhj.t().mdf(),bi.mh().mdf())){continue;}
-      if(mhj.key().m().startsWith("#$")){continue;}
-      err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
-      }}
-    boolean mustClose=!hasOpenState(l,bridges);
+    if(!l.isInterface()){
+      if(!classMhs.isEmpty()){
+        var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
+        if(xzs.size()>1){throw new EndError.CoherentError(l.poss(),
+          Err.nonCoherentNoSetOfFields(xzs));
+          }
+        }
+      for(var bi:bridges){for(var mhj:classMhs){ 
+        if(!Coherence.canAlsoBe(mhj.t().mdf(),bi.mh().mdf())){continue;}
+        if(mhj.key().m().startsWith("#$")){continue;}
+        err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
+        }}
+      }
     if(!mustClose && l.isInterface()){
        mustClose= l.mwts().stream().anyMatch(m->m.key().hasUniqueNum())
         || l.ts().stream().anyMatch(t->t.p().hasUniqueNum());

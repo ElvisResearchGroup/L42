@@ -211,9 +211,9 @@ _______
       then L.Info.close?=close
     forall MWT in bridge(L.MWT), MWT.mds in {mut, lent, capsule}
     MHs={MWT.MH | MWT in L.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.s of form _::0(_)}
-    forall MWT in bridge(L.MWT), forall MH in MHs:
+    if L.interface?=empty forall MWT in bridge(L.MWT), forall MH in MHs:
       if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
-    if MHs!=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
+    if MHs!=empty and L.interface?=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
     L.Info.coherentDep subseteq L.Info.typeDep
     ...
     L.Info.nativePar subseteq L.Info.typeDep//same for all the fields of Info containing Ps

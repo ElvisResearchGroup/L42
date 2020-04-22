@@ -51,6 +51,7 @@ public class Close extends GuessFields{
     var pIn=p.navigate(cs);
     var l=close(pIn,wrap);
     pIn=pIn.update(l,false);
+    assert l.wf();
     return pIn._ofCore(P.of(cs.size(),General.L()));
     }
   public Core.L close(Program p,Function<L42£LazyMsg,L42Any>wrap){

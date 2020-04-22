@@ -44,7 +44,7 @@ public class Deps{
   public boolean isEmpty(){return typePs.isEmpty();}
   public static P.NCs _origin(Program p0,P.NCs path,S s){
     try{return p0.from(SortHeader.origin(p0.navigate(path),s,L()),path);}
-    catch(LL.NotInDom | EndError ee){return null;}//can be more efficent rewriting the above to avoid the exception.
+    catch(LL.NotInDom | EndError ee){return null;}//can be more efficient rewriting the above to avoid the exception.
     //we need the null because when adding usedMethods for methods that are not declared, we need to "guess" that they are not refined...
     }
   public static P.NCs _publicRoot(P.NCs pi){
@@ -53,23 +53,22 @@ public class Deps{
     if(cs.size()==csCut.size()){return null;}
     return pi.withCs(csCut);
     }
-  void addP(P p){
+  void addP(Program p0,P p){
     if(!p.isNCs()){return;}
     var pi=p.toNCs();
     typePs.add(pi);
     pi=_publicRoot(pi);
     if(pi==null){return;}
     typePs.add(pi);
-    watched.add(pi);
+    addWatched(p0, pi);
+    }
+  void addWatched(Program p0,P.NCs pi){
+    if(!pi.cs().isEmpty()){watched.add(pi);}
+    if(pi.n()==0){return;}
+    var p1=p0.pop(pi.n());
+    if(!p1.inPrivate()){watched.add(pi);}
     }
   public Info toInfo(boolean typed){
-    for(var pi:typePs){
-      var cs=pi.cs();
-      var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
-      if(cs.size()==csCut.size()){continue;}
-      watched.add(pi.withCs(csCut));
-      }
-    watched.removeAll(L(P.pThis0));
     return new Info(typed,
       /*typeDep*/ uniqueWrap(typePs),
       /*coherentDep*/ uniqueWrap(cohePs),
@@ -79,17 +78,14 @@ public class Deps{
       /*hiddenSupertypes*/ uniqueWrap(hiddenSupertypes),
       L(), false, "", L(), -1);    
     }
-  private final PropagatorCollectorVisitor base=new PropagatorCollectorVisitor(){
-    @Override public void visitP(P p){addP(p);}
-    };
-  public Deps collectDocs(List<Doc> docs){
-    base.visitDocs(docs);
+  public Deps collectDocs(Program p0,List<Doc> docs){
+    new DepsV(p0).visitDocs(docs);
     return this;
     }
-  public Deps collectTs(List<T> ts){
-    base.visitTs(ts);
+  public Deps collectTs(Program p0,List<T> ts){
+    new DepsV(p0).visitTs(ts);
     return this;
-    }    
+    }
   public Deps collectDeps(Program p0, List<MWT> mwts){
     var deps=new DepsV(p0);
     //TODO: we had addPublicRoots(cohePs); but I think it was wrong, it would limit the sum interface+class if the class have a non watched private nested class (that would disapper otherwise...)
@@ -119,16 +115,10 @@ public class Deps{
       LL ll=p.of(t.p(),p.topCore().poss());
       if(ll.isFullL()){
         for(var m:((Full.L)ll).ms()){
-          //if(m.key().hasUniqueNum()){continue;}
           if(m.key() instanceof S){refined.add((S)m.key());} 
           }
         }
-      else{
-        for(var m:((Core.L)ll).mwts()){
-          //if(m.key().hasUniqueNum()){continue;}
-          refined.add(m.key());
-          }
-        }
+      else{for(var m:((Core.L)ll).mwts()){refined.add(m.key());}}
       }
     }
   public static void skipAct(P.NCs pi,List<C> cs,L l,Consumer<P.NCs>act){
@@ -155,7 +145,7 @@ public class Deps{
       for(var p:li.info().typeDep()){skipAct(p, csi, l,typePs::add);}
       for(var p:li.info().coherentDep()){skipAct(p, csi, l,metaCohePs::add);}
       for(var p:li.info().metaCoherentDep()){skipAct(p, csi, l,metaCohePs::add);}
-      for(var p:li.info().watched()){skipAct(p, csi, l,watched::add);}
+      for(var p:li.info().watched()){skipAct(p, csi, l,w->addWatched(p0.push(l).navigate(csi), w));}
       for(var pathSel:li.info().usedMethods()){
         var p=pathSel.p().toNCs();
         skipAct(p, csi, l,pi->{
@@ -167,7 +157,7 @@ public class Deps{
         if(!t.p().hasUniqueNum()){skipAct(t.p().toNCs(), csi, l,hiddenSupertypes::add);}
         }
       }
-    @Override public void visitP(P p){addP(p);}
+    @Override public void visitP(P p){addP(p0,p);}
     @Override public void visitMCall(Core.MCall mc){
       super.visitMCall(mc);
       var t=g(mc.xP());
@@ -175,7 +165,7 @@ public class Deps{
       var pi=t.p().toNCs();
       if(pi.equals(P.pThis0)||pi.hasUniqueNum()){return;}//mc.s() can be public if is implemented
       //it is irrelevant to watch or not interface methods, since interfaces can not be made abstract anyway
-      if(mc.s().hasUniqueNum()){watched.add(pi);return;}
+      if(mc.s().hasUniqueNum()){addWatched(p0,pi);return;}
       if(!pi.equals(P.pThis0)){usedMethods.add(new PathSel(pi, mc.s(),null));}
       }
     @Override public void visitPCastT(Core.PCastT p){

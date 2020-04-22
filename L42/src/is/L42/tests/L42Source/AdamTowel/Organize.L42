@@ -11,9 +11,9 @@ CloseAll={
     )
   }
 ClassOperators={class method This1()=This1()}
-Introspection.Nested public
-class method This (Introspection.Nested public)
-class method This()=\(public=\.from(classAny=Public)) 
+Name public
+class method This (Name public)
+class method This()=\(public=Name"") 
 
 method Size maxLev(Introspection.Nested that)=(
   var res=0Size
@@ -45,8 +45,11 @@ method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,
 
 EmptyOnThis={class method S (S that)=if that==S"This" S"" else that}
 
-method Bool isPrivate(Introspection.Doc that)=!that.annotatedAs(nested=this.public())
-
+method Bool isPrivate(Introspection.Doc that)={
+  if this.public()==Name"" return !that.annotatedAs(Public)
+  return !that.annotatedAs(nested=that.root().nested(name=this.public()))
+  }
+  
 method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size level)={
   ncs=n.nesteds()
   if level!=0Size (
@@ -54,12 +57,22 @@ method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size le
     return that
     )
   ms=n.methods()
+  var hasPublic=Bool.false()
   privates=Name$List()((
-    for e in ncs (if this.isPrivate(e.outerDoc()) \res<=e.nameFromRoot())
-    for e in ms (if this.isPrivate(e.doc()) \res<=e.nameFromRoot())
+    for e in ncs (
+      //Debug(S" names: %e.nameFromRoot()  %this.public().nameFromRoot()")
+      //Debug(S" eq %(e==this.public())")
+      if this.isPrivate(e.outerDoc()) \res<=e.nameFromRoot()
+      else hasPublic:=Bool.true()
+        )
+    for e in ms (
+      if this.isPrivate(e.doc()) (
+        if !e.isRefined() \res<=e.nameFromRoot()
+        )
+      else hasPublic:=Bool.true()
+      )
     ))
-  somePublic=privates.size()!=ms.size()+ncs.size()
-  if somePublic (for name in privates that.#squareAdd(hide=name))
+  if hasPublic (for name in privates that.#squareAdd(hide=name))
   return that
   }
 method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size level)={
@@ -79,7 +92,7 @@ method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size
     if inC.endsWith(\"$") (inC:=inC.subString(start=0\, end=\size-1\)) //"B$C"    ""
     if inC.startsWith(\"$") return void
     inC:=inC.replace(\"$" with=\".") //"B.C"    ""
-    if inC.size()==0Size return that.#squareAdd(Name(inName)=>n.nameFromRoot())
+    if inC.size()==0Size return that.#squareAdd(deep=Name(inName)=>n.nameFromRoot())
     return that.#squareAdd(Name(inName)=>Name(n.nameFromRoot().toS()++S"."++inC))  //A.B$C$ =>A.B.C
     }
   return that

@@ -48,7 +48,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     expected=oldE;
     }
   void errIf(boolean cond,E e,String msg){
-    if(cond){throw new EndError.TypeError(e.poss(),msg);}
+    if(cond){
+    throw new EndError.TypeError(e.poss(),msg);}
     }
   void mustSubPath(P p1,P p2,List<Pos>poss){
     if(!p._isSubtype(p1, p2)){

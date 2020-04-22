@@ -565,7 +565,7 @@ dropCache:
       nc=nc.withL(new UniqueNsRefresher().refreshUniqueNs(nc.l()));
       }
     var info=l.info();
-    Deps deps=new Deps().collectDocs(nc.docs());
+    Deps deps=new Deps().collectDocs(p1,nc.docs());
     if(nc.key().hasUniqueNum()){deps.collectDepsE(p1, nc.l());}
     info=Top.sumInfo(info,deps.toInfo(true));
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);

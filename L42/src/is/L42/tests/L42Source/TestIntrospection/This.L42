@@ -3,38 +3,6 @@ reuse[AdamTowel]
 Full={class method S (Trait that)=
   Introspection.Nested.from(library=that.code()).toFullS()
   }
-TestOrganize=(
-  res=Organize:{
-    A={method Void m1()}
-    A$={method Void m2()}
-    $={method Void m3()}
-    }
-  {}:Test"$s"(actual=Full(res)
-  expected=S"""
-    |{method Void m3()A={
-    |  method Void m1()
-    |  method Void m2()
-    |  #typed{close}
-    |  }
-    |#norm{close}}
-    """)
-  res2=Organize:{
-    @Public A={method Void m1()=void}
-    A$={@Public method Void m2()=void}
-    $={method Void m3()=void}
-    B={method Void m4()=void}
-    @Public A$C={method Void m5()=void}
-    }
-  {}:Test"Public"(actual=Full(res2)
-  expected=S"""
-    |{@This1.Public A={
-    |  @This2.Public method Void m2()=(..)
-    |  @This2.Public C={method Void m5()=(..)#typed{close}}
-    |  #typed{close}
-    |  }
-    |#norm{close}}
-    """)
-  )
 TestFullS=(
   {}:Test"fullS"(actual=Full(Trait:{ method Void foo(S that)=void  method B bar() B={}})
   expected=S"""

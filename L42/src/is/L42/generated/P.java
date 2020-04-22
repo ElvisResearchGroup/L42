@@ -47,7 +47,8 @@ public interface P extends Visitable<P> {
   Full.T fullVoid = new Full.T(Mdf.Immutable, L(), L(), P.pVoid);
 
   static P.NCs of(int n, List<C> cs) {
-    assert n >= 0;
+    assert n >= 0:
+    n;
     return new NCs(n, cs);
   }
 

@@ -30,6 +30,7 @@ import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
+import is.L42.visitors.WellFormedness;
 
 class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
   CloneRenameUsages(Rename r){
@@ -39,6 +40,13 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     }
   Rename r;
   P renamedPath(P path){
+    assert this.p().minimize(path)==path: 
+      path +" "+this.p().minimize(path);
+    var res=renamedPathAux(path);
+    assert this.p().minimize(res)==res: res +" "+this.p().minimize(res);
+    return res;
+    }
+  private P renamedPathAux(P path){
     int nesting=whereFromTop().size();
     if(!path.isNCs()){return path;}
     List<C> currentP=_topCs(whereFromTop(),path.toNCs());
@@ -103,16 +111,17 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     }
   @Override public P visitP(P path){return renamedPath(path);}
   @Override public Doc visitDoc(Doc doc){return infoRename.visitDoc(doc);}
-  @Override public MCall visitMCall(MCall mcall){
-    mcall=super.visitMCall(mcall);
-    var t=g._of(mcall.xP());
-    if(t==null){return mcall;}
+  @Override public MCall visitMCall(MCall mcall0){
+    MCall mcall1=super.visitMCall(mcall0);
+    var t=g._of(mcall1.xP());
+    if(t==null){t=g._of(mcall0.xP());}
+    if(t==null){return mcall1;}
     var path=t.p();
-    if(!path.isNCs()){return mcall;}
-    var originPath=Deps._origin(p(),path.toNCs(),mcall.s());
+    if(!path.isNCs()){return mcall1;}
+    var originPath=Deps._origin(p(),path.toNCs(),mcall1.s());
     if(originPath==null){originPath=path.toNCs();}
-    var s2=renamedS(originPath,mcall.s());
-    return mcall.withS(s2);    
+    var s2=renamedS(originPath,mcall1.s());
+    return mcall1.withS(s2);    
     }
   @Override public Info visitInfo(Info i){return i;}//it is handled later by infoRename.renameUsageInfo 
   private final InfoCloneVisitor infoRename=new InfoCloneVisitor();
@@ -140,7 +149,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
         var pi=ps.p().toNCs();
         if(pi.equals(P.pThis0)){continue;}
         if(pi.hasUniqueNum()){
-          assert newWatched.contains(pi);
+          assert Deps._publicRoot(pi).equals(P.pThis0) || newWatched.contains(Deps._publicRoot(pi)): pi;
           continue;
           }
         if(ps._s().hasUniqueNum() && !newWatched.contains(pi)){newWatched.add(pi);}
@@ -168,10 +177,22 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       //return renameUsageInfo(super.visitL(l));
       }
     @Override public P visitP(P path){return CloneRenameUsages.this.visitP(path);}
+
+  @Override public List<S> visitInfoSs(List<S> ss){
+    return L(ss,(c,s)->{
+      var s0=this.visitS(s);
+      if(s0==null){return;}
+      if(c.contains(s0)){return;}
+      c.add(s0);
+      });
+    }
     @Override public S visitS(S s){//for how we use this, we can assume it is inside an Info.refined
       var p0=CloneRenameUsages.this.p();
       for(var t:p0.topCore().ts()){
         L l=p0._ofCore(t.p());
+        //if l is null, it was made private.
+        //The only case where s is renamed and also P is renamed, is if s is made private
+        if(l==null){continue;} 
         if(l.info().refined().contains(s)){continue;}
         if(_elem(l.mwts(),s)==null){continue;}
         return renamedS(t.p().toNCs(),s);

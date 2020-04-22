@@ -71,7 +71,9 @@ public class Sum {
     assert l2.wf();
     assert WellFormedness.checkInfo(pOut.push(cOut,l1),l1): " "+l1+"\n\n"+l2;
     assert WellFormedness.checkInfo(pOut.push(cOut,l2),l2);
-    return compose(pOut,cOut,l1,l2,errC,errM);
+    var res=compose(pOut,cOut,l1,l2,errC,errM);
+    assert res.wf();
+    return res;
     }
   public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
     this.pOut=pOut;
@@ -100,11 +102,6 @@ public class Sum {
     Plus plus=new Plus(L());
     Core.L l=plus.plus(l1, l2);
     wellFormedRefineAndNoCircularImplements(l);
-    try{assert l.wf();}
-    catch(EndError ee){
-      System.out.println("Ill formed result of sum:"+l);
-      throw ee;
-      }
     return l;
     }
   RuntimeException err(IMWT fault1,IMWT fault2,Supplier<String> ss){
