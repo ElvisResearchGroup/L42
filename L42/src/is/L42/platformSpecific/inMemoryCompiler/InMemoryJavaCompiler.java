@@ -277,7 +277,7 @@ public class InMemoryJavaCompiler {
       };
     CompilationTask compilerTask = compiler.getTask(
       /*out:*/null,classFileManager,diagnisticListenerForErrors,
-      /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","--enable-preview","--release","13","-classpath",System.getProperty("java.class.path")),
+      /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","--enable-preview","--release",javaVersion(),"-classpath",System.getProperty("java.class.path")),
       /*StringsClasses??:*/null,files
       );
     boolean compilationRes=compilerTask.call();
@@ -286,5 +286,9 @@ public class InMemoryJavaCompiler {
       throw new CompilationError(diagnisticListenerForErrors);
       }
     return classLoader;
+    }
+  static private String javaVersion(){
+    var res=System.getProperty("java.version");
+    return res.substring(0,res.indexOf("."));
     }
   }
