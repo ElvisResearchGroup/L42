@@ -345,9 +345,7 @@ public class Core {
       }
       C c = cs.get(0);
       var res = LDom._elem(ncs, c);
-      if (res == null) {
-        return null;
-      }
+      if (res == null) {return null;}
       return res.l()._cs(cs.subList(1, cs.size()));
     }
 

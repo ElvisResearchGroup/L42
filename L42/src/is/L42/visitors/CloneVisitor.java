@@ -123,6 +123,7 @@ public class CloneVisitor {
     if(ts0==ts && mwts==mwts0 && ncs==ncs0 && info==info0 && docs==docs0){return l;}
     return new Core.L(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
     }
+  public List<P.NCs> visitInfoWatched(List<P.NCs> ps){return visitInfoPNCs(ps);}//overridable
   public final List<P.NCs> visitInfoPNCs(List<P.NCs> ps){
     return L(ps,(c,p)->{
       var pp=this.visitP(p);
@@ -157,7 +158,7 @@ public class CloneVisitor {
     var typeDep=visitInfoPNCs(typeDep0);
     var coherentDep=visitInfoPNCs(coherentDep0);
     var metaCoherentDep=visitInfoPNCs(metaCoherentDep0);
-    var watched=visitInfoPNCs(watched0);
+    var watched=visitInfoWatched(watched0);
     var usedMethods=visitInfoPathSels(usedMethods0);
     var hiddenSupertypes=visitInfoPNCs(hiddenSupertypes0);
     var refined=visitInfoSs(refined0);

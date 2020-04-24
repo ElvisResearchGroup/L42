@@ -289,6 +289,7 @@ public class InMemoryJavaCompiler {
     }
   static private String javaVersion(){
     var res=System.getProperty("java.version");
-    return res.substring(0,res.indexOf("."));
+    if(res.contains(".")){res=res.substring(0,res.indexOf("."));}
+    return res;
     }
   }

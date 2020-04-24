@@ -93,7 +93,7 @@ method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size
     if inC.startsWith(\"$") return void
     inC:=inC.replace(\"$" with=\".") //"B.C"    ""
     if inC.size()==0Size return that.#squareAdd(deep=Name(inName)=>n.nameFromRoot())
-    return that.#squareAdd(Name(inName)=>Name(n.nameFromRoot().toS()++S"."++inC))  //A.B$C$ =>A.B.C
+    return that.#squareAdd(deep=Name(inName)=>Name(n.nameFromRoot().toS()++S"."++inC))  //A.B$C$ =>A.B.C
     }
   return that
   }

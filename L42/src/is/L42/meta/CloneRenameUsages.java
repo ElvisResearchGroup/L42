@@ -4,7 +4,9 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
+import static is.L42.tools.General.popL;
 import static is.L42.tools.General.popLRight;
+import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.unreachable;
 
 import java.util.ArrayList;
@@ -46,6 +48,23 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     assert this.p().minimize(res)==res: res +" "+this.p().minimize(res);
     return res;
     }
+  private P.NCs renamedPathPrivate(int nesting,P.NCs path,C last){
+    var p0=path.withCs(popLRight(path.cs()));
+    List<C> currentP=_topCs(whereFromTop(),p0);
+    if(currentP==null){return path;}
+    Arrow a=r.map.get(new Arrow(currentP,null));
+    if(a==null || !a.full){return path;}
+    if(!a.isCs() || a._cs.isEmpty()){return path;}
+    C last0=a._cs.get(a._cs.size()-1);
+    if(!last0.hasUniqueNum()){return path;}
+    P.NCs newP=p().minimize(P.of(nesting,a._cs));
+    int size=newP.cs().size();
+    if(size<=1){return newP.withCs(pushL(newP.cs(),last));}//0 or 1; so removed the last there is nothing to rename
+    C lastC=newP.cs().get(size-1);
+    if(!lastC.hasUniqueNum()){return newP.withCs(pushL(newP.cs(),last));}
+    newP=renamedPathPrivate(nesting,newP,lastC);
+    return newP.withCs(pushL(newP.cs(),last));
+    }
   private P renamedPathAux(P path){
     int nesting=whereFromTop().size();
     if(!path.isNCs()){return path;}
@@ -53,7 +72,14 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     if(currentP==null){return path;}
     Arrow a=r.map.get(new Arrow(currentP,null));
     if(a==null || !a.full){return path;}
-    if(a.isCs()){return p().minimize(P.of(nesting,a._cs));}
+    if(a.isCs()){
+      P.NCs newP=p().minimize(P.of(nesting,a._cs));
+      int size=newP.cs().size();
+      if(size<=1){return newP;}//0 or 1; so removed the last there is nothing to rename      
+      C lastC=newP.cs().get(size-1);
+      if(!lastC.hasUniqueNum()){return newP;}
+      return renamedPathPrivate(nesting,newP,lastC);
+      }
     assert a.isP();
     if(!a._path.isNCs()){return a._path;}
     var res=a._path.toNCs();
@@ -139,17 +165,17 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       for(var p:res.typeDep()){
         if(newTypeDep.contains(p)){continue;}//even if already without duplicated, we may add it as a public root below
         newTypeDep.add(p);
-        var pp=Deps._publicRoot(p);
-        if(pp!=null && !newTypeDep.contains(pp)){
-          newTypeDep.add(pp);
-          if(!pp.equals(P.pThis0)){newWatched.add(pp);}
+        var pp=Deps._publicRoot(p(),p);
+        if(pp!=null){
+          if(!newTypeDep.contains(pp)){newTypeDep.add(pp);}
+          if(!pp.equals(P.pThis0)&& !newWatched.contains(pp)){newWatched.add(pp);}
           }
         }
       for(var ps:res.usedMethods()){//two iterations to first collect all the newWatched
         var pi=ps.p().toNCs();
         if(pi.equals(P.pThis0)){continue;}
         if(pi.hasUniqueNum()){
-          assert Deps._publicRoot(pi).equals(P.pThis0) || newWatched.contains(Deps._publicRoot(pi)): pi;
+          assert Deps._publicRoot(p(),pi).equals(P.pThis0) || newWatched.contains(Deps._publicRoot(p(),pi)): pi;
           continue;
           }
         if(ps._s().hasUniqueNum() && !newWatched.contains(pi)){newWatched.add(pi);}

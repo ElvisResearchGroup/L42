@@ -274,6 +274,7 @@ _______
 // for all P.C::k._ in typeDep, where P not of form _.C'::n._: 
 //   add P to typeDep and to watched
 //and we never put This0 in watched, nor This0.xx in usedMethods; we do not put Thisn in watched if in the program the outer name of Thisn has a unique number
+//when P in typeDep has unique numbers, we also put the public root
 //all of nativePar must be included in coherentDep too (well formedness?) 
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
     collectDeps(p; Docs) + collectDeps(p; T0..Tn,Ts) + collectDepsE(p; e?)

@@ -1210,7 +1210,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      method Void vc()=This1.A.C<:class This1.A.C.vc()
      B::2={class method Void v::3()=void #norm{}}
      #norm{
-       typeDep=This,This.B::2,This1.A,This1.A.C
+       typeDep=This,This.B::2,This1.A.C
        coherentDep=This,This.B::2,This1.A.C
        usedMethods=This1.A.C.vc()}
      }
@@ -1548,7 +1548,6 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        #norm{typeDep=This1, This2 watched=This2}}
      #norm{typeDep=This, This1 watched=This1}}
    #norm{typeDep=This}}"""/*next test after this line*/)
-   
    ),new AtomicTest(()->pass("""
      A={
        method Void v(This.B b)=b.b()       
@@ -1560,7 +1559,188 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    A::1={
      method Void v::2(This.B::3 b)=b.b::4()
      B::3={method Void b::4()=void #norm{}}
-     #norm{typeDep=This.B::3, This}}
+     #norm{typeDep=This.B::3,This}}
    #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ B={ #norm{}} #norm{}}
+     C={ method This1.A.B foo() #norm{typeDep=This1.A.B}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   A::1={ B::2={#norm{}}#norm{}}
+   C={method This1.A::1.B::2 foo()
+   #norm{typeDep=This1.A::1.B::2,This1 watched=This1}}
+   #norm{}}"""/*next test after this line*/)   
+   ),new AtomicTest(()->pass("""
+     A={ B={ #norm{}} #norm{}}
+     C={ method This1.A.B foo() #norm{typeDep=This1.A.B}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*K.
+   """,/*expected after this line*/"""
+   C={method This1.K.B foo()
+     #norm{typeDep=This1.K.B}}
+   K={B={#norm{}}#norm{}}
+   #norm{}}"""/*next test after this line*/)
+   //8 permutation tests
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   A::1={method Void foo::2(This a, This.B::3 b, This.B::3.C::5 c, This.B::3.C::5.D::7 d)=void
+     B::3={method Void foo::4(This1 a, This b, This.C::5 c, This.C::5.D::7 d)=void
+       C::5={method Void foo::6(This2 a, This1 b, This c, This.D::7 d)=void
+          D::7={method Void foo::8(This3 a, This2 b, This1 c, This d)=void
+            #norm{typeDep=This3, This4, This2, This1, This watched=This4, This3, This2, This1}}
+          #norm{typeDep=This2, This3, This1, This, This.D::7 watched=This3, This2, This1}}
+        #norm{typeDep=This1, This2, This, This.C::5, This.C::5.D::7 watched=This2, This1}}
+      #norm{typeDep=This, This1, This.B::3, This.B::3.C::5, This.B::3.C::5.D::7 watched=This1}}
+    #norm{typeDep=This}}
+    """/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.B.=>*<empty>
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This.B::1 b, This.B::1.C::3 c, This.B::1.C::3.D::5 d)=void
+     B::1={method Void foo::2(This1 a, This b, This.C::3 c, This.C::3.D::5 d)=void
+       C::3={method Void foo::4(This2 a, This1 b, This c, This.D::5 d)=void
+         D::5={method Void foo::6(This3 a, This2 b, This1 c, This d)=void
+           #norm{typeDep=This3, This2, This1, This watched=This3, This2, This1}}
+         #norm{typeDep=This2, This1, This, This.D::5 watched=This2, This1}}
+       #norm{typeDep=This1, This, This.C::3, This.C::3.D::5 watched=This1}}
+     #norm{typeDep=This, This.B::1, This.B::1.C::3, This.B::1.C::3.D::5}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.B.C.=>*<empty>
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This.B b, This.B.C::1 c, This.B.C::1.D::3 d)=void
+     B={method Void foo(This1 a, This b, This.C::1 c, This.C::1.D::3 d)=void
+       C::1={method Void foo::2(This2 a, This1 b, This c, This.D::3 d)=void
+         D::3={method Void foo::4(This3 a, This2 b, This1 c, This d)=void
+           #norm{typeDep=This3, This2, This1, This watched=This2, This1}}
+         #norm{typeDep=This2, This1, This, This.D::3 watched=This1}}
+       #norm{typeDep=This1, This, This.C::1, This.C::1.D::3}}
+     #norm{typeDep=This, This.B, This.B.C::1, This.B.C::1.D::3 watched=This.B}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.B.C.D.=>*<empty>
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This.B b, This.B.C c, This.B.C.D::1 d)=void
+     B={method Void foo(This1 a, This b, This.C c, This.C.D::1 d)=void
+       C={method Void foo(This2 a, This1 b, This c, This.D::1 d)=void
+         D::1={method Void foo::2(This3 a, This2 b, This1 c, This d)=void
+           #norm{typeDep=This3, This2, This1, This watched=This1}}
+         #norm{typeDep=This2, This1, This, This.D::1}}
+       #norm{typeDep=This1, This, This.C, This.C.D::1 watched=This.C}}
+     #norm{typeDep=This, This.B, This.B.C, This.B.C.D::1 watched=This.B.C}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.=>*K.
+   """,/*expected after this line*/"""
+   K={method Void foo(This a, This.B b, This.B.C c, This.B.C.D d)=void
+     B={method Void foo(This1 a, This b, This.C c, This.C.D d)=void
+       C={method Void foo(This2 a, This1 b, This c, This.D d)=void
+         D={method Void foo(This3 a, This2 b, This1 c, This d)=void
+           #norm{typeDep=This3, This2, This1, This}}
+         #norm{typeDep=This2, This1, This, This.D}}
+       #norm{typeDep=This1, This, This.C, This.C.D}}
+     #norm{typeDep=This, This.B, This.B.C, This.B.C.D}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.B.=>*K.
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This1.K b, This1.K.C c, This1.K.C.D d)=void
+     #norm{typeDep=This, This1.K, This1.K.C, This1.K.C.D}}
+   K={method Void foo(This1.A a, This b, This.C c, This.C.D d)=void
+     C={method Void foo(This2.A a, This1 b, This c, This.D d)=void
+       D={method Void foo(This3.A a, This2 b, This1 c, This d)=void
+         #norm{typeDep=This3.A, This2, This1, This}}
+       #norm{typeDep=This2.A, This1, This, This.D}}
+     #norm{typeDep=This1.A, This, This.C, This.C.D}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.B.C.=>*K.
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This.B b, This1.K c, This1.K.D d)=void
+     B={method Void foo(This1 a, This b, This2.K c, This2.K.D d)=void
+       #norm{typeDep=This1, This, This2.K, This2.K.D}}
+     #norm{typeDep=This, This.B, This1.K, This1.K.D}}
+   K={method Void foo(This1.A a, This1.A.B b, This c, This.D d)=void
+     D={method Void foo(This2.A a, This2.A.B b, This1 c, This d)=void
+       #norm{typeDep=This2.A, This2.A.B, This1, This}}
+     #norm{typeDep=This1.A, This1.A.B, This, This.D}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+     A.B.C.D.=>*K.
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This.B b, This.B.C c, This1.K d)=void
+     B={method Void foo(This1 a, This b, This.C c, This2.K d)=void
+       C={method Void foo(This2 a, This1 b, This c, This3.K d)=void
+         #norm{typeDep=This2, This1, This, This3.K}}
+       #norm{typeDep=This1, This, This.C, This2.K}}
+     #norm{typeDep=This, This.B, This.B.C, This1.K}}
+   K={method Void foo(This1.A a, This1.A.B b, This1.A.B.C c, This d)=void
+     #norm{typeDep=This1.A This1.A.B This1.A.B.C This}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={
+       method Void foo(This a,This.B b)=void
+       B={
+         method Void foo(This1 a,This b)=void
+         #norm{typeDep=This1,This}}
+       #norm{typeDep=This,This.B}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.=>*K.
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This1.K b)=void
+     #norm{typeDep=This, This1.K}}
+   K={method Void foo(This1.A a, This b)=void
+     #norm{typeDep=This1.A,This}}
+   #norm{}}"""/*next test after this line*/)
+
+   ),new AtomicTest(()->pass("""
+     A={
+       method Void foo(This a,This.B b)=void
+       B={
+         method Void foo(This1 a,This b)=void
+         #norm{typeDep=This1,This}}
+       #norm{typeDep=This,This.B}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.=>*K.J.
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This1.K.J b)=void
+     #norm{typeDep=This, This1.K.J}}
+   K={
+     J={method Void foo(This2.A a, This b)=void
+       #norm{typeDep=This2.A, This}}
+     #typed{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={
+       method Void foo(This a,This.B b)=void
+       B={
+         method Void foo(This1 a,This b)=void
+         #norm{typeDep=This1,This}}
+       #norm{typeDep=This,This.B}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.=>*<empty>
+   """,/*expected after this line*/"""
+   A={method Void foo(This a, This.B::1 b)=void
+     B::1={method Void foo::2(This1 a, This b)=void
+       #norm{typeDep=This1, This watched=This1}}
+     #norm{typeDep=This, This.B::1}}
+   #norm{}}"""/*next test after this line*/)//watched=This1 is added by CloneRename before the private content is moved in place
    ));}
+private static String nested4="""
+     A={
+       method Void foo(This a,This.B b,This.B.C c,This.B.C.D d)=void
+       B={
+         method Void foo(This1 a,This b,This.C c,This.C.D d)=void
+         C={
+           method Void foo(This2 a,This1 b,This c,This.D d)=void
+           D={method Void foo(This3 a,This2 b,This1 c,This d)=void
+             #norm{typeDep=This3,This2,This1,This}}
+           #norm{typeDep=This2,This1,This,This.D}} 
+         #norm{typeDep=This1,This,This.C,This.C.D}}
+       #norm{typeDep=This,This.B,This.B.C,This.B.C.D}}
+     #norm{}}""";
+
+   //TODO: it seams like it may refresh the novel private numbers for every rename in L42. Test it in a testRenameL42? how?
 }

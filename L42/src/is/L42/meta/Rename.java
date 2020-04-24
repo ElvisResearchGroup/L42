@@ -56,6 +56,7 @@ import is.L42.top.UniqueNsRefresher;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.WellFormedness;
 
 public class Rename {
@@ -151,9 +152,6 @@ public class Rename {
       });
     cs=L();
     L res=applyMap();
-    //System.out.println("renamed lib: "+this.mapToS());
-    //System.out.println(res);
-    //System.out.println("---------------");
     assert l.info().isTyped()==res.info().isTyped();
     assert res.wf();
     assert WellFormedness.allMinimized(pOut,cOut,res);
@@ -414,31 +412,63 @@ public class Rename {
     if(!a.full && a.isEmpty()){return toAbstract(l1);}
     assert a.isCs();
     if(!a.full){noCircular(l1,L());}
-    int n=a._cs.size();
-    P.NCs src=P.of(n,L());
+    P.NCs src=P.of(a._cs.size(),L());
     L l=noNesteds(l1);
-    C c1=freshC(p.pop().topCore().ncs(),0);
-    l=fromAndPushThis0Out(forcedNavigate(p,a._cs),l,src,c1,true);
+    l=fromAndPushThis0Out(forcedNavigate(p,a._cs),l,src);
     int last=a._cs.size()-1;
     addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
     if(!a.full){return toAbstract(l1);}
     return Program.emptyL.withNcs(l1.ncs());
     //TODO: discuss, should the label by #typed, #norm or something else?
     }
-  static L fromAndPushThis0Out(Program prg,L l,P.NCs src,C c1,boolean removeC1){
-    return new From(prg,src,0){
+  static L fromAndPushThis0Out(Program prg,L l,P.NCs src){
+    return new From(prg,src,0){//0+start since p is placed in the new l position
       L start(L l){return superVisitL(l);}
       @Override public P visitP(P p){
-        if(!p.isNCs()){return super.visitP(p);}
+        if(!p.isNCs()){return p;}
         var pp=p.toNCs();
-        if(pp.n()!=j()){return program().minimize(super.visitP(p));}
-        var normalStart=pp.cs().isEmpty() ||!pp.cs().get(0).hasUniqueNum();
+        int n=pp.n();
+        if(n<j()){return p;}
+        if(n==j()){
+          if(pp.cs().isEmpty() || pp.cs().get(0).hasUniqueNum()){return p;}
+          pp=program().from(pp.withN(0),src);
+          return program().minimize(pp.withN(pp.n()+j()));
+          }
+        //assert n>j();
+        pp=program().from(pp.withN(n-j()),src);
+        return program().minimize(pp.withN(pp.n()+j()));
+        }
+        /*
+        A new kind of e[from P;p;j]
+        Exactly like the other e[from P;p;j], but when a Path P0 is reached: 
+        * Any[from _;_;_]=Any
+        * Void[from _;_;_]=Void
+        * Library[from _;_;_]=Library
+        * Thisn.Cs[from P;p;j] = Thisn.Cs
+            n<j
+            assert p=L C?1 L1..C?j Lj, C?j=empty or C?j=C::k  
+        * Thisj.C::k.Cs[from P;p;j;_] = Thisj.C::k.Cs
+        * Thisj[from P;p;j;_] = Thisj
+        * Thisj.C.Cs[from P;p;j] = p.minimize(This(j+k).Cs1)
+            C has no unique number
+            This0.C.Cs[from P;p] = Thisk.Cs1
+        * This(j+1+n).Cs[from P;p;j] = p.minimize(This(j+k).Cs1) //This(j+1+n).Cs points outside
+            This(1+n).Cs[from P;p] = Thisk.Cs1 
+         C c1=freshC(p.pop().topCore().ncs(),0);//TODO: this may disappear??
+        */
+        /*var normalStart=pp.cs().isEmpty() ||!pp.cs().get(0).hasUniqueNum();
         if(normalStart){ 
           pp=P.of(pp.n()+1,pushL(c1,pp.cs()));
           }
         pp=(P.NCs)super.visitP(pp);
         if(!normalStart || !removeC1){return pp;}
-        return program().minimize(P.of(pp.n()-1,popL(pp.cs())));
+        return program().minimize(P.of(pp.n()-1,popL(pp.cs())));*/
+      @Override public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
+        return L(ps,(c,p)->{
+          var pp=this.visitP(p);
+          if(!pp.isNCs()||c.contains(pp)||pp.equals(P.pThis0)){return;}
+          c.add(pp.toNCs());
+          });
         }
       }.start(l);
     }
@@ -547,7 +577,7 @@ public class Rename {
   void nestedInNewPosition(NC nc,Arrow a,boolean moveDocs){
     if(a._cs.isEmpty()){
       L l1=noNesteds(nc.l());
-      addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(0,a.cs),nc.key(),false);
+      addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(a._cs.size(),a.cs));
       return;
       }
     var cs1=popLRight(a._cs);
@@ -555,8 +585,8 @@ public class Rename {
     Program p=forcedNavigate(this.p,a._cs);
     L l1=nc.l();
     l1=noNesteds(l1);
-    var src=p.minimize(P.of(n,cs));//not n+1 because of the -1 in from?
-    l1=fromAndPushThis0Out(p,l1,src,nc.key(),false);
+    var src=p.minimize(P.of(a._cs.size(),a.cs));
+    l1=fromAndPushThis0Out(p,l1,src);
     List<Doc> docs=L();
     if(moveDocs){
       var p0=p.pop();
@@ -596,8 +626,8 @@ public class Rename {
     var l2=noNesteds(nc.l());
     int n=a._cs.size()-1;
     Program p=forcedNavigate(this.p,a._cs);
-    var src=p.minimize(P.of(n,cs));
-    l2=fromAndPushThis0Out(p,l2,src,nc.key(),true);
+    var src=p.minimize(P.of(a._cs.size(),a.cs));
+    l2=fromAndPushThis0Out(p,l2,src);
     int last=a._cs.size()-1;
     var nc2=new NC(nc.poss(),nc.docs(),a._cs.get(last),l2);
     if(nc1==null){return L(nc2);}

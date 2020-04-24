@@ -487,4 +487,10 @@ public class Program implements Visitable<Program>{
     if(pTails.isEmpty()){return false;}
     return pTails.hasC() && pTails.c().hasUniqueNum();
     }
+  public boolean inPublicUpTo(int j){
+    if(j==0){return false;}
+    if(pTails.isEmpty()){return false;}
+    if(pTails.hasC() && !pTails.c().hasUniqueNum()){return true;}
+    return pop().inPublicUpTo(j-1);
+    }
   }

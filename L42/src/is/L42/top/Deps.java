@@ -47,17 +47,26 @@ public class Deps{
     catch(LL.NotInDom | EndError ee){return null;}//can be more efficient rewriting the above to avoid the exception.
     //we need the null because when adding usedMethods for methods that are not declared, we need to "guess" that they are not refined...
     }
-  public static P.NCs _publicRoot(P.NCs pi){
+  public static P.NCs _publicRoot(Program p0,P.NCs pi){
     var cs=pi.cs();
     var csCut=L(cs.stream().takeWhile(c->!c.hasUniqueNum()));
     if(cs.size()==csCut.size()){return null;}
-    return pi.withCs(csCut);
+    pi=pi.withCs(csCut);
+    return pi;//TODO: it is really unclear if I should do the following instead :-(
+    /*if(!csCut.isEmpty()){return pi;}
+    var p1=p0.pop(pi.n());
+    int added=0;
+    while(p1.inPrivate()){
+      p1=p1.pop();
+      added+=1;      
+      }
+    return pi.withN(pi.n()+added);*/
     }
   void addP(Program p0,P p){
     if(!p.isNCs()){return;}
     var pi=p.toNCs();
     typePs.add(pi);
-    pi=_publicRoot(pi);
+    pi=_publicRoot(p0,pi);
     if(pi==null){return;}
     typePs.add(pi);
     addWatched(p0, pi);
