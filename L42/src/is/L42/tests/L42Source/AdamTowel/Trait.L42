@@ -1,30 +1,30 @@
-Lifted={interface
+@Public Lifted={interface
   class method Library code()
   class method Trait +(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Introspection$Nested nested()
   }
-ClassOperators={class method Trait()=Trait(code={#norm{}})}
-Library code
+@Public ClassOperators={class method Trait()=Trait(code={#norm{}})}
+@Public Library code
 class method This(Library code)
-class method This(Library that)=This(code=that)
+@Public class method This(Library that)=This(code=that)
 
 class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
   return This(code=Meta().simpleSum(a=a,b=b))
   catch error Trait$ClassClash e exception e
   catch error Trait$MethodClash e exception e
   } 
-method This +(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
-method This +1(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=lib,b=this.code())
-method This +(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
-method This +1(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=lifted.code(),b=this.code())
-method This +(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
-method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
-method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
-method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
-method Introspection$Nested nested()=Introspection$Nested.from(library=this.code())
+@Public method This +(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
+@Public method This +1(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=lib,b=this.code())
+@Public method This +(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
+@Public method This +1(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=lifted.code(),b=this.code())
+@Public method This +(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
+@Public method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lib)
+@Public method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=lifted.code())
+@Public method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum::0(a=this.code(),b=trait.code())
+@Public method Introspection$Nested nested()=Introspection$Nested.from(library=this.code())
 
-Acc={
+@Public Acc={
   var Meta that
   class method mut This(Meta that)
   class method mut This (mut This squareBuilder)=squareBuilder
@@ -36,7 +36,7 @@ Acc={
   mut method Void #squareAdd(Meta deep)=this.that(\that.mergeMap(deep=deep))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
   }
-method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
+@Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
   return squareBuilder.that().applyMap(this.code())
   catch error Trait$InvalidName e exception e
   catch error Trait$InvalidMap e exception e
@@ -44,8 +44,7 @@ method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$Cl
   catch error Trait$MethodClash e exception e
   })
 
-
-method Library #toLibrary()=
+@Public method Library #toLibrary()=
   Meta().simpleSum(a=Meta().resource(this.code()),b=ToLibrary())
 
 ToLibrary=Meta().resource({[Lifted]

@@ -35,6 +35,7 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
+import is.L42.generated.LDom;
 import is.L42.generated.LL;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
@@ -112,6 +113,11 @@ public class Program implements Visitable<Program>{
     }
   public Program push(LL ll){return new Program(ll,pTails.pTailSingle(top));}
   public Program push(C c){return push(c,top.c(c));}
+  public Program _push(C c){
+    var res=LDom._elem(topCore().ncs(), c);
+    if(res==null){return null;}
+    return push(c,res.l());
+    }
   public Program update(LL ll){return update(ll,true);}
   public Program update(LL ll,boolean cleanPushed){
     assert !is.L42.common.Constants.updatePopChecks() || !cleanPushed || cleanPushed(pTails):pTails.printCs();
@@ -124,6 +130,17 @@ public class Program implements Visitable<Program>{
   public Program navigate(List<C> cs){
     Program res=this;
     for(C c:cs){res=res.push(c);}
+    return res;
+    }
+  public Program _navigate(P.NCs p){//Still exception if n>dept
+    return this.pop(p.n())._navigate(p.cs());
+    }
+  public Program _navigate(List<C> cs){
+    Program res=this;
+    for(C c:cs){
+      res=res._push(c);
+      if(res==null){return null;}
+      }
     return res;
     }
   public int dept(){

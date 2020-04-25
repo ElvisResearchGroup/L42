@@ -239,7 +239,7 @@ public class Rename {
   List<C> hiddenBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().hiddenSupertypes());}
   boolean isDeleted(List<C>csi){
     var a=map.get(new Arrow(csi,null));
-    return a!=null && (a.isEmpty() || a.isP());
+    return a!=null && ((!a.full && a.isEmpty() )|| a.isP());
     }
   String mapToS(){
     return list.stream().map(e->e.toStringErr()).collect(Collectors.joining(";"));
@@ -424,6 +424,12 @@ public class Rename {
   static L fromAndPushThis0Out(Program prg,L l,P.NCs src){
     return new From(prg,src,0){//0+start since p is placed in the new l position
       L start(L l){return superVisitL(l);}
+      @Override public Info visitInfo(Info i){
+        assert i.usedMethods().stream().noneMatch(u->i.watched().contains(u.p()));
+        Info i0=super.visitInfo(i);
+        assert i0.usedMethods().stream().noneMatch(u->i0.watched().contains(u.p()));
+        return i0;        
+        }
       @Override public P visitP(P p){
         if(!p.isNCs()){return p;}
         var pp=p.toNCs();
@@ -624,7 +630,6 @@ public class Rename {
       }
     var nc1=_onlyNested(nc);
     var l2=noNesteds(nc.l());
-    int n=a._cs.size()-1;
     Program p=forcedNavigate(this.p,a._cs);
     var src=p.minimize(P.of(a._cs.size(),a.cs));
     l2=fromAndPushThis0Out(p,l2,src);

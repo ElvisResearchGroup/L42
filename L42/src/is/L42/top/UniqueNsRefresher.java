@@ -2,28 +2,49 @@ package is.L42.top;
 
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.LDom;
+import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.meta.Arrow;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tools.General;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.PropagatorCollectorVisitor;
 
 public class UniqueNsRefresher extends CloneVisitor{
   HashSet<Integer> used=Resources.usedUniqueNs;
   int upTo=Resources.allBusyUpTo;
   HashSet<Integer> newUsed=new HashSet<Integer>();
   HashMap<Integer,Integer> refreshed=new HashMap<>();
+  boolean scope;public UniqueNsRefresher(boolean scope){this.scope=scope;}
+  public UniqueNsRefresher(){this(false);}
   L refreshUniqueNs(L l){
+    if(scope){l.accept(new PropagatorCollectorVisitor(){
+      @Override public void visitNC(Core.L.NC nc){
+        if(!nc.key().hasUniqueNum()){return;}
+        refreshed.put(nc.key().uniqueNum(),UniqueNsRefresher.this.firstFreshUnique());
+        }
+      @Override public void visitMWT(Core.L.MWT mwt){
+        if(!mwt.key().hasUniqueNum()){return;}
+        refreshed.put(mwt.key().uniqueNum(),UniqueNsRefresher.this.firstFreshUnique());
+        }
+      });}
     L res=l.accept(this);
     used.addAll(newUsed);
     Resources.allBusyUpTo=upTo;
     return res;
     }
   private int updatedFor(int n){
+    if(scope){
+      Integer k=refreshed.get(n);
+      if(k==null){return n;}
+      return k;
+      }
     if(!used.contains(n)){newUsed.add(n);return n;}
     Integer k=refreshed.get(n);
     if(k==null){
@@ -31,6 +52,12 @@ public class UniqueNsRefresher extends CloneVisitor{
       refreshed.put(n,k);
       }
     return k;
+    }
+  @Override public P visitP(P p){
+    if(!p.isNCs()){return p;}
+    var pp=p.toNCs();
+    List<C> cs=General.L(pp.cs(),this::visitC);
+    return pp.withCs(cs);
     }
   @Override public C visitC(C c){
     if(!c.hasUniqueNum() || c.uniqueNum()==0){return c;}

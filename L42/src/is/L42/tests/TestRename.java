@@ -1727,6 +1727,31 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        #norm{typeDep=This1, This watched=This1}}
      #norm{typeDep=This, This.B::1}}
    #norm{}}"""/*next test after this line*/)//watched=This1 is added by CloneRename before the private content is moved in place
+   ),new AtomicTest(()->pass("""
+     A={class method Void foo()=void #norm{}}
+     B={method Void bar()=This1.A<:class This1.A.foo() #norm{typeDep=This1.A coherentDep=This1.A usedMethods=This1.A.foo()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+   """,/*expected after this line*/"""
+   A::1={class method Void foo::2()=void #norm{}}
+   B={method Void bar()=This1.A::1<:class This1.A::1.foo::2()
+     #norm{typeDep=This1.A::1, This1 coherentDep=This1.A::1 watched=This1}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface class method Void foo() #norm{}}
+     C={
+       class method Library lib()={[This2.I]
+         class method Void foo()=void
+         #norm{typeDep=This2.I refined=foo()}}
+       #norm{typeDep=This1.I hiddenSupertypes=This1.I}}
+     #norm{}}""",/*rename map after this line*/"""
+     I.=>*<empty> | C.=>*<empty>
+   """,/*expected after this line*/"""
+   nested class { I={..} C={..} }
+   The method I.foo()
+   can not be made private since is implemented by private parts of nested class C
+   Full mapping:I=>*<empty>;C=>*<empty>
+   [file:[###]"""/*next test after this line*/)
    ));}
 private static String nested4="""
      A={

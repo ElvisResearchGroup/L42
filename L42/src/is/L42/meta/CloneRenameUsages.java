@@ -120,7 +120,9 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     List<MWT> mwts1=L(l.mwts(),(c,mwti)->
       c.addAll(r.renameMWT(visitMWT(mwti))));
     var ncs1=r.renameNCs(this,l.ncs());
+    assert l.info().usedMethods().stream().noneMatch(u->l.info().watched().contains(u.p()));
     Info i=infoForNewPrivateNesteds(l.ncs(),ncs1,l.info());
+    assert i.usedMethods().stream().noneMatch(u->i.watched().contains(u.p()));
     List<T> ts1=visitTs(l.ts());
     List<Doc> docs1=visitDocs(l.docs());
     return doPushedOp(new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,i,docs1));    
@@ -139,8 +141,8 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
   @Override public Doc visitDoc(Doc doc){return infoRename.visitDoc(doc);}
   @Override public MCall visitMCall(MCall mcall0){
     MCall mcall1=super.visitMCall(mcall0);
-    var t=g._of(mcall1.xP());
-    if(t==null){t=g._of(mcall0.xP());}
+    var t=g._of(mcall0.xP());
+    if(t==null){t=g._of(mcall1.xP());}
     if(t==null){return mcall1;}
     var path=t.p();
     if(!path.isNCs()){return mcall1;}
@@ -198,20 +200,16 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
         );
       return l.withInfo(res);
       }
-    @Override public L visitL(L l){
-      throw unreachable();
-      //return renameUsageInfo(super.visitL(l));
-      }
+    @Override public L visitL(L l){throw unreachable();}
     @Override public P visitP(P path){return CloneRenameUsages.this.visitP(path);}
-
-  @Override public List<S> visitInfoSs(List<S> ss){
-    return L(ss,(c,s)->{
-      var s0=this.visitS(s);
-      if(s0==null){return;}
-      if(c.contains(s0)){return;}
-      c.add(s0);
-      });
-    }
+    @Override public List<S> visitInfoSs(List<S> ss){
+      return L(ss,(c,s)->{
+        var s0=this.visitS(s);
+        if(s0==null){return;}
+        if(c.contains(s0)){return;}
+        c.add(s0);
+        });
+      }
     @Override public S visitS(S s){//for how we use this, we can assume it is inside an Info.refined
       var p0=CloneRenameUsages.this.p();
       for(var t:p0.topCore().ts()){

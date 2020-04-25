@@ -128,6 +128,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       name="£c"+pt.c().inner()+uId+"£_"+name;
       pt=pt.tail();
       }
+    if(name.isEmpty()){return name;}
     return name.substring(0,name.length()-2);
     }
   public static List<C> classNamePath(Program p){
@@ -173,7 +174,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     assert lib!=null:t;
     var mwts=lib.mwts();
     var elem=_elem(mwts,m.s());
-    assert elem!=null:m.s();
+    assert elem!=null:
+      m.s()+" "+mwts+" "+lib.poss();
     var mh=elem.mh();
     T ret=p.from(mh.t(),t.p().toNCs());
     boolean nw=nativeWrap(ret);

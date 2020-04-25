@@ -107,40 +107,42 @@ public class Loader {
   HashSet<String> okToJava=new HashSet<>();//remove elements when the enter in loaded
   HashSet<String> notOkToJava=new HashSet<>();//to be flushed every new load bunch
   boolean isOkToJava(Program p,String name){
-    return isOkToJava(p,name,new HashSet<>(),new HashSet<>());
+    var res=notOkToJava(p,name, new HashSet<>());
+    if(!res){okToJava.add(name);}
+    return !res;
     }
-  boolean isOkToJava(Program p,String name,HashSet<String> mayBeOkToJava,HashSet<String>passed){
-    if(loaded.containsKey(name)){return true;}//already in Java
-    if(okToJava.contains(name)){return true;}//already verified to be ok
-    if(notOkToJava.contains(name)){return false;}
+  boolean notOkToJava(Program p,String name,HashSet<String> mayBeOkToJava){
+    if(loaded.containsKey(name)){return false;}//already in Java
+    if(okToJava.contains(name)){return false;}//already verified to be ok
+    if(notOkToJava.contains(name)){return true;}
     mayBeOkToJava.add(name);
     for(var path:p.topCore().info().typeDep()){
-      var canNavigate=p.pop(path.n()).top._cs(path.cs());
-      if(canNavigate==null){notOkToJava.add(name);return false;}
-      var p0=p.navigate(path);//test above avoid costly exception here
+      var p0=p._navigate(path);
+      if(p0==null){notOkToJava.add(name);return true;}
       //if navigate impossible; it can happen if class refers to stuff defined later
       String name0=J.classNameStr(p0);
-      if(mayBeOkToJava.contains(name0)){passed.add(name0);continue;}
-      HashSet<String>passed0=new HashSet<>();
-      var res=isOkToJava(p0,name0,mayBeOkToJava,passed0);
-      passed.addAll(passed0);
-      if(!res){notOkToJava.add(name);return false;}
+      if(name0.isEmpty() || mayBeOkToJava.contains(name0)){continue;}
+      var res=notOkToJava(p0,name0,mayBeOkToJava);
+      if(res){return true;}
       }
-    mayBeOkToJava.remove(name);
-    passed.remove(name);
-    if(passed.isEmpty()){okToJava.add(name);}
-    return true;
+    return false;
+    }
     //* okToJava(p):
     //    name(p) already loaded
     //* okToJava(p):
     //    forall P in p(This).typeDep
-    //    okToJava(p.navigate(P))
-    }
+    //      okToJava(p.navigate(P))
+    //only fails if we reach a P so that p.navigate(P) is undefined
+    //* notOkToJava(p)
+    //    P in p(This).typeDep and p.navigate(P) undefined
+    //* notOkToJava(p)
+    //    P in p(This).typeDep and notOkToJava(p.navigate(P))
   void loadRec(Program p,ArrayList<SourceFile>files){
     var l=p.topCore();
     for(var nc:l.ncs()){loadRec(p.push(nc.key(), nc.l()),files);}
     if(!l.info().isTyped()){return;}
     String name=J.classNameStr(p);
+    if(name.isEmpty()){return;}
     if(this.loaded.containsKey(name)){return;}
     if(!isOkToJava(p,name)){return;}
     J j=new J(p,G.empty(),false,libs,false);

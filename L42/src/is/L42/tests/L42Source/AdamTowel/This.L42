@@ -27,8 +27,8 @@ S$StringBuilder={
 // but miss some details and do not have encapsulation
 DeployAAA=(
   lib={
-    AbstractTowel={}
     Public$={}
+    @Public$ AbstractTowel={}
     @Public$ @AbstractTowel{public}Public={}    
     @Public @AbstractTowel{hasToS}HasToS={interface read method S toS()}
     //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.
@@ -55,7 +55,8 @@ DeployAAA=(
     @Public Trait$InvalidMap=BaseErrorTrait()
     @Public @AbstractTowel{test}Test={...}
     @Public @AbstractTowel{log}Log={...}
-    Meta={...}
+    @Public Meta={...} //TODO: will be private later, but then
+    //trait[] need to take NOT A META, and NAME=>NAME need to return NOT A META
     @Public @AbstractTowel{name}Name={...}
     @Public @AbstractTowel{trait}Trait={...}
     @Public @AbstractTowel{class}Class={...}
@@ -105,9 +106,11 @@ DeployAdamTowel={reuse[#$aaa]
     base=Trait({reuse[#$aaa]})[clear='Introspection$Nested]
     added=Trait:{...}
     tot=base+added
-    //organize=Organize(public='Public)
-    organize=Organize()
-    Deploy.towel(url='AdamTowel,code=Class:organize:tot)
+    organize=Organize(public='Public)
+    toDeploy=Class:organize:tot
+    //Debug(Introspection.Nested.from(library=toDeploy).toFullS())
+    //organize=Organize()
+    Deploy.towel(url='AdamTowel,code=toDeploy)
     )
   }
 //Testing step2:

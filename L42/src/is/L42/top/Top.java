@@ -541,12 +541,16 @@ dropCache:
     assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
     assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
     assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
+    var allW=mergeU(info1.watched(),info2.watched());
+    List<Core.PathSel> allU=L(c->{//avoid the ps in watched
+      for(var ps:info1.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
+      for(var ps:info2.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
+      });
     Info res=new Info(info1.isTyped() && info2.isTyped(),
       mergeU(info1.typeDep(),info2.typeDep()),
       mergeU(info1.coherentDep(),info2.coherentDep()),
       mergeU(info1.metaCoherentDep(),info2.metaCoherentDep()),
-      mergeU(info1.watched(),info2.watched()),
-      mergeU(info1.usedMethods(),info2.usedMethods()),
+      allW,allU,
       mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
       mergeU(info1.refined(),info2.refined()),
       info1.close() || info2.close(),
@@ -562,7 +566,7 @@ dropCache:
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
     Core.L l=(Core.L)p1.top;
     if(!(source instanceof LL)){
-      nc=nc.withL(new UniqueNsRefresher().refreshUniqueNs(nc.l()));
+      nc=nc.withL(new UniqueNsRefresher(true).refreshUniqueNs(nc.l()));
       }
     var info=l.info();
     Deps deps=new Deps().collectDocs(p1,nc.docs());
