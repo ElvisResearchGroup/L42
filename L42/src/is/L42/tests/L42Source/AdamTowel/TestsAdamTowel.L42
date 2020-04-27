@@ -70,7 +70,7 @@ TestSizeParsing=(
   catch error S.ParseError x 
     {}:Test"InvalidParseIntError"(
       x.text()==S"The string %S.dq()oh NO!%S.dq() is not a valid number"
-      )"Error is %x" 
+      )"Error is %x"
   )
 NotCoh={This field, class method This ()}
 TestMakeNotCohList=Class:Collection.listTrait()['Elem=>NotCoh<:class Any]
