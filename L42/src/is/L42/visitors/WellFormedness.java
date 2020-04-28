@@ -124,6 +124,16 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     setAll.removeAll(setSome);
     throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
     }
+  public static boolean coherentInfo(Program p,Info i){
+    i.accept(new PropagatorCollectorVisitor(){
+      @Override public void visitP(P path){
+        assert p.minimize(path)==path:
+          path +" "+p.minimize(path);        
+        }
+      });
+    assert i.usedMethods().stream().noneMatch(u->i.watched().contains(u.p()));
+    return true;
+    }
   public static boolean checkInfo(Program p,Core.L l){
     Deps deps=new Deps().collectDeps(p,l.mwts());
     deps.collectDepsNCs(p,l.ncs());    

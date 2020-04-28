@@ -344,7 +344,8 @@ public class Program implements Visitable<Program>{
     if(path.n()==0){return path;}
     if(path.n()==1){return baseMinimize(path);}
     var pathLess1=path.withN(path.n()-1);
-    assert !pTails.isEmpty(): path;
+    assert !pTails.isEmpty(): 
+    path;
     P.NCs tmp=pop().minimize(pathLess1).toNCs();
     if(pathLess1==tmp){tmp=path;}
     else{tmp=tmp.withN(tmp.n()+1);}
@@ -352,7 +353,8 @@ public class Program implements Visitable<Program>{
     return tmp;
     }
   private P.NCs baseMinimize(P.NCs p) {
-    assert !pTails.isEmpty():p;
+    assert !pTails.isEmpty():
+      p;
     if(p.cs().isEmpty()){return p;}
     if(!pTails.hasC()){return p;}
     if(!pTails.c().equals(p.cs().get(0))){return p;}

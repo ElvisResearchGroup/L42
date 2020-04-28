@@ -15,6 +15,7 @@ import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unreachable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
@@ -325,7 +326,10 @@ public class Rename {
         err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class on itself");
         }
       }
-    if(!that.full && that._s==null){makeAbstractOk(l,that.cs);}
+    if(!that.full && that._s==null){
+      if(that.isEmpty()){makeAbstractOk(null,that.cs);}//allow to abstractify interface
+      else{makeAbstractOk(l,that.cs);}//but not to move implementation out
+      }
     if(that._s!=null && !that.isEmpty()){
       assert that.isMeth();
       if(!that._cs.equals(that.cs)){
@@ -424,10 +428,18 @@ public class Rename {
   static L fromAndPushThis0Out(Program prg,L l,P.NCs src){
     return new From(prg,src,0){//0+start since p is placed in the new l position
       L start(L l){return superVisitL(l);}
+      Program forAssert(){
+        Program res=forcedNavigate(program().pop(j()+src.n()),src.cs());
+        List<C> path=program().path();
+        int i=path.size();
+        path=path.subList(i-j(),i);
+        return forcedNavigate(res,path);
+        }
       @Override public Info visitInfo(Info i){
-        assert i.usedMethods().stream().noneMatch(u->i.watched().contains(u.p()));
+        assert program().dept()-j()==prg.dept();
+        assert WellFormedness.coherentInfo(forAssert(), i);
         Info i0=super.visitInfo(i);
-        assert i0.usedMethods().stream().noneMatch(u->i0.watched().contains(u.p()));
+        assert WellFormedness.coherentInfo(program(), i0);
         return i0;        
         }
       @Override public P visitP(P p){
@@ -437,38 +449,12 @@ public class Rename {
         if(n<j()){return p;}
         if(n==j()){
           if(pp.cs().isEmpty() || pp.cs().get(0).hasUniqueNum()){return p;}
-          pp=program().from(pp.withN(0),src);
+          pp=prg.from(pp.withN(0),src);
           return program().minimize(pp.withN(pp.n()+j()));
           }
-        //assert n>j();
-        pp=program().from(pp.withN(n-j()),src);
+        pp=prg.from(pp.withN(n-j()),src);//note, correctly prg~=~ progam().pop(j())
         return program().minimize(pp.withN(pp.n()+j()));
         }
-        /*
-        A new kind of e[from P;p;j]
-        Exactly like the other e[from P;p;j], but when a Path P0 is reached: 
-        * Any[from _;_;_]=Any
-        * Void[from _;_;_]=Void
-        * Library[from _;_;_]=Library
-        * Thisn.Cs[from P;p;j] = Thisn.Cs
-            n<j
-            assert p=L C?1 L1..C?j Lj, C?j=empty or C?j=C::k  
-        * Thisj.C::k.Cs[from P;p;j;_] = Thisj.C::k.Cs
-        * Thisj[from P;p;j;_] = Thisj
-        * Thisj.C.Cs[from P;p;j] = p.minimize(This(j+k).Cs1)
-            C has no unique number
-            This0.C.Cs[from P;p] = Thisk.Cs1
-        * This(j+1+n).Cs[from P;p;j] = p.minimize(This(j+k).Cs1) //This(j+1+n).Cs points outside
-            This(1+n).Cs[from P;p] = Thisk.Cs1 
-         C c1=freshC(p.pop().topCore().ncs(),0);//TODO: this may disappear??
-        */
-        /*var normalStart=pp.cs().isEmpty() ||!pp.cs().get(0).hasUniqueNum();
-        if(normalStart){ 
-          pp=P.of(pp.n()+1,pushL(c1,pp.cs()));
-          }
-        pp=(P.NCs)super.visitP(pp);
-        if(!normalStart || !removeC1){return pp;}
-        return program().minimize(P.of(pp.n()-1,popL(pp.cs())));*/
       @Override public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
         return L(ps,(c,p)->{
           var pp=this.visitP(p);
@@ -583,11 +569,10 @@ public class Rename {
   void nestedInNewPosition(NC nc,Arrow a,boolean moveDocs){
     if(a._cs.isEmpty()){
       L l1=noNesteds(nc.l());
-      addMapTop=fromAndPushThis0Out(Program.emptyP,l1,P.of(a._cs.size(),a.cs));
+      addMapTop=fromAndPushThis0Out(this.p,l1,P.of(0,a.cs));
       return;
       }
     var cs1=popLRight(a._cs);
-    int n=cs1.size();
     Program p=forcedNavigate(this.p,a._cs);
     L l1=nc.l();
     l1=noNesteds(l1);
@@ -596,10 +581,10 @@ public class Rename {
     List<Doc> docs=L();
     if(moveDocs){
       var p0=p.pop();
-      var src0=p0.minimize(P.of(n,cs));
+      var src0=p0.minimize(P.of(cs1.size(),cs));
       docs=p0.fromDocs(nc.docs(),src0);
       }
-    NC newNC=new NC(nc.poss(),docs,a._cs.get(n),l1);
+    NC newNC=new NC(nc.poss(),docs,a._cs.get(cs1.size()),l1);
     addMapNCs(cs1,newNC);
     }
   NC rename7superNC(NC nc,List<C> csc,Arrow a){
@@ -681,9 +666,12 @@ public class Rename {
     Info i=l0.info();    
     i=new Info(i.isTyped(),typeDep,L(),L(),L(),L(),L(),i.refined(),false, "",L(), -1);
     return l.withNcs(ncs).withInfo(i);
-    } 
-  Program forcedNavigate(Program p,List<C> cs){
-    for(C c:cs){p=p.push(c,Program.emptyL);}
+    }
+  static Program forcedNavigate(Program p,List<C> cs){
+    for(C c:cs){
+      if(c!=null){p=p.push(c,Program.emptyL);}
+      else{p=p.push(Program.emptyL);}
+      }
     return p;
     }
   void noCircular(L l,List<C>cs0){

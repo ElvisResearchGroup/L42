@@ -71,7 +71,8 @@ _______
         then Cs'=>P' in Map 
     if N = Cs.s then N' in {Cs.s',empty}, s!=s'
     if N = Cs then N' in {Cs',P,empty} Cs!=Cs'
-    if N|>N'of form Cs->_ then makeAbstractOk(p,Cs,empty,L,Map) 
+    if N|>N'of form Cs->empty then makeAbstractOk(p,Cs,empty,L,Map)
+    if N|>N'of form Cs->Cs' then makeAbstractOk(p,Cs,L(Cs),L,Map) 
     if N|>N'of form Cs.s|>Cs'.s'
       then Cs=Cs' and size(s.xs)=size(s'.xs)
     if N|>N' = Cs|>Cs'

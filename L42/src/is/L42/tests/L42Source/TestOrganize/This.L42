@@ -12,15 +12,13 @@ TestOrganize0=(
     }
   n1=Introspection.Nested.from(library=lib).nested(name='Public2)
   n2=Introspection.Nested.from(library=lib).nested(name='A)
-  organize=Organize(public=n1)
+  organize=Organize(public='Public2)
   {}:Test"eqOk"(n1==n1)
   {}:Test"annotatedAs"(n2.outerDoc().annotatedAs(nested=n1))
   res=organize:lib
   {}:Test"Public"(actual=Full(res)
   expected=S"""
-    |{Public2={#typed{close}}
-    | @This.Public2 A={method This1.B b()#typed{close}}
-    | B={#typed{close}}#typed{close}}
+    |{@<private>A={method<private>b()#typed{typeDep=<private>watched=This1 close}}#norm{typeDep=<private>close}}
     """)
   )
 TestOrganize1=(
