@@ -149,7 +149,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*expected lib after this line*/"""
      nested class I={interface m() }
      nested class I={ k() }
-     This interface is privately implemented  but the summed version is larger: { k() }
+     This interface is privately implemented but the summed version is larger: { k() }
      [file:[###]"""/*next test after this line*/)    
    ),new AtomicTest(()->fail("""
      I={interface method Void m() #norm{}}
@@ -434,7 +434,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*expected lib after this line*/"""
    nested class A={interface foo() }
    nested class A={interface bar() }
-   This interface is privately implemented  but the summed version is larger: {interface bar() }
+   This interface is privately implemented but the summed version is larger: {interface bar() }
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      I={interface method Void foo::1() #norm{close}}
@@ -445,6 +445,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    nested class A={ [ This1.I ] }
    The nested class can not be turned into an interface; a close interface is implemented
    [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={ K::1={#norm{}} #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={method Void a() #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     A={ method Void a() K::1={#norm{}} #norm{}}
+   #norm{}}"""/*next test after this line*/)
+
    ));}
    
    //TODO: test A{ Void m()} I{interface Any m()} + A={I} I={}

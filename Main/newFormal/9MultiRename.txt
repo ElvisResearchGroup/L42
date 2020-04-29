@@ -7,7 +7,7 @@ AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
 //indeed the code keeps a map to ncs 
 _______
 #define applyMap(p;Map)=L    completeMap(ns,p,Map)=Map    extendMap(ns,p,Map)=Map
-* applyMap(p;Map0)= L'+LOf(AddMap) //simpler then normal sum, at least can skip normalizing unique numbers
+* applyMap(p;Map0)= L'+LOf(AddMap) //simpler then normal sum: skip normalizing unique numbers, and sum class+interface is never allowed, nor growing interfaces
     Map1=extendMap(p,empty,Map0)
     earlyCheck(p.top,Map1)
     Map2=completeMap(existingNs,p,Map1)
@@ -79,7 +79,11 @@ _______
       then Cs"|>Cs' not in Map
     if N|>N' = Cs.s|>Cs'.s'
       then Cs".s"|>Cs'.s' not in map
-      
+    if N|>N' = Cs=>Cs' then     //TODO: in code
+      either Cs' notin dom(L) or L(Cs').interface?=L(Cs).interface?
+      if L(Cs)>L(Cs') or L(Cs')>L(Cs) then L(Cs').interface?=empty
+    if N|>N' = Cs->Cs' then
+      either Cs' notin dom(L) or L(Cs').interface?=empty
 * LOf(AddMap) =
     create a lib containing all the AddMap entries.
     The constraints on the Map make so that if Cs->L in map,
@@ -131,9 +135,9 @@ _______
     if empty-><empty> in Map:
       noExposeUniqueN(L)      
       L2=L1[toAbstract], AddMap0=empty
+      L2={L1.ncs[where C have no unique num]}//and empty info
     if empty=>Cs' in Map:
       n=sizeOf(Cs')
-      L2={ncs}//and empty info
       AddMap0=Cs'->L1[noNesteds][renameFrom Thisn;p.navigate(Cs');0]
     otherwise L2=L1, AddMap0=empty
 * Rename[p;Cs;Map] L = L1;AddMap,AddMap',AddMap1..AddMapn

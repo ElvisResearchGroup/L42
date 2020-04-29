@@ -53,6 +53,7 @@ public class Sum {
   MetaError errC;
   MetaError errM;
   LinkedHashMap<List<C>,LinkedHashSet<List<C>>> map=new LinkedHashMap<>();
+  boolean inRename;
   LinkedHashSet<List<C>> allWatchedRight;
   LinkedHashSet<List<C>> allRequiredCoherentRight;
   LinkedHashSet<List<C>> allHiddenSupertypesRight;
@@ -71,17 +72,35 @@ public class Sum {
     assert l2.wf();
     assert WellFormedness.checkInfo(pOut.push(cOut,l1),l1): " "+l1+"\n\n"+l2;
     assert WellFormedness.checkInfo(pOut.push(cOut,l2),l2);
-    var res=compose(pOut,cOut,l1,l2,errC,errM);
+    var res=compose(false,pOut,cOut,l1,l2,errC,errM);
     assert res.wf();
     return res;
     }
-  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
+  public Core.L compose(boolean inRename,Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
     this.pOut=pOut;
     this.cOut=cOut;
     this.errC=errC;
     this.errM=errM;  
+    this.inRename=inRename;
     topLeft=l1;
     topRight=l2;
+    if(!inRename){fillMaps(l1, l2);}    
+    singleMap(topLeft,topRight);
+    transitiveMap();
+    if(!inRename){
+      for(var cs:allHiddenSupertypesLeft){growHiddenError(l1,l2,cs);}
+      for(var cs:allHiddenSupertypesRight){growHiddenError(l2,l1,cs);}
+      }
+/*    else{ //no checks, rename will do them
+      l1.visitInnerLNoPrivate((li,csi)->growHiddenError(l1, l2, csi));
+      l2.visitInnerLNoPrivate((li,csi)->growHiddenError(l2, l1, csi));
+      }*/
+    Plus plus=new Plus(L());
+    Core.L l=plus.plus(l1, l2);
+    wellFormedRefineAndNoCircularImplements(l);
+    return l;
+    }
+  private void fillMaps(Core.L l1, Core.L l2) {
     General.Consumer3<LinkedHashSet<List<C>>,Core.L,List<C>> f;//needed for type inference
     f=(c,li,csi)->{for(var w:li.info().hiddenSupertypes()){addPublicCsOfP(w,csi,c);}};
     allHiddenSupertypesLeft=allFromInfo(l1,f);
@@ -94,16 +113,11 @@ public class Sum {
       for(var w:li.info().metaCoherentDep()){addPublicCsOfP(w,csi,c);}
       };
     allRequiredCoherentLeft=allFromInfo(l1,f);
-    allRequiredCoherentRight=allFromInfo(l2,f);
-    singleMap(topLeft,topRight);
-    transitiveMap();
-    for(var cs:allHiddenSupertypesLeft){growHiddenError(l1,l2,cs);}
-    for(var cs:allHiddenSupertypesRight){growHiddenError(l2,l1,cs);}
-    Plus plus=new Plus(L());
-    Core.L l=plus.plus(l1, l2);
-    wellFormedRefineAndNoCircularImplements(l);
-    return l;
+    allRequiredCoherentRight=allFromInfo(l2,f); 
     }
+  private static final String errBase="The nested class can not be turned into an interface; ";
+  //private static final String errInRename="The nested class can not be turned into an interface inside of a rename operation";
+  private static final String errGrowHidden="This interface is privately implemented but the summed version is larger: ";
   RuntimeException err(IMWT fault1,IMWT fault2,Supplier<String> ss){
     Supplier<String> msg=()->ss.get()+"\n"+errM.pos(fault2.mwt)+"\n-----\n";
     return errM.throwErr(fault1.mwt,msg);
@@ -179,8 +193,7 @@ public class Sum {
     if(l1cs==null){return;}
     if(!moreThen(l2cs,l1cs)){return;}
     assert !l1cs.info().close();
-    err(cs,l1cs,l2cs,()->"This interface is privately implemented "
-      +" but the summed version is larger: "+errC.intro(l2cs,false).stripTrailing());
+    err(cs,l1cs,l2cs,()->errGrowHidden+errC.intro(l2cs,false).stripTrailing());
     }
   public  static List<C> culpritFromInfo(Core.L l,BiFunction<Core.L,List<C>,List<C>> f){
     Object[] res={null};
@@ -557,7 +570,7 @@ public class Sum {
       return differentInterfaces(allRequiredCoherentRight,allWatchedRight,topRightCs,pCs);
       }
     boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, Core.L topCs,Program pCs){
-      var errBase="The nested class can not be turned into an interface; "; 
+      if(inRename){return true;} 
       var errCoherent=errBase+"since it is used with 'class' modifier (is required coherent)";
       if(coherents.contains(cs)){err(cs,topCs,null,()->errCoherent);}
       var errWatched=errBase+"since its privates are used by other code (is watched)";

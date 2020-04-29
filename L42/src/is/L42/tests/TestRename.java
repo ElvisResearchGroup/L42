@@ -1752,6 +1752,48 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    can not be made private since is implemented by private parts of nested class C
    Full mapping:I=>*<empty>;C=>*<empty>
    [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     method This.A bar(This.A a)
+     K::1={#norm{}}
+     A={interface class method Void foo() #norm{}}
+     B={method Void bar()=void #norm{ typeDep=This1 watched=This1}}
+     #norm{typeDep=This.A This.B watched=This.A This.B}}""",/*rename map after this line*/"""
+     =>A.
+   """,/*expected after this line*/"""
+   nested class { bar(a) A={..} B={..} }
+   nested class This
+   can not be turned into an interface inside of a rename operation
+   Full mapping:This=>A
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     method This.A bar(This.A a)
+     K::1={#norm{}}
+     A={class method Void foo() #norm{}}
+     B={method Void bar()=void #norm{ typeDep=This1 watched=This1}}
+     #norm{typeDep=This.A This.B watched=This.A This.B}}""",/*rename map after this line*/"""
+     =>A.
+   """,/*expected after this line*/"""
+   A={
+     class method Void foo()
+     method This bar(This a)
+     K::1={#norm{}}
+     #norm{typeDep=This, This1.B watched=This1.B}
+     }
+   B={method Void bar()=void
+     #norm{typeDep=This1.A watched=This1.A}}
+   #typed{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     method This.B bar(This.B a)
+     K::1={#norm{}}
+     B={method Void bar()=void #norm{ typeDep=This1 watched=This1}}
+     #norm{typeDep=This.B watched=This.B}}""",/*rename map after this line*/"""
+     =>A.
+   """,/*expected after this line*/"""
+   B={method Void bar()=void #norm{typeDep=This1.A watched=This1.A}}
+   A={method This1.B bar(This1.B a)
+     K::1={#norm{}}
+     #norm{typeDep=This1.B watched=This1.B}}
+   #typed{}}"""/*next test after this line*/)
    ));}
 private static String nested4="""
      A={
@@ -1768,4 +1810,18 @@ private static String nested4="""
      #norm{}}""";
 
    //TODO: it seams like it may refresh the novel private numbers for every rename in L42. Test it in a testRenameL42? how?
+      /*
+        sumInRename ignore errors for growHiddenError and differentInterfaces
+        early checks? 
+        rename Cs=>Cs' checks:
+          Cs' empty or Cs.interface?=Cs'.interface? and if both interface, check growHiddenError
+        rename Cs->Cs' checks:
+          Cs' empty or Cs'.interface?=empty         
+
+    issue with interfaces and private nesteds:
+    with a sum, we would prevent top to become an interface since is watched,
+    however when the sum is invoked by rename, l2 is incomplete, thus l2.A does not
+    result as watched, and the nested classes are removed.
+    We now block all the "advanced" sum features during rename
+    */
 }

@@ -153,7 +153,6 @@ public class Rename {
       });
     cs=L();
     L res=applyMap();
-    assert l.info().isTyped()==res.info().isTyped();
     assert res.wf();
     assert WellFormedness.allMinimized(pOut,cOut,res);
     assert WellFormedness.checkInfo(pOut.push(cOut,res),res);
@@ -165,7 +164,7 @@ public class Rename {
     completeMap();
     L l1=renameTop();
     L l2=lOfAddMap();
-    return new Sum().compose(p.pop(),cOut,l1,l2,errC,errM);
+    return new Sum().compose(true,p.pop(),cOut,l1,l2,errC,errM);
     }
   void miniAddMap(Arrow key,Arrow val){
     if(map.containsKey(key)){
@@ -299,38 +298,50 @@ public class Rename {
       +"is already involved in the rename; thus "+elem+"can not be renamed");
     }
   void earlyCheck(Arrow that){
+    earlyCheckNoUniqueNum(that);
     L l=p._ofCore(that.cs);
     if(l==null){err(errName,errName.intro(that.cs,false)+"does not exists");}
-    MWT mwt=null;
-    if(that._s!=null){
-      mwt=_elem(l.mwts(),that._s);
-      if(mwt==null){err(errName,errName.intro(that.cs,that._s)+"does not exists");}
+    if(that._s!=null){earlyCheckHasS(that,l);return;}
+    if(that.isMeth()){err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class into a method");}
+    if(that.isCs() && that._cs.equals(that.cs)){
+      err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class on itself");
       }
-    earlyCheckNoUniqueNum(that);
-    if(that._s==null && that.full && that.cs.isEmpty()){
+    if(that.full && that.cs.isEmpty()){
       if(that.isP()){err(errFail,"'This' can not be redirected away");}
       if(that.isEmpty()){err(errFail,"'This' can not be hidden");}
       }
-    if(that.isP()){earlyCheckPOne(that.cs, l);}
-    if(that._s!=null){
-      if(!that.isEmpty() &&!that.isMeth()){
-        err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a method into a nested class");
-        }
-      if(that.isMeth() && that._sOut.equals(that._s)){
-        err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a method on itself");
-        }
+    if(that.isP()){earlyCheckPOne(that.cs, l);return;}
+    if(!that.full){
+      if(that.isEmpty()){makeAbstractOk(null,that.cs);return;}//allow to abstractify interface
+      makeAbstractOk(l,that.cs);//but not to move implementation out
+      assert that._cs!=null;
+      var l_cs=p._ofCore(that._cs);
+      if(l_cs!=null && l_cs.isInterface()){err(errFail,"Implementation can not be moved onto an interface");}
+      return;
       }
-    else{
-      if(that.isMeth()){err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class into a method");}
-      if(that.isCs() && that._cs.equals(that.cs)){
-        err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class on itself");
-        }
+    if(that.isEmpty()){return;}
+    var l_cs=p._ofCore(that._cs);
+    if(l_cs==null){return;}
+    if(l_cs.isInterface()!=l.isInterface()){
+      var info=errFail.intro(l_cs.isInterface()?that.cs:that._cs,false);
+      err(errFail,info+"can not be turned into an interface inside of a rename operation");}
+    if(!l_cs.isInterface()){return;}
+    var lBig=Sum.moreThen(l, l_cs);
+    var l_csBig=Sum.moreThen(l_cs,l);
+    if(!lBig && !l_csBig){return;}
+    var info=errFail.intro(lBig?that._cs:that.cs,false);
+    err(errFail,info+"can not grow inside of a rename operation");
+    }
+  private void earlyCheckHasS(Arrow that, L l) {
+    MWT mwt=_elem(l.mwts(),that._s);
+    if(mwt==null){err(errName,errName.intro(that.cs,that._s)+"does not exists");}
+    if(!that.isEmpty() &&!that.isMeth()){
+      err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a method into a nested class");
       }
-    if(!that.full && that._s==null){
-      if(that.isEmpty()){makeAbstractOk(null,that.cs);}//allow to abstractify interface
-      else{makeAbstractOk(l,that.cs);}//but not to move implementation out
+    if(that.isMeth() && that._sOut.equals(that._s)){
+      err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a method on itself");
       }
-    if(that._s!=null && !that.isEmpty()){
+    if(!that.isEmpty()){
       assert that.isMeth();
       if(!that._cs.equals(that.cs)){
         err(errFail,"methods can only be renamed from inside the same nested class, but the following mapping is present: "+that.toStringErr()+"\n");
@@ -422,7 +433,8 @@ public class Rename {
     int last=a._cs.size()-1;
     addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
     if(!a.full){return toAbstract(l1);}
-    return Program.emptyL.withNcs(l1.ncs());
+    var ncs=L(l1.ncs().stream().filter(nci->!nci.key().hasUniqueNum()));
+    return Program.emptyL.withNcs(ncs);
     //TODO: discuss, should the label by #typed, #norm or something else?
     }
   static L fromAndPushThis0Out(Program prg,L l,P.NCs src){
