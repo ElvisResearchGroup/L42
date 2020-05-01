@@ -130,6 +130,12 @@ public class Rename {
     Sum.openImplements(p.navigate(cs),
       s->err(errFail,errFail.intro(cs,false)+"The implementation can not be removed; "+s));
     }
+  private boolean deepCheckInfo(Program p,Core.L l){
+    l.visitInnerL((li,csi)->{
+      assert WellFormedness.checkInfo(p.navigate(csi),li): ""+li;
+      });
+    return true;
+    }
   public Core.L apply(Program pOut,C cOut,Core.L l,List<Arrow>list,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     this.list=list;
     this.p=pOut.push(cOut,l);
@@ -140,7 +146,7 @@ public class Rename {
     this.errM=new MetaError(wrapM);
     this.map=new LinkedHashMap<>();
     assert l.wf();
-    assert WellFormedness.checkInfo(p,l): ""+l;
+    assert deepCheckInfo(p,l);
     assert WellFormedness.allMinimized(pOut,cOut,l);
     for(var a:list){miniAddMap(new Arrow(a.cs,a._s),a);}    
     allWatched=Sum.allFromInfo(l,(c,li,csi)->{
@@ -155,7 +161,7 @@ public class Rename {
     L res=applyMap();
     assert res.wf();
     assert WellFormedness.allMinimized(pOut,cOut,res);
-    assert WellFormedness.checkInfo(pOut.push(cOut,res),res);
+    assert deepCheckInfo(pOut.push(cOut,res),res);
     return res;
     }
   L applyMap(){
@@ -241,9 +247,7 @@ public class Rename {
     var a=map.get(new Arrow(csi,null));
     return a!=null && ((!a.full && a.isEmpty() )|| a.isP());
     }
-  String mapToS(){
-    return list.stream().map(e->e.toStringErr()).collect(Collectors.joining(";"));
-    }
+  String mapToS(){return list.stream().map(e->e.toStringErr()).collect(Collectors.joining(";"));}
   Error err(MetaError err,String s){throw err(err, ()->s);}
   Error err(MetaError err,Supplier<String> ss){
     throw err.throwErr(p.topCore(),()->{
@@ -433,8 +437,7 @@ public class Rename {
     int last=a._cs.size()-1;
     addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
     if(!a.full){return toAbstract(l1);}
-    var ncs=L(l1.ncs().stream().filter(nci->!nci.key().hasUniqueNum()));
-    return Program.emptyL.withNcs(ncs);
+    return onlyNesteds(l1);
     //TODO: discuss, should the label by #typed, #norm or something else?
     }
   static L fromAndPushThis0Out(Program prg,L l,P.NCs src){
@@ -475,11 +478,6 @@ public class Rename {
           });
         }
       }.start(l);
-    }
-  C freshC(List<NC> ncs,int num){
-    C res=new C("Fresh"+num,-1);
-    if(ncs.stream().noneMatch(e->e.key().equals(res))){return res;}
-    return freshC(ncs,num+1);
     }
   L renameL(L l){return new CloneRenameUsages(this).visitL(l);}
   List<NC> renameNCs(CloneRenameUsages r,List<NC> ncs){return L(ncs,(c,nci)->{
@@ -662,12 +660,10 @@ public class Rename {
 
   L toAbstract(L l0){
     List<MWT> mwts=L(l0.mwts(),(c,m)->{
-      if(m.key().hasUniqueNum()){return;}
-      c.add(m.with_e(null));
+      if(!m.key().hasUniqueNum()){c.add(m.with_e(null));}
       });
     List<NC> ncs=L(l0.ncs(),(c,n)->{
-      if(n.key().hasUniqueNum()){return;}
-      c.add(n);
+      if(!n.key().hasUniqueNum()){c.add(n);}
       });
     L l=new L(l0.poss(),l0.isInterface(),l0.ts(),mwts,L(),Info.empty,l0.docs());
     List<P.NCs> typeDep=L(c->l.accept(new Accumulate<Void>(){
@@ -719,12 +715,16 @@ public class Rename {
         }
       });
     }
+  L onlyNesteds(L l){
+    List<NC> ncs=L(l.ncs().stream().filter(nci->!nci.key().hasUniqueNum()));
+    Deps deps=new Deps();
+    for(var nc:ncs){deps.collectDocs(forcedNavigate(p, cs),nc.docs());}
+    return Program.emptyL.withNcs(ncs).withInfo(deps.toInfo(true)).withPoss(L());
+    //purposely trashing the pos of the L inside the nc
+    }
   NC _onlyNested(NC nc){
-    List<NC> ncs=L(nc.l().ncs(),(c,nci)->{
-      if(!nci.key().hasUniqueNum()){c.add(nci);}
-      });
-    if(ncs.isEmpty()){return null;}
-    L l=Program.emptyL.withNcs(ncs).withPoss(nc.poss());//purposely trashing the pos of the L inside the nc
+    var l=onlyNesteds(nc.l());
+    if(l.ncs().isEmpty()){return null;}
     return nc.withL(l).withDocs(L());
     }
   L noNesteds(L l){

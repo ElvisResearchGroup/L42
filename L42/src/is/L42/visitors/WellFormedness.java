@@ -165,7 +165,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
           throw new EndError.NotWellFormed(l.poss(),Err.typeDependencyNotCore(p));
           }
         }
-      ProgramTypeSystem.type(true,p.update(l,false));
+      ProgramTypeSystem.type(false,p.update(l,false));
       }
     return true;
     }

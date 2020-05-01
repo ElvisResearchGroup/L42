@@ -156,7 +156,8 @@ class OpUtils{
       if(tti instanceof TrustedKind){
         var ki=(TrustedKind)tti;
         var li=p._ofCore(pi);
-        assert li!=null: pi+" "+p.pop().topCore();
+        assert li!=null:
+          pi+" "+p.pop().topCore();
         var kind=li.info().nativeKind();
         if(!kind.isEmpty() && ki==TrustedKind._fromString(kind)){return;}
         throw new EndError.TypeError(mwt._e().poss(),

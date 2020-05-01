@@ -92,7 +92,7 @@ public class General {
   public static <T> List<T> uniqueWrap(List<T>l){return unique(l,true);}
   private static <T> List<T> unique(List<T>l,boolean changed){
     ArrayList<T> res=new ArrayList<>();
-    for(T t:l){if(!res.contains(t)){res.add(t);changed=true;}}
+    for(T t:l){if(!res.contains(t)){res.add(t);}else{changed=true;}}
     if(!changed){return l;}
     return Collections.unmodifiableList(res);
     }

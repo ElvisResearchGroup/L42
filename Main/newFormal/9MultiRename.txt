@@ -100,9 +100,12 @@ _______
     if P found in LDoms, Cs = LDoms++P and Cs.s =>Cs.s' in Rename.Map, then s' is returned
     if L is a subterm, then keep recursivelly entering in all the subterms,
       and the new info will be Rename(Info)
+    //NOTE: this is incomplete; to complete it more informally,
+    // if P is of form P.C::n.Cs, P is renamed and the tail .C::n.Cs is appendend to the renamed P'
+    // if P is renamed in a form P'.C::n then P' is recursivelly renamed in P" and P".C::n is returned
 _______
-#define LDoms++P = Cs    LDoms++Cs
-* LDoms,LDom1..LDomn++Thisn.Cs =LDoms++Cs
+#define LDoms++P = Cs    LDoms++Cs = Cs'
+* LDoms,LDom1..LDomn++Thisn.Cs = LDoms++Cs
 * Cs++Cs'=Cs.Cs'
 * LDoms++Cs undefined otherwise (there is some LDom not form C)
 _______

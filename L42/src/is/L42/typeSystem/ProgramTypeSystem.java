@@ -46,7 +46,7 @@ public class ProgramTypeSystem {
       }
     for(NC nc:l.ncs()){
       var pushed=p.push(nc.key(),nc.l());
-      if(typed||nc.key().hasUniqueNum()){type(typed,pushed);}
+      if(typed||nc.key().hasUniqueNum()){type(true,pushed);}
       if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent(false);}
       }
     if(l.info().close()){
@@ -138,5 +138,4 @@ public class ProgramTypeSystem {
     var mdf=TypeManipulation.fwdPOf(mh.t().mdf());
     e.visitable().accept(new MdfTypeSystem(p,g,Collections.emptySet(),mdf));
     }
-
-}
+  }

@@ -3,6 +3,7 @@ package is.L42.meta;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.merge;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.popLRight;
@@ -48,11 +49,11 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     assert this.p().minimize(res)==res: res +" "+this.p().minimize(res);
     return res;
     }
-  private P.NCs renamedPathPrivate(int nesting,P.NCs path,C last){
+  private P.NCs renamedPathPrivate(int nesting,P.NCs path,C last){//there was a mapping Cs.C->Cs.C::n
     var p0=path.withCs(popLRight(path.cs()));
     List<C> currentP=_topCs(whereFromTop(),p0);
     if(currentP==null){return path;}
-    Arrow a=r.map.get(new Arrow(currentP,null));
+    Arrow a=r.map.get(new Arrow(currentP,null)); //if Cs was also renamed
     if(a==null || !a.full){return path;}
     if(!a.isCs() || a._cs.isEmpty()){return path;}
     C last0=a._cs.get(a._cs.size()-1);
@@ -65,22 +66,29 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     newP=renamedPathPrivate(nesting,newP,lastC);
     return newP.withCs(pushL(newP.cs(),last));
     }
+  private P addPrivateTail(P.NCs path,List<C> tail){return path.withCs(merge(path.cs(),tail));}
   private P renamedPathAux(P path){
     int nesting=whereFromTop().size();
     if(!path.isNCs()){return path;}
     List<C> currentP=_topCs(whereFromTop(),path.toNCs());
     if(currentP==null){return path;}
-    Arrow a=r.map.get(new Arrow(currentP,null));
+    var csCut=L(currentP.stream().takeWhile(c->!c.hasUniqueNum()));
+    Arrow a=r.map.get(new Arrow(csCut,null));
     if(a==null || !a.full){return path;}
     if(a.isCs()){
+      List<C> csMore=L();//the private tail
+      if(csCut.size()!=currentP.size()){csMore=currentP.subList(csCut.size(),currentP.size());}
       P.NCs newP=p().minimize(P.of(nesting,a._cs));
       int size=newP.cs().size();
-      if(size<=1){return newP;}//0 or 1; so removed the last there is nothing to rename      
+      if(size<=1){return addPrivateTail(newP,csMore);}//0 or 1; so removed the last there is nothing to rename      
       C lastC=newP.cs().get(size-1);
-      if(!lastC.hasUniqueNum()){return newP;}
-      return renamedPathPrivate(nesting,newP,lastC);
+      if(!lastC.hasUniqueNum()){return addPrivateTail(newP,csMore);}
+      assert csMore.isEmpty() || popL(newP.cs()).equals(popL(path.toNCs().cs())): newP+" "+path;
+      assert newP.n()==path.toNCs().n(): newP+" "+path;
+      return addPrivateTail(renamedPathPrivate(nesting,newP,lastC),csMore);
       }
     assert a.isP();
+    assert csCut.size()==currentP.size();
     if(!a._path.isNCs()){return a._path;}
     var res=a._path.toNCs();
     res=res.withN(nesting+res.n()+1);//because destination is relative to outside pStart.top

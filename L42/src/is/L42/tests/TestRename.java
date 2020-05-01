@@ -1794,6 +1794,63 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      K::1={#norm{}}
      #norm{typeDep=This1.B watched=This1.B}}
    #typed{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     method Void v(This.A a)
+     @This.A A={#norm{}}
+     #norm{typeDep=This.A}}""",/*rename map after this line*/"""
+     =>B.
+   """,/*expected after this line*/"""
+   @This.A A={#norm{}}
+   B={method Void v(This1.A a)#norm{typeDep=This1.A}}
+   #typed{typeDep=This.A}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     C={
+       method Void v(This.A a)
+       @This.A A={#norm{}}
+       #norm{typeDep=This.A}}
+     #norm{}}""",/*rename map after this line*/"""
+     C.=>B.
+   """,/*expected after this line*/"""
+   C={
+     @This.A A={#norm{}}
+     #typed{typeDep=This.A}//why this is not triggering the "not well formedness" as above?
+     }
+   B={method Void v(This1.C.A a)
+     #norm{typeDep=This1.C.A}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     I={interface method Void foo() #norm{}}
+     C={
+       D={[This2.I] method Void foo()=void
+         K={method Void user(This1 that)=that.foo()
+           #norm{typeDep=This1 usedMethods=This1.foo()}}
+         #norm{typeDep=This2.I refined=foo()}}
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     C.=>*<empty>
+   """,/*expected after this line*/"""
+   I={interface method Void foo()#norm{}}
+   C::1={
+     D::2={[This2.I]method Void foo()=void
+       K::3={method Void user::4(This1 that)=that.foo()
+         #norm{typeDep=This1, This2 watched=This2}}
+       #norm{typeDep=This2.I, This, This1, This2 watched=This1, This2 refined=foo()}}
+     #norm{typeDep=This1.I, This, This1 watched=This1 hiddenSupertypes=This1.I}}
+   #norm{typeDep=This.I, This hiddenSupertypes=This.I}}
+   """/*next test after this line*/)
+
+   ),new AtomicTest(()->pass("""
+     C::1={method Void foo::2()=void #norm{}}
+     D={method Void foo(This1.C::1 c)=c.foo::2()
+       #norm{typeDep=This1 This1.C::1 watched=This1}}
+     #norm{}}""",/*rename map after this line*/"""
+     =>K.
+   """,/*expected after this line*/"""
+   D={method Void foo(This1.K.C::1 c)=c.foo::2()
+     #norm{typeDep=This1.K, This1.K.C::1, watched=This1.K}}
+   K={C::1={method Void foo::2()=void #norm{}}
+     #norm{}}
+   #typed{}}"""/*next test after this line*/)
    ));}
 private static String nested4="""
      A={
@@ -1823,5 +1880,14 @@ private static String nested4="""
     however when the sum is invoked by rename, l2 is incomplete, thus l2.A does not
     result as watched, and the nested classes are removed.
     We now block all the "advanced" sum features during rename
+    
+    
+    
+    TODO: WELL FORMEDNESS OF INFOS:
+    now does: ProgramTypeSystem.type(true,p.update(l,false));
+    but:
+      1-this type public nested classes even if only the outer is "typed" labelled"
+      2-this type private nested classes if the outer is "typed". Good. But...
+        we now just put "typed" on any box we introduce. Is this ok? Yes because the created boxes never have private nesteds?
     */
 }

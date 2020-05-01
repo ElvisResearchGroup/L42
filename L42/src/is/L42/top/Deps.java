@@ -6,6 +6,7 @@ import static is.L42.tools.General.merge;
 import static is.L42.tools.General.uniqueWrap;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
@@ -71,6 +72,14 @@ public class Deps{
     typePs.add(pi);
     addWatched(p0, pi);
     }
+  void addUsedMethods(Program p0,P.NCs pi,S si){
+    if(pi.hasUniqueNum()){return;}
+    if(!pi.cs().isEmpty()){usedMethods.add(new PathSel(pi,si,null));}
+    if(pi.n()==0){return;}//This0.emptyCs==This0
+    var p1=p0.pop(pi.n());
+    if(p1.inPrivate()){return;}
+    usedMethods.add(new PathSel(pi,si,null));
+    }
   void addWatched(Program p0,P.NCs pi){
     if(!pi.cs().isEmpty()){watched.add(pi);}
     if(pi.n()==0){return;}
@@ -78,14 +87,22 @@ public class Deps{
     if(!p1.inPrivate()){watched.add(pi);}
     }
   public Info toInfo(boolean typed){
+    var uWatched=uniqueWrap(watched);
     return new Info(typed,
       /*typeDep*/ uniqueWrap(typePs),
       /*coherentDep*/ uniqueWrap(cohePs),
       /*metaCoherentDep*/ uniqueWrap(metaCohePs),
-      /*watched*/ uniqueWrap(watched),
-      /*usedMethods*/ uniqueWrap(usedMethods),
+      /*watched*/ uWatched,
+      /*usedMethods*/ uniqueUsedMethods(usedMethods,uWatched),
       /*hiddenSupertypes*/ uniqueWrap(hiddenSupertypes),
       L(), false, "", L(), -1);    
+    }
+  private static List<PathSel> uniqueUsedMethods(ArrayList<PathSel> l, List<P.NCs> watched){
+    ArrayList<PathSel> res=new ArrayList<>();
+    for(var t:l){
+      if(!watched.contains(t.p()) && !res.contains(t)){res.add(t);}
+      }
+    return Collections.unmodifiableList(res);
     }
   public Deps collectDocs(Program p0,List<Doc> docs){
     new DepsV(p0).visitDocs(docs);
@@ -175,7 +192,7 @@ public class Deps{
       if(pi.equals(P.pThis0)||pi.hasUniqueNum()){return;}//mc.s() can be public if is implemented
       //it is irrelevant to watch or not interface methods, since interfaces can not be made abstract anyway
       if(mc.s().hasUniqueNum()){addWatched(p0,pi);return;}
-      if(!pi.equals(P.pThis0)){usedMethods.add(new PathSel(pi, mc.s(),null));}
+      addUsedMethods(p0,pi, mc.s());
       }
     @Override public void visitPCastT(Core.PCastT p){
       super.visitPCastT(p);

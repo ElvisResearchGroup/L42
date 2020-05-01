@@ -273,7 +273,9 @@ _______
 //all collectDeps/collectDepsE implicitly manages the public roots:
 // for all P.C::k._ in typeDep, where P not of form _.C'::n._: 
 //   add P to typeDep and to watched
-//and we never put This0 in watched, nor This0.xx in usedMethods; we do not put Thisn in watched if in the program the outer name of Thisn has a unique number
+//and we never put This0 in watched, nor This0.xx in usedMethods;
+// we do not put Thisn in watched or Thisn.m(xs)  in usedMethods if in the program the outer name of Thisn has a unique number
+//we do not put any usedMethods with Thisn.Cs if Cs has unique numbers
 //when P in typeDep has unique numbers, we also put the public root
 //all of nativePar must be included in coherentDep too (well formedness?) 
 * collectDeps(p; Docs mdf method T0 m(T1 x1..Tn xn)[Ts] e?) =
