@@ -83,7 +83,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       if(size<=1){return addPrivateTail(newP,csMore);}//0 or 1; so removed the last there is nothing to rename      
       C lastC=newP.cs().get(size-1);
       if(!lastC.hasUniqueNum()){return addPrivateTail(newP,csMore);}
-      assert csMore.isEmpty() || popL(newP.cs()).equals(popL(path.toNCs().cs())): newP+" "+path;
+      assert !csMore.isEmpty() || popLRight(newP.cs()).equals(popLRight(path.toNCs().cs())): newP+" "+path;
       assert newP.n()==path.toNCs().n(): newP+" "+path;
       return addPrivateTail(renamedPathPrivate(nesting,newP,lastC),csMore);
       }
@@ -115,7 +115,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     return res;
     }
     
-  @Override public L pushedOp(L l) {return infoRename.renameUsageInfo(l);}
+  @Override public L pushedOp(L l) {return infoRename.renameUsageInfo(this.p(),l);}
   @Override public L visitL(L l){
     var key=getLastCMs();
     var inner=key instanceof S || this.whereFromTop().stream().anyMatch(k->k instanceof S);
@@ -162,7 +162,21 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
   @Override public Info visitInfo(Info i){return i;}//it is handled later by infoRename.renameUsageInfo 
   private final InfoCloneVisitor infoRename=new InfoCloneVisitor();
   private class InfoCloneVisitor extends CloneVisitor{
-    public L renameUsageInfo(L l){
+    boolean assertWatchedOk(Program p0,P.NCs pi, List<P.NCs>newWatched){
+      var pr=Deps._publicRoot(p0,pi);
+      if(newWatched.contains(pr)){return true;}
+      if(pr.equals(P.pThis0)){return true;}
+      if(pr.cs().size()!=0){return false;}
+      return p0.pop(pr.n()).inPrivate();
+      }
+    boolean watchable(Program p0,ArrayList<P.NCs>newWatched,P.NCs w){
+      if(newWatched.contains(w)){return false;}
+      if(w.hasUniqueNum()){return false;}
+      if(w.cs().size()!=0){return true;}
+      if(w.n()==0){return false;}
+      return !p0.pop(w.n()).inPrivate();
+      }
+    public L renameUsageInfo(Program p0,L l){
       Info res=l.info().accept(this);
       boolean close=res.close();
       if(l.isInterface() && !close){
@@ -178,29 +192,30 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
         var pp=Deps._publicRoot(p(),p);
         if(pp!=null){
           if(!newTypeDep.contains(pp)){newTypeDep.add(pp);}
-          if(!pp.equals(P.pThis0)&& !newWatched.contains(pp)){newWatched.add(pp);}
+          if(watchable(p0, newWatched,pp)){newWatched.add(pp);}
           }
         }
       for(var ps:res.usedMethods()){//two iterations to first collect all the newWatched
         var pi=ps.p().toNCs();
         if(pi.equals(P.pThis0)){continue;}
         if(pi.hasUniqueNum()){
-          assert Deps._publicRoot(p(),pi).equals(P.pThis0) || newWatched.contains(Deps._publicRoot(p(),pi)): pi;
+          assert assertWatchedOk(p(),pi,newWatched);
           continue;
           }
-        if(ps._s().hasUniqueNum() && !newWatched.contains(pi)){newWatched.add(pi);}
+        if(ps._s().hasUniqueNum() && watchable(p0, newWatched, pi)){newWatched.add(pi);}
         }
+      for(var w:res.watched()){if(watchable(p0, newWatched, w)){newWatched.add(w);}}
       ArrayList<PathSel>newUsedMethods=new ArrayList<>();
       for(var ps:res.usedMethods()){
         if(ps.p().equals(P.pThis0) || ps.p().hasUniqueNum()){continue;}
-        if(newWatched.contains(ps.p())){continue;}
+        if(!watchable(p0, newWatched,ps.p().toNCs())){continue;}
         assert !newUsedMethods.contains(ps);//dups already removed by CloneVisitor
         newUsedMethods.add(ps);
         }
       assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
       res=new Info(res.isTyped(),L(newTypeDep.stream()),
         res.coherentDep(),res.metaCoherentDep(),
-        mergeU(res.watched(),newWatched),L(newUsedMethods.stream()),
+        L(newWatched.stream()),L(newUsedMethods.stream()),
         L(res.hiddenSupertypes().stream().filter(p->!p.hasUniqueNum())),
         res.refined(),
         close,

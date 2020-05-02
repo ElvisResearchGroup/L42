@@ -1032,7 +1032,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    A::2={method Void foo::1()=void #typed{}}
    B={method Any foo()=void #typed{}}
    C={method Void a(This1.A::2 a)=a.foo::1()
-     #typed{typeDep=This1.A::2,This1 watched=This1.A::2, This1}}
+     #typed{typeDep=This1.A::2,This1 watched=This1}}
    #typed{typeDep=This.A::2,This}}
    """/*next test after this line*/)
        ),new AtomicTest(()->fail("""
@@ -1582,7 +1582,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    K={B={#norm{}}#norm{}}
    #norm{}}"""/*next test after this line*/)
    //8 permutation tests
-   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+   ),/*test 114*/new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
      A.=>*<empty>
    """,/*expected after this line*/"""
    A::1={method Void foo::2(This a, This.B::3 b, This.B::3.C::5 c, This.B::3.C::5.D::7 d)=void
@@ -1667,7 +1667,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        #norm{typeDep=This2.A, This2.A.B, This1, This}}
      #norm{typeDep=This1.A, This1.A.B, This, This.D}}
    #norm{}}"""/*next test after this line*/)
-   ),new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
+   ),/*test 121*/new AtomicTest(()->pass(nested4,/*rename map after this line*/"""
      A.B.C.D.=>*K.
    """,/*expected after this line*/"""
    A={method Void foo(This a, This.B b, This.B.C c, This1.K d)=void
@@ -1834,11 +1834,10 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      D::2={[This2.I]method Void foo()=void
        K::3={method Void user::4(This1 that)=that.foo()
          #norm{typeDep=This1, This2 watched=This2}}
-       #norm{typeDep=This2.I, This, This1, This2 watched=This1, This2 refined=foo()}}
-     #norm{typeDep=This1.I, This, This1 watched=This1 hiddenSupertypes=This1.I}}
+       #norm{typeDep=This2.I, This, This2, This1 watched=This2 refined=foo()}}
+     #norm{typeDep=This1.I,This.D::2, This1, This watched=This1 hiddenSupertypes=This1.I}}
    #norm{typeDep=This.I, This hiddenSupertypes=This.I}}
    """/*next test after this line*/)
-
    ),new AtomicTest(()->pass("""
      C::1={method Void foo::2()=void #norm{}}
      D={method Void foo(This1.C::1 c)=c.foo::2()
