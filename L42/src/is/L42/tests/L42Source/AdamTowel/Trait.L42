@@ -10,7 +10,7 @@ class method This(Library code)
 @Public class method This(Library that)=This(code=that)
 
 class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
-  return This(code=Meta().simpleSum(a=a,b=b))
+  return This(code=Name$Mapping().simpleSum(a=a,b=b))
   catch error Trait$ClassClash e exception e
   catch error Trait$MethodClash e exception e
   } 
@@ -25,15 +25,15 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
 @Public method Introspection$Nested nested()=Introspection$Nested.from(library=this.code())
 
 @Public Acc={
-  var Meta that
-  class method mut This(Meta that)
+  var Name$Mapping that
+  class method mut This(Name$Mapping that)
   class method mut This (mut This squareBuilder)=squareBuilder
-  class method mut This ##apply#squareBuilder()=Acc(Meta())
+  class method mut This ##apply#squareBuilder()=Acc(Name$Mapping())
   class method Bool #shortCircutSquare()=Bool.true()
-  mut method Void #squareAdd(Meta that)=this.that(\that.mergeMap(that))
+  mut method Void #squareAdd(Name$Mapping that)=this.that(\that.mergeMap(that))
   mut method Void #squareAdd(Name clear)=this.#squareAdd(clear->Name"")
   mut method Void #squareAdd(Name deepClear)=this.#squareAdd(deep=deepClear->Name"")
-  mut method Void #squareAdd(Meta deep)=this.that(\that.mergeMap(deep=deep))
+  mut method Void #squareAdd(Name$Mapping deep)=this.that(\that.mergeMap(deep=deep))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
   }
 @Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
@@ -45,9 +45,9 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
   })
 
 @Public method Library #toLibrary()=
-  Meta().simpleSum(a=Meta().resource(this.code()),b=ToLibrary())
+  Name$Mapping().simpleSum(a=Name$Mapping().resource(this.code()),b=ToLibrary())
 
-ToLibrary=Meta().resource({[Lifted]
+ToLibrary=Name$Mapping().resource({[Lifted]
   class method Library ()
   method code()=This()
   method +(lib)=ClassOperators()+lib

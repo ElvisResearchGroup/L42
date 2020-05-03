@@ -1850,6 +1850,29 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    K={C::1={method Void foo::2()=void #norm{}}
      #norm{}}
    #typed{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Void foo() #norm{}}
+     D={[This1.I] method Void foo()=void
+       #norm{typeDep=This1.I refined=foo()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.->*<empty>
+   """,/*expected after this line*/"""
+   nested class { I={..} D={..} }
+   nested class A
+   does not exists
+   Full mapping:A->*<empty>
+   [file:[###]"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={I={interface method Void foo() #norm{}} #norm{}}
+     D={[This1.A.I] method Void foo()=void
+       #norm{typeDep=This1.A.I refined=foo()}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.->*<empty>
+   """,/*expected after this line*/"""
+   A={I={interface method Void foo()#norm{}}#norm{}}
+   D={[This1.A.I]method Void foo()=void
+     #norm{typeDep=This1.A.I refined=foo()}}
+   #norm{}}"""/*next test after this line*/)
    ));}
 private static String nested4="""
      A={

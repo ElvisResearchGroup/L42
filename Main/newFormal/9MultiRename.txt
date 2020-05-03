@@ -31,11 +31,18 @@ _______
     Map0=Cs.Cs1=>empty..,Cs.Csn=>empty
     Si1..Sik=domS(p(This.Cs.Csi))/p(This.Cs.Csi).Info.refine
     Mapi=Cs.Csi.Si1=>empty..,Cs.Csi.Sin=>empty
+* extendMap(p,Cs->*empty,Map) = Cs.Cs1->empty..,Cs.Csn->empty extendMap(p,Map)
+    Cs1..Csn=domNC(p(This.Cs))
+    //an interface *can* have its implementation (that is the private nested classes) deleted, if is not watched
 * extendMap(p,Cs=>*P,Map) = Cs.Cs1=>P.Cs1..Cs.Csn=>P.Csn extendMap(p,Map)
     Cs1..Csn=dom(p(This.Cs))//thus error if P is Any/Void/Library and Cs1..Csn is not empty
 * extendMap(p,Cs=>*Cs',Map) = Cs.Cs1=>Cs'.Cs1..Cs.Csn=>Cs'.Csn extendMap(p,Map)
     Cs1..Csn=dom(p(This.Cs))
+* extendMap(p,Cs->*Cs',Map) = Cs.Cs1->Cs'.Cs1..Cs.Csn->Cs'.Csn extendMap(p,Map)
+    Cs1..Csn={Cs'| Cs' in domNC(p(This.Cs)) and p(This.Cs.Cs').interface?=empty}
+    //an interface can not have its implementation (that is the private nested classes) moved
 * extendMap(p,empty)=empty
+//* extendMap(p,Cs->*P,Map) is undefined
 _______
 #define allWatched(Core.L,Map)
 * allWatched(L,Map)=allWatched(L\Csz)//all watched without considering Cs1..Csn
@@ -176,6 +183,13 @@ _______
     Rename.Cs.(mwt.s) notin dom(Map)
     forall This0.Cs0 in p(Rename.Cs).Ts.Ps[from Rename.Cs;{}],
       Cs0.(mwt.s) notin dom(Map)
+//TODO: file Rename line540
+How to handle interface methods with ->?
+Was a map not well formedness that we can not -> interface names?
+in this case, it is failing to detect it
+-always?
+-when method -> is induced from ->* ?
+We need to add some tests to TestRename
 * Rename(nc) = nc;empty
     (Rename.Cs).(nc.C) notin dom(Map)
 ---//everywhere when we write Cs we mean Rename.Cs

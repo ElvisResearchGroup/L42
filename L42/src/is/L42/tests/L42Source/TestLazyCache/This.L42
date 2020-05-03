@@ -20,9 +20,9 @@ Scope1 ={
   }
   */
 MetaWrapper={
-  read method Meta  inner::0()
-  class method This of::0(Meta inner)
-  class method This of(Meta inner)=this.of::0(inner=inner)
+  read method Name.Mapping  inner::0()
+  class method This of::0(Name.Mapping inner)
+  class method This of(Name.Mapping inner)=this.of::0(inner=inner)
   imm method Size ft()=native{trusted:lazyCache} (
     Log"MetaWrapper".write(S"42")
     42Size
@@ -30,10 +30,10 @@ MetaWrapper={
   }
 TestMW=(
   Log"MetaWrapper".clear()
-  mw=MetaWrapper.of(inner=Meta())
+  mw=MetaWrapper.of(inner=Name.Mapping())
   {}:Test"mw42"(expected=42Size, actual=mw.ft())
   {}:Test"mw42Again"(expected=42Size, actual=mw.ft())
-  mw2=MetaWrapper.of(inner=Meta())
+  mw2=MetaWrapper.of(inner=Name.Mapping())
   {}:Test"mw42Again"(expected=42Size, actual=mw2.ft())
   {}:Test"cacheAvoidRepeating"(expected=S"42",actual=Log"MetaWrapper".#$reader().read())
   )

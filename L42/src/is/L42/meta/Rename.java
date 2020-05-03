@@ -149,14 +149,6 @@ public class Rename {
     assert deepCheckInfo(p,l);
     assert WellFormedness.allMinimized(pOut,cOut,l);
     for(var a:list){miniAddMap(new Arrow(a.cs,a._s),a);}    
-    allWatched=Sum.allFromInfo(l,(c,li,csi)->{
-      if(isDeleted(csi)){return;}
-      for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,c);}
-      });
-    allHiddenSupertypes=Sum.allFromInfo(l,(c,li,csi)->{
-      if(isDeleted(csi)){return;}
-      for(var w:li.info().hiddenSupertypes()){Sum.addPublicCsOfP(w,csi,c);}
-      });
     cs=L();
     L res=applyMap();
     assert res.wf();
@@ -165,7 +157,15 @@ public class Rename {
     return res;
     }
   L applyMap(){
-    expandMap();
+    extendMap();
+    allWatched=Sum.allFromInfo(p.topCore(),(c,li,csi)->{
+      if(isDeleted(csi)){return;}
+      for(var w:li.info().watched()){Sum.addPublicCsOfP(w,csi,c);}
+      });
+    allHiddenSupertypes=Sum.allFromInfo(p.topCore(),(c,li,csi)->{
+      if(isDeleted(csi)){return;}
+      for(var w:li.info().hiddenSupertypes()){Sum.addPublicCsOfP(w,csi,c);}
+      });
     earlyCheck();
     completeMap();
     L l1=renameTop();
@@ -179,39 +179,44 @@ public class Rename {
     map.put(key,val);
     }
   void addedArrow(Arrow a,Arrow src,List<C>csi,L li,Map<Arrow,Arrow> map){
-    if(a.isEmpty()){
-      miniAddMap(src,new Arrow(src.cs,null,a.full,false,null,null,null));
-      for(var m:li.mwts()){
-        if(m.key().hasUniqueNum()){continue;}
-        if(li.info().refined().contains(m.key())){continue;}
-        miniAddMap(new Arrow(src.cs,m.key()),new Arrow(src.cs,m.key(),a.full,false,null,null,null));
-        }
+    if(!a.full && li.isInterface() && a._cs!=null){assert a._path==null;return;}
+    assert a._s==null && a._sOut==null;
+    if(csi.isEmpty() && !a.isEmpty()){//either isCs or isP, if csi is empty, is simple
+      miniAddMap(src,new Arrow(src.cs,null,a.full,false,a._path,a._cs,null));
       return;
       }
     if(a.isCs()){
       miniAddMap(src,new Arrow(src.cs,null,a.full,false,null,merge(a._cs,csi),null));
       return;
       }
-    if(csi.isEmpty()){
-      miniAddMap(src,new Arrow(src.cs,null,a.full,false,a._path,null,null));
-      return;
+    if(a._path!=null){
+      assert a.full && a._cs==null:a;
+      if(!a._path.isNCs()){err(errFail,"mapping: "+a.toStringErr()+"\n"
+        +errFail.intro(merge(a.cs,csi),false)
+        +"can not be redirected on a nested of "+a._path);}
+      var p=a._path.toNCs();
+      p=p.withCs(merge(p.cs(),csi));
+      miniAddMap(src,new Arrow(src.cs,null,a.full,false,p,null,null));
       }
-    assert a._path!=null:a;
-    if(!a._path.isNCs()){err(errFail,"mapping: "+a.toStringErr()+"\n"
-      +errFail.intro(merge(a.cs,csi),false)
-      +"can not be redirected on a nested of "+a._path);}
-    var p=a._path.toNCs();
-    p=p.withCs(merge(p.cs(),csi));
-    miniAddMap(src,new Arrow(src.cs,null,a.full,false,p,null,null));
+    assert a.isEmpty();
+    miniAddMap(src,new Arrow(src.cs,null,a.full,false,null,null,null));
+    if(!a.full){return;}
+    for(var m:li.mwts()){
+      if(m.key().hasUniqueNum()){continue;}
+      if(li.info().refined().contains(m.key())){continue;}
+      miniAddMap(new Arrow(src.cs,m.key()),new Arrow(src.cs,m.key(),a.full,false,null,null,null));
+      }
     }
-  void expandMap(){
+  void extendMap(){
     var old=map;
     map=new LinkedHashMap<>();
     for(var e:old.entrySet()){
       Arrow a=e.getValue();
       if(a.star && a._s!=null){err(errFail,"transitive rename only applicable on nested classes");}
       if(!a.star){miniAddMap(e.getKey(),a);continue;}
-      p._ofCore(a.cs).visitInnerLNoPrivate((li,csi)->{
+      var lcs=p._ofCore(a.cs);
+      if(lcs==null){err(errName,errName.intro(a.cs,false)+"does not exists");}
+      lcs.visitInnerLNoPrivate((li,csi)->{
         var src=new Arrow(merge(a.cs,csi),null);
         addedArrow(a,src,csi,li,map);
         });
@@ -512,7 +517,8 @@ public class Rename {
     Arrow e=map.get(new Arrow(cs,mwt.key()));
     if(e==null){return notDirectlyRenamed(mwt);}
     if(!e.full){
-      if(mwt._e()==null){err(errFail,errFail.intro(cs,mwt.key())+"is already abstract");}
+      if(mwt._e()==null){
+        err(errFail,errFail.intro(cs,mwt.key())+"is already abstract");}
       if(e.isEmpty()){return L(rename3restrictMeth(mwt));}
       assert e.isMeth();
       return L(rename4superMeth(mwt,e._sOut));
@@ -538,6 +544,7 @@ public class Rename {
       if(cs0==null){continue;}
       var a=map.get(new Arrow(cs0,mwt.key()));
       if(a==null){continue;}
+      assert a.full && a._sOut!=null: a;//if there is a rename, is a rename =>
       if(a._sOut.hasUniqueNum()){return L(rename1hideInterfaceMeth(l,mwt, a._sOut));}
       return rename2interfaceMeth(mwt,a._sOut);
       }
@@ -703,6 +710,7 @@ public class Rename {
       @Override public void visitMWT(MWT mwt){
         super.visitMWT(mwt.with_e(null));
         }
+      @Override public void visitInfo(Info info){}
       @Override public void visitNC(NC nc){}
       @Override public void visitP(P path){
         if(!path.isNCs()){return;}

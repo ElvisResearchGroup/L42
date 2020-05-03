@@ -20,7 +20,7 @@ OptTrait=Trait:{
 
 ListNative=Trait:{...}
 ListOps=ListNative + {...} + Class.ReadToString+Class.ImmToString+Class.ReadClone
-@Public class method Trait listTrait()=Trait(ListOps())//TODO: Meta.resource need to take a NativeName, so that Trait.Lifted() may return a Trait
+@Public class method Trait listTrait()=Trait(ListOps())//TODO: Name$Mapping.resource need to take a NativeName, so that Trait.Lifted() may return a Trait
 ListEqOps=Trait:{...}
 @Public class method Trait listEqTrait()={
   return this.listTrait()+ListEqOps

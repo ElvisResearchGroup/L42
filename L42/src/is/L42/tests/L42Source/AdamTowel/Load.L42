@@ -37,14 +37,14 @@ class method mut Introspection.Nesteds baseDeps()=\[
   ]
 method Trait.Acc collect(Library that)=(
   at=Introspection.Nested.from(library=that).nested(name='AbstractTowel)
-  acc=Trait.Acc(Meta())
+  acc=Trait.Acc(Name$Mapping())
   for nci in at.nesteds() (
     src=nci.outerDoc().annotation(nested=at).get().texts().left()
     name=nci.nameFromRoot()
     for ncj in this.deps() (
       dest=ncj.outerDoc().annotation(nested=at).get().texts().left()
       matches=this.match(src=src,dest=dest)
-      if matches acc.#squareAdd(name=>ncj.classAny())
+      if matches acc.#squareAdd(deep=name=>ncj.classAny())
       )
     )
   acc

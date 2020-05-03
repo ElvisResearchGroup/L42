@@ -32,13 +32,13 @@ method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,
   (var lev=0Size while lev<max (//range will come later
     lev+=1Size
     i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
-    res:=res(squareBuilder=this.mapRename$(Trait.Acc(Meta()),n=i,level=max-lev))
+    res:=res(squareBuilder=this.mapRename$(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
   res:=CloseAll(res)
   (var lev=0Size while lev<max (//range will come later
     lev+=1Size
     i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
-    res:=res(squareBuilder=this.mapHide(Trait.Acc(Meta()),n=i,level=max-lev))
+    res:=res(squareBuilder=this.mapHide(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
   res
   )
