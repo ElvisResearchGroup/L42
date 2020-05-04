@@ -148,7 +148,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     checkMissing(i.metaCoherentDep(),l.info().metaCoherentDep(),l.poss(),Err::missedMetaCoheDep);
     checkMissing(i.watched(),l.info().watched(),l.poss(),Err::missedWatched);
     checkMissing(i.hiddenSupertypes(),l.info().hiddenSupertypes(),l.poss(),Err::missedHiddenSupertypes);
-    checkMissing(i.usedMethods(),l.info().usedMethods(),l.poss(),Err::missedUsedMethods);
+    List<PathSel> usedNotWatched=L(i.usedMethods().stream().filter(ps->!l.info().watched().contains(ps.p())));
+    checkMissing(usedNotWatched,l.info().usedMethods(),l.poss(),Err::missedUsedMethods);
     checkMissing(refined,L(l.mwts().stream().map(m->m.key())),l.poss(),Err::missedRefined);
     checkMissing(
       L(l.info().nativePar().stream().filter(pi->pi.isNCs()).map(pi->pi.toNCs())),

@@ -1,4 +1,4 @@
-class method This #apply()
+@This1.Public class method This #apply()
 method This addMap(This1.NativeName name,class Any classAny)=
   native{trusted:addMapP} error void
 method This addMapDoubleArrow(This1.NativeName a,This1.NativeName b)=
@@ -15,15 +15,15 @@ method Library resource(Library that)=
   native{trusted:resource} error void
 method Library simpleSum(Library a, Library b)=
   native{trusted:simpleSum} error void
-class method This1.Name #from(This1.S$StringBuilder stringLiteral)=
-  This1.Name<:class This1.Name.#from(stringLiteral=stringLiteral)
-  
 method This1.S pathName(class Any that)=
   native{trusted:pathName} error void
-  
+
+@This1.Public class method This1.Name #from(This1.S$StringBuilder stringLiteral)=
+  This1.Name<:class This1.Name.#from(stringLiteral=stringLiteral)
+    
 #norm{
   nativeKind=Meta
-  typeDep=This0, This1.S,This1.Name,This1.S$StringBuilder,This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.NativeName
+  typeDep=This0, This1.S,This1.Name,This1.S$StringBuilder,This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.NativeName,This1.Public
   coherentDep=This0, This1.Name This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.S
   nativePar= This1.Trait$ClassClash This1.Trait$MethodClash This1.Trait$InvalidName This1.Trait$InvalidMap This1.S$ParseError
   usedMethods=This1.Name.#from(stringLiteral)

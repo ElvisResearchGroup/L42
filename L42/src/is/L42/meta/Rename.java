@@ -723,6 +723,7 @@ public class Rename {
   void noExposeUniqueN(List<C> cs,L l){
     l.accept(new Accumulate<Void>(){
       @Override public void visitMWT(MWT mwt){
+        if(mwt.key().hasUniqueNum()){return;}
         super.visitMWT(mwt.with_e(null).withNativeUrl(""));
         }
       @Override public void visitInfo(Info info){}

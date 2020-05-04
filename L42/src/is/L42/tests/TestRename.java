@@ -1897,6 +1897,20 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    Code can not be extracted since it exposes uniquely numbered path nested class B.C::1
    Full mapping:A-><empty>;B-><empty>
    [file:[###]"""/*next test after this line*/)
+
+   ),new AtomicTest(()->pass("""
+     A={ method Void m()=void
+       B={ method Void bb(This1 b)=b.m()
+         #norm{typeDep=This1 usedMethods=This1.m()}} 
+       #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.B.=>*<empty>
+   """,/*expected after this line*/"""
+   A={method Void m()=void
+     B::1={method Void bb::2(This1 b)=b.m()
+       #norm{typeDep=This1 usedMethods=This1.m()}}
+     #norm{typeDep=This}}
+     #norm{}}"""/*next test after this line*/)
    ));}
 private static String nested4="""
      A={

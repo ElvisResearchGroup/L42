@@ -285,7 +285,7 @@ _______
       This0.Cs0 notin p(Cs1)[from This0.Cs1;{}]
 
 * noExposeUniqueN(Map,Cs',L)
-    for all of the P in L.Ts.Ps, or in any method return type, parameter type, exception type or in any Path in docs:
+    for all of the P in L.Ts.Ps, or in any non uniquely named method return type, parameter type, exception type or in any Path in docs:
       if P has unique num and P[from This0.Cs';{}] = This0.Cs.C::n._//path is in the bubble, inside Cs
       then Cs notin {Cs| Cs->_ in Map or Cs=>P in Map}//more then the not watched: also including Cs->Cs'
     
