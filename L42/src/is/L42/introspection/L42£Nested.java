@@ -173,7 +173,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     public void visitMWT(MWT mwt){
       if(mwt.key().hasUniqueNum()){return;}
       if(!mwt.nativeUrl().isEmpty()){mwt=mwt.withNativeUrl("..");}
-      super.visitMWT(mwt.with_e(null));
+      super.visitMWT(mwt.with_e(null).withNativeUrl(""));
       if(mwt._e()!=null){c("=(..)");}
       }
     public void visitNC(NC nc){

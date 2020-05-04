@@ -734,7 +734,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.->C.
    """,/*expected after this line*/"""
    nested class { A={..} }
-   nested class This
+   nested class A
    Code can not be extracted since it exposes uniquely numbered path nested class D::2
    Full mapping:A->C
    [file:[###]"""/*next test after this line*/)
@@ -1873,6 +1873,30 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    D={[This1.A.I]method Void foo()=void
      #norm{typeDep=This1.A.I refined=foo()}}
    #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+     A={
+       B={#norm{}}
+       @This.B C={#norm{}}
+       #norm{typeDep=This.B}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.->*<empty>
+   """,/*expected after this line*/"""
+   A={
+     B={#norm{}}
+     @This.B C={#norm{}}
+     #norm{typeDep=This.B}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     A={ method Void m(This1.B.C::1 c)=void #norm{typeDep=This1.B,This1.B.C::1 watched=This1.B}}
+     B={ C::1={#norm{}} #norm{}}
+     #norm{}}""",/*rename map after this line*/"""
+     A.-><empty> | B.-><empty>
+   """,/*expected after this line*/"""
+   nested class { A={..} B={..} }
+   nested class A
+   Code can not be extracted since it exposes uniquely numbered path nested class B.C::1
+   Full mapping:A-><empty>;B-><empty>
+   [file:[###]"""/*next test after this line*/)
    ));}
 private static String nested4="""
      A={

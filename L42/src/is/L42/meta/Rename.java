@@ -425,6 +425,7 @@ public class Rename {
         return xx;
         }
       });
+    assert e!=null;
     return mwt.withMh(mh).with_e(e);
     }
   L renameTop(){
@@ -432,7 +433,7 @@ public class Rename {
     Arrow a=map.get(new Arrow(L(),null));
     if(a==null){return l1;}
     if(a.isMeth()){return l1;}
-    if(!a.full){noExposeUniqueN(l1);}
+    if(!a.full){noExposeUniqueN(L(),l1);}
     if(!a.full && a.isEmpty()){return toAbstract(l1);}
     assert a.isCs();
     if(!a.full){noCircular(l1,L());}
@@ -497,7 +498,7 @@ public class Rename {
     if(a==null){return L(nc);}
     List<C> csc=pushL(cs,nc.key());
     if(!a.full){//either 7 or 8
-      if(a.isEmpty()){return L(rename8restrictNC(nc));}
+      if(a.isEmpty()){return L(rename8restrictNC(csc,nc));}
       return L(rename7superNC(nc,csc,a));
       }
     if(a.isP()){
@@ -570,10 +571,10 @@ public class Rename {
     addMapMWTs(mwtOf(mwt,s1));
     return L();
     }
-  MWT rename3restrictMeth(MWT mwt){return mwt.with_e(null);}
+  MWT rename3restrictMeth(MWT mwt){return mwt.with_e(null).withNativeUrl("");}
   MWT rename4superMeth(MWT mwt,S s1){
     addMapMWTs(mwtOf(mwt,s1));
-    return mwt.with_e(null);
+    return mwt.with_e(null).withNativeUrl("");
     }
   List<MWT> rename5meth(MWT mwt,S s1){
     addMapMWTs(mwtOf(mwt,s1));
@@ -606,12 +607,12 @@ public class Rename {
     }
   NC rename7superNC(NC nc,List<C> csc,Arrow a){
     noCircular(nc.l(),csc);
-    noExposeUniqueN(nc.l());
+    noExposeUniqueN(csc,nc.l());
     nestedInNewPosition(nc,a,false);
     return nc.withL(toAbstract(nc.l()));
     }
-  NC rename8restrictNC(NC nc){
-    noExposeUniqueN(nc.l());
+  NC rename8restrictNC(List<C> csc,NC nc){
+    noExposeUniqueN(csc,nc.l());
     return nc.withL(toAbstract(nc.l()));
     }
   NC _rename9nested(NC nc,Arrow a){
@@ -667,17 +668,20 @@ public class Rename {
 
   L toAbstract(L l0){
     List<MWT> mwts=L(l0.mwts(),(c,m)->{
-      if(!m.key().hasUniqueNum()){c.add(m.with_e(null));}
+      if(!m.key().hasUniqueNum()){c.add(m.with_e(null).withNativeUrl(""));}
       });
     List<NC> ncs=L(l0.ncs(),(c,n)->{
       if(!n.key().hasUniqueNum()){c.add(n);}
       });
     L l=new L(l0.poss(),l0.isInterface(),l0.ts(),mwts,L(),Info.empty,l0.docs());
-    List<P.NCs> typeDep=L(c->l.accept(new Accumulate<Void>(){
-      @Override public void visitP(P p){
-        if(p.isNCs() && !c.contains(p)){c.add(p.toNCs());}
-        }
-      }));
+    List<P.NCs> typeDep=L(c->{
+      var acc=new Accumulate<Void>(){
+        @Override public
+        void visitP(P p){if(p.isNCs() && !c.contains(p)){c.add(p.toNCs());}}
+        };
+      l.accept(acc);
+      for(var nc:ncs){acc.visitDocs(nc.docs());}
+      });
     Info i=l0.info();    
     i=new Info(i.isTyped(),typeDep,L(),L(),L(),L(),L(),i.refined(),false, "",L(), -1);
     return l.withNcs(ncs).withInfo(i);
@@ -705,21 +709,27 @@ public class Rename {
         }
       }
     }
-  void noExposeUniqueN(L l){
+  void noSingleExposeUniqueN(List<C> cs,P.NCs p){
+    P.NCs pi=Program.emptyP.from(p,cs);
+    if(pi.n()!=0){return;}
+    if(!pi.hasUniqueNum()){return;}
+    var csCut=L(pi.cs().stream().takeWhile(c->!c.hasUniqueNum()));
+    var a=map.get(new Arrow(csCut,null));
+    if(a==null || (a.full && !a.isP())){return;}
+    err(errFail,errFail.intro(cs,false)
+      +"Code can not be extracted since it exposes uniquely numbered path "
+      +errFail.intro(p.cs(),false));
+    }
+  void noExposeUniqueN(List<C> cs,L l){
     l.accept(new Accumulate<Void>(){
       @Override public void visitMWT(MWT mwt){
-        super.visitMWT(mwt.with_e(null));
+        super.visitMWT(mwt.with_e(null).withNativeUrl(""));
         }
       @Override public void visitInfo(Info info){}
       @Override public void visitNC(NC nc){}
       @Override public void visitP(P path){
         if(!path.isNCs()){return;}
-        var p=path.toNCs();
-        if(p.n()!=0 || p.cs().isEmpty()){return;}
-        if(!p.cs().get(0).hasUniqueNum()){return;}
-        err(errFail,errFail.intro(cs,false)
-          +"Code can not be extracted since it exposes uniquely numbered path "
-          +errFail.intro(p.cs(),false));
+        noSingleExposeUniqueN(cs,path.toNCs());
         }
       });
     }

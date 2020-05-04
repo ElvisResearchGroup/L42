@@ -138,12 +138,12 @@ _______
     Rename[p;cs=empty;Map] p(This0) = L1;AddMap        
     if empty->Cs' in Map:
       noCircular(p;L;empty)
-      noExposeUniqueN(L)
+      noExposeUniqueN(Map,empty,L)
       n=sizeOf(Cs')
       L2=L1[toAbstract]
       AddMap0=Cs'->L1[noNesteds][renameFrom Thisn;p.navigate(Cs')]
     if empty-><empty> in Map:
-      noExposeUniqueN(L)      
+      noExposeUniqueN(Map,empty,L)      
       L2=L1[toAbstract], AddMap0=empty
       L2={L1.ncs[where C have no unique num]}//and empty info
     if empty=>Cs' in Map:
@@ -234,17 +234,17 @@ We need to add some tests to TestRename
     Rename.Cs.C->empty in Rename.Map //bringing at top level
     L'=L[noNesteds][renameFrom This0.Rename.Cs.C;{};0]
     noCircular(p;L;(Rename.Cs).C)
-    noExposeUniqueN(L)
+    noExposeUniqueN(Rename.Map,(Rename.Cs).C,L)
 * Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L'
     Rename.Cs.C->Cs'.C' in Rename.Map
     n=sizeOf(Cs'.C')
     p=Rename.p.navigate(Cs'.C')//Cs' may not be in dom(p), see forcedNavigate in the code
     L'=L[noNesteds][renameFrom p.minimize(Thisn.(Rename.Cs.C));p;0]
     noCircular(p;L;(Rename.Cs).C);
-    noExposeUniqueN(L)
+    noExposeUniqueN(Rename.Map,(Rename.Cs).C,L)
 //8:nested toAbstract
 * Rename(Docs C=L) = Docs C=L[toAbstract];empty
-    noExposeUniqueN(L)
+    noExposeUniqueN(Rename.Map,(Rename.Cs).C,L)
     Rename.Cs.C-><empty> in Rename.Map
 //9:nested rename
 * Rename(Docs C=L) = (C=L)[onlyNesteds];empty->L'
@@ -279,14 +279,18 @@ We need to add some tests to TestRename
 //complex lift/embed can be obtained by delegate+->+hiding
 //+introspection to find all implemented versions
 _______
-#define noCircular(p;L;Cs)    noExposeUniqueN(L)    L[toAbstract]=L'    nc[onlyNested]=nc?    L[noNested]=L'
+#define noCircular(p;L;Cs)    noExposeUniqueN(Map,Cs,L)    L[toAbstract]=L'    nc[onlyNested]=nc?    L[noNested]=L'
 * noCircular(p;L;Cs0)
     forall public This0.Cs1 in L.Info.typeDep[from This0.Cs0;{}]\This0.Cs0
       This0.Cs0 notin p(Cs1)[from This0.Cs1;{}]
 
-* noExposeUniqueN(L)
+* noExposeUniqueN(Map,Cs',L)
+    for all of the P in L.Ts.Ps, or in any method return type, parameter type, exception type or in any Path in docs:
+      if P has unique num and P[from This0.Cs';{}] = This0.Cs.C::n._//path is in the bubble, inside Cs
+      then Cs notin {Cs| Cs->_ in Map or Cs=>P in Map}//more then the not watched: also including Cs->Cs'
+    
     there is no This0.C::k.Cs in L.Ts.Ps, or in any method return type,
-      parameter type, exeption type or in any Path in docs.    
+      parameter type, exception type or in any Path in docs.    
 
 * L[toAbstract] = L' removes all the private nested classes/methods, and make all the methods abstract.
     The nested classes are left untouched.
