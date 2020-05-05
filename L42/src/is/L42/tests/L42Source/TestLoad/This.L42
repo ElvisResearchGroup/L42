@@ -2,14 +2,24 @@ reuse[AdamTowel]
 
 Base=Trait:{
   reuse[AdamTowel]
-  Main={class method S hello()=S"hello world"}
+  Main={class method S hello(S that)=S"hello %that"}
   }
-Deployed=Load:Deploy.module(Base.code(),n=Name"Main")<:Trait.code()
+Deployed0=Load:Deploy.module(Base.code(),n='Main)<:Trait.code()
+Deployed1=Deploy.module(
+  url='MiniLib
+  code=Base.code()
+  name='Main
+  )
+Deployed2=Load:{reuse[#$MiniLib]}
 
 Test1=(
   {}:Test"BaseLocal"(
     expected=S"hello world"
-    actual=Deployed.hello()
+    actual=Deployed0.hello(S"world")
+    )
+  {}:Test"BaseRemote"(
+    expected=S"hello L42"
+    actual=Deployed2.hello(S"L42")
     )
   )
   

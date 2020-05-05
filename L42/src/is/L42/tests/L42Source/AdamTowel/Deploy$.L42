@@ -4,7 +4,6 @@ class method Void module(Url url,Library code,Name name)
 class method Trait module(Library that,Name n)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
   =(
-  Debug(S"deploy module start %n")
   at=Name"AbstractTowel"
   //l=removeUnusedCode(l,that)
   top=Introspection.Nested.from(library=that)

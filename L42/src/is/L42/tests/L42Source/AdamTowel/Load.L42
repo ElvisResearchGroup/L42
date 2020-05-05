@@ -40,11 +40,9 @@ method Trait.Acc collect(Library that)=(
   atOut=Introspection.Nested.from(classAny=AbstractTowel)
   acc=Trait.Acc(Name$Mapping())
   for nci in atIn.nesteds() (
-    Debug(S"nci  %nci.outerName()")
     src=nci.innerDoc().annotation(nested=atIn).get().texts().left()
     name=nci.nameFromRoot()
     for ncj in this.deps() (
-      Debug(S"ncj  %ncj.outerName()")
       dest=ncj.innerDoc().annotation(nested=atOut).get().texts().left()
       matches=this.match(src=src,dest=dest)
       if matches (acc.#squareAdd(deep=name=>ncj.classAny()) Break())
@@ -54,10 +52,7 @@ method Trait.Acc collect(Library that)=(
   )
 method Library :(Library that)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
-  =(
-    Debug(S"LoadStart")
-    Class:Trait(that)(squareBuilder=this.collect(that))
-    )
+  =Class:Trait(that)(squareBuilder=this.collect(that))
   
 method Bool match(S src,S dest)=src==dest//To be overridden
 @AbstractTowel{load}

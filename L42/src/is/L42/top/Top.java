@@ -233,11 +233,13 @@ dropCache:
     var currentState=new Cache.InOut(loader.bytecodeSize(),loader.libsCachedSize(),ctz.copy(),cachableAlreadyCoherent(),p);
     var newCache=new Cache.CTop(currentState, null, null, info.hashDollarInside, coreL, -1, -1);
     Program p0=p.update(coreL,false);
-    List<Half.E> e1n=L(coreL.mwts(),(c,mwti)->{
-      var memi=_elem(ms,mwti.key());
+    //next line, is mhs to be closer to the formalism
+    List<MWT> mhs=L(coreL.mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
+    List<Half.E> e1n=L(mhs,(c,mhi)->{
+      var memi=_elem(ms,mhi.key());
       Full.E _ei=null;
       if(memi!=null){_ei=memi._e();}
-      ctzAdd(ctz,p0,mwti.mh(),_ei,c);
+      ctzAdd(ctz,p0,mhi.mh(),_ei,c);
       });
     assert p.top.isFullL();
     assert loader.bytecodeSize()==cache.allByteCode().size():loader.bytecodeSize()+" "+cache.allByteCode().size();
@@ -254,16 +256,16 @@ dropCache:
     Program p1=cachedNCs.isEmpty()?p0:cachedNCs.get(cachedNCs.size()-1).out().p();
     assert p1.top instanceof Core.L;
     assert p1.topCore().wf();//Check the new core top is well formed
-    List<Core.E> coreE1n=L(coreL.mwts(),e1n,(c,mwti,_ei)->{
+    List<Core.E> coreE1n=L(mhs,e1n,(c,mhi,_ei)->{
       if(_ei==null){c.add(null);return;}
-      Core.E eri=infer(new I(null,p1,G.of(mwti.mh())),ctz,null,_ei,null);
+      Core.E eri=infer(new I(null,p1,G.of(mhi.mh())),ctz,null,_ei,null);
       c.add(eri);
       });//and propagate errors out
-    List<MWT> coreMWTs=L(coreL.mwts(),coreE1n,(c,mwti,_ei)->{//mwt'1..mwt'n
-      var memi=_elem(ms,mwti.key());
+    List<MWT> coreMWTs=L(mhs,coreE1n,(c,mhi,_ei)->{//mwt'1..mwt'n
+      var memi=_elem(ms,mhi.key());
       String nat="";
       if(memi instanceof Full.L.MWT){nat=((Full.L.MWT)memi).nativeUrl();}
-      c.add(mwti.withNativeUrl(nat).with_e(_ei));
+      c.add(mhi.withNativeUrl(nat).with_e(_ei));
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
@@ -531,7 +533,7 @@ dropCache:
     assert mwts0.size()+mwts.size()==l.mwts().size();
     Deps collected=new Deps().collectDeps(p,mwts);
     Info info=collected.toInfo(true);
-    var allMwts=merge(mwts0,mwts);
+    var allMwts=merge(mwts,mwts0);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
     Info info1=sumInfo(l.info(),info).withClose(closeState);

@@ -107,8 +107,7 @@ DeployAdamTowel={reuse[#$aaa]
     tot=base+added
     organize=Organize(public='Public)
     toDeploy=Class:(organize:tot)['This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
-    //Debug(Introspection.Nested.from(library=toDeploy).toFullS())
-    //organize=Organize()
+    Debug(Introspection.Nested.from(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)
     )
   }

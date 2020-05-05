@@ -197,6 +197,7 @@ public class Rename {
       var p=a._path.toNCs();
       p=p.withCs(merge(p.cs(),csi));
       miniAddMap(src,new Arrow(src.cs,null,a.full,false,p,null,null));
+      return;
       }
     assert a.isEmpty();
     miniAddMap(src,new Arrow(src.cs,null,a.full,false,null,null,null));
