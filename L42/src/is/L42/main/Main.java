@@ -43,7 +43,9 @@ public class Main {
     Class<?> c=o.getClass(); 
     System.out.println(c.getCanonicalName());
     try{System.out.println(c.getMethod("£mtoS").invoke(o).toString());return;}
-    catch(Throwable t){}
+    catch(Throwable t){
+      t.printStackTrace();
+      }
     try{
       Field of=c.getField("unwrap");
       of.setAccessible(true);
@@ -58,7 +60,7 @@ public class Main {
       }
     catch(Throwable t){}
     System.out.println("The error type can not be displayed");
-    for(var m:c.getMethods()){System.out.println(m.getName());}
+    for(var m:c.getMethods()){System.out.println(m.getName()+" "+m.toString());}
     for(var m:c.getFields()){System.out.println(m.getName());}
     }
   }

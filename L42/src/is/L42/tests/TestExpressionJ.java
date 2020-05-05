@@ -226,7 +226,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   jc("""
      """,
      """
-     class £cN£n1 implements L42Any,L42Cachable<£cN£n1>{
+     public class £cN£n1 implements L42Any,L42Cachable<£cN£n1>{
        [###]
        public static int £mof(£cN£n1 £xthis){
          return 0;
@@ -248,7 +248,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        public static £cN£n1 wrap(int that){£cN£n1 res=new £cN£n1();res.unwrap=that;return res;}
        }
      ""","""
-     class £cA£n1 implements L42Any,L42Cachable<£cA£n1>{
+     public class £cA£n1 implements L42Any,L42Cachable<£cA£n1>{
        [###]
        int £xn;
        public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cA£n1)o).£xn=(int)f;};
@@ -279,7 +279,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   jc("""
      C={ #norm{}}
      ""","""
-     class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
+     public class £cC£n1 extends L42NoFields<£cC£n1> implements L42Any{
        static final Class<£cC£n1> _class=£cC£n1.class;
        public static final L42Cache<£cC£n1> myCache=[###]
        @Override public L42Cache<£cC£n1> myCache(){return myCache;}
@@ -302,7 +302,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        method This1.N n()
        #norm{typeDep=This This1.N}}
      ""","""
-     class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
+     public class £cC£n1 implements L42Any,L42Cachable<£cC£n1>{
        [###]
        int £xn;
        public static BiConsumer<Object,Object> FieldAssFor_n=(f,o)->{((£cC£n1)o).£xn=(int)f;};

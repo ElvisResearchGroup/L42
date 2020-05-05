@@ -2,37 +2,37 @@
 NativeDoc i
 class method This(NativeDoc that)=\(i=that)
 
-method Nested root()=\(this.i().root())
-method Name nameFromRoot()=\.of(this.i().nameFromRoot())
+@Public method Nested root()=\(this.i().root())
+@Public method Name nameFromRoot()=\.of(this.i().nameFromRoot())
 
-method Docs docs()=\()((
+@Public method Doc$List docs()=\()((
   size=this.i().docNum()
   var i=0Size
   while i<size (
     \res<=Doc$(this.i().docIn(i))
     i+=1Size//sadly, range will be added later
   )))
-method S$List texts()=\()((
+@Public method S$List texts()=\()((
   size=this.i().docNum()+1Size
   var i=0Size
   while i<size (
     \res<=this.i().textIn(i)
     i+=1Size//sadly, range will be added later
   )))
-method Bool hasAnnotation()=this.i().hasAnnotation()
-method Nested nested()=\(this.i().nested())
-method Name name()=\.of(this.i().name())
+@Public method Bool hasAnnotation()=this.i().hasAnnotation()
+@Public method Nested nested()=\(this.i().nested())
+@Public method Name name()=\.of(this.i().name())
 
-read method S toS()=this.i().toS()
+method toS()=this.i().toS()
 
-method Bool annotatedAs(class Any that)=this.annotatedAs(nested=\.from(classAny=that))
-method Bool annotatedAs(Nested nested)={
+@Public method Bool annotatedAs(class Any that)=this.annotatedAs(nested=\.from(classAny=that))
+@Public method Bool annotatedAs(Nested nested)={
   @DelayTyping Void _=void//delays typing so Doc$ do not get typed before is merged
   if this.hasAnnotation() && this.nested()==nested return Bool.true()
   return this.docs().matchAny()(for d in \vals \res<=d.annotatedAs(nested=nested)<:Bool)
   }
-method Doc$Opt annotation(class Any that)=this.annotation(nested=\.from(classAny=that))
-method Doc$Opt annotation(Nested nested)={
+@Public method Doc$Opt annotation(class Any that)=this.annotation(nested=\.from(classAny=that))
+@Public method Doc$Opt annotation(Nested nested)={
   if this.hasAnnotation() && this.nested()==nested 
     return Doc$Opt(this)<:Doc$Opt//TODO: should we tweak the TS since this was known from the block?
   for d in this.docs() (

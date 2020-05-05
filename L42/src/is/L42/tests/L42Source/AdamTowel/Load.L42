@@ -1,8 +1,8 @@
 ClassOperators={class method This1()=This1()}
 
-Introspection.Nesteds deps
+Introspection.Nested$List deps
   
-class method This(Introspection.Nesteds deps)
+class method This(Introspection.Nested$List deps)
   
 class method This()=\(deps=this.baseDeps())
   
@@ -10,7 +10,7 @@ N={//To shorten the creation of the list baseDeps
   ClassOperators={class method class This1()=This1}
   class method Introspection.Nested:(class Any a)=\.from(classAny=a)
   }
-class method mut Introspection.Nesteds baseDeps()=\[
+class method mut Introspection.Nested$List baseDeps()=\[
   N:Public;
   N:(HasToS<:class Any);
   N:Break;
@@ -36,21 +36,28 @@ class method mut Introspection.Nesteds baseDeps()=\[
   N:Load$;
   ]
 method Trait.Acc collect(Library that)=(
-  at=Introspection.Nested.from(library=that).nested(name='AbstractTowel)
+  atIn=Introspection.Nested.from(library=that).nested(name='AbstractTowel)
+  atOut=Introspection.Nested.from(classAny=AbstractTowel)
   acc=Trait.Acc(Name$Mapping())
-  for nci in at.nesteds() (
-    src=nci.outerDoc().annotation(nested=at).get().texts().left()
+  for nci in atIn.nesteds() (
+    Debug(S"nci  %nci.outerName()")
+    src=nci.innerDoc().annotation(nested=atIn).get().texts().left()
     name=nci.nameFromRoot()
     for ncj in this.deps() (
-      dest=ncj.outerDoc().annotation(nested=at).get().texts().left()
+      Debug(S"ncj  %ncj.outerName()")
+      dest=ncj.innerDoc().annotation(nested=atOut).get().texts().left()
       matches=this.match(src=src,dest=dest)
-      if matches acc.#squareAdd(deep=name=>ncj.classAny())
+      if matches (acc.#squareAdd(deep=name=>ncj.classAny()) Break())
       )
     )
   acc
   )
 method Library :(Library that)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
-  =Class:Trait(that)(squareBuilder=this.collect(that))
+  =(
+    Debug(S"LoadStart")
+    Class:Trait(that)(squareBuilder=this.collect(that))
+    )
   
 method Bool match(S src,S dest)=src==dest//To be overridden
+@AbstractTowel{load}

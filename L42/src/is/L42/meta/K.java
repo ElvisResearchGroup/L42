@@ -61,7 +61,9 @@ public class K extends GuessFields{
     var pIn=p.navigate(cs);
     var l=k(pIn,wrap,mutK,immK);
     pIn=pIn.update(l,false);
-    return pIn._ofCore(P.of(cs.size(),L()));
+    var res= pIn._ofCore(P.of(cs.size(),L()));
+    assert res.wf();
+    return res;
     }
   public Core.L k(Program p,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     var l=p.topCore();

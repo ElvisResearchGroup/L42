@@ -408,14 +408,14 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   public void header(boolean interf,String jC){
     if(interf){
-      kw("interface "+jC+ " extends L42Any");
+      kw("public interface "+jC+ " extends L42Any");
       return;
       }
     if(this.isCoherent && (!this.fields.xs.isEmpty() || nativeKind(p))){
-      kw("class "+jC+ " implements L42Any,L42Cachable<"+jC+">");
+      kw("public class "+jC+ " implements L42Any,L42Cachable<"+jC+">");
       return;
       }
-    kw("class "+jC+ " extends L42NoFields<"+jC+"> implements L42Any");
+    kw("public class "+jC+ " extends L42NoFields<"+jC+"> implements L42Any");
     }
   public String jCName(PTails p){
     if(p.isEmpty()){return "";}

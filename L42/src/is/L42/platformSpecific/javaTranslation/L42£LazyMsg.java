@@ -29,12 +29,25 @@ public class L42£LazyMsg extends L42NoFields.Eq<L42£LazyMsg>{
     msg=lazy.get();
     return msg;
     }
-  public void setMsg(String msg){this.msg=msg;this.lazy=null;}
+  public void setMsg(String msg){
+    assert msg!=null;
+    this.msg=msg;
+    this.lazy=null;
+    }
   private String msg;
   private Supplier<String> lazy;
   public L42£LazyMsg(){this.lazy=base;}
-  public L42£LazyMsg(Supplier<String>lazy){this.msg=null;this.lazy=lazy;}
-  public L42£LazyMsg(String msg){this.msg=msg;this.lazy=null;}
+  public L42£LazyMsg(Supplier<String>lazy){
+    assert lazy!=null;
+    this.msg=null;
+    this.lazy=lazy;
+    }
+  public L42£LazyMsg(String msg){
+    assert msg!=null:
+      "";
+    this.msg=msg;
+    this.lazy=null;
+    }
   @Override public String toString(){return getMsg();}
   @Override public boolean eq(L42£LazyMsg other){
     if(lazy==null && other.lazy==null){

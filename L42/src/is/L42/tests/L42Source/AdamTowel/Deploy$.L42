@@ -4,6 +4,7 @@ class method Void module(Url url,Library code,Name name)
 class method Trait module(Library that,Name n)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
   =(
+  Debug(S"deploy module start %n")
   at=Name"AbstractTowel"
   //l=removeUnusedCode(l,that)
   top=Introspection.Nested.from(library=that)
@@ -12,7 +13,7 @@ class method Trait module(Library that,Name n)
   for nc in top.nesteds() {
     name=nc.nameFromRoot()
     if name==n || name==at return void
-    annotated=nc.outerDoc().annotation(nested=i)
+    annotated=nc.innerDoc().annotation(nested=i)
     if annotated return acc.#squareAdd(deep=name=>at.toS()++name)
     return acc.#squareAdd(hide=name)
     }

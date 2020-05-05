@@ -41,7 +41,9 @@ public class Wither {
     var pIn=p.navigate(cs);
     var l=wither(pIn,wrap,immK);
     pIn=pIn.update(l,false);
-    return pIn._ofCore(P.of(cs.size(),L()));
+    var res=pIn._ofCore(P.of(cs.size(),L()));
+    assert res.wf();
+    return res;
     }
   public Core.L wither(Program p,Function<L42£LazyMsg,L42Any>wrap,String immK){
     var l=p.topCore();

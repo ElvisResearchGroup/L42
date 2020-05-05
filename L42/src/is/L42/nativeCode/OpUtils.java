@@ -43,7 +43,7 @@ class OpUtils{
       }
     static private final String vectorExc2(String body){
       return "try{"+body+"}"+
-        "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
+        "catch(IndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
       }
     static final Map<TrustedKind,Generator>type(String s,Signature sig){
       return Map.of(TrustedKind.Type,use("return "+s+";",sig));
@@ -52,19 +52,19 @@ class OpUtils{
       return Map.of(TrustedKind.Nested,use("return "+s+";",sig));
       }
     static final Map<TrustedKind,Generator>nested(String s,Signature sig,int num){
-      return Map.of(TrustedKind.Nested,use(exc("return "+s+";",num,"ArrayIndexOutOfBoundsException"),sig));
+      return Map.of(TrustedKind.Nested,use(exc("return "+s+";",num,"IndexOutOfBoundsException"),sig));
       }
     static final Map<TrustedKind,Generator>doc(String s,Signature sig){
       return Map.of(TrustedKind.Doc,use("return "+s+";",sig));
       }
     static final Map<TrustedKind,Generator>doc(String s,Signature sig,int num){
-      return Map.of(TrustedKind.Doc,use(exc("return "+s+";",num,"ArrayIndexOutOfBoundsException"),sig));
+      return Map.of(TrustedKind.Doc,use(exc("return "+s+";",num,"IndexOutOfBoundsException"),sig));
       }
     static final Map<TrustedKind,Generator>method(String s,Signature sig){
       return Map.of(TrustedKind.Method,use("return "+s+";",sig));
       }
     static final Map<TrustedKind,Generator>method(String s,Signature sig,int num){
-      return Map.of(TrustedKind.Method,use(exc("return "+s+";",num,"ArrayIndexOutOfBoundsException"),sig));
+      return Map.of(TrustedKind.Method,use(exc("return "+s+";",num,"IndexOutOfBoundsException"),sig));
       }
     static final String exc(String body,int num,String exc){
       return "try{"+body+"}"+

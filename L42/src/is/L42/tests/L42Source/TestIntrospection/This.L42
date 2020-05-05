@@ -77,7 +77,7 @@ TestFromLib=(
       """.trim())
   {}:Test"3"(actual=Introspection.Nested.from(library=lib).nesteds(),
     expected=S"""
-      |Introspection.Nesteds[(i="{ foo(that)=(..) }\n\nFile name:[###]")]
+      |Introspection.Nested.List[(i="{ foo(that)=(..) }\n\nFile name:[###]")]
       """.trim())
   {}:Test"4"(actual=n.outerName(), expected=S"B")
   {}:Test"5"(actual=n.outerDoc(), expected=S"@{@{hi}}")

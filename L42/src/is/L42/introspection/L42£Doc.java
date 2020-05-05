@@ -23,9 +23,9 @@ public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
     public String textIn(int that){return doc.texts().get(that);}//textNum==docNum+1
     public boolean hasAnnotation(){return doc._pathSel()!=null;}
     public L42£Nested nested(){
-      if(doc._pathSel()==null){throw new IndexOutOfBoundsException();}
+      if(doc._pathSel()==null){throw new IndexOutOfBoundsException("The Doc has no annotated Path");}
       P p=doc._pathSel().p();
-      if(root.isBinded()){return L42£Nested.fromClass(p);}
+      if(root.isBinded()){return L42£Nested.fromClassInBinded(p,this.root._outerC());}
       var p0=p.toNCs();
       if(p0.n()>nameFromRoot.cs.size()){
         p0=p0.withN(p0.n()-(nameFromRoot.cs.size()+1));
@@ -42,9 +42,6 @@ public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
       if(ps._x()!=null){res=res.withX(ps._x().toString());}
       return res;
       }
-    /*TODO: insert them all, then lift them as TrustedOp, then propagate them (twice) to AdamTowel */
-
-
   static Doc normalize(List<Doc> docs){
     if(docs.isEmpty()){return emptyDoc;}
     //if(docs.size()==1){return docs.get(0);} No, otherwise we can not distinguish @{@A,@B,@C} from @A,@B,@C; but sum operator would make them different...

@@ -53,6 +53,15 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     if(clazz==P.pLibrary){return instanceLibrary;}
     return fromClass(clazz.toNCs());
     }
+  static public L42£Nested fromClassInBinded(P clazz,C _top){
+    if(clazz==P.pAny){return instanceAny;}
+    if(clazz==P.pVoid){return instanceVoid;}
+    if(clazz==P.pLibrary){return instanceLibrary;}
+    var p=clazz.toNCs();
+    if(p.n()!=0){return fromClass(p.withN(p.n()-1));}
+    assert _top!=null;
+    return fromClass(p.withCs(pushL(p.cs(),_top)));
+    }
   static public L42£Nested fromClass(P.NCs clazz){
     L l=Resources.currentP._ofCore(clazz);
     assert l!=null;
@@ -68,7 +77,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     assert name!=L42£Name.instance:
     "";
     L l=rootL._cs(name.cs);
-    if(l==null){throw new ArrayIndexOutOfBoundsException();}//throw err name invalid
+    if(l==null){throw new IndexOutOfBoundsException(name+" not in the domain of the nested class");}//throw err name invalid
     if(_classAny==null || !_classAny.isNCs()){
       return new L42£Nested(posStr(l.poss()),l,rootL,name.onlyCs(),null).myNorm();
       }
@@ -76,13 +85,26 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     newP=newP.withCs(merge(newP.cs(),name.cs));
     return fromClass(newP);
     }
-  public boolean hasOuter(){return _outerC()!=null;}
+  private static String errAnon="The nested class is anonymous";
+  private static String errOuter="The outer nested class is inaccessible (top level or primitive path)";
+  public boolean hasOuter(){return _outerCForDoc()!=null;}
   public String outerName(){
     C c=_outerC();
-    if(c==null){throw new ArrayIndexOutOfBoundsException();}
+    if(c==null){throw new IndexOutOfBoundsException(errAnon);}
     return c.toString();
     }
   public C _outerC(){//TODO: we can have classAny with private stuff... how we avoid it?
+    if(!isBinded()){
+      var cs=nameFromRoot.cs;
+      if(cs.isEmpty()){return null;}
+      return cs.get(cs.size()-1);  
+      }
+    if(!_classAny.isNCs()){return null;}
+    var path=_classAny.toNCs();
+    if(path.cs().isEmpty()){return null;}
+    return path.cs().get(path.cs().size()-1);
+    }
+  private C _outerCForDoc(){//like _outerC but fails if the outerDoc could be still to compile 
     if(!isBinded()){
       var cs=nameFromRoot.cs;
       if(cs.isEmpty()){return null;}
@@ -95,17 +117,17 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     }
   public L42£Nested outer(){
     if(!isBinded()){
-      if(nameFromRoot.cs.isEmpty()){throw new ArrayIndexOutOfBoundsException();}
+      if(nameFromRoot.cs.isEmpty()){throw new IndexOutOfBoundsException(errAnon);}
       return nestedByName(L42£Name.fromCs(popLRight(nameFromRoot.cs)));
       }
-    if(!_classAny.isNCs()){throw new ArrayIndexOutOfBoundsException();}
+    if(!_classAny.isNCs()){throw new IndexOutOfBoundsException(errOuter);}
     var path=_classAny.toNCs();
-    if(path.cs().size()<=1){throw new ArrayIndexOutOfBoundsException();}
+    if(path.cs().size()<=1){throw new IndexOutOfBoundsException(errOuter);}
     return L42£Nested.fromClass(path.withCs(popLRight(path.cs())));
     }
   public L42£Doc outerDoc(){
-    var c=_outerC();
-    if(c==null){throw new ArrayIndexOutOfBoundsException();}
+    var c=_outerCForDoc();
+    if(c==null){throw new IndexOutOfBoundsException(errAnon);}
     var o=outer();
     NC nc=_elem(o.currentL.ncs(),c);
     Doc doc=L42£Doc.normalize(nc.docs());

@@ -2,28 +2,28 @@
 NativeMethod i
 class method This(NativeMethod that)=\(i=that)
 
-method Doc doc()=\(this.i().doc())
+@Public method Doc doc()=\(this.i().doc())
 
-method Type returnType()=\(this.i().returnType())
+@Public method Type returnType()=\(this.i().returnType())
 
-method Types parameters()=\()((
+@Public method Type$List parameters()=\()((
   size=this.i().parNum()
   var i=0Size
   while i<size (
     \res<=Type$(this.i().parIn(i))
     i+=1Size
     )))
-method Types exceptions()=\()((
+@Public method Type$List exceptions()=\()((
   size=this.i().excNum()
   var i=0Size
   while i<size (
     \res<=Type$(this.i().excIn(i))
     i+=1Size
     )))
-method Bool isRefined()=this.i().isRefined()
-method Bool isAbstract()=this.i().isAbstract()
-method Nested nested()=\(this.i().nested())
-method Name nameFromRoot()=\.of(this.i().nameFromRoot())
-method S position()=this.i().position()
+@Public method Bool isRefined()=this.i().isRefined()
+@Public method Bool isAbstract()=this.i().isAbstract()
+@Public method Nested nested()=\(this.i().nested())
+@Public method Name nameFromRoot()=\.of(this.i().nameFromRoot())
+@Public method S position()=this.i().position()
 
-read method S toS()=this.i().toS()
+method toS()=this.i().toS()

@@ -47,20 +47,26 @@ public class Close extends GuessFields{
   ArrayList<MWT> newMWTs=new ArrayList<>();
   ArrayList<MWT> toSkip=new ArrayList<>();
   public Core.L close(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
-    if(cs.isEmpty()){return close(p,wrap);}
+    if(cs.isEmpty()){
+      var res=close(p,wrap);
+      assert res.wf();
+      return res;
+      }
     var pIn=p.navigate(cs);
     var l=close(pIn,wrap);
     pIn=pIn.update(l,false);
     assert l.wf();
-    return pIn._ofCore(P.of(cs.size(),General.L()));
+    var res=pIn._ofCore(P.of(cs.size(),General.L()));
+    assert res.wf();
+    return res;
     }
-  public Core.L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
+  private Core.L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
     this.p=p;
     this.err=new MetaError(wrap);
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
     this.addGettersSetters(p);
-    for(var m:abs){
+    for(var m:this.abs){
       if(!Coherence.validConstructorSignature(p, m.mh())){continue;}
       if(!m.key().xs().containsAll(getters.keySet())){continue;}
       //constructors can initialize more fields then the getters
@@ -98,9 +104,10 @@ public class Close extends GuessFields{
     if(m._e()==null){
       if(ks.contains(m.mh())){processK(m);return;}
       if(Coherence.allowedAbstract(m.mh(),ks)){processAllowedAbs(m);return;}
-      if(m.key().xs().isEmpty()){processGetter(m);return;}
-      if(m.key().xs().size()==1){processSetter(m);return;}
+      if(getters.containsKey(Coherence.fieldName(m.mh()))){processGetter(m);return;}
+      if(setters.containsKey(Coherence.fieldName(m.mh()))){processSetter(m);return;}
       processAllowedAbs(m);//we just let it alone
+      return;
       }
     if(match("lazyCache",m)){processLazyCache(m);return;}
     var invalidate=match("invalidateCache",m);

@@ -93,15 +93,17 @@ NativeMethod={
        This2.NativeName,This2.Collection$NoElementInOpt
     }}
 Nested$={class method This(NativeNested that) read method Bool readEquality(read This that)}
-Nesteds=Collection.list(Nested$)
+@Public Nested$List=Collection.list(Nested$)
 Type$={class method This(NativeType that) read method Bool readEquality(read This that)}
-Types=Collection.list(Type$)
+@Public Type$List=Collection.list(Type$)
 Doc$={class method This(NativeDoc that) read method Bool readEquality(read This that)}
-Doc$Opt=Collection.optional(Doc$)
-Docs=Collection.list(Doc$)
+@Public Doc$Opt=Collection.optional(Doc$)
+@Public Doc$List=Collection.list(Doc$)
 Method$={class method This(NativeMethod that) read method Bool readEquality(read This that)}
-Methods=Collection.list(Method$)
-Nested=Data:{...}
-Type=Data:{...}
-Doc=Data:{...}
-Method=Data:{...}
+@Public Method$List=Collection.list(Method$)
+ExposeEq=Trait:{@Public method Bool ==(This that) @Public method Bool !=(This that)}
+@Public Nested=Data:ExposeEq:{...}
+@Public Type=Data:ExposeEq:{...}
+@Public Doc=Data:ExposeEq:{...}
+@Public Method=Data:ExposeEq:{...}
+@AbstractTowel{introspection}
