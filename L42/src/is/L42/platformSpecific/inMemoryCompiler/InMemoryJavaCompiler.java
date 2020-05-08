@@ -185,34 +185,30 @@ public class InMemoryJavaCompiler {
       ClassFile jclassObject = map.get(name);
       return super.defineClass(name, jclassObject.getBytes(), 0, jclassObject.getBytes().length);
       }
+    private URLStreamHandler forcedUrlResolution(){
+      return new URLStreamHandler(){
+        @Override protected URLConnection openConnection(URL u){
+          return new URLConnection(u){
+            @Override public void connect(){}
+            @Override public InputStream getInputStream(){
+              return new ByteArrayInputStream(map.get(url.getPath()).getBytes());
+              }
+            };
+          }
+        };
+      }
     @Override
-    public URL getResource(String name) {
-        String javaName = name.replace(".class","").replace(File.separatorChar/*'/'*/, '.').replace('/', '.');
-        //NOTE: probably there is a bug in safeNativeCode, where '/' is used instead of File.separatorChar
-        //If this isn't a class from this compiler, hand off to the parent
-        if (!map.containsKey(javaName)){return super.getResource(name);}
-        //Return a new url, that returns our file for its input stream.
-        try {
-            return new URL(null, "string:" + javaName, new URLStreamHandler() {
-                @Override
-                protected URLConnection openConnection(URL u) {
-                    return new URLConnection(u) {
-                        public void connect() {
-                        }
-
-                        @Override
-                        public InputStream getInputStream() {
-                            return new ByteArrayInputStream(map.get(url.getPath()).getBytes());
-                        }
-                    };
-                }
-            });
-        } catch (MalformedURLException e) {
-            throw new UncheckedIOException(e);
-        }
+    public URL getResource(String name){
+      String javaName = name.replace(".class","").replace(File.separatorChar/*'/'*/, '.').replace('/', '.');
+      //NOTE: probably there is a bug in safeNativeCode, where '/' is used instead of File.separatorChar
+      //If this isn't a class from this compiler, hand off to the parent
+      if (!map.containsKey(javaName)){return super.getResource(name);}
+      //Return a new url, that returns our file for its input stream.
+      try {return new URL(null, "string:" + javaName, forcedUrlResolution());}
+      catch(MalformedURLException e){throw new Error(e);}
+      }
     }
-    }
-  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, List<SClassFile> newBytecode) throws CompilationError {
+  public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, ArrayList<? super SClassFile> newBytecode) throws CompilationError {
     var out=new ArrayList<ClassFile>();
     try{return auxCompile(env,files,out);}
     finally{

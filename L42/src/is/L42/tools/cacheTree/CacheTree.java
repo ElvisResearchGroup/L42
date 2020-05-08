@@ -13,7 +13,11 @@ public interface CacheTree {
   interface O{boolean eq(O f);}
   class R{Fun _g; O _o; EndError _err;
     //either only _err==null or only _g and _o ==null
-    public R(Fun _g,O _o,EndError _err){this._g=_g;this._o=_o;this._err=_err;}
+    public R(Fun _g,O _o,EndError _err){
+      this._g=_g;this._o=_o;this._err=_err;
+      assert (_err==null && _o!=null && _g!=null)
+        ||  (_err!=null && _o==null && _g==null);
+      }
     public boolean eq(R r){
       if((this._g==null)!=(r._g==null)){return false;}
       if((this._o==null)!=(r._o==null)){return false;}

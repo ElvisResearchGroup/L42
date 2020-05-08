@@ -76,3 +76,10 @@ public class CacheTreeTest {
     System.out.println( ((N)c.r._o).n);}
     }
   }
+
+  /*
+  C= Cache, I input M medium O out
+  D= ?node?
+  
+  
+  */

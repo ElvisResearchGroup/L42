@@ -14,7 +14,6 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.NameMangling;
 import is.L42.common.Program;
-import is.L42.generated.Cache;
 import is.L42.generated.Core;
 import is.L42.generated.Core.PCastT;
 import is.L42.generated.Core.T;
@@ -39,13 +38,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
   Core.E res; 
   final CTz ctzFrom;
   final Top top;
-  ArrayList<Cache.CTop> ctops;
-  int indexCTops=0;
-  public InferToCore(I i,CTz ctz,Top top,ArrayList<Cache.CTop> ctops){
+  public InferToCore(I i,CTz ctz,Top top){
     this.i=i; this.top=top;
     this.sets = ctz.allSTz(i.p());
     this.ctzFrom=ctz;
-    this.ctops=ctops;
     } 
   public final Core.E compute(Half.E e){
     assert res==null;
@@ -99,20 +95,8 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){
     Program p=i.p().push(i._c(),l);
-    Cache.CTop res;
-    var valid=top.validCache;
-    assert !valid || indexCTops<ctops.size(): valid+" "+indexCTops+" "+ctops.size();
-    assert valid || indexCTops==ctops.size(): valid+" "+indexCTops+" "+ctops.size();
-    if(valid){res=top.topCache(p, ctops.get(indexCTops));}
-    else{res=top.topNoCache(ctzFrom, p);}
-    if (valid!=top.validCache){ 
-      assert !top.validCache;
-      ctops=new ArrayList<>(ctops.subList(0, indexCTops));
-      }
-    if(!top.validCache){ctops.add(res);}
-    indexCTops+=1;
-    Program pr=res.out().p();
-    commit(pr.topCore());
+    var res=top.topNoCache(ctzFrom, p);
+    commit(res.topCore());
     }
   @Override public void visitL(Core.L l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){

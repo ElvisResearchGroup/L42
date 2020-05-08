@@ -56,7 +56,6 @@ public class Init {
     assert program!=null;
     FreshNames f=new FreshNames();   
     top=makeTop(program,f);
-    assert top.cacheOk();
     Program res=init(program,f);
     assert res.top.wf();
     collectAllUniqueNs(res,Resources.usedUniqueNs);

@@ -58,7 +58,7 @@ public class Loader {
       assert res==null;
       }
     }
-  public Core.L runNow(Program p,C c,Core.E e,List<SClassFile> outNewBytecode,ArrayList<L42£Library> newLibs) throws CompilationError, InvocationTargetException{
+  public Core.L runNow(Program p,C c,Core.E e,ArrayList<? super SClassFile> outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),false,libs,false){
       @Override public boolean precomputeCoherent(){return false;}
@@ -87,7 +87,7 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p,List<SClassFile> newBytecode,List<L42£Library> newLibs) throws CompilationError{
+  public void loadNow(Program p,ArrayList<? super SClassFile> newBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
     this.notOkToJava.clear();
     int oldLibNum=libs.size();

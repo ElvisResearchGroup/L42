@@ -22,7 +22,7 @@ import is.L42.generated.Full;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 
-public class Cache implements Serializable {
+/*public class Cache implements Serializable {
   ArrayList<L42£Library> allLibs;
   ArrayList<SClassFile> allByteCode;
   CTop _top;
@@ -595,3 +595,4 @@ public class Cache implements Serializable {
     this._top = _top;
   }
 }
+*/

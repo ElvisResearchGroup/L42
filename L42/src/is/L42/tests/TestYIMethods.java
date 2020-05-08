@@ -603,7 +603,7 @@ public static List<Core.L.MWT> processIn(String l){
   return L(mhs,hes,(c,mhi,ei)->{
     if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;} 
     I i=new I(new C("C",-1),p,G.of(mhi));
-    var cei=new InferToCore(i,ctz,null,null).compute(ei);
+    var cei=new InferToCore(i,ctz,null).compute(ei);
     c.add(new Core.L.MWT(L(),L(),mhi,"",cei));
     }); 
   }
