@@ -20,7 +20,7 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
     e.accept(this);
     return result;
     }
-  private T result=empty();
+  protected T result=empty();
   public T acc(){return this.result;}
   public T empty(){return null;}//can be overrided, but is often left to null  
   public static abstract class SkipL<T> extends Accumulate<T>{

@@ -67,6 +67,9 @@ public class InMemoryJavaCompiler {
     private final ByteArrayOutputStream byteCode = new ByteArrayOutputStream();
     public final String name;
     private byte[] bytes=null;
+    public boolean equalBytes(SClassFile that){
+      return Arrays.equals(this.bytes,that.bytes);
+      }
     public ClassFile(String name, Kind kind) {
       super(strToUrl(name,kind),kind);
       this.name=name;

@@ -5,9 +5,15 @@ import java.util.Set;
 
 import is.L42.generated.X;
 
-public class FreshNames {
+public class FreshNames{
   int current=0;
   Set<Integer> used=new HashSet<>();
+  public FreshNames copy(){
+    var res=new FreshNames();
+    res.current=this.current;
+    res.used.addAll(this.used);
+    return res;
+    }
   public void addToUsed(X x){
     String i=x.inner();
     if(!i.startsWith("fresh")){return;}
@@ -21,6 +27,5 @@ public class FreshNames {
     String res="fresh"+current+"_"+hint;
     current+=1;
     return res;
-    
     }
-}
+  }

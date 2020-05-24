@@ -1,4 +1,94 @@
 Tree case: GIVEN
+f,g::= open(g)->R U close(g)->R U needOpen(g) U out(g)->O
+R::=g|Err
+Rs::=gs|Err
+#define do(g)=O    openClose(g)=R    openCloseNested(g)=R
+* do(g)=out(openClose(g))
+
+* openClose(g)=Err
+    open(g)=Err
+* openClose(g0)=Err
+    open(g0)=g1
+    openCloseNested(g1)=Err
+* openClose(g0)=close(g2)
+    open(g0)=g1
+    openCloseNested(g1)=g2
+    
+* openCloseNested(g)=g
+    !needOpen(g)
+* openCloseNested(g0)=Err
+    needOpen(g0)
+    openClose(g0)=Err
+* openCloseNested(g0)=openCloseNested(g1)
+    needOpen(g0)
+    openClose(g0)=g1
+---------------------------------------    
+C ::= empty
+ |g0->Err
+ |g0->g1->(C1..Cn) //well formedness: n!=0, C1.g0==g1, Cn.R==C(n+1).g0, C1..Cn-1 have no Err, Cn have Err
+ |g0->g1->(C1..Cn)->R //well formedness: C1.g0==g1, Cn.R==C(n+1).g0, C1..Cn have no Err
+
+* err(Cs,C) = Cs,C
+    C in {g0->Err, g0->g1->(C1..Cn), g0->g1->(C1..Cn)->Err}
+* last(g0;Cs,C;g) = Cs,C
+    C=g0->g1->(C1..Cn)->g
+* last(g0;empty;g0) = empty
+* open(OK/KO,C,g) = open(g) but defined only with
+    -OK if the step respects the one cached in C, and may use C to know open(g)
+    -KO otherwise
+* middleAndCloseCached(C,g) holds if we can guarantee that g is correctly cached by C
+//note * middleAndCloseCached(C,g[nc1..ncn]) only if no #$ at all inside all of nc1..ncn
+//note * middleAndCloseCached(C,g[e L1..Ln]) only if no #$ at all inside all of e, L1..Ln  
+
+* middleAndClose(g0,Cs,g1) = g0->g1->(Cs)
+    openCloseNested(Cs,g1) = err(Cs)
+* middleAndClose(g0,g1) = g0->g1->(Cs)->close(g2)
+    openCloseNested(Cs,g1) = last(g1,Cs,g2)
+
+#define do(C,g)=O    openClose(C,g)=C'    openCloseNested(C,g)=C'
+//* do(C,g) = out(openClose(C,g))//need to extract the last ->R
+* openClose(empty, g) = g->Err
+    open(g)=Err
+* openClose(empty,g0) = middleAndClose(g0,empty,g1)
+    open(g0)=g1
+* openClose(C,g0) = g0->Err
+    open(_,C,g0)=Err;
+* openClose(C,g0) = middleAndClose(g0,empty,g1)
+    open(KO,C,g0)=g1;
+* openClose(C,g0) = C //here and below we know the cache had Cs, would have failed before otherwise
+    open(OK,C,g0)=g1;
+    middleAndCloseCached(C,g1)
+* openClose(C,g0) = middleAndClose(g0,C.Cs,g1)
+    open(OK,C,g0)=g1;
+    not middleAndCloseCached(C,g1)
+
+#define openCloseNested(Cs0,g)=Cs1
+* openCloseNested(Cs,g)=empty
+    !needOpen(g)    
+* openCloseNested(empty,g0)=C1//keep going until needOpen, even if Cs is over 
+    needOpen(g0)
+    openClose(empty,g0)=err(C1)
+* openCloseNested(empty,g0)=C1 openCloseNested(empty,g1) //keep going until needOpen, even if Cs is over 
+    needOpen(g0)
+    openClose(empty,g0)=last(g0,C1,g1)
+* openCloseNested(C0 Cs,g)=C1 //C0 Cs of size 1, 2 or more
+    needOpen(g)
+    openClose(C0,g)=err(C1)
+* openCloseNested(C0,g0)=C1 openCloseNested(empty,g1) //last of the list of Cs
+    needOpen(g0)
+    openClose(C0,g0)=last(g0,C1,g1)
+* openCloseNested(C0 C Cs,g0)=C1 openCloseNested(C Cs,g1)//C0 C Cs of size 2 or more
+    needOpen(g0)
+    openClose(C0,g0)=last(g0,C1,g1)
+    C.g0=g1
+* openCloseNested(C0 C Cs,g0)=C1 openCloseNested(empty,g1)//C0 C Cs of size 2 or more
+    needOpen(g0)
+    openClose(C0,g0)=last(g0,C1,g1)
+    C.g0!=g1
+############################################
+---------------------------------------
+
+Tree case: GIVEN
 D::= D[I;Ds;M]
 I,M,O::= input, medium, output
 f,g::= I->gr U M,Os->R
@@ -24,8 +114,7 @@ g(D Ds)=Err
 
 
 lets build a notation that behave likes g(D) but with caching
-C::= C[D;gr;Cs;R] | empty //as in, a Cs can be "as long as needed and
-padded with empty"
+C::= C[D;gr;Cs;R] | empty //as in, a Cs can be "as long as needed and padded with empty"
 #define g(C,D)= C
 g(empty, D)= C[D;Err;empty;Err]
   Err=g(D.I)
@@ -39,30 +128,30 @@ g0(empty, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
   not err(Cs.Rs)
   g1,Cs.Rs.gs=_,g2
 g(C, D)= C[D;Err;empty;Err]
-  g|-C.D.I!=D.I:g0
+  g|-C!=D.I:g0
   Err=g0(D.I)
 g0(C, D)= C[D;g1;Cs;Err]
-  g|-C.D.I!=D.I:g0
+  g|-C!=D.I:g0
   g1=g0(D.I)
   g1(emptys,D.Ds)=Cs//yes,empty:C.D.I!=D.I
   err(Cs.Rs)
 g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
-  g|-C.D.I!=D.I:g0
+  g|-C!=D.I:g0
   g1=g0(D.I)
   g1(emptys,D.Ds)=Cs//yes,empty:C.D.I!=D.I
   not err(Cs.Rs)
   g1,Cs.Rs.gs=_,g2
 g(C, D)= C
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   C.D certainEq[NoI] D
 //g(C,D)=C C.D certainEq D//subsumed by the above
 g(C, D)= C[D;Err;empty;Err]
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0 
   not C.D certainEq[NoI] D
   assert C.gr=g0(D.I)
   C.gr=Err
 g(C, D)= C[D;g1;Cs;Err]
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   not C.D certainEq[NoI] D
   assert C.gr=g0(D.I)
   C.gr=g1
@@ -70,7 +159,7 @@ g(C, D)= C[D;g1;Cs;Err]
   Cs=g1(C.Cs,D.Ds)
   err(Cs.Rs)
 g(C, D)= C
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   not C.D certainEq[NoI] D
   assert C.gr=g0(D.I)
   C.gr=g1
@@ -79,7 +168,7 @@ g(C, D)= C
   not err(Cs.Rs)
   Cs.Rs=C.Cs.Rs
 g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   assert C.gr=g0(D.I)
   C.gr=g1
   not C.Cs.Ds certainEq D.Ds
@@ -88,7 +177,7 @@ g(C, D)= C[D;g1;Cs;g2(D.M,Cs.Rs.Os)]
   Cs.Rs!=C.Cs.Rs
   g1,Cs.Rs.gs=_,g2
 g(C, D)= C[D;g1;C.Cs;Err]
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   g1=C.gr
   assert C.gr=g0(D.I)
   C.Cs.Ds certainEq D.Ds
@@ -97,7 +186,7 @@ g(C, D)= C[D;g1;C.Cs;Err]
   not C.D.M certainEq D.M
   err(C.Cs.Rs)
 g(C, D)= C[D;g1;C.Cs;g3(D.M,Cs.Rs.Os)]
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   C.gr=g1
   assert C.gr=g0(D.I)
   C.Cs.Ds certainEq D.Ds
@@ -105,9 +194,9 @@ g(C, D)= C[D;g1;C.Cs;g3(D.M,Cs.Rs.Os)]
   assert C.Cs=g3(C.Cs.Ds,D.Ds)
   not err(C.Cs.Rs)
   g1,Cs.Rs.gs=_,g2
-  not g2|-C.D.M = D.M : g3
+  g2|-C != D.M : g3
 g(C, D)= C
-  g|-C.D.I=D.I:g0
+  g|-C==D.I:g0
   C.gr=g1
   assert C.gr=g0(D.I)
   C.Cs.Ds certainEq D.Ds
@@ -115,7 +204,7 @@ g(C, D)= C
   assert C.Cs=g3(C.Cs.Ds,D.Ds)
   not err(C.Cs.Rs)
   g1,Cs.Rs.gs=_,g2
-  g2|-C.D.M = D.M : g3
+  g2|-C == D.M : g3
 
 #define g(Cs;Ds)= Cs
 g(Cs;empty)=empty
@@ -152,8 +241,8 @@ g0(C,Cs;D,Ds)=C',g1(emptys;Ds)
   C'.R != C.R
 //
 I, M need to provide 3-val eq
-I,M: certainEq, canNotBe
-I,M: g|- I1=I2 :g0,  g|- I1!=I2 :g0
+I,M: certainEq, canNotBe //this is the 3-val eq in math
+I,M: g|- C==I/M :g0,  g|- C!=I/M :g0
 C do not have a equality
 D have certainEq,canNotBe derived from I,M
 D have certainEq[NoI]

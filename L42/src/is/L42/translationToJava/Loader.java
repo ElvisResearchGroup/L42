@@ -58,6 +58,15 @@ public class Loader {
       assert res==null;
       }
     }
+  public boolean checkByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
+    assert libs.equals(newLibs);
+    for(var e:bytecode){
+      var cf=classLoader.map().get(e.name);
+      assert cf.equalBytes(e);
+      }
+    return true;
+    }
+
   public Core.L runNow(Program p,C c,Core.E e,ArrayList<? super SClassFile> outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),false,libs,false){

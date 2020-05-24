@@ -68,8 +68,8 @@ public interface CacheTree {
       }
     }
   interface Fun{
-    Fun complexEq(I a, I b, boolean[]eq);
-    Fun complexEq(M a, M b, boolean[]eq);
+    Fun complexEq(C c, I i, boolean[]eq);
+    Fun complexEq(C c, M m, boolean[]eq);
     boolean eq(Fun f);
     Fun apply(I i);
     R apply(M m, List<O> os);
@@ -103,7 +103,7 @@ public interface CacheTree {
       if(_c==null){return emptyCache(d);}
       D cd=_c.d;
       boolean[] testI={false};
-      Fun g0=this.complexEq(cd.i(),d.i(), testI);
+      Fun g0=this.complexEq(_c,d.i(), testI);
       if(!testI[0]){
         Fun g1;try{g1=g0.apply(d.i());}
         catch(EndError e){return new C(d,null,L(),new R(null,null,e));}
@@ -139,7 +139,7 @@ public interface CacheTree {
       if(err!=null){return new C(d,g1,_c.cs,new R(null,null,err));}
       Fun g2=lastGOf(g1,_c.cs);
       boolean[]testM={false}; 
-      Fun g3=g2.complexEq(cd.m(), d.m(), testM);
+      Fun g3=g2.complexEq(_c, d.m(), testM);
       if(testM[0]){return _c;}// REUSE CACHE
       return new C(d,g1,_c.cs,g3.apply(d.m(),osOf(_c.cs)));
       }
