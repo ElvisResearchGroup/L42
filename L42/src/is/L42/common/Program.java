@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
@@ -221,12 +222,12 @@ public class Program implements Visitable<Program>{
   public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source).visitDocs(docs);}
   public ST from(ST st,P.NCs source){return fromVisitor(source).visitST(st);}
   public List<ST> fromSTz(List<ST> stz,P.NCs source){return fromVisitor(source).visitSTz(stz);}
-  public CTz from(CTz ctz,P.NCs source){
+  public CTz from(Map<ST,List<ST>> ctz,P.NCs source){
     var res=new CTz();
-    for(var e:ctz.entries()){
+    for(var e:ctz.entrySet()){
       ST st=from(e.getKey(),source);
       List<ST> stz=fromSTz(e.getValue(),source);
-      res.plusAcc(this, st, stz);
+      if(!(st instanceof Core.T)){res.plusAcc(this, st, stz);}
       }
     return res;
     }

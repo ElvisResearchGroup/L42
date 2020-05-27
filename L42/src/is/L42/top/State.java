@@ -52,9 +52,9 @@ import is.L42.visitors.WellFormedness;
 class State{
   public static Loader loader=new Loader();
   public State(FreshNames freshNames,ArrayList<HashSet<List<C>>>alreadyCoherent, int uniqueId,
-      ArrayList<SClassFile> allByteCode,ArrayList<L42£Library> allLibs,Path initialPath,CTz ctz,Program p){
+      ArrayList<SClassFile> allByteCode,ArrayList<L42£Library> allLibs,Path initialPath){
     this.freshNames=freshNames;this.alreadyCoherent=alreadyCoherent;this.uniqueId=uniqueId;
-    this.allByteCode=allByteCode;this.allLibs=allLibs;this.initialPath=initialPath;this.ctz=ctz;this.p=p;
+    this.allByteCode=allByteCode;this.allLibs=allLibs;this.initialPath=initialPath;
     }
   final FreshNames freshNames;
   final ArrayList<HashSet<List<C>>> alreadyCoherent;//=new ArrayList<>();
@@ -63,8 +63,6 @@ class State{
   final ArrayList<L42£Library> allLibs;
 
   final Path initialPath;
-  CTz ctz;
-  Program p;
   private ArrayList<HashSet<List<C>>> copyAlreadyCoherent(){
     var alreadyCoherent2=new ArrayList<HashSet<List<C>>>(alreadyCoherent.size());
     for(var hs:alreadyCoherent){alreadyCoherent2.add(new HashSet<List<C>>(hs));}
@@ -74,11 +72,11 @@ class State{
     return new State(
       freshNames.copy(),copyAlreadyCoherent(),uniqueId,
       new ArrayList<>(allByteCode),new ArrayList<>(allLibs),
-      initialPath,ctz.copy(),p
-      );
+      initialPath);
     }
-  List<Half.E> topOpen(Full.L original){
-    p=p.push(original);
+
+  Program topOpen(Program p,ArrayList<Half.E>e1n,CTz ctz){
+    assert e1n.isEmpty();
     alreadyCoherent.add(new HashSet<>());
     assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
     Core.L coreL=SortHeader.coreTop(p,uniqueId++);//propagates the right header errors
@@ -88,32 +86,30 @@ class State{
     Program p0=p.update(coreL,false);
     //next line, is mhs to be closer to the formalism
     List<MWT> mhs=L(coreL.mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
-    List<Half.E> e1n=L(mhs,(c,mhi)->{
+    for(var mhi:mhs){
       var memi=_elem(ms,mhi.key());
       Full.E _ei=null;
       if(memi!=null){_ei=memi._e();}
-      ctzAdd(ctz,p0,mhi.mh(),_ei,c);
-      });
+      ctzAdd(ctz,p0,mhi.mh(),_ei,e1n);
+      };
     assert p.top.isFullL();
     try{loader.loadNow(p0,allByteCode,allLibs);}
     catch(CompilationError e){throw new Error(e);}
-    this.p=p0;
-    return e1n;
+    return p0;
     }
-  Program topClose(List<Full.L.MWT> ms,List<Half.E> e1n){
-    Program p1=p;
-    List<MWT> mhs=L(p.topCore().mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
+  Core.L topClose(Program p1,List<Full.L.M> ms,List<Half.E> e1n,CTz ctz){
+    List<MWT> mhs=L(p1.topCore().mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
     assert p1.top instanceof Core.L;
     assert p1.topCore().wf();//Check the new core top is well formed
     List<Core.E> coreE1n=L(mhs,e1n,(c,mhi,_ei)->{
       if(_ei==null){c.add(null);return;}
-      Core.E eri=infer(new I(null,p1,G.of(mhi.mh())),ctz,null,_ei);
+      Core.E eri=infer(new I(null,p1,G.of(mhi.mh())),_ei,ctz);
       c.add(eri);
       });//and propagate errors out
     List<MWT> coreMWTs=L(mhs,coreE1n,(c,mhi,_ei)->{//mwt'1..mwt'n
       var memi=_elem(ms,mhi.key());
       String nat="";
-      if(memi!=null){nat=((Full.L.MWT)memi).nativeUrl();}
+      if(memi instanceof Full.L.MWT){nat=((Full.L.MWT)memi).nativeUrl();}
       c.add(mhi.withNativeUrl(nat).with_e(_ei));
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
@@ -122,8 +118,7 @@ class State{
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
     alreadyCoherent.remove(alreadyCoherent.size()-1);
-    Program p3=p2.update(l,false);
-    return p3;
+    return l;
     }
   private void ctzAdd(CTz ctz0, Program p, MH mh, Full.E _e, ArrayList<Half.E> es) {
     if(_e==null){es.add(null);return;}
@@ -135,11 +130,11 @@ class State{
   private static ToHalf.Res<Half.E> toHalf(CTz ctz,Y y, FreshNames fresh,Full.E fe){
     return new ToHalf(y, ctz, fresh).compute(fe);
     }
-  private Core.E infer(I i,CTz ctz,CTz frommed,Half.E e) throws EndError{
+  private Core.E infer(I i,Half.E e,CTz ctz) throws EndError{
     return new InferToCore(i,ctz,null).compute(e);
     //TODO: may update InferToCore to not do the Full.L any more?
     }
-  public Half.E topNCiOpen(int i,List<Full.L.NC> allNCs){
+  public Half.E topNCiOpen(Program p,int i,List<Full.L.NC> allNCs,CTz ctz){
     NC current=allNCs.get(i);//implicit assert is in range 
     Full.E fe=current.e();
     C c0=current.key();
@@ -149,14 +144,13 @@ class State{
     var  hq=toHalf(ctz,y,freshNames,fe);
     return hq.e;
     }
-  public Program topNCiClose(int index,List<Full.L.NC> allNCs,Half.E he){//now we can assume he have no full   
+  public Program topNCiClose(Program p,int index,List<Full.L.NC> allNCs,Half.E he,CTz ctz){//now we can assume he have no full   
     NC current=allNCs.get(index);//implicit assert is in range
     List<Pos> poss=current.poss();
     List<Full.Doc> docs=current.docs();
-    CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
     C c0=current.key();
     I i=new I(c0,p,G.empty());
-    Core.E ce=infer(i,ctz,frommedCTz,he); //propagates errors
+    Core.E ce=infer(i,he,ctz); //propagates errors
     assert ce!=null;
     WellFormedness.of(ce.visitable());
     Deps deps=new Deps();
@@ -179,9 +173,6 @@ class State{
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
     //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
     p1=flagTyped(p1,allByteCode,allLibs);//propagate errors
-    CTz newCTz=p1.from(frommedCTz,P.of(0,L(c0)));
-    this.ctz=newCTz;
-    this.p=p1;
     //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
     return p1; 
     }
@@ -253,7 +244,7 @@ class State{
     }
   private Core.L updateInfo(Program p1,Core.E source, Core.L.NC nc) {
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
-    Core.L l=(Core.L)p1.top;
+    Core.L l=p1.topCore();
     if(!(source instanceof LL)){
       nc=nc.withL(new UniqueNsRefresher(true).refreshUniqueNs(nc.l()));
       }

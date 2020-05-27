@@ -63,6 +63,15 @@ import static is.L42.tools.General.*;
 //TODO: also remove Cache from srcLombock
 public class Top {
   public Program topNoCache(CTz ctz,Program p){
+    State.loader=new Loader();
+    State s=new State(new FreshNames(),new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>(),null);
+    if(p.dept()>0){//only for tests
+      var l=LayerL.empty.push(Program.emptyL,new CTz().releaseMap()).push(p.pop(),0,L(),L(),L()).push(p.top,ctz.releaseMap());
+      return new DirectTop().top(new GLOpen(l,s));
+      }
+    return new DirectTop().top(new GLOpen(LayerL.empty.push(p.top,ctz.releaseMap()),s));
+    }
+  public Program __topNoCache(CTz ctz,Program p){
     alreadyCoherent.add(new HashSet<>());
     assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
     Core.L coreL=SortHeader.coreTop(p,uniqueId++);//propagates the right header errors
@@ -113,7 +122,7 @@ public class Top {
   public Program topNC(CTz ctz, Program p, List<Full.L.NC> allNCs){
     if(allNCs.isEmpty()){return p;}
     NC current=allNCs.get(0);
-    CTz frommedCTz=p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
+    CTz frommedCTz=null;//TODO:p.push(current.key(),Program.emptyL).from(ctz,P.pThis1);
     Full.E fe=current.e();
     C c0=current.key();
     System.out.println("Now considering main "+c0+" "+p.topCore().info()._uniqueId());
@@ -135,7 +144,7 @@ public class Top {
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
     //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
     p1=flagTyped(p1,allByteCode,allLibs);//propagate errors
-    CTz newCTz=p1.from(frommedCTz,P.of(0,L(c0)));
+    CTz newCTz=null;//TODO:p1.from(frommedCTz,P.of(0,L(c0)));
     //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
     return topNC(newCTz,p1,popL(allNCs)); 
     }

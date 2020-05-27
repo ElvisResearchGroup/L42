@@ -63,8 +63,9 @@ public class Full {
       }
     @Override public LL _cs(List<C> cs){
       if(cs.isEmpty()){return this;}
-      if(cs.size()==1){return this._c(cs.get(0));}
-      return this._c(cs.get(0))._cs(cs.subList(1,cs.size()));
+      var oneStep=this._c(cs.get(0));
+      if(oneStep==null || cs.size()==1){return oneStep;} 
+      return oneStep._cs(cs.subList(1,cs.size()));
       }
     @Override public LL cs(List<C> cs){
       if(cs.isEmpty()){return this;}

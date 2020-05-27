@@ -4,6 +4,8 @@ import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.todo;
 
 import java.io.Serializable;
+import java.util.List;
+import java.util.function.BiConsumer;
 
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
@@ -13,6 +15,7 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.P;
+import is.L42.tools.General;
 import is.L42.generated.Core.L;
 
 public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any,Serializable{
@@ -23,7 +26,16 @@ public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any
   public P.NCs localPath(){return localPath;}
   L originL;
   C originName=null;
-  public static final L42Any pathInstance=new L42ClassAny(P.pLibrary);
+  public static final L42£Library pathInstance;static{
+    class L42£LibraryFwd extends L42£Library implements L42Fwd{
+      @Override public List<Object> os(){return General.L();}
+      @Override public List<BiConsumer<Object, Object>> fs(){return General.L();}
+      @Override public L42ClassAny asPath(){return new L42ClassAny(P.pLibrary);}
+      @Override public int hashCode(){return 1;}
+      };
+    pathInstance=new L42£LibraryFwd();
+    }
+  private L42£Library(){}
   public L42£Library(Program p) {
     originP=p.pop();
     if(p.pTails.hasC()){originName=p.pTails.c();}
@@ -34,6 +46,8 @@ public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any
     return res*31+originL.poss().toString().hashCode(); 
     }
   @Override public boolean eq(L42£Library l){
+    if(this==l){return true;}
+    if(this==pathInstance ||l==pathInstance){return false;}
     boolean res=originName==l.originName || (originName!=null && originName.equals(l.originName));
     return res && originP.equals(l.originP) && originL.equals(originL);
     }

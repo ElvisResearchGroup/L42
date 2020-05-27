@@ -157,7 +157,8 @@ public class General {
   @FunctionalInterface
   public static interface Consumer3<T1,T2,T3>{void accept(T1 t1,T2 t2,T3 t3);}
   public static <A,B,R> List<R>L(List<A> a,List<B> b,Consumer3<ArrayList<R>,A,B> c){
-    if(a.size()!=b.size()){throw new Error("different sizes of \n"+a+"\n"+b);}
+    if(a.size()!=b.size()){
+      throw new Error("different sizes of \n"+a+"\n"+b);}
     if(a.isEmpty()){return L();}
     ArrayList<R> res=new ArrayList<>();
     for(int i=0;i<a.size();i++){

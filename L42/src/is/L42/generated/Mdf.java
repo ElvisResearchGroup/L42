@@ -32,7 +32,7 @@ public enum Mdf {
   public boolean isIn(Mdf a,Mdf b,Mdf c,Mdf d,Mdf e) {return this==a || this==b ||this==c || this==d||this==e;}
   public static Mdf fromString(String s) {
    for (Mdf mdf : Mdf.values()) {if (mdf.inner.equals(s))return mdf;}
-   throw new NumberFormatException();
+   throw bug();
     }
   public static List<Mdf> muts=Arrays.asList(Mdf.Mutable,Mdf.MutablePFwd,Mdf.MutableFwd);
   public static List<Mdf> imms=Arrays.asList(Mdf.Immutable,Mdf.ImmutablePFwd,Mdf.ImmutableFwd);
