@@ -41,6 +41,7 @@ import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.FlagTyped;
@@ -49,7 +50,7 @@ import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.WellFormedness;
 
-class State{
+public class State{
   public static Loader loader=new Loader();
   public State(FreshNames freshNames,ArrayList<HashSet<List<C>>>alreadyCoherent, int uniqueId,
       ArrayList<SClassFile> allByteCode,ArrayList<L42£Library> allLibs,Path initialPath){
@@ -169,6 +170,7 @@ class State{
     assert l!=null:c0+" "+e;
     //now, generating the new nc and adding it to the top of the program
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
+    Resources.notifyCompiledNC(nc.key()+"\n");
     Program p1=p.update(updateInfo(p,e,nc),false);
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
     //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
@@ -269,5 +271,27 @@ class State{
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
     Info info1=Top.sumInfo(l.info(),info).withClose(closeState);
     return l.withMwts(allMwts).withInfo(info1);
+    }
+  @Override public int hashCode(){
+    final int prime = 31;
+    int result = 1;
+    result = prime * result + allByteCode.hashCode();
+    result = prime * result + allLibs.hashCode();
+    result = prime * result + alreadyCoherent.hashCode();
+    result = prime * result + freshNames.hashCode();
+    result = prime * result + uniqueId;
+    return result;
+    }
+  @Override public boolean equals(Object obj){//initial path is not considered for equality
+    if(this == obj){return true;}
+    if(obj == null){return false;}
+    if(getClass() != obj.getClass()){return false;}
+    State other = (State) obj;
+    if(!allByteCode.equals(other.allByteCode)){return false;}
+    if(!allLibs.equals(other.allLibs)){return false;}
+    if(!alreadyCoherent.equals(other.alreadyCoherent)){return false;}
+    if(!freshNames.equals(other.freshNames)){return false;}
+    if(uniqueId != other.uniqueId){return false;}
+    return true;
     }
   }

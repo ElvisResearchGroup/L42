@@ -62,14 +62,22 @@ import static is.L42.tools.General.*;
 
 //TODO: also remove Cache from srcLombock
 public class Top {
+  public static Cache topCache(Cache c,String code){
+    Init init=new Init(code);
+    State.loader=new Loader();
+    State s=new State(new FreshNames(),new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>(),null);
+    LayerE l=LayerL.empty.push(init.p.top,new CTz().releaseMap());
+    return new CachedTop().openClose(c,new GLOpen(l,s));    
+    }
   public Program topNoCache(CTz ctz,Program p){
     State.loader=new Loader();
     State s=new State(new FreshNames(),new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>(),null);
     if(p.dept()>0){//only for tests
       var l=LayerL.empty.push(Program.emptyL,new CTz().releaseMap()).push(p.pop(),0,L(),L(),L()).push(p.top,ctz.releaseMap());
-      return new DirectTop().top(new GLOpen(l,s));
+      //return new DirectTop().top(new GLOpen(l,s));
+      return new CachedTop().top(Cache.of(), new GLOpen(l,s));
       }
-    return new DirectTop().top(new GLOpen(LayerL.empty.push(p.top,ctz.releaseMap()),s));
+    return new CachedTop().top(Cache.of(),new GLOpen(LayerL.empty.push(p.top,ctz.releaseMap()),s));
     }
   public Program __topNoCache(CTz ctz,Program p){
     alreadyCoherent.add(new HashSet<>());

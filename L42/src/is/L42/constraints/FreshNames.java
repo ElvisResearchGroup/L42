@@ -28,4 +28,12 @@ public class FreshNames{
     current+=1;
     return res;
     }
+  @Override public int hashCode() {return 31*(31+current) + used.hashCode();}
+  @Override public boolean equals(Object obj) {
+    if(this == obj){return true;}
+    if(obj == null){return false;}
+    if(getClass() != obj.getClass()){return false;}
+    FreshNames other = (FreshNames) obj;
+    return current==other.current && used.equals(other.used);
+    }
   }

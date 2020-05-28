@@ -27,14 +27,17 @@ import is.L42.generated.P;
 import safeNativeCode.slave.Slave;
 
 public class Resources {
-  private static StringBuffer out=new StringBuffer();//StringBuffer is the synchronized StringBuilder
+  private static StringBuffer compiledNesteds=new StringBuffer();//StringBuffer is the synchronized StringBuilder
+  public static void notifyCompiledNC(String s){compiledNesteds.append(s);}
+  public static String notifiedCompiledNC(){return compiledNesteds.toString();}
+  private static StringBuffer out=new StringBuffer();
   public static String out(){return out.toString();}
   public static void out(String s){
     s+="\n";
     out.append(s);
     System.out.print(s);
     }
-  private static StringBuffer tests=new StringBuffer();//StringBuffer is the synchronized StringBuilder
+  private static StringBuffer tests=new StringBuffer();
   public static String tests(){return tests.toString();}
   public static void tests(String s){
     tests.append(s);
@@ -73,5 +76,6 @@ public class Resources {
     allBusyUpTo=0;
     out=new StringBuffer();
     tests=new StringBuffer();
+    compiledNesteds=new StringBuffer();
     }
   }

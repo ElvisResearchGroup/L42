@@ -29,6 +29,21 @@ interface LayerE{
     List<Full.L.M> ms,List<Half.E> e1n){
     var self=this;
     return new LayerL(){
+      @Override public int hashCode(){
+        return 31*(31+p.hashCode())+ncs.hashCode();
+        }//purposely only exploring those two fields, to balance efficiency
+      @Override public boolean equals(Object o){
+        if(this==o){return true;}
+        if(o==null){return false;}
+        if(this.getClass()!=o.getClass()){return false;}
+        var l=(LayerL)o;
+        if(!p.equals(l.p())){return false;}
+        if(index!=l.index()){return false;}
+        if(!ncs.equals(l.ncs())){return false;}
+        if(!ms.equals(l.ms())){return false;}
+        if(!e1n.equals(l.e1n())){return false;}
+        return true;   
+        }
       boolean pOk(Program p){
         if(p.top instanceof Full.L){
           return false;}
@@ -71,6 +86,8 @@ interface LayerL{
     public List<Full.L.M> ms(){throw bug();}
     public List<Half.E> e1n(){throw bug();}
     public LayerE layerE(){throw bug();}
+    @Override public int hashCode(){return 1;}
+    @Override public boolean equals(Object o){return this==o;}
     };
   default LayerE push(Half.E e,Map<ST,List<ST>>ctz){
     var self=this;
@@ -78,6 +95,15 @@ interface LayerL{
       public Half.E e(){return e;}
       public Map<ST,List<ST>> ctz(){return ctz;}
       public LayerL layerL(){return self;}
+      @Override public int hashCode(){return 31*(31+e.hashCode())+ctz.hashCode();}//purposely not exploring nested layers
+      @Override public boolean equals(Object o){
+        if(this==o){return true;}
+        if(o==null){return false;}
+        if(this.getClass()!=o.getClass()){return false;}
+        var l=(LayerE)o;
+        return self.equals(l.layerL()) 
+          && e.equals(l.e()) && ctz.equals(l.ctz());   
+        }
       };
     }
   }
@@ -95,9 +121,11 @@ layerL             he layerL        he layerL
 GEClose->          GLClose,         GEOpen
 he p;i;.. layerE   p*;i+1;.. layerE    p*;i+1;.. layerE
 */
-class GLOpen implements G{
-  LayerE layer; State state;
+
+class GLOpen extends G{
+  LayerE layer;
   GLOpen(LayerE layer,State state){this.layer=layer;this.state=state;}
+  public LayerE layer(){return layer;}
   private Program currentP(LayerL l,Full.L fullL){
     if(l==LayerL.empty){return Program.flat(fullL);}
     if(l.ncs().isEmpty()){return l.p().push(fullL);}//only for tests
@@ -125,9 +153,10 @@ class GLOpen implements G{
   public boolean needOpen(){return true;}
   public Program out(){return this.layer.layerL().p();}
   }
-class GLClose implements G{
-  LayerL layer; State state;
+class GLClose extends G{
+  LayerL layer;
   GLClose(LayerL layer,State state){this.layer=layer;this.state=state;}
+  public LayerL layer(){return layer;}
   public G _open(){throw bug();}
   public G _close(){
     State s2=state.copy();
@@ -161,9 +190,10 @@ class GLClose implements G{
       }.visitE(e);
     }
   }
-class GEOpen implements G{
-  LayerL layer; State state;
+class GEOpen extends G{
+  LayerL layer;
   GEOpen(LayerL layer,State state){this.layer=layer;this.state=state;}
+  public LayerL layer(){return layer;}
   public G _open(){
     State s2=state.copy();
     CTz ctz=new CTz(layer.layerE().ctz());
@@ -178,9 +208,10 @@ class GEOpen implements G{
   public boolean needOpen(){return true;}
   public Program out(){return layer.p();}
   }
-class GEClose implements G{
-  LayerE layer; State state;
+class GEClose extends G{
+  LayerE layer;
   GEClose(LayerE layer,State state){this.layer=layer;this.state=state;}
+  public LayerE layer(){return layer;}
   public G _open(){throw bug();}
   public G _close(){
     State s2=state.copy();

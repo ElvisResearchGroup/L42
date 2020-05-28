@@ -514,4 +514,21 @@ public class Program implements Visitable<Program>{
     if(pTails.hasC() && !pTails.c().hasUniqueNum()){return true;}
     return pop().inPublicUpTo(j-1);
     }
+  @Override public int hashCode(){
+    return this.top.hashCode();//very unlikely that it can be different but with equal top
+    }
+  @Override public boolean equals(Object o){
+    if(this==o){return true;}
+    if(o==null){return false;}
+    var p=(Program)o;
+    if(!top.equals(p.top)){return false;}
+    if(!pTails.printCs().equals(p.pTails.printCs())){return false;}
+    return eqTails(pTails,p.pTails);
+    }
+  boolean eqTails(PTails a,PTails b){
+    if(a==b){return true;}
+    if(a.isEmpty() || b.isEmpty()){return false;}
+    if(!a.ll().equals(b.ll())){return false;}
+    return eqTails(a.tail(),b.tail());
+    }
   }
