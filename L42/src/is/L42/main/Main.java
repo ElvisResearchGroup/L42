@@ -1,5 +1,7 @@
 package is.L42.main;
 
+import static is.L42.tools.General.L;
+
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
@@ -17,7 +19,9 @@ import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42Exception;
 import is.L42.platformSpecific.javaTranslation.L42Return;
 import is.L42.platformSpecific.javaTranslation.L42Throwable;
+import is.L42.top.CachedTop;
 import is.L42.top.Init;
+import is.L42.top.Top;
 
 public class Main {
   public static void main(String...arg) throws IOException {
@@ -29,9 +33,8 @@ public class Main {
       }
     else if(!Files.exists(path)){path=Paths.get(name+".L42");}
     try{
-      var code=Parse.fromPath(path);
-      Init init=new Init((Full.L)code);    
-      init.top.top(init.p);
+      var code=(Full.L)Parse.fromPath(path);
+      Top.topCache(new CachedTop(L(),L()),code);    
       }
     catch(L42Throwable ee){
       System.out.println("L42 terminated with "+ee.getClass().getCanonicalName());

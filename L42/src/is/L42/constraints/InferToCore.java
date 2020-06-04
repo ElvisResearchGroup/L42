@@ -94,9 +94,10 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){
-    Program p=i.p().push(i._c(),l);
-    var res=top.topNoCache(ctzFrom, p);
-    commit(res.topCore());
+    throw bug();
+    //Program p=i.p().push(i._c(),l);
+    //var res=top.topNoCache(ctzFrom, p);
+    //commit(res.topCore());
     }
   @Override public void visitL(Core.L l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){

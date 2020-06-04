@@ -45,8 +45,7 @@ C ::= empty
 * middleAndClose(g0,g1) = g0->g1->(Cs)->close(g2)
     openCloseNested(Cs,g1) = last(g1,Cs,g2)
 
-#define do(C,g)=O    openClose(C,g)=C'    openCloseNested(C,g)=C'
-//* do(C,g) = out(openClose(C,g))//need to extract the last ->R
+#define openClose(C,g)=C'    openCloseNested(C,g)=C'
 * openClose(empty, g) = g->Err
     open(g)=Err
 * openClose(empty,g0) = middleAndClose(g0,empty,g1)

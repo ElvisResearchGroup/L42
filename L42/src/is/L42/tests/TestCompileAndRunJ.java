@@ -27,6 +27,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.Compilation
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
+import is.L42.top.CachedTop;
 import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.translationToJava.J;
@@ -210,7 +211,7 @@ public static void loadRunErr(String s,String e){
   try{
     String p="{"+baseStr+s+"Task="+e+"}";
     Init init=new Init(p);
-    init.top.top(init.p);
+    Top.topCache(new CachedTop(L(),L()),init);
     }
   catch (java.util.concurrent.CancellationException e1) {
     return;
@@ -223,7 +224,7 @@ public static void loadRun(String s,String e,String output){
   Resources.clearRes();
   String p="{"+baseStr+s+"Task="+e+"}";
   Init init=new Init(p);
-  init.top.top(init.p);
+  Top.topCache(new CachedTop(L(),L()),init);
   assertEquals(output,Resources.out());
   }
 public static String baseStr="""

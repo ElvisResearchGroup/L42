@@ -24,6 +24,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
+import is.L42.top.CachedTop;
 import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
@@ -332,8 +333,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    top("{C={B={method This m() #norm{typeDep= This1.B }}} A={}}",
    "{C={B={imm method imm This0 m()#typed{typeDep=This0}}#typed{}}A={#typed{}}#norm{}}")
 
-   ),new AtomicTest(()->
-   topFail(PathNotExistent.class,"{[This1.A]}B= ={}",Err.pathNotExistant("This1.A"))
+//   ),new AtomicTest(()->//Note: can not support starting from a non flat program any more
+//   topFail(PathNotExistent.class,"{[This1.A]}B= ={}",Err.pathNotExistant("This1.A"))
    ),new AtomicTest(()->
    top("{A={interface}B={interface[This1.A]}C={[This1.B, This1.A]}}","""
      {A={interface #typed{}}
@@ -435,13 +436,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    topFail(InvalidImplements.class,"{A={[I]} J={interface method This m()} I={interface [J] method This m()}}",Err.nestedClassesImplemented(hole))
 
-   ),new AtomicTest(()->
-   top("{[I]}A= ={I={interface #norm{}} #norm{}}","{[This1.I] #norm{typeDep=This1.I}}")
-   ),new AtomicTest(()->
-   top("{[I]}A= ={J={interface #norm{}} I={interface [This1.J]#norm{typeDep=This1.J}} #norm{}}","{[This1.I,This1.J] #norm{typeDep=This1.I,This1.J}}")
-   ),new AtomicTest(()->
-   top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J] method This m() #norm{typeDep=This1.J This refined=m()}}#norm{}}",
-   "{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
+   //),new AtomicTest(()->//Note: can not support starting from a non flat program any more
+   //top("{[I]}A= ={I={interface #norm{}} #norm{}}","{[This1.I] #norm{typeDep=This1.I}}")
+   //),new AtomicTest(()->
+   //top("{[I]}A= ={J={interface #norm{}} I={interface [This1.J]#norm{typeDep=This1.J}} #norm{}}","{[This1.I,This1.J] #norm{typeDep=This1.I,This1.J}}")
+   //),new AtomicTest(()->
+   //top("{[I]}A= ={J={interface method This m()#norm{typeDep=This}} I={interface [This1.J] method This m() #norm{typeDep=This1.J This refined=m()}}#norm{}}",
+   //"{[This1.I,This1.J] method This1.I m() #norm{typeDep=This1.I,This1.J refined=m()}}")
 
    ),new AtomicTest(()->
    top(
@@ -784,15 +785,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void top(String program,String out){
   Resources.clearRes();
   Constants.testWithNoUpdatePopChecks(()->{
-    Init init=new Init(program);
-    assertEquals(init.top.top(init.p).top,Core.L.parse(out));
+    var res=Top.topCache(new CachedTop(L(),L()),program);
+    assertEquals(res,Core.L.parse(out));
     });
   }
 public static void topFail(Class<?> kind,String program,String ...output){
   Resources.clearRes();
   checkFail(()->Constants.testWithNoUpdatePopChecks(()->{
-    Init init=new Init(program);
-    init.top.top(init.p);
+    Top.topCache(new CachedTop(L(),L()),program);
     }), output, kind);
   }
 }

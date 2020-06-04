@@ -28,7 +28,8 @@ import safeNativeCode.slave.Slave;
 
 public class Resources {
   private static StringBuffer compiledNesteds=new StringBuffer();//StringBuffer is the synchronized StringBuilder
-  public static void notifyCompiledNC(String s){compiledNesteds.append(s);}
+  public static void notifyCompiledNC(String s){
+    compiledNesteds.append(s);}
   public static String notifiedCompiledNC(){return compiledNesteds.toString();}
   private static StringBuffer out=new StringBuffer();
   public static String out(){return out.toString();}

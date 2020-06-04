@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import is.L42.common.CTz;
+import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -29,6 +30,7 @@ interface LayerE{
     List<Full.L.M> ms,List<Half.E> e1n){
     var self=this;
     return new LayerL(){
+      @Override public String toString(){return "L["+p+", "+index+", "+ncs+", "+ms+", "+e1n+", "+self+"]";}
       @Override public int hashCode(){
         return 31*(31+p.hashCode())+ncs.hashCode();
         }//purposely only exploring those two fields, to balance efficiency
@@ -88,6 +90,7 @@ interface LayerL{
     public LayerE layerE(){throw bug();}
     @Override public int hashCode(){return 1;}
     @Override public boolean equals(Object o){return this==o;}
+    @Override public String toString(){return "EmptyL";}
     };
   default LayerE push(Half.E e,Map<ST,List<ST>>ctz){
     var self=this;
@@ -95,6 +98,7 @@ interface LayerL{
       public Half.E e(){return e;}
       public Map<ST,List<ST>> ctz(){return ctz;}
       public LayerL layerL(){return self;}
+      @Override public String toString(){return "E["+e+", "+ctz+", "+self+"]";}
       @Override public int hashCode(){return 31*(31+e.hashCode())+ctz.hashCode();}//purposely not exploring nested layers
       @Override public boolean equals(Object o){
         if(this==o){return true;}
@@ -132,47 +136,60 @@ class GLOpen extends G{
     C c=l.ncs().get(l.index()).key();
     return l.p().push(c,fullL);
     }
-  public G _open(){
+  public R _open(G gc,R rc){
+    LayerE l2=null;
+    if(gc!=null && gc.getClass()==this.getClass()){l2=((GLOpen)gc).layer;}
+    Program pC=l2==null?null:currentP(l2.layerL(),GLClose._get(l2.e()));
     Full.L original=GLClose._get(layer.e());
     assert original!=null;
     Program p=currentP(layer.layerL(),original);
-    State s2=state.copy();
-    CTz frommedCTz=s2.uniqueId==0?new CTz()://if we are not at the start
+    boolean eq=l2!=null && p.equals(pC);
+    if(eq && rc.isErr()){return rc;}
+    State s2=(eq?rc._g.state:state).copy();
+    CTz frommedCTz=state.uniqueId==0?new CTz():// if we are not at the start
       layer.layerL().p().push(p.pTails.c(),Program.emptyL)
-      .from(layer.ctz(),P.pThis1);      
+      .from(layer.ctz(),P.pThis1);
+    assert !eq || state.equals(gc.state);
+    assert !eq || s2.uniqueId==0 ||
+      l2.layerL().p().push(pC.pTails.c(),Program.emptyL)
+      .from(l2.ctz(),P.pThis1).equals(frommedCTz);
+
+    //Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     var e1n=new ArrayList<Half.E>();
-    Program p2=s2.topOpen(p,e1n,frommedCTz);
+    Program p2=eq?((Program[])rc._obj)[0]:s2.topOpen(p,e1n,frommedCTz);
+    if(eq){e1n.addAll(((ArrayList<Half.E>[])rc._obj)[1]);}
     LayerL l=layer.push(p2,0,ncs,ms,e1n);
-    if(ncs.isEmpty()){return new GLClose(l,s2);}
-    return new GEOpen(l,s2);
+    if(ncs.isEmpty()){return new R(new GLClose(l,s2),new Object[]{p2,e1n});}
+    return new R(new GEOpen(l,s2),new Object[]{p2,e1n});
     }
-  public G _close(){throw bug();}
-  public boolean middleAndCloseCached(Cache c){throw bug();}
+  public R _close(G gc,R rc){throw bug();}
   public boolean needOpen(){return true;}
-  public Program out(){return this.layer.layerL().p();}
   }
 class GLClose extends G{
   LayerL layer;
   GLClose(LayerL layer,State state){this.layer=layer;this.state=state;}
   public LayerL layer(){return layer;}
-  public G _open(){throw bug();}
-  public G _close(){
-    State s2=state.copy();
+  public R _open(G gc,R rc){throw bug();}
+  public R _close(G gc,R rc){
+    LayerL l2=null;
+    if(gc!=null && gc.getClass()==this.getClass()){l2=((GLClose)gc).layer;}
+    boolean eq=l2!=null && layer.p().equals(l2.p()) && layer.ms().equals(l2.ms())&&layer.e1n().equals(l2.e1n()) && layer.layerE().ctz().equals(l2.layerE().ctz());
+    if(eq && rc.isErr()){return rc;}
+    State s2=(eq?rc._g.state:state).copy();
     CTz ctz=new CTz(layer.layerE().ctz());
-    Core.L res=s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
+    assert !eq || (state.equals(gc.state) && layer.layerE().ctz().equals(l2.layerE().ctz())); 
+    Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     LayerE l=layer.layerE();
     Half.E newE=set(l.e(),res);
     l=l.layerL().push(newE,ctz.releaseMap());
     Full.L newL=_get(newE);
-    if(newL!=null){return new GLOpen(l,s2);}
-    return new GEClose(l,s2);
+    if(newL!=null){return new R(new GLOpen(l,s2),res);}
+    return new R(new GEClose(l,s2),res);
     }
-  public boolean middleAndCloseCached(Cache c){throw bug();}
   public boolean needOpen(){return false;}
-  public Program out(){return layer.p();}
-    static Full.L _get(Half.E e){
+  static Full.L _get(Half.E e){
     return new Accumulate<Full.L>(){
       @Override public void visitL(Full.L l){if(result==null){result=l;}}
       @Override public void visitL(Core.L l){return;}
@@ -194,36 +211,32 @@ class GEOpen extends G{
   LayerL layer;
   GEOpen(LayerL layer,State state){this.layer=layer;this.state=state;}
   public LayerL layer(){return layer;}
-  public G _open(){
+  public R _open(G gc,R rc){
     State s2=state.copy();
     CTz ctz=new CTz(layer.layerE().ctz());
     Half.E e=s2.topNCiOpen(layer.p(),layer.index(),layer.ncs(),ctz);
     Full.L l=GLClose._get(e);
     LayerE newLayer=layer.push(e,ctz.releaseMap());
-    if(l==null){return new GEClose(newLayer,s2);}
-    return new GLOpen(newLayer,s2);
+    if(l==null){return new R(new GEClose(newLayer,s2),e);}
+    return new R(new GLOpen(newLayer,s2),e);
     }
-  public G _close(){throw bug();}
-  public boolean middleAndCloseCached(Cache c){throw bug();}
+  public R _close(G gc,R rc){throw bug();}
   public boolean needOpen(){return true;}
-  public Program out(){return layer.p();}
   }
 class GEClose extends G{
   LayerE layer;
   GEClose(LayerE layer,State state){this.layer=layer;this.state=state;}
   public LayerE layer(){return layer;}
-  public G _open(){throw bug();}
-  public G _close(){
+  public R _open(G gc,R rc){throw bug();}
+  public R _close(G gc,R rc){
     State s2=state.copy();
     LayerL popL=layer.layerL();
     assert GLClose._get(layer.e())==null;
     CTz ctz=new CTz(layer.ctz());
     Program p=s2.topNCiClose(popL.p(),popL.index(),popL.ncs(),layer.e(),ctz);
     popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n());
-    if(popL.index()<popL.ncs().size()){return new GEOpen(popL,s2);}
-    return new GLClose(popL,s2);
+    if(popL.index()<popL.ncs().size()){return new R(new GEOpen(popL,s2),p);}
+    return new R(new GLClose(popL,s2),p);
     }
-  public boolean middleAndCloseCached(Cache c){throw bug();}
   public boolean needOpen(){return false;}
-  public Program out(){return Program.flat((Core.L)layer.e());}
   }

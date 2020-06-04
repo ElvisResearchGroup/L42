@@ -62,23 +62,30 @@ import static is.L42.tools.General.*;
 
 //TODO: also remove Cache from srcLombock
 public class Top {
-  public static Cache topCache(Cache c,String code){
-    Init init=new Init(code);
+  public static Core.L topCache(CachedTop c,String code){
+    return topCache(c,new Init(code));
+    }    
+  public static Core.L topCache(CachedTop c,Full.L code){
+    return topCache(c,new Init(code));
+    }
+    public static Core.L topCache(CachedTop c,Init init){
     State.loader=new Loader();
     State s=new State(new FreshNames(),new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>(),null);
     LayerE l=LayerL.empty.push(init.p.top,new CTz().releaseMap());
-    return new CachedTop().openClose(c,new GLOpen(l,s));    
+    R res=c.openClose(new GLOpen(l,s));
+    if(res.isErr()){throw res._err;}
+    return (Core.L)res._obj;    
     }
-  public Program topNoCache(CTz ctz,Program p){
+  /*public Program topNoCache(CTz ctz,Program p){
     State.loader=new Loader();
     State s=new State(new FreshNames(),new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>(),null);
     if(p.dept()>0){//only for tests
       var l=LayerL.empty.push(Program.emptyL,new CTz().releaseMap()).push(p.pop(),0,L(),L(),L()).push(p.top,ctz.releaseMap());
-      //return new DirectTop().top(new GLOpen(l,s));
+      return new DirectTop().top(new GLOpen(l,s));
       return new CachedTop().top(Cache.of(), new GLOpen(l,s));
       }
     return new CachedTop().top(Cache.of(),new GLOpen(LayerL.empty.push(p.top,ctz.releaseMap()),s));
-    }
+    }*/
   public Program __topNoCache(CTz ctz,Program p){
     alreadyCoherent.add(new HashSet<>());
     assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
@@ -157,7 +164,7 @@ public class Top {
     return topNC(newCTz,p1,popL(allNCs)); 
     }
 //-----------------
-  public Program top(Program p)throws EndError {return topNoCache(new CTz(),p);}
+//  public Program top(Program p)throws EndError {return topNoCache(new CTz(),p);}
   private Core.L updateInfo(Program p, List<Core.L.MWT>mwts) {
     Core.L l=(Core.L)p.top;
     List<Core.L.MWT> mwts0=L(l.mwts(),(c,m)->{
