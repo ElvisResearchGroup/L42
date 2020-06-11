@@ -276,7 +276,8 @@ public class InMemoryJavaCompiler {
       };
     CompilationTask compilerTask = compiler.getTask(
       /*out:*/null,classFileManager,diagnisticListenerForErrors,
-      /*compilerOptions:*/Arrays.asList("-Xlint:unchecked","-encoding","\"UTF-8\"","--enable-preview","--release",javaVersion(),"-classpath",System.getProperty("java.class.path")),
+      /*compilerOptions:*/Arrays.asList("-Xlint:-unchecked","-encoding","\"UTF-8\"","--enable-preview","--release",javaVersion(),"-classpath",System.getProperty("java.class.path")),
+      //-Xlint:all-Xlint:unchecked
       /*StringsClasses??:*/null,files
       );
     boolean compilationRes=compilerTask.call();

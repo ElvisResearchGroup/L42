@@ -150,20 +150,29 @@ class GLOpen extends G{
       layer.layerL().p().push(p.pTails.c(),Program.emptyL)
       .from(layer.ctz(),P.pThis1);
     assert !eq || state.equals(gc.state);
-    assert !eq || s2.uniqueId==0 ||
-      l2.layerL().p().push(pC.pTails.c(),Program.emptyL)
-      .from(l2.ctz(),P.pThis1).equals(frommedCTz);
+    assert !eq || s2.uniqueId==0 
+      || l2.layerL()==LayerL.empty 
+      || l2.layerL().p().push(pC.pTails.c(),Program.emptyL).from(l2.ctz(),P.pThis1).equals(frommedCTz);
 
     //Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     var e1n=new ArrayList<Half.E>();
-    Program p2=eq?((Program[])rc._obj)[0]:s2.topOpen(p,e1n,frommedCTz);
-    if(eq){e1n.addAll(((ArrayList<Half.E>[])rc._obj)[1]);}
+    Program p2=eq?getP(rc):s2.topOpen(p,e1n,frommedCTz);
+    if(eq){e1n.addAll(getE1n(rc));}
     LayerL l=layer.push(p2,0,ncs,ms,e1n);
     if(ncs.isEmpty()){return new R(new GLClose(l,s2),new Object[]{p2,e1n});}
     return new R(new GEOpen(l,s2),new Object[]{p2,e1n});
     }
+  private Program getP(R r){
+    var os=(Object[])r._obj;
+    return (Program)os[0];
+  }
+  @SuppressWarnings("unchecked")
+  private ArrayList<Half.E> getE1n(R r){
+    var os=(Object[])r._obj;
+    return (ArrayList<Half.E>)os[1];
+  }
   public R _close(G gc,R rc){throw bug();}
   public boolean needOpen(){return true;}
   }
@@ -212,11 +221,18 @@ class GEOpen extends G{
   GEOpen(LayerL layer,State state){this.layer=layer;this.state=state;}
   public LayerL layer(){return layer;}
   public R _open(G gc,R rc){
-    State s2=state.copy();
-    CTz ctz=new CTz(layer.layerE().ctz());
-    Half.E e=s2.topNCiOpen(layer.p(),layer.index(),layer.ncs(),ctz);
+    LayerL l2=null;
+    if(gc!=null && gc.getClass()==this.getClass()){l2=((GEOpen)gc).layer;}
+    var old=l2==null?null:l2.ncs().get(l2.index());
+    var current=layer.ncs().get(layer.index());
+    boolean eq=l2!=null && old.equals(current);
+    if(eq && rc.isErr()){return rc;}
+    State s2=(eq?rc._g.state:state).copy();
+    CTz ctz=new CTz(layer.layerE().ctz());//TODO: for now ctzs are recreated also during caching. To fix
+    Half.E e=eq?(Half.E)rc._obj:s2.topNCiOpen(layer.p(),layer.index(),layer.ncs(),ctz);
+    assert !eq || state.equals(gc.state);
     Full.L l=GLClose._get(e);
-    LayerE newLayer=layer.push(e,ctz.releaseMap());
+    LayerE newLayer=layer.push(e,ctz.releaseMap());//TODO: here it needs to be handled different during caching
     if(l==null){return new R(new GEClose(newLayer,s2),e);}
     return new R(new GLOpen(newLayer,s2),e);
     }
@@ -229,11 +245,22 @@ class GEClose extends G{
   public LayerE layer(){return layer;}
   public R _open(G gc,R rc){throw bug();}
   public R _close(G gc,R rc){
-    State s2=state.copy();
+    LayerE l2=null;
+    if(gc!=null && gc.getClass()==this.getClass()){l2=((GEClose)gc).layer;}
+    LayerL oldPopL=l2==null?null:l2.layerL();
     LayerL popL=layer.layerL();
+    var currentP=popL.p();
+    var oldP=l2==null?null:oldPopL.p();
+    var currentE=layer.e();
+    var oldE=l2==null?null:l2.e();
+    boolean eq=l2!=null && oldE.equals(currentE)&& oldP.equals(currentP);
+    //TODO: can the p ever be different?
+    if(eq && rc.isErr()){return rc;}
+    State s2=(eq?rc._g.state:state).copy();
     assert GLClose._get(layer.e())==null;
     CTz ctz=new CTz(layer.ctz());
-    Program p=s2.topNCiClose(popL.p(),popL.index(),popL.ncs(),layer.e(),ctz);
+    Program p=eq?(Program)rc._obj:s2.topNCiClose(popL.p(),popL.index(),popL.ncs(),layer.e(),ctz);
+    assert !eq || state.equals(gc.state);
     popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n());
     if(popL.index()<popL.ncs().size()){return new R(new GEOpen(popL,s2),p);}
     return new R(new GLClose(popL,s2),p);

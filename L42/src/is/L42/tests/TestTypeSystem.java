@@ -33,6 +33,7 @@ import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.tools.AtomicTest;
+import is.L42.top.CachedTop;
 import is.L42.top.Init;
 import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
@@ -784,7 +785,8 @@ public static void pass(String program){
           return p1;
         }};
     }};
-  Program p=init.top.top(init.p);
+  Program p=Program.flat(Top.topCache(new CachedTop(L(),L()),init));
+  //Program p=init.top.top(init.p);
   ProgramTypeSystem.type(true, p);
   allCoherent(p);
   }
