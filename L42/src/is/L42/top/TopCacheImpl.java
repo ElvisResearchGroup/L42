@@ -5,8 +5,10 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.typeFilter;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import is.L42.common.CTz;
 import is.L42.common.EndError;
@@ -21,13 +23,14 @@ import is.L42.generated.P;
 import is.L42.generated.ST;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
+import is.L42.visitors.PropagatorCollectorVisitor;
 
 interface LayerE{
   Half.E e();
   Map<ST,List<ST>> ctz();
   LayerL layerL();
   default LayerL push(Program p,int index,List<Full.L.NC> ncs,
-    List<Full.L.M> ms,List<Half.E> e1n){
+    List<Full.L.M> ms,List<Half.E> e1n,Map<ST,List<ST>> ctz){
     var self=this;
     return new LayerL(){
       @Override public String toString(){return "L["+p+", "+index+", "+ncs+", "+ms+", "+e1n+", "+self+"]";}
@@ -70,6 +73,7 @@ interface LayerE{
       public List<Full.L.NC> ncs(){return ncs;}
       public List<Full.L.M> ms(){return ms;}
       public List<Half.E> e1n(){return e1n;}
+      public Map<ST,List<ST>> ctz(){return ctz;}
       public LayerE layerE(){return self;}
       };
     }
@@ -80,6 +84,7 @@ interface LayerL{
   List<Full.L.NC> ncs();
   List<Full.L.M> ms();
   List<Half.E> e1n();
+  Map<ST,List<ST>> ctz();
   LayerE layerE();
   static final LayerL empty=new LayerL(){
     public int index(){throw bug();}
@@ -88,6 +93,7 @@ interface LayerL{
     public List<Full.L.M> ms(){throw bug();}
     public List<Half.E> e1n(){throw bug();}
     public LayerE layerE(){throw bug();}
+    public Map<ST,List<ST>> ctz(){throw bug();}
     @Override public int hashCode(){return 1;}
     @Override public boolean equals(Object o){return this==o;}
     @Override public String toString(){return "EmptyL";}
@@ -143,24 +149,24 @@ class GLOpen extends G{
     Full.L original=GLClose._get(layer.e());
     assert original!=null;
     Program p=currentP(layer.layerL(),original);
-    boolean eq=l2!=null && p.equals(pC);
+    assert p.top.isFullL();
+    boolean eq=l2!=null && p.equals(pC) && !((Full.L)p.top).reuseUrl().contains("#$");
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
-    CTz frommedCTz=state.uniqueId==0?new CTz():// if we are not at the start
-      layer.layerL().p().push(p.pTails.c(),Program.emptyL)
-      .from(layer.ctz(),P.pThis1);
-    assert !eq || state.equals(gc.state);
+    assert !eq || state.equals(gc.state):
+      "";
     assert !eq || s2.uniqueId==0 
       || l2.layerL()==LayerL.empty 
-      || l2.layerL().p().push(pC.pTails.c(),Program.emptyL).from(l2.ctz(),P.pThis1).equals(frommedCTz);
-
-    //Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
+      || l2.ctz().equals(layer.ctz());
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     var e1n=new ArrayList<Half.E>();
-    Program p2=eq?getP(rc):s2.topOpen(p,e1n,frommedCTz);
+    var releasedMap=new AtomicReference<Map<ST,List<ST>>>();
+    if(!eq){State.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
+    Program p2=eq?getP(rc):s2.topOpen(p,e1n,state.uniqueId==0?Collections.emptyMap():layer.ctz(),releasedMap);
     if(eq){e1n.addAll(getE1n(rc));}
-    LayerL l=layer.push(p2,0,ncs,ms,e1n);
+    var ctz=eq?((LayerL)rc._g.layer()).ctz():releasedMap.get();
+    LayerL l=layer.push(p2,0,ncs,ms,e1n,ctz);
     if(ncs.isEmpty()){return new R(new GLClose(l,s2),new Object[]{p2,e1n});}
     return new R(new GEOpen(l,s2),new Object[]{p2,e1n});
     }
@@ -184,11 +190,12 @@ class GLClose extends G{
   public R _close(G gc,R rc){
     LayerL l2=null;
     if(gc!=null && gc.getClass()==this.getClass()){l2=((GLClose)gc).layer;}
-    boolean eq=l2!=null && layer.p().equals(l2.p()) && layer.ms().equals(l2.ms())&&layer.e1n().equals(l2.e1n()) && layer.layerE().ctz().equals(l2.layerE().ctz());
+    boolean eq=l2!=null && layer.p().equals(l2.p()) && layer.ms().equals(l2.ms())&&layer.e1n().equals(l2.e1n()) && layer.ctz().equals(l2.ctz());
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
-    CTz ctz=new CTz(layer.layerE().ctz());
-    assert !eq || (state.equals(gc.state) && layer.layerE().ctz().equals(l2.layerE().ctz())); 
+    CTz ctz=new CTz(layer.ctz());
+    assert !eq || (state.equals(gc.state) && layer.ctz().equals(l2.ctz())):
+      state.equals(gc.state)+" "+layer.ctz().equals(l2.ctz()); 
     Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     LayerE l=layer.layerE();
     Half.E newE=set(l.e(),res);
@@ -225,14 +232,16 @@ class GEOpen extends G{
     if(gc!=null && gc.getClass()==this.getClass()){l2=((GEOpen)gc).layer;}
     var old=l2==null?null:l2.ncs().get(l2.index());
     var current=layer.ncs().get(layer.index());
-    boolean eq=l2!=null && old.equals(current);
+    boolean eq=l2!=null && old.equals(current) && l2.p().equals(layer.p());
+    assert !eq || state.equals(gc.state):
+      "";
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
-    CTz ctz=new CTz(layer.layerE().ctz());//TODO: for now ctzs are recreated also during caching. To fix
+    CTz ctz=eq?null:new CTz(layer.ctz());
     Half.E e=eq?(Half.E)rc._obj:s2.topNCiOpen(layer.p(),layer.index(),layer.ncs(),ctz);
-    assert !eq || state.equals(gc.state);
     Full.L l=GLClose._get(e);
-    LayerE newLayer=layer.push(e,ctz.releaseMap());//TODO: here it needs to be handled different during caching
+    var ctzMap=eq?((LayerE)rc._g.layer()).ctz():ctz.releaseMap();
+    LayerE newLayer=layer.push(e,ctzMap);
     if(l==null){return new R(new GEClose(newLayer,s2),e);}
     return new R(new GLOpen(newLayer,s2),e);
     }
@@ -253,17 +262,29 @@ class GEClose extends G{
     var oldP=l2==null?null:oldPopL.p();
     var currentE=layer.e();
     var oldE=l2==null?null:l2.e();
-    boolean eq=l2!=null && oldE.equals(currentE)&& oldP.equals(currentP);
+    boolean hasHashDollar=hasHashDollar(currentE);
+    boolean eq=l2!=null && oldE.equals(currentE)&& !hasHashDollar &&oldP.equals(currentP);
+    assert !eq || state.equals(gc.state);
     //TODO: can the p ever be different?
     if(eq && rc.isErr()){return rc;}
+    if(!eq){State.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
     State s2=(eq?rc._g.state:state).copy();
     assert GLClose._get(layer.e())==null;
-    CTz ctz=new CTz(layer.ctz());
-    Program p=eq?(Program)rc._obj:s2.topNCiClose(popL.p(),popL.index(),popL.ncs(),layer.e(),ctz);
-    assert !eq || state.equals(gc.state);
-    popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n());
+    CTz ctz=new CTz(layer.ctz());//TODO: is it the case that topNCi close do not modify CTz? in that case, can we avoid the copy?
+    Program p=eq?(Program)rc._obj:s2.topNCiClose(currentP,popL.index(),popL.ncs(),currentE,ctz);
+    popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n(),popL.ctz());
     if(popL.index()<popL.ncs().size()){return new R(new GEOpen(popL,s2),p);}
     return new R(new GLClose(popL,s2),p);
     }
   public boolean needOpen(){return false;}
+  private boolean hasHashDollar(Half.E e){
+    return new Accumulate.SkipL<Boolean>(){
+      @Override public Boolean empty(){return false;}
+      @Override public void visitMCall(Half.MCall s){
+        super.visitMCall(s);
+        if(s.s().m().startsWith("#$")){
+          this.result=true;}
+        }
+      }.of(e.visitable());
+    }
   }

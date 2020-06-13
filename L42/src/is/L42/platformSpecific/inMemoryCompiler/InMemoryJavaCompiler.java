@@ -116,6 +116,23 @@ public class InMemoryJavaCompiler {
     private final HashMap<String,ClassFile> map;
     public HashMap<String,ClassFile> map(){return map;}
     public static class SClassFile implements Serializable{
+      @Override public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(bytes);
+        result = prime * result + kind.hashCode();
+        result = prime * result + name.hashCode();
+        return result;
+      }
+      @Override public boolean equals(Object obj) {
+        assert getClass() == obj.getClass();
+        if (this == obj){return true;}
+        SClassFile other = (SClassFile) obj;
+        if (!Arrays.equals(bytes, other.bytes)){return false;}
+        if (kind != other.kind){return false;}
+        if (!name.equals(other.name)){return false;}
+        return true;
+        }
       private static final long serialVersionUID = 1L;
       public  String name;
       private byte[] bytes=null;
@@ -267,11 +284,16 @@ public class InMemoryJavaCompiler {
         }
       @Override public JavaFileObject getJavaFileForOutput(
           Location location,String className, JavaFileObject.Kind kind, FileObject sibling)throws IOException{
-        ClassFile classFile=new ClassFile(className, kind);
-        var added=map.put(className, classFile);
-        assert added==null:className;
-        outNewBytecode.add(classFile);
-        return classFile;
+        //ClassFile classFile=new ClassFile(className, kind);//maybe is easier to just be allowed to readd stuff
+        //var added=map.put(className, classFile);
+        //assert added==null:className;
+        //outNewBytecode.add(classFile);
+        //return classFile;
+        return map.computeIfAbsent(className,k->{
+          ClassFile classFile=new ClassFile(className, kind);
+          outNewBytecode.add(classFile);  
+          return classFile;
+          });
         }
       };
     CompilationTask compilerTask = compiler.getTask(

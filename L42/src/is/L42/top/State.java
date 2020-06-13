@@ -12,6 +12,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.atomic.AtomicReference;
 
 import is.L42.common.CTz;
 import is.L42.common.EndError;
@@ -36,6 +38,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.ST;
 import is.L42.generated.X;
 import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
@@ -76,8 +79,9 @@ public class State{
       initialPath);
     }
 
-  Program topOpen(Program p,ArrayList<Half.E>e1n,CTz ctz){
+  Program topOpen(Program p,ArrayList<Half.E>e1n,Map<ST,List<ST>> ctzMap,AtomicReference<Map<ST,List<ST>>> releasedMap){
     assert e1n.isEmpty();
+    Resources.notifyCompiledNC("topO:"+p.dept()+",");
     alreadyCoherent.add(new HashSet<>());
     assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
     Core.L coreL=SortHeader.coreTop(p,uniqueId++);//propagates the right header errors
@@ -85,6 +89,8 @@ public class State{
     List<Full.L.M> ms=topL.ms();
     //var info=new HashDollarInfo(topL);//TODO: what to do with this?
     Program p0=p.update(coreL,false);
+    CTz ctz=p0.from(ctzMap,P.pThis1);
+    assert ctz.coherent(p0);
     //next line, is mhs to be closer to the formalism
     List<MWT> mhs=L(coreL.mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
     for(var mhi:mhs){
@@ -96,9 +102,11 @@ public class State{
     assert p.top.isFullL();
     try{loader.loadNow(p0,allByteCode,allLibs);}
     catch(CompilationError e){throw new Error(e);}
+    releasedMap.set(ctz.releaseMap());
     return p0;
     }
   Core.L topClose(Program p1,List<Full.L.M> ms,List<Half.E> e1n,CTz ctz){
+    Resources.notifyCompiledNC("topC:"+p1.dept()+",");
     List<MWT> mhs=L(p1.topCore().mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
     assert p1.top instanceof Core.L;
     assert p1.topCore().wf();//Check the new core top is well formed
@@ -139,17 +147,19 @@ public class State{
     NC current=allNCs.get(i);//implicit assert is in range 
     Full.E fe=current.e();
     C c0=current.key();
+    Resources.notifyCompiledNC("NCiO:"+c0+",");
     System.out.println("Now considering main "+c0+" "+p.topCore().info()._uniqueId());
     //var info=new HashDollarInfo(current);//TODO: more stuff to remove/handle?
     Y y=new Y(p,GX.empty(),L(),null,L());
     var  hq=toHalf(ctz,y,freshNames,fe);
     return hq.e;
     }
-  public Program topNCiClose(Program p,int index,List<Full.L.NC> allNCs,Half.E he,CTz ctz){//now we can assume he have no full   
+  public Program topNCiClose(Program p,int index,List<Full.L.NC> allNCs,Half.E he,CTz ctz){//now we can assume he have no full
     NC current=allNCs.get(index);//implicit assert is in range
     List<Pos> poss=current.poss();
     List<Full.Doc> docs=current.docs();
     C c0=current.key();
+    Resources.notifyCompiledNC("NCiC:"+c0+",");
     I i=new I(c0,p,G.empty());
     Core.E ce=infer(i,he,ctz); //propagates errors
     assert ce!=null;
@@ -161,8 +171,6 @@ public class State{
     //return ce0;}
     Core.E e=ce0;//toCoreTypeCoherent(ctz,frommedCTz,poss,p,c0,fe,allNCs);
     Core.L l=null;
-    ArrayList<SClassFile> allByteCode=new ArrayList<>();//TODO: those two will need to be saved for caching
-    ArrayList<L42£Library> allLibs=new ArrayList<>();
     if(e instanceof Core.L){l=(Core.L)e;}
     else{l=reduce(p,c0,e,allByteCode,allLibs);}//propagate errors
     //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
@@ -170,20 +178,19 @@ public class State{
     assert l!=null:c0+" "+e;
     //now, generating the new nc and adding it to the top of the program
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
-    Resources.notifyCompiledNC(nc.key()+"\n");
     Program p1=p.update(updateInfo(p,e,nc),false);
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
-    //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
-    p1=flagTyped(p1,allByteCode,allLibs);//propagate errors
-    //assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
+    assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
+    p1=flagTyped(p1);//propagate errors
+    assert loader.bytecodeSize()==allByteCode.size():loader.bytecodeSize()+" "+allByteCode.size();
     return p1; 
     }
   public void coherentAllPs(Program p, List<P.NCs> cohePs)throws EndError{
     Coherence.coherentAllPs(p,cohePs,alreadyCoherent);
     }
-  protected Program flagTyped(Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42£Library> newLibs) throws EndError{
+  protected Program flagTyped(Program p1) throws EndError{
     Program p=FlagTyped.flagTyped(loader,p1);//but can be overridden as a testing handler
-    try {loader.loadNow(p,cBytecode,newLibs);}
+    try {loader.loadNow(p,allByteCode,allLibs);}
     catch (CompilationError e) {throw new Error(e);}
     return p;
     }
@@ -238,12 +245,6 @@ public class State{
       }
     catch(CompilationError e1){throw new Error(e1);}
     }
-  private Program flagTyped(Loader loader,Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42£Library> newLibs) throws EndError{
-    Program p=FlagTyped.flagTyped(loader,p1);//but can be overridden as a testing handler
-    try {loader.loadNow(p,cBytecode,newLibs);}
-    catch (CompilationError e) {throw new Error(e);}
-    return p;
-    }
   private Core.L updateInfo(Program p1,Core.E source, Core.L.NC nc) {
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
     Core.L l=p1.topCore();
@@ -287,8 +288,11 @@ public class State{
     if(obj == null){return false;}
     if(getClass() != obj.getClass()){return false;}
     State other = (State) obj;
-    if(!allByteCode.equals(other.allByteCode)){return false;}
-    if(!allLibs.equals(other.allLibs)){return false;}
+    if(allByteCode.size()!=other.allByteCode.size()){return false;}
+    //seams like there is some compiler freedom :( if(!allByteCode.equals(other.allByteCode)){return false;}
+    if(allLibs.size()!=other.allLibs.size()){return false;}
+    //libs define a complex equality, that eventually check the whole surrunding program, and is ok for those to be different in this context.
+    //if(!allLibs.equals(other.allLibs)){return false;}
     if(!alreadyCoherent.equals(other.alreadyCoherent)){return false;}
     if(!freshNames.equals(other.freshNames)){return false;}
     if(uniqueId != other.uniqueId){return false;}

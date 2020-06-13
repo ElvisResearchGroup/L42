@@ -10,6 +10,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
+import org.stringtemplate.v4.compiler.STParser.namedArg_return;
+
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
@@ -41,21 +43,27 @@ class Element{
   SourceFile source; 
   }
 public class Loader {
-  public String toString(){
+  /*public String toString(){
     String res="";
     for(var e:loaded.values()){res+=e.cIds+"\n"+e.source+"\n\n";}
     return res;
-    }
+    }*/
   private final ArrayList<L42£Library> libs=new ArrayList<>();
   public int libsCachedSize(){return libs.size();}//needed for double checking on caching
   public int bytecodeSize(){return classLoader.map().size();}//needed for double checking on caching
-  final HashMap<String,Element> loaded=new HashMap<>();
+  final HashSet<String>loaded=new HashSet<>();
   final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
   public void loadByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
+    libs.clear();
     libs.addAll(newLibs);
     for(var e:bytecode){
-      var res=classLoader.map().put(e.name,e.toCF());
-      assert res==null;
+      classLoader.map().computeIfAbsent(e.name,k->{
+        assert !loaded.contains(e.name);
+        loaded.add(e.name.substring("is.L42.metaGenerated.".length()));
+        return e.toCF();
+        });
+      //var res=classLoader.map().put(e.name,e.toCF());
+      //assert res==null;//simpler to just re add stuff?
       }
     }
   public boolean checkByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
@@ -121,7 +129,7 @@ public class Loader {
     return !res;
     }
   boolean notOkToJava(Program p,String name,HashSet<String> mayBeOkToJava){
-    if(loaded.containsKey(name)){return false;}//already in Java
+    if(loaded.contains(name)){return false;}//already in Java
     if(okToJava.contains(name)){return false;}//already verified to be ok
     if(notOkToJava.contains(name)){return true;}
     mayBeOkToJava.add(name);
@@ -152,14 +160,14 @@ public class Loader {
     if(!l.info().isTyped()){return;}
     String name=J.classNameStr(p);
     if(name.isEmpty()){return;}
-    if(this.loaded.containsKey(name)){return;}
+    if(this.loaded.contains(name)){return;}
     if(!isOkToJava(p,name)){return;}
     J j=new J(p,G.empty(),false,libs,false);
     j.mkClass();
     String code=header+j.result().toString();
-    var e=new Element(l,J.classNamePath(p),name,new SourceFile(metaPackage+name,code));
-    files.add(e.source);
-    loaded.put(name,e);
+    //var e=new Element(l,J.classNamePath(p),name,new SourceFile(metaPackage+name,code));
+    files.add(new SourceFile(metaPackage+name,code));//e.source
+    loaded.add(name);
     okToJava.remove(name);
     }
   public static final String metaPackage="is.L42.metaGenerated.";
