@@ -27,6 +27,8 @@ import is.L42.generated.P;
 import safeNativeCode.slave.Slave;
 
 public class Resources {
+  private static HashMap<String,String> logs=new HashMap<>();
+  public static HashMap<String,String> logs(){return logs;}
   private static StringBuffer compiledNesteds=new StringBuffer();//StringBuffer is the synchronized StringBuilder
   public static void notifyCompiledNC(String s){
     compiledNesteds.append(s);}
@@ -78,5 +80,6 @@ public class Resources {
     out=new StringBuffer();
     tests=new StringBuffer();
     compiledNesteds=new StringBuffer();
+    logs.clear();
     }
   }

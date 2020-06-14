@@ -113,6 +113,30 @@ public class TestCachingCases {
     "NCiC:R,",
     "NCiC:R,",
     null);}
+@Test void hashDollarEDiff(){
+  String code="""
+      {reuse[AdamTowel]
+      A=Log"A".clear()
+      B=Log"A".write(S"B")
+      C=Debug(S"DoingC:"++Log"A".#$reader().read())}
+      """;  
+  Resources.clearRes();
+  var cache1=new CachedTop(L(),L());
+  Top.topCache(cache1,code);
+  String exe=Resources.notifiedCompiledNC();
+  String out=Resources.out();
+  Resources.clearRes();
+  var cache2=cache1.toNextCache();
+  Top.topCache(cache2,code);
+  String exe2=Resources.notifiedCompiledNC();
+  String out2=Resources.out();
+  assertEquals("topO:0,NCiO:A,NCiC:A,NCiO:B,NCiC:B,NCiO:C,NCiC:C,topC:0,",exe);
+  assertEquals("NCiC:C,",exe2);
+  assertEquals("DoingC:B\n",out);
+  assertEquals("DoingC:\n",out2);
+  }
+
+
 //TODO: now add hashDollarEdifferet, using a trusted pluging that return {@{num++}}
 /*
  TODO: testh #$ reuse, #$ e,
