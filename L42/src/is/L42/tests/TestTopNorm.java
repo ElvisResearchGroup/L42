@@ -26,7 +26,6 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
-import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.FullL42Visitor;
 import is.L42.visitors.WellFormedness;
@@ -785,14 +784,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void top(String program,String out){
   Resources.clearRes();
   Constants.testWithNoUpdatePopChecks(()->{
-    var res=Top.topCache(new CachedTop(L(),L()),program);
+    var res=Init.topCache(new CachedTop(L(),L()),program);
     assertEquals(res,Core.L.parse(out));
     });
   }
 public static void topFail(Class<?> kind,String program,String ...output){
   Resources.clearRes();
   checkFail(()->Constants.testWithNoUpdatePopChecks(()->{
-    Top.topCache(new CachedTop(L(),L()),program);
+    Init.topCache(new CachedTop(L(),L()),program);
     }), output, kind);
   }
 }

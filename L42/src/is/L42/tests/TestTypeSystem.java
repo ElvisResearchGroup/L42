@@ -2,6 +2,7 @@ package is.L42.tests;
 
 import java.util.List;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -35,7 +36,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoa
 import is.L42.tools.AtomicTest;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
-import is.L42.top.Top;
+import is.L42.top.State;
 import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.ProgramTypeSystem;
@@ -778,15 +779,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
 public static void pass(String program){
   Resources.clearRes();
+  class StateForTest extends State{
+    public StateForTest(FreshNames f,ArrayList<HashSet<List<C>>>c, int u,ArrayList<SClassFile> b,ArrayList<L42£Library> l){
+      super(f,c,u,b,l);
+      }
+    @Override protected Program flagTyped(Program p) throws EndError{return p;}
+    @Override public State copy(){
+      return new StateForTest(freshNames.copy(),copyAlreadyCoherent(),
+        uniqueId,new ArrayList<>(allByteCode),new ArrayList<>(allLibs));
+      }
+    }
   Init init=new Init("{"+program+"}"){
-    @Override protected Top makeTop(Program program,FreshNames f){
-      return new Top(f,0,new Loader(),null){
-        @Override protected Program flagTyped(Program p1,ArrayList<SClassFile> cBytecode,ArrayList<L42£Library>newLibs) throws EndError{
-          return p1;
-        }};
-    }};
-  Program p=Program.flat(Top.topCache(new CachedTop(L(),L()),init));
-  //Program p=init.top.top(init.p);
+    @Override protected State makeState(){
+      return new StateForTest(f,new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>());
+      }
+    };
+  Program p=Program.flat(init.topCache(new CachedTop(L(),L())));
   ProgramTypeSystem.type(true, p);
   allCoherent(p);
   }

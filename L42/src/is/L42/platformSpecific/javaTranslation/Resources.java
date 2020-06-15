@@ -24,9 +24,11 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.P;
+import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 
 public class Resources {
+  public static Loader loader=new Loader();
   private static HashMap<String,String> logs=new HashMap<>();
   public static HashMap<String,String> logs(){return logs;}
   private static StringBuffer compiledNesteds=new StringBuffer();//StringBuffer is the synchronized StringBuilder

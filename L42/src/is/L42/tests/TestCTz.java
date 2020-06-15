@@ -27,7 +27,6 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.tools.AtomicTest;
-import is.L42.top.Top;
 import is.L42.visitors.AuxVisitor;
 import is.L42.visitors.FullL42Visitor;
 

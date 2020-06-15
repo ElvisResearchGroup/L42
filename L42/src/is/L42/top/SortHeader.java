@@ -65,7 +65,7 @@ class SortHeader{
       if(refine(p0,mi.key(),P.pThis0,poss)){c.add(mi.key());}
       });
     var newInfo=deps.toInfo(false).withRefined(ss).with_uniqueId(uniqueId).withClose(true);
-    newInfo=Top.sumInfo(coreL.info(),newInfo);
+    newInfo=coreL.info().sumInfo(newInfo);
     return coreL.withMwts(merge(coreL.mwts(),mwts)).withInfo(newInfo);
     }
   public static Core.L coreTop(Program p,int uniqueId) throws EndError{

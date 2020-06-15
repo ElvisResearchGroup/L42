@@ -17,6 +17,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.stream.Stream;
 
+import is.L42.common.CTz;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Err;
@@ -44,18 +45,16 @@ import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.PropagatorCollectorVisitor;
 
 public class Init {
-  public Init(String s){this(Parse.sureProgram(Constants.dummy,s));}
-  public final Top top;
+  public Init(String s){this(Constants.dummy,Parse.sureProgram(Constants.dummy,s));}
   public final Program p;
-  public Init(Full.L l){this(Program.flat(l));}
-  protected Top makeTop(Program program, FreshNames f){
-    Path path=Paths.get(program.top.pos().fileName()).getParent();
-    return new Top(f,0,new Loader(),path);//but can be overridden as a testing handler
-    }
-  public Init(Program program){
+  public final Path initialPath;
+  public final FreshNames f;
+  public Init(Full.L l){this(initialPath(l),Program.flat(l));}
+  static Path initialPath(Full.L l){return Paths.get(l.pos().fileName()).getParent();}
+  public Init(Path initialPath,Program program){
     assert program!=null;
-    FreshNames f=new FreshNames();   
-    top=makeTop(program,f);
+    this.f=new FreshNames();
+    this.initialPath=initialPath;
     Program res=init(program,f);
     assert res.top.wf();
     collectAllUniqueNs(res,Resources.usedUniqueNs);
@@ -86,4 +85,20 @@ public class Init {
     pStart.top.wf();
     return pStart.top.visitable().accept(new InitVisitor(f,pStart));
     }
-}
+  public static Core.L topCache(CachedTop c,String code){
+    return new Init(code).topCache(c);
+    }    
+  public static Core.L topCache(CachedTop c,Full.L code){
+    return new Init(code).topCache(c);
+    }
+  protected State makeState(){//overriddable for tests
+    return new State(f,new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>());
+    }
+  public Core.L topCache(CachedTop c){
+    Resources.loader=new Loader();
+    LayerE l=LayerL.empty.push(this.p.top,new CTz().releaseMap());
+    R res=c.openClose(new GLOpen(l,makeState()));
+    if(res.isErr()){throw res._err;}
+    return (Core.L)res._obj;    
+    }
+  }

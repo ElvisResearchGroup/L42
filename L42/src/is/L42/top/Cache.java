@@ -10,7 +10,7 @@ import is.L42.common.Program;
 class R{
   final EndError _err;final G _g;final Object _obj;
   R(G g,Object obj){
-    assert g!=null && obj!=null;
+    assert g!=null;
     _g=g;
     _obj=obj;
     _err=null;

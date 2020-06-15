@@ -37,7 +37,6 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.Init;
-import is.L42.top.Top;
 import is.L42.top.UniqueNsRefresher;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.FullL42Visitor;

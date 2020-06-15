@@ -52,7 +52,6 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Deps;
-import is.L42.top.Top;
 import is.L42.top.UniqueNsRefresher;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.Accumulate;
@@ -410,7 +409,7 @@ public class Rename {
       });
     Deps deps=new Deps();
     for(var nc:ncs){deps.collectDocs(forcedNavigate(p, cs),nc.docs());}
-    Info i=Top.sumInfo(l.info(),deps.toInfo(true));
+    Info i=l.info().sumInfo(deps.toInfo(true));
     return l.withMwts(mwts).withNcs(ncs).withInfo(i);
     }
   MWT mwtOf(MWT mwt,S s1){

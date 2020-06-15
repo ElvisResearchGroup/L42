@@ -28,7 +28,6 @@ import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.meta.MetaError;
 import is.L42.tools.InductiveSet;
-import is.L42.top.Top;
 import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
@@ -37,9 +36,8 @@ public class InferToCore extends UndefinedCollectorVisitor{
   final InductiveSet<ST, ST> sets;
   Core.E res; 
   final CTz ctzFrom;
-  final Top top;
-  public InferToCore(I i,CTz ctz,Top top){
-    this.i=i; this.top=top;
+  public InferToCore(I i,CTz ctz){
+    this.i=i;
     this.sets = ctz.allSTz(i.p());
     this.ctzFrom=ctz;
     } 
@@ -93,12 +91,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     }  
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
-  @Override public void visitL(Full.L l){
-    throw bug();
-    //Program p=i.p().push(i._c(),l);
-    //var res=top.topNoCache(ctzFrom, p);
-    //commit(res.topCore());
-    }
+  @Override public void visitL(Full.L l){throw bug();}
   @Override public void visitL(Core.L l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){
     commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(Mdf.Class,pCastT.stz(),pCastT.poss())));

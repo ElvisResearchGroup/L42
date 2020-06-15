@@ -13,6 +13,7 @@ import is.L42.visitors.Visitable;
 import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
+import is.L42.generated.Core.L.Info;
 
 import static is.L42.tools.General.*;
 
@@ -137,6 +138,32 @@ public class Core {
       List<P> nativePar;
       int _uniqueId;
       public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),L(),false,"",L(),-1);
+      public Info sumInfo(Info info2) {
+        Info info1=this;
+        assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
+        assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
+        assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
+        var allW=mergeU(info1.watched(),info2.watched());
+        List<Core.PathSel> allU=L(c->{//avoid the ps in watched
+          for(var ps:info1.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
+          for(var ps:info2.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
+          });
+        Info res=new Info(info1.isTyped() && info2.isTyped(),
+          mergeU(info1.typeDep(),info2.typeDep()),
+          mergeU(info1.coherentDep(),info2.coherentDep()),
+          mergeU(info1.metaCoherentDep(),info2.metaCoherentDep()),
+          allW,allU,
+          mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
+          mergeU(info1.refined(),info2.refined()),
+          info1.close() || info2.close(),
+          info1.nativeKind()+info2.nativeKind(),
+          info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
+          Math.max(info1._uniqueId(),info2._uniqueId())
+          );
+        if(res.equals(info1)){return info1;}
+        if(res.equals(info2)){return info2;}
+        return res;
+        }
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class

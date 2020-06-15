@@ -18,7 +18,6 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
 import is.L42.top.State;
-import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 
 public class TestCachingCases {
@@ -122,12 +121,12 @@ public class TestCachingCases {
       """;  
   Resources.clearRes();
   var cache1=new CachedTop(L(),L());
-  Top.topCache(cache1,code);
+  Init.topCache(cache1,code);
   String exe=Resources.notifiedCompiledNC();
   String out=Resources.out();
   Resources.clearRes();
   var cache2=cache1.toNextCache();
-  Top.topCache(cache2,code);
+  Init.topCache(cache2,code);
   String exe2=Resources.notifiedCompiledNC();
   String out2=Resources.out();
   assertEquals("topO:0,NCiO:A,NCiC:A,NCiO:B,NCiC:B,NCiO:C,NCiC:C,topC:0,",exe);
@@ -163,7 +162,7 @@ void pass(String code1,String code2,String expectedExe1,String expectedExe2){
 void pass(String code1,String code2,String expectedExe1,String expectedExe2,String expectedExe3,Core.L resetReuseds){
   Resources.clearRes();
   var cache1=new CachedTop(L(),L());
-  Top.topCache(cache1,code1);
+  Init.topCache(cache1,code1);
   String exe=Resources.notifiedCompiledNC();
   Resources.clearRes();
   
@@ -172,13 +171,13 @@ void pass(String code1,String code2,String expectedExe1,String expectedExe2,Stri
   
   var cache2=cache1.toNextCache();
   @SuppressWarnings("unused")//for the debugger
-  var res2=Top.topCache(cache2,code2);
+  var res2=Init.topCache(cache2,code2);
   String exe2=Resources.notifiedCompiledNC();
   
   Resources.clearRes();
   var cache3=cache2.toNextCache();
   @SuppressWarnings("unused")//for the debugger
-  var res3=Top.topCache(cache3,code2);
+  var res3=Init.topCache(cache3,code2);
   String exe3=Resources.notifiedCompiledNC();
   assertEquals(expectedExe1,exe);
   assertEquals(expectedExe2,exe2);

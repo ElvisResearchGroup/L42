@@ -9,9 +9,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
-
-import org.stringtemplate.v4.compiler.STParser.namedArg_return;
-
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
@@ -28,7 +25,6 @@ import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.tools.InductiveSet;
-import is.L42.top.Top;
 import is.L42.typeSystem.Coherence;
 
 import static is.L42.tools.General.L;
@@ -62,8 +58,6 @@ public class Loader {
         loaded.add(e.name.substring("is.L42.metaGenerated.".length()));
         return e.toCF();
         });
-      //var res=classLoader.map().put(e.name,e.toCF());
-      //assert res==null;//simpler to just re add stuff?
       }
     }
   public boolean checkByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
@@ -74,7 +68,6 @@ public class Loader {
       }
     return true;
     }
-
   public Core.L runNow(Program p,C c,Core.E e,ArrayList<? super SClassFile> outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),false,libs,false){

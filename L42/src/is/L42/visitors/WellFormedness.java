@@ -75,7 +75,6 @@ import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.top.Deps;
-import is.L42.top.Top;
 import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.ProgramTypeSystem;
 

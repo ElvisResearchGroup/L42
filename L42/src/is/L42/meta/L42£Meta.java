@@ -52,7 +52,6 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.top.Deps;
-import is.L42.top.Top;
 import is.L42.top.UniqueNsRefresher;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.typeSystem.TypeManipulation;

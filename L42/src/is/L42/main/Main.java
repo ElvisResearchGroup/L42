@@ -21,7 +21,6 @@ import is.L42.platformSpecific.javaTranslation.L42Return;
 import is.L42.platformSpecific.javaTranslation.L42Throwable;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
-import is.L42.top.Top;
 
 public class Main {
   public static void main(String...arg) throws IOException {
@@ -34,7 +33,7 @@ public class Main {
     else if(!Files.exists(path)){path=Paths.get(name+".L42");}
     try{
       var code=(Full.L)Parse.fromPath(path);
-      Top.topCache(new CachedTop(L(),L()),code);    
+      Init.topCache(new CachedTop(L(),L()),code);    
       }
     catch(L42Throwable ee){
       System.out.println("L42 terminated with "+ee.getClass().getCanonicalName());

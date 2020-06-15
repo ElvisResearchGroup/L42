@@ -23,7 +23,6 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.Compilation
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
-import is.L42.top.Top;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;

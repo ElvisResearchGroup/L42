@@ -20,7 +20,6 @@ import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.top.Deps;
-import is.L42.top.Top;
 import is.L42.generated.C;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
@@ -143,7 +142,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       d.collectDepsE(p(),nc.l());
       }
     if (d.isEmpty()){return former;}
-    return Top.sumInfo(former,d.toInfo(true));
+    return former.sumInfo(d.toInfo(true));
     }
   @Override public P visitP(P path){return renamedPath(path);}
   @Override public Doc visitDoc(Doc doc){return infoRename.visitDoc(doc);}

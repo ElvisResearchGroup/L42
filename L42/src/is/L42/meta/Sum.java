@@ -44,7 +44,6 @@ import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
-import is.L42.top.Top;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.WellFormedness;
@@ -348,7 +347,7 @@ public class Sum {
       Info info2=l2.info();
       if(isInterface3&&!l1.isInterface()){info1=info1.withWatched(L()).withCoherentDep(L());}
       if(isInterface3&&!l2.isInterface()){info2=info2.withWatched(L()).withCoherentDep(L());}
-      Info info3=Top.sumInfo(info1,info2);
+      Info info3=info1.sumInfo(info2);
       LinkedHashSet<S> refineds=new LinkedHashSet<>(info3.refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(info3.typeDep());
       var mapped=map.get(cs);

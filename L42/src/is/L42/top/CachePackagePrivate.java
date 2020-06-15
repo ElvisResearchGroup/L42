@@ -21,6 +21,7 @@ import is.L42.generated.Half;
 import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.ST;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.PropagatorCollectorVisitor;
@@ -160,25 +161,25 @@ class GLOpen extends G{
       || l2.ctz().equals(layer.ctz());
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));
-    var e1n=new ArrayList<Half.E>();
-    var releasedMap=new AtomicReference<Map<ST,List<ST>>>();
-    if(!eq){State.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
-    Program p2=eq?getP(rc):s2.topOpen(p,e1n,state.uniqueId==0?Collections.emptyMap():layer.ctz(),releasedMap);
-    if(eq){e1n.addAll(getE1n(rc));}
-    var ctz=eq?((LayerL)rc._g.layer()).ctz():releasedMap.get();
+    if(!eq){Resources.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
+    Program p2;
+    Map<ST,List<ST>> ctz;
+    List<Half.E> e1n;
+    if(eq){
+      p2=((LayerL)rc._g.layer()).p();;
+      ctz=((LayerL)rc._g.layer()).ctz();
+      e1n=((LayerL)rc._g.layer()).e1n();
+      }
+    else{
+      State.TopOpenOut out=s2.topOpen(p,state.uniqueId==0?Collections.emptyMap():layer.ctz());
+      p2=out.p;
+      ctz=out.releasedMap;
+      e1n=out.e1n;
+      }
     LayerL l=layer.push(p2,0,ncs,ms,e1n,ctz);
-    if(ncs.isEmpty()){return new R(new GLClose(l,s2),new Object[]{p2,e1n});}
-    return new R(new GEOpen(l,s2),new Object[]{p2,e1n});
+    if(ncs.isEmpty()){return new R(new GLClose(l,s2),null);}
+    return new R(new GEOpen(l,s2),null);
     }
-  private Program getP(R r){
-    var os=(Object[])r._obj;
-    return (Program)os[0];
-  }
-  @SuppressWarnings("unchecked")
-  private ArrayList<Half.E> getE1n(R r){
-    var os=(Object[])r._obj;
-    return (ArrayList<Half.E>)os[1];
-  }
   public R _close(G gc,R rc){throw bug();}
   public boolean needOpen(){return true;}
   }
@@ -267,7 +268,7 @@ class GEClose extends G{
     assert !eq || state.equals(gc.state);
     //TODO: can the p ever be different?
     if(eq && rc.isErr()){return rc;}
-    if(!eq){State.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
+    if(!eq){Resources.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
     State s2=(eq?rc._g.state:state).copy();
     assert GLClose._get(layer.e())==null;
     CTz ctz=new CTz(layer.ctz());//TODO: is it the case that topNCi close do not modify CTz? in that case, can we avoid the copy?
