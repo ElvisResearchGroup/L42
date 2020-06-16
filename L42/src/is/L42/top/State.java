@@ -6,6 +6,7 @@ import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -54,7 +55,7 @@ import is.L42.typeSystem.PathTypeSystem;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.WellFormedness;
 
-public class State{
+public class State implements Serializable{
   public State(FreshNames freshNames,ArrayList<HashSet<List<C>>>alreadyCoherent, int uniqueId,
       ArrayList<SClassFile> allByteCode,ArrayList<L42£Library> allLibs){
     this.freshNames=freshNames;this.alreadyCoherent=alreadyCoherent;this.uniqueId=uniqueId;

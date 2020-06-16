@@ -4,12 +4,20 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.pushL;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.Serializable;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
 
-public class CachedTop{
+public class CachedTop implements Serializable{
   final List<G> cached;
   final List<R>cachedR;
   public CachedTop(List<G> cached,List<R>cachedR){
@@ -75,5 +83,24 @@ public class CachedTop{
       if(r1.isErr()){return r1;}
       r0=r1;
       }
+    }
+  public static CachedTop loadCache(Path path){
+    path=path.toAbsolutePath();
+    try(
+      var file=new FileInputStream(path.resolve("cache.L42Bytes").toFile()); 
+      var out=new ObjectInputStream(file);
+      ){return (CachedTop)out.readObject();}
+    catch(FileNotFoundException e){return new CachedTop(L(),L());}
+    catch(ClassNotFoundException e){throw bug();}
+    catch(IOException e){throw new Error(e);}
+    }
+  public void saveCache(Path path){
+    path=path.toAbsolutePath();
+    try(
+      var file=new FileOutputStream(path.resolve("cache.L42Bytes").toFile()); 
+      var out=new ObjectOutputStream(file);
+      ){out.writeObject(this);}
+    catch (FileNotFoundException e) {throw new Error(e);}
+    catch (IOException e) {throw new Error(e);}
     }
   }

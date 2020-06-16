@@ -1,11 +1,12 @@
 package is.L42.constraints;
 
+import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
 import is.L42.generated.X;
 
-public class FreshNames{
+public class FreshNames implements Serializable{
   int current=0;
   Set<Integer> used=new HashSet<>();
   public FreshNames copy(){

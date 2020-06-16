@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.function.Function;
 
@@ -112,6 +113,31 @@ public class TestCachingCases {
     "NCiC:R,",
     "NCiC:R,",
     null);}
+
+@Test void cacheOnFile(){
+  String code="""
+      {reuse[AdamTowel]
+      A=Log"A".clear()
+      B=Log"A".write(S"B")
+      C=Debug(S"DoingC:"++Log"A".#$reader().read())}
+      """;  
+  Resources.clearRes();
+  var cache1=new CachedTop(L(),L());
+  Init.topCache(cache1,code);
+  String exe=Resources.notifiedCompiledNC();
+  String out=Resources.out();
+  Resources.clearRes();
+  var cache2=cache1.toNextCache();
+  cache2.saveCache(Paths.get("localhost","TestCaching"));
+  cache2=CachedTop.loadCache(Paths.get("localhost","TestCaching"));
+  Init.topCache(cache2,code);
+  String exe2=Resources.notifiedCompiledNC();
+  String out2=Resources.out();
+  assertEquals("topO:0,NCiO:A,NCiC:A,NCiO:B,NCiC:B,NCiO:C,NCiC:C,topC:0,",exe);
+  assertEquals("NCiC:C,",exe2);
+  assertEquals("DoingC:B\n",out);
+  assertEquals("DoingC:\n",out2);
+  }
 @Test void hashDollarEDiff(){
   String code="""
       {reuse[AdamTowel]
@@ -136,12 +162,7 @@ public class TestCachingCases {
   }
 
 
-//TODO: now add hashDollarEdifferet, using a trusted pluging that return {@{num++}}
 /*
- TODO: testh #$ reuse, #$ e,
- how is FreshNames used in init? Top should inherit it as before.
- minimize Top, State and the caching ones 
- 
 So, what if CTz is a tree?
 in any L we can use only the CTzs from the method in the L
 and in the outer L? no informations about other nesteds of the outer L?

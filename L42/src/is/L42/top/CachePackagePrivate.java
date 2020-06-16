@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.typeFilter;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +27,7 @@ import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.PropagatorCollectorVisitor;
 
-interface LayerE{
+interface LayerE extends Serializable{
   Half.E e();
   Map<ST,List<ST>> ctz();
   LayerL layerL();
@@ -79,7 +80,7 @@ interface LayerE{
       };
     }
   }
-interface LayerL{
+interface LayerL extends Serializable{
   int index();
   Program p();
   List<Full.L.NC> ncs();
@@ -87,7 +88,8 @@ interface LayerL{
   List<Half.E> e1n();
   Map<ST,List<ST>> ctz();
   LayerE layerE();
-  static final LayerL empty=new LayerL(){
+  //To avoid serialization from making many instances of it
+  static enum EmptyLayerL implements LayerL{Empty;
     public int index(){throw bug();}
     public Program p(){throw bug();}
     public List<Full.L.NC> ncs(){throw bug();}
@@ -95,10 +97,9 @@ interface LayerL{
     public List<Half.E> e1n(){throw bug();}
     public LayerE layerE(){throw bug();}
     public Map<ST,List<ST>> ctz(){throw bug();}
-    @Override public int hashCode(){return 1;}
-    @Override public boolean equals(Object o){return this==o;}
     @Override public String toString(){return "EmptyL";}
     };
+  static final LayerL empty=EmptyLayerL.Empty;
   default LayerE push(Half.E e,Map<ST,List<ST>>ctz){
     var self=this;
     return new LayerE(){
