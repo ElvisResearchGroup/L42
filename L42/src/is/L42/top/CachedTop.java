@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
+import is.L42.tests.TestCachingCases;
 
 public class CachedTop implements Serializable{
   final List<G> cached;
@@ -62,6 +63,7 @@ public class CachedTop implements Serializable{
     return (Program)r._obj;
     }
   R openClose(G g0){
+    TestCachingCases.timeNow("open");
     G cg0=_getCached();
     R cr0=_getCachedR();
     R r0=g0.open(cg0,cr0);
@@ -73,6 +75,7 @@ public class CachedTop implements Serializable{
     R cr1=_getCachedR();
     R res=r1._g.close(cg1,cr1);
     addPerformed(r1._g,res);
+    TestCachingCases.timeNow("close");
     return res;
     }
   R openCloseNested(R r0){

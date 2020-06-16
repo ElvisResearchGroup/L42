@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 import org.junit.jupiter.api.Test;
 
@@ -115,6 +116,16 @@ public class TestCachingCases {
     null);}
 
 @Test void cacheOnFile(){
+  //IntStream.range(0, 10).forEach(i->cacheOnFile1());
+  cacheOnFile1();
+  }
+public static long last=0;
+public static void timeNow(String msg) {  
+  long now=System.currentTimeMillis();
+  System.out.println("Time:"+(now-last)+"   "+msg);
+  last=now;
+  }
+void cacheOnFile1(){
   String code="""
       {reuse[AdamTowel]
       A=Log"A".clear()
@@ -123,14 +134,23 @@ public class TestCachingCases {
       """;  
   Resources.clearRes();
   var cache1=new CachedTop(L(),L());
+  long start1=System.currentTimeMillis();
+  TestCachingCases.last=start1;
   Init.topCache(cache1,code);
+  long end1=System.currentTimeMillis();
   String exe=Resources.notifiedCompiledNC();
   String out=Resources.out();
   Resources.clearRes();
   var cache2=cache1.toNextCache();
   cache2.saveCache(Paths.get("localhost","TestCaching"));
+  System.out.println("Now with Cache");
   cache2=CachedTop.loadCache(Paths.get("localhost","TestCaching"));
+  long start2=System.currentTimeMillis();
   Init.topCache(cache2,code);
+  long end2=System.currentTimeMillis();
+  assertTrue(end1-start1>end2-start2);
+  System.out.println("Full Time: "+(end1-start1));
+  System.out.println("Cached Time: "+(end2-start2));
   String exe2=Resources.notifiedCompiledNC();
   String out2=Resources.out();
   assertEquals("topO:0,NCiO:A,NCiC:A,NCiO:B,NCiC:B,NCiO:C,NCiC:C,topC:0,",exe);

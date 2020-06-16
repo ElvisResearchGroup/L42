@@ -21,6 +21,7 @@ import java.util.concurrent.TimeoutException;
 import java.util.function.Supplier;
 
 import is.L42.common.Program;
+import is.L42.common.ReadURL;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.P;
@@ -83,5 +84,6 @@ public class Resources {
     tests=new StringBuffer();
     compiledNesteds=new StringBuffer();
     logs.clear();
+    ReadURL.resetCache();
     }
   }

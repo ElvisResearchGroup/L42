@@ -40,6 +40,7 @@ import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tests.TestCachingCases;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.PropagatorCollectorVisitor;
@@ -86,6 +87,7 @@ public class Init {
     return pStart.top.visitable().accept(new InitVisitor(f,pStart));
     }
   public static Core.L topCache(CachedTop c,String code){
+    TestCachingCases.timeNow("begin0");
     return new Init(code).topCache(c);
     }    
   public static Core.L topCache(CachedTop c,Full.L code){
@@ -95,8 +97,11 @@ public class Init {
     return new State(f,new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>());
     }
   public Core.L topCache(CachedTop c){
+    TestCachingCases.timeNow("begin1");
     Resources.loader=new Loader();
+    TestCachingCases.timeNow("begin2");
     LayerE l=LayerL.empty.push(this.p.top,new CTz().releaseMap());
+    TestCachingCases.timeNow("begin3");
     R res=c.openClose(new GLOpen(l,makeState()));
     if(res.isErr()){throw res._err;}
     return (Core.L)res._obj;    
