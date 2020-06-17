@@ -90,7 +90,7 @@ static Arrow fromS(String s){
   }
 static class FailErr extends Error{}
 public static void fail(String sl1,String s2,String err){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   String[]msg={null};
   Init init1=new Init("{Outer={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
@@ -100,7 +100,7 @@ public static void fail(String sl1,String s2,String err){
   Err.strCmp(msg[0],err);
   }
 public static void pass(String sl1,String s2,String sl3){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   Init init1=new Init("{Outer={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("Outer",-1))));
   Core.L l3Actual=new Rename(new UniqueNsRefresher()).apply(init1.p,new C("Outer",-1),l1,map(s2),null,null,null,null);

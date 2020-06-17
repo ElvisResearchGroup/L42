@@ -18,7 +18,7 @@ public class AtomicTest{
   public String toString() {return "line "+lineNumber;}
   public void run() {
     Constants.refresh();
-    Resources.clearRes();
+    Resources.clearResKeepReuse();
     r.run();
     }
   public static int lineNumber() {

@@ -778,7 +778,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ));}
 
 public static void pass(String program){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   class StateForTest extends State{
     public StateForTest(FreshNames f,ArrayList<HashSet<List<C>>>c, int u,ArrayList<SClassFile> b,ArrayList<L42£Library> l){
       super(f,c,u,b,l);

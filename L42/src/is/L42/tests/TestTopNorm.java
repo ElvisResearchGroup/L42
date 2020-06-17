@@ -782,14 +782,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    };
 
 public static void top(String program,String out){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   Constants.testWithNoUpdatePopChecks(()->{
     var res=Init.topCache(new CachedTop(L(),L()),program);
     assertEquals(res,Core.L.parse(out));
     });
   }
 public static void topFail(Class<?> kind,String program,String ...output){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   checkFail(()->Constants.testWithNoUpdatePopChecks(()->{
     Init.topCache(new CachedTop(L(),L()),program);
     }), output, kind);

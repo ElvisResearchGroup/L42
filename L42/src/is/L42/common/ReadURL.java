@@ -31,7 +31,7 @@ public class ReadURL {
       var file=new FileInputStream(fullName); 
       var in=new ObjectInputStream(file);
       ){res=(Core.L)in.readObject();}
-    catch(FileNotFoundException e){throw todo();}
+    catch(FileNotFoundException e){throw new Error(e);}
     catch(IOException e){throw new Error(e);}
     catch(ClassNotFoundException e){throw bug();}
     //TODO: check it is really well typed?

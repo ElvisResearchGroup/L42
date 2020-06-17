@@ -206,7 +206,7 @@ public static void load(String s){
   }
 
 public static void loadRunErr(String s,String e){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   try{
     String p="{"+baseStr+s+"Task="+e+"}";
     Init init=new Init(p);
@@ -220,7 +220,7 @@ public static void loadRunErr(String s,String e){
   }  
 
 public static void loadRun(String s,String e,String output){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   String p="{"+baseStr+s+"Task="+e+"}";
   Init init=new Init(p);
   init.topCache(new CachedTop(L(),L()));

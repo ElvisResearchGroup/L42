@@ -469,7 +469,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      assertEquals(pRes,Sum.miniFrom(pInto.toNCs().cs(),pThat.toNCs().cs()));
      }
 public static void pass(String sl1,String sl2,String sl3){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   Init init1=new Init("{A={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));
   Init init2=new Init("{A={"+sl2+"#norm{}}");
@@ -481,7 +481,7 @@ public static void pass(String sl1,String sl2,String sl3){
   }
 static class FailErr extends Error{}
 public static void fail(String sl1,String sl2,String err){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   String[]msg={null};
   Init init1=new Init("{A={"+sl1+"#norm{}}");
   Core.L l1=init1.p._ofCore(P.of(0,List.of(new C("A",-1))));

@@ -1,11 +1,13 @@
 package is.L42.tests;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.range;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Function;
 import java.util.stream.IntStream;
 
@@ -114,6 +116,16 @@ public class TestCachingCases {
     "NCiC:R,",
     "NCiC:R,",
     null);}
+@Test void adamChange(){passMany(
+  List.of(
+    "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
+    "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
+    "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}"
+  ),List.of(
+    "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
+    "topO:0,NCiO:Main2,NCiC:Main2,",
+    "topO:0,NCiO:Main2,NCiC:Main2,"
+  ));}
 
 @Test void cacheOnFile(){
   //IntStream.range(0, 10).forEach(i->cacheOnFile1());
@@ -132,7 +144,7 @@ void cacheOnFile1(){
       B=Log"A".write(S"B")
       C=Debug(S"DoingC:"++Log"A".#$reader().read())}
       """;  
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   var cache1=new CachedTop(L(),L());
   long start1=System.currentTimeMillis();
   TestCachingCases.last=start1;
@@ -140,7 +152,7 @@ void cacheOnFile1(){
   long end1=System.currentTimeMillis();
   String exe=Resources.notifiedCompiledNC();
   String out=Resources.out();
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   var cache2=cache1.toNextCache();
   cache2.saveCache(Paths.get("localhost","TestCaching"));
   System.out.println("Now with Cache");
@@ -165,12 +177,12 @@ void cacheOnFile1(){
       B=Log"A".write(S"B")
       C=Debug(S"DoingC:"++Log"A".#$reader().read())}
       """;  
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   var cache1=new CachedTop(L(),L());
   Init.topCache(cache1,code);
   String exe=Resources.notifiedCompiledNC();
   String out=Resources.out();
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   var cache2=cache1.toNextCache();
   Init.topCache(cache2,code);
   String exe2=Resources.notifiedCompiledNC();
@@ -201,11 +213,11 @@ void pass(String code1,String code2,String expectedExe1,String expectedExe2){
   pass(code1,code2,expectedExe1,expectedExe2,"",null);
   }
 void pass(String code1,String code2,String expectedExe1,String expectedExe2,String expectedExe3,Core.L resetReuseds){
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   var cache1=new CachedTop(L(),L());
   Init.topCache(cache1,code1);
   String exe=Resources.notifiedCompiledNC();
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   
   var tmp=Constants.readURL;try{
   if(resetReuseds!=null){Constants.readURL=ignored->resetReuseds;}
@@ -215,7 +227,7 @@ void pass(String code1,String code2,String expectedExe1,String expectedExe2,Stri
   var res2=Init.topCache(cache2,code2);
   String exe2=Resources.notifiedCompiledNC();
   
-  Resources.clearRes();
+  Resources.clearResKeepReuse();
   var cache3=cache2.toNextCache();
   @SuppressWarnings("unused")//for the debugger
   var res3=Init.topCache(cache3,code2);
@@ -224,5 +236,16 @@ void pass(String code1,String code2,String expectedExe1,String expectedExe2,Stri
   assertEquals(expectedExe2,exe2);
   assertEquals(expectedExe3,exe3);
   }finally{Constants.readURL=tmp;}
+  }
+void passMany(List<String>codes,List<String> expecteds){
+  var cache=new CachedTop(L(),L());
+  assert codes.size()==expecteds.size();
+  for(var i:range(codes.size())){
+    Resources.clearResKeepReuse();
+    Init.topCache(cache,codes.get(i));
+    cache=cache.toNextCache();
+    String exe=Resources.notifiedCompiledNC();
+    assertEquals(expecteds.get(i),exe);
+    }
   }
 }

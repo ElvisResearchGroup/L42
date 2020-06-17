@@ -58,8 +58,8 @@ interface LayerE extends Serializable{
         return pOk(p.pop());
         }
       boolean deptOk(Program p, LayerL l){
-        assert l!=LayerL.empty;
-        var layerEnd=l.layerE().layerL()==LayerL.empty;
+        assert l!=LayerL.empty();
+        var layerEnd=l.layerE().layerL()==LayerL.empty();
         var pEnd=p.pTails.isEmpty();
         if(layerEnd==pEnd && layerEnd){return true;}
         if(layerEnd!=pEnd){
@@ -99,7 +99,7 @@ interface LayerL extends Serializable{
     public Map<ST,List<ST>> ctz(){throw bug();}
     @Override public String toString(){return "EmptyL";}
     };
-  static final LayerL empty=EmptyLayerL.Empty;
+  static LayerL empty(){return EmptyLayerL.Empty;}
   default LayerE push(Half.E e,Map<ST,List<ST>>ctz){
     var self=this;
     return new LayerE(){
@@ -139,7 +139,7 @@ class GLOpen extends G{
   GLOpen(LayerE layer,State state){this.layer=layer;this.state=state;}
   public LayerE layer(){return layer;}
   private Program currentP(LayerL l,Full.L fullL){
-    if(l==LayerL.empty){return Program.flat(fullL);}
+    if(l==LayerL.empty()){return Program.flat(fullL);}
     if(l.ncs().isEmpty()){return l.p().push(fullL);}//only for tests
     C c=l.ncs().get(l.index()).key();
     return l.p().push(c,fullL);
@@ -158,7 +158,7 @@ class GLOpen extends G{
     assert !eq || state.equals(gc.state):
       "";
     assert !eq || s2.uniqueId==0 
-      || l2.layerL()==LayerL.empty 
+      || l2.layerL()==LayerL.empty()
       || l2.ctz().equals(layer.ctz());
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));

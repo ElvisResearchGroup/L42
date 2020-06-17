@@ -8,7 +8,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 
 public class TestDecoratorsErrors extends is.L42.tools.TestL42Bridge{
   public static Stream<L42Test> test() throws IOException, URISyntaxException {
-    Resources.clearRes();
+    Resources.clearResKeepReuse();
     var res=TestDecoratorsErrors.class.getResource("L42Source/TestDecoratorsErrors");
     is.L42.main.Main.main(Paths.get(res.toURI()).toString());
     return fromString(Resources.tests());

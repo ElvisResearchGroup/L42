@@ -40,8 +40,10 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DeployAdamTowel extends TestL42Bridge {
   public static Stream<L42Test> test() throws IOException, URISyntaxException {
     Resources.clearRes();
-    var res=DeployAdamTowel.class.getResource("L42Source/AdamTowel");
-    Main.main(Paths.get(res.toURI()).toString());
-    return fromString(Resources.tests());
+    var url=DeployAdamTowel.class.getResource("L42Source/AdamTowel");
+    Main.main(Paths.get(url.toURI()).toString());
+    var res=fromString(Resources.tests());
+    Resources.clearRes();
+    return res;
     }
   }

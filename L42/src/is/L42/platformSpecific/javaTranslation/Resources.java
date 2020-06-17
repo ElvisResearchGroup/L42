@@ -76,6 +76,10 @@ public class Resources {
   private static ArrayList<L42£Library>libsCached;
   public static final HashMap<String,Slave>slaves=new HashMap<>();
   public static void clearRes() {
+    clearResKeepReuse();
+    ReadURL.resetCache();
+    }
+  public static void clearResKeepReuse() {
     libsCached=null;
     slaves.clear();
     usedUniqueNs.clear();
@@ -84,6 +88,5 @@ public class Resources {
     tests=new StringBuffer();
     compiledNesteds=new StringBuffer();
     logs.clear();
-    ReadURL.resetCache();
     }
   }

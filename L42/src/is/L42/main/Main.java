@@ -19,6 +19,7 @@ import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42Exception;
 import is.L42.platformSpecific.javaTranslation.L42Return;
 import is.L42.platformSpecific.javaTranslation.L42Throwable;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
 
@@ -27,13 +28,21 @@ public class Main {
     String name = arg[0];
     assert name != null;
     Path path=Paths.get(name);
-    if(Files.exists(path) && Files.isDirectory(path)){
-      path=path.resolve("This.L42");
-      }
-    else if(!Files.exists(path)){path=Paths.get(name+".L42");}
+    boolean isDir=Files.exists(path) && Files.isDirectory(path);
+    if(!Files.exists(path)){path=Paths.get(name+".L42");}
+    run(path,isDir,false);
+    }
+  public static void run(Path path,boolean isDir,boolean caching) throws IOException {
+    CachedTop c=new CachedTop(L(),L());
+    if(isDir && caching){c=CachedTop.loadCache(path);}
+    run(path.resolve("This.L42"),c);
+    if(caching){c.toNextCache().saveCache(path);}
+    System.out.println(Resources.notifiedCompiledNC());
+    }
+  public static void run(Path path,CachedTop c) throws IOException {
     try{
       var code=(Full.L)Parse.fromPath(path);
-      Init.topCache(new CachedTop(L(),L()),code);    
+      Init.topCache(c,code);    
       }
     catch(L42Throwable ee){
       System.out.println("L42 terminated with "+ee.getClass().getCanonicalName());

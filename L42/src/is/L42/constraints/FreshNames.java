@@ -26,6 +26,7 @@ public class FreshNames implements Serializable{
   public String fresh(String hint){
     while(used.contains(current)){current+=1;}
     String res="fresh"+current+"_"+hint;
+    used.add(current);
     current+=1;
     return res;
     }
