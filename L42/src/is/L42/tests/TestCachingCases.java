@@ -28,43 +28,46 @@ public class TestCachingCases {
 @Test void base(){pass("{A0={B1={} B2={} B3={}}}",
   "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
   "");}
+@Test void base2(){pass("{A0={B1={} B2=({}) B3={}}}",
+    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
+    "");}
 @Test void baseChange(){pass(
   "{A0={B1={D={}} B2={} B3={}}}",
   "{A0={B1={D={}} B2={C={}} B3={}}}",
   "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
-  "topO:0,NCiO:A0,topO:1,NCiO:B2,topO:2,NCiO:C,topO:3,topC:3,NCiC:C,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
+  "NCiO:A0,NCiO:B2,NCiO:C,topO:3,topC:3,NCiC:C,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
 @Test void changeLater(){pass(
     "{A0={B1={D={}} B2={} B3={}}}",
     "{A0={B1={D={}} B2={} B3={C={}}}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B3,topO:2,NCiO:C,topO:3,topC:3,NCiC:C,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
+    "NCiO:A0,NCiO:B3,NCiO:C,topO:3,topC:3,NCiC:C,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
 @Test void changeRemove(){pass(
     "{A0={B1={D={}} B2={C={}} B3={}}}",
     "{A0={B1={D={}} B2={} B3={}}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,NCiO:B2,topO:2,NCiO:C,topO:3,topC:3,NCiC:C,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
+    "NCiO:A0,NCiO:B2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
 @Test void changeMethod(){pass(
     "{A0={B1={D={}} B2={} B3={}}}",
     "{A0={B1={D={}} B2={method Void foo()=void} B3={}}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
+    "NCiO:A0,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
 @Test void changeMethodType(){pass(
     "{A0={B1={D={}} B2={method Void foo()=void} B3={method Void m(B2 b)=(_=b.foo() void)}}}",
     "{A0={B1={D={}} B2={method Library foo()={#norm{}}} B3={method Void m(B2 b)=(_=b.foo() void)}}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
+    "NCiO:A0,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,");}
 @Test void changeTrashIllTyped(){pass(
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar()} E={}} {}) Late={}}}",
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar()} E={K={}}} {}) Late={}}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,NCiO:E,topO:3,topC:3,NCiC:E,topC:2,topO:2,topC:2,NCiC:B1,NCiO:Late,topO:2,topC:2,NCiC:Late,topC:1,NCiC:A0,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:E,topO:3,NCiO:K,topO:4,topC:4,NCiC:K,topC:3,NCiC:E,topC:2,topO:2,topC:2,NCiC:B1,NCiO:Late,topO:2,topC:2,NCiC:Late,topC:1,NCiC:A0,topC:0,");}
+    "NCiO:A0,NCiO:B1,NCiO:E,NCiO:K,topO:4,topC:4,NCiC:K,topC:3,NCiC:E,topC:2,topO:2,topC:2,NCiC:B1,NCiO:Late,topO:2,topC:2,NCiC:Late,topC:1,NCiC:A0,topC:0,");}
 @Test void changeTrashIllTypedCTz1(){pass(
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() method Void diff(D d)=(_=d.bar() void)}} {})} Late={}}",
     "{A0={B1=(_aux={D={method Library foo()[Late]=this.bar() method Void diff(D d)=(_=d.bar() void)}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,");}
+    "NCiO:A0,NCiO:B1,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,");}
 //TODO: caching now seams to be able to go "back on track" while still saving the new improved cache at the end.
-//is this always working? is thid desirable?
+//is this always working? is this desirable?
 @Test void changeTrashIllTypedCTz2(){pass(
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() method Void diff(D d)=(_=d.bar() void)}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
@@ -73,17 +76,17 @@ public class TestCachingCases {
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() Inner={method Void diff(D d)=(_=d.bar() void)}}} {})} Late={}}",
     "{A0={B1=(_aux={D={method Library foo()[Late]=this.bar() Inner={method Void diff(D d)=(_=d.bar() void)}}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
-      "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,NCiC:B1,");}
+    "NCiO:A0,NCiO:B1,NCiO:D,topO:3,NCiO:Inner,topO:4,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,NCiC:B1,");}
 @Test void deep2Level(){pass(
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() Inner={Inner2={method Void diff(D d)=(_=d.bar() void)}}}} {})} Late={}}",
     "{A0={B1=(_aux={D={method Library foo()[Late]=this.bar() Inner={Inner2={method Void diff(D d)=(_=d.bar() void)}}}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,NCiO:Inner2,topO:5,topC:5,NCiC:Inner2,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,NCiO:Inner2,topO:5,topC:5,NCiC:Inner2,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,NCiC:B1,");}
+    "NCiO:A0,NCiO:B1,NCiO:D,topO:3,NCiO:Inner,topO:4,NCiO:Inner2,topO:5,topC:5,NCiC:Inner2,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,NCiC:B1,");}
 @Test void deep3Level(){pass(
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() Inner={Inner2={Inner3={method Void diff(D d)=(_=d.bar() void)}}}}} {})} Late={}}",
     "{A0={B1=(_aux={D={method Library foo()[Late]=this.bar() Inner={Inner2={Inner3={method Void diff(D d)=(_=d.bar() void)}}}}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,NCiO:Inner2,topO:5,NCiO:Inner3,topO:6,topC:6,NCiC:Inner3,topC:5,NCiC:Inner2,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,NCiO:Inner2,topO:5,NCiO:Inner3,topO:6,topC:6,NCiC:Inner3,topC:5,NCiC:Inner2,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,NCiC:B1,");}
+    "NCiO:A0,NCiO:B1,NCiO:D,topO:3,NCiO:Inner,topO:4,NCiO:Inner2,topO:5,NCiO:Inner3,topO:6,topC:6,NCiC:Inner3,topC:5,NCiC:Inner2,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,NCiC:B1,");}
 @Test void hashDollarReuseSame(){pass(
     "{A0={B1={} R={reuse[#$ba]} C={}} Late={}}",
     "{A0={B1={} R={reuse[#$ba]} C={}} Late={}}",
@@ -106,7 +109,7 @@ public class TestCachingCases {
     "{A0={B1={class method Library foo()={#norm{}}} R=B1.foo() C={}} Late={}}",
     "{A0={B1={class method Library foo()={method Void v()=void #norm{}}} R=B1.foo() C={}} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:R,NCiC:R,NCiO:C,topO:2,topC:2,NCiC:C,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
-    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:R,NCiC:R,NCiO:C,topO:2,topC:2,NCiC:C,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,"
+    "NCiO:A0,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:R,NCiC:R,NCiO:C,topO:2,topC:2,NCiC:C,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,"
     );}
 
 @Test void hashDollarESame(){pass(
@@ -116,16 +119,59 @@ public class TestCachingCases {
     "NCiC:R,",
     "NCiC:R,",
     null);}
-@Test void adamChange(){passMany(
+@Test void hashDollarESameButTyped(){pass(
+    "{A0={B1={class method Library #$foo()={#norm{}}} R=B1.#$foo() C={}} Late={}}",
+    "{A0={B1={class method Library #$foo()={#typed{}}} R=B1.#$foo() C={}} Late={}}",//same
+    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:R,NCiC:R,NCiO:C,topO:2,topC:2,NCiC:C,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
+    "NCiO:A0,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiC:R,",
+    "NCiC:R,",
+    null);}
+
+@Test void threeChanges(){passMany(
+    List.of(
+      "{A={class method class A a()=this} Main2=(_=A.a() {})}",
+      "{A={class method class A a()=this} Main2=(_=A.a().a() {})}",
+      "{A={class method class A a()=this} Main2=(_=A.a().a().a() {})}",
+      "{A={class method class A a()=this} Main2=(_=A.a().a().a().a() {})}"
+    ),List.of(
+      "topO:0,NCiO:A,topO:1,topC:1,NCiC:A,NCiO:Main2,topO:1,topC:1,NCiC:Main2,topC:0,",
+      "NCiO:Main2,topO:1,topC:1,NCiC:Main2,topC:0,",
+      "NCiO:Main2,topO:1,topC:1,NCiC:Main2,topC:0,",
+      "NCiO:Main2,topO:1,topC:1,NCiC:Main2,topC:0,"
+    ));}
+@Test void adamChangeVarLength1(){passMany(
   List.of(
     "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
     "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
     "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}"
   ),List.of(
     "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
-    "topO:0,NCiO:Main2,NCiC:Main2,",
-    "topO:0,NCiO:Main2,NCiC:Main2,"
+    "NCiO:Main2,NCiC:Main2,",
+    "NCiO:Main2,NCiC:Main2,topC:0,"//because 1 extra char, thus 1 extra freevar is generated
   ));}
+@Test void adamChangeVarLength2(){passMany(
+    List.of(
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main4\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}"
+    ),List.of(
+      "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
+      "NCiO:Main2,NCiC:Main2,topC:0,",
+      "NCiO:Main2,NCiC:Main2,topC:0,",
+      "NCiO:Main2,NCiC:Main2,"
+    ));}
+
+@Test void adamChangeSameLength(){passMany(
+    List.of(
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main4\")}"
+    ),List.of(
+      "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
+      "NCiO:Main2,NCiC:Main2,",
+      "NCiO:Main2,NCiC:Main2,"
+    ));}
 
 @Test void cacheOnFile(){
   //IntStream.range(0, 10).forEach(i->cacheOnFile1());
@@ -158,6 +204,7 @@ void cacheOnFile1(){
   System.out.println("Now with Cache");
   cache2=CachedTop.loadCache(Paths.get("localhost","TestCaching"));
   long start2=System.currentTimeMillis();
+  last=start2;
   Init.topCache(cache2,code);
   long end2=System.currentTimeMillis();
   assertTrue(end1-start1>end2-start2);
@@ -170,10 +217,44 @@ void cacheOnFile1(){
   assertEquals("DoingC:B\n",out);
   assertEquals("DoingC:\n",out2);
   }
+@Test void testSpeedChange(){
+  ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+  String code1="""
+    {reuse [AdamTowel]
+    Main1=(Debug(S"Hello world1") )
+    Main2=Debug(S"Main41")}
+    """;
+  String code2="""
+      {reuse [AdamTowel]
+      Main1=(Debug(S"Hello world1") )
+      Main2=Debug(S"Main42")}
+      """;
+    System.out.println("START WARM UP");
+    last=System.currentTimeMillis();
+    Init.topCache(new CachedTop(L(),L()),code1);
+    last=System.currentTimeMillis();
+    long start1=last;
+    Resources.clearResKeepReuse();
+    System.out.println("START FIRST EXECUTION");
+    var cache1=new CachedTop(L(),L());
+    Init.topCache(cache1,code1);
+    long end1=System.currentTimeMillis();
+    System.out.println(Resources.notifiedCompiledNC());
+    System.out.println("START CACHED EXECUTION");
+    long start2=System.currentTimeMillis();
+    Resources.clearResKeepReuse();
+    var cache2=cache1.toNextCache();
+    Init.topCache(cache2,code2);
+    long end2=System.currentTimeMillis();
+    System.out.println(Resources.notifiedCompiledNC());
+    System.out.println("TimeBase= "+(end1-start1));
+    System.out.println("TimeCache= "+(end2-start2));
+    assertTrue(end1-start1>end2-start2);
+  }
 @Test void hashDollarEDiff(){
   String code="""
       {reuse[AdamTowel]
-      A=Log"A".clear()
+      A=Log"A".clear()//also the test environment clears the log
       B=Log"A".write(S"B")
       C=Debug(S"DoingC:"++Log"A".#$reader().read())}
       """;  
@@ -245,6 +326,7 @@ void passMany(List<String>codes,List<String> expecteds){
     Init.topCache(cache,codes.get(i));
     cache=cache.toNextCache();
     String exe=Resources.notifiedCompiledNC();
+    System.out.println("Now at iteration "+i);
     assertEquals(expecteds.get(i),exe);
     }
   }

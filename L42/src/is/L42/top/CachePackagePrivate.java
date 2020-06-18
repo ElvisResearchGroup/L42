@@ -23,6 +23,7 @@ import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.ST;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tests.TestCachingCases;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.PropagatorCollectorVisitor;
@@ -144,7 +145,13 @@ class GLOpen extends G{
     C c=l.ncs().get(l.index()).key();
     return l.p().push(c,fullL);
     }
+  private LL noNC(LL ll) {
+    if(!ll.isFullL()) {return ll;}
+    var l=(Full.L)ll;
+    return l.withMs(L(l.ms().stream().filter(m->!(m instanceof Full.L.NC))));
+    }
   public R _open(G gc,R rc){
+    TestCachingCases.timeNow("GLOpen1");
     LayerE l2=null;
     if(gc!=null && gc.getClass()==this.getClass()){l2=((GLOpen)gc).layer;}
     Program pC=l2==null?null:currentP(l2.layerL(),GLClose._get(l2.e()));
@@ -152,20 +159,30 @@ class GLOpen extends G{
     assert original!=null;
     Program p=currentP(layer.layerL(),original);
     assert p.top.isFullL();
-    boolean eq=l2!=null && p.equals(pC) && !((Full.L)p.top).reuseUrl().contains("#$");
+    TestCachingCases.timeNow("GLOpen2");
+    boolean eq=l2!=null &&
+      !((Full.L)p.top).reuseUrl().contains("#$") &&
+      state.equals(gc.state);
+    if(eq){
+      Program pNoNC=p.update(noNC(p.top),false);
+      Program pCNoNC=pC.update(noNC(pC.top),false);
+      eq=pNoNC.equals(pCNoNC);
+      }
+    TestCachingCases.timeNow("GLOpen3 "+eq);
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
-    assert !eq || state.equals(gc.state):
-      "";
     assert !eq || s2.uniqueId==0 
       || l2.layerL()==LayerL.empty()
       || l2.ctz().equals(layer.ctz());
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));
+    TestCachingCases.timeNow("GLOpen4");
     if(!eq){Resources.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
+    TestCachingCases.timeNow("GLOpen5");
     Program p2;
     Map<ST,List<ST>> ctz;
     List<Half.E> e1n;
+    TestCachingCases.timeNow("GLOpen6");
     if(eq){
       p2=((LayerL)rc._g.layer()).p();;
       ctz=((LayerL)rc._g.layer()).ctz();
@@ -177,6 +194,7 @@ class GLOpen extends G{
       ctz=out.releasedMap;
       e1n=out.e1n;
       }
+    TestCachingCases.timeNow("GLOpen7");
     LayerL l=layer.push(p2,0,ncs,ms,e1n,ctz);
     if(ncs.isEmpty()){return new R(new GLClose(l,s2),null);}
     return new R(new GEOpen(l,s2),null);
@@ -192,11 +210,16 @@ class GLClose extends G{
   public R _close(G gc,R rc){
     LayerL l2=null;
     if(gc!=null && gc.getClass()==this.getClass()){l2=((GLClose)gc).layer;}
-    boolean eq=l2!=null && layer.p().equals(l2.p()) && layer.ms().equals(l2.ms())&&layer.e1n().equals(l2.e1n()) && layer.ctz().equals(l2.ctz());
+    boolean eq=l2!=null &&
+      layer.p().equals(l2.p()) &&
+      layer.ms().equals(l2.ms())&& 
+      layer.e1n().equals(l2.e1n()) &&
+      layer.ctz().equals(l2.ctz()) &&
+      state.equals(gc.state);
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
     CTz ctz=new CTz(layer.ctz());
-    assert !eq || (state.equals(gc.state) && layer.ctz().equals(l2.ctz())):
+    assert !eq || layer.ctz().equals(l2.ctz()):
       state.equals(gc.state)+" "+layer.ctz().equals(l2.ctz()); 
     Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     LayerE l=layer.layerE();

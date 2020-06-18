@@ -27,6 +27,7 @@ public class ReadURL {
       System.out.println("Reusing cached "+fullName);
       return res;
       }
+    System.out.println("Reading from disk "+fullName);
     try(
       var file=new FileInputStream(fullName); 
       var in=new ObjectInputStream(file);

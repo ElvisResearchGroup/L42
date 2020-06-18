@@ -62,10 +62,15 @@ public class CachedTop implements Serializable{
     if(r.isErr()){throw r._err;}
     return (Program)r._obj;
     }
+  void dbgPrint(G g,G gc){
+    String str=gc==null?"null":gc.getClass().getSimpleName();
+    System.out.println("Cache comparing "+g.getClass().getSimpleName()+" "+str);
+    }
   R openClose(G g0){
-    TestCachingCases.timeNow("open");
+    TestCachingCases.timeNow("open "+g0.getClass().getSimpleName());
     G cg0=_getCached();
     R cr0=_getCachedR();
+    dbgPrint(g0,cg0);
     R r0=g0.open(cg0,cr0);
     addPerformed(g0,r0);
     if(r0.isErr()){return r0;}
@@ -73,9 +78,10 @@ public class CachedTop implements Serializable{
     if(r1.isErr()){return r1;}
     G cg1=_getCached();
     R cr1=_getCachedR();
+    dbgPrint(r1._g,cg1);
     R res=r1._g.close(cg1,cr1);
     addPerformed(r1._g,res);
-    TestCachingCases.timeNow("close");
+    TestCachingCases.timeNow("close "+r1._g.getClass().getSimpleName());
     return res;
     }
   R openCloseNested(R r0){
