@@ -140,7 +140,7 @@ public class State implements Serializable{
     Full.E fe=current.e();
     C c0=current.key();
     Resources.notifyCompiledNC("NCiO:"+c0+",");
-    System.out.println("Now considering main "+c0+" "+p.topCore().info()._uniqueId());
+    System.err.println("Now considering main "+c0+" "+p.topCore().info()._uniqueId());
     Y y=new Y(p,GX.empty(),L(),null,L());
     var hq=new ToHalf(y, ctz, freshNames).compute(fe);
     return hq.e;
@@ -161,7 +161,7 @@ public class State implements Serializable{
     Core.L l;
     if(e instanceof Core.L){l=(Core.L)e;}
     else{l=reduce(p,c0,e,allByteCode,allLibs);}//propagate errors
-    System.out.println(c0+ " reduced");
+    System.err.println(c0+ " reduced");
     assert l!=null:c0+" "+e;
     //now, generating the new nc and adding it to the top of the program
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);

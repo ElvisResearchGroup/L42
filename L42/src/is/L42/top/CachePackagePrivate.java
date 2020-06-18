@@ -219,8 +219,7 @@ class GLClose extends G{
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
     CTz ctz=new CTz(layer.ctz());
-    assert !eq || layer.ctz().equals(l2.ctz()):
-      state.equals(gc.state)+" "+layer.ctz().equals(l2.ctz()); 
+    assert !eq || layer.ctz().equals(l2.ctz()); 
     Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     LayerE l=layer.layerE();
     Half.E newE=set(l.e(),res);
@@ -257,9 +256,10 @@ class GEOpen extends G{
     if(gc!=null && gc.getClass()==this.getClass()){l2=((GEOpen)gc).layer;}
     var old=l2==null?null:l2.ncs().get(l2.index());
     var current=layer.ncs().get(layer.index());
-    boolean eq=l2!=null && old.equals(current) && l2.p().equals(layer.p());
-    assert !eq || state.equals(gc.state):
-      "";
+    boolean eq=l2!=null
+      && old.equals(current)
+      && l2.p().equals(layer.p())
+      && state.equals(gc.state);
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
     CTz ctz=eq?null:new CTz(layer.ctz());
@@ -288,9 +288,11 @@ class GEClose extends G{
     var currentE=layer.e();
     var oldE=l2==null?null:l2.e();
     boolean hasHashDollar=hasHashDollar(currentE);
-    boolean eq=l2!=null && oldE.equals(currentE)&& !hasHashDollar &&oldP.equals(currentP);
-    assert !eq || state.equals(gc.state);
-    //TODO: can the p ever be different?
+    boolean eq=l2!=null 
+      && oldE.equals(currentE)
+      && !hasHashDollar 
+      && oldP.equals(currentP)
+      && state.equals(gc.state);
     if(eq && rc.isErr()){return rc;}
     if(!eq){Resources.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
     State s2=(eq?rc._g.state:state).copy();

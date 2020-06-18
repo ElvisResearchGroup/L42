@@ -92,11 +92,12 @@ public class ToSVisitor implements ToSTrait{
   public void visitEVoid(Core.EVoid eVoid){
     kw("void");
     }
-  
+  public boolean headerNewLine(){return false;}//to override
   public void visitL(Core.L l){
     boolean inline=HasMultilinePart.inline(l);
     c("{");
     if(!inline){indent();}
+    if(!inline && headerNewLine()){nl();}
     if(l.isInterface()){c("interface");}
     exceptionImplements(l.ts());
     var sp=empty();

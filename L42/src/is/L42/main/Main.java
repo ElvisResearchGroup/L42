@@ -14,6 +14,7 @@ import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42Exception;
@@ -37,12 +38,11 @@ public class Main {
     if(isDir && caching){c=CachedTop.loadCache(path);}
     run(path.resolve("This.L42"),c);
     if(caching){c.toNextCache().saveCache(path);}
-    System.out.println(Resources.notifiedCompiledNC());
     }
-  public static void run(Path path,CachedTop c) throws IOException {
+  public static Core.L run(Path path,CachedTop c) throws IOException {
     try{
       var code=(Full.L)Parse.fromPath(path);
-      Init.topCache(c,code);    
+      return Init.topCache(c,code);    
       }
     catch(L42Throwable ee){
       System.out.println("L42 terminated with "+ee.getClass().getCanonicalName());

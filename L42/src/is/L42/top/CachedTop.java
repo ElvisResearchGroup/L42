@@ -14,8 +14,10 @@ import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import is.L42.common.Program;
+import is.L42.generated.Core;
 import is.L42.tests.TestCachingCases;
 
 public class CachedTop implements Serializable{
@@ -25,6 +27,13 @@ public class CachedTop implements Serializable{
     this.cached=cached;
     this.cachedR=cachedR;
     }
+  public Optional<Core.L> lastTopL(){
+    return cachedR.stream().map(this::_lastTopL).filter(e->e!=null).reduce((a, b)->b);
+    }
+  private Core.L _lastTopL(R r){
+    if(r.isErr()) {return null;}
+    return (Core.L)r._obj;
+  }
   public CachedTop toNextCache(){return new CachedTop(performed,performedR);}
   final ArrayList<G> performed=new ArrayList<>();
   final ArrayList<R> performedR=new ArrayList<>();
@@ -64,7 +73,7 @@ public class CachedTop implements Serializable{
     }
   void dbgPrint(G g,G gc){
     String str=gc==null?"null":gc.getClass().getSimpleName();
-    System.out.println("Cache comparing "+g.getClass().getSimpleName()+" "+str);
+    System.err.println("Cache comparing "+g.getClass().getSimpleName()+" "+str);
     }
   R openClose(G g0){
     TestCachingCases.timeNow("open "+g0.getClass().getSimpleName());
@@ -101,6 +110,10 @@ public class CachedTop implements Serializable{
       ){return (CachedTop)out.readObject();}
     catch(FileNotFoundException e){return new CachedTop(L(),L());}
     catch(ClassNotFoundException e){throw bug();}
+    catch(java.io.InvalidClassException e){
+      System.err.println("LOG: saved cache was made of outdated bytecode");
+      return new CachedTop(L(),L());
+      }
     catch(IOException e){throw new Error(e);}
     }
   public void saveCache(Path path){

@@ -23,11 +23,7 @@ public class ReadURL {
     if(hd){url=url.substring(2);}
     String fullName="localhost"+File.separator+url+".L42";
     Core.L res=hd?null:cache.get(fullName);
-    if(res!=null){
-      System.out.println("Reusing cached "+fullName);
-      return res;
-      }
-    System.out.println("Reading from disk "+fullName);
+    if(res!=null){return res;}
     try(
       var file=new FileInputStream(fullName); 
       var in=new ObjectInputStream(file);

@@ -304,7 +304,7 @@ public class InMemoryJavaCompiler {
       );
     boolean compilationRes=compilerTask.call();
     if(!compilationRes){
-      System.out.println(files);
+      System.err.println(files);
       throw new CompilationError(diagnisticListenerForErrors);
       }
     return classLoader;

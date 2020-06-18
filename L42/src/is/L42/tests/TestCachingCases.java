@@ -173,6 +173,19 @@ public class TestCachingCases {
       "NCiO:Main2,NCiC:Main2,"
     ));}
 
+
+@Test void adamChangeMiddle(){passMany(
+    List.of(
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world2\") ) Main2=Debug(S\"Main\")}",
+      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world3\") ) Main2=Debug(S\"MaiW\")}"
+    ),List.of(
+      "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
+      "NCiO:Main1,NCiC:Main1,",
+      "NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,"
+    ));}
+
+
 @Test void cacheOnFile(){
   //IntStream.range(0, 10).forEach(i->cacheOnFile1());
   cacheOnFile1();
@@ -218,7 +231,7 @@ void cacheOnFile1(){
   assertEquals("DoingC:\n",out2);
   }
 @Test void testSpeedChange(){
-  ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+  //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
   String code1="""
     {reuse [AdamTowel]
     Main1=(Debug(S"Hello world1") )

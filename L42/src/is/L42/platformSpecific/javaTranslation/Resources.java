@@ -18,6 +18,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import is.L42.common.Program;
@@ -38,9 +39,12 @@ public class Resources {
   public static String notifiedCompiledNC(){return compiledNesteds.toString();}
   private static StringBuffer out=new StringBuffer();
   public static String out(){return out.toString();}
+  private static Consumer<String> outHandler=s->{};
+  public static void setOutHandler(Consumer<String> c){outHandler=c;}
   public static void out(String s){
     s+="\n";
     out.append(s);
+    outHandler.accept(s);
     System.out.print(s);
     }
   private static StringBuffer tests=new StringBuffer();
