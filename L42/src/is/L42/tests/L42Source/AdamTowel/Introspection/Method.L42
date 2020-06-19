@@ -6,6 +6,8 @@ class method This(NativeMethod that)=\(i=that)
 
 @Public method Type returnType()=\(this.i().returnType())
 
+@Public method S selector()=this.nameFromRoot().selector()
+
 @Public method Type$List parameters()=\()((
   size=this.i().parNum()
   var i=0Size

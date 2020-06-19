@@ -30,6 +30,16 @@ class method This(NativeNested that)=\(i=that)
     \res<=Method$(this.i().methodIn(i))
     i+=1Size
     )))
+@Public method Method$ meth(S selector)={
+  size=this.i().methodNum()
+  var i=0Size
+  while i<size (
+    mi=Method$(this.i().methodIn(i))
+    if mi.nameFromRoot()<:Name.selector()==selector return mi
+    i+=1Size
+    )
+  error Collection$NoElementInOpt"Method %selector not in methods list: %this.methods()"
+  }
 @Public method Type$List implements()=\()((
   size=this.i().implementedNum()
   var i=0Size
