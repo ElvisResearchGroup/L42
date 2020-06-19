@@ -15,6 +15,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import is.L42.common.Program;
 import is.L42.generated.Core;
@@ -28,12 +29,13 @@ public class CachedTop implements Serializable{
     this.cachedR=cachedR;
     }
   public Optional<Core.L> lastTopL(){
-    return cachedR.stream().map(this::_lastTopL).filter(e->e!=null).reduce((a, b)->b);
+    return cachedR.stream().flatMap(this::_lastTopL).reduce((a, b)->b);
     }
-  private Core.L _lastTopL(R r){
-    if(r.isErr()) {return null;}
-    return (Core.L)r._obj;
-  }
+  private Stream<Core.L> _lastTopL(R r){
+    if(r.isErr()) {return Stream.of();}
+    if(r._obj instanceof Core.L){return Stream.of((Core.L)r._obj);}
+    return Stream.of();
+    }
   public CachedTop toNextCache(){return new CachedTop(performed,performedR);}
   final ArrayList<G> performed=new ArrayList<>();
   final ArrayList<R> performedR=new ArrayList<>();

@@ -112,12 +112,19 @@ public class Deps{
     new DepsV(p0).visitTs(ts);
     return this;
     }
+  public static List<String>whiteListedNatives=List.of(
+      "trusted:lazyCache",
+      "trusted:invalidateCache",
+      "trusted:readEagerCache",
+      "trusted:readLazyCache"
+      );
   public Deps collectDeps(Program p0, List<MWT> mwts){
     var deps=new DepsV(p0);
     //TODO: we had addPublicRoots(cohePs); but I think it was wrong, it would limit the sum interface+class if the class have a non watched private nested class (that would disapper otherwise...)
     for(var m:mwts){
       deps.of(m);
       if(m.nativeUrl().isEmpty()){continue;}
+      if(whiteListedNatives.contains(m.nativeUrl())){continue;}
       P p=m.mh().t().p();
       if(p.isNCs()){cohePs.add(p.toNCs());}
       }

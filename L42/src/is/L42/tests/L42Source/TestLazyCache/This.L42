@@ -1,5 +1,24 @@
 reuse[AdamTowel]
 
+Scope0={
+  Point=Data:{Num x, Num y
+    @Cache.Lazy method Num sum()={
+      Debug(S"doing sum")
+      Log"Foo".write(S"doing sum")
+      return this.x()+this.y()
+      }
+    }
+  Main=(
+    Log"Foo".clear()
+    Point p=Point(x=1\,y=3\)
+    Debug(S"sum1 is %p.sum()")
+    Debug(S"sum2 is %p.sum()")
+    {}:Test"cacheRepeating"(
+      expected=S"doing sum"
+      actual=Log"Foo".#$reader().read())
+    )
+  }
+
 /*This test need to use the organizer decorator, in turn requiring full path rename.
 Scope1 ={
   A = {
@@ -345,4 +364,3 @@ NestedCloseTest=(
   {}:Test"NestedClose2"(expected=S"Hi" actual=b.foo())
   {}:Test"NestedCloseLog"(expected=S"Foo" actual=Log"Foo".#$reader().read())
   )
-  
