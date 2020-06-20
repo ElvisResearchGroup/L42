@@ -424,15 +424,18 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
+    if(jC.contains("MessageTrait£n1£_£cOptMessage£n39")) {
+      System.out.println("Making "+jC);
+    }
     String jCName="new String[]{"+jCName(p.pTails).substring(1)+"}";
     
     header(interf,jC);
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();
-    if(!interf){
-      if(this.isCoherent && (!this.fields.xs.isEmpty() || nativeKind(p))){
-      addCachableMethods(jC,jCName);
-      }
+    if(interf){c("static final Class<"+jC+"> _class="+jC+".class;");nl();}
+    else{
+      boolean useFields=this.isCoherent && (!this.fields.xs.isEmpty() || nativeKind(p));
+      if(useFields){addCachableMethods(jC,jCName);}
       else{addCachableMethodsNoFields(jC,jCName);}
       }
     if(this.isCoherent){

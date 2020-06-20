@@ -1,33 +1,27 @@
-HasToS={interface read method S toS()}
-Message={interface [HasToS]
-  mut method Void text(S that)
-  read method S text()
-  method This #whoopsed(Library atPos)
-  }
-Message$Guard={interface [Message]}
-Introspection$Nested={
-  class method This from(class Any classAny)
-  method S excName(S text)
-  }
-S={}
-S$StringBuilder={[HasToS]}
-BaseErrorTraitAddOns=Name$Mapping().resource({[HasToS,Message,Message$Guard]
+reuse[#$aaa]
+BaseErrorTraitAddOns=Trait:{[HasToS,Message,Message$Guard]
   class method This ()
   class method mut This (S that)
   read method S text()
   class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
   read method S toS()=Introspection$Nested.from(classAny=This).excName(text=this.text())
-  method Message #whoopsed(Library atPos)=this
-  })
-S$ParseError=BaseErrorTraitAddOns()
-Trait$MethodClash=BaseErrorTraitAddOns()
-Trait$ClassClash=BaseErrorTraitAddOns()
-Trait$InvalidName=BaseErrorTraitAddOns()
-Trait$InvalidMap=BaseErrorTraitAddOns()
-Bool={
+  method Message #whoopsed(Library atPos)=This(
+    S"""%
+      |%this.text()
+      |Whoopsed in position:
+      |  %Introspection$Nested.from(library=atPos).position()
+      """
+    )
+  }
+S_ParseError=BaseErrorTraitAddOns()
+Trait_MethodClash=BaseErrorTraitAddOns()
+Trait_ClassClash=BaseErrorTraitAddOns()
+Trait_InvalidName=BaseErrorTraitAddOns()
+Trait_InvalidMap=BaseErrorTraitAddOns()
+Bool$={
   method This #if()
   class method This false()
   class method This true()
   method Void #checkTrue()[Void]
   }
-Size={...}
+Size$={...}

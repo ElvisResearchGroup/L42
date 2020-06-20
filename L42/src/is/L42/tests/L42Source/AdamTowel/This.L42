@@ -46,6 +46,7 @@ DeployAAA=(
       class method This from(Library library)=error void
       class method This from(class Any classAny)=error void
       method S excName(S text)=error void
+      method S position()=error void
       }
     @Public Url={...}
     BaseErrorTrait={...}
@@ -102,9 +103,14 @@ DeployAAA=(
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
   AddOns=(
-    base=Trait({reuse[#$aaa]})[clear='Introspection$Nested]
-    added=Trait:{...}
-    tot=base+added
+    tot=Trait({...})[
+      clear='Introspection$Nested;
+      'S_ParseError=>'S.ParseError;
+      'Trait_MethodClash=>'Trait.MethodClash;
+      'Trait_ClassClash=>'Trait.ClassClash;
+      'Trait_InvalidName=>'Trait.InvalidName;
+      'Trait_InvalidMap=>'Trait.InvalidMap;
+      ]
     organize=Organize(public='Public)
     toDeploy=Class:(organize:tot)['This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
     Debug(Introspection.Nested.from(library=toDeploy).toFullS())

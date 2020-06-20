@@ -730,7 +730,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   Test=void
   }
   ""","""
-  {A={imm method This foo()=native{trusted:lazyCache} error void #typed{typeDep=This0 coherentDep=This}}
+  {A={imm method This foo()=native{trusted:lazyCache} error void #typed{typeDep=This0}}
   Test={#typed{}}
   #norm{}}
   """)

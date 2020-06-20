@@ -93,7 +93,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     boolean find=false;
     if(e.thr()==Exception){find=tryAlternatives(ps.stream(),computed);}
     else{find=tryAlternatives(ts.stream().map(t->t.p()),computed);}
-    errIf(!find,e,Err.leakedThrow(e.thr().inner));
+    errIf(!find,e,Err.leakedThrow(e.thr().inner+" "+computed));
     _computed=null;
     }
   private boolean tryAlternatives(Stream<P> stream,P computed){

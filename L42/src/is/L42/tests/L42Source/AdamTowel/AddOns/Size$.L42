@@ -1,0 +1,28 @@
+class method This zero()
+read method Bool <(read This that)
+read method Bool <=(read This that)
+method This -(This that)
+method This #succ()
+Range0={
+  Size$ limit
+  class method mut This(Size$ limit)
+  mut method mut This #iterator()=this
+  mut method Void #close(Size$ that)=void
+  mut method Bool #incomplete(Size$ that)=that<this.limit()
+  mut method Size$ #elem#default(Size$ that)=that
+  mut method Bool #hasElem(Size$ that)=that<this.limit()
+  mut method Size$ #startIndex()=Size$.zero()
+  }
+InverseRange={
+  Size$ limit
+  class method mut This(Size$ limit)
+  mut method mut This #iterator()=this
+  mut method Void #close(Size$ that)=void
+  mut method Bool #incomplete(Size$ that)=that<=this.limit()
+  mut method Size$ #elem#default(Size$ that)=this.limit()-that
+  mut method Bool #hasElem(Size$ that)=that<=this.limit()
+  mut method Size$ #startIndex()=Size$.zero().#succ()
+  }
+method mut Range0 range()=Range0(limit=this)//TODO: get assertion error if I write Range instead.
+//When do we check all Path are declared? 
+ 

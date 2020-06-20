@@ -194,7 +194,7 @@ class GLOpen extends G{
       ctz=out.releasedMap;
       e1n=out.e1n;
       }
-    TestCachingCases.timeNow("GLOpen7");
+    TestCachingCases.timeNow("GLOpen7 "+p2.dept()+" "+(!p2.pTails.isEmpty() && p2.pTails.hasC()?p2.pTails.c():""));
     LayerL l=layer.push(p2,0,ncs,ms,e1n,ctz);
     if(ncs.isEmpty()){return new R(new GLClose(l,s2),null);}
     return new R(new GEOpen(l,s2),null);
