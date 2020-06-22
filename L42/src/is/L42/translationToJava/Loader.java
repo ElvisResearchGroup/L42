@@ -125,6 +125,7 @@ public class Loader {
     if(loaded.contains(name)){return false;}//already in Java
     if(okToJava.contains(name)){return false;}//already verified to be ok
     if(notOkToJava.contains(name)){return true;}
+    if(p.topCore().info()._uniqueId()!=-1){return true;}//still being metaprogrammed
     mayBeOkToJava.add(name);
     for(var path:p.topCore().info().typeDep()){
       var p0=p._navigate(path);

@@ -23,8 +23,9 @@ public class Constants{
   public static Function<String,Core.L> readURL=ReadURL::of;
   private static final HashMap<String,Program> fwPrograms=new HashMap<>();
   public static void refresh(){fwPrograms.clear();}
-  public static Path dummy=Paths.get("localhost","dummy.txt");
-  public static Path temp=Paths.get("localhost","temp.txt");
+  public static Path localhost=Paths.get("localhost");
+  public static Path dummy=localhost.resolve("dummy.txt");
+  public static Path temp=localhost.resolve("temp.txt");
   private static boolean updatePopChecks=true;
   public static boolean updatePopChecks(){return updatePopChecks;}
   public static void testWithNoUpdatePopChecks(Runnable r){

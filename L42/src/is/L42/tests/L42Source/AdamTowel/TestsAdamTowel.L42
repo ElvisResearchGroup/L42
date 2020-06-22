@@ -184,3 +184,16 @@ TestEqualities=(
   {}:Test"ReadClone1"(mutCouple.readClone().immEquality(mutCouple.readClone()))
   void
   )
+
+TestNestedTraits={
+  Trait2=Trait:{method Void foo()=void}
+  A=Trait2:{
+    class method Bool k()=Bool.true()
+    B=Trait:{
+      class method class This1 m()=This1
+      }
+    }
+  AA=A.code()
+  BB=AA.B.code()
+  TestBB={}:Test"bb"(BB.m().k())
+  }

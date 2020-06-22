@@ -1,0 +1,158 @@
+NotValidSupport=Class:Message:{[Message.Guard]}
+NotSameSupport=Class:Message:{[Message.Guard]}
+NotValidUnit=Class:Message:{[Message.Guard]}
+UnitCastError=Class:Message:{[Message.Guard]}
+
+TraitUnit=Trait:{
+  [HasToS]
+  Support that
+  class method This (Support that)
+  method Support #inner()=this.that()
+  method toS()=this.that().toS()
+  Support={
+    [HasToS]
+    class method This #from(S.StringBuilder stringLiteral)
+    method This +(This that)
+    method This -(This that)
+    method This *(This that)
+    method This /(This that)
+    read method Bool ==(read This that)
+    read method Bool !=(read This that)
+    read method Bool >(read This that)
+    read method Bool <(read This that)
+    read method Bool >=(read This that)
+    read method Bool <=(read This that)
+    }
+  class method This #from(S.StringBuilder stringLiteral)
+    =This(Support.#from(stringLiteral=stringLiteral))
+  method This +(This that)
+    =This(this.that()+that.that())
+  method This -(This that)
+    =This(this.that()-that.that())
+  method This *(Support support)
+    =This(this.that()*support)
+  method This /(Support support)
+    =This(this.that()/support)
+  method Support /(This that)
+    =this.that()/that.that()
+  read method Bool ==(read This that)
+    =this.that()==that.that()
+  read method Bool !=(read This that)
+    =this.that()!=that.that()
+  method Bool >(This that)
+    =this.that()>that.that()
+  method Bool <(This that)
+    =this.that()<that.that()
+  method Bool >=(This that)
+    =this.that()>=that.that()
+  method Bool <=(This that)
+    =this.that()<=that.that()
+  class method This unitCast(Any that)=(
+    return that
+    catch return This x x
+    catch return Any x (
+      s=Introspection.Nested.from(classAny=This).outerName()
+      error UnitCastError"The object is not of class %s"
+      )
+    )
+  ClassOperators={class method class This1 #apply()=This1}
+  class method Library *(class Any unit)[NotValidUnit,NotSameSupport]
+    =CompositUnit(this and=unit)
+  class method Library /(class Any unit)[NotValidUnit,NotSameSupport]
+    =CompositUnit(this per=unit)
+  }
+class method Library (class Any that)[NotValidSupport]={
+  return Data:TraitUnit['Support=>that]
+  catch Message.Guard g exception NotValidSupport
+    "The provided class is not a valid support class for a unit of measure"
+    .with(cause=g)
+  }
+
+TraitComposedUnit=Trait:{
+  T1={
+    method Support #inner()
+    class method This(Support that)
+    class method This unitCast(Any that)
+    }
+  T2={
+    method Support #inner()
+    class method This(Support that) 
+    }
+  Support={
+    method This *(This that)
+    method This /(This that)
+    }
+  method Support #inner()
+  class method This(Support that)
+  }
+TraitTimes=TraitComposedUnit:{T1={},T2={}
+  Support={method This *(This that)  method This /(This that)}
+  class method This (T1 that, T2 and)
+    =This(that.#inner()<:Support*and.#inner()<:Support)
+  method T1 /(T2 right)
+    =T1(this.#inner()<:Support/right.#inner())
+  method T2 /(T1 left)
+    =T2(this.#inner()/left.#inner())
+  BuilderTrait=Trait:{
+    method This1 *(T2 u_right)=This1(T1.unitCast(this) and=u_right)
+    method This1 *1(T2 u_right)=this*u_right  
+    }
+  class method Library builder()={
+    parName=Introspection.Nested.from(classAny=T2).outerName()
+    name0=Name"#times0(u_%parName)"//parName is uppercase, u_parName is lowercase
+    name1=Name"#times1(u_%parName)"
+    return BuilderTrait['#times0(u_right)=>name0;'#times1(u_right)=>name1;].code()
+    whoops Message.Guard
+    }
+  }
+TraitDiv=TraitComposedUnit:{T1={},T2={}
+  Support={method This *(This that)  method This /(This that)}
+  class method This (T1 that, T2 per)
+    =This(that.#inner()<:Support/per.#inner()<:Support)
+  method T1 *(T2 right)
+    =T1(this.#inner()<:Support*right.#inner())
+  method T1 /1(T2 left0)
+    =T1(left0.#inner()/this.#inner())
+  BuilderTrait=Trait:{
+    method This1 /(T2 u_right)=This1(T1.unitCast(this) per=u_right)
+    }
+  class method Library builder()={
+    parName=Introspection.Nested.from(classAny=T2).outerName()
+    name=Name"#divide0(u_%parName)"//parName is uppercase, u_parName is lowercase
+    return BuilderTrait['#divide0(u_right)=>name;].code()
+    whoops Message.Guard
+    }
+  }
+// /left,/right,/self,/support,/1left0,  /unit
+CompositUnit={
+  class method Library (class Any that, class Any and)[NotValidUnit,NotSameSupport]
+    =this(c1=that,c2=and,trait=Trait(TraitTimes()))
+  class method Library (class Any that, class Any per)[NotValidUnit,NotSameSupport]
+    =this(c1=that,c2=per,trait=Trait(TraitDiv()))
+  class method Introspection.Type tOf(Introspection.Nested that)[NotValidUnit]={
+    return that.meth(selector='#inner()).returnType()
+    catch error Collection.NoElementInOpt e exception NotValidUnit
+      " Provided class %that.outerName() do not offers 'method Support #inner()'"
+      .with(cause=e)
+    }
+  class method Library (class Any c1, class Any c2,Trait trait)
+  ,,,,[NotValidUnit, NotSameSupport]=(
+    //check c1.#inner() and c2.#inner() are same type t
+    i1=Introspection.Nested.from(classAny=c1)
+    i2=Introspection.Nested.from(classAny=c2)
+    ,,{
+      t1=this.tOf(i1)
+      t2=this.tOf(i2)
+      if t1.nested()!=t2.nested() exception NotSameSupport
+        "Provided classes %i1.outerName() (%t1.nested().outerName()) and %i2.outerName() (%t2.nested().outerName()) have different supports."
+      if !t1.nested().isBinded() exception NotValidUnit
+        "Provided class %i1.outerName() 'method Support #inner()' return type must be declared externally"
+      cAny=t1.nested().classAny()
+      res=TraitUnit['Support=>cAny]
+      return Data:res:trait['Support=>cAny;'T1=>c1;'T2=>c2]
+      catch Message.Guard g exception NotValidUnit
+        "The provided classes %i1.outerName() and %i2.outerName() are not  valid Unit classes."
+        .with(cause=g)
+      }
+    )
+  }

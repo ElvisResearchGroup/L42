@@ -61,17 +61,14 @@ public class StringInterpolation {
     if (c=='}'){openC-=1;}
     }
   boolean isTerminal(char former,char c){
-    if(openR<0 || openS<0 || openC<0){
-      return true;
+    if(openR<0 || openS<0 || openC<0){return true;}
+    if(openR!=0 || openS!=0 || openC!=0){return false;}
+    if(c==')' ||c==']' || c=='}'){return true;}
+    if(former!=')' && former!=']'){
+      return terminals.indexOf(c)!=-1;
       }
-    if(openR==0 && openS==0 && openC==0){
-      if(former!=')' && former!=']'){
-        return terminals.indexOf(c)!=-1;
-        }
-      return c!='.' && c!='(' && c!='[';
-      }
-    return false;
-  }
+    return c!='.' && c!='(' && c!='[';
+    }
   private final String terminals=" , \n !~\"%&/=?'^*-@><;:";
   final String symbol;
   private static enum Mode{
@@ -102,7 +99,7 @@ public class StringInterpolation {
         self.close(c);
         return i;
         }
-      self.close(c);
+      //self.close(c);
       self.modeToStr();
       return i-1;
       }},

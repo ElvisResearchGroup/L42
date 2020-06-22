@@ -213,9 +213,9 @@ void cacheOnFile1(){
   String out=Resources.out();
   Resources.clearResKeepReuse();
   var cache2=cache1.toNextCache();
-  cache2.saveCache(Paths.get("localhost","TestCaching"));
+  cache2.saveCache(Constants.localhost.resolve("TestCaching"));
   System.out.println("Now with Cache");
-  cache2=CachedTop.loadCache(Paths.get("localhost","TestCaching"));
+  cache2=CachedTop.loadCache(Constants.localhost.resolve("TestCaching"));
   long start2=System.currentTimeMillis();
   last=start2;
   Init.topCache(cache2,code);

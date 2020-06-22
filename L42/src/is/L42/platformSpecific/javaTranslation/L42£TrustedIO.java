@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.stream.Collectors;
 
@@ -15,6 +16,7 @@ import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42SingletonCache;
 import is.L42.cache.nativecache.ValueCache;
+import is.L42.common.Constants;
 import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
@@ -112,8 +114,9 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
       @Override public Core.L.Info visitInfo(Core.L.Info info){
         return info.withTyped(true);
         }});
+    Path fullPath=Constants.localhost.resolve(s+".L42");
     try(
-      var file=new FileOutputStream("localhost"+File.separator+s+".L42"); 
+      var file=new FileOutputStream(fullPath.toFile()); 
       var out=new ObjectOutputStream(file);
       ){
       out.writeObject(l);

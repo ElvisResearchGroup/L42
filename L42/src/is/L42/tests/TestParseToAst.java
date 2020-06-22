@@ -418,8 +418,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    passI("S\"%x1%(x2)%x3%(x4)\"","x1","(x2)","x3","(x4)")
  ),new AtomicTest(()->
    passI("S\"%x1%x2.foo()[]%x3()[] ()%(x4)\"","x1","x2.foo()[]","x3()[]","(x4)")
-
-
+ ),new AtomicTest(()->
+   passI("S\"foo(%bar)\"","bar")
+ ),new AtomicTest(()->
+   passI("S\"foo[%this.bar())\"","this.bar()")
+ ),new AtomicTest(()->
+   passI("S\"foo[%this.bar[])\"","this.bar[]")
   ));}
 public static void pass(String input) {pass(input,input);}
 public static void pass(String input,String output) {

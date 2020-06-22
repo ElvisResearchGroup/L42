@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -22,10 +23,11 @@ public class ReadURL {
     boolean hd=url.startsWith("#$");
     if(hd){url=url.substring(2);}
     String fullName="localhost"+File.separator+url+".L42";
+    Path fullPath=Constants.localhost.resolve(url+".L42");
     Core.L res=hd?null:cache.get(fullName);
     if(res!=null){return res;}
     try(
-      var file=new FileInputStream(fullName); 
+      var file=new FileInputStream(fullPath.toFile()); 
       var in=new ObjectInputStream(file);
       ){res=(Core.L)in.readObject();}
     catch(FileNotFoundException e){throw new Error(e);}
