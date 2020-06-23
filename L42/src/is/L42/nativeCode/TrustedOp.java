@@ -203,7 +203,7 @@ public enum TrustedOp {
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
-    Meta,use("return %s.resource(%s);",sigI(Lib,Lib)))),
+    Meta,use("return %s.resource(%s,%s);",sigI(Lib,Lib,Name)))),
   Close("close",Map.of(
     Meta,use("return %s.close(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String)))),
   AddConstructors("addConstructors",Map.of(

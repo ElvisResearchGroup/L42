@@ -147,9 +147,11 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     return res0;
     }
   private static S applyS=S.parse("#apply()");
-  public L42£Library resource(L42£Library that){
+  public L42£Library resource(L42£Library that,L42£Name name){
     L l=addThis1().visitL(that.unwrap);
-    var mh=new Core.MH(Mdf.Class,L(),P.coreLibrary,applyS,L(),L());
+    S sName=applyS;
+    if(name._s!=null || name._s.xs().isEmpty()){sName=name._s;}
+    var mh=new Core.MH(Mdf.Class,L(),P.coreLibrary,sName,L(),L());
     var meth=new Core.L.MWT(l.poss(),L(),mh,"",l);
     Deps deps=new Deps().collectDepsE(Resources.currentP,l);
     var res=new Core.L(l.poss(), false, L(), L(meth), L(), deps.toInfo(l.info().isTyped()),L());

@@ -13,11 +13,11 @@ BaseErrorTraitAddOns=Trait:{[HasToS,Message,Message$Guard]
       """
     )
   }
-S_ParseError=BaseErrorTraitAddOns()
-Trait_MethodClash=BaseErrorTraitAddOns()
-Trait_ClassClash=BaseErrorTraitAddOns()
-Trait_InvalidName=BaseErrorTraitAddOns()
-Trait_InvalidMap=BaseErrorTraitAddOns()
+S_ParseError=BaseErrorTraitAddOns.code()
+Trait_MethodClash=BaseErrorTraitAddOns.code()
+Trait_ClassClash=BaseErrorTraitAddOns.code()
+Trait_InvalidName=BaseErrorTraitAddOns.code()
+Trait_InvalidMap=BaseErrorTraitAddOns.code()
 Bool$={
   method This #if()
   class method This false()

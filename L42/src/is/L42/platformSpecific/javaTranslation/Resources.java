@@ -39,12 +39,22 @@ public class Resources {
   public static String notifiedCompiledNC(){return compiledNesteds.toString();}
   private static StringBuffer out=new StringBuffer();
   public static String out(){return out.toString();}
+  private static StringBuffer err=new StringBuffer();
+  public static String err(){return err.toString();}
   private static Consumer<String> outHandler=s->{};
   public static void setOutHandler(Consumer<String> c){outHandler=c;}
+  private static Consumer<String> errHandler=s->{};
+  public static void setErrHandler(Consumer<String> c){errHandler=c;}
   public static void out(String s){
     s+="\n";
     out.append(s);
     outHandler.accept(s);
+    System.out.print(s);
+    }
+  public static void err(String s){
+    s+="\n";
+    err.append(s);
+    errHandler.accept(s);
     System.out.print(s);
     }
   private static StringBuffer tests=new StringBuffer();
@@ -89,6 +99,7 @@ public class Resources {
     usedUniqueNs.clear();
     allBusyUpTo=0;
     out=new StringBuffer();
+    err=new StringBuffer();
     tests=new StringBuffer();
     compiledNesteds=new StringBuffer();
     logs.clear();

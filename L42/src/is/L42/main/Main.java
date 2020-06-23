@@ -45,15 +45,22 @@ public class Main {
       return Init.topCache(c,code);    
       }
     catch(L42Throwable ee){
-      System.out.println("L42 terminated with "+ee.getClass().getCanonicalName());
+      Resources.err("L42 terminated with "+ee.getClass().getCanonicalName());
       printError(ee.unbox);
+      throw ee;
+      }
+    catch(EndError ee) {
+      Resources.err("-------------------------");
+      Resources.err("Compile time error:");
+      Resources.err("-------------------------");
+      Resources.err(ee.getMessage());
       throw ee;
       }
     }
   private static void printError(Object o){
     Class<?> c=o.getClass(); 
-    System.out.println(c.getCanonicalName());
-    try{System.out.println(c.getMethod("£mtoS").invoke(o).toString());return;}
+    Resources.err(c.getCanonicalName());
+    try{Resources.err(c.getMethod("£mtoS").invoke(o).toString());return;}
     catch(Throwable t){
       t.printStackTrace();
       }
@@ -62,16 +69,16 @@ public class Main {
       of.setAccessible(true);
       Object oo=of.get(o);
       Class<?>cc=oo.getClass();
-      try{System.out.println(cc.getMethod("£mtoS").invoke(oo).toString());return;}
+      try{Resources.err(cc.getMethod("£mtoS").invoke(oo).toString());return;}
       catch(Throwable t){}
-      try{System.out.println(cc.getMethod("getMsg").invoke(oo).toString());return;}
+      try{Resources.err(cc.getMethod("getMsg").invoke(oo).toString());return;}
       catch(Throwable t){}
-      System.out.println("Methods of the unwrapped object");
-      for(var m:cc.getMethods()){System.out.println(m.getName());}
+      Resources.err("Methods of the unwrapped object");
+      for(var m:cc.getMethods()){Resources.err(m.getName());}
       }
     catch(Throwable t){}
-    System.out.println("The error type can not be displayed");
-    for(var m:c.getMethods()){System.out.println(m.getName()+" "+m.toString());}
-    for(var m:c.getFields()){System.out.println(m.getName());}
+    Resources.err("The error type can not be displayed");
+    for(var m:c.getMethods()){Resources.err(m.getName()+" "+m.toString());}
+    for(var m:c.getFields()){Resources.err(m.getName());}
     }
   }

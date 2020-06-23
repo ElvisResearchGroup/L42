@@ -424,9 +424,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
-    if(jC.contains("MessageTrait£n1£_£cOptMessage£n39")) {
-      System.out.println("Making "+jC);
-    }
     String jCName="new String[]{"+jCName(p.pTails).substring(1)+"}";
     
     header(interf,jC);

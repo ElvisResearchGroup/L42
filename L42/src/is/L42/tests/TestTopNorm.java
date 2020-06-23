@@ -734,6 +734,30 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   Test={#typed{}}
   #norm{}}
   """)
+
+  ),new AtomicTest(()->
+      top("""
+      {A={}
+       B1={class method Void v(class Any that)=void}
+       C1={class method Void vv()=B1.v(A)}
+       B2={class method Void =>(class Any that)=void}
+       C2={class method Void vv(class B2 b)=b=>A}
+       Test=void
+      }
+      ""","""
+      {A={#typed{}}
+       B1={class method Void v(class Any that)=void #typed{}}
+       C1={class method Void vv()=
+         This1.B1<:class This1.B1.v(that=This1.A<:class Any)
+         #typed{typeDep=This1.B1, This1.A coherentDep=This1.B1
+         usedMethods=This1.B1.v(that)}}
+       B2={class method Void #equalgt0(class Any that)=void #typed{}}
+       C2={class method Void vv(class This1.B2 b)=
+         b.#equalgt0(that=This1.A<:class Any)
+         #typed{typeDep=This1.B2, This1.A
+         usedMethods=This1.B2.#equalgt0(that)}}
+       Test={#typed{}}#norm{}}
+      """)
   ),new AtomicTest(()->
   topFail(EndError.TypeError.class,"""
   {A={imm method mut This foo()=native{trusted:lazyCache} error void}

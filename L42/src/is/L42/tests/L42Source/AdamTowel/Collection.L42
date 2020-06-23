@@ -9,7 +9,7 @@ OptTrait=Trait:{
     typeDep=This.Elem,This,This2.Collection$NoElementInOpt,This2.Bool
     coherentDep=This.Elem,This,This2.Collection$NoElementInOpt ,This2.Bool 
     }}
-@Public class method Trait optionalTrait()=Trait(OptTrait())    
+@Public class method Trait optionalTrait()=OptTrait()    
 @Public class method Library optional(class Any that)={
   return Class:OptTrait['Elem=>that]
   catch Trait$InvalidName e error e
@@ -20,7 +20,7 @@ OptTrait=Trait:{
 
 ListNative=Trait:{...}
 ListOps=ListNative + {...} + Class.ReadToString+Class.ImmToString+Class.ReadClone
-@Public class method Trait listTrait()=Trait(ListOps())//TODO: Name$Mapping.resource need to take a NativeName, so that Trait.Lifted() may return a Trait
+@Public class method Trait listTrait()=ListOps()
 ListEqOps=Trait:{...}
 @Public class method Trait listEqTrait()={
   return this.listTrait()+ListEqOps

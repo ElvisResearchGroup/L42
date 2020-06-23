@@ -432,12 +432,16 @@ public class ToHalf extends UndefinedCollectorVisitor{
       }
     ArrayList<List<ST>> opArgs=new ArrayList<>();
     ArrayList<ST> retSTz=new ArrayList<>();
+    Y oldY=y;
+    if(binOp.op().kind!=OpKind.RelationalOp){this.y=this.y.with_expectedT(L());}
+    else {this.y=this.y.with_expectedT(L(P.coreClassAny));}
     List<Half.XP> es=L(binOp.es(),(c,ei)->{
       var ri=compute(ei);
       c.add((Half.XP)ri.e);
       opArgs.add(ri.resSTz);
       retSTz.addAll(ri.retSTz);
       });
+    this.y=oldY;
     var resST=new ST.STOp(binOp.op(),L(opArgs.stream()));
     commit(new Half.BinOp(binOp.pos(),binOp.op(), es), L(resST), retSTz);
     }

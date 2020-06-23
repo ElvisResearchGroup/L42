@@ -1,7 +1,35 @@
+B2B={}
 NotValidSupport=Class:Message:{[Message.Guard]}
 NotSameSupport=Class:Message:{[Message.Guard]}
 NotValidUnit=Class:Message:{[Message.Guard]}
 UnitCastError=Class:Message:{[Message.Guard]}
+//static methods, need to be compilable before top
+FromT={class method Name (class Any that, S name)=(
+  parName=Introspection.Nested.from(classAny=that).outerName()
+  Name"#%(name)(u_%parName)"//parName is uppercase, u_parName is lowercase
+  )}
+OrganizeOn={class method Library (class Trait.Lifted that,Trait.Acc map)={
+  return Trait(that.code()).#apply(squareBuilder=map).code()
+  whoops Message.Guard
+  }}
+TraitAbstractSupport=Trait:{
+  [HasToS]
+  class method This #from(S.StringBuilder stringLiteral)
+  method This +(This that)
+  method This -(This that)
+  method This *(This that)
+  method This /(This that)
+  read method Bool ==(read This that)
+  read method Bool !=(read This that)
+  read method Bool >(read This that)
+  read method Bool <(read This that)
+  read method Bool >=(read This that)
+  read method Bool <=(read This that)
+  }
+TraitHasSupport=Trait:{Support={}
+  method Support #inner() class method This(Support that)
+  }
+TraitHasUnitCast=Trait:{class method This unitCast(Any that)}
 
 TraitUnit=Trait:{
   [HasToS]
@@ -9,20 +37,7 @@ TraitUnit=Trait:{
   class method This (Support that)
   method Support #inner()=this.that()
   method toS()=this.that().toS()
-  Support={
-    [HasToS]
-    class method This #from(S.StringBuilder stringLiteral)
-    method This +(This that)
-    method This -(This that)
-    method This *(This that)
-    method This /(This that)
-    read method Bool ==(read This that)
-    read method Bool !=(read This that)
-    read method Bool >(read This that)
-    read method Bool <(read This that)
-    read method Bool >=(read This that)
-    read method Bool <=(read This that)
-    }
+  Support=Class:TraitAbstractSupport
   class method This #from(S.StringBuilder stringLiteral)
     =This(Support.#from(stringLiteral=stringLiteral))
   method This +(This that)
@@ -55,80 +70,76 @@ TraitUnit=Trait:{
       error UnitCastError"The object is not of class %s"
       )
     )
-  ClassOperators={class method class This1 #apply()=This1}
-  class method Library *(class Any unit)[NotValidUnit,NotSameSupport]
-    =CompositUnit(this and=unit)
-  class method Library /(class Any unit)[NotValidUnit,NotSameSupport]
-    =CompositUnit(this per=unit)
+  ClassOperators={
+    class method This ()
+    method Library *(class Any unit)[NotValidUnit,NotSameSupport]
+      =CompositUnit(This1<:class Any and=unit)
+    method Library /(class Any unit)[NotValidUnit,NotSameSupport]
+      =CompositUnit(This1<:class Any per=unit)
+    }
+  Inverse={class method Library ()[NotValidUnit]=CompositUnit(inverse=This1<:class Any)}
+  //the class Any casts are needed since CompositUnit is declared later.
+  //It must be declared later since it uses TraitUnit internally
+  //class Any annitation is a normalization step and happen befory typing
   }
-class method Library (class Any that)[NotValidSupport]={
-  return Data:TraitUnit['Support=>that]
-  catch Message.Guard g exception NotValidSupport
-    "The provided class is not a valid support class for a unit of measure"
-    .with(cause=g)
+  
+TraitTimes=TraitHasSupport:{
+  Support=Class:TraitAbstractSupport
+  T1=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  class method This (T1 that,T2 and)=This(that.#inner()*and.#inner())
+  method T1 /(T2 right)=T1(this.#inner()<:Support/right.#inner())
+  method T2 /(T1 left)=T2(this.#inner()/left.#inner())
+  Left=Trait:{
+    method This1 *(T2 u_par)=This1(T1.unitCast(this) and=u_par)
+    method This1 *1(T2 u_par)=this*u_par
+    }
+  OrganizeOnLeft={class method Library ()=OrganizeOn(Left,map=\[
+    '#times0(u_par)=>FromT(T2 name=S"#times0");
+    '#times1(u_par)=>FromT(T2 name=S"#times1");
+    ])}
+  Right=Trait:{
+    method This1 *(T1 u_par)=u_par*this
+    method This1 *1(T1 u_par)=This1(u_par and=T2.unitCast(this)) 
+    }
+  OrganizeOnRight={class method Library ()=OrganizeOn(Right,map=\[
+    '#times0(u_par)=>FromT(T1 name=S"#times0");
+    '#times1(u_par)=>FromT(T1 name=S"#times1");
+    ])}
   }
-
-TraitComposedUnit=Trait:{
-  T1={
-    method Support #inner()
-    class method This(Support that)
-    class method This unitCast(Any that)
-    }
-  T2={
-    method Support #inner()
-    class method This(Support that) 
-    }
-  Support={
-    method This *(This that)
-    method This /(This that)
-    }
-  method Support #inner()
-  class method This(Support that)
+TraitInverse=TraitHasSupport:{
+  Support=Class:TraitAbstractSupport
+  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  class method This (Support that,T2 per)=This(that/per.#inner())
+  method Support *(T2 right)=this.#inner()<:Support*right.#inner()
+  method Support /1(T2 left0)=left0.#inner()/this.#inner()
+  Right=Trait:{method This1 /1(Support u_par)=This1(u_par per=T2.unitCast(this))}
+  OrganizeOnUnit={class method Library ()=OrganizeOn(Right,map=\[
+    '#divide1(u_par)=>FromT(Support name=S"#divide1")
+    ])}
   }
-TraitTimes=TraitComposedUnit:{T1={},T2={}
-  Support={method This *(This that)  method This /(This that)}
-  class method This (T1 that, T2 and)
-    =This(that.#inner()<:Support*and.#inner()<:Support)
-  method T1 /(T2 right)
-    =T1(this.#inner()<:Support/right.#inner())
-  method T2 /(T1 left)
-    =T2(this.#inner()/left.#inner())
-  BuilderTrait=Trait:{
-    method This1 *(T2 u_right)=This1(T1.unitCast(this) and=u_right)
-    method This1 *1(T2 u_right)=this*u_right  
-    }
-  class method Library builder()={
-    parName=Introspection.Nested.from(classAny=T2).outerName()
-    name0=Name"#times0(u_%parName)"//parName is uppercase, u_parName is lowercase
-    name1=Name"#times1(u_%parName)"
-    return BuilderTrait['#times0(u_right)=>name0;'#times1(u_right)=>name1;].code()
-    whoops Message.Guard
-    }
+  
+TraitDiv=TraitHasSupport:{
+  Support=Class:TraitAbstractSupport
+  T1=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
+  method T1 *(T2 right)=T1(this.#inner()<:Support*right.#inner())
+  method T1 /1(T2 left0)=T1(left0.#inner()/this.#inner())
+  Left=Trait:{method This1 /(T2 u_par)=This1(T1.unitCast(this) per=u_par)}
+  OrganizeOnLeft={class method Library ()=OrganizeOn(Left,map=\[
+    '#divide0(u_par)=>FromT(T2 name=S"#divide0")
+    ])}
+  Right=Trait:{method This1 /1(T1 u_par)=This1(u_par per=T2.unitCast(this))}
+  OrganizeOnRight={class method Library ()=OrganizeOn(Right,map=\[
+    '#divide1(u_par)=>FromT(T1 name=S"#divide1")
+    ])}
   }
-TraitDiv=TraitComposedUnit:{T1={},T2={}
-  Support={method This *(This that)  method This /(This that)}
-  class method This (T1 that, T2 per)
-    =This(that.#inner()<:Support/per.#inner()<:Support)
-  method T1 *(T2 right)
-    =T1(this.#inner()<:Support*right.#inner())
-  method T1 /1(T2 left0)
-    =T1(left0.#inner()/this.#inner())
-  BuilderTrait=Trait:{
-    method This1 /(T2 u_right)=This1(T1.unitCast(this) per=u_right)
-    }
-  class method Library builder()={
-    parName=Introspection.Nested.from(classAny=T2).outerName()
-    name=Name"#divide0(u_%parName)"//parName is uppercase, u_parName is lowercase
-    return BuilderTrait['#divide0(u_right)=>name;].code()
-    whoops Message.Guard
-    }
-  }
-// /left,/right,/self,/support,/1left0,  /unit
 CompositUnit={
   class method Library (class Any that, class Any and)[NotValidUnit,NotSameSupport]
-    =this(c1=that,c2=and,trait=Trait(TraitTimes()))
+    =this(c1=that,c2=and,trait=TraitTimes())
   class method Library (class Any that, class Any per)[NotValidUnit,NotSameSupport]
-    =this(c1=that,c2=per,trait=Trait(TraitDiv()))
+    =this(c1=that,c2=per,trait=TraitDiv())
   class method Introspection.Type tOf(Introspection.Nested that)[NotValidUnit]={
     return that.meth(selector='#inner()).returnType()
     catch error Collection.NoElementInOpt e exception NotValidUnit
@@ -155,4 +166,39 @@ CompositUnit={
         .with(cause=g)
       }
     )
+  class method Library (class Any inverse)
+  ,,,,[NotValidUnit]=(
+    //check c1.#inner() and c2.#inner() are same type t
+    unit=Introspection.Nested.from(classAny=inverse)
+    ,,{
+      support=this.tOf(unit).nested()
+      if !support.isBinded() exception NotValidUnit
+        "Provided class %unit.outerName() 'method Support #inner()' return type must be declared externally"
+      cAny=support.classAny()
+      res=TraitUnit['Support=>cAny]
+      return Data:res:TraitInverse['Support=>cAny;'T2=>inverse]
+      catch Message.Guard g exception NotValidUnit
+        "The provided classe %unit.outerName() is not a valid Unit class."
+        .with(cause=g)
+      }
+    )
   }
+//top level method
+class method Library (class Any that)[NotValidSupport]={
+  return Data:TraitUnit['Support=>that]
+  catch Message.Guard g exception NotValidSupport
+    "The provided class is not a valid support class for a unit of measure"
+    .with(cause=g)
+  }
+  
+    /*
+  (a/b)
+  b*(a/b)=a
+  a/(a/b)=b
+  b*(1/b)=1
+  1/(1/b)=b
+  a/b=(a/b) //both addable to a or to b
+  1/b=(1/b) //only addable to b
+  1*a/b=a/b//fine, but only since we have no a*
+  */
+// /left,/right,/self,/support,/1left0,  /unit

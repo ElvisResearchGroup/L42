@@ -1,4 +1,5 @@
 @Public Lifted={interface
+  class method Trait()
   class method Library code()
   class method Trait +(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
@@ -45,16 +46,15 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
   })
 
 @Public method Library #toLibrary()=
-  Name$Mapping().simpleSum(a=Name$Mapping().resource(this.code()),b=ToLibrary())
+  Name$Mapping().simpleSum(a=Name$Mapping().resource(this.code(),name=Name"code()".that()),b=ToLibrary.of())
 
 ToLibrary=Name$Mapping().resource({[Lifted]
-  class method Library ()
-  method code()=This()
+  method ()=Trait(code=this.code())
   method +(lib)=ClassOperators()+lib
   method +1(lib)=lib+ClassOperators()
   class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
     ClassOperators()(squareBuilder=squareBuilder)
-  ClassOperators={class method Trait()=Trait(code=This1.code())}
+  ClassOperators={class method Trait()=This1()}
   method nested()=ClassOperators().nested()
-  })
+  },name=Name"of()".that())
 @AbstractTowel{trait}

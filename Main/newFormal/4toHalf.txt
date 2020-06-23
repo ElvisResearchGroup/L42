@@ -79,7 +79,10 @@ _______
     e0 OP..OP en not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
     n=1 or OP of form OP2 //unassociative
 * Y! xP0 OP..OP xPn = xP'0 OP..OP xP'n; OP STz0,..,STzn; empty; Y.CTz
-    Y[expectedT = empty]!xPi = xP'i; STzi; empty; Y.CTz // Y!xP shouldn't introduce any new constraints
+    Y'!xPi = xP'i; STzi; empty; Y.CTz // Y!xP shouldn't introduce any new constraints
+    Y'=Y[expectedT =class Any] if OP of form OP2 //unassociative
+    Y'=Y[expectedT = empty] otherwise
+
     xP1 OP..OP xPn not of forms (CsP OP en) or (e0 OP3 en)//former cases not applicable
 * Y!( Ds e Ks WHOOPS?) = Y!(Ds e Ks WHOOPS? void)
     !returning(e)

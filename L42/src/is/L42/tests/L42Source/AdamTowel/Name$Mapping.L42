@@ -11,7 +11,7 @@ method This mergeMap(This deep)=
   native{trusted:mergeMapDeep} error void
 method Library applyMap(Library that)=
   native{trusted:applyMap} error void
-method Library resource(Library that)=
+method Library resource(Library that,This1.NativeName name)=
   native{trusted:resource} error void
 method Library simpleSum(Library a, Library b)=
   native{trusted:simpleSum} error void
