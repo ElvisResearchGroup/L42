@@ -416,7 +416,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private X freshX(String s){return new X(fresh.fresh(s));}
   @Override public void visitBinOp(Full.BinOp binOp){
     assert binOp.es().size()>=2:binOp.es();
-    if(binOp.es().size()!=2){binOp=applyAssociativity(binOp);}
+    while(binOp.es().size()!=2 && binOp.op().kind!=OpKind.RelationalOp){
+      binOp=applyAssociativity(binOp);;
+      }
     if(binOp.op().kind==OpKind.BoolOp){visitBinOp3(binOp);return;}
     if(binOp.es().get(0) instanceof Full.CsP){binOp=visitBinOpCsp(binOp);}
     List<Full.E> xps=new ArrayList<>();
@@ -448,14 +450,13 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private Full.BinOp applyAssociativity(Full.BinOp b){
     int s=b.es().size();
     assert s>2:s;
-    if(b.op().kind==OpKind.RelationalOp){return b;}
     if(b.op().kind==OpKind.DataLeftOp){
       var left=new Full.BinOp(b.pos(),b.op(),b.es().subList(0, 2));
       return b.withEs(pushL(left,b.es().subList(2,s)));
       }
     var right=new Full.BinOp(b.pos(),b.op(),b.es().subList(s-2, s));
     return b.withEs(pushL(b.es().subList(0,s-2),right)); 
-    }
+    }// a : b : (c : d)    // (a + b) + c + d
   private void visitBinOp3(Full.BinOp b){
     Pos p=b.pos();
     var e0=b.es().get(0);
@@ -486,7 +487,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert b.es().get(0) instanceof Full.CsP;
     var csp=(Full.CsP)b.es().get(0);
     var e=b.es().get(1);
-    assert b.es().size()==2;
+    assert b.es().size()==2:
+      "";
     assert csp.cs().isEmpty();
     assert csp._p().isNCs();//should be a well formedness error
     var p=csp._p().toNCs();

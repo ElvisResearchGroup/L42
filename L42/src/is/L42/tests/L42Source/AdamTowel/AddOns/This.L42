@@ -4,7 +4,7 @@ BaseErrorTraitAddOns=Trait:{[HasToS,Message,Message$Guard]
   class method mut This (S that)
   read method S text()
   class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
-  read method S toS()=Introspection$Nested.from(classAny=This).excName(text=this.text())
+  read method S toS()=Introspection$Nested.from(classAny=This).msgTitle(text=this.text())
   method Message #whoopsed(Library atPos)=This(
     S"""%
       |%this.text()

@@ -5,13 +5,13 @@
   class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Introspection$Nested nested()
   }
-@Public ClassOperators={class method Trait()=Trait(code={#norm{}})}
+@Public ClassOperators={class method Trait()=Trait({#norm{}})}
 @Public Library code
 class method This(Library code)
 @Public class method This(Library that)=This(code=that)
 
 class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
-  return This(code=Name$Mapping().simpleSum(a=a,b=b))
+  return This(Name$Mapping().simpleSum(a=a,b=b))
   catch error Trait$ClassClash e exception e
   catch error Trait$MethodClash e exception e
   } 
@@ -37,7 +37,7 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
   mut method Void #squareAdd(Name$Mapping deep)=this.that(\that.mergeMap(deep=deep))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
   }
-@Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This(code={
+@Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This({
   return squareBuilder.that().applyMap(this.code())
   catch error Trait$InvalidName e exception e
   catch error Trait$InvalidMap e exception e
@@ -48,8 +48,12 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
 @Public method Library #toLibrary()=
   Name$Mapping().simpleSum(a=Name$Mapping().resource(this.code(),name=Name"code()".that()),b=ToLibrary.of())
 
+//The code must have 'class method Library code()'
+@Public class method Library delayedCode(Library that)[Trait$ClassClash,Trait$MethodClash]=
+  (Trait(that)+ToLibrary.of()).code()
+
 ToLibrary=Name$Mapping().resource({[Lifted]
-  method ()=Trait(code=this.code())
+  method ()=Trait(this.code())
   method +(lib)=ClassOperators()+lib
   method +1(lib)=lib+ClassOperators()
   class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=

@@ -1,4 +1,3 @@
-B2B={}
 NotValidSupport=Class:Message:{[Message.Guard]}
 NotSameSupport=Class:Message:{[Message.Guard]}
 NotValidUnit=Class:Message:{[Message.Guard]}
@@ -70,13 +69,10 @@ TraitUnit=Trait:{
       error UnitCastError"The object is not of class %s"
       )
     )
-  ClassOperators={
-    class method This ()
-    method Library *(class Any unit)[NotValidUnit,NotSameSupport]
-      =CompositUnit(This1<:class Any and=unit)
-    method Library /(class Any unit)[NotValidUnit,NotSameSupport]
-      =CompositUnit(This1<:class Any per=unit)
-    }
+  Times={class method Library (class Any that)[NotValidUnit,NotSameSupport]
+    =CompositUnit(This1<:class Any and=that)}
+  Per={class method Library (class Any that)[NotValidUnit,NotSameSupport]
+    =CompositUnit(This1<:class Any per=that)}
   Inverse={class method Library ()[NotValidUnit]=CompositUnit(inverse=This1<:class Any)}
   //the class Any casts are needed since CompositUnit is declared later.
   //It must be declared later since it uses TraitUnit internally
@@ -90,22 +86,24 @@ TraitTimes=TraitHasSupport:{
   class method This (T1 that,T2 and)=This(that.#inner()*and.#inner())
   method T1 /(T2 right)=T1(this.#inner()<:Support/right.#inner())
   method T2 /(T1 left)=T2(this.#inner()/left.#inner())
-  Left=Trait:{
+  _FromLeft=Trait:{
     method This1 *(T2 u_par)=This1(T1.unitCast(this) and=u_par)
     method This1 *1(T2 u_par)=this*u_par
     }
-  OrganizeOnLeft={class method Library ()=OrganizeOn(Left,map=\[
-    '#times0(u_par)=>FromT(T2 name=S"#times0");
-    '#times1(u_par)=>FromT(T2 name=S"#times1");
-    ])}
-  Right=Trait:{
+  FromLeft=Trait.delayedCode({class method Library code()
+    =OrganizeOn(_FromLeft,map=\[
+      '#times0(u_par)=>FromT(T2 name=S"#times0");
+      '#times1(u_par)=>FromT(T2 name=S"#times1");
+    ])})
+  _FromRight=Trait:{
     method This1 *(T1 u_par)=u_par*this
     method This1 *1(T1 u_par)=This1(u_par and=T2.unitCast(this)) 
     }
-  OrganizeOnRight={class method Library ()=OrganizeOn(Right,map=\[
-    '#times0(u_par)=>FromT(T1 name=S"#times0");
-    '#times1(u_par)=>FromT(T1 name=S"#times1");
-    ])}
+  FromRight=Trait.delayedCode({class method Library code()
+    =OrganizeOn(_FromRight,map=\[
+      '#times0(u_par)=>FromT(T1 name=S"#times0");
+      '#times1(u_par)=>FromT(T1 name=S"#times1");
+    ])})
   }
 TraitInverse=TraitHasSupport:{
   Support=Class:TraitAbstractSupport
@@ -113,10 +111,9 @@ TraitInverse=TraitHasSupport:{
   class method This (Support that,T2 per)=This(that/per.#inner())
   method Support *(T2 right)=this.#inner()<:Support*right.#inner()
   method Support /1(T2 left0)=left0.#inner()/this.#inner()
-  Right=Trait:{method This1 /1(Support u_par)=This1(u_par per=T2.unitCast(this))}
-  OrganizeOnUnit={class method Library ()=OrganizeOn(Right,map=\[
-    '#divide1(u_par)=>FromT(Support name=S"#divide1")
-    ])}
+  _FromUnit=Trait:{method This1 /1(Support u_par)=This1(u_par per=T2.unitCast(this))}
+  FromUnit=Trait.delayedCode({class method Library code()
+    =OrganizeOn(_FromUnit,map=\['#divide1(u_par)=>FromT(Support name=S"#divide1")])})
   }
   
 TraitDiv=TraitHasSupport:{
@@ -126,14 +123,12 @@ TraitDiv=TraitHasSupport:{
   class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
   method T1 *(T2 right)=T1(this.#inner()<:Support*right.#inner())
   method T1 /1(T2 left0)=T1(left0.#inner()/this.#inner())
-  Left=Trait:{method This1 /(T2 u_par)=This1(T1.unitCast(this) per=u_par)}
-  OrganizeOnLeft={class method Library ()=OrganizeOn(Left,map=\[
-    '#divide0(u_par)=>FromT(T2 name=S"#divide0")
-    ])}
-  Right=Trait:{method This1 /1(T1 u_par)=This1(u_par per=T2.unitCast(this))}
-  OrganizeOnRight={class method Library ()=OrganizeOn(Right,map=\[
-    '#divide1(u_par)=>FromT(T1 name=S"#divide1")
-    ])}
+  _FromLeft=Trait:{method This1 /(T2 u_par)=This1(T1.unitCast(this) per=u_par)}
+  FromLeft=Trait.delayedCode({class method Library code()
+    =OrganizeOn(_FromLeft,map=\['#divide0(u_par)=>FromT(T2 name=S"#divide0")])})
+  _FromRight=Trait:{method This1 /1(T1 u_par)=This1(u_par per=T2.unitCast(this))}
+  FromRight=Trait.delayedCode({class method Library code()
+    =OrganizeOn(_FromRight,map=\['#divide1(u_par)=>FromT(T2 name=S"#divide1")])})
   }
 CompositUnit={
   class method Library (class Any that, class Any and)[NotValidUnit,NotSameSupport]

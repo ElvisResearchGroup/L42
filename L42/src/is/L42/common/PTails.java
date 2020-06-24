@@ -20,9 +20,11 @@ public abstract class PTails implements Visitable<PTails>{
   @Override public String toString() {return Constants.toS.apply(this);}
   public String printCs(){
     if(isEmpty()){return "";}
-    if(hasC()){return c()+"|"+this.tail().printCs();}
-    return "<No C>|"+this.tail().printCs();
-    }
+    var res=this.tail().printCs();
+    if(!res.isEmpty()){res+=".";}
+    if(hasC()){return res+c();}
+    return res+"<No C>";
+    }  
   private PTails(){}
   //public boolean isEmpty(){return this==empty;}//sadly, serialization/deserialzation breaks this
   public boolean isEmpty(){return true;}

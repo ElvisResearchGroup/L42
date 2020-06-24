@@ -1,56 +1,86 @@
 reuse [AdamTowel]
-Unit={...}
-TraitSI=Trait:{
-  Support=Class:Unit.TraitAbstractSupport
-  //the seven basic units
-  M=Unit(Support)//meters
-  Kg=Unit(Support)//kilograms
-  S=Unit(Support)//seconds
-  A=Unit(Support)//ampers
-  K=Unit(Support)//kelvins
-  Mol=Unit(Support)//moles
-  Cd=Unit(Support)//candels
-  
-  Velocity=M/S<:class Any
-  M2=M*M<:class Any
-  M$=Class:M2.OrganizeOnRight():Trait:Velocity.OrganizeOnRight()
-  //this works, with Trait in the center. Is this ugly? why so?
-  //it seams to give an assertion error to debug tomorrow.
-  //I may want to offer Class$Libs, and
-  //Class.fromLibs[], Trait.fromLibs[]
-  //The version 'fromTraits' is dumb since we can use +
-  Acceleration=Velocity/S<:class Any
-  Velocity$=Acceleration.OrganizeOnRight()
-  
-  M3=M2*M<:class Any
-  M2$=M3.OrganizeOnRight()
 
-  Hz=S.Inverse()  //hertz, 1/S
-  S$=Hz.OrganizeOnUnit()
-  
-  N=Kg*Acceleration<:class Any
-  Density=Kg/M3<:class Any
-  Kg$=Class:N.OrganizeOnRight():Trait:Density.OrganizeOnRight()
 
-  Pa=N/M2<:class Any
-  J=N*M<:class Any
-  N$=Class:Pa.OrganizeOnRight():Trait:J.OrganizeOnRight()
-  
-  W=J/S<:class Any
-  C=S*A<:class Any
-  V=W/A<:class Any
-  F=C/V<:class Any
-  Ohm=V/A<:class Any
-  Siemens=Ohm.Inverse()
-  Wb=V*S<:class Any
-  T=Wb/M2<:class Any
-  H=Wb/A<:class Any
-  Bq=S.Inverse()
-  Gy=J/Kg<:class Any
-  Sv=J/Kg<:class Any
-  Kat=Mol/S<:class Any
+Base0=Trait:{reuse [AdamTowel]
+  A={Msg=Class:(Message:{class method Void vv()=void}+{})}
   }
-SI=Class:TraitSI['Support=>Num]
+Deployed1=Deploy.module(
+  url='ATest
+  code=Base0.code()
+  name='A
+  )
+Base=Trait:{reuse [AdamTowel]
+  Unit={...}
+  TraitSI=Trait:{
+    Support=Class:Unit.TraitAbstractSupport
+    //the seven basic units
+    M=Unit(Support)//meters
+    Kg=Unit(Support)//kilograms
+    S=Unit(Support)//seconds
+    A=Unit(Support)//ampers
+    K=Unit(Support)//kelvins
+    Mol=Unit(Support)//moles
+    Cd=Unit(Support)//candels
+
+    Velocity=M.Per(S)
+    M2=M.Times(M)
+    M$=Class:M2.FromLeft:Velocity.FromLeft
+    
+    Acceleration=Velocity.Per(S)
+    Velocity$=Class:Acceleration.FromLeft
+
+    M3=M2.Times(M)
+    M2$=Class:M3.FromLeft
+
+    Hz=S.Inverse()  //hertz, 1/S
+    C=S.Times(A)
+    Bq=S.Inverse()//use Bq(1Support per=mySeconds) to build
+    S$=Class:Hz.FromUnit:C.FromLeft
+    
+    N=Kg.Times(Acceleration)
+    Density=Kg.Per(M3)
+    Kg$=Class:N.FromLeft:Density.FromLeft
+
+    Pa=N.Per(M2)
+    J=N.Times(M)
+    N$=Class:Pa.FromLeft:J.FromLeft
+  
+    W=J.Per(S)
+    Gy=J.Per(Kg)
+    Sv=J.Per(Kg)//use Sv(myJ per=myKg) to build
+    J$=Class:W.FromLeft:Gy.FromLeft
+    
+    V=W.Per(A)
+    W$=Class:V.FromLeft
+    
+    F=C.Per(V)
+    C$=Class:F.FromLeft
+    
+    Ohm=V.Times(A)
+    Wb=V.Times(S)
+    V$=Class:Ohm.FromLeft:Wb.FromLeft
+    
+    Siemens=Ohm.Inverse()
+    
+    T=Wb.Per(M2)
+    H=Wb.Per(A)
+    Wb$=T.FromRight:H.FromLeft
+        
+    Kat=Mol.Per(S)
+    Mol$=Class:Kat.FromLeft
+    }
+  }
+  
+DeployUnit=Deploy.module(
+  url='Unit
+  code=Base['TraitSI=>'Unit.TraitSI].code()
+  name='Unit
+  )
+  
+UnitLib=Load:{reuse[#$Unit]}
+
+SI=Class:UnitLib.TraitSI['Support=>Num]
+
 Main=(
   Debug(S"Hello world")
   m=SI.M"12.45"

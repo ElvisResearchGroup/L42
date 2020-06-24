@@ -69,7 +69,7 @@ class method This(NativeNested that)=\(i=that)
 
 method toS()=this.i().toS()
 
-method S excName(S text)=
+@Public method S msgTitle(S text)=
   S"Message %(Name$Mapping().pathName(this.classAny()))%this.superInterfaces():%S.nl()%text"
 
 method S className()=Name$Mapping().pathName(this.classAny())

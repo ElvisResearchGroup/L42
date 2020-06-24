@@ -1,13 +1,13 @@
 [Message]
 var S text
-var OptMessage cause
+var Message.OptMessage cause
 method toS()=(
-  var res=Introspection$Nested.from(classAny=This).excName(text=this.text())
+  var res=Introspection$Nested.from(classAny=This).msgTitle(text=this.text())
   if this.cause() res:=res++S.nl()++this.cause().get().toS()
   res 
   )
-class method mut This (S text OptMessage cause)
-class method mut This (S that)=This(text=that,cause=OptMessage()) 
+class method mut This (S text, Message.OptMessage cause)
+class method mut This (S that)=This(text=that,cause=Message.OptMessage()) 
 class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
 method This #whoopsed(Library atPos)=This(
   text=S"""%
@@ -19,16 +19,5 @@ method This #whoopsed(Library atPos)=This(
   )
 method This with(Message cause)=This(
   text=this.text()
-  cause=OptMessage(cause)
+  cause=Message.OptMessage(cause)
   )
-OptMessage={
-  class method mut This #apply()
-  class method mut This #apply(fwd mut This2.Message that)=native{trusted:optK} error void
-  read method read This2.Message get()=native{trusted:get}error void
-  mut method mut This2.Message #get()=native{trusted:#get}error void
-  read method This2.Bool #if()=native{trusted:isPresent}error void
-  #norm{nativeKind=Opt nativePar=This2.Message,This2.S$ParseError
-    typeDep=This2.Bool,This2.Message,This,This2.S$ParseError
-    coherentDep=This2.Bool,This2.Message,This,This2.S$ParseError 
-    }
-  }

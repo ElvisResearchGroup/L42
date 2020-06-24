@@ -45,7 +45,13 @@ public class Main {
       return Init.topCache(c,code);    
       }
     catch(L42Throwable ee){
-      Resources.err("L42 terminated with "+ee.getClass().getCanonicalName());
+      var pTails=Resources.currentP.pTails;
+      var location=pTails.printCs();
+      if(!location.isEmpty()){location+=".";}
+      location+=Resources.currentC;
+      Resources.err("While performing reduction on "+location);
+      if(ee.getClass()==L42Exception.class){Resources.err("L42 terminated with exception");}
+      else{Resources.err("L42 terminated with error");}
       printError(ee.unbox);
       throw ee;
       }
@@ -59,7 +65,6 @@ public class Main {
     }
   private static void printError(Object o){
     Class<?> c=o.getClass(); 
-    Resources.err(c.getCanonicalName());
     try{Resources.err(c.getMethod("£mtoS").invoke(o).toString());return;}
     catch(Throwable t){
       t.printStackTrace();
