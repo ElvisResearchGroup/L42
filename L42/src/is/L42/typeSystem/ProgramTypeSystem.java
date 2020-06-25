@@ -38,7 +38,7 @@ public class ProgramTypeSystem {
   public static void type(boolean typed,Program p){
     L l=p.topCore();
     checkNativeExceptions(p);
-    J j=new J(p,null,false,null,true);
+    J j=new J(p,null,null,true);
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
       assert !l.info().isTyped() || switch(0){default: typeMWT(p,mwt,j); yield true;};

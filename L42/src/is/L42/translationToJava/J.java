@@ -40,20 +40,19 @@ import is.L42.visitors.ToSTrait;
 public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToSTrait{
   @Override public ToSTrait.ToSState state(){return state;}
   ToSTrait.ToSState state= new ToSTrait.ToSState();
-
-  public J(Program p, G g, boolean wrap,ArrayList<L42£Library>libs,boolean forTs){
+  public Coherence newCoherence(Program p) {return new Coherence(p,false);} 
+  public J(Program p, G g,ArrayList<L42£Library>libs,boolean forTs){
     this.p=p;
-    boolean close=p.topCore().info().close();
-    this.ch=new Coherence(p,close);
+    this.ch=newCoherence(p);
     this.isCoherent=precomputeCoherent();
     if(this.isCoherent){this.fields=new Fields(forTs);}
     this.g=g;
-    this.wrap=wrap;
+    this.wrap=false;
     this.libs=libs;
     }
   public boolean precomputeCoherent(){return ch.isCoherent(true);}//Can be overridden for testing
   final Program p;
-  final boolean isCoherent;
+  public final boolean isCoherent;
   public final Coherence ch;
   public boolean cachedClearCacheGood=false;
   G g;

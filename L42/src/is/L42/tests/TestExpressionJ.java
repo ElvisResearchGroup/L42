@@ -344,7 +344,7 @@ public static void je(String e,String out){
       usedMethods=This0.A.of(),This0.A.ma(a),This0.B.of(),This0.B.mb(b)}}
     """;
   var p=Program.parse(l);
-  J j=new J(p,G.empty(),false, new ArrayList<>(),false);
+  J j=new J(p,G.empty(), new ArrayList<>(),false);
   j.visitE(p.topCore().mwts().get(0)._e());
   String res=j.result().toString();
   Err.strCmp(res,out);
@@ -366,7 +366,7 @@ public static void jc(String e,String ...out){
   var p=Program.parse(l);
   List<String> res=L(p.topCore().ncs(),(c,nc)->{
     var pi=p.push(nc.key());
-    J j=new J(pi,G.empty(),false,new ArrayList<>(),false);
+    J j=new J(pi,G.empty(),new ArrayList<>(),false);
     j.mkClass();
     c.add(j.result().toString());
     });

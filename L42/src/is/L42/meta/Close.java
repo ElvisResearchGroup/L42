@@ -85,7 +85,10 @@ public class Close extends GuessFields{
       if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
       }
     l= l.withMwts(L(newMWTs.stream())).withInfo(i);
-    J newJ=new J(p.update(l,false),null,false,null,true);
+    J newJ=new J(p.update(l,false),null,null,true){//so that it ignore public abstract methods
+      public Coherence newCoherence(Program p){return new Coherence(p,true);}
+      };
+    assert newJ.isCoherent;
     assert newJ.fields!=null:
     "";
     //TODO: need more? is this needed?//that is, can this code be triggered?

@@ -779,7 +779,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   }
   """,
   Err.nativeParameterCountInvalid(hole,hole,hole))
-  ));}
+      ),new AtomicTest(()->
+      topFail(EndError.CoherentError.class,"""
+      {A={
+        class method This of::0()
+        class method This of()=This.of::0()
+        method Void v()
+        }
+      Test=A.of().v()
+      }
+      """,
+      Err.nonCoherentPrivateStateAndPublicAbstractMethods(hole))
+    ));}
 
   private static String tryCatchTest(String s){
     return """

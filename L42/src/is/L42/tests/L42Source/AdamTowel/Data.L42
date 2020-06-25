@@ -51,23 +51,30 @@ Wither$Meta={
   @Public method Trait :(Library that)=Trait(Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK"))
   }
 @Public ClassOperators={class method This1()=This1()}
-Operations=
-  Class.MutReferenceEquality+
-  Class.MutStructuralEquality+
-  Class.ImmEquality+
-  Class.ReadClone+
-  Class.MutClone+
-  Class.ReadEquality+
-  Class.ImmToString+
-  Class.ImmNorm
 AddEqOp=Trait:{
-    method Bool immEquality(This that)
-    method Bool ==(This that)=this.immEquality(that)
+    method Bool ==(This that)=System.immEquality(this and=that)
+    read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
     method Bool !=(This that)=!(this==that)
     }
-AddHasToS=Class.ReadToString+{[HasToS]
-    method toS()=this.readToString()
+AddHasToS=Trait:{[HasToS]
+    method toS()=System.immToString(System.readClone(this))
     }
+AddMutClone=Trait:{
+    mut method capsule This mutClone()=(
+      capsule Any any=System.mutClone(this)
+      return any
+      catch return capsule This self self
+      catch return capsule Any _ error void
+      )
+    }
+AddReadClone=Trait:{
+    read method This clone()=(
+      Any any=System.readClone(this)
+      return any
+      catch return This self self
+      catch return Any _ error void
+      )
+    }    
 @Public class method This()
 @Public method Library :(Library lib)=this:Trait(lib)
 @Public method Library :(Trait that)=(
@@ -75,15 +82,15 @@ AddHasToS=Class.ReadToString+{[HasToS]
   acc:=AddConstructors:acc
   acc:=Wither:acc
   acc:=Close:acc
-  acc:=Operations+acc
   catch Trait$MethodClash x error x
   catch Trait$ClassClash x error x
   //TODO: handle errors for Close,AddConstructors and so on
   //declare a common Data.Fail interface/wrapper and Data will throw exception Data.Fail
   //TODO: make some stuff private?
-  //TODO: add toString and standard code to Operations, and wither!
   (acc:=AddHasToS:acc catch Any _ void)
   (acc:=AddEqOp:acc catch Any _ void)
+  (acc:=AddMutClone:acc catch Any _ void)
+  (acc:=AddReadClone:acc catch Any _ void)
   Class:acc
   )
 @AbstractTowel{data}

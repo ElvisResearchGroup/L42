@@ -1,14 +1,5 @@
 reuse [AdamTowel]
 
-
-Base0=Trait:{reuse [AdamTowel]
-  A={Msg=Class:(Message:{class method Void vv()=void}+{})}
-  }
-Deployed1=Deploy.module(
-  url='ATest
-  code=Base0.code()
-  name='A
-  )
 Base=Trait:{reuse [AdamTowel]
   Unit={...}
   TraitSI=Trait:{
@@ -77,7 +68,10 @@ DeployUnit=Deploy.module(
   name='Unit
   )
   
-UnitLib=Load:{reuse[#$Unit]}
+UnitLib=(
+  l=Load:{reuse[#$Unit]}
+  Debug(S"foo")
+  l)
 
 SI=Class:UnitLib.TraitSI['Support=>Num]
 

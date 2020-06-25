@@ -265,7 +265,9 @@ class GEOpen extends G{
     CTz ctz=eq?null:new CTz(layer.ctz());
     Half.E e=eq?(Half.E)rc._obj:s2.topNCiOpen(layer.p(),layer.index(),layer.ncs(),ctz);
     Full.L l=GLClose._get(e);
-    var ctzMap=eq?((LayerE)rc._g.layer()).ctz():ctz.releaseMap();
+    //TODO: the meta e should not touch the ctzMap anyway, right?
+    //var ctzMap=eq?((LayerE)rc._g.layer()).ctz():ctz.releaseMap();
+    var ctzMap=layer.ctz();
     LayerE newLayer=layer.push(e,ctzMap);
     if(l==null){return new R(new GEClose(newLayer,s2),e);}
     return new R(new GLOpen(newLayer,s2),e);

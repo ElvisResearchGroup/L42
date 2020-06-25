@@ -175,19 +175,45 @@ public enum TrustedOp {
   WithPath("withPath",Map.of(Name,use("return %s.withPath(%s);",sig(Readable,Immutable,Name,Immutable,String)))),
   WithSelector("withSelector",Map.of(Name,use("return %s.withSelector(%s);",sig(Readable,Immutable,Name,Immutable,String)))),
   WithX("withX",Map.of(Name,use("return %s.withX(%s);",sig(Readable,Immutable,Name,Immutable,String)))),
+  //TRUSTEDIO
   StrDebug("strDebug",Map.of(
     String,use("Resources.out(%s); return L42£Void.instance;",sigI(Void)),
     TrustedIO,use("return %s.strDebug(%s);",sigI(Void,String))
     )),
-  AddToLog("addToLog",Map.of(
-    TrustedIO,use("return %s.addToLog(%s,%s);",sigI(Void,String,String))
-    )),
-  ClearLog("clearLog",Map.of(
-    TrustedIO,use("return %s.clearLog(%s);",sigI(Void,String))
-    )),
-  ReadLog("#$readLog",Map.of(
-    TrustedIO,use("return %s.readLog(%s);",sigI(String,String))
-    )),
+  AddToLog("addToLog",trustedIO(
+    "return %s.addToLog(%s,%s);",sigI(Void,String,String))),
+  ClearLog("clearLog",trustedIO(
+    "return %s.clearLog(%s);",sigI(Void,String))),
+  ReadLog("#$readLog",trustedIO(
+    "return %s.readLog(%s);",sigI(String,String))),
+  SystemMutReferenceEquality("mutReferenceEquality",trustedIO(
+    "return %2$s==%3$s;",
+    sig(Immutable,Immutable,Bool,Mutable,Any,Mutable,Any))),
+  SystemMutStructuralEquality("mutStructuralEquality",trustedIO(
+    "return L42CacheMap.structurallyEqualNoNorm(%2$s,%3$s);",
+    sig(Immutable,Immutable,Bool,Mutable,Any,Mutable,Any))),
+  SystemImmEquality("immEquality",trustedIO(
+    "return L42CacheMap.structurallyEqualNorm(%2$s,%3$s);",
+    sig(Immutable,Immutable,Bool,Immutable,Any,Immutable,Any))),
+  SystemMutClone("mutClone",trustedIO(
+    "return L42CacheMap.dup(%2$s);",
+    sig(Immutable,Capsule,Any,Mutable,Any))),
+  SystemReadClone("readClone",trustedIO(
+    "return L42CacheMap.normalizeAndDup(%2$s);",
+    sig(Immutable,Immutable,Any,Readable,Any))),  
+  SystemImmNorm("immNorm",trustedIO(
+    "return L42CacheMap.normalize(%2$s);",
+    sig(Immutable,Immutable,Any,Immutable,Any))),    
+  SystemMutToString("mutToString",trustedIO(
+    "return L42CacheMap.objToString(%2$s);",
+    sig(Immutable,Immutable,String,Mutable,Any))),
+//This may not be needed any more: if you cast as any, the native got wrapped anyway!
+//      AnyNativeKind,use("return L42CacheMap.objToString(%This.wrap(%2$s));",
+//        sig(Mutable,Immutable,String))
+  SystemImmToString("immToString",trustedIO(
+    "return L42CacheMap.objToString(L42CacheMap.normalize(%2$s));",
+    sig(Immutable,Immutable,String,Immutable,Any))),
+//same      AnyNativeKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%This.wrap(%1$s)));",sig(Immutable,Immutable,String))
   TestCondition("testCondition",Map.of(
   //Library pos,This1.S name,B,This1.S message
     TrustedIO,use("return %s.testCondition(%s,%s,%s,%s);",sigI(Void,
@@ -376,26 +402,6 @@ public enum TrustedOp {
   LazyCache("lazyCache",Map.of(AnyKind,new LazyCacheGenerator())),
   EagerCache("readEagerCache",Map.of(AnyKind,new EagerCacheGenerator())),
   //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
-  MutReferenceEquality("mutReferenceEquality",Map.of(AnyKind,use(
-    "return %1$s==%2$s;",sig(Mutable,Immutable,Bool,Mutable,This)))),
-  MutStructuralEquality("mutStructuralEquality",Map.of(AnyKind,use(
-    "return L42CacheMap.structurallyEqualNoNorm(%1$s,%2$s);",sig(Mutable,Immutable,Bool,Mutable,This)))),
-  ImmEquality("immEquality",Map.of(AnyKind,use(
-    "return L42CacheMap.structurallyEqualNorm(%1$s,%2$s);",sig(Immutable,Immutable,Bool,Immutable,This)))),
-  MutClone("mutClone",Map.of(AnyKind,use(
-    "return L42CacheMap.dup(%1$s);",sig(Mutable,Capsule,This)))),
-  ReadClone("readClone",Map.of(AnyKind,use(
-    "return L42CacheMap.normalizeAndDup(%1$s);",sig(Readable,Immutable,This)))),  
-  ImmNorm("immNorm",Map.of(AnyKind,use(
-    "return L42CacheMap.normalize(%1$s);",sig(Immutable,Immutable,This)))),    
-  MutToString("mutToString",Map.of(
-    AnyKind,use("return L42CacheMap.objToString(%1$s);",sig(Mutable,Immutable,String)),
-    AnyNativeKind,use("return L42CacheMap.objToString(%This.wrap(%1$s));",sig(Mutable,Immutable,String))
-    )),
-  ImmToString("immToString",Map.of(
-    AnyKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%1$s));",sig(Immutable,Immutable,String)),
-    AnyNativeKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%This.wrap(%1$s)));",sig(Immutable,Immutable,String))
-    ))
   ;
   public final String inner;
   Map<TrustedKind,Generator>code;

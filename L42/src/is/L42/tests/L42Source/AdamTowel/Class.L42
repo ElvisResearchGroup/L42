@@ -2,35 +2,4 @@ ClassOperators={class method class This1()=This1}
 class method Library #colon0(Trait that)=that.code()
 class method Library #colon0(class Trait.Lifted lifted)=lifted.code()
 
-MutReferenceEquality=Trait:{
-  mut method Bool mutReferenceEquality(mut This that)=native{trusted:mutReferenceEquality} error void
-  }
-MutStructuralEquality=Trait:{
-  mut method Bool mutStructuralEquality(mut This that)=native{trusted:mutStructuralEquality} error void
-  }
-ImmEquality=Trait:{
-  method Bool immEquality(This that)=native{trusted:immEquality} error void
-  }
-MutClone=Trait:{
-  mut method capsule This mutClone()=native{trusted:mutClone} error void
-  }
-ReadClone=Trait:{
-  read method imm This readClone()=native{trusted:readClone} error void
-  }
-ReadEquality=Trait:{
-  read method Bool readEquality(read This that)=this.readClone().immEquality(that.readClone())
-  read method imm This readClone()
-  method Bool immEquality(This that)
-  }
-ImmNorm=Trait:{
-  imm method This immNorm()=native{trusted:immNorm} error void
-  }
-ImmToString=Trait:{
-  imm method S immToString()=native{trusted:immToString} error void
-  }
-ReadToString=Trait:{
-  read method S readToString()=this.readClone().immToString()
-  read method imm This readClone()
-  method S immToString()
-  }
 @AbstractTowel{class}

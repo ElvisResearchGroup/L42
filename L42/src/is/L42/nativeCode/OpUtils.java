@@ -6,7 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
+import static is.L42.nativeCode.OpUtils.use;
+import static is.L42.nativeCode.Signature.sigI;
 import static is.L42.nativeCode.TT.*;
+import static is.L42.nativeCode.TrustedKind.String;
+import static is.L42.nativeCode.TrustedKind.TrustedIO;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
@@ -65,6 +69,9 @@ class OpUtils{
       }
     static final Map<TrustedKind,Generator>method(String s,Signature sig,int num){
       return Map.of(TrustedKind.Method,use(exc("return "+s+";",num,"IndexOutOfBoundsException"),sig));
+      }
+    static final Map<TrustedKind,Generator>trustedIO(String s,Signature sig){
+      return Map.of(TrustedIO,use(s,sig));
       }
     static final String exc(String body,int num,String exc){
       return "try{"+body+"}"+

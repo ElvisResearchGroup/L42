@@ -130,58 +130,54 @@ TestLog=(
   iLog.clear()
   )
 
-ClassUtils = Class.MutReferenceEquality+Class.MutStructuralEquality+Class.ImmEquality+Class.MutClone+Class.ReadClone+Class.ReadEquality
-
-Person=Class:ClassUtils:{
+Person={
   var S name
   var Size age
   class method mut This(S name,Size age)
   read method capsule This clone()=This(name=this.name(),age=this.age())
   }
-Couple=Class:ClassUtils:{
+Couple={
   var Person p1
   var Person p2
   class method mut This(Person p1, Person p2)
   read method capsule This clone()=This(p1=this.p1(),p2=this.p2())
   imm method Void normMe()=native{trusted:lazyCache} (void)
   }
-I=Class:ClassUtils:{
-  class method mut This()
-  }
+I={ class method mut This() }
 TestEqualities=(
   Person immPerson = (
     mut Person p1=Person(name=S"bob",age=23Size)
     mut Person p2=Person(name=S"bob",age=23Size)
-    {}:Test"RefEq1"(!p1.mutReferenceEquality(p2))
-    {}:Test"RefEq2"(p1.mutReferenceEquality(p1))
-    {}:Test"RefEq3"(p2.mutReferenceEquality(p2))
-    {}:Test"StructEq1"(p1.mutStructuralEquality(p2))
+    {}:Test"RefEq1"(!System.mutReferenceEquality(p1 and=p2))
+    {}:Test"RefEq2"(System.mutReferenceEquality(p1 and=p1))
+    {}:Test"RefEq3"(System.mutReferenceEquality(p2 and=p2))
+    {}:Test"StructEq1"(System.mutStructuralEquality(p1 and=p2))
     p1.age(24Size)
-    {}:Test"StructEq2"(!p1.mutStructuralEquality(p2))
+    {}:Test"StructEq2"(!System.mutStructuralEquality(p1 and=p2))
     mut Person p3 = p1.clone()
-    {}:Test"StructEq3"(p1.mutStructuralEquality(p3))
+    {}:Test"StructEq3"(System.mutStructuralEquality(p1 and=p3))
     p1
     )
   Couple immCouple = (
     mut Couple c1 = Couple(p1=immPerson, p2=immPerson)
     mut Couple c2 = Couple(p1=immPerson, p2=immPerson.clone())
-    {}:Test"StructEq4"(!c1.mutStructuralEquality(c2))
+    {}:Test"StructEq4"(!System.mutStructuralEquality(c1 and=c2))
     c2
     )
   Couple immCouple2 = Couple(p1=immPerson, p2=immPerson)
   Couple immCouple3 = Couple(p1=immPerson.clone(), p2=immPerson.clone())
   Couple immCouple4 = Couple(p1=immPerson, p2=Person(name=S"Claire",age=20Size))
-  {}:Test"ImmEq1"(immCouple.immEquality(immCouple2))
-  {}:Test"ImmEq2"(immCouple2.immEquality(immCouple3))
-  {}:Test"ImmEq3"(!immCouple3.immEquality(immCouple4))
+  {}:Test"ImmEq1"(System.immEquality(immCouple and=immCouple2))
+  {}:Test"ImmEq2"(System.immEquality(immCouple2 and=immCouple3))
+  {}:Test"ImmEq3"(!System.immEquality(immCouple3 and=immCouple4))
   I i1 = I()
   I i2 = I()
-  {}:Test"ImmEq4"(i1.immEquality(i2))
+  {}:Test"ImmEq4"(System.immEquality(i1 and=i2))
   
   mut Couple mutCouple = Couple(p1=immPerson, p2=immPerson)
-  {}:Test"MutClone1"(!mutCouple.mutReferenceEquality(mutCouple.mutClone()))
-  {}:Test"MutClone2"(mutCouple.mutStructuralEquality(mutCouple.mutClone()))
-  {}:Test"ReadClone1"(mutCouple.readClone().immEquality(mutCouple.readClone()))
+  {}:Test"MutClone1"(!System.mutReferenceEquality(mutCouple and=System.mutClone(mutCouple)))
+  {}:Test"MutClone2"(System.mutStructuralEquality(mutCouple and=System.mutClone(mutCouple)))
+  {}:Test"ReadClone1"(System.immEquality(System.readClone(mutCouple) and=System.readClone(mutCouple)))
   void
   )
 
