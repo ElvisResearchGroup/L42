@@ -95,6 +95,7 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     }
   public L42£Void deployLibrary(String s, L42£Library l42Lib){
     Core.L l=l42Lib.unwrap;
+    System.out.println(l);
     assert l.wf();
     Program p=Program.flat(l);
     l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient

@@ -5,7 +5,7 @@ UnitCastError=Class:Message:{[Message.Guard]}
 //static methods, need to be compilable before top
 FromT={class method Name (class Any that, S name)=(
   parName=Introspection.Nested.from(classAny=that).outerName()
-  Name"#%(name)(u_%parName)"//parName is uppercase, u_parName is lowercase
+  Name"%(name)(u_%parName)"//parName is uppercase, u_parName is lowercase
   )}
 OrganizeOn={class method Library (class Trait.Lifted that,Trait.Acc map)={
   return Trait(that.code()).#apply(squareBuilder=map).code()
@@ -110,6 +110,7 @@ TraitInverse=TraitHasSupport:{
   T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
   class method This (Support that,T2 per)=This(that/per.#inner())
   method Support *(T2 right)=this.#inner()<:Support*right.#inner()
+  method Support *1(T2 right)=this*right
   method Support /1(T2 left0)=left0.#inner()/this.#inner()
   _FromUnit=Trait:{method This1 /1(Support u_par)=This1(u_par per=T2.unitCast(this))}
   FromUnit=Trait.delayedCode({class method Library code()
@@ -122,6 +123,7 @@ TraitDiv=TraitHasSupport:{
   T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
   class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
   method T1 *(T2 right)=T1(this.#inner()<:Support*right.#inner())
+  method T1 *1(T2 right)=this*right
   method T1 /1(T2 left0)=T1(left0.#inner()/this.#inner())
   _FromLeft=Trait:{method This1 /(T2 u_par)=This1(T1.unitCast(this) per=u_par)}
   FromLeft=Trait.delayedCode({class method Library code()

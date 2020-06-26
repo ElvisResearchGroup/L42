@@ -54,13 +54,14 @@ public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> imp
     int i = s.indexOf('.');
     if (i < 0) {assert i==-1;return new L42£BigRational(new BigInteger(s),BigInteger.ONE);}
     //we have a . to worry about
-    int pow=s.length()-i;
+    if(i==0 || i==s.length()-1){throw new NumberFormatException(s);}
+    int denSize=s.length()-(i+1);
     String sDen="1";
-    for(int j=0;j<pow;j++){sDen+="0";}
+    for(int j=0;j<denSize;j++){sDen+="0";}
     BigInteger den=new BigInteger(sDen);
     String sNum=//s.replace(".","");//would tolerate more dots
       s.substring(0, i)+s.substring(i+1,s.length());
-    assert sNum.indexOf(".")==-1;
+    if(sNum.indexOf(".")!=-1){throw new NumberFormatException(s);}
     BigInteger num=new BigInteger(sNum);
     return L42£BigRational.from(num,den);
     }

@@ -19,6 +19,7 @@ import java.util.stream.Stream;
 
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.introspection.L42£Nested;
 import is.L42.tests.TestCachingCases;
 
 public class CachedTop implements Serializable{
@@ -33,8 +34,27 @@ public class CachedTop implements Serializable{
     }
   private Stream<Core.L> _lastTopL(R r){
     if(r.isErr()) {return Stream.of();}
-    if(r._obj instanceof Core.L){return Stream.of((Core.L)r._obj);}
-    return Stream.of();
+    if(!(r._obj instanceof Program)) {return Stream.of();}
+    Program p=(Program)r._obj;
+    p=p.pop(p.dept());
+    //System.out.println(p.topCore().domNC());
+    return Stream.of(p.topCore());
+    //var le=(LayerE)r._g.layer();
+    //System.out.println(L42£Nested.fromLibrary((Core.L)r._obj).toString());
+    /*if(le.layerL()==LayerL.empty()){return Stream.of((Core.L)r._obj);} 
+    var p=le.layerL().p();
+    System.out.println("OUTER P");
+    System.out.println(L42£Nested.fromLibrary(p.topCore()).toString());
+    var i=le.layerL().index();
+    var c=le.layerL().ncs().get(i).key();
+    System.out.println(c);
+    System.out.println("######################");
+    p=p.push(c, (Core.L)r._obj);
+    //partially correct, if the e had more then one l and it terminated with error
+    //it would return the last solved one.*/
+    //p=p.pop(p.dept());
+    //System.out.println(p.topCore().domNC());
+    //return Stream.of(p.topCore());
     }
   public CachedTop toNextCache(){return new CachedTop(performed,performedR);}
   final ArrayList<G> performed=new ArrayList<>();
