@@ -11,9 +11,9 @@ Close$Meta={
   Name that
   @Public class method This(Name that)
   @Public ClassOperators={class method This1()=This1('This)}
-  @Public method Trait :(Trait t)=this:t.code()
-  @Public method Trait :(class Trait.Lifted l)=this:l.code()
-  @Public method Trait :(Library that)=Trait(Close$Meta().close(that,name=this.that().toS()))
+  @Public method Trait :(Trait t)=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)=Trait(this:l.code())
+  @Public method Library :(Library that)=Close$Meta().close(that,name=this.that().toS())
   }
 @Public AddConstructors$Fail=Class:Message.Native:{[Message$Guard]}      
 AddConstructors$Meta={
@@ -28,9 +28,9 @@ AddConstructors$Meta={
   Name that
   @Public class method This(Name that)
   @Public ClassOperators={class method This1()=This1('This)}
-  @Public method Trait :(Trait t)=this:t.code()
-  @Public method Trait :(class Trait.Lifted l)=this:l.code()
-  @Public method Trait :(Library that)=Trait(AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK"))
+  @Public method Trait :(Trait t)=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)=Trait(this:l.code())
+  @Public method Library :(Library that)=AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
   }
 
 @Public Wither$Fail=Class:Message.Native:{[Message$Guard]}      
@@ -46,9 +46,9 @@ Wither$Meta={
   Name that
   @Public class method This(Name that)
   @Public ClassOperators={class method This1()=This1('This)}
-  @Public method Trait :(Trait t)=this:t.code()
-  @Public method Trait :(class Trait.Lifted l)=this:l.code()
-  @Public method Trait :(Library that)=Trait(Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK"))
+  @Public method Trait :(Trait t)=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)=Trait(this:l.code())
+  @Public method Library :(Library that)=Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK")
   }
 @Public ClassOperators={class method This1()=This1()}
 AddEqOp=Trait:{
@@ -76,8 +76,8 @@ AddReadClone=Trait:{
       )
     }    
 @Public class method This()
-@Public method Library :(Library lib)=this:Trait(lib)
-@Public method Library :(Trait that)=(
+@Public method Library :(Library lib)=(this:Trait(lib)).code()
+@Public method Trait :(Trait that)=(
   var Trait acc=that
   acc:=AddConstructors:acc
   acc:=Wither:acc
@@ -91,7 +91,7 @@ AddReadClone=Trait:{
   (acc:=AddEqOp:acc catch Any _ void)
   (acc:=AddMutClone:acc catch Any _ void)
   (acc:=AddReadClone:acc catch Any _ void)
-  Class:acc
+  acc
   )
 @AbstractTowel{data}
 /*

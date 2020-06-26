@@ -102,8 +102,8 @@ Doc$={class method This(NativeDoc that) read method Bool readEquality(read This 
 Method$={class method This(NativeMethod that) read method Bool readEquality(read This that)}
 @Public Method$List=Collection.list(Method$)
 ExposeEq=Trait:{@Public method Bool ==(This that) @Public method Bool !=(This that)}
-@Public Nested=Data:ExposeEq:{...}
-@Public Type=Data:ExposeEq:{...}
-@Public Doc=Data:ExposeEq:{...}
-@Public Method=Data:ExposeEq:{...}
+@Public Nested=Class:Data:ExposeEq:{...}
+@Public Type=Class:Data:ExposeEq:{...}
+@Public Doc=Class:Data:ExposeEq:{...}
+@Public Method=Class:Data:ExposeEq:{...}
 @AbstractTowel{introspection}

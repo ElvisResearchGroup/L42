@@ -94,7 +94,7 @@ public class ToSVisitor implements ToSTrait{
     }
   public boolean headerNewLine(){return false;}//to override
   public void visitL(Core.L l){
-    boolean inline=HasMultilinePart.inline(l);
+    boolean inline=HasMultilinePart.inline(l) &&!headerNewLine();
     c("{");
     if(!inline){indent();}
     if(!inline && headerNewLine()){nl();}

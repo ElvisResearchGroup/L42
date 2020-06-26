@@ -305,7 +305,7 @@ TestReadCache={
     {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
     {}:Test"res3"(expected=2Size, actual=a.m())
     )
-  Person=Class:Data.Close:{
+  Person=Data.Close:{
     S name
     capsule S.List allergies
     class method mut This(S name, capsule S.List allergies)
@@ -349,7 +349,7 @@ TestReadCache={
     //  S"Person[%this.name();%this.allergies().size()]"
     //or... Cache.Transient ?    
   }
-  NestedClose=Class:Data.Close('A.B):{
+  NestedClose=Data.Close('A.B):{
   A={
     B={
       class method This()

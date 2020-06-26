@@ -23,8 +23,8 @@ method Size maxLev(Introspection.Nested that)=(
     )
   res+1Size
   )
-method Trait :(Library that)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
-  this:Trait(that)
+method Library :(Library that)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
+  (this:Trait(that)).code()
   
 method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
   max=this.maxLev(Introspection.Nested.from(library=trait.code()))

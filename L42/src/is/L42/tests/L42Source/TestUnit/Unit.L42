@@ -1,7 +1,7 @@
-NotValidSupport=Class:Message:{[Message.Guard]}
-NotSameSupport=Class:Message:{[Message.Guard]}
-NotValidUnit=Class:Message:{[Message.Guard]}
-UnitCastError=Class:Message:{[Message.Guard]}
+NotValidSupport=Message:{[Message.Guard]}
+NotSameSupport=Message:{[Message.Guard]}
+NotValidUnit=Message:{[Message.Guard]}
+UnitCastError=Message:{[Message.Guard]}
 //static methods, need to be compilable before top
 FromT={class method Name (class Any that, S name)=(
   parName=Introspection.Nested.from(classAny=that).outerName()
@@ -157,7 +157,7 @@ CompositUnit={
         "Provided class %i1.outerName() 'method Support #inner()' return type must be declared externally"
       cAny=t1.nested().classAny()
       res=TraitUnit['Support=>cAny]
-      return Data:res:trait['Support=>cAny;'T1=>c1;'T2=>c2]
+      return Class:Data:res:trait['Support=>cAny;'T1=>c1;'T2=>c2]
       catch Message.Guard g exception NotValidUnit
         "The provided classes %i1.outerName() and %i2.outerName() are not  valid Unit classes."
         .with(cause=g)
@@ -173,7 +173,7 @@ CompositUnit={
         "Provided class %unit.outerName() 'method Support #inner()' return type must be declared externally"
       cAny=support.classAny()
       res=TraitUnit['Support=>cAny]
-      return Data:res:TraitInverse['Support=>cAny;'T2=>inverse]
+      return Class:Data:res:TraitInverse['Support=>cAny;'T2=>inverse]
       catch Message.Guard g exception NotValidUnit
         "The provided classe %unit.outerName() is not a valid Unit class."
         .with(cause=g)
@@ -182,7 +182,7 @@ CompositUnit={
   }
 //top level method
 class method Library (class Any that)[NotValidSupport]={
-  return Data:TraitUnit['Support=>that]
+  return Class:Data:TraitUnit['Support=>that]
   catch Message.Guard g exception NotValidSupport
     "The provided class is not a valid support class for a unit of measure"
     .with(cause=g)
