@@ -341,14 +341,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        |aa
        \"""
      """.trim())
-     ),new AtomicTest(()->
+   ),new AtomicTest(()->
    pass("""
      S\"""%
        |aa
        |bbb
        \"""
      """.trim())
-     ),new AtomicTest(()->
+   ),new AtomicTest(()->
+   pass("""
+     S\"""
+       |Abba % babba
+       \"""
+       """.trim())
+   ),new AtomicTest(()->
    pass("""
      S\"""%
        |aa%foo cc

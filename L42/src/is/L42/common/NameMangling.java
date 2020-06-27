@@ -63,7 +63,7 @@ public class NameMangling {
       case '#'->"hash";
       case '@'->"at";
       case '$'->"dollar";
-      case '%'->"%";
+      case '%'->"percent";
       case '\\'->"backSlash";
       case ' '->"space";
       case '\n'->"newLine";

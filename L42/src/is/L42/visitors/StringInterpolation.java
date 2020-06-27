@@ -137,7 +137,7 @@ public class StringInterpolation {
     assert openR==0: openR;
     assert openS==0: openS;
     assert openC==0: openC;
-    if (escapeSize==0){return new Full.EString(pos,0,L(eVoid),L(s));}
+    if(escapeSize==0){return new Full.EString(pos,0,L(eVoid),L(s));}
     for(int i=0;i<s.length();i++){
       i=mode.run(this, s, i);
       }

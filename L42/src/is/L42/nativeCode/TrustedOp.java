@@ -133,7 +133,7 @@ public enum TrustedOp {
   SHash("'#'",append("#")),
   SAt("'@'",append("@")),
   SDollar("'$'",append("$")),
-  SPercent("'%'",append("%%")),//%% instead of % for the stringformat
+  SPercent("'%'",append("%%")),//%% instead of % for the java stringformat
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
   SNewLine("newLine",append("\\n")),

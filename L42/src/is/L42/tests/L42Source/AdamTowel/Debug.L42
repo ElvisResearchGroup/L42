@@ -1,4 +1,4 @@
-class method Void #apply(read This1.HasToS that)=(
+@This1.Public class method Void #apply(read This1.HasToS that)=(
   This d=This<:class This.of() 
   d.strDebug(that=that.toS())
   )
@@ -34,7 +34,7 @@ method Void clearLog(This1.S logName)=native{trusted:clearLog} error void
 method This1.S #$readLog(This1.S logName)=native{trusted:#$readLog} error void
   
 #norm{nativeKind=TrustedIO
-  typeDep=This,This1.HasToS,This1.S,This1.Bool,This1.AbstractTowel
+  typeDep=This,This1.HasToS,This1.S,This1.Bool,This1.AbstractTowel,This1.Public
   coherentDep=This,This1.S,This1.Bool
   usedMethods=This1.HasToS.toS()}
 @This1.AbstractTowel{debug}
