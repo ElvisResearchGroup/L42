@@ -29,6 +29,10 @@ public class CachedTop implements Serializable{
     this.cached=cached;
     this.cachedR=cachedR;
     }
+  public void fakeRunWithNoChange() {
+    performed.addAll(cached);
+    performedR.addAll(cachedR);
+    }
   public Optional<Core.L> lastTopL(){
     return cachedR.stream().flatMap(this::_lastTopL).reduce((a, b)->b);
     }

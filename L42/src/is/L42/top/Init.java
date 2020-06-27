@@ -91,7 +91,12 @@ public class Init {
     return new Init(code).topCache(c);
     }    
   public static Core.L topCache(CachedTop c,Full.L code){
-    return new Init(code).topCache(c);
+    Init i;try{i=new Init(code);}
+    catch(EndError e){//well formedness or the like. Anyway, cache is untouched
+      c.fakeRunWithNoChange();
+      throw e; 
+    }     
+    return i.topCache(c);
     }
   protected State makeState(){//overriddable for tests
     return new State(f,new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>());
