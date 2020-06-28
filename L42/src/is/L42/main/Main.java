@@ -41,8 +41,8 @@ public class Main {
     }
   public static Core.L run(Path path,CachedTop c) throws IOException {
     try{
-      var code=(Full.L)Parse.fromPath(path);
-      return Init.topCache(c,code);    
+      var code=Parse.codeFromPath(path);
+      return Init.topCache(c,path,code);    
       }
     catch(L42Throwable ee){
       var pTails=Resources.currentP.pTails;

@@ -1,0 +1,47 @@
+[HasToS]
+Support=Class:TraitAbstractSupport
+Support that
+class method This (Support that)
+method Support #inner()=this.that()
+method toS()=this.that().toS()
+class method This #from(S.StringBuilder stringLiteral)
+  =This(Support.#from(stringLiteral=stringLiteral))
+method This +(This that)
+  =This(this.that()+that.that())
+method This -(This that)
+  =This(this.that()-that.that())
+method This *(Support support)
+  =This(this.that()*support)
+method This /(Support support)
+  =This(this.that()/support)
+method Support /(This that)
+  =this.that()/that.that()
+read method Bool ==(read This that)
+  =this.that()==that.that()
+read method Bool !=(read This that)
+  =this.that()!=that.that()
+method Bool >(This that)
+  =this.that()>that.that()
+method Bool <(This that)
+  =this.that()<that.that()
+method Bool >=(This that)
+  =this.that()>=that.that()
+method Bool <=(This that)
+  =this.that()<=that.that()
+class method This unitCast(Any that)=(
+  return that
+  catch return This x x
+  catch return Any x (
+    s=N(This).outerName()
+    error UnitCastError"The object is not of class %s"
+    )
+  )
+Times={class method Library (class Any that)[NotValidUnit,NotSameSupport]
+  =CompositUnit(N(This1), and=N(that))}
+Per={class method Library (class Any that)[NotValidUnit,NotSameSupport]
+  =CompositUnit(N(This1), per=N(that))}
+Inverse={class method Library ()[NotValidUnit]
+  =CompositUnit(inverse=N(This1))}
+  //the class Any casts are needed since CompositUnit is declared later.
+  //It must be declared later since it uses TraitUnit internally
+  //class Any annitation is a normalization step and happen befory typing

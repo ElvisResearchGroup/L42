@@ -1,0 +1,49 @@
+reuse [AdamTowel]
+Enum={
+  ClassOperators={class method class This1 ()=This1}
+  Fail=Message:{[Message.Guard]}
+  class method Library:(Library that)[Fail]=(this:Trait(that)).code()
+  class method Trait :(Trait trait)[Fail]={
+    ns=trait.nested().nesteds()
+    var res=TraitEnumBase()
+    for n in ns (
+      step=TraitEnumStep['E=>n.nameFromRoot()]
+      base=res['Vals.#apply()=>'Vals.prev()]
+      res:=(step:base)[hide='Vals.prev()]
+      )
+    //closing res
+    return res+trait
+    catch Message.Guard g exception Fail"".with(cause=g)
+    }
+  TraitEnumBase=Trait:{
+    Top={interface  
+      read method Bool readEquality(read This that)
+      }
+    List=Collection.list(Top)
+    Vals={ class method List ()=List() }
+    }
+  TraitEnumStep=Trait:{
+    Top={interface
+      read method Bool readEquality(read This that)
+      }//if readEquality is removed, should be not well formed, but is ok?
+    E={[Top,HasToS]
+      class method This()
+      method readEquality(that)
+        =System.immEquality(System.readClone(this) and=System.readClone(that))
+      method toS()=Introspection.Nested.from(classAny=This).outerName().toS()
+      }
+    List={method This withLeft(Top that)}
+    Vals={
+      class method List prev()
+      class method List ()=this.prev().withLeft(E())
+      }
+    }
+  }
+Direction=Enum:{
+  North={}, East={},South={},Weast={}
+  }
+Main=(
+  Debug(S"Hel8lo world")
+  Debug(Direction.Vals())//the list try to native toString the elements that somehow fails
+  Debug(S"Hello world")
+  )

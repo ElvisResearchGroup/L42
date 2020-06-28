@@ -13,6 +13,7 @@ Base=Trait:{reuse [AdamTowel]
     Candel=Unit(Support)//candels
 
     Velocity=Meter.Per(Second)
+//             Unit.CompositUnit(TraitUnit,Meter, per=Second)
     Meter2=Meter.Times(Meter)
     Meter$=Class:Meter2.FromLeft:Velocity.FromLeft
     
@@ -24,12 +25,16 @@ Base=Trait:{reuse [AdamTowel]
 
     Hertz=Second.Inverse()  //hertz, 1/S
     Coulomb=Second.Times(Ampere)
-    Becquerel=Second.Inverse()//use Bq(1Support per=mySeconds) to build
-    Second$=Class:Hertz.FromUnit:Coulomb.FromLeft
+    Becquerel=Second.Inverse()//use Becquerel(1Support per=mySeconds) to build
+    Second$=Class:Hertz.FromUnit:Coulomb.FromLeft //can use myNum/24Second to get Hertz
     
     Newton=Kg.Times(Acceleration)
     Density=Kg.Per(Meter3)
-    Kg$=Class:Newton.FromLeft:Density.FromLeft
+    Kg$=Class:Newton.FromLeft:Density.FromLeft//optional other syntaxes:
+    //Kg$=Class:Newton.FromKg:Density.FromKg 
+    //Kg$=Class:Sum[Newton.FromKG, Density.FromKg]
+    //Kg$=Class:(Newton.FromKg + Density.FromKg)
+    //Kg$=(Newton.FromKg + Density.FromKg).code()
 
     Pascal=Newton.Per(Meter2)
     Joule=Newton.Times(Meter)
@@ -37,7 +42,7 @@ Base=Trait:{reuse [AdamTowel]
   
     Watt=Joule.Per(Second)
     Gray=Joule.Per(Kg)
-    Sievert=Joule.Per(Kg)//use Sv(myJ per=myKg) to build
+    Sievert=Joule.Per(Kg)//use Sievert(myJ, per=myKg) to build
     Joule$=Class:Watt.FromLeft:Gray.FromLeft
     
     Volt=Watt.Per(Ampere)
@@ -51,10 +56,11 @@ Base=Trait:{reuse [AdamTowel]
     Volt$=Class:Ohm.FromLeft:Weber.FromLeft
     
     Siemens=Ohm.Inverse()
-    
+    Ohm$=Class:Siemens.FromUnit
+
     Tesla=Weber.Per(Meter2)
     Henry=Weber.Per(Ampere)
-    Wrber$=Tesla.FromRight:Henry.FromLeft
+    Weber$=Class:Tesla.FromLeft:Henry.FromLeft
         
     Katal=Mole.Per(Second)
     Mole$=Class:Katal.FromLeft

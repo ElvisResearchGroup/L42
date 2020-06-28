@@ -111,12 +111,11 @@ public class Parse {
   public static Result<Program> program(Path fileName,String s){
     return aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
     }
-  public static LL fromPath(Path path) throws IOException{
+  public static String codeFromPath(Path path) throws IOException{
     if(Files.isDirectory(path)){path=path.resolve("This.L42");}
     String code=Files.readString(path,StandardCharsets.US_ASCII);
     code=code.replace("\r","");
-    Program p=Parse.sureProgram(path,"{"+code+"\n}");
-    return p.top;
+    return "{"+code+"\n}";
     }
   public static Program sureProgram(Path fileName,String s){
     var res=aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));

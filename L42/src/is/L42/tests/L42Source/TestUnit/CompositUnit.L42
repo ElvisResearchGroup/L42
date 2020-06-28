@@ -1,0 +1,90 @@
+TraitTimes=TraitHasSupport:{
+  Support=Class:TraitAbstractSupport
+  T1=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  class method This (T1 that,T2 and)=This(that.#inner()*and.#inner())
+  method T1 /(T2 right)=T1(this.#inner()<:Support/right.#inner())
+  method T2 /(T1 left)=T2(this.#inner()/left.#inner())
+  _FromLeft=Trait:{
+    method This1 *(T2 u_par)=This1(T1.unitCast(this) and=u_par)
+    method This1 *1(T2 u_par)=this*u_par
+    }
+  FromLeft=Trait.delayedCode({class method Library code()
+    =ParRename(T2,trait=_FromLeft(),names=\[S"#times0";S"#times1"])
+    })
+  _FromRight=Trait:{
+    method This1 *(T1 u_par)=u_par*this
+    method This1 *1(T1 u_par)=This1(u_par and=T2.unitCast(this)) 
+    }
+  FromRight=Trait.delayedCode({class method Library code()
+    =ParRename(T2,trait=_FromRight(),names=\[S"#times0";S"#times1"])
+    })
+  }
+  
+TraitInverse=TraitHasSupport:{
+  Support=Class:TraitAbstractSupport
+  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  class method This (Support that,T2 per)=This(that/per.#inner())
+  method Support *(T2 right)=this.#inner()<:Support*right.#inner()
+  method Support *1(T2 right)=this*right
+  method Support /1(T2 left0)=left0.#inner()/this.#inner()
+  _FromUnit=Trait:{method This1 /1(Support u_par)=This1(u_par per=T2.unitCast(this))}
+  FromUnit=Trait.delayedCode({class method Library code()
+    =ParRename(T2,trait=_FromUnit(),names=\[S"#divide1"])
+    })
+  }
+  
+TraitDiv=TraitHasSupport:{
+  Support=Class:TraitAbstractSupport
+  T1=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
+  method T1 *(T2 right)=T1(this.#inner()<:Support*right.#inner())
+  method T1 *1(T2 right)=this*right
+  method T1 /1(T2 left0)=T1(left0.#inner()/this.#inner())
+  _FromLeft=Trait:{method This1 /(T2 u_par)=This1(T1.unitCast(this) per=u_par)}
+  FromLeft=Trait.delayedCode({class method Library code()
+    =ParRename(T2,trait=_FromLeft(),names=\[S"#divide0"])
+    })
+  _FromRight=Trait:{method This1 /1(T1 u_par)=This1(u_par per=T2.unitCast(this))}
+  FromRight=Trait.delayedCode({class method Library code()
+    =ParRename(T2,trait=_FromRight(),names=\[S"#divide1"])
+    })
+  }
+  
+class method Library (Introspection.Nested that, Introspection.Nested and)[NotValidUnit,NotSameSupport]
+  =this(i1=that,i2=and,trait=TraitTimes())
+class method Library (Introspection.Nested that, Introspection.Nested per)[NotValidUnit,NotSameSupport]
+  =this(i1=that,i2=per,trait=TraitDiv())
+class method Introspection.Type tOf(Introspection.Nested that)[NotValidUnit]={
+  return that.meth(selector='#inner()).returnType()
+  catch error Collection.NoElementInOpt e exception NotValidUnit
+    " Provided class %that.outerName() do not offers 'method Support #inner()'"
+    .with(cause=e)
+  }
+class method Library (Introspection.Nested i1, Introspection.Nested i2,Trait trait)[NotValidUnit, NotSameSupport]={
+  //check i1.#inner() and i2.#inner() are same type t
+  t1=this.tOf(i1)
+  t2=this.tOf(i2)
+  if t1.nested()!=t2.nested() exception NotSameSupport
+    "Provided classes %i1.outerName() (%t1.nested().outerName()) and %i2.outerName() (%t2.nested().outerName()) have different supports."
+  if !t1.nested().isBinded() exception NotValidUnit
+    "Provided class %i1.outerName() 'method Support #inner()' return type must be declared externally"
+  cAny=t1.nested().classAny()
+  res=TraitUnit['Support=>cAny]
+  return Class:Data:res:trait['Support=>cAny;'T1=>i1.classAny();'T2=>i2.classAny()]
+  catch Message.Guard g exception NotValidUnit
+    "The provided classes %i1.outerName() and %i2.outerName() are not  valid Unit classes."
+    .with(cause=g)
+  }
+class method Library (Introspection.Nested inverse)[NotValidUnit]={
+  support=this.tOf(inverse).nested()
+  if !support.isBinded() exception NotValidUnit
+    "Provided class %inverse.outerName() 'method Support #inner()' return type must be declared externally"
+  cAny=support.classAny()
+  res=TraitUnit['Support=>cAny]
+  return Class:Data:res:TraitInverse['Support=>cAny;'T2=>inverse.classAny()]
+  catch Message.Guard g exception NotValidUnit
+    "The provided classe %inverse.outerName() is not a valid Unit class."
+    .with(cause=g)
+  }

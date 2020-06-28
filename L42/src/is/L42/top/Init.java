@@ -47,6 +47,7 @@ import is.L42.visitors.PropagatorCollectorVisitor;
 
 public class Init {
   public Init(String s){this(Constants.dummy,Parse.sureProgram(Constants.dummy,s));}
+  public Init(Path initialPath,String s){this(initialPath,Parse.sureProgram(initialPath,s));}
   public final Program p;
   public final Path initialPath;
   public final FreshNames f;
@@ -90,8 +91,8 @@ public class Init {
     TestCachingCases.timeNow("begin0");
     return new Init(code).topCache(c);
     }    
-  public static Core.L topCache(CachedTop c,Full.L code){
-    Init i;try{i=new Init(code);}
+  public static Core.L topCache(CachedTop c,Path initialPath,String code){
+    Init i;try{i=new Init(initialPath,code);}
     catch(EndError e){//well formedness or the like. Anyway, cache is untouched
       c.fakeRunWithNoChange();
       throw e; 

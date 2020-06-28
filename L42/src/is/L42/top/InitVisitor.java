@@ -53,7 +53,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       path=path.resolve("This.L42");
       }
     else if(!Files.exists(path)){path=outerPath.resolve(lastC.inner()+".L42");}
-    LL dots;try{dots=Parse.fromPath(path);}
+    LL dots;try {dots=Parse.sureProgram(path,Parse.codeFromPath(path)).top;}
     catch(IOException ioe){
       throw new EndError.InvalidImplements(s.poss(),Err.dotDotDotSouceNotExistant(path));
       }
