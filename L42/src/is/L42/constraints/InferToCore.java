@@ -108,8 +108,12 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitBinOp(Half.BinOp binOp){
     List<Core.XP> xps=L(binOp.es(),(c,x)->c.add((Core.XP)compute(x)));
     List<T> ts=L(xps,(c,xpi)->c.add(i.g().of(xpi)));
+    for(var t:ts){
+      if(i.p()._ofCore(t.p())!=null){continue;}
+      throw new EndError.InferenceFailure(binOp.poss(),Err.pathNotExistant(t.p()));
+      }
     var res=i.p()._opOptions(binOp.op(), ts);
-    //TODO: can we make a test where the former call return null?
+    assert res!=null;//null if some involved path does not exists
     if(res.size()!=1){
       var list=L(res,(c,psi)->c.add(psi.p()+"."+psi.s()));
       String err=Err.operatorNotFound(binOp.op().inner+" ("+NameMangling.methName(binOp.op(),0)+")",list);

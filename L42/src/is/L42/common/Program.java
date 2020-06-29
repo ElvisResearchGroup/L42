@@ -452,6 +452,7 @@ public class Program implements Visitable<Program>{
     var tz0=tzs.get(0);
     return L(tz0,(c,ti)->{for(var tz:inductive){c.add(pushL(ti,tz));}});
     }
+  //TODO: why it is underscore named if can not return null?
   private boolean _opOptionsAcc(Op op, List<T>ts, int i,ArrayList<Psi>acc){
     List<T> t11n=L(range(ts),(cj,j)->{
       if(j!=i){cj.add(ts.get(j));}
@@ -475,8 +476,8 @@ public class Program implements Visitable<Program>{
       for(int j:range(t1n)){
         P p1j=t11n.get(j).p();
         P pj=t1n.get(j).p();
-        Boolean res=_isSubtype(p1j,pj);
-        if(res==null){return false;}
+        Boolean res=_isSubtype(p1j,pj);//null if p1j or pj do not exists
+        assert res!=null;//if(res==null){return false;} should be checked before
         res&=(t11n.get(j).mdf()==Mdf.Class)==(t1n.get(j).mdf()==Mdf.Class);
         if(!res){acceptablePaths=false;}//Do not break, so the return false above can be triggered
         }
