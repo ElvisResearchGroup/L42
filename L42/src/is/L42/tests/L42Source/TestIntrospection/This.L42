@@ -26,8 +26,7 @@ TestFullS=(
     |  }
     """)
   {}:Test"renameDeep"(actual=Full(
-    Trait({ B={method Any b() C={method Any c()}}})
-    [deep='B=>'A.C])
+    Trait({ B={method Any b() C={method Any c()}}})['B=>'A.C])
   expected=S"""
     |{A={C={method Any b()C={method Any c()#typed{}}#typed{}}#typed{}}#norm{}}
     """)

@@ -140,6 +140,10 @@ public class CachedTop implements Serializable{
       System.err.println("LOG: saved cache was made of outdated bytecode");
       return new CachedTop(L(),L());
       }
+    catch(java.io.EOFException e){
+      System.err.print("Log: cache file was corrupted\n\n"+e);
+      return new CachedTop(L(),L());
+      }
     catch(IOException e){throw new Error(e);}
     }
   public void saveCache(Path path){

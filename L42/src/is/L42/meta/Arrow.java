@@ -20,6 +20,16 @@ public final class Arrow{
     assert _path==null || _cs==null;
     assert _sOut==null || _cs!=null;
     }
+  public Arrow withStar(){
+    if(_s!=null) {return this;}
+    return new Arrow(cs,_s,full,true,_path,_cs,_sOut);
+    }
+  public Arrow withNoStar(){
+    return new Arrow(cs,_s,full,false,_path,_cs,_sOut);    
+    }
+  public Arrow copy(){
+    return new Arrow(cs,_s,full,star,_path,_cs,_sOut);    
+    }
   @Override public String toString() {
     String res=cs.toString();
     if(_s!=null){res+="."+_s;}
@@ -87,10 +97,10 @@ public final class Arrow{
     if(!cs.equals(other.cs)){return false;}
     return full == other.full && star==other.star;
     }
-  public List<C> cs;
-  public S _s;
-  public boolean full;
-  public boolean star;
+  final public List<C> cs;
+  final public S _s;
+  final public boolean full;
+  final public boolean star;
   public P _path;
   public List<C> _cs;
   public S _sOut;

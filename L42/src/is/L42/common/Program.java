@@ -477,7 +477,7 @@ public class Program implements Visitable<Program>{
         P p1j=t11n.get(j).p();
         P pj=t1n.get(j).p();
         Boolean res=_isSubtype(p1j,pj);//null if p1j or pj do not exists
-        assert res!=null;//if(res==null){return false;} should be checked before
+        if(res==null){return false;}//happens only under solve
         res&=(t11n.get(j).mdf()==Mdf.Class)==(t1n.get(j).mdf()==Mdf.Class);
         if(!res){acceptablePaths=false;}//Do not break, so the return false above can be triggered
         }

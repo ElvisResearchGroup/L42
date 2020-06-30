@@ -13,8 +13,8 @@ class method Trait module(Library that,Name n)
     name=nc.nameFromRoot()
     if name==n || name==at return void
     annotated=nc.innerDoc().annotation(nested=i)
-    if annotated return acc.#squareAdd(deep=name=>at.toS()++name)
+    if annotated return acc.#squareAdd(name=>at.toS()++name)
     return acc.#squareAdd(hide=name)
     }
-  Trait(that)(squareBuilder=acc)[deepClear=at;deep=n=>'This]
+  Trait(that)(squareBuilder=acc)[clear=at;n=>'This]
   )

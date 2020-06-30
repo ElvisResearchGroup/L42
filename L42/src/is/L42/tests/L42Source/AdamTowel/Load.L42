@@ -46,7 +46,7 @@ method Trait.Acc collect(Library that)=(
     for ncj in this.deps() (
       dest=ncj.innerDoc().annotation(nested=atOut).get().texts().left()
       matches=this.match(src=src,dest=dest)
-      if matches (acc.#squareAdd(deep=name=>ncj.classAny()) Break())
+      if matches (acc.#squareAdd(name=>ncj.classAny()) Break())
       )
     )
   acc

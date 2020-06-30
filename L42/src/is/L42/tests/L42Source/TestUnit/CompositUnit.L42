@@ -73,14 +73,14 @@ class method Library (Introspection.Nested i1, Introspection.Nested i2,Trait tra
   res=TraitUnit['Support=>cAny]
   Trait traitRes={
     if i1==i2 return trait[
-      'Support=>cAny;'T1=>i1.classAny();'T2=>i2.classAny();
-       deep='TraitFromLeft=>Name"TraitFrom%i1.outerName()";
+       'Support=>cAny;'T1=>i1.classAny();'T2=>i2.classAny();
+       'TraitFromLeft=>Name"TraitFrom%i1.outerName()";
        hide='TraitFromRight;
        ]
     return trait[
-      'Support=>cAny;'T1=>i1.classAny();'T2=>i2.classAny();
-       deep='TraitFromLeft=>Name"TraitFrom%i1.outerName()";
-       deep='TraitFromRight=>Name"TraitFrom%i2.outerName()";
+       'Support=>cAny;'T1=>i1.classAny();'T2=>i2.classAny();
+       'TraitFromLeft=>Name"TraitFrom%i1.outerName()";
+       'TraitFromRight=>Name"TraitFrom%i2.outerName()";
        ]
     }
   return Class:Data:res:traitRes
@@ -95,7 +95,7 @@ class method Library (Introspection.Nested inverse)[NotValidUnit]={
   cAny=support.classAny()
   res=TraitUnit['Support=>cAny]
   return Class:Data:res:TraitInverse
-    ['Support=>cAny;'T2=>inverse.classAny();deep='TraitFromUnit=>Name"TraitFrom%inverse.outerName()"]
+    ['Support=>cAny;'T2=>inverse.classAny();'TraitFromUnit=>Name"TraitFrom%inverse.outerName()"]
   catch Message.Guard g exception NotValidUnit
     "The provided classe %inverse.outerName() is not a valid Unit class."
     .with(cause=g)

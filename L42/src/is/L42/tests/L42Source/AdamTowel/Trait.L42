@@ -3,6 +3,7 @@
   class method Library code()
   class method Trait +(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
+  class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]
   class method Introspection$Nested nested()
   }
 @Public ClassOperators={class method Trait()=Trait({#norm{}})}
@@ -31,11 +32,11 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
   class method mut This (mut This squareBuilder)=squareBuilder
   class method mut This ##apply#squareBuilder()=Acc(Name$Mapping())
   class method Bool #shortCircutSquare()=Bool.true()
-  mut method Void #squareAdd(Name$Mapping that)=this.that(\that.mergeMap(that))
+  mut method Void #squareAdd(Name$Mapping that)=this.that(\that.mergeMap(deep=that))
   mut method Void #squareAdd(Name clear)=this.#squareAdd(clear->Name"")
-  mut method Void #squareAdd(Name deepClear)=this.#squareAdd(deep=deepClear->Name"")
-  mut method Void #squareAdd(Name$Mapping deep)=this.that(\that.mergeMap(deep=deep))
-  mut method Void #squareAdd(Name hide)=this.#squareAdd(deep=hide=>Name"")
+  mut method Void #squareAdd(Name clearSingle)=this.#squareAdd(single=clearSingle->Name"")
+  mut method Void #squareAdd(Name$Mapping single)=this.that(\that.mergeMap(single))
+  mut method Void #squareAdd(Name hide)=this.#squareAdd(hide=>Name"")
   }
 @Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This({
   return squareBuilder.that().applyMap(this.code())
@@ -56,8 +57,7 @@ ToLibrary=Name$Mapping().resource({[Lifted]
   method ()=Trait(this.code())
   method +(lib)=ClassOperators()+lib
   method +1(lib)=lib+ClassOperators()
-  class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
-    ClassOperators()(squareBuilder=squareBuilder)
+  method (squareBuilder)=ClassOperators()(squareBuilder=squareBuilder)
   ClassOperators={class method Trait()=This1()}
   method nested()=ClassOperators().nested()
   },name=Name"of()".that())

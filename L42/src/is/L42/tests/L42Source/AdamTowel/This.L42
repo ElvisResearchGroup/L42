@@ -113,7 +113,7 @@ DeployAdamTowel={reuse[#$aaa]
       'Trait_InvalidMap=>'Trait.InvalidMap;
       ]
     organize=Organize(public='Public)
-    toDeploy=Class:(organize:tot)['This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
+    toDeploy=Class:(organize:tot)[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
     Debug(Introspection.Nested.from(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)
     )

@@ -107,13 +107,14 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     return new L42£Meta(mergeU(renames,meta.renames));
     }
   public L42£Meta mergeMapDeep(L42£Meta meta){
-    var tmp=meta.renames.stream().map(a->new Arrow(a.cs,a._s,a.full,a._s==null,a._path,a._cs,a._sOut));
+    var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
   public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     L l=input.unwrap;
     L res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
-      renames, wrapName, wrapFail, wrapC, wrapM);
+      L(renames.stream().map(a->a.copy())),
+      wrapName, wrapFail, wrapC, wrapM);
     return wrapL(res);
     }
   public static P unwrapPath(L42Any classAny){
