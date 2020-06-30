@@ -19,6 +19,7 @@ import is.L42.generated.Core.D;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
 import is.L42.nativeCode.EagerCacheGenerator;
+import is.L42.nativeCode.LazyCacheGenerator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
@@ -392,11 +393,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   private void generateClearCache() { 
     c("public void clearCache(){");indent();nl();
     for(MWT mwti:fields.readLazy){
-      String name="£k"+mwti.key().m();
+      String name=LazyCacheGenerator.nameFromS(mwti.key());
       c("this.is"+name+"=false;");nl();
       }
     for(MWT mwti:fields.eager){
-      String name="£k"+mwti.key().m();
+      String name=LazyCacheGenerator.nameFromS(mwti.key());
       c("this."+name+"="+name+"(this);");nl();
       }
     c("}");deIndent();nl();
@@ -472,7 +473,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("@Override public L42Cache<"+jC+"> myCache() {return mySCache;}");
     c("}");deIndent();nl();
     c("public static final "+jC+" pathInstance=new _Fwd();");nl();
-    c("static final L42Cache<"+jC+"> mySCache=L42CacheMap.newSingletonCache(\""+jC+"£Class\", pathInstance.getClass());");nl();
+    c("static final L42Cache<"+jC+"> mySCache=L42CacheMap.newSingletonCache("+jCName+", pathInstance.getClass());");nl();
     if(nativeKind(p)){
       c("public ");
       typeName(p);
@@ -617,7 +618,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       nl();
       }
     for(MWT mwti:fields.eager){
-      String name="£k"+mwti.key().m();
+      String name=LazyCacheGenerator.nameFromS(mwti.key());
       c("Res."+name+"="+name+"(Res);");nl();
       }     
     c("return Res;"); 

@@ -8,6 +8,7 @@ import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
+import is.L42.generated.S;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.translationToJava.J;
@@ -33,13 +34,19 @@ public class LazyCacheGenerator implements Generator{
         "immutable or class return type",mh.mdf(),"immutable or class"));
       }
     }
+  public static String nameFromS(S s) {
+    assert s.xs().isEmpty();
+    String name="£k"+s.m().replace("#", "£h");
+    //other used letters: x _ f c n h E
+    if(s.hasUniqueNum()){name+="£n"+s.uniqueNum();}
+    return name;
+    }
   @Override public void of(boolean type, MWT mwt, J j) {
     if(type){typeCache(mwt,j); return;}
     assert mwt.key().xs().isEmpty();
     String retT=j.typeNameStr(mwt.mh().t().p());
     String thisT=j.typeNameStr(j.p());
-    String name="£k"+mwt.key().m();//other used letters: x _ f c n h E
-    if(mwt.key().hasUniqueNum()){name+="£k"+mwt.key().uniqueNum();}
+    String name=nameFromS(mwt.key());
     if(mwt.mh().mdf().isClass()){classCache(j,name);}
     if(mwt.mh().mdf().isImm()){immCache(j,name);}
     if(mwt.mh().mdf().isRead()){readCache(j,name);}

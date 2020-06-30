@@ -148,6 +148,7 @@ _______
     MHs=[extractMHs(p;Ms)] 
       U [p(P1).MWTs.MH[from P1;p]] U..U [p(Pk).MWTs.MH[from Pk;p]]
     s1..sn=MHs.ss.distinct()
+    forall si in dom(Ms) si in s1..sn//else error, unexpected method implemented
     origin(p;s1)..origin(p;sn) all defined
     [MHi,_]=[MH| MH in MHs and MH.s=si]
     i in 1..n

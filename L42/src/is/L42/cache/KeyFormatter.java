@@ -133,7 +133,8 @@ class KeyFormatter{
     if(cache.typename() == TrustedKind.Vector){return new FormatVector(hint,this,lineN);}
     if(cache.typename() instanceof TrustedKind){return new FormatTrusted(hint,this,lineN);}
     if(cache.typename() instanceof String[]){return new Format42(hint,this,lineN);}
-    assert false:cache.typename();
+    assert false:
+      cache.typename();
     throw bug();
     }
   public String varName(P path){

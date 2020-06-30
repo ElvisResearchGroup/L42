@@ -199,6 +199,8 @@ public class Err {
   "The unique numbers "+_1+" are in the domain of more then one library literal; others are in positions \n"+_2
   ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
   "The method "+_1+" is inherited from multiple interfaces, and do not have a single origin. Origins are "+_2
+  ;}public static String noMethodOrigin(Object _1,Object _2){return
+  "The method "+_1+" is not inherited from any interfaces; inherited methods are "+_2
   ;}public static String notInterfaceImplemented(){return
   "A nested class is implemented but is not an interface"
   ;}public static String thisNumberOutOfScope(Object _1){return

@@ -180,7 +180,10 @@ public class General {
   public static RuntimeException unreachable(){throw new Error("Postcondition violation");}
   public static RuntimeException todo(){throw new Error("Not implemented yet");}
   public static RuntimeException bug(){throw new Error("Precondition violation");}
- 
+  public static boolean checkNoException(Supplier<Boolean> s){
+    try {return s.get();}
+    catch(Throwable t){throw new AssertionError("",t);}
+    } 
   @SuppressWarnings("unused") private static <T> void testL(T e) {
     List<T> x = L(e);
     List<Integer> y=L();

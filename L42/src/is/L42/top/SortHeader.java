@@ -155,6 +155,11 @@ class SortHeader{
         }
       });
     List<S> ss=L(methods.stream().flatMap(msi->msi.stream().map(m->m.s())).distinct());
+    for(var mi:ms){
+      if(!(mi.key() instanceof S)){continue;}
+      if(ss.contains(mi.key())){continue;}
+      throw new InvalidImplements(poss,Err.noMethodOrigin(mi.key(),ss));
+      }
     for(S s:ss){origin(p,s,p.top.poss());}// it throws InvalidImplements
     List<MH> res=L(ss,(c,s)->{
       for(var msi:methods){

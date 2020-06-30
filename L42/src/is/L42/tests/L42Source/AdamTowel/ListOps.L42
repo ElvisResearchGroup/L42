@@ -108,7 +108,7 @@ method This withAlso(Size that, Elem val)=(
   )
 
 method This withAlsoLeft(Elem that)=this.withAlso(0\, val=that)
-method This withAlsoRight(Elem that)=this.withAlso(\size.#pred(), val=that)
+method This withAlsoRight(Elem that)=this.withAlso(\size, val=that)
 
 //skipping/filtering
 method This without(Size index)=(

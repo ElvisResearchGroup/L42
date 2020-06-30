@@ -392,7 +392,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     "{C={interface } A={interface [C] method Void a()} B={interface [C] method Any a()} D={[B,A]}}",
     Err.moreThenOneMethodOrigin("a()", hole))
     ),new AtomicTest(()->
-    topFail(InvalidImplements.class,"{A={interface method Any a()} B={interface method Any a()} C={[B,A]}}",Err.moreThenOneMethodOrigin("a()", hole))
+    topFail(InvalidImplements.class,
+    "{A={interface method Any a()} B={interface method Any a()} C={[B,A]}}",
+    Err.moreThenOneMethodOrigin("a()", hole))
+    ),new AtomicTest(()->
+    topFail(InvalidImplements.class,
+    "{C={interface } A={[C] method a()=void}}",
+    Err.noMethodOrigin(hole,hole))
     ),new AtomicTest(()->
     top("{I={interface method Any m()} A={interface[I]}}","""
     {I={interface method Any m()#typed{}}

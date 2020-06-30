@@ -3,6 +3,7 @@ package is.L42.meta;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.checkNoException;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
@@ -131,7 +132,7 @@ public class Rename {
     }
   private boolean deepCheckInfo(Program p,Core.L l){
     l.visitInnerL((li,csi)->{
-      assert WellFormedness.checkInfo(p.navigate(csi),li): ""+li;
+      assert checkNoException(()->WellFormedness.checkInfo(p.navigate(csi),li)): ""+li;
       });
     return true;
     }
