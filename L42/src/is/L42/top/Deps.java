@@ -86,6 +86,11 @@ public class Deps{
     var p1=p0.pop(pi.n());
     if(!p1.inPrivate()){watched.add(pi);}
     }
+  void addHiddenSupertype(Program p0,P.NCs pi){
+    if(!pi.cs().isEmpty()){hiddenSupertypes.add(pi);}
+    var p1=p0.pop(pi.n());
+    if(!p1.inPrivate()){hiddenSupertypes.add(pi);}
+    }
   public Info toInfo(boolean typed){
     var uWatched=uniqueWrap(watched);
     return new Info(typed,
@@ -134,8 +139,10 @@ public class Deps{
     var deps=new DepsV(p0);
     for(var m:ncs){
       deps.visitDocs(m.docs());
-      if(m.key().hasUniqueNum()){deps.of(m.l());}      
-      }    
+      if(!m.key().hasUniqueNum()){continue;}
+      deps.lastC=m.key();
+      deps.of(m.l());
+      }
     return this;
     }
   public Deps collectDepsE(Program p0,Core.E e) {
@@ -168,26 +175,29 @@ public class Deps{
     return pi.withN(pi.n()-(cs.size()+1));
     }
   public class DepsV extends Accumulate.WithG<ArrayList<P.NCs>>{
-    Program p0;DepsV(Program p0){this.p0=p0;}
+    Program p0;
+    C lastC=null;
+    DepsV(Program p0){this.p0=p0;}
     public ArrayList<P.NCs> empty(){return typePs;}
     @Override public void visitL(Full.L l){throw bug();}
     @Override public void visitL(Core.L l){
       l.visitInnerLNoPrivate((li,csi)->this.innerVisitL(l,li,csi));
       }
     private void innerVisitL(L l,L li,List<C> csi){
+      Program pcsi=(lastC==null?p0.push(l):p0.push(lastC,l)).navigate(csi);
       for(var p:li.info().typeDep()){skipAct(p, csi, l,typePs::add);}
       for(var p:li.info().coherentDep()){skipAct(p, csi, l,metaCohePs::add);}
       for(var p:li.info().metaCoherentDep()){skipAct(p, csi, l,metaCohePs::add);}
-      for(var p:li.info().watched()){skipAct(p, csi, l,w->addWatched(p0.push(l).navigate(csi), w));}
+      for(var p:li.info().watched()){skipAct(p, csi, l,w->addWatched(pcsi, w));}
       for(var pathSel:li.info().usedMethods()){
         var p=pathSel.p().toNCs();
         skipAct(p, csi, l,pi->{
           if(!pi.equals(P.pThis0)){usedMethods.add(pathSel.withP(pi));}
           });
         }
-      for(var p:li.info().hiddenSupertypes()){skipAct(p, csi, l,hiddenSupertypes::add);}
+      for(var p:li.info().hiddenSupertypes()){skipAct(p, csi, l,w->addHiddenSupertype(pcsi,w));}
       for(var t:li.ts()){
-        if(!t.p().hasUniqueNum()){skipAct(t.p().toNCs(), csi, l,hiddenSupertypes::add);}
+        if(!t.p().hasUniqueNum()){skipAct(t.p().toNCs(), csi, l,w->addHiddenSupertype(pcsi,w));}
         }
       }
     @Override public void visitP(P p){addP(p0,p);}

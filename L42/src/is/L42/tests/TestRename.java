@@ -1910,7 +1910,63 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        #norm{typeDep=This1 usedMethods=This1.m()}}
      #norm{typeDep=This}}
      #norm{}}"""/*next test after this line*/)
-   ));}
+     ),new AtomicTest(()->pass("""
+     A={ 
+       I={ interface method Void seal::1() 
+         B={[This1] method Void seal::1()=void 
+           #norm{typeDep=This1 refined=seal::1() }}
+         #norm{close}}
+       #norm{}} 
+     #norm{}}""",/*rename map after this line*/"""
+     A.I.=>*<empty>
+   """,/*expected after this line*/"""
+   A={
+     I::2={interface
+       method Void seal::1()
+       B::1={[This1] method Void seal::1()=void
+         #norm{typeDep=This1, This2 watched=This2 refined=seal::1()}}
+       #norm{typeDep=This, This1 watched=This1 close}}
+     #norm{typeDep=This}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->pass("""
+       A={ 
+         I={ interface method Void seal::1() 
+           B={[This1] method Void seal::1()=void 
+             #norm{typeDep=This1 refined=seal::1() }}
+           #norm{close}}
+         #norm{}} 
+       #norm{}}""",/*rename map after this line*/"""
+       A.I.B.=>*<empty>
+       """,/*expected after this line*/"""
+       A={
+         I={interface method Void seal::1()
+           B::1={[This1]method Void seal::1()=void
+             #norm{typeDep=This1 refined=seal::1()}}
+           #norm{typeDep=This hiddenSupertypes=This close}}
+         #norm{}}
+       #norm{}}"""/*next test after this line*/)
+
+     ),new AtomicTest(()->pass("""
+       A={ 
+         I={ interface method Void seal() 
+           B={[This1] method Void seal()=void 
+             #norm{typeDep=This1 refined=seal() }}
+           #norm{close}}
+         #norm{}} 
+       #norm{}}""",/*rename map after this line*/"""
+       A.I.seal()=><empty>
+       """,/*expected after this line*/"""
+     A={
+       I={interface
+         method Void seal::1()
+         B={[This1]method Void seal::1()=void
+         #norm{typeDep=This1 refined=seal::1()}}
+       #norm{close}}
+     #norm{}}
+     #norm{}}"""/*next test after this line*/)
+     ));}
+
+
 private static String nested4="""
      A={
        method Void foo(This a,This.B b,This.B.C c,This.B.C.D d)=void

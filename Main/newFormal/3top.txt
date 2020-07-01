@@ -277,7 +277,7 @@ _______
 // for all P.C::k._ in typeDep, where P not of form _.C'::n._: 
 //   add P to typeDep and to watched
 //and we never put This0 in watched, nor This0.xx in usedMethods;
-// we do not put Thisn in watched or Thisn.m(xs)  in usedMethods if in the program the outer name of Thisn has a unique number
+// we do not put Thisn in watched or hiddenSupertypes or Thisn.m(xs)  in usedMethods if in the program the outer name of Thisn has a unique number
 //we do not put any usedMethods with Thisn.Cs if Cs has unique numbers
 //when P in typeDep has unique numbers, we also put the public root
 //all of nativePar must be included in coherentDep too (well formedness?) 
@@ -313,7 +313,7 @@ _______
     otherwise m has private numbers and P?=G(xP), (P.s)?=empty //G is computed during the traversal
     otherwise P?=empty and (P.s)?=G(xP).m(x1..xn)
     NOTE: is irrelevant to watch or not interface methods
-    -An interrface must be watched if the private nesteds are used
+    -An interface must be watched if the private nesteds are used
     -Irrelevant if watched or not because private method are used, since interfaces can not be made abstract anyway
 * collectDepsE(p;loop e)=collectDepsE(p;throw e)=collectDepsE(p;x :=e)=collectDepsE(p;e)
 * collectDepsE(p;P<:class Any)= Info[typeDep=P] //only if P not Any/Void/Library
