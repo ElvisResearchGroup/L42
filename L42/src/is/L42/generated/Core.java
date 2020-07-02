@@ -12,6 +12,8 @@ import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
 import is.L42.generated.Core.L.Info;
+import is.L42.generated.P.NCs;
+
 import static is.L42.tools.General.*;
 
 public class Core {
@@ -704,7 +706,7 @@ public class Core {
       public Info sumInfo(Info info2) {
         Info info1 = this;
         assert info1._uniqueId() == -1 || info2._uniqueId() == -1;
-        assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
+        assert info1.nativeKind().isEmpty() || info2.nativeKind().isEmpty();
         assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
         var allW = mergeU(info1.watched(), info2.watched());
         List<Core.PathSel> allU = L(c -> {
@@ -729,7 +731,6 @@ public class Core {
         }
         return res;
       }
-
       @java.lang.SuppressWarnings("all")
       public Info(final boolean isTyped, final List<P.NCs> typeDep, final List<P.NCs> coherentDep, final List<P.NCs> metaCoherentDep, final List<P.NCs> watched, final List<PathSel> usedMethods, final List<P.NCs> hiddenSupertypes, final List<S> refined, final boolean close, final String nativeKind, final List<P> nativePar, final int _uniqueId) {
         this.isTyped = isTyped;

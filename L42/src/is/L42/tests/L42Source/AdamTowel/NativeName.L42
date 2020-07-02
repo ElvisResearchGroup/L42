@@ -7,6 +7,7 @@ read method This with(This1.S x)=native{trusted:withX} error void
 read method This with(This1.S selector)=native{trusted:withSelector} error void
 read method This with(This1.S path)=native{trusted:withPath} error void
 #norm{nativeKind=Name,nativePar=This1.S$ParseError
-  typeDep=This,This1.S,This1.S$ParseError 
+  typeDep=This,This1.S,This1.S$ParseError
+  watched=This1.S,This1.S$ParseError 
   coherentDep=This,This1.S$ParseError,This1.S    
   }

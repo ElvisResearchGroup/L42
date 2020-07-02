@@ -219,6 +219,7 @@ _______
     L.Info.nativePar subseteq L.Info.typeDep//same for all the fields of Info containing Ps
     L.Info.nativeKind recognized
     L.Info.watched disjoint L.Info.usedMethods.Ps
+    forall native MWT in L.MWTs nativeMustWatch(MWT,L.Info) subsetEq L.Info.watched,This  
     expectedNumber(L.Info.nativeKind,L.Info.nativePar)
     //the number of nativePar is the expected number for the kind of nativeKind
     

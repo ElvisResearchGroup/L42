@@ -13,6 +13,7 @@ mut method Void remove(This2.Size that)=native{trusted:remove} error void
 
 Elem={#norm{}}
 #norm{nativeKind=Vector, nativePar=This0.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
-  typeDep=This0,This2.Size,This2.Bool, This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
+  typeDep=This,This2.Size,This2.Bool, This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
+  watched=This2.Size,This2.Bool,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
   coherentDep=This,This2.Bool,This2.Size,This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
   }

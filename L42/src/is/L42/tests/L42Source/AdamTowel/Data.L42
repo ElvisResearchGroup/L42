@@ -3,7 +3,8 @@ Close$Meta={
   class method This #apply()
   method Library close(Library that,This2.S name)=native{trusted:close} error void
   #norm{nativeKind=Meta,
-    typeDep=This0 This1.Close$Fail,This2.S
+    typeDep=This This1.Close$Fail,This2.S
+    watched=This1.Close$Fail,This2.S
     coherentDep=This1.Close$Fail,
     nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
     }}
@@ -21,6 +22,7 @@ AddConstructors$Meta={
   method Library addConstructors(Library that,This2.S name,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
   #norm{nativeKind=Meta,
     typeDep=This0 This1.AddConstructors$Fail,This2.S
+    watched=This1.AddConstructors$Fail,This2.S
     coherentDep=This1.AddConstructors$Fail,
     nativePar=This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail
     }}
@@ -39,6 +41,7 @@ Wither$Meta={
   method Library wither(Library that,This2.S name,This2.S immK)=native{trusted:wither} error void
   #norm{nativeKind=Meta,
     typeDep=This0 This1.Wither$Fail,This2.S
+    watched=This1.Wither$Fail,This2.S
     coherentDep=This1.Wither$Fail,
     nativePar=This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail
     }}

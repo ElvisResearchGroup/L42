@@ -16,8 +16,8 @@ import is.L42.visitors.ToSVisitor;
 public class FullS extends ToSVisitor{
 public void visitMWT(MWT mwt){
   if(mwt.key().hasUniqueNum()){return;}
-  if(!mwt.nativeUrl().isEmpty()){mwt=mwt.withNativeUrl("..");}
   super.visitMWT(mwt.with_e(null).withNativeUrl(""));
+  if(!mwt.nativeUrl().isEmpty()){c("native{..}");}
   if(mwt._e()!=null){c("=(..)");}
   }
 public void visitNC(NC nc){

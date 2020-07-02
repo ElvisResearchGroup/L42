@@ -3,6 +3,7 @@ S={
   class method This empty()
   #norm{nativeKind=String, nativePar=This1.ParseErr
     typeDep=This,This1.ParseErr
+    watched=This1.ParseErr
     coherentDep=This1.ParseErr
   }}
 ParseErr={class method This empty() #norm{nativeKind=LazyMessage typeDep=This}}
@@ -10,7 +11,7 @@ Debug={
   class method This of()
   method Void deployLibrary(This1.S that,Library lib)=
     native{trusted:deployLibrary} error void
-    #norm{typeDep=This, This1.S, nativeKind=TrustedIO}        
+    #norm{typeDep=This, This1.S, nativeKind=TrustedIO, watched=This1.S}        
   }
 S$StringBuilder={
   class method mut This of()
@@ -19,7 +20,8 @@ S$StringBuilder={
   read method This1.S toS()=
     native{trusted:toS} error void
     #norm{nativeKind=StringBuilder
-      typeDep=This0,This1.S
+      typeDep=This,This1.S
+      watched=This1.S
       coherentDep=This1.S 
       }
   }

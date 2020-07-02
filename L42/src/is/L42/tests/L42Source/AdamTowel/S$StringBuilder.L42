@@ -108,8 +108,8 @@ class method mut This0 #stringLiteralBuilder()
 read method This1.S toS()=
   native{trusted:toS} error void
 #norm{nativeKind=StringBuilder
-  typeDep=This0,This1.HasToS,This1.S,This1.HasToS
+  typeDep=This,This1.HasToS,This1.S,This1.HasToS
+  watched=This1.HasToS,This1.S,This1.HasToS
   coherentDep=This0,This1.S
-  usedMethods=This1.HasToS.toS()
   refined=toS()
   }

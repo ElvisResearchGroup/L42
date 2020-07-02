@@ -5,6 +5,7 @@ $=Trait:{
   mut method Void text(This2.S that)=native{trusted:setMsg}error void
   #norm{nativeKind=LazyMessage
     typeDep=This,This2.S
+    watched=This2.S
     coherentDep=This,This2.S
     }
   }+{[Message]

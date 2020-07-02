@@ -68,6 +68,7 @@ SlashRes=Class:Trait({
   mut method mut This1 #get()=native{trusted:#get}error void
   #norm{nativeKind=Opt nativePar=This1,This3.Collection$NoElementInOpt
     typeDep=This1,This,This3.Collection$NoElementInOpt
+    watched=This1,This3.Collection$NoElementInOpt
     coherentDep=This1,This,This3.Collection$NoElementInOpt 
     }
   }):{

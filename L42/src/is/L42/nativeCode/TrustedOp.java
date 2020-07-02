@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.BiFunction;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Stream;
 
@@ -24,8 +25,10 @@ import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.E;
+import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.P;
+import is.L42.tools.General;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.NativeDispatch;
     
@@ -332,7 +335,7 @@ public enum TrustedOp {
   SetImm("setImm",Map.of(Vector,use(vectorOp("set",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   SetMut("setMut",Map.of(Vector,use(vectorOp("set",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
   AddImm("addImm",Map.of(Vector,use(vectorOp("add",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  AddMut("addMut",Map.of(Vector,use(vectorOp("add",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),  
+  AddMut("addMut",Map.of(Vector,use(vectorOp("add",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
   Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
@@ -383,7 +386,7 @@ public enum TrustedOp {
   Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
   LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new L42£LazyMsg(%2$s);",sig(Class,Mutable,LazyMessage,Immutable,String)))),
   SetMsg("setMsg",Map.of(LazyMessage,use("%s.setMsg(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,String)))),
-  OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))), 
+  OptK("optK",Map.of(Opt,use("return (%Gen1)%2$s;",sig(Class,Mutable,This,MutableFwd,Gen1)))),
   Get("get",  Map.of(Opt,use("""
     if(%1$s!=null){return %1$s;}
     throw new L42Error(%Gen2.wrap(
@@ -415,6 +418,22 @@ public enum TrustedOp {
   TrustedOp(String inner,Map<TrustedKind,Generator>code){
     this.inner = inner;
     this.code=code;
+    }
+  public List<P.NCs> nativeMustWatch(MWT mwt,Info info){
+    if(info.nativeKind().isEmpty()){return L();}
+    var c=new ArrayList<P.NCs>();
+    addT(c,mwt.mh().t());
+    for(T t:mwt.mh().pars()){addT(c,t);}
+    for(T t:mwt.mh().exceptions()){addT(c,t);}
+    for(P p:info.nativePar()){if(p.isNCs()){c.add(p.toNCs());}}
+    c.removeIf(p->p.hasUniqueNum());
+    if(!List.of("Vector","Opt").contains(info.nativeKind())){return c;} 
+    if(info.nativePar().isEmpty()){return c;}//to avoid out of order errors
+    c.removeIf(p->p.equals(info.nativePar().get(0)));//remove only removes the first occurence
+    return c;
+    }
+  private static void addT(ArrayList<P.NCs>c,T t){
+    if(t.p().isNCs()){c.add(t.p().toNCs());}
     }
   public static TrustedOp fromString(String s) {
    for (TrustedOp t : TrustedOp.values()) {

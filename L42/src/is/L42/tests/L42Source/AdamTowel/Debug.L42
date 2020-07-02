@@ -35,6 +35,7 @@ method This1.S #$readLog(This1.S logName)=native{trusted:#$readLog} error void
   
 #norm{nativeKind=TrustedIO
   typeDep=This,This1.HasToS,This1.S,This1.Bool,This1.AbstractTowel,This1.Public
+  watched=This1.HasToS,This1.S,This1.Bool,This1.AbstractTowel,This1.Public
   coherentDep=This,This1.S,This1.Bool
-  usedMethods=This1.HasToS.toS()}
+  }
 @This1.AbstractTowel{debug}

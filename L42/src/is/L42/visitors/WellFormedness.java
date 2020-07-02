@@ -2,6 +2,7 @@ package is.L42.visitors;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.merge;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.unique;
@@ -74,6 +75,7 @@ import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.nativeCode.TrustedOp;
 import is.L42.top.Deps;
 import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.ProgramTypeSystem;
@@ -738,6 +740,14 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       if(t.genericNumber()+t.genExceptionNumber()!=l.info().nativePar().size()){
         throw new EndError.NotWellFormed(l.poss(),Err.nativeKindParCountInvalid(t,t.genericNumber()+t.genExceptionNumber(),l.info().nativePar().size()));
         }
+      }
+    for(MWT mwt:l.mwts()){
+      String nativeUrl=mwt.nativeUrl();
+      if(!nativeUrl.startsWith("trusted:")){continue;}
+      String nativeOp=nativeUrl.substring("trusted:".length());
+      var op=TrustedOp.fromString(nativeOp);
+      var mw=op.nativeMustWatch(mwt,l.info());
+      checkMissing(mw,merge(l.info().watched(),L(P.pThis0)),l.poss(),Err::missedWatchedNative);
       }
     List<LDom> dom=L(Stream.concat(l.mwts().stream()
       .map(m->m.key()),l.ncs().stream().map(m->m.key())));

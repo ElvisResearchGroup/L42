@@ -30,6 +30,10 @@ NativeNested={
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
       This2.Trait$InvalidName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt 
+    watched=
+      This2.Bool,This2.S,This2.Size,This2.NativeName,
+      This1.NativeType,This1.NativeDoc,This1.NativeMethod
+      This2.Trait$InvalidName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt 
     coherentDep=
       This,This2.Bool,This2.S,This2.Size,This2.NativeName,
       This1.NativeType,This1.NativeDoc,This1.NativeMethod
@@ -47,6 +51,7 @@ NativeType={
   
   #norm{nativeKind=Type
     typeDep=This,This2.S,This1.NativeDoc,This1.NativeNested,This2.NativeName
+    watched=This2.S,This1.NativeDoc,This1.NativeNested,This2.NativeName
     coherentDep=This,This2.S,This1.NativeDoc,This1.NativeNested,This2.NativeName
     }}
 
@@ -65,6 +70,7 @@ NativeDoc={
   
   #norm{nativeKind=Doc,nativePar=This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
     typeDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
+    watched=This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
     coherentDep=This,This1.NativeNested,This2.S,This2.Bool,This2.Size,This2.NativeName,This2.Collection$OutOfBounds,This2.Collection$NoElementInOpt
     }}
 NativeMethod={
@@ -85,6 +91,10 @@ NativeMethod={
   #norm{nativeKind=Method,nativePar=This2.Collection$NoElementInOpt
     typeDep=
        This,This2.S,This2.Size,This2.Bool,
+       This1.NativeDoc,This1.NativeNested,This1.NativeType,
+       This2.NativeName,This2.Collection$NoElementInOpt
+    watched=
+       This2.S,This2.Size,This2.Bool,
        This1.NativeDoc,This1.NativeNested,This1.NativeType,
        This2.NativeName,This2.Collection$NoElementInOpt
     coherentDep=

@@ -4,5 +4,6 @@ read method This1.S text()=native{trusted:get}error void
 mut method Void text(This1.S that)=native{trusted:setMsg}error void
 #norm{nativeKind=LazyMessage
   typeDep=This,This1.S,
+  watched=This1.S,
   coherentDep=This,This1.S, 
   }

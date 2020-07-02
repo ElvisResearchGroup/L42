@@ -89,7 +89,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   loadRun("""
     I={interface method Void i() #typed{}}
-    D={[This1.I] class method This of() method Void i()=void #typed{typeDep=This,This1.I, refined=i() nativeKind=Bool}}
+    D={[This1.I] class method This of() method Void i()=void #typed{typeDep=This,This1.I,watched=This1.I, refined=i() nativeKind=Bool}}
     ""","(This.D x=This.D<:class This.D.of() Void v=x.i() {#norm{}})","")
 //slaves
   ),new AtomicTest(()->
@@ -232,7 +232,8 @@ public static String baseStr="""
     method This0 sum(This0 that)=native{trusted:OP+} error void
     method Void strDebug()=native{trusted:strDebug} error void
     #typed{nativeKind=String,nativePar=This1.ParseErr
-      typeDep=This This1.S This1.ParseErr
+      typeDep=This This1.ParseErr
+      watched=This1.ParseErr
       coherentDep=This,This1.ParseErr
       }
     }
@@ -242,7 +243,7 @@ public static String baseStr="""
     mut method Void #a()=native{trusted:'a'} error void
     mut method Void #b()=native{trusted:'b'} error void
     read method This1.S toS()=native{trusted:toS} error void
-    #typed{typeDep=This This1.S nativeKind=StringBuilder coherentDep=This1.S}
+    #typed{typeDep=This This1.S nativeKind=StringBuilder coherentDep=This1.S watched=This1.S}
     }
   A={
     class method mut This0 of(This1.S n)

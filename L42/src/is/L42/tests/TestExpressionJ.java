@@ -337,7 +337,7 @@ public static void je(String e,String out){
     B={
       class method This0 of()
       method Void mb(This0 b)
-      #norm{nativeKind=String typeDep=This,This1.PE, nativePar=This1.PE, coherentDep=This1.PE}
+      #norm{nativeKind=String typeDep=This,This1.PE,watched=This1.PE, nativePar=This1.PE, coherentDep=This1.PE}
       }
     PE={#norm{nativeKind=LazyMessage}}
     #norm{typeDep=This This.A This.B coherentDep=This.A This.B uniqueId=id1

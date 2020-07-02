@@ -338,6 +338,8 @@ public class Err {
   "Core library literal do not declare all the meta coherence dependencies; the following are missing: "+ps
   ;}public static String missedWatched(Object ps){return
   "Core library literal do not declare all the watched; the following are missing: "+ps
+  ;}public static String missedWatchedNative(Object ps){return
+  "Core library literal do not declare all the watched: a native method requires to watch also the following: "+ps
   ;}public static String missedHiddenSupertypes(Object ps){return
   "Core library literal do not declare all the hidden supertypes; the following are missing: "+ps
   ;}public static String missedUsedMethods(Object ps){return
