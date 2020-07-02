@@ -7,9 +7,9 @@ TestClose1=(
     @Cache.Clear class method Size double(mut Size n)=error void
     }
   {}:Test"Close1"(
-    actual={error Data.Close:code catch error Data.Close.Fail x return x}
+    actual={error Data.Close:code catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
+      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
       |@This1.Cache.Clear class method This1.Size double(mut This1.Size n)=(..)
       |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.Size n) initializes it as This1.Size
       |[file:[###]
@@ -20,9 +20,9 @@ TestClose1=(
     @Cache.Now read method Size double()=this.n()+this.n()
     }
   {}:Test"Close2"(
-    actual={error Data.Close:code2 catch error Data.Close.Fail x return x}
+    actual={error Data.Close:code2 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
+      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
       |@This1.Cache.Now read method This1.Size double()=(..)
       |must be a class method
       |[file:[###]
@@ -32,9 +32,9 @@ TestClose1=(
     class method mut This of::0(Size n)
     }
   {}:Test"Close3"(
-    actual={error Data.Close:code3 catch error Data.Close.Fail x return x}
+    actual={error Data.Close:code3 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
+      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
       |nested class { }
       |Class is already close
       |[file:[###]
@@ -49,9 +49,9 @@ TestClose1=(
       )
     }
   {}:Test"Close4"(
-    actual={error Data.Close:code4 catch error Data.Close.Fail x return x}
+    actual={error Data.Close:code4 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
+      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
       |@This1.Cache.Clear class method This1.Size append1(mut This1.S.List thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
       |[file:[###]
@@ -62,9 +62,9 @@ TestClose1=(
     @Cache.Now class method Size double(Size nn)=nn+nn
     }
   {}:Test"Close5"(
-    actual={error Data.Close:code5 catch error Data.Close.Fail x return x}
+    actual={error Data.Close:code5 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
+      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
       |@This1.Cache.Now class method This1.Size double(This1.Size nn)=(..)
       |No candidate getter/exposer with name nn and method modifier Immutable or Readable
       |[file:[###]
@@ -75,9 +75,9 @@ TestClose1=(
     @Cache.Now class method Size double(Size n)=n+n
     }
   {}:Test"Close6"(
-    actual={error Data.Close:code6 catch error Data.Close.Fail x return x}
+    actual={error Data.Close:code6 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Message.Guard):
+      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
       |@This1.Cache.Now class method This1.Size double(This1.Size n)=(..)
       |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.Size n)
       |[file:[###]

@@ -1,9 +1,19 @@
 reuse [AdamTowel]
-
+Point=Data:{Num x,Num y}
+Person=Data:{var Point location, var S name, mut S.List allergies
+  @Cache.Now class method Void invariant(S name)=(
+    if name==S"" error X"empty name"
+    )
+  }
+Unit=Data:{method Void foo()=Debug(S"unitcode")}
 Direction=Collection.Enum:{
   North={}, East={},South={},Weast={}
   }
 Main=(
+  mut Person p=Person(location=Point(x=0\,y=0\),name=S"Bob",allergies=\[S""])
   Debug(Direction.Vals())
+  Unit().foo()
+  Debug(Unit()==Unit())
+  p.name(S"")
   Debug(Direction.Vals())
   )

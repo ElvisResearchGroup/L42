@@ -1,9 +1,9 @@
 CloseAll={
-  class method Trait (Trait that)=(
+  class method Trait (Trait that)[Data.Close$Fail]=(
     n=Introspection.Nested.from(library=that.code())
     This(that,n=n)  
     )
-  class method Trait (Trait that,Introspection.Nested n)=(
+  class method Trait (Trait that,Introspection.Nested n)[Data.Close$Fail]=(
     var res=that
     for ni in n.nesteds() (res:=This(res,n=ni))
     if !n.isInterface() && !n.isClose() (res:=Data.Close(n.nameFromRoot()):res)
@@ -23,10 +23,13 @@ method Size maxLev(Introspection.Nested that)=(
     )
   res+1Size
   )
-method Library :(Library that)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
+method Library :(Library that)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
   (this:Trait(that)).code()
+
+method Trait :(class Trait.Lifted lifted)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
+  (this:lifted())
   
-method Trait :(Trait trait)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
+method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
   max=this.maxLev(Introspection.Nested.from(library=trait.code()))
   var res=trait
   (var lev=0Size while lev<max (//range will come later

@@ -1,4 +1,7 @@
-@Public Close$Fail=Class:Message.Native:{[Message$Guard]}      
+@Public Fail={interface [Message$Guard]}
+
+@Public Close$Fail=Class:Message.Native:{[Fail]} 
+
 Close$Meta={
   class method This #apply()
   method Library close(Library that,This2.S name)=native{trusted:close} error void
@@ -8,15 +11,21 @@ Close$Meta={
     coherentDep=This1.Close$Fail,
     nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
     }}
+
 @Public Close={
   Name that
   @Public class method This(Name that)
   @Public ClassOperators={class method This1()=This1('This)}
-  @Public method Trait :(Trait t)=Trait(this:t.code())
-  @Public method Trait :(class Trait.Lifted l)=Trait(this:l.code())
-  @Public method Library :(Library that)=Close$Meta().close(that,name=this.that().toS())
+  @Public method Trait :(Trait t)[Close$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[Close$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[Close$Fail]={
+    return Close$Meta().close(that,name=this.that().toS())
+    catch error Close$Fail x exception x
+    } 
   }
-@Public AddConstructors$Fail=Class:Message.Native:{[Message$Guard]}      
+
+@Public AddConstructors$Fail=Class:Message.Native:{[Fail]}      
+
 AddConstructors$Meta={
   class method This #apply()
   method Library addConstructors(Library that,This2.S name,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
@@ -26,16 +35,22 @@ AddConstructors$Meta={
     coherentDep=This1.AddConstructors$Fail,
     nativePar=This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail
     }}
+
 @Public AddConstructors={
   Name that
   @Public class method This(Name that)
   @Public ClassOperators={class method This1()=This1('This)}
-  @Public method Trait :(Trait t)=Trait(this:t.code())
-  @Public method Trait :(class Trait.Lifted l)=Trait(this:l.code())
-  @Public method Library :(Library that)=AddConstructors$Meta().addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
+  @Public method Trait :(Trait t)[AddConstructors$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[AddConstructors$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[AddConstructors$Fail]={
+    return AddConstructors$Meta()
+      .addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
+    catch error AddConstructors$Fail x exception x
+    }
   }
 
-@Public Wither$Fail=Class:Message.Native:{[Message$Guard]}      
+@Public Wither$Fail=Class:Message.Native:{[Fail]}      
+
 Wither$Meta={
   class method This #apply()
   method Library wither(Library that,This2.S name,This2.S immK)=native{trusted:wither} error void
@@ -45,23 +60,37 @@ Wither$Meta={
     coherentDep=This1.Wither$Fail,
     nativePar=This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail
     }}
+
 @Public Wither={
   Name that
   @Public class method This(Name that)
   @Public ClassOperators={class method This1()=This1('This)}
-  @Public method Trait :(Trait t)=Trait(this:t.code())
-  @Public method Trait :(class Trait.Lifted l)=Trait(this:l.code())
-  @Public method Library :(Library that)=Wither$Meta().wither(that,name=this.that().toS(),immK=S"#immK")
+  @Public method Trait :(Trait t)[Wither$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[Wither$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[Wither$Fail]={
+    return Wither$Meta()
+      .wither(that,name=this.that().toS(),immK=S"#immK")
+    catch error Wither$Fail x exception x
+    }
   }
-@Public ClassOperators={class method This1()=This1()}
+  
 AddEqOp=Trait:{
     method Bool ==(This that)=System.immEquality(this and=that)
+    }
+
+AddNEqOp=Trait:{
+    method Bool ==(This that)
+    method Bool !=(This that)= !(this==that)
+    }
+
+AddReadEqOp=Trait:{
     read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
-    method Bool !=(This that)=!(this==that)
     }
-AddHasToS=Trait:{[HasToS]
-    method toS()=System.immToString(System.readClone(this))
-    }
+
+AddHasToS=Trait:{
+  [HasToS] method toS()=System.immToString(System.readClone(this))
+  }
+  
 AddMutClone=Trait:{
     mut method capsule This mutClone()=(
       capsule Any any=System.mutClone(this)
@@ -70,6 +99,7 @@ AddMutClone=Trait:{
       catch return capsule Any _ error void
       )
     }
+    
 AddReadClone=Trait:{
     read method This clone()=(
       Any any=System.readClone(this)
@@ -77,52 +107,49 @@ AddReadClone=Trait:{
       catch return This self self
       catch return Any _ error void
       )
-    }    
-@Public class method This()
-@Public method Library :(Library lib)=(this:Trait(lib)).code()
-@Public method Trait :(Trait that)=(
+    } 
+    
+@Public ClassOperators={class method This1()=This1()}
+
+Name that
+@Public method Trait optionallyApply(Trait that,Trait acc)={
+  if this.that()==Name"This" return that:acc 
+  return that['This=>this.that()]:acc
+  catch Any _ return acc
+  }
+@Public class method This(Name that)
+@Public class method This()=This('This)
+
+@Public method Library :(Library lib)[Fail]=(this:Trait(lib)).code()
+@Public method Trait :(Trait that)[Fail]=(
   var Trait acc=that
-  acc:=AddConstructors:acc
-  acc:=Wither:acc
-  acc:=Close:acc
-  catch Trait$MethodClash x error x
-  catch Trait$ClassClash x error x
-  //TODO: handle errors for Close,AddConstructors and so on
-  //declare a common Data.Fail interface/wrapper and Data will throw exception Data.Fail
-  //TODO: make some stuff private?
-  (acc:=AddHasToS:acc catch Any _ void)
-  (acc:=AddEqOp:acc catch Any _ void)
-  (acc:=AddMutClone:acc catch Any _ void)
-  (acc:=AddReadClone:acc catch Any _ void)
+  name=this.that()
+  acc:=AddConstructors(name):acc
+  acc:=Wither(name):acc
+  acc:=Close(name):acc
+  acc:=this.optionallyApply(AddHasToS(), acc=acc)
+  acc:=this.optionallyApply(AddEqOp(), acc=acc)
+  acc:=this.optionallyApply(AddReadEqOp(), acc=acc)
+  acc:=this.optionallyApply(AddNEqOp(), acc=acc)
+  acc:=this.optionallyApply(AddMutClone(), acc=acc)
+  acc:=this.optionallyApply(AddReadClone(), acc=acc)
   acc
   )
 @AbstractTowel{data}
 /*
-Data: adds
+Current behaviour of Data: adds
   //using Traits
   -read conventional structural equals//need a wrapper if the type of the argument is not This0?
   -read conventional structural toString
-  -read niceToString
-  -read hashCode from conventional string?
-  -read lift toLibrary capsule val?
+  //--missing: -read lift toLibrary capsule val? a method using the structural toString procedure to make the code returning the object
   //using field informations
   -imm wither
   -constructor with as many fwds as possible
-  Do not close state, do not handle invariant
-  Return a library, not a Trait
-
+  It closes the state and handle the invariant
+  -using Class: also check for consistency
 Class: check that the library is consistent (and may extract from a trait)
-  Both Data subsume Class.
+Class.Abstract and Data.Abstract may not check consistency?
+-We may want to add more fields to personalize the name of the two constructors
 
-Do we need special treatement for classes with no fields?
-in this case it would make an Imm constructor, but it would be deceiving to allow Data on no fields.
-Would also add an operator == even if no fields... is this transparent with structural checks?
-
-Action: on code with only 1 abs method named #apply, it mark them as interfaces
-  on code implementing an Action method behave as Class and then close
-all the state an make all but the interface methods private
-Organize: will rename A$B in A.B and so on; will mark as private
-methods not annotated as @Public
-Unit
-Alphanumeric
+//it seams like we do not need special treatment for classes with no fields
 */
