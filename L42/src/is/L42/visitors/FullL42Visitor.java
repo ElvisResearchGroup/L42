@@ -484,6 +484,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     check(ctx);
     S s=opt(ctx.m(),null,this::visitM);
     List<Full.Par> ps=L(ctx.par(),(c,p)->c.add(visitPar(p)));
+    if(ps.size()==1 && ps.get(0)._that()==null && ps.get(0).es().isEmpty()){ps=L();}
     return new Full.Call(pos(ctx), eVoid, s, true, ps);
     }
   Full.E parseBinOp(Pos pos,List<? extends ParserRuleContext> es0,List<TerminalNode>ops0) {

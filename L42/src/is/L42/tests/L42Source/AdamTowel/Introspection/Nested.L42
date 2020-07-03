@@ -57,6 +57,8 @@ class method This(NativeNested that)=\(i=that)
 
 @Public method Bool isBinded()=this.i().isBinded()
 
+@Public method S isCoherent()=this.i().isCoherent()
+
 @Public method S toFullS()=this.i().toFullString()
 
 @Public method This root()=\(this.i().root())  

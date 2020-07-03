@@ -18,6 +18,7 @@ NativeNested={
   method This2.Bool isClose()=native{trusted:isClose}error void
   method This2.Bool isInterface()=native{trusted:isInterface}error void
   method This2.Bool isBinded()=native{trusted:isBinded}error void
+  method This2.S isCoherent()=native{trusted:isCoherent}error void
   method This2.S toFullString()=native{trusted:toFullString}error void
   method This root()=native{trusted:root}error void  
   method This2.NativeName nameFromRoot()=native{trusted:nameFromRoot}error void
@@ -112,8 +113,8 @@ Doc$={class method This(NativeDoc that) read method Bool readEquality(read This 
 Method$={class method This(NativeMethod that) read method Bool readEquality(read This that)}
 @Public Method$List=Collection.list(Method$)
 ExposeEq=Trait:{@Public method Bool ==(This that) @Public method Bool !=(This that)}
-@Public Nested=Class:Data:ExposeEq:{...}
-@Public Type=Class:Data:ExposeEq:{...}
-@Public Doc=Class:Data:ExposeEq:{...}
-@Public Method=Class:Data:ExposeEq:{...}
+@Public Nested=Class$CanIncoherent:Data:ExposeEq:{...}
+@Public Type=Class$CanIncoherent:Data:ExposeEq:{...}
+@Public Doc=Class$CanIncoherent:Data:ExposeEq:{...}
+@Public Method=Class$CanIncoherent:Data:ExposeEq:{...}
 @AbstractTowel{introspection}

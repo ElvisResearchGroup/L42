@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.nativecache.ValueCache;
+import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core.Doc;
@@ -34,6 +35,7 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
+import is.L42.typeSystem.Coherence;
 
 public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
   static String posStr(List<Pos> poss){
@@ -183,7 +185,21 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     this.publicNCs=L(currentL.ncs().stream().filter(m->!m.key().hasUniqueNum()));
     this.publicMWTs=L(currentL.mwts().stream().filter(m->!m.key().hasUniqueNum()));
     this.publicTs=L(currentL.ts().stream().filter(m->!m.p().hasUniqueNum()));
-    } 
+    }
+  private Program myP(){
+    if(this.isBinded()){
+      if(!this._classAny.isNCs()){return Program.emptyP;}
+      var res=Resources.currentP._navigate(this._classAny.toNCs());
+      assert res!=null;
+      return res;
+      }
+    return Resources.currentP.push(Resources.currentC,this.currentL);
+    }
+  public String isCoherent() {
+    try{new Coherence(myP(),false).isCoherent(false);}
+    catch(EndError e) {return e.computeMsg();}
+    return "";
+    }
   public String toFullString(){
     var v=new FullS();
     this.currentL.accept(v);

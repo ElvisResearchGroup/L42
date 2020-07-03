@@ -1,5 +1,9 @@
+IncoherentClass=Message:{[Message$Guard]}
 ClassOperators={class method class This1()=This1}
-class method Library #colon0(Trait that)=that.code()
-class method Library #colon0(class Trait.Lifted lifted)=lifted.code()
-
+class method Library #colon0(class Trait.Lifted lifted)[IncoherentClass]=this:lifted()
+class method Library #colon0(Trait that)[IncoherentClass]={
+  S s=Introspection.Nested.from(library=that.code()).isCoherent()
+  if s==S"" return that.code()
+  exception IncoherentClass"%s"
+  }
 @AbstractTowel{class}

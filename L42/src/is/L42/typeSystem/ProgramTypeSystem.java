@@ -72,7 +72,8 @@ public class ProgramTypeSystem {
     if(info.nativeKind().isEmpty()){return;}
     var nk=TrustedKind._fromString(info.nativeKind());
     assert nk!=null;
-    for(int i:range(nk.genericNumber(),nk.genExceptionNumber())){
+    int base=nk.genericNumber();
+    for(int i:range(base,base+nk.genExceptionNumber())){
       P pi=info.nativePar().get(i);
       errIf(!info.coherentDep().contains(pi),
         l.poss(),Err.nativeExceptionNotCoherentDep(info.nativeKind(),pi)

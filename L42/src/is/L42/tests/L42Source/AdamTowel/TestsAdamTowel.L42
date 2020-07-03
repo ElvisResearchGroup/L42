@@ -73,7 +73,7 @@ TestSizeParsing=(
       )"Error is %x"
   )
 NotCoh={This field, class method This ()}
-TestMakeNotCohList=Class:Collection.listTrait()['Elem=>NotCoh<:class Any]
+TestMakeNotCohList=Class.CanIncoherent:Collection.listTrait()['Elem=>NotCoh<:class Any]
 TestSList=(
   s=S.List()
   s.add(\"hi")

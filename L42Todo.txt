@@ -1,0 +1,25 @@
+-CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
+
+-L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
+
+-Close: the java file call Close.java seams to be the starting point to do more caching
+
+
+-Upgrade Class: check that the library is consistent (and may extract from a trait)
+Class: check that the library is consistent (and may extract from a trait)
+Class.Abstract and Data.Abstract may not check consistency?
+
+-Class$CanIncoherent is a terrible name
+
+-capturing stack overflow?
+
+
+Should I do Alphanumeric?
+//   );}@Test public void t1(){top(//TODO: fix, so that also a class expression can be a top level toLibrary?
+//   top("{A={class method Library #toLibrary()={#norm{}}} B=(class A a=A<:class A a)}","{A={#typed{}}B={#typed{}}#norm{}}")
+
+
+//NO?:
+Should organize check that $ renamed stuff is renamed onto an existing target?
+otherwise Organize:{Foo={}   Fooo$={}} works with no reported errors
+But.... Foo$Bar is ok if Foo exists and Bar does not...

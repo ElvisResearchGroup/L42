@@ -10,7 +10,7 @@ Direction=Collection.Enum:{
   North={}, East={},South={},Weast={}
   }
 Main=(
-  mut Person p=Person(location=Point(x=0\,y=0\),name=S"Bob",allergies=\[S""])
+  mut Person p=Person(location=Point(x=0\,y=0\),name=S"Bob",allergies=\[])
   Debug(Direction.Vals())
   Unit().foo()
   Debug(Unit()==Unit())

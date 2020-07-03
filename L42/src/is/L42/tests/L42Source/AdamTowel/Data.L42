@@ -1,6 +1,6 @@
 @Public Fail={interface [Message$Guard]}
 
-@Public Close$Fail=Class:Message.Native:{[Fail]} 
+@Public Close$Fail=Class$CanIncoherent:Message.Native:{[Fail]} 
 
 Close$Meta={
   class method This #apply()
@@ -24,7 +24,7 @@ Close$Meta={
     } 
   }
 
-@Public AddConstructors$Fail=Class:Message.Native:{[Fail]}      
+@Public AddConstructors$Fail=Class$CanIncoherent:Message.Native:{[Fail]}      
 
 AddConstructors$Meta={
   class method This #apply()
@@ -49,7 +49,7 @@ AddConstructors$Meta={
     }
   }
 
-@Public Wither$Fail=Class:Message.Native:{[Fail]}      
+@Public Wither$Fail=Class$CanIncoherent:Message.Native:{[Fail]}      
 
 Wither$Meta={
   class method This #apply()

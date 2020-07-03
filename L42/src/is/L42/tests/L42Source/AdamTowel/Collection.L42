@@ -12,7 +12,7 @@ OptTrait=Trait:{
     }}
 @Public class method Trait optionalTrait()=OptTrait()    
 @Public class method Library optional(class Any that)={
-  return Class:OptTrait['Elem=>that]
+  return Class$CanIncoherent:OptTrait['Elem=>that]
   catch Trait$InvalidName e error e
   catch Trait$InvalidMap e error e
   catch Trait$ClassClash e error e
@@ -33,7 +33,7 @@ EqBase=Trait:{
   class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
   }
 @Public class method Library list(class Any that)[Trait$InvalidMap]={
-  return Class:(this.listEqTrait()+EqBase)['Elem=>that]
+  return Class$CanIncoherent:(this.listEqTrait()+EqBase)['Elem=>that]
   catch Trait$InvalidName e error e
   catch Trait$ClassClash e error e
   catch Trait$MethodClash e error e

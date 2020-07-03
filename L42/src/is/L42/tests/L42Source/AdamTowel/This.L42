@@ -62,7 +62,7 @@ DeployAAA=(
     @Public Name$Mapping={...}
     @Public Name={...}
     @Public Trait={...}
-    @Public Class={...}
+    Class$CanIncoherent={...}
     @Public Deploy={...}
     @Public Message={...}
     @Public Message$Guard={interface [Message]}
@@ -71,29 +71,30 @@ DeployAAA=(
     LazyMessageTrait={...}
     @Public X=Message:{...}
     @Public Collection$IterationIncomplete=Message:{[Message$Guard]}
-    @Public Collection$NoElementInOpt=Class:Message.Native:{[Message$Guard]}
-    @Public Collection$OutOfBounds=Class:Message.Native:{[Message$Guard]}
-    @Public Collection$ElementNotImm=Class:Message.Native:{[Message$Guard]}
-    @Public Collection$ElementNotMut=Class:Message.Native:{[Message$Guard]}    
+    @Public Collection$NoElementInOpt=Class$CanIncoherent:Message.Native:{[Message$Guard]}
+    @Public Collection$OutOfBounds=Class$CanIncoherent:Message.Native:{[Message$Guard]}
+    @Public Collection$ElementNotImm=Class$CanIncoherent:Message.Native:{[Message$Guard]}
+    @Public Collection$ElementNotMut=Class$CanIncoherent:Message.Native:{[Message$Guard]}    
     @Public Collection={...}
-    @Public S$List=Class:Collection.listEqTrait()['Elem=>S]:{
+    @Public S$List=Class$CanIncoherent:Collection.listEqTrait()['Elem=>S]:{
       class method Bool equals(read S a,read S b)=a==b
       }
-    @Public Name$List=Class:Collection.listEqTrait()['Elem=>Name]:{
+    @Public Name$List=Class$CanIncoherent:Collection.listEqTrait()['Elem=>Name]:{
       class method Bool equals(read Name a,read Name b)=a==b
       }
-    Size$List=Class:Collection.listEqTrait()['Elem=>Size]:{
+    Size$List=Class$CanIncoherent:Collection.listEqTrait()['Elem=>Size]:{
       class method Bool equals(read Size a,read Size b)=a==b
       }
-    Num$List=Class:Collection.listEqTrait()['Elem=>Num]:{
+    Num$List=Class$CanIncoherent:Collection.listEqTrait()['Elem=>Num]:{
       class method Bool equals(read Num a,read Num b)=a==b
-      }    
+      }
     @Public Cache={...}
     @Public Data={...}
-    @Public Introspection=Class:Trait({...})[
+    @Public Introspection=Class$CanIncoherent:Trait({...})[
       'Nested$=>'Nested;'Type$=>'Type;'Doc$=>'Doc;'Method$=>'Method
       ]
     DelayTyping={}
+    @Public Class={...}
     @Public Organize={...}
     Deploy$={...}
     Load$={}
@@ -117,7 +118,7 @@ DeployAdamTowel={reuse[#$aaa]
       'Trait_InvalidMap=>'Trait.InvalidMap;
       ]
     organize=Organize(public='Public)
-    toDeploy=Class:(organize:tot)[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
+    toDeploy=Class$CanIncoherent:(organize:tot)[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
     Debug(Introspection.Nested.from(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)
     )
