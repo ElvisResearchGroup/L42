@@ -1,4 +1,17 @@
 reuse[AdamTowel]
+TestDataRelax=(
+  {}:Test"DataNoRelax"((
+    _=Data:{method Void foo(S notAField)}
+    catch Class.IncoherentClass x (Bool.true())
+    Bool.false()
+    ))
+  {}:Test"DataRelax"((
+    _=Data.Relax:{method Void foo(S notAField)}
+    catch Class.IncoherentClass x (Bool.false())
+    Bool.true()
+    ))
+
+  )
 TestDataFwd={
   A=Data:{mut B b,var S name}
   B=Data:{mut A a,var S name}
@@ -6,11 +19,10 @@ TestDataFwd={
     mut A a=A(b=b,name=S"myA")
     mut B b=B(a=a,name=S"myB")
     {}:Test"name"(expected=S"myB",actual=a.b().name())
-    //TODO: test and fix toS for circular objects
     /*{}:Test"toS"(expected=S"""
-      b1=B(a=a1, name="myB")
-      a1=A(b=b1, name="myA")
-      a1
+      |b1=B(a=a1, name="myB")
+      |a1=A(b=b1, name="myA")
+      |a1
       """.trim(),actual=a)*/
     )
   }

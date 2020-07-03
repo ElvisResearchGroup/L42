@@ -197,7 +197,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     }
   public String isCoherent() {
     try{new Coherence(myP(),false).isCoherent(false);}
-    catch(EndError e) {return e.computeMsg();}
+    catch(EndError e) {return e.getMessage();}
     return "";
     }
   public String toFullString(){

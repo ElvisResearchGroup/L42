@@ -1,6 +1,5 @@
-@Public Fail={interface [Message$Guard]}
 
-@Public Close$Fail=Class$CanIncoherent:Message.Native:{[Fail]} 
+@Public Close$Fail=Class$Relax:Message.Native:{[Data$Fail]} 
 
 Close$Meta={
   class method This #apply()
@@ -24,7 +23,7 @@ Close$Meta={
     } 
   }
 
-@Public AddConstructors$Fail=Class$CanIncoherent:Message.Native:{[Fail]}      
+@Public AddConstructors$Fail=Class$Relax:Message.Native:{[Data$Fail]}      
 
 AddConstructors$Meta={
   class method This #apply()
@@ -49,7 +48,7 @@ AddConstructors$Meta={
     }
   }
 
-@Public Wither$Fail=Class$CanIncoherent:Message.Native:{[Fail]}      
+@Public Wither$Fail=Class$Relax:Message.Native:{[Data$Fail]}      
 
 Wither$Meta={
   class method This #apply()
@@ -108,20 +107,33 @@ AddReadClone=Trait:{
       catch return Any _ error void
       )
     } 
-    
-@Public ClassOperators={class method This1()=This1()}
+
+@Public Relax={
+  @Public ClassOperators={class method This2()=This1()}
+  class method This1()=This1('This,check=Bool.false())
+  class method This1(Name that)=This1(that,check=Bool.false())
+  }
 
 Name that
+
+Bool check
+
+@Public class method This(Name that,Bool check)
+
+@Public class method This(Name that)=This(that,check=Bool.true())
+
+@Public class method This()=This('This,check=Bool.true())
+
+@Public ClassOperators={class method This1()=This1()}
+
 @Public method Trait optionallyApply(Trait that,Trait acc)={
   if this.that()==Name"This" return that:acc 
   return that['This=>this.that()]:acc
   catch Any _ return acc
   }
-@Public class method This(Name that)
-@Public class method This()=This('This)
-
-@Public method Library :(Library lib)[Fail]=(this:Trait(lib)).code()
-@Public method Trait :(Trait that)[Fail]=(
+@Public class method Void checkCoherent(Library that)[Class$IncoherentClass]=void
+@Public method Library :(Library lib)[Data$Fail]=(this:Trait(lib)).code()
+@Public method Trait :(Trait that)[Data$Fail]=(
   var Trait acc=that
   name=this.that()
   acc:=AddConstructors(name):acc
@@ -133,6 +145,7 @@ Name that
   acc:=this.optionallyApply(AddNEqOp(), acc=acc)
   acc:=this.optionallyApply(AddMutClone(), acc=acc)
   acc:=this.optionallyApply(AddReadClone(), acc=acc)
+  if this.check() (This.checkCoherent(acc.code()))
   acc
   )
 @AbstractTowel{data}

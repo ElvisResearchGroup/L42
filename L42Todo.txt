@@ -3,16 +3,28 @@
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 
 -Close: the java file call Close.java seams to be the starting point to do more caching
+-file 7 is quite misterius... what is it? solve the TODOs when parallelizing?
 
-
--Upgrade Class: check that the library is consistent (and may extract from a trait)
-Class: check that the library is consistent (and may extract from a trait)
-Class.Abstract and Data.Abstract may not check consistency?
-
--Class$CanIncoherent is a terrible name
+-circular toString in TestData?
+-toLibrary in Data? is similar to the toString...
 
 -capturing stack overflow?
+nativeKind=NonDeterministicError
+if a catch capture a NDE, then the method need to be bridge or #$
 
+method A a() native{SO}=e
+  (
+  System.#$enableNonDeterministicError()
+  e0
+  catch error NonDeterministicError x e1
+  e2
+  )
+
+  SO.#$enable((
+  e0
+  catch error SO x e1
+  e2
+  ))
 
 Should I do Alphanumeric?
 //   );}@Test public void t1(){top(//TODO: fix, so that also a class expression can be a top level toLibrary?

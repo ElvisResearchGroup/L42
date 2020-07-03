@@ -61,7 +61,7 @@ mut method Void #add(mut Elem right)=this.#add(\size, val=right)
 mut method  Void removeLeft()=this.remove(0\)
 mut method  Void removeRight()=this.remove(\size.#pred())
 mut method mut SlashRes res()=SlashRes(this)
-SlashRes=Class$CanIncoherent:Trait({
+SlashRes=Class$Relax:Trait({
   class method mut This #apply()
   class method mut This #apply(fwd mut This1 that)=native{trusted:optK} error void
   read method read This1 get()=native{trusted:get}error void

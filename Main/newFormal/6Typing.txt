@@ -46,12 +46,14 @@ _______
    assert p(This0).Info.refined={s| P in p(This0).Ts.Ps and s in dom(p(P))}//should be already true for well formedness
    forall P in p(This0).Ts.Ps, p(P).Ts.Ps subseteq p(This0).Ts.Ps
 * p |- MWT //(member method)
+    MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
+    forall MH in MHs: p|- MWT.MH <=MH
     if MWT.e?=e then 
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P
       p;MWT.G;empty |= e :_ <=fwd% MWT.T.mdf
       if MWT.native?!=empty then typePlugin(p;MWT)
-    MHs={MH[from P;p] | P in p(This0).Ts.Ps and p(P)(MWT.s)=MH}//assert all abstract
-    forall MH in MHs: p|- MWT.MH <=MH
+      if (_ catch error imm P x _ _) in MWT.e and p(P).Info.nativeKind=NonDeterministicError//TODO: add in code? about capturing non deterministic errors
+        then MWT.s starts with #$ //and then update J to generate catches...
 _______
 #define p |- MH1 <= MH2
 * p |- MH1 <= MH2 

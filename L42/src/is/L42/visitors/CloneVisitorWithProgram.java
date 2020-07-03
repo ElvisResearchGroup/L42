@@ -57,6 +57,7 @@ public class CloneVisitorWithProgram extends CloneVisitor {
       }
     Program aux=p;
     var lastPos=poss;
+    poss=s.poss();
     if(lastCMs instanceof C){
       p=p.push((C)lastCMs,s);
       whereFromTop.add(lastCMs);
