@@ -2,7 +2,7 @@ reuse [AdamTowel]
 Base=Trait:{reuse [AdamTowel]
   Unit={...}
   TraitSI=Organize:Trait:{
-    Support=Class:Unit.TraitAbstractSupport
+    Support=Class.Relax:Unit.TraitAbstractSupport
     //the seven basic units
     Meter=Unit(Support)//meters
     Kg=Unit(Support)//kilograms
@@ -15,52 +15,52 @@ Base=Trait:{reuse [AdamTowel]
     Velocity=Meter.Per(Second)
 //             Unit.CompositUnit(TraitUnit,Meter, per=Second)
     Meter2=Meter.Times(Meter)
-    Meter$=Class:Meter2.TraitFromMeter:Velocity.TraitFromMeter
+    Meter$=Class.Relax:Meter2.TraitFromMeter:Velocity.TraitFromMeter
     
     Acceleration=Velocity.Per(Second)
-    Velocity$=Class:Acceleration.TraitFromVelocity
+    Velocity$=Class.Relax:Acceleration.TraitFromVelocity
 
     Meter3=Meter2.Times(Meter)
-    Meter2$=Class:Meter3.TraitFromMeter2
+    Meter2$=Class.Relax:Meter3.TraitFromMeter2
 
     Hertz=Second.Inverse()  //hertz, 1/S
     Coulomb=Second.Times(Ampere)
     Becquerel=Second.Inverse()//use Becquerel(1Support per=mySeconds) to build
-    Second$=Class:Hertz.TraitFromSecond:Coulomb.TraitFromSecond //can use myNum/24Second to get Hertz
+    Second$=Class.Relax:Hertz.TraitFromSecond:Coulomb.TraitFromSecond //can use myNum/24Second to get Hertz
     
     Newton=Kg.Times(Acceleration)
     Density=Kg.Per(Meter3)
-    Kg$=Class:Newton.TraitFromKg:Density.TraitFromKg
+    Kg$=Class.Relax:Newton.TraitFromKg:Density.TraitFromKg
 
     Pascal=Newton.Per(Meter2)
     Joule=Newton.Times(Meter)
-    Newton$=Class:Pascal.TraitFromNewton:Joule.TraitFromNewton
+    Newton$=Class.Relax:Pascal.TraitFromNewton:Joule.TraitFromNewton
   
     Watt=Joule.Per(Second)
     Gray=Joule.Per(Kg)
     Sievert=Joule.Per(Kg)//use Sievert(myJ, per=myKg) to build
     Entropy=Joule.Per(Kelvin)
-    Joule$=Class:Watt.TraitFromJoule:Gray.TraitFromJoule:Entropy.TraitFromJoule
+    Joule$=Class.Relax:Watt.TraitFromJoule:Gray.TraitFromJoule:Entropy.TraitFromJoule
     
     Volt=Watt.Per(Ampere)
-    Watt$=Class:Volt.TraitFromWatt
+    Watt$=Class.Relax:Volt.TraitFromWatt
     
     Farad=Coulomb.Per(Volt)
-    Coulomb$=Class:Farad.TraitFromCoulomb
+    Coulomb$=Class.Relax:Farad.TraitFromCoulomb
     
     Ohm=Volt.Times(Ampere)
     Weber=Volt.Times(Second)
-    Volt$=Class:Ohm.TraitFromVolt:Weber.TraitFromVolt
+    Volt$=Class.Relax:Ohm.TraitFromVolt:Weber.TraitFromVolt
     
     Siemens=Ohm.Inverse()
     Ohm$=Class:Siemens.TraitFromOhm
 
     Tesla=Weber.Per(Meter2)
     Henry=Weber.Per(Ampere)
-    Weber$=Class:Tesla.TraitFromWeber:Henry.TraitFromWeber
+    Weber$=Class.Relax:Tesla.TraitFromWeber:Henry.TraitFromWeber
         
     Katal=Mole.Per(Second)
-    Mole$=Class:Katal.TraitFromMole
+    Mole$=Class.Relax:Katal.TraitFromMole
     //constants
     @Cache.Lazy class method Hertz caesiumTransitionFrequency()
       =9192631770Hertz

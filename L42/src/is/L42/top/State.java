@@ -202,6 +202,20 @@ public class State implements Serializable{
     var pts=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pAny);
     ce.visitable().accept(pts);
     var cmp=pts._computed();
+    /*if(cmp==P.pAny){//TODO: should not be needed
+      try{
+        var pts0=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pVoid);
+        ce.visitable().accept(pts0);
+        cmp=pts._computed();
+        }
+      catch(EndError e0){try{
+        var pts0=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pLibrary);
+        ce.visitable().accept(pts0);
+        cmp=pts._computed();        
+      }
+      catch(EndError e1){
+        //correctly ignored
+      }}}*/
     if(cmp==null){cmp=P.pVoid;}
     ce.visitable().accept(new MdfTypeSystem(p,G.empty(),Collections.emptySet(),Mdf.Immutable));
     if(cmp==P.pLibrary || cmp==P.pVoid){return cmp;}

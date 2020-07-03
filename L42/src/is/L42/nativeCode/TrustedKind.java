@@ -72,22 +72,19 @@ public enum TrustedKind implements TrustedT{
       }
     @Override public int genExceptionNumber(){return 5;}
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
-    },  
+    },
   LazyMessage("L42£LazyMsg"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return new L42£LazyMsg();";
     }
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
-  /*TODO:  typing of program: native kinds need to be
-   -known,
-   -have the right amount of nativeGens//done?
-   -constructor have no args and return mut/imm//TODO
-   -some of those gens need to be NCs//TODO //??? what I meant here??
-   -some of those gens need to point to other nativeKind
-   //Done for "LazyMsg is the only native error" in checkNativeExceptions(p)
-   //are there other cases?
-  */ 
+  NonDeterministicError("L42£NonDeterministicError"){public String factory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return new L42£NonDeterministicError();";
+    }
+    @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
+    },
   Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==4;
@@ -97,7 +94,6 @@ public enum TrustedKind implements TrustedT{
     @Override public int genExceptionNumber(){return 3;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     },
-  //TODO: how Opt work on int/float/String?
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;

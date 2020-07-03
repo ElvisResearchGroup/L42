@@ -347,6 +347,18 @@ public class Sum {
       Info info2=l2.info();
       if(isInterface3&&!l1.isInterface()){info1=info1.withWatched(L()).withCoherentDep(L());}
       if(isInterface3&&!l2.isInterface()){info2=info2.withWatched(L()).withCoherentDep(L());}
+      if(!info1.nativeKind().isEmpty() && !info2.nativeKind().isEmpty()){
+        if(!info1.nativeKind().equals(info2.nativeKind())){
+          err(cs,l1,l2,()->"The two nativeKind are incompatible:"+l1.info().nativeKind()+" and "+l2.info().nativeKind());
+          }
+        info2=info2.withNativeKind("");
+        }
+      if(!info1.nativePar().isEmpty() && !info2.nativePar().isEmpty()){
+        if(!info1.nativePar().equals(info2.nativePar())){
+          err(cs,l1,l2,()->"The two nativePar are incompatible:"+l1.info().nativePar()+" and "+l2.info().nativePar());
+          }
+        info2=info2.withNativePar(L());
+        }
       Info info3=info1.sumInfo(info2);
       LinkedHashSet<S> refineds=new LinkedHashSet<>(info3.refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(info3.typeDep());

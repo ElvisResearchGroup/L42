@@ -1,23 +1,14 @@
 reuse[#$aaa]
-BaseErrorTraitAddOns=Trait:{[HasToS,Message,Message$Guard]
-  class method This ()
-  class method mut This (S that)
-  read method S text()
-  class method This #from(S$StringBuilder stringLiteral)=This(stringLiteral.toS())
-  read method S toS()=Introspection$Nested.from(classAny=This).msgTitle(text=this.text())
-  method Message #whoopsed(Library atPos)=This(
-    S"""%
-      |%this.text()
-      |Whoopsed in position:
-      |  %Introspection$Nested.from(library=atPos).position()
-      """
-    )
-  }
-S_ParseError=BaseErrorTraitAddOns.code()
-Trait_MethodClash=BaseErrorTraitAddOns.code()
-Trait_ClassClash=BaseErrorTraitAddOns.code()
-Trait_InvalidName=BaseErrorTraitAddOns.code()
-Trait_InvalidMap=BaseErrorTraitAddOns.code()
+BaseErrorTraitAddOn=Message.Native()[
+  clear='#apply(that);
+  clear='text();
+  clear='text(that);
+  ]
+S_ParseError=BaseErrorTraitAddOn.code()
+Trait_MethodClash=BaseErrorTraitAddOn.code()
+Trait_ClassClash=BaseErrorTraitAddOn.code()
+Trait_InvalidName=BaseErrorTraitAddOn.code()
+Trait_InvalidMap=BaseErrorTraitAddOn.code()
 Bool$={
   method This #if()
   class method This false()

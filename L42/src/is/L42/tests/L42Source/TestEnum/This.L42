@@ -9,11 +9,18 @@ Unit=Data:{method Void foo()=Debug(S"unitcode")}
 Direction=Collection.Enum:{
   North={}, East={},South={},Weast={}
   }
+Throw={class method Void (S.ParseError that)[S.ParseError]=exception that}
 Main=(
-  mut Person p=Person(location=Point(x=0\,y=0\),name=S"Bob",allergies=\[])
-  Debug(Direction.Vals())
-  Unit().foo()
-  Debug(Unit()==Unit())
-  p.name(S"")
-  Debug(Direction.Vals())
+  S.ParseError ee=(_=Size"nope" catch error S.ParseError pe pe error X"")
+  Debug(ee)
+  Debug(S"More text")
+  (Throw(ee)
+  whoops S.ParseError
+  void)
+  //mut Person p=Person(location=Point(x=0\,y=0\),name=S"Bob",allergies=\[])
+  //Debug(Direction.Vals())
+  //Unit().foo()
+  //Debug(Unit()==Unit())
+  //p.name(S"")
+  //Debug(Direction.Vals())
   )

@@ -89,7 +89,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     visitExpecting(e.e(),P.pAny);
     var computed=_computed;
     assert computed!=null;
-    if(e.thr()==Error){return;}
+    if(e.thr()==Error){_computed=null;return;}
     boolean find=false;
     if(e.thr()==Exception){find=tryAlternatives(ps.stream(),computed);}
     else{find=tryAlternatives(ts.stream().map(t->t.p()),computed);}
@@ -144,10 +144,10 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     visitE(e.e());
     g=oldG;
     computeds.add(_computed);
+    computeds.removeIf(c->c==null);
     var computed=new HashSet<P>();
     for(P c1:computeds){
-      if(c1==null){continue;}
-      var superAll=computeds.stream().allMatch(c2->c2!=null && p._isSubtype(c2,c1));
+      var superAll=computeds.stream().allMatch(c2->p._isSubtype(c2,c1));
       if(superAll){computed.add(c1);}
       }
     if(computed.size()!=1){_computed=expected;}

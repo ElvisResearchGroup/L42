@@ -1,7 +1,7 @@
 TraitTimes=TraitHasSupport:{
-  Support=Class:TraitAbstractSupport
-  T1=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
-  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  Support=Class.Relax:TraitAbstractSupport
+  T1=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
   class method This (T1 that,T2 and)=This(that.#inner()*and.#inner())
   method T1 /(T2 right)=T1(this.#inner()<:Support/right.#inner())
   method T2 /(T1 left)=T2(this.#inner()/left.#inner())
@@ -21,9 +21,9 @@ TraitTimes=TraitHasSupport:{
     })
   }
 TraitDiv=TraitHasSupport:{
-  Support=Class:TraitAbstractSupport
-  T1=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
-  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  Support=Class.Relax:TraitAbstractSupport
+  T1=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
   class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
   method T1 *(T2 right)=T1(this.#inner()<:Support*right.#inner())
   method T1 *1(T2 right)=this*right
@@ -39,8 +39,8 @@ TraitDiv=TraitHasSupport:{
   }
   
 TraitInverse=TraitHasSupport:{
-  Support=Class:TraitAbstractSupport
-  T2=Class:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  Support=Class.Relax:TraitAbstractSupport
+  T2=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
   class method This (Support that,T2 per)=This(that/per.#inner())
   method Support *(T2 right)=this.#inner()<:Support*right.#inner()
   method Support *1(T2 right)=this*right
@@ -83,7 +83,7 @@ class method Library (Introspection.Nested i1, Introspection.Nested i2,Trait tra
        'TraitFromRight=>Name"TraitFrom%i2.outerName()";
        ]
     }
-  return Class:Data:res:traitRes
+  return Class.Relax:Data.Relax:res:traitRes
   catch Message.Guard g exception NotValidUnit
     "The provided classes %i1.outerName() and %i2.outerName() are not  valid Unit classes."
     .with(cause=g)
@@ -94,7 +94,7 @@ class method Library (Introspection.Nested inverse)[NotValidUnit]={
     "Provided class %inverse.outerName() 'method Support #inner()' return type must be declared externally"
   cAny=support.classAny()
   res=TraitUnit['Support=>cAny]
-  return Class:Data:res:TraitInverse
+  return Class.Relax:Data.Relax:res:TraitInverse
     ['Support=>cAny;'T2=>inverse.classAny();'TraitFromUnit=>Name"TraitFrom%inverse.outerName()"]
   catch Message.Guard g exception NotValidUnit
     "The provided classe %inverse.outerName() is not a valid Unit class."

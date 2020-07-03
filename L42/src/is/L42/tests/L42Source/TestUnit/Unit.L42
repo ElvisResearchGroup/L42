@@ -45,7 +45,7 @@ TraitUnit=Trait:{...}
 CompositUnit={...}
 
 class method Library (class Any that)[NotValidSupport]={
-  return Class:Data:TraitUnit['Support=>that]
+  return Class.Relax:Data.Relax:TraitUnit['Support=>that]
   catch Message.Guard g exception NotValidSupport
     "The provided class is not a valid support class for a unit of measure"
     .with(cause=g)

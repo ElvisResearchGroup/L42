@@ -9,7 +9,7 @@ TestClose1=(
   {}:Test"Close1"(
     actual={error Data.Close:code catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
+      |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Clear class method This1.Size double(mut This1.Size n)=(..)
       |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.Size n) initializes it as This1.Size
       |[file:[###]
@@ -22,7 +22,7 @@ TestClose1=(
   {}:Test"Close2"(
     actual={error Data.Close:code2 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
+      |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now read method This1.Size double()=(..)
       |must be a class method
       |[file:[###]
@@ -34,7 +34,7 @@ TestClose1=(
   {}:Test"Close3"(
     actual={error Data.Close:code3 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
+      |Message This.Data.Close.Fail([###]):
       |nested class { }
       |Class is already close
       |[file:[###]
@@ -51,7 +51,7 @@ TestClose1=(
   {}:Test"Close4"(
     actual={error Data.Close:code4 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
+      |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Clear class method This1.Size append1(mut This1.S.List thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
       |[file:[###]
@@ -64,7 +64,7 @@ TestClose1=(
   {}:Test"Close5"(
     actual={error Data.Close:code5 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
+      |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now class method This1.Size double(This1.Size nn)=(..)
       |No candidate getter/exposer with name nn and method modifier Immutable or Readable
       |[file:[###]
@@ -77,26 +77,19 @@ TestClose1=(
   {}:Test"Close6"(
     actual={error Data.Close:code6 catch Data.Close.Fail x return x}
     expected=S"""
-      |Message This.Data.Close.Fail(This.Message, This.HasToS, This.Data.Fail, This.Message.Guard):
+      |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now class method This1.Size double(This1.Size n)=(..)
       |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.Size n)
       |[file:[###]
       """.trim())
     )
-   /*
-    -TODO:make introspection print className/interface names, so we can print the right error
-    -standard code
-    -add callSiteCache?
-    -add lazyReadCache?
-    -add multi args cache for imm/class?
-  */ 
 TestSum1=(
   code1a={method Void foo()=void}
   code1b={method Void foo()=void}
   {}:Test"Sum1"(
     actual={error (Trait:code1a)+code1b catch Trait.MethodClash x return x}
     expected=S"""
-    |Message This.Trait.MethodClash(This.HasToS, This.Message, This.Message.Guard):
+    |Message This.Trait.MethodClash([###]):
     |method Void foo()=(..)
     |Conflicting implementation: the method is implemented on both side of the sum
     |[file:[###]
@@ -106,7 +99,7 @@ TestSum1=(
   {}:Test"Sum2"(
     actual={error (Trait:code2a)+code2b catch Trait.ClassClash x return x}
     expected=S"""
-    |Message This.Trait.ClassClash(This.HasToS, This.Message, This.Message.Guard):
+    |Message This.Trait.ClassClash([###]):
     |nested class This={ foo()=(..) }
     |The nested class can not be turned into an interface; some public methods are implemented
     |[file:[###]
@@ -122,7 +115,7 @@ TestRename=(
   {}:Test"MethodClash=>"(
     actual={error Code['A=>'B] catch Trait.MethodClash x return x}
     expected=S"""
-      |Message This.Trait.MethodClash(This.HasToS, This.Message, This.Message.Guard):
+      |Message This.Trait.MethodClash([###]):
       |method Any foo()=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
@@ -130,7 +123,7 @@ TestRename=(
   {}:Test"MethodClash->"(
     actual={error Code['A->'B] catch Trait.MethodClash x return x}
     expected=S"""
-      |Message This.Trait.MethodClash(This.HasToS, This.Message, This.Message.Guard):
+      |Message This.Trait.MethodClash([###]):
       |method Any foo()=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
@@ -140,7 +133,7 @@ TestRename2=(
   {}:Test"MethodClash->"(
     actual={error Code['C->'This] catch Trait.MethodClash x return x}
     expected=S"""
-      |Message This.Trait.MethodClash(This.HasToS, This.Message, This.Message.Guard):
+      |Message This.Trait.MethodClash([###]):
       |method Void a(This.A a)=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
       |[file:[###]
@@ -148,7 +141,7 @@ TestRename2=(
   {}:Test"InvalidMap->"(
     actual={error Code['A.foo()=>Name""][single='A->Name""] catch Trait.InvalidMap x return x}
     expected=S"""
-      |Message This.Trait.InvalidMap(This.HasToS, This.Message, This.Message.Guard):
+      |Message This.Trait.InvalidMap([###]):
       |nested class { a(a)=(..) A={..} B={..} C={..} }
       |nested class A
       |The implementation can not be removed since the class is watched by nested class C
@@ -158,7 +151,7 @@ TestRename2=(
   {}:Test"InvalidMap->"(
     actual={error Code[hide='A.foo()][clearSingle='A] catch Trait.InvalidMap x return x}
     expected=S"""
-      |Message This.Trait.InvalidMap(This.HasToS, This.Message, This.Message.Guard):
+      |Message This.Trait.InvalidMap([###]):
       |nested class { a(a)=(..) A={..} B={..} C={..} }
       |nested class A
       |The implementation can not be removed since the class is watched by nested class C
@@ -166,8 +159,6 @@ TestRename2=(
       |[file:[###]
       """.trim())
   )
-//TODO: now somehow the Info is always declassed to "norm" :-(
-//TODO: Data & co must also throw exception instead of error 
 
 //Testing a funkyer way to test
 TestError=Trait:{

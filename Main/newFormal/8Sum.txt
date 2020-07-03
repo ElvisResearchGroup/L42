@@ -68,6 +68,11 @@ _______
   Ps=paths(PLUS.topLeft(Cs1),..,PLUS.topLeft(Csn))[from p.minimize(Thisk.Csn);p],
        paths(PLUS.topRight(Cs1),..,PLUS.topEight(Csn))[from p.minimize(Thisk.Csn);p]
 
+* Info1+Info2 =
+    just the sum of all the members without repetitions keeping the order from the left one,
+    but if there is a nativeKind, then it must be the same on both side,
+    and nativePars also need to be the same
+
 *  Ts1 + Ts2= Ts1,Ts2\Ts1 //using T.P for set minus removal
 _______
 #define NCs1 PLUS NCs2 = NCs3    PLUS(L)=L'    paths(L)=Ps

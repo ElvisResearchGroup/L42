@@ -63,10 +63,6 @@ _______
     //or error: leaked exception P is not the subtype of a declared exception
     //or  method declares an exception (P) which is not a subtype of implemented exceptions
     
-    TODO: Now we could get a Javac error if we use for example
-      L42£LazyMsg  vs £cDeployAAA£n0£_£cMessage£n1     to refine woopsed.
-      We need to change method subtype in the interface check so that a native type can not refine an interface :-(
-      Only way?
 _______
 #define Q |- e: P 
 * Q |- void : P //(void)

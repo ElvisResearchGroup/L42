@@ -1,5 +1,5 @@
 [HasToS]
-Support=Class:TraitAbstractSupport
+Support=Class.Relax:TraitAbstractSupport
 Support that
 class method This (Support that)
 method Support #inner()=this.that()
@@ -42,6 +42,3 @@ Per={class method Library (class Any that)[NotValidUnit,NotSameSupport]
   =CompositUnit(N(This1), per=N(that))}
 Inverse={class method Library ()[NotValidUnit]
   =CompositUnit(inverse=N(This1))}
-  //the class Any casts are needed since CompositUnit is declared later.
-  //It must be declared later since it uses TraitUnit internally
-  //class Any annitation is a normalization step and happen befory typing
