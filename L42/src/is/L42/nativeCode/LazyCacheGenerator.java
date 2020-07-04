@@ -50,32 +50,30 @@ public class LazyCacheGenerator implements Generator{
     if(mwt.mh().mdf().isClass()){classCache(j,name);}
     if(mwt.mh().mdf().isImm()){immCache(j,name);}
     if(mwt.mh().mdf().isRead()){readCache(j,name);}
-    fieldAndAuxMethod(j,name,retT,thisT,mwt._e());
+    fieldAndAuxMethod(mwt.mh().mdf().isClass(),j,name,retT,thisT,mwt._e());
     if(!mwt.mh().mdf().isIn(Mdf.Readable,Mdf.Immutable,Mdf.Class)){throw bug();}
     }
   void immCache(J j,String name){
     if(j.fields.xs.isEmpty()){readCache(j,name);return;}
     j.c("if(£xthis.norm==null){L42CacheMap.normalizeCachable(£xthis);}");j.nl();
-    j.c("if(!£xthis.norm.is"+name+"){£xthis.norm."+name+"="+name+"(£xthis.norm); £xthis.norm.is"+name+"=true;}");j.nl();
-    j.c("return £xthis.norm."+name+";");j.nl();j.deIndent();    
+    j.c("return £xthis.norm."+name+".join();");j.nl();j.deIndent();    
     j.c("}");j.nl();
-    j.c("volatile boolean is"+name+";");j.nl();
     }
   void readCache(J j,String name){
-    j.c("if(!£xthis.is"+name+"){£xthis."+name+"="+name+"(£xthis); £xthis.is"+name+"=true;}");j.nl();
-    j.c("return £xthis."+name+";");j.nl();j.deIndent();    
+    j.c("return £xthis."+name+".join();");j.nl();j.deIndent();    
     j.c("}");j.nl();
-    j.c("volatile boolean is"+name+";");j.nl();
     }
   void classCache(J j,String name){
-    j.c("if(!is"+name+"){"+name+"="+name+"(£xthis); is"+name+"=true;}");j.nl();
-    j.c("return "+name+";");j.nl();j.deIndent();    
+    j.c("return "+name+".join();");j.nl();j.deIndent();    
     j.c("}");j.nl();
-    j.c("static volatile boolean is"+name+";");j.nl();
-    j.c("static ");//evil but works, since fieldAndAuxMethod is called directly after
     }
-  void fieldAndAuxMethod(J j,String name,String retT,String thisT,Core.E e){
-    j.c("volatile "+retT+" "+name+";");j.nl();
+  void fieldAndAuxMethod(boolean isStatic,J j,String name,String retT,String thisT,Core.E e){
+    String theThis="pathInstance";
+    if(isStatic) {j.c("static ");}
+    else {theThis=thisT+".this";}
+    j.c("CachedRes<"+J.boxed(retT)+"> "+name+"=new CachedRes<"+J.boxed(retT)+">(){public "
+      +J.boxed(retT)+" op(){return "+name+"("+theThis+");"+"}};");j.nl();
+      //TODO: not for the imm only on the normalized one
     j.c("private static "+retT+" "+name+"("+thisT+" £xthis){");j.indent();j.nl();
     j.c("return ");
     j.visitE(e);

@@ -42,6 +42,15 @@ public class EagerCacheGenerator extends LazyCacheGenerator{
         }});
     clearCacheGood(j);
     }
+  @Override void fieldAndAuxMethod(boolean isStatic,J j,String name,String retT,String thisT,Core.E e){
+    if(isStatic) {j.c("static ");}
+    j.c(retT+" "+name+";");
+    j.c("private static "+retT+" "+name+"("+thisT+" £xthis){");j.indent();j.nl();
+    j.c("return ");
+    j.visitE(e);
+    j.c(";");    
+    }
+  
   void immOrCapsule(MWT forErr,J j,S s){
     if(!s.xs().isEmpty()){
       throw new EndError.TypeError(forErr._e().poss(),

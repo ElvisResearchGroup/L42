@@ -20,6 +20,9 @@
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString...
 
+-rename consistently all "eager" stuff into "now".
+-new CachedRes for imm only on norms (now are allocated all of the time)
+
 4)  TODO: Now we could get a Javac error if we use for example
     L42£LazyMsg  vs £cDeployAAA£n0£_£cMessage£n1     to refine woopsed.
     We need to change method subtype in the interface check so that a native type can not refine an interface :-(

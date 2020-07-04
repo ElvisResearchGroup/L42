@@ -110,16 +110,8 @@ public enum TrustedKind implements TrustedT{
       var nk=pLocal.topCore().info().nativeKind();
       var tk=TrustedKind._fromString(nk);
       if(tk==null){return j.typeNameStr(pLocal);}
-      switch(tk.inner){//primitive types have lowercase start
-        case "int":return "Integer";
-        case "boolean":return "Boolean";
-        case "char":return "Char";
-        case "short":return "Short";
-        case "long":return "Long";
-        case "double":return "Double";
-        case "float":return "Float";
-        case "byte":return "Byte";
-        }
+      var boxed=J.boxed(tk.inner);
+      if(boxed!=tk.inner) {return boxed;}
       return j.typeNameStr(pLocal);
       }
     },

@@ -185,6 +185,7 @@ public class Loader {
     import is.L42.cache.L42Cachable;
     import is.L42.cache.L42StandardCache;
     import is.L42.cache.L42SingletonCache;
+    import is.L42.cache.concurrency.CachedRes;
     import is.L42.platformSpecific.javaTranslation.L42NoFields;
     import is.L42.meta.L42£Meta;
     import is.L42.introspection.L42£Nested;
