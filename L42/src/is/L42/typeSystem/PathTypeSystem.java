@@ -21,6 +21,7 @@ import is.L42.generated.Core;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class PathTypeSystem extends UndefinedCollectorVisitor{
@@ -33,6 +34,8 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     this.expected=expected;
     this._computed=null;
   }
+  public List<Pos> positionOfNonDeterministicError=null;
+  public P typeOfNonDetermisticError=null;
   boolean isDeep;
   Program p;
   G g;
@@ -153,12 +156,23 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(computed.size()!=1){_computed=expected;}
     else{_computed=computed.iterator().next();}
     }
+  private void fillNonDeterministicError(List<Pos>pos,P path){
+    if(positionOfNonDeterministicError!=null){return;}
+    var lib=p._ofCore(path);
+    if(lib==null){return;}
+    var nk=lib.info().nativeKind();
+    if(nk.isEmpty()){return;}
+    if(!TrustedKind._fromString(nk).equals(TrustedKind.NonDeterministicError)){return;}
+    positionOfNonDeterministicError=pos;
+    typeOfNonDetermisticError=path;
+    }
   private P typeK(K k, ArrayList<T> ts1, ArrayList<P> ps1) {
     var t=k.t();
     var oldG=g;
     g=g.plusEq(k.x(),k.t());
     visitE(k.e());
     g=oldG;
+    fillNonDeterministicError(k.e().poss(),t.p());
     if(k.thr()==Return){ts1.add(t);}
     if(k.thr()==Exception){ps1.add(t.p());}
     if(!t.mdf().isClass()){return _computed;}

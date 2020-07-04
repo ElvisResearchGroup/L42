@@ -135,8 +135,12 @@ public class ProgramTypeSystem {
   private static void typeMethE(Program p,MH mh, E e){
     var g=G.of(mh);
     List<P> ps=L(mh.exceptions().stream().map(t->t.p()));
-    e.visitable().accept(new PathTypeSystem(true,p,g,L(),ps,mh.t().p()));
+    var pts=new PathTypeSystem(true,p,g,L(),ps,mh.t().p());
+    e.visitable().accept(pts);
     var mdf=TypeManipulation.fwdPOf(mh.t().mdf());
     e.visitable().accept(new MdfTypeSystem(p,g,Collections.emptySet(),mdf));
+    var nde=pts.positionOfNonDeterministicError;
+    errIf(nde!=null && !mh.key().m().startsWith("#$"),nde,
+      Err.nonDetermisticErrorOnlyHD(mh,pts.typeOfNonDetermisticError));
     }
   }

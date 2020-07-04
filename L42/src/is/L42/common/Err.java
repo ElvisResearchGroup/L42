@@ -311,6 +311,8 @@ public class Err {
   "methods "+s+", bridging effectful #$ non determinism have modifier "+mdf+", but only {mut,lent,capsule} are allowed"
   ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return
   "methods "+bi+", bridging effectful #$ non determinism could be invoked through factory "+fi+", that has no #$"
+  ;}public static String nonDetermisticErrorOnlyHD(Object m,Object e){return
+  "method "+m+" catches the non deterministic error "+e+". Only #$ methods are allowed to catch non deterministic errors."
   ;}public static String mustHaveCloseState(){return
   "the core library literal must be a close class. Caused by eager cache methods"
   ;}public static String mustHaveCloseStateBridge(Object fs,Object bs){return

@@ -106,7 +106,21 @@ public enum TrustedKind implements TrustedT{
       var info=p.topCore().info();
       P gen1=info.nativePar().get(0);
       if(!gen1.isNCs()){return J.primitivePToString(gen1);}
-      return j.typeNameStr(p.navigate(gen1.toNCs()));
+      var pLocal=p.navigate(gen1.toNCs());
+      var nk=pLocal.topCore().info().nativeKind();
+      var tk=TrustedKind._fromString(nk);
+      if(tk==null){return j.typeNameStr(pLocal);}
+      switch(tk.inner){//primitive types have lowercase start
+        case "int":return "Integer";
+        case "boolean":return "Boolean";
+        case "char":return "Char";
+        case "short":return "Short";
+        case "long":return "Long";
+        case "double":return "Double";
+        case "float":return "Float";
+        case "byte":return "Byte";
+        }
+      return j.typeNameStr(pLocal);
       }
     },
   Name("L42£Name"){public String factory(J j,MWT mwt){

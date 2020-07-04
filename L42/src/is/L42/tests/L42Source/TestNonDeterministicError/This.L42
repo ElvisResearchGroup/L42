@@ -1,0 +1,26 @@
+reuse [AdamTowel]
+
+Looping={
+  class method Void loop()=this.loop()
+  class method Void #$loopStop()=(
+    Debug(S"Start")//just to check that it compiles (without the #$ would not)
+    Looping.loop()
+    catch error System.NonDeterministicError e (
+      Debug(e)
+      )
+    Debug(S"End")
+    )
+  }
+//Main1=Looping.#$loopStop()
+Main0=(
+  Log"loop".clear()
+  ,,(
+    Log"loop".write(S"InMain0")
+    Looping.loop()
+    catch error System.NonDeterministicError e (Log"loop".write(e.toS()))
+    Log"loop".write(S"end")
+    )
+  {}:Test"OnlyTest"(
+    actual=Log"loop".#$reader().read()
+    expected=S"InMain0[###]StackOverflowError[###]")
+  )

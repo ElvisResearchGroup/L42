@@ -29,6 +29,12 @@ public class L42£NonDeterministicError extends L42NoFields.Eq<L42£NonDetermini
     }
   private String msg;
   public L42£NonDeterministicError(){this.msg="";}
+  private static String throwableToMsg(Throwable t){
+    var res=t.getClass().getSimpleName();
+    if(t.getMessage()!=null){res+="\n"+t.getMessage();}
+    return res;
+    }
+  public L42£NonDeterministicError(Throwable t){this(throwableToMsg(t));}
   public L42£NonDeterministicError(String msg){
     assert msg!=null:
       "";

@@ -68,7 +68,7 @@ DeployAAA=(
     @Public Message$Guard={interface [Message]}
     @Public Message$Assertion={interface[Message]}
     MessageTrait=Trait:{...}
-    LazyMessageTrait={...}
+    NativeMessageTrait={...}
     @Public X=Message:{...}
     @Public Collection$IterationIncomplete=Message:{[Message$Guard]}
     @Public Collection$NoElementInOpt=Class$Relax:Message.Native:{[Message$Guard]}
@@ -106,6 +106,7 @@ DeployAAA=(
     Load$={}
     @Public Load={...}
     @Public Collection$Enum={...}
+    System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
     //Introspection$Type={...}
     }
   mut S$StringBuilder sb=S$StringBuilder.of()

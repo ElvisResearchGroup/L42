@@ -1,17 +1,21 @@
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
  -IDE: clear cache should stop the loading of the old cache and set up run?
- //TODO: now somehow the Info is always declassed to "norm" :-(
-    
-    -add callSiteCache?
-    -add lazyReadCache?
-    -add multi args cache for imm/class?
-
+ -IDE: cut paste on win do not survive the IDE being closed
+ -IDE: test cut paste on linux
+ -Run a balanced parenthesis test on syntax errors
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
+ 
+ //TODO: now somehow the Info is always declassed to "norm" :-(    
+ 
+ -add callSiteCache?
+ -add lazyReadCache?
+ -add multi args cache for imm/class?
+ -add parallel cache
+ 
+ -fix the failing test of rename free vars
 
 -Close: the java file call Close.java seams to be the starting point to do more caching
 -file 7 is quite misterius... what is it? solve the TODOs when parallelizing?
-  //TODO: how Opt work on int/float/String?
-
 
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString...
@@ -20,16 +24,17 @@
     L42£LazyMsg  vs £cDeployAAA£n0£_£cMessage£n1     to refine woopsed.
     We need to change method subtype in the interface check so that a native type can not refine an interface :-(
     Only way?
-
-3)
--capturing stack overflow?
-nativeKind=NonDeterministicError
-if a catch capture a NDE, then the method need to be bridge or #$
-     
-2)-TODO: classes with nativeKind: constructor have no args and return mut/imm//TODO
-
-    
- 
+also... what about sum? we can make a class native after it refined a method?
+Restriction option:
+*ClassClash:
+  in a bubble, if a class is used to refine a method return, then
+  it can not be made native 
+*mwt implements ok only if native is not used to refine 
+ Better Java option:
+ *when declaring a method, use the wrapped type.
+ *when translating the e, use (any of the) super interface types
+ *when translating a call, add an .unwrap
+ --define a function 'isNativeRefined'
 ------------------
 Should I do Alphanumeric?
 //   );}@Test public void t1(){top(//TODO: fix, so that also a class expression can be a top level toLibrary?
@@ -40,3 +45,29 @@ Should I do Alphanumeric?
 Should organize check that $ renamed stuff is renamed onto an existing target?
 otherwise Organize:{Foo={}   Fooo$={}} works with no reported errors
 But.... Foo$Bar is ok if Foo exists and Bar does not...
+
+
+
+More tests?
+I verified, but not added a test, the following:
+-correctly not coherent if mut This or fields exists. 
+ It seams like all the restrictions of nativeKinds are implemented
+LM={
+  class method This of::0()
+  #norm{
+    nativeKind=LazyMessage
+    typeDep=This close}
+  }
+-capturing a NonDeterministicException in a non #$ method is not well typed
+
+-data properly have fwd for the fields not used in invariants
+-data works just fine on 0 fields objects.
+-parse error can be whoopsed
+Throw={class method Void (S.ParseError that)[S.ParseError]=exception that}
+Main=(
+  S.ParseError ee=(_=Size"nope" catch error S.ParseError pe pe error X"")
+  Debug(ee)
+  Debug(S"More text")
+  (Throw(ee)
+  whoops S.ParseError
+  void))

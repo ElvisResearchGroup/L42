@@ -7,7 +7,7 @@ interface [HasToS]
   class method Library :(Library that)[Trait$ClassClash,Trait$MethodClash]=(MessageTrait()<:Trait:that).code()
   }
 Native={
-  class method Trait()=LazyMessageTrait.$.ClassOperators()
+  class method Trait()=NativeMessageTrait.Lazy()
   ClassOperators={class method Trait()=This1()}
   }
 @Public OptMessage={

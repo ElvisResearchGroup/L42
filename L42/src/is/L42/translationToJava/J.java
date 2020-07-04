@@ -10,6 +10,7 @@ import static is.L42.tools.General.range;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Stream;
 
 import is.L42.common.G;
@@ -238,8 +239,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     g=g.plusEq(b.ds());
     addFwds(b.ds());    
     dec(b.ds());
+    Optional<Core.K> k=locateNonDetermisticError(b.ks());
     if(!b.ks().isEmpty()){kw("try{");indent();nl();}
+    if(k.isPresent()){kw("try{");indent();nl();}
     visitDs(b.ds());//init
+    if(k.isPresent()) {rethrowNonDeterministicError(k.get());}
     if(!b.ks().isEmpty()){
       nl();
       c("}");
@@ -305,6 +309,25 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     catchGroup(ThrowKind.Exception,L(ks.stream().filter(k->k.thr()==ThrowKind.Exception)));
     catchGroup(ThrowKind.Return,L(ks.stream().filter(k->k.thr()==ThrowKind.Return)));
     }
+  Optional<Core.K> locateNonDetermisticError(List<Core.K> ks){
+    return ks.stream().filter(ki->
+      ki.thr()==ThrowKind.Error && isNonDeterministicError(ki.t().p())).findFirst();  
+    }
+  private boolean isNonDeterministicError(P path){
+    String nk=this.p._ofCore(path).info().nativeKind();
+    return TrustedKind._fromString(nk).equals(TrustedKind.NonDeterministicError);
+    }
+  private void rethrowNonDeterministicError(Core.K k){
+    var v=catchVar();
+    kw("}catch(Throwable "+v+"){");
+    indent();nl();
+    c("if("+v+" instanceof L42Throwable){throw (L42Throwable)"+v+";}");
+    kw("Resources.throwE(new L42Error(");
+    className(k.t().p());
+    c(".wrap(new L42£NonDeterministicError("+v+"))");
+    c("));");
+    nl();c("}");deIndent();nl();
+    }
   private void catchGroup(ThrowKind tk,List<Core.K> ks){
     if(ks.isEmpty()){return;}
     kw("catch(L42"+tk+" "+catchVar()+"){");
@@ -312,7 +335,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     ks.forEach(this::catchIf);
     c("throw "+catchVar()+";");
     nl();c("}");deIndent();nl();
-
     }
   private void catchIf(Core.K k){
     kw("if("+catchVar()+".obj42() instanceof ");
