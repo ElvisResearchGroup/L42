@@ -170,12 +170,12 @@ public class LoopCache {
       else { return new KeyVarID(varmap.get(this.value)); }
       }
     
-    public void replaceNN(Map<Object, Object> replacements) {
+    /*public void replaceNN(Map<Object, Object> replacements) {
       if(replacements.containsKey(value)) {
         value = replacements.get(value);
         isNorm = L42CacheMap.isNorm(value);
         }
-      }
+      }*/
     }
   
   protected static class CircleObject  {
@@ -207,10 +207,10 @@ public class LoopCache {
       return new CircleObject(this.obj);
       }
     
-    public CircleObject replaceNN(Map<Object, Object> replacements) {
+    /*public CircleObject replaceNN(Map<Object, Object> replacements) {
       for(Field field : params) {field.replaceNN(replacements); }
       return this;
-      }
+      }*/
     
     public void constructVarMap(Map<Object, Integer> varmap, List<Object> order, Map<Object, CircleObject> amap, MyInteger i) {
       varmap.put(this.obj, i.getAndIncrement());

@@ -19,11 +19,14 @@ TestDataFwd={
     mut A a=A(b=b,name=S"myA")
     mut B b=B(a=a,name=S"myB")
     {}:Test"name"(expected=S"myB",actual=a.b().name())
-    /*{}:Test"toS"(expected=S"""
+    //A(b=(a=(b=b1, name="myA"), name="myB"), name="myA")//current toS result (with undefined b1)
+    //b1=B(a=(b=b1, name="myA"), name="myB") //possible desired outcome, still unsatisfactory
+    //A(b=b1, name="myB"), name="myA")
+    {}:Test"toS"(expected=S"""
       |b1=B(a=a1, name="myB")
       |a1=A(b=b1, name="myA")
       |a1
-      """.trim(),actual=a)*/
+      """.trim(),actual=a)
     )
   }
 TestDataBase={

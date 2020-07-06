@@ -87,7 +87,8 @@ public class L42CacheMap {
     String s=List.of(Thread.currentThread().getStackTrace()).toString();
     assert s.contains(".lateInitialize(") 
       //|| s.contains("ArrayListCacheForType")
-      || s.contains(".NormalizationTests."):
+      || s.contains(".NormalizationTests.")
+      || s.contains(".readObjToString("):
       s;
     return true;    
     }

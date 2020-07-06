@@ -208,7 +208,7 @@ public enum TrustedOp {
     "return L42CacheMap.normalize(%2$s);",
     sig(Immutable,Immutable,Any,Immutable,Any))),    
   SystemMutToString("mutToString",trustedIO(
-    "return L42CacheMap.objToString(%2$s);",
+    "return L42CacheMap.readObjToString(%2$s);",//was "objToString("
     sig(Immutable,Immutable,String,Mutable,Any))),
 //This may not be needed any more: if you cast as any, the native got wrapped anyway!
 //      AnyNativeKind,use("return L42CacheMap.objToString(%This.wrap(%2$s));",
