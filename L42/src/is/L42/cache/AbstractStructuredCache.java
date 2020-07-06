@@ -7,6 +7,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import is.L42.platformSpecific.javaTranslation.L42Fwd;
 abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
   abstract F _fields(T t);//{return t.allFields();}//null for arraylist
   abstract Object f(T t,int i,F _fields);//{return fields[i];}//override for arraylist
@@ -26,12 +28,24 @@ abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
       }
     throw unreachable();
     }
+  private boolean checkFwd(Object o){
+    if (o==null) {return false;}
+    if (!(o instanceof L42Fwd)){return false;}
+    try{
+      var f=o.getClass().getField("pathInstance");
+      Object oo=f.get(o);
+      return oo!=o;
+      }//relax, is an assertion method
+    catch(Exception e){throw new Error(e);}
+    }
   public Set<Object> _computeCircle(T t, List<Object> prevs,boolean norm){
     F _fields = _fields(t);
     int size=fn(t);
     Set<Object> circle = null;   
     for(int i = 0; i < size; i++){
       var vali=f(t,i,_fields);
+      assert !checkFwd(vali):
+        "";
       if(vali==null){assert this.rawFieldCache(i)!=null;continue;} 
       if(prevs.stream().anyMatch(o->o==vali)){circle=addCircle(circle,cutTo(prevs,vali));continue;}
       L42Cache<Object> cache = this.fieldCache(vali,i);
@@ -54,6 +68,7 @@ abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
     publish(t);
     }
   @Override public T normalize(T t) {
+    assert !checkFwd(t):"";
     NormResult<T> res = normalizeInner(t, new ArrayList<Object>());
     if(res.hasResult()) { return res.result(); }
     return LoopCache.normalizeCircle(t, res.circle());    

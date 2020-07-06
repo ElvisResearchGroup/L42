@@ -113,9 +113,19 @@ public class L42CacheMap {
   @SuppressWarnings("unchecked") 
   static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
-    if(t instanceof L42Cachable) { return ((L42Cachable<T>) t).isNorm(); }
-    L42Cache<T> cache = getCacheObject(t);
+    if(t instanceof L42Cachable) { return ((L42Cachable<?>) t).isNorm(); }
+    L42Cache<T> cache = getCacheObject((Class<T>) t.getClass()).refine(t);
     return cache.isNorm(t);
+    }
+  @SuppressWarnings("unchecked")
+  static <T> boolean isNorm(T t,int i,L42Cache<?> c) {
+    if(t == null){return true;}
+    if(t instanceof L42Cachable){return ((L42Cachable<?>) t).isNorm(); }
+    var cache=(L42Cache<T>)c.rawFieldCache(i);
+    if(cache!=null){return cache.isNorm(t);}
+    assert List.of(Thread.currentThread().getStackTrace())
+      .toString().contains(".NormalizationTests.");//line after just for tests
+    return getCacheObject((Class<T>) t.getClass()).refine(t).isNorm(t);
     }
   
   static <T> boolean identityEquals(T t1, T t2) {

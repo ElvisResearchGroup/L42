@@ -19,8 +19,8 @@ import is.L42.common.Program;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
-import is.L42.nativeCode.EagerCacheGenerator;
-import is.L42.nativeCode.LazyCacheGenerator;
+import is.L42.nativeCode.CacheNowGenerator;
+import is.L42.nativeCode.CacheLazyGenerator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
@@ -391,7 +391,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("private volatile "+jC+" norm;");nl();
     c("@Override public "+jC+" newInstance(){ return new " + jC + "();}");nl();
-    c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
+    //c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
+    c("@Override public void setNorm("+jC+" t){Resources.breakHere();this.norm=t;}");nl();
     c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
     c("@Override public int numFields(){return "+xs.size()+";}");nl();
     c("@Override public Object[] allFields() {return new Object[]{");
@@ -411,15 +412,15 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("}}");nl();
     if(needClearCache()){generateClearCache();}
     }
-  private boolean needClearCache(){return !fields.xs.isEmpty() && fields.readLazy.size()+fields.eager.size()!=0;}
+  private boolean needClearCache(){return !fields.xs.isEmpty() && fields.cacheReadLazy.size()+fields.cacheNow.size()!=0;}
   private void generateClearCache() { 
     c("public void clearCache(){");indent();nl();
-    for(MWT mwti:fields.readLazy){
-      String name=LazyCacheGenerator.nameFromS(mwti.key());
-      c("this.is"+name+"=false;");nl();
+    for(MWT mwti:fields.cacheReadLazy){
+      String name=CacheLazyGenerator.nameFromS(mwti.key());
+      c("this."+name+".clear();");nl();
       }
-    for(MWT mwti:fields.eager){
-      String name=LazyCacheGenerator.nameFromS(mwti.key());
+    for(MWT mwti:fields.cacheNow){
+      String name=CacheLazyGenerator.nameFromS(mwti.key());
       c("this."+name+"="+name+"(this);");nl();
       }
     c("}");deIndent();nl();
@@ -510,8 +511,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public List<X> xs;
     final public List<P> ps;
     final public List<String> psJ;
-    final public ArrayList<MWT> readLazy=new ArrayList<>();
-    final public ArrayList<MWT> eager=new ArrayList<>();
+    final public ArrayList<MWT> cacheReadLazy=new ArrayList<>();
+    final public ArrayList<MWT> cacheNow=new ArrayList<>();
     public Fields(boolean forTs){
       if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}
       xs=ch.classMhs.get(0).s().xs();
@@ -526,8 +527,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       assert xs.size()==ps.size();
       for(MWT mwti:p.topCore().mwts()){
         if(mwti.nativeUrl().isEmpty()){continue;}
-        if(mwti.nativeUrl().equals("trusted:lazyCache") && mwti.mh().mdf().isRead()){readLazy.add(mwti);}
-        if(mwti.nativeUrl().equals("trusted:readEagerCache")){eager.add(mwti); assert mwti.mh().mdf().isRead();}
+        if(mwti.nativeUrl().equals("trusted:lazyCache") && mwti.mh().mdf().isRead()){cacheReadLazy.add(mwti);}
+        if(mwti.nativeUrl().equals("trusted:readNowCache")){cacheNow.add(mwti); assert forTs||mwti.mh().mdf().isRead();}
         }
       }
     }
@@ -549,7 +550,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       NativeDispatch.nativeCode(k,mwt,this);
       return;
       }
-    if(EagerCacheGenerator.isCapsuleMutator(mwt,this) && needClearCache()){
+    if(CacheNowGenerator.isCapsuleMutator(mwt,this) && needClearCache()){
       c("var Res=");
       visitE(mwt._e());
       c(";");    
@@ -639,8 +640,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       if(isFwd){c("}");}
       nl();
       }
-    for(MWT mwti:fields.eager){
-      String name=LazyCacheGenerator.nameFromS(mwti.key());
+    for(MWT mwti:fields.cacheNow){
+      String name=CacheLazyGenerator.nameFromS(mwti.key());
       c("Res."+name+"="+name+"(Res);");nl();
       }     
     c("return Res;"); 

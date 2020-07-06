@@ -4,20 +4,21 @@ _______
 #define typePlugin(p;MWT)    typePlugin(p;MWT;balCurly)
 * typePlugin(p;MWT)=typePlugin(p;MWT;MWT.nativeUrl)
 
-* typePlugin(p;MWT;cache)
+* typePlugin(p;MWT;balCurly)
+    balCurly in {cacheLazy,cacheEager} 
     MWT.mdf in {imm,class}
     MWT.T.mdf in {imm,class}
     MWT.pars=empty
-    //MWT.exceptions=empty//Note, would this be needed?
-    MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent//TODO: add in code
+    //Note: we allow exceptions
+    MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
 
-* typePlugin(p;MWT;eager)
+* typePlugin(p;MWT;cacheNow)
     MHs={MWT.MH| MWT in p(This0).MWTs, MWT.e?=empty}
     MWT.mdf=read
     MWT.T.mdf in {imm,class}
     MWT.pars=empty
-    //MWT.exceptions=empty//Note, would this be needed?
-    MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent//TODO: add in code
+    //Note: we allow exceptions. I can not find a problem for it on 5/7/2020. Note, this is not a capsule mutator but an invariant
+    MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
     forall ctx such that MWT.e=ctx[this],exists ctx' such that
       ctx=ctx'[[].m::0()] and immOrCapsule(MHs,m::0)
     clearCacheGood(p(This0),MHs)
@@ -46,7 +47,10 @@ _______
 
 * validCapsuleMutator(MWT,MHs)
     MWT.exceptions=empty
-    MWT.T.mdf notin {mut,lent,fwd mut}//TODO: if capsule mutator returns a lent then only lent would be excluded
+    MWT.T.mdf notin {mut,lent,fwd mut}
     MWT.pars.mdfs notin {read,lent,mut}
     MWT.e=ctx[this]
     not this inside ctx[void]//only one occurence of this
+    //NOTE: if the capsule exposers was to return lent 
+    //then it would be MWT.T.mdf !=lent, but
+    //now capsule exposers only return mut.

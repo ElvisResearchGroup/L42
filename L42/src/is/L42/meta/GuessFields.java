@@ -27,7 +27,7 @@ public class GuessFields {
         this.abs.add(m);
         _addGettersSetters(m);
         }
-      if(Utils.match(p, err, "readEagerCache",m)){//||Utils.match(p, err, "readLazyCache",m)//TODO: add it when we make the readLazyCache too...
+      if(Utils.match(p, err, "readNowCache",m)){//||Utils.match(p, err, "readLazyCache",m)//TODO: add it when we make the readLazyCache too...
         this.fieldsUsedInReadCache.addAll(m.key().xs());
         }
       }

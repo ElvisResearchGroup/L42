@@ -216,7 +216,6 @@ public enum TrustedOp {
   SystemImmToString("immToString",trustedIO(
     "return L42CacheMap.objToString(L42CacheMap.normalize(%2$s));",
     sig(Immutable,Immutable,String,Immutable,Any))),
-//same      AnyNativeKind,use("return L42CacheMap.objToString(L42CacheMap.normalize(%This.wrap(%1$s)));",sig(Immutable,Immutable,String))
   TestCondition("testCondition",Map.of(
   //Library pos,This1.S name,B,This1.S message
     TrustedIO,use("return %s.testCondition(%s,%s,%s,%s);",sigI(Void,
@@ -408,8 +407,8 @@ public enum TrustedOp {
       ));
     """,sig(Mutable,Mutable,Gen1)))),
   IsPresent("isPresent",Map.of(Opt,use("return %1$s!=null;",sig(Readable,Immutable,Bool)))),
-  LazyCache("lazyCache",Map.of(AnyKind,new LazyCacheGenerator())),
-  EagerCache("readEagerCache",Map.of(AnyKind,new EagerCacheGenerator())),
+  CacheLazy("lazyCache",Map.of(AnyKind,new CacheLazyGenerator())),
+  CacheNow("readNowCache",Map.of(AnyKind,new CacheNowGenerator())),
   //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
   ;
   public final String inner;

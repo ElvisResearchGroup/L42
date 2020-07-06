@@ -31,7 +31,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
-import is.L42.nativeCode.EagerCacheGenerator;
+import is.L42.nativeCode.CacheNowGenerator;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -92,7 +92,7 @@ public class Close extends GuessFields{
     assert newJ.fields!=null:
     "";
     //TODO: need more? is this needed?//that is, can this code be triggered?
-    try{new EagerCacheGenerator().clearCacheGood(newJ);}
+    try{new CacheNowGenerator().clearCacheGood(newJ);}
     catch(EndError ee){err.throwErr(l,ee.getMessage());}
     return l;
     }
@@ -113,12 +113,13 @@ public class Close extends GuessFields{
       return;
       }
     if(match("lazyCache",m)){processLazyCache(m);return;}
+    if(match("lazyReadCache",m)){processLazyReadCache(m);return;}
     var invalidate=match("invalidateCache",m);
-    var eager=match("readEagerCache",m);
-    if(!invalidate &&!eager){processBase(m);return;}
+    var now=match("readNowCache",m);
+    if(!invalidate &&!now){processBase(m);return;}
     if(!m.mh().mdf().isClass()){err.throwErr(m,"must be a class method");}
     if(invalidate){processInvalidate(m);return;}
-    if(eager){processEager(m);return;}
+    if(now){processNow(m);return;}
     assert false;
     }
   public Core.E fCapsExposer(MWT mErr,Pos pos,X x,T t){
@@ -176,8 +177,10 @@ public class Close extends GuessFields{
       General.L(abs.stream().filter(m->
         m.mh().mdf().isIn(recMdf1,recMdf2) 
         && Coherence.fieldName(m.mh()).equals(x)));
-    }  
-  public Core.E fAcc(MWT mErr,Pos pos,X x,Mdf recMdf1,Mdf recMdf2){
+    }
+  private static final List<Mdf>immCapsClass=List.of(Mdf.Immutable, Mdf.Capsule,Mdf.Class);
+  private static final List<Mdf>immCapsClassImmFwd=List.of(Mdf.Immutable, Mdf.Capsule,Mdf.Class,Mdf.ImmutableFwd);
+  public Core.E fAcc(boolean noFwdImm,MWT mErr,Pos pos,X x,Mdf recMdf1,Mdf recMdf2){
     var mh=abs.stream().filter(m->
       m.mh().mdf().isIn(recMdf1,recMdf2) 
       && Coherence.fieldName(m.mh()).equals(x)
@@ -190,7 +193,8 @@ public class Close extends GuessFields{
       int i=ki.key().xs().indexOf(x);
       assert i!=-1;
       T ti=ki.pars().get(i);
-      if(!ti.mdf().isIn(Mdf.Immutable, Mdf.Capsule,Mdf.Class)){
+      var allowed=noFwdImm?immCapsClass:immCapsClassImmFwd;
+      if(!allowed.contains(ti.mdf())){
         if(ti.mdf().isFwdImm()){
           err.throwErr(mErr,"parameter "+x+" is initialized with fwd in the constructor "+ki);  
           }
@@ -222,7 +226,12 @@ public class Close extends GuessFields{
   public void processSetter(MWT m){processState(m);}
   public void processLazyCache(MWT m){
     if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}    
+    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}
+    //TODO: edit here to add multi parameter lazy cached imm/class
     newMWTs.add(m.withNativeUrl("trusted:lazyCache"));
+    }
+  public void processLazyReadCache(MWT m){
+    processClassToRead(ClassToRead.LazyRead,m);
     }
   public void processInvalidate(MWT m){
     mustAddThis0Coherence=true;//will use This0
@@ -255,7 +264,20 @@ public class Close extends GuessFields{
     newMWTs.add(m);
     }
   private boolean mustAddThis0Coherence=false;
-  public void processEager(MWT m){
+  public void processNow(MWT m){
+    processClassToRead(ClassToRead.Now,m);
+    }
+  static enum ClassToRead{
+    Now(true,"trusted:readNowCache","readNowCache"),
+    LazyRead(false,"trusted:lazyCache","lazyReadCache");
+    boolean noFwdImm;
+    String trusted;
+    String annotation;
+    ClassToRead(boolean noFwdImm,String trusted,String annotation){
+      this.noFwdImm=noFwdImm;this.trusted=trusted;this.annotation=annotation;
+      }
+    }
+  public void processClassToRead(ClassToRead ctr,MWT m){
     mustAddThis0Coherence=true;//will use This0
     var ok=m.mh().pars().stream().allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class));
     if(!ok){err.throwErr(m,"all parameters must be imm, readable or class");}
@@ -274,10 +296,19 @@ public class Close extends GuessFields{
       toSkip.add(old);
       }
     var m1=m.withMh(mh1);//m1: the no arg meth calling the static method s
-    List<Core.E> exs1=General.L(s.xs(),(ci,xi)->ci.add(fAcc(m,m._e().pos(),xi,Mdf.Immutable,Mdf.Readable)));
+    List<Core.E> exs1=General.L(s.xs(),(ci,xi)->ci.add(fAcc(ctr.noFwdImm,m,m._e().pos(),xi,Mdf.Immutable,Mdf.Readable)));
     m1=m1.with_e(Utils.ThisCall(m.poss().get(0),s,exs1));
-    newMWTs.add(m1.withNativeUrl("trusted:readEagerCache"));
-    newMWTs.add(m);
+    newMWTs.add(m1.withNativeUrl(ctr.trusted));
+    newMWTs.add(m.withDocs(removeClassToReadDoc(ctr.annotation,m.docs())));
+    }
+  private List<Doc> removeClassToReadDoc(String target,List<Doc>ds){
+    return L(c->{
+      boolean removed=false;
+      for(Doc d:ds){
+        if(!removed && Utils.match(p,err,target,null,d)){removed=true;}
+        else{c.add(d);}
+        }
+      });
     }
   public void processAllowedAbs(MWT m){newMWTs.add(m);}
   public void processBase(MWT m){newMWTs.add(m);}

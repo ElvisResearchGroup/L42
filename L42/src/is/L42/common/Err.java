@@ -314,7 +314,7 @@ public class Err {
   ;}public static String nonDetermisticErrorOnlyHD(Object m,Object e){return
   "method "+m+" catches the non deterministic error "+e+". Only #$ methods are allowed to catch non deterministic errors."
   ;}public static String mustHaveCloseState(){return
-  "the core library literal must be a close class. Caused by eager cache methods"
+  "the core library literal must be a close class. Caused by Cache.Now methods"
   ;}public static String mustHaveCloseStateBridge(Object fs,Object bs){return
   "the core library literal must be a close class; it is either a close interface or factory methods "+fs+
   " are present, and methods bridging effectful #$ non determinism "+bs+" are present"

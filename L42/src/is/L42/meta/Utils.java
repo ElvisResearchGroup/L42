@@ -26,20 +26,20 @@ public class Utils {
   public static Core.MCall thisCall(Pos pos,S s,List<Core.E>es){
     return new Core.MCall(pos,this0.withPos(pos), s, es);
     }
-  public static boolean match(Program p,MetaError err,String target,MWT m){
-  for( var d:m.docs()){
-    if(d._pathSel()==null){continue;}
+  public static boolean match(Program p,MetaError err,String target,MWT forErr,Doc d){
+    if(d._pathSel()==null){return false;}
     L ld=p._ofCore(d._pathSel().p());
-    if(ld==null){ 
-      err.throwErr(m,"annotation "+d._pathSel().p()+"not existent");
-      }
+    if(ld==null){err.throwErr(forErr,"annotation "+d._pathSel().p()+"not existent");}
     for(var di:ld.docs()){
-      if(di.texts().size()!=1){continue;}
+      if(di.texts().size()!=1){return false;}
       if(di.texts().get(0).equals(target)){return true;}
       }
+    return false;
     }
-  return false;
-  }
+  public static boolean match(Program p,MetaError err,String target,MWT m){
+    for(var d:m.docs()){if(match(p,err,target,m,d)){return true;}}
+    return false;
+    }
   public static boolean equalT(T t1, T t2){
     return t1.p().equals(t2.p()) && t1.mdf().equals(t2.mdf());
     }

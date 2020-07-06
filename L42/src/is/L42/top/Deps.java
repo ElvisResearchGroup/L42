@@ -120,8 +120,7 @@ public class Deps{
   public static List<String>whiteListedNatives=List.of(
       "trusted:lazyCache",
       "trusted:invalidateCache",
-      "trusted:readEagerCache",
-      "trusted:readLazyCache"
+      "trusted:readNowCache"
       );
   public Deps collectDeps(Program p0, List<MWT> mwts){
     var deps=new DepsV(p0);

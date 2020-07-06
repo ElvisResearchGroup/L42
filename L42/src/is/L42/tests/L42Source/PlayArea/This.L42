@@ -1,0 +1,27 @@
+reuse [AdamTowel]
+A={...}
+
+
+AA=Organize:{A$b={}}
+
+Entry=Data:{Size key, S elem}
+MapIS=Class:Trait({
+  A=Collection.list(Entry)
+  B={
+    read method S get(Size that)={
+      for e in This.toMap(this) (if e.key()==that return e.elem())
+      error X"not there"
+      }
+    mut method Void insert(Entry that)=(
+      mut A map=This.toMap(this)
+      for e in map (if e.key()==that.key() error X"already there")
+      map.add(that)
+      )
+    class method fwd mut A toMap(fwd mut This that)
+    }
+  class method fwd mut This toMap(fwd mut This that)=that
+  })['A=>'This]['B=>'This]
+  
+Main=(
+  Debug(S"Hello world"++S" !!")
+  )

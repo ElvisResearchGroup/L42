@@ -189,7 +189,8 @@ public class LoopCache {
       Object[] rawfields = cache.f(obj);
       Field[] fields = new Field[rawfields.length];
       for(int i = 0; i < rawfields.length; i++) {
-        fields[i] = new Field(rawfields[i], L42CacheMap.isNorm(rawfields[i]));
+        boolean isNorm=L42CacheMap.isNorm(rawfields[i],i,cache);
+        fields[i] = new Field(rawfields[i], isNorm);
         }
       this.obj = obj;
       this.params = fields;
