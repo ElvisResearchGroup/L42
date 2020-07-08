@@ -136,6 +136,18 @@ public class L42AuxBaseListener implements L42AuxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSelectorCall(L42AuxParser.SelectorCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSelectorCall(L42AuxParser.SelectorCallContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterPathSel(L42AuxParser.PathSelContext ctx) { }
 	/**
 	 * {@inheritDoc}

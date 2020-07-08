@@ -17,8 +17,9 @@ nudeCsP: csP EOF;
 path: thisKw (Dot c)*;
 cs: c (Dot c)*;
 selector: m? '(' (x W*)* ')';
-pathSel:csP (Dot? selector)? | selector;
-pathSelX:pathSel (Dot x)?;
+selectorCall: (Dot m)? '(' (x W*)* ')';
+pathSel:csP (selectorCall)? | selector;
+pathSelX:csP (selectorCall (Dot x)?)? | selector (Dot x)?;
 nudePathSelX:pathSelX EOF;
 
 infoNorm:'#norm{';
@@ -78,4 +79,3 @@ charInDoc: CHARInDoc | MUniqueNum | MHash | X | Dot | ThisKw | C | AnyKw | VoidK
 topDoc:TDStart pathSelX EOF | TDStart pathSelX? '{' topDocText '}' EOF;
 topDocText:charInDoc* | charInDoc* doc topDocText | charInDoc* '{' topDocText '}' topDocText;
 doc:Doc;
-

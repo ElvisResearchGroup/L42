@@ -1,29 +1,33 @@
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
  -IDE: clear cache should stop the loading of the old cache and set up run?
  -IDE: cut paste on win do not survive the IDE being closed
- -IDE: test cut paste on linux
  -IDE: syntax bug: this.foo::0() get marked red
- -IDE: make folder A\ give an error and make wrong autofill
  -Run a balanced parenthesis test on syntax errors
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    
  
+ -Cache.Now optimization: we could search for a normalized version of the object just created,
+ and in case it exists we can use the cached results on the normalized one. 
+ 
  -add callSiteCache?
    Discovery: Cache.Calls can be done by close as a 'transformation'
    adding private class Cache.Lazy methods.
    No new runtime support needed. No new J tweaks
+   -no, this would only work for pre existing classes, and loading/unloading would not change stuff
+   -option: a decorator that do it on all the code, including all the private code in nesteds.
+     we could just apply it to adam towel, then we could add it to Data/Organize? may be just organize?
  -add multi args cache for imm/class?
    They can be done by close or even by user defined decorators?
- -add parallel cache
+ -add parallel cache/eagerCache
 //NOTE: naive eagerCache on imm methods using fwd parameters
 //may start reading them before they are ready.
 //also, it may start running before the object is imm.
 //eager cache sould start after the object is normed.
-//Are we sure that for circular objects they are normed AFTER
-//the fwds are sorted? 
+//We sure, we checked, circular imm born objects are normed AFTER
+//the fwds are sorted YES
 
- -fix the failing test of rename free vars
+-fix the failing test of rename free vars
 
 -file J line 397
 
@@ -39,21 +43,6 @@
 
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 
-4)  TODO: Now we could get a Javac error if we use for example
-    L42£LazyMsg  vs £cDeployAAA£n0£_£cMessage£n1     to refine woopsed.
-    We need to change method subtype in the interface check so that a native type can not refine an interface :-(
-    Only way?
-also... what about sum? we can make a class native after it refined a method?
-Restriction option:
-*ClassClash:
-  in a bubble, if a class is used to refine a method return, then
-  it can not be made native 
-*mwt implements ok only if native is not used to refine 
- Better Java option:
- *when declaring a method, use the wrapped type.
- *when translating the e, use (any of the) super interface types
- *when translating a call, add an .unwrap
- --define a function 'isNativeRefined'
 ------------------
 Should I do Alphanumeric?
 //   );}@Test public void t1(){top(//TODO: fix, so that also a class expression can be a top level toLibrary?

@@ -1,4 +1,26 @@
 reuse[AdamTowel]
+TestDataInterface={
+  Shape={interface [HasToS]
+    S that
+    class method This of(S that)
+    }
+  Square=Data:{[Shape]
+    S that
+    class method Shape of(S that)=This(that)
+    }
+  MainShape=(
+    res=S"""
+      |Square("square")
+      """.trim()
+    {}:Test"square direct"(
+      expected=res
+      actual=Square.of(S"square"))
+    class Shape s=Square
+    {}:Test"square by shape"(
+      expected=res
+      actual=s.of(S"square"))
+    )
+  }
 TestDataRelax=(
   {}:Test"DataNoRelax"((
     _=Data:{method Void foo(S notAField)}

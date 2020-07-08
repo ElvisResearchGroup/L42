@@ -1,5 +1,7 @@
 interface [HasToS]
 @Public var S text
+@Public class method mut This (S that) 
+@Public class method This #from(S$StringBuilder stringLiteral)
 @Public method This #whoopsed(Library atPos)
 @Public ClassOperators={
   class method class ClassOperators ()=This

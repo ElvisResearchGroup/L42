@@ -43,6 +43,7 @@ method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,T
     i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapHide(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
+  catch error S$ParseError e exception Trait$InvalidName(e.text())
   res
   )
 

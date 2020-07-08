@@ -71,6 +71,12 @@ public interface L42AuxVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitSelector(L42AuxParser.SelectorContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link L42AuxParser#selectorCall}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitSelectorCall(L42AuxParser.SelectorCallContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link L42AuxParser#pathSel}.
 	 * @param ctx the parse tree
 	 * @return the visitor result

@@ -108,6 +108,16 @@ public interface L42AuxListener extends ParseTreeListener {
 	 */
 	void exitSelector(L42AuxParser.SelectorContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link L42AuxParser#selectorCall}.
+	 * @param ctx the parse tree
+	 */
+	void enterSelectorCall(L42AuxParser.SelectorCallContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link L42AuxParser#selectorCall}.
+	 * @param ctx the parse tree
+	 */
+	void exitSelectorCall(L42AuxParser.SelectorCallContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link L42AuxParser#pathSel}.
 	 * @param ctx the parse tree
 	 */

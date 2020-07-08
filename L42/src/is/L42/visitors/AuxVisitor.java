@@ -65,12 +65,13 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
     }
   @Override public Full.PathSel visitPathSel(L42AuxParser.PathSelContext ctx) {
     Full.CsP p=FullL42Visitor.opt(ctx.csP(),null,this::visitCsP);
-    S s=FullL42Visitor.opt(ctx.selector(),null,this::visitSelector);
+    S s=FullL42Visitor.opt(ctx.selectorCall(),null,this::visitSelectorCall);
     return new Full.PathSel(p.cs(),p._p(),s,null); 
     }
   @Override public Full.PathSel visitPathSelX(L42AuxParser.PathSelXContext ctx) {
-    Full.CsP p=FullL42Visitor.opt(ctx.pathSel().csP(),null,this::visitCsP);
-    S s=FullL42Visitor.opt(ctx.pathSel().selector(),null,this::visitSelector);
+    Full.CsP p=FullL42Visitor.opt(ctx.csP(),null,this::visitCsP);
+    S s=FullL42Visitor.opt(ctx.selectorCall(),null,this::visitSelectorCall);
+    if(s==null) {s=FullL42Visitor.opt(ctx.selector(),null,this::visitSelector);}
     X x=FullL42Visitor.opt(ctx.x(),null,this::visitX);
     List<C> cs=L();
     P _p=null;
@@ -81,6 +82,12 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
     return new Full.PathSel(cs,_p,s,x); 
     }
   @Override public S visitSelector(L42AuxParser.SelectorContext ctx) {
+    List<X>xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
+    if(ctx.m()==null){return new S("",xs,-1);}
+    assert !ctx.m().getText().contains("fwd ");
+    return FullL42Visitor.parseM(ctx.m().getText()).withXs(xs);
+    }
+  @Override public S visitSelectorCall(L42AuxParser.SelectorCallContext ctx) {
     List<X>xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
     if(ctx.m()==null){return new S("",xs,-1);}
     assert !ctx.m().getText().contains("fwd ");
@@ -122,7 +129,8 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
     assert ctx.topDocText().size()==1;
     Full.Doc text1=visitTopDocText(ctx.topDocText(0));
     var res=Parse.ctxDoc(Paths.get(pos.fileName()),"@"+ctx.doc().getText());
-    assert !res.hasErr();
+    assert !res.hasErr():
+      "";
     Full.Doc doc=visitTopDoc(res.res);
     return text1
       .withDocs(pushL(doc,text1.docs()))

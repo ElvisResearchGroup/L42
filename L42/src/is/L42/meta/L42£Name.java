@@ -34,7 +34,8 @@ public class L42£Name extends L42NoFields.Eq<L42£Name>{
     return cs.stream().map(c->c.toString()).collect(Collectors.joining("."));
     }
   private static String norm(List<C> cs,S _s, X _x){
-    assert _s!=null|| _x==null;
+    assert _s!=null|| _x==null
+        :"";
     if(_s==null){return cs(cs);}
     if(_x==null){return cs(cs)+"."+_s;}
     return cs(cs)+"."+_s+"."+_x;

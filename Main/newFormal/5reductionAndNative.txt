@@ -238,18 +238,24 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J.staticMethHeader(mdf method T m(T1 x1..Tn xn)_) =
     public static J(T) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
 
-* J.refineMethHeader(mdf method T m(T1 x1..Tn xn)_) =
-    public J(T) m(x1..xn) (J(T1) £xx1..J(Tn) £xxn)
+* J.refineMethHeader(mdf method T m(T1 x1..Tn xn)_) = public T' m(x1..xn) (J(T1) £xx1..J(Tn) £xxn)
+    T' = J.className(T) if J.refineNative(T,m(x1..xn))
+    T'=J(T) otherwise
 
 * J.staticMethBody(mdf method T m(T1 x1..Tn xn)_) =
     {returnKw £xthis.m(x1..xn)(£xx1..£xxn);} //but if !coherent(J.p,false) then just throw new Error();
 
 * J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
-    {returnkw J.className(This0).m(x1..xn)(this,£xx1..£xxn);} //but if !coherent(J.p,false) then just throw new Error();
-  p(This0).Info.nativeKind=empty
-* J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
-    {returnkw J.className(This0).m(x1..xn)(this.unwrap,£xx1..£xxn);}
-  p(This0).Info.nativeKind!=empty
+    {returnkw ctx[J.className(This0).m(x1..xn)(e,£xx1..£xxn)];}
+  coherent(J.p,false)
+  ctx=[] if !J.refineNative(T,m(x1..xn))
+  ctx=J.className(T).wrap([]) otherwise
+  e=this if p(This0).Info.nativeKind=empty or mdf==class,
+  e=this.unwrap otherwise
+
+* J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) = {throw new Error();}
+  !coherent(J.p,false)
+  
 * J.refined(MWT)=empty
     MWT.MH.s notin p(This0).Info.refined
     p(This0).interface?=empty
@@ -308,17 +314,22 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
 * J.meth(mdf method Void #*x(T that)_)=//if method is a field (may instead be allowed abstract)
       J.staticMethHeader(mdf method Void #*x(T that)_){£xthis.£xx=that;return L42Void.instance;}
 
-* fields(p)=P1 x1..Pn xn
+* J.refineNative(T,s)
+    p(T).info.native!=empty
+    T' in J.p.Ts
+    p'=J.p.navigate(T')
+    T" s(_)_ in p'.top
+    p'(T").interface!=empty
+    
+    
+
+* fields(p)=P1 x1..Pn xn //just empty set if called on an interface
     n=0 if mhs=empty
     {x1..xn}={xs| xs in mh.xss}
     either {Pi}={mh.parsi.P | mh in mhs}
     or Pi=Any otherwise
     mhs={mwt.mh | mwt in p(This0).mwts, mwt.e?=empty and mwt.mdf=class}
     //guaranteed not interface implemented
-//TODO:? if we make so that all assignament to imm from mut/capsule are wrapped in a normalize(e), we
-//would trash many duplicated imm object early
-//TODO: in coherence:
-a coherent nativeKind must have private constructor and no other 'state' methods.
 //TODO: 
 -check when a method is allowed abstract (coherence can 'sort' them?)
 -when a field have two nativeKind types, we need to make the CAST do the unwrap too;

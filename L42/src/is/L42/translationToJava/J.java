@@ -514,9 +514,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public ArrayList<MWT> cacheReadLazy=new ArrayList<>();
     final public ArrayList<MWT> cacheNow=new ArrayList<>();
     public Fields(boolean forTs){
-      if(ch.classMhs.isEmpty()){ xs=L(); ps=L();psJ=L();return;}
+      if(ch.classMhs.isEmpty()|| p.topCore().isInterface()){ xs=L(); ps=L();psJ=L();return;}
       xs=ch.classMhs.get(0).s().xs();
-      assert forTs || p.topCore().isInterface() || ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)) : xs +" "+ch.classMhs;
+      assert forTs || ch.classMhs.stream().allMatch(m->m.s().xs().equals(xs)) : xs +" "+ch.classMhs;
       ps=L(range(xs),(c,i)->{
         List<P> pis=L(ch.classMhs.stream().map(m->m.pars().get(i).p()).distinct());
         if(pis.size()==1){c.add(pis.get(0));}
@@ -678,7 +678,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   private void refineMethHeader(MH mh) {
     kw("public ");
-    typeName(mh.t());
+    if(refineNative(mh.t(),mh.s())){className(mh.t());}
+    else{typeName(mh.t());}
     visitS(mh.s());
     c("(");
     seq(i->typeName(mh.pars().get(i)),mh.s().xs(),", ");
@@ -699,24 +700,38 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c(");");nl();
     c("}");deIndent();nl();
     }
-private void refineMethBody(MH mh) {
+  private void refineMethBody(MH mh) {
+    boolean unwrap=!p.topCore().info().nativeKind().isEmpty() && !mh.mdf().isClass();
+    boolean wrap=refineNative(mh.t(),mh.s());
     if(!isCoherent){cThrowError();return;}
     c("{");indent();nl();
     kw("return");
+    if(wrap){className(p._navigate(mh.t().p().toNCs()));c(".wrap(");}
     className(p);
     c(".");
     visitS(mh.s());
     c("(");
-    kw("this");
-    if(!p.topCore().info().nativeKind().isEmpty()){c(".unwrap");}
+    kw("this");if(unwrap){c(".unwrap");}
     for(X x:mh.s().xs()){
       c(", ");
       kw("£x"+x.inner());
       }
+    if(wrap){c(")");}
     c(");");nl();
     c("}");deIndent();nl();
     }
-public static String boxed(String name) {
+  private boolean refineNative(T t,S s) {
+    if(p._ofCore(t.p()).info().nativeKind().isEmpty()) {return false;}
+    for(T ti:p.topCore().ts()){
+      Program pi=p.navigate(ti.p().toNCs());
+      var m=_elem(pi.topCore().mwts(),s);
+      if(m==null){continue;}
+      if(pi._ofCore(m.mh().t().p()).isInterface()) {return true;}
+      }
+    return false;
+    }
+  
+  public static String boxed(String name) {
     switch(name){
       case "float":return "Float";
       case "double":return "Double";

@@ -134,17 +134,17 @@ Bool check
 @Public class method Void checkCoherent(Library that)[Class$IncoherentClass]=void
 @Public method Library :(Library lib)[Data$Fail]=(this:Trait(lib)).code()
 @Public method Trait :(Trait that)[Data$Fail]=(
-  var Trait acc=that
   name=this.that()
-  acc:=AddConstructors(name):acc
-  acc:=Wither(name):acc
-  acc:=Close(name):acc
+  var Trait acc=that
   acc:=this.optionallyApply(AddHasToS(), acc=acc)
   acc:=this.optionallyApply(AddEqOp(), acc=acc)
   acc:=this.optionallyApply(AddReadEqOp(), acc=acc)
   acc:=this.optionallyApply(AddNEqOp(), acc=acc)
   acc:=this.optionallyApply(AddMutClone(), acc=acc)
-  acc:=this.optionallyApply(AddReadClone(), acc=acc)
+  acc:=this.optionallyApply(AddReadClone(), acc=acc)  
+  acc:=AddConstructors(name):acc
+  acc:=Wither(name):acc
+  acc:=Close(name):acc
   if this.check() (This.checkCoherent(acc.code()))
   acc
   )

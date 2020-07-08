@@ -434,7 +434,8 @@ public class FullL42Visitor implements L42Visitor<Object>{
     String s=ctx.getText();
     s=s.substring(1);
     var res=Parse.ctxPathSelX(Paths.get(pos.fileName()),s);
-    assert !res.hasErr();
+    assert !res.hasErr():
+      "";
     Full.PathSel ps=new AuxVisitor(pos).visitPathSelX(res.res.pathSelX());
     assert ps!=null;
     return new Full.EPathSel(pos, ps);
