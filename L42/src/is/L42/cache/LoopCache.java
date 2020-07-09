@@ -21,11 +21,13 @@ public class LoopCache {
   {
     Map<Object, Set<Object>> equivClasses = new IdentityHashMap<>();
     Map<Object, List<Object>> circleFields = new IdentityHashMap<>();
+    Map<Object, List<Object>> nonCircleFields = new IdentityHashMap<>();
     Map<Object, Object[]> fields = new IdentityHashMap<>();
     Map<Object, L42Cache<Object>> types = new IdentityHashMap<>();
     for(Object o : circle) { 
       equivClasses.put(o,L42CacheMap.identityHashSet()); 
       circleFields.put(o, new ArrayList<>()); 
+      nonCircleFields.put(o, new ArrayList<>()); 
       types.put(o, L42CacheMap.getCacheObject(o));
       }
     for(Object o : circle) {
@@ -40,6 +42,8 @@ public class LoopCache {
       for(Object field : f) {
         if(circle.contains(field)) {
           circleFields.get(o).add(field);
+          } else {
+          nonCircleFields.get(o).add(field);
           }
         }
       }
@@ -55,6 +59,27 @@ public class LoopCache {
           List<Object> f2 = circleFields.get(o2);
           for(int i = 0; i < f1.size(); i++) {
             if(i >= f2.size() || Collections.disjoint(equivClasses.get(f1.get(i)), equivClasses.get(f2.get(i)))) {
+              toRemove.add(o2);
+              equivClasses.get(o2).remove(o);
+              repl++;
+              break object2;
+              }
+            }
+          }
+        equivClasses.get(o).removeAll(toRemove);
+        }
+      } while(repl > 0);
+    repl = 0;
+    do {
+      repl = 0;
+      for(Object o : circle) {
+        toRemove.clear();
+        object2:
+        for(Object o2 : equivClasses.get(o)) {
+          List<Object> f1 = nonCircleFields.get(o);
+          List<Object> f2 = nonCircleFields.get(o2);
+          for(int i = 0; i < f1.size(); i++) {
+            if(i >= f2.size() || f1.get(i) != f2.get(i)) {
               toRemove.add(o2);
               equivClasses.get(o2).remove(o);
               repl++;

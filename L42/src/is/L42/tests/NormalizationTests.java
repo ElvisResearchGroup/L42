@@ -343,6 +343,18 @@ public class NormalizationTests {
       }, false);
   }
   
+  @Test
+  public void testAlkyne() {
+    R2 res = testSelfProperties(() -> {
+      R2 r1 = new R2(null, "Hello");
+      R2 r2 = new R2(r1, "Goodbye");
+      r1.referenced = r2;
+      return r1;
+      });
+    assertTrue(res.referenced2.equals("Hello"));
+    assertTrue(((R2) res.referenced).referenced2.equals("Goodbye"));
+    }
+  
   private static <T> T testSelfProperties(Supplier<T> supplier) {
     return testBiProperties(supplier, supplier, true);
     }
