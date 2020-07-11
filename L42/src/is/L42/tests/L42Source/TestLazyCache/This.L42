@@ -328,7 +328,7 @@ TestCircularObjects={
         {}:Test"manualExecution_d2_d1"(expected=S"Hello", actual=d2.other().that())
     {}:Test"cacheCResult"(expected=S"Goodbye", actual=d2.firstE())
     {}:Test"cacheCResultAgain"(expected=S"Goodbye", actual=d2.firstE())
-    {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
     )  
   TestCircular=(
     Log"Foo".clear()
@@ -340,7 +340,7 @@ TestCircularObjects={
     {}:Test"manualExecution"(expected=S"Goodbye", actual=d2.that().val(0\))
     {}:Test"cacheCResult"(expected=S"Goodbye", actual=d2.firstE())
     {}:Test"cacheCResultAgain"(expected=S"Goodbye", actual=d2.firstE())
-    {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
     )
   }
 

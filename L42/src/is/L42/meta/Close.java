@@ -113,6 +113,7 @@ public class Close extends GuessFields{
       return;
       }
     if(match("lazyCache",m)){processLazyCache(m);return;}
+    if(match("eagerCache",m)){processEagerCache(m);return;}
     if(match("lazyReadCache",m)){processLazyReadCache(m);return;}
     var invalidate=match("invalidateCache",m);
     var now=match("readNowCache",m);
@@ -210,25 +211,55 @@ public class Close extends GuessFields{
       }}    
     return Utils.thisCall(pos,mh.get().key().withUniqueNum(0),General.L());
     }
-  public void processState(MWT m){
+  private static final S normS=S.parse("norm()");
+  private Core.E addNorm(Core.E e){
+    String varName="x";
+    for(X xi:fieldNames) {varName+=xi.inner();}
+    X x=new X(varName);
+    var d=new Core.D(false,P.coreThis0,x, e);
+    var body=new Core.MCall(e.pos(),new Core.EX(e.pos(), x),normS,L());
+    return new Core.Block(e.pos(),L(d),L(),body);
+    }
+  private void processState(MWT m,boolean norm){
     var s=m.key();
     var s2=s.withUniqueNum(0);
     assert !s.hasUniqueNum();
     var m2=m.withMh(m.mh().withS(s2));
     Pos pos=m.poss().get(0);
     List<Core.E> exs=General.L(s.xs(),(ci,xi)->ci.add(new Core.EX(pos,xi)));
-    m=m.with_e(Utils.thisCall(pos,s2,exs));
+    Core.E newE=Utils.thisCall(pos,s2,exs);
+    if(norm){newE=addNorm(newE);} 
+    m=m.with_e(newE);
     newMWTs.add(m);
     newMWTs.add(m2);
     }
-  public void processK(MWT m){processState(m);}
-  public void processGetter(MWT m){processState(m);}
-  public void processSetter(MWT m){processState(m);}
+  private boolean mNormOk(){
+    var mNorm=_elem(p.topCore().mwts(),normS);
+    if(mNorm==null){return false;}
+    var mh=mNorm.mh();
+    if(!mh.mdf().isImm() || !mh.t().mdf().isImm()){return false;}
+    if(!mh.t().p().equals(P.pThis0)){return false;}
+    if(!mh.exceptions().isEmpty()) {return false;}
+    return true;    
+    }
+  public void processK(MWT m){
+    if(!this.hasEagerCache) {processState(m,false);return;}
+    if(!mNormOk()){err.throwErr(m,"class can not use eager cache with invalid norm method");}
+    if(!m.mh().t().mdf().isImm()){err.throwErr(m,"class can not use eager cache with mutable fields");}
+    processState(m,true);
+    }
+  public void processGetter(MWT m){processState(m,false);}
+  public void processSetter(MWT m){processState(m,false);}
   public void processLazyCache(MWT m){
     if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}    
     if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}
     //TODO: edit here to add multi parameter lazy cached imm/class
     newMWTs.add(m.withNativeUrl("trusted:lazyCache"));
+    }
+  public void processEagerCache(MWT m){
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}    
+    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}
+    newMWTs.add(m.withNativeUrl("trusted:eagerCache"));
     }
   public void processLazyReadCache(MWT m){
     processClassToRead(ClassToRead.LazyRead,m);

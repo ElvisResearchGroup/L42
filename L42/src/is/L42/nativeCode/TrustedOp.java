@@ -408,6 +408,7 @@ public enum TrustedOp {
     """,sig(Mutable,Mutable,Gen1)))),
   IsPresent("isPresent",Map.of(Opt,use("return %1$s!=null;",sig(Readable,Immutable,Bool)))),
   CacheLazy("lazyCache",Map.of(AnyKind,new CacheLazyGenerator())),
+  CacheEager("eagerCache",Map.of(AnyKind,new CacheEagerGenerator())),
   CacheNow("readNowCache",Map.of(AnyKind,new CacheNowGenerator())),
   //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
   ;

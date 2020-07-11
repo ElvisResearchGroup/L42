@@ -119,6 +119,7 @@ public class Deps{
     }
   public static List<String>whiteListedNatives=List.of(
       "trusted:lazyCache",
+      "trusted:eagerCache",
       "trusted:invalidateCache",
       "trusted:readNowCache"
       );

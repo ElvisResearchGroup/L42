@@ -108,6 +108,16 @@ AddReadClone=Trait:{
       )
     } 
 
+
+AddImmNorm=Trait:{
+    method This norm()=(
+      Any any=System.immNorm(this)
+      return any
+      catch return This self self
+      catch return Any _ error void
+      )
+    } 
+
 @Public Relax={
   @Public ClassOperators={class method This2()=This1()}
   class method This1()=This1('This,check=Bool.false())
@@ -141,7 +151,8 @@ Bool check
   acc:=this.optionallyApply(AddReadEqOp(), acc=acc)
   acc:=this.optionallyApply(AddNEqOp(), acc=acc)
   acc:=this.optionallyApply(AddMutClone(), acc=acc)
-  acc:=this.optionallyApply(AddReadClone(), acc=acc)  
+  acc:=this.optionallyApply(AddReadClone(), acc=acc)
+  acc:=this.optionallyApply(AddImmNorm(), acc=acc)  
   acc:=AddConstructors(name):acc
   acc:=Wither(name):acc
   acc:=Close(name):acc

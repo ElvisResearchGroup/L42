@@ -39,8 +39,8 @@ public abstract class CachedRes<T>{
   public void clear() {val=null;localPool=null;}//terminating the computation would be hard
   public synchronized void startNow(){
     if(val!=null){return;}
-    val=new CompletableFuture<>();
     localPool=pool;
+    val=new CompletableFuture<>();
     try {val.complete(op());}
     catch(L42Throwable t) {val.completeExceptionally(t);throw t;}
     }
@@ -51,6 +51,7 @@ public abstract class CachedRes<T>{
       startEager();
       return;
       }
+    localPool=pool;
     val=CompletableFuture.supplyAsync(this::op,pool);
     }
   public synchronized T join(){
@@ -60,6 +61,10 @@ public abstract class CachedRes<T>{
       startNow();
       }
     try{return val.join();}
-    catch(CompletionException ce){throw (L42Throwable)ce.getCause();}
+    catch(CompletionException ce){
+      if(ce.getCause() instanceof RuntimeException){throw (RuntimeException)ce.getCause();}
+      if(ce.getCause() instanceof Error){throw (Error)ce.getCause();}
+      throw ce;
+      }
     }
   }

@@ -50,9 +50,8 @@ import is.L42.typeSystem.Coherence;
        if {read?,imm?} {capsule?} then capsule
        error if a mdf can not be found
      Mdfs: all imm/class for the imm constructor
-       -mut fields are always fwd mut in the constructor
-       -imm fields are fwd iff not used by any readCache 
-       (may need to be more general if we add more kinds of cache)
+       -mut fields are always fwd mut in the constructor //no need to ever remove fwd since 'now' can only read imms and capsules, no muts
+       -imm fields are fwd iff not used by any readCache and there is no eagerCache 
      */
 public class K extends GuessFields{
   public Core.L k(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
@@ -111,7 +110,7 @@ public class K extends GuessFields{
     if(clazz){return new T(Mdf.Class,L(),p);}
     var imm=match(null,List.of(Mdf.Immutable,Mdf.Readable),optionsGet) && match(null,L(Mdf.Immutable),optionsSet);
     if(imm){
-      if(fieldsUsedInReadCache.contains(x)){return new T(Mdf.Immutable,L(),p);}
+      if(hasEagerCache || fieldsUsedInReadCache.contains(x)){return new T(Mdf.Immutable,L(),p);}
       return new T(Mdf.ImmutableFwd,L(),p);
       }
     var mut=match(Mdf.Mutable,List.of(Mdf.Readable,Mdf.Immutable,Mdf.Lent),optionsGet) &&  match(null,List.of(Mdf.Mutable,Mdf.Capsule),optionsSet);

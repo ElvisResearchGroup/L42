@@ -6,7 +6,7 @@
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    
- 
+
  -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
  
@@ -14,26 +14,35 @@
    Discovery: Cache.Calls can be done by close as a 'transformation'
    adding private class Cache.Lazy methods.
    No new runtime support needed. No new J tweaks
-   -no, this would only work for pre existing classes, and loading/unloading would not change stuff
    -option: a decorator that do it on all the code, including all the private code in nesteds.
      we could just apply it to adam towel, then we could add it to Data/Organize? may be just organize?
  -add multi args cache for imm/class?
    They can be done by close or even by user defined decorators?
  -add parallel cache/eagerCache
-//NOTE: naive eagerCache on imm methods using fwd parameters
-//may start reading them before they are ready.
-//also, it may start running before the object is imm.
-//eager cache sould start after the object is normed.
-//We sure, we checked, circular imm born objects are normed AFTER
-//the fwds are sorted YES
+
+Data.Value:
+  Value just annotate as @Cache.Now the first method, that must be class void.
+  then the method argument become imm fields and the result is dataed
+  MCall=Data.Value:{[Expr] class method Void
+    (Expr receiver, Name name, Expr.List args)
+    =Data.Ensure[name.args().size()==args.size()]
+    }
+
+AddDocs:  myDoc.addTo({},name=...)
 
 -fix the failing test of rename free vars
 
--file J line 397
+-Test Close/Data: if a well typed trait is Dataed, then 
+  data need to throw exceptions if @Cache.** annotations are badly places.
+  Try for example to place them on mut methods
+  test all kind of annotations
+  
+-Main=(//this code is considered a "degenerated statement" Well formedness 235
+  Debug(Point(3\,5\).xy())//the issue s that there are no parName= for parameters.... but this is a terrible error to get in this case
+  )
+  
+-add and test System.restartThreads() //or better name
 
--Close: the java file call Close.java seams to be the starting point to do more caching
-
--OrganizeBug: AA=Organize:{A$b={}}
 -Expand multi method types:this should work also for read/mut/imm/capsule. Unsure about lent
  class method fwd mut This toMap(fwd mut This that)=that
  
@@ -53,8 +62,6 @@ Should I do Alphanumeric?
 Should organize check that $ renamed stuff is renamed onto an existing target?
 otherwise Organize:{Foo={}   Fooo$={}} works with no reported errors
 But.... Foo$Bar is ok if Foo exists and Bar does not...
-
-
 
 More tests?
 I verified, but not added a test, the following:

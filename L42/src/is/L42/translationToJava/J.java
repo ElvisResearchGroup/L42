@@ -391,8 +391,17 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
     c("private volatile "+jC+" norm;");nl();
     c("@Override public "+jC+" newInstance(){ return new " + jC + "();}");nl();
-    //c("@Override public void setNorm("+jC+" t){this.norm=t;}");nl();
-    c("@Override public void setNorm("+jC+" t){Resources.breakHere();this.norm=t;}");nl();
+    c("@Override public void setNorm("+jC+" t){assert this.norm==null;this.norm=t;");
+    if(!fields.cacheEager.isEmpty()){
+      c("if(t==this){");
+      for(var mi:fields.cacheEager){
+        String name=CacheLazyGenerator.nameFromS(mi.key());
+        c("this."+name+".startEager();");nl();
+
+        }
+      c("}");nl();
+      }
+    c("}");nl();
     c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
     c("@Override public int numFields(){return "+xs.size()+";}");nl();
     c("@Override public Object[] allFields() {return new Object[]{");
@@ -512,6 +521,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     final public List<P> ps;
     final public List<String> psJ;
     final public ArrayList<MWT> cacheReadLazy=new ArrayList<>();
+    final public ArrayList<MWT> cacheEager=new ArrayList<>();
     final public ArrayList<MWT> cacheNow=new ArrayList<>();
     public Fields(boolean forTs){
       if(ch.classMhs.isEmpty()|| p.topCore().isInterface()){ xs=L(); ps=L();psJ=L();return;}
@@ -529,6 +539,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         if(mwti.nativeUrl().isEmpty()){continue;}
         if(mwti.nativeUrl().equals("trusted:lazyCache") && mwti.mh().mdf().isRead()){cacheReadLazy.add(mwti);}
         if(mwti.nativeUrl().equals("trusted:readNowCache")){cacheNow.add(mwti); assert forTs||mwti.mh().mdf().isRead();}
+        if(mwti.nativeUrl().equals("trusted:eagerCache")){cacheEager.add(mwti);}
         }
       }
     }
