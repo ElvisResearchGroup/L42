@@ -31,7 +31,8 @@ DeployAAA=(
   lib={
     Public$={}
     @Public$ AbstractTowel={}
-    @Public$ Public={@AbstractTowel{public}}    
+    @Public$ Public={@AbstractTowel{public}}
+    @Public Cache={...}    
     @Public HasToS={interface read method S toS() @AbstractTowel{hasToS}}
     //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.
     //List can take a class method Boolean equals(Elem e1,Elem e2)
@@ -88,7 +89,6 @@ DeployAAA=(
     Num$List=Class$Relax:Collection.listEqTrait()['Elem=>Num]:{
       class method Bool equals(read Num a,read Num b)=a==b
       }
-    @Public Cache={...}
     @Public Data$Fail={interface [Message$Guard]}
     Class$IncoherentClass=Message:{[Data$Fail]}
     @Public Data={...}

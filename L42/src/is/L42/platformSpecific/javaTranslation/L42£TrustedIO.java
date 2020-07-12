@@ -34,18 +34,24 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
     return L42£Void.instance;
     }
   public L42£Void addToLog(String logName,String text){
-    String oldText=Resources.logs().putIfAbsent(logName,text);
-    if(oldText!=null){Resources.logs().put(logName,oldText+text);}
-    return L42£Void.instance;
+    synchronized(Resources.logs()){
+      String oldText=Resources.logs().putIfAbsent(logName,text);
+      if(oldText!=null){Resources.logs().put(logName,oldText+text);}
+      return L42£Void.instance;
+      }
     }
   public L42£Void clearLog(String logName){
-    Resources.logs().remove(logName);
-    return L42£Void.instance;
+    synchronized(Resources.logs()){
+      Resources.logs().remove(logName);
+      return L42£Void.instance;
+      }
     }
   public String readLog(String logName){
-    String res=Resources.logs().get(logName);
-    return res==null?"":res;
-    }    
+    synchronized(Resources.logs()){
+      String res=Resources.logs().get(logName);
+      return res==null?"":res;
+      }
+    }
   public L42£Void testActualExpected(L42£Library hasPos,String name, String actual, String expected,String message,String hole){
     System.out.println("testActualExpected");
     System.out.println(name);

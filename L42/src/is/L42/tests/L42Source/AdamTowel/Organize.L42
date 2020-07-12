@@ -1,3 +1,30 @@
+//TODO: divide organize more clearly in multiple decorators that can be used from users
+//now we have 4 fases that should become usable decorators:
+//-CloseAll
+//-Rename$
+//-Hide non Public
+//-CacheCall
+
+@Public CacheCall$Fail=Class$Relax:Message.Native:{[Message$Guard]}
+CacheCall$Meta={
+  class method This #apply()
+  method Library cacheCall(Library that)=native{trusted:cacheCall} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.CacheCall$Fail,This2.S
+    watched=This1.CacheCall$Fail,This2.S
+    coherentDep=This1.CacheCall$Fail,
+    nativePar=This1.CacheCall$Fail This1.CacheCall$Fail This1.CacheCall$Fail This1.CacheCall$Fail This1.CacheCall$Fail
+    }}
+CacheCall={
+  @Public ClassOperators={class method class This1 ()=This1}
+  @Public class method Trait :(Trait t)[CacheCall$Fail]=Trait(this:t.code())
+  @Public class method Trait :(class Trait.Lifted l)[CacheCall$Fail]=Trait(this:l.code())
+  @Public class method Library :(Library that)[CacheCall$Fail]={
+    return CacheCall$Meta().cacheCall(that)
+    catch error CacheCall$Fail x exception x
+    }
+  }
+
 CloseAll={
   class method Trait (Trait that)[Data.Close$Fail]=(
     n=Introspection.Nested.from(library=that.code())
@@ -23,13 +50,13 @@ method Size maxLev(Introspection.Nested that)=(
     )
   res+1Size
   )
-method Library :(Library that)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
+method Library :(Library that)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=
   (this:Trait(that)).code()
 
-method Trait :(class Trait.Lifted lifted)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=
+method Trait :(class Trait.Lifted lifted)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=
   (this:lifted())
   
-method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=(
+method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
   max=this.maxLev(Introspection.Nested.from(library=trait.code()))
   var res=trait
   (var lev=0Size while lev<max (//range will come later
@@ -44,7 +71,7 @@ method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,T
     res:=res(squareBuilder=this.mapHide(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
   catch error S$ParseError e exception Trait$InvalidName(e.text())
-  res
+  CacheCall:res
   )
 
 EmptyOnThis={class method S (S that)=if that==S"This" S"" else that}

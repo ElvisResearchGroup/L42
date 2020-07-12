@@ -1,4 +1,6 @@
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
+-CACHING bug: if I reuse adam towel and declare a nested call Test it fails for shadowing (correctly)
+    but when I then rename it, it keeps failing for shadowing
  -IDE: clear cache should stop the loading of the old cache and set up run?
  -IDE: cut paste on win do not survive the IDE being closed
  -IDE: syntax bug: this.foo::0() get marked red
@@ -45,7 +47,8 @@ AddDocs:  myDoc.addTo({},name=...)
 
 -Expand multi method types:this should work also for read/mut/imm/capsule. Unsure about lent
  class method fwd mut This toMap(fwd mut This that)=that
- 
+-Should I have inference for exceptions? so that [] just infers the exception clause?
+  half could simply collect all the meth calls, and if they are typed, add the information (of course... filter caches etc)
 -Bug: CircularityIssue need to be improved by a long time 
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString...

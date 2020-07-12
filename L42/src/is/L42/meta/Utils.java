@@ -29,7 +29,8 @@ public class Utils {
   public static boolean match(Program p,MetaError err,String target,MWT forErr,Doc d){
     if(d._pathSel()==null){return false;}
     L ld=p._ofCore(d._pathSel().p());
-    if(ld==null){err.throwErr(forErr,"annotation "+d._pathSel().p()+"not existent");}
+    if(ld==null){
+      err.throwErr(forErr,"annotation "+d._pathSel().p()+" not existent");}
     for(var di:ld.docs()){
       if(di.texts().size()!=1){return false;}
       if(di.texts().get(0).equals(target)){return true;}

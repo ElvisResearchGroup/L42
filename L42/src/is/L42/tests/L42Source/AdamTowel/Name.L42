@@ -15,7 +15,7 @@ method toS()=this.that().toS()
   return this.with(path=prefix++S"."++p)
   }
 @Public class method This (S that)=\.of(that.toName()) 
-@Public class method This #from(S$StringBuilder stringLiteral)=\(stringLiteral.toS())
+@Public @Cache.Call class method This #from(S$StringBuilder stringLiteral)=\(stringLiteral.toS())
 // => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;
 @Public method Name$Mapping =>(class Any target)=
   Name$Mapping().addMap(name=this.that(),classAny=target)

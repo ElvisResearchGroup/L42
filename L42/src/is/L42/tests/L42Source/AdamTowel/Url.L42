@@ -1,5 +1,5 @@
 [HasToS] method toS()=this.that()
 S that
 class method This of(S that)
-class method This #from(S$StringBuilder stringLiteral)=this.of(stringLiteral.toS())
+@Cache.Call class method This #from(S$StringBuilder stringLiteral)=this.of(stringLiteral.toS())
 @AbstractTowel{url}

@@ -53,6 +53,6 @@ Test2={
     S res=Log"Point".#$reader().read()
     Debug(res)
     Debug(res.size())
-    {}:Test"WithData"(res.size()==510Size)
+    {}:Test"WithData res=%res"(res.size()==510Size)
     )
   }
