@@ -100,7 +100,7 @@ mut method Void #sspace()=native{trusted:space}error void
 mut method Void #snewLine()=native{trusted:newLine}error void
 
 mut method Void #stringAddAll(mut This that)=this.addAll(string=that.toS())
-mut method Void #stringAddExpr(This1.HasToS that)=this.addAll(string=that.toS())
+mut method Void #stringAddExpr(read This1.HasToS that)=this.addAll(string=that.toS())
 mut method Void addAll(This1.S string)=native{trusted:addAll}error void
 
 

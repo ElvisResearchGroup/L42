@@ -229,10 +229,36 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   @Override public void visitD(Full.D d){
     if(d._e()!=null){lastPos=d._e().poss();}
     super.visitD(d);
+    }
+  void degenerated(Full.D d,Full.Block b,int next){
     if(d._e()==null){return;}
     if(d._varTx()!=null || !d.varTxs().isEmpty()){return;}
     if(!degenerate(d._e())){return;}
+    assert d._e()!=null;
+    lastPos=d._e().poss();
+    if(b.ds().size()<=next){
+      boolean noE=!b.ks().isEmpty() || !b.whoopsed().isEmpty() || !similarToPars(b._e());
+      if(noE){err(Err.degenerateStatement(d._e()));}
+      err(Err.degenerateStatement(d._e(),b._e()));
+      }
+    var dNext=b.ds().get(next);
+    if(similarToPars(dNext)){err(Err.degenerateStatement(d._e(),dNext._e()));}
     err(Err.degenerateStatement(d._e()));
+    //degenerate statements often happens for forgetting par names in meth calls.
+    //for example in Debug(Point(3\,5\).xy()).
+    //checking degenerate late gives better error msg (nested first)
+    }
+  boolean similarToPars(Full.E _e){
+    if(_e==null){return false;}
+    if(!(_e instanceof Full.Block)){return false;}
+    var b=(Full.Block)_e;
+    if(b.isCurly()){return false;}
+    if(!b.ks().isEmpty() ||!b.whoopsed().isEmpty()){return false;}
+    return !b.ds().isEmpty();
+    }
+  boolean similarToPars(Full.D d){
+    if(d._varTx()!=null){return false;}
+    return similarToPars(d._e());    
     }
   @Override public void visitD(Core.D d){
     lastPos=d.e().poss();
@@ -275,14 +301,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     err(Err.deadThrow(t.thr()));
     }
   @Override public void visitBlock(Full.Block b){
+    visitBlockDeclared(b);
+    if(b.isCurly()){Returning.ofBlock(b);}
+    else{checkDeadCode(b);checkNeedBlock(b);}
+    for(var i:range(b.ds())){degenerated(b.ds().get(i),b,i+1);}
+    }      
+  void visitBlockDeclared(Full.Block b){    
     lastPos=b.poss();
     var domDs=FV.domFullDs(b.ds());
     var domMatches=FV.domFullDsOnlyMatchs(b.ds());
     var allVar=FV.domVarFullDs(b.ds());
     okXs(domDs);
-    for(var x: domDs){if(declared.contains(x)){
-      err(Err.redefinedName(x));
-      }}
+    for(var x: domDs){if(declared.contains(x)){err(Err.redefinedName(x));}}
     var oldDeclared=new ArrayList<>(declared);
     declared.addAll(domDs);
     declaredHidden.addAll(domMatches);
@@ -292,14 +322,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(isErr){declaredVarError.addAll(oldDeclared);}
     for(var d:b.ds()){
       visitD(d);
-      if(d._varTx()!=null && d._varTx().isVar()){
-        assert d._varTx()._x()!=null;
-        declaredVarFwd.remove(d._varTx()._x());
-        for(var vtx:d.varTxs()){
-          assert vtx._x()!=null;
-          declaredHidden.remove(vtx._x());
-          }
-        }
+      if(d._varTx()==null || !d._varTx().isVar()){continue;}
+      assert d._varTx()._x()!=null;
+      declaredVarFwd.remove(d._varTx()._x());
+      assert d.varTxs().stream().allMatch(vtx->vtx._x()!=null);
+      for(var vtx:d.varTxs()){declaredHidden.remove(vtx._x());}
       }
     declaredHidden.addAll(domDs);
     visitFullKs(b.ks());
@@ -309,7 +336,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(b._e()!=null){visitE(b._e());}
     declared.removeAll(domDs);
     declaredVar.removeAll(allVar);
-    if(b.isCurly()){Returning.ofBlock(b);return;}
+    }
+  void checkDeadCode(Full.Block b){
     int minus=0;
     if(b._e()==null){
       var last=b.ds().get(b.ds().size()-1);
@@ -321,6 +349,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       lastPos=b.ds().get(i)._e().poss();
       err(Err.deadCodeAfter(i));
       }
+    }
+  void checkNeedBlock(Full.Block b){
     for(int i:range(1,b.ds().size())){
       var di=b.ds().get(i);
       var dj=b.ds().get(i-1);
@@ -331,10 +361,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err(Err.needBlock(dj._e()));
       }
     if(b.ks().isEmpty()){return;}
-    if(b.ds().size()<=b.dsAfter()){
-      if(b._e()==null){return;}
-      }
-    else{
+    var hasAfter=b.ds().size()>b.dsAfter();
+    if(!hasAfter && b._e()==null){return;}
+    if(hasAfter){
       Full.D firstAfter=b.ds().get(b.dsAfter());
       if(firstAfter._varTx()!=null || !firstAfter.varTxs().isEmpty()){return;}
       }
@@ -343,7 +372,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(degenerate(kLast.e())){return;}
     if(!CheckBlockNeeded.of(kLast.e(),false)){return;}
     lastPos=kLast.e().poss();
-    err(Err.needBlock(kLast.e()));
+    err(Err.needBlock(kLast.e()));    
     }
   @Override public void visitBlock(Core.Block b){
     lastPos=b.poss();

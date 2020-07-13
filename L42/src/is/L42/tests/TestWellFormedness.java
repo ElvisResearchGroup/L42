@@ -260,6 +260,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 
    ),new AtomicTest(()->
    fail("(void, void void void)",Err.degenerateStatement(hole))
+   ),new AtomicTest(()->
+   fail("(Foo(A(), B()))",Err.degenerateStatement(hole,hole))
+   ),new AtomicTest(()->
+   fail("(Foo(A(), B()) A() B())",Err.degenerateStatement(hole,hole))
+   ),new AtomicTest(()->
+   fail("( A() Foo(A(), B()) A() A())",Err.degenerateStatement(hole,hole))
 
   ));}
 public static String inCore(String s){

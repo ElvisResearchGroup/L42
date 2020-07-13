@@ -190,7 +190,11 @@ public class Err {
   ;}public static String privateNestedPrivateMember(Object _1){return
   "member "+_1+" inside a private nested class is not private"
   ;}public static String degenerateStatement(Object _1){return
-  "The following expression is not a correct statement: "+_1
+  "The following expression is not a correct independent statement: "+_1
+  ;}public static String degenerateStatement(Object _1,Object _2){return
+  "The following expression is not a correct independent statement: "+_1+
+  "\n the code after is recognized as a block, not as a list of parameters: "+_2+
+  "\nSome parameter name may be missing."
   ;}public static String zeroNumberForC(Object _1){return
   "The unique number 0 can not be used on class names, but it is used in "+_1
   ;}public static String zeroNumberForNonThis(Object _1){return

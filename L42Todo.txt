@@ -1,10 +1,11 @@
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
--CACHING bug: if I reuse adam towel and declare a nested call Test it fails for shadowing (correctly)
+2)-CACHING bug: if I reuse adam towel and declare a nested call Test it fails for shadowing (correctly)
     but when I then rename it, it keeps failing for shadowing
  -IDE: clear cache should stop the loading of the old cache and set up run?
  -IDE: cut paste on win do not survive the IDE being closed
  -IDE: syntax bug: this.foo::0() get marked red
- -Run a balanced parenthesis test on syntax errors
+ -IDE: meth names wiht more then one # are badly highlighted
+3) -Run a balanced parenthesis test on syntax errors
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    
@@ -12,36 +13,15 @@
  -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
  
- -add callSiteCache?
-   Discovery: Cache.Calls can be done by close as a 'transformation'
-   adding private class Cache.Lazy methods.
-   No new runtime support needed. No new J tweaks
-   -option: a decorator that do it on all the code, including all the private code in nesteds.
-     we could just apply it to adam towel, then we could add it to Data/Organize? may be just organize?
  -add multi args cache for imm/class?
    They can be done by close or even by user defined decorators?
- -add parallel cache/eagerCache
-
-Data.Value:
-  Value just annotate as @Cache.Now the first method, that must be class void.
-  then the method argument become imm fields and the result is dataed
-  MCall=Data.Value:{[Expr] class method Void
-    (Expr receiver, Name name, Expr.List args)
-    =Data.Ensure[name.args().size()==args.size()]
-    }
-
-AddDocs:  myDoc.addTo({},name=...)
 
 -fix the failing test of rename free vars
 
--Test Close/Data: if a well typed trait is Dataed, then 
+1)-Test Close/Data: if a well typed trait is Dataed, then 
   data need to throw exceptions if @Cache.** annotations are badly places.
   Try for example to place them on mut methods
   test all kind of annotations
-  
--Main=(//this code is considered a "degenerated statement" Well formedness 235
-  Debug(Point(3\,5\).xy())//the issue s that there are no parName= for parameters.... but this is a terrible error to get in this case
-  )
   
 -add and test System.restartThreads() //or better name
 
@@ -59,6 +39,15 @@ AddDocs:  myDoc.addTo({},name=...)
 Should I do Alphanumeric?
 //   );}@Test public void t1(){top(//TODO: fix, so that also a class expression can be a top level toLibrary?
 //   top("{A={class method Library #toLibrary()={#norm{}}} B=(class A a=A<:class A a)}","{A={#typed{}}B={#typed{}}#norm{}}")
+Data.Value:
+  Value just annotate as @Cache.Now the first method, that must be class void.
+  then the method argument become imm fields and the result is dataed
+  MCall=Data.Value:{[Expr] class method Void
+    (Expr receiver, Name name, Expr.List args)
+    =Data.Ensure[name.args().size()==args.size()]
+    }
+
+AddDocs:  myDoc.addTo({},name=...)
 
 
 //NO?:
