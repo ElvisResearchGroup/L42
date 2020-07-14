@@ -19,6 +19,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
+import is.L42.generated.LDom;
 import is.L42.generated.LL;
 import is.L42.generated.P;
 import is.L42.generated.ST;
@@ -163,10 +164,24 @@ class GLOpen extends G{
     boolean eq=l2!=null &&
       !((Full.L)p.top).reuseUrl().contains("#$") &&
       state.equals(gc.state);
-    if(eq){
+    if(eq){//check the header is the same
       Program pNoNC=p.update(noNC(p.top),false);
       Program pCNoNC=pC.update(noNC(pC.top),false);
       eq=pNoNC.equals(pCNoNC);
+      }
+    if(eq && rc.isErr() && rc._err instanceof EndError.InvalidHeader){
+      eq=false;
+      }
+    if(eq && !rc.isErr() && p.top.isFullL()){//check novel ncs names do not clash with cached ones
+      var ncs=((LayerL)rc._g.layer()).p().topCore().ncs();//all and only the nesteds from the cached reuse 
+      var mwts=((LayerL)rc._g.layer()).p().topCore().mwts();//same for mwts from reuse
+      for(var mi:((Full.L)p.top).ms()){
+        if(LDom._elem(((Full.L)pC.top).ms(),mi.key())!=null){continue;}
+        var dupC=ncs.stream().anyMatch(ncj->ncj.key().equals(mi.key()));
+        if(dupC){eq=false;break;}
+        var dupM=mwts.stream().anyMatch(mwtj->mwtj.key().equals(mi.key()));
+        if(dupM){eq=false;break;}
+        }
       }
     TestCachingCases.timeNow("GLOpen3 "+eq);
     if(eq && rc.isErr()){return rc;}

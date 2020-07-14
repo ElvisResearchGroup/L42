@@ -24,7 +24,7 @@ TestClose1=(
     expected=S"""
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now read method This1.Size double()=(..)
-      |must be a class method
+      |can not be made into a cached read method; the receiver modifier must be class but it is read
       |[file:[###]
       """.trim())
   code3={

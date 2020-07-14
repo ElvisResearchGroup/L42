@@ -1,10 +1,6 @@
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
-2)-CACHING bug: if I reuse adam towel and declare a nested call Test it fails for shadowing (correctly)
-    but when I then rename it, it keeps failing for shadowing
- -IDE: clear cache should stop the loading of the old cache and set up run?
- -IDE: cut paste on win do not survive the IDE being closed
- -IDE: syntax bug: this.foo::0() get marked red
- -IDE: meth names wiht more then one # are badly highlighted
+-IDE: clear cache should stop the loading of the old cache and set up run?
+-IDE: cut paste on win do not survive the IDE being closed
 3) -Run a balanced parenthesis test on syntax errors
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
@@ -21,7 +17,8 @@
 -test cache in case the cached method do some exceptions/errors
   
 -add and test System.restartThreads() //or better name
-
+-put LDom._elem as favorite static
+-using a hello world lib (that have methods) test that caching works with method hiding
 -Expand multi method types:this should work also for read/mut/imm/capsule. Unsure about lent
  class method fwd mut This toMap(fwd mut This that)=that
 -Should I have inference for exceptions? so that [] just infers the exception clause?

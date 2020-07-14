@@ -4,6 +4,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -14,6 +15,7 @@ import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
 
 import is.L42.common.Constants;
+import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.constraints.FreshNames;
@@ -185,6 +187,24 @@ public class TestCachingCases {
       "NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,"
     ));}
 
+@Test void repetedName(){
+  var code0="{reuse [AdamTowel] Foo=Debug(S\"@@@@foo\")}";
+  var code1="{reuse [AdamTowel] Test={} Bar=Debug(S\"####bar\") Foo=Debug(S\"@@foo@@\")}";
+  var code2="{reuse [AdamTowel] Bar=Debug(S\"####bar\") Foo=Debug(S\"@@foo@@\")}";
+  var cache=new CachedTop(L(),L());//round 0
+  Resources.clearResKeepReuse();
+  Init.topCache(cache,code0);
+  assertEquals(Resources.out(),"@@@@foo\n");
+  cache=cache.toNextCache();//round 1
+  Resources.clearResKeepReuse();
+  try{Init.topCache(cache,code1);fail();}
+  catch(EndError.InvalidHeader ie){}
+  assertEquals(Resources.out(),"");
+  cache=cache.toNextCache();//round 2
+  Resources.clearResKeepReuse();
+  Init.topCache(cache,code2);
+  assertEquals(Resources.out(),"####bar\n@@foo@@\n");
+  }
 
 @Test void cacheOnFile(){
   //IntStream.range(0, 10).forEach(i->cacheOnFile1());
@@ -286,7 +306,6 @@ void cacheOnFile1(){
   assertEquals("DoingC:B\n",out);
   assertEquals("DoingC:\n",out2);
   }
-
 
 /*
 So, what if CTz is a tree?
