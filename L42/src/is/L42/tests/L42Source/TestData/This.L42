@@ -1,4 +1,113 @@
 reuse[AdamTowel]
+
+TestDataCacheErrors={
+  A={class method S (Library that)=(
+    _=Data:that
+    Debug(S"passed :(")
+    catch Data.Fail f (f.toS())
+    S""
+    )}
+  TestLazy=(
+    {}:Test"with par"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Lazy method This2.Num m(This2.Num x)=(..)
+      |can not be made cached; it must have zero parameters[###]
+      """.trim(),actual=A({
+        @Cache.Lazy method Num m(Num x)=1Num
+        }))
+    {}:Test"with mut receiver"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Lazy mut method This2.Num m()=(..)
+      |can not be made cached; the receiver modifier must be imm or capsule but it is mut[###]
+      """.trim(),actual=A({
+        @Cache.Lazy mut method Num m()=1Num
+        }))
+    {}:Test"with mut return"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Lazy method mut This2.S.List m()=(..)
+      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      """.trim(),actual=A({
+        @Cache.Lazy method mut S.List m()=S.List[]
+        }))
+    )
+  TestEager=(
+    {}:Test"with par"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Eager method This2.Num m(This2.Num x)=(..)
+      |can not be made cached; it must have zero parameters[###]
+      """.trim(),actual=A({
+        @Cache.Eager method Num m(Num x)=1Num
+        }))
+    {}:Test"with mut receiver"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Eager mut method This2.Num m()=(..)
+      |can not be made cached; the receiver modifier must be imm but it is mut[###]
+      """.trim(),actual=A({
+        @Cache.Eager mut method Num m()=1Num
+        }))
+    {}:Test"with class receiver"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Eager class method This2.Num m()=(..)
+      |can not be made cached; the receiver modifier must be imm but it is class[###]
+      """.trim(),actual=A({
+        @Cache.Eager class method Num m()=1Num
+        }))
+    {}:Test"with mut return"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Eager method mut This2.S.List m()=(..)
+      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      """.trim(),actual=A({
+        @Cache.Eager method mut S.List m()=S.List[]
+        }))
+    )
+  TestNow=(
+    {}:Test"with par"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.Now class method mut This2.S.List m(This2.Num foo)=(..)
+      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      """.trim(),actual=A({Num foo
+        @Cache.Now class method mut S.List m(Num foo)=S.List[]
+        }))
+    {}:Test"with par"(expected=S"""
+     |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+     |@This2.Cache.Now method This2.Num m(This2.Num foo)=(..)
+     |can not be made into a cached read method; the receiver modifier must be class but it is imm[###]
+      """.trim(),actual=A({Num foo
+        @Cache.Now method Num m(Num foo)=foo
+        }))
+    {}:Test"with par"(expected=S"""
+     |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+     |@This2.Cache.Now class method This2.Num m(This2.Num bar)=(..)
+     |No candidate getter/exposer with name bar and method modifier imm or read[###]
+      """.trim(),actual=A({Num foo
+        @Cache.Now class method Num m(Num bar)=bar
+        }))
+    )
+  TestLazyRead=(
+    {}:Test"with par"(expected=S"""
+      |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+      |@This2.Cache.LazyRead class method mut This2.S.List m(This2.Num foo)=(..)
+      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      """.trim(),actual=A({Num foo
+        @Cache.LazyRead class method mut S.List m(Num foo)=S.List[]
+        }))
+    {}:Test"with par"(expected=S"""
+     |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+     |@This2.Cache.LazyRead method This2.Num m(This2.Num foo)=(..)
+     |can not be made into a cached read method; the receiver modifier must be class but it is imm[###]
+      """.trim(),actual=A({Num foo
+        @Cache.LazyRead method Num m(Num foo)=foo
+        }))
+    {}:Test"with par"(expected=S"""
+     |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+     |@This2.Cache.LazyRead class method This2.Num m(This2.Num bar)=(..)
+     |No candidate getter/exposer with name bar and method modifier imm or read[###]
+      """.trim(),actual=A({Num foo
+        @Cache.LazyRead class method Num m(Num bar)=bar
+        }))
+    )
+  }
+
 TestDataInterface={
   Shape={interface [HasToS]
     S that

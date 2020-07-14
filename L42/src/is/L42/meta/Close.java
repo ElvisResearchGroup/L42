@@ -118,7 +118,6 @@ public class Close extends GuessFields{
     var invalidate=match("invalidateCache",m);
     var now=match("readNowCache",m);
     if(!invalidate &&!now){processBase(m);return;}
-    if(!m.mh().mdf().isClass()){err.throwErr(m,"must be a class method");}
     if(invalidate){processInvalidate(m);return;}
     if(now){processNow(m);return;}
     assert false;
@@ -188,7 +187,7 @@ public class Close extends GuessFields{
       ).reduce(toOneOr(()->err.throwErr(mErr,()->errMsgMoreThenOne(x,recMdf1,recMdf2))));
     if(!mh.isPresent()){
       err.throwErr(mErr, "No candidate getter/exposer with name "+x
-        +" and method modifier "  +recMdf1+" or "+recMdf2);
+        +" and method modifier "  +recMdf1.inner+" or "+recMdf2.inner);
       }
     for(var ki:ks){
       int i=ki.key().xs().indexOf(x);
@@ -250,15 +249,28 @@ public class Close extends GuessFields{
     }
   public void processGetter(MWT m){processState(m,false);}
   public void processSetter(MWT m){processState(m,false);}
-  public void processLazyCache(MWT m){
+
+  private void checkClassRec(MWT m){
+    if(!m.mh().mdf().isClass()){err.throwErr(m,"can not be made into a cached read method; the receiver modifier must be class but it is "+m.mh().mdf().inner);}    
+    }
+  private void checkZeroPars(MWT m){
+    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}    
+    }
+  private void checkRetAndBody(MWT m){
     if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}    
-    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}
+    if(!m.mh().t().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the return type modifier must be imm or capsule but it is "+m.mh().t().mdf().inner);}    
+    }
+  public void processLazyCache(MWT m){
+    if(!m.mh().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or capsule but it is "+m.mh().mdf().inner);}
+    checkZeroPars(m);
+    checkRetAndBody(m);
     //TODO: edit here to add multi parameter lazy cached imm/class
     newMWTs.add(m.withNativeUrl("trusted:lazyCache"));
     }
   public void processEagerCache(MWT m){
-    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}    
-    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}
+    if(!m.mh().mdf().isImm()){err.throwErr(m,"can not be made cached; the receiver modifier must be imm but it is "+m.mh().mdf().inner);}
+    checkZeroPars(m);
+    checkRetAndBody(m);
     newMWTs.add(m.withNativeUrl("trusted:eagerCache"));
     }
   public void processLazyReadCache(MWT m){
@@ -309,6 +321,8 @@ public class Close extends GuessFields{
       }
     }
   public void processClassToRead(ClassToRead ctr,MWT m){
+    checkRetAndBody(m);
+    checkClassRec(m);
     mustAddThis0Coherence=true;//will use This0
     var ok=m.mh().pars().stream().allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class));
     if(!ok){err.throwErr(m,"all parameters must be imm, readable or class");}

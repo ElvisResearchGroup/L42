@@ -66,7 +66,7 @@ TestClose1=(
     expected=S"""
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now class method This1.Size double(This1.Size nn)=(..)
-      |No candidate getter/exposer with name nn and method modifier Immutable or Readable
+      |No candidate getter/exposer with name nn and method modifier imm or read
       |[file:[###]
       """.trim())
   code6={

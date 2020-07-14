@@ -18,10 +18,7 @@
 
 -fix the failing test of rename free vars
 
-1)-Test Close/Data: if a well typed trait is Dataed, then 
-  data need to throw exceptions if @Cache.** annotations are badly places.
-  Try for example to place them on mut methods
-  test all kind of annotations
+-test cache in case the cached method do some exceptions/errors
   
 -add and test System.restartThreads() //or better name
 
