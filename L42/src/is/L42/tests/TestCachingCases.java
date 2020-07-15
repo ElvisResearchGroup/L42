@@ -205,6 +205,26 @@ public class TestCachingCases {
   Init.topCache(cache,code2);
   assertEquals(Resources.out(),"####bar\n@@foo@@\n");
   }
+@Test void repetedNameSelector(){
+  var code0="{reuse[MiniLib] A={}}";
+  var code1="{reuse[MiniLib] class method Void hello(Void that)=that B={} A={}}";
+  var code2="{reuse[MiniLib] B={} A={}}";
+  var cache=new CachedTop(L(),L());//round 0
+  Resources.clearResKeepReuse();
+  Init.topCache(cache,code0);
+  assertEquals(Resources.notifiedCompiledNC(),
+    "topO:0,NCiO:A,topO:1,topC:1,NCiC:A,topC:0,");
+  cache=cache.toNextCache();//round 1
+  Resources.clearResKeepReuse();
+  try{Init.topCache(cache,code1);fail();}
+  catch(EndError.InvalidHeader ie){}
+  assertEquals(Resources.notifiedCompiledNC(),"topO:0,");
+  cache=cache.toNextCache();//round 2
+  Resources.clearResKeepReuse();
+  Init.topCache(cache,code2);
+  assertEquals(Resources.notifiedCompiledNC(),
+    "topO:0,NCiO:B,topO:1,topC:1,NCiC:B,NCiO:A,topO:1,topC:1,NCiC:A,topC:0,");
+  }
 
 @Test void cacheOnFile(){
   //IntStream.range(0, 10).forEach(i->cacheOnFile1());

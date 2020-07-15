@@ -9,17 +9,13 @@
  -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
  
- -add multi args cache for imm/class?
-   They can be done by close or even by user defined decorators?
-
 -fix the failing test of rename free vars
 
 -test cache in case the cached method do some exceptions/errors
   
 -add and test System.restartThreads() //or better name
--put LDom._elem as favorite static
--using a hello world lib (that have methods) test that caching works with method hiding
 -Expand multi method types:this should work also for read/mut/imm/capsule. Unsure about lent
+  //was there already, called "extended". Test that the two "extended" rules are applied
  class method fwd mut This toMap(fwd mut This that)=that
 -Should I have inference for exceptions? so that [] just infers the exception clause?
   half could simply collect all the meth calls, and if they are typed, add the information (of course... filter caches etc)
@@ -43,7 +39,9 @@ Data.Value:
 
 AddDocs:  myDoc.addTo({},name=...)
 
-
+ -add multi args cache for imm/class?
+   They can be done by close or even by user defined decorators?
+   
 //NO?:
 Should organize check that $ renamed stuff is renamed onto an existing target?
 otherwise Organize:{Foo={}   Fooo$={}} works with no reported errors

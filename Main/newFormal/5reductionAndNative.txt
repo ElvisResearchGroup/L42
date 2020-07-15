@@ -235,9 +235,16 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
   J.fields(J.p) = T1 x1..Tn xn
   JC = J.className(J.p)
 
+* J.staticMethHeader(mdf method T0 m(T1 x1..Tn xn)_) =
+      public static J(T0) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
+    J(T0) != Object or Object notin J(T1)..J(Tn)
 * J.staticMethHeader(mdf method T m(T1 x1..Tn xn)_) =
-    public static J(T) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
-
+      public static J(T0) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
+      public static J(T0') m(x1..xn) (J(mdf This0) £xthis, J(T1') £xx1..J(Tn') £xxn)
+    Ti'=noFwd(Ti)
+    J(T0)==Object and Object in J(T1)..J(Tn)  
+    
+    
 * J.refineMethHeader(mdf method T m(T1 x1..Tn xn)_) = public T' m(x1..xn) (J(T1) £xx1..J(Tn) £xxn)
     T' = J.className(T) if J.refineNative(T,m(x1..xn))
     T'=J(T) otherwise
@@ -265,7 +272,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     MWT.MH.s in p(This0).Info.refined
 * J.refined(MWT)=
     J.refineMethHeader(MWT.MH);
-    J.staticMethHeader(MWT.MH)J.staticMethBody(MWT.MH)
+    J.staticMethHeader(MWT.MH) J.staticMethBody(MWT.MH)//generates two if staticMethHeader generates two
     J.p(This0).interface? = interface
 
 * J.meth(MWT1..MWTn)=J.refined(MWT1) J.meth(MWT1) .. J.refined(MWTn) J.meth(MWTn)
@@ -278,11 +285,16 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
     if !coherent(J.p,false); the other cases are only applied if coherent(J.p,false) 
 * J.meth(MH=e) =
     J.staticMethHeader(MH){returnKw J[G=MH.G][MH.T](e);}
-
+    J.staticMethHeader(MH) generates only 1 result
+* J.meth(MH=e) =
+    J.staticMethHeader(MH).0 {returnKw J[G=MH.G][MH.T](e);}
+    J.staticMethHeader(MH).1 {returnKw (J(noFwd(MH.T))) MH.s((Object)?£xx1,..,(Object)?£xxn);}//casting the right ones to Object
+    //could be just J[G=MH.G][MH.T](e) if e is very simple 
+    
 * J.meth(MH)=//if method is allowed abstract  //all cases for abs methods:
-      J.staticMethHeader(MH){throw new Error();}
+      J.staticMethHeader(MH){throw new Error();}//create two if staticMethHeader returns two headers
 * J.meth(MH)=
-    J.staticMethHeader(MH){return J(kind,x1..xn);}  
+    J.staticMethHeader(MH){return J(kind,x1..xn);}//create two if staticMethHeader returns two headers
     J.p(This0).Info.NativeKind=kind
     MH.mdf=class
 * J.meth(MH)=
@@ -290,7 +302,7 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
       J(p(This0)) Res=new J(p(This0))();
       Res.x1=CAST1 x1;..;Res.xn=CASTn xn;
       return Res;
-      }
+      }//assert staticMethHeader return 1 element only
     fwd _ notin MH.pars.mdfs
     MH.mdf=class
     CASTi=empty if J(MH.parsi)!=Object
@@ -302,18 +314,19 @@ J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
         ...
         if(xn instanceof L42Fwd){((L42Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
         return Res;
-        }
+        }//assert staticMethHeader return 1 element only
     fwd _ in MH.pars.mdfs
     MH.mdf=class
     CASTi=empty if J(MH.parsi)!=Object
     CASTi=(J(MH.parsi[mdf=imm]))
 * J.meth(mdf method T #*x()_)=//if method is a field (may instead be allowed abstract)
       J.staticMethHeader(mdf method T #*x()_){return CAST £xthis.£xx;}
+      //assert staticMethHeader return 1 element only
     CAST = empty if T x in  J.fields(J.p)
     CAST = (J(T)) otherwise 
 * J.meth(mdf method Void #*x(T that)_)=//if method is a field (may instead be allowed abstract)
       J.staticMethHeader(mdf method Void #*x(T that)_){£xthis.£xx=that;return L42Void.instance;}
-
+      //assert staticMethHeader return 1 element only
 * J.refineNative(T,s)
     p(T).info.native!=empty
     T' in J.p.Ts

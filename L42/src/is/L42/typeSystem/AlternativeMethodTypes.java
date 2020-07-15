@@ -54,33 +54,32 @@ public class AlternativeMethodTypes {
     return null;
     }
   static public MethT _mImmFwd(MethT mt){
-    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     if(!mt.mdf().isFwdPMut()){return null;}
+    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     List<Mdf> mdfs = L(mt.mdfs(),m->mutToCapsuleAndFwdMutToFwdImm(m));
     MethT res= mt.withMdfs(mdfs).withMdf(Mdf.ImmutablePFwd);
     if(res.wf()){return res;}
     return null;
     }
   static public MethT _mRead(MethT mt){
-    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     if(!mt.mdf().isFwdPMut()){return null;}
+    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     List<Mdf> mdfs = L(mt.mdfs(),m->mutToCapsuleAndFwdToRead(m));
     MethT res=mt.withMdfs(mdfs).withMdf(Mdf.Readable);
     if(res.wf()){return res;}
     return null;
     }
-
   static public MethT _mImmFwdExtended(MethT mt){
-    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     if(!mt.mdf().isFwdMut()){return null;}
+    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     List<Mdf> mdfs = L(mt.mdfs(),m->mutToCapsuleAndFwdMutToFwdImm(m));
     MethT res=mt.withMdfs(mdfs).withMdf(Mdf.ImmutableFwd);
     if(res.wf()){return res;}
     return null;
     }
   static public MethT _mReadExtended(MethT mt){
-    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     if(!mt.mdf().isFwdMut()){return null;}
+    if(!fwd_or_fwdP_inMdfs(mt.mdfs())){return null;}
     List<Mdf> mdfs = L(mt.mdfs(),m->mutToCapsuleAndFwdToRead(m));
     MethT res=mt.withMdfs(mdfs).withMdf(Mdf.Readable);
     if(res.wf()){return res;}

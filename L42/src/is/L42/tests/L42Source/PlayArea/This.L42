@@ -1,14 +1,34 @@
 reuse [AdamTowel]
 
-
-AA=Organize:{A$b={}}
+UseExtnededMultiMethodTyping={
+  B=Data:{var S name}
+  A={class method fwd mut B (fwd mut B that)=that }
+  MMain=(
+    var B b1=B(name=S"Bob1")
+    var mut B b2=B(name=S"Bob2")
+    b1:=A(b1)
+    b2:=A(b2)
+    void
+    )
+  }
+BugNativFwd={//test also with fwd+subtyping, also when fwd+subtyping do real fwd action
+  A={class method fwd mut S.List (fwd mut S.List that)=that }
+  MMain=(
+    var S.List l1=S.List[S"hi"]
+    var mut S.List l2=S.List[S"hi"]
+    l1:=A(l1)
+    l2:=A(l2)
+    void
+    )
+  }
 
 Entry=Data:{Size key, S elem}
 MapIS=Class:Trait({
   A=Collection.list(Entry)
   B={
     read method S get(Size that)={
-      for e in This.toMap(this) (if e.key()==that return e.elem())
+      read A map=This.toMap(this)
+      for e in map (if e.key()==that return e.elem())
       error X"not there"
       }
     mut method Void insert(Entry that)=(
@@ -22,5 +42,10 @@ MapIS=Class:Trait({
   })['A=>'This]['B=>'This]
   
 Main=(
-  Debug(S"Hello world"++S" !!")
+  Debug(S"Heiillo world"++S" !!")
+  mut MapIS m=MapIS[\(key=3\, elem=S"hi");\(key=4\, elem=S"hi")]
+  Debug(m)
+  m.insert(\(key=3\, elem=S"hi22"))
+  Debug(m)
+  catch error X e Debug(e)
   )

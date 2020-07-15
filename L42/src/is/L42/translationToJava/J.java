@@ -77,13 +77,14 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   boolean isObjectT(T t){
     return t.p().isNCs() && t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd,Mdf.Class) && nativeKind(t);
     }
-  void typeName(T t){
-    if(!t.p().isNCs()){typeName(t.p());return;}
-    if(t.mdf().isClass()){className(p.navigate(t.p().toNCs()));return;}
-    if (!t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd)){typeName(t.p());return;}
-    if(!nativeKind(t)){typeName(t.p());}
-    else{kw("Object");}
-  };
+  void typeName(T t){kw(typeNameStr(t));}
+  String typeNameStr(T t){
+    if(!t.p().isNCs()){return typeNameStr(t.p());}
+    if(t.mdf().isClass()){return classNameStr(p.navigate(t.p().toNCs()));}
+    if (!t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd)){return typeNameStr(t.p());}
+    if(!nativeKind(t)){return typeNameStr(t.p());}
+    return "Object";
+    }
   public String typeNameStr(P p){
     if(p.isNCs()){
       try{return typeNameStr(this.p.navigate(p.toNCs()));}
@@ -359,11 +360,13 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     deIndent();
     nl();
      }
-  @Override public void visitS(S s){
-    kw("£m"+(s.m().replace("#", "£h")));
-    if(s.hasUniqueNum()){c("£n"+s.uniqueNum());}
-    for(var x:s.xs()){c("£x"+x);}
+  public static String methName(S s){
+    var res="£m"+(s.m().replace("#", "£h"));
+    if(s.hasUniqueNum()){res+="£n"+s.uniqueNum();}
+    for(var x:s.xs()){res+="£x"+x;}
+    return res;
     }
+  @Override public void visitS(S s){kw(methName(s));}
   @Override public void visitT(Core.T t){typeName(t);}
   
   //EXPRESSION PART FINISH, CLASS PART START
@@ -548,10 +551,25 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(p.topCore().isInterface()){c(";");nl();return;}
     g=G.of(mwt.mh());
     wrap(mwt.mh().t().p());
-    staticMethHeader(mwt.mh());
+    var mh=staticMethHeaderStr(mwt.mh());
+    c(mh.get(0));
     c("{");indent();nl();
     methBody(mwt);
     nl();c("}");deIndent();nl();
+    if(mh.size()==1){return;}
+    c(mh.get(1));
+    c("{");indent();nl();
+    c("return ("+typeNameStr(mwt.mh().t().p())+")");
+    visitS(mwt.key());
+    c("(£xthis");//the first parameter was never a fwd
+    for(var i:range(mwt.key().xs())){
+      var xi="£x"+mwt.key().xs().get(i).inner();
+      var ci="";
+      if(typeNameStr(mwt.mh().pars().get(i)).equals("Object")){ci="(Object)";}
+      c(", "+ci+xi);
+      }
+    c(");");
+    nl();c("}");deIndent();nl();    
     }
   private void methBody(MWT mwt){
     if(!isCoherent){cThrowError();return;}
@@ -663,7 +681,11 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     if(l.isInterface()){
       refineMethHeader(mh);
       c(";");nl();
-      staticMethHeader(mh);
+      var mhS=staticMethHeaderStr(mh);
+      c(mhS.get(0));
+      staticMethBody(mh);
+      if(mhS.size()==1){return;}
+      c(mhS.get(1));
       staticMethBody(mh);
       return;
       }
@@ -673,19 +695,29 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     refineMethBody(mh);
     }
   private void staticMethHeader(MH mh) {
-    kw("public static ");
-    typeName(mh.t());
-    visitS(mh.s());
-    c("(");
-    if(mh.mdf().isClass()){className(p);}
-    else{typeName(p);}
-    kw("£xthis");
+    var res=staticMethHeaderStr(mh);
+    assert res.size()==1;
+    c(res.get(0));
+    }
+  private List<String> staticMethHeaderStr(MH mh) {
+    var retT=typeNameStr(mh.t());
+    var ts=L(mh.pars().stream().map(ti->typeNameStr(ti)));
+    var one=!retT.equals("Object") || !ts.contains("Object");
+    if(one){return L(staticMethHeader(mh, retT,ts,false));}
+    return List.of(staticMethHeader(mh, retT,ts,false),staticMethHeader(mh, retT,ts,true));
+    }
+  private String staticMethHeader(MH mh,String retT,List<String>ts,boolean noFwd){
+    if(noFwd){retT=typeNameStr(mh.t().p());}
+    var res="public static "+retT+" "+methName(mh.s())+"(";
+    if(mh.mdf().isClass()){res+=classNameStr(p);}
+    else{res+=typeNameStr(p);}
+    res+=" £xthis";
     for(var i:range(mh.s().xs())){
-      c(", ");
-      typeName(mh.pars().get(i));
-      kw("£x"+mh.s().xs().get(i).inner());
+      res+=", "
+        +(noFwd?typeNameStr(mh.pars().get(i).p()):ts.get(i))
+        +" £x"+mh.s().xs().get(i).inner();
       }
-    c(")");
+    return res+=")";
     }
   private void refineMethHeader(MH mh) {
     kw("public ");
