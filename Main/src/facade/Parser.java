@@ -96,7 +96,9 @@ static final class Pos  {
     final int pos;
     final ParData.State state;
     }
-  static class ParData{
+  
+
+static class ParData{
     int currentLine=1;
     int currentPos=0;
     public static enum State{ None,CommSL,CommML,StrSL,StrMLText,StrMLPadding,Round,Square,Curly}

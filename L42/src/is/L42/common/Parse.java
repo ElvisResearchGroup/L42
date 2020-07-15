@@ -6,7 +6,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -34,7 +33,6 @@ import is.L42.generated.L42Parser;
 import is.L42.generated.L42Parser.NudeEContext;
 import is.L42.generated.L42Parser.NudePContext;
 import is.L42.generated.LL;
-import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedOp;
 import is.L42.visitors.AuxVisitor;
 import is.L42.visitors.FullL42Visitor;
@@ -66,7 +64,7 @@ public class Parse {
     public FailConsole(Path fileName,StringBuilder sb){
       this.fileName=fileName;this.sb=sb;}
     @Override public void syntaxError(Recognizer<?, ?> r,Object o,int line,int charPos,String msg,RecognitionException e){
-      sb.append(new Pos(fileName.toUri(),line,charPos)+ msg);
+      sb.append(new is.L42.generated.Pos(fileName.toUri(),line,charPos)+ msg);
       }
     }
   private static <T>Result<T> doResult(Path fileName,Lexer l,Parser p, Supplier<T> s){
@@ -119,7 +117,10 @@ public class Parse {
     }
   public static Program sureProgram(Path fileName,String s){
     var res=aux(fileName,s,p->p.nudeP(),(v,eCtx)->v.visitNudeP(eCtx));
-    if (res.hasErr()){throw new EndError.NotWellFormed(L(),res.toString());}
+    if (res.hasErr()){
+      Balance.checkForBalancedParenthesis(fileName.toUri(), s);//throws if error is discovered
+      throw new EndError.NotWellFormed(L(),res.toString());
+      }
     assert res.res!=null;
     return res.res; 
     }
@@ -155,5 +156,5 @@ public class Parse {
     var t = new CommonTokenStream(l);
     var p=new L42AuxParser(t);
     return doResult(fileName,l,p,()->p.nudePathSelX());
-    } 
+    }
   }
