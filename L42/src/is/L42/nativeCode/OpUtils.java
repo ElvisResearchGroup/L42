@@ -24,7 +24,7 @@ import is.L42.translationToJava.NativeDispatch;
 enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
   static String vectorGet(boolean mut){
-    //Note: on different systems multiline strings are composed differenlty!
+    //Note: on different Java versions multiline strings are composed differenlty!
     //the "non indented" .wrap is needed, otherwise we would patter match
     // ""Gen3."" on some systems and ""Gen3  ."" on some others  
     return vectorExc2("""

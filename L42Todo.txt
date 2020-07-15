@@ -4,8 +4,9 @@
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    
-
- -Cache.Now optimization: we could search for a normalized version of the object just created,
+-Vector BUG: the error message seams to only mention imms:
+  -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
+-Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
  
 -fix the failing test of rename free vars
