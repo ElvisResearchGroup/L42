@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Set;
 
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
-abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
-  abstract F _fields(T t);//{return t.allFields();}//null for arraylist
-  abstract Object f(T t,int i,F _fields);//{return fields[i];}//override for arraylist
-  abstract void setF(T t,int i,Object o,F _fields);
-  abstract T newInstance(T t);
+public abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
+  protected abstract F _fields(T t);//{return t.allFields();}//null for arraylist
+  protected abstract Object f(T t,int i,F _fields);//{return fields[i];}//override for arraylist
+  protected abstract void setF(T t,int i,Object o,F _fields);
+  protected abstract T newInstance(T t);
   private <K> Set<K> addCircle(Set<K> _circle, Collection<K> more){
     if(more==null){return _circle;}
     Set<K> res=L42CacheMap.identityHashSet();

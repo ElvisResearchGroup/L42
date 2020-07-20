@@ -89,8 +89,8 @@ class OpUtils{
       for(var m:maps){res.putAll(m);}
       return Collections.unmodifiableMap(res);
       }
-    static private String vectorCache(J j){
-      P pGen=j.p().topCore().info().nativePar().get(0);
+    static public String genCache(J j,int i){
+      P pGen=j.p().topCore().info().nativePar().get(i);
       if(pGen==P.pAny){return "null";}
       if(pGen==P.pVoid){return "L42£Void.myCache";}
       if(pGen==P.pLibrary){return "L42£Library.myCache";}
@@ -113,7 +113,7 @@ class OpUtils{
       String typeName=j.typeNameStr(j.p());
       return "var res=new "+typeName+"("+size+"+2); "+
         "var res0=(ArrayList)res; "+
-        "res0.add("+vectorCache(j)+");res0.add(null); return res;";
+        "res0.add("+genCache(j,0)+");res0.add(null); return res;";
       }
     static void checkParCount(Program p,MWT mwt,int expected){
       if(mwt.key().xs().size()==expected){return;}

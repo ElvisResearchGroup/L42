@@ -16,10 +16,10 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
 public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>,ArrayList<?>>{
-  @Override ArrayList<?> _fields(ArrayList<?> t){return t;}
-  @Override Object f(ArrayList<?> t,int i,ArrayList<?> _fields){return f(t,i);}
-  @Override void setF(ArrayList<?> t,int i,Object o,ArrayList<?> _fields){f(t,o,i);}
-  @Override ArrayList<?> newInstance(ArrayList<?> t){
+  @Override protected ArrayList<?> _fields(ArrayList<?> t){return t;}
+  @Override protected Object f(ArrayList<?> t,int i,ArrayList<?> _fields){return f(t,i);}
+  @Override protected void setF(ArrayList<?> t,int i,Object o,ArrayList<?> _fields){f(t,o,i);}
+  @Override protected ArrayList<?> newInstance(ArrayList<?> t){
     var res=new ArrayList<>(t.size());
     res.add(t.get(0));
     res.add(null);

@@ -8,7 +8,12 @@
   -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
- 
+
+-BUG: big rational: should not have hashcode, (already have no equals)
+-Cache: use String .intern()
+  -what about Integer? what about big rational? what about arrays 
+and should wrap all the returns with normalization, so that we only return normalized numbers.
+
 -fix the failing test of rename free vars
 
 -test cache in case the cached method do some exceptions/errors
