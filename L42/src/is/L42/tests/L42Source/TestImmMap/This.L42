@@ -1,0 +1,42 @@
+reuse [AdamTowel]
+ONum=Collection.optional(Num)
+//Need to check:
+/*
+2 and 3 gen connected with Opt
+2 gen Not Opt
+trait it
+make wrapper
+support iteration
+
+*/
+MapAll={
+  IM={
+    class method mut This of()
+    read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
+    read method This2.Size size()=native{trusted:size} error void
+    read method This2.Num immVal(This2.Size that)=native{trusted:immVal} error void
+    read method This2.S immKey(This2.Size that)=native{trusted:immKey} error void
+    read method This2.ONum val(This2.S that)=native{trusted:val} error void
+    mut method Void put(This2.S key, This2.Num val)=native{trusted:put} error void
+    mut method Void remove(This2.S that)=native{trusted:removeKey} error void
+    #norm{
+      nativeKind=HIMap
+      nativePar=This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
+      typeDep=This,This2.Size,This2.Bool,This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
+      coherentDep=This2.Size,This2.Bool,This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
+      watched=This2.Size,This2.Bool,This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
+      }
+    }
+  }
+Main=(
+  mut MapAll.IM m=MapAll.IM.of()
+  Debug(S"Hello world %m.isEmpty() %m.size()")
+  (_=m.immVal(3Size) catch error Collection.OutOfBounds oob (Debug(oob)) error X"")
+  (_=m.immVal(Size"-2") catch error Collection.OutOfBounds oob (Debug(oob)) error X"")
+  m.put(key=S"a" val=5Num)
+  m.put(key=S"b" val=7Num)
+  sa=S"a" sb=S"b"
+  Debug(S"-- %m.val(sa).get() %m.size()")
+  m.remove(sa)
+  Debug(S"-- %m.val(sb).get() %m.size()")
+  )
