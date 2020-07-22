@@ -1,3 +1,13 @@
+ParRename={class method Library (class Any that, Trait trait,S.List names)={
+  S parName=N(that).outerName()
+  var acc=trait
+  for name in names (
+    acc:=acc[Name"%(name)(u_par)"=>Name"%(name)(u_%parName)"]
+    )
+  whoops Message.Guard
+  return acc.code()
+  }}
+
 TraitTimes=TraitHasSupport:{
   Support=Class.Relax:TraitAbstractSupport
   T1=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast

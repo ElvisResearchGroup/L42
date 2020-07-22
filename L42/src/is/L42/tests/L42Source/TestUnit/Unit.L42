@@ -6,17 +6,7 @@ UnitCastError=Message:{[Message.Guard]}
 //static methods, need to be compilable before top
 N={class method Introspection.Nested (class Any that)
   =Introspection.Nested.from(classAny=that)}
-  
-ParRename={class method Library (class Any that, Trait trait,S.List names)={
-  S parName=N(that).outerName()
-  var acc=trait
-  for name in names (
-    acc:=acc[Name"%(name)(u_par)"=>Name"%(name)(u_%parName)"]
-    )
-  whoops Message.Guard
-  return acc.code()
-  }}
-  
+
 TraitAbstractSupport=Trait:{
   [HasToS]
   class method This #from(S.StringBuilder stringLiteral)

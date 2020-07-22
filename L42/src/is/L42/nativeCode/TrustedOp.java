@@ -326,19 +326,50 @@ public enum TrustedOp {
   IsAbstract("isAbstract",method("%s.isAbstract()",sigI(Bool))),
   //####VECTOR####
   VectorK("vectorK",Map.of(Vector,vectorKs())),
-  IsEmpty("isEmpty",Map.of(Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)))),
+  IsEmpty("isEmpty",Map.of(
+    Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)),
+    HIMap,use("return %s.isEmpty();",sig(Readable,Immutable,Bool))
+    )),
   Size("size",Map.of(
     Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
+    HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
-  ReadVal("readVal",Map.of(Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)))),
-  ImmVal("immVal",Map.of(Vector,use(vectorGet(false),sig(Readable,Immutable,Gen1,Immutable,Int)))),
+  ReadVal("readVal",Map.of(
+    Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int))
+    )),
+  ImmVal("immVal",Map.of(
+    Vector,use(vectorGet(false),sig(Readable,Immutable,Gen1,Immutable,Int)),
+    HIMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Readable,Immutable,Gen2,Immutable,Int))
+    )),
   HashVal("#val",Map.of(Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)))),
   SetImm("setImm",Map.of(Vector,use(vectorOp("set",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   SetMut("setMut",Map.of(Vector,use(vectorOp("set",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
   AddImm("addImm",Map.of(Vector,use(vectorOp("add",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   AddMut("addMut",Map.of(Vector,use(vectorOp("add",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
   Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
+  //MAPs
+  ImmKey("immKey",Map.of(
+      HIMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
+      )),
+//  ReadVal("readVal",Map.of(
+//      Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int))
+//      )),
+//  HashVal("#val",Map.of(Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)))),
+  Val("val",Map.of(
+      HIMap,use("return %s.val(%s);",sig(Readable,Immutable,Gen3,Immutable,Gen1))
+      )),
+  Put("put",Map.of(
+      HIMap,use("%s.put(%s,%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1,Immutable,Gen2))
+      )),
+  RemoveKey("removeKey",Map.of(
+      HIMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
+      )),
+
+  //val put remove
+  
+  
+  //String
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
   SubString("subString",Map.of(String,use("""

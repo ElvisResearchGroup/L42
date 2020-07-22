@@ -821,7 +821,7 @@ public static void pass(String program){
   Program p=Program.flat(init.topCache(new CachedTop(L(),L())));
   ProgramTypeSystem.type(true, p);
   TestTypeSystem.allCoherent(p);
-  new TypeAllMeth(p).visitL(p.topCore());
+  new TypeAllMeth(p).visitL(p.topCore());//a visitor
   }
 static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
   Program p;TypeAllMeth(Program p){this.p=p;}
@@ -830,15 +830,14 @@ static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
      p=p.push(nc.key(),nc.l());
      try{visitL(nc.l());}
      finally{p=oldP;}
-    }
+     }
   @Override public void visitMWT(Core.L.MWT m){
     if(m._e()!=null){typeMethESifo(p,m.mh(),m._e());}
     }
   }
 private static void typeMethESifo(Program p,MH mh, E e){
   var g=G.of(mh);
-  var mdf=TypeManipulation.fwdPOf(mh.t().mdf());
-  e.visitable().accept(new is.L42.typeSystem.SifoTypeSystem(p,g,Collections.emptySet(),mdf));
+  e.visitable().accept(new is.L42.typeSystem.SifoTypeSystem(p,g,Collections.emptySet(),mh.t()));
   }
 public static void failC(String program,String...out){
   checkFail(()->{

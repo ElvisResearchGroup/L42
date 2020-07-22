@@ -29,7 +29,7 @@ import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
-  public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs,  Mdf expected) {
+  public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs, T expected) {
     this.p = p;
     this.g = g;
     this.mdfs=mdfs;
@@ -39,9 +39,9 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   Program p;
   G g;
   Set<Mdf> mdfs;
-  Mdf expected;
-  void visitExpecting(E e,Mdf newExpected){
-    Mdf oldE=expected;
+  T expected;
+  void visitExpecting(E e,T newExpected){
+    T oldE=expected;
     expected=newExpected;
     visitE(e);
     expected=oldE;
@@ -56,31 +56,33 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       }
     }  
   @Override public void visitEVoid(EVoid e){
-    mustSubMdf(Immutable, expected,e.poss());
+    //mustSubMdf(Immutable, expected,e.poss());
     }
   @Override public void visitPCastT(PCastT e){
-    mustSubMdf(Class, expected,e.poss());
+    //mustSubMdf(Class, expected,e.poss());
     }
   @Override public void visitL(L e){
-    mustSubMdf(Immutable, expected,e.poss());
+    //mustSubMdf(Immutable, expected,e.poss());
     }
   @Override public void visitEX(EX e){
-    mustSubMdf(g.of(e.x()).mdf(), expected,e.poss());
+    T t=this.g._of(e.x());
+    assert t!=null;
+    //mustSubSecurity(g.of(e.x()).mdf(), expected,e.poss());
     }
   @Override public void visitLoop(Loop e){
-    mustSubMdf(Immutable, expected,e.poss());
-    visitExpecting(e.e(),Immutable);
+    //mustSubMdf(Immutable, expected,e.poss());
+    visitExpecting(e.e(),P.coreVoid);
     }
   @Override public void visitThrow(Throw e){
-    if(e.thr()!=Return){visitExpecting(e.e(),Immutable);return;}
+    if(e.thr()!=Return){visitExpecting(e.e(),P.coreVoid);return;}
     var general=TypeManipulation._mostGeneralMdf(mdfs);
     errIf(general==null,e,Err.invalidSetOfMdfs(mdfs));
-    visitExpecting(e.e(),TypeManipulation.fwdOf(general));
+    //visitExpecting(e.e(),TypeManipulation.fwdOf(general));
     }
   @Override public void visitMCall(MCall e){
     P p0=TypeManipulation.guess(g,e.xP());
     var meths=AlternativeMethodTypes.types(p,p0.toNCs(),e.s());
-    meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected)));
+    meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
     //TODO: use the "canAlsoBe" to further filter on the set of methods,
     //this can also be used to give better error messages line "class method called on non class"
     errIf(meths.isEmpty(),e,Err.methCallResultIncompatibleWithExpected(e.s(),expected));
@@ -97,9 +99,9 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
         g=oldG;
         mdfs=oldMdfs;
         for(int i:range(es)){
-          expected=m.mdfs().get(i);
+          //expected=m.mdfs().get(i);
           currentX=i==0?"receiver":e.s().xs().get(i-1).inner();
-          currentMdf=expected;
+          //currentMdf=expected;
           visitE(es.get(i));
           }
         expected=oldExpected;
@@ -115,15 +117,15 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature(e.s(),wrongParameters));
     }
   @Override public void visitOpUpdate(OpUpdate e){
-    mustSubMdf(Immutable,expected,e.poss());
+    //mustSubMdf(Immutable,expected,e.poss());
     T t=g.of(e.x());
-    visitExpecting(e.e(),t.mdf());
+    //visitExpecting(e.e(),t.mdf());
     assert g.isVar(e.x());//TODO: where is varriness of G used?
     }
   @Override public void visitBlock(Block e){
-    var hope=expected.isIn(Capsule,Immutable,ImmutableFwd,ImmutablePFwd);
-    if(e.ds().isEmpty()){hope=false;}
-    if(!hope){visitBlockDirect(e);return;}
+    //var hope=expected.isIn(Capsule,Immutable,ImmutableFwd,ImmutablePFwd);
+    //if(e.ds().isEmpty()){hope=false;}
+    //if(!hope){visitBlockDirect(e);return;}
     var oldG=g;
     var oldExpected=expected;
     var oldMdfs=mdfs;
@@ -143,7 +145,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
           }
         });
       g=lentG;
-      expected=Mutable;
+      //expected=Mutable;
       mdfs=oldMdfs;
       try{visitBlockDirect(e);}
       catch(EndError.TypeError te2){throw te;}
@@ -174,7 +176,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     for(var d:txe){
       g=g1;
       var mdf=TypeManipulation.fwdPOf(d.t().mdf());
-      visitExpecting(d.e(),mdf);
+      //visitExpecting(d.e(),mdf);
       }
     if(TypeManipulation.fwd_or_fwdP_inMdfs(mdfs)){
       List<D> errs=L(txe.stream().filter(di->fvs.contains(di.x())));

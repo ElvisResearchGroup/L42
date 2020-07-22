@@ -1,6 +1,8 @@
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: cut paste on win do not survive the IDE being closed
+-CloseParenthesis: remove the outermost {} before running it.
+-errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    

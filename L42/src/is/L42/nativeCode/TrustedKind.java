@@ -94,14 +94,14 @@ public enum TrustedKind implements TrustedT{
     @Override public int genExceptionNumber(){return 3;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     },
-  HMap("L42£Map"){@Override public String factory(J j,MWT mwt){
+  HIMap("L42£ImmMap"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
-    assert j.p().topCore().info().nativePar().size()==4;//TODO: how many?
+    assert j.p().topCore().info().nativePar().size()==4;
     String typeName=j.typeNameStr(j.p());
-    return "RETURN new "+typeName+"("+OpUtils.genCache(j,0)+","+OpUtils.genCache(j,1)+");";
+    return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+",()->"+OpUtils.genCache(j,1)+");";
     }
     @Override public int genericNumber(){return 3;}
-    @Override public int genExceptionNumber(){return 3;}
+    @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     },
   Opt("Opt"){public String factory(J j,MWT mwt){
