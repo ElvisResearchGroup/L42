@@ -1,4 +1,4 @@
-package is.L42.typeSystem;
+package is.L42.sifo;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
@@ -24,12 +24,16 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
+import is.L42.typeSystem.AlternativeMethodTypes;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FV;
 import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
   public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs, T expected) {
+    //TODO:need to have a full represtantion of the lattice
+    //class Lattice{Map<P,List<P>>  //generated.P
     this.p = p;
     this.g = g;
     this.mdfs=mdfs;
