@@ -11,11 +11,13 @@ import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.tools.General;
 import is.L42.translationToJava.J;
+import is.L42.typeSystem.ProgramTypeSystem;
 
 public enum TrustedKind implements TrustedT{
   AnyKind(""){public String factory(J j,MWT mwt){throw bug();}
@@ -103,6 +105,8 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    @Override public void checkNativePars(Program p){super.checkNativePars(p);}
+    //TODO: add check for native maps-opt
     },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
@@ -205,4 +209,21 @@ public enum TrustedKind implements TrustedT{
     throw new EndError.TypeError(poss,
       Err.nativeParameterInvalidKind(p.topCore().info().nativeKind(),mh,mdf,mh.t(),mdf));
     */}
+  public void checkNativePars(Program p){
+    var l=p.topCore();
+    var info=l.info();
+    int base=genericNumber();
+    for(int i:range(base,base+genExceptionNumber())){
+      P pi=info.nativePar().get(i);
+      if(!info.coherentDep().contains(pi)){
+        throw new EndError.TypeError(l.poss(),
+          Err.nativeExceptionNotCoherentDep(info.nativeKind(),pi));
+        }
+      var li=p.of(pi,l.poss());
+      if(li.isFullL() || !((Core.L)li).info().nativeKind().equals(TrustedKind.LazyMessage.inner)){
+        throw new EndError.TypeError(l.poss(),
+          Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi));
+        }
+      }
+    }
   }

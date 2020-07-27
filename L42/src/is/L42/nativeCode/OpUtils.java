@@ -145,8 +145,6 @@ class OpUtils{
         var tmdfi=sig.parMdfs.get(i);
         checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi);
         }
-      //TODO: check exceptions
-      //TODO: check that exceptional Gens are native lazyMsg
       return true;
       }
     private static void checkGen(int i,Program p,MWT mwt,Signature sig,P pi){

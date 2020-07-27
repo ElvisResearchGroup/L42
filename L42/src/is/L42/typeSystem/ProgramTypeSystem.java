@@ -37,7 +37,7 @@ public class ProgramTypeSystem {
     }
   public static void type(boolean typed,Program p){
     L l=p.topCore();
-    checkNativeExceptions(p);
+    checkNativeConstraints(p);
     J j=new J(p,null,null,true);
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
@@ -66,23 +66,13 @@ public class ProgramTypeSystem {
     //var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
     //errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
     }
-  public static void checkNativeExceptions(Program p){
+  public static void checkNativeConstraints(Program p){
     var l=p.topCore();
     var info=l.info();
     if(info.nativeKind().isEmpty()){return;}
     var nk=TrustedKind._fromString(info.nativeKind());
     assert nk!=null;
-    int base=nk.genericNumber();
-    for(int i:range(base,base+nk.genExceptionNumber())){
-      P pi=info.nativePar().get(i);
-      errIf(!info.coherentDep().contains(pi),
-        l.poss(),Err.nativeExceptionNotCoherentDep(info.nativeKind(),pi)
-        );
-      var li=p.of(pi,l.poss());
-      errIf(li.isFullL() || !((Core.L)li).info().nativeKind().equals("LazyMessage"),
-        l.poss(),Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi)
-        );
-      }
+    nk.checkNativePars(p);
     }
   public static void typeMWT(Program p,MWT mwt,J j){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
