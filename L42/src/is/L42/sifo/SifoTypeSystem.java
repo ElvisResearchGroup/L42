@@ -3,6 +3,7 @@ package is.L42.sifo;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.todo;
 import static is.L42.generated.Mdf.*;
 import static is.L42.generated.ThrowKind.*;
 
@@ -32,14 +33,13 @@ import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
   public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs, T expected) {
-    //TODO:need to have a full represtantion of the lattice
-    //class Lattice{Map<P,List<P>>  //generated.P
     this.p = p;
     this.g = g;
     this.mdfs=mdfs;
     this.expected=expected;
-  }
+    }
   boolean isDeep;
+  int dept=0;
   Program p;
   G g;
   Set<Mdf> mdfs;
@@ -59,22 +59,45 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       throw new EndError.TypeError(poss,Err.subTypeExpected(m1,m2));
       }
     }  
-  @Override public void visitEVoid(EVoid e){
-    //mustSubMdf(Immutable, expected,e.poss());
+  @Override public void visitEVoid(EVoid e){ }
+  @Override public void visitPCastT(PCastT e){ }
+  @Override public void visitL(L e){}
+  private P getSifoAnn(List<Doc>docs){
+    List<P> paths=sifos(expected.docs());
+    if(paths.isEmpty()) {return lattice.bottom();}
+    if(paths.size()!=1){throw todo();}//TODO:
+    return paths.get(0);
     }
-  @Override public void visitPCastT(PCastT e){
-    //mustSubMdf(Class, expected,e.poss());
+  private List<P> sifos(List<Doc> docs){
+    return L(c->{
+      var ps=d._pathSel();
+      if(ps==null){return;}
+      P p=_asSifo(ps.p());
+      if(p!=null){c.add(p);}
+      });    
     }
-  @Override public void visitL(L e){
-    //mustSubMdf(Immutable, expected,e.poss());
+  private P _asSifo(P path){
+    if(!path.isNCs()) {return null;}
+    P.NCs ncs=path.toNCs();
+    if(ncs.n()!=dept) {return null;}
+    ncs=ncs.withN(0);
+    if(!lattice.contains(ncs)){return null;}
+    return ncs;
     }
   @Override public void visitEX(EX e){
     T t=this.g._of(e.x());
     assert t!=null;
-    //mustSubSecurity(g.of(e.x()).mdf(), expected,e.poss());
+    P actualPath= getSifoAnn(t.docs());
+    P expectedPath= getSifoAnn(expected.docs());
+    mustSubSecurity(t.mdf(),actualPath, expected.mdf(),expectedPath,e.poss());
     }
+  private void mustSubSecurity(Mdf subMdf,P sub,Mdf supMdf,P sup,List<Pos>pos){
+    if(sub.equals(sup)){return;}
+    var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule);
+    if(mdfOk && lattice.compare(sub,sup)){return;}
+    throw todo();
+    }  
   @Override public void visitLoop(Loop e){
-    //mustSubMdf(Immutable, expected,e.poss());
     visitExpecting(e.e(),P.coreVoid);
     }
   @Override public void visitThrow(Throw e){
