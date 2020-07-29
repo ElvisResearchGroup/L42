@@ -3,43 +3,52 @@ package is.L42.sifo;
 import java.util.ArrayList;
 import java.util.List;
 
-import is.L42.generated.P;
+import is.L42.tools.General;
 
-public class LoopTest {
+public class LoopTest<T> {
 
-  public Lattice lattice;
-  public List<TrackLevel> trackedLevels = new ArrayList<TrackLevel>();
+  public Lattice<T> lattice;
+  public List<TrackLevel<T>> trackedLevels = new ArrayList<TrackLevel<T>>();
 
-  public LoopTest(Lattice lattice) {
+  public LoopTest(Lattice<T> lattice) {
     this.lattice = lattice;
-    TrackLevel trackedLevel = null;
 
-    for (P level : lattice.getAllLevels()) {
-      trackedLevel = new TrackLevel(level, false);
+    for (T level : lattice.getAllLevels()) {
+      TrackLevel<T> trackedLevel = new TrackLevel<>(level);
       trackedLevels.add(trackedLevel);
     }
   }
 
-  public boolean TestForLoop() {
-    P bottom = lattice.getBottom();
+  public boolean testForLoop() {
+    T bottom = lattice.getBottom();
     if (bottom == null) {
-      System.out.println("Error finding bottom");
-      return false;
+      throw new Error("Error finding bottom");
     }
-    TrackLevel tracked = getTrackedLevelFromP(bottom);
+    TrackLevel<T> tracked = getTrackedLevelFromP(bottom);
     tracked.setVisited(true);
-    return traverseUpwards(tracked);
+    tracked.setAtLeastOnceVisited(true);
+    boolean hasLoop = traverseUpwards(tracked);
+    return moreThanOneLattice() || hasLoop;
   }
 
-  public boolean traverseUpwards(TrackLevel lowerTrackLevel) {
+  private boolean moreThanOneLattice() {
+    for (TrackLevel<T> trackLevel : trackedLevels) {
+      if (trackLevel.isAtLeastOnceVisited() == false) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  public boolean traverseUpwards(TrackLevel<T> lowerTrackLevel) {
     boolean result = false;
-    for (P higherLevelP : lattice.getHigherLevels(lowerTrackLevel.getLevel())) {
-      TrackLevel higherLevel = getTrackedLevelFromP(higherLevelP);
+    for (T higherLevelP : lattice.getHigherLevels(lowerTrackLevel.getLevel())) {
+      TrackLevel<T> higherLevel = getTrackedLevelFromP(higherLevelP);
       if (higherLevel.isVisited()) {
-        result = true;
         return true;
       } else {
         higherLevel.setVisited(true);
+        higherLevel.setAtLeastOnceVisited(true);
         result = traverseUpwards(higherLevel);
         higherLevel.setVisited(false);
       }
@@ -48,12 +57,12 @@ public class LoopTest {
     return result;
   }
 
-  private TrackLevel getTrackedLevelFromP(P level) {
-    for (TrackLevel trackedLevel : trackedLevels) {
-      if (trackedLevel.getLevel() == level) {
+  private TrackLevel<T> getTrackedLevelFromP(T level) {
+    for (TrackLevel<T> trackedLevel : trackedLevels) {
+      if (trackedLevel.getLevel().equals(level)) {
         return trackedLevel;
       }
     }
-    return null;
+    throw General.unreachable();
   }
 }

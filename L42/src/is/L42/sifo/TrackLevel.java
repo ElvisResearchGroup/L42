@@ -1,15 +1,21 @@
 package is.L42.sifo;
 
-import is.L42.generated.P;
+public class TrackLevel<T> {
 
-public class TrackLevel {
-
-  private P level;
+  private T level;
   private boolean visited;
+  private boolean atLeastOnceVisited;
 
-  public TrackLevel(P level, boolean visited) {
+  public TrackLevel(T level, boolean visited) {
     this.level = level;
     this.visited = visited;
+    this.setAtLeastOnceVisited(false);
+  }
+  
+  public TrackLevel(T level) {
+    this.level = level;
+    this.visited = false;
+    this.setAtLeastOnceVisited(false);
   }
   
   public boolean isVisited() {
@@ -21,7 +27,15 @@ public class TrackLevel {
   }
 
 
-  public P getLevel() {
+  public T getLevel() {
     return this.level;
+  }
+
+  public boolean isAtLeastOnceVisited() {
+    return atLeastOnceVisited;
+  }
+
+  public void setAtLeastOnceVisited(boolean atLeastOnceVisited) {
+    this.atLeastOnceVisited = atLeastOnceVisited;
   }
 }
