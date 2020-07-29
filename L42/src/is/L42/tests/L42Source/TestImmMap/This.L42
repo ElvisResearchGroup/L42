@@ -2,15 +2,37 @@ reuse [AdamTowel]
 ONum=Collection.optional(Num)
 //Need to check:
 /*
-2 and 3 gen connected with Opt
-2 gen Not Opt
 trait it
 make wrapper
 support iteration
+//what about removing some methods from lists?
+
+redirect:
+You may redirect a native** on another native** if the native pars are
+  idenatically transferred in redirect
+You can not redirect a {} on an {nativeKind=Opt}
+//another nativeOpt may now be ill typed
+You can not redirect a {nativeKind=Opt} on an {} or different native kind
+//a map may now be ill typed
+You can not redirect a {nativeKind=LazyMsg} on an {}  or different native kind
+//a range of natives may now be ill typed
+
+sum:
+You may sum/sumrename a native** on another native** if the native pars are
+  idenatically renamed
+You can not sum a {} on an {nativeKind=Opt}
+//another nativeOpt may now be ill typed
+You can not sum a {nativeKind=Opt} on an {} or different native kind
+//sum is simmetric, so look above
+You can not sum a {nativeKind=LazyMsg} on an {}
+//a range of natives may now be ill typed
 
 */
 MapAll={
-  IM={
+  TraitHIMap:{
+    Key={}
+    Val={}
+    OVal={}
     class method mut This of()
     read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
     read method This2.Size size()=native{trusted:size} error void

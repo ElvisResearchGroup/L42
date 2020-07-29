@@ -43,6 +43,7 @@ import is.L42.tests.TestCachingCases;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.PropagatorCollectorVisitor;
+import is.L42.visitors.WellFormedness;
 
 public class Init {
   public Init(String s){this(Constants.dummy,Parse.sureProgram(Constants.dummy,s));}

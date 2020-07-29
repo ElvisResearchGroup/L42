@@ -14,6 +14,7 @@ import java.util.regex.Pattern;
 import org.opentest4j.AssertionFailedError;
 
 import is.L42.generated.Full.E;
+import is.L42.generated.P;
 import is.L42.generated.Pos;
 
 public class Err {
@@ -270,9 +271,10 @@ public class Err {
   "class of native kind "+_1+" uses as error path "+_2+", that is not of nativeKind LazyMsg"  
   ;}public static String nativeExceptionNotCoherentDep(Object _1,Object _2){return
   "class of native kind "+_1+" uses as error path "+_2+", that is not in coherentDep" 
-
   ;}public static String nativeReceiverInvalid(Object _1,Object _2){return
   "native body "+_1+" uses unrecognized receiver of kind "+_2
+  ;}public static String nativeParameterViolatedConstraint(String kind,Object p,String msg){return
+  "native kind "+kind+" requires the parameter "+p+" "+msg
   ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
   ;}public static String nativeKindParCountInvalid(Object _1,Object _2,Object _3){return

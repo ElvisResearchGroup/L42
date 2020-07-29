@@ -1,5 +1,60 @@
 reuse[AdamTowel]
+Person=Data:{var S name}
+OptP=Collection.opt(Person)
+  ...
+  //imm OptP o=OptP(\(name=S"bob"))
+  mut Person p=Person(name=S"bob")
+  mut OptP o=OptP(p)
+  Person ip=Person(name=S"bob")
+  OptP io=OptP(ip)
+ 
+A={
+  class method mut Person #foo(mut OptP that)=that.#get()
+  class method read Person foo(read OptP that)=that.get()
+  
+    capsule        class 
+  imm    mut                 fwd mut, fwd  imm       fwd%mut fwd%imm
+        lent
+     read
+  }
+  
+  this.foo=fwd; if(fwd instanceof FWD){fwd.add(v->this.foo=v);}
+  
+  
+  
 
+TraitsAndNative={
+  Base={class method mut This ()}
+  HasOpt=Trait:{A=Collection.opt(Base)}
+  }
+/*
+Collection.list(OptNum) may fail since list have optElem inside??
+Should we allow opt(opt(t)) by generating better bytecode
+toAbstract: abstracting a native is only possible if the dependencies are abstracted too
+ == the classes using P as nativePar, watches P
+redirect:
+You may redirect a native** on another native** if the native pars are
+  idenatically transferred in redirect
+  //simpler? redirect on native is impossible?
+You can not redirect a {} on an {.. #norm{nativeKind=Opt nativePar=S,Collections.ElemNotInOpt}}
+//another nativeOpt may now be ill typed
+You can not redirect a {nativeKind=Opt} on an {} or different native kind
+//a map may now be ill typed
+You can not redirect a {nativeKind=LazyMsg} on an {}  or different native kind
+//a range of natives may now be ill typed
+
+sum:
+You may sum/sumrename a native** on another native** if the native pars are
+  idenatically renamed
+You can not sum a {} on an {nativeKind=Opt}
+//another nativeOpt may now be ill typed
+You can not sum a {nativeKind=Opt} on an {} or different native kind
+//sum is simmetric, so look above
+You can not sum a {nativeKind=LazyMsg} on an {}
+//a range of natives may now be ill typed
+
+
+*/
 TestClose1=(
   code={
     Size n
