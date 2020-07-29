@@ -43,6 +43,62 @@ public class TestTopNorm{
   @Test public void t1(){top(
     "{}",
     "{#norm{}}"
+  );}@Test public void notWellFormed0(){top("""
+    {A={
+       class method Library foo(Library a,Library b)=b
+       }
+     B=A.foo(a={},b={})
+     }""","""
+     {A={
+        class method Library foo(Library a, Library b)=b
+        #typed{}
+        }
+      B={#typed{}}#norm{}}
+     """
+  );}@Test public void notWellFormed1(){topFail(EndError.NotWellFormed.class,"""
+    {Z={}
+     A={
+       class method Library foo(Library a,Library b)=b
+       #norm{watched=This1.Z}}
+       B=A.foo(a={},b={})
+       }""",Err.infoPathNotInTyped("[###]","[###]")
+  );}@Test public void notWellFormed2(){topFail(EndError.NotWellFormed.class,"""
+    {Z={}
+     A={
+       class method Library foo(Library a,Library b)=b
+       }
+       B=A.foo(a={#norm{watched=This1.Z}},b={})
+       }""",Err.infoPathNotInTyped("[###]","[###]")
+  );}@Test public void notWellFormed3OkIfTrashed(){top("""
+    {Z={}
+     A={
+       class method Library foo(Library a,Library b)=b
+       }
+     B=A.foo(a={#norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=Opt, nativePar=This1.Z,This1.Z}},b={})
+     }""","""
+     {Z={#typed{}}
+      A={class method Library foo(Library a, Library b)=b
+         #typed{}}
+      B={#typed{}}#norm{}}
+     """
+  );}@Test public void notWellFormed3ButNotWellTyped(){topFail(EndError.TypeError.class,"""
+    {Z={}
+     A={
+       class method Library foo(Library a,Library b)=a
+       }
+       B=A.foo(a={#norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=Opt, nativePar=This1.Z,This1.Z}},b={})
+      }""",Err.nativeExceptionNotLazyMessage("[###]","[###]")
+  );}@Test public void notWellTypedMap(){topFail(EndError.TypeError.class,"""
+    {Z={#norm{nativeKind=LazyMessage}}
+     A={
+       #norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=HIMap, nativePar=This1.Z,This1.Z,This1.Z,This1.Z}
+       }
+    }""",Err.nativeParameterViolatedConstraint("[###]","[###]","[###]")
+  );}@Test public void notWellTypedOpt(){topFail(EndError.TypeError.class,"""
+    {Z={#norm{nativeKind=LazyMessage}}
+     ZO={#norm{nativeKind=Opt, nativePar=This1.Z,This1.Z typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z}}
+     ZOO={#norm{nativeKind=Opt, nativePar=This1.ZO,This1.Z typeDep=This1.ZO,This1.Z, coherentDep=This1.ZO,This1.Z, watched=This1.ZO,This1.Z}}
+     }""",Err.nativeParameterViolatedConstraint("[###]","[###]","[###]")
   );}@Test public void t2(){top(
    "{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}"
   );}@Test public void t3(){top(

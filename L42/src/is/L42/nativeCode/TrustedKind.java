@@ -105,8 +105,25 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public void checkNativePars(Program p){super.checkNativePars(p);}
-    //TODO: add check for native maps-opt
+    @Override public void checkNativePars(Program p){
+      super.checkNativePars(p);
+      var l=p.topCore();
+      var info=l.info();
+      P pV=info.nativePar().get(1);
+      P pO=info.nativePar().get(2);
+      var lV=p._ofCore(pV);
+      var lO=p._ofCore(pO);
+      assert lV!=null;
+      assert lO!=null;
+      var isOpt=lO.info().nativeKind().equals(TrustedKind.Opt.name());
+      String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pO,"to be Opt("+pV+")");
+      if(!isOpt){throw new EndError.TypeError(l.poss(),msg);}
+      if(lO.info().nativePar().isEmpty()){return;}
+      //Opt will give a better error independently
+      var pP=p.from(lO.info().nativePar().get(0),pO.toNCs());
+      if(pP.equals(pV)){return;}
+      throw new EndError.TypeError(l.poss(),msg);
+      }
     },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
@@ -127,6 +144,17 @@ public enum TrustedKind implements TrustedT{
       var boxed=J.boxed(tk.inner);
       if(boxed!=tk.inner) {return boxed;}
       return j.typeNameStr(pLocal);
+      }
+    @Override public void checkNativePars(Program p){
+      super.checkNativePars(p);
+      var l=p.topCore();
+      var info=l.info();
+      P pV=info.nativePar().get(0);
+      var lV=p._ofCore(pV);
+      assert lV!=null;
+      var isOpt=lV.info().nativeKind().equals(TrustedKind.Opt.name());
+      String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pV,"to not be Opt");
+      if(isOpt){throw new EndError.TypeError(l.poss(),msg);}
       }
     },
   Name("L42£Name"){public String factory(J j,MWT mwt){
@@ -220,7 +248,8 @@ public enum TrustedKind implements TrustedT{
           Err.nativeExceptionNotCoherentDep(info.nativeKind(),pi));
         }
       var li=p.of(pi,l.poss());
-      if(li.isFullL() || !((Core.L)li).info().nativeKind().equals(TrustedKind.LazyMessage.inner)){
+      var lm=TrustedKind.LazyMessage.name();
+      if(li.isFullL() || !((Core.L)li).info().nativeKind().equals(lm)){
         throw new EndError.TypeError(l.poss(),
           Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi));
         }
