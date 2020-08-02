@@ -5,6 +5,7 @@ import static is.L42.tools.General.range;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Function;
 
 import static is.L42.nativeCode.OpUtils.use;
 import static is.L42.nativeCode.Signature.sigI;
@@ -197,12 +198,20 @@ class OpUtils{
           Err.nativeParameterInvalidKind(mwt.nativeUrl(),sig,mwt.key(),pi,"This"));            
         }
       }
-  @SuppressWarnings("removal")//String.formatted is "preview feature" so triggers warnings
   static Generator use(String s0,Signature sig){
+    return use(p->s0,sig);
+    }
+  static Function<Program,String> optChoice(String opt,String optOpt){
+    return p->{
+      if(!TrustedKind.isOptOpt(p)){return opt;}
+      return optOpt;
+      }; 
+    }
+  static Generator use(Function<Program,String> s0,Signature sig){
     return (type,mwt,j)->{
       Program p=j.p();
       if(type && typingUse(p,mwt,sig)){j.c("");return;}
-      String s=s0;
+      String s=s0.apply(p);
       s = replaceGen(j,p,s,P.pThis0,"%This");
       for(int i:range(p.topCore().info().nativePar())){
         P geni=p.topCore().info().nativePar().get(i);

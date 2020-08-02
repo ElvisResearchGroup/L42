@@ -115,7 +115,7 @@ public enum TrustedKind implements TrustedT{
       var lO=p._ofCore(pO);
       assert lV!=null;
       assert lO!=null;
-      var isOpt=lO.info().nativeKind().equals(TrustedKind.Opt.name());
+      var isOpt=isOpt(p,pO);
       String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pO,"to be Opt("+pV+")");
       if(!isOpt){throw new EndError.TypeError(l.poss(),msg);}
       if(lO.info().nativePar().isEmpty()){return;}
@@ -141,20 +141,11 @@ public enum TrustedKind implements TrustedT{
       var nk=pLocal.topCore().info().nativeKind();
       var tk=TrustedKind._fromString(nk);
       if(tk==null){return j.typeNameStr(pLocal);}
+      assert isOptOpt(p)==(tk==Opt);
+      if(tk==Opt){return J.classNameStr(pLocal);}
       var boxed=J.boxed(tk.inner);
       if(boxed!=tk.inner) {return boxed;}
       return j.typeNameStr(pLocal);
-      }
-    @Override public void checkNativePars(Program p){
-      super.checkNativePars(p);
-      var l=p.topCore();
-      var info=l.info();
-      P pV=info.nativePar().get(0);
-      var lV=p._ofCore(pV);
-      assert lV!=null;
-      var isOpt=lV.info().nativeKind().equals(TrustedKind.Opt.name());
-      String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pV,"to not be Opt");
-      if(isOpt){throw new EndError.TypeError(l.poss(),msg);}
       }
     },
   Name("L42£Name"){public String factory(J j,MWT mwt){
@@ -254,5 +245,16 @@ public enum TrustedKind implements TrustedT{
           Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi));
         }
       }
+    }
+  public static boolean isOptOpt(Program p){
+    var l=p.topCore();
+    if(l.info().nativePar().size()!=2){return false;}//a better error will raise in other places
+    P path=l.info().nativePar().get(0);
+    return isOpt(p,path);
+    }
+  public static boolean isOpt(Program p,P path){
+    var lO=p._ofCore(path);
+    assert lO!=null;
+    return lO.info().nativeKind().equals(TrustedKind.Opt.name());
     }
   }

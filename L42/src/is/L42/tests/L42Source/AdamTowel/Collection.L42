@@ -1,18 +1,8 @@
-OptTrait=Trait:{
-  class method mut This #apply()
-  class method mut This #apply(fwd mut This.Elem that)=native{trusted:optK} error void
-  read method read This.Elem get()=native{trusted:get}error void
-  mut method mut This.Elem #get()=native{trusted:#get}error void
-  read method This2.Bool #if()=native{trusted:isPresent}error void
-  Elem={#norm{}}
-  #norm{nativeKind=Opt nativePar=This.Elem,This2.Collection$NoElementInOpt
-    typeDep=This.Elem,This,This2.Collection$NoElementInOpt,This2.Bool
-    watched=This2.Collection$NoElementInOpt,This2.Bool
-    coherentDep=This.Elem,This,This2.Collection$NoElementInOpt ,This2.Bool 
-    }}
-@Public class method Trait optionalTrait()=OptTrait()    
+OptNative=Trait:{...}
+OptOps=OptNative+{...}
+@Public class method Trait optionalTrait()=OptOps()    
 @Public class method Library optional(class Any that)={
-  return Class$Relax:OptTrait['Elem=>that]
+  return Class$Relax:this.optionalTrait()['Elem=>that]
   catch Trait$InvalidName e error e
   catch Trait$InvalidMap e error e
   catch Trait$ClassClash e error e
