@@ -2,17 +2,13 @@ package is.L42.sifo;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-import is.L42.tools.General;
 
 public class StringLattice extends Lattice<String> {
 
   @Override
   protected ArrayList<String> lowerLevels(String p) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   @Override
