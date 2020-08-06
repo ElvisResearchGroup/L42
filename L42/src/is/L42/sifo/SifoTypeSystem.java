@@ -64,13 +64,13 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   @Override public void visitL(L e){}
   private P getSifoAnn(List<Doc>docs){
     List<P> paths=sifos(expected.docs());
-    if(paths.isEmpty()) {return lattice.bottom();}
+    //TODO: if(paths.isEmpty()) {return lattice.bottom();}
     if(paths.size()!=1){throw todo();}//TODO:
     return paths.get(0);
     }
   private List<P> sifos(List<Doc> docs){
     return L(c->{
-      var ps=d._pathSel();
+      PathSel ps=null;//d._pathSel();TODO:
       if(ps==null){return;}
       P p=_asSifo(ps.p());
       if(p!=null){c.add(p);}
@@ -81,7 +81,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     P.NCs ncs=path.toNCs();
     if(ncs.n()!=dept) {return null;}
     ncs=ncs.withN(0);
-    if(!lattice.contains(ncs)){return null;}
+    //TODO: if(!lattice.contains(ncs)){return null;}
     return ncs;
     }
   @Override public void visitEX(EX e){
@@ -94,7 +94,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   private void mustSubSecurity(Mdf subMdf,P sub,Mdf supMdf,P sup,List<Pos>pos){
     if(sub.equals(sup)){return;}
     var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule);
-    if(mdfOk && lattice.compare(sub,sup)){return;}
+    //TODO: if(mdfOk && lattice.compare(sub,sup)){return;}
     throw todo();
     }  
   @Override public void visitLoop(Loop e){
