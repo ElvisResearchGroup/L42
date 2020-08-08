@@ -1,1 +1,15 @@
-to fill
+Elem={}
+class method Bool equals(read Elem a,read Elem b)
+read method Bool #if()
+read method Bool isPresent()
+read method Bool !()
+read method Bool == (read This that)={
+  if this.isPresent() != that.isPresent() return Bool.false()
+  return !this || This.equals(a=this.get(),b=that.get())
+  }
+read method Bool != (read This that)
+  =!(this==that)
+read method Bool #in1(read Elem that)
+  =this.contains(that)
+read method Bool contains(read Elem that)
+  =this.isPresent() && This.equals(a=this.get(),b=that)

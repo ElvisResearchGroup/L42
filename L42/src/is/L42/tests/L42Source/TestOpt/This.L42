@@ -1,34 +1,6 @@
 reuse[AdamTowel]
 
-/*
-Collection.list(OptNum) may fail since list have optElem inside??
-Should we allow opt(opt(t)) by generating better bytecode
-toAbstract: abstracting a native is only possible if the dependencies are abstracted too
- == the classes using P as nativePar, watches P
-redirect:
-You may redirect a native** on another native** if the native pars are
-  idenatically transferred in redirect
-  //simpler? redirect on native is impossible?
-You can not redirect a {} on an {.. #norm{nativeKind=Opt nativePar=S,Collections.ElemNotInOpt}}
-//another nativeOpt may now be ill typed
-You can not redirect a {nativeKind=Opt} on an {} or different native kind
-//a map may now be ill typed
-You can not redirect a {nativeKind=LazyMsg} on an {}  or different native kind
-//a range of natives may now be ill typed
-
-sum:
-You may sum/sumrename a native** on another native** if the native pars are
-  idenatically renamed
-You can not sum a {} on an {nativeKind=Opt}
-//another nativeOpt may now be ill typed
-You can not sum a {nativeKind=Opt} on an {} or different native kind
-//sum is simmetric, so look above
-You can not sum a {nativeKind=LazyMsg} on an {}
-//a range of natives may now be ill typed
-*/
-
-//TODO: opt must be toS and ==, != if the element inside is
-
+TestOptOK={
   A=Data:{S name}
   Opt1S=Collection.optional(S)
   Opt1A=Collection.optional(A)
@@ -36,10 +8,7 @@ You can not sum a {nativeKind=LazyMsg} on an {}
   Opt2A=Collection.optional(Opt1A)
   Opt3S=Collection.optional(Opt2S)
   Opt3A=Collection.optional(Opt2A)
-
-TestOptOK={
-
-  Main=(
+  Main1=(
     s=S"hi"
     a=A(name=s)
     imm opt1S=Opt1S(s)
@@ -54,12 +23,49 @@ TestOptOK={
     {}:Test"6 true"(opt1A.isPresent())
     {}:Test"6 true"(opt2A.isPresent())
     {}:Test"6 true"(opt3A.isPresent())
-    
     {}:Test"6 get"(actual=opt1S.get() expected=S"hi")
     {}:Test"6 get"(actual=opt2S.get().get() expected=S"hi")
     {}:Test"6 get"(actual=opt3S.get().get().get() expected=S"hi")
     {}:Test"6 get"(actual=opt1A.get() expected=S"A(name[###])")
     {}:Test"6 get"(actual=opt2A.get().get() expected=S"A(name[###])")
     {}:Test"6 get"(actual=opt3A.get().get().get() expected=S"A(name[###])")
-    )  
+    )
+  TestEqToS=(
+    s=S"hi"
+    a=A(name=s)
+    imm opt1S=Opt1S(s)
+    imm opt1A=Opt1A(a)
+    imm opt2S=Opt2S(opt1S)
+    imm opt2A=Opt2A(opt1A)
+    imm opt3S=Opt3S(opt2S)
+    imm opt3A=Opt3A(opt2A)
+    Debug(opt1S)
+    {}:Test"toS"(actual=opt1S
+      expected=S"[hi]")
+    Debug(opt1A)
+    {}:Test"toS"(actual=opt1A
+      expected=S"""
+        |[A(name="hi")]
+        """.trim())
+    Debug(opt2S)
+    {}:Test"toS"(actual=opt2S
+      expected=S"[[hi]]")
+    Debug(opt2A)
+    {}:Test"toS"(actual=opt2A
+      expected=S"""
+        |[[A(name="hi")]]
+        """.trim())
+    Debug(opt3S)
+    {}:Test"toS"(actual=opt3S
+      expected=S"[[[hi]]]")
+    Debug(opt3A)
+    {}:Test"toS"(actual=opt3A
+      expected=S"""
+        |[[[A(name="hi")]]]
+        """.trim())
+    Debug(opt2A==opt3A.get())
+    Debug(Opt2A()!=opt3A.get())
+    {}:Test"eq"(opt2A==opt3A.get())
+    {}:Test"neq"(!(Opt2A()!=opt3A.get()))
+    ) 
   }

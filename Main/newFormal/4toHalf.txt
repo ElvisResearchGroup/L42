@@ -105,7 +105,7 @@ _______
     Y[GX=GXn,CTz=CTz'(m-1)]!Km = K'm; STzm; STz'm; CTz'm
     Y[GX=GXn,CTz=CTz'm]!e  = e'; STz0;  STz'0; CTz'0
     STz = STz0 U..U STzm
-    STz' = STz'0 U..U STz'm U STz"1 U..U STz"n
+    STz' = STz'0 U..U STz'm U removeRets(K'1..K'm,STz"1 U..U STz"n)
 * Y!{Ds Ks WHOOPS? Ds2} = (Void x=e K error void); STz; empty; CTz
     // Note: well formedness for {...} will ensure that the above "error void" is unreachable
     Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
@@ -178,6 +178,14 @@ _______
       )    
     mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?//only one of the two is defined
     x1..xn, x'1..x'n fresh
+
+_______
+#define removeRets(Ks,STz) = STz'
+* removeRets(empty,STz) = STz
+* removeRets(K Ks,STz) = removeRets(Ks,STz)
+    K.throw!=return
+* removeRets(K Ks,STz) = removeRets(Ks,STz\K.STz)//TODO: is this removing too much? can we make a counter example?
+    K.throw=return
 _______
 #define strLitPar(stringElement) = Full.E
 * strLitPar(CHAR1 .. CHARn)=(

@@ -3,7 +3,10 @@
 -IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: cut paste on win do not survive the IDE being closed
 -Opt: seams to work for optOpt. In TestOpt add tests for automatic addition of == and toS
-    should be like List? two diffent ways to creat opt: one with no toS/Eq and one using readEquals of Data. 
+    should be like List? two diffent ways to creat opt: one with no toS/Eq and one using readEquals of Data.
+    Use AnyToS for Opt, List
+-bug "if A b return void" is parsed as "if A b", "return void"
+//can improve Collection after fixing this and the other in TestWellFormedness  
 -Rename bug or in need to explore: what happen if meth names or parameter names are renamed into keywords (if, for, in, method,...)
 -CloseParenthesis: remove the outermost {} before running it.
 -errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#

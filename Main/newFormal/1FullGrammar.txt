@@ -306,7 +306,10 @@ _______
 * returning(loop e)
 * returning(if _ e1 else e2) iff 
     returning(e1) and returning(e2)
-* returning( (Ds1 Ks WHOOPS? Ds2 e) ) iff //TODO: do we handle the case for (Ds e Ks WHOOPS?) ??
+* returning( (Ds1 Ks WHOOPS? Ds2 e) ) iff
+    returning(e)
+    forall K in Ks: returning(K.e)
+* returning( (Ds e Ks WHOOPS?) ) iff
     returning(e)
     forall K in Ks: returning(K.e)
 //* undefined in all the other cases

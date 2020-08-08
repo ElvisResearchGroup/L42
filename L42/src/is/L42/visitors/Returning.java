@@ -12,6 +12,7 @@ import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
+import is.L42.generated.Full.D;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 class HasReturn extends PropagatorCollectorVisitor{
@@ -69,8 +70,17 @@ public class Returning extends UndefinedCollectorVisitor{
     visitE(i._else());
     }
   @Override public void visitBlock(Full.Block b){
-    if(b._e()==null){super.visitBlock(b);}
+    if(b.isCurly()){uc();}
+    if(b._e()==null){visitBlockNoE(b);return;}
     visitE(b._e());
-    visitFullKs(b.ks());
+    for(var k:b.ks()){visitE(k.e());}
+    }
+  private void visitBlockNoE(Full.Block b){
+    if(b.ds().isEmpty() || b.dsAfter()!=b.ds().size()){super.visitBlock(b);return;}
+    D last=b.ds().get(b.ds().size()-1);
+    if(last._e()==null || last._varTx()!=null){super.visitBlock(b);return;}
+    var e=last._e();
+    visitE(e);
+    for(var k:b.ks()){visitE(k.e());}    
     }
   }

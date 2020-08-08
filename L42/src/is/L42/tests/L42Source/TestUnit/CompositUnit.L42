@@ -10,21 +10,23 @@ ParRename={class method Library (class Any that, Trait trait,S.List names)={
 
 TraitTimes=TraitHasSupport:{
   Support=Class.Relax:TraitAbstractSupport
-  T1=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
-  T2=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T1=Class.Relax:TraitHasSupport['Support=>Support]
+  T2=Class.Relax:TraitHasSupport['Support=>Support]
   class method This (T1 that,T2 and)=This(that.#inner()*and.#inner())
   method T1 /(T2 right)=T1(this.#inner()<:Support/right.#inner())
   method T2 /(T1 left)=T2(this.#inner()/left.#inner())
   _FromLeft=Trait:{
-    method This1 *(T2 u_par)=This1(T1.unitCast(this) and=u_par)
+    method T1 self()
+    method This1 *(T2 u_par)=This1(this.self() and=u_par)
     method This1 *1(T2 u_par)=this*u_par
     }
   TraitFromLeft=Trait.delayedCode({class method Library code()
     =ParRename(T2,trait=_FromLeft(),names=\[S"#times0";S"#times1"])
     })
   _FromRight=Trait:{
+    method T2 self()
     method This1 *(T1 u_par)=u_par*this
-    method This1 *1(T1 u_par)=This1(u_par and=T2.unitCast(this)) 
+    method This1 *1(T1 u_par)=This1(u_par and=this.self()) 
     }
   TraitFromRight=Trait.delayedCode({class method Library code()
     =ParRename(T2,trait=_FromRight(),names=\[S"#times0";S"#times1"])
@@ -32,17 +34,23 @@ TraitTimes=TraitHasSupport:{
   }
 TraitDiv=TraitHasSupport:{
   Support=Class.Relax:TraitAbstractSupport
-  T1=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
-  T2=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T1=Class.Relax:TraitHasSupport['Support=>Support]
+  T2=Class.Relax:TraitHasSupport['Support=>Support]
   class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
   method T1 *(T2 right)=T1(this.#inner()<:Support*right.#inner())
   method T1 *1(T2 right)=this*right
   method T1 /1(T2 left0)=T1(left0.#inner()/this.#inner())
-  _FromLeft=Trait:{method This1 /(T2 u_par)=This1(T1.unitCast(this) per=u_par)}
+  _FromLeft=Trait:{
+    method T1 self()
+    method This1 /(T2 u_par)=This1(this.self() per=u_par)
+    }
   TraitFromLeft=Trait.delayedCode({class method Library code()
     =ParRename(T2,trait=_FromLeft(),names=\[S"#divide0"])
     })
-  _FromRight=Trait:{method This1 /1(T1 u_par)=This1(u_par per=T2.unitCast(this))}
+  _FromRight=Trait:{
+    method T2 self()
+    method This1 /1(T1 u_par)=This1(u_par per=this.self())
+    }
   TraitFromRight=Trait.delayedCode({class method Library code()
     =ParRename(T2,trait=_FromRight(),names=\[S"#divide1"])
     })
@@ -50,12 +58,15 @@ TraitDiv=TraitHasSupport:{
   
 TraitInverse=TraitHasSupport:{
   Support=Class.Relax:TraitAbstractSupport
-  T2=Class.Relax:TraitHasSupport['Support=>Support]:TraitHasUnitCast
+  T2=Class.Relax:TraitHasSupport['Support=>Support]
   class method This (Support that,T2 per)=This(that/per.#inner())
   method Support *(T2 right)=this.#inner()<:Support*right.#inner()
   method Support *1(T2 right)=this*right
   method Support /1(T2 left0)=left0.#inner()/this.#inner()
-  _FromUnit=Trait:{method This1 /1(Support u_par)=This1(u_par per=T2.unitCast(this))}
+  _FromUnit=Trait:{
+    method T2 self()
+    method This1 /1(Support u_par)=This1(u_par per=this.self())
+    }
   TraitFromUnit=Trait.delayedCode({class method Library code()
     =ParRename(T2,trait=_FromUnit(),names=\[S"#divide1"])
     })

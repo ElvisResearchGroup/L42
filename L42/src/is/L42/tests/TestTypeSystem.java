@@ -209,7 +209,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->pass("""
    A={B={method Any main()[Any]=(
      (exception void catch exception Any x exception x)
-     catch exception Void xOut (void) void)
+     catch exception Void xOut (void))
    }}
    """)
    ),new AtomicTest(()->pass("""
@@ -298,13 +298,11 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    C={class method This k()}
    D={class method This k()}
    A={B={method Library main()=(
-     Void unused1=(
-       exception C.k()
+     (exception C.k()
        catch exception D x return {#norm{}}
        catch exception C x error void
        )
      catch return  Library result0 (result0)
-     error void
    )}}
    """)
    ),new AtomicTest(()->pass(

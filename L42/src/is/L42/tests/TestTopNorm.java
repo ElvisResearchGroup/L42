@@ -94,11 +94,6 @@ public class TestTopNorm{
        #norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=HIMap, nativePar=This1.Z,This1.Z,This1.Z,This1.Z}
        }
     }""",Err.nativeParameterViolatedConstraint("[###]","[###]","[###]")
-  );}@Test public void notWellTypedOpt(){topFail(EndError.TypeError.class,"""
-    {Z={#norm{nativeKind=LazyMessage}}
-     ZO={#norm{nativeKind=Opt, nativePar=This1.Z,This1.Z typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z}}
-     ZOO={#norm{nativeKind=Opt, nativePar=This1.ZO,This1.Z typeDep=This1.ZO,This1.Z, coherentDep=This1.ZO,This1.Z, watched=This1.ZO,This1.Z}}
-     }""",Err.nativeParameterViolatedConstraint("[###]","[###]","[###]")
   );}@Test public void t2(){top(
    "{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}"
   );}@Test public void t3(){top(
@@ -781,7 +776,45 @@ public class TestTopNorm{
     }
     """,
     Err.nonCoherentPrivateStateAndPublicAbstractMethods(hole)
-  );}
+  );}@Test public void t85(){top("""
+    {A={class method Void a(Any that)=(
+      if This x=that error void
+      void
+      )}}
+    ""","""
+    {A={class method Void a(Any that)=(
+      Void fresh0_underscore=(
+        This x=(
+          Void fresh2_underscore=return that
+          catch return This fresh1_cast fresh1_cast
+          error void)
+        catch return Any fresh1_cast void
+        error void)
+      void)
+    #typed{typeDep=This}}#norm{}}
+    """
+  );}@Test public void t86(){top("""
+    {A={method This a(Any that)={
+      if This x=that return x
+      return this
+      }}}
+    ""","""
+    {A={method This a(Any that)=(
+      Void fresh0_curlyX=(
+        Void fresh2_underscore=(
+          This x=(
+            Void fresh4_underscore=return that
+            catch return This fresh3_cast fresh3_cast
+            error void)
+          catch return Any fresh3_cast void
+          return x)
+        Void fresh5_underscore=return this 
+        void)
+      catch return This fresh1_curlyX1 fresh1_curlyX1
+      error void)
+    #typed{typeDep=This}}#norm{}}          
+    """
+    );}
 
   private static String tryCatchTest(String s){
     return """

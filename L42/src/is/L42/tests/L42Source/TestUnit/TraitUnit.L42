@@ -28,14 +28,7 @@ method Bool >=(This that)
   =this.that()>=that.that()
 method Bool <=(This that)
   =this.that()<=that.that()
-class method This unitCast(Any that)=(
-  return that
-  catch return This x x
-  catch return Any x (
-    s=N(This).outerName()
-    error UnitCastError"The object is not of class %s"
-    )
-  )
+method This self()=this
 Times={class method Library (class Any that)[NotValidUnit,NotSameSupport]
   =CompositUnit(N(This1), and=N(that))}
 Per={class method Library (class Any that)[NotValidUnit,NotSameSupport]

@@ -3,11 +3,14 @@ package is.L42.constraints;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
+import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unique;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
@@ -21,6 +24,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
+import is.L42.generated.Half.K;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.Op.OpKind;
@@ -34,6 +38,7 @@ import is.L42.generated.X;
 import is.L42.generated.Y;
 import is.L42.generated.Full.Call;
 import is.L42.generated.Full.Cast;
+import is.L42.generated.Full.D;
 import is.L42.generated.Full.E;
 import is.L42.generated.Full.If;
 import is.L42.generated.Full.Par;
@@ -260,11 +265,12 @@ public class ToHalf extends UndefinedCollectorVisitor{
     ArrayList<Half.D> ds=new ArrayList<>();
     ArrayList<Half.K> ks=new ArrayList<>();
     ArrayList<ST> resST=new ArrayList<>();
-    ArrayList<ST> retST=new ArrayList<>();
+    ArrayList<ST> retSTDs=new ArrayList<>();
+    ArrayList<ST> retSTKs=new ArrayList<>();
     for(Full.D d:block.ds()){
       var res=auxD(d);
       ds.addAll(res.e);
-      retST.addAll(res.retSTz); //resST is empty
+      retSTDs.addAll(res.retSTz); //resST is empty
       for(var dRes:res.e){
         y=y.withG(y.g().plusEqOver(dRes.x(),dRes.stz()));
         }
@@ -273,13 +279,21 @@ public class ToHalf extends UndefinedCollectorVisitor{
       var res=auxK(k);
       ks.add(res.e);
       resST.addAll(res.resSTz);
-      retST.addAll(res.retSTz);
+      retSTKs.addAll(res.retSTz);
       }
     var res=compute(block._e());
     resST.addAll(res.resSTz);
-    retST.addAll(res.retSTz);
-    commit(new Half.Block(block.pos(),L(ds.stream()),L(ks.stream()),res.e),resST,retST);
+    retSTKs.addAll(res.retSTz);
+    removeRets(ks,retSTDs,retSTKs);
+    commit(new Half.Block(block.pos(),L(ds.stream()),L(ks.stream()),res.e),resST,retSTKs);
     y=oldY;
+    }
+  private void removeRets(ArrayList<K> ks, ArrayList<ST> all,ArrayList<ST> dest){
+    for(var k:ks){
+      if(k.thr()!=ThrowKind.Return){continue;}
+      all.removeAll(k.stz());
+      }
+    dest.addAll(all);
     }
   private Res<List<Half.D>> auxD(Full.D d){
     assert d._e()!=null;
@@ -542,7 +556,45 @@ public class ToHalf extends UndefinedCollectorVisitor{
       });
     return makeBlock(p,e0n,ex);
     }
+  private void visitIfMatch(Full.If sIf){
+    assert sIf._condition()==null;
+    assert sIf._else()==null;
+    assert !sIf.matches().isEmpty();
+    Pos p=sIf.pos();
+    if(sIf.matches().size()>1){visitIfMatchPlus(sIf);return;}
+    var m=sIf.matches().get(0);
+    if(m._e()==null && m.varTxs().isEmpty()){assert m._varTx()!=null; throw todo();}
+    if(m._e()==null){throw todo();}
+    if(!m.varTxs().isEmpty()){throw todo();}
+    if(!isFullXP(m._e())){visitBlock(ifMatchBlock(p,sIf,m));return;}
+    var t=m._varTx()._t();
+    assert t!=null;
+    assert m._varTx()._x()!=null;
+    X x1=freshX("cast");
+    Core.EX ex1=new Core.EX(p,x1);
+    var returnXP=makeDec(new Full.Throw(p,ThrowKind.Return,m._e()));
+    var returnK=new Full.K(ThrowKind.Return,t,x1,ex1);
+    var returnKAny=new Full.K(ThrowKind.Return,P.fullClassAny.with_mdf(t._mdf()),x1,new Core.EVoid(p));
+    var innerB=new Full.Block(p,false,L(returnXP),1,L(returnK),L(),null);
+    var decX=makeDec(t,m._varTx()._x(),innerB);
+    var outerB=new Full.Block(p,false,L(decX),1,L(returnKAny),L(),sIf.then());
+    visitBlock(outerB);    
+    }
+  private Full.Block ifMatchBlock(Pos p,Full.If sIf,D match){
+    X x=freshX("cond");
+    Core.EX ex=new Core.EX(p,x);
+    var decX=makeDec(null,x,match._e());
+    sIf=sIf.withMatches(L(match.with_e(ex)));
+    return makeBlock(p,L(decX),sIf);
+    }
+  private void visitIfMatchPlus(Full.If sIf){
+    var m=sIf.matches().get(0);
+    sIf=sIf.withMatches(popL(sIf.matches()));
+    sIf=sIf.withMatches(L(m)).withThen(sIf);
+    visitIfMatch(sIf);
+    }
   @Override public void visitIf(Full.If sIf){
+    if(!sIf.matches().isEmpty()){visitIfMatch(sIf);return;}
     Pos p=sIf.pos();
     if(sIf._else()==null){sIf=sIf.with_else(new Core.EVoid(p));}
     if(sIf._condition()==null){uc();}

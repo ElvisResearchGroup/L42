@@ -1,8 +1,37 @@
+AnyToS={class method S (read Any that)={
+  if read HasToS s=that return s.toS()
+  return System.immToString(System.readClone(that)) 
+  }}
 OptNative=Trait:{...}
 OptOps=OptNative+{...}
-@Public class method Trait optionalTrait()=OptOps()    
+OptEqOps=OptOps+{...}
+@Public class method Trait optionalTrait()=OptEqOps()
+TraitEq1=Trait:{
+  Elem={read method Bool readEquality(read This that)}
+  class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
+  }
+TraitEq2=Trait:{
+  Elem={read method Bool ==(read This that)}
+  class method Bool equals(read Elem a,read Elem b)= a==b
+  }
+TraitEq3=Trait:{
+  Elem={}
+  class method Bool equals(read Elem a,read Elem b)
+    =System.immEquality(System.readClone(a) and=System.readClone(b))
+  }
+class method Trait selectEq(class Any that)={
+  return TraitEq1['Elem=>that]
+  catch Any e1 (
+    return TraitEq2['Elem=>that]
+    catch Any e2 (
+      return TraitEq3['Elem=>that]
+      catch Any e3 error e3
+      )
+    )
+  } 
 @Public class method Library optional(class Any that)={
-  return Class$Relax:this.optionalTrait()['Elem=>that]
+  res=this.optionalTrait()['Elem=>that]+This.selectEq(that)
+  return Class$Relax:res//TODO: use a catch Any here?
   catch Trait$InvalidName e error e
   catch Trait$InvalidMap e error e
   catch Trait$ClassClash e error e
@@ -18,12 +47,8 @@ ListEqOps=Trait:{...}
   catch Trait$ClassClash e error e
   catch Trait$MethodClash e error e
   }
-EqBase=Trait:{
-  Elem={read method Bool readEquality(read This that)}
-  class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
-  }
 @Public class method Library list(class Any that)[Trait$InvalidMap]={
-  return Class$Relax:(this.listEqTrait()+EqBase)['Elem=>that]
+  return Class$Relax:(this.listEqTrait()+TraitEq1)['Elem=>that]
   catch Trait$InvalidName e error e
   catch Trait$ClassClash e error e
   catch Trait$MethodClash e error e
