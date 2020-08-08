@@ -21,7 +21,7 @@ mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#set(that,val=val
 mut method Elem #update#imm(Size that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
 read method Void #close(Size that)=
-  if this.#incomplete(that) error S"multi for skipped some elements"
+  if this.#incomplete(that) error S"multi-for skipped some elements"
 
 mut method Void add(Elem that)=this.add(right=that)
 mut  method mut This (Void that)=this
@@ -38,8 +38,16 @@ mut method Void #set(Size that,mut Elem val)
 mut method  Void remove(Size that)
 mut method Void add(Size that, Elem val)
 mut method Void #add(Size that, mut Elem val)
-method toS()=System.immToString(System.readClone(this))
-
+method toS()=(
+  var i=0Size
+  var res=S"["
+  while i<this.size() (
+    res++= AnyToS(this.val(i))
+    i:=i.#succ()
+    if i!=this.size() (res++=S"; ") 
+    )
+  res++S"]"
+  )
 read method Elem left()=this.val(0\)
 read method Elem right()=this.val(\size.#pred())
 mut method mut Elem #left()=this.#val(0\)
@@ -81,7 +89,7 @@ method This ++(This right)=This[
     for e in this \res<=e;
     for e in right \res<=e;
     ]
-//TODO: can not parse \#vals, also it suld be \res<=e, but... 
+//TODO: can not parse \#vals, also it should be \res<=e, but... 
 //if res is the lib, then we can not make <= as comparing list for subsetEq
 //if is Box, then ok with Opt<K> native?
 

@@ -189,10 +189,10 @@ TestDataBase={
     HasToS interfS=S"hi"
     HasToS interfP=Point(x=1\,y=2\)
     {}:Test"anys1"(expected=S"""
-      |Anys[3Size]
+      |[3]
       """, actual=bs.toS()++S.nl())
     {}:Test"anys2"(expected=S"""
-      |Anys[3Size]
+      |[3]
       """, actual=interf.toS()++S.nl())
     {}:Test"anys3"(expected=S"""
       |hi
