@@ -66,6 +66,36 @@ TestOptOK={
     Debug(opt2A==opt3A.get())
     Debug(Opt2A()!=opt3A.get())
     {}:Test"eq"(opt2A==opt3A.get())
-    {}:Test"neq"(!(Opt2A()!=opt3A.get()))
-    ) 
+    {}:Test"neq"(Opt2A()!=opt3A.get())
+    )
+  }
+TestDifferentEqs={
+  A={ class method This ()
+    read method Bool ==(read This that)=(
+      Log"Opt".write(S"A-eq")
+      Bool.true()
+      )
+    }
+  B={class method This ()
+    read method Bool readEquality(read This that)=(
+      Log"Opt".write(S"B-eq")
+      Bool.true()
+      )
+    }
+  C={class method This ()}
+  OptA=Collection.optional(A)
+  OptB=Collection.optional(B)
+  OptC=Collection.optional(C)
+  Main=(
+    Log"Opt".clear()
+    imm oa=OptA(A())
+    _=oa==oa
+    _=OptB(B())<:OptB==OptB(B())<:OptB
+    _=OptC(C())<:OptC==OptC(C())<:OptC
+    Debug(S"logged:")
+    Debug(Log"Opt".#$reader().read())
+    {}:Test"eqLogging"(actual=Log"Opt".#$reader().read()
+      expected=S"A-eqB-eq"
+      )
+    )
   }

@@ -4,8 +4,7 @@ TestNoData={
     read method Bool ==(read Point that)=
       this.x()==that.x() && this.y()==that.y()
     }
-  PointEquality=Trait:{class method Bool equals(read Point a,read Point b)=a==b}
-  Points=Class:Collection.listEqTrait()['Elem=>Point]:PointEquality
+  Points=Collection.list(Point)
 
   Test1=(
     points=Points[\(x=3\ y=5\)]

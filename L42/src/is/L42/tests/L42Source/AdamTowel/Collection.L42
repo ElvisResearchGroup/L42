@@ -31,26 +31,17 @@ class method Trait selectEq(class Any that)={
   } 
 @Public class method Library optional(class Any that)={
   res=this.optionalTrait()['Elem=>that]+This.selectEq(that)
-  return Class$Relax:res//TODO: use a catch Any here?
-  catch Trait$InvalidName e error e
-  catch Trait$InvalidMap e error e
-  catch Trait$ClassClash e error e
-  catch Trait$MethodClash e error e
+  return Class$Relax:res
+  catch Any e error e
   }
 
 ListNative=Trait:{...}
 ListOps=ListNative + {...}
-@Public class method Trait listTrait()=ListOps()
-ListEqOps=Trait:{...}
-@Public class method Trait listEqTrait()={
-  return this.listTrait()+ListEqOps
-  catch Trait$ClassClash e error e
-  catch Trait$MethodClash e error e
-  }
-@Public class method Library list(class Any that)[Trait$InvalidMap]={
-  return Class$Relax:(this.listEqTrait()+TraitEq1)['Elem=>that]
-  catch Trait$InvalidName e error e
-  catch Trait$ClassClash e error e
-  catch Trait$MethodClash e error e
+ListEqOps=ListOps+{...}
+@Public class method Trait listTrait()=ListEqOps()
+@Public class method Library list(class Any that)={
+  res=this.listTrait()['Elem=>that]+This.selectEq(that)
+  return Class$Relax:res
+  catch Any e error e
   }
 @AbstractTowel{collection}

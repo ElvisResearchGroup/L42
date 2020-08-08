@@ -71,7 +71,7 @@ Scope0={
 Scope1 ={
   O=Organize:{
     B$={}
-    Bs = Class:Collection.listTrait()['Elem=>B$]
+    Bs = Class:Collection.list(B$)
     B = {
       mut method mut Bs bs::0(),
       class method mut This of::0(mut Bs bs)
@@ -166,7 +166,7 @@ TestACache=(
   {}:Test"cacheEnsureRepeatOnce"(expected=S"firstEcalledfirstEcalled",actual=Log"Foo".#$reader().read())
   )
   
- HasToSs = Class:Collection.listTrait()['Elem=>HasToS<:class Any]
+ HasToSs = Class:Collection.list(HasToS)
  
  B={
   HasToSs that
@@ -206,9 +206,9 @@ TestBCache=(
   void
   )
   
-AnyList = Class:Collection.listTrait()['Elem=>Any]
-VoidList = Class:Collection.listTrait()['Elem=>Void]
-LibList = Class:Collection.listTrait()['Elem=>Library]
+AnyList = Class:Collection.list(Any)
+VoidList = Class:Collection.list(Void)
+LibList = Class:Collection.list(Library)
 
 C={
   S.List that

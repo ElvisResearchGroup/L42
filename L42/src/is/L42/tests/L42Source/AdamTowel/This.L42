@@ -77,18 +77,10 @@ DeployAAA=(
     @Public Collection$ElementNotImm=Class$Relax:Message.Native:{[Message$Guard]}
     @Public Collection$ElementNotMut=Class$Relax:Message.Native:{[Message$Guard]}    
     @Public Collection={...}
-    @Public S$List=Class$Relax:Collection.listEqTrait()['Elem=>S]:{
-      class method Bool equals(read S a,read S b)=a==b
-      }
-    @Public Name$List=Class$Relax:Collection.listEqTrait()['Elem=>Name]:{
-      class method Bool equals(read Name a,read Name b)=a==b
-      }
-    Size$List=Class$Relax:Collection.listEqTrait()['Elem=>Size]:{
-      class method Bool equals(read Size a,read Size b)=a==b
-      }
-    Num$List=Class$Relax:Collection.listEqTrait()['Elem=>Num]:{
-      class method Bool equals(read Num a,read Num b)=a==b
-      }
+    @Public S$List=Collection.list(S)
+    @Public Name$List=Collection.list(Name)
+    Size$List=Collection.list(Size)
+    Num$List=Collection.list(Num)
     @Public Data$Fail={interface [Message$Guard]}
     Class$IncoherentClass=Message:{[Data$Fail]}
     @Public Data={...}
