@@ -186,7 +186,7 @@ class GLOpen extends G{
     TestCachingCases.timeNow("GLOpen3 "+eq);
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
-    assert !eq || s2.uniqueId==0 
+    assert !eq || s2.uniqueId==0 //TODO: randomly getting assertion errors here on novel errors
       || l2.layerL()==LayerL.empty()
       || l2.ctz().equals(layer.ctz());
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);

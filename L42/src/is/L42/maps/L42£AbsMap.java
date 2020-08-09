@@ -22,7 +22,6 @@ implements L42Cachable<Self>{
   Self norm=null;
   Supplier<L42Cache<K>> kCache;
   Supplier<L42Cache<T>> vCache;
-  public boolean isEmpty(){return map==null || map.isEmpty();}
   @SuppressWarnings("unchecked")
   public L42£AbsMap(Object kCache,Object vCache){
     this.kCache=(Supplier<L42Cache<K>>)kCache;

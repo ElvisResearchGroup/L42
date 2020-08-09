@@ -130,10 +130,14 @@ method Bool >>=(This right)={
   }
 */
 
-read method Bool ==(read This that)=
+read method Bool allEq(read This that)=
   this.size()==that.size() &&
   this.matchAll()(for read e1 in this, read e2 in that 
     \res<= This.equals(a=e1,b=e2))
+
+method Bool ==(This that)=System.immEquality(this and=that)
+method Bool !=(This that)= !(this==that)
+read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
 
 read method Size indexOfLeft(read Elem val)={
   //for pos in this.size().range() (//No, range is defined later so it can not be used here

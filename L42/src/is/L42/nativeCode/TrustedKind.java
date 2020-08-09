@@ -96,34 +96,17 @@ public enum TrustedKind implements TrustedT{
     @Override public int genExceptionNumber(){return 3;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     },
-  HIMap("L42£ImmMap"){@Override public String factory(J j,MWT mwt){
-    assert mwt.key().xs().isEmpty();
-    assert j.p().topCore().info().nativePar().size()==4;
-    String typeName=j.typeNameStr(j.p());
-    return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+",()->"+OpUtils.genCache(j,1)+");";
-    }
+  HIMap("L42£ImmMap"){@Override public String factory(J j,MWT mwt){return mapFactory(j,mwt);}
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public void checkNativePars(Program p){
-      super.checkNativePars(p);
-      var l=p.topCore();
-      var info=l.info();
-      P pV=info.nativePar().get(1);
-      P pO=info.nativePar().get(2);
-      var lV=p._ofCore(pV);
-      var lO=p._ofCore(pO);
-      assert lV!=null;
-      assert lO!=null;
-      var isOpt=isOpt(p,pO);
-      String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pO,"to be Opt("+pV+")");
-      if(!isOpt){throw new EndError.TypeError(l.poss(),msg);}
-      if(lO.info().nativePar().isEmpty()){return;}
-      //Opt will give a better error independently
-      var pP=p.from(lO.info().nativePar().get(0),pO.toNCs());
-      if(pP.equals(pV)){return;}
-      throw new EndError.TypeError(l.poss(),msg);
-      }
+    @Override public void checkNativePars(Program p){super.checkNativePars(p);mapCheckNativePars(p);}
+    },
+  HMMap("L42£MutMap"){@Override public String factory(J j,MWT mwt){return mapFactory(j,mwt);}
+    @Override public int genericNumber(){return 3;}
+    @Override public int genExceptionNumber(){return 1;}
+    @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    @Override public void checkNativePars(Program p){super.checkNativePars(p);mapCheckNativePars(p);}
     },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
@@ -256,5 +239,30 @@ public enum TrustedKind implements TrustedT{
     var lO=p._ofCore(path);
     assert lO!=null;
     return lO.info().nativeKind().equals(TrustedKind.Opt.name());
+    }
+  //-------
+  String mapFactory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    assert j.p().topCore().info().nativePar().size()==4;
+    String typeName=j.typeNameStr(j.p());
+    return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+",()->"+OpUtils.genCache(j,1)+");";
+    }
+  void mapCheckNativePars(Program p){
+    var l=p.topCore();
+    var info=l.info();
+    P pV=info.nativePar().get(1);
+    P pO=info.nativePar().get(2);
+    var lV=p._ofCore(pV);
+    var lO=p._ofCore(pO);
+    assert lV!=null;
+    assert lO!=null;
+    var isOpt=isOpt(p,pO);
+    String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pO,"to be Opt("+pV+")");
+    if(!isOpt){throw new EndError.TypeError(l.poss(),msg);}
+    if(lO.info().nativePar().isEmpty()){return;}
+    //Opt will give a better error independently
+    var pP=p.from(lO.info().nativePar().get(0),pO.toNCs());
+    if(pP.equals(pV)){return;}
+    throw new EndError.TypeError(l.poss(),msg);
     }
   }

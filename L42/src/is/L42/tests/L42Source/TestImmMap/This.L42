@@ -1,64 +1,68 @@
 reuse [AdamTowel]
-ONum=Collection.optional(Num)
-//Need to check:
 /*
-trait it
-make wrapper
-support iteration
-//what about removing some methods from lists?
-
-redirect:
+//Could be done, but is not now: redirect:
 You may redirect a native** on another native** if the native pars are
   idenatically transferred in redirect
-You can not redirect a {} on an {nativeKind=Opt}
-//another nativeOpt may now be ill typed
-You can not redirect a {nativeKind=Opt} on an {} or different native kind
-//a map may now be ill typed
-You can not redirect a {nativeKind=LazyMsg} on an {}  or different native kind
-//a range of natives may now be ill typed
-
-sum:
-You may sum/sumrename a native** on another native** if the native pars are
-  idenatically renamed
-You can not sum a {} on an {nativeKind=Opt}
-//another nativeOpt may now be ill typed
-You can not sum a {nativeKind=Opt} on an {} or different native kind
-//sum is simmetric, so look above
-You can not sum a {nativeKind=LazyMsg} on an {}
-//a range of natives may now be ill typed
-
 */
 MapAll={
-  TraitHIMap:{
-    Key={}
-    Val={}
-    OVal={}
-    class method mut This of()
-    read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
-    read method This2.Size size()=native{trusted:size} error void
-    read method This2.Num immVal(This2.Size that)=native{trusted:immVal} error void
-    read method This2.S immKey(This2.Size that)=native{trusted:immKey} error void
-    read method This2.ONum val(This2.S that)=native{trusted:val} error void
-    mut method Void put(This2.S key, This2.Num val)=native{trusted:put} error void
-    mut method Void remove(This2.S that)=native{trusted:removeKey} error void
-    #norm{
-      nativeKind=HIMap
-      nativePar=This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
-      typeDep=This,This2.Size,This2.Bool,This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
-      coherentDep=This2.Size,This2.Bool,This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
-      watched=This2.Size,This2.Bool,This2.S,This2.Num,This2.ONum,This2.Collection.OutOfBounds
-      }
+  NativeMap=Trait:{...}
+  MapOps=Trait:{...}
+  TraitMap=NativeMap+MapOps
+  @Public class method Trait mapTrait()=TraitMap()
+  @Public class method Library map(class Any key,class Any val)={
+    res=this.listTrait()['Key=>key;'Val=>val]
+    return Class.Relax:Organize:res
+    catch Any e error e
     }
   }
+Map=Class:MapAll.TraitMap['Key=>S;'Val=>Num]
 Main=(
-  mut MapAll.IM m=MapAll.IM.of()
-  Debug(S"Hello world %m.isEmpty() %m.size()")
-  (_=m.immVal(3Size) catch error Collection.OutOfBounds oob (Debug(oob)) error X"")
-  (_=m.immVal(Size"-2") catch error Collection.OutOfBounds oob (Debug(oob)) error X"")
-  m.put(key=S"a" val=5Num)
-  m.put(key=S"b" val=7Num)
-  sa=S"a" sb=S"b"
-  Debug(S"-- %m.val(sa).get() %m.size()")
-  m.remove(sa)
-  Debug(S"-- %m.val(sb).get() %m.size()")
+  mut Map m=Map[key=\"a", val=5\; key=\"b",val=7\]
+  Debug(m)
+  {}:Test"m1"(actual=m
+    expected=S"{a->5;b->7;}")
   )
+Person=Data:{var S name}
+Ps=Class:MapAll.TraitMap['Key=>S;'Val=>Person]
+PList=Collection.list(Person)
+MainPs=(
+  mut m1=Ps[key='Bob, val=\(name='Bob); key='Alice,val=\(name='Alice)]
+  mut m2=Ps[key='Charly, mutVal=\(name='Charly); key='Hugo,mutVal=\(name='Hugo)]
+  mut list=PList[mutVal=\(name='Charly);mutVal=\(name='Hugo)]
+  S err1=(_=m1.immVal(3Size) catch error Collection.ElementNotImm oob (oob.toS()) error X"")
+  S err2=(_=m2.immVal(Size"-2") catch error Collection.OutOfBounds oob (oob.toS()) error X"")
+  Debug(err1)
+  Debug(err2)
+  {}:Test"oob1"(actual=err1, expected=S"""
+     |[###]Index 3 outside of the imm range 0--2
+     """)
+  {}:Test"oob2"(actual=err2, expected=S"""
+     |[###]Index -2 out of bounds for length 0
+     """)
+ //Note: error messages will report the lenght of the imms, not the whole
+  for (key1,val1) in m1, mut pi in list (
+    Debug(pi)
+    )
+  for (key1,val1) in m1, mut e in m2 (
+    e.#val().name(\name++val1.name())
+    )
+  for (key1,val1) in m1, mut (key2,mut val2) in m2 (
+    val2.name(\name++val1.name())
+    )
+  for (key3,val1) in m1, (key2,mut val2) in m2 (
+    val2.name(\name++val1.name())
+    )
+  Debug(m1)
+  {}:Test"m1"(actual=m1
+    expected=S"""
+      |{Bob->Person(name="Bob");Alice->Person(name="Alice");}
+      """.trim())
+  Debug(m2)
+    {}:Test"m1"(actual=m2
+    expected=S"""
+      |{Charly->Person(name="CharlyBobBobBob");Hugo->Person(name="HugoAliceAliceAlice");}
+      """.trim())
+  )
+//TODO: we really need to decide if == and co take a read or an imm
+//data make it take an imm
+//Unit and String make it take a read

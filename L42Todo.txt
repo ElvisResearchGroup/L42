@@ -33,7 +33,9 @@ and should wrap all the returns with normalization, so that we only return norma
 -Bug: CircularityIssue need to be improved by a long time 
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString...
-
+-mispelling a native causes an assertion error instead of a compile error
+-CachePackagePrivate 189://TODO: randomly getting assertion errors here on novel errors
+  To reproduce: run in the ide 42 with a type error, edit the 42 to get a different type errror. Run twice
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 
 ------------------

@@ -327,22 +327,26 @@ public enum TrustedOp {
   //####VECTOR####
   VectorK("vectorK",Map.of(Vector,vectorKs())),
   IsEmpty("isEmpty",Map.of(
-    Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)),
-    HIMap,use("return %s.isEmpty();",sig(Readable,Immutable,Bool))
+    Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool))
     )),
   Size("size",Map.of(
     Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
     HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
+    HMMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
   ReadVal("readVal",Map.of(
-    Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int))
+    Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
+    HMMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Readable,Readable,Gen2,Immutable,Int))
     )),
   ImmVal("immVal",Map.of(
     Vector,use(vectorGet(false),sig(Readable,Immutable,Gen1,Immutable,Int)),
     HIMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Readable,Immutable,Gen2,Immutable,Int))
     )),
-  HashVal("#val",Map.of(Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)))),
+  HashVal("#val",Map.of(
+    Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)),
+    HMMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Mutable,Mutable,Gen2,Immutable,Int))
+    )), 
   SetImm("setImm",Map.of(Vector,use(vectorOp("set",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   SetMut("setMut",Map.of(Vector,use(vectorOp("set",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
   AddImm("addImm",Map.of(Vector,use(vectorOp("add",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
@@ -350,20 +354,23 @@ public enum TrustedOp {
   Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
   //MAPs
   ImmKey("immKey",Map.of(
-      HIMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
+      HIMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
+      HMMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
       )),
-//  ReadVal("readVal",Map.of(
-//      Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int))
-//      )),
-//  HashVal("#val",Map.of(Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)))),
-  Val("val",Map.of(
-      HIMap,use("return %s.val(%s);",sig(Readable,Immutable,Gen3,Immutable,Gen1))
+  MapVal("mapVal",Map.of(
+      HIMap,use("return %s.val(%s);",sig(Readable,Immutable,Gen3,Immutable,Gen1)),
+      HMMap,use("return %s.val(%s);",sig(Readable,Readable,Gen3,Immutable,Gen1))
+      )),
+  HashMapVal("#mapVal",Map.of(
+      HMMap,use("return %s.val(%s);",sig(Mutable,Mutable,Gen3,Immutable,Gen1))
       )),
   Put("put",Map.of(
-      HIMap,use("%s.put(%s,%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1,Immutable,Gen2))
+      HIMap,use("%s.put(%s,%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1,Immutable,Gen2)),
+      HMMap,use("%s.put(%s,%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1,Mutable,Gen2))
       )),
   RemoveKey("removeKey",Map.of(
-      HIMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
+      HIMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
+      HMMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
       )),
 
   //val put remove
@@ -471,11 +478,19 @@ public enum TrustedOp {
     addT(c,mwt.mh().t());
     for(T t:mwt.mh().pars()){addT(c,t);}
     for(T t:mwt.mh().exceptions()){addT(c,t);}
-    for(P p:info.nativePar()){if(p.isNCs()){c.add(p.toNCs());}}
     c.removeIf(p->p.hasUniqueNum());
-    if(!List.of("Vector","Opt").contains(info.nativeKind())){return c;} 
-    if(info.nativePar().isEmpty()){return c;}//to avoid out of order errors
+    if(info.nativePar().isEmpty()){return andParsFrom(c,info,0);}//to avoid out of order errors
+    if(!List.of("Vector","Opt","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
     c.removeIf(p->p.equals(info.nativePar().get(0)));//remove only removes the first occurence
+    if(info.nativePar().size()<2 || !List.of("HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,1);}
+    c.removeIf(p->p.equals(info.nativePar().get(1)));//remove only removes the first occurence
+    return andParsFrom(c,info,2);
+    }
+  private ArrayList<P.NCs> andParsFrom(ArrayList<P.NCs>c,Info info,int index){
+    for(P p:info.nativePar()){
+      if(p.isNCs() && index<=0){c.add(p.toNCs());}
+      index-=1;
+      }
     return c;
     }
   private static void addT(ArrayList<P.NCs>c,T t){

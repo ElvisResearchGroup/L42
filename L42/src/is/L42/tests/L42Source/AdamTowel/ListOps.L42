@@ -21,7 +21,7 @@ mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#set(that,val=val
 mut method Elem #update#imm(Size that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
 read method Void #close(Size that)=
-  if this.#incomplete(that) error S"multi-for skipped some elements"
+  if this.#incomplete(that) error X"multi-for skipped some elements"
 
 mut method Void add(Elem that)=this.add(right=that)
 mut  method mut This (Void that)=this

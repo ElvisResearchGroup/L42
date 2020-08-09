@@ -163,7 +163,7 @@ _______
 
 * Y!for (DX in xP)s DX in e (DX in e)s e' = Y!(x=e for (DX in xP)s DX in x (DX in e)s e')
 * Y!for DX1 in xP1..DXn in xPn e = Y!(
-      x1 = xP1.#iterator() .. xn = xPn.#iterator()//use .#varIterator if DXi.var?=var 
+      x1 = xP1.#iterator() .. xn = xPn.#iterator()//use .#varIterator if DXi.var?=var or mut/lent/capsule in DXi (at any dept)   
       var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
       (
         loop if x1.#hasElem(x'1) && .. && xn.#hasElem(x'n) && ( x1.#incomplete(x'1) || .. || xn.#incomplete(x'n)) (
@@ -176,7 +176,7 @@ _______
         catch exception Void _ void
         )
       )    
-    mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?//only one of the two is defined
+    mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?, or first of capsule,mut,lent,read,imm if one of those is defined in the TLocals in DXi.TLocal 
     x1..xn, x'1..x'n fresh
 
 _______
@@ -205,12 +205,17 @@ _______
 * Y!(var? mdf? x=e) = var? mdf? STz x=e'; STz'; CTz
       Y[expectedT = empty]!e = e'; STz; STz'; CTz
 * Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTzn
-    Y!(TLocal x = e) = D0; STz0; CTz0
-    Y[GX+=x:D0.STz CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(x1)()) = D1; STz1; CTz1
+    TLocal'=TLocal if TLocal !=empty or capsule,mut,lent not in TLocal1..TLocaln
+    otherwise TLocal'=capsule if capsule in TLocal1..TLocaln
+    otherwise TLocal'=mut if mut in TLocal1..TLocaln
+    otherwise TLocal'=lent if lent in TLocal1..TLocaln
+    Y!(TLocal' x = e) = D0; STz0; CTz0
+    Y[GX+=x:D0.STz CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(TLocal1,x1)()) = D1; STz1; CTz1
     ..
-    Y[GX+=x:D0.STz CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(xn)()) = Dn; STzn; CTzn
+    Y[GX+=x:D0.STz CTz=CTz(n-1)]!(varn? TLocaln xn = x.methNameTrim(TLocaln,xn)()) = Dn; STzn; CTzn
     x fresh
 
+* methodNameTrim(TLocal, x)=x without any number postfix. If TLocal contains mut,capsule,lent, then '#' is added
 _______
 # define Y!FULL.K= HALF.K; STz; STz';CTz
 * Y!catch throw? T '_' e = Y!catch throw? T x e

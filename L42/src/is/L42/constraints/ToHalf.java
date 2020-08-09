@@ -313,11 +313,26 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=oldY;
     return new Res<>(L(hd),L(),res.retSTz);
     }
+  private boolean hasMdf(VarTx v,Mdf m){
+    if(v._mdf()==m){return true;}
+    return v._t()!=null && v._t()._mdf()==m;
+    }
+  private Mdf propagateSubMdf(Full.D d){
+    var m=d._varTx()._mdf();
+    if(m!=null) {return m;}
+    if(d._varTx()._t()!=null){return null;}
+    boolean hasCap=d.varTxs().stream().anyMatch(v->hasMdf(v,Mdf.Capsule));
+    if(hasCap){return Mdf.Capsule;}
+    boolean hasMut=d.varTxs().stream().anyMatch(v->hasMdf(v,Mdf.Mutable));
+    if(hasMut){return Mdf.Mutable;}
+    boolean hasLent=d.varTxs().stream().anyMatch(v->hasMdf(v,Mdf.Lent));
+    if(hasLent){return Mdf.Lent;}
+    return null;
+    }
   private Res<List<Half.D>> auxMultiD(Full.D d){
     X x=freshX("DecMatch");
     Core.EX ex=new Core.EX(d._e().pos(),x);
-    d.varTxs();
-    Full.D step0=d.withVarTxs(L()).with_varTx(d._varTx().with_x(x));
+    Full.D step0=d.withVarTxs(L()).with_varTx(d._varTx().with_x(x).with_mdf(propagateSubMdf(d)));    
     List<ST>retST=new ArrayList<>();
     List<Half.D> ds=new ArrayList<>();
     var res=auxD(step0);
@@ -327,6 +342,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=y.withG(y.g().plusEq(x,res.e.get(0).stz()));
     for(var vtx:d.varTxs()){
       S s=NameMangling.methNameTrim(vtx._x());
+      var addHash=vtx._mdf()!=null && vtx._mdf().isIn(Mdf.Capsule,Mdf.Mutable,Mdf.Lent);
+      addHash|=vtx._t()!=null && vtx._t()._mdf()!=null && vtx._t()._mdf().isIn(Mdf.Capsule,Mdf.Mutable,Mdf.Lent);
+      if(addHash){s=s.withM("#"+s.m());}
       var mCall=new Full.Call(ex.pos(),ex,s,false,Par.emptys);
       Full.D di=new Full.D(vtx,L(),mCall);
       var resi=auxD(di);
@@ -647,13 +665,48 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var x1ie=new Core.EX(p,x1i);
     return new Full.Call(p,xie,s,false,L(new Par(x1ie,L(),L())));    
     }
+  private boolean useVarIterator(D d){
+    if(d._varTx()!=null && useVarIterator(d._varTx())){return true;}
+    for(var v:d.varTxs()){if(useVarIterator(v)){return true;}}
+    return false;
+    }
+  private boolean useVarIterator(VarTx v){
+    if(v.isVar()){return true;}
+    if(v._mdf()!=null && v._mdf().isIn(Mdf.Mutable, Mdf.Lent,Mdf.Capsule)){return true;}
+    return v._t()!=null && v._t()._mdf()!=null && v._t()._mdf().isIn(Mdf.Mutable, Mdf.Lent,Mdf.Capsule);
+    }
+  private Mdf _computeMdfi(VarTx v){
+    if(v==null){return null;}
+    if(v._mdf()!=null){return v._mdf();}
+    if(v._t()==null){return null;}
+    var m=v._t()._mdf();
+    return m==null?Mdf.Immutable:m;
+    }
+  private Mdf _computeMdfi(D d){
+    var v=d._varTx();
+    Mdf res=_computeMdfi(v);
+    if(res!=null){return res;}
+    var mdfs=new ArrayList<Mdf>();
+    for(var vi:d.varTxs()){
+      var mi=_computeMdfi(vi);
+      if(mi!=null){mdfs.add(mi);}
+      }
+    if(mdfs.isEmpty()){return null;}
+    //order: capsule,mut,lent,read,imm
+    if(mdfs.contains(Mdf.Capsule)) {return Mdf.Capsule;}
+    if(mdfs.contains(Mdf.Mutable)) {return Mdf.Mutable;}
+    if(mdfs.contains(Mdf.Lent)) {return Mdf.Lent;}
+    if(mdfs.contains(Mdf.Readable)) {return Mdf.Readable;}
+    if(mdfs.contains(Mdf.Immutable)) {return Mdf.Immutable;}
+    return null;
+    }
   private Full.Block forMain(Full.For sFor){
     Pos p=sFor.pos();
     Full.E ev=new Core.EVoid(p);
     var xIts=new ArrayList<X>();
     var xIndexs=new ArrayList<X>();
     List<Full.D> dsIts=L(sFor.ds().stream().map(d->//x1=xP1.#iterator()..xn=xPn.#iterator()
-      dsElem(p,"xIt",d._e(),false,d._varTx().isVar()?varIteratorS:iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
+      dsElem(p,"xIt",d._e(),false,useVarIterator(d)?varIteratorS:iteratorS,xIts)));//need to turn to list so that xIts is filled, same below
     List<Full.D> dsStartIndexs=L(sFor.ds().stream().map(d->//var x'1 = xP1.#startIndex() .. var x'n = xPn.#startIndex()
       dsElem(p,"xIndex",d._e(),true,startIndexS,xIndexs)));
     List<Full.D> dsCloses=L(xIts,xIndexs,(c,xi,x1i)->//x1.#close(x'1) .. xn.#close(x'n)
@@ -669,9 +722,8 @@ public class ToHalf extends UndefinedCollectorVisitor{
     List<Full.D> dsElems=L(sFor.ds(),xIts,xIndexs,(c,di,xi,x1i)->{//DX1 = x1.methName('elem',mdf?1)(x'1) .. DXn = xn.methName('elem',mdf?n)(x'n)
       var v=di._varTx();
       X _x=null;
-      Mdf _mdfi=null;
-      if(v!=null){_mdfi=di._varTx()._mdf();_x=di._varTx()._x();}
-      if(v!=null && v._t()!=null && v._t()._mdf()!=null){_mdfi=v._t()._mdf();}
+      Mdf _mdfi=_computeMdfi(di);
+      if(v!=null){_x=v._x();}
       S s=NameMangling.methName("elem",_mdfi);
       c.add(di.with_e(binMeth(p,xi,x1i,s)));
       if(_x!=null && v.isVar()){e[0]=replaceOnUpdate(e[0],_mdfi,_x,xi,x1i);}

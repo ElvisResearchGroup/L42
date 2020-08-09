@@ -139,6 +139,9 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public Core.L.NC visitNC(Core.L.NC s) {
+    if(s.key().inner().equals("OVal")){
+      System.out.println("s");
+    }
     var lastPos=s.poss();
     LDom aux=lastCMs;
     lastCMs=s.key();

@@ -1914,6 +1914,8 @@ public class Core {
       this._pathSel = _pathSel;
       this.texts = texts;
       this.docs = docs;
+      if(this.toString().contains("This3.Public")){
+        System.out.println(this);}
     }
 
     @java.lang.SuppressWarnings("all")
