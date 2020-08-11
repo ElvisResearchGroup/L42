@@ -66,7 +66,19 @@ public class L42£Name extends L42NoFields.Eq<L42£Name>{
       }
     if(res.cs().stream().anyMatch(c->c.hasUniqueNum())){throw new NumberFormatException();}
     if(res._s()!=null && res._s().hasUniqueNum()){throw new NumberFormatException();}
+    //for(var c:res.cs()) {checkForbidden(c.inner());}//All Cs are uppercase anyway
+    for(var x:res._s().xs()) {checkForbidden(x.inner());}
+    checkForbidden(res._s().m());
     return res(res.cs(),res._s(),res._x());
+    }
+  private static List<String>forbidden=List.of(
+    "fwd","mut","imm","lent","read","capsule","class",
+    "void","var","catch","interface","if","else","while",
+    "for","in","loop","return","error","exception","whoops",
+    "method","reuse","native","_","this"
+    );
+  private static void checkForbidden(String s){
+    if(forbidden.contains(s)){throw new NumberFormatException();}
     }
   public String x(){return _x==null?"":_x.toString();}
   public String selector(){return _s==null?"":_s.toString();}

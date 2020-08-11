@@ -175,6 +175,9 @@ public class Balance{
     return 0;
     }
   public static void checkForBalancedParenthesis(URI fileName,String s){
+    int i0=s.indexOf("{");
+    int in=s.lastIndexOf("}");
+    if(i0==0 && in==s.length()-1){s=s.substring(1,in);}
     Balance d=new Balance(fileName);
     char[] cs=s.toCharArray();
     for(int i=0;i<cs.length;i++){

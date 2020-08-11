@@ -2,13 +2,7 @@
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
 -IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: cut paste on win do not survive the IDE being closed
--Opt: seams to work for optOpt. In TestOpt add tests for automatic addition of == and toS
-    should be like List? two diffent ways to creat opt: one with no toS/Eq and one using readEquals of Data.
-    Use AnyToS for Opt, List
--bug "if A b return void" is parsed as "if A b", "return void"
-//can improve Collection after fixing this and the other in TestWellFormedness  
--Rename bug or in need to explore: what happen if meth names or parameter names are renamed into keywords (if, for, in, method,...)
--CloseParenthesis: remove the outermost {} before running it.
+-bug "if A b return void" is parsed as "if A b", "return void" 
 -errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
@@ -39,6 +33,8 @@ and should wrap all the returns with normalization, so that we only return norma
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
 ------------------
+//To test, NativeNames: there is now a set of forbidden words, this may not be exactly identical to what identifiers can have.
+//Should hava an automatic test that works, and may be we should be sure that a method parameter can not be called "reuse" if it is directly wrote in the program.
 //Could be done, but is not now: redirect:
 You may redirect a native** on another native** if the native pars are
   idenatically transferred in redirect
