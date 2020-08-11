@@ -579,6 +579,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     method N #startIndex()=N()
     method B #hasElem(N that)=B()
     method E #elem#default(N that)=E()
+    method E #elem#imm(N that)=E()
     }
   N={
     class method This ()

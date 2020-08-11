@@ -27,6 +27,7 @@ public class From extends CloneVisitor{
     return res;
     }
   @Override public Core.L.NC visitNC(Core.L.NC nc){
+    nc=nc.withDocs(visitDocs(nc.docs()));
     int oldJ=j;
     Program oldP=program;
     j+=1;

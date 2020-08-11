@@ -42,6 +42,7 @@ DeployAAA=(
     @Public Num={...}
     @Public S={...}
     NativeName={...}
+    BootStrapping={...}
     @Public S$ParseError={...}//can not use BaseErrorTrait() since circular dependence from S
     @Public Debug={...}
     @Public System={...}
@@ -99,7 +100,8 @@ DeployAAA=(
     @Public Load={...}
     @Public Collection$Enum={...}
     System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
-    //Introspection$Type={...}
+    BootStrapping$={...}
+    Collection$={...}    
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()
@@ -110,6 +112,7 @@ DeployAdamTowel={reuse[#$aaa]
   AddOns=(
     tot=Trait({...})[
       clear='Introspection$Nested;
+      clear='BootStrapping;
       clear='Data.checkCoherent(that);
       ][
       'S_ParseError=>'S.ParseError;

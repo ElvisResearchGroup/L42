@@ -7,8 +7,8 @@ TestNoData={
   Points=Collection.list(Point)
 
   Test1=(
-    points=Points[\(x=3\ y=5\)]
-    {}:Test"basicPoints=="(points==points)
+    points=Points[\(x=3\ y=5\)]//inferred as mut
+    {}:Test"basicPoint.allEq"(points.allEq(points))
  
     ss=S.List[S"hello";S" ";S"world"]
     {}:Test"basic0: showcasing == test style"(

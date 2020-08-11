@@ -1,0 +1,49 @@
+reuse [AdamTowel]
+Map=Collection.map(key=S, val=Num)
+Main=(
+  mut Map m=Map[key=\"a", val=5\; key=\"b",val=7\]
+  Debug(m)
+  {}:Test"m1"(actual=m
+    expected=S"{a->5;b->7;}")
+  )
+Person=Data:{var S name}
+Ps=Collection.map(key=S, val=Person)
+PList=Collection.list(Person)
+MainPs=(
+  mut m1=Ps[key='Bob, val=\(name='Bob); key='Alice,val=\(name='Alice)]
+  mut m2=Ps[key='Charly, mutVal=\(name='Charly); key='Hugo,mutVal=\(name='Hugo)]
+  mut list=PList[mutVal=\(name='Charly);mutVal=\(name='Hugo)]
+  S err1=(_=m1.immVal(3Size) catch error Collection.ElementNotImm oob (oob.toS()) error X"")
+  S err2=(_=m2.immVal(Size"-2") catch error Collection.OutOfBounds oob (oob.toS()) error X"")
+  Debug(err1)
+  Debug(err2)
+  {}:Test"oob1"(actual=err1, expected=S"""
+     |[###]Index 3 outside of the imm range 0--2
+     """.trim())
+  {}:Test"oob2"(actual=err2, expected=S"""
+     |[###]Index -2 out of bounds for length 0
+     """.trim())
+ //Note: error messages will report the lenght of the imms, not the whole
+  for (key1,val1) in m1, mut pi in list (
+    Debug(pi)
+    )
+  for (key1,val1) in m1, mut e in m2 (
+    e.#val().name(\name++val1.name())
+    )
+  for (key1,val1) in m1, mut (key2,mut val2) in m2 (
+    val2.name(\name++val1.name())
+    )
+  for (key3,val1) in m1, (key2,mut val2) in m2 (
+    val2.name(\name++val1.name())
+    )
+  Debug(m1)
+  {}:Test"m1"(actual=m1
+    expected=S"""
+      |{Bob->Person(name="Bob");Alice->Person(name="Alice");}
+      """.trim())
+  Debug(m2)
+    {}:Test"m1"(actual=m2
+    expected=S"""
+      |{Charly->Person(name="CharlyBobBobBob");Hugo->Person(name="HugoAliceAliceAlice");}
+      """.trim())
+  )

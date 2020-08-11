@@ -2,10 +2,6 @@ AnyToS={class method S (read Any that)={
   if read HasToS s=that return s.toS()
   return System.immToString(System.readClone(that)) 
   }}
-OptNative=Trait:{...}
-OptOps=OptNative+{...}
-OptEqOps=OptOps+{...}
-@Public class method Trait optionalTrait()=OptEqOps()
 TraitEq1=Trait:{
   Elem={read method Bool readEquality(read This that)}
   class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
@@ -29,12 +25,17 @@ class method Trait selectEq(class Any that)={
       )
     )
   } 
+//####Opts
+OptNative=Trait:{...}
+OptOps=OptNative+{...}
+OptEqOps=OptOps+{...}
+@Public class method Trait optionalTrait()=OptEqOps()
 @Public class method Library optional(class Any that)={
   res=this.optionalTrait()['Elem=>that]+This.selectEq(that)
   return Class$Relax:res
   catch Any e error e
   }
-
+//####Lists
 ListNative=Trait:{...}
 ListOps=ListNative + {...}
 ListEqOps=ListOps+{...}

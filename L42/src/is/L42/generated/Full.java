@@ -2995,8 +2995,6 @@ public class Full {
       this._pathSel = _pathSel;
       this.texts = texts;
       this.docs = docs;
-      assert !this.toString().contains("This3.Public")
-      :"";
     }
 
     @java.lang.SuppressWarnings("all")

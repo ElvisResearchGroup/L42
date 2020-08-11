@@ -1,0 +1,11 @@
+//###Maps
+MapNative=Trait:{...}
+MapOps=Trait:{...}
+TraitMap=MapNative+MapOps
+@Public class method Trait mapTrait()=TraitMap()
+@Public class method Library map(class Any key,class Any val)={
+  res=this.mapTrait()['Key=>key;'Val=>val]
+  return Organize:Class$Relax:res
+  catch Any e error e
+  }
+@AbstractTowel{collection}
