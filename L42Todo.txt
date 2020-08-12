@@ -32,6 +32,18 @@ and should wrap all the returns with normalization, so that we only return norma
   To reproduce: run in the ide 42 with a type error, edit the 42 to get a different type errror. Run twice
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
+
+
+-Test List of itself and Maps and Set of itself. The following may be needed
+  re designing arraylist caching and map caching
+  right now the code to take fetch the cache object for the gen parameter of 
+  an arraylist, when the type is native is:
+  return wrapperT+".myCache.rawFieldCache(0)";
+  This may or may not work if the type is an arrayList,
+  and I doubt it working for an arraylist of "This0", that is possible in L42
+  Should we have a "function" that give you the cache in the first element of the array,
+  instead of the cache object iself?
+
 ------------------
 //To test, NativeNames: there is now a set of forbidden words, this may not be exactly identical to what identifiers can have.
 //Should hava an automatic test that works, and may be we should be sure that a method parameter can not be called "reuse" if it is directly wrote in the program.

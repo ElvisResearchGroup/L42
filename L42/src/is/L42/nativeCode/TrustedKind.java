@@ -5,6 +5,7 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
 import java.util.List;
+import java.util.function.Function;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
@@ -101,12 +102,18 @@ public enum TrustedKind implements TrustedT{
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     @Override public void checkNativePars(Program p){super.checkNativePars(p);mapCheckNativePars(p);}
+    @Override public String typeNameStr(Program p,J j){
+      return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
+      }
     },
   HMMap("L42£MutMap"){@Override public String factory(J j,MWT mwt){return mapFactory(j,mwt);}
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     @Override public void checkNativePars(Program p){super.checkNativePars(p);mapCheckNativePars(p);}
+    @Override public String typeNameStr(Program p,J j){
+      return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
+      }
     },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
@@ -119,16 +126,7 @@ public enum TrustedKind implements TrustedT{
     @Override public String typeNameStr(Program p,J j){
       var info=p.topCore().info();
       P gen1=info.nativePar().get(0);
-      if(!gen1.isNCs()){return J.primitivePToString(gen1);}
-      var pLocal=p.navigate(gen1.toNCs());
-      var nk=pLocal.topCore().info().nativeKind();
-      var tk=TrustedKind._fromString(nk);
-      if(tk==null){return j.typeNameStr(pLocal);}
-      assert isOptOpt(p)==(tk==Opt);
-      if(tk==Opt){return J.classNameStr(pLocal);}
-      var boxed=J.boxed(tk.inner);
-      if(boxed!=tk.inner) {return boxed;}
-      return j.typeNameStr(pLocal);
+      return optTypeNameString(p, gen1, j);
       }
     },
   Name("L42£Name"){public String factory(J j,MWT mwt){
@@ -186,12 +184,16 @@ public enum TrustedKind implements TrustedT{
     return null;
     }
   public String typeNameStr(Program p,J j){
-    String res=inner;
     var info=p.topCore().info();
+    return typeNameStr(p,j,i->info.nativePar().get(i));
+    }
+  public String typeNameStr(Program p,J j,Function<Integer,P>generics){
+    String res=inner;
     if(this.genericNumber()==0){return res;}
     res+="<";
     for(var i:range(this.genericNumber())){
-      P pi=info.nativePar().get(i);
+      P pi=generics.apply(i);
+      if(pi==null){continue;}
       if(!pi.isNCs()){res+=J.primitivePToString(pi);}
       else{res+=J.boxed(j.typeNameStr(p.navigate(pi.toNCs())));}
       res+=", ";
@@ -246,6 +248,18 @@ public enum TrustedKind implements TrustedT{
     assert j.p().topCore().info().nativePar().size()==4;
     String typeName=j.typeNameStr(j.p());
     return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+",()->"+OpUtils.genCache(j,1)+");";
+    }
+  String optTypeNameString(Program p,P gen1, J j) {
+    if(!gen1.isNCs()){return J.primitivePToString(gen1);}
+    var pLocal=p.navigate(gen1.toNCs());
+    var nk=pLocal.topCore().info().nativeKind();
+    var tk=TrustedKind._fromString(nk);
+    if(tk==null){return j.typeNameStr(pLocal);}
+    assert isOptOpt(p)==(tk==Opt);
+    if(tk==Opt){return J.classNameStr(pLocal);}
+    var boxed=J.boxed(tk.inner);
+    if(boxed!=tk.inner) {return boxed;}
+    return j.typeNameStr(pLocal);
     }
   void mapCheckNativePars(Program p){
     var l=p.topCore();

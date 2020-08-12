@@ -59,7 +59,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestSifoTypeSystem
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    pass("A={B={method Void main()=void}}")   
-   ),new AtomicTest(()->
+   /*),new AtomicTest(()->
    pass("""
      A={
        Left={interface @{securityLevel}}
@@ -798,7 +798,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   """,Err.nonCoherentMethod("###x()"))
   ),new AtomicTest(()->failC("""
   NotCoh={This field, class method This ()}
-  """,Err.nonCoherentMethod("field()"))
+  """,Err.nonCoherentMethod("field()"))*/
   ));}
 
 public static void pass(String program){

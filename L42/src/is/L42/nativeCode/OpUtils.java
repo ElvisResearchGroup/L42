@@ -50,6 +50,9 @@ class OpUtils{
       return "try{"+body+"}"+
         "catch(IndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
       }
+    static final Function<Program,String> mapOutOfBound(String body,String bodyOpt){
+      return mapChoice(mapOutOfBound(body), mapOutOfBound(bodyOpt));
+      }
     static final String mapOutOfBound(String body){
       return "try{"+body+"}"+
         "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen4.wrap(new L42£LazyMsg(oob.getMessage())));}";
@@ -204,6 +207,17 @@ class OpUtils{
   static Function<Program,String> optChoice(String opt,String optOpt){
     return p->{
       if(!TrustedKind.isOptOpt(p)){return opt;}
+      return optOpt;
+      }; 
+    }
+  static Function<Program,String> mapChoice(String opt,String optOpt){
+    return p->{
+      var i=p.topCore().info();
+      assert i.nativeKind().contains("Map");
+      if(i.nativePar().size()<3){return opt;}//a better error will happen in other places
+      var pOpt=i.nativePar().get(2);
+      if(!pOpt.isNCs()){return opt;}//a better error will happen in other places
+      if(!TrustedKind.isOptOpt(p.navigate(pOpt.toNCs()))){return opt;}
       return optOpt;
       }; 
     }

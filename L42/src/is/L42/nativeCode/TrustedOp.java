@@ -337,15 +337,21 @@ public enum TrustedOp {
     )),
   ReadVal("readVal",Map.of(
     Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
-    HMMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Readable,Readable,Gen2,Immutable,Int))
+    HMMap,use(mapOutOfBound(
+      "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
+      ),sig(Readable,Readable,Gen2,Immutable,Int))
     )),
   ImmVal("immVal",Map.of(
     Vector,use(vectorGet(false),sig(Readable,Immutable,Gen1,Immutable,Int)),
-    HIMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Readable,Immutable,Gen2,Immutable,Int))
+    HIMap,use(mapOutOfBound(
+      "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
+      ),sig(Readable,Immutable,Gen2,Immutable,Int))
     )),
   HashVal("#val",Map.of(
     Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)),
-    HMMap,use(mapOutOfBound("return %s.valIndex(%s);"),sig(Mutable,Mutable,Gen2,Immutable,Int))
+    HMMap,use(mapOutOfBound(
+      "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
+      ),sig(Mutable,Mutable,Gen2,Immutable,Int))
     )), 
   SetImm("setImm",Map.of(Vector,use(vectorOp("set",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
   SetMut("setMut",Map.of(Vector,use(vectorOp("set",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
@@ -365,8 +371,12 @@ public enum TrustedOp {
       HMMap,use("return %s.val(%s);",sig(Mutable,Mutable,Gen3,Immutable,Gen1))
       )),
   Put("put",Map.of(
-      HIMap,use("%s.put(%s,%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1,Immutable,Gen2)),
-      HMMap,use("%s.put(%s,%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1,Mutable,Gen2))
+      HIMap,use(mapChoice(
+        "%s.put(%s,%s);return L42£Void.instance;","%s.put(%s,%Gen2.wrap(%s));return L42£Void.instance;"
+        ),sig(Mutable,Immutable,Void,Immutable,Gen1,Immutable,Gen2)),
+      HMMap,use(mapChoice(
+        "%s.put(%s,%s);return L42£Void.instance;","%s.put(%s,%Gen2.wrap(%s));return L42£Void.instance;"
+        ),sig(Mutable,Immutable,Void,Immutable,Gen1,Mutable,Gen2))
       )),
   RemoveKey("removeKey",Map.of(
       HIMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
