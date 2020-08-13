@@ -333,6 +333,7 @@ public enum TrustedOp {
     Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
     HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HMMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
+    HSet,use("return  %s.size();",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
   ReadVal("readVal",Map.of(
@@ -361,7 +362,8 @@ public enum TrustedOp {
   //MAPs
   ImmKey("immKey",Map.of(
       HIMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
-      HMMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
+      HMMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
+      HSet,use(setOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
       )),
   MapVal("mapVal",Map.of(
       HIMap,use("return %s.val(%s);",sig(Readable,Immutable,Gen3,Immutable,Gen1)),
@@ -376,11 +378,13 @@ public enum TrustedOp {
         ),sig(Mutable,Immutable,Void,Immutable,Gen1,Immutable,Gen2)),
       HMMap,use(mapChoice(
         "%s.put(%s,%s);return L42£Void.instance;","%s.put(%s,%Gen2.wrap(%s));return L42£Void.instance;"
-        ),sig(Mutable,Immutable,Void,Immutable,Gen1,Mutable,Gen2))
+        ),sig(Mutable,Immutable,Void,Immutable,Gen1,Mutable,Gen2)),
+      HSet,use("%s.add(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
       )),
   RemoveKey("removeKey",Map.of(
       HIMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
-      HMMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
+      HMMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
+      HSet,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
       )),
 
   //val put remove
@@ -490,7 +494,7 @@ public enum TrustedOp {
     for(T t:mwt.mh().exceptions()){addT(c,t);}
     c.removeIf(p->p.hasUniqueNum());
     if(info.nativePar().isEmpty()){return andParsFrom(c,info,0);}//to avoid out of order errors
-    if(!List.of("Vector","Opt","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
+    if(!List.of("Vector","Opt","HSet","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
     c.removeIf(p->p.equals(info.nativePar().get(0)));//remove only removes the first occurence
     if(info.nativePar().size()<2 || !List.of("HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,1);}
     c.removeIf(p->p.equals(info.nativePar().get(1)));//remove only removes the first occurence

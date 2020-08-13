@@ -8,4 +8,13 @@ TraitMap=MapNative+MapOps
   return Organize:Class$Relax:res
   catch Any e error e
   }
-@AbstractTowel{collection}
+//###Sets
+SetNative=Trait:{...}
+SetOps=Trait:{...}
+TraitSet=SetNative+SetOps
+@Public class method Trait setTrait()=TraitSet()
+@Public class method Library set(class Any that)={
+  res=this.setTrait()['Key=>that]
+  return Organize:Class$Relax:res
+  catch Any e error e
+  }

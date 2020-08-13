@@ -57,6 +57,10 @@ class OpUtils{
       return "try{"+body+"}"+
         "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen4.wrap(new L42£LazyMsg(oob.getMessage())));}";
       }
+    static final String setOutOfBound(String body){
+      return "try{"+body+"}"+
+        "catch(ArrayIndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
+      }
     static final Map<TrustedKind,Generator>type(String s,Signature sig){
       return Map.of(TrustedKind.Type,use("return "+s+";",sig));
       }

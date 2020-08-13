@@ -16,7 +16,7 @@ import is.L42.numbers.L42£BigRational;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42NoFields.EqCache;
 public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
-  L42£Set(Supplier<L42Cache<K>> kCache){super(kCache);}
+  public <KK>L42£Set(Supplier<L42Cache<KK>> kCache){super(kCache);}
   public int size(){return inner==null?0:inner.size();}
   @SuppressWarnings("unchecked")
   protected void loadIteration(){
@@ -43,4 +43,6 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
   @Override public L42Cache<?> rawFieldCache(int i){return kCache.get();}
   @Override public L42Cache<L42£Set<K>> myCache(){return this;}
   @Override protected L42£Set<K> newInstance(L42£Set<K> t){return new L42£Set<K>(kCache);}
+  @SuppressWarnings("unchecked")
+  public static final Class<L42£Set<?>> _class=(Class<L42£Set<?>>)(Object)L42£Set.class;
   }

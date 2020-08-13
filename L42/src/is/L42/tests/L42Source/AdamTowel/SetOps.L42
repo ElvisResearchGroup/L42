@@ -1,0 +1,56 @@
+[HasToS]
+Key={}
+Set={
+  class method mut This of()
+  read method Size size()
+  read method Key immKey(Size that)
+  mut method Void put(Key key)
+  mut method Void remove(Key key)
+  }
+read method read Set set()
+mut  method mut Set  #set()
+
+class method mut This of(mut Set set)
+@Public class method mut This empty()=This.of(set=Set.of())
+@Public read method Size size()=this.set().size()
+@Public read method Bool isEmpty()=this.size()==0Size
+
+@Public read method Key key(Size that)=this.set().immKey(that)
+//---------------
+@Public mut method Void put(Key key)=this.#set().put(key=key)
+@Public mut method Void remove(Key key)=this.#set().remove(key=key)
+//-------------------Supporting []
+@Public class method mut This (mut This squareBuilder)=squareBuilder
+@Public class method mut This ##apply#squareBuilder()=This.empty()
+@Public class method Bool #shortCircutSquare()=Bool.true()
+@Public mut method Void #squareAdd(Key that)=this.put(key=that)
+@Public mut method Void #yield(Void that)=void
+//-------------------Supporting iteration
+@Public read method read This vals()=this
+@Public mut method mut This #vals()=this
+@Public read method read This #iterator()=this
+//@Public mut method mut This #varIterator()=this//NO varIterators on sets:immkeys+no way to update them
+@Public read method Size #startIndex()=0Size
+@Public read method Bool #hasElem(Size that)=that<this.size()
+@Public read method Bool #incomplete(Size that)=that!=this.size()
+
+@Public read method Key #elem#imm(Size that)=this.key(that)
+@Public read method Key #elem#default(Size that)=this.#elem#imm(that)
+@Public read method Key #elem#read(Size that)=this.#elem#imm(that)
+
+//Note: updating entries is not supported. It would require some language improvement
+//mut method mut Entry #update#mut(Size that, mut Entry val)=(this.#set(that,val=val) val)
+//mut method Entry #update#imm(Size that, Entry val)=(this.set(that,val=val) val)
+//mut method Entry #update#default(Size that, Entry val)=this.#update#imm(that,val=val)
+@Public read method Void #close(Size that)=
+  if this.#incomplete(that) error X"multi-for skipped some elements"
+@Public method toS()=(
+  var res=S"{"
+  for key in this (res++=S"%Collection.AnyToS(key);")
+  res++S"}"
+  )
+
+//------Eq
+@Public method Bool ==(This that)=System.immEquality(this and=that)
+@Public method Bool !=(This that)= !(this==that)
+@Public read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))

@@ -115,6 +115,11 @@ public enum TrustedKind implements TrustedT{
       return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
       }
     },
+  HSet("L42£Set"){@Override public String factory(J j,MWT mwt){return setFactory(j,mwt);}
+    @Override public int genericNumber(){return 1;}
+    @Override public int genExceptionNumber(){return 1;}
+    @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;
@@ -248,6 +253,12 @@ public enum TrustedKind implements TrustedT{
     assert j.p().topCore().info().nativePar().size()==4;
     String typeName=j.typeNameStr(j.p());
     return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+",()->"+OpUtils.genCache(j,1)+");";
+    }
+  String setFactory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    assert j.p().topCore().info().nativePar().size()==2;
+    String typeName=j.typeNameStr(j.p());
+    return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+");";
     }
   String optTypeNameString(Program p,P gen1, J j) {
     if(!gen1.isNCs()){return J.primitivePToString(gen1);}

@@ -73,3 +73,15 @@ MapWithOptsKeys={
     {}:Test"optMap2"(expected=S"{[]->bar;[one]->world;}",actual=map)
     )
   }
+  
+SetTest1={
+  Set=Collection.set(S)
+  Main=(
+    set=Set[S"Hello";S" ";S"world"]
+    Debug(set)
+    {}:Test"set1"(expected=S"{Hello; ;world;}",actual=set)
+    set.put(key=S"!!")
+    Debug(set)
+    {}:Test"optMap2"(expected=S"{Hello; ;world;!!;}",actual=set)
+    )
+  }
