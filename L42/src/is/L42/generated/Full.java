@@ -199,7 +199,8 @@ public class Full {
 
     @Override
     public LL c(C c) {
-      assert !this.isDots && this.reuseUrl.isEmpty();
+      assert !this.isDots && this.reuseUrl.isEmpty():
+        "";
       var res = LDom._elem(ms, c);
       if (res == null) {
         throw new LL.NotInDom(this, c);

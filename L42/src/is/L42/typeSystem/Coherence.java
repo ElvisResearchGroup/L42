@@ -189,6 +189,8 @@ public class Coherence {
     return allowedAbstract(mh,classMhs);
     }
   static public boolean canAlsoBe(Mdf mdf0, Mdf mdf){
+    if(mdf0==null) {mdf0=Mdf.Immutable;}
+    if(mdf==null) {mdf=Mdf.Immutable;}
     return switch(mdf0){
       case Capsule,Mutable-> !mdf.isClass();
       case Lent-> mdf.isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable,Mdf.MutableFwd);

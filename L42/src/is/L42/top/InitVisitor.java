@@ -97,6 +97,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       List<P> ps=L(l.ts().stream().map(t->t._p()));
       List<Integer> ns=L(l.ms(),(c,mi)->{
         if(!mi.key().hasUniqueNum()){return;}
+        if(mi.key().uniqueNum()==0){return;}
         LDom key=mi.key();
         if(key instanceof C){c.add(key.uniqueNum());return;}
         //filter the refined methods
@@ -146,6 +147,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       throw new EndError.InvalidImplements(s.poss(),Err.nestedClassesImplemented(this0s));
       }
     checkUniqueNs(s);
+    //TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
     return s;        
     }
   void checkInfo(Core.L l){WellFormedness.checkInfo(p(),l);}

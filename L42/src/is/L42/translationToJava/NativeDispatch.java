@@ -27,6 +27,8 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
 import is.L42.generated.P;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import safeNativeCode.slave.Functions;
+import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
 
 public class NativeDispatch {
@@ -59,26 +61,32 @@ public class NativeDispatch {
   public static void untrusted(String nativeKind, String nativeUrl, MWT mwt,J j) {
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
     List<String> xs=xs(mwt);
-    String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2); 
+    //String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2);
+    String resT=j.typeNameStr(mwt.mh().t());
+    String toLambda="new safeNativeCode.slave.Functions.Supplier<"
+      +resT+">(){public "+resT+" get()throws Exception"
+      +nativeUrl.substring(nativeUrl.indexOf("}\n")+2)+"}";
     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
-    Resources.slaves.computeIfAbsent(slaveName, sn->{
-      String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim()+"\n";
-      int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
-      int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
-      String[] args = new String[]{"--enable-preview"};
-      if (memoryLimit > 0) {
-        args = new String[]{"-Xmx"+memoryLimit+"M","--enable-preview"};
-      }
-      return new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader());
-    });
+    var onErr = onErr(mwt, j);
+    String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim()+"\n";
+    int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
+    int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
     j.c(java.lang.String.format("""
-    try {
-      Resources.slaves.get("%s").addClassLoader(new Object(){}.getClass().getEnclosingClass().getClassLoader());
-      return Resources.slaves.get("%s").call(%s).get();
-    } catch (java.rmi.RemoteException ex) {
-        throw new RuntimeException(ex);
-    }
-    """, slaveName, slaveName, toLambda));   
+    try{return Resources.loadSlave(%s,%s,"%s",new Object(){}).call(%s).get();}
+    catch(safeNativeCode.exceptions.SlaveException ex){%s}
+    catch (java.rmi.RemoteException ex){throw new RuntimeException(ex);}
+    """,memoryLimit,timeLimit,slaveName,toLambda,onErr));   
   }
-}
+  private static String onErr(MWT mwt, J j) {
+    if(mwt.mh().exceptions().size()!=1){return "throw ex;";}
+    var t=mwt.mh().exceptions().get(0);
+    Program pErr=j.p()._navigate(t.p().toNCs());
+    if(!pErr.topCore().info().nativeKind().equals(TrustedKind.LazyMessage.name())){return "throw ex;";}
+    var err=J.classNameStr(pErr);
+    return
+      "String msg;try{msg=ex.getChild().call(Throwable::getMessage).get();}\n"+
+      "catch (java.rmi.RemoteException ex1){throw new RuntimeException(ex1);}\n"+
+      "throw new L42Exception("+err+".wrap(new L42£LazyMsg(msg)));";
+    }
+  }

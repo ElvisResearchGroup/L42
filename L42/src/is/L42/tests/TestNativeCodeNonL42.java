@@ -1,8 +1,10 @@
 package is.L42.tests;
 
 import static is.L42.tools.General.bug;
+import static org.junit.Assert.fail;
 
 import java.lang.reflect.InvocationTargetException;
+import java.rmi.RemoteException;
 import java.security.Permission;
 import java.util.ArrayList;
 import java.util.List;
@@ -17,7 +19,14 @@ import is.L42.tools.General;
 import safeNativeCode.slave.host.ProcessSlave;
 
 public class TestNativeCodeNonL42 {
-  
+  @Test
+  public void slaveError(){
+    var s=new ProcessSlave(0,new String[]{"-Xmx8000M","--enable-preview"},Resources.class.getClassLoader());
+    try {s.<String>call(()->{throw null;});fail();}
+    catch (RemoteException e){fail();}
+    catch(safeNativeCode.exceptions.SlaveException se){return;}
+    fail();
+  }
   @Test
   public void doThing() throws InvocationTargetException, CompilationError
   {

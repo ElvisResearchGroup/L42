@@ -104,7 +104,7 @@ cast: CastOp t;
 oR: OR |ORNS;
 par: e? (x'='e)*;
 //Note, just writing [oR d+ k* whoops? d* e ')'] was causing parsing of ( a b+c(d)) as ( a b+c  (d))  
-block: oR d*? e k* whoops? ')' | oR d+ k* whoops? e ')' | oR d+ k* whoops? d* e ')'
+block: oR d*? e k* whoops? ')' | oR d+ k* whoops? e ')' | oR d+ k* whoops? d*? e ')'
   | '{' d+ (k+ whoops? d* | whoops d*)? '}';
 d: (dX '=')? e;
 dX:VarKw? tLocal x | tLocal UnderScore | tLocal oR (VarKw? tLocal x)+ ')';

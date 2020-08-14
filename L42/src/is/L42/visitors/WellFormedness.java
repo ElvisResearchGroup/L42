@@ -677,16 +677,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       validPrivateNested(m.poss(),(C)m.key(),m._e());
       }
     var bridges=bridgeFull(l.ms());
-    if(!bridges.isEmpty()){
-      err(Err.bridgeMethodsInFullL(L(bridges.stream().map(m->m.key()))));
-      }
-    //if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
-    var notHDCallsHD=L(l.ms().stream()
-      .filter(Full.L.MI.class::isInstance)
-      .map(Full.L.MI.class::cast)
-      .filter(m->isBridgeMeth(m.key().m(),"",m.e().visitable()))
-      .map(m->m.key()));
-    if(!notHDCallsHD.isEmpty()){err(Err.bridgeMethodsInFullL(notHDCallsHD));}
+    if(!bridges.isEmpty()){wellFormednessFullBridges(l,bridges);}
     List<LDom> dom=L(l.ms().stream().map(m->m.key()));
     List<LDom> impl=L(l.ms().stream()
       .filter(m->!(m instanceof Full.L.NC))
@@ -694,6 +685,37 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     List<Visitable<?>> ts=L(l.ts().stream()
       .map(t->(Visitable<?>)t.with_mdf(null).withDocs(L())));
     common(l.isInterface(), ts, dom, impl);
+    }
+  private void wellFormednessFullBridges(Full.L l,List<Full.L.M> bridges) {
+    var anyMi=l.ms().stream().anyMatch(mi->mi instanceof Full.L.MI);
+    if(anyMi){err(Err.bridgeMethodsInFullL(L(bridges.stream().map(m->m.key()))));}
+    List<Full.MH> classMhs=L(l.ms(),(c,m)->{
+      var mwt=(Full.L.MWT)m;
+      if(mwt.mh()._mdf()==null || !mwt.mh()._mdf().isClass() || mwt._e()!=null){return;}
+      if(mwt.key().hasUniqueNum()){c.add(mwt.mh());}
+      });    
+    if(classMhs.isEmpty()){
+      err(Err.mustHaveCloseStateBridge(
+        L(classMhs.stream().map(m->m.key())),
+        L(bridges.stream().map(m->m.key()))));      
+      }    
+    for(var m:bridges){
+      var mwt=(Full.L.MWT)m;
+      if(mwt.mh()._mdf()==null){err(Err.bridgeNotMutable(mwt.key(),"imm"));}
+      else if(!mwt.mh()._mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule)){err(Err.bridgeNotMutable(mwt.key(),mwt.mh()._mdf()));}
+      }
+    if(!l.isInterface()){
+      if(!classMhs.isEmpty()){
+        var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
+        if(xzs.size()>1){throw new EndError.CoherentError(l.poss(),Err.nonCoherentNoSetOfFields(xzs));}
+        }
+      for(var mbi:bridges){for(var mhj:classMhs){
+        var bi=(Full.L.MWT)mbi;
+        if(!Coherence.canAlsoBe(mhj.t()._mdf(),bi.mh()._mdf())){continue;}
+        if(mhj.key().m().startsWith("#$")){continue;}
+        err(Err.bridgeViolatedByFactory(bi.key(),mhj.key()));
+        }}
+      }    
     }
   private <PP extends P> void typedContains(Core.L.Info info,Stream<PP> others,String name){
     var extra=L(others.filter(o->o.isNCs() && !info.typeDep().contains(o)));
@@ -846,11 +868,17 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     return L(mwts.stream().filter(m->m._e()!=null &&
       isBridgeMeth(m.key().m(),m.nativeUrl(),m._e().visitable())));
     }
-  private List<Full.L.MWT> bridgeFull(List<Full.L.M> ms){
-    return L(ms.stream()
-      .filter(Full.L.MWT.class::isInstance)
-      .map(Full.L.MWT.class::cast)
-      .filter(m-> m._e()!=null &&
-        isBridgeMeth(m.key().m(),m.nativeUrl(),m._e().visitable())));
+  private List<Full.L.M> bridgeFull(List<Full.L.M> ms){
+    return L(ms,(c,m)->{
+      if(m instanceof Full.L.NC){return;}
+      if(m._e()==null){return;}//includes m instanceof Full.L.F
+      if(m instanceof Full.L.MI){
+        var mi=(Full.L.MI)m;
+        if(isBridgeMeth(mi.key().m(),"",m._e().visitable())){c.add(m);}
+        return;
+        }
+      var mwt=(Full.L.MWT)m;
+      if(isBridgeMeth(mwt.key().m(),mwt.nativeUrl(),m._e().visitable())){c.add(m);}
+      });
     }
   }

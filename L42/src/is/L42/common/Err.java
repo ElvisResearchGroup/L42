@@ -312,7 +312,7 @@ public class Err {
   ;}public static String errorVarBindingOpUpdate(Object x,Object op){return
   "the operator "+op+" is used on the variable "+x+", but updating it would violate strong error safety"
   ;}public static String bridgeMethodsInFullL(Object _1){return
-  "methods bridging effectful #$ non determinism need to be coded in core library literals only. But the following methods was present in a full literal: "+_1
+  "if methods bridging effectful #$ non determinism are present, then all methods need to be annotated with their type. The following bridge methods was present : "+_1
   ;}public static String bridgeNotMutable(Object s,Object mdf){return
   "methods "+s+", bridging effectful #$ non determinism have modifier "+mdf+", but only {mut,lent,capsule} are allowed"
   ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return

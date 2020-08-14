@@ -214,7 +214,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
    pass("if a&&b return X\"oh\"",
    "SIf(|<x|x>SThrow(|P|))|")
-     ));}
+  ),new AtomicTest(()->
+   pass("(A(x) catch Void v (v) S x=y D(x))",
+      "[|D(PFCall(|x|))K(|t(P)x[|x|])D(t(P)x|x)PFCall(|x|)|]|")
+      ));}
 public static void pass(String input,String output) {
   String res=parseStructure(parseWithException(input));
   assertEquals(output,res);

@@ -77,7 +77,9 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     assert name!=L42£Name.instance:
     "";
     L l=rootL._cs(name.cs);
-    if(l==null){throw new IndexOutOfBoundsException(name+" not in the domain of the nested class");}//throw err name invalid
+    if(l==null){
+      throw new IndexOutOfBoundsException(name+" not in the domain of the nested class; the domain is: "+rootL.domNC());
+      }//throw err name invalid
     if(_classAny==null || !_classAny.isNCs()){
       return new L42£Nested(posStr(l.poss()),l,rootL,name.onlyCs(),null).myNorm();
       }

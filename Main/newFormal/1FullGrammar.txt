@@ -199,21 +199,22 @@ _______
     if LL(C::n)=CORE.L and C' in dom(CORE.L) then C' of form _::n' //all nesteds of private nesteds are private
     if LL(C::n)=CORE.L and m(xs) in dom(CORE.L) then m of form _::n' or P.m(xs) in CORE.L.Info.refined
     if _.#$_(_) inside LL.MI.e then LL.MI.s of form #$_
-    if bridge({MWT| MWT in LL})!=empty then LL of form CORE.L//works for both CORE.L and FULL.L
+    if bridge(LL.Ms)!=empty then forall M in LL M not of form MI
+    forall MWT in bridge(LL.MWT), MWT.mds in {mut, lent, capsule}
+    MHs={MWT.MH | MWT in LL.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.s of form _::0(_)}
+    if bridge(LL.Ms)!=empty then MHs!=empty
+    if LL.interface?=empty forall MWT in bridge(LL.MWT), forall MH in MHs:
+      if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
+    if MHs!=empty and L.interface?=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
     //We do not enforce the next point, instead we make it not coherent if cache+open
     //if _ native{trusted:cachable} _ in L.MWT or_ native{trusted:eagerCachable} _ in L.MWT
-     then LL of form CORE.L and LL.Info.nativeKind=empty
+    //then LL of form CORE.L and LL.Info.nativeKind=empty
     
 * Core.L: (in addition to all the LL)
     if !hasOpenState(L)
       or L.interface?=interface, _.C._ in L.Ts and C of form _::n
       or L.interface?=interface and m::n(xs) in dom(L)
       then L.Info.close?=close
-    forall MWT in bridge(L.MWT), MWT.mds in {mut, lent, capsule}
-    MHs={MWT.MH | MWT in L.MWTs where MWT.mdf=class, MWT.e?=empty and MWT.s of form _::0(_)}
-    if L.interface?=empty forall MWT in bridge(L.MWT), forall MH in MHs:
-      if MH.T.mdf canAlsoBe MWT.mdf then MH.m of form #$_
-    if MHs!=empty and L.interface?=empty then {xz} = {xz | MH in MHs xz={x | x in MH.s.xs}}
     L.Info.coherentDep subseteq L.Info.typeDep
     ...
     L.Info.nativePar subseteq L.Info.typeDep//same for all the fields of Info containing Ps
@@ -317,12 +318,12 @@ _______
 * hasReturn(_,e,_)
     return e' is contained inside e without traversing LL or a block with curly or another throw e'
 _______
-#define hasOpenState(Core.L)    hasOpenState(interface?, mwts)    bridge(MWTs) = MWTs'
+#define hasOpenState(Core.L)    hasOpenState(interface?, mwts)    bridge(Ms) = Ms'
 * hasOpenState({interface? MWTs NCs Info})=hasOpenState(interface?,MWTs)
 * hasOpenState(interface, _)
 * hasOpenState(empty, MWTs)
     forall MWT in MWTs where MWT.e?=empty: MWT.m not of form _::n
     bridge(MWTs) = empty
 
-* bridge(MWTs) = {MWT| MWT in MWTs,  MWT.m not of form #$_,
-    and  _.#$_(_) inside MWT.e? or untrusted(MWT.native?)}
+* bridge(Ms) = {M| M in Ms, M of form MWT or MI, M.m not of form #$_,
+    and  _.#$_(_) inside MWT.e? or untrusted(M.native?)}

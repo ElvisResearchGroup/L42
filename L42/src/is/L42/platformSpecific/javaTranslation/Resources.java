@@ -28,6 +28,7 @@ import is.L42.generated.Core;
 import is.L42.generated.P;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
+import safeNativeCode.slave.host.ProcessSlave;
 
 public class Resources {
   public static Loader loader=new Loader();
@@ -103,6 +104,15 @@ public class Resources {
     tests=new StringBuffer();
     compiledNesteds=new StringBuffer();
     logs.clear();
+    }
+  public static Slave loadSlave(int memoryLimit,int timeLimit,String slaveName,Object o){
+    return Resources.slaves.computeIfAbsent(slaveName, sn->{
+      String[] args = new String[]{"--enable-preview"};
+      if(memoryLimit>0){args=new String[]{"-Xmx"+memoryLimit+"M","--enable-preview"};}
+      Slave s=new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader());
+      s.addClassLoader(o.getClass().getEnclosingClass().getClassLoader());
+      return s;
+      });
     }
   public static void breakHere(){//poor man attempt to add breakpoints to generated java
     System.out.println("java debugger Breakpoint");

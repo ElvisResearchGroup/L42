@@ -1,9 +1,7 @@
 reuse [AdamTowel]
-Task1=Debug(S"first")
-A=Trait:{class method S foo(S bar)=bar}{
-B=Class:A['foo(bar)=>'foo(for)]
 Main=(
-  Debug(Introspection.Nested.from(classAny=B).toFullS())
-  //Debug(B.foo(for=S"hi"))
-  Debug(S"kHello world")
+  Debug(S"Hello world1")
+  catch Void v (v)
+  S x=S"Hello world2"
+  Debug(x)
   )
