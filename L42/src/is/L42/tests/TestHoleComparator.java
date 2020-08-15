@@ -54,7 +54,7 @@ public class TestHoleComparator extends AtomicTest.Tester
         cmp("1234QQABCDQQEFGH", Err.hole + "1274" + Err.hole + "ABCD" + Err.hole + "EFGH" + Err.hole, false),
         cmp("1234QQABCDQQEFGH", Err.hole + "1234" + Err.hole + "ABFD" + Err.hole + "EFGH" + Err.hole, false),
         cmp("1234ABCDEFGH", Err.hole + "1234A" + Err.hole + "4ABCD" + Err.hole + "EFGH" + Err.hole, false),
-        cmp("1234ABCD", "1234A" + Err.hole + "4ABCD", false)
+        cmp("1234ABCD", "1234A"+Err.hole+"4ABCD", false)
     );
     }
   
