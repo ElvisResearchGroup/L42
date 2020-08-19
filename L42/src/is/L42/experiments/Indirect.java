@@ -10,7 +10,6 @@ public class Indirect {
       import javax.swing.JFrame;
       import javax.swing.SwingUtilities;
       public class MiniGui2 {
-        public static void main(String[]a) {new MiniGui2();}
         public MiniGui2(){SwingUtilities.invokeLater(this::make);}
         void make(){
           var frame = new JFrame("MiniGui");
