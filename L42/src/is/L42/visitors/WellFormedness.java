@@ -690,6 +690,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     var anyMi=l.ms().stream().anyMatch(mi->mi instanceof Full.L.MI);
     if(anyMi){err(Err.bridgeMethodsInFullL(L(bridges.stream().map(m->m.key()))));}
     List<Full.MH> classMhs=L(l.ms(),(c,m)->{
+      if(!(m instanceof Full.L.MWT)){return;}
       var mwt=(Full.L.MWT)m;
       if(mwt.mh()._mdf()==null || !mwt.mh()._mdf().isClass() || mwt._e()!=null){return;}
       if(mwt.key().hasUniqueNum()){c.add(mwt.mh());}

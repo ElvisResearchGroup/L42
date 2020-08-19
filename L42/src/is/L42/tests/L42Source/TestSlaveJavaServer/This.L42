@@ -1,0 +1,73 @@
+reuse [AdamTowel]
+Lib=Trait:{reuse [AdamTowel]
+  JavaServer=Organize:{
+    @Public Fail=Message:{[Message.Guard]}
+    @Public class method mut This #$of()=this.#$of::0()
+    class method mut This #$of::0()
+    
+    @Public mut method Void loadCode(S fullName,S code)=(
+      S res=This.#$loadCode(fullName=fullName,code=code)
+      catch System.JavaException x (error Fail"%x.text()")
+      if res!=S"" (error Fail"%res")
+      )
+    class method S #$loadCode(S fullName,S code)[System.JavaException]=native{
+      serverSlave{}
+      {return is.L42.platformSpecific.javaEvents.LoadJavaCode.loadJavaCode(#1,#2);
+      }} error void
+    
+    @Public mut method S nextEvent()={
+      return This.#$nextEvent()
+      catch System.JavaException x error Fail"%x.text()"
+      }
+    class method S #$nextEvent()[System.JavaException]=native{
+      serverSlave{}
+      {return is.L42.platformSpecific.javaEvents.Event.nextEvent();
+      }} error void
+    
+    @Public mut method Void submitEvent(S that)=(
+      _=This.#$submitEvent(that)
+      catch System.JavaException x error Fail"%x.text()"
+      void
+      )
+    class method S #$submitEvent(S that)[System.JavaException]=native{
+      serverSlave{}
+      {is.L42.platformSpecific.javaEvents.Event.submitEvent(#1);
+      return "";}} error void
+    }
+  }
+DeployFileSystem = Deploy.module(
+  url='JavaServer
+  code=Lib.code()
+  name='JavaServer
+  )
+  
+J=Load:{reuse[JavaServer]}
+
+Main=(
+  S javaCode=S"""
+  |  package miniGui;
+  |
+  |import javax.swing.JButton;
+  |import javax.swing.JFrame;
+  |import javax.swing.SwingUtilities;
+  |
+  |public class MiniGui {
+  |  public static void main(String[]a) {new MiniGui();}
+  |  public MiniGui(){SwingUtilities.invokeLater(this::make);}
+  |  void make(){
+  |    var frame = new JFrame("MiniGui");
+  |    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  |    frame.setSize(300,300);
+  |    var button = new JButton("Press");
+  |    button.addActionListener(e->{
+  |      System.out.println("pressed");
+  |      });
+  |    frame.getContentPane().add(button);
+  |    frame.setVisible(true);
+  |    }
+  |  }
+  """
+  j=J.#$of()
+  j.loadCode(fullName=S"miniGui.MiniGui",code=javaCode)
+  Debug(S"Hello world")
+  )
