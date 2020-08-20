@@ -13,6 +13,7 @@ method This0 sum(This0 that)=native{trusted:OP+} error void
 @This1.Public read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 @This1.Public method This1.Bool contains(This that)=native{trusted:contains}error void
 @This1.Public method This replace(This that,This with)=native{trusted:replace}error void
+@This1.Public method This1.Size indexOf(This that,This1.Size from)=native{trusted:indexOf}error void
 @This1.Public method This subString(This1.Size start,This1.Size end)=native{trusted:subString}error void
 @This1.Public method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
 @This1.Public method This1.Bool endsWith(This that)=native{trusted:endsWith}error void
@@ -27,6 +28,7 @@ method This0 sum(This0 that)=native{trusted:OP+} error void
   Void v=b.#snewLine()
   b
   ))
+@This1.Public method This1.Size indexOf(This that)=this.indexOf(that=that,from=This1.Size<:class This1.Size.zero())
 
 #norm{nativeKind=String, nativePar=This1.S$ParseError
   typeDep=This, This1.Size,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.Bool,This1.S$ParseError,This1.NativeName,This1.Public,This1.AbstractTowel,This1.Cache.Call

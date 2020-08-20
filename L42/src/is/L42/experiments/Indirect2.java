@@ -1,6 +1,8 @@
 package is.L42.experiments;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
+import safeNativeCode.slave.process.ProcessMain;
+import safeNativeCode.utils.Utils;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
@@ -18,11 +20,11 @@ class MiniGui3 {
   }
 public class Indirect2 {
   public static void main(String[]a) throws Throwable{
-    String[] args = new String[]{"--enable-preview"};
-    Slave s=new ProcessSlave(0, args, ClassLoader.getPlatformClassLoader());
-    s.addClassLoader(new Object(){}.getClass().getEnclosingClass().getClassLoader());
+    //String[] args = new String[]{"--enable-preview"};
+    Slave s=new ProcessSlave(0,  new String[]{}, ClassLoader.getPlatformClassLoader());
+    //s.addClassLoader(new Object(){}.getClass().getEnclosingClass().getClassLoader());
     //This throws a strange exception
-    s.call(()->new MiniGui3());
+    //s.call(()->new MiniGui3());
     //But this works
     //new MiniGui3();
     }

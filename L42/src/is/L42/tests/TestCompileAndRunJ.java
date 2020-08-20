@@ -212,11 +212,11 @@ public static void loadRunErr(String s,String e){
     Init init=new Init(p);
     init.topCache(new CachedTop(L(),L()));
     }
-  catch (java.util.concurrent.CancellationException e1) {
+  catch(Error e1) {
+    assertTrue(e1.getCause()!=null &&e1.getCause() instanceof java.util.concurrent.CancellationException);
     return;
     }
-    fail("java.util.concurrent.CancellationException expected for timeout");
-    //TODO: is there a better unchecked exception in java to use to this aim?
+  fail("java.util.concurrent.CancellationException expected for timeout");
   }  
 
 public static void loadRun(String s,String e,String output){

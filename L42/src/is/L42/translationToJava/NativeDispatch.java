@@ -68,25 +68,34 @@ public class NativeDispatch {
       +nativeUrl.substring(nativeUrl.indexOf("}\n")+2)+"}";
     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
     String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
-    var onErr = onErr(mwt, j);
     String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim()+"\n";
     int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
     int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
     j.c(java.lang.String.format("""
     try{return Resources.loadSlave(%s,%s,"%s",new Object(){}).call(%s).get();}
     catch(safeNativeCode.exceptions.SlaveException ex){%s}
-    catch (java.rmi.RemoteException ex){throw new RuntimeException(ex);}
-    """,memoryLimit,timeLimit,slaveName,toLambda,onErr));   
+    catch(java.util.concurrent.CancellationException|java.rmi.RemoteException ex){%s}
+    """,memoryLimit,timeLimit,slaveName,toLambda,onErr(mwt, j),onJavaErr(mwt, j)));   
   }
   private static String onErr(MWT mwt, J j) {
     if(mwt.mh().exceptions().size()!=1){return "throw ex;";}
     var t=mwt.mh().exceptions().get(0);
     Program pErr=j.p()._navigate(t.p().toNCs());
     if(!pErr.topCore().info().nativeKind().equals(TrustedKind.LazyMessage.name())){return "throw ex;";}
-    var err=J.classNameStr(pErr);
-    return
-      "String msg;try{msg=ex.getChild().call(Throwable::getMessage).get();}\n"+
-      "catch (java.rmi.RemoteException ex1){throw new RuntimeException(ex1);}\n"+
-      "throw new L42Exception("+err+".wrap(new L42£LazyMsg(msg)));";
+    return java.lang.String.format("""
+      String msg;try{msg=ex.getChild().call(Throwable::getMessage).get();}
+      catch (java.rmi.RemoteException ex1){msg=ex1.getClass().getName()+"\\n"+ex1.getMessage();}
+      throw new L42Exception(%s.wrap(new L42£LazyMsg(msg)));
+      """,J.classNameStr(pErr));
+    }
+  private static String onJavaErr(MWT mwt, J j) {
+    if(mwt.mh().exceptions().size()!=1){return "throw new Error(ex);";}
+    var t=mwt.mh().exceptions().get(0);
+    Program pErr=j.p()._navigate(t.p().toNCs());
+    if(!pErr.topCore().info().nativeKind().equals(TrustedKind.LazyMessage.name())){return "throw ex;";}
+    return java.lang.String.format("""
+      String msg=ex.getClass().getName()+"\\n"+ex.getMessage();
+      throw new L42Exception(%s.wrap(new L42£LazyMsg(msg)));
+      """,J.classNameStr(pErr));
     }
   }

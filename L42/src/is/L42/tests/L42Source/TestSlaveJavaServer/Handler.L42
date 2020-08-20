@@ -1,0 +1,28 @@
+interface
+@Public mut method Void >>1(EventIterator.Event event)
+BaseTrait=Trait:{[Handler$] method >>1(event)=void}
+InductiveTrait=Trait:{[Handler$] 
+  method >>1(event)=(
+    if event.id()== This.currentName() (this.current(msg=event.msg()))
+    this.super(event);
+    )
+  class method S currentName()
+  mut method Void current(S msg)
+  mut method Void super(EventIterator.Event event)
+  }
+@Public ClassOperators={
+  class method class This #apply()=This
+  class method Library #colon0(Library that)[This2.Trait.ClassClash, This2.Trait.MethodClash]
+    =Class.Relax:this:Trait(that)
+  class method This2.Trait #colon0(This2.Trait trait)[This2.Trait.ClassClash, This2.Trait.MethodClash]
+    =
+    //LiftValue('name(),classAny=S, val=S"hi")
+    //LiftS=Lifter(S name='name())
+    //LiftS(S"hi") == Trait
+  }
+    mut method Void okButton(S msg)=(..)
+  mut method Void cancelButton(S msg)=(..)  
+  mut method Void >>1(J.Event event)=(
+    if event.id()== S"okButton" (this.okButton(msg=event.msg()))
+    if event.id()== S"cancelButton" (this.cancelButton(msg=event.msg()))
+    )

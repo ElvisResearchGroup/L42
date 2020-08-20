@@ -1,3 +1,4 @@
+-SafeJava bug? class loaders should not be a hashSet ClassSupplier(Set<ClassLoader> classLoaders)
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
 -IDE: clear cache should stop the loading of the old cache and set up run?
@@ -125,3 +126,34 @@ MethName=Data:{A that,B b,C c  @Cache.Lazy method A()=that._methName(b=b,c=c)}
 @Cache.Lazy class method A a(B b,C c)=e
 class method A a(B b,C c)=BC(b=b,c=c)()
 BC=Data:{B b,C c  @Cache.Lazy method A()=e}
+
+------------------------
+GuiModel=Event.Handler:{
+  mut method Void okButton(S msg)=(..)
+  mut method Void cancelButton(S msg)=(..)  
+  }
+Main=(//main is the controller?
+  j=Event.#$()
+  LoadView(j)//j.load(name='a.b.C, code=..)//the view
+  streams=S.List['A;'B';'C]
+  guiModel=GuiModel()//the model
+  for e in j(streams) e>>guiModel
+  )
+  with multiple models:
+    networkModel=NetworkModel()
+    guiModel=GuiModel()
+    hs=Event.handlers[key='A,val=networkModel;key='B, val=guiModel]
+    for e in j(streams) e>>hs
+
+GuiModel=J.Handler:{
+  mut method Void okButton(S msg)=(..)
+  mut method Void cancelButton(S msg)=(..)  
+  }
+  ==
+GuiModel={[J.Handler]
+  mut method Void okButton(S msg)=(..)
+  mut method Void cancelButton(S msg)=(..)  
+  mut method Void >>1(J.Event event)=(
+    if event.id()== S"okButton" (this.okButton(msg=event.msg()))
+    if event.id()== S"cancelButton" (this.cancelButton(msg=event.msg()))
+    )

@@ -157,6 +157,14 @@ read method Size indexOfRight(read Elem val)={
     pos-=1Size
     )
   }
+mut method Void removeLeft(read Elem val)=(
+  i=this.indexOfLeft(val=val)
+  if i!=Size"-1" (this.remove(i))
+  )
+mut method Void removeRight(read Elem val)=(
+  i=this.indexOfRight(val=val)
+  if i!=Size"-1" (this.remove(i))
+  )
 /*
 method This without(Size index) //from VectorTrait
 //TODO: HERE

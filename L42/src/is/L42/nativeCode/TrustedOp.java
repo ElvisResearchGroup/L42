@@ -404,6 +404,7 @@ public enum TrustedOp {
     ))),  
   Contains("contains",Map.of(String,use("return %s.contains(%s);",sigI(Bool,String)))),
   Replace("replace",Map.of(String,use("return %s.replace(%s,%s);",sigI(String,String,String)))),
+  IndexOf("indexOf",Map.of(String,use("return %s.indexOf(%s,%s);",sigI(Int,String,Int)))),
   Trim("trim",Map.of(String,use("return %s.trim();",sigI(String)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),

@@ -2,12 +2,17 @@ reuse [AdamTowel]
 Lib=Trait:{reuse [AdamTowel]
   JavaServer=Organize:{
     @Public Fail=Message:{[Message.Guard]}
+    Handler$={mut method Void >>1(EventIterator.Event event)}
+    @Public Handler={...}
+    @Public mut method mut EventIterator (mut S.List that)
+      =EventIterator(this,streams=that)
+    @Public EventIterator={...}
     @Public class method mut This #$of()=this.#$of::0()
     class method mut This #$of::0()
     
-    @Public mut method Void loadCode(S fullName,S code)=(
+    @Public mut method Void loadCode(S fullName,S code)[Fail]=(
       S res=This.#$loadCode(fullName=fullName,code=code)
-      catch System.JavaException x (error Fail"%x.text()")
+      catch System.JavaException x (exception Fail"%x.text()")
       if res!=S"" (error Fail"%res")
       )
     class method S #$loadCode(S fullName,S code)[System.JavaException]=native{
@@ -15,23 +20,23 @@ Lib=Trait:{reuse [AdamTowel]
       {return is.L42.platformSpecific.javaEvents.LoadJavaCode.loadJavaCode(#1,#2);
       }} error void
     
-    @Public mut method S nextEvent()={
-      return This.#$nextEvent()
-      catch System.JavaException x error Fail"%x.text()"
+    @Public mut method S nextEvent(S keys)[Fail]={
+      return This.#$nextEvent(keys=keys)
+      catch System.JavaException x exception Fail"%x.text()"
       }
-    class method S #$nextEvent()[System.JavaException]=native{
+    class method S #$nextEvent(S keys)[System.JavaException]=native{
       serverSlave{}
-      {return is.L42.platformSpecific.javaEvents.Event.nextEvent();
+      {return is.L42.platformSpecific.javaEvents.Event.nextEvent(#1);
       }} error void
     
-    @Public mut method Void submitEvent(S that)=(
-      _=This.#$submitEvent(that)
-      catch System.JavaException x error Fail"%x.text()"
+    @Public mut method Void submitEvent(S key, S id, S msg)[Fail]=(
+      _=This.#$submitEvent(key=key,id=id,msg=msg)
+      catch System.JavaException x exception Fail"%x.text()"
       void
       )
-    class method S #$submitEvent(S that)[System.JavaException]=native{
+    class method S #$submitEvent(S key,S id,S msg)[System.JavaException]=native{
       serverSlave{}
-      {is.L42.platformSpecific.javaEvents.Event.submitEvent(#1);
+      {is.L42.platformSpecific.javaEvents.Event.submitEvent(#1,#2,#3);
       return "";}} error void
     }
   }
@@ -41,7 +46,7 @@ DeployFileSystem = Deploy.module(
   name='JavaServer
   )
   
-J=Load:{reuse[JavaServer]}
+J=Load:{reuse[#$JavaServer]}
 
 Main=(
   S javaCode=S"""
@@ -50,6 +55,7 @@ Main=(
   |import javax.swing.JButton;
   |import javax.swing.JFrame;
   |import javax.swing.SwingUtilities;
+  |import is.L42.platformSpecific.javaEvents.Event;
   |
   |public class MiniGui {
   |  public static void main(String[]a) {new MiniGui();}
@@ -60,8 +66,11 @@ Main=(
   |    frame.setSize(300,300);
   |    var button = new JButton("Press");
   |    button.addActionListener(e->{
+  |      Event.submitEvent("MiniGui","PressButton","");
   |      System.out.println("pressed");
   |      });
+  |    Event.registerEvent("MiniGuiInput",(k,id,msg)->
+  |      SwingUtilities.invokeLater(()->button.setText(button.getText()+"!")));
   |    frame.getContentPane().add(button);
   |    frame.setVisible(true);
   |    }
@@ -70,4 +79,12 @@ Main=(
   j=J.#$of()
   j.loadCode(fullName=S"miniGui.MiniGui",code=javaCode)
   Debug(S"Hello world")
+  //loop(Debug(j.nextEvent(keys='MiniGui)))
+  for e in j(\['MiniGui]) (
+    if e.id().startsWith(S"P") (
+      j.submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)
+      )
+    Debug(e)
+    )
+  Debug(S"end events")
   )
