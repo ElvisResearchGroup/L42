@@ -59,6 +59,7 @@ public class ResetDocs extends CloneVisitor{
   @Override public Core.L.NC visitNC(Core.L.NC nc){
     var oldCsIn=csIn;
     csIn=pushL(csIn,nc.key());
+    nc=super.visitNC(nc);
     var current=new PathSel(P.of(0,csIn),null,null);
     var doc=reDocs.get(current);
     if(doc!=null){

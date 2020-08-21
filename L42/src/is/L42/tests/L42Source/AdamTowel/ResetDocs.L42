@@ -22,11 +22,13 @@ ResetDocsMeta={
   }
 read method read Map self()
 @Public class method mut Map #resetDocs#squareBuilder()=Map.empty()
-@Public read method Library resetDocs(Library that)=(
+@Public read method Library resetDocs(Library that)[Trait$InvalidName]=(
   NativeMap map=(
     mut_map=NativeMap.of()
     for (key,val) in this.self() (mut_map.put(key=key.that(),val=val))
     mut_map)
-  ResetDocsMeta()(that,map=map)
+  res=ResetDocsMeta()(that,map=map)
+  catch error Trait$InvalidName x exception x
+  res
   )
   

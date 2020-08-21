@@ -240,6 +240,8 @@ public enum TrustedOp {
     Meta,use("return %s.cacheCall(%s,%Gen1::wrap);",sigI(Lib,Lib)))),
   ResetDocs("resetDocs",Map.of(
     Meta,use("return %s.resetDocs(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,HIMap)))),
+  NativeSlaveRename("nativeSlaveRename",Map.of(
+      Meta,use("return %s.nativeSlaveRename(%s,%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String,String)))),
   Wither("wither",Map.of(
     Meta,use("return %s.wither(%s,%s,%Gen1::wrap,%s);",sigI(Lib,Lib,String,String)))),
   AddMapP("addMapP",Map.of(

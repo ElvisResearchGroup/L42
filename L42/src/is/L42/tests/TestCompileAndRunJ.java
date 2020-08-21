@@ -96,8 +96,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   loadRun("""
   SafeReadFile={
     class method This1.S #$read(This1.S fileName)=native{
-      ioSlave{}
-      {try( 
+      ioSlave{}{
+      try( 
       java.util.stream.Stream<String>lines=java.nio.file.Files.lines(
         java.nio.file.Paths.get(#1+".txt")))
         {return lines.collect(java.util.stream.Collectors.joining("\\n"));}
@@ -121,8 +121,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   loadRun("""
   Safe2={
     class method This1.S #$go()=native{
-      nativeSlave{}
-      {
+      nativeSlave{}{
       try {
             java.net.URLClassLoader cl = new java.net.URLClassLoader(new java.net.URL[] {java.nio.file.Paths.get("testLibs/test.jar").toUri().toURL()});
             return (String)cl.loadClass("Test").getDeclaredMethod("sayHello").invoke(null);
@@ -146,8 +145,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   loadRun("""
   Safe2={
     class method This1.S #$go()=native{
-      nativeSlave{}
-      {
+      nativeSlave{}{
       try {
             java.net.URLClassLoader cl = new java.net.URLClassLoader(new java.net.URL[] {java.nio.file.Paths.get("testLibs/native-test.jar").toUri().toURL()});
             Class<?> c = cl.loadClass("HelloWorld");
@@ -172,10 +170,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   loadRunErr("""
   Safe3={
     class method This1.S #$go()=native{
-      nativeSlave{
-        timeLimit:2
-        }
-      {
+      nativeSlave{timeLimit:2}{
       while(true){
         if(false){break;}
         System.out.println("looping");

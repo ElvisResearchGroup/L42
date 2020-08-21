@@ -67,6 +67,10 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     this.renames=renames;
     this.toString=renames.toString();
     }
+  public L42£Library nativeSlaveRename(L42£Library input,String oldName,String newName,Function<L42£LazyMsg,L42Any>wrap){
+    L l=input.unwrap;
+    return wrapL(new NativeSlaveNames().apply(l,oldName,newName,wrap));
+    }
   public L42£Library resetDocs(L42£Library input,L42£ImmMap<?,?> map,Function<L42£LazyMsg,L42Any>wrap){
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);

@@ -25,6 +25,7 @@ import is.L42.generated.S;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
 import is.L42.translationToJava.J;
+import is.L42.translationToJava.NativeDispatch;
 import is.L42.generated.Core.L.NC;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
@@ -107,6 +108,8 @@ public class ProgramTypeSystem {
     String nativeUrl=mwt.nativeUrl();
     String nativeKind=p.topCore().info().nativeKind();
     if(!nativeUrl.startsWith("trusted:")){
+      var info =new NativeDispatch.NativeUrlInfo(nativeUrl.trim());
+      errIf(!info.errorMsg.isEmpty(),mwt.poss(),Err.nativeSlaveInvalid(info.errorMsg));
       var mh=mwt.mh();
       var ok=mh.mdf().isIn(Mdf.Class,Mdf.Immutable);
       errIf(!ok,mwt.poss(),Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.key(),"imm or class",mh.mdf(),"imm or class"));

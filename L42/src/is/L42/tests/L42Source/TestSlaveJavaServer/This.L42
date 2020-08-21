@@ -1,6 +1,6 @@
 reuse [AdamTowel]
 Lib=Trait:{reuse [AdamTowel]
-  JavaServer=Organize:{
+  JavaServerTrait=Trait:Organize:{
     @Public Fail=Message:{[Message.Guard]}
     @Public Event=Data:{S key,S id,S msg}
     @Public EventIterator={...}
@@ -19,8 +19,8 @@ Lib=Trait:{reuse [AdamTowel]
       if res!=S"" (error Fail"%res")
       )
     class method S #$loadCode(S fullName,S code)[System.JavaException]=native{
-      serverSlave{}
-      {return is.L42.platformSpecific.javaEvents.LoadJavaCode.loadJavaCode(#1,#2);
+      serverSlave{}{
+      return is.L42.platformSpecific.javaEvents.LoadJavaCode.loadJavaCode(#1,#2);
       }} error void
     
     @Public mut method S nextEvent(S keys)[Fail]={
@@ -28,8 +28,8 @@ Lib=Trait:{reuse [AdamTowel]
       catch System.JavaException x exception Fail"%x.text()"
       }
     class method S #$nextEvent(S keys)[System.JavaException]=native{
-      serverSlave{}
-      {return is.L42.platformSpecific.javaEvents.Event.nextEvent(#1);
+      serverSlave{}{
+      return is.L42.platformSpecific.javaEvents.Event.nextEvent(#1);
       }} error void
     
     @Public mut method Void submitEvent(S key, S id, S msg)[Fail]=(
@@ -38,9 +38,15 @@ Lib=Trait:{reuse [AdamTowel]
       void
       )
     class method S #$submitEvent(S key,S id,S msg)[System.JavaException]=native{
-      serverSlave{}
-      {is.L42.platformSpecific.javaEvents.Event.submitEvent(#1,#2,#3);
+      serverSlave{}{
+      is.L42.platformSpecific.javaEvents.Event.submitEvent(#1,#2,#3);
       return "";}} error void
+    }[clear='Handler.Map]
+  JavaServer={
+    class method Library(S slaveName)=(
+      t=JavaServerTrait+{Handler={Map=Collection.map(key=S val=Handler)}}
+      Trait.NativeSlaveRename(t.code(),oldName=S"serverSlave", newName=slaveName)
+      )
     }
   }
 DeployFileSystem = Deploy.module(
@@ -97,3 +103,17 @@ Main=(
     )
   Debug(S"end events %model.count()")
   )
+/*
+TODO NEXT
+sum of natives ok if natives and native par ==
+abstractify natives do not remove native/nativePar
+redirect natives ok, check same native/nativePar
+-Then, no need to watch used natives!
+
+-for now, can try 2 layers lib
+
+-todo: operator that change all native ids, similar to resetDocs
+but string->string
+
+
+*/

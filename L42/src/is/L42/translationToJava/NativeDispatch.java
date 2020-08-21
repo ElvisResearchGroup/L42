@@ -15,6 +15,7 @@ import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
+import java.util.function.Function;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -22,10 +23,14 @@ import java.util.stream.Stream;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
+import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
+import is.L42.meta.MetaError;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
 import is.L42.generated.P;
+import is.L42.platformSpecific.javaTranslation.L42Any;
+import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import safeNativeCode.slave.Functions;
 import safeNativeCode.slave.Slave;
@@ -49,33 +54,52 @@ public class NativeDispatch {
     var k=TrustedKind._fromString(nativeKind);
     return k.factory(j,mwt);
     }
+  public static class NativeUrlInfo{
+    public String errorMsg="";
+    public final String slaveName;
+    public final int endLine;
+    public final int timeLimit;
+    public final int memoryLimit;
+    public NativeUrlInfo(String s){
+      assert s.length()==s.trim().length();
+      int endName=s.indexOf("{");
+      int endNamePar=s.indexOf("}");
+      endLine=s.indexOf("\n");
+      int preEndLine=s.indexOf("{\n");
+      assert endName<endNamePar;
+      if(endNamePar>endLine){errorMsg+="Slave name and parameters need to sit on one line\n";}
+      if(preEndLine+1!=endLine){errorMsg+="Slave name parameters must end with '}{\\n' and be followed by native code\n";}
+      slaveName=s.substring(0,endName).trim();
+      if(!p.matcher(slaveName).matches()){errorMsg+="Invalid Slave name: ["+slaveName+"] \n";}
+      String nativeData = s.substring(endName+1,endNamePar).trim()+"\n";
+      timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
+      memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));      
+      }
+    private static final Pattern p = Pattern.compile("^([a-zA-Z_$][a-zA-Z\\d_$]*)$");
+    }
   private static String readSection(String nativeUrl, String part, String def) {
     if(!nativeUrl.contains(part)){return def;}
     nativeUrl = nativeUrl.substring(nativeUrl.indexOf(part)+part.length());
     int nl = nativeUrl.indexOf("\n");
-    if(nl == -1){
-      throw bug();
-      }
+    if(nl == -1){throw bug();}
     return nativeUrl.substring(0, nl).trim();
   }
   public static void untrusted(String nativeKind, String nativeUrl, MWT mwt,J j) {
+    nativeUrl=nativeUrl.trim();
+    var info=new NativeUrlInfo(nativeUrl);
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
     List<String> xs=xs(mwt);
-    //String toLambda="()->"+nativeUrl.substring(nativeUrl.indexOf("}\n")+2);
+    //String toLambda="()->{"+nativeUrl.substring(info.endLine);
     String resT=j.typeNameStr(mwt.mh().t());
     String toLambda="new safeNativeCode.slave.Functions.Supplier<"
-      +resT+">(){public "+resT+" get()throws Exception"
-      +nativeUrl.substring(nativeUrl.indexOf("}\n")+2)+"}";
+      +resT+">(){public "+resT+" get()throws Exception {"
+      +nativeUrl.substring(info.endLine)+"}";
     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
-    String slaveName=nativeUrl.substring(0,nativeUrl.indexOf("{")).trim();
-    String nativeData = nativeUrl.substring(nativeUrl.indexOf("{")+1, nativeUrl.indexOf("}")).trim()+"\n";
-    int timeLimit = Integer.parseInt(readSection(nativeData, "timeLimit:", "0"));
-    int memoryLimit = Integer.parseInt(readSection(nativeData, "memoryLimit:", "0"));
     j.c(java.lang.String.format("""
     try{return Resources.loadSlave(%s,%s,"%s",new Object(){}).call(%s).get();}
     catch(safeNativeCode.exceptions.SlaveException ex){%s}
     catch(java.util.concurrent.CancellationException|java.rmi.RemoteException ex){%s}
-    """,memoryLimit,timeLimit,slaveName,toLambda,onErr(mwt, j),onJavaErr(mwt, j)));   
+    """,info.memoryLimit,info.timeLimit,info.slaveName,toLambda,onErr(mwt, j),onJavaErr(mwt, j)));   
   }
   private static String onErr(MWT mwt, J j) {
     if(mwt.mh().exceptions().size()!=1){return "throw ex;";}
