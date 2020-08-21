@@ -101,8 +101,14 @@ DeployAAA=(
     @Public Collection$Enum={...}
     System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
     System$JavaException=Class:Message.Native:{[Message$Guard]}
-    BootStrapping$={...}
-    Collection$={...}    
+    Collection$={...}
+    Trait$DocMap=Class:Trait({
+      Map=Collection$.map(key=Name,val=S)
+      ResetDocs={...}
+      read method read This self()=this
+      })['Map=>'This]['ResetDocs=>'This]
+    @Public Trait$LiftS={...}
+    BootStrapping$={...}    
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()

@@ -63,16 +63,23 @@ public class Main {
       throw ee;
       }
     }
-  private static void printError(Object o){
+  public static Object _unwrap(Object o){
     Class<?> c=o.getClass(); 
+    try{
+      Field of=c.getField("unwrap");
+      of.setAccessible(true);
+      return of.get(o);
+      }
+    catch(ReflectiveOperationException roe){return null;}
+    }
+  private static void printError(Object o){
+    Class<?> c=o.getClass();
     try{Resources.err(c.getMethod("£mtoS").invoke(o).toString());return;}
     catch(Throwable t){
       t.printStackTrace();
       }
     try{
-      Field of=c.getField("unwrap");
-      of.setAccessible(true);
-      Object oo=of.get(o);
+      Object oo=_unwrap(o);
       Class<?>cc=oo.getClass();
       try{Resources.err(cc.getMethod("£mtoS").invoke(oo).toString());return;}
       catch(Throwable t){}

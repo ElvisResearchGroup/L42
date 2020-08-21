@@ -42,6 +42,7 @@ import is.L42.generated.Core.Doc;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.maps.L42£ImmMap;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
@@ -65,6 +66,11 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
   public L42£Meta(List<Arrow> renames){
     this.renames=renames;
     this.toString=renames.toString();
+    }
+  public L42£Library resetDocs(L42£Library input,L42£ImmMap<?,?> map,Function<L42£LazyMsg,L42Any>wrap){
+    L l=input.unwrap;
+    var pIn=Resources.currentP.push(Resources.currentC,l);
+    return wrapL(new ResetDocs().apply(pIn,map,wrap));
     }
   public L42£Library wither(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
     L l=input.unwrap;

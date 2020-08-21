@@ -1,0 +1,11 @@
+TraitS=Trait:{
+  class method S () =
+    native{trusted:lazyCache}
+    Introspection.Nested.from(classAny=This)
+      .innerDoc().docs().left().texts().left()
+  }
+class method Library (S that)={
+  return Trait$DocMap[key='This val=that].resetDocs(TraitS.code())
+  //return Class:TraitS.resetDocs[key='This val=that]
+  whoops Message
+  }

@@ -2,11 +2,14 @@ reuse [AdamTowel]
 Lib=Trait:{reuse [AdamTowel]
   JavaServer=Organize:{
     @Public Fail=Message:{[Message.Guard]}
-    Handler$={mut method Void >>1(EventIterator.Event event)}
+    @Public Event=Data:{S key,S id,S msg}
+    @Public EventIterator={...}
+    Handler$={interface mut method Void >>1(Event event)}
     @Public Handler={...}
+    @Public Handler$Map=Collection.map(key=S val=Handler)
+    Event$={method Void >>(Handler$Map map)=void}
     @Public mut method mut EventIterator (mut S.List that)
       =EventIterator(this,streams=that)
-    @Public EventIterator={...}
     @Public class method mut This #$of()=this.#$of::0()
     class method mut This #$of::0()
     
@@ -47,9 +50,16 @@ DeployFileSystem = Deploy.module(
   )
   
 J=Load:{reuse[#$JavaServer]}
+Model=Data:J.Handler:{
+  var Size count, mut J j
+  @J.Handler mut method Void pressButton(S msg)=(
+    this.count(\count+1\)
+    this.#j().submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)
+    whoops J.Fail
+    )
+  }
 
-Main=(
-  S javaCode=S"""
+JavaCode={class method S ()=S"""
   |  package miniGui;
   |
   |import javax.swing.JButton;
@@ -66,7 +76,7 @@ Main=(
   |    frame.setSize(300,300);
   |    var button = new JButton("Press");
   |    button.addActionListener(e->{
-  |      Event.submitEvent("MiniGui","PressButton","");
+  |      Event.submitEvent("MiniGui","pressButton","");
   |      System.out.println("pressed");
   |      });
   |    Event.registerEvent("MiniGuiInput",(k,id,msg)->
@@ -76,15 +86,14 @@ Main=(
   |    }
   |  }
   """
+  }
+Main=(
   j=J.#$of()
-  j.loadCode(fullName=S"miniGui.MiniGui",code=javaCode)
-  Debug(S"Hello world")
-  //loop(Debug(j.nextEvent(keys='MiniGui)))
-  for e in j(\['MiniGui]) (
-    if e.id().startsWith(S"P") (
-      j.submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)
-      )
-    Debug(e)
+  j.loadCode(fullName=S"miniGui.MiniGui",code=JavaCode())
+  model=Model(count=0\, j=j)
+  for e in j.processEvents(\['MiniGui]) (
+    e>>model
+    e>>J.Handler.Map[key='MiniGui val=model]
     )
-  Debug(S"end events")
+  Debug(S"end events %model.count()")
   )
