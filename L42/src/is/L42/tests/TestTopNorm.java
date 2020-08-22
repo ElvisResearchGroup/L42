@@ -81,6 +81,7 @@ public class TestTopNorm{
          #typed{}}
       B={#typed{}}#norm{}}
      """
+  /*Suppressed: now the invalid natives will simply perform the body
   );}@Test public void notWellFormed3ButNotWellTyped(){topFail(EndError.TypeError.class,"""
     {Z={}
      A={
@@ -88,6 +89,7 @@ public class TestTopNorm{
        }
        B=A.foo(a={#norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=Opt, nativePar=This1.Z,This1.Z}},b={})
       }""",Err.nativeExceptionNotLazyMessage("[###]","[###]")
+      */
   );}@Test public void notWellTypedMap(){topFail(EndError.TypeError.class,"""
     {Z={#norm{nativeKind=LazyMessage}}
      A={
@@ -748,6 +750,7 @@ public class TestTopNorm{
        usedMethods=This1.B2.#equalgt0(that)}}
      Test={#typed{}}#norm{}}
     """
+  /*Suppressed: now the invalid natives will simply perform the body
   );}@Test public void t81(){topFail(EndError.TypeError.class,"""
     {A={imm method mut This foo()=native{trusted:lazyCache} error void}
     Test=void
@@ -766,6 +769,7 @@ public class TestTopNorm{
     }
     """,
     Err.nativeParameterCountInvalid(hole,hole,hole)
+    */
   );}@Test public void t84(){topFail(EndError.CoherentError.class,"""
     {A={
       class method This of::0()

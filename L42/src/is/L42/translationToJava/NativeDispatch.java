@@ -74,11 +74,14 @@ public class NativeDispatch {
     public final int memoryLimit;
     public NativeUrlInfo(String s){
       assert s.length()==s.trim().length();
+      assert !s.isEmpty();
+      assert !s.startsWith("trusted:");
       int endName=s.indexOf("{");
       int endNamePar=s.indexOf("}");
       endLine=s.indexOf("\n");
       int preEndLine=s.indexOf("{\n");
-      assert endName<endNamePar;
+      if(endName==-1 || endNamePar==-1){errorMsg+="Slave parameters missing\n";}
+      else{assert endName<endNamePar:endName+" "+endNamePar+" "+s;}
       if(endNamePar>endLine){errorMsg+="Slave name and parameters need to sit on one line\n";}
       if(preEndLine+1!=endLine){errorMsg+="Slave name parameters must end with '}{\\n' and be followed by native code\n";}
       slaveName=s.substring(0,endName).trim();

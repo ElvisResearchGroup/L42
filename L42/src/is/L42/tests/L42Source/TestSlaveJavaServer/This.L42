@@ -1,20 +1,22 @@
 reuse [AdamTowel]
 Lib=Trait:{reuse [AdamTowel]
-  JavaServer=Organize:{...}
-  //JavaServer={
-  //  class method Library(S slaveName)=(
-  //    t=JavaServerTrait+{Handler={Map=Collection.map(key=S val=Handler)}}
-  //    Trait.NativeSlaveRename(t.code(),oldName=S"serverSlave", newName=slaveName)
-  //    )
-  //  }
+  JavaServer=Trait:Organize:{...}
+  Top={
+    class method Library(S slaveName)[Trait.InvalidName]=Trait.NativeSlaveRename(
+      JavaServer.code()
+      oldName=S"serverSlave"
+      newName=slaveName
+      )
+    }
   }
 DeployFileSystem = Deploy.module(
   url='JavaServer
   code=Lib.code()
-  name='JavaServer
+  name='Top
   )
   
-J=Load:{reuse[#$JavaServer]}
+J0=Load:{reuse[#$JavaServer]}
+J=J0(slaveName=S"miniGuiSlave{}")
 Model=Data:J.Handler:{
   var Size count, mut J j
   @J.Handler mut method Void pressButton(S msg)=(

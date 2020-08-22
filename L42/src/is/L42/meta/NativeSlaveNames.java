@@ -25,10 +25,10 @@ public class NativeSlaveNames extends CloneVisitor{
   String newName;
   public L apply(L l, String oldName, String newName, Function<L42£LazyMsg, L42Any> wrap) {
     err=new MetaError(wrap);
-    this.oldName=oldName;
-    this.newName=newName;
-    var info1=new NativeDispatch.NativeUrlInfo(oldName+"{}{\n");
-    var info2=new NativeDispatch.NativeUrlInfo(oldName+"{\n");
+    this.oldName=oldName=oldName.trim();
+    this.newName=newName=newName.trim();
+    var info1=new NativeDispatch.NativeUrlInfo(oldName+"{}{\n_");
+    var info2=new NativeDispatch.NativeUrlInfo(newName+"{\n_");
     if(!info1.errorMsg.isEmpty()){err.throwErr(l,"Attempting replacing native slave id ["+oldName+"], but it is not a valid native slave id: "+info1.errorMsg);}
     if(!info2.errorMsg.isEmpty()){err.throwErr(l,"Attempting replacing native slave id ["+oldName+"] with ["+newName+"] but it is not a valid native slave id: "+info2.errorMsg);}
     return l.accept(this);
@@ -36,7 +36,8 @@ public class NativeSlaveNames extends CloneVisitor{
   @Override public Core.L.MWT visitMWT(Core.L.MWT mwt){
     mwt=super.visitMWT(mwt);
     var nu=mwt.nativeUrl();
-    var info=new NativeDispatch.NativeUrlInfo(nu);
+    if(nu.isEmpty()||nu.startsWith("trusted:")){return mwt;}
+    var info=new NativeDispatch.NativeUrlInfo(nu.trim());
     if(!info.slaveName.equals(oldName)){return mwt;}
     nu=nu.substring(info.endLine);
     return mwt.withNativeUrl(newName+"{"+nu);

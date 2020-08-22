@@ -470,6 +470,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{typeDep=This0 coherentDep=This nativeKind=Int}
    }}
    """)
+   /*Suppressed: now the invalid natives will simply perform the body
    ),new AtomicTest(()->fail("""
    A={B={
    class method This of()
@@ -477,6 +478,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{typeDep=This0 This1 watched=This1 coherentDep=This nativeKind=Int}
    }}
    """,Err.nativeParameterInvalidKind(hole,"method This main(This1 that)",hole,hole,"Int"))
+   */
    ),new AtomicTest(()->pass("""
    A={B={ class method This()
    method Void main()=(
