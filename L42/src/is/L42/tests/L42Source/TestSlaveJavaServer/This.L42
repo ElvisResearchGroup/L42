@@ -1,53 +1,12 @@
 reuse [AdamTowel]
 Lib=Trait:{reuse [AdamTowel]
-  JavaServerTrait=Trait:Organize:{
-    @Public Fail=Message:{[Message.Guard]}
-    @Public Event=Data:{S key,S id,S msg}
-    @Public EventIterator={...}
-    Handler$={interface mut method Void >>1(Event event)}
-    @Public Handler={...}
-    @Public Handler$Map=Collection.map(key=S val=Handler)
-    Event$={method Void >>(Handler$Map map)=void}
-    @Public mut method mut EventIterator (mut S.List that)
-      =EventIterator(this,streams=that)
-    @Public class method mut This #$of()=this.#$of::0()
-    class method mut This #$of::0()
-    
-    @Public mut method Void loadCode(S fullName,S code)[Fail]=(
-      S res=This.#$loadCode(fullName=fullName,code=code)
-      catch System.JavaException x (exception Fail"%x.text()")
-      if res!=S"" (error Fail"%res")
-      )
-    class method S #$loadCode(S fullName,S code)[System.JavaException]=native{
-      serverSlave{}{
-      return is.L42.platformSpecific.javaEvents.LoadJavaCode.loadJavaCode(#1,#2);
-      }} error void
-    
-    @Public mut method S nextEvent(S keys)[Fail]={
-      return This.#$nextEvent(keys=keys)
-      catch System.JavaException x exception Fail"%x.text()"
-      }
-    class method S #$nextEvent(S keys)[System.JavaException]=native{
-      serverSlave{}{
-      return is.L42.platformSpecific.javaEvents.Event.nextEvent(#1);
-      }} error void
-    
-    @Public mut method Void submitEvent(S key, S id, S msg)[Fail]=(
-      _=This.#$submitEvent(key=key,id=id,msg=msg)
-      catch System.JavaException x exception Fail"%x.text()"
-      void
-      )
-    class method S #$submitEvent(S key,S id,S msg)[System.JavaException]=native{
-      serverSlave{}{
-      is.L42.platformSpecific.javaEvents.Event.submitEvent(#1,#2,#3);
-      return "";}} error void
-    }[clear='Handler.Map]
-  JavaServer={
-    class method Library(S slaveName)=(
-      t=JavaServerTrait+{Handler={Map=Collection.map(key=S val=Handler)}}
-      Trait.NativeSlaveRename(t.code(),oldName=S"serverSlave", newName=slaveName)
-      )
-    }
+  JavaServer=Organize:{...}
+  //JavaServer={
+  //  class method Library(S slaveName)=(
+  //    t=JavaServerTrait+{Handler={Map=Collection.map(key=S val=Handler)}}
+  //    Trait.NativeSlaveRename(t.code(),oldName=S"serverSlave", newName=slaveName)
+  //    )
+  //  }
   }
 DeployFileSystem = Deploy.module(
   url='JavaServer
@@ -65,55 +24,26 @@ Model=Data:J.Handler:{
     )
   }
 
-JavaCode={class method S ()=S"""
-  |  package miniGui;
-  |
-  |import javax.swing.JButton;
-  |import javax.swing.JFrame;
-  |import javax.swing.SwingUtilities;
-  |import is.L42.platformSpecific.javaEvents.Event;
-  |
-  |public class MiniGui {
-  |  public static void main(String[]a) {new MiniGui();}
-  |  public MiniGui(){SwingUtilities.invokeLater(this::make);}
-  |  void make(){
-  |    var frame = new JFrame("MiniGui");
-  |    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  |    frame.setSize(300,300);
-  |    var button = new JButton("Press");
-  |    button.addActionListener(e->{
-  |      Event.submitEvent("MiniGui","pressButton","");
-  |      System.out.println("pressed");
-  |      });
-  |    Event.registerEvent("MiniGuiInput",(k,id,msg)->
-  |      SwingUtilities.invokeLater(()->button.setText(button.getText()+"!")));
-  |    frame.getContentPane().add(button);
-  |    frame.setVisible(true);
-  |    }
-  |  }
-  """
-  }
+JavaCode={...}
 Main=(
   j=J.#$of()
   j.loadCode(fullName=S"miniGui.MiniGui",code=JavaCode())
   model=Model(count=0\, j=j)
-  for e in j.processEvents(\['MiniGui]) (
-    e>>model
-    e>>J.Handler.Map[key='MiniGui val=model]
-    )
+  keys=S.List['MiniGui]//mut: model can update it and add/remove keys to fetch
+  models=J.Handler.Map[key='MiniGui mutVal=model]//mut: models can update it and (un)register models
+  model.pressButton(msg=S"")
+  model.pressButton(msg=S"")
+  model.pressButton(msg=S"")
+  _=j.nextEvent(keys='MiniGui)//wait for the first event timeout
+  text=j.askEvent(key='Ask, id=S"",msg=S"")
+  abc=S.List['A;'B;'C]
+  for e in j(keys) i in abc (e>>models)
+  j.submitEvent(key='Kill,id=S"",msg=S"")
   Debug(S"end events %model.count()")
+  Debug(S"[[%text]]")
+  {}:Test"askedText"(expected=S"Press!!!", actual=text)
   )
+  
 /*
-TODO NEXT
-sum of natives ok if natives and native par ==
-abstractify natives do not remove native/nativePar
-redirect natives ok, check same native/nativePar
--Then, no need to watch used natives!
-
--for now, can try 2 layers lib
-
--todo: operator that change all native ids, similar to resetDocs
-but string->string
-
-
+-all Jars in the root of the project need to be imported
 */

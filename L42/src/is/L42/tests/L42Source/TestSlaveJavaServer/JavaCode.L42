@@ -1,0 +1,39 @@
+class method S ()=S"""
+  |package miniGui;
+  |
+  |import java.awt.event.WindowEvent;
+  |import javax.swing.JButton;
+  |import javax.swing.JFrame;
+  |import javax.swing.SwingUtilities;
+  |import is.L42.platformSpecific.javaEvents.Event;
+  |import java.util.concurrent.CompletableFuture;
+  |
+  |public class MiniGui {
+  |  public static void main(String[]a) {new MiniGui();}
+  |  public MiniGui(){SwingUtilities.invokeLater(this::make);}
+  |  void make(){
+  |    var frame = new JFrame("MiniGui");
+  |    frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  |    frame.setSize(300,300);
+  |    var button = new JButton("Press");
+  |    button.addActionListener(e->{
+  |      Event.submitEvent("MiniGui","pressButton","");
+  |      System.out.println("pressed");
+  |      });
+  |    Event.registerEvent("MiniGuiInput",(k,id,msg)->
+  |      SwingUtilities.invokeLater(()->button.setText(button.getText()+"!"))
+  |      );
+  |    Event.registerEvent("Kill",(k,id,msg)->
+  |      frame.dispatchEvent(new WindowEvent(frame, WindowEvent.WINDOW_CLOSING))
+  |      );
+  |    Event.registerAskEvent("Ask",(k,id,msg)->{
+  |      if(SwingUtilities.isEventDispatchThread()){throw new Error("unreachable");}
+  |      var res=new CompletableFuture<String>();
+  |      SwingUtilities.invokeLater(()->res.complete(button.getText()));
+  |      return res.join();
+  |      });
+  |    frame.getContentPane().add(button);
+  |    frame.setVisible(true);
+  |    }
+  |  }
+  """

@@ -1,3 +1,8 @@
+-Disable autowatched native and nativeTypechecking:
+  at code generation, if nativeTypechecking does not work, just generate the body without the native
+-Think of a way to allows any type to go back an forth from any native, like registering a function or looking to the first field  
+-mapCheckNativePars(p) with checkLazy
+
 -SafeJava bug? class loaders should not be a hashSet ClassSupplier(Set<ClassLoader> classLoaders)
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
@@ -126,6 +131,3 @@ MethName=Data:{A that,B b,C c  @Cache.Lazy method A()=that._methName(b=b,c=c)}
 @Cache.Lazy class method A a(B b,C c)=e
 class method A a(B b,C c)=BC(b=b,c=c)()
 BC=Data:{B b,C c  @Cache.Lazy method A()=e}
-
------------------
--finish testSlaveJava

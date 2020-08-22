@@ -491,7 +491,19 @@ public enum TrustedOp {
     this.inner = inner;
     this.code=code;
     }
+  @SuppressWarnings("unused")
   public List<P.NCs> nativeMustWatch(MWT mwt,Info info){
+    if(true) {return L();}//TODO:
+    /*
+    nativeMustWatch(_) for now return empty,
+    otherwise a library can not define new native
+    (like List/Map/Opt)
+    Likelly, in the future it will stay empty, but
+    the native code generation will make possible to map
+    arbitrary types to natives, so another towel can define
+    a non native S or Bool and we can still load a library using
+    an Opt (that used to watch Bool) onto a non native bool
+    */
     if(info.nativeKind().isEmpty()){return L();}
     var c=new ArrayList<P.NCs>();
     addT(c,mwt.mh().t());

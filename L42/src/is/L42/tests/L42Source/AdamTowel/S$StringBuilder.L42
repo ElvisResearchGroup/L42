@@ -107,9 +107,10 @@ mut method Void addAll(This1.S string)=native{trusted:addAll}error void
 class method mut This0 #stringLiteralBuilder()
 read method This1.S toS()=
   native{trusted:toS} error void
+//OLD watched=This1.HasToS,This1.S,This1.HasToS  
 #norm{nativeKind=StringBuilder
   typeDep=This,This1.HasToS,This1.S,This1.HasToS
-  watched=This1.HasToS,This1.S,This1.HasToS
   coherentDep=This0,This1.S
+  usedMethods= This1.HasToS.toS()
   refined=toS()
   }

@@ -1,11 +1,13 @@
 package is.L42.platformSpecific.javaEvents;
 
 import static is.L42.tools.General.range;
+import static is.L42.tools.General.unreachable;
 
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
@@ -16,24 +18,31 @@ import java.util.function.Function;
 public class Event{
   public static final String end="##End##\n";
   public static final String empty="##Empty##\n";
-  public static final int longWait=1000;
-  public static final int shortWait=10;
+  private static final int longWait=1000;
+  private static final int shortWait=10;
   @FunctionalInterface
-  public static interface Consumer3<T1,T2,T3>{void accept(T1 t1,T2 t2,T3 t3);}
-  static {Consumer3.class.getClass();}//just loading Consumer3 together with Event
+  public static interface Consumer3{void accept(String key,String id,String msg);}
+  public static interface Function3{String accept(String key,String id,String msg);}
+  public static interface FFunction3{CompletableFuture<String> accept(String key,String id,String msg);}
+  static {//just loading Consumer3,Function3 together with Event
+    Consumer3.class.getClass();
+    Function3.class.getClass();
+    FFunction3.class.getClass();
+    }
   static private final ExecutorService executor = Executors.newFixedThreadPool(1);
-  private static LinkedBlockingDeque<String> clearDeque(Consumer3<String,String,String>c,String key,LinkedBlockingDeque<String>deque){
+  private static LinkedBlockingDeque<String> clearDeque(Consumer3 c,String key,LinkedBlockingDeque<String>deque){
     while(!deque.isEmpty()){
-      String s=deque.getFirst();
+      String s;try {s=deque.takeFirst();}
+      catch (InterruptedException e) {throw unreachable();}//not empty
       int index=s.indexOf("\n");
       if(index==-1) {throw new Error("invalid event shape "+s);}
       String id=s.substring(0,index);
       String msg=s.substring(index+1);
-      c.accept(key, id,msg);          
+      c.accept(key, id,msg); 
       }
-    return null;    
+    return null;
     } 
-  public static void registerEvent(String key,Consumer3<String,String,String>c){
+  public static void registerEvent(String key,Consumer3 c){
     callbacks.compute(key,(k,v)->{
       var newV=executorAction(c);
       streams.computeIfPresent(k,(k0,v0)->clearDeque(newV, k0,v0));
@@ -98,12 +107,25 @@ public class Event{
       return v;
       });
     }
-  private static Consumer3<String,String,String> executorAction(Consumer3<String,String,String> c){
+  public static CompletableFuture<String> askEvent(String key,String id,String msg){
+    var v=askCallbacks.get(key);
+    if(v==null){return Event.defaultAskAction;}
+    return CompletableFuture.supplyAsync(()->v.accept(key, id, msg), executor);
+    }
+  public static void registerAskEvent(String key,Function3 c){
+    askCallbacks.put(key,c);
+    }
+  public static void resetAskEvent(String key){
+    askCallbacks.remove(key);
+    }
+  private static Consumer3 executorAction(Consumer3 c){
     return (key,id,msg)->executor.submit(()->c.accept(key, id, msg));
     }
   private static void defaultAction(String key,String id,String msg){
     streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>()).addLast(id+"\n"+msg);
     }
+  private static final CompletableFuture<String>defaultAskAction=CompletableFuture.completedFuture("");
   private static final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new  LinkedHashMap<>());
-  private static final Map<String,Consumer3<String,String,String>> callbacks=Collections.synchronizedMap(new LinkedHashMap<>());
+  private static final Map<String,Consumer3> callbacks=Collections.synchronizedMap(new LinkedHashMap<>());
+  private static final Map<String,Function3> askCallbacks=Collections.synchronizedMap(new LinkedHashMap<>());
   }

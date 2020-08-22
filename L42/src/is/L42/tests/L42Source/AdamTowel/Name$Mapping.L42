@@ -20,11 +20,12 @@ method This1.S pathName(class Any that)=
 
 @This1.Public @This1.Cache.Call class method This1.Name #from(This1.S$StringBuilder stringLiteral)=
   This1.Name<:class This1.Name.#from(stringLiteral=stringLiteral)
-    
+
+//OLD watched=This1.S,This1.Name,This1.S$StringBuilder,This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.NativeName,This1.Public,This1.Cache.Call    
 #norm{
   nativeKind=Meta
   typeDep=This0, This1.S,This1.Name,This1.S$StringBuilder,This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.NativeName,This1.Public,This1.Cache.Call
-  watched=This1.S,This1.Name,This1.S$StringBuilder,This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.NativeName,This1.Public,This1.Cache.Call
   coherentDep=This0, This1.Name This1.S$ParseError,This1.Trait$MethodClash,This1.Trait$ClassClash,This1.Trait$InvalidName,This1.Trait$InvalidMap,This1.S
   nativePar= This1.Trait$ClassClash This1.Trait$MethodClash This1.Trait$InvalidName This1.Trait$InvalidMap This1.S$ParseError
+  usedMethods=This1.Name.#from(stringLiteral)
   }

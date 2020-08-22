@@ -38,7 +38,7 @@ public class ProgramTypeSystem {
     }
   public static void type(boolean typed,Program p){
     L l=p.topCore();
-    checkNativeConstraints(p);
+    checkNativeConstraints(p,false);
     J j=new J(p,null,null,true);
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
@@ -67,13 +67,13 @@ public class ProgramTypeSystem {
     //var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
     //errIf(!ok,l.poss(),Err.mismatchRefine(estimatedRefined,l.info().refined()));
     }
-  public static void checkNativeConstraints(Program p){
+  public static void checkNativeConstraints(Program p,boolean checkLazy){
     var l=p.topCore();
     var info=l.info();
     if(info.nativeKind().isEmpty()){return;}
     var nk=TrustedKind._fromString(info.nativeKind());
     assert nk!=null;
-    nk.checkNativePars(p);
+    nk.checkNativePars(p,checkLazy);
     }
   public static void typeMWT(Program p,MWT mwt,J j){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
@@ -104,7 +104,16 @@ public class ProgramTypeSystem {
       }
     return null;    
     }
+  public static void warningOnErr(Runnable r){
+    try{r.run();}
+    catch(EndError.TypeError te){
+      System.err.println("WARNING: plugin type not satified\n"+te.getMessage());
+      }
+    }
   private static void typePlugin(Program p, MWT mwt,J j) {
+    warningOnErr(()->auxTypePlugin(p,mwt,j));
+    }
+  private static void auxTypePlugin(Program p, MWT mwt,J j) {
     String nativeUrl=mwt.nativeUrl();
     String nativeKind=p.topCore().info().nativeKind();
     if(!nativeUrl.startsWith("trusted:")){

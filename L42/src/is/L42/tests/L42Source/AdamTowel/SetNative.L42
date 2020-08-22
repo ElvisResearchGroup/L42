@@ -5,11 +5,11 @@ Set={
   read method This1.Key immKey(This3.Size that)=native{trusted:immKey} error void
   mut method Void put(This1.Key key)=native{trusted:put} error void
   mut method Void remove(This1.Key key)=native{trusted:removeKey} error void
+  //OLD watched=This3.Size,This3.Bool,This3.Collection$OutOfBounds
   #norm{
     nativeKind=HSet
     nativePar=This1.Key,This3.Collection$OutOfBounds
     typeDep=This,This3.Size,This3.Bool,This1.Key,This3.Collection$OutOfBounds
     coherentDep=This,This3.Size,This3.Bool,This1.Key,This3.Collection$OutOfBounds
-    watched=This3.Size,This3.Bool,This3.Collection$OutOfBounds
     }
   }

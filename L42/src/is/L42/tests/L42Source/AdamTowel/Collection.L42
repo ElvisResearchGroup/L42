@@ -1,4 +1,4 @@
-AnyToS={class method S (read Any that)={
+@Public AnyToS={class method S (read Any that)={
   if read HasToS s=that return s.toS()
   return System.immToString(System.readClone(that)) 
   }}

@@ -17,9 +17,9 @@ Lazy=Extra:{
   class method mut This #apply(This2.S that)=native{trusted:lazyMessageK} error void
   read method This2.S text()=native{trusted:get}error void
   mut method Void text(This2.S that)=native{trusted:setMsg}error void
+  //OLD watched=This2.S
   #norm{nativeKind=LazyMessage
     typeDep=This,This2.S
-    watched=This2.S
     coherentDep=This,This2.S
     }
   }
@@ -28,9 +28,9 @@ NonDeterministic=Extra:{
   class method mut This #apply(This2.S that)=native{trusted:nonDeterministicErrorK} error void
   read method This2.S text()=native{trusted:get}error void
   mut method Void text(This2.S that)=native{trusted:setMsg}error void
+  //OLD watched=This2.S
   #norm{nativeKind=NonDeterministicError
     typeDep=This,This2.S
-    watched=This2.S
     coherentDep=This,This2.S
     }
   }

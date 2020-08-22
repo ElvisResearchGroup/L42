@@ -29,11 +29,11 @@ method This0 sum(This0 that)=native{trusted:OP+} error void
   b
   ))
 @This1.Public method This1.Size indexOf(This that)=this.indexOf(that=that,from=This1.Size<:class This1.Size.zero())
-
+//OLD watched=This1.Size,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.Bool,This1.S$ParseError,This1.NativeName,This1.Public,This1.AbstractTowel,This1.Cache.Call
 #norm{nativeKind=String, nativePar=This1.S$ParseError
   typeDep=This, This1.Size,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.Bool,This1.S$ParseError,This1.NativeName,This1.Public,This1.AbstractTowel,This1.Cache.Call
-  watched=This1.Size,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.Bool,This1.S$ParseError,This1.NativeName,This1.Public,This1.AbstractTowel,This1.Cache.Call
   coherentDep=This,This1.S$StringBuilder,This1.S$ParseError,This1.Size,This1.Num,This1.Bool,This1.NativeName
+  usedMethods=This1.S$StringBuilder.toS(), This1.Bool.not(), This1.S$StringBuilder.#stringLiteralBuilder(), This1.S$StringBuilder.#sdQuote(), This1.S$StringBuilder.#snewLine(), This1.Size.zero()
   refined=toS()
   }
 @This1.AbstractTowel{s}

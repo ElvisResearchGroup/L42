@@ -2,8 +2,8 @@ class method This #apply()
 class method mut This #apply(This1.S that)=native{trusted:lazyMessageK} error void
 read method This1.S text()=native{trusted:get}error void
 mut method Void text(This1.S that)=native{trusted:setMsg}error void
+//OLD watched=This1.S,
 #norm{nativeKind=LazyMessage
   typeDep=This,This1.S,
-  watched=This1.S,
   coherentDep=This,This1.S, 
   }

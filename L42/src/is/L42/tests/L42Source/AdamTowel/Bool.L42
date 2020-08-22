@@ -20,9 +20,9 @@ method This #shortProcess#minusgt(This that,This other)=other
 read method This1.S toS()=native{trusted:toS} error void
 read method This #equalequal0(read This that)=native{trusted:OP==} error void
 read method This #bangequal0(read This that)=(This tmp=this.#equalequal0(that=that) tmp.not())
+//OLD watched=This1.S,This1.HasToS,This1.AbstractTowel
 #norm{nativeKind=Bool
   typeDep=This,This1.S,This1.HasToS,This1.AbstractTowel
-  watched=This1.S,This1.HasToS,This1.AbstractTowel
   coherentDep=This,This1.S
   refined=toS()
   }

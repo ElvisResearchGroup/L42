@@ -20,6 +20,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
@@ -48,6 +49,17 @@ public class NativeDispatch {
     var k=TrustedKind._fromString(nativeKind);
     var op=TrustedOp.fromString(nativeOp);
     assert op._of(k)!=null:k+" "+op;//type checking should avoid this
+    //op._of(k).of(false, mwt,j);//before type checking guranteed there was no need of "true", now type checking just make a warning
+    try{
+      op._of(k).of(true, mwt,j);
+      k.checkNativePars(j.p(),true);
+      }
+    catch(EndError.TypeError te){
+      j.c("return ");
+      j.visitE(mwt._e());
+      j.c(";");
+      return;
+      }
     op._of(k).of(false, mwt,j);
     }
   public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
@@ -94,7 +106,7 @@ public class NativeDispatch {
     String toLambda="new safeNativeCode.slave.Functions.Supplier<"
       +resT+">(){public "+resT+" get()throws Exception {"
       +nativeUrl.substring(info.endLine)+"}";
-    for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
+     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
     j.c(java.lang.String.format("""
     try{return Resources.loadSlave(%s,%s,"%s",new Object(){}).call(%s).get();}
     catch(safeNativeCode.exceptions.SlaveException ex){%s}

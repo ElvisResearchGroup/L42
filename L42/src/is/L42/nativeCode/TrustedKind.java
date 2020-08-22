@@ -101,7 +101,7 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public void checkNativePars(Program p){super.checkNativePars(p);mapCheckNativePars(p);}
+    @Override public void checkNativePars(Program p,boolean checkLazy){super.checkNativePars(p,checkLazy);mapCheckNativePars(p);}
     @Override public String typeNameStr(Program p,J j){
       return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
       }
@@ -110,7 +110,7 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public void checkNativePars(Program p){super.checkNativePars(p);mapCheckNativePars(p);}
+    @Override public void checkNativePars(Program p,boolean checkLazy){super.checkNativePars(p,checkLazy);mapCheckNativePars(p);}
     @Override public String typeNameStr(Program p,J j){
       return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
       }
@@ -218,7 +218,7 @@ public enum TrustedKind implements TrustedT{
     throw new EndError.TypeError(poss,
       Err.nativeParameterInvalidKind(p.topCore().info().nativeKind(),mh,mdf,mh.t(),mdf));
     */}
-  public void checkNativePars(Program p){
+  public void checkNativePars(Program p,boolean checkLazy){
     var l=p.topCore();
     var info=l.info();
     int base=genericNumber();
@@ -231,8 +231,9 @@ public enum TrustedKind implements TrustedT{
       var li=p.of(pi,l.poss());
       var lm=TrustedKind.LazyMessage.name();
       if(li.isFullL() || !((Core.L)li).info().nativeKind().equals(lm)){
-        throw new EndError.TypeError(l.poss(),
-          Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi));
+        String msg=Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi);
+        if(checkLazy){throw new EndError.TypeError(l.poss(),msg);}
+        ProgramTypeSystem.warningOnErr(()->{throw new EndError.TypeError(l.poss(),msg);});
         }
       }
     }

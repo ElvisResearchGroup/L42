@@ -9,12 +9,12 @@ Hi={
   read method This1.OVal val(This1.Key key)=native{trusted:mapVal} error void
   mut method Void put(This1.Key key, This1.Val val)=native{trusted:put} error void
   mut method Void remove(This1.Key key)=native{trusted:removeKey} error void
+  //OLD watched=This3.Size,This3.Bool,This1.OVal,This3.Collection$OutOfBounds
   #norm{
     nativeKind=HIMap
     nativePar=This1.Key,This1.Val,This1.OVal,This3.Collection$OutOfBounds
     typeDep=This,This3.Size,This3.Bool,This1.Key,This1.Val,This1.OVal,This3.Collection$OutOfBounds
     coherentDep=This,This3.Size,This3.Bool,This1.Key,This1.Val,This1.OVal,This3.Collection$OutOfBounds
-    watched=This3.Size,This3.Bool,This1.OVal,This3.Collection$OutOfBounds
     }
   }
 Hm={
@@ -27,11 +27,11 @@ Hm={
   mut method mut This1.OVal #val(This1.Key key)=native{trusted:#mapVal} error void
   mut method Void put(This1.Key key,mut This1.Val val)=native{trusted:put} error void
   mut method Void remove(This1.Key key)=native{trusted:removeKey} error void
+  //OLD watched=This3.Size,This3.Bool,This1.OVal,This3.Collection$OutOfBounds
   #norm{
     nativeKind=HMMap
     nativePar=This1.Key,This1.Val,This1.OVal,This3.Collection$OutOfBounds
     typeDep=This,This3.Size,This3.Bool,This1.Key,This1.Val,This1.OVal,This3.Collection$OutOfBounds
     coherentDep=This,This3.Size,This3.Bool,This1.Key,This1.Val,This1.OVal,This3.Collection$OutOfBounds
-    watched=This3.Size,This3.Bool,This1.OVal,This3.Collection$OutOfBounds
     }
   }

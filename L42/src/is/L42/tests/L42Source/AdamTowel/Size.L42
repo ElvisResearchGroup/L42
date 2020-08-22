@@ -20,10 +20,11 @@ read method This1.S toS()=native{trusted:toS} error void
   )
 method This #succ()=native{trusted:succ} error void
 method This #pred()=native{trusted:pred} error void
+//OLD watched=This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
 #norm{nativeKind=Int
   typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
-  watched=This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
-  coherentDep=This0,This1.Bool,This1.S 
+  coherentDep=This0,This1.Bool,This1.S
+  watched=This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call 
   refined=toS()
   }
 @This1.AbstractTowel{size}

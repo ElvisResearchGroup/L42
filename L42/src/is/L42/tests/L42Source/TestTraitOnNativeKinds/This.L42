@@ -1,0 +1,16 @@
+reuse [AdamTowel]
+Base=Trait:Collection.optional(S)
+Main=(
+  Debug(S"Hello world")
+  sOpt=S"nativeKind=Opt nativePar=This1.S"
+  
+  s0=Base.nested().toFullS()
+  {}:Test""(s0.contains(sOpt))
+  Debug(s0.contains(sOpt))
+  
+  s1=Base[clear='This].nested().toFullS()
+  {}:Test""(s1.contains(sOpt))
+  Debug(s1.contains(sOpt))
+  Debug(s1)
+
+  )
