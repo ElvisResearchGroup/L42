@@ -1,0 +1,56 @@
+class method S (S url)=S"""%
+  |package db;
+  |import is.L42.platformSpecific.javaEvents.Event;
+  |import java.sql.Connection;
+  |import java.sql.DriverManager;
+  |import java.sql.ResultSet;
+  |import java.sql.SQLException;
+  |import java.sql.Statement;
+  |import java.util.Map;
+  |public class DB{
+  |  Connection c;
+  |  Statement s;
+  |  ResultSet r;
+  |  static interface Ask{String of(String msg) throws SQLException;}
+  |  public DB()throws SQLException{
+  |    Event.class.getClass();
+  |    c=DriverManager.getConnection("%url");
+  |    s = c.createStatement();
+  |    Map<String,Ask> hm=Map.of(
+  |      "execute(sql)",this::execute,
+  |      "executeQuery(sql)",this::executeQuery,
+  |      "next()",this::next,
+  |      "get(label)",this::get,
+  |      "kill()",this::kill
+  |      );
+  |    System.out.println("{{registering}}");
+  |    Event.registerAskEvent("DB",(k,id,msg)->{
+  |      System.out.println("{{"+k+" "+id+" "+msg+"}}");
+  |      try{return hm.get(id).of(msg);}
+  |      catch(NullPointerException npe){throw new RuntimeException("Invalid id: "+id);}
+  |      catch(SQLException e){throw new RuntimeException(e);}
+  |      });
+  |    }
+  |  String execute(String sql)throws SQLException{s.execute(sql);return "";}
+  |  String executeQuery(String sql)throws SQLException{
+  |    if(r!=null){r.close();}
+  |    r=s.executeQuery(sql);
+  |    return "";
+  |    }
+  |  String next(String empty)throws SQLException{
+  |    if(r==null){return "false";}
+  |    return r.next()?"true":"false";
+  |    }
+  |  String get(String field)throws SQLException{
+  |    if(r==null){return "";}
+  |    return r.getString(field);
+  |    }
+  |  String kill(String empty)throws SQLException{
+  |    System.out.println("killing JVM0");
+  |    if(r!=null){s.close();r.close();}
+  |    System.out.println("killing JVM1");
+  |    System.exit(0);
+  |    return "";
+  |    }
+  |  }  
+"""

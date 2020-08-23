@@ -1,14 +1,19 @@
 package is.L42.platformSpecific.javaTranslation;
 
+import java.io.File;
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.Callable;
@@ -20,11 +25,15 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+import java.util.stream.Stream;
+
+import com.google.common.io.Files;
 
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Full;
 import is.L42.generated.P;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
@@ -89,14 +98,24 @@ public class Resources {
     return new L42ClassAny(l.localPath());
     }
   private static ArrayList<L42£Library>libsCached;
-  public static final HashMap<String,Slave>slaves=new HashMap<>();
+  private static final LinkedHashMap<String,Slave>slaves=new LinkedHashMap<>();
+  public static void killAllSlaves(){
+    for(Slave s:slaves.values()){s.terminate();}
+    try{for(Slave s:slaves.values()){s.waitForExit();}}
+    catch (InterruptedException e){
+      Thread.currentThread().interrupt();
+      throw new Error(e);
+      }
+    catch(IOException e){throw new Error(e);}
+    finally{slaves.clear();}
+    }
   public static void clearRes() {
     clearResKeepReuse();
     ReadURL.resetCache();
     }
   public static void clearResKeepReuse() {
     libsCached=null;
-    slaves.clear();
+    killAllSlaves();
     usedUniqueNs.clear();
     allBusyUpTo=0;
     out=new StringBuffer();
@@ -105,11 +124,37 @@ public class Resources {
     compiledNesteds=new StringBuffer();
     logs.clear();
     }
+  public static Program top(){
+    Program p=currentP;
+    while(!p.pTails.isEmpty()){p=p.pop();}
+    return p;
+    }
+  public static Path initialPath(){
+    var t=top();
+    return Paths.get(t.top.pos().fileName()).getParent();
+    }
   public static Slave loadSlave(int memoryLimit,int timeLimit,String slaveName,Object o){
     return Resources.slaves.computeIfAbsent(slaveName, sn->{
       String[] args = new String[]{"--enable-preview"};
       if(memoryLimit>0){args=new String[]{"-Xmx"+memoryLimit+"M","--enable-preview"};}
-      Slave s=new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader());
+      var workingDir=initialPath().toFile();//the nio/Path API is not great for the needed task
+      Stream<String> sysPaths=Arrays.stream(System.getProperty("java.class.path").split(File.pathSeparator));
+      Stream<String> workingPaths=
+        Arrays.stream(workingDir.listFiles((dir,name)->name.endsWith(".jar")))
+        .map(f->f.getAbsolutePath().toString());
+      String[] localPaths=Stream.concat(sysPaths, workingPaths)
+        .map(path -> Paths.get(path).toAbsolutePath().toString())
+        .toArray(String[]::new);
+      System.out.println("######################");
+      System.out.println(Arrays.asList(workingDir.list()));
+      System.out.println(Arrays.asList(localPaths));
+      Slave s=new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader()){
+        @Override protected ProcessBuilder makeProcessBuilder() throws IOException {
+          var pb=super.makeProcessBuilder();
+          return pb.directory(workingDir);
+          }
+       @Override protected String[] getClassPath(){return localPaths;}
+        };
       s.addClassLoader(o.getClass().getEnclosingClass().getClassLoader());
       return s;
       });

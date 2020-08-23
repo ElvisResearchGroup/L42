@@ -7,7 +7,9 @@ import static is.L42.tools.General.range;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.io.StringReader;
+import java.io.StringWriter;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
@@ -117,7 +119,17 @@ public class NativeDispatch {
     """,info.memoryLimit,info.timeLimit,info.slaveName,toLambda,onErr(mwt, j),onJavaErr(mwt, j)));   
   }
   private static String onErr(MWT mwt, J j) {
-    if(mwt.mh().exceptions().size()!=1){return "throw ex;";}
+    if(mwt.mh().exceptions().size()!=1){
+      //var sw=new StringWriter();//Should we run this instead of getMessage?
+      //e.printStackTrace(new PrintWriter(sw));
+      //return e.getClass().getName()+"\n"+e.getMessage()
+      //  +"\n"+sw;
+      return """
+        String msg;try{msg=ex.getChild().call(Throwable::getMessage).get();}
+        catch (java.rmi.RemoteException ex1){msg=ex1.getClass().getName()+"\\n"+ex1.getMessage();}
+        throw new Error(msg);
+        """;
+      }
     var t=mwt.mh().exceptions().get(0);
     Program pErr=j.p()._navigate(t.p().toNCs());
     if(!pErr.topCore().info().nativeKind().equals(TrustedKind.LazyMessage.name())){return "throw ex;";}

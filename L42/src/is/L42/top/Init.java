@@ -46,17 +46,15 @@ import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.WellFormedness;
 
 public class Init {
-  public Init(String s){this(Constants.dummy,Parse.sureProgram(Constants.dummy,s));}
-  public Init(Path initialPath,String s){this(initialPath,Parse.sureProgram(initialPath,s));}
+  public Init(String s){this(Parse.sureProgram(Constants.dummy,s));}
+  public Init(Path initialPath,String s){this(Parse.sureProgram(initialPath,s));}
   public final Program p;
-  public final Path initialPath;
+  //public final Path initialPath;
   public final FreshNames f;
-  public Init(Full.L l){this(initialPath(l),Program.flat(l));}
-  static Path initialPath(Full.L l){return Paths.get(l.pos().fileName()).getParent();}
-  public Init(Path initialPath,Program program){
+  public Init(Full.L l){this(Program.flat(l));}
+  public Init(Program program){
     assert program!=null;
     this.f=new FreshNames();
-    this.initialPath=initialPath;
     Program res=init(program,f);
     assert res.top.wf();
     collectAllUniqueNs(res,Resources.usedUniqueNs);
@@ -96,7 +94,8 @@ public class Init {
     catch(EndError e){//well formedness or the like. Anyway, cache is untouched
       c.fakeRunWithNoChange();
       throw e; 
-    }     
+    }
+    finally{Resources.killAllSlaves();}
     return i.topCache(c);
     }
   protected State makeState(){//overriddable for tests

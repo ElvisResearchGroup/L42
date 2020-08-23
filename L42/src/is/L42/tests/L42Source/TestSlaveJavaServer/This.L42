@@ -31,15 +31,20 @@ Main=(
   j=J.#$of()
   j.loadCode(fullName=S"miniGui.MiniGui",code=JavaCode())
   model=Model(count=0\, j=j)
-  keys=S.List['MiniGui]//mut: model can update it and add/remove keys to fetch
-  models=J.Handler.Map[key='MiniGui mutVal=model]//mut: models can update it and (un)register models
   model.pressButton(msg=S"")
   model.pressButton(msg=S"")
   model.pressButton(msg=S"")
   _=j.nextEvent(keys='MiniGui)//wait for the first event timeout
   text=j.askEvent(key='Ask, id=S"",msg=S"")
   abc=S.List['A;'B;'C]
-  for e in j(keys) i in abc (e>>models)
+  keys=S.List['MiniGui]//mut: model can update it and add/remove keys to fetch
+  models=J.Handler.Map[key='MiniGui mutVal=model]//mut: models can update it and (un)register models
+  for e in j(keys) i in abc (
+    e>>models
+    text2=j.askEvent(key='Ask, id=S"",msg=S"")
+    Debug(S"[[%text2]]-----")
+    Debug(e)
+    )
   j.submitEvent(key='Kill,id=S"",msg=S"")
   Debug(S"end events %model.count()")
   Debug(S"[[%text]]")

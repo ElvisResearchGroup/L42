@@ -1,5 +1,7 @@
 package is.L42.platformSpecific.javaEvents;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -15,17 +17,21 @@ public class LoadJavaCode {
     //full name in form "math.Calculator"
     SourceFile file = new SourceFile(fullName,code);
     List<SourceFile> files = List.of(file);
-    ClassLoader classes = InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new ArrayList<>());
+    ClassLoader classes = InMemoryJavaCompiler.compile(Event.class.getClassLoader(),files,new ArrayList<>());
     classes.loadClass(fullName).getConstructor().newInstance();
     }
   public static String loadJavaCode(String fullName,String code){
+    Event.preLoad();
     try{auxLoadJavaCode(fullName, code);}
     catch(
         CompilationError|InstantiationException|
         IllegalAccessException|IllegalArgumentException|
         InvocationTargetException|NoSuchMethodException|
         SecurityException|ClassNotFoundException e){
-      return e.getClass().getName()+"\n"+e.getMessage();
+      var sw=new StringWriter();
+      e.printStackTrace(new PrintWriter(sw));
+      return e.getClass().getName()+"\n"+e.getMessage()
+        +"\n"+sw;
       }
     return "";
     }
