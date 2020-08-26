@@ -29,6 +29,7 @@ import is.L42.generated.X;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.typeSystem.Coherence;
+import is.L42.typeSystem.TypeManipulation;
 
     /*
      generate two constructors, a mut and an imm named mutK and immK (parameters)
@@ -77,8 +78,10 @@ public class K extends GuessFields{
     List<T> immTs=L(mutTs,this::forgeTImm);
     S mutS=new S(mutK,xs,-1);
     S immS=new S(immK,xs,-1);
-    var immMh=new Core.MH(Mdf.Class,L(),P.coreThis0,immS,immTs,L());
-    var mutMh=immMh.withS(mutS);
+    var immTsNoFwd=L(immTs.stream().map(t->t.withMdf(TypeManipulation.noFwd(t.mdf()))));
+    var immMh=new Core.MH(Mdf.Class,L(),P.coreThis0,immS,immTsNoFwd,L());
+    var mutMh=new Core.MH(Mdf.Class,L(),P.coreThis0,mutS,immTs,L());
+    
     if(!veryImm){mutMh=mutMh.withT(P.coreThis0.withMdf(Mdf.Mutable)).withPars(mutTs);}
     MWT immM=new MWT(l.poss(),L(),immMh,"",null);
     MWT mutM=new MWT(l.poss(),L(),mutMh,"",null);

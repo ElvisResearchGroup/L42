@@ -14,5 +14,6 @@ Bool$={
   class method This false()
   class method This true()
   method Void #checkTrue()[Void]
+  class method This from(S string)=if string==S"true" This.true() else This.false()
   }
 Size$={...}

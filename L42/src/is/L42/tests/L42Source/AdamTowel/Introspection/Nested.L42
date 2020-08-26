@@ -38,7 +38,8 @@ class method This(NativeNested that)=\(i=that)
     if mi.nameFromRoot()<:Name.selector()==selector return mi
     i+=1Size
     )
-  error Collection$NoElementInOpt"Method %selector not in methods list: %this.methods()"
+  ns=S$List()(for m in this.methods() \res<=m.selector() )
+  error Collection$NoElementInOpt"Method %selector not in methods list: %ns"
   }
 @Public method Type$List implements()=\()((
   size=this.i().implementedNum()

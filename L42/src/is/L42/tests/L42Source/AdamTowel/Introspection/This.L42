@@ -110,7 +110,11 @@ Type$={class method This(NativeType that) read method Bool readEquality(read Thi
 Doc$={class method This(NativeDoc that) read method Bool readEquality(read This that)}
 @Public Doc$Opt=Collection.optional(Doc$)
 @Public Doc$List=Collection.list(Doc$)
-Method$={class method This(NativeMethod that) read method Bool readEquality(read This that)}
+Method$={
+  class method This(NativeMethod that)
+  read method Bool readEquality(read This that)
+  method S selector()
+  }
 @Public Method$List=Collection.list(Method$)
 ExposeEq=Trait:{@Public method Bool ==(This that) @Public method Bool !=(This that)}
 @Public Nested=Class$Relax:Data:ExposeEq:{...}

@@ -1,0 +1,17 @@
+reuse [AdamTowel]
+DB={...}
+Point=Data:{Num x, Num y}
+Points=Collection.list(Point)
+MyQ=Class:DB.Query(
+  types=Introspection.Nested.List[
+    Introspection.Nested.from(classAny=Points);
+    Introspection.Nested.from(classAny=S);
+    ]
+  sql=S"foo @name baz"
+  )()
+Main=(
+  Debug(S"Hello world")
+  q=MyQ(DB.#$of())
+  Points ps=q(name=S"Bob")
+  Debug(ps)
+  )

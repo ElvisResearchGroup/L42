@@ -1,8 +1,15 @@
--Disable autowatched native and nativeTypechecking:
-  at code generation, if nativeTypechecking does not work, just generate the body without the native
--Think of a way to allows any type to go back an forth from any native, like registering a function or looking to the first field  
--mapCheckNativePars(p) with checkLazy
-
+-IDE: somehow disable insertion of random '}'
+-when printing outline: docs need to be \n\n and
+  we can sort alphabetically the members
+-TypeSystem test: it seams like imm res=this.mutMeth().mutMeth() does not work on lent this!
+   it seams to be a problem with inference. Is it admissible?
+-TypeSystem enrich: simmetric of multi method types:
+  -a method taking no mut,read,lent and returning imms (can take fwds?)
+    can be typed returning either imm OR read (and not immPFwd?)
+  -a method taking no muts and returning imm/capsule (can take fwds?)
+    can be typed returning either imm or mut (and not their mdfPFwd?)
+-BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native
+-Big, but confusing: the java compiler go in loop for code too complex, like to many &&. See TestTopNorm t_manyAnds() :-(
 -SafeJava bug? class loaders should not be a hashSet ClassSupplier(Set<ClassLoader> classLoaders)
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
@@ -131,3 +138,31 @@ MethName=Data:{A that,B b,C c  @Cache.Lazy method A()=that._methName(b=b,c=c)}
 @Cache.Lazy class method A a(B b,C c)=e
 class method A a(B b,C c)=BC(b=b,c=c)()
 BC=Data:{B b,C c  @Cache.Lazy method A()=e}
+
+
+-------------
+//only imms; Data/AddKs must generate immk with not fwd,
+or generate 2 immks.
+{
+R={class method This #immK(A a, B b)}
+A={class method This from(S that)}
+B={class method This from(S that)}
+mut method R nextR()=R(
+    a=A.from(this.get(S"a"))
+    b=B.from(this.get(S"a"))
+    )
+  }
+{
+List={
+  class method This ()
+  mut method add(R right)
+  }
+R={}
+mut method R nextR()
+mut List allR()=(
+  res=List()
+  while this.next() (res.add(right=this.nextR()))
+  res
+  )
+}
+

@@ -1,0 +1,9 @@
+reuse [AdamTowel]
+Point1=Data:{Size x, Size y
+  @Cache.Now class method Bool inv(Size x,Size y)=x>y}
+Point2=Data:{var Size x, Size y}
+Point3=Data:{mut Point2 x, Size y}
+
+Main=(
+  Debug(S"Hello world")
+  )

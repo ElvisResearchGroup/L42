@@ -1,41 +1,12 @@
 reuse [AdamTowel]
-J0=Load:{reuse[#$JavaServer]}
+J0=Load:{reuse[JavaServer]}
 J=J0(slaveName=S"dbServer{}")
-JavaCode={...}
 Queries={...}
-DB=Organize:Data:{
-  Fail=Message:{[Message.Guard]}
-  mut J j
-  @Public class method mut DB #$of(S connection)[Fail]=(
-    j=J.#$of()
-    j.loadCode(fullName=S"db.DB",code=JavaCode(url=connection))
-    catch J.Fail x exception Fail"%x" // better then using .with(cause=x)?
-    DB(j=j)
-    )
-  @Public mut method Void execute(S sql)[Fail]=(
-    _=this.#j().askEvent(key='DB, id='execute(sql),msg=sql)
-    catch J.Fail x exception Fail"%x"
-    void)
-  @Public mut method Void executeQuery(S sql)[Fail]=(
-    _=this.#j().askEvent(key='DB, id='executeQuery(sql),msg=sql)
-    catch J.Fail x exception Fail"%x"
-    void)
-  @Public mut method Bool next()[Fail]=(
-    res=this.#j().askEvent(key='DB, id='next(),msg=S"")
-    catch J.Fail x exception Fail"%x"
-    res==S"true")
-  @Public mut method S get(S label)[Fail]={
-    return this.#j().askEvent(key='DB, id='get(label),msg=label)
-    catch J.Fail x exception Fail"%x"
-    }
-  @Public mut method Void kill()=(
-    _=this.#j().askEvent(key='DB, id='kill(),msg=S"")
-    catch J.Fail _ (void)
-    error X"unreachable")
-  }
+DB=Organize:Data:{...}
 Main2=(
   db=DB.#$of(connection=S"jdbc:derby:Test1;create=true")
-  db.execute(sql=Queries.drop())
+  (db.execute(sql=Queries.drop())
+  catch DB.Fail f (Debug(f)) void)
   db.execute(sql=Queries.createT())
   db.execute(sql=Queries.insert())
   db.executeQuery(sql=Queries.select())
@@ -53,10 +24,11 @@ Main2=(
     age= db.get(label=S"age")
     Debug(S"%id %name %age")
     )
+  db.execute(sql=Queries.drop())
   db.kill()
   void
   )
-Main=(
+/*Main=(
   Debug(S"Start1")
   j=J.#$of()
   j.loadCode(fullName=S"db.DB",code=JavaCode(url=S"jdbc:derby:Test1;create=true"))
@@ -86,4 +58,4 @@ Main=(
     )
   _=j.askEvent(key='DB, id='kill(),msg=S"")
   void
-  )
+  )*/

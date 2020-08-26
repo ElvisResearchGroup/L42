@@ -9,6 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import is.L42.common.CTz;
 import is.L42.common.EndError;
@@ -53,6 +57,7 @@ public class Main {
       if(ee.getClass()==L42Exception.class){Resources.err("L42 terminated with exception");}
       else{Resources.err("L42 terminated with error");}
       printError(ee.unbox);
+      printStackTrace(ee);
       throw ee;
       }
     catch(EndError ee) {
@@ -71,6 +76,36 @@ public class Main {
       return of.get(o);
       }
     catch(ReflectiveOperationException roe){return null;}
+    }
+  private static String unMark(String s){
+    s=s.replace("£h","#");
+    int i0=s.indexOf("£n");
+    if(i0!=-1) {s=s.substring(0,i0);}
+    if(s.contains("£x")){s=s.replaceFirst(Pattern.quote("£x"),"(")+")";}
+    s=s.replaceAll(Pattern.quote("£x"),", ");
+    return s;//x h c n m
+    }
+  private static void printStackTrace(Throwable t){
+    Resources.err("Reconstructed stack trace");
+    String init="is.L42.metaGenerated.£c";
+    for(var se:t.getStackTrace()){
+      var cn=se.getClassName();
+      var mn=se.getMethodName();
+      if(mn.equals("execute")){return;}
+      //is.L42.metaGenerated.£cIntrospection£n0£_£cNested
+      //Introspection.Nested £n0£_£c
+      cn=cn.replace(init,"");
+      cn=Arrays.stream(cn.split(Pattern.quote("£_£c")))
+        .map(s->unMark(s.trim())).collect(Collectors.joining("."));
+      mn=unMark(mn.replace("£m",""));
+      if(!mn.contains("(")){mn+="()";}
+      if(mn.startsWith("#apply(")){
+        Resources.err(cn+mn.substring("#apply".length()));
+        }
+      else{
+        Resources.err(cn+"."+mn);
+        }
+      }
     }
   private static void printError(Object o){
     Class<?> c=o.getClass();

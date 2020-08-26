@@ -1,0 +1,48 @@
+/*
+DBEngine=Load:{reuse dblib}//lib
+DBMapper=DBEngine(J)//generic on J
+MyDB=DBMapper.#$connection(S"..")
+Q=MyDB.query[MyDB.Person.List;Num;S]"sql"
+"select * from Person where age=@age and city=@city"
+d,s,b?
+The provided types must have toS.
+if toS is annotate @ToS.Raw, it will be quoted
+Usage:
+Q(age=e1,city=e2)
+////int findColumn(String columnLabel)
+to optimize
+chech from string is ok for num with comma and bools
+num size bool S //array of those? from S?
+
+//Name must have a method returning S.List of xs
+//String, Num, Bool, Size must now declare from(string)
+//also all stringable (URL?) and all Units, also Name (and remove #apply(that))
+//ideally, some collections too
+//@ToS.Raw need to be added, and can be used for "generic" toS algorithms
+Shoulw we instead have ToS.Raw be an interface that extends ToS?
+//Future todo: name must override => also for Introspection.Nested
+  where can delegate to Nested.classAny() or Nested.nameFromRoot()
+class method Bool isK(Introspection.Nested n,Introspection.Method m)=(
+  r=m.returnType()
+  ps=m.parameters()
+  res=r.nested()==n  && r.mdf()==S"imm "//&& r.mdf() in S.List[S"mut";S"imm"] //TODO: handling the mut one need different code generation anyway
+    && ps.left().mdf()==S"class"
+  //breaking the expression in pieces to avoid looping Javac :-(
+  res && m.exceptions().isEmpty()
+  && ps.withoutLeft().matchAll()(for p in \vals \res<=(p.mdf()==S"imm"))
+  )
+class method Introspection.Method elemK(class Any that)=(
+  i=Introspection.Nested.from(classAny=that)
+  n=i.meth(selector=S"left()").returnType().nested()
+  ks=Introspection.Method.List()(
+    for m in n.methods() if this.isK(n=n,m=m) \res<=m
+    )
+  if ks.size()!=0Size error X"""%
+    |Not exactly one constructor candidate in
+    |n.outerName()
+    |possible constructors are:%(S.List()(for m in ks \res<=m.selector()))
+    """
+  ks.left()
+  )
+
+*/

@@ -1,0 +1,89 @@
+Traits=Collection.list(Trait)
+
+FormatPar={
+  class method S (S that,S key,HasToS val)=
+    that.replace(S"@%key" with=Collection.AnyToS(val))
+  class method mut S.List xs(S that)={//TODO: enrich meth typing so we avoid the mut result
+    acc=S.List()
+    var res=that
+    loop (
+      i0=res.indexOf(S"@")
+      if i0==Size"-1" return acc
+      i=res.indexOf(S" ", from=i0)
+      i1=(if i==Size"-1" res.size() else i)
+      p=res.subString(start=i0+1Size,end=i1)
+      res:=res.subString(start=i1, end=\size)
+      _=Name"%(p)()"//will throw error if p is not a valid identifier
+      acc.add(right=p)
+      )
+    }
+  }
+Collecters={...}
+Executers={...}
+//----------
+Introspection.Nested.List types
+S sql
+Introspection.Nested r
+Introspection.Method k
+S.List xs
+class method This(Introspection.Nested.List types,S sql,Introspection.Nested r,Introspection.Method k,S.List xs)
+class method This(Introspection.Nested.List types,S sql)=(
+  r=types.left().meth(selector='left()).returnType().nested()
+  ms=Introspection.Method.List()(for m in r.methods() (
+    if m.selector().toS().startsWith(S"#immK(") \res<=m
+    ))
+  if ms.size()!=1Size error X"more then one canditate imm constructor"//TODO:
+  This(types=types,sql=sql,r=r, k=ms.val(0\),xs=FormatPar.xs(sql))
+  )
+      
+method Trait field(Trait that, Size i)={
+  n=Name"p%(i)()"
+  f_s=Trait.LiftS(this.k().nameFromRoot().xs().val(i))['#apply()=>n]
+  tSrc=Name"T%(i)"
+  tDest=this.k().parameters().val(i+1Size).nested().classAny()
+  return (that+f_s)[tSrc=>tDest;hide=n]
+  whoops Message.Guard
+  }
+method Trait makeCR()={
+  n=this.k().parameters().size()-1Size
+  if n==0Size error X"no zero fields"
+  var res=Collecters.traits().val(n-1Size)//TODO: error X"too many fields"
+  for i in n.range() ( res:=this.field(res,i=i) )//from 0 to n-1
+  return res[Collecters.names().val(n-1Size)=>Name"R.%this.k().selector()"]
+  whoops Message.Guard
+  }
+//--
+method Trait par(Trait that,Size i)={
+  n=Name"p%(i)()"
+  tSrc=Name"T%(i)"
+  tDest=this.types().val(i+1Size).classAny()
+  p=this.xs().val(i)
+  p_s=Trait.LiftS(p)['#apply()=>n]
+  return (that+p_s)[tSrc=>tDest;hide=n]
+  whoops Message.Guard
+  }
+method Trait makeExecuteQ()={
+  n=this.xs().size() //ok for zero too
+  var res=Executers.traits().val(n)//TODO: error X"too many parameters"
+  for i in n.range() ( res:=this.par(res,i=i) ) //0 to n-1
+  nameDest=Name"#apply()".with(xs=this.xs())
+  sql=Trait.LiftS(this.sql())['#apply()=>'sql()]
+  return res[Executers.names().val(n)=>nameDest]+sql
+  whoops Message.Guard
+  }
+//---
+TraitK=Trait:{
+  class method mut This (mut DB db)
+  class method mut This (mut DB that)=This(db=that)
+  }
+method Trait ()={
+  makeCR=this.makeCR()
+  executeQ=this.makeExecuteQ()
+  //Debug(makeCR.nested().toFullS())
+  //Debug(executeQ.nested().toFullS())
+  return (TraitK+makeCR+executeQ)[
+    'R=>this.r().classAny();
+    'List=>this.types().left().classAny()
+    ]
+  whoops Message.Guard
+  }

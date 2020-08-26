@@ -1,0 +1,29 @@
+JavaCode={...}
+@Public Fail=Message:{[Message.Guard]}
+mut J j
+@Public class method mut DB #$of(S connection)[Fail]=(
+  j=J.#$of()
+  j.loadCode(fullName=S"db.DB",code=JavaCode(url=connection))
+  catch J.Fail x exception Fail"%x" // better then using .with(cause=x)?
+  DB(j=j)
+  )
+@Public mut method Void execute(S sql)[Fail]=(
+  _=this.#j().askEvent(key='DB, id='execute(sql),msg=sql)
+  catch J.Fail x exception Fail"%x"
+  void)
+@Public mut method Void executeQuery(S sql)[Fail]=(
+  _=this.#j().askEvent(key='DB, id='executeQuery(sql),msg=sql)
+  catch J.Fail x exception Fail"%x"
+  void)
+@Public mut method Bool next()[Fail]=(
+  res=this.#j().askEvent(key='DB, id='next(),msg=S"")
+  catch J.Fail x exception Fail"%x"
+  res==S"true")
+@Public mut method S get(S label)[Fail]={
+  return this.#j().askEvent(key='DB, id='get(label),msg=label)
+  catch J.Fail x exception Fail"%x"
+  }
+@Public mut method Void kill()=(
+  _=this.#j().askEvent(key='DB, id='kill(),msg=S"")
+  catch J.Fail _ (void)
+  error X"unreachable")

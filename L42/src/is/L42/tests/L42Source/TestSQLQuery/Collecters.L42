@@ -1,0 +1,47 @@
+ColT=Trait:{class method This from(S string)}
+K1=Trait:{
+  mut method mut DB #db()
+  R={class method This #immK(T0 p0)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0=ColT.code()
+  class method S p0()
+  mut method List collectResults()=(
+    lent db=this.#db()//inference would fail
+      (
+      res=List()//to allow for promotion res to imm
+      Size i0=db.findColumn(This.p0())
+      while db.next() (res.add(right=R.#immK(
+        p0=T0.from(string=db.get(index=i0))
+        )))
+      res
+      )
+    )
+  }
+K2=Trait:{
+  mut method mut DB #db()
+  R={class method This #immK(T0 p0,T1 p1)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0=ColT.code()
+  T1=ColT.code()
+  class method S p0()
+  class method S p1()
+  mut method List collectResults()=(
+    lent db=this.#db()
+      (
+      res=List()
+      Size i0=db.findColumn(This.p0())
+      Size i1=db.findColumn(This.p1())
+      while db.next() (res.add(right=R.#immK(
+        p0=T0.from(string=db.get(index=i0))
+        p1=T1.from(string=db.get(index=i1))
+        )))
+      res
+      )
+    )
+  }
+class method Traits traits()=Traits[
+  K1();K2();
+  ]
+class method Name.List names()=Name.List[
+  'R.#immK(p0);'R.#immK(p0,p1);
+  ]

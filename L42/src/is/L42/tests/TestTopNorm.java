@@ -819,6 +819,19 @@ public class TestTopNorm{
     #typed{typeDep=This}}#norm{}}          
     """
     );}
+  //Disabled: send the Java compiler in loop
+  /*@Test*/ public void t_manyAnds(){top("""
+      {reuse [AdamTowel]
+      Foo={
+        class method Bool isK(Bool a)=
+          a && a && a && a && a && a && a &&
+          a && a && a && a && a
+        }
+      Main=Debug(S"Hello world")}
+      ""","""
+      {#typed{typeDep=This}}#norm{}}          
+      """     
+      );}
 
   private static String tryCatchTest(String s){
     return """

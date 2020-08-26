@@ -163,7 +163,8 @@ class GLOpen extends G{
     TestCachingCases.timeNow("GLOpen2");
     boolean eq=l2!=null &&
       !((Full.L)p.top).reuseUrl().contains("#$") &&
-      state.equals(gc.state);
+      state.equals(gc.state)&&
+      l2.ctz().equals(layer.ctz());//ctz need to be tested, can change when errors are fixed
     if(eq){//check the header is the same
       Program pNoNC=p.update(noNC(p.top),false);
       Program pCNoNC=pC.update(noNC(pC.top),false);
@@ -186,9 +187,12 @@ class GLOpen extends G{
     TestCachingCases.timeNow("GLOpen3 "+eq);
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
-    assert !eq || s2.uniqueId==0 //TODO: randomly getting assertion errors here on novel errors
+    assert !eq || s2.uniqueId==0
       || l2.layerL()==LayerL.empty()
-      || l2.ctz().equals(layer.ctz());
+      || l2.ctz().equals(layer.ctz()):
+        eq+" "+s2.uniqueId+" "+
+        l2.layerL()==LayerL.empty()+" "+
+        l2.ctz().equals(layer.ctz());
     var ncs=typeFilter(original.ms().stream(),Full.L.NC.class);
     var ms=L(original.ms().stream().filter(m->!(m instanceof Full.L.NC)));
     TestCachingCases.timeNow("GLOpen4");

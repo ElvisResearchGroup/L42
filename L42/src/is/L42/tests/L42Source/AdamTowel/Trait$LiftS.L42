@@ -1,13 +1,19 @@
 TraitS=Trait:{
+  A={}
   class method S () =
     native{trusted:lazyCache}
-    Introspection.Nested.from(classAny=This)
-      .innerDoc().docs().left().texts().left()
+    Introspection.Nested.from(classAny=A)
+      .outerDoc().docs().left().texts().left()
   }
-class method Library (S that)={
-  (return Trait$DocMap[key='This val=that].resetDocs(TraitS.code())
-  //return Class:TraitS.resetDocs[key='This val=that]
+class method Trait (S that)={(
+  map=Trait$DocMap[key='A val=that]
+  lib=map.resetDocs(TraitS.code())
+  return Trait(lib)[hide='A]
+  //I can not yet use Class:TraitS.resetDocs[key='A val=that]
   whoops Message
   )
   catch Trait$InvalidName x error x//unreachable
+  catch Trait$InvalidMap x error x//unreachable
+  catch Trait$ClassClash x error x//unreachable
+  catch Trait$MethodClash x error x//unreachable
   }

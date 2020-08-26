@@ -22,7 +22,7 @@ InductiveTrait=Trait:{[Handler$]
         var sel=m.selector()
         index=sel.indexOf(S"(")
         sel:=sel.subString(start=0\, end=index)
-        s0=Trait(Trait.LiftS(sel))
+        s0=Trait.LiftS(sel)
         s1=InductiveTrait['current(msg)=>\"%m.selector()"]
         s2=s0+s1+res['#gtgt1(event)->'super(event)]
         res:=s2[hide='#apply();hide='super(event)]

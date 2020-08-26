@@ -101,7 +101,7 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public void checkNativePars(Program p,boolean checkLazy){super.checkNativePars(p,checkLazy);mapCheckNativePars(p);}
+    @Override public void checkNativePars(Program p,boolean noWarning){super.checkNativePars(p,noWarning);mapCheckNativePars(p,noWarning);}
     @Override public String typeNameStr(Program p,J j){
       return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
       }
@@ -110,7 +110,7 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 3;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public void checkNativePars(Program p,boolean checkLazy){super.checkNativePars(p,checkLazy);mapCheckNativePars(p);}
+    @Override public void checkNativePars(Program p,boolean noWarning){super.checkNativePars(p,noWarning);mapCheckNativePars(p,noWarning);}
     @Override public String typeNameStr(Program p,J j){
       return typeNameStr(p,j,i->i==1?null:p.topCore().info().nativePar().get(i));
       }
@@ -218,7 +218,7 @@ public enum TrustedKind implements TrustedT{
     throw new EndError.TypeError(poss,
       Err.nativeParameterInvalidKind(p.topCore().info().nativeKind(),mh,mdf,mh.t(),mdf));
     */}
-  public void checkNativePars(Program p,boolean checkLazy){
+  public void checkNativePars(Program p,boolean noWarning){
     var l=p.topCore();
     var info=l.info();
     int base=genericNumber();
@@ -232,8 +232,7 @@ public enum TrustedKind implements TrustedT{
       var lm=TrustedKind.LazyMessage.name();
       if(li.isFullL() || !((Core.L)li).info().nativeKind().equals(lm)){
         String msg=Err.nativeExceptionNotLazyMessage(info.nativeKind(),pi);
-        if(checkLazy){throw new EndError.TypeError(l.poss(),msg);}
-        ProgramTypeSystem.warningOnErr(()->{throw new EndError.TypeError(l.poss(),msg);});
+        errWarning(new EndError.TypeError(l.poss(),msg),noWarning);
         }
       }
     }
@@ -273,7 +272,7 @@ public enum TrustedKind implements TrustedT{
     if(boxed!=tk.inner) {return boxed;}
     return j.typeNameStr(pLocal);
     }
-  void mapCheckNativePars(Program p){
+  void mapCheckNativePars(Program p,boolean noWarning){
     var l=p.topCore();
     var info=l.info();
     P pV=info.nativePar().get(1);
@@ -284,11 +283,15 @@ public enum TrustedKind implements TrustedT{
     assert lO!=null;
     var isOpt=isOpt(p,pO);
     String msg=Err.nativeParameterViolatedConstraint(info.nativeKind(),pO,"to be Opt("+pV+")");
-    if(!isOpt){throw new EndError.TypeError(l.poss(),msg);}
+    if(!isOpt){errWarning(new EndError.TypeError(l.poss(),msg),noWarning);return;}
     if(lO.info().nativePar().isEmpty()){return;}
     //Opt will give a better error independently
     var pP=p.from(lO.info().nativePar().get(0),pO.toNCs());
     if(pP.equals(pV)){return;}
-    throw new EndError.TypeError(l.poss(),msg);
+    errWarning(new EndError.TypeError(l.poss(),msg),noWarning);
+    }
+  void errWarning(EndError.TypeError err,boolean noWarning){
+    if(noWarning){throw err;}
+    ProgramTypeSystem.warningOnErr(()->{throw err;});
     }
   }
