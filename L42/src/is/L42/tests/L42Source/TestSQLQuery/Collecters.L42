@@ -5,13 +5,13 @@ K1=Trait:{
   List={ class method mut This () mut method Void add(R right) }
   T0=ColT.code()
   class method S p0()
-  mut method List collectResults()=(
+  mut method List collectResults()[DB.Fail]=(
     lent db=this.#db()//inference would fail
       (
       res=List()//to allow for promotion res to imm
-      Size i0=db.findColumn(This.p0())
+      Size i0=db.findColumn(label=This.p0())
       while db.next() (res.add(right=R.#immK(
-        p0=T0.from(string=db.get(index=i0))
+        p0=T0.from(string=db.get(i0))
         )))
       res
       )
@@ -25,15 +25,15 @@ K2=Trait:{
   T1=ColT.code()
   class method S p0()
   class method S p1()
-  mut method List collectResults()=(
+  mut method List collectResults()[DB.Fail]=(
     lent db=this.#db()
       (
       res=List()
-      Size i0=db.findColumn(This.p0())
-      Size i1=db.findColumn(This.p1())
+      Size i0=db.findColumn(label=This.p0())
+      Size i1=db.findColumn(label=This.p1())
       while db.next() (res.add(right=R.#immK(
-        p0=T0.from(string=db.get(index=i0))
-        p1=T1.from(string=db.get(index=i1))
+        p0=T0.from(string=db.get(i0))
+        p1=T1.from(string=db.get(i1))
         )))
       res
       )

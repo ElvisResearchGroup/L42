@@ -1,0 +1,43 @@
+class method S(HasToS that)=(
+  var S s=that.toS()
+  var b=Bool.false()
+  if HasToS.Raw r=that (b:=Bool.true())
+  if b s:=S"'%this.escape(s)'"
+  else s:=this.validate(s)
+  s
+  )
+class method S validate(S that)={//properly propagate S.ParseError
+  if that==S"true" || that==S"false" (return that)
+  _=Size.from(string=that)
+  return that
+  }
+class method S escape(S that)=(
+  var res=that
+  res:=res.replace(S.nl() with=S"\n")
+  res:=res.replace(S.dq() with=S"\%S.dq()")
+  res:=res.replace(S"'" with=S"\'")
+  res:=res.replace(S"_" with=S"\_")
+  res:=res.replace(S"\" with=S"\\")
+  //res:=res.replace(?? with=S"\b")
+  //res:=res.replace(?? with=S"\r")
+  //res:=res.replace(?? with=S"\%")
+  //res:=res.replace(?? with=S"\t")//TODO: tabs in strings?
+  //then check that all the characters are "valid", to avoid unicode surprises?
+  res
+  )
+class method S (S that,S key,HasToS val)=
+  that.replace(S"@%key" with=FormatPar(val))
+class method mut S.List xs(S that)={//TODO: enrich meth typing so we avoid the mut result
+  acc=S.List()
+  var res=that
+  loop (
+   i0=res.indexOf(S"@")
+   if i0==Size"-1" return acc
+   i=res.indexOf(S" ", from=i0)
+   i1=(if i==Size"-1" res.size() else i)
+   p=res.subString(start=i0+1Size,end=i1)
+   res:=res.subString(start=i1, end=\size)
+   _=Name"%(p)()"//will throw error if p is not a valid identifier
+   acc.add(right=p)
+   )
+  }

@@ -618,6 +618,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     return p!=null && !p.isNCs();
     }
   @Override public void visitOpUpdate(Full.OpUpdate op){
+    super.visitOpUpdate(op);
     var x=op.x();
     if(!declaredVar.contains(x)){err(Err.nonVarBindingOpUpdate(x,op.op().inner));}
     if(declaredVarFwd.contains(x)){err(Err.fwdVarBindingOpUpdate(x,op.op().inner));}

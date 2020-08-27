@@ -1,25 +1,20 @@
 Traits=Collection.list(Trait)
 
-FormatPar={
-  class method S (S that,S key,HasToS val)=
-    that.replace(S"@%key" with=Collection.AnyToS(val))
-  class method mut S.List xs(S that)={//TODO: enrich meth typing so we avoid the mut result
-    acc=S.List()
-    var res=that
-    loop (
-      i0=res.indexOf(S"@")
-      if i0==Size"-1" return acc
-      i=res.indexOf(S" ", from=i0)
-      i1=(if i==Size"-1" res.size() else i)
-      p=res.subString(start=i0+1Size,end=i1)
-      res:=res.subString(start=i1, end=\size)
-      _=Name"%(p)()"//will throw error if p is not a valid identifier
-      acc.add(right=p)
-      )
-    }
-  }
+FormatPar={...}
 Collecters={...}
 Executers={...}
+SquareBuilder={
+  mut Introspection.Nested.List that
+  class method mut This (mut Introspection.Nested.List that)
+  class method mut This #query#squareBuilder()=This(\())
+  class method Bool #shortCircutSquare()=Bool.true()
+  mut method Void #squareAdd(class Any that)
+    =this.#that().add(right=Introspection.Nested.from(classAny=that))
+  method Library #from(S.StringBuilder stringLiteral)={
+    return Class:This1(types=this.that(),sql=S.#from(stringLiteral=stringLiteral))()
+    whoops Message.Guard
+    }
+  }
 //----------
 Introspection.Nested.List types
 S sql

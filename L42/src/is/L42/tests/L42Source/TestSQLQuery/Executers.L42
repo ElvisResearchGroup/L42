@@ -1,9 +1,9 @@
 E0=Trait:{
   List={}
   mut method mut DB #db()
-  mut method List collectResults()
+  mut method List collectResults()[DB.Fail]
   class method S sql()
-  mut method List ()=(
+  mut method List ()[DB.Fail]=(
     var S sql=This.sql()
     this.#db().executeQuery(sql=sql)
     this.collectResults()
@@ -13,10 +13,10 @@ E1=Trait:{
   List={}
   T0={[HasToS]}
   mut method mut DB #db()
-  mut method List collectResults()
+  mut method List collectResults()[DB.Fail]
   class method S sql()
   class method S p0()
-  mut method List (T0 p0)=(
+  mut method List (T0 p0)[DB.Fail]=(
     var S sql=This.sql()
     sql:=FormatPar(sql,key=This.p0(),val=p0)
     this.#db().executeQuery(sql=sql)
@@ -28,11 +28,11 @@ E2=Trait:{
   T0={[HasToS]}
   T1={[HasToS]}
   mut method mut DB #db()
-  mut method List collectResults()
+  mut method List collectResults()[DB.Fail]
   class method S sql()
   class method S p0()
   class method S p1()
-  mut method List (T0 p0,T1 p1)=(
+  mut method List (T0 p0,T1 p1)[DB.Fail]=(
     var S sql=This.sql()
     sql:=FormatPar(sql,key=This.p0(),val=p0)
     sql:=FormatPar(sql,key=This.p1(),val=p1)

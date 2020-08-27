@@ -1,11 +1,19 @@
 JavaCode={...}
 @Public Fail=Message:{[Message.Guard]}
+J={
+  Fail={[HasToS]}
+  class method mut This #$of()
+  mut method Void loadCode(S fullName, S code)[Fail]
+  mut method S askEvent(S key, S id, S msg)[Fail]
+  }
 mut J j
-@Public class method mut DB #$of(S connection)[Fail]=(
-  j=J.#$of()
+class method mut This(mut J j)
+@Public class method mut This #$of(S connection)[Fail]
+  =This(j=J.#$of(),connection=connection)
+@Public class method mut This (mut J j, S connection)[Fail]=(
   j.loadCode(fullName=S"db.DB",code=JavaCode(url=connection))
   catch J.Fail x exception Fail"%x" // better then using .with(cause=x)?
-  DB(j=j)
+  This(j=j)
   )
 @Public mut method Void execute(S sql)[Fail]=(
   _=this.#j().askEvent(key='DB, id='execute(sql),msg=sql)
@@ -21,6 +29,14 @@ mut J j
   res==S"true")
 @Public mut method S get(S label)[Fail]={
   return this.#j().askEvent(key='DB, id='get(label),msg=label)
+  catch J.Fail x exception Fail"%x"
+  }
+@Public mut method Size findColumn(S label)[Fail]={
+  return Size.from(string=this.#j().askEvent(key='DB, id='findColumn(label),msg=label))
+  catch J.Fail x exception Fail"%x"
+  }
+@Public mut method S get(Size that)[Fail]={
+  return this.#j().askEvent(key='DB, id='get(that),msg=that.toS())
   catch J.Fail x exception Fail"%x"
   }
 @Public mut method Void kill()=(

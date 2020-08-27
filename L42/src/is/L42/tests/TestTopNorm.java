@@ -43,6 +43,19 @@ public class TestTopNorm{
   @Test public void t1(){top(
     "{}",
     "{#norm{}}"
+  );}@Test public void tNestedInterface(){top("""
+    {A={interface method Void v() B={interface [This1]}}
+    C={[This1.A.B] method Void v()=void
+      #norm{typeDep=This1.A.B refined=v()}}} 
+    """,
+    "{#norm{}}"
+  //the issue may be that we have nested return statements (the if have its own desugared)
+  );}@Test public void tIfInterface(){top("""
+    {A={interface }
+    C={method Void v(A that)={if Void x=that void return void}
+    }} 
+    """,
+    "{#norm{}}"      
   );}@Test public void notWellFormed0(){top("""
     {A={
        class method Library foo(Library a,Library b)=b

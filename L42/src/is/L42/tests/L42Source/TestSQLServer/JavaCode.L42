@@ -21,6 +21,8 @@ class method S (S url)=S"""%
   |      "executeQuery(sql)",this::executeQuery,
   |      "next()",this::next,
   |      "get(label)",this::get,
+  |      "findColumn(label)",this::findColumn,
+  |      "get(that)",this::getIndex,
   |      "kill()",this::kill
   |      );
   |    System.out.println("{{registering}}");
@@ -44,6 +46,14 @@ class method S (S url)=S"""%
   |  String get(String field)throws SQLException{
   |    if(r==null){return "";}
   |    return r.getString(field);
+  |    }
+  |  String findColumn(String field)throws SQLException{
+  |    if(r==null){return "";}
+  |    return r.findColumn(field)+"";
+  |    }
+  |  String getIndex(String that)throws SQLException{
+  |    if(r==null){return "";}
+  |    return r.getString(Integer.parseInt(that));
   |    }
   |  String kill(String empty)throws SQLException{
   |    System.out.println("killing JVM0");

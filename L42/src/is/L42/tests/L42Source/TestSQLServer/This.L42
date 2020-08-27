@@ -1,9 +1,29 @@
 reuse [AdamTowel]
+Queries={...}
+
+Lib=Trait:{reuse [AdamTowel]
+  DB=Trait:{...}
+  Top={
+    class method Library(class Any javaServer)[Trait.InvalidMap]={
+      return Class:Organize:DB['J=>javaServer]
+      catch Trait.InvalidMap im exception im
+      whoops Message.Guard
+      }
+    }
+  }
+DeployRawDB = Deploy.module(
+  url='RawDB
+  code=Lib.code()
+  name='Top
+  )
+
 J0=Load:{reuse[JavaServer]}
 J=J0(slaveName=S"dbServer{}")
-Queries={...}
-DB=Organize:Data:{...}
+DBLib=Load:{reuse [#$RawDB]}
+DB=DBLib(javaServer=J)
+
 Main2=(
+  outs=S.List()
   db=DB.#$of(connection=S"jdbc:derby:Test1;create=true")
   (db.execute(sql=Queries.drop())
   catch DB.Fail f (Debug(f)) void)
@@ -15,6 +35,7 @@ Main2=(
     name=db.get(label=S"name")
     age=db.get(label=S"age")
     Debug(S"%id %name %age")
+    outs.add(right=S"%id %name %age")
     )
   db.execute(sql=Queries.insert2())
   db.executeQuery(sql=Queries.select())
@@ -23,39 +44,13 @@ Main2=(
     name=db.get(label=S"name")
     age= db.get(label=S"age")
     Debug(S"%id %name %age")
+    outs.add(right=S"%id %name %age")
     )
   db.execute(sql=Queries.drop())
-  db.kill()
+  db.kill()  
+  {}:Test"fromDB1"(expected=S"1 Bob 25"  actual=outs.val(0\))
+  {}:Test"fromDB2"(expected=S"1 Bob 25"  actual=outs.val(1\))
+  {}:Test"fromDB3"(expected=S"2 Alice 27"  actual=outs.val(2\))
+  {}:Test"fromDB4"(outs.size()==3Size)
   void
   )
-/*Main=(
-  Debug(S"Start1")
-  j=J.#$of()
-  j.loadCode(fullName=S"db.DB",code=JavaCode(url=S"jdbc:derby:Test1;create=true"))
-  Debug(S"Start2")
-  //_=j.nextEvent(keys='DB)//wait for the first event timeout
-  _=j.askEvent(key='DB, id='execute(sql),msg=Queries.drop())
-  _=j.askEvent(key='DB, id='execute(sql),msg=Queries.createT())
-  _=j.askEvent(key='DB, id='execute(sql),msg=Queries.insert())
-  _=j.askEvent(key='DB, id='executeQuery(sql),msg=Queries.select())
-  while(Bool.true()) (
-    res=j.askEvent(key='DB, id='next(),msg=S"")
-    if res!=S"true" Break()
-    id=j.askEvent(key='DB, id='get(label),msg=S"id")
-    name= j.askEvent(key='DB, id='get(label),msg=S"name")
-    age= j.askEvent(key='DB, id='get(label),msg=S"age")
-    Debug(S"%id %name %age")
-    )
-  _=j.askEvent(key='DB, id='execute(sql),msg=Queries.insert2())
-  _=j.askEvent(key='DB, id='executeQuery(sql),msg=Queries.select())
-  while(Bool.true()) (
-    res=j.askEvent(key='DB, id='next(),msg=S"")
-    if res!=S"true" Break()
-    id=j.askEvent(key='DB, id='get(label),msg=S"id")
-    name= j.askEvent(key='DB, id='get(label),msg=S"name")
-    age= j.askEvent(key='DB, id='get(label),msg=S"age")
-    Debug(S"%id %name %age")
-    )
-  _=j.askEvent(key='DB, id='kill(),msg=S"")
-  void
-  )*/

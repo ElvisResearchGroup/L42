@@ -1,6 +1,8 @@
-class method mut This #$of()
-mut method Size findColumn(S that)=0Size
-mut method Bool next()=Bool.false()
-mut method S get(Size index)=S""
-mut method Void executeQuery(S sql)=Debug(sql)
+Fail={}
+class method mut This #$of(S connection)[Fail]
+mut method Size findColumn(S label)[Fail]
+mut method Bool next()[Fail]
+mut method S get(Size that)[Fail]
+mut method Void executeQuery(S sql)[Fail]
 Query={...}
+class method Query.SquareBuilder query(Query.SquareBuilder squareBuilder)=squareBuilder
