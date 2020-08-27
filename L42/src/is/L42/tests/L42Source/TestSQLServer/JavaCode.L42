@@ -1,8 +1,9 @@
-class method S (S url)=S"""%
+class method S (S url)=S"""%%
   |package db;
   |import is.L42.platformSpecific.javaEvents.Event;
   |import java.sql.Connection;
   |import java.sql.DriverManager;
+  |import java.sql.DatabaseMetaData;
   |import java.sql.ResultSet;
   |import java.sql.SQLException;
   |import java.sql.Statement;
@@ -10,12 +11,14 @@ class method S (S url)=S"""%
   |public class DB{
   |  Connection c;
   |  Statement s;
+  |  DatabaseMetaData m;
   |  ResultSet r;
   |  static interface Ask{String of(String msg) throws SQLException;}
   |  public DB()throws SQLException{
   |    Event.class.getClass();
-  |    c=DriverManager.getConnection("%url");
+  |    c=DriverManager.getConnection("%%url");
   |    s = c.createStatement();
+  |    m = c.getMetaData();
   |    Map<String,Ask> hm=Map.of(
   |      "execute(sql)",this::execute,
   |      "executeQuery(sql)",this::executeQuery,
@@ -23,11 +26,11 @@ class method S (S url)=S"""%
   |      "get(label)",this::get,
   |      "findColumn(label)",this::findColumn,
   |      "get(that)",this::getIndex,
+  |      "queryTables()",this::queryTables,
+  |      "queryColumns(tableName)",this::queryColumns,
   |      "kill()",this::kill
   |      );
-  |    System.out.println("{{registering}}");
   |    Event.registerAskEvent("DB",(k,id,msg)->{
-  |      System.out.println("{{"+k+" "+id+" "+msg+"}}");
   |      try{return hm.get(id).of(msg);}
   |      catch(NullPointerException npe){throw new RuntimeException("Invalid id: "+id);}
   |      catch(SQLException e){throw new RuntimeException(e);}
@@ -55,12 +58,20 @@ class method S (S url)=S"""%
   |    if(r==null){return "";}
   |    return r.getString(Integer.parseInt(that));
   |    }
-  |  String kill(String empty)throws SQLException{
-  |    System.out.println("killing JVM0");
-  |    if(r!=null){s.close();r.close();}
-  |    System.out.println("killing JVM1");
-  |    System.exit(0);
+  |  String queryTables(String unused)throws SQLException{
+  |    if(r!=null){r.close();}
+  |    r=m.getTables(null, null, "%",new String[]{"TABLE"});
   |    return "";
+  |    }
+  |  String queryColumns(String tableName)throws SQLException{
+  |    if(r!=null){r.close();}
+  |    r=m.getColumns(null, null, tableName.toUpperCase(), null);
+  |    return "";
+  |    }
+  |  String kill(String empty)throws SQLException{
+  |    if(r!=null){s.close();r.close();}
+  |    System.exit(0);
+  |    return "";//unreachable
   |    }
   |  }  
 """

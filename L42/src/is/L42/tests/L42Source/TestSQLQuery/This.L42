@@ -7,22 +7,10 @@ DBLib=Load:{reuse [RawDB]}
 DB=Class:Trait(DBLib(javaServer=J)):{...}
 Point=Data:{Num x, Num y}
 Points=Collection.list(Point)
-/*MyQ=Class:DB.Query(
-  types=Introspection.Nested.List[
-    Introspection.Nested.from(classAny=Points);
-    Introspection.Nested.from(classAny=S);
-    ]
-  sql=S"SELECT * FROM Foo WHERE z!=@name"
-  )()
-*/
 MyQ=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
-DBAPI=Organize:Data:{
+DBAPI=DB.QueryBox:{
   @Public A=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
   @Public B=DB.query[Points;Num;]"SELECT * FROM Foo WHERE x!=@num"
-  mut DB db
-  @Public class method mut This(mut DB that)=This(db=that)
-  @Public mut method mut A a()=A(this.#db())
-  @Public mut method mut B b()=B(this.#db())
   }
 Main=(
   Debug(S"Hello world1")
@@ -35,6 +23,6 @@ Main=(
   Debug(ps)
   Debug(q(name=S"A3"))
   Debug(q(name=S"A3"))
-  Debug(DBAPI(db).a()(name=S"Bob"))
+  Debug(DBAPI(db).queryA()(name=S"Bob"))
   db.execute(sql=S"DROP TABLE Foo")
   )

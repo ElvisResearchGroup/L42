@@ -43,6 +43,13 @@ public class TestTopNorm{
   @Test public void t1(){top(
     "{}",
     "{#norm{}}"
+  );}@Test public void interpolation(){top("""
+    {A={class method Void v()=Void\"\"\"%
+       |a%"b
+       \"\"\"
+     }} 
+     """,
+     "{#norm{}}"
   );}@Test public void tNestedInterface(){top("""
     {A={interface method Void v() B={interface [This1]}}
     C={[This1.A.B] method Void v()=void

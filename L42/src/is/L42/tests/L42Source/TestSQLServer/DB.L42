@@ -39,6 +39,14 @@ class method mut This(mut J j)
   return this.#j().askEvent(key='DB, id='get(that),msg=that.toS())
   catch J.Fail x exception Fail"%x"
   }
+@Public mut method Void queryTables()[Fail]=(
+  _=this.#j().askEvent(key='DB, id='queryTables(),msg=S"")
+  catch J.Fail x exception Fail"%x"
+  void)
+@Public mut method Void queryColums(S tableName)[Fail]=(
+  _=this.#j().askEvent(key='DB, id='queryColumns(tableName),msg=tableName)
+  catch J.Fail x exception Fail"%x"
+  void)
 @Public mut method Void kill()=(
   _=this.#j().askEvent(key='DB, id='kill(),msg=S"")
   catch J.Fail _ (void)

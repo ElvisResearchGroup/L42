@@ -17,7 +17,7 @@ Main=(
     expected=S"{method Void b()=(..)A={#typed{}}#typed{}@{hello world}}"
     )
   )
-HW=Trait.LiftS(S"Hello World")
+HW=Class:Trait.LiftS(S"Hello World")
 TestLiftS=(
   Debug(HW())
   {}:Test"TestLiftS"(actual=HW()

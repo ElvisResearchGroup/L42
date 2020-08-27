@@ -1,10 +1,21 @@
-OneQ=Trait:{}
-
-DBAPI=Organize:Data:{
-  @Public A=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
-  @Public B=DB.query[Points;Num;]"SELECT * FROM Foo WHERE x!=@num"
-  mut DB db
-  @Public class method mut This(mut DB that)=This(db=that)
+ClassOperators={class method class This1()=This1}
+Fail=Message:{[Message.Guard]}
+OneQ=Trait:{
+  @Public A={class method mut This(mut DB that)}
+  mut method mut DB #db()
   @Public mut method mut A a()=A(this.#db())
-  @Public mut method mut B b()=B(this.#db())
+  }
+CloseQ=Trait:{
+  class method mut This(mut DB db)
+  @Public class method mut This(mut DB that)=This(db=that)  
+  }
+class method Library :(Library lib)[Fail,Class.IncoherentClass]=Class:this:Trait(lib)
+class method Trait :(Trait trait)[Fail]={
+  var res=CloseQ()
+  for n in trait.nested().nesteds() (
+    if Name"A"==n.nameFromRoot() (res+=OneQ['a()=>\"query%(n.outerName())()"])
+    else (res+=OneQ['A=>n.nameFromRoot();'a()=>\"query%(n.outerName())()"])
+    )
+  return Organize:Data:(res+trait)
+  catch Message.Guard g exception Fail"".with(cause=g)
   }
