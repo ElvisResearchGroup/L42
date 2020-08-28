@@ -71,6 +71,13 @@ public class General {
     return a.filter(clazz::isInstance).map(clazz::cast)
       .collect(Collectors.toList());
     }
+  public static <T> List<T> mergeNew(List<T>l1,List<T>l2){
+    //l1,l2 may be ArrayList.Sublist, and could give serialization issues
+    ArrayList<T> res=new ArrayList<>();
+    res.addAll(l1);
+    res.addAll(l2);
+    return Collections.unmodifiableList(res);
+    }
   public static <T> List<T> merge(List<T>l1,List<T>l2){
     if(l1.isEmpty()){return l2;}
     if(l2.isEmpty()){return l1;}

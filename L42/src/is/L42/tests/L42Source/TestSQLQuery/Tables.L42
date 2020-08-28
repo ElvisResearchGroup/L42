@@ -1,0 +1,36 @@
+Fail=Message:{[Message.Guard]}
+class method Library (mut DB db)[Fail]={
+  db.queryTables()
+  i=db.findColumn(label=S"TABLE_NAME")
+  //tables=S.List()(while db.next()\res<=db.get(i))
+  var res=Trait()
+  while db.next() (res+=this.makeTable(db=db,name=db.get(i)))
+  return Class:res
+  catch Message.Guard g exception Fail"".with(cause=g)
+  }
+ColTrait=Trait:{T={} method T f()}
+class method Trait makeTable(mut DB db,S name)[Fail]=(
+  db.queryColums(tableName=name)
+  n=db.findColumn(label=S"COLUMN_NAME")
+  t=db.findColumn(label=S"TYPE_NAME")
+  var res=Trait()
+  while db.next() (
+    res+=this.col(name=db.get(n), type=db.get(t))
+    )
+  res:=(Data:res)['This=>Name"%name.toCamel()"]
+  catch Message.Guard g exception Fail"".with(cause=g)
+  res
+  )
+class method class Any type(S that)={
+  if that==S"INTEGER" || that==S"INT" return Num
+  if that==S"VARCHAR" || that==S"CHAR" return S
+  if that==S"BOOLEAN" || that==S"BOOL" return Bool
+  error X"unsupported db table type %that"//TODO:
+  }
+class method Trait col(S name,S type)[Fail]={
+  t=this.type(type)
+  n=Name"%(name.toCamelLow())()"
+  if n==Name"f()" return ColTrait['T=>t]
+  return ColTrait['T=>t;'f()=>n]
+  catch Message.Guard g exception Fail"".with(cause=g)
+  }

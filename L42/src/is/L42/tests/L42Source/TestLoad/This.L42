@@ -11,6 +11,7 @@ Deployed1=Deploy.module(
   name='Main
   )
 Deployed2=Load:{reuse[#$MiniLib]}
+Deployed3={B={A=Load:{reuse[#$MiniLib]}}}
 
 Test1=(
   {}:Test"BaseLocal"(
@@ -21,16 +22,15 @@ Test1=(
     expected=S"hello L42"
     actual=Deployed2.hello(S"L42")
     )
+  Debug(Deployed3.B.A.hello(S"L42"))
+  {}:Test"BaseRemoteIn"(
+    expected=S"hello L42"
+    actual=Deployed3.B.A.hello(S"L42")
+    )
   )
   
   /*
 TODO:
 - remove unused code in load
 - load must throw error if the map can not be completed
-- organize must be buggy, there is no way the internal Public is recognized
-as Public for the outer organize??
-  
-Then caching top level
-
-Then IDE
 */

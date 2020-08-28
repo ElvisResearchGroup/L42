@@ -165,11 +165,24 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     g=oldG;
     }
   private G typeDs(G g0,List<D>allDs, HashSet<Mdf> mdfs) {
+    //avoiding recursion, it would go in stack overflow for long generated
+    //ds when expanding long string literals
     if(allDs.isEmpty()){return g0;}
+    var mutDs=new ArrayList<>(allDs);
+    while(!mutDs.isEmpty()){
+      g0=typeDsLoops(g0,mutDs,mdfs);
+      }
+    return g0;
+  }
+  private G typeDsLoops(G g0,ArrayList<D>mutDs, HashSet<Mdf> mdfs){
+    assert !mutDs.isEmpty();
     var fvs=new ArrayList<X>();
-    int split=splitDs(allDs,fvs);
-    var txe=allDs.subList(0, split+1);
-    var restDs=allDs.subList(split+1,allDs.size());
+    int split=splitDs(mutDs,fvs);
+    var away=mutDs.subList(0, split+1);
+    var txe=L(away.stream());
+    int size=mutDs.size();
+    away.clear();
+    assert size==split+1+mutDs.size():size+" "+split+" "+mutDs.size();
     G g1=g0.plusEqFwdOnlyMutOrImm(txe);
     for(var d:txe){
       g=g1;
@@ -191,7 +204,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       });
     if(fwdInFreeMdfs){g2=g0.plusEqFwdP(txe);}
     else{g2=g0.plusEq(txe);}
-    return typeDs(g2,restDs,mdfs); 
+    return g2; 
     }
   private int splitDs(List<D> ds,ArrayList<X> xs){//cut will be from 0 to i included
     if (ds.isEmpty()){return 0;}

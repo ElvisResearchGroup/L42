@@ -1,0 +1,60 @@
+class method S from(This string)
+@Public Map=Collection$.map(key=S,val=S)
+@Public Set=Collection$.set(S)
+@Public @Cache.Lazy class method S$List allUpLow()=S$List[
+  'Aa;'Bb;'Cc;'Dd;'Ee;'Ff;'Gg;'Hh;'Ii;'Jj;'Kk;'Ll;'Mm;
+  'Nn;'Oo;'Pp;'Qq;'Rr;'Ss;'Tt;'Uu;'Vv;'Ww;'Xx;'Yy;'Zz;
+  ]
+@Public @Cache.Lazy class method Map lowToUp()=(
+  map=Map[]
+  for lu in this.allUpLow() (map.put(
+    key=lu.subString(start=1\ end=2\)
+    val=lu.subString(start=0\ end=1\)
+    ))
+  map
+  )
+@Public @Cache.Lazy class method Map upToLow()=(
+  map=Map[]
+  for lu in this.allUpLow() (map.put(
+    key=lu.subString(start=0\ end=1\)
+    val=lu.subString(start=1\ end=2\)
+    ))
+  map
+  )
+
+@Public method S toCamel()={
+  that=This.from(string=this)
+  if that==S"" return that
+  s1=that.subString(start=0\ end=1\)
+  res=that.subString(start=1\ end=\size)
+  return This.up1(char=s1)++This.toCamelLow(res)
+  }
+@Public method S toCamelLow()=This.toCamelLow(This.from(string=this))
+class method S toCamelLow(S that)={
+  if that==S"" return that
+  s1=that.subString(start=0\ end=1\)
+  res=that.subString(start=1\ end=\size)
+  if res==S"" return this.low1(char=s1)
+  if s1==S"_" (
+    s2=res.subString(start=0\ end=1\)
+    res2=res.subString(start=1\ end=\size)
+    return s2++this.toCamelLow(res2)
+    )
+  return this.low1(char=s1)++this.toCamelLow(res)
+  }
+class method S low1(S that)={
+  if that==S"" return that
+  s1=that.subString(start=0\ end=1\)
+  res=that.subString(start=1\ end=\size)
+  return this.low1(char=s1)++res
+  }
+class method S low1(S char)={
+  r=this.upToLow().val(key=char)
+  if r return r.get()<:S
+  return char
+  }
+class method S up1(S char)={
+  r=this.lowToUp().val(key=char)
+  if r return r.get()<:S
+  return char
+  }

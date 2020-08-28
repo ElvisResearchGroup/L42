@@ -53,7 +53,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     if(clazz==P.pLibrary){return instanceLibrary;}
     return fromClass(clazz.toNCs());
     }
-  static public L42£Nested fromClassInBinded(P clazz,C _top){
+  /*static public L42£Nested fromClassInBinded(P clazz,C _top){
     if(clazz==P.pAny){return instanceAny;}
     if(clazz==P.pVoid){return instanceVoid;}
     if(clazz==P.pLibrary){return instanceLibrary;}
@@ -61,10 +61,11 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     if(p.n()!=0){return fromClass(p.withN(p.n()-1));}
     assert _top!=null;
     return fromClass(p.withCs(pushL(p.cs(),_top)));
-    }
+    }*/
   static public L42£Nested fromClass(P.NCs clazz){
     L l=Resources.currentP._ofCore(clazz);
-    assert l!=null;
+    assert l!=null:
+      clazz;
     return new L42£Nested(posStr(l.poss()),l,l,L42£Name.empty,clazz).myNorm();
     }
   static public L42£Nested fromLibrary(L42£Library l){

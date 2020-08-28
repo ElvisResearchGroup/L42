@@ -14,6 +14,7 @@ import is.L42.generated.P;
 import is.L42.meta.L42£Name;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
+import is.L42.platformSpecific.javaTranslation.Resources;
 
 public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
     public L42£Nested root(){return root;}
@@ -25,7 +26,10 @@ public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
     public L42£Nested nested(){
       if(doc._pathSel()==null){throw new IndexOutOfBoundsException("The Doc has no annotated Path");}
       P p=doc._pathSel().p();
-      if(root.isBinded()){return L42£Nested.fromClassInBinded(p,this.root._outerC());}
+      if(root.isBinded()){
+        var pp=Resources.currentP.from(p, root._classAny.toNCs());
+        return L42£Nested.fromClass(pp);
+        }
       var p0=p.toNCs();
       if(p0.n()>nameFromRoot.cs.size()){
         p0=p0.withN(p0.n()-(nameFromRoot.cs.size()+1));

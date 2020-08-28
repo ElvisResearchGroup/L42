@@ -196,6 +196,7 @@ public class State implements Serializable{
       LL ll=p.of(pi,ce.poss());//propagate errors for path not existent
       Core.L l=(Core.L)ll;
       if(!l.info().isTyped()){
+        //TODO: first step, check that all the used names in p/pi.typeDeps exists
         new CircularityIssue(pi,l,p,ce,moreNCs).reportError();
         }
       }

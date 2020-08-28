@@ -105,7 +105,9 @@ public interface P extends Visitable<P> {
 
     @java.lang.SuppressWarnings("all")
     public NCs(final int n, final List<C> cs) {
-      this.n = n;
+      this.n = n;      
+      assert !cs.getClass().getName().contains("SubList"):
+        cs;
       this.cs = cs;
     }
 

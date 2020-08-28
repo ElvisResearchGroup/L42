@@ -1,9 +1,13 @@
 Fail={}
-class method mut This #$of(S connection)[Fail]
+class method mut This #$of()[Fail]
 mut method Size findColumn(S label)[Fail]
 mut method Bool next()[Fail]
 mut method S get(Size that)[Fail]
 mut method Void executeQuery(S sql)[Fail]
-Query={...}
-QueryBox={...}
-class method Query.SquareBuilder query(Query.SquareBuilder squareBuilder)=squareBuilder
+mut method Void queryTables()[Fail]
+mut method Void queryColums(S tableName)[Fail]
+@Public Query={...}
+@Public QueryBox={...}
+@Public Tables={...}
+@Public mut method Library tables()[Tables.Fail]=Tables(db=this)
+@Public class method Query.SquareBuilder query(Query.SquareBuilder squareBuilder)=squareBuilder

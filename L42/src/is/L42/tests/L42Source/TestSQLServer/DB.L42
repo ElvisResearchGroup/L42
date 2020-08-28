@@ -8,12 +8,13 @@ J={
   }
 mut J j
 class method mut This(mut J j)
-@Public class method mut This #$of(S connection)[Fail]
-  =This(j=J.#$of(),connection=connection)
-@Public class method mut This (mut J j, S connection)[Fail]=(
-  j.loadCode(fullName=S"db.DB",code=JavaCode(url=connection))
-  catch J.Fail x exception Fail"%x" // better then using .with(cause=x)?
-  This(j=j)
+@Public class method S connection()
+@Public class method mut This #$of()[Fail]
+  =This(J.#$of())
+@Public class method mut This (mut J that)[Fail]=(
+  that.loadCode(fullName=S"db.DB",code=JavaCode(url=This.connection()))
+  catch J.Fail x exception Fail"%x" // in this case it is better then using .with(cause=x)?
+  This(j=that)
   )
 @Public mut method Void execute(S sql)[Fail]=(
   _=this.#j().askEvent(key='DB, id='execute(sql),msg=sql)

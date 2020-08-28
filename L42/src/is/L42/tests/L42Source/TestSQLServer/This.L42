@@ -4,8 +4,10 @@ Queries={...}
 Lib=Trait:{reuse [AdamTowel]
   DB=Trait:{...}
   Top={
-    class method Library(class Any javaServer)[Trait.InvalidMap]={
-      return Class:Organize:DB['J=>javaServer]
+    class method Trait dbTrait()=DB()
+    class method Library(S that, class Any javaServer)[Trait.InvalidMap]={
+      t=Trait.LiftS(that)['#apply()=>'connection()]
+      return Class:Organize:this.dbTrait()['J=>javaServer]:t
       catch Trait.InvalidMap im exception im
       whoops Message.Guard
       }
@@ -20,11 +22,11 @@ DeployRawDB = Deploy.module(
 J0=Load:{reuse[JavaServer]}
 J=J0(slaveName=S"dbServer{}")
 DBLib=Load:{reuse [#$RawDB]}
-DB=DBLib(javaServer=J)
+DB=DBLib(S"jdbc:derby:Test1;create=true",javaServer=J)
 
 Main2=(
   outs=S.List()
-  db=DB.#$of(connection=S"jdbc:derby:Test1;create=true")
+  db=DB.#$of()
   (db.execute(sql=Queries.drop())
   catch DB.Fail f (Debug(f)) void)
   db.execute(sql=Queries.createT())

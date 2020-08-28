@@ -110,18 +110,13 @@ public class Event{
     }
   public static CompletableFuture<String> askEvent(String key,String id,String msg){
     var v=askCallbacks.get(key);
-    System.out.println(ProcessHandle.current().pid()+" Request for askEvent "+key+" res= "+v+" "+System.identityHashCode(askCallbacks)+" "+System.identityHashCode(Event.class));
-    System.out.println(askCallbacks.keySet());
     if(v==null){return Event.defaultAskAction;}
     return CompletableFuture.supplyAsync(()->v.accept(key, id, msg), executor);
     }
   public static void registerAskEvent(String key,Function3 c){
-    System.out.println(ProcessHandle.current().pid()+" Registered askEvent "+key+" val= "+c+" "+System.identityHashCode(askCallbacks)+" "+System.identityHashCode(Event.class));
     askCallbacks.put(key,c);
-    System.out.println("looking back "+key+" val= "+askCallbacks.get(key));
     }
   public static void resetAskEvent(String key){
-    System.out.println(ProcessHandle.current().pid()+" Reset askEvent "+key);
     askCallbacks.remove(key);
     }
   private static Consumer3 executorAction(Consumer3 c){

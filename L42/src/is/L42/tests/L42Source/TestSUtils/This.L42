@@ -1,0 +1,8 @@
+reuse [AdamTowel]
+Main=(
+  s1=S"AAAA_BBB345^_&DE"
+  Debug(s1.toCamel())
+  {}:Test""(actual=s1.toCamel() expected=S"AaaaBbb345^&de")
+  Debug(s1.toCamelLow())
+  {}:Test""(actual=s1.toCamelLow() expected=S"aaaaBbb345^&de")
+  )

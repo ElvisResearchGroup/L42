@@ -1,10 +1,24 @@
 reuse [AdamTowel]
 
-J0=Load:{reuse[JavaServer]}
-J=J0(slaveName=S"dbServer{}")
+QueryDB=Trait:{reuse [AdamTowel]
+  Top={
+    RawDB=Load:{reuse [RawDB]}
+    DB=RawDB.dbTrait():{...}
+    class method Trait dbTrait()=DB()
+    }
+  }
+DeployUnit=Deploy.module(
+  url='DB
+  code=QueryDB[clear='Top.RawDB.dbTrait();hide='Top.DB]['Top.RawDB=>'Top].code()
+  name='Top
+  )
+//-------------
+LoadJ=Load:{reuse[JavaServer]}
+J=LoadJ(slaveName=S"dbServer{}")
 
-DBLib=Load:{reuse [RawDB]}
-DB=Class:Trait(DBLib(javaServer=J)):{...}
+LoadDB=Load:{reuse[#$DB]}
+DB=LoadDB(S"jdbc:derby:Test1;create=true",javaServer=J)
+
 Point=Data:{Num x, Num y}
 Points=Collection.list(Point)
 MyQ=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
@@ -13,16 +27,33 @@ DBAPI=DB.QueryBox:{
   @Public B=DB.query[Points;Num;]"SELECT * FROM Foo WHERE x!=@num"
   }
 Main=(
-  Debug(S"Hello world1")
-  db=DB.#$of(connection=S"jdbc:derby:Test1;create=true")
-  Debug(S"Hello world2")
+  db=DB.#$of()
   db.execute(sql=S"CREATE TABLE Foo (x int,y int, z varchar(255))")
   db.execute(sql=S"INSERT INTO Foo (x,y,z) Values (1,2,'A3'),(4,5,'B6'),(7,8,'C9')")
   q=MyQ(db)
   Points ps=q(name=S"Bob")
   Debug(ps)
+  {}:Test""(actual=ps
+    expected=S"[Point(x=1, y=2); Point(x=4, y=5); Point(x=7, y=8)]")
   Debug(q(name=S"A3"))
-  Debug(q(name=S"A3"))
+  {}:Test""(actual=q(name=S"A3")
+    expected=S"[Point(x=4, y=5); Point(x=7, y=8)]")
   Debug(DBAPI(db).queryA()(name=S"Bob"))
+  {}:Test""(actual=DBAPI(db).queryA()(name=S"Bob")
+    expected=S"[Point(x=1, y=2); Point(x=4, y=5); Point(x=7, y=8)]")
+  )
+Table=DB.#$of().tables()
+AfterMain=(
+  s=Introspection.Nested.from(classAny=Table.Foo).toFullS()
+  Debug(s)
+  {}:Test""(expected=S"""
+    |{[This2.HasToS]
+    |[###]method This2.Num x()=(..)
+    |[###]method This2.Num y()=(..)
+    |[###]method This2.S z()=(..)
+    |[###]
+    """, actual=s)
+  db=DB.#$of()
   db.execute(sql=S"DROP TABLE Foo")
+  db.kill()
   )

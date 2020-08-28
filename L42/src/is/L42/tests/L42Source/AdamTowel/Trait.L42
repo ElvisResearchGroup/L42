@@ -7,11 +7,11 @@
   class method Trait resetDocs(mut DocMap squareBuilder)[Trait$InvalidName]
   class method Introspection$Nested nested()
   }
-@Public ClassOperators={class method Trait()=Trait({#norm{}})}
+@Public ClassOperators={class method Trait()=Trait()}
 @Public Library code
 class method This(Library code)
 @Public class method This(Library that)=This(code=that)
-
+@Public class method Trait ()=Trait({#norm{}})
 class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
   return This(Name$Mapping().simpleSum(a=a,b=b))
   catch error Trait$ClassClash e exception e

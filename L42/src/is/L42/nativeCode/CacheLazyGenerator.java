@@ -45,7 +45,9 @@ public class CacheLazyGenerator implements Generator{
     if(type){typeCache(mwt,j); return;}
     assert mwt.key().xs().isEmpty();
     String retT=j.typeNameStr(mwt.mh().t().p());
-    String thisT=j.typeNameStr(j.p());
+    String thisT;
+    if(mwt.mh().mdf().isClass()){thisT=J.classNameStr(j.p());}
+    else{thisT=j.typeNameStr(j.p());}
     String name=nameFromS(mwt.key());
     if(mwt.mh().mdf().isClass()){classCache(j,name);}
     if(mwt.mh().mdf().isImm()){immCache(j,name);}

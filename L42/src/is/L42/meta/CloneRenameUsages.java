@@ -4,6 +4,7 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.merge;
+import static is.L42.tools.General.mergeNew;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.popLRight;
@@ -65,7 +66,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     newP=renamedPathPrivate(nesting,newP,lastC);
     return newP.withCs(pushL(newP.cs(),last));
     }
-  private P addPrivateTail(P.NCs path,List<C> tail){return path.withCs(merge(path.cs(),tail));}
+  private P addPrivateTail(P.NCs path,List<C> tail){return path.withCs(mergeNew(path.cs(),tail));}
   private P renamedPathAux(P path){
     int nesting=whereFromTop().size();
     if(!path.isNCs()){return path;}

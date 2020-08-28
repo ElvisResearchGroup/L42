@@ -1,4 +1,8 @@
 -IDE: somehow disable insertion of random '}'
+-Consistency: Opt should have val and #val, not get
+-Consistency: should map and set also have ()? or should list only support [] to create empty collection
+-Cache.Lazy: it seams to be fine when applied on class methods of natives.
+  -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
 -when printing outline: docs need to be \n\n and
   we can sort alphabetically the members
 -TypeSystem test: it seams like imm res=this.mutMeth().mutMeth() does not work on lent this!
