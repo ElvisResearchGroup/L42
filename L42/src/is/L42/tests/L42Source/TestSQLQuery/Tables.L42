@@ -17,7 +17,7 @@ class method Trait makeTable(mut DB db,S name)[Fail]=(
   while db.next() (
     res+=this.col(name=db.get(n), type=db.get(t))
     )
-  res:=(Data:res)['This=>Name"%name.toCamel()"]
+  res:=(Data:res)['This=>Name"%name.toCamelUp()"]
   catch Message.Guard g exception Fail"".with(cause=g)
   res
   )

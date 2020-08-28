@@ -38,6 +38,13 @@ class method This sum::0(Library a,Library b)[Trait$ClassClash,Trait$MethodClash
   mut method Void #squareAdd(Name clearSingle)=this.#squareAdd(single=clearSingle->Name"")
   mut method Void #squareAdd(Name$Mapping single)=this.that(\that.mergeMap(single))
   mut method Void #squareAdd(Name hide)=this.#squareAdd(hide=>Name"")
+  mut method Void #squareAdd(Name$Mapping ignoreSelfRename)
+    =if !ignoreSelfRename.isSelfRename()
+      this.that(\that.mergeMap(deep=ignoreSelfRename))
+    
+  mut method Void #squareAdd(Name$Mapping ignoreSelfRenameSingle)
+    =if !ignoreSelfRenameSingle.isSelfRename()
+      this.that(\that.mergeMap(ignoreSelfRenameSingle))
   }
 @Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This({
   return squareBuilder.that().applyMap(this.code())

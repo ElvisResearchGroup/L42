@@ -1,8 +1,28 @@
 reuse [AdamTowel]
 Main=(
   s1=S"AAAA_BBB345^_&DE"
-  Debug(s1.toCamel())
-  {}:Test""(actual=s1.toCamel() expected=S"AaaaBbb345^&de")
+  Debug(s1.toCamelUp())
+  {}:Test""(actual=s1.toCamelUp() expected=S"AaaaBbb345^&de")
   Debug(s1.toCamelLow())
   {}:Test""(actual=s1.toCamelLow() expected=S"aaaaBbb345^&de")
+  s2=S"___AAAA_BBB345^_&DE"
+  s3=S"___aAAA_BBB345^_&DE"
+  Debug(s2.toCamelLow())
+  {}:Test""(actual=s2.toCamelLow() expected=S"___aaaaBbb345^&de")
+  Debug(s3.toCamelLow())
+  {}:Test""(actual=s3.toCamelLow() expected=S"___aaaaBbb345^&de")
+  Debug(s2.toCamelUp())
+  {}:Test""(actual=s2.toCamelUp() expected=S"___AaaaBbb345^&de")
+  Debug(s3.toCamelUp())
+  {}:Test""(actual=s2.toCamelUp() expected=S"___AaaaBbb345^&de")
+
+  Debug(s2.toStartUp())
+  {}:Test""(actual=s2.toStartUp() expected=S"___AAAA_BBB345^_&DE")
+  Debug(s3.toStartUp())
+  {}:Test""(actual=s2.toStartUp() expected=S"___AAAA_BBB345^_&DE")
+
+  Debug(s2.toStartLow())
+  {}:Test""(actual=s2.toStartLow() expected=S"___aAAA_BBB345^_&DE")
+  Debug(s3.toStartLow())
+  {}:Test""(actual=s2.toStartLow() expected=S"___aAAA_BBB345^_&DE")
   )

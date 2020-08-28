@@ -261,7 +261,9 @@ public enum TrustedOp {
   PathName("pathName",Map.of(
     Meta,use("return %s.pathName(%s);",sig(Immutable,Immutable,String,
       Class,Any))
-    )),  
+    )),
+  IsSelfRename("isSelfRename",Map.of(
+      Meta,use("return %s.isSelfRename();",sigI(Bool)))),
   //####Nested####
   FromClass("fromClass",all(
     nested("L42£Nested.fromClass(%2$s)",sig(Class,Immutable,Nested,Class,Any)),

@@ -13,8 +13,11 @@ class method Library :(Library lib)[Fail,Class.IncoherentClass]=Class:this:Trait
 class method Trait :(Trait trait)[Fail]={
   var res=CloseQ()
   for n in trait.nested().nesteds() (
-    if Name"A"==n.nameFromRoot() (res+=OneQ['a()=>\"query%(n.outerName())()"])
-    else (res+=OneQ['A=>n.nameFromRoot();'a()=>\"query%(n.outerName())()"])
+    dest=Name"%(n.outerName().toStartLow())()"
+    res+=OneQ[
+      ignoreSelfRename='A=>n.nameFromRoot();
+      ignoreSelfRename='a()=>dest
+      ]
     )
   return Organize:Data:(res+trait)
   catch Message.Guard g exception Fail"".with(cause=g)

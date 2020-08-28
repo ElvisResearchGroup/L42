@@ -5,6 +5,15 @@ class method S from(This string)
   'Aa;'Bb;'Cc;'Dd;'Ee;'Ff;'Gg;'Hh;'Ii;'Jj;'Kk;'Ll;'Mm;
   'Nn;'Oo;'Pp;'Qq;'Rr;'Ss;'Tt;'Uu;'Vv;'Ww;'Xx;'Yy;'Zz;
   ]
+class method S underscores(S that)=(
+  var rest=that
+  var res=S""
+  while rest.startsWith(S"_") (
+    rest:=rest.subString(start=1\,end=\size)
+    res++=S"_"
+    )
+  res
+  )
 @Public @Cache.Lazy class method Map lowToUp()=(
   map=Map[]
   for lu in this.allUpLow() (map.put(
@@ -21,15 +30,31 @@ class method S from(This string)
     ))
   map
   )
-
-@Public method S toCamel()={
-  that=This.from(string=this)
-  if that==S"" return that
-  s1=that.subString(start=0\ end=1\)
-  res=that.subString(start=1\ end=\size)
-  return This.up1(char=s1)++This.toCamelLow(res)
-  }
-@Public method S toCamelLow()=This.toCamelLow(This.from(string=this))
+method S$List identifierParts()={
+  tot=This.from(string=this)
+  us=This.underscores(tot)
+  usSize=us.size()
+  if tot.size()==usSize return S$List[us;S"";S""]<:S$List
+  s1=tot.subString(start=usSize,end=usSize+1\)
+  tail=tot.subString(start=usSize+1\,end=\size)
+  return S$List[us;s1;tail]<:S$List
+  } 
+@Public method S toStartLow()=(
+  id=this.identifierParts()
+  id.val(0\)++This.low1(char=id.val(1\))++id.val(2\)
+  )
+@Public method S toStartUp()=(
+  id=this.identifierParts()
+  id.val(0\)++This.up1(char=id.val(1\))++id.val(2\)
+  )
+@Public method S toCamelUp()=(
+  id=this.identifierParts()
+  id.val(0\)++This.up1(char=id.val(1\))++This.toCamelLow(id.val(2\))
+  )
+@Public method S toCamelLow()=(
+  id=this.identifierParts()
+  id.val(0\)++This.low1(char=id.val(1\))++This.toCamelLow(id.val(2\))
+  )
 class method S toCamelLow(S that)={
   if that==S"" return that
   s1=that.subString(start=0\ end=1\)

@@ -125,6 +125,15 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
+  public boolean isSelfRename(){
+    if(this.renames.size()!=1) {return false;}
+    var r=this.renames.get(0);
+    if(r.isP()){return false;}
+    if((r._s==null)!=(r._sOut==null)){return false;}
+    boolean csOk=r._cs==null || r.cs.equals(r._cs);
+    boolean sOk=r._s==null || r._s.equals(r._sOut);
+    return csOk && sOk;
+    }
   public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     L l=input.unwrap;
     L res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
