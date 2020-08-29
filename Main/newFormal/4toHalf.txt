@@ -184,6 +184,9 @@ _______
 * removeRets(empty,STz) = STz
 * removeRets(K Ks,STz) = removeRets(Ks,STz)
     K.throw!=return
+* removeRets(K Ks,STz) = empty 
+    K.throw=return,
+    Any in K.STz
 * removeRets(K Ks,STz) = removeRets(Ks,STz\K.STz)//TODO: is this removing too much? can we make a counter example?
     K.throw=return
 _______

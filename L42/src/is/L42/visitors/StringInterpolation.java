@@ -1,5 +1,6 @@
 package is.L42.visitors;
 
+import is.L42.common.EndError;
 import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Core.EVoid;
@@ -100,6 +101,11 @@ public class StringInterpolation {
         return i;
         }
       //self.close(c);
+      var lastE=self.es.get(self.es.size()-1);
+      if(lastE.length()==0){
+          self.errors.append(self.pos + Err.stringInterpolation("<empty>","The interpolated expression is empty\n"));
+          lastE.append("void");
+          }
       self.modeToStr();
       return i-1;
       }},

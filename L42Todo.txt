@@ -36,8 +36,6 @@
   -what about Integer? what about big rational? what about arrays 
 and should wrap all the returns with normalization, so that we only return normalized numbers.
 
--fix the failing test of rename free vars
-
 -test cache in case the cached method do some exceptions/errors
   
 -add and test System.restartThreads() //or better name
@@ -45,13 +43,11 @@ and should wrap all the returns with normalization, so that we only return norma
   half could simply collect all the meth calls, and if they are typed, add the information (of course... filter caches etc)
 -Bug: CircularityIssue need to be improved by a long time 
 -circular toString in TestData?
--toLibrary in Data? is similar to the toString...
+-toLibrary in Data? is similar to the toString... now we have ListS+from(string), should we have from(ListAnys fields)? 
 -mispelling a native causes an assertion error instead of a compile error
--CachePackagePrivate 189://TODO: randomly getting assertion errors here on novel errors
-  To reproduce: run in the ide 42 with a type error, edit the 42 to get a different type errror. Run twice
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
-
+-Collections.AnyToS should consider HasToS.Raw
 
 -Test List of itself and Maps and Set of itself. The following may be needed
   re designing arraylist caching and map caching
@@ -83,7 +79,7 @@ Data.Value:
     =Data.Ensure[name.args().size()==args.size()]
     }
 
-AddDocs:  myDoc.addTo({},name=...)
+Make a more complete AddDocs?  myDoc.addTo({},name=...) currently only string docs are supported
 
  -add multi args cache for imm/class?
    They can be done by close or even by user defined decorators?
@@ -138,35 +134,6 @@ method A _methName(B b,C c)=e//and generate those 3 lines, then set _methName an
 MethName=Data:{A that,B b,C c  @Cache.Lazy method A()=that._methName(b=b,c=c)}
 @Cache.Lazy  method A methName(B b,C c)=MethName(_this=this,b=b,c=c)()
 
-
 @Cache.Lazy class method A a(B b,C c)=e
 class method A a(B b,C c)=BC(b=b,c=c)()
 BC=Data:{B b,C c  @Cache.Lazy method A()=e}
-
-
--------------
-//only imms; Data/AddKs must generate immk with not fwd,
-or generate 2 immks.
-{
-R={class method This #immK(A a, B b)}
-A={class method This from(S that)}
-B={class method This from(S that)}
-mut method R nextR()=R(
-    a=A.from(this.get(S"a"))
-    b=B.from(this.get(S"a"))
-    )
-  }
-{
-List={
-  class method This ()
-  mut method add(R right)
-  }
-R={}
-mut method R nextR()
-mut List allR()=(
-  res=List()
-  while this.next() (res.add(right=this.nextR()))
-  res
-  )
-}
-

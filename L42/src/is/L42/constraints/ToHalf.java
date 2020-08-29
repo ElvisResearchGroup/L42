@@ -291,6 +291,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private void removeRets(ArrayList<K> ks, ArrayList<ST> all,ArrayList<ST> dest){
     for(var k:ks){
       if(k.thr()!=ThrowKind.Return){continue;}
+      if(k.stz().contains(P.coreAny)){all.clear();break;}
       all.removeAll(k.stz());
       }
     dest.addAll(all);

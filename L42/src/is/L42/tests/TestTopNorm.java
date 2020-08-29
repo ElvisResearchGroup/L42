@@ -43,26 +43,63 @@ public class TestTopNorm{
   @Test public void t1(){top(
     "{}",
     "{#norm{}}"
-  );}@Test public void interpolation(){top("""
+  );}@Test public void interpolation() {topFail(EndError.NotWellFormed.class,"""
     {A={class method Void v()=Void\"\"\"%
        |a%"b
        \"\"\"
      }} 
      """,
-     "{#norm{}}"
-  );}@Test public void tNestedInterface(){top("""
+     """
+     [###]Error: ill formed string interpolation: [<empty>]
+     The interpolated expression is empty
+     [###]
+     """
+   );}@Test public void tNestedInterface(){
+   //TODO: If This1.A is omitted as implemented interface, the error is not very understandable
+   top("""
     {A={interface method Void v() B={interface [This1]}}
-    C={[This1.A.B] method Void v()=void
-      #norm{typeDep=This1.A.B refined=v()}}} 
+    C={[This1.A.B,This1.A] method Void v()=void
+      #norm{typeDep=This1.A.B,This1.A refined=v()}
+      }} 
     """,
-    "{#norm{}}"
-  //the issue may be that we have nested return statements (the if have its own desugared)
+    """
+    {A={
+      interface method Void v()
+      B={interface[This1]
+       method Void v()
+       #typed{typeDep=This1 refined=v()}
+       }
+    #typed{}}
+    C={[This1.A.B, This1.A]
+      method Void v()=void
+      #typed{typeDep=This1.A.B, This1.A refined=v()}
+      }
+    #norm{}}
+    """
   );}@Test public void tIfInterface(){top("""
     {A={interface }
     C={method Void v(A that)={if Void x=that void return void}
     }} 
     """,
-    "{#norm{}}"      
+    """
+    {A={interface #typed{}}
+    C={
+      method Void v(This1.A that)=(
+        Void fresh0_curlyX=(
+          Void fresh2_underscore=(
+            Void x=(
+              Void fresh4_underscore=return that
+              catch return Void fresh3_cast fresh3_cast
+              error void)
+            catch return Any fresh3_cast void
+            void)
+          Void fresh5_underscore=return void
+          void)
+        catch return Void fresh1_curlyX1 fresh1_curlyX1
+        error void)
+      #typed{typeDep=This1.A}}
+     #norm{}}      
+     """
   );}@Test public void notWellFormed0(){top("""
     {A={
        class method Library foo(Library a,Library b)=b
@@ -109,13 +146,16 @@ public class TestTopNorm{
        }
        B=A.foo(a={#norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=Opt, nativePar=This1.Z,This1.Z}},b={})
       }""",Err.nativeExceptionNotLazyMessage("[###]","[###]")
-      */
   );}@Test public void notWellTypedMap(){topFail(EndError.TypeError.class,"""
     {Z={#norm{nativeKind=LazyMessage}}
      A={
-       #norm{typeDep=This1.Z, coherentDep=This1.Z, watched=This1.Z,nativeKind=HIMap, nativePar=This1.Z,This1.Z,This1.Z,This1.Z}
+       #norm{typeDep=This1.Z, coherentDep=This1.Z,
+       watched=This1.Z,
+       nativeKind=HIMap,
+       nativePar=This1.Z,This1.Z,This1.Z,This1.Z}
        }
     }""",Err.nativeParameterViolatedConstraint("[###]","[###]","[###]")
+  */
   );}@Test public void t2(){top(
    "{A={} B=(void)}","{A={#typed{}}B={#typed{}}#norm{}}"
   );}@Test public void t3(){top(

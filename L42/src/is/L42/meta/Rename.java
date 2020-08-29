@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.IdentityHashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
@@ -223,18 +224,22 @@ public class Rename {
         });
       }
     }
+  int firstPrivateOf(IdentityHashMap<Core.L,Integer>map,Core.L l,LDom lDom){
+    return map.computeIfAbsent(l,l0->fresh.firstPrivateOf(l0,lDom));
+    }
   void completeMap(){
+    var assignedPrivates=new IdentityHashMap<Core.L,Integer>();
     for(Arrow a:map.values()){
       if(!a.full || !a.isEmpty()){continue;}
       if(a._s!=null){
-        int n=fresh.firstPrivateOf(p._ofCore(a.cs),a._s);
+        int n=firstPrivateOf(assignedPrivates,p._ofCore(a.cs),a._s);
         a._cs=a.cs;
         a._sOut=a._s.withUniqueNum(n);
         continue;
         }
       var popped=a.cs.subList(0,a.cs.size()-1);
       C top=a.cs.get(a.cs.size()-1);
-      int n=fresh.firstPrivateOf(p._ofCore(popped),top);
+      int n=firstPrivateOf(assignedPrivates,p._ofCore(popped),top);
       a._cs=pushL(popped,top.withUniqueNum(n));
       }
     }
