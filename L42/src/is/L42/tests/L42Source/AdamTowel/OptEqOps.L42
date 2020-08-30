@@ -9,9 +9,9 @@ read method Bool readEquality(read This that)=System.immEquality(System.readClon
 
 read method Bool allEq(read This that)={
   if this.isPresent() != that.isPresent() return Bool.false()
-  return !this || This.equals(a=this.get(),b=that.get())
+  return !this || This.equals(a=this.val(),b=that.val())
   }
 read method Bool #in1(read Elem that)
   =this.contains(that)
 read method Bool contains(read Elem that)
-  =this.isPresent() && This.equals(a=this.get(),b=that)
+  =this.isPresent() && This.equals(a=this.val(),b=that)

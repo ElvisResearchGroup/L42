@@ -28,16 +28,16 @@ class method mut This(mut J j)
   res=this.#j().askEvent(key='DB, id='next(),msg=S"")
   catch J.Fail x exception Fail"%x"
   res==S"true")
-@Public mut method S get(S label)[Fail]={
-  return this.#j().askEvent(key='DB, id='get(label),msg=label)
+@Public mut method S val(S label)[Fail]={
+  return this.#j().askEvent(key='DB, id='val(label),msg=label)
   catch J.Fail x exception Fail"%x"
   }
 @Public mut method Size findColumn(S label)[Fail]={
   return Size.from(string=this.#j().askEvent(key='DB, id='findColumn(label),msg=label))
   catch J.Fail x exception Fail"%x"
   }
-@Public mut method S get(Size that)[Fail]={
-  return this.#j().askEvent(key='DB, id='get(that),msg=that.toS())
+@Public mut method S val(Size that)[Fail]={
+  return this.#j().askEvent(key='DB, id='val(that),msg=that.toS())
   catch J.Fail x exception Fail"%x"
   }
 @Public mut method Void queryTables()[Fail]=(

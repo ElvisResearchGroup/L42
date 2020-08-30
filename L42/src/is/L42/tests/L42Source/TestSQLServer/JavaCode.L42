@@ -23,9 +23,9 @@ class method S (S url)=S"""%%
   |      "execute(sql)",this::execute,
   |      "executeQuery(sql)",this::executeQuery,
   |      "next()",this::next,
-  |      "get(label)",this::get,
+  |      "val(label)",this::get,
   |      "findColumn(label)",this::findColumn,
-  |      "get(that)",this::getIndex,
+  |      "val(that)",this::getIndex,
   |      "queryTables()",this::queryTables,
   |      "queryColumns(tableName)",this::queryColumns,
   |      "kill()",this::kill

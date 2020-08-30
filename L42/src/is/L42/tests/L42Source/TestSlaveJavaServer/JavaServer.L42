@@ -10,7 +10,7 @@ Event$={
   method Event self()
   method Void >>(mut Handler$Map map)=(
     optH=map.#val(key=this.self().key())
-    if optH (this.self()>>optH.#get())
+    if optH (this.self()>>optH.#val())
     )
   }
 @Public mut method mut EventIterator (mut S.List that)

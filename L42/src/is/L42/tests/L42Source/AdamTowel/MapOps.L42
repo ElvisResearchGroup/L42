@@ -29,6 +29,7 @@ read method read Hm hm()
 mut  method mut Hm  #hm()
 
 class method mut This of(mut Hi hi,mut Hm hm)
+@Public class method mut This ()=This.empty()
 @Public class method mut This empty()=This.of(hi=Hi.of(),hm=Hm.of())
 @Public read method Size size()=this.hi().size()+this.hm().size()
 @Public read method Bool isEmpty()=this.size()==0Size

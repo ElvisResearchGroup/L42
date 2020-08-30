@@ -2,9 +2,9 @@ Fail=Message:{[Message.Guard]}
 class method Library (mut DB db)[Fail]={
   db.queryTables()
   i=db.findColumn(label=S"TABLE_NAME")
-  //tables=S.List()(while db.next()\res<=db.get(i))
+  //tables=S.List()(while db.next()\res<=db.val(i))
   var res=Trait()
-  while db.next() (res+=this.makeTable(db=db,name=db.get(i)))
+  while db.next() (res+=this.makeTable(db=db,name=db.val(i)))
   return Class:res
   catch Message.Guard g exception Fail"".with(cause=g)
   }
@@ -15,7 +15,7 @@ class method Trait makeTable(mut DB db,S name)[Fail]=(
   t=db.findColumn(label=S"TYPE_NAME")
   var res=Trait()
   while db.next() (
-    res+=this.col(name=db.get(n), type=db.get(t))
+    res+=this.col(name=db.val(n), type=db.val(t))
     )
   res:=(Data:res)['This=>Name"%name.toCamelUp()"]
   catch Message.Guard g exception Fail"".with(cause=g)

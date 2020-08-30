@@ -19,17 +19,17 @@ OptSize=Collection.optional(Size)
 TestOptS=(
   OptS o1=OptS()
   OptS o2=OptS(S"hi")
-  {}:Test"opt"(o2.get()==S"hi")
+  {}:Test"opt"(o2.val()==S"hi")
   {}:Test"optNope"(S"Optional value is empty"==(
-    error o1.get() catch error Collection.NoElementInOpt e e.text()
+    error o1.val() catch error Collection.NoElementInOpt e e.text()
     ))
   )
 TestOptSize=(
   OptSize o1=OptSize()
   OptSize o2=OptSize(8Size)
-  {}:Test"opt"(o2.get()==8Size)
+  {}:Test"opt"(o2.val()==8Size)
   {}:Test"optNope"(S"Optional value is empty"==(
-    error o1.get() catch error Collection.NoElementInOpt e e.text()
+    error o1.val() catch error Collection.NoElementInOpt e e.text()
     ))
   )
 TestSizeRange=(

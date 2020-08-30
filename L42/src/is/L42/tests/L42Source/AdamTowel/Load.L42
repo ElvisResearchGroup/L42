@@ -41,10 +41,10 @@ method Trait.Acc collect(Library that)=(
   atOut=Introspection.Nested.from(classAny=AbstractTowel)
   acc=Trait.Acc(Name$Mapping())
   for nci in atIn.nesteds() (
-    src=nci.innerDoc().annotation(nested=atIn).get().texts().left()
+    src=nci.innerDoc().annotation(nested=atIn).val().texts().left()
     name=nci.nameFromRoot()
     for ncj in this.deps() (
-      dest=ncj.innerDoc().annotation(nested=atOut).get().texts().left()
+      dest=ncj.innerDoc().annotation(nested=atOut).val().texts().left()
       matches=this.match(src=src,dest=dest)
       if matches (acc.#squareAdd(name=>ncj.classAny()) Break())
       )

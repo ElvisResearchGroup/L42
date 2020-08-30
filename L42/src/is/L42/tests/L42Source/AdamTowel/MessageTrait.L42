@@ -3,7 +3,7 @@ var S text
 var Message.OptMessage cause
 method toS()=(
   var res=Introspection$Nested.from(classAny=This).msgTitle(text=this.text())
-  if this.cause() res:=res++S.nl()++this.cause().get().toS()
+  if this.cause() res:=res++S.nl()++this.cause().val().toS()
   res 
   )
 class method mut This (S text, Message.OptMessage cause)

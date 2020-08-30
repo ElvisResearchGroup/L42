@@ -5,5 +5,5 @@ read method Bool isPresent()=this.#if()
 read method Bool !()=!this.isPresent()
 method toS()={
   if !this return S"[]"
-  return S"[%AnyToS(this.get())]"
+  return S"[%AnyToS(this.val())]"
   }

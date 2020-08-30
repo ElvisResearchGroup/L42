@@ -63,7 +63,7 @@ class method S toCamelLow(S that)={
   if s1==S"_" (
     s2=res.subString(start=0\ end=1\)
     res2=res.subString(start=1\ end=\size)
-    return s2++this.toCamelLow(res2)
+    return S"_"++s2++this.toCamelLow(res2)
     )
   return this.low1(char=s1)++this.toCamelLow(res)
   }
@@ -75,11 +75,11 @@ class method S low1(S that)={
   }
 class method S low1(S char)={
   r=this.upToLow().val(key=char)
-  if r return r.get()<:S
+  if r return r.val()<:S
   return char
   }
 class method S up1(S char)={
   r=this.lowToUp().val(key=char)
-  if r return r.get()<:S
+  if r return r.val()<:S
   return char
   }

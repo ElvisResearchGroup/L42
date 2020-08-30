@@ -11,6 +11,7 @@ read method read Set set()
 mut  method mut Set  #set()
 
 class method mut This of(mut Set set)
+@Public class method mut This ()=this.empty()
 @Public class method mut This empty()=This.of(set=Set.of())
 @Public read method Size size()=this.set().size()
 @Public read method Bool isEmpty()=this.size()==0Size

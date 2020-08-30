@@ -23,12 +23,12 @@ TestOptOK={
     {}:Test"6 true"(opt1A.isPresent())
     {}:Test"6 true"(opt2A.isPresent())
     {}:Test"6 true"(opt3A.isPresent())
-    {}:Test"6 get"(actual=opt1S.get() expected=S"hi")
-    {}:Test"6 get"(actual=opt2S.get().get() expected=S"hi")
-    {}:Test"6 get"(actual=opt3S.get().get().get() expected=S"hi")
-    {}:Test"6 get"(actual=opt1A.get() expected=S"A(name[###])")
-    {}:Test"6 get"(actual=opt2A.get().get() expected=S"A(name[###])")
-    {}:Test"6 get"(actual=opt3A.get().get().get() expected=S"A(name[###])")
+    {}:Test"6 get"(actual=opt1S.val() expected=S"hi")
+    {}:Test"6 get"(actual=opt2S.val().val() expected=S"hi")
+    {}:Test"6 get"(actual=opt3S.val().val().val() expected=S"hi")
+    {}:Test"6 get"(actual=opt1A.val() expected=S"A(name[###])")
+    {}:Test"6 get"(actual=opt2A.val().val() expected=S"A(name[###])")
+    {}:Test"6 get"(actual=opt3A.val().val().val() expected=S"A(name[###])")
     )
   TestEqToS=(
     s=S"hi"
@@ -63,10 +63,10 @@ TestOptOK={
       expected=S"""
         |[[[A(name="hi")]]]
         """.trim())
-    Debug(opt2A==opt3A.get())
-    Debug(Opt2A()<:Opt2A!=opt3A.get())
-    {}:Test"eq"(opt2A==opt3A.get())
-    {}:Test"neq"(Opt2A()<:Opt2A!=opt3A.get())
+    Debug(opt2A==opt3A.val())
+    Debug(Opt2A()<:Opt2A!=opt3A.val())
+    {}:Test"eq"(opt2A==opt3A.val())
+    {}:Test"neq"(Opt2A()<:Opt2A!=opt3A.val())
     )
   }
 TestDifferentEqs={

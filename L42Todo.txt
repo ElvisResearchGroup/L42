@@ -1,9 +1,5 @@
--IDE: somehow disable insertion of random '}'
--Consistency: Opt should have val and #val, not get
--Consistency: should map and set also have ()? or should list only support [] to create empty collection
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
--when printing outline: docs need to be \n\n and
   we can sort alphabetically the members
 -TypeSystem test: it seams like imm res=this.mutMeth().mutMeth() does not work on lent this!
    it seams to be a problem with inference. Is it admissible?
@@ -19,6 +15,8 @@
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
 -IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: cut paste on win do not survive the IDE being closed
+-IDE: somehow disable insertion of random '}'
+-IDE:when printing outline: docs need to be \n\n and
 -untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer>
 -bug "if A b return void" is parsed as "if A b", "return void" 
 -errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#
