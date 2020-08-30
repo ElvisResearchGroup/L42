@@ -115,7 +115,7 @@ eBinary1: eBinary0 (OP1 eBinary0)*; //left associative, all op the same
 eBinary2: eBinary1 ((OP2|InKw) eBinary1)*; //unassociative, all op the same, thus a<b<c could be resolved as a.#left#1(center:b,right:c)
 eBinary3: eBinary2 (OP3 eBinary2)*; //left associative, all op the same
 sIf: IfKw e e (ElseKw e)? | IfKw match+ e;
-match: t x | t x '=' e | t? oR (t? x)+')' '=' e;
+match:  x CastOp t | t x '=' e | t? oR (t? x)+')' '=' e;
 sWhile: WhileKw e e;
 sFor: ForKw (dX InKw e)+ e;
 sLoop: LoopKw e;

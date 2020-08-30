@@ -1,8 +1,6 @@
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
   we can sort alphabetically the members
--TypeSystem test: it seams like imm res=this.mutMeth().mutMeth() does not work on lent this!
-   it seams to be a problem with inference. Is it admissible?
 -TypeSystem enrich: simmetric of multi method types:
   -a method taking no mut,read,lent and returning imms (can take fwds?)
     can be typed returning either imm OR read (and not immPFwd?)
@@ -17,8 +15,7 @@
 -IDE: cut paste on win do not survive the IDE being closed
 -IDE: somehow disable insertion of random '}'
 -IDE:when printing outline: docs need to be \n\n and
--untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer>
--bug "if A b return void" is parsed as "if A b", "return void" 
+-untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer> 
 -errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#
 -bug initVisitor 149 TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
@@ -28,9 +25,7 @@
   -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
-
--BUG: big rational: should not have hashcode, (already have no equals)
--Cache: use String .intern()
+-Cache: use String .intern()?
   -what about Integer? what about big rational? what about arrays 
 and should wrap all the returns with normalization, so that we only return normalized numbers.
 

@@ -140,8 +140,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail("{return void A b=void error void}","dead code after the statement 0 of the block")
    ),new AtomicTest(()->
-   pass("{A b=void if A b return void error void}")
-   //pass("{A b=void if b<:A return void error void}")//Should we use this kind of syntax instead?
+   //pass("{A b=void if A b return void error void}")
+   pass("{A b=void if b<:A return void error void}")
    ),new AtomicTest(()->
    pass("{A b=void A c={return b} return c}")
    ),new AtomicTest(()->

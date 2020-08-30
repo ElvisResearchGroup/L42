@@ -19,10 +19,6 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> implements Comparable<L42£BigRational>{
-  @Override public int hashCode() {
-    int result =31 + den.hashCode();
-    return 31 * result + num.hashCode();
-    }
   @Override public boolean eq(L42£BigRational other){
     if(this==other){return true;}
     if(!den.equals(other.den)){return false;}

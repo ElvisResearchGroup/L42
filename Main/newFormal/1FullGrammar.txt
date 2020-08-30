@@ -53,7 +53,7 @@ _______
   FULL.DX ::= var? TLocal x | TLocal '_' | TLocal ( var?0 TLocal0 x0 ..var?n TLocaln xn )
   FULL.K ::= catch throw? T x e | catch throw? T '_' e
   FULL.WHOOPS ::= whoops T+
-  FULL.match ::= T x | T x = e | T?0(T?1 x0..T?n xn) = e //where at least one T?i is not empty //correctly not TLocal
+  FULL.match ::= x<:T | T x = e | T?0(T?1 x0..T?n xn) = e //where at least one T?i is not empty //correctly not TLocal
   FULL.xP ::= x | CsP | CsP<:T | \ | \<:T
   Ldom::=s | Cs
 _______
