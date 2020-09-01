@@ -9,10 +9,10 @@ _______
   CORE.T ::= mdf Docs P
   CsP ::=Cs | P
   FULL.T ::= mdf? Docs CsP
-  FULL/CORE.PL ::= [Ts] // In concrete syntax an [empty] is represented as empty and imm is omitted; Well formedness: all mdf in Ts are imm
-  FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) PL //the Docs are on the type of 'This'
-  CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) PL
-  FULL/CORE.H ::= interface? PL
+  INFER ::= '_' //just the underscore sign. Careful, it conflicts with metanotation
+  FULL.MH ::= (mdf Docs)? method T mOp (T1 x1..Tn xn) [INFER?Ts] //the Docs are on the type of 'This'
+  CORE.MH ::= mdf Docs method T m (T1 x1..Tn xn) [Ts]
+  FULL/CORE.H ::= interface? [Ts]
   FULL.TLocal ::= T | mdf?
   FULL/CORE/HALF.xe ::= x = e
   FULL/CORE/HALF.xv ::= x = v
@@ -170,7 +170,7 @@ _______
 * FULL.F: F.t.mdf not fwd
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
 * FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L 
-* FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)PL
+* FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)_
     mdf notin {fwd imm, fwd mut}
     T0 = mdf This0
     if exists i: Ti.mdf=fwd imm then T.mdf undefined or T.mdf in {mut, fwd mut, imm, fwd imm}
@@ -180,8 +180,9 @@ _______
 * FULL.match of form T?0(T?1 x0..T?n xn) = e; at least one T?i is not empty
 * FULL.e: \x only appear in a method parameter expression
 * FULL.sFor: forall TLocal(var?1 TLocal1 x1.. var?n TLocaln xn) in FULL.sFor.DXs: var1?..varn?=empty 
-* CORE.PL: forall mdf in PL.Ts.mdfs, mdf= imm //empty in the concrete syntax
-* FULL.PL: forall mdf? in PL.Ts.mdfs, mdf?= imm //empty in the concrete syntax
+* CORE [Ts]: forall mdf in Ts.mdfs, mdf= imm //empty in the concrete syntax
+* FULL [INFER?Ts]: forall mdf? in Ts.mdfs, mdf?= imm //empty in the concrete syntax
+  For both CORE and FULL, [empty] is represented as empty and imms are omitted.
 * FULL.L: if reuse[URL] or ..., then no Docs, F and MI in FULL.L
 * C::n n!=0
 * e.m::0(_) and e::0.m[_]: e in {'this','This0'}

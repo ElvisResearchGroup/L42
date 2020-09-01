@@ -140,6 +140,7 @@ public enum TrustedOp {
   SBackSlash("'\\'",append("\\\\")),
   SSpace("space",append(" ")),
   SNewLine("newLine",append("\\n")),
+  STab("tab",append("\\t")),
   AddAll("addAll",Map.of(StringBuilder,use("%s.append(%s);return L42£Void.instance;",
     sig(Mutable,Immutable,Void,Immutable,String)))),
    

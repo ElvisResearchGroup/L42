@@ -8,7 +8,6 @@
     can be typed returning either imm or mut (and not their mdfPFwd?)
 -BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native
 -Big, but confusing: the java compiler go in loop for code too complex, like to many &&. See TestTopNorm t_manyAnds() :-(
--SafeJava bug? class loaders should not be a hashSet ClassSupplier(Set<ClassLoader> classLoaders)
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
 -IDE: clear cache should stop the loading of the old cache and set up run?
@@ -32,8 +31,7 @@ and should wrap all the returns with normalization, so that we only return norma
 -test cache in case the cached method do some exceptions/errors
   
 -add and test System.restartThreads() //or better name
--Should I have inference for exceptions? so that [] just infers the exception clause?
-  half could simply collect all the meth calls, and if they are typed, add the information (of course... filter caches etc)
+-Consider removing 'pos' from Introspection toS, since pos is very big, that toFullS() is shorted then toS()
 -Bug: CircularityIssue need to be improved by a long time 
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString... now we have ListS+from(string), should we have from(ListAnys fields)? 

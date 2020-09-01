@@ -1,15 +1,14 @@
-Fail=Message:{[Message.Guard]}
-class method Library (mut DB db)[Fail]={
+class method Library (mut DB db)[MetaFail]={
   db.queryTables()
   i=db.findColumn(label=S"TABLE_NAME")
   //tables=S.List()(while db.next()\res<=db.val(i))
   var res=Trait()
   while db.next() (res+=this.makeTable(db=db,name=db.val(i)))
   return Class:res
-  catch Message.Guard g exception Fail"".with(cause=g)
+  catch Message.Guard g exception MetaFail"".with(cause=g)
   }
 ColTrait=Trait:{T={} method T f()}
-class method Trait makeTable(mut DB db,S name)[Fail]=(
+class method Trait makeTable(mut DB db,S name)[_]=(
   db.queryColums(tableName=name)
   n=db.findColumn(label=S"COLUMN_NAME")
   t=db.findColumn(label=S"TYPE_NAME")
@@ -17,20 +16,16 @@ class method Trait makeTable(mut DB db,S name)[Fail]=(
   while db.next() (
     res+=this.col(name=db.val(n), type=db.val(t))
     )
-  res:=(Data:res)['This=>Name"%name.toCamelUp()"]
-  catch Message.Guard g exception Fail"".with(cause=g)
-  res
+  (Data:res)['This=>Name"%name.toCamelUp()"]
   )
-class method class Any type(S that)={
+class method class Any type(S that)[MetaFail]={
   if that==S"INTEGER" || that==S"INT" return Num
   if that==S"VARCHAR" || that==S"CHAR" return S
   if that==S"BOOLEAN" || that==S"BOOL" return Bool
-  error X"unsupported db table type %that"//TODO:
+  exception MetaFail"unsupported db table type %that"
   }
-class method Trait col(S name,S type)[Fail]={
+class method Trait col(S name,S type)[_]=(
   t=this.type(type)
   n=Name"%(name.toCamelLow())()"
-  if n==Name"f()" return ColTrait['T=>t]
-  return ColTrait['T=>t;'f()=>n]
-  catch Message.Guard g exception Fail"".with(cause=g)
-  }
+  ColTrait['T=>t;ignoreSelfRename='f()=>n]
+  )

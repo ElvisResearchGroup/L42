@@ -100,6 +100,25 @@ public class TestTopNorm{
       #typed{typeDep=This1.A}}
      #norm{}}      
      """
+  );}@Test public void tInfer(){top("""
+      {
+      A={interface method Void foo()[Void,A]}
+      C={
+        method Void a(A that)[_]=(this.b(that) catch A a void void)
+        method Void b(A that)[_]=(this.c(that) catch Void v v void)
+        method Void c(A that)[_]=this.d(that)
+        method Void d(A that)[_]=that.foo()
+        }} 
+    ""","""
+    {A={interface method Void foo()[Void,This]#typed{typeDep=This}}
+    C={
+      method Void a(This1.A that)=(Void fresh0_underscore=this.b(that=that)catch exception This1.A a void void)
+      method Void b(This1.A that)[This1.A]=(Void fresh1_underscore=this.c(that=that)catch exception Void v v void)
+      method Void c(This1.A that)[Void,This1.A]=this.d(that=that)
+      method Void d(This1.A that)[Void,This1.A]=that.foo()
+    #typed{typeDep=This1.A usedMethods=This1.A.foo()}}
+  #norm{}}                                          
+  """      
   );}@Test public void notWellFormed0(){top("""
     {A={
        class method Library foo(Library a,Library b)=b

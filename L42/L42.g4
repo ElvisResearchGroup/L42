@@ -94,7 +94,7 @@ fullNC:  doc* csP '=' e;
 header: InterfaceKw? ('['t+']')?;
 info: Info;
 
-fullMH: (Mdf doc*)? MethodKw t mOp oR (t x)* ')' ('['t+']')?;
+fullMH: (Mdf doc*)? MethodKw t mOp oR (t x)* ')' ( ('[' UnderScore t* ']')|('[' t+ ']')  )?;
 mOp: | m | Uop | (OP0 | OP1 | OP2 | OP3) Number?;//to filter 'number' to be an int
 voidE: VoidKW;
 ePostfix: (Uop|Number)* eAtomic (fCall | squareCall | string | cast)*;

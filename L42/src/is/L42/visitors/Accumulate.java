@@ -63,9 +63,12 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
       assert g.containsKey(x);
       g.remove(x);
       }
+    public void visitBlockDs(Core.Block block){
+      visitDs(block.ds());
+      }
     @Override public void visitBlock(Core.Block block){
       for(var d:block.ds()){commitG(d.x(),d.t());}
-      visitDs(block.ds());
+      visitBlockDs(block);
       visitE(block.e());
       for(var d:block.ds()){removeG(d.x());}
       for(var k:block.ks()){

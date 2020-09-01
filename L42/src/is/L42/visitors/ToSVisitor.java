@@ -269,9 +269,12 @@ public class ToSVisitor implements ToSTrait{
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
     exceptionImplements(exceptions0);
     }
-  public void exceptionImplementsFull(List<Full.T> ts){
-    if(ts.isEmpty()){return;}
-    c("[");seq(empty(),L(ts,t->t._mdf()!=Mdf.Immutable?t:t.with_mdf(null)),", ");c("]");
+  public void exceptionImplementsFull(boolean infer,List<Full.T> ts){
+    if(!infer && ts.isEmpty()){return;}
+    c("[");
+    if(infer) {c("_");}
+    seq(empty(),L(ts,t->t._mdf()!=Mdf.Immutable?t:t.with_mdf(null)),", ");
+    c("]");
     }
   public void exceptionImplements(List<Core.T> ts){
     if(ts.isEmpty()){return;}
@@ -381,7 +384,7 @@ public class ToSVisitor implements ToSTrait{
     var ts0=l.ts();
     var ms0=l.ms();
     var docs0=l.docs();
-    exceptionImplementsFull(ts0);
+    exceptionImplementsFull(false,ts0);
     var sp=empty();
     if(!inline){sp=i->nl();}
     seqHas(sp,ms0,"");
@@ -709,7 +712,7 @@ public class ToSVisitor implements ToSTrait{
       }
     else{cMethName(s0);}
     c("(");seq(i->visitT(pars0.get(i)),s0.xs(),", ");c(")");
-    exceptionImplementsFull(exceptions0);
+    exceptionImplementsFull(mh.infer(),exceptions0);
     }
   public void visitProgram(Program program) { 
     program.top.visitable().accept(this);

@@ -617,7 +617,7 @@ public class CloneVisitor {
     var pars=visitFullTs(pars0);
     var exceptions=visitFullTs(exceptions0);
     if(docs==docs0 && t==t0 && s==s0 && pars==pars0 && exceptions==exceptions0){return mh;}
-    return new Full.MH(mh._mdf(),docs,t,mh._op(),mh.n(),s,pars,exceptions);
+    return new Full.MH(mh._mdf(),docs,t,mh._op(),mh.n(),s,pars,mh.infer(),exceptions);
     }
   public Program visitProgram(Program program) { 
     LL ll=program.top.visitable().accept(this);

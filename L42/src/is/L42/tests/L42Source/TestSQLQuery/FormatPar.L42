@@ -18,11 +18,11 @@ class method S escape(S that)=(
   res:=res.replace(S"'" with=S"\'")
   res:=res.replace(S"_" with=S"\_")
   res:=res.replace(S"\" with=S"\\")
+  res:=res.replace(S.tab() with=S"\t")
+  res:=res.replace(S.percent() with=S"\%S.percent()")
   //res:=res.replace(?? with=S"\b")
   //res:=res.replace(?? with=S"\r")
-  //res:=res.replace(?? with=S"\%")
-  //res:=res.replace(?? with=S"\t")//TODO: tabs in strings?
-  //then check that all the characters are "valid", to avoid unicode surprises?
+  //TODO: then check that all the characters are "valid", to avoid unicode surprises?
   res
   )
 class method S (S that,S key,HasToS val)=

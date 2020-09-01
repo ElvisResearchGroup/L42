@@ -68,7 +68,7 @@ _______
 * firstErr(Rs,Err,_) = Err
     Err not in Rs
 _______
-#define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'   
+#define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'
 * top(CTz,p) => PR
     CORE.L = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
     Ms=p(This0).Ms //Ms = FULL.Ms
@@ -84,7 +84,8 @@ _______
     //novel CTzs are not captured since no Full.L in e?s
     MWT'i = MHi Ms(MHi.s).native e?'i//Note: it recovers also the docs for the MHi.s
     L = updateInfo(p1, MWT'1..MWT'n)
-    p2=p1.update(L)
+    sz={MHi.s| i in 1..n, Ms(MHi.s).MH has INFER}
+    p2=inferExceptions(sz,p1.update(L))
     PR = CTz1; p2.update(p2.top()[Info.uniqueId=empty])
 
 * topNC(CTz;p;empty) =>CTz;p
@@ -130,6 +131,40 @@ _______
     P in Ps2 if P.C::k._ is anywhere in CORE.L
     n fresh
     CORE.L = {interface? [Ts1] MWTs Info ♥Docs}
+_______
+#define inferExceptions(sz,p) = p'    leaks(p,G,e) = Ts    minimizeSub(Ts;Ts') = Ts"
+* inferExceptions(sz,p) = inferExceptions(sz,p')
+  MWT.s in sz
+  p(This0)={H MWTs0 MWT MWTs1 NCs Info Docs}
+  MWT= mdf Docs method T m (Txs) [Ts] e
+  T1..Tn=leaks(p,MWT.G, e),Ts//NO, this also removes all Ts that have duplicates
+  Ts"=minimizeSub(leaks(p,MWT.G, e),Ts;empty)
+  MWT'= mdf Docs method T m (Txs) [Ts"] e
+  Ts"!=Ts
+  Docs'=Docs[typeDep+=MWT.Ts]
+  p'=p.update({H MWTs0 MWT' MWTs1 NCs Info Docs'})
+* inferExceptions(sz,p) = p
+  otherwise
+
+* T' in leaks(p,G,P.m(x1=e1..xn=en))
+  T'[From P;p] in p(P)(m(x1..xn)).MH.Ts
+  //and propagate to subcomponents
+
+* T' in leaks(p,G,xP.m(x1=e1..xn=en))  
+  G(xP).P=P
+  T'[From P;p] in p(P)(m(x1..xn)).MH.Ts
+  //and propagate to subcomponents
+
+//and propagate recursively on the expression sub term with the following exceptions:
+//- no Ts in leaks(p,G,L)
+//- G keep tracks of x:T induced by ds and ks
+//- a leak T outs of a D guarded by a K is filtered if p|-T<=K.T
+  
+* minimizeSub(empty;Ts)=Ts
+* minimizeSub(T Ts;Ts')=minimizeSub(Ts;Ts')
+    exists T' in Ts' such that p|-T<=T'
+*  otherwise minimizeSub(T Ts;Ts')=minimizeSub(Ts; Ts" T)
+    Ts"={T' in Ts'| such that not p|-T'<=T}
 _______
 #define CTz[from P;p]    ST[from P;p]
 * CTz[from P;p] = CTz' trivially propagates on the structure and applies ST[from P; p] on all the ST in CTz
@@ -179,9 +214,6 @@ _______
     Info = collectDeps(p;MWTs.es)
     Info1 = (Info0+Info) if hasOpenState(interface?,MWTs0 MWTs1)
     Info1 = (Info0+Info)[closeState?=closeState] otherwise
-    //TODO: either here we make all P.#from(stringLiteral=..) and P.m(squareBuilder=..)
-    //with no free variables into class methods or in the execution we optimize as 
-    //class methods all subexpressions with no free var (and not calling #$s)
 * updateInfo(p,FULL.e,Docs C=L) = L0[♥Docs C=L'][Info+=collectDeps(p,Docs C=L)]
     p(This0) = L0
     L'=refreshUniqueNames(L) if FULL.e not of form LL

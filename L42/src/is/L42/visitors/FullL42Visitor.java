@@ -386,7 +386,8 @@ public class FullL42Visitor implements L42Visitor<Object>{
     var _op = visitMOp(ctx.mOp());
     assert _op==null || s.m().isEmpty();
     int n=stringToInt(ctx.mOp().Number(), pos);
-    return new Full.MH(_mdf, docs, t, _op, n, s, pars, exceptions);
+    boolean infer=ctx.UnderScore()!=null;
+    return new Full.MH(_mdf, docs, t, _op, n, s, pars,infer, exceptions);
     }
   private List<Full.T> checkAllEmptyMdf(Pos pos, List<Full.T> ts){
     return L(ts,ti->{

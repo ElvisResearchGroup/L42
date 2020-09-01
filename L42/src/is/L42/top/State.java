@@ -43,6 +43,7 @@ import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.generated.X;
 import is.L42.generated.Y;
+import is.L42.constraints.InferExceptions;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
@@ -129,7 +130,14 @@ public class State implements Serializable{
       });
     Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
-    Program p2=p1.update(l,false);//propagate illTyped
+    List<S> sz=L(coreMWTs,(c,m)->{
+      var _m=_elem(ms,m.key());
+      if(_m==null || !(_m instanceof Full.L.MWT)){return;}
+      var mwt=(Full.L.MWT)_m;
+      if(mwt.mh().infer()){c.add(m.key());}
+      });
+    var ie=new InferExceptions(p1.update(l,false));
+    Program p2=ie.inferExceptions(sz);//propagate illTyped
     alreadyCoherent.remove(alreadyCoherent.size()-1);
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));

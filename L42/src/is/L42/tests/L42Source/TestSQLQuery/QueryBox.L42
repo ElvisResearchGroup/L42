@@ -1,5 +1,4 @@
 ClassOperators={class method class This1()=This1}
-Fail=Message:{[Message.Guard]}
 OneQ=Trait:{
   @Public A={class method mut This(mut DB that)}
   mut method mut DB #db()
@@ -9,8 +8,8 @@ CloseQ=Trait:{
   class method mut This(mut DB db)
   @Public class method mut This(mut DB that)=This(db=that)  
   }
-class method Library :(Library lib)[Fail,Class.IncoherentClass]=Class:this:Trait(lib)
-class method Trait :(Trait trait)[Fail]={
+class method Library :(Library lib)[MetaFail,Class.IncoherentClass]=Class:this:Trait(lib)
+class method Trait :(Trait trait)[MetaFail]={
   var res=CloseQ()
   for n in trait.nested().nesteds() (
     dest=Name"%(n.outerName().toStartLow())()"
@@ -20,5 +19,5 @@ class method Trait :(Trait trait)[Fail]={
       ]
     )
   return Organize:Data:(res+trait)
-  catch Message.Guard g exception Fail"".with(cause=g)
+  catch Message.Guard g exception MetaFail"".with(cause=g)
   }

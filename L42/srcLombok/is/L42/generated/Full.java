@@ -164,7 +164,7 @@ public class Full {
     List<C>cs; P _p; S _s; X _x;}
   @Value @Wither public static class
   MH implements LDom.HasKey, Visitable<MH>{@Override public MH accept(CloneVisitor cv){return cv.visitMH(this);}@Override public void accept(CollectorVisitor cv){cv.visitMH(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    Mdf _mdf; List<Doc> docs; T t; Op _op; int n; S s; List<T> pars; List<T> exceptions;
+    Mdf _mdf; List<Doc> docs; T t; Op _op; int n; S s; List<T> pars; boolean infer; List<T> exceptions;
     @Override public S key(){return is.L42.common.NameMangling.keyOf(_op,n,s);}
     public List<T> parsWithThis(){return pushL(P.fullThis0.with_mdf(_mdf),pars);}
     }
