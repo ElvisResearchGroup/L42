@@ -17,7 +17,7 @@ public class GuessFields {
   ArrayList<MWT> abs=new ArrayList<>();
   LinkedHashMap<X,List<MWT>> getters=new LinkedHashMap<>();
   HashSet<X> fieldsUsedInReadCache=new HashSet<>();
-  boolean hasEagerCache=false;
+  boolean autoNormed=false;
   boolean gettersNoMut=true;
   LinkedHashMap<X,List<MWT>> setters=new LinkedHashMap<>();
 
@@ -31,7 +31,7 @@ public class GuessFields {
       if(Utils.match(p, err, "readNowCache",m)){
         this.fieldsUsedInReadCache.addAll(m.key().xs());
         }
-      if(Utils.match(p, err, "eagerCache",m)){this.hasEagerCache=true;}
+      if(Utils.match(p, err, "eagerCache",m)){this.autoNormed=true;}
       }
     }
   void _addGettersSetters(MWT m){      

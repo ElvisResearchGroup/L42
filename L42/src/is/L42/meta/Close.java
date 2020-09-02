@@ -46,7 +46,8 @@ public class Close extends GuessFields{
   HashSet<X> fieldNames=new HashSet<>();
   ArrayList<MWT> newMWTs=new ArrayList<>();
   ArrayList<MWT> toSkip=new ArrayList<>();
-  public Core.L close(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
+  public Core.L close(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap){
+    this.autoNormed|=autoNorm;
     if(cs.isEmpty()){
       var res=close(p,wrap);
       assert res.wf();
@@ -65,7 +66,7 @@ public class Close extends GuessFields{
     this.err=new MetaError(wrap);
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
-    this.addGettersSetters(p);
+    addGettersSetters(p);
     for(var m:this.abs){
       if(!Coherence.validConstructorSignature(p, m.mh())){continue;}
       if(!m.key().xs().containsAll(getters.keySet())){continue;}
@@ -242,7 +243,7 @@ public class Close extends GuessFields{
     return true;    
     }
   public void processK(MWT m){
-    if(!this.hasEagerCache) {processState(m,false);return;}
+    if(!this.autoNormed) {processState(m,false);return;}
     if(!mNormOk()){err.throwErr(m,"class can not use eager cache with invalid norm method");}
     if(!m.mh().t().mdf().isImm()){err.throwErr(m,"class can not use eager cache with mutable fields");}
     processState(m,true);

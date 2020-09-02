@@ -1,0 +1,103 @@
+BaseAst=Trait({interface
+  Node={interface}
+  Nodes=Collection.list(Node)
+  Case=Decorator:{
+    ImplNode=Trait:{[Node]}
+    method Trait(Trait trait)[Message.Guard]=Data('This,autoNorm=Bool.true()):ImplNode:trait
+    }
+  P=Case:{S text}
+  H1=Case:{S text}
+  Div=Case:{Nodes nodes}
+  Divs=Collection.list(Div)
+  Head=Case:{}
+  Body=Case:{Divs divs}
+  Html=Case:{Head head,Body body}
+  A=Case:{S href, S text}
+  })['Node=>'This]
+/*ToHtmlAst1=Trait({
+  Node=Class:BaseAst
+  
+  })['Node=>'This]*/
+N=Class:BaseAst
+ToHtml1={class method S (N that)={
+  if that<:N.P  return S"<P>%that.text()<\P>"
+  if that<:N.H1 return S"<H1>%that.text()<\H1>"
+  if that<:N.Div (
+    ss=S(for e in that.nodes() \res<=this(e))//TODO to add
+    return S"<Div>%ss<\Div>"
+    )
+  if that<:N.Head return S"<Head><\Head>"
+  if that<:N.Body (
+    ss=S(for e in that.divs() \res<=this(e))
+    return S"<Div>%ss<\Div>"
+    )
+  if that<:N.Html return S"<Html>%that.head() %that.body()<\Html>"
+  if that<:N.A return S"<A>%that.head() %that.body()<\A>"
+  error X""
+  }}
+SelfT=Trait:{method This self()=this}
+BaseAstSelf=BaseAst+{interface
+  method This self()
+  P=Class:SelfT
+  H1=Class:SelfT
+  Div=Class:SelfT
+  Head=Class:SelfT
+  Body=Class:SelfT
+  Html=Class:SelfT
+  A=Class:SelfT
+  }
+ToHtml2=Trait({interface
+  method S toHtml()
+  Top=Class:BaseAstSelf
+  P={
+    method Top.P self()
+    method S toHtml()=S"<P>%this.self().text()</P>"
+    }
+  /*H1=Case:{S text}
+  Div=Case:{Nodes nodes}
+  Divs=Collection.list(Div)
+  Head=Case:{}
+  Body=Case:{Divs divs}
+  Html=Case:{Head head,Body body}
+  A=Case:{S href, S text}*/
+  })['Top=>'This]
+
+
+BaseAstOP=BaseAst+{interface
+  R={}
+  P={}
+  Nodes={}
+  Divs={}
+  method R op(P that)
+  P={S text, method R (P that,S text)
+    method R op(P that)=this(that,text=this.text())}
+  H1={S text, method R (P that,S text)
+    method R op(P that)=this(that,text=this.text())}
+  Div={Nodes nodes, method R (P that,Nodes nodes)
+    method R op(P that)=this(that,nodes=this.nodes())}
+  Head={method R (P that)
+    method R op(P that)=this(that)}
+  Body={Divs divs, method R (P that, Divs divs)
+    method R op(P that)=this(that,divs=this.divs())}
+  Html={Head head, Body body, method R (P that, Head head, Body body)
+    method R op(P that)=this(that,head=this.head(),body=this.body())}
+  A={S href, S text, method R (P that, S href, S text)
+    method R op(P that)=this(that,href=this.href(),text=this.text())}
+  }
+ToHtml3=BaseAstOP['R=>S;'P=>Void;'op(that)=>'toHtml(that)]:{
+  Node={method S toHtml(Void that)}
+  Nodes=Collection.absList(Node)
+  P={method S(Void that,S text)=S"<P>%text</P>"}
+  P={method S(Void that,S text)=S"<H1>%text</H1>"}
+  Div={method S toHtml(Void that) method S(Void that,Nodes nodes)
+    =S"<Div>%S(for e in nodes \res<=e.toHtml(that))</Div>"}
+  Divs=Collection.absList(Div)
+  Head={method S toHtml(Void that) method S(Void that)=S"<Head></Head>"}
+  Body={method S toHtml(Void that) method S(Void that,Divs divs)
+    =S"<Div>%S(for e in divs \res<=e.toHtml(that))</Div>"}
+  Html={method S(Void that,Head head,Body body)
+    =S"<Div>%head.toHtml(that) body.toHtml(that)</Div>"}
+  //A=Class:SelfT
+  }
+
+

@@ -1,0 +1,19 @@
+Arg$DecoratorTrait=Trait:{
+  @Public Fail=Message:{[Message.Guard]}
+  @Public method Library : (Library lib)[Fail]=(this:Trait(lib)).code()
+  @Public method Trait : (Trait trait)[Fail]={
+    return this(trait=trait)
+    catch Message.Guard g exception Fail"".with(cause=g)
+    }
+  method Trait (Trait trait)[Message.Guard]
+  }
+DecoratorTrait=Arg$DecoratorTrait:{
+  @Public ClassOperators={class method This1()=This1()}
+  @Public class method This()
+  }
+$=Class:DecoratorTrait:{
+  method Trait (Trait trait)[Message.Guard]=DecoratorTrait:trait
+  }
+Arg=Class:DecoratorTrait:{
+  method Trait (Trait trait)[Message.Guard]=Arg$DecoratorTrait:trait
+  }

@@ -81,20 +81,20 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new Wither().wither(pIn,unwrapCs(cs),wrap,immK));
     }
-  public L42£Library addConstructors(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+  public L42£Library addConstructors(L42£Library input,String cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
-    return wrapL(new K().k(pIn,unwrapCs(cs),wrap,mutK,immK));
+    return wrapL(new K().k(pIn,unwrapCs(cs),autoNorm,wrap,mutK,immK));
     }
   public L42£Library cacheCall(L42£Library input,Function<L42£LazyMsg,L42Any>wrap){
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(CacheCall.of(pIn,wrap));
     }
-  public L42£Library close(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap){
+  public L42£Library close(L42£Library input,String cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap){
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
-    return wrapL(new Close().close(pIn,unwrapCs(cs),wrap));    
+    return wrapL(new Close().close(pIn,unwrapCs(cs),autoNorm,wrap));    
     } 
   @Override public String toString(){return toString;}
   @Override public boolean eq(L42£Meta meta){return toString.equals(meta.toString);}

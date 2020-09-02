@@ -3,22 +3,23 @@
 
 Close$Meta={
   class method This #apply()
-  method Library close(Library that,This2.S name)=native{trusted:close} error void
+  method Library close(Library that,This2.S name,This2.Bool autoNorm)=native{trusted:close} error void
   #norm{nativeKind=Meta,
-    typeDep=This This1.Close$Fail,This2.S
-    watched=This1.Close$Fail,This2.S
+    typeDep=This This1.Close$Fail,This2.S,This2.Bool
+    watched=This1.Close$Fail,This2.S,This2.Bool
     coherentDep=This1.Close$Fail,
     nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
     }}
 
 @Public Close={
   Name that
-  @Public class method This(Name that)
-  @Public ClassOperators={class method This1()=This1('This)}
+  Bool autoNorm
+  @Public class method This(Name that,Bool autoNorm)
+  @Public ClassOperators={class method This1()=This1('This,autoNorm=Bool.false())}
   @Public method Trait :(Trait t)[Close$Fail]=Trait(this:t.code())
   @Public method Trait :(class Trait.Lifted l)[Close$Fail]=Trait(this:l.code())
   @Public method Library :(Library that)[Close$Fail]={
-    return Close$Meta().close(that,name=this.that().toS())
+    return Close$Meta().close(that,name=this.that().toS(),autoNorm=this.autoNorm())
     catch error Close$Fail x exception x
     } 
   }
@@ -27,23 +28,24 @@ Close$Meta={
 
 AddConstructors$Meta={
   class method This #apply()
-  method Library addConstructors(Library that,This2.S name,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
+  method Library addConstructors(Library that,This2.S name,This2.Bool autoNorm,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
   #norm{nativeKind=Meta,
-    typeDep=This0 This1.AddConstructors$Fail,This2.S
-    watched=This1.AddConstructors$Fail,This2.S
+    typeDep=This0 This1.AddConstructors$Fail,This2.S,This2.Bool
+    watched=This1.AddConstructors$Fail,This2.S,This2.Bool
     coherentDep=This1.AddConstructors$Fail,
     nativePar=This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail
     }}
 
 @Public AddConstructors={
   Name that
-  @Public class method This(Name that)
-  @Public ClassOperators={class method This1()=This1('This)}
+  Bool autoNorm
+  @Public class method This(Name that,Bool autoNorm)
+  @Public ClassOperators={class method This1()=This1('This,autoNorm=Bool.false())}
   @Public method Trait :(Trait t)[AddConstructors$Fail]=Trait(this:t.code())
   @Public method Trait :(class Trait.Lifted l)[AddConstructors$Fail]=Trait(this:l.code())
   @Public method Library :(Library that)[AddConstructors$Fail]={
     return AddConstructors$Meta()
-      .addConstructors(that,name=this.that().toS(),mutK=S"#apply",immK=S"#immK")
+      .addConstructors(that,name=this.that().toS(),autoNorm=this.autoNorm(),mutK=S"#apply",immK=S"#immK")
     catch error AddConstructors$Fail x exception x
     }
   }
@@ -120,19 +122,24 @@ AddImmNorm=Trait:{
 
 @Public Relax={
   @Public ClassOperators={class method This2()=This1()}
-  class method This1()=This1('This,check=Bool.false())
-  class method This1(Name that)=This1(that,check=Bool.false())
+  class method This1()=This1('This,check=Bool.false(),autoNorm=Bool.false())
+  class method This1(Name that)=This1(that,check=Bool.false(), autoNorm=Bool.false())
+  class method This1(Name that, Bool autoNorm)=This1(that,check=Bool.false(), autoNorm=autoNorm)
   }
 
 Name that
 
 Bool check
 
-@Public class method This(Name that,Bool check)
+Bool autoNorm
 
-@Public class method This(Name that)=This(that,check=Bool.true())
+@Public class method This(Name that,Bool check,Bool autoNorm)
 
-@Public class method This()=This('This,check=Bool.true())
+@Public class method This(Name that)=This(that,check=Bool.true(),autoNorm=Bool.false())
+
+@Public class method This(Name that,Bool autoNorm)=This(that,check=Bool.true(),autoNorm=autoNorm)
+
+@Public class method This()=This('This,check=Bool.true(),autoNorm=Bool.false())
 
 @Public ClassOperators={class method This1()=This1()}
 
@@ -145,6 +152,7 @@ Bool check
 @Public method Library :(Library lib)[Data$Fail]=(this:Trait(lib)).code()
 @Public method Trait :(Trait that)[Data$Fail]=(
   name=this.that()
+  autoNorm=this.autoNorm()
   var Trait acc=that
   acc:=this.optionallyApply(AddHasToS(), acc=acc)
   acc:=this.optionallyApply(AddEqOp(), acc=acc)
@@ -153,9 +161,9 @@ Bool check
   acc:=this.optionallyApply(AddMutClone(), acc=acc)
   acc:=this.optionallyApply(AddReadClone(), acc=acc)
   acc:=this.optionallyApply(AddImmNorm(), acc=acc)  
-  acc:=AddConstructors(name):acc
+  acc:=AddConstructors(name,autoNorm=autoNorm):acc
   acc:=Wither(name):acc
-  acc:=Close(name):acc
+  acc:=Close(name,autoNorm=autoNorm):acc
   if this.check() (This.checkCoherent(acc.code()))
   acc
   )

@@ -33,7 +33,7 @@ CloseAll={
   class method Trait (Trait that,Introspection.Nested n)[Data.Close$Fail]=(
     var res=that
     for ni in n.nesteds() (res:=This(res,n=ni))
-    if !n.isInterface() && !n.isClose() (res:=Data.Close(n.nameFromRoot()):res)
+    if !n.isInterface() && !n.isClose() (res:=Data.Close(n.nameFromRoot(),autoNorm=Bool.false()):res)
     res
     )
   }

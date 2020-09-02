@@ -309,11 +309,19 @@ class GEClose extends G{
     var currentE=layer.e();
     var oldE=l2==null?null:l2.e();
     boolean hasHashDollar=hasHashDollar(currentE);
-    boolean eq=l2!=null 
-      && oldE.equals(currentE)
-      && !hasHashDollar 
-      && oldP.equals(currentP)
-      && state.equals(gc.state);
+    boolean eq=l2!=null;
+    int index=layer.layerL().index();
+    eq = eq && index==l2.layerL().index();
+    if(eq){
+      Full.L.NC nc=layer.layerL().ncs().get(index);
+      Full.L.NC nc2=l2.layerL().ncs().get(index);
+      eq= oldE.equals(currentE)
+        && nc.key().equals(nc2.key())
+        && nc.docs().equals(nc2.docs())
+        && !hasHashDollar 
+        && oldP.equals(currentP)
+        && state.equals(gc.state);
+      }
     if(eq && rc.isErr()){return rc;}
     if(!eq){Resources.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
     State s2=(eq?rc._g.state:state).copy();

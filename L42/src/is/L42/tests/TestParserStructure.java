@@ -177,6 +177,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("bar<:Foo","xCast(|t(P))|")
    ),new AtomicTest(()->
+   pass("if bar<:Foo void","SIf(|Match(x|t(P))void)|")
+   ),new AtomicTest(()->
+   pass("if Foo(bar)=baz bar","SIf(|Match(t(P)|x||x)x)|")
+   ),new AtomicTest(()->
+   pass("if (a,b)=baz a","SIf(|Match(|xx||x)x)|")
+   ),new AtomicTest(()->
+   pass("if (A a,b)=baz a","SIf(|Match(|t(P)xx||x)x)|")
+   ),new AtomicTest(()->
    pass("x.foo().bar()","xFCall(|m||)FCall(|m||)|")
    ),new AtomicTest(()->
    pass("x.foo(a b=c)","xFCall(|m|xx|x|)|")

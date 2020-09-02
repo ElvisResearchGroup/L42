@@ -426,7 +426,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   private void preDeclare(Full.D d) {
     var v=d._varTx();
     var vs=d.varTxs();
-    if(v!=null && v._x()!=null){preDeclare(v.isVar(),v._x());}
+    if(d._e()!=null && v!=null && v._x()!=null){preDeclare(v.isVar(),v._x());}
     for(var vi:vs){
       assert vi._x()!=null;
       preDeclare(vi.isVar(),vi._x());

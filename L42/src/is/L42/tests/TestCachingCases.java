@@ -33,6 +33,17 @@ public class TestCachingCases {
 @Test void base2(){pass("{A0={B1={} B2=({}) B3={}}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,topC:2,NCiC:B1,NCiO:B2,topO:2,topC:2,NCiC:B2,NCiO:B3,topO:2,topC:2,NCiC:B3,topC:1,NCiC:A0,topC:0,",
     "");}
+@Test void nameChangePar(){pass(
+    "{AA={class method Void v()=void} Main=AA.v()}",
+    "{A={class method Void v()=(void)} Main=A.v()}",
+    "topO:0,NCiO:AA,topO:1,topC:1,NCiC:AA,NCiO:Main,NCiC:Main,topC:0,",
+    "NCiO:A,topO:1,topC:1,NCiC:A,NCiO:Main,NCiC:Main,topC:0,");}
+@Test void nameChange(){pass(
+    "{AA={class method Void v()=void} Main=AA.v()}",
+    "{A={class method Void v()=void} Main=A.v()}",
+    "topO:0,NCiO:AA,topO:1,topC:1,NCiC:AA,NCiO:Main,NCiC:Main,topC:0,",
+    "NCiO:A,topO:1,topC:1,NCiC:A,NCiO:Main,NCiC:Main,topC:0,");}
+
 @Test void baseChange(){pass(
   "{A0={B1={D={}} B2={} B3={}}}",
   "{A0={B1={D={}} B2={C={}} B3={}}}",

@@ -1,3 +1,8 @@
+-rename Bug discovered by TestAst
+-ToHalf 586 was not completed:
+    if(m._e()==null){throw todo();}
+    if(!m.varTxs().isEmpty()){throw todo();}
+-another toS bug: A=Data:{} B=Data:{A a} B(a=A()).toS()
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
   we can sort alphabetically the members

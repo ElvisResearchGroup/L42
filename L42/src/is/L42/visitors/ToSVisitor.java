@@ -610,6 +610,15 @@ public class ToSVisitor implements ToSTrait{
     var tx0=d._varTx();
     var txs0=d.varTxs();
     var e0=d._e();
+    if(tx0!=null && e0==null){//was an if a<:B
+      var t0=tx0._t();
+      var x0=tx0._x();
+      assert t0!=null && x0!=null;
+      visitX(x0);
+      c("<:");
+      visitT(t0);
+      return;
+      }
     if(tx0!=null){
       nextIsMatching=!txs0.isEmpty();
       visitVarTx(tx0);

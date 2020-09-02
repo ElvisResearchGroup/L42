@@ -55,7 +55,8 @@ import is.L42.typeSystem.TypeManipulation;
        -imm fields are fwd iff not used by any readCache and there is no eagerCache 
      */
 public class K extends GuessFields{
-  public Core.L k(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+  public Core.L k(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+    this.autoNormed|=autoNorm;
     err=new MetaError(wrap);
     if(cs.isEmpty()){return k(p,wrap,mutK,immK);}
     var pIn=p.navigate(cs);
@@ -113,7 +114,7 @@ public class K extends GuessFields{
     if(clazz){return new T(Mdf.Class,L(),p);}
     var imm=match(null,List.of(Mdf.Immutable,Mdf.Readable),optionsGet) && match(null,L(Mdf.Immutable),optionsSet);
     if(imm){
-      if(hasEagerCache || fieldsUsedInReadCache.contains(x)){return new T(Mdf.Immutable,L(),p);}
+      if(autoNormed || fieldsUsedInReadCache.contains(x)){return new T(Mdf.Immutable,L(),p);}
       return new T(Mdf.ImmutableFwd,L(),p);
       }
     var mut=match(Mdf.Mutable,List.of(Mdf.Readable,Mdf.Immutable,Mdf.Lent),optionsGet) &&  match(null,List.of(Mdf.Mutable,Mdf.Capsule),optionsSet);

@@ -442,7 +442,7 @@ TestReadCache={
       {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
     )
   }
-  NestedClose=Data.Close('A.B):{
+  NestedClose=Data.Close('A.B, autoNorm=Bool.false()):{
   A={
     B={
       class method This()

@@ -1,0 +1,51 @@
+reuse [AdamTowel]
+Decorator=Organize:{...}
+
+AstCase={...}
+AstTrait=Organize:Trait:{...}
+
+WithToHtml=Organize:Trait:{
+  $=Class:AstTrait
+  ToHtml=Data:{[$.Visitor]
+    var S res
+    class method mut This()=This(res=S"")
+    mut method Void append(S that)=this.res(\res++that)
+    method Void visitP($.P that)=this.append(S"<P>%that.text()</P>")
+    method Void visitH1($.H1 that)=this.append(S"<H1>%that.text()</H1>")
+    method Void visitDiv($.Div that)=(
+      this.append(S"<Div>")
+      for e in that.nodes() (this.append(e.accept(this)))
+      this.append(S"</Div>")
+      )
+    method Void visitHead($.Head that)=this.append(S"<Head></Head>")
+    method Void visitBody($.Body that)=(
+      this.append(S"<Body>")
+      for e in that.nodes() (this.append(this.visitDiv(e)))
+      this.append(S"</Body>")
+      )
+    method Void visitHtml($.Html that)=(
+      h=this.visitHead(that.head())
+      b=this.visitBody(that.body())
+      this.append(S"<Html>%h %b</Html>")
+      )
+    method Void visitA($.A that)=this.append(S"<A href='%this.href()'> %this.text()</A>")
+    }
+  }
+WithH2=Organize:Trait:{
+  H2$={}
+  $=Class:WithToHtml+{Visitor={method Void visitH2(H2$ that)}}
+  H2=$.Case(H2$):{S text}
+  ToHtml={
+    mut method Void append(S that)
+    mut method Void visitH2(H2 that)=this.append(S"<H2>%that.text()</H2>")
+    }
+  
+  }
+N=Class:WithH2
+Main=(
+  Debug(S"Hello world")
+  html=N.Div(\[N.P(S"hi")])
+  toHtml=N.ToHtml()
+  html.accept(toHtml)
+  Debug(toHtml.res())
+  )

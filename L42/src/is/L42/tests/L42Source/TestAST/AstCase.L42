@@ -1,0 +1,21 @@
+class method Library(class Any top,class Any visitor)[_]
+  =Class:CaseTrait['Top=>top;'Visitor=>visitor]
+CaseTrait=Decorator:Data:Trait:{
+  Top={interface}
+  Visitor={interface}
+  ImplNode=Trait:{[Top]
+    V={mut method Void visitXX(Self that)}
+    Self={}
+    method Self self()
+    method Void accept(mut V that)=that.visitXX(this.self())
+    }
+  class Any that
+  method Trait(Trait trait)[Message.Guard]=(
+    t=this.that()
+    name=Introspection.Nested.from(classAny=t).outerName().subString(start=0\ end=\size-1\)
+    n=Name"visit%(name)(that)"
+    d=Data('This,autoNorm=Bool.true())
+    i=ImplNode['V=>Visitor;'Self=>t;'visitXX(that)=>n]
+    d:i:trait
+    )
+  }

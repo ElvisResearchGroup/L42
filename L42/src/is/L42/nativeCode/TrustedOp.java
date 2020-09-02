@@ -234,9 +234,9 @@ public enum TrustedOp {
   Resource("resource",Map.of(
     Meta,use("return %s.resource(%s,%s);",sigI(Lib,Lib,Name)))),
   Close("close",Map.of(
-    Meta,use("return %s.close(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String)))),
+    Meta,use("return %s.close(%s,%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String,Bool)))),
   AddConstructors("addConstructors",Map.of(
-    Meta,use("return %s.addConstructors(%s,%s,%Gen1::wrap,%s,%s);",sigI(Lib,Lib,String,String,String)))),
+    Meta,use("return %s.addConstructors(%s,%s,%s,%Gen1::wrap,%s,%s);",sigI(Lib,Lib,String,Bool,String,String)))),
   CacheCall("cacheCall",Map.of(
     Meta,use("return %s.cacheCall(%s,%Gen1::wrap);",sigI(Lib,Lib)))),
   ResetDocs("resetDocs",Map.of(
