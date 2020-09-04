@@ -1,4 +1,5 @@
--rename Bug discovered by TestAst
+-should \add(e) call this.add(e)? so that '\res<=' can disappear?
+  #conseguences: a.foo() == a.foo. ; however a.foo() is never interpreted as (a.foo)(); thus a.foo()() will stay the same 
 -ToHalf 586 was not completed:
     if(m._e()==null){throw todo();}
     if(!m.varTxs().isEmpty()){throw todo();}

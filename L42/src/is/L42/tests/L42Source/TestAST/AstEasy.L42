@@ -1,0 +1,45 @@
+  Case=Decorator:{
+    method Trait(Trait trait)[Message.Guard]
+      =Data('This,autoNorm=Bool.true()):trait
+    }
+Base=Trait({interface
+  Node={interface}
+  Nodes=Collection.list(Node)
+  P=Case:{[Node] S text}
+  H1=Case:{[Node] S text}
+  Div=Case:{[Node] Nodes nodes}
+  Divs=Collection.list(Div)
+  Head=Case:{[Node]}
+  Body=Case:{[Node] Divs divs}
+  Html=Case:{[Node] Head head,Body body}
+  A=Case:{S href, S text}
+  })['Node=>'This]
+Abs=Base[clear='This]
+ToHtml=Trait({interface
+  Node=Abs+{method S toHtml()}
+  P={method S toHtml()=S"<P>%this<:Node.P.text()</P>"}
+  H1={method S toHtml()=S"<H1>%this<:Node.H1.text()</H1>"}
+  Div={method S toHtml()=(
+    ss=S()(for e in this<:Node.Div.nodes() \add(e.toHtml()))
+    S"<Div>%ss</Div>"
+    )}
+  Head={method S toHtml()=S"<Head></Head>"}
+  Body={method S toHtml()=(
+    ss=S()(for e in this<:Node.Body.divs() \add(e.toHtml()))
+    //ss=l.reduce(a)(for e in\vals\add(\acc+e))
+    //ss=l.stream().reduce(a,(acc,e)->acc+e)
+    S"<Body>%ss</Body>"
+    )}
+  Html={method S toHtml()=(
+    s=this<:Node.Body
+    S"<Div>%s.head().toHtml() s.body().toHtml()</Div>"
+    )}
+  })['Node=>'This]
+WithH2=Trait({interface
+  Node=Abs.code()
+  H2=Case:{Node S text}
+  })['Node=>'This]
+All=Trait({
+  Node=Base+WithH2+ToHtml
+  H2={method S toHtml()=S"<H2>%this<:Node.H2.text()</H2>"}
+  }})['Node=>'This]

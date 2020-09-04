@@ -267,11 +267,15 @@ We need to add some tests to TestRename
     P in {Any,Void,Library}
     L.MWTs=empty
 * Rename(C=L) = (C=L)[onlyNesteds];empty
+    if L.interface? = interface then L.Info.close!=close //we can not redirect closed interfaces
     Cs.C => Thisn.Cs' in Map
     P=This(n+sizeOf(Cs.C)).Cs'
     p=Rename.p.navigate(Cs.C)
     forall MWT in L.MWTs://they should have been already "internally renamed"
       p|- p(P)(MWT.s).MH[from P;p]<=MWT.MH
+    if L.interface? = interface then size(L.MWTs) == size(p(P).MWTs) and forall MWT in L.MWTs:
+      p|- MWT.MH<=p(P)(MWT.s).MH[from P;p] //must be eqivalent: <= and =>
+    //for interfaces the error should mention lack of equivalence, not lack of subtyping
 
 //TODO: another operator could be "delegate Cs.s->Cs'.s',
 //generating in Cs.s a method body that is just a call for Cs'.s'

@@ -621,22 +621,22 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    ),new AtomicTest(()->fail("""
      A={#norm{}} B={#norm{typeDep=This1.A watched=This1.A}}
    #norm{}} K={#typed{}}""",/*rename map after this line*/"""
-     A.=>#This1.K
+     A.=>#This.K
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
    nested class A
    The implementation can not be removed since the class is watched by nested class B
-   Full mapping:A=>This1.K
+   Full mapping:A=>This.K
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method This1.B s(This1.B x) #norm{typeDep=This1.B}} B={#norm{}}
    #norm{}} K={#typed{}}""",/*rename map after this line*/"""
-     A.=>#This1.K
+     A.=>#This.K
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
    Also nested class B
    need to be redirected to an outer path
-   Full mapping:A=>This1.K
+   Full mapping:A=>This.K
    [file:[###]"""/*next test after this line*/)
    //nested classes
     ),new AtomicTest(()->pass("""
@@ -1964,9 +1964,68 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        #norm{close}}
      #norm{}}
      #norm{}}"""/*next test after this line*/)
-     ));}
-
-
+     
+),new AtomicTest(()->pass("""
+    A={ 
+      I={interface method Void foo() #norm{}}
+      B={[This1.I] method Void foo()=void #norm{typeDep=This1.I refined=foo() }}
+      #norm{}}
+    #norm{}} K={interface method Void foo() #typed{}}""",/*rename map after this line*/"""
+    A.I.=>#This.K
+    """,/*expected after this line*/"""
+  A={
+    B={[This3.K] method Void foo()=void #norm{typeDep=This3.K refined=foo() }}
+    #norm{}}
+  #norm{}} K={interface method Void foo() #typed{}}"""/*next test after this line*/)
+),new AtomicTest(()->fail("""
+    A={ 
+      I={interface method Any foo() #norm{}}
+      B={[This1.I] method Void foo()=void #norm{typeDep=This1.I refined=foo() }}
+      #norm{}}
+    #norm{}} K={interface method Library foo() #typed{}}""",/*rename map after this line*/"""
+    A.I.=>#This.K
+    """,/*expected after this line*/"""
+  nested class { A={..} }
+  nested class A.I
+  can not be redirected, the target This.K
+  does not expose a compatible method method A.I.foo()
+  Redirected interfaces must have all equivalent methods.
+  Invalid method inheritance for foo():
+  the return type Any is not a subtype of the inherited type Library
+  Full mapping:A.I=>This.K
+  [###]"""/*next test after this line*/)
+),new AtomicTest(()->fail("""
+    A={ 
+      I={interface #norm{}}
+      B={[This1.I] method Void foo()=void #norm{typeDep=This1.I }}
+      #norm{}}
+    #norm{}} K={interface method Library foo() #typed{}}""",/*rename map after this line*/"""
+    A.I.=>#This.K
+    """,/*expected after this line*/"""
+  nested class { A={..} }
+  nested class A.I
+  can not be redirected, the target This.K
+  does not expose a compatible method method A.I.foo()
+  Redirected interfaces must have all equivalent methods.
+  the method does not exists in the source interface
+  Full mapping:A.I=>This.K
+  [###]"""/*next test after this line*/)
+),new AtomicTest(()->fail("""
+    A={ 
+      I={interface #norm{close}}
+      B={[This1.I] method Void foo()=void #norm{typeDep=This1.I }}
+      #norm{}}
+    #norm{}} K={interface #typed{}}""",/*rename map after this line*/"""
+    A.I.=>#This.K
+    """,/*expected after this line*/"""
+  nested class { A={..} }
+  nested class A
+  can not be redirected, the source is a close interface
+  Full mapping:A.I=>This.K
+  [###]"""/*next test after this line*/)
+));}
+//TODO: also check that the target must be an interface too
+//Test they must both be open interfaces?
 private static String nested4="""
      A={
        method Void foo(This a,This.B b,This.B.C c,This.B.C.D d)=void
