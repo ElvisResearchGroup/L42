@@ -274,7 +274,7 @@ public class State implements Serializable{
     Info info=collected.toInfo(true);
     var allMwts=merge(mwts,mwts0);
     var bridges=WellFormedness.bridge(allMwts);
-    var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,bridges);
+    var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,l.ncs(),bridges);
     Info info1=l.info().sumInfo(info).withClose(closeState);
     return l.withMwts(allMwts).withInfo(info1);
     }

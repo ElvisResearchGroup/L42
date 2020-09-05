@@ -143,7 +143,8 @@ public class Sum {
         }
       }.of(other);
     }
-  private static Core.L normalizePrivates(Core.L l,HashSet<Integer>otherNs) {
+  private static Core.L normalizePrivates(Core.L l,HashSet<Integer>otherNs){
+    otherNs.remove(0);
     HashMap<Integer,Integer>next=new HashMap<>();
     for(int i:otherNs){
       int nextI=i+1;

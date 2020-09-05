@@ -875,7 +875,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        method Void v::0()=void
        B={#norm{}}
        D::2={#norm{}}
-       #norm{}}
+       #norm{close}}
      C={method Void b()=void
        #norm{}}
      #norm{typeDep=This.A}}""",/*rename map after this line*/"""
@@ -887,7 +887,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    A::1={
      method Void v::0()=void
      D::2={#norm{}}
-     #norm{}}
+     #norm{close}}
    C={method Void b()=void #norm{}}
    #norm{typeDep=This.A::1,This}}
    """/*next test after this line*/)

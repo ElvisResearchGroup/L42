@@ -61,10 +61,12 @@ public class StringInterpolation {
     if (c==']'){openS-=1;}
     if (c=='}'){openC-=1;}
     }
-  boolean isTerminal(char former,char c){
+  boolean isTerminal(char former,char c,char next){
     if(openR<0 || openS<0 || openC<0){return true;}
     if(openR!=0 || openS!=0 || openC!=0){return false;}
     if(c==')' ||c==']' || c=='}'){return true;}
+    if(c=='<' && next==':'){return false;}
+    if(former=='<' && c==':'){return false;}
     if(former!=')' && former!=']'){
       return terminals.indexOf(c)!=-1;
       }
@@ -94,8 +96,9 @@ public class StringInterpolation {
     Expr{public int run(StringInterpolation self,String s,int i){
       char c=s.charAt(i);
       char former=s.charAt(i-1);
+      char next=s.length()>i+1?s.charAt(i+1):'\n';
       self.open(c);
-      if(!self.isTerminal(former,c)){
+      if(!self.isTerminal(former,c,next)){
         self.appendExp(c);
         self.close(c);
         return i;
@@ -112,9 +115,10 @@ public class StringInterpolation {
     Round{public int run(StringInterpolation self,String s,int i){
       char c=s.charAt(i);
       char former=' ';
+      char next=s.length()>i+1?s.charAt(i+1):'\n';
       self.open(c);
       self.close(c);
-      if(!self.isTerminal(former,c) && self.openR!=0){
+      if(!self.isTerminal(former,c,next) && self.openR!=0){
         self.appendExp(c);
         return i;
         }

@@ -322,6 +322,8 @@ _______
 _______
 #define hasOpenState(Core.L)    hasOpenState(interface?, mwts)    bridge(Ms) = Ms'
 * hasOpenState({interface? MWTs NCs Info})=hasOpenState(interface?,MWTs)
+    forall m in MWTs.ms m not of form _::0
+    forall c in NCs.cs c not of form _::0
 * hasOpenState(interface, _)
 * hasOpenState(empty, MWTs)
     forall MWT in MWTs where MWT.e?=empty: MWT.m not of form _::n

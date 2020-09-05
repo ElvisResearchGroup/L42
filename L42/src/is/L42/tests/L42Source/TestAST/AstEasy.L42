@@ -1,8 +1,9 @@
-  Case=Decorator:{
-    method Trait(Trait trait)[Message.Guard]
-      =Data('This,autoNorm=Bool.true()):trait
-    }
-Base=Trait({interface
+Case=Decorator:{
+  HasSelf=Trait:{method This self()=this}
+  method Trait(Trait trait)[Message.Guard]
+    =Data('This,autoNorm=Bool.true()):HasSelf:trait
+  }
+Base=Trait:{
   Node={interface}
   Nodes=Collection.list(Node)
   P=Case:{[Node] S text}
@@ -13,33 +14,33 @@ Base=Trait({interface
   Body=Case:{[Node] Divs divs}
   Html=Case:{[Node] Head head,Body body}
   A=Case:{S href, S text}
-  })['Node=>'This]
+  }
 Abs=Base[clear='This]
-ToHtml=Trait({interface
-  Node=Abs+{method S toHtml()}
-  P={method S toHtml()=S"<P>%this<:Node.P.text()</P>"}
-  H1={method S toHtml()=S"<H1>%this<:Node.H1.text()</H1>"}
-  Div={method S toHtml()=(
-    ss=S()(for e in this<:Node.Div.nodes() \add(e.toHtml()))
+ToHtml=Trait({
+  Dom=Class.Relax:Abs:{Node={method S toHtml()}}
+  P={method Dom.P self() method S toHtml()=S"<P>%this.self().text()</P>"}
+  H1={method Dom.H1 self() method S toHtml()=S"<H1>%this.self().text()</H1>"}
+  Div={method Dom.Div self() method S toHtml()=(
+    var ss=S""
+    for e in this.self().nodes() (ss++=e.toHtml())
     S"<Div>%ss</Div>"
     )}
-  Head={method S toHtml()=S"<Head></Head>"}
-  Body={method S toHtml()=(
-    ss=S()(for e in this<:Node.Body.divs() \add(e.toHtml()))
-    //ss=l.reduce(a)(for e in\vals\add(\acc+e))
-    //ss=l.stream().reduce(a,(acc,e)->acc+e)
+  Head={method Dom.Head self() method S toHtml()=S"<Head></Head>"}
+  Body={method Dom.Body self() method S toHtml()=(
+    var ss=S""
+    for e in this.self().divs() (ss++=e.toHtml())
     S"<Body>%ss</Body>"
     )}
-  Html={method S toHtml()=(
-    s=this<:Node.Body
-    S"<Div>%s.head().toHtml() s.body().toHtml()</Div>"
-    )}
-  })['Node=>'This]
-WithH2=Trait({interface
-  Node=Abs.code()
-  H2=Case:{Node S text}
-  })['Node=>'This]
+  Html={method Dom.Html self() method S toHtml()=
+    S"<Div>%this.self().head().toHtml() this.self().body().toHtml()</Div>"
+    }
+  })['Dom=>'This]
+WithH2=Trait({
+  Dom=Class.Relax:Abs
+  H2=Case:{[Dom.Node] S text}
+  })['Dom=>'This]
+WTC=Class.Relax:WithH2
 All=Trait({
-  Node=Base+WithH2+ToHtml
-  H2={method S toHtml()=S"<H2>%this<:Node.H2.text()</H2>"}
-  }})['Node=>'This]
+  Dom=Class.Relax:Base:WithH2:ToHtml
+  H2={method Dom.H2 self() method S toHtml()=S"<H2>%this.self().text()</H2>"}
+  })['Dom=>'This]

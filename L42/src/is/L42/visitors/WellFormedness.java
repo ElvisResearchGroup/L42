@@ -844,9 +844,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       }       
     }
   private static boolean hasOpenState(Core.L l,List<Core.L.MWT>bridges){
-    return hasOpenState(l.isInterface(),l.mwts(),bridges);
+    return hasOpenState(l.isInterface(),l.mwts(),l.ncs(),bridges);
     }
-  public static boolean hasOpenState(boolean isInterface,List<Core.L.MWT>mwts, List<Core.L.MWT>bridges){
+  public static boolean hasOpenState(boolean isInterface,List<Core.L.MWT>mwts,List<Core.L.NC>ncs, List<Core.L.MWT>bridges){
+    if(mwts.stream().anyMatch(m->m.key().uniqueNum()==0)){return false;}
+    if(ncs.stream().anyMatch(n->n.key().uniqueNum()==0)){return false;}
     if(isInterface){return true;}
     if(!bridges.isEmpty()){return false;}
     for(var mwt:mwts){

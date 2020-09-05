@@ -111,8 +111,7 @@ public class Main {
     Class<?> c=o.getClass();
     try{Resources.err(c.getMethod("£mtoS").invoke(o).toString());return;}
     catch(Throwable t){
-      t.printStackTrace();
-      }
+      System.err.println("method £mtoS not found in class "+c);}
     try{
       Object oo=_unwrap(o);
       Class<?>cc=oo.getClass();

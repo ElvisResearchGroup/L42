@@ -135,11 +135,15 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     return csOk && sOk;
     }
   public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
-    L l=input.unwrap;
-    L res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
-      L(renames.stream().map(a->a.copy())),
-      wrapName, wrapFail, wrapC, wrapM);
-    return wrapL(res);
+    try{
+      L l=input.unwrap;
+      L res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
+        L(renames.stream().map(a->a.copy())),
+        wrapName, wrapFail, wrapC, wrapM);
+      return wrapL(res);
+      }
+    catch(RuntimeException rte){
+      throw rte;}//To support breakpoints here
     }
   public static P unwrapPath(L42Any classAny){
     L42ClassAny cn;

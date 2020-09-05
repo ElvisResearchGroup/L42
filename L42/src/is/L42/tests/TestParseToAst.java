@@ -430,7 +430,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    passI("S\"foo[%this.bar())\"","this.bar()")
  ),new AtomicTest(()->
    passI("S\"foo[%this.bar[])\"","this.bar[]")
-  ));}
+ ),new AtomicTest(()->
+   passI("S\"foo%this<:A.bar()\"","this<:A.bar()")
+ ));}
 public static void pass(String input) {pass(input,input);}
 public static void pass(String input,String output) {
   var r=Parse.e(Constants.dummy,input);
