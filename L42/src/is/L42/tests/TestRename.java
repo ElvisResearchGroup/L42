@@ -2023,7 +2023,36 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   can not be redirected, the source is a close interface
   Full mapping:A.I=>This.K
   [###]"""/*next test after this line*/)
-));}
+),new AtomicTest(()->pass("""
+   I={interface method This op() #norm{typeDep=This}}
+   B={[This1.I] method This op() #norm{typeDep=This,This1.I refined=op()}} 
+   #norm{}}""",/*rename map after this line*/"""
+    I.op()=>I.m()
+    """,/*expected after this line*/"""
+  I={interface method This m()#norm{typeDep=This}}
+  B={[This1.I]method This m()
+    #norm{typeDep=This, This1.I refined=m()}}
+  #norm{}}"""/*next test after this line*/)
+),new AtomicTest(()->pass("""
+    A::1={class method Void op::2()=void #norm{}}
+    A={class method Void op()=void #norm{}}
+    B={
+      class method Void b()=This1.A<:class This1.A.op()
+      class method Void b1()=This1.A::1<:class This1.A::1.op::2()
+      #norm{typeDep=This1,This1.A,This1.A::1 coherentDep=This1.A,This1.A::1 watched=This1 usedMethods=This1.A.op()}} 
+    #norm{}}""",/*rename map after this line*/"""
+     A.=>*<empty>
+     """,/*expected after this line*/"""
+   A::1={class method Void op::2()=void #norm{}}
+   A::3={class method Void op::4()=void #norm{}}
+   B={
+     class method Void b()=This1.A::3<:class This1.A::3.op::4()
+     class method Void b1()=This1.A::1<:class This1.A::1.op::2()
+     #norm{typeDep=This1, This1.A::3, This1.A::1 coherentDep=This1.A::3, This1.A::1 watched=This1}
+     }
+  #norm{}}"""/*next test after this line*/)
+ ));}
+
 //TODO: also check that the target must be an interface too
 //Test they must both be open interfaces?
 private static String nested4="""

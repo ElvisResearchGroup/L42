@@ -1,14 +1,27 @@
 reuse [AdamTowel]
-Decorator=Organize:{...}
-
-//AstCase={...}
-//AstTrait=Organize:Trait:{...}
+Point=Data:{Num x, Num y}
+Points=Collection.list(Point)
+Main0=(
+  p1=Point(x=3Num,y=5Num)
+  p2=Point(x=8Num,y=12Num)
+  Debug(p1)
+  ps=Points[p1;p2;p1]
+  Debug(ps)
+  var acc=S""
+  for p in ps ( acc++=p.x().toS() )
+  Debug(acc)
+  )
 AstEasy={...}
-/*N=Class:AstEasy.All
+N=Class:AstEasy.All
 Main=(
   Debug(S"Hello world")
-  html=N.Div(\[N.P(S"hi")])
-  toHtml=N.ToHtml()
-  html.accept(toHtml)
-  Debug(toHtml.res())
-  )*/
+  dom=N.Div(nodes=\[N.A(href=S"L42.is",text=S"Hello");N.H2(text=S"World")])
+  Debug(dom.toHtml())
+  )
+O=Class:AstEasy.BaseWithOps
+Main2=(
+  Debug(S"Hello world2")
+  dom=O.Div(nodes=\[O.P(text=S"Hello");O.H1(text=S"World")])
+  Debug(dom.toItalian())
+  Debug(dom.pInDiv())
+  )

@@ -1,5 +1,6 @@
 -test that if we (only) manually add a ::0 private implemented method,
-then 'canditate' public constructors are not recognized, and the class is never instantiable 
+then 'canditate' public constructors are not recognized, and the class is never instantiable
+-Rename feature add: must be possible to rename-sum an interface with, at lease, an empty class never used. 
 -should \add(e) call this.add(e)? so that '\res<=' can disappear?
   #conseguences: a.foo() == a.foo. ; however a.foo() is never interpreted as (a.foo)(); thus a.foo()() will stay the same 
 -ToHalf 586 was not completed:

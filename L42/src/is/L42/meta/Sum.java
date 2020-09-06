@@ -383,7 +383,7 @@ public class Sum {
         if(left!=null){
           for(var m:left.mwts()){
             MWT mi=m.withMh(p.from(stripDocs(m.mh()),path));
-            imwts.add(new IMWT(false,mi));
+            if(!Sum.this.inRename){imwts.add(new IMWT(false,mi));}
             refineds.add(mi.key());
             }
           paths(typeDep,left,p,path);
@@ -392,13 +392,13 @@ public class Sum {
        if(right!=null){
           for(var m:right.mwts()){
             MWT mi=m.withMh(p.from(m.mh(),path));
-            imwts.add(new IMWT(false,mi));
+            if(!Sum.this.inRename){imwts.add(new IMWT(false,mi));}
             refineds.add(mi.key());
             }
           paths(typeDep,right,p,path);
           }
         }
-    }
+      }
     private MH stripDocs(MH mh) {
       return new MH(mh.mdf(),L(),mh.t().withDocs(L()),mh.key(),
         L(mh.pars(),t->t.withDocs(L())),

@@ -1,4 +1,4 @@
-Arg$DecoratorTrait=Trait:{
+WithArgs$DecoratorTrait=Trait:{
   @Public Fail=Message:{[Message.Guard]}
   @Public method Library : (Library lib)[Fail]=(this:Trait(lib)).code()
   @Public method Trait : (Trait trait)[Fail]={
@@ -7,13 +7,13 @@ Arg$DecoratorTrait=Trait:{
     }
   method Trait (Trait trait)[Message.Guard]
   }
-DecoratorTrait=Arg$DecoratorTrait:{
+DecoratorTrait=WithArgs$DecoratorTrait:{
   @Public ClassOperators={class method This1()=This1()}
   @Public class method This()
   }
 $=Class:DecoratorTrait:{
-  method Trait (Trait trait)[Message.Guard]=DecoratorTrait:trait
+  @Public method Trait (Trait trait)[Message.Guard]=DecoratorTrait:trait
   }
-Arg=Class:DecoratorTrait:{
-  method Trait (Trait trait)[Message.Guard]=Arg$DecoratorTrait:trait
+@Public WithArgs=Class:DecoratorTrait:{
+  @Public method Trait (Trait trait)[Message.Guard]=WithArgs$DecoratorTrait:trait
   }

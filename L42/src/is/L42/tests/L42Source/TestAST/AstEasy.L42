@@ -13,7 +13,7 @@ Base=Trait:{
   Head=Case:{[Node]}
   Body=Case:{[Node] Divs divs}
   Html=Case:{[Node] Head head,Body body}
-  A=Case:{S href, S text}
+  A=Case:{[Node] S href, S text}
   }
 Abs=Base[clear='This]
 ToHtml=Trait({
@@ -32,15 +32,66 @@ ToHtml=Trait({
     S"<Body>%ss</Body>"
     )}
   Html={method Dom.Html self() method S toHtml()=
-    S"<Div>%this.self().head().toHtml() this.self().body().toHtml()</Div>"
+    S"<Div>%this.self().head().toHtml() %this.self().body().toHtml()</Div>"
+    }
+  A={method Dom.A self() method S toHtml()=
+    S"<A href='%this.self().href()'>%this.self().text()</A>"
     }
   })['Dom=>'This]
 WithH2=Trait({
   Dom=Class.Relax:Abs
   H2=Case:{[Dom.Node] S text}
   })['Dom=>'This]
-WTC=Class.Relax:WithH2
 All=Trait({
   Dom=Class.Relax:Base:WithH2:ToHtml
   H2={method Dom.H2 self() method S toHtml()=S"<H2>%this.self().text()</H2>"}
   })['Dom=>'This]
+Clone=Trait({
+  Dom=Class.Relax:Abs:{
+    Node={interface method This op()}
+    Div={[Node] method This op()}
+    Head={[Node] method This op()}
+    Body={[Node] method This op()}
+    }
+  Extra={
+    class method S text(S that)=that
+    class method S url(S that)=that
+    }
+  P={method Dom.P self()
+    method Dom.Node op()=Dom.P(text=Extra.text(this.self().text()))}
+  H1={method Dom.H1 self()
+    method Dom.Node op()=Dom.H1(text=Extra.text(this.self().text()))}
+  Div={method Dom.Div self()
+    method Dom.Div op()=Dom.Div(nodes=
+      Dom.Nodes()(for e in this.self().nodes() \res<=e.op())
+      )}
+  Head={method Dom.Head self() method Dom.Head op()=this.self()}
+  Body={method Dom.Body self()
+    method Dom.Body op()=Dom.Body(divs=
+      Dom.Divs()(for e in this.self().divs() \res<=e.op())
+      )}
+  Html={method Dom.Html self()
+    method Dom.Html op()=Dom.Html(
+      head=this.self().head().op() body=this.self().body().op()
+      )}
+  A={method Dom.A self()
+    method Dom.Node op()=Dom.A(
+      href=Extra.url(this.self().href())
+      text=Extra.text(this.self().text())
+      )}
+  })['Dom=>'This]
+ToItalian=Trait({
+  Dom=Class.Relax:Clone['Node.op()=>'Node.toItalian();clear='Extra.text(that)]
+  Extra={class method S text(S that)=S"Pizza!!!"++that}
+  })['Dom=>'This][hide='Extra]
+PInDiv=Trait({
+  Dom=Class.Relax:Clone['Node.op()=>'Node.pInDiv()]['P.pInDiv()->'P.superPInDiv()]
+  P={method Dom.P self()
+    method Dom.Node pInDiv()=(
+      p=this.self().superPInDiv()
+      Dom.Div(nodes=Dom.Nodes[p])
+      )
+    }
+  })['Dom=>'This][hide='Extra]
+  
+BaseWithOps=Base:ToItalian:PInDiv

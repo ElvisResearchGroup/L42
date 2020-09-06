@@ -7,7 +7,9 @@ AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
 //indeed the code keeps a map to ncs 
 _______
 #define applyMap(p;Map)=L    completeMap(ns,p,Map)=Map    extendMap(ns,p,Map)=Map
-* applyMap(p;Map0)= L'+LOf(AddMap) //simpler then normal sum: skip normalizing unique numbers, and sum class+interface is never allowed, nor growing interfaces
+* applyMap(p;Map0)= L'+LOf(AddMap) //simpler then normal sum:
+//simpler sum: skip normalizing unique numbers, and sum class+interface is never allowed, nor growing interfaces;
+//and implemented(L,Cs)=empty for all the cases. TODO: this looks scary, may be fine in the rename, but how to test it?
     Map1=extendMap(p,empty,Map0)
     earlyCheck(p.top,Map1)
     Map2=completeMap(existingNs,p,Map1)

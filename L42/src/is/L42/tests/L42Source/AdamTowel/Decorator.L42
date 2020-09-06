@@ -1,0 +1,28 @@
+WithArgs$DecoratorTrait=Trait:{
+  @Public Fail=Message:{[Message$Guard]}
+  @Public method Library : (Library lib)[Fail]=(this:Trait(lib)).code()
+  @Public method Trait : (Trait trait)[Fail]={
+    return this(trait=trait)
+    catch Message$Guard g exception Fail"".with(cause=g)
+    }
+  method Trait (Trait trait)[Message$Guard]
+  }
+DecoratorTrait=WithArgs$DecoratorTrait:{
+  @Public ClassOperators={class method This1()=This1()}
+  @Public class method This()
+  }
+$=(DecoratorTrait:{
+  @Public method Trait (Trait trait)[Message$Guard]={
+    return DecoratorTrait:trait //code below is only needed since Message.Guard is not yet implemented by many trait messages
+    catch Message$Guard e exception e
+    catch Any e error X"unreachable after adam towel deployment"
+    }
+  }).code()
+@Public WithArgs=(DecoratorTrait:{
+  @Public method Trait (Trait trait)[Message$Guard]={
+    return WithArgs$DecoratorTrait:trait
+    catch Message$Guard e exception e
+    catch Any e error X"unreachable after adam towel deployment"
+    }    
+  }).code()
+@AbstractTowel{decorator}
