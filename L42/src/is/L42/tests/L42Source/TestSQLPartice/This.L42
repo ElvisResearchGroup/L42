@@ -1,0 +1,23 @@
+reuse [AdamTowel]
+LoadJ=Load:{reuse[JavaServer]}
+J=LoadJ(slaveName=S"dbServer{}")
+
+LoadDB=Load:{reuse[DB]}
+DB=LoadDB(S"jdbc:derby:Practice1;create=true",javaServer=J)
+
+Point=Data:{Num x, Num y}
+Points=Collection.list(Point)
+DBAPI=DB.QueryBox:{
+  @Public A=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
+  @Public B=DB.query[Points;Num;]"SELECT * FROM Foo WHERE x!=@num"
+  }
+SetUp={...}
+Table=DB.#$of().tables()
+Main=(
+  db=DB.#$of()
+  mut box=DBAPI(db)
+  Debug(box.a()(name=S"Bob"))
+  {}:Test""(actual=box.a()(name=S"Bob")
+    expected=S"[Point(x=1, y=2); Point(x=4, y=5); Point(x=7, y=8)]")
+  )
+TearDown={...}

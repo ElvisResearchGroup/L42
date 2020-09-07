@@ -1,0 +1,6 @@
+Populate=(
+  db=DB.#$of()
+  db.execute(sql=S"CREATE TABLE Foo (x int,y int, z varchar(255))")
+  db.execute(sql=S"INSERT INTO Foo (x,y,z) Values (1,2,'A3'),(4,5,'B6'),(7,8,'C9')")
+  )
+

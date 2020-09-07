@@ -1,0 +1,5 @@
+AfterMain=(
+  db=DB.#$of()
+  db.execute(sql=S"DROP TABLE Foo")
+  db.kill()
+  )
