@@ -39,7 +39,7 @@ Main=(
   abc=S.List['A;'B;'C]
   keys=S.List['MiniGui]//mut: model can update it and add/remove keys to fetch
   models=J.Handler.Map[key='MiniGui mutVal=model]//mut: models can update it and (un)register models
-  for e in j(keys) /*i in abc*/ (
+  for e in j(keys) i in abc (
     e>>models
     text2=j.askEvent(key='Ask, id=S"",msg=S"")
     Debug(S"[[%text2]]-----")

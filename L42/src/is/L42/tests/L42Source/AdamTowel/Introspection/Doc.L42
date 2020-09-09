@@ -9,14 +9,14 @@ class method This(NativeDoc that)=\(i=that)
   size=this.i().docNum()
   var i=0Size
   while i<size (
-    \res<=Doc$(this.i().docIn(i))
+    \add(Doc$(this.i().docIn(i)))
     i+=1Size//sadly, range will be added later
   )))
 @Public method S$List texts()=\()((
   size=this.i().docNum()+1Size
   var i=0Size
   while i<size (
-    \res<=this.i().textIn(i)
+    \add(this.i().textIn(i))
     i+=1Size//sadly, range will be added later
   )))
 @Public method Bool hasAnnotation()=this.i().hasAnnotation()
@@ -29,7 +29,7 @@ method toS()=this.i().toS()
 @Public method Bool annotatedAs(Nested nested)={
   @DelayTyping Void _=void//delays typing so Doc$ do not get typed before is merged
   if this.hasAnnotation() && this.nested()==nested return Bool.true()
-  return this.docs().matchAny()(for d in \vals \res<=d.annotatedAs(nested=nested)<:Bool)
+  return Match.Some()(for d in this.docs() \add(d.annotatedAs(nested=nested)))
   }
 @Public method Doc$Opt annotation(class Any that)=this.annotation(nested=\.from(classAny=that))
 @Public method Doc$Opt annotation(Nested nested)={

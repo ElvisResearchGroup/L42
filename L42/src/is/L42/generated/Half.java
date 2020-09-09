@@ -354,6 +354,7 @@ public class Half {
       this.xP = xP;
       this.s = s;
       this.es = es;
+      assert s.xs().size()==es.size();
     }
 
     @java.lang.SuppressWarnings("all")

@@ -14,22 +14,22 @@ TestNoData={
     {}:Test"basic0: showcasing == test style"(
       S"hello world"
       ==
-      ss.reduce()(for e in \vals \res<=\acc++e)
+      ss.reduce()(for e in \vals \add(\acc++e))
       )
     pp=Points[\(x=3\ y=5\);\(x=1\ y=0\);\(x=0\ y=7\)]
     {}:Test"points reduce"(
       Point(x=1\ y=0\)
       ==
-      pp.reduce()(for e in \vals if e.x()>0Size \res<=e)
+      pp.reduce()(for e in \vals if e.x()>0Size \add(e))
       )
   
     {}:Test"basic:reduce from empty string"(
       expected=S"-hello world" 
-      actual=ss.reduce(S"-")(for e in \vals \res<=\acc++e)
+      actual=ss.reduce(S"-")(for e in \vals \add(\acc++e))
       )
     {}:Test"basic: reduce from left value"(
       expected=S"hello world" 
-      actual=ss.reduce()(for e in \vals \res<=\acc++e)
+      actual=ss.reduce()(for e in \vals \add(\acc++e))
       )
     )
   }

@@ -18,7 +18,6 @@ _______
 
 * Y!void = void;imm Void;empty;Y.CTz
 * Y!\ = %Y.onSlash%<:Y.onSlash; Y.onSlash; empty; Y.CTz //onSlash!=expectedT, consider foo.bar(\.x())
-* Y!\x = Y!((Y.onSlashX).x())
 * Y!CsP = Y!(CsP <:class CsP)// assert CsP of form P
     class Any not in Y.p.solve(Y.expectedT)
 * Y!CsP = Y!(CsP <:class Any)
@@ -41,18 +40,16 @@ _______
 * Y! (x := e) = (x := e'); imm Void; STz'; CTz <+Y.p (STz <= Y.GX(x))
     Y[expectedT=Y.GX(x)]!e = e'; STz; STz'; CTz
 * Y!e(par) = Y!e.#apply(par)
+    e not of form \x
 * Y!e.m(e,xes) = Y!e.m(that=e, xes)
 * Y!e.m(xes) = Y!(x=e x.m(xes))
-    e not of form xP //xP on the argument is FULL.xP, HALF.xP in the result
+    e not of form xP 
     x fresh
-* Y!xP.m(x1=e1,..xn=en) = xP'.m(x1=e'1,..,xn=e'n); STz'; STz"; CTz'n
-    Y[expectedT=empty]!xP = xP'; ST1..STk; STz"0; CTz'0//Y!FULL.xP is always a HALF.xP
-    s=m(x1..xn)
-    STz' = ST1.s..STk.s //injects .s on all the elements of STz
-    STz'i = ST1.s.i..STk.s.i //here and below, i in 1..n
-    Y[onSlash=STz'i;onSlashX=xP';expectedT=STz'i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi
-    CTz'i = CTzi <+Y.p (STzi <= STz'i)
-    STz" = STz"0 U..U STz"n
+* Y!\x = Y!\x()
+* Y!\x(e,xes) = Y!\x(that=e, xes)
+* Y!\x(x1=e1,..xn=en) = Y.mCall(x(x1..xn),e1..en)
+* Y!xP.m(x1=e1,..xn=en) = Y[onSlashX=xP'].mCall(x(x1..xn),e1..en)
+    Y[expectedT=empty]!xP = xP'; _; empty; _//Y!FULL.xP is always a HALF.xP
 * Y!en OP..OP e1 OP e0 OP e = Y! en OP..OP e1 OP (e0 OP e) 
     OP of form OP0 or OP3 //right associative
 * Y!e0 OP1 e OP1 e1..OP1 en = Y! (e0 OP1 e) OP1 e1..OP1 en //left associative 
@@ -112,15 +109,8 @@ _______
     K = catch return Y.expectedT,STz x' x'
     x, x' fresh
 * Y!e[pars] = Y!e.#apply[pars]
-* Y!e.m[pars]= Y!(e.m(squareBuilder=(
-      x=\.#m#squareBuilder()
-      if \.#shortCircutSquare() (
-        e1..en void//so \ and \x are about the builder
-        )
-      x))
-    x fresh
-    ei = x.#yield(e'i) if pari=e'i and e'i is an sIf, sWhile, sFor, loop _ or B
-    ei = x.#squareAdd(pari) otherwise
+* Y!\x[pars]= Y!(\x(squareBuilder=Y.squareBuilder(x,pars)))
+* Y!e.m[pars]= Y!(e.m(squareBuilder=Y.squareBuilder(m,pars)))
 
 * Y!e "stringElement" = 
     Y!e.#from(stringLiteral=strLitPar(stringElement))
@@ -179,6 +169,31 @@ _______
     mdf?i = DXi.TLocal.mdf?, or mdf?i = DXi.TLocal.T.mdf?, or first of capsule,mut,lent,read,imm if one of those is defined in the TLocals in DXi.TLocal 
     x1..xn, x'1..x'n fresh
 
+_______
+#define Y.squareBuilder(m,pars)=e 
+* Y.squareBuilder(m,par1..parn) = (
+    x=\.#m#squareBuilder()
+    if \.#shortCircutSquare() (
+      x.#squareAdd(par1)
+      ..
+      x.#squareAdd(parn)
+      void//so \ and \x are about the builder
+      )
+    x) 
+  x fresh
+_______
+#define Y.mCall(s,es)=e;STz';STz";CTz    Y.expectedRes(HALF.xP) = STz
+* Y.mCall(xP,s,e1..en)=xP.m(x1=e'1,..,xn=e'n); STz.s; STz"1 U..U STz"n; CTz'n
+    s=m(x1..xn)
+    xP=Y.onSlashX
+    Y.expectedRes(xP)=STz
+    CTz'0=Y.CTz
+    Y[onSlash=STz.s.i;expectedT=STz.s.i; CTz=CTz'(i-1)]!ei = e'i; STzi; STz"i; CTzi for i in 1..n
+    CTz'i = CTzi <+Y.p (STzi <= STz'i)
+
+* Y.expectedRes(x) = Y.G(x)
+* Y.expectedRes(P<:STz) =STz 
+* Y.expectedRes(%STz%<:STz') = STz' 
 _______
 #define removeRets(Ks,STz) = STz'
 * removeRets(empty,STz) = STz

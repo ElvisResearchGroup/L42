@@ -12,14 +12,14 @@ class method This(NativeMethod that)=\(i=that)
   size=this.i().parNum()
   var i=0Size
   while i<size (
-    \res<=Type$(this.i().parIn(i))
+    \add(Type$(this.i().parIn(i)))
     i+=1Size
     )))
 @Public method Type$List exceptions()=\()((
   size=this.i().excNum()
   var i=0Size
   while i<size (
-    \res<=Type$(this.i().excIn(i))
+    \add(Type$(this.i().excIn(i)))
     i+=1Size
     )))
 @Public method Bool isRefined()=this.i().isRefined()

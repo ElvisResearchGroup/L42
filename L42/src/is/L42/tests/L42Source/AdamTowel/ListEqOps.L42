@@ -6,30 +6,8 @@ class method mut This ##apply#squareBuilder()
 class method Bool #shortCircutSquare()
 mut method Void #squareAdd(Elem that)
 mut method Void #squareAdd(mut Elem mutVal)
-mut method Void #yield(Void that)
 read method read This vals()
 mut method mut This #vals()
-mut method mut SlashRes res()
-SlashRes={mut method Void <=(Elem e)}
-
-read method lent MatchAny matchAny()
-MatchAny={
-  lent method lent This res()
-  lent method Bool (Void that)
-  lent method Void <=(Bool b)[Void]
-  }
-read method lent MatchAll matchAll()
-MatchAll={
-  lent method lent This res()
-  lent method Bool (Void that)
-  lent method Void <=(Bool b)[Void]
-  }
-read method lent MatchNone matchNone()
-MatchNone={
-  lent method lent This res()
-  lent method Bool (Void that)
-  lent method Void <=(Bool b)[Void]
-  }
 
 read method read This #iterator()
 mut method mut This #varIterator()
@@ -90,13 +68,11 @@ read method lent ElemBox reduce(Elem that)
 ElemBox={
   read method Elem (Void that)
   read method Elem acc()
-  lent method lent This res()
-  lent method Void <=(Elem that)
-  }
-  
+  lent method Void add(Elem that)
+  }  
 //----------------------------
-
-method This withoutAll(read Elem val)=This[for e in this (if !This.equals(a=e,b=val) \res<=e)]
+method This withoutAll(read Elem val)=
+  This()(for e in this (if !This.equals(a=e,b=val) \add(e)))
 
 read method Bool contains(read Elem that)={
   for read e in this (
@@ -110,7 +86,8 @@ read method Bool #in1(read Elem that)=this.contains(that)
 
 method This -(Elem right)=this.withoutAll(val=right)
 
-method This --(This right)=This[for e in this ( if !(e in right) \res<=e)]
+method This --(This right)=
+  This()(for e in this ( if !(e in right) \add(e)))
 
 /*
 //method This &(This right)=This[for e in this ( if e in right \res<=e )]
@@ -132,8 +109,8 @@ method Bool >>=(This right)={
 
 read method Bool allEq(read This that)=
   this.size()==that.size() &&
-  this.matchAll()(for read e1 in this, read e2 in that 
-    \res<= This.equals(a=e1,b=e2))
+  Match.All()(for read e1 in this, read e2 in that 
+    \add(This.equals(a=e1,b=e2)))
 
 method Bool ==(This that)=System.immEquality(this and=that)
 method Bool !=(This that)= !(this==that)
@@ -213,7 +190,6 @@ class method mut This ##apply#squareBuilder()=This()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #add(Elem that)=this.add(val=that)
 mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
-mut method Void #yield(Void that)=void
 read method read This vals()=this
 mut method mut This #vals()=this
 read method read This #iterator()=this

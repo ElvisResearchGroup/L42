@@ -63,12 +63,12 @@ Clone=Trait({
     method Dom.Node op()=Dom.H1(text=Extra.text(this.self().text()))}
   Div={method Dom.Div self()
     method Dom.Div op()=Dom.Div(nodes=
-      Dom.Nodes()(for e in this.self().nodes() \res<=e.op())
+      Dom.Nodes()(for e in this.self().nodes() \add(e.op()))
       )}
   Head={method Dom.Head self() method Dom.Head op()=this.self()}
   Body={method Dom.Body self()
     method Dom.Body op()=Dom.Body(divs=
-      Dom.Divs()(for e in this.self().divs() \res<=e.op())
+      Dom.Divs()(for e in this.self().divs() \add(e.op()))
       )}
   Html={method Dom.Html self()
     method Dom.Html op()=Dom.Html(

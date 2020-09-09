@@ -17,6 +17,8 @@ Main=(
   Debug(S"Hello world")
   dom=N.Div(nodes=\[N.A(href=S"L42.is",text=S"Hello");N.H2(text=S"World")])
   Debug(dom.toHtml())
+  {}:Test"toHtml"(actual=dom.toHtml()
+    expected=S"<Div><A href='L42.is'>Hello</A><H2>World</H2></Div>")
   )
 O=Class:AstEasy.BaseWithOps
 Main2=(
@@ -24,4 +26,12 @@ Main2=(
   dom=O.Div(nodes=\[O.P(text=S"Hello");O.H1(text=S"World")])
   Debug(dom.toItalian())
   Debug(dom.pInDiv())
+  {}:Test"toItalian"(actual=dom.toItalian()
+    expected=S"""
+    |O.Div(nodes=[O.P(text="Pizza!!!Hello"); O.H1(text="Pizza!!!World")])
+    """.trim())
+  {}:Test"pInDiv"(actual=dom.pInDiv()
+    expected=S"""
+      |O.Div(nodes=[O.Div(nodes=[O.P(text="Hello")]); O.H1(text="World")])
+      """.trim())
   )

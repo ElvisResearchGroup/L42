@@ -40,28 +40,28 @@ TestSizeRange=(
 TestMatchReduce=((
   mut S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))
+    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))
   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
   lent S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
+    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))    
   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
   read S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
+    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))    
   ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
   imm S.List ss=S.List[S"a";S"b";S"c"]
   {}:Test"reduceWithValue"(S"DDabc"==
-    ss.reduce(S"DD")(for e in \vals \res<=\acc++e))    
+    ss.reduce(S"DD")(for e in \vals \add(\acc++e)))    
   ))
 TestMatchSome=(
   ss=S.List[S"a";S"b";S"c"]
   (    
-    res=ss.matchAny()(for s in \vals \res<=(s==S"c"))
+    res=Match.Some()(for s in ss \add(s==S"c"))
     {}:Test"MatchSome"(res)
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
     var sAcc=S""
-    res=ss.matchAny()(for s in \vals (sAcc++=S"#" \res<=(s==S"b")))
+    res=Match.Some()(for s in ss (sAcc++=S"#" \add(s==S"b")))
     {}:Test"MatchSomeShortCircut"(sAcc.size()==2Size)
     )
   )
@@ -91,8 +91,7 @@ TestSList=(
   )
 TestMap=(
   imm s=S.List[S"a";S"b";S"c"]
-  res=S.List()(for e in s \res<=S"Q"++e)
-  //Note: should the above be preferred wrt S.List[for e in s \res<=...] ??
+  res=S.List()(for e in s \add(S"Q"++e))
   {}:Test"mapped"(res.val(1\)==S"Qb")
   )
 
@@ -118,10 +117,10 @@ TestVectorOps=(
     for s1 in ss1, imm s2 in ss2 (sAcc++=s1++s2)
     {}:Test"Simple for"(sAcc==S"a1b2c3")
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-    ss3=S.List[(\res<=S"hi")]
+    ss3=S.List()(\add(S"hi"))
     {}:Test"justSlash"(ss3.size()==1Size)
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
-    ss4=S.List[for s1 in ss1, imm s2 in ss2 (\res<=s1++s2)]
+    ss4=S.List()(for s1 in ss1, imm s2 in ss2 \add(s1++s2))
     for var imm si in ss4 (si:=S"pe"++si)
     for var si in ss4 (si:=S"No"++si)
     var sAcc=S""

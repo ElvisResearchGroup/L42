@@ -80,7 +80,6 @@ class method mut This of(mut Hi hi,mut Hm hm)
 @Public class method Bool #shortCircutSquare()=Bool.true()
 @Public mut method Void #squareAdd(Key key, Val val)=this.put(key=key,val=val)
 @Public mut method Void #squareAdd(Key key, mut Val mutVal)=this.#put(key=key,val=mutVal)
-@Public mut method Void #yield(Void that)=void
 //--Entries
 @Public read method read Entry entry(Size that)
   =Entry(key=this.key(that),val=this.val(that))

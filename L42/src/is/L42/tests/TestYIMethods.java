@@ -136,10 +136,124 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This m0(Any b)=this.nope()
      method Void m2(Any a)=(This x=this.nope() void)
      """)
-
-
+//slashX       
    ),new AtomicTest(()->pass("""
-     method Void +(This that)=void     
+     method Any m1(This a)
+     method Any m2()=this.m1(a=\\foo)
+     ""","""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=this.foo())
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method This foo()
+     method Any m2()=this.m1(a=\\foo.m1(a=this))
+     ""","""
+     method Any m1(This a)
+     method This foo()
+     method Any m2()=this.m1(a=(
+       This fresh0_receiver=this.foo()
+       fresh0_receiver.m1(a=this))
+       )
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method This foo()
+     method This bar(This squareBuilder)
+     method This #bar#squareBuilder()
+     method This #shortCircutSquare()
+     method This #if()
+     method Any m2()=this.m1(a=\\foo.bar[])
+     ""","""
+     method Any m1(This a)
+     method This foo()
+     method This bar(This squareBuilder)
+     method This #bar#squareBuilder()
+     method This #shortCircutSquare()
+     method This #if()
+     method Any m2()=this.m1(a=(
+       This fresh1_receiver=this.foo()
+       fresh1_receiver.bar(squareBuilder=(
+         This fresh0_builder=This<:class This.#bar#squareBuilder()
+         Void fresh2_underscore=(
+           This fresh3_cond=This<:class This.#shortCircutSquare()
+           (Void fresh4_underscore=(This fresh5_receiver=fresh3_cond.#if()fresh5_receiver.#checkTrue())
+         catch exception Void fresh6_underscore void(void)))
+       fresh0_builder))))
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=\\foo())
+     ""","""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=this.foo())
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=\\foo(this,x=void))
+     ""","""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=this.foo(that=this,x=void))
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method This foo(This squareBuilder)
+     method This #shortCircutSquare()
+     method This #if()
+     method Any m2()=this.m1(a=\\foo[this])
+     ""","""
+     method Any m1(This a)
+     method This foo(This squareBuilder)
+     method This #shortCircutSquare()
+     method This #if()
+     method Any m2()=this.m1(a=this.foo(
+       squareBuilder=(
+         This fresh0_builder=This<:class This.#foo#squareBuilder()
+         Void fresh1_underscore=(
+           This fresh2_cond=This<:class This.#shortCircutSquare()
+             (
+             Void fresh3_underscore=(
+               This fresh4_receiver=fresh2_cond.#if()
+               fresh4_receiver.#checkTrue()
+               )
+             catch exception Void fresh5_underscore
+             void
+             ( Void fresh6_underscore=fresh0_builder.#squareAdd(that=this) void)
+           ))
+         fresh0_builder)))
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method Any foo()
+     method Any m2()=this.m1(a=\\foo()())
+     ""","""
+     method Any m1(This a)
+     method Any foo()
+     method Any m2()=this.m1(a=(
+       Any fresh0_receiver=this.foo()
+       fresh0_receiver.#apply()))
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method Any foo()
+     method Any m2()=this.m1(a=(\\foo)())
+     ""","""
+     method Any m1(This a)
+     method Any foo()
+     method Any m2()=this.m1(a=(
+       Any fresh0_receiver=(this.foo())
+       fresh0_receiver.#apply()))
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=\\(this))
+     ""","""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=This<:class This.#apply(that=this))
+     """)
+  //operators       
+  ),new AtomicTest(()->pass("""
+     method Void +(This that)=void 
      method Void m()=this+this
      ""","""
      method Void #plus0(This that)=void

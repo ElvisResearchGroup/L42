@@ -659,6 +659,7 @@ public class Rename {
     P.NCs path=a._path.toNCs();
     path=path.withN(path.n()+1);
     L l=this.p._ofCore(path);
+    assert l!=null;//TODO: was null one time while running on an unsyncronized TestSQLServer, where JServer was out of date
     Program p=this.p.navigate(a.cs);
     String interfMsg=nc.l().isInterface()?"Redirected interfaces must have all equivalent methods.\n":"";
     path=P.of(path.n()+a.cs.size(),path.cs());

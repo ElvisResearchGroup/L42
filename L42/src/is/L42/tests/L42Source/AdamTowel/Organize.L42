@@ -91,12 +91,12 @@ method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size le
   var hasPublic=Bool.false()
   privates=Name$List()((
     for e in ncs (
-      if this.isPrivate(e.outerDoc()) \res<=e.nameFromRoot()
+      if this.isPrivate(e.outerDoc()) \add(e.nameFromRoot())
       else hasPublic:=Bool.true()
       )
     for e in ms (
       if this.isPrivate(e.doc()) (
-        if !e.isRefined() \res<=e.nameFromRoot()
+        if !e.isRefined() \add(e.nameFromRoot())
         )
       else hasPublic:=Bool.true()
       )

@@ -97,19 +97,35 @@ public class ToHalf extends UndefinedCollectorVisitor{
   @Override public void visitSlash(Full.Slash slash){
     var res=new Half.SlashCastT(slash.pos(), y.onSlash(),y.onSlash());
     commit(res,y.onSlash(),L());
+    }  
+  private void commitMCall(Y oldY,Pos pos,S s,List<Full.E>es){
+    Half.XP xp=this.y._onSlashX();
+    assert xp!=null;
+    List<ST> stz=expectedRes(xp);
+    ArrayList<Half.E> esRes=new ArrayList<>();
+    ArrayList<ST> retST=new ArrayList<>();
+    for(int i:range(s.xs())){//i in 1..n
+      List<ST> stz1i=L(stz,sti->new ST.STMeth(sti, s, i+1));
+      y=y.withOnSlash(stz1i).with_expectedT(stz1i);
+      var resi=compute(es.get(i));
+      ctz.plusAcc(y.p(), resi.resSTz, stz1i); 
+      esRes.add(resi.e);
+      retST.addAll(resi.retSTz);    
+      }    
+    y=oldY;
+    List<ST> stzRes=L(stz,sti->new ST.STMeth(sti, s, -1));
+    commit(new Half.MCall(pos, xp, s,L(esRes.stream())),stzRes,unique(retST));
+    }
+  List<ST> expectedRes(Half.XP xp){
+    if(xp instanceof Core.EX){return y.g()._of(((Core.EX)xp).x());}
+    if(xp instanceof Half.PCastT){return ((Half.PCastT)xp).stz();}
+    assert xp instanceof Half.SlashCastT;
+    return ((Half.SlashCastT)xp).stz1();
+    //Note: should it be stz1() or stz()? it was stz, but looked wrong
     }
   @Override public void visitSlashX(Full.SlashX slashX){
-    var xp=y._onSlashX();
-    assert xp!=null;
-    var s=new S(slashX.x().inner(),L(),-1);
-    var h=new Half.MCall(slashX.pos(),xp,s,L());
-    List<ST> rec=null;
-    if(xp instanceof Core.EX){rec=y.g()._of(((Core.EX)xp).x());}
-    if(xp instanceof Half.PCastT){rec=((Half.PCastT)xp).stz();}
-    if(xp instanceof Half.SlashCastT){rec=((Half.SlashCastT)xp).stz();}
-    assert rec!=null;
-    List<ST> stz1=L(rec,(c,st)->c.add(new ST.STMeth(st, s, -1)));
-    commit(h,stz1,L());
+    var call=new Full.Call(slashX.pos(),slashX,null,false,Full.Par.emptys);
+    visitCall(call);
     }
     
   @Override public void visitCsP(Full.CsP csP){
@@ -209,16 +225,17 @@ public class ToHalf extends UndefinedCollectorVisitor{
       if(par._that()==null){return par;}
       par=par.withEs(pushL(par._that(),par.es()));
       par=par.withXs(pushL(X.thatX,par.xs()));
-      return par;
+      return par.with_that(null);
       });
     }
   @Override public void visitCall(Full.Call call){
-    if(call._s()==null){call=call.with_s(NameMangling.hashApply());}
+    boolean slashXRec=call.e() instanceof Full.SlashX;
+    if(!slashXRec && call._s()==null){call=call.with_s(NameMangling.hashApply());}
     if(call.isSquare()){call=expandSquare(call);}
     var pars=addThats(call.pars());
     assert !pars.isEmpty();
     Full.Par par=pars.get(0);
-    if(!isFullXP(call.e())){
+    if(!isFullXP(call.e())&& !(slashXRec && call._s()==null)){
       X rec=freshX("receiver");
       Full.D d=makeDec(null,rec,call.e());
       Full.E c=call.withE(new Core.EX(call.pos(),rec));
@@ -226,25 +243,16 @@ public class ToHalf extends UndefinedCollectorVisitor{
       return;
       }
     Y oldY=y;
-    y=y.with_expectedT(P.stzCoreVoid);
-    var resXP=compute(call.e());
+    if(call._s()==null){//we are on a \foo(par)
+      var slashX=(Full.SlashX)call.e();
+      S s=new S(slashX.x().inner(),L(),-1);
+      s=s.withXs(par.xs());
+      commitMCall(oldY,call.pos(),s,par.es());
+      return;}
     S s=call._s().withXs(par.xs());
-    List<ST> stz1=L(resXP.resSTz,sti->new ST.STMeth(sti, s, -1));
-    ArrayList<Half.E> es=new ArrayList<>();
-    ArrayList<ST> retST=new ArrayList<>();
-    for(int i:range(s.xs())){
-      List<ST> stz1i=L(resXP.resSTz,sti->new ST.STMeth(sti, s, i+1));
-      Y yi=y.withOnSlash(stz1i)
-        .with_onSlashX((Half.XP)resXP.e)
-        .with_expectedT(stz1i);
-      y=yi;
-      var resi=compute(par.es().get(i));
-      ctz.plusAcc(y.p(), resi.resSTz, stz1i); 
-      es.add(resi.e);
-      retST.addAll(resi.retSTz);    
-      }    
-    y=oldY;
-    commit(new Half.MCall(call.pos(), (Half.XP)resXP.e, s,L(es.stream())),stz1,unique(retST));
+    var recXP=compute(call.e());
+    y=y.with_onSlashX((Half.XP)recXP.e);
+    commitMCall(oldY,call.pos(),s,par.es());
     }
   @Override public void visitBlock(Full.Block block){
     if(block.isCurly()){curlyBlock(block);return;}
@@ -387,7 +395,11 @@ public class ToHalf extends UndefinedCollectorVisitor{
     assert s.isSquare();
     X x=freshX("builder");
     Core.EX ex=new Core.EX(p,x);
-    var squareB=new Full.Call(p,new Full.Slash(p), squareBuilder(s._s()),false,Par.emptys);
+    boolean okSlashX=s.e() instanceof Full.SlashX && s._s()==null;
+    var sel=okSlashX?
+      new S(((Full.SlashX)s.e()).x().inner(),L(),-1)
+      :s._s();
+    var squareB=new Full.Call(p,new Full.Slash(p),squareBuilder(sel),false,Par.emptys);
     var decX=makeDec(null,x,squareB);
     List<Par> pars=s.pars();
     if(pars.size()>=2){
@@ -396,20 +408,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
         pars=pars.subList(0, pars.size()-1);
         }
       }
-    List<Full.D> e1n=L(pars,(c,pi)->{
-      if(pi.es().isEmpty() && pi._that()!=null){
-        var e1i=pi._that();
-        if(e1i instanceof Full.If 
-         ||e1i instanceof Full.While
-         ||e1i instanceof Full.For
-         ||e1i instanceof Full.Loop
-         ||e1i instanceof Full.Block){
-          c.add(makeDec(new Full.Call(p,ex,yieldS,false,L(new Par(e1i,L(),L())))));
-          return;
-          }
-        }
-      c.add(makeDec(new Full.Call(p,ex,squareAddS,false,L(pi))));
-      });
+    List<Full.D> e1n=L(pars,(c,pi)->
+      c.add(makeDec(new Full.Call(p,ex,squareAddS,false,L(pi))))
+      );
     Full.E block=makeBlock(p,e1n,new Core.EVoid(p));
     var eIf=new Full.If(p,squareB.with_s(shortCircutSquare),L(),block,null);
     var builderBlock=makeBlock(p,List.of(decX,makeDec(eIf)),ex);
@@ -777,7 +778,6 @@ public class ToHalf extends UndefinedCollectorVisitor{
     return baseSquareBuilder.withM("#"+m.m()+baseSquareBuilder.m());
     }
   private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
-  private static final S yieldS=S.parse("#yield()");
   private static final S squareAddS=S.parse("#squareAdd()");
   private static final S stringAddAllS=S.parse("#stringAddAll()");
   private static final S stringAddExprS=S.parse("#stringAddExpr()");

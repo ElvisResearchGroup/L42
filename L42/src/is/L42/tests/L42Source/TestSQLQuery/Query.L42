@@ -25,8 +25,7 @@ class method This(Introspection.Nested.List types,S sql,Introspection.Nested r,I
 class method This(Introspection.Nested.List types,S sql)[MetaFail]=(
   r=types.left().meth(selector='left()).returnType().nested()
   ms=Introspection.Method.List()(for m in r.methods() (
-    if m.selector().toS().startsWith(S"#immK(") \res<=m
-    ))
+    if m.selector().toS().startsWith(S"#immK(") \add(m)))
   if ms.size()!=1Size exception MetaFail"Not exactly one canditate #immK constructor:%ms"
   This(types=types,sql=sql,r=r, k=ms.val(0\),xs=FormatPar.xs(sql))
   )

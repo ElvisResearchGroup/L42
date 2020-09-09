@@ -25,7 +25,6 @@ class method mut This of(mut Set set)
 @Public class method mut This ##apply#squareBuilder()=This.empty()
 @Public class method Bool #shortCircutSquare()=Bool.true()
 @Public mut method Void #squareAdd(Key that)=this.put(key=that)
-@Public mut method Void #yield(Void that)=void
 //-------------------Supporting iteration
 @Public read method read This vals()=this
 @Public mut method mut This #vals()=this
