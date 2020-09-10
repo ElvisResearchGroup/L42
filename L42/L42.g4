@@ -60,7 +60,7 @@ MUniqueNum: Fx('#' Fx)*'::'Fn;
 MHash: ('#$' | '#'+) Fx('#' Fx)* ('::'Fn)?;
 X: Fx;
 x: X;
-SlashX:'\\'Fx;
+SlashX:'\\' (Fx | (( '#$' | '#'+) Fx('#' Fx)*));
 slashX:SlashX;
 m: MUniqueNum|MHash|X | VoidKW | VarKw | CatchKw | InterfaceKw | IfKw | ElseKw | WhileKw | ForKw | InKw | LoopKw | Throw | WhoopsKw | MethodKw | Mdf;//filtering fwd later on
 CsP: C(ClassSep C)*;

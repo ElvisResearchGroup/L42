@@ -829,6 +829,14 @@ public class TestTopNorm{
        usedMethods=This1.B2.#equalgt0(that)}}
      Test={#typed{}}#norm{}}
     """
+  );}@Test public void zeroMakeItClose(){topFail(EndError.CoherentError.class,"""
+    {A={
+      class method This ()
+      class method Void foo::0()=void
+      }
+    B=(_=A() {})
+    }
+    """,Err.nonCoherentPrivateStateAndPublicAbstractMethods("[#apply()]")
   /*Suppressed: now the invalid natives will simply perform the body
   );}@Test public void t81(){topFail(EndError.TypeError.class,"""
     {A={imm method mut This foo()=native{trusted:lazyCache} error void}

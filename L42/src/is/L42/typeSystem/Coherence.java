@@ -47,15 +47,19 @@ public class Coherence {
         Err.nativeFactoryAbsent(p.topCore().info().nativeKind())
         );
       }
-    //TODO: add isCloseState in info?
+    boolean closeClass=p.topCore().info().close() && !p.topCore().isInterface();
     var uniqueNums=mhs.stream()
       .map(m->m.key().uniqueNum()).distinct().count();
-    if(uniqueNums>1){
+    boolean err=uniqueNums>1;//where absence of uniqueNum is also a uniqueNum value
+    if(!err && closeClass){err=mhs.stream().anyMatch(m->!m.key().hasUniqueNum());}
+    if(err){//TODO: this error does not discuss all the cases properly, but
+      //it can also come up with introspection, so should not disclose informations
+      //on uniqueNumbers... is this already the best error to report then?
       if(justResult){return false;}
       throw new EndError.CoherentError(p.topCore().poss(),
         Err.nonCoherentPrivateStateAndPublicAbstractMethods(
         L(mhs.stream().filter(m->!m.key().hasUniqueNum()).map(m->m.key()))
-        ));}
+        ));}   
     var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
     if(xzs.size()>1){
       if(justResult){return false;}

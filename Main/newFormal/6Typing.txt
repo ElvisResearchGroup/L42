@@ -258,10 +258,10 @@ _______
 * coherent(p,flag)
     CORE.L = p(This0)
     MHs = {MH | Docs MH in CORE.L.MWTs either flag=norm or MH.m of form _::n} //thus no e, thus abstract
+    if CORE.L.Info.close=close and CORE.L.interface?=empty then forall m in MHs.ms m has uniqueNum
     either CORE.L.interface?=interface
     or class not in MHs.mdfs and CORE.L.Info.native=empty//no abstract class method
     or exists xz  and n? such that: forall MH in MHs, coherent(p;MHs;MH;xz;n?)
-
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn = xz
     p |- This0 <= T.P

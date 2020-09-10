@@ -290,7 +290,7 @@ public enum TrustedOp {
   IsClose("isClose",nested("%s.isClose()",sigI(Bool))),
   IsInterface("isInterface",nested("%s.isInterface()",sigI(Bool))),
   IsBinded("isBinded",nested("%s.isBinded()",sigI(Bool))),
-  IsConsistent("isCoherent",nested("%s.isCoherent()",sigI(String))),
+  IsCoherent("isCoherent",nested("%s.isCoherent()",sigI(String))),
   ToFullString("toFullString",nested("%s.toFullString()",sigI(String))),
   Root("root",all(
     nested("%s.root()",sigI(Nested)),

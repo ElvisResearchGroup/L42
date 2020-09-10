@@ -158,6 +158,25 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      """)
    ),new AtomicTest(()->pass("""
      method Any m1(This a)
+     method Any m2()=this.m1(a=\\#f#oo)
+     ""","""
+     method Any m1(This a)
+     method Any m2()=this.m1(a=this.#f#oo())
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
+     method This #foo()
+     method Any m2()=this.m1(a=\\#foo.m1(a=this))
+     ""","""
+     method Any m1(This a)
+     method This #foo()
+     method Any m2()=this.m1(a=(
+       This fresh0_receiver=this.#foo()
+       fresh0_receiver.m1(a=this))
+       )
+     """)
+   ),new AtomicTest(()->pass("""
+     method Any m1(This a)
      method This foo()
      method This bar(This squareBuilder)
      method This #bar#squareBuilder()
