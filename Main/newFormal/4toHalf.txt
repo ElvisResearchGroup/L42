@@ -131,7 +131,7 @@ _______
       catch exception Void _ e2
       e1)
 * Y!if match match+ e = Y!(if match if match+ e)
-* Y!(if T x e) = Y!(if T x'=x e[x=x'])
+* Y!(if x<:T e) = Y!(if T x'=x e[x=x'])
     x' fresh
 * Y!(if T x=e e') = Y!(x'=e, if T x=x' e')
     e not of form xP
@@ -224,8 +224,7 @@ _______
       Y[expectedT = empty]!e = e'; STz; STz'; CTz
 * Y!(TLocal(var1? TLocal1 x1..varn? TLocaln xn) = e) = D0..Dn; STz0 U..U STzn; CTzn
     TLocal'=TLocal if TLocal !=empty or capsule,mut,lent not in TLocal1..TLocaln
-    otherwise TLocal'=capsule if capsule in TLocal1..TLocaln
-    otherwise TLocal'=mut if mut in TLocal1..TLocaln
+    otherwise TLocal'=mut if mut or capsule in TLocal1..TLocaln
     otherwise TLocal'=lent if lent in TLocal1..TLocaln
     Y!(TLocal' x = e) = D0; STz0; CTz0
     Y[GX+=x:D0.STz CTz=CTz0]!(var1? TLocal1 x1 = x.methNameTrim(TLocal1,x1)()) = D1; STz1; CTz1

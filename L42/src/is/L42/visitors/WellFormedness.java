@@ -597,9 +597,15 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     var _c0=i._condition();
     if(_c0!=null){visitE(_c0);}
     visitFullDs(i.matches());
-    for(var di:i.matches()){validMatch(di);preDeclare(di);}
+    for(var di:i.matches()){
+      validMatch(di);
+      if(di._e()!=null){preDeclare(di);}
+      //else it is of form x<:T
+      }
     visitE(i.then());
-    for(var di:i.matches()){postDeclare(di);}
+    for(var di:i.matches()){
+      if(di._e()!=null){postDeclare(di);}
+      }
     var _else0=i._else();    
     if(_else0!=null){visitE(_else0);}
 

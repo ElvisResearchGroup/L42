@@ -41,7 +41,9 @@ TestOptOK={
     imm opt3A=Opt3A(opt2A)
     Debug(opt1S)
     {}:Test"toS"(actual=opt1S
-      expected=S"[hi]")
+      expected=S"""
+        |["hi"]
+        """.trim())
     Debug(opt1A)
     {}:Test"toS"(actual=opt1A
       expected=S"""
@@ -49,7 +51,9 @@ TestOptOK={
         """.trim())
     Debug(opt2S)
     {}:Test"toS"(actual=opt2S
-      expected=S"[[hi]]")
+      expected=S"""
+        |[["hi"]]
+        """.trim())
     Debug(opt2A)
     {}:Test"toS"(actual=opt2A
       expected=S"""
@@ -57,7 +61,9 @@ TestOptOK={
         """.trim())
     Debug(opt3S)
     {}:Test"toS"(actual=opt3S
-      expected=S"[[[hi]]]")
+      expected=S"""
+        |[[["hi"]]]
+        """.trim())
     Debug(opt3A)
     {}:Test"toS"(actual=opt3A
       expected=S"""

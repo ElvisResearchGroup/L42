@@ -8,6 +8,7 @@ import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unique;
+import static is.L42.tools.General.unreachable;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -331,7 +332,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     if(m!=null) {return m;}
     if(d._varTx()._t()!=null){return null;}
     boolean hasCap=d.varTxs().stream().anyMatch(v->hasMdf(v,Mdf.Capsule));
-    if(hasCap){return Mdf.Capsule;}
+    if(hasCap){return Mdf.Mutable;}
     boolean hasMut=d.varTxs().stream().anyMatch(v->hasMdf(v,Mdf.Mutable));
     if(hasMut){return Mdf.Mutable;}
     boolean hasLent=d.varTxs().stream().anyMatch(v->hasMdf(v,Mdf.Lent));
@@ -576,19 +577,75 @@ public class ToHalf extends UndefinedCollectorVisitor{
       });
     return makeBlock(p,e0n,ex);
     }
+  private void visitIfMatchTxy(Full.If o,D m){
+    X x=freshX("typeMatch");
+    var vtx0=m._varTx();
+    if(vtx0==null){vtx0=new VarTx(false,null,null,x);}
+    else{vtx0=vtx0.with_x(x);}
+    var m0=m.withVarTxs(L()).with_varTx(vtx0);
+    List<VarTx> withTs=L(m.varTxs().stream().filter(v->v._t()!=null));
+    var d0 = dFromTxs(m,new Core.EX(o.pos(), x));
+    var e2=o.then();
+    if(!withTs.isEmpty()){
+      List<D>ms=L(withTs.stream().map(v->new Full.D(v,L(),null)));
+      e2=new Full.If(e2.pos(),null,ms,e2,null);
+      }
+    var e0=makeBlock(o.then().pos(),L(d0), e2);
+    visitIf(o.withMatches(L(m0)).withThen(e0));
+    }
+  private D dFromTxs(D m,Full.E e) {
+    List<VarTx> noTs=L(m.varTxs().stream().map(v->v.with_t(null)));
+    var d0=new Full.D(new VarTx(false, null, null, null),noTs,e);
+    return d0;
+  }
   private void visitIfMatch(Full.If sIf){
     assert sIf._condition()==null;
     assert sIf._else()==null;
     assert !sIf.matches().isEmpty();
-    Pos p=sIf.pos();
     if(sIf.matches().size()>1){visitIfMatchPlus(sIf);return;}
     var m=sIf.matches().get(0);
-    if(m._e()==null && m.varTxs().isEmpty()){assert m._varTx()!=null; throw todo();}
-    if(m._e()==null){throw todo();}
-    if(!m.varTxs().isEmpty()){throw todo();}
-    if(!isFullXP(m._e())){visitBlock(ifMatchBlock(p,sIf,m));return;}
+    //x<:T case
+    if(m._e()==null && m.varTxs().isEmpty()){visitIfMatchXCastT(sIf, m);return;}
+    assert m._e()!=null;
+    if(!m.varTxs().isEmpty()){
+      //case if T (x,y)=e 
+      if(m._varTx()!=null){visitIfMatchTxy(sIf,m);return;}
+      //case if (x,y)=e 
+      visitIfMatchXs(sIf,m);return;
+      }
+    //case T x=xP
+    assert m._varTx()._t()!=null;
+    if(!isFullXP(m._e())){visitBlock(ifMatchBlock(sIf.pos(),sIf,m));return;}
+    //case T x=e
+    visitIfMatchTxe(sIf,m);
+    }
+  private void visitIfMatchXCastT(Full.If sIf, D m) {
+    assert m._varTx()!=null;
+    assert sIf._else()==null && sIf._condition()==null;
+    var x0=new Core.EX(sIf.pos(),m._varTx()._x());
+    X freshX=freshX("typeCase");
+    D m0=m.with_e(x0).with_varTx(m._varTx().with_x(freshX));
+    var e0=sIf.then().visitable().accept(new CloneVisitor(){
+      @Override public Core.EX visitEX(Core.EX ex){
+        if(!ex.x().equals(x0.x())){return ex;}
+        return ex.withX(freshX);
+      }});
+    visitIfMatch(sIf.withMatches(L(m0)).withThen(e0));
+  }
+  void visitIfMatchXs(Full.If sIf, D m){
+    List<VarTx> txs=L(m.varTxs().stream().filter(v->v._t()!=null));
+    assert !txs.isEmpty():"";
+    assert m._e()!=null;
+    var d0 = dFromTxs(m,m._e());
+    List<D>ms=L(txs.stream().map(v->new Full.D(v,L(),null)));
+    Full.If sIf0=sIf.withMatches(ms);
+    var b=makeBlock(sIf.pos(),L(d0),sIf0);
+    visitBlock(b);
+    }
+  
+  void visitIfMatchTxe(Full.If sIf, D m){
+    Pos p=sIf.pos();
     var t=m._varTx()._t();
-    assert t!=null;
     assert m._varTx()._x()!=null;
     X x1=freshX("cast");
     Core.EX ex1=new Core.EX(p,x1);

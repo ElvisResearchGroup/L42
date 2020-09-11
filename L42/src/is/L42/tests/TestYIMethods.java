@@ -72,7 +72,158 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("method Void v()=void, method Any a(Any a)=void",
    "method Void v()=void, method Any a(Any a)=void")
-   ),new AtomicTest(()->pass("""
+ ),new AtomicTest(()->pass("""
+     method This x()
+     method Any y()
+     method Any m1(Any a)={if a<:This return a.m1(a=a) return this.m1(a=a)}
+     method Any m2(Any a)={if This b=a return b.m1(a=a) return this.m1(a=a)}
+     method Any m3(Any a)={if This (x,y2)=a return x.m1(a=y2) return this.m1(a=a)}
+     method Any m4(Any a)={if (x,This y)=this return y.m1(a=y) return this.m1(a=a)}
+     method Any m5(Any a)={if This (x,This y)=a return y.m1(a=y) return this.m1(a=a)}
+     method Any m6(Any a)={if This (This x,This y)=a return y.m1(a=y) return this.m1(a=a)}
+     ""","""
+     method This x()
+     method Any y()
+     method Any m1(Any a)=(
+       Void fresh0_curlyX=(
+         Void fresh2_underscore=(
+           This fresh3_typeCase=(Void fresh5_underscore=return a
+             catch return This fresh4_cast fresh4_cast
+             error void)
+           catch return Any fresh4_cast void
+           return fresh3_typeCase.m1(a=fresh3_typeCase)
+           )
+         Void fresh6_underscore=return this.m1(a=a)
+         void)
+       catch return Any fresh1_curlyX1 fresh1_curlyX1
+       error void)
+     method Any m2(Any a)=(
+       Void fresh7_curlyX=(
+         Void fresh9_underscore=(
+           This b=(
+             Void fresh11_underscore=return a
+             catch return This fresh10_cast fresh10_cast
+             error void)
+           catch return Any fresh10_cast void
+           return b.m1(a=a))
+         Void fresh12_underscore=return this.m1(a=a)
+         void)
+       catch return Any fresh8_curlyX1 fresh8_curlyX1
+       error void)
+     method Any m3(Any a)=(
+       Void fresh13_curlyX=(
+         Void fresh15_underscore=(
+           This fresh16_typeMatch=(
+             Void fresh18_underscore=return a
+             catch return This fresh17_cast fresh17_cast
+             error void
+             )
+           catch return Any fresh17_cast void
+           (This fresh19_DecMatch=fresh16_typeMatch
+             This x=fresh19_DecMatch.x()
+             Any y2=fresh19_DecMatch.y()
+             return x.m1(a=y2)
+             )
+           )
+         Void fresh20_underscore=return this.m1(a=a)
+         void
+         )
+       catch return Any fresh14_curlyX1 fresh14_curlyX1
+       error void
+       )
+     method Any m4(Any a)=(
+       Void fresh21_curlyX=(
+         Void fresh23_underscore=(
+           This fresh24_DecMatch=this
+           This x=fresh24_DecMatch.x()
+           Any y=fresh24_DecMatch.y()
+           (
+             This fresh25_typeCase=(
+               Void fresh27_underscore=return y
+               catch return This fresh26_cast fresh26_cast
+               error void
+               )
+             catch return Any fresh26_cast void
+             return fresh25_typeCase.m1(a=fresh25_typeCase)
+             )
+           )
+         Void fresh28_underscore=return this.m1(a=a)
+         void
+         )
+       catch return Any fresh22_curlyX1 fresh22_curlyX1
+       error void
+       )
+     method Any m5(Any a)=(
+       Void fresh29_curlyX=(
+         Void fresh31_underscore=(
+           This fresh32_typeMatch=(
+             Void fresh34_underscore=return a
+             catch return This fresh33_cast fresh33_cast
+             error void
+             )
+           catch return Any fresh33_cast
+           void
+           (
+             This fresh35_DecMatch=fresh32_typeMatch
+             This x=fresh35_DecMatch.x()
+             Any y=fresh35_DecMatch.y()
+             (
+               This fresh36_typeCase=(
+                 Void fresh38_underscore=return y
+                 catch return This fresh37_cast fresh37_cast
+                 error void
+                 )
+               catch return Any fresh37_cast void
+               return fresh36_typeCase.m1(a=fresh36_typeCase)
+               )
+             )
+           )
+         Void fresh39_underscore=return this.m1(a=a)
+         void
+         )
+       catch return Any fresh30_curlyX1 fresh30_curlyX1
+       error void
+       )
+     method Any m6(Any a)=(
+       Void fresh40_curlyX=(
+         Void fresh42_underscore=(
+           This fresh43_typeMatch=(
+             Void fresh45_underscore=return a
+             catch return This fresh44_cast fresh44_cast
+             error void
+             )
+           catch return Any fresh44_cast void
+           (
+             This fresh46_DecMatch=fresh43_typeMatch
+             This x=fresh46_DecMatch.x()
+             Any y=fresh46_DecMatch.y()
+             (
+               This fresh47_typeCase=(
+                 Void fresh49_underscore=return x
+                 catch return This fresh48_cast fresh48_cast
+                 error void
+                 )
+               catch return Any fresh48_cast void
+               (
+                 This fresh50_typeCase=(
+                   Void fresh52_underscore=return y
+                   catch return This fresh51_cast fresh51_cast
+                   error void
+                   )
+                 catch return Any fresh51_cast void
+                 return fresh50_typeCase.m1(a=fresh50_typeCase)
+                 )
+               )
+             )
+           )
+         Void fresh53_underscore=return this.m1(a=a)
+         void
+         )
+       catch return Any fresh41_curlyX1 fresh41_curlyX1
+       error void
+       )
+     """)
+  ),new AtomicTest(()->pass("""
      method Any m1(Any a)=(x=this.m2(b=void) x)
      method Any m2(Any b)=(x=this.m1(a=void) x)
      ""","""

@@ -35,7 +35,7 @@ DeployAAA=(
     @Public Cache={...}    
     @Public HasToS={interface
       read method S toS()
-      Raw={interface}
+      Raw={interface [This1]}
       @AbstractTowel{hasToS}
       }
     //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.

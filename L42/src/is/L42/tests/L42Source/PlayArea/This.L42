@@ -1,10 +1,36 @@
-Out={interface method Void a(OutI v)}
-OutI={interface method Void v()}
-T1=Trait:{
-  In={interface 
-  T2=Trait:{
-    
-    }
+reuse [AdamTowel]
+A={#norm{nativeKind=baalean}}
+//code reuse
+H=Trait:{  class method S hello()=S"Hello"  }
+W=Trait:{  class method S world()=S"World"  }
+HW=Trait:{
+  class method S hello()
+  class method S world()
+  class method S helloWorld()=this.hello()++S" "++this.world()
   }
-AA={class method Void v()=void}
-Main=AA.v()
+Result=Class:HW:W:H
+Main1=(
+  Debug(S"-Main1"++Result.helloWorld())
+  )
+Result2=Class:(HW:W:H)['helloWorld()=>'hi();
+  hide='hello();  hide='world()
+  ]
+Main2=(
+  Debug(S"-Main2"++Result2.hi())
+  )
+//safety
+
+Person=Data:{S name, var Num age
+  mut method Void birthDay()=this.age(this.age()+1Num)
+  @Cache.Now class method Void ok(S name, Num age)=(
+    Debug(S"checking if %name is ok")
+    if name==S"" (error X"invalid name")
+    if age<0Num (error X"invalid age")
+    )
+  }
+Main3=(
+  bob=Person(name=S"Bob", age=23Num)
+  Debug(bob)
+  bob.birthDay()
+  Debug(bob)
+  )

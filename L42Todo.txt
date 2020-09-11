@@ -1,10 +1,5 @@
 -CTz todo line 84; check formalism
--Rename feature add: must be possible to rename-sum an interface with, at lease, an empty class never used. 
--HALF DONE:should \add(e) call this.add(e)? so that '\res<=' can disappear?
-  #conseguences: a.foo() == a.foo. ; however a.foo() is never interpreted as (a.foo)(); thus a.foo()() will stay the same 
--ToHalf 586 was not completed:
-    if(m._e()==null){throw todo();}
-    if(!m.varTxs().isEmpty()){throw todo();}
+-Rename feature add: must be possible to rename-sum an interface with, at least, an empty class never used. 
 -another toS bug: A=Data:{} B=Data:{A a} B(a=A()).toS()
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
@@ -22,7 +17,7 @@
 -IDE: cut paste on win do not survive the IDE being closed
 -IDE: somehow disable insertion of random '}'
 -IDE:when printing outline: docs need to be \n\n and
--untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer> 
+-untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer> (also, what about null results?) 
 -errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#
 -bug initVisitor 149 TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
@@ -43,10 +38,8 @@ and should wrap all the returns with normalization, so that we only return norma
 -Bug: CircularityIssue need to be improved by a long time 
 -circular toString in TestData?
 -toLibrary in Data? is similar to the toString... now we have ListS+from(string), should we have from(ListAnys fields)? 
--mispelling a native causes an assertion error instead of a compile error
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
--Collections.AnyToS should consider HasToS.Raw
 
 -Test List of itself and Maps and Set of itself. The following may be needed
   re designing arraylist caching and map caching

@@ -54,6 +54,10 @@ public class TestTopNorm{
      The interpolated expression is empty
      [###]
      """
+  );}@Test public void mispelledNative() {topFail(EndError.NotWellFormed.class,"""
+    {A={#norm{nativeKind=baalean}}}
+    """,
+    "native kind baalean is not recognized"
    );}@Test public void tNestedInterface(){
    //TODO: If This1.A is omitted as implemented interface, the error is not very understandable
    top("""

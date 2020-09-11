@@ -59,7 +59,9 @@ Main2=(
     tables.add(right=name)
     )
   Debug(tables)
-  {}:Test"fromDB5"(expected=S"[PERSON]"  actual=tables)
+  {}:Test"fromDB5"(expected=S"""
+    |["PERSON"]
+    """.trim()  actual=tables)
   cols=S.List()
   db.queryColums(tableName=tables.left())
   cName=db.findColumn(label=S"COLUMN_NAME")
@@ -70,7 +72,9 @@ Main2=(
     cols.add(right=S"%name %type")
     )
   Debug(cols)
-  {}:Test"fromDB6"(expected=S"[ID INTEGER; NAME VARCHAR; AGE INTEGER]"  actual=cols)
+  {}:Test"fromDB6"(expected=S"""
+    |["ID INTEGER"; "NAME VARCHAR"; "AGE INTEGER"]
+    """.trim()  actual=cols)
   db.execute(sql=Queries.drop())
   db.kill()
   void
