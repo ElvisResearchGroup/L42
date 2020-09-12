@@ -72,7 +72,32 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("method Void v()=void, method Any a(Any a)=void",
    "method Void v()=void, method Any a(Any a)=void")
- ),new AtomicTest(()->pass("""
+   ),new AtomicTest(()->pass(
+   "method Any x()=this method This m1()={if (This x)=this return this return this}",
+   """
+   method Any x()=this
+   method This m1()=(
+     Void fresh0_curlyX=(
+       Void fresh2_underscore=(
+         This fresh3_DecMatch=this
+         Any x=fresh3_DecMatch.x()
+         (
+           This fresh4_typeCase=(
+             Void fresh6_underscore=return x
+             catch return This fresh5_cast fresh5_cast
+             error void
+             )
+           catch return Any fresh5_cast void
+           return this
+           )
+         )
+       Void fresh7_underscore=return this
+       void
+       )
+     catch return This fresh1_curlyX1 fresh1_curlyX1
+     error void
+     )
+   """)),new AtomicTest(()->pass("""
      method This x()
      method Any y()
      method Any m1(Any a)={if a<:This return a.m1(a=a) return this.m1(a=a)}

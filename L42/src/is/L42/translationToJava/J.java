@@ -638,7 +638,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c(NativeDispatch.nativeFactory(this,kind,mwt));
       return;  
       }
-    if(fields.xs.isEmpty()){c("return pathInstance;");}
+    if(fields.xs.isEmpty()){c("assert pathInstance!=null; return pathInstance;");}
     else{newAndFwd(mwt);}
     }
   private void newAndFwd(MWT mwt){
@@ -653,7 +653,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       if(isFwd){
         kw("if(");
         visitX(xi);
-        kw("instanceof L42Fwd){((L42Fwd)");
+        kw("instanceof L42Fwd && !(((Object)");
+        visitX(xi);
+        kw(") instanceof L42NoFields<?>)){((L42Fwd)");
         visitX(xi);
         c(").rememberAssign(Res,");
         typeName(p);

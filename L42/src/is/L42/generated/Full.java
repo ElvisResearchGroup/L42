@@ -2884,6 +2884,8 @@ public class Full {
       this.docs = docs;
       this.cs = cs;
       this._p = _p;
+      assert !cs.isEmpty() || _p!=null:
+        "";
     }
 
     @java.lang.SuppressWarnings("all")
