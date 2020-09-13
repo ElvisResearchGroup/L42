@@ -217,25 +217,17 @@ public interface L42Cache<T> extends Serializable {
    * @param t The object to resolve the key for
    * @return The key
    */
-  default KeyNorm2D simpleKey(T t)
-  {
-    Object[] fields = this.f(t);
-    Object[][] key = new Object[1][fields.length + 1];
+  default KeyNorm2D simpleKey(T t){
+    int size=this.fn(t);
+    Object[][] key = new Object[1][size + 1];
     key[0][0] = this;
-    System.arraycopy(fields, 0, key[0], 1, fields.length);
+    for(int i=0;i<size;i+=1){key[0][i+1]=this.f(t, i);}
     return new KeyNorm2D(key);
-  }
-  
-  default L42Cache<T> refine(T t) {
-    return this;
-  }
-  
-  void clear();
-  
+    }  
+  default L42Cache<T> refine(T t){return this;}
+  void clear();  
   default T dup(T that) {
     return this.dup(that, new IdentityHashMap<>());
-    }
-  
-  T dup(T that, Map<Object, Object> map);
-  
+    }  
+  T dup(T that, Map<Object, Object> map);  
   }

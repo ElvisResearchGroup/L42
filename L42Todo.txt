@@ -25,7 +25,7 @@
 -Cache: use String .intern()?
   -what about Integer? what about big rational? what about arrays 
 and should wrap all the returns with normalization, so that we only return normalized numbers.
-
+-in keys/normalization: can we always use F _fields(T t) and co? so that we reduce the number of norm methods?
 -test cache in case the cached method do some exceptions/errors
 -collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
 -if a method ends in stack oveflow, the error is only reported in Java and not in the IDE

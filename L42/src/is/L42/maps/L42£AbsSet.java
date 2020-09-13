@@ -33,8 +33,9 @@ public abstract class L42£AbsSet<K,Inner,Self>
   @Override public Object[] f(Self t){throw unreachable();}
   @Override public void f(Self t, Object o, int i){throw unreachable();}
   @Override protected Self _fields(Self t){return t;}
-  @Override protected Object f(Self t, int i, Self _fields){return f(t,i);}
-  @Override protected void setF(Self t, int i, Object o, Self _fields){throw unreachable();}
+  @Override public Object f(Self t, int i){throw unreachable();}
+  @Override protected abstract Object f(Self t, int i, Self _fields);
+  @Override protected abstract void setF(Self t, int i, Object o, Self _fields);
   @Override public Object[] allFields(){throw unreachable();}
   @Override public void setField(int i, Object o){throw unreachable();}
   @Override public Object getField(int i){throw unreachable();}

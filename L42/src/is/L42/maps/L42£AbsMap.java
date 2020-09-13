@@ -61,11 +61,18 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     inner.remove(key);
     clearIteration();
     }
-  @Override public Object f(Self t, int i){
+  @Override public Object f(Self t, int i, Self _fields){
     loadIteration();
     if(i%2==0){return keys[i/2];}
     return vals[i/2];
     }
+  @SuppressWarnings("unchecked")
+  @Override protected void setF(Self t, int i, Object o, Self _fields){
+    loadIteration();
+    if(i%2==0){assert keys[i/2]==o;}
+    else{inner.put(keys[i/2],(T)o); vals[i/2]=(T)o;}
+    }
+
   @Override public int fn(Self t){return inner==null?0:inner.size()*2;}
   @Override public L42Cache<?> rawFieldCache(int i){
     if(i%2==0){return kCache.get();}

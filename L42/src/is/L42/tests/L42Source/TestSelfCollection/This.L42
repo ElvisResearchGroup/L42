@@ -2,8 +2,12 @@ reuse [AdamTowel]
 A=Organize:{//TODO: add Maps sets and ops, then simplify cache suppliers
   L$={}
   L=Collection.list(L$)
-  }
-Main=(
+  S$={}
+  S=Collection.set(S$)
+  SN=Collection.set(Num)
+  SSN=Collection.set(SN)
+  }/*
+MainL=(
   l1=A.L()
   l2=A.L()
   imm l3=A.L()
@@ -14,5 +18,22 @@ Main=(
   Debug(l1.size())
   {}:Test""(expected=S"[[]; []; []]" actual=l1)
   {}:Test""(expected=3Size actual=l1.size())
+  )*/
+MainS=(
+  Debug(S"start")
+  s1=A.SSN()
+  imm s2=A.SN()
+  imm s3=(
+    s=A.SN()
+    s.put(key=3Num)//s2
+    s
+    )
+  s1.put(key=s2)
+  Debug(s1)
+  s1.put(key=s3)
+  Debug(s1)
+  Debug(s1.size())
+  {}:Test""(expected=S"[[]; []; []]" actual=s1)
+  {}:Test""(expected=3Size actual=s1.size())
   {}:Test""(expected=3Size actual=0Size)//Fails to remember to continue here
   )

@@ -194,6 +194,7 @@ public class Loader {
     import is.L42.introspection.L42£Method;
     import is.L42.meta.L42£Name;
     import is.L42.maps.L42£Set;
+    import is.L42.maps.L42£SelfSet;
     import is.L42.maps.L42£ImmMap;
     import is.L42.maps.L42£MutMap;
     import is.L42.maps.L42£SelfVector;

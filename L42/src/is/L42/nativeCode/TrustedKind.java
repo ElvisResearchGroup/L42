@@ -135,6 +135,18 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    @Override public TrustedKind specialize(Program p,List<P>nativePars){
+      if(!nativePars.get(0).equals(P.pThis0)){return this;}
+      return SelfHSet;
+      }
+    },
+  SelfHSet("L42£SelfSet"){@Override public String factory(J j,MWT mwt){return setFactory(j,mwt);}
+    @Override public int genericNumber(){return 1;}
+    @Override public int genExceptionNumber(){return 1;}
+    @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    @Override public String typeNameStr(Program p,J j){
+      return "L42£SelfSet";
+      }
     },
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();

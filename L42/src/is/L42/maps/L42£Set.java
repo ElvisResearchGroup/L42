@@ -35,10 +35,15 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
     if(inner==null){inner=new LinkedHashSet<>();}
     inner.add(key);
     }
-  @Override public Object f(L42£Set<K> t, int i){
+  @Override protected Object f(L42£Set<K> t, int i, L42£Set<K> _fields){
     loadIteration();
     return keys[i];
     }
+  @Override protected void setF(L42£Set<K> t, int i, Object o, L42£Set<K> _fields){
+    loadIteration();
+    assert keys[i]==o;
+    }
+
   @Override public int fn(L42£Set<K> t){return inner==null?0:inner.size();}
   @Override public L42Cache<?> rawFieldCache(int i){return kCache.get();}
   @Override public L42Cache<L42£Set<K>> myCache(){return this;}
