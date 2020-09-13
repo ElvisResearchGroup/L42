@@ -162,7 +162,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(lib==null){return;}
     var nk=lib.info().nativeKind();
     if(nk.isEmpty()){return;}
-    if(!TrustedKind._fromString(nk).equals(TrustedKind.NonDeterministicError)){return;}
+    if(!TrustedKind._fromString(nk,p.navigate(path.toNCs())).equals(TrustedKind.NonDeterministicError)){return;}
     positionOfNonDeterministicError=pos;
     typeOfNonDetermisticError=path;
     }

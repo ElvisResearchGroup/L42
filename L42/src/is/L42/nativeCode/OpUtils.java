@@ -176,7 +176,7 @@ class OpUtils{
         assert li!=null:
           pi+" "+p.pop().topCore();
         var kind=li.info().nativeKind();
-        if(!kind.isEmpty() && ki==TrustedKind._fromString(kind)){return;}
+        if(!kind.isEmpty() && ki==TrustedKind._fromString(kind,p.navigate(pi.toNCs()))){return;}
         throw new EndError.TypeError(mwt._e().poss(),
           Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,ki));            
         }

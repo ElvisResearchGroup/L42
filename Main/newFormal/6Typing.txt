@@ -50,10 +50,11 @@ _______
     forall MH in MHs: p|- MWT.MH <=MH
     if MWT.e?=e then 
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P
-      p;MWT.G;empty |= e :_ <=fwd% MWT.T.mdf
-      if MWT.native?!=empty then typePlugin(p;MWT)
-      if (_ catch error imm P x _ _) in MWT.e and p(P).Info.nativeKind=NonDeterministicError//TODO: add in code? about capturing non deterministic errors
-        then MWT.s starts with #$ //and then update J to generate catches...
+      mdf in bodyTypes(MWT.Ts.mdfs->MWT.T.mdf)  //MWT.Ts.mdfs includes the "this mdfs"
+      p;MWT.G;empty |= e :_ <=mdf //TODO: do in code
+      if MWT.native?!=empty then typePlugin(p;MWT) //currently *very* relaxed, otherwise breaks metalevel soundness 
+      if (_ catch error imm P x _ _) in MWT.e and p(P).Info.nativeKind=NonDeterministicError
+        then MWT.s starts with #$ 
 _______
 #define p |- MH1 <= MH2
 * p |- MH1 <= MH2 
@@ -206,6 +207,21 @@ _______
 * mutToCapsuleAndFwdRead(mdfs)->read in methTypes(p,P,s) //(mReadExtended)
     mdfs->fwd mut in methTypes(p,P,s)
     fwd_or_fwd%_in(mdfs)
+_______    
+#define bodyTypes(mdfs->mdf)=mdfs' //allowed mdfs' to type the meth body
+* mdfs->read = {read,fwd%mut,fwd%imm}
+* mdfs->lent = {lent,fwd%mut}
+* mdfs->mut = {fwd%mut}
+* mdfs->imm = {read,fwd%imm,fwd%mut}  if read,lent,mut not mdfs
+* mdfs->imm = {fwd%imm,fwd%mut}  if mut not mdfs
+* mdfs->imm = {fwd%imm}  otherwise
+* mdfs->capsule = {fwd%mut} if mut not mdfs
+* mdfs->capsule = {capsule} otherwise
+* mdfs->class = {class}
+* mdfs->fwd imm = {read,fwd imm,fwd mut}  if fwd mut,read,lent,mut not mdfs//fwd mut absent by well formedness anyway
+* mdfs->fwd imm = {fwd imm,fwd%mut}  if fwd mut,mut not mdfs
+* mdfs->fwd imm={fwd imm}  otherwise
+* mdfs->fwd mut={fwd mut}
 _______
 #define toLent(G)=G'    toLent(T)=T'
 * toLent(G)(x)=G(x) if G(x).T.mdf=immutable //var? is preserved only for imm. Preserving a read var would expose read references inside capsules

@@ -1,7 +1,6 @@
 class method Library (mut DB db)[MetaFail]={
   db.queryTables()
   i=db.findColumn(label=S"TABLE_NAME")
-  //tables=S.List()(while db.next()\res<=db.val(i))
   var res=Trait()
   while db.next() (res+=this.makeTable(db=db,name=db.val(i)))
   return Class:res

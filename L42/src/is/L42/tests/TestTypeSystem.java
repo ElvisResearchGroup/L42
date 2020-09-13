@@ -776,7 +776,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->failC("""
   NotCoh={This field, class method This ()}
   """,Err.nonCoherentMethod("field()"))
-  ));}
+
+),new AtomicTest(()->pass("""
+  A={class method mut This() mut method mut A foo()=this}
+  class method read A mutA()=(read res=A().foo() res)
+  class method A immA()=(read res=A().foo() res)
+  class method read A mutA(mut A a)=(read res=A().foo() res)
+  //class method A immA(mut A a)=(read res=A().foo() res)
+  """)
+),new AtomicTest(()->fail("""
+  A={class method mut This() mut method mut A foo()=this}
+  class method read A mutA()=(read res=A().foo() res)
+  class method A immA()=(read res=A().foo() res)
+  class method read A mutA(mut A a)=(read res=A().foo() res)
+  class method A immA(mut A a)=(read res=A().foo() res)
+  """,Err.subTypeExpected("[###]","[###]"))
+));}
 
 public static void pass(String program){
   Resources.clearResKeepReuse();

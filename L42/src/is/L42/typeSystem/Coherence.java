@@ -90,7 +90,7 @@ public class Coherence {
       }
     var nat=p.topCore().info().nativeKind();
     TrustedKind tk=null;
-    if(!nat.isEmpty()){tk=TrustedKind._fromString(nat);}
+    if(!nat.isEmpty()){tk=TrustedKind._fromString(nat,p);}
     return tk==null || tk.typePluginK(p,mh);
     }
   public boolean coherentClass(MH mh, Set<X> xz){

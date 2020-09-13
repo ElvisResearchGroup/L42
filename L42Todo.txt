@@ -1,14 +1,9 @@
 -CTz todo line 84; check formalism
 -Rename feature add: must be possible to rename-sum an interface with, at least, an empty class never used. 
--another toS bug: A=Data:{} B=Data:{A a} B(a=A()).toS()
+-write in some guides: A=B:{..} does not typecheck .. but typechecks all its nested classes if dependencies are sorted
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
-  we can sort alphabetically the members
--TypeSystem enrich: simmetric of multi method types:
-  -a method taking no mut,read,lent and returning imms (can take fwds?)
-    can be typed returning either imm OR read (and not immPFwd?)
-  -a method taking no muts and returning imm/capsule (can take fwds?)
-    can be typed returning either imm or mut (and not their mdfPFwd?)
+  we can sort alphabetically the members   
 -BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native
 -Big, but confusing: the java compiler go in loop for code too complex, like to many &&. See TestTopNorm t_manyAnds() :-(
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.

@@ -108,7 +108,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     var info=p.topCore().info();
     String nk=info.nativeKind();
     if(nk.isEmpty()){return classNameStr(p);}
-    return TrustedKind._fromString(nk).typeNameStr(p,this);
+    return TrustedKind._fromString(nk,p).typeNameStr(p,this);
     }
   void typeName(Program p){
     kw(typeNameStr(p));
@@ -280,7 +280,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("£x"+d.x()+"=");
     String nativeKind=p._ofCore(d.t().p()).info().nativeKind();
     if(nativeKind.isEmpty()){c("null");}
-    else{c(TrustedKind._fromString(nativeKind).defaultVal());}
+    else{c(TrustedKind._fromString(nativeKind,p()).defaultVal());}
     c(";");
     nl();
     if(!fwds.contains(d.x())){return;}
@@ -316,7 +316,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   private boolean isNonDeterministicError(P path){
     String nk=this.p._ofCore(path).info().nativeKind();
-    return TrustedKind._fromString(nk).equals(TrustedKind.NonDeterministicError);
+    return !nk.isEmpty() && TrustedKind._fromString(nk,p.navigate(path.toNCs())).equals(TrustedKind.NonDeterministicError);
     }
   private void rethrowNonDeterministicError(Core.K k){
     var v=catchVar();

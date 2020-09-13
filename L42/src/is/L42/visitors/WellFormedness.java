@@ -794,7 +794,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         ));}
       }
     if(!l.info().nativeKind().isEmpty()){
-      var t=TrustedKind._fromString(l.info().nativeKind());
+      var t=TrustedKind._rawFromString(l.info().nativeKind());
       if(t==null){throw new EndError.NotWellFormed(l.poss(),Err.nativeKindInvalid(l.info().nativeKind()));}
       if(t.genericNumber()+t.genExceptionNumber()!=l.info().nativePar().size()){
         throw new EndError.NotWellFormed(l.poss(),Err.nativeKindParCountInvalid(t,t.genericNumber()+t.genExceptionNumber(),l.info().nativePar().size()));

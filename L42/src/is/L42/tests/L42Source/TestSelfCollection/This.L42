@@ -1,0 +1,10 @@
+reuse [AdamTowel]
+A=Organize:{
+  L$={}
+  L=Collection.list(L$)
+  }
+Main=(
+  Debug(S"Hello world")
+  l=A.L()
+  Debug(S"Hello world2")
+  )

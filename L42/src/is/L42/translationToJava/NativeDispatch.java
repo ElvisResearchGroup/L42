@@ -48,7 +48,7 @@ public class NativeDispatch {
     String nativeUrl=mwt.nativeUrl();
     if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);return;}
     String nativeOp=nativeUrl.substring("trusted:".length());
-    var k=TrustedKind._fromString(nativeKind);
+    var k=TrustedKind._fromString(nativeKind,j.p());
     var op=TrustedOp.fromString(nativeOp);
     assert op._of(k)!=null:k+" "+op;//type checking should avoid this
     //op._of(k).of(false, mwt,j);//before type checking guranteed there was no need of "true", now type checking just make a warning
@@ -65,7 +65,7 @@ public class NativeDispatch {
     op._of(k).of(false, mwt,j);
     }
   public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
-    var k=TrustedKind._fromString(nativeKind);
+    var k=TrustedKind._fromString(nativeKind,j.p());
     return k.factory(j,mwt);
     }
   public static class NativeUrlInfo{

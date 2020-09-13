@@ -181,7 +181,13 @@ public enum TrustedKind implements TrustedT{
   public abstract String factory(J j,MWT mwt);
   public abstract boolean typePluginK(Program p,MH mh);
   public String defaultVal(){return "null";}
-  public static TrustedKind _fromString(String s) {
+  public static TrustedKind _fromString(String s,Program p) {
+    var res=_rawFromString(s);
+    if(res==null){return null;}
+    return res.specialize(p,p.topCore().info().nativePar());
+    }
+  public TrustedKind specialize(Program p,List<P>nativePars){return this;}
+  public static TrustedKind _rawFromString(String s){
     if(s.isEmpty()){return AnyKind;}
     for (TrustedKind t : TrustedKind.values()) {
       if (t.name().equals(s))return t;
@@ -264,7 +270,7 @@ public enum TrustedKind implements TrustedT{
     if(!gen1.isNCs()){return J.primitivePToString(gen1);}
     var pLocal=p.navigate(gen1.toNCs());
     var nk=pLocal.topCore().info().nativeKind();
-    var tk=TrustedKind._fromString(nk);
+    var tk=TrustedKind._fromString(nk,p);
     if(tk==null){return j.typeNameStr(pLocal);}
     assert isOptOpt(p)==(tk==Opt);
     if(tk==Opt){return J.classNameStr(pLocal);}

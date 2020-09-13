@@ -19,6 +19,7 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
+import is.L42.generated.MethT;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -71,7 +72,7 @@ public class ProgramTypeSystem {
     var l=p.topCore();
     var info=l.info();
     if(info.nativeKind().isEmpty()){return;}
-    var nk=TrustedKind._fromString(info.nativeKind());
+    var nk=TrustedKind._fromString(info.nativeKind(),p);
     assert nk!=null;
     nk.checkNativePars(p,checkLazy);
     }
@@ -127,7 +128,7 @@ public class ProgramTypeSystem {
       return;
       }
     String nativeOp=nativeUrl.substring("trusted:".length());
-    var k=TrustedKind._fromString(nativeKind);
+    var k=TrustedKind._fromString(nativeKind,p);
     var op=TrustedOp.fromString(nativeOp);
     var g=op._of(k);
     errIf(g==null,mwt._e().poss(),
@@ -139,8 +140,7 @@ public class ProgramTypeSystem {
     List<P> ps=L(mh.exceptions().stream().map(t->t.p()));
     var pts=new PathTypeSystem(true,p,g,L(),ps,mh.t().p());
     e.visitable().accept(pts);
-    var mdf=TypeManipulation.fwdPOf(mh.t().mdf());
-    e.visitable().accept(new MdfTypeSystem(p,g,Collections.emptySet(),mdf));
+    BodyTypes.checkBody(p, g, mh, e);
     var nde=pts.positionOfNonDeterministicError;
     errIf(nde!=null && !mh.key().m().startsWith("#$"),nde,
       Err.nonDetermisticErrorOnlyHD(mh,pts.typeOfNonDetermisticError));

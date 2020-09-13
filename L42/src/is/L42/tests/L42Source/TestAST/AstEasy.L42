@@ -3,6 +3,12 @@ Case=Decorator:{
   method Trait(Trait trait)[Message.Guard]
     =Data('This,autoNorm=Bool.true()):HasSelf:trait
   }
+Self=Data:Decorator.WithArgs:{//pointless, usually is shorter to just declare
+  HasSelf=Trait:{S={} method S self()}
+  class Any that
+  method Trait(Trait trait)[Message.Guard]
+    =HasSelf['S=>this.that()]:trait
+  }
 Base=Trait:{
   Node={interface}
   Nodes=Collection.list(Node)
@@ -18,7 +24,7 @@ Base=Trait:{
 Abs=Base[clear='This]
 ToHtml=Trait({
   Dom=Class.Relax:Abs:{Node={method S toHtml()}}
-  P={method Dom.P self() method S toHtml()=S"<P>%this.self().text()</P>"}
+  P=Self(Dom.P):{method S toHtml()=S"<P>%this.self()<:Dom.P.text()</P>"}
   H1={method Dom.H1 self() method S toHtml()=S"<H1>%this.self().text()</H1>"}
   Div={method Dom.Div self() method S toHtml()=(
     var ss=S""

@@ -112,6 +112,10 @@ TestDataInterface={
     S that
     class method This of(S that)
     }
+  Point=Data:{[Shape]
+    read method S that()=S"singularity"
+    class method Shape of(S that)=This()
+    }
   Square=Data:{[Shape]
     S that
     class method Shape of(S that)=This(that)
@@ -127,6 +131,17 @@ TestDataInterface={
     {}:Test"square by shape"(
       expected=res
       actual=s.of(S"square"))
+    class Shape p=Point
+    {}:Test"point by shape"(
+      expected=S"Point()"
+      actual=p.of(S"ignored"))
+    )
+  }
+TestDataSingleton={
+  A=Data:{}
+  B=Data:{A a}
+  Main=(
+    {}:Test"singletonOk"(expected=S"B(a=())" actual=B(a=A()))
     )
   }
 TestDataRelax=(
@@ -140,7 +155,6 @@ TestDataRelax=(
     catch Class.IncoherentClass x (Bool.false())
     Bool.true()
     ))
-
   )
 TestDataFwd={
   A=Data:{mut B b,var S name}
