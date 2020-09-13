@@ -45,4 +45,5 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
   @Override protected L42£Set<K> newInstance(L42£Set<K> t){return new L42£Set<K>(kCache);}
   @SuppressWarnings("unchecked")
   public static final Class<L42£Set<?>> _class=(Class<L42£Set<?>>)(Object)L42£Set.class;
+  @Override public Object typename(){return TrustedKind.HSet;}
   }

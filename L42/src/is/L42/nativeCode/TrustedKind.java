@@ -89,13 +89,29 @@ public enum TrustedKind implements TrustedT{
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
   Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
+      assert mwt.key().xs().isEmpty();
+      assert j.p().topCore().info().nativePar().size()==4;
+      return OpUtils.makeVector(j,"0");      
+      }
+    @Override public int genericNumber(){return 1;}
+    @Override public int genExceptionNumber(){return 3;}
+    @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    @Override public TrustedKind specialize(Program p,List<P>nativePars){
+        if(!nativePars.get(0).equals(P.pThis0)){return this;}
+        return SelfVector;
+        }
+    },
+  SelfVector("L42£SelfVector"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==4;
-    return OpUtils.makeVector(j,"0");      
+    return "return new L42£SelfVector();";      
     }
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 3;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
+    @Override public String typeNameStr(Program p,J j){
+      return "L42£SelfVector";
+      }
     },
   HIMap("L42£ImmMap"){@Override public String factory(J j,MWT mwt){return mapFactory(j,mwt);}
     @Override public int genericNumber(){return 3;}

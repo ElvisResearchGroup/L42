@@ -280,7 +280,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("£x"+d.x()+"=");
     String nativeKind=p._ofCore(d.t().p()).info().nativeKind();
     if(nativeKind.isEmpty()){c("null");}
-    else{c(TrustedKind._fromString(nativeKind,p()).defaultVal());}
+    else{c(TrustedKind._rawFromString(nativeKind).defaultVal());}
     c(";");
     nl();
     if(!fwds.contains(d.x())){return;}

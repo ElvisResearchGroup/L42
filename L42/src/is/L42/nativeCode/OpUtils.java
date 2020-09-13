@@ -24,12 +24,15 @@ import is.L42.translationToJava.NativeDispatch;
 
 enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
-  static String vectorGet(boolean mut){
+  static String vectorGet(boolean mut,boolean self){
     //Note: on different Java versions multiline strings are composed differenlty!
     //the "non indented" .wrap is needed, otherwise we would patter match
-    // ""Gen3."" on some systems and ""Gen3  ."" on some others  
-    return vectorExc2("""
-      Object tmp=((ArrayList)%1$s).get(%2$s*2+3);
+    // ""Gen3."" on some systems and ""Gen3  ."" on some others
+    String tName="ArrayList";
+    if(self){tName="L42£SelfVector";}
+    String flagName="";
+    if(self){flagName="Flag";}
+    return vectorExc2("Object tmp=(("+tName+")%1$s).get"+flagName+"(%2$s*2+3);\n"+"""
       if(tmp==is.L42.nativeCode.Flags."""+(mut?"MutElem":"ImmElem")+"""
         ){return %1$s.get(%2$s*2+2);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
@@ -37,8 +40,15 @@ class OpUtils{
         "#val called, but the element in position "+%1$s+" was inserted as immutable"
         )));
     """);}
-    static String vectorOp(String op,boolean mut){
-      return vectorExc2("%1$s."+op+"(%2$s*2+2,%3$s);((ArrayList)%1$s)."+op+"(%2$s*2+3,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")+");return L42£Void.instance;");
+    static String vectorOp(String op,boolean mut,boolean self){
+      String tName="ArrayList";
+      if(self) {tName="L42£SelfVector";}
+      return vectorExc2(//ok also for SelfVector since add/set take object
+        "%1$s."
+        +op+"(%2$s*2+2,%3$s);(("+tName+")%1$s)."
+        +op+"(%2$s*2+3,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")
+        +");return L42£Void.instance;"
+        );
       }
     static String vectorOpRemove(){
       return vectorExc2("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42£Void.instance;");
@@ -46,7 +56,7 @@ class OpUtils{
     static String vectorReadGet(){
       return vectorExc2("return %s.get(%s*2+2);");
       }
-    static private final String vectorExc2(String body){
+    private static final String vectorExc2(String body){
       return "try{"+body+"}"+
         "catch(IndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
       }

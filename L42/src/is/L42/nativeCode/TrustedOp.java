@@ -332,12 +332,17 @@ public enum TrustedOp {
   IsRefined("isRefined",method("%s.isRefined()",sigI(Bool))),
   IsAbstract("isAbstract",method("%s.isAbstract()",sigI(Bool))),
   //####VECTOR####
-  VectorK("vectorK",Map.of(Vector,vectorKs())),
+  VectorK("vectorK",Map.of(
+    Vector,vectorKs(),
+    SelfVector,use("return new L42£SelfVector();",sig(Class,Mutable,This,Immutable,Int))
+    )),
   IsEmpty("isEmpty",Map.of(
-    Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool))
+    Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)),
+    SelfVector,use("return %s.size()==2;",sig(Readable,Immutable,Bool))
     )),
   Size("size",Map.of(
     Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
+    SelfVector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
     HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HMMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HSet,use("return  %s.size();",sig(Readable,Immutable,Int)),
@@ -345,27 +350,45 @@ public enum TrustedOp {
     )),
   ReadVal("readVal",Map.of(
     Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
+    SelfVector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
     HMMap,use(mapOutOfBound(
       "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
       ),sig(Readable,Readable,Gen2,Immutable,Int))
     )),
   ImmVal("immVal",Map.of(
-    Vector,use(vectorGet(false),sig(Readable,Immutable,Gen1,Immutable,Int)),
+    Vector,use(vectorGet(false,false),sig(Readable,Immutable,Gen1,Immutable,Int)),
+    SelfVector,use(vectorGet(false,true),sig(Readable,Immutable,Gen1,Immutable,Int)),
     HIMap,use(mapOutOfBound(
       "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
       ),sig(Readable,Immutable,Gen2,Immutable,Int))
     )),
   HashVal("#val",Map.of(
-    Vector,use(vectorGet(true),sig(Mutable,Mutable,Gen1,Immutable,Int)),
+    Vector,use(vectorGet(true,false),sig(Mutable,Mutable,Gen1,Immutable,Int)),
+    SelfVector,use(vectorGet(true,true),sig(Mutable,Mutable,Gen1,Immutable,Int)),
     HMMap,use(mapOutOfBound(
       "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
       ),sig(Mutable,Mutable,Gen2,Immutable,Int))
     )), 
-  SetImm("setImm",Map.of(Vector,use(vectorOp("set",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  SetMut("setMut",Map.of(Vector,use(vectorOp("set",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  AddImm("addImm",Map.of(Vector,use(vectorOp("add",false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)))),
-  AddMut("addMut",Map.of(Vector,use(vectorOp("add",true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)))),
-  Remove("remove",Map.of(Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)))),
+  SetImm("setImm",Map.of(
+    Vector,use(vectorOp("set",false,false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)),
+    SelfVector,use(vectorOp("set",false,true),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1))
+    )),
+  SetMut("setMut",Map.of(
+    Vector,use(vectorOp("set",true,false),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)),
+    SelfVector,use(vectorOp("set",true,true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1))
+    )),
+  AddImm("addImm",Map.of(
+    Vector,use(vectorOp("add",false,false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)),
+    SelfVector,use(vectorOp("add",false,true),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1))
+    )),
+  AddMut("addMut",Map.of(
+    Vector,use(vectorOp("add",true,false),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)),
+    SelfVector,use(vectorOp("add",true,true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1))
+    )),
+  Remove("remove",Map.of(
+    Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)),
+    SelfVector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int))
+    )),
   //MAPs
   ImmKey("immKey",Map.of(
       HIMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
@@ -514,7 +537,7 @@ public enum TrustedOp {
     for(T t:mwt.mh().exceptions()){addT(c,t);}
     c.removeIf(p->p.hasUniqueNum());
     if(info.nativePar().isEmpty()){return andParsFrom(c,info,0);}//to avoid out of order errors
-    if(!List.of("Vector","Opt","HSet","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
+    if(!List.of("Vector","SelfVector","Opt","HSet","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
     c.removeIf(p->p.equals(info.nativePar().get(0)));//remove only removes the first occurence
     if(info.nativePar().size()<2 || !List.of("HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,1);}
     c.removeIf(p->p.equals(info.nativePar().get(1)));//remove only removes the first occurence

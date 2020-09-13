@@ -27,7 +27,8 @@
 and should wrap all the returns with normalization, so that we only return normalized numbers.
 
 -test cache in case the cached method do some exceptions/errors
-  
+-collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
+-if a method ends in stack oveflow, the error is only reported in Java and not in the IDE
 -add and test System.restartThreads() //or better name
 -Consider removing 'pos' from Introspection toS, since pos is very big, that toFullS() is shorted then toS()
 -Bug: CircularityIssue need to be improved by a long time 
@@ -36,7 +37,10 @@ and should wrap all the returns with normalization, so that we only return norma
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
 
--Test List of itself and Maps and Set of itself. The following may be needed
+-In progress:Test List of itself and Maps and Set of itself.
+The solution is nativeKind specialization, so that I will make a specilized nativeImpl
+for collections and optionals of self. I can use the same idea to support lists of primitives and arrays
+I used to believe that The following may be needed
   re designing arraylist caching and map caching
   right now the code to take fetch the cache object for the gen parameter of 
   an arraylist, when the type is native is:

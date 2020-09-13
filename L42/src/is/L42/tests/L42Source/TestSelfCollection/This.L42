@@ -1,10 +1,18 @@
 reuse [AdamTowel]
-A=Organize:{
+A=Organize:{//TODO: add Maps sets and ops, then simplify cache suppliers
   L$={}
   L=Collection.list(L$)
   }
 Main=(
-  Debug(S"Hello world")
-  l=A.L()
-  Debug(S"Hello world2")
+  l1=A.L()
+  l2=A.L()
+  imm l3=A.L()
+  l1.#add(right=l2)
+  l1.#add(right=l2)
+  l1.add(right=l3)
+  Debug(l1)
+  Debug(l1.size())
+  {}:Test""(expected=S"[[]; []; []]" actual=l1)
+  {}:Test""(expected=3Size actual=l1.size())
+  {}:Test""(expected=3Size actual=0Size)//Fails to remember to continue here
   )

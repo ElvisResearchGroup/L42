@@ -41,7 +41,7 @@ method toS()=(
   var i=0Size
   var res=S"["
   while i<this.size() (
-    res++= AnyToS(this.val(i))
+    res++= AnyToS(this.readVal(i))
     i:=i.#succ()
     if i!=this.size() (res++=S"; ") 
     )
