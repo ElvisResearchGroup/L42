@@ -12,11 +12,7 @@ public class TrackLevel<T> {
     this.setAtLeastOnceVisited(false);
   }
   
-  public TrackLevel(T level) {
-    this.level = level;
-    this.visited = false;
-    this.setAtLeastOnceVisited(false);
-  }
+  public TrackLevel(T level) {this(level,false);}
   
   public boolean isVisited() {
     return this.visited;

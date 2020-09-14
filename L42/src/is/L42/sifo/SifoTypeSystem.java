@@ -2,6 +2,7 @@ package is.L42.sifo;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 import static is.L42.generated.Mdf.*;
@@ -32,11 +33,12 @@ import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
-  public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs, T expected) {
+  public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs, T expected,Lattice42 lattice) {
     this.p = p;
     this.g = g;
     this.mdfs=mdfs;
     this.expected=expected;
+    this.lattice=lattice;
     }
   boolean isDeep;
   int dept=0;
@@ -44,6 +46,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   G g;
   Set<Mdf> mdfs;
   T expected;
+  Lattice42 lattice;
   void visitExpecting(E e,T newExpected){
     T oldE=expected;
     expected=newExpected;
@@ -54,34 +57,34 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(cond){
     throw new EndError.TypeError(e.poss(),msg);}
     }
-  void mustSubMdf(Mdf m1,Mdf m2,List<Pos> poss){
+  void mustSubMdf(Mdf m1,Mdf m2,List<Pos> poss){//TODO: check if it was needed
     if(!Program.isSubtype(m1, m2)){
       throw new EndError.TypeError(poss,Err.subTypeExpected(m1,m2));
       }
     }  
-  @Override public void visitEVoid(EVoid e){ }
-  @Override public void visitPCastT(PCastT e){ }
+  @Override public void visitEVoid(EVoid e){}
+  @Override public void visitPCastT(PCastT e){}
   @Override public void visitL(L e){}
   private P getSifoAnn(List<Doc>docs){
     List<P> paths=sifos(expected.docs());
     //TODO: if(paths.isEmpty()) {return lattice.bottom();}
-    if(paths.size()!=1){throw todo();}//TODO:
+    if(paths.size()!=1){throw bug();}//TODO: good error
     return paths.get(0);
     }
   private List<P> sifos(List<Doc> docs){
-    return L(c->{
-      PathSel ps=null;//d._pathSel();TODO:
+    return L(docs,(c,d)->{
+      PathSel ps=d._pathSel();
       if(ps==null){return;}
       P p=_asSifo(ps.p());
       if(p!=null){c.add(p);}
       });    
     }
   private P _asSifo(P path){
-    if(!path.isNCs()) {return null;}
+    if(!path.isNCs()){return null;}
     P.NCs ncs=path.toNCs();
-    if(ncs.n()!=dept) {return null;}
+    if(ncs.n()!=dept){return null;}
     ncs=ncs.withN(0);
-    //TODO: if(!lattice.contains(ncs)){return null;}
+    if(!lattice.getAllLevels().contains(ncs)){return null;}
     return ncs;
     }
   @Override public void visitEX(EX e){
@@ -94,8 +97,8 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   private void mustSubSecurity(Mdf subMdf,P sub,Mdf supMdf,P sup,List<Pos>pos){
     if(sub.equals(sup)){return;}
     var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule);
-    //TODO: if(mdfOk && lattice.compare(sub,sup)){return;}
-    throw todo();
+    if(mdfOk && lattice.secondHigherThanFirst(sub,sup)){return;}
+    throw bug();//TODO: good error
     }  
   @Override public void visitLoop(Loop e){
     visitExpecting(e.e(),P.coreVoid);
