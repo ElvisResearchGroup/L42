@@ -72,8 +72,11 @@ public abstract class Lattice<T> {
   }
 
   public abstract T getBottom();
-
-  public T leastUpperBound(List<T> levels) {
+  public <Sub extends T> T leastUpperBoundOrLow(List<Sub> levels){
+    if(levels.isEmpty()){return getBottom();}
+    return leastUpperBound(levels);
+    }
+  public <Sub extends T> T leastUpperBound(List<Sub> levels){
     if (levels.size() == 1) {
       return levels.get(0);
     }

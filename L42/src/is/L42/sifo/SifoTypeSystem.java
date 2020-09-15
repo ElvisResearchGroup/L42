@@ -33,17 +33,23 @@ import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
-  public SifoTypeSystem(Program p, G g, Set<Mdf> mdfs, T expected,Lattice42 lattice) {
+  public SifoTypeSystem(Program p, G g,List<T> exceptions, Set<Mdf> mdfs, T expected,Lattice42 lattice) {
     this.p = p;
     this.g = g;
     this.mdfs=mdfs;
     this.expected=expected;
     this.lattice=lattice;
+    this.sifoExceptions=L(exceptions,(c,t)->{
+      var sifoP=getSifoAnn(t.docs());
+      if(sifoP.isNCs()){c.add(sifoP.toNCs());}
+      });
     }
   boolean isDeep;
   int dept=0;
   Program p;
   G g;
+  List<P.NCs> sifoExceptions;
+  List<P> sifoReturns=L();
   Set<Mdf> mdfs;
   T expected;
   Lattice42 lattice;
@@ -66,20 +72,20 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   @Override public void visitPCastT(PCastT e){}
   @Override public void visitL(L e){}
   private P getSifoAnn(List<Doc>docs){
-    List<P> paths=sifos(expected.docs());
-    //TODO: if(paths.isEmpty()) {return lattice.bottom();}
+    List<P.NCs> paths=sifos(expected.docs());
+    if(paths.isEmpty()) {return lattice.getBottom();}
     if(paths.size()!=1){throw bug();}//TODO: good error
     return paths.get(0);
     }
-  private List<P> sifos(List<Doc> docs){
+  private List<P.NCs> sifos(List<Doc> docs){
     return L(docs,(c,d)->{
       PathSel ps=d._pathSel();
       if(ps==null){return;}
-      P p=_asSifo(ps.p());
+      var p=_asSifo(ps.p());
       if(p!=null){c.add(p);}
       });    
     }
-  private P _asSifo(P path){
+  private P.NCs _asSifo(P path){
     if(!path.isNCs()){return null;}
     P.NCs ncs=path.toNCs();
     if(ncs.n()!=dept){return null;}
@@ -94,6 +100,12 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     P expectedPath= getSifoAnn(expected.docs());
     mustSubSecurity(t.mdf(),actualPath, expected.mdf(),expectedPath,e.poss());
     }
+  private T tWithSec(P sec){
+    if(!sec.isNCs()){return P.coreVoid;}
+    var s=sec.toNCs().withN(dept);
+    var d=new Doc(new PathSel(s,null,null),L(),L());
+    return P.coreVoid.withDocs(L(d));
+    }
   private void mustSubSecurity(Mdf subMdf,P sub,Mdf supMdf,P sup,List<Pos>pos){
     if(sub.equals(sup)){return;}
     var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule);
@@ -104,47 +116,72 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     visitExpecting(e.e(),P.coreVoid);
     }
   @Override public void visitThrow(Throw e){
-    if(e.thr()!=Return){visitExpecting(e.e(),P.coreVoid);return;}
+    if(e.thr()==Error){
+      visitExpecting(e.e(),P.coreVoid);return;
+      }
+    if(e.thr()==Exception){
+      var lub=lattice.leastUpperBoundOrLow(this.sifoExceptions);
+      visitExpecting(e.e(),tWithSec(lub));
+      return;
+      }
+    assert e.thr()==Return;
+    //Ts2.mdfs subsetEq {imm,capsule}
+    boolean ret1=List.of(Mdf.Capsule,Mdf.Immutable).containsAll(mdfs); 
+    if(ret1){
+      var lub=lattice.leastUpperBoundOrLow(this.sifoReturns);
+      visitExpecting(e.e(),tWithSec(lub));
+      return;
+      }
+    if(sifoReturns.stream().distinct().count()!=1) {throw todo();}//TODO:good error here
+    var s=sifoReturns.get(0);
     var general=TypeManipulation._mostGeneralMdf(mdfs);
-    errIf(general==null,e,Err.invalidSetOfMdfs(mdfs));
-    //visitExpecting(e.e(),TypeManipulation.fwdOf(general));
+    assert general!=null;
+    visitExpecting(e.e(),tWithSec(s).withMdf(general));
     }
   @Override public void visitMCall(MCall e){
-    P p0=TypeManipulation.guess(g,e.xP());
+    var s=getSifoAnn(expected.docs());
+    var selectedS=lattice.getBottom();
+    if (!s.equals(lattice.getBottom())){
+      boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule);
+      if(promotable) {throw todo();}//TODO: Tobias
+      //implements a latitce.between(s,s1)=ss so that s,s1 in ss and all in between
+      selectedS=s;
+      }
+    P.NCs p0=TypeManipulation.guess(g,e.xP()).toNCs();
+    var mh=_elem(p._ofCore(p0).mwts(),e.s()).mh();
+    List<Core.T>parTypes=p.from(mh.parsWithThis(), p0);
+    //Core.T retType=p.from(mh.t(),p0);
+    //var retSec=getSifoAnn(retType.docs());
+    //retSec=lattice.leastUpperBound(List.of(retSec,selectedS));
     var meths=AlternativeMethodTypes.types(p,p0.toNCs(),e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
-    //TODO: use the "canAlsoBe" to further filter on the set of methods,
-    //this can also be used to give better error messages line "class method called on non class"
-    errIf(meths.isEmpty(),e,Err.methCallResultIncompatibleWithExpected(e.s(),expected));
-    List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});
-    var oldG=g;
+    assert !meths.isEmpty();
+    List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});//the receiver and the arguments
+    assert es.size()==parTypes.size();
     var oldExpected=expected;
+    var oldG=g;
     var oldMdfs=mdfs;
-    HashMap<String,HashSet<Mdf>> wrongParameters=new HashMap<>();
-    String currentX=null;
-    Mdf currentMdf=null;
+    var oldSifoExceptions=sifoExceptions;
+    var oldSifoReturns=sifoReturns;
     EndError.TypeError lastErr=null;
     for(var m:meths){
       try{
         g=oldG;
         mdfs=oldMdfs;
+        sifoExceptions=oldSifoExceptions;
+        sifoReturns=oldSifoReturns;
         for(int i:range(es)){
-          //expected=m.mdfs().get(i);
-          currentX=i==0?"receiver":e.s().xs().get(i-1).inner();
-          //currentMdf=expected;
+          var pi=parTypes.get(i);
+          var sec=lattice.leastUpperBound(List.of(getSifoAnn(pi.docs()),selectedS));//TODO: may want to write the meth taking 2 only          
+          expected=tWithSec(sec).withMdf(m.mdfs().get(i)).withP(pi.p());
           visitE(es.get(i));
           }
         expected=oldExpected;
         return;     
         }
-      catch(EndError.TypeError toSave){
-        lastErr=toSave;
-        var res=wrongParameters.putIfAbsent(currentX,new HashSet<>(L(currentMdf)));
-        if(res!=null){res.add(currentMdf);}        
-        }
+      catch(EndError.TypeError toSave){lastErr=toSave;}
       }
-    if(lastErr.msgPart().startsWith("Incompatible modifiers for method call")){throw lastErr;}
-    errIf(true,e,Err.methCallNoCompatibleMdfParametersSignature(e.s(),wrongParameters));
+    throw lastErr;//TODO: better error?
     }
   @Override public void visitOpUpdate(OpUpdate e){
     //mustSubMdf(Immutable,expected,e.poss());
