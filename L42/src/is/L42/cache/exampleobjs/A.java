@@ -77,7 +77,7 @@ public class A implements L42Cachable<A>, Serializable {
   }
 
   @Override
-  public L42Cache<A> myCache() 
+  public L42Cache<A,?> myCache() 
   {
     return myCache;
   }

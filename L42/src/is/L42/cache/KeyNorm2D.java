@@ -42,7 +42,7 @@ public class KeyNorm2D {
       int length=lines[i].length;
       int klength=key.lines[i].length;
       if(length != klength){return false;}
-      L42Cache<?> cache = (L42Cache<?>) lines[i][0];
+      L42Cache<?,?> cache = (L42Cache<?,?>) lines[i][0];
       if(!cache.equals(key.lines[i][0])){return false;}
       for(int j = 1; j < length; j++){
         var l=lines[i][j];
@@ -62,7 +62,7 @@ public class KeyNorm2D {
       builder.append('v');
       builder.append(i);
       builder.append(" : ");
-      builder.append(((L42Cache<?>) line[0]).typename());
+      builder.append(((L42Cache<?,?>) line[0]).typename());
       for(int j = 1; j < line.length; j++) {
         builder.append(' ');
         builder.append(line[j] == null ? "null" : line[j].toString().replace('\n', ' '));

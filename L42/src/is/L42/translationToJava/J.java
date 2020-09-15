@@ -391,7 +391,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("static{L42CacheMap.lateInitialize(myCache,new Class<?>[]{");
     seq(range(ps),i->is.get(i)?"null":addDotClass(ps.get(i)),",");
     c("});}");nl();
-    c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
+    c("@Override public L42Cache<"+jC+",?> myCache(){return myCache;}");nl();
     c("private volatile "+jC+" norm;");nl();
     c("@Override public "+jC+" newInstance(){ return new " + jC + "();}");nl();
     c("@Override public void setNorm("+jC+" t){assert this.norm==null;this.norm=t;");
@@ -440,8 +440,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
    }
   private void addCachableMethodsNoFields(String jC,String jCName){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("public static final L42Cache<"+jC+"> myCache=L42CacheMap.newSingletonCache("+jCName+","+jC+"._class);");nl();
-    c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();
+    c("public static final L42Cache<"+jC+",?> myCache=L42CacheMap.newSingletonCache("+jCName+","+jC+"._class);");nl();
+    c("@Override public L42Cache<"+jC+",?> myCache(){return myCache;}");nl();
     }
   public void header(boolean interf,String jC){
     if(interf){
@@ -505,10 +505,10 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
         cThrowError();        
         }
       }
-    c("@Override public L42Cache<"+jC+"> myCache() {return mySCache;}");
+    c("@Override public L42Cache<"+jC+",?> myCache() {return mySCache;}");
     c("}");deIndent();nl();
     c("public static final "+jC+" pathInstance=new _Fwd();");nl();
-    c("static final L42Cache<"+jC+"> mySCache=L42CacheMap.newSingletonCache("+jCName+", pathInstance.getClass());");nl();
+    c("static final L42Cache<"+jC+",?> mySCache=L42CacheMap.newSingletonCache("+jCName+", pathInstance.getClass());");nl();
     if(nativeKind(p)){
       c("public ");
       typeName(p);

@@ -1,5 +1,7 @@
 package is.L42.cache.nativecache;
 
+import static is.L42.tools.General.unreachable;
+
 import java.util.List;
 import java.util.Map;
 
@@ -8,7 +10,7 @@ import is.L42.cache.KeyNorm2D;
 import is.L42.cache.NormResult;
 import is.L42.tools.General;
 
-public abstract class ValueCache<Type> implements L42Cache<Type> {
+public abstract class ValueCache<Type> implements L42Cache<Type,Type> {
 
   @Override 
   public void addObjectOverride(KeyNorm2D key, Type value) {}
@@ -44,11 +46,6 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   public Object[] f(Type t) {
     return new Object[0];
     }
-
-  @Override
-  public void f(Type t, Object o, int i) {
-    throw new ArrayIndexOutOfBoundsException();
-    }
   
   @Override
   public int fn(Type t) { return 0; }
@@ -64,7 +61,7 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
     }
   
   @Override 
-  public L42Cache<?> rawFieldCache(int i) {
+  public L42Cache<?,?> rawFieldCache(int i) {
     return this;
     }
   
@@ -94,5 +91,14 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
   public Type dup(Type that, Map<Object, Object> map) {
     return that;
     }
+  @Override public Type _fields(Type t){return t;}
   
+  @Override
+  public Object f(Type t, int i, Type _fields) {
+    throw unreachable();
+    }
+  @Override
+  public void setF(Type t, int i, Object o, Type _fields) {
+    throw unreachable();
+    }
   }

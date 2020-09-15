@@ -32,7 +32,7 @@ public interface L42Cachable<T> {
   /**
    * @return A reference to my cache object
    */
-  L42Cache<T> myCache();
+  L42Cache<T,?> myCache();
   
   default boolean isNorm() {
     return myNorm() != null;

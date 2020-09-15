@@ -33,6 +33,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.sifo.Lattice42;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
@@ -837,7 +838,7 @@ static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
   }
 private static void typeMethESifo(Program p,MH mh, E e){
   var g=G.of(mh);
-  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(p,g,Collections.emptySet(),mh.t()));
+  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(p,g,Collections.emptySet(),mh.t(),new Lattice42(p,P.pThis0)));
   }
 public static void failC(String program,String...out){
   checkFail(()->{

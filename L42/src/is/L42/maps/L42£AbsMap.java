@@ -17,11 +17,11 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42NoFields.EqCache;
 public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<K,T>,Self>{
   T[] vals=null;
-  Supplier<L42Cache<T>> vCache;
+  Supplier<L42Cache<T,?>> vCache;
   @SuppressWarnings("unchecked")
   public L42£AbsMap(Object kCache,Object vCache){
     super(kCache);
-    this.vCache=(Supplier<L42Cache<T>>)vCache;
+    this.vCache=(Supplier<L42Cache<T,?>>)vCache;
     }
   public int size(){return inner==null?0:inner.size();}
   @Override protected void clearIteration(){keys=null;vals=null;}
@@ -67,14 +67,14 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     return vals[i/2];
     }
   @SuppressWarnings("unchecked")
-  @Override protected void setF(Self t, int i, Object o, Self _fields){
+  @Override public void setF(Self t, int i, Object o, Self _fields){
     loadIteration();
     if(i%2==0){assert keys[i/2]==o;}
     else{inner.put(keys[i/2],(T)o); vals[i/2]=(T)o;}
     }
 
   @Override public int fn(Self t){return inner==null?0:inner.size()*2;}
-  @Override public L42Cache<?> rawFieldCache(int i){
+  @Override public L42Cache<?,?> rawFieldCache(int i){
     if(i%2==0){return kCache.get();}
     return vCache.get();
     }

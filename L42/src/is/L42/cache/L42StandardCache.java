@@ -4,12 +4,12 @@ import java.util.Arrays;
 import java.util.HashSet;
 
 public class L42StandardCache<T extends L42Cachable<T>> extends AbstractStructuredCache<T,Object[]>{
-  @Override protected Object[] _fields(T t){return t.allFields();}
-  @Override protected Object f(T t,int i,Object[]_fields){return _fields[i];}
-  @Override protected void setF(T t,int i,Object o,Object[]_fields){t.setField(i, _fields[i]=o);}
+  @Override public Object[] _fields(T t){return t.allFields();}
+  @Override public Object f(T t,int i,Object[]_fields){return _fields[i];}
+  @Override public void setF(T t,int i,Object o,Object[]_fields){t.setField(i, _fields[i]=o);}
   @Override protected T newInstance(T t){return t.newInstance();}
   private final Object typename;
-  private L42Cache<?>[] caches;
+  private L42Cache<?,?>[] caches;
     L42StandardCache(Object typename, Class<? extends T> myClass) {
     this.typename = typename;   
     L42CacheMap.addCacheableType(myClass, this);
@@ -20,12 +20,10 @@ public class L42StandardCache<T extends L42Cachable<T>> extends AbstractStructur
     t.setNorm(t);
     }          
   @Override public boolean isNorm(T t){return t.isNorm();} 
-  @Override public Object[] f(T t){return t.allFields();}  
-  @Override public Object f(T t, int i){return t.getField(i);}  
-  @Override public void f(T t, Object o, int i){t.setField(i, o);}  
+  @Override public Object[] f(T t){return t.allFields();}    
   @Override public int fn(T t){return t.numFields();}
   @Override public Object typename(){return typename;}  
-  @Override public L42Cache<?> rawFieldCache(int i){return caches[i];}
+  @Override public L42Cache<?,?> rawFieldCache(int i){return caches[i];}
   @Override public T getMyNorm(T me){return me.myNorm();}
   @Override public void setMyNorm(T me, T norm){me.setNorm(norm);}  
   }

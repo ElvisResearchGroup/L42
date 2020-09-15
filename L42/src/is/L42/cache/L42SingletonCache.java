@@ -3,7 +3,7 @@ package is.L42.cache;
 import java.util.List;
 import java.util.Map;
 
-public class L42SingletonCache<T> implements L42Cache<T> {
+public class L42SingletonCache<T> implements L42Cache<T,T> {
   
   private final Object typename;
   private final KeyNorm2D key;
@@ -59,23 +59,10 @@ public class L42SingletonCache<T> implements L42Cache<T> {
     return new Object[0];
     }
 
-  @Override 
-  public Object f(T t, int i) { 
-    throw new IndexOutOfBoundsException();  
-    }
-
-  @Override 
-  public void f(T t, Object o, int i) { 
-    throw new IndexOutOfBoundsException(); 
-    }
-
-  @Override 
-  public int fn(T t) { 
-    return 0; 
-    }
+  @Override public int fn(T t){return 0;}
   
   @Override 
-  public L42Cache<?> rawFieldCache(int i) {
+  public L42Cache<?,?> rawFieldCache(int i) {
     throw new IndexOutOfBoundsException(); 
     }
 
@@ -99,5 +86,12 @@ public class L42SingletonCache<T> implements L42Cache<T> {
   public T dup(T that, Map<Object, Object> map) { 
     return that;
     }
-  
+
+  @Override
+  public T _fields(T t) {
+    return t;
+    }
+
+  @Override public Object f(T t, int i, T _fields){throw new IndexOutOfBoundsException();}
+  @Override public void setF(T t, int i, Object o, T _fields){throw new IndexOutOfBoundsException();}
   }

@@ -9,10 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
-public abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
-  protected abstract F _fields(T t);//{return t.allFields();}//null for arraylist
-  protected abstract Object f(T t,int i,F _fields);//{return fields[i];}//override for arraylist
-  protected abstract void setF(T t,int i,Object o,F _fields);
+public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
   protected abstract T newInstance(T t);
   private <K> Set<K> addCircle(Set<K> _circle, Collection<K> more){
     if(more==null){return _circle;}
@@ -48,13 +45,13 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
         "";
       if(vali==null){assert this.rawFieldCache(i)!=null;continue;} 
       if(prevs.stream().anyMatch(o->o==vali)){circle=addCircle(circle,cutTo(prevs,vali));continue;}
-      L42Cache<Object> cache = this.fieldCache(vali,i);
+      L42Cache<Object,?> cache = this.fieldCache(vali,i);
       NormResult<Object> res=norm?
         cache.normalizeInner(vali, new ArrayList<>(prevs)):
         cache.computeKeyNNInner(vali,new ArrayList<>(prevs));
       if(norm && res.hasResult()){setF(t,i,res.result(),_fields);continue;}
       if(!res.hasResult() && res.circle().contains(t)){circle=addCircle(res.circle(),circle);continue;}
-      if(norm){setF(t,i,LoopCache.normalizeCircle(vali, res.circle()),_fields);}
+      if(norm){setF(t,i,new LoopCache<>(vali, res.circle()).result,_fields);}
       }
     return circle;
     }
@@ -71,7 +68,7 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
     assert !checkFwd(t):"";
     NormResult<T> res = normalizeInner(t, new ArrayList<Object>());
     if(res.hasResult()) { return res.result(); }
-    return LoopCache.normalizeCircle(t, res.circle());    
+    return new LoopCache<T>(t, res.circle()).result;    
     }
   public NormResult<T> normalizeInner(T t, List<Object> prevs) {
     if(this.isNorm(t)){return new NormResult<T>(this.getMyNorm(t));}
@@ -110,12 +107,14 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
     if(that == null || isNorm(that)){return that;}
     T nObj = newInstance(that);
     map.put(that, nObj);
-    for(int i = 0; i < this.fn(that); i++){
-      Object field = this.f(that, i);
-      L42Cache<Object> fieldcache = this.fieldCache(field, i);
+    int size=this.fn(that);
+    F fs=this._fields(that);
+    for(int i = 0; i < size; i++){
+      Object field = this.f(that, i,fs);
+      L42Cache<Object,?> fieldcache = this.fieldCache(field, i);
       var mapped=map.get(field);
       if(mapped==null){map.put(field,mapped=fieldcache.dup(field, map));}
-      this.f(nObj,mapped, i);
+      this.setF(nObj,i,mapped,fs);
       }
     return nObj;
     }
@@ -126,6 +125,5 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T>{
     @SuppressWarnings("unused") final Object o; Publisher(Object o){this.o=o;}
     //See https://stackoverflow.com/questions/6457109/java-concurrency-is-final-field-initialized-in-constructor-thread-safe
     //--Storing a reference to it into a final field of a properly constructed object;
-    //TODO: discuss if we can use publishing INSTEAD of volatile fields for caches
     }
   }

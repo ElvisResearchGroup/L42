@@ -15,9 +15,9 @@ public abstract class L42£AbsSet<K,Inner,Self>
   Inner inner=null;
   K[] keys=null;
   Self norm=null;
-  Supplier<L42Cache<K>> kCache;
+  Supplier<L42Cache<K,?>> kCache;
   @SuppressWarnings("unchecked")
-  public L42£AbsSet(Object kCache){this.kCache=(Supplier<L42Cache<K>>)kCache;}
+  public L42£AbsSet(Object kCache){this.kCache=(Supplier<L42Cache<K,?>>)kCache;}
   public abstract int size();//{return inner==null?0:inner.size();}
   static protected final Object[] emptyArr=new Object[]{};
   protected void clearIteration(){keys=null;}//vals=null;
@@ -31,11 +31,7 @@ public abstract class L42£AbsSet<K,Inner,Self>
   @Override public void setNorm(Self norm){this.norm=norm;}//from cachable
   @Override public Self myNorm(){return norm;}//from cachable
   @Override public Object[] f(Self t){throw unreachable();}
-  @Override public void f(Self t, Object o, int i){throw unreachable();}
-  @Override protected Self _fields(Self t){return t;}
-  @Override public Object f(Self t, int i){throw unreachable();}
-  @Override protected abstract Object f(Self t, int i, Self _fields);
-  @Override protected abstract void setF(Self t, int i, Object o, Self _fields);
+  @Override public Self _fields(Self t){return t;}
   @Override public Object[] allFields(){throw unreachable();}
   @Override public void setField(int i, Object o){throw unreachable();}
   @Override public Object getField(int i){throw unreachable();}

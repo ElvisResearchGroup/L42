@@ -16,9 +16,15 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
 public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>,ArrayList<?>>{
-  @Override protected ArrayList<?> _fields(ArrayList<?> t){return t;}
-  @Override protected Object f(ArrayList<?> t,int i,ArrayList<?> _fields){return f(t,i);}
-  @Override protected void setF(ArrayList<?> t,int i,Object o,ArrayList<?> _fields){f(t,o,i);}
+  @Override public ArrayList<?> _fields(ArrayList<?> t){return t;}
+  @Override public Object f(ArrayList<?> t, int i,ArrayList<?> _fields){return t.get(i + 2);}
+  @Override public void setF(ArrayList<?> t,int i,Object o,ArrayList<?> _fields){
+    if(i+2>=t.size()){t.add(null);t.add(null);}//so that set is "also" an add
+    @SuppressWarnings("unchecked")
+    var tt=(ArrayList<Object>)t;
+    tt.set(i + 2, o);    
+    }      
+
   @Override protected ArrayList<?> newInstance(ArrayList<?> t){
     var res=new ArrayList<>(t.size());
     res.add(t.get(0));
@@ -39,15 +45,9 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>,ArrayLi
       arr[i] = t.get(i + 2);
     return arr;
     }  
-  @Override public Object f(ArrayList<?> t, int i){return t.get(i + 2);}
-  @SuppressWarnings("unchecked") @Override
-  public void f(ArrayList<?> t, Object o, int i){
-    if(i+2>=t.size()){t.add(null);t.add(null);}//so that set is "also" an add
-    ((ArrayList<Object>)t).set(i + 2, o);
-    }      
   @Override public int fn(ArrayList<?> t){return t.size()-2;}
   @Override public Object typename(){return TrustedKind.Vector;}
-  @Override public L42Cache<?> rawFieldCache(int i) {
+  @Override public L42Cache<?,?> rawFieldCache(int i) {
     if(i%2!=0){return Flags.cache;}
     return null;
     }
@@ -56,13 +56,13 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>,ArrayLi
   public void setMyNorm(ArrayList<?> me, ArrayList<?> norm){
     ((ArrayList<Object>)me).set(1, norm);
     }
-  @Override public L42Cache<ArrayList<?>> refine(ArrayList<?> t) {
-    return new ArrayListCacheForType(this, (L42Cache<?>) t.get(0));
+  @Override public L42Cache<ArrayList<?>,ArrayList<?>> refine(ArrayList<?> t) {
+    return new ArrayListCacheForType(this, (L42Cache<?,?>) t.get(0));
     }
   ArrayListCache(AbstractStructuredCache<ArrayList<?>,ArrayList<?>> o){super(o);}  
   public static class ArrayListCacheForType extends ArrayListCache {
-    L42Cache<?> type;    
-    public ArrayListCacheForType(ArrayListCache owner, L42Cache<?> type) {
+    L42Cache<?,?> type;    
+    public ArrayListCacheForType(ArrayListCache owner, L42Cache<?,?> type) {
       super(owner);
       //assert type!=null;//can be null if it is an interface
       this.type = type;
@@ -80,7 +80,7 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>,ArrayLi
       return type.equals(otype);
       }
     @Override 
-    public L42Cache<?> rawFieldCache(int i) {
+    public L42Cache<?,?> rawFieldCache(int i) {
       if(i%2!=0){return Flags.cache;}
       return type; 
       }    

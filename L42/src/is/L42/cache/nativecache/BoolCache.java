@@ -14,5 +14,4 @@ public class BoolCache extends ValueCache<Boolean> {
   protected boolean valueCompare(Boolean t1, Boolean t2) { 
     return t1.booleanValue() == t2.booleanValue();
     }
-
   }
