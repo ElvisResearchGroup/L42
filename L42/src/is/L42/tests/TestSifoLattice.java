@@ -28,6 +28,9 @@ public class TestSifoLattice {
     assertEquals(lattice.leastUpperBound(List.of("b2", "b2")), "b2");
     assertEquals(lattice.leastUpperBound(List.of("b2", "b1")), "b1");
     assertEquals(lattice.leastUpperBound(List.of("b2", "a2")), "a1");
+    assertTrue(lattice.levelsBetween("bottom", "a1").containsAll(List.of("bottom", "a2", "b2", "a1")));
+    assertTrue(lattice.levelsBetween("bottom", "b1").containsAll(List.of("bottom", "b2", "b1")));
+    assertTrue(lattice.levelsBetween("bottom", "top").containsAll(lattice.getAllLevels()));
   }
 
   @Test
@@ -39,6 +42,8 @@ public class TestSifoLattice {
     assertEquals(lattice.leastUpperBound(List.of("bottom", "c2")), "c2");
     assertEquals(lattice.leastUpperBound(List.of("a2", "c2")), "top");
     assertEquals(lattice.leastUpperBound(List.of("c1", "a2")), "top");
+    assertTrue(lattice.levelsBetween("bottom", "a1").containsAll(List.of("bottom", "a2", "b2", "a1")));
+    assertTrue(lattice.levelsBetween("c2", "c1").containsAll(List.of("c2", "c1")));
   }
 
   @Test
