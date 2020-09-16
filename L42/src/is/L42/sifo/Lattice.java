@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import com.google.common.collect.Lists;
+
 import is.L42.tools.General;
 
 public abstract class Lattice<T> {
@@ -72,10 +74,16 @@ public abstract class Lattice<T> {
   }
 
   public abstract T getBottom();
+  
+  public <Sub extends T> T leastUpperBound(Sub level1, Sub level2){
+    return leastUpperBound(List.of(level1, level2));
+  }
+  
   public <Sub extends T> T leastUpperBoundOrLow(List<Sub> levels){
     if(levels.isEmpty()){return getBottom();}
     return leastUpperBound(levels);
     }
+  
   public <Sub extends T> T leastUpperBound(List<Sub> levels){
     if (levels.size() == 1) {
       return levels.get(0);
@@ -115,6 +123,20 @@ public abstract class Lattice<T> {
   public boolean secondHigherThanFirst(T level1, T level2) {
     Map<T, Integer> uppers = getUpper(level1);
     return uppers.keySet().contains(level2);
+  }
+  
+  public <Sub extends T> List<T> levelsBetween(Sub lowerLevel, Sub higherLevel) {
+    Set<T> upperFromLow = getUpper(lowerLevel).keySet();
+    Set<T> upperFromHigh = getUpper(higherLevel).keySet();
+    upperFromHigh.remove(higherLevel);
+    upperFromLow.removeAll(upperFromHigh);
+    List<T> returnList = new ArrayList<T>(upperFromLow);
+    for (T nextLevel : upperFromLow) {
+      if (!getUpper(nextLevel).keySet().contains(higherLevel)) {
+        returnList.remove(nextLevel);
+      }
+    }
+    return returnList;
   }
 
   protected T calculateLeast(Map<T, Integer> upper1, Map<T, Integer> upper2) {
