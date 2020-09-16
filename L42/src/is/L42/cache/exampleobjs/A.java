@@ -36,9 +36,7 @@ public class A implements L42Cachable<A>, Serializable {
     return i2;
   }
 
-  @Override
-  public Object[] allFields() 
-  {
+  public Object[] allFields(){
     return new Object[] { i1, i2 };
   }
 

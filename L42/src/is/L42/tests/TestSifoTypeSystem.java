@@ -838,7 +838,7 @@ static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
   }
 private static void typeMethESifo(Program p,MH mh, E e){
   var g=G.of(mh);
-  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(p,g,Collections.emptySet(),mh.t(),new Lattice42(p,P.pThis0)));
+  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(p,g,L(/*exceptions here*/),Collections.emptySet(),mh.t(),new Lattice42(p,P.pThis0)));
   }
 public static void failC(String program,String...out){
   checkFail(()->{

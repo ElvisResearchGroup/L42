@@ -37,14 +37,6 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>,ArrayLi
     this.setMyNorm(t, t);
     }  
   @Override public boolean isNorm(ArrayList<?> t){return t.get(1)!=null;}
-  @Override public Object[] f(ArrayList<?> t) {
-    //It is called in LoopCache... TODO: we could refactor this, but it also happen for normal objects anyway
-    final int len = fn(t);
-    Object[] arr = new Object[len];
-    for(int i = 0; i < len; i++)
-      arr[i] = t.get(i + 2);
-    return arr;
-    }  
   @Override public int fn(ArrayList<?> t){return t.size()-2;}
   @Override public Object typename(){return TrustedKind.Vector;}
   @Override public L42Cache<?,?> rawFieldCache(int i) {

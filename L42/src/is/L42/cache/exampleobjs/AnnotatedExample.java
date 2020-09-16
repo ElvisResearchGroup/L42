@@ -38,7 +38,6 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializ
    * result in errors.
    */
   
-  @Override 
   public Object[] allFields() { 
     return new Object[] { myString, myInt, myReference };
     }

@@ -28,8 +28,6 @@ public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {
     };
   
   @Override 
-  public Object[] allFields() { return null; }
-  @Override 
   public void setField(int i, Object o) {}
   @Override 
   public Object getField(int i) { return null; }

@@ -43,7 +43,11 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
       var vali=f(t,i,_fields);
       assert !checkFwd(vali):
         "";
-      if(vali==null){assert this.rawFieldCache(i)!=null;continue;} 
+      if(vali==null){
+        assert this.rawFieldCache(i)!=null:
+          "";
+        continue;
+        } 
       if(prevs.stream().anyMatch(o->o==vali)){circle=addCircle(circle,cutTo(prevs,vali));continue;}
       L42Cache<Object,?> cache = this.fieldCache(vali,i);
       NormResult<Object> res=norm?
@@ -108,13 +112,14 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
     T nObj = newInstance(that);
     map.put(that, nObj);
     int size=this.fn(that);
-    F fs=this._fields(that);
+    F thatFs=this._fields(that);
+    F objFs=this._fields(nObj);
     for(int i = 0; i < size; i++){
-      Object field = this.f(that, i,fs);
+      Object field = this.f(that, i,thatFs);
       L42Cache<Object,?> fieldcache = this.fieldCache(field, i);
       var mapped=map.get(field);
       if(mapped==null){map.put(field,mapped=fieldcache.dup(field, map));}
-      this.setF(nObj,i,mapped,fs);
+      this.setF(nObj,i,mapped,objFs);
       }
     return nObj;
     }

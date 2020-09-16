@@ -38,10 +38,8 @@ public class L42£SelfVector
   @Override public Object typename(){return TrustedKind.SelfVector;}
   L42£SelfVector myNorm=null;
   @Override public boolean isNorm(L42£SelfVector t){return myNorm!=null;}
-  @Override public Object[] f(L42£SelfVector t){throw unreachable();}
   @Override public L42£SelfVector getMyNorm(L42£SelfVector me) {return myNorm;}
   @Override public void setMyNorm(L42£SelfVector me, L42£SelfVector norm){myNorm=norm;}
-  @Override public Object[] allFields(){throw unreachable();}
   @Override public void setField(int i, Object o){throw unreachable();}
   @Override public Object getField(int i){throw unreachable();}
   @Override public int numFields(){throw unreachable();}

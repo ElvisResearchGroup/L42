@@ -25,7 +25,6 @@ class CircleEntry<T,F>{
       if(r!=null){cache.setF(o,i,r.replacement,fields);}
       }
     assert replacement!=null;
-    //cache.setMyNorm(o, replacement);//TODO:
     assert replacement==map.get(replacement).replacement;
     fields=cache._fields(o);
     }
@@ -78,7 +77,8 @@ public class LoopCache<T> {
       return;
       }
     for(Object o : circleObjects.keySet()) {
-      KeyNorm2D chonker = keyFromCircleObject(o, circleObjects);//TODO: assert chonker.equals(key)?
+      KeyNorm2D chonker = keyFromCircleObject(o, circleObjects);
+      //are chonkers keys starting from different parts of the same circular objects?
       KeyNorm2D simplified = simpleKeyFromChonker(o, chonker,L42CacheMap.getCacheObject(o));
       circularIndex.put(chonker, o);
       var m=map.get(o);
@@ -155,7 +155,6 @@ public class LoopCache<T> {
       KeyNorm2D chonker = keyFromCircleObject(o, circleObjects);
       var m=map.get(o);
       var ch=circularIndex.get(chonker);
-      m.setReplacement(ch);//why? TODO: test if we remove it
       m.setNorm(o,ch);
       }
     @SuppressWarnings("unchecked")
@@ -214,11 +213,6 @@ public class LoopCache<T> {
     private final Field[] params;
     
     private final L42Cache<?,?> cache;
-    /*TODO:
-    @SuppressWarnings("unchecked")
-    public static<T,F> CircleObject of(Object obj,CircleEntry<T,F> m){
-      return new CircleObject((T)obj,m.cache,m.fields);
-      }*/
     @SuppressWarnings("unchecked")
     public static<T,F> CircleObject of(Object obj){
       var cache=(L42Cache<T,F>)L42CacheMap.getCacheObject(obj);

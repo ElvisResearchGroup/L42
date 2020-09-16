@@ -54,11 +54,6 @@ public class L42SingletonCache<T> implements L42Cache<T,T> {
     return true; 
     }
 
-  @Override 
-  public Object[] f(T t) { 
-    return new Object[0];
-    }
-
   @Override public int fn(T t){return 0;}
   
   @Override 

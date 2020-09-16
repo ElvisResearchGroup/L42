@@ -8,39 +8,38 @@ import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 
 public class I implements L42Cachable<I>, Serializable {
-	
+  
   public static final Class<I> _class = I.class;
   public static final L42Cache<I,?> myCache;
-	
-	static
-	{
-	  myCache = L42CacheMap.newStandardCache("I", I.class);
-	}
-	
+  
+  static{
+    myCache = L42CacheMap.newStandardCache("I", I.class);
+  }
+  
 
-	public Object[] allFields() 
-	{
-		return new Object[0];
-	}
+  public Object[] allFields() 
+  {
+    return new Object[0];
+  }
 
-	public void setField(int i, Object o) {
-		throw new ArrayIndexOutOfBoundsException();	
-	  }
-	
-	@Override
-  public Object getField(int i) {
-	  throw new ArrayIndexOutOfBoundsException();
+  public void setField(int i, Object o) {
+    throw new ArrayIndexOutOfBoundsException();  
     }
-	
-	@Override
+  
+  @Override
+  public Object getField(int i) {
+    throw new ArrayIndexOutOfBoundsException();
+    }
+  
+  @Override
   public int numFields() { return 0; }
 
-	@Override
-	public L42Cache<I,?> myCache() {
-		return myCache;
-	}
+  @Override
+  public L42Cache<I,?> myCache() {
+    return myCache;
+  }
 
-	private volatile I myNorm = null;
+  private volatile I myNorm = null;
   
   public I myNorm() {
     return myNorm;

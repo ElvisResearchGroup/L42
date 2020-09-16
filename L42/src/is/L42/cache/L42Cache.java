@@ -131,19 +131,7 @@ public interface L42Cache<T,F> extends Serializable {
    * @return if they're identity equals.
    */
   boolean identityEquals(T t1, T t2);
-  
-  /**
-   * Given an object of type T, returns an array of 
-   * all t's fields. The fields are in an arbitrary
-   * but set order that is congruent with<code>
-   * f(T, int)</code> and <code>f(T, Object,
-   * int)</code>
-   * 
-   * @param t The object
-   * @return The array of fields
-   */
-  Object[] f(T t);
-  
+    
   /**
    * @return The number of fields for this object
    */
@@ -220,7 +208,7 @@ public interface L42Cache<T,F> extends Serializable {
    * @param _fields The representation of the object fields
    * @return The value of the field at index i.
    */
-  Object f(T t,int i,F _fields);//for example {return fields[i];}//override for arraylist
+  Object f(T t,int i,F _fields);//for example {return _fields[i];}//override for arraylist
   /**
    * Given an object of type T, sets the value of a field
    * of t at index i. 

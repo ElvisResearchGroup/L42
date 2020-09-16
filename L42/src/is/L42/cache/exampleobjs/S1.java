@@ -26,7 +26,6 @@ public class S1 implements L42Cachable<S1>, Serializable {
     this.myString = s;
     }
 
-  @Override 
   public Object[] allFields() { 
     return new Object[] { myString };
     }

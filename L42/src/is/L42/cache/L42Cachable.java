@@ -1,9 +1,7 @@
 package is.L42.cache;
 
 public interface L42Cachable<T> {
-  
-  Object[] allFields();
-  
+    
   /**
    * Sets the field at index i. Returns 
    * <code>ArrayIndexOutOfBoundsException</code> if

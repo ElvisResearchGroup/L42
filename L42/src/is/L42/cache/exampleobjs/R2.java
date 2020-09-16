@@ -29,7 +29,6 @@ public class R2 implements L42Cachable<R2>, Serializable{
     this.referenced2 = ref2;
   }
 
-  @Override
   public Object[] allFields() {
     return new Object[] { referenced, referenced2 };
   }

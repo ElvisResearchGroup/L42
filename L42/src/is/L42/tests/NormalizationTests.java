@@ -399,11 +399,17 @@ public class NormalizationTests {
     L42Cache<T,?> cache = getCacheObject(n1);
     assertTrue(cache.identityEquals(n1, n2));
     alreadyChecked.add(n1);
-    Object[] n1f = cache.f(n1);
-    Object[] n2f = cache.f(n2);
-    for(int i = 0; i < n1f.length; i++) { testDeepFieldEQ(n1f[i], n2f[i], alreadyChecked); }
+    int size=cache.fn(n1);
+    assert size==cache.fn(n2);
+    for(int i = 0; i < size; i++){
+      testDeepFieldEq(cache,i,n1,n2,alreadyChecked); 
+      }
     }
-  
+  static <T,F>void testDeepFieldEq(L42Cache<T,F>cache,int i,T n1,T n2,Set<Object>alreadyChecked){
+    var n1f=cache._fields(n1);
+    var n2f=cache._fields(n1);
+    testDeepFieldEQ(cache.f(n1,i,n1f),cache.f(n2,i,n2f), alreadyChecked);
+    }
   private static final class L42List<T> {
     private final ArrayList<Object> underlying = new ArrayList<>();
     

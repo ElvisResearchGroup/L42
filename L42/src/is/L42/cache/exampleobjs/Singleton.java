@@ -17,7 +17,6 @@ public class Singleton implements L42Cachable<Singleton>, Serializable {
   
   public static Singleton construct() { return singleton; }
   
-  @Override 
   public Object[] allFields() { return new Object[0]; }
 
   @Override 

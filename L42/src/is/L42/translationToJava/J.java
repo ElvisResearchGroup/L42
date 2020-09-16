@@ -407,9 +407,9 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("}");nl();
     c("@Override public "+jC+" myNorm(){return this.norm;}");nl();
     c("@Override public int numFields(){return "+xs.size()+";}");nl();
-    c("@Override public Object[] allFields() {return new Object[]{");
-    seq(xs,x->x,",");
-    c("};}");nl();
+    //c("@Override public Object[] allFields() {return new Object[]{");
+    //seq(xs,x->x,",");
+    //c("};}");nl();
     c("@Override public void setField(int i, Object o){switch(i){");indent();nl();
     for(int i:range(xs)){
       c("case "+i+":"+xs.get(i)+"=("+ps.get(i)+")o;return;");nl();

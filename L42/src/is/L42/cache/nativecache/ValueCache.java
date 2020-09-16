@@ -41,11 +41,6 @@ public abstract class ValueCache<Type> implements L42Cache<Type,Type> {
   public Object f(Type t, int i) {
     throw new ArrayIndexOutOfBoundsException();
     }
-
-  @Override
-  public Object[] f(Type t) {
-    return new Object[0];
-    }
   
   @Override
   public int fn(Type t) { return 0; }

@@ -30,9 +30,7 @@ public abstract class L42£AbsSet<K,Inner,Self>
   @Override public void setMyNorm(Self t, Self norm){this.norm=norm;}
   @Override public void setNorm(Self norm){this.norm=norm;}//from cachable
   @Override public Self myNorm(){return norm;}//from cachable
-  @Override public Object[] f(Self t){throw unreachable();}
   @Override public Self _fields(Self t){return t;}
-  @Override public Object[] allFields(){throw unreachable();}
   @Override public void setField(int i, Object o){throw unreachable();}
   @Override public Object getField(int i){throw unreachable();}
   @Override public int numFields(){throw unreachable();}
