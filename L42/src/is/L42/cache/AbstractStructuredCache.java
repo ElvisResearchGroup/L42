@@ -60,11 +60,11 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
     return circle;
     }
   private final Map<KeyNorm2D, T> normMap;
-  AbstractStructuredCache(AbstractStructuredCache<T,F> o){this.normMap=o.normMap;}
+  protected AbstractStructuredCache(AbstractStructuredCache<T,F> o){this.normMap=o.normMap;}
   public AbstractStructuredCache(){this.normMap=L42CacheMap.newNormMap();}
   @Override public void addObjectOverride(KeyNorm2D key,T value){normMap.put(key, value);}
   T _get(KeyNorm2D key) {return normMap.get(key);}
-  void add(KeyNorm2D key, T t) {
+  protected void add(KeyNorm2D key, T t) {
     normMap.put(key, t);
     publish(t);
     }

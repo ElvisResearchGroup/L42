@@ -39,12 +39,12 @@ class method mut This of(mut Hi hi,mut Hm hm)
   if that<s return this.hi().immKey(that)
   return this.hm().immKey(that-s)
   }
-@Public read method Val immVal(Size that)={
+@Public read method Val val(Size that)={
   s=this.hi().size()
   if that<s return this.hi().immVal(that)
   error Collection$ElementNotImm"Index %that outside of the imm range 0--%s"
   }
-@Public read method read Val val(Size that)={
+@Public read method read Val readVal(Size that)={
   s=this.hi().size()
   if that<s return this.hi().immVal(that)
   return this.hm().val(that-s)
@@ -84,7 +84,7 @@ class method mut This of(mut Hi hi,mut Hm hm)
 @Public read method read Entry entry(Size that)
   =Entry(key=this.key(that),val=this.val(that))
 @Public read method Entry immEntry(Size that)
-  =Entry(key=this.key(that),val=this.immVal(that))
+  =Entry(key=this.key(that),val=this.val(that))
 @Public mut method mut Entry #entry(Size that)
   =Entry(key=this.key(that),val=this.#val(that))
 //-------------------Supporting iteration
@@ -108,8 +108,15 @@ class method mut This of(mut Hi hi,mut Hm hm)
 @Public read method Void #close(Size that)=
   if this.#incomplete(that) error X"multi-for skipped some elements"
 @Public method toS()=(
+  var i=0Size
   var res=S"{"
-  for (key,read val) in this (res++=S"%Collection.AnyToS(key)->%Collection.AnyToS(val);")
+  while i<this.size() (
+    key=Collection.AnyToS(this.key(i))
+    val=Collection.AnyToS(this.readVal(i))
+    res++=S"%key->%val"    
+    i:=i.#succ()
+    if i!=this.size() (res++=S"; ") 
+    )
   res++S"}"
   )
 

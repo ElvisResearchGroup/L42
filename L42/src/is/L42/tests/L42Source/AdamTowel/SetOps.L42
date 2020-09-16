@@ -16,15 +16,15 @@ class method mut This of(mut Set set)
 @Public read method Size size()=this.set().size()
 @Public read method Bool isEmpty()=this.size()==0Size
 
-@Public read method Key key(Size that)=this.set().immKey(that)
+@Public read method Key val(Size that)=this.set().immKey(that)
 //---------------
-@Public mut method Void put(Key key)=this.#set().put(key=key)
-@Public mut method Void remove(Key key)=this.#set().remove(key=key)
+@Public mut method Void add(Key that)=this.#set().put(key=that)
+@Public mut method Void remove(Key that)=this.#set().remove(key=that)
 //-------------------Supporting []
 @Public class method mut This (mut This squareBuilder)=squareBuilder
 @Public class method mut This ##apply#squareBuilder()=This.empty()
 @Public class method Bool #shortCircutSquare()=Bool.true()
-@Public mut method Void #squareAdd(Key that)=this.put(key=that)
+@Public mut method Void #squareAdd(Key that)=this.add(that)
 //-------------------Supporting iteration
 @Public read method read This vals()=this
 @Public mut method mut This #vals()=this
@@ -34,7 +34,7 @@ class method mut This of(mut Set set)
 @Public read method Bool #hasElem(Size that)=that<this.size()
 @Public read method Bool #incomplete(Size that)=that!=this.size()
 
-@Public read method Key #elem#imm(Size that)=this.key(that)
+@Public read method Key #elem#imm(Size that)=this.val(that)
 @Public read method Key #elem#default(Size that)=this.#elem#imm(that)
 @Public read method Key #elem#read(Size that)=this.#elem#imm(that)
 
@@ -45,8 +45,13 @@ class method mut This of(mut Set set)
 @Public read method Void #close(Size that)=
   if this.#incomplete(that) error X"multi-for skipped some elements"
 @Public method toS()=(
+  var i=0Size
   var res=S"{"
-  for key in this (res++=S"%Collection.AnyToS(key);")
+  while i<this.size() (
+    res++= Collection.AnyToS(this.val(i))
+    i:=i.#succ()
+    if i!=this.size() (res++=S"; ") 
+    )
   res++S"}"
   )
 

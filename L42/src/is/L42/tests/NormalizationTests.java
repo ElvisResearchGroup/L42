@@ -372,7 +372,13 @@ public class NormalizationTests {
     L42Cache<T,?> cache = getCacheObject(n1);
     T dup1 = cache.dup(n1);
     T dup2 = cache.dup(n2);
-    assertEquals(eKey(dup1,true,false), eKey(n1,true,false));
+    var kDup1=eKey(dup1,true,false);
+    var kN1=eKey(n1,true,false);
+    if(!kDup1.equals(kN1)){
+      System.out.print("");
+      kDup1.equals(kN1);
+    }
+    assertEquals(kDup1,kN1 );
     assertEquals(eKey(dup2,true,false), eKey(n2,true,false));
     assertTrue(n1 != n2);
     if(readEQ) { assertEquals(eKey(n1, true, false), eKey(n2, true, false)); }

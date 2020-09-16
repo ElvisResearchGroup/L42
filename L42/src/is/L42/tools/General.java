@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.PrimitiveIterator;
 import java.util.function.BiConsumer;
+import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -191,6 +192,12 @@ public class General {
     try {return s.get();}
     catch(Throwable t){throw new AssertionError("",t);}
     } 
+  @SuppressWarnings("unchecked")
+  public static <T> boolean eq(T o1,Object o2,BiPredicate<T,T>t){
+    if(o1==o2){return true;}
+    if(o1.getClass()!=o2.getClass()){return false;}
+    return t.test(o1,(T)o2);   
+    }
   @SuppressWarnings("unused") private static <T> void testL(T e) {
     List<T> x = L(e);
     List<Integer> y=L();

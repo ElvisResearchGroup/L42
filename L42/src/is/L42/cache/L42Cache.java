@@ -157,6 +157,8 @@ public interface L42Cache<T,F> extends Serializable {
   @SuppressWarnings({ "unchecked" }) 
   default <R> L42Cache<R,?> fieldCache(R t, int i) {
     L42Cache<?,?> raw = this.rawFieldCache(i);
+    assert raw!=null || t!=null:
+      "";
     return (L42Cache<R,?>)(raw == null ? L42CacheMap.getCacheObject(t) : ((L42Cache<R,?>)raw).refine(t));
   }
   

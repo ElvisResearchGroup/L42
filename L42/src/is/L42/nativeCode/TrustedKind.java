@@ -137,17 +137,22 @@ public enum TrustedKind implements TrustedT{
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     @Override public TrustedKind specialize(Program p,List<P>nativePars){
       if(!nativePars.get(0).equals(P.pThis0)){return this;}
-      return SelfHSet;
+      throw todo();//TODO:
+      /*For circular sets and maps, and for any kind of nativeKind where
+       * the containts are violated, we should delegate to a special
+       * "broken" nativeKind, that just implements any method delegating
+       * to the native expression.
+       */
       }
     },
-  SelfHSet("L42£SelfSet"){@Override public String factory(J j,MWT mwt){return setFactory(j,mwt);}
+/*  SelfHSet("L42£SelfSet"){@Override public String factory(J j,MWT mwt){return setFactory(j,mwt);}
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     @Override public String typeNameStr(Program p,J j){
       return "L42£SelfSet";
       }
-    },
+    },*/
   Opt("Opt"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;
@@ -286,13 +291,13 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==4;
     String typeName=j.typeNameStr(j.p());
-    return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+",()->"+OpUtils.genCache(j,1)+");";
+    return "return new "+typeName+"("+OpUtils.genCache(j,0)+","+OpUtils.genCache(j,1)+");";
     }
   String setFactory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;
     String typeName=j.typeNameStr(j.p());
-    return "return new "+typeName+"(()->"+OpUtils.genCache(j,0)+");";
+    return "return new "+typeName+"("+OpUtils.genCache(j,0)+");";
     }
   String optTypeNameString(Program p,P gen1, J j) {
     if(!gen1.isNCs()){return J.primitivePToString(gen1);}

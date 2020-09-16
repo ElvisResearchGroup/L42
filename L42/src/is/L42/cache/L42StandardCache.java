@@ -15,7 +15,7 @@ public class L42StandardCache<T extends L42Cachable<T>> extends AbstractStructur
     L42CacheMap.addCacheableType(myClass, this);
     }  
   public void lateInitialize(Class<?>...classes){caches=L42CacheMap.getCacheArray(classes);}
-  @Override void add(KeyNorm2D key, T t) {
+  @Override protected void add(KeyNorm2D key, T t) {
     super.add(key,t);
     t.setNorm(t);
     }          

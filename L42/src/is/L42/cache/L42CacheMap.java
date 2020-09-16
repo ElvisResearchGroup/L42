@@ -103,8 +103,10 @@ public class L42CacheMap {
   
   @SuppressWarnings("unchecked") //NOTE: public only for testing
   public static <T> L42Cache<T,?> getCacheObject(T o) {
+    assert o!=null;
     if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache();}
-    return getCacheObject((Class<T>) o.getClass()).refine(o);
+    var c=getCacheObject((Class<T>) o.getClass());
+    return c.refine(o);
     }
   public static <T> T normalize_internal(T t) {//NOTE: public only for testing
     L42Cache<T,?> cache = getCacheObject(t);

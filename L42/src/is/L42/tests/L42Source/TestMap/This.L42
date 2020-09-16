@@ -6,7 +6,7 @@ Base={
     Debug(m)
     {}:Test"m1"(actual=m
       expected=S"""
-        |{"a"->5;"b"->7;}
+        |{"a"->5; "b"->7}
         """.trim())
     )
   Person=Data:{var S name}
@@ -16,8 +16,8 @@ Base={
     mut m1=Ps[key='Bob, val=\(name='Bob); key='Alice,val=\(name='Alice)]
     mut m2=Ps[key='Charly, mutVal=\(name='Charly); key='Hugo,mutVal=\(name='Hugo)]
     mut list=PList[mutVal=\(name='Charly);mutVal=\(name='Hugo)]
-    S err1=(_=m1.immVal(3Size) catch error Collection.ElementNotImm oob (oob.toS()) error X"")
-    S err2=(_=m2.immVal(Size"-2") catch error Collection.OutOfBounds oob (oob.toS()) error X"")
+    S err1=(_=m1.val(3Size) catch error Collection.ElementNotImm oob (oob.toS()) error X"")
+    S err2=(_=m2.val(Size"-2") catch error Collection.OutOfBounds oob (oob.toS()) error X"")
     Debug(err1)
     Debug(err2)
     {}:Test"oob1"(actual=err1, expected=S"""
@@ -42,12 +42,12 @@ Base={
     Debug(m1)
     {}:Test"m1"(actual=m1
       expected=S"""
-        |{"Bob"->Person(name="Bob");"Alice"->Person(name="Alice");}
+        |{"Bob"->Person(name="Bob"); "Alice"->Person(name="Alice")}
         """.trim())
     Debug(m2)
       {}:Test"m1"(actual=m2
       expected=S"""
-        |{"Charly"->Person(name="CharlyBobBobBob");"Hugo"->Person(name="HugoAliceAliceAlice");}
+        |{"Charly"->Person(name="CharlyBobBobBob"); "Hugo"->Person(name="HugoAliceAliceAlice")}
         """.trim())
     )
   }
@@ -58,12 +58,12 @@ MapWithOpts={
     map=Map[key=1\ val=\(\"hi");key=2\ val=\(\"world");]
     Debug(map)
     {}:Test"optMap1"(expected=S"""
-      |{1->["hi"];2->["world"];}
+      |{1->["hi"]; 2->["world"]}
       """.trim(),actual=map)
     map.put(key=2\,val=\())
     Debug(map)
     {}:Test"optMap2"(expected=S"""
-      |{1->["hi"];2->[];}
+      |{1->["hi"]; 2->[]}
       """.trim(),actual=map)
     )
   }
@@ -74,12 +74,12 @@ MapWithOptsKeys={
     map=Map[key=\() val=\"hi";key=\(\"one") val=\"world";]
     Debug(map)
     {}:Test"optMap1"(expected=S"""
-      |{[]->"hi";["one"]->"world";}
+      |{[]->"hi"; ["one"]->"world"}
       """.trim(),actual=map)
     map.put(key=\(),val=\"bar")
     Debug(map)
     {}:Test"optMap2"(expected=S"""
-      |{[]->"bar";["one"]->"world";}
+      |{[]->"bar"; ["one"]->"world"}
       """.trim(),actual=map)
     )
   }
@@ -90,12 +90,12 @@ SetTest1={
     set=Set[S"Hello";S" ";S"world"]
     Debug(set)
     {}:Test"set1"(expected=S"""
-      |{"Hello";" ";"world";}
+      |{"Hello"; " "; "world"}
       """.trim(),actual=set)
-    set.put(key=S"!!")
+    set.add(S"!!")
     Debug(set)
     {}:Test"optMap2"(expected=S"""
-      |{"Hello";" ";"world";"!!";}
+      |{"Hello"; " "; "world"; "!!"}
       """.trim(),actual=set)
     )
   }

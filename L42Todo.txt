@@ -20,12 +20,13 @@
  //TODO: now somehow the Info is always declassed to "norm" :-(    
 -Vector BUG: the error message seams to only mention imms:
   -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
+-L42Cache, should remove T,F/fields() and the F parameter, since it is always self anyway?
+-can we simply or remove class NormResult?
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
 -Cache: use String .intern()?
   -what about Integer? what about big rational? what about arrays 
 and should wrap all the returns with normalization, so that we only return normalized numbers.
--in keys/normalization: can we always use F _fields(T t) and co? so that we reduce the number of norm methods?
 -test cache in case the cached method do some exceptions/errors
 -collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
 -if a method ends in stack oveflow, the error is only reported in Java and not in the IDE
@@ -37,18 +38,7 @@ and should wrap all the returns with normalization, so that we only return norma
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
 
--In progress:Test List of itself and Maps and Set of itself.
-The solution is nativeKind specialization, so that I will make a specilized nativeImpl
-for collections and optionals of self. I can use the same idea to support lists of primitives and arrays
-I used to believe that The following may be needed
-  re designing arraylist caching and map caching
-  right now the code to take fetch the cache object for the gen parameter of 
-  an arraylist, when the type is native is:
-  return wrapperT+".myCache.rawFieldCache(0)";
-  This may or may not work if the type is an arrayList,
-  and I doubt it working for an arraylist of "This0", that is possible in L42
-  Should we have a "function" that give you the cache in the first element of the array,
-  instead of the cache object iself?
+-add SelfOpt like SelfVector
 
 ------------------
 //To test, NativeNames: there is now a set of forbidden words, this may not be exactly identical to what identifiers can have.

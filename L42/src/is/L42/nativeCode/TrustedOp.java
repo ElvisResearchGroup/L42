@@ -346,7 +346,6 @@ public enum TrustedOp {
     HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HMMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HSet,use("return  %s.size();",sig(Readable,Immutable,Int)),
-    SelfHSet,use("return  %s.size();",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
   ReadVal("readVal",Map.of(
@@ -394,8 +393,7 @@ public enum TrustedOp {
   ImmKey("immKey",Map.of(
       HIMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
       HMMap,use(mapOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
-      HSet,use(setOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int)),
-      SelfHSet,use(setOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
+      HSet,use(setOutOfBound("return %s.keyIndex(%s);"),sig(Readable,Immutable,Gen1,Immutable,Int))
       )),
   MapVal("mapVal",Map.of(
       HIMap,use("return %s.val(%s);",sig(Readable,Immutable,Gen3,Immutable,Gen1)),
@@ -411,14 +409,12 @@ public enum TrustedOp {
       HMMap,use(mapChoice(
         "%s.put(%s,%s);return L42£Void.instance;","%s.put(%s,%Gen2.wrap(%s));return L42£Void.instance;"
         ),sig(Mutable,Immutable,Void,Immutable,Gen1,Mutable,Gen2)),
-      HSet,use("%s.add(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
-      SelfHSet,use("%s.add(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
+      HSet,use("%s.add(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
       )),
   RemoveKey("removeKey",Map.of(
       HIMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
       HMMap,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
-      HSet,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1)),
-      SelfHSet,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
+      HSet,use("%s.remove(%s);return L42£Void.instance;",sig(Mutable,Immutable,Void,Immutable,Gen1))
       )),
 
   //val put remove
