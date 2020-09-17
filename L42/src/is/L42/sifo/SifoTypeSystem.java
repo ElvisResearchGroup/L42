@@ -138,22 +138,16 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     assert general!=null;
     visitExpecting(e.e(),tWithSec(s).withMdf(general));
     }
-  @Override public void visitMCall(MCall e){
-    var s=getSifoAnn(expected.docs());
-    var selectedS=lattice.getBottom();
-    if (!s.equals(lattice.getBottom())){
-      boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule);
-      if(promotable) {throw todo();}//TODO: Tobias
-      //implements a latitce.between(s,s1)=ss so that s,s1 in ss and all in between
-      selectedS=s;
-      }
-    P.NCs p0=TypeManipulation.guess(g,e.xP()).toNCs();
-    var mh=_elem(p._ofCore(p0).mwts(),e.s()).mh();
-    List<Core.T>parTypes=p.from(mh.parsWithThis(), p0);
-    //Core.T retType=p.from(mh.t(),p0);
-    //var retSec=getSifoAnn(retType.docs());
-    //retSec=lattice.leastUpperBound(List.of(retSec,selectedS));
-    var meths=AlternativeMethodTypes.types(p,p0.toNCs(),e.s());
+  public void visitMCall(MCall e,P.NCs p0,List<T> parTypes,List<T>excs, P selectedS){
+    //var excsSifo=L(excs.stream().map(t->getSifoAnn(t.docs())).distinct());
+    //assert excsSifo.size()==1;
+    //P excSifo=excsSifo.get(0);
+    //still broken?
+    //TODO: right now we can capture varius kinds of sifoExceptions, and we may mix up
+    //the associated types.
+    //Should sifo exceptions and returns be a single one too?
+    
+    var meths=AlternativeMethodTypes.types(p,p0,e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
     assert !meths.isEmpty();
     List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});//the receiver and the arguments
@@ -172,7 +166,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
         sifoReturns=oldSifoReturns;
         for(int i:range(es)){
           var pi=parTypes.get(i);
-          var sec=lattice.leastUpperBound(List.of(getSifoAnn(pi.docs()),selectedS));//TODO: may want to write the meth taking 2 only          
+          var sec=lattice.leastUpperBound(getSifoAnn(pi.docs()),selectedS);          
           expected=tWithSec(sec).withMdf(m.mdfs().get(i)).withP(pi.p());
           visitE(es.get(i));
           }
@@ -183,11 +177,35 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       }
     throw lastErr;//TODO: better error?
     }
+  
+  @Override public void visitMCall(MCall e){
+    var s=getSifoAnn(expected.docs());
+    var selectedS=lattice.getBottom();
+    P.NCs p0=TypeManipulation.guess(g,e.xP()).toNCs();
+    var mh=_elem(p._ofCore(p0).mwts(),e.s()).mh();
+    List<Core.T>parTypes=p.from(mh.parsWithThis(), p0);
+    List<Core.T>excTypes=p.from(mh.exceptions(), p0);
+    Core.T retType=p.from(mh.t(),p0);
+    var retSec=getSifoAnn(retType.docs());
+    if (!s.equals(lattice.getBottom())){
+      boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule);
+      if(promotable) {
+        var s1n=lattice.levelsBetween(retSec,s);
+        EndError firstErr=null;//TODO: what about order
+        for(var si:s1n){
+          try{visitMCall(e,p0,parTypes,excTypes,si);return;}
+          catch(EndError err){if(firstErr!=null){firstErr=err;}}
+          }
+        assert firstErr!=null;
+        throw firstErr;
+        }
+      selectedS=s;
+      }
+    visitMCall(e,p0,parTypes,excTypes,selectedS);
+    }
   @Override public void visitOpUpdate(OpUpdate e){
-    //mustSubMdf(Immutable,expected,e.poss());
     T t=g.of(e.x());
-    //visitExpecting(e.e(),t.mdf());
-    assert g.isVar(e.x());//TODO: where is varriness of G used?
+    visitExpecting(e.e(),t);
     }
   @Override public void visitBlock(Block e){
     //var hope=expected.isIn(Capsule,Immutable,ImmutableFwd,ImmutablePFwd);
