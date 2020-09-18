@@ -126,16 +126,29 @@ public abstract class Lattice<T> {
   }
   
   public <Sub extends T> List<T> levelsBetween(Sub lowerLevel, Sub higherLevel) {
-    Set<T> upperFromLow = getUpper(lowerLevel).keySet();
+    Map<T,Integer> upperFromLowMap = getUpper(lowerLevel);
     Set<T> upperFromHigh = getUpper(higherLevel).keySet();
     upperFromHigh.remove(higherLevel);
-    upperFromLow.removeAll(upperFromHigh);
-    List<T> returnList = new ArrayList<T>(upperFromLow);
-    for (T nextLevel : upperFromLow) {
+    for (T t : upperFromHigh) {
+      upperFromLowMap.remove(t);
+    }
+    
+    List<T> removeList = new ArrayList<>(upperFromLowMap.keySet());
+    for (T nextLevel : removeList) {
       if (!getUpper(nextLevel).keySet().contains(higherLevel)) {
-        returnList.remove(nextLevel);
+        upperFromLowMap.remove(nextLevel);
       }
     }
+    
+    List<T> returnList = new ArrayList<>();
+    for (int i = 0; i <= upperFromLowMap.get(higherLevel); i++) {
+      for(T t : upperFromLowMap.keySet()) {
+        if (upperFromLowMap.get(t) == i) {
+          returnList.add(t);
+        }
+      }
+    }
+    
     return returnList;
   }
 
