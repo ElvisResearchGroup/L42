@@ -13,6 +13,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import is.L42.generated.Core.*;
 import is.L42.generated.Core.L.MWT;
@@ -33,23 +35,28 @@ import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
+  public static String err1(String par1,String par2){return "";}  
   public SifoTypeSystem(Program p, G g,List<T> exceptions, Set<Mdf> mdfs, T expected,Lattice42 lattice) {
     this.p = p;
     this.g = g;
     this.mdfs=mdfs;
     this.expected=expected;
     this.lattice=lattice;
-    this.sifoExceptions=L(exceptions,(c,t)->{
-      var sifoP=getSifoAnn(t.docs());
-      if(sifoP.isNCs()){c.add(sifoP.toNCs());}
-      });
+    if(exceptions.isEmpty()){return;}
+    List<P> sifoExceptions=L(exceptions,(c,t)->
+      c.add(getSifoAnn(t.docs())));
+    if(sifoExceptions.stream().distinct().count()==1){
+      this._sifoExceptions=sifoExceptions.get(0);
+      return;
+      }
+    throw bug();//TODO: error: multiple types of sifo security exceptions
     }
   boolean isDeep;
   int dept=0;
   Program p;
   G g;
-  List<P.NCs> sifoExceptions;
-  List<P> sifoReturns=L();
+  P _sifoExceptions=null;
+  P _sifoReturns=null;
   Set<Mdf> mdfs;
   T expected;
   Lattice42 lattice;
@@ -117,36 +124,34 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     }
   @Override public void visitThrow(Throw e){
     if(e.thr()==Error){
-      visitExpecting(e.e(),P.coreVoid);return;
+      P.NCs top=lattice.getTop().toNCs();
+      assert top.n()==0;
+      top=top.withN(dept);
+      visitExpecting(e.e(),this.tWithSec(top));return;
       }
     if(e.thr()==Exception){
-      var lub=lattice.leastUpperBoundOrLow(this.sifoExceptions);
-      visitExpecting(e.e(),tWithSec(lub));
+      T expected=P.coreVoid;
+      if(this._sifoExceptions!=null){expected=tWithSec(this._sifoExceptions);};
+      visitExpecting(e.e(),expected);
       return;
       }
     assert e.thr()==Return;
-    //Ts2.mdfs subsetEq {imm,capsule}
-    boolean ret1=List.of(Mdf.Capsule,Mdf.Immutable).containsAll(mdfs); 
-    if(ret1){
-      var lub=lattice.leastUpperBoundOrLow(this.sifoReturns);
-      visitExpecting(e.e(),tWithSec(lub));
-      return;
-      }
-    if(sifoReturns.stream().distinct().count()!=1) {throw todo();}//TODO:good error here
-    var s=sifoReturns.get(0);
+    T expected=P.coreVoid;
     var general=TypeManipulation._mostGeneralMdf(mdfs);
-    assert general!=null;
-    visitExpecting(e.e(),tWithSec(s).withMdf(general));
+    if(this._sifoReturns!=null){expected=tWithSec(this._sifoReturns);}
+    visitExpecting(e.e(),expected.withMdf(general));
     }
   public void visitMCall(MCall e,P.NCs p0,List<T> parTypes,List<T>excs, P selectedS){
-    //var excsSifo=L(excs.stream().map(t->getSifoAnn(t.docs())).distinct());
-    //assert excsSifo.size()==1;
-    //P excSifo=excsSifo.get(0);
-    //still broken?
-    //TODO: right now we can capture varius kinds of sifoExceptions, and we may mix up
-    //the associated types.
-    //Should sifo exceptions and returns be a single one too?
-    
+    var excsSifo=L(excs.stream().map(t->getSifoAnn(t.docs())).distinct());
+    //if excsSifo.size()>1 it will be an error when the header is typed
+    P excSifo=excsSifo.isEmpty()?null:excsSifo.get(0);
+    if(excSifo!=null && !excSifo.equals(this._sifoExceptions)){
+      throw bug();//can not throw excSifo
+      }
+    //will go in block
+    //if(this._sifoExceptions!=null && excSifo!=null){
+    //  if(!this._sifoExceptions.equals(excSifo)){throw bug();}//no more then one kind of sifo exception in scope
+    //  }
     var meths=AlternativeMethodTypes.types(p,p0,e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
     assert !meths.isEmpty();
@@ -155,15 +160,15 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     var oldExpected=expected;
     var oldG=g;
     var oldMdfs=mdfs;
-    var oldSifoExceptions=sifoExceptions;
-    var oldSifoReturns=sifoReturns;
+    var oldSifoExceptions=_sifoExceptions;
+    var oldSifoReturns=_sifoReturns;
     EndError.TypeError lastErr=null;
     for(var m:meths){
       try{
         g=oldG;
         mdfs=oldMdfs;
-        sifoExceptions=oldSifoExceptions;
-        sifoReturns=oldSifoReturns;
+        _sifoExceptions=oldSifoExceptions;
+        _sifoReturns=oldSifoReturns;
         for(int i:range(es)){
           var pi=parTypes.get(i);
           var sec=lattice.leastUpperBound(getSifoAnn(pi.docs()),selectedS);          
@@ -207,100 +212,60 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     T t=g.of(e.x());
     visitExpecting(e.e(),t);
     }
+  private boolean isTop(T t){return isTop(getSifoAnn(t.docs()));}
+  private boolean isTop(P sifo){return lattice.getTop().equals(sifo);}
   @Override public void visitBlock(Block e){
-    //var hope=expected.isIn(Capsule,Immutable,ImmutableFwd,ImmutablePFwd);
-    //if(e.ds().isEmpty()){hope=false;}
-    //if(!hope){visitBlockDirect(e);return;}
-    var oldG=g;
-    var oldExpected=expected;
+    var newMdfs=new HashSet<>(mdfs);
+    for(K k:e.ks()){typeK(k,newMdfs);}
     var oldMdfs=mdfs;
-    try{visitBlockDirect(e);}
-    catch(EndError.TypeError te){
-      var lentG=oldG.toLent();
-      e.accept(new PropagatorCollectorVisitor(){
-        @Override public void visitL(Core.L l){}
-        @Override public void visitEX(EX x){
-          if(oldG._of(x.x())==null){return;}
-          if(lentG._of(x.x())==null){throw te;}
+    mdfs=newMdfs;
+    boolean hasKs=e.ks().isEmpty();
+    boolean hasErr=e.ks().stream().anyMatch(k->k.thr()==ThrowKind.Error);
+    if(hasKs){
+      var sfv=e.ds().stream().flatMap(di->FV.of(di.e().visitable()).stream());
+      List<X> fv=L(sfv.filter(x->e.ds().stream().noneMatch(d->d.x().equals(x))));
+      var s=L(fv.stream()
+        .filter(x->g._of(x).mdf().isIn(Mdf.Mutable, Mdf.Capsule) || g.isVar(x))
+        .map(x->getSifoAnn(g._of(x).docs()))
+        .distinct());
+      if(!s.isEmpty()){
+        if(s.size()>1){throw todo();}//more the one mut security in-out
+        if(hasErr && !isTop(s.get(0))){throw todo();}//error only caught as high
+        }
+      var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
+      if(hasErr){//T0..Tn: the result type+the types of catches
+        if(t0n.stream().anyMatch(t->isTop(t))) {throw todo();}//error capturing errors must be high
+        }
+      else{
+        for(T ti:t0n){
+          ArrayList<P> ss=fv.stream().map(x->getSifoAnn(g._of(x).docs())).collect(Collectors.toCollection(ArrayList::new));
+          var secTi=getSifoAnn(ti.docs());
+          ss.add(secTi);
+          var lub=lattice.leastUpperBound(ss);
+          if(!lub.equals(secTi)){throw todo();}//error all catched/results need to be lub
           }
-        @Override public void visitOpUpdate(Core.OpUpdate u){
-          if(oldG._of(u.x())==null){return;}
-          if(!lentG.isVar(u.x())){throw te;}
-          super.visitOpUpdate(u);
-          }
-        });
-      g=lentG;
-      //expected=Mutable;
-      mdfs=oldMdfs;
-      try{visitBlockDirect(e);}
-      catch(EndError.TypeError te2){throw te;}
-      finally{g=oldG;expected=oldExpected;}      
+        }
       }
-    }
-  private void visitBlockDirect(Block e){
-    var mdfs2=new HashSet<Mdf>(mdfs);
-    for(K k:e.ks()){typeK(k,mdfs2);}
-    G g1=g;
-    if(e.ks().stream().anyMatch(k->k.thr()==Error)){g1=g.toRead();}
-    var oldMdfs=mdfs;
-    mdfs=mdfs2;
     G oldG=g;
-    G g0=typeDs(g1,e.ds(),mdfs2);
-    g=oldG.plusEqMdf(g0);
+    G g0=typeDs(e.ds());
+    g=g.plusEqMdf(g0);
     mdfs=oldMdfs;
     visitE(e.e());
     g=oldG;
     }
-  private G typeDs(G g0,List<D>allDs, HashSet<Mdf> mdfs) {
-    if(allDs.isEmpty()){return g0;}
-    var fvs=new ArrayList<X>();
-    int split=splitDs(allDs,fvs);
-    var txe=allDs.subList(0, split+1);
-    var restDs=allDs.subList(split+1,allDs.size());
-    G g1=g0.plusEqFwdOnlyMutOrImm(txe);
-    for(var d:txe){
-      g=g1;
-      var mdf=TypeManipulation.fwdPOf(d.t().mdf());
-      //visitExpecting(d.e(),mdf);
-      }
-    if(TypeManipulation.fwd_or_fwdP_inMdfs(mdfs)){
-      List<D> errs=L(txe.stream().filter(di->fvs.contains(di.x())));
-      if(!errs.isEmpty()){//TODO: errIf may not be the best abstraction...
-        errIf(true,errs.get(0).e(),Err.mayLeakUnresolvedFwd(errs.get(0).x()));
-        }
-      assert txe.size()==1;//TODO: if this is true we can optimize above, avoiding streams
-      }
-    G g2;
-    boolean fwdInFreeMdfs=fvs.stream().anyMatch(xi->{
-      var ti=g0._of(xi);
-      if(ti==null){return false;}
-      return TypeManipulation.fwd_or_fwdP_in(ti.mdf());
-      });
-    if(fwdInFreeMdfs){g2=g0.plusEqFwdP(txe);}
-    else{g2=g0.plusEq(txe);}
-    return typeDs(g2,restDs,mdfs); 
-    }
-  private int splitDs(List<D> ds,ArrayList<X> xs){//cut will be from 0 to i included
-    if (ds.isEmpty()){return 0;}
-    int n=ds.size()-1;
-    for(int i=0;i<n;i+=1){//i+1 always available in ds
-      xs.addAll(FV.of(ds.get(i).e().visitable()));
-      if(xsNotInDomi(xs,ds,i+1)){return i;}
-      }
-    return n;
-    }
-  private boolean xsNotInDomi(List<X> xs,List<D> ds,int ip1){
-    for(int i=ip1;i<ds.size();i+=1){
-      if(xs.contains(ds.get(i).x())){return false;}
-      }
-    return true;
+  private G typeDs(List<D>allDs){
+    G g1=g.plusEq(allDs);
+    var oldG=g;
+    g=g1;
+    for(var d:allDs){visitExpecting(d.e(),d.t());}
+    g=oldG;
+    return g1;
     }
   private void typeK(K k, HashSet<Mdf> mdfs1) {
-    var t=k.t();
     var oldG=g;
     g=g.plusEq(k.x(),k.t());
     visitE(k.e());
     g=oldG;
-    if(k.thr()==ThrowKind.Return){mdfs1.add(t.mdf());}
+    if(k.thr()==ThrowKind.Return){mdfs1.add(k.t().mdf());}
     }
   }
