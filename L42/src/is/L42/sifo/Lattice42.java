@@ -13,6 +13,7 @@ public class Lattice42 extends Lattice<P>{
   
   public Lattice42(Program p, P top){
     super(top);
+    this.top = top;
     this.p=p;
     }
   

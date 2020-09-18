@@ -9,6 +9,7 @@ import java.util.Set;
 
 import com.google.common.collect.Lists;
 
+import is.L42.generated.P;
 import is.L42.tools.General;
 
 public abstract class Lattice<T> {
@@ -24,11 +25,13 @@ public abstract class Lattice<T> {
    * Value: All direct higher Levels
    */
   Map<T, ArrayList<T>> inner;
+  T top;
 
   public Lattice(T top) {
     Map<T, ArrayList<T>> lattice = new HashMap<>();
     lattice.put(top, new ArrayList<>());
     this.inner = lattice;
+    this.top = top;
   }
   
   public Lattice() {
@@ -74,6 +77,10 @@ public abstract class Lattice<T> {
   }
 
   public abstract T getBottom();
+  
+  public T getTop() {
+    return top;
+  }
   
   public <Sub extends T> T leastUpperBound(Sub level1, Sub level2){
     return leastUpperBound(List.of(level1, level2));
