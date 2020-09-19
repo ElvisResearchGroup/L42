@@ -369,7 +369,7 @@ public class NormalizationTests {
     T n1old, n2old;
     T n1 = n1old = supplier1.get();
     T n2 = n2old = supplier2.get();
-    L42Cache<T,?> cache = getCacheObject(n1);
+    L42Cache<T> cache = getCacheObject(n1);
     T dup1 = cache.dup(n1);
     T dup2 = cache.dup(n2);
     var kDup1=eKey(dup1,true,false);
@@ -402,7 +402,7 @@ public class NormalizationTests {
   private static <T> void testDeepFieldEQ(T n1, T n2, Set<Object> alreadyChecked) {
     if(alreadyChecked.contains(n1) && alreadyChecked.contains(n2)) { return; };
     if(n1 == null) { assertTrue(n2 == null); return; }
-    L42Cache<T,?> cache = getCacheObject(n1);
+    L42Cache<T> cache = getCacheObject(n1);
     assertTrue(cache.identityEquals(n1, n2));
     alreadyChecked.add(n1);
     int size=cache.fn(n1);
@@ -411,10 +411,8 @@ public class NormalizationTests {
       testDeepFieldEq(cache,i,n1,n2,alreadyChecked); 
       }
     }
-  static <T,F>void testDeepFieldEq(L42Cache<T,F>cache,int i,T n1,T n2,Set<Object>alreadyChecked){
-    var n1f=cache._fields(n1);
-    var n2f=cache._fields(n1);
-    testDeepFieldEQ(cache.f(n1,i,n1f),cache.f(n2,i,n2f), alreadyChecked);
+  static <T>void testDeepFieldEq(L42Cache<T>cache,int i,T n1,T n2,Set<Object>alreadyChecked){
+    testDeepFieldEQ(cache.f(n1,i),cache.f(n2,i), alreadyChecked);
     }
   private static final class L42List<T> {
     private final ArrayList<Object> underlying = new ArrayList<>();

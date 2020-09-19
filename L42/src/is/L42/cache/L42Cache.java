@@ -5,7 +5,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface L42Cache<T,F> extends Serializable {
+public interface L42Cache<T> extends Serializable {
   
   /**
    * Produces the normalized version of this object, such that
@@ -144,7 +144,7 @@ public interface L42Cache<T,F> extends Serializable {
    * @param i The index of the field
    * @return The cache for that field, or null
    */
-  L42Cache<?,?> rawFieldCache(int i);
+  L42Cache<?> rawFieldCache(int i);
   
   /**
    * Returns the cache object for the relevant subfield. Always 
@@ -155,11 +155,10 @@ public interface L42Cache<T,F> extends Serializable {
    * @return The cache for the object
    */
   @SuppressWarnings({ "unchecked" }) 
-  default <R> L42Cache<R,?> fieldCache(R t, int i) {
-    L42Cache<?,?> raw = this.rawFieldCache(i);
-    assert raw!=null || t!=null:
-      "";
-    return (L42Cache<R,?>)(raw == null ? L42CacheMap.getCacheObject(t) : ((L42Cache<R,?>)raw).refine(t));
+  default <R> L42Cache<R> fieldCache(R t, int i) {
+    L42Cache<?> raw = this.rawFieldCache(i);
+    assert raw!=null || t!=null:"";
+    return (L42Cache<R>)(raw == null ? L42CacheMap.getCacheObject(t) : ((L42Cache<R>)raw).refine(t));
   }
   
   T getMyNorm(T me);
@@ -187,19 +186,17 @@ public interface L42Cache<T,F> extends Serializable {
    */
   default KeyNorm2D simpleKey(T t){
     int size=this.fn(t);
-    F fs=this._fields(t);
     Object[][] key = new Object[1][size + 1];
     key[0][0] = this;
-    for(int i=0;i<size;i+=1){key[0][i+1]=this.f(t, i,fs);}
+    for(int i=0;i<size;i+=1){key[0][i+1]=this.f(t, i);}
     return new KeyNorm2D(key);
     }  
-  default L42Cache<T,F> refine(T t){return this;}
+  default L42Cache<T> refine(T t){return this;}
   void clear();  
   default T dup(T that) {
     return this.dup(that, new IdentityHashMap<>());
     }  
   T dup(T that, Map<Object, Object> map);
-  F _fields(T t);//for example {return t.allFields();}//t for ArrayList
   
   /**
    * Given an object of type T, returns the field
@@ -207,18 +204,16 @@ public interface L42Cache<T,F> extends Serializable {
    * 
    * @param t The object
    * @param i The index of the field
-   * @param _fields The representation of the object fields
    * @return The value of the field at index i.
    */
-  Object f(T t,int i,F _fields);//for example {return _fields[i];}//override for arraylist
+  Object f(T t,int i);
   /**
    * Given an object of type T, sets the value of a field
    * of t at index i. 
    * @param t The object
    * @param o The new value of the field
    * @param i The index of the field
-   * @param _fields The representation of the object fields
    */
-  void setF(T t,int i,Object o,F _fields);
+  void setF(T t,int i,Object o);
 
   }

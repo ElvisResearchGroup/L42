@@ -27,7 +27,7 @@ interface FormatKind{
   String specialS();
   }
 class Format42 implements FormatKind{
-  L42Cache<?,?> cache;
+  L42Cache<?> cache;
   P.NCs path;
   int lineN;
   KeyFormatter f;
@@ -78,7 +78,7 @@ class Format42 implements FormatKind{
     return new C(a,Integer.parseInt(b));
     }
   public Format42(P.NCs hint,KeyFormatter f, int lineN) {
-    this.cache=(L42Cache<?,?>)f.k.lines()[lineN][0];
+    this.cache=(L42Cache<?>)f.k.lines()[lineN][0];
     this.lineN=lineN;
     this.f=f;
     if(hint!=null){this.path=hint;assert null!=f.p._ofCore(path);return;}
@@ -129,7 +129,7 @@ class KeyFormatter{
   HashSet<Integer> visited= new HashSet<>();
  
   public FormatKind newFormatKind(P.NCs hint,int lineN){
-    var cache=(L42Cache<?,?>)k.lines()[lineN][0];
+    var cache=(L42Cache<?>)k.lines()[lineN][0];
     if(cache.typename() == TrustedKind.Vector){return new FormatVector(hint,this,lineN);}
     if(cache.typename() instanceof TrustedKind){return new FormatTrusted(hint,this,lineN);}
     if(cache.typename() instanceof String[]){return new Format42(hint,this,lineN);}
@@ -158,7 +158,7 @@ class KeyFormatter{
     }
   public String formatDispatch(P.NCs hint,P.NCs source,Core.L l,X x, Object o, boolean isInterface, int size) {
     int id=((KeyVarID)o).value();
-    var cache=(L42Cache<?,?>)k.lines()[id][0];
+    var cache=(L42Cache<?>)k.lines()[id][0];
     boolean isNative=cache.typename()instanceof TrustedKind;
     if(hint==null && isNative){hint=_computeHint(source, l, x);}
     return formatDispatchId(id,hint,0,isInterface,size);

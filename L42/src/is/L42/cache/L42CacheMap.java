@@ -26,31 +26,41 @@ import is.L42.nativeCode.Flags;
 public class L42CacheMap {
   
   //TODO: Change to string to get rid of reflection maybe?
-  private static final Map<Class<?>, L42Cache<?,?>> commander;
-  private static final L42Cache<?,?> arrayListCache;  
+  private static final Map<Class<?>, L42Cache<?>> commander;
+ 
   private static final CacheBuilder<Object,Object> builder = CacheBuilder.newBuilder().softValues(); 
-  
+  public static final L42Cache<?> intCache=new IntCache();
+  public static final L42Cache<?> boolCache=new BoolCache();
+  public static final L42Cache<?> floatCache=new FloatCache();
+  public static final L42Cache<?> doubleCache=new DoubleCache();
+  public static final L42Cache<?> longCache=new LongCache();
+  public static final L42Cache<?> shortCache=new ShortCache();
+  public static final L42Cache<?> byteCache=new ByteCache();
+  public static final L42Cache<?> charCache=new CharCache();
+  public static final L42Cache<?> stringCache=new StringCache();
+  public static final L42Cache<?> flagsCache=Flags.cache;
+  public static final L42Cache<?> arrayListCache=new ArrayListCache();
+
   static {    
     commander = new HashMap<>();
-    commander.put(int.class, new IntCache());
-    commander.put(Integer.class, commander.get(int.class));
-    commander.put(boolean.class, new BoolCache());
-    commander.put(Boolean.class, commander.get(boolean.class));
-    commander.put(float.class, new FloatCache());
-    commander.put(Float.class, commander.get(float.class));
-    commander.put(double.class, new DoubleCache());
-    commander.put(Double.class, commander.get(double.class));
-    commander.put(long.class, new LongCache());
-    commander.put(Long.class, commander.get(long.class));
-    commander.put(short.class, new ShortCache());
-    commander.put(Short.class, commander.get(short.class));
-    commander.put(byte.class, new ByteCache());
-    commander.put(Byte.class, commander.get(byte.class));
-    commander.put(char.class, new CharCache());
-    commander.put(Character.class, commander.get(char.class));
-    commander.put(String.class, new StringCache());
-    arrayListCache=new ArrayListCache();
-    commander.put(Flags.class, Flags.cache);
+    commander.put(int.class, intCache);
+    commander.put(Integer.class, intCache);
+    commander.put(boolean.class, boolCache);
+    commander.put(Boolean.class, boolCache);
+    commander.put(float.class, floatCache);
+    commander.put(Float.class, floatCache);
+    commander.put(double.class, doubleCache);
+    commander.put(Double.class, doubleCache);
+    commander.put(long.class, longCache);
+    commander.put(Long.class, longCache);
+    commander.put(short.class, shortCache);
+    commander.put(Short.class, shortCache);
+    commander.put(byte.class, byteCache);
+    commander.put(Byte.class, byteCache);
+    commander.put(char.class, charCache);
+    commander.put(Character.class, charCache);
+    commander.put(String.class, stringCache);
+    commander.put(Flags.class, flagsCache);
     commander.put(ArrayList.class,arrayListCache);
     }
   
@@ -65,7 +75,7 @@ public class L42CacheMap {
    * @param class_ The class object representing the type
    * @param cache The relevant cache object
    */
-  static <T,C extends L42Cache<T,?>> C addCacheableType(Class<? extends T> class_, C cache) {
+  static <T,C extends L42Cache<T>> C addCacheableType(Class<? extends T> class_, C cache) {
     commander.put(class_, cache);
     return cache;
     }
@@ -77,10 +87,10 @@ public class L42CacheMap {
    * @return
    */
   @SuppressWarnings("unchecked")
-  public static <T> L42Cache<T,?> getCacheObject(Class<T> class_) {//NOTE: public only for testing
-    if(class_==ArrayList.class){return (L42Cache<T,?>) arrayListCache;}
+  public static <T> L42Cache<T> getCacheObject(Class<T> class_) {//NOTE: public only for testing
+    if(class_==ArrayList.class){return (L42Cache<T>) arrayListCache;}
     assert cacheUnderControl();
-    return (L42Cache<T,?>) commander.get(class_);
+    return (L42Cache<T>) commander.get(class_);
     }
   
   private static boolean cacheUnderControl(){
@@ -93,8 +103,8 @@ public class L42CacheMap {
     return true;    
     }
     
-  static L42Cache<?,?>[] getCacheArray(Class<?> ... classes) {
-    L42Cache<?,?>[] caches = new L42Cache<?,?>[classes.length];
+  static L42Cache<?>[] getCacheArray(Class<?> ... classes) {
+    L42Cache<?>[] caches = new L42Cache<?>[classes.length];
     for(int i = 0; i < classes.length; i++) {
       caches[i] = getCacheObject(classes[i]);
       }
@@ -102,14 +112,14 @@ public class L42CacheMap {
     }
   
   @SuppressWarnings("unchecked") //NOTE: public only for testing
-  public static <T> L42Cache<T,?> getCacheObject(T o) {
+  public static <T> L42Cache<T> getCacheObject(T o) {
     assert o!=null;
     if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache();}
     var c=getCacheObject((Class<T>) o.getClass());
     return c.refine(o);
     }
   public static <T> T normalize_internal(T t) {//NOTE: public only for testing
-    L42Cache<T,?> cache = getCacheObject(t);
+    L42Cache<T> cache = getCacheObject(t);
     return cache.normalize(t);
     }
   
@@ -117,14 +127,14 @@ public class L42CacheMap {
   static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
     if(t instanceof L42Cachable) { return ((L42Cachable<?>) t).isNorm(); }
-    L42Cache<T,?> cache = getCacheObject((Class<T>) t.getClass()).refine(t);
+    L42Cache<T> cache = getCacheObject((Class<T>) t.getClass()).refine(t);
     return cache.isNorm(t);
     }
   @SuppressWarnings("unchecked")
-  static <T> boolean isNorm(T t,int i,L42Cache<?,?> c) {
+  static <T> boolean isNorm(T t,int i,L42Cache<?> c) {
     if(t == null){return true;}
     if(t instanceof L42Cachable){return ((L42Cachable<?>) t).isNorm(); }
-    var cache=(L42Cache<T,?>)c.rawFieldCache(i);
+    var cache=(L42Cache<T>)c.rawFieldCache(i);
     if(cache!=null){return cache.isNorm(t);}
     assert List.of(Thread.currentThread().getStackTrace())
       .toString().contains(".NormalizationTests.");//line after just for tests
@@ -133,7 +143,7 @@ public class L42CacheMap {
   
   static <T> boolean identityEquals(T t1, T t2) {
     if(t1 instanceof L42Cachable) { return t1 == t2; }
-    L42Cache<T,?> cache = getCacheObject(t1);
+    L42Cache<T> cache = getCacheObject(t1);
     return cache.identityEquals(t1, t2);
     }
   
@@ -148,7 +158,7 @@ public class L42CacheMap {
    * @return The object's key
    */
   public static <T> KeyNorm2D getKey(T t, boolean norm) {//NOTE: public only for testing
-    L42Cache<T,?> cache = getCacheObject(t);
+    L42Cache<T> cache = getCacheObject(t);
     t = norm ? cache.normalize(t) : t;
     return cache.computeKeyNN(t);
   }
@@ -171,22 +181,21 @@ public class L42CacheMap {
     public KeyExpander(Object obj, boolean entireROG, boolean norm){this.obj=obj;this.entireROG=entireROG;this.norm=norm;}
     final Map<Object, Integer> done = new IdentityHashMap<>();
     final ArrayList<Object[]> nkeylist = new ArrayList<>();
-    <T,F> KeyVarID apply(int offset, L42Cache<T,F> cache, T toAdd, int toAddIndex, Object[][] subkey){
+    <T> KeyVarID apply(int offset, L42Cache<T> cache, T toAdd, int toAddIndex, Object[][] subkey){
       KeyVarID res = new KeyVarID(offset + toAddIndex);
       done.put(toAdd, res.value());
       var key=subkey[toAddIndex];
-      var fs=cache._fields(toAdd);
       for(int i = 1; i < key.length; i++){
         if(!(key[i] instanceof KeyVarID)){continue;}
         var oldId = (KeyVarID)key[i];
-        Object field = cache.f(toAdd, i - 1,fs);
+        Object field = cache.f(toAdd, i - 1);
         if(done.containsKey(field)){key[i]=new KeyVarID(done.get(field));continue;}
         var fCache=cache.fieldCache(field, i - 1); 
         key[i]=apply(offset, fCache, field, oldId.value(), subkey);
         }
       return res;
       }
-    <T>Object addNewObject(L42Cache<T,?> theCache, T theObj){
+    <T>Object addNewObject(L42Cache<T> theCache, T theObj){
       if(theCache==null){theCache=getCacheObject(theObj);}
       if(!entireROG && theCache.isNorm(theObj) ) { return theObj; }
       theObj = norm ? theCache.normalize(theObj) : theObj;
@@ -207,18 +216,18 @@ public class L42CacheMap {
       }
     void addI(int i){
       Object[] line=nkeylist.get(i);
-      L42Cache<?,?> c = (L42Cache<?,?>) line[0];
+      L42Cache<?> c = (L42Cache<?>) line[0];
       if(c.isValueType()){return;}
       for(int j = 1; j < line.length; j++) {forBody(c,j,line);}
       }
-    <T>void forBody(L42Cache<?,?> lineCache,int j,Object[] line){
+    <T>void forBody(L42Cache<?> lineCache,int j,Object[] line){
       if(line[j] instanceof KeyVarID){return;}
       if(done.containsKey(line[j])){
         line[j] = new KeyVarID(done.get(line[j]));
         return;
         }
       if(line[j]==null){return;}
-      @SuppressWarnings("unchecked") var cache=(L42Cache<T,?>)lineCache.rawFieldCache(j - 1);
+      @SuppressWarnings("unchecked") var cache=(L42Cache<T>)lineCache.rawFieldCache(j - 1);
       @SuppressWarnings("unchecked") var value=(T)line[j];
       line[j] = addNewObject(cache,value);
       }
@@ -242,7 +251,7 @@ public class L42CacheMap {
     }
   
   public static void clearAllCaches() {
-    for(L42Cache<?,?> cache : commander.values()) {
+    for(L42Cache<?> cache : commander.values()) {
       cache.clear();
       }
     }
@@ -259,7 +268,7 @@ public class L42CacheMap {
     cache.lateInitialize(classes);
     }
   
-  public static synchronized <T, C extends L42Cache<T,?>> void addCachableType_synchronized(Class<? extends T> class_, C cache) {
+  public static synchronized <T, C extends L42Cache<T>> void addCachableType_synchronized(Class<? extends T> class_, C cache) {
     addCacheableType(class_, cache);
     }
   
@@ -277,7 +286,7 @@ public class L42CacheMap {
     }
   
   public synchronized static <T> T dup(T t) {
-    L42Cache<T,?> cache = getCacheObject(t);
+    L42Cache<T> cache = getCacheObject(t);
     return cache.dup(t);
     }
   

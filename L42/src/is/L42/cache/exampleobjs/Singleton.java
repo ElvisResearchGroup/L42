@@ -35,7 +35,7 @@ public class Singleton implements L42Cachable<Singleton>, Serializable {
     }
 
   @Override 
-  public L42Cache<Singleton,?> myCache() {
+  public L42Cache<Singleton> myCache() {
     return myCache; 
     }
 

@@ -20,11 +20,11 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields.EqCache;
 import is.L42.tools.General;
 public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<K,T>,Self>{
   T[] vals=null;
-  L42Cache<T,?> vCache;
+  L42Cache<T> vCache;
   @SuppressWarnings("unchecked")
   public L42£AbsMap(Object kCache,Object vCache){
     super(kCache);
-    this.vCache=(L42Cache<T,?>)vCache;
+    this.vCache=(L42Cache<T>)vCache;
     }
   public int size(){return inner==null?0:inner.size();}
   @Override protected void clearIteration(){keys=null;vals=null;}
@@ -41,18 +41,13 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     }
   public T valIndex(int index){loadIteration();return vals[index];}
   public /*Opt<T>*/T val(K key){//can never be null, TODO: we need to sort Opt to use flag values?
-    key=kCache.normalize(key);
+    key=kCache.refine(key).normalize(key);
     T val=inner==null?null:inner.get(key);
     return val;//this, in 42 must be an Opt<T> native
-    //TODO: still broken if T is an optional
-    //in the Java generation, if T is an optional, we need to make a map of wrapped<T>
-    //and is ok to return the wrapped T here.
-    //in put, we would need to "wrap" the T before calling put
-    //should be ok to put Opt keys, but we should test it
     }
   abstract public T processVal(T val);//vCache.get().normalize(val);
   public void put(K key,T val){
-    key=kCache.normalize(key);
+    key=kCache.refine(key).normalize(key);
     val=processVal(val);
     clearIteration();
     assert val!=null;
@@ -68,26 +63,26 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     public MapCache(Object typeName){super();this.typeName=typeName;}
     protected MapCache(Object typeName,MapCache<K,T,M> o){super(o);this.typeName=typeName;}
     Object typeName;
-    @Override public Object f(M t, int i, M _fields){
+    @Override public Object f(M t, int i){
       t.loadIteration();
       if(i%2==0){return t.keys[i/2];}
       return t.vals[i/2];
       }
     @SuppressWarnings("unchecked")
-    @Override public void setF(M t, int i, Object o, M _fields){
+    @Override public void setF(M t, int i, Object o){
       t.loadIteration();
       if(i%2==0){assert t.keys[i/2]==o;}
       else{t.inner.put(t.keys[i/2],(T)o); t.vals[i/2]=(T)o;}
       }
     @Override public int fn(M t){return t.inner==null?0:t.inner.size()*2;}
-    @Override public L42Cache<?,?> rawFieldCache(int i){throw unreachable();}
+    @Override public L42Cache<?> rawFieldCache(int i){throw unreachable();}
     @Override protected M newInstance(M t){return t.newInstance();}
     @Override public Object typename(){return typeName;}
-    @Override public L42Cache<M,M> refine(M t){
+    @Override public MapCache<K,T,M> refine(M t){
       var k=t.kCache;
       var v=t.vCache;
       return new MapCache<K,T,M>(typeName,this){
-        @Override public L42Cache<?,?> rawFieldCache(int i){
+        @Override public L42Cache<?> rawFieldCache(int i){
           if(i%2==0){return k;}
           return v;
           }

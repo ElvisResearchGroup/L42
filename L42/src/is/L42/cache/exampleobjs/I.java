@@ -10,7 +10,7 @@ import is.L42.cache.L42CacheMap;
 public class I implements L42Cachable<I>, Serializable {
   
   public static final Class<I> _class = I.class;
-  public static final L42Cache<I,?> myCache;
+  public static final L42Cache<I> myCache;
   
   static{
     myCache = L42CacheMap.newStandardCache("I", I.class);
@@ -35,7 +35,7 @@ public class I implements L42Cachable<I>, Serializable {
   public int numFields() { return 0; }
 
   @Override
-  public L42Cache<I,?> myCache() {
+  public L42Cache<I> myCache() {
     return myCache;
   }
 

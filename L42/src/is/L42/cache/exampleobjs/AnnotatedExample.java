@@ -83,7 +83,7 @@ public class AnnotatedExample implements L42Cachable<AnnotatedExample>, Serializ
   public int numFields() { return 3; }
 
   @Override 
-  public L42Cache<AnnotatedExample,?> myCache() { 
+  public L42Cache<AnnotatedExample> myCache() { 
     return myCache; 
     }
 

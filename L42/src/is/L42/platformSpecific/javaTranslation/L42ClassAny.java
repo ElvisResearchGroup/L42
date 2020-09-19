@@ -34,7 +34,7 @@ public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {
   @Override 
   public int numFields() { return 0; }
   @Override 
-  public L42Cache<L42ClassAny,?> myCache() { return myCache; }
+  public L42Cache<L42ClassAny> myCache() { return myCache; }
   @Override 
   public void setNorm(L42ClassAny t) {}
   @Override public L42ClassAny myNorm() { return null; }

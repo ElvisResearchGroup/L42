@@ -10,7 +10,7 @@ import is.L42.cache.KeyNorm2D;
 import is.L42.cache.NormResult;
 import is.L42.tools.General;
 
-public abstract class ValueCache<Type> implements L42Cache<Type,Type> {
+public abstract class ValueCache<Type> implements L42Cache<Type> {
 
   @Override 
   public void addObjectOverride(KeyNorm2D key, Type value) {}
@@ -37,10 +37,6 @@ public abstract class ValueCache<Type> implements L42Cache<Type,Type> {
   public boolean identityEquals(Type t1, Type t2) {
     return valueCompare(t1, t2);
     }
-
-  public Object f(Type t, int i) {
-    throw new ArrayIndexOutOfBoundsException();
-    }
   
   @Override
   public int fn(Type t) { return 0; }
@@ -56,7 +52,7 @@ public abstract class ValueCache<Type> implements L42Cache<Type,Type> {
     }
   
   @Override 
-  public L42Cache<?,?> rawFieldCache(int i) {
+  public L42Cache<?> rawFieldCache(int i) {
     return this;
     }
   
@@ -86,14 +82,13 @@ public abstract class ValueCache<Type> implements L42Cache<Type,Type> {
   public Type dup(Type that, Map<Object, Object> map) {
     return that;
     }
-  @Override public Type _fields(Type t){return t;}
   
   @Override
-  public Object f(Type t, int i, Type _fields) {
+  public Object f(Type t, int i) {
     throw unreachable();
     }
   @Override
-  public void setF(Type t, int i, Object o, Type _fields) {
+  public void setF(Type t, int i, Object o) {
     throw unreachable();
     }
   }

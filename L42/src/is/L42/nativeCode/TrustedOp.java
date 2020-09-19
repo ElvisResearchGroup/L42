@@ -333,8 +333,8 @@ public enum TrustedOp {
   IsAbstract("isAbstract",method("%s.isAbstract()",sigI(Bool))),
   //####VECTOR####
   VectorK("vectorK",Map.of(
-    Vector,vectorKs(),
-    SelfVector,use("return new L42£SelfVector();",sig(Class,Mutable,This,Immutable,Int))
+    Vector,vectorKs(false),
+    SelfVector,vectorKs(true)
     )),
   IsEmpty("isEmpty",Map.of(
     Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)),

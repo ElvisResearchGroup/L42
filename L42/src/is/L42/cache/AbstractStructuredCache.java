@@ -9,7 +9,7 @@ import java.util.Map;
 import java.util.Set;
 
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
-public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
+public abstract class AbstractStructuredCache<T> implements L42Cache<T>{
   protected abstract T newInstance(T t);
   private <K> Set<K> addCircle(Set<K> _circle, Collection<K> more){
     if(more==null){return _circle;}
@@ -36,11 +36,10 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
     catch(Exception e){throw new Error(e);}
     }
   public Set<Object> _computeCircle(T t, List<Object> prevs,boolean norm){
-    F _fields = _fields(t);
     int size=fn(t);
     Set<Object> circle = null;   
     for(int i = 0; i < size; i++){
-      var vali=f(t,i,_fields);
+      var vali=f(t,i);
       assert !checkFwd(vali):
         "";
       if(vali==null){
@@ -49,18 +48,18 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
         continue;
         } 
       if(prevs.stream().anyMatch(o->o==vali)){circle=addCircle(circle,cutTo(prevs,vali));continue;}
-      L42Cache<Object,?> cache = this.fieldCache(vali,i);
+      L42Cache<Object> cache = this.fieldCache(vali,i);
       NormResult<Object> res=norm?
         cache.normalizeInner(vali, new ArrayList<>(prevs)):
         cache.computeKeyNNInner(vali,new ArrayList<>(prevs));
-      if(norm && res.hasResult()){setF(t,i,res.result(),_fields);continue;}
+      if(norm && res.hasResult()){setF(t,i,res.result());continue;}
       if(!res.hasResult() && res.circle().contains(t)){circle=addCircle(res.circle(),circle);continue;}
-      if(norm){setF(t,i,new LoopCache<>(vali, res.circle()).result,_fields);}
+      if(norm){setF(t,i,new LoopCache<>(vali, res.circle()).result);}
       }
     return circle;
     }
   private final Map<KeyNorm2D, T> normMap;
-  protected AbstractStructuredCache(AbstractStructuredCache<T,F> o){this.normMap=o.normMap;}
+  protected AbstractStructuredCache(AbstractStructuredCache<T> o){this.normMap=o.normMap;}
   public AbstractStructuredCache(){this.normMap=L42CacheMap.newNormMap();}
   @Override public void addObjectOverride(KeyNorm2D key,T value){normMap.put(key, value);}
   T _get(KeyNorm2D key) {return normMap.get(key);}
@@ -112,14 +111,12 @@ public abstract class AbstractStructuredCache<T,F> implements L42Cache<T,F>{
     T nObj = newInstance(that);
     map.put(that, nObj);
     int size=this.fn(that);
-    F thatFs=this._fields(that);
-    F objFs=this._fields(nObj);
     for(int i = 0; i < size; i++){
-      Object field = this.f(that, i,thatFs);
-      L42Cache<Object,?> fieldcache = this.fieldCache(field, i);
+      Object field = this.f(that, i);
+      L42Cache<Object> fieldcache = this.fieldCache(field, i);
       var mapped=map.get(field);
       if(mapped==null){map.put(field,mapped=fieldcache.dup(field, map));}
-      this.setF(nObj,i,mapped,objFs);
+      this.setF(nObj,i,mapped);
       }
     return nObj;
     }

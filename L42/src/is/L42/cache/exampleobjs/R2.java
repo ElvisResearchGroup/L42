@@ -59,7 +59,7 @@ public class R2 implements L42Cachable<R2>, Serializable{
   public int numFields() { return 2; }
 
   @Override
-  public L42Cache<R2,?> myCache() 
+  public L42Cache<R2> myCache() 
   {
     return myCache;
   }

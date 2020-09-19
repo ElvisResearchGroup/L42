@@ -124,12 +124,15 @@ class OpUtils{
       String wrapperT=J.classNameStr(pOfGen);
       return wrapperT+".myCache.rawFieldCache(0)";
       }
-    static Generator vectorKs(){return (type,mwt,j)->{
+    static Generator vectorKs(boolean self){return (type,mwt,j)->{
       Signature sig0=Signature.sig(Mdf.Class,Mdf.Mutable,This,Mdf.Immutable,TrustedKind.Int);
       if(type && typingUse(j.p(),mwt,sig0)){j.c("");return;}//TODO: here and in use: why j.c("")??
-      String s=OpUtils.makeVector(j,"%2$s");
-      s=s.formatted(NativeDispatch.xs(mwt).toArray());
-      j.c(s);
+      if(!self){
+        String s=OpUtils.makeVector(j,"%2$s");
+        s=s.formatted(NativeDispatch.xs(mwt).toArray());
+        j.c(s);
+        }
+      else{j.c("return new L42£SelfVector();");}
       };}
     static public String makeVector(J j,String size){
       String typeName=j.typeNameStr(j.p());

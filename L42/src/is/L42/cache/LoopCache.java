@@ -9,24 +9,22 @@ import java.util.Map;
 import java.util.Set;
 import java.util.function.Consumer;
 
-class CircleEntry<T,F>{
+class CircleEntry<T>{
   Set<Object>equivClasses;
   List<Object>circleFields;
   List<Object>nonCircleFields;
-  F fields;
-  L42Cache<T,F> cache;
+  L42Cache<T> cache;
   T replacement;
-  void applyReplacements(Object oo,Map<Object,CircleEntry<?,?>> map){
+  void applyReplacements(Object oo,Map<Object,CircleEntry<?>> map){
     @SuppressWarnings("unchecked")
     T o=(T)oo;
     int size=cache.fn(o);
     for(int i = 0; i < size; i++) {
-      var r=map.get(cache.f(o, i, fields));
-      if(r!=null){cache.setF(o,i,r.replacement,fields);}
+      var r=map.get(cache.f(o, i));
+      if(r!=null){cache.setF(o,i,r.replacement);}
       }
     assert replacement!=null;
     assert replacement==map.get(replacement).replacement;
-    fields=cache._fields(o);
     }
   @SuppressWarnings("unchecked")
   void setReplacement(Object o){
@@ -40,7 +38,7 @@ class CircleEntry<T,F>{
   void addObjectOverride(KeyNorm2D key,Object obj){
     cache.addObjectOverride(key,(T)obj);
     }
-  CircleEntry(Set<Object> circle,T o,L42Cache<T,F> myCache){
+  CircleEntry(Set<Object> circle,T o,L42Cache<T> myCache){
     this.cache=myCache;
     equivClasses=L42CacheMap.identityHashSet();
     for(Object o2 : circle) {
@@ -49,15 +47,14 @@ class CircleEntry<T,F>{
       }
     circleFields=new ArrayList<>();
     nonCircleFields=new ArrayList<>();
-    fields = myCache._fields(o);
     int size=myCache.fn(o);
     for(int i=0;i<size;i++){
-      Object f=myCache.f(o, i,fields);
+      Object f=myCache.f(o, i);
       if(circle.contains(f)){circleFields.add(f);}
       else{nonCircleFields.add(f);}
       }
     }
-  static <T,F> CircleEntry<T,F> of(Set<Object> circle,T o,L42Cache<T,F> myCache){return new CircleEntry<T, F>(circle, o, myCache);}
+  static <T> CircleEntry<T> of(Set<Object> circle,T o,L42Cache<T> myCache){return new CircleEntry<T>(circle, o, myCache);}
   }
 public class LoopCache<T> {
   //TODO: how can we have a global circularIndex map???
@@ -87,7 +84,7 @@ public class LoopCache<T> {
       }
     result=desired;
     }
-  Map<Object,CircleEntry<?,?>> map=new IdentityHashMap<>();
+  Map<Object,CircleEntry<?>> map=new IdentityHashMap<>();
   final T result;
   void initMap(Set<Object> circle){
     for(Object o : circle){
@@ -178,14 +175,13 @@ public class LoopCache<T> {
     return new KeyNorm2D(lines);
     }
   
-  private static <T,F> KeyNorm2D simpleKeyFromChonker(T obj, KeyNorm2D key,L42Cache<T,F> cache) {
+  private static <T,F> KeyNorm2D simpleKeyFromChonker(T obj, KeyNorm2D key,L42Cache<T> cache) {
     Object[] ln1 = key.lines()[0];
     Object[] ln1cpy = new Object[ln1.length];
     System.arraycopy(ln1, 0, ln1cpy, 0, ln1.length);
-    F fs=cache._fields(obj);
     for(int i = 1; i < ln1.length; i++) {
       if(ln1[i] instanceof KeyVarID) {
-        ln1cpy[i] = cache.f(obj, i-1,fs);
+        ln1cpy[i] = cache.f(obj, i-1);
         }
       }
     return new KeyNorm2D(new Object[][] { ln1cpy });
@@ -212,19 +208,18 @@ public class LoopCache<T> {
     private final Object obj;
     private final Field[] params;
     
-    private final L42Cache<?,?> cache;
+    private final L42Cache<?> cache;
     @SuppressWarnings("unchecked")
-    public static<T,F> CircleObject of(Object obj){
-      var cache=(L42Cache<T,F>)L42CacheMap.getCacheObject(obj);
-      var fields=cache._fields((T)obj);
-      return new CircleObject((T)obj,cache,fields);
+    public static<T> CircleObject of(Object obj){
+      var cache=(L42Cache<T>)L42CacheMap.getCacheObject(obj);
+      return new CircleObject((T)obj,cache);
       }    
-    public<T,F> CircleObject(T obj,L42Cache<T,F> cache,F fs){
+    public<T> CircleObject(T obj,L42Cache<T> cache){
       this.cache=cache;
       int size=cache.fn(obj);
       Field[] fields = new Field[size];
       for(int i = 0; i < size; i++) {
-        Object fi=cache.f(obj,i,fs);
+        Object fi=cache.f(obj,i);
         boolean isNorm=L42CacheMap.isNorm(fi,i,cache);
         fields[i] = new Field(fi, isNorm);
         }
@@ -237,14 +232,13 @@ public class LoopCache<T> {
     public CircleObject replace(Map<Object, Object> replacements) {
       return replace(replacements,cache);
       }
-    private <T,F>CircleObject replace(Map<Object, Object> replacements,L42Cache<T,F>cache) {
+    private <T>CircleObject replace(Map<Object, Object> replacements,L42Cache<T>cache) {
       @SuppressWarnings("unchecked")
       T o=(T)obj;
-      F fs=cache._fields(o);
       int size=cache.fn(o);
       for(int i = 0; i < size; i++){
-        var fiR=replacements.get(cache.f(o,i,fs));
-        if(fiR!=null){cache.setF(o,i,fiR,fs);}
+        var fiR=replacements.get(cache.f(o,i));
+        if(fiR!=null){cache.setF(o,i,fiR);}
         }
       return CircleObject.of(this.obj);
       }
