@@ -10,6 +10,7 @@ import static is.L42.tools.General.range;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -316,7 +317,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     }
   private boolean isNonDeterministicError(P path){
     String nk=this.p._ofCore(path).info().nativeKind();
-    return !nk.isEmpty() && TrustedKind._fromString(nk,p.navigate(path.toNCs())).equals(TrustedKind.NonDeterministicError);
+    return !nk.isEmpty() && TrustedKind._fromString(nk,p.navigate(path.toNCs()))==TrustedKind.NonDeterministicError;
     }
   private void rethrowNonDeterministicError(Core.K k){
     var v=catchVar();

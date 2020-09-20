@@ -129,7 +129,7 @@ public class ProgramTypeSystem {
       }
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind._fromString(nativeKind,p);
-    var op=TrustedOp.fromString(nativeOp);
+    var op=TrustedOp._fromString(nativeOp);
     var g=op._of(k);
     errIf(g==null,mwt._e().poss(),
       Err.nativeReceiverInvalid(mwt.nativeUrl(),nativeKind));

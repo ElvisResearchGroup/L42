@@ -553,12 +553,10 @@ public enum TrustedOp {
   private static void addT(ArrayList<P.NCs>c,T t){
     if(t.p().isNCs()){c.add(t.p().toNCs());}
     }
-  public static TrustedOp fromString(String s) {
+  public static TrustedOp _fromString(String s) {
    for (TrustedOp t : TrustedOp.values()) {
     if (t.inner.equals(s))return t;
     }
-   assert false:
-   "#"+s+"#";
-   throw todo();
-  }
+   return null;
+   }
  }

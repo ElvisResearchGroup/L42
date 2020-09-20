@@ -33,6 +33,20 @@ public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> imp
   public static L42£BigRational from(BigInteger num){return new L42£BigRational(num,BigInteger.ONE);}
   public static L42£BigRational from(BigInteger num,BigInteger den){return normalize(num, den);}
   public static L42£BigRational from(long num,long den){return from(BigInteger.valueOf(num),BigInteger.valueOf(den));}
+  private static double getMantissa(double x) {
+    int exponent = Math.getExponent(x);
+    return x / Math.scalb(1.0, exponent);
+    }
+  final static int mantissaBits=53;
+  public static L42£BigRational from(double num){
+    int exponent=Math.getExponent(num);//+mantissaBits;
+    double man=Math.scalb(num, mantissaBits-exponent);
+    System.out.println(man);
+    long longMan=Math.round(man);
+    System.out.println(longMan);
+    var den=Math.scalb(1.0, mantissaBits+exponent);
+    return from(BigInteger.valueOf(longMan),BigInteger.valueOf(Math.round(den)));    
+    }
   public static L42£BigRational from(String s){
     assert s != null;
     assert s.length() != 0;

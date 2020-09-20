@@ -62,27 +62,12 @@ public class CTz{
     this.inner=null;//release the only pointer to inner
     return res;
     }
-  /*public CTz copy(){
-    CTz ctz=new CTz();
-    ctz.inner.putAll(inner);
-    return ctz;
-    }*/
   @Override public String toString(){
     String res=inner.toString();
     res=res.substring(1,res.length()-1);
     return res.replace("imm ","");
     }
-  /*public boolean coherent(){//below is just richer
-    for(var st:inner.keySet()){
-      assert !(st instanceof T):st;
-      }
-    return true;
-    }*/
   public boolean coherent(Program p){
-  //Issue: when we p.push(C,L) and L is inside halfE, we may have
-  //"solve" doing invalid things... can it happens?
-  //TODO: Change formalism so that ctz frommed for each L and trash the accumulated infos.
-  //then, when an nc is committed, we explore the coreL to add the info again into the ctz
     for(var e:inner.entrySet()){
       assert !(e.getKey() instanceof T):e.getKey();
       assert p.solve(e.getKey())==e.getKey():p.solve(e.getKey())+" "+e.getKey();

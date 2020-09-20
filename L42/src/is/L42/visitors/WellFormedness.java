@@ -804,7 +804,9 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       String nativeUrl=mwt.nativeUrl();
       if(!nativeUrl.startsWith("trusted:")){continue;}
       String nativeOp=nativeUrl.substring("trusted:".length());
-      var op=TrustedOp.fromString(nativeOp);
+      var op=TrustedOp._fromString(nativeOp);
+      if(op==null){throw new EndError.NotWellFormed(l.poss(),
+        Err.nativeTrustedOpInvalid(nativeOp));}
       var mw=op.nativeMustWatch(mwt,l.info());
       checkMissing(mw,merge(l.info().watched(),L(P.pThis0)),l.poss(),Err::missedWatchedNative);
       }

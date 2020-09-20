@@ -1,32 +1,28 @@
--CTz todo line 84; check formalism
 -Rename feature add: must be possible to rename-sum an interface with, at least, an empty class never used. 
 -write in some guides: A=B:{..} does not typecheck .. but typechecks all its nested classes if dependencies are sorted
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
-  we can sort alphabetically the members   
 -BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native
--Big, but confusing: the java compiler go in loop for code too complex, like to many &&. See TestTopNorm t_manyAnds() :-(
+-BIG, but confusing: the java compiler go in loop for code too complex, like to many &&. See TestTopNorm t_manyAnds() :-(
 -CACHING: there is a bug when sometime a .unwrap field is null, causing an assert error. It is about re running after errors.
 -IDE crash: paste on IDE. close IDE, open IDE, copy on IDE. System now unresponsive!
--IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: cut paste on win do not survive the IDE being closed
+-IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: somehow disable insertion of random '}'
--IDE:when printing outline: docs need to be \n\n and
+-IDE:we can sort alphabetically the members
 -untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer> (also, what about null results?) 
--errorbug: if we use a non existent url for trusted op we get an assertion error instead of a 42 error, as in java.lang.AssertionError: #isSize#
 -bug initVisitor 149 TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
  //TODO: now somehow the Info is always declassed to "norm" :-(    
 -Vector BUG: the error message seams to only mention imms:
   -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
--L42Cache, should remove T,F/fields() and the F parameter, since it is always self anyway?
 -can we simply or remove class NormResult?
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
 -Cache: use String .intern()?
   -what about Integer? what about big rational? what about arrays 
-and should wrap all the returns with normalization, so that we only return normalized numbers.
+  -should wrap all the returns with normalization, so that we only return normalized numbers?
 -test cache in case the cached method do some exceptions/errors
 -collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
 -if a method ends in stack oveflow, the error is only reported in Java and not in the IDE
@@ -37,9 +33,6 @@ and should wrap all the returns with normalization, so that we only return norma
 -toLibrary in Data? is similar to the toString... now we have ListS+from(string), should we have from(ListAnys fields)? 
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
-
--add SelfOpt like SelfVector
-
 ------------------
 //To test, NativeNames: there is now a set of forbidden words, this may not be exactly identical to what identifiers can have.
 //Should hava an automatic test that works, and may be we should be sure that a method parameter can not be called "reuse" if it is directly wrote in the program.

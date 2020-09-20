@@ -1,5 +1,15 @@
 reuse [AdamTowel]
-A={#norm{nativeKind=baalean}}
+Main=(
+  ns=Num.List()( for i in (10Size).range() \add(Num.from(string=i.toS())))
+  //for e1 in l1., e2 in 10Size.range() (ff)
+  //ns=Num.List()(Size.range())
+  Debug(ns)
+  )
+//B={#norm{nativeKind=baalean}}
+/*A={
+  class method This #apply()
+  method This a(This that)=native{trusted:OlkjkljP} that
+  #norm{nativeKind=Int typeDep=This, coherentDep=This}}
 //code reuse
 H=Trait:{  class method S hello()=S"Hello"  }
 W=Trait:{  class method S world()=S"World"  }
@@ -33,4 +43,4 @@ Main3=(
   Debug(bob)
   bob.birthDay()
   Debug(bob)
-  )
+  )*/

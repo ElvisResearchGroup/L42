@@ -281,6 +281,8 @@ public class Err {
   "native kind "+_1+" requires "+_2+" nativePar parameters, but "+_3+" are declared"
   ;}public static String nativeKindInvalid(Object _1){return
   "native kind "+_1+" is not recognized"
+  ;}public static String nativeTrustedOpInvalid(Object _1){return
+  "native trusted operation "+_1+" is not recognized"
   ;}public static String nativeSlaveInvalid(Object _1){return
   "native slave invalid:"+_1
   ;}public static String nativeKindInvalidSelector(Object _1,Object _2){return

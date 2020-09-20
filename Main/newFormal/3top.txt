@@ -228,7 +228,8 @@ _______
     p=I.p.push(I.C?,FULL.L) //here we intentionally do a push(C,L) where C not in dom(p(This0))  
     top(I.frommed,p) => PR
     PR = CTz';p' IfErr(PR) ER = PR
-    ER = CTz';p'(This0)
+    ER = I.CTz;p'(This0)//it was CTz' before, but the constraints captured in a L can not influence the next (unrelated) one.
+    // Moreover, now all those CTzs are trashed anyway 
 * I!CORE.L => I.frommed;CORE.L //no useful ccz could be here (assuming no CORE.L in the source)
 * I!P<:STz => I.frommed;P<:I(class STz)
 * I!P<:STz => inferenceFailure(I,STz)

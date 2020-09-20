@@ -26,4 +26,14 @@ public class TestBigN {
     assertEquals(L42£BigRational.from("123456"),L42£BigRational.from("123456"));
     assertFalse(L42£BigRational.from("123456").equals(L42£BigRational.from("123455")));
     }
+  @Test public void fromDouble(){
+    //assertEquals(L42£BigRational.from(0d),L42£BigRational.from("0"));
+    //assertEquals(L42£BigRational.from(1d),L42£BigRational.from("1"));
+    //assertEquals(L42£BigRational.from(2d),L42£BigRational.from("2"));
+    //assertEquals(L42£BigRational.from(3d),L42£BigRational.from("3"));
+    assertEquals(L42£BigRational.from(4d),L42£BigRational.from("4"));
+    assertEquals(L42£BigRational.from(8d),L42£BigRational.from("8"));
+    assertEquals(L42£BigRational.from(1.23456789d),L42£BigRational.from("1.23456789"));
+    assertEquals(L42£BigRational.from(12d),L42£BigRational.from("12"));
+  }
   }
