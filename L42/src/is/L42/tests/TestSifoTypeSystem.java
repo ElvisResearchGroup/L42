@@ -60,7 +60,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestSifoTypeSystem
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    pass("A={B={method Void main()=void}}")   
-   /*),new AtomicTest(()->
+   ),new AtomicTest(()->
    pass("""
      A={
        Left={interface @{securityLevel}}
@@ -68,7 +68,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        Top={interface [Left,Right] @{securityLevel}}
        A={class method This()}
        B={class method @Left A main(@Left A a)=a}//should pass       
-       }""")   
+       }""")
    ),new AtomicTest(()->
    fail("""
        A={
@@ -76,10 +76,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          Right={interface@{securityLevel}}
          Top={interface [Left,Right] @{securityLevel}}
          A={class method This()}
-         B={class method @Left A main(@Right A a)=a}//should pass       
+         B={class method @Left A main(@Right A a)=a}//should fail       
          }""",
        "MySifoError in line[###]: in method ...")   
-     ),new AtomicTest(()->
+   /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->
    pass("A={class method Void v()=void B={method class A main()=A<:class A}}")   
@@ -838,7 +838,8 @@ static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
   }
 private static void typeMethESifo(Program p,MH mh, E e){
   var g=G.of(mh);
-  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(p,g,L(/*exceptions here*/),Collections.emptySet(),mh.t(),new Lattice42(p,P.pThis0)));
+  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(
+    p,g,mh.exceptions(),Collections.emptySet(),mh.t(),new Lattice42(p,P.pThis0)));
   }
 public static void failC(String program,String...out){
   checkFail(()->{
@@ -850,45 +851,4 @@ public static void fail(String program,String...out){
     pass(program);
     }, out, TypeError.class);
   }
-public static String listExample="""
-  N={
-    class method This k()
-    method Void checkZero()=void 
-    method N lessOne()=this
-    }
-  List={
-    class method This k(fwd imm List next, N elem)
-    class method List factory(N that)=(
-      List x=this.factoryAux(that,top=x)
-      x
-      )
-    class method List factoryAux(N that,fwd imm List top)=(
-      Void z=that.checkZero()
-      catch error Void x (
-        List.k(
-          next=List.factoryAux(that.lessOne(),top=top)
-          elem=that
-          ))
-      List.k(next=top,elem=N.k())
-      )
-    }
-  """;
-public static String cloneExample="""
-  N={class method mut This #mutK() class method mut This k()=this.#mutK()}
-  BB={var N that
-    class method mut This #mutK(N that)
-    class method mut This k(N that)=this.#mutK(that)
-    read method capsule BB clone()=BB.k(this.that())
-    }
-  AA={mut BB f
-    class method mut This #mutK(mut BB f)
-    class method mut This k(mut BB f)=this.#mutK(f=f)
-    }
-  Vector={
-    class method mut This #mutK()
-    mut method Void add(mut BB that)=void
-    }
-  """;
-
-
 }
