@@ -1,5 +1,7 @@
 package is.L42.cache;
 
+import static is.L42.tools.General.unreachable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,7 +32,7 @@ public class L42CacheMap {
  
   private static final CacheBuilder<Object,Object> builder = CacheBuilder.newBuilder().softValues(); 
   public static final L42Cache<?> intCache=new IntCache();
-  public static final L42Cache<?> boolCache=new BoolCache();
+  public static final L42Cache<?> boolCache=new BoolCache();//TODO: we probably can optimize the bool cache away
   public static final L42Cache<?> floatCache=new FloatCache();
   public static final L42Cache<?> doubleCache=new DoubleCache();
   public static final L42Cache<?> longCache=new LongCache();
@@ -88,7 +90,7 @@ public class L42CacheMap {
    */
   @SuppressWarnings("unchecked")
   public static <T> L42Cache<T> getCacheObject(Class<T> class_) {//NOTE: public only for testing
-    if(class_==ArrayList.class){return (L42Cache<T>) arrayListCache;}
+    //if(class_==ArrayList.class){return (L42Cache<T>) arrayListCache;}
     assert cacheUnderControl();
     return (L42Cache<T>) commander.get(class_);
     }
@@ -114,9 +116,19 @@ public class L42CacheMap {
   @SuppressWarnings("unchecked") //NOTE: public only for testing
   public static <T> L42Cache<T> getCacheObject(T o) {
     assert o!=null;
-    if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache();}
-    var c=getCacheObject((Class<T>) o.getClass());
-    return c.refine(o);
+    if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache().refine(o);}
+    if(o instanceof String){return (L42Cache<T>) stringCache;}
+    if(o instanceof ArrayList<?>){return ((L42Cache<T>) arrayListCache).refine(o);}
+    if(o instanceof Integer){return (L42Cache<T>) intCache;}
+    if(o instanceof Float){return (L42Cache<T>) floatCache;}
+    if(o instanceof Double){return (L42Cache<T>) doubleCache;}
+    if(o instanceof Long){return (L42Cache<T>) longCache;}
+    if(o instanceof Short){return (L42Cache<T>) shortCache;}
+    if(o instanceof Character){return (L42Cache<T>) charCache;}
+    if(o instanceof Byte){return (L42Cache<T>) byteCache;}
+    if(o instanceof Boolean){return (L42Cache<T>) boolCache;}
+    if(o instanceof Flags){return (L42Cache<T>) flagsCache;}
+    throw unreachable();
     }
   public static <T> T normalize_internal(T t) {//NOTE: public only for testing
     L42Cache<T> cache = getCacheObject(t);
