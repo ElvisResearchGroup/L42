@@ -42,20 +42,20 @@ public class NormalizationTests {
     assert list.size() == 0;
     assertThrows(IndexOutOfBoundsException.class, () -> { list.getImm(0); });
     assertThrows(IndexOutOfBoundsException.class, () -> { list.getMut(0); });
-    assert list.getUnderlyingList().size() == 2;
+    assert list.getUnderlyingList().size() == 1;
     list.addAsImm("I am imm");
     assert list.length() == 1;
     assert list.getImm(0).equals("I am imm");
     assertThrows(NullPointerException.class, () -> { list.getMut(0); });
-    assert list.getUnderlyingList().size() == 4;
-    assert list.getUnderlyingList().get(2).equals("I am imm");
-    assert ((Flags) ((Object) list.getUnderlyingList().get(3))) == ImmElem;
+    assert list.getUnderlyingList().size() == 3;
+    assert list.getUnderlyingList().get(1).equals("I am imm");
+    assert ((Flags) ((Object) list.getUnderlyingList().get(2))) == ImmElem;
     list.addAsMut("I am mut");
     assert list.getMut(1).equals("I am mut");
     assertThrows(NullPointerException.class, () -> { list.getImm(1); });
-    assert list.getUnderlyingList().size() == 6;
-    assert list.getUnderlyingList().get(4).equals("I am mut");
-    assert ((Flags) ((Object) list.getUnderlyingList().get(5))) == MutElem;
+    assert list.getUnderlyingList().size() == 5;
+    assert list.getUnderlyingList().get(3).equals("I am mut");
+    assert ((Flags) ((Object) list.getUnderlyingList().get(4))) == MutElem;
     }
   
   @Test
@@ -312,7 +312,7 @@ public class NormalizationTests {
           }
         return rlist.get(0).getUnderlyingList();
         }, false);
-      for(int i = 2; i < al.size(); i += 2) {
+      for(int i =1; i < al.size(); i += 2) {
         assert al.get(i) == al;
         }
       }
@@ -418,12 +418,11 @@ public class NormalizationTests {
     private final ArrayList<Object> underlying = new ArrayList<>();
     
     public L42List(Class<T> myClass) {
-      underlying.add(L42CacheMap.getCacheObject(myClass));
       underlying.add(null);
     }
     
     public int length() {
-      return (underlying.size() - 2) / 2;
+      return (underlying.size() - 1) / 2;
       }
     
     public int size() {
@@ -442,7 +441,7 @@ public class NormalizationTests {
     
     public boolean isImm(int pos) {
       pos *= 2;
-      pos += 2;
+      pos += 1;
       return underlying.get(pos + 1) == ImmElem;
       }
     
@@ -450,7 +449,7 @@ public class NormalizationTests {
     public T getImm(int pos) {
       if(isImm(pos)) {
         pos *= 2;
-        pos += 2;
+        pos += 1;
         return (T) underlying.get(pos);
         } else {
         throw new NullPointerException();
@@ -461,7 +460,7 @@ public class NormalizationTests {
     public T getMut(int pos) {
       if(!isImm(pos)) {
         pos *= 2;
-        pos += 2;
+        pos += 1;
         return (T) underlying.get(pos);
         } else {
         throw new NullPointerException();

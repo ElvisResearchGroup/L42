@@ -14,12 +14,9 @@ public abstract class L42£AbsSet<K,Inner,Self>implements L42Cachable<Self>{
   Inner inner=null;
   K[] keys=null;
   Self norm=null;
-  L42Cache<K> kCache;
-  @SuppressWarnings("unchecked")
-  public L42£AbsSet(Object kCache){this.kCache=(L42Cache<K>)kCache;}
-  public abstract int size();//{return inner==null?0:inner.size();}
+  public abstract int size();
   static protected final Object[] emptyArr=new Object[]{};
-  protected void clearIteration(){keys=null;}//vals=null;
+  protected void clearIteration(){keys=null;}
   protected abstract void loadIteration();
   public K keyIndex(int index){loadIteration();return keys[index];}
   public abstract void remove(K key);

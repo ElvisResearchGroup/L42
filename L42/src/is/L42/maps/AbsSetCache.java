@@ -18,15 +18,12 @@ import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
 public abstract class AbsSetCache<T extends L42Cachable<T>> extends AbstractStructuredCache<T>{
-  public AbsSetCache(){super();}
-  protected AbsSetCache(AbsSetCache<T> o){super(o);}
   @Override protected void add(KeyNorm2D key, T t) {
     super.add(key,t);
     this.setMyNorm(t, t);
     }  
   @Override public boolean isNorm(T t){return t.isNorm();}
   @Override public int fn(T t){return t.numFields();}
-  @Override abstract public L42Cache<?> rawFieldCache(Object t,int i);
   @Override public T getMyNorm(T t){return t.myNorm();}
   @Override public void setMyNorm(T t, T norm){t.setNorm(t);}
   }

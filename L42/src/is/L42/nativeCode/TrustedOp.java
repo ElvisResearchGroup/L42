@@ -337,12 +337,12 @@ public enum TrustedOp {
     SelfVector,vectorKs(true)
     )),
   IsEmpty("isEmpty",Map.of(
-    Vector,use("return %s.size()==2;",sig(Readable,Immutable,Bool)),
-    SelfVector,use("return %s.size()==2;",sig(Readable,Immutable,Bool))
+    Vector,use("return %s.size()==1;",sig(Readable,Immutable,Bool)),
+    SelfVector,use("return %s.size()==1;",sig(Readable,Immutable,Bool))
     )),
   Size("size",Map.of(
-    Vector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
-    SelfVector,use("return (%s.size()-2)/2;",sig(Readable,Immutable,Int)),
+    Vector,use("return (%s.size()-1)/2;",sig(Readable,Immutable,Int)),
+    SelfVector,use("return (%s.size()-1)/2;",sig(Readable,Immutable,Int)),
     HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HMMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HSet,use("return  %s.size();",sig(Readable,Immutable,Int)),

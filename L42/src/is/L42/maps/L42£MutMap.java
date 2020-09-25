@@ -4,7 +4,6 @@ import is.L42.cache.L42Cache;
 import is.L42.maps.L42£AbsMap.MapCache;
 import is.L42.nativeCode.TrustedKind;
 public class L42£MutMap<K,T> extends L42£AbsMap<K,T,L42£MutMap<K,T>>{
-  public <KK,TT>L42£MutMap(L42Cache<KK> kCache,L42Cache<TT> vCache){super(kCache,vCache);}
   public T processVal(T val){return val;}
   @SuppressWarnings("unchecked")
   public static final Class<L42£MutMap<?,?>> _class=(Class<L42£MutMap<?,?>>)(Object)L42£MutMap.class;

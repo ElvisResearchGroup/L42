@@ -20,12 +20,6 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields.EqCache;
 import is.L42.tools.General;
 public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<K,T>,Self>{
   T[] vals=null;
-  L42Cache<T> vCache;
-  @SuppressWarnings("unchecked")
-  public L42£AbsMap(Object kCache,Object vCache){
-    super(kCache);
-    this.vCache=(L42Cache<T>)vCache;
-    }
   public int size(){return inner==null?0:inner.size();}
   @Override protected void clearIteration(){keys=null;vals=null;}
   @SuppressWarnings("unchecked")
@@ -40,14 +34,14 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     vals=(T[])inner.values().toArray();        
     }
   public T valIndex(int index){loadIteration();return vals[index];}
-  public /*Opt<T>*/T val(K key){//can never be null, TODO: we need to sort Opt to use flag values?
-    key=kCache.normalize(key);
+  public T val(K key){
+    if(key!=null){key=L42CacheMap.normalize(key);}
     T val=inner==null?null:inner.get(key);
     return val;//this, in 42 must be an Opt<T> native
     }
   abstract public T processVal(T val);//vCache.get().normalize(val);
   public void put(K key,T val){
-    key=kCache.normalize(key);
+    if(key!=null){key=L42CacheMap.normalize(key);}
     val=processVal(val);
     clearIteration();
     assert val!=null;
@@ -60,8 +54,7 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     clearIteration();
     }
   public static class MapCache<K,T,M extends L42£AbsMap<K,T,M>> extends AbsSetCache<M>{
-    public MapCache(Object typeName){super();this.typeName=typeName;}
-    protected MapCache(Object typeName,MapCache<K,T,M> o){super(o);this.typeName=typeName;}
+    public MapCache(Object typeName){this.typeName=typeName;}
     Object typeName;
     @Override public Object f(M t, int i){
       t.loadIteration();
@@ -76,10 +69,8 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
       }
     @Override public int fn(M t){return t.inner==null?0:t.inner.size()*2;}
     @Override public L42Cache<?> rawFieldCache(Object o,int i){
-      if(o==null){return this;}
+      if(o==null){return null;}
       return L42CacheMap.getCacheObject(o);
-      //if(i%2==0){return t.kCache;}
-      //return t.vCache;
       }
     @Override protected M newInstance(M t){return t.newInstance();}
     @Override public Object typename(){return typeName;}

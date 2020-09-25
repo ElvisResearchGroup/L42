@@ -32,9 +32,9 @@ class OpUtils{
     if(self){tName="L42£SelfVector";}
     String flagName="";
     if(self){flagName="Flag";}
-    return vectorExc2("Object tmp=(("+tName+")%1$s).get"+flagName+"(%2$s*2+3);\n"+"""
+    return vectorExc2("Object tmp=(("+tName+")%1$s).get"+flagName+"(%2$s*2+2);\n"+"""
       if(tmp==is.L42.nativeCode.Flags."""+(mut?"MutElem":"ImmElem")+"""
-        ){return %1$s.get(%2$s*2+2);}
+        ){return %1$s.get(%2$s*2+1);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
     .wrap(new L42£LazyMsg(
         "#val called, but the element in position "+%1$s+" was inserted as immutable"
@@ -45,16 +45,16 @@ class OpUtils{
       if(self) {tName="L42£SelfVector";}
       return vectorExc2(//ok also for SelfVector since add/set take object
         "%1$s."
-        +op+"(%2$s*2+2,%3$s);(("+tName+")%1$s)."
-        +op+"(%2$s*2+3,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")
+        +op+"(%2$s*2+1,%3$s);(("+tName+")%1$s)."
+        +op+"(%2$s*2+2,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")
         +");return L42£Void.instance;"
         );
       }
     static String vectorOpRemove(){
-      return vectorExc2("%1$s.remove(%2$s*2+3);%1$s.remove(%2$s*2+2);return L42£Void.instance;");
+      return vectorExc2("%1$s.remove(%2$s*2+2);%1$s.remove(%2$s*2+1);return L42£Void.instance;");
       }
     static String vectorReadGet(){
-      return vectorExc2("return %s.get(%s*2+2);");
+      return vectorExc2("return %s.get(%s*2+1);");
       }
     private static final String vectorExc2(String body){
       return "try{"+body+"}"+
@@ -136,9 +136,9 @@ class OpUtils{
       };}
     static public String makeVector(J j,String size){
       String typeName=j.typeNameStr(j.p());
-      return "var res=new "+typeName+"("+size+"+2); "+
+      return "var res=new "+typeName+"("+size+"+1); "+
         "var res0=(ArrayList)res; "+
-        "res0.add("+genCache(j,0)+");res0.add(null); return res;";
+        "res0.add(null); return res;";
       }
     static void checkParCount(Program p,MWT mwt,int expected){
       if(mwt.key().xs().size()==expected){return;}

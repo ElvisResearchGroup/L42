@@ -291,13 +291,13 @@ public enum TrustedKind implements TrustedT{
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==4;
     String typeName=j.typeNameStr(j.p());
-    return "return new "+typeName+"("+OpUtils.genCache(j,0)+","+OpUtils.genCache(j,1)+");";
+    return "return new "+typeName+"();";
     }
   String setFactory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==2;
     String typeName=j.typeNameStr(j.p());
-    return "return new "+typeName+"("+OpUtils.genCache(j,0)+");";
+    return "return new "+typeName+"();";
     }
   String optTypeNameString(Program p,P gen1, J j) {
     if(!gen1.isNCs()){return J.primitivePToString(gen1);}

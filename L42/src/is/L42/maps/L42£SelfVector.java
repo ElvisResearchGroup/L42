@@ -33,9 +33,9 @@ public class L42£SelfVector implements L42Cachable<L42£SelfVector>{
   L42£SelfVector myNorm=null;
   @Override public void setNorm(L42£SelfVector norm){this.myNorm=norm;}
   @Override public L42£SelfVector myNorm(){return myNorm;}
-  @Override public void setField(int i, Object o){inner.set(i+2,o);}
-  @Override public Object getField(int i){return inner.get(i+2);}
-  @Override public int numFields(){return inner.size()-2;}
+  @Override public void setField(int i, Object o){inner.set(i+1,o);}
+  @Override public Object getField(int i){return inner.get(i+1);}
+  @Override public int numFields(){return inner.size()-1;}
   @Override public L42£SelfVector newInstance(){return new L42£SelfVector();}
   @Override public L42Cache<L42£SelfVector> myCache(){return myCache;}
   public static final SelfVectorCache myCache=new SelfVectorCache();

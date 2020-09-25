@@ -116,7 +116,8 @@ public class L42CacheMap {
   
   @SuppressWarnings("unchecked") //NOTE: public only for testing
   public static <T> L42Cache<T> getCacheObject(T o) {
-    assert o!=null;
+    assert o!=null:
+      "";
     if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache();}
     if(o instanceof String){return (L42Cache<T>) stringCache;}
     if(o instanceof ArrayList<?>){return ((L42Cache<T>) arrayListCache);}

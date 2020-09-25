@@ -1,7 +1,5 @@
--we could avoid a ton of problems if we used the class object instead of null for opts!!
-
+-we could avoid a ton of problems if we used the class object instead of null for opts!! But... how to handle Opt String and Opt Integer???
 -Rename feature add: must be possible to rename-sum an interface with, at least, an empty class never used. 
--write in some guides: A=B:{..} does not typecheck .. but typechecks all its nested classes if dependencies are sorted
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
 -BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native
@@ -12,7 +10,8 @@
 -IDE: clear cache should stop the loading of the old cache and set up run?
 -IDE: somehow disable insertion of random '}'
 -IDE:we can sort alphabetically the members
--untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer> (also, what about null results?) 
+-untrusted nativeCode: if Size is the result, we make a generic of <int> instead of <Integer> (also, what about null results?)
+-untrusted nativeCode should return OptStrings instead of strings!! 
 -bug initVisitor 149 TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
 -L42 optimization: if an e is just the Full.L emptyLibrary, I can avoid a lot of fromming of CTzs.... it can speed up a lot whith tests using{}: as tag!
 -L42 cache optimization: new NormResult<T>(circle); and the "commander" pattern can be made faster
@@ -23,7 +22,7 @@
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
 -Cache: use String .intern()?
-  -what about Integer? what about big rational? what about arrays 
+  -what about Integer? what about big rational? what about arrays //now all ValueCache stuff is not flyweithed 
   -should wrap all the returns with normalization, so that we only return normalized numbers?
 -test cache in case the cached method do some exceptions/errors
 -collections methods are quite irregular, for example add() is shortcut for add(right), but #add() does not exists to be a shortcut for #add(right)
@@ -36,6 +35,7 @@
 -new CachedRes for imm only on norms (now are allocated all of the time) (search new CachedRes)
 -BootStrapping: consider moving some operations inside of it
 ------------------
+-write in some guides: A=B:{..} does not typecheck .. but typechecks all its nested classes if dependencies are sorted
 //To test, NativeNames: there is now a set of forbidden words, this may not be exactly identical to what identifiers can have.
 //Should hava an automatic test that works, and may be we should be sure that a method parameter can not be called "reuse" if it is directly wrote in the program.
 //Could be done, but is not now: redirect:

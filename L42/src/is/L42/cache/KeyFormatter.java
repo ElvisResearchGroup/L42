@@ -166,7 +166,8 @@ class KeyFormatter{
     if(cache.typename() == TrustedKind.Vector){return new FormatVector(hint,this,lineN,o);}
     if(cache.typename() instanceof TrustedKind){return new FormatTrusted(hint,this,lineN,o);}
     if(cache.typename() instanceof String[]){return new Format42(hint,this,lineN,o);}
-    assert false: cache.typename();
+    assert false:
+      cache.typename();
     throw unreachable();
     }
   private String formatDispatchId(int id,P.NCs hint,Object o, boolean isInterface, int size) {

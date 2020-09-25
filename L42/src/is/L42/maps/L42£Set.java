@@ -20,7 +20,6 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42NoFields.EqCache;
 import is.L42.tools.General;
 public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
-  public <KK>L42£Set(L42Cache<KK> kCache){super(kCache);}
   public int size(){return inner==null?0:inner.size();}
   @SuppressWarnings("unchecked")
   protected void loadIteration(){
@@ -34,7 +33,7 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
     clearIteration();
     }
   public void add(K key){
-    key=kCache.normalize(key);
+    if(key!=null){key=L42CacheMap.normalize(key);}
     clearIteration();
     if(inner==null){inner=new LinkedHashSet<>();}
     inner.add(key);
@@ -45,8 +44,6 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
   @Override public L42Cache<L42£Set<K>> myCache(){return ((SetCache<K>)myCache);}
   public static final SetCache<?> myCache=new SetCache<Object>();
   public static class SetCache<K> extends AbsSetCache<L42£Set<K>>{
-    public SetCache(){super();}
-    protected SetCache(SetCache<K> o){super(o);}
     @Override public Object f(L42£Set<K> t, int i){
       t.loadIteration();
       return t.keys[i];
@@ -61,8 +58,6 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
     @Override public L42Cache<?> rawFieldCache(Object o,int i){
       if(o==null){return this;}
       return L42CacheMap.getCacheObject(o);
-      //var t=(L42£Set<K>)o;
-      //return t.kCache;
       }
     }
   }
