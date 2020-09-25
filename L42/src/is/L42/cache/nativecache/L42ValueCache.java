@@ -10,7 +10,7 @@ import is.L42.cache.KeyNorm2D;
 import is.L42.cache.NormResult;
 import is.L42.tools.General;
 
-public abstract class ValueCache<Type> implements L42Cache<Type> {
+public abstract class L42ValueCache<Type> implements L42Cache<Type> {
 
   @Override 
   public void addObjectOverride(KeyNorm2D key, Type value) {}
@@ -52,8 +52,8 @@ public abstract class ValueCache<Type> implements L42Cache<Type> {
     }
   
   @Override 
-  public L42Cache<?> rawFieldCache(int i) {
-    return this;
+  public L42Cache<?> rawFieldCache(Object t,int i) {
+    throw unreachable();
     }
   
   @Override

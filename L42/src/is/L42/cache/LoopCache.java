@@ -171,7 +171,7 @@ public class LoopCache<T> {
     List<Object> order = new ArrayList<>();
     circleobjects.get(circleobj).constructVarMap(varnames, order, circleobjects, new MyInteger(0));
     Object[][] lines = new Object[order.size()][];
-    for(int i = 0; i < lines.length; i++) { lines[i] = (circleobjects.get(order.get(i))).toKey(varnames); }
+    for(int i = 0; i < lines.length; i++) { lines[i] = circleobjects.get(order.get(i)).toKey(varnames); }
     return new KeyNorm2D(lines);
     }
   
@@ -220,7 +220,7 @@ public class LoopCache<T> {
       Field[] fields = new Field[size];
       for(int i = 0; i < size; i++) {
         Object fi=cache.f(obj,i);
-        boolean isNorm=L42CacheMap.isNorm(fi,i,cache);
+        boolean isNorm=L42CacheMap.isNorm(obj,fi,i,cache);
         fields[i] = new Field(fi, isNorm);
         }
       this.obj = obj;

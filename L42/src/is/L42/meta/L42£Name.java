@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.ValueCache;
+import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
 import is.L42.generated.C;

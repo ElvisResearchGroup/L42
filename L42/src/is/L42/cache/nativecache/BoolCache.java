@@ -5,7 +5,7 @@ import java.util.List;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
-public class BoolCache extends ValueCache<Boolean> {
+public class BoolCache extends L42ValueCache<Boolean> {
 
   @Override 
   public Object typename() {return TrustedKind.Bool;}

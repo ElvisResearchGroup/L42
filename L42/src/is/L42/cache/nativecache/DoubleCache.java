@@ -4,7 +4,7 @@ import java.util.List;
 
 import is.L42.tools.General;
 
-public class DoubleCache extends ValueCache<Double> {
+public class DoubleCache extends L42ValueCache<Double> {
 
   @Override 
   public String typename() { 

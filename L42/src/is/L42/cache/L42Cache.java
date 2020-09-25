@@ -144,7 +144,7 @@ public interface L42Cache<T> extends Serializable {
    * @param i The index of the field
    * @return The cache for that field, or null
    */
-  L42Cache<?> rawFieldCache(int i);
+  L42Cache<?> rawFieldCache(Object t,int i);
   
   /**
    * Returns the cache object for the relevant subfield. Always 
@@ -155,10 +155,11 @@ public interface L42Cache<T> extends Serializable {
    * @return The cache for the object
    */
   @SuppressWarnings({ "unchecked" }) 
-  default <R> L42Cache<R> fieldCache(R t, int i) {
-    L42Cache<?> raw = this.rawFieldCache(i);
-    assert raw!=null || t!=null:"";
-    return (L42Cache<R>)(raw == null ? L42CacheMap.getCacheObject(t) : ((L42Cache<R>)raw).refine(t));
+  default <R> L42Cache<R> fieldCache(T obj,R t, int i) {
+    L42Cache<?> raw = this.rawFieldCache(t,i);
+    if(raw==null && t!=null){return L42CacheMap.getCacheObject(t);}
+    assert raw!=null;
+    return (L42Cache<R>)raw;
   }
   
   T getMyNorm(T me);
@@ -191,7 +192,6 @@ public interface L42Cache<T> extends Serializable {
     for(int i=0;i<size;i+=1){key[0][i+1]=this.f(t, i);}
     return new KeyNorm2D(key);
     }  
-  default L42Cache<T> refine(T t){return this;}
   void clear();  
   default T dup(T that) {
     return this.dup(that, new IdentityHashMap<>());

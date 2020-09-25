@@ -33,8 +33,6 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>>{
     res.add(null);
     return res;
     }
-  public ArrayListCache(){super();}
-  private ArrayListCache(ArrayListCache o){super(o);}
   @Override protected void add(KeyNorm2D key, ArrayList<?> t) {
     super.add(key,t);
     this.setMyNorm(t, t);
@@ -44,7 +42,11 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>>{
   //the normalized verion of itself
   @Override public int fn(ArrayList<?> t){return t.size()-2;}
   @Override public Object typename(){return TrustedKind.Vector;}
-  @Override public L42Cache<?> rawFieldCache(int i){throw unreachable();}
+  @Override public L42Cache<?> rawFieldCache(Object o,int i){
+      if(i%2!=0){return Flags.cache;}
+      if(o!=null) {return L42CacheMap.getCacheObject(o);}
+      return this;
+      }
   @Override public ArrayList<?> getMyNorm(ArrayList<?> me){
       if(me==null) {return null;}///the normalized version of iself
       return (ArrayList<?>) ((Object[])me.get(1))[0];
@@ -52,22 +54,6 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>>{
   @SuppressWarnings("unchecked") @Override 
   public void setMyNorm(ArrayList<?> me, ArrayList<?> norm){
     ((ArrayList<Object>)me).set(1, new Object[]{norm});
-    }
-  @Override public L42Cache<ArrayList<?>> refine(ArrayList<?> t) {
-    var c=(L42Cache<?>)(t==null?L42CacheMap.boolCache:t.get(0));//Tricky: if t is null then this is
-    //a 'composite' cache also for Optional List and this is the empty optional.
-    //we reuse the same cache of T also for OptT, and for lists, we reuse the same map for all
-    //the kinds of T, so 'boolCache' is good as any other for a cache for the empty optional
-    return new ArrayListCache(this){
-      @Override public L42Cache<?> rawFieldCache(int i){
-        if(i%2!=0){return Flags.cache;}
-        return c;
-        }
-      @Override public int hashCode(){return Objects.hashCode(c);}
-      @Override public boolean equals(Object o){
-        return General.eq(this,o,(o1,o2)->
-          Objects.equals(o1.rawFieldCache(0),o2.rawFieldCache(0)));
-        }
-      };
+    //Norm wrapped up as array, otherwise when placed as hashmap key it would loop 
     }
   }

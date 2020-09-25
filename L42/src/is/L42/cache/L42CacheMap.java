@@ -24,6 +24,7 @@ import is.L42.cache.nativecache.LongCache;
 import is.L42.cache.nativecache.ShortCache;
 import is.L42.cache.nativecache.StringCache;
 import is.L42.nativeCode.Flags;
+import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public class L42CacheMap {
   
@@ -116,9 +117,9 @@ public class L42CacheMap {
   @SuppressWarnings("unchecked") //NOTE: public only for testing
   public static <T> L42Cache<T> getCacheObject(T o) {
     assert o!=null;
-    if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache().refine(o);}
+    if(o instanceof L42Cachable){return ((L42Cachable<T>) o).myCache();}
     if(o instanceof String){return (L42Cache<T>) stringCache;}
-    if(o instanceof ArrayList<?>){return ((L42Cache<T>) arrayListCache).refine(o);}
+    if(o instanceof ArrayList<?>){return ((L42Cache<T>) arrayListCache);}
     if(o instanceof Integer){return (L42Cache<T>) intCache;}
     if(o instanceof Float){return (L42Cache<T>) floatCache;}
     if(o instanceof Double){return (L42Cache<T>) doubleCache;}
@@ -139,22 +140,25 @@ public class L42CacheMap {
   static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
     if(t instanceof L42Cachable) { return ((L42Cachable<?>) t).isNorm(); }
-    L42Cache<T> cache = getCacheObject((Class<T>) t.getClass()).refine(t);
+    L42Cache<T> cache = getCacheObject((Class<T>) t.getClass());
     return cache.isNorm(t);
     }
   @SuppressWarnings("unchecked")
-  static <T> boolean isNorm(T t,int i,L42Cache<?> c) {
+  static <T,K> boolean isNorm(T t,K fi,int i,L42Cache<T> c) {
     if(t == null){return true;}
-    if(t instanceof L42Cachable){return ((L42Cachable<?>) t).isNorm(); }
-    var cache=(L42Cache<T>)c.rawFieldCache(i);
-    if(cache!=null){return cache.isNorm(t);}
+    if(t instanceof L42Cachable<?>){return ((L42Cachable<T>) t).isNorm(); }
+    var cache=(L42Cache<K>)c.rawFieldCache(fi,i);
+    if(cache!=null){return cache.isNorm(fi);}
     assert List.of(Thread.currentThread().getStackTrace())
       .toString().contains(".NormalizationTests.");//line after just for tests
-    return getCacheObject((Class<T>) t.getClass()).refine(t).isNorm(t);
+    return getCacheObject((Class<T>) t.getClass()).isNorm(t);
     }
   
+  @SuppressWarnings("unchecked")
   static <T> boolean identityEquals(T t1, T t2) {
-    if(t1 instanceof L42Cachable) { return t1 == t2; }
+    if(t1==t2) {return true;}
+    if(t1 instanceof L42NoFields.Eq<?>){return ((L42NoFields.Eq<T>)t1).eq(t2);}
+    if(t1 instanceof L42Cachable<?>){return false;}
     L42Cache<T> cache = getCacheObject(t1);
     return cache.identityEquals(t1, t2);
     }
@@ -183,7 +187,7 @@ public class L42CacheMap {
     return objToString_internal(obj);
     }
   static String objToString_internal(Object obj) {
-    return KeyFormatter.start(new KeyExpander(obj,true,false).expandedKey());
+    return KeyFormatter.start(new KeyExpander(obj,true,false).expandedKey(),obj);
     }
   //public just for testing
   static public class KeyExpander {
@@ -202,16 +206,15 @@ public class L42CacheMap {
         var oldId = (KeyVarID)key[i];
         Object field = cache.f(toAdd, i - 1);
         if(done.containsKey(field)){key[i]=new KeyVarID(done.get(field));continue;}
-        var fCache=cache.fieldCache(field, i - 1); 
+        var fCache=cache.fieldCache(toAdd,field, i - 1); 
         key[i]=apply(offset, fCache, field, oldId.value(), subkey);
         }
       return res;
       }
     <T>Object addNewObject(L42Cache<T> theCache, T theObj){
-      if(theCache==null){theCache=getCacheObject(theObj);}
       if(!entireROG && theCache.isNorm(theObj) ) { return theObj; }
       theObj = norm ? theCache.normalize(theObj) : theObj;
-      KeyNorm2D subkey = theCache.refine(theObj).computeKeyNN(theObj);
+      KeyNorm2D subkey = theCache.computeKeyNN(theObj);
       Object[][] subkeylines = subkey.lines();
       int offset = nkeylist.size();
       KeyVarID nid = apply(offset, theCache, theObj, 0, subkeylines);
@@ -219,28 +222,35 @@ public class L42CacheMap {
       return nid;
       }
     public KeyNorm2D expandedKey(){
-      addNewObject(null, obj);
-      for(int i = 0; i < nkeylist.size(); i++){addI(i);}
+      var c=getCacheObject(obj);
+      addNewObject(c, obj);
+      for(int i = 0; i < nkeylist.size(); i++){
+        addI(i,obj);
+        }
       //Note: the above add lines while working, thus size changes
       Object[][] narr = new Object[nkeylist.size()][];
       for(int i = 0; i < narr.length; i++) { narr[i] = nkeylist.get(i);}
       return new KeyNorm2D(narr);
       }
-    void addI(int i){
+    void addI(int i,Object fi){
       Object[] line=nkeylist.get(i);
       L42Cache<?> c = (L42Cache<?>) line[0];
       if(c.isValueType()){return;}
-      for(int j = 1; j < line.length; j++) {forBody(c,j,line);}
+      for(int j = 1; j < line.length; j++) {forBody(c,fi,j,line);}
       }
-    <T>void forBody(L42Cache<?> lineCache,int j,Object[] line){
+    <T,K>void forBody(L42Cache<K> lineCache,Object fi,int j,Object[] line){
       if(line[j] instanceof KeyVarID){return;}
       if(done.containsKey(line[j])){
         line[j] = new KeyVarID(done.get(line[j]));
         return;
         }
       if(line[j]==null){return;}
-      @SuppressWarnings("unchecked") var cache=(L42Cache<T>)lineCache.rawFieldCache(j - 1);
-      @SuppressWarnings("unchecked") var value=(T)line[j];
+      @SuppressWarnings("unchecked")
+      var value=(T)line[j];
+      @SuppressWarnings("unchecked")
+      var cache=(L42Cache<T>)lineCache.rawFieldCache(value,j - 1);
+      //j-1 since j==0 is the contained object?
+      if(cache==null){cache=getCacheObject(value);}
       line[j] = addNewObject(cache,value);
       }
     }

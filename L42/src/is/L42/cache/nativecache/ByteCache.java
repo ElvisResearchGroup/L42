@@ -4,7 +4,7 @@ import java.util.List;
 
 import is.L42.tools.General;
 
-public class ByteCache extends ValueCache<Byte> {
+public class ByteCache extends L42ValueCache<Byte> {
 
   @Override 
   public String typename() { 

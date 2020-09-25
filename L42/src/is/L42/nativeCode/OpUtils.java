@@ -122,7 +122,7 @@ class OpUtils{
       if(l.isInterface()){return "null";}
       if(l.info().nativeKind().isEmpty()){return genT+".myCache";}
       String wrapperT=J.classNameStr(pOfGen);
-      return wrapperT+".myCache.rawFieldCache(0)";
+      return wrapperT+".myCache.rawFieldCache(null,0)";
       }
     static Generator vectorKs(boolean self){return (type,mwt,j)->{
       Signature sig0=Signature.sig(Mdf.Class,Mdf.Mutable,This,Mdf.Immutable,TrustedKind.Int);

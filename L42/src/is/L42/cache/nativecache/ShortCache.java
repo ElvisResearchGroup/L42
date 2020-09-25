@@ -4,7 +4,7 @@ import java.util.List;
 
 import is.L42.tools.General;
 
-public class ShortCache extends ValueCache<Short> {
+public class ShortCache extends L42ValueCache<Short> {
 
   @Override 
   public String typename() { 

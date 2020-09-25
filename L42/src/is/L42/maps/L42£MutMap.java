@@ -9,6 +9,6 @@ public class L42£MutMap<K,T> extends L42£AbsMap<K,T,L42£MutMap<K,T>>{
   @SuppressWarnings("unchecked")
   public static final Class<L42£MutMap<?,?>> _class=(Class<L42£MutMap<?,?>>)(Object)L42£MutMap.class;
   @SuppressWarnings("unchecked")
-  @Override public MapCache<K,T,L42£MutMap<K,T>> myCache(){return ((MapCache<K,T,L42£MutMap<K,T>>)myCache).refine(this);}
+  @Override public MapCache<K,T,L42£MutMap<K,T>> myCache(){return ((MapCache<K,T,L42£MutMap<K,T>>)myCache);}
   public static final MapCache<?,?,?> myCache=new MapCache<Object,Object,L42£MutMap<Object,Object>>(TrustedKind.HMMap);
   }

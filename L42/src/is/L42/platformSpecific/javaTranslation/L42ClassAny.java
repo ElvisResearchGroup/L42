@@ -2,7 +2,7 @@ package is.L42.platformSpecific.javaTranslation;
 
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
-import is.L42.cache.nativecache.ValueCache;
+import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.generated.P;
 import is.L42.tools.General;
 
@@ -13,7 +13,7 @@ public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {
     this.unwrap=p;
     }
   
-  public static final ValueCache<L42ClassAny> myCache = new ValueCache<L42ClassAny>() {
+  public static final L42ValueCache<L42ClassAny> myCache = new L42ValueCache<L42ClassAny>() {
 
     @Override 
     public String typename() { 

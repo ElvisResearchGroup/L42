@@ -1,5 +1,7 @@
 package is.L42.sifo;
 
+import static is.L42.tools.General.L;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,9 +30,8 @@ public abstract class Lattice<T> {
   T top;
 
   public Lattice(T top) {
-    Map<T, ArrayList<T>> lattice = new HashMap<>();
-    lattice.put(top, new ArrayList<>());
-    this.inner = lattice;
+    this.inner = new HashMap<>();
+    this.inner.put(top, new ArrayList<>());
     this.top = top;
   }
   
@@ -86,12 +87,13 @@ public abstract class Lattice<T> {
     return leastUpperBound(List.of(level1, level2));
   }
   
-  public <Sub extends T> T leastUpperBoundOrLow(List<Sub> levels){
+  public <Sub extends T> T leastUpperBound(List<Sub> levels){
+    levels=L(levels.stream().filter(l->!getBottom().equals(l)));
     if(levels.isEmpty()){return getBottom();}
-    return leastUpperBound(levels);
+    return leastUpperBoundAux(levels);
     }
   
-  public <Sub extends T> T leastUpperBound(List<Sub> levels){
+  private <Sub extends T> T leastUpperBoundAux(List<Sub> levels){
     if (levels.size() == 1) {
       return levels.get(0);
     }
@@ -111,6 +113,7 @@ public abstract class Lattice<T> {
   }
 
   protected Map<T, Integer> getUpper(T level) {
+    assert !getBottom().equals(level);
     Map<T, Integer> uppers = new HashMap<T, Integer>();
     uppers.put(level, 0);
     for (T upperLevel : inner.get(level)) {
@@ -128,6 +131,7 @@ public abstract class Lattice<T> {
   }
 
   public boolean secondHigherThanFirst(T level1, T level2) {
+    if(level1.equals(getBottom())){return true;}
     Map<T, Integer> uppers = getUpper(level1);
     return uppers.keySet().contains(level2);
   }
@@ -136,28 +140,22 @@ public abstract class Lattice<T> {
     Map<T,Integer> upperFromLowMap = getUpper(lowerLevel);
     Set<T> upperFromHigh = getUpper(higherLevel).keySet();
     upperFromHigh.remove(higherLevel);
-    for (T t : upperFromHigh) {
-      upperFromLowMap.remove(t);
-    }
-    
-    List<T> removeList = new ArrayList<>(upperFromLowMap.keySet());
-    for (T nextLevel : removeList) {
+    for (T t : upperFromHigh){upperFromLowMap.remove(t);}
+    for (T nextLevel : upperFromLowMap.keySet()) {
       if (!getUpper(nextLevel).keySet().contains(higherLevel)) {
         upperFromLowMap.remove(nextLevel);
-      }
-    }
-    
-    List<T> returnList = new ArrayList<>();
-    for (int i = 0; i <= upperFromLowMap.get(higherLevel); i++) {
-      for(T t : upperFromLowMap.keySet()) {
-        if (upperFromLowMap.get(t) == i) {
-          returnList.add(t);
         }
-      }
-    }
-    
+      }    
+    List<T> returnList = new ArrayList<>();
+    Integer steps=upperFromLowMap.get(higherLevel);
+    if(steps==null){return L();}
+    for(int i = 0; i <= steps; i++){
+      for(T t : upperFromLowMap.keySet()){
+        if(upperFromLowMap.get(t) == i){returnList.add(t);}
+        }
+      }    
     return returnList;
-  }
+    }
 
   protected T calculateLeast(Map<T, Integer> upper1, Map<T, Integer> upper2) {
     T least = null;

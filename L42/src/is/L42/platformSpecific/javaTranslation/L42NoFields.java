@@ -1,7 +1,7 @@
 package is.L42.platformSpecific.javaTranslation;
 
 import is.L42.cache.L42Cachable;
-import is.L42.cache.nativecache.ValueCache;
+import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.generated.P;
 import is.L42.tools.General;
 
@@ -24,7 +24,7 @@ public abstract class L42NoFields<T> implements L42Cachable<T>{
       }
     public abstract boolean eq(T that);
     }
-  public static class EqCache<T extends Eq<T>> extends ValueCache<T>{
+  public static class EqCache<T extends Eq<T>> extends L42ValueCache<T>{
     Object typeName; public EqCache(Object typeName){this.typeName=typeName;}
     @Override public Object typename(){return typeName;}
     @Override protected boolean valueCompare(T t1,T t2) {return t1.eq(t2);}

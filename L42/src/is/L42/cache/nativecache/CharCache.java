@@ -1,6 +1,6 @@
 package is.L42.cache.nativecache;
 
-public class CharCache extends ValueCache<Character> {
+public class CharCache extends L42ValueCache<Character> {
 
   @Override 
   public String typename() { 

@@ -1,6 +1,7 @@
 package is.L42.tests;
 
 import java.util.List;
+import java.util.Set;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.ArrayList;
@@ -34,6 +35,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.sifo.Lattice42;
+import is.L42.sifo.SifoTypeSystem;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
@@ -59,15 +61,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSifoTypeSystem
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
-   pass("A={B={method Void main()=void}}")   
-   ),new AtomicTest(()->
-   pass("""
+//---------------
+  pass("""
      A={
        Left={interface @{securityLevel}}
        Right={interface@{securityLevel}}
        Top={interface [Left,Right] @{securityLevel}}
-       A={class method This()}
-       B={class method @Left A main(@Left A a)=a}//should pass       
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A a)=a}//should pass
+         }       
        }""")
    ),new AtomicTest(()->
    fail("""
@@ -75,11 +78,85 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
          Left={interface @{securityLevel}}
          Right={interface@{securityLevel}}
          Top={interface [Left,Right] @{securityLevel}}
-         A={class method This()}
-         B={class method @Left A main(@Right A a)=a}//should fail       
+         W={
+           A={class method This()}
+           B={class method @Left A main(@Right A a)=a}//should fail
+           }       
          }""",
-       "MySifoError in line[###]: in method ...")   
-   /*  ),new AtomicTest(()->
+       SifoTypeSystem.noSubErr("[###]","[###]"))
+//------------------
+   ),new AtomicTest(()->
+   pass("""
+     A={
+       Left={interface @{securityLevel}}
+       Right={interface@{securityLevel}}
+       Top={interface [Left,Right] @{securityLevel}}
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A that, @Right A a)=(@Right A x=a that)}
+         }       
+       }""")
+   ),new AtomicTest(()->
+   fail("""
+     A={
+       Left={interface @{securityLevel}}
+       Right={interface@{securityLevel}}
+       Top={interface [Left,Right] @{securityLevel}}
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A that, @Right A a)=(@Right A x=a a)}
+         }       
+       }""",
+     SifoTypeSystem.noSubErr("[###]","[###]"))
+//------------------
+   ),new AtomicTest(()->
+   pass("""
+     A={
+       Left={interface @{securityLevel}}
+       Right={interface@{securityLevel}}
+       Top={interface [Left,Right] @{securityLevel}}
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A that, @Right A a)=(@Left A x=this.main(that,a=a),x)}
+         }       
+       }""")
+   ),new AtomicTest(()->
+   fail("""
+     A={
+       Left={interface @{securityLevel}}
+       Right={interface@{securityLevel}}
+       Top={interface [Left,Right] @{securityLevel}}
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A that, @Right A a)=(@Right A x=this.main(that,a=a),that)}
+         }       
+       }""",
+     SifoTypeSystem.methodCallSecurityIncompatible("[###]","[###]"))
+//------------------
+   ),new AtomicTest(()->
+   pass("""
+     A={
+       Left={interface @{securityLevel}}
+       Right={interface@{securityLevel}}
+       Top={interface [Left,Right] @{securityLevel}}
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)}
+         }       
+       }""")
+   ),new AtomicTest(()->
+   fail("""
+     A={
+       Left={interface @{securityLevel}}
+       Right={interface@{securityLevel}}
+       Top={interface [Left,Right] @{securityLevel}}
+       W={
+         A={class method This()}
+         B={class method @Left A main(@Left A that, @Right A a)=this.main(that,a=that)}
+         }       
+       }""",
+     SifoTypeSystem.methodCallSecurityIncompatible("[###]","[###]"))
+ /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->
    pass("A={class method Void v()=void B={method class A main()=A<:class A}}")   
@@ -838,8 +915,11 @@ static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
   }
 private static void typeMethESifo(Program p,MH mh, E e){
   var g=G.of(mh);
-  e.visitable().accept(new is.L42.sifo.SifoTypeSystem(
-    p,g,mh.exceptions(),Collections.emptySet(),mh.t(),new Lattice42(p,P.pThis0)));
+  var top=new P.NCs(0,L(new C("Top",-1)));//TODO: lattice to string, plus no parameter in InterfaceH below
+  var l=new Lattice42(p.pop(2),top);
+  l.traverseInterfaceHierarchy(top);
+  var vis=new SifoTypeSystem(2,p,g,mh.exceptions(),Set.of(),mh.t(),l);
+  e.visitable().accept(vis);
   }
 public static void failC(String program,String...out){
   checkFail(()->{

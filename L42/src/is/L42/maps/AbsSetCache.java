@@ -26,9 +26,7 @@ public abstract class AbsSetCache<T extends L42Cachable<T>> extends AbstractStru
     }  
   @Override public boolean isNorm(T t){return t.isNorm();}
   @Override public int fn(T t){return t.numFields();}
-  @Override public L42Cache<?> rawFieldCache(int i){
-    throw unreachable();}
+  @Override abstract public L42Cache<?> rawFieldCache(Object t,int i);
   @Override public T getMyNorm(T t){return t.myNorm();}
   @Override public void setMyNorm(T t, T norm){t.setNorm(t);}
-  @Override public abstract L42Cache<T> refine(T t);
   }

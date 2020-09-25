@@ -14,7 +14,7 @@ import java.util.Random;
 import java.util.Set;
 
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.ValueCache;
+import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 

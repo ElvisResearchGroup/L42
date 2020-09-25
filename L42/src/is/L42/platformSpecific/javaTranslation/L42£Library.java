@@ -10,7 +10,7 @@ import java.util.function.BiConsumer;
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.ValueCache;
+import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;

@@ -265,7 +265,7 @@ public class NormalizationTests {
       });
     }
   
-  @Test
+  @Test 
   public void testAnnoying() {
     testSelfProperties(() -> {
       L42List<R1> l1 = new L42List<R1>(R1._class);

@@ -34,7 +34,7 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
     clearIteration();
     }
   public void add(K key){
-    key=kCache.refine(key).normalize(key);
+    key=kCache.normalize(key);
     clearIteration();
     if(inner==null){inner=new LinkedHashSet<>();}
     inner.add(key);
@@ -42,7 +42,7 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
   @SuppressWarnings("unchecked")
   public static final Class<L42£Set<?>> _class=(Class<L42£Set<?>>)(Object)L42£Set.class;
   @SuppressWarnings("unchecked")
-  @Override public L42Cache<L42£Set<K>> myCache(){return ((SetCache<K>)myCache).refine(this);}
+  @Override public L42Cache<L42£Set<K>> myCache(){return ((SetCache<K>)myCache);}
   public static final SetCache<?> myCache=new SetCache<Object>();
   public static class SetCache<K> extends AbsSetCache<L42£Set<K>>{
     public SetCache(){super();}
@@ -58,16 +58,11 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
     @Override public int fn(L42£Set<K> t){return t.inner==null?0:t.inner.size();}
     @Override public Object typename(){return TrustedKind.HSet;}
     @Override protected L42£Set<K> newInstance(L42£Set<K> t){return t.newInstance();}
-    @Override public L42Cache<L42£Set<K>> refine(L42£Set<K> t){
-      var c=t.kCache;
-      return new SetCache<K>(this){
-        @Override public L42Cache<?> rawFieldCache(int i){return c;}
-        @Override public int hashCode(){return Objects.hashCode(c);}
-        @Override public boolean equals(Object o){
-          return General.eq(this,o,(o1,o2)->
-            Objects.equals(o1.rawFieldCache(0),o2.rawFieldCache(0)));
-          }
-        };
+    @Override public L42Cache<?> rawFieldCache(Object o,int i){
+      if(o==null){return this;}
+      return L42CacheMap.getCacheObject(o);
+      //var t=(L42£Set<K>)o;
+      //return t.kCache;
       }
     }
   }

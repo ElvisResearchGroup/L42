@@ -57,7 +57,7 @@ public class L42SingletonCache<T> implements L42Cache<T> {
   @Override public int fn(T t){return 0;}
   
   @Override 
-  public L42Cache<?> rawFieldCache(int i) {
+  public L42Cache<?> rawFieldCache(Object t,int i) {
     throw new IndexOutOfBoundsException(); 
     }
 

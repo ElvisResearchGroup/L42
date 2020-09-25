@@ -5,7 +5,7 @@ import java.util.List;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.tools.General;
 
-public class IntCache extends ValueCache<Integer> {
+public class IntCache extends L42ValueCache<Integer> {
 
   @Override 
   public Object typename() { 

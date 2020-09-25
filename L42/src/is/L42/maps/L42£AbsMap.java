@@ -41,13 +41,13 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
     }
   public T valIndex(int index){loadIteration();return vals[index];}
   public /*Opt<T>*/T val(K key){//can never be null, TODO: we need to sort Opt to use flag values?
-    key=kCache.refine(key).normalize(key);
+    key=kCache.normalize(key);
     T val=inner==null?null:inner.get(key);
     return val;//this, in 42 must be an Opt<T> native
     }
   abstract public T processVal(T val);//vCache.get().normalize(val);
   public void put(K key,T val){
-    key=kCache.refine(key).normalize(key);
+    key=kCache.normalize(key);
     val=processVal(val);
     clearIteration();
     assert val!=null;
@@ -75,26 +75,13 @@ public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<
       else{t.inner.put(t.keys[i/2],(T)o); t.vals[i/2]=(T)o;}
       }
     @Override public int fn(M t){return t.inner==null?0:t.inner.size()*2;}
-    @Override public L42Cache<?> rawFieldCache(int i){throw unreachable();}
+    @Override public L42Cache<?> rawFieldCache(Object o,int i){
+      if(o==null){return this;}
+      return L42CacheMap.getCacheObject(o);
+      //if(i%2==0){return t.kCache;}
+      //return t.vCache;
+      }
     @Override protected M newInstance(M t){return t.newInstance();}
     @Override public Object typename(){return typeName;}
-    @Override public MapCache<K,T,M> refine(M t){
-      var k=t.kCache;
-      var v=t.vCache;
-      return new MapCache<K,T,M>(typeName,this){
-        @Override public L42Cache<?> rawFieldCache(int i){
-          if(i%2==0){return k;}
-          return v;
-          }
-        @Override public int hashCode(){return Objects.hash(k,v);}
-        @Override public boolean equals(Object o){
-          return General.eq(this,o,(o1,o2)->
-            Objects.equals(o1.rawFieldCache(0),o2.rawFieldCache(0))
-            && Objects.equals(o1.rawFieldCache(1),o2.rawFieldCache(1))
-            && o1.typeName==o2.typeName
-            );
-          }
-        };
-      }
     }
   }

@@ -43,10 +43,9 @@ public class L42£SelfVector implements L42Cachable<L42£SelfVector>{
     public SelfVectorCache(){super();}
     @Override public Object f(L42£SelfVector t, int i){return t.getField(i);}
     @Override public void setF(L42£SelfVector t, int i, Object o){t.setField(i,o);}
-    @Override public L42Cache<?> rawFieldCache(int i){return this;}
+    @Override public L42Cache<?> rawFieldCache(Object t,int i){return this;}
     @Override public int fn(L42£SelfVector t){return t.size();}
     @Override public Object typename(){return TrustedKind.SelfVector;}
     @Override protected L42£SelfVector newInstance(L42£SelfVector t){return t.newInstance();}
-    @Override public L42Cache<L42£SelfVector> refine(L42£SelfVector t){return this;}
     }
   }
