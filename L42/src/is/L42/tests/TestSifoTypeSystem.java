@@ -62,101 +62,52 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TestSifoTypeSystem
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
 //---------------
-  pass("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A a)=a}//should pass
-         }       
-       }""")
+  pass(testMeth("class method @Left A main(@Left A a)=a"))
    ),new AtomicTest(()->
-   fail("""
-       A={
-         Left={interface @{securityLevel}}
-         Right={interface@{securityLevel}}
-         Top={interface [Left,Right] @{securityLevel}}
-         W={
-           A={class method This()}
-           B={class method @Left A main(@Right A a)=a}//should fail
-           }       
-         }""",
-       SifoTypeSystem.noSubErr("[###]","[###]"))
-//------------------
-   ),new AtomicTest(()->
-   pass("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A that, @Right A a)=(@Right A x=a that)}
-         }       
-       }""")
-   ),new AtomicTest(()->
-   fail("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A that, @Right A a)=(@Right A x=a a)}
-         }       
-       }""",
+   fail(testMeth("class method @Left A main(@Right A a)=a"),
      SifoTypeSystem.noSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
-   pass("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A that, @Right A a)=(@Left A x=this.main(that,a=a),x)}
-         }       
-       }""")
+   pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=a that)"))
    ),new AtomicTest(()->
-   fail("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A that, @Right A a)=(@Right A x=this.main(that,a=a),that)}
-         }       
-       }""",
-     SifoTypeSystem.methodCallSecurityIncompatible("[###]","[###]"))
+   fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=a a)"),
+     SifoTypeSystem.noSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
-   pass("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)}
-         }       
-       }""")
+   pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Left A x=this.main(that,a=a),x)"))
    ),new AtomicTest(()->
-   fail("""
-     A={
-       Left={interface @{securityLevel}}
-       Right={interface@{securityLevel}}
-       Top={interface [Left,Right] @{securityLevel}}
-       W={
-         A={class method This()}
-         B={class method @Left A main(@Left A that, @Right A a)=this.main(that,a=that)}
-         }       
-       }""",
-     SifoTypeSystem.methodCallSecurityIncompatible("[###]","[###]"))
- /*  ),new AtomicTest(()->
+   fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=this.main(that,a=a),that)"),
+     SifoTypeSystem.noSubErr("[###]","[###]"))
+//------------------
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"))
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=that)"),
+     SifoTypeSystem.noSubErr("[###]","[###]"))
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(a,a=a)"),
+     SifoTypeSystem.noSubErr("[###]","[###]"))
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Top A main(@Left A that, @Right A a)=this.main(that,a=a)"))
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Top A main(@Left A that, @Right A a)=this.main(that,a=that)"))
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Top A main(@Left A that, @Right A a)=this.main(a,a=a)"))   
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Top A main(@Left A that, @Right A a)=this.main(a,a=that)"))   
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Top A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"))   
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Top A main(mut @Left A that, mut @Right A a)=this.main(a,a=that)"),
+     SifoTypeSystem.noSubErr("[###]","[###]"))
+   ),new AtomicTest(()->
+   pass(testMeth("imm @Left method @Top A main(@Left A that, @Right A a)=this.main(a,a=that)"))   
+   ),new AtomicTest(()->
+   fail(testMeth("imm @Top method @Top A main(mut @Left A that, @Right A a)=this.main(that,a=a)"),"")
+   //TODO: this is ok to pass as typing method call, but should fail on typing method declaration
+
+   
+   /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->
    pass("A={class method Void v()=void B={method class A main()=A<:class A}}")   
@@ -930,5 +881,20 @@ public static void fail(String program,String...out){
   checkFail(()->{
     pass(program);
     }, out, TypeError.class);
+  }
+public static String testMeth(String s){
+  return """
+      A={
+      Left={interface @{securityLevel}}
+      Right={interface@{securityLevel}}
+      Top={interface [Left,Right] @{securityLevel}}
+      W={
+        A={class method This()}
+        B={
+      """+s+"""
+          }
+        }       
+      }
+      """;
   }
 }

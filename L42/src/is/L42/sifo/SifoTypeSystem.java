@@ -50,8 +50,8 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     return "Level " + p1 + " is not equal to " + p2;}
   public static String isNotTopErr(P p, P top){
     return "Level " + p + " is not the top of the lattice. Should be " + top;}
-  public static String methodCallSecurityIncompatible(Object resSec, Object parSec){
-    return "The security....Level is not the top of the lattice. Should be ";}
+//  public static String methodCallSecurityIncompatible(Object resSec, Object parSec){
+//    return "The security....Level is not the top of the lattice. Should be ";}
   private String allMustTopErr(List<T> t0n, P top) {
     return differentSecurityLevelsErr(t0n.stream().map(t -> getSifoAnn(t.docs())).collect(Collectors.toList()), topErrString + top + ". ");
   }
@@ -137,7 +137,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(sub.equals(sup)){return;}
     var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule,Mdf.Class);
     if(mdfOk && lattice.secondHigherThanFirst(sub,sup)){return;}
-    throw new EndError.TypeError(pos, noSubErr(sub, sup));//TODO: good error
+    throw new EndError.TypeError(pos, noSubErr(sup,sub));
     }  
   @Override public void visitLoop(Loop e){
     visitExpecting(e.e(),P.coreVoid);
@@ -161,7 +161,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(this._sifoReturns!=null){expected=tWithSec(this._sifoReturns);}
     visitExpecting(e.e(),expected.withMdf(general));
     }
-  public void visitMCall(MCall e,P.NCs p0,List<T> parTypes,List<T>excs, P selectedS){
+  public void visitMCall(boolean promoted,MCall e,P.NCs p0,List<T> parTypes,List<T>excs, P selectedS){
     var excsSifo=L(excs.stream().map(t->getSifoAnn(t.docs())).distinct());
     //if excsSifo.size()>1 it will be an error when the header is typed
     P excSifo=excsSifo.isEmpty()?null:excsSifo.get(0);
@@ -174,7 +174,8 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     //  }
     var meths=AlternativeMethodTypes.types(p,p0,e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
-    assert !meths.isEmpty();
+    assert !meths.isEmpty():
+      "";
     List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});//the receiver and the arguments
     assert es.size()==parTypes.size();
     var oldExpected=expected;
@@ -191,7 +192,8 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
         _sifoReturns=oldSifoReturns;
         for(int i:range(es)){
           var pi=parTypes.get(i);
-          var sec=lattice.leastUpperBound(getSifoAnn(pi.docs()),selectedS);          
+          var sec=getSifoAnn(pi.docs());
+          if(promoted){sec=lattice.leastUpperBound(sec,selectedS);}          
           expected=tWithSec(sec).withMdf(m.mdfs().get(i)).withP(pi.p());
           visitE(es.get(i));
           }
@@ -202,7 +204,14 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       }
     throw lastErr;//TODO: better error?
     }
-  
+  boolean comparable(List<P> ss,P s){
+    for(P si:ss){
+      if(lattice.secondHigherThanFirst(si,s)){continue;}
+      if(lattice.secondHigherThanFirst(s,si)){continue;}
+      return false;
+      }
+    return true;
+    }  
   @Override public void visitMCall(MCall e){
     var s=getSifoAnn(expected.docs());
     var selectedS=lattice.getBottom();
@@ -212,25 +221,42 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     List<Core.T>excTypes=p.from(mh.exceptions(), p0);
     Core.T retType=p.from(mh.t(),p0);
     var retSec=getSifoAnn(retType.docs());
+    List<P> allSec=L(c->{
+      c.add(retSec);
+      for(var pi:parTypes){c.add(getSifoAnn(pi.docs()));}
+      });
+    boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule,Mdf.Class);
     if (!s.equals(lattice.getBottom())){
-      boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule,Mdf.Class);
+      List<P>s1n=List.of();
       if(promotable){
-        var s1n=lattice.levelsBetween(retSec,s);
-        if(s1n.isEmpty()){
-          throw new EndError.TypeError(e.poss(),methodCallSecurityIncompatible(retSec,s));
-          }
-        EndError firstErr=null;//TODO: what about order
+        s1n=lattice.levelsBetween(retSec,s);
+        s1n=L(s1n.stream().filter(si->comparable(allSec,si)));
+        }
+      if(!s1n.isEmpty()){
         for(var si:s1n){
-          try{visitMCall(e,p0,parTypes,excTypes,si);return;}
-          catch(EndError err){if(firstErr==null){firstErr=err;}}
+          var oldExpected=expected;
+          var oldG=g;
+          var oldMdfs=mdfs;
+          var oldSifoExceptions=_sifoExceptions;
+          var oldSifoReturns=_sifoReturns;
+          try{visitMCall(true,e,p0,parTypes,excTypes,si);return;}
+          catch(EndError err){}
+          expected=oldExpected;
+          g=oldG;
+          mdfs=oldMdfs;
+          _sifoExceptions=oldSifoExceptions;
+          _sifoReturns=oldSifoReturns;
           }
-        assert firstErr!=null:
-          "";
-        throw firstErr;
         }
       selectedS=s;
       }
-    visitMCall(e,p0,parTypes,excTypes,selectedS);
+    if(!promotable && !s.equals(retSec)){
+      throw new EndError.TypeError(e.poss(),notEqualErr(s,retSec));
+      }
+    if(promotable && !lattice.secondHigherThanFirst(retSec,s)){
+      throw new EndError.TypeError(e.poss(),noSubErr(s,retSec));
+      }
+    visitMCall(false,e,p0,parTypes,excTypes,selectedS);
     }
   @Override public void visitOpUpdate(OpUpdate e){
     T t=g.of(e.x());
@@ -248,8 +274,10 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       .map(x->getSifoAnn(g._of(x).docs()))
       .distinct());
     if(!s.isEmpty()){
-      if(s.size()>1){throw new EndError.TypeError(e.poss(), differentSecurityLevelsErr(s, exceptionsErrString));}//TODO: more the one mut security in-out
-      if(hasErr && !isTop(s.get(0))){throw new EndError.TypeError(e.poss(), isNotTopErr(s.get(0), lattice.getTop()));}//TODO: error only caught as high
+      if(s.size()>1){
+        throw new EndError.TypeError(e.poss(), differentSecurityLevelsErr(s, exceptionsErrString));}//TODO: more the one mut security in-out
+      if(hasErr && !isTop(s.get(0))){
+        throw new EndError.TypeError(e.poss(), isNotTopErr(s.get(0), lattice.getTop()));}//TODO: error only caught as high
       }
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
     if(hasErr){//T0..Tn: the result type+the types of catches
