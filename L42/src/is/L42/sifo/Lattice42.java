@@ -3,7 +3,9 @@ package is.L42.sifo;
 import static is.L42.tools.General.L;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
@@ -15,8 +17,8 @@ public class Lattice42 extends Lattice<P>{
   
   public Lattice42(Program p, P top){
     super(top);
-    this.top = top;
     this.p=p;
+    traverseInterfaceHierarchy(top);
     }
   
   public ArrayList<P> lowerLevels(P path){
@@ -31,5 +33,23 @@ public class Lattice42 extends Lattice<P>{
   @Override
   public P getBottom() {
     return P.pAny;
+  }
+  
+  @Override
+  protected Map<P, Integer> getUpper(P level) {
+    Map<P, Integer> uppers = new HashMap<P, Integer>();
+    if (getBottom().equals(level)) {
+      for (P upperLevel : inner.keySet()) {
+        uppers.put(upperLevel, 1);
+      }
+      return uppers;
+    }
+    assert !getBottom().equals(level);
+    uppers.put(level, 0);
+    for (P upperLevel : inner.get(level)) {
+      uppers.put(upperLevel, 1);
+      getUpper(uppers, upperLevel, 1);
+    }
+    return uppers;
   }
   }

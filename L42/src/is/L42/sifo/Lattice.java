@@ -39,9 +39,9 @@ public abstract class Lattice<T> {
     this.inner = new HashMap<>();
   }
 
-  public void traverseInterfaceHierarchy(T top) {
-    for (T nextLevel : lowerLevels(top)) {
-      addElementToKey(nextLevel, top);
+  public void traverseInterfaceHierarchy(T level) {
+    for (T nextLevel : lowerLevels(level)) {
+      addElementToKey(nextLevel, level);
       traverseInterfaceHierarchy(nextLevel);
     }
   }
@@ -113,7 +113,6 @@ public abstract class Lattice<T> {
   }
 
   protected Map<T, Integer> getUpper(T level) {
-    assert !getBottom().equals(level);
     Map<T, Integer> uppers = new HashMap<T, Integer>();
     uppers.put(level, 0);
     for (T upperLevel : inner.get(level)) {
@@ -141,11 +140,7 @@ public abstract class Lattice<T> {
     Set<T> upperFromHigh = getUpper(higherLevel).keySet();
     upperFromHigh.remove(higherLevel);
     for (T t : upperFromHigh){upperFromLowMap.remove(t);}
-    for (T nextLevel : upperFromLowMap.keySet()) {
-      if (!getUpper(nextLevel).keySet().contains(higherLevel)) {
-        upperFromLowMap.remove(nextLevel);
-        }
-      }    
+    upperFromLowMap.keySet().removeIf(e-> !getUpper(e).keySet().contains(higherLevel));   
     List<T> returnList = new ArrayList<>();
     Integer steps=upperFromLowMap.get(higherLevel);
     if(steps==null){return L();}
@@ -172,5 +167,15 @@ public abstract class Lattice<T> {
       }
     }
     return least;
+  }
+  
+  @Override
+  public String toString() {
+    StringBuilder mapAsString = new StringBuilder("{");
+    for (T key : inner.keySet()) {
+        mapAsString.append(key + "->" + inner.get(key) + ", ");
+    }
+    mapAsString.delete(mapAsString.length()-2, mapAsString.length()).append("}");
+    return mapAsString.toString();
   }
 }

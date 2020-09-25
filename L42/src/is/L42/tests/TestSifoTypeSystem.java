@@ -105,8 +105,62 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail(testMeth("imm @Top method @Top A main(mut @Left A that, @Right A a)=this.main(that,a=a)"),"")
    //TODO: this is ok to pass as typing method call, but should fail on typing method declaration
-
-   
+   ),new AtomicTest(()->
+   fail(testMeth("imm @Left method @Left A main(@Left A that, mut @Right A a)=this.main(that,a=a)"),"")
+   //TODO: this is ok to pass as typing method call, but should fail on typing method declaration
+   ),new AtomicTest(()->
+   fail(testMeth("imm @Left method @Left A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"),"")
+   //TODO: this should fail on typing method declaration right parameter is not higher than receiver
+   ),new AtomicTest(()->
+   pass(testMeth("imm @Left method @Left A main(mut @Left A that, @Right A a)=this.main(that,a=a)"))
+   //this should pass on typing method declaration right parameter is imm
+   ),new AtomicTest(()->
+   fail(testMeth("imm @Top method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"),"")
+   //TODO: this should fail on typing method declaration return is not higher than receiver
+   ),new AtomicTest(()->
+   pass(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"))
+   //this should pass as mut is correctly assigned
+   ),new AtomicTest(()->
+   fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(imm @Left A x=this.main(that,a=a),that)"), "")
+   //TODO: fail, assigend mut to imm, but correct error thrown?
+   ),new AtomicTest(()->
+   fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Right A x=this.main(that,a=a),that)"),
+       SifoTypeSystem.notEqualErr("[###]","[###]"))
+   //fail, assigend mut left to mut right
+   ),new AtomicTest(()->
+   fail(testMeth("class method mut @Left A main(mut @Left A that, mut @Right A a)=(mut @Top A x=this.main(that,a=a),that)"),
+       SifoTypeSystem.notEqualErr("[###]","[###]"))
+   //fail, assigend mut left to mut top
+   ),new AtomicTest(()->
+   fail(testMeth("class method mut @Left A main(mut @Left A that, mut @Right A a)=(mut @Left A x=this.main(that,a=a),a)"),
+       SifoTypeSystem.noSubErr("[###]","[###]"))
+   //fail, return right but left is expected
+   ),new AtomicTest(()->
+   fail(testMeth("class method mut @Left A main(@Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"), "")
+   //TODO: fail, imm returned as mut
+   ),new AtomicTest(()->
+   pass(testMeth("class method mut @Left A main(@Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),x)"))
+   //pass, mut returned as mut
+   ),new AtomicTest(()->
+   pass(testMeth("class method mut @Left A main(capsule @Left A that, mut @Left A a)=(mut @Top A x=that,a)"))
+   //pass, left capsule is promoted to mut top
+   ),new AtomicTest(()->
+   fail(testMeth("class method mut @Top A main(capsule @Left A that, mut @Left A a)=(mut @Top A x=this.main(that,a=a),a)"),
+       SifoTypeSystem.noSubErr("[###]","[###]"))
+   //fail, left cannot be returned as top
+   ),new AtomicTest(()->
+   pass(testMeth("class method mut @Top A main(capsule @Left A that, mut @Top A a)=(mut @Top A x=this.main(that,a=a),a)"))
+   //pass, call correct and top returned
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Top A x=this.main(that,a=a),that)"))
+   //pass, return left is promoted to top
+   ),new AtomicTest(()->
+   pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Top A x=this.main(that,a=a),that)"))
+   //pass, imm return promoted to top
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(A x=this.main(that,a=a),that)"),
+       SifoTypeSystem.noSubErr("[###]","[###]"))
+   //fail, left cannot be assigned to any
    /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->
@@ -867,9 +921,7 @@ static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
 private static void typeMethESifo(Program p,MH mh, E e){
   var g=G.of(mh);
   var top=new P.NCs(0,L(new C("Top",-1)));//TODO: lattice to string, plus no parameter in InterfaceH below
-  var l=new Lattice42(p.pop(2),top);
-  l.traverseInterfaceHierarchy(top);
-  var vis=new SifoTypeSystem(2,p,g,mh.exceptions(),Set.of(),mh.t(),l);
+  var vis=new SifoTypeSystem(2,p,g,mh.exceptions(),Set.of(),mh.t(),new Lattice42(p.pop(2),top));
   e.visitable().accept(vis);
   }
 public static void failC(String program,String...out){

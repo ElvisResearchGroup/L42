@@ -39,22 +39,31 @@ import is.L42.visitors.UndefinedCollectorVisitor;
 public class SifoTypeSystem extends UndefinedCollectorVisitor{
   public static String exceptionsErrString = "Errors/Exceptions have different security levels, only the same is allowed.";
   public static String topErrString = "Errors/Exceptions have different security levels, all have to be top of lattice: ";
-  public static String differentSecurityLevelsErr(List<P> sifoExceptions, String err){
-    return err + sifoExceptions.stream().map(p -> p.toNCs().toString()).reduce("", (s1,s2) -> s1+s2);}
-  public static String moreThanOneAnnotationErr(List<P.NCs> annotations){
-    return "More than one level is annotated, only one is allowed." + 
-        annotations.stream().map(p -> p.toString()).reduce("", (s1,s2) -> s1+s2);}
+  public static String differentSecurityLevelsErr(String sifoExceptions){
+    return exceptionsErrString + sifoExceptions;}
+  public static String moreThanOneAnnotationErr(String annotations){
+    return "More than one level is annotated, only one is allowed: " +  annotations;}
+  private static String listPToString(List<P> ps) {
+    return ps.stream().map(p -> p.toNCs().toString()).reduce("", (s1,s2) -> s1 + ", " + s2);
+  }
+  private static String listPNCsToString(List<P.NCs> ncs) {
+    return ncs.stream().map(p -> p.toString()).reduce("", (s1,s2) -> s1 + ", " + s2);
+  }
+  private String listTToString(List<T> t0n) {
+    return listPToString(t0n.stream().map(t -> getSifoAnn(t.docs())).collect(Collectors.toList()));
+  }
   public static String noSubErr(Object p1, Object p2){
     return "Level " + p1 + " is not a sublevel of " + p2;}
-  public static String notEqualErr(P p1, P p2){
+  public static String notEqualErr(Object p1, Object p2){
     return "Level " + p1 + " is not equal to " + p2;}
-  public static String isNotTopErr(P p, P top){
+  public static String isNotTopErr(Object p, Object top){
     return "Level " + p + " is not the top of the lattice. Should be " + top;}
 //  public static String methodCallSecurityIncompatible(Object resSec, Object parSec){
 //    return "The security....Level is not the top of the lattice. Should be ";}
-  private String allMustTopErr(List<T> t0n, P top) {
-    return differentSecurityLevelsErr(t0n.stream().map(t -> getSifoAnn(t.docs())).collect(Collectors.toList()), topErrString + top + ". ");
+  private String allMustTopErr(String t0n, Object top) {
+    return topErrString + top + ". Found: " + t0n;
   }
+
   public SifoTypeSystem(int dept,Program p, G g,List<T> exceptions, Set<Mdf> mdfs, T expected,Lattice42 lattice) {
     this.dept=dept;
     this.p = p;
@@ -69,7 +78,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       this._sifoExceptions=sifoExceptions.get(0);
       return;
       }
-    throw new EndError.TypeError(null, differentSecurityLevelsErr(sifoExceptions, exceptionsErrString));//TODO: error: multiple types of sifo security exceptions
+    throw new EndError.TypeError(null, differentSecurityLevelsErr(listPToString(sifoExceptions)));
     }
   boolean isDeep;
   int dept;
@@ -101,7 +110,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
   private P getSifoAnn(List<Doc>docs){
     List<P.NCs> paths=sifos(docs);
     if(paths.isEmpty()) {return lattice.getBottom();}
-    if(paths.size()!=1){throw new EndError.TypeError(null, moreThanOneAnnotationErr(paths));}//TODO: good error
+    if(paths.size()!=1){throw new EndError.TypeError(null, moreThanOneAnnotationErr(listPNCsToString(paths)));}
     return paths.get(0);
     }
   private List<P.NCs> sifos(List<Doc> docs){
@@ -254,7 +263,7 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       throw new EndError.TypeError(e.poss(),notEqualErr(s,retSec));
       }
     if(promotable && !lattice.secondHigherThanFirst(retSec,s)){
-      throw new EndError.TypeError(e.poss(),noSubErr(s,retSec));
+      throw new EndError.TypeError(e.poss(),noSubErr(retSec,s));
       }
     visitMCall(false,e,p0,parTypes,excTypes,selectedS);
     }
@@ -275,14 +284,14 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       .distinct());
     if(!s.isEmpty()){
       if(s.size()>1){
-        throw new EndError.TypeError(e.poss(), differentSecurityLevelsErr(s, exceptionsErrString));}//TODO: more the one mut security in-out
+        throw new EndError.TypeError(e.poss(), differentSecurityLevelsErr(listPToString(s)));}
       if(hasErr && !isTop(s.get(0))){
         throw new EndError.TypeError(e.poss(), isNotTopErr(s.get(0), lattice.getTop()));}//TODO: error only caught as high
       }
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
     if(hasErr){//T0..Tn: the result type+the types of catches
       if(t0n.stream().allMatch(t->isTop(t))){return;}
-      throw new EndError.TypeError(e.poss(), allMustTopErr(t0n, lattice.getTop()));///error capturing errors must be high
+      throw new EndError.TypeError(e.poss(), allMustTopErr(listTToString(t0n), lattice.getTop()));
       }
     for(T ti:t0n){
       ArrayList<P> ss=fv.stream().map(x->getSifoAnn(g._of(x).docs())).collect(Collectors.toCollection(ArrayList::new));
