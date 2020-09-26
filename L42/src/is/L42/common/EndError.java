@@ -42,4 +42,7 @@ public abstract class EndError extends RuntimeException{
   public static class NotWellFormed extends EndError{
     public NotWellFormed(List<Pos> poss, String msg) { super(poss, msg);}
     }
+  public static class LeakedSlaveError extends EndError{
+    public LeakedSlaveError(List<Pos> poss, String msg) { super(poss, msg);}
+    }
   }

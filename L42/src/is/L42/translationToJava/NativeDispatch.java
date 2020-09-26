@@ -14,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -28,6 +29,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.L42AuxParser.NativeKindContext;
 import is.L42.meta.MetaError;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
@@ -101,33 +103,68 @@ public class NativeDispatch {
     if(nl == -1){throw bug();}
     return nativeUrl.substring(0, nl).trim();
   }
+  static class WhiteListed{
+    String resT;
+    boolean isOpt;
+    List<String> invalid=new ArrayList<>();
+    static List<String>list=List.of("String","Boolean","Integer","Double");
+    String type(J j,Core.T t){
+      String res=j.typeNameStr(t);
+      res=J.boxed(res);
+      if(!list.contains(res)){invalid.add(t.p().toString());}
+      return res;
+      }
+    WhiteListed(J j,MWT mwt){
+      this.resT=type(j,mwt.mh().t());
+      var l=j.p()._ofCore(mwt.mh().t().p());
+      this.isOpt=l.info().nativeKind().equals(TrustedKind.Opt.inner);
+      //Note: the return type must be WhiteListed, but the parameter types can be free.
+      //This is useful for a range of tasks, including pluggable type systems
+      }    
+    }
   public static void untrusted(String nativeKind, String nativeUrl, MWT mwt,J j) {
     nativeUrl=nativeUrl.trim();
     var info=new NativeUrlInfo(nativeUrl);
     //anything in nativeUrl after first occurrence of the token "}\n" can be turned in a lambda
     List<String> xs=xs(mwt);
     //String toLambda="()->{"+nativeUrl.substring(info.endLine);
-    String resT=j.typeNameStr(mwt.mh().t());
+    var wl=new WhiteListed(j, mwt);
     String toLambda="new safeNativeCode.slave.Functions.Supplier<"
-      +resT+">(){public "+resT+" get()throws Exception {"
+      +wl.resT+">(){public "+wl.resT+" get()throws Exception {"
       +nativeUrl.substring(info.endLine)+"}";
-     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
+    if(!wl.invalid.isEmpty()){
+      toLambda="new safeNativeCode.slave.Functions.Supplier<"
+          +wl.resT+">(){public "+wl.resT+" get()throws Exception {"
+          +"throw new Error(\"The type "+wl.invalid+" can not be safelly returned from Java\");}}";      
+      }
+    String toLambdaOnNull="";
+    if(!wl.isOpt){
+      toLambdaOnNull="if(res==null){return slave.call(new safeNativeCode.slave.Functions.Supplier<"
+        +wl.resT+">(){public "+wl.resT+" get()throws Exception {"
+        +"throw new Error(\"Java code was returning null, but the expected result is not optional\");}}).get();}";
+      }
+    for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
     j.c(java.lang.String.format("""
-    try{return Resources.loadSlave(%s,%s,"%s",new Object(){}).call(%s).get();}
+    try{
+      var slave=Resources.loadSlave(%s,%s,"%s",new Object(){});
+      var res=slave.call(%s).get();
+      %s
+      return res;
+      }
     catch(safeNativeCode.exceptions.SlaveException ex){%s}
     catch(java.util.concurrent.CancellationException|java.rmi.RemoteException ex){%s}
-    """,info.memoryLimit,info.timeLimit,info.slaveName,toLambda,onErr(mwt, j),onJavaErr(mwt, j)));   
+    """,info.memoryLimit,info.timeLimit,info.slaveName,toLambda,toLambdaOnNull,onErr(mwt, j),onJavaErr(mwt, j)));   
   }
   private static String onErr(MWT mwt, J j) {
     if(mwt.mh().exceptions().size()!=1){
-      //var sw=new StringWriter();//Should we run this instead of getMessage?
+      //TODO: var sw=new StringWriter();//Should we run this instead of getMessage?
       //e.printStackTrace(new PrintWriter(sw));
       //return e.getClass().getName()+"\n"+e.getMessage()
       //  +"\n"+sw;
       return """
         String msg;try{msg=ex.getChild().call(Throwable::getMessage).get();}
         catch (java.rmi.RemoteException ex1){msg=ex1.getClass().getName()+"\\n"+ex1.getMessage();}
-        throw new Error(msg);
+        throw new is.L42.common.EndError.LeakedSlaveError(List.of(), msg);
         """;
       }
     var t=mwt.mh().exceptions().get(0);
