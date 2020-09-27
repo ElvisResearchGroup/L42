@@ -1,9 +1,21 @@
-ColT=Trait:{class method This from(S string)}
+TS=Trait:{
+  ColT={class method This from(S string)}
+  class method ColT colT(lent DB db,Size i)[_]
+    =ColT.from(string=db.val(i).val())
+  }
+
+TOptS=Trait:{
+  ColT={class method This from(S.Opt optS)}
+  class method ColT colT(lent DB db,Size i)[_]
+    =ColT.from(optS=db.val(i))
+  }
+  
 K1=Trait:{
   mut method mut DB #db()
   R={class method This #immK(T0 p0)}
   List={ class method mut This () mut method Void add(R right) }
-  T0=ColT.code()
+  T0={}
+  class method T0 p0(lent DB db,Size i)[DB.Fail]
   class method S p0()
   mut method List collectResults()[DB.Fail]=(
     lent db=this.#db()//inference would fail
@@ -11,7 +23,7 @@ K1=Trait:{
       res=List()//to allow for promotion res to imm
       Size i0=db.findColumn(label=This.p0())
       while db.next() (res.add(right=R.#immK(
-        p0=T0.from(string=db.val(i0))
+        p0=This.p0(db=db,i=i0)
         )))
       res
       )
@@ -21,8 +33,10 @@ K2=Trait:{
   mut method mut DB #db()
   R={class method This #immK(T0 p0,T1 p1)}
   List={ class method mut This () mut method Void add(R right) }
-  T0=ColT.code()
-  T1=ColT.code()
+  T0={}
+  T1={}
+  class method T0 p0(lent DB db,Size i)[DB.Fail]
+  class method T1 p1(lent DB db,Size i)[DB.Fail]
   class method S p0()
   class method S p1()
   mut method List collectResults()[DB.Fail]=(
@@ -32,8 +46,8 @@ K2=Trait:{
       Size i0=db.findColumn(label=This.p0())
       Size i1=db.findColumn(label=This.p1())
       while db.next() (res.add(right=R.#immK(
-        p0=T0.from(string=db.val(i0))
-        p1=T1.from(string=db.val(i1))
+        p0=This.p0(db=db,i=i0)
+        p1=This.p1(db=db,i=i1)
         )))
       res
       )

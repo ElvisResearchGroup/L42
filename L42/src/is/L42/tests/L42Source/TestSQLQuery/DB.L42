@@ -3,7 +3,7 @@ MetaFail=Message:{[Message.Guard]}
 class method mut This #$of()[Fail]
 mut method Size findColumn(S label)[Fail]
 mut method Bool next()[Fail]
-mut method S val(Size that)[Fail]
+mut method S.Opt val(Size that)[Fail]
 mut method Void executeQuery(S sql)[Fail]
 mut method Void queryTables()[Fail]
 mut method Void queryColums(S tableName)[Fail]

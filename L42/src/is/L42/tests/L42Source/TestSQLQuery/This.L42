@@ -19,9 +19,18 @@ J=LoadJ(slaveName=S"dbServer{}")
 LoadDB=Load:{reuse[#$DB]}
 DB=LoadDB(S"jdbc:derby:Test1;create=true",javaServer=J)
 
+PreMain=(//Delete if is there, to make a clean start
+  DB.#$of().execute(sql=S"DROP TABLE Foo")
+  catch Message _ void
+  void
+  )
+
+ONum=Collection.optional(Num)
 Point=Data:{Num x, Num y}
 Points=Collection.list(Point)
-MyQ=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
+OPoint=Data:{ONum x, ONum y}
+OPoints=Collection.list(OPoint)
+MyQ=DB.query[OPoints;S;]"SELECT * FROM Foo WHERE z!=@name"
 DBAPI=DB.QueryBox:{
   @Public A=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
   @Public B=DB.query[Points;Num;]"SELECT * FROM Foo WHERE x!=@num"
@@ -31,13 +40,13 @@ Main=(
   db.execute(sql=S"CREATE TABLE Foo (x int,y int, z varchar(255))")
   db.execute(sql=S"INSERT INTO Foo (x,y,z) Values (1,2,'A3'),(4,5,'B6'),(7,8,'C9')")
   q=MyQ(db)
-  Points ps=q(name=S"Bob")
+  OPoints ps=q(name=S"Bob")
   Debug(ps)
   {}:Test""(actual=ps
-    expected=S"[Point(x=1, y=2); Point(x=4, y=5); Point(x=7, y=8)]")
+    expected=S"[OPoint(x=1, y=2); OPoint(x=4, y=5); OPoint(x=7, y=8)]")
   Debug(q(name=S"A3"))
   {}:Test""(actual=q(name=S"A3")
-    expected=S"[Point(x=4, y=5); Point(x=7, y=8)]")
+    expected=S"[OPoint(x=4, y=5); OPoint(x=7, y=8)]")
   Debug(DBAPI(db).a()(name=S"Bob"))
   {}:Test""(actual=DBAPI(db).a()(name=S"Bob")
     expected=S"[Point(x=1, y=2); Point(x=4, y=5); Point(x=7, y=8)]")

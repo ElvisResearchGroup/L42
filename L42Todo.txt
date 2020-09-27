@@ -1,3 +1,5 @@
+-Bug Optional toString in internal toString: it just prints the inside;  what happens if null? 
+-handle division by zero int, long, Num (and double? how is NAN cached eq?)
 -we could avoid a ton of problems if we used the class object instead of null for opts!! But... how to handle Opt String and Opt Integer???
 -Rename feature add: must be possible to rename-sum an interface with, at least, an empty class never used. 
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.

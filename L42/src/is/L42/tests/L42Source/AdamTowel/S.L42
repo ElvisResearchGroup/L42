@@ -45,7 +45,13 @@ method This sum(This0 that)=native{trusted:OP+} error void
   b
   ))  
 @This1.Public method This1.Size indexOf(This that)=this.indexOf(that=that,from=This1.Size<:class This1.Size.zero())
-//OLD watched=This1.Size,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.Bool,This1.S$ParseError,This1.NativeName,This1.Public,This1.AbstractTowel,This1.Cache.Call
+
+@This1.Public Opt={
+  read method This2.Bool isPresent()
+  read method read This1 val()
+  #norm{ typeDep=This1, This2.Bool }
+  }
+
 #norm{nativeKind=String, nativePar=This1.S$ParseError
   typeDep=This, This1.Size,This1.Long,This1.Double,This1.Num, This1.S$StringBuilder,This1.HasToS,This1.HasToS.Raw,This1.Bool,This1.S$ParseError,This1.NativeName,This1.Public,This1.AbstractTowel,This1.Cache.Call
   coherentDep=This,This1.S$StringBuilder,This1.S$ParseError,This1.Size,This1.Long,This1.Double,This1.Num,This1.Bool,This1.NativeName

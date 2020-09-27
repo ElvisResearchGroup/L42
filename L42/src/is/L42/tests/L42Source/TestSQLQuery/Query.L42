@@ -32,15 +32,23 @@ class method This(Introspection.Nested.List types,S sql)[MetaFail]=(
       
 method Trait field(Trait that, Size i)[_]=(
   n=Name"p%(i)()"
+  ndbi=Name"p%(i)(db,i)"
   f_s=Trait.LiftS(this.k().nameFromRoot().xs().val(i))['#apply()=>n]
   tSrc=Name"T%(i)"
   tDest=this.k().parameters().val(i+1Size).nested().classAny()
-  (that+f_s)[tSrc=>tDest;hide=n]
+  Trait factory={
+    return Collecters.TOptS['ColT=>tDest;'colT(db,i)=>ndbi]
+    catch Message.Guard _
+    return Collecters.TS['ColT=>tDest;'colT(db,i)=>ndbi]
+    }
+  ((that+f_s)[tSrc=>tDest]+factory)[hide=n;hide=ndbi]
   )
 method Trait makeCR()[_,MetaFail]=(
   n=this.k().parameters().size()-1Size
-  if n==0Size exception MetaFail"The provided type can not have zero fields: %this.r().outerName()"
-  if n-1Size>=Collecters.traits().size() exception MetaFail"too many fields in the class: %this.r().outerName() max=%Collecters.traits().size()"
+  if n==0Size exception MetaFail
+    "The provided type can not have zero fields: %this.r().outerName()"
+  if n-1Size>=Collecters.traits().size() exception MetaFail
+    "too many fields in the class: %this.r().outerName() max=%Collecters.traits().size()"
   var res=Collecters.traits().val(n-1Size)
   for i in n.range() ( res:=this.field(res,i=i) )//from 0 to n-1
   res[Collecters.names().val(n-1Size)=>Name"R.%this.k().selector()"]

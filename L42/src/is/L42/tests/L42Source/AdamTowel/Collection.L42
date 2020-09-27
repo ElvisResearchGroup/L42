@@ -40,9 +40,11 @@ class method Trait selectEq(class Any that)={
 OptNative=Trait:{...}
 OptOps=OptNative+{...}
 OptEqOps=OptOps+{...}
+OptFromSOps=Trait:{...}
 @Public class method Trait optionalTrait()=OptEqOps()
 @Public class method Library optional(class Any that)={
-  res=this.optionalTrait()['Elem=>that]+This.selectEq(that)
+  var res=this.optionalTrait()['Elem=>that]+This.selectEq(that)
+  (res:=res+OptFromSOps['Elem=>that] catch Any e void void)
   return Class$Relax:res
   catch Any e error e
   }

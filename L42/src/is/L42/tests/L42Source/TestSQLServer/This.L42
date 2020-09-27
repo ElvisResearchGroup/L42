@@ -19,7 +19,7 @@ DeployRawDB = Deploy.module(
   name='Top
   )
 
-J0=Load:{reuse[JavaServer]}
+J0=Load:{reuse[#$JavaServer]}
 J=J0(slaveName=S"dbServer{}")
 DBLib=Load:{reuse [#$RawDB]}
 DB=DBLib(S"jdbc:derby:Test1;create=true",javaServer=J)
@@ -37,7 +37,7 @@ Main2=(
     name=db.val(label=S"name")
     age=db.val(label=S"age")
     Debug(S"%id %name %age")
-    outs.add(right=S"%id %name %age")
+    outs.add(right=S"%id.val() %name.val() %age.val()")
     )
   db.execute(sql=Queries.insert2())
   db.executeQuery(sql=Queries.select())
@@ -46,7 +46,7 @@ Main2=(
     name=db.val(label=S"name")
     age= db.val(label=S"age")
     Debug(S"%id %name %age")
-    outs.add(right=S"%id %name %age")
+    outs.add(right=S"%id.val() %name.val() %age.val()")
     )
   {}:Test"fromDB1"(expected=S"1 Bob 25"  actual=outs.val(0\))
   {}:Test"fromDB2"(expected=S"1 Bob 25"  actual=outs.val(1\))
@@ -56,7 +56,7 @@ Main2=(
   db.queryTables()
   while db.next() (
     name=db.val(label=S"TABLE_NAME")
-    tables.add(right=name)
+    tables.add(right=name.val())
     )
   Debug(tables)
   {}:Test"fromDB5"(expected=S"""
@@ -69,7 +69,7 @@ Main2=(
   while db.next() (
     name=db.val(cName)
     type=db.val(cType)
-    cols.add(right=S"%name %type")
+    cols.add(right=S"%name.val() %type.val()")
     )
   Debug(cols)
   {}:Test"fromDB6"(expected=S"""

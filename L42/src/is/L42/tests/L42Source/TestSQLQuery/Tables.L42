@@ -2,7 +2,7 @@ class method Library (mut DB db)[MetaFail]={
   db.queryTables()
   i=db.findColumn(label=S"TABLE_NAME")
   var res=Trait()
-  while db.next() (res+=this.makeTable(db=db,name=db.val(i)))
+  while db.next() (res+=this.makeTable(db=db,name=db.val(i).val()))
   return Class:res
   catch Message.Guard g exception MetaFail"".with(cause=g)
   }
@@ -13,7 +13,7 @@ class method Trait makeTable(mut DB db,S name)[_]=(
   t=db.findColumn(label=S"TYPE_NAME")
   var res=Trait()
   while db.next() (
-    res+=this.col(name=db.val(n), type=db.val(t))
+    res+=this.col(name=db.val(n).val(), type=db.val(t).val())
     )
   (Data:res)['This=>Name"%name.toCamelUp()"]
   )

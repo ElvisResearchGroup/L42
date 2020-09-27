@@ -6,6 +6,10 @@ mut method mut This #varIterator()=this
 read method Size #startIndex()=0Size
 read method Bool #hasElem(Size that)=Bool.true()
 read method Bool #incomplete(Size that)=!this.streams().isEmpty()
+mut method Event from(S.Opt oRes)=(
+  if !oRes.isPresent() error X"unexpected Event with null string"
+  this.from(res=oRes.val())
+  )
 mut method Event from(S res)=(
   index1=res.indexOf(S.nl())
   if index1==Size"-1" error X"unexpected Event format: [[%res]]"
@@ -25,7 +29,7 @@ mut method Event #elem#imm(Size that)={
     while !this.#streams().isEmpty() (this.#streams().removeRight())
     return Event(key=aKey, id=S"##Empty##", msg=S"")
     )
-  return this.from(res=res)
+  return this.from(oRes=res)
   }
 read method S keys()=(
   var res=S""
