@@ -43,6 +43,20 @@ public enum TrustedKind implements TrustedT{
     public String defaultVal(){return "0";}
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
+  Long("long"){public String factory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return 0;";
+    }
+    public String defaultVal(){return "0";}
+    @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
+    },
+  Double("double"){public String factory(J j,MWT mwt){
+    assert mwt.key().xs().isEmpty();
+    return "return 0;";
+    }
+    public String defaultVal(){return "0";}
+    @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
+    },
   String("String"){public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     return "return \"\";";

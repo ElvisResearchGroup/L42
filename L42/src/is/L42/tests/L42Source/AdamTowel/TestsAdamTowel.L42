@@ -5,10 +5,13 @@ TestNum=(
   {}:Test"one*"(1Num*1Num==1Num)
   {}:Test"two+"(2Num+2Num==4Num)
   {}:Test"two*"(2Num*2Num==4Num)
-  {}:Test"zero"(Num"25/30"+Num"11/60"==Num"61/60")
-  {}:Test"zero"(Num"25/30"+Num"-11/60"==Num"39/60")
-  {}:Test"zero"(Num"25/30"*Num"11/10"==Num"275/300")
-  {}:Test"zero"(Num"25/30"*Num"-11/10"==Num"-275/300")
+  {}:Test"numOp1"(Num"25/30"+Num"11/60"==Num"61/60")
+  {}:Test"numOp2"(Num"25/30"+Num"-11/60"==Num"39/60")
+  {}:Test"numOp3"(Num"25/30"*Num"11/10"==Num"275/300")
+  {}:Test"numOp4"(Num"25/30"*Num"-11/10"==Num"-275/300")
+  {}:Test"numConversion1"((12Size).toNum(denominator=3Size)==4Num)
+  {}:Test"numConversion2"((12Long).toNum(denominator=3Long)==4Num)
+  {}:Test"numConversion2"((12Double).toNum()==12Num)
   )
 TestQuote=(
   ss=S.List['hi()]
@@ -78,8 +81,9 @@ TestSizeParsing=(
   {}:Test"InvalidParseInt"( Bool.false() )"Errors not thrown"
   catch error S.ParseError x 
     {}:Test"InvalidParseIntError"(
-      x.text()==S"The string %S.dq()oh NO!%S.dq() is not a valid number"
-      )"Error is %x"
+      actual=x.text()
+      expected=S"The string %S.dq()oh NO!%S.dq() is not a valid int32 number"
+      )
   )
 NotCoh={This field, class method This ()}
 TestMakeNotCohList=Class.Relax:Collection.listTrait()['Elem=>NotCoh<:class Any]

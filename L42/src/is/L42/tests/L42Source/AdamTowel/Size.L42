@@ -1,6 +1,8 @@
 [This1.HasToS]
 class method This zero()
 class method This from(This1.S string)=string.toInt()
+class method This from(This1.Num num)=native{trusted:fromNum} error void
+method This1.Num toNum(This denominator)=This1.S<:class This1.S.sizeToNum(that=this,denominator=denominator)
 method This #plus0(This that)=native{trusted:OP+} error void
 method This #times0(This that)=native{trusted:OP*} error void
 method This #divide0(This that)=native{trusted:OP/} error void
@@ -22,9 +24,9 @@ method This #succ()=native{trusted:succ} error void
 method This #pred()=native{trusted:pred} error void
 //OLD watched=This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
 #norm{nativeKind=Int
-  typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
-  coherentDep=This0,This1.Bool,This1.S
-  usedMethods=This1.S.toInt(), This1.Bool.not(), This1.S$StringBuilder.toS()
+  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
+  coherentDep=This,This1.Num,This1.Bool,This1.S
+  usedMethods=This1.S.toInt(),This1.S.sizeToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()
   }
 @This1.AbstractTowel{size}

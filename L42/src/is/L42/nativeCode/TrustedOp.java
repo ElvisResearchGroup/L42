@@ -143,18 +143,39 @@ public enum TrustedOp {
   STab("tab",append("\\t")),
   AddAll("addAll",Map.of(StringBuilder,use("%s.append(%s);return L42£Void.instance;",
     sig(Mutable,Immutable,Void,Immutable,String)))),
-   
-  //toString
-  ToS("toS",useToS(StringBuilder,Int,Bool,Name,Nested,Doc,Type,Method,BigRational)),//String is pre added
+  FromNum("fromNum",Map.of(
+    Int,use("return (int)(%2$s.doubleValue());",sig(Class,Immutable,Int,Immutable,BigRational)),
+    Double,use("return %2$s.doubleValue();",sig(Class,Immutable,Double,Immutable,BigRational)),
+    Long,use("return (long)(%2$s.doubleValue());",sig(Class,Immutable,Long,Immutable,BigRational))
+    )),
+  ToS("toS",useToS(StringBuilder,Int,Long,Double,Bool,Name,Nested,Doc,Type,Method,BigRational)),//String is pre added
   ToInt("toInt",Map.of(String,use("""
     try{return Integer.parseInt(%1$s);}
     catch(NumberFormatException nfe){
       throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
-        "The string \\""+%1$s+"\\" is not a valid number"
+        "The string \\""+%1$s+"\\" is not a valid int32 number"
         )));
       }
-    """,sig(Readable,Immutable,Int)
+    """,sigI(Int)
     ))),
+  ToLong("toLong",Map.of(String,use("""
+      try{return Long.parseLong(%1$s);}
+      catch(NumberFormatException nfe){
+        throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+          "The string \\""+%1$s+"\\" is not a valid int64 number"
+          )));
+        }
+      """,sigI(Long)
+      ))),
+  ToDouble("toDouble",Map.of(String,use("""
+      try{return Double.parseDouble(%1$s);}
+      catch(NumberFormatException nfe){
+        throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+          "The string \\""+%1$s+"\\" is not a valid double number"
+          )));
+        }
+      """,sigI(Double)
+      ))),  
   ToNum("toNum",Map.of(String,use("""
     try{return L42£BigRational.from(%1$s);}
     catch(NumberFormatException nfe){
@@ -162,7 +183,35 @@ public enum TrustedOp {
         "The string \\""+%1$s+"\\" is not a valid number"
         )));
       }
-    """,sig(Readable,Immutable,BigRational)
+    """,sigI(BigRational)
+    ))),
+  //other toNum also in String, so that they can throw NumberFormatException
+  DoubleToNum("doubleToNum",Map.of(String,use("""
+    try{return L42£BigRational.from(%2$s);}
+    catch(NumberFormatException nfe){
+      throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+        "The double "+%2$s+" is not a valid number"
+        )));
+      }
+    """,sig(Class,Immutable,BigRational,Immutable,Double)
+    ))),
+  LongToNum("longToNum",Map.of(String,use("""
+    try{return L42£BigRational.from(%2$s,%3$s);}
+    catch(NumberFormatException nfe){
+      throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+        "The longs "+%2$s+"/"+%3$s+" are not a valid number"
+        )));
+      }
+    """,sig(Class,Immutable,BigRational,Immutable,Long,Immutable,Long)
+    ))),
+  IntToNum("intToNum",Map.of(String,use("""
+    try{return L42£BigRational.from((long)%2$s,(long)%3$s);}
+    catch(NumberFormatException nfe){
+        throw new L42Error(%Gen1.wrap(new L42£LazyMsg(
+          "The ints "+%2$s+"/"+%3$s+" are not a valid number"
+          )));
+        }
+    """,sig(Class,Immutable,BigRational,Immutable,Int,Immutable,Int)
     ))),
   ToName("toName",Map.of(String,use("""
     try{return L42£Name.parse(%1$s);}
@@ -171,7 +220,7 @@ public enum TrustedOp {
         "The string \\""+%1$s+"\\" is not a valid name"
         )));
       }
-    """,sig(Readable,Immutable,Name)
+    """,sigI(Name)
     ))),
   X("x",Map.of(Name,use("return %s.x();",sig(Readable,Immutable,String)))),
   Selector("selector",Map.of(Name,use("return %s.selector();",sig(Readable,Immutable,String)))),
@@ -436,33 +485,62 @@ public enum TrustedOp {
   Replace("replace",Map.of(String,use("return %s.replace(%s,%s);",sigI(String,String,String)))),
   IndexOf("indexOf",Map.of(String,use("return %s.indexOf(%s,%s);",sigI(Int,String,Int)))),
   Trim("trim",Map.of(String,use("return %s.trim();",sigI(String)))),
+  RandomNextSeed("randomNextSeed",Map.of(Long,use(//same algorithm of java.utils.Random in 2020. Should not matter if it changes
+    "return (%s * 0x5DEECE66DL + 0xBL) & ((1L<<48)-1);",
+    sigI(Long)))),
+  RandomNextLong("randomNextLong",Map.of(Long,use(
+    "return new java.util.Random(%s).nextLong();",
+    sigI(Long)))),
+  RandomNextDouble("randomNextDouble",Map.of(Long,use(
+    "return new java.util.Random(%s).nextDouble();",
+    sigI(Double)))),
+  RandomNextSize("randomNextSize",Map.of(Long,use(
+    "return new java.util.Random(%s).nextInt(%s);",
+    sigI(Int,Int)))),
+  RandomSeed("#$randomSeed",Map.of(Long,use(
+      "return new java.util.Random().nextLong();",
+      sig(Class,Immutable,Long)))),
   Plus("OP+",Map.of(
     Int,use("return %s + %s;",sigI(Int,Int)),
+    Long,use("return %s + %s;",sigI(Long,Long)),
+    Double,use("return %s + %s;",sigI(Double,Double)),
     BigRational,use("return %s.sum(%s);",sigI(BigRational,BigRational)),
     String,use("return %s + %s;",sigI(String,String))
     )),
   Times("OP*",Map.of(
     Int,use("return %s * %s;",sigI(Int,Int)),
+    Long,use("return %s * %s;",sigI(Long,Long)),
+    Double,use("return %s * %s;",sigI(Double,Double)),
     BigRational,use("return %s.multiply(%s);",sigI(BigRational,BigRational))
     )),
   Divide("OP/",Map.of(
     Int,use("return %s / %s;",sigI(Int,Int)),
+    Long,use("return %s / %s;",sigI(Long,Long)),
+    Double,use("return %s / %s;",sigI(Double,Double)),
     BigRational,use("return %s.divide(%s);",sigI(BigRational,BigRational))
     )),
   Minus("OP-",Map.of(
     Int,use("return %s - %s;",sigI(Int,Int)),
+    Long,use("return %s - %s;",sigI(Long,Long)),
+    Double,use("return %s - %s;",sigI(Double,Double)),
     BigRational,use("return %s.subtract(%s);",sigI(BigRational,BigRational))
     )),
   LT("OP<",Map.of(
     Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)),
+    Long,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Long)),
+    Double,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Double)),
     BigRational,use("return %s.compareTo(%s)==-1;",sig(Readable,Immutable,Bool,Readable,BigRational))
     )),
   LTEqual("OP<=",Map.of(
     Int,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Int)),
+    Long,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Long)),
+    Double,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Double)),
     BigRational,use("return %s.compareTo(%s)!=1;",sig(Readable,Immutable,Bool,Readable,BigRational))
     )),
   EqualEqual("OP==",Map.of(
     Int,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Int)),
+    Long,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Long)),
+    Double,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Double)),
     String,use("return %s.equals(%s);",sig(Readable, Immutable,Bool, Readable,String)),
     Bool,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Bool)),
     BigRational,use("return %s.equals(%s);",sig(Readable,Immutable,Bool,Readable,BigRational))

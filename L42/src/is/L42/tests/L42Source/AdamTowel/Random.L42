@@ -1,0 +1,23 @@
+read method Long that::0()
+mut method Void that::0(Long that)
+class method mut This of::0(Long that)
+class method mut This #$random()=This.of::0(Long.#$randomSeed())
+class method mut This (Long seed)=This.of::0(seed)
+mut method Long nextLong()=(
+  res=this.that::0().randomNextLong()
+  this.that::0(this.that::0().randomNextSeed())
+  res
+  )
+mut method Double nextDouble()=(
+  res=this.that::0().randomNextDouble()
+  this.that::0(this.that::0().randomNextSeed())
+  res
+  )
+mut method Size nextInRange(Size start,Size end)=(
+  if start<0Size || end<=start (error X
+    "invalid parameters for nextInRange: start=%start, end=%end")
+  res=this.that::0().randomNextSize(bound=end-start)
+  this.that::0(this.that::0().randomNextSeed())
+  res+start
+  )
+@AbstractTowel{random}

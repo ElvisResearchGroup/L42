@@ -31,11 +31,16 @@ public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> imp
   public final static L42£BigRational ONE = new L42£BigRational(BigInteger.ONE,BigInteger.ONE);
   private L42£BigRational(BigInteger num, BigInteger den){this.num=num;this.den=den;}
   public static L42£BigRational from(BigInteger num){return new L42£BigRational(num,BigInteger.ONE);}
-  public static L42£BigRational from(BigInteger num,BigInteger den){return normalize(num, den);}
+  public static L42£BigRational from(BigInteger num,BigInteger den){
+      if(den.equals(BigInteger.ZERO)){throw new NumberFormatException("Zero denomitator not allowed for a number");}
+      return normalize(num, den);
+      }
   public static L42£BigRational from(long num,long den){return from(BigInteger.valueOf(num),BigInteger.valueOf(den));}
   final static int mantissaBits=53;
   public static L42£BigRational from(double num){
-    if(Double.isNaN(num) || !Double.isFinite(num)){throw new Error("The provided number can not be converted to a rational: "+num);}
+    if(Double.isNaN(num) || !Double.isFinite(num)){
+      throw new NumberFormatException("The provided number can not be converted to a rational: "+num);
+      }
     int exponent=Math.getExponent(num);
     int mantOffset = mantissaBits-exponent;
     long man=Math.round(Math.scalb(num, mantOffset));
