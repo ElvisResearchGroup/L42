@@ -140,9 +140,9 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       var ti=mh.pars().get(i);
       var t0i=mh0.pars().get(i);
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
-      if(!tiOk) {throw new Error("3");}//TODO:
+      if(!tiOk) {throw new Error("3");}//TODO: already caught by L42?
       }
-    if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error("4");}//TODO:
+    if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error("4");}//TODO: already caught by L42?
     for(int i:range(mh.exceptions())){
       var ti=mh.exceptions().get(i);
       var t0i=mh0.exceptions().get(i);
@@ -212,7 +212,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(sub.equals(sup)){return;}
     var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule,Mdf.Class);
     if(mdfOk && lattice.secondHigherThanFirst(sub,sup)){return;}
-    throw new EndError.TypeError(pos, noSubErr(sup,sub));
+    throw new EndError.TypeError(pos, noSubErr(sub,sup));
     }  
   @Override public void visitLoop(Loop e){
     visitExpecting(e.e(),P.coreVoid);
