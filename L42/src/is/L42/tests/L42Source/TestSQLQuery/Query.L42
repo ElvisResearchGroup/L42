@@ -11,47 +11,49 @@ SquareBuilder={
   mut method Void #squareAdd(class Any that)
     =this.#that().add(right=Introspection.Nested.from(classAny=that))
   method Library #from(S.StringBuilder stringLiteral)[MetaFail]={
-    return Class:This1(types=this.that(),sql=S.#from(stringLiteral=stringLiteral))()
+    sql=stringLiteral.toS()
+    xs=FormatPar.xs(sql)
+    if Introspection.Nested.from(classAny=Void)==this.that().left() (
+      return Class:This1(types=this.that(),sql=sql,xs=xs).queryExecute()
+      )
+    r=this.that().left().meth(selector='left()).returnType().nested()
+    ms=Introspection.Method.List()(for m in r.methods() (
+      if m.selector().toS().startsWith(S"#immK(") \add(m)
+      ))
+    if ms.size()!=1Size exception MetaFail"Not exactly one canditate #immK constructor:%ms"
+    q=This1(types=this.that(),sql=sql,xs=xs)
+    return Class:q.queryWithResult(k=ms.val(0\), r=r)
     catch Message.Guard g exception MetaFail"".with(cause=g)
     }
   }
 //----------
 Introspection.Nested.List types
 S sql
-Introspection.Nested r
-Introspection.Method k
 S.List xs
-class method This(Introspection.Nested.List types,S sql,Introspection.Nested r,Introspection.Method k,S.List xs)
-class method This(Introspection.Nested.List types,S sql)[MetaFail]=(
-  r=types.left().meth(selector='left()).returnType().nested()
-  ms=Introspection.Method.List()(for m in r.methods() (
-    if m.selector().toS().startsWith(S"#immK(") \add(m)))
-  if ms.size()!=1Size exception MetaFail"Not exactly one canditate #immK constructor:%ms"
-  This(types=types,sql=sql,r=r, k=ms.val(0\),xs=FormatPar.xs(sql))
+class method This(Introspection.Nested.List types,S sql,S.List xs)
+
+method Trait makeCR(Introspection.Method k,S nameErr)[_,MetaFail]=(
+  n=k.parameters().size()-1Size
+  if n==0Size exception MetaFail
+    "The provided type can not have zero fields: %nameErr"
+  if n-1Size>=Collecters.traits().size() exception MetaFail
+    "too many fields in the class: %nameErr max=%Collecters.traits().size()"
+  var res=Collecters.traits().val(n-1Size)
+  for i in n.range() ( res:=this.field(res,i=i,k=k) )//from 0 to n-1
+  res[Collecters.names().val(n-1Size)=>Name"R.%k.selector()"]
   )
-      
-method Trait field(Trait that, Size i)[_]=(
+method Trait field(Trait that, Size i,Introspection.Method k)[_]=(
   n=Name"p%(i)()"
   ndbi=Name"p%(i)(db,i)"
-  f_s=Trait.LiftS(this.k().nameFromRoot().xs().val(i))['#apply()=>n]
+  f_s=Trait.LiftS(k.nameFromRoot().xs().val(i))['#apply()=>n]
   tSrc=Name"T%(i)"
-  tDest=this.k().parameters().val(i+1Size).nested().classAny()
+  tDest=k.parameters().val(i+1Size).nested().classAny()
   Trait factory={
     return Collecters.TOptS['ColT=>tDest;'colT(db,i)=>ndbi]
     catch Message.Guard _
     return Collecters.TS['ColT=>tDest;'colT(db,i)=>ndbi]
     }
   ((that+f_s)[tSrc=>tDest]+factory)[hide=n;hide=ndbi]
-  )
-method Trait makeCR()[_,MetaFail]=(
-  n=this.k().parameters().size()-1Size
-  if n==0Size exception MetaFail
-    "The provided type can not have zero fields: %this.r().outerName()"
-  if n-1Size>=Collecters.traits().size() exception MetaFail
-    "too many fields in the class: %this.r().outerName() max=%Collecters.traits().size()"
-  var res=Collecters.traits().val(n-1Size)
-  for i in n.range() ( res:=this.field(res,i=i) )//from 0 to n-1
-  res[Collecters.names().val(n-1Size)=>Name"R.%this.k().selector()"]
   )
 //--
 method Trait par(Trait that,Size i)[_]=(
@@ -69,18 +71,23 @@ method Trait makeExecuteQ()[_,MetaFail]=(
   for i in n.range() ( res:=this.par(res,i=i) ) //0 to n-1
   nameDest=Name"#apply()".with(xs=this.xs())
   sql=Trait.LiftS(this.sql())['#apply()=>'sql()]
-  res[Executers.names().val(n)=>nameDest]+sql
+  res[ignoreSelfRename=Executers.names().val(n)=>nameDest]+sql
   )
 //---
 TraitK=Trait:{
   class method mut This (mut DB db)
   class method mut This (mut DB that)=This(db=that)
   }
-method Trait ()[_]=(
-  makeCR=this.makeCR()
+method Trait queryWithResult(Introspection.Method k, Introspection.Nested r)[_]=(
+  makeCR=this.makeCR(k=k nameErr=r.outerName())
   executeQ=this.makeExecuteQ()
-  (TraitK+makeCR+executeQ)[
-    'R=>this.r().classAny();
+  (TraitK+makeCR+executeQ+Executers.TraitExecuteQuery)[
+    'R=>r.classAny();
     'List=>this.types().left().classAny()
     ]
+  )
+TraitVoidRet=Trait:{mut method Void collectResults()[DB.Fail]=void}  
+method Trait queryExecute()[_]=(
+  q=TraitK+this.makeExecuteQ()+Executers.TraitExecute
+  q['List=>Void]+TraitVoidRet
   )

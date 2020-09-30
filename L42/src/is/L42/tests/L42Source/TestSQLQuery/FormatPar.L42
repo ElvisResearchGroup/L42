@@ -27,7 +27,7 @@ class method S escape(S that)=(
   )
 class method S (S that,S key,HasToS val)=
   that.replace(S"@%key" with=FormatPar(val))
-class method mut S.List xs(S that)={//TODO: enrich meth typing so we avoid the mut result
+class method S.List xs(S that)={
   acc=S.List()
   var res=that
   loop (
@@ -38,6 +38,6 @@ class method mut S.List xs(S that)={//TODO: enrich meth typing so we avoid the m
    p=res.subString(start=i0+1Size,end=i1)
    res:=res.subString(start=i1, end=\size)
    _=Name"%(p)()"//will throw error if p is not a valid identifier
-   acc.add(right=p)
+   if !acc.contains(p) acc.add(right=p)
    )
   }
