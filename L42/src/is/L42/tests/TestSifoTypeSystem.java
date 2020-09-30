@@ -59,6 +59,7 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 import static is.L42.common.Err.hole;
 import static is.L42.generated.LDom._elem;
+import static is.L42.sifo.SifoTopTS.differentSecurityLevelsErr;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSifoTypeSystem
@@ -105,20 +106,24 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass(testMeth("imm @Left method @Top A main(@Left A that, @Right A a)=this.main(a,a=that)"))   
    ),new AtomicTest(()->
-   fail(testMeth("imm @Top method @Top A main(mut @Left A that, @Right A a)=this.main(that,a=a)"),"")
-   //TODO: this is ok to pass as typing method call, but should fail on typing method declaration
+   fail(testMeth("imm @Top method @Top A main(mut @Left A that, @Right A a)=this.main(that,a=a)"),
+       SifoTopTS.noSubErr("[###]","[###]"))
+   //this is ok to pass as typing method call, but should fail on typing method declaration
    ),new AtomicTest(()->
-   fail(testMeth("imm @Left method @Left A main(@Left A that, mut @Right A a)=this.main(that,a=a)"),"")
-   //TODO: this is ok to pass as typing method call, but should fail on typing method declaration
+   fail(testMeth("imm @Left method @Left A main(@Left A that, mut @Right A a)=this.main(that,a=a)"),
+       SifoTopTS.noSubErr("[###]","[###]"))
+   //this is ok to pass as typing method call, but should fail on typing method declaration
    ),new AtomicTest(()->
-   fail(testMeth("imm @Left method @Left A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"),"")
-   //TODO: this should fail on typing method declaration right parameter is not higher than receiver
+   fail(testMeth("imm @Left method @Left A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"),
+       SifoTopTS.noSubErr("[###]","[###]"))
+   //this should fail on typing method declaration right parameter is not higher than receiver
    ),new AtomicTest(()->
    pass(testMeth("imm @Left method @Left A main(mut @Left A that, @Right A a)=this.main(that,a=a)"))
-   //this should pass on typing method declaration right parameter is imm
+   //TODO:this should pass on typing method declaration right parameter is imm
    ),new AtomicTest(()->
-   fail(testMeth("imm @Top method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"),"")
-   //TODO: this should fail on typing method declaration return is not higher than receiver
+   fail(testMeth("imm @Top method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"),
+       SifoTopTS.noSubErr("[###]","[###]"))
+   //this should fail on typing method declaration return is not higher than receiver
    ),new AtomicTest(()->
    pass(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"))
    //this should pass as mut is correctly assigned
@@ -173,7 +178,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method Void err()[@Left A, @Right B]=void
      class method @Left A main(@Left A that, @Right A a)[@Left A, @Right B]
        =(this.err(),@Left A x=this.main(that,a=a),that)
-     """),"put the right error here")
+     """), SifoTopTS.differentSecurityLevelsErr("[###]"))
+   ),new AtomicTest(()->
+   fail(testMeth("""
+     @Left method Void err()[@Right B]=void
+     @Left method @Left A main(@Left A that, @Left A a)[@Right B]
+       =(this.err(),@Left A x=this.main(that,a=a),that)
+     """), "should throw an error, as exception is not higher than receiver")
  ),new AtomicTest(()->
  fail(testMeth("""
    class method Void err()[@Left A]=void
@@ -185,6 +196,27 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     I1={interface method @Left A foo(@Right B that)[@Top B]}
     C1={[I1] method @Right A foo(@Right B that)[@Top B]=this.foo(that)}
     """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    I1={interface method @Left A foo(@Right B that)[@Top B]}
+    C1={[I1] method @Left A foo(@Left B that)[@Top B]=this.foo(that)}
+    """),"caught by L42")
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    I1={interface method @Left A foo(@Right B that)[@Left B]}
+    C1={[I1] method @Left A foo(@Right B that)[@Right B]=this.foo(that)}
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    I1={interface method @Left A foo(@Right B that)[@Left B]}
+    C1={[I1] method @Left A foo(@Right B that)[@Right B,Left A]=this.foo(that)}
+    """),"caught by L42")
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    I1={interface @Left method @Top A foo(@Right B that)}
+    C1={[I1] @Right method @Top A foo(@Right B that)=this.foo(that)}
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  //TODO:receiver is changed, should throw an error
   ),new AtomicTest(()->
   fail(testMeth("""
    class method @Left A main(@Left A that, @Right A a)
@@ -200,7 +232,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     @Right method @Left A main(@Left A that, @Left A a)=that
     """),SifoTopTS.notEqualErr("[###]","[###]"))
   //TODO: this need to fail because we can use a left reader
-  //to inspect right. There is a similar test in line 117?
+  //to inspect right. There is a similar test in line 120
   ),new AtomicTest(()->
   fail(testMeth("""
     @Right method @Left A main(@Left A that, A a)

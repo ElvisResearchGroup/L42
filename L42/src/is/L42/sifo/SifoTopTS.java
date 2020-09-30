@@ -57,8 +57,6 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
     return "Level " + p1 + " is not equal to " + p2;}
   public static String isNotTopErr(Object p, Object top){
     return "Level " + p + " is not the top of the lattice. Should be " + top;}
-//  public static String methodCallSecurityIncompatible(Object resSec, Object parSec){
-//    return "The security....Level is not the top of the lattice. Should be ";}
 
   Program p;
   Lattice42 lattice;
@@ -103,7 +101,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       this._sifoExceptions=sifoExceptions.get(0);
       return;
       }
-    throw new EndError.TypeError(null, differentSecurityLevelsErr(listPToString(sifoExceptions)));
+    throw new EndError.TypeError(p.topCore().poss(), differentSecurityLevelsErr(listPToString(sifoExceptions)));//TODO:poss
     }
   boolean isDeep;
   int dept;
@@ -135,22 +133,22 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(elem==null){return;}
     MH mh0=p.from(elem.mh(),t.p().toNCs());
     var retOk=getSifoAnn(mh.t().docs()).equals(getSifoAnn(mh0.t().docs()));
-    if(!retOk) {throw new Error();}//TODO:
+    if(!retOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(mh.t().docs()), getSifoAnn(mh0.t().docs())));}//TODO:poss
     var recOk=getSifoAnn(mh.docs()).equals(getSifoAnn(mh0.docs()));
-    if(!recOk) {throw new Error();}//TODO:
+    if(!recOk) {throw new Error("2");}//TODO:
     for(int i:range(mh.pars())){
       var ti=mh.pars().get(i);
       var t0i=mh0.pars().get(i);
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
-      if(!tiOk) {throw new Error();}//TODO:
+      if(!tiOk) {throw new Error("3");}//TODO:
       }
-    if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error();}//TODO:
+    if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error("4");}//TODO:
     for(int i:range(mh.exceptions())){
       var ti=mh.exceptions().get(i);
       var t0i=mh0.exceptions().get(i);
-      if(!ti.p().equals(t0i.p())){throw new Error();}//TODO:
+      if(!ti.p().equals(t0i.p())){throw new Error("5");}//TODO:
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
-      if(!tiOk){throw new Error();}//TODO:
+      if(!tiOk){throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}//TODO:poss
       }
     }
   void checkMH(Core.MH mh){
@@ -160,16 +158,16 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       var allS=L(mh.exceptions().stream()
           .map(t->getSifoAnn(t.docs()))
           .distinct());
-      if(allS.size()!=1){throw new Error();}//TODO: good error for different kinds of exception security
+      if(allS.size()!=1){throw new Error("7");}//TODO: already thrown in line 104?
       var sExc=allS.get(0);
-      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new Error();}//TODO:
+      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new Error("8");}//TODO:
       }
     var sRet=getSifoAnn(mh.t().docs());
-    if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new Error();}//TODO:
+    if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, sRet));}//TODO:poss
     for(T ti:mh.pars()){
       if(!ti.mdf().isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent)){continue;}
       var si=getSifoAnn(ti.docs());
-      if(!lattice.secondHigherThanFirst(sRec,si)){throw new Error();}//TODO:
+      if(!lattice.secondHigherThanFirst(sRec,si)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, si));}//TODO:poss
       }
      }
   @Override public void visitEVoid(EVoid e){}
@@ -178,7 +176,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
   P getSifoAnn(List<Doc>docs){
     List<P.NCs> paths=sifos(docs);
     if(paths.isEmpty()) {return lattice.getBottom();}
-    if(paths.size()!=1){throw new EndError.TypeError(null, moreThanOneAnnotationErr(listPNCsToString(paths)));}
+    if(paths.size()!=1){throw new EndError.TypeError(null, moreThanOneAnnotationErr(listPNCsToString(paths)));}//TODO:poss
     return paths.get(0);
     }
   private List<P.NCs> sifos(List<Doc> docs){
