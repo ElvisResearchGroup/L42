@@ -53,9 +53,112 @@ K2=Trait:{
       )
     )
   }
+K3=Trait:{
+  mut method mut DB #db()
+  R={class method This #immK(T0 p0,T1 p1,T2 p2)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  T2={}
+  class method T0 p0(lent DB db,Size i)[DB.Fail]
+  class method T1 p1(lent DB db,Size i)[DB.Fail]
+  class method T2 p2(lent DB db,Size i)[DB.Fail]
+  class method S p0()
+  class method S p1()
+  class method S p2()
+  mut method List collectResults()[DB.Fail]=(
+    lent db=this.#db()
+      (
+      res=List()
+      Size i0=db.findColumn(label=This.p0())
+      Size i1=db.findColumn(label=This.p1())
+      Size i2=db.findColumn(label=This.p2())
+      while db.next() (res.add(right=R.#immK(
+        p0=This.p0(db=db,i=i0)
+        p1=This.p1(db=db,i=i1)
+        p2=This.p2(db=db,i=i2)
+        )))
+      res
+      )
+    )
+  }
+K4=Trait:{
+  mut method mut DB #db()
+  R={class method This #immK(T0 p0,T1 p1,T2 p2,T3 p3)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  T2={}
+  T3={}
+  class method T0 p0(lent DB db,Size i)[DB.Fail]
+  class method T1 p1(lent DB db,Size i)[DB.Fail]
+  class method T2 p2(lent DB db,Size i)[DB.Fail]
+  class method T3 p3(lent DB db,Size i)[DB.Fail]
+  class method S p0()
+  class method S p1()
+  class method S p2()
+  class method S p3()
+  mut method List collectResults()[DB.Fail]=(
+    lent db=this.#db()
+      (
+      res=List()
+      Size i0=db.findColumn(label=This.p0())
+      Size i1=db.findColumn(label=This.p1())
+      Size i2=db.findColumn(label=This.p2())
+      Size i3=db.findColumn(label=This.p3())
+      while db.next() (res.add(right=R.#immK(
+        p0=This.p0(db=db,i=i0)
+        p1=This.p1(db=db,i=i1)
+        p2=This.p2(db=db,i=i2)
+        p3=This.p3(db=db,i=i3)
+        )))
+      res
+      )
+    )
+  }
+K5=Trait:{
+  mut method mut DB #db()
+  R={class method This #immK(T0 p0,T1 p1,T2 p2,T3 p3,T4 p4)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  T2={}
+  T3={}
+  T4={}
+  class method T0 p0(lent DB db,Size i)[DB.Fail]
+  class method T1 p1(lent DB db,Size i)[DB.Fail]
+  class method T2 p2(lent DB db,Size i)[DB.Fail]
+  class method T3 p3(lent DB db,Size i)[DB.Fail]
+  class method T4 p4(lent DB db,Size i)[DB.Fail]
+  class method S p0()
+  class method S p1()
+  class method S p2()
+  class method S p3()
+  class method S p4()
+  mut method List collectResults()[DB.Fail]=(
+    lent db=this.#db()
+      (
+      res=List()
+      Size i0=db.findColumn(label=This.p0())
+      Size i1=db.findColumn(label=This.p1())
+      Size i2=db.findColumn(label=This.p2())
+      Size i3=db.findColumn(label=This.p3())
+      Size i4=db.findColumn(label=This.p4())
+      while db.next() (res.add(right=R.#immK(
+        p0=This.p0(db=db,i=i0)
+        p1=This.p1(db=db,i=i1)
+        p2=This.p2(db=db,i=i2)
+        p3=This.p3(db=db,i=i3)
+        p4=This.p4(db=db,i=i4)
+        )))
+      res
+      )
+    )
+  }
 class method Traits traits()=Traits[
-  K1();K2();
+  K1();K2();K3();K4();K5();
   ]
 class method Name.List names()=Name.List[
-  'R.#immK(p0);'R.#immK(p0,p1);
+  'R.#immK(p0);'R.#immK(p0,p1);'R.#immK(p0,p1,p2);
+  'R.#immK(p0,p1,p2,p3);'R.#immK(p0,p1,p2,p3,p4);
   ]

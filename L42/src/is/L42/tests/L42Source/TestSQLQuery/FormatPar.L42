@@ -27,14 +27,22 @@ class method S escape(S that)=(
   )
 class method S (S that,S key,HasToS val)=
   that.replace(S"@%key" with=FormatPar(val))
+
+class method Size nextIndex(S that,Size current)=(
+  options=S.List[S" "; S","; S";"; S"="; S"<"; S">"; S")"; S"("]
+  var res=that.size()
+  for o in options (
+    i=that.indexOf(o, from=current)
+    if i!=Size"-1" res:=res.min(i)
+    )
+  res)
 class method S.List xs(S that)={
   acc=S.List()
   var res=that
   loop (
    i0=res.indexOf(S"@")
    if i0==Size"-1" return acc
-   i=res.indexOf(S" ", from=i0)
-   i1=(if i==Size"-1" res.size() else i)
+   i1=this.nextIndex(res,current=i0)
    p=res.subString(start=i0+1Size,end=i1)
    res:=res.subString(start=i1, end=\size)
    _=Name"%(p)()"//will throw error if p is not a valid identifier

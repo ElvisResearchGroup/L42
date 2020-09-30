@@ -3,10 +3,13 @@ package is.L42.sifo;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 import static is.L42.generated.Mdf.*;
 import static is.L42.generated.ThrowKind.*;
+import static is.L42.sifo.SifoTopTS.*;
+import static is.L42.sifo.SifoTypeSystem.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -35,22 +38,18 @@ import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FV;
 import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
-
-public class SifoTypeSystem extends UndefinedCollectorVisitor{
+public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
   public static String exceptionsErrString = "Errors/Exceptions have different security levels, only the same is allowed.";
   public static String topErrString = "Errors/Exceptions have different security levels, all have to be top of lattice: ";
   public static String differentSecurityLevelsErr(String sifoExceptions){
     return exceptionsErrString + sifoExceptions;}
   public static String moreThanOneAnnotationErr(String annotations){
     return "More than one level is annotated, only one is allowed: " +  annotations;}
-  private static String listPToString(List<P> ps) {
+  static String listPToString(List<P> ps) {
     return ps.stream().map(p -> p.toNCs().toString()).reduce("", (s1,s2) -> s1 + ", " + s2);
   }
-  private static String listPNCsToString(List<P.NCs> ncs) {
+  static String listPNCsToString(List<P.NCs> ncs) {
     return ncs.stream().map(p -> p.toString()).reduce("", (s1,s2) -> s1 + ", " + s2);
-  }
-  private String listTToString(List<T> t0n) {
-    return listPToString(t0n.stream().map(t -> getSifoAnn(t.docs())).collect(Collectors.toList()));
   }
   public static String noSubErr(Object p1, Object p2){
     return "Level " + p1 + " is not a sublevel of " + p2;}
@@ -60,10 +59,36 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     return "Level " + p + " is not the top of the lattice. Should be " + top;}
 //  public static String methodCallSecurityIncompatible(Object resSec, Object parSec){
 //    return "The security....Level is not the top of the lattice. Should be ";}
-  private String allMustTopErr(String t0n, Object top) {
-    return topErrString + top + ". Found: " + t0n;
-  }
 
+  Program p;
+  Lattice42 lattice;
+  int startDept;
+  public SifoTopTS(Program p,P.NCs top){
+    this.p=p;
+    var s=top.cs().size();
+    var ttop=new P.NCs(0,L(top.cs().get(s-1)));
+    startDept=-1;//TODO:
+    var pp=p.navigate(popLRight(top.cs()));
+    this.lattice=new Lattice42(pp,ttop);
+    }  
+  @Override public void visitNC(Core.L.NC nc){
+     Program oldP=p;
+     p=p.push(nc.key(),nc.l());
+     startDept+=1;
+     try{visitL(nc.l());}
+     finally{p=oldP;startDept-=1;}
+     }
+  @Override public void visitMWT(Core.L.MWT m){
+    var mh=m.mh();
+    var g=G.of(mh,mh.docs());
+    var vis=new SifoTypeSystem(startDept,p,g,mh.exceptions(),Set.of(),mh.t(),this.lattice);
+    vis.checkMH(m.mh());
+    if(m._e()!=null){
+      m._e().visitable().accept(vis);
+      }
+    }
+  }
+class SifoTypeSystem extends UndefinedCollectorVisitor{
   public SifoTypeSystem(int dept,Program p, G g,List<T> exceptions, Set<Mdf> mdfs, T expected,Lattice42 lattice) {
     this.dept=dept;
     this.p = p;
@@ -104,10 +129,53 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
       throw new EndError.TypeError(poss,Err.subTypeExpected(m1,m2));
       }
     }  
+  void checkMHSub(Core.MH mh,T t){
+    var l=p._ofCore(t.p());
+    var elem=_elem(l.mwts(),mh.key());
+    if(elem==null){return;}
+    MH mh0=p.from(elem.mh(),t.p().toNCs());
+    var retOk=getSifoAnn(mh.t().docs()).equals(getSifoAnn(mh0.t().docs()));
+    if(!retOk) {throw new Error();}//TODO:
+    var recOk=getSifoAnn(mh.docs()).equals(getSifoAnn(mh0.docs()));
+    if(!recOk) {throw new Error();}//TODO:
+    for(int i:range(mh.pars())){
+      var ti=mh.pars().get(i);
+      var t0i=mh0.pars().get(i);
+      var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
+      if(!tiOk) {throw new Error();}//TODO:
+      }
+    if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error();}//TODO:
+    for(int i:range(mh.exceptions())){
+      var ti=mh.exceptions().get(i);
+      var t0i=mh0.exceptions().get(i);
+      if(!ti.p().equals(t0i.p())){throw new Error();}//TODO:
+      var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
+      if(!tiOk){throw new Error();}//TODO:
+      }
+    }
+  void checkMH(Core.MH mh){
+    for(var t:this.p.topCore().ts()){checkMHSub(mh,t);}
+    var sRec=getSifoAnn(mh.docs());
+    if(!mh.exceptions().isEmpty()){
+      var allS=L(mh.exceptions().stream()
+          .map(t->getSifoAnn(t.docs()))
+          .distinct());
+      if(allS.size()!=1){throw new Error();}//TODO: good error for different kinds of exception security
+      var sExc=allS.get(0);
+      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new Error();}//TODO:
+      }
+    var sRet=getSifoAnn(mh.t().docs());
+    if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new Error();}//TODO:
+    for(T ti:mh.pars()){
+      if(!ti.mdf().isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent)){continue;}
+      var si=getSifoAnn(ti.docs());
+      if(!lattice.secondHigherThanFirst(sRec,si)){throw new Error();}//TODO:
+      }
+     }
   @Override public void visitEVoid(EVoid e){}
   @Override public void visitPCastT(PCastT e){}
   @Override public void visitL(L e){}
-  private P getSifoAnn(List<Doc>docs){
+  P getSifoAnn(List<Doc>docs){
     List<P.NCs> paths=sifos(docs);
     if(paths.isEmpty()) {return lattice.getBottom();}
     if(paths.size()!=1){throw new EndError.TypeError(null, moreThanOneAnnotationErr(listPNCsToString(paths)));}
@@ -273,7 +341,13 @@ public class SifoTypeSystem extends UndefinedCollectorVisitor{
     }
   private boolean isTop(T t){return isTop(getSifoAnn(t.docs()));}
   private boolean isTop(P sifo){return lattice.getTop().equals(sifo);}
-  
+
+  String listTToString(List<T> t0n) {
+    return listPToString(t0n.stream().map(t -> getSifoAnn(t.docs())).collect(Collectors.toList()));
+    }
+  String allMustTopErr(String t0n, Object top) {
+    return topErrString + top + ". Found: " + t0n;
+    }
   private void onKs(Block e){
     boolean hasErr=e.ks().stream().anyMatch(k->k.thr()==ThrowKind.Error);
     var sfv=e.ds().stream().flatMap(di->FV.of(di.e().visitable()).stream());

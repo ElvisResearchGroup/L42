@@ -68,6 +68,14 @@ method Trait makeExecuteQ()[_,MetaFail]=(
   n=this.xs().size() //ok for zero too
   if n>=Executers.traits().size() exception MetaFail"too many query parameters:%n"
   var res=Executers.traits().val(n)
+  xsSize=this.xs().size()
+  tsSize=this.types().size()-1Size
+  if xsSize!=tsSize (exception MetaFail"""%
+    |Inconsistent query:
+    |the number of provided parameter types is %tsSize
+    |but the number of holes is %(xsSize).
+    |The holes are: %this.xs()
+    """)
   for i in n.range() ( res:=this.par(res,i=i) ) //0 to n-1
   nameDest=Name"#apply()".with(xs=this.xs())
   sql=Trait.LiftS(this.sql())['#apply()=>'sql()]

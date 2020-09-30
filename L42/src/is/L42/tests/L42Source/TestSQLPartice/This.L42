@@ -1,23 +1,43 @@
 reuse [AdamTowel]
+
 LoadJ=Load:{reuse[JavaServer]}
-J=LoadJ(slaveName=S"dbServer{}")
-
+GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
+DbJ=LoadJ(slaveName=S"dbServer{}")
 LoadDB=Load:{reuse[DB]}
-DB=LoadDB(S"jdbc:derby:Practice1;create=true",javaServer=J)
+DB=LoadDB(S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
 
-Point=Data:{Num x, Num y}
-Points=Collection.list(Point)
-DBAPI=DB.QueryBox:{
-  @Public A=DB.query[Points;S;]"SELECT * FROM Foo WHERE z!=@name"
-  @Public B=DB.query[Points;Num;]"SELECT * FROM Foo WHERE x!=@num"
+JavaCode={...}
+
+Model=Data:GuiJ.Handler:{
+  mut GuiJ j
+  @GuiJ.Handler mut method Void printAll(S msg)=(void)
+  @GuiJ.Handler mut method Void addPerson(S msg)=(
+    this.#j().submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)
+    whoops GuiJ.Fail
+    )
+  }
+/*Main=(
+  j=GuiJ.#$of()
+  j.loadCode(fullName=S"miniGui.MiniGui",code=JavaCode())
+  model=Model(j=j)
+  void
+  )
+*/
+Person=Data:{S name, Size age, Size height, Size weight}
+Persons=Collection.list(Person)
+
+Queries=DB.QueryBox:{
+  @Public Insert=DB.query[Void;S;Size;Size;Size]"""
+    |INSERT INTO Person (name,age,height,weight)
+    |Values (@name,@age,@height,@weight)
+    """
+  @Public All=DB.query[Persons]"SELECT * FROM Person"
   }
 SetUp={...}
 Table=DB.#$of().tables()
 Main=(
-  db=DB.#$of()
-  mut box=DBAPI(db)
-  Debug(box.a()(name=S"Bob"))
-  {}:Test""(actual=box.a()(name=S"Bob")
-    expected=S"[Point(x=1, y=2); Point(x=4, y=5); Point(x=7, y=8)]")
+  q=Queries(DB.#$of())
+  q.insert()(name='Bob, age=15\ height=165\ weight=67\)
+  Debug(q.all()())
   )
 TearDown={...}

@@ -35,7 +35,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.sifo.Lattice42;
-import is.L42.sifo.SifoTypeSystem;
+import is.L42.sifo.SifoTopTS;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
@@ -53,6 +53,8 @@ import is.L42.visitors.FullL42Visitor;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.popL;
+import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 import static is.L42.common.Err.hole;
@@ -65,28 +67,28 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   pass(testMeth("class method @Left A main(@Left A a)=a"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Right A a)=a"),
-     SifoTypeSystem.noSubErr("[###]","[###]"))
+     SifoTopTS.noSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=a that)"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=a a)"),
-     SifoTypeSystem.noSubErr("[###]","[###]"))
+     SifoTopTS.noSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Left A x=this.main(that,a=a),x)"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=this.main(that,a=a),that)"),
-     SifoTypeSystem.noSubErr("[###]","[###]"))
+     SifoTopTS.noSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=that)"),
-     SifoTypeSystem.noSubErr("[###]","[###]"))
+     SifoTopTS.noSubErr("[###]","[###]"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(a,a=a)"),
-     SifoTypeSystem.noSubErr("[###]","[###]"))
+     SifoTopTS.noSubErr("[###]","[###]"))
    ),new AtomicTest(()->
    pass(testMeth("class method @Top A main(@Left A that, @Right A a)=this.main(that,a=a)"))
    ),new AtomicTest(()->
@@ -99,7 +101,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass(testMeth("class method @Top A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"))   
    ),new AtomicTest(()->
    fail(testMeth("class method @Top A main(mut @Left A that, mut @Right A a)=this.main(a,a=that)"),
-     SifoTypeSystem.noSubErr("[###]","[###]"))
+     SifoTopTS.noSubErr("[###]","[###]"))
    ),new AtomicTest(()->
    pass(testMeth("imm @Left method @Top A main(@Left A that, @Right A a)=this.main(a,a=that)"))   
    ),new AtomicTest(()->
@@ -125,15 +127,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    //TODO: fail, assigend mut to imm, but correct error thrown?
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Right A x=this.main(that,a=a),that)"),
-       SifoTypeSystem.notEqualErr("[###]","[###]"))
+       SifoTopTS.notEqualErr("[###]","[###]"))
    //fail, assigend mut left to mut right
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, mut @Right A a)=(mut @Top A x=this.main(that,a=a),that)"),
-       SifoTypeSystem.notEqualErr("[###]","[###]"))
+       SifoTopTS.notEqualErr("[###]","[###]"))
    //fail, assigend mut left to mut top
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, mut @Right A a)=(mut @Left A x=this.main(that,a=a),a)"),
-       SifoTypeSystem.noSubErr("[###]","[###]"))
+       SifoTopTS.noSubErr("[###]","[###]"))
    //fail, return right but left is expected
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(@Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"), "")
@@ -146,7 +148,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    //pass, left capsule is promoted to mut top
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Top A main(capsule @Left A that, mut @Left A a)=(mut @Top A x=this.main(that,a=a),a)"),
-       SifoTypeSystem.noSubErr("[###]","[###]"))
+       SifoTopTS.noSubErr("[###]","[###]"))
    //fail, left cannot be returned as top
    ),new AtomicTest(()->
    pass(testMeth("class method mut @Top A main(capsule @Left A that, mut @Top A a)=(mut @Top A x=this.main(that,a=a),a)"))
@@ -159,8 +161,56 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    //pass, imm return promoted to top
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(A x=this.main(that,a=a),that)"),
-       SifoTypeSystem.noSubErr("[###]","[###]"))
-   //fail, left cannot be assigned to any
+     SifoTopTS.noSubErr("[###]","[###]"))
+   ),new AtomicTest(()->
+   pass(testMeth("""
+     class method Void err()[A]=void
+     class method @Left A main(@Left A that, @Right A a)[A]
+       =(this.err(),@Left A x=this.main(that,a=a),that)
+     """))
+   ),new AtomicTest(()->
+   fail(testMeth("""
+     class method Void err()[@Left A, @Right B]=void
+     class method @Left A main(@Left A that, @Right A a)[@Left A, @Right B]
+       =(this.err(),@Left A x=this.main(that,a=a),that)
+     """),"put the right error here")
+ ),new AtomicTest(()->
+ fail(testMeth("""
+   class method Void err()[@Left A]=void
+   class method @Left A main(@Left A that, @Right A a)[@Right A]
+     =(this.err(),@Left A x=this.main(that,a=a),that)
+   """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    I1={interface method @Left A foo(@Right B that)[@Top B]}
+    C1={[I1] method @Right A foo(@Right B that)[@Top B]=this.foo(that)}
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+   class method @Left A main(@Left A that, @Right A a)
+     =(@Left A x=this.main(that,a=a) catch exception @Left A y (y) that)
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    class method @Left A main(@Left A that, A a)
+      =(@Left A x=this.main(that,a=a) catch exception @Left A y (y) that)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    @Right method @Left A main(@Left A that, @Left A a)=that
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  //TODO: this need to fail because we can use a left reader
+  //to inspect right. There is a similar test in line 117?
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    @Right method @Left A main(@Left A that, A a)
+      =(@Left A x=this.main(that,a=a) catch exception @Left A y (y) that)
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  //this should (also) fail because of the exception. We should
+  //disentangle it more from the case above
+
+ 
+ //fail, left cannot be assigned to any
    /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->
@@ -904,25 +954,8 @@ public static void pass(String program){
   Program p=Program.flat(init.topCache(new CachedTop(L(),L())));
   ProgramTypeSystem.type(true, p);
   TestTypeSystem.allCoherent(p);
-  new TypeAllMeth(p).visitL(p.topCore());//a visitor
-  }
-static class TypeAllMeth extends is.L42.visitors.PropagatorCollectorVisitor{
-  Program p;TypeAllMeth(Program p){this.p=p;}
-  @Override public void visitNC(Core.L.NC nc){
-     Program oldP=p;
-     p=p.push(nc.key(),nc.l());
-     try{visitL(nc.l());}
-     finally{p=oldP;}
-     }
-  @Override public void visitMWT(Core.L.MWT m){
-    if(m._e()!=null){typeMethESifo(p,m.mh(),m._e());}
-    }
-  }
-private static void typeMethESifo(Program p,MH mh, E e){
-  var g=G.of(mh);
-  var top=new P.NCs(0,L(new C("Top",-1)));//TODO: lattice to string, plus no parameter in InterfaceH below
-  var vis=new SifoTypeSystem(2,p,g,mh.exceptions(),Set.of(),mh.t(),new Lattice42(p.pop(2),top));
-  e.visitable().accept(vis);
+  var top=new P.NCs(0,List.of(new C("A",-1),new C("Top",-1)));
+  new SifoTopTS(p,top).visitL(p.topCore());//a visitor
   }
 public static void failC(String program,String...out){
   checkFail(()->{

@@ -16,4 +16,12 @@ Bool$={
   method Void #checkTrue()[Void]
   class method This from(S string)=if string==S"true" This.true() else This.false()
   }
-Size$={...}
+TraitMinMax=Trait:{
+  read method This1.Bool #lt0(read This that)
+  method This min(This that)=if that<this that else this
+  method This max(This that)=if this<that that else this    
+  }
+Size$=(TraitMinMax+{...}).code()
+Num$=TraitMinMax.code()
+Double$=TraitMinMax.code()
+Long$=TraitMinMax.code()

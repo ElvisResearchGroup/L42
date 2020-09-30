@@ -1,6 +1,15 @@
+Create=DB.query[Void]"""
+  |CREATE TABLE Person (
+  |  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY(Start with 1, Increment by 1),
+  |  name varchar(255),
+  |  age int,
+  |  height int,
+  |  weight int
+  |  )
+  """
 Populate=(
-  db=DB.#$of()
-  db.execute(sql=S"CREATE TABLE Foo (x int,y int, z varchar(255))")
-  db.execute(sql=S"INSERT INTO Foo (x,y,z) Values (1,2,'A3'),(4,5,'B6'),(7,8,'C9')")
+  Create(DB.#$of())()
+  catch Message _ void
+  void
   )
 

@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 
 import is.L42.generated.Core;
 import is.L42.generated.Core.D;
+import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
@@ -35,9 +36,10 @@ public class G {
   public static G empty() {
     return new G(Collections.emptyMap(),Collections.emptySet());
     }
-  public static G of(Core.MH mh){
+  public static G of(Core.MH mh){return of(mh,L());}
+  public static G of(Core.MH mh,List<Doc>thisDocs){    
     Map<X, T> xInT=new HashMap<>();
-    xInT.put(X.thisX,P.coreThis0.withMdf(mh.mdf()));
+    xInT.put(X.thisX,P.coreThis0.withMdf(mh.mdf()).withDocs(thisDocs));
     for(int i:range(mh.s().xs())){
       X x=mh.s().xs().get(i);
       T t=mh.pars().get(i);
