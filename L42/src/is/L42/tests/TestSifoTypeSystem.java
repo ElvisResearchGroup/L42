@@ -59,7 +59,6 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 import static is.L42.common.Err.hole;
 import static is.L42.generated.LDom._elem;
-import static is.L42.sifo.SifoTopTS.differentSecurityLevelsErr;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSifoTypeSystem
@@ -82,6 +81,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=this.main(that,a=a),that)"),
      SifoTopTS.noSubErr("[###]","[###]"))
 //------------------
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Left A main(@Left @Right A that, @Right A a)=(@Right A x=a that)"),
+       SifoTopTS.moreThanOneAnnotationErr("[###]"))
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Left @Right A main(@Right A that, @Right A a)=(@Right A x=a that)"),
+       SifoTopTS.moreThanOneAnnotationErr("[###]"))
+   ),new AtomicTest(()->
+   fail(testMeth("imm @Left @Right method @Left A main(@Right A that, @Right A a)=(@Right A x=a that)"),
+       SifoTopTS.moreThanOneAnnotationErr("[###]"))
+   ),new AtomicTest(()->
+   fail(testMeth("class method @Left @Right A main(@Right A that, @Right A a)=(@Right @Left A x=a that)"),
+       SifoTopTS.moreThanOneAnnotationErr("[###]"))
    ),new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"))
    ),new AtomicTest(()->
@@ -119,7 +130,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    //this should fail on typing method declaration right parameter is not higher than receiver
    ),new AtomicTest(()->
    pass(testMeth("imm @Left method @Left A main(mut @Left A that, @Right A a)=this.main(that,a=a)"))
-   //TODO:this should pass on typing method declaration right parameter is imm
+   //this should pass on typing method declaration right parameter is imm
    ),new AtomicTest(()->
    fail(testMeth("imm @Top method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"),
        SifoTopTS.noSubErr("[###]","[###]"))
@@ -130,7 +141,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(imm @Left A x=this.main(that,a=a),that)"), 
      Err.methCallNoCompatibleMdfParametersSignature("[###]", "[###]"))
-   //TODO: fail, assigend mut to imm, but correct error thrown?
+   //fail, assigend mut to imm
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Right A x=this.main(that,a=a),that)"),
        SifoTopTS.notEqualErr("[###]","[###]"))
@@ -176,13 +187,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method Void err()[@Left A, @Right B]=void
      class method @Left A main(@Left A that, @Right A a)[@Left A, @Right B]
        =(this.err(),@Left A x=this.main(that,a=a),that)
-     """), SifoTopTS.differentSecurityLevelsErr("[###]"))
+     """), SifoTopTS.differentSecurityLevelsExceptionsErr("[###]"))
    ),new AtomicTest(()->
    fail(testMeth("""
      imm @Left method Void err()[@Right B]=void
      imm @Left method @Left A main(@Left A that, @Left A a)[@Right B]
        =(this.err(),@Left A x=this.main(that,a=a),that)
-     """), "should throw an error, as exception is not higher than receiver")
+     """), SifoTopTS.noSubErr("[###]","[###]"))
  ),new AtomicTest(()->
  fail(testMeth("""
    class method Void err()[@Left A]=void
@@ -198,7 +209,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   fail(testMeth("""
     I1={interface method @Left A foo(@Right B that)[@Top B]}
     C1={[I1] method @Left A foo(@Left B that)[@Top B]=this.foo(that)}
-    """),"caught by L42")
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     I1={interface method @Left A foo(@Right B that)[@Left B]}
@@ -214,8 +225,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   fail(testMeth("""
     I1={interface imm @Left method @Top A foo(@Right B that)}
     C1={[I1] imm @Right method @Top A foo(@Right B that)=this.foo(that)}
-    """),
-    SifoTopTS.notEqualErr("[###]","[###]"))
+    """), SifoTopTS.notEqualErr("[###]","[###]"))
   //TODO:receiver is changed, should throw an error
   ),new AtomicTest(()->
   fail(testMeth("""
@@ -251,6 +261,40 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   //TODO: make a test where having @Right exception fails but @Left exception pass
   ),new AtomicTest(()->
   pass(testMeth("""
+    imm @Left method @Left A main(@Left A that)
+      =(@Left A x=this.main(that) catch exception @Left A y (this.main(that)) x)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm @Left method @Left A main(@Left A that)
+      =(@Left A x=this.main(that) catch exception @Right A y (this.main(that)) x)
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm @Left method @Left A main(@Left A that, @Right A a)
+      =(var @Right A x=a
+       (x:=a catch exception @Right A y (that) that))
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm @Left method @Left A main(@Left A that, @Right A a)
+      =(var @Right A x=a
+       (x:=a catch exception @Left A y (that) that))
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm @Right method @Top A main(@Left A that, @Right A a)
+      =(var @Right A x=a
+       (x:=a catch exception @Right A y (that) that))
+    """))
+  //TODO: is one between line 262 and 289 your expected scenario?
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Left A main(@Left A that)
+      =(@Left A x=this.main(that) catch exception @Right A y (this.main(that)) x)
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
     imm method @Top A main(@Left A that)
       =(@Top A x=this.main(that) catch error @Top A y (y) x)
     """))
@@ -268,7 +312,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   fail(testMeth("""
     imm method mut A main(mut @Left A that, mut A a)
       =(mut A x=this.main(that,a=a) catch exception @Left A y (a) a)
-    """),SifoTopTS.differentSecurityLevelsErr("[###]"))
+    """),SifoTopTS.differentSecurityLevelsVariablesErr("[###]"))
   ),new AtomicTest(()->
   pass(testMeth("""
     imm method @Left A main(@Left A that)=(
@@ -286,21 +330,26 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     """))
   ),new AtomicTest(()->
   fail(testMeth("""
-    imm method @Left A main(@Left A that,@Right A a)=(
+    imm method @Left A main(@Left A that, @Right A a)=(
       var @Left A x=that
       var @Right A y=a
       (x:=x  y:=y
        catch exception @Left A b (x)
        x))
-    """),"ddd")
-  //TODO: check error text, here it does not mention free variable / var variables
+    """), SifoTopTS.differentSecurityLevelsVariablesErr("[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Left A main(@Left A that, @Right A a)=(
+      var @Left A x=that
+      var @Right A y=a
+      (x:=x
+      @Right A z=y
+       catch exception @Left A b (x)
+       x))
+    """))
   //TODO: next: try to use y not as var for example z=y; this should pass
+  //TODO: tests with loop are missing
   
-  //this should (also) fail because of the exception. We should
-  //disentangle it more from the case above
-
- 
- //fail, left cannot be assigned to any
    /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
    ),new AtomicTest(()->

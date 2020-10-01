@@ -39,13 +39,16 @@ import is.L42.visitors.FV;
 import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
 public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
-  public static String exceptionsErrString = "Errors/Exceptions have different security levels, only the same is allowed. Found: ";
+  public static String exceptionsErrString = " Errors/Exceptions have different security levels, only the same is allowed. Found: ";
+  public static String varErrString = " Variables have different security levels, only the same is allowed. Found: ";
   public static String topErrString = "Errors/Exceptions have different security levels, all have to be top of lattice: ";
   public static String allMustTopErr(String t0n, Object top) {
     return topErrString + top + ". Found: " + t0n;
     }
-  public static String differentSecurityLevelsErr(String sifoExceptions){
+  public static String differentSecurityLevelsExceptionsErr(String sifoExceptions){
     return exceptionsErrString + sifoExceptions;}
+  public static String differentSecurityLevelsVariablesErr(String sifoExceptions){
+    return varErrString + sifoExceptions;}
   public static String moreThanOneAnnotationErr(String annotations){
     return "More than one level is annotated, only one is allowed: " +  annotations;}
   static String listPToString(List<P> ps) {
@@ -54,7 +57,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
       .collect(Collectors.joining(", "));
     }
   static String listPNCsToString(List<P.NCs> ncs) {
-    return ncs.stream().map(p -> p.toString()).reduce("", (s1,s2) -> s1 + ", " + s2);
+    return ncs.stream().map(p -> p+"").collect(Collectors.joining(", "));
   }
   public static String noSubErr(Object p1, Object p2){
     return "Level " + p1 + " is not a sublevel of " + p2;}
@@ -106,7 +109,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       this._sifoExceptions=sifoExceptions.get(0);
       return;
       }
-    throw new EndError.TypeError(p.topCore().poss(), differentSecurityLevelsErr(listPToString(sifoExceptions)));//TODO:poss
+    throw new EndError.TypeError(p.topCore().poss(), differentSecurityLevelsExceptionsErr(listPToString(sifoExceptions)));//TODO:poss
     }
   boolean isDeep;
   int dept;
@@ -140,12 +143,12 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     var retOk=getSifoAnn(mh.t().docs()).equals(getSifoAnn(mh0.t().docs()));
     if(!retOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(mh.t().docs()), getSifoAnn(mh0.t().docs())));}//TODO:poss
     var recOk=getSifoAnn(mh.docs()).equals(getSifoAnn(mh0.docs()));
-    if(!recOk) {throw new Error("2");}//TODO:
+    if(!recOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(mh.docs()), getSifoAnn(mh0.docs())));}//TODO:poss
     for(int i:range(mh.pars())){
       var ti=mh.pars().get(i);
       var t0i=mh0.pars().get(i);
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
-      if(!tiOk) {throw new Error("3");}//TODO: already caught by L42?
+      if(!tiOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}//TODO:poss
       }
     if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error("4");}//TODO: already caught by L42?
     for(int i:range(mh.exceptions())){
@@ -165,7 +168,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
           .distinct());
       if(allS.size()!=1){throw new Error("7");}//TODO: already thrown in line 104?
       var sExc=allS.get(0);
-      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new Error("8");}//TODO:
+      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, sExc));}//TODO:poss
       }
     var sRet=getSifoAnn(mh.t().docs());
     if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, sRet));}//TODO:poss
@@ -181,7 +184,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
   P getSifoAnn(List<Doc>docs){
     List<P.NCs> paths=sifos(docs);
     if(paths.isEmpty()) {return lattice.getBottom();}
-    if(paths.size()!=1){throw new EndError.TypeError(null, moreThanOneAnnotationErr(listPNCsToString(paths)));}//TODO:poss
+    if(paths.size()!=1){throw new EndError.TypeError(this.p.topCore().poss(), moreThanOneAnnotationErr(listPNCsToString(paths)));}//TODO:poss
     return paths.get(0);
     }
   private List<P.NCs> sifos(List<Doc> docs){
@@ -353,7 +356,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       .distinct());
     if(!s.isEmpty()){
       if(s.size()>1){
-        throw new EndError.TypeError(e.poss(), differentSecurityLevelsErr(listPToString(s)));
+        throw new EndError.TypeError(e.poss(), differentSecurityLevelsVariablesErr(listPToString(s)));
         }
       }
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
