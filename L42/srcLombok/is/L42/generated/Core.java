@@ -231,6 +231,8 @@ public class Core {
       assert s.xs().size()==pars.size();
       }
     @Override public S key(){return s;}
-    public List<T> parsWithThis(){return pushL(P.coreThis0.withMdf(mdf),pars);}
+    public List<T> parsWithThis(){
+      return pushL(P.coreThis0.withMdf(mdf).withDocs(docs), pars);
+      }
     }
   }

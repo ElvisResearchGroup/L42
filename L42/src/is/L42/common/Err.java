@@ -333,7 +333,7 @@ public class Err {
   ;}public static String methSubTypeExpectedMdf(Object s, Object _1,Object _2){return
   "Invalid method inheritance for "+s+": the modifier "+_1+" is different from the inherited mdf "+_2
   ;}public static String methSubTypeExpectedPars(Object s, Object _1,Object _2){return
-  "Invalid method inheritance for "+s+": the parameters "+_1+" are diffrent from the inherited parameters "+_2
+  "Invalid method inheritance for "+s+": the parameters "+_1+" are different from the inherited parameters "+_2
   ;}public static String methSubTypeExpectedExc(Object s, Object _1,Object _2){return
   "Invalid method inheritance for "+s+": exception "+_1+" is not a subtype of any exception in "+_2
   ;}public static String invalidDotDotDotLocation(){return

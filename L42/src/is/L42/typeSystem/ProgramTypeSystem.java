@@ -8,6 +8,7 @@ import static is.L42.tools.General.todo;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.stream.IntStream;
 
 import is.L42.common.EndError;
 import is.L42.common.Err;
@@ -98,7 +99,12 @@ public class ProgramTypeSystem {
   public static String _typeMHSubtypeErrMsg(Program p,MH mhI, MH mhC){
     if(!p._isSubtype(mhC.t(), mhI.t())){return Err.methSubTypeExpectedRet(mhC.key(),mhC.t(), mhI.t());} 
     if(mhC.mdf()!=mhI.mdf()){return Err.methSubTypeExpectedMdf(mhC.key(),mhC.mdf(),mhI.mdf());}
-    if(!mhI.pars().equals(mhC.pars())){return Err.methSubTypeExpectedPars(mhC.key(),mhC.pars(),mhI.pars());}
+    var parsEq=IntStream.range(0,mhI.pars().size()).allMatch(i->{
+      var tIi=mhI.pars().get(i);
+      var tCi=mhC.pars().get(i);
+      return tIi.mdf().equals(tCi.mdf()) && tIi.p().equals(tCi.p());
+      });
+    if(!parsEq){return Err.methSubTypeExpectedPars(mhC.key(),mhC.pars(),mhI.pars());}
     for( var eC:mhC.exceptions()){
       boolean cond=mhI.exceptions().stream().anyMatch(eI->p._isSubtype(eC,eI));
       if(!cond){return Err.methSubTypeExpectedExc(mhC.key(),eC, mhI.exceptions());}  

@@ -128,7 +128,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    pass(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"))
    //this should pass as mut is correctly assigned
    ),new AtomicTest(()->
-   fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(imm @Left A x=this.main(that,a=a),that)"), "")
+   fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(imm @Left A x=this.main(that,a=a),that)"), 
+     Err.methCallNoCompatibleMdfParametersSignature("[###]", "[###]"))
    //TODO: fail, assigend mut to imm, but correct error thrown?
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Right A x=this.main(that,a=a),that)"),
@@ -142,9 +143,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail(testMeth("class method mut @Left A main(mut @Left A that, mut @Right A a)=(mut @Left A x=this.main(that,a=a),a)"),
        SifoTopTS.noSubErr("[###]","[###]"))
    //fail, return right but left is expected
-   ),new AtomicTest(()->
-   fail(testMeth("class method mut @Left A main(@Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"), "")
-   //TODO: fail, imm returned as mut
    ),new AtomicTest(()->
    pass(testMeth("class method mut @Left A main(@Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),x)"))
    //pass, mut returned as mut
@@ -181,8 +179,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      """), SifoTopTS.differentSecurityLevelsErr("[###]"))
    ),new AtomicTest(()->
    fail(testMeth("""
-     @Left method Void err()[@Right B]=void
-     @Left method @Left A main(@Left A that, @Left A a)[@Right B]
+     imm @Left method Void err()[@Right B]=void
+     imm @Left method @Left A main(@Left A that, @Left A a)[@Right B]
        =(this.err(),@Left A x=this.main(that,a=a),that)
      """), "should throw an error, as exception is not higher than receiver")
  ),new AtomicTest(()->
@@ -209,13 +207,15 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   ),new AtomicTest(()->
   fail(testMeth("""
     I1={interface method @Left A foo(@Right B that)[@Left B]}
-    C1={[I1] method @Left A foo(@Right B that)[@Right B,Left A]=this.foo(that)}
-    """),"caught by L42")
+    C1={[I1] method @Left A foo(@Right B that)[@Right B,@Left A]=this.foo(that)}
+    """),
+    Err.methSubTypeExpectedExc("[###]","[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
-    I1={interface @Left method @Top A foo(@Right B that)}
-    C1={[I1] @Right method @Top A foo(@Right B that)=this.foo(that)}
-    """),SifoTopTS.notEqualErr("[###]","[###]"))
+    I1={interface imm @Left method @Top A foo(@Right B that)}
+    C1={[I1] imm @Right method @Top A foo(@Right B that)=this.foo(that)}
+    """),
+    SifoTopTS.notEqualErr("[###]","[###]"))
   //TODO:receiver is changed, should throw an error
   ),new AtomicTest(()->
   fail(testMeth("""
@@ -229,15 +229,73 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     """))
   ),new AtomicTest(()->
   fail(testMeth("""
-    @Right method @Left A main(@Left A that, @Left A a)=that
-    """),SifoTopTS.notEqualErr("[###]","[###]"))
-  //TODO: this need to fail because we can use a left reader
-  //to inspect right. There is a similar test in line 120
+    imm @Right method @Left A main(@Left A that, @Left A a)=that
+    """),
+    SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
-    @Right method @Left A main(@Left A that, A a)
-      =(@Left A x=this.main(that,a=a) catch exception @Left A y (y) that)
+    imm @Left method @Right A main(@Left A that)
+      =(@Right A x=this.main(that)  x)
+    """),SifoTopTS.noSubErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Right A main(@Left A that)
+      =(@Right A x=this.main(that) catch exception @Right A y (y) x)
     """),SifoTopTS.notEqualErr("[###]","[###]"))
+  //the existence of the right exception tell us about the state of left
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Right A main(@Left A that)
+      =(@Right A x=this.main(that) catch exception @Left A y (this.main(that)) x)
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  //TODO: make a test where having @Right exception fails but @Left exception pass
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Top A main(@Left A that)
+      =(@Top A x=this.main(that) catch error @Top A y (y) x)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Top A main(@Left A that)
+      =(@Top A x=this.main(that) catch error @Left A y (y) x)
+    """),SifoTopTS.allMustTopErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Top A main(@Left A that)
+      =(@Top A x=this.main(that) catch exception @Left A y (y) x)
+    """))//passes with exception but fails (above) with error
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method mut A main(mut @Left A that, mut A a)
+      =(mut A x=this.main(that,a=a) catch exception @Left A y (a) a)
+    """),SifoTopTS.differentSecurityLevelsErr("[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Left A main(@Left A that)=(
+      var @Left A x=that
+      (x:=x
+      x))
+    """))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Left A main(@Left A that)=(
+      var @Left A x=that
+      (x:=x
+       catch exception @Left A a (x)
+       x))
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Left A main(@Left A that,@Right A a)=(
+      var @Left A x=that
+      var @Right A y=a
+      (x:=x  y:=y
+       catch exception @Left A b (x)
+       x))
+    """),"ddd")
+  //TODO: check error text, here it does not mention free variable / var variables
+  //TODO: next: try to use y not as var for example z=y; this should pass
+  
   //this should (also) fail because of the exception. We should
   //disentangle it more from the case above
 
