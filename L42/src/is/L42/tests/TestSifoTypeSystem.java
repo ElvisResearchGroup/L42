@@ -338,7 +338,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        x))
     """), SifoTopTS.differentSecurityLevelsVariablesErr("[###]"))
   ),new AtomicTest(()->
-  pass(testMeth("""
+  fail(testMeth("""
     imm method @Left A main(@Left A that, @Right A a)=(
       var @Left A x=that
       var @Right A y=a
@@ -346,8 +346,55 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       @Right A z=y
        catch exception @Left A b (x)
        x))
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
+  //----------
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Top A main(@Top A top,@Left A that, @Right A a)=(
+      var @Left A x=that
+      var @Right A y=a
+      (x:=x  y:=y
+       catch exception @Top A b (top)
+       top))
+    """), SifoTopTS.differentSecurityLevelsVariablesErr("[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Top A main(@Top A top, @Left A that, @Right A a)=(
+      var @Left A x=that
+      var @Right A y=a
+      (x:=x
+      @Right A z=y
+       catch exception @Top A b (top)
+       top))
     """))
-  //TODO: next: try to use y not as var for example z=y; this should pass
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method @Top A main(@Top A top, @Left A that, @Right A a)=(
+      var @Left A x=that
+      var @Right A y=a
+      (y:=y
+      @Left A z=x
+       catch exception @Top A b (top)
+       top))
+    """))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    imm method A newATrue()=this.newATrue()
+    imm method A newAFalse()=this.newAFalse()
+    imm method A isTrue(A that)[A]=that
+    imm method @Right A main(@Left A that)=(
+      var @Right A y=this.newAFalse()
+      @Top Void unused=(
+        @Left A z=this.isTrue(that)
+        catch exception @Top A b (void)
+        y:=this.newATrue()
+        void)
+      y
+      )
+    """))
+
+  
+  
   //TODO: tests with loop are missing
   
    /*  ),new AtomicTest(()->

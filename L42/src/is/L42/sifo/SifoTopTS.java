@@ -35,6 +35,7 @@ import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.typeSystem.AlternativeMethodTypes;
 import is.L42.typeSystem.TypeManipulation;
+import is.L42.visitors.Accumulate;
 import is.L42.visitors.FV;
 import is.L42.visitors.PropagatorCollectorVisitor;
 import is.L42.visitors.UndefinedCollectorVisitor;
@@ -247,7 +248,8 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
   public void visitMCall(boolean promoted,MCall e,P.NCs p0,List<T> parTypes,List<T>excs, P selectedS){
     var excsSifo=L(excs.stream().map(t->getSifoAnn(t.docs())).distinct());
     P excSifo=excsSifo.isEmpty()?null:excsSifo.get(0);
-    if(excSifo!=null && !excSifo.equals(this._sifoExceptions)){
+    if(promoted && excSifo!=null){excSifo=lattice.leastUpperBound(excSifo,selectedS);}
+    if(excSifo!=null && !lattice.secondHigherThanFirst(excSifo, this._sifoExceptions)){
       throw new EndError.TypeError(e.poss(), notEqualErr(excSifo, _sifoExceptions));//TODO: can not throw excSifo
       }
     var meths=AlternativeMethodTypes.types(p,p0,e.s());
@@ -349,14 +351,21 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
   private void onKs(Block e){
     boolean hasErr=e.ks().stream().anyMatch(k->k.thr()==ThrowKind.Error);
     var sfv=e.ds().stream().flatMap(di->FV.of(di.e().visitable()).stream());
-    List<X> fv=L(sfv.filter(x->e.ds().stream().noneMatch(d->d.x().equals(x))));
-    var s=L(fv.stream()
-      .filter(x->g._of(x).mdf().isIn(Mdf.Mutable, Mdf.Capsule) || g.isVar(x))
+    List<X> fvDs=FV.ofBlockDs(e);
+    List<X> fvBlock=FV.of(e);
+    var s=L(fvBlock.stream()
+      .filter(x->g._of(x).mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule) || g.isVar(x))
       .map(x->getSifoAnn(g._of(x).docs()))
       .distinct());
     if(!s.isEmpty()){
       if(s.size()>1){
         throw new EndError.TypeError(e.poss(), differentSecurityLevelsVariablesErr(listPToString(s)));
+        }
+      for(X x:fvBlock){
+        if(g._of(x).mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule) || g.isVar(x)){continue;}
+        var sifo=getSifoAnn(g._of(x).docs());
+        if(lattice.secondHigherThanFirst(sifo, s.get(0))){continue;}
+        throw new Error();//TODO:
         }
       }
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
@@ -365,7 +374,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       throw new EndError.TypeError(e.poss(), allMustTopErr(listTToString(t0n), lattice.getTop()));
       }
     for(T ti:t0n){
-      ArrayList<P> ss=fv.stream().map(x->getSifoAnn(g._of(x).docs())).collect(Collectors.toCollection(ArrayList::new));
+      ArrayList<P> ss=fvDs.stream().map(x->getSifoAnn(g._of(x).docs())).collect(Collectors.toCollection(ArrayList::new));
       var secTi=getSifoAnn(ti.docs());
       ss.add(secTi);
       var lub=lattice.leastUpperBound(ss);
@@ -373,7 +382,43 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         throw new EndError.TypeError(e.poss(), notEqualErr(lub, secTi));}
       }
     }
+  void addThrow(Core.K k){
+    if(k.thr().equals(ThrowKind.Return)){
+      var sifo=getSifoAnn(k.t().docs());
+      if(this._sifoReturns==null){this._sifoReturns=sifo;return;}
+      if(sifo.equals(this._sifoReturns)){return;}
+      var promotable=k.t().mdf().isIn(Mdf.Capsule,Mdf.Immutable);
+      var sub=lattice.secondHigherThanFirst(this._sifoReturns,sifo);
+      if(promotable && sub){return;}
+      throw new Error("");//TODO:
+      }
+    if(k.thr().equals(ThrowKind.Exception)){
+      var sifo=getSifoAnn(k.t().docs());
+      if(this._sifoExceptions==null){this._sifoExceptions=sifo;return;}
+      if(sifo.equals(this._sifoExceptions)){return;}
+      var sub=lattice.secondHigherThanFirst(this._sifoExceptions,sifo);
+      if(sub){return;}
+      throw new Error("");//TODO:
+      }
+    }
   @Override public void visitBlock(Block e){
+    G oldG=this.g;
+    try{
+      this.g=unVar(e);
+      visitBlockUnVar(e);
+      }
+    finally{this.g=oldG;}
+    }
+  G unVar(Block e){
+    List<X> varred=new ArrayList<>();
+    e.accept(new Accumulate.SkipL<T>(){
+      @Override public void visitOpUpdate(Core.OpUpdate opUpdate){
+        varred.add(opUpdate.x());
+        }
+      });
+    return this.g.keepVars(varred);
+    }
+  public void visitBlockUnVar(Block e){
     var newMdfs=new HashSet<>(mdfs);
     for(K k:e.ks()){typeK(k,newMdfs);}
     var oldMdfs=mdfs;
@@ -381,7 +426,14 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     boolean hasKs=!e.ks().isEmpty();
     if(hasKs){onKs(e);}
     G oldG=g;
-    G g0=typeDs(e.ds());
+    var oldSifoExceptions=this._sifoExceptions;
+    var oldSifoReturns=this._sifoReturns;
+    for(var k:e.ks()){addThrow(k);}
+    G g0;try{g0=typeDs(e.ds());}
+    finally{
+      this._sifoExceptions=oldSifoExceptions;
+      this._sifoReturns=oldSifoReturns;
+      }
     g=g.plusEqMdf(g0);
     mdfs=oldMdfs;
     visitE(e.e());

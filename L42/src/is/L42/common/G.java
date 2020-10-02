@@ -3,6 +3,7 @@ package is.L42.common;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -58,6 +59,12 @@ public class G {
       );
     }
   public boolean isVar(X x){return vars.contains(x);}
+  public G keepVars(Collection<X> vars){
+    Set<X> vs=new HashSet<>(this.vars);
+    vs.retainAll(vars);
+    vs=Collections.unmodifiableSet(vs);
+    return new G(xInT,vs);
+    }
   public T of(X x) {
     T res= xInT.get(x);
     assert res!=null: x;

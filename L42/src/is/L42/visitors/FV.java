@@ -13,6 +13,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Pos;
 import is.L42.generated.X;
+import is.L42.generated.Core.OpUpdate;
 
 public class FV extends PropagatorCollectorVisitor{
   public static List<X> of(Visitable<?> v){
@@ -20,10 +21,23 @@ public class FV extends PropagatorCollectorVisitor{
     v.accept(fv);
     return fv.result;
     }
-  
+  public static List<X> ofBlockDs(Core.Block b){
+    FV fv=new FV();
+    b.withKs(L()).withE(new Core.EVoid(b.pos())).accept(fv);
+    return fv.result;
+    }  
   List<X> result=new ArrayList<>();
-  
-  public void visitEX(Core.EX x){result.add(x.x());}
+
+  @Override public void visitOpUpdate(OpUpdate e){
+    super.visitOpUpdate(e);
+    result.add(e.x());
+    }
+  @Override public void visitOpUpdate(Full.OpUpdate e){
+    super.visitOpUpdate(e);
+    result.add(e.x());
+    }
+  public void visit(Core.EX x){result.add(x.x());}
+  @Override public void visitEX(Core.EX x){result.add(x.x());}
   //full part
   @Override public void visitK(Full.K k){
     var acc=store();
