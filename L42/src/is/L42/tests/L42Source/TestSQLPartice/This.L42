@@ -8,21 +8,6 @@ DB=LoadDB(S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
 
 JavaCode={...}
 
-Model=Data:GuiJ.Handler:{
-  mut GuiJ j
-  @GuiJ.Handler mut method Void printAll(S msg)=(void)
-  @GuiJ.Handler mut method Void addPerson(S msg)=(
-    this.#j().submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)
-    whoops GuiJ.Fail
-    )
-  }
-/*Main=(
-  j=GuiJ.#$of()
-  j.loadCode(fullName=S"miniGui.MiniGui",code=JavaCode())
-  model=Model(j=j)
-  void
-  )
-*/
 Person=Data:{S name, Size age, Size height, Size weight}
 Persons=Collection.list(Person)
 
@@ -33,11 +18,60 @@ Queries=DB.QueryBox:{
     """
   @Public All=DB.query[Persons]"SELECT * FROM Person"
   }
+Model=Data:GuiJ.Handler:{
+  mut GuiJ j
+  mut Queries q
+  @GuiJ.Handler mut method Void printAll(S msg)=(
+    all=this.#q().all()()
+    Debug(S"printAll(%msg) called; will now be %all.toS()")
+    this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
+    this.#j().submitEvent(key='Example.Display, id=S"tableClear", msg=S"")
+    for p in all (
+      this.#j().submitEvent(key='Example.Display, id=S"tableAdd", msg=S"%p.name(),%p.age(),%p.height(),%p.weight(),")
+      )
+    whoops DB.Fail, GuiJ.Fail
+    )
+  @GuiJ.Handler mut method Void addPerson(S msg)=(
+    Debug(S"addPerson(%msg) called")
+    this.#q().insert()(name='Alice, age=25\ height=170\ weight=75\)
+    whoops DB.Fail
+    )
+  }
+
 SetUp={...}
 Table=DB.#$of().tables()
 Main=(
   q=Queries(DB.#$of())
   q.insert()(name='Bob, age=15\ height=165\ weight=67\)
-  Debug(q.all()())
+  j=GuiJ.#$of()
+  model=Model(j=j,q=q)
+  text=q.all()().toS().replace(S.dq() with=S"\%S.dq()")
+  code=
+    JavaCode.opening(name='Example,x=800Size,y=600Size)++
+    JavaCode.button(k='Example id=S"addPerson" msg='PressedAdd text=S"add")++
+    JavaCode.button(k='Example id=S"printAll" msg='PressedPrint text=S"printAll")++
+    JavaCode.label(k='Example id=S"label1" text=text)++
+    JavaCode.table(k='Example id=S"table" columns=S"id,name,age,height,weight")++
+    JavaCode.table(k='Example id=S"tableIn" columns=S"id,name,age,height,weight")++
+    S"""
+      |{
+      |  Event.registerEvent("Example.Display",(k,id,msg)->SwingUtilities.invokeLater(()->{
+      |    System.out.println(k+" "+id+" "+msg);
+      |    if(id.equals("label1")){label1.setText(msg);}
+      |    if(id.equals("tableAdd")){((DefaultTableModel)(table.getModel())).addRow(msg.split(","));}
+      |    if(id.equals("tableClear")){((DefaultTableModel)(table.getModel())).setRowCount(0);}
+      |    }));
+      |  add(label1,BorderLayout.NORTH);
+      |  add(new JScrollPane(table),BorderLayout.CENTER);
+      |  add(addPerson,BorderLayout.WEST);
+      |  add(printAll,BorderLayout.EAST);
+      |}
+      """++
+    JavaCode.closing()
+  j.loadCode(fullName=S"miniGui.Example",code=code)
+  for e in j(\['Example]) (
+    e>>model
+    Debug(e)
+    )
   )
 TearDown={...}

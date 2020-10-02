@@ -123,7 +123,7 @@ public class Main {
       for(var m:cc.getMethods()){Resources.err(m.getName());}
       }
     catch(Throwable t){}
-    Resources.err("The error type can not be displayed");
+    Resources.err("The error type can not be displayed for Java class "+c.getName());
     for(var m:c.getMethods()){Resources.err(m.getName()+" "+m.toString());}
     for(var m:c.getFields()){Resources.err(m.getName());}
     }

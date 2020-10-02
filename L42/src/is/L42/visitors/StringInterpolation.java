@@ -72,7 +72,7 @@ public class StringInterpolation {
       }
     return c!='.' && c!='(' && c!='[';
     }
-  private final String terminals=" , \n !~\"%&/=?'^*-@><;:";
+  private final String terminals="\\ ,\n!~\"%&/=?'^*-+@><;:";
   final String symbol;
   private static enum Mode{
     Str{public int run(StringInterpolation self,String s,int i){

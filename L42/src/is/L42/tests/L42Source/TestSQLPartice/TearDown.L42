@@ -1,6 +1,6 @@
 Drop=DB.query[Void]"DROP TABLE Person"
 AfterMain=(
   db=DB.#$of()
-  Drop(db)()
+  //Drop(db)()
   db.kill()
   )

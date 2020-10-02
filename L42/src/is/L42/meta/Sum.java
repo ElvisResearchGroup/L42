@@ -598,6 +598,9 @@ public class Sum {
 class IMWT{
   final boolean isInterface;
   final Core.L.MWT mwt;
+  @Override public String toString(){
+    return "IMWT("+isInterface+","+mwt+")"; 
+    }
   IMWT(boolean isInterface,Core.L.MWT mwt){this.isInterface=isInterface;this.mwt=mwt;}
   public static List<IMWT> of(boolean isInterface,List<Core.L.MWT> mwts){
     return L(mwts,(c,m)->c.add(new IMWT(isInterface,m)));

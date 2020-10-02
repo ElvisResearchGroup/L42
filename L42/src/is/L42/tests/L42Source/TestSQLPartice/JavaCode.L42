@@ -1,2 +1,43 @@
-
-
+class method S opening(S name,Size x,Size y)=S"""%
+  |package miniGui;
+  |
+  |import java.awt.event.WindowEvent;
+  |import java.awt.BorderLayout;
+  |import javax.swing.JButton;
+  |import javax.swing.JLabel;
+  |import javax.swing.JTable;
+  |import javax.swing.table.DefaultTableModel;
+  |import javax.swing.JScrollPane;
+  |import javax.swing.JFrame;
+  |import javax.swing.SwingUtilities;
+  |import is.L42.platformSpecific.javaEvents.Event;
+  |import java.util.concurrent.CompletableFuture;
+  |
+  |public class %name extends JFrame{
+  |  public static void main(String[]a){
+  |    SwingUtilities.invokeLater(%(name)::new);
+  |    }
+  |  public %(name)(){
+  |    setTitle("%name");
+  |    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  |    setSize(%x,%y);
+  |    setVisible(true);
+  |    Event.registerEvent("Kill",(k,id,msg)->
+  |      dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING))
+  |      );
+  |    }
+  """
+class method S closing()=S"}"
+class method S button(S k,S id,S msg,S text)=S"""%
+  |JButton %id = new JButton("%text");{
+  |  %(id).addActionListener(e->Event.submitEvent("%k","%id","%msg"));
+  |  }
+  """
+class method S label(S k,S id,S text)=S"""%
+  |JLabel %id = new JLabel("%text");
+  """
+class method S table(S k,S id,S columns)=S"""%
+  |JTable %id = new JTable(new DefaultTableModel(
+  |  new Object[][]{},
+  |  "%columns".split(",")));
+  """

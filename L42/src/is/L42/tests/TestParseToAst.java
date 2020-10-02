@@ -409,6 +409,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
  ),new AtomicTest(()->
    pass("S\"aa%(x)bb\"")
  ),new AtomicTest(()->
+   pass("S\"\"\"\n  |aa\"%x\"bb\n  \"\"\"")
+ ),new AtomicTest(()->
    pass("S\"aa%(x[])bb\"")
  ),new AtomicTest(()->
    passI("S\"aa%x[].foo()bb\"","x[].foo()")

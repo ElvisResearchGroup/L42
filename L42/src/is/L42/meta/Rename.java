@@ -171,7 +171,23 @@ public class Rename {
     completeMap();
     L l1=renameTop();
     L l2=lOfAddMap();
+    assert checkNoDupDomain(l1);
+    assert checkNoDupDomain(l2);
     return new Sum().compose(true,p.pop(),cOut,l1,l2,errC,errM);
+    }
+  boolean checkNoDupDomain(Core.L l){
+    for(int i:range(l.mwts())){
+      for(int j:range(i+1,l.mwts().size())){
+        assert !l.mwts().get(i).key().equals(l.mwts().get(j).key()):
+          l.mwts().get(i)+" "+l.mwts().get(j);
+        }
+      }
+    for(int i:range(l.ncs())){
+      for(int j:range(i+1,l.ncs().size())){
+        assert !l.ncs().get(i).key().equals(l.ncs().get(j).key());
+        }
+      }
+    return true;
     }
   void miniAddMap(Arrow key,Arrow val){
     if(map.containsKey(key)){
@@ -232,9 +248,15 @@ public class Rename {
     for(Arrow a:map.values()){
       if(!a.full || !a.isEmpty()){continue;}
       if(a._s!=null){
-        int n=firstPrivateOf(assignedPrivates,p._ofCore(a.cs),a._s);
+        var l=p._ofCore(a.cs);
+        int n=firstPrivateOf(assignedPrivates,l,a._s);
+        S s=a._s.withUniqueNum(n);
+        while(_elem(l.mwts(),s)!=null){
+          n+=1;
+          s=a._s.withUniqueNum(n);
+          }
         a._cs=a.cs;
-        a._sOut=a._s.withUniqueNum(n);
+        a._sOut=s;
         continue;
         }
       var popped=a.cs.subList(0,a.cs.size()-1);

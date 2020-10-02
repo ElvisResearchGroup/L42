@@ -56,7 +56,7 @@ public class MetaError{
       }
     if(fault instanceof Core.L.MWT){
       var mwt=(Core.L.MWT)fault;
-      assert !mwt.key().hasUniqueNum();
+      System.err.print("Log: private name part of error:"+mwt.key());
       if(mwt._e()!=null && mwt.nativeUrl().isEmpty()){elem="=(..)";}
       if(mwt._e()!=null && !mwt.nativeUrl().isEmpty()){elem=" (..)";}
       mwt=mwt.with_e(null);
