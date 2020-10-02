@@ -365,7 +365,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         if(g._of(x).mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule) || g.isVar(x)){continue;}
         var sifo=getSifoAnn(g._of(x).docs());
         if(lattice.secondHigherThanFirst(sifo, s.get(0))){continue;}
-        throw new Error();//TODO:
+        throw new EndError.TypeError(e.poss(), noSubErr(sifo,  s.get(0)));
         }
       }
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
@@ -390,7 +390,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       var promotable=k.t().mdf().isIn(Mdf.Capsule,Mdf.Immutable);
       var sub=lattice.secondHigherThanFirst(this._sifoReturns,sifo);
       if(promotable && sub){return;}
-      throw new Error("");//TODO:
+      throw new Error("10");//TODO:
       }
     if(k.thr().equals(ThrowKind.Exception)){
       var sifo=getSifoAnn(k.t().docs());
@@ -398,7 +398,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       if(sifo.equals(this._sifoExceptions)){return;}
       var sub=lattice.secondHigherThanFirst(this._sifoExceptions,sifo);
       if(sub){return;}
-      throw new Error("");//TODO:
+      throw new Error("11");//TODO:
       }
     }
   @Override public void visitBlock(Block e){

@@ -274,19 +274,19 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     imm @Left method @Left A main(@Left A that, @Right A a)
       =(var @Right A x=a
        (x:=a catch exception @Right A y (that) that))
-    """),SifoTopTS.notEqualErr("[###]","[###]"))
+    """),SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     imm @Left method @Left A main(@Left A that, @Right A a)
       =(var @Right A x=a
        (x:=a catch exception @Left A y (that) that))
-    """),SifoTopTS.notEqualErr("[###]","[###]"))
+    """),SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()->
-  pass(testMeth("""
+  fail(testMeth("""
     imm @Right method @Top A main(@Left A that, @Right A a)
       =(var @Right A x=a
        (x:=a catch exception @Right A y (that) that))
-    """))
+    """),SifoTopTS.noSubErr("[###]","[###]")) //TODO:is this correcty failing?
   //TODO: is one between line 262 and 289 your expected scenario?
   ),new AtomicTest(()->
   fail(testMeth("""
@@ -346,7 +346,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       @Right A z=y
        catch exception @Left A b (x)
        x))
-    """),SifoTopTS.notEqualErr("[###]","[###]"))
+    """),SifoTopTS.noSubErr("[###]","[###]"))
   //----------
   ),new AtomicTest(()->
   fail(testMeth("""
@@ -366,7 +366,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       @Right A z=y
        catch exception @Top A b (top)
        top))
-    """))
+    """))//TODO: is this correctly failing?
   ),new AtomicTest(()->
   pass(testMeth("""
     imm method @Top A main(@Top A top, @Left A that, @Right A a)=(
@@ -376,9 +376,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       @Left A z=x
        catch exception @Top A b (top)
        top))
-    """))
+    """))//TODO: is this correctly failing?
   ),new AtomicTest(()->
-  pass(testMeth("""
+  fail(testMeth("""
     imm method A newATrue()=this.newATrue()
     imm method A newAFalse()=this.newAFalse()
     imm method A isTrue(A that)[A]=that
@@ -391,7 +391,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
         void)
       y
       )
-    """))
+    """),SifoTopTS.noSubErr("[###]","[###]"))
 
   
   
