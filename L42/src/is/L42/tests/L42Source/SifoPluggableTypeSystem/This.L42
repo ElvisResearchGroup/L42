@@ -27,6 +27,7 @@ SifoTest={
   Left={interface @{securityLevel}}
   Right={interface@{securityLevel}}
   Top={interface [Left,Right] @{securityLevel}}
+  DeclassifyS={class method S (@Top S that)=that}
   Code=Sifo(Top):{...}
   Main=Code.main()
   }

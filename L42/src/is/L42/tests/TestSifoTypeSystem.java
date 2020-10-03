@@ -258,11 +258,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     imm method @Right A main(@Left A that)
       =(@Right A x=this.main(that) catch exception @Left A y (this.main(that)) x)
     """),SifoTopTS.notEqualErr("[###]","[###]"))
-  //TODO: make a test where having @Right exception fails but @Left exception pass
   ),new AtomicTest(()->
   pass(testMeth("""
     imm @Left method @Left A main(@Left A that)
-      =(@Left A x=this.main(that) catch exception @Left A y (this.main(that)) x)
+      =(@Left A x=this.main(that) catch exception @Left A y1 (this.main(that)) x)
     """))
   ),new AtomicTest(()->
   fail(testMeth("""
@@ -271,23 +270,22 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     """),SifoTopTS.notEqualErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
-    imm @Left method @Left A main(@Left A that, @Right A a)
+    imm @Left method @Left Void main(@Right A a)
       =(var @Right A x=a
-       (x:=a catch exception @Right A y (that) that))
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+       (x:=a catch exception @Right A y (void) void))
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
-    imm @Left method @Left A main(@Left A that, @Right A a)
+    imm @Left method @Left Void main(@Left A that, @Right A a)
       =(var @Right A x=a
-       (x:=a catch exception @Left A y (that) that))
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+       (x:=a catch exception @Left A y (void) void))
+    """),SifoTopTS.notEqualErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     imm @Right method @Top A main(@Left A that, @Right A a)
       =(var @Right A x=a
        (x:=a catch exception @Right A y (that) that))
-    """),SifoTopTS.noSubErr("[###]","[###]")) //TODO:is this correcty failing?
-  //TODO: is one between line 262 and 289 your expected scenario?
+    """),SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     imm method @Left A main(@Left A that)
@@ -358,25 +356,34 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
        top))
     """), SifoTopTS.differentSecurityLevelsVariablesErr("[###]"))
   ),new AtomicTest(()->
-  pass(testMeth("""
-    imm method @Top A main(@Top A top, @Left A that, @Right A a)=(
+  fail(testMeth("""
+    imm method @Top A main(@Top A top, @Left A that)=(
       var @Left A x=that
-      var @Right A y=a
-      (x:=x
-      @Right A z=y
+      (//top.op()//fails becouse this could be there
+        x:=x//and this can leak information on the success of top.op()
        catch exception @Top A b (top)
        top))
-    """))//TODO: is this correctly failing?
+    """),SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   pass(testMeth("""
-    imm method @Top A main(@Top A top, @Left A that, @Right A a)=(
+    imm method @Top Void main(@Left A that, @Right A a)=(
+      var @Left A x=that
+      var @Right A y=a
+      (y:=y
+      //@Left A z=x
+       catch exception @Top A b (void)
+       void))
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    imm method @Top Void main(@Left A that, @Right A a)=(
       var @Left A x=that
       var @Right A y=a
       (y:=y
       @Left A z=x
-       catch exception @Top A b (top)
-       top))
-    """))//TODO: is this correctly failing?
+       catch exception @Top A b (void)
+       void))
+    """),SifoTopTS.noSubErr("[###]","[###]"))      
   ),new AtomicTest(()->
   fail(testMeth("""
     imm method A newATrue()=this.newATrue()
@@ -392,8 +399,6 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       y
       )
     """),SifoTopTS.noSubErr("[###]","[###]"))
-
-  
   
   //TODO: tests with loop are missing
   
