@@ -6,6 +6,7 @@ import static is.L42.tools.General.unreachable;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.mergeU;
+import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.pushL;
 
 import java.io.File;
@@ -51,6 +52,8 @@ import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.sifo.Lattice42;
+import is.L42.sifo.SifoTopTS;
 import is.L42.tools.General;
 import is.L42.top.Deps;
 import is.L42.top.UniqueNsRefresher;
@@ -125,6 +128,16 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
+  public L42£Library sifo(L42£Library input,L42Any top,Function<L42£LazyMsg,L42Any>wrap){
+    L l=input.unwrap;
+    var pathTop=unwrapPath(top).toNCs();
+    pathTop=pathTop.withN(pathTop.n());
+    var pIn=Resources.currentP.push(Resources.currentC,l);
+    var lattice=new Lattice42(Resources.currentP,pathTop);
+    new SifoTopTS(pIn,lattice,1).visitL(l);
+    return input;    
+    }
+  
   public boolean isSelfRename(){
     if(this.renames.size()!=1) {return false;}
     var r=this.renames.get(0);

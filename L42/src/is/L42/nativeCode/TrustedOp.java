@@ -312,6 +312,9 @@ public enum TrustedOp {
     Meta,use("return %s.pathName(%s);",sig(Immutable,Immutable,String,
       Class,Any))
     )),
+  Sifo("sifo",Map.of(
+      Meta,use("return %s.sifo(%s,%s,%Gen1::wrap);",sig(Immutable,Immutable,Lib,Immutable,Lib,Class,Any))
+      )),
   IsSelfRename("isSelfRename",Map.of(
       Meta,use("return %s.isSelfRename();",sigI(Bool)))),
   //####Nested####

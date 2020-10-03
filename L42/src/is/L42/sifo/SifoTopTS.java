@@ -70,6 +70,11 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
   Program p;
   Lattice42 lattice;
   int startDept;
+  public SifoTopTS(Program p,Lattice42 lattice, int dept){
+    this.p=p;
+    this.lattice=lattice;
+    this.startDept=dept;
+    }
   public SifoTopTS(Program p,P.NCs top){
     this.p=p;
     var s=top.cs().size();
