@@ -1,0 +1,32 @@
+reuse [AdamTowel]
+
+Sifo=Organize:{
+  @Public Fail=Class:Message.Native:{[Message.Guard]} 
+  Meta={
+    class method This #apply()
+    method Library sifo(Library input,class Any top)
+      =native{trusted:sifo} error void
+    #norm{nativeKind=Meta,
+      typeDep=This This1.Fail
+      watched=This1.Fail
+      coherentDep=This1.Fail,
+      nativePar=This1.Fail This1.Fail This1.Fail This1.Fail This1.Fail
+      }}
+  $={
+    class Any that
+    @Public class method This(class Any that)
+    @Public method Trait :(Trait t)[Fail]=Trait(this:t.code())
+    @Public method Trait :(class Trait.Lifted l)[Fail]=Trait(this:l.code())
+    @Public method Library :(Library that)[Fail]={
+      return Meta().sifo(input=that,top=this.that())
+      catch error Fail x exception x
+      }
+    }
+  }
+SifoTest={
+  Left={interface @{securityLevel}}
+  Right={interface@{securityLevel}}
+  Top={interface [Left,Right] @{securityLevel}}
+  Code=Sifo(Top):{...}
+  Main=Code.main()
+  }
