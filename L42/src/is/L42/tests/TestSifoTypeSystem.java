@@ -62,7 +62,8 @@ import static is.L42.generated.LDom._elem;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSifoTypeSystem
-extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
+extends AtomicTest.Tester{@SuppressWarnings("preview")
+public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
 //---------------
   pass(testMeth("class method @Left A main(@Left A a)=a"))
    ),new AtomicTest(()->
@@ -199,7 +200,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    class method Void err()[@Left A]=void
    class method @Left A main(@Left A that, @Right A a)[@Right A]
      =(this.err(),@Left A x=this.main(that,a=a),that)
-   """),SifoTopTS.notEqualErr("[###]","[###]"))
+   """),SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     I1={interface method @Left A foo(@Right B that)[@Top B]}

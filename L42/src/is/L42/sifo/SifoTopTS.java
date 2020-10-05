@@ -94,7 +94,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
     var mh=m.mh();
     var g=G.of(mh,mh.docs());
     var vis=new SifoTypeSystem(startDept,p,g,mh.exceptions(),Set.of(),mh.t(),this.lattice);
-    vis.checkMH(m.mh());
+    vis.checkMH(m.mh(), m.poss());
     if(m._e()!=null){
       m._e().visitable().accept(vis);
       }
@@ -147,14 +147,14 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(elem==null){return;}
     MH mh0=p.from(elem.mh(),t.p().toNCs());
     var retOk=getSifoAnn(mh.t().docs()).equals(getSifoAnn(mh0.t().docs()));
-    if(!retOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(mh.t().docs()), getSifoAnn(mh0.t().docs())));}//TODO:poss
+    if(!retOk) {throw new EndError.TypeError(elem.poss(), notEqualErr(getSifoAnn(mh.t().docs()), getSifoAnn(mh0.t().docs())));}
     var recOk=getSifoAnn(mh.docs()).equals(getSifoAnn(mh0.docs()));
-    if(!recOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(mh.docs()), getSifoAnn(mh0.docs())));}//TODO:poss
+    if(!recOk) {throw new EndError.TypeError(elem.poss(), notEqualErr(getSifoAnn(mh.docs()), getSifoAnn(mh0.docs())));}
     for(int i:range(mh.pars())){
       var ti=mh.pars().get(i);
       var t0i=mh0.pars().get(i);
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
-      if(!tiOk) {throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}//TODO:poss
+      if(!tiOk) {throw new EndError.TypeError(elem.poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}
       }
     if(mh.exceptions().size()!=mh0.exceptions().size()){throw new Error("4");}//TODO: already caught by L42?
     for(int i:range(mh.exceptions())){
@@ -162,10 +162,10 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       var t0i=mh0.exceptions().get(i);
       if(!ti.p().equals(t0i.p())){throw new Error("5");}//TODO:
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
-      if(!tiOk){throw new EndError.TypeError(this.p.topCore().poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}//TODO:poss
+      if(!tiOk){throw new EndError.TypeError(elem.poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}
       }
     }
-  void checkMH(Core.MH mh){
+  void checkMH(Core.MH mh, List<Pos> poss){
     for(var t:this.p.topCore().ts()){checkMHSub(mh,t);}
     var sRec=getSifoAnn(mh.docs());
     if(!mh.exceptions().isEmpty()){
@@ -174,14 +174,14 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
           .distinct());
       if(allS.size()!=1){throw new Error("7");}//TODO: already thrown in line 104?
       var sExc=allS.get(0);
-      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, sExc));}//TODO:poss
+      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new EndError.TypeError(poss, noSubErr(sRec, sExc));}
       }
     var sRet=getSifoAnn(mh.t().docs());
-    if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, sRet));}//TODO:poss
+    if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new EndError.TypeError(poss, noSubErr(sRec, sRet));}
     for(T ti:mh.pars()){
       if(!ti.mdf().isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent)){continue;}
       var si=getSifoAnn(ti.docs());
-      if(!lattice.secondHigherThanFirst(sRec,si)){throw new EndError.TypeError(this.p.topCore().poss(), noSubErr(sRec, si));}//TODO:poss
+      if(!lattice.secondHigherThanFirst(sRec,si)){throw new EndError.TypeError(poss, noSubErr(sRec, si));}
       }
      }
   @Override public void visitEVoid(EVoid e){}
@@ -255,7 +255,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     P excSifo=excsSifo.isEmpty()?null:excsSifo.get(0);
     if(promoted && excSifo!=null){excSifo=lattice.leastUpperBound(excSifo,selectedS);}
     if(excSifo!=null && !lattice.secondHigherThanFirst(excSifo, this._sifoExceptions)){
-      throw new EndError.TypeError(e.poss(), notEqualErr(excSifo, _sifoExceptions));//TODO: can not throw excSifo
+      throw new EndError.TypeError(e.poss(), noSubErr(excSifo, _sifoExceptions));
       }
     var meths=AlternativeMethodTypes.types(p,p0,e.s());
     meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
@@ -287,7 +287,8 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         }
       catch(EndError.TypeError toSave){lastErr=toSave;}
       }
-    throw lastErr;//TODO: better error?
+    if (lastErr != null)
+    throw lastErr;//TODO: how is a nullpointer possible here
     }
   boolean comparable(List<P> ss,P s){
     for(P si:ss){

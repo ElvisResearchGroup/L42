@@ -1,3 +1,68 @@
-
-class method Void main()=Debug(DeclassifyS(this.err(S"hello Sifo")))
+class method Void main()=
+  Debug(DeclassifyS(this.err(S"hello Sifo")))
 class method @Left S err(@Left S that)=that
+
+Row={
+Map=Collection.map(key=S, val=S)
+mut Map row
+
+method S getEntry(S key)=(row.val(key))
+method Void setEntry(S key, S value)=(row.put(key=key,val=value))
+}
+
+Database={
+Rows=Collection.list(Row)
+S name
+mut Rows rows
+
+method S getName()=(name)
+method Void setName(S nameNew)=(name=nameNew)
+method mut Row addRow()=(row=Row(),rows.add(row),row)
+method Void removeRow(Num index)=(rows.remove(index))
+method Void setEntry(S key, S value, Num rowNumber)=(
+mut Row row,
+if(rowNumber < 0Num || rowNumber >= rows.size()) (row = addRow())
+(row=rows.get(rowNumber)),
+rows.setEntry(key, value)
+)
+method Void getEntry(S key, Num rowNumber)={
+mut Row row,
+if(rowNumber < 0Num || rowNumber >= rows.size()) {return null}
+(row=rows.get(rowNumber)),
+return rows.getEntry(key)
+}
+method Collection.list(String) getAllEntries(S key)=(
+Num i = 0Num
+result = Collection.list(String)
+while (i < rows.size()) (
+  S nextValue = rows.get(i).getEntry(key)
+  results.add(nextValue)
+)
+result
+)
+}
+
+GUI={
+@Left mut Database dbLeft
+@Right mut Database dbRight
+//Construction with default values?
+class method GUI createGUI()=(
+mut Database dbl=Database(name=S"left",rows=Rows())//new Rows()
+mut Database dbr=Database(name=S"right",rows=Rows())
+GUI gui=GUI(dbLeft=dbl, dbRight=dbr)
+gui)
+method Void printEntry(S entry)=(Debug(entry))
+}
+
+TestDB={
+method Void test()=(
+mut GUI gui = createGUI()//Construction?
+gui.dbLeft.setEntry(key=S"person",value=S"hans",-1Num)
+gui.dbRight.setEntry(key=S"person",value=S"peter",-1Num)
+@Left S name = gui.dbLeft.getEntry(key=S"person",0)
+//gui.dbRight.setEntry(key=S"person",value=name,-1Num)
+gui.dbRight.setEntry(key=S"person",value=DeclassifyS(name),-1Num)
+gui.dbLeft.setEntry(key=S"person",value=name,-1Num)
+gui.printEntry(DeclassifyS(name))
+)
+}
