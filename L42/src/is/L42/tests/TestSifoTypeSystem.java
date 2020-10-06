@@ -400,6 +400,39 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
       y
       )
     """),SifoTopTS.noSubErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    mut method Void setEntry(A a1, A a2, A a3)=void
+    mut @Left method Void main()=(
+        p1=A()
+        p2=A()
+        p3=A()
+        _=this.setEntry(a1=p1,a2=p2,a3=p3)
+        void
+      )
+    """))//return of Void is promoted to Left and then returned. Trashing the result is not working
+  ),new AtomicTest(()->
+  pass(testMeth("""
+    mut method Void setEntry(A a1, A a2, A a3)=void
+    mut @Left method @Left Void main()=(
+        p1=A()
+        p2=A()
+        p3=A()
+        _=this.setEntry(a1=p1,a2=p2,a3=p3)
+        void
+      )
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+    mut method Void setEntry(A a1, A a2, A a3)=void
+    mut @Left method @Left Void main()=(
+        p1=A()
+        p2=A()
+        p3=A()
+        this.setEntry(a1=p1,a2=p2,a3=p3)
+      )
+    """), "@Left Void main() ist making this pass")
+  
   
   //TODO: tests with loop are missing
   
