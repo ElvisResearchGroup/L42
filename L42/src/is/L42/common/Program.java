@@ -198,9 +198,6 @@ public class Program implements Visitable<Program>{
     }
   private CloneVisitor fromVisitor(P.NCs source){
     return new CloneVisitor(){
-      @Override public Core.T visitT(Core.T t){
-        return t.withP(from(t.p(),source));
-        }
       @Override public P visitP(P p){
         return from(p,source);
         }

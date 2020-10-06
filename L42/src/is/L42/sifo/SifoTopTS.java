@@ -257,10 +257,11 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(excSifo!=null && !lattice.secondHigherThanFirst(excSifo, this._sifoExceptions)){
       throw new EndError.TypeError(e.poss(), noSubErr(excSifo, _sifoExceptions));
       }
-    var meths=AlternativeMethodTypes.types(p,p0,e.s());
-    meths=L(meths.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
-    assert !meths.isEmpty():
-      "";
+    var meths0=AlternativeMethodTypes.types(p,p0,e.s());
+    var meths=L(meths0.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
+    if(meths.isEmpty()){
+      throw new EndError.TypeError(e.poss(), "IMPOSSIBLE");//TODO: is it impossible for real, but needed for backtracking?
+      }
     List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});//the receiver and the arguments
     assert es.size()==parTypes.size();
     var oldExpected=expected;
@@ -287,7 +288,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         }
       catch(EndError.TypeError toSave){lastErr=toSave;}
       }
-    if (lastErr != null)
+    //if (lastErr != null)
     throw lastErr;//TODO: how is a nullpointer possible here
     }
   boolean comparable(List<P> ss,P s){
