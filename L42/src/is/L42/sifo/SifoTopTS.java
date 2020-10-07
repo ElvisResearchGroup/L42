@@ -177,7 +177,9 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new EndError.TypeError(poss, noSubErr(sRec, sExc));}
       }
     var sRet=getSifoAnn(mh.t().docs());
-    if(!lattice.secondHigherThanFirst(sRec,sRet)){throw new EndError.TypeError(poss, noSubErr(sRec, sRet));}
+    boolean retIsVoid=mh.t().p().equals(P.pVoid);
+    boolean retErr=!retIsVoid && !lattice.secondHigherThanFirst(sRec,sRet);
+    if(retErr){throw new EndError.TypeError(poss, noSubErr(sRec, sRet));}
     for(T ti:mh.pars()){
       if(!ti.mdf().isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent)){continue;}
       var si=getSifoAnn(ti.docs());
@@ -214,6 +216,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     assert t!=null;
     P actualPath= getSifoAnn(t.docs());
     P expectedPath= getSifoAnn(expected.docs());
+    if(t.p().equals(P.pVoid)){return;}
     mustSubSecurity(t.mdf(),actualPath, expected.mdf(),expectedPath,e.poss());
     }
   private T tWithSec(P sec){
@@ -288,7 +291,6 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         }
       catch(EndError.TypeError toSave){lastErr=toSave;}
       }
-    //if (lastErr != null)
     throw lastErr;//TODO: how is a nullpointer possible here
     }
   boolean comparable(List<P> ss,P s){
@@ -298,7 +300,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       return false;
       }
     return true;
-    }  
+    }
   @Override public void visitMCall(MCall e){
     var s=getSifoAnn(expected.docs());
     var selectedS=lattice.getBottom();
@@ -313,6 +315,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       for(var pi:parTypes){c.add(getSifoAnn(pi.docs()));}
       });
     boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule,Mdf.Class);
+    if(retType.p().equals(P.pVoid)){s=lattice.getTop();}//TODO: does it make sense???
     if (!s.equals(lattice.getBottom())){
       List<P>s1n=List.of();
       if(promotable){
@@ -357,7 +360,6 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     }
   private void onKs(Block e){
     boolean hasErr=e.ks().stream().anyMatch(k->k.thr()==ThrowKind.Error);
-    var sfv=e.ds().stream().flatMap(di->FV.of(di.e().visitable()).stream());
     List<X> fvDs=FV.ofBlockDs(e);
     List<X> fvBlock=FV.of(e);
     var s=L(fvBlock.stream()
@@ -446,15 +448,39 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     visitE(e.e());
     g=oldG;
     }
+  private G growG1(G acc,D d){
+    var t=acc._of(d.x());
+    if(t==null){return acc;}
+    if(!t.docs().isEmpty()){return acc;}
+    if(!(d.e() instanceof MCall)){return acc;}
+    var e=(MCall)d.e();
+    var receiver=acc._of(e.xP());
+    if(receiver==null){return acc;}
+    var rDocs=receiver.docs();
+    if(!rDocs.isEmpty()){return acc.update(d.x(),t.withDocs(rDocs));}
+    var l=p._ofCore(receiver.p());
+    if(l==null){return acc;}
+    var mwt=_elem(l.mwts(),e.s());
+    if(mwt==null){return acc;}
+    var docs=mwt.mh().t().docs();
+    if(docs.isEmpty()){return acc;}
+    var newDocs=p.fromDocs(docs,receiver.p().toNCs());
+    return acc.update(d.x(),t.withDocs(newDocs));
+    }
+  private G growG(List<D>allDs){
+    G res=g.plusEq(allDs);
+    for(D d:allDs){res=growG1(res,d);}
+    return res;
+    }
   private G typeDs(List<D>allDs){
-    G g1=g.plusEq(allDs);
+    G g1=growG(allDs);
     var oldG=g;
     g=g1;
-    for(var d:allDs){visitExpecting(d.e(),d.t());}
+    for(var d:allDs){visitExpecting(d.e(),g._of(d.x()));}//Note: d.t() is not more poor, we infer Sifos on the gamma
     g=oldG;
     return g1;
     }
-  private void typeK(K k, HashSet<Mdf> mdfs1) {
+  private void typeK(K k, HashSet<Mdf> mdfs1){
     var oldG=g;
     g=g.plusEq(k.x(),k.t());
     visitE(k.e());

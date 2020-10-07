@@ -400,10 +400,15 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
       y
       )
     """),SifoTopTS.noSubErr("[###]","[###]"))
+    ),new AtomicTest(()->
+      pass(testMeth("""
+        mut method Void setEntry(A a)=void
+        mut @Left method Void main(A a)=this.setEntry(a=a)
+        """))//minimizing the test below
   ),new AtomicTest(()->
   pass(testMeth("""
     mut method Void setEntry(A a1, A a2, A a3)=void
-    mut @Left method Void main()=(
+    mut @Left method @Left Void main()=(
         p1=A()
         p2=A()
         p3=A()
@@ -432,7 +437,8 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
         this.setEntry(a1=p1,a2=p2,a3=p3)
       )
     """), "@Left Void main() ist making this pass")
-  
+  //TODO: so, If I understand correctly, you are happy that it passes, but you wanted me to notice
+  //the reason for the pass?
   
   //TODO: tests with loop are missing
   

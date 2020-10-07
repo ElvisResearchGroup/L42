@@ -36,16 +36,17 @@ Database=Data:{
     )
   }
 
-Gui=Data:{
-  //mut @Left Database dbLeft
-  //mut @Right Database dbRight
-  read method read @Left Database dbLeft()
-  read method read @Right Database dbRight()
-  mut method mut @Left Database #dbLeft()
-  mut method mut @Right Database #dbRight()
+Gui={
+  mut @Left Database dbLeft
+  mut @Right Database dbRight
+  //read method read @Left Database dbLeft()
+  //read method read @Right Database dbRight()
+  //mut method mut @Left Database #dbLeft()
+  //mut method mut @Right Database #dbRight()
+  class method mut This (mut @Left Database dbLeft, mut @Right Database dbRight)
   class method mut This ()=(
-    dbl=Database(name=S"left",rows=Rows())
-    dbr=Database(name=S"right",rows=Rows())
+    capsule @Left Database dbl=Database(name=S"left",rows=Rows())
+    capsule @Right Database dbr=Database(name=S"right",rows=Rows())
     This(dbLeft=dbl, dbRight=dbr)
     )
 //  class method mut This ()=This(//this would be the same
@@ -53,22 +54,16 @@ Gui=Data:{
 //    dbRight=\(name=S"right",rows=\())
 //    )
   }
+
 class method Void testDb()=(
   mut Gui gui = Gui()
-  mut @Right Database dbR=gui.#dbRight()
-  mut @Left Database dbL=gui.#dbLeft()
-  p=S"person"
-  hans=S"hans"
-  zero=0Size
-  dbL.setEntry(zero,key=p,value=hans)
-  dbR.setEntry(0Size,key=S"person",value=S"peter")
-  @Left S name = dbL.getEntry(0Size,key=S"person").val()
-  //gui.dbRight().setEntry(1Size,key=S"person",value=name)//Should fail SIFO
-  Debug(S"")
+  gui.#dbLeft().setEntry(0Size,key=S"person",value=S"hans")
+  gui.#dbRight().setEntry(0Size,key=S"person",value=S"peter")
+  @Left S.Opt oName=gui.#dbLeft().getEntry(0Size,key=S"person")
+  @Left S name=oName.val()
+  //gui.#dbRight().setEntry(1Size,key=S"person",value=name)//Should fail SIFO
   S dName=DeclassifyS(name)
-  Debug(S"")
-  Debug(S"")
-  dbR.setEntry(1Size,key=S"person",value=dName)//thus we have to declassify
-  dbL.setEntry(1Size,key=S"person",value=name)
-  Debug(S"")//Debug(DeclassifyS(name))
+  gui.#dbRight().setEntry(1Size,key=S"person",value=dName)//thus we have to declassify
+  gui.#dbLeft().setEntry(1Size,key=S"person",value=name)
+  Debug(DeclassifyS(name))
   )

@@ -96,10 +96,17 @@ public class G {
     }
   public G plusEq(X x, T t) {
     Map<X,T> xInT=new HashMap<>(this.xInT);
-    assert !xInT.containsKey(x):x+" not in "+xInT;
+    assert !xInT.containsKey(x):x+" in "+xInT;
     xInT.put(x,t);
     return new G(Collections.unmodifiableMap(xInT),vars); 
     }
+  public G update(X x, T t) {
+    Map<X,T> xInT=new HashMap<>(this.xInT);
+    assert xInT.containsKey(x):x+" not in "+xInT;
+    xInT.put(x,t);
+    return new G(Collections.unmodifiableMap(xInT),vars); 
+    }
+
   public G toRead(){
     var map=new HashMap<X,T>();
     for(var e:this.xInT.entrySet()){
