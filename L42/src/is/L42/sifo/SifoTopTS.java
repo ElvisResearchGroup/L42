@@ -34,6 +34,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.typeSystem.AlternativeMethodTypes;
+import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.FV;
@@ -90,6 +91,26 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
      try{visitL(nc.l());}
      finally{p=oldP;startDept-=1;}
      }
+  private void kParsOk(MH k,SifoTypeSystem vis,Coherence c){
+    var s=vis.getSifoAnn(k.t().docs());
+    for(var i:range(k.key().xs())){
+      var xi=k.key().xs().get(i);
+      var ti=k.pars().get(i);
+      var si=vis.getSifoAnn(ti.docs());
+      if(!lattice.secondHigherThanFirst(s, si)){throw new Error("");}//TODO:
+      for(T tj:c.fieldTs(xi,Mdf.Readable)){
+        var sj=vis.getSifoAnn(tj.docs());
+        if(!si.equals(sj)){throw new Error("");}//TODO:
+        }
+      }
+    }
+  @Override public void visitL(L l){
+    super.visitL(l);
+    var vis=new SifoTypeSystem(startDept,p,G.empty(),L(),Set.of(),P.coreVoid,this.lattice);
+    var c=new Coherence(p,false);    
+    c.isCoherent(false);//check if is coherent ant throw errors otherwise
+    for(MH k:c.classMhs){kParsOk(k,vis,c);}
+    }
   @Override public void visitMWT(Core.L.MWT m){
     var mh=m.mh();
     var g=G.of(mh,mh.docs());

@@ -175,8 +175,10 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Top A x=this.main(that,a=a),that)"))
    //pass, imm return promoted to top
    ),new AtomicTest(()->
-   fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(A x=this.main(that,a=a),that)"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+   pass(testMeth("""
+     class method @Left A main(@Left A that, @Right A a)=(
+       A x=this.main(that,a=a),that)
+     """))
    ),new AtomicTest(()->
    pass(testMeth("""
      class method Void err()[A]=void
@@ -428,7 +430,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
       )
     """))
   ),new AtomicTest(()->
-  fail(testMeth("""
+  pass(testMeth("""
     mut method Void setEntry(A a1, A a2, A a3)=void
     mut @Left method @Left Void main()=(
         p1=A()
@@ -436,9 +438,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
         p3=A()
         this.setEntry(a1=p1,a2=p2,a3=p3)
       )
-    """), "@Left Void main() ist making this pass")
-  //TODO: so, If I understand correctly, you are happy that it passes, but you wanted me to notice
-  //the reason for the pass?
+    """))
   
   //TODO: tests with loop are missing
   
