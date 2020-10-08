@@ -1,5 +1,7 @@
-class method Void main()=
+class method Void main()=(
   Debug(DeclassifyS(this.err(S"hello Sifo")))
+  this.testDb()
+  )
   
 class method @Left S err(@Left S that)=that
 
@@ -13,7 +15,7 @@ Database=Data:{
   var S name
   mut Rows rows
   mut method mut Row addRow()=(
-    row=Row()
+    mut Row row = Row()
     this.#rows().#add(right=row)
     row
     )
@@ -58,6 +60,7 @@ class method Void testDb()=(
   gui.#dbRight().setEntry(0Size,key=S"person",value=S"peter")
   @Left S.Opt oName=gui.#dbLeft().getEntry(0Size,key=S"person")
   @Left S name=oName.val()
+  void
   //gui.#dbRight().setEntry(1Size,key=S"person",value=name)//Should fail SIFO
   S dName=DeclassifyS(name)
   gui.#dbRight().setEntry(1Size,key=S"person",value=dName)//thus we have to declassify

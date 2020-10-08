@@ -439,6 +439,24 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
         this.setEntry(a1=p1,a2=p2,a3=p3)
       )
     """))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+  mut @Left A aleft
+  mut @Right A aright
+  class method mut This newA(mut @Left A aleft, mut @Right A aright)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+  mut @Left A aleft
+  mut @Right A aright
+  class method mut This (mut @Right A aleft, mut @Left A aright)
+    """), "should fail because constructor uses wrong security levels")
+  ),new AtomicTest(()->
+  fail(testMeth("""
+  mut @Left A aleft
+  mut @Right A aright
+  class method mut @Left This (mut @Right A aleft, mut @Left A aright)
+    """), SifoTopTS.noSubErr("[###]","[###]"))
   
   //TODO: tests with loop are missing
   

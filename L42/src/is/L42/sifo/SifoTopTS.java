@@ -80,7 +80,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
     this.p=p;
     var s=top.cs().size();
     var ttop=new P.NCs(0,L(top.cs().get(s-1)));
-    startDept=-1;//TODO:
+    startDept=-1;
     var pp=p.navigate(popLRight(top.cs()));
     this.lattice=new Lattice42(pp,ttop);
     }  
@@ -97,7 +97,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
       var xi=k.key().xs().get(i);
       var ti=k.pars().get(i);
       var si=vis.getSifoAnn(ti.docs());
-      if(!lattice.secondHigherThanFirst(s, si)){throw new Error("");}//TODO:
+      if(!lattice.secondHigherThanFirst(s, si)){throw new EndError.TypeError(p.topCore().poss(), noSubErr(s, si));}
       for(T tj:c.fieldTs(xi,Mdf.Readable)){
         var sj=vis.getSifoAnn(tj.docs());
         if(!si.equals(sj)){throw new Error("");}//TODO:
@@ -157,7 +157,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(cond){
     throw new EndError.TypeError(e.poss(),msg);}
     }
-  void mustSubMdf(Mdf m1,Mdf m2,List<Pos> poss){//TODO: check if it was needed
+  void mustSubMdf(Mdf m1,Mdf m2,List<Pos> poss){
     if(!Program.isSubtype(m1, m2)){
       throw new EndError.TypeError(poss,Err.subTypeExpected(m1,m2));
       }
@@ -181,7 +181,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     for(int i:range(mh.exceptions())){
       var ti=mh.exceptions().get(i);
       var t0i=mh0.exceptions().get(i);
-      if(!ti.p().equals(t0i.p())){throw new Error("5");}//TODO:
+      if(!ti.p().equals(t0i.p())){throw new Error("5");}//TODO: how to trigger this?
       var tiOk=getSifoAnn(ti.docs()).equals(getSifoAnn(t0i.docs()));
       if(!tiOk){throw new EndError.TypeError(elem.poss(), notEqualErr(getSifoAnn(ti.docs()), getSifoAnn(t0i.docs())));}
       }
@@ -312,7 +312,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         }
       catch(EndError.TypeError toSave){lastErr=toSave;}
       }
-    throw lastErr;//TODO: how is a nullpointer possible here
+    throw lastErr;
     }
   boolean comparable(List<P> ss,P s){
     for(P si:ss){
@@ -336,7 +336,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       for(var pi:parTypes){c.add(getSifoAnn(pi.docs()));}
       });
     boolean promotable=expected.mdf().isIn(Mdf.Immutable,Mdf.Capsule,Mdf.Class);
-    if(retType.p().equals(P.pVoid)){s=lattice.getTop();}//TODO: does it make sense???
+    if(retType.p().equals(P.pVoid)){s=lattice.getTop();}
     if (!s.equals(lattice.getBottom())){
       List<P>s1n=List.of();
       if(promotable){
@@ -420,7 +420,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       var promotable=k.t().mdf().isIn(Mdf.Capsule,Mdf.Immutable);
       var sub=lattice.secondHigherThanFirst(this._sifoReturns,sifo);
       if(promotable && sub){return;}
-      throw new Error("10");//TODO:
+      throw new Error("10");//TODO: how to trigger this
       }
     if(k.thr().equals(ThrowKind.Exception)){
       var sifo=getSifoAnn(k.t().docs());
@@ -428,7 +428,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       if(sifo.equals(this._sifoExceptions)){return;}
       var sub=lattice.secondHigherThanFirst(this._sifoExceptions,sifo);
       if(sub){return;}
-      throw new Error("11");//TODO:
+      throw new Error("11");//TODO: how to trigger this
       }
     }
   @Override public void visitBlock(Block e){
