@@ -59,6 +59,7 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 import static is.L42.common.Err.hole;
 import static is.L42.generated.LDom._elem;
+import static is.L42.sifo.SifoTopTS.differentSecurityLevelsVariablesErr;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TestSifoTypeSystem
@@ -229,7 +230,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     I1={interface imm @Left method @Top A foo(@Right B that)}
     C1={[I1] imm @Right method @Top A foo(@Right B that)=this.foo(that)}
     """), SifoTopTS.notEqualErr("[###]","[###]"))
-  //TODO:receiver is changed, should throw an error
+  //receiver is changed, should throw an error
   ),new AtomicTest(()->
   fail(testMeth("""
    class method @Left A main(@Left A that, @Right A a)
@@ -457,8 +458,75 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   mut @Right A aright
   class method mut @Left This (mut @Right A aleft, mut @Left A aright)
     """), SifoTopTS.noSubErr("[###]","[###]"))
-  
-  //TODO: tests with loop are missing
+  ),new AtomicTest(()-> //loop tests
+  pass(testMeth("""
+  mut method Void #checkTrue()                                          
+  class method @Left A main(@Left A that, mut @Left B b)=(
+      while b (_=this.main(that, b=b) void)
+      that)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+  mut method Void #checkTrue()
+  class method @Left A getLeft(@Left A a)=(a)                                      
+  class method @Left A main(@Left A that, mut B b)=(
+      while b (_=this.getLeft(a=that) void)
+      that)
+    """), SifoTopTS.noSubErr("[###]","[###]"))
+  ),new AtomicTest(()->
+  pass(testMeth("""
+  mut method Void #checkTrue()
+  imm @Left method @Left A getLeft(@Left A a)=(a)                                      
+  imm @Left method @Left A main(@Left A that, mut @Left B b)=(
+      while b (_=this.getLeft(a=that) void)
+      that)
+    """))
+  ),new AtomicTest(()-> //example where the guard is low
+  pass(testMeth("""
+  read method Void #checkTrue()
+  imm @Left method @Left A getLeft(@Left A a)=(a)                                      
+  imm @Left method @Left A main(@Left A that, B b)=(
+      while b (_=this.getLeft(a=that) void)
+      that)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+  read method Void #checkTrue()                                    
+  class method @Left A main(@Left A that, mut B b)=(
+      while b (_=this.main(that, b=b) void)
+      that)
+    """), "")//is that correctly failing in SifoTopTS line 398?
+  ),new AtomicTest(()->
+  pass(testMeth("""
+  read method Void #checkTrue()                                    
+  imm @Left method @Left A main(A that, mut @Left B b)=(
+      while b (_=this.main(that, b=b) void)
+      that)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+  read method Void #checkTrue()                                    
+  class method @Left A main(A that, mut @Left B b)=(
+      while b (_=this.main(that, b=b) void)
+      that)
+    """), "")
+  ),new AtomicTest(()->
+  pass(testMeth("""
+  mut method Void #checkTrue()                                          
+  class method @Left A main(@Left A that, mut @Left B b)=(
+      var @Left A a = that
+      while b (a:=that void)
+      that)
+    """))
+  ),new AtomicTest(()->
+  fail(testMeth("""
+  mut method Void #checkTrue()                                          
+  class method @Left A main(A that, mut @Left B b)=(
+      var A a = that
+      while b (a:=that void)
+      that)
+    """), SifoTopTS.differentSecurityLevelsVariablesErr("[###]"))
+  //TODO: tests with loops above
   
    /*  ),new AtomicTest(()->
    fail("A={B={method Library main()=void}}",Err.invalidExpectedTypeForVoidLiteral(hole))
