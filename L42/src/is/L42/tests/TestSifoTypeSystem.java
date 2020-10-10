@@ -274,10 +274,16 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """),SifoTopTS.notEqualErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
-    imm @Left method @Left Void main(@Right A a)
+    imm @Left method @Left This main(@Right A a)
       =(var @Right A x=a
-       (x:=a catch exception @Right A y (void) void))
-    """),SifoTopTS.notEqualErr("[###]","[###]"))
+       (x:=a catch exception @Right A y (this) this))
+    """),SifoTopTS.noSubErr("[###]","[###]"))
+      ),new AtomicTest(()->
+   pass(testMeth("""
+     imm @Left method @Left Void main(@Right A a)
+       =(var @Right A x=a
+        (x:=a catch exception @Right A y (void) void))
+     """))//passes with Void result
   ),new AtomicTest(()->
   fail(testMeth("""
     imm @Left method @Left Void main(@Left A that, @Right A a)
@@ -460,9 +466,24 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """), SifoTopTS.noSubErr("[###]","[###]"))
   ),new AtomicTest(()-> //loop tests
   pass(testMeth("""
-  mut method Void #checkTrue()                                          
-  class method @Left A main(@Left A that, mut @Left B b)=(
-      while b (_=this.main(that, b=b) void)
+  read method Void #checkTrue()[Void]=void                                          
+  imm @Left method @Left A main(@Left A that, @Left B b)=(  
+    Void fresh0=( 
+      loop(
+        Void fresh2=b.#checkTrue() 
+        void
+        )
+      catch exception Void fresh3 void
+      )
+    that)
+    """))
+  ),new AtomicTest(()->  
+  pass(testMeth("""
+  read method Void #checkTrue()[Void]=void                                          
+  imm @Left method @Left A main(@Left A that, @Left B b)=(
+      while b (
+        void
+        )
       that)
     """))
   ),new AtomicTest(()->
@@ -491,11 +512,13 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     """))
   ),new AtomicTest(()->
   fail(testMeth("""
-  read method Void #checkTrue()                                    
+  read method Void #checkTrue()
   class method @Left A main(@Left A that, mut B b)=(
       while b (_=this.main(that, b=b) void)
       that)
-    """), "")//is that correctly failing in SifoTopTS line 398?
+    """), SifoTopTS.noSubErr("[###]","[###]"))
+  //  consider if we where to call main2 instead class method @Left A main2(@Left A that, mut B b)[Void]
+  //  in this case it must fail or be unsound (b could count rounds and that could chose to throw or not)
   ),new AtomicTest(()->
   pass(testMeth("""
   read method Void #checkTrue()                                    
@@ -504,12 +527,12 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
       that)
     """))
   ),new AtomicTest(()->
-  fail(testMeth("""
+  pass(testMeth("""
   read method Void #checkTrue()                                    
   class method @Left A main(A that, mut @Left B b)=(
       while b (_=this.main(that, b=b) void)
       that)
-    """), "")
+    """))
   ),new AtomicTest(()->
   pass(testMeth("""
   mut method Void #checkTrue()                                          

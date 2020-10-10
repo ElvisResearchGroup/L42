@@ -98,8 +98,15 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
       var ti=k.pars().get(i);
       var si=vis.getSifoAnn(ti.docs());
       if(!lattice.secondHigherThanFirst(s, si)){throw new EndError.TypeError(p.topCore().poss(), noSubErr(s, si));}
-      for(T tj:c.fieldTs(xi,Mdf.Readable)){
+      for(T tj:c.fieldTs(xi,Mdf.Readable)){//fieldTs does not return getter types
         var sj=vis.getSifoAnn(tj.docs());
+        if(!si.equals(sj)){throw new Error("");}//TODO:
+        }
+      for(MH mhj:c.mhs){
+        if(!mhj.key().xs().isEmpty()){continue;}
+        if(mhj.mdf().isClass()){continue;}
+        if(!Coherence.fieldName(mhj).equals(xi)){continue;}
+        var sj=vis.getSifoAnn(mhj.t().docs());
         if(!si.equals(sj)){throw new Error("");}//TODO:
         }
       }
@@ -275,7 +282,9 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     visitExpecting(e.e(),expected.withMdf(general));
     }
   public void visitMCall(boolean promoted,MCall e,P.NCs p0,List<T> parTypes,List<T>excs, P selectedS){
-    var excsSifo=L(excs.stream().map(t->getSifoAnn(t.docs())).distinct());
+    var excsSifo=L(excs.stream()
+      .filter(t->!t.p().equals(P.pVoid))
+      .map(t->getSifoAnn(t.docs())).distinct());
     P excSifo=excsSifo.isEmpty()?null:excsSifo.get(0);
     if(promoted && excSifo!=null){excSifo=lattice.leastUpperBound(excSifo,selectedS);}
     if(excSifo!=null && !lattice.secondHigherThanFirst(excSifo, this._sifoExceptions)){
@@ -347,12 +356,12 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         s1n=L(s1n.stream().filter(si->comparable(allSec,si)));
         }
       if(!s1n.isEmpty()){
+        var oldExpected=expected;
+        var oldG=g;
+        var oldMdfs=mdfs;
+        var oldSifoExceptions=_sifoExceptions;
+        var oldSifoReturns=_sifoReturns;
         for(var si:s1n){
-          var oldExpected=expected;
-          var oldG=g;
-          var oldMdfs=mdfs;
-          var oldSifoExceptions=_sifoExceptions;
-          var oldSifoReturns=_sifoReturns;
           try{visitMCall(true,e,p0,parTypes,excTypes,si);return;}
           catch(EndError err){}
           expected=oldExpected;
@@ -407,6 +416,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       throw new EndError.TypeError(e.poss(), allMustTopErr(listTToString(t0n), lattice.getTop()));
       }
     for(T ti:t0n){
+      if(ti.p().equals(P.pVoid)){continue;}
       ArrayList<P> ss=fvDs.stream().map(x->getSifoAnn(g._of(x).docs())).collect(Collectors.toCollection(ArrayList::new));
       var secTi=getSifoAnn(ti.docs());
       ss.add(secTi);

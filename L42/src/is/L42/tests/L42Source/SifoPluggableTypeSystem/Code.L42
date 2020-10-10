@@ -32,7 +32,7 @@ Database=Data:{
     }
   method S.List getAllEntries(S key)=S.List()(
     for i in this.rows().size().range() (
-      nextValue = this.rows().val(i).getEntry(key=key)
+      nextValue = this.rows().readVal(i).getEntry(key=key)
       if nextValue \add(nextValue.val())
       )
     )
