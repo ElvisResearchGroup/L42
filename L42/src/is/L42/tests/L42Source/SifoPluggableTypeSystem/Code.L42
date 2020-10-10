@@ -28,7 +28,7 @@ Database=Data:{
   read method S.Opt getEntry(Size that, S key)={
     if that < 0Size error X"invalid row number %that"
     if that >= this.rows().size() return S.Opt()<:imm S.Opt
-    return this.rows().val(that).getEntry(key=key)
+    return this.rows().readVal(that).getEntry(key=key)
     }
   method S.List getAllEntries(S key)=S.List()(
     for i in this.rows().size().range() (
@@ -60,7 +60,7 @@ class method Void testDb()=(
   gui.#dbRight().setEntry(0Size,key=S"person",value=S"peter")
   @Left S.Opt oName=gui.#dbLeft().getEntry(0Size,key=S"person")
   @Left S name=oName.val()
-  void
+  //void
   //gui.#dbRight().setEntry(1Size,key=S"person",value=name)//Should fail SIFO
   S dName=DeclassifyS(name)
   gui.#dbRight().setEntry(1Size,key=S"person",value=dName)//thus we have to declassify

@@ -326,7 +326,10 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     var s=getSifoAnn(expected.docs());
     var selectedS=lattice.getBottom();
     P.NCs p0=TypeManipulation.guess(g,e.xP()).toNCs();
-    var mh=_elem(p._ofCore(p0).mwts(),e.s()).mh();
+    var mwt=_elem(p._ofCore(p0).mwts(),e.s());
+    if(mwt==null){return;}
+    //assert mwt!=null:"";//can be null if the code is sifoed before the type checking happens
+    var mh=mwt.mh();
     List<Core.T>parTypes=p.from(mh.parsWithThis(), p0);
     List<Core.T>excTypes=p.from(mh.exceptions(), p0);
     Core.T retType=p.from(mh.t(),p0);
