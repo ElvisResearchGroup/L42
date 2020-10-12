@@ -1,0 +1,30 @@
+reuse [AdamTowel]
+Main0=(
+  Debug(S"Hello world")
+  )
+LoadJ=Load:{reuse[JavaServer]}
+GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
+JavaCode={...}
+
+Model=Data:GuiJ.Handler:{
+  mut GuiJ j
+  @GuiJ.Handler mut method Void ping(S msg)=(
+    Debug(S"ping(%msg) called")
+    //this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
+    whoops GuiJ.Fail
+    )
+  }
+
+Main=(
+  j=GuiJ.#$of()
+  model=Model(j=j)
+  code=
+    JavaCode.opening(package=S"miniGui", name='Example,x=800Size,y=600Size,pingDelay=30Size)++
+    JavaCode.body()++
+    JavaCode.closing()
+  j.loadCode(fullName=S"miniGui.Example",code=code)
+  for e in j(\['Example]) (
+    e>>model
+    Debug(e)
+    )
+  )

@@ -1,0 +1,43 @@
+class method S opening(S package,S name,Size x,Size y,Size pingDelay)=S"""%
+  |package %package;
+  |import javax.swing.JLabel;
+  |import javax.swing.JPanel;
+  |import l42Gui.*;
+  |public class %name {{
+  |  var g="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png";
+  |  L42Frame f=L42Frame.openAndPings(40,%pingDelay,()->new L42Frame("%name",%x,%y){  
+  """
+class method S closing()=S"});}}"
+class method S body()=S"""
+  |    int posX=20;
+  |    int posY=70;
+  |    @Override public void ping(){
+  |      System.out.println(posX);
+  |      posX+=1;
+  |      posY+=1;
+  |      e.submit("base",posX+";"+posY+";15;"+g,false);
+  |      repaint();
+  |      }
+  |    JLabel label1=new JLabel("yo!");
+  |    JLabel label2=new JLabel("west");
+  |    PaintEntities e=new PaintEntities();
+  |    JPanel p=new JPanel();
+  |    {add(p);}
+  |    {addEast(p,label1);}
+  |    {addCenter(p,e);}
+  |    {addWest(p,label2);}
+  """
+class method S button(S k,S id,S msg,S text)=S"""%
+  |JButton %id = new JButton("%text");{
+  |  %(id).addActionListener(e->Event.submitEvent("%k","%id","%msg"));
+  |  }
+  """
+class method S label(S k,S id,S text)=S"""%
+  |JLabel %id = new JLabel("%text");
+  """
+class method S table(S k,S id,S columns)=S"""%
+  |JTable %id = new JTable(new DefaultTableModel(
+  |  new Object[][]{},
+  |  "%columns".split(",")));
+  """
+
