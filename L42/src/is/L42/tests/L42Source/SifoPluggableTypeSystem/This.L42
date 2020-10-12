@@ -9,6 +9,7 @@ SifoTest={
   DeclassifyS=Sifo.declassify(S top=Top)
   DeclassifySCapsule=Sifo.declassifyCapsule(S top=Top)
   Code=Sifo(Top):{...}
+  Bank=Sifo(Top):{...}
   Main=(
     _=Log(S"hi").#$reader()
     Code.main()

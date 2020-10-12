@@ -69,19 +69,19 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   pass(testMeth("class method @Left A main(@Left A a)=a"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Right A a)=a"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+     SifoTopTS.notSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=a that)"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=a a)"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+     SifoTopTS.notSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Left A x=this.main(that,a=a),x)"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=(@Right A x=this.main(that,a=a),that)"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+     SifoTopTS.notSubErr("[###]","[###]"))
 //------------------
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left @Right A that, @Right A a)=(@Right A x=a that)"),
@@ -99,10 +99,10 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    pass(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(that,a=that)"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+     SifoTopTS.notSubErr("[###]","[###]"))
    ),new AtomicTest(()->
    fail(testMeth("class method @Left A main(@Left A that, @Right A a)=this.main(a,a=a)"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+     SifoTopTS.notSubErr("[###]","[###]"))
    ),new AtomicTest(()->
    pass(testMeth("class method @Top A main(@Left A that, @Right A a)=this.main(that,a=a)"))
    ),new AtomicTest(()->
@@ -115,27 +115,27 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    pass(testMeth("class method @Top A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"))   
    ),new AtomicTest(()->
    fail(testMeth("class method @Top A main(mut @Left A that, mut @Right A a)=this.main(a,a=that)"),
-     SifoTopTS.noSubErr("[###]","[###]"))
+     SifoTopTS.notSubErr("[###]","[###]"))
    ),new AtomicTest(()->
    pass(testMeth("imm @Left method @Top A main(@Left A that, @Right A a)=this.main(a,a=that)"))   
    ),new AtomicTest(()->
    fail(testMeth("imm @Top method @Top A main(mut @Left A that, @Right A a)=this.main(that,a=a)"),
-       SifoTopTS.noSubErr("[###]","[###]"))
+       SifoTopTS.notSubErr("[###]","[###]"))
    //this is ok to pass as typing method call, but should fail on typing method declaration
    ),new AtomicTest(()->
    fail(testMeth("imm @Left method @Left A main(@Left A that, mut @Right A a)=this.main(that,a=a)"),
-       SifoTopTS.noSubErr("[###]","[###]"))
+       SifoTopTS.notSubErr("[###]","[###]"))
    //this is ok to pass as typing method call, but should fail on typing method declaration
    ),new AtomicTest(()->
    fail(testMeth("imm @Left method @Left A main(mut @Left A that, mut @Right A a)=this.main(that,a=a)"),
-       SifoTopTS.noSubErr("[###]","[###]"))
+       SifoTopTS.notSubErr("[###]","[###]"))
    //this should fail on typing method declaration right parameter is not higher than receiver
    ),new AtomicTest(()->
    pass(testMeth("imm @Left method @Left A main(mut @Left A that, @Right A a)=this.main(that,a=a)"))
    //this should pass on typing method declaration right parameter is imm
    ),new AtomicTest(()->
    fail(testMeth("imm @Top method @Left A main(@Left A that, @Right A a)=this.main(that,a=a)"),
-       SifoTopTS.noSubErr("[###]","[###]"))
+       SifoTopTS.notSubErr("[###]","[###]"))
    //this should fail on typing method declaration return is not higher than receiver
    ),new AtomicTest(()->
    pass(testMeth("class method mut @Left A main(mut @Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),that)"))
@@ -154,7 +154,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    //fail, assigend mut left to mut top
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Left A main(mut @Left A that, mut @Right A a)=(mut @Left A x=this.main(that,a=a),a)"),
-       SifoTopTS.noSubErr("[###]","[###]"))
+       SifoTopTS.notSubErr("[###]","[###]"))
    //fail, return right but left is expected
    ),new AtomicTest(()->
    pass(testMeth("class method mut @Left A main(@Left A that, @Right A a)=(mut @Left A x=this.main(that,a=a),x)"))
@@ -164,7 +164,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    //pass, left capsule is promoted to mut top
    ),new AtomicTest(()->
    fail(testMeth("class method mut @Top A main(capsule @Left A that, mut @Left A a)=(mut @Top A x=this.main(that,a=a),a)"),
-       SifoTopTS.noSubErr("[###]","[###]"))
+       SifoTopTS.notSubErr("[###]","[###]"))
    //fail, left cannot be returned as top
    ),new AtomicTest(()->
    pass(testMeth("class method mut @Top A main(capsule @Left A that, mut @Top A a)=(mut @Top A x=this.main(that,a=a),a)"))
@@ -197,13 +197,13 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      imm @Left method Void err()[@Right B]=void
      imm @Left method @Left A main(@Left A that, @Left A a)[@Right B]
        =(this.err(),@Left A x=this.main(that,a=a),that)
-     """), SifoTopTS.noSubErr("[###]","[###]"))
+     """), SifoTopTS.notSubErr("[###]","[###]"))
  ),new AtomicTest(()->
  fail(testMeth("""
    class method Void err()[@Left A]=void
    class method @Left A main(@Left A that, @Right A a)[@Right A]
      =(this.err(),@Left A x=this.main(that,a=a),that)
-   """),SifoTopTS.noSubErr("[###]","[###]"))
+   """),SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     I1={interface method @Left A foo(@Right B that)[@Top B]}
@@ -245,12 +245,12 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   fail(testMeth("""
     imm @Right method @Left A main(@Left A that, @Left A a)=that
     """),
-    SifoTopTS.noSubErr("[###]","[###]"))
+    SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     imm @Left method @Right A main(@Left A that)
       =(@Right A x=this.main(that)  x)
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+    """),SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     imm method @Right A main(@Left A that)
@@ -277,7 +277,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     imm @Left method @Left This main(@Right A a)
       =(var @Right A x=a
        (x:=a catch exception @Right A y (this) this))
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+    """),SifoTopTS.notSubErr("[###]","[###]"))
       ),new AtomicTest(()->
    pass(testMeth("""
      imm @Left method @Left Void main(@Right A a)
@@ -295,7 +295,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     imm @Right method @Top A main(@Left A that, @Right A a)
       =(var @Right A x=a
        (x:=a catch exception @Right A y (that) that))
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+    """),SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
     imm method @Left A main(@Left A that)
@@ -354,7 +354,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
       @Right A z=y
        catch exception @Left A b (x)
        x))
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+    """),SifoTopTS.notSubErr("[###]","[###]"))
   //----------
   ),new AtomicTest(()->
   fail(testMeth("""
@@ -373,7 +373,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
         x:=x//and this can leak information on the success of top.op()
        catch exception @Top A b (top)
        top))
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+    """),SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   pass(testMeth("""
     imm method @Top Void main(@Left A that, @Right A a)=(
@@ -393,7 +393,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
       @Left A z=x
        catch exception @Top A b (void)
        void))
-    """),SifoTopTS.noSubErr("[###]","[###]"))      
+    """),SifoTopTS.notSubErr("[###]","[###]"))      
   ),new AtomicTest(()->
   fail(testMeth("""
     imm method A newATrue()=this.newATrue()
@@ -408,7 +408,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
         void)
       y
       )
-    """),SifoTopTS.noSubErr("[###]","[###]"))
+    """),SifoTopTS.notSubErr("[###]","[###]"))
     ),new AtomicTest(()->
       pass(testMeth("""
         mut method Void setEntry(A a)=void
@@ -457,13 +457,13 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   mut @Left A aleft
   mut @Right A aright
   class method mut This (mut @Right A aleft, mut @Left A aright)
-    """), "should fail because constructor uses wrong security levels")
+    """), SifoTopTS.notEqualErr("[###]","[###]"))
   ),new AtomicTest(()->
   fail(testMeth("""
   mut @Left A aleft
   mut @Right A aright
   class method mut @Left This (mut @Right A aleft, mut @Left A aright)
-    """), SifoTopTS.noSubErr("[###]","[###]"))
+    """), SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()-> //loop tests
   pass(testMeth("""
   read method Void #checkTrue()[Void]=void                                          
@@ -493,7 +493,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   class method @Left A main(@Left A that, mut B b)=(
       while b (_=this.getLeft(a=that) void)
       that)
-    """), SifoTopTS.noSubErr("[###]","[###]"))
+    """), SifoTopTS.notSubErr("[###]","[###]"))
   ),new AtomicTest(()->
   pass(testMeth("""
   mut method Void #checkTrue()
@@ -516,7 +516,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
   class method @Left A main(@Left A that, mut B b)=(
       while b (_=this.main(that, b=b) void)
       that)
-    """), SifoTopTS.noSubErr("[###]","[###]"))
+    """), SifoTopTS.notSubErr("[###]","[###]"))
   //  consider if we where to call main2 instead class method @Left A main2(@Left A that, mut B b)[Void]
   //  in this case it must fail or be unsound (b could count rounds and that could chose to throw or not)
   ),new AtomicTest(()->

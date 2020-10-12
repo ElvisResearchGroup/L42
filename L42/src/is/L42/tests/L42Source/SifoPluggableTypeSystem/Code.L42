@@ -30,7 +30,7 @@ Database=Data:{
     if that >= this.rows().size() return S.Opt()<:imm S.Opt
     return this.rows().readVal(that).getEntry(key=key)
     }
-  method S.List getAllEntries(S key)=S.List()(
+  read method S.List getAllEntries(S key)=S.List()(
     for i in this.rows().size().range() (
       nextValue = this.rows().readVal(i).getEntry(key=key)
       if nextValue \add(nextValue.val())
@@ -65,5 +65,9 @@ class method Void testDb()=(
   S dName=DeclassifyS(name)
   gui.#dbRight().setEntry(1Size,key=S"person",value=dName)//thus we have to declassify
   gui.#dbLeft().setEntry(1Size,key=S"person",value=name)
+  @Left S.List oName2=gui.#dbLeft().getAllEntries(key=S"person")
   Debug(DeclassifyS(name))
+  Debug(DeclassifyS(oName2.val(1Size)))
+  //@Left S.Opt oName2=gui.#dbLeft().getEntry(0Size,key=S"person")
+  //Debug(DeclassifyS(l.get(0)))
   )

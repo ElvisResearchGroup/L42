@@ -61,7 +61,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
   static String listPNCsToString(List<P.NCs> ncs) {
     return ncs.stream().map(p -> p+"").collect(Collectors.joining(", "));
   }
-  public static String noSubErr(Object p1, Object p2){
+  public static String notSubErr(Object p1, Object p2){
     return "Level " + p1 + " is not a sublevel of " + p2;}
   public static String notEqualErr(Object p1, Object p2){
     return "Level " + p1 + " is not equal to " + p2;}
@@ -97,7 +97,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
       var xi=k.key().xs().get(i);
       var ti=k.pars().get(i);
       var si=vis.getSifoAnn(ti.docs());
-      if(!lattice.secondHigherThanFirst(s, si)){throw new EndError.TypeError(p.topCore().poss(), noSubErr(s, si));}
+      if(!lattice.secondHigherThanFirst(s, si)){throw new EndError.TypeError(p.topCore().poss(), notSubErr(s, si));}
       for(T tj:c.fieldTs(xi,Mdf.Readable)){//fieldTs does not return getter types
         var sj=vis.getSifoAnn(tj.docs());
         if(!si.equals(sj)){throw new Error("");}//TODO:
@@ -107,7 +107,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
         if(mhj.mdf().isClass()){continue;}
         if(!Coherence.fieldName(mhj).equals(xi)){continue;}
         var sj=vis.getSifoAnn(mhj.t().docs());
-        if(!si.equals(sj)){throw new Error("");}//TODO:
+        if(!si.equals(sj)){throw new EndError.TypeError(p.topCore().poss(), notEqualErr(si, sj));}
         }
       }
     }
@@ -202,16 +202,16 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
           .distinct());
       if(allS.size()!=1){throw new Error("7");}//TODO: already thrown in line 104?
       var sExc=allS.get(0);
-      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new EndError.TypeError(poss, noSubErr(sRec, sExc));}
+      if(!lattice.secondHigherThanFirst(sRec,sExc)){throw new EndError.TypeError(poss, notSubErr(sRec, sExc));}
       }
     var sRet=getSifoAnn(mh.t().docs());
     boolean retIsVoid=mh.t().p().equals(P.pVoid);
     boolean retErr=!retIsVoid && !lattice.secondHigherThanFirst(sRec,sRet);
-    if(retErr){throw new EndError.TypeError(poss, noSubErr(sRec, sRet));}
+    if(retErr){throw new EndError.TypeError(poss, notSubErr(sRec, sRet));}
     for(T ti:mh.pars()){
       if(!ti.mdf().isIn(Mdf.Capsule, Mdf.Mutable, Mdf.Lent)){continue;}
       var si=getSifoAnn(ti.docs());
-      if(!lattice.secondHigherThanFirst(sRec,si)){throw new EndError.TypeError(poss, noSubErr(sRec, si));}
+      if(!lattice.secondHigherThanFirst(sRec,si)){throw new EndError.TypeError(poss, notSubErr(sRec, si));}
       }
      }
   @Override public void visitEVoid(EVoid e){}
@@ -257,7 +257,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     if(sub.equals(sup)){return;}
     var mdfOk=subMdf.isIn(Mdf.Immutable, Mdf.Capsule,Mdf.Class);
     if(mdfOk && lattice.secondHigherThanFirst(sub,sup)){return;}
-    throw new EndError.TypeError(pos, noSubErr(sub,sup));
+    throw new EndError.TypeError(pos, notSubErr(sub,sup));
     }  
   @Override public void visitLoop(Loop e){
     visitExpecting(e.e(),P.coreVoid);
@@ -288,7 +288,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     P excSifo=excsSifo.isEmpty()?null:excsSifo.get(0);
     if(promoted && excSifo!=null){excSifo=lattice.leastUpperBound(excSifo,selectedS);}
     if(excSifo!=null && !lattice.secondHigherThanFirst(excSifo, this._sifoExceptions)){
-      throw new EndError.TypeError(e.poss(), noSubErr(excSifo, _sifoExceptions));
+      throw new EndError.TypeError(e.poss(), notSubErr(excSifo, _sifoExceptions));
       }
     var meths0=AlternativeMethodTypes.types(p,p0,e.s());
     var meths=L(meths0.stream().filter(m->Program.isSubtype(m.mdf(),expected.mdf())));
@@ -377,7 +377,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
       throw new EndError.TypeError(e.poss(),notEqualErr(s,retSec));
       }
     if(promotable && !lattice.secondHigherThanFirst(retSec,s)){
-      throw new EndError.TypeError(e.poss(),noSubErr(retSec,s));
+      throw new EndError.TypeError(e.poss(),notSubErr(retSec,s));
       }
     visitMCall(false,e,p0,parTypes,excTypes,selectedS);
     }
@@ -407,7 +407,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
         if(g._of(x).mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Capsule) || g.isVar(x)){continue;}
         var sifo=getSifoAnn(g._of(x).docs());
         if(lattice.secondHigherThanFirst(sifo, s.get(0))){continue;}
-        throw new EndError.TypeError(e.poss(), noSubErr(sifo,  s.get(0)));
+        throw new EndError.TypeError(e.poss(), notSubErr(sifo,  s.get(0)));
         }
       }
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));

@@ -1,0 +1,168 @@
+Balance={
+  var Size balance
+  var Size withdraw
+  class method mut This (Size balance, Size withdraw)
+  mut @Top method @Top Bool updateBalance(Size x, @Top Size overdraft_limit)=(
+    var @Top Size newBalance = this.balance() + x
+    var @Top Bool result = Bool.true()
+    if newBalance < overdraft_limit (
+      newBalance := balance
+      result := Bool.false()
+    )
+    this.balance(newBalance)
+    result
+  )
+  mut @Top method @Top Bool undoUpdateBalance(Size x, @Top Size overdraft_limit)=(
+    var @Top Size newBalance = this.balance() - x
+    var @Top Bool result = Bool.true()
+    if newBalance < overdraft_limit (
+      newBalance := balance
+      result := Bool.false()
+    )
+    this.balance(newBalance)
+    result
+  )
+  
+  mut @Top method @Top Bool update(Size x, @Top Size overdraft_limit, @Top Size daily_limit)=(
+    var @Top Size newWithdraw = this.withdraw()
+    @Top Size oldWithdraw = this.withdraw()
+    var @Top Bool result = Bool.true()
+    if x < 0Size (
+      newWithdraw := newWithdraw + x
+      if newWithdraw < daily_limit (
+        newWithdraw := oldWithdraw
+        result := Bool.false()
+      )
+    )
+    if newWithdraw >= daily_limit && updateBalance(x=x,overdraft_limit=overdraft_limit).not() (
+      newWithdraw := oldWithdraw
+      result := Bool.false()
+    )
+    this.withdraw(newWithdraw)
+    result
+  )
+  
+  mut @Top method @Top Bool update(Size x, @Top Size overdraft_limit, @Top Size daily_limit)=(
+    var @Top Size newWithdraw = this.withdraw()
+    @Top Size oldWithdraw = this.withdraw()
+    var @Top Bool result = Bool.true()
+    if x < 0Size (
+      newWithdraw := newWithdraw - x
+      if newWithdraw < daily_limit (
+        newWithdraw := oldWithdraw
+        result := Bool.false()
+      )
+    )
+    if newWithdraw >= daily_limit && undoUpdateBalance(x=x,overdraft_limit=overdraft_limit).not() (
+      newWithdraw := oldWithdraw
+      result := Bool.false()
+    )
+    this.withdraw(newWithdraw)
+    result
+  )
+}
+
+Application=Data:{
+  mut Account account
+  class method mut This (mut Account account)
+  class method mut This ()=(
+    mut Account acc=Account()
+    This(account=acc)
+    )
+  mut method Void nextDay()=(
+    this.account().balance().withdraw(0Num)
+    this.account().interest(this.account().interest() + this.account().calculateInterest())
+    )
+   mut method Void nextDay()=(
+    this.account().balance().balance(
+      this.account().balance().balance() + this.account().interest())
+    this.account().interest(0Num)
+    )
+}
+
+Account={
+  @Top Size overdraft_limit
+  @Top Size daily_limt
+  Size interest_rate
+  var @Top Size interest
+  mut @Top Balance balance
+  var Bool lock
+  
+  class method mut This (
+    @Top Size overdraft_limit,
+    @Top Size daily_limt,
+    Size interest_rate,
+    @Top Size interest,
+    mut @Top Balance balance
+    Bool lock
+    )
+    
+  class method mut This() =(
+    @Top Size overdraft_limit = Size"-5000"
+    @Top Size daily_limt = Size"-1000"
+    Size interest_rate = 2Size
+    @Top Size interest = 0Size
+    mut @Top Balance balance = balance(0Size, withdraw=0Size)
+    Bool lock = Bool.false()
+    This(
+      overdraft_limit=overdraft_limit,
+      daily_limt=daily_limt,
+      interest_rate=interest_rate,
+      interest=interest,
+      balance=balance,
+      lock=lock
+      )
+    )
+    
+  read method @Top Size calculateInterest()=(
+    this.balance().balance() * this.interest_rate() / 36500Size
+    )
+  read method @Top Size estimatedInterest(Size daysLeft)=(
+    this.interest() + daysLeft * this.calculateInterest()
+    )
+  read method @Top Bool creditworthy(Size amount)=(
+    this.balance().balance() >= amount
+    )
+  
+  mut method Void doLock()=(this.lock(Bool.true()))
+  mut method Void unLock()=(this.lock(Bool.false()))
+}
+
+Transaction={
+  read method @Top Bool transfer(mut Account soure, mut Account destination, Size amount)=(
+    var @Top Bool result = Bool.true()
+    if (this.lockForTransfer(source, destination=destination).not()) (
+      result := Bool.false()
+    ) else (
+      mut @Top Balance sourceBalance = source.balance()
+      mut @Top Balance destinationBalance = destination.balance()
+      @Top size sdl = source.daily_limit()
+      @Top size sol = source.overdraft_limit()
+      @Top size ddl = destination.daily_limit()
+      @Top size dol = destination.overdraft_limit()
+      if (amount <= 0) (
+         result := Bool.false()
+      ) else if (sourceBalance.update(amount * -1, daily_limit=sdl, overdraft_limit=sol).not()) ( 
+        result  := Bool.false()
+      ) else if (destinationBalance.update(amount, daily_limit=ddl, overdraft_limit=dol).not()) (
+        result  := Bool.false()
+        sourceBalance.undoUpdate(amount * -1, daily_limit=sdl, overdraft_limit=sol);
+      ) else (
+        result := Bool.true()
+      )
+      source.unLock()
+      destination.unLock()
+    )
+    result
+  )
+  
+  class method Bool lockForTransfer(mut Account soure, mut Account destination)={
+    if source.lock() return Bool.false()
+    if destination.lock() return Bool.false()
+    source.doLock()
+    destination.doLock()
+    return Bool.true()
+    }
+}
+
+
