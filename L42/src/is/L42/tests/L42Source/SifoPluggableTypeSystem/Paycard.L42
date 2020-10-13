@@ -1,0 +1,94 @@
+Paycard={
+  @Top Size limit
+  var @Top Size unsuccessfulOperations
+  Size id
+  var @Top Size balance
+  mut @Top LogFile log
+  class method mut This(@Top Size limit,@Top Size unsuccessfulOperations,Size id,@Top Size balance,mut @Top LogFile log)
+  class method mut This(@Top Size limit, Size id)=This(
+  limit = limit,
+  unsuccessfulOperations = 0Size,
+  id = id,
+  balance = 0Size,
+  log = LogFile()
+  )
+  class method mut PayCard createJuniorCard()=(
+    This(limit=100Size, id=0Size)
+    )
+  mut method @Top Bool charge(Size amount)={
+    if (amount <= 0Size) return Bool.false()
+    var @Top Size intermediate = this.balance()
+    @Top Bool result = this.balance()+amount < this.limit()
+    if result intermediate := this.balance()+amount
+    this.balance(intermediate)
+    return result
+    }
+    
+  mut method Void chargeAndRecord(Size amount)=(
+    mut @Top LogFile logFile = this.log()
+    if charge(amount) logFile.addRecord(balance=balance)
+    )
+
+  read method @Top Bool isValid()={
+    if unsuccessfulOperations<=3Size return Bool.true()
+    else return Bool.false()
+    }
+    
+  read method @Top S infoCardMsg()=
+    S" Current balance on card is " ++ this.balance()
+}
+
+LogRecord={
+//  var Size transactionCounter = 0 //static
+  var Size balance = -1
+  var Size transactionId = -1
+  var Bool empty = true
+    
+  mut method mut This(Size balance, Size transactionId, Bool empty)
+  mut method mut This () =This(
+    balance = Size"-1",
+    transactionId = Size"-1",
+    empty = Bool.true()
+    )
+   
+  mut method Void setRecord(Size balance)={
+    if balance < 0 return void
+    else {
+      this.empty(Bool.false())
+      this.balance(balance)
+      //this.transactionId = transactionCounter++;
+      return void
+      }
+    }
+}
+LogRecords=Collection.list(LogRecord)
+LogFile={
+  var Size currentRecord
+  mut LogRecords logRecords
+  mut method mut This(Size currentRecord,mut LogRecords logRecords)
+    
+  mut method mut This ()=This(
+    currentRecord=0
+    logRecords=LogRecords()
+    )
+    
+    
+  mut method Void addRecord(Size balance)=(
+    this.currentRecord(this.currentRecord() + 1Size)
+    mut LogRecord newRecord = LogRecord()
+    newRecord.setRecord(balance=balance)
+    logRecords.#add(right=newRecord)
+    )
+
+  read method mut LogRecord getMaximumRecord()=(
+    mut LogRecord max = this.logRecords().#val(0)
+    var Size i = 1
+    while i < this.logRecords().size() (
+      LogRecord lr = this.logRecords().#val(i)
+      if lr.balance() > max.alance() max = lr
+      i++
+      )
+    max
+    )
+}
+
