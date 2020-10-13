@@ -3,7 +3,7 @@ Account={
   class method Size overdraftLimit()=Size"-5000"
   class method Size dailyLimit()=Size"-1000"
   var @Top Size interest
-  @Top mut State state
+  mut @Top State state
   var Bool lock
   class method mut This (@Top Size interest, mut @Top State state, Bool lock)
   class method mut This() = This(
@@ -12,27 +12,32 @@ Account={
     lock=Bool.false()
     )
   
-  read method @Top Size calculateInterest()=
-    (this.state().balance()<:Size * This.interestRate()) / 36500Size
+  read method @Top Size calculateInterest()=(
+    @Top Size balance = this.state().balance()
+    @Top Size totInterests = balance * This.interestRate()
+    totInterests / 36500Size
+    )
   read method @Top Size estimatedInterest(Size daysLeft)=(
     @Top Size moreInterest = daysLeft * this.calculateInterest()
     this.interest() + moreInterest
     )
-  read method @Top Bool creditWorthy(Size amount)=
-    this.state().balance()<:Size >= amount
+  read method @Top Bool creditWorthy(Size amount)=(
+    @Top Size balance = this.state().balance()
+    balance >= amount
+    )
   mut method Void doLock()=this.lock(Bool.true())
   mut method Void unLock()=this.lock(Bool.false())
   }
 State=Data:{
   var Size balance,var Size withdraw
   mut method Bool updateBalance(Size that)={
-    var Size newBalance = this.balance() + that
+    Size newBalance = this.balance() + that
     if newBalance < Account.overdraftLimit() return Bool.false()
     this.balance(newBalance)
     return Bool.true()
     }
-  mut @Top method @Top Bool undoUpdateBalance(Size that)={
-    var Size newBalance = this.balance() - that
+  mut method Bool undoUpdateBalance(Size that)={
+    Size newBalance = this.balance() - that
     if newBalance < Account.overdraftLimit() return Bool.false()
     this.balance(newBalance)
     return Bool.true()
@@ -60,6 +65,7 @@ State=Data:{
     return Bool.true()
     }
   }
+
 Application={
   mut Account account
   class method mut This (mut Account account)
@@ -68,11 +74,15 @@ Application={
     This(account=acc)
     )
   mut method Void nextDay()=(
-    this.#account().#state().withdraw(0Size)
+    mut @Top State state = this.#account().#state()
+    state.withdraw(0Size)
     this.#account().interest(\interest + \calculateInterest)
     )
    mut method Void nextYear()=(
-    this.#account().#state().balance(\balance + this.account().interest())
+    mut @Top State state = this.#account().#state()
+    @Top Size interest = this.account().interest()
+    @Top Size newBalance = state.balance() + interest
+    state.balance(newBalance)
     this.#account().interest(0Size)
     )
   }
@@ -82,8 +92,10 @@ Transaction={
     mut @Top State sourceState = source.#state()
     mut @Top State destinationState = destination.#state()
     if (amount <= Size"0") return Bool.false() 
-    if !sourceState.update(amount * Size"-1") return Bool.false()
-    if !destinationState.update(amount) (
+    @Top Bool sourceKo = !sourceState.update(amount * Size"-1")
+    if sourceKo return Bool.false()
+    @Top Bool destinationKo = !destinationState.update(amount)
+    if destinationKo (
       _=sourceState.undoUpdate(amount * Size"-1")
       return Bool.false()
       )
