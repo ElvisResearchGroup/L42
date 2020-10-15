@@ -30,7 +30,9 @@ public class Coherence {
   public final Program p;
   public final List<MH> mhs;
   public final List<MH> classMhs;
+  public final boolean onlyPrivate;
   public Coherence(Program p, boolean onlyPrivate){
+    this.onlyPrivate=onlyPrivate;
     this.p=p;
     mhs=L(p.topCore().mwts(),(c,mi)->{
       if(mi._e()==null && (!onlyPrivate || mi.key().hasUniqueNum())){c.add(mi.mh());}
@@ -42,6 +44,11 @@ public class Coherence {
     if(p.topCore().isInterface()){return true;}
     if(classMhs.isEmpty()){
       boolean emptyNative=p.topCore().info().nativeKind().isEmpty();
+      if(!emptyNative && onlyPrivate){
+        var totClassMhs=p.topCore().mwts().stream()
+          .filter(m->m.mh().mdf().isClass() && m._e()==null).count();
+        emptyNative=totClassMhs!=0;
+        }
       if(emptyNative || justResult){return emptyNative;}
       throw new EndError.CoherentError(p.topCore().poss(),
         Err.nativeFactoryAbsent(p.topCore().info().nativeKind())

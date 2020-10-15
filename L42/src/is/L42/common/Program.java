@@ -230,16 +230,16 @@ public class Program implements Visitable<Program>{
     }
   
   public boolean isSubtype(Stream<P> subPs,P superP){
-    return subPs.allMatch(p->_isSubtype(p, superP));
+    return subPs.allMatch(p->Boolean.TRUE==_isSubtype(p, superP));
     }
   public boolean isSubtype(P subP,Stream<P> superPs){
-    return superPs.allMatch(p->_isSubtype(subP,p));
+    return superPs.allMatch(p->Boolean.TRUE==_isSubtype(subP,p));
     }
   public boolean isSubtype(Stream<T> subTs,T superT){
-    return subTs.allMatch(t->_isSubtype(t, superT));
+    return subTs.allMatch(t->Boolean.TRUE==_isSubtype(t, superT));
     }
   public boolean isSubtype(T subT,Stream<T> superTs){
-    return superTs.allMatch(t->_isSubtype(subT,t));
+    return superTs.allMatch(t->Boolean.TRUE==_isSubtype(subT,t));
     }
   public Boolean _isSubtype(T subT,T superT){
     if(!isSubtype(subT.mdf(),superT.mdf())){return false;}

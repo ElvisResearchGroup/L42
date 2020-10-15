@@ -8,13 +8,13 @@ SifoTest={
   Top=Sifo:{[Left,Right]}
   DeclassifyS=Sifo.declassify(S top=Top)
   DeclassifySCapsule=Sifo.declassifyCapsule(S top=Top)
-  DatabaseExample=Sifo(Top):{...}
-  BankExample=Sifo(Top):{...}
-  //EmailExample=Sifo(Top):Organize:{...}
+  //DatabaseExample=Sifo(Top):{...}
+  //BankExample=Sifo(Top):{...}
+  EmailExample=Sifo(Top):Organize:{...}
   //PaycardExample=Sifo(Top):{...}
   Main=(
     _=Log(S"hi").#$reader()
-    DatabaseExample.main()
+    //DatabaseExample.main()
     {}:Test"sifo passed"(Bool.true())
     )
   }

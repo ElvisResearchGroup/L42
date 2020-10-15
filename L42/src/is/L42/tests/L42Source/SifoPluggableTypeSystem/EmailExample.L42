@@ -1,4 +1,3 @@
-Counter=Data:{var Size emails}
 MetaData=Data:{
   var Size encryptionKey
   var Bool isEncrypted
@@ -12,43 +11,68 @@ AddressBookEntry=Data:{
   mut method Void add(S receiver)=this.#receivers().add(receiver)
   }
 AddressBook=Collection.list(AddressBookEntry)
-$Keyring={ class method mut This () }
-$Clients={
+Keyring$={ class method mut This () }
+Clients$={
   class method mut This ()
   mut method mut This outSelf()=this
+  mut method mut Client client(S address)
   }
-$OptClient={ class method mut This () }
-$Client={
-  S name
-  class method mut This(Size id,S name,mut $Keyring keyring,
-    @Top Size privateKey,Bool autoResponse,mut AddressBook addressBook,
-    mut $OptClient forwardReceiver,mut $Clients clients)
-  mut method mut This self()=this  
+Counter=Data:{
+  var Size emails
+  mut Clients$ clients
   }
-OptClient=Collection.optional($Client)
-Clients=Organize:{
-  $=Class:Trait(Collection.list($Client)):{mut method mut This self()=this}
-  mut method mut $ self()
-  mut method mut $Clients outSelf()
-  mut method mut $Client client(Size id)=this.self().#val(id)//note: unused also in the original example
-  mut method mut $Client client(S address)={
-    for mut c in this.self().#vals() ( if c.name()==address return c )
-    error X"Receiver %address Unknown"
-    }
-  mut method Void resetClients()=while !this.self().isEmpty() this.removeRight()
-  mut method $Client create(S name, @Top Size privateKey, Bool autoResponse)=(
-    client = $Client(id=this.size(), name=name,keyring=\(), privateKey=privateKey,
-      autoResponse=autoResponse,addressBook=\(), forwardReceiver=\(),clients=this.outSelf())
-    this.self().#add(right=client)
-    client
+
+OptClient$={ class method mut This () }
+Client$={[HasToS]
+  mut method mut This self()=this
+  class method mut This self(mut This that)=that
+  }
+Email={
+  Size id
+  S subject
+  imm @Top S body
+  var mut Client from
+  var S to
+  mut @Top MetaData metaData
+  class method mut This (Size id,S subject,
+    @Top S body,mut Client from,S to,mut @Top MetaData metaData)
+  class method mut This create(mut Counter counter,S subject,@Top S body,mut Client from,S to)=(
+    id = counter.emails()
+    counter.emails(\emails+1\)
+    capsule @Top MetaData metaData = MetaData(
+      encryptionKey=0Size
+      isEncrypted=Bool.false()
+      signKey=0Size
+      isSigned=Bool.false()
+      isSignatureVerified=Bool.true()
+      )
+    This(id=id,subject=subject,body=body,from=from,to=to,metaData=metaData)
+    )
+  mut method @Top Bool isReadable() =(
+    @Top Bool b=this.#metaData().isEncrypted()
+    !b
+    )
+  mut method Void printMail()=(
+    Debug(S"ID:  %this.id()")
+    Debug(S"FROM: %this.from()")
+    Debug(S"TO: %this.to()")
+    Debug(S"SUBJECT: %this.subject()")
+    //Debug(S"IS_READABLE %this.isReadable()")//high
+    //Debug(S"BODY: %this.body()")//high
+    //Debug(S"ENCRYPTED %this.metaData().isEncrypted()")//high
+    //Debug(S"SIGNED %this.metaData().isSigned()") //high
+    //Debug(S"SIGNATURE %this.metaData().SignKey()")//high
+    //Debug(S"SIGNATURE VERIFIED %this.metaData().isSignatureVerified()") //high
     )
   }
+OptClient=Collection.optional(Client$)
+
 KeyringEntry=Data:{
- mut $Client keyOwner
+ mut Client$ keyOwner
  Size publicKey
  }
 Keyring=Collection.list(KeyringEntry)
-Client={
+Client={[HasToS]
   Size id
   S name
   mut Keyring keyring
@@ -56,8 +80,16 @@ Client={
   var Bool autoResponse
   mut AddressBook addressBook
   var mut OptClient forwardReceiver
-  mut Clients clients
-  mut method mut $Client self()
+  mut Counter static
+  read method S toS()=this.name()//could have more info, but not privateKey
+  mut method mut Clients$ #clients()=this.#static().#clients()
+  mut method mut Client$ self()
+  class method mut Client self(mut Client$ that)
+  class method mut This(Size id,S name,mut Keyring keyring,
+    @Top Size privateKey,Bool autoResponse,mut AddressBook addressBook,
+    mut OptClient forwardReceiver,mut Clients$ clients)
+  read method Bool ==(read Client that)=this.id()==that.id()
+
   mut method Void deliver(mut Email msg)=Debug(S"mail delivered%S.nl()")//represents the real sending of the email
   mut method Void incomingWrappeeAutoResponder(mut Email msg)=(
     this.deliver(msg=msg)
@@ -65,11 +97,11 @@ Client={
     )
   mut method Void incomingWrappeeForward(mut Email msg)=(
     this.incomingWrappeeAutoResponder(msg=msg)
-    receiverOpt = this.forwardReceiver()
+    receiverOpt = this.#forwardReceiver()
     if receiverOpt (
-      msg.to(receiverOpt.val().name())
+      msg.to(This.self(receiverOpt.#val()).name())
       this.forward(msg=msg)
-      receiverOpt.val().incoming(msg=msg)
+      This.self(receiverOpt.#val()).incoming(msg=msg)
       )
     )
   mut method Void incomingWrappeeVerify(mut Email msg)=(
@@ -78,10 +110,11 @@ Client={
     )
   mut method Void incoming(mut Email msg)=(
     @Top Size privkey = this.privateKey()
-    @Top MetaData m=msg.#metadata()
-    if privkey != 0Size (
-      @Top Bool valid = This.isKeyPairValid(publicKey=m.encriptionKey(), privateKey=privkey)
-      if m.isEncripted() && valid ( //high context, only assignments to high
+    mut @Top MetaData m=msg.#metaData()
+    @Top Bool nonZero = privkey != 0Size
+    if nonZero (
+      @Top Bool valid = m.isEncrypted() && This.isKeyPairValid(publicKey=m.encryptionKey(), privateKey=privkey)
+      if valid ( //high context, only assignments to high
         m.isEncrypted(Bool.false())
         m.encryptionKey(0Size)
         )
@@ -95,132 +128,108 @@ Client={
     this.mail(msg=msg)
     )
   mut method Void outgoingWrappeeEncrypt(mut Email msg)=(
-    mut Client receiver = This.getClientByAdress(address=msg.to())
-    Size pubkey = this.getKeyringPublicKeyByClient(client=receiver)
+    mut Client receiver = this.#clients().client(address=msg.to())
+    Size pubkey = this.getKeyringPublicKey(client=receiver)
     if pubkey != 0Size ( // low
-      msg.#metadata().encryptionKey(pubkey) //pubkey promoted to high
-      msg.#metadata().isEncrypted(Bool.true())
+      msg.#metaData().encryptionKey(pubkey) //pubkey promoted to high
+      msg.#metaData().isEncrypted(Bool.true())
       Debug(S"Encrypted Mail %msg.id()")
       )
     this.outgoingWrappeeBase(msg=msg)
     )
-  mut method Void outgoingWrappeeAddressbook(mut Email msg)=(
-    mut S.List aliasReceivers = this.getAddressBookReceiversForAlias(msg.to())
+  mut method Void outgoingWrappeeAddressbook(mut Email msg)={
+    mut S.List aliasReceivers = this.getAddressBookReceivers(alias=msg.to())
     if aliasReceivers.isEmpty() return this.outgoingWrappeeEncrypt(msg=msg)
     for i in (aliasReceivers.size()-1Size).range() (//TODO: check range docs
       S receiverAddress = aliasReceivers.val(i+1\)
       msg.to(receiverAddress)
       this.outgoing(msg=msg)
-      this.clients().getClientByAdress(receiverAddress).#val().incoming(msg=msg)
+      this.#clients().client(address=receiverAddress).incoming(msg=msg)
       )
     msg.to(aliasReceivers.val(0\))
-    this.outgoingWrappeeEncrypt(msg=msg)
-    )
+    return this.outgoingWrappeeEncrypt(msg=msg)
+    }
   mut method Void outgoing(mut Email msg)=(
     this.sign(msg=msg)
     this.outgoingWrappeeAddressbook(msg=msg)
     )
   mut method Void sendEmail(S receiverAddress, S subject, @Top S body)=(//TODO: counter must have the create method
-    email = Email.create(counter=this.emailCounter(), subject=subject, body=body, from=this, to=receiverAddress)
+    mut Email email = Email.create(counter=this.#static(), subject=subject, body=body, from=this, to=receiverAddress)
     Debug(S"sending Mail %email.id()")
     this.outgoing(msg=email)
-    receiver = this.clients().getClientByAdress(email.to())
-    if !receiver.val().isPresent() error X"Receiver %receiverAddress Unknown"
-    receiver.val().incoming(msg=email)
+    receiver = this.#clients().client(address=email.to())
+    receiver.incoming(msg=email)
     )
   mut method Void addKeyringEntry(mut Client client, Size publicKey)=(
-   this.#keyring().#add(KeyringEntry(keyOwner=client, publicKey=publicKey))
+   this.#keyring().#add(right=KeyringEntry(keyOwner=client.self(), publicKey=publicKey))
    )
-  read method Size getKeyringPublicKeyByClient(read Client client)={
-    for e in this.keyring() (
-      if e.keyOwner().equals(client) return e.publicKey()
+  mut method Size getKeyringPublicKey(mut Client client)={
+    for mut e in this.#keyring() (
+      if This.self(e.#keyOwner())==client return e.publicKey()
       )
     return 0Size
     }
-  class method @Top Bool isKeyPairValid(@Top Size publicKey, @Top Size privateKey)={
+  class method Bool isKeyPairValid(Size publicKey,Size privateKey)={
+    //NOTE: this function was going in top*top in top, but is much easier to use low and promote
     //Debug(S"keypair valid %publicKey %privateKey")//correctly fails verification
-    if publicKey == 0Size || privateKey == 0Size return Bool.false()
+    isZero = publicKey == 0Size || privateKey == 0Size
+    if isZero return Bool.false()
     return privateKey == publicKey //should be a secure validation. This is just an example.
     }
   mut method Void autoRespond(mut Email msg)=(
     Debug(S"sending autoresponse%S.nl()")
-    mut Client sender = msg.from()
+    sender = msg.#from()
     msg.to(sender.name())
     this.outgoing(msg=msg)
     sender.incoming(msg=msg)
     )
-  mut method mut S.List getAddressBookReceiversForAlias(S alias)={
-    for e in this.addressBook() (
-      if e.alias().equals(alias) return e.receivers()
+  mut method mut S.List getAddressBookReceivers(S alias)={
+    for mut e in this.#addressBook() (
+      if e.alias()==alias return e.#receivers()
       )
     return S.List()
     }
   mut method Void addAddressbookEntry(S alias, S receiver)={
-    for e in this.addressBook() (
-      if e.alias().equals(alias) return e.add(receiver=receiver)
+    for mut e in this.#addressBook() (
+      if e.alias()==alias return e.add(receiver=receiver)
       )
     newEntry = AddressBookEntry(alias=alias, receivers=S.List[receiver])
-    return this.addressBook().#add(newEntry)
+    return this.#addressBook().#add(right=newEntry)
     }
   mut method Void sign(mut Email msg)={
     @Top Size privkey = this.privateKey()
-    if privkey == 0Size return void
-    msg.#metadata().isSigned(Bool.true())
-    msg.#metadata().signKey(privkey)
+    @Top Bool isZero = privkey == 0Size
+    if isZero return void
+    msg.#metaData().isSigned(Bool.true())
+    msg.#metaData().signKey(privkey)
     return void
     }
   mut method Void verify(mut Email msg)=( //receiver of message
-    Size pubkey = this.getKeyringPublicKeyByClient(msg.from())//TODO: name more 42
-    @Top Bool keyValid = This.isKeyPairValid(publicKey=pubkey, privateKey=msg.getEmailSignKey())
-    if pubkey != 0Size && keyValid  msg.#metadata().isSignatureVerified(Bool.true()) 
+    mut @Top MetaData metaData=msg.#metaData()
+    Size pubkey = this.getKeyringPublicKey(client=msg.#from())
+    @Top Bool keyValid = pubkey != 0Size && This.isKeyPairValid(publicKey=pubkey, privateKey=metaData.signKey())
+    if keyValid metaData.isSignatureVerified(Bool.true()) 
     )
   mut method Void forward(mut Email msg)=(
     Debug(S"Forwarding message.%S.nl()")
-    this.printMail(msg=msg)
+    msg.printMail()
     this.outgoing(msg=msg)
     )
   }
-
-Email={
-  Size id
-  S subject
-  @Top S body
-  mut Client from
-  var S to
-  mut @Top MetaData metaData
-  class method mut This (Size id,S subject,@Top S body,mut Client from,S to,@Top MetaData metaData)
-  class method This create(mut Counter counter,S subject,@Top S body,mut Client from,S to)=(
-    id=counter.emails()
-    counter.emails(\emails+1\)
-    metaData=MetaData(
-      encryptionKey=0Size
-      isEncrypted=Bool.false()
-      signKey=0Size
-      isSigned=Bool.false()
-      isSignatureVerified=Bool.true()
-      )
-    This(id=id,subject=subject,body=body,from=from,to=to,metaData=metaData)
-    )
-  mut method @Top Bool isReadable() = !this.metaData().isEncrypted()
-  class method Void printMailWrappeeBase(mut Email that)=(
-    Debug(S"ID:  " ++ that.id())
-    Debug(S"FROM: " ++ that.from())
-    Debug(S"TO: " ++ that.to())
-    Debug(S"SUBJECT: " ++ that.subject())
-    //Debug(S"IS_READABLE " ++ that.isReadable())//high
-    //Debug(S"BODY: " ++ that.body())//high
-    //Debug(S"ENCRYPTED " ++ that.metaData().isEncrypted())//high
-    //Debug(S"SIGNED " ++ that.metaData().isSigned()) //high
-    //Debug(S"SIGNATURE " ++ that.metaData().SignKey())//high
-    //Debug(S"SIGNATURE VERIFIED " ++ that.metaData().isSignatureVerified()) //high
-    )
-  read method mut Email clone() = Email(
-    id=this.id()
-    subject=this.subject()
-    body=this.body()
-    from=this.from().clone()
-    to=this.to()
-    metaData=this.metaData().clone()
+Clients=Organize:{
+  $=Class:Trait(Collection.list(Client)):{mut method mut This self()=this}
+  mut method mut $ self()
+  mut method mut Clients$ outSelf()
+  mut method mut Client client(Size id)=this.self().#val(id)//note: unused also in the original example
+  mut method mut Client client(S address)={
+    for mut c in this.self().#vals() ( if c.name()==address return c )
+    error X"Receiver %address Unknown"
+    }
+  mut method Void resetClients()=while !this.self().isEmpty() this.removeRight()
+  mut method mut Client create(S name, @Top Size privateKey, Bool autoResponse)=(
+    client = Client(id=this.size(), name=name,keyring=\(), privateKey=privateKey,
+      autoResponse=autoResponse,addressBook=\(), forwardReceiver=\(),clients=this.outSelf())
+    this.self().#add(right=client)
+    client
     )
   }
-    

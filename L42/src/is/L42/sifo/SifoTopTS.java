@@ -107,7 +107,8 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
         if(mhj.mdf().isClass()){continue;}
         if(!Coherence.fieldName(mhj).equals(xi)){continue;}
         var sj=vis.getSifoAnn(mhj.t().docs());
-        if(!si.equals(sj)){throw new EndError.TypeError(p.topCore().poss(), notEqualErr(si, sj));}
+        if(!si.equals(sj)){
+          throw new EndError.TypeError(p.topCore().poss(), notEqualErr(si, sj));}
         }
       }
     }

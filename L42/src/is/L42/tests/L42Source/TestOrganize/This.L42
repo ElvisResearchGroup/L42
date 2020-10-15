@@ -3,7 +3,19 @@ reuse[AdamTowel]
 Full={class method S (Library that)=
   Introspection.Nested.from(library=that).toFullS()
   }
-  
+TestOrganizeWrongDollarStays=(
+  res=Organize:{A={} $A={} Foo={$A a, class method This ($A a)}}
+  Debug(Full(res))
+  {}:Test"Public"(actual=Full(res)
+    expected=S"""
+      |{A={#typed{close}}$A={#typed{close}}Foo={
+      |  read method This1.$A a()=(..)
+      |  class method This #apply(This1.$A a)=(..)
+      |  #typed{close}
+      |  }
+      |#norm{close}}
+      """)
+  )
 TestOrganize0=(
   lib={
     Public2={}

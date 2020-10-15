@@ -89,7 +89,8 @@ public class Close extends GuessFields{
     J newJ=new J(p.update(l,false),null,null,true){//so that it ignore public abstract methods
       public Coherence newCoherence(Program p){return new Coherence(p,true);}
       };
-    assert newJ.isCoherent;
+    assert newJ.isCoherent:
+    "";
     assert newJ.fields!=null:
     "";
     //TODO: need more? is this needed?//that is, can this code be triggered?
