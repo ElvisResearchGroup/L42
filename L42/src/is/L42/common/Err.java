@@ -297,8 +297,8 @@ public class Err {
   "native body "+_1+" has selector "+mh+"; required "+sig+" but the parameter of type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
   "The class is not coherent. Candidate factory parameters are: "+_1
-  ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object _1){return
-  "The class is not coherent. It has private state but also abstract methods:"+_1
+  ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object meths,Object pos){return
+  "The class is not coherent. It has private state but also abstract methods:"+meths+", the first one is in positions:"+pos
   ;}public static String nativeFactoryAbsent(Object _1){return
   "The class is not coherent. It is declared with native kind "+_1+" but has no factory method"  
   ;}public static String nonCoherentMethod(Object _1){return

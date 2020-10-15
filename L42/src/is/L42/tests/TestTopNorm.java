@@ -840,7 +840,7 @@ public class TestTopNorm{
       }
     B=(_=A() {})
     }
-    """,Err.nonCoherentPrivateStateAndPublicAbstractMethods("[#apply()]")
+    """,Err.nonCoherentPrivateStateAndPublicAbstractMethods("[#apply()]",hole)
   /*Suppressed: now the invalid natives will simply perform the body
   );}@Test public void t81(){topFail(EndError.TypeError.class,"""
     {A={imm method mut This foo()=native{trusted:lazyCache} error void}
@@ -870,7 +870,7 @@ public class TestTopNorm{
     Test=A.of().v()
     }
     """,
-    Err.nonCoherentPrivateStateAndPublicAbstractMethods(hole)
+    Err.nonCoherentPrivateStateAndPublicAbstractMethods(hole,hole)
   );}@Test public void t85(){top("""
     {A={class method Void a(Any that)=(
       if This x=that error void

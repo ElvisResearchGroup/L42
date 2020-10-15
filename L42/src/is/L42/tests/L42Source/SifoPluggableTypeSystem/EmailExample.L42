@@ -11,17 +11,20 @@ AddressBookEntry=Data:{
   mut method Void add(S receiver)=this.#receivers().add(receiver)
   }
 AddressBook=Collection.list(AddressBookEntry)
-Keyring$={ class method mut This () }
+Keyring$={}
 Clients$={
-  class method mut This ()
   mut method mut This outSelf()=this
-  mut method mut Client client(S address)
+  class method mut This self(mut This that)=that
   }
-Counter=Data:{
+Counter={
   var Size emails
   mut Clients$ clients
+  mut method mut Counter self()=this
+  class method mut This(Size emails,mut Clients$ clients)
+  mut method mut Client$ client(Size id)
+  mut method mut Client$ client(S address)
+  mut method Void resetClients()
   }
-
 OptClient$={ class method mut This () }
 Client$={[HasToS]
   mut method mut This self()=this
@@ -76,18 +79,17 @@ Client={[HasToS]
   Size id
   S name
   mut Keyring keyring
-  @Top Size privateKey
+  imm @Top Size privateKey
   var Bool autoResponse
   mut AddressBook addressBook
   var mut OptClient forwardReceiver
   mut Counter static
   read method S toS()=this.name()//could have more info, but not privateKey
-  mut method mut Clients$ #clients()=this.#static().#clients()
   mut method mut Client$ self()
   class method mut Client self(mut Client$ that)
   class method mut This(Size id,S name,mut Keyring keyring,
     @Top Size privateKey,Bool autoResponse,mut AddressBook addressBook,
-    mut OptClient forwardReceiver,mut Clients$ clients)
+    mut OptClient forwardReceiver,mut Counter static)
   read method Bool ==(read Client that)=this.id()==that.id()
 
   mut method Void deliver(mut Email msg)=Debug(S"mail delivered%S.nl()")//represents the real sending of the email
@@ -128,7 +130,7 @@ Client={[HasToS]
     this.mail(msg=msg)
     )
   mut method Void outgoingWrappeeEncrypt(mut Email msg)=(
-    mut Client receiver = this.#clients().client(address=msg.to())
+    mut Client receiver = This.self(this.#static().client(address=msg.to()))
     Size pubkey = this.getKeyringPublicKey(client=receiver)
     if pubkey != 0Size ( // low
       msg.#metaData().encryptionKey(pubkey) //pubkey promoted to high
@@ -144,7 +146,7 @@ Client={[HasToS]
       S receiverAddress = aliasReceivers.val(i+1\)
       msg.to(receiverAddress)
       this.outgoing(msg=msg)
-      this.#clients().client(address=receiverAddress).incoming(msg=msg)
+      This.self(this.#static().client(address=receiverAddress)).incoming(msg=msg)
       )
     msg.to(aliasReceivers.val(0\))
     return this.outgoingWrappeeEncrypt(msg=msg)
@@ -157,8 +159,8 @@ Client={[HasToS]
     mut Email email = Email.create(counter=this.#static(), subject=subject, body=body, from=this, to=receiverAddress)
     Debug(S"sending Mail %email.id()")
     this.outgoing(msg=email)
-    receiver = this.#clients().client(address=email.to())
-    receiver.incoming(msg=email)
+    receiver = this.#static().client(address=email.to())
+    This.self(receiver).incoming(msg=email)
     )
   mut method Void addKeyringEntry(mut Client client, Size publicKey)=(
    this.#keyring().#add(right=KeyringEntry(keyOwner=client.self(), publicKey=publicKey))
@@ -216,20 +218,43 @@ Client={[HasToS]
     this.outgoing(msg=msg)
     )
   }
-Clients=Organize:{
-  $=Class:Trait(Collection.list(Client)):{mut method mut This self()=this}
-  mut method mut $ self()
-  mut method mut Clients$ outSelf()
-  mut method mut Client client(Size id)=this.self().#val(id)//note: unused also in the original example
+Clients=Collection.list(Client)
+Counter$={
+  mut Clients clients
+  mut method mut Counter self()
+  mut method mut Client client(Size id)
+    =this.#clients().#val(id)//note: unused also in the original example
   mut method mut Client client(S address)={
-    for mut c in this.self().#vals() ( if c.name()==address return c )
+    for mut c in this.#clients() ( if c.name()==address return c )
     error X"Receiver %address Unknown"
     }
-  mut method Void resetClients()=while !this.self().isEmpty() this.removeRight()
+  mut method Void resetClients()=while !this.#clients().isEmpty() this.#clients().removeRight()
   mut method mut Client create(S name, @Top Size privateKey, Bool autoResponse)=(
-    client = Client(id=this.size(), name=name,keyring=\(), privateKey=privateKey,
-      autoResponse=autoResponse,addressBook=\(), forwardReceiver=\(),clients=this.outSelf())
-    this.self().#add(right=client)
+    size=this.#clients().size()
+    client = Client(
+      id=size, name=name,keyring=\(), privateKey=privateKey,
+      autoResponse=autoResponse,addressBook=\(), forwardReceiver=\(),
+      static=this.self())
+    this.#clients().#add(right=client)
     client
     )
-  }
+  class method mut This(Size emails,mut Clients clients)
+  class method mut This()=This(emails=0\,clients=\())
+  mut method Void example()=(
+    mut Client client1 = this.create(name=S"Malte", privateKey=5\, autoResponse=Bool.false()) // ok
+    mut Client client2 = this.create(name=S"Sebastian", privateKey=7\,autoResponse=Bool.true()) // ok
+    mut Client client3 = this.create(name=S"Tim", privateKey=3\, autoResponse=Bool.false()) // ok
+    client1.addAddressbookEntry(alias=S"seb",receiver=S"Sebastian") // ok
+    client1.addKeyringEntry(client=client2, publicKey=7\)
+    client1.addKeyringEntry(client=client3, publicKey=3\)
+    client2.addKeyringEntry(client=client1, publicKey=5\)
+    client2.addKeyringEntry(client=client3, publicKey=3\)
+    client3.addKeyringEntry(client=client2, publicKey=7\)
+    sebAlias=client1.getAddressBookReceivers(alias=S"seb")
+    Debug(S"Addressbook entry: %sebAlias") // ok
+    client2.forwardReceiver(OptClient(client3.self())) //ok
+    client1.sendEmail(receiverAddress=S"Sebastian", subject=S"Email1", body=S"Hallo, das ist die erste Mail")  // ok
+    Debug(S"Forwarded by client2: %client2.forwardReceiver()") // ok
+    Debug(client1.getAddressBookReceivers(alias=S"seb")) // ok
+    this.resetClients() // ok
+    )}

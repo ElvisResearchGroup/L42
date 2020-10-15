@@ -1,14 +1,19 @@
-Account={  
+Account={
   class method Size interestRate()=2Size
   class method Size overdraftLimit()=Size"-5000"
   class method Size dailyLimit()=Size"-1000"
   var @Top Size interest
   mut @Top State state
   var Bool lock
+  class method S statement(read State state)=S"""%
+    |Current balance=%state.balance()
+    |Current withdraw=%state.withdraw()
+    """
   class method mut This (@Top Size interest, mut @Top State state, Bool lock)
-  class method mut This() = This(
+  class method mut This()=This(balance=0\)
+  class method mut This(Size balance) = This(
     interest=0Size,
-    state=State(balance=0Size, withdraw=0Size)
+    state=State(balance=balance, withdraw=0Size)
     lock=Bool.false()
     )
   
@@ -87,7 +92,7 @@ Application={
     )
   }
 Transaction={
-  read method @Top Bool transfer(mut Account source, mut Account destination, Size amount)={
+  class method @Top Bool transfer(mut Account source, mut Account destination, Size amount)={
     if !This.lockForTransfer(source=source, destination=destination) return Bool.false()
     mut @Top State sourceState = source.#state()
     mut @Top State destinationState = destination.#state()
@@ -111,3 +116,12 @@ Transaction={
     return Bool.true()
     }
   }
+Main={class method Void()=(
+  mut Application a=Application()
+  mut Account bob=Account(balance=50\)
+  mut Account alice=Account(balance=65\)
+  _=Transaction.transfer(source=alice,destination=bob,amount=5\)
+  @Top S txt=Account.statement(state=bob.state())
+  Debug(DeclassifyS(txt))
+  void
+  )}

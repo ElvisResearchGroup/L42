@@ -18,6 +18,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
+import is.L42.generated.LDom;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.S;
@@ -63,10 +64,12 @@ public class Coherence {
       //it can also come up with introspection, so should not disclose informations
       //on uniqueNumbers... is this already the best error to report then?
       if(justResult){return false;}
+      var meths=L(mhs.stream().filter(m->!m.key().hasUniqueNum()).map(m->m.key()));
+      S s0=meths.get(0);
+      var m0=LDom._elem(p.topCore().mwts(),s0);
       throw new EndError.CoherentError(p.topCore().poss(),
-        Err.nonCoherentPrivateStateAndPublicAbstractMethods(
-        L(mhs.stream().filter(m->!m.key().hasUniqueNum()).map(m->m.key()))
-        ));}   
+        Err.nonCoherentPrivateStateAndPublicAbstractMethods(meths,m0.poss())
+        );}   
     var xzs=L(classMhs.stream().map(m->new HashSet<>(m.key().xs())).distinct());
     if(xzs.size()>1){
       if(justResult){return false;}

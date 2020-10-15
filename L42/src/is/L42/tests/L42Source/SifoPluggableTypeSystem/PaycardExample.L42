@@ -1,26 +1,19 @@
 LogRecord={
-//  var Size transactionCounter = 0 //static
   var Size balance
-  var Size transactionId
   var Bool empty
     
-  class method mut This(Size balance, Size transactionId, Bool empty)
+  class method mut This(Size balance, Bool empty)
   class method mut This () = This(
     balance = Size"-1",
-    transactionId = Size"-1",
     empty = Bool.true()
     )
    
   mut method Void setRecord(Size balance)={
     if balance < 0Size return void
-    else {
-      this.empty(Bool.false())
-      this.balance(balance)
-      //this.transactionId = transactionCounter++;
-      return void
-      }
+    this.empty(Bool.false())
+    return this.balance(balance)
     }
-}
+  }
 LogRecords=Collection.list(LogRecord)
 LogFile={
   var Size currentRecord
@@ -37,54 +30,66 @@ LogFile={
     this.#logRecords().#add(right=newRecord)
     )
   mut method mut LogRecord getMaximumRecord()=(
-    mut LogRecord max = this.#logRecords().#val(0Size)
+    var mut LogRecord max = this.#logRecords().#val(0Size)
     var Size i = 1Size
     while i < this.logRecords().size() (
       mut LogRecord lr = this.#logRecords().#val(i)
-      if lr.balance() > max.balance() max := lr
-      i := i + 1Size
+      if lr.balance() > max.balance() ( max := lr )
+      i += 1Size
       )
     max
     )
-}
-
+  }
 PayCard={
-  @Top Size limit
-  var @Top Size unsuccessfulOperations
+  State=Data:{
+    Size limit
+    var Size unsuccessfulOperations
+    var Size balance
+    mut LogFile log
+    }
   Size id
-  var @Top Size balance
-  mut @Top LogFile log
-  class method mut This(@Top Size limit,@Top Size unsuccessfulOperations,Size id,@Top Size balance,mut @Top LogFile log)
-  class method mut This(@Top Size limit, Size id)=This(
-    limit = limit,
-    unsuccessfulOperations = 0Size,
+  mut @Top State state
+  class method mut This(Size id,mut @Top State state)
+  class method mut This(Size id,@Top Size limit)=This(
     id = id,
-    balance = 0Size,
-    log = LogFile()
-  )
+    state=\(
+      limit = limit,
+      unsuccessfulOperations = 0Size,
+      balance = 0Size,
+      log = LogFile()
+      )
+    )
   class method mut PayCard createJuniorCard()=(
-    This(limit=100Size, id=0Size)
+    This(id=0Size,limit=100Size)
     )
-  mut method @Top Bool charge(Size amount)={
-    if (amount <= 0Size) return Bool.false()
-    var @Top Size intermediate = this.balance()
-    @Top Bool result = this.balance()+amount < this.limit()
-    if result intermediate := this.balance()+amount
-    this.balance(intermediate)
-    return result
+  mut method @Top Bool charge(Size amount)=
+    This.charge(state=this.#state(),amount=amount)
+  class method Bool charge(mut State state,Size amount)={
+    if amount <= 0Size return Bool.false()
+    if state.balance()+amount >= state.limit() return Bool.false()
+    state.balance(state.balance()+amount)
+    return Bool.true()
     }
-    
-  mut method Void chargeAndRecord(Size amount)=(
-    mut @Top LogFile logFile = this.log()
-    if charge(amount) logFile.addRecord(balance=balance)
+  mut method Void chargeAndRecord(Size amount)=
+    This.chargeAndRecord(state=this.#state(),amount=amount)
+  class method Void chargeAndRecord(mut State state,Size amount)=(
+    logFile = state.#log()
+    if This.charge(state=state,amount=amount) logFile.addRecord(balance=state.balance())
     )
-
-  read method @Top Bool isValid()={
-    if unsuccessfulOperations<=3Size return Bool.true()
-    else return Bool.false()
-    }
-    
-  read method @Top S infoCardMsg()=
-    S"Current balance on card is %this.balance()"
-}
-
+  read method @Top Bool isValid()=This.isValid(state=this.state())
+  class method Bool isValid(read State state)=
+    state.unsuccessfulOperations()<=3Size
+/*  read method @Top Bool isValid()=(//or, without auxiliary method
+    read @Top State state=this.state()
+    state.unsuccessfulOperations()<=3Size
+    )*/
+  read method @Top S infoCardMsg()=This.infoCardMsg(state=this.state())
+  class method S infoCardMsg(read State state)=
+    S"Current debt on card is %state.balance()"
+  }
+Main={class method Void()=(
+  mut PayCard j=PayCard.createJuniorCard()
+  _=j.charge(amount=20\)
+  _=j.chargeAndRecord(amount=10\)
+  Debug(j.infoCardMsg())
+  )}
