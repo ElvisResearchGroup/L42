@@ -1,4 +1,54 @@
-Paycard={
+LogRecord={
+//  var Size transactionCounter = 0 //static
+  var Size balance
+  var Size transactionId
+  var Bool empty
+    
+  class method mut This(Size balance, Size transactionId, Bool empty)
+  class method mut This () = This(
+    balance = Size"-1",
+    transactionId = Size"-1",
+    empty = Bool.true()
+    )
+   
+  mut method Void setRecord(Size balance)={
+    if balance < 0Size return void
+    else {
+      this.empty(Bool.false())
+      this.balance(balance)
+      //this.transactionId = transactionCounter++;
+      return void
+      }
+    }
+}
+LogRecords=Collection.list(LogRecord)
+LogFile={
+  var Size currentRecord
+  mut LogRecords logRecords
+  class method mut This(Size currentRecord,mut LogRecords logRecords)
+  class method mut This ()=This(
+    currentRecord=0Size,
+    logRecords=LogRecords()
+    )
+  mut method Void addRecord(Size balance)=(
+    this.currentRecord(this.currentRecord() + 1Size)
+    mut LogRecord newRecord = LogRecord()
+    newRecord.setRecord(balance=balance)
+    this.#logRecords().#add(right=newRecord)
+    )
+  mut method mut LogRecord getMaximumRecord()=(
+    mut LogRecord max = this.#logRecords().#val(0Size)
+    var Size i = 1Size
+    while i < this.logRecords().size() (
+      mut LogRecord lr = this.#logRecords().#val(i)
+      if lr.balance() > max.balance() max := lr
+      i := i + 1Size
+      )
+    max
+    )
+}
+
+PayCard={
   @Top Size limit
   var @Top Size unsuccessfulOperations
   Size id
@@ -6,11 +56,11 @@ Paycard={
   mut @Top LogFile log
   class method mut This(@Top Size limit,@Top Size unsuccessfulOperations,Size id,@Top Size balance,mut @Top LogFile log)
   class method mut This(@Top Size limit, Size id)=This(
-  limit = limit,
-  unsuccessfulOperations = 0Size,
-  id = id,
-  balance = 0Size,
-  log = LogFile()
+    limit = limit,
+    unsuccessfulOperations = 0Size,
+    id = id,
+    balance = 0Size,
+    log = LogFile()
   )
   class method mut PayCard createJuniorCard()=(
     This(limit=100Size, id=0Size)
@@ -35,60 +85,6 @@ Paycard={
     }
     
   read method @Top S infoCardMsg()=
-    S" Current balance on card is " ++ this.balance()
-}
-
-LogRecord={
-//  var Size transactionCounter = 0 //static
-  var Size balance = -1
-  var Size transactionId = -1
-  var Bool empty = true
-    
-  mut method mut This(Size balance, Size transactionId, Bool empty)
-  mut method mut This () =This(
-    balance = Size"-1",
-    transactionId = Size"-1",
-    empty = Bool.true()
-    )
-   
-  mut method Void setRecord(Size balance)={
-    if balance < 0 return void
-    else {
-      this.empty(Bool.false())
-      this.balance(balance)
-      //this.transactionId = transactionCounter++;
-      return void
-      }
-    }
-}
-LogRecords=Collection.list(LogRecord)
-LogFile={
-  var Size currentRecord
-  mut LogRecords logRecords
-  mut method mut This(Size currentRecord,mut LogRecords logRecords)
-    
-  mut method mut This ()=This(
-    currentRecord=0
-    logRecords=LogRecords()
-    )
-    
-    
-  mut method Void addRecord(Size balance)=(
-    this.currentRecord(this.currentRecord() + 1Size)
-    mut LogRecord newRecord = LogRecord()
-    newRecord.setRecord(balance=balance)
-    logRecords.#add(right=newRecord)
-    )
-
-  read method mut LogRecord getMaximumRecord()=(
-    mut LogRecord max = this.logRecords().#val(0)
-    var Size i = 1
-    while i < this.logRecords().size() (
-      LogRecord lr = this.logRecords().#val(i)
-      if lr.balance() > max.alance() max = lr
-      i++
-      )
-    max
-    )
+    S"Current balance on card is %this.balance()"
 }
 
