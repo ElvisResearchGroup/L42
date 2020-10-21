@@ -16,10 +16,24 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class Event{
-  public static final String end="##End##\n";
-  public static final String empty="##Empty##\n";
-  private static final int longWait=1000;
-  private static final int shortWait=10;
+  private static final String end="##End##\n";
+  public static String end(){return end;}
+  private static String empty="##Empty##\n";
+  public static String empty(){return empty;}
+  public static void setEmpty(String idMsg){empty=idMsg;}
+  private static int longWait=1000;
+  private static int shortWait=8;//longWait/120
+  public static void setTimeout(int timeout){
+    longWait=timeout;
+    if(timeout>=500){
+      shortWait=timeout/120;
+      ps=psLong;
+      }
+    else{
+      shortWait=timeout/4;
+      ps=psShort;
+      }
+    }
   @FunctionalInterface
   public static interface Consumer3{void accept(String key,String id,String msg);}
   public static interface Function3{String accept(String key,String id,String msg);}
@@ -61,6 +75,9 @@ public class Event{
       return k+"\n"+nextEvent1(k);}
     @SuppressWarnings("unchecked")
     var qs=(LinkedBlockingDeque<String>[])new LinkedBlockingDeque[ks.length];
+    for(var i:range(ks.length)){
+      qs[i]=streams.computeIfAbsent(ks[i],k->new LinkedBlockingDeque<>());
+      }
     try{
       for(var pi:ps){
         var res=oneRound(ks,qs,pi);
@@ -72,8 +89,13 @@ public class Event{
       throw new Error(ie);
       }
     return empty;
-    }
-  private static final List<Poller>ps=List.of(
+    }  
+  private static final List<Poller>psShort=List.of(
+      q->q.poll(),
+      q->q.poll(shortWait,TimeUnit.MILLISECONDS),
+      q->q.poll(shortWait*3,TimeUnit.MILLISECONDS)
+      );
+  private static final List<Poller>psLong=List.of(
     q->q.poll(),
     q->q.poll(shortWait,TimeUnit.MILLISECONDS),
     q->q.poll(shortWait*3,TimeUnit.MILLISECONDS),
@@ -81,6 +103,7 @@ public class Event{
     q->q.poll(shortWait*27,TimeUnit.MILLISECONDS),
     q->q.poll(shortWait*81,TimeUnit.MILLISECONDS)
     );
+  private static List<Poller>ps=psLong;
   private static interface Poller{String apply(LinkedBlockingDeque<String> q)throws InterruptedException;}
   private static String oneRound(String[]ks,LinkedBlockingDeque<String>[]qs, Poller poll)throws InterruptedException{
     var res=poll.apply(qs[0]);
@@ -126,7 +149,7 @@ public class Event{
     streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>()).addLast(id+"\n"+msg);
     }
   private static final CompletableFuture<String>defaultAskAction=CompletableFuture.completedFuture("");
-  private static final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new  LinkedHashMap<>());
+  private static final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new LinkedHashMap<>());
   private static final Map<String,Consumer3> callbacks=Collections.synchronizedMap(new LinkedHashMap<>());
   private static final Map<String,Function3> askCallbacks=Collections.synchronizedMap(new LinkedHashMap<>());
   }

@@ -8,9 +8,17 @@ JavaCode={...}
 
 Model=Data:GuiJ.Handler:{
   mut GuiJ j
-  @GuiJ.Handler mut method Void ping(S msg)=(
-    Debug(S"ping(%msg) called")
-    //this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
+  var Size posX
+  var Size posY
+  class method mut This(mut GuiJ j)=This(j=j,posX=20Size,posY=75Size)
+  @GuiJ.Handler mut method Void guiMsg(S msg)=(
+    Debug(S"guiMsg(%msg) called")
+    )
+  mut method Void ping(GuiJ.Event that)=(
+    var g=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
+    this.posX(\posX+1\)
+    this.posY(\posY+1\)
+    this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=  S"%this.posX();%this.posY();15;%g")
     whoops GuiJ.Fail
     )
   }
@@ -19,12 +27,14 @@ Main=(
   j=GuiJ.#$of()
   model=Model(j=j)
   code=
-    JavaCode.opening(package=S"miniGui", name='Example,x=800Size,y=600Size,pingDelay=30Size)++
-    JavaCode.body()++
+    //JavaCode.opening(package=S"miniGui", name='Example,x=800Size,y=600Size,pingDelay=30Size)++
+    JavaCode.opening(package=S"miniGui", name='Example,x=800Size,y=600Size)++
+    JavaCode.body2()++
     JavaCode.closing()
   j.loadCode(fullName=S"miniGui.Example",code=code)
   for e in j(\['Example]) (
     e>>model
     Debug(e)
+    model.ping(e)
     )
   )
