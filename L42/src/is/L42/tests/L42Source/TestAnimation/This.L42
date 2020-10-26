@@ -1,40 +1,83 @@
 reuse [AdamTowel]
-Main0=(
-  Debug(S"Hello world")
+Module=Trait:{reuse [AdamTowel]
+  Top={
+    GuiBuilder=Trait:Data:{...}
+    class method Library (class Any javaServer)[_]=GuiBuilder['J=>javaServer].code()
+    }
+  }
+DeployUnit=Deploy.module(
+  url='GuiBuilder
+  code=Module.code()
+  name='Top
   )
+//-------------
 LoadJ=Load:{reuse[JavaServer]}
 GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
-JavaCode={...}
+LoadGui=Load:{reuse[#$GuiBuilder]}
+Gui=LoadGui(javaServer=GuiJ)
 
-Model=Data:GuiJ.Handler:{
-  mut GuiJ j
+Google=Data:{
   var Size posX
   var Size posY
-  class method mut This(mut GuiJ j)=This(j=j,posX=20Size,posY=75Size)
-  @GuiJ.Handler mut method Void guiMsg(S msg)=(
-    Debug(S"guiMsg(%msg) called")
+  var Size dirX
+  var Size dirY
+  mut method Void ping()=(
+    this.posX(\posX+\dirX)
+    this.posY(\posY+\dirY)
     )
-  mut method Void ping(GuiJ.Event that)=(
+  read method S paint()=(
     var g=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
-    this.posX(\posX+1\)
-    this.posY(\posY+1\)
-    //this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=  S"%this.posX();%this.posY();15;%g")
-    whoops GuiJ.Fail
+    S"%this.posX();%this.posY();15;%g"
     )
   }
-
+Amazon=Data:{
+  var Size posX
+  var Size posY
+  var Size reached
+  read method S paint()=(
+    a=S"https://i.pinimg.com/originals/18/e1/80/18e180218bdac1685b79197c9023259b.png"
+    x=S"https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Red_x.svg/1200px-Red_x.svg.png"
+    i=(if this.reached()==0Size a else x)
+    S"%this.posX();%this.posY();25;%i"
+    )
+  class method mut This(Size x,Size y)=This(posX=x,posY=y,reached=0Size)
+  }
+Amazons=Collection.list(Amazon)
+Model=Data:GuiJ.Handler:{...}
 Main=(
   j=GuiJ.#$of()
-  model=Model(j=j)
-  code=
-    //JavaCode.opening(package=S"miniGui", name='Example,x=800Size,y=600Size,pingDelay=30Size)++
-    JavaCode.opening(package=S"miniGui", name='Example,x=800Size,y=600Size)++
-    JavaCode.body2()++
-    JavaCode.closing()
-  j.loadCode(fullName=S"miniGui.Example",code=code)
-  for e in j(\['Example]) (
-    Debug(e)
-    //e>>model
-    model.ping(e)
-    )
+  r=Random.#$random()
+  xr=r.nextInRange(start=120\ end=600\)
+  yr=r.nextInRange(start=120\ end=600\)
+  model=Model(j=j,as=\[
+    mutVal=\(x=34\,y=170\);
+    mutVal=\(x=140\,y=230\);
+    mutVal=\(x=xr,y=yr);
+    ])
+  gui=Gui(j=j,package=S"miniGui",name='Example,x=800\,y=600\,ping=30\)
+  b1=gui.button(id=S"reset",msg='Pressed,text=S"PressMe")
+  gui"""%
+    |//JLabel label1=new JLabel("yo!");
+    |%b1
+    |JLabel label2=new JLabel("west");
+    |PaintEntities e=new PaintEntities(){
+    |  public void submit(String n,String e,boolean r){
+    |    super.submit(n,e,r);
+    |    this.requestFocusInWindow();
+    |    }};
+    |JPanel p=new JPanel();
+    |{
+    |  e.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
+    |  //event.submitEvent("Example","First","Here");
+    |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->
+    |    e.submit(id,msg,true));
+    |  add(p);
+    |  addEast(p,reset);
+    |  addCenter(p,e);
+    |  addWest(p,label2);
+    |  e.setFocusable(true);
+    |  e.requestFocusInWindow();
+    |  }
+    """
+  for e in j(\['Example]) (e>>model)
   )

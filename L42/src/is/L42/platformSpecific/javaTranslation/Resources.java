@@ -38,6 +38,7 @@ import is.L42.generated.P;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
+import safeNativeCode.utils.Utils;
 
 public class Resources {
   public static Loader loader=new Loader();
@@ -133,6 +134,12 @@ public class Resources {
     var t=top();
     return Paths.get(t.top.pos().fileName()).getParent();
     }
+  /*static{//Not needed here, but in the slave code!
+    var sup=Utils.getIsJavaClass();
+    Utils.setIsJavaClass((loc,name)->
+      name.equals("is.L42.platformSpecific.javaEvents.Event") || sup.test(loc, name)
+      );
+    }*/
   public static Slave loadSlave(int memoryLimit,int timeLimit,String slaveName,Object o){
     return Resources.slaves.computeIfAbsent(slaveName, sn->{
       String[] args = new String[]{"--enable-preview"};

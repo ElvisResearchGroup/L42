@@ -1,67 +1,20 @@
-class method S opening(S package,S name,Size x,Size y,Size pingDelay)=S"""%
-  |package %package;
-  |import javax.swing.JLabel;
-  |import javax.swing.JPanel;
-  |import is.L42.platformSpecific.javaEvents.Event;
-  |import l42Gui.*;
+class method S openingPing(S name,Size x,Size y,Size pingDelay)=S"""%
   |public class %name {public %name (Event event){
-  |  var g="https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png";
-  |  L42Frame f=L42Frame.openAndPings(40,%pingDelay,()->new L42Frame("%name",%x,%y){
+  |  l42Gui.L42Frame f=l42Gui.L42Frame.openAndPings(40,%pingDelay,()->new l42Gui.L42Frame(event,"%name",%x,%y){
+  |    @Override public void ping(){
+  |      event.submitEvent("%name","ping",""+System.currentTimeMillis());
+  |      }
   """
-class method S opening(S package,S name,Size x,Size y)=S"""%
-  |package %package;
-  |import javax.swing.JLabel;
-  |import javax.swing.JPanel;
-  |import is.L42.platformSpecific.javaEvents.Event;
-  |import l42Gui.*;
+class method S openingNoPing(S name,Size x,Size y)=S"""%
   |public class %name {public %name (Event event){
-  |  L42Frame f=L42Frame.open(()->new L42Frame(event,"%name",%x,%y){
+  |  l42Gui.L42Frame f=l42Gui.L42Frame.open(()->new l42Gui.L42Frame(event,"%name",%x,%y){
+  """
+class method S defaultImports()=S"""
+  |import javax.swing.*;
+  |import l42Gui.*;
+  |import is.L42.platformSpecific.javaEvents.Event;
   """
 class method S closing()=S"});}}"
-class method S body()=S"""
-  |    int posX=20;
-  |    int posY=70;
-  |    @Override public void ping(){
-  |      System.out.println(posX);
-  |      posX+=1;
-  |      posY+=1;
-  |      e.submit("base",posX+";"+posY+";15;"+g,false);
-  |      repaint();
-  |      }
-  |    JLabel label1=new JLabel("yo!");
-  |    JLabel label2=new JLabel("west");
-  |    PaintEntities e=new PaintEntities();
-  |    JPanel p=new JPanel();
-  |    {add(p);}
-  |    {addEast(p,label1);}
-  |    {addCenter(p,e);}
-  |    {addWest(p,label2);}
-  """
-class method S body2()=S"""
-  |JLabel label1=new JLabel("yo!");
-  |JLabel label2=new JLabel("west");
-  |PaintEntities e=new PaintEntities();
-  |JPanel p=new JPanel();
-  |{
-  |  e.addKeyListener(new BindKeys(event,"Example","pressd","released","typed"));
-  |  event.setTimeout(3000);
-  |  event.submitEvent("Example","First","Here");
-  |  event.submitEvent("Example","Second","Here");
-  |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->
-  |    e.submit(id,msg,true));
-  |  add(p);
-  |  addEast(p,label1);
-  |  addCenter(p,e);
-  |  addWest(p,label2);
-  |  e.setFocusable(true);
-  |  e.requestFocusInWindow();
-  |}
-  """
-class method S button(S k,S id,S msg,S text)=S"""%
-  |JButton %id = new JButton("%text");{
-  |  %(id).addActionListener(e->event.submitEvent("%k","%id","%msg"));
-  |  }
-  """
 class method S label(S k,S id,S text)=S"""%
   |JLabel %id = new JLabel("%text");
   """
@@ -70,4 +23,3 @@ class method S table(S k,S id,S columns)=S"""%
   |  new Object[][]{},
   |  "%columns".split(",")));
   """
-

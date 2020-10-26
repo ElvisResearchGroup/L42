@@ -17,7 +17,8 @@ import java.util.function.Function;
 
 public class Event{
   private static Event instance=null;
-  protected static void initialize(){instance=new Event();}
+  public static void initialize(){instance=new Event();}
+  //Mah, when initialize is protected, we get a runtime security error
   public static void test_only_initialize(){instance=new Event();}
   private Event(){}
   public static Event instance(){
@@ -54,7 +55,6 @@ public class Event{
     }
   static private final ExecutorService executor = Executors.newFixedThreadPool(1);
   private static LinkedBlockingDeque<String> clearDeque(Consumer3 c,String key,LinkedBlockingDeque<String>deque){
-    System.out.println("Clearing stream"+deque);
     while(!deque.isEmpty()){
       String s;try {s=deque.takeFirst();}
       catch (InterruptedException e) {throw unreachable();}//not empty
@@ -125,7 +125,6 @@ public class Event{
     }
   private String nextEvent1(String key){
     var events=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());
-    System.out.println("Reading from stream ["+key+"]"+streams+"{"+writeId+"}"+System.identityHashCode(events));
     String res;try{res=events.pollFirst(longWait,TimeUnit.MILLISECONDS);}
     catch (InterruptedException e){
       Thread.currentThread().interrupt();
@@ -135,7 +134,6 @@ public class Event{
     return res;
     }
   public void submitEvent(String key,String id,String msg){
-    System.out.println("submitEvent:"+key+" "+id+" "+msg);
     callbacks.compute(key,(k,v)->{
       if(v==null){v=this::defaultAction;}
       v.accept(k, id, msg);
@@ -156,12 +154,9 @@ public class Event{
   private Consumer3 executorAction(Consumer3 c){
     return (key,id,msg)->executor.submit(()->c.accept(key, id, msg));
     }
-  private int writeId=0;
   private void defaultAction(String key,String id,String msg){
-    System.out.println("submitEvent to Stream:"+key+" "+id+" "+msg);
     var s=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());
     s.addLast(id+"\n"+msg);
-    System.out.println("streams with event "+streams+" "+(writeId=System.identityHashCode(s)));
     }
   private final CompletableFuture<String>defaultAskAction=CompletableFuture.completedFuture("");
   private final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new LinkedHashMap<>());

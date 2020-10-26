@@ -1,0 +1,28 @@
+mut GuiJ j
+mut Google g
+mut Amazons as
+class method mut This(mut GuiJ j mut Amazons as)=
+  This(j=j,g=Google(posX=20Size,posY=75Size,dirX=1Size,dirY=1Size) as=as)
+@GuiJ.Handler mut method Void reset(S msg)=(
+  this.#g().posX(20\)
+  this.#g().posY(75\)
+  )
+@GuiJ.Handler mut method Void pressed(S msg)=(
+  if msg==S"Up" (this.#g().dirY(\"-1"))
+  if msg==S"Left" (this.#g().dirX(\"-1"))
+  if msg==S"Down" (this.#g().dirY(\"1"))
+  if msg==S"Right" (this.#g().dirX(\"1"))
+  )
+@GuiJ.Handler mut method Void ping(S msg)=(
+  this.#g().ping()
+  for mut a in this.#as() (
+    dx=a.posX()-this.g().posX()
+    dy=a.posY()-this.g().posY()
+    hit=(dx*dx) + (dy*dy) <35Size
+    if hit a.reached(20Size)
+    )
+  var res=this.g().paint()
+  for read a in this.as() ( res++=S.nl()++a.paint() )
+  this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=res)
+  whoops GuiJ.Fail
+  )

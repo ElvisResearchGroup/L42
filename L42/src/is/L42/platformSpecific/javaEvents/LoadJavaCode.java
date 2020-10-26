@@ -12,8 +12,15 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.tests.RunningUtils;
+import safeNativeCode.utils.Utils;
 
 public class LoadJavaCode {
+  static{
+    var sup=Utils.getIsJavaClass();
+    Utils.setIsJavaClass((loc,name)->
+      name.equals("is.L42.platformSpecific.javaEvents.Event") || sup.test(loc, name)
+      );
+    }
   private static HashSet<String> loaded=new HashSet<>();
   private static void auxLoadJavaCode(String fullName,String code) throws CompilationError, InstantiationException, IllegalAccessException, IllegalArgumentException, InvocationTargetException, NoSuchMethodException, SecurityException, ClassNotFoundException{
     //full name in form "math.Calculator"
@@ -31,7 +38,6 @@ public class LoadJavaCode {
     k.newInstance(e);
     }
   public static String loadJavaCode(String fullName,String code){
-    Event.preLoad();
     try{auxLoadJavaCode(fullName, code);}
     catch(
         CompilationError|InstantiationException|
