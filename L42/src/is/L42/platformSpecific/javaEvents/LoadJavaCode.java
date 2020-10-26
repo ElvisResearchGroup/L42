@@ -21,8 +21,14 @@ public class LoadJavaCode {
     loaded.add(fullName);
     SourceFile file = new SourceFile(fullName,code);
     List<SourceFile> files = List.of(file);
-    ClassLoader classes = InMemoryJavaCompiler.compile(Event.class.getClassLoader(),files,new ArrayList<>());
-    classes.loadClass(fullName).getConstructor().newInstance();
+    Event.initialize();
+    Event e=Event.instance();//Thus, the class is loaded here, before calling the new code
+    ClassLoader classes = InMemoryJavaCompiler.compile(
+        //ClassLoader.getSystemClassLoader()
+        LoadJavaCode.class.getClassLoader()
+        ,files,new ArrayList<>());
+    var k=classes.loadClass(fullName).getConstructor(Event.class);
+    k.newInstance(e);
     }
   public static String loadJavaCode(String fullName,String code){
     Event.preLoad();

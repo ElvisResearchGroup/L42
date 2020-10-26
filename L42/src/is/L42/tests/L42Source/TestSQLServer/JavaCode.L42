@@ -14,8 +14,7 @@ class method S (S url)=S"""%%
   |  DatabaseMetaData m;
   |  ResultSet r;
   |  static interface Ask{String of(String msg) throws SQLException;}
-  |  public DB()throws SQLException{
-  |    Event.class.getClass();
+  |  public DB(Event event)throws SQLException{
   |    c=DriverManager.getConnection("%%url");
   |    s = c.createStatement();
   |    m = c.getMetaData();
@@ -30,7 +29,7 @@ class method S (S url)=S"""%%
   |      "queryColumns(tableName)",this::queryColumns,
   |      "kill()",this::kill
   |      );
-  |    Event.registerAskEvent("DB",(k,id,msg)->{
+  |    event.registerAskEvent("DB",(k,id,msg)->{
   |      try{return hm.get(id).of(msg);}
   |      catch(NullPointerException npe){throw new RuntimeException("Invalid id: "+id);}
   |      catch(SQLException e){throw new RuntimeException(e);}

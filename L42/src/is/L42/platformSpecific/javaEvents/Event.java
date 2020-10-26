@@ -16,14 +16,22 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class Event{
-  private static final String end="##End##\n";
-  public static String end(){return end;}
-  private static String empty="##Empty##\n";
-  public static String empty(){return empty;}
-  public static void setEmpty(String idMsg){empty=idMsg;}
-  private static int longWait=1000;
-  private static int shortWait=8;//longWait/120
-  public static void setTimeout(int timeout){
+  private static Event instance=null;
+  protected static void initialize(){instance=new Event();}
+  public static void test_only_initialize(){instance=new Event();}
+  private Event(){}
+  public static Event instance(){
+    if(instance!=null){return instance;}
+    throw new Error("Event instance not initialized; this may be an issue with multiple class loaders");
+    }
+  private final String end="##End##\n";
+  public String end(){return end;}
+  private String empty="##Empty##\n";
+  public String empty(){return empty;}
+  public void setEmpty(String idMsg){empty=idMsg;}
+  private int longWait=1000;
+  private int shortWait=8;//longWait/120
+  public void setTimeout(int timeout){
     longWait=timeout;
     if(timeout>=500){
       shortWait=timeout/120;
@@ -46,6 +54,7 @@ public class Event{
     }
   static private final ExecutorService executor = Executors.newFixedThreadPool(1);
   private static LinkedBlockingDeque<String> clearDeque(Consumer3 c,String key,LinkedBlockingDeque<String>deque){
+    System.out.println("Clearing stream"+deque);
     while(!deque.isEmpty()){
       String s;try {s=deque.takeFirst();}
       catch (InterruptedException e) {throw unreachable();}//not empty
@@ -57,17 +66,17 @@ public class Event{
       }
     return null;
     } 
-  public static void registerEvent(String key,Consumer3 c){
+  public void registerEvent(String key,Consumer3 c){
     callbacks.compute(key,(k,v)->{
       var newV=executorAction(c);
       streams.computeIfPresent(k,(k0,v0)->clearDeque(newV, k0,v0));
       return newV;
       });
     }
-  public static void resetEvent(String key){
-    callbacks.put(key,Event::defaultAction);
+  public void resetEvent(String key){
+    callbacks.put(key,this::defaultAction);
     }
-  public static String nextEvent(String keys){
+  public String nextEvent(String keys){
     var ks=keys.split("\n");
     if(ks.length==0) {return end;}
     if(ks.length==1) {
@@ -88,14 +97,14 @@ public class Event{
       Thread.currentThread().interrupt();
       throw new Error(ie);
       }
-    return empty;
+    return ks[0]+"\n"+empty;
     }  
-  private static final List<Poller>psShort=List.of(
+  private final List<Poller>psShort=List.of(
       q->q.poll(),
       q->q.poll(shortWait,TimeUnit.MILLISECONDS),
       q->q.poll(shortWait*3,TimeUnit.MILLISECONDS)
       );
-  private static final List<Poller>psLong=List.of(
+  private final List<Poller>psLong=List.of(
     q->q.poll(),
     q->q.poll(shortWait,TimeUnit.MILLISECONDS),
     q->q.poll(shortWait*3,TimeUnit.MILLISECONDS),
@@ -103,9 +112,9 @@ public class Event{
     q->q.poll(shortWait*27,TimeUnit.MILLISECONDS),
     q->q.poll(shortWait*81,TimeUnit.MILLISECONDS)
     );
-  private static List<Poller>ps=psLong;
+  private List<Poller>ps=psLong;
   private static interface Poller{String apply(LinkedBlockingDeque<String> q)throws InterruptedException;}
-  private static String oneRound(String[]ks,LinkedBlockingDeque<String>[]qs, Poller poll)throws InterruptedException{
+  private String oneRound(String[]ks,LinkedBlockingDeque<String>[]qs, Poller poll)throws InterruptedException{
     var res=poll.apply(qs[0]);
     if(res!=null){return ks[0].trim()+"\n"+res;}
     for(var i=1;i<ks.length;i++){
@@ -114,8 +123,9 @@ public class Event{
       }
     return null;
     }
-  private static String nextEvent1(String key){
+  private String nextEvent1(String key){
     var events=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());
+    System.out.println("Reading from stream ["+key+"]"+streams+"{"+writeId+"}"+System.identityHashCode(events));
     String res;try{res=events.pollFirst(longWait,TimeUnit.MILLISECONDS);}
     catch (InterruptedException e){
       Thread.currentThread().interrupt();
@@ -124,32 +134,37 @@ public class Event{
     if(res==null){return empty;}
     return res;
     }
-  public static void submitEvent(String key,String id,String msg){
+  public void submitEvent(String key,String id,String msg){
+    System.out.println("submitEvent:"+key+" "+id+" "+msg);
     callbacks.compute(key,(k,v)->{
-      if(v==null){v=Event::defaultAction;}
+      if(v==null){v=this::defaultAction;}
       v.accept(k, id, msg);
       return v;
       });
     }
-  public static CompletableFuture<String> askEvent(String key,String id,String msg){
+  public CompletableFuture<String> askEvent(String key,String id,String msg){
     var v=askCallbacks.get(key);
-    if(v==null){return Event.defaultAskAction;}
+    if(v==null){return this.defaultAskAction;}
     return CompletableFuture.supplyAsync(()->v.accept(key, id, msg), executor);
     }
-  public static void registerAskEvent(String key,Function3 c){
+  public void registerAskEvent(String key,Function3 c){
     askCallbacks.put(key,c);
     }
-  public static void resetAskEvent(String key){
+  public void resetAskEvent(String key){
     askCallbacks.remove(key);
     }
-  private static Consumer3 executorAction(Consumer3 c){
+  private Consumer3 executorAction(Consumer3 c){
     return (key,id,msg)->executor.submit(()->c.accept(key, id, msg));
     }
-  private static void defaultAction(String key,String id,String msg){
-    streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>()).addLast(id+"\n"+msg);
+  private int writeId=0;
+  private void defaultAction(String key,String id,String msg){
+    System.out.println("submitEvent to Stream:"+key+" "+id+" "+msg);
+    var s=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());
+    s.addLast(id+"\n"+msg);
+    System.out.println("streams with event "+streams+" "+(writeId=System.identityHashCode(s)));
     }
-  private static final CompletableFuture<String>defaultAskAction=CompletableFuture.completedFuture("");
-  private static final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new LinkedHashMap<>());
-  private static final Map<String,Consumer3> callbacks=Collections.synchronizedMap(new LinkedHashMap<>());
-  private static final Map<String,Function3> askCallbacks=Collections.synchronizedMap(new LinkedHashMap<>());
+  private final CompletableFuture<String>defaultAskAction=CompletableFuture.completedFuture("");
+  private final Map<String,LinkedBlockingDeque<String>> streams=Collections.synchronizedMap(new LinkedHashMap<>());
+  private final Map<String,Consumer3> callbacks=Collections.synchronizedMap(new LinkedHashMap<>());
+  private final Map<String,Function3> askCallbacks=Collections.synchronizedMap(new LinkedHashMap<>());
   }

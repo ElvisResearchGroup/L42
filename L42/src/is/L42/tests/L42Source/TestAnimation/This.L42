@@ -18,7 +18,7 @@ Model=Data:GuiJ.Handler:{
     var g=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
     this.posX(\posX+1\)
     this.posY(\posY+1\)
-    this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=  S"%this.posX();%this.posY();15;%g")
+    //this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=  S"%this.posX();%this.posY();15;%g")
     whoops GuiJ.Fail
     )
   }
@@ -33,8 +33,8 @@ Main=(
     JavaCode.closing()
   j.loadCode(fullName=S"miniGui.Example",code=code)
   for e in j(\['Example]) (
-    e>>model
     Debug(e)
+    //e>>model
     model.ping(e)
     )
   )
