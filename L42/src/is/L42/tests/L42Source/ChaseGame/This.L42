@@ -1,20 +1,71 @@
 reuse [AdamTowel]
-Module=Trait:{reuse [AdamTowel]
-  Top={
-    GuiBuilder=Trait:Data:{...}
-    class method Library (class Any javaServer)[_]=GuiBuilder['J=>javaServer].code()
-    }
-  }
-DeployUnit=Deploy.module(
-  url='GuiBuilder
-  code=Module.code()
-  name='Top
-  )
-//-------------
 LoadJ=Load:{reuse[JavaServer]}
-GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
-LoadGui=Load:{reuse[#$GuiBuilder]}
-Gui=LoadGui(javaServer=GuiJ)
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+
+Pulse=Data:{
+  Double x
+  Double y
+  @Cache.Now Void invariant(Double x,Double y)=(
+    unit= x<=1Double && x>=Double"-1" && y<=1Double && y>=Double"-1" 
+    if !unit error X"Invalid pulse: x=%x, y=%y"
+    )
+  class method Double random(Radom that)=
+    Double.from(num=that.nextInRange(start=20\, end=199\).toNum())-Double"0.5"
+  }
+Kind=Data:{
+  Double topSpeed
+  Double acc
+  Double radius
+  S img
+  }
+PlayerKind={class method Kind ()=\(topSpeed=10\,acc=2\,radius=20\,img=)}
+RatKind={class method Kind ()=\(topSpeed=5\,acc=3\,radius=10\,img=)}
+Entity={interface
+  var Double x
+  var Double y
+  var Double sx
+  var Double sy
+  var Kind kind
+  var AI ai
+  mut method Void ping(Size that, read Entities es)
+  read method S paint()
+  }
+Entities=Collection.list(Entity)
+Env=Data:{
+  var Size that
+  var mut Entities es
+  mut Random r
+  }
+AI:{interface
+  method Pulse (read Env that, mut Random r)
+  }
+PulseAI=Data:{[AI]//will be used to move the player according to the keys
+  Pulse pulse
+  method (that,r)=this.pulse()
+  }
+DriftAI=Data:{[AI]
+  method (that,r)=Pulse(x=Pulse.random(),y=Pulse.random())
+  }
+Impact={class method Bool (read Entity a, read Entity b)=(
+  dx=a.x()-b.x()
+  dy=a.y()-b.y()
+  r=a.kind().radius()+b.kind().radius()
+  (dx*dx)+(dy*dy) <= r*r
+  )}
+EntityTrait=Trait:{[Entity]
+  method ping(that,es)=(
+    (x1,y1)=this.ai()(that,es=es)
+    acc=this.kind().acc()
+    this.sx(\sx+(acc*x1))
+    this.sy(\sy+(acc*y1))
+    this.x(\x+\sx)
+    this.y(\y+\sy)
+    )
+  method paint()=S"%this.x();%this.y();%this.kind.radius();%this.kind().img()"
+  }
+Player=Class:Data:EntityTrait
 
 Google=Data:{
   var Size posX
@@ -78,4 +129,4 @@ Main=(
     |  }
     """
   for e in j(\['Example]) (e>>model)
-  )
+  )*/
