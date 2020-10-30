@@ -1,0 +1,8 @@
+[AI]
+method (that,r)=(
+  player=that.es().readVal(0\)
+  self=that.es().readVal(that.that())
+  x=player.pos().x()-self.pos().x()
+  y=player.pos().y()-self.pos().y()
+  Pulse(rad=x.atan2(y),power=1Double)
+  )

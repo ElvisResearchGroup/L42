@@ -1,0 +1,20 @@
+[Map.Entity]
+MyAI={[AI]}
+var MyAI ai
+method ping(that)=(
+  pulse=this.ai()(that,r=that.#r())
+  k=this.kind()
+  s=this.speed()
+  if pulse.power() == 0Double (
+    this.speed(s+Vector(x=s.x()*k.break(),y=s.y()*k.break()))
+    )
+  else (
+    this.speed(s.sum(rad=pulse.rad(),power=k.acc(),max=k.topSpeed()))
+    )
+  this.pos(\pos+\speed)
+  )
+method paint()=(
+  p=this.pos()
+  k=this.kind()
+  S"%p.x().ceil();%p.y().ceil();%k.radius().ceil();%k.img()"
+  )

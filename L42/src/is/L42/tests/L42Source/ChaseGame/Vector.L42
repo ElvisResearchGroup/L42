@@ -1,0 +1,21 @@
+Double x
+Double y
+@Cache.Now class method Void invariant(Double x,Double y)=(
+  if x.toS()==S"NaN" error X"x is NaN"
+  if y.toS()==S"NaN" error X"y is NaN"
+  )
+method This +(This that)=This(x=this.x()+that.x(),y=this.y()+that.y())
+method This sum(Double rad,Double power,Double max)={
+  x=this.x()+(power*rad.sin())
+  y=this.y()+(power*rad.cos())
+  if x.toS()==S"NaN" error X""
+  tot2=(x*x)+(y*y)
+  if tot2<=max*max return This(x=x,y=y)
+  tot=tot2.pow(exp=Double"0.5")
+  redX=(max*x)/tot
+  redY=(max*y)/tot
+  return This(x=redX,y=redY)
+  }
+class method Double tao()=Double"6.283185307"
+class method Double randomRad(mut Random that)=
+  that.nextDouble()*This.tao()

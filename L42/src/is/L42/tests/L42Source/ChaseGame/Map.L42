@@ -1,0 +1,17 @@
+Env={}
+Entity={interface
+  var Vector pos
+  var Vector speed
+  var Kind kind
+  var S text
+  mut method Void ping(mut Env that)
+  read method S paint()
+  }
+Entity$List=Collection.list(Entity)
+Env$=Data:{
+  var Size that
+  var mut Entity$List es
+  mut Random r
+  class method mut This #$of(mut Entity player)=
+    This(0Size,es=Entity$List[mutVal=player],r=Random.#$random())
+  }
