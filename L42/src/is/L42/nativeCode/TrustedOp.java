@@ -528,6 +528,15 @@ public enum TrustedOp {
     Double,use("return %s - %s;",sigI(Double,Double)),
     BigRational,use("return %s.subtract(%s);",sigI(BigRational,BigRational))
     )),
+  MathPow("mathPow",Map.of(Double,use("return Math.pow(%s,%s);",sigI(Double,Double)))),
+  MathSin("mathSin",Map.of(Double,use("return Math.sin(%s);",sigI(Double)))),
+  MathCos("mathCos",Map.of(Double,use("return Math.cos(%s);",sigI(Double)))),
+  MathTan("mathTan",Map.of(Double,use("return Math.tan(%s);",sigI(Double)))),
+  MathATan2("mathATan2",Map.of(Double,use("return Math.atan2(%s,%s);",sigI(Double,Double)))),
+  MathFloorLong("mathFloorLong",Map.of(Double,use("return (long)Math.floor(%s);",sigI(Long)))),
+  MathFloorInt("mathFloorInt",Map.of(Double,use("return (int)Math.floor(%s);",sigI(Int)))),
+  MathCeilLong("mathCeilLong",Map.of(Double,use("return (long)Math.ceil(%s);",sigI(Long)))),
+  MathCeilInt("mathCeilInt",Map.of(Double,use("return (int)Math.ceil(%s);",sigI(Int)))),
   LT("OP<",Map.of(
     Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)),
     Long,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Long)),

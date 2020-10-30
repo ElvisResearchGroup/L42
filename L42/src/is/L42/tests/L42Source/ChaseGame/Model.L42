@@ -1,0 +1,31 @@
+mut JServer j
+mut Player player
+mut Map.Env env
+class method mut This #$of()=(
+  p=Player()
+  This(
+    j=JServer.#$of(),
+    player=p
+    env=Map.Env.#$of(player=p)
+    )
+  )
+@JServer.Handler mut method Void reset(S msg)=
+  this.#player().pos(\(x=20\,y=75\))
+  
+@JServer.Handler mut method Void pressed(S msg)=
+  this.#player().ai(\ai.withInput(msg=msg,pressed=Bool.true()))
+@JServer.Handler mut method Void released(S msg)=
+  this.#player().ai(\ai.withInput(msg=msg,pressed=Bool.false()))
+
+@JServer.Handler mut method Void ping(S msg)=(
+  //this.#player().ping(this.#env())
+  es=this.#env().#es()
+  for index in es.size().range(), mut e in es (
+    this.#env().that(index)
+    e.ping(this.#env())
+    )
+  var res=S""
+  for read e in this.env().es() ( res++=e.paint()++S.nl() )
+  this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=res)
+  whoops JServer.Fail
+  )

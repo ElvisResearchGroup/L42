@@ -5,128 +5,54 @@ LoadGui=Load:{reuse[GuiBuilder]}
 Gui=LoadGui(javaServer=JServer)
 
 Pulse=Data:{
-  Double x
-  Double y
-  @Cache.Now Void invariant(Double x,Double y)=(
-    unit= x<=1Double && x>=Double"-1" && y<=1Double && y>=Double"-1" 
-    if !unit error X"Invalid pulse: x=%x, y=%y"
-    )
-  class method Double random(Radom that)=
-    Double.from(num=that.nextInRange(start=20\, end=199\).toNum())-Double"0.5"
+  Double rad
+  Double power
   }
+Vector=Data:{...}
 Kind=Data:{
   Double topSpeed
   Double acc
   Double radius
+  Double break
   S img
   }
-PlayerKind={class method Kind ()=\(topSpeed=10\,acc=2\,radius=20\,img=)}
-RatKind={class method Kind ()=\(topSpeed=5\,acc=3\,radius=10\,img=)}
-Entity={interface
-  var Double x
-  var Double y
-  var Double sx
-  var Double sy
-  var Kind kind
-  var AI ai
-  mut method Void ping(Size that, read Entities es)
-  read method S paint()
-  }
-Entities=Collection.list(Entity)
-Env=Data:{
-  var Size that
-  var mut Entities es
-  mut Random r
-  }
-AI:{interface
-  method Pulse (read Env that, mut Random r)
-  }
-PulseAI=Data:{[AI]//will be used to move the player according to the keys
-  Pulse pulse
-  method (that,r)=this.pulse()
-  }
-DriftAI=Data:{[AI]
-  method (that,r)=Pulse(x=Pulse.random(),y=Pulse.random())
-  }
-Impact={class method Bool (read Entity a, read Entity b)=(
-  dx=a.x()-b.x()
-  dy=a.y()-b.y()
+PlayerKind={class method Kind ()=\(
+  topSpeed=5\,acc=\"0.08",radius=20\,break=\"-0.15"
+  img=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")}
+RatKind={class method Kind ()=\(
+  topSpeed=2\,acc=\"0.03",radius=25\,break=\"-0.2"
+  img=S"rat.png")}
+
+Map=Organize:{...}
+AI={interface  method Pulse (read Map.Env that, mut Random r) }
+PulseAI=Data:{...}
+DriftAI=Data:{[AI]  method (that,r)=Pulse(rad=Vector.randomRad(r),power=1Double)}
+ChaseAI=Data:{...}
+Impact={class method Bool (read Map.Entity a, read Map.Entity b)=(
+  dx=a.pos().x()-b.pos().x()
+  dy=a.pos().y()-b.pos().y()
   r=a.kind().radius()+b.kind().radius()
   (dx*dx)+(dy*dy) <= r*r
   )}
-EntityTrait=Trait:{[Entity]
-  method ping(that,es)=(
-    (x1,y1)=this.ai()(that,es=es)
-    acc=this.kind().acc()
-    this.sx(\sx+(acc*x1))
-    this.sy(\sy+(acc*y1))
-    this.x(\x+\sx)
-    this.y(\y+\sy)
+EntityTrait=Trait:{...}
+Player=Class:Data:EntityTrait['MyAI=>PulseAI]:{
+  class method mut This()=This(
+    ai=PulseAI(left=Bool.false(),right=Bool.false(),up=Bool.false(),down=Bool.false(),text=S"")
+    pos=Vector(x=35\,y=100\)
+    speed=Vector(x=0\,y=0\)
+    kind=PlayerKind()
+    text=S""
     )
-  method paint()=S"%this.x();%this.y();%this.kind.radius();%this.kind().img()"
   }
-Player=Class:Data:EntityTrait
+Rat=Class:Data:EntityTrait['MyAI=>ChaseAI]:{
+  class method mut This(Double x,Double y)=This(
+    ai=ChaseAI()
+    pos=Vector(x=x,y=y)
+    speed=Vector(x=0\,y=0\)
+    kind=RatKind()
+    text=S""
+    )
+  }
 
-Google=Data:{
-  var Size posX
-  var Size posY
-  var Size dirX
-  var Size dirY
-  mut method Void ping()=(
-    this.posX(\posX+\dirX)
-    this.posY(\posY+\dirY)
-    )
-  read method S paint()=(
-    var g=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
-    S"%this.posX();%this.posY();15;%g"
-    )
-  }
-Amazon=Data:{
-  var Size posX
-  var Size posY
-  var Size reached
-  read method S paint()=(
-    a=S"https://i.pinimg.com/originals/18/e1/80/18e180218bdac1685b79197c9023259b.png"
-    x=S"https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Red_x.svg/1200px-Red_x.svg.png"
-    i=(if this.reached()==0Size a else x)
-    S"%this.posX();%this.posY();25;%i"
-    )
-  class method mut This(Size x,Size y)=This(posX=x,posY=y,reached=0Size)
-  }
-Amazons=Collection.list(Amazon)
-Model=Data:GuiJ.Handler:{...}
-Main=(
-  j=GuiJ.#$of()
-  r=Random.#$random()
-  xr=r.nextInRange(start=120\ end=600\)
-  yr=r.nextInRange(start=120\ end=600\)
-  model=Model(j=j,as=\[
-    mutVal=\(x=34\,y=170\);
-    mutVal=\(x=140\,y=230\);
-    mutVal=\(x=xr,y=yr);
-    ])
-  gui=Gui(j=j,package=S"miniGui",name='Example,x=800\,y=600\,ping=30\)
-  b1=gui.button(id=S"reset",msg='Pressed,text=S"PressMe")
-  gui"""%
-    |%b1
-    |JLabel label2=new JLabel("west");
-    |PaintEntities e=new PaintEntities(){
-    |  public void submit(String n,String e,boolean r){
-    |    super.submit(n,e,r);
-    |    this.setFocusable(true);
-    |    this.requestFocusInWindow();
-    |    }};
-    |JPanel p=new JPanel();
-    |{
-    |  e.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
-    |  //event.submitEvent("Example","First","Here");
-    |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->
-    |    e.submit(id,msg,true));
-    |  add(p);
-    |  addEast(p,reset);
-    |  addCenter(p,e);
-    |  addWest(p,label2);
-    |  }
-    """
-  for e in j(\['Example]) (e>>model)
-  )*/
+Model=Data:JServer.Handler:{...}
+Main={...}

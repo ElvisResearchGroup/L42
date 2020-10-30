@@ -109,7 +109,7 @@ public class K extends GuessFields{
       }
     P p=options.get(0);
     List<Mdf> optionsGet=L(getters.get(x).stream().map(m->m.mh().t().mdf()).distinct());
-    List<Mdf> optionsSet=L(setters.getOrDefault(x,L()).stream().map(m->m.mh().t().mdf()).distinct());
+    List<Mdf> optionsSet=L(setters.getOrDefault(x,L()).stream().map(m->m.mh().pars().get(0).mdf()).distinct());
     var clazz=match(Mdf.Class,L(),optionsGet) && match(null,L(Mdf.Class),optionsSet);
     if(clazz){return new T(Mdf.Class,L(),p);}
     var imm=match(null,List.of(Mdf.Immutable,Mdf.Readable),optionsGet) && match(null,L(Mdf.Immutable),optionsSet);
