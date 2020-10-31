@@ -13,8 +13,15 @@ method ping(that)=(
     )
   this.pos(\pos+\speed)
   )
-method paint()=(
+method paint()={
   p=this.pos()
   k=this.kind()
-  S"%p.x().ceil();%p.y().ceil();%k.radius().ceil();%k.img()"
-  )
+  x=p.x()
+  y=p.y()
+  res=S"%x.ceil();%y.ceil();%k.radius().ceil();0;%k.img()"
+  if this.text()==S"" return res
+  xr=x+(k.radius()/2Double)
+  yr=y-(k.radius()/2Double)
+  res2=S"%xr.ceil();%yr.ceil();%k.radius().ceil();0;text:%this.text()"
+  return res++S.nl()++res2
+  }

@@ -4,11 +4,15 @@ Bool right
 Bool up
 Bool down
 S text
+method This withInput(S msg)={ //typed
+  if msg==S.nl() return this.with(text=S"")
+  return this.with(text=\text++msg)
+  }
 method This withInput(S msg,Bool pressed)={
-  if msg==S"Left" (return this.with(left=pressed))
-  if msg==S"Right" (return this.with(right=pressed))
-  if msg==S"Up" (return this.with(up=pressed))
-  if msg==S"Down" (return this.with(down=pressed))
+  if msg==S"Left" return this.with(left=pressed)
+  if msg==S"Right" return this.with(right=pressed)
+  if msg==S"Up" return this.with(up=pressed)
+  if msg==S"Down" return this.with(down=pressed)
   return this//return this.with(text=\text()++msg)//to fix
   }
 method Double rad(Bool left,Bool right,Bool up,Bool down)={

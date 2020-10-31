@@ -1,19 +1,25 @@
 Task=(
   model=Model.#$of()
-  model.#env().#es().#add(right=Rat(x=140\, y=230\))
-  model.#env().#es().#add(right=Rat(x=240\, y=130\))
-  model.#env().#es().#add(right=Rat(x=540\, y=530\))
+  model.#env().#es().#add(right=Rat(text=S"Apollo",x=140\, y=230\))
+  model.#env().#es().#add(right=Rat(text=S"Zeus",x=240\, y=130\))
+  model.#env().#es().#add(right=Rat(text=S"Minerva",x=540\, y=530\))
   gui=Gui(j=model.#j(),package=S"miniGui",name='Example,x=800\,y=600\,ping=30\)
   b1=gui.button(id=S"reset",msg='Pressed,text=S"PressMe")
   gui"""%
     |%b1
     |JLabel label2=new JLabel("west");
     |PaintEntities e=new PaintEntities(){
-    |  public void submit(String n,String e,boolean r){
+    |  @Override public void submit(String n,String e,boolean r){
     |    super.submit(n,e,r);
     |    this.setFocusable(true);
     |    this.requestFocusInWindow();
-    |    }};
+    |    }
+    |  @Override public void draw(java.awt.Graphics2D g,PaintEntities.Entity e){
+    |    if (!e.imgUrl().startsWith("text:")){super.draw(g,e);return;}
+    |    var txt=e.imgUrl().substring(5);
+    |    g.drawString(txt, e.x(), e.y());
+    |    }
+    |  };
     |JPanel p=new JPanel();
     |{
     |  e.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));

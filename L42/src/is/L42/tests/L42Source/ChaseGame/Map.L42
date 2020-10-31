@@ -3,10 +3,11 @@ Entity={interface
   var Vector pos
   var Vector speed
   var Kind kind
-  var S text
+  S text
   mut method Void ping(mut Env that)
   read method S paint()
   }
+Entity$Opt=Collection.optional(Entity)
 Entity$List=Collection.list(Entity)
 Env$=Data:{
   var Size that

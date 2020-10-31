@@ -1,8 +1,13 @@
 [AI]
+method read Map.Entity.Opt target(read Map.Entity.List that)
 method (that,r)=(
-  player=that.es().readVal(0\)
+  //player=that.es().readVal(0\)
   self=that.es().readVal(that.that())
-  x=player.pos().x()-self.pos().x()
-  y=player.pos().y()-self.pos().y()
+  selfP=self.pos()
+  target=this.target(that.es())
+  targetP=if target (target.val().pos())
+    else (self.pos()+self.speed())
+  x=targetP.x()-selfP.x()
+  y=targetP.y()-selfP.y()
   Pulse(rad=x.atan2(y),power=1Double)
   )

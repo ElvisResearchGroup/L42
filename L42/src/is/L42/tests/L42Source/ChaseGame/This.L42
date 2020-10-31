@@ -4,6 +4,18 @@ JServer=LoadJ(slaveName=S"javaServer{}")
 LoadGui=Load:{reuse[GuiBuilder]}
 Gui=LoadGui(javaServer=JServer)
 
+//TODO:
+/*
+Kind, AI, Entity seams redundant
+when bullet hit rat, both disappear
+when entity moves out of bound too much, it disappear
+when player hit by rat, game over
+when rat hits rat, they do not overlap
+new rats spown
+new words for rats
+keep/show points
+
+*/
 Pulse=Data:{
   Double rad
   Double power
@@ -16,18 +28,10 @@ Kind=Data:{
   Double break
   S img
   }
-PlayerKind={class method Kind ()=\(
-  topSpeed=5\,acc=\"0.08",radius=20\,break=\"-0.15"
-  img=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")}
-RatKind={class method Kind ()=\(
-  topSpeed=2\,acc=\"0.03",radius=25\,break=\"-0.2"
-  img=S"rat.png")}
-
 Map=Organize:{...}
 AI={interface  method Pulse (read Map.Env that, mut Random r) }
-PulseAI=Data:{...}
 DriftAI=Data:{[AI]  method (that,r)=Pulse(rad=Vector.randomRad(r),power=1Double)}
-ChaseAI=Data:{...}
+ChaseAI=Trait:{...}
 Impact={class method Bool (read Map.Entity a, read Map.Entity b)=(
   dx=a.pos().x()-b.pos().x()
   dy=a.pos().y()-b.pos().y()
@@ -35,22 +39,53 @@ Impact={class method Bool (read Map.Entity a, read Map.Entity b)=(
   (dx*dx)+(dy*dy) <= r*r
   )}
 EntityTrait=Trait:{...}
+BulletKind={class method Kind ()=\(
+  topSpeed=7\,acc=\"0.8",radius=5\,break=\"-0.15"
+  img=S"https://i.pinimg.com/originals/7c/8e/ed/7c8eedf65ace7600e70ea8b0bdc5c02a.jpg")
+  }
+BulletAI=Data:Class:ChaseAI:{
+  S text
+  method read Map.Entity.Opt target(read Map.Entity.List that)={
+    for read e in that ( if e.text()==this.text() return Map.Entity.Opt(e) )
+    return Map.Entity.Opt()
+    }
+  }
+Bullet=Class:Data:EntityTrait['MyAI=>BulletAI]:{
+  read method S text()=this.ai()<:BulletAI.text()
+  class method mut This(S text,Double x,Double y)=This(
+    ai=BulletAI(text=text)
+    pos=Vector(x=x,y=y)
+    speed=Vector(x=0\,y=0\)
+    kind=BulletKind()
+    )
+  }
+PlayerKind={class method Kind ()=\(
+  topSpeed=5\,acc=\"0.08",radius=20\,break=\"-0.15"
+  img=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png")}
+PulseAI=Data:{...}
 Player=Class:Data:EntityTrait['MyAI=>PulseAI]:{
+  read method S text()=this.ai()<:PulseAI.text()
   class method mut This()=This(
     ai=PulseAI(left=Bool.false(),right=Bool.false(),up=Bool.false(),down=Bool.false(),text=S"")
     pos=Vector(x=35\,y=100\)
     speed=Vector(x=0\,y=0\)
     kind=PlayerKind()
-    text=S""
     )
   }
-Rat=Class:Data:EntityTrait['MyAI=>ChaseAI]:{
-  class method mut This(Double x,Double y)=This(
-    ai=ChaseAI()
+RatKind={class method Kind ()=\(
+  topSpeed=2\,acc=\"0.03",radius=25\,break=\"-0.2"
+  img=S"rat.png")}
+RatAI=Data:Class:ChaseAI:{
+  method read Map.Entity.Opt target(read Map.Entity.List that)=
+    \(that.readVal(0\))
+  }
+Rat=Class:Data:EntityTrait['MyAI=>RatAI]:{
+  class method mut This(S text,Double x,Double y)=This(
+    ai=RatAI()
     pos=Vector(x=x,y=y)
     speed=Vector(x=0\,y=0\)
     kind=RatKind()
-    text=S""
+    text=text
     )
   }
 
