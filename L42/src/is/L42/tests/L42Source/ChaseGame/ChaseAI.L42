@@ -1,13 +1,13 @@
-[AI]
-method read Map.Entity.Opt target(read Map.Entity.List that)
-method (that,r)=(
-  //player=that.es().readVal(0\)
-  self=that.es().readVal(that.that())
-  selfP=self.pos()
+Vector pos
+Vector speed
+read method read Map.Entity.Opt target(read Map.Entity.List that)
+mut method Void moveSpeed(Double rad,Size power)
+mut method Void chase(mut Map.Env that)=(
+  selfP=this.pos()
   target=this.target(that.es())
   targetP=if target (target.val().pos())
-    else (self.pos()+self.speed())
+    else (this.pos()+this.speed())
   x=targetP.x()-selfP.x()
   y=targetP.y()-selfP.y()
-  Pulse(rad=x.atan2(y),power=1Double)
+  this.moveSpeed(rad=x.atan2(y),power=1\)
   )

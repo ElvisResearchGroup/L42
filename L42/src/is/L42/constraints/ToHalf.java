@@ -300,10 +300,15 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private void removeRets(ArrayList<K> ks, ArrayList<ST> all,ArrayList<ST> dest){
     for(var k:ks){
       if(k.thr()!=ThrowKind.Return){continue;}
-      if(k.stz().contains(P.coreAny)){all.clear();break;}
+      if(k.stz().stream().anyMatch(this::isAny)){
+        all.clear();break;}
       all.removeAll(k.stz());
       }
     dest.addAll(all);
+    }
+  private boolean isAny(ST st){
+    if(st instanceof Core.T t){return t.p().equals(P.pAny);}
+    return false;
     }
   private Res<List<Half.D>> auxD(Full.D d){
     assert d._e()!=null;

@@ -15,7 +15,12 @@ Task=(
     |    this.requestFocusInWindow();
     |    }
     |  @Override public void draw(java.awt.Graphics2D g,PaintEntities.Entity e){
-    |    if (!e.imgUrl().startsWith("text:")){super.draw(g,e);return;}
+    |    var r=e.radius();
+    |    if (!e.imgUrl().startsWith("text:")){
+    |      g.fillOval(e.x()-r,e.y()-r,r*2,r*2);
+    |      super.draw(g,e);
+    |      return;
+    |      }
     |    var txt=e.imgUrl().substring(5);
     |    g.drawString(txt, e.x(), e.y());
     |    }

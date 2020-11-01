@@ -1,21 +1,33 @@
-[AI]//will be used to move the player according to the keys
-Bool left
-Bool right
-Bool up
-Bool down
-S text
-method This withInput(S msg)={ //typed
-  if msg==S.nl() return this.with(text=S"")
-  return this.with(text=\text++msg)
+var Bool left
+var Bool right
+var Bool up
+var Bool down
+var S text
+mut method Void moveSpeed(Double rad,Size power)
+
+mut method Void input(S msg)={ //typed
+  if msg==S.nl() return this.text(S"")
+  return this.text(\text++msg)
   }
-method This withInput(S msg,Bool pressed)={
-  if msg==S"Left" return this.with(left=pressed)
-  if msg==S"Right" return this.with(right=pressed)
-  if msg==S"Up" return this.with(up=pressed)
-  if msg==S"Down" return this.with(down=pressed)
-  return this//return this.with(text=\text()++msg)//to fix
+mut method Void input(S msg,Bool pressed)={//!pressed==released
+  if msg==S"Left" return this.left(pressed)
+  if msg==S"Right" return this.right(pressed)
+  if msg==S"Up" return this.up(pressed)
+  if msg==S"Down" return this.down(pressed)
+  return void
   }
-method Double rad(Bool left,Bool right,Bool up,Bool down)={
+
+mut method Void keyMove()={
+  left=this.left() && !this.right()
+  right=this.right() && !this.left()
+  up=this.up() && !this.down()
+  down=this.down() && !this.up()
+  if !up && !down && !left && !right return this.moveSpeed(rad=0\,power=0\)
+  rad=This.rad(left=left,right=right,up=up,down=down)
+  return this.moveSpeed(rad=rad,power=1\)
+  }
+  
+class method Double rad(Bool left,Bool right,Bool up,Bool down)={
   a45=45Double*(Vector.tao()/360Double)
   downR=a45*0Double
   downRightR=a45*1Double
@@ -38,13 +50,4 @@ method Double rad(Bool left,Bool right,Bool up,Bool down)={
   if left return leftR
   if right return rightR
   error X"unreachable"
-  }
-method (that,r)={
-  left=this.left() && !this.right()
-  right=this.right() && !this.left()
-  up=this.up() && !this.down()
-  down=this.down() && !this.up()
-  if !up && !down && !left && !right return Pulse(rad=0\,power=0\)
-  rad=this.rad(left=left,right=right,up=up,down=down)
-  return Pulse(rad=rad,power=1\)
   }

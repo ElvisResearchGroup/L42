@@ -1,12 +1,14 @@
 mut JServer j
 mut Player player
 mut Map.Env env
+var Size pings
 class method mut This #$of()=(
   p=Player()
   This(
     j=JServer.#$of(),
     player=p
     env=Map.Env.#$of(player=p)
+    pings=0Size
     )
   )
 @JServer.Handler mut method Void reset(S msg)=
@@ -19,21 +21,29 @@ class method mut This #$of()=(
     y=this.#player().pos().y()
     this.#env().#es().#add(right=Bullet(text=text,x=x,y=y))
     )
-  this.#player().ai(\ai.withInput(msg=msg))
+  this.#player().input(msg=msg)
   )
 @JServer.Handler mut method Void pressed(S msg)=
-  this.#player().ai(\ai.withInput(msg=msg,pressed=Bool.true()))
+  this.#player().input(msg=msg,pressed=Bool.true())
 @JServer.Handler mut method Void released(S msg)=
-  this.#player().ai(\ai.withInput(msg=msg,pressed=Bool.false()))
+  this.#player().input(msg=msg,pressed=Bool.false())
 
 @JServer.Handler mut method Void ping(S msg)=(
+  this.#env().clearRemoveQueue()
+  this.pings(\pings+1\)
   es=this.#env().#es()
-  for index in es.size().range(), mut e in es (
-    this.#env().that(index)
-    e.ping(this.#env())
+  newRat=(this.pings()/360Size)*360Size==this.pings()
+  if newRat (
+    xr=Double.from(num=this.#env().#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
+    yr=Double.from(num=this.#env().#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
+    r=Rat(text=S"Num%(this.pings()/360Size)",x=xr,y=yr)
+    es.#add(right=r)
     )
   var res=S""
-  for read e in es ( res++=e.paint()++S.nl() )
+  for mut e in es (
+    e.ping(this.#env())
+    res++=e.paint()++S.nl() 
+    )
   this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=res)
   whoops JServer.Fail
   )

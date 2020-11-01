@@ -970,6 +970,9 @@ public class Half {
     @java.lang.SuppressWarnings("all")
     public K(final ThrowKind thr, final List<ST> stz, final X x, final E e) {
       this.thr = thr;
+      if(stz.toString().equals("[read This1.Map.Entity.Opt, class This1.Map.Entity.Opt.#apply(that), read This1.Map.Entity.List.#iterator().#elem#read(that), class This1.Map.Entity.Opt.#apply()]")) {
+        System.out.println("here");
+        }
       this.stz = stz;
       this.x = x;
       this.e = e;

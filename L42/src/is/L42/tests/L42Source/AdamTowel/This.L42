@@ -40,7 +40,10 @@ DeployAAA=(
       }
     //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.
     //List can take a class method Boolean equals(Elem e1,Elem e2)
-    @Public Break={class method Void ()[Void]=exception void @AbstractTowel{break}}
+    @Public Break={
+      class method Void ()[Void]=exception void
+      class method Void (Void that)[Void]=exception void
+      @AbstractTowel{break}}
     @Public Bool={...}
     @Public Size={...}
     @Public Long={...}
