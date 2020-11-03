@@ -39,8 +39,11 @@ CloseAll={
   }
 ClassOperators={class method This1()=This1()}
 Name public
-class method This (Name public)
-class method This()=\(public=Name"") 
+Bool just$
+class method This (Name public, Bool just$)
+class method This (Name public)=\(public=public,just$=Bool.false())
+class method This(Bool just$)=\(public=Name"",just$=just$) 
+class method This()=\(public=Name"",just$=Bool.false()) 
 
 method Size maxLev(Introspection.Nested that)=(
   var res=0Size
@@ -64,6 +67,11 @@ method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,T
     i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapRename$(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
+  if !this.just$() res:=this.after$(res,max=max)
+  res
+  )
+method Trait after$(Trait that, Size max)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
+  var res=that
   res:=CloseAll(res)
   (var lev=0Size while lev<max (//range will come later
     lev+=1Size
@@ -73,7 +81,6 @@ method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,T
   catch error S$ParseError e exception Trait$InvalidName(e.text())
   CacheCall:res
   )
-
 EmptyOnThis={class method S (S that)=if that==S"This" S"" else that}
 
 method Bool isPrivate(Introspection.Doc that)={

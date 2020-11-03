@@ -362,6 +362,8 @@ public class Err {
   "Core library literal can not watch This" 
   ;}public static String typeDependencyNotCore(Object p){return
   "Typed core library literal can not depend on full core libary "+p
+  ;}public static String untypedDependency(Object p,Object ps){return
+  "untyped dependencies for "+p+": "+ps  
   ;}public static String mismatchRefine(Object estimate,Object declared){return
   "Core library literal declares the following refined methods :"+declared+", but the actual set of refined methods is "+estimate
   ;}public static String missingImplementedInterface(Object missing){return

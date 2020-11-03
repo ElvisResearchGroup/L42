@@ -1,8 +1,8 @@
 Vector pos
 Vector speed
-read method read Map.Entity.Opt target(read Map.Entity.List that)
+read method read $.Entity.Opt target(read $.Entity.List that)
 mut method Void moveSpeed(Double rad,Size power)
-mut method Void chase(mut Map.Env that)=(
+mut method Void chase(mut $ that)=(
   selfP=this.pos()
   target=this.target(that.es())
   targetP=if target (target.val().pos())

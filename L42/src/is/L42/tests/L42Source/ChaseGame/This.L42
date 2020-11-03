@@ -9,18 +9,13 @@ Pulse=Data:{
   Double power
   }
 Vector=Data:{...}
-Map=Organize:{...}
-Impact={class method Bool (read Map.Entity a, read Map.Entity b)=(
-  dx=a.pos().x()-b.pos().x()
-  dy=a.pos().y()-b.pos().y()
-  r=a.radius()+b.radius()
-  (dx*dx)+(dy*dy) <= r*r
-  )}
-EntityTrait=Trait:{...}
-PulseAI=Trait:{...}
-ChaseAI=Trait:{...}
-Rat=Class:Data:EntityTrait:ChaseAI:{...}
-Bullet=Class:Data:EntityTrait:ChaseAI:{...}
-Player=Class:Data:EntityTrait:PulseAI:{...}
-Model=Data:JServer.Handler:{...}
+ModelTrait=Trait:{
+  mut JServer.Handler.Map stage
+  S key
+  mut method Void setStage(mut JServer.Handler that)=
+    this.#stage().#put(key=this.key(),val=that)
+  }
+EnvModel=Class:Data:JServer.Handler:ModelTrait:Trait({...})['$=>'This]
+StartModel=Class:Data:JServer.Handler:ModelTrait:{...}
+JavaCode={...}
 Main={...}

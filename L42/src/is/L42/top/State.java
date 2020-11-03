@@ -11,6 +11,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -200,13 +201,7 @@ public class State implements Serializable{
   private P wellTyped(Program p, Core.E ce,Deps deps,List<Full.L.NC>moreNCs)  throws EndError{
     var depsV=deps.new DepsV(p){@Override public void visitL(Core.L l){return;}};
     depsV.of(ce.visitable());
-    for(var pi:deps.typePs){
-      LL ll=p.of(pi,ce.poss());//propagate errors for path not existent
-      Core.L l=(Core.L)ll;
-      if(!l.info().isTyped()){
-        new CircularityIssue(deps.typePs,pi,l,p,ce,moreNCs).reportError();
-        }
-      }
+    new CircularityIssue(deps.typePs,p,ce,moreNCs).checkNotIllTyped();
     var pts=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pAny);
     ce.visitable().accept(pts);
     var cmp=pts._computed();

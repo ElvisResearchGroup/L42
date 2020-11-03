@@ -1,0 +1,110 @@
+$=Organize(just$=\.true()):{
+  $={}
+  Entity={interface
+    Bool solid
+    Vector pos
+    Vector speed
+    Double radius
+    Double break
+    mut method Void ping(mut $ that)
+    read method S paint()
+    }
+  Entity$Opt=Collection.optional(Entity)
+  Entity$List=Collection.list(Entity)
+  mut Entity$List es
+  mut method Bool sameEntity(mut Entity a, mut Entity b)
+  mut method Void bulletKill(mut Entity that)
+  mut method Void playerIsHit()
+  }
+Impact={class method Bool (read $.Entity a, read $.Entity b)=(
+  dx=a.pos().x()-b.pos().x()
+  dy=a.pos().y()-b.pos().y()
+  r=a.radius()+b.radius()
+  (dx*dx)+(dy*dy) <= r*r
+  )}
+EntityTrait=Trait:{...}
+PulseAI=Trait:{...}
+ChaseAI=Trait:{...}
+Rat=Class:Data:EntityTrait:ChaseAI:{...}
+Bullet=Class:Data:EntityTrait:ChaseAI:{...}
+Player=Class:Data:EntityTrait:PulseAI:{...}
+
+mut Player player
+mut $.Entity.List es
+mut $.Entity.List removeQueue
+mut Random r
+mut JServer j
+var Size points
+var Size pings
+mut method Void remove(mut $.Entity that)=this.#removeQueue().#add(right=that)
+mut method Void clearRemoveQueue()=(
+  r=this.#removeQueue()
+  for mut e in r ( this.removeQueue(e) )
+  while !r.isEmpty() ( r.removeRight() )
+  )
+mut method Void removeQueue(mut $.Entity that)=(
+  es=this.#es()
+  for i in es.size().range(), mut e in es (
+    if this.sameEntity(a=that,b=e) Break(es.remove(i))
+    )
+  )
+class method mut This (mut JServer j, mut JServer.Handler.Map stage,S key, mut Random r)=(
+  mut Player p=Player()
+  mut $.Entity.List es=$.Entity.List[
+    mutVal=p;
+    mutVal=Rat(text=S"Apollo",x=140\, y=230\);
+    mutVal=Rat(text=S"Zeus",x=240\, y=130\);
+    mutVal=Rat(text=S"Minerva",x=540\, y=530\);]
+  This(stage=stage,key=key,player=p,es=es,
+    removeQueue=$.Entity.List(),r=r,j=j,points=0Size,pings=0Size)
+  )
+@JServer.Handler mut method Void reset(S msg)=
+  this.#player().pos(\(x=20\,y=75\))
+
+@JServer.Handler mut method Void typed(S msg)=(
+  if msg==S.nl() (
+    text=this.#player().text()
+    x=this.#player().pos().x()
+    y=this.#player().pos().y()
+    this.#es().#add(right=Bullet(text=text,x=x,y=y))
+    )
+  this.#player().input(msg=msg)
+  )
+@JServer.Handler mut method Void pressed(S msg)=
+  this.#player().input(msg=msg,pressed=Bool.true())
+@JServer.Handler mut method Void released(S msg)=
+  this.#player().input(msg=msg,pressed=Bool.false())
+
+@JServer.Handler mut method Void ping(S msg)=(
+  this.clearRemoveQueue()
+  this.pings(\pings+1\)
+  es=this.#es()
+  newRat=(this.pings()/360Size)*360Size==this.pings()
+  if newRat (
+    xr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
+    yr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
+    r=Rat(text=S"Num%(this.pings()/360Size)",x=xr,y=yr)
+    es.#add(right=r)
+    )
+  var res=S""
+  for mut e in es (
+    e.ping(this)
+    res++=e.paint()++S.nl() 
+    )
+  this.#j().submitEvent(key='Example.RefreshEntities, id=S"base", msg=res)
+  whoops JServer.Fail
+  )
+mut method Void bulletKill(mut $.Entity that)=(
+  this.remove(that)
+  this.points(\points+1\)
+  this.#j().submitEvent(key='Example.ChangePoints, id=S"",msg=this.points().toS())
+  whoops Message.Guard
+  )
+mut method Bool sameEntity(mut $.Entity a, mut $.Entity b)=
+  System.mutReferenceEquality(a,and=b)
+mut method Void playerIsHit()=(
+  this.#j().submitEvent(key='Example.StartScreen, id=S"game", msg=S"Last Score:%this.points()")
+  mut JServer.Handler model=StartModel(stage=this.#stage(),key=this.key(),j=this.#j(),r=this.#r())
+  this.setStage(model)
+  whoops JServer.Fail
+  )

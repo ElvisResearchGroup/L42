@@ -1,4 +1,4 @@
-[Map.Entity]
+[$.Entity]
 class method mut This()=
   This(pos=Vector(x=35\,y=100\),speed=Vector(x=0\,y=0\),text=S"",
     left=Bool.false(),right=Bool.false(),up=Bool.false(),down=Bool.false())
@@ -16,14 +16,9 @@ method ping(that)=(
   this.keyMove()
   this.moveImpact(that)
   )
-mut method Void playerIsHit()=(
-    this.pos(\(x=200\,y=200\)) 
-    this.speed(\(x=0\,y=0\))
-    )    
-
-mut method Bool onImpact(mut Map.Env that,Vector oldP, mut Map.Entity impacted)={
+mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)={
   if impacted<:mut Rat (
-    this.playerIsHit()
+    that.playerIsHit()
     return \.true()
     )
   return \.false()

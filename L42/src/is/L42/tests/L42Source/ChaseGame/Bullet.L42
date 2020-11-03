@@ -1,4 +1,4 @@
-[Map.Entity]
+[$.Entity]
 S text
 class method mut This(S text,Double x,Double y)=
   This(pos=Vector(x=x,y=y),speed=Vector(x=0\,y=0\),text=text)
@@ -8,16 +8,16 @@ read method Double break()=\"-0.15"
 read method Double topSpeed()=7\
 read method Double acc()=\"0.8"
 read method S img()=S"https://i.pinimg.com/originals/7c/8e/ed/7c8eedf65ace7600e70ea8b0bdc5c02a.jpg"
-mut method Void chase(mut Map.Env that)
+mut method Void chase(mut $ that)
 method ping(that)=(
   this.chase(that)
   this.moveImpact(that)
   )
-mut method Bool onImpact(mut Map.Env that,Vector oldP, mut Map.Entity impacted)=(
-  if impacted <: mut Rat ( that.remove(impacted) )
+mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)=(
+  if impacted <: mut Rat (that.bulletKill(impacted))
   \.false()
   )
-read method read Map.Entity.Opt target(read Map.Entity.List that)={
+read method read $.Entity.Opt target(read $.Entity.List that)={
   for read e in that (
     if e<:read Rat (if e.text()==this.text() return \(e))
     )

@@ -1,4 +1,4 @@
-[Map.Entity]
+[$.Entity]
 var Vector pos
 var Vector speed
 Double topSpeed
@@ -17,7 +17,7 @@ mut method Void moveSpeed(Double rad,Size power)=(
       )
     )
   )
-mut method Void moveImpact(mut Map.Env that)=(
+mut method Void moveImpact(mut $ that)=(
   oldP=this.pos()
   this.pos(\pos+\speed)
   for mut e in that.#es() (
@@ -26,7 +26,7 @@ mut method Void moveImpact(mut Map.Env that)=(
       )
     )
   )
-mut method Bool onImpact(mut Map.Env that,Vector oldP, mut Map.Entity impacted)
+mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)
 
 method paint()={
   p=this.pos()

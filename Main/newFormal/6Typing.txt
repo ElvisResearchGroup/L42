@@ -26,13 +26,18 @@ _______
     Cs' in untypable(p)
     not p(Cs').Info.Flag=typed //could be norm but also p(Cs') undefined
 _______
-#define wellTyped(p, CORE.e)=CORE.T
-* wellTyped(p,e)=T //the code will give an error here if a typeDep path is not in dom(p)
+#define wellTyped(p, CORE.e)=CORE.T    illTyped(p,P)
+* wellTyped(p,e)=T
+    forall P inside e, not illTyped(p,P)
     Q=Q[Flag=norm;p;G=empty;Ts=empty;Ps=Any]
     p;empty;empty|= CORE.e : imm
     either Q |- CORE.e : Library
     or Q |- CORE.e : imm Void
     or Q |- CORE.e : P and imm method Library #toLibrary() _ in p(P).MWT
+
+* illTyped(p,P) if p(P) undefined //this will cover also classes defined later
+* illTyped(p,P) if p(P).Info.Flag!=Typed
+* illTyped(p,P) if P' in p(P).Info.TypeDep and illTyped(p,P'[from P;p])
 _______
 #define flag |- p    p |- CORE.MWT
 * flag |- p      //(library well typed)

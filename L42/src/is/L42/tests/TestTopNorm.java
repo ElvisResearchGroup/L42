@@ -123,6 +123,28 @@ public class TestTopNorm{
     #typed{typeDep=This1.A usedMethods=This1.A.foo()}}
   #norm{}}                                          
   """      
+  );}@Test public void tInferBase(){top("""
+    {Res=(lib={ A={} B={}
+      class method Void m(A that)=(
+        A a=that.of()
+        B b=a.foo()
+      void )} void)}
+    ""","""
+    {Res={#typed{}}#norm{}}
+    """
+  );}@Test public void tInferAdvanced(){top("""
+     {Res=(lib={ A={} B={}
+      class method Void m(A that)=(
+        a=that.of()//we do not know the type of 'a'
+        A a0=a.foo()//but a.foo()=A
+        A a1=a0.of()//and a0.of()=A
+        //This is NOT requiring to use the type A.of().foo()
+        //TODO: can we find an example where such type is required?
+        //for now we disable those types to avoid some type loops
+      void )} void)}
+    ""","""
+    {Res={#typed{}}#norm{}}                                          
+    """
   );}@Test public void notWellFormed0(){top("""
     {A={
        class method Library foo(Library a,Library b)=b
@@ -909,6 +931,14 @@ public class TestTopNorm{
       error void)
     #typed{typeDep=This}}#norm{}}          
     """
+    );}
+  @Test public void sumTypeStaysOk(){topFail(EndError.PathNotExistent.class,"""
+    {reuse [AdamTowel]
+     A=Trait:{method B b(B b)=b.foo()}
+     C=A:{}
+     B={method This b()=this}
+     Main=Debug(S"ok")}
+    """,hole+Err.pathNotExistant("This1.B")
     );}
   //Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""

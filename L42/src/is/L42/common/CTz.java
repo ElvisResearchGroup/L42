@@ -116,10 +116,14 @@ public class CTz{
         install(sti, st1->s.accept(st1));//* ST' in CTz.allSTz(p,ST)
         }
       }
+    //DISCUSSION:
+    //We are preventing all types of form nested ST.STMeth to avoid circularities in the inference.
+    //I can not write a test where a nested ST.STMeth type is required to pass.
     private void onSTMeth(ST.STMeth stsi, Consumer<ST> s) {
       ST st=stsi.st();
       install(st,st2->{
-        if(st2.equals(stsi)){return;}//to avoid growing a.foo().foo()...foo()
+        if(st2 instanceof ST.STMeth){return;}//to avoid growing a.foo().foo()...foo()
+        //exmaple weaker condition; too weak, can still loop: if(st2.equals(stsi)){return;}
         ST st3=p.solve(stsi.withSt(st2));
         install(st3,st1->s.accept(st1));
         });

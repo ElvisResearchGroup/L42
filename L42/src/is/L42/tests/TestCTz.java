@@ -135,13 +135,13 @@ extends AtomicTest.Tester{
    This.nope() = [This, This.nope()]
    This.dope() = [This.dope(), This.nope().m(), Void]
    """)
-   ),new AtomicTest(()->inferAll(ctz()
-   .a(st(This,"nope()"),This)
-   .a(st(This,"dope()"),st(st(st(This,"nope()"),"nope()"),"m()"))
-   ,"""
-   This.nope() = [This, This.nope()]
-   This.dope() = [This.dope(), This.nope().m(), This.nope().nope().m(), Void]
-   """)
+//   ),new AtomicTest(()->inferAll(ctz() //types of form This.nope().m() are disabled for now
+//   .a(st(This,"nope()"),This)
+//   .a(st(This,"dope()"),st(st(st(This,"nope()"),"nope()"),"m()"))
+//   ,"""
+//   This.nope() = [This, This.nope()]
+//   This.dope() = [This.dope(), This.nope().m(), This.nope().nope().m(), Void]
+//   """)
 
 //operators         
    ),new AtomicTest(()->inferAll(ctz()

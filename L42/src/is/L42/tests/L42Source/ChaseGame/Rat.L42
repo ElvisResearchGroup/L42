@@ -1,4 +1,4 @@
-[Map.Entity]
+[$.Entity]
 var Vector speed
 class method mut This(S text,Double x,Double y)=
   This(pos=Vector(x=x,y=y),speed=Vector(x=0\,y=0\),text=text)
@@ -8,16 +8,16 @@ read method Double break()=\"-0.2"
 read method Double topSpeed()=2\
 read method Double acc()=\"0.03"
 read method S img()=S"rat.png"
-mut method Void chase(mut Map.Env that)
+mut method Void chase(mut $ that)
 method ping(that)=(
   this.chase(that)
   this.moveImpact(that)
   )
-mut method Bool onImpact(mut Map.Env that,Vector oldP, mut Map.Entity impacted)=(
-  if impacted<:mut Player (impacted.playerIsHit())
+mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)=(
+  if impacted<:mut Player (that.playerIsHit())
   this.pos(oldP)
   this.speed(\(x=0\,y=0\))
   Bool.false()
   )
-read method read Map.Entity.Opt target(read Map.Entity.List that)=
+read method read $.Entity.Opt target(read $.Entity.List that)=
     \(that.readVal(0\))
