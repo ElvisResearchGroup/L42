@@ -3,23 +3,25 @@ S text
 class method mut This(S text,Double x,Double y)=
   This(pos=Vector(x=x,y=y),speed=Vector(x=0\,y=0\),text=text)
 read method Bool solid()=\.false()
-read method Double radius()=5\
+read method Double radius()=10\
 read method Double break()=\"-0.15"
-read method Double topSpeed()=7\
+read method Double topSpeed()=5\
 read method Double acc()=\"0.8"
-read method S img()=S"https://i.pinimg.com/originals/7c/8e/ed/7c8eedf65ace7600e70ea8b0bdc5c02a.jpg"
+read method S img()=S"fire.png"
 mut method Void chase(mut $ that)
 method ping(that)=(
   this.chase(that)
   this.moveImpact(that)
+  if this.pos()**that.margin().restrict(\"0.05")!=this.pos() ( that.remove(this) )
   )
 mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)=(
   if impacted <: mut Rat (that.bulletKill(impacted))
   \.false()
   )
-read method read $.Entity.Opt target(read $.Entity.List that)={
-  for read e in that (
-    if e<:read Rat (if e.text()==this.text() return \(e))
+mut method mut $.Entity.Opt target(mut $ that)={
+  for mut e in that.#es() (
+    if e<:mut Rat (if e.text()==this.text() return \(e))
     )
+  that.remove(this)
   return \()
   }

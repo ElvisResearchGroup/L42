@@ -3,10 +3,10 @@ var Vector speed
 class method mut This(S text,Double x,Double y)=
   This(pos=Vector(x=x,y=y),speed=Vector(x=0\,y=0\),text=text)
 read method Bool solid()=\.true()
-read method Double radius()=25\
+read method Double radius()=30\
 read method Double break()=\"-0.2"
-read method Double topSpeed()=2\
-read method Double acc()=\"0.03"
+read method Double topSpeed()=1\
+read method Double acc()=\"0.01"
 read method S img()=S"rat.png"
 mut method Void chase(mut $ that)
 method ping(that)=(
@@ -19,5 +19,5 @@ mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)=(
   this.speed(\(x=0\,y=0\))
   Bool.false()
   )
-read method read $.Entity.Opt target(read $.Entity.List that)=
-    \(that.readVal(0\))
+mut method mut $.Entity.Opt target(mut $ that)=
+    \(that.#es().#val(0\))

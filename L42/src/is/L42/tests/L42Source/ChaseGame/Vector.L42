@@ -19,3 +19,5 @@ method This sum(Double rad,Double power,Double max)={
 class method Double tao()=Double"6.283185307"
 class method Double randomRad(mut Random that)=
   that.nextDouble()*This.tao()
+method This **(Margin bound)=
+  This(x=bound.asIn(x=this.x()),y=bound.asIn(y=this.y()))

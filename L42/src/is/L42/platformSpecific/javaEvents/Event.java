@@ -152,7 +152,8 @@ public class Event{
     askCallbacks.remove(key);
     }
   private Consumer3 executorAction(Consumer3 c){
-    return (key,id,msg)->executor.submit(()->c.accept(key, id, msg));
+    return c;
+    //return (key,id,msg)->executor.submit(()->c.accept(key, id, msg));
     }
   private void defaultAction(String key,String id,String msg){
     var s=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());

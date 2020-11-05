@@ -322,11 +322,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(isErr){declaredVarError.addAll(oldDeclared);}
     for(var d:b.ds()){
       visitD(d);
+      assert d.varTxs().stream().allMatch(vtx->vtx._x()!=null);
+      for(var vtx:d.varTxs()){declaredHidden.remove(vtx._x());}
       if(d._varTx()==null || !d._varTx().isVar()){continue;}
       assert d._varTx()._x()!=null;
       declaredVarFwd.remove(d._varTx()._x());
-      assert d.varTxs().stream().allMatch(vtx->vtx._x()!=null);
-      for(var vtx:d.varTxs()){declaredHidden.remove(vtx._x());}
       }
     declaredHidden.addAll(domDs);
     visitFullKs(b.ks());

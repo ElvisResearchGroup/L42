@@ -42,6 +42,10 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(((capsule a)=void void))")
    ),new AtomicTest(()->
+   pass("(((a)=void b=a void))")
+   ),new AtomicTest(()->
+   fail("((c=Void.foo(a) (a)=void b=a void))",Err.nameUsedInCatchOrMatch("a"))
+   ),new AtomicTest(()->
    pass(inCore("(var mut This0 x=void x)"))
    ),new AtomicTest(()->
    pass(inCore("(capsule This0 x=void x)"))

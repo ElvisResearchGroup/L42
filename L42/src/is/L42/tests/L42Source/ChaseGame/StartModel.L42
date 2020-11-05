@@ -11,7 +11,7 @@ class method mut This #$of(S key)=(
   res
   )
 @JServer.Handler mut method Void start(S msg)=(
-  this.#j().submitEvent(key='Example.GameScreen, id=S"game", msg=S"0")
+  this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
   this.setStage(EnvModel(j=this.#j(),stage=this.#stage(),key=this.key(),r=this.#r()))
   whoops JServer.Fail
   )

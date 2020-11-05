@@ -1,20 +1,20 @@
-class method S gameScreen(mut Gui that)=(
+class method S (mut Gui that)=(
   reset=that.button(id=S"reset",msg='Pressed,text=S"Reset")
+  start=that.button(id=S"start",msg='Pressed,text=S"Start")
   S"""%
     |JPanel gameScreen=new JPanel();
     |JPanel gameControls=new JPanel();
     |%reset
+    |%start
+    |JPanel startScreen=new JPanel();
+    |JLabel title=new JLabel("        Rattype!");
+    |JPanel startControls=new JPanel();
     |JLabel points=new JLabel("Points=0");
     |PaintEntities paintable=new PaintEntities(){
-    |  @Override public void submit(String n,String e,boolean r){
-    |    super.submit(n,e,r);
-    |    this.setFocusable(true);
-    |    this.requestFocusInWindow();
-    |    }
     |  @Override public void draw(java.awt.Graphics2D g,PaintEntities.Entity e){
     |    var r=e.radius();
     |    if (!e.imgUrl().startsWith("text:")){
-    |      g.fillOval(e.x()-r,e.y()-r,r*2,r*2);
+    |//      g.fillOval(e.x()-r,e.y()-r,r*2,r*2);
     |      super.draw(g,e);
     |      return;
     |      }
@@ -24,47 +24,30 @@ class method S gameScreen(mut Gui that)=(
     |  };
     |{
     |  paintable.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
-    |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->
-    |    paintable.submit(id,msg,true));
-    |  event.registerEvent("Example.GameScreen",(k,id,msg)->
-    |    javax.swing.SwingUtilities.invokeLater(()->gameScreen(msg)));
-    |  event.registerEvent("Example.StartScreen",(k,id,msg)->
-    |    javax.swing.SwingUtilities.invokeLater(()->startScreen(msg)));
-    |  event.registerEvent("Example.ChangePoints",(k,id,msg)->
-    |    javax.swing.SwingUtilities.invokeLater(()->points(msg)));
+    |  event.registerEvent("Example.RefreshEntities",(k,id,msg)->{
+    |    paintable.submit(id,msg,true);
+    |    paintable.setFocusable(true);
+    |    paintable.requestFocusInWindow();
+    |    });
+    |  new Screens(this,event,"Example.ChangeScreen")
+    |    .register("Start",this::startScreen)
+    |    .register("Game",this::gameScreen);
     |  addNorth(gameControls,reset);
     |  addSouth(gameControls,points);
     |  addCenter(gameScreen,paintable);
     |  addEast(gameScreen,gameControls);
-    |  }
-    |void points(String s){points.setText("Points="+s);}
-    |void gameScreen(String s){
-    |  points(s);
-    |  getContentPane().removeAll();
-    |  getContentPane().add(gameScreen);
-    |  repaint();
-    |  setVisible(true);
-    |  }
-  """
-  )
-class method S startScreen(mut Gui that)=(
-  start=that.button(id=S"start",msg='Pressed,text=S"Start")
-  S"""%
-    |JPanel startScreen=new JPanel();
-    |%start
-    |JLabel title=new JLabel("        Rattype!");
-    |JPanel startControls=new JPanel();
-    |{
     |  addNorth(startControls,start);
     |  addCenter(startScreen,title);
     |  addEast(startScreen,startControls);
+    |  add(startScreen(""));
     |  }
-    |void startScreen(String s){
+    |JComponent gameScreen(String s){
+    |  points.setText("Points="+s);
+    |  return gameScreen;
+    |  }
+    |JComponent startScreen(String s){
     |  title.setText("        Rattype!    "+s);
-    |  getContentPane().removeAll();
-    |  getContentPane().add(startScreen);
-    |  repaint();
-    |  setVisible(true);
+    |  return startScreen;
     |  }
   """
   )

@@ -6,11 +6,11 @@ var S text
 var Vector pos
 var Vector speed
 read method Bool solid()=\.true()
-read method Double radius()=20\
+read method Double radius()=25\
 read method Double break()=\"-0.15"
 read method Double topSpeed()=5\
 read method Double acc()=\"0.08"
-read method S img()=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
+read method S img()=S"cheese.png"
 mut method Void keyMove()
 method ping(that)=(
   this.keyMove()
