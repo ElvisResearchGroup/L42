@@ -54,6 +54,8 @@ public class Wither {
     if(candidateKs.isEmpty()){err.throwErr(l,"provided constructor name: "+immK+" is not present in the classs");}
     if(candidateKs.size()!=1){err.throwErr(l,"provided constructor name "+immK+" is ambiguos:"+candidateKs);}
     MWT k=candidateKs.get(0);
+    String fName=_findImmUnusableField(k,l.mwts());
+    if(fName!=null){err.throwErr(l,"provided constructor name "+immK+" refers to imm-unusable field "+fName);}
     pos=k.poss().get(0);
     if(k.key().xs().isEmpty()){return l;}
     List<MWT> newMWT=L(c->{
@@ -68,6 +70,20 @@ public class Wither {
       i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));
       }
     return l.withMwts(newMWT).withInfo(i);
+    }
+  private String _findImmUnusableField(MWT k, List<MWT> mwts){
+    assert !k.key().hasUniqueNum();
+    for(var x : k.key().xs()){
+      S s=new S(x.inner(),L(),-1);
+      var mwt=_elem(mwts,s);
+      if(mwt==null){return x.inner();}
+      var mMdf=mwt.mh().mdf();
+      var rMdf=mwt.mh().t().mdf();
+      boolean usable=mMdf.isIn(Mdf.Immutable,Mdf.Readable)
+        && rMdf.isIn(Mdf.Immutable,Mdf.Readable);
+      if(!usable){return x.inner();}
+      }
+    return null;
     }
   public void witherX(int i, MWT k,ArrayList<MWT>c){
     X x=k.key().xs().get(i);

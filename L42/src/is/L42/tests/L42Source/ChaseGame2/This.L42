@@ -1,0 +1,15 @@
+reuse [AdamTowel]
+LoadJ=Load:{reuse[JavaServer]}
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+
+Pulse=Data:{
+  Double rad
+  Double power
+  }
+Margin=Data:{...}
+Vector=Data:{...}
+EnvModel=Class:Data:Organize(just$=\.true()):JServer.Handler:{...}
+JavaCode={...}
+Main={...}

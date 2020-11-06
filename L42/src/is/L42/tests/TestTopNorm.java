@@ -145,7 +145,19 @@ public class TestTopNorm{
     ""","""
     {Res={#typed{}}#norm{}}                                          
     """
-  );}@Test public void notWellFormed0(){top("""
+  );}@Test public void fwdInitDelegate(){top("""
+    {A={
+      class method This foo(fwd imm Any a)=this.foo(a=a)
+      class method This bar(fwd imm Any a)=this.foo(a=a)
+      }
+     }""","""
+     {A={
+     class method This foo(fwd imm Any a)=this.foo(a=a)
+     class method This bar(fwd imm Any a)=this.foo(a=a)
+     #typed{typeDep=This}
+     }#norm{}}
+     """
+    );}@Test public void notWellFormed0(){top("""
     {A={
        class method Library foo(Library a,Library b)=b
        }

@@ -1,0 +1,22 @@
+[$.Entity]
+var S text
+var Vector pos
+var Vector speed
+read method Bool solid()=\.true()
+read method Double radius()=25\
+read method Double break()=\"-0.15"
+read method Double topSpeed()=5\
+read method Double acc()=\"0.08"
+read method S img()=S"cheese.png"
+mut method Void keyMove()
+method ping()=(
+  this.keyMove()
+  this.moveImpact()
+  )
+mut method Bool onImpact(Vector oldP, mut $.Entity impacted)={
+  if impacted<:mut Rat (
+    this.#model().playerIsHit()
+    return \.true()
+    )
+  return \.false()
+  }
