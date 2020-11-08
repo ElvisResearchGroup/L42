@@ -80,7 +80,7 @@ public class Wither {
       var mMdf=mwt.mh().mdf();
       var rMdf=mwt.mh().t().mdf();
       boolean usable=mMdf.isIn(Mdf.Immutable,Mdf.Readable)
-        && rMdf.isIn(Mdf.Immutable,Mdf.Readable);
+        && rMdf.isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class);
       if(!usable){return x.inner();}
       }
     return null;

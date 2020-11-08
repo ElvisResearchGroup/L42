@@ -45,7 +45,7 @@ Main=(
     Debug(S"[[%text2]]-----")
     Debug(e)
     )
-  j.submitEvent(key='Kill,id=S"",msg=S"")
+  (j.submitEvent(key='Kill,id=S"",msg=S"")  catch J.Fail f Debug(f))
   Debug(S"end events %model.count()")
   Debug(S"[[%text]]")
   {}:Test"askedText"(expected=S"Press!!!", actual=text.val())

@@ -27,7 +27,7 @@ Google=Data:{
     )
   read method S paint()=(
     var g=S"https://www.google.com/images/branding/googlelogo/2x/googlelogo_color_92x30dp.png"
-    S"%this.posX();%this.posY();15;%g"
+    S"%this.posX();%this.posY();15;0;%g"
     )
   }
 Amazon=Data:{
@@ -38,7 +38,7 @@ Amazon=Data:{
     a=S"https://i.pinimg.com/originals/18/e1/80/18e180218bdac1685b79197c9023259b.png"
     x=S"https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Red_x.svg/1200px-Red_x.svg.png"
     i=(if this.reached()==0Size a else x)
-    S"%this.posX();%this.posY();25;%i"
+    S"%this.posX();%this.posY();25;0;%i"
     )
   class method mut This(Size x,Size y)=This(posX=x,posY=y,reached=0Size)
   }
@@ -77,5 +77,10 @@ Main=(
     |  addWest(p,label2);
     |  }
     """
-  for e in j(\['Example]) (e>>model)
+  (posX1,posY1)=model.g()
+  for e in j(\['Example]), x in (100Size).range() (e>>model)
+  (posX2,posY2)=model.g()
+  Debug(S" %posX1 %posX2, %posY1 %posY2")
+  {}:Test"100 steps x"(posX1+100Size==posX2)
+  {}:Test"100 steps y"(posY1+100Size==posY2)
   )

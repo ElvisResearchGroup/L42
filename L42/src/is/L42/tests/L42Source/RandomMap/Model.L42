@@ -1,0 +1,35 @@
+mut Random r
+mut JServer j
+var Camera c
+Camera=Data:{
+  Double x,Double y,Double z
+  method S toMsg()=S"%this.x();%this.y();%this.z()"
+  }
+class method mut This #$of()=This(r=Random.#$random(),j=JServer.#$of(),c=Camera(x=25\,y=25\,z=25\))
+
+
+@JServer.Handler mut method Void ping(S msg)=void
+
+@JServer.Handler mut method Void start(S msg)=(
+  g=S"Ground"
+  col=S"%g;%g;%g;%g;%g"
+  mapMsg=S"""%
+  |%col
+  |%col
+  |%col
+  |%col
+  |%col
+  """
+  this.#j().submitEvent(key='Example.SetMap, id=S"",msg=mapMsg)
+  this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
+  whoops Message.Guard
+  )
+@JServer.Handler mut method Void pressed(S msg)=(
+  if msg==S"Left" (this.c(\c.with(x=\x-\"0.2")))
+  if msg==S"Right" (this.c(\c.with(x=\x+\"0.2")))
+  if msg==S"Up" (this.c(\c.with(y=\y-\"0.2")))
+  if msg==S"Down" (this.c(\c.with(y=\y+\"0.2")))
+  this.#j().submitEvent(key='Example.SetCamera, id=S"", msg=this.c().toMsg())
+  Debug(this.c())
+  whoops Message.Guard
+  )

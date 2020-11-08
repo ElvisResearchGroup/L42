@@ -68,7 +68,7 @@ public class Event{
     } 
   public void registerEvent(String key,Consumer3 c){
     callbacks.compute(key,(k,v)->{
-      var newV=executorAction(c);
+      Consumer3 newV=executorAction(c);
       streams.computeIfPresent(k,(k0,v0)->clearDeque(newV, k0,v0));
       return newV;
       });
@@ -134,6 +134,13 @@ public class Event{
     return res;
     }
   public void submitEvent(String key,String id,String msg){
+    try{
+      auxSubmitEvent(key, id, msg);
+      }
+    catch(RuntimeException err){err.printStackTrace();throw err;}
+    catch(Error err){err.printStackTrace();throw err;}
+    }
+  public void auxSubmitEvent(String key,String id,String msg){
     callbacks.compute(key,(k,v)->{
       if(v==null){v=this::defaultAction;}
       v.accept(k, id, msg);

@@ -283,6 +283,7 @@ void cacheOnFile1(){
   }
 @Test void testSpeedChange(){
   //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
+  //"".getClass().getClassLoader()
   String code1="""
     {reuse [AdamTowel]
     Main1=(Debug(S"Hello world1") )

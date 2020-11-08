@@ -1,5 +1,8 @@
 package is.L42.platformSpecific.javaTranslation;
 
+import static is.L42.tools.General.popL;
+import static is.L42.tools.General.pushL;
+
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -156,6 +159,12 @@ public class Resources {
       //System.out.println(Arrays.asList(workingDir.list()));
       //System.out.println(Arrays.asList(localPaths));
       Slave s=new ProcessSlave(timeLimit, args, ClassLoader.getPlatformClassLoader()){
+        @Override protected List<String> getJavaArgs(String libLocation){
+          var res=super.getJavaArgs(libLocation);
+          //return pushL(res.get(0),pushL("-ea",popL(res)));
+          res.add(0,"-ea");
+          return res;
+          }
         @Override protected ProcessBuilder makeProcessBuilder() throws IOException {
           var pb=super.makeProcessBuilder();
           return pb.directory(workingDir);

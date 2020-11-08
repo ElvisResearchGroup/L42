@@ -1,5 +1,4 @@
 -Test cut() when object are removed, it may give a out of bound exception anyway?
--TestAnimation is deploying a library, it should be its own tests
 -Easy: when printing positions sort them by file
 -for pluggable type systems and field docs: it is very sad that
  @Foo T bar put the annotation on the field but imm @Foo bar puts it on the type
@@ -29,7 +28,7 @@
  //TODO: now somehow the Info is always declassed to "norm" :-(    
 -Vector BUG: the error message seams to only mention imms:
   -- "#val called, but the element in position "+%1$s+" was inserted as immutable"
--can we simply or remove class NormResult?
+-can we simplify or remove class NormResult?
 -Cache.Now optimization: we could search for a normalized version of the object just created,
  and in case it exists we can use the cached results on the normalized one. 
 -Cache: use String .intern()?
