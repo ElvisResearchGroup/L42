@@ -38,7 +38,7 @@ _______
   Flag ::= norm | typed
   FULL.L ::= {(H | reuse[URL] | ...) Ms Docs}
   FULL.M ::= F | MI | MWT | NC
-  FULL.F ::= Docs var? T x
+  FULL.F ::= Docs var? T x( = e)?
   FULL.MI ::= Docs method mOp(xs) = e // well formedness: all LL inside e are CORE.L
   FULL.MWT ::=Docs MH (= native{BalCurly}? e)? // well formedness: all LL inside e are CORE.L
   FULL.NC ::= Docs C = e //FULL.L can be inside e
@@ -168,6 +168,7 @@ _______
     no repetition in Ds.xs
 * throw FULL.e: not returning(FULL.e)
 * FULL.F: F.t.mdf not fwd
+    if F.e is defined, then FV(e)=empty
 * FULL.MI:MI.e.FULL.L undefined //e does not contains any FULL.L
 * FULL.MWT: if MWT.e?=e, then e.FULL.L undefined //e does not contains any FULL.L 
 * FULL/CORE.MH: MH =mdf method T _(T1 x1.. Tn xn)_

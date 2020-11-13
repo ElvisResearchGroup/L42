@@ -136,7 +136,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{T x=void x}","[|D(t(P)x|void)D(x)|]|")
    ),new AtomicTest(()->
-   pass("{T x=void}","[|D(t(P)x|void)|]|")
+   pass("{T x=void}","{|Header()FullF(t(P)x|void)|}|")
    ),new AtomicTest(()->
    pass("{T x}","{|Header()FullF(t(P)x)|}|")
    ),new AtomicTest(()->

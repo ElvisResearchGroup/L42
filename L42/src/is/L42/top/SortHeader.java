@@ -21,6 +21,7 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.LL;
+import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -91,7 +92,7 @@ class SortHeader{
     var infoP1=Core.L.Info.empty.withTypeDep(L(ts1.stream().map(t->t.p().toNCs())));
     var newTop=new Core.L(poss,l.isInterface(), ts1, L(), L(), infoP1,L());
     Program p1 = p.update(newTop,false);
-    var mh1n=methods(p1,ts1,l.ms(),poss);//propagate err
+    var mh1n=methods(p1,ts1,addDefaults(l.ms()),poss);//propagate err
     List<Core.L.MWT> mwts=L(mh1n,(c,mh)->{
       List<Core.Doc> docs=L();
       List<Pos> possi=poss;
@@ -144,6 +145,17 @@ class SortHeader{
         }
       c.addAll(recRes);
       });
+    }
+  static List<Full.L.M> addDefaults(List<Full.L.M> ms){
+    var res=new ArrayList<>(ms);
+    for(var mi:ms){if(mi instanceof Full.L.F fi){
+      if (fi._e()==null){continue;}
+      var si=fi.key().withM("#default#"+fi.key().m());
+      var mhi=new Full.MH(Mdf.Class,L(),fi.t(),null,-1,si,L(),false,L());
+      var mwti=new Full.L.MWT(fi.pos(),L(),mhi,"",fi._e());
+      res.add(mwti);
+      }}
+    return L(res.stream());
     }
   private static List<Core.MH> methods(Program p,List<Core.T>ps,List<M> ms,List<Pos> poss){
     List<Core.MH> mhs=p.extractMHs(ms);

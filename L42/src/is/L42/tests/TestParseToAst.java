@@ -199,9 +199,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("{T x=void x}","{\n  T x=void\n  x\n  }\n")
    ),new AtomicTest(()->
-   pass("{\n  T x=void\n  }\n")
+   pass("{T x=void}")//parsed as an L
    ),new AtomicTest(()->
-   pass("{T x}")
+   pass("{T x}")//parsed as an L
    ),new AtomicTest(()->
    pass("{T x y}","{\n  T\n  x\n  y\n  }\n")
    ),new AtomicTest(()->

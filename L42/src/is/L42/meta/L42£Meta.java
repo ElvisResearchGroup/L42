@@ -84,6 +84,11 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new Wither().wither(pIn,unwrapCs(cs),wrap,immK));
     }
+  public L42£Library defaults(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap){
+    L l=input.unwrap;
+    var pIn=Resources.currentP.push(Resources.currentC,l);
+    return wrapL(new Defaults().of(pIn,unwrapCs(cs),wrap));
+    }
   public L42£Library addConstructors(L42£Library input,String cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);

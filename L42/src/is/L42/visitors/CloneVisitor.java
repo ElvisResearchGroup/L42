@@ -392,11 +392,13 @@ public class CloneVisitor {
     var docs0=f.docs();
     var t0=f.t();
     var s0=f.key();
+    var _e0=f._e();
     var docs=visitFullDocs(docs0);
     var t=visitT(t0);
     var s=visitS(s0);
+    var _e=_e0==null?_e0:_e0.visitable().accept(this);
     if(docs==docs0 && t==t0 && s==s0){return f;}
-    return new Full.L.F(f.pos(),docs,f.isVar(),t,s);
+    return new Full.L.F(f.pos(),docs,f.isVar(),t,s,_e);
     }
     
   public Full.L.MI visitMI(Full.L.MI mi){

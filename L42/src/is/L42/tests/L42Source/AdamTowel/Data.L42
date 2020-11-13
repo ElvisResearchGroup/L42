@@ -74,7 +74,31 @@ Wither$Meta={
     catch error Wither$Fail x exception x
     }
   }
-  
+@Public Defaults$Fail=Class$Relax:Message.Native:{[Data$Fail]}      
+
+Defaults$Meta={
+  class method This #apply()
+  method Library defaults(Library that,This2.S name)=native{trusted:defaults} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Defaults$Fail,This2.S
+    watched=This1.Defaults$Fail,This2.S
+    coherentDep=This1.Defaults$Fail,
+    nativePar=This1.Defaults$Fail This1.Defaults$Fail This1.Defaults$Fail This1.Defaults$Fail This1.Defaults$Fail
+    }}
+
+@Public Defaults={
+  Name that
+  @Public class method This(Name that)
+  @Public ClassOperators={class method This1()=This1('This)}
+  @Public method Trait :(Trait t)[Defaults$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[Defaults$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[Defaults$Fail]={
+    return Defaults$Meta()
+      .defaults(that,name=this.that().toS())
+    catch error Defaults$Fail x exception x
+    }
+  }
+
 AddEqOp=Trait:{
     method Bool ==(This that)=System.immEquality(this and=that)
     }
@@ -163,6 +187,7 @@ Bool autoNorm
   acc:=this.optionallyApply(AddImmNorm(), acc=acc)  
   acc:=AddConstructors(name,autoNorm=autoNorm):acc
   acc:=Wither(name):acc
+  acc:=Defaults(name):acc
   acc:=Close(name,autoNorm=autoNorm):acc
   if this.check() (This.checkCoherent(acc.code()))
   acc

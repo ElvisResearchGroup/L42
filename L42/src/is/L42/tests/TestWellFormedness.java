@@ -57,6 +57,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    fail(inCore("(var fwd mut This0 x=void x)"),Err.varBindingCanNotBe(hole))
 
    ),new AtomicTest(()->
+   fail("{Any x=y}",Err.nameUsedNotInScope("y"))
+   ),new AtomicTest(()->
    pass("{method (that,foo)=((var y=foo void), (y=foo,void.foo(y+void)) void)}")
    ),new AtomicTest(()->
    pass("{C=(x=void x+x)}")

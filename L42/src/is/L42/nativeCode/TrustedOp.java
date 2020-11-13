@@ -284,6 +284,8 @@ public enum TrustedOp {
     Meta,use("return %s.resource(%s,%s);",sigI(Lib,Lib,Name)))),
   Close("close",Map.of(
     Meta,use("return %s.close(%s,%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String,Bool)))),
+  Defaults("defaults",Map.of(
+    Meta,use("return %s.defaults(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String)))),  
   AddConstructors("addConstructors",Map.of(
     Meta,use("return %s.addConstructors(%s,%s,%s,%Gen1::wrap,%s,%s);",sigI(Lib,Lib,String,Bool,String,String)))),
   CacheCall("cacheCall",Map.of(

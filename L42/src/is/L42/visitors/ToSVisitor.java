@@ -399,9 +399,14 @@ public class ToSVisitor implements ToSTrait{
     var docs0=f.docs();
     var t0=f.t();
     var s0=f.key();
+    var e0=f._e();
     visitFullDocs(docs0);
     visitT(t0);
     cMethName(s0);
+    if(e0!=null){
+      c("=");
+      visitE(e0);
+      }
     }
     
   public void visitMI(Full.L.MI mi){

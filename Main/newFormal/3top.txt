@@ -71,7 +71,7 @@ _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'
 * top(CTz,p) => PR
     CORE.L = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
-    Ms=p(This0).Ms //Ms = FULL.Ms
+    Ms=addDefaults(p(This0).Ms) //Ms = FULL.Ms
     p0 = p.update(CORE.L) //assert all levels of p0 are CORE.L TODO: add assert in code
     MH1..MHn = [MWT.MH| MWT in CORE.L.MWTs, MWT.s in dom(Ms)]//if p.top has reuse, some MWT may have a body
     CTz.add(p0; MH1 Ms(MH1.s).e?; e?1).. .add(p0; MHn Ms(MHn.s).e?; e?n) = CTz0
@@ -121,7 +121,7 @@ _______
     Ts1 = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
     forall imm P in Ts1\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
     p1 = p.update({interface? [Ts1] #norm{typeDep=Ts1}})//now with correct implements    
-    MWTs = [♥Docs MH e?| MH in methods(p1,Ts1,Ms) and 
+    MWTs = [♥Docs MH e?| MH in methods(p1,Ts1,addDefaults(Ms)) and 
       either Docs=Ms(MH.s).Docs or Docs=empty otherwise
       either e?=Ms(MH.s).e?=empty or Ms(MH.s).e?=e and e?=error void otherwise]//error if Ms(MH.s) undefined and MH.s have private number
       //private imported by interface need to be explicitly declared
@@ -166,6 +166,11 @@ _______
 *  otherwise minimizeSub(T Ts;Ts')=minimizeSub(Ts; Ts" T)
     Ts"={T' in Ts'| such that not p|-T'<=T}
 _______
+#define addDefaults(FULL.Ms)=FULL.MS
+* defaultsOf(Ms)=Ms MWT1..MWTn
+  var?1 T1 x1=e1..var?n Tn xn=en =[F| F in Ms where F.e is defined]
+  MWTi=class method T1 #default#xi()=ei
+_______
 #define CTz[from P;p]    ST[from P;p]
 * CTz[from P;p] = CTz' trivially propagates on the structure and applies ST[from P; p] on all the ST in CTz
 
@@ -206,7 +211,8 @@ _______
     ♥T = toRead(♥T)
 * extractMHs(p;T x,Ms)=extractMHs(toRead(♥T) x,Ms)
     ♥T != toRead(♥T) // NOTE: before was also doing mut method capsuleToLent(♥T) #x()
-* extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)    
+* extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)
+* extractMHs(var? T x=e,Ms)=extractMHs(var? T x,Ms)    
     
 * updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info1}
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}

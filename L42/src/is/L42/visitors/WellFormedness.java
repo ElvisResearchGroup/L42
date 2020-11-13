@@ -449,6 +449,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }    
   @Override public void visitF(Full.L.F f){
     super.visitF(f);
+    if(f._e()!=null){visitE(f._e());}
     if(f.t()._mdf()==null){return;}
     if(!f.t()._mdf().isIn(Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
     err(Err.invalidFieldType(f));

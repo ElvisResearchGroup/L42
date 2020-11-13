@@ -328,7 +328,8 @@ public class FullL42Visitor implements L42Visitor<Object>{
     List<Full.Doc> docs = L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
     S s = parseM(ctx.x().getText());
     boolean isVar=ctx.VarKw()!=null;
-    return new Full.L.F(pos(ctx),docs,isVar,visitT(ctx.t()),s);
+    Full.E e=ctx.e()==null?null:visitE(ctx.e());
+    return new Full.L.F(pos(ctx),docs,isVar,visitT(ctx.t()),s,e);
     }
   @Override public Full.L.MI visitFullMi(FullMiContext ctx) {
     check(ctx);

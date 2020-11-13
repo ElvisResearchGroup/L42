@@ -87,7 +87,7 @@ tLocal: t | Mdf | ;
 eAtomic: x | csP | voidE | fullL | block | slash | pathSel | slashX;
 fullL:'{' (header | DotDotDot | ReuseURL) fullM* info? doc*'}';
 fullM: fullF | fullMi | fullMWT | fullNC;
-fullF: doc* VarKw? t x;
+fullF: doc* VarKw? t x('=' e)?;
 fullMi: doc* MethodKw mOp oR x* ')' '=' e;
 fullMWT: doc* fullMH ('=' NativeURL? e)?;
 fullNC:  doc* csP '=' e;

@@ -89,7 +89,7 @@ public class State implements Serializable{
       assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
       Core.L coreL=SortHeader.coreTop(p,uniqueId++);
       Full.L topL=(Full.L)p.top;
-      List<Full.L.M> ms=topL.ms();
+      List<Full.L.M> ms=SortHeader.addDefaults(topL.ms());
       Program p0=p.update(coreL,false);
       CTz ctz=p0.from(ctzMap,P.pThis1);
       assert ctz.coherent(p0);
