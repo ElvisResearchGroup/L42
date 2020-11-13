@@ -430,15 +430,15 @@ public class Sum {
         this.addC(nc1.key()).plus(nc1.l(),nc2.l())
         );
       }
+    public static final String errConflict="Conflicting implementation: the method is implemented on both side of the sum";
     IMWT plus(IMWT imwt1,IMWT imwt2,Core.L l1,Core.L l2){
-      var errConflict="Conflicting implementation: the method is implemented on both side of the sum";
       boolean eqMH=Utils.equalMH(imwt1.mwt.mh(),imwt2.mwt.mh());
       boolean abs1=imwt1.mwt._e()==null;
       boolean abs2=imwt2.mwt._e()==null;
       boolean oneInterf=imwt1.isInterface || imwt2.isInterface;
       if(!abs1 && !abs2){err(imwt1,imwt2,()->errConflict);}
       if(eqMH){
-        if(abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1,imwt2));} 
+        //if(abs1 && abs2){return new IMWT(oneInterf,accDoc(imwt1,imwt2));} 
         if(abs2){return new IMWT(oneInterf,accDoc(imwt1,imwt2));} 
         var mwt=accDoc(imwt1,imwt2).with_e(imwt2.mwt._e()).withNativeUrl(imwt2.mwt.nativeUrl());
         return new IMWT(oneInterf,mwt);
@@ -496,19 +496,7 @@ public class Sum {
       if(imwt.mwt._e()!=null || imwt.isInterface){return true;}
       return otherCanNot;
       }
-    MWT accDoc(IMWT ia,IMWT ib){
-      MWT a=ia.mwt; 
-      MWT b=ib.mwt;
-      var totDoc=mergeU(a.docs(),b.docs());
-      var mhDoc=mergeU(a.mh().docs(),b.mh().docs());
-      var tDoc=merge(a.mh().t().docs(),b.mh().t().docs());
-      General.Consumer3<ArrayList<T>,T,T> merger=(c,ta,tb)->c.add(ta.withDocs(mergeU(ta.docs(),tb.docs())));
-      List<T> ts=L(a.mh().pars(),b.mh().pars(),merger);
-      List<T> excs=L(a.mh().exceptions(),b.mh().exceptions(),merger);
-      MH mh=new MH(a.mh().mdf(),mhDoc,a.mh().t().withDocs(tDoc),a.key(),ts,excs);
-      List<Pos> pos=mergeU(a.poss(),b.poss());
-      return a.withPoss(pos).withDocs(totDoc).withMh(mh);
-      }
+    MWT accDoc(IMWT ia,IMWT ib){return Utils.accDoc(ia.mwt,ib.mwt);}
     List<NC> plusNCs(List<NC> a,List<NC> b){
       return L(c->{
         for(var mi:a){

@@ -1,5 +1,21 @@
 [HasToS]
 method Name self()
+
+@Public method class Any *1(class Any that)[_]=
+  (Introspection.Nested.from(classAny=that)*this).classAny()
+
+@Public method Introspection.Nested *1(Introspection.Nested n)[_]={
+  (path,selector,x)=this.self()
+  i=if path==S"" n else (n.nested(name=\"%path"))
+  if selector==S"" return i
+  m=i.meth(selector=selector)
+  if x==S"this" return i
+  if x==S"" return m.returnType().nested()
+  for xi in this.xs(), ti in m.parameters() (
+    if xi==x return ti.nested()
+    )
+  error X"unreachable"
+  }
 @Public class method Bool validX(S that)={
   _=Name"foo(%that)"
   catch error S$ParseError _ return Bool.false()

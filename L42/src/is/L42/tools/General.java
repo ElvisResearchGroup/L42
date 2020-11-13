@@ -131,7 +131,7 @@ public class General {
     return Collections.unmodifiableList(res);
     }
 
-  public static <T> List<T>L(Stream<T> s){return s.collect(Collectors.toList());}
+  public static <T> List<T>L(Stream<T> s){return s.collect(Collectors.toUnmodifiableList());}
   public static <T> List<T>L(){return Collections.emptyList();}
   public static <T> List<T>L(T e){return Collections.singletonList(e);}
   public static <T> List<T>L(Consumer<ArrayList<T>> c){

@@ -1,0 +1,58 @@
+MapTrait=Trait:{
+  E={}
+  L={read method E val(Size that)  mut method Void set(Size that, E val)}
+  Size side;
+  mut Size.List m;
+  read method Size coords(Size x,Size y)
+  read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
+  mut method Void m(Size x,Size y,Size val)=this.#m().set(this.coords(x=x,y=y),val=val)
+  }
+MapKind={class method Trait (S that,class Any list)[_]=MapTrait[
+    'm()=>\"%(that)()";
+    '#m()=>\"%#(that)()";
+    'm(x,y)=>\"%(that)(x,y)";
+    'm(x,y,val)=>\"%(that)(x,y,val)";
+    'L=>list;
+    'E=>list*'val(that)]}
+$=Class:Data
+  :MapKind(S"map",list=Size.List)
+  :MapKind(S"riverMap",list=Size.List)
+  :MapKind(S"grassMap",list=Bool.List)
+  :MapKind(S"treeMap",list=Bool.List)
+  :MapKind(S"rocksMap",list=Bool.List)
+  :{
+  mut Size.List montainsTop;
+  Size waterLevel;
+  Size treeLevel;
+  Size rockLevel;
+  Size maxZ;
+  mut Random r;
+  }
+class method $ (Size waterLevel,Size treeLevel,Size rockLevel,Size maxZ,mut Random r)=$(
+  map=\()
+  riverMap=\()
+  grassMap=\()
+  treeMap=\()
+  rocksMap=\()
+  montainsTop=\()
+  waterLevel=waterLevel
+  treeLevel=treeLevel
+  rockLevel=rockLevel
+  maxZ=maxZ
+  r=r
+  )
+read method Size coords(Size x,Size y)=x*this.side()+y
+
+method S msg(Size side)=(
+  
+  g=S"Ground"
+  col=S"%g;%g;%g;%g;%g"
+  mapMsg=S"""%
+  |%col
+  |%col
+  |%col
+  |%col
+  |%col
+  """
+)
+

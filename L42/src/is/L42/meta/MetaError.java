@@ -54,13 +54,12 @@ public class MetaError{
       if(cs.isEmpty()){elem+="nested class This\n";}
       else{elem+="nested class "+cs.stream().map(c->c.toString()).collect(Collectors.joining("."))+"\n";}
       }
-    if(fault instanceof Core.L.MWT){
-      var mwt=(Core.L.MWT)fault;
-      System.err.print("Log: private name part of error:"+mwt.key());
+    if(fault instanceof Core.L.MWT mwt){
+      assert !mwt.key().hasUniqueNum();
+      //System.err.print("Log: private name part of error:"+mwt.key());
       if(mwt._e()!=null && mwt.nativeUrl().isEmpty()){elem="=(..)";}
       if(mwt._e()!=null && !mwt.nativeUrl().isEmpty()){elem=" (..)";}
-      mwt=mwt.with_e(null);
-      elem=mwt.toString()+elem;
+      elem=mwt.with_e(null).toString()+elem;
       elem+="\n";
       }
     if(fault instanceof Core.L){

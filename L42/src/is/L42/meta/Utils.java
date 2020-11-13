@@ -1,7 +1,11 @@
 package is.L42.meta;
 
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.merge;
+import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.range;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
@@ -9,6 +13,7 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
+import is.L42.tools.General;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
@@ -43,6 +48,17 @@ public class Utils {
     }
   public static boolean equalT(T t1, T t2){
     return t1.p().equals(t2.p()) && t1.mdf().equals(t2.mdf());
+    }
+  public static MWT accDoc(MWT a,MWT b){
+    var totDoc=mergeU(a.docs(),b.docs());
+    var mhDoc=mergeU(a.mh().docs(),b.mh().docs());
+    var tDoc=mergeU(a.mh().t().docs(),b.mh().t().docs());
+    General.Consumer3<ArrayList<T>,T,T> merger=(c,ta,tb)->c.add(ta.withDocs(mergeU(ta.docs(),tb.docs())));
+    List<T> ts=L(a.mh().pars(),b.mh().pars(),merger);
+    List<T> excs=L(a.mh().exceptions(),b.mh().exceptions(),merger);
+    MH mh=new MH(a.mh().mdf(),mhDoc,a.mh().t().withDocs(tDoc),a.key(),ts,excs);
+    List<Pos> pos=mergeU(a.poss(),b.poss());
+    return a.withPoss(pos).withDocs(totDoc).withMh(mh);
     }
   public static boolean equalMH(MH mh1, MH mh2) {
     if(!equalT(mh1.t(),mh2.t()) || mh1.mdf()!=mh2.mdf() 

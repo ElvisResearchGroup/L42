@@ -4,6 +4,7 @@ import static is.L42.tools.General.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -453,7 +454,9 @@ public class FullL42Visitor implements L42Visitor<Object>{
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
     check(ctx);
     var res=visitEAtomic(ctx.eAtomic());
-    var uOpList=L(ctx.children.stream().takeWhile(c->c instanceof TerminalNodeImpl));
+    var uOpList=ctx.children.stream()
+      .takeWhile(c->c instanceof TerminalNodeImpl)
+      .collect(Collectors.toCollection(ArrayList::new));
     Collections.reverse(uOpList);
     assert ctx.getChild(uOpList.size())==ctx.eAtomic();
     for(int i: range(uOpList.size()+1,ctx.children.size())){

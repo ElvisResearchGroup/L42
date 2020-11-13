@@ -10,20 +10,13 @@ class method mut This #$of()=This(r=Random.#$random(),j=JServer.#$of(),c=Camera(
 
 @JServer.Handler mut method Void ping(S msg)=void
 
+/*RandomMap={...}
 @JServer.Handler mut method Void start(S msg)=(
-  g=S"Ground"
-  col=S"%g;%g;%g;%g;%g"
-  mapMsg=S"""%
-  |%col
-  |%col
-  |%col
-  |%col
-  |%col
-  """
+  mapMsg=RandomMap.msg(side=300\)
   this.#j().submitEvent(key='Example.SetMap, id=S"",msg=mapMsg)
   this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
   whoops Message.Guard
-  )
+  )*/
 @JServer.Handler mut method Void pressed(S msg)=(
   if msg==S"Left" (this.c(\c.with(x=\x-\"0.2")))
   if msg==S"Right" (this.c(\c.with(x=\x+\"0.2")))

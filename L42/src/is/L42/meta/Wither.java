@@ -89,7 +89,7 @@ public class Wither {
     X x=k.key().xs().get(i);
     T t=k.mh().pars().get(i);
     S s=new S("with",L(x),-1);
-    if(_elem(c,s)!=null){throw todo();}//do sum
+    if(_elem(c,s)!=null){throw todo();}//do sum using SumMethods.sum(as,bs)
     MH mh=new MH(Mdf.Immutable,L(),P.coreThis0,s,L(t),L());
     List<Core.E>es=L(k.key().xs(),(ci,xi)->ci.add(kPar(xi,x)));
     Core.E body=Utils.ThisCall(pos, k.key(), es);
