@@ -6,7 +6,7 @@ Executers={...}
 SquareBuilder={
   mut Introspection.Nested.List that
   class method mut This (mut Introspection.Nested.List that)
-  class method mut This #query#squareBuilder()=This(\())
+  class method mut This #squareBuilder#query()=This(\())
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #squareAdd(class Any that)
     =this.#that().add(right=Introspection.Nested.from(classAny=that))

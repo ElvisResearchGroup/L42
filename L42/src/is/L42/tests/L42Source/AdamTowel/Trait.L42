@@ -31,7 +31,7 @@ class method This sum(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
   var Name$Mapping that
   class method mut This(Name$Mapping that)
   class method mut This (mut This squareBuilder)=squareBuilder
-  class method mut This ##apply#squareBuilder()=Acc(Name$Mapping())
+  class method mut This #squareBuilder()=Acc(Name$Mapping())
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #squareAdd(Name$Mapping that)=this.that(\that.mergeMap(deep=that))
   mut method Void #squareAdd(Name clear)=this.#squareAdd(clear->Name"")

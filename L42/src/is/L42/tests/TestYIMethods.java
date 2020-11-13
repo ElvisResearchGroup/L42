@@ -355,7 +355,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Any m1(This a)
      method This foo()
      method This bar(This squareBuilder)
-     method This #bar#squareBuilder()
+     method This #squareBuilder#bar()
      method This #shortCircutSquare()
      method This #if()
      method Any m2()=this.m1(a=\\foo.bar[])
@@ -363,13 +363,13 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method Any m1(This a)
      method This foo()
      method This bar(This squareBuilder)
-     method This #bar#squareBuilder()
+     method This #squareBuilder#bar()
      method This #shortCircutSquare()
      method This #if()
      method Any m2()=this.m1(a=(
        This fresh1_receiver=this.foo()
        fresh1_receiver.bar(squareBuilder=(
-         This fresh0_builder=This<:class This.#bar#squareBuilder()
+         This fresh0_builder=This<:class This.#squareBuilder#bar()
          Void fresh2_underscore=(
            This fresh3_cond=This<:class This.#shortCircutSquare()
            (Void fresh4_underscore=(This fresh5_receiver=fresh3_cond.#if()fresh5_receiver.#checkTrue())
@@ -403,7 +403,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #if()
      method Any m2()=this.m1(a=this.foo(
        squareBuilder=(
-         This fresh0_builder=This<:class This.#foo#squareBuilder()
+         This fresh0_builder=This<:class This.#squareBuilder#foo()
          Void fresh1_underscore=(
            This fresh2_cond=This<:class This.#shortCircutSquare()
              (
@@ -750,7 +750,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #shortCircutSquare()
      method This foo(This squareBuilder)
      method This a(This b, This c)=this.foo(squareBuilder=(
-       This fresh0_builder=This<:class This.#foo#squareBuilder()
+       This fresh0_builder=This<:class This.#squareBuilder#foo()
        Void fresh1_underscore=(
          This fresh2_cond=This<:class This.#shortCircutSquare()
          ( Void fresh3_underscore=(

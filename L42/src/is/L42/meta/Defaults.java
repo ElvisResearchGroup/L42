@@ -49,9 +49,6 @@ import is.L42.typeSystem.TypeManipulation;
      * TODO: in the future, consider a boolean option to give error if the method is present with the right types but implemented?
      * TODO: for now, the default methods must have no exceptions, we can add exception subtype
      */
-//consistency: ##apply#squareBuilder but #default#x for the #apply??
-//should it be #squareBuilder and #squareBuilder#otherMeth?
-//what about shortCircuts prefixes?
 public class Defaults{
   MetaError err;
   Core.L l;

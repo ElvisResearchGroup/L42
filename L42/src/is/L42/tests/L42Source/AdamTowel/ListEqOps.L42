@@ -2,7 +2,7 @@ Elem={}
 class method Bool equals(read Elem a,read Elem b)
 
 class method mut This (mut This squareBuilder)
-class method mut This ##apply#squareBuilder()
+class method mut This #squareBuilder()
 class method Bool #shortCircutSquare()
 mut method Void #squareAdd(Elem that)
 mut method Void #squareAdd(mut Elem mutVal)
@@ -186,7 +186,7 @@ Void removeRight(read Elem val){
 
 
 class method mut This (mut This squareBuilder)=squareBuilder
-class method mut This ##apply#squareBuilder()=This()
+class method mut This #squareBuilder()=This()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #add(Elem that)=this.add(val=that)
 mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)

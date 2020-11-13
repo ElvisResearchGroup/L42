@@ -22,7 +22,7 @@ class method mut This of(mut Set set)
 @Public mut method Void remove(Key that)=this.#set().remove(key=that)
 //-------------------Supporting []
 @Public class method mut This (mut This squareBuilder)=squareBuilder
-@Public class method mut This ##apply#squareBuilder()=This.empty()
+@Public class method mut This #squareBuilder()=This.empty()
 @Public class method Bool #shortCircutSquare()=Bool.true()
 @Public mut method Void #squareAdd(Key that)=this.add(that)
 //-------------------Supporting iteration

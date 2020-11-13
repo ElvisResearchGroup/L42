@@ -21,7 +21,7 @@ ResetDocsMeta={
     }
   }
 read method read Map self()
-@Public class method mut Map #resetDocs#squareBuilder()=Map.empty()
+@Public class method mut Map #squareBuilder#resetDocs()=Map.empty()
 @Public read method Library resetDocs(Library that)[Trait$InvalidName]=(
   NativeMap map=(
     mut_map=NativeMap.of()

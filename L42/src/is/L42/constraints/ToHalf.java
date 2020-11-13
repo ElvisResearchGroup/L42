@@ -837,7 +837,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S stringLiteralBuilder=S.parse("#stringLiteralBuilder()");
   private static final S baseSquareBuilder=S.parse("#squareBuilder()");
   private static final S squareBuilder(S m){
-    return baseSquareBuilder.withM("#"+m.m()+baseSquareBuilder.m());
+    var n="";
+    if(!m.m().equals("#apply")){n="#"+m.m();}
+    return baseSquareBuilder.withM(baseSquareBuilder.m()+n);
     }
   private static final S shortCircutSquare=S.parse("#shortCircutSquare()");
   private static final S squareAddS=S.parse("#squareAdd()");

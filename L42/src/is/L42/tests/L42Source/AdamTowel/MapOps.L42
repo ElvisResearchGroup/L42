@@ -76,7 +76,7 @@ class method mut This of(mut Hi hi,mut Hm hm)
   )
 //-------------------Supporting []
 @Public class method mut This (mut This squareBuilder)=squareBuilder
-@Public class method mut This ##apply#squareBuilder()=This.empty()
+@Public class method mut This #squareBuilder()=This.empty()
 @Public class method Bool #shortCircutSquare()=Bool.true()
 @Public mut method Void #squareAdd(Key key, Val val)=this.put(key=key,val=val)
 @Public mut method Void #squareAdd(Key key, mut Val mutVal)=this.#put(key=key,val=mutVal)

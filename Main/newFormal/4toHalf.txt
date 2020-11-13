@@ -172,7 +172,7 @@ _______
 _______
 #define Y.squareBuilder(m,pars)=e 
 * Y.squareBuilder(m,par1..parn) = (
-    x=\.#m#squareBuilder()
+    x=\.#squareBuilder#m()//will be just #squareBuilder if m==#apply
     if \.#shortCircutSquare() (
       x.#squareAdd(par1)
       ..

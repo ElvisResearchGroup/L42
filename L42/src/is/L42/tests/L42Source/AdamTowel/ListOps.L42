@@ -1,7 +1,7 @@
 [HasToS]
 Elem={}
 class method mut This (mut This squareBuilder)=squareBuilder
-class method mut This ##apply#squareBuilder()=This()
+class method mut This #squareBuilder()=This()
 class method Bool #shortCircutSquare()=Bool.true()
 mut method Void #squareAdd(Elem that)=this.add(right=that)
 mut method Void #squareAdd(mut Elem mutVal)=this.#add(right=mutVal)
