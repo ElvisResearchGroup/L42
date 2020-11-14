@@ -36,6 +36,7 @@ interface LayerE extends Serializable{
   default LayerL push(Program p,int index,List<Full.L.NC> ncs,
     List<Full.L.M> ms,List<Half.E> e1n,Map<ST,List<ST>> ctz){
     var self=this;
+    //assert ms.stream().noneMatch(m->m instanceof Full.L.F && m._e()!=null);
     return new LayerL(){
       @Override public String toString(){return "L["+p+", "+index+", "+ncs+", "+ms+", "+e1n+", "+self+"]";}
       @Override public int hashCode(){

@@ -3,7 +3,8 @@ parsing top level LL, resolve ... and Cs into Thisn.Cs, check well formedness, a
 _______
 #define init(FULL.L) = FULL.L' //with no Cs and no '...'
   it propagates on the structure;
-    all the ... are expanded with the code retrieved from the file system.
+    all the ... are expanded with the code retrieved from the file system;
+    then calls expandMs(FULL.L) on all the FULL.L.
     on all the FULL.L and CORE.L it grows a local program p,
     on all the Cs applies p.minimize(p.resolve(C.Cs)).
     on all the P applies p.minimize(P).
@@ -69,9 +70,9 @@ _______
     Err not in Rs
 _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'
-* top(CTz,p) => PR
+    Ms=expandMethods(p'(This0).Ms) //Ms = FULL.Ms
+    p=p'.update(p'(This0)[Ms=Ms])
     CORE.L = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
-    Ms=addDefaults(p(This0).Ms) //Ms = FULL.Ms
     p0 = p.update(CORE.L) //assert all levels of p0 are CORE.L TODO: add assert in code
     MH1..MHn = [MWT.MH| MWT in CORE.L.MWTs, MWT.s in dom(Ms)]//if p.top has reuse, some MWT may have a body
     CTz.add(p0; MH1 Ms(MH1.s).e?; e?1).. .add(p0; MHn Ms(MHn.s).e?; e?n) = CTz0
@@ -121,7 +122,7 @@ _______
     Ts1 = (♥Ts).distinct(),(collect(p0,♥Ts)\♥Ts)//gets the transitively implemented interfaces -Any
     forall imm P in Ts1\♥Ts, P not of form Thisk._.C::n._//private interfaces not added
     p1 = p.update({interface? [Ts1] #norm{typeDep=Ts1}})//now with correct implements    
-    MWTs = [♥Docs MH e?| MH in methods(p1,Ts1,addDefaults(Ms)) and 
+    MWTs = [♥Docs MH e?| MH in methods(p1,Ts1,Ms) and 
       either Docs=Ms(MH.s).Docs or Docs=empty otherwise
       either e?=Ms(MH.s).e?=empty or Ms(MH.s).e?=e and e?=error void otherwise]//error if Ms(MH.s) undefined and MH.s have private number
       //private imported by interface need to be explicitly declared
@@ -164,12 +165,7 @@ _______
 * minimizeSub(T Ts;Ts')=minimizeSub(Ts;Ts')
     exists T' in Ts' such that p|-T<=T'
 *  otherwise minimizeSub(T Ts;Ts')=minimizeSub(Ts; Ts" T)
-    Ts"={T' in Ts'| such that not p|-T'<=T}
-_______
-#define addDefaults(FULL.Ms)=FULL.MS
-* defaultsOf(Ms)=Ms MWT1..MWTn
-  var?1 T1 x1=e1..var?n Tn xn=en =[F| F in Ms where F.e is defined]
-  MWTi=class method T1 #default#xi()=ei
+    Ts"={T' in Ts'| such that not p|-T'<=T} 
 _______
 #define CTz[from P;p]    ST[from P;p]
 * CTz[from P;p] = CTz' trivially propagates on the structure and applies ST[from P; p] on all the ST in CTz
@@ -202,17 +198,25 @@ _______
     //assert P' never This0
     //assert s in dom(p(P).mwts)
 _______
+#define expandMs(FULL.L)=FULL.L    expandMs(FULL.M)=FULL.Ms
+* expandMs({H M1..Mn Docs})={H expandMs(M1)..expandMs(Mn) Docs}
+* expandMs({reuse[URL] M1..Mn Docs})={reuse[URL] expandMs(M1)..expandMs(Mn) Docs}
+* expandMs(var? T x=e)=expandMs(var? T x) class method T #default#x()=e
+* expandMs(T x)=read method toRead(T) x()
+    T = toRead(T) or T.Mdf = capsule
+* expandMs(T x)=expandMs(toRead(T) x) mut method T #x()
+    T != toRead(T) and T.Mdf != capsule   
+     // NOTE: before was also handling capsules with mut method capsuleToLent(T) #x()
+* expandMs(var T x)=mut method Void x(T that) expandMs(T x)
+* expandMs(NC)=NC
+* expandMs(MWT)=MWT
+* expandMs(MI)=MI
+_______
 #define extractMHs(p;Full.Ms)=CORE.MHs //need to keep the order
 * extractMHs(p;empty)=empty
 * extractMHs(p;NC,Ms)=extractMHs(Ms) 
-* extractMHs(p;MI,Ms)=extractMHs(Ms) 
-* extractMHs(p;MWT,Ms)=♥MWT.MH,extractMHs(Ms) 
-* extractMHs(p;T x,Ms)=read method ♥T x(), extractMHs(Ms)
-    ♥T = toRead(♥T)
-* extractMHs(p;T x,Ms)=extractMHs(toRead(♥T) x,Ms)
-    ♥T != toRead(♥T) // NOTE: before was also doing mut method capsuleToLent(♥T) #x()
-* extractMHs(var T x,Ms)=mut method Void x(♥T that), extractMHs(T x,Ms)
-* extractMHs(var? T x=e,Ms)=extractMHs(var? T x,Ms)    
+* extractMHs(p;MI,Ms)=extractMHs(Ms)
+* extractMHs(p;MWT,Ms)=♥MWT.MH,extractMHs(Ms)// assert M not of form F
     
 * updateInfo(p,MWTs) = {interface? Ts MWTs0 MWTs NCs Info1}
     p(This0) = {interface? Ts MWTs0 MWTs1 NCs Info0 Docs}

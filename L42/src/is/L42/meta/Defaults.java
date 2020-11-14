@@ -110,22 +110,25 @@ public class Defaults{
   public boolean okDef(MWT d,MWT m, T t, X x,List<X> oldXs){
     String name=m.key().m();
     String defName="#default#"+name+"#"+x.inner();
+    Mdf tMdf=TypeManipulation.noFwd(t.mdf());
     if(!d.mh().mdf().equals(m.mh().mdf())){return false;}
     if(name.equals("#apply")){defName="#default#"+x.inner();}
     if(!defName.equals(d.key().m())){return false;}
     for(var i :range(d.key().xs())){
       var xi=d.key().xs().get(i);
       var ti=d.mh().pars().get(i);
+      var mdfi=TypeManipulation.noFwd(ti.mdf());
       var j=m.key().xs().indexOf(xi);
       assert j!=-1;
       var tj=m.mh().pars().get(j);
-      if(ti.mdf().isCapsule()){err.throwErr(d, "Default method "+d.key()+" uses invalid modifier capsule for parameter "+xi);}
-      if(!ti.mdf().equals(tj.mdf())|| !ti.p().equals(tj.p())){
+      if(ti.mdf().isCapsule()){err.throwErr(d, "Default method "+d.key()+" uses invalid modifier capsule for parameter "+xi);}      
+      if(!mdfi.equals(tj.mdf())|| !ti.p().equals(tj.p())){
         err.throwErr(d, "Default method "+d.key()+" uses invalid type for parameter "+xi+"; it should be "+tj);
         }
       }
-    var retOk= d.mh().t().p().equals(t.p()) && d.mh().t().mdf().equals(t.mdf());
-    if(!retOk){err.throwErr(d,"Default method "+d.key()+" uses invalid return type "+d.mh().t()+"; it should be "+t);}
+    var retOk= d.mh().t().p().equals(t.p()) && d.mh().t().mdf().equals(tMdf);
+    if(!retOk){
+      err.throwErr(d,"Default method "+d.key()+" uses invalid return type "+d.mh().t()+"; it should be "+t);}
     if(!d.mh().exceptions().isEmpty()){err.throwErr(d,"Default method "+d.key()+" should throws no exceptions, but it throws "+d.mh().exceptions());}
     //TODO: complete here to handle exceptions
     if(!oldXs.containsAll(d.key().xs())){

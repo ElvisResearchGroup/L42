@@ -1,5 +1,8 @@
 package is.L42.top;
 
+import static is.L42.generated.Mdf.Capsule;
+import static is.L42.generated.Mdf.Lent;
+import static is.L42.generated.Mdf.Mutable;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.merge;
@@ -33,6 +36,7 @@ import is.L42.translationToJava.Loader;
 import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
+import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -110,5 +114,44 @@ public class Init {
     R res=c.openClose(new GLOpen(l,makeState()));
     if(res.isErr()){throw res._err;}
     return (Core.L)res._obj;    
+    }
+  private static void addMWT(ArrayList<Full.L.M> acc, Full.L.F f, Full.MH mh){
+    List<Full.Doc> docs=L();
+    if(f._e()==null){docs=f.docs();}
+    var mwt=new Full.L.MWT(f.pos(),docs,mh,"",f._e());
+    acc.add(mwt);
+    }
+  private static void expandM(ArrayList<Full.L.M> acc, Full.L.F f){
+    if (f._e()!=null){
+      var s=f.key().withM("#default#"+f.key().m());
+      var mh=new Full.MH(Mdf.Class,L(),f.t(),null,-1,s,L(),false,L());
+      addMWT(acc, f, mh);
+      f=f.with_e(null);
+      }
+    if(f.isVar()){
+      var s=f.key().withXs(X.thatXs);
+      var mh=new Full.MH(Mdf.Mutable,L(),P.fullVoid,null,-1,s,L(f.t()),false,L());
+      addMWT(acc, f, mh);
+      f=f.withVar(false);      
+      }
+    Mdf mdf=f.t()._mdf();
+    if(mdf==null){mdf=Mdf.Immutable;}
+    var isMut=mdf.isIn(Lent,Mutable,Capsule);
+    if(isMut && !mdf.isCapsule()){
+      var s=f.key().withM("#"+f.key().m());
+      var mh=new Full.MH(Mdf.Mutable,L(),f.t(),null,-1,s,L(),false,L());
+      addMWT(acc, f, mh);
+      }
+    if(isMut){f=f.withT(f.t().with_mdf(Mdf.Readable));}
+    var mh=new Full.MH(Mdf.Readable,L(),f.t(),null,-1,f.key(),L(),false,L());      
+    addMWT(acc,f,mh);
+    }
+  static List<Full.L.M> exapandMs(List<Full.L.M>ms){
+    var res=new ArrayList<Full.L.M>();
+    for(var mi:ms){
+      if(mi instanceof Full.L.F fi){expandM(res,fi);}
+      else{res.add(mi);}
+      }
+    return L(res.stream());
     }
   }

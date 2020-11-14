@@ -1,4 +1,24 @@
 reuse[AdamTowel]
+TestDataDefaults={
+  Point=Data:{Num x,Num y}
+  Points=Collection.list(Point)
+  Poligon=Data:{
+    mut Points points=Points()
+    }
+  Poligon2=Data:{
+    var Points points=Points()
+    }
+  Main=(
+    pol=Poligon()
+    {}:Test"pol size"(pol.points().size()==0Size)
+    pol.#points().add(\(x=2\,y=3\))
+    {}:Test"pol size"(pol.points().size()==1Size)
+    pol2=Poligon2()
+    {}:Test"pol2 size"(pol2.points().size()==0Size)
+    pol2.points(\points.withAlsoRight(\(x=2\,y=3\)))
+    {}:Test"pol2 size"(pol2.points().size()==1Size)
+    )
+  }
 TestDataCacheErrors={
   A={class method S (Library that)=(
     _=Data:that

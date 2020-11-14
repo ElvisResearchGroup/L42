@@ -59,6 +59,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       }
     if(dots.isFullL()){
       List<Full.L.M> newMs=merge(((Full.L)dots).ms(),s.ms());
+      newMs=Init.exapandMs(newMs);
       return ((Full.L)dots).withMs(newMs);
       }
     if(s.ms().isEmpty()){return dots;}
@@ -134,7 +135,10 @@ class InitVisitor extends CloneVisitorWithProgram{
     for(var n:ns){if(n!=0){uniqueNs.put(n,pos);}} 
     }
   @Override public LL visitL(Full.L s){
-    if(!s.isDots()){return super.visitL(s);}
+    if(!s.isDots()){
+      var newMs=Init.exapandMs(s.ms());
+      return super.visitL(s.withMs(newMs));
+      }
     LL res=addDots(s);
     if(res.isFullL()){return super.visitL((Full.L)res);}
     return super.visitL((Core.L)res);

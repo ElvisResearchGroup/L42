@@ -1,6 +1,9 @@
 package is.L42.top;
 
 import static is.L42.generated.LDom._elem;
+import static is.L42.generated.Mdf.Capsule;
+import static is.L42.generated.Mdf.Lent;
+import static is.L42.generated.Mdf.Mutable;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popL;
@@ -87,16 +90,15 @@ public class State implements Serializable{
       Resources.notifyCompiledNC("topO:"+p.dept()+",");
       alreadyCoherent.add(new HashSet<>());
       assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
-      Core.L coreL=SortHeader.coreTop(p,uniqueId++);
       Full.L topL=(Full.L)p.top;
-      List<Full.L.M> ms=SortHeader.addDefaults(topL.ms());
+      Core.L coreL=SortHeader.coreTop(p,uniqueId++);
       Program p0=p.update(coreL,false);
       CTz ctz=p0.from(ctzMap,P.pThis1);
       assert ctz.coherent(p0);
       //next line, is called mhs to be closer to the formalism
-      List<MWT> mhs=L(coreL.mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
+      List<MWT> mhs=L(coreL.mwts().stream().filter(mi->_elem(topL.ms(), mi.key())!=null));
       for(var mhi:mhs){
-        var memi=_elem(ms,mhi.key());
+        var memi=_elem(topL.ms(),mhi.key());
         Full.E _ei=(memi==null)?null:memi._e();
         ctzAdd(ctz,p0,mhi.mh(),_ei);//adds to e1n
         }

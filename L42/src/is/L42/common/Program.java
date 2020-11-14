@@ -11,6 +11,7 @@ import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.todo;
 import static is.L42.tools.General.typeFilter;
+import static is.L42.tools.General.unreachable;
 
 import java.nio.file.Paths;
 import java.util.ArrayList;
@@ -319,19 +320,8 @@ public class Program implements Visitable<Program>{
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
       if(m instanceof Full.L.MI){return;}
-      if(m instanceof Full.L.MWT){c.add(TypeManipulation.toCore(((Full.L.MWT)m).mh()));return;}
-      Full.L.F f=(Full.L.F)m;
-      Core.T t=TypeManipulation.toCore(f.t());
-      Core.T tr=TypeManipulation.toRead(t);
-      assert tr!=null;
-      if(f.isVar()){c.add(new Core.MH(Mdf.Mutable,L(), P.coreVoid, f.key().withXs(X.thatXs), L(t),L()));}
-      if(t!=tr){
-        assert !t.equals(tr);
-        if(!t.mdf().isCapsule()){
-          c.add(new Core.MH(Mdf.Mutable,L(),t, f.key().withM("#"+f.key().m()), L(),L()));
-          }
-        }
-      c.add(new Core.MH(Mdf.Readable,L(), tr, f.key(), L(),L()));
+      if(m instanceof Full.L.MWT mwt){c.add(TypeManipulation.toCore(mwt.mh()));return;}
+      throw unreachable();      
       });
     }
   

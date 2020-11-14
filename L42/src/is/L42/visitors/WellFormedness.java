@@ -884,7 +884,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   private List<Full.L.M> bridgeFull(List<Full.L.M> ms){
     return L(ms,(c,m)->{
       if(m instanceof Full.L.NC){return;}
-      if(m._e()==null){return;}//includes m instanceof Full.L.F
+      if(m._e()==null || m instanceof Full.L.F){return;}
       if(m instanceof Full.L.MI){
         var mi=(Full.L.MI)m;
         if(isBridgeMeth(mi.key().m(),"",m._e().visitable())){c.add(m);}

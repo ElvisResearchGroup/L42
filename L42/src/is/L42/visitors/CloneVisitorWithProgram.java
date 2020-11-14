@@ -50,7 +50,6 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     }
   @Override public LL visitL(Full.L s) {
     if(lastCMs==null){
-      assert p.top==s;
       var res=super.visitL(s);
       if(res.isFullL()){return fullLHandler((Full.L)res);} 
       return coreLHandler((Core.L)res);
