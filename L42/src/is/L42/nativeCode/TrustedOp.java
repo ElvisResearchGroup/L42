@@ -530,6 +530,10 @@ public enum TrustedOp {
     Double,use("return %s - %s;",sigI(Double,Double)),
     BigRational,use("return %s.subtract(%s);",sigI(BigRational,BigRational))
     )),
+  Mod("mod",Map.of(
+      Int,use("return %s %% %s;",sigI(Int,Int)),
+      Long,use("return %s %% %s;",sigI(Long,Long))
+      )),
   MathPow("mathPow",Map.of(Double,use("return Math.pow(%s,%s);",sigI(Double,Double)))),
   MathSin("mathSin",Map.of(Double,use("return Math.sin(%s);",sigI(Double)))),
   MathCos("mathCos",Map.of(Double,use("return Math.cos(%s);",sigI(Double)))),

@@ -1,0 +1,24 @@
+[ToS]
+E={class method E base()}
+L=Class.Relax:Trait(Collection.list(E))[clear='This]
+Size side
+read method Size coords(Size x,Size y)=x*this.side()+y
+mut L cells
+class method mut L #default#cells(Size side)=
+  L()( for i in (side*side).range() \add(E.base()) )
+read method Size (Size x,Size y)=this.cells().val(this.coords(x=x,y=y))
+mut method Void (Size x,Size y,E val)=this.#cells().set(this.coords(x=x,y=y),val=val)
+read method Size x(Size coord) {return coord.mod(this.size());} 
+read method Size y(Size coord) {return coord/this.size();}
+read method S toS()=(
+  var res=S""
+  for y in this.side().range() (
+    res++=S.nl()
+    for x in this.side().range() (
+      e=this.m(x=x,y=y)
+      if e==E.base() (res++="@")
+      else (res++=e.toS().substring(start=0\ end=1\))
+      )
+    )
+    res
+  )

@@ -1,47 +1,52 @@
-MapTrait=Trait:{
-  E={}
-  L={read method E val(Size that)  mut method Void set(Size that, E val)}
-  Size side;
-  mut Size.List m;
-  read method Size coords(Size x,Size y)
-  read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
-  mut method Void m(Size x,Size y,Size val)=this.#m().set(this.coords(x=x,y=y),val=val)
-  }
-MapKind={class method Trait (S that,class Any list)[_]=MapTrait[
-    'm()=>\"%(that)()";
-    '#m()=>\"%#(that)()";
-    'm(x,y)=>\"%(that)(x,y)";
-    'm(x,y,val)=>\"%(that)(x,y,val)";
-    'L=>list;
-    'E=>list*'val(that)]}
-$=Class:Data
-  :MapKind(S"map",list=Size.List)
-  :MapKind(S"riverMap",list=Size.List)
-  :MapKind(S"grassMap",list=Bool.List)
-  :MapKind(S"treeMap",list=Bool.List)
-  :MapKind(S"rocksMap",list=Bool.List)
-  :{
-  mut Size.List montainsTop;
-  Size waterLevel;
-  Size treeLevel;
-  Size rockLevel;
-  Size maxZ;
-  mut Random r;
-  }
-class method $ (Size waterLevel,Size treeLevel,Size rockLevel,Size maxZ,mut Random r)=$(
-  map=\()
-  riverMap=\()
-  grassMap=\()
-  treeMap=\()
-  rocksMap=\()
-  montainsTop=\()
-  waterLevel=waterLevel
-  treeLevel=treeLevel
-  rockLevel=rockLevel
-  maxZ=maxZ
-  r=r
+Size side
+mut Random r
+Size waterLevel
+Size treeLevel
+Size rockLevel
+Size maxZ
+mut Points montainsTop
+DeptMap=MapList.expansion(Size.List,base='zero())
+BoolMap=MapList.expansion(Bool.List,base='false())
+mut DeptMap map
+class method mut DeptMap #default#map(Size side,mut Random r)=
+  \(side=side, r=r,maxSeeds=\"-1")
+mut DeptMap riverMap
+mut BoolMap grassMap
+mut BoolMap treeMap
+mut BoolMap rocksMap
+
+class method mut Points montainsTop(DeptMap map)=(
+  s=map.side()
+  low=s/6Size
+  mid=s/2Size
+  high=5Size*(s/6Size)
+  p1=map.rCoord(minX=low,maxX=mid,minY=low,maxY=mid)
+  p2=map.rCoord(minX=mid,maxX=high,minY=mid,maxY=high)///TODO: HERE
+  p3=map.coord((c.x(p1)+c.x(p1)+c.x(p2))/3,(c.y(p1)+c.y(p1)+c.y(p2))/3);
+  p4=map.coord((c.x(p1)+c.x(p2)+c.x(p2))/3,(c.y(p1)+c.y(p2)+c.y(p2))/3);
+  p5=map.rCoord()
+  p6=map.rCoord()
+  p7=map.rCoord()
+  
   )
-read method Size coords(Size x,Size y)=x*this.side()+y
+
+class method mut This(
+  Size side,mut Random r,Size waterLevel,Size treeLevel,Size rockLevel,Size maxZ)=(
+  
+
+  This(side=side,r=r,
+    waterLevel=waterLevel,treeLevel=treeLevel,rockLevel=rockLevel,
+    maxZ=maxZ,
+mut Points montainsTop
+DeptMap=MapList.expansion(Size.List,base='zero())
+BoolMap=MapList.expansion(Bool.List,base='false())
+  map=DeptMap(side=side, r=r,maxSeeds=\"-1")
+mut DeptMap riverMap
+mut BoolMap grassMap
+mut BoolMap treeMap
+mut BoolMap rocksMap
+
+)
 
 method S msg(Size side)=(
   

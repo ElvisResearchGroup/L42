@@ -1,0 +1,58 @@
+mut Random r
+Size side
+mut L cells
+Size.List seeds=Size.List()
+Size maxSeeds
+read method Size coords(Size x,Size y)
+
+method Void addSeed(Size coord,E seed)=(
+  this.#seeds().add(coord)
+  this.#cells().set(coord val=seed)
+  )
+mut Points order=Points[
+  \(x=\"-1" y=\"-1"); \(x=\"0"  y=\"-1"); \(x=\"1"  y=\"-1");
+  \(x=\"-1" y=\"0");                       \(x=\"1"  y=\"0");
+  \(x=\"-1" y=\"1");  \(x=\"0"  y=\"1");   \(x=\"1"  y=\"1");
+  ]
+mut method Void initGrow()=(
+  ShufflePoints.shuffle(this.#order(),r=this.#r())
+  limit=this.seeds().size()-this.maxSeeds()
+  if this.maxSeeds()>0Size (
+   while this.seeds().size()>this.maxSeeds() this.#seeds().removeLeft()
+   )
+  ShuffleSize.shuffle(this.#seeds(),r=this.#r())
+  )
+mut method Void growInOrder(Double chance,Size x,Size y, Size c)=(
+  seed=this.cells().val(c);
+  for o this.order() {
+    xd=x+o.x()
+    yd=y+o.y()
+    if xd<0Size || xd>=maxX ||yd<0Size || yd>=maxY return void
+    nearC=this.coord(x=xd,y=yd)
+    if r.nextDouble()>chance return void
+    newSeed=this.combine(x=x,y=y,seed=seed,oldCell=this.cells().val(nearC))
+    if newSeed==E.base() return void
+    this.#cells().set(nearC, val=newSeed)
+    this.#cells().set(c, val=newSeed)
+    this.#seeds().add(nearC);
+    }
+  )
+mut method grow(Double chance)=(
+  this.initGrow()
+  for i in this.seeds().range() (//will grow down below
+    c=seeds.val(i)//so we only iterate on the current ones
+    this.growInOrder(change=chance,x=this.x(c),y=this.y(c),c=c)
+    )
+  )
+mut method Size rCoord()=
+  this.#r().nextInRange(start=0\ end=this.side()*this.side())
+mut method Size rCoord(Size xMin,Size xMax,Size yMin,Size yMax)=this.coord(
+  x=this.#r().nextInRange(start=xMin,end=xMax)
+  y=this.#r().nextInRange(start=yMin,end=yMax)
+  )
+mut method Void clearSeeds()=
+  while !this.seeds().isEmpty() this.#seeds().removeRight()
+read method E combine(Size x, Size y, E seed,T oldCell)={
+  if oldCell!=E.base() return E.base()
+  return seed
+  }

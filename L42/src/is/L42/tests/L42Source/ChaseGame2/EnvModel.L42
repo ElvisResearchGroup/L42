@@ -143,6 +143,12 @@ mut method Bool sameEntity(mut $.Entity a, mut $.Entity b)=
   System.mutReferenceEquality(a,and=b)
 mut method Void playerIsHit()=(
   this.running(\.false())
+  p=this.#player()
+  p.left(\.false())
+  p.right(\.false())
+  p.up(\.false())
+  p.down(\.false())
+  p.text(\"")
   this.#j().submitEvent(key='Example.ChangeScreen, id='Start, msg=S"Last Score:%this.points()")
   whoops JServer.Fail
   )

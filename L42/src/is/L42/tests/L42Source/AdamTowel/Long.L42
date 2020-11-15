@@ -7,6 +7,7 @@
 @This1.Public method This #times0(This that)=native{trusted:OP*} error void
 @This1.Public method This #divide0(This that)=native{trusted:OP/} error void
 @This1.Public method This #minus0(This that)=native{trusted:OP-} error void
+@This1.Public method This mod(This that)=native{trusted:mod} error void
 
 @This1.Public read method This1.Bool #lt0(read This that)=native{trusted:OP<} error void
 @This1.Public read method This1.Bool #gt0(read This that)=that.#lt0(that=this)
