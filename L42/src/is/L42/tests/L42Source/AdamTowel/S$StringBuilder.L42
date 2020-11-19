@@ -100,15 +100,14 @@ mut method Void #sspace()=native{trusted:space}error void
 mut method Void #snewLine()=native{trusted:newLine}error void
 mut method Void #stab()=native{trusted:tab}error void
 
-mut method Void #stringAddAll(mut This that)=this.addAll(string=that.toS())
-mut method Void #stringAddExpr(read This1.HasToS that)=this.addAll(string=that.toS())
-mut method Void addAll(This1.S string)=native{trusted:addAll}error void
+mut method Void #stringAddAll(mut This that)=this.append(that=that.toS())
+mut method Void #stringAddExpr(read This1.HasToS that)=this.append(that=that.toS())
+mut method Void append(This1.S that)=native{trusted:addAll}error void
 
-
-class method mut This0 #stringLiteralBuilder()
+class method mut This #apply()
+class method mut This #stringLiteralBuilder()=this.#apply()
 read method This1.S toS()=
   native{trusted:toS} error void
-//OLD watched=This1.HasToS,This1.S,This1.HasToS  
 #norm{nativeKind=StringBuilder
   typeDep=This,This1.HasToS,This1.S,This1.HasToS
   coherentDep=This0,This1.S

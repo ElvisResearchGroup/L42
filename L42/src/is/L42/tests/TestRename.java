@@ -610,13 +610,13 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    ),new AtomicTest(()->fail("""
      A={method This1.B s(This1.B x)=x #norm{typeDep=This1.B}} B={#norm{}}
    #norm{}} K={#typed{}}""",/*rename map after this line*/"""
-     A.=>#This1.K
+     A.=>#This.K
    """,/*expected after this line*/"""
    nested class { A={..} B={..} }
    nested class A
    Redirected classes need to be fully abstract and method This1.B s(This1.B x)=(..)
    is implemented
-   Full mapping:A=>This1.K
+   Full mapping:A=>This.K
    [file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}} B={#norm{typeDep=This1.A watched=This1.A}}
@@ -2051,10 +2051,38 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      #norm{typeDep=This1, This1.A::3, This1.A::1 coherentDep=This1.A::3, This1.A::1 watched=This1}
      }
   #norm{}}"""/*next test after this line*/)
- ));}
-
-//TODO: also check that the target must be an interface too
-//Test they must both be open interfaces?
+  //TODO: also check that the target must be an interface too
+  //Test they must both be open interfaces?
+    
+),new AtomicTest(()->pass("""
+    A={B={class method Void op() #norm{}}#norm{}}
+    #norm{}} K={B={class method Void op() #typed{}}#typed{}}""",/*rename map after this line*/"""
+     A.=>*#This.K
+     """,/*expected after this line*/"""
+     #norm{}}"""/*next test after this line*/)
+),new AtomicTest(()->fail("""
+    A={B={class method Void op() #norm{}}#norm{}}
+    #norm{}} K={B={#typed{}}#typed{}}""",/*rename map after this line*/"""
+    A.=>*#This.K
+    """,/*expected after this line*/"""
+    nested class { A={..} }
+    nested class A.B
+    can not be redirected, the target This.K.B
+    does not expose a compatible method method A.B.op()
+    the method does not exists
+    Full mapping:A=>*This.K
+    [###]"""/*next test after this line*/)
+),new AtomicTest(()->fail("""
+    A={B={class method Void op() #norm{}}#norm{}}
+    #norm{}} K={#typed{}}""",/*rename map after this line*/"""
+    A.=>*#This.K
+    """,/*expected after this line*/"""
+    nested class { A={..} }
+    This.K.B
+    does not exists in the redirected destination
+    Full mapping:A=>*This.K
+    [###]"""/*next test after this line*/)
+    ));}
 private static String nested4="""
      A={
        method Void foo(This a,This.B b,This.B.C c,This.B.C.D d)=void

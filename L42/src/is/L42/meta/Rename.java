@@ -347,7 +347,7 @@ public class Rename {
       if(that.isP()){err(errFail,"'This' can not be redirected away");}
       if(that.isEmpty()){err(errFail,"'This' can not be hidden");}
       }
-    if(that.isP()){earlyCheckPOne(that.cs, l);return;}
+    if(that.isP()){earlyCheckPOne(that.cs,that._path, l);return;}
     if(!that.full){
       if(that.isEmpty()){makeAbstractOk(null,that.cs);return;}//allow to abstractify interface
       makeAbstractOk(l,that.cs);//but not to move implementation out
@@ -395,7 +395,9 @@ public class Rename {
     if(that._cs!=null){priv&=that._cs.stream().anyMatch(c->c.hasUniqueNum());}
     if(priv){err(errFail,"A mapping using unique numbers was attempted");}//Should it be prevented before
     }
-  private void earlyCheckPOne(List<C> cs, L l){
+  private void earlyCheckPOne(List<C> cs,P path, L l){
+    var ok=!path.isNCs() || p._ofCore(path.toNCs().withN(path.toNCs().n()+1))!=null;
+    if(!ok){err(errName,errName.intro(path,false)+"does not exists in the redirected destination");}
     makeAbstractOk(null,cs);
     for(var mwt:l.mwts()){
       if(mwt.key().hasUniqueNum()){return;}
@@ -681,7 +683,7 @@ public class Rename {
     P.NCs path=a._path.toNCs();
     path=path.withN(path.n()+1);
     L l=this.p._ofCore(path);
-    assert l!=null;//TODO: was null one time while running on an unsyncronized TestSQLServer, where JServer was out of date
+    assert l!=null:"";
     Program p=this.p.navigate(a.cs);
     String interfMsg=nc.l().isInterface()?"Redirected interfaces must have all equivalent methods.\n":"";
     path=P.of(path.n()+a.cs.size(),path.cs());

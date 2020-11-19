@@ -98,8 +98,26 @@ public class TestDefault{
   class method Any #default#foo#y(capsule Void x)
   ""","""
   class method Any #default#foo#y(capsule Void x)
-  Default method #default#foo#y(x) uses invalid modifier capsule for parameter x
+  Default method #default#foo#y(x) uses invalid modifier Capsule for parameter x
   [###]""");}
+@Test public void wrongParType02(){fail("""
+    class method Void foo(fwd imm Any x, fwd imm Any y)
+    class method Any #default#foo#x()
+    class method fwd imm Any #default#foo#y(fwd imm Void x)
+    ""","""
+    class method fwd imm Any #default#foo#y(fwd imm Void x)
+    Default method #default#foo#y(x) uses invalid modifier ImmutableFwd for parameter x
+    [###]""");}
+@Test public void okFwd(){pass("""
+    class method Void foo(fwd imm Any x, fwd imm Any y)
+    class method Any #default#foo#x()
+    class method Any #default#foo#y(Any x)
+    ""","""
+    class method Void foo(fwd imm Any x, fwd imm Any y)
+    class method Any #default#foo#x()
+    class method Any #default#foo#y(Any x)
+    class method Void foo()=(imm Any x=this.#default#foo#x() imm Any y=this.#default#foo#y(x=x)this.foo(x=x, y=y))
+    """);}
 @Test public void apply01(){pass("""
   class method Void #apply(Any x, Any y)
   class method Any #default#x()

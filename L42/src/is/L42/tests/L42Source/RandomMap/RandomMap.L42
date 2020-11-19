@@ -51,22 +51,19 @@ mut method Void addMontains()=(
     lastSize:=c.seeds().size()
     )
   )
-  //-TODO: remove .range and Range0!!!
-  //-String concatenation in making the msg is very slow and is an easy
-  //low fruit
   //-rendering java side is now very slow, I must have messd up while
   //reducing the code. Transparency issue?
 read method S msg()=(
   Debug(S"msgIn")
   g=S"Ground"
-  var res=S""
+  var res=S.StringBuilder()
   for x in Range(this.side()) (
     for y in Range(this.side()) (
-      for z in Range(this.map()(x=x,y=y)) (res++=g++S";")
-      res++=g++S.nl()
+      for z in Range(this.map()(x=x,y=y)) (res.append(g++S";"))
+      res.append(g++S.nl())
       )
     )
   Debug(S"msgOut")
-  res
+  res.toS()
   )
 

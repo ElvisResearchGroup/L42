@@ -98,7 +98,8 @@ public class Defaults{
         usedX.addAll(d.key().xs());
         List<E> esD=L(d.key().xs().stream().map(x->new Core.EX(pos,x)));
         E ei=Utils.thisCall(pos, d.key(), esD);
-        ds.add(new Core.D(false, ti, xi, ei));
+        var _ti=ti.withMdf(TypeManipulation.noFwd(ti.mdf()));
+        ds.add(new Core.D(false, _ti, xi, ei));
         }
       }
     if(collected.isEmpty()){return Stream.empty();}
@@ -107,7 +108,8 @@ public class Defaults{
     for(var i:range(nonDef)){
       if(usedX.contains(nonDef.get(i))){
         var ti=nonDefT.get(i);
-        nonDefT.set(i,ti.withMdf(TypeManipulation.noFwd(ti.mdf())));
+        ti=ti.withMdf(TypeManipulation.noFwd(ti.mdf()));
+        nonDefT.set(i,ti);
         }
       }
     mh=new MH(mh.mdf(),mh.docs(),mh.t(),s,L(nonDefT.stream()),mh.exceptions());
