@@ -21,19 +21,18 @@ mut Points order=Points[
 mut method Void initGrow()=(
   ShufflePoint.shuffle(this.#order(),r=this.#r())
   limit=this.seeds().size()-this.maxSeeds()
-  if this.maxSeeds()>0Size (
-   while this.seeds().size()>this.maxSeeds() this.#seeds().removeLeft()
-   )
   ShuffleSize.shuffle(this.#seeds(),r=this.#r())
+  if this.maxSeeds()>0Size (
+    while this.seeds().size()>this.maxSeeds() this.#seeds().removeRight()
+    )
   )
-mut method Void growInOrder(Double chance,Size x,Size y,Size c)=(
+mut method Void growInOrder(Size x,Size y,Size c)=(
   seed=this.cells().val(c)
   for o in this.order() {
     xd=x+o.x()
     yd=y+o.y()
     if xd<0Size || xd>=this.side() || yd<0Size || yd>=this.side() return void
     nearC=this.coords(x=xd,y=yd)
-    if this.#r().nextDouble()>chance return void
     newSeed=this.combine(x=x,y=y,seed=seed,oldCell=this.cells().val(nearC))
     if newSeed==E.base() return void
     this.#cells().set(nearC, val=newSeed)
@@ -42,11 +41,12 @@ mut method Void growInOrder(Double chance,Size x,Size y,Size c)=(
     return void
     }
   )
-mut method Void grow(Double chance)=(
+mut method Void grow(Size percent)=(
   this.initGrow()
-  for i in Range(this.seeds().size()) (//will grow down below
+  //if this.#r().nextDouble()>chance return void
+  for i in Range((this.seeds().size()*percent)/100Size) (//will grow down below
     c=this.seeds().val(i)//so we only iterate on the current ones
-    this.growInOrder(chance=chance,x=this.x(coord=c),y=this.y(coord=c),c=c)
+    this.growInOrder(x=this.x(coord=c),y=this.y(coord=c),c=c)
     )
   )
 mut method Size rCoord()=

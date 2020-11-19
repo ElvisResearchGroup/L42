@@ -1,10 +1,13 @@
 mut Random r
 mut JServer j
 var Camera c
+Size side=64Size//256?
+Double sideD=64Double
 Camera=Data:{
   Double x,Double y,Double z
   method S toMsg()=S"%this.x();%this.y();%this.z()"
   }
+read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
 class method mut This #$of()=This(r=Random.#$random(),j=JServer.#$of(),c=Camera(x=25\,y=25\,z=25\))
 
 
@@ -19,18 +22,19 @@ MapList={...}
 RandomMap=Data:{...}
 @JServer.Handler mut method Void start(S msg)=(
   map=RandomMap(
-    side=300\,r=this.#r(),
+    side=this.side(),r=this.#r(),
     waterLevel=0\,treeLevel=0\,rockLevel=0\,maxZ=75\)
   map.addMontains()
+  map.montainsErosion(rounds=2\)
   this.#j().submitEvent(key='Example.SetMap, id=S"",msg=map.msg())
   this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
   whoops Message.Guard
   )
 @JServer.Handler mut method Void pressed(S msg)=(
-  if msg==S"Left" (this.c(\c.with(x=\x-\"0.2")))
-  if msg==S"Right" (this.c(\c.with(x=\x+\"0.2")))
-  if msg==S"Up" (this.c(\c.with(y=\y-\"0.2")))
-  if msg==S"Down" (this.c(\c.with(y=\y+\"0.2")))
+  if msg==S"Left" (this.c(\c.with(x=this<=\x-\"0.1")))
+  if msg==S"Right" (this.c(\c.with(x=this<=\x+\"0.1")))
+  if msg==S"Up" (this.c(\c.with(y=this<=\y-\"0.1")))
+  if msg==S"Down" (this.c(\c.with(y=this<=\y+\"0.1")))
   this.#j().submitEvent(key='Example.SetCamera, id=S"", msg=this.c().toMsg())
   //Debug(this.c())
   whoops Message.Guard

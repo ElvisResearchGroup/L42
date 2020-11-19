@@ -10,7 +10,10 @@ class method S (mut Gui that)=(
     |JLabel title=new JLabel("        Random map");
     |JPanel startControls=new JPanel();
     |JLabel points=new JLabel("Points=0");
-    |topProjection.View view=topProjection.View.of(new topProjection.Camera(37,37,40),300,300,52,100,450d);
+    |topProjection.View view=topProjection.View.of(
+    |  new topProjection.Camera(37,37,90),
+    |  64,64,//256,256,//300,300, //side
+    |  52,100,450d);
     |topProjection.PaintProjection paintable=new topProjection.PaintProjection(view)
     |  .name("Air",topProjection.Drawable.air)
     |  .name("Ground",topProjection.Drawable.ground);

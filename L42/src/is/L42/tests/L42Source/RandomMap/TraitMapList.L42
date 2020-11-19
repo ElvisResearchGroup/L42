@@ -6,6 +6,8 @@ read method Size coords(Size x,Size y)=(x*this.side())+y
 mut L cells
 class method mut L #default#cells(Size side)=
   L()( for i in Range(side*side) \add(E.base()) )
+read method Bool inRange(Size x,Size y)=this.inRange(x) && this.inRange(y)
+read method Bool inRange(Size that)=that>=0Size && that<this.side()
 read method E (Size x,Size y)=this.cells().val(this.coords(x=x,y=y))
 mut method Void (Size x,Size y,E val)=this.#cells().set(this.coords(x=x,y=y),val=val)
 read method E (Point that)=this(x=that.x(),y=that.y())

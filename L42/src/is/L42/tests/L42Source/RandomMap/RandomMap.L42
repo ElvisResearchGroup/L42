@@ -31,28 +31,47 @@ class method mut This(
   treesMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
   rocksMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
   )
-mut method Void addMontains()=(
-  c=this.#map()
-  c.initTops(maxZ=75\)
-  var lastSize=this.side()*this.side()
-  for h in Range(1\ to=this.maxZ()) (
-    Debug(S"**start1 for h=%h; seeds size=%c.seeds().size() maxZ=%this.maxZ()")
-    c.clearSeeds()
-    Debug(S"**start2 for h=%h; seeds size=%c.seeds().size()")
-    for p in c.montainsTop() ( if p.z()>=h c.addSeed(p val=h) )
-    Debug(S"**start3")
-    Debug(S"-- start growing for h=%h; seeds size=%c.seeds().size()")
-    for attempts in Range(10\) (//grows 20 times/200 //0.1
-      Debug(S"-- attempt %attempts, side=%c.seeds().size()")
-      if c.seeds().size()>=(lastSize*9Size)/10Size Break()
-      c.grow(chance=0.95Double)
+mut method Void montainsErosion(Size rounds)=
+  for r in Range(rounds) this.montainsErosionRound()
+mut method Void montainsErosionRound()=(
+  s=this.side()
+  m=this.#map()
+  o=m.#order()
+  ShufflePoint.shuffle(o,r=this.#r())
+  for x in Range(s) (
+    for y in Range(s) (
+      for (x1,y1) in o (
+        xd=x+x1
+        yd=y+y1//TODO: consider having defaults for MapList instead
+        if m.inRange(x=xd,y=yd) (
+          h0=m(x=x,y=y)
+          h1=m(x=xd,y=yd)
+          if h0>h1+6Size m(x=x,y=y,val=h0-4Size)
+          )  
+        )
       )
-    Debug(S"-- end growing for h=%h; seeds size=%c.seeds().size()")
-    lastSize:=c.seeds().size()
     )
   )
-  //-rendering java side is now very slow, I must have messd up while
-  //reducing the code. Transparency issue?
+mut method Void addMontains()=(
+  m=this.#map()
+  m.initTops(maxZ=75\)
+  var lastSize=this.side()*this.side()
+  for h in Range(1\ to=this.maxZ()) (
+    Debug(S"**start1 for h=%h; seeds size=%m.seeds().size() maxZ=%this.maxZ()")
+    m.clearSeeds()
+    Debug(S"**start2 for h=%h; seeds size=%m.seeds().size()")
+    for p in m.montainsTop() ( if p.z()>=h m.addSeed(p val=h) )
+    Debug(S"**start3")
+    Debug(S"-- start growing for h=%h; seeds size=%m.seeds().size()")
+    for attempts in Range(150\) (//grows 20 times/200 //0.1
+      //Debug(S"-- attempt %attempts, seeds=%c.seeds().size()")
+      if m.seeds().size()>=(lastSize*9Size)/10Size Break()
+      m.grow(percent=30\)
+      )
+    Debug(S"-- end growing for h=%h; seeds size=%m.seeds().size()")
+    lastSize:=m.seeds().size()
+    )
+  )
 read method S msg()=(
   Debug(S"msgIn")
   g=S"Ground"
@@ -60,7 +79,7 @@ read method S msg()=(
   for x in Range(this.side()) (
     for y in Range(this.side()) (
       for z in Range(this.map()(x=x,y=y)) (res.append(g++S";"))
-      res.append(g++S.nl())
+      res.append(g++S";"++g++S.nl())
       )
     )
   Debug(S"msgOut")
