@@ -4,60 +4,69 @@ Size waterLevel
 Size treeLevel
 Size rockLevel
 Size maxZ
-mut Points montainsTop
-DeptMap=MapList.expansion(Size.List,base='zero())
-BoolMap=MapList.expansion(Bool.List,base='false())
-mut DeptMap map
-class method mut DeptMap #default#map(Size side,mut Random r)=
-  \(side=side, r=r,maxSeeds=\"-1")
-mut DeptMap riverMap
+HeightMap=Class:Data:MapList.expansion(Size.List,base='zero()):{...}
+RiverMap=Class:Data:MapList.expansion(Size.List,base='zero()):{
+  read method Size combine(Size x,Size y,Size seed,Size oldCell)=this.baseCombine(x=x,y=y,seed=seed,oldCell=oldCell)
+  }
+BoolMap=Class:Data:MapList.expansion(Bool.List,base='false()):{
+  read method Bool combine(Size x,Size y,Bool seed,Bool oldCell)=this.baseCombine(x=x,y=y,seed=seed,oldCell=oldCell)
+  }
+mut HeightMap map
+mut RiverMap riverMap
 mut BoolMap grassMap
-mut BoolMap treeMap
+mut BoolMap treesMap
 mut BoolMap rocksMap
 
-class method mut Points montainsTop(DeptMap map)=(
-  s=map.side()
-  low=s/6Size
-  mid=s/2Size
-  high=5Size*(s/6Size)
-  p1=map.rCoord(minX=low,maxX=mid,minY=low,maxY=mid)
-  p2=map.rCoord(minX=mid,maxX=high,minY=mid,maxY=high)///TODO: HERE
-  p3=map.coord((c.x(p1)+c.x(p1)+c.x(p2))/3,(c.y(p1)+c.y(p1)+c.y(p2))/3);
-  p4=map.coord((c.x(p1)+c.x(p2)+c.x(p2))/3,(c.y(p1)+c.y(p2)+c.y(p2))/3);
-  p5=map.rCoord()
-  p6=map.rCoord()
-  p7=map.rCoord()
-  
-  )
 
 class method mut This(
-  Size side,mut Random r,Size waterLevel,Size treeLevel,Size rockLevel,Size maxZ)=(
-  
-
-  This(side=side,r=r,
-    waterLevel=waterLevel,treeLevel=treeLevel,rockLevel=rockLevel,
-    maxZ=maxZ,
-mut Points montainsTop
-DeptMap=MapList.expansion(Size.List,base='zero())
-BoolMap=MapList.expansion(Bool.List,base='false())
-  map=DeptMap(side=side, r=r,maxSeeds=\"-1")
-mut DeptMap riverMap
-mut BoolMap grassMap
-mut BoolMap treeMap
-mut BoolMap rocksMap
-
-)
-
-method S msg(Size side)=(
-  
+    Size side,mut Random r,
+    Size waterLevel,Size treeLevel,Size rockLevel,
+    Size maxZ)=This(
+  side=side,r=r,
+  waterLevel=waterLevel,treeLevel=treeLevel,rockLevel=rockLevel,
+  maxZ=maxZ,
+  map=HeightMap(side=side, r=r,maxSeeds=\"-1")
+  riverMap=RiverMap(side=side, r=r,maxSeeds=\"-1")
+  grassMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
+  treesMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
+  rocksMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
+  )
+mut method Void addMontains()=(
+  c=this.#map()
+  c.initTops(maxZ=75\)
+  var lastSize=this.side()*this.side()
+  for h in Range(1\ to=this.maxZ()) (
+    Debug(S"**start1 for h=%h; seeds size=%c.seeds().size() maxZ=%this.maxZ()")
+    c.clearSeeds()
+    Debug(S"**start2 for h=%h; seeds size=%c.seeds().size()")
+    for p in c.montainsTop() ( if p.z()>=h c.addSeed(p val=h) )
+    Debug(S"**start3")
+    Debug(S"-- start growing for h=%h; seeds size=%c.seeds().size()")
+    for attempts in Range(10\) (//grows 20 times/200 //0.1
+      Debug(S"-- attempt %attempts, side=%c.seeds().size()")
+      if c.seeds().size()>=(lastSize*9Size)/10Size Break()
+      c.grow(chance=0.95Double)
+      )
+    Debug(S"-- end growing for h=%h; seeds size=%c.seeds().size()")
+    lastSize:=c.seeds().size()
+    )
+  )
+  //-TODO: remove .range and Range0!!!
+  //-String concatenation in making the msg is very slow and is an easy
+  //low fruit
+  //-rendering java side is now very slow, I must have messd up while
+  //reducing the code. Transparency issue?
+read method S msg()=(
+  Debug(S"msgIn")
   g=S"Ground"
-  col=S"%g;%g;%g;%g;%g"
-  mapMsg=S"""%
-  |%col
-  |%col
-  |%col
-  |%col
-  |%col
-  """
-)
+  var res=S""
+  for x in Range(this.side()) (
+    for y in Range(this.side()) (
+      for z in Range(this.map()(x=x,y=y)) (res++=g++S";")
+      res++=g++S.nl()
+      )
+    )
+  Debug(S"msgOut")
+  res
+  )
 

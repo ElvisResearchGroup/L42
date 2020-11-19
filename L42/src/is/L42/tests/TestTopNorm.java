@@ -663,66 +663,6 @@ public class TestTopNorm{
       ) 
     }
     """,Err.castOnPathOnlyValidIfNotInterface(hole)
-  //strings printing ba
-  );}@Test public void t67(){top("""
-    {
-      S={
-        class method This0 of()
-        method This0 sum(This0 that)=native{trusted:OP+} error void
-        #norm{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE,This, watched=This1.PE}
-        }
-      PE={class method This0 of() #norm{nativeKind=LazyMessage, typeDep=This}}
-      Debug={
-        class method Void #apply(This1.S that)=(This d=This<:class This.of() d.strDebug(that=that))
-        class method This0 of()        
-        method Void strDebug(This1.S that)=native{trusted:strDebug} error void
-        method Void deployLibrary(This1.S that,Library lib)=native{trusted:deployLibrary} error void
-        #norm{nativeKind=TrustedIO typeDep=This0 This1.S coherentDep=This0, watched=This1.S}        
-        }
-      SB={
-        class method mut This0 of()
-        mut method Void #a()=native{trusted:'a'} error void
-        mut method Void #b()=native{trusted:'b'} error void
-        read method This1.S toS()=native{trusted:toS} error void
-        #norm{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0,This1.S, watched=This1.S}
-        }
-      C=(
-        mut SB sb=SB.of()
-        sb.#b()
-        sb.#a()
-        Debug(sb.toS())
-        Debug.of().deployLibrary(sb.toS(), lib={
-        A={
-          class method Library foo()={method Void retrived() #norm{}}
-          #norm{}}
-        #norm{}})
-        {#norm{}}
-        )
-      }
-    ""","""
-    {S={
-      class method imm This0 of()
-      imm method imm This0 sum(imm This0 that)=native{trusted:OP+}error void
-      #typed{nativeKind=String nativePar=This1.PE typeDep=This0,This1.PE coherentDep=This1.PE,This,watched=This1.PE}
-      }
-     PE={class method This0 of() #typed{nativeKind=LazyMessage typeDep=This}}
-     Debug={
-       class method imm Void #apply(imm This1.S that)=(imm This0 d=This0<:class This0.of()d.strDebug(that=that))
-       class method imm This0 of()
-       imm method imm Void strDebug(imm This1.S that)=native{trusted:strDebug}error void
-       imm method imm Void deployLibrary(imm This1.S that, imm Library lib)=native{trusted:deployLibrary}error void
-       #typed{nativeKind=TrustedIO typeDep=This0 This1.S coherentDep=This0,watched=This1.S}
-       }
-     SB={
-       class method mut This0 of()
-       mut method Void #a()=native{trusted:'a'} error void
-       mut method Void #b()=native{trusted:'b'} error void
-       read method This1.S toS()=native{trusted:toS} error void
-       #typed{nativeKind=StringBuilder typeDep=This0 This1.S coherentDep=This0,This1.S,watched=This1.S}
-       }
-     C={#typed{}}
-     #norm{}}
-     """    
   );}@Test public void t68(){top("""
     {reuse[ba]
      C=A.foo() 

@@ -31,7 +31,7 @@ Database=Data:{
     return this.rows().readVal(that).getEntry(key=key)
     }
   read method S.List getAllEntries(S key)=S.List()(
-    for i in this.rows().size().range() (
+    for i in Range(this.rows().size()) (
       nextValue = this.rows().readVal(i).getEntry(key=key)
       if nextValue \add(nextValue.val())
       )

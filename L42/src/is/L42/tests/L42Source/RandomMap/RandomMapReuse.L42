@@ -5,7 +5,7 @@ MapTrait=Trait:{
   read method Size coords(Size x,Size y)
   mut L m
   class method mut L #default#m(Size side)=
-    L()( for i in (side*side).range() \add(E.base()) )
+    L()( for i in Range(side*side) \add(E.base()) )
   read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
   mut method Void m(Size x,Size y,E val)=this.#m().set(this.coords(x=x,y=y),val=val)
   }
@@ -41,31 +41,31 @@ Size side
 
 mut Size.List map
 class method mut Size.List #default#map(Size side)=
-  Size.List()( for i in (side*side).range() \add(0\) )
+  Size.List()( for i in Range(side*side) \add(0\) )
 read method Size map(Size x,Size y)=this.map().val(this.coords(x=x,y=y))
 mut method Void map(Size x,Size y,Size val)=this.#map().set(this.coords(x=x,y=y),val=val)
 
 mut Size.List riverMap
 class method mut Size.List #default#riverMap(Size side)=
-  Size.List()( for i in (side*side).range() \add(0\) )
+  Size.List()( for i in Range(side*side) \add(0\) )
 read method Size riverMap(Size x,Size y)=this.riverMap().val(this.coords(x=x,y=y))
 mut method Void riverMap(Size x,Size y,Size val)=this.#riverMap().set(this.coords(x=x,y=y),val=val)
 
 mut Bool.List grassMap
 class method mut Bool.List #default#m(Size side)=
-  Bool.List()( for i in (side*side).range() \add(\.false()) )
+  Bool.List()( for i in Range(side*side) \add(\.false()) )
 read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
 mut method Void m(Size x,Size y,Bool val)=this.#m().set(this.coords(x=x,y=y),val=val)
 
 mut Bool.List treeMap
 class method mut Bool.List #default#m(Size side)=
-  Bool.List()( for i in (side*side).range() \add(\.false()) )
+  Bool.List()( for i in Range(side*side) \add(\.false()) )
 read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
 mut method Void m(Size x,Size y,Bool val)=this.#m().set(this.coords(x=x,y=y),val=val)
 
 mut Bool.List rocksMap
 class method mut Bool.List #default#rocksMap(Size side)=
-  Bool.List()( for i in (side*side).range() \add(\.false()) )
+  Bool.List()( for i in Range(side*side) \add(\.false()) )
 read method Size rocksMap(Size x,Size y)=this.rocksMap().val(this.coords(x=x,y=y))
 mut method Void rocksMap(Size x,Size y,Bool val)=this.#rocksMap().set(this.coords(x=x,y=y),val=val)
 

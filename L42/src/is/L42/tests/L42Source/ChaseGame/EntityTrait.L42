@@ -12,7 +12,7 @@ mut method Void moveSpeed(Double rad,Size power)=(
     this.speed(s+Vector(x=s.x()*this.break(),y=s.y()*this.break()))
     )
   else (
-    for i in power.range() (
+    for i in Range(power) (
       this.speed(s.sum(rad=rad,power=this.acc(),max=this.topSpeed()))
       )
     )

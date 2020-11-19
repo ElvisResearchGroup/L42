@@ -1,6 +1,11 @@
+TraitE=Trait:{[HasToS]
+  class method This base()
+  read method Bool ==(read This that)
+  read method Bool !=(read This that)
+  }
 TraitMapList=Trait:{...}
-class method Library (class Any that,Name base)[_]=
-  Class:Data:MapTrait['E.base()=>\"E.%base"]['L=>that;'E=>that*'val(that)]
+class method Trait (class Any that,Name base)[_]=
+  TraitMapList['E.base()=>base.with(path='E)]['L=>that;'E=>that*'val(that)]
 CellularExpansion=TraitMapList:{...}
-class method Library expansion(class Any that,Name base)[_]=
-  Class:Data:CellularExpansion['E.base()=>\"E.%base"]['L=>that;'E=>that*'val(that)]
+class method Trait expansion(class Any that,Name base)[_]=
+  CellularExpansion['E.base()=>base.with(path='E)]['L=>that;'E=>that*'val(that)]

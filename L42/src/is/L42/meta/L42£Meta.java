@@ -14,6 +14,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -27,6 +28,7 @@ import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42SingletonCache;
 import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Constants;
+import is.L42.common.EndError;
 import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.generated.C;
@@ -49,6 +51,7 @@ import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
+import is.L42.platformSpecific.javaTranslation.L42£Void;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -132,6 +135,47 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
   public L42£Meta mergeMapDeep(L42£Meta meta){
     var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
+    }
+  
+  public L42£Void deployLibrary(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+    var err=new MetaError(wrap);
+    Core.L l=l42Lib.unwrap;
+    System.out.println(l);
+    assert l.wf();
+    Program p=Program.flat(l);
+    l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient
+      @Override public P visitP(P p){
+        boolean open=p.isNCs() && (p.toNCs().n()>p().dept() || this.p()._ofCore(p)==null);
+        if(open){
+          err.throwErr(p,"Path "+p+" not defined inside of deployed code");
+          }
+        return p;
+        }
+      });
+    try {ProgramTypeSystem.type(true, p);}
+    catch(EndError e){
+      err.throwErr(l42Lib,e.toString());
+      }
+    l=l.accept(new CloneVisitor(){
+      @Override public Core.L.Info visitInfo(Core.L.Info info){
+        return info.withTyped(true);
+        }});
+    Path fullPath=Constants.localhost.resolve(s+".L42");
+    try(
+      var file=new FileOutputStream(fullPath.toFile()); 
+      var out=new ObjectOutputStream(file);
+      ){
+      out.writeObject(l);
+      }
+    catch (FileNotFoundException e) {throw unreachable();}
+    catch (IOException e) {
+      e.printStackTrace();
+      throw todo();
+      }
+    //TODO: should throw a non deterministic exception as for 
+    //memory overflow/stack overflow. It should be error S,
+    //the same type of the String
+    return L42£Void.instance;
     }
   public L42£Library sifo(L42£Library input,L42Any top,Function<L42£LazyMsg,L42Any>wrap){
     L l=input.unwrap;

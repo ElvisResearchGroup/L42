@@ -117,7 +117,7 @@ method Bool !=(This that)= !(this==that)
 read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
 
 read method Size indexOfLeft(read Elem val)={
-  //for pos in this.size().range() (//No, range is defined later so it can not be used here
+  //for pos in Range(this.size()) (//No, range is defined later so it can not be used here
   var pos=0Size
   size=this.size()
   loop (

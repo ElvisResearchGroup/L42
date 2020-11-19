@@ -142,7 +142,7 @@ Client={[HasToS]
   mut method Void outgoingWrappeeAddressbook(mut Email msg)={
     mut S.List aliasReceivers = this.getAddressBookReceivers(alias=msg.to())
     if aliasReceivers.isEmpty() return this.outgoingWrappeeEncrypt(msg=msg)
-    for i in (aliasReceivers.size()-1Size).range() (//TODO: check range docs
+    for i in Range(aliasReceivers.size()-1Size) (
       S receiverAddress = aliasReceivers.val(i+1\)
       msg.to(receiverAddress)
       this.outgoing(msg=msg)

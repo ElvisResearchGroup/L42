@@ -37,7 +37,7 @@ TestOptSize=(
   )
 TestSizeRange=(
   var sAcc=S""
-  for i in (21Size).range() (sAcc++=S"a")
+  for i in Range(21Size) (sAcc++=S"a")
   {}:Test"range 21"(sAcc.size()==21Size)
   )
 TestMatchReduce=((

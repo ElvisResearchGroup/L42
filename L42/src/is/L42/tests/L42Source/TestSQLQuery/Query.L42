@@ -39,7 +39,7 @@ method Trait makeCR(Introspection.Method k,S nameErr)[_,MetaFail]=(
   if n-1Size>=Collecters.traits().size() exception MetaFail
     "too many fields in the class: %nameErr max=%Collecters.traits().size()"
   var res=Collecters.traits().val(n-1Size)
-  for i in n.range() ( res:=this.field(res,i=i,k=k) )//from 0 to n-1
+  for i in Range(n) ( res:=this.field(res,i=i,k=k) )//from 0 to n-1
   res[Collecters.names().val(n-1Size)=>Name"R.%k.selector()"]
   )
 method Trait field(Trait that, Size i,Introspection.Method k)[_]=(
@@ -76,7 +76,7 @@ method Trait makeExecuteQ()[_,MetaFail]=(
     |but the number of holes is %(xsSize).
     |The holes are: %this.xs()
     """)
-  for i in n.range() ( res:=this.par(res,i=i) ) //0 to n-1
+  for i in Range(n) ( res:=this.par(res,i=i) ) //0 to n-1
   nameDest=Name"#apply()".with(xs=this.xs())
   sql=Trait.LiftS(this.sql())['#apply()=>'sql()]
   res[ignoreSelfRename=Executers.names().val(n)=>nameDest]+sql

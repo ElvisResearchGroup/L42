@@ -8,6 +8,9 @@ TestDataDefaults={
   Poligon2=Data:{
     var Points points=Points()
     }
+  PointSum=Data:{Num x,Num y Num s
+    class method Num #default#s(Num x, Num y)=x+y
+    }
   Main=(
     pol=Poligon()
     {}:Test"pol size"(pol.points().size()==0Size)
@@ -17,6 +20,8 @@ TestDataDefaults={
     {}:Test"pol2 size"(pol2.points().size()==0Size)
     pol2.points(\points.withAlsoRight(\(x=2\,y=3\)))
     {}:Test"pol2 size"(pol2.points().size()==1Size)
+    pSum=PointSum(x=2\,y=40\)
+    {}:Test"pSum"(pSum.s()==42Num)
     )
   }
 TestDataCacheErrors={

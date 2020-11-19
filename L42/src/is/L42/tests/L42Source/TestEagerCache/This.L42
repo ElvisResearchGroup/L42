@@ -14,13 +14,13 @@ Test1={
     method Size times2()=
     native{trusted:eagerCache} (
       Log"Foo".write(S"[")
-      for i in (5000Size).range() (Debug(S"in2"))
+      for i in Range(5000Size) (Debug(S"in2"))
       Log"Foo".write(S"]")
       this.inner::0()*2Size
       )
     method Size times3()=
     native{trusted:eagerCache} (
-      for i in (500Size).range() (Debug(S"in3"))
+      for i in Range(500Size) (Debug(S"in3"))
       Log"Foo".write(S"{")
       Log"Foo".write(S"}")
       this.inner::0()*3Size
@@ -49,7 +49,7 @@ Test2={
   Main=(
     Log"Point".clear()
     p=Point(x=3\,y=5\)
-    for i in (500Size).range() (Log"Point".write(S"@"))
+    for i in Range(500Size) (Log"Point".write(S"@"))
     S res=Log"Point".#$reader().read()
     Debug(res)
     Debug(res.size())

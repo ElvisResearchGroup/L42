@@ -7,10 +7,22 @@ S={
     coherentDep=This1.ParseErr
   }}
 ParseErr={class method This empty() #norm{nativeKind=LazyMessage typeDep=This}}
-Debug={
+DeployMeta={
   class method This of()
+  class method This #apply()
   method Void deployLibrary(This1.S that,Library lib)=
     native{trusted:deployLibrary} error void
+  #norm{nativeKind=Meta,
+    typeDep=This This1.ParseErr,This1.S
+    watched=This1.ParseErr,This1.S
+    coherentDep=This1.ParseErr,
+    nativePar=This1.ParseErr This1.ParseErr This1.ParseErr This1.ParseErr This1.ParseErr
+    }}
+
+Debug={
+  class method This of()
+  method Void strDebug(This1.S that)=
+    native{trusted:strDebug} error void
     #norm{typeDep=This, This1.S, nativeKind=TrustedIO, watched=This1.S}        
   }
 S$StringBuilder={
@@ -69,6 +81,7 @@ DeployAAA=(
     @Public Trait$ClassClash=BaseErrorTrait()
     @Public Trait$InvalidName=BaseErrorTrait()
     @Public Trait$InvalidMap=BaseErrorTrait()
+    @Public Deploy$LibraryNotSelfContained=BaseErrorTrait()
     @Public Test={...}
     @Public Log={...}
     @Public Name$Mapping={...}
@@ -91,6 +104,7 @@ DeployAAA=(
     @Public Collection={...}
     @Public S$List=Collection.list(S)
     @Public Name$List=Collection.list(Name)
+    Bool$List=Collection.list(Bool)
     Size$List=Collection.list(Size)
     Long$List=Collection.list(Long)
     Double$List=Collection.list(Double)
@@ -111,6 +125,7 @@ DeployAAA=(
     Deploy$={...}
     Load$={}
     @Public Random={...}
+    @Public Range={...}
     @Public Load={...}
     @Public Collection$Enum={...}
     System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
@@ -129,7 +144,7 @@ DeployAAA=(
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()
-  Debug.of().deployLibrary(sb.toS(),lib=lib)
+  DeployMeta.of().deployLibrary(sb.toS(),lib=lib)
   )
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
@@ -144,6 +159,7 @@ DeployAdamTowel={reuse[#$aaa]
       'Trait_ClassClash=>'Trait.ClassClash;
       'Trait_InvalidName=>'Trait.InvalidName;
       'Trait_InvalidMap=>'Trait.InvalidMap;
+      'Deploy_LibraryNotSelfContained=>'Deploy.LibraryNotSelfContained;
       ]
     organize=Organize(public='Public)
     toDeploy=Class$Relax:(organize:tot)[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]

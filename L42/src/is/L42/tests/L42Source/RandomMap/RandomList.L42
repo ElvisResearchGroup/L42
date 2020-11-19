@@ -1,8 +1,8 @@
 TraitRandomList=Trait:{
-  E={class method E base()}
+  E={}
   L=Class.Relax:Trait(Collection.list(E))[clear='This]
   class method Void shuffle(mut L that,mut Random r)=(
-    for a in that.size().range() (
+    for a in Range(that.size()) (
       b=r.nextInRange(start=a,end=that.size())
       tmp=that.val(a)
       that.set(a val=\val(b))
@@ -10,7 +10,7 @@ TraitRandomList=Trait:{
       )
     )
   class method Void #shuffle(mut L that,mut Random r)=(
-    for a in that.size().range() (
+    for a in Range(that.size()) (
       b=r.nextInRange(start=a,end=that.size())
       tmp=that.#val(a)
       that.#set(a val=that.#val(b))
@@ -19,7 +19,7 @@ TraitRandomList=Trait:{
     )
   class method E randomChoice(read L that,mut Random r)=
     that.val(r.nextInRange(start=0\ end=that.size()))
-  class method mut E #randomChoice(read L that,mut Random r)=
+  class method mut E #randomChoice(mut L that,mut Random r)=
     that.#val(r.nextInRange(start=0\ end=that.size()))
   }
 class method Library (class Any that)[_]=

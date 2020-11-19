@@ -24,6 +24,4 @@ InverseRange={
   mut method Bool #hasElem(Size$ that)=that<=this.limit()
   mut method Size$ #startIndex()=Size$.zero().#succ()
   }
-method mut Range0 range()=Range0(limit=this)//TODO: get assertion error if I write Range instead.
-//When do we check all Path are declared? 
- 
+//method mut Range0 range()=Range0(limit=this)

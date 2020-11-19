@@ -46,7 +46,7 @@ mut method Void clearRemoveQueue()=(
   )
 mut method Void removeQueue(mut $.Entity that)=(
   es=this.#es()
-  for i in es.size().range(), mut e in es (
+  for i in Range(es.size()), mut e in es (
     if this.sameEntity(a=that,b=e) Break(es.remove(i))
     )
   )

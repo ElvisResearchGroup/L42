@@ -274,10 +274,10 @@ public enum TrustedOp {
   TestActualExpected("testActualExpected",Map.of(
     TrustedIO,use("return %s.testActualExpected(%s,%s,%s,%s,%s,%s);",sigI(Void,
       Lib,String,String,String,String,String))
-    )),  
-  DeployLibrary("deployLibrary",Map.of(
-    TrustedIO,use("return %s.deployLibrary(%s,%s);",sigI(Void,String,Lib)))),
+    )),
   //####META####
+  DeployLibrary("deployLibrary",Map.of(
+    Meta,use("return %s.deployLibrary(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(

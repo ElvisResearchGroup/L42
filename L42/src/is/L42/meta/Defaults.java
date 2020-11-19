@@ -76,6 +76,7 @@ public class Defaults{
     var collected=new ArrayList<MWT>();    
     var nonDef=new ArrayList<X>();
     var nonDefT=new ArrayList<T>();
+    var usedX=new HashSet<X>();
     var ds=new ArrayList<Core.D>();
     var es=new ArrayList<E>();
     for(var i:range(ts)){
@@ -94,6 +95,7 @@ public class Defaults{
       else{
         var d=okDefs.get(0);
         collected.add(d);
+        usedX.addAll(d.key().xs());
         List<E> esD=L(d.key().xs().stream().map(x->new Core.EX(pos,x)));
         E ei=Utils.thisCall(pos, d.key(), esD);
         ds.add(new Core.D(false, ti, xi, ei));
@@ -102,6 +104,12 @@ public class Defaults{
     if(collected.isEmpty()){return Stream.empty();}
     S s=m.key().withXs(nonDef);
     var mh=m.mh();
+    for(var i:range(nonDef)){
+      if(usedX.contains(nonDef.get(i))){
+        var ti=nonDefT.get(i);
+        nonDefT.set(i,ti.withMdf(TypeManipulation.noFwd(ti.mdf())));
+        }
+      }
     mh=new MH(mh.mdf(),mh.docs(),mh.t(),s,L(nonDefT.stream()),mh.exceptions());
     E e=Utils.thisCall(pos,m.key(), L(es.stream()));
     e=new Core.Block(pos, L(ds.stream()), L(), e);
@@ -111,19 +119,21 @@ public class Defaults{
     String name=m.key().m();
     String defName="#default#"+name+"#"+x.inner();
     Mdf tMdf=TypeManipulation.noFwd(t.mdf());
+    t=new T(tMdf,L(),t.p());
     if(!d.mh().mdf().equals(m.mh().mdf())){return false;}
     if(name.equals("#apply")){defName="#default#"+x.inner();}
     if(!defName.equals(d.key().m())){return false;}
     for(var i :range(d.key().xs())){
       var xi=d.key().xs().get(i);
       var ti=d.mh().pars().get(i);
-      var mdfi=TypeManipulation.noFwd(ti.mdf());
+      var mdfi=ti.mdf();
       var j=m.key().xs().indexOf(xi);
       assert j!=-1;
       var tj=m.mh().pars().get(j);
-      if(ti.mdf().isCapsule()){err.throwErr(d, "Default method "+d.key()+" uses invalid modifier capsule for parameter "+xi);}      
-      if(!mdfi.equals(tj.mdf())|| !ti.p().equals(tj.p())){
-        err.throwErr(d, "Default method "+d.key()+" uses invalid type for parameter "+xi+"; it should be "+tj);
+      var mdfj=TypeManipulation.noFwd(tj.mdf());
+      if(mdfi.isIn(Mdf.Capsule, Mdf.ImmutableFwd,Mdf.MutableFwd)){err.throwErr(d, "Default method "+d.key()+" uses invalid modifier "+mdfi+" for parameter "+xi);}      
+      if(!mdfi.equals(mdfj)|| !ti.p().equals(tj.p())){
+        err.throwErr(d, "Default method "+d.key()+" uses invalid type for parameter "+xi+"; it should be "+new T(mdfj,L(),tj.p()));
         }
       }
     var retOk= d.mh().t().p().equals(t.p()) && d.mh().t().mdf().equals(tMdf);

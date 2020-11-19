@@ -1,7 +1,7 @@
-class method Void module(Url url,Library code,Name name)
+@Public class method Void module(Url url,Library code,Name name)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
   =Deploy.towel(url=url,code=this.module(code,n=name).code())
-class method Trait module(Library that,Name n)
+@Public class method Trait module(Library that,Name n)
   [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
   =(
   at=Name"AbstractTowel"
