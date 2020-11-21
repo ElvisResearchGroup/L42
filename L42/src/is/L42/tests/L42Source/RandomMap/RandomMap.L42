@@ -1,7 +1,6 @@
 Size side
 mut Random r
 Size waterLevel
-Size treeLevel
 Size rockLevel
 Size maxZ
 HeightMap=Class:Data:MapList.expansion(Size.List,base='zero()):{...}
@@ -17,20 +16,20 @@ mut BoolMap rocksMap
 
 class method mut This(
     Size side,mut Random r,
-    Size waterLevel,Size treeLevel,Size rockLevel,
+    Size waterLevel,Size rockLevel,
     Size maxZ)=This(
   side=side,r=r,
-  waterLevel=waterLevel,treeLevel=treeLevel,rockLevel=rockLevel,
+  waterLevel=waterLevel,rockLevel=rockLevel,
   maxZ=maxZ,
   map=HeightMap(side=side, r=r,maxSeeds=\"-1",maxZ=maxZ)
   grassMap=BoolMap(side=side, r=r,maxSeeds=(side*side)/4Size)
-  treesMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
+  treesMap=BoolMap(side=side, r=r,maxSeeds=(side*side)/7Size)
   rocksMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
   )
   
-  
-mut method Void makeGrass()=(
-  c=this.#grassMap()
+mut method Void makeGrass()=this.makeBools(c=this.#grassMap())
+mut method Void makeTrees()=this.makeBools(c=this.#treesMap())
+mut method Void makeBools(mut BoolMap c)=(
   m=this.map()
   s=this.side()
   for i in Range(50\) (c.addSeed(
@@ -112,22 +111,49 @@ mut method Void addMontains()=(
   )
 
 read method S msg()=(
-  g=S"Ground"
-  w=S"Water"
-  gr=S"Grass"
+  g=S"Ground;"
+  w=S"Water;"
+  gr=S"Grass;"
+  r=S"Rock;"
+  tree=S"TreeTrunk;TreeTrunk;TreeTop;"
   var res=S.StringBuilder()
   for x in Range(this.side()) (
     for y in Range(this.side()) (
       h=this.map()(x=x,y=y)
-      for z in Range(h) (res.append(g++S";"))
+      isRock=this.rocksMap()(x=x,y=y)
+      isGrass=this.grassMap()(x=x,y=y)
+      rockH=if isRock h else ( (h-6Size).max(0\) )
+      groundH=if isRock 0Size else (
+        if isGrass ( h.min(5\) ) else ( h.min(6\) ) )
+      for z in Range(rockH) (res.append(r))
+      for z in Range(groundH) (res.append(g))
+      if isGrass (res.append(gr))
+      if this.treesMap()(x=x,y=y) (res.append(tree))
       river=this.map().riverMap()(x=x,y=y)
-      if river>0Size for z in Range(river) (res.append(w++S";"))
+      if river>0Size for z in Range(river) (res.append(w))
       wl=(this.waterLevel()-h)-river
-      if wl>0Size for z in Range(wl) (res.append(w++S";"))
-      if this.grassMap()(x=x,y=y) (res.append(gr++S";"))
+      if wl>0Size for z in Range(wl) (res.append(w))
       res.append(S.nl())
       )
     )
-  Debug(S"msgOut")
   res.toS()
+  )
+mut method Void markRocks()=(
+  s=this.side()-1Size
+  m=this.map()
+  r=this.#rocksMap()
+  o=this.map().order()
+  for x in Range(1\ to=s) (
+    for y in Range(1\ to=s) {
+      h=m(x=x,y=y)
+      if h>=this.rockLevel() ( return r(x=x,y=y,val=\.true()) )
+      var min=this.maxZ()
+      for (x1,y1) in o ( min:=min.min(m(x=x+x1,y=y+y1)) )
+      return if min<h-6Size (
+        r(x=x,y=y, val=\.true())
+        this.#grassMap()(x=x,y=y, val=\.false())
+        this.#treesMap()(x=x,y=y, val=\.false())
+        )
+      }
+    )
   )

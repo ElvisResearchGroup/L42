@@ -47,24 +47,21 @@ mut method Void makeRivers(Size waterLevel)=(
   this.runWater(p=this.montainsTop().val(2\))
   this.runWater(p=this.montainsTop().val(3\))
   s=this.side()-1Size
-  o=this.#order()//WHAT is the code below trying to do?
-  ShufflePoint.shuffle(o,r=this.#r())
+  o=this.#order()
   for x in Range(1\ to=s) (
     for y in Range(1\ to=s) {
       if this.riverMap()(x=x,y=y) > 0Size return void
-      var max=Size"-1"
-      for (x1,y1) in o (
+      h=this(x=x,y=y)
+      if h <= waterLevel return void
+      var max=Size"-1"//for all non water points
+      for (x1,y1) in o (//for all surrunding spots, find the max with water
         r=this.riverMap()(x=x+x1,y=y+y1)
-        if r>0Size (
-          candidate=this(x=x+x1,y=y+y1)+r
-          if candidate>max max:=candidate
-          )
+        candidate=this(x=x+x1,y=y+y1)+r
+        if r>0Size ( max:=candidate.max(max) )
         )
       if max==Size"-1" return void
-      m=this(x=x,y=y)
-      if m < waterLevel-1Size return void
-      if m <= max  this(x=x,y=y,val=max)
-      else this(x=x,y=y,val=(m+max)/2Size)
+      if h <= max  this(x=x,y=y,val=max)
+      else this(x=x,y=y,val=(h+max)/2Size)
       return void
       }
     )
@@ -107,9 +104,10 @@ mut method Void riversGoDown(read Points river)=(
   )
 mut method Void adjust(read Points river)=(
   this.riversGoDown(river=river)
-  preLastH=this.riverMap()(river.right())
-    .max(this(river.val(\size()-2\))+1Size)
+  endH=this(river.val(\size()-2\))+1Size//the earth + 1 water
+  preLastH=this.riverMap()(river.right()).max(endH)
   this.#riverMap()(river.right() val=preLastH)
+  this(river.val(\size()-2\) val=0\)
   var lastH=this(river.right())
   for i in Range(river.size()-2\).reverse() (
     pi=river.val(i)

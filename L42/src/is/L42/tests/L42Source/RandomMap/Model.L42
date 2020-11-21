@@ -9,7 +9,7 @@ Camera=Data:{
   }
 read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
 class method mut This #$of()=This(
-  r=Random(seed=10\)//Random.#$random(),
+  r=Random(seed=11\)//Random.#$random(), //10 has a lake
   j=JServer.#$of(),
   c=Camera(x=25\,y=25\,z=25\))
 
@@ -25,12 +25,14 @@ RandomMap=Data:{...}
 @JServer.Handler mut method Void start(S msg)=(
   map=RandomMap(
     side=this.side(),r=this.#r(),
-    waterLevel=5\,treeLevel=40\,rockLevel=60\,maxZ=75\)
+    waterLevel=5\,rockLevel=60\,maxZ=75\)
   map.addMontains()
   map.addShores()
   map.montainsErosion(rounds=1\)
   map.#map().makeRivers(waterLevel=map.waterLevel())
-  //map.makeGrass()
+  map.makeGrass()
+  map.makeTrees()
+  map.markRocks()
   map.#map().noUnderZero()
   this.#j().submitEvent(key='Example.SetMap, id=S"",msg=map.msg())
   this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
@@ -41,7 +43,8 @@ RandomMap=Data:{...}
   if msg==S"Right" (this.c(\c.with(x=this<=\x+\"0.1")))
   if msg==S"Up" (this.c(\c.with(y=this<=\y-\"0.1")))
   if msg==S"Down" (this.c(\c.with(y=this<=\y+\"0.1")))
+  if msg==S"q" (this.c(\c.with(z=this<=\z-\"0.1")))
+  if msg==S"a" (this.c(\c.with(z=this<=\z+\"0.1")))
   this.#j().submitEvent(key='Example.SetCamera, id=S"", msg=this.c().toMsg())
-  //Debug(this.c())
   whoops Message.Guard
   )

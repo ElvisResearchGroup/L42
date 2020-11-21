@@ -19,7 +19,9 @@ class method S (mut Gui that)=(
     |  .name("Ground",topProjection.Drawable.ground)
     |  .name("Water",topProjection.Drawable.water)
     |  .name("Grass",topProjection.Drawable.grass)
-    |  .name("Rock",topProjection.Drawable.rock);
+    |  .name("Rock",topProjection.Drawable.rock)
+    |  .name("TreeTrunk",topProjection.Drawable.treeTrunk)
+    |  .name("TreeTop",topProjection.Drawable.treeTop);
     |{
     |  paintable.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
     |  event.registerEvent("Example.SetMap",(k,id,msg)->{
