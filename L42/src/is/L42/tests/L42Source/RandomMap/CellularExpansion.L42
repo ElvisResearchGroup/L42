@@ -9,6 +9,8 @@ read method Size coords(Size x,Size y)
 
 mut method Void addSeed(Point that,E val)=
   this.addSeed(coord=this.coords(x=that.x(),y=that.y()),val=val)
+mut method Void addSeed(Size x, Size y,E val)=
+  this.addSeed(coord=this.coords(x=x,y=y),val=val)
 mut method Void addSeed(Size coord,E val)=(
   this.#seeds().add(coord)
   this.#cells().set(coord val=val)

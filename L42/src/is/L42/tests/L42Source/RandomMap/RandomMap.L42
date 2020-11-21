@@ -5,14 +5,11 @@ Size treeLevel
 Size rockLevel
 Size maxZ
 HeightMap=Class:Data:MapList.expansion(Size.List,base='zero()):{...}
-RiverMap=Class:Data:MapList.expansion(Size.List,base='zero()):{
-  read method Size combine(Size x,Size y,Size seed,Size oldCell)=this.baseCombine(x=x,y=y,seed=seed,oldCell=oldCell)
-  }
 BoolMap=Class:Data:MapList.expansion(Bool.List,base='false()):{
-  read method Bool combine(Size x,Size y,Bool seed,Bool oldCell)=this.baseCombine(x=x,y=y,seed=seed,oldCell=oldCell)
+  read method Bool combine(Size x,Size y,Bool seed,Bool oldCell)=seed
   }
+//  read method Bool combine(Size x,Size y,Bool seed,Bool oldCell)=this.baseCombine(x=x,y=y,seed=seed,oldCell=oldCell)
 mut HeightMap map
-mut RiverMap riverMap
 mut BoolMap grassMap
 mut BoolMap treesMap
 mut BoolMap rocksMap
@@ -25,12 +22,58 @@ class method mut This(
   side=side,r=r,
   waterLevel=waterLevel,treeLevel=treeLevel,rockLevel=rockLevel,
   maxZ=maxZ,
-  map=HeightMap(side=side, r=r,maxSeeds=\"-1")
-  riverMap=RiverMap(side=side, r=r,maxSeeds=\"-1")
-  grassMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
+  map=HeightMap(side=side, r=r,maxSeeds=\"-1",maxZ=maxZ)
+  grassMap=BoolMap(side=side, r=r,maxSeeds=(side*side)/4Size)
   treesMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
   rocksMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
   )
+  
+  
+mut method Void makeGrass()=(
+  c=this.#grassMap()
+  m=this.map()
+  s=this.side()
+  for i in Range(50\) (c.addSeed(
+    x=this.#r().nextInRange(start=0\ end=s)
+    y=this.#r().nextInRange(start=0\ end=s)
+    val=\.true()))
+  for i in Range(50\) (c.grow(percent=20\))
+  for x in Range(s) (
+    for y in Range(s) (
+      if m(x=x,y=y)<this.waterLevel()+3Size ( c(x=x,y=y,val=\.false()) )
+      if m(x=x,y=y)>this.rockLevel() ( c(x=x,y=y,val=\.false()) )
+      if m.riverMap()(x=x,y=y)>0Size ( c(x=x,y=y,val=\.false()) )
+      )
+    )
+  )
+mut method Void addShores()=(
+  s=this.side()
+  c=BoolMap(side=s,r=this.#r(),maxSeeds=\"-1")
+  for x in Range(s) (
+    c.addSeed(x=x,y=0\,val=\.true())
+    c.addSeed(x=x,y=s-1\,val=\.true())
+    )
+  for y in Range(s) (
+    c.addSeed(x=0\,y=y,val=\.true())
+    c.addSeed(x=s-1\,y=y,val=\.true())
+    )
+  for x in Range(s/3\) (
+    for y in Range(s/3\) (
+      c.addSeed(x=x,y=y,val=\.true())
+      )
+    )
+  seeds=c.seeds().size()
+  for attempts in Range(150\) (
+      if c.seeds().size()>=seeds*3Size Break()
+      c.grow(percent=10\)
+      )
+  for x in Range(s) (
+    for y in Range(s) (
+      if c(x=x,y=y) this.#map()(x=x,y=y,val=0\)
+      )
+    )
+  )
+
 mut method Void montainsErosion(Size rounds)=
   for r in Range(rounds) this.montainsErosionRound()
 mut method Void montainsErosionRound()=(
@@ -54,35 +97,37 @@ mut method Void montainsErosionRound()=(
   )
 mut method Void addMontains()=(
   m=this.#map()
-  m.initTops(maxZ=75\)
+  m.initTops()
   var lastSize=this.side()*this.side()
   for h in Range(1\ to=this.maxZ()) (
-    Debug(S"**start1 for h=%h; seeds size=%m.seeds().size() maxZ=%this.maxZ()")
     m.clearSeeds()
-    Debug(S"**start2 for h=%h; seeds size=%m.seeds().size()")
     for p in m.montainsTop() ( if p.z()>=h m.addSeed(p val=h) )
-    Debug(S"**start3")
     Debug(S"-- start growing for h=%h; seeds size=%m.seeds().size()")
-    for attempts in Range(150\) (//grows 20 times/200 //0.1
-      //Debug(S"-- attempt %attempts, seeds=%c.seeds().size()")
+    for attempts in Range(150\) (
       if m.seeds().size()>=(lastSize*9Size)/10Size Break()
       m.grow(percent=30\)
       )
-    Debug(S"-- end growing for h=%h; seeds size=%m.seeds().size()")
     lastSize:=m.seeds().size()
     )
   )
+
 read method S msg()=(
-  Debug(S"msgIn")
   g=S"Ground"
+  w=S"Water"
+  gr=S"Grass"
   var res=S.StringBuilder()
   for x in Range(this.side()) (
     for y in Range(this.side()) (
-      for z in Range(this.map()(x=x,y=y)) (res.append(g++S";"))
-      res.append(g++S";"++g++S.nl())
+      h=this.map()(x=x,y=y)
+      for z in Range(h) (res.append(g++S";"))
+      river=this.map().riverMap()(x=x,y=y)
+      if river>0Size for z in Range(river) (res.append(w++S";"))
+      wl=(this.waterLevel()-h)-river
+      if wl>0Size for z in Range(wl) (res.append(w++S";"))
+      if this.grassMap()(x=x,y=y) (res.append(gr++S";"))
+      res.append(S.nl())
       )
     )
   Debug(S"msgOut")
   res.toS()
   )
-

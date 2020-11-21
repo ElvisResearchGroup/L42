@@ -16,7 +16,10 @@ class method S (mut Gui that)=(
     |  52,100,450d);
     |topProjection.PaintProjection paintable=new topProjection.PaintProjection(view)
     |  .name("Air",topProjection.Drawable.air)
-    |  .name("Ground",topProjection.Drawable.ground);
+    |  .name("Ground",topProjection.Drawable.ground)
+    |  .name("Water",topProjection.Drawable.water)
+    |  .name("Grass",topProjection.Drawable.grass)
+    |  .name("Rock",topProjection.Drawable.rock);
     |{
     |  paintable.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
     |  event.registerEvent("Example.SetMap",(k,id,msg)->{

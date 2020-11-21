@@ -16,11 +16,11 @@ class method This of(Size start Size end)
 @Public ReverseRange={
   This1 that
   class method This(This1 that)
-  @Public mut method mut This #iterator()=this
-  @Public mut method Void #close(Size that)=void
-  @Public mut method Bool #incomplete(Size that)=this.that().end()-that>=this.that().start()
-  @Public mut method Size #elem#default(Size that)=this.that().end()-that
-  @Public mut method Bool #hasElem(Size that)=this.that().end()-that>=this.that().start()
-  @Public mut method Size #startIndex()=Size.zero().#succ()
+  @Public method This #iterator()=this
+  @Public method Void #close(Size that)=void
+  @Public method Bool #incomplete(Size that)=this.that().end()-that>=this.that().start()
+  @Public method Size #elem#default(Size that)=this.that().end()-that
+  @Public method Bool #hasElem(Size that)=this.that().end()-that>=this.that().start()
+  @Public method Size #startIndex()=Size.zero().#succ()
   }
 @This1.AbstractTowel{range}

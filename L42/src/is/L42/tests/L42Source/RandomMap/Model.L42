@@ -8,8 +8,10 @@ Camera=Data:{
   method S toMsg()=S"%this.x();%this.y();%this.z()"
   }
 read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
-class method mut This #$of()=This(r=Random.#$random(),j=JServer.#$of(),c=Camera(x=25\,y=25\,z=25\))
-
+class method mut This #$of()=This(
+  r=Random(seed=10\)//Random.#$random(),
+  j=JServer.#$of(),
+  c=Camera(x=25\,y=25\,z=25\))
 
 @JServer.Handler mut method Void ping(S msg)=void
 
@@ -23,9 +25,13 @@ RandomMap=Data:{...}
 @JServer.Handler mut method Void start(S msg)=(
   map=RandomMap(
     side=this.side(),r=this.#r(),
-    waterLevel=0\,treeLevel=0\,rockLevel=0\,maxZ=75\)
+    waterLevel=5\,treeLevel=40\,rockLevel=60\,maxZ=75\)
   map.addMontains()
-  map.montainsErosion(rounds=2\)
+  map.addShores()
+  map.montainsErosion(rounds=1\)
+  map.#map().makeRivers(waterLevel=map.waterLevel())
+  //map.makeGrass()
+  map.#map().noUnderZero()
   this.#j().submitEvent(key='Example.SetMap, id=S"",msg=map.msg())
   this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
   whoops Message.Guard
