@@ -107,7 +107,7 @@ mut method Void adjust(read Points river)=(
   endH=this(river.val(\size()-2\))+1Size//the earth + 1 water
   preLastH=this.riverMap()(river.right()).max(endH)
   this.#riverMap()(river.right() val=preLastH)
-  this(river.val(\size()-2\) val=0\)
+  this(river.right() val=0\)
   var lastH=this(river.right())
   for i in Range(river.size()-2\).reverse() (
     pi=river.val(i)

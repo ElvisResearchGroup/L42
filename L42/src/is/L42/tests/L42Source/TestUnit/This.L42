@@ -1,27 +1,26 @@
 reuse [AdamTowel]
-Base=Trait:{reuse [AdamTowel]
-  Unit={...}
-  TraitSI=Organize:Trait:{
-    Support=Class.Relax:Unit.TraitAbstractSupport
+Base = Trait:{reuse [AdamTowel]
+  Unit = {...}
+  TraitSI = Organize : Trait : {
+    Support = Class.Relax : Unit.TraitAbstractSupport
     //the seven basic units
-    Meter=Unit(Support)//meters
-    Kg=Unit(Support)//kilograms
-    Second=Unit(Support)//seconds
-    Ampere=Unit(Support)//ampers
-    Kelvin=Unit(Support)//kelvins
-    Mole=Unit(Support)//moles
-    Candela=Unit(Support)//candelas
+    Meter = Unit(Support)
+    Kg = Unit(Support)
+    Second = Unit(Support)
+    Ampere = Unit(Support)
+    Kelvin = Unit(Support)
+    Mole = Unit(Support)
+    Candela = Unit(Support)
 
-    Velocity=Meter.Per(Second)
+    Velocity = Meter.Per(Second)
 //             Unit.CompositUnit(TraitUnit,Meter, per=Second)
-    Meter2=Meter.Times(Meter)
-    Meter$=Class.Relax:Meter2.TraitFromMeter:Velocity.TraitFromMeter
-    
-    Acceleration=Velocity.Per(Second)
-    Velocity$=Class.Relax:Acceleration.TraitFromVelocity
+    Meter2 = Meter.Times(Meter)
+    Meter$ = Class.Relax : Meter2.TraitFromMeter : Velocity.TraitFromMeter
+    Acceleration = Velocity.Per(Second)
+    Velocity$ = Class.Relax:Acceleration.TraitFromVelocity
 
-    Meter3=Meter2.Times(Meter)
-    Meter2$=Class.Relax:Meter3.TraitFromMeter2
+    Meter3 = Meter2.Times(Meter)
+    Meter2$ = Class.Relax : Meter3.TraitFromMeter2
 
     Hertz=Second.Inverse()  //hertz, 1/S
     Coulomb=Second.Times(Ampere)

@@ -1,3 +1,4 @@
+//### numeral is Size, string is S
 Size side
 mut Random r
 Size waterLevel
@@ -13,19 +14,22 @@ mut BoolMap grassMap
 mut BoolMap treesMap
 mut BoolMap rocksMap
 
-
-class method mut This(
-    Size side,mut Random r,
-    Size waterLevel,Size rockLevel,
-    Size maxZ)=This(
-  side=side,r=r,
-  waterLevel=waterLevel,rockLevel=rockLevel,
-  maxZ=maxZ,
-  map=HeightMap(side=side, r=r,maxSeeds=\"-1",maxZ=maxZ)
-  grassMap=BoolMap(side=side, r=r,maxSeeds=(side*side)/4Size)
-  treesMap=BoolMap(side=side, r=r,maxSeeds=(side*side)/7Size)
-  rocksMap=BoolMap(side=side, r=r,maxSeeds=\"-1")
-  )
+class method mut This (
+                Size side,
+                mut Random r,
+                Size waterLevel,
+                Size rockLevel,
+                Size maxZ)=
+  This(side = side,
+    r = r,
+    waterLevel = waterLevel,
+    rockLevel=rockLevel,
+    maxZ = maxZ,
+    map = HeightMap(side=side, r=r, maxSeeds=\"-1", maxZ=maxZ)
+    grassMap = BoolMap(side=side, r=r, maxSeeds=(side*side)/4Size)
+    treesMap = BoolMap(side=side, r=r, maxSeeds=(side*side)/7Size)
+    rocksMap = BoolMap(side=side, r=r, maxSeeds=\"-1")
+    )
   
 mut method Void makeGrass()=this.makeBools(c=this.#grassMap())
 mut method Void makeTrees()=this.makeBools(c=this.#treesMap())
@@ -89,7 +93,7 @@ mut method Void montainsErosionRound()=(
           h0=m(x=x,y=y)
           h1=m(x=xd,y=yd)
           if h0>h1+6Size m(x=x,y=y,val=h0-4Size)
-          )  
+          )
         )
       )
     )
@@ -120,7 +124,7 @@ read method S msg()=(
   for x in Range(this.side()) (
     for y in Range(this.side()) (
       h=this.map()(x=x,y=y)
-      isRock=this.rocksMap()(x=x,y=y)
+      isRock=this.rocksMap()(x=x, y=y)
       isGrass=this.grassMap()(x=x,y=y)
       rockH=if isRock h else ( (h-6Size).max(0\) )
       groundH=if isRock 0Size else (
