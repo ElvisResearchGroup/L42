@@ -1,0 +1,27 @@
+Random={...}
+Support = Trait : { [HasToS]
+  class method This zero()
+  class method This #from(S$StringBuilder stringLiteral)
+  
+  method This + (This that)
+  method This - (This that)
+  method This * (This that)
+  method This / (This that)
+  
+  read method Bool == (read This that)
+  read method Bool != (read This that)
+  read method Bool > (read This that)
+  read method Bool < (read This that)
+  read method Bool >= (read This that)
+  read method Bool <= (read This that)
+  
+  method Size ceil()
+  method Size floor()
+  method Size round()
+  method Double toDouble()
+  }
+class method Double pi()= \"3.14159265358979"
+class method Double tau()=\"6.28318530717958"
+class method Double randomRad(mut Random that)=
+  that.nextDouble() * This.tau()
+@This1.AbstractTowel{math}

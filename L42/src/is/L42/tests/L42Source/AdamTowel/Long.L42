@@ -21,11 +21,18 @@ read method This1.S toS()=native{trusted:toS} error void
   This1.S s=stringLiteral.toS()
   s.toLong()
   )
+method This #succ()=native{trusted:succ} error void
+method This #pred()=native{trusted:pred} error void
 method This randomNextSeed()=native{trusted:randomNextSeed} error void
 method This randomNextLong()=native{trusted:randomNextLong} error void
 method This1.Double randomNextDouble()=native{trusted:randomNextDouble} error void
 method This1.Size randomNextSize(This1.Size bound)=native{trusted:randomNextSize} error void
 class method This #$randomSeed()=native{trusted:#$randomSeed} error void
+
+method This1.Size ceil()=native{trusted:longToInt} error void
+method This1.Size floor()=native{trusted:longToInt} error void
+method This1.Size round()=native{trusted:longToInt} error void
+method This1.Double toDouble()=native{trusted:longToDouble} error void
 
 #norm{nativeKind=Long
   typeDep=This1.Public,This,This1.Num,This1.S,This1.Size,This1.Double,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call

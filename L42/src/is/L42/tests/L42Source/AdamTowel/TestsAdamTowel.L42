@@ -10,7 +10,7 @@ TestNum=(
   {}:Test"numOp3"(Num"25/30"*Num"11/10"==Num"275/300")
   {}:Test"numOp4"(Num"25/30"*Num"-11/10"==Num"-275/300")
   {}:Test"numConversion1"((12Size).toNum(denominator=3Size)==4Num)
-  {}:Test"numConversion2"((12Long).toNum(denominator=3Long)==4Num)
+  {}:Test"numConversion2"((12Math.Long).toNum(denominator=3Math.Long)==4Num)
   {}:Test"numConversion2"((12Double).toNum()==12Num)
   )
 TestQuote=(

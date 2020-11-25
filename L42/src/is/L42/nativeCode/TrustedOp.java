@@ -543,6 +543,13 @@ public enum TrustedOp {
   MathFloorInt("mathFloorInt",Map.of(Double,use("return (int)Math.floor(%s);",sigI(Int)))),
   MathCeilLong("mathCeilLong",Map.of(Double,use("return (long)Math.ceil(%s);",sigI(Long)))),
   MathCeilInt("mathCeilInt",Map.of(Double,use("return (int)Math.ceil(%s);",sigI(Int)))),
+  MathRoundLong("mathRoundLong",Map.of(Double,use("return (long)Math.round(%s);",sigI(Long)))),
+  MathRoundInt("mathRoundInt",Map.of(Double,use("return (int)Math.round(%s);",sigI(Int)))),
+  IntToDouble("intToDouble",Map.of(Int,use("return (double)%s;",sigI(Double)))),
+  IntToLong("intToLong",Map.of(Int,use("return (long)%s;",sigI(Long)))),
+  LongToDouble("longToDouble",Map.of(Long,use("return (double)%s;",sigI(Double)))),
+  LongToInt("longToInt",Map.of(Long,use("return (int)%s;",sigI(Int)))),
+
   LT("OP<",Map.of(
     Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)),
     Long,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Long)),
@@ -563,8 +570,14 @@ public enum TrustedOp {
     Bool,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Bool)),
     BigRational,use("return %s.equals(%s);",sig(Readable,Immutable,Bool,Readable,BigRational))
     )),
-  Succ("succ",Map.of(Int,use("return %s +1;",sigI(Int)))),
-  Pred("pred",Map.of(Int,use("return %s -1;",sigI(Int)))),
+  Succ("succ",Map.of(
+    Int,use("return %s +1;",sigI(Int)),
+    Long,use("return %s +1;",sigI(Long))
+    )),
+  Pred("pred",Map.of(
+    Int,use("return %s -1;",sigI(Int)),
+    Long,use("return %s -1;",sigI(Long))
+    )),
   LazyMessageK("lazyMessageK",Map.of(LazyMessage,use("return new L42£LazyMsg(%2$s);",sig(Class,Mutable,LazyMessage,Immutable,String)))),
   NonDeterministicErrorK("nonDeterministicErrorK",Map.of(NonDeterministicError,use("return new L42£NonDeterministicError(%2$s);",sig(Class,Mutable,NonDeterministicError,Immutable,String)))),
   SetMsg("setMsg",Map.of(

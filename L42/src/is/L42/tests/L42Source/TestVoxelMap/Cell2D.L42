@@ -1,0 +1,25 @@
+Size coord
+
+@Public class method This (Size x, Size y) = 
+  This(coord=Coords(
+    x=InRangeCell.bound(x=x)
+    y=InRangeCell.bound(y=y)
+    ))
+@Public read method Size x() = Coords.x(this.coord())
+@Public read method Size y() = Coords.y(this.coord())
+   
+@Public method This with(Size x) = 
+  This(coord=Coords(
+    x=InRangeCell.bound(x=x)
+    y=this.y()
+    ))
+@Public method This with(Size y) = 
+  This(coord=Coords(
+    x=this.x()
+    y=InRangeCell.bound(y=y)
+    ))
+@Public method This random(mut Math.Random r)=
+  This(
+    x=r.nextInRange(start=0\ end=Margin.maxX())
+    y=r.nextInRange(start=0\ end=Margin.maxY())
+    )

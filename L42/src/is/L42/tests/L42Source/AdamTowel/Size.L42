@@ -23,10 +23,16 @@ read method This1.S toS()=native{trusted:toS} error void
   )
 method This #succ()=native{trusted:succ} error void
 method This #pred()=native{trusted:pred} error void
-//OLD watched=This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
+
+method This ceil()=this
+method This floor()=this
+method This round()=this
+method This1.Double toDouble()=native{trusted:intToDouble} error void
+method This1.Long toLong()=native{trusted:intToLong} error void
+
 #norm{nativeKind=Int
-  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
-  coherentDep=This,This1.Num,This1.Bool,This1.S
+  typeDep=This,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double,This1.Long
+  coherentDep=This,This1.Num,This1.Bool,This1.S,This1.Double,This1.Long
   usedMethods=This1.S.toInt(),This1.S.sizeToNum(that,denominator), This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()
   }

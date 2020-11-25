@@ -58,8 +58,8 @@ DeployAAA=(
       @AbstractTowel{break}}
     @Public Bool={...}
     @Public Size={...}
-    @Public Long={...}
     @Public Double={...}
+    Long={...}
     @Public Num={...}
     @Public S={...}
     NativeName={...}
@@ -106,8 +106,8 @@ DeployAAA=(
     @Public Name$List=Collection.list(Name)
     Bool$List=Collection.list(Bool)
     Size$List=Collection.list(Size)
-    Long$List=Collection.list(Long)
     Double$List=Collection.list(Double)
+    Long$List=Collection.list(Long)
     Num$List=Collection.list(Num)
     @Public Data$Fail={interface [Message$Guard]}
     Class$IncoherentClass=Message:{[Data$Fail]}
@@ -123,8 +123,8 @@ DeployAAA=(
     @Public Class={...}
     @Public Organize={...}
     Deploy$={...}
+    @Public Math={...}
     Load$={}
-    @Public Random={...}
     @Public Range={...}
     @Public Load={...}
     @Public Collection$Enum={...}
@@ -149,7 +149,7 @@ DeployAAA=(
 //Deploy step2:
 DeployAdamTowel={reuse[#$aaa]
   AddOns=(
-    tot=Trait({...})[
+    var tot=Trait({...})[
       clear='Introspection$Nested;
       clear='BootStrapping;
       clear='Data.checkCoherent(that);
@@ -160,9 +160,10 @@ DeployAdamTowel={reuse[#$aaa]
       'Trait_InvalidName=>'Trait.InvalidName;
       'Trait_InvalidMap=>'Trait.InvalidMap;
       'Deploy_LibraryNotSelfContained=>'Deploy.LibraryNotSelfContained;
+      'Long=>'Math.Long;
       ]
-    organize=Organize(public='Public)
-    toDeploy=Class$Relax:(organize:tot)[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
+    tot:=Organize(public='Public) : tot
+    toDeploy=Class$Relax:tot[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
     Debug(Introspection.Nested.from(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)
     )

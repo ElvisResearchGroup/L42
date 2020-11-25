@@ -18,11 +18,27 @@ Bool$={
   class method This from(S string)=if string==S"true" This.true() else This.false()
   }
 TraitMinMax=Trait:{
-  read method This1.Bool #lt0(read This that)
+  read method Bool #lt0(read This that)
   method This min(This that)=if that<this that else this
-  method This max(This that)=if this<that that else this    
+  method This max(This that)=if this<that that else this
+  method Bool isInRange(This that,This to)=that<this && this<to 
   }
-Size$=TraitMinMax.code()
-Num$=TraitMinMax.code()
-Double$=TraitMinMax.code()
-Long$=TraitMinMax.code()
+TraitRangeTo=Trait:{
+  read method Bool #lt0(read This that)
+  method This #pred()
+  method This inRange(This that,This to)=
+    if this<that that
+    else if this<to this
+    else  to.#pred()
+  }
+TraitRangeMax=Trait:{
+  read method Bool #lt0(read This that)
+  method This inRange(This that,This max)=
+    if this<that that
+    else if this<max this
+    else  max
+  }
+Size$=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax
+Math$Long=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax
+Num$=Class$Relax:TraitMinMax:TraitRangeMax
+Double$=Class$Relax:TraitMinMax:TraitRangeMax

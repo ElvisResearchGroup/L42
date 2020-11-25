@@ -1,0 +1,15 @@
+Size x
+Size y
+
+@Public method Cell2D$List adjacent8()=\[
+  \(x=this.x()-1\, y=this.y()-1\);\(x=this.x()-1\, y=this.y());\(x=this.x()-1\, y=this.y()+1\);
+  \(x=this.x(),    y=this.y()-1\);                             \(x=this.x(),    y=this.y()+1\);
+  \(x=this.x()+1\, y=this.y()-1\);\(x=this.x()+1\, y=this.y());\(x=this.x()+1\, y=this.y()+1\);
+  ]
+@Public method Cell2D$List adjacent4()=\[
+                                  \(x=this.x()-1\, y=this.y());
+  \(x=this.x(),    y=this.y()-1\);                             \(x=this.x(),    y=this.y()+1\);
+                                  \(x=this.x()+1\, y=this.y());
+  ]
+@Public method Point2D toPoint() = 
+  \(x=this.x().toDouble(), y=this.y().toDouble())

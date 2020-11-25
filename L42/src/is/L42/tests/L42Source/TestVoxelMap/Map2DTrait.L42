@@ -1,0 +1,38 @@
+[HasToS]
+E = Class.Relax : TraitE
+L = Class.Relax : Trait(Collection.list(E))[clear='This]
+
+mut L cells = L()(
+  for i in Range(Margin.maxX() * Margin.maxY()) \add(E.base()) )
+ 
+read method E (Size x,Size y) = 
+  this.cells().val(Coords(x=x,y=y))
+
+mut method Void (Size x,Size y,E val) = 
+  this.#cells().set(Coords(x=x,y=y), val=val)
+  
+read method E (Cell2D that) = 
+  this(x=that.x(), y=that.y())
+  
+mut method Void (Cell2D that,E val) = 
+  this(x=that.x(), y=that.y(), val=val)
+  
+read method S toS()=(
+  var res=S""
+  for x in Range(Margin.maxX()) (
+    res++=S.nl()
+    for y in Range(Margin.maxY()) (
+      e=this(x=x,y=y)
+      if e==E.base() (res++=S"@")
+      else (res++=e.toS().subString(start=0\ end=1\))
+      )
+    )
+  res
+  )
+
+method This #iterator()=this
+method Void #close(Size that)=void
+method Bool #incomplete(Size that)=that<Margin.maxX()*Margin.maxY()
+method Cell2D #elem#default(Size that)=\(coord=that)
+method Bool #hasElem(Size that)=that<Margin.maxX()*Margin.maxY()
+method Size #startIndex()=0Size
