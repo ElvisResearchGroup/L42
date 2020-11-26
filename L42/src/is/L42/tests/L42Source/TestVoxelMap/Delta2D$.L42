@@ -1,0 +1,10 @@
+Size x, Size y
+
+method Delta2D *1 (Size that) = this * that
+method Delta2D * (Size that) = 
+  \(x=this.x()*that, y=this.y()*that)
+
+method Vector2D toVector() =
+  \(x=this.x().toDouble(), y=this.y().toDouble())
+method Cell3D to3D(Size z) =
+  \(x=this.x(), y=this.y(), z=z)

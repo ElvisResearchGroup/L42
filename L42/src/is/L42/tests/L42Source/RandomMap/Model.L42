@@ -1,4 +1,4 @@
-mut Random r
+mut Math.Random r
 mut JServer j
 var Camera c
 Size side=64Size//256?
@@ -9,7 +9,7 @@ Camera=Data:{
   }
 read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
 class method mut This #$of()=This(
-  r=Random(seed=12\)//Random.#$random(), //10 has a lake
+  r=Math.Random(seed=12\)//Math.Random.#$random(), //10 has a lake
   j=JServer.#$of(),
   c=Camera(x=25\,y=25\,z=25\))
 

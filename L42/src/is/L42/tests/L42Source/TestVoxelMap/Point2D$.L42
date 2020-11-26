@@ -1,0 +1,12 @@
+Double x, Double y
+
+method Point2D random(mut Math.Random r) = \(
+  x=r.nextDouble()* Margin.maxX().toDouble()
+  y=r.nextDouble()* Margin.maxY().toDouble()
+  )
+  
+method Point3D to3D(Double z) = \(
+  x=this.x()
+  y=this.y()
+  z=z
+  )

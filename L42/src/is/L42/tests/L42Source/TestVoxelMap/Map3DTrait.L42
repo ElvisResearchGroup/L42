@@ -1,0 +1,29 @@
+[HasToS]
+E = Class.Relax : TraitE
+L = Class.Relax : Trait(Collection.list(E))[clear='This]
+class method E base()
+
+mut L cells = L()(
+  for i in Range(Margin.layerSize() * Margin.maxZ()) \add(This.base()) )
+ 
+read method E (Size x, Size y, Size z) = 
+  this.cells().val(Coords(x=x, y=y, z=z))
+
+mut method Void (Size x, Size y, Size z, E val) = 
+  this.#cells().set(Coords(x=x, y=y, z=z), val=val)
+  
+read method E (Cell3D that) = 
+  this(x=that.x(), y=that.y(), z=that.z())
+  
+mut method Void (Cell3D that,E val) = 
+  this(x=that.x(), y=that.y(), z=that.z(), val=val)
+  
+read method S toS() = S"LargeMap3D"
+
+method This #iterator() = this
+method Void #close(Size that) = void
+method Bool #incomplete(Size that) = that < Margin.layerSize() * Margin.maxZ()
+method Cell3D #elem#default(Size that) = \(x=Coords.x3(that), y=Coords.y3(that), z=Coords.z3(that))
+method Bool #hasElem(Size that) = that < Margin.layerSize() * Margin.maxZ()
+method Size #startIndex() = 0Size
+

@@ -1,0 +1,38 @@
+Size x, Size y, Size z
+
+method Cell3D random(mut Math.Random r)=\(
+  x=r.nextInRange(start=0\ end=Margin.maxX())
+  y=r.nextInRange(start=0\ end=Margin.maxY())
+  z=r.nextInRange(start=0\ end=Margin.maxZ())
+  )
+  
+method Cell3D$List adjacent26()=(
+  (x,y,z) = this
+  \[
+    \(x=x-1\, y=y-1\, z=z-1\);\(x=x-1\, y=y, z=z-1\);\(x=x-1\, y=y+1\, z=z-1\);
+    \(x=x,    y=y-1\, z=z-1\);\(x=x,    y=y, z=z-1\);\(x=x,    y=y+1\, z=z-1\);
+    \(x=x+1\, y=y-1\, z=z-1\);\(x=x+1\, y=y, z=z-1\);\(x=x+1\, y=y+1\, z=z-1\);
+    
+    \(x=x-1\, y=y-1\, z=z   );\(x=x-1\, y=y, z=z   );\(x=x-1\, y=y+1\, z=z   );
+    \(x=x,    y=y-1\, z=z   );                       \(x=x,    y=y+1\, z=z   );
+    \(x=x+1\, y=y-1\, z=z   );\(x=x+1\, y=y, z=z   );\(x=x+1\, y=y+1\, z=z   );
+
+    \(x=x-1\, y=y-1\, z=z+1\);\(x=x-1\, y=y, z=z+1\);\(x=x-1\, y=y+1\, z=z+1\);
+    \(x=x,    y=y-1\, z=z+1\);\(x=x,    y=y, z=z+1\);\(x=x,    y=y+1\, z=z+1\);
+    \(x=x+1\, y=y-1\, z=z+1\);\(x=x+1\, y=y, z=z+1\);\(x=x+1\, y=y+1\, z=z+1\);
+    ]
+  )
+method Cell3D$List adjacent6()=(
+  (x,y,z) = this
+  \[
+                              \(x=x,    y=y, z=z-1\);
+                              \(x=x-1\, y=y, z=z   );
+    \(x=x,    y=y-1\, z=z   );                       \(x=x,    y=y+1\, z=z   );
+                              \(x=x+1\, y=y, z=z   );
+                              \(x=x,    y=y, z=z+1\);
+    ]
+  )
+
+method Point3D toPoint() = 
+  \(x=this.x().toDouble(), y=this.y().toDouble(), z=this.z().toDouble())
+method Cell2D to2D() = \(x=this.x(), y=this.y())

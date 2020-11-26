@@ -1,6 +1,32 @@
 reuse [AdamTowel]
-VoxelMap = Organize : Trait : {...}
-
+Module = Trait : {reuse [AdamTowel]
+  VoxelMap = Organize : Trait({...})['Margin=>'This]
+  }
+DeployUnit = Deploy.module(
+  url='VoxelMapTrait
+  code=Module.code()
+  name='VoxelMap
+  )
+  
+VMT = Load : {reuse [VoxelMapTrait] }
+VM = Class: VMT : {
+  class method Size maxX()=50\
+  class method Size maxY()=100\
+  class method Size maxZ()=200\
+  }
+Map = Class : VM.map2D(S.List) : {
+  class method S base() = S""
+  }
+  
 Main=(
-  Debug(S"Hello world")
+  p1 = VM.Point3D(x=1\, y=2\, z=3\)
+  {}:Test"pOk"(actual=p1.toS(), expected=S"""
+    |VM.Point3D(x="1.0", y="2.0", z="3.0")
+    """.trim())
+  {}:Test"pKo"((
+    _ = VM.Point3D(x=500\, y=2\, z=3\)
+    catch error Message.Assertion a ( Bool.true() )
+    Bool.false()
+    ))
+  Debug(S"Hello world %p1")
   )

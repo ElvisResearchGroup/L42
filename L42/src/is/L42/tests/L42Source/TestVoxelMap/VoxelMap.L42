@@ -1,18 +1,25 @@
-Margin = {
+Margin = {//todo maxX renamed to sizeX and so on? or just x?
+//if I rename size to I, then I can call Margin Size?
   class method Size maxX()
   class method Size maxY()
   class method Size maxZ()
+  class method Size layerSize()=this.maxX() * this.maxY()
   }
 Coords = {
-  class method Size(Size x,Size y) =  (x * Margin.maxY()) + y
-  class method Size x(Size that)=that/Margin.maxY()
-  class method Size y(Size that)=that.mod(Margin.maxY()) 
+  class method Size(Size x, Size y) =  (x * Margin.maxY()) + y
+  class method Size(Size x, Size y, Size z) =
+    (z * Margin.layerSize()) + (x * Margin.maxY()) + y
+  class method Size x2(Size that)=that/Margin.maxY()
+  class method Size y2(Size that)=that.mod(Margin.maxY())
+  class method Size x3(Size that)=that.mod(Margin.layerSize())/Margin.maxY()
+  class method Size y3(Size that)=that.mod(Margin.layerSize()).mod(Margin.maxY())
+  class method Size z3(Size that)=that.mod(Margin.layerSize())
   }
 InRangeTrait = Trait : {...}
 InRangeCell = Class : InRangeTrait['U=>Size] : {
   class method Bool inRange(Size that, Size to) = that.isInRange(0\ to=to)
 
-  class method Size bound(Size that, Size to) = that.inRange(0\ to=to)
+  class method Size bound(Size that, Size to) = that.clamp(0\ to=to)
   }
 InRangeDouble = Class : InRangeTrait['U=>Double] : {
   class method Bool inRange(Double that, Size to) = (
@@ -27,43 +34,83 @@ InRangeDouble = Class : InRangeTrait['U=>Double] : {
     }
   }
 
-//--------------
-Cell2D = Data : {...}
-Cell2D$List = Collection.list(Cell2D)
-Cell2D$Opt = Collection.optional(Cell2D)
-Cell2D$ = {...}
-    
-Point2D = Data : {
-  @Public Double x
-  @Public Double y
-  @Public class method This (Double x, Double y) = 
-    This.of(x=InRangeDouble.bound(x=x), y=InRangeDouble.bound(y=y))
-  class method This of(Double x, Double y)
+//Data, fields and invariants for all datatypes
+Cell2D = Data : {Size x, Size y
+  @Cache.Now class method Void invariant(Size x, Size y) = 
+    InRangeCell.errorOutOfRange(This, x=x, y=y)
   }
-Point2D$List = Collection.list(Point2D)
-Point2D$Opt = Collection.optional(Point2D)
-
-Delta2D = Data : {
-  Size x, Size y
+Cell3D = Data : {Size x, Size y, Size z
+  @Cache.Now class method Void invariant(Size x, Size y, Size z) = 
+    InRangeCell.errorOutOfRange(This, x=x, y=y, z=z)
+  }
+Point2D = Data : {Double x, Double y
+  @Cache.Now class method Void invariant(Double x, Double y) = 
+    InRangeDouble.errorOutOfRange(This, x=x, y=y)
+  }
+Point3D = Data : {Double x, Double y, Double z
+  @Cache.Now class method Void invariant(Double x, Double y, Double z) = 
+    InRangeDouble.errorOutOfRange(This, x=x, y=y, z=z)
+  }
+Delta2D = Data : {Size x, Size y
   method Cell2D +1 (Cell2D cell) = this + cell
   method Cell2D + (Cell2D cell) = \(x=this.x()+cell.x(), y=this.y()+cell.y())
   method This + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y())
   }
-    
-Vector2D = Data : {...}
+Delta3D = Data : {Size x, Size y, Size z
+  method Cell3D +1 (Cell3D cell) = this + cell
+  method Cell3D + (Cell3D cell) = \(x=this.x()+cell.x(), y=this.y()+cell.y(), z=this.z()+cell.z())
+  method This + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y(), z=this.z()+that.z())
+  }
+Vector2D = Data : {Double x, Double y
+  @Cache.Now class method Void invariant(Double x,Double y) = (
+    if x.toS()==S"NaN" error X"x is NaN"
+    if y.toS()==S"NaN" error X"y is NaN"
+    )}
+Vector3D = Data : {Double x, Double y, Double z
+  @Cache.Now class method Void invariant(Double x, Double y, Double z) = (
+    if x.toS()==S"NaN" error X"x is NaN"
+    if y.toS()==S"NaN" error X"y is NaN"
+    if z.toS()==S"NaN" error X"z is NaN"
+    )}
+
+//List and Opt for all data types
+Cell2D$List = Collection.list(Cell2D)
+Cell2D$Opt = Collection.optional(Cell2D)
+Point2D$List = Collection.list(Point2D)
+Point2D$Opt = Collection.optional(Point2D)
+Delta2D$List = Collection.list(Delta2D)
+Delta2D$Opt = Collection.optional(Delta2D)
 Vector2D$List = Collection.list(Vector2D)
 Vector2D$Opt = Collection.optional(Vector2D)
 
+Cell3D$List = Collection.list(Cell3D)
+Cell3D$Opt = Collection.optional(Cell3D)
+Point3D$List = Collection.list(Point3D)
+Point3D$Opt = Collection.optional(Point3D)
+Delta3D$List = Collection.list(Delta3D)
+Delta3D$Opt = Collection.optional(Delta3D)
+Vector3D$List = Collection.list(Vector3D)
+Vector3D$Opt = Collection.optional(Vector3D)
 
-//--------------------
+//Other methods for the datatypes
+Cell2D$ = {...}
+Cell3D$ = {...}
+Delta2D$ = {...}
+Delta3D$ = {...}
+Point2D$ = {...}
+Point3D$ = {...}
+Vector2D$ = {...}
+Vector3D$ = {...}
+
+//Map2D and Map3D
 TraitE = Trait : { [HasToS]
-  class method This base()
   read method Bool == (read This that)
   read method Bool != (read This that) 
   }
 
 Map2DTrait = Trait : {...}
-class method Library map2D(class Any that,Name base)[_] = 
-  Class : Map2DTrait
-    ['E.base()=>base.with(path='E)]
-    ['L=>that;'E=>that*'val(that)]
+class method Trait map2D(class Any that)[_] = 
+  Map2DTrait['L=>that;'E=>that*'val(that)]
+Map3DTrait = Trait : {...}
+class method Trait map3D(class Any that)[_] = 
+  Map3DTrait['L=>that;'E=>that*'val(that)]

@@ -8,7 +8,7 @@ mut Points montainsTop=Points()
 RiverMap=Class:Data:MapList(Size.List,base='zero())
 mut RiverMap riverMap
 class method mut RiverMap #default#riverMap(Size side)=\(side=side)
-mut Random r
+mut Math.Random r
 Size maxZ
 Size side
 read method Size (Point that)
