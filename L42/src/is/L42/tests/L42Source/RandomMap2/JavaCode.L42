@@ -1,0 +1,59 @@
+class method S (mut Gui that)=(
+  reset=that.button(id=S"reset",msg='Pressed,text=S"Reset")
+  start=that.button(id=S"start",msg='Pressed,text=S"Start")
+  S"""%
+    |JPanel gameScreen=new JPanel();
+    |JPanel gameControls=new JPanel();
+    |%reset
+    |%start
+    |JPanel startScreen=new JPanel();
+    |JLabel title=new JLabel("        Random map");
+    |JPanel startControls=new JPanel();
+    |JLabel points=new JLabel("Points=0");
+    |topProjection.View view=topProjection.View.of(
+    |  new topProjection.Camera(37,37,90),
+    |  64,64,//side
+    |  52,100,450d);
+    |topProjection.PaintProjection paintable=new topProjection.PaintProjection(view)
+    |  .name("Air",topProjection.Drawable.air)
+    |  .name("Ground",topProjection.Drawable.ground)
+    |  .name("Water",topProjection.Drawable.water)
+    |  .name("Grass",topProjection.Drawable.grass)
+    |  .name("Rock",topProjection.Drawable.rock)
+    |  .name("TreeTrunk",topProjection.Drawable.treeTrunk)
+    |  .name("TreeTop",topProjection.Drawable.treeTop);
+    |{
+    |  paintable.addKeyListener(new BindKeys(event,"Example","pressed","released","typed"));
+    |  event.registerEvent("Example.SetMap",(k,id,msg)->{
+    |    System.out.println("Map setted");
+    |    paintable.map(msg);
+    |    paintable.setFocusable(true);
+    |    paintable.requestFocusInWindow();
+    |    });
+    |  event.registerEvent("Example.SetCamera",(k,id,msg)->{
+    |    paintable.cameraPos(msg);
+    |    paintable.setFocusable(true);
+    |    paintable.requestFocusInWindow();
+    |    });
+    |  new Screens(this,event,"Example.ChangeScreen")
+    |    .register("Start",this::startScreen)
+    |    .register("Game",this::gameScreen);
+    |  addNorth(gameControls,reset);
+    |  addSouth(gameControls,points);
+    |  addCenter(gameScreen,paintable);
+    |  addEast(gameScreen,gameControls);
+    |  addNorth(startControls,start);
+    |  addCenter(startScreen,title);
+    |  addEast(startScreen,startControls);
+    |  add(startScreen(""));
+    |  }
+    |JComponent gameScreen(String s){
+    |  points.setText("Points="+s);
+    |  return gameScreen;
+    |  }
+    |JComponent startScreen(String s){
+    |  title.setText("        Random map    "+s);
+    |  return startScreen;
+    |  }
+  """
+  )

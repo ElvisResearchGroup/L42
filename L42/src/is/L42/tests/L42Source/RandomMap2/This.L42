@@ -1,0 +1,26 @@
+reuse [AdamTowel]
+VMT = Load : {reuse [VoxelMapTrait] }
+V = Class: VMT : {
+  class method Size maxX()=64\
+  class method Size maxY()=64\
+  class method Size maxZ()=100\
+  }
+/*Map = Class : V.map2D(S.List) : {
+  class method S base() = S""
+  }*/
+  
+
+Foo=(
+Debug(Name"A.foo(x).this")
+void
+)
+ShuffleSize = Math.randomList(Size)
+ShuffleCell = Math.randomList(V.Cell2D)
+CellularExpansion={...}
+LoadJ=Load:{reuse[JavaServer]}
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+JavaCode={...}
+Model=Data:JServer.Handler:{...}
+Main={...}

@@ -8,7 +8,7 @@ DeployUnit = Deploy.module(
   name='VoxelMap
   )
   
-VMT = Load : {reuse [VoxelMapTrait] }
+VMT = Load : {reuse [#$VoxelMapTrait] }
 VM = Class: VMT : {
   class method Size maxX()=50\
   class method Size maxY()=100\

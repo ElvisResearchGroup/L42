@@ -68,6 +68,10 @@ mut method Void #add(mut Elem right)=this.#add(\size, val=right)
 
 mut method  Void removeLeft()=this.remove(0\)
 mut method  Void removeRight()=this.remove(\size.#pred())
+
+mut method Void clear() =
+  while !this.isEmpty() this.removeRight()
+  
 //#################OPERATORS
 method This +(Elem right)=this.withAlso(\size,val=right)
 

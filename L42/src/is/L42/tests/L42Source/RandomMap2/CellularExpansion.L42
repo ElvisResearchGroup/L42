@@ -1,0 +1,54 @@
+_Trait = Trait : {
+  E = { }
+  Map = {
+    class method E base()
+    read method Void (V.Cell2D that, E val)
+    read method E (V.Cell2D that)
+    }
+  mut Math.Random r
+  mut Map cells
+  mut V.Cell2D.List seeds = V.Cell2D.List()
+  Size maxSeeds
+  mut Size.List order = Size.List[0\; 1\; 2\; 3\; 4\; 5\; 6\; 7\]
+  mut method Void addSeed(V.Cell2D that,E val) = (
+    this.#cells()(that, val=val)
+    this.#seeds().add(that)
+    )
+    
+  mut method Void initGrow()=(
+    ShuffleSize.shuffle(this.#order(),r=this.#r())
+    limit=this.seeds().size()-this.maxSeeds()
+    ShuffleCell.shuffle(this.#seeds(),r=this.#r())
+    if this.maxSeeds()>0Size (
+      while this.seeds().size()>this.maxSeeds() this.#seeds().removeRight()
+      )
+    )
+  mut method Void grow(Size percent)=(
+    this.initGrow()
+    //if this.#r().nextDouble()>chance return void
+    for i in Range((this.seeds().size()*percent)/100Size) (//will grow down below
+      seed = this.seeds().val(i)
+      if !seed.isBorder() this.growInOrder(seed=seed)
+      )
+    )
+  mut method Void growInOrder(V.Cell2D seed)=(
+    for o in this.order() (
+      ci=V.Delta2D.adjacent8().val(o) + seed
+      newSeed=this.combine(ci, seed=seed)
+      if newSeed!=Map.base() (
+        this.#map().set(seed, val=newSeed)
+        this.#map().set(ci, val=newSeed)
+        this.#seeds().add(ci)
+        )
+      )
+    )
+  read method E combine(V.Cell2D that, E seed)//To override //TODO: if I write just Cell2D get bad error position.
+  read method E baseCombine(V.Cell2D that, E seed)={
+    oldCell = this.map().val(ci)
+    if oldCell != E.base() return Map.base()
+    return seed
+    }
+  }
+  
+class method Trait (class Any that)[_] =
+  _Trait['L=>that;'E=>that*'base()]

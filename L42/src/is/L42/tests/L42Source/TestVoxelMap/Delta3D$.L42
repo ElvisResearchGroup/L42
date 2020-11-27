@@ -9,3 +9,35 @@ method Vector3D toVector() =
 method Cell2D to2D() =
   \(x=this.x(), y=this.y())
 
+@Cache.Lazy class method Delta3D$List adjacent26()=(
+  m = Size"-1" //minus, zero and plus
+  z = Size"0"
+  p = Size"1"
+  \[
+    \(x=m, y=m, z=m);\(x=m, y=z, z=m);\(x=m, y=p, z=m);
+    \(x=z, y=m, z=m);\(x=z, y=z, z=m);\(x=z, y=p, z=m);
+    \(x=p, y=m, z=m);\(x=p, y=z, z=m);\(x=p, y=p, z=m);
+
+    \(x=m, y=m, z=z);\(x=m, y=z, z=z);\(x=m, y=p, z=z);
+    \(x=z, y=m, z=z);                 \(x=z, y=p, z=z);
+    \(x=p, y=m, z=z);\(x=p, y=z, z=z);\(x=p, y=p, z=z);
+
+    \(x=m, y=m, z=p);\(x=m, y=z, z=p);\(x=m, y=p, z=p);
+    \(x=z, y=m, z=p);\(x=z, y=z, z=p);\(x=z, y=p, z=p);
+    \(x=p, y=m, z=p);\(x=p, y=z, z=p);\(x=p, y=p, z=p);
+    ]
+  )
+@Cache.Lazy class method Delta3D$List adjacent6()=(
+  m = Size"-1" //minus, zero and plus
+  z = Size"0"
+  p = Size"1"
+  \[
+                     \(x=z, y=z, z=m);
+
+                     \(x=m, y=z, z=z);
+    \(x=z, y=m, z=z);                 \(x=z, y=p, z=z);
+                     \(x=p, y=z, z=z);
+
+                     \(x=z, y=z, z=p);
+    ]
+  )

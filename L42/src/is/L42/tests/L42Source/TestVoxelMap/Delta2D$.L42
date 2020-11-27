@@ -8,3 +8,28 @@ method Vector2D toVector() =
   \(x=this.x().toDouble(), y=this.y().toDouble())
 method Cell3D to3D(Size z) =
   \(x=this.x(), y=this.y(), z=z)
+  
+//qui gli adiacenti!
+
+@Cache.Lazy class method Delta2D$List adjacent8()=(
+  m = Size"-1" //minus, zero and plus
+  z = Size"0"
+  p = Size"1"
+  \[
+    \(x=m, y=m);\(x=m, y=z);\(x=m, y=p);
+    \(x=z, y=m);            \(x=z, y=p);
+    \(x=p, y=m);\(x=p, y=z);\(x=p, y=p);
+    ]
+  )
+@Cache.Lazy class method Delta2D$List adjacent4()=(
+  m = Size"-1" //minus, zero and plus
+  z = Size"0"
+  p = Size"1"
+  \[
+                \(x=m, y=z);
+    \(x=z, y=m);            \(x=z, y=p);
+                \(x=p, y=z);
+    ]
+  )
+
+//range without borders too
