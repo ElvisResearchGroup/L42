@@ -1,5 +1,6 @@
 package is.L42.common;
 
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unreachable;
@@ -10,21 +11,48 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Pattern;
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
 
 import org.opentest4j.AssertionFailedError;
 
+import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Full.E;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.generated.S;
 
 public class Err {
+  public static String hole="[###]";//not contains \.[]{}()<>*+-=!?^$|
   public static String trimExpression(String e){
     if(e.length()<50){return e;}
     String start=e.substring(0,24);
     String end=e.substring(e.length()-24,e.length());
     return start+"[...]"+end;
     }
-  public static String hole="[###]";//not contains \.[]{}()<>*+-=!?^$|
+  public static String options(S attempted, List<MWT> mwts){
+    mwts=L(mwts.stream().sorted((m1,m2)->{
+      var eqAtt1=m1.key().m().equalsIgnoreCase(attempted.m());
+      var eqAtt2=m2.key().m().equalsIgnoreCase(attempted.m());
+      var un1=m1.key().hasUniqueNum();
+      var un2=m2.key().hasUniqueNum();  
+      var n1=m1.key().m();
+      var n2=m2.key().m();
+      var xs1=m1.key().xs().size();  
+      var xs2=m2.key().xs().size();
+      if(eqAtt1 && !eqAtt2){return -1;}
+      if(eqAtt2 && !eqAtt1){return 1;}
+      if(un1 && !un2){return 1;}
+      if(un2 && !un1){return -1;}
+      var cmp=n1.compareTo(n2);
+      if(cmp!=0){return cmp;}
+      if(xs1<xs2){return -1;}
+      if(xs1>xs2){return 1;}
+      return m1.key().toString().compareTo(m2.key().toString());
+    }));
+    //consider using some variation of Levenshtein Distance from attempted
+    return mwts.stream().map(m->m.key()+"        "+m.with_e(null)).collect(Collectors.joining("\n"));
+    }
   
   public static String posString(List<Pos>poss){
     if(poss==null){return "[no position]";}
@@ -210,8 +238,10 @@ public class Err {
   "A nested class is implemented but is not an interface"
   ;}public static String thisNumberOutOfScope(Object _1){return
   "Path "+_1+" this number is out of the scope of the program"  
-  ;}public static String pathNotExistant(Object _1){return
-  "Path "+_1+" not existant"  
+  ;}public static String pathNotExistant(Object _1, Object others){return
+  "Path "+_1+" not existant."+others  
+  ;}public static String urlNotExistant(Object _1){return
+  "Url "+_1+" not existant."
   ;}public static String interfaceImplementsItself(Object ts){return
   "Interfaces can not implement This (self implement); but the current interface implements "+ts
   ;}public static String sealedInterface(Object _1,Object _2){return
@@ -257,8 +287,11 @@ public class Err {
   "An "+_1+" is leaked out of this expression"
   ;}public static String leakedExceptionFromMethCall(Object _1){return
   "An exception is leaked out of this expression ("+_1+")"
-  ;}public static String methodDoesNotExists(Object _1,Object _2){return
-  "Method "+_1+" does not exists. Existing methods are:\n"+_2+"\n"
+  ;}public static String methodDoesNotExists(S attempted,List<MWT> others){return
+  methodDoesNotExists(attempted,options(attempted,others))
+  ;}public static String methodDoesNotExists(Object attempted,Object others){return
+  "Method "+attempted+" does not exists. Existing methods are:\n"+others+"\n"
+
   ;}public static String invalidSetOfMdfs(Object _1){return
   "Invalid set of modifiers for the expected type of a return: "+_1
   ;}public static String methCallResultIncompatibleWithExpected(Object _1,Object _2){return

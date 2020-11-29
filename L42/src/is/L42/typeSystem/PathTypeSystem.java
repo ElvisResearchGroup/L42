@@ -109,7 +109,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     assert l!=null:
     "";
     MWT mwt=_elem(l.mwts(),e.s());
-    errIf(mwt==null,e,Err.methodDoesNotExists(e.s(),L(l.mwts().stream().map(m->m.key()))));
+    errIf(mwt==null,e,Err.methodDoesNotExists(e.s(),l.mwts()));
     MH mh=p.from(mwt.mh(),p0.toNCs());
     mustSubPath(mh.t().p(),expected,e.poss());
     visitExpecting(e.xP(),p0);

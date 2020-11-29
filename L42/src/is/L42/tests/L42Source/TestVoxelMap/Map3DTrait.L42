@@ -20,10 +20,9 @@ mut method Void (Cell3D that,E val) =
   
 read method S toS() = S"LargeMap3D"
 
-method This #iterator() = this
-method Void #close(Size that) = void
-method Bool #incomplete(Size that) = that < Margin.layerSize() * Margin.maxZ()
-method Cell3D #elem#default(Size that) = \(x=Coords.x3(that), y=Coords.y3(that), z=Coords.z3(that))
-method Bool #hasElem(Size that) = that < Margin.layerSize() * Margin.maxZ()
-method Size #startIndex() = 0Size
-
+read method read This #iterator() = this
+read method Void #close(Size that) = void
+read method Bool #incomplete(Size that) = that < Margin.layerSize() * Margin.maxZ()
+read method Cell3D #elem#default(Size that) = \(x=Coords.x3(that), y=Coords.y3(that), z=Coords.z3(that))
+read method Bool #hasElem(Size that) = that < Margin.layerSize() * Margin.maxZ()
+read method Size #startIndex() = 0Size

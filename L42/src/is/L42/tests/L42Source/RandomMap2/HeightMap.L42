@@ -20,29 +20,7 @@ mut method Size rand(Size that, Size to)=
   this.#r().nextInRange(start=that,end=to)
 //For now, makes a maxZ tall diagonal line and
 //6 other maxZ*0.65 peakes
-mut method Void initTops()=(
-  low=this.side()/6Size
-  mid=this.side()/2Size
-  high=5Size*(this.side()/6Size)
-  midZ=(this.maxZ()*2Size)/3Size
-  lowZ=(midZ*1Size)/3Size
-  p1x=this.rand(low to=mid)
-  p1y=this.rand(low to=mid)
-  p2x=this.rand(mid to=high)
-  p2y=this.rand(mid to=high)
-  this.#montainsTop().add(Point(x=p1x,y=p1y, z=this.rand(midZ to=this.maxZ())))
-  for w in Range(1\ to=6\) (
-    x=((p1x*w)+(p2x*(6Size-w)))/6Size
-    y=((p1y*w)+(p2y*(6Size-w)))/6Size
-    this.#montainsTop().add(Point(x=x,y=y, z=this.rand(midZ to=this.maxZ())))
-    )
-  for w in Range(0\ to=6\) (//6 extra random lower tops
-    x=this.rand(low to=high)
-    y=this.rand(low to=high) 
-    z=this.rand(lowZ to=midZ)
-    this.#montainsTop().add(\(x=x,y=y,z=z))
-    )
-  )
+
 mut method Void makeRivers(Size waterLevel)=(
   this.runWater(p=this.montainsTop().val(2\))
   this.runWater(p=this.montainsTop().val(3\))

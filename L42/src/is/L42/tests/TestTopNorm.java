@@ -890,7 +890,7 @@ public class TestTopNorm{
      C=A:{}
      B={method This b()=this}
      Main=Debug(S"ok")}
-    """,hole+Err.pathNotExistant("This1.B")
+    """,hole+Err.pathNotExistant("This1.B",hole)
     );}
   //Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""

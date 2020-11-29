@@ -1,0 +1,60 @@
+mut SizeMap cells
+mut Math.Random r
+mut V.Cell3D.List mountainTops = V.Cell3D.List()
+mut V.Cell2D.List seeds
+mut method Void grow(Size percent)
+mut method Void addSeed(V.Cell2D that, Size val)
+
+read method Size combine(V.Cell2D that, Size seed) = {
+  read SizeMap cs=this.cells()
+  Size oldCell = cs(that)
+  if oldCell==0Size return seed   //unsetted is set
+  if oldCell+1\==seed return seed //contaged
+  if oldCell+6\ <seed return (oldCell+seed)/2Size //pulled up if it is so far below
+  return 0Size //do nothing
+  }
+mut method Size rand(Size that, Size to)=
+  this.#r().nextInRange(start=that,end=to)
+//TODO: for consistence, nextInRange and substring should have that instead of start
+
+mut method Void initTops(Size that) = (
+  lowX = V.maxX()/6Size
+  lowY = V.maxY()/6Size
+  midX = V.maxX()/2Size
+  midY = V.maxY()/2Size
+  highX = 5Size*(V.maxX()/6Size)
+  highY = 5Size*(V.maxY()/6Size)
+  midZ = (V.maxZ()*2Size)/3Size
+  lowZ = midZ/2Size
+  p1x=this.rand(lowX to=midX)
+  p1y=this.rand(lowY to=midY)
+  p2x=this.rand(midX to=highX)
+  p2y=this.rand(midY to=highY)
+  this.#mountainTops().add(\(x=p1x, y=p1y, z=this.rand(midZ to=that)))
+  for w in Range(1\ to=6\) (
+    x = ((p1x*w)+(p2x*(6Size-w)))/6Size
+    y = ((p1y*w)+(p2y*(6Size-w)))/6Size
+    this.#mountainTops().add(\(x=x, y=y, z=this.rand(midZ to=that)))
+    )
+  for w in Range(0\ to=6\) (//6 extra random lower tops
+    x = this.rand(lowX to=highX)
+    y = this.rand(lowY to=highY) 
+    z = this.rand(lowZ to=midZ)
+    this.#mountainTops().add(\(x=x, y=y, z=z))
+    )
+  )
+
+mut method Void addMontains(Size that) = (
+  m = this.#cells()
+  var lastSize=V.layerSize()
+  for h in Range(1\ to=that) (
+    this.#seeds().clear()
+    for p in this.mountainTops() ( if p.z()>=h this.addSeed(p.to2D() val=h) )
+    Debug(S"-- start growing for h=%h; seeds size=%this.seeds().size()")
+    for attempts in Range(150\) (
+      if this.seeds().size()>=(lastSize*9Size)/10Size Break()
+      this.grow(percent=30\)
+      )
+    lastSize:=this.seeds().size()
+    )
+  )

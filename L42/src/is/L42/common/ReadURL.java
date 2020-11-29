@@ -10,15 +10,17 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.nio.file.Path;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import is.L42.generated.Core;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 
 public class ReadURL {
   private static final Map<String,Core.L>cache=new HashMap<>();
   public static void resetCache() {cache.clear();}
-  public static Core.L of(String url){
+  public static Core.L of(String url,List<Pos>poss){
     P.coreAny.hashCode();//preloading class P
     boolean hd=url.startsWith("#$");
     if(hd){url=url.substring(2);}
@@ -30,7 +32,7 @@ public class ReadURL {
       var file=new FileInputStream(fullPath.toFile()); 
       var in=new ObjectInputStream(file);
       ){res=(Core.L)in.readObject();}
-    catch(FileNotFoundException e){throw new Error(e);}
+    catch(FileNotFoundException e){throw new EndError.UrlNotExistent(poss,url);}
     catch(IOException e){throw new Error(e);}
     catch(ClassNotFoundException e){throw bug();}
     //TODO: check it is really well typed?

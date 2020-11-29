@@ -8,7 +8,7 @@ class method Bool (U x,U y, U z) = this(x=x,y=y) && this(z=z)
     
 class method Bool (U x) = this.inRange(x, to=Margin.maxX())
 class method Bool (U y) = this.inRange(y, to=Margin.maxY())
-class method Bool (U z) = this.inRange(z, to=Margin.maxY())
+class method Bool (U z) = this.inRange(z, to=Margin.maxZ())
 
 class method U bound(U x) = this.bound(x, to=Margin.maxX())
 class method U bound(U y) = this.bound(y, to=Margin.maxY())

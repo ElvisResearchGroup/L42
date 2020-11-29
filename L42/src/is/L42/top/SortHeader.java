@@ -40,7 +40,7 @@ import is.L42.typeSystem.TypeManipulation;
 class SortHeader{
   public static Core.L coreTopReuse(Program p,int uniqueId,Full.L l,List<Pos> poss)throws EndError{
     Core.L coreL0=new UniqueNsRefresher().refreshUniqueNs(
-      Constants.readURL.apply(l.reuseUrl()));
+      Constants.readURL.apply(l.reuseUrl(),poss));
     Core.L coreL=coreL0.withPoss(merge(p.top.poss(),coreL0.poss()));
     List<LDom>dups=L(l.ms().stream().map(m->m.key()).filter(k->
       coreL.mwts().stream().anyMatch(m->k.equals(m.key()))

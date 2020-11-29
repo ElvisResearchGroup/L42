@@ -5,18 +5,25 @@ V = Class: VMT : {
   class method Size maxY()=64\
   class method Size maxZ()=100\
   }
-/*Map = Class : V.map2D(S.List) : {
-  class method S base() = S""
-  }*/
-  
+SizeMap = Class : Data : V.map2D(Size.List) : {
+  class method Size base() = 0Size
+  }
+BoolMap = Class : Data : V.map2D(Bool.List) : {
+  class method Bool base() = Bool.false()
+  }
+ShuffleSize = Math.randomList(Size.List)
+ShuffleCell = Math.randomList(V.Cell2D.List)
+CellularExpansion = {...}
+HeightExpansion = Class: Data: CellularExpansion(SizeMap): {...}
+
+BoolExpansion = Class: Data: CellularExpansion(BoolMap): {
+  read method Bool combine(V.Cell2D that, Bool seed) = seed
+  }
 
 Foo=(
 Debug(Name"A.foo(x).this")
 void
 )
-ShuffleSize = Math.randomList(Size)
-ShuffleCell = Math.randomList(V.Cell2D)
-CellularExpansion={...}
 LoadJ=Load:{reuse[JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")
 LoadGui=Load:{reuse[GuiBuilder]}

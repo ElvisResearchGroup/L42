@@ -83,7 +83,8 @@ public class InferToCore extends UndefinedCollectorVisitor{
           hints+="\nThe class "+t.p()+" does not exists";          
           continue;
           }
-        hints+="\nThe available methods for "+t.p()+" are "+L(l.mwts().stream().map(m->m.key()));
+        hints+="\nThe available methods for "+t.p()+" are \n"
+          +Err.options(meth.s(), l.mwts())+"\n";
         }
       throw new EndError.InferenceFailure(poss, Err.inferenceFailNoInfoAbout(st,hints));
       }
@@ -110,7 +111,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     List<T> ts=L(xps,(c,xpi)->c.add(i.g().of(xpi)));
     for(var t:ts){
       if(i.p()._ofCore(t.p())!=null){continue;}
-      throw new EndError.InferenceFailure(binOp.poss(),Err.pathNotExistant(t.p()));
+      throw new EndError.PathNotExistent(binOp.poss(),i.p(), t.p().toNCs());
       }
     var res=i.p()._opOptions(binOp.op(), ts);
     assert res!=null;//null if some involved path does not exists
@@ -164,7 +165,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     if(ds0.isEmpty()){return L();}
     Half.D d=ds0.get(0);
     List<Half.D> ds=popL(ds0);
-    Core.T t=infer(d._mdf(),d.stz(),poss);//not the final t
+    Core.T t=infer(d._mdf(),d.stz(),d.e().poss());//not the final t
     Core.E e1=compute(d.e());
     var fvE=FV.of(e1.visitable());
     Core.T t1=t;

@@ -1,8 +1,11 @@
 _Trait = Trait : {
-  E = { }
+  E = {
+    read method Bool ==(read E that)
+    read method Bool !=(read E that)
+    }
   Map = {
     class method E base()
-    read method Void (V.Cell2D that, E val)
+    mut method Void (V.Cell2D that, E val)
     read method E (V.Cell2D that)
     }
   mut Math.Random r
@@ -25,30 +28,29 @@ _Trait = Trait : {
     )
   mut method Void grow(Size percent)=(
     this.initGrow()
-    //if this.#r().nextDouble()>chance return void
-    for i in Range((this.seeds().size()*percent)/100Size) (//will grow down below
-      seed = this.seeds().val(i)
-      if !seed.isBorder() this.growInOrder(seed=seed)
+    for i in Range((this.seeds().size()*percent)/100Size) (
+      ci = this.seeds().val(i)
+      if !ci.isBorder() this.growInOrder(c=ci)
       )
     )
-  mut method Void growInOrder(V.Cell2D seed)=(
+  mut method Void growInOrder(V.Cell2D c)=(
     for o in this.order() (
-      ci=V.Delta2D.adjacent8().val(o) + seed
-      newSeed=this.combine(ci, seed=seed)
-      if newSeed!=Map.base() (
-        this.#map().set(seed, val=newSeed)
-        this.#map().set(ci, val=newSeed)
+      ci=V.Delta2D.adjacent8().val(o) + c
+      newSeed=this.combine(ci, seed=this.cells()(c))
+      if newSeed != Map.base() (
+        this.#cells()(c, val=newSeed)
+        this.#cells()(ci, val=newSeed)
         this.#seeds().add(ci)
         )
       )
     )
   read method E combine(V.Cell2D that, E seed)//To override //TODO: if I write just Cell2D get bad error position.
   read method E baseCombine(V.Cell2D that, E seed)={
-    oldCell = this.map().val(ci)
-    if oldCell != E.base() return Map.base()
+    oldCell = this.cells()(that)
+    if oldCell != Map.base() return Map.base()
     return seed
     }
   }
   
 class method Trait (class Any that)[_] =
-  _Trait['L=>that;'E=>that*'base()]
+  _Trait['Map=>that;'E=>that*'base()]

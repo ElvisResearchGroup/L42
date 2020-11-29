@@ -365,7 +365,7 @@ void pass(String code1,String code2,String expectedExe1,String expectedExe2,Stri
   Resources.clearResKeepReuse();
   
   var tmp=Constants.readURL;try{
-  if(resetReuseds!=null){Constants.readURL=ignored->resetReuseds;}
+    if(resetReuseds!=null){Constants.readURL=(ignored,l)->resetReuseds;}
   
   var cache2=cache1.toNextCache();
   @SuppressWarnings("unused")//for the debugger

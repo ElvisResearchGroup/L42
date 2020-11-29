@@ -21,16 +21,13 @@ Points=Collection.list(Point)
 RandomMap=Data:{...}
 @JServer.Handler mut method Void start(S msg)=(
   map=RandomMap(
-    side=this.side(),r=this.#r(),
-    waterLevel=5\,rockLevel=60\,maxZ=75\)
-  map.addMontains()
-  map.addShores()
-  map.montainsErosion(rounds=1\)
-  map.#map().makeRivers(waterLevel=map.waterLevel())
-  map.makeGrass()
-  map.makeTrees()
-  map.markRocks()
-  map.#map().noUnderZero()
+    r=this.#r(),
+    waterLevel=5\,rockLevel=60\,mountainLevel=75\)
+  map.heightMap()
+  //map.makeGrass()
+  //map.makeTrees()
+  //map.markRocks()
+  //map.#map().noUnderZero()
   this.#j().submitEvent(key='Example.SetMap, id=S"",msg=map.msg())
   this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
   whoops Message.Guard

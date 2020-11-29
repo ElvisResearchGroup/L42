@@ -88,7 +88,7 @@ public class Program implements Visitable<Program>{
   public LL of(P.NCs path,List<Pos>errs){
     try{return this.pop(path.n()).top.cs(path.cs());}
     catch(LL.NotInDom nid){
-      throw new EndError.PathNotExistent(errs,Err.pathNotExistant(path));
+      throw new EndError.PathNotExistent(errs,this,path);
       }
     }
   public Program pop(int n){
@@ -278,32 +278,32 @@ public class Program implements Visitable<Program>{
       }
     }
   public P resolve(List<C> cs,List<Pos>poss){
-    int n=findScope(cs.get(0),0,poss);
+    int n=findScope(cs,cs.get(0),0,poss);
     return P.of(n, cs);
     }
-  private int findScopeFull(C c, int acc,List<Pos>poss){
+  private int findScopeFull(List<C> cs,C c, int acc,List<Pos>poss){
     String url=((Full.L)top).reuseUrl();
     Full.L fTop=(Full.L)top;
     if(_elem(fTop.ms(),c)!=null){return acc;}
     if(!url.isEmpty()){
       if(url.startsWith("#$")){return acc;}
-      Core.L cTop = Constants.readURL.apply(url);
+      Core.L cTop = Constants.readURL.apply(url,poss);
       if(cTop.domNC().contains(c)){return acc;}
-      throw new EndError.PathNotExistent(poss,Err.pathNotExistant(c));
+      throw new EndError.PathNotExistent(poss,cs,c);
       }
     assert !fTop.isDots();
     if(pTails.isEmpty()){
-      throw new EndError.PathNotExistent(poss, Err.pathNotExistant(c));
+      throw new EndError.PathNotExistent(poss,cs,c);
       }
-    return pop().findScope(c, acc+1,poss);
+    return pop().findScope(cs,c, acc+1,poss);
     }
-  private int findScopeCore(C c, int acc,List<Pos>poss){
+  private int findScopeCore(List<C> cs,C c, int acc,List<Pos>poss){
     if(top.domNC().contains(c)){return acc;}
-    return pop().findScope(c, acc+1,poss);
+    return pop().findScope(cs,c, acc+1,poss);
     }
-  private int findScope(C c, int acc,List<Pos>poss){
-    if(top.isFullL()){return findScopeFull(c,acc,poss);}
-    return findScopeCore(c,acc,poss);
+  private int findScope(List<C> cs,C c, int acc,List<Pos>poss){
+    if(top.isFullL()){return findScopeFull(cs,c,acc,poss);}
+    return findScopeCore(cs,c,acc,poss);
     }
   public List<S> fieldMs(Full.L.F f){
     return L(c->{
