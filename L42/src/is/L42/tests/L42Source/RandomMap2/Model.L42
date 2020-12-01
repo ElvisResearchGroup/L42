@@ -1,7 +1,7 @@
 mut Math.Random r
 mut JServer j
 var Camera c
-Size side=64Size//256?
+Size side=64Size
 Double sideD=64Double
 Camera=Data:{
   Double x,Double y,Double z
@@ -9,7 +9,7 @@ Camera=Data:{
   }
 read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
 class method mut This #$of()=This(
-  r=Math.Random(seed=12\)//Math.Random.#$random(), //10 has a lake
+  r=Math.Random(seed=10\)//Math.Random.#$random(), //10 has a lake
   j=JServer.#$of(),
   c=Camera(x=25\,y=25\,z=25\))
 
@@ -24,10 +24,10 @@ RandomMap=Data:{...}
     r=this.#r(),
     waterLevel=5\,rockLevel=60\,mountainLevel=75\)
   map.heightMap()
-  //map.makeGrass()
-  //map.makeTrees()
-  //map.markRocks()
-  //map.#map().noUnderZero()
+  map.makeGrass()
+  map.makeTrees()
+  map.markRocks()
+  map.noUnderZero()
   this.#j().submitEvent(key='Example.SetMap, id=S"",msg=map.msg())
   this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
   whoops Message.Guard

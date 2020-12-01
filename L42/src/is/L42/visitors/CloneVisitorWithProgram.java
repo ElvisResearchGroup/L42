@@ -29,9 +29,14 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   public LDom getLastCMs(){return lastCMs;}
   public Core.L pushedOp(Core.L s) {return null;}//for overriding
   public Core.L doPushedOp(Core.L s){
-    if(lastCMs==null){return pushedOp(s);}
     Program aux=p;
     var lastPos=poss;
+    poss=s.poss();
+    if(lastCMs==null){
+      var res=pushedOp(s);
+      poss=lastPos;
+      return res;
+      }
     if(lastCMs instanceof C){
       p=p.push((C)lastCMs,s);
       whereFromTop.add(lastCMs);
@@ -49,14 +54,16 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public LL visitL(Full.L s) {
-    if(lastCMs==null){
-      var res=super.visitL(s);
-      if(res.isFullL()){return fullLHandler((Full.L)res);} 
-      return coreLHandler((Core.L)res);
-      }
-    Program aux=p;
     var lastPos=poss;
     poss=s.poss();
+    if(lastCMs==null){
+      var res=super.visitL(s);
+      if(res.isFullL()){res=fullLHandler((Full.L)res);} 
+      else {res=coreLHandler((Core.L)res);}
+      poss=lastPos;
+      return res;
+      }
+    Program aux=p;
     if(lastCMs instanceof C){
       p=p.push((C)lastCMs,s);
       whereFromTop.add(lastCMs);
@@ -78,7 +85,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
   public LL fullLHandler(Full.L l){return l;/*super.visitL(l);*/}//visitL already calls super.visitL
   public Core.L coreLHandler(Core.L l){return l;/*super.visitL(l);*/}
   @Override public Full.L.NC visitNC(Full.L.NC s) {
-    var lastPos=s.poss();
+    var lastPos=poss;
+    poss=s.poss();
     LDom aux=lastCMs;
     lastCMs=s.key();
     var res=super.visitNC(s);
@@ -87,7 +95,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public Full.L.MI visitMI(Full.L.MI s) {
-    var lastPos=s.poss();
+    var lastPos=poss;
+    poss=s.poss();
     LDom aux=lastCMs;
     lastCMs=s.key();
     var res=super.visitMI(s);
@@ -96,7 +105,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public Full.L.MWT visitMWT(Full.L.MWT s) {
-    var lastPos=s.poss();
+    var lastPos=poss;
+    poss=s.poss();
     LDom aux=lastCMs;
     lastCMs=s.key();
     var res=super.visitMWT(s);
@@ -105,12 +115,14 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public Core.L visitL(Core.L s) {
+    var lastPos=poss;
+    poss=s.poss();
     if(lastCMs==null){
       assert p.top==s;
       var res=coreLHandler(super.visitL(s));
+      poss=lastPos;
       return res;
       }
-    var lastPos=s.poss();
     Program aux=p;
     if(lastCMs instanceof C){
       p=p.push((C)lastCMs,s);
@@ -129,7 +141,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public Core.L.MWT visitMWT(Core.L.MWT s) {
-    var lastPos=s.poss();
+    var lastPos=poss;
+    poss=s.poss();
     LDom aux=lastCMs;
     lastCMs=s.key();
     var res=super.visitMWT(s);
@@ -138,7 +151,8 @@ public class CloneVisitorWithProgram extends CloneVisitor {
     return res;
     }
   @Override public Core.L.NC visitNC(Core.L.NC s) {
-    var lastPos=s.poss();
+    var lastPos=poss;
+    poss=s.poss();
     LDom aux=lastCMs;
     lastCMs=s.key();
     var res=super.visitNC(s);

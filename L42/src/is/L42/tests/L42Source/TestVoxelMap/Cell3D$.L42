@@ -1,6 +1,6 @@
 Size x, Size y, Size z
 
-method Cell3D random(mut Math.Random r)=\(
+class method Cell3D random(mut Math.Random r)=\(
   x=r.nextInRange(start=0\ end=Margin.maxX())
   y=r.nextInRange(start=0\ end=Margin.maxY())
   z=r.nextInRange(start=0\ end=Margin.maxZ())

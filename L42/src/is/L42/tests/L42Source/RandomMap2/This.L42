@@ -14,11 +14,10 @@ BoolMap = Class : Data : V.map2D(Bool.List) : {
 ShuffleSize = Math.randomList(Size.List)
 ShuffleCell = Math.randomList(V.Cell2D.List)
 CellularExpansion = {...}
-HeightExpansion = Class: Data: CellularExpansion(SizeMap): {...}
-
 BoolExpansion = Class: Data: CellularExpansion(BoolMap): {
   read method Bool combine(V.Cell2D that, Bool seed) = seed
   }
+HeightExpansion = Class: Data: CellularExpansion(SizeMap): {...}
 
 Foo=(
 Debug(Name"A.foo(x).this")

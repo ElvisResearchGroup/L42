@@ -20,15 +20,15 @@ _Trait = Trait : {
     
   mut method Void initGrow()=(
     ShuffleSize.shuffle(this.#order(),r=this.#r())
-    limit=this.seeds().size()-this.maxSeeds()
     ShuffleCell.shuffle(this.#seeds(),r=this.#r())
     if this.maxSeeds()>0Size (
-      while this.seeds().size()>this.maxSeeds() this.#seeds().removeRight()
+      while this.seeds().size() > this.maxSeeds()
+        this.#seeds().removeRight()
       )
     )
   mut method Void grow(Size percent)=(
     this.initGrow()
-    for i in Range((this.seeds().size()*percent)/100Size) (
+    for i in Range((this.seeds().size() * percent) / 100Size) (
       ci = this.seeds().val(i)
       if !ci.isBorder() this.growInOrder(c=ci)
       )

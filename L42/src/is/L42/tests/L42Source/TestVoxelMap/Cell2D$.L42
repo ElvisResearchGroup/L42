@@ -1,7 +1,7 @@
 Size x
 Size y
 
-method Cell2D random(mut Math.Random r)=\(
+class method Cell2D random(mut Math.Random r)=\(
   x=r.nextInRange(start=0\ end=Margin.maxX())
   y=r.nextInRange(start=0\ end=Margin.maxY())
   )
