@@ -526,7 +526,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
     }
   C={class method Void foo()=D.foo()}
   D={class method Library foo()=K.E.foo()}
-  """,Err.methodDoesNotExists(hole,hole))
+  """,Err.methodDoesNotExists(hole,""))
   ),new AtomicTest(()->fail("""
   class method Any  foo()=exception void
   """,Err.leakedThrow(hole))

@@ -45,7 +45,7 @@ public class Close extends GuessFields{
   ArrayList<MH> ks=new ArrayList<>();
   HashSet<X> fieldNames=new HashSet<>();
   ArrayList<MWT> newMWTs=new ArrayList<>();
-  ArrayList<MWT> toSkip=new ArrayList<>();
+  ArrayList<MWT> oldMWTs=new ArrayList<>();
   public Core.L close(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap){
     this.autoNormed|=autoNorm;
     if(cs.isEmpty()){
@@ -78,14 +78,14 @@ public class Close extends GuessFields{
       if(k.key().xs().size()!=fieldNames.size()){errorAmbiguousK(l,k);}
       }
     for(var m:l.mwts()){process(m);}
-    newMWTs.removeAll(toSkip);
     Info i=l.info();
     i=i.withClose(true);
     if(mustAddThis0Coherence && !i.coherentDep().contains(P.pThis0)){
       i=i.withCoherentDep(pushL(i.coherentDep(),P.pThis0));
       if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
       }
-    l= l.withMwts(L(newMWTs.stream())).withInfo(i);
+    var mwts=new SumMethods(err).sum(oldMWTs, newMWTs);
+    l= l.withMwts(mwts).withInfo(i);
     J newJ=new J(p.update(l,false),null,null,true){//so that it ignore public abstract methods
       public Coherence newCoherence(Program p){return new Coherence(p,true);}
       };
@@ -142,7 +142,7 @@ public class Close extends GuessFields{
       if(!ti.p().equals(t.p())){
         err.throwErr(mErr,"first parameter does not correspond to a capsule field; ambiguous field type: "+ti+" or "+t);
         }
-      if(!ti.mdf().isCapsule()){
+      if(!ti.mdf().isCapsule() && !ki.t().mdf().isImm()){
         err.throwErr(mErr,"first parameter does not correspond to a capsule field; constructor "+ki+" initializes it as "+ti);
         }
       }
@@ -231,7 +231,7 @@ public class Close extends GuessFields{
     Core.E newE=Utils.thisCall(pos,s2,exs);
     if(norm){newE=addNorm(newE);} 
     m=m.with_e(newE);
-    newMWTs.add(m);
+    oldMWTs.add(m);
     newMWTs.add(m2);
     }
   private boolean mNormOk(){
@@ -267,13 +267,13 @@ public class Close extends GuessFields{
     checkZeroPars(m);
     checkRetAndBody(m);
     //TODO: edit here to add multi parameter lazy cached imm/class
-    newMWTs.add(m.withNativeUrl("trusted:lazyCache"));
+    oldMWTs.add(m.withNativeUrl("trusted:lazyCache"));
     }
   public void processEagerCache(MWT m){
     if(!m.mh().mdf().isImm()){err.throwErr(m,"can not be made cached; the receiver modifier must be imm but it is "+m.mh().mdf().inner);}
     checkZeroPars(m);
     checkRetAndBody(m);
-    newMWTs.add(m.withNativeUrl("trusted:eagerCache"));
+    oldMWTs.add(m.withNativeUrl("trusted:eagerCache"));
     }
   public void processLazyReadCache(MWT m){
     processClassToRead(ClassToRead.LazyRead,m);
@@ -306,7 +306,7 @@ public class Close extends GuessFields{
     var m1=m.withMh(mh1);
     m1=m1.with_e(Utils.ThisCall(pos,s,exs1));
     newMWTs.add(m1);
-    newMWTs.add(m);
+    oldMWTs.add(m);
     }
   private boolean mustAddThis0Coherence=false;
   public void processNow(MWT m){
@@ -334,19 +334,16 @@ public class Close extends GuessFields{
     var mh1=new MH(Mdf.Readable,m.mh().docs(),m.mh().t(),s1,General.L(),General.L());
     var old=_elem(p.topCore().mwts(),s1);
     if(old!=null){
-      if(old._e()!=null){
-        newMWTs.add(m);
-        return;//Do nothing if the method s1 is already present and implemented
-        }
+      if(old._e()!=null){return;}//Do nothing if the method s1 is already present and implemented
       boolean eq=Utils.equalMH(old.mh(),mh1);
       if(!eq){err.throwErr(old,"Generated method "+mh1+" would conflict with existent abstract method "+old.mh());}
-      toSkip.add(old);
+      oldMWTs.add(old);
       }
     var m1=m.withMh(mh1);//m1: the no arg meth calling the static method s
     List<Core.E> exs1=General.L(s.xs(),(ci,xi)->ci.add(fAcc(ctr.noFwdImm,m,m._e().pos(),xi,Mdf.Immutable,Mdf.Readable)));
     m1=m1.with_e(Utils.ThisCall(m.poss().get(0),s,exs1));
     newMWTs.add(m1.withNativeUrl(ctr.trusted));
-    newMWTs.add(m.withDocs(removeClassToReadDoc(ctr.annotation,m.docs())));
+    oldMWTs.add(m.withDocs(removeClassToReadDoc(ctr.annotation,m.docs())));
     }
   private List<Doc> removeClassToReadDoc(String target,List<Doc>ds){
     return L(c->{
@@ -357,8 +354,8 @@ public class Close extends GuessFields{
         }
       });
     }
-  public void processAllowedAbs(MWT m){newMWTs.add(m);}
-  public void processBase(MWT m){newMWTs.add(m);}
+  public void processAllowedAbs(MWT m){oldMWTs.add(m);}
+  public void processBase(MWT m){oldMWTs.add(m);}
   public boolean match(String target,MWT m){return Utils.match(p,err,target,m);}
   }
   /*

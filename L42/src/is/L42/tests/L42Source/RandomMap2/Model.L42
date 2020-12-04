@@ -1,22 +1,15 @@
 mut Math.Random r
 mut JServer j
-var Camera c
+var V.Point3D c
 Size side=64Size
 Double sideD=64Double
-Camera=Data:{
-  Double x,Double y,Double z
-  method S toMsg()=S"%this.x();%this.y();%this.z()"
-  }
 read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
 class method mut This #$of()=This(
   r=Math.Random(seed=10\)//Math.Random.#$random(), //10 has a lake
   j=JServer.#$of(),
-  c=Camera(x=25\,y=25\,z=25\))
+  c=V.Point3D(x=25\,y=25\,z=25\))
 
 @JServer.Handler mut method Void ping(S msg)=void
-
-Point=Data:{Size x,Size y,Size z=0Size}
-Points=Collection.list(Point)
 
 RandomMap=Data:{...}
 @JServer.Handler mut method Void start(S msg)=(
@@ -39,6 +32,10 @@ RandomMap=Data:{...}
   if msg==S"Down" (this.c(\c.with(y=this<=\y+\"0.1")))
   if msg==S"q" (this.c(\c.with(z=this<=\z-\"0.1")))
   if msg==S"a" (this.c(\c.with(z=this<=\z+\"0.1")))
-  this.#j().submitEvent(key='Example.SetCamera, id=S"", msg=this.c().toMsg())
+  this.#j().submitEvent(
+    key='Example.SetCamera,
+    id=S"", 
+    msg=S"%this.c().x();%this.c().y();%this.c().z()"
+    )
   whoops Message.Guard
   )

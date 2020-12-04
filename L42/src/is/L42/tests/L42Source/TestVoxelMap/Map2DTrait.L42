@@ -1,18 +1,19 @@
 [HasToS]
 E = Class.Relax : TraitE
 L = Class.Relax : Trait(Collection.list(E))[clear='This]
-//TODO: make this invariant, it will require capsule mutators!
-//@Cache.Now class method Void invariant(read L cells) =
-//  if cells.size()!=Margin.layerSize()
+@Cache.Now class method Void invariant(read L cells) =
+  if cells.size()!=Margin.layerSize() error X
+    "The size of the internal list is invalid: %cells.size(), but it should be %Margin.layerSize()"
 class method E base()
-mut L cells = L()(
+capsule L cells = L()(
   for i in Range(Margin.layerSize()) \add(This.base()) )
  
 read method E (Size x,Size y) = 
   this.cells().val(Coords(x=x, y=y))
 
-mut method Void (Size x, Size y, E val) = 
-  this.#cells().set(Coords(x=x, y=y), val=val)
+mut method Void (Size x, Size y, E val)
+@Cache.Clear class method Void (mut L cells, Size x, Size y, E val) = 
+  cells.set(Coords(x=x, y=y), val=val)
   
 read method E (Cell2D that) = 
   this(x=that.x(), y=that.y())

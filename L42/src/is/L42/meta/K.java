@@ -73,7 +73,7 @@ public class K extends GuessFields{
     catch(EndError ee){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
     if(mutK.equals(immK)){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
     addGettersSetters(p);
-    boolean veryImm=gettersNoMut && setters.isEmpty();
+    boolean veryImm=gettersAllImm && setters.isEmpty();
     List<X> xs=L(getters.keySet().stream());//deterministic: it is a LinkedHashMap
     List<T> mutTs=L(xs,(c,x)->c.add(forgeT(x)));
     List<T> immTs=L(mutTs,this::forgeTImm);
@@ -88,6 +88,12 @@ public class K extends GuessFields{
     MWT mutM=new MWT(l.poss(),L(),mutMh,"",null);
     List<MWT> newMWT=L(c->{
       c.addAll(l.mwts());
+      if(immS.xs().toString().contains("cells")){
+        System.out.println("");
+        }
+    if(mutS.xs().toString().contains("cells")){
+      System.out.println("");
+      }
       if(_elem(l.mwts(),immS)==null){c.add(immM);}
       if(_elem(l.mwts(),mutS)==null){c.add(mutM);}
       });
@@ -97,8 +103,9 @@ public class K extends GuessFields{
     return l.withMwts(newMWT).withInfo(i);
     }
   public T forgeTImm(T t){
-    if(!t.mdf().isFwdMut()){return t;}
-    return t.withMdf(Mdf.ImmutableFwd);    
+    if(t.mdf().isCapsule()){return t.withMdf(Mdf.Immutable);} 
+    if(t.mdf().isFwdMut()){return t.withMdf(Mdf.ImmutableFwd);}
+    return t;
     }    
   public T forgeT(X x){
     List<P> options=L(getters.get(x).stream().map(m->m.mh().t().p()).distinct());
@@ -113,13 +120,14 @@ public class K extends GuessFields{
     var clazz=match(Mdf.Class,L(),optionsGet) && match(null,L(Mdf.Class),optionsSet);
     if(clazz){return new T(Mdf.Class,L(),p);}
     var imm=match(null,List.of(Mdf.Immutable,Mdf.Readable),optionsGet) && match(null,L(Mdf.Immutable),optionsSet);
-    if(imm){
-      if(autoNormed || fieldsUsedInReadCache.contains(x)){return new T(Mdf.Immutable,L(),p);}
+    var caps=match(null,List.of(Mdf.Readable),optionsGet) &&  match(null,L(Mdf.Capsule),optionsSet);
+    if(imm && (autoNormed ||!caps)){ //fieldsUsedInReadCache can also be capsule
+      var mustImm=autoNormed || fieldsUsedInReadCache.contains(x);
+      if(mustImm){return new T(Mdf.Immutable,L(),p);}
       return new T(Mdf.ImmutableFwd,L(),p);
       }
     var mut=match(Mdf.Mutable,List.of(Mdf.Readable,Mdf.Immutable,Mdf.Lent),optionsGet) &&  match(null,List.of(Mdf.Mutable,Mdf.Capsule),optionsSet);
     if(mut){return new T(Mdf.MutableFwd,L(),p);}
-    var caps=match(null,List.of(Mdf.Readable,Mdf.Immutable),optionsGet) &&  match(null,L(Mdf.Capsule),optionsSet);
     if(caps){return new T(Mdf.Capsule,L(),p);}
     throw err.throwErr(getters.get(x).get(0),"ambiguous field modifier; can not be neither class, mut, imm or capsule");
     }

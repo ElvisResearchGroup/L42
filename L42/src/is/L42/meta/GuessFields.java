@@ -18,7 +18,7 @@ public class GuessFields {
   LinkedHashMap<X,List<MWT>> getters=new LinkedHashMap<>();
   HashSet<X> fieldsUsedInReadCache=new HashSet<>();
   boolean autoNormed=false;
-  boolean gettersNoMut=true;
+  boolean gettersAllImm=true;
   LinkedHashMap<X,List<MWT>> setters=new LinkedHashMap<>();
 
   public void addGettersSetters(Program p) {
@@ -49,7 +49,7 @@ public class GuessFields {
     if(!m.mh().mdf().isIn(Mdf.Mutable, Mdf.Lent,Mdf.Immutable,Mdf.Readable)){return;}
     var list=getters.getOrDefault(x,new ArrayList<>());
     list.add(m);
-    if(!m.mh().t().mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class)){gettersNoMut=false;}
+    if(!m.mh().t().mdf().isIn(Mdf.Immutable,Mdf.Class)){gettersAllImm=false;}
     getters.putIfAbsent(x, list);
     }
   }

@@ -48,14 +48,18 @@ import is.L42.typeSystem.TypeManipulation;
      * Error if there is more then one possible default method to apply
      * TODO: in the future, consider a boolean option to give error if the method is present with the right types but implemented?
      * TODO: for now, the default methods must have no exceptions, we can add exception subtype
+     * Note: the default generation happens only for methods with either no annotations or also the 'applyDefaults' annotation;\
+     * In AdamTowel such annotation is Data.Defaults
      */
 public class Defaults{
   MetaError err;
   Core.L l;
+  Program p;
   public Core.L of(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
     err=new MetaError(wrap);
-    if(cs.isEmpty()){this.l=p.topCore();return of();}
+    if(cs.isEmpty()){this.p=p;this.l=p.topCore();return of();}
     var pIn=p.navigate(cs);
+    this.p=pIn;
     this.l=pIn.topCore();
     pIn=pIn.update(of(),false);
     var res= pIn._ofCore(P.of(cs.size(),L()));
@@ -69,6 +73,7 @@ public class Defaults{
     }
   Stream<MWT> of(MWT m){
     if(m.key().hasUniqueNum()){return Stream.empty();}
+    if(!m.docs().isEmpty() && !matchApplyDefaults(m)){return Stream.empty();}
     var pos=m.poss().get(0);
     var xs=m.key().xs();
     var ts=m.mh().pars();
@@ -170,8 +175,7 @@ public class Defaults{
       err.throwErr(defs.get(0),"More then one applicable default initialization for parameter "+x+" of "+s+":\n"+dups);
       }
     }
-  //  String s="ambiguous field type; other options are ";
-    //  Supplier<String> ss=()->s+L(getters.get(x).stream().map(m->m.mh().t().p()));
-    //  err.throwErr(getters.get(x).get(0),ss);
- 
+  public boolean matchApplyDefaults(MWT m){
+    return Utils.match(p,err,"applyDefaults",m);
+    }  
   }

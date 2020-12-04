@@ -14,7 +14,7 @@ VM = Class: VMT : {
   class method Size maxY()=100\
   class method Size maxZ()=200\
   }
-Map = Class : VM.map2D(S.List) : {
+Map = Class : Data : VM.map2D(S.List) : {
   class method S base() = S""
   }
   

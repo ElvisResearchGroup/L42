@@ -19,10 +19,6 @@ BoolExpansion = Class: Data: CellularExpansion(BoolMap): {
   }
 HeightExpansion = Class: Data: CellularExpansion(SizeMap): {...}
 
-Foo=(
-Debug(Name"A.foo(x).this")
-void
-)
 LoadJ=Load:{reuse[JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")
 LoadGui=Load:{reuse[GuiBuilder]}

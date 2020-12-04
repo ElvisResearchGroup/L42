@@ -1,16 +1,22 @@
 [HasToS]
 E = Class.Relax : TraitE
 L = Class.Relax : Trait(Collection.list(E))[clear='This]
+
+@Cache.Now class method Void invariant(read L cells) =
+  if cells.size()!=Margin.layerSize()*Margin.maxZ() error X
+    "The size of the internal list is invalid: %cells.size(), but it should be %(Margin.layerSize()*Margin.maxZ())"
+
 class method E base()
 
-mut L cells = L()(
+capsule L cells = L()(
   for i in Range(Margin.layerSize() * Margin.maxZ()) \add(This.base()) )
  
 read method E (Size x, Size y, Size z) = 
   this.cells().val(Coords(x=x, y=y, z=z))
 
-mut method Void (Size x, Size y, Size z, E val) = 
-  this.#cells().set(Coords(x=x, y=y, z=z), val=val)
+mut method Void (Size x, Size y, Size z, E val)
+class method Void (mut L cells, Size x, Size y, Size z, E val) = 
+  cells.set(Coords(x=x, y=y, z=z), val=val)
   
 read method E (Cell3D that) = 
   this(x=that.x(), y=that.y(), z=that.z())
