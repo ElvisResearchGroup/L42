@@ -20,10 +20,10 @@
   @Public mut method Void add(Bool that)[Void]=if that (this.pass(!that) Break())
   }
 @Public Count={
-  var Size count
-  class method mut This(Size count)
-  @Public class method mut This()=This(count=0Size)
-  @Public mut method Size (Void that)=this.count()
+  var I count
+  class method mut This(I count)
+  @Public class method mut This()=This(count=0I)
+  @Public mut method I (Void that)=this.count()
   @Public mut method Void add(Bool that)[Void]=if that (this.count(\count+1\))
   }
 @AbstractTowel{match}

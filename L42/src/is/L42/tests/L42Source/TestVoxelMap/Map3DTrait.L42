@@ -11,11 +11,11 @@ class method E base()
 capsule L cells = L()(
   for i in Range($.Margin.layerSize() * $.Margin.maxZ()) \add(This.base()) )
  
-read method E (Size x, Size y, Size z) = 
+read method E (I x, I y, I z) = 
   this.cells().val($.Coords(x=x, y=y, z=z))
 
-mut method Void (Size x, Size y, Size z, E val)
-class method Void (mut L cells, Size x, Size y, Size z, E val) = 
+mut method Void (I x, I y, I z, E val)
+class method Void (mut L cells, I x, I y, I z, E val) = 
   cells.set($.Coords(x=x, y=y, z=z), val=val)
   
 read method E ($.Cell3D that) = 
@@ -27,8 +27,8 @@ mut method Void ($.Cell3D that,E val) =
 read method S toS() = S"LargeMap3D"
 
 read method read This #iterator() = this
-read method Void #close(Size that) = void
-read method Bool #incomplete(Size that) = that < $.Margin.layerSize() * $.Margin.maxZ()
-read method $.Cell3D #elem#default(Size that) = \(x=$.Coords.x3(that), y=$.Coords.y3(that), z=$.Coords.z3(that))
-read method Bool #hasElem(Size that) = that < $.Margin.layerSize() * $.Margin.maxZ()
-read method Size #startIndex() = 0Size
+read method Void #close(I that) = void
+read method Bool #incomplete(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
+read method $.Cell3D #elem#default(I that) = \(x=$.Coords.x3(that), y=$.Coords.y3(that), z=$.Coords.z3(that))
+read method Bool #hasElem(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
+read method I #startIndex() = 0I

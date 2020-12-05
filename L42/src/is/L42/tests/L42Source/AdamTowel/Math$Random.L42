@@ -13,8 +13,8 @@ mut method Double nextDouble()=(
   this.that::0(this.that::0().randomNextSeed())
   res
   )
-mut method Size nextInRange(Size start,Size end)=(
-  if start<0Size || end<=start (error X
+mut method I nextInRange(I start,I end)=(
+  if start<0I || end<=start (error X
     "invalid parameters for nextInRange: start=%start, end=%end")
   res=this.that::0().randomNextSize(bound=end-start)
   this.that::0(this.that::0().randomNextSeed())

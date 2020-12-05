@@ -9,37 +9,37 @@ read method read This vals()=this
 mut method mut This #vals()=this
 read method read This #iterator()=this
 mut method mut This #varIterator()=this
-read method Size #startIndex()=0Size
-read method Bool #hasElem(Size that)=that<this.size()
-read method Bool #incomplete(Size that)=that!=this.size()
-read method Elem #elem#imm(Size that)=this.val(that)
-mut method mut Elem #elem#mut(Size that)=this.#val(that)
-read method Elem #elem#default(Size that)=this.#elem#imm(that)
-read method read Elem #elem#read(Size that)=this.readVal(that)
-mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#set(that,val=val) val)
-mut method Elem #update#imm(Size that, Elem val)=(this.set(that,val=val) val)
-mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
-read method Void #close(Size that)=
+read method I #startIndex()=0I
+read method Bool #hasElem(I that)=that<this.size()
+read method Bool #incomplete(I that)=that!=this.size()
+read method Elem #elem#imm(I that)=this.val(that)
+mut method mut Elem #elem#mut(I that)=this.#val(that)
+read method Elem #elem#default(I that)=this.#elem#imm(that)
+read method read Elem #elem#read(I that)=this.readVal(that)
+mut method mut Elem #update#mut(I that, mut Elem val)=(this.#set(that,val=val) val)
+mut method Elem #update#imm(I that, Elem val)=(this.set(that,val=val) val)
+mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
+read method Void #close(I that)=
   if this.#incomplete(that) error X"multi-for skipped some elements"
 
 mut method Void add(Elem that)=this.add(right=that)
 mut  method mut This (Void that)=this
 
 class method mut This ()
-class method mut This (Size capacity)
+class method mut This (I capacity)
 read method Bool isEmpty()
-read method Size size()
-read method read Elem readVal(Size that)
-read method imm  Elem val(Size that)
-mut method mut Elem #val(Size that)
-mut method Void set(Size that,Elem val)
-mut method Void #set(Size that,mut Elem val)
-mut method  Void remove(Size that)
-mut method Void add(Size that, Elem val)
-mut method Void #add(Size that, mut Elem val)
+read method I size()
+read method read Elem readVal(I that)
+read method imm  Elem val(I that)
+mut method mut Elem #val(I that)
+mut method Void set(I that,Elem val)
+mut method Void #set(I that,mut Elem val)
+mut method  Void remove(I that)
+mut method Void add(I that, Elem val)
+mut method Void #add(I that, mut Elem val)
 
 method toS()=(
-  var i=0Size
+  var i=0I
   var res=S"["
   while i<this.size() (
     res++= AnyToS(this.readVal(i))
@@ -81,10 +81,10 @@ method This ++(This right)=This()((
     ))
 
 //#################Withs
-method This with(Size that, Elem val)=(
+method This with(I that, Elem val)=(
   size=this.size()
   res=This(capacity=this.size())
-  var i=0Size
+  var i=0I
   while i<that (res.add(this.val(i)) i:=i.#succ())
   res.add(val) i:=i.#succ()
   while i<size (res.add(this.val(i)) i:=i.#succ())
@@ -93,10 +93,10 @@ method This with(Size that, Elem val)=(
 method This withLeft(Elem that)=this.with(0\, val=that)
 method This withRight(Elem that)=this.with(\size.#pred(), val=that)
 
-method This withAlso(Size that, Elem val)=(
+method This withAlso(I that, Elem val)=(
   size=this.size()
   res=This(capacity=this.size())
-  var i=0Size
+  var i=0I
   while i<that (res.add(this.val(i)) i:=i.#succ())
   res.add(val)
   while i<size (res.add(this.val(i)) i:=i.#succ())
@@ -107,10 +107,10 @@ method This withAlsoLeft(Elem that)=this.withAlso(0\, val=that)
 method This withAlsoRight(Elem that)=this.withAlso(\size, val=that)
 
 //skipping/filtering
-method This without(Size index)=(
+method This without(I index)=(
   size=this.size()
   res=This(capacity=this.size())
-  var i=0Size
+  var i=0I
   while i<index (res.add(this.val(i)) i:=i.#succ())
   i:=i.#succ()
   while i<size (res.add(this.val(i)) i:=i.#succ())
@@ -137,40 +137,40 @@ read method lent ElemBox reduce(Elem that)=ElemBox(vals=this.vals(start=0\),elem
 read method read Iterator cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 mut method mut Iterator #cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 
-read method read Iterator vals(Size start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
-mut method mut Iterator #vals(Size start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
-read method read Iterator cutVals(Size start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
-mut method mut Iterator #cutVals(Size start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
+read method read Iterator vals(I start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
+mut method mut Iterator #vals(I start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
+read method read Iterator cutVals(I start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
+mut method mut Iterator #cutVals(I start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
 
-read method read Iterator vals(Size end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
-mut method mut Iterator #vals(Size end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
-read method read Iterator cutVals(Size end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
-mut method mut Iterator #cutVals(Size end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
+read method read Iterator vals(I end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
+mut method mut Iterator #vals(I end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
+read method read Iterator cutVals(I end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
+mut method mut Iterator #cutVals(I end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
 
-read method read Iterator vals(Size start,Size end)=Iterator(start=start,end=end,cut=\.false(),list=this)
-mut method mut Iterator #vals(Size start,Size end)=Iterator(start=start,end=end,cut=\.false(),list=this)
-read method read Iterator cutVals(Size start,Size end)=Iterator(start=start,end=end,cut=\.true(),list=this)
-mut method mut Iterator #cutVals(Size start,Size end)=Iterator(start=start,end=end,cut=\.true(),list=this)
+read method read Iterator vals(I start,I end)=Iterator(start=start,end=end,cut=\.false(),list=this)
+mut method mut Iterator #vals(I start,I end)=Iterator(start=start,end=end,cut=\.false(),list=this)
+read method read Iterator cutVals(I start,I end)=Iterator(start=start,end=end,cut=\.true(),list=this)
+mut method mut Iterator #cutVals(I start,I end)=Iterator(start=start,end=end,cut=\.true(),list=this)
 
 Iterator={
-  Size start
-  Size end
+  I start
+  I end
   Bool cut
   mut This1 list
-  class method mut This(Size start,Size end,Bool cut,fwd mut This1 list)
+  class method mut This(I start,I end,Bool cut,fwd mut This1 list)
   read method read This #iterator()=this
   mut method mut This #varIterator()=this
-  read method Size #startIndex()=this.start()
-  read method Bool #hasElem(Size that)=that<this.end()
-  read method Bool #incomplete(Size that)=that!=this.end()
-  read method Elem #elem#imm(Size that)=this.list().val(that)
-  mut method mut Elem #elem#mut(Size that)=this.#list().#val(that)
-  read method Elem #elem#default(Size that)=this.list().#elem#imm(that)
-  read method read Elem #elem#read(Size that)=this.list().readVal(that)
-  mut method mut Elem #update#mut(Size that, mut Elem val)=(this.#list().#set(that,val=val) val)
-  mut method Elem #update#imm(Size that, Elem val)=(this.#list().set(that,val=val) val)
-  mut method Elem #update#default(Size that, Elem val)=this.#list().#update#imm(that,val=val)
-  read method Void #close(Size that)=
+  read method I #startIndex()=this.start()
+  read method Bool #hasElem(I that)=that<this.end()
+  read method Bool #incomplete(I that)=that!=this.end()
+  read method Elem #elem#imm(I that)=this.list().val(that)
+  mut method mut Elem #elem#mut(I that)=this.#list().#val(that)
+  read method Elem #elem#default(I that)=this.list().#elem#imm(that)
+  read method read Elem #elem#read(I that)=this.list().readVal(that)
+  mut method mut Elem #update#mut(I that, mut Elem val)=(this.#list().#set(that,val=val) val)
+  mut method Elem #update#imm(I that, Elem val)=(this.#list().set(that,val=val) val)
+  mut method Elem #update#default(I that, Elem val)=this.#list().#update#imm(that,val=val)
+  read method Void #close(I that)=
     if this.#incomplete(that) error Collection$IterationIncomplete
       "While iterating on multiple collections, iteration terminated abruptly. The size of the collections may have not been the same."
   }

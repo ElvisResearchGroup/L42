@@ -28,7 +28,7 @@ method mut S$List _xs(S s)={
   res=S$List()
   loop (
     c=pars.indexOf(S",")
-    if c==Size"-1" (
+    if c==I"-1" (
       res.add(right=pars)
       return res
       )
@@ -48,7 +48,7 @@ method mut S$List _xs(S s)={
   if x!=S"" && x!=S"this" && !(x in xs) error S$ParseError(
     S"in with(xs=%xs), removing the selected x from %this")
   i=s.indexOf(S"(")
-  m=s.subString(start=0Size,end=i)
+  m=s.subString(start=0I,end=i)
   if xs.isEmpty() return this.self().with(selector=m++S"()")
   var pars=xs.left()
   for xi in xs.withoutLeft() (pars++=S", "++xi)

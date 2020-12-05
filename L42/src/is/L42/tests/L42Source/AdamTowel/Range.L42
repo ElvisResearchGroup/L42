@@ -1,26 +1,26 @@
-Size start
-Size end
-@Public class method This(Size that)=This(that=0\,to=that)
-@Public class method This(Size that Size to)=(
+I start
+I end
+@Public class method This(I that)=This(that=0\,to=that)
+@Public class method This(I that I to)=(
   if that>to error X"Invalid Range: start=%that end=%to"
   This.of(start=that,end=to)
   )    
-class method This of(Size start Size end)
+class method This of(I start I end)
 @Public method This #iterator()=this
-@Public method Void #close(Size that)=void
-@Public method Bool #incomplete(Size that)=that<this.end()
-@Public method Size #elem#default(Size that)=that
-@Public method Bool #hasElem(Size that)=that<this.end()
-@Public method Size #startIndex()=this.start()
+@Public method Void #close(I that)=void
+@Public method Bool #incomplete(I that)=that<this.end()
+@Public method I #elem#default(I that)=that
+@Public method Bool #hasElem(I that)=that<this.end()
+@Public method I #startIndex()=this.start()
 @Public method ReverseRange reverse()=\(this)
 @Public ReverseRange={
   This1 that
   class method This(This1 that)
   @Public method This #iterator()=this
-  @Public method Void #close(Size that)=void
-  @Public method Bool #incomplete(Size that)=this.that().end()-that>=this.that().start()
-  @Public method Size #elem#default(Size that)=this.that().end()-that
-  @Public method Bool #hasElem(Size that)=this.that().end()-that>=this.that().start()
-  @Public method Size #startIndex()=Size.zero().#succ()
+  @Public method Void #close(I that)=void
+  @Public method Bool #incomplete(I that)=this.that().end()-that>=this.that().start()
+  @Public method I #elem#default(I that)=this.that().end()-that
+  @Public method Bool #hasElem(I that)=this.that().end()-that>=this.that().start()
+  @Public method I #startIndex()=I.zero().#succ()
   }
 @This1.AbstractTowel{range}

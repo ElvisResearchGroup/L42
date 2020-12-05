@@ -1,12 +1,12 @@
 TS=Trait:{
   ColT={class method This from(S string)}
-  class method ColT colT(lent DB db,Size i)[_]
+  class method ColT colT(lent DB db,I i)[_]
     =ColT.from(string=db.val(i).val())
   }
 
 TOptS=Trait:{
   ColT={class method This from(S.Opt optS)}
-  class method ColT colT(lent DB db,Size i)[_]
+  class method ColT colT(lent DB db,I i)[_]
     =ColT.from(optS=db.val(i))
   }
   
@@ -15,13 +15,13 @@ K1=Trait:{
   R={class method This #immK(T0 p0)}
   List={ class method mut This () mut method Void add(R right) }
   T0={}
-  class method T0 p0(lent DB db,Size i)[DB.Fail]
+  class method T0 p0(lent DB db,I i)[DB.Fail]
   class method S p0()
   mut method List collectResults()[DB.Fail]=(
     lent db=this.#db()//inference would fail
       (
       res=List()//to allow for promotion res to imm
-      Size i0=db.findColumn(label=This.p0())
+      I i0=db.findColumn(label=This.p0())
       while db.next() (res.add(right=R.#immK(
         p0=This.p0(db=db,i=i0)
         )))
@@ -35,16 +35,16 @@ K2=Trait:{
   List={ class method mut This () mut method Void add(R right) }
   T0={}
   T1={}
-  class method T0 p0(lent DB db,Size i)[DB.Fail]
-  class method T1 p1(lent DB db,Size i)[DB.Fail]
+  class method T0 p0(lent DB db,I i)[DB.Fail]
+  class method T1 p1(lent DB db,I i)[DB.Fail]
   class method S p0()
   class method S p1()
   mut method List collectResults()[DB.Fail]=(
     lent db=this.#db()
       (
       res=List()
-      Size i0=db.findColumn(label=This.p0())
-      Size i1=db.findColumn(label=This.p1())
+      I i0=db.findColumn(label=This.p0())
+      I i1=db.findColumn(label=This.p1())
       while db.next() (res.add(right=R.#immK(
         p0=This.p0(db=db,i=i0)
         p1=This.p1(db=db,i=i1)
@@ -60,9 +60,9 @@ K3=Trait:{
   T0={}
   T1={}
   T2={}
-  class method T0 p0(lent DB db,Size i)[DB.Fail]
-  class method T1 p1(lent DB db,Size i)[DB.Fail]
-  class method T2 p2(lent DB db,Size i)[DB.Fail]
+  class method T0 p0(lent DB db,I i)[DB.Fail]
+  class method T1 p1(lent DB db,I i)[DB.Fail]
+  class method T2 p2(lent DB db,I i)[DB.Fail]
   class method S p0()
   class method S p1()
   class method S p2()
@@ -70,9 +70,9 @@ K3=Trait:{
     lent db=this.#db()
       (
       res=List()
-      Size i0=db.findColumn(label=This.p0())
-      Size i1=db.findColumn(label=This.p1())
-      Size i2=db.findColumn(label=This.p2())
+      I i0=db.findColumn(label=This.p0())
+      I i1=db.findColumn(label=This.p1())
+      I i2=db.findColumn(label=This.p2())
       while db.next() (res.add(right=R.#immK(
         p0=This.p0(db=db,i=i0)
         p1=This.p1(db=db,i=i1)
@@ -90,10 +90,10 @@ K4=Trait:{
   T1={}
   T2={}
   T3={}
-  class method T0 p0(lent DB db,Size i)[DB.Fail]
-  class method T1 p1(lent DB db,Size i)[DB.Fail]
-  class method T2 p2(lent DB db,Size i)[DB.Fail]
-  class method T3 p3(lent DB db,Size i)[DB.Fail]
+  class method T0 p0(lent DB db,I i)[DB.Fail]
+  class method T1 p1(lent DB db,I i)[DB.Fail]
+  class method T2 p2(lent DB db,I i)[DB.Fail]
+  class method T3 p3(lent DB db,I i)[DB.Fail]
   class method S p0()
   class method S p1()
   class method S p2()
@@ -102,10 +102,10 @@ K4=Trait:{
     lent db=this.#db()
       (
       res=List()
-      Size i0=db.findColumn(label=This.p0())
-      Size i1=db.findColumn(label=This.p1())
-      Size i2=db.findColumn(label=This.p2())
-      Size i3=db.findColumn(label=This.p3())
+      I i0=db.findColumn(label=This.p0())
+      I i1=db.findColumn(label=This.p1())
+      I i2=db.findColumn(label=This.p2())
+      I i3=db.findColumn(label=This.p3())
       while db.next() (res.add(right=R.#immK(
         p0=This.p0(db=db,i=i0)
         p1=This.p1(db=db,i=i1)
@@ -125,11 +125,11 @@ K5=Trait:{
   T2={}
   T3={}
   T4={}
-  class method T0 p0(lent DB db,Size i)[DB.Fail]
-  class method T1 p1(lent DB db,Size i)[DB.Fail]
-  class method T2 p2(lent DB db,Size i)[DB.Fail]
-  class method T3 p3(lent DB db,Size i)[DB.Fail]
-  class method T4 p4(lent DB db,Size i)[DB.Fail]
+  class method T0 p0(lent DB db,I i)[DB.Fail]
+  class method T1 p1(lent DB db,I i)[DB.Fail]
+  class method T2 p2(lent DB db,I i)[DB.Fail]
+  class method T3 p3(lent DB db,I i)[DB.Fail]
+  class method T4 p4(lent DB db,I i)[DB.Fail]
   class method S p0()
   class method S p1()
   class method S p2()
@@ -139,11 +139,11 @@ K5=Trait:{
     lent db=this.#db()
       (
       res=List()
-      Size i0=db.findColumn(label=This.p0())
-      Size i1=db.findColumn(label=This.p1())
-      Size i2=db.findColumn(label=This.p2())
-      Size i3=db.findColumn(label=This.p3())
-      Size i4=db.findColumn(label=This.p4())
+      I i0=db.findColumn(label=This.p0())
+      I i1=db.findColumn(label=This.p1())
+      I i2=db.findColumn(label=This.p2())
+      I i3=db.findColumn(label=This.p3())
+      I i4=db.findColumn(label=This.p4())
       while db.next() (res.add(right=R.#immK(
         p0=This.p0(db=db,i=i0)
         p1=This.p1(db=db,i=i1)

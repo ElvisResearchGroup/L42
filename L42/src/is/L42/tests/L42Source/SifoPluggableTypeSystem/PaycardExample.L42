@@ -1,87 +1,87 @@
 LogRecord={
-  var Size balance
+  var I balance
   var Bool empty
     
-  class method mut This(Size balance, Bool empty)
+  class method mut This(I balance, Bool empty)
   class method mut This () = This(
-    balance = Size"-1",
+    balance = I"-1",
     empty = Bool.true()
     )
    
-  mut method Void setRecord(Size balance)={
-    if balance < 0Size return void
+  mut method Void setRecord(I balance)={
+    if balance < 0I return void
     this.empty(Bool.false())
     return this.balance(balance)
     }
   }
 LogRecords=Collection.list(LogRecord)
 LogFile={
-  var Size currentRecord
+  var I currentRecord
   mut LogRecords logRecords
-  class method mut This(Size currentRecord,mut LogRecords logRecords)
+  class method mut This(I currentRecord,mut LogRecords logRecords)
   class method mut This ()=This(
-    currentRecord=0Size,
+    currentRecord=0I,
     logRecords=LogRecords()
     )
-  mut method Void addRecord(Size balance)=(
-    this.currentRecord(this.currentRecord() + 1Size)
+  mut method Void addRecord(I balance)=(
+    this.currentRecord(this.currentRecord() + 1I)
     mut LogRecord newRecord = LogRecord()
     newRecord.setRecord(balance=balance)
     this.#logRecords().#add(right=newRecord)
     )
   mut method mut LogRecord getMaximumRecord()=(
-    var mut LogRecord max = this.#logRecords().#val(0Size)
-    var Size i = 1Size
+    var mut LogRecord max = this.#logRecords().#val(0I)
+    var I i = 1I
     while i < this.logRecords().size() (
       mut LogRecord lr = this.#logRecords().#val(i)
       if lr.balance() > max.balance() ( max := lr )
-      i += 1Size
+      i += 1I
       )
     max
     )
   }
 PayCard={
   State=Data:{
-    Size limit
-    var Size unsuccessfulOperations
-    var Size balance
+    I limit
+    var I unsuccessfulOperations
+    var I balance
     mut LogFile log
     }
-  Size id
+  I id
   mut @Top State state
-  class method mut This(Size id,mut @Top State state)
-  class method mut This(Size id,@Top Size limit)=This(
+  class method mut This(I id,mut @Top State state)
+  class method mut This(I id,@Top I limit)=This(
     id = id,
     state=\(
       limit = limit,
-      unsuccessfulOperations = 0Size,
-      balance = 0Size,
+      unsuccessfulOperations = 0I,
+      balance = 0I,
       log = LogFile()
       )
     )
   class method mut PayCard createJuniorCard()=(
-    This(id=0Size,limit=100Size)
+    This(id=0I,limit=100I)
     )
-  mut method @Top Bool charge(Size amount)=
+  mut method @Top Bool charge(I amount)=
     This.charge(state=this.#state(),amount=amount)
-  class method Bool charge(mut State state,Size amount)={
-    if amount <= 0Size return Bool.false()
+  class method Bool charge(mut State state,I amount)={
+    if amount <= 0I return Bool.false()
     if state.balance()+amount >= state.limit() return Bool.false()
     state.balance(state.balance()+amount)
     return Bool.true()
     }
-  mut method Void chargeAndRecord(Size amount)=
+  mut method Void chargeAndRecord(I amount)=
     This.chargeAndRecord(state=this.#state(),amount=amount)
-  class method Void chargeAndRecord(mut State state,Size amount)=(
+  class method Void chargeAndRecord(mut State state,I amount)=(
     logFile = state.#log()
     if This.charge(state=state,amount=amount) logFile.addRecord(balance=state.balance())
     )
   read method @Top Bool isValid()=This.isValid(state=this.state())
   class method Bool isValid(read State state)=
-    state.unsuccessfulOperations()<=3Size
+    state.unsuccessfulOperations()<=3I
 /*  read method @Top Bool isValid()=(//or, without auxiliary method
     read @Top State state=this.state()
-    state.unsuccessfulOperations()<=3Size
+    state.unsuccessfulOperations()<=3I
     )*/
   read method @Top S infoCardMsg()=This.infoCardMsg(state=this.state())
   class method S infoCardMsg(read State state)=

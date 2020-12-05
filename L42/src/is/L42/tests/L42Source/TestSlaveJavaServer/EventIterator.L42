@@ -3,25 +3,25 @@ mut S.List streams
 class method mut This(mut This1 that, mut S.List streams)
 mut method mut This #iterator()=this
 mut method mut This #varIterator()=this
-read method Size #startIndex()=0Size
-read method Bool #hasElem(Size that)=Bool.true()
-read method Bool #incomplete(Size that)=!this.streams().isEmpty()
+read method I #startIndex()=0I
+read method Bool #hasElem(I that)=Bool.true()
+read method Bool #incomplete(I that)=!this.streams().isEmpty()
 mut method Event from(S.Opt oRes)=(
   if !oRes.isPresent() error X"unexpected Event with null string"
   this.from(res=oRes.val())
   )
 mut method Event from(S res)=(
   index1=res.indexOf(S.nl())
-  if index1==Size"-1" error X"unexpected Event format: [[%res]]"
+  if index1==I"-1" error X"unexpected Event format: [[%res]]"
   key=res.subString(start=0\,end=index1)
   index2=res.indexOf(S.nl(),from=index1+1\)
-  if index2==Size"-1" error X"unexpected Event format: [[%res]]"
+  if index2==I"-1" error X"unexpected Event format: [[%res]]"
   id=res.subString(start=index1+1\,end=index2)
   msg=res.subString(start=index2+1\,end=\size)
   if id==S"##End##" (this.#streams().removeLeft(val=key))
   Event(key=key, id=id, msg=msg)
   )
-mut method Event #elem#imm(Size that)={
+mut method Event #elem#imm(I that)={
   var res=this.#that().nextEvent(keys=this.keys())
   catch Fail f (
     if f.text()!=S"java.util.concurrent.CancellationException%S.nl()null" error f
@@ -36,6 +36,6 @@ read method S keys()=(
   for s in this.streams() (res++=s++S.nl())
   res
   )
-mut method Event #elem#default(Size that)=this.#elem#imm(that)
-mut method Event #elem#read(Size that)=this.#elem#imm(that)
-read method Void #close(Size that)=void
+mut method Event #elem#default(I that)=this.#elem#imm(that)
+mut method Event #elem#read(I that)=this.#elem#imm(that)
+read method Void #close(I that)=void

@@ -22,11 +22,11 @@ BugNativFwd={//we should test also with fwd+subtyping, also when fwd+subtyping d
     )
   }
 
-Entry=Data:{Size key, S elem}
+Entry=Data:{I key, S elem}
 MapIS=Class:Trait({
   A=Collection.list(Entry)
   B={
-    read method S get(Size that)={
+    read method S get(I that)={
       read A map=This.toMap(this)
       for e in map (if e.key()==that return e.elem())
       error X"not there"

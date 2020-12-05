@@ -4,35 +4,35 @@ Main=(
   )
 Test1={
   Foo={
-    read method Size inner::0()
-    class method This of::0(Size inner)
-    class method This of(Size inner)=(
+    read method I inner::0()
+    class method This of::0(I inner)
+    class method This of(I inner)=(
       This r=this.of::0(inner=inner)
       _=System.immNorm(r)//start the eagers
       r
       )
-    method Size times2()=
+    method I times2()=
     native{trusted:eagerCache} (
       Log"Foo".write(S"[")
-      for i in Range(5000Size) (Debug(S"in2"))
+      for i in Range(5000I) (Debug(S"in2"))
       Log"Foo".write(S"]")
-      this.inner::0()*2Size
+      this.inner::0()*2I
       )
-    method Size times3()=
+    method I times3()=
     native{trusted:eagerCache} (
-      for i in Range(500Size) (Debug(S"in3"))
+      for i in Range(500I) (Debug(S"in3"))
       Log"Foo".write(S"{")
       Log"Foo".write(S"}")
-      this.inner::0()*3Size
+      this.inner::0()*3I
       )
     }
   TestCache=(
     Log"Foo".clear()
-    Foo foo=Foo.of(inner=5Size)
-    {}:Test"cacheResult2"(expected=10Size, actual=foo.times2())
-    {}:Test"cacheResult2Again"(expected=10Size, actual=foo.times2())
-    {}:Test"cacheResult3"(expected=15Size, actual=foo.times3())
-    {}:Test"cacheResult3Again"(expected=15Size, actual=foo.times3())
+    Foo foo=Foo.of(inner=5I)
+    {}:Test"cacheResult2"(expected=10I, actual=foo.times2())
+    {}:Test"cacheResult2Again"(expected=10I, actual=foo.times2())
+    {}:Test"cacheResult3"(expected=15I, actual=foo.times3())
+    {}:Test"cacheResult3Again"(expected=15I, actual=foo.times3())
     Debug(Log"Foo".#$reader().read())
     {}:Test"cacheAvoidRepeating"(expected=S"[{}]",actual=Log"Foo".#$reader().read())
     )
@@ -49,10 +49,10 @@ Test2={
   Main=(
     Log"Point".clear()
     p=Point(x=3\,y=5\)
-    for i in Range(500Size) (Log"Point".write(S"@"))
+    for i in Range(500I) (Log"Point".write(S"@"))
     S res=Log"Point".#$reader().read()
     Debug(res)
     Debug(res.size())
-    {}:Test"WithData res=%res"(res.size()==510Size)
+    {}:Test"WithData res=%res"(res.size()==510I)
     )
   }

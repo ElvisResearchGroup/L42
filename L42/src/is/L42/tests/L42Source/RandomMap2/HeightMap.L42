@@ -1,45 +1,45 @@
-read method Size combine(Size x,Size y, Size seed,Size oldCell)={
-  if oldCell==0Size return seed   //unsetted is set
+read method I combine(I x,I y, I seed,I oldCell)={
+  if oldCell==0I return seed   //unsetted is set
   if oldCell+1\==seed return seed //contaged
-  if oldCell+6\ <seed return (oldCell+seed)/2Size //pulled up if it is so far below
-  return 0Size //do nothing
+  if oldCell+6\ <seed return (oldCell+seed)/2I //pulled up if it is so far below
+  return 0I //do nothing
   }
 mut Points montainsTop=Points()
-RiverMap=Class:Data:MapList(Size.List,base='zero())
+RiverMap=Class:Data:MapList(I.List,base='zero())
 mut RiverMap riverMap
-class method mut RiverMap #default#riverMap(Size side)=\(side=side)
+class method mut RiverMap #default#riverMap(I side)=\(side=side)
 mut Math.Random r
-Size maxZ
-Size side
-read method Size (Point that)
-read method Size (Size x,Size y)
-mut method Void (Point that,Size val)
-mut method Void (Size x,Size y,Size val)
+I maxZ
+I side
+read method I (Point that)
+read method I (I x,I y)
+mut method Void (Point that,I val)
+mut method Void (I x,I y,I val)
 
-mut method Size rand(Size that, Size to)=
+mut method I rand(I that, I to)=
   this.#r().nextInRange(start=that,end=to)
 //For now, makes a maxZ tall diagonal line and
 //6 other maxZ*0.65 peakes
 
-mut method Void makeRivers(Size waterLevel)=(
+mut method Void makeRivers(I waterLevel)=(
   this.runWater(p=this.montainsTop().val(2\))
   this.runWater(p=this.montainsTop().val(3\))
-  s=this.side()-1Size
+  s=this.side()-1I
   o=this.#order()
   for x in Range(1\ to=s) (
     for y in Range(1\ to=s) {
-      if this.riverMap()(x=x,y=y) > 0Size return void
+      if this.riverMap()(x=x,y=y) > 0I return void
       h=this(x=x,y=y)
       if h <= waterLevel return void
-      var max=Size"-1"//for all non water points
+      var max=I"-1"//for all non water points
       for (x1,y1) in o (//for all surrunding spots, find the max with water
         r=this.riverMap()(x=x+x1,y=y+y1)
         candidate=this(x=x+x1,y=y+y1)+r
-        if r>0Size ( max:=candidate.max(max) )
+        if r>0I ( max:=candidate.max(max) )
         )
-      if max==Size"-1" return void
+      if max==I"-1" return void
       if h <= max  this(x=x,y=y,val=max)
-      else this(x=x,y=y,val=(h+max)/2Size)
+      else this(x=x,y=y,val=(h+max)/2I)
       return void
       }
     )
@@ -54,13 +54,13 @@ mut method mut Points runWaterDown(Point start)={
   river=Points()
   loop (
     this.add(river=river,p=p)
-    var min=this.maxZ()+1Size
+    var min=this.maxZ()+1I
     for pi in Points[p.with(y=\y-1\); p.with(x=\x-1\); p.with(x=\x+1\); p.with(y=\y+1\)] (
       candidate=this(pi)
-      ok=this.riverMap()(pi) == 0Size && candidate<min //what happens if we remove the riverMap check?
+      ok=this.riverMap()(pi) == 0I && candidate<min //what happens if we remove the riverMap check?
       if ok (min:=candidate, p:=pi)
       )///crucially, min can be higher than the former this(p)
-    if min==this.maxZ()+1Size || this(p)<=0Size (
+    if min==this.maxZ()+1I || this(p)<=0I (
       this.add(river=river,p=p)
       return river
       )
@@ -70,7 +70,7 @@ mut method Void runWater(Point p)=(
   x=this.#r().nextInRange(start=p.x()-2\,end=p.x()+2\)
   y=this.#r().nextInRange(start=p.y()-2\,end=p.y()+2\)
   river=this.runWaterDown(start=\(x=x,y=y))
-  if river.size()>=2Size this.adjust(river=river)
+  if river.size()>=2I this.adjust(river=river)
   )
 mut method Void riversGoDown(read Points river)=(
   var last=this(river.left())
@@ -82,7 +82,7 @@ mut method Void riversGoDown(read Points river)=(
   )
 mut method Void adjust(read Points river)=(
   this.riversGoDown(river=river)
-  endH=this(river.val(\size()-2\))+1Size//the earth + 1 water
+  endH=this(river.val(\size()-2\))+1I//the earth + 1 water
   preLastH=this.riverMap()(river.right()).max(endH)
   this.#riverMap()(river.right() val=preLastH)
   this(river.right() val=0\)
@@ -93,10 +93,10 @@ mut method Void adjust(read Points river)=(
     riverH=this.riverMap()(pi)
     if lastH>currentH (
       this.#riverMap()(pi val=(riverH+lastH)-currentH)
-      currentH:=(riverH+lastH)-1Size
+      currentH:=(riverH+lastH)-1I
       )
-    delta=(currentH-(lastH+1Size))
-    if delta>0Size (//should make more water on waterfalls
+    delta=(currentH-(lastH+1I))
+    if delta>0I (//should make more water on waterfalls
       this.#riverMap()(pi val=this.riverMap()(pi)+delta)
       this(pi val=this(pi)-delta)
       )
@@ -106,7 +106,7 @@ mut method Void adjust(read Points river)=(
 mut method Void noUnderZero()=(
   for x in Range(this.side()) (
     for y in Range(this.side()) (
-      if this(x=x,y=y)<0Size (
+      if this(x=x,y=y)<0I (
         reduced=(this.riverMap()(x=x,y=y)+this(x=x,y=y)).max(0\)
         this.#riverMap()(x=x,y=y,val=reduced)
         this(x=x,y=y,val=0\)

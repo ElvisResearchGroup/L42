@@ -1,55 +1,55 @@
 Account={
-  class method Size interestRate()=2Size
-  class method Size overdraftLimit()=Size"-5000"
-  class method Size dailyLimit()=Size"-1000"
-  var @Top Size interest
+  class method I interestRate()=2I
+  class method I overdraftLimit()=I"-5000"
+  class method I dailyLimit()=I"-1000"
+  var @Top I interest
   mut @Top State state
   var Bool lock
   class method S statement(read State state)=S"""%
     |Current balance=%state.balance()
     |Current withdraw=%state.withdraw()
     """
-  class method mut This (@Top Size interest, mut @Top State state, Bool lock)
+  class method mut This (@Top I interest, mut @Top State state, Bool lock)
   class method mut This()=This(balance=0\)
-  class method mut This(Size balance) = This(
-    interest=0Size,
-    state=State(balance=balance, withdraw=0Size)
+  class method mut This(I balance) = This(
+    interest=0I,
+    state=State(balance=balance, withdraw=0I)
     lock=Bool.false()
     )
   
-  read method @Top Size calculateInterest()=(
-    @Top Size balance = this.state().balance()
-    @Top Size totInterests = balance * This.interestRate()
-    totInterests / 36500Size
+  read method @Top I calculateInterest()=(
+    @Top I balance = this.state().balance()
+    @Top I totInterests = balance * This.interestRate()
+    totInterests / 36500I
     )
-  read method @Top Size estimatedInterest(Size daysLeft)=(
-    @Top Size moreInterest = daysLeft * this.calculateInterest()
+  read method @Top I estimatedInterest(I daysLeft)=(
+    @Top I moreInterest = daysLeft * this.calculateInterest()
     this.interest() + moreInterest
     )
-  read method @Top Bool creditWorthy(Size amount)=(
-    @Top Size balance = this.state().balance()
+  read method @Top Bool creditWorthy(I amount)=(
+    @Top I balance = this.state().balance()
     balance >= amount
     )
   mut method Void doLock()=this.lock(Bool.true())
   mut method Void unLock()=this.lock(Bool.false())
   }
 State=Data:{
-  var Size balance,var Size withdraw
-  mut method Bool updateBalance(Size that)={
-    Size newBalance = this.balance() + that
+  var I balance,var I withdraw
+  mut method Bool updateBalance(I that)={
+    I newBalance = this.balance() + that
     if newBalance < Account.overdraftLimit() return Bool.false()
     this.balance(newBalance)
     return Bool.true()
     }
-  mut method Bool undoUpdateBalance(Size that)={
-    Size newBalance = this.balance() - that
+  mut method Bool undoUpdateBalance(I that)={
+    I newBalance = this.balance() - that
     if newBalance < Account.overdraftLimit() return Bool.false()
     this.balance(newBalance)
     return Bool.true()
     }
-  mut method Bool update(Size that)={
+  mut method Bool update(I that)={
     var newWithdraw = this.withdraw()
-    if that < 0Size (
+    if that < 0I (
       newWithdraw += that
       if newWithdraw < Account.dailyLimit() return Bool.false()
       )
@@ -58,9 +58,9 @@ State=Data:{
     this.withdraw(newWithdraw)
     return Bool.true()
     }
-  mut method Bool undoUpdate(Size that)={
+  mut method Bool undoUpdate(I that)={
     var newWithdraw = this.withdraw()
-    if that < 0Size (
+    if that < 0I (
       newWithdraw -= that
       if newWithdraw < Account.dailyLimit() return Bool.false()
       )
@@ -80,28 +80,28 @@ Application={
     )
   mut method Void nextDay()=(
     mut @Top State state = this.#account().#state()
-    state.withdraw(0Size)
+    state.withdraw(0I)
     this.#account().interest(\interest + \calculateInterest)
     )
    mut method Void nextYear()=(
     mut @Top State state = this.#account().#state()
-    @Top Size interest = this.account().interest()
-    @Top Size newBalance = state.balance() + interest
+    @Top I interest = this.account().interest()
+    @Top I newBalance = state.balance() + interest
     state.balance(newBalance)
-    this.#account().interest(0Size)
+    this.#account().interest(0I)
     )
   }
 Transaction={
-  class method @Top Bool transfer(mut Account source, mut Account destination, Size amount)={
+  class method @Top Bool transfer(mut Account source, mut Account destination, I amount)={
     if !This.lockForTransfer(source=source, destination=destination) return Bool.false()
     mut @Top State sourceState = source.#state()
     mut @Top State destinationState = destination.#state()
-    if (amount <= Size"0") return Bool.false() 
-    @Top Bool sourceKo = !sourceState.update(amount * Size"-1")
+    if (amount <= I"0") return Bool.false() 
+    @Top Bool sourceKo = !sourceState.update(amount * I"-1")
     if sourceKo return Bool.false()
     @Top Bool destinationKo = !destinationState.update(amount)
     if destinationKo (
-      _=sourceState.undoUpdate(amount * Size"-1")
+      _=sourceState.undoUpdate(amount * I"-1")
       return Bool.false()
       )
     source.unLock()

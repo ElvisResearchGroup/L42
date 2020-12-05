@@ -28,16 +28,16 @@ read method This1.S toS()=native{trusted:toS} error void
   )
 
 method This1.Long floorLong()=native{trusted:mathFloorLong} error void
-method This1.Size floor()=native{trusted:mathFloorInt} error void
+method This1.I floor()=native{trusted:mathFloorInt} error void
 method This1.Long ceilLong()=native{trusted:mathCeilLong} error void
-method This1.Size ceil()=native{trusted:mathCeilInt} error void
-method This1.Size round()=native{trusted:mathRoundInt} error void
-method This1.Size roundLong()=native{trusted:mathRoundLong} error void
+method This1.I ceil()=native{trusted:mathCeilInt} error void
+method This1.I round()=native{trusted:mathRoundInt} error void
+method This1.I roundLong()=native{trusted:mathRoundLong} error void
 method This1.Double toDouble()=this
 
 #norm{nativeKind=Double
-  typeDep=This,This1.Size,This1.Long,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
-  coherentDep=This,This1.Size,This1.Long,This1.Num,This1.Bool,This1.S
+  typeDep=This,This1.I,This1.Long,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
+  coherentDep=This,This1.I,This1.Long,This1.Num,This1.Bool,This1.S
   usedMethods=This1.S.toDouble(),This1.S.doubleToNum(that),This1.Bool.not(), This1.S$StringBuilder.toS()
   refined=toS()
   }

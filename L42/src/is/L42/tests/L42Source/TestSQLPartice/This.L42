@@ -8,11 +8,11 @@ DB=LoadDB(S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
 
 JavaCode={...}
 
-Person=Data:{S name, Size age, Size height, Size weight}
+Person=Data:{S name, I age, I height, I weight}
 Persons=Collection.list(Person)
 
 Queries=DB.QueryBox:{
-  @Public Insert=DB.query[Void;S;Size;Size;Size]"""
+  @Public Insert=DB.query[Void;S;I;I;I]"""
     |INSERT INTO Person (name,age,height,weight)
     |Values (@name,@age,@height,@weight)
     """
@@ -47,7 +47,7 @@ Main=(
   model=Model(j=j,q=q)
   text=q.all()().toS().replace(S.dq() with=S"\%S.dq()")
   code=
-    JavaCode.opening(name='Example,x=800Size,y=600Size)++
+    JavaCode.opening(name='Example,x=800I,y=600I)++
     JavaCode.button(k='Example id=S"addPerson" msg='PressedAdd text=S"add")++
     JavaCode.button(k='Example id=S"printAll" msg='PressedPrint text=S"printAll")++
     JavaCode.label(k='Example id=S"label1" text=text)++

@@ -34,12 +34,12 @@ class method mut This(mut J j)
   return this.#j().askEvent(key='DB, id='val(label),msg=label)
   catch J.Fail x exception Fail"%x"
   }
-@Public mut method Size findColumn(S label)[Fail]={
+@Public mut method I findColumn(S label)[Fail]={
   index=this.#j().askEvent(key='DB, id='findColumn(label),msg=label)
-  return Size.from(string=index.val())
+  return I.from(string=index.val())
   catch J.Fail x exception Fail"%x"
   }
-@Public mut method S.Opt val(Size that)[Fail]={
+@Public mut method S.Opt val(I that)[Fail]={
   return this.#j().askEvent(key='DB, id='val(that),msg=that.toS())
   catch J.Fail x exception Fail"%x"
   }

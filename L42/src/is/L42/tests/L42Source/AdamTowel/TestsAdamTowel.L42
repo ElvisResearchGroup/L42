@@ -9,7 +9,7 @@ TestNum=(
   {}:Test"numOp2"(Num"25/30"+Num"-11/60"==Num"39/60")
   {}:Test"numOp3"(Num"25/30"*Num"11/10"==Num"275/300")
   {}:Test"numOp4"(Num"25/30"*Num"-11/10"==Num"-275/300")
-  {}:Test"numConversion1"((12Size).toNum(denominator=3Size)==4Num)
+  {}:Test"numConversion1"((12I).toNum(denominator=3I)==4Num)
   {}:Test"numConversion2"((12Math.Long).toNum(denominator=3Math.Long)==4Num)
   {}:Test"numConversion2"((12Double).toNum()==12Num)
   )
@@ -18,7 +18,7 @@ TestQuote=(
   {}:Test"quote"(S"hi()"==ss.left())
   )
 OptS=Collection.optional(S)
-OptSize=Collection.optional(Size)
+OptSize=Collection.optional(I)
 TestOptS=(
   OptS o1=OptS()
   OptS o2=OptS(S"hi")
@@ -29,16 +29,16 @@ TestOptS=(
   )
 TestOptSize=(
   OptSize o1=OptSize()
-  OptSize o2=OptSize(8Size)
-  {}:Test"opt"(o2.val()==8Size)
+  OptSize o2=OptSize(8I)
+  {}:Test"opt"(o2.val()==8I)
   {}:Test"optNope"(S"Optional value is empty"==(
     error o1.val() catch error Collection.NoElementInOpt e e.text()
     ))
   )
 TestSizeRange=(
   var sAcc=S""
-  for i in Range(21Size) (sAcc++=S"a")
-  {}:Test"range 21"(sAcc.size()==21Size)
+  for i in Range(21I) (sAcc++=S"a")
+  {}:Test"range 21"(sAcc.size()==21I)
   )
 TestMatchReduce=((
   mut S.List ss=S.List[S"a";S"b";S"c"]
@@ -65,19 +65,19 @@ TestMatchSome=(
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
     var sAcc=S""
     res=Match.Some()(for s in ss (sAcc++=S"#" \add(s==S"b")))
-    {}:Test"MatchSomeShortCircut"(sAcc.size()==2Size)
+    {}:Test"MatchSomeShortCircut"(sAcc.size()==2I)
     )
   )
 TestSizeInString=(
-  half=21Size
+  half=21I
   answer=half+half
-  {}:Test"Sum"(answer==42Size)"Computed answer is %answer.toS()"
-  //{}:Test"Failing test"(answer==8Size)"Computed answer is %answer.toS()"
+  {}:Test"Sum"(answer==42I)"Computed answer is %answer.toS()"
+  //{}:Test"Failing test"(answer==8I)"Computed answer is %answer.toS()"
   {}:Test"StringConcat"(S"Hello World "++answer.toS()++S"!" == S"Hello World 42!")
   {}:Test"StringSpliceConcat"(S"Hello World %answer!" == S"Hello World 42!")
   )
 TestSizeParsing=(
-  err=Size"oh NO!"//throws error
+  err=I"oh NO!"//throws error
   {}:Test"InvalidParseInt"( Bool.false() )"Errors not thrown"
   catch error S.ParseError x 
     {}:Test"InvalidParseIntError"(
@@ -90,8 +90,8 @@ TestMakeNotCohList=Class.Relax:Collection.listTrait()['Elem=>NotCoh<:class Any]
 TestSList=(
   s=S.List()
   s.add(\"hi")
-  {}:Test"singleVal"(expected=S"hi", actual=s.val(0Size))
-  {}:Test"size1"(s.size()==1Size)
+  {}:Test"singleVal"(expected=S"hi", actual=s.val(0I))
+  {}:Test"size1"(s.size()==1I)
   )
 TestMap=(
   imm s=S.List[S"a";S"b";S"c"]
@@ -106,8 +106,8 @@ TestWhile=(
     )
   )
 TestBoolRelOps=(
-  {}:Test"Less then"(!(3Size<3Size))
-  {}:Test"Less then and false"(!(3Size<3Size && Bool.false()))
+  {}:Test"Less then"(!(3I<3I))
+  {}:Test"Less then and false"(!(3I<3I && Bool.false()))
   )
 TestVectorOps=(
   ss1=S.List[S"a";S"b";S"c"]
@@ -122,7 +122,7 @@ TestVectorOps=(
     {}:Test"Simple for"(sAcc==S"a1b2c3")
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
     ss3=S.List()(\add(S"hi"))
-    {}:Test"justSlash"(ss3.size()==1Size)
+    {}:Test"justSlash"(ss3.size()==1I)
     ),,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,,(
     ss4=S.List()(for s1 in ss1, imm s2 in ss2 \add(s1++s2))
     for var imm si in ss4 (si:=S"pe"++si)
@@ -144,8 +144,8 @@ TestLog=(
 
 Person={
   var S name
-  var Size age
-  class method mut This(S name,Size age)
+  var I age
+  class method mut This(S name,I age)
   read method capsule This clone()=This(name=this.name(),age=this.age())
   }
 Couple={
@@ -155,16 +155,16 @@ Couple={
   read method capsule This clone()=This(p1=this.p1(),p2=this.p2())
   imm method Void normMe()=native{trusted:lazyCache} (void)
   }
-I={ class method mut This() }
+A={ class method mut This() }
 TestEqualities=(
   Person immPerson = (
-    mut Person p1=Person(name=S"bob",age=23Size)
-    mut Person p2=Person(name=S"bob",age=23Size)
+    mut Person p1=Person(name=S"bob",age=23I)
+    mut Person p2=Person(name=S"bob",age=23I)
     {}:Test"RefEq1"(!System.mutReferenceEquality(p1 and=p2))
     {}:Test"RefEq2"(System.mutReferenceEquality(p1 and=p1))
     {}:Test"RefEq3"(System.mutReferenceEquality(p2 and=p2))
     {}:Test"StructEq1"(System.mutStructuralEquality(p1 and=p2))
-    p1.age(24Size)
+    p1.age(24I)
     {}:Test"StructEq2"(!System.mutStructuralEquality(p1 and=p2))
     mut Person p3 = p1.clone()
     {}:Test"StructEq3"(System.mutStructuralEquality(p1 and=p3))
@@ -178,12 +178,12 @@ TestEqualities=(
     )
   Couple immCouple2 = Couple(p1=immPerson, p2=immPerson)
   Couple immCouple3 = Couple(p1=immPerson.clone(), p2=immPerson.clone())
-  Couple immCouple4 = Couple(p1=immPerson, p2=Person(name=S"Claire",age=20Size))
+  Couple immCouple4 = Couple(p1=immPerson, p2=Person(name=S"Claire",age=20I))
   {}:Test"ImmEq1"(System.immEquality(immCouple and=immCouple2))
   {}:Test"ImmEq2"(System.immEquality(immCouple2 and=immCouple3))
   {}:Test"ImmEq3"(!System.immEquality(immCouple3 and=immCouple4))
-  I i1 = I()
-  I i2 = I()
+  A i1 = A()
+  A i2 = A()
   {}:Test"ImmEq4"(System.immEquality(i1 and=i2))
   
   mut Couple mutCouple = Couple(p1=immPerson, p2=immPerson)

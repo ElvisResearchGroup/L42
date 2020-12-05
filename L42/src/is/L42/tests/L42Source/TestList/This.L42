@@ -1,6 +1,6 @@
 reuse[AdamTowel]
 TestNoData={
-  Point={Size x Size y  class method This(Size x Size y)
+  Point={I x I y  class method This(I x I y)
     read method Bool ==(read Point that)=
       this.x()==that.x() && this.y()==that.y()
     }
@@ -20,7 +20,7 @@ TestNoData={
     {}:Test"points reduce"(
       Point(x=1\ y=0\)
       ==
-      pp.reduce()(for e in \vals if e.x()>0Size \add(e))
+      pp.reduce()(for e in \vals if e.x()>0I \add(e))
       )
   
     {}:Test"basic:reduce from empty string"(

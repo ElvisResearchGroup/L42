@@ -1,7 +1,7 @@
 mut Math.Random r
 mut JServer j
 var Camera c
-Size side=64Size//256?
+I side=64I
 Double sideD=64Double
 Camera=Data:{
   Double x,Double y,Double z
@@ -15,10 +15,10 @@ class method mut This #$of()=This(
 
 @JServer.Handler mut method Void ping(S msg)=void
 
-Point=Data:{Size x,Size y,Size z=0Size}
+Point=Data:{I x,I y,I z=0I}
 Points=Collection.list(Point)
 ShufflePoint=RandomList(Points)
-ShuffleSize=RandomList(Size.List)
+ShuffleI=RandomList(I.List)
 MapList={...}
 
 RandomMap=Data:{...}

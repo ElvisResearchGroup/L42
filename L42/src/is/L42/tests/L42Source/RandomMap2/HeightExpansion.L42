@@ -1,39 +1,39 @@
-mut SizeMap cells
+mut IMap cells
 mut Math.Random r
 mut V.Cell3D.List mountainTops = V.Cell3D.List()
-mut SizeMap riverMap
+mut IMap riverMap
 mut V.Cell2D.List seeds
-mut method Void grow(Size percent)
-mut method Void addSeed(V.Cell2D that, Size val)
+mut method Void grow(I percent)
+mut method Void addSeed(V.Cell2D that, I val)
 
-read method Size combine(V.Cell2D that, Size seed) = {
-  read SizeMap cs=this.cells()
-  Size oldCell = cs(that)
-  if oldCell==0Size return seed   //unsetted is set
+read method I combine(V.Cell2D that, I seed) = {
+  read IMap cs=this.cells()
+  I oldCell = cs(that)
+  if oldCell==0I return seed   //unsetted is set
   if oldCell+1\==seed return seed //contaged
-  if oldCell+6\ <seed return (oldCell+seed)/2Size //pulled up if it is so far below
-  return 0Size //do nothing
+  if oldCell+6\ <seed return (oldCell+seed)/2I //pulled up if it is so far below
+  return 0I //do nothing
   }
-mut method Size rand(Size that, Size to)=
+mut method I rand(I that, I to)=
   this.#r().nextInRange(start=that,end=to)
 
-mut method Void initTops(Size that) = (
-  lowX = V.maxX()/6Size
-  lowY = V.maxY()/6Size
-  midX = V.maxX()/2Size
-  midY = V.maxY()/2Size
-  highX = 5Size*(V.maxX()/6Size)
-  highY = 5Size*(V.maxY()/6Size)
-  midZ = (V.maxZ()*2Size)/3Size
-  lowZ = midZ/2Size
+mut method Void initTops(I that) = (
+  lowX = V.maxX()/6I
+  lowY = V.maxY()/6I
+  midX = V.maxX()/2I
+  midY = V.maxY()/2I
+  highX = 5I*(V.maxX()/6I)
+  highY = 5I*(V.maxY()/6I)
+  midZ = (V.maxZ()*2I)/3I
+  lowZ = midZ/2I
   p1x=this.rand(lowX to=midX)
   p1y=this.rand(lowY to=midY)
   p2x=this.rand(midX to=highX)
   p2y=this.rand(midY to=highY)
   this.#mountainTops().add(\(x=p1x, y=p1y, z=this.rand(midZ to=that)))
   for w in Range(1\ to=6\) (
-    x = ((p1x*w)+(p2x*(6Size-w)))/6Size
-    y = ((p1y*w)+(p2y*(6Size-w)))/6Size
+    x = ((p1x*w)+(p2x*(6I-w)))/6I
+    y = ((p1y*w)+(p2y*(6I-w)))/6I
     this.#mountainTops().add(\(x=x, y=y, z=this.rand(midZ to=that)))
     )
   for w in Range(0\ to=6\) (//6 extra random lower tops
@@ -44,7 +44,7 @@ mut method Void initTops(Size that) = (
     )
   )
 
-mut method Void addMontains(Size that) = (
+mut method Void addMontains(I that) = (
   m = this.#cells()
   var lastSize=V.layerSize()
   for h in Range(1\ to=that) (
@@ -52,7 +52,7 @@ mut method Void addMontains(Size that) = (
     for p in this.mountainTops() ( if p.z()>=h this.addSeed(p.to2D() val=h) )
     Debug(S"-- start growing for h=%h; seeds size=%this.seeds().size()")
     for attempts in Range(150\) (
-      if this.seeds().size()>=(lastSize*9Size)/10Size Break()
+      if this.seeds().size()>=(lastSize*9I)/10I Break()
       this.grow(percent=30\)
       )
     lastSize:=this.seeds().size()
@@ -73,13 +73,13 @@ mut method Void addShores() = (
     c.addSeed(\(x=1\, y=y), val=\.true())
     c.addSeed(\(x=V.maxX()-2\, y=y), val=\.true())
     )
-  start=(V.maxX()*this.rand(5Size to=25Size)) / 30Size
+  start=(V.maxX()*this.rand(5I to=25I)) / 30I
   for x in Range(start to=V.maxX()) (
     for y in Range(V.maxY()/3\) (
       c.addSeed(\(x=x, y=y) val=\.true())
       )
     )
-  max = V.layerSize() / 2Size
+  max = V.layerSize() / 2I
   for attempts in Range(150\) (
       if c.seeds().size() >= max Break()
       c.grow(percent=10\)
@@ -87,7 +87,7 @@ mut method Void addShores() = (
   map = this.#cells()
   for ci in map (
     if c.cells()(ci) (
-      v=(map(ci) - 8Size).clamp(0\ to=50\)
+      v=(map(ci) - 8I).clamp(0\ to=50\)
       map(ci val=v)
       )
     )
@@ -99,38 +99,38 @@ mut method Void montainsErosion() = (
     if !ci.isBorder() (
       hi = map(ci)
       var hMin = V.maxZ()
-      var hMax = 0Size
+      var hMax = 0I
       for d in V.Delta2D.adjacent8() (
         hMin:=hMin.min(map(ci+d))
         hMax:=hMax.max(map(ci+d))
         )
-      if hi > hMin + 4Size  || hi < hMax - 4Size (
-        newH=(hi + hi + hMin + hMax) / 4Size
+      if hi > hMin + 4I  || hi < hMax - 4I (
+        newH=(hi + hi + hMin + hMax) / 4I
         map(ci, val=newH)
         )
       )
     )
   )
 
-mut method Void makeRivers(Size waterLevel)=(
+mut method Void makeRivers(I waterLevel)=(
   this.runWater(p=this.mountainTops().val(2\).to2D())
   this.runWater(p=this.mountainTops().val(3\).to2D())
   map = this.#cells()
   rMap = this.#riverMap()
   for ci in map {
     if ci.isBorder() return void
-    if rMap(ci) > 0Size return void
+    if rMap(ci) > 0I return void
     h=map(ci)
     if h <= waterLevel return void
-    var max=Size"-1"//for all non water points
+    var max=I"-1"//for all non water points
     for d in V.Delta2D.adjacent8() (//for all surrunding spots, find the max with water
       r = rMap(ci+d)
       candidate = map(ci+d)+r
-      if r > 0Size ( max := candidate.max(max) )
+      if r > 0I ( max := candidate.max(max) )
       )
-    if max==Size"-1" return void
+    if max==I"-1" return void
     if h <= max  map(ci, val=max)
-    else map(ci, val=(h + max) / 2Size)
+    else map(ci, val=(h + max) / 2I)
     return void
     }
   )
@@ -153,10 +153,10 @@ mut method mut V.Cell2D.List runWaterDown(V.Cell2D start)={
     for d in V.Delta2D.adjacent4() (
       pi = pOld+d
       candidate = map(pi)
-      ok = rMap(pi) == 0Size && candidate<min //what happens if we remove the riverMap check?
+      ok = rMap(pi) == 0I && candidate<min //what happens if we remove the riverMap check?
       if ok ( min:=candidate, p:=pi )
       )///crucially, min can be higher than the former this(p)
-    if min == V.maxZ() || map(p) <= 0Size (
+    if min == V.maxZ() || map(p) <= 0I (
       this.add(river=river,p=p)
       return river
       )
@@ -166,7 +166,7 @@ mut method Void runWater(V.Cell2D p)=(
   x=this.rand(p.x()-2\,to=p.x()+2\)
   y=this.rand(p.y()-2\,to=p.y()+2\)
   river=this.runWaterDown(start=\(x=x,y=y))
-  if river.size() >= 2Size this.adjust(river=river)
+  if river.size() >= 2I this.adjust(river=river)
   )
 mut method Void riversGoDown(read V.Cell2D.List river)=(
   map = this.#cells()
@@ -181,7 +181,7 @@ mut method Void adjust(read V.Cell2D.List river)=(
   map = this.#cells()
   rMap = this.#riverMap()
   this.riversGoDown(river=river)
-  endH = map(river.val(\size()-2\))+1Size//the earth + 1 water
+  endH = map(river.val(\size()-2\))+1I//the earth + 1 water
   preLastH = rMap(river.right()).max(endH)
   rMap(river.right() val=preLastH)
   map(river.right() val=0\)
@@ -192,10 +192,10 @@ mut method Void adjust(read V.Cell2D.List river)=(
     riverH = rMap(pi)
     if lastH > currentH (
       rMap(pi val=(riverH+lastH)-currentH)
-      currentH := (riverH+lastH)-1Size
+      currentH := (riverH+lastH)-1I
       )
-    delta = (currentH-(lastH+1Size))
-    if delta > 0Size (//should make more water on waterfalls
+    delta = (currentH-(lastH+1I))
+    if delta > 0I (//should make more water on waterfalls
       rMap(pi val=rMap(pi)+delta)
       map(pi val=map(pi)-delta)
       )

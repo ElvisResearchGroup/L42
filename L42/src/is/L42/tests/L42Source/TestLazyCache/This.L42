@@ -7,14 +7,14 @@ WithReadLazy={
     class method mut This of::0(S name)
     mut method Void name(S that)=this.name::0(that)
     class method mut This of(S name)=This.of::0(name=name)
-    read method Size nameSize()=native{trusted:lazyCache} (
+    read method I nameSize()=native{trusted:lazyCache} (
       Log"AA".write(S"ACT.")
       this.name::0().size()
       )
     }
   BB=Data:{ 
     var S name capsule AA aa//tested to fail with mut
-    @Debug @Cache.LazyRead @S class method Size nameSize(S name, read AA aa)=(
+    @Debug @Cache.LazyRead @S class method I nameSize(S name, read AA aa)=(
       Log"BB".write(S"ACT.")
       name.size()
       )
@@ -23,11 +23,11 @@ WithReadLazy={
     Log"AA".clear()
     mut AA aa=AA.of(name=S"Bob")
     {}:Test"empty"(Log"AA".#$reader().read()==S"")
-    {}:Test"3"(aa.nameSize()==3Size)
+    {}:Test"3"(aa.nameSize()==3I)
     Debug(aa.nameSize())
     {}:Test"act"(Log"AA".#$reader().read()==S"ACT.")
     aa.name(S"Charles")
-    {}:Test"7"(aa.nameSize()==7Size)
+    {}:Test"7"(aa.nameSize()==7I)
     Debug(aa.nameSize())
     {}:Test"actact"(Log"AA".#$reader().read()==S"ACT.ACT.")
     )
@@ -35,13 +35,13 @@ WithReadLazy={
     Log"BB".clear()
     mut BB bb=BB(name=S"Bob" aa=AA.of(name=S"Alice"))
     {}:Test"empty"(Log"BB".#$reader().read()==S"")
-    {}:Test"3"(bb.nameSize()==3Size)
+    {}:Test"3"(bb.nameSize()==3I)
     Debug(bb.nameSize())
     {}:Test"act"(
       actual=Log"BB".#$reader().read()
       expected=S"ACT.")
     bb.name(S"Charles")
-    {}:Test"7"(bb.nameSize()==7Size)
+    {}:Test"7"(bb.nameSize()==7I)
     Debug(bb.nameSize())
     {}:Test"actact"(
       actual=Log"BB".#$reader().read()
@@ -76,7 +76,7 @@ Scope1 ={
       mut method mut Bs bs::0(),
       class method mut This of::0(mut Bs bs)
       class method mut This of(mut Bs bs)=this.of::0(bs=bs)
-      read method Size ok()=native{trusted:readNowCache} 3Size
+      read method I ok()=native{trusted:readNowCache} 3I
       //tested to fail with imm instead of read
       }
     }
@@ -88,7 +88,7 @@ Scope1 ={
       bs.#add(right=b)
       b
       )
-    {}:Test""(ib.ok()==3Size)
+    {}:Test""(ib.ok()==3I)
     void
     )
   }
@@ -97,43 +97,43 @@ MetaWrapper={
   read method Name.Mapping  inner::0()
   class method This of::0(Name.Mapping inner)
   class method This of(Name.Mapping inner)=this.of::0(inner=inner)
-  imm method Size ft()=native{trusted:lazyCache} (
+  imm method I ft()=native{trusted:lazyCache} (
     Log"MetaWrapper".write(S"42")
-    42Size
+    42I
     )
   }
 TestMW=(
   Log"MetaWrapper".clear()
   mw=MetaWrapper.of(inner=Name.Mapping())
-  {}:Test"mw42"(expected=42Size, actual=mw.ft())
-  {}:Test"mw42Again"(expected=42Size, actual=mw.ft())
+  {}:Test"mw42"(expected=42I, actual=mw.ft())
+  {}:Test"mw42Again"(expected=42I, actual=mw.ft())
   mw2=MetaWrapper.of(inner=Name.Mapping())
-  {}:Test"mw42Again"(expected=42Size, actual=mw2.ft())
+  {}:Test"mw42Again"(expected=42I, actual=mw2.ft())
   {}:Test"cacheAvoidRepeating"(expected=S"42",actual=Log"MetaWrapper".#$reader().read())
   )
   
 Foo={
-  read method Size inner::0()
-  class method This of::0(Size inner)
-  class method This of(Size inner)=this.of::0(inner=inner)
-  imm method Size times2()=
+  read method I inner::0()
+  class method This of::0(I inner)
+  class method This of(I inner)=this.of::0(inner=inner)
+  imm method I times2()=
     native{trusted:lazyCache} (
       Log"Foo".write(S"2")
-      this.inner::0()*2Size
+      this.inner::0()*2I
       )
-  read method Size times3Now()=
+  read method I times3Now()=
     native{trusted:readNowCache} (
       Log"Foo".write(S"3")
-      this.inner::0()*3Size
+      this.inner::0()*3I
       )
   }
 TestCache=(
   Log"Foo".clear()
-  Foo foo=Foo.of(inner=5Size)
-  {}:Test"cacheResult"(expected=10Size, actual=foo.times2())
-  {}:Test"cacheResultAgain"(expected=10Size, actual=foo.times2())
-  {}:Test"cacheResultNow"(expected=15Size, actual=foo.times3Now())
-  {}:Test"cacheResultNowAgain"(expected=15Size, actual=foo.times3Now())
+  Foo foo=Foo.of(inner=5I)
+  {}:Test"cacheResult"(expected=10I, actual=foo.times2())
+  {}:Test"cacheResultAgain"(expected=10I, actual=foo.times2())
+  {}:Test"cacheResultNow"(expected=15I, actual=foo.times3Now())
+  {}:Test"cacheResultNowAgain"(expected=15I, actual=foo.times3Now())
   {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())
   )
 
@@ -346,26 +346,26 @@ TestCircularObjects={
 
 TestClassCache={
   A={
-    class method Size const()=native{trusted:lazyCache} (
+    class method I const()=native{trusted:lazyCache} (
       Log"Foo".write(S"ACT.")
-      42Size
+      42I
       )
     }
   Task=(
     Log"Foo".clear()
-    {}:Test"res1"(expected=42Size, actual=A.const())
-    {}:Test"res2"(expected=42Size, actual=A.const())
+    {}:Test"res1"(expected=42I, actual=A.const())
+    {}:Test"res2"(expected=42I, actual=A.const())
     {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
     )
   }
 TestReadCache={
   A={
-    read method Size that::0()
-    mut method Void that::0(Size that)
-    mut method Void update(Size that)=this.that::0(that)
-    class method mut A of::0(Size that)
-    class method mut A(Size that)=this.of::0(that)
-    read method Size m()=native{trusted:readNowCache} (
+    read method I that::0()
+    mut method Void that::0(I that)
+    mut method Void update(I that)=this.that::0(that)
+    class method mut A of::0(I that)
+    class method mut A(I that)=this.of::0(that)
+    read method I m()=native{trusted:readNowCache} (
       Log"Foo".write(S"ACT.")
       this.that::0()
       )
@@ -373,19 +373,19 @@ TestReadCache={
   Task1=(
     Log"Foo".clear()
     mut A a=A(42\)
-    {}:Test"res1"(expected=42Size, actual=a.m())
-    {}:Test"res2"(expected=42Size, actual=a.m())
+    {}:Test"res1"(expected=42I, actual=a.m())
+    {}:Test"res2"(expected=42I, actual=a.m())
     {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
     //more, with update
     a.update(0\)
-    {}:Test"res3"(expected=0Size, actual=a.m())
+    {}:Test"res3"(expected=0I, actual=a.m())
     )
   B={
     read method read S.List that::0()
     mut method mut S.List #that::0()
     class method mut This of::0(capsule S.List that)
     mut method Void addOne()=this.#that::0().add(S"hi")
-    read method Size m()=native{trusted:readNowCache} (
+    read method I m()=native{trusted:readNowCache} (
       Log"Foo".write(S"ACT.")
       this.that::0().size()
       )
@@ -393,13 +393,13 @@ TestReadCache={
   Task2=(
     Log"Foo".clear()
     mut B a=B.of::0(S.List[\"hello"])
-    {}:Test"res1"(expected=1Size, actual=a.m())
-    {}:Test"res2"(expected=1Size, actual=a.m())
+    {}:Test"res1"(expected=1I, actual=a.m())
+    {}:Test"res2"(expected=1I, actual=a.m())
     {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
     //more, with update
     a.addOne()
     {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
-    {}:Test"res3"(expected=2Size, actual=a.m())
+    {}:Test"res3"(expected=2I, actual=a.m())
     )
   Person=Data.Close:{
     S name
@@ -415,7 +415,7 @@ TestReadCache={
       )
     @Cache.Now class method Void ok(S name,read S.List allergies)=(
       Log"Foo".write(S"ok()")
-      if name==S"" || allergies.size()>200Size error X"InvalidPerson"
+      if name==S"" || allergies.size()>200I error X"InvalidPerson"
       )
     @Cache.Now class method S title(S name)=(
        Log"Foo".write(S"title()")

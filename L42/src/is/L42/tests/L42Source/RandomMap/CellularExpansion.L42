@@ -1,17 +1,17 @@
 E=Class.Relax:TraitE
 L=Class.Relax:Trait(Collection.list(E))[clear='This]
 mut Math.Random r
-Size side
+I side
 mut L cells
-mut Size.List seeds=Size.List()
-Size maxSeeds
-read method Size coords(Size x,Size y)
+mut I.List seeds=I.List()
+I maxSeeds
+read method I coords(I x,I y)
 
 mut method Void addSeed(Point that,E val)=
   this.addSeed(coord=this.coords(x=that.x(),y=that.y()),val=val)
-mut method Void addSeed(Size x, Size y,E val)=
+mut method Void addSeed(I x, I y,E val)=
   this.addSeed(coord=this.coords(x=x,y=y),val=val)
-mut method Void addSeed(Size coord,E val)=(
+mut method Void addSeed(I coord,E val)=(
   this.#seeds().add(coord)
   this.#cells().set(coord val=val)
   )
@@ -23,17 +23,17 @@ mut Points order=Points[
 mut method Void initGrow()=(
   ShufflePoint.shuffle(this.#order(),r=this.#r())
   limit=this.seeds().size()-this.maxSeeds()
-  ShuffleSize.shuffle(this.#seeds(),r=this.#r())
-  if this.maxSeeds()>0Size (
+  ShuffleI.shuffle(this.#seeds(),r=this.#r())
+  if this.maxSeeds()>0I (
     while this.seeds().size()>this.maxSeeds() this.#seeds().removeRight()
     )
   )
-mut method Void growInOrder(Size x,Size y,Size c)=(
+mut method Void growInOrder(I x,I y,I c)=(
   seed=this.cells().val(c)
   for o in this.order() {
     xd=x+o.x()
     yd=y+o.y()
-    if xd<0Size || xd>=this.side() || yd<0Size || yd>=this.side() return void
+    if xd<0I || xd>=this.side() || yd<0I || yd>=this.side() return void
     nearC=this.coords(x=xd,y=yd)
     newSeed=this.combine(x=x,y=y,seed=seed,oldCell=this.cells().val(nearC))
     if newSeed==E.base() return void
@@ -43,26 +43,26 @@ mut method Void growInOrder(Size x,Size y,Size c)=(
     return void
     }
   )
-mut method Void grow(Size percent)=(
+mut method Void grow(I percent)=(
   this.initGrow()
   //if this.#r().nextDouble()>chance return void
-  for i in Range((this.seeds().size()*percent)/100Size) (//will grow down below
+  for i in Range((this.seeds().size()*percent)/100I) (//will grow down below
     c=this.seeds().val(i)//so we only iterate on the current ones
     this.growInOrder(x=this.x(coord=c),y=this.y(coord=c),c=c)
     )
   )
-mut method Size rCoord()=
+mut method I rCoord()=
   this.#r().nextInRange(start=0\ end=this.side()*this.side())
-mut method Size rCoord(Size xMin,Size xMax,Size yMin,Size yMax)=this.coords(
+mut method I rCoord(I xMin,I xMax,I yMin,I yMax)=this.coords(
   x=this.#r().nextInRange(start=xMin,end=xMax)
   y=this.#r().nextInRange(start=yMin,end=yMax)
   )
 mut method Void clearSeeds()=
   while !this.seeds().isEmpty() this.#seeds().removeRight()
 
-read method E combine(Size x, Size y, E seed,E oldCell)//To override
+read method E combine(I x, I y, E seed,E oldCell)//To override
 
-read method E baseCombine(Size x, Size y, E seed,E oldCell)={
+read method E baseCombine(I x, I y, E seed,E oldCell)={
   if oldCell!=E.base() return E.base()
   return seed
   }

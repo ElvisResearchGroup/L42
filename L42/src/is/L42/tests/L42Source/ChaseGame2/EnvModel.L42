@@ -42,10 +42,10 @@ Player=Class:Data:EntityTrait:PulseAI:{...}
 mut Player player
 var mut $.Entity.List es
 mut $.Entity.List removeQueue
-mut Random r
+mut Math.Random r
 mut JServer j
-var Size points
-var Size pings
+var I points
+var I pings
 var Bool running
 class method mut This #$of()=(
   p=Player(
@@ -57,10 +57,10 @@ class method mut This #$of()=(
     player=p
     es=$.Entity.List(),
     removeQueue=$.Entity.List(),
-    r=Random.#$random(),
+    r=Math.Random.#$random(),
     j=JServer.#$of(),
-    points=0Size,
-    pings=0Size,
+    points=0I,
+    pings=0I,
     running=Bool.false()
     )
   res
@@ -101,26 +101,26 @@ mut method Void removeQueue(mut $.Entity that)=(
   S"Bob(age=23\)";
   S"bob.age(\age+1\)";
   S"text.subString(start=4\ end=\size)";
-  S"Size.List[1\;2\;3\]";
+  S"I.List[1\;2\;3\]";
   S"for a in as, var b in bs (b+=a)";
-  S"Person=Data:{S name,Size age}";
-  S"Task={}:Test%S.dq()Test1%(S.dq())(expected=42Size, actual=40Size+2Size)";
+  S"Person=Data:{S name,I age}";
+  S"Task={}:Test%S.dq()Test1%(S.dq())(expected=42I, actual=40I+2I)";
   S"MyTrait['A=>'B]";
   S"Top=Organize:Data:{...}";
   ]
 @JServer.Handler mut method Void ping(S msg)=
   if this.running() this.runningPing(msg=msg)
 mut method Void runningPing(S msg)=(
-  speed=230Size
+  speed=230I
   this.clearRemoveQueue()
   this.pings(\pings+1\)
   es=this.#es()
   newRat=(this.pings()/speed)*speed==this.pings()
   if newRat (
-    xr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
-    yr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
-    last=This.names().size()-1Size
-    current=(this.pings()/speed)-1Size
+    xr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1I))
+    yr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1I))
+    last=This.names().size()-1I
+    current=(this.pings()/speed)-1I
     text=This.names().val(current.min(last))
     r=this.rat(text=text,x=0\,y=0\)
     es.#add(right=r)

@@ -8,11 +8,11 @@ class method E base()
 capsule L cells = L()(
   for i in Range($.Margin.layerSize()) \add(This.base()) )
  
-read method E (Size x,Size y) = 
+read method E (I x,I y) = 
   this.cells().val($.Coords(x=x, y=y))
 
-mut method Void (Size x, Size y, E val)
-@Cache.Clear class method Void (mut L cells, Size x, Size y, E val) = 
+mut method Void (I x, I y, E val)
+@Cache.Clear class method Void (mut L cells, I x, I y, E val) = 
   cells.set($.Coords(x=x, y=y), val=val)
   
 read method E ($.Cell2D that) = 
@@ -35,8 +35,8 @@ read method S toS()=(
   )
 
 read method read This #iterator() = this
-read method Void #close(Size that) = void
-read method Bool #incomplete(Size that) = that < $.Margin.layerSize()
-read method $.Cell2D #elem#default(Size that) = \(x=$.Coords.x2(that), y=$.Coords.y2(that))
-read method Bool #hasElem(Size that) = that < $.Margin.layerSize()
-read method Size #startIndex() = 0Size
+read method Void #close(I that) = void
+read method Bool #incomplete(I that) = that < $.Margin.layerSize()
+read method $.Cell2D #elem#default(I that) = \(x=$.Coords.x2(that), y=$.Coords.y2(that))
+read method Bool #hasElem(I that) = that < $.Margin.layerSize()
+read method I #startIndex() = 0I

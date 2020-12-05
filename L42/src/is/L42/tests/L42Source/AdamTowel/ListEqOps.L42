@@ -11,30 +11,30 @@ mut method mut This #vals()
 
 read method read This #iterator()
 mut method mut This #varIterator()
-read method Size #startIndex()
-read method Bool #hasElem(Size that)
-read method Bool #incomplete(Size that)
-read method Elem #elem#imm(Size that)
-mut method mut Elem #elem#mut(Size that)
-read method Elem #elem#default(Size that)
-read method read Elem #elem#read(Size that)
-mut method mut Elem #update#mut(Size that, mut Elem val)
-mut method Elem #update#imm(Size that, Elem val)
-mut method Elem #update#default(Size that, Elem val)
-read method Void #close(Size that)
+read method I #startIndex()
+read method Bool #hasElem(I that)
+read method Bool #incomplete(I that)
+read method Elem #elem#imm(I that)
+mut method mut Elem #elem#mut(I that)
+read method Elem #elem#default(I that)
+read method read Elem #elem#read(I that)
+mut method mut Elem #update#mut(I that, mut Elem val)
+mut method Elem #update#imm(I that, Elem val)
+mut method Elem #update#default(I that, Elem val)
+read method Void #close(I that)
 class method mut This ()
-class method mut This (Size capacity)
+class method mut This (I capacity)
 mut  method mut This (Void that)
 read method Bool isEmpty()
-read method Size size()
-read method read Elem readVal(Size that)
-read method imm  Elem val(Size that)
-mut method mut Elem #val(Size that)
-mut method Void set(Size that,Elem val)
-mut method Void #set(Size that,mut Elem val)
-mut method  Void remove(Size that)
-mut method Void add(Size that, Elem val)
-mut method Void #add(Size that, mut Elem val)
+read method I size()
+read method read Elem readVal(I that)
+read method imm  Elem val(I that)
+mut method mut Elem #val(I that)
+mut method Void set(I that,Elem val)
+mut method Void #set(I that,mut Elem val)
+mut method  Void remove(I that)
+mut method Void add(I that, Elem val)
+mut method Void #add(I that, mut Elem val)
 read method Elem left()
 read method Elem right()
 mut method mut Elem #left()
@@ -54,13 +54,13 @@ mut method  Void removeLeft()
 mut method  Void removeRight()
 method This +(Elem right)
 method This ++(This right)
-method This with(Size that, Elem val)
+method This with(I that, Elem val)
 method This withLeft(Elem that)
 method This withRight(Elem that)
-method This withAlso(Size that, Elem val)
+method This withAlso(I that, Elem val)
 method This withAlsoLeft(Elem that)
 method This withAlsoRight(Elem that)
-method This without(Size index)
+method This without(I index)
 method This withoutLeft()
 method This withoutRight()
 read method lent ElemBox reduce()
@@ -116,54 +116,54 @@ method Bool ==(This that)=System.immEquality(this and=that)
 method Bool !=(This that)= !(this==that)
 read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
 
-read method Size indexOfLeft(read Elem val)={
+read method I indexOfLeft(read Elem val)={
   //for pos in Range(this.size()) (//No, range is defined later so it can not be used here
-  var pos=0Size
+  var pos=0I
   size=this.size()
   loop (
     if This.equals(a=this.val(pos) b=val) return pos
-    if pos<=0Size return Size"-1"
-    pos+=1Size
+    if pos<=0I return I"-1"
+    pos+=1I
     )
   }
-read method Size indexOfRight(read Elem val)={
-  var Size pos=this.size()-1Size
+read method I indexOfRight(read Elem val)={
+  var I pos=this.size()-1I
   loop (
     if This.equals(a=this.val(pos) b=val) return pos
-    if pos<=0Size return Size"-1"
-    pos-=1Size
+    if pos<=0I return I"-1"
+    pos-=1I
     )
   }
 mut method Void removeLeft(read Elem val)=(
   i=this.indexOfLeft(val=val)
-  if i!=Size"-1" (this.remove(i))
+  if i!=I"-1" (this.remove(i))
   )
 mut method Void removeRight(read Elem val)=(
   i=this.indexOfRight(val=val)
-  if i!=Size"-1" (this.remove(i))
+  if i!=I"-1" (this.remove(i))
   )
 /*
-method This without(Size index) //from VectorTrait
+method This without(I index) //from VectorTrait
 //TODO: HERE
 method This withoutLeft(read Elem val) {
   pos=this.indexOfLeft(val:val)
-  if pos<0Size return this
+  if pos<0I return this
   return this.without(index:pos)
   }
 
 method This withoutRight(read Elem val)={
   pos=this.indexOfRight(val:val)
-  if pos<0Size return this
+  if pos<0I return this
   return this.without(index:pos)
   }
 
-mut method Void remove(Size that) //from VectorTrait
+mut method Void remove(I that) //from VectorTrait
 
 mut method Void removeAll(read Elem val){
-  var Size pos=0Size
+  var I pos=0I
   loop (
     if this.val(pos)==val (this.remove(pos))
-    else (pos+=1Size)
+    else (pos+=1I)
     if pos==this.size() (return void)
     )
   }
@@ -171,14 +171,14 @@ mut method Void removeAll(read Elem val){
 mut method
 Void removeLeft(read Elem val){
   pos=this.indexOfLeft(val:val)
-  if pos<0Size (return void)
+  if pos<0I (return void)
   return this.remove(pos)
   }
 
 mut method
 Void removeRight(read Elem val){
   pos=this.indexOfRight(val:val)
-  if pos<0Size (return void)
+  if pos<0I (return void)
   return this.remove(pos)
   }
 
@@ -194,27 +194,27 @@ read method read This vals()=this
 mut method mut This #vals()=this
 read method read This #iterator()=this
 mut method mut This #varIterator()=this
-read method Size #startIndex()=0Size
-read method Bool #hasElem(Size that)=that<this.size()
-read method Bool #incomplete(Size that)=that!=this.size()
-read method Elem #elem#imm(Size that)=this.val(that)
-mut method mut Elem #elem#mut(Size that)=this.#val(that)
-read method Elem #elem#default(Size that)=this.#elem#imm(that)
-mut method mut Elem #update#mut(Size that, mut Elem val)=(this(that,mutVal=val) val)
-mut method Elem #update#imm(Size that, Elem val)=(this(that,val=val) val)
-mut method Elem #update#default(Size that, Elem val)=this.#update#imm(that,val=val)
-read method Void #close(Size that)=
+read method I #startIndex()=0I
+read method Bool #hasElem(I that)=that<this.size()
+read method Bool #incomplete(I that)=that!=this.size()
+read method Elem #elem#imm(I that)=this.val(that)
+mut method mut Elem #elem#mut(I that)=this.#val(that)
+read method Elem #elem#default(I that)=this.#elem#imm(that)
+mut method mut Elem #update#mut(I that, mut Elem val)=(this(that,mutVal=val) val)
+mut method Elem #update#imm(I that, Elem val)=(this(that,val=val) val)
+mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
+read method Void #close(I that)=
   if this.#incomplete(that) error S"multi for skipped some elements"
 mut method Void add(Elem that)=this.add(right=that)
 
 class method mut This ()
 read method Bool isEmpty()
-read method Size size()
-read method read Elem readVal(Size that)
-read method imm  Elem val(Size that)
-mut method mut Elem #val(Size that)
-mut method Void #apply(Size that,Elem val)
-mut method Void #apply(Size that,mut Elem mutVal)
+read method I size()
+read method read Elem readVal(I that)
+read method imm  Elem val(I that)
+mut method mut Elem #val(I that)
+mut method Void #apply(I that,Elem val)
+mut method Void #apply(I that,mut Elem mutVal)
 mut method Void add(Elem val)
 mut method Void add(mut Elem mutVal)
 */

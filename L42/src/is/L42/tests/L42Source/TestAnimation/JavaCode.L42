@@ -1,11 +1,11 @@
-class method S openingPing(S name,Size x,Size y,Size pingDelay)=S"""%
+class method S openingPing(S name,I x,I y,I pingDelay)=S"""%
   |public class %name {public %name (Event event){
   |  l42Gui.L42Frame f=l42Gui.L42Frame.openAndPings(40,%pingDelay,()->new l42Gui.L42Frame(event,"%name",%x,%y){
   |    @Override public void ping(){
   |      event.submitEvent("%name","ping",""+System.currentTimeMillis());
   |      }
   """
-class method S openingNoPing(S name,Size x,Size y)=S"""%
+class method S openingNoPing(S name,I x,I y)=S"""%
   |public class %name {public %name (Event event){
   |  l42Gui.L42Frame f=l42Gui.L42Frame.open(()->new l42Gui.L42Frame(event,"%name",%x,%y){
   """

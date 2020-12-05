@@ -1,14 +1,14 @@
 reuse [AdamTowel]
 R={
-  class method Size #$size1()=native{
+  class method I #$size1()=native{
     resSlave{}{
     return 12;
     }} error void
-  class method Size #$size2()=native{
+  class method I #$size2()=native{
     resSlave{}{
     return null;
     }} error void
-  class method Size #$size3()[S.ParseError]=native{
+  class method I #$size3()[S.ParseError]=native{
     resSlave{}{
     return null;
     }} error void

@@ -51,7 +51,7 @@ Main2=(
   {}:Test"fromDB1"(expected=S"1 Bob 25"  actual=outs.val(0\))
   {}:Test"fromDB2"(expected=S"1 Bob 25"  actual=outs.val(1\))
   {}:Test"fromDB3"(expected=S"2 Alice 27"  actual=outs.val(2\))
-  {}:Test"fromDB4"(outs.size()==3Size)
+  {}:Test"fromDB4"(outs.size()==3I)
   tables=S.List()
   db.queryTables()
   while db.next() (

@@ -1,5 +1,5 @@
-Size x
-Size y
+I x
+I y
 
 class method Cell2D random(mut Math.Random r)=\(
   x=r.nextInRange(start=0\ end=Margin.maxX())
@@ -9,11 +9,11 @@ method Point2D toPoint() = \(
   x=this.x().toDouble()
   y=this.y().toDouble()
   )
-method Cell3D to3D(Size z) =
+method Cell3D to3D(I z) =
   \(x=this.x(), y=this.y(), z=z)
   
 method Bool isBorder() = (
   (x, y) = this
-  x==0Size || x==Margin.maxX()-1Size
-    || y==0Size || y==Margin.maxY()-1Size
+  x==0I || x==Margin.maxX()-1I
+    || y==0I || y==Margin.maxY()-1I
   )

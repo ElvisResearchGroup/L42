@@ -10,9 +10,9 @@ DeployUnit = Deploy.module(
   
 VMT = Load : {reuse [#$VoxelMapTrait] }
 VM = Class: VMT : {
-  class method Size maxX()=50\
-  class method Size maxY()=100\
-  class method Size maxZ()=200\
+  class method I maxX()=50I
+  class method I maxY()=100I
+  class method I maxZ()=200I
   }
 Map = Class : Data : VM.map2D(S.List) : {
   class method S base() = S""

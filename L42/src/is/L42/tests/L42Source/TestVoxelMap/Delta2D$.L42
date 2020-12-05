@@ -1,24 +1,22 @@
-Size x, Size y
+I x, I y
 
 method Cell2D +1 (Cell2D cell) = this + cell
 method Cell2D + (Cell2D cell) = \(x=this.x()+cell.x(), y=this.y()+cell.y())
 method Delta2D + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y())
 
-method Delta2D *1 (Size that) = this * that
-method Delta2D * (Size that) = 
+method Delta2D *1 (I that) = this * that
+method Delta2D * (I that) = 
   \(x=this.x()*that, y=this.y()*that)
 
 method Vector2D toVector() =
   \(x=this.x().toDouble(), y=this.y().toDouble())
-method Cell3D to3D(Size z) =
+method Cell3D to3D(I z) =
   \(x=this.x(), y=this.y(), z=z)
   
-//qui gli adiacenti!
-
 @Cache.Lazy class method Delta2D$List adjacent8()=(
-  m = Size"-1" //minus, zero and plus
-  z = Size"0"
-  p = Size"1"
+  m = I"-1" //minus, zero and plus
+  z = I"0"
+  p = I"1"
   \[
     \(x=m, y=m);\(x=m, y=z);\(x=m, y=p);
     \(x=z, y=m);            \(x=z, y=p);
@@ -26,9 +24,9 @@ method Cell3D to3D(Size z) =
     ]
   )
 @Cache.Lazy class method Delta2D$List adjacent4()=(
-  m = Size"-1" //minus, zero and plus
-  z = Size"0"
-  p = Size"1"
+  m = I"-1" //minus, zero and plus
+  z = I"0"
+  p = I"1"
   \[
                 \(x=m, y=z);
     \(x=z, y=m);            \(x=z, y=p);

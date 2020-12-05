@@ -18,7 +18,7 @@ A=Organize:{//TODO: add Maps sets and ops, then simplify cache suppliers
   Loa=Collection.list(OA)
   Soa=Collection.set(OA)
   Sos=Collection.set(This1.S.Opt)
-  Mos=Collection.map(key=Size,val=This1.S.Opt)
+  Mos=Collection.map(key=I,val=This1.S.Opt)
   La=Collection.list(A)
   Ola=Collection.optional(La)
   Mini=Collection.map(key=A, val=La)
@@ -81,7 +81,7 @@ MainL=(
   Debug(l1)
   Debug(l1.size())
   {}:Test""(expected=S"[[]; []; []]" actual=l1)
-  {}:Test""(expected=3Size actual=l1.size())
+  {}:Test""(expected=3I actual=l1.size())
   )
 MainSSN=(
   s1=A.SSN()
@@ -97,7 +97,7 @@ MainSSN=(
   Debug(s1)
   Debug(s1.size())
   {}:Test""(expected=S"{{}; {3}}" actual=s1)
-  {}:Test""(expected=2Size actual=s1.size())
+  {}:Test""(expected=2I actual=s1.size())
   )
 MainS=(
   s1=A.S()
@@ -113,7 +113,7 @@ MainS=(
   Debug(s1)
   Debug(s1.size())
   {}:Test""(expected=S"{{}; {{}}}" actual=s1)
-  {}:Test""(expected=2Size actual=s1.size())
+  {}:Test""(expected=2I actual=s1.size())
   )
 MainM=(
   mut m1=A.M()
@@ -126,7 +126,7 @@ MainM=(
   Debug(m1)
   Debug(m1.size())
   {}:Test""(expected=S"{{}->{}; {{}->{}}->{}}" actual=m1)
-  {}:Test""(expected=2Size actual=m1.size())
+  {}:Test""(expected=2I actual=m1.size())
   )
 MainO=(
   o1=A.O()

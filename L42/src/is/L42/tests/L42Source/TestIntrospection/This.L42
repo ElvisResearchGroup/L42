@@ -38,7 +38,7 @@ ExampleAnn={@{exampleAnn}}
 TestMeth=(
   lib={ method Void foo(S that)=void  method B bar() B={}}
   n=Introspection.Nested.from(library=lib)
-  b=n.nesteds().val(0Size)
+  b=n.nesteds().val(0I)
   foo=n.methods().val(0\)
   bar=n.methods().val(1\)
   b2=bar.returnType().nested()
@@ -49,7 +49,7 @@ TestMeth=(
   )
 TestAnn=(
   lib={ @ExampleAnn B={method Void foo(S that)=void}}
-  n=Introspection.Nested.from(library=lib).nesteds().val(0Size)
+  n=Introspection.Nested.from(library=lib).nesteds().val(0I)
   clazz=n.outerDoc().docs().left().nested()
   s=clazz.innerDoc().docs().left().texts().left()
   {}:Test"0"(expected=S"exampleAnn", actual=s)
@@ -65,7 +65,7 @@ TestFromLib=(
       |Line:[###]
       |Column:[###]
       """.trim())
-  n=Introspection.Nested.from(library=lib).nesteds().val(0Size)      
+  n=Introspection.Nested.from(library=lib).nesteds().val(0I)      
   {}:Test"2"(actual=n
     expected=S"""
       |{ foo(that)=(..) }

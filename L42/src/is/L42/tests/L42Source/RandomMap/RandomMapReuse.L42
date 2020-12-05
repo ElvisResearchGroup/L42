@@ -1,13 +1,13 @@
 MapTrait=Trait:{
   E={class method E base()}
   L=Class.Relax:Trait(Collection.list(E))[clear='This]
-  Size side
-  read method Size coords(Size x,Size y)
+  I side
+  read method I coords(I x,I y)
   mut L m
-  class method mut L #default#m(Size side)=
+  class method mut L #default#m(I side)=
     L()( for i in Range(side*side) \add(E.base()) )
-  read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
-  mut method Void m(Size x,Size y,E val)=this.#m().set(this.coords(x=x,y=y),val=val)
+  read method I m(I x,I y)=this.m().val(this.coords(x=x,y=y))
+  mut method Void m(I x,I y,E val)=this.#m().set(this.coords(x=x,y=y),val=val)
   }
 MapKind={class method Trait (S that,class Any list,Name base)[_]=MapTrait[
   'm()=>\"%(that)()";
@@ -21,58 +21,58 @@ MapKind={class method Trait (S that,class Any list,Name base)[_]=MapTrait[
   'E=>list*'val(that)
   ]}
 $=Class:Data
-  :MapKind(S"map",list=Size.List,base='zero())
-  :MapKind(S"riverMap",list=Size.List,base='zero())
+  :MapKind(S"map",list=I.List,base='zero())
+  :MapKind(S"riverMap",list=I.List,base='zero())
   :MapKind(S"grassMap",list=Bool.List,base='false())
   :MapKind(S"treeMap",list=Bool.List,base='false())
   :MapKind(S"rocksMap",list=Bool.List,base='false())
   :{
-  mut Size.List montainsTop
-  Size waterLevel
-  Size treeLevel
-  Size rockLevel
-  Size maxZ
+  mut I.List montainsTop
+  I waterLevel
+  I treeLevel
+  I rockLevel
+  I maxZ
   mut Random r
   }
 mut method mut $ self()
-read method Size coords(Size x,Size y)=x*this.side()+y
+read method I coords(I x,I y)=x*this.side()+y
 
-Size side
+I side
 
-mut Size.List map
-class method mut Size.List #default#map(Size side)=
-  Size.List()( for i in Range(side*side) \add(0\) )
-read method Size map(Size x,Size y)=this.map().val(this.coords(x=x,y=y))
-mut method Void map(Size x,Size y,Size val)=this.#map().set(this.coords(x=x,y=y),val=val)
+mut I.List map
+class method mut I.List #default#map(I side)=
+  I.List()( for i in Range(side*side) \add(0\) )
+read method I map(I x,I y)=this.map().val(this.coords(x=x,y=y))
+mut method Void map(I x,I y,I val)=this.#map().set(this.coords(x=x,y=y),val=val)
 
-mut Size.List riverMap
-class method mut Size.List #default#riverMap(Size side)=
-  Size.List()( for i in Range(side*side) \add(0\) )
-read method Size riverMap(Size x,Size y)=this.riverMap().val(this.coords(x=x,y=y))
-mut method Void riverMap(Size x,Size y,Size val)=this.#riverMap().set(this.coords(x=x,y=y),val=val)
+mut I.List riverMap
+class method mut I.List #default#riverMap(I side)=
+  I.List()( for i in Range(side*side) \add(0\) )
+read method I riverMap(I x,I y)=this.riverMap().val(this.coords(x=x,y=y))
+mut method Void riverMap(I x,I y,I val)=this.#riverMap().set(this.coords(x=x,y=y),val=val)
 
 mut Bool.List grassMap
-class method mut Bool.List #default#m(Size side)=
+class method mut Bool.List #default#m(I side)=
   Bool.List()( for i in Range(side*side) \add(\.false()) )
-read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
-mut method Void m(Size x,Size y,Bool val)=this.#m().set(this.coords(x=x,y=y),val=val)
+read method I m(I x,I y)=this.m().val(this.coords(x=x,y=y))
+mut method Void m(I x,I y,Bool val)=this.#m().set(this.coords(x=x,y=y),val=val)
 
 mut Bool.List treeMap
-class method mut Bool.List #default#m(Size side)=
+class method mut Bool.List #default#m(I side)=
   Bool.List()( for i in Range(side*side) \add(\.false()) )
-read method Size m(Size x,Size y)=this.m().val(this.coords(x=x,y=y))
-mut method Void m(Size x,Size y,Bool val)=this.#m().set(this.coords(x=x,y=y),val=val)
+read method I m(I x,I y)=this.m().val(this.coords(x=x,y=y))
+mut method Void m(I x,I y,Bool val)=this.#m().set(this.coords(x=x,y=y),val=val)
 
 mut Bool.List rocksMap
-class method mut Bool.List #default#rocksMap(Size side)=
+class method mut Bool.List #default#rocksMap(I side)=
   Bool.List()( for i in Range(side*side) \add(\.false()) )
-read method Size rocksMap(Size x,Size y)=this.rocksMap().val(this.coords(x=x,y=y))
-mut method Void rocksMap(Size x,Size y,Bool val)=this.#rocksMap().set(this.coords(x=x,y=y),val=val)
+read method I rocksMap(I x,I y)=this.rocksMap().val(this.coords(x=x,y=y))
+mut method Void rocksMap(I x,I y,Bool val)=this.#rocksMap().set(this.coords(x=x,y=y),val=val)
 
-mut Size.List montainsTop;
-Size waterLevel;
-Size treeLevel;
-Size rockLevel;
-Size maxZ;
+mut I.List montainsTop;
+I waterLevel;
+I treeLevel;
+I rockLevel;
+I maxZ;
 mut Random r;
-read method Size coords(Size x,Size y)=x*this.side()+y
+read method I coords(I x,I y)=x*this.side()+y

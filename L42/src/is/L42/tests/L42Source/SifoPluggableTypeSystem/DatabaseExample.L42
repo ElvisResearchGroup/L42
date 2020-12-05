@@ -19,14 +19,14 @@ Database=Data:{
     this.#rows().#add(right=row)
     row
     )
-  mut method Void removeRow(Size index)=this.#rows().remove(index)
-  mut method Void setEntry(Size that, S key, S value)=(
-    if that < 0Size error X"invalid row number %that"
+  mut method Void removeRow(I index)=this.#rows().remove(index)
+  mut method Void setEntry(I that, S key, S value)=(
+    if that < 0I error X"invalid row number %that"
     while that >= this.rows().size() (_=this.addRow() void)
     this.#rows().#val(that).setEntry(key=key, value=value)
     )
-  read method S.Opt getEntry(Size that, S key)={
-    if that < 0Size error X"invalid row number %that"
+  read method S.Opt getEntry(I that, S key)={
+    if that < 0I error X"invalid row number %that"
     if that >= this.rows().size() return S.Opt()<:imm S.Opt
     return this.rows().readVal(that).getEntry(key=key)
     }
@@ -56,18 +56,18 @@ Gui={
 
 class method Void testDb()=(
   mut Gui gui = Gui()
-  gui.#dbLeft().setEntry(0Size,key=S"person",value=S"hans")
-  gui.#dbRight().setEntry(0Size,key=S"person",value=S"peter")
-  @Left S.Opt oName=gui.#dbLeft().getEntry(0Size,key=S"person")
+  gui.#dbLeft().setEntry(0I,key=S"person",value=S"hans")
+  gui.#dbRight().setEntry(0I,key=S"person",value=S"peter")
+  @Left S.Opt oName=gui.#dbLeft().getEntry(0I,key=S"person")
   @Left S name=oName.val()
   //void
-  //gui.#dbRight().setEntry(1Size,key=S"person",value=name)//Should fail SIFO
+  //gui.#dbRight().setEntry(1I,key=S"person",value=name)//Should fail SIFO
   S dName=DeclassifyS(name)
-  gui.#dbRight().setEntry(1Size,key=S"person",value=dName)//thus we have to declassify
-  gui.#dbLeft().setEntry(1Size,key=S"person",value=name)
+  gui.#dbRight().setEntry(1I,key=S"person",value=dName)//thus we have to declassify
+  gui.#dbLeft().setEntry(1I,key=S"person",value=name)
   @Left S.List oName2=gui.#dbLeft().getAllEntries(key=S"person")
   Debug(DeclassifyS(name))
-  Debug(DeclassifyS(oName2.val(1Size)))
-  //@Left S.Opt oName2=gui.#dbLeft().getEntry(0Size,key=S"person")
+  Debug(DeclassifyS(oName2.val(1I)))
+  //@Left S.Opt oName2=gui.#dbLeft().getEntry(0I,key=S"person")
   //Debug(DeclassifyS(l.get(0)))
   )

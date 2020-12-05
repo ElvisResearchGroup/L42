@@ -1,23 +1,23 @@
 reuse [AdamTowel]
 VMT = Load : {reuse [VoxelMapTrait] }
 V = Class: VMT : {
-  class method Size maxX()=64\
-  class method Size maxY()=64\
-  class method Size maxZ()=100\
+  class method I maxX()=64\
+  class method I maxY()=64\
+  class method I maxZ()=100\
   }
-SizeMap = Class : Data : V.map2D(Size.List) : {
-  class method Size base() = 0Size
+IMap = Class : Data : V.map2D(I.List) : {
+  class method I base() = 0I
   }
 BoolMap = Class : Data : V.map2D(Bool.List) : {
   class method Bool base() = Bool.false()
   }
-ShuffleSize = Math.randomList(Size.List)
+ShuffleI = Math.randomList(I.List)
 ShuffleCell = Math.randomList(V.Cell2D.List)
 CellularExpansion = {...}
 BoolExpansion = Class: Data: CellularExpansion(BoolMap): {
   read method Bool combine(V.Cell2D that, Bool seed) = seed
   }
-HeightExpansion = Class: Data: CellularExpansion(SizeMap): {...}
+HeightExpansion = Class: Data: CellularExpansion(IMap): {...}
 
 LoadJ=Load:{reuse[JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")

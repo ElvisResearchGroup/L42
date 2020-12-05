@@ -17,10 +17,10 @@ LoadGui=Load:{reuse[#$GuiBuilder]}
 Gui=LoadGui(javaServer=GuiJ)
 
 Google=Data:{
-  var Size posX
-  var Size posY
-  var Size dirX
-  var Size dirY
+  var I posX
+  var I posY
+  var I dirX
+  var I dirY
   mut method Void ping()=(
     this.posX(\posX+\dirX)
     this.posY(\posY+\dirY)
@@ -31,16 +31,16 @@ Google=Data:{
     )
   }
 Amazon=Data:{
-  var Size posX
-  var Size posY
-  var Size reached
+  var I posX
+  var I posY
+  var I reached
   read method S paint()=(
     a=S"https://i.pinimg.com/originals/18/e1/80/18e180218bdac1685b79197c9023259b.png"
     x=S"https://upload.wikimedia.org/wikipedia/en/thumb/b/ba/Red_x.svg/1200px-Red_x.svg.png"
-    i=(if this.reached()==0Size a else x)
+    i=(if this.reached()==0I a else x)
     S"%this.posX();%this.posY();25;0;%i"
     )
-  class method mut This(Size x,Size y)=This(posX=x,posY=y,reached=0Size)
+  class method mut This(I x,I y)=This(posX=x,posY=y,reached=0I)
   }
 Amazons=Collection.list(Amazon)
 Model=Data:GuiJ.Handler:{...}
@@ -78,9 +78,9 @@ Main=(
     |  }
     """
   (posX1,posY1)=model.g()
-  for e in j(\['Example]), x in Range(100Size) (e>>model)
+  for e in j(\['Example]), x in Range(100I) (e>>model)
   (posX2,posY2)=model.g()
   Debug(S" %posX1 %posX2, %posY1 %posY2")
-  {}:Test"100 steps x"(posX1+100Size==posX2)
-  {}:Test"100 steps y"(posY1+100Size==posY2)
+  {}:Test"100 steps x"(posX1+100I==posX2)
+  {}:Test"100 steps y"(posY1+100I==posY2)
   )

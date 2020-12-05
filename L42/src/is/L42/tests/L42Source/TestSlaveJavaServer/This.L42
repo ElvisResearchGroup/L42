@@ -18,7 +18,7 @@ DeployFileSystem = Deploy.module(
 J0=Load:{reuse[#$JavaServer]}
 J=J0(slaveName=S"miniGuiSlave{}")
 Model=Data:J.Handler:{
-  var Size count, mut J j
+  var I count, mut J j
   @J.Handler mut method Void pressButton(S msg)=(
     this.count(\count+1\)
     this.#j().submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)

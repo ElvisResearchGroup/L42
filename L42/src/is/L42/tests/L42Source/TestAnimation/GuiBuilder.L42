@@ -7,21 +7,21 @@ mut J j
 S package
 S imports
 S name
-Size x
-Size y
-Size ping
+I x
+I y
+I ping
 class method S defaultImports()=JavaCode.defaultImports()
-class method mut This (mut J j,S package,S imports,S name,Size x,Size y)=
-  This(j=j,package=package,imports=imports,name=name,x=x,y=y,ping=Size"-1")
-class method mut This (mut J j,S package,S name,Size x,Size y,Size ping)=
+class method mut This (mut J j,S package,S imports,S name,I x,I y)=
+  This(j=j,package=package,imports=imports,name=name,x=x,y=y,ping=I"-1")
+class method mut This (mut J j,S package,S name,I x,I y,I ping)=
   This(j=j,package=package,imports=This.defaultImports(),name=name,x=x,y=y,ping=ping)
-class method mut This (mut J j,S package,S name,Size x,Size y)=
-  This(j=j,package=package,imports=This.defaultImports(),name=name,x=x,y=y,ping=Size"-1")
+class method mut This (mut J j,S package,S name,I x,I y)=
+  This(j=j,package=package,imports=This.defaultImports(),name=name,x=x,y=y,ping=I"-1")
 read method S toSwing(S that)=(
   h=S"package %this.package();"
   i=this.imports()
   S o={
-    if this.ping()>0Size return JavaCode.openingPing(
+    if this.ping()>0I return JavaCode.openingPing(
        name=this.name(),x=this.x(),y=this.y(),pingDelay=this.ping())
     return JavaCode.openingNoPing(name=this.name(),x=this.x(),y=this.y())
     }

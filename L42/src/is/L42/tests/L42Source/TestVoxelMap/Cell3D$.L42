@@ -1,4 +1,4 @@
-Size x, Size y, Size z
+I x, I y, I z
 
 class method Cell3D random(mut Math.Random r) = \(
   x=r.nextInRange(start=0\ end=Margin.maxX())
@@ -14,7 +14,7 @@ method Cell2D to2D() = \(x=this.x(), y=this.y())
 
 method Bool isBorder() = (
   (x, y, z) = this
-  x==0Size || x==Margin.maxX()-1Size
-    || y==0Size || y==Margin.maxY()-1Size
-    || z==0Size || z==Margin.maxZ()-1Size
+  x==0I || x==Margin.maxX()-1I
+    || y==0I || y==Margin.maxY()-1I
+    || z==0I || z==Margin.maxZ()-1I
   )

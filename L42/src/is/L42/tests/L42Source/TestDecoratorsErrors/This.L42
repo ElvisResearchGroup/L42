@@ -2,34 +2,34 @@ reuse[AdamTowel]
 
 TestClose1=(
   code={
-    Size n
-    class method mut This(Size n)
-    @Cache.Clear class method Size double(mut Size n)=error void
+    I n
+    class method mut This(I n)
+    @Cache.Clear class method I double(mut I n)=error void
     }
   {}:Test"Close1"(
     actual={error Data.Close:code catch Data.Close.Fail x return x}
     expected=S"""
       |Message This.Data.Close.Fail([###]):
-      |@This1.Cache.Clear class method This1.Size double(mut This1.Size n)=(..)
-      |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.Size n) initializes it as This1.Size
+      |@This1.Cache.Clear class method This1.I double(mut This1.I n)=(..)
+      |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.I n) initializes it as This1.I
       |[file:[###]
       """.trim())
   code2={
-    Size n
-    class method mut This(Size n)
-    @Cache.Now read method Size double()=this.n()+this.n()
+    I n
+    class method mut This(I n)
+    @Cache.Now read method I double()=this.n()+this.n()
     }
   {}:Test"Close2"(
     actual={error Data.Close:code2 catch Data.Close.Fail x return x}
     expected=S"""
       |Message This.Data.Close.Fail([###]):
-      |@This1.Cache.Now read method This1.Size double()=(..)
+      |@This1.Cache.Now read method This1.I double()=(..)
       |can not be made into a cached read method; the receiver modifier must be class but it is read
       |[file:[###]
       """.trim())
   code3={
-    read method Size n::0()
-    class method mut This of::0(Size n)
+    read method I n::0()
+    class method mut This of::0(I n)
     }
   {}:Test"Close3"(
     actual={error Data.Close:code3 catch Data.Close.Fail x return x}
@@ -42,8 +42,8 @@ TestClose1=(
   code4={
     capsule S.List that
     class method mut This(capsule S.List that)
-    @Cache.Now class method Size size(read S.List that)=that.size()
-    @Cache.Clear class method Size append1(mut S.List thaat)=(
+    @Cache.Now class method I size(read S.List that)=that.size()
+    @Cache.Clear class method I append1(mut S.List thaat)=(
       thaat.add(S"1")
       thaat.size()
       )
@@ -52,34 +52,34 @@ TestClose1=(
     actual={error Data.Close:code4 catch Data.Close.Fail x return x}
     expected=S"""
       |Message This.Data.Close.Fail([###]):
-      |@This1.Cache.Clear class method This1.Size append1(mut This1.S.List thaat)=(..)
+      |@This1.Cache.Clear class method This1.I append1(mut This1.S.List thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
       |[file:[###]
       """.trim())
   code5={
-    Size n
-    class method mut This(Size n)
-    @Cache.Now class method Size double(Size nn)=nn+nn
+    I n
+    class method mut This(I n)
+    @Cache.Now class method I double(I nn)=nn+nn
     }
   {}:Test"Close5"(
     actual={error Data.Close:code5 catch Data.Close.Fail x return x}
     expected=S"""
       |Message This.Data.Close.Fail([###]):
-      |@This1.Cache.Now class method This1.Size double(This1.Size nn)=(..)
+      |@This1.Cache.Now class method This1.I double(This1.I nn)=(..)
       |No candidate getter/exposer with name nn and method modifier imm or read
       |[file:[###]
       """.trim())
   code6={
-    Size n
-    class method mut This(fwd imm Size n)
-    @Cache.Now class method Size double(Size n)=n+n
+    I n
+    class method mut This(fwd imm I n)
+    @Cache.Now class method I double(I n)=n+n
     }
   {}:Test"Close6"(
     actual={error Data.Close:code6 catch Data.Close.Fail x return x}
     expected=S"""
       |Message This.Data.Close.Fail([###]):
-      |@This1.Cache.Now class method This1.Size double(This1.Size n)=(..)
-      |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.Size n)
+      |@This1.Cache.Now class method This1.I double(This1.I n)=(..)
+      |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.I n)
       |[file:[###]
       """.trim())
     )

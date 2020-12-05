@@ -36,8 +36,8 @@ mut $.Entity.List es
 mut $.Entity.List removeQueue
 mut Random r
 mut JServer j
-var Size points
-var Size pings
+var I points
+var I pings
 mut method Void remove(mut $.Entity that)=this.#removeQueue().#add(right=that)
 mut method Void clearRemoveQueue()=(
   r=this.#removeQueue()
@@ -58,7 +58,7 @@ class method mut This (mut JServer j, mut JServer.Handler.Map stage,S key, mut R
     mutVal=Rat(text=S"Zeus",x=240\, y=130\);
     mutVal=Rat(text=S"Minerva",x=540\, y=530\);]
   This(stage=stage,key=key,player=p,es=es,
-    removeQueue=$.Entity.List(),r=r,j=j,points=0Size,pings=0Size)
+    removeQueue=$.Entity.List(),r=r,j=j,points=0I,pings=0I)
   )
 @JServer.Handler mut method Void reset(S msg)=
   this.#player().pos(\(x=20\,y=75\))
@@ -84,24 +84,24 @@ class method mut This (mut JServer j, mut JServer.Handler.Map stage,S key, mut R
   S"Bob(age=23\)";
   S"bob.age(\age+1\)";
   S"text.subString(start=4\ end=\size)";
-  S"Size.List[1\;2\;3\]";
+  S"I.List[1\;2\;3\]";
   S"for a in as, var b in bs (b+=a)";
-  S"Person=Data:{S name,Size age}";
-  S"Task={}:Test%S.dq()Test1%(S.dq())(expected=42Size, actual=40Size+2Size)";
+  S"Person=Data:{S name,I age}";
+  S"Task={}:Test%S.dq()Test1%(S.dq())(expected=42I, actual=40I+2I)";
   S"MyTrait['A=>'B]";
   S"Top=Organize:Data:{...}";
   ]
 @JServer.Handler mut method Void ping(S msg)=(
-  speed=230Size
+  speed=230I
   this.clearRemoveQueue()
   this.pings(\pings+1\)
   es=this.#es()
   newRat=(this.pings()/speed)*speed==this.pings()
   if newRat (
-    xr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
-    yr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1Size))
-    last=This.names().size()-1Size
-    current=(this.pings()/speed)-1Size
+    xr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1I))
+    yr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1I))
+    last=This.names().size()-1I
+    current=(this.pings()/speed)-1I
     text=This.names().val(current.min(last))
     r=Rat(text=text,x=0\,y=0\)
     es.#add(right=r)

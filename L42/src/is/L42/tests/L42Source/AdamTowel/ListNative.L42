@@ -1,19 +1,18 @@
 class method mut This #apply()
-class method mut This #apply(This2.Size capacity)=native{trusted:vectorK} error void
+class method mut This #apply(This2.I capacity)=native{trusted:vectorK} error void
 read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
-read method This2.Size size()=native{trusted:size} error void
-read method read This0.Elem readVal(This2.Size that)=native{trusted:readVal} error void
-read method imm This0.Elem val(This2.Size that)=native{trusted:immVal} error void
-mut method mut This0.Elem #val(This2.Size that)=native{trusted:#val} error void
-mut method Void set(This2.Size that,This0.Elem val)=native{trusted:setImm} error void
-mut method Void #set(This2.Size that,mut This0.Elem val)=native{trusted:setMut} error void
-mut method Void add(This2.Size that,This0.Elem val)=native{trusted:addImm} error void
-mut method Void #add(This2.Size that,mut This0.Elem val)=native{trusted:addMut} error void
-mut method Void remove(This2.Size that)=native{trusted:remove} error void
+read method This2.I size()=native{trusted:size} error void
+read method read This0.Elem readVal(This2.I that)=native{trusted:readVal} error void
+read method imm This0.Elem val(This2.I that)=native{trusted:immVal} error void
+mut method mut This0.Elem #val(This2.I that)=native{trusted:#val} error void
+mut method Void set(This2.I that,This0.Elem val)=native{trusted:setImm} error void
+mut method Void #set(This2.I that,mut This0.Elem val)=native{trusted:setMut} error void
+mut method Void add(This2.I that,This0.Elem val)=native{trusted:addImm} error void
+mut method Void #add(This2.I that,mut This0.Elem val)=native{trusted:addMut} error void
+mut method Void remove(This2.I that)=native{trusted:remove} error void
 
 Elem={#norm{}}
-//OLD watched=This2.Size,This2.Bool,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
 #norm{nativeKind=Vector, nativePar=This0.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
-  typeDep=This,This2.Size,This2.Bool, This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
-  coherentDep=This,This2.Bool,This2.Size,This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
+  typeDep=This,This2.I,This2.Bool, This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
+  coherentDep=This,This2.Bool,This2.I,This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
   }

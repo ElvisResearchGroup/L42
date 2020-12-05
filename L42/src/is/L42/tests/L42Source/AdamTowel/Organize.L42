@@ -45,13 +45,13 @@ class method This (Name public)=\(public=public,just$=Bool.false())
 class method This(Bool just$)=\(public=Name"",just$=just$) 
 class method This()=\(public=Name"",just$=Bool.false()) 
 
-method Size maxLev(Introspection.Nested that)=(
-  var res=0Size
+method I maxLev(Introspection.Nested that)=(
+  var res=0I
   for ni in that.nesteds() (
     tmp=this.maxLev(ni)
     if res<tmp res:=tmp
     )
-  res+1Size
+  res+1I
   )
 method Library :(Library that)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=
   (this:Trait(that)).code()
@@ -62,19 +62,19 @@ method Trait :(class Trait.Lifted lifted)[Data.Close$Fail,Trait$InvalidName,Trai
 method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
   max=this.maxLev(Introspection.Nested.from(library=trait.code()))
   var res=trait
-  (var lev=0Size while lev<max (//range will come later
-    lev+=1Size
+  (var lev=0I while lev<max (//range will come later
+    lev+=1I
     i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapRename$(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
   if !this.just$() res:=this.after$(res,max=max)
   res
   )
-method Trait after$(Trait that, Size max)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
+method Trait after$(Trait that, I max)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
   var res=that
   res:=CloseAll(res)
-  (var lev=0Size while lev<max (//range will come later
-    lev+=1Size
+  (var lev=0I while lev<max (//range will come later
+    lev+=1I
     i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapHide(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
@@ -88,9 +88,9 @@ method Bool isPrivate(Introspection.Doc that)={
   return !that.annotatedAs(nested=that.root().nested(name=this.public()))
   }
   
-method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size level)={
+method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, I level)={
   ncs=n.nesteds()
-  if level!=0Size (
+  if level!=0I (
     for ni in ncs (_=this.mapHide(that,n=ni,level=level-1\) void)
     return that
     )
@@ -111,9 +111,9 @@ method mut Trait.Acc mapHide(mut Trait.Acc that, Introspection.Nested n, Size le
   if hasPublic (for name in privates that.#squareAdd(hide=name))
   return that
   }
-method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size level)={
+method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, I level)={
   ncs=n.nesteds()
-  if level!=0Size (
+  if level!=0I (
     for ni in ncs (_=this.mapRename$(that,n=ni,level=level-1\) void)
     return that
     )
@@ -121,14 +121,14 @@ method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, Size
   outSize=outName.size()
   for ni in ncs {
     inName=ni.nameFromRoot().toS() //A.B$C$   A.$
-    var inC=if outSize==0Size inName 
+    var inC=if outSize==0I inName 
       else inName.subString(start=outSize+1\,end=\size) //"B$C$"   "$"
     if inC.contains(\"$$") return void
     if !inC.contains(\"$") return void
     if inC.endsWith(\"$") (inC:=inC.subString(start=0\, end=\size-1\)) //"B$C"    ""
     if inC.startsWith(\"$") return void
     inC:=inC.replace(\"$" with=\".") //"B.C"    ""
-    if inC.size()==0Size return that.#squareAdd(\"%inName"=>n.nameFromRoot())
+    if inC.size()==0I return that.#squareAdd(\"%inName"=>n.nameFromRoot())
     return that.#squareAdd(\"%inName"=>\"%(n.nameFromRoot()).%inC")  //A.B$C$ =>A.B.C
     }
   return that

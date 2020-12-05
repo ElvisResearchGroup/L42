@@ -6,9 +6,9 @@ Double acc
 S img
 S text
 
-mut method Void moveSpeed(Double rad,Size power)=(
+mut method Void moveSpeed(Double rad,I power)=(
   s=this.speed()
-  if power <= 0Size (
+  if power <= 0I (
     this.speed(s+Vector(x=s.x()*this.break(),y=s.y()*this.break()))
     )
   else (

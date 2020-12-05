@@ -11,24 +11,24 @@ _Trait = Trait : {
   mut Math.Random r
   mut Map cells
   mut V.Cell2D.List seeds = V.Cell2D.List()
-  Size maxSeeds
-  mut Size.List order = Size.List[0\; 1\; 2\; 3\; 4\; 5\; 6\; 7\]
+  I maxSeeds
+  mut I.List order = I.List[0\; 1\; 2\; 3\; 4\; 5\; 6\; 7\]
   mut method Void addSeed(V.Cell2D that,E val) = (
     this.#cells()(that, val=val)
     this.#seeds().add(that)
     )
     
   mut method Void initGrow()=(
-    ShuffleSize.shuffle(this.#order(),r=this.#r())
+    ShuffleI.shuffle(this.#order(),r=this.#r())
     ShuffleCell.shuffle(this.#seeds(),r=this.#r())
-    if this.maxSeeds()>0Size (
+    if this.maxSeeds()>0I (
       while this.seeds().size() > this.maxSeeds()
         this.#seeds().removeRight()
       )
     )
-  mut method Void grow(Size percent)=(
+  mut method Void grow(I percent)=(
     this.initGrow()
-    for i in Range((this.seeds().size() * percent) / 100Size) (
+    for i in Range((this.seeds().size() * percent) / 100I) (
       ci = this.seeds().val(i)
       if !ci.isBorder() this.growInOrder(c=ci)
       )

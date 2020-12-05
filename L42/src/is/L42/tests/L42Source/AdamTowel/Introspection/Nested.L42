@@ -18,35 +18,35 @@ class method This(NativeNested that)=\(i=that)
 
 @Public method Nested$List nesteds()=\()((
   size=this.i().nestedNum()
-  var i=0Size
+  var i=0I
   while i<size (
     \add(Nested$(this.i().nestedIn(i)))
-    i+=1Size//sadly, range will be added later
+    i+=1I//sadly, range will be added later
     )))
 @Public method Method$List methods()=\()((
   size=this.i().methodNum()
-  var i=0Size
+  var i=0I
   while i<size (
     \add(Method$(this.i().methodIn(i)))
-    i+=1Size
+    i+=1I
     )))
 @Public method Method$ meth(S selector)={
   size=this.i().methodNum()
-  var i=0Size
+  var i=0I
   while i<size (
     mi=Method$(this.i().methodIn(i))
     if mi.nameFromRoot()<:Name.selector()==selector return mi
-    i+=1Size
+    i+=1I
     )
   ns=S$List()(for m in this.methods() \add(m.selector()) )
   error Collection$NoElementInOpt"Method %selector not in methods list: %ns"
   }
 @Public method Type$List implements()=\()((
   size=this.i().implementedNum()
-  var i=0Size
+  var i=0I
   while i<size (
     \add(Type$(this.i().implementedIn(i)))
-    i+=1Size//sadly, range will be added later
+    i+=1I//sadly, range will be added later
   )))
 @Public method Bool hasOuter()=this.i().hasOuter()
 

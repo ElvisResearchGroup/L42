@@ -1,33 +1,32 @@
 Margin = {//todo maxX renamed to sizeX and so on? or just x?
-  //if I rename size to I, then I can call Margin Size?
-  class method Size maxX()
-  class method Size maxY()
-  class method Size maxZ()
-  class method Size layerSize()=this.maxX() * this.maxY()
+  class method I maxX()
+  class method I maxY()
+  class method I maxZ()
+  class method I layerSize()=this.maxX() * this.maxY()
   class method Double deltaP()=\"0.4999"
   class method Double deltaM()=\"-0.4999"
   }
 Coords = {
-  class method Size(Size x, Size y) =  (x * Margin.maxY()) + y
-  class method Size(Size x, Size y, Size z) =
+  class method I(I x, I y) =  (x * Margin.maxY()) + y
+  class method I(I x, I y, I z) =
     (z * Margin.layerSize()) + (x * Margin.maxY()) + y
-  class method Size x2(Size that)=that/Margin.maxY()
-  class method Size y2(Size that)=that.mod(Margin.maxY())
-  class method Size x3(Size that)=that.mod(Margin.layerSize())/Margin.maxY()
-  class method Size y3(Size that)=that.mod(Margin.layerSize()).mod(Margin.maxY())
-  class method Size z3(Size that)=that.mod(Margin.layerSize())
+  class method I x2(I that)=that/Margin.maxY()
+  class method I y2(I that)=that.mod(Margin.maxY())
+  class method I x3(I that)=that.mod(Margin.layerSize())/Margin.maxY()
+  class method I y3(I that)=that.mod(Margin.layerSize()).mod(Margin.maxY())
+  class method I z3(I that)=that.mod(Margin.layerSize())
   }
 InRangeTrait = Trait : {...}
-InRangeCell = Class : InRangeTrait['U=>Size] : {
-  class method Bool inRange(Size that, Size to) = that.isInRange(0\ to=to)
-  class method Size bound(Size that, Size to) = that.clamp(0\ to=to)
+InRangeCell = Class : InRangeTrait['U=>I] : {
+  class method Bool inRange(I that, I to) = that.isInRange(0\ to=to)
+  class method I bound(I that, I to) = that.clamp(0\ to=to)
   }
 InRangeDouble = Class : InRangeTrait['U=>Double] : {
-  class method Bool inRange(Double that, Size to) = (
+  class method Bool inRange(Double that, I to) = (
     m = to.toDouble() + Margin.deltaP()
     that >= Margin.deltaM() && that <= to.toDouble()
     )
-  class method Double bound(Double that, Size to) = {
+  class method Double bound(Double that, I to) = {
     if that < Margin.deltaM() return Margin.deltaM()
     m = to.toDouble() + Margin.deltaP()
     if that > m return m
@@ -36,12 +35,12 @@ InRangeDouble = Class : InRangeTrait['U=>Double] : {
   }
 
 //Data, fields and invariants for all datatypes
-Cell2D = Data : {Size x, Size y
-  @Cache.Now class method Void invariant(Size x, Size y) = 
+Cell2D = Data : {I x, I y
+  @Cache.Now class method Void invariant(I x, I y) = 
     InRangeCell.errorOutOfRange(This, x=x, y=y)
   }
-Cell3D = Data : {Size x, Size y, Size z
-  @Cache.Now class method Void invariant(Size x, Size y, Size z) = 
+Cell3D = Data : {I x, I y, I z
+  @Cache.Now class method Void invariant(I x, I y, I z) = 
     InRangeCell.errorOutOfRange(This, x=x, y=y, z=z)
   }
 Point2D = Data : {Double x, Double y
@@ -52,8 +51,8 @@ Point3D = Data : {Double x, Double y, Double z
   @Cache.Now class method Void invariant(Double x, Double y, Double z) = 
     InRangeDouble.errorOutOfRange(This, x=x, y=y, z=z)
   }
-Delta2D = Data : {Size x, Size y}
-Delta3D = Data : {Size x, Size y, Size z}
+Delta2D = Data : {I x, I y}
+Delta3D = Data : {I x, I y, I z}
 Vector2D = Data : {Double x, Double y
   @Cache.Now class method Void invariant(Double x,Double y) = (
     if x.toS()==S"NaN" error X"x is NaN"

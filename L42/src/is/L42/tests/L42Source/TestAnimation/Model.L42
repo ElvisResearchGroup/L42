@@ -2,7 +2,7 @@ mut GuiJ j
 mut Google g
 mut Amazons as
 class method mut This(mut GuiJ j mut Amazons as)=
-  This(j=j,g=Google(posX=20Size,posY=75Size,dirX=1Size,dirY=1Size) as=as)
+  This(j=j,g=Google(posX=20I,posY=75I,dirX=1I,dirY=1I) as=as)
 @GuiJ.Handler mut method Void reset(S msg)=(
   this.#g().posX(20\)
   this.#g().posY(75\)
@@ -18,8 +18,8 @@ class method mut This(mut GuiJ j mut Amazons as)=
   for mut a in this.#as() (
     dx=a.posX()-this.g().posX()
     dy=a.posY()-this.g().posY()
-    hit=(dx*dx) + (dy*dy) <35Size
-    if hit a.reached(20Size)
+    hit=(dx*dx) + (dy*dy) <35I
+    if hit a.reached(20I)
     )
   var res=this.g().paint()
   for read a in this.as() ( res++=S.nl()++a.paint() )

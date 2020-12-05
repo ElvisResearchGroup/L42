@@ -1,7 +1,7 @@
 Vector pos
 Vector speed
 mut method mut $.Entity.Opt target(mut $ that)
-mut method Void moveSpeed(Double rad,Size power)
+mut method Void moveSpeed(Double rad,I power)
 mut method Void chase(mut $ that)=(
   selfP=this.pos()
   target=this.target(that)

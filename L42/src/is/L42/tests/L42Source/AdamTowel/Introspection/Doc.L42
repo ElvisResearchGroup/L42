@@ -7,17 +7,17 @@ class method This(NativeDoc that)=\(i=that)
 
 @Public method Doc$List docs()=\()((
   size=this.i().docNum()
-  var i=0Size
+  var i=0I
   while i<size (
     \add(Doc$(this.i().docIn(i)))
-    i+=1Size//sadly, range will be added later
+    i+=1I//sadly, range will be added later
   )))
 @Public method S$List texts()=\()((
-  size=this.i().docNum()+1Size
-  var i=0Size
+  size=this.i().docNum()+1I
+  var i=0I
   while i<size (
     \add(this.i().textIn(i))
-    i+=1Size//sadly, range will be added later
+    i+=1I//sadly, range will be added later
   )))
 @Public method Bool hasAnnotation()=this.i().hasAnnotation()
 @Public method Nested nested()=\(this.i().nested())
