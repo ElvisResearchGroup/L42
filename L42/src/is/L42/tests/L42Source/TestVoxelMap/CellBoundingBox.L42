@@ -1,0 +1,19 @@
+$.Cell3D lowCorner
+$.Cell3D highCorner
+
+@Cache.Now class method Void invariant($.Cell3D lowCorner,$.Cell3D highCorner) = (
+  xOk = lowCorner.x()<highCorner.x()
+  yOk = lowCorner.y()<highCorner.y()
+  zOk = lowCorner.z()<highCorner.z()
+  if !( xOk && yOk && zOk) (
+    xOkMsg = if xOk S"" else S"(invalid)"
+    yOkMsg = if yOk S"" else S"(invalid)"
+    zOkMsg = if zOk S"" else S"(invalid)"
+    error X"""%
+      |Invalid CellBoundingBox:
+      |  x= %lowCorner.x() < %highCorner.x()  %xOkMsg
+      |  y= %lowCorner.y() < %highCorner.y()  %yOkMsg
+      |  z= %lowCorner.z() < %highCorner.z()  %zOkMsg
+      """
+    )
+  )

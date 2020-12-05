@@ -10,3 +10,15 @@ method Point3D to3D(Double z) = \(
   y=this.y()
   z=z
   )
+method Double distance(Point2D other) = this.distance2(other=other).pow(exp=Double"0.5")
+method Double distance2(Point2D other) = (
+  (x1,y1) = this
+  (x2,y2) = other
+  dx=x1-x2
+  dy=y1-y2
+  (dx*dx)+(dy*dy)
+  )
+method Cell2D toCell() = \(
+  x=this.x().round()
+  y=this.y().round()
+  )

@@ -1,6 +1,6 @@
 reuse [AdamTowel]
 Module = Trait : {reuse [AdamTowel]
-  VoxelMap = Organize : Trait({...})['Margin=>'This]
+  VoxelMap =Organize : Trait({...})['$.Margin=>'This]
   }
 DeployUnit = Deploy.module(
   url='VoxelMapTrait

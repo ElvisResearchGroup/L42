@@ -1,12 +1,15 @@
 Size x, Size y, Size z
 
-class method Cell3D random(mut Math.Random r)=\(
+class method Cell3D random(mut Math.Random r) = \(
   x=r.nextInRange(start=0\ end=Margin.maxX())
   y=r.nextInRange(start=0\ end=Margin.maxY())
   z=r.nextInRange(start=0\ end=Margin.maxZ())
   )
-method Point3D toPoint() = 
-  \(x=this.x().toDouble(), y=this.y().toDouble(), z=this.z().toDouble())
+method Point3D toPoint() = \(
+  x=this.x().toDouble()
+  y=this.y().toDouble()
+  z=this.z().toDouble()
+  )
 method Cell2D to2D() = \(x=this.x(), y=this.y())
 
 method Bool isBorder() = (

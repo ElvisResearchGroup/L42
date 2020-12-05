@@ -1,0 +1,38 @@
+
+@Public $.Point3D bottomCenter
+@Public Double radius
+@Public Double height
+@Public CellBoundingBox box
+@Public class method This ($.Point3D bottomCenter, Double radius, Double height) = (
+  iR = radius*Double"-1"
+  low = bottomCenter + $.Vector3D(x=iR,y=iR,z=0\)
+  high = bottomCenter + $.Vector3D(x=radius,y=radius,z=height)
+  box = CellBoundingBox(lowCorner=low.toCell(), highCorner=high.toCell())
+  This(bottomCenter=bottomCenter, radius=radius, height=height, box=box)
+  )
+@Public method Double low() = this.bottomCenter().z()
+@Public method Double high() = this.height()+this.low()
+@Public method Bool impact(This cilinder) = (
+  (bottomCenter1,radius1,height1,low1,high1) = this
+  (bottomCenter2,radius2,height2,low2,high2) = cilinder
+  impactZ=This.impactZ(l1=low1,h1=high1,l2=low2,h2=high2)
+  impactZ && This.impactCircle(
+    p1=bottomCenter1,r1=radius1,
+    p2=bottomCenter2,r2=radius2
+    )
+  )
+class method Bool impactZ(Double l1,Double h1,Double l2,Double h2) = 
+  if h1<h2 (l2<h1).or(l1.isInRange(l2 to=h2))
+  else  (l1<h2).or(l2.isInRange(l1 to=h1))
+ 
+class method Bool impactCircle($.Point3D p1,Double r1,$.Point3D p2,Double r2) =
+  p1.distanceXY2(other=p2) < (r1+r2)*(r1+r2)
+
+@Public method Bool impact($.Cell3D cell) = (
+  (x,y,z) = cell
+  (x1,y1,z1) = this.box().lowCorner()
+  (x2,y2,z2) = this.box().highCorner()
+  x.isInRange(x1 to=x2)
+    .and(y.isInRange(y1 to=y2))
+    .and(z.isInRange(z1 to=z2))
+  )

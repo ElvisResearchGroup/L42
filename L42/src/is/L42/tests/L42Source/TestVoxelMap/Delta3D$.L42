@@ -1,5 +1,9 @@
 Size x, Size y, Size z
 
+method Cell3D +1 (Cell3D cell) = this + cell
+method Cell3D + (Cell3D cell) = \(x=this.x()+cell.x(), y=this.y()+cell.y(), z=this.z()+cell.z())
+method Delta3D + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y(), z=this.z()+that.z())
+
 method Delta3D *1 (Size that) = this * that
 method Delta3D * (Size that) = 
   \(x=this.x()*that, y=this.y()*that, z=this.z()*that)

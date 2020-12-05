@@ -1,7 +1,9 @@
 Double x, Double y, Double z
 class method This(Double x, Double y, Double z)
 
-method This +(This that)=\(x=this.x() + that.x(), y=this.y() + that.y(), z=this.z() + that.z())
+method Point3D +1 (Point3D point) = this + point
+method Point3D + (Point3D point) = \(x=this.x()+point.x(), y=this.y()+point.y(), z=this.z()+point.z())
+method This + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y(), z=this.z()+that.z())
 
 class method This(Double theta, Double phi) = \(
   x=theta.cos() * phi.cos()

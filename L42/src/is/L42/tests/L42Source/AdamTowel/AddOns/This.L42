@@ -21,7 +21,7 @@ TraitMinMax=Trait:{
   read method Bool #lt0(read This that)
   method This min(This that)=if that<this that else this
   method This max(This that)=if this<that that else this
-  method Bool isInRange(This that,This to)=!(this<that) && this<to 
+  method Bool isInRange(This that,This to)=(this<to).and(!(this<that)) 
   }
 TraitRangeTo=Trait:{
   read method Bool #lt0(read This that)

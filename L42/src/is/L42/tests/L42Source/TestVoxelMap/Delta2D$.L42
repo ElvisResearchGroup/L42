@@ -1,5 +1,9 @@
 Size x, Size y
 
+method Cell2D +1 (Cell2D cell) = this + cell
+method Cell2D + (Cell2D cell) = \(x=this.x()+cell.x(), y=this.y()+cell.y())
+method Delta2D + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y())
+
 method Delta2D *1 (Size that) = this * that
 method Delta2D * (Size that) = 
   \(x=this.x()*that, y=this.y()*that)

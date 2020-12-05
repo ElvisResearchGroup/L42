@@ -5,8 +5,10 @@ class method Cell2D random(mut Math.Random r)=\(
   x=r.nextInRange(start=0\ end=Margin.maxX())
   y=r.nextInRange(start=0\ end=Margin.maxY())
   )
-method Point2D toPoint() = 
-  \(x=this.x().toDouble(), y=this.y().toDouble())
+method Point2D toPoint() = \(
+  x=this.x().toDouble()
+  y=this.y().toDouble()
+  )
 method Cell3D to3D(Size z) =
   \(x=this.x(), y=this.y(), z=z)
   

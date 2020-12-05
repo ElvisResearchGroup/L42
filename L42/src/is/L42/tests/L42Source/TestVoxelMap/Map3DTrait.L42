@@ -3,32 +3,32 @@ E = Class.Relax : TraitE
 L = Class.Relax : Trait(Collection.list(E))[clear='This]
 
 @Cache.Now class method Void invariant(read L cells) =
-  if cells.size()!=Margin.layerSize()*Margin.maxZ() error X
-    "The size of the internal list is invalid: %cells.size(), but it should be %(Margin.layerSize()*Margin.maxZ())"
+  if cells.size()!=$.Margin.layerSize()*$.Margin.maxZ() error X
+    "The size of the internal list is invalid: %cells.size(), but it should be %($.Margin.layerSize()*$.Margin.maxZ())"
 
 class method E base()
 
 capsule L cells = L()(
-  for i in Range(Margin.layerSize() * Margin.maxZ()) \add(This.base()) )
+  for i in Range($.Margin.layerSize() * $.Margin.maxZ()) \add(This.base()) )
  
 read method E (Size x, Size y, Size z) = 
-  this.cells().val(Coords(x=x, y=y, z=z))
+  this.cells().val($.Coords(x=x, y=y, z=z))
 
 mut method Void (Size x, Size y, Size z, E val)
 class method Void (mut L cells, Size x, Size y, Size z, E val) = 
-  cells.set(Coords(x=x, y=y, z=z), val=val)
+  cells.set($.Coords(x=x, y=y, z=z), val=val)
   
-read method E (Cell3D that) = 
+read method E ($.Cell3D that) = 
   this(x=that.x(), y=that.y(), z=that.z())
   
-mut method Void (Cell3D that,E val) = 
+mut method Void ($.Cell3D that,E val) = 
   this(x=that.x(), y=that.y(), z=that.z(), val=val)
   
 read method S toS() = S"LargeMap3D"
 
 read method read This #iterator() = this
 read method Void #close(Size that) = void
-read method Bool #incomplete(Size that) = that < Margin.layerSize() * Margin.maxZ()
-read method Cell3D #elem#default(Size that) = \(x=Coords.x3(that), y=Coords.y3(that), z=Coords.z3(that))
-read method Bool #hasElem(Size that) = that < Margin.layerSize() * Margin.maxZ()
+read method Bool #incomplete(Size that) = that < $.Margin.layerSize() * $.Margin.maxZ()
+read method $.Cell3D #elem#default(Size that) = \(x=$.Coords.x3(that), y=$.Coords.y3(that), z=$.Coords.z3(that))
+read method Bool #hasElem(Size that) = that < $.Margin.layerSize() * $.Margin.maxZ()
 read method Size #startIndex() = 0Size

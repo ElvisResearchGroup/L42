@@ -2,30 +2,30 @@
 E = Class.Relax : TraitE
 L = Class.Relax : Trait(Collection.list(E))[clear='This]
 @Cache.Now class method Void invariant(read L cells) =
-  if cells.size()!=Margin.layerSize() error X
-    "The size of the internal list is invalid: %cells.size(), but it should be %Margin.layerSize()"
+  if cells.size()!=$.Margin.layerSize() error X
+    "The size of the internal list is invalid: %cells.size(), but it should be %$.Margin.layerSize()"
 class method E base()
 capsule L cells = L()(
-  for i in Range(Margin.layerSize()) \add(This.base()) )
+  for i in Range($.Margin.layerSize()) \add(This.base()) )
  
 read method E (Size x,Size y) = 
-  this.cells().val(Coords(x=x, y=y))
+  this.cells().val($.Coords(x=x, y=y))
 
 mut method Void (Size x, Size y, E val)
 @Cache.Clear class method Void (mut L cells, Size x, Size y, E val) = 
-  cells.set(Coords(x=x, y=y), val=val)
+  cells.set($.Coords(x=x, y=y), val=val)
   
-read method E (Cell2D that) = 
+read method E ($.Cell2D that) = 
   this(x=that.x(), y=that.y())
   
-mut method Void (Cell2D that, E val) = 
+mut method Void ($.Cell2D that, E val) = 
   this(x=that.x(), y=that.y(), val=val)
   
 read method S toS()=(
   var res=S""
-  for x in Range(Margin.maxX()) (
+  for x in Range($.Margin.maxX()) (
     res++=S.nl()
-    for y in Range(Margin.maxY()) (
+    for y in Range($.Margin.maxY()) (
       e=this(x=x,y=y)
       if e==This.base() (res++=S"@")
       else (res++=e.toS().subString(start=0\ end=1\))
@@ -36,7 +36,7 @@ read method S toS()=(
 
 read method read This #iterator() = this
 read method Void #close(Size that) = void
-read method Bool #incomplete(Size that) = that < Margin.layerSize()
-read method Cell2D #elem#default(Size that) = \(x=Coords.x2(that), y=Coords.y2(that))
-read method Bool #hasElem(Size that) = that<Margin.layerSize()
+read method Bool #incomplete(Size that) = that < $.Margin.layerSize()
+read method $.Cell2D #elem#default(Size that) = \(x=$.Coords.x2(that), y=$.Coords.y2(that))
+read method Bool #hasElem(Size that) = that < $.Margin.layerSize()
 read method Size #startIndex() = 0Size
