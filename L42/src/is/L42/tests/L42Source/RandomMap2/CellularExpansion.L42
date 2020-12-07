@@ -1,7 +1,7 @@
 _Trait = Trait : {
   E = {
-    read method Bool ==(read E that)
-    read method Bool !=(read E that)
+    method Bool ==(E that)
+    method Bool !=(E that)
     }
   Map = {
     class method E base()

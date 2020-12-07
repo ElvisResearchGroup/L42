@@ -7,20 +7,7 @@ L = Class.Relax : Trait(Collection.list(E))[clear='This]
 class method E base()
 capsule L cells = L()(
   for i in Range($.Margin.layerSize()) \add(This.base()) )
- 
-read method E (I x,I y) = 
-  this.cells().val($.Coords(x=x, y=y))
 
-mut method Void (I x, I y, E val)
-@Cache.Clear class method Void (mut L cells, I x, I y, E val) = 
-  cells.set($.Coords(x=x, y=y), val=val)
-  
-read method E ($.Cell2D that) = 
-  this(x=that.x(), y=that.y())
-  
-mut method Void ($.Cell2D that, E val) = 
-  this(x=that.x(), y=that.y(), val=val)
-  
 read method S toS()=(
   var res=S""
   for x in Range($.Margin.maxX()) (
@@ -40,3 +27,36 @@ read method Bool #incomplete(I that) = that < $.Margin.layerSize()
 read method $.Cell2D #elem#default(I that) = \(x=$.Coords.x2(that), y=$.Coords.y2(that))
 read method Bool #hasElem(I that) = that < $.Margin.layerSize()
 read method I #startIndex() = 0I
+
+//accessors imm
+read method E (I x,I y) = 
+  this.cells().val($.Coords(x=x, y=y))
+read method E ($.Cell2D that) = 
+  this(x=that.x(), y=that.y())
+
+mut method Void (I x, I y, E val)
+@Cache.Clear class method Void (mut L cells, I x, I y, E val) = 
+  cells.set($.Coords(x=x, y=y), val=val)
+  
+mut method Void ($.Cell2D that, E val) = 
+  this(x=that.x(), y=that.y(), val=val)
+
+//accessors mut
+read method mut E #val(I x,I y)
+@Cache.Clear class method mut E #val(mut L cells, I x, I y) = 
+  cells.#val($.Coords(x=x, y=y))
+read method mut E #val($.Cell2D that) = 
+  this.#val(x=that.x(), y=that.y())
+
+mut method Void #set(I x, I y, mut E val)
+@Cache.Clear class method Void #set(mut L cells, I x, I y, mut E val) = 
+  cells.#set($.Coords(x=x, y=y), val=val)
+  
+mut method Void #set($.Cell2D that, mut E val) = 
+  this.#set(x=that.x(), y=that.y(), val=val)
+
+//accessors read
+read method read E readVal(I x,I y) = 
+  this.cells().readVal($.Coords(x=x, y=y))
+read method read E readVal($.Cell2D that) = 
+  this.readVal(x=that.x(), y=that.y())

@@ -23,8 +23,8 @@ TraitEnumBase=Trait({interface
 TraitEnumStep=Trait:{interface
   class method Void sealed()
   read method Bool readEquality(read This that)
-  read method Bool ==(read This that)
-  read method Bool !=(read This that)
+  method Bool ==(This that)
+  method Bool !=(This that)
   E={[This1,HasToS]
     class method This()
     class method Void sealed()=void

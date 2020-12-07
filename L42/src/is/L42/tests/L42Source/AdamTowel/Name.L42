@@ -3,7 +3,8 @@ NativeName that
 class method This of(NativeName that)
 method toS()=this.that().toS()
 method This self()=this
-@Public read method Bool ==(read This that)=this.toS()==that.toS()
+@Public read method Bool readEquality(read This that)=this.toS()==that.toS()
+@Public method Bool ==(This that)=this.toS()==that.toS()
 @Public method S x()=this.that().x()
 @Public method S selector()=this.that().selector()
 @Public method S path()=this.that().path()

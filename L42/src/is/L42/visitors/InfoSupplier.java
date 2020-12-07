@@ -23,6 +23,7 @@ import is.L42.generated.Core.L.Info;
 import is.L42.generated.L42AuxParser.InfoBodyContext;
 import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.PathContext;
+import is.L42.generated.L42AuxParser.UsedMethodsContext;
 
 final class InfoSupplier implements Supplier<Core.L.Info> {
   private final Result<InfoContext> r;
@@ -61,7 +62,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   Core.PathSel psf(L42AuxParser.PathSelContext pi){
     Full.PathSel tmp=av.visitPathSel(pi);
     Core.PathSel p=inject._inject(tmp);
-    if(p!=null){return p;}
+    if(p!=null && p._s()!=null && p._x()==null){return p;}
     inject.errors.append(L(pos)+Err.invalidPathInInfo(tmp));
     return new Core.PathSel(P.pThis0,tmp._s(),tmp._x());
     }
@@ -143,4 +144,4 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
       privateSupertypes,refined,close,
       nativeKind,nativePar,_uniqueId);
     }
-}
+  }

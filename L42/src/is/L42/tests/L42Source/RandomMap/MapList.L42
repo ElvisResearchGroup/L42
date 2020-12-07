@@ -1,7 +1,7 @@
 TraitE=Trait:{[HasToS]
   class method This base()
-  read method Bool ==(read This that)
-  read method Bool !=(read This that)
+  method Bool ==(This that)
+  method Bool !=(This that)
   }
 TraitMapList=Trait:{...}
 class method Trait (class Any that,Name base)[_]=

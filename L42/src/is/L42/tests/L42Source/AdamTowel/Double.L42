@@ -8,12 +8,14 @@ method This #times0(This that)=native{trusted:OP*} error void
 method This #divide0(This that)=native{trusted:OP/} error void
 method This #minus0(This that)=native{trusted:OP-} error void
 
-read method This1.Bool #lt0(read This that)=native{trusted:OP<} error void
-read method This1.Bool #gt0(read This that)=that.#lt0(that=this)
-read method This1.Bool #ltequal0(read This that)=native{trusted:OP<=} error void
-read method This1.Bool #gtequal0(read This that)=that.#ltequal0(that=this)
-read method This1.Bool #equalequal0(read This that)=native{trusted:OP==} error void
-read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
+method This1.Bool #lt0(This that)=native{trusted:OP<} error void
+method This1.Bool #gt0(This that)=that.#lt0(that=this)
+method This1.Bool #ltequal0(This that)=native{trusted:OP<=} error void
+method This1.Bool #gtequal0(This that)=that.#ltequal0(that=this)
+
+read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
+method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
+method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
 
 method This pow(This exp)=native{trusted:mathPow} error void
 method This sin()=native{trusted:mathSin} error void

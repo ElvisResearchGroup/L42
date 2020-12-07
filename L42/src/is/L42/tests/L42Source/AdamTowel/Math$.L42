@@ -1,19 +1,21 @@
 Support = Trait : { [HasToS]
-  class method This zero()
   class method This #from(S$StringBuilder stringLiteral)
   
   method This + (This that)
   method This - (This that)
   method This * (This that)
   method This / (This that)
+   
+  read method Bool readEquality(read This that)
+  method Bool ==(This that)
+  method Bool !=(This that)
+ 
+  method Bool >(This that)
+  method Bool <(This that)
+  method Bool >=(This that)
+  method Bool <=(This that)
   
-  read method Bool == (read This that)
-  read method Bool != (read This that)
-  read method Bool > (read This that)
-  read method Bool < (read This that)
-  read method Bool >= (read This that)
-  read method Bool <= (read This that)
-  
+  class method This zero()
   method I ceil()
   method I floor()
   method I round()

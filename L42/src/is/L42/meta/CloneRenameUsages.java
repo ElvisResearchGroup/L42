@@ -202,7 +202,8 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
           assert assertWatchedOk(p(),pi,newWatched);
           continue;
           }
-        if(ps._s().hasUniqueNum() && watchable(p0, newWatched, pi)){newWatched.add(pi);}
+        var toAdd=ps._s().hasUniqueNum() && watchable(p0, newWatched, pi);
+        if(toAdd){newWatched.add(pi);}
         }
       for(var w:res.watched()){if(watchable(p0, newWatched, w)){newWatched.add(w);}}
       ArrayList<PathSel>newUsedMethods=new ArrayList<>();

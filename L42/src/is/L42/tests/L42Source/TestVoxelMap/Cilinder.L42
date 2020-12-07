@@ -1,18 +1,17 @@
+$.Point3D bottomCenter
+Double radius
+Double height
 
-@Public $.Point3D bottomCenter
-@Public Double radius
-@Public Double height
-@Public CellBoundingBox box
-@Public class method This ($.Point3D bottomCenter, Double radius, Double height) = (
+@Cache.Now class method CellBoundingBox box(
+      $.Point3D bottomCenter, Double radius, Double height) = (//derived field
   iR = radius*Double"-1"
-  low = bottomCenter + $.Vector3D(x=iR,y=iR,z=0\)
-  high = bottomCenter + $.Vector3D(x=radius,y=radius,z=height)
-  box = CellBoundingBox(lowCorner=low.toCell(), highCorner=high.toCell())
-  This(bottomCenter=bottomCenter, radius=radius, height=height, box=box)
+  low = bottomCenter + $.Vector3D(x=iR, y=iR, z=0\)
+  high = bottomCenter + $.Vector3D(x=radius, y=radius, z=height)
+  \(lowCorner=low.toCell(), highCorner=high.toCell())
   )
-@Public method Double low() = this.bottomCenter().z()
-@Public method Double high() = this.height()+this.low()
-@Public method Bool impact(This cilinder) = (
+method Double low() = this.bottomCenter().z()
+method Double high() = this.height()+this.low()
+method Bool impact(This cilinder) = (
   (bottomCenter1,radius1,height1,low1,high1) = this
   (bottomCenter2,radius2,height2,low2,high2) = cilinder
   impactZ=This.impactZ(l1=low1,h1=high1,l2=low2,h2=high2)
@@ -28,11 +27,12 @@ class method Bool impactZ(Double l1,Double h1,Double l2,Double h2) =
 class method Bool impactCircle($.Point3D p1,Double r1,$.Point3D p2,Double r2) =
   p1.distanceXY2(other=p2) < (r1+r2)*(r1+r2)
 
-@Public method Bool impact($.Cell3D cell) = (
+//It seams pointless, it is usually done in the other way around
+/*method Bool impact($.Cell3D cell) = (
   (x,y,z) = cell
   (x1,y1,z1) = this.box().lowCorner()
   (x2,y2,z2) = this.box().highCorner()
   x.isInRange(x1 to=x2)
     .and(y.isInRange(y1 to=y2))
     .and(z.isInRange(z1 to=z2))
-  )
+  )*/

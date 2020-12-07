@@ -6,21 +6,6 @@ NotValidUnit=Message:{[Message.Guard]}
 N={class method Introspection.Nested (class Any that)
   =Introspection.Nested.from(classAny=that)}
 
-TraitAbstractSupport=Trait:{
-  [HasToS]
-  class method This #from(S.StringBuilder stringLiteral)
-  method This +(This that)
-  method This -(This that)
-  method This *(This that)
-  method This /(This that)
-  read method Bool ==(read This that)
-  read method Bool !=(read This that)
-  read method Bool >(read This that)
-  read method Bool <(read This that)
-  read method Bool >=(read This that)
-  read method Bool <=(read This that)
-  }
-  
 TraitHasSupport=Trait:{
   Support={}
   method Support #inner() 

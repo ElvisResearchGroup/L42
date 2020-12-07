@@ -15,8 +15,10 @@ class method This1.Num sizeToNum(This1.I that,This1.I denominator)=native{truste
 method This sum(This0 that)=native{trusted:OP+} error void
 @This1.Public @This1.Cache.Call class method This0 #from(This1.S$StringBuilder stringLiteral)=stringLiteral.toS()
 
-@This1.Public read method This1.Bool #equalequal0(read This that)=native{trusted:OP==} error void
-@This1.Public read method This1.Bool #bangequal0(read This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
+@This1.Public read method This1.Bool readEquality(read This that)=native{trusted:OP==} error void
+@This1.Public method This1.Bool #equalequal0(This that)=this.readEquality(that=that)
+@This1.Public method This1.Bool #bangequal0(This that)=(This1.Bool tmp=this.#equalequal0(that=that) tmp.not())
+
 @This1.Public method This1.Bool contains(This that)=native{trusted:contains}error void
 @This1.Public method This replace(This that,This with)=native{trusted:replace}error void
 @This1.Public method This1.I indexOf(This that,This1.I from)=native{trusted:indexOf}error void

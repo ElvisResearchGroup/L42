@@ -551,16 +551,16 @@ public enum TrustedOp {
   LongToInt("longToInt",Map.of(Long,use("return (int)%s;",sigI(Int)))),
 
   LT("OP<",Map.of(
-    Int,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Int)),
-    Long,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Long)),
-    Double,use("return %s < %s;",sig(Readable,Immutable,Bool,Readable,Double)),
-    BigRational,use("return %s.compareTo(%s)==-1;",sig(Readable,Immutable,Bool,Readable,BigRational))
+    Int,use("return %s < %s;",sigI(Bool,Int)),
+    Long,use("return %s < %s;",sigI(Bool,Long)),
+    Double,use("return %s < %s;",sigI(Bool,Double)),
+    BigRational,use("return %s.compareTo(%s)==-1;",sigI(Bool,BigRational))
     )),
   LTEqual("OP<=",Map.of(
-    Int,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Int)),
-    Long,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Long)),
-    Double,use("return %s <= %s;",sig(Readable,Immutable,Bool,Readable,Double)),
-    BigRational,use("return %s.compareTo(%s)!=1;",sig(Readable,Immutable,Bool,Readable,BigRational))
+    Int,use("return %s <= %s;",sigI(Bool,Int)),
+    Long,use("return %s <= %s;",sigI(Bool,Long)),
+    Double,use("return %s <= %s;",sigI(Bool,Double)),
+    BigRational,use("return %s.compareTo(%s)!=1;",sigI(Bool,BigRational))
     )),
   EqualEqual("OP==",Map.of(
     Int,use("return %s == %s;",sig(Readable, Immutable,Bool, Readable,Int)),

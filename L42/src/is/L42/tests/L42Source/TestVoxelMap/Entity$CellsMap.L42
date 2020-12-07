@@ -1,0 +1,82 @@
+Map = {
+  read method Bool isFull($.Cell3D cell)
+  read method Bool isWater($.Cell3D cell)
+  read method Bool isAir($.Cell3D cell)
+  read method Double gravity()
+  }
+Box = {
+  mut Entity$Cells inner
+  mut Map map
+  read method Void noOverlap(read Entity e) = (
+    (x1,y1,z1) = e.geometry().box().lowCorner()
+    (x2,y2,z2) = e.geometry().box().highCorner()
+    for x in Range(x1 to=x2) for y in Range(y1 to=y2) (
+      for z in Range(z1 to=z2) (this.noOverlapMap(e, cell=\(x=x, y=y,z=z)))
+      for ei in this.#inner().#val(x=x, y=y) (
+        eq = System.mutReferenceEquality(e and=ei)
+        if !eq this.noOverlap(a=e, b=ei)
+        )
+      )
+    )
+  read method Bool checkNoOverlap(read Entity e) = (
+    this.noOverlap(e=e)
+    catch error Entity$CollisionFail cf ( Bool.false() )
+    Bool.true()
+    )
+  read method Void noOverlapMap(mut Entity that,$.Cell3D cell) = (
+    if this.map().isFull(cell=cell) error Entity$CollisionFail"""
+      | Impact between entity %that and full part of the map in position %cell
+      """
+    )
+  read method Void noOverlap(mut Entity a, mut Entity b) = (
+    if a.cilinder().impact(cilinder=b.cilinder()) error Entity$CollisionFail"""
+      | Impact between entity %a and entity %b
+      """
+    )
+  mut method Void move(mut Entity e) = (
+   e.acceleration(\acceleration+\pulse)
+   e.velocity(\velocity+\acceleration)
+   var oldG = e.geometry()
+   var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
+   e.geometry(newG)
+   for x in Range(3I) (
+     if this.checkNoOverlap(e=e) ( Break() )
+     if x == 2I ( Break(e.geometry(oldG)) )
+     (x1,y1,z1) = oldG.bottomCenter()
+     (x2,y2,z2) = newG.bottomCenter()
+     newG:=oldG.with(bottomCenter=\(
+       x=(x1+x2)/2Double
+       y=(y1+y2)/2Double
+       z=(z1+z2)/2Double
+       ))
+     e.geometry(newG)
+     )
+   this.moveGravity(e=e)
+   )
+  mut method Void moveGravity(mut Entity e) = (
+    g = this.map().gravity()
+    oldG = e.geometry()
+    oldP = e.geometry().bottomCenter()
+    newP = oldP.with(z=(\z-g).max(0\))
+    var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
+    e.geometry(\geometry.with(bottomCenter=newP))
+    if this.checkNoOverlap(e=e) (
+      e.velocity(\velocity.with(z=\z-g))
+      )
+    else ( e.geometry(oldG) )
+    )
+  }
+  
+capsule Box box
+  
+@Cache.Clear class method Void move(mut Box box) = (
+  for ci in box.inner()
+    for mut e in box.#inner().#val(ci) 
+      box.move(e=e) 
+  )
+    
+@Cache.Now class method Void noOverlap(read Box box) = (
+  for ci in box.inner()
+    for read e in box.inner().readVal(ci)
+      box.noOverlap(e=e) 
+  )

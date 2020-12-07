@@ -16,18 +16,19 @@ CellBoundingBox = Data : {...}
 
 Cilinder = Data : {...}
 
-/*
-Entity wity pulse acceleration and speed
-Entities
-Map2D of Entities,
-  invariant: no overlap
-  abstract isFull(Cell3D)
-  
-Move: forall entities, 
-  remove from map,
-  apply pulse, apply acceleration, apply velocity
-  if overlap, compute intermediate point
-  apply gravity, if overlap ignore gravity
-  place again on map
+Entity = {interface
+  var Cilinder geometry
+  var $.Vector3D velocity
+  var $.Vector3D acceleration
+  $.Vector3D pulse
+  Bool floatAir
+  Bool floatWater
+  Bool solid
+  Bool halfSolid
+  }
+Entity$List = Collection.list(Entity)
+Entity$ListList = Collection.list(Entity$List)
+Entity$Cells = Class : Data : Map2DTrait['L=>Entity$ListList;'E=>Entity$List]
 
-*/
+Entity$CollisionFail = Message : {[Message.Guard]}
+Entity$CellsMap = Trait : Data : {...}

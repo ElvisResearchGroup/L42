@@ -9,7 +9,7 @@ ParRename={class method Library (class Any that, Trait trait,S.List names)={
   }}
 
 TraitTimes=TraitHasSupport:{
-  Support=Class.Relax:TraitAbstractSupport
+  Support=Class.Relax:Math.Support
   T1=Class.Relax:TraitHasSupport['Support=>Support]
   T2=Class.Relax:TraitHasSupport['Support=>Support]
   class method This (T1 that,T2 and)=This(that.#inner()*and.#inner())
@@ -33,7 +33,7 @@ TraitTimes=TraitHasSupport:{
     })
   }
 TraitDiv=TraitHasSupport:{
-  Support=Class.Relax:TraitAbstractSupport
+  Support=Class.Relax:Math.Support
   T1=Class.Relax:TraitHasSupport['Support=>Support]
   T2=Class.Relax:TraitHasSupport['Support=>Support]
   class method This (T1 that, T2 per)=This(that.#inner()/per.#inner())
@@ -57,7 +57,7 @@ TraitDiv=TraitHasSupport:{
   }
   
 TraitInverse=TraitHasSupport:{
-  Support=Class.Relax:TraitAbstractSupport
+  Support=Class.Relax:Math.Support
   T2=Class.Relax:TraitHasSupport['Support=>Support]
   class method This (Support that,T2 per)=This(that/per.#inner())
   method Support *(T2 right)=this.#inner()<:Support*right.#inner()
