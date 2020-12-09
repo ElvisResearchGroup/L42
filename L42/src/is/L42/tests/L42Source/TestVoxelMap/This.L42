@@ -15,7 +15,8 @@ VM = Class: VMT : {
   class method I maxZ()=200I
   }
 Map = Class : Data : VM.map2D(S.List) : {
-  class method S base() = S""
+  class method Void base(I x, I y, mut S.List cells) = cells.add(S"")
+  class method S toS(I x, I y, read S val) = val.toS()
   }
   
 Main=(

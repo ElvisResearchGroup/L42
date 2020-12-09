@@ -1,26 +1,26 @@
 [HasToS]
-E = Class.Relax : TraitE
+E = {}
 L = Class.Relax : Trait(Collection.list(E))[clear='This]
-
+/*
 @Cache.Now class method Void invariant(read L cells) =
   if cells.size()!=$.Margin.layerSize()*$.Margin.maxZ() error X
     "The size of the internal list is invalid: %cells.size(), but it should be %($.Margin.layerSize()*$.Margin.maxZ())"
 
-class method E base()
-
-capsule L cells = L()(
-  for i in Range($.Margin.layerSize() * $.Margin.maxZ()) \add(This.base()) )
- 
+class method Void baseE(I x, I y, I z, mut L cells)
+capsule L cells = (
+  cells=L()
+  for x in Range($.Margin.maxX()) (
+    for y in Range($.Margin.maxY()) (
+      for z in Range($.Margin.maxZ()) 
+        This.baseE(x=x, y=y, z=z, cells=cells) 
+      )
+    )
+  cells
+  )
 
 read method S toS() = S"LargeMap3D"
 
-read method read This #iterator() = this
-read method Void #close(I that) = void
-read method Bool #incomplete(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
-read method $.Cell3D #elem#default(I that) = \(x=$.Coords.x3(that), y=$.Coords.y3(that), z=$.Coords.z3(that))
-read method Bool #hasElem(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
-read method I #startIndex() = 0I
-
+read method This #iterator() = Iterator3D()
 //accessors imm
 read method E (I x, I y, I z) = 
   this.cells().val($.Coords(x=x, y=y, z=z))
@@ -36,17 +36,28 @@ mut method Void ($.Cell3D that,E val) =
   this(x=that.x(), y=that.y(), z=that.z(), val=val)
 
 //accessors mut
-read method mut E #val(I x,I y,I z)
-@Cache.Clear class method mut E #val(mut L cells, I x, I y,I z) = 
-  cells.#val($.Coords(x=x, y=y, z=z))
-read method mut E #val($.Cell3D that) = 
-  this.#val(x=that.x(), y=that.y(), z=that.z())
+Action= {interface
+  method Any (mut L cells)
+  }
+mut method Any (Action action)
+@Cache.Clear class method Any (mut L cells, Action action) = 
+  action(cells=cells)
+ActionTrait = Trait : {[Action]
+  T = {}
+  method T (mut L cells)
+  method T (mut This1 that)={
+    if T x = that(action=this) return x
+    error X"unreachable"
+    }
+  }
+class method Library action(Library that)[_] =
+  Class : ActionTrait['T=>Trait(that).nested()*'#apply(cells)] : that
 
-mut method Void #set(I x, I y, I z, mut E val)
-@Cache.Clear class method Void #set(mut L cells, I x, I y, I z, mut E val) = 
+mut method Void #set(I x, I y,I z, capsule E val)
+@Cache.Clear class method Void #set(mut L cells, I x, I y,I z, capsule E val) = 
   cells.#set($.Coords(x=x, y=y, z=z), val=val)
   
-mut method Void #set($.Cell3D that, mut E val) = 
+mut method Void #set($.Cell3D that, capsule E val) = 
   this.#set(x=that.x(), y=that.y(), z=that.z(), val=val)
 
 //accessors read
@@ -54,3 +65,4 @@ read method read E readVal(I x,I y,I z) =
   this.cells().readVal($.Coords(x=x, y=y, z=z))
 read method read E readVal($.Cell3D that) = 
   this.readVal(x=that.x(), y=that.y(), z=that.z())
+*/

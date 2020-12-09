@@ -104,7 +104,7 @@ public class CacheNowGenerator extends CacheLazyGenerator{
     if(mwt.mh().t().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.MutableFwd)){
       throw new EndError.TypeError(mwt._e().poss(),
           Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),
-            "not mutable or lent",mwt.mh().t(),"not mutable or lent"));
+            "not mutable or lent",mwt.mh().t(),"imm, capsule, class or read"));
       }
     for(var t:mwt.mh().pars()){
       if(t.mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable)){

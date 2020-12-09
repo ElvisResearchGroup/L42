@@ -287,8 +287,13 @@ public class Close extends GuessFields{
     if(!first.isIn(Mdf.Mutable,Mdf.Lent)){
       err.throwErr(m,"first parameter must refer to a capsule field as mut or lent");
       }
-    if(!m.mh().pars().stream().skip(1).allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class))){
-      err.throwErr(m,"non first parameters must be imm, readable or class");
+    if(!m.mh().pars().stream().skip(1).allMatch(t->t.mdf().isIn(Mdf.Immutable,Mdf.Class,Mdf.Capsule))){
+      err.throwErr(m,"non first parameters can not be mut, lent or read");
+      }
+    if(!m.mh().t().mdf().isIn(Mdf.Immutable,Mdf.Class,Mdf.Capsule)){
+      if(!(first.isLent() && m.mh().t().mdf().isMut())){
+        err.throwErr(m,"return type must be imm, capsule or class. (Can also be mut if the capsule is seen as lent.)");
+        }
       }
     var pos=m._e().pos();
     S s=m.key();

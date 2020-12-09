@@ -6,10 +6,14 @@ V = Class: VMT : {
   class method I maxZ()=100\
   }
 IMap = Class : Data : V.map2D(I.List) : {
-  class method I base() = 0I
+  class method I base() =0I
+  class method Void base(I x, I y, mut I.List cells) = cells.add(this.base())
+  class method S toS(I x, I y, read I val) = val.toS()
   }
 BoolMap = Class : Data : V.map2D(Bool.List) : {
-  class method Bool base() = Bool.false()
+  class method Bool base() =Bool.false()
+  class method Void base(I x, I y, mut Bool.List cells) = cells.add(this.base())
+  class method S toS(I x, I y, read Bool val) = val.toS()
   }
 ShuffleI = Math.randomList(I.List)
 ShuffleCell = Math.randomList(V.Cell2D.List)

@@ -20,6 +20,7 @@ import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
+import is.L42.generated.LDom;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42Exception;
 import is.L42.platformSpecific.javaTranslation.L42Return;
@@ -53,6 +54,8 @@ public class Main {
       var location=pTails.printCs();
       if(!location.isEmpty()){location+=".";}
       location+=Resources.currentC;
+      var l=Resources.currentP.topCore();
+      location+="\n      in "+l.poss();
       Resources.err("While performing reduction on "+location);
       if(ee.getClass()==L42Exception.class){Resources.err("L42 terminated with exception");}
       else{Resources.err("L42 terminated with error");}

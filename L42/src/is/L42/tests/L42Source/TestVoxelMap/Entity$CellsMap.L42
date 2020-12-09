@@ -7,41 +7,43 @@ Map = {
 Box = {
   mut Entity$Cells inner
   mut Map map
-  read method Void noOverlap(read Entity e) = (
+  read method Void noOverlap(I x0, I y0, I i0, read Entity e) = (
     (x1,y1,z1) = e.geometry().box().lowCorner()
     (x2,y2,z2) = e.geometry().box().highCorner()
     for x in Range(x1 to=x2) for y in Range(y1 to=y2) (
       for z in Range(z1 to=z2) (this.noOverlapMap(e, cell=\(x=x, y=y,z=z)))
-      for ei in this.#inner().#val(x=x, y=y) (
-        eq = System.mutReferenceEquality(e and=ei)
+      es = this.inner()(x=x, y=y)      
+      for i in Range(es.size()), ei in es (
+        eq = x==x0 && y==y0 && i==i0 //System.mutReferenceEquality(e and=ei)
         if !eq this.noOverlap(a=e, b=ei)
         )
       )
     )
-  read method Bool checkNoOverlap(read Entity e) = (
-    this.noOverlap(e=e)
+  read method Bool checkNoOverlap($.Cell2D ci, I i0, read Entity e) = (
+    this.noOverlap(x0=ci.x(), y0=ci.y(), i0=i0, e=e)
     catch error Entity$CollisionFail cf ( Bool.false() )
     Bool.true()
     )
-  read method Void noOverlapMap(mut Entity that,$.Cell3D cell) = (
+  read method Void noOverlapMap(read Entity that,$.Cell3D cell) = (
     if this.map().isFull(cell=cell) error Entity$CollisionFail"""
       | Impact between entity %that and full part of the map in position %cell
       """
     )
-  read method Void noOverlap(mut Entity a, mut Entity b) = (
-    if a.cilinder().impact(cilinder=b.cilinder()) error Entity$CollisionFail"""
+  read method Void noOverlap(read Entity a, read Entity b) = (
+    if a.geometry().impact(cilinder=b.geometry()) error Entity$CollisionFail"""
       | Impact between entity %a and entity %b
       """
     )
-  mut method Void move(mut Entity e) = (
-   e.acceleration(\acceleration+\pulse)
-   e.velocity(\velocity+\acceleration)
+  mut method Void move($.Cell2D ci, I i) = (
+   inner = this.#inner()
+   inner.step(cell=ci, index=i)
+   e = inner.readVal(ci).val(i)
    var oldG = e.geometry()
    var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
-   e.geometry(newG)
-   for x in Range(3I) (
-     if this.checkNoOverlap(e=e) ( Break() )
-     if x == 2I ( Break(e.geometry(oldG)) )
+   inner(cell=ci, index=i, geometry=newG)
+   for r in Range(3I) (
+     if this.checkNoOverlap(ci=ci, i0=i, e=e) ( Break() )
+     if r == 2I ( Break(inner(cell=ci, index=i, geometry=oldG)) )
      (x1,y1,z1) = oldG.bottomCenter()
      (x2,y2,z2) = newG.bottomCenter()
      newG:=oldG.with(bottomCenter=\(
@@ -49,21 +51,23 @@ Box = {
        y=(y1+y2)/2Double
        z=(z1+z2)/2Double
        ))
-     e.geometry(newG)
+     inner(cell=ci, index=i, geometry=newG)
      )
-   this.moveGravity(e=e)
+   this.moveGravity(ci=ci, i=i)
    )
-  mut method Void moveGravity(mut Entity e) = (
+  mut method Void moveGravity($.Cell2D ci, I i) = (
+    inner = this.#inner()
     g = this.map().gravity()
+    e = inner.readVal(ci).val(i)
     oldG = e.geometry()
     oldP = e.geometry().bottomCenter()
     newP = oldP.with(z=(\z-g).max(0\))
     var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
-    e.geometry(\geometry.with(bottomCenter=newP))
-    if this.checkNoOverlap(e=e) (
-      e.velocity(\velocity.with(z=\z-g))
+    inner(cell=ci, index=i, geometry=newG)
+    if this.checkNoOverlap(ci=ci, i0=i, e=e) (
+      inner(cell=ci, index=i, velocity=e.velocity().with(z=\z-g))
       )
-    else ( e.geometry(oldG) )
+    else ( inner(cell=ci, index=i, geometry=oldG) )
     )
   }
   
@@ -71,12 +75,14 @@ capsule Box box
   
 @Cache.Clear class method Void move(mut Box box) = (
   for ci in box.inner()
-    for mut e in box.#inner().#val(ci) 
-      box.move(e=e) 
+    for i in Range(box.inner()(ci).size())
+      box.move(ci=ci, i=i) 
   )
     
 @Cache.Now class method Void noOverlap(read Box box) = (
-  for ci in box.inner()
-    for read e in box.inner().readVal(ci)
-      box.noOverlap(e=e) 
+  for ci in box.inner() (
+    es = box.inner().readVal(ci)
+    for i in Range(es.size()), e in es
+      box.noOverlap(x0=ci.x(), y0=ci.y(), i0=i, e=e) 
+    )
   )

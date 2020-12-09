@@ -32,6 +32,7 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.Accumulate;
+import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.PropagatorCollectorVisitor;
 
 
@@ -169,7 +170,7 @@ public class Deps{
     if(pi.n()<=cs.size()){
       var cs0=cs.subList(0, cs.size()-pi.n());
       cs0=merge(cs0,pi.cs());
-      Program.flat(l).of(P.of(0,cs0),l.poss());//propagate errors is path is not existent
+      Program.flat(l).of(P.of(0,cs0),l.poss());//propagate errors if path is not existent
       return null;
       }
     return pi.withN(pi.n()-(cs.size()+1));
@@ -185,6 +186,19 @@ public class Deps{
       }
     private void innerVisitL(L l,L li,List<C> csi){
       Program pcsi=(lastC==null?p0.push(l):p0.push(lastC,l)).navigate(csi);
+      try{innerVisitL(pcsi,l,li,csi);}
+      catch(EndError.PathNotExistent pne){
+        new CloneVisitorWithProgram(pcsi){
+          @Override public Info visitInfo(Info info){return info;}
+          @Override public P visitP(P path){
+            this.p().of(path,this.poss);//propagate path not existent error with good position
+            return path;
+            }
+          }.visitL(li);
+        throw pne;
+        }
+      }
+    private void innerVisitL(Program pcsi,L l,L li,List<C> csi){
       for(var p:li.info().typeDep()){skipAct(p, csi, l,typePs::add);}
       for(var p:li.info().coherentDep()){skipAct(p, csi, l,metaCohePs::add);}
       for(var p:li.info().metaCoherentDep()){skipAct(p, csi, l,metaCohePs::add);}

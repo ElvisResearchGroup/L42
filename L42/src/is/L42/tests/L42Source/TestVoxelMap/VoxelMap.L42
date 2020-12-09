@@ -1,8 +1,20 @@
 $ = Organize(just$=\.true()) : {...}
 //Map2D and Map3D
-TraitE = Trait : { [HasToS]
-  read method Bool == (read This that)
-  read method Bool != (read This that) 
+
+Iterator2D = {
+  class method This ()
+  method Void #close(I that) = void
+  method Bool #incomplete(I that) = that < $.Margin.layerSize()
+  method $.Cell2D #elem#default(I that) = \(x=$.Coords.x2(that), y=$.Coords.y2(that))
+  method Bool #hasElem(I that) = that < $.Margin.layerSize()
+  method I #startIndex() = 0I
+  }
+Iterator3D = {
+  class method This ()
+  method Void #close(I that) = void
+  method Bool #incomplete(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
+  method $.Cell3D #elem#default(I that) = \(x=$.Coords.x3(that), y=$.Coords.y3(that), z=$.Coords.z3(that))
+  method Bool #hasElem(I that) = that < $.Margin.layerSize() * $.Margin.maxZ()
   }
 
 Map2DTrait = Trait : {...}
@@ -28,7 +40,26 @@ Entity = {interface
   }
 Entity$List = Collection.list(Entity)
 Entity$ListList = Collection.list(Entity$List)
-Entity$Cells = Class : Data : Map2DTrait['L=>Entity$ListList;'E=>Entity$List]
+Entity$Cells = Class : Data : 
+  Map2DTrait['L=>Entity$ListList;'E=>Entity$List] : {
+  Box = {}
+  class method Void base(I x, I y, mut Entity$ListList cells) =
+    cells.#add(right=Entity$List())
+  class method S toS(I x, I y, read Entity$List val) =
+    val.size().toS()
+  @Cache.Clear class method Void step(mut Box box,$.Cell2D cell, I index) = (
+    mut Entity$List es = box.#val(cell)
+    e = es.#val(index)
+    e.acceleration(\acceleration+\pulse)
+    e.velocity(\velocity+\acceleration)
+    )
+  @Cache.Clear class method Void (mut Box box,$.Cell2D cell, I index, $.Vector3D velocity) =
+    box.#val(cell).#val(index).velocity(velocity)
+
+  @Cache.Clear class method Void (mut Box box,$.Cell2D cell, I index, Cilinder geometry) =
+    box.#val(cell).#val(index).geometry(geometry)
+  }
+  
 
 Entity$CollisionFail = Message : {[Message.Guard]}
 Entity$CellsMap = Trait : Data : {...}

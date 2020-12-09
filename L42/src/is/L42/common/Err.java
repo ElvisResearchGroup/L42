@@ -327,7 +327,7 @@ public class Err {
   ;}public static String nativeBodyInvalidExceptions(Object _1,Object mh){return
   "native body "+_1+" has selector "+mh+"; this method must have an empty throw exception clause"
   ;}public static String nativeParameterInvalidKind(Object _1,Object mh,Object sig,Object _3,Object _4){return
-  "native body "+_1+" has selector "+mh+"; required "+sig+" but the parameter of type "+_3+" is not of kind "+_4
+  "native body "+_1+" has selector "+mh+"; required "+sig+" but the type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
   "The class is not coherent. Candidate factory parameters are: "+_1
   ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object meths,Object pos){return

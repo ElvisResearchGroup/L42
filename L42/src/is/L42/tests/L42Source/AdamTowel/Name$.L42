@@ -1,6 +1,11 @@
 [HasToS]
 method Name self()
 
+
+@Public method Name$Mapping =>(Introspection.Nested nested)=
+  if nested.isBinded() this.self() => nested.classAny()
+  else this.self() => nested.nameFromRoot()
+
 @Public method class Any *1(class Any that)[_]=
   (Introspection.Nested.from(classAny=that)*this).classAny()
 
