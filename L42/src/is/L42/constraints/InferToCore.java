@@ -161,6 +161,9 @@ public class InferToCore extends UndefinedCollectorVisitor{
     assert t.mdf().isImm() || k.thr()==ThrowKind.Return;
     return new Core.K(k.thr(),t,k.x(),e);
     }
+  private boolean xIsRead(X x,Core.D d){
+    return d.x().equals(x) && d.t().mdf().isRead();
+    }
   private List<Core.D> auxDs(List<X> fv, List<Half.D> ds0,List<Pos>poss) {
     if(ds0.isEmpty()){return L();}
     Half.D d=ds0.get(0);
@@ -170,7 +173,13 @@ public class InferToCore extends UndefinedCollectorVisitor{
     var fvE=FV.of(e1.visitable());
     Core.T t1=t;
     boolean noDMdf=d._mdf()==null;
-    boolean toImm=noDMdf && t.mdf().isRead() && 
+    boolean readBlock=false;
+    if (e1 instanceof Core.Block b1){
+      if (b1.e() instanceof Core.EX x1) {
+        readBlock=b1.ds().stream().anyMatch(di->xIsRead(x1.x(),di));
+        }
+      }
+    boolean toImm=noDMdf && t.mdf().isRead() && !readBlock && 
       fvE.stream().noneMatch(xi->{
         var ti=i.g()._of(xi);
         return ti!=null && ti.mdf().isIn(Mdf.Readable,Mdf.Lent,Mdf.Mutable);

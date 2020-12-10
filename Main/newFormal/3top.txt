@@ -282,7 +282,7 @@ _______
     I(mdf? STz) = CORE.T IfNotE(CORE.T) DsR = inferenceFailure(I,STz)
     I!e => ER 
     ER = CTz';e' IfErr(ER) DR = ER
-    CORE.T' = CORE.T[mdf=imm] if mdf?=empty, CORE.T.mdf=read and 
+    CORE.T' = CORE.T[mdf=imm] if mdf?=empty, CORE.T.mdf=read, e' not a block of for (ds _ x) where ds(x) is read and 
       not exists x in FV(e') such that x in dom(I.G) and I.G(x).mdf in {read,lent,mut}
     CORE.T' = CORE.T[mdf=mut] if mdf?=empty, CORE.T.mdf=capsule and xs=_,x,_,x,_ //2+ usages
     CORE.T' = CORE.T otherwise

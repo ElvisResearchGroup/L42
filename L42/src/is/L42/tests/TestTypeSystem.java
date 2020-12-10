@@ -354,6 +354,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    """)
    ),new AtomicTest(()->pass(cloneExample+"""
    A={B={method BB main()=(
+     BB bi=AA.k(f=(BB b=BB.k(N.k()) b).clone())<:AA.f()
+     bi
+     )}}
+   """)
+   ),new AtomicTest(()->pass(cloneExample+"""
+   A={B={method BB main()=(
      read BB b=BB.k(N.k())
      BB bi=AA.k(f=b.clone())<:AA.f() 
      bi
