@@ -297,7 +297,7 @@ public class Err {
   ;}public static String methCallResultIncompatibleWithExpected(Object _1,Object _2){return
   "for method "+_1+", method call result type is incompatible with the expected modifier: "+_2
   ;}public static String methCallNoCompatibleMdfParametersSignature(Object _1,Object _2){return
-  "Incompatible modifiers for method call.\nFor method "+_1+", method call parameter signature is incompatible with the parameters: "+_2
+  "Incompatible modifiers for method call.\nFor method "+_1+", method call parameter signature is incompatible with the parameters expected signature: "+_2
   ;}public static String mayLeakUnresolvedFwd(Object _1){return
   "fwd variable "+_1+" may be leaked out using a return"
   ;}public static String nativeExceptionNotLazyMessage(Object _1,Object _2){return

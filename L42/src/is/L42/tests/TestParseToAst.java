@@ -102,6 +102,8 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("(@Foo A x=A x)","(\n  @Foo A x=A\n  x\n  )\n")
    ),new AtomicTest(()->
+   pass("(var read @Foo A x=A x)","(\n  var read@Foo A x=A\n  x\n  )\n")
+   ),new AtomicTest(()->
    pass("(\n  @Foo@Bar A x=A\n  x\n  )\n")
    ),new AtomicTest(()->
    {try{pass("(A a=A()(B))");Assert.fail();}catch(EndError.NotWellFormed nwf){}}

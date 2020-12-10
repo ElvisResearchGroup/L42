@@ -30,6 +30,7 @@ Box = Data:{
     )
     
   read method Iterator2D #iterator() = Iterator2D()
+  read method I #startIndex() = 0I
   
   //accessors imm
   read method E (I x,I y) = this.cells().val($.Coords(x=x, y=y))

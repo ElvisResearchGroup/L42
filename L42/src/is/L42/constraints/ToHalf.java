@@ -68,6 +68,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
   FreshNames fresh;
   Res<Half.E> res;
   public final Res<Half.E> compute(Full.E e){
+    assert ctz.coherent(y.p());
     assert res==null;
     e.visitable().accept(this);
     assert res!=null;
@@ -324,7 +325,9 @@ public class ToHalf extends UndefinedCollectorVisitor{
     var res=compute(d._e());
     if(t==null){t=res.resSTz;}
     else{ctz.plusAcc(y.p(),res.resSTz,t);}
-    var hd=new Half.D(d._varTx().isVar(),d._varTx()._mdf(), t, d._varTx()._x(),res.e);
+    Mdf mdf=d._varTx()._mdf();
+    if(mdf==null && d._varTx()._t()!=null){mdf=d._varTx()._t()._mdf();}
+    var hd=new Half.D(d._varTx().isVar(),mdf, t, d._varTx()._x(),res.e);
     y=oldY;
     return new Res<>(L(hd),L(),res.retSTz);
     }

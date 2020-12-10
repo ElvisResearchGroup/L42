@@ -56,6 +56,14 @@ public class CTz{
   private Map<ST,List<ST>> inner=new HashMap<>();
   public Set<Map.Entry<ST,List<ST>>> entries(){return Collections.unmodifiableSet(inner.entrySet());}
   public CTz(Map<ST,List<ST>> innerImm){this.inner.putAll(innerImm);}
+  public CTz(Program p,Map<ST,List<ST>> innerImm){
+    for(var e:innerImm.entrySet()){
+      var k=p.solve(e.getKey());
+      if(k instanceof T){continue;}
+      var v=L(e.getValue().stream().map(p::solve));
+      this.inner.put(k, v);
+      }
+    }
   public CTz(){}
   public Map<ST,List<ST>> releaseMap(){
     var res=Collections.unmodifiableMap(inner);
@@ -70,7 +78,8 @@ public class CTz{
   public boolean coherent(Program p){
     for(var e:inner.entrySet()){
       assert !(e.getKey() instanceof T):e.getKey();
-      assert p.solve(e.getKey())==e.getKey():p.solve(e.getKey())+" "+e.getKey();
+      assert p.solve(e.getKey())==e.getKey():
+        p.solve(e.getKey())+" "+e.getKey();
       for(var st:e.getValue()){
         assert p.solve(st)==st:p.solve(st)+" "+st;  
         }

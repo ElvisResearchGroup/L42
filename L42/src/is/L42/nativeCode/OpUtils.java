@@ -37,7 +37,7 @@ class OpUtils{
         ){return %1$s.get(%2$s*2+1);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
     .wrap(new L42£LazyMsg(
-        "#val called, but the element in position "+%1$s+" was inserted as immutable"
+        "#val called, but the element in position "+%2$s+" was inserted as"""+(mut?" immutable\"":" mutable\"")+"""
         )));
     """);}
     static String vectorOp(String op,boolean mut,boolean self){

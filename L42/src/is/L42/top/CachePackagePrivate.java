@@ -35,6 +35,7 @@ interface LayerE extends Serializable{
   LayerL layerL();
   default LayerL push(Program p,int index,List<Full.L.NC> ncs,
     List<Full.L.M> ms,List<Half.E> e1n,Map<ST,List<ST>> ctz){
+    assert new CTz(ctz).coherent(p);
     var self=this;
     //assert ms.stream().noneMatch(m->m instanceof Full.L.F && m._e()!=null);
     return new LayerL(){
@@ -104,6 +105,7 @@ interface LayerL extends Serializable{
     };
   static LayerL empty(){return EmptyLayerL.Empty;}
   default LayerE push(Half.E e,Map<ST,List<ST>>ctz){
+    //I'm not sure which is the right p    assert this==empty() || new CTz(ctz).coherent(this.p());
     var self=this;
     return new LayerE(){
       public Half.E e(){return e;}
@@ -327,11 +329,15 @@ class GEClose extends G{
     if(!eq){Resources.loader.loadByteCodeFromCache(state.allByteCode,state.allLibs);}
     State s2=(eq?rc._g.state:state).copy();
     assert GLClose._get(layer.e())==null;
-    CTz ctz=new CTz(layer.ctz());//TODO: is it the case that topNCi close do not modify CTz? in that case, can we avoid the copy?
-    Program p=eq?(Program)rc._obj:s2.topNCiClose(currentP,popL.index(),popL.ncs(),currentE,ctz);
-    popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n(),popL.ctz());
+    //It seams like we need to do the new CTz that internally copies the data
+    Program p=eq?(Program)rc._obj:s2.topNCiClose(currentP,popL.index(),popL.ncs(),currentE,new CTz(layer.ctz()));
+    popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n(),normalize(p,popL.ctz()));
     if(popL.index()<popL.ncs().size()){return new R(new GEOpen(popL,s2),p);}
     return new R(new GLClose(popL,s2),p);
+    }
+  private Map<ST, List<ST>> normalize(Program p, Map<ST, List<ST>> ctz) {
+    var res=new CTz(p,ctz);
+    return res.releaseMap();
     }
   public boolean needOpen(){return false;}
   private boolean hasHashDollar(Half.E e){

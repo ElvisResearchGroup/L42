@@ -1,5 +1,63 @@
 reuse [AdamTowel]
-A=Trait:{method B b(B b)=b.foo()}
-C=A:{}
-B={method This b()=this}
-Main=Debug(S"ok")
+RLL = Trait : {interface
+  read method read E top()
+  read method read L pop()
+  read method read L push(read E that)
+  read method read L ++(read L that)
+  read method Bool isEmpty()
+  read method Iterator #iterator()
+  read method read L #startIndex()
+  read method read L #succ()
+
+  E = {}
+  L = {interface
+    read method read E top()
+    read method read L pop()
+    read method read L push(read E that)
+    read method read L ++(read L that)
+    read method Bool isEmpty()
+    read method Iterator #iterator()
+    read method read L #startIndex()
+    read method read L #succ()
+    }
+  Empty = Data : {[L]
+    class method read This()
+    method top()=error X"The empty linked list has no top"
+    method pop()=error X"The empty linked list has no tail"
+    method push(that) = Cons(top=that, pop=this)
+    method ++(that) = that
+    method isEmpty() = Bool.true()
+    method #iterator() = Iterator()
+    method #startIndex() = this
+    method #succ() = this.pop()
+    }
+  Cons = {[L]
+    read E top
+    read L pop
+    class method read This (read E top, read L pop)
+    method push(that) = This(top=that, pop=this)
+    method ++(that) = (this.pop()++that).push(this.top())
+    method isEmpty() = Bool.false()
+    method #iterator() = Iterator()
+    method #startIndex() = this
+    method #succ() = this.pop()
+    }
+  Iterator = {
+    class method This ()
+    method Void #close(read L that) = if !that.isEmpty() error X"Incomplete iteration for Linked List"
+    method Bool #incomplete(read L that) = !that.isEmpty()
+    method read E #elem#default(read L that) = that.top()
+    method Bool #hasElem(read L that) = !that.isEmpty()
+    }
+  }
+L = Class:RLL['E=>S;'L=>'This]
+Task = (
+  read S foo=S"foo"
+  read S bar=S"bar"
+  read L l=L.Empty().push(foo).push(bar).push(foo)
+  Debug(l.top())
+  Debug(l.pop().top())
+  for s in l Debug(s)
+  )
+
+Main=Debug(S"ok54")

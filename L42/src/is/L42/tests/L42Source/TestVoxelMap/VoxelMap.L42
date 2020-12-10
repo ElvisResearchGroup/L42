@@ -47,7 +47,7 @@ Entity$Cells = Class : Data :
     cells.#add(right=Entity$List())
   class method S toS(I x, I y, read Entity$List val) =
     val.size().toS()
-  @Cache.Clear class method Void step(mut Box box,$.Cell2D cell, I index) = (
+  /*@Cache.Clear class method Void step(mut Box box,$.Cell2D cell, I index) = (
     mut Entity$List es = box.#val(cell)
     e = es.#val(index)
     e.acceleration(\acceleration+\pulse)
@@ -57,9 +57,10 @@ Entity$Cells = Class : Data :
     box.#val(cell).#val(index).velocity(velocity)
 
   @Cache.Clear class method Void (mut Box box,$.Cell2D cell, I index, Cilinder geometry) =
-    box.#val(cell).#val(index).geometry(geometry)
+    box.#val(cell).#val(index).geometry(geometry)*/
+  capsule method mut Box #box()
   }
-  
 
 Entity$CollisionFail = Message : {[Message.Guard]}
+Entity$LList = Collection.linkedList(Entity)
 Entity$CellsMap = Trait : Data : {...}

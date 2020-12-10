@@ -169,12 +169,13 @@ public class InferToCore extends UndefinedCollectorVisitor{
     Core.E e1=compute(d.e());
     var fvE=FV.of(e1.visitable());
     Core.T t1=t;
-    boolean toImm=d._mdf()==null && t.mdf().isRead() && 
+    boolean noDMdf=d._mdf()==null;
+    boolean toImm=noDMdf && t.mdf().isRead() && 
       fvE.stream().noneMatch(xi->{
         var ti=i.g()._of(xi);
         return ti!=null && ti.mdf().isIn(Mdf.Readable,Mdf.Lent,Mdf.Mutable);
         });
-    boolean toMut=!toImm && d._mdf()==null && t.mdf().isCapsule() && 
+    boolean toMut=!toImm && noDMdf && t.mdf().isCapsule() && 
       fv.stream().filter(xi->xi.equals(d.x())).count()>=2;
     if(toImm){t1=t.withMdf(Mdf.Immutable);}
     else if(toMut){t1=t.withMdf(Mdf.Mutable);}

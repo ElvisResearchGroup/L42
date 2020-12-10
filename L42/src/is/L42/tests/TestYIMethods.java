@@ -72,6 +72,9 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    ),new AtomicTest(()->
    pass("method Void v()=void, method Any a(Any a)=void",
    "method Void v()=void, method Any a(Any a)=void")
+   ),new AtomicTest(()->
+   pass("method read Void v()=(var read Void v=void v)",
+   "method read Void v()=(var read Void v=void v)")   
    ),new AtomicTest(()->pass(
    "method Any x()=this method This m1()={if (This x)=this return this return this}",
    """

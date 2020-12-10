@@ -1,0 +1,55 @@
+interface
+
+@Public read method read Elem top()
+@Public read method read L pop()
+@Public read method read L push(read Elem that)
+@Public read method read L ++(read L that)
+@Public read method Bool isEmpty()
+@Public read method Iterator #iterator()
+@Public read method read L #startIndex()
+@Public read method read L #succ()
+
+Elem = {}
+L = {interface
+  read method read Elem top()
+  read method read L pop()
+  read method read L push(read Elem that)
+  read method read L ++(read L that)
+  read method Bool isEmpty()
+  read method Iterator #iterator()
+  read method read L #startIndex()
+  read method read L #succ()
+  }
+  
+@Public Empty = {[L]
+  @Public class method read L() = This.of()
+  class method read This of()
+  method top()=error X"The empty linked list has no top"
+  method pop()=error X"The empty linked list has no tail"
+  method push(that) = Cons(top=that, pop=this)
+  method ++(that) = that
+  method isEmpty() = Bool.true()
+  method #iterator() = Iterator()
+  method #startIndex() = this
+  method #succ() = this.pop()
+  }
+  
+Cons = {[L]
+  read Elem top
+  read L pop
+  class method read This (read Elem top, read L pop)
+  method push(that) = This(top=that, pop=this)
+  method ++(that) = (this.pop()++that).push(this.top())
+  method isEmpty() = Bool.false()
+  method #iterator() = Iterator()
+  method #startIndex() = this
+  method #succ() = this.pop()
+  }
+
+@Public Iterator = {
+  class method This () 
+  @Public method Void #close(read L that) = if !that.isEmpty() error X"Incomplete iteration for Linked List"
+  @Public method Bool #incomplete(read L that) = !that.isEmpty()
+  @Public method read Elem #elem#default(read L that) = that.top()
+  @Public method Bool #hasElem(read L that) = !that.isEmpty()
+  }

@@ -18,3 +18,12 @@ TraitSet=SetNative+SetOps
   return Organize:Class$Relax:res
   catch Any e error e
   }
+
+// read linked list
+LinkedListOps = Trait({...})['L=>'This]
+@Public class method Trait linkedListTrait() = LinkedListOps()
+@Public class method Library linkedList(class Any that) = {
+  res=this.linkedListTrait()['Elem=>that]
+  return Organize : Class$Relax : res
+  catch Any e error e
+  }

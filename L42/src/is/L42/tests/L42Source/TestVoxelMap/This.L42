@@ -1,4 +1,5 @@
 reuse [AdamTowel]
+LL = Collection.linkedList(S)
 Module = Trait : {reuse [AdamTowel]
   VoxelMap =Organize : Trait({...})['$.Margin=>'This]
   }
@@ -18,7 +19,12 @@ Map = Class : Data : VM.map2D(S.List) : {
   class method Void base(I x, I y, mut S.List cells) = cells.add(S"")
   class method S toS(I x, I y, read S val) = val.toS()
   }
-  
+Try = (
+  capsule VM.Entity.Cells cs=VM.Entity.Cells()
+  mut VM.Entity.Cells.Box csBox = cs.#box()
+  Debug(csBox.readVal(x=0I, y=0I))
+  void
+  )  
 Main=(
   p1 = VM.Point3D(x=1\, y=2\, z=3\)
   {}:Test"pOk"(actual=p1.toS(), expected=S"""

@@ -345,6 +345,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      a
      )}}
    """)
+   //CONFUSING: it fails and there are 16 different equalish attempts
    ),new AtomicTest(()->pass(cloneExample+"""
    A={B={method BB main()=(
      BB bi=AA.k(f=(read BB b=BB.k(N.k()) b).clone())<:AA.f()
