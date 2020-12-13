@@ -1,5 +1,22 @@
 reuse [AdamTowel]
 LL = Collection.linkedList(S)
+Foo = Data : {
+  capsule S.List that
+  @Cache.Now class method read  LL val(read S.List that) = LL.Empty().push(that.val(0I))
+  }
+  //TODO: test two cache now methods with same name and different fields name
+  
+  //TODO: allow read returns?
+  //System.mutRefEq, should it work for mut+read?  --yes?
+  //should we also have a read == read that
+  // -if both imm normed, is == on normed
+  // -if both not normed,... no this can not work if both are/will be imm eventually 
+
+MMain = (
+  foo= Foo(\[S"hi"])
+  Debug(foo.val().top())
+  )
+
 Module = Trait : {reuse [AdamTowel]
   VoxelMap =Organize : Trait({...})['$.Margin=>'This]
   }

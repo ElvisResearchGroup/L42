@@ -42,14 +42,14 @@ TestDataCacheErrors={
     {}:Test"with mut receiver"(expected=S"""
       |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
       |@This2.Cache.Lazy mut method This2.Num m()=(..)
-      |can not be made cached; the receiver modifier must be imm or capsule but it is mut[###]
+      |can not be made cached; the receiver modifier must be imm or class but it is mut[###]
       """.trim(),actual=A({
         @Cache.Lazy mut method Num m()=1Num
         }))
     {}:Test"with mut return"(expected=S"""
       |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
       |@This2.Cache.Lazy method mut This2.S.List m()=(..)
-      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      |can not be made cached; the return type modifier must be imm, class or read; but it is mut[###]
       """.trim(),actual=A({
         @Cache.Lazy method mut S.List m()=S.List[]
         }))
@@ -79,7 +79,7 @@ TestDataCacheErrors={
     {}:Test"with mut return"(expected=S"""
       |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
       |@This2.Cache.Eager method mut This2.S.List m()=(..)
-      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      |can not be made cached; the return type modifier must be imm, class or read; but it is mut[###]
       """.trim(),actual=A({
         @Cache.Eager method mut S.List m()=S.List[]
         }))
@@ -88,7 +88,7 @@ TestDataCacheErrors={
     {}:Test"with par"(expected=S"""
       |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
       |@This2.Cache.Now class method mut This2.S.List m(This2.Num foo)=(..)
-      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      |can not be made cached; the return type modifier must be imm, class or read; but it is mut[###]
       """.trim(),actual=A({Num foo
         @Cache.Now class method mut S.List m(Num foo)=S.List[]
         }))
@@ -111,7 +111,7 @@ TestDataCacheErrors={
     {}:Test"with par"(expected=S"""
       |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
       |@This2.Cache.LazyRead class method mut This2.S.List m(This2.Num foo)=(..)
-      |can not be made cached; the return type modifier must be imm or capsule but it is mut[###]
+      |can not be made cached; the return type modifier must be imm, class or read; but it is mut[###]
       """.trim(),actual=A({Num foo
         @Cache.LazyRead class method mut S.List m(Num foo)=S.List[]
         }))

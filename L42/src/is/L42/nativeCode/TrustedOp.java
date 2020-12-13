@@ -241,10 +241,10 @@ public enum TrustedOp {
     "return %s.readLog(%s);",sigI(String,String))),
   SystemMutReferenceEquality("mutReferenceEquality",trustedIO(
     "return %2$s==%3$s;",
-    sig(Immutable,Immutable,Bool,Mutable,Any,Mutable,Any))),
+    sig(Immutable,Immutable,Bool,Mutable,Any,Readable,Any))),
   SystemMutStructuralEquality("mutStructuralEquality",trustedIO(
     "return L42CacheMap.structurallyEqualNoNorm(%2$s,%3$s);",
-    sig(Immutable,Immutable,Bool,Mutable,Any,Mutable,Any))),
+    sig(Immutable,Immutable,Bool,Mutable,Any,Readable,Any))),
   SystemImmEquality("immEquality",trustedIO(
     "return L42CacheMap.structurallyEqualNorm(%2$s,%3$s);",
     sig(Immutable,Immutable,Bool,Immutable,Any,Immutable,Any))),

@@ -1,6 +1,6 @@
-class method Bool mutReferenceEquality(mut Any that, mut Any and)
+class method Bool mutReferenceEquality(mut Any that, read Any and)
   =Debug.of().mutReferenceEquality(that,and=and)
-class method This1.Bool mutStructuralEquality(mut Any that,mut Any and)
+class method This1.Bool mutStructuralEquality(mut Any that,read Any and)
   =Debug.of().mutStructuralEquality(that,and=and)
 class method This1.Bool immEquality(Any that,Any and)
   =Debug.of().immEquality(that,and=and)

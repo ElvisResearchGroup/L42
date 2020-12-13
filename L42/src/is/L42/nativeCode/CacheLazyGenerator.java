@@ -23,15 +23,15 @@ public class CacheLazyGenerator implements Generator{
       }
     if(!mh.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class)){
       throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(url,mh,
-        "immutable, readable or class methods",mh.mdf(),"immutable, readable or class"));
+        "imm, class or read methods",mh.mdf(),"imm, class or read"));
       }
     if(!mh.pars().isEmpty()){
       throw new EndError.TypeError(p,Err.nativeParameterCountInvalid(url,mh,0));
       }
     var t=mwt.mh().t();
-    if(!t.mdf().isIn(Mdf.Immutable,Mdf.Class)){
+    if(!t.mdf().isIn(Mdf.Immutable,Mdf.Class,Mdf.Readable)){
       throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(url,mh,
-        "immutable or class return type",mh.mdf(),"immutable or class"));
+        "imm, class or read return type",t.mdf(),"imm, class or read"));
       }
     }
   public static String nameFromS(S s) {

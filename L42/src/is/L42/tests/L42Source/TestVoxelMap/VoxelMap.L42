@@ -28,7 +28,7 @@ CellBoundingBox = Data : {...}
 
 Cilinder = Data : {...}
 
-Entity = {interface
+Entity = {interface [HasToS]
   var Cilinder geometry
   var $.Vector3D velocity
   var $.Vector3D acceleration
@@ -36,7 +36,7 @@ Entity = {interface
   Bool floatAir
   Bool floatWater
   Bool solid
-  Bool halfSolid
+  //Bool halfSolid
   }
 Entity$List = Collection.list(Entity)
 Entity$ListList = Collection.list(Entity$List)
@@ -63,4 +63,6 @@ Entity$Cells = Class : Data :
 
 Entity$CollisionFail = Message : {[Message.Guard]}
 Entity$LList = Collection.linkedList(Entity)
+Entity$LLLList = Collection.linkedList(Entity$LList)
+
 Entity$CellsMap = Trait : Data : {...}

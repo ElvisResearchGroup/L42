@@ -10,9 +10,9 @@ method Void testActualExpected(Library pos,This1.S name,This1.S actual,This1.S e
 method Void testCondition(Library pos,This1.S name,This1.Bool cond,This1.S message)=
   native{trusted:testCondition} error void
 
-method This1.Bool mutReferenceEquality(mut Any that, mut Any and)=
+method This1.Bool mutReferenceEquality(mut Any that, read Any and)=
   native{trusted:mutReferenceEquality} error void
-method This1.Bool mutStructuralEquality(mut Any that,mut Any and)=
+method This1.Bool mutStructuralEquality(mut Any that,read Any and)=
   native{trusted:mutStructuralEquality} error void
 method This1.Bool immEquality(Any that,Any and)=
   native{trusted:immEquality} error void

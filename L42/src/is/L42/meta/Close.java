@@ -256,14 +256,14 @@ public class Close extends GuessFields{
     if(!m.mh().mdf().isClass()){err.throwErr(m,"can not be made into a cached read method; the receiver modifier must be class but it is "+m.mh().mdf().inner);}    
     }
   private void checkZeroPars(MWT m){
-    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}    
+    if(!m.key().xs().isEmpty()){err.throwErr(m,"can not be made cached; it must have zero parameters");}
     }
   private void checkRetAndBody(MWT m){
-    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}    
-    if(!m.mh().t().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the return type modifier must be imm or capsule but it is "+m.mh().t().mdf().inner);}    
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}
+    if(!m.mh().t().mdf().isIn(Mdf.Immutable, Mdf.Class, Mdf.Readable)){err.throwErr(m,"can not be made cached; the return type modifier must be imm, class or read; but it is "+m.mh().t().mdf().inner);}
     }
   public void processLazyCache(MWT m){
-    if(!m.mh().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or capsule but it is "+m.mh().mdf().inner);}
+    if(!m.mh().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
     checkZeroPars(m);
     checkRetAndBody(m);
     //TODO: edit here to add multi parameter lazy cached imm/class

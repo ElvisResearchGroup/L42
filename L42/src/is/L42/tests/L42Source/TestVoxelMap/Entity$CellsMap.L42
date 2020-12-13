@@ -3,6 +3,8 @@ Map = {
   read method Bool isWater($.Cell3D cell)
   read method Bool isAir($.Cell3D cell)
   read method Double gravity()
+  read method I maxRadius() //may be like 1 or 2 
+  //TODO: invariants to check for map radius and gravity positive?
   }
 Box = {
   mut Entity$Cells.Box inner
@@ -16,23 +18,41 @@ Box = {
         for z in Range(z1 to=z2) 
           this.noOverlapMap(e, cell=\(x=x, y=y,z=z))
     )
-  
+  read method read Entity$LList okOverlapping(read Entity e) = (
+    hits = this.overlapping(e=e)
+    var solidCount=0I
+    for ei in hits ( if ei.solid() solidCount+=1I )
+    if e.solid() && solidCount==0I error X"Solid object does not impact with itself"
+    if e.solid() && solidCount!=1I (
+      var msg=S""
+      for ei in hits if ei.solid() (msg++=S"%ei; ")
+      error Entity$CollisionFail"""
+        |Impact between entity %e and other entities : [%msg]
+        """
+      )
+    hits
+    )
   read method read Entity$LList overlapping(read Entity e) = (
-    (x1,y1,z1) = e.geometry().box().lowCorner()
-    (x2,y2,z2) = e.geometry().box().highCorner()
+    (x1,y1) = e.geometry().box().lowCorner()
+    (x2,y2) = e.geometry().box().highCorner()
+    xL = (x1-this.map().maxRadius()).clamp($.minX() to=$.maxX())
+    xH = (x2+this.map().maxRadius()).clamp($.minX() to=$.maxX())
+    yL = (y1-this.map().maxRadius()).clamp($.minY() to=$.maxY())
+    yH = (y2+this.map().maxRadius()).clamp($.minY() to=$.maxY())
+
     var read Entity$LList res = Entity$LList.Empty()
-    for x in Range(x1 to=x2) for y in Range(y1 to=y2) (
+    for x in Range(xL to=xH) for y in Range(yL to=yH) (
       for read ei in this.inner()(x=x, y=y) (
-        read Entity$LList tmp = this.overlapping(e with=ei)
-        res:=res.#plusplus0(tmp) )
+        res++=this.overlapping(e with=ei)
+        )
       )
     res
     )
-  /*read method Bool checkNoOverlap($.Cell2D ci, I i0, read Entity e) = (
-    this.noOverlap(x0=ci.x(), y0=ci.y(), i0=i0, e=e)
-    catch error Entity$CollisionFail cf ( Bool.false() )
-    Bool.true()
-    )*/
+  read method Bool checkNoOverlap(mut Entity e) = {
+    hits = this.overlapping(e=e)
+    for ei in hits ( if ei.solid() return Bool.false() )
+    return !this.map().isFull(cell=cell)
+    )
   read method Void noOverlapMap(read Entity that,$.Cell3D cell) = (
     if this.map().isFull(cell=cell) error Entity$CollisionFail"""
       | Impact between entity %that and full part of the map in position %cell
@@ -41,56 +61,67 @@ Box = {
   read method read Entity$LList overlapping(read Entity that, read Entity with) =
     if !that.geometry().impact(cilinder=with.geometry()) Entity$LList.Empty()
     else Entity$LList.Empty().push(with)
+  mut method Void remove(mut Entity e) = (
     
-  /*mut method Void move($.Cell2D ci, I i) = (
-   inner = this.#inner()
-   inner.step(cell=ci, index=i)
-   e = inner.readVal(ci).val(i)
-   var oldG = e.geometry()
-   var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
-   inner(cell=ci, index=i, geometry=newG)
-   for r in Range(3I) (
-     if this.checkNoOverlap(ci=ci, i0=i, e=e) ( Break() )
-     if r == 2I ( Break(inner(cell=ci, index=i, geometry=oldG)) )
-     (x1,y1,z1) = oldG.bottomCenter()
-     (x2,y2,z2) = newG.bottomCenter()
-     newG:=oldG.with(bottomCenter=\(
-       x=(x1+x2)/2Double
-       y=(y1+y2)/2Double
-       z=(z1+z2)/2Double
-       ))
-     inner(cell=ci, index=i, geometry=newG)
+    )
+  mut method Void add(mut Entity e) = (
+    
+    )
+  mut method Void move(mut Entity e) = (
+  //TODO: may move to other map cell,
+  //TODO: max radius something?
+    this.remove(e=e)
+    e.acceleration(\acceleration+\pulse)
+    e.velocity(\velocity+\acceleration)
+    var oldG = e.geometry()
+    var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
+    e.geometry(newG)
+    for r in Range(3I) (
+      if this.checkNoOverlap(e=e) ( Break() )
+      if r == 2I ( Break(e.geometry(oldG)) )
+      (x1,y1,z1) = oldG.bottomCenter()
+      (x2,y2,z2) = newG.bottomCenter()
+      newG:=oldG.with(bottomCenter=\(
+        x=(x1+x2)/2Double
+        y=(y1+y2)/2Double
+        z=(z1+z2)/2Double
+        ))
+     e.geometry(newG)
      )
-   this.moveGravity(ci=ci, i=i)
+   this.moveGravity(e=e)
+   this.add(e=e)
    )
-  mut method Void moveGravity($.Cell2D ci, I i) = (
-    inner = this.#inner()
+  mut method Void moveGravity(mut Entity e) = (
     g = this.map().gravity()
-    e = inner.readVal(ci).val(i)
     oldG = e.geometry()
     oldP = e.geometry().bottomCenter()
     newP = oldP.with(z=(\z-g).max(0\))
     var newG = oldG.with(bottomCenter=\bottomCenter+e.velocity())
-    inner(cell=ci, index=i, geometry=newG)
-    if this.checkNoOverlap(ci=ci, i0=i, e=e) (
-      inner(cell=ci, index=i, velocity=e.velocity().with(z=\z-g))
+    e.geometry(newG)
+    if this.checkNoOverlap(e=e) (
+      e.velocity(\velocity.with(z=\z-g))
       )
-    else ( inner(cell=ci, index=i, geometry=oldG) )
-    )*/
+    else ( e.geometry(oldG) )
+    )
   }
   
 capsule Box box
-/*
-@Cache.Clear class method Void move(mut Box box) = (
-  for ci in box.inner()
-    for i in Range(box.inner()(ci).size())
-      box.move(ci=ci, i=i) 
-  )*/
-  
-@Cache.Now class method Void elemsOk(read Box box) = (
+
+@Cache.Clear class method Void move(mut Box box) =
+  for mut e in box.#es() box.move(e=e)
+
+@Cache.Now class method Void elemsOk(read Box box) =
   Entity$Cells.invariant(box=box.inner())
-  )  
-@Cache.Now class method Void noOverlap(read Box box) = (
-  for e in box.es()
-    box.noOverlap(e=e)
+  
+@Cache.Now class method read Entity$LLLList noOverlap(read Box box) = (
+  var read res = Entity$LLLList.Empty()
+  for i in Range(box.es().size()).reverse() (
+    e = box.es().val(i)
+    res:=res.push(box.okOverlapping(e=e))
+    box.noOverlappingMap(e=e)
+    //TODO: more checks: 
+    //all entities in es are on the map and vice versa //HOW???
+    //all entites are in a point that corresponds to their position
+    )
+  res
   )
