@@ -17,3 +17,32 @@ $.Cell3D highCorner
       """
     )
   )
+
+method This expand(I that) = (
+  (x1,y1,z1) = this.lowCorner()
+  (x2,y2,z2) = this.highCorner()
+  xL = (x1-that).max(0I)
+  xH = (x2+that).min($.Margin.maxX())
+  yL = (y1-that).max(0I)
+  yH = (y2+that).min($.Margin.maxY())
+  zL = (z1-that).max(0I)
+  zH = (z2+that).min($.Margin.maxZ())
+  This(
+    lowCorner=$.Cell3D(x=xL,y=yL,z=zL),
+    highCorner=$.Cell3D(x=xH,y=yH,z=zH)
+    )
+  )
+method $.Cell2D.List vals2D() = \()((
+  (x1,y1) = this.lowCorner()
+  (x2,y2) = this.highCorner()
+  for x in Range(x1 to=x2) for y in Range(y1 to=y2) (
+    \add(\(x=x,y=y))
+    )
+  ))
+method $.Cell3D.List vals3D() = \()((
+  (x1,y1,z1) = this.lowCorner()
+  (x2,y2,z2) = this.highCorner()
+  for x in Range(x1 to=x2) for y in Range(y1 to=y2) for z in Range(z1 to=z2) (
+    \add(\(x=x,y=y,z=z))
+    )
+  ))

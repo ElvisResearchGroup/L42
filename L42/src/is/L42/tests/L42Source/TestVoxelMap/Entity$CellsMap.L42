@@ -32,17 +32,11 @@ Box = {
       )
     hits
     )
+  
   read method read Entity$LList overlapping(read Entity e) = (
-    (x1,y1) = e.geometry().box().lowCorner()
-    (x2,y2) = e.geometry().box().highCorner()
-    xL = (x1-this.map().maxRadius()).clamp($.minX() to=$.maxX())
-    xH = (x2+this.map().maxRadius()).clamp($.minX() to=$.maxX())
-    yL = (y1-this.map().maxRadius()).clamp($.minY() to=$.maxY())
-    yH = (y2+this.map().maxRadius()).clamp($.minY() to=$.maxY())
-
     var read Entity$LList res = Entity$LList.Empty()
-    for x in Range(xL to=xH) for y in Range(yL to=yH) (
-      for read ei in this.inner()(x=x, y=y) (
+    for p in e.geometry().box().expand(this.map().maxRadius()).vals2D() (
+      for read ei in this.inner()(p) (
         res++=this.overlapping(e with=ei)
         )
       )
@@ -51,8 +45,11 @@ Box = {
   read method Bool checkNoOverlap(mut Entity e) = {
     hits = this.overlapping(e=e)
     for ei in hits ( if ei.solid() return Bool.false() )
-    return !this.map().isFull(cell=cell)
-    )
+    for p in e.geometry().box().expand(this.map().maxRadius()).vals2D() (
+      if !this.map().isFull(cell=p) return Bool.false()
+      )
+    return Bool.true()
+    }
   read method Void noOverlapMap(read Entity that,$.Cell3D cell) = (
     if this.map().isFull(cell=cell) error Entity$CollisionFail"""
       | Impact between entity %that and full part of the map in position %cell
@@ -61,15 +58,15 @@ Box = {
   read method read Entity$LList overlapping(read Entity that, read Entity with) =
     if !that.geometry().impact(cilinder=with.geometry()) Entity$LList.Empty()
     else Entity$LList.Empty().push(with)
+
   mut method Void remove(mut Entity e) = (
-    
+    l= e.geometry().centerBottom()
+    void
     )
   mut method Void add(mut Entity e) = (
-    
+    void
     )
   mut method Void move(mut Entity e) = (
-  //TODO: may move to other map cell,
-  //TODO: max radius something?
     this.remove(e=e)
     e.acceleration(\acceleration+\pulse)
     e.velocity(\velocity+\acceleration)
