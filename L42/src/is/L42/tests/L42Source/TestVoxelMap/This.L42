@@ -36,9 +36,20 @@ Map = Class : Data : VM.map2D(S.List) : {
   class method Void base(I x, I y, mut S.List cells) = cells.add(S"")
   class method S toS(I x, I y, read S val) = val.toS()
   }
+  
+Terra = Class : VM.Physics : {
+  Map = {
+    read method Bool isFull(VM.Cell3D cell) = Bool.false()
+    read method Bool isWater(VM.Cell3D cell) = Bool.false()
+    read method Bool isAir(VM.Cell3D cell) = Bool.true()
+    read method Double gravity()=0.1\
+    read method I maxRadius()= 1I
+    }
+  //Entity = { CellsMap = { mut method Void ping()=void }}
+  }  
 Try = (
-  capsule VM.Entity.Cells cs=VM.Entity.Cells()
-  mut VM.Entity.Cells.Box csBox = cs.#box()
+  capsule Terra.Entity.Cells cs=Terra.Entity.Cells()
+  mut Terra.Entity.Cells.Box csBox = cs.#box()
   Debug(csBox.readVal(x=0I, y=0I))
   void
   )  

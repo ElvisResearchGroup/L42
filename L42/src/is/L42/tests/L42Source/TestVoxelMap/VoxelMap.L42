@@ -28,41 +28,4 @@ CellBoundingBox = Data : {...}
 
 Cilinder = Data : {...}
 
-Entity = {interface [HasToS]
-  var Cilinder geometry
-  var $.Vector3D velocity
-  var $.Vector3D acceleration
-  $.Vector3D pulse
-  Bool floatAir
-  Bool floatWater
-  Bool solid
-  //Bool halfSolid
-  }
-Entity$List = Collection.list(Entity)
-Entity$ListList = Collection.list(Entity$List)
-Entity$Cells = Class : Data : 
-  Map2DTrait['L=>Entity$ListList;'E=>Entity$List] : {
-  Box = {}
-  class method Void base(I x, I y, mut Entity$ListList cells) =
-    cells.#add(right=Entity$List())
-  class method S toS(I x, I y, read Entity$List val) =
-    val.size().toS()
-  /*@Cache.Clear class method Void step(mut Box box,$.Cell2D cell, I index) = (
-    mut Entity$List es = box.#val(cell)
-    e = es.#val(index)
-    e.acceleration(\acceleration+\pulse)
-    e.velocity(\velocity+\acceleration)
-    )
-  @Cache.Clear class method Void (mut Box box,$.Cell2D cell, I index, $.Vector3D velocity) =
-    box.#val(cell).#val(index).velocity(velocity)
-
-  @Cache.Clear class method Void (mut Box box,$.Cell2D cell, I index, Cilinder geometry) =
-    box.#val(cell).#val(index).geometry(geometry)*/
-  capsule method mut Box #box()
-  }
-
-Entity$CollisionFail = Message : {[Message.Guard]}
-Entity$LList = Collection.linkedList(Entity)
-Entity$LLLList = Collection.linkedList(Entity$LList)
-
-Entity$CellsMap = Trait : Data : {...}
+Physics = Organize(just$=\.true()) : Trait({...})['TopBox=>'Entity$CellsMap.Box]

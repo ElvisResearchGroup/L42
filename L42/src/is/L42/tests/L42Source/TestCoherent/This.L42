@@ -13,6 +13,17 @@ UnUsable2=Trait:{ S f1
 C1=Class:Usable1
 C2=Class:Usable2
 
+UnUsableNested = Trait : {
+  I foo
+  class method This (I foo)
+  A = {
+    I foo
+    class method This (I foo)
+    method I ffoo()
+    }
+  }
+
+
 Main=(
   {}:Test""(expected=S"""
     |Message This.Class.IncoherentClass([###]):
@@ -26,4 +37,12 @@ Main=(
     |The class is not coherent. It has private state but also abstract methods:[f1(), #apply(f1)][###]
     """.trim()
     actual=(_=Class:UnUsable2 catch Message x (x.toS()) error X"unus2"))
+
+  {}:Test""(expected=S"""
+    |Message This.Class.IncoherentClass([###]):
+    |[###]
+    |The class is not coherent. ????It has private state but also abstract methods:[f1(), #apply(f1)][###]
+    """.trim()
+    actual=(_=Class:UnUsableNested catch Message x (x.toS()) error X"unusNested"))
   )
+

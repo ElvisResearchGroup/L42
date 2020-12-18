@@ -39,10 +39,15 @@ method $.Cell2D.List vals2D() = \()((
     \add(\(x=x,y=y))
     )
   ))
-method $.Cell3D.List vals3D() = \()((
+method $.Cell3D.List vals3D() = (
+  //TODO: the format as above would crash javac
+  //with an out of memory error independend on the amount of
+  //memory provided :-/
   (x1,y1,z1) = this.lowCorner()
   (x2,y2,z2) = this.highCorner()
+  mut res = $.Cell3D.List()
   for x in Range(x1 to=x2) for y in Range(y1 to=y2) for z in Range(z1 to=z2) (
-    \add(\(x=x,y=y,z=z))
+      res.add(\(x=x,y=y,z=z))
     )
-  ))
+  res
+  )

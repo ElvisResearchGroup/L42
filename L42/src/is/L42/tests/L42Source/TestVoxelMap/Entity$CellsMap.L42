@@ -1,15 +1,18 @@
-Map = {
-  read method Bool isFull($.Cell3D cell)
-  read method Bool isWater($.Cell3D cell)
-  read method Bool isAir($.Cell3D cell)
-  read method Double gravity()
-  read method I maxRadius() //may be like 1 or 2 
-  //TODO: invariants to check for map radius and gravity positive?
-  }
+class method mut This (capsule Map map) = (
+  capsule cells = Entity$Cells()
+  capsule box = Box(inner=cells.#box(), es=\(), map=map)
+  This(box=box)
+  )
 Box = {
+  class method mut This (
+    mut Entity$Cells.Box inner
+    mut Entity$List es
+    mut Map map)
   mut Entity$Cells.Box inner
   mut Entity$List es
   mut Map map
+  mut method mut TopBox self()
+  mut method Void ping()
   read method Void noOverlappingMap(read Entity e) = (
     (x1,y1,z1) = e.geometry().box().lowCorner()
     (x2,y2,z2) = e.geometry().box().highCorner()
@@ -45,7 +48,7 @@ Box = {
   read method Bool checkNoOverlap(mut Entity e) = {
     hits = this.overlapping(e=e)
     for ei in hits ( if ei.solid() return Bool.false() )
-    for p in e.geometry().box().expand(this.map().maxRadius()).vals2D() (
+    for p in e.geometry().box().vals3D() (
       if !this.map().isFull(cell=p) return Bool.false()
       )
     return Bool.true()
@@ -59,12 +62,19 @@ Box = {
     if !that.geometry().impact(cilinder=with.geometry()) Entity$LList.Empty()
     else Entity$LList.Empty().push(with)
 
-  mut method Void remove(mut Entity e) = (
-    l= e.geometry().centerBottom()
-    void
-    )
+  mut method Void remove(mut Entity e) = {
+    p = e.geometry().bottomCenter()
+    l = this.#inner().#val(p.to2D().toCell())
+    for mut e0 in l (
+      eq = System.mutReferenceEquality(e and=e0)
+      if eq return void
+      )
+    error X"unreachable"
+    }
   mut method Void add(mut Entity e) = (
-    void
+    p = e.geometry().bottomCenter()
+    l = this.#inner().#val(p.to2D().toCell())
+    l.#add(right=e)
     )
   mut method Void move(mut Entity e) = (
     this.remove(e=e)
@@ -104,6 +114,11 @@ Box = {
   
 capsule Box box
 
+@Cache.Clear class method Void ping(mut Box box) = (
+  box.ping()
+  for mut e in box.#es() e.ping(box.self())
+  )
+  
 @Cache.Clear class method Void move(mut Box box) =
   for mut e in box.#es() box.move(e=e)
 
