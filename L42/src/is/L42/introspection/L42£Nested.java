@@ -196,7 +196,8 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
       assert res!=null;
       return res;
       }
-    return Resources.currentP.push(Resources.currentC,this.currentL);
+    var root=Resources.currentP.push(Resources.currentC,this.rootL);
+    return root.navigate(this.nameFromRoot.cs);
     }
   public String isCoherent() {
     try{new Coherence(myP(),false).isCoherent(false);}

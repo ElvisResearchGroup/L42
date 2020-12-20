@@ -34,15 +34,15 @@ Main=(
   {}:Test""(expected=S"""
     |Message This.Class.IncoherentClass([###]):
     |[###]
+    |The class is not coherent. Method ffoo() is not part of the abstract state[###]
+    """.trim()
+    actual=(_=Class:UnUsableNested catch Message x (x.toS()) error X"unusNested"))
+  {}:Test""(expected=S"""
+    |Message This.Class.IncoherentClass([###]):
+    |[###]
     |The class is not coherent. It has private state but also abstract methods:[f1(), #apply(f1)][###]
     """.trim()
     actual=(_=Class:UnUsable2 catch Message x (x.toS()) error X"unus2"))
 
-  {}:Test""(expected=S"""
-    |Message This.Class.IncoherentClass([###]):
-    |[###]
-    |The class is not coherent. ????It has private state but also abstract methods:[f1(), #apply(f1)][###]
-    """.trim()
-    actual=(_=Class:UnUsableNested catch Message x (x.toS()) error X"unusNested"))
   )
 

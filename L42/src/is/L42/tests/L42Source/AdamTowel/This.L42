@@ -116,10 +116,15 @@ DeployAAA=(
       'Nested$=>'Nested;'Type$=>'Type;'Doc$=>'Doc;'Method$=>'Method
       ]
     DelayTyping={}
-    Data$={class method Void checkCoherent(Library that)[Class$IncoherentClass]=(
-      S s=Introspection.Nested.from(library=that).isCoherent()
-      if s!=S"" exception Class$IncoherentClass"%s"
-      )}
+    Data$={
+      class method Void checkCoherent(Library that)[Class$IncoherentClass]=
+        this.checkCoherent(n=Introspection.Nested.from(library=that))
+      class method Void checkCoherent(Introspection.Nested n)[Class$IncoherentClass]=(
+        S s=n.isCoherent()
+        if s!=S"" exception Class$IncoherentClass"%s"
+        for ni in n.nesteds() this.checkCoherent(n=ni) 
+        )
+      }
     @Public Class={...}
     @Public Organize={...}
     Deploy$={...}
