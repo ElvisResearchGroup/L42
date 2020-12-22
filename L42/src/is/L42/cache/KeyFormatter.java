@@ -12,6 +12,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import is.L42.cache.nativecache.L42ValueCache;
@@ -151,7 +152,7 @@ class FormatVector extends Format42{
 class KeyFormatter{
   KeyNorm2D k;
   Program p=Resources.currentP;
-  HashMap<Integer,String> expanded=new HashMap<>();
+  HashMap<Integer,Supplier<String>> expanded=new HashMap<>();
   HashSet<Integer> visited= new HashSet<>();
 
   public String varName(P path){
@@ -175,10 +176,13 @@ class KeyFormatter{
     String special=k.specialS();
     if(special!=null){return special;}
     String name=varName(k.path())+id;
-    if(visited.contains(id)){return name;}
+    if(visited.contains(id)){
+      expanded.put(id,()->name+" = "+k.format(true,size));
+      return name;
+      }
     visited.add(id);
     if(size<50){return k.format(isInterface,size);}
-    expanded.put(id,name+"="+k.format(true,size));
+    expanded.put(id,()->name+" = "+k.format(true,size));
     return name;    
     }
   public String formatDispatch(P.NCs hint,P.NCs source,Core.L l,X x, Object o, boolean isInterface, int size) {
@@ -215,13 +219,14 @@ class KeyFormatter{
     FormatKind first=f.newFormatKind(null,0,o);
     String res=first.format(true,0);
     if(f.expanded.isEmpty()){return res;}
-    res+="\n"+f.expanded.entrySet().stream()
+    res=first.format(true,0);
+    res+="\n  where:\n"+f.expanded.entrySet().stream()
       .sorted((e1,e2)->e1.getKey()-e2.getKey())
-      .map(e->e.getValue())
+      .map(e->"    "+e.getValue().get())
       .collect(Collectors.joining("\n"));
     if(f.expanded.keySet().contains(0)){
-      res=f.varName(first.path())+"0="+res;
+      res=f.varName(first.path())+"0 = "+res;
       }
-    return res;    
+    return res;
     }
   }

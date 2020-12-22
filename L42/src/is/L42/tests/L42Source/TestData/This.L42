@@ -188,16 +188,33 @@ TestDataFwd={
     mut A a=A(b=b,name=S"myA")
     mut B b=B(a=a,name=S"myB")
     {}:Test"name"(expected=S"myB",actual=a.b().name())
-    //A(b=(a=(b=b1, name="myA"), name="myB"), name="myA")//current toS result (with undefined b1)
-    //b1=B(a=(b=b1, name="myA"), name="myB") //possible desired outcome, still unsatisfactory
-    //A(b=b1, name="myB"), name="myA")
     {}:Test"toS"(expected=S"""
-      |b1=B(a=a1, name="myB")
-      |a1=A(b=b1, name="myA")
-      |a1
+      |a0 = A(b=b1, name="myA")
+      |  where:
+      |    b1 = B(a=a0, name="myB")
       """.trim(),actual=a)
     )
   }
+TestDAG={
+  A=Data:{I that}
+  B=Data:{A foo,A bar}
+  Task1=(
+    A a12=A(12I)
+    A a42=A(42I)
+    B b=B(foo=a12,bar=a42)
+    B bDag=B(foo=a12,bar=a12)
+    {}:Test"b"(expected=
+      S"B(foo=(12), bar=(42))",
+      actual=b)
+    {}:Test"bDag"(expected=S"""
+      |B(foo=a1, bar=a1)
+      |  where:
+      |    a1 = A(12)
+      """.trim(),
+      actual=bDag)
+    )
+  }
+
 TestDataBase={
   Point=Data:{I x, I y}
   TestPoint=(
