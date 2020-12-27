@@ -27,6 +27,7 @@ import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.meta.MetaError;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
 import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
@@ -155,6 +156,11 @@ public class InferToCore extends UndefinedCollectorVisitor{
   private Core.K auxK(Half.K k) {
     I oldI=i;
     Core.T t=infer(k.stz(),k.e().poss());
+    if(t.p().isNCs()) {
+      var ex=new Core.EX(k.e().pos(),k.x());
+      var pt=i.p().navigate(t.p().toNCs());
+      Resources.inferenceHandler().ex(ex,pt);
+      }
     i=i.withG(i.g().plusEq(k.x(),t));
     Core.E e=compute(k.e());
     i=oldI;
@@ -190,6 +196,11 @@ public class InferToCore extends UndefinedCollectorVisitor{
     else if(toMut){t1=t.withMdf(Mdf.Mutable);}
     i=i.withG(i.g().plusEq(d.x(), t1));
     var recursive=auxDs(fv,ds,poss);
+    if(t1.p().isNCs()) {
+      var ex=new Core.EX(d.e().pos(),d.x());
+      var pt1=i.p().navigate(t1.p().toNCs());
+      Resources.inferenceHandler().ex(ex, pt1);
+      }
     return pushL(new Core.D(d.isVar(),t1,d.x(),e1),recursive); 
     }
   @Override public void visitD(Half.D d){uc();}

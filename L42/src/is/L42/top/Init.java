@@ -115,6 +115,10 @@ public class Init {
     if(res.isErr()){throw res._err;}
     return (Core.L)res._obj;    
     }
+  public static P resolveCsP(Program p,CsP s) {
+  if(s._p()!=null){return InitVisitor.min(s._p(),p,s.poss());}
+  return InitVisitor.min(p.resolve(s.cs(),s.poss()),p,s.poss());
+  }
   private static void addMWT(ArrayList<Full.L.M> acc, Full.L.F f, Full.MH mh){
     List<Full.Doc> docs=L();
     if(f._e()==null){docs=f.docs();}

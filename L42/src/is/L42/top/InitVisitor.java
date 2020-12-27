@@ -218,10 +218,8 @@ class InitVisitor extends CloneVisitorWithProgram{
     return info;
     }
   @Override public P visitP(P p) {return min(p);}
-  
   @Override public CsP visitCsP(CsP s) {
-    if(s._p()!=null){return s.with_p(min(s._p()));}
-    return new CsP(s.pos(),L(),min(p().resolve(s.cs(),s.poss())));
+    return new CsP(s.pos(),L(),Init.resolveCsP(p(),s));
     }
   @Override public Full.T visitT(Full.T s) {
     s=super.visitT(s);
@@ -232,12 +230,13 @@ class InitVisitor extends CloneVisitorWithProgram{
     if(s._p()!=null){return s.with_p(min(s._p()));}
     return new Full.PathSel(L(),min(p().resolve(s.cs(),poss)),s._s(),s._x());
     }
-  private P min(P p){
+  private P min(P p){return min(p,p(),poss);}
+  static P min(P p,Program prog,List<Pos>poss){
     if(!p.isNCs()){return p;}
     var p0=p.toNCs();
-    if(p0.n()>p().dept()){
+    if(p0.n()>prog.dept()){
       throw new EndError.PathNotExistent(poss,Err.thisNumberOutOfScope(p));
       }
-    return p().minimize(p0);
+    return prog.minimize(p0);
     }
   }

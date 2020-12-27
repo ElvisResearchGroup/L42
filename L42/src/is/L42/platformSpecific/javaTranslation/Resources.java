@@ -26,6 +26,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.TimeoutException;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
@@ -38,6 +39,7 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
@@ -175,6 +177,15 @@ public class Resources {
       return s;
       });
     }
+  public interface InferenceHandler{
+    default void ex(Core.EX ex, Program p) {}
+    default void mwt(Core.L.MWT mwt, Program p) {}
+    default void nc(Core.E e, Program p) {}
+    }
+  private static InferenceHandler inferenceHandler=new InferenceHandler(){};
+  public static void inferenceHandler(InferenceHandler i){inferenceHandler = i;}
+  public static InferenceHandler inferenceHandler(){return inferenceHandler;}
+
   public static void breakHere(){//poor man attempt to add breakpoints to generated java
     System.out.println("java debugger Breakpoint");
     String s=Arrays.asList(Thread.currentThread().getStackTrace()).toString();

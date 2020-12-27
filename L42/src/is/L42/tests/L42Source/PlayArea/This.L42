@@ -1,19 +1,10 @@
 reuse [AdamTowel]
-
-Foo = Class : Trait : {
-  I foo
-  class method This (I foo)
-  //method I ffoo()
-  A = {
-    I foo
-    class method This (I foo)
-    method I ffoo()
-    }
-  }
-
+A=Data:{Num x, Num y}
+As=Collection.list(A)
 Main = (
-  foo = Foo(foo=32I)
-  a = Foo.A(foo=32I)
-  
-  Debug(S"ok %foo.foo()  %a.foo()")
+  a = A(x=12\,y=33\)
+  Debug(S"ok %a")
+  as=As[]
+  as.add(a)
+  void
   )

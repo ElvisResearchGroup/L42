@@ -170,6 +170,7 @@ public class State implements Serializable{
     Core.E e=adapt(ce,pRes);
     Coherence.coherentAllPs(p,deps.cohePs,alreadyCoherent);
     Core.L l;
+    Resources.inferenceHandler().nc(e, p);
     if(e instanceof Core.L){l=(Core.L)e;}
     else{l=reduce(p,c0,e,allByteCode,allLibs);}//propagate errors
     System.err.println(c0+ " reduced");

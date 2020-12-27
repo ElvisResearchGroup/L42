@@ -22,6 +22,7 @@ import is.L42.generated.Half;
 import is.L42.generated.I;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
+import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FullL42Visitor;
@@ -912,10 +913,12 @@ public static List<Core.L.MWT> processIn(String l){
     c.add(ctz._add(fresh,p, mhi, mi._e()));
     });
   return L(mhs,hes,(c,mhi,ei)->{
-    if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;} 
+    if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;}
     I i=new I(new C("C",-1),p,G.of(mhi));
     var cei=new InferToCore(i,ctz).compute(ei);
-    c.add(new Core.L.MWT(L(),L(),mhi,"",cei));
+    var mwt=new Core.L.MWT(L(),L(),mhi,"",cei);
+    c.add(mwt);
+    Resources.inferenceHandler().mwt(mwt, i.p());//TODO: not perfect, we can have methods inside methods :/
     }); 
   }
 }
