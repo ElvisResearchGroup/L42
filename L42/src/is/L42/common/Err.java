@@ -30,27 +30,42 @@ public class Err {
     String end=e.substring(e.length()-24,e.length());
     return start+"[...]"+end;
     }
-  public static String options(S attempted, List<MWT> mwts){
-    mwts=L(mwts.stream().sorted((m1,m2)->{
-      var eqAtt1=m1.key().m().equalsIgnoreCase(attempted.m());
-      var eqAtt2=m2.key().m().equalsIgnoreCase(attempted.m());
-      var un1=m1.key().hasUniqueNum();
-      var un2=m2.key().hasUniqueNum();  
-      var n1=m1.key().m();
-      var n2=m2.key().m();
-      var xs1=m1.key().xs().size();  
-      var xs2=m2.key().xs().size();
-      if(eqAtt1 && !eqAtt2){return -1;}
-      if(eqAtt2 && !eqAtt1){return 1;}
-      if(un1 && !un2){return 1;}
-      if(un2 && !un1){return -1;}
-      var cmp=n1.compareTo(n2);
-      if(cmp!=0){return cmp;}
-      if(xs1<xs2){return -1;}
-      if(xs1>xs2){return 1;}
-      return m1.key().toString().compareTo(m2.key().toString());
-    }));
+  /*
+   with get
+   0 all the ones with name exactly get
+   1 first all the ones starting with get
+   2 then all the ones starting with #get
+   3 then all the ones containing get
+   4 finally all the others in alphabetic order, with # stuff later on
+   */
+  public static int tier(String hint,String m){
+    if(hint.equals(m)){return 0;}
+    if(m.startsWith(hint)){return 1;}
+    if(m.startsWith("#"+hint)){return 2;}
+    if(m.contains(hint)){return 3;}
+    return 4;
+    }
+  public static int best(S hint, MWT m1, MWT m2){
     //consider using some variation of Levenshtein Distance from attempted
+    int tierM1=tier(hint.m().toLowerCase(),m1.key().m().toLowerCase());
+    int tierM2=tier(hint.m().toLowerCase(),m2.key().m().toLowerCase());
+    if(tierM1!=tierM2){return Integer.compare(tierM1, tierM2);}
+    var un1=m1.key().hasUniqueNum();
+    var un2=m2.key().hasUniqueNum();  
+    var n1=m1.key().m();
+    var n2=m2.key().m();
+    var xs1=m1.key().xs().size();  
+    var xs2=m2.key().xs().size();
+    if(un1 && !un2){return 1;}
+    if(un2 && !un1){return -1;}
+    var cmp=n1.compareTo(n2);
+    if(cmp!=0){return cmp;}
+    if(xs1<xs2){return -1;}
+    if(xs1>xs2){return 1;}
+    return m1.key().toString().compareTo(m2.key().toString());    
+    }
+  public static String options(S attempted, List<MWT> mwts){
+    mwts=L(mwts.stream().sorted((m1,m2)->best(attempted,m1,m2)));
     return mwts.stream().map(m->m.key()+"        "+m.with_e(null)).collect(Collectors.joining("\n"));
     }
   
