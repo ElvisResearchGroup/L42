@@ -198,8 +198,8 @@ public class InferToCore extends UndefinedCollectorVisitor{
     var recursive=auxDs(fv,ds,poss);
     if(t1.p().isNCs()) {
       var ex=new Core.EX(d.e().pos(),d.x());
-      var pt1=i.p().navigate(t1.p().toNCs());
-      Resources.inferenceHandler().ex(ex, pt1);
+      var pt1=i.p()._navigate(t1.p().toNCs());
+      if(pt1!=null){Resources.inferenceHandler().ex(ex, pt1);}
       }
     return pushL(new Core.D(d.isVar(),t1,d.x(),e1),recursive); 
     }

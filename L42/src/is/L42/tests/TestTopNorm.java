@@ -43,6 +43,16 @@ public class TestTopNorm{
   @Test public void t1(){top(
     "{}",
     "{#norm{}}"
+  );}@Test public void onlineUrls(){top("""
+    {
+    Trash={class method Void (Library that)=void}
+    Task=Trash({
+      reuse [L42.is/AdamTowel]
+      Main=Debug(S"ok")
+      })
+    }
+    """,
+    "{Trash={class method Void #apply(Library that)=void #typed{}}Task={#typed{}}#norm{}}"
   );}@Test public void interpolation() {topFail(EndError.NotWellFormed.class,"""
     {A={class method Void v()=Void\"\"\"%
        |a%"b

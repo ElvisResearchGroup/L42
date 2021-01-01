@@ -8,6 +8,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.List;
@@ -24,12 +26,23 @@ public class ReadURL {
     P.coreAny.hashCode();//preloading class P
     boolean hd=url.startsWith("#$");
     if(hd){url=url.substring(2);}
-    String fullName="localhost"+File.separator+url+".L42";
-    Path fullPath=Constants.localhost.resolve(url+".L42");
+    String fullName;
+    URL fullPath;
+    try {
+      if(url.contains(".")) {
+        fullName="http://"+url+".L42";
+        fullPath=new URL(fullName);
+        }
+      else{
+        fullName="localhost"+File.separator+url+".L42";
+        fullPath=Constants.localhost.resolve(url+".L42").toUri().toURL();
+        }
+      }
+    catch(MalformedURLException e){throw new EndError.UrlNotExistent(poss,url);}
     Core.L res=hd?null:cache.get(fullName);
     if(res!=null){return res;}
     try(
-      var file=new FileInputStream(fullPath.toFile()); 
+      var file=fullPath.openStream(); 
       var in=new ObjectInputStream(file);
       ){res=(Core.L)in.readObject();}
     catch(FileNotFoundException e){throw new EndError.UrlNotExistent(poss,url);}
