@@ -918,7 +918,6 @@ public static List<Core.L.MWT> processIn(String l){
     var cei=new InferToCore(i,ctz).compute(ei);
     var mwt=new Core.L.MWT(L(),L(),mhi,"",cei);
     c.add(mwt);
-    Resources.inferenceHandler().mwt(mwt, i.p());//TODO: not perfect, we can have methods inside methods :/
     }); 
   }
 }

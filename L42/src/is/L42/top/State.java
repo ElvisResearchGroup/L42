@@ -142,6 +142,9 @@ public class State implements Serializable{
     var ie=new InferExceptions(p1.update(l,false));
     Program p2=ie.inferExceptions(sz);//propagate illTyped
     alreadyCoherent.remove(alreadyCoherent.size()-1);
+    for(var mwti:coreMWTs) {
+      Resources.inferenceHandler().mwt(mwti, p2);//TODO: not perfect, we can have methods inside methods :/
+      }
     l=p2.topCore();
     l=l.withInfo(l.info().with_uniqueId(-1));
     return l;
