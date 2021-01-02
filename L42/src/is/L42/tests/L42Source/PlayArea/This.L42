@@ -1,10 +1,12 @@
 reuse [AdamTowel]
-A=Data:{Num x, Num y}
-As=Collection.list(A)
+Unit = Load:{reuse[Unit]}
+SI = Class:Unit.TraitSI['Support=>Num]
+Year = Unit(I)
+
+Person=Data:{S name, Year age}
+Persons=Collection.list(Person)
 Main = (
-  a = A(x=12\,y=33\)
+  a = Person(name='Bob, age=33\)
+  I support = 3Year/1Year
   Debug(S"ok %a"++S"dd")
-  as=As[]
-  as.add(a)
-  void
   )

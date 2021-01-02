@@ -38,6 +38,19 @@ mut method  Void remove(I that)
 mut method Void add(I that, Elem val)
 mut method Void #add(I that, mut Elem val)
 
+read method capsule This clone()=(
+  size = this.size()
+  res = This(capacity=size)
+  var i=0I
+  while i<size (
+    if Elem ei = System.readClone(this.readVal(i)) (
+      res.add(ei) //always matches
+      )
+    i := i.#succ()
+    )
+  res
+  )
+
 method toS()=(
   var i=0I
   var res=S"["

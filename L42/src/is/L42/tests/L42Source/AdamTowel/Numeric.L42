@@ -1,0 +1,11 @@
+interface
+@{
+This method creates an instance of the current type from another @This.
+Any class implementing @This should refine the return type to its own This type.
+}
+class method This (This that)
+
+method I toI()
+method Num toNum()
+method Double toDouble()
+method Long toLong()

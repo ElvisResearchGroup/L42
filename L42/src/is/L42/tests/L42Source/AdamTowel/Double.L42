@@ -36,7 +36,8 @@ method This1.I ceil()=native{trusted:mathCeilInt} error void
 method This1.I round()=native{trusted:mathRoundInt} error void
 method This1.I roundLong()=native{trusted:mathRoundLong} error void
 method This1.Double toDouble()=this
-
+method This1.I toI()=native{trusted:mathFloorInt} error void
+method This1.Long toLong()=native{trusted:mathFloorLong} error void
 #norm{nativeKind=Double
   typeDep=This,This1.I,This1.Long,This1.Num,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call
   coherentDep=This,This1.I,This1.Long,This1.Num,This1.Bool,This1.S

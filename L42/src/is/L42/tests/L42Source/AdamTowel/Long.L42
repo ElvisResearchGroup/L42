@@ -35,6 +35,14 @@ class method This #$randomSeed()=native{trusted:#$randomSeed} error void
 method This1.I ceil()=native{trusted:longToInt} error void
 method This1.I floor()=native{trusted:longToInt} error void
 method This1.I round()=native{trusted:longToInt} error void
+method This1.I toI()=native{trusted:longToInt} error void
+method This1.Num toNum()=(
+  This zero = This<:class This.zero()
+  This one = zero.#succ()
+  This1.S<:class This1.S.longToNum(that=this,denominator=one)
+  )
+method This toLong() = this
+
 method This1.Double toDouble()=native{trusted:longToDouble} error void
 
 #norm{nativeKind=Long

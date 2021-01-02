@@ -38,12 +38,29 @@ TraitRangeMax=Trait:{
     else if this<max this
     else  max
   }
-I$=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax
-Math$Long=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax
+I$=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:{
+  [Math.Numeric]
+  method Math.Long toLong()//Long=>Math.Long is renamed later, mentioning it we delay typing of This
+  class method This (Math.Numeric that) = that.toI()
+  }
+Math$Long=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:{
+  [Math.Numeric]
+  method Math.Long toLong()//Long=>Math.Long is renamed later, mentioning it we delay typing of This
+  class method This (Math.Numeric that) = that.toLong()
+  }
 Num$=Class$Relax:TraitMinMax:TraitRangeMax:{
+  [Math.Numeric]
+  method Math.Long toLong()=Long.from(num=this)//Long=>Math.Long is renamed later, mentioning it we delay typing of This
+  class method This (Math.Numeric that) = that.toNum()
   method I floor()=this.toDouble().floor()
   method I ceil()=this.toDouble().ceil()
   method I round()=this.toDouble().round()
   method Double toDouble()
+  method I toI()=I.from(num=this)
+  method This toNum()=this
   }
-Double$=Class$Relax:TraitMinMax:TraitRangeMax
+Double$=Class$Relax:TraitMinMax:TraitRangeMax:{
+  [Math.Numeric]
+  method Math.Long toLong()//Long=>Math.Long is renamed later, mentioning it we delay typing of This
+  class method This (Math.Numeric that) = that.toDouble()
+  }
