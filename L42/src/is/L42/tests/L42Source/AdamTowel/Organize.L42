@@ -122,10 +122,10 @@ method mut Trait.Acc mapRename$(mut Trait.Acc that, Introspection.Nested n, I le
   for ni in ncs {
     inName=ni.nameFromRoot().toS() //A.B$C$   A.$
     var inC=if outSize==0I inName 
-      else inName.subString(start=outSize+1\,end=\size) //"B$C$"   "$"
+      else inName.subString(outSize+1\ to=\size) //"B$C$"   "$"
     if inC.contains(\"$$") return void
     if !inC.contains(\"$") return void
-    if inC.endsWith(\"$") (inC:=inC.subString(start=0\, end=\size-1\)) //"B$C"    ""
+    if inC.endsWith(\"$") (inC:=inC.subString(0\ to=\size-1\)) //"B$C"    ""
     if inC.startsWith(\"$") return void
     inC:=inC.replace(\"$" with=\".") //"B.C"    ""
     if inC.size()==0I return that.#squareAdd(\"%inName"=>n.nameFromRoot())

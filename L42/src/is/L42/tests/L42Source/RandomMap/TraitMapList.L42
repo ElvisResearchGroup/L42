@@ -21,7 +21,7 @@ read method S toS()=(
     for x in Range(this.side()) (
       e=this(x=x,y=y)
       if e==E.base() (res++=S"@")
-      else (res++=e.toS().subString(start=0\ end=1\))
+      else (res++=e.toS().subString(0\ to=1\))
       )
     )
     res

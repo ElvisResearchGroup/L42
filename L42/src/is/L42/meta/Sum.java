@@ -213,9 +213,12 @@ public class Sum {
     if(cs!=null){c.add(cs);}
     }
   public static boolean moreThen(Core.L l1,Core.L l2){
+    return moreThen(l1,l2,(p1,p2)->p1.equals(p2));
+    }
+  public static boolean moreThen(Core.L l1,Core.L l2,BiFunction<P,P,Boolean>pathComp){
     if(!l2.isInterface()){return false;}
     for(T t1:l1.ts()){
-      if(l2.ts().stream().noneMatch(t2->t2.p().equals(t1.p()))){return true;}
+      if(l2.ts().stream().noneMatch(t2->pathComp.apply(t1.p(),t2.p()))){return true;}
       }
     for(MWT m1:l1.mwts()){
       if(l2.mwts().stream().noneMatch(m2->m2.key().equals(m1.key()))){return true;}

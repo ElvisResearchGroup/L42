@@ -15,4 +15,12 @@ Main=(
     actual=Direction.Vals()
     expected=S"[North; East; South; Weast]"
     )
+  {}:Test"byName"(
+    actual=Direction.Vals(S"North")
+    expected=Direction.Vals().val(0I)
+    )
+  {}:Test"byNameErr"((
+    _=Direction.Vals(S"Northe")
+    catch error S.ParseError x (Bool.true()) 
+    Bool.false()))
   )

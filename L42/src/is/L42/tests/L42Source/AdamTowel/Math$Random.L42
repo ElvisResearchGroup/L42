@@ -13,12 +13,12 @@ mut method Double nextDouble()=(
   this.that::0(this.that::0().randomNextSeed())
   res
   )
-mut method I nextInRange(I start,I end)=(
-  if start<0I || end<=start (error X
-    "invalid parameters for nextInRange: start=%start, end=%end")
-  res=this.that::0().randomNextSize(bound=end-start)
+mut method I nextInRange(I that,I to)=(
+  if that<0I || to<=that (error X
+    "invalid parameters for nextInRange: start=%that, end=%to")
+  res=this.that::0().randomNextSize(bound=to-that)
   this.that::0(this.that::0().randomNextSeed())
-  res+start
+  res+that
   )
 mut method Double radiant()=
   this.nextDouble() * Math.tau()

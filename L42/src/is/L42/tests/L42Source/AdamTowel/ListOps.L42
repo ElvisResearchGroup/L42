@@ -144,26 +144,16 @@ ElemBox={
   read method Elem acc()=this.elem()
   lent method Void add(Elem that)=this.elem(that)
   }
-read method lent ElemBox reduce()=ElemBox(vals=this.vals(start=1\),elem=this.left())
-read method lent ElemBox reduce(Elem that)=ElemBox(vals=this.vals(start=0\),elem=that)
+read method lent ElemBox reduce()=ElemBox(vals=this.vals(1\ to=\size),elem=this.left())
+read method lent ElemBox reduce(Elem that)=ElemBox(vals=this.vals(0\ to=\size),elem=that)
 
 read method read Iterator cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 mut method mut Iterator #cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 
-read method read Iterator vals(I start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
-mut method mut Iterator #vals(I start)=Iterator(start=start,end=this.size(),cut=\.false(),list=this)
-read method read Iterator cutVals(I start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
-mut method mut Iterator #cutVals(I start)=Iterator(start=start,end=this.size(),cut=\.true(),list=this)
-
-read method read Iterator vals(I end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
-mut method mut Iterator #vals(I end)=Iterator(start=0\,end=end,cut=\.false(),list=this)
-read method read Iterator cutVals(I end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
-mut method mut Iterator #cutVals(I end)=Iterator(start=0\,end=end,cut=\.true(),list=this)
-
-read method read Iterator vals(I start,I end)=Iterator(start=start,end=end,cut=\.false(),list=this)
-mut method mut Iterator #vals(I start,I end)=Iterator(start=start,end=end,cut=\.false(),list=this)
-read method read Iterator cutVals(I start,I end)=Iterator(start=start,end=end,cut=\.true(),list=this)
-mut method mut Iterator #cutVals(I start,I end)=Iterator(start=start,end=end,cut=\.true(),list=this)
+read method read Iterator vals(I that,I to)=Iterator(start=that,end=to,cut=\.false(),list=this)
+mut method mut Iterator #vals(I that,I to)=Iterator(start=that,end=to,cut=\.false(),list=this)
+read method read Iterator cutVals(I that,I to)=Iterator(start=that,end=to,cut=\.true(),list=this)
+mut method mut Iterator #cutVals(I that,I to)=Iterator(start=that,end=to,cut=\.true(),list=this)
 
 Iterator={
   I start

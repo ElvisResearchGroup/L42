@@ -43,8 +43,8 @@ class method S.List xs(S that)={
    i0=res.indexOf(S"@")
    if i0==I"-1" return acc
    i1=this.nextIndex(res,current=i0)
-   p=res.subString(start=i0+1I,end=i1)
-   res:=res.subString(start=i1, end=\size)
+   p=res.subString(i0+1I to=i1)
+   res:=res.subString(i1 to=\size)
    _=Name"%(p)()"//will throw error if p is not a valid identifier
    if !acc.contains(p) acc.add(right=p)
    )

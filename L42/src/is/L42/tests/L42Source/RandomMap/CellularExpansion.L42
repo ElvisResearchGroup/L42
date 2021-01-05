@@ -52,10 +52,10 @@ mut method Void grow(I percent)=(
     )
   )
 mut method I rCoord()=
-  this.#r().nextInRange(start=0\ end=this.side()*this.side())
+  this.#r().nextInRange(0\ to=this.side()*this.side())
 mut method I rCoord(I xMin,I xMax,I yMin,I yMax)=this.coords(
-  x=this.#r().nextInRange(start=xMin,end=xMax)
-  y=this.#r().nextInRange(start=yMin,end=yMax)
+  x=this.#r().nextInRange(xMin to=xMax)
+  y=this.#r().nextInRange(yMin to=yMax)
   )
 mut method Void clearSeeds()=
   while !this.seeds().isEmpty() this.#seeds().removeRight()

@@ -13,11 +13,11 @@ mut method Event from(S.Opt oRes)=(
 mut method Event from(S res)=(
   index1=res.indexOf(S.nl())
   if index1==I"-1" error X"unexpected Event format: [[%res]]"
-  key=res.subString(start=0\,end=index1)
+  key=res.subString(0\ to=index1)
   index2=res.indexOf(S.nl(),from=index1+1\)
   if index2==I"-1" error X"unexpected Event format: [[%res]]"
-  id=res.subString(start=index1+1\,end=index2)
-  msg=res.subString(start=index2+1\,end=\size)
+  id=res.subString(index1+1\ to=index2)
+  msg=res.subString(index2+1\ to=\size)
   if id==S"##End##" (this.#streams().removeLeft(val=key))
   Event(key=key, id=id, msg=msg)
   )

@@ -17,7 +17,7 @@ mut method Void (Point that,I val)
 mut method Void (I x,I y,I val)
 
 mut method I rand(I that, I to)=
-  this.#r().nextInRange(start=that,end=to)
+  this.#r().nextInRange(that to=to)
 //For now, makes a maxZ tall diagonal line and
 //6 other maxZ*0.65 peakes
 
@@ -67,8 +67,8 @@ mut method mut Points runWaterDown(Point start)={
     )
   }
 mut method Void runWater(Point p)=(
-  x=this.#r().nextInRange(start=p.x()-2\,end=p.x()+2\)
-  y=this.#r().nextInRange(start=p.y()-2\,end=p.y()+2\)
+  x=this.#r().nextInRange(p.x()-2\ to=p.x()+2\)
+  y=this.#r().nextInRange(p.y()-2\ to=p.y()+2\)
   river=this.runWaterDown(start=\(x=x,y=y))
   if river.size()>=2I this.adjust(river=river)
   )

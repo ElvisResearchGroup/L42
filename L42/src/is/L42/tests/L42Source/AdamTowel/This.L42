@@ -132,10 +132,10 @@ DeployAAA=(
     @Public Range={...}
     Load$={}
     @Public Load={...}
-    @Public Collection$Enum={...}
     System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
     System$JavaException=Class:Message.Native:{[Message$Guard]}
     Collection$={...}
+    @Public Collection$Enum={...}
     S$=Class:Trait({...})['Map.OVal=>'Opt]
     Name$={...}
     Trait$DocMap=Class:Trait({
@@ -147,7 +147,8 @@ DeployAAA=(
     @Public Trait$NativeSlaveRename={...}
     BootStrapping$={...}
     Math$Random={...}
-    Math$={...}    
+    Math$={...}
+    S$Alphanumeric=Decorator.$:{...}    
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()

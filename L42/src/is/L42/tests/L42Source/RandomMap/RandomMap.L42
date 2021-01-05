@@ -36,8 +36,8 @@ mut method Void makeBools(mut BoolMap c)=(
   m=this.map()
   s=this.side()
   for i in Range(50\) (c.addSeed(
-    x=this.#r().nextInRange(start=0\ end=s)
-    y=this.#r().nextInRange(start=0\ end=s)
+    x=this.#r().nextInRange(0\ to=s)
+    y=this.#r().nextInRange(0\ to=s)
     val=\.true()))
   for i in Range(50\) (c.grow(percent=20\))
   for x in Range(s) (

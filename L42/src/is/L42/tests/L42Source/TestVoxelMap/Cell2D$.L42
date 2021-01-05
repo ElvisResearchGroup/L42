@@ -2,8 +2,8 @@ I x
 I y
 
 class method Cell2D random(mut Math.Random r)=\(
-  x=r.nextInRange(start=0\ end=Margin.maxX())
-  y=r.nextInRange(start=0\ end=Margin.maxY())
+  x=r.nextInRange(0\ to=Margin.maxX())
+  y=r.nextInRange(0\ to=Margin.maxY())
   )
 method Point2D toPoint() = \(
   x=this.x().toDouble()

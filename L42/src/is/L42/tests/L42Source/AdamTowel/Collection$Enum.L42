@@ -8,18 +8,16 @@ class method Trait :(Trait trait)[Fail]={
     base=res['Vals.next()=>'Vals.prev()]
     res:=(step+base)[hide='Vals.prev()]
     )
-  res:=res[hide='sealed()]
   res:=(res+TraitCacheVals)[hide='Vals.next()]
-  return res+trait
+  return (res+trait)[hide='sealed()]
   catch Message$Guard g exception Fail"".with(cause=g)
   catch Any g error X"trait exceptions should all become guards"
   }
-TraitEnumBase=Trait({interface
+TraitEnumBase=Trait:{interface
   read method Bool readEquality(read This that)
-  Top={interface read method Bool readEquality(read This that)}
-  List=Collection.list(Top)
+  List={class method mut This()}
   Vals={ class method List next()=List() }
-  })['Top=>'This]
+  }
 TraitEnumStep=Trait:{interface
   class method Void sealed()
   read method Bool readEquality(read This that)
@@ -40,10 +38,29 @@ TraitEnumStep=Trait:{interface
     class method List next()=this.prev().withAlsoRight(E())
     }
   }
-TraitCacheVals=Trait:{
-  List={}
+TraitCacheVals=Trait({interface[HasToS]
+  read method Bool readEquality(read This that)
+  Top={interface[HasToS]
+    read method Bool readEquality(read This that)
+    }
+  List=Collection.list(Top)  
+  Map=Collection$.map(key=S,val=Top)
   Vals=Data:{
     class method List next()
     @Cache.Lazy class method List ()=this.next()
+    @Cache.Lazy class method Map map()=(
+      map = Map()
+      for e in this() ( map.put(key=e.toS(),val=e) )
+      map
+      )
+    class method Top (S that) = (
+      res=this.map().val(key=that).val()
+      catch error Any x error S$ParseError(S"""
+        |Invalid enumeration name: %(that).
+        |Valid enumeration names are %this()
+        """)        
+      res
+      )
+    //should it throw a ParseError instead?
     }
-  }
+  })['Top=>'This]

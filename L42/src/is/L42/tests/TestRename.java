@@ -2034,6 +2034,17 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     #norm{typeDep=This, This1.I refined=m()}}
   #norm{}}"""/*next test after this line*/)
 ),new AtomicTest(()->pass("""
+    I={interface #norm{}}
+    A={interface [This1.I] #norm{typeDep=This1.I}}
+    B={C={interface [This2.I] #norm{typeDep=This2.I}}#norm{}}
+    #norm{}}""",/*rename map after this line*/"""
+      A.=>*B.C.
+    """,/*expected after this line*/"""
+    I={interface #norm{}}
+    B={C={interface[This2.I]#norm{typeDep=This2.I}}
+    #norm{}}
+    #norm{}}"""/*next test after this line*/)
+),new AtomicTest(()->pass("""
     A::1={class method Void op::2()=void #norm{}}
     A={class method Void op()=void #norm{}}
     B={

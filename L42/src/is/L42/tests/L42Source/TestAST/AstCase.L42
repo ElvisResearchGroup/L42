@@ -12,7 +12,7 @@ CaseTrait=Decorator:Data:Trait:{
   class Any that
   method Trait(Trait trait)[Message.Guard]=(
     t=this.that()
-    name=Introspection.Nested.from(classAny=t).outerName().subString(start=0\ end=\size-1\)
+    name=Introspection.Nested.from(classAny=t).outerName().subString(0\ to=\size-1\)
     n=Name"visit%(name)(that)"
     d=Data('This,autoNorm=Bool.true())
     i=ImplNode['V=>Visitor;'Self=>t;'visitXX(that)=>n]

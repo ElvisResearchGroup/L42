@@ -10,3 +10,49 @@ Main = (
   I support = 3Year/1Year
   Debug(S"ok %a"++S"dd")
   )
+Alphanumeric = Organize:Decorator:{
+  AlphanumericTrait = Trait:{
+    [HasToS]
+    S that
+    method toS()=this.that()
+    @Cache.Call class method This #from(S.StringBuilder stringLiteral)=this.from(string=stringLiteral.toS())
+    class method This from(S string)
+    }
+  @Public method Trait trait()=AlphanumericTrait()
+  @Public method Trait(Trait trait)[Message.Guard] =
+    Data('This,autoNorm=Bool.true()):this.trait():trait
+  }
+Email = Alphanumeric:{
+  S local //fields
+  S domain
+  
+  class method
+  This from(S string)={
+    index= string.indexOf(S"@") //works only for simple emails
+    if index==I"-1" (error S.ParseError"@ not found")
+    local= string.subString(0I to=index) //string slicing
+    domain= string.subString(index+1I to=\size) //string slicing
+    if domain.contains(S"@") (error S.ParseError"multiple @ found")
+    return This(string,local=local,domain=domain)
+    } //call the factory with fields plus the original string
+  }
+MainEMail = (
+  email = Email"foo@bar.com"
+  Debug(email)
+  Debug(email.local())
+  Debug(email.domain())
+  )
+
+Direction = Collection.Enum:{
+  North={}, East={},South={},Weast={}
+  }
+  /*Builder = {
+    mut method Void onSubString(S that)
+    mut method Void onInterpolation(SomeStuff that)
+    }
+  class method
+  This parse(mut Builder that)={
+    return This(that.toS(),local=local,domain=domain)
+    } //call the factory with fields plus the original string
+  }*/
+  

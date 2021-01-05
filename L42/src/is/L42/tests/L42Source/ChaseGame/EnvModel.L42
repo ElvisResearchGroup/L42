@@ -83,7 +83,7 @@ class method mut This (mut JServer j, mut JServer.Handler.Map stage,S key, mut R
   S"Main=Debug(S%S.dq()Hello World%S.dq())";
   S"Bob(age=23\)";
   S"bob.age(\age+1\)";
-  S"text.subString(start=4\ end=\size)";
+  S"text.subString(4\ to=\size)";
   S"I.List[1\;2\;3\]";
   S"for a in as, var b in bs (b+=a)";
   S"Person=Data:{S name,I age}";
@@ -98,8 +98,8 @@ class method mut This (mut JServer j, mut JServer.Handler.Map stage,S key, mut R
   es=this.#es()
   newRat=(this.pings()/speed)*speed==this.pings()
   if newRat (
-    xr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1I))
-    yr=Double.from(num=this.#r().nextInRange(start=0\,end=500\).toNum(denominator=1I))
+    xr=Double.from(num=this.#r().nextInRange(0\ to=500\).toNum(denominator=1I))
+    yr=Double.from(num=this.#r().nextInRange(0\ to=500\).toNum(denominator=1I))
     last=This.names().size()-1I
     current=(this.pings()/speed)-1I
     text=This.names().val(current.min(last))

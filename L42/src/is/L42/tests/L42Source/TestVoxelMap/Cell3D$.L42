@@ -1,9 +1,9 @@
 I x, I y, I z
 
 class method Cell3D random(mut Math.Random r) = \(
-  x=r.nextInRange(start=0\ end=Margin.maxX())
-  y=r.nextInRange(start=0\ end=Margin.maxY())
-  z=r.nextInRange(start=0\ end=Margin.maxZ())
+  x=r.nextInRange(0\ to=Margin.maxX())
+  y=r.nextInRange(0\ to=Margin.maxY())
+  z=r.nextInRange(0\ to=Margin.maxZ())
   )
 method Point3D toPoint() = \(
   x=this.x().toDouble()

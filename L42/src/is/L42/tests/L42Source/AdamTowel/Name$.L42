@@ -29,7 +29,7 @@ method Name self()
 @Public method S$List xs()=this._xs(s=this.self().selector())
 method mut S$List _xs(S s)={
   i=s.indexOf(S"(")
-  var pars=s.subString(start=i+1\,end=\size-1\)
+  var pars=s.subString(i+1\ to=\size-1\)
   res=S$List()
   loop (
     c=pars.indexOf(S",")
@@ -37,9 +37,9 @@ method mut S$List _xs(S s)={
       res.add(right=pars)
       return res
       )
-    x=pars.subString(start=0\ end=c)
+    x=pars.subString(0\ to=c)
     res.add(right=x)
-    pars:=pars.subString(start=c+1\,end=\size)
+    pars:=pars.subString(c+1\ to=\size)
     )
   }
 @Public method Name with(S$List xs)={
@@ -53,7 +53,7 @@ method mut S$List _xs(S s)={
   if x!=S"" && x!=S"this" && !(x in xs) error S$ParseError(
     S"in with(xs=%xs), removing the selected x from %this")
   i=s.indexOf(S"(")
-  m=s.subString(start=0I,end=i)
+  m=s.subString(0I to=i)
   if xs.isEmpty() return this.self().with(selector=m++S"()")
   var pars=xs.left()
   for xi in xs.withoutLeft() (pars++=S", "++xi)

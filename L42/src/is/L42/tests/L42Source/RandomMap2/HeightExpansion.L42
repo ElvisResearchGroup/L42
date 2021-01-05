@@ -15,7 +15,7 @@ read method I combine(V.Cell2D that, I seed) = {
   return 0I //do nothing
   }
 mut method I rand(I that, I to)=
-  this.#r().nextInRange(start=that,end=to)
+  this.#r().nextInRange(that to=to)
 
 mut method Void initTops(I that) = (
   lowX = V.maxX()/6I

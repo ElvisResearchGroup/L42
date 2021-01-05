@@ -363,11 +363,15 @@ public class Rename {
       var info=errFail.intro(l_cs.isInterface()?that.cs:that._cs,false);
       err(errFail,info+"can not be turned into an interface inside of a rename operation");}
     if(!l_cs.isInterface()){return;}
-    var lBig=Sum.moreThen(l, l_cs);
-    var l_csBig=Sum.moreThen(l_cs,l);
+    var lBig=Sum.moreThen(l, l_cs,pathComp(that.cs,that._cs));
+    var l_csBig=Sum.moreThen(l_cs,l,pathComp(that._cs,that.cs));
     if(!lBig && !l_csBig){return;}
     var info=errFail.intro(lBig?that._cs:that.cs,false);
     err(errFail,info+"can not grow inside of a rename operation");
+    }
+  private BiFunction<P,P,Boolean>pathComp(List<C>cs1,List<C>cs2){
+    return (p1,p2)->//must be NCs since they are implemented interfaces
+      p.from(p1.toNCs(),cs1).equals(p.from(p2.toNCs(), cs2));
     }
   private void earlyCheckHasS(Arrow that, L l) {
     MWT mwt=_elem(l.mwts(),that._s);
