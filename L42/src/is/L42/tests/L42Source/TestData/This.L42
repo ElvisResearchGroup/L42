@@ -257,3 +257,24 @@ TestDataBase={
       |Point(x=1, y=2)
       """, actual=interfP.toS()++S.nl())    
     )}
+Fibo = {
+  //0 1 1 2 3 5 8 13 21 34 55 89 144 233 377
+  ComputeFibo=Data:{
+    Num that
+    @Cache.Lazy method Num ()={
+      n=this.that()
+      if n==0Num ||n==1Num (return n)
+      return This(n-1Num)<:This()+This(n-2Num)()
+      }
+    class method Num slowFibo(Num n)={
+      if n==0Num ||n==1Num (return n)
+      return This.slowFibo(n=n-1\)+This.slowFibo(n=n-2\)
+      }
+    }
+  Task=(
+    {}:Test""(actual=ComputeFibo(5\)()
+      expected=5Num)
+    {}:Test""(actual=ComputeFibo(50\)()
+      expected=12586269025Num)
+    )
+  }
