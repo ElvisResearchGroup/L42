@@ -53,6 +53,88 @@ public class TestTopNorm{
     }
     """,
     "{Trash={class method Void #apply(Library that)=void #typed{}}Task={#typed{}}#norm{}}"
+  );}@Test public void traitTopUnique0(){top("""
+    {
+    Trait = {
+      PrePriv::3 = {#norm{}}
+      class method Library foo::2() = {
+        #norm{typeDep=This1,This1.PrePriv::3 watched=This1} 
+        }
+      class method Library () = This.foo::2()
+      }
+    Main = Trait()
+    }
+    """,
+    """
+    {
+    Trait = {
+      class method Library foo::2() = { #typed{typeDep=This1, This1.PrePriv::3 watched=This1} }
+      class method Library #apply() = This<:class This.foo::2()
+      PrePriv::3={#typed{}}
+      #typed{typeDep=This,This.PrePriv::3 coherentDep=This}}
+    Main= { #typed{typeDep=This1.Trait, This1.Trait.PrePriv::3 watched=This1.Trait} }
+    #norm{}}
+    """
+   );}@Test public void traitTopUnique1(){top("""
+    {
+    Trait = {
+      PrePriv::3 = {#norm{}}
+      Priv::1 = {
+        class method Library foo::2() = {
+          class method class Any bar()=This2.PrePriv::3<:class Any
+          #norm{typeDep=This1,This2,This2.PrePriv::3 watched=This2} 
+          }
+        #norm{typeDep=This,This1,This1.PrePriv::3}}
+      class method Library () = Priv::1.foo::2()
+      }
+    Main = Trait()
+    }
+    """,
+    """
+    {
+    Trait={
+      class method Library #apply() = 
+        This.Priv::1<:class This.Priv::1.foo::2()
+      PrePriv::3 = {#typed{}}
+      Priv::1 = {
+        class method Library foo::2() = {
+          class method class Any bar() = 
+            This2.PrePriv::3<:class Any
+          #typed{typeDep=This1, This2, This2.PrePriv::3
+            watched=This2}}
+        #typed{typeDep=This, This1, This1.PrePriv::3}}
+      #typed{typeDep=This, This.PrePriv::3, This.Priv::1
+             coherentDep=This.Priv::1}}
+    Main={
+      class method class Any bar() = 
+        This1.Trait.PrePriv::3<:class Any
+      #typed{typeDep=This1.Trait.Priv::1, This1.Trait, This1.Trait.PrePriv::3
+             watched=This1.Trait}}
+    #norm{}}
+    """
+  );}@Test public void traitTopUnique(){top("""
+    {
+    Trait = {
+      Priv::1 = {
+        class method Library foo::2() = { #norm{typeDep=This1, watched=This1} }
+        #norm{typeDep=This}}
+      class method Library () = Priv::1.foo::2()
+      }
+    Main = Trait()
+    }
+    """,
+    """
+    {
+    Trait={
+      class method Library #apply()=This.Priv::1<:class This.Priv::1.foo::2()
+      Priv::1={
+        class method Library foo::2() =
+          {#typed{typeDep=This1 watched=This1}}
+        #typed{typeDep=This}}
+      #typed{typeDep=This.Priv::1, This coherentDep=This.Priv::1}}
+    Main={#typed{typeDep=This1.Trait.Priv::1, This1.Trait watched=This1.Trait}}
+    #norm{}}
+    """
   );}@Test public void interpolation() {topFail(EndError.NotWellFormed.class,"""
     {A={class method Void v()=Void\"\"\"%
        |a%"b

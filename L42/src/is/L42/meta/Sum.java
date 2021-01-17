@@ -73,6 +73,7 @@ public class Sum {
     assert WellFormedness.checkInfo(pOut.push(cOut,l2),l2);
     var res=compose(false,pOut,cOut,l1,l2,errC,errM);
     assert res.wf();
+    assert WellFormedness.checkInfo(pOut.push(cOut,res),res);
     return res;
     }
   public Core.L compose(boolean inRename,Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){

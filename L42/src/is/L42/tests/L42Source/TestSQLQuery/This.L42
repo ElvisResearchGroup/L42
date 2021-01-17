@@ -1,24 +1,59 @@
 reuse [AdamTowel]
 
-QueryDB=Trait:{reuse [AdamTowel]
+QueryLib=Trait:{reuse [AdamTowel]
   Top={
-    RawDB=Load:{reuse [RawDB]}
-    DB=RawDB.dbTrait():{...}
-    class method Trait dbTrait()=DB()
+    RawQuery=Load:{reuse [RawQuery]}
+    Source=RawQuery.trait():{...}
+    class method Trait trait()=Source()
+    DBJavaCode={...}
+    IQLJavaCode={...}
+    class method Library (S packageName,S className,S code,class Any javaServer)[Trait.InvalidMap]
+    class method Trait hide(Library that)[_] = Trait(that)
+      ['Query.SquareBuilder=>'QuerySquare][
+      hide='queryColums(tableName);
+      hide='queryTables();
+      hide='code();
+      hide='codeName();
+      hide='codePackageName();
+      hide='execute(query);
+      hide='executeQuery(query);
+      hide='findColumn(label);
+      hide='next();
+      hide='val(label);
+      hide='val(that);
+      hide='Query;
+      hide='Tables;
+      hide='QueryBox.CloseQ;
+      hide='QueryBox.OneQ;
+      hide='QuerySquare.#apply(that);
+      hide='QuerySquare.#that();
+      hide='QuerySquare.that();
+      ]
+    class method Library sql(S connectionString, class Any javaServer)[_] = (
+      code = DBJavaCode(url=connectionString)
+      res = This(packageName=S"db",className=S"DB",code=code,javaServer=javaServer)
+      This.hide(res).code()
+      )
+    class method Library iql(class Any javaServer)[_] = (
+      res=This(packageName=S"iql42",className=S"IQL42",code=IQLJavaCode(),javaServer=javaServer)
+      This.hide(res)[hide='tables()].code()
+      )
     }
   }
 DeployUnit=Deploy.module(
-  url='DB
-  code=QueryDB[clear='Top.RawDB.dbTrait();hide='Top.DB]['Top.RawDB=>'Top].code()
-  name='Top
+  url='Query //RawQuery.trait()+=Raw
+  code=QueryLib
+    [clear='Top.RawQuery.trait();hide='Top.Source]
+    ['Top.RawQuery=>'Top]
+    .code()
+  name='Top //TODO: it would work if we renamed Top in This?
   )
 //-------------
 LoadJ=Load:{reuse[JavaServer]}
 J=LoadJ(slaveName=S"dbServer{}")
 
-LoadDB=Load:{reuse[#$DB]}
-DB=LoadDB(S"jdbc:derby:Test1;create=true",javaServer=J)
-
+LoadQuery=Load:{reuse[#$Query]}
+DB=LoadQuery.sql(connectionString=S"jdbc:derby:Test1;create=true",javaServer=J)
 
 ONum=Collection.optional(Num)
 Point=Data:{Num x, Num y}
@@ -70,3 +105,17 @@ AfterMain=(
   Drop(db)()
   db.kill()
   )
+TestIQL = {
+  IQL=LoadQuery.iql(javaServer=J)
+  MyQ=IQL.query[Points]"""
+    |'Provide some points' 
+    |      Pages('please provide some points')
+    |x 'x coordinate =' Integer{}
+    |y 'y coordinate =' Integer{}
+    """
+  MainL=(
+    iql=IQL.#$of()
+    ps=MyQ(iql)()
+    Debug(ps)
+    )
+  }

@@ -1,35 +1,35 @@
 TraitExecuteQuery=Trait:{
-  mut method mut DB #db()
-  mut method Void executeQuery(S sql)[DB.Fail]
-    = this.#db().executeQuery(sql=sql)
+  mut method mut Source #source()
+  mut method Void executeQuery(S query)[Source.Fail]
+    = this.#source().executeQuery(query=query)
   }
 TraitExecute=Trait:{
-  mut method mut DB #db()
-  mut method Void executeQuery(S sql)[DB.Fail]
-    = this.#db().execute(sql=sql)
+  mut method mut Source #source()
+  mut method Void executeQuery(S query)[Source.Fail]
+    = this.#source().execute(query=query)
   }
 E0=Trait:{
   List={}
-  mut method List collectResults()[DB.Fail]
-  mut method Void executeQuery(S sql)[DB.Fail]
-  class method S sql()
-  mut method List ()[DB.Fail]=(
-    var S sql=This.sql()
-    this.executeQuery(sql=sql)
+  mut method List collectResults()[Source.Fail]
+  mut method Void executeQuery(S query)[Source.Fail]
+  class method S query()
+  mut method List ()[Source.Fail]=(
+    var S query=This.query()
+    this.executeQuery(query=query)
     this.collectResults()
     )
   }
 E1=Trait:{
   List={}
   T0={[HasToS]}
-  mut method List collectResults()[DB.Fail]
-  mut method Void executeQuery(S sql)[DB.Fail]
-  class method S sql()
+  mut method List collectResults()[Source.Fail]
+  mut method Void executeQuery(S query)[Source.Fail]
+  class method S query()
   class method S p0()
-  mut method List (T0 p0)[DB.Fail]=(
-    var S sql=This.sql()
-    sql:=FormatPar(sql,key=This.p0(),val=p0)
-    this.executeQuery(sql=sql)
+  mut method List (T0 p0)[Source.Fail]=(
+    var S query=This.query()
+    query:=FormatPar(query,key=This.p0(),val=p0)
+    this.executeQuery(query=query)
     this.collectResults()
     )
   }
@@ -37,16 +37,16 @@ E2=Trait:{
   List={}
   T0={[HasToS]}
   T1={[HasToS]}
-  mut method List collectResults()[DB.Fail]
-  mut method Void executeQuery(S sql)[DB.Fail]
-  class method S sql()
+  mut method List collectResults()[Source.Fail]
+  mut method Void executeQuery(S query)[Source.Fail]
+  class method S query()
   class method S p0()
   class method S p1()
-  mut method List (T0 p0,T1 p1)[DB.Fail]=(
-    var S sql=This.sql()
-    sql:=FormatPar(sql,key=This.p0(),val=p0)
-    sql:=FormatPar(sql,key=This.p1(),val=p1)
-    this.executeQuery(sql=sql)
+  mut method List (T0 p0,T1 p1)[Source.Fail]=(
+    var S query=This.query()
+    query:=FormatPar(query,key=This.p0(),val=p0)
+    query:=FormatPar(query,key=This.p1(),val=p1)
+    this.executeQuery(query=query)
     this.collectResults()
     )
   }
@@ -55,18 +55,18 @@ E3=Trait:{
   T0={[HasToS]}
   T1={[HasToS]}
   T2={[HasToS]}
-  mut method List collectResults()[DB.Fail]
-  mut method Void executeQuery(S sql)[DB.Fail]
-  class method S sql()
+  mut method List collectResults()[Source.Fail]
+  mut method Void executeQuery(S query)[Source.Fail]
+  class method S query()
   class method S p0()
   class method S p1()
   class method S p2()
-  mut method List (T0 p0,T1 p1,T2 p2)[DB.Fail]=(
-    var S sql=This.sql()
-    sql:=FormatPar(sql,key=This.p0(),val=p0)
-    sql:=FormatPar(sql,key=This.p1(),val=p1)
-    sql:=FormatPar(sql,key=This.p2(),val=p2)
-    this.executeQuery(sql=sql)
+  mut method List (T0 p0,T1 p1,T2 p2)[Source.Fail]=(
+    var S query=This.query()
+    query:=FormatPar(query,key=This.p0(),val=p0)
+    query:=FormatPar(query,key=This.p1(),val=p1)
+    query:=FormatPar(query,key=This.p2(),val=p2)
+    this.executeQuery(query=query)
     this.collectResults()
     )
   }
@@ -76,20 +76,20 @@ E4=Trait:{
   T1={[HasToS]}
   T2={[HasToS]}
   T3={[HasToS]}
-  mut method List collectResults()[DB.Fail]
-  mut method Void executeQuery(S sql)[DB.Fail]
-  class method S sql()
+  mut method List collectResults()[Source.Fail]
+  mut method Void executeQuery(S query)[Source.Fail]
+  class method S query()
   class method S p0()
   class method S p1()
   class method S p2()
   class method S p3()
-  mut method List (T0 p0,T1 p1,T2 p2,T3 p3)[DB.Fail]=(
-    var S sql=This.sql()
-    sql:=FormatPar(sql,key=This.p0(),val=p0)
-    sql:=FormatPar(sql,key=This.p1(),val=p1)
-    sql:=FormatPar(sql,key=This.p2(),val=p2)
-    sql:=FormatPar(sql,key=This.p3(),val=p3)
-    this.executeQuery(sql=sql)
+  mut method List (T0 p0,T1 p1,T2 p2,T3 p3)[Source.Fail]=(
+    var S query=This.query()
+    query:=FormatPar(query,key=This.p0(),val=p0)
+    query:=FormatPar(query,key=This.p1(),val=p1)
+    query:=FormatPar(query,key=This.p2(),val=p2)
+    query:=FormatPar(query,key=This.p3(),val=p3)
+    this.executeQuery(query=query)
     this.collectResults()
     )
   }
@@ -100,22 +100,22 @@ E5=Trait:{
   T2={[HasToS]}
   T3={[HasToS]}
   T4={[HasToS]}
-  mut method List collectResults()[DB.Fail]
-  mut method Void executeQuery(S sql)[DB.Fail]
-  class method S sql()
+  mut method List collectResults()[Source.Fail]
+  mut method Void executeQuery(S query)[Source.Fail]
+  class method S query()
   class method S p0()
   class method S p1()
   class method S p2()
   class method S p3()
   class method S p4()
-  mut method List (T0 p0,T1 p1,T2 p2,T3 p3,T4 p4)[DB.Fail]=(
-    var S sql=This.sql()
-    sql:=FormatPar(sql,key=This.p0(),val=p0)
-    sql:=FormatPar(sql,key=This.p1(),val=p1)
-    sql:=FormatPar(sql,key=This.p2(),val=p2)
-    sql:=FormatPar(sql,key=This.p3(),val=p3)
-    sql:=FormatPar(sql,key=This.p4(),val=p4)
-    this.executeQuery(sql=sql)
+  mut method List (T0 p0,T1 p1,T2 p2,T3 p3,T4 p4)[Source.Fail]=(
+    var S query=This.query()
+    query:=FormatPar(query,key=This.p0(),val=p0)
+    query:=FormatPar(query,key=This.p1(),val=p1)
+    query:=FormatPar(query,key=This.p2(),val=p2)
+    query:=FormatPar(query,key=This.p3(),val=p3)
+    query:=FormatPar(query,key=This.p4(),val=p4)
+    this.executeQuery(query=query)
     this.collectResults()
     )
   }

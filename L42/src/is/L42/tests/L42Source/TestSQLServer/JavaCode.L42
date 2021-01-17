@@ -19,8 +19,8 @@ class method S (S url)=S"""%%
   |    s = c.createStatement();
   |    m = c.getMetaData();
   |    Map<String,Ask> hm=Map.of(
-  |      "execute(sql)",this::execute,
-  |      "executeQuery(sql)",this::executeQuery,
+  |      "execute(query)",this::execute,
+  |      "executeQuery(query)",this::executeQuery,
   |      "next()",this::next,
   |      "val(label)",this::get,
   |      "findColumn(label)",this::findColumn,
@@ -35,10 +35,10 @@ class method S (S url)=S"""%%
   |      catch(SQLException e){throw new RuntimeException(e);}
   |      });
   |    }
-  |  String execute(String sql)throws SQLException{s.execute(sql);return "";}
-  |  String executeQuery(String sql)throws SQLException{
+  |  String execute(String query)throws SQLException{s.execute(query);return "";}
+  |  String executeQuery(String query)throws SQLException{
   |    if(r!=null){r.close();}
-  |    r=s.executeQuery(sql);
+  |    r=s.executeQuery(query);
   |    return "";
   |    }
   |  String next(String empty)throws SQLException{

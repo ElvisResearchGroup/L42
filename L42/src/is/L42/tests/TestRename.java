@@ -1734,7 +1734,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    A::1={class method Void foo::2()=void #norm{}}
    B={method Void bar()=This1.A::1<:class This1.A::1.foo::2()
-     #norm{typeDep=This1.A::1, This1 coherentDep=This1.A::1 watched=This1}}
+     #norm{typeDep=This1.A::1, This1 coherentDep=This1.A::1,This1 watched=This1}}
    #norm{}}"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      I={interface class method Void foo() #norm{}}
@@ -2050,7 +2050,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     B={
       class method Void b()=This1.A<:class This1.A.op()
       class method Void b1()=This1.A::1<:class This1.A::1.op::2()
-      #norm{typeDep=This1,This1.A,This1.A::1 coherentDep=This1.A,This1.A::1 watched=This1 usedMethods=This1.A.op()}} 
+      #norm{typeDep=This1,This1.A,This1.A::1 coherentDep=This1,This1.A,This1.A::1 watched=This1 usedMethods=This1.A.op()}} 
     #norm{}}""",/*rename map after this line*/"""
      A.=>*<empty>
      """,/*expected after this line*/"""
@@ -2059,7 +2059,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    B={
      class method Void b()=This1.A::3<:class This1.A::3.op::4()
      class method Void b1()=This1.A::1<:class This1.A::1.op::2()
-     #norm{typeDep=This1, This1.A::3, This1.A::1 coherentDep=This1.A::3, This1.A::1 watched=This1}
+     #norm{typeDep=This1, This1.A::3, This1.A::1 coherentDep=This1,This1.A::3, This1.A::1 watched=This1}
      }
   #norm{}}"""/*next test after this line*/)
   //TODO: also check that the target must be an interface too

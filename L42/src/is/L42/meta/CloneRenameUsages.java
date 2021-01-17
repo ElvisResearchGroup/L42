@@ -22,6 +22,7 @@ import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.top.Deps;
 import is.L42.generated.C;
+import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.Info;
@@ -114,8 +115,8 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     res.addAll(p.cs());
     return res;
     }
-    
   @Override public L pushedOp(L l) {return infoRename.renameUsageInfo(this.p(),l);}
+
   @Override public L visitL(L l){
     var key=getLastCMs();
     var inner=key instanceof S || this.whereFromTop().stream().anyMatch(k->k instanceof S);
@@ -169,6 +170,64 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       if(pr.cs().size()!=0){return false;}
       return p0.pop(pr.n()).inPrivate();
       }
+    @Override public List<P.NCs> visitInfoNoUnique(List<P.NCs> ps){
+      return L(ps,(c,p)->addAndFix(c,p,false,true));
+      }
+    @Override public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
+      return L(c->{
+        for(var p:ps){
+          var pp=this.visitP(p);
+          if(!pp.isNCs()){continue;}
+          var pi=pp.toNCs();
+          if(!pi.hasUniqueNum()){
+            if(!pi.equals(P.pThis0) && !c.contains(pi)){ c.add(pi); }
+            continue;
+            }
+          var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
+          pi=pi.withCs(csCut);
+          if(!pi.equals(P.pThis0) && !c.contains(pi)){c.add(pi);}
+          }
+        for(var pi:discaredUsedMeth){
+          var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
+          pi=pi.withCs(csCut);
+          if(!pi.equals(P.pThis0) && !c.contains(pi)){c.add(pi);}
+          }
+        discaredUsedMeth.clear();
+      });
+      }
+    @Override public List<P.NCs> visitInfoHiddenSupertypes(List<P.NCs> ps){
+      return L(ps,(c,p)->addAndFix(c,p,false,false));
+      }
+    @Override public List<P.NCs> visitInfoAlsoUnique(List<P.NCs> ps){
+      return L(ps,(c,p)->addAndFix(c,p,true,true));
+      }
+    private void addAndFix(ArrayList<P.NCs>c,P.NCs p,boolean original,boolean cutted){
+      var pp=this.visitP(p);
+      if(!pp.isNCs()) {return;}
+      var pi=pp.toNCs();
+      if(!pi.hasUniqueNum()){
+        if(!c.contains(pi)){ c.add(pi); }
+        return;
+        }
+      if(original && !c.contains(pi)){ c.add(pi); }
+      if(!cutted) {return;}
+      var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
+      pi=pi.withCs(csCut);
+      if(!c.contains(pi)){c.add(pi);}    
+      }
+    List<P.NCs> discaredUsedMeth=new ArrayList<>();
+    public final List<Core.PathSel> visitInfoUsedMeth(List<Core.PathSel> pathSels){
+      return L(pathSels,(c,p)->{
+        var pp=this.visitPathSel(p);
+        if(pp.p().hasUniqueNum()||pp._s().hasUniqueNum()){
+          discaredUsedMeth.add(pp.p().toNCs());
+          return;
+          }
+        if(c.contains(pp)){return;}
+        c.add(pp);
+        });
+      }
+
     boolean watchable(Program p0,ArrayList<P.NCs>newWatched,P.NCs w){
       if(newWatched.contains(w)){return false;}
       if(w.hasUniqueNum()){return false;}

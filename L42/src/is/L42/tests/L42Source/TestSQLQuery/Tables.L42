@@ -1,19 +1,19 @@
-class method Library (mut DB db)[MetaFail]={
-  db.queryTables()
-  i=db.findColumn(label=S"TABLE_NAME")
+class method Library (mut Source source)[MetaFail]={
+  source.queryTables()
+  i=source.findColumn(label=S"TABLE_NAME")
   var res=Trait()
-  while db.next() (res+=this.makeTable(db=db,name=db.val(i).val()))
+  while source.next() (res+=this.makeTable(source=source,name=source.val(i).val()))
   return Class:res
   catch Message.Guard g exception MetaFail"".with(cause=g)
   }
 ColTrait=Trait:{T={} method T f()}
-class method Trait makeTable(mut DB db,S name)[_]=(
-  db.queryColums(tableName=name)
-  n=db.findColumn(label=S"COLUMN_NAME")
-  t=db.findColumn(label=S"TYPE_NAME")
+class method Trait makeTable(mut Source source,S name)[_]=(
+  source.queryColums(tableName=name)
+  n=source.findColumn(label=S"COLUMN_NAME")
+  t=source.findColumn(label=S"TYPE_NAME")
   var res=Trait()
-  while db.next() (
-    res+=this.col(name=db.val(n).val(), type=db.val(t).val())
+  while source.next() (
+    res+=this.col(name=source.val(n).val(), type=source.val(t).val())
     )
   (Data:res)['This=>Name"%name.toCamelUp()"]
   )
@@ -21,7 +21,7 @@ class method class Any type(S that)[MetaFail]={
   if that==S"INTEGER" || that==S"INT" return Num
   if that==S"VARCHAR" || that==S"CHAR" return S
   if that==S"BOOLEAN" || that==S"BOOL" return Bool
-  exception MetaFail"unsupported db table type %that"
+  exception MetaFail"unsupported table type %that"
   }
 class method Trait col(S name,S type)[_]=(
   t=this.type(type)

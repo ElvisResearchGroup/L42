@@ -123,7 +123,24 @@ public class CloneVisitor {
     if(ts0==ts && mwts==mwts0 && ncs==ncs0 && info==info0 && docs==docs0){return l;}
     return new Core.L(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
     }
-  public List<P.NCs> visitInfoWatched(List<P.NCs> ps){return visitInfoPNCs(ps);}//overridable
+  public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
+    var res=visitInfoNoUnique(ps);
+    assert res.stream().noneMatch(p->p.equals(P.pThis0));
+    return res;
+    }
+  public List<P.NCs> visitInfoHiddenSupertypes(List<P.NCs> ps){
+    return visitInfoNoUnique(ps);
+    }
+  public List<P.NCs> visitInfoNoUnique(List<P.NCs> ps){
+    var res=visitInfoPNCs(ps);
+    assert res.stream().noneMatch(p->p.hasUniqueNum()):
+      "";
+    return res;
+    }
+  public List<P.NCs> visitInfoAlsoUnique(List<P.NCs> ps){
+    return visitInfoPNCs(ps);
+    }
+
   public final List<P.NCs> visitInfoPNCs(List<P.NCs> ps){
     return L(ps,(c,p)->{
       var pp=this.visitP(p);
@@ -131,9 +148,14 @@ public class CloneVisitor {
       c.add(pp.toNCs());
       });
     }
+  public List<Core.PathSel> visitInfoUsedMeth(List<Core.PathSel> pathSels){
+    return visitInfoPathSels(pathSels);
+    }
   public final List<Core.PathSel> visitInfoPathSels(List<Core.PathSel> pathSels){
     return L(pathSels,(c,p)->{
       var pp=this.visitPathSel(p);
+      assert !pp.p().hasUniqueNum():
+        pp;
       if(c.contains(pp)){return;}
       c.add(pp);
       });
@@ -155,12 +177,12 @@ public class CloneVisitor {
     var refined0=info.refined();
     var nativePar0=info.nativePar();
 
-    var typeDep=visitInfoPNCs(typeDep0);
-    var coherentDep=visitInfoPNCs(coherentDep0);
-    var metaCoherentDep=visitInfoPNCs(metaCoherentDep0);
+    var typeDep=visitInfoAlsoUnique(typeDep0);
+    var coherentDep=visitInfoAlsoUnique(coherentDep0);
+    var metaCoherentDep=visitInfoAlsoUnique(metaCoherentDep0);
+    var usedMethods=visitInfoUsedMeth(usedMethods0);
     var watched=visitInfoWatched(watched0);
-    var usedMethods=visitInfoPathSels(usedMethods0);
-    var hiddenSupertypes=visitInfoPNCs(hiddenSupertypes0);
+    var hiddenSupertypes=visitInfoHiddenSupertypes(hiddenSupertypes0);
     var refined=visitInfoSs(refined0);
     var nativePar=visitPs(nativePar0);    
     var res=new Core.L.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched,

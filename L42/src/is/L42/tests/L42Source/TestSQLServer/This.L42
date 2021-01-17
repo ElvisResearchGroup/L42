@@ -2,36 +2,40 @@ reuse [AdamTowel]
 Queries={...}
 
 Lib=Trait:{reuse [AdamTowel]
-  DB=Trait:{...}
+  QueryEngine=Trait:{...}
   Top={
-    class method Trait dbTrait()=DB()
-    class method Library(S that, class Any javaServer)[Trait.InvalidMap]={
-      t=Trait.LiftS(that)['#apply()=>'connection()]
-      return Class:Organize:this.dbTrait()['J=>javaServer]:t
+    class method Trait trait()=QueryEngine()
+    class method Library(S packageName, S className, S code, class Any javaServer)[Trait.InvalidMap]={
+      t=Trait.LiftS(code)['#apply()=>'code()]
+       +Trait.LiftS(packageName)['#apply()=>'codePackageName()]
+       +Trait.LiftS(className)['#apply()=>'codeName()]
+
+      return Class:Organize:this.trait()['J=>javaServer]:t
       catch Trait.InvalidMap im exception im
       whoops Message.Guard
       }
     }
   }
-DeployRawDB = Deploy.module(
-  url='RawDB
+DeployRawQuery = Deploy.module(
+  url='RawQuery
   code=Lib.code()
   name='Top
   )
 
 J0=Load:{reuse[#$JavaServer]}
 J=J0(slaveName=S"dbServer{}")
-DBLib=Load:{reuse [#$RawDB]}
-DB=DBLib(S"jdbc:derby:Test1;create=true",javaServer=J)
+DBLib=Load:{reuse [#$RawQuery]}
+JavaCode={...}
+DB=DBLib(packageName=S"db",className=S"DB",code=JavaCode(url=S"jdbc:derby:Test1;create=true"),javaServer=J)
 
 Main2=(
   outs=S.List()
   db=DB.#$of()
-  (db.execute(sql=Queries.drop())
+  (db.execute(query=Queries.drop())
   catch DB.Fail f (Debug(f)) void)
-  db.execute(sql=Queries.createT())
-  db.execute(sql=Queries.insert())
-  db.executeQuery(sql=Queries.select())
+  db.execute(query=Queries.createT())
+  db.execute(query=Queries.insert())
+  db.executeQuery(query=Queries.select())
   while db.next() (
     id=db.val(label=S"id")
     name=db.val(label=S"name")
@@ -39,8 +43,8 @@ Main2=(
     Debug(S"%id %name %age")
     outs.add(right=S"%id.val() %name.val() %age.val()")
     )
-  db.execute(sql=Queries.insert2())
-  db.executeQuery(sql=Queries.select())
+  db.execute(query=Queries.insert2())
+  db.executeQuery(query=Queries.select())
   while db.next() (
     id=db.val(label=S"id")
     name=db.val(label=S"name")
@@ -75,7 +79,7 @@ Main2=(
   {}:Test"fromDB6"(expected=S"""
     |["ID INTEGER"; "NAME VARCHAR"; "AGE INTEGER"]
     """.trim()  actual=cols)
-  db.execute(sql=Queries.drop())
+  db.execute(query=Queries.drop())
   db.kill()
   void
   )

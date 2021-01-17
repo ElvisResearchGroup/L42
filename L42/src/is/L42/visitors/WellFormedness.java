@@ -169,6 +169,18 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         }
       ProgramTypeSystem.type(false,p.update(l,false));
       }
+    checkInfoMeth(p,l);  
+    return true;
+    }
+  public static boolean checkInfoMeth(Program p,Core.L l){
+    for (var m:l.mwts()){
+      if(m._e()==null){continue;}
+      m._e().visitable().accept(new PropagatorCollectorVisitor(){
+        @Override public void visitL(Core.L l){
+          checkInfo(p.push(l),l);
+          }
+        });
+      }
     return true;
     }
   public static boolean of(Visitable<?> v){
@@ -740,8 +752,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     typedContains(info,info.usedMethods().stream().map(ps->ps.p()),"usedMethods");
     typedContains(info,info.watched().stream(),"watched");
     for(var p:info.watched()){
-      if(p.equals(P.pThis0)){
-      throw new EndError.NotWellFormed(lastPos,Err.noSelfWatch());}
+      if(p.hasUniqueNum()){throw new EndError.NotWellFormed(lastPos,Err.noUniqueWatch(p));}
+      if(p.equals(P.pThis0)){throw new EndError.NotWellFormed(lastPos,Err.noSelfWatch());}
       for(var ps:info.usedMethods()){
         if(!p.equals(ps.p())){continue;}
         throw new EndError.NotWellFormed(lastPos,Err.infoWatchedUsedDisjoint(p));

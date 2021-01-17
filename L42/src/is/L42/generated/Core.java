@@ -10,6 +10,8 @@ import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
+import is.L42.common.EndError;
+import is.L42.common.Err;
 import is.L42.common.Parse;
 import is.L42.generated.Core.L.Info;
 import static is.L42.tools.General.*;

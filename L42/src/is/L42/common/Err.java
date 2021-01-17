@@ -408,6 +408,8 @@ public class Err {
   "Core library literal do not declare all the refined methods; the following are missing: "+ss
   ;}public static String noSelfWatch(){return
   "Core library literal can not watch This" 
+  ;}public static String noUniqueWatch(Object _1){return
+  "Core library literal can not watch unique numbers "+_1 
   ;}public static String typeDependencyNotCore(Object p){return
   "Typed core library literal can not depend on full core libary "+p
   ;}public static String untypedDependency(Object p,Object ps){return

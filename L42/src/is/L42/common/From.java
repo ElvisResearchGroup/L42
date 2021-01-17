@@ -1,6 +1,9 @@
 package is.L42.common;
 
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+
+import java.util.List;
 
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -44,5 +47,32 @@ public class From extends CloneVisitor{
     P.NCs p0=p.toNCs().withN(n-j);
     P.NCs p1=program.from(p0, source);
     return p1.withN(p1.n()+j);
+    }
+  @Override public List<P.NCs> visitInfoAlsoUnique(List<P.NCs> ps){
+    return L(ps,(c,p)->{
+      var pp=this.visitP(p);
+      if(!pp.isNCs()){return;}
+      var pi=pp.toNCs();
+      if(!c.contains(pp)){c.add(pi);}
+      if(!pi.hasUniqueNum()){return;}
+      var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
+      pi=pi.withCs(csCut);
+      if(!c.contains(pi)){c.add(pi);}
+      });
+    }
+  @Override public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
+    return L(ps,(c,p)->{
+      var pp=this.visitP(p);
+      if(!pp.isNCs()){return;}
+      var pi=pp.toNCs();
+      if(!pi.hasUniqueNum()){
+        assert !pi.equals(P.pThis0) && !c.contains(pi);
+        c.add(pi);
+        return;
+        }
+      var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
+      pi=pi.withCs(csCut);
+      if(!pi.equals(P.pThis0) && !c.contains(pi)){c.add(pi);}
+      });
     }
   }
