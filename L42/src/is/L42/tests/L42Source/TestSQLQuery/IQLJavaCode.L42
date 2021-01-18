@@ -5,7 +5,6 @@ class method S ()=S"""
   |import java.util.Map;
   |import java.util.ArrayList;
   |public class IQL42{
-  |//TODO: adapt the file, then insert the two pre modes, in the iql premode hide tables
   |  List<Map<String,String>> res=List.of();
   |  ArrayList<String> keys=new ArrayList<>();
   |  int index=-1;
@@ -18,8 +17,6 @@ class method S ()=S"""
   |      "val(label)",this::get,
   |      "findColumn(label)",this::findColumn,
   |      "val(that)",this::getIndex,
-  |      //"queryTables()",this::queryTables,//TODO: is removed ok? others to remove?
-  |      //"queryColumns(tableName)",this::queryColumns,
   |      "kill()",this::kill
   |      );
   |    event.registerAskEvent("IQL42",(k,id,msg)->{
@@ -28,7 +25,7 @@ class method S ()=S"""
   |      });
   |    }
   |  void runQuery(String query){
-  |    res=ui.IQL.run(query);
+  |    res=iql.IQL.run(query);
   |    keys.clear();
   |    keys.addAll(res.get(0).keySet());
   |    java.util.Collections.sort(keys);

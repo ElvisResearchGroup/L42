@@ -1,0 +1,23 @@
+reuse [AdamTowel]
+Point=Data:{Num x, Num y}
+Points=Collection.list(Point)
+
+LoadJ=Load:{reuse[JavaServer]}
+J=LoadJ(slaveName=S"iqlServer{}")
+LoadQuery=Load:{reuse[Query]}
+
+TestIQL = {
+  IQL=LoadQuery.iql(javaServer=J)//bug on '@msg', the ' is seen as part of the msg identifier TODO
+  MyQ=IQL.query[Points;S]"""
+    |'Provide some points'
+    |      Pages('@msg ')
+    |x 'x coordinate =' Integer{ display=inline}
+    |y 'y coordinate =' Integer{ display=inline}
+    """
+  MainL=(
+    iql=IQL.#$of()
+    ps=MyQ(iql)(msg=S"please provide a point")
+    Debug(ps)
+    )
+  }
+Main=Debug(S"hi")
