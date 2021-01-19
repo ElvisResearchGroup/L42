@@ -107,15 +107,16 @@ AfterMain=(
   )
 TestIQL = {
   IQL=LoadQuery.iql(javaServer=J)
-  MyQ=IQL.query[Points]"""
-    |'Provide some points' 
+  MyQ=IQL.query[Points;S]"""
+    | @msg
     |      Pages('please provide some points')
     |x 'x coordinate =' Integer{}
     |y 'y coordinate =' Integer{}
     """
   MainL=(
     iql=IQL.#$of()
-    ps=MyQ(iql)()
-    Debug(ps)
+    //ps=MyQ(iql)(msg=S"Provide some points")
+    //Debug(ps)
+    void//commented otherwise the test would require user input
     )
   }

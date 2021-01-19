@@ -7,10 +7,10 @@ J=LoadJ(slaveName=S"iqlServer{}")
 LoadQuery=Load:{reuse[Query]}
 
 TestIQL = {
-  IQL=LoadQuery.iql(javaServer=J)//bug on '@msg', the ' is seen as part of the msg identifier TODO
+  IQL=LoadQuery.iql(javaServer=J)
   MyQ=IQL.query[Points;S]"""
     |'Provide some points'
-    |      Pages('@msg ')
+    |      Pages(@msg)
     |x 'x coordinate =' Integer{ display=inline}
     |y 'y coordinate =' Integer{ display=inline}
     """

@@ -1,115 +1,54 @@
 reuse [AdamTowel]
 
-Check = Data:{
-  Bool res, S msg
+Point = Data:{ Double x, Double y
+  method Double distance(Point that) = 3Double
   }
-Checks = Class:Trait(Collection.list(Check))[hide='#squareAdd(that)]:{
-  mut method Void add(Check that)
-  read method I size()
-  mut method Void #squareAdd(Bool that) = this.#squareAdd(that,msg=S"Assertion %this.size() failed")
-  mut method Void #squareAdd(Bool that, S msg) = this.add(Check(res=that,msg=msg))
-  mut method Void #squareAdd(Any actual, Any expected) = this.#squareAdd(expected=expected, actual=actual)
-  mut method Void #squareAdd(Any expected, Any actual) = {
-    eq = System.immEquality(expected,and=actual)
-    if eq return this.#squareAdd(eq)
-    return this.#squareAdd(eq msg=S"""%
-      | Assertion %this.size() failed:
-      | expected = %Collection.AnyToS(expected)
-      | actual = %Collection.AnyToS(actual)
-      """)
-    }
-  }
+
+Points = Collection.list(Point)
+
+Animal = Data:{
+  var Point location
+  capsule Points path
+
+  mut method
+  Void move() = (
+    this.location(\path.left())
+    this.removeLeftPath()
+    )
+
+  mut method
+  Void trim() = 
+    this.removeFarthest(location=\location, distance=3Double)
+
+  @Cache.Clear class method
+  Void removeLeftPath(mut Points path) =
+    path.removeLeft()
   
-EnableAssertions={class method Bool ()=\.true()}
-TraitXAssertList = Trait:{
-  class method S introMsg()
-  class method Void (mut Checks squareBuilder) = {
-    if Match.All()(for ci in squareBuilder \add(ci.res())) return void
-    var S msg=this.introMsg()
-    for ci in squareBuilder (
-      if !ci.res() msg++=S.nl()++ci.msg()
+  @Cache.Clear class method
+  Void removeFarthest(mut Points path, Point location, Double distance) = (
+    var maxD=distance
+    var maxI=I"-1"
+    for p in path, i in Range(path.size()) (
+      currentD = location.distance(p)
+      if currentD>maxD (
+        maxI:=i
+        maxD:=currentD
+        )
       )
-    error X"%msg"
-    }
-  class method mut Checks #squareBuilder() = Checks()
-  class method Bool #shortCircutSquare() = EnableAssertions()
-  }
-XX=Class:TraitXAssertList:{
-  class method S introMsg() = S"Some failed (post)conditions:"
-  }
-XXPre=Class:TraitXAssertList:{
-  class method S introMsg() = S"Some failed preconditions:"
-  }
+    if maxI!=I"-1" path.remove(maxI)
+    )
 
-Point = Data:{
-  var Double x, var Double y
-  @Cache.Now class method Double distanceFromOrigin(Double x,Double y) = 
-    ((x*x)+(y*y)).pow(exp=\"0.5")
+  @Cache.Now class method
+  Void invariant(read Points path, Point location) = 
+    if path.contains(location) error X"..."
   }
-MM = (
-  p=Point(x=0\,y=1\)
-  XX[
-    2I==2I;
-    expected=5Num
-    actual=2Double+3Double
-    ]
-  void
-  )
-
-Unit = Load:{reuse[Unit]}
-SI = Class:Unit.TraitSI['Support=>Num]
-Year = Unit(I)
-
-Person=Data:{S name, Year age}
-Persons=Collection.list(Person)
+  
 Main = (
-  a = Person(name='Bob, age=33\)
-  I support = 3Year/1Year
-  Debug(S"ok %a"++S"dd")
+  Debug(S"Hi")
+  a=Animal(
+    location=\(x=1\,y=2\)
+    path=\[\(x=2\,y=3\);\(x=3\,y=4\)]
+    )
+  a.trim()
+  Debug(a)
   )
-Alphanumeric = Organize:Decorator:{
-  AlphanumericTrait = Trait:{
-    [HasToS]
-    S that
-    method toS()=this.that()
-    @Cache.Call class method This #from(S.StringBuilder stringLiteral)=this.from(string=stringLiteral.toS())
-    class method This from(S string)
-    }
-  @Public method Trait trait()=AlphanumericTrait()
-  @Public method Trait(Trait trait)[Message.Guard] =
-    Data('This,autoNorm=Bool.true()):this.trait():trait
-  }
-Email = Alphanumeric:{
-  S local //fields
-  S domain
-  
-  class method
-  This from(S string)={
-    index= string.indexOf(S"@") //works only for simple emails
-    if index==I"-1" (error S.ParseError"@ not found")
-    local= string.subString(0I to=index) //string slicing
-    domain= string.subString(index+1I to=\size) //string slicing
-    if domain.contains(S"@") (error S.ParseError"multiple @ found")
-    return This(string,local=local,domain=domain)
-    } //call the factory with fields plus the original string
-  }
-MainEMail = (
-  email = Email"foo@bar.com"
-  Debug(email)
-  Debug(email.local())
-  Debug(email.domain())
-  )
-
-Direction = Collection.Enum:{
-  North={}, East={},South={},Weast={}
-  }
-  /*Builder = {
-    mut method Void onSubString(S that)
-    mut method Void onInterpolation(SomeStuff that)
-    }
-  class method
-  This parse(mut Builder that)={
-    return This(that.toS(),local=local,domain=domain)
-    } //call the factory with fields plus the original string
-  }*/
-  

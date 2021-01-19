@@ -28,10 +28,17 @@ class method S escape(S that)=(
 class method S (S that,S key,HasToS val)=
   that.replace(S"@%key" with=FormatPar(val))
 
+Terminators = Data:{@Cache.Lazy class method S.List () = S.List[
+    S" "; S.nl(); S.tab();
+    S"."; S","; S";"; S"|"; S":"; S"@";S"'"; S.dq(); S.percent();
+    S")"; S"(";S"]"; S"{";S"}"; S"{";
+    S"="; S"<"; S">"; S"+"; S"-"; S"/"; S"\"; S"*"; S"^"; S"&"; S"!";
+    S"?"; S"$"; S"#";
+    ]}
+
 class method I nextIndex(S that,I current)=(
-  options=S.List[S" "; S","; S";"; S"="; S"<"; S">"; S")"; S"("]
   var res=that.size()
-  for o in options (
+  for o in Terminators() (
     i=that.indexOf(o, from=current)
     if i!=I"-1" res:=res.min(i)
     )
@@ -42,7 +49,7 @@ class method S.List xs(S that)={
   loop (
    i0=res.indexOf(S"@")
    if i0==I"-1" return acc
-   i1=this.nextIndex(res,current=i0)
+   i1=this.nextIndex(res,current=i0+1I)
    p=res.subString(i0+1I to=i1)
    res:=res.subString(i1 to=\size)
    _=Name"%(p)()"//will throw error if p is not a valid identifier

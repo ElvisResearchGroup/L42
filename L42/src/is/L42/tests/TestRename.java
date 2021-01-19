@@ -1834,7 +1834,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
        K::3={method Void user::4(This1 that)=that.foo()
          #norm{typeDep=This1, This2 watched=This2}}
        #norm{typeDep=This2.I, This, This2, This1 watched=This2 refined=foo()}}
-     #norm{typeDep=This1.I,This.D::2, This1, This watched=This1 hiddenSupertypes=This1.I}}
+     #norm{typeDep=This1.I,This.D::2, This, This1 watched=This1 hiddenSupertypes=This1.I}}
    #norm{typeDep=This.I, This hiddenSupertypes=This.I}}
    """/*next test after this line*/)
    ),new AtomicTest(()->pass("""
