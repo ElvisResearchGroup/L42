@@ -1,5 +1,36 @@
 reuse [AdamTowel]
-
+Tire = Data:{var Num pressure}
+Wheel = Data:{var mut Tire tire}
+Seat = Data:{var S description}
+Chain = Data:{ var Num damage 
+  mut method Void onWheel(lent Wheel that) = (
+    lent Tire t=that.#tire()
+    t.pressure(\pressure-1\)
+    this.damage(\damage+1\)
+    )
+  }
+Bike = (x=Data.Close:{
+  class method mut This(
+    capsule Wheel front, capsule Wheel back, capsule Seat seat, capsule Chain chain)
+  var capsule Wheel front
+  var capsule Wheel back
+  lent method lent Wheel #back()
+  var capsule Seat seat
+  var capsule Chain chain
+  lent method lent Chain #chain()
+  mut method Void chainOnWheel() = 
+    this.#chain().onWheel(this.#back())
+    
+  } {})
+Main00=(
+  b=Bike(
+    front=\(tire=\(pressure=1\))
+    back=\(tire=\(pressure=2\))
+    seat=\(description='Ok)
+    chain=\(damage=3\)
+    )
+  Debug(b.front())
+  )
 Point = Data:{ Double x, Double y
   method Double distance(Point that) = 3Double
   }
