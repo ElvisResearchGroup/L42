@@ -127,8 +127,9 @@ public class K extends GuessFields{
       return new T(Mdf.ImmutableFwd,L(),p);
       }
     var mut=match(Mdf.Mutable,List.of(Mdf.Readable,Mdf.Immutable,Mdf.Lent),optionsGet) &&  match(null,List.of(Mdf.Mutable,Mdf.Capsule),optionsSet);
+    var lentCaps=match(null,List.of(Mdf.Readable,Mdf.Lent),optionsGet) &&  match(null,L(Mdf.Capsule),optionsSet);
     if(mut){return new T(Mdf.MutableFwd,L(),p);}
-    if(caps){return new T(Mdf.Capsule,L(),p);}
+    if(caps || lentCaps){return new T(Mdf.Capsule,L(),p);}
     throw err.throwErr(getters.get(x).get(0),"ambiguous field modifier; can not be neither class, mut, imm or capsule");
     }
   public boolean match(Mdf must,List<Mdf> may,List<Mdf> current){

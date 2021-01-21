@@ -173,12 +173,12 @@ class OpUtils{
       var pari=p.topCore().info().nativePar().get(i);
       if(pi.equals(pari)){return;}
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,pari));            
+        Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,pi,pari));            
       }
     private static void checkMdf(MWT mwt,Signature sig,Mdf mdfi,Mdf tmdfi){
       if(mdfi!=tmdfi){
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,mdfi,tmdfi));
+          Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,mdfi,tmdfi));
         }
       }
     private static void checkSingle(Program p,MWT mwt,Signature sig,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
@@ -191,22 +191,22 @@ class OpUtils{
         var kind=li.info().nativeKind();
         if(!kind.isEmpty() && ki==TrustedKind._fromString(kind,p.navigate(pi.toNCs()))){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,ki));            
+          Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,pi,ki));            
         }
       if(tti==Lib){
         if(pi==P.pLibrary){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-         Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Library"));            
+         Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,pi,"Library"));            
         }
       if(tti==Void){
         if(pi==P.pVoid){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Void"));            
+          Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,pi,"Void"));            
         }
       if(tti==Any){
         if(pi==P.pAny){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),sig,pi,"Any"));            
+          Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,pi,"Any"));            
         }
       if(tti==Gen1){checkGen(0,p,mwt,sig,pi);}
       if(tti==Gen2){checkGen(1,p,mwt,sig,pi);}
@@ -215,7 +215,7 @@ class OpUtils{
       if(tti==This){
         if(pi.equals(P.pThis0)){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),sig,mwt.key(),pi,"This"));            
+          Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),sig,mwt.key(),pi,"This"));            
         }
       }
   static Generator use(String s0,Signature sig){

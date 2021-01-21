@@ -27,7 +27,7 @@ public class CacheNowGenerator extends CacheLazyGenerator{
     MH mh=mwt.mh();
     if(!mh.mdf().isRead()){
       throw new EndError.TypeError(mwt._e().poss(),
-        Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),"readable methods",mh.mdf(),"readable methods"));
+        Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),"readable methods",mh.mdf(),"readable methods"));
       }
     super.typeCache(mwt, j);
     mwt._e().visitable().accept(new Accumulate.SkipL<Void>(){
@@ -38,7 +38,7 @@ public class CacheNowGenerator extends CacheLazyGenerator{
       @Override public void visitX(X x){//this in meth calls may be filtered above
         if(!x.inner().equals("this")){return;}
         throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeBodyInvalidThis(mwt.nativeUrl(),mwt.mh()));
+          Err.nativeBodyInvalidThis(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh()));
         }});
     clearCacheGood(j);
     }
@@ -54,13 +54,13 @@ public class CacheNowGenerator extends CacheLazyGenerator{
   void immOrCapsule(MWT forErr,J j,S s){
     if(!s.xs().isEmpty()){
       throw new EndError.TypeError(forErr._e().poss(),
-        Err.nativeBodyInvalidThis(forErr.nativeUrl(),forErr.mh()));}
+        Err.nativeBodyInvalidThis(!forErr.nativeUrl().isEmpty(),forErr.nativeUrl(),forErr.mh()));}
     X x=Coherence.fieldName(s);
     var f=j.ch.fieldTs(x, Mdf.Mutable);
     if(f.stream().allMatch(t->t.mdf().isImm())){return;}
     if(f.stream().allMatch(t->t.mdf().isCapsule())){return;}
     throw new EndError.TypeError(forErr._e().poss(),
-      Err.nativeBodyInvalidThis(forErr.nativeUrl(),forErr.mh()));
+      Err.nativeBodyInvalidThis(!forErr.nativeUrl().isEmpty(),forErr.nativeUrl(),forErr.mh()));
     }
   public void clearCacheGood(J j){
     if(j.cachedClearCacheGood){return;}
@@ -99,17 +99,17 @@ public class CacheNowGenerator extends CacheLazyGenerator{
     }
   void  validCapsuleMutator(MWT mwt,J j){
     if(!mwt.mh().exceptions().isEmpty()){
-      throw new EndError.TypeError(mwt._e().poss(),Err.nativeBodyInvalidExceptions("capsuleMutator",mwt.mh()));
+      throw new EndError.TypeError(mwt._e().poss(),Err.nativeBodyInvalidExceptions(!mwt.nativeUrl().isEmpty(),"capsuleMutator",mwt.mh()));
       } 
     if(mwt.mh().t().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.MutableFwd)){
       throw new EndError.TypeError(mwt._e().poss(),
-          Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),
+          Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),
             "not mutable or lent",mwt.mh().t(),"imm, capsule, class or read"));
       }
     for(var t:mwt.mh().pars()){
       if(t.mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable)){
         throw new EndError.TypeError(mwt._e().poss(),
-            Err.nativeParameterInvalidKind(mwt.nativeUrl(),mwt.mh(),
+            Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),
               "not mutable, lent or read",t,"not mutable, lent or read"));
         }
       }
@@ -120,7 +120,8 @@ public class CacheNowGenerator extends CacheLazyGenerator{
         acc()[0]++;
         }}.of(mwt._e().visitable())[0];
       if(thises!=1){
-        throw new EndError.TypeError(mwt._e().poss(),Err.nativeBodyInvalidThisCount("capsuleMutator",mwt.mh()));
+        throw new EndError.TypeError(mwt._e().poss(),Err.nativeBodyInvalidThisCount(
+          !mwt.nativeUrl().isEmpty(),"capsuleMutator",mwt.mh()));
         }      
     }
   static boolean isThisCall(Core.MCall m){

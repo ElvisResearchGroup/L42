@@ -9,9 +9,7 @@ Chain = Data:{ var Num damage
     this.damage(\damage+1\)
     )
   }
-Bike = (x=Data.Close:{
-  class method mut This(
-    capsule Wheel front, capsule Wheel back, capsule Seat seat, capsule Chain chain)
+Bike = Data:{
   var capsule Wheel front
   var capsule Wheel back
   lent method lent Wheel #back()
@@ -20,13 +18,12 @@ Bike = (x=Data.Close:{
   lent method lent Chain #chain()
   mut method Void chainOnWheel() = 
     this.#chain().onWheel(this.#back())
-    
-  } {})
+  }
 Main00=(
   b=Bike(
     front=\(tire=\(pressure=1\))
     back=\(tire=\(pressure=2\))
-    seat=\(description='Ok)
+    seat=\(description='Okj)
     chain=\(damage=3\)
     )
   Debug(b.front())

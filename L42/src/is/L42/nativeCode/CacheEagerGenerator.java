@@ -24,7 +24,7 @@ public class CacheEagerGenerator extends CacheLazyGenerator{
     MH mh=mwt.mh();
     var url=mwt.nativeUrl();
     if(!mh.mdf().isImm()){
-      throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(url,mh,
+      throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),url,mh,
         "immutable methods",mh.mdf(),"immutable"));
       }
     super.typeCache(mwt,j);

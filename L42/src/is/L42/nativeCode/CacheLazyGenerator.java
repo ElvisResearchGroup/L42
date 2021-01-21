@@ -22,7 +22,7 @@ public class CacheLazyGenerator implements Generator{
       throw new EndError.TypeError(p,Err.nativeKindInvalidSelector(url,mh));
       }
     if(!mh.mdf().isIn(Mdf.Immutable,Mdf.Readable,Mdf.Class)){
-      throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(url,mh,
+      throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(!url.isEmpty(),url,mh,
         "imm, class or read methods",mh.mdf(),"imm, class or read"));
       }
     if(!mh.pars().isEmpty()){
@@ -30,7 +30,7 @@ public class CacheLazyGenerator implements Generator{
       }
     var t=mwt.mh().t();
     if(!t.mdf().isIn(Mdf.Immutable,Mdf.Class,Mdf.Readable)){
-      throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(url,mh,
+      throw new EndError.TypeError(p,Err.nativeParameterInvalidKind(!url.isEmpty(),url,mh,
         "imm, class or read return type",t.mdf(),"imm, class or read"));
       }
     }

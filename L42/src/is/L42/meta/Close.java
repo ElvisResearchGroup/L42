@@ -89,13 +89,13 @@ public class Close extends GuessFields{
     J newJ=new J(p.update(l,false),null,null,true){//so that it ignore public abstract methods
       public Coherence newCoherence(Program p){return new Coherence(p,true);}
       };
-    assert newJ.isCoherent:
-    "";
-    assert newJ.fields!=null:
-    "";
+    assert newJ.isCoherent:"";
+    assert newJ.fields!=null:"";
     //TODO: need more? is this needed?//that is, can this code be triggered?
-    try{new CacheNowGenerator().clearCacheGood(newJ);}
-    catch(EndError ee){err.throwErr(l,ee.getMessage());}
+    if (this.countMutCache!=0){
+      try{new CacheNowGenerator().clearCacheGood(newJ);}
+      catch(EndError ee){err.throwErr(l,ee.getMessage());}
+      }
     return l;
     }
   private void errorAmbiguousK(Core.L l,MH k){
@@ -105,6 +105,7 @@ public class Close extends GuessFields{
      L(fieldNames.stream().sorted((x1,x2)->x1.inner().compareTo(x2.inner())));
     err.throwErr(t,msg);
     }
+  private int countMutCache=0;
   public void process(MWT m){
     if(m._e()==null){
       if(ks.contains(m.mh())){processK(m);return;}
@@ -116,12 +117,12 @@ public class Close extends GuessFields{
       }
     if(match("lazyCache",m)){processLazyCache(m);return;}
     if(match("eagerCache",m)){processEagerCache(m);return;}
-    if(match("lazyReadCache",m)){processLazyReadCache(m);return;}
+    if(match("lazyReadCache",m)){countMutCache++;processLazyReadCache(m);return;}
     var invalidate=match("invalidateCache",m);
     var now=match("readNowCache",m);
-    if(!invalidate &&!now){processBase(m);return;}
-    if(invalidate){processInvalidate(m);return;}
-    if(now){processNow(m);return;}
+    if(!invalidate && !now){processBase(m);return;}
+    if(invalidate){countMutCache++;processInvalidate(m);return;}
+    if(now){countMutCache++;processNow(m);return;}
     assert false;
     }
   public Core.E fCapsExposer(MWT mErr,Pos pos,X x,T t){
