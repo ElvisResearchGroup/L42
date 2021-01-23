@@ -60,7 +60,7 @@ method This withRight(Elem that)
 method This withAlso(I that, Elem val)
 method This withAlsoLeft(Elem that)
 method This withAlsoRight(Elem that)
-method This without(I index)
+method This without(I that)
 method This withoutLeft()
 method This withoutRight()
 read method lent ElemBox reduce()
@@ -74,20 +74,40 @@ ElemBox={
 method This withoutAll(read Elem val)=
   This()(for e in this (if !This.equals(a=e,b=val) \add(e)))
 
+method This withoutLeft(read Elem val) = (
+  pos=this.indexOfLeft(val=val)
+  if pos<0I  this 
+  else this.without(pos)
+  )
+  
+method This withoutRight(read Elem val) = (
+  pos=this.indexOfRight(val=val)
+  if pos<0I  this 
+  else this.without(pos)
+  )
+
 read method Bool contains(read Elem that)={
   for read e in this (
     if This.equals(a=e,b=that) return Bool.true()
     )
   return Bool.false()
   }
-
 //################# operators
 read method Bool #in1(read Elem that)=this.contains(that)
 
 method This -(Elem right)=this.withoutAll(val=right)
 
-method This --(This right)=
-  This()(for e in this ( if !(e in right) \add(e)))
+method This --(This right) = (
+  size = this.size()
+  res = This(capacity=size)
+  var i=0I
+  while i<size (
+    Elem ei = this.readVal(i)
+    if !(ei in right) ( res.add(ei) )
+    i := i.#succ()
+    )
+  res
+  )
 
 /*
 //method This &(This right)=This[for e in this ( if e in right \res<=e )]
@@ -143,19 +163,8 @@ mut method Void removeRight(read Elem val)=(
   if i!=I"-1" (this.remove(i))
   )
 /*
-method This without(I index) //from VectorTrait
 //TODO: HERE
-method This withoutLeft(read Elem val) {
-  pos=this.indexOfLeft(val:val)
-  if pos<0I return this
-  return this.without(index:pos)
-  }
 
-method This withoutRight(read Elem val)={
-  pos=this.indexOfRight(val:val)
-  if pos<0I return this
-  return this.without(index:pos)
-  }
 
 mut method Void remove(I that) //from VectorTrait
 

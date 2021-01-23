@@ -75,7 +75,32 @@ public class TestTopNorm{
     Main= { #typed{typeDep=This1.Trait, This1.Trait.PrePriv::3 watched=This1.Trait} }
     #norm{}}
     """
-   );}@Test public void traitTopUnique1(){top("""
+  );}@Test public void traitTopUniqueTypeDep(){top("""
+    {
+    Trait = {
+      Priv::1 = {
+        class method Library foo::2() = {
+          method This1 m()
+          #norm{typeDep=This1}}
+        #norm{typeDep=This}}
+      class method Library () = Priv::1.foo::2()
+      }
+    Main = Trait()
+    }
+    """,
+    """
+    {
+    Trait = {
+      class method Library #apply() = 
+        This.Priv::1<:class This.Priv::1.foo::2()
+      Priv::1 = {
+        class method Library foo::2() = {method This1 m() #typed{typeDep=This1}}
+        #typed{typeDep=This}}
+      #typed{typeDep=This.Priv::1 coherentDep=This.Priv::1}}
+    Main={method This1.Trait.Priv::1 m() #typed{typeDep=This1.Trait.Priv::1, This1.Trait, watched=This1.Trait}}
+    #norm{}}
+    """
+  );}@Test public void traitTopUnique1(){top("""
     {
     Trait = {
       PrePriv::3 = {#norm{}}
@@ -131,7 +156,7 @@ public class TestTopNorm{
         class method Library foo::2() =
           {#typed{typeDep=This1 watched=This1}}
         #typed{typeDep=This}}
-      #typed{typeDep=This.Priv::1, This coherentDep=This.Priv::1}}
+      #typed{typeDep=This.Priv::1 coherentDep=This.Priv::1}}
     Main={#typed{typeDep=This1.Trait.Priv::1, This1.Trait watched=This1.Trait}}
     #norm{}}
     """

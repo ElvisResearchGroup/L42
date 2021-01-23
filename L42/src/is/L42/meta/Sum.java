@@ -3,6 +3,7 @@ package is.L42.meta;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
+import static is.L42.tools.General.checkNoException;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.pushL;
@@ -63,17 +64,18 @@ public class Sum {
   Core.L topRight;
   Program pOut;
   C cOut;
-  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
-    l2=normalizePrivates(l2,otherNs(l1));
+  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2_,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+    var l2=normalizePrivates(l2_,otherNs(l1));
     MetaError errC=new MetaError(wrapC);
     MetaError errM=new MetaError(wrapM);
-    assert l1.wf();
-    assert l2.wf();
-    assert WellFormedness.checkInfo(pOut.push(cOut,l1),l1): " "+l1+"\n\n"+l2;
-    assert WellFormedness.checkInfo(pOut.push(cOut,l2),l2);
+    
+    assert checkNoException(()->l1.wf());
+    assert checkNoException(()->l2.wf());
+    assert checkNoException(()->WellFormedness.checkInfo(pOut.push(cOut,l1),l1)): " "+l1+"\n\n"+l2;
+    assert checkNoException(()->WellFormedness.checkInfo(pOut.push(cOut,l2),l2));
     var res=compose(false,pOut,cOut,l1,l2,errC,errM);
-    assert res.wf();
-    assert WellFormedness.checkInfo(pOut.push(cOut,res),res);
+    assert checkNoException(()->res.wf());
+    assert checkNoException(()->WellFormedness.checkInfo(pOut.push(cOut,res),res));
     return res;
     }
   public Core.L compose(boolean inRename,Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){

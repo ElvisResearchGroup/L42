@@ -52,12 +52,22 @@ public class CacheCall{
     List<MWT>mwts=L(newMwts->{
       for(int i:range(l.mwts())){newMwts.add(handleMWT(p,newMwts, i, err));}
       });
+    boolean mustConsistentThis0=mwts.size()!=l.mwts().size();
     List<NC>ncs=L(l.ncs(),(newNCs,nci)->{
       var pi=p.push(nci.key(),nci.l());
       var li=of(pi,err);
       newNCs.add(nci.withL(li));
       });
-    return l.withMwts(mwts).withNcs(ncs);
+    var res=l.withMwts(mwts).withNcs(ncs);
+    if(mustConsistentThis0) {
+      var i=res.info();
+      var td=i.typeDep();
+      var cd=i.coherentDep();
+      if(!td.contains(P.pThis0)){i=i.withTypeDep(pushL(td,P.pThis0));}
+      if(!cd.contains(P.pThis0)){i=i.withCoherentDep(pushL(cd,P.pThis0));}
+      res=res.withInfo(i);
+      }
+    return res;
     }
   public static Core.L.MWT handleMWT(Program p,ArrayList<MWT> mwts,int index,MetaError err){
     var mwt=p.topCore().mwts().get(index);

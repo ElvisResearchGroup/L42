@@ -1,4 +1,36 @@
 reuse [AdamTowel]
+In={
+  Point = Data:{var Num x, var Num y}
+  Points = Collection.list(Point)
+  Main00=(
+    Points outPs=(
+      imm p0=Point(x=3\,y=0\) //an imm point
+      p1=Point(x=1\,y=1\) //a mut point
+      ps=Points[p0;mutVal=p1] //a mut list with both points
+      X[
+        p0==ps.val(0\);
+        p0==ps.left();
+        p1.readEquality(ps.#val(1\));
+        p1.readEquality(ps.#right());
+        p0.readEquality(ps.readVal(0\));
+        p1.readEquality(ps.readVal(1\));
+        ]
+      for read p in ps ( Debug(p) )
+      ps
+      )
+    Debug(outPs.withAlsoRight(\(x=5\,y=5\)))
+    for p in outPs.clone() ( Debug(p) )
+    )
+  }
+MM = (
+  imm ss = S.List['A;'B;'B;'C]
+  //s2=S"B"< ss
+  s2 = S"0"+ss+S"e"
+  //for s in ss.vals(1I to=50I) ( Debug(s) )
+  //Debug(s2 && s2)
+  Debug(s2)
+  )
+
 Tire = Data:{var Num pressure}
 Wheel = Data:{var mut Tire tire}
 Seat = Data:{var S description}

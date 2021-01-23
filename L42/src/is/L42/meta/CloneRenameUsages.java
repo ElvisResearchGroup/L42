@@ -164,7 +164,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
   private final InfoCloneVisitor infoRename=new InfoCloneVisitor();
   private class InfoCloneVisitor extends CloneVisitor{
     boolean assertWatchedOk(Program p0,P.NCs pi, List<P.NCs>newWatched){
-      var pr=Deps._publicRoot(p0,pi);
+      var pr=pi;//Deps._publicRoot(p0,pi);
       if(newWatched.contains(pr)){return true;}
       if(pr.equals(P.pThis0)){return true;}
       if(pr.cs().size()!=0){return false;}
@@ -179,18 +179,17 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
           var pp=this.visitP(p);
           if(!pp.isNCs()){continue;}
           var pi=pp.toNCs();
-          if(!pi.hasUniqueNum()){
+          var pRoot=Deps._publicRoot(pi);
+          if(pRoot==null){
             if(!pi.equals(P.pThis0) && !c.contains(pi)){ c.add(pi); }
             continue;
             }
-          var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
-          pi=pi.withCs(csCut);
-          if(!pi.equals(P.pThis0) && !c.contains(pi)){c.add(pi);}
+          if(!pRoot.equals(P.pThis0) && !c.contains(pRoot)){c.add(pRoot);}
           }
         for(var pi:discaredUsedMeth){
-          var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
-          pi=pi.withCs(csCut);
-          if(!pi.equals(P.pThis0) && !c.contains(pi)){c.add(pi);}
+          var piRoot=Deps._publicRoot(pi);
+          if(piRoot==null){piRoot=pi;}
+          if(!piRoot.equals(P.pThis0) && !c.contains(piRoot)){c.add(piRoot);}
           }
         discaredUsedMeth.clear();
       });
@@ -205,15 +204,14 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       var pp=this.visitP(p);
       if(!pp.isNCs()) {return;}
       var pi=pp.toNCs();
-      if(!pi.hasUniqueNum()){
+      var piRoot=Deps._publicRoot(pi);
+      if(piRoot==null){
         if(!c.contains(pi)){ c.add(pi); }
         return;
         }
       if(original && !c.contains(pi)){ c.add(pi); }
       if(!cutted) {return;}
-      var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
-      pi=pi.withCs(csCut);
-      if(!c.contains(pi)){c.add(pi);}    
+      if(!c.contains(piRoot)){c.add(piRoot);}    
       }
     List<P.NCs> discaredUsedMeth=new ArrayList<>();
     public final List<Core.PathSel> visitInfoUsedMeth(List<Core.PathSel> pathSels){
@@ -248,7 +246,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       for(var p:res.typeDep()){
         if(newTypeDep.contains(p)){continue;}//even if already without duplicated, we may add it as a public root below
         newTypeDep.add(p);
-        var pp=Deps._publicRoot(p(),p);
+        var pp=Deps._publicRoot(/*p(),*/p);
         if(pp!=null){
           if(!newTypeDep.contains(pp)){newTypeDep.add(pp);}
           if(watchable(p0, newWatched,pp)){newWatched.add(pp);}

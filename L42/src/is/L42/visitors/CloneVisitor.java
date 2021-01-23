@@ -123,6 +123,10 @@ public class CloneVisitor {
     if(ts0==ts && mwts==mwts0 && ncs==ncs0 && info==info0 && docs==docs0){return l;}
     return new Core.L(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
     }
+  public List<P.NCs> visitInfoTypeDep(List<P.NCs> ps){
+      return visitInfoAlsoUnique(ps);
+      }
+  
   public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
     var res=visitInfoNoUnique(ps);
     assert res.stream().noneMatch(p->p.equals(P.pThis0));
@@ -177,7 +181,7 @@ public class CloneVisitor {
     var refined0=info.refined();
     var nativePar0=info.nativePar();
 
-    var typeDep=visitInfoAlsoUnique(typeDep0);
+    var typeDep=visitInfoTypeDep(typeDep0);
     var coherentDep=visitInfoAlsoUnique(coherentDep0);
     var metaCoherentDep=visitInfoAlsoUnique(metaCoherentDep0);
     var usedMethods=visitInfoUsedMeth(usedMethods0);

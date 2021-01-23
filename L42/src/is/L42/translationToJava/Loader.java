@@ -26,8 +26,10 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.tools.InductiveSet;
 import is.L42.typeSystem.Coherence;
+import is.L42.visitors.WellFormedness;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.checkNoException;
 
 class Element{
   public Element(L l,List<C> path,String cIds,SourceFile source){
@@ -83,7 +85,10 @@ public class Loader {
     var files=L(new SourceFile(metaPackage+name+"£E",code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outNewBytecode);
     assert classes==classLoader;
-    return runMainName(p,c,name);
+    var res=runMainName(p,c,name);
+    assert checkNoException(()->res.wf());
+    assert checkNoException(()->WellFormedness.checkInfo(p.push(Resources.currentC,res),res));
+    return res;
     }
   public Core.L runMainName(Program p, C c,String name) throws InvocationTargetException{
     Resources.setLibsCached(p,c,libs);

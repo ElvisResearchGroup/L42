@@ -3,11 +3,13 @@ package is.L42.common;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
+import is.L42.top.Deps;
 import is.L42.visitors.CloneVisitor;
 
 public class From extends CloneVisitor{
@@ -15,6 +17,7 @@ public class From extends CloneVisitor{
     this.program=program; this.source=source; this.j=j; 
     }
   Program program; P.NCs source; int j;
+  
   public int j(){return j;}
   public Program program(){return program;}
   @Override public Full.L visitL(Full.L l){throw bug();}
@@ -54,25 +57,44 @@ public class From extends CloneVisitor{
       if(!pp.isNCs()){return;}
       var pi=pp.toNCs();
       if(!c.contains(pp)){c.add(pi);}
-      if(!pi.hasUniqueNum()){return;}
-      var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
-      pi=pi.withCs(csCut);
-      if(!c.contains(pi)){c.add(pi);}
+      var piRoot=Deps._publicRoot(pi);
+      if(piRoot==null){return;}
+      if(!c.contains(piRoot)){c.add(piRoot);}
       });
     }
+  private ArrayList<P.NCs> toWatch=new ArrayList<>();
+  public List<P.NCs> visitInfoTypeDep(List<P.NCs> ps){
+      toWatch.clear();
+      return L(ps,(c,p)->{
+          var pp=this.visitP(p);
+          if(!pp.isNCs()){return;}
+          var pi=pp.toNCs();
+          if(!c.contains(pp)){c.add(pi);}
+          var piRoot=Deps._publicRoot(pi);
+          if(piRoot==null){return;}
+          if(!c.contains(piRoot)){
+            toWatch.add(piRoot);
+            c.add(piRoot);
+            }
+          });
+      }
   @Override public List<P.NCs> visitInfoWatched(List<P.NCs> ps){
-    return L(ps,(c,p)->{
-      var pp=this.visitP(p);
-      if(!pp.isNCs()){return;}
-      var pi=pp.toNCs();
-      if(!pi.hasUniqueNum()){
-        assert !pi.equals(P.pThis0) && !c.contains(pi);
-        c.add(pi);
-        return;
+    return L(c->{
+      for(var p:ps){
+        var pp=this.visitP(p);
+        if(!pp.isNCs()){continue;}
+        var pi=pp.toNCs();
+        var piRoot=Deps._publicRoot(pi);
+        if(piRoot==null){
+          assert !pi.equals(P.pThis0) && !c.contains(pi);
+          c.add(pi);
+          continue;
+          }
+        if(!piRoot.equals(P.pThis0) && !c.contains(piRoot)){c.add(piRoot);}
         }
-      var csCut=L(pi.cs().stream().takeWhile(ci->!ci.hasUniqueNum()));
-      pi=pi.withCs(csCut);
-      if(!pi.equals(P.pThis0) && !c.contains(pi)){c.add(pi);}
+      for(var p:toWatch){
+        if(!p.equals(P.pThis0) && !c.contains(p)){c.add(p);}  
+        }
       });
     }
   }

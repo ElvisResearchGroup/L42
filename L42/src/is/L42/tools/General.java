@@ -6,7 +6,6 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.PrimitiveIterator;
 import java.util.function.BiConsumer;
 import java.util.function.BiPredicate;
 import java.util.function.BinaryOperator;
@@ -190,7 +189,8 @@ public class General {
   public static RuntimeException bug(){throw new Error("Precondition violation");}
   public static boolean checkNoException(Supplier<Boolean> s){
     try {return s.get();}
-    catch(Throwable t){throw new AssertionError("",t);}
+    catch(Throwable t){
+        throw new AssertionError("",t);}
     } 
   @SuppressWarnings("unchecked")
   public static <T> boolean eq(T o1,Object o2,BiPredicate<T,T>t){

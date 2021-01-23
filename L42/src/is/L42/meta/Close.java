@@ -80,9 +80,9 @@ public class Close extends GuessFields{
     for(var m:l.mwts()){process(m);}
     Info i=l.info();
     i=i.withClose(true);
+    if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
     if(mustAddThis0Coherence && !i.coherentDep().contains(P.pThis0)){
       i=i.withCoherentDep(pushL(i.coherentDep(),P.pThis0));
-      if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
       }
     var mwts=new SumMethods(err).sum(oldMWTs, newMWTs);
     l= l.withMwts(mwts).withInfo(i);
