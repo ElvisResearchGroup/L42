@@ -252,17 +252,11 @@ public enum TrustedOp {
     "return L42CacheMap.dup(%2$s);",
     sig(Immutable,Capsule,Any,Mutable,Any))),
   SystemReadClone("readClone",trustedIO(
-    "return L42CacheMap.normalizeAndDup(%2$s);",
+    "return L42CacheMap.dupAndNormalize(%2$s);",
     sig(Immutable,Immutable,Any,Readable,Any))),  
   SystemImmNorm("immNorm",trustedIO(
     "return L42CacheMap.normalize(%2$s);",
     sig(Immutable,Immutable,Any,Immutable,Any))),    
-  SystemMutToString("mutToString",trustedIO(
-    "return L42CacheMap.readObjToString(%2$s);",//was "objToString("
-    sig(Immutable,Immutable,String,Mutable,Any))),
-//This may not be needed any more: if you cast as any, the native got wrapped anyway!
-//      AnyNativeKind,use("return L42CacheMap.objToString(%This.wrap(%2$s));",
-//        sig(Mutable,Immutable,String))
   SystemImmToString("immToString",trustedIO(
     "return L42CacheMap.objToString(L42CacheMap.normalize(%2$s));",
     sig(Immutable,Immutable,String,Immutable,Any))),

@@ -180,10 +180,10 @@ public class L42CacheMap {
     return cache.computeKeyNN(t);
   }
   
-  public static synchronized String readObjToString(Object o) {
+  /*public static synchronized String readObjToString(Object o) {
     if(isNorm(o)) { return objToString_internal(o); }
     return objToString_internal(normalize_internal(getCacheObject(o).dup(o)));
-    }
+    }*/
   public static synchronized String objToString(Object obj) {
     return objToString_internal(obj);
     }
@@ -295,9 +295,11 @@ public class L42CacheMap {
     addCacheableType(class_, cache);
     }
   
-  public static synchronized <T> T normalizeAndDup(T t) {
-    t = normalize_internal(t);
-    return dup(t);
+  public static synchronized <T> T dupAndNormalize(T t) {
+    if(isNorm(t)){return t;}
+    t=dup(t);
+    t=normalize_internal(t);
+    return t;
     }
   
   public static synchronized <T extends L42Cachable<T>> T normalizeCachable(T t) {

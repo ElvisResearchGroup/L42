@@ -26,7 +26,7 @@ Base={
     {}:Test"oob2"(actual=err2, expected=S"""
        |[###]Index -2 out of bounds for length 0
        """.trim())
-   //Note: error messages will report the lenght of the imms, not the whole
+   //Note: error messages will report the length of the imms, not the whole
     for (key1,val1) in m1, mut pi in list (
       Debug(pi)
       )

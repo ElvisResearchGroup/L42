@@ -22,8 +22,6 @@ method Any readClone(read Any that)=
   native{trusted:readClone} error void
 method Any immNorm(Any that)=
   native{trusted:immNorm} error void
-method This1.S mutToString(mut Any that)=
-  native{trusted:mutToString} error void
 method This1.S immToString(Any that)=
   native{trusted:immToString} error void
   

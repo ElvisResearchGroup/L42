@@ -14,8 +14,10 @@ TestDataDefaults={
   Main=(
     pol=Poligon()
     {}:Test"pol size"(pol.points().size()==0I)
+    {}:Test"pol toS1"(actual=pol.toS(), expected=S"Poligon(points=[])")
     pol.#points().add(\(x=2\,y=3\))
     {}:Test"pol size"(pol.points().size()==1I)
+    {}:Test"pol toS2"(actual=pol.toS(), expected=S"Poligon(points=[(x=2, y=3)])")
     pol2=Poligon2()
     {}:Test"pol2 size"(pol2.points().size()==0I)
     pol2.points(\points.withAlsoRight(\(x=2\,y=3\)))

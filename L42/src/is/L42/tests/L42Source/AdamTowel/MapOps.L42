@@ -2,7 +2,10 @@
 Key={}
 Val={}
 @Public OVal={read method Bool #if()}
-@Public Entry=Data:{Key key, mut Val val}
+@Public Entry=Data:{
+  Key key, mut Val val
+  class method read This readEntry(Key key, read Val val)
+  }
 Hi={
   class method mut This of()
   read method I size()
@@ -82,7 +85,7 @@ class method mut This of(mut Hi hi,mut Hm hm)
 @Public mut method Void #squareAdd(Key key, mut Val mutVal)=this.#put(key=key,val=mutVal)
 //--Entries
 @Public read method read Entry entry(I that)
-  =Entry(key=this.key(that),val=this.val(that))
+  =Entry.readEntry(key=this.key(that),val=this.readVal(that))
 @Public read method Entry immEntry(I that)
   =Entry(key=this.key(that),val=this.val(that))
 @Public mut method mut Entry #entry(I that)

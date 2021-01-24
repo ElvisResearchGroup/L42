@@ -11,7 +11,7 @@ class method Any readClone(read Any that)
 class method Any immNorm(Any that)
   =Debug.of().immNorm(that)
 class method This1.S mutToString(mut Any that)
-  =Debug.of().mutToString(that)
+  =this.immToString(this.readClone(that))
 class method This1.S immToString(Any that)
   =Debug.of().immToString(that)
   
