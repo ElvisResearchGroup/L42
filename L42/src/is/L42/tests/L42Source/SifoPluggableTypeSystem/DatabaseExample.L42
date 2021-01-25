@@ -6,7 +6,7 @@ class method Void main()=(
 class method @Left S err(@Left S that)=that
 
 Row=Class:Trait(Collection.map(key=S, val=S))[clear='OVal]['OVal=>S.Opt]:{
-  read method S.Opt getEntry(S key)=this.immVal(key=key)
+  read method S.Opt getEntry(S key)=this.val(key=key)
   mut method Void setEntry(S key, S value)=this.put(key=key,val=value)
   }
 Rows=Collection.list(Row)

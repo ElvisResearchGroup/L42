@@ -1,11 +1,32 @@
 reuse [AdamTowel]
-In={
-  Point = Data:{var Num x, var Num y}
-  Main01=(
-    imm Point pImm=Point(x=0\ y=0\)<:Point.norm()
-    mut Point p00=Point(x=0\ y=0\)
-    Debug(S"p00 =%p00 y=%p00.y()")
-    p00.y(200\)
-    Debug(S"p00 =%p00 y=%p00.y()")//TODO: serius bug?
-    )
-  }
+Point = Data:{var Num x, var Num y}
+OPoint = Collection.optional(Point)
+Map1 = Collection.map(key=Point,val=Point)
+Set1 = Collection.set(Point)
+Main01=(
+  imm p00=Point(x=0\ y=0\)
+  mut p01=Point(x=0\ y=1\)
+  map = Map1[key=p00,val=p00]
+  Debug(map.readVal(key=p00))
+  var imm p00Box = OPoint(p00)
+  var mut p01Box = OPoint(p01)
+  X[
+    p00 in p00Box;
+    p00Box.val()==p00;
+    p01Box.val().readEquality(p01);
+    ]
+  if p00Box ( Debug(S"printing %p00Box") )//printing [Point(x=0, y=0)]
+  p01Box.#val().x(50\)
+  Debug(S"printing %p01")//printing Point(x=50, y=1)
+  p00Box:= OPoint()
+  p01Box:= OPoint()
+  if !p00Box ( Debug(S"printing %p00Box") )//printing []
+    X[
+    !(p00 in p00Box);
+    !p00Box.isPresent();
+    ]
+  //mut Point p00=Point(x=0\ y=0\)
+  Debug(S"p00 =%p00 y=%p00.y()")
+  //p00.y(200\)
+  Debug(S"p00 =%p00 y=%p00.y()")
+  )

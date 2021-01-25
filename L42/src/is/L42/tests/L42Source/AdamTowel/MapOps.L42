@@ -58,9 +58,9 @@ class method mut This of(mut Hi hi,mut Hm hm)
   return this.#hm().#val(that-s)
   }
 //---------------
-@Public read method OVal immVal(Key key)=this.hi().val(key=key)
-@Public read method read OVal val(Key key)={
-  iV=this.immVal(key=key)
+@Public read method OVal val(Key key)=this.hi().val(key=key)
+@Public read method read OVal readVal(Key key)={
+  iV=this.val(key=key)
   if iV return iV
   return this.hm().val(key=key)
   }
