@@ -1,5 +1,26 @@
 reuse [AdamTowel]
-Point = Data:{var Num x, var Num y}
+Max = {class method Num (Num.List that) = that.reduce()(
+  for e in \vals() ( if \acc < e \add(e) )
+  )}
+MapText = {
+  UnequalSize}= Message:{[Message.Guard]}
+  class method
+  S (S.List keys, S.List vals) = {
+    if keys.size() !=  vals.size() error UnequalSize
+      "keys= %keys.size(), values= %values.size()" 
+    //the former formatting allows us to keep a whole line for the error message
+    res = S.List()(for k in keys, v in vals \add(S"%k->%v"))
+    if res.isEmpty() return S"[]"
+    return S"["++res.reduce()(for s in \vals \add(S", %s"))++S"]"
+    }
+  }
+Main = (
+  Debug(Max(\[10\;20\;30\;3\]))
+  Debug(Max(\[10\]))
+  Debug(Max(\[]))
+  Debug(MapText(keys=S.List[S"a";S"b";S"c"] vals=S.List[S"z";S"y";S"z"]))
+  )
+/*Point = Data:{var Num x, var Num y}
 OPoint = Collection.optional(Point)
 Map1 = Collection.map(key=Point,val=Point)
 Set1 = Collection.set(Point)
@@ -30,3 +51,4 @@ Main01=(
   //p00.y(200\)
   Debug(S"p00 =%p00 y=%p00.y()")
   )
+*/

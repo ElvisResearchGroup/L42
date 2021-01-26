@@ -20,7 +20,9 @@ mut method mut Elem #update#mut(I that, mut Elem val)=(this.#set(that,val=val) v
 mut method Elem #update#imm(I that, Elem val)=(this.set(that,val=val) val)
 mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
 read method Void #close(I that)=
-  if this.#incomplete(that) error X"multi-for skipped some elements"
+  if this.#incomplete(that) error Collection$IterationIncomplete
+    "While iterating on multiple collections, iteration terminated abruptly. The size of the collections may have not been the same."
+
 
 mut method Void add(Elem that)=this.add(right=that)
 mut  method mut This (Void that)=this
@@ -160,8 +162,14 @@ ElemBox={
   read method Elem acc()=this.elem()
   lent method Void add(Elem that)=this.elem(that)
   }
-read method lent ElemBox reduce()=ElemBox(vals=this.vals(1\ to=\size),elem=this.left())
-read method lent ElemBox reduce(Elem that)=ElemBox(vals=this.vals(0\ to=\size),elem=that)
+read method lent ElemBox reduce() = (
+  l = this.left()
+  catch error Message$Guard _ error Collection$OperationUndefinedOnEmpty
+    "The requested operation can not be completed on an empty list"  
+  ElemBox(vals=this.vals(1\ to=\size),elem=l)
+  )
+read method lent ElemBox reduce(Elem that) = 
+  ElemBox(vals=this.vals(0\ to=\size),elem=that)
 
 read method read Iterator cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
 mut method mut Iterator #cut()=Iterator(start=0\,end=this.size(),cut=\.true(),list=this)
