@@ -1,0 +1,145 @@
+reuse [AdamTowel]
+MaxOfList = {//static method pattern
+  UndefinedOnEmpty = Message:{[Message.Guard]}
+  //Max is undefined on empty lists.
+  //Since there was no mention of preconditions, we should explicitly handle all the error cases as Guards
+  class method
+  Num (Num.List that) = {
+    if that.isEmpty() ( error UndefinedOnEmpty"Max is undefined on empty lists" )
+    //now that we know we can proceed: 
+    var Num maxCandidate= that.left()
+    //there is no such thing like a minimum Num, we need to select one element from the list.
+    for n in that (
+      //we could write 'that.withoutLeft()' to avoid checking on the first again
+      if maxCandidate<n (maxCandidate:= n)
+      //update the variable to keep track of the max so far.
+      )
+    return maxCandidate
+    }
+  }
+MaxOfList2 = {
+  class method
+  Num (Num.List that) =
+    that.reduce()(
+      for e in \vals() (
+        if \acc < e \add(e) 
+        )
+      )
+  }
+MapText = {
+  UnequalSize = Message:{[Message.Guard]}
+  class method
+  S (S.List keys, S.List vals) = {
+    if keys.size() !=  vals.size() error UnequalSize
+      "keys= %keys.size(), values= %vals.size()" 
+    //the former formatting allows us to keep a whole line for the error message
+    res = S.List()(for k in keys, v in vals \add(S"%k->%v"))
+    if res.isEmpty() return S"[]"
+    return S"["++res.reduce()(for s in \vals \add(\acc++S", %s"))++S"]"
+    //TODO: S"%\acc,.." should work
+    }
+  }
+FilterUpTo = {
+  class method
+  S.List (S.List that, I size) = (
+    X.Pre[size >= 0I]
+    S.List()(for s in that if s.size()<= size \add(s))
+    )
+  }
+Main = (
+  {}:Test""(expected=30Num
+    actual=MaxOfList(\[10\;20\;30\;3\]))
+  {}:Test""(expected=30Num
+    actual=MaxOfList(\[10\]))
+  {}:Test""(expected=S"Ok"
+    actual=(_=MaxOfList(\[]) catch error Any  _ ( S"Ok" ) S"Fail"))
+
+  {}:Test""(expected=30Num
+    actual=MaxOfList2(\[10\;20\;30\;3\]))
+  {}:Test""(expected=30Num
+    actual=MaxOfList2(\[10\]))
+  {}:Test""(expected=S"Ok"
+    actual=(_=MaxOfList2(\[]) catch error Any  _ ( S"Ok" ) S"Fail"))
+  {}:Test""(expected=S"[a->z, b->y, c->z]"
+    actual=MapText(keys=S.List[S"a";S"b";S"c"] vals=S.List[S"z";S"y";S"z"]))
+  
+  {}:Test""(expected=S.List[S"a";S"ab"]
+    actual=FilterUpTo(S.List[S"a";S"ab";S"abc"] size=2I))
+  )
+  
+Cell = Collection.Enum:{Dirt={} Rock={} Empty={} Mole={}}
+
+Point = Data:{I x, I y
+  class method Void invariant(I x, I y) = X.Guarded[
+    x>=0I; x<80I;
+    y>=0I; y<80I;
+    ]
+
+  method This go(Direction that) = {
+    return that.go(this)
+    catch error X.Guarded _ return this
+    }
+  }
+Direction = Collection.Enum:{interface
+  method Point go(Point that)
+  Up={[This1] method go(that)=that.with(x=\x-1I)}
+  Down={[This1]method go(that)=that.with(x=\x+1I)}
+  Left={[This1]method go(that)=that.with(y=\y-1I)}
+  Right={[This1]method go(that)=that.with(y=\y+1I)}
+  }
+
+Main2= (
+  p=Point(x=2I y=3I)
+  Debug(p)
+  )
+Cells = Collection.list(Cell)//TODO needed?
+/*
+Land: Data <>< { //we may want to put the field and the predefined factory private;
+  //you can search in the documentation of Data how to do it.
+  mut Cells cells
+
+  class method
+  mut This ()
+    This(cells: Cells[
+      with i in Range(stop: 80Size*80Size) (
+        if Random(10Size)==0Size (use[Cell.rock()])
+        else (use[Cell.dirt()])
+        )
+      ])   
+
+  //implementation of the matrix as an example,
+  //in good 42 code should be imported from a library
+  mut method 
+  Void set(Point that, Cell val)
+    this.#cells()(that.y()*80Size+that.x(), val: val)
+    
+  read method 
+  Cell get(Point that)
+    this.#cells().val(that.y()*80Size+that.x())    
+  
+  
+  mut method
+  Void randomDig() (
+    var Point current= Point(x: 0Size,y: 0Size)
+    with i in Range(stop: 100Size) (
+      this.set(current,val: Cell.empty())
+      d= Direction.from(index: Random(4Size))
+      newPoint= current.go(d)
+      if !this.get(d).isRock() ( //no digging in rock
+        current:= newPoint
+        )
+      )
+    this.set(current,val: Cell.mole()) //finally, the mole is where we ends up
+    )
+  
+  toS() S""[with x in Range(stop: 80Size) (
+      use[S.nl()] //newline
+      with y in Range(stop: 80Size) {
+        p= this.get(Point(x: x,y: y))
+        if p.isRock() return use[S"#"]//common pattern: with {return use[..]}
+        if p.isDirt() return use[S"%"]//use[..] return void, so is ok
+        if p.isEmpty() return use[S" "]//as final result of a with block
+        X[p.isMole()] return use[S"M"]         
+      })]""++S.nl()
+  //since we define 'toS()' explicitly, Data will leave it alone :)
+  }*/

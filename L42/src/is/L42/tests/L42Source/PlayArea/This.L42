@@ -1,24 +1,40 @@
 reuse [AdamTowel]
-Max = {class method Num (Num.List that) = that.reduce()(
-  for e in \vals() ( if \acc < e \add(e) )
-  )}
-MapText = {
-  UnequalSize}= Message:{[Message.Guard]}
+MaxOfList = {//static method pattern
+  UndefinedOnEmpty = Message:{[Message.Guard]}
+  //Max is undefined on empty lists.
+  //Since there was no mention of preconditions, we should explicitly handle all the error cases as Guards
   class method
-  S (S.List keys, S.List vals) = {
-    if keys.size() !=  vals.size() error UnequalSize
-      "keys= %keys.size(), values= %values.size()" 
-    //the former formatting allows us to keep a whole line for the error message
-    res = S.List()(for k in keys, v in vals \add(S"%k->%v"))
-    if res.isEmpty() return S"[]"
-    return S"["++res.reduce()(for s in \vals \add(S", %s"))++S"]"
+  Num (Num.List that) = {
+    if that.isEmpty() ( error UndefinedOnEmpty"Max is undefined on empty lists" )
+    //now that we know we can proceed: 
+    var Num maxCandidate= that.left()
+    //there is no such thing like a minimum Num, we need to select one element from the list.
+    for n in that (
+      //we could write 'that.withoutLeft()' to avoid checking on the first again
+      if maxCandidate<n (maxCandidate:= n)
+      //update the variable to keep track of the max so far.
+      )
+    return maxCandidate
     }
   }
+MaxOfList2 = {
+  class method
+  Num (Num.List that) =
+    that.reduce()(
+      for e in \vals() (
+        if \acc < e \add(e) 
+        )
+      )
+  }
+
 Main = (
-  Debug(Max(\[10\;20\;30\;3\]))
-  Debug(Max(\[10\]))
-  Debug(Max(\[]))
-  Debug(MapText(keys=S.List[S"a";S"b";S"c"] vals=S.List[S"z";S"y";S"z"]))
+  Debug(MaxOfList(\[10\;20\;30\;3\]))
+  Debug(MaxOfList(\[10\]))
+  Debug(MaxOfList(\[]))
+  Debug(MaxOfList2(\[10\;20\;30\;3\]))
+  Debug(MaxOfList2(\[10\]))
+  Debug(MaxOfList2(\[]))
+  //Debug(MapText(keys=S.List[S"a";S"b";S"c"] vals=S.List[S"z";S"y";S"z"]))
   )
 /*Point = Data:{var Num x, var Num y}
 OPoint = Collection.optional(Point)
