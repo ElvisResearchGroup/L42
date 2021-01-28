@@ -67,10 +67,8 @@ Main = (
     actual=FilterUpTo(S.List[S"a";S"ab";S"abc"] size=2I))
   )
   
-Cell = Collection.Enum:{Dirt={} Rock={} Empty={} Mole={}}
-
 Point = Data:{I x, I y
-  class method Void invariant(I x, I y) = X.Guarded[
+  @Cache.Now class method Void invariant(I x, I y) = X.Guarded[
     x>=0I; x<80I;
     y>=0I; y<80I;
     ]
@@ -79,6 +77,8 @@ Point = Data:{I x, I y
     return that.go(this)
     catch error X.Guarded _ return this
     }
+  method I index() = 
+    (this.y()*80I)+this.x()
   }
 Direction = Collection.Enum:{interface
   method Point go(Point that)
@@ -88,58 +88,60 @@ Direction = Collection.Enum:{interface
   Right={[This1]method go(that)=that.with(y=\y+1I)}
   }
 
-Main2= (
+Main2 = (
   p=Point(x=2I y=3I)
   Debug(p)
   )
-Cells = Collection.list(Cell)//TODO needed?
-/*
-Land: Data <>< { //we may want to put the field and the predefined factory private;
-  //you can search in the documentation of Data how to do it.
-  mut Cells cells
-
-  class method
-  mut This ()
-    This(cells: Cells[
-      with i in Range(stop: 80Size*80Size) (
-        if Random(10Size)==0Size (use[Cell.rock()])
-        else (use[Cell.dirt()])
-        )
-      ])   
-
-  //implementation of the matrix as an example,
-  //in good 42 code should be imported from a library
+  
+Cell = Collection.Enum:{interface
+  method S symbol()
+  Dirt={method S symbol()=S"##"}
+  Rock={method S symbol()=S.percent()++S.percent()}
+  Empty={method S symbol()=S"  "}
+  Mole={method S symbol()=S"MM"}
+  }
+Land = Data:{[HasToS]
+  mut Math.Random rand
+  mut Cell.List cells
+  class method mut Cell.List #default#cells(mut Math.Random rand) = Cell.List[](
+    for i in Range(80I*80I) (
+      if rand.nextInRange(0I to=10I)==0I \add(Cell.Rock())
+      else \add(Cell.Dirt())
+      )
+    )   
   mut method 
-  Void set(Point that, Cell val)
-    this.#cells()(that.y()*80Size+that.x(), val: val)
+  Void set(Point that, Cell val) =
+    this.#cells().set(that.index() val=val)
     
   read method 
-  Cell get(Point that)
-    this.#cells().val(that.y()*80Size+that.x())    
-  
+  Cell val(Point that) =
+    this.cells().val(that.index())    
   
   mut method
-  Void randomDig() (
-    var Point current= Point(x: 0Size,y: 0Size)
-    with i in Range(stop: 100Size) (
-      this.set(current,val: Cell.empty())
-      d= Direction.from(index: Random(4Size))
-      newPoint= current.go(d)
-      if !this.get(d).isRock() ( //no digging in rock
-        current:= newPoint
-        )
+  Void randomDig() = (
+    var current = Point(x=0I y=0I)
+    for i in Range(3000I) (
+      this.set(current,val=Cell.Empty())
+      d = Direction.Vals().val(this.#rand().nextInRange(0I to=4I))
+      newPoint = current.go(d) //no digging in rock
+      if this.val(newPoint)!=Cell.Rock() ( current:=newPoint )
       )
-    this.set(current,val: Cell.mole()) //finally, the mole is where we ends up
+    this.set(current,val=Cell.Mole()) //finally, the mole is where we ends up
     )
   
-  toS() S""[with x in Range(stop: 80Size) (
-      use[S.nl()] //newline
-      with y in Range(stop: 80Size) {
-        p= this.get(Point(x: x,y: y))
-        if p.isRock() return use[S"#"]//common pattern: with {return use[..]}
-        if p.isDirt() return use[S"%"]//use[..] return void, so is ok
-        if p.isEmpty() return use[S" "]//as final result of a with block
-        X[p.isMole()] return use[S"M"]         
-      })]""++S.nl()
+  method toS() = (
+    var res=S""
+    for x in Range(80I) (
+      res++=S.nl()//newline
+      for y in Range(80I) res++=this.val(\(x=x,y=y)).symbol()
+      )
+    res++S.nl()
+    )
   //since we define 'toS()' explicitly, Data will leave it alone :)
-  }*/
+  }
+
+MainMole = (
+  land = Land(rand=\.#$random())
+  land.randomDig()
+  Debug(land)
+  )

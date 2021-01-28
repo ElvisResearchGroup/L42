@@ -86,6 +86,12 @@ public class StringInterpolation {
         return i;
         }
       i+=self.symbol.length()-1;
+      int nextI=Math.min(i+1,s.length()-1);
+      if(nextI!=i+1){
+          self.errors.append(self.pos + Err.stringInterpolation(s,"The interpolated expression is empty\n"));
+          self.mode=Mode.Expr;
+          return nextI;
+          }
       char next=s.charAt(Math.min(i+1,s.length()-1));
       self.moreExp();
       if(next=='('){self.mode=Mode.Round;}

@@ -41,7 +41,7 @@ import is.L42.typeSystem.TypeManipulation;
      *For all methods m with modifier mdf and parameters T1 x1..Tn xn
      * discover all parameters xs,
      * where there is a mdf method Ti m#default#xi(), abstract or not
-     * generate a method with parameters x1..xn\xs using such default values and delagating to the orginal m
+     * generate a method with parameters x1..xn\xs using such default values and delegating to the original m
      * give error if a method with that selector is present with different types
      * We also support methods using former values as in mdf method Ti m#default#xi(T x)
      * if x is a parameter present before xi (no fwd defaults)
