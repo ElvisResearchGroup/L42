@@ -35,8 +35,8 @@ MapText = {
     //the former formatting allows us to keep a whole line for the error message
     res = S.List()(for k in keys, v in vals \add(S"%k->%v"))
     if res.isEmpty() return S"[]"
-    return S"["++res.reduce()(for s in \vals \add(\acc++S", %s"))++S"]"
-    //TODO: S"%\acc,.." should work
+    text = res.reduce()(for s in \vals \add(\acc++S", %s"))
+    return S"[%text]"
     }
   }
 FilterUpTo = {
@@ -68,18 +68,23 @@ Main = (
   )
   
 Point = Data:{I x, I y
-  @Cache.Now class method Void invariant(I x, I y) = X.Guarded[
+  @Cache.Now class method
+  Void invariant(I x, I y) = X.Guarded[
     x>=0I; x<80I;
     y>=0I; y<80I;
     ]
 
-  method This go(Direction that) = {
+  method
+  This go(Direction that) = {
     return that.go(this)
     catch error X.Guarded _ return this
     }
-  method I index() = 
+    
+  method
+  I index() = 
     (this.y()*80I)+this.x()
   }
+  
 Direction = Collection.Enum:{interface
   method Point go(Point that)
   Up={[This1] method go(that)=that.with(x=\x-1I)}
@@ -93,22 +98,26 @@ Main2 = (
   Debug(p)
   )
   
-Cell = Collection.Enum:{interface
+Cell = Collection.Enum:{
   method S symbol()
   Dirt={method S symbol()=S"##"}
   Rock={method S symbol()=S.percent()++S.percent()}
   Empty={method S symbol()=S"  "}
   Mole={method S symbol()=S"MM"}
   }
+  
 Land = Data:{[HasToS]
   mut Math.Random rand
   mut Cell.List cells
-  class method mut Cell.List #default#cells(mut Math.Random rand) = Cell.List[](
+  
+  class method
+  mut Cell.List #default#cells(mut Math.Random rand) = Cell.List[](
     for i in Range(80I*80I) (
       if rand.nextInRange(0I to=10I)==0I \add(Cell.Rock())
       else \add(Cell.Dirt())
       )
-    )   
+    )
+
   mut method 
   Void set(Point that, Cell val) =
     this.#cells().set(that.index() val=val)
