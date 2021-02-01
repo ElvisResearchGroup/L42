@@ -6,18 +6,15 @@ LoadJ=Load:{reuse[JavaServer]}
 J=LoadJ(slaveName=S"iqlServer{}")
 LoadQuery=Load:{reuse[Query]}
 
-TestIQL = {
-  IQL=LoadQuery.iql(javaServer=J)
-  MyQ=IQL.query[Points;S]"""
-    |'Provide some points'
-    |      Pages(@msg)
-    |x 'x coordinate =' Integer{ display=inline}
-    |y 'y coordinate =' Integer{ display=inline}
-    """
-  MainL=(
-    iql=IQL.#$of()
-    ps=MyQ(iql)(msg=S"please provide a point")
-    Debug(ps)
-    )
-  }
-Main=Debug(S"hi")
+IQL=LoadQuery.iql(javaServer=J)
+MyQ=IQL.query[Points;S]"""
+  |'Provide some points'
+  |      Pages(@msg)
+  |x 'x coordinate =' Integer{ inline}
+  |y 'y coordinate =' Integer{ inline}
+  """
+MainL=(
+  iql=IQL.#$of()
+  ps=MyQ(iql)(msg=S"please provide a point")
+  Debug(ps)
+  )

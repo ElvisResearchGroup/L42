@@ -1,0 +1,53 @@
+reuse [AdamTowel]
+Unit=Load:{reuse[Unit]}
+
+SI=Class:Unit.TraitSI['Support=>Num]
+
+Main=(
+  Debug(S"Playing with units!")
+  SI.Meter res1= (6SI.Meter +4SI.Meter)*2Num //20M
+  Debug(res1)
+  {}:Test"20Meter"(res1==20SI.Meter)
+  Num res2=42SI.Meter / 2SI.Meter
+  {}:Test"division"(res2==21Num)
+  Num res3=(42SI.Meter).#inner()
+  {}:Test"inner"(res3==42Num)
+  SI.Velocity fast1= 42SI.Meter/0.1SI.Second
+  Debug(fast1)
+  {}:Test"division composite"(fast1==420SI.Velocity)
+  fast2= SI.Velocity"420" //equivalent ways to initialize it
+  fast3= SI.Velocity"840/2"
+  distance1= 60SI.Second * fast1
+  Debug(distance1)
+  {}:Test"times component"(distance1==25200SI.Meter)
+  g= 9.8SI.Acceleration
+  speedAfter= 10SI.Second * g //98 m/s
+  Debug(speedAfter)
+  {}:Test"times compoment"(speedAfter==98SI.Velocity)
+  t=10SI.Second
+  //free fall distance d=(gt^2)/2
+  distance2= (g*t*t)/2Num//490 m after 10s free fall
+  Debug(distance2)
+  {}:Test"free fall"(distance2==490SI.Meter)
+  //Newton=Kg*m/s2 = Kg*Acceleration
+  myRoket= 900SI.Newton
+  gForceOnMe= 80SI.Kg*g //little less than 800
+  myLift= myRoket-gForceOnMe
+  {}:Test"can fly"(myLift>0SI.Newton)
+  if myLift>0SI.Newton (Debug(S"I can fly"))
+  myAcc= myLift / 80SI.Kg
+  Debug(myAcc)
+  {}:Test"acceleration up"(myAcc==1.45SI.Acceleration)
+  reachedHeight= (myAcc*t*t) / 2Num //after 10 sec
+  Debug(reachedHeight)
+  {}:Test"reachedHeight"(reachedHeight==SI.Meter"145/2")
+  Debug(S"End of the program")
+  )
+  
+Year = Unit(I)
+
+Main2 = (
+  var date = 1974Year
+  date+=10Year
+  Debug(date)
+  )

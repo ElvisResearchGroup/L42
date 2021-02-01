@@ -135,7 +135,9 @@ public class Event{
     }
   public void submitEvent(String key,String id,String msg){
     try{
+      System.out.println(key+id+msg);
       auxSubmitEvent(key, id, msg);
+      System.out.println(key+id+msg+"OUT");
       }
     catch(RuntimeException err){err.printStackTrace();throw err;}
     catch(Error err){err.printStackTrace();throw err;}

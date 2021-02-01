@@ -1,43 +1,28 @@
-class method S opening(S name,I x,I y)=S"""%
-  |package miniGui;
-  |
-  |import java.awt.event.WindowEvent;
-  |import java.awt.BorderLayout;
-  |import javax.swing.JButton;
-  |import javax.swing.JLabel;
-  |import javax.swing.JTable;
-  |import javax.swing.table.DefaultTableModel;
-  |import javax.swing.JScrollPane;
-  |import javax.swing.JFrame;
-  |import javax.swing.SwingUtilities;
-  |import is.L42.platformSpecific.javaEvents.Event;
-  |import java.util.concurrent.CompletableFuture;
-  |
-  |public class %name extends JFrame{
-  |  public static void main(String[]a){
-  |    SwingUtilities.invokeLater(%(name)::new);
-  |    }
-  |  public %(name)(){
-  |    setTitle("%name");
-  |    setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-  |    setSize(%x,%y);
-  |    setVisible(true);
-  |    Event.registerEvent("Kill",(k,id,msg)->
-  |      dispatchEvent(new WindowEvent(this, WindowEvent.WINDOW_CLOSING))
-  |      );
-  |    }
+class method S (mut Gui that)=(
+  reset=that.button(id=S"reset",msg='Pressed,text=S"Reset")
+  start=that.button(id=S"start",msg='Pressed,text=S"Start")
+  addPerson=that.button(id=S"addPerson",msg='PressedAdd,text=S"add")
+  printAll=that.button(id=S"printAll" msg='PressedPrint text=S"printAll")
+  S"""%
+    |JPanel screen1=new JPanel();
+    |%reset
+    |%start
+    |%addPerson
+    |%printAll
+    |JTable table = new JTable(new DefaultTableModel(
+    |  new Object[][]{},
+    |  new Object[]{"id","name","age","height","weight"}));
+    |JLabel title=new JLabel("        Random map");
+    |{
+    |  event.registerEvent("Example.Display",(k,id,msg)->SwingUtilities.invokeLater(()->{
+    |    System.out.println(k+" "+id+" "+msg);
+    |    if(id.equals("tableAdd")){((DefaultTableModel)(table.getModel())).addRow(msg.split(","));}
+    |    if(id.equals("tableClear")){((DefaultTableModel)(table.getModel())).setRowCount(0);}
+    |    }));
+    |  addWest(screen1,addPerson);
+    |  addEast(screen1,printAll);
+    |  addCenter(screen1,new JScrollPane(table));
+    |  add(screen1);
+    |  }
   """
-class method S closing()=S"}"
-class method S button(S k,S id,S msg,S text)=S"""%
-  |JButton %id = new JButton("%text");{
-  |  %(id).addActionListener(e->Event.submitEvent("%k","%id","%msg"));
-  |  }
-  """
-class method S label(S k,S id,S text)=S"""%
-  |JLabel %id = new JLabel("%text");
-  """
-class method S table(S k,S id,S columns)=S"""%
-  |JTable %id = new JTable(new DefaultTableModel(
-  |  new Object[][]{},
-  |  "%columns".split(",")));
-  """
+  )

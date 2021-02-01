@@ -1,10 +1,14 @@
 reuse [AdamTowel]
 
 LoadJ=Load:{reuse[JavaServer]}
+LoadGui=Load:{reuse[GuiBuilder]}
+
 GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
 DbJ=LoadJ(slaveName=S"dbServer{}")
-LoadDB=Load:{reuse[DB]}
-DB=LoadDB(S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
+Query=Load:{reuse[Query]}
+DB=Query.sql(connectionString=S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
+IQL=Query.iql(javaServer=GuiJ)
+Gui=LoadGui(javaServer=GuiJ)
 
 JavaCode={...}
 
@@ -18,10 +22,19 @@ Queries=DB.QueryBox:{
     """
   @Public All=DB.query[Persons]"SELECT * FROM Person"
   }
+AddPersons=IQL.query[Persons]"""
+  | 'Add data for more persons' Pages('Add data for more persons')
+  | name 'name' String
+  | age  'age'  Integer
+  | height 'height' Decimal
+  | weight 'weight' Decimal
+  """
+  
 Model=Data:GuiJ.Handler:{
   mut GuiJ j
   mut Queries q
   @GuiJ.Handler mut method Void printAll(S msg)=(
+    Debug(S"printAll(%msg) called")
     all=this.#q().all()()
     Debug(S"printAll(%msg) called; will now be %all.toS()")
     this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
@@ -33,8 +46,12 @@ Model=Data:GuiJ.Handler:{
     )
   @GuiJ.Handler mut method Void addPerson(S msg)=(
     Debug(S"addPerson(%msg) called")
-    this.#q().insert()(name='Alice, age=25\ height=170\ weight=75\)
-    whoops DB.Fail
+    ps=AddPersons(IQL(this.#j()))()
+    Debug(ps)
+    for (name,age,height,weight) in ps (
+      this.#q().insert()(name=name, age=age height=height weight=weight)
+      )
+    whoops DB.Fail, IQL.Fail
     )
   }
 
@@ -45,33 +62,13 @@ Main=(
   q.insert()(name='Bob, age=15\ height=165\ weight=67\)
   j=GuiJ.#$of()
   model=Model(j=j,q=q)
-  text=q.all()().toS().replace(S.dq() with=S"\%S.dq()")
-  code=
-    JavaCode.opening(name='Example,x=800I,y=600I)++
-    JavaCode.button(k='Example id=S"addPerson" msg='PressedAdd text=S"add")++
-    JavaCode.button(k='Example id=S"printAll" msg='PressedPrint text=S"printAll")++
-    JavaCode.label(k='Example id=S"label1" text=text)++
-    JavaCode.table(k='Example id=S"table" columns=S"id,name,age,height,weight")++
-    JavaCode.table(k='Example id=S"tableIn" columns=S"id,name,age,height,weight")++
-    S"""
-      |{
-      |  Event.registerEvent("Example.Display",(k,id,msg)->SwingUtilities.invokeLater(()->{
-      |    System.out.println(k+" "+id+" "+msg);
-      |    if(id.equals("label1")){label1.setText(msg);}
-      |    if(id.equals("tableAdd")){((DefaultTableModel)(table.getModel())).addRow(msg.split(","));}
-      |    if(id.equals("tableClear")){((DefaultTableModel)(table.getModel())).setRowCount(0);}
-      |    }));
-      |  add(label1,BorderLayout.NORTH);
-      |  add(new JScrollPane(table),BorderLayout.CENTER);
-      |  add(addPerson,BorderLayout.WEST);
-      |  add(printAll,BorderLayout.EAST);
-      |}
-      """++
-    JavaCode.closing()
-  j.loadCode(fullName=S"miniGui.Example",code=code)
-  for e in j(\['Example]) (
-    e>>model
-    Debug(e)
-    )
+  gui=Gui(j=model.#j(),package=S"miniGui",imports=S"""%
+  | %Gui.defaultImports()
+  | import javax.swing.table.DefaultTableModel;
+  """,
+  name='Example,x=800\,y=600\)
+  b1=gui.button(id=S"addPerson",msg='PressedAdd,text=S"add")
+  gui"%JavaCode(gui)"
+  for e in model.#j()(\['Example]) (e>>model )
   )
 TearDown={...}
