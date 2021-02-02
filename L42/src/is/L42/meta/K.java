@@ -88,12 +88,6 @@ public class K extends GuessFields{
     MWT mutM=new MWT(l.poss(),L(),mutMh,"",null);
     List<MWT> newMWT=L(c->{
       c.addAll(l.mwts());
-      if(immS.xs().toString().contains("cells")){
-        System.out.println("");
-        }
-    if(mutS.xs().toString().contains("cells")){
-      System.out.println("");
-      }
       if(_elem(l.mwts(),immS)==null){c.add(immM);}
       if(_elem(l.mwts(),mutS)==null){c.add(mutM);}
       });

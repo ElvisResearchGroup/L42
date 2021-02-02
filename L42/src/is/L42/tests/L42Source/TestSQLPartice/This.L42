@@ -7,20 +7,24 @@ GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
 DbJ=LoadJ(slaveName=S"dbServer{}")
 Query=Load:{reuse[Query]}
 DB=Query.sql(connectionString=S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
+SetUp={...}
+Table=DB.#$of().tables()
 IQL=Query.iql(javaServer=GuiJ)
 Gui=LoadGui(javaServer=GuiJ)
 
-JavaCode={...}
-
 Person=Data:{S name, I age, I height, I weight}
 Persons=Collection.list(Person)
-
+Key=Data:{I id}
+Keys=Collection.list(Key)
 Queries=DB.QueryBox:{
+  @Public All=DB.query[Table.Person.List]"SELECT * FROM Person"
+  
   @Public Insert=DB.query[Void;S;I;I;I]"""
     |INSERT INTO Person (name,age,height,weight)
     |Values (@name,@age,@height,@weight)
     """
-  @Public All=DB.query[Persons]"SELECT * FROM Person"
+  @Public DeleteId=DB.query[Void;I]"DELETE FROM Person WHERE id=@id"
+  @Public DeleteName=DB.query[Void;S]"DELETE FROM Person WHERE name=@name"
   }
 AddPersons=IQL.query[Persons]"""
   | 'Add data for more persons' Pages('Add data for more persons')
@@ -29,37 +33,58 @@ AddPersons=IQL.query[Persons]"""
   | height 'height' Decimal
   | weight 'weight' Decimal
   """
+RemoveById=IQL.query[Keys]"""
+  | 'Deleting an entry' Single('Entry to delete?')
+  | id 'index' String
+  """
+PName=Data:{S name}
+PNames=Collection.list(PName)
+RemoveByName=IQL.query[PNames]"""
+  | 'Deleting entries' Tabular('Entries to delete?')
+  | name 'name' String
+  """
   
 Model=Data:GuiJ.Handler:{
   mut GuiJ j
   mut Queries q
   @GuiJ.Handler mut method Void printAll(S msg)=(
-    Debug(S"printAll(%msg) called")
     all=this.#q().all()()
-    Debug(S"printAll(%msg) called; will now be %all.toS()")
     this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
     this.#j().submitEvent(key='Example.Display, id=S"tableClear", msg=S"")
-    for p in all (
-      this.#j().submitEvent(key='Example.Display, id=S"tableAdd", msg=S"%p.name(),%p.age(),%p.height(),%p.weight(),")
+    for (id,name,age,height,weight) in all (
+      this.#j().submitEvent(key='Example.Display, id=S"tableAdd",
+        msg=S"%id,%name,%age,%height,%weight,")
       )
     whoops DB.Fail, GuiJ.Fail
     )
   @GuiJ.Handler mut method Void addPerson(S msg)=(
-    Debug(S"addPerson(%msg) called")
     ps=AddPersons(IQL(this.#j()))()
-    Debug(ps)
     for (name,age,height,weight) in ps (
       this.#q().insert()(name=name, age=age height=height weight=weight)
       )
+    this.printAll(msg=msg)
+    whoops DB.Fail, IQL.Fail
+    )
+  @GuiJ.Handler mut method Void removeById(S msg)=(
+    ks=RemoveById(IQL(this.#j()))()
+    for (id) in ks (//zero or one time
+      this.#q().deleteId()(id=id)
+      )
+    this.printAll(msg=msg)
+    whoops DB.Fail, IQL.Fail
+    )
+  @GuiJ.Handler mut method Void removeByName(S msg)=(
+    ks=RemoveByName(IQL(this.#j()))()
+    for (name) in ks (//zero or one time
+      this.#q().deleteName()(name=name)
+      )
+    this.printAll(msg=msg)
     whoops DB.Fail, IQL.Fail
     )
   }
-
-SetUp={...}
-Table=DB.#$of().tables()
+JavaCode={...}
 Main=(
   q=Queries(DB.#$of())
-  q.insert()(name='Bob, age=15\ height=165\ weight=67\)
   j=GuiJ.#$of()
   model=Model(j=j,q=q)
   gui=Gui(j=model.#j(),package=S"miniGui",imports=S"""%
@@ -67,7 +92,6 @@ Main=(
   | import javax.swing.table.DefaultTableModel;
   """,
   name='Example,x=800\,y=600\)
-  b1=gui.button(id=S"addPerson",msg='PressedAdd,text=S"add")
   gui"%JavaCode(gui)"
   for e in model.#j()(\['Example]) (e>>model )
   )

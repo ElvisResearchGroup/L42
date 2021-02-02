@@ -34,7 +34,7 @@ class method S #$loadCode(S fullName,S code)[System.JavaException]=native{
   }
 class method S.Opt #$nextEvent(S keys)[System.JavaException]=native{
   serverSlave{}{
-  return is.L42.platformSpecific.javaEvents.Event.instance().nextEvent(#1);
+    return is.L42.platformSpecific.javaEvents.Event.instance().nextEvent(#1);
   }} error void
 
 @Public mut method Void submitEvent(S key, S id, S msg)[Fail]=(

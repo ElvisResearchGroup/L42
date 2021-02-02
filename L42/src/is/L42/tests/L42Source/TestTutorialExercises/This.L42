@@ -61,14 +61,14 @@ ReadSelf = {
 Main = (
   {}:Test""(expected=30Num
     actual=MaxOfList(\[10\;20\;30\;3\]))
-  {}:Test""(expected=30Num
+  {}:Test""(expected=10Num
     actual=MaxOfList(\[10\]))
   {}:Test""(expected=S"Ok"
     actual=(_=MaxOfList(\[]) catch error Any  _ ( S"Ok" ) S"Fail"))
 
   {}:Test""(expected=30Num
     actual=MaxOfList2(\[10\;20\;30\;3\]))
-  {}:Test""(expected=30Num
+  {}:Test""(expected=10Num
     actual=MaxOfList2(\[10\]))
   {}:Test""(expected=S"Ok"
     actual=(_=MaxOfList2(\[]) catch error Any  _ ( S"Ok" ) S"Fail"))
@@ -78,8 +78,8 @@ Main = (
   {}:Test""(expected=S.List[S"a";S"ab"]
     actual=FilterUpTo(S.List[S"a";S"ab";S"abc"] size=2I))
     
-  {}:Test""(expected=ReadSelf(FileSystem.Real.#$of())
-    actual=S"reuse [AdamTowel]%S.nl()MaxOfList = [###]")
+  {}:Test""(actual=ReadSelf(FileSystem.Real.#$of())
+    expected=S"reuse [AdamTowel]%S.nl()MaxOfList = [###]")
   )
   
 Point = Data:{I x, I y

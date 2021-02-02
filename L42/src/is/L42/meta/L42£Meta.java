@@ -140,7 +140,6 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
   public L42£Void deployLibrary(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
     Core.L l=l42Lib.unwrap;
-    System.out.println(l);
     assert l.wf();
     Program p=Program.flat(l);
     l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient

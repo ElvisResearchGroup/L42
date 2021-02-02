@@ -7,6 +7,7 @@ class method Library (mut Source source)[MetaFail]={
   catch Message.Guard g exception MetaFail"".with(cause=g)
   }
 ColTrait=Trait:{T={} method T f()}
+InnerList=Trait({This$={} List=Collection.list(This$)})['This$=>'This]
 class method Trait makeTable(mut Source source,S name)[_]=(
   source.queryColums(tableName=name)
   n=source.findColumn(label=S"COLUMN_NAME")
@@ -15,7 +16,7 @@ class method Trait makeTable(mut Source source,S name)[_]=(
   while source.next() (
     res+=this.col(name=source.val(n).val(), type=source.val(t).val())
     )
-  (Data:res)['This=>Name"%name.toCamelUp()"]
+  (InnerList:Data:res)['This=>Name"%name.toCamelUp()"]
   )
 class method class Any type(S that)[MetaFail]={
   if that==S"INTEGER" || that==S"INT" return Num

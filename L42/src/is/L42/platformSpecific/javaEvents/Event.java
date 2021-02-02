@@ -17,7 +17,9 @@ import java.util.function.Function;
 
 public class Event{
   private static Event instance=null;
-  public static void initialize(){instance=new Event();}
+  public static void initialize(){
+    if(instance==null){instance=new Event();}
+    }
   //Mah, when initialize is protected, we get a runtime security error
   public static void test_only_initialize(){instance=new Event();}
   private Event(){}
@@ -81,7 +83,9 @@ public class Event{
     if(ks.length==0) {return end;}
     if(ks.length==1) {
       var k=ks[0].trim();
-      return k+"\n"+nextEvent1(k);}
+      var res=k+"\n"+nextEvent1(k);
+      return res;
+      }
     @SuppressWarnings("unchecked")
     var qs=(LinkedBlockingDeque<String>[])new LinkedBlockingDeque[ks.length];
     for(var i:range(ks.length)){
@@ -134,16 +138,14 @@ public class Event{
     return res;
     }
   public void submitEvent(String key,String id,String msg){
-    try{
-      System.out.println(key+id+msg);
-      auxSubmitEvent(key, id, msg);
-      System.out.println(key+id+msg+"OUT");
-      }
+    try{auxSubmitEvent(key, id, msg);}
     catch(RuntimeException err){err.printStackTrace();throw err;}
     catch(Error err){err.printStackTrace();throw err;}
     }
   public void auxSubmitEvent(String key,String id,String msg){
     callbacks.compute(key,(k,v)->{
+      System.out.println(key+" "+k+" "+id+" "+msg+" "+v);
+      System.out.println(callbacks);
       if(v==null){v=this::defaultAction;}
       v.accept(k, id, msg);
       return v;

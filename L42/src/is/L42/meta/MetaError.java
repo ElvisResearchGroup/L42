@@ -105,7 +105,6 @@ public class MetaError{
     }
   public RuntimeException throwErr(Object fault,String msg){
     var lazy=new L42£LazyMsg(intro(fault,true)+msg+"\n"+pos(fault));
-    //System.out.println("42Error thrown:\n"+msg);
     throw new L42Error(wrap.apply(lazy));
     }
   public RuntimeException throwErr(Object fault,Supplier<String> msg){

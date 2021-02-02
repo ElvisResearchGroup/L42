@@ -19,7 +19,6 @@ class method S ()=S"""
   |    var button = new JButton("Press");
   |    button.addActionListener(e->{
   |      event.submitEvent("MiniGui","pressButton","");
-  |      System.out.println("pressed");
   |      });
   |    event.registerEvent("MiniGuiInput",(k,id,msg)->
   |      SwingUtilities.invokeLater(()->button.setText(button.getText()+"!"))
