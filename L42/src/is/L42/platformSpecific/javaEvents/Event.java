@@ -12,6 +12,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -143,13 +144,8 @@ public class Event{
     catch(Error err){err.printStackTrace();throw err;}
     }
   public void auxSubmitEvent(String key,String id,String msg){
-    callbacks.compute(key,(k,v)->{
-      System.out.println(key+" "+k+" "+id+" "+msg+" "+v);
-      System.out.println(callbacks);
-      if(v==null){v=this::defaultAction;}
-      v.accept(k, id, msg);
-      return v;
-      });
+    var v = callbacks.getOrDefault(key,this::defaultAction);
+    v.accept(key, id, msg);
     }
   public CompletableFuture<String> askEvent(String key,String id,String msg){
     var v=askCallbacks.get(key);
