@@ -1,16 +1,19 @@
 reuse [AdamTowel]
 
 LoadJ=Load:{reuse[JavaServer]}
-LoadGui=Load:{reuse[GuiBuilder]}
-
 GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=GuiJ)
+
 DbJ=LoadJ(slaveName=S"dbServer{}")
 Query=Load:{reuse[Query]}
 DB=Query.sql(connectionString=S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
+
 SetUp={...}
 Table=DB.#$of().tables()
+
 IQL=Query.iql(javaServer=GuiJ)
-Gui=LoadGui(javaServer=GuiJ)
+
 
 Person=Data:{S name, I age, I height, I weight}
 Persons=Collection.list(Person)
@@ -30,7 +33,7 @@ AddPersons=IQL.query[Persons]"""
   | 'Add data for more persons' Pages('Add data for more persons')
   | name 'name' String
   | age  'age'  Integer
-  | height 'height' Decimal
+  | height 'height' Decimal{regex='[0-9]*\\.[0-9][0-9]'}
   | weight 'weight' Decimal
   """
 RemoveById=IQL.query[Keys]"""
@@ -49,7 +52,7 @@ Model=Data:GuiJ.Handler:{
   mut Queries q
   @GuiJ.Handler mut method Void printAll(S msg)=(
     all=this.#q().all()()
-    this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
+    //this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
     this.#j().submitEvent(key='Example.Display, id=S"tableClear", msg=S"")
     for (id,name,age,height,weight) in all (
       this.#j().submitEvent(key='Example.Display, id=S"tableAdd",
@@ -87,12 +90,41 @@ Main=(
   q=Queries(DB.#$of())
   j=GuiJ.#$of()
   model=Model(j=j,q=q)
-  gui=Gui(j=model.#j(),package=S"miniGui",imports=S"""%
-  | %Gui.defaultImports()
-  | import javax.swing.table.DefaultTableModel;
-  """,
-  name='Example,x=800\,y=600\)
-  gui"%JavaCode(gui)"
-  for e in model.#j()(\['Example]) (e>>model )
+  gui=Gui(j=j,package=S"miniGui",imports=S"""%
+    | %Gui.defaultImports()
+    | import javax.swing.table.DefaultTableModel;
+    """,
+    name='Example,x=800\,y=600\
+    )
+    
+  buttons = 
+      gui.button(id=S"reset",msg='Pressed,text=S"Reset")
+    ++gui.button(id=S"start",msg='Pressed,text=S"Start")
+    ++gui.button(id=S"addPerson",msg='PressedAdd,text=S"add")
+    ++gui.button(id=S"removeById",msg='PressedRemove,text=S"remove by id")
+    ++gui.button(id=S"removeByName",msg='PressedRemove,text=S"remove by name")
+    ++gui.button(id=S"printAll" msg='PressedPrint text=S"printAll")
+  gui"""%
+    |%buttons
+    |JPanel screen1=new JPanel();
+    |JPanel buttons=new JPanel();
+    |JTable table = new JTable(new DefaultTableModel(
+    |  new Object[][]{},
+    |  new Object[]{"id","name","age","height","weight"}));
+    |{
+    |  event.registerEvent("Example.Display",(k,id,msg)->SwingUtilities.invokeLater(()->{
+    |    if(id.equals("tableAdd")){((DefaultTableModel)(table.getModel())).addRow(msg.split(","));}
+    |    if(id.equals("tableClear")){((DefaultTableModel)(table.getModel())).setRowCount(0);}
+    |    }));
+    |  addNorth(screen1,buttons);
+    |  addFlow(buttons,addPerson);
+    |  addFlow(buttons,removeById);
+    |  addFlow(buttons,removeByName);
+    |  addFlow(buttons,printAll);
+    |  addCenter(screen1,new JScrollPane(table));
+    |  add(screen1);
+    |  }
+  """
+  for e in j(\['Example]) ( e>>model )
   )
 TearDown={...}
