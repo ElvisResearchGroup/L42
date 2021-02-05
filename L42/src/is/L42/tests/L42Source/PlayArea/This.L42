@@ -1,7 +1,43 @@
 reuse [AdamTowel]
 J0=Load:{reuse[JavaServer]}
 J=J0(slaveName=S"mySlave{}")
-/*
+Model=Data:J.Handler:{
+  var I count, mut J j
+  @J.Handler mut method Void fromJavaToL42(S msg)=(
+    this.count(\count+1\)
+    Debug(S"pong received %msg with count=%this.count()")
+    if this.count()<40I (
+      this.#j().submitEvent(key=S"BarIn", id=S"ping", msg=S"the message %this.count()")
+      whoops J.Fail
+      )
+    else this.#j().kill()
+    )
+  }
+MainPingPong=(
+  j=J.#$of()
+  j.loadCode(fullName=S"foo.Bar2",code=S"""
+    |package foo;
+    |import is.L42.platformSpecific.javaEvents.Event;
+    |public record Bar2(Event event){
+    | public Bar2{
+    |    event.registerEvent("BarIn",(k,id,msg)->{
+    |      System.out.println("Ping Event received "+id+" "+msg);
+    |      event.submitEvent("BarOut","fromJavaToL42","pong");
+    |      });
+    |    event.registerEvent("Kill",(k,id,msg)->{
+    |      System.out.println("Doing cleanup before slave JVM is killed");
+    |      System.exit(0);
+    |      });
+    |    }
+    |  }
+    """)
+  model=Model(count=0\, j=j)
+  model.fromJavaToL42(msg=S"Initial message")
+  keys=S.List[S"BarOut"]//mut: model can update it and add/remove keys to fetch
+  models=J.Handler.Map[key=S"BarOut" mutVal=model]//mut: models can update it and (un)register models
+  for e in j(keys) ( e>>models )
+  {}:Test"completedOk"(Bool.true())
+  )
 MainAsk=(
   j=J.#$of()
   j.loadCode(fullName=S"foo.Bar1",code=S"""
@@ -15,45 +51,8 @@ MainAsk=(
   |  }
   """)
   text=j.askEvent(key=S"BarAsk", id=S"anId",msg=S"aMsg")
-  Debug(S"[[%text]]")
-  )
-*/
-Model=Data:J.Handler:{
-  var I count, mut J j
-  @J.Handler mut method Void fromJavaToL42(S msg)=(
-    this.count(\count+1\)
-    Debug(S"pong received %msg with count=%this.count()")
-    if this.count()<40I (
-      this.#j().submitEvent(key=S"BarIn", id=S"ping", msg=S"the message %this.count()")
-      whoops J.Fail
-      )
-    else (
-      this.#j().submitEvent(key=S"Kill",id=S"",msg=S"")
-      catch exception J.Fail _ void
-      )
-    )
-  }
-MainPingPong=(
-  j=J.#$of()
-  j.loadCode(fullName=S"foo.Bar2",code=S"""
-  |package foo;
-  |import is.L42.platformSpecific.javaEvents.Event;
-  |public record Bar2(Event event){
-  | public Bar2{
-  |    event.registerEvent("BarIn",(k,id,msg)->{
-  |      System.out.println("Ping Event received "+id+" "+msg);
-  |      event.submitEvent("BarOut","fromJavaToL42","pong");
-  |      });
-  |    event.registerEvent("Kill",(k,id,msg)->{
-  |      System.out.println("Doing cleanup before slave JVM is killed");
-  |//      System.exit(0);
-  |      });
-  |    }
-  |  }
-  """)
-  model=Model(count=0\, j=j)
-  model.fromJavaToL42(msg=S"Initial message")
-  keys=S.List[S"BarOut"]//mut: model can update it and add/remove keys to fetch
-  models=J.Handler.Map[key=S"BarOut" mutVal=model]//mut: models can update it and (un)register models
-  for e in j(keys)( e>>models )
+  {}:Test"OptOk"(actual=text, expected=S"""
+    |["any string computed in Java using anId and aMsg"]"
+    """.trim())
+  Debug(text)
   )

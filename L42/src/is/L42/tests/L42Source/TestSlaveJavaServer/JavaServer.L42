@@ -15,11 +15,15 @@ Event$={
   }
 @Public mut method mut EventIterator (mut S.List that)
   =EventIterator(this,streams=that)
-@Public class method mut This #$of()=this.#$of::0()
-class method mut This #$of::0()
+@Public class method mut This #$of()=this.#$of::0(alive=Bool.false())
+class method mut This #$of::0(Bool alive)
+read method Bool alive::0()
+mut method Void alive::0(Bool that)
+@Public read method Bool alive()=this.alive::0()
 
 @Public mut method Void loadCode(S fullName,S code)[Fail]=(
   S res=This.#$loadCode(fullName=fullName,code=code)
+  this.alive::0(Bool.true())
   catch System.JavaException x (exception Fail"%x.text()")
   if res!=S"" (error Fail"%res")
   )
@@ -46,6 +50,11 @@ class method S.Opt #$submitEvent(S key,S id,S msg)[System.JavaException]=native{
   serverSlave{}{
   is.L42.platformSpecific.javaEvents.Event.instance().submitEvent(#1,#2,#3);
   return "";}} error void
+@Public mut method Void kill()=(
+  (this.submitEvent(key=S"Kill",id=S"",msg=S"")
+  catch exception Fail _ void)
+  this.alive::0(Bool.false())
+  )
 
 @Public mut method S.Opt askEvent(S key, S id, S msg)[Fail]={
   return This.#$askEvent(key=key,id=id,msg=msg)

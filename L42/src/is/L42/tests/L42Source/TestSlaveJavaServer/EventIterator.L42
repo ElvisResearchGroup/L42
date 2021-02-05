@@ -24,7 +24,8 @@ mut method Event from(S res)=(
 mut method Event #elem#imm(I that)={
   var res=this.#that().nextEvent(keys=this.keys())
   catch Fail f (
-    if f.text()!=S"java.util.concurrent.CancellationException%S.nl()null" error f
+    end = f.text().startsWith(S"java.util.concurrent.CancellationException%S.nl()")
+    if !end && this.that().alive() error f
     aKey=this.#streams().left()
     while !this.#streams().isEmpty() (this.#streams().removeRight())
     return Event(key=aKey, id=S"##Empty##", msg=S"")
