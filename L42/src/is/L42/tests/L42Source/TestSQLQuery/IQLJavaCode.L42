@@ -29,6 +29,10 @@ class method S ()=S"""
   |    keys.clear();
   |    keys.addAll(res.get(0).keySet());
   |    java.util.Collections.sort(keys);
+  |    if (res.size()==1){
+  |      var emptyShape=res.get(0).values().stream().allMatch(s->s!=null&&s.isEmpty());
+  |      if(emptyShape){res=List.of();}
+  |      }
   |    index=-1;
   |    }
   |  String execute(String query){runQuery(query);return "";}

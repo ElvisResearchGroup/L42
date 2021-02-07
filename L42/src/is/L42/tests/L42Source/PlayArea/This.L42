@@ -3,7 +3,7 @@ ToJar=Trait:{reuse [AdamTowel]
   Point = Data:{Num x, Num y, Any note}
   A={class method Void foo()=(
     p = Point(x=3Num,y=5Num, note=Name"Info.info()")
-    Debug(S"helloWORLDToJar %p")
+    Debug(S"hello WORLD ToJar %p")
     )}
   class method Void #$main()=A.foo()
   }

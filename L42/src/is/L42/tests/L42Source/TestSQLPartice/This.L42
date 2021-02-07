@@ -1,94 +1,94 @@
 reuse [AdamTowel]
+//We use 3 libraries: JavaServer, GuiBuilder and Query
+LoadJ = Load:{reuse[JavaServer]}
+LoadGui = Load:{reuse[GuiBuilder]}
+Query = Load:{reuse[Query]}
 
-LoadJ=Load:{reuse[JavaServer]}
-GuiJ=LoadJ(slaveName=S"miniGuiSlave{}")
-LoadGui=Load:{reuse[GuiBuilder]}
-Gui=LoadGui(javaServer=GuiJ)
+//SQL part
+DbJ = LoadJ(slaveName=S"dbServer{}") //slave for the DB connection
+DB = Query.sql(//instantiate Query for SQL queries
+  connectionString=S"jdbc:derby:PersonsGui;create=true",
+  javaServer=DbJ)
 
-DbJ=LoadJ(slaveName=S"dbServer{}")
-Query=Load:{reuse[Query]}
-DB=Query.sql(connectionString=S"jdbc:derby:PersonsGui;create=true",javaServer=DbJ)
+SetUp = {...}//set up the DB tables in case this is the first run
 
-SetUp={...}
-Table=DB.#$of().tables()
+Table = DB.#$of().tables() //reify the DB tables (here is just Person)
 
-IQL=Query.iql(javaServer=GuiJ)
-
-
-Person=Data:{S name, I age, I height, I weight}
-Persons=Collection.list(Person)
-Key=Data:{I id}
-Keys=Collection.list(Key)
-Queries=DB.QueryBox:{
-  @Public All=DB.query[Table.Person.List]"SELECT * FROM Person"
+Queries = DB.QueryBox:{//A box with all the queries we want to support
+  @Public All = DB.query[Table.Person.List]"SELECT * FROM Person"
   
-  @Public Insert=DB.query[Void;S;I;I;I]"""
+  @Public Insert = DB.query[Void;S;I;I;I]"""
     |INSERT INTO Person (name,age,height,weight)
     |Values (@name,@age,@height,@weight)
     """
-  @Public DeleteId=DB.query[Void;I]"DELETE FROM Person WHERE id=@id"
-  @Public DeleteName=DB.query[Void;S]"DELETE FROM Person WHERE name=@name"
+  @Public DeleteId = DB.query[Void;I]"DELETE FROM Person WHERE id=@id"
+  @Public DeleteName = DB.query[Void;S]"DELETE FROM Person WHERE name=@name"
   }
-AddPersons=IQL.query[Persons]"""
-  | 'Add data for more persons' Pages('Add data for more persons')
-  | name 'name' String
-  | age  'age'  Integer
-  | height 'height' Decimal
-  | weight 'weight' Decimal
-  """//{regex='[0-9]*\\.[0-9][0-9]'}
-RemoveById=IQL.query[Keys]"""
-  | 'Deleting an entry' Single('Entry to delete?')
-  | id 'index' String
-  """
-PName=Data:{S name}
-PNames=Collection.list(PName)
-RemoveByName=IQL.query[PNames]"""
-  | 'Deleting entries' Tabular('Entries to delete?')
-  | name 'name' String
-  """
-  
-Model=Data:GuiJ.Handler:{
+
+//IQL part
+GuiJ = LoadJ(slaveName=S"miniGuiSlave{}") //slave for IQL and Gui
+IQL = Query.iql(javaServer=GuiJ)//instantiate Query for IQL queries
+//types expected by the IQL queries
+Person = Data:Data.AddList:{S name, I age, I height, I weight}
+Key = Data:Data.AddList:{I id}
+PName = Data:Data.AddList:{S name}
+
+Dialogs = IQL.QueryBox:{//A box with all the queries we want to support
+  @Public AddPersons = IQL.query[Person.List]"""
+    | 'Add data for more persons' Pages('Add data for more persons')
+    | name 'name' String
+    | age  'age'  Integer
+    | height 'height' Decimal
+    | weight 'weight' Decimal
+    """//{regex='[0-9]*\\.[0-9][0-9]'}
+  @Public RemoveById=IQL.query[Key.List]"""
+    | 'Deleting an entry' Single('Entry to delete?')
+    | id 'index' String
+    """
+  @Public RemoveByName = IQL.query[PName.List]"""
+    | 'Deleting entries' Tabular('Entries to delete?')
+    | name 'name' String
+    """
+  }
+
+//GUI part
+Gui=LoadGui(javaServer=GuiJ)  
+Model=Data:GuiJ.Handler:{ //the model answering to Java events
   mut GuiJ j
-  mut Queries q
+  mut Queries sql
+  mut Dialogs iql
+  mut method Void submitEvent(S that, S msg)[_] =
+    this.#j().submitEvent(key='Example.Display, id=that, msg=msg)
   @GuiJ.Handler mut method Void printAll(S msg)=(
-    all=this.#q().all()()
-    //this.#j().submitEvent(key='Example.Display, id=S"label1", msg=all.toS())
-    this.#j().submitEvent(key='Example.Display, id=S"tableClear", msg=S"")
-    for (id,name,age,height,weight) in all (
-      this.#j().submitEvent(key='Example.Display, id=S"tableAdd",
-        msg=S"%id,%name,%age,%height,%weight,")
+    this.submitEvent(S"tableClear", msg=S"")
+    for (id,name,age,height,weight) in this.#sql().all()() (
+      this.submitEvent(S"tableAdd", msg=S"%id,%name,%age,%height,%weight,")
       )
     whoops DB.Fail, GuiJ.Fail
     )
   @GuiJ.Handler mut method Void addPerson(S msg)=(
-    ps=AddPersons(IQL(this.#j()))()
-    for (name,age,height,weight) in ps (
-      this.#q().insert()(name=name, age=age height=height weight=weight)
+    for (name,age,height,weight) in this.#iql().addPersons()() (
+      this.#sql().insert()(name=name, age=age, height=height, weight=weight)
       )
     this.printAll(msg=msg)
     whoops DB.Fail, IQL.Fail
     )
   @GuiJ.Handler mut method Void removeById(S msg)=(
-    ks=RemoveById(IQL(this.#j()))()
-    for (id) in ks (//zero or one time
-      this.#q().deleteId()(id=id)
+    for (id) in this.#iql().removeById()() (//zero or one time
+      this.#sql().deleteId()(id=id)
       )
     this.printAll(msg=msg)
     whoops DB.Fail, IQL.Fail
     )
   @GuiJ.Handler mut method Void removeByName(S msg)=(
-    ks=RemoveByName(IQL(this.#j()))()
-    for (name) in ks (//zero or one time
-      this.#q().deleteName()(name=name)
+    for (name) in this.#iql().removeByName()() (//zero or one time
+      this.#sql().deleteName()(name=name)
       )
     this.printAll(msg=msg)
     whoops DB.Fail, IQL.Fail
     )
   }
-Main=(
-  q=Queries(DB.#$of())
-  j=GuiJ.#$of()
-  model=Model(j=j,q=q)
+OpenGui = {class method Void (mut GuiJ j)[_] = (
   gui=Gui(j=j,package=S"miniGui",imports=S"""%
     | %Gui.defaultImports()
     | import javax.swing.table.DefaultTableModel;
@@ -117,6 +117,14 @@ Main=(
     |{event.registerEvent("Example.Display","tableClear",
     |  (k,id,msg)->SwingUtilities.invokeLater(()->tModel.setRowCount(0)));}
     """
-  for e in j(\['Example]) ( e>>model )
+  )}
+//Finally, the Main puts all together
+Main=(
+  j=GuiJ.#$of()//the Java GUI slave
+  sql=Queries(DB.#$of())//sql queries and the Java DB slave
+  iql=Dialogs(IQL(j))//iql queries supported by the GUI slave
+  model=Model(j=j,sql=sql,iql=iql)
+  OpenGui(j=j)
+  for e in j(\['Example]) ( e>>model )//event loop
   )
-TearDown={...}
+TearDown={...}//clean up

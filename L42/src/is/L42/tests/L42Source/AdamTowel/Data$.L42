@@ -1,0 +1,37 @@
+class method Void checkCoherent(Library that)[Class$IncoherentClass]=
+  this.checkCoherent(n=Introspection.Nested.from(library=that))
+class method Void checkCoherent(Introspection.Nested n)[Class$IncoherentClass]=(
+  S s=n.isCoherent()
+  if s!=S"" exception Class$IncoherentClass"%s"
+  for ni in n.nesteds() this.checkCoherent(n=ni) 
+  )
+
+//Extra features that can be manually added as in
+//Point = Data:Data.AddList:{Num x, Num y} 
+TraitAddList = Trait({
+  $={read method Bool readEquality(read This that)}
+  List=Collection.list($)
+  })['$=>'This]
+TraitAddSet = Trait({
+  $={read method Bool readEquality(read This that)}
+  Set=Collection$.set($)
+  })['$=>'This]
+TraitAddOpt = Trait({
+  $={read method Bool readEquality(read This that)}
+  Opt=Collection.optional($)
+  })['$=>'This]
+@Public AddList = {class method This()
+  @Public ClassOperators={class method This1() = This1()}
+  @Public method Library :(Library lib)[_] = (this:Trait(lib)).code()
+  @Public method Trait :(Trait that)[_] = TraitAddList+that
+  }
+@Public AddSet = {class method This()
+  @Public ClassOperators={class method This1() = This1()}
+  @Public method Library :(Library lib)[_] = (this:Trait(lib)).code()
+  @Public method Trait :(Trait that)[_] = TraitAddSet+that
+  }
+@Public AddOpt = {class method This()
+  @Public ClassOperators={class method This1() = This1()}
+  @Public method Library :(Library lib)[_] = (this:Trait(lib)).code()
+  @Public method Trait :(Trait that)[_] = TraitAddOpt+that
+  }

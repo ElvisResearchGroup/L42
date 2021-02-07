@@ -33,7 +33,7 @@ import is.L42.visitors.WellFormedness;
 
 public class ToJar {
   long timeNow=System.currentTimeMillis();
-  public void of(Path jarName,Core.L lib,List<C>cs,S main) throws IOException, CompilationError {
+  public void of(Path jarName,Core.L lib) throws IOException, CompilationError {
     var nc=new Core.L.NC(lib.poss(),L(),new C("Top",-1), lib);
     var info=Info.empty.withTyped(true);
     lib=new Core.L(lib.poss(),false,L(),L(),L(nc), info, L());

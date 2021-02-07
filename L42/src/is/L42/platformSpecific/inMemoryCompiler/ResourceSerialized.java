@@ -41,15 +41,9 @@ public class ResourceSerialized implements Serializable{
     JarEntry entry = new JarEntry(fileName);
     entry.setTime(time);
     target.putNextEntry(entry);
-    try(
-      var bos=new ByteArrayOutputStream();
-      var out=new ObjectOutputStream(bos);
-      ){
-      out.writeObject(this);
-      out.flush();
-      bos.flush();
-      target.write(bos.toByteArray());
-      }
+    var out=new ObjectOutputStream(target);
+    out.writeObject(this);
+    out.flush();
     target.closeEntry();
     }
   public static ResourceSerialized load(InputStream readerIs){

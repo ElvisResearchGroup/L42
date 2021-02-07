@@ -1,6 +1,4 @@
 @Public AnyToS={class method S (read Any that)={
-  //if that<:read HasToS.Raw b:=Bool.true())
-  //if that<:read HasToS return that.toS()
   if read HasToS.Raw s=that return this.escape(s.toS())  
   if read HasToS s=that return s.toS()
   return System.immToString(System.readClone(that)) 

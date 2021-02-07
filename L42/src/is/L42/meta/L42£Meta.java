@@ -186,7 +186,10 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       var err=new MetaError(wrap);
       Core.L l=libraryCloseAndTyped(l42Lib, err);
       Path fullPath=Constants.localhost.resolve(s+".jar");
-      try{new ToJar().of(fullPath,l,L(),S.parse("main()"));}
+      var mainS=S.parse("#$main()");
+      var main=_elem(l.mwts(),mainS);
+      if(main==null){ err.throwErr(mainS,"Method "+mainS+" not defined inside of the deployed code"); }
+      try{ new ToJar().of(fullPath,l); }
       catch (FileNotFoundException e) {throw unreachable();}
       catch (IOException e) {
         e.printStackTrace();
