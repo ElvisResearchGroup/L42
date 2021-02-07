@@ -71,11 +71,21 @@ public class Event{
     } 
   public void registerEvent(String key,Consumer3 c){
     callbacks.compute(key,(k,v)->{
-      Consumer3 newV=executorAction(c);
-      streams.computeIfPresent(k,(k0,v0)->clearDeque(newV, k0,v0));
-      return newV;
+      streams.computeIfPresent(k,(k0,v0)->clearDeque(c, k0,v0));
+      return c;
       });
     }
+  public void registerEvent(String key,String id,Consumer3 c){
+      callbacks.compute(key,(k,v)->{
+        Consumer3 vOld=v!=null?v:this::defaultAction;
+        Consumer3 cIf=(_key,_id,_msg)->{
+          if(id.equals(_id)){c.accept(_key, _id, _msg);}
+          else {vOld.accept(_key, _id, _msg);}
+          };
+        streams.computeIfPresent(k,(k0,v0)->clearDeque(cIf, k0,v0));
+        return cIf;
+        });
+      }
   public void resetEvent(String key){
     callbacks.put(key,this::defaultAction);
     }
@@ -157,10 +167,6 @@ public class Event{
     }
   public void resetAskEvent(String key){
     askCallbacks.remove(key);
-    }
-  private Consumer3 executorAction(Consumer3 c){
-    return c;
-    //return (key,id,msg)->executor.submit(()->c.accept(key, id, msg));
     }
   private void defaultAction(String key,String id,String msg){
     var s=streams.computeIfAbsent(key,k->new LinkedBlockingDeque<>());

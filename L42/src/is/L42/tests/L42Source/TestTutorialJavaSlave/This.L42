@@ -20,7 +20,7 @@ MainPingPong=(
     |import is.L42.platformSpecific.javaEvents.Event;
     |public record Bar2(Event event){
     | public Bar2{
-    |    event.registerEvent("BarIn",(k,id,msg)->{
+    |    event.registerEvent("BarIn","ping",(k,id,msg)->{
     |      System.out.println("Ping Event received "+id+" "+msg);
     |      event.submitEvent("BarOut","fromJavaToL42","pong");
     |      });

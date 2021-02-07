@@ -462,8 +462,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   public void mkClass(){
     boolean interf=p.topCore().isInterface();
     String jC = J.classNameStr(p);
-    String jCName="new String[]{"+jCName(p.pTails).substring(1)+"}";
-    
+    String jCName="new String[]{"+jCName(p.pTails).substring(1)+"}";    
     header(interf,jC);
     for(T ti:p.topCore().ts()){c(", "); visitT(ti);}
     c("{");indent();nl();

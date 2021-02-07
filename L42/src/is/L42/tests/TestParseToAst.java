@@ -436,7 +436,14 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    passI("S\"foo[%this.bar[])\"","this.bar[]")
  ),new AtomicTest(()->
    passI("S\"foo%this<:A.bar()\"","this<:A.bar()")
- ));}
+ ),new AtomicTest(()->
+   passI("S\"\"\"%\n  |foo%(S\"bar\") bla\n  \"\"\"","(S\"bar\")")
+ ),new AtomicTest(()->
+   passI("S\"\"\"%\n  |foo%S\"bar\" bla\n  \"\"\"","S")//Ok, must be in parenthesis
+ ),new AtomicTest(()->
+   passI("S\"\"\"%\n  |foo%a.bar(S\"bar\") bla\n  \"\"\"","a.bar(S\"bar\")")
+
+  ));}
 public static void pass(String input) {pass(input,input);}
 public static void pass(String input,String output) {
   var r=Parse.e(Constants.dummy,input);

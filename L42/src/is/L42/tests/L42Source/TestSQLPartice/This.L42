@@ -33,9 +33,9 @@ AddPersons=IQL.query[Persons]"""
   | 'Add data for more persons' Pages('Add data for more persons')
   | name 'name' String
   | age  'age'  Integer
-  | height 'height' Decimal{regex='[0-9]*\\.[0-9][0-9]'}
+  | height 'height' Decimal
   | weight 'weight' Decimal
-  """
+  """//{regex='[0-9]*\\.[0-9][0-9]'}
 RemoveById=IQL.query[Keys]"""
   | 'Deleting an entry' Single('Entry to delete?')
   | id 'index' String
@@ -85,7 +85,6 @@ Model=Data:GuiJ.Handler:{
     whoops DB.Fail, IQL.Fail
     )
   }
-JavaCode={...}
 Main=(
   q=Queries(DB.#$of())
   j=GuiJ.#$of()
@@ -96,35 +95,28 @@ Main=(
     """,
     name='Example,x=800\,y=600\
     )
-    
-  buttons = 
-      gui.button(id=S"reset",msg='Pressed,text=S"Reset")
-    ++gui.button(id=S"start",msg='Pressed,text=S"Start")
-    ++gui.button(id=S"addPerson",msg='PressedAdd,text=S"add")
-    ++gui.button(id=S"removeById",msg='PressedRemove,text=S"remove by id")
-    ++gui.button(id=S"removeByName",msg='PressedRemove,text=S"remove by name")
-    ++gui.button(id=S"printAll" msg='PressedPrint text=S"printAll")
   gui"""%
-    |%buttons
     |JPanel screen1=new JPanel();
+    |{add(screen1);}
     |JPanel buttons=new JPanel();
-    |JTable table = new JTable(new DefaultTableModel(
-    |  new Object[][]{},
-    |  new Object[]{"id","name","age","height","weight"}));
-    |{
-    |  event.registerEvent("Example.Display",(k,id,msg)->SwingUtilities.invokeLater(()->{
-    |    if(id.equals("tableAdd")){((DefaultTableModel)(table.getModel())).addRow(msg.split(","));}
-    |    if(id.equals("tableClear")){((DefaultTableModel)(table.getModel())).setRowCount(0);}
-    |    }));
-    |  addNorth(screen1,buttons);
-    |  addFlow(buttons,addPerson);
-    |  addFlow(buttons,removeById);
-    |  addFlow(buttons,removeByName);
-    |  addFlow(buttons,printAll);
-    |  addCenter(screen1,new JScrollPane(table));
-    |  add(screen1);
-    |  }
-  """
+    |{addNorth(screen1,buttons);}
+    |%gui.button(id=S"addPerson",msg='PressedAdd,text=S"add")
+    |{addFlow(buttons,addPerson);}
+    |%gui.button(id=S"removeById",msg='PressedRemove,text=S"remove by id")
+    |{addFlow(buttons,removeById);}
+    |%gui.button(id=S"removeByName",msg='PressedRemove,text=S"remove by name")
+    |{addFlow(buttons,removeByName);}
+    |%gui.button(id=S"printAll" msg='PressedPrint text=S"printAll")
+    |{addFlow(buttons,printAll);}
+    |Object[] tLabels={"id","name","age","height","weight"};
+    |DefaultTableModel tModel=new DefaultTableModel(new Object[][]{},tLabels);
+    |JTable table = new JTable(tModel);
+    |{addCenter(screen1,new JScrollPane(table));}
+    |{event.registerEvent("Example.Display","tableAdd",
+    |  (k,id,msg)->SwingUtilities.invokeLater(()->tModel.addRow(msg.split(","))));}
+    |{event.registerEvent("Example.Display","tableClear",
+    |  (k,id,msg)->SwingUtilities.invokeLater(()->tModel.setRowCount(0)));}
+    """
   for e in j(\['Example]) ( e>>model )
   )
 TearDown={...}

@@ -47,6 +47,8 @@ import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.maps.L42£ImmMap;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.inMemoryCompiler.ToJar;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42Fwd;
@@ -136,29 +138,33 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
+  public static Core.L libraryCloseAndTyped(L42£Library l42Lib, MetaError err){
+      Core.L l=l42Lib.unwrap;
+      assert l.wf();
+      Program p=Program.flat(l);
+      l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient
+        @Override public P visitP(P p){
+          boolean open=p.isNCs() && (p.toNCs().n()>p().dept() || this.p()._ofCore(p)==null);
+          if(open){
+            err.throwErr(p,"Path "+p+" not defined inside of deployed code");
+            }
+          return p;
+          }
+        });
+      try {ProgramTypeSystem.type(true, p);}
+      catch(EndError e){
+        err.throwErr(l42Lib,e.toString());
+        }
+      l=l.accept(new CloneVisitor(){
+        @Override public Core.L.Info visitInfo(Core.L.Info info){
+          return info.withTyped(true);
+          }});
+      return l;
+      }
   
   public L42£Void deployLibrary(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=l42Lib.unwrap;
-    assert l.wf();
-    Program p=Program.flat(l);
-    l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient
-      @Override public P visitP(P p){
-        boolean open=p.isNCs() && (p.toNCs().n()>p().dept() || this.p()._ofCore(p)==null);
-        if(open){
-          err.throwErr(p,"Path "+p+" not defined inside of deployed code");
-          }
-        return p;
-        }
-      });
-    try {ProgramTypeSystem.type(true, p);}
-    catch(EndError e){
-      err.throwErr(l42Lib,e.toString());
-      }
-    l=l.accept(new CloneVisitor(){
-      @Override public Core.L.Info visitInfo(Core.L.Info info){
-        return info.withTyped(true);
-        }});
+    Core.L l=libraryCloseAndTyped(l42Lib, err);
     Path fullPath=Constants.localhost.resolve(s+".L42");
     try(
       var file=new FileOutputStream(fullPath.toFile()); 
@@ -176,6 +182,26 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     //the same type of the String
     return L42£Void.instance;
     }
+  public L42£Void deployJar(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+      var err=new MetaError(wrap);
+      Core.L l=libraryCloseAndTyped(l42Lib, err);
+      Path fullPath=Constants.localhost.resolve(s+".jar");
+      try{new ToJar().of(fullPath,l,L(),S.parse("main()"));}
+      catch (FileNotFoundException e) {throw unreachable();}
+      catch (IOException e) {
+        e.printStackTrace();
+        throw todo();
+        }
+      catch (CompilationError e) {
+        e.printStackTrace();
+        throw todo();
+        }
+      //TODO: should throw a non deterministic exception as for 
+      //memory overflow/stack overflow. It should be error S,
+      //the same type of the String
+      return L42£Void.instance;
+      }
+
   public L42£Library sifo(L42£Library input,L42Any top,Function<L42£LazyMsg,L42Any>wrap){
     L l=input.unwrap;
     var pathTop=unwrapPath(top).toNCs();

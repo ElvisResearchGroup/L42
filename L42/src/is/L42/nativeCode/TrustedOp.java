@@ -272,6 +272,8 @@ public enum TrustedOp {
   //####META####
   DeployLibrary("deployLibrary",Map.of(
     Meta,use("return %s.deployLibrary(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
+  DeployJar("deployJar",Map.of(
+          Meta,use("return %s.deployJar(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(

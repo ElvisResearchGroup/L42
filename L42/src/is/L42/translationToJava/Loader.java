@@ -50,7 +50,7 @@ public class Loader {
   public int libsCachedSize(){return libs.size();}//needed for double checking on caching
   public int bytecodeSize(){return classLoader.map().size();}//needed for double checking on caching
   final HashSet<String>loaded=new HashSet<>();
-  final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
+  public final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
   public void loadByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
     libs.clear();
     libs.addAll(newLibs);
