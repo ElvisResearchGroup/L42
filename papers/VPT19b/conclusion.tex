@@ -1,0 +1,8 @@
+\section{Conclusion and Future Work}\label{s:conc}
+As we have shown with our examples, iterative composition is quite powerful, we believe we can use this power together with our approach to perform complex code transformations over statically verified code, without needing further verification. 
+
+For a trait literal to be statically verified, the verifier needs to see the contracts of any methods called within it, this precludes such literals from referencing code that has yet to be meta-programmed. This hampers the common technique of using meta-programming to add methods to a trait: the input trait cannot call such additional methods, since they have not been generated yet. A workaround to this is to provide the declaration and contracts (but not implementation) of any method a trait literal needs to call. This however lessens some of the advantages of meta-programming.
+
+We would like to prove that our contract matching /extend/ function is `sound', as well as investigating the soundness of other composition operators (such as ones that make traits reference different classes, with possibly different method contracts).
+
+We leave the complicated task of actually implementing static verification for an iterative composition language, such as `42'~\cite{l42}, to future work. In particular, it would be worthwhile investigating how contracts of meta-operations (like our /pow_generate/ and /combine_accounts/ functions) could be specified and verified.

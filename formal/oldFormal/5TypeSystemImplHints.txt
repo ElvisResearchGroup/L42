@@ -1,0 +1,212 @@
+//Note for James: this file is not ready to read yet
+----------------------------- 
+1 Deteministic strategy for type system
+-----------------------------
+type system:
+TSIn: Delta,e,T
+TSOut: either OK(TSIn,e,T,Tr) or Error(TSIn,String,Opt(T)) //Error.T is the obtained type that is not a subtype of expected one.
+
+object with 
+-memoized hash map TSIn->TSOut
+
+ts(TSIn in)->TSOut
+  use Anonymous Visitor to dispatch to specific ts
+tsPath(TSIn in,Path p)->TSOut //assert in.e == p, etc. for other cases
+  ...follow rule Path...
+..other cases...
+  
+structure of all tsXX methods://or just the dispatch one :-)
+  TSOut res=_memoizedTSRes(in);
+  if (res!=null){return res;}
+  try{
+    ... return res=e; ...
+    }
+  finally{memoizeTSRes(in,res);}//remember, memoizeTSRes need to not memoize null res
+  
+non trivial methods: tsBlock and tsMCall 
+
+tsBlock(TsIn in,Block e)->TSOut
+  res1=tsBlockBase(in,e)
+  if res1.isOk(){return res=res1;}
+  if !promotionMakesSense(){return res=res1;}//promotionMakesSense: mut that need capsule
+  res2=tsBlockPromotion(in,e)//calls tsBlock internally,
+  //thanks to promotionMakesSense does not goes in loop
+  if res2.isOk(){return res=res2;}
+  //if we are here, both res1,res2 not ok
+  return res=combine(res1,res2)
+  
+splitDs(ds)->i
+  //Algorithm to divide ds in the first minimal ds1, ds2
+  ds=ds0..dsn;
+  domi=dom(dsi+1..dsn)
+  var xs=empty
+  var i=0
+  loop (
+    xs= xs U  FV(ei)
+    if (domi\xs) = domi then return i
+    //cut will be from 0 to i included
+    i:=i+1
+    if i==n return i //ds.size-1
+    )
+   error X""// would be unreachable return i //that is, ds=d1..di , di+1..dn
+  
+tsMCall(TSIn in,MCall e)->TSOut
+  Path rec=guessType(e.receiver)
+  mTypes=computeMTypes(in.p,rec,e.s)//TODO: in code error if meth not there
+  //memoizing mTypes would be a mistake since we can not abstract over p and [from rec]
+  // 1 select the first match with acceptable return type
+  mType=_firstMatchReturn(TSIn.T,mTypes)
+  if mType==null return res=Error???
+  //unachievable return type (T) for method (P.s) [line numbers of expression and declaration]
+  //2 type all the parameters with mutOnlyToLent(Ts) //we may include mutOnlyToLent in the computation of the MTypes, instead of in the loop below
+  resp=TSOut[with ei in e.es.withAlso(left:e.receiver), Ti in mTypes.Ts
+    resi=ts(in.with(e:ei, t:mutOnlyToLent(Ti)))
+    if !resi.isOk() return res=combineContext(TSIn,resi)
+    use[resi]   
+    ]
+  assert forall r in resp, r.isOk()
+  ---------------------
+  mTypeRev=_bestMatchMtype(Ts[with r in resp (use[r.T])],TSIn.T,mTypes) 
+  if mTypeRev!=null 
+    return res=makeMCallOK(TSIn,resp,mTypeRev)//mTypeRev.returnType needed, and Trs[with r in resp (use[r.Tr])].collapse())
+  //3 if there is no matching method, we may need to retype some mut
+  //in capsule caused by mvp:
+  //it is  not over if there is a mathing method type with mutToCapsule(result param types)
+  tsToCaps=Ts[with r in resp (use[mutToCapsule(r.T)])] //TODO: If some mutToCapsule fails, then the whole methCall fails
+  mTypeMVP=_bestMatchMtype(tsToCaps,TSIn.T,mTypes)
+  ------------------
+  if mTypeMVP==null Error????
+  //this assert could not work: assert firstMatchParameters(tsToCaps,mTypesRes-mTypeMVP) fails
+  //To be happy, we can retype the obtained mut parameters into expected capsule
+  respMVP=TSOut[with ri in resp, T ti in mTypeMVP.TS (
+    if (ri.mdf <= ti.mfd) (
+      assert ri.mdf != Mdf.mut //James think this assertion may fail for ri/ti= read 
+      use [ri]
+      )
+    else(
+      assert ri.mdf == Mdf.mut
+      assert ti.mdf == Mdf.capsule
+      resi=ts(ri.in.with(expectedT:ti))
+      if !resi.isOK()  return Error???
+      use [resi]
+      )
+    )]
+  assert forall r in respMVP, r.isOk()
+  return res=makeMCallOK(TSIn,respMVP,mTypeMVP)
+
+//Notes on mtypes obtained during testing:
+-noFwd(mImmFwd(base))!=mI(mRead(base)), for example if
+a read parameter is present in base, it becomes imm only on the left
+-they can be different, and none of the two 
+is always better (methT subtype)
+//----
+computeMTypes
+  order of first list; //some entries may have the same value
+  mBase
+  mNoFwd(mBase)
+  mImmFwd(mBase)
+  mRead(mBase)
+  mC(mBase)
+  mC(mNoFwd(mBase))
+  mI(mBase)
+  mI(mRead(mBase))
+  mNoFwd(mImmFwd(mBase))  
+  mVp(mBase) //1 mType for each mut parameter
+  mVp(mNoFwd(base))//1 mType for each mut parameter
+  
+_firstMatchReturn(T)
+moves along the list and select the first with a
+compatible return type
+_bestMatchMtype(Ts->T)
+for all the mt subtype of Ts->T, select the one with
+the most precise return type
+
+_memoizedTSRes(in) //need attention: we can not use .equals on p
+  in=Phase,p,G,e,T
+  equality on in will use the identity of p and e
+  return map.get(in)
+memoizeTSRes(in,res)
+  assert map(in)==null
+  return map.put(in,res)
+  
+  -------------
+  Erorr structors and error improvments:
+  -error safety interact badly with error messages:
+    can we retype without error safety to discover where is the problem?
+    can we identify when a certain variable is hidden/demotes?
+  -method chunks? calling a(b(c(d))), where is the problem if 
+  there is an invalid subtype, thanks to alternative method typing?
+  should we blame the whole chunk?
+  
+  
+  
+  
+  
+----------------
+Notes:
+Coherent and union types:
+to easy translation in Java/etc, we can not accept the following
+A,B interface
+C,D implements A,B
+
+I implements C,D
+class method This f(I x   )
+mut method Void x ( C that)
+mut method Void #x ( D that)
+read method A x()
+read method B #x()
+as coherent, since the field would be an union type of C and D
+
+
+
+(catch precise any)//notice, needs to be Any, it can't be 
+//(exception A() exception B() catch exception C x useXAsB(x) ) 
+//because even if A unrelated B, C; B <C    may be somewhere far away:: D extends A, C
+Phase |p |G |Tr|-catch return Any x e ~> catch return T1 x e': T | Tr'
+where
+not catchRethrow(catch return Any x e)
+T1=T if p |-T'<=T forall T' in Tr.T
+Phase |p |G+x:T1|- e ~> e':_<=T| Tr'
+
+--------------------------
+Notationandgrammar:
+e::=..|  x:=e//done
+d::= var? T x=e | var? x=chain//done
+chain::=..|(ds ks e) with guessable(ds ks e)
+T::= mdf P /*remove skeletaltypes*/
+
+d not well formed if var+capsule or var+fwd
+
+guessable(ds e)=guessable(e)
+guessable(ds ks catch throw x e ks' throw _)= guessable(e)
+  with
+  all e in {ks.es,ks'.es} of form throw _
+  not catchRethrow(catch throw x e)
+
+How to actually guess if is return?
+guess(G, d1..dn ks catch return T x e ks' throw _)= guess(G[x:mdf T.P],e)
+  with
+  all e in {ks.es,ks'.es} of form throw _
+  not catchRethrow(catch throw x e)
+  mdf=mostGeneralMdf(guessMdf(G[d1..dn],d1.e)U..U guessMdf(G[d1..dn],dn.e))
+  
+guessMdf(G,void)=guessMdf(G,P)=guessMdf(G,L)=guessMdf(G,x)=..=empty
+guessMdf(G,return e)=guess(G,e).mdf
+guessMdf(G,(ds k1..kn e))=guessMdf(G,e)U?? guessMdf(G[ki.x:ki.T],ki.e).. 
+  with return =ki.throw
+// do we still have a limit that all the catches must catch the same kind of throw?
+otherwise
+guessMdf(G,(d1..dj k1..kn e))=guessMdf(G,e) 
+  U guessMdf(G[k1.x:k1.T],k1.e) U..U guessMdf(G[kn.x:kn.T],kn.e)
+  U guessMdf(G[d1..dj],d1.e) U..U guessMdf(G[d1..dj],dj.e)
+  
+D::= ...;xs //the var in G//no added to the G as var?//done
+
+
+
+ in rule ds now we add the guessed T to ds without T; this
+ can cause a type error if guessed is capsule and d is var
+ since d not well formed if var+capsule
+
+ Note: capsule P is never guessed, is demoted to mut P,
+ to avoid suprisingly use only onece references.

@@ -1,0 +1,41 @@
+mut Math.Random r
+mut JServer j
+var V.Point3D c
+I side=64I
+Double sideD=64Double
+read method Double <=(Double that)=that.max(0.5\).min(this.sideD()-1.5\)
+class method mut This #$of()=This(
+  r=Math.Random(seed=10\)//Math.Random.#$random(), //10 has a lake
+  j=JServer.#$of(),
+  c=V.Point3D(x=25\,y=25\,z=25\))
+
+@JServer.Handler mut method Void ping(S msg)=void
+
+RandomMap=Data:{...}
+@JServer.Handler mut method Void start(S msg)=(
+  map=RandomMap(
+    r=this.#r(),
+    waterLevel=5\,rockLevel=60\,mountainLevel=75\)
+  map.heightMap()
+  map.makeGrass()
+  map.makeTrees()
+  map.markRocks()
+  map.noUnderZero()
+  this.#j().submitEvent(key='Example.SetMap, id=S"",msg=map.msg())
+  this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
+  whoops Message.Guard
+  )
+@JServer.Handler mut method Void pressed(S msg)=(
+  if msg==S"Left" (this.c(\c.with(x=this<=\x-\"0.1")))
+  if msg==S"Right" (this.c(\c.with(x=this<=\x+\"0.1")))
+  if msg==S"Up" (this.c(\c.with(y=this<=\y-\"0.1")))
+  if msg==S"Down" (this.c(\c.with(y=this<=\y+\"0.1")))
+  if msg==S"q" (this.c(\c.with(z=this<=\z-\"0.1")))
+  if msg==S"a" (this.c(\c.with(z=this<=\z+\"0.1")))
+  this.#j().submitEvent(
+    key='Example.SetCamera,
+    id=S"", 
+    msg=S"%this.c().x();%this.c().y();%this.c().z()"
+    )
+  whoops Message.Guard
+  )

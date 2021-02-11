@@ -1,0 +1,85 @@
+DEFINE Redirect(p, L0, C0s, P0) ≔
+	IF ¬Primitive(P0):
+		P0 ≔ "This"(P0.n + 1) + P0.Cs
+
+	p ≔ EvilPush(p, L0)
+	A ≔ {C0s ↦ {P0}}
+	V ≔ ∅ // A function from Cs → P 
+	E ≔ ∅ // A set of paris (Pz, Pz)
+
+	WHILE LET {P} ≔ A(Cs):
+		ERROR IF Cs = ∅ ∨ Private(Cs) ∨ PathDefined(L0, Cs)
+		 
+		L  ≔ L0[Cs]
+		L′ ≔ p[P]
+
+		ERROR IF HasPrivateState(L) ∨ ¬NoImplementation(L)
+		ERROR IF L.interface ≠ L′.interface ∧ (L.interface ∨ UsedAsPath(L0, "This0".Cs))
+
+		DO: // Check implemented interfaces:
+			Ps  ≔ {P  ∈  L.Ps ⦁ FromP(P, "This0." + Cs)}
+			Ps′ ≔ {P′ ∈ L′.Ps ⦁ FromP(P′, P)}
+			ERROR IF Ps′ = ∅ ∧ Ps ≠ ∅ 
+			
+			FOREACH P ∈ Ps:
+				IF Outer(P):
+					ERROR IF P ∉ Ps′
+				ELSE:
+					A ⧺= P.Cs ↦ Ps′\{P ∈ Ps | Outer(P)}
+
+		FOR M ∈ L.Ms: // Redirect Members
+			ERROR IF M.Id ∉ Dom(L′.Ms)
+			LET M′ ≔ L′.Ms[M.Id]
+			ERROR IF Kind(M′) ≠ Kind(M)
+
+			IF Kind(M) = "Class":
+				A  ⧺= (Cs + M.C) ↦ {P + M.C}
+			ELSE:
+				Mwt  = FromM(M, "This0" + Cs)
+				Mwt′ = FromM(M′, P)
+				
+				ERROR IF Mwt.μ ≠ Mwt′.μ
+
+				FOR (T, T′) ∈ Zip(Mwt.TR + Mwt.TAs,  Mwt′.TR + Mwt′.TAs)
+					ERROR IF T.μ ≠ T′.μ
+					IF Outer(T.P):
+						ERROR IF T.P ≠ T′.P
+					ELSE:
+						A  ⧺= T.P.Cs ↦ {T′.P}
+				
+				DO: // Check exceptions:
+					PEs  = {T ∈  Mwt.TEs ⦁ T.P}
+					PEs′ = {T ∈ Mwt′.TEs ⦁ T.P}
+					PIs = { P ∈ PEs | ¬Outer(P) }
+
+					E ∪= {(PEs, PEs′)}
+
+					FOREACH P ∈ PIs:
+						A  ⧺= P.Cs ↦ PEs′
+					
+					ERROR IF #PEs′ < #PIs + #((PEs ∖ PIs) ∩ PEs′)
+			
+		V ∪= {Cs ↦ P}
+		FOR Cs ↦ P ∈ V:
+			IF LET Pz ≔ A(Cs):
+				ERROR IF P ∉ Pz
+				A ∖= {Cs ↦ Pz}
+
+	ERROR IF A ≠ ∅
+
+	FOR (Pz1, Pz2) ∈ E:
+		ERROR IF Pz2 ⊈ {P ∈ Pz1 ⦁ Outer(P) ? P : V(P.Cs)}
+
+	FOREACH Cs ↦ P ∈ V:
+		L0 ≔ Rename(L0, Cs, P)
+		L0 ≔ Remove(L0, Cs)
+	RETURN L0
+
+DEFINE A  ⧺ Cs ↦ Pz ≔
+	IF LET Pz′ ≔ A(Cs):
+		Pz′ ∩= Pz
+		ERROR IF Pz′ = ∅
+		A ⊕ {Cs ↦ Pz′}
+		
+	ELSE:
+		A ∪ {Cs ↦ Pz}

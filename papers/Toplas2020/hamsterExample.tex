@@ -1,0 +1,154 @@
+ 
+Suppose we have a \Q@Cage@ class which contains a \Q@Hamster@; the \Q@Cage@ will move its \Q@Hamster@ along a path. We would like to ensure that the \Q@Hamster@ does not deviate from the path. We can express this as the invariant of \Q@Cage@: the position of the \Q@Cage@'s \Q@Hamster@ must be within the path (stored as a field of \Q@Cage@).
+This example is interesting since it relies on \Q@List@s and \Q@Point@s that are not designed with \Q@Hamster/Cage@s in mind.
+
+%We show a detailed analysis on our Spec\# implementation, showing all the effort we put in trying to find better solutions.
+
+%
+% While Spec\# requires specialised \Q@Point@, \Q@Hamster@, and \Q@Cage@ declarations to be able to enforce the invariant, our version manages to capture the required information in just a few annotations on \Q@Cage@ and leaves \Q@Point@ and \Q@Hamster@ unmodified.
+%	if(that==null || !(that instanceof Point)){return false;}
+% 	return ((Point)that).x==this.x && ((Point)that).y==this.y; 
+%  }
+\begin{lstlisting}
+class Point { Double x; Double y; Point(Double x, Double y) {..}
+  @Override read method Bool equals(read Object that) {
+    return that instanceof Point &&
+      this.x == ((Point)that).x && this.y == ((Point)that).y; }}
+class Hamster {Point pos; //pos is imm by default
+  Hamster(Point pos) {..}}
+class Cage {
+  capsule Hamster h;
+  List<Point> path; //path is imm by default
+  Cage(capsule Hamster h, List<Point> path) {..}
+  read method Bool invariant() {
+    return this.path.contains(this.h.pos); }
+  mut method Void move() {
+    Int index = 1 + this.path.indexOf(this.pos()));
+    this.moveTo(this.path.get(index % this.path.size())); }
+  read method Point pos() { return this.h.pos; }
+  mut method Void moveTo(Point p) { this.h.pos = p; }}
+\end{lstlisting}
+
+The \Q@invariant()@ method on \Q@Cage@ simply verifies that the \Q@pos@ of \Q@this.h@ is within the \Q@this.path@ list. This is accepted by our invariant protocol since \Q@path@ is an \Q@imm@ field (hence deeply immutable) and \Q@h@ is a \Q@capsule@ field (hence fully encapsulated). The \Q@path.contains@ call is accepted by our type system as it only needs \Q@read@ access: it merely needs to be able to access each element of the list and call \Q@Point@'s equal method, which takes a \Q@read@ receiver and parameter.
+The \Q@move@ method actually moves the hamster along the path, but to ensure that our restrictions on \Q@capsule@ fields are respected we forwarded some of the behaviour to separate methods: \Q@pos()@ which returns the position of \Q@h@ and \Q@moveTo(p)@ which updates the position of \Q@h@.
+The \Q@pos@ method is needed since \Q@move()@ is a \Q@mut@ method, and so any direct \Q@this.h@ access would cause it to be a capsule mutator, which would make the program erroneous as \Q@move()@ uses \Q@this@ multiple times.
+Similarly, we need the \Q@moveTo(p)@ method to modify the ROG of the \Q@h@ field, this must be done within a capsule mutator that uses \Q@this@ only once.
+
+As our \Q@path@ and \Q@h@ fields are never themselves updated, the only point where the ROG of our \Q@Cage@ can mutate is in the \Q@moveTo(p)@ capsule mutator, thus 
+our invariant protocol will insert runtime invariant checks only here and at the end of the constructor.
+
+\begin{comment}
+We use the \Q@read@ annotation on the \Q@equals(that)@ method to express that it does not modify either its
+receiver or its parameter. In \Q@Cage@ we use 
+the \Q@capsule@ annotation to ensure
+that the modification of the \Q@Hamster@'s ROG is fully under the control
+of the containing \Q@Cage@. 
+We annotated the \Q@move()@
+and \Q@moveTo(p)@ methods with \Q@mut@, since they modify
+their receivers' ROG. The default annotation is \Q@imm@, thus \Q@Cage@'s \Q@path@ field is a deeply immutable list of \Q@Point@s.
+% Note how we just use \Q@List.contains()@ and \Q@List.indexOf()@
+% to check if the hamster position is inside the list.
+% The conventional syntax correctly instantiates a \Q@Cage@:
+% \Q@new Cage(new Hamster(new Point(..)), List.of(new Point(...))@.
+Our system performs runtime checks for the invariant
+at the end of \Q@Cage@'s constructor, \Q@moveTo(p)@ method, and after any update to one of its fields.
+The \Q@moveTo(p)@ method is the only one that may (directly) break the \Q@Cage@'s invariant. However, there is only a single occurrence of \Q@this@ and it is used to read the \Q@h@ field. We use the guarantees of RCs to ensure that no alias to \Q@this@ could be reachable from either \Q@h@ or the immutable \Q@Point@ parameter. Thus, the potentially broken \Q@this@ object is not visible while the \Q@Hamster@'s position is updated. 
+The invariant is checked at the end of the \Q@moveTo(p)@ method, just before \Q@this@ would become visible again.
+This technique loosely corresponds to an implicit pack and unpack: we `unpack' \Q@this@ before reading the field, then we work on the field's value while the invariant of \Q@this@ is not known to hold, finally when returning, we `pack' \Q!this! and check its invariant before allowing it to be used again.
+\end{comment}
+
+Note: since only \Q@Cage@ has an invariant,
+ only the code of \Q@Cage@ needs to be handled carefully; allowing the code for \Q@Point@ and \Q@Hamster@ to be unremarkable.
+ This contrasts with Spec\#: all code involved in  verification needs to be designed with verification in mind~\cite{barnett2011specification}.
+% The best solution we found was to define our own equality for \Q@Point@ instead of relying on \Q@Object.Equals@,
+% thus we could not use \Q@List.Contains@ and \Q@List.IndexOf@.
+
+\subheading{Comparison with Spec\#}
+We now show our hamster example in Spec\#; the system most similar to ours:
+%or \small or \footnotesize etc.
+\begin{lstlisting}[
+language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
+// Note: assume everything is `public'
+class Point { double x; double y; Point(double x, double y) {..}
+  [Pure] bool Equal(double x, double y) {
+    return x == this.x && y == this.y; }}
+class Hamster{[Peer] Point pos; 
+  Hamster([Captured] Point pos){..}}
+class Cage {
+  [Rep] Hamster h; [Rep, ElementsRep] List<Point> path;
+  Cage([Captured] Hamster h, [Captured] List<Point> path)
+    requires Owner.Same(Owner.ElementProxy(path), path); {
+      this.h = h; this.path = path; base(); }
+  invariant exists {int i in (0 : this.path.Count);
+    this.path[i].Equal(this.h.pos.x, this.h.pos.y) };
+  void Move() {
+    int i = 0;
+    while(i<path.Count && !path[i].Equal(h.pos.x,h.pos.y)){i++;}
+    expose(this) {this.h.pos = this.path[i%this.path.Count];}}}
+\end{lstlisting}
+
+In both this and our original version, we designed \Q@Point@ and \Q@Hamster@ in a general way, and not solely to be used by classes with an invariant: thus \Q@Point@ is not an immutable class.
+
+The Spec\# approach uses ownership: the \Q@Rep@ attribute on the \Q@h@ and \Q@path@ fields means its value is owned by the enclosing \Q@Cage@, similarly the \Q@ElementsRep@ attribute on the \Q@path@ field means its \emph{elements} are owned by the \Q@Cage@. Conversely, in the \Q@Hamster@ class, the \Q@Peer@ annotation on the \Q@pos@ field means its value is owned by the owner of the enclosing \Q@Hamster@, thus if a \Q@Cage@ owns a \Q@Hamster@, it also owns the \Q@Hamster@'s \Q@pos@. The \Q@Captured@ annotations on the constructor parameters of \Q@Cage@ and \Q@Hamster@ means that the passed in values must be un-owned and the body of the constructor may modify their owners (the owner is automatically updated when the parameter is assigned to a \Q@Rep@ or \Q@Peer@ field
+%, which is exactly what the bodies of the constructors do\footnote{The last line of \Q@Cage@s constructor, \Q@base@ simply calls its base class's (\Q@Object@'s) constructor, this is effectively a no-op. Spec\# however, does not know it is a side-effect free operation, so had the call been at the begining (the default if ommited), it would be unable to verify that the constructors pre-condition still holds when the \Q@path@ field is assigned.}
+%
+).
+% The pre-condition, \Q@Owner.Same(Owner.ElementProxy(path), path)@ requires that the elements of the \Q@path@ parameter are owned by the owner of the (un-owned) \Q@path@ itself (i.e. the elements are also un-owned).
+%Marco: it was a very involved sentence. To explain it properly it would take much more text. Do we need it?
+
+Though we don't want either \Q@pos@ or \Q@path@ to ever mutate, Spec\# currently has no way of enforcing that an \emph{instance} of a non-immutable class is itself immutable.\footnote{There is a paper~\cite{DBLP:conf/vstte/LeinoMW08} that describes a simple solution to this problem: assign ownership of the object to a special predefined `freezer' object, which never gives up mutation permission, however this does not appear to have been implemented; this would provide similar flexibility to the RC system we use, which allows an initially mutable object to be promoted to immutable.} In Spec\#, an \Q@invariant()@ can only access fields on owned or immutable objects, thus necessitating our use of the \Q@Peer@ and \Q@Rep@ annotations on the \Q@pos@ and \Q@path@ fields.
+
+Note that this prevents multiple \Q@Cage@s from sharing the same point instance in their \Q@path@.
+%, unless they are owned by the same object (such as a \Q@DoubleCage@ containing two \Q@Hamster@s).  
+Had we made \Q@Point@ an immutable class, we would get no such restriction. A similar problem applies to our \Q@pos@ field: the \Q@pos@ of \Q@Hamster@s in different  \Q@Cage@s cannot be the same \Q@Point@ instance.
+Note how if we consider being in the ROG of an object's capsule fields as being `owned' by the object, our \Q@capsule@ fields behave like \Q@Rep@ fields; similarly, \Q@mut@ fields (that are in the ROG of a \Q@capsule@ field) behave like \Q@Peer@ fields.
+
+The \Q@expose(this)@ block is needed, since in Spec\# in order to modify a field of an object (like \Q@this.h.pos@), we must first ``expose'' its owner (the \Q@Cage@). During an \Q@expose@ block, Spec\# will not assume the invariant of the exposed object, but will ensure it is re-established at the end of the block. This is similar to our concept of capsule mutators (like our \Q@moveTo@ method above), however it is supported by adding an extra syntactic construct (the \Q@expose@ block), which we avoid.
+
+Finally, note our custom \Q@Equal(x,y)@ method on \Q@Point@: this is needed since we can't overload the usual \Q@Object.Equals(other)@ method because is marked as \Q@Reads(ReadsAttribute.Reads.Nothing)@, which requires the method not read any fields, even those of its receiver.
+We resorted to making our own \Q@Equal(x,y)@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@Pure@, this requires that it can only read fields of objects owned by the \emph{receiver} of the method, so a method\\* \Q@[Pure] bool Equal(Point that)@ can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to just pass the fields of the other point to the method.
+Sadly this mean we can no longer use \Q@List@'s \Q@Contains(elem)@ and \Q@IndexOf(elem)@ methods, rather we have to expand out their code manually.
+
+% In addition, for our equality method to be (indirectly) called in an invariant, it must be marked as \Q@Pure@, however this requires it only reads fields owned by the \Q@receiver@, however the \Q@Point@s in \Q@path@ and \Q@Hamster@ do not own eachother. \IOComm{"eachother" is more appropriate here than "each other", as that means something different; I could also use "one another" if you want} Thus we made our \Q@Equal@ method simply take the fields of the other \Q@Point@, these are immutable value types and so can be freely used in a \Q@Pure@ method.
+%Since we had to make our own \Q@Equal@ method, we could not use the library defined \Q@Contains@ method, and instead had to implement this operation manually.
+
+Even with all the above annotations, we needed special care in creating \Q@Cage@s:%\vspace{-1.860px}% magic number that prevents the listings background going onto the next page
+\begin{lstlisting}[
+%basicstyle=\footnotesize,
+language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}]
+List<Point> pl = new List<Point>{new Point(0,0),new Point(0,1)};
+Owner.AssignSame(pl, Owner.ElementProxy(pl));
+Cage c = new Cage(new Hamster(new Point(0, 0)), pl);
+\end{lstlisting}
+
+\noindent In Spec\# objects start their life as un-owned, so each \Q@new@ instruction above returns an unowned object; however when the \Q@Point@s are placed inside the \Q@pl@ list, Spec\# looses track of this. Thus the \Q@AssignSame@ call is needed to mark the elements of \Q@pl@ as still being unowned (since \Q@pl@ itself is unowned).
+Contrast this with our system which requires no such operation; we can simply write:
+\begin{lstlisting}
+Cage c = new Cage(new Hamster(new Point(0, 0)),
+  List.of(new Point(0, 0), new Point(0, 1)));
+\end{lstlisting}
+
+%3 read 2 capsule 3 mut extra method moveTo
+%----
+In Spec\# we had to add $10$ different annotations, of $8$ different kinds; some of which were quite involved. In comparison, our approach requires only $8$ simple keywords, of $3$ different kinds; however we needed to write 
+separate \Q@pos()@ and \Q@moveTo(p)@ methods.
+%  Moreover we had been unable to reuse 
+% \Q@Object.Equals@, \Q@List.IndexOf@ and % \Q@List.Contains@.
+% Note: we had to add a new class \Q@PureObject@, since the \Q@Objec@ constructor is not annotated as \Q@[Pure]@.
+%3 pure,
+%1 peer
+%3 captured
+%2 rep
+%1 ElementsRep
+%1 requires Owner.Same(Owner.ElementProxy(path), path);
+%1 invariant
+%1 exists
+%expose(this)
+%re implementation of indexOf
+%dumb equals(double,double)
+%dumb class PureObject { [Pure] PureObject() { } }
+%Owner.AssignSame(pl, Owner.ElementProxy(pl));
+% manually handle ownership details while instantiating a \Q@new Cage(..)@.
+% Note how the \Q@expose@ block cover plays the same role of our \Q@moveTo@ method.
+
+%We evaluate our contribution by means of case studies;

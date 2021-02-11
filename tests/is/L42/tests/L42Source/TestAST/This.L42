@@ -1,0 +1,38 @@
+reuse [AdamTowel]
+Point=Data:{Num x, Num y}
+Points=Collection.list(Point)
+Main0=(
+  p1=Point(x=3Num,y=5Num)
+  p2=Point(x=8Num,y=12Num)
+  Debug(p1)
+  ps=Points[p1;p2;p1]
+  Debug(ps)
+  var acc=S""
+  for p in ps ( acc++=p.x().toS() )
+  Debug(acc)
+  )
+MultiMethodsStyle={...}
+AstEasy={...}
+N=Class:AstEasy.All
+Main=(
+  Debug(S"Hello world")
+  dom=N.Div(nodes=\[N.A(href=S"L42.is",text=S"Hello");N.H2(text=S"World")])
+  Debug(dom.toHtml())
+  {}:Test"toHtml"(actual=dom.toHtml()
+    expected=S"<Div><A href='L42.is'>Hello</A><H2>World</H2></Div>")
+  )
+O=Class:AstEasy.BaseWithOps
+Main2=(
+  Debug(S"Hello world2")
+  dom=O.Div(nodes=\[O.P(text=S"Hello");O.H1(text=S"World")])
+  Debug(dom.toItalian())
+  Debug(dom.pInDiv())
+  {}:Test"toItalian"(actual=dom.toItalian()
+    expected=S"""
+    |O.Div(nodes=[O.P(text="Pizza!!!Hello"); O.H1(text="Pizza!!!World")])
+    """.trim())
+  {}:Test"pInDiv"(actual=dom.pInDiv()
+    expected=S"""
+      |O.Div(nodes=[O.Div(nodes=[O.P(text="Hello")]); O.H1(text="World")])
+      """.trim())
+  )

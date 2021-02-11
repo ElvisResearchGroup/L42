@@ -1,9 +1,0 @@
-[HasToS]
-Elem={}
-read method Bool #if()
-read method Bool isPresent()=this.#if()
-read method Bool !()=!this.isPresent()
-method toS()={
-  if !this return S"[]"
-  return S"[%AnyToS(this.val())]"
-  }

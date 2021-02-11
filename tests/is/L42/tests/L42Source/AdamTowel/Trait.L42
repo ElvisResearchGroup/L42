@@ -1,0 +1,77 @@
+@Public Lifted={interface
+  class method Trait()
+  class method Library code()
+  class method Trait +(Library lib)[Trait$ClassClash,Trait$MethodClash]
+  class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
+  class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]
+  class method Trait resetDocs(mut DocMap squareBuilder)[Trait$InvalidName]
+  class method Introspection$Nested nested()
+  }
+@Public ClassOperators={class method Trait()=Trait()}
+@Public Library code
+class method This(Library code)
+@Public class method This(Library that)=This(code=that)
+@Public class method Trait ()=Trait({#norm{}})
+class method This sum(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
+  return This(Name$Mapping().simpleSum(a=a,b=b))
+  catch error Trait$ClassClash e exception e
+  catch error Trait$MethodClash e exception e
+  } 
+@Public method This +(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lib)
+@Public method This +1(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=lib,b=this.code())
+@Public method This +(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lifted.code())
+@Public method This +1(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=lifted.code(),b=this.code())
+@Public method This +(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=trait.code())
+@Public method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lib)
+@Public method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lifted.code())
+@Public method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=trait.code())
+@Public method Introspection$Nested nested()=Introspection$Nested.from(library=this.code())
+@Public DocMap={ }
+@Public Acc={
+  var Name$Mapping that
+  class method mut This(Name$Mapping that)
+  class method mut This (mut This squareBuilder)=squareBuilder
+  class method mut This #squareBuilder()=Acc(Name$Mapping())
+  class method Bool #shortCircutSquare()=Bool.true()
+  mut method Void #squareAdd(Name$Mapping that)=this.that(\that.mergeMap(deep=that))
+  mut method Void #squareAdd(Name clear)=this.#squareAdd(clear->Name"")
+  mut method Void #squareAdd(Name clearSingle)=this.#squareAdd(single=clearSingle->Name"")
+  mut method Void #squareAdd(Name$Mapping single)=this.that(\that.mergeMap(single))
+  mut method Void #squareAdd(Name hide)=this.#squareAdd(hide=>Name"")
+  mut method Void #squareAdd(Name$Mapping ignoreSelfRename)
+    =if !ignoreSelfRename.isSelfRename()
+      this.that(\that.mergeMap(deep=ignoreSelfRename))
+    
+  mut method Void #squareAdd(Name$Mapping ignoreSelfRenameSingle)
+    =if !ignoreSelfRenameSingle.isSelfRename()
+      this.that(\that.mergeMap(ignoreSelfRenameSingle))
+  }
+@Public method This (read Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]=This({
+  return squareBuilder.that().applyMap(this.code())
+  catch error Trait$InvalidName e exception e
+  catch error Trait$InvalidMap e exception e
+  catch error Trait$ClassClash e exception e
+  catch error Trait$MethodClash e exception e
+  })
+@Public method This resetDocs(mut DocMap squareBuilder)[Trait$InvalidName]=This({
+  return BootStrapping.resetDocs(squareBuilder,code=this.code())
+  catch error Trait$InvalidName e exception e
+  })
+
+@Public method Library #toLibrary()=
+  Name$Mapping().simpleSum(a=Name$Mapping().resource(this.code(),name=Name"code()".that()),b=ToLibrary.of())
+
+//The code must have 'class method Library code()'
+@Public class method Library delayedCode(Library that)[Trait$ClassClash,Trait$MethodClash]=
+  (Trait(that)+ToLibrary.of()).code()
+
+ToLibrary=Name$Mapping().resource({[Lifted]
+  method ()=Trait(this.code())
+  method +(lib)=ClassOperators()+lib
+  method +1(lib)=lib+ClassOperators()
+  method (squareBuilder)=ClassOperators()(squareBuilder=squareBuilder)
+  method resetDocs(squareBuilder)=ClassOperators().resetDocs(squareBuilder=squareBuilder)
+  ClassOperators={class method Trait()=This1()}
+  method nested()=ClassOperators().nested()
+  },name=Name"of()".that())
+@AbstractTowel{trait}

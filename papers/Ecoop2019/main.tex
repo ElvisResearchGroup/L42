@@ -1,0 +1,70 @@
+\documentclass[a4paper,UKenglish]{lipics-v2018}
+%This is a template for producing LIPIcs articles. 
+%See lipics-manual.pdf for further information.
+%for A4 paper format use option "a4paper", for US-letter use option "letterpaper"
+%for british hyphenation rules use option "UKenglish", for american hyphenation rules use option "USenglish"
+% for section-numbered lemmas etc., use "numberwithinsect"
+
+\usepackage{microtype}%if unwanted, comment out or use option "draft"
+%\graphicspath{{./graphics/}}%helpful if your graphic files are in another directory
+\bibliographystyle{plainurl}% the recommnded bibstyle
+
+\usepackage{verbatim}
+\input{Def}
+
+\title{Using nested classes as associated types.}
+%\titlerunning{Dummy short title}%optional, please use if title is longer than one line
+\author{Authors omitted for double-bind review.}{Unspecified Institution.}{}{}{}
+\authorrunning{Authors omitted for double-bind review.} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+\Copyright{Authors omitted for double-bind review.} %mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+
+\begin{comment}
+	%mandatory, please use full name; only 1 author per \author macro; first two parameters are mandatory, other parameters can be empty.
+	\author{Marco Servetto}{Victoria University of Wellington}{marco.servetto@ecs.vuw.ac.nz}{}{}
+	\author{Isaac Oscar Garian}{Victoria University of Wellington}{isaac@ecs.vuw.ac.nz}{}{}
+	\authorrunning{Isaac O.\,G. and M. Servetto} %mandatory. First: Use abbreviated first/middle names. Second (only in severe cases): Use first author plus 'et al.'
+	\Copyright{Isaac Oscar G. and Marco Servetto} %mandatory, please use full first names. LIPIcs license is "CC-BY";  http://creativecommons.org/licenses/by/3.0/
+\end{comment}
+
+\subjclass{Dummy classification}% mandatory: Please choose ACM 2012 classifications from https://www.acm.org/publications/class-2012 or https://dl.acm.org/ccs/ccs_flat.cfm . E.g., cite as "General and reference $\rightarrow$ General literature" or \ccsdesc[100]{General and reference~General literature}. 
+\keywords{Dummy keyword}%mandatory
+% \category{}%optional, e.g. invited paper
+%\relatedversion{}%optional, e.g. full version hosted on arXiv, HAL, or other respository/website
+%\supplement{}%optional, e.g. related research data, source code, ... hosted on a repository like zenodo, figshare, GitHub, ...
+%\funding{}%optional, to capture a funding statement, which applies to all authors. Please enter author specific funding statements as fifth argument of the \author macro.
+%\acknowledgements{I want to thank \dots}%optional
+
+%Editor-only macros:: begin (do not touch as author)%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\EventEditors{John Q. Open and Joan R. Access}
+\EventNoEds{2}
+\EventLongTitle{42nd Conference on Very Important Topics (CVIT 2016)}
+\EventShortTitle{CVIT 2016}
+\EventAcronym{CVIT}
+\EventYear{2016}
+\EventDate{December 24--27, 2016}
+\EventLocation{Little Whinging, United Kingdom}
+\EventLogo{}
+\SeriesVolume{42}
+\ArticleNo{23}
+%\nolinenumbers %uncomment to disable line numbering
+%\hideLIPIcs  %uncomment to remove references to LIPIcs series (logo, DOI, ...), e.g. when preparing a pre-final version to be uploaded to arXiv or another public repository
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent convallis orci arcu, eu mollis dolor. Aliquam eleifend suscipit lacinia. Maecenas quam mi, porta ut lacinia sed, convallis ac dui. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Suspendisse potenti. 
+ \end{abstract}
+\input{Intro}
+\input{Formal}
+\input{Examples}
+\input{Conclusion}
+
+\appendix
+
+\bibliography{main}
+
+
+\end{document}

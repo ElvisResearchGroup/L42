@@ -1,0 +1,61 @@
+[HasToS]
+method Name self()
+
+
+@Public method Name$Mapping =>(Introspection.Nested nested)=
+  if nested.isBinded() this.self() => nested.classAny()
+  else this.self() => nested.nameFromRoot()
+
+@Public method class Any *1(class Any that)[_]=
+  (Introspection.Nested.from(classAny=that)*this).classAny()
+
+@Public method Introspection.Nested *1(Introspection.Nested n)[_]={
+  (path,selector,x)=this.self()
+  i=if path==S"" n else (n.nested(name=\"%path"))
+  if selector==S"" return i
+  m=i.meth(selector=selector)
+  if x==S"this" return i
+  if x==S"" return m.returnType().nested()
+  for xi in this.xs(), ti in m.parameters() (
+    if xi==x return ti.nested()
+    )
+  error X"unreachable"
+  }
+@Public class method Bool validX(S that)={
+  _=Name"foo(%that)"
+  catch error S$ParseError _ return Bool.false()
+  return Bool.true()
+  }
+@Public method S$List xs()=this._xs(s=this.self().selector())
+method mut S$List _xs(S s)={
+  i=s.indexOf(S"(")
+  var pars=s.subString(i+1\ to=\size-1\)
+  res=S$List()
+  loop (
+    c=pars.indexOf(S",")
+    if c==I"-1" (
+      res.add(right=pars)
+      return res
+      )
+    x=pars.subString(0\ to=c)
+    res.add(right=x)
+    pars:=pars.subString(c+1\ to=\size)
+    )
+  }
+@Public method Name with(S$List xs)={
+  s=this.self().selector()
+  if s==S"" return this.self()
+  for xi in xs (
+    if !This.validX(xi) error S$ParseError(
+      S"in with(xs=%xs), invaid x in xs: %xi")
+    )
+  x=this.self().x()
+  if x!=S"" && x!=S"this" && !(x in xs) error S$ParseError(
+    S"in with(xs=%xs), removing the selected x from %this")
+  i=s.indexOf(S"(")
+  m=s.subString(0I to=i)
+  if xs.isEmpty() return this.self().with(selector=m++S"()")
+  var pars=xs.left()
+  for xi in xs.withoutLeft() (pars++=S", "++xi)
+  return this.self().with(selector=m++S"(%pars)")
+  }

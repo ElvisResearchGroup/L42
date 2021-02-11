@@ -1,0 +1,59 @@
+// 11 annotations, 28 + 11 tokens, 118+65 characters
+
+// Total accross all files:
+//     59 annotations, 140+23 tokens, 826+215 characters
+
+using System;
+using Microsoft.Contracts;
+using System.Collections.Generic;
+
+internal static class MainClass
+{
+	// Transfers ownership of the elements of the given to the same owner as the list
+	[NoDefaultContract] static List<Gui.Widget>OwnElements([Captured]List<Gui.Widget>list) // 6 annotations, 25+11 tokens, 54+65 characters
+		requires Owner.None(Owner.ElementProxy(list));
+		ensures Owner.Same(Owner.ElementProxy(list), list);
+		ensures result == list; 
+	{
+		Owner.AssignSame(list, Owner.ElementProxy(list));
+		return list;
+	}
+
+	internal static void Main(string[] args) // 5 annotations, 5 tokens, 65 chars
+	{
+		// Note: if I try and put this all in one expression, it fails to verify. So I have had to split up the widgets into seperate variables
+		SafeMovable wd = new SafeMovable("D", 280, 280, 64,  64,  "blue",  OwnElements(new List<Gui.Widget>{}      ));
+		SafeMovable wc = new SafeMovable("C", 6,   6,   32,  32,  "black", OwnElements(new List<Gui.Widget>{}      ));
+		SafeMovable wb = new SafeMovable("B", 50,  50,  128, 128, "blue",  OwnElements(new List<Gui.Widget>{wc}    ));
+		SafeMovable wa = new SafeMovable("A", 20,  40,  640, 640, "red",   OwnElements(new List<Gui.Widget>{wd, wb}));
+		SafeMovable w  = new SafeMovable(700, 700, "green", new Box("Green", OwnElements(new List<Gui.Widget> {wa}), 2, 2));
+
+		string[] events = {
+			"A_Left::Pressed::_",
+			"A_Right::Pressed::_",
+			"A_Up::Pressed::_",
+			"A_Down::Pressed::_",
+
+			"B_Left::Pressed::_",
+			"B_Right::Pressed::_",
+			"B_Up::Pressed::_",
+			"B_Down::Pressed::_",
+
+			"C_Left::Pressed::_",
+			"C_Right::Pressed::_",
+			"C_Up::Pressed::_",
+			"C_Down::Pressed::_",
+
+			"D_Left::Pressed::_",
+			"D_Right::Pressed::_",
+			"D_Up::Pressed::_",
+			"D_Down::Pressed::_",
+			"EXIT"
+		};
+
+		new Gui("a1").display("Moving", 800, 800, w, events);
+		Debug.PrintCounter("Invariant");
+		Debug.Print("#@Success@#");
+		Console.Read();
+	}
+}

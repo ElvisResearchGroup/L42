@@ -1,0 +1,85 @@
+reuse [AdamTowel]
+Queries={...}
+
+Lib=Trait:{reuse [AdamTowel]
+  QueryEngine=Trait:{...}
+  Top={
+    class method Trait trait()=QueryEngine()
+    class method Library(S packageName, S className, S code, class Any javaServer)[Trait.InvalidMap]={
+      t=Trait.LiftS(code)['#apply()=>'code()]
+       +Trait.LiftS(packageName)['#apply()=>'codePackageName()]
+       +Trait.LiftS(className)['#apply()=>'codeName()]
+
+      return Class:Organize:this.trait()['J=>javaServer]:t
+      catch Trait.InvalidMap im exception im
+      whoops Message.Guard
+      }
+    }
+  }
+DeployRawQuery = Deploy.module(
+  url='RawQuery
+  code=Lib.code()
+  name='Top
+  )
+
+J0=Load:{reuse[#$JavaServer]}
+J=J0(slaveName=S"dbServer{}")
+DBLib=Load:{reuse [#$RawQuery]}
+JavaCode={...}
+DB=DBLib(packageName=S"db",className=S"DB",code=JavaCode(url=S"jdbc:derby:Test1;create=true"),javaServer=J)
+
+Main2=(
+  outs=S.List()
+  db=DB.#$of()
+  (db.execute(query=Queries.drop())
+  catch DB.Fail f (Debug(f)) void)
+  db.execute(query=Queries.createT())
+  db.execute(query=Queries.insert())
+  db.executeQuery(query=Queries.select())
+  while db.next() (
+    id=db.val(label=S"id")
+    name=db.val(label=S"name")
+    age=db.val(label=S"age")
+    Debug(S"%id %name %age")
+    outs.add(right=S"%id.val() %name.val() %age.val()")
+    )
+  db.execute(query=Queries.insert2())
+  db.executeQuery(query=Queries.select())
+  while db.next() (
+    id=db.val(label=S"id")
+    name=db.val(label=S"name")
+    age= db.val(label=S"age")
+    Debug(S"%id %name %age")
+    outs.add(right=S"%id.val() %name.val() %age.val()")
+    )
+  {}:Test"fromDB1"(expected=S"1 Bob 25"  actual=outs.val(0\))
+  {}:Test"fromDB2"(expected=S"1 Bob 25"  actual=outs.val(1\))
+  {}:Test"fromDB3"(expected=S"2 Alice 27"  actual=outs.val(2\))
+  {}:Test"fromDB4"(outs.size()==3I)
+  tables=S.List()
+  db.queryTables()
+  while db.next() (
+    name=db.val(label=S"TABLE_NAME")
+    tables.add(right=name.val())
+    )
+  Debug(tables)
+  {}:Test"fromDB5"(expected=S"""
+    |["PERSON"]
+    """.trim()  actual=tables)
+  cols=S.List()
+  db.queryColums(tableName=tables.left())
+  cName=db.findColumn(label=S"COLUMN_NAME")
+  cType=db.findColumn(label=S"TYPE_NAME")
+  while db.next() (
+    name=db.val(cName)
+    type=db.val(cType)
+    cols.add(right=S"%name.val() %type.val()")
+    )
+  Debug(cols)
+  {}:Test"fromDB6"(expected=S"""
+    |["ID INTEGER"; "NAME VARCHAR"; "AGE INTEGER"]
+    """.trim()  actual=cols)
+  db.execute(query=Queries.drop())
+  db.kill()
+  void
+  )

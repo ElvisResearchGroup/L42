@@ -1,0 +1,171 @@
+reuse [AdamTowel]
+MaxOfList = {//static method pattern
+  UndefinedOnEmpty = Message:{[Message.Guard]}
+  //Max is undefined on empty lists.
+  //Since there was no mention of preconditions, we should explicitly handle all the error cases as Guards
+  class method
+  Num (Num.List that) = {
+    if that.isEmpty() ( error UndefinedOnEmpty"Max is undefined on empty lists" )
+    //now that we know we can proceed: 
+    var Num maxCandidate= that.left()
+    //there is no such thing like a minimum Num, we need to select one element from the list.
+    for n in that (
+      //we could write 'that.withoutLeft()' to avoid checking on the first again
+      if maxCandidate<n (maxCandidate:= n)
+      //update the variable to keep track of the max so far.
+      )
+    return maxCandidate
+    }
+  }
+MaxOfList2 = {
+  class method
+  Num (Num.List that) =
+    that.reduce()(
+      for e in \vals() (
+        if \acc < e \add(e) 
+        )
+      )
+  }
+MapText = {
+  UnequalSize = Message:{[Message.Guard]}
+  class method
+  S (S.List keys, S.List vals) = {
+    if keys.size() !=  vals.size() error UnequalSize
+      "keys= %keys.size(), values= %vals.size()" 
+    //the former formatting allows us to keep a whole line for the error message
+    res = S.List()(for k in keys, v in vals \add(S"%k->%v"))
+    if res.isEmpty() return S"[]"
+    text = res.reduce()(for s in \vals \add(\acc++S", %s"))
+    return S"[%text]"
+    }
+  }
+FilterUpTo = {
+  class method
+  S.List (S.List that, I size) = (
+    X.Pre[size >= 0I]
+    S.List()(for s in that if s.size()<= size \add(s))
+    )
+  }
+
+FileSystem = Load:{reuse[FileSystem]}
+
+ReadSelf = {
+  class method
+  S (mut FileSystem that) = (
+    S s=that.read(fileName=S"This.L42")
+    Debug(S"[[%s]]")
+    s
+    //_=f.write(fileName=S"Example1.txt",content=S"SomeContent")
+    )
+  }
+Main = (
+  {}:Test""(expected=30Num
+    actual=MaxOfList(\[10\;20\;30\;3\]))
+  {}:Test""(expected=10Num
+    actual=MaxOfList(\[10\]))
+  {}:Test""(expected=S"Ok"
+    actual=(_=MaxOfList(\[]) catch error Any  _ ( S"Ok" ) S"Fail"))
+
+  {}:Test""(expected=30Num
+    actual=MaxOfList2(\[10\;20\;30\;3\]))
+  {}:Test""(expected=10Num
+    actual=MaxOfList2(\[10\]))
+  {}:Test""(expected=S"Ok"
+    actual=(_=MaxOfList2(\[]) catch error Any  _ ( S"Ok" ) S"Fail"))
+  {}:Test""(expected=S"[a->z, b->y, c->z]"
+    actual=MapText(keys=S.List[S"a";S"b";S"c"] vals=S.List[S"z";S"y";S"z"]))
+  
+  {}:Test""(expected=S.List[S"a";S"ab"]
+    actual=FilterUpTo(S.List[S"a";S"ab";S"abc"] size=2I))
+    
+  {}:Test""(actual=ReadSelf(FileSystem.Real.#$of())
+    expected=S"reuse [AdamTowel]%S.nl()MaxOfList = [###]")
+  )
+  
+Point = Data:{I x, I y
+  @Cache.Now class method
+  Void invariant(I x, I y) = X.Guarded[
+    x>=0I; x<80I;
+    y>=0I; y<80I;
+    ]
+
+  method
+  This go(Direction that) = {
+    return that.go(this)
+    catch error X.Guarded _ return this
+    }
+    
+  method
+  I index() = 
+    (this.y()*80I)+this.x()
+  }
+  
+Direction = Collection.Enum:{interface
+  method Point go(Point that)
+  Up={[This1] method go(that)=that.with(x=\x-1I)}
+  Down={[This1]method go(that)=that.with(x=\x+1I)}
+  Left={[This1]method go(that)=that.with(y=\y-1I)}
+  Right={[This1]method go(that)=that.with(y=\y+1I)}
+  }
+
+Main2 = (
+  p=Point(x=2I y=3I)
+  Debug(p)
+  )
+  
+Cell = Collection.Enum:{
+  method S symbol()
+  Dirt={method S symbol()=S"##"}
+  Rock={method S symbol()=S.percent()++S.percent()}
+  Empty={method S symbol()=S"  "}
+  Mole={method S symbol()=S"MM"}
+  }
+  
+Land = Data:{[HasToS]
+  mut Math.Random rand
+  mut Cell.List cells
+  
+  class method
+  mut Cell.List #default#cells(mut Math.Random rand) = Cell.List[](
+    for i in Range(80I*80I) (
+      if rand.nextInRange(0I to=10I)==0I \add(Cell.Rock())
+      else \add(Cell.Dirt())
+      )
+    )
+
+  mut method 
+  Void set(Point that, Cell val) =
+    this.#cells().set(that.index() val=val)
+    
+  read method 
+  Cell val(Point that) =
+    this.cells().val(that.index())    
+  
+  mut method
+  Void randomDig() = (
+    var current = Point(x=0I y=0I)
+    for i in Range(3000I) (
+      this.set(current,val=Cell.Empty())
+      d = Direction.Vals().val(this.#rand().nextInRange(0I to=4I))
+      newPoint = current.go(d) //no digging in rock
+      if this.val(newPoint)!=Cell.Rock() ( current:=newPoint )
+      )
+    this.set(current,val=Cell.Mole()) //finally, the mole is where we ends up
+    )
+  
+  method toS() = (
+    var res=S""
+    for x in Range(80I) (
+      res++=S.nl()//newline
+      for y in Range(80I) res++=this.val(\(x=x,y=y)).symbol()
+      )
+    res++S.nl()
+    )
+  //since we define 'toS()' explicitly, Data will leave it alone :)
+  }
+
+MainMole = (
+  land = Land(rand=\.#$random())
+  land.randomDig()
+  Debug(land)
+  )

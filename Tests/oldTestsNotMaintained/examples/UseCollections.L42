@@ -1,9 +1,0 @@
-{reuse L42.is/miniBase
-Vector:Load[]<{reuse L42.is/VectorLib}
-NVec:Vector.vector(N)
-Main:{
-  v=NVec[1N;2N;3N;4N]
-  with vi in v.vals() (Debug(vi))
-  return ExitCode.normal()
-  }
-}

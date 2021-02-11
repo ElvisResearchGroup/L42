@@ -1,0 +1,166 @@
+Separating use and reuse to improve both //(title from bruno)
+
+Abstract
+
+Introduction
+
+
+
+
+
+
+Managing State
+
+
+
+---------------------
+Road to 42:
+
+  In the model we have presented we have iterative compilation,
+  in the sense that flattening and type checking alternates.
+  What if flattening could execute arbitrary computation?
+  This would subsume the need for a main expression!
+  
+  e::=x|T|e.m(es)|L
+  CD::=C:e
+  T::=Cs | Library | Class
+  and a trait will just be encoded as a class with a single method:
+  Trait1:{class method Library code() L1 }
+  Composition operators are now supported by some classes:
+  Sum.of(e1,e2)
+  Rename.of(...)
+  and we can have a Resource(L) operator
+  that just wrap the L into a method, so that
+  Trait1:Resource(L1) will reduce in the trait pattern as before.
+  
+  Now typing is a little harder....
+  
+  ----------
+  In addition to this, 42 have feature less related to code composition, like
+  a strong type system supporting aliasing mutability and circularity control,
+   checked exceptions, errors (unchecked exceptions), strong exception safety
+   for errors ... 
+  a compact syntax for arithmentic and list operations,
+  allowing overloading and a much nicer syntax for code composition
+  as ....
+  
+  42 is also strongly against primitive types/classes, thus there is no such
+  thing as a predefined standard library or a nicer sintax for certains special 
+  classes like String and numbers.
+  The idea is that any program will start importing a library, called Towel,
+  that contains the classes that are usually expected from a standard library.
+  And the programmers are encouraged to develop their own version of towels.
+  
+  This would be crazy in any language not supporting the level of code reuse
+  42 offers:
+  From one side, developing your own standard library would be a massive amount
+  of work, and from the other side, libraries developed using a certain towel 
+  would not be compatible with any other towel.
+  However, the level of code reuse offered by 42 solves both limitations:
+  You can obtain your own Towel by staining/embrowdering another Towel.
+  You can load a library deployed by other towels.
+  
+  Lets dig in how this mechanism can work
+  
+  
+  After, show Use.hide/Use.extends
+  
+  This form of disciplined metaprogramming
+  is more likly to produce semantically reasonable results w.r.t.
+  full ast generation metaprogramming/ quote unquote metaprogramming.
+  
+  This is because the atomic steps are operations 
+  designed to be understandable and meaningful for the human metaprogrammer,
+  and because such operators can not introduce any new type error.
+  
+  This disciplined metaprogramming is not very limited, as one may expect;
+  indeed is possible to generate arbitrary behaviour out of inductive reasoning:
+  example: generate toS.
+  -base: case one field
+  -step: merge two fields
+  -wrap the final result
+   
+   
+  
+  
+
+
+  
+  
+  
+  
+  ListP:{inteface
+    method int size()
+    method Person get(int index)
+    method void set(int index,Person value) 
+    }
+  baseList:{implements ListI...}
+  map:{implements ListI
+    method Bool geq(Person p1,Person p2)
+    method This sort(){..use geq..}}
+  
+  MyList:Sum baseList,map,{ method Bool geq(Person p1,Person p2) p1.age()>p2.age() }
+
+
+-----------------------------------------
+examples of attempts of constructors/state in traits:
+   
+
+  No constructor: all the fields start at null/a default specified value.
+  In this model fields are like another kind of member, and two fields
+  with identical type can be merged by sum.
+  
+  In this model, you can write new C() for all classes, and
+  you may be required to call and init method later, as in
+  new Point().init(10,30).
+  pro: commutative/associative, do not disrupt elegance of sum methods.
+  negatives: objects are created "broken" and the user is trusted with fixing them
+    easy to add fields, but the load of inizializing them is on the user; moreover
+    all the objects are intrinsically mutable, so this model is unfriendly
+    to a functional programming style.
+  /*
+  for example, in the usual Point/ColoredPoint example,
+  a point trait could look like
+  point: { int x=0; int y=0
+  method This initXY(int x,int y){this.x=x;this.y=y;return this;}
+  method This sum(This other){
+    return new This().initXY(this.x+other.x,this.y+other.y);}
+  }
+  and a CPoint class just adding a color could look like
+  colored:{ Color color=new Color().init(/*red*/);}
+  CPoint:Use point,colored
+  CPoint:{ int x=0; int y=0;Color color=new Color().init(/*red*/);
+    method This initXY(int x,int y){this.x=x;this.y=y;return this;}
+    method This sum(This other){
+      return new This().initXY(this.x+other.x,this.y+other.y);}
+    }
+  Where summing points leave the color to red, without giving any warning
+  to the programmer composing point and colored.
+*/  
+  
+constructor compose fields:
+In this approach the fields are declared but not initialized, and
+a constructor taking a value for each field and just initializing such field
+is automatically generated in the resulting class.
+Pro: it is easy to add fields.
+Negatives:This approach is associative but not commutative, since the order of composition
+will change the order of the fields, there is no support for self construction
+more that declaring a static abstract factory as before.
+  
+Constructor can be composed if they offers the same parameters.
+In this approach traits declare field and constructors
+and the constructor initialize the fields, and can do any other computation.
+In order to sum two traits, we need their constructors to have the same 
+parameters with the same order. Then the composed constructor will execute
+both constructor bodies in order.
+Pro: it is associative and "mostly" commutative: the order of composition is relevant only
+in the order of execution of side effects during construction.
+Self construction is easy in this model.
+Negative: the requirement that the constructors need the same parameters 
+hamper reuse, and if a field is added, its initial value need to be
+syntetized from the old constructor parameters.
+
+-----------------------------
+
+Our proposed solution:
+We like the extreame 

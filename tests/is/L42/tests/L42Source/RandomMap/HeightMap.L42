@@ -1,0 +1,138 @@
+read method I combine(I x,I y, I seed,I oldCell)={
+  if oldCell==0I return seed   //unsetted is set
+  if oldCell+1\==seed return seed //contaged
+  if oldCell+6\ <seed return (oldCell+seed)/2I //pulled up if it is so far below
+  return 0I //do nothing
+  }
+mut Points montainsTop=Points()
+RiverMap=Class:Data:MapList(I.List,base='zero())
+mut RiverMap riverMap
+class method mut RiverMap #default#riverMap(I side)=\(side=side)
+mut Math.Random r
+I maxZ
+I side
+read method I (Point that)
+read method I (I x,I y)
+mut method Void (Point that,I val)
+mut method Void (I x,I y,I val)
+
+mut method I rand(I that, I to)=
+  this.#r().nextInRange(that to=to)
+//For now, makes a maxZ tall diagonal line and
+//6 other maxZ*0.65 peakes
+mut method Void initTops()=(
+  low=this.side()/6I
+  mid=this.side()/2I
+  high=5I*(this.side()/6I)
+  midZ=(this.maxZ()*2I)/3I
+  lowZ=(midZ*1I)/3I
+  p1x=this.rand(low to=mid)
+  p1y=this.rand(low to=mid)
+  p2x=this.rand(mid to=high)
+  p2y=this.rand(mid to=high)
+  this.#montainsTop().add(Point(x=p1x,y=p1y, z=this.rand(midZ to=this.maxZ())))
+  for w in Range(1\ to=6\) (
+    x=((p1x*w)+(p2x*(6I-w)))/6I
+    y=((p1y*w)+(p2y*(6I-w)))/6I
+    this.#montainsTop().add(Point(x=x,y=y, z=this.rand(midZ to=this.maxZ())))
+    )
+  for w in Range(0\ to=6\) (//6 extra random lower tops
+    x=this.rand(low to=high)
+    y=this.rand(low to=high) 
+    z=this.rand(lowZ to=midZ)
+    this.#montainsTop().add(\(x=x,y=y,z=z))
+    )
+  )
+mut method Void makeRivers(I waterLevel)=(
+  this.runWater(p=this.montainsTop().val(2\))
+  this.runWater(p=this.montainsTop().val(3\))
+  s=this.side()-1I
+  o=this.#order()
+  for x in Range(1\ to=s) (
+    for y in Range(1\ to=s) {
+      if this.riverMap()(x=x,y=y) > 0I return void
+      h=this(x=x,y=y)
+      if h <= waterLevel return void
+      var max=I"-1"//for all non water points
+      for (x1,y1) in o (//for all surrunding spots, find the max with water
+        r=this.riverMap()(x=x+x1,y=y+y1)
+        candidate=this(x=x+x1,y=y+y1)+r
+        if r>0I ( max:=candidate.max(max) )
+        )
+      if max==I"-1" return void
+      if h <= max  this(x=x,y=y,val=max)
+      else this(x=x,y=y,val=(h+max)/2I)
+      return void
+      }
+    )
+  )
+mut method Void add(mut Points river,Point p)=(
+  this.#riverMap()(p, val=1\)
+  this(p,val=this(p)-1\)
+  river.add(p)
+  )
+mut method mut Points runWaterDown(Point start)={
+  var p=start
+  river=Points()
+  loop (
+    this.add(river=river,p=p)
+    var min=this.maxZ()+1I
+    for pi in Points[p.with(y=\y-1\); p.with(x=\x-1\); p.with(x=\x+1\); p.with(y=\y+1\)] (
+      candidate=this(pi)
+      ok=this.riverMap()(pi) == 0I && candidate<min //what happens if we remove the riverMap check?
+      if ok (min:=candidate, p:=pi)
+      )///crucially, min can be higher than the former this(p)
+    if min==this.maxZ()+1I || this(p)<=0I (
+      this.add(river=river,p=p)
+      return river
+      )
+    )
+  }
+mut method Void runWater(Point p)=(
+  x=this.#r().nextInRange(p.x()-2\ to=p.x()+2\)
+  y=this.#r().nextInRange(p.y()-2\ to=p.y()+2\)
+  river=this.runWaterDown(start=\(x=x,y=y))
+  if river.size()>=2I this.adjust(river=river)
+  )
+mut method Void riversGoDown(read Points river)=(
+  var last=this(river.left())
+  for p in river (
+    current=this(p)
+    if current>last this(p val=last)
+    else last:=current
+    )
+  )
+mut method Void adjust(read Points river)=(
+  this.riversGoDown(river=river)
+  endH=this(river.val(\size()-2\))+1I//the earth + 1 water
+  preLastH=this.riverMap()(river.right()).max(endH)
+  this.#riverMap()(river.right() val=preLastH)
+  this(river.right() val=0\)
+  var lastH=this(river.right())
+  for i in Range(river.size()-2\).reverse() (
+    pi=river.val(i)
+    var currentH=this(pi)
+    riverH=this.riverMap()(pi)
+    if lastH>currentH (
+      this.#riverMap()(pi val=(riverH+lastH)-currentH)
+      currentH:=(riverH+lastH)-1I
+      )
+    delta=(currentH-(lastH+1I))
+    if delta>0I (//should make more water on waterfalls
+      this.#riverMap()(pi val=this.riverMap()(pi)+delta)
+      this(pi val=this(pi)-delta)
+      )
+    lastH:=currentH
+    )
+  )
+mut method Void noUnderZero()=(
+  for x in Range(this.side()) (
+    for y in Range(this.side()) (
+      if this(x=x,y=y)<0I (
+        reduced=(this.riverMap()(x=x,y=y)+this(x=x,y=y)).max(0\)
+        this.#riverMap()(x=x,y=y,val=reduced)
+        this(x=x,y=y,val=0\)
+        )
+      )
+    )
+  )

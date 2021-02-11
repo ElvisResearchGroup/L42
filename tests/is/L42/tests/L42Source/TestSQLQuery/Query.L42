@@ -1,0 +1,101 @@
+Traits=Collection.list(Trait)
+
+FormatPar={...}
+Collecters={...}
+Executers={...}
+SquareBuilder={
+  mut Introspection.Nested.List that
+  class method mut This (mut Introspection.Nested.List that)
+  class method mut This #squareBuilder#query()=This(\())
+  class method Bool #shortCircutSquare()=Bool.true()
+  mut method Void #squareAdd(class Any that)
+    =this.#that().add(right=Introspection.Nested.from(classAny=that))
+  method Library #from(S.StringBuilder stringLiteral)[MetaFail]={
+    query=stringLiteral.toS()
+    xs=FormatPar.xs(query)
+    if Introspection.Nested.from(classAny=Void)==this.that().left() (
+      return Class:This1(types=this.that(),query=query,xs=xs).queryExecute()
+      )
+    r=this.that().left().meth(selector='left()).returnType().nested()
+    ms=Introspection.Method.List()(for m in r.methods() (
+      if m.selector().toS().startsWith(S"#immK(") \add(m)
+      ))
+    if ms.size()!=1I exception MetaFail"Not exactly one canditate #immK constructor:%ms"
+    q=This1(types=this.that(),query=query,xs=xs)
+    return Class:q.queryWithResult(k=ms.val(0\), r=r)
+    catch Message.Guard g exception MetaFail"".with(cause=g)
+    }
+  }
+//----------
+Introspection.Nested.List types
+S query
+S.List xs
+class method This(Introspection.Nested.List types,S query,S.List xs)
+
+method Trait makeCR(Introspection.Method k,S nameErr)[_,MetaFail]=(
+  n=k.parameters().size()-1I
+  if n==0I exception MetaFail
+    "The provided type can not have zero fields: %nameErr"
+  if n-1I>=Collecters.traits().size() exception MetaFail
+    "too many fields in the class: %nameErr max=%Collecters.traits().size()"
+  var res=Collecters.traits().val(n-1I)
+  for i in Range(n) ( res:=this.field(res,i=i,k=k) )//from 0 to n-1
+  res[Collecters.names().val(n-1I)=>Name"R.%k.selector()"]
+  )
+method Trait field(Trait that, I i,Introspection.Method k)[_]=(
+  n=Name"p%(i)()"
+  nsourcei=Name"p%(i)(source,i)"
+  f_s=Trait.LiftS(k.nameFromRoot().xs().val(i))['#apply()=>n]
+  tSrc=Name"T%(i)"
+  tDest=k.parameters().val(i+1I).nested().classAny()
+  Trait factory={
+    return Collecters.TOptS['ColT=>tDest;'colT(source,i)=>nsourcei]
+    catch Message.Guard _
+    return Collecters.TS['ColT=>tDest;'colT(source,i)=>nsourcei]
+    }
+  ((that+f_s)[tSrc=>tDest]+factory)[hide=n;hide=nsourcei]
+  )
+//--
+method Trait par(Trait that,I i)[_]=(
+  n=Name"p%(i)()"
+  tSrc=Name"T%(i)"
+  tDest=this.types().val(i+1I).classAny()
+  p=this.xs().val(i)
+  p_s=Trait.LiftS(p)['#apply()=>n]
+  (that+p_s)[tSrc=>tDest;hide=n]
+  )
+method Trait makeExecuteQ()[_,MetaFail]=(
+  n=this.xs().size() //ok for zero too
+  if n>=Executers.traits().size() exception MetaFail"too many query parameters:%n"
+  var res=Executers.traits().val(n)
+  xsSize=this.xs().size()
+  tsSize=this.types().size()-1I
+  if xsSize!=tsSize (exception MetaFail"""%
+    |Inconsistent query:
+    |the number of provided parameter types is %tsSize
+    |but the number of holes is %(xsSize).
+    |The holes are: %this.xs()
+    """)
+  for i in Range(n) ( res:=this.par(res,i=i) ) //0 to n-1
+  nameDest=Name"#apply()".with(xs=this.xs())
+  query=Trait.LiftS(this.query())['#apply()=>'query()]
+  res[ignoreSelfRename=Executers.names().val(n)=>nameDest]+query
+  )
+//---
+TraitK=Trait:{
+  class method mut This (mut Source source)
+  class method mut This (mut Source that)=This(source=that)
+  }
+method Trait queryWithResult(Introspection.Method k, Introspection.Nested r)[_]=(
+  makeCR=this.makeCR(k=k nameErr=r.outerName())
+  executeQ=this.makeExecuteQ()
+  (TraitK+makeCR+executeQ+Executers.TraitExecuteQuery)[
+    'R=>r.classAny();
+    'List=>this.types().left().classAny()
+    ]
+  )
+TraitVoidRet=Trait:{mut method Void collectResults()[Source.Fail]=void}  
+method Trait queryExecute()[_]=(
+  q=TraitK+this.makeExecuteQ()+Executers.TraitExecute
+  q['List=>Void]+TraitVoidRet
+  )

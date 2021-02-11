@@ -1,0 +1,110 @@
+\section{Related Work on Runtime Verification Tools}
+\label{s:runtime-verification}
+By looking to a survey by Voigt \etal~\cite{Voigt2013} and the extensive MOP project~\cite{meredith2012overview},
+it seems that most runtime verification tools (RV) empower users
+to implement the kind of monitoring they see fit for their specific problem at hand. This means that users are responsible for deciding, designing, and encoding both the logical properties and the instrumentation criteria~\cite{meredith2012overview}.
+In the context of class invariants, this means the user defines the invariant protocol and the soundness of such protocol is not checked by the tool.
+
+In practice, this means that the logic, instrumentation, and implementation end up connected:
+a specific instrumentation strategy is only good to test certain logic properties in certain applications.
+No guarantee is given that the implemented instrumentation strategy is able to support the required logic in the monitored application.
+Some of these tools are designed to support class invariants: for example InvTS~\cite{gorbovitski08efficient} lets you write Python conditions that are verified on a set of Python objects, but the programmer needs to be able
+to predict which objects are in need of being checked and to use a simpler domain specific language to target them. Hence if a programmer makes a mistake while using this domain specific language, invariant checking
+will not be triggered.
+Some tools are intentionally unsound and just perform invariant checking following some heuristic that is expected to catch most failures: such as jmlrac~\cite{Burdy2005} and Microsoft Code Contracts~\cite{fahndrich2010embedded}.
+
+%In particular, the heuristic of 
+%We encoded our GUI example also on Microsoft Code Contract; their system also ran the invariant checking $77$ times. Their system is easy to use, but it is unsound since it is built over an unsound/incomplete static verifier~\cite{?}.
+
+
+
+
+
+
+%
+%In this work we define a language where a minimal, standardized,
+%efficient and completely general purpose instrumentation strategy can soundly verify conditions
+%expressible as a\\* \Q@read method imm Bool invariant()@, for any well-typed program; with open world assumption
+%and possible Byzantine behaviour of any object in the system.
+%
+%By seeing class invariant as a part of the type of the object,
+%the `RV tool' philosophy is akin to letting the programmer customize the behaviour of the
+%type system: the programmer implementation may be unsound; while our philosophy is
+%to give the user a way to represent complex and expressive types (in the form of arbitrary code in 
+%the \Q@invariant()@ method), but 
+%the type system implementation is fixed in stone by the language designer.
+
+Many works attempt to move out of the `RV tool' philosophy to ensure RV monitors work as expected, as for example
+%\sepItems
+%In avionics, where memory allocation is disallowed, making reasoning about aliasing much simpler~\cite{laurent2015assuring}:
+%``\emph{Runtime Verification (RV) can act as the last line of defense to
+%protect the public safety, but only if the RV system itself is trusted.}''.
+%\sepItems
+%In domain specific languages~\cite{ferrari2002guardians}:
+%``\emph{Proof techniques for establishing security properties}''.
+%\sepItems
+%On assertions over restrictive domain specific languages, to tame some of the C/C++
+%undefined behaviour~\cite{agten2015sound}:
+%``\emph{no verified assertion in the verified
+%module will ever fail at runtime, even if the module runs as part of
+%a vulnerable application thSound and Unsound monitorsat is subject to code injection attacks}''.
+the study of contracts as refinements of types~\cite{findler2001contract}.
+However, such work is only interested in pre and post-conditions, not class invariants.
+
+Our invariant protocol is much stronger than
+visible state semantics, and keeps the invariant under tight control.
+Gopinathan \etal's.~\cite{Gopinathan:2008:RMO:1483018.1483028} approach keeps
+a similar level of control:
+relying on powerful aspect-oriented support, they detect any field update in the whole ROG of any object, and check all the invariants that such update may have violated.
+We agree with their criticism of visible state semantics, where  methods still have to assume that any object may be broken; in such case calling any public method would trigger an error, but while the object is just passed around (and for example stored in collections), the broken state will not be detected; Gopinathan \etal says ``\emph{there are many instances where $o$'s invariant is violated by the programmer inadvertently changing the state of $p$ when $o$ is in a steady state. Typically, $o$ and $p$ are objects exposed by the API, and the programmer (who is the user of the API), unaware of the dependency between $o$ and $p$, calls a method of $p$ in such a way that $o$'s invariant is violated. The fact that the violation occurred is detected much later, when a method of $o$ is called again, and it is difficult to determine exactly where such violations occur.}''
+
+However, their approach addresses neither exceptions nor non-determinism caused by I/O, so their work is unsound if those aspects are taken into consideration.
+
+Their approach is very computationally intensive, but we think it is powerful enough that it could even be used to roll back the very field update that caused the invariant to fail, making the object valid again.
+We considered a rollback approach for our work, however rolling back a single field update is likely to be completely unexpected, rather we should roll back more meaningful operations, similarly to what happens
+with transactional memory, and so is likely to be very hard to support efficiently.
+%However we think roll-back this would be a 
+%\REVComm{\REVComm{terrible}{2}{It seems in poor taste to complain of ``terrible'' ideas, especially without attempting to demonstrate the improvements of the proposed approach.}}{3}{Nontechnical term. It is not a great idea to label previous work as ``terrible''}
+% ideally not only the field-update breaking the invariant should be reverted, %the roll-back should 
+Using TMs to enforce strong exception safety is a much simpler alternative, providing the same level of safety, albeit being more restrictive (namely that if the operation did succeed it is still effectively rolled back).
+
+%: for example
+%assume that we are moving object between two boats:
+%the overflowing object may be removed from the \Q@cargo@ of the second boat, but it would not
+%be placed back in the first boat. It would look like the object has disappeared.
+%The important pTheir approach is very computationally intensive, but we think it is powerful enough that it could even be used to roll-back the very field update that caused oint here is that the program would be in an unexpected state
+%even if no object invariants are violated, and this would happen \textbf{because} of the 
+%invariant checking/fixing behaviour, not because of code written by the programmer.
+%We believe that the only viable option is to detect violations after the fact.
+
+%\LINE
+%Another approach used in the dynamic language Racket is to interpose on primitive operations like procedure-calls and field updates; this allows one to enforce visible-state semantics by wrapping invariant operations around such operations (as is done in aspect-oriented systems like Jose~{?}). This technique can be used with gradual typing to dynamically enforce `types' of mutable structures in a safe way.
+
+%\LINE
+%\subheading{Chaperones and impersonators}
+Chaperones and impersonators~\cite{DBLP:conf/oopsla/StricklandTFF12} lifts the techniques of gradual typing~\cite{takikawa2015towards,DBLP:conf/oopsla/TakikawaSDTF12,DBLP:conf/popl/WrigstadNLOV10}
+to work on general purpose predicates, where
+values can be wrapped to ensure an invariant holds.
+This technique is very powerful and can be used to enforce pre and post-conditions by wrapping function arguments and return values.
+This technique however does not monitor the effects of aliasing, as such they may notice if a contract has been broken, but not when or why. In addition, due to the difficulty of performing static analysis in weakly typed languages, they need to inject runtime checking code around every user-facing operation.
+Aspect oriented systems like Jose~\cite{feldman2006jose}, similarly wrap invariant checks around method bodies.
+%
+%One of the advantages of their system is that is transparent to the user. 
+%\LINE
+%
+%\LINE
+%
+%\noindent\textit{Performance}
+%Our case study shows that our sound approach can monitor programs
+%for a fraction of the cost of many other approaches.
+%Many other works%
+%~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design}
+% check/run
+%the invariant code at the start and end of every public
+%method; this even include trivial getters.
+%In  our approach, we call the \Q@invariant@ method
+%one time at the end of each setter, capsule mutator method and constructor.
+%We do not inject it at the end of other methods, which are usually more numerous and invoked much more often.
+%Of course, \Q@invariant@ can still be called indirectly, for example by calling a setter.
+%We expect our approach to result in a dramatic reduction over the number of required checks,
+%except for cases when public methods just update many fields directly (without using setters).

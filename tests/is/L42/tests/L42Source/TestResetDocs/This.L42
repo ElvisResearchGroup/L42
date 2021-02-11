@@ -1,0 +1,26 @@
+reuse [AdamTowel]
+Base=Trait:{ @{aa}@{bb}A={} method Void b()=void}
+Main=(
+  v1=Base.resetDocs[key='A val='Nope]
+  v2=Base.resetDocs[key='A val=\""]
+  v3=Base.resetDocs[key='A val=\""; key='This val=\"hello world"]
+  Debug(v1.nested().toFullS())
+  {}:Test"v1"(actual=v1.nested().toFullS()
+    expected=S"{method Void b()=(..)@{Nope}A={#typed{}}#typed{}}"
+    )
+  Debug(v2.nested().toFullS())
+  {}:Test"v2"(actual=v2.nested().toFullS()
+    expected=S"{method Void b()=(..)A={#typed{}}#typed{}}"
+    )
+  Debug(v3.nested().toFullS())
+  {}:Test"v3"(actual=v3.nested().toFullS()
+    expected=S"{method Void b()=(..)A={#typed{}}#typed{}@{hello world}}"
+    )
+  )
+HW=Class:Trait.LiftS(S"Hello World")
+TestLiftS=(
+  Debug(HW())
+  {}:Test"TestLiftS"(actual=HW()
+    expected=S"Hello World"
+    )
+  )

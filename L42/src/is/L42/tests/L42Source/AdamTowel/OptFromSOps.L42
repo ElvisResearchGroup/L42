@@ -1,9 +1,0 @@
-[HasToS]
-Elem={class method This from(S string)}
-class method mut This ()
-class method mut This (fwd mut Elem that)
-class method This from(S string)
-  =This(Elem.from(string=string))
-class method This from(S.Opt optS)=
-  if optS.isPresent() This.from(string=optS.val())
-  else This()

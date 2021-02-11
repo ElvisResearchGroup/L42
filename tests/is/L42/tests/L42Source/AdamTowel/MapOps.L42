@@ -1,0 +1,129 @@
+[HasToS]
+Key={}
+Val={}
+@Public OVal={read method Bool #if()}
+@Public Entry=Data:{
+  Key key, mut Val val
+  class method read This readEntry(Key key, read Val val)
+  }
+Hi={
+  class method mut This of()
+  read method I size()
+  read method Val immVal(I that)
+  read method Key immKey(I that)
+  read method OVal val(Key key)
+  mut method Void put(Key key,Val val)
+  mut method Void remove(Key key)
+  }
+Hm={
+  class method mut This of()
+  read method I size()
+  read method read Val val(I that)
+  mut method mut Val #val(I that)
+  read method Key immKey(I that)
+  read method read OVal val(Key key)
+  mut method mut OVal #val(Key key)
+  mut method Void put(Key key,mut Val val)
+  mut method Void remove(Key key)
+  }
+read method read Hi hi()
+mut  method mut Hi  #hi()
+read method read Hm hm()
+mut  method mut Hm  #hm()
+
+class method mut This of(mut Hi hi,mut Hm hm)
+@Public class method mut This ()=This.empty()
+@Public class method mut This empty()=This.of(hi=Hi.of(),hm=Hm.of())
+@Public read method I size()=this.hi().size()+this.hm().size()
+@Public read method Bool isEmpty()=this.size()==0I
+
+@Public read method Key key(I that)={
+  s=this.hi().size()
+  if that<s return this.hi().immKey(that)
+  return this.hm().immKey(that-s)
+  }
+@Public read method Val val(I that)={
+  s=this.hi().size()
+  if that<s return this.hi().immVal(that)
+  error Collection$ElementNotImm"Index %that outside of the imm range 0--%s"
+  }
+@Public read method read Val readVal(I that)={
+  s=this.hi().size()
+  if that<s return this.hi().immVal(that)
+  return this.hm().val(that-s)
+  }
+@Public mut method mut Val #val(I that)={
+  s=this.hi().size()
+  if that<s error Collection$ElementNotMut"Index %that outside of the imm range %s--%this.size()"
+  return this.#hm().#val(that-s)
+  }
+//---------------
+@Public read method OVal val(Key key)=this.hi().val(key=key)
+@Public read method read OVal readVal(Key key)={
+  iV=this.val(key=key)
+  if iV return iV
+  return this.hm().val(key=key)
+  }
+@Public mut method mut OVal #val(Key key)=this.#hm().#val(key=key)
+@Public mut method Void put(Key key,Val val)=(
+  this.#hm().remove(key=key)
+  this.#hi().put(key=key,val=val)
+  )
+@Public mut method Void #put(Key key,mut Val val)=(
+  this.#hi().remove(key=key)
+  this.#hm().put(key=key,val=val)
+  )
+@Public mut method Void remove(Key key)=(
+  this.#hi().remove(key=key)
+  this.#hm().remove(key=key)
+  )
+//-------------------Supporting []
+@Public class method mut This (mut This squareBuilder)=squareBuilder
+@Public class method mut This #squareBuilder()=This.empty()
+@Public class method Bool #shortCircutSquare()=Bool.true()
+@Public mut method Void #squareAdd(Key key, Val val)=this.put(key=key,val=val)
+@Public mut method Void #squareAdd(Key key, mut Val mutVal)=this.#put(key=key,val=mutVal)
+//--Entries
+@Public read method read Entry entry(I that)
+  =Entry.readEntry(key=this.key(that),val=this.readVal(that))
+@Public read method Entry immEntry(I that)
+  =Entry(key=this.key(that),val=this.val(that))
+@Public mut method mut Entry #entry(I that)
+  =Entry(key=this.key(that),val=this.#val(that))
+//-------------------Supporting iteration
+@Public read method read This vals()=this
+@Public mut method mut This #vals()=this
+@Public read method read This #iterator()=this
+@Public mut method mut This #varIterator()=this
+@Public read method I #startIndex()=0I
+@Public read method Bool #hasElem(I that)=that<this.size()
+@Public read method Bool #incomplete(I that)=that!=this.size()
+
+@Public read method Entry #elem#imm(I that)=this.immEntry(that)
+@Public mut method mut Entry #elem#mut(I that)=this.#entry(that)
+@Public read method Entry #elem#default(I that)=this.#elem#imm(that)
+@Public read method read Entry #elem#read(I that)=this.entry(that)
+
+//Note: updating entries is not supported. It would require some language improvement
+//mut method mut Entry #update#mut(I that, mut Entry val)=(this.#set(that,val=val) val)
+//mut method Entry #update#imm(I that, Entry val)=(this.set(that,val=val) val)
+//mut method Entry #update#default(I that, Entry val)=this.#update#imm(that,val=val)
+@Public read method Void #close(I that)=
+  if this.#incomplete(that) error X"multi-for skipped some elements"
+@Public method toS()=(
+  var i=0I
+  var res=S"{"
+  while i<this.size() (
+    key=Collection.AnyToS(this.key(i))
+    val=Collection.AnyToS(this.readVal(i))
+    res++=S"%key->%val"    
+    i:=i.#succ()
+    if i!=this.size() (res++=S"; ") 
+    )
+  res++S"}"
+  )
+
+//------Eq
+@Public method Bool ==(This that)=System.immEquality(this and=that)
+@Public method Bool !=(This that)= !(this==that)
+@Public read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))

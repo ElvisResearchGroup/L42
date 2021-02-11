@@ -1,0 +1,459 @@
+reuse[AdamTowel]
+
+WithReadLazy={
+  AA={
+    read method S name::0()
+    mut method Void name::0(S that)
+    class method mut This of::0(S name)
+    mut method Void name(S that)=this.name::0(that)
+    class method mut This of(S name)=This.of::0(name=name)
+    read method I nameSize()=native{trusted:lazyCache} (
+      Log"AA".write(S"ACT.")
+      this.name::0().size()
+      )
+    }
+  BB=Data:{ 
+    var S name capsule AA aa//tested to fail with mut
+    @Debug @Cache.LazyRead @S class method I nameSize(S name, read AA aa)=(
+      Log"BB".write(S"ACT.")
+      name.size()
+      )
+    }
+  MainAA=(
+    Log"AA".clear()
+    mut AA aa=AA.of(name=S"Bob")
+    {}:Test"empty"(Log"AA".#$reader().read()==S"")
+    {}:Test"3"(aa.nameSize()==3I)
+    Debug(aa.nameSize())
+    {}:Test"act"(Log"AA".#$reader().read()==S"ACT.")
+    aa.name(S"Charles")
+    {}:Test"7"(aa.nameSize()==7I)
+    Debug(aa.nameSize())
+    {}:Test"actact"(Log"AA".#$reader().read()==S"ACT.ACT.")
+    )
+  MainBB=(
+    Log"BB".clear()
+    mut BB bb=BB(name=S"Bob" aa=AA.of(name=S"Alice"))
+    {}:Test"empty"(Log"BB".#$reader().read()==S"")
+    {}:Test"3"(bb.nameSize()==3I)
+    Debug(bb.nameSize())
+    {}:Test"act"(
+      actual=Log"BB".#$reader().read()
+      expected=S"ACT.")
+    bb.name(S"Charles")
+    {}:Test"7"(bb.nameSize()==7I)
+    Debug(bb.nameSize())
+    {}:Test"actact"(
+      actual=Log"BB".#$reader().read()
+      expected=S"ACT.ACT.")
+    )
+  }
+
+Scope0={
+  Point=Data:{Num x, Num y
+    @Cache.Lazy method Num sum()={
+      Debug(S"doing sum")
+      Log"Foo".write(S"doing sum")
+      return this.x()+this.y()
+      }
+    }
+  Main=(
+    Log"Foo".clear()
+    Point p=Point(x=1\,y=3\)
+    Debug(S"sum1 is %p.sum()")
+    Debug(S"sum2 is %p.sum()")
+    {}:Test"cacheRepeating"(
+      expected=S"doing sum"
+      actual=Log"Foo".#$reader().read())
+    )
+  }
+
+Scope1 ={
+  O=Organize:{
+    B$={}
+    Bs = Class:Collection.list(B$)
+    B = {
+      mut method mut Bs bs::0(),
+      class method mut This of::0(mut Bs bs)
+      class method mut This of(mut Bs bs)=this.of::0(bs=bs)
+      read method I ok()=native{trusted:readNowCache} 3I
+      //tested to fail with imm instead of read
+      }
+    }
+    
+  LateCacheLoadingTask=(
+    imm O.B ib=(
+      mut O.Bs bs=O.Bs[]
+      mut O.B b=O.B.of(bs=bs)
+      bs.#add(right=b)
+      b
+      )
+    {}:Test""(ib.ok()==3I)
+    void
+    )
+  }
+
+MetaWrapper={
+  read method Name.Mapping  inner::0()
+  class method This of::0(Name.Mapping inner)
+  class method This of(Name.Mapping inner)=this.of::0(inner=inner)
+  imm method I ft()=native{trusted:lazyCache} (
+    Log"MetaWrapper".write(S"42")
+    42I
+    )
+  }
+TestMW=(
+  Log"MetaWrapper".clear()
+  mw=MetaWrapper.of(inner=Name.Mapping())
+  {}:Test"mw42"(expected=42I, actual=mw.ft())
+  {}:Test"mw42Again"(expected=42I, actual=mw.ft())
+  mw2=MetaWrapper.of(inner=Name.Mapping())
+  {}:Test"mw42Again"(expected=42I, actual=mw2.ft())
+  {}:Test"cacheAvoidRepeating"(expected=S"42",actual=Log"MetaWrapper".#$reader().read())
+  )
+  
+Foo={
+  read method I inner::0()
+  class method This of::0(I inner)
+  class method This of(I inner)=this.of::0(inner=inner)
+  imm method I times2()=
+    native{trusted:lazyCache} (
+      Log"Foo".write(S"2")
+      this.inner::0()*2I
+      )
+  read method I times3Now()=
+    native{trusted:readNowCache} (
+      Log"Foo".write(S"3")
+      this.inner::0()*3I
+      )
+  }
+TestCache=(
+  Log"Foo".clear()
+  Foo foo=Foo.of(inner=5I)
+  {}:Test"cacheResult"(expected=10I, actual=foo.times2())
+  {}:Test"cacheResultAgain"(expected=10I, actual=foo.times2())
+  {}:Test"cacheResultNow"(expected=15I, actual=foo.times3Now())
+  {}:Test"cacheResultNowAgain"(expected=15I, actual=foo.times3Now())
+  {}:Test"cacheAvoidRepeating"(expected=S"32",actual=Log"Foo".#$reader().read())
+  )
+
+A={
+  S.List that
+  class method This (S.List that)
+  imm method S firstE()=
+    native{trusted:lazyCache} (
+      Log"Foo".write(S"firstEcalled")
+      this.that().val(0\)
+      )
+  }
+TestACache=(
+  Log"Foo".clear()
+  A a=A(S.List[S"Hello";S"Hi"])
+  A b=A(S.List[S"Hello";S"Hi"])
+  {}:Test"cacheAResult"(expected=S"Hello", actual=a.firstE())
+  {}:Test"cacheAResultAgain"(expected=S"Hello", actual=a.firstE())
+  {}:Test"cacheAvoidRepeating"(expected=S"firstEcalled",actual=Log"Foo".#$reader().read())
+  {}:Test"cacheAResult"(expected=S"Hello", actual=b.firstE())
+  {}:Test"cacheAResultAgain"(expected=S"Hello", actual=b.firstE())
+  {}:Test"cacheAvoidRepeating"(expected=S"firstEcalled",actual=Log"Foo".#$reader().read())
+  A c=A(S.List[S"Hello";S"Hi"])
+  {}:Test"cacheAResult"(expected=S"Hello", actual=c.firstE())
+  {}:Test"cacheAResultAgain"(expected=S"Hello", actual=c.firstE())
+  {}:Test"cacheAvoidRepeating"(expected=S"firstEcalled",actual=Log"Foo".#$reader().read())
+  A d=A(S.List[S"Hello";S"Hi";S"donut"])
+  {}:Test"cacheDResult"(expected=S"Hello", actual=d.firstE())
+  {}:Test"cacheDResultAgain"(expected=S"Hello", actual=d.firstE())
+  {}:Test"cacheEnsureRepeatOnce"(expected=S"firstEcalledfirstEcalled",actual=Log"Foo".#$reader().read())
+  )
+  
+ HasToSs = Class:Collection.list(HasToS)
+ 
+ B={
+  HasToSs that
+  class method This (HasToSs that)
+  imm method S firstE()=
+    native{trusted:lazyCache} (
+      Log"Foo".write(S"firstEcalled2")
+      this.that().val(0\).toS()
+      )
+  }
+  
+BBox={
+  B that
+  class method This innerCon(B that)
+  class method This (HasToSs that)=This.innerCon(B(that))
+  imm method S firstE()=
+    native{trusted:lazyCache} (
+      this.that().firstE()
+      )
+  
+}
+  
+TestBCache=(
+  Log"Foo".clear()
+  B b = B(HasToSs[S"Hello";S"Goodbye"])
+  B b2 = B(HasToSs[S"Hello";S"Goodbye"])
+  {}:Test"cacheBResult"(expected=S"Hello", actual=b.firstE())
+  {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b.firstE())
+  {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
+  {}:Test"cacheBResult"(expected=S"Hello", actual=b2.firstE())
+  {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b2.firstE())
+  {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
+  BBox b3 = BBox(HasToSs[S"Hello";S"Goodbye"])
+  {}:Test"cacheBResult"(expected=S"Hello", actual=b3.firstE())
+  {}:Test"cacheBResultAgain"(expected=S"Hello", actual=b3.firstE())
+  {}:Test"cacheBvoidRepeating"(expected=S"firstEcalled2",actual=Log"Foo".#$reader().read())
+  void
+  )
+  
+AnyList = Class:Collection.list(Any)
+VoidList = Class:Collection.list(Void)
+LibList = Class:Collection.list(Library)
+
+C={
+  S.List that
+  AnyList myList
+  class method This (S.List that, AnyList myList)
+  imm method S firstE()=
+    native{trusted:lazyCache} (
+      Log"Foo".write(S"firstEcalled3")
+      this.that().val(0\)
+      )
+  }
+  
+MyTrait=Trait:{imm method Void foo()=void}
+  
+TestAnyVoidLibrary=(
+  Log"Foo".clear()
+  C c = C(that=S.List[S"Hello";S"Hi"], 
+          myList=AnyList[MyTrait.code();void;S"bar"])
+  C c2 = C(that=S.List[S"Hello";S"Hi"], 
+          myList=AnyList[MyTrait.code();void;S"bar"])
+  {}:Test"cacheCResult"(expected=S"Hello", actual=c.firstE())
+  {}:Test"cacheCResultAgain"(expected=S"Hello", actual=c.firstE())
+  {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
+  {}:Test"cacheCResult"(expected=S"Hello", actual=c2.firstE())
+  {}:Test"cacheCResultAgain"(expected=S"Hello", actual=c2.firstE())
+  {}:Test"cacheCvoidRepeating"(expected=S"firstEcalled3",actual=Log"Foo".#$reader().read())
+  void
+)
+
+ClassBox={
+  class Any myClass
+  class method This(class Any myClass)
+  imm method Void printOut()=
+    native{trusted:lazyCache} (
+      Log"Foo".write(S"ClassBoxPrint")
+      void
+      )
+  }
+
+TestClassBox=(
+  Log"Foo".clear()
+  ClassBox b1 = ClassBox(myClass=S)
+  ClassBox b2 = ClassBox(myClass=S)
+  ClassBox b3 = ClassBox(myClass=HasToS)
+  ClassBox b4 = ClassBox(myClass=HasToS)
+  ClassBox b5 = ClassBox(myClass=Void)
+  ClassBox b6 = ClassBox(myClass=Void)
+  ClassBox b7 = ClassBox(myClass=Any)
+  ClassBox b8 = ClassBox(myClass=Any)
+  ClassBox b9 = ClassBox(myClass=Library)
+  ClassBox b10 = ClassBox(myClass=Library)
+  b1.printOut()
+  b2.printOut()
+  {}:Test"ClassBox_works_the_same"(expected=S"ClassBoxPrint", actual=Log"Foo".#$reader().read())
+  b3.printOut()
+  b4.printOut()
+  {}:Test"ClassBox_works_the_same"(expected=S"ClassBoxPrintClassBoxPrint", actual=Log"Foo".#$reader().read())
+  b5.printOut()
+  b6.printOut()
+  {}:Test"ClassBox_works_the_same"(expected=S"ClassBoxPrintClassBoxPrintClassBoxPrint", actual=Log"Foo".#$reader().read())
+  b7.printOut()
+  b8.printOut()
+  {}:Test"ClassBox_works_the_same"(expected=S"ClassBoxPrintClassBoxPrintClassBoxPrintClassBoxPrint", actual=Log"Foo".#$reader().read())
+  b9.printOut()
+  b10.printOut()
+  {}:Test"ClassBox_works_the_same"(expected=S"ClassBoxPrintClassBoxPrintClassBoxPrintClassBoxPrintClassBoxPrint", actual=Log"Foo".#$reader().read())
+  void
+)
+TestCircularObjects={
+  Base={
+    S that
+    Any myAny
+    class method This (S that,fwd imm Any myAny)
+    method Base other()=(
+      return this.myAny()
+      catch return Base b b
+      catch return Any _ error X""
+      )
+    imm method S firstE()=native{trusted:lazyCache} (
+      Log"Foo".write(S"ACT.")
+      this.that()
+      )
+    }
+  D={
+    S.List that
+    Any myAny
+    class method This (S.List that,fwd imm Any myAny)
+    imm method S firstE()=native{trusted:lazyCache} (
+      Log"Foo".write(S"ACT.")
+      this.that().val(0\)
+      )
+    }
+  TestCircular0=(
+    Log"Foo".clear()
+    D d1 = D(S.List[S"Hello"],myAny=d2)
+    D d2 = D(S.List[S"Goodbye"],myAny=d2)  
+    {}:Test"cacheCResult"(expected=S"Hello", actual=d1.firstE())
+    {}:Test"cacheCResultAgain"(expected=S"Hello", actual=d1.firstE())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"manualExecution"(expected=S"Goodbye", actual=d2.that().val(0\))
+    {}:Test"cacheCResult"(expected=S"Goodbye", actual=d2.firstE())
+    {}:Test"cacheCResultAgain"(expected=S"Goodbye", actual=d2.firstE())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
+    )
+  TestCircularBase=(
+    Log"Foo".clear()
+    Base d1 = Base(S"Hello",myAny=d2)
+    Base d2 = Base(S"Goodbye",myAny=d1)
+    {}:Test"manualExecution_d1"(expected=S"Hello", actual=d1.that())
+    {}:Test"manualExecution_d1_d2"(expected=S"Goodbye", actual=d1.other().that())  
+      {}:Test"cacheCResult"(expected=S"Hello", actual=d1.firstE())
+    {}:Test"manualExecution_d1a"(expected=S"Hello", actual=d1.that())
+    {}:Test"manualExecution_d1_d2a"(expected=S"Goodbye", actual=d1.other().that())  
+      {}:Test"cacheCResultAgain"(expected=S"Hello", actual=d1.firstE())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"manualExecution_d2"(expected=S"Goodbye", actual=d2.that())
+        {}:Test"manualExecution_d2_d1"(expected=S"Hello", actual=d2.other().that())
+    {}:Test"cacheCResult"(expected=S"Goodbye", actual=d2.firstE())
+    {}:Test"cacheCResultAgain"(expected=S"Goodbye", actual=d2.firstE())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
+    )  
+  TestCircular=(
+    Log"Foo".clear()
+    D d1 = D(S.List[S"Hello"],myAny=d2)
+    D d2 = D(S.List[S"Goodbye"],myAny=d1)  
+    {}:Test"cacheCResult"(expected=S"Hello", actual=d1.firstE())
+    {}:Test"cacheCResultAgain"(expected=S"Hello", actual=d1.firstE())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"manualExecution"(expected=S"Goodbye", actual=d2.that().val(0\))
+    {}:Test"cacheCResult"(expected=S"Goodbye", actual=d2.firstE())
+    {}:Test"cacheCResultAgain"(expected=S"Goodbye", actual=d2.firstE())
+    {}:Test"cacheCvoidRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
+    )
+  }
+
+TestClassCache={
+  A={
+    class method I const()=native{trusted:lazyCache} (
+      Log"Foo".write(S"ACT.")
+      42I
+      )
+    }
+  Task=(
+    Log"Foo".clear()
+    {}:Test"res1"(expected=42I, actual=A.const())
+    {}:Test"res2"(expected=42I, actual=A.const())
+    {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    )
+  }
+TestReadCache={
+  A={
+    read method I that::0()
+    mut method Void that::0(I that)
+    mut method Void update(I that)=this.that::0(that)
+    class method mut A of::0(I that)
+    class method mut A(I that)=this.of::0(that)
+    read method I m()=native{trusted:readNowCache} (
+      Log"Foo".write(S"ACT.")
+      this.that::0()
+      )
+    }
+  Task1=(
+    Log"Foo".clear()
+    mut A a=A(42\)
+    {}:Test"res1"(expected=42I, actual=a.m())
+    {}:Test"res2"(expected=42I, actual=a.m())
+    {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    //more, with update
+    a.update(0\)
+    {}:Test"res3"(expected=0I, actual=a.m())
+    )
+  B={
+    read method read S.List that::0()
+    mut method mut S.List #that::0()
+    class method mut This of::0(capsule S.List that)
+    mut method Void addOne()=this.#that::0().add(S"hi")
+    read method I m()=native{trusted:readNowCache} (
+      Log"Foo".write(S"ACT.")
+      this.that::0().size()
+      )
+    }
+  Task2=(
+    Log"Foo".clear()
+    mut B a=B.of::0(S.List[\"hello"])
+    {}:Test"res1"(expected=1I, actual=a.m())
+    {}:Test"res2"(expected=1I, actual=a.m())
+    {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())
+    //more, with update
+    a.addOne()
+    {}:Test"cacheRepeating"(expected=S"ACT.ACT.",actual=Log"Foo".#$reader().read())
+    {}:Test"res3"(expected=2I, actual=a.m())
+    )
+  Person=Data.Close:{
+    S name
+    capsule S.List allergies
+    class method mut This(S name, capsule S.List allergies)
+    @Cache.Lazy method S description()=(
+      Log"Foo".write(S"description()")
+      S"Person[%this.name();%this.allergies().size()]"
+      )
+    @Cache.Clear class method Void add(mut S.List allergies,S allergy)=(
+      Log"Foo".write(S"add()")  
+      allergies.add(allergy)
+      )
+    @Cache.Now class method Void ok(S name,read S.List allergies)=(
+      Log"Foo".write(S"ok()")
+      if name==S"" || allergies.size()>200I error X"InvalidPerson"
+      )
+    @Cache.Now class method S title(S name)=(
+       Log"Foo".write(S"title()")
+       S"Dr. %name of 42"
+       )
+    }
+  Task3=(
+    Log"Foo".clear()
+    imm Person i=(
+      mut Person a=Person(name=S"bob",allergies=S.List[S"dust"])
+      {}:Test"cacheRepeating"(expected=S"ok()title()",actual=Log"Foo".#$reader().read())
+      {}:Test"readProperty1"(expected=S"Dr. bob of 42", actual=a.title())
+      {}:Test"cacheRepeating"(expected=S"ok()title()",actual=Log"Foo".#$reader().read())
+      //more, with update
+      a.add(allergy=S"pollen")
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()",actual=Log"Foo".#$reader().read())
+      {}:Test"readProperty2"(expected=S"Dr. bob of 42", actual=a.title())
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()",actual=Log"Foo".#$reader().read())
+      a
+      )
+      {}:Test"immCache1"(expected=S"Person[bob;2]", actual=i.description())
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
+      {}:Test"immCache2"(expected=S"Person[bob;2]", actual=i.description())
+      {}:Test"cacheRepeating"(expected=S"ok()title()add()ok()title()description()",actual=Log"Foo".#$reader().read())
+    )
+  }
+  NestedClose=Data.Close('A.B, autoNorm=Bool.false()):{
+  A={
+    B={
+      class method This()
+      @Cache.Lazy method S foo()=(Log"Foo".write('Foo) S"Hi")
+      }
+    }
+  }
+NestedCloseTest=(
+  Log"Foo".clear()
+  b=NestedClose.A.B()
+  {}:Test"NestedClose1"(expected=S"Hi" actual=b.foo())
+  {}:Test"NestedClose2"(expected=S"Hi" actual=b.foo())
+  {}:Test"NestedCloseLog"(expected=S"Foo" actual=Log"Foo".#$reader().read())
+  )

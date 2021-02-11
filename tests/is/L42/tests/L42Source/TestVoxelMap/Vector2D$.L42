@@ -1,0 +1,27 @@
+Double x, Double y
+class method This (Double x, Double y)
+
+method Vector2D +(This that)=\(x=this.x() + that.x(), y=this.y() + that.y())
+
+class method This (Double rad)=\(x=rad.sin(), y=rad.cos())
+
+method This random(mut Math.Random r) = This(rad=r.radiant())
+
+method This limit(Double that) = {
+  (x,y) = this
+  tot2 = (x * x) + (y * y)
+  if tot2 <= that * that return this
+  return This.norm(that, x=x, y=y, tot2=tot2)
+  }
+method This norm(Double that) = (
+  (x,y)=this
+  This.norm(that, x=x, y=y, tot2=(x * x) + (y * y) )
+  )
+class method This norm(Double that, Double x, Double y, Double tot2) = (
+  tot = tot2.pow(exp=Double"0.5")
+  redX = (that * x) / tot
+  redY = (that * y) / tot
+  \(x=redX, y=redY)
+  )
+
+method Vector3D to3D(Double z)=Vector3D(x=this.x(), y=this.y(), z=z)

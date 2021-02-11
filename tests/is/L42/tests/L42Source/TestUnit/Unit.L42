@@ -1,0 +1,24 @@
+//Unit specific errors:
+NotValidSupport=Message:{[Message.Guard]}
+NotSameSupport=Message:{[Message.Guard]}
+NotValidUnit=Message:{[Message.Guard]}
+//static methods, need to be compilable before top
+N={class method Introspection.Nested (class Any that)
+  =Introspection.Nested.from(classAny=that)}
+
+TraitHasSupport=Trait:{
+  Support={}
+  method Support #inner() 
+  class method This(Support that)
+  }
+  
+TraitUnit=Trait:{...}
+
+CompositUnit={...}
+
+class method Library (class Any that)[NotValidSupport]={
+  return Class.Relax:Data.Relax:TraitUnit['Support=>that]
+  catch Message.Guard g exception NotValidSupport
+    "The provided class is not a valid support class for a unit of measure"
+    .with(cause=g)
+  }

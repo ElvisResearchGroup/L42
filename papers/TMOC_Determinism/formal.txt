@@ -1,0 +1,209 @@
+As a notation, I will put an "s" to represent a sequence, so if x  is
+a terminal or a nonterminal
+xs is implicitly defined as xs::=x1..xn
+
+Type Grammar:
+
+  T::= mdf C
+  mdf::=imm|mut|read
+  C::=ID | ID$
+
+Types are modified class names. For this work we can just use the tree
+simpler modifiers, immutable, mutable and readonly. We consider the
+deep interpretation, so that an immutable reference is a reference to
+a deeply immutable object graph.
+Class names are divided in two kinds: Normal and Capability ($)
+In concrete code examples, we can use identifiers ending with $ to
+represent the second group.
+A capability class/interface has a capability name.
+A normal one has a normal name.
+Normal classes/interfaces can only use normal names in their type annotations.
+Some Capability classes can be "magic", that is, their semantic is
+given by he language; other can be user defined.
+The main expression can use any kind of class.
+Crucially, Capability classes can implement normal interfaces (see
+details later)
+
+Declarations and expressions grammar:
+
+  D::= class C implements Cs {Ms Fs} | interface C implements Cs {Ms}
+  F::= mut C f; | imm C f;//no read fields for simplcity
+  M::= mdf method T m(T1 x1..Tn xn) e?  
+  //optional e, if absent is abstract method. mdf is the modifier for "this"
+  e::= x | v | e.f | e1.f=e2 | e.m(es) | new C(es)
+    | if x=native(C,es) then e3 else e4
+  v::= i | b
+  T::= mdf C | Bytes
+  p::= Ds e  //program with main expression
+
+We have a conventional language of final classes and interfaces, with
+default constructors as in FJ, conventional heap and locations (i) and
+field access and field update. Of course as well formedness,
+interfaces has only abstract methods, while classes has
+no abstract methods.
+Well formedness: methods containing native(ID$,...) are contained in $ named classes.
+The language semantic is parametric on a relation
+C(bs)->R  with R::=Ok(b)| Error
+such relation is well formed:
+  for all C, bs, exists R so that C(bs)->R  //always defined
+  ID(bs)->R and ID(bs)->R' implies R=R' //ID without dollar is deterministc
+
+  Conventional "if e then e1 else e2" is sugar for
+  "if unused=native(IF,e.getBytes()) then e1 else e2"
+  
+We do not support exceptions for simplicity, we discuss challenges of exceptions in future work.
+
+Type environments:
+
+  G::= x1:T1..xn:Tn
+  h::= i1->mdf1 C1(is1).. in->mdfn Cn(isn) //mdf only imm/mut
+  H::= i1:T1.. in:Tn  //mdf only imm/mut
+
+I aim to show (variations of) the following:
+  -1: **read determinism**
+    Execution of a method with no mut parameters (including this) is deterministic, even if some capability classes may have non deterministic methods.
+    Thus, sequential calls to the method will produce isomorphic results, but if mutable behavior happen between calls, the result may change. For example, if this fragment of code is well typed, no matter what is the embedding (well typed) program,
+    read Point p=new Point(a,b)
+    T r1=p.getX()//defined as read method T getX() ...
+    T r2=p.getX()//r1 ROG is graph isomorph to r2 ROG
+    p.setX(..)//defined as mut method T setX(...) ...
+    T r3=p.getX()//no guaranteed connection between r3 and r1 The interesting bit is that p can contain capability objects in its ROG!
+
+-2: **imm equational**
+    a method with no parameters and immutable mdf will always produce the same result, and an optimized execution could safely cache the result
+    for example
+    imm F f=new F(....)
+    imm R r1=f.apply1()
+    imm R r2=f.apply1()//may safely return the cached value
+    mut R r3=f.apply2()//may safely return a deep structural clone of the cached value
+
+-3: *immutable objects can be cached if they have isomorphic ROGs*
+    So for example
+    imm F f1=new F(new A(),new B())//created one time
+    imm F f2=new F(new A(),new B())//optimized can make f1==f2 as heap addresses
+    imm R r1=f1.apply()//computed
+    imm R r2=f2.apply()//cached from f1
+
+To my understanding those properties together remove (most of) the need of backdoors to optimize deeply immutable datastructures, and offers great advantages while formally proving correctness of programs.
+
+***The key to those properties is that a capability class can only
+implement a normal interface that has all methods with mut modifier
+for this.***
+
+
+
+name/address signature, arguments
+ID foobar_float32_int32_int64
+
+
+for example, assume
+-----
+class System$ implements System{
+  mut method imm String readFile(imm String name)
+      new FileSystem$().readFile(name)
+  }
+  
+interface System{  mut method imm String readFile(imm String name) }
+
+class User{ mut System f;
+  read method T readMethod()...//any well typed body, can not use f
+  mut method T mutMethod()...//any well typed body
+  }
+----
+clearly, main expression
+  new User(new System$()).mutMethod() will be able to read the file, and
+multiple reductions may produce different results,
+but
+  new User(new System$()).readMethod() will not be able to read the file:
+  the method is called with a "read this", thus all field accesses will produce read/imm values, in particular we could only access a read System, that would not be able to actually read the file.
+
+This model could be generalized: we could have more modifiers acting as "keys" for more kinds of capabilities, but I think the presented model is useful in practice as it is.
+In the following, a sketch of the most important typing rules Notations:
+  
+  *Sig(Ds,C) extract the signature (set of 'mdf method T m(Ts)' ) from Ds(C)
+  
+  *T\mut produce the non mut version of a type:
+     mut C\mut=ret C, imm C\mut=imm C, read C\mut=read C
+  
+  *G\mut applies T\mut to all its stored types.
+
+
+           forall C in dom(Ds0) C=ID and Ds0 |- ID:OK
+           forall C in dom(Ds1) C=ID$ and Ds0 Ds1 |- ID$:OK
+           Ds0 Ds1; empty; empty |-e:T
+(pOK)--------------------------------------------------------------------
+           Ds0 Ds1 e:ok
+
+          C;Ds|-M1:OK ..C,Ds|-Mn:OK
+          C;Ds|-C1:OK ..C,Ds|-Ck:OK
+          Ds(C)=_ C implements C1.Ck {M1..Mn,Fs}
+(COK)-------------------------------------   
+           Ds|-C:OK
+
+                Sig(Ds,C') subsetEq Sig(Ds,C)
+                if C of form ID$ and C' of form ID,
+                then forall M in Sig(Ds,C), M=mut method _
+(subtypeOk)----------------------------------------
+                       C;Ds |-C':OK
+
+           Ds;G|-e:mut C
+           Ds(C)=class C implements Cs{Ms T1 d1..Tn fn}
+(mutf)--------------------------------------------------- 
+           Ds;G|- e.fi:Ti
+
+           Ds;G|-e:mdf C
+           Ds(C)=class C implements Cs{Ms T1 d1..Tn fn}
+(_f)  -------------------------------------------------
+           Ds;G|- e.fi:Ti\mut
+
+             Ds;G|-e1:mut C //field update receiver must be mut
+             Ds;G|-e2:Ti
+             Ds(C)=class C implements Cs{Ms T1 d1..Tn fn}
+(update)---------------------------------------------------
+             Ds;G|- e1.fi=e2:Ti
+
+       Ds;G\mut|-e:mut C
+(imm) -------------------
+       Ds;G|-e:imm C
+//promotion/recovery rule: we can do better, but this is sufficient for examples
+
+       Ds;G|-e1:T1 ... Ds;G|-en:Tn
+       Ds(C)=class C implements Cs{Ms T1 d1..Tn fn}
+(new) -----------------------------------------------
+       Ds;G|-new C(e1,...,en):mut C
+ 
+       Ds;G|-e1:imm C1 ... Ds;G|-en: imm Cn
+       Ds(C)=class C implements Cs{Ms _ C1 d1.. _Cn fn}
+(newImm) -----------------------------------------------//optional rule
+       Ds;G|-new C(e1,...,en): imm C
+       
+       Ds;G|-e0:T0 ... Ds;G|-en:Tn
+       T0=mdf C
+       mdf method T m(T0 x0,..,Tn xn) in Sig(Ds,C)
+(mcall)-----------------------------------------------
+       Ds;G|-e0.m(e1,...,en):T
+      
+         Ds:G|-e1: Byte .. Ds:G|-en: Byte
+         Ds:G|-e0: T
+         Ds:G,x:Byte|-e: T
+         #C=n
+(native)------------------------------------
+        Ds:G|- if x=native(C,e1..en) then e else e0:T
+       
+REDUCTION:
+
+reduction is mostly conventional. Of course native is interesting:
+
+     C(bs)->Ok(b)
+(n-ok)------------------------------------
+     h|if x=native(C,bs) then e else e' -> h|e[x=b]
+
+          C(bs)->Error
+(n-error)------------------------------------
+     h|if x=native(ID,bs) then e else e' -> h|e'
+
+
+
+simpler option:
+  no bites, just 
+  if rand then e1 else e2

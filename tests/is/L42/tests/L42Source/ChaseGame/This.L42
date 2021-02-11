@@ -1,0 +1,22 @@
+reuse [AdamTowel]
+LoadJ=Load:{reuse[JavaServer]}
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+
+Pulse=Data:{
+  Double rad
+  Double power
+  }
+Margin=Data:{...}
+Vector=Data:{...}
+ModelTrait=Trait:{
+  mut JServer.Handler.Map stage
+  S key
+  mut method Void setStage(mut JServer.Handler that)=
+    this.#stage().#put(key=this.key(),val=that)
+  }
+EnvModel=Class:Data:JServer.Handler:ModelTrait:Trait({...})['$=>'This]
+StartModel=Class:Data:JServer.Handler:ModelTrait:{...}
+JavaCode={...}
+Main={...}

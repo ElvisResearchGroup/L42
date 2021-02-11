@@ -1,0 +1,356 @@
+_______
+#define reduce(p,A,L) => ER
+* reduce(p,A,L) => empty;L
+* reduce(p,A,throw v) => throw(p,A,v)
+* reduce(p,A,e) => reduce(p,A',e')
+    A;e->p A';e'
+* reduce(p,A,e) => limit(p)//memory/stack overflow, timeout, loop
+_______
+#define A.rog(v)
+//obvious, but includes the as1;as2
+_______
+#define A.free()
+//the set of all the a in the right side of A but not in the dom(A)
+_______
+#define A.pathOf(v)   A.callByValue(v1..vn)
+* A.pathOf(P)=P
+* A.pathOf(a)=A(a).P
+
+* A.callByValue(v vs) = A(v), A.callByValue(vs) if A(v) is defined
+* A.callByValue(v vs) = v, A.callByValue(vs) if A(v) is undefined
+* A.callByValue() =empty 
+_______
+#define A[mdf v0..vn]=A' //if mdf is imm, mark A.rog(v) as imm
+* A[mdf v]=A if mdf!=imm or v not of form a
+* A[imm a]=A[imm A.rog(a)]
+* A[imm a]=A[imm A.rog(a)]
+* (A,imm?1 a1->Obj1..imm?n an->Objn)[imm a1..an]=A,imm a1->Obj1..imm an->Objn 
+_______
+#define A[mdf x=v]=A'  A[x=v]
+* (A,mdf x=_)[mdf x=v]=A[x=v][mdf v], mdf x=v
+* A[mdf x=v]=A[x=v][mdf v], mdf x=v
+    x not in dom(A)
+* (A,a->P(xvs1,x=x',xvs2))[x'=v]=(A,a->P(xvs1,x=v,xvs2))[x'=v]
+* A[x=v]=A otherwise
+_______
+#define A|e --> A'|e'    
+* A | x  -->p  A| A(x) //is ok that can not be applied on unresolved fwds
+* A | x := v  -->p  A[_ x=v]| void //non deterministically chose the mdf that works
+* A | loop e  -->p  A | (void x=e loop e)  
+* A0 | (var? T x=e0 Ds Ks e)  -->p  A1 | (var? T x=e1 Ds Ks e)
+    A0 | e0  -->p  A1 | e1
+* A0 | (var? T x=v Ds Ks e)  -->p  A[T.mdf x=v] | (Ds Ks e)
+* A | (Ks e)  -->p  A| e
+* A | (var? T x=ctxV[K.throw v] Ds K Ks e)  -->p  A[K.T.mdf K.x=v] | K.e
+    p |- A.pathOf(v) <= K.T.P
+* A | (var? T x=ctxV[throw v] Ds K Ks e)  -->p  A | (var? T x=ctxV[throw v] Ds Ks e)
+    throw!=K.throw or not p |- A.pathOf(v) <= K.T.P
+* A | (var? T x=ctxV[throw v] Ds e)  -->p  A | throw v
+* A | P.m(x1=v1 .. xn=vn)  -->p  A', imm? a->P(x1=v'1..xn=v'n) empty;empty | a
+    MWT=p(P).m(x1..xn)
+    imm?=imm if MWT.mdf=imm
+    imm?=empty otherwise
+    v'1..v'n=A.callByValue(v1..vn)
+    A'=A[MWT.mdf1 v'1]..[MWT.mdfn v'n]
+* A,a->P(xvs1,x=_,xvs2) | v0.#?x(that=v1)  -->p  A' | void
+    {mdf}=p(P).#?x(that).params.mwts
+    a,v=A.callByValue(v0,v1)
+    A'=(A,a->P(xvs1,x=v,xvs2))[mdf v]
+* A,a->P(xvs1,x=v,xvs2) | v0.#?x()  -->p  A' | v
+    {mdf}=p(P).#?x(that).mdf
+    a=A.callByValue(v0)
+    A'=(A,a->P(xvs1,x=v,xvs2))[mdf a]
+* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1 | MWT.e[this=v'0,x1=v'1,..xn=v'n]
+    v'0..v'n=A.callByValue(v0..vn)
+    MWT=p(A0.pathOf(v'0)).m(x1..xn)[from A0.pathOf(v'0);p]
+    MWT.native[Url]? = empty// or not empty but plg not applicable.
+    A1=A0[MWT.mdf0 v'0]..[MWT.mdfn v'n]
+* A0 | v0.m(x1=v1 .. xn=vn)  -->p  A1,A',A2|v
+    v'0..v'n=A.callByValue(v0..vn)
+    MWT = p(A0.pathOf(v'0)).m(x1..xn)[from A0.pathOf(v'0);p]
+    MWT.native[Url]? != empty
+    A1,A = A0[MWT.mdf0 v'0]..[MWT.mdfn v'n]
+    Ts = MWT.pars, MWT.mdf A0.pathOf(v'0)
+    capsule not in Ts.mdfs//not a loss in expressiveness, we can use a wrapper
+    A = plgMuts(A1,A;Ts;v'0..v'n)
+    as1 = accessibleMutAddresses(A,Ts,v'0..v'n)
+    as2 = accessibleImmAddresses(A,Ts,v'0..v'n)
+    callPlugin(A1,A;MWT;v0..vn) => A1,A'|v
+    if URl of form tURL then {A0|v0 | callPlugin(A1,A;MWT;v0..vn) => A0|v0}={A1,A'|v}
+    A' = A~as1;as2
+    either MWT.T.mdf=mut, v in as1, v->P(_)_;_ in A and p|-P<=MWT.T.P
+    or MWT.T.mdf=imm
+    //untyped libs, now if a lib is not typed we know it could not have been typed yet
+    either v=L and L.flag=norm implies {L| L in v'1..v'n, L.flag=norm} not empty
+    or v in as2, imm v->P(_)_;_ in A and p|-P<=MWT.T.P 
+//rationale: plg values P() as are created (with empty as1;as2) by normal constructors, no need of plg calls.
+//plg can reorganize the as on top of any P().
+//plg can create a new L or return any accessible as consistent with the method return mdf
+_______
+#define accessibleMutAddresses(A;Ts;vs)=as      accessibleImmAddresses(A;Ts;vs)=as
+* a0..an in accessibleMutAddresses(A;T1..Tn;v1..vn)
+    vi=a0
+    Ti.mdf=mut
+    a0->P(_)a1..an;_ in A
+
+* a1..an in accessibleImmAddresses(A;T1..Tn;v1..vn)
+    vi=a0
+    Ti.mdf=mut
+    a0->P(_) _;a1..an in A
+* a0,as1,as2 in accessibleImmAddresses(A;T1..Tn;v1..vn)
+    vi=a0
+    Ti.mdf=imm
+    a0->P(_) as1;as2 in A
+_______
+#define A~as1;as2 = A'
+* A~as1;as2 = A'    //note: no imm a-> P()_;_ in A', since is only mut stuff
+    dom(A') = dom(A)
+    if a-> P() as1';as2' in A' then a-> P() _;_ in A, as1' subsetEq as1 and as2' subsetEq as2
+_______
+#define plgMuts(A;Ts;vs) = A'
+* a->P() as1;as2 in plgMuts(A,T1..Tn,v1..vn)
+    vi=a
+    Ti.mdf=mut
+    a->P() as1;as2 in A
+    
+----------------------------------------------------------------------
+J ::=[p;G;fwds=xs;wrap=Any?;catchLev=n; libMap(n->Core.L)]
+
+//every L in meth bodies and in the main expression have a corresponding index,
+// and such index can be used to access the literal at run time.
+//the index stores both the L "as is" and a prefrommed version 
+//with respect to the point of origin of the current main
+* J.catchVar="catchVar"+J.catchLev
+* J.native(T) = J.p(T.P).Info.nativeKind!=empty
+* J.nativeWrap(T) =J.native(T) and J.wrap=Any
+
+* J(T) = J(T.P) //J extract the name as type. J.className(p) the name as class dec.
+    T.P not of form Thisn.Cs
+* J(T) = J.className(J.p.navigate(T.P)) if T.mdf=class and T.P=Thisn.Cs   
+* J(T) = J(T.P) if T.mdf not in {class, fwd mut, fwd imm} and T.P=Thisn.Cs
+* J(T) = J(T.P) if T.mdf in {fwd mut, fwd imm} and !J.native(T) and T.P=Thisn.Cs
+* J(T) = Object if T.mdf in {fwd mut, fwd imm} and J.native(T) and T.P=Thisn.Cs
+* J(Any) =L42Any
+* J(Void) =L42Void
+* J(Library) =L42Library
+* J(Thisn.Cs) = J(J.p.navigate(Thisn.Cs))
+* J(p) = p(This0).Info.nativeKind<J(p(This0).Info.nativePar)>
+    if p(This0).Info.NativeKind!=empty
+    Omit <> for empty p(This0).Info.nativePar
+* J(p) = J.className(p) otherwise
+* J.className(T)=J.className(T.P)
+* J.className(P)=J.className(J.p.navigate(P))
+* J.className(p) = JC// java class name
+    assert all elements in pTails are C:CORE.L
+    p=L C0:L0 ..Cn Ln
+    JC= £cCn+Ln.Info.TopID+£_+..+£_+£cC0+L0.Info.TopID
+  
+* J[wrap] = J[wrap=Any]
+* J[!wrap] = J[wrap=empty]
+* J[ST]= J[wrap] if p(p.minimize(empty,ST)).interface?=interface
+* J[ST]=J otherwise
+* J.varName(x)="£x"+x+"£fwd"
+    if x in J.fwd
+* J.varName(x)="£x"+x
+    otherwise
+* J(x) = J.varName(x)
+    !J.nativeWrap(J.G(x))
+* J(x) = J.className(J.G(x)).wrap(x)
+    J.nativeWrap(J.G(x))
+* J(P<:class Any) = Wrap.ofPath("P")//J(P) may not be a defined class, but the name is still in the map
+* J(P<:class P') = J.className(P).pathInstance //static field
+    P'!= Any //TODO: no need to distinguish Any, then remove Resource.ofPath and Wrap.ofPath
+* J(void) = L42Void.instance
+* J(L)= Wrap.ofLib("J.libToMap(L)")// all libs can be pre wrapped and pre frommed? or is it better to cache it once?
+* J(xP.m(x1=e1..xn=en))=je
+    s=m(x1..xn)
+    je'=J.className(J.G(xP)).s(J[!wrap](xP),J[J.G(xP).s.1](e1)..J[J.G(xP).s.n](en))
+    T=solve(J.G(xP).s)
+    je=je' if !J.nativeWrap(T)
+    je=J.className(T).wrap(je') otherwise
+* J(loop e)= switchKw(0){defaultKw->{
+    if(false)yield Wrap.throwE(null);
+    whileKw(trueKw) J[!wrap](e);
+    }}
+* J(throw e)= Wrap.throwE(new J(throw)(J[wrap](e)))
+* J(x:=e)=Wrap.toVoid(x=J[J.G(x)](e))
+* J( (e) )=J(e)
+* J( (Ds e) )=switchKw(0){defaultKw->{J'.dec(Ds) J'.init(Ds) yieldKw J'(e);}}
+    J'=J[G+=Ds.G][fwd=xs]
+    Ds=D1..Dn
+    xs={Di.x| i in 1..n, Di.x inside Di.e..Dn.e}
+* J( (Ds Ks e) )=switchKw(0){defaultKw->{J'.dec(Ds) try{J'.init(Ds)} J'.catch(Ks) yieldKw J'(e);}}
+    J'=J[G+=Ds.G][fwd=J.fwd,xs]
+    Ds=D1..Dn
+    xs={Di.x| i in 1..n, Di.x inside Di.e..Dn.e}
+* J.dec(D1..Dn) = J.dec(D1)..J.dec(Dn)
+* J.init(D1..Dn) = J1.init(D1)..Jn.init(Dn)
+    Ji=J[fwd=J.fwd\D0.x..D(i-1).x]
+* J.dec(var? T x=e) = 
+    J(T) "£x"+x=defaultFor(J(T));
+    J(T[mdf=fwd imm]) "£x"+x+"£fwd"=J.className(T).NewFwd(); //if x in J.fwd
+* J.init(var? T x=e) =
+    x=J[J.G(x)](e);
+    ((L42Fwd)x£fwd).fix(x);//if x in J.fwd
+* J.catch(Kz) = J.catch(group(Ks1)) J.catchRet(group(Ks2)) J.catchErr(group(Ks3))
+    Ks1,Ks2,Ks3=Kz
+* group(catch throw T1 x1 e1..catch throw T1 x1 e1) = throw T1 x1 e1..Tn xn en
+
+ * J.catch(throw T1 x0 e0..Tn xn en) = catchKw(J(throw) J.catchVar){
+    J.catchIf(T0 x0 e0)..J.catchIf(Tn xn en)
+    throw J.catchVar;
+    }
+ * J.catch(throw) = empty
+
+* J.catchIf(T x e) =
+    if(J.catchVar.obj42() instanceof J.className(T) ){
+      J(T) "£x"+x=(J(T))J.catchVar.obj42();//if !J.native(T)
+      J(T) "£x"+x=((J.className(T))J.catchVar.obj42()).unwrap;//if J.native(T)
+      yieldKw J[G+=x:T][catchLev+=1](e);
+      }
+
+* J.class()= interfaceKw/classKw JC extendsKw/implementsKw J(Ts){
+      J.meth(MWTs) //no nested classes
+      J(T1) x1;
+      public static BiConsumer<Object,Object> FieldAssFor_x1=(f,o)->{((JC)o).x1=(J(T1))f;};
+      ...
+      J(Tn) xn;
+      public static BiConsumer<Object,Object> FieldAssFor_xn=(f,o)->{((JC)o).xn=(J(Tn))f;};
+      public static JC NewFwd(){return new _Fwd();}
+      public static class _Fwd extends JC implements L42Fwd{//implements CN if CN interface
+        private List<Object> os=new ArrayList<>();
+        private List<BiConsumer<Object,Object>> fs=new ArrayList<>();
+        public List<Object> os(){return os;}
+        public List<BiConsumer<Object,Object>> fs(){return fs;}
+        //if is interface, implement with throw new Error() all the methods
+        }
+      public static final JC instance=new _Fwd();//so it work also if CN is interface
+      public J(J.p) unwrap;//only if J.native(J.p)
+      public static JC wrap(J(J.p) that){JC res=new JC();res.unwrap=that;return res;}//only if J.native(J.p)
+      }
+    J[p=J.p.push(NC1.C,NC1.L)].class()
+    .. 
+    J[p=J.p.push(NCn.C,NCn.L)].class()
+  J.p(This0) = {interface? Ts MWTs NC1..NCn Info}
+  J.fields(J.p) = T1 x1..Tn xn
+  JC = J.className(J.p)
+
+* J.staticMethHeader(mdf method T0 m(T1 x1..Tn xn)_) =
+      public static J(T0) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
+    J(T0) != Object or Object notin J(T1)..J(Tn)
+* J.staticMethHeader(mdf method T m(T1 x1..Tn xn)_) =
+      public static J(T0) m(x1..xn) (J(mdf This0) £xthis, J(T1) £xx1..J(Tn) £xxn)
+      public static J(T0') m(x1..xn) (J(mdf This0) £xthis, J(T1') £xx1..J(Tn') £xxn)
+    Ti'=noFwd(Ti)
+    J(T0)==Object and Object in J(T1)..J(Tn)  
+    
+    
+* J.refineMethHeader(mdf method T m(T1 x1..Tn xn)_) = public T' m(x1..xn) (J(T1) £xx1..J(Tn) £xxn)
+    T' = J.className(T) if J.refineNative(T,m(x1..xn))
+    T'=J(T) otherwise
+
+* J.staticMethBody(mdf method T m(T1 x1..Tn xn)_) =
+    {returnKw £xthis.m(x1..xn)(£xx1..£xxn);} //but if !coherent(J.p,false) then just throw new Error();
+
+* J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) =
+    {returnkw ctx[J.className(This0).m(x1..xn)(e,£xx1..£xxn)];}
+  coherent(J.p,false)
+  ctx=[] if !J.refineNative(T,m(x1..xn))
+  ctx=J.className(T).wrap([]) otherwise
+  e=this if p(This0).Info.nativeKind=empty or mdf==class,
+  e=this.unwrap otherwise
+
+* J.refineMethBody(mdf method T m(T1 x1..Tn xn)_) = {throw new Error();}
+  !coherent(J.p,false)
+  
+* J.refined(MWT)=empty
+    MWT.MH.s notin p(This0).Info.refined
+    p(This0).interface?=empty
+* J.refined(MWT)=
+    J.refineMethHeader(MWT.MH) J.refineMethBody(MWT.MH)
+    J.p(This0).interface? = empty
+    MWT.MH.s in p(This0).Info.refined
+* J.refined(MWT)=
+    J.refineMethHeader(MWT.MH);
+    J.staticMethHeader(MWT.MH) J.staticMethBody(MWT.MH)//generates two if staticMethHeader generates two
+    J.p(This0).interface? = interface
+
+* J.meth(MWT1..MWTn)=J.refined(MWT1) J.meth(MWT1) .. J.refined(MWTn) J.meth(MWTn)
+    J.p(This0).interface? = empty
+* J.meth(MWT1..MWTn)=J.refined(MWT1) .. J.refined(MWTn)
+    J.p(This0).interface? = interface
+* J.meth(MH = native[URL] e) =
+    J.staticMethHeader(MH){return J(J.p(This0).Info.kind,URL,x1..xn,e);}
+* J.meth(MH=e)=J.staticMethHeader(MH){throw new Error();}
+    if !coherent(J.p,false); the other cases are only applied if coherent(J.p,false) 
+* J.meth(MH=e) =
+    J.staticMethHeader(MH){returnKw J[G=MH.G][MH.T](e);}
+    J.staticMethHeader(MH) generates only 1 result
+* J.meth(MH=e) =
+    J.staticMethHeader(MH).0 {returnKw J[G=MH.G][MH.T](e);}
+    J.staticMethHeader(MH).1 {returnKw (J(noFwd(MH.T))) MH.s((Object)?£xx1,..,(Object)?£xxn);}//casting the right ones to Object
+    //could be just J[G=MH.G][MH.T](e) if e is very simple 
+    
+* J.meth(MH)=//if method is allowed abstract  //all cases for abs methods:
+      J.staticMethHeader(MH){throw new Error();}//create two if staticMethHeader returns two headers
+* J.meth(MH)=
+    J.staticMethHeader(MH){return J(kind,x1..xn);}//create two if staticMethHeader returns two headers
+    J.p(This0).Info.NativeKind=kind
+    MH.mdf=class
+* J.meth(MH)=
+      J.staticMethHeader(MH){
+      J(p(This0)) Res=new J(p(This0))();
+      Res.x1=CAST1 x1;..;Res.xn=CASTn xn;
+      return Res;
+      }//assert staticMethHeader return 1 element only
+    fwd _ notin MH.pars.mdfs
+    MH.mdf=class
+    CASTi=empty if J(MH.parsi)!=Object
+    CASTi=(J(MH.parsi[mdf=imm]))
+* J.meth(MH)=
+      J.staticMethHeader(MH){
+        J(p(This0)) Res=new JC();
+        if(x1 instanceof L42Fwd){((L42Fwd)x1).add(Res,JC.FieldAssFor_x1);}else{Res.x1=CAST1 x1;}
+        ...
+        if(xn instanceof L42Fwd){((L42Fwd)xn).add(Res,JC.FieldAssFor_xn);}else{Res.xn=CASTn xn;}
+        return Res;
+        }//assert staticMethHeader return 1 element only
+    fwd _ in MH.pars.mdfs
+    MH.mdf=class
+    CASTi=empty if J(MH.parsi)!=Object
+    CASTi=(J(MH.parsi[mdf=imm]))
+* J.meth(mdf method T #*x()_)=//if method is a field (may instead be allowed abstract)
+      J.staticMethHeader(mdf method T #*x()_){return CAST £xthis.£xx;}
+      //assert staticMethHeader return 1 element only
+    CAST = empty if T x in  J.fields(J.p)
+    CAST = (J(T)) otherwise 
+* J.meth(mdf method Void #*x(T that)_)=//if method is a field (may instead be allowed abstract)
+      J.staticMethHeader(mdf method Void #*x(T that)_){£xthis.£xx=that;return L42Void.instance;}
+      //assert staticMethHeader return 1 element only
+* J.refineNative(T,s)
+    p(T).info.native!=empty
+    T' in J.p.Ts
+    p'=J.p.navigate(T')
+    T" s(_)_ in p'.top
+    p'(T").interface!=empty
+    
+    
+
+* fields(p)=P1 x1..Pn xn //just empty set if called on an interface
+    n=0 if mhs=empty
+    {x1..xn}={xs| xs in mh.xss}
+    either {Pi}={mh.parsi.P | mh in mhs}
+    or Pi=Any otherwise
+    mhs={mwt.mh | mwt in p(This0).mwts, mwt.e?=empty and mwt.mdf=class}
+    //guaranteed not interface implemented
+//TODO: 
+-check when a method is allowed abstract (coherence can 'sort' them?)
+-when a field have two nativeKind types, we need to make the CAST do the unwrap too;
+and the setter/constructors would have to do the wrapping.
+
+###Assumed
+---
+interface L42Fwd{/*as in newReduction.Fix*/}
+interface L42Any{}//marker interface, implemented by all 42class
+-----------------------------
+

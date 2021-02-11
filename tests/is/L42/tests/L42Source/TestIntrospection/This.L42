@@ -1,0 +1,85 @@
+reuse[AdamTowel]
+
+Full={class method S (Trait that)=
+  Introspection.Nested.from(library=that.code()).toFullS()
+  }
+TestFullS=(
+  {}:Test"fullS"(actual=Full(Trait:{ method Void foo(S that)=void  method B bar() B={}})
+  expected=S"""
+    |{
+    |  method Void foo(This1.S that)=(..)
+    |  method This.B bar()
+    |  B={#typed{}}
+    |  #norm{}
+    |  }
+    """)
+  {}:Test"sum"(actual=Full(
+    Trait:{ method Void foo(S that)=void  method B bar() B={}}
+    +{B={method Void beer()}}
+    )
+  expected=S"""
+    |{
+    |  method Void foo(This1.S that)=(..)
+    |  method This.B bar()
+    |  B={method Void beer()#typed{}}
+    |  #norm{}
+    |  }
+    """)
+  {}:Test"renameDeep"(actual=Full(
+    Trait({ B={method Any b() C={method Any c()}}})['B=>'A.C])
+  expected=S"""
+    |{A={C={method Any b()C={method Any c()#typed{}}#typed{}}#typed{}}#norm{}}
+    """)
+
+  )
+
+ExampleAnn={@{exampleAnn}}
+
+TestMeth=(
+  lib={ method Void foo(S that)=void  method B bar() B={}}
+  n=Introspection.Nested.from(library=lib)
+  b=n.nesteds().val(0I)
+  foo=n.methods().val(0\)
+  bar=n.methods().val(1\)
+  b2=bar.returnType().nested()
+  {}:Test"self1String"(expected=b actual=b2)
+  //{}:Test"self1"(b.nameFromRoot()==b2.nameFromRoot())
+  {}:Test"self1"(b==b2)
+  {}:Test"self2"(n!=b2)
+  )
+TestAnn=(
+  lib={ @ExampleAnn B={method Void foo(S that)=void}}
+  n=Introspection.Nested.from(library=lib).nesteds().val(0I)
+  clazz=n.outerDoc().docs().left().nested()
+  s=clazz.innerDoc().docs().left().texts().left()
+  {}:Test"0"(expected=S"exampleAnn", actual=s)
+  )
+TestFromLib=(
+  lib={method Void foo(S that)=void @{hi} B={method Void foo(S that)=void}}
+  {}:Test"1"(
+    actual=Introspection.Nested.from(library=lib)
+    expected=S"""
+      |{ foo(that)=(..) B={..} }
+      |
+      |File name:[###]/TestIntrospection/This.L42
+      |Line:[###]
+      |Column:[###]
+      """.trim())
+  n=Introspection.Nested.from(library=lib).nesteds().val(0I)      
+  {}:Test"2"(actual=n
+    expected=S"""
+      |{ foo(that)=(..) }
+      |
+      |File name:[###]/TestIntrospection/This.L42
+      |Line:[###]
+      |Column:[###]
+      """.trim())
+  {}:Test"3"(actual=Introspection.Nested.from(library=lib).nesteds(),
+    expected=S"""
+      |[{ foo(that)=(..) }
+      |
+      |File name:[###]]
+      """.trim())
+  {}:Test"4"(actual=n.outerName(), expected=S"B")
+  {}:Test"5"(actual=n.outerDoc(), expected=S"@{@{hi}}")
+  )

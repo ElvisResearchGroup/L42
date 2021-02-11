@@ -1,0 +1,40 @@
+U = Class.Relax : Math.Support
+class method Bool inRange(U that, I to)
+class method U bound(U that, I to)
+    
+class method Bool (U x,U y) = this(x=x) && this(y=y)
+      
+class method Bool (U x,U y, U z) = this(x=x,y=y) && this(z=z)
+    
+class method Bool (U x) = this.inRange(x, to=Margin.maxX())
+class method Bool (U y) = this.inRange(y, to=Margin.maxY())
+class method Bool (U z) = this.inRange(z, to=Margin.maxZ())
+
+class method U bound(U x) = this.bound(x, to=Margin.maxX())
+class method U bound(U y) = this.bound(y, to=Margin.maxY())
+class method U bound(U z) = this.bound(z, to=Margin.maxZ())
+
+class method Void errorOutOfRange(class Any that, U x, U y) =
+  if !this(x=x,y=y) (
+    name=Introspection.Nested.from(classAny=that).outerName()
+    xRange = if this(x=x) S"" else S"(out of range)"
+    yRange = if this(y=y) S"" else S"(out of range)"
+    error X"""%
+      |Instance of class %name has some out of range coordinates:
+      | x=%x; %xRange
+      | y=%y; %yRange
+      """
+    )
+class method Void errorOutOfRange(class Any that, U x, U y, U z) =
+  if !this(x=x,y=y, z=z) (
+    name=Introspection.Nested.from(classAny=that).outerName()
+    xRange = if this(x=x) S"" else S"(out of range)"
+    yRange = if this(y=y) S"" else S"(out of range)"
+    zRange = if this(z=z) S"" else S"(out of range)"
+    error X"""%
+      |Instance of class %name has some out of range coordinates:
+      | x=%x; %xRange
+      | y=%y; %yRange
+      | z=%z; %zRange
+      """
+    )

@@ -1,0 +1,34 @@
+reuse [AdamTowel]
+LoadJ=Load:{reuse[JavaServer]}
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+
+VMT = Load : {reuse [#$VoxelMapTrait] }
+VM = Class: VMT : {
+  class method I maxX()=50I
+  class method I maxY()=100I
+  class method I maxZ()=200I
+  } 
+Terra = Class : VM.Physics : {
+  Map = {
+    read method Bool isFull(VM.Cell3D cell) = Bool.false()
+    read method Bool isWater(VM.Cell3D cell) = Bool.false()
+    read method Bool isAir(VM.Cell3D cell) = Bool.true()
+    read method Double gravity()=0.1\
+    read method I maxRadius()= 1I
+    }
+  CellsMap = { Box ={
+    mut method Void ping()=void 
+    }}
+  }
+
+Pulse=Data:{
+  Double rad
+  Double power
+  }
+Margin=Data:{...}
+Vector=Data:{...}
+EnvModel=Class:Data:Organize(just$=\.true()):JServer.Handler:{...}
+JavaCode={...}
+Main={...}

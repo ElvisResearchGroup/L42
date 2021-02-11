@@ -1,0 +1,387 @@
+% greek-fontenc.def
+% *****************
+%
+% Common Greek font encoding definitions
+% ======================================
+%
+% :Copyright: © 2013 Günter Milde
+% :Licence:   This work may be distributed and/or modified under the
+%             conditions of the `LaTeX Project Public License`_, either
+%             version 1.3 of this license or any later version.
+% :Identification:
+%  ::
+
+\ProvidesFile{greek-fontenc.def}
+[2015/08/04 v0.13 Common Greek font encoding definitions]
+
+% :Abstract:  This file provides definitions that are shared between
+%             font encodings providing Greek characters.
+%
+% Changelog:
+%   .. class:: borderless
+%
+%   ===== ============  ========================================================
+%   0.9   2013-07-03    code "outsourced" from lgrxenc.def
+%   0.9.1 2013-07-17    composite definitions starting with standard accent cmds
+%   0.11  2013-11-28    ``\greekscript`` TextCommand
+%   0.12  2014-12-12    Remove symbol macros for breathing accents.
+%   0.13  2015/08/04    No @uclclist entry for ypogegrammeni/prosgegrammeni.
+%   ===== ============  ========================================================
+%
+% Usage
+% -----
+%
+% This file is input by the font encoding definition files lgrenc.def_. and
+% greek-euenc.def_.
+%
+% Implementation
+% --------------
+%
+% ensuregreek, greekscript
+% ~~~~~~~~~~~~~~~~~~~~~~~~
+%
+% Provide "empty" encoding-specific definitions for ``\ensuregreek`` and
+% ``\greekscript``. The definitions in this file make the font encoding fit
+% for use with the Greek script. (See ``textalpha.sty`` for default
+% definitions.)
+%
+% The ``\ensuregreek`` macro can be used to ensure that its argument is set
+% in a font encoding with support for Greek. If the active font encoding
+% supports it, kerning between adjacent command calls (e.g.
+% ``\ensuregreek{A}\ensuregreek{\Upsilon}``) is preserved. This allows, e.g.,
+% wrapping of compound Unicode character definitions. ::
+
+\ProvideTextCommand{\ensuregreek}{\LastDeclaredEncoding}[1]{#1}
+
+% The ``\greekscript`` declaration switches to a font encoding supporting
+% the Greek script, if required. The following definition announces the
+% ``\LastDeclaredEncoding`` as Greek-supporting::
+
+\ProvideTextCommand{\greekscript}{\LastDeclaredEncoding}{}
+
+
+% Aliases
+% ~~~~~~~
+%
+% Aliases are defined via `DeclareTextCommand` so that up/downcasing works
+% without the need for additional uclclist_ entries.
+%
+% Compatibility aliases for hyperref_'s puenc.def::
+
+\DeclareTextCommand{\textstigmagreek}{\LastDeclaredEncoding}{\textstigma}
+\DeclareTextCommand{\textkoppagreek}{\LastDeclaredEncoding}{\textkoppa}
+\DeclareTextCommand{\textStigmagreek}{\LastDeclaredEncoding}{\textStigma}
+\DeclareTextCommand{\textSampigreek}{\LastDeclaredEncoding}{\textSampi}
+\DeclareTextCommand{\textsampigreek}{\LastDeclaredEncoding}{\textsampi}
+\DeclareTextCommand{\textdigammagreek}{\LastDeclaredEncoding}{\textdigamma}
+\DeclareTextCommand{\textDigammagreek}{\LastDeclaredEncoding}{\textDigamma}
+
+\DeclareTextCommand{\textnumeralsigngreek}{\LastDeclaredEncoding}{\textdexiakeraia}
+\DeclareTextCommand{\textnumeralsignlowergreek}{\LastDeclaredEncoding}{\textaristerikeraia}
+
+% Names from babel_ and teubner_ (do we want to define them here as alias?)
+%
+% .. code:: latex
+%
+%   \DeclareTextCommand{\anwtonos}{\LastDeclaredEncoding}{\textdexiakeraia}     % ʹ
+%   \DeclareTextCommand{\katwtonos}{\LastDeclaredEncoding}{\textaristerikeraia} % ͵
+%
+% Two Unicode code points and names for one character::
+
+\DeclareTextCommand{\accoxia}{\LastDeclaredEncoding}{\acctonos}
+\DeclareTextCommand{\acckoronis}{\LastDeclaredEncoding}{\accpsili}
+
+% Symbol macros for the breathings:
+%
+% Moved to ``textalpha.sty`` to avoid clashes with local definitions
+% of ``\<`` and ``\>`` in documents using LGR or babel-greek.
+% (Bugreport David Kastrup). If you want to use the short macros without
+% loading `textalpha`, you can define them in the document preamble like
+%
+% .. code:: latex
+%
+%   \DeclareTextCommand{\<}{LGR}{\accdasia}
+%   \DeclareTextCommand{\>}{LGR}{\accpsili}
+%   \DeclareTextCompositeCommand{\>}{LGR}{'}{\accpsilioxia}
+%   \DeclareTextCompositeCommand{\>}{LGR}{`}{\accpsilivaria}
+%   \DeclareTextCompositeCommand{\>}{LGR}{~}{\accpsiliperispomeni}
+%   \DeclareTextCompositeCommand{\<}{LGR}{'}{\accdasiaoxia}
+%   \DeclareTextCompositeCommand{\<}{LGR}{`}{\accdasiavaria}
+%   \DeclareTextCompositeCommand{\<}{LGR}{~}{\accdasiaperispomeni}
+%
+% Or use alternative symbols for the breathings (cf. X compose
+% table, LCI encoding)?
+%
+% .. code:: latex
+%
+%   \DeclareTextCommand{\(}{\LastDeclaredEncoding}{\accdasia}
+%   \DeclareTextCommand{\)}{\LastDeclaredEncoding}{\accpsili}
+%
+% Composite diacritics
+% ~~~~~~~~~~~~~~~~~~~~
+%
+% Composite accents can be input as sequence of simple diacritics (in
+% arbitrary order) via named macro, symbol macro and "transcription
+% characters", e.g. one of
+%
+% .. code:: latex
+%
+%   \accdialytica\accvaria\textalpha,
+%   \"\'\textalpha,
+%   \"'\textalpha, or
+%   \'"\textalpha.
+%
+% Separate definitions for the supported variants of the second input token
+% are required as composition is based on the non-expanded input
+%
+% The composition with simple "transcription characters" must also be defined
+% for the symbol macros, otherwise it fails with ``\Makeuppercase``.
+%
+% For Unicode encodings (where they do not resolve to Greek named macros,
+% composite definitions starting with standard macros are requried::
+
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\acctonos}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\'}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{'}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\"}{\LastDeclaredEncoding}{\'}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\"}{\LastDeclaredEncoding}{'}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\accvaria}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\`}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{`}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\"}{\LastDeclaredEncoding}{\`}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\"}{\LastDeclaredEncoding}{`}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\accperispomeni}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\~}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{~}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\"}{\LastDeclaredEncoding}{\~}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\"}{\LastDeclaredEncoding}{~}{\accdialytikaperispomeni}
+
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{\accdialytika}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{\"}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{"}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{\"}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{"}{\accdialytikatonos}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{\accdasia}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{\<}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{<}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{\<}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{<}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{\accpsili}{\accpsilioxia}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{\>}{\accpsilioxia}
+\DeclareTextCompositeCommand{\acctonos}{\LastDeclaredEncoding}{>}{\accpsilioxia}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{\>}{\accpsilioxia}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{>}{\accpsilioxia}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{\'}{\textquoteright}
+\DeclareTextCompositeCommand{\'}{\LastDeclaredEncoding}{'}{\textquoteright}
+
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{\accdialytika}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{\"}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{"}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{\"}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{"}{\accdialytikavaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{\accdasia}{\accdasiavaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{\<}{\accdasiavaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{<}{\accdasiavaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{\<}{\accdasiavaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{<}{\accdasiavaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{\accpsili}{\accpsilivaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{\>}{\accpsilivaria}
+\DeclareTextCompositeCommand{\accvaria}{\LastDeclaredEncoding}{>}{\accpsilivaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{\>}{\accpsilivaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{>}{\accpsilivaria}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{\`}{\textquoteleft}
+\DeclareTextCompositeCommand{\`}{\LastDeclaredEncoding}{`}{\textquoteleft}
+
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{\accdialytika}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{\"}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{"}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\~}{\LastDeclaredEncoding}{\"}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\~}{\LastDeclaredEncoding}{"}{\accdialytikaperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{\accdasia}{\accdasiaperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{\<}{\accdasiaperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{<}{\accdasiaperispomeni}
+\DeclareTextCompositeCommand{\~}{\LastDeclaredEncoding}{\<}{\accdasiaperispomeni}
+\DeclareTextCompositeCommand{\~}{\LastDeclaredEncoding}{<}{\accdasiaperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{\accpsili}{\accpsiliperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{\>}{\accpsiliperispomeni}
+\DeclareTextCompositeCommand{\accperispomeni}{\LastDeclaredEncoding}{>}{\accpsiliperispomeni}
+\DeclareTextCompositeCommand{\~}{\LastDeclaredEncoding}{\>}{\accpsiliperispomeni}
+\DeclareTextCompositeCommand{\~}{\LastDeclaredEncoding}{>}{\accpsiliperispomeni}
+
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{\acctonos}{\accpsilioxia}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{\'}{\accpsilioxia}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{'}{\accpsilioxia}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{\accvaria}{\accpsilivaria}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{\`}{\accpsilivaria}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{`}{\accpsilivaria}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{\accperispomeni}{\accpsiliperispomeni}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{\~}{\accpsiliperispomeni}
+\DeclareTextCompositeCommand{\accpsili}{\LastDeclaredEncoding}{~}{\accpsiliperispomeni}
+
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{\acctonos}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{\'}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{'}{\accdasiaoxia}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{\accvaria}{\accdasiavaria}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{\`}{\accdasiavaria}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{`}{\accdasiavaria}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{\accperispomeni}{\accdasiaperispomeni}
+\DeclareTextCompositeCommand{\accdasia}{\LastDeclaredEncoding}{\~}{\accdasiaperispomeni}
+
+% .. _uclclist:
+%
+% UPPERCASE
+% ~~~~~~~~~
+%
+% If UPPERCASE (all-caps) is generated with ``\MakeUppercase``, macro
+% substitutions in the ``\@uclclist`` apply. This can be used to drop the
+% diacritics (except dialytika and sub-iota). Different conventions exist for
+% the `treatment of sub-iota with uppercase letters`__. In the CB Fonts, an
+% "index" iota is used.
+%
+% __ http://www.tlg.uci.edu/~opoudjis/unicode/unicode_adscript.html
+%
+%
+% @uclclist extension
+% """""""""""""""""""
+%
+% Based on the `babel patch`_ and ``fontenc.sty``.
+%
+% The definition of an auxiliary, self-restting macro makes this idempotent
+% (only the first use of this function will expand the ``@uclclist``).
+% The second and third lines are TeX' way of writing ``uclclist += …``::
+
+\providecommand*\update@uclc@with@greek{%
+  \expandafter\def\expandafter\@uclclist\expandafter{%
+    \@uclclist
+    \accdasia\LGR@accdropped
+    \accdasiaoxia\LGR@hiatus
+    \accdasiavaria\LGR@accdropped
+    \accdasiaperispomeni\LGR@accdropped
+    \accpsili\LGR@hiatus
+    \accpsilioxia\LGR@hiatus
+    \accpsilivaria\LGR@hiatus
+    \accpsiliperispomeni\LGR@accdropped
+    \acctonos\LGR@hiatus
+    \accvaria\LGR@accdropped
+    \accdialytikatonos\LGR@accDialytika
+    \accdialytikavaria\LGR@accDialytika
+    \accdialytikaperispomeni\LGR@accDialytika
+    \accperispomeni\LGR@accdropped
+    % \ypogegrammeni\prosgegrammeni
+    \textalpha  \textAlpha
+    \textbeta   \textBeta
+    \textgamma  \textGamma
+    \textdelta  \textDelta
+    \textepsilon\textEpsilon
+    \textzeta   \textZeta
+    \texteta    \textEta
+    \texttheta  \textTheta
+    \textiota   \textIota
+    \textkappa  \textKappa
+    \textlambda \textLambda
+    \textmu     \textMu
+    \textnu     \textNu
+    \textxi     \textXi
+    \textomicron\textOmicron
+    \textpi     \textPi
+    \textrho    \textRho
+    \textvarsigma  \textSigma
+    \textsigma     \textSigma
+    \textautosigma \textSigma
+    \texttau    \textTau
+    \textupsilon\textUpsilon
+    \textphi    \textPhi
+    \textchi    \textChi
+    \textpsi    \textPsi
+    \textomega  \textOmega
+    \textqoppa     \textQoppa
+    \textvarstigma \textStigma
+    \textstigma    \textStigma
+    \textsampi     \textSampi
+    \textdigamma   \textDigamma
+  }%
+  \let\update@uclc@with@greek\relax
+}
+
+% Expand the uclc list using the just defined macro::
+
+\update@uclc@with@greek
+
+
+% Substitution macros
+% """""""""""""""""""
+%
+% Drop diacritics (The argument passing ensures that kerning is preserved) ::
+
+\DeclareTextCommand{\LGR@accdropped}{\LastDeclaredEncoding}[1]{#1}
+
+
+% Keep dialytika: Define a dummy alias so that downcasing with
+% ``\MakeLowercase`` does not convert a simple dialytika to a composite
+% accent::
+
+\DeclareTextCommand{\LGR@accDialytika}{\LastDeclaredEncoding}{\accdialytika}
+\DeclareTextCompositeCommand{\accdialytika}{\LastDeclaredEncoding}{\LGR@hiatus}{\accdialytika}
+
+
+
+% Mark hiatus
+% """""""""""
+%
+% Tonos and dasia mark a hiatus if placed on the
+% first vowel of a diphthong (ΑΙ, ΑΥ, ΕΙ). A dialytika must be placed on the
+% second vowel if they are dropped (άυλος → ΑΫΛΟΣ, μάινα → ΜΑΪΝΑ, κέικ → ΚΕΪΚ,
+% ἀυπνία → ΑΫΠΝΙΑ)::
+
+\DeclareTextCommand{\LGR@hiatus}{\LastDeclaredEncoding}[1]{#1}
+\DeclareTextCompositeCommand{\LGR@hiatus}{\LastDeclaredEncoding}{>}{\LGR@hiatus}
+\DeclareTextCompositeCommand{\LGR@hiatus}{\LastDeclaredEncoding}{<}{\LGR@accdropped}
+\DeclareTextCompositeCommand{\LGR@hiatus}{\LastDeclaredEncoding}{\textAlpha}{\LGR@A@hiatus}
+\DeclareTextCompositeCommand{\LGR@hiatus}{\LastDeclaredEncoding}{\textEpsilon}{\LGR@E@hiatus}
+
+% The font encoding file must define the ``\LGR@hiatus`` TextCommand. See
+% ``lgrenc.def`` for an example.
+%
+% The following macro can be used to test if the next character is an Alpha or
+% Epsilon. As ``\@ifnextchar`` gobbles spaces the lookahead macro definition
+% from ``amsgen.sty`` is used:
+%
+%   This macro is a new version of LaTeX’s ``\@ifnextchar``, macro
+%   that does not skip over spaces.
+%
+% ::
+
+\providecommand*{\LGR@ifnextchar}[3]{%
+  \let\reserved@d= #1%
+  \def\reserved@a{#2}\def\reserved@b{#3}%
+  \futurelet\@let@token\LGR@ifnch
+}
+\providecommand*{\LGR@ifnch}{%
+  \ifx\@let@token\reserved@d \let\reserved@b\reserved@a \fi
+  \reserved@b
+}
+
+
+
+% .. References
+%    ----------
+%
+% .. _alphabeta: alphabeta.sty.html
+% .. _athnum: http://www.ctan.org/pkg/athnum
+% .. _Babel: http://www.ctan.org/pkg/babel
+% .. _babel patch: http://www.eutypon.gr/eutypon/pdf/e2008-20/e20-a03.pdf
+% .. _fntguide: http://mirror.ctan.org/macros/latex/doc/fntguide.pdf
+% .. _fontenc:  http://www.ctan.org/pkg/fontenc
+% .. _hyperref: http://www.ctan.org/pkg/hyperref
+% .. _ibycus: http://www.ctan.org/pkg/ibycus-babel
+% .. _LaTeX Project Public License: http://www.latex-project.org/lppl.txt
+% .. _lgrx: http://www.ctan.org/pkg/lgrx
+% .. _ltxcmds: http://www.ctan.org/pkg/ltxcmds
+% .. _teubner: http://www.ctan.org/pkg/teubner
+% .. _teubner-doc:
+%     http://mirror.ctan.org/macros/latex/contrib/teubner/teubner-doc.pdf
+% .. _textalpha: textalpha.sty.html
+% .. _ucs: http://www.ctan.org/pkg/unicode
+%
+% .. _lgrenc.def: lgrenc.def.html
+% .. _greek-euenc.def: greek-euenc.def.html

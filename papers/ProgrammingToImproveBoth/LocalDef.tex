@@ -1,0 +1,99 @@
+
+%\newenvironment{listing}{\vspace{-3pt}\begin{lstlisting}}{\end{lstlisting}\vspace{-3pt}}
+%
+\lstset{language=Java,
+  basicstyle=\ttfamily\footnotesize,%\small,%\scriptsize,
+%  keywordstyle=\bfseries,%\color{darkRed},
+%  showstringspaces=false,
+  mathescape=true,
+%  xleftmargin=0pt,
+%  xrightmargin=0pt,
+%  breaklines=false,
+%  breakatwhitespace=false,
+%  breakautoindent=false,
+%  linewidth=1.005\textwidth,% should be enough
+%  identifierstyle=\idstyle
+ morekeywords={method,Use,This,constructor,as,into,rename},
+ deletekeywords={double}
+}
+\newcommand\Q\lstinline
+
+\newcommand\Rotated[1]{\begin{turn}{90}\begin{minipage}{9em}#1\end{minipage}\end{turn}}
+
+\newcommand\Opt[1]{#1 ?}
+
+\newenvironment{bnf}{$\begin{array}{lcll}}{\end{array}$}
+\newcommand{\prodFull}[3]{#1&::=&#2&\mbox{#3}}
+%\newcommand{\prodFull}[3]{#1&::=&\mbox{#2}&\mbox{#3}}
+\newcommand{\prodInline}[2]{#1::=#2}
+\newcommand{\prodNextLine}[2]{&&#1&\mbox{#2}}
+\newcommand{\terminal}[1]{%
+\ensuremath{$\texttt{#1}$}%
+}
+
+\newcommand{\terminalCode}[1]{\mbox{\lstinline{#1}}}
+\newcommand{\metavariable}[1]{%
+\ensuremath{\mathit{#1}}%
+}
+
+%-------------------------------- comms--------
+\newif\ifsubmit
+%\submitfalse
+\submittrue
+\ifsubmit
+\newcommand{\BO}[1]{#1} 
+\newcommand{\BOComm}[1]{} 
+\newcommand{\MS}[1]{#1} 
+\newcommand{\MSComm}[1]{} 
+\newcommand{\HA}[1]{#1} 
+\newcommand{\HAComm}[1]{} 
+\else
+\newcommand{\BO}[1]{\textcolor{blue}{#1}} 
+\newcommand{\BOComm}[1]{{\scriptsize \textcolor{blue}{[Elena{:} #1]}}}
+\newcommand{\MS}[1]{\textcolor{green}{#1}} 
+\newcommand{\MSComm}[1]{{\scriptsize \textcolor{green}{[Marco{:} #1]}}}
+\newcommand{\HA}[1]{\textcolor{red}{#1}}
+\newcommand{\HAComm}[1]{{\scriptsize \textcolor{red}{[Arora{:} #1]}}}
+\fi
+
+%----------------------
+\newcommand\dom{\text{dom}}
+\newcommand*{\Scale}[2][4]{\scalebox{#1}{$#2$}}%
+\newcommand\smallDs{{\Scale[0.5]{\overline{\mD}}}}
+\newcommand\vds{{v_{\smallDs}}}
+\newcommand\Rulename[1]{{\textsc{#1}}}
+\newcommand\ctx{{\mathcal{E}}}
+\newcommand\mID{\metavariable{ID}}
+\newcommand\mL{\metavariable{L}}
+\newcommand\mE{\metavariable{E}}
+\newcommand\mC{\metavariable{C}}
+\newcommand\mT{\metavariable{T}}
+\newcommand\mV{\metavariable{V}} %code value t or L
+\newcommand\mM{\metavariable{M}}
+\newcommand\mG{\Gamma}
+\newcommand\mDE{\metavariable{DE}}
+\newcommand\mTE{\metavariable{TE}}
+\newcommand\mCE{\metavariable{CE}}
+\newcommand\mMD{\metavariable{MD}}
+\newcommand\mTD{\metavariable{TD}}
+\newcommand\mCD{\metavariable{CD}}
+\newcommand\mD{\metavariable{D}}
+\newcommand\me{\metavariable{e}}
+\newcommand\mx{\metavariable{x}}
+\newcommand\mm{\metavariable{m}}
+\newcommand\mt{\metavariable{t}}
+\newcommand\use{\terminalCode{Use}}
+\newcommand\oC{\mbox{\lstinline@\{@}}
+\newcommand\cC{\mbox{\lstinline@\}@}}
+\newcommand\oR{\mbox{\lstinline@(@}}
+\newcommand\cR{\mbox{\lstinline@)@}}
+
+\newcommand{\mynotes}[3]{{\color{#2} {\sc #1}: #3}}
+\newcommand\bruno[1]{\mynotes{Bruno}{red}{#1}}
+\newcommand\marco[1]{\mynotes{Marco}{blue}{#1}}
+
+\newcommand{\syndef}{$::=$}
+
+%\newcommand\name{\textbf{$42_{\mu}$}\xspace}
+\newcommand\name{\texorpdfstring{42\textsubscript{\mu}}{42µ}\xspace}
+

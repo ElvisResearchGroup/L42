@@ -1,0 +1,229 @@
+Elem={}
+class method Bool equals(read Elem a,read Elem b)
+
+class method mut This (mut This squareBuilder)
+class method mut This #squareBuilder()
+class method Bool #shortCircutSquare()
+mut method Void #squareAdd(Elem that)
+mut method Void #squareAdd(mut Elem mutVal)
+read method read This vals()
+mut method mut This #vals()
+
+read method read This #iterator()
+mut method mut This #varIterator()
+read method I #startIndex()
+read method Bool #hasElem(I that)
+read method Bool #incomplete(I that)
+read method Elem #elem#imm(I that)
+mut method mut Elem #elem#mut(I that)
+read method Elem #elem#default(I that)
+read method read Elem #elem#read(I that)
+mut method mut Elem #update#mut(I that, mut Elem val)
+mut method Elem #update#imm(I that, Elem val)
+mut method Elem #update#default(I that, Elem val)
+read method Void #close(I that)
+class method mut This ()
+class method mut This (I capacity)
+mut  method mut This (Void that)
+read method Bool isEmpty()
+read method I size()
+read method read Elem readVal(I that)
+read method imm  Elem val(I that)
+mut method mut Elem #val(I that)
+mut method Void set(I that,Elem val)
+mut method Void #set(I that,mut Elem val)
+mut method  Void remove(I that)
+mut method Void add(I that, Elem val)
+mut method Void #add(I that, mut Elem val)
+read method Elem left()
+read method Elem right()
+mut method mut Elem #left()
+mut method mut Elem #right()
+read method read Elem readLeft()
+read method read Elem readRight()
+mut method  Void left(Elem that)
+mut method  Void right(Elem that)
+mut method  Void #left(mut Elem that)
+mut method  Void #right(mut Elem that)
+mut method Void add(Elem left)
+mut method Void add(Elem right)
+mut method Void add(Elem that)
+mut method Void #add(mut Elem left)
+mut method Void #add(mut Elem right)
+mut method  Void removeLeft()
+mut method  Void removeRight()
+method This +(Elem right)
+method This ++(This right)
+method This with(I that, Elem val)
+method This withLeft(Elem that)
+method This withRight(Elem that)
+method This withAlso(I that, Elem val)
+method This withAlsoLeft(Elem that)
+method This withAlsoRight(Elem that)
+method This without(I that)
+method This withoutLeft()
+method This withoutRight()
+read method lent ElemBox reduce()
+read method lent ElemBox reduce(Elem that)
+ElemBox={
+  read method Elem (Void that)
+  read method Elem acc()
+  lent method Void add(Elem that)
+  }  
+//----------------------------
+method This withoutAll(read Elem val)=
+  This()(for e in this (if !This.equals(a=e,b=val) \add(e)))
+
+method This withoutLeft(read Elem val) = (
+  pos=this.indexOfLeft(val=val)
+  if pos<0I  this 
+  else this.without(pos)
+  )
+  
+method This withoutRight(read Elem val) = (
+  pos=this.indexOfRight(val=val)
+  if pos<0I  this 
+  else this.without(pos)
+  )
+
+read method Bool contains(read Elem that)={
+  for read e in this (
+    if This.equals(a=e,b=that) return Bool.true()
+    )
+  return Bool.false()
+  }
+//################# operators
+read method Bool #in1(read Elem that)=this.contains(that)
+
+method This -(Elem right)=this.withoutAll(val=right)
+
+method This --(This right) = (
+  size = this.size()
+  res = This(capacity=size)
+  var i=0I
+  while i<size (
+    Elem ei = this.readVal(i)
+    if !(ei in right) ( res.add(ei) )
+    i := i.#succ()
+    )
+  res
+  )
+
+/*
+//method This &(This right)=This[for e in this ( if e in right \res<=e )]
+//TODO: what to do here? & operator has been removed and && short circuts..
+
+//superset
+//method Bool >>(This right)= this >>=right & !(right>>=this)
+
+//supersetEq
+//method Bool >>=(This right)=//TODO:
+//  Bool.falseOr[{for read e in right(if !(e in this) return \true)}]
+method Bool >>=(This right)={
+  for read e in right (
+    if !(e in this) return Bool.false()
+    )
+  return Bool.true()
+  }
+*/
+
+read method Bool allEq(read This that)=
+  this.size()==that.size() &&
+  Match.All()(for read e1 in this, read e2 in that 
+    \add(This.equals(a=e1,b=e2)))
+
+method Bool ==(This that)=System.immEquality(this and=that)
+method Bool !=(This that)= !(this==that)
+read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
+
+read method I indexOfLeft(read Elem val)={
+  //for pos in Range(this.size()) (//No, range is defined later so it can not be used here
+  var pos=0I
+  size=this.size()
+  loop (
+    if This.equals(a=this.val(pos) b=val) return pos
+    if pos<=0I return I"-1"
+    pos+=1I
+    )
+  }
+read method I indexOfRight(read Elem val)={
+  var I pos=this.size()-1I
+  loop (
+    if This.equals(a=this.val(pos) b=val) return pos
+    if pos<=0I return I"-1"
+    pos-=1I
+    )
+  }
+mut method Void removeLeft(read Elem val)=(
+  i=this.indexOfLeft(val=val)
+  if i!=I"-1" (this.remove(i))
+  )
+mut method Void removeRight(read Elem val)=(
+  i=this.indexOfRight(val=val)
+  if i!=I"-1" (this.remove(i))
+  )
+/*
+//TODO: HERE
+
+
+mut method Void remove(I that) //from VectorTrait
+
+mut method Void removeAll(read Elem val){
+  var I pos=0I
+  loop (
+    if this.val(pos)==val (this.remove(pos))
+    else (pos+=1I)
+    if pos==this.size() (return void)
+    )
+  }
+
+mut method
+Void removeLeft(read Elem val){
+  pos=this.indexOfLeft(val:val)
+  if pos<0I (return void)
+  return this.remove(pos)
+  }
+
+mut method
+Void removeRight(read Elem val){
+  pos=this.indexOfRight(val:val)
+  if pos<0I (return void)
+  return this.remove(pos)
+  }
+
+
+
+
+class method mut This (mut This squareBuilder)=squareBuilder
+class method mut This #squareBuilder()=This()
+class method Bool #shortCircutSquare()=Bool.true()
+mut method Void #add(Elem that)=this.add(val=that)
+mut method Void #add(mut Elem mutVal)=this.add(mutVal=mutVal)
+read method read This vals()=this
+mut method mut This #vals()=this
+read method read This #iterator()=this
+mut method mut This #varIterator()=this
+read method I #startIndex()=0I
+read method Bool #hasElem(I that)=that<this.size()
+read method Bool #incomplete(I that)=that!=this.size()
+read method Elem #elem#imm(I that)=this.val(that)
+mut method mut Elem #elem#mut(I that)=this.#val(that)
+read method Elem #elem#default(I that)=this.#elem#imm(that)
+mut method mut Elem #update#mut(I that, mut Elem val)=(this(that,mutVal=val) val)
+mut method Elem #update#imm(I that, Elem val)=(this(that,val=val) val)
+mut method Elem #update#default(I that, Elem val)=this.#update#imm(that,val=val)
+read method Void #close(I that)=
+  if this.#incomplete(that) error S"multi for skipped some elements"
+mut method Void add(Elem that)=this.add(right=that)
+
+class method mut This ()
+read method Bool isEmpty()
+read method I size()
+read method read Elem readVal(I that)
+read method imm  Elem val(I that)
+mut method mut Elem #val(I that)
+mut method Void #apply(I that,Elem val)
+mut method Void #apply(I that,mut Elem mutVal)
+mut method Void add(Elem val)
+mut method Void add(mut Elem mutVal)
+*/

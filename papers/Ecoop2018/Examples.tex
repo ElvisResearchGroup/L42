@@ -1,0 +1,799 @@
+\saveSpace\saveSpace\section{Formalization}\label{sec:formal}
+\saveSpace\saveSpace
+
+Here we show a simple formalization for the language we presented so far.
+We also model nested classes, but in order to avoid uninteresting complexities, we assume that
+all the type names are fully qualified from the top level, so the examples shown before should be
+written like \Q@This.Exp@, \Q@This.Sum@ and so on.
+In a real language, a simple pre-processor may take care of this step.
+
+In most languages, when implementing an interface, the programmer may avoid repeating abstract methods
+they do not wish to implement.
+In that same spirit, in our simplified formalization we consider source code containing
+all the methods imported from interfaces. In a real language, a normalization process
+may hide this abstraction\footnote{
+In the full 42 language scoping is indeed supported by an initial de-sugaring, and a normalization phase takes care of importing methods from interfaces.
+}.
+We also consider a binary operator sum \Q@+@ instead of the variable arity operator \Q@use@.
+
+Figure 1 contains the complete formalization for the 
+compilation process and the type system for \name.
+It starts with the syntax, then
+we show the compilation process and the typing rules.
+
+
+
+
+\begin{figure}
+%NEW FORMALISATION below
+% Syntax
+% D::=TD|CD
+% TE::=t:E Trait Decl Expr
+% CE::=C:E Class Decl
+% TD::=t:L
+% CD::=C:L
+% E::= L| t| E+E | E[rename T.m1->m2]|E[rename T1->T2]|E[redirect T1->T2]
+% L::= {interface? implements Ts Ms}//all L are like LC in 42
+% T::=C|C.T // .T is a shortcut for This.T
+% M::= static? method T m(T1 x1..Tn xn) e? | CD
+% e::= x| e.m(es) | T.m(es)
+
+\begin{bnf}
+\prodFull\mID{\mt\mid\mC}{class or trait name}\\
+\prodFull\mDE{\mID\terminalCode{=}\mE}{Meta-declaration}\\
+\prodFull\mD{\mID\terminalCode{=}\mL}{Declaration}\\
+\prodFull\mE{\mL \mid \mt \mid \mE\,\terminalCode{+}\mE
+\mid \ldots
+%\mid \mE\terminalCode{[rename}\ \mT\terminalCode{.}\mm_1\ \terminalCode{to}\ \mm_2\terminalCode{]}
+}{Code Expression}\\
+%\prodNextLine{
+% \mid
+%\mE\terminalCode{[rename}\ \mT_1\ \terminalCode{in}\ \mT_2\terminalCode{]} \mid
+%\mE\terminalCode{[redirect}\ \mT_1\ \terminalCode{to}\ \mT_2\terminalCode{]}}{Code Expression}\\
+\prodFull\mL{
+\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT\ \overline\mM\ \cC}{Code Literal}\\
+\prodFull\mT{\mC \mid \mC\terminalCode{.}\mT}{Type}\\
+\prodFull\mM{\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me \mid \mC\terminalCode{=}\mL}{Member}\\
+
+\prodFull\me{\mx \mid \me\terminalCode{.}\mm\oR\overline\me\cR \mid \mT\terminalCode{.}\mm\oR\overline\me\cR}{Expression}\\
+
+\prodFull{v_{{\smallDs}}}{\mT\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}}\cR
+\text{  where }\mm \text{ is abstract in }\overline\mD(\mT)
+}{value}\\
+
+\prodFull{\ctx_{\smallDs}}{[]\mid
+\ctx_\smallDs\terminalCode{.}\mm\oR\overline\me\cR
+\mid
+v_{{\smallDs}}\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx_\smallDs,\overline\me\cR
+\mid
+\mT\terminalCode{.}\mm\oR\overline{v_{{\smallDs}}},\ctx_\smallDs,\overline\me\cR
+}{evaluation ctx}\\
+
+\prodFull{\ctx_c}{[]\mid\ctx_c\,\terminalCode+\mE | \mL\,\terminalCode+\ctx_c |\ldots}{compilation ctx}\\
+
+\prodFull{\ctx}{[]\mid\ctx\,\terminalCode+\mE | \mE\,\terminalCode+\ctx |\ldots}{ctx}\\
+
+\prodFull\mG{\mx_1{:}\mT_1\ldots\mx_n{:}\mT_n}{variable env}
+\end{bnf}\\
+\\
+\newcommand{\pushLeft}{\!\!\!\!\!\!\!\!\!\!\!\!}
+$\begin{array}{l}
+
+%       D.E -->^+_CDs L  CDs|-CD1:OK .. CDs|-CDn:OK       CDs=CD1..CDn
+% (top)---------------------------------------------------------------    D.E not of form L
+%      CD1..CDn CDs' D Ds -> CDs CDs' D[with E=L] Ds
+
+\pushLeft\inferrule[(top)]{
+  \mE_0 \xrightarrow[\smallDs]{} \mE_1
+  \\
+  \forall \mD\in\overline\mD,
+  \overline\mD\vdash\mD:\text{OK}
+  }{ 
+    \overline\mD \ \overline{\mD'}\ \mID\terminalCode{=}\mE_0 \ \overline{\mDE}
+    \rightarrow 
+    \overline\mD\ \overline{\mD'}\ \mID\terminalCode{=}\mE_1\ \overline{\mDE}
+  } %{\overline\mD=\mD_1..\mD_n }
+\quad\quad
+%
+%     ------------------------
+%      t -->_CDs CDs(t)
+
+ \inferrule[(look-up)]{
+    \ 
+  }{ 
+    \mt \xrightarrow[\smallDs]{}\ \overline\mD(\mt)
+  }
+\quad
+
+\inferrule[(ctx-c)]{
+    \mE_0 \xrightarrow[\smallDs]{}\ \mE_1
+  }{ 
+     {\ctx}_c[\mE_0] \xrightarrow[\smallDs]{}\ {\ctx}_c[\mE_1]
+  }
+\quad
+%
+%      --------------------------      L = L1+L2
+%      L1+L2  -->_CDs L
+
+\inferrule[(sum)]{
+    \
+  }{ 
+     \mL_1\,\terminalCode{+}\mL_2 \xrightarrow[\smallDs]{}\ \mL
+  }\mL = \mL_1+\mL_2
+\\[5ex]
+%  C;CDs,C=L |- L[This=C] :OK
+% ----------------------------------------- coherent(L)
+%  CDs|-C=L : OK
+
+\pushLeft\inferrule[(CD-OK)]{
+    \mC;\overline\mD,\mC\terminalCode{=}\mL_1\vdash \mL_1\ :\text{OK}
+  }{ 
+     \overline\mD \vdash \mC\terminalCode{=}\mL_0\ :\text{OK}
+  }
+\begin{array}{l}
+\mL_1=\mL_0[\terminalCode{This}=\mC]\\
+\text{coherent}(\mC,\mL_1)
+\end{array}
+\quad\quad 
+
+%    This;CDs,This=L |- L :OK
+%----------------------------------------
+%    CDs|-t=L : OK
+
+\inferrule[(TD-OK)]{
+    \terminalCode{This};\overline\mD,\terminalCode{This=}\mL\vdash \mL\ :\text{OK}
+  }{ 
+     \overline\mD \vdash \mt\terminalCode{=}\mL\ :\text{OK}
+  }
+\\[5ex] 
+
+%  forall i in 1..k T;CDs|-Mi:Ok
+%--------------------------------------------------  L={interface? implements T1..Tn M1..Mk} 
+%  T;CDs|-L:Ok                                         forall i in 1..n 	CDs(Ti).interface?=interface
+%                                                             forall i in 1..n and m in 	dom(CDs(Ti)), m in dom(L)
+
+\pushLeft\inferrule[(L-OK)]{
+    \forall\mM\in\overline\mM,
+  \mT;\overline\mD\vdash\mM:\text{OK}
+  }{ 
+     \mT;\overline\mD \vdash  \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT \ \overline\mM \cC \ :\text{OK}\\
+  } 
+%\begin{array}{l} 
+%  \mL=\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT \ \overline\mM \cC \\
+%  \forall \mT\in\overline\mT \text{and } m \in \dom(\mD(\mT)), \mm \in \dom(\mL)
+%   \end{array}
+\quad
+\inferrule[(Nested-OK)]{
+    \mT\terminalCode{.}\mC;\overline\mD\vdash \mL\ :\text{OK}
+  }{ 
+     \mT;\overline\mD \vdash \mC\terminalCode{=}\mL\ :\text{OK}
+  }
+
+\\[5ex] 
+
+%  if e?=e then CDs; G|-e:T                         
+%----------------------------------------------------------   forall T in CDs(C).Ts, if m in dom(CDs(Ti)) then
+%   T;CDs|-static? T0 m(T1 x1..Tn xn) e?              static? T0 m(T1 x1..Tn xn) in CDs(Ti)
+%                                                                        if static?=static then G=x1:T1 .. xn:Tn
+%                                                                        else G=this:T,x1:T1 .. xn:Tn
+
+\pushLeft\inferrule[(Method-OK)]{
+    \text{if}\ \Opt\me=\me\ \text{then}\ \overline\mD; \mG\vdash\me:\mT
+  }{ 
+     \mT;\overline\mD \vdash \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR \Opt\me
+  } \begin{array}{l} 
+  \text{if}\ \Opt{\terminalCode{static}}=\terminalCode{static}\\
+  \quad \text{then}\ \mG=\mx_1:\mT_1\ .. \ \mx_n:\mT_n\ \\
+  \quad\text{else}\ \mG=\terminalCode{this}:\mT,\mx_1:\mT_1\ ..\ \mx_n:\mT_n
+  \\
+%removed, now is well formedness
+%  \forall \mT \in \text{implementsOf}(\overline\mD(\mC)),\ \text{if}\ \mm \in \dom(\overline\mD(\mT))\ \text{then} \\
+%  \quad\Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \in \overline\mD(\mT) \\
+   \end{array}
+\\[5ex] 
+
+
+
+\pushLeft\inferrule[(subsumption)]{
+%  \begin{array}{l}
+    \overline\mD; \mG\vdash\me: \mT_1  \\\\
+    \overline\mD\vdash\mT_1 \leq \mT_2
+%  \end{array}
+  }{ 
+     \overline\mD; \mG\vdash\me: \mT_2
+  }
+\quad \inferrule[(static-method-call)]{
+    \overline\mD;\mG\vdash\me_1:\mT_1\ \ldots \ \overline\mD;\mG\vdash\me_n:\mT_n
+  }{ 
+    \overline\mD;\mG\vdash \mT_0.\mm\oR\me_1\ \ldots \ \me_n\cR:\mT
+  } \terminalCode{static method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
+\\[5ex] 
+
+%    CDs;G|-e0:T0 .. CDs;G|-en:Tn
+%---------------------------------------------    static T m(T1 x1..Tn xn) _ in CDs(T0)
+%  CDs;G|-e0.m(e1..en):T
+
+\pushLeft\inferrule[(x)]{
+    \
+  }{ 
+    \overline\mD; \mG\vdash\mx: \mG\oR\mx\cR
+  }
+\quad
+\inferrule[(method-call)]{
+    \overline\mD;\mG\vdash\me_0:\mT_0\ \ldots \ \overline\mD;\mG\vdash\me_n:\mT_n
+  }{ 
+    \overline\mD;\mG\vdash \me_0.\mm\oR\me_1\ \ldots \ \me_n\cR:\mT
+  } \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR \text{\_} \in \overline\mD\oR\mT_0 \cR
+
+\\[5ex] 
+\pushLeft\inferrule[(ctxv)]{\me_0\xrightarrow[\smallDs]{}\me_1}{
+ \ctx_{\smallDs}[\me_0]\xrightarrow[\smallDs]{} \ctx_{\smallDs}[\me_1]
+ }
+
+\quad
+\inferrule[(s-m)]{{}_{}}{
+ \mT\terminalCode{.}\mm\oR\overline\vds\cR\xrightarrow[\smallDs]{}
+ \mathit{meth}(\overline\mD(\mT,\mm),\overline\vds)
+}
+\quad
+\inferrule[(m)]{{}_{}}{
+ \vds\terminalCode{.}\mm\oR\overline\vds\cR\xrightarrow[\smallDs]{}
+ \mathit{meth}(\overline\mD(\mT,\mm),\vds\,\overline\vds)
+}\vds=\mT\terminalCode{.}\mm'\oR\_\cR\\
+\end{array}
+$\\
+\caption{Formalization}
+\end{figure}
+
+\subsection{Syntax}
+
+%In the following section, we present a simplified grammar of \name. 
+We use $\mt$ and $\mC$ to represent lower case trait and upper case class identifiers respectively.
+To declare a trait \mTD\ or a class \mCD, we can use either a code literal \mL\ or a trait
+expression $\mE$. Note how in $\mE$\ you can refer to a trait by name.
+In full 42, we support various operators including the ones presented before and much more,
+ but here we only show the single sum operator \Q@+@.
+This operation is a generalization to the case of nested classes of the simplest and most elegant
+trait composition operator~\cite{ducasse2006traits}.
+Code literals \mL\ can be marked as interfaces. We use `?' to represent optional terms.
+Note that the interface keyword is inside the curly brackets,
+so an upper case name associated with an interface literal is a class-interface, while a lowercase one is a trait-interface.
+Then we have a set of implemented interfaces and a set of member
+declarations, they can be methods or nested classes.
+The members of a code literal are a set, thus their order is immaterial.
+If a code literal implements zero interfaces, the concrete syntax omits the \Q@implements@ keyword.
+
+Methods \mMD~can be instance methods or \Q@static@ methods. 
+A static method in \name is similar to a \Q@static@ method in Java but can be abstract.
+This is very useful in the context of code composition.
+To denote a method as abstract, instead of an optional keyword we just omit the implementation \me.
+
+Finally, expressions $\me$ are just variables, method calls or static method calls.
+The ugliness of having two different kinds of method calls is an artefact of our simplifications.
+In the full 42 language, type names are a kind of expression whose type helps to model metaclasses.
+Our concept of abstract state implies we have no \Q@new@ expressions, and
+the values are just calls to abstract static methods.
+Thus values are parametric on the shape of the specific programs $\overline\mD$.
+
+We then show the evaluation context, the compilation context and full
+context.
+
+\subsection{Well-formedness}
+
+The whole program, that is $\overline\mDE$, is well formed if
+all the traits and classes at top level have unique names. The special class name
+\Q@This@ is not one of those,
+and the subtype relations are consistent:
+this means that the implementation of interfaces is not circular,
+and that $\forall\ \_\terminalCode{=}\ctx[\mL]\in\overline\mDE, \mathit{consistentSubtype}(\overline\mDE,\terminalCode{This=}\mL;\mL)$
+
+\noindent That is, every literal declares
+all the methods that are declared in its super interfaces, and declare them with the same exact type.\footnote{The full 42 language allows for covariant return types, like in Java.}
+
+
+\noindent\textbf{Define }$\mathit{consistentSubtype}(\overline\mDE;\mL)$\\
+$\begin{array}{l}
+\!\!\!\bullet\ \mathit{consistentSubtype}(
+  \overline\mDE,
+  \oC
+  \Opt{\terminalCode{interface}}
+  \terminalCode{implements}\overline\mT\ 
+  \overline\mM
+  \cC
+  )\quad\text{where}\\
+
+\quad\quad
+\forall \mT\in\overline\mT,\overline\mDE(\mT)=\oC\terminalCode{interface}\,\_\cC
+ \text{,\footnotemark}
+\\
+\quad\quad \forall\ \_\terminalCode{=}\mL\in  \overline\mM, 
+\mathit{consistentSubtype}(\overline\mDE;\mL) 
+
+\text{ and }
+\\
+\quad\quad 
+\forall \mm, \mT\in\overline\mT,
+\text{if}\,\terminalCode{method}\ \mT_0 \mm\oR
+\overline{\mT\,\mx}
+%\mT'_1\,\mx'_1\ldots\mT'_k\,\mx'_k
+\cR\in\overline\mDE(\mT)
+\,\text{then}\,
+\terminalCode{method}\ \mT_0 \mm\oR
+%\mT_1\,\mx_1\ldots\mT_n\,\mx_n
+\overline{\mT\,\mx}
+\cR\Opt\me
+\in\overline\mM
+
+%\mT_0=\mT'_0, \overline{\mT\,\mx}=\overline{\mT\,\mx}'
+%\mT_0\ldots\mT_n=\mT'_0\ldots\mT'_k
+
+
+\\
+\end{array}$
+\footnotetext{That is, in this simplified version 
+in order to implements an interface nested in a different top level name, such interface can not be generated using a trait expression. This limitation is lifted in the full language.}
+${}_{}$\\*
+${}_{}$\\*
+\noindent A code literal \mL\ is well formed if:
+\begin{itemize}
+\item all method parameters have unique names and the special parameter name \Q@this@ is not declared
+ in the parameter list,
+\item all methods in a code literal have unique names,
+\item all nested classes in a code literal have unique names, and no nested class is called \Q@This@,
+\item all used variables are in scope, and
+\item all methods in an interface are abstract, and there are no interface static methods.
+\end{itemize}
+
+\saveSpace
+\subsection{Compilation process}
+\saveSpace
+Usually the compilation process is not modelled, but here it is the \textbf{most interesting part}.
+Here we explain in the detail the flattening process and how and when compilation errors may arise.
+It is composed by rules \Rulename{top},\ \Rulename{look-up},\ \Rulename{ctx-c} and \Rulename{sum}.
+If we were to formally model more composition operators, each operator would have its own  rule.
+
+Rule \Rulename{top}
+compiles the leftmost top level (trait or class) declaration that needs to be compiled.
+In order to do so,
+it identifies the subset of the program $\overline\mD$ that can already be typed (second premise).
+Then the expression is executed under the control of such compiled program (first premise).
+According to rule \Rulename{look-up}, all the traits inside the expression need to
+be compiled, that is $\forall\mt, \text{if}\, \mE=\ctx[\mt]\,\text{then}\, \mt\in\dom(\overline\mD)$.
+If a large enough $\overline\mD$ cannot be typed, this would cause a compilation error
+at this stage.
+Rule \Rulename{look-up}
+replaces a trait name $\mt$ with the corresponding literal $\mL$.
+Thanks to the fact that $\overline\mD$ is all well typed, we know that $\mL$ is well typed too.
+Rule \Rulename{ctx-c}
+uses the compilation context to decide what step to apply next.
+It enforces a deterministic left-right call by value\footnote{
+In the flattening process, values are code literals $\mL$.} reduction;
+thus the leftmost invalid sum that is performed will be the one providing the compilation error.
+
+Keeping in mind the order of members in a literal is immaterial, rule \Rulename{sum}
+applies the operator:
+
+\noindent\textbf{Define }$\mL_1+\mL_2, \ \overline{\mM}+\overline{\mM},\ \mM+\mM$\\
+$\begin{array}{l}
+\!\!\!\bullet\ \mL_1+\mL_2 =\mL_3\quad\text{where}\\
+\quad\quad \mL_1= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1\ \overline\mM_1\ \overline\mM_0\cC\\
+\quad\quad \mL_2= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_2\ \overline\mM_2\ \overline\mM_0'\cC\\
+\quad\quad \mL_3= \oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT_1,\overline\mT_2\ \overline\mM_1,\overline\mM_2\ (\overline\mM_0+\overline\mM_0')\cC\\
+\quad\quad \dom(\overline\mM_1)
+%\pitchfork
+\,\text{disjoint}\,
+ \dom(\overline\mM_2) \text{ and } \dom(\overline\mM_0)\ =\ \dom(\overline\mM_0')\\
+
+\!\!\!\bullet\ (\mM_1\ldots\mM_n)+(\mM'_1\ldots\mM'_n)\ = \ (\mM_1+\mM'_1)\ldots(\mM_n+\mM'_n)\\
+
+\!\!\!\bullet\ \mC\terminalCode{=}\mL_1+\mC\terminalCode{=}\mL_2\ = \ \mC\terminalCode{=}\mL_3\quad if \mL_1+\mL_2\\
+
+\!\!\!\bullet\ \mM_1+\mM_2=\mM_2+\mM_1\\
+
+\!\!\!\bullet\ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \ + \ \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me = \Opt{\terminalCode{static}}\ \terminalCode{method}\ \mT_0\ \mm\oR\overline{\mT\,\mx}\cR \Opt\me\\
+\end{array}$
+
+Sum composes the content of the arguments
+by taking the union of their members and the union of their \Q@implements@.
+Members with the same name are recursively composed.
+There are three cases where the composition is impossible.
+\begin{itemize}
+\item MethodClash: two methods with the same name are composed,
+but either their headers have different types or they are both implemented.
+\item ClassClash: a class is composed with an interface.%
+\footnote{
+The full language offers some relaxation here, so that for example an empty class can be seen as an empty interface during composition.
+}
+\item ImplementsClash:
+The result code would not be well formed.
+For example
+\begin{lstlisting}
+t1={  A:{interface method Void a()}  }
+t2={
+  A:{interface}
+  B:{implements A}  }
+\end{lstlisting}
+Naively, \Q@t1+t2@ should result in a class \Q@B@ implementing \Q@A@ with method \Q@a()@,
+but \Q@B@ would not offer such method \Q@a()@.%
+\footnote{While in \name it could be possible to try to patch class \Q@B@, for example adding a
+abstract method \Q@a()@, we chose to give an error in this case, since in the full 42 language
+such patch would 
+be able to turn private nested classes
+into abstract (private) ones.}
+
+ImplementsClash can happen only when composing nested interfaces. Note that while the first two kind of errors are obtained directly by the definition of 
+$\mL_1+\mL_2$, ImplementsClash is obtained since injecting the resulting 
+$\mL$ in the program would make it ill-formed by 
+$\mathit{consistentSubtype}(\overline\mDE,\mL)$.
+\end{itemize}
+\saveSpace
+\subsection{Typing}
+\saveSpace
+Typing is composed by rules \Rulename{cd-ok}, \Rulename{td-ok},
+\Rulename{l-ok},
+\Rulename{nested-ok} and \Rulename{method-ok},
+followed by expression typing rules
+\Rulename{subsumption}, \Rulename{method-call}, \Rulename{x} and \Rulename{static-method-call}.
+
+Rules \Rulename{cd-ok} and \Rulename{td-ok}
+are interesting: a top level class is typed by replacing all occurrences of the name `\Q@This@' with the class name $C$,
+and is required to be coherent.
+On the other side, a top level trait is typed by temporary adding to the typed program a mapping for
+\Q@This@.
+
+\noindent\textbf{Define }$\text{coherent}(\mT,\mL)$\\
+$\begin{array}{l}
+\!\!\!\bullet\ \text{coherent}(\mT,
+\oC \Opt{\terminalCode{interface}}\ \terminalCode{implements} \overline\mT\ \overline\mM\cC
+)\quad\text{where}\\
+
+\quad\quad \forall \mC\terminalCode{=}\mL'\in\overline\mM \text{coherent}(\mT\terminalCode{.}\mC,\mL')\\
+\quad\quad \text{either }
+\Opt{\terminalCode{interface}}=\terminalCode{interface}\\
+\quad\quad\quad \text{or } 
+\forall\ 
+\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM,\ 
+\text{state}(\text{factory}(\mT,\overline\mM),\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR)
+\end{array}$
+
+\noindent A Library is \emph{coherent} if 
+all the nested classes are coherent,
+and either the Library is an interface, or
+there are no static methods, or all the static methods
+are a valid \emph{state} method of the candidate \emph{factory}.
+Note, by asking for
+$\terminalCode{method}\ \mT'\ \mm\oR\overline{\mT\,\mx}\cR \in\overline\mM$
+we select only the abstract methods.
+
+\noindent\textbf{Define }$\text{factory}(\mT,\overline\mM)$\\
+$\begin{array}{l}
+
+\!\!\!\bullet\ \text{factory}(\mT,\mM_1\ldots\mM_n)=\mM_i=\terminalCode{static method}\ \mT\, \mm
+\oR
+\_
+\cR
+
+\quad\text{where}\\
+\quad\quad \forall j\neq i.\ \mM_j=
+\text{not of the form}\ \terminalCode{static method}\ \_\, \_
+\oR
+\_
+\cR
+\end{array}$
+
+\noindent The factory is the only static abstract  method, and
+its return type is the nominal type of our class.
+
+\noindent\textbf{Define }$\text{state}(\mM,\mM')$\\
+$\begin{array}{l}
+
+
+\!\!\!\bullet\ \text{state}(
+\terminalCode{static}\ \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+\terminalCode{method}\ \mT_i\ \mx_i\oR\cR
+)\\
+
+%\!\!\!\bullet\ \text{state}(
+%\terminalCode{static}\ \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+%\terminalCode{method}\ \terminalCode{Void} \mx_i\oR\mT_i\,\terminalCode{that}\cR
+%)\\
+
+\!\!\!\bullet\ \text{state}(
+\terminalCode{static}\ \terminalCode{method}\ \mT\ \mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR,
+\terminalCode{method}\ \mT\ \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR
+)\\
+
+\end{array}$
+
+\noindent A non static method is part of the \emph{abstract state} if 
+it is a valid getter or wither. This simple formalism without imperative features do not offer setters.
+
+
+Rule \Rulename{Nested-OK} helps to accumulate the type of \Q@this@ so that rule \Rulename{Method-OK}
+can use it.
+Rule \Rulename{L-OK} is so simple since all the checks
+related to correctly implementing interfaces are delegated to the well formedness criteria.
+The other rules are straightforward and standard.
+
+\saveSpace
+\subsection{Formal properties}
+\saveSpace
+In addition to conventional soundness of the expression reduction,
+\name ensures soundness of the compilation process itself.
+A similar property was called meta-level-soundness in~\cite{servetto2014meta}; here we can obtain the same result in
+a much simpler setting.
+We denote $\mathit{wrong}(\overline\mD,\mE)$ to be the count of $\mL$ such that
+$\mE=\ctx[\mL]\ \text{and not}\ \overline\mD\vdash\mL:\text{OK}$.
+
+\begin{Theorem}[Compilation Soundness]
+
+if $\mE_0 \xrightarrow[\smallDs]{} \mE_1$
+then $\mathit{wrong}(\overline\mD,\mE_0)\geq\mathit{wrong}(\overline\mD,\mE_1)$.
+\end{Theorem}
+This can be proved by cases on the applied reduction rule:
+\begin{itemize}
+\item
+\Rulename{look-up} preserve the number of wrong literals,
+since $t \in \overline\mD$ and $\overline\mD$ are well typed by \Rulename{top} second preconditions.
+\item \Rulename{sum} either preserves or reduces the number of
+wrong literals:
+the core of the proof is to show the sum of two well typed literals produces a well typed one.
+A code literal is well typed (\Rulename{l-ok}) if all the method bodies are correct.
+This holds since those same method bodies
+are well typed in a strictly poorer environment with respect to the one used to type the result.
+This is because every member in the result
+is structurally a subtype of
+the corresponding member in the argument.
+Note that by well formedness, if \Rulename{sum}
+is applied, the result still respects 
+$\mathit{consistentSubtype}$.
+\end{itemize}
+\noindent 
+Compilation Soundness has two important corollaries:
+\begin{itemize}
+\item If a class is declared without literals,
+and the flattening is successful then \mC\ is well-typed: there is no need of further checking.
+\item On the other side, if a class is declared by using literals $\mL_1\ldots\mL_n$, and after successful flattening $\mC = \mL$ can not be type-checked,
+then the issue was originally present in one of $\mL_1\ldots\mL_n$.
+This also means that as an optimization strategy
+ we may remember what method bodies come from traits and what method bodies come from code literals, in order to type-check only the latter.
+
+If the result can not be type-checked, does not means
+that is intrinsically ill-typed: it may happen that a 
+referred type is declared \emph{after} the current class. 
+As we see in the next section, we leverage on this 
+to allow recursive types.
+ \end{itemize}
+
+
+
+
+
+\saveSpace
+\subsection{Advantages of our compilation process}
+\saveSpace
+
+Our typing discipline is very simple from a formal perspective,  
+and is what distinguishes our approach from a simple minded code composition macro~\cite{bawden1999quasiquotation}
+or a rigid module composition~\cite{ancona2002calculus}. 
+It is built on two core ideas:
+
+\paragraph{1: traits are \textbf{well-typed} before being reused.}
+ For example in
+
+\saveSpace\begin{lstlisting}
+t={method int m(){return 2;} 
+   method int n(){return this.m()+1;}}
+\end{lstlisting}\saveSpace
+
+\noindent \Q@t@ is well typed since \Q@m()@ is declared inside of \Q@t@, while
+
+\saveSpace\begin{lstlisting}
+t1={method int n(){return this.m()+1;}} 
+\end{lstlisting}\saveSpace
+\noindent would be ill-typed.
+
+\paragraph{2: code literals are \textbf{not required to be well-typed} before flattening.}${}_{}$\\*
+A code literal $\mL$ in a declaration $\mD$
+is must be well formed and respect
+$\mathit{consistentSubtype}$. However 
+it is not type-checked before flattening,
+and only the result is expected to be well-typed.
+This example using the trait \Q@t@ is correct:
+
+\saveSpace\begin{lstlisting}
+C= Use t, {method int k(){return this.n()+this.m();}}
+\end{lstlisting}\saveSpace
+
+\noindent The code literal
+\Q@{method int k(){ return this.n()+this.m();}}@, 
+is not well typed,
+since \Q@n@, \Q@m@ are not locally defined. However in 
+\name the result of the flattening is well-typed.
+This is not the case in many similar works in literature~\cite{deep,Bettini2015282,Bergel2007} where the
+literals have to be \emph{self contained}. In this case we would have been forced to
+declare abstract methods \Q@n@ and \Q@m@, even if \Q@t@ already 
+provides such methods.
+
+This relaxation allows multiple declarations to be flattened one at the time, without typing them individually, and then to type them all together.
+In this way, we support recursive types%
+\footnote{
+OO languages leverage on recursive types most of the times:
+for example \Q@String@ may offer a \Q@Int size()@
+method, and \Q@Int@ may offer a \Q@String toString()@ method.
+This means that typing classes 
+\Q@String@ and \Q@Int@ in isolation one at a time is not possible.}
+between multiple $\mC$\Q@=@$\mE$ \textbf{without
+the need of predicting the resulting shape}%
+\footnote{This is fundamental in the full language where arbitrary code can be run at compile time, making impossible to predict the resulting shape.}.
+
+As seen in \Rulename{top}, our compilation process
+proceeds in a top-down fashion, flattening one declaration at a time,
+and declarations need type-checking
+only where their type is first needed,
+that is, when they are required to type a trait $\mt$ used in an expression $\mE$.
+That is, in \name typing and flattening are interleaved. We assume our compilation process to stop as soon as 
+an error arises. 
+For example
+\saveSpace\begin{lstlisting}
+ta={method int ma(){return 2;}}
+tc={method int mc(A a,B b){return b.mb(a);}}
+A= Use ta
+B= {method int mb(A a){return a.ma()+1;}}
+C= Use tc, {method int hello(){return 1;}}
+\end{lstlisting}\saveSpace
+In this scenario, since we go top down, we first need to generate \Q@A@.
+To generate \Q@A@, we need to use \Q@ta@ (but we do not need
+\Q@tc@, in rule \Rulename{top} $\overline\mD=$\Q@ta@ and $\overline\mD'=$\Q@tc@).
+At this moment, \Q@tc@ cannot be compiled/checked alone:
+information about \Q@A@ and \Q@B@ is needed.
+In order to modularly ensure well-typedness,
+we require only \Q@ta@ to be well typed at this stage. If \Q@ta@ was not well-typed
+a type error could be generated at this stage.
+
+Now, we need to generate \Q@C@, and we need to ensure well-typedness of \Q@tc@.
+Now \Q@A@ is already well typed (since generated by \use\ \Q@ta@, with no \mL),
+and \Q@B@ can be typed. Finally \Q@tc@ can be typed and reused.
+If \Rulename{sum} could not be performed (for example it \Q@tc@ had a method \Q@hello@ too)
+a composition error could be generated at this stage.
+On the opposite side, if \Q@B@ and \Q@C@ were swapped, as in
+\saveSpace\begin{lstlisting}
+C= Use tc, {method int hello(){return 1;}}
+B= {method int mb(A a){return a.ma()+1;}}
+\end{lstlisting}\saveSpace
+\noindent
+we would be unable to type \Q@tc@, since we need to know the type of \Q@A@ and \Q@B@.
+A type error would be generated, on the lines of ``flattening of \Q@C@
+requires \Q@tc@, \Q@tc@ requires \Q@B@ that is defined later''.
+
+%In this example, a more expressive compilation/precompilation process 
+%could compute a dependency graph and, if possible, reorganize the list,
+
+\paragraph{The cost: what expressive power we lose}${}_{}$\\*
+Our simple formalism requires the declarations to be provided in the right dependency order. However, sometimes no such order exists.
+An example of a ``morally correct'' program where no right order exists is the following:
+\saveSpace\begin{lstlisting}
+t= { int mt(A a){return a.ma();}}
+A= Use t {int ma(){return 1;}}
+\end{lstlisting}\saveSpace
+
+We just wrote an involved program where the correctness of trait \Q@t@ depends of 
+\Q@A@, that is in turn generated using trait \Q@t@.
+We believe any typing allowing those programs would be fragile with respect to code evolution,
+and could make human understanding the code-reuse process much harder/involved.
+
+%Rewriting our example in Java may help to show how involved it is.
+%\saveSpace\begin{lstlisting}
+%class T{ int mt(A a){return a.ma();}
+%class A extends T {int ma() {return 1;}}
+%\end{lstlisting}\saveSpace
+
+In sharp contrast with
+many other approaches (TR, PT, DJ and in some sense even Java, C\# and Scala)
+we chose to not support this kind of involved programs.
+
+TR, PT, DJ, Java, C\# and Scala
+accept a great complexity in order to \textbf{predict the structural shape} of the resulting code before doing the actual code reuse/adaptation.
+Those approaches logically divide the program in groups of mutually dependent classes, where each group may depend on a number of other groups.
+This form a direct acyclic graph of groups.
+To type a group, all depended groups are typed, then
+the signature/structural shape of all
+the classes of the group is extracted.
+Finally, with the information of the depended groups and the one extracted
+from the current group, it is possible to type-check the implementation of each class in the group.
+Such approach relies on the structural shape of the result of composition operators depending only on the
+structural shape of their input (as for \use).
+
+%Following this model, it is reasonable to assume that flattening happens group by group, before extracting the class signatures.
+
+
+
+%\paragraph{In \name, typechecking before compiling would be redundant}${}_{}$\\*
+%In the world of strongly typed languages we are tempted to
+%first check that all can go well, and then perform the flattening.
+%This would however be overcomplicated without any observable difference:
+%Indeed, in the \Q@A,B,C@ example above there is no difference
+%between
+%\begin{itemize}
+%\item  (1) First check \Q@B@ and produce \Q@B@ code (that also contains \Q@B@ structural shape),
+%  (2) then use \Q@B@ shape to check \Q@C@ and produce \Q@C@ code;\ 
+%or a more involved
+%\item  (1) First check \Q@B@ and discover just \Q@B@ structural shape as result of the checking,
+%  (2) then use \Q@B@ shape to check \Q@C@.
+%  (3) Finally produce both \Q@B@ and \Q@C@ code.
+%\end{itemize}
+%
+%
+%This may seems a dangerous relaxation at first, but also Java has the same behaviour:
+%\saveSpace\begin{lstlisting}[language=Java]
+%  class A{ int ma() {return 2;}  int n(){return this.ma()+1;} }
+%  class B extends A{ int mb(){return this.ma();} }
+%\end{lstlisting}\saveSpace
+%\noindent in \Q@B@ we can call \lstinline{this.ma()} even if in the curly braces there is no declaration for \Q@ma()@.
+%
+%
+
+
+
+\noindent 
+In the world of strongly typed languages we are tempted to
+first check that all can go well, and then perform the flattening. 
+Such methodology would be redundant in our setting: we can only reuse code by naming traits; but our point of relaxation is {\bf only} the code literal: in no way an error can ``move around'' and be duplicated during the compilation process.
+That is, our approach allows for safe libraries of traits and classes to be typechecked once and then deployed and reused by multiple clients: no type error will emerge from library code.
+%However, we do not force the programmer to write self-contained code where all the abstract method definition are explicitly declared.
+
+
+\saveSpace
+\subsection{Expression reduction}
+\saveSpace
+Reduction rules are incredibly simple and standard.
+A great advantage of our compilation model is that expressions are executed on
+a simple fully flattened program, 
+where all the composition operators have been removed.
+From the point of view of expression reduction, \name is a simple language of 
+interfaces and final classes, where nested classes gives structure to the code but have no special semantics.
+The reduction of expressions is composed by rules
+\Rulename{ctx-v},\Rulename{s-m} and \Rulename{m}.
+The only interesting point is the auxiliary function $\mathit{meth}$:
+
+
+\noindent\textbf{Define }$\mathit{meth}(\mM,\overline\vds)$
+
+$\begin{array}{l}
+
+\!\!\!\bullet\mathit{meth}(\terminalCode{static method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_1\ldots\vds_n)=\me[\mx_1=\vds_1\ldots\me_n=\vds_n]
+\\
+
+\!\!\!\bullet\mathit{meth}(\terminalCode{method}\ \mT\ \mm\oR\mT_1\, \mx_1\ldots\mT_n\,\mx_n\cR\me,\vds_0\ldots\vds_n)=\me[\terminalCode{this}=\vds_0,\mx_1=\vds_1\ldots\me_n=\vds_n]
+\\
+
+\!\!\!\bullet\mathit{meth}(\terminalCode{method}\ \mT_i\ \mx_i\oR\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_n\cR)=\vds_i\\
+\quad \quad\text{where}\ \ \overline\mD(\mT,\mm) =
+\terminalCode{static method}
+\ \mT\,\mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR
+\\
+
+\!\!\!\bullet\mathit{meth}(\terminalCode{method}\ \mT\ \terminalCode{with}\mx_i\oR\mT_i\,\terminalCode{that}\cR,\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds_i\ldots\vds_n\cR,
+\vds
+)=
+\mT\terminalCode{.}\mm\oR\vds_1\ldots\vds\ldots\vds_n\cR
+\\
+\quad \quad\text{where}\ \ \overline\mD(\mT,\mm) =
+\terminalCode{static method}
+\ \mT\,\mm\oR\mT_1\,\mx_1\ldots\mT_n\,\mx_n\cR
+\end{array}$
+
+\noindent 
+Here we take care of reading bodies and preparing for
+execution.
+The first case is about static methods,
+the second is about instance methods.
+The third and fourth cases are more interesting, since they take care of
+the abstract state:
+the third case takes care of getters and the fourth takes care of withers.
+In our formalization we are not modelling state mutation, so there is 
+no case for setters.
+
+For space reasons, we omit the proof of conventional soundness for the
+reduction. It is unsurprising, since the flattened calculus is like a
+simplified version of Featherweight Java~\cite{igarashi2001featherweight}.

@@ -1,0 +1,87 @@
+A
+===================
+* having timings on a wide range of examples would have been re-assuring.
+* Spec# is more powerful and it would have been interesting to know what one can do in Spec# that isn’t possible in L42.
+* the paper only contains three case studies and they are all small with only a few invariants.
+* the three provided benchmarks are all synthetic and designed by the authors. 
+* annotating real code would have made a much more convincing case
+* users of the class have to dig into the code of the class rather than only needing to understand its interface
+* a more detailed introduction to [type modifiers and object capabilities] earlier on in the paper would be beneficial. 
+* I would also like like to see explicitly why both [type modifiers and object capabilities] are needed rather than one, 
+* could there be any unintended interference between the two concepts [of type modifiers and object capabilities]?
+* Rust’s relaxed support for TMs or OCs would make enforcement of their protocol harder or impossible. Why? 
+
+B
+========================	
+* the established terminology for “invariant”, which dates back to Liskov and Guttag I believe, is “representation invariant” also known as “rep invariant”. 
+* The “invariant” method is usually called “repOK”, or “checkRep”.
+* The “capsule” semantics captures and prevents what I’ve known as “representation exposure”.
+* the paper (without considering the appendix) is not self-contained. It relies on certain semantics of reference and object immutability, and ownership, 
+* it is unclear to me what the capsule, i.e., ownership semantics is, exactly, and how it relates to the well-known owners-as-dominators, and owners-as-modifiers semantics.
+* what does it mean “immutable references can be freely shared across capsule boundaries”? 
+* How does the underlying immutability system guarantee object immutability? 
+* But constructor X() can still leak implicit parameter “this”  ... thus creating references other than “x” to the immutable object. How does the underlying type system keep track of such references, or prevent their creation?
+* It was also unclear what the importance of object capabilities is. 
+* is not very different from the Boogie/Spec# methodology, which also relies on ownership and immutability guarantees. The two methods appear to be equivalent... Does Boogie/Spec# rely on object immutability guarantees as well, or does it rely solely on standard method purity and standard owners-as-dominators ownership?. 
+* Why do we care for reducing repOK checks
+
+C 
+====================
+* capsule mutator method on the object which is a method that uses its receiver only once, to read a capsule field, and furthermore takes only "imm" and "capsule" arguments (so that the external uniqueness property is preserved).
+* More and larger case studies are necessary in future work to gain assurance of the practical usability of the programming model.
+* The "box" and "transformer" patterns, which the programming model essentially imposes, are unusual. Hopefully, it will be possible in future work to reduce the programming overhead.
+*  I would have liked a slightly deeper and more rigorous introduction to the type system. Specifically, the typing rules for "capsule" fields are not entirely clear to me.
+* I found Secs. 5 and 6 unnecessary. // reviewer D liked them!
+* p. 9: "Note that these restrictions do not apply ...": I do not understand this sentence.
+* p. 9: Footnote 12: to me, it would make sense that the runtime semantics (in particular: the invariant checking semantics) of checked exceptions would be inconsistent with that of unchecked semantics.
+* p. 19: "using an inner Box object is a common pattern in static verification": I thought I knew a bit about static verification, but I've never heard of the Box pattern or seen anything like it.
+* p. 23: "Dafny ... requires objects to be newly allocated (or cloned) before another object's invariant may depend on it.": I thought Dafny implemented the dynamic frames approach, which is very flexible? An invariant is just a pure function, which can have a "reads" clause mentioning any arbitrary set of memory locations? I don't think Dafny implements the visible state semantics. Invariants are not even built into the language; they are just a pattern of using pure functions in preconditions and postconditions?
+* p. 24: The suggestion at the bottom of p. 24, "One interesting avenue", strikes me as a bit silly and impractical. Indeed: a precondition would have to hold throughout the method's execution, which is generally not the case.
+
+D
+======================================================
+* Approach seems very restrictive
+* advocates checking the invariant of an object after every single field update. 
+* as a goal that it is not possible to call a method of an object whose invariant does not hold
+* invariants can only access imm and capsule fields is very severe!
+* making it "easy" to decided when checking is sensible, and reduces the possibility of passing broken receivers around. ... However, the methodology does not claim to actually prevent any clear class of these pathologies (invariants can still dereference null by passing something inappropriate to a method called in an invariant, for example), and no evidence is given that this type of pathology is actually a serious problem in practice (to the degree that a vague "reduction in likelihood" would be worth striving for).
+* Section 6 sort of touches on a justification for this, but really only shows that it is one way of solving a representation exposure problem, not that it's really necessary or not-problematic. This paper is using reference immutability: why not use that in some way to control rep exposure?
+
+* Requiring that "capsule mutators" only use "this" once is extremely restrictive
+* One possible work-around I could think of is to define the [binary] tree with mut fields, then use a separate "wrapper" object with a capsule TreeNode reference that checked sortedness as its invariant. Does this work?
+* L42 because the prototype currently lacks inheripage 19: Counting tokens and characters in annotations is not useful, and is not something we should be counting. Please remove those, which would set a bad precedent for others. The annotation counts and categories of course are fine.
+tance! The paper writes this off as a minor fix for the future ... if an override of a known method called by an invariant accesses a non-imm/capsule field, 
+* if the limitations of a system aren't encountered in an evaluation, why not? 
+* Most code in the class of type systems considered uses read and mut much more heavily than those permitted in invariants here;
+* protocols for invariant checking and the details of strong exception safety were both inadequately explained.
+* how SES ensures an object with a violated invariant is garbage when the exception is caught
+* "this" can only be used to access capsule and imm fields. This suggests to me that method calls on those fields would be disallowed,
+* the static checking were written down somewhere formally I could check this there
+* On lines 370-372, how does this allow an invariant to be violated for a non-trivial period of time before being checked again? 
+* On lines 372-374, why would it otherwise be possible to "leak out a mut alias to the capsule field?" Even doing this locally violates the soundness semantics for every reference immutability system I've seen
+* On lines 374-376: I just don't understand what this sentence is suggesting.
+* everything is presented in English, even subtle technical points. Part of it is also that the paper cycles through the system there are proofs for, L42's own relaxations, and further speculated relaxations.
+*  I'd move the speculation to the very end of the paper, and include a brief overview of the gap between L42 and the formal system just before the evaluation. 
+*  Well-Formedness criteria in Section 4 assume an important correctness property, rather than proving it is true.  ...
+* The case study is very narrow: one program, which happens to avoid encountering the many restrictions of the approach. 
+* The children() method returns state from inside capsule box. As noted earlier, this should be type-incorrect in all of the related systems cited, to the best of my knowledge. Those systems would reject line 678, ....
+* This is the same code that was apparently difficult to implement in Spec#. Is there a bug in the implementation? If not, why is this permitted? 
+* but means the system can no longer be used for safe concurrency; fine if L42 has none, but again if this is deviating from prior work this must be discussed, and if it's relying on the details of a particular system, some detail of that specific system/paper should be given to contrast with the broad-stokes view of Gordon et al./Clebsch et al./Servetto et al.
+* Note: this example also seems to run afoul of the speculation on page 10 that allowing public fields can work, as long as capsule fields are never accessed except directly from the receiver. Line 685 appears to do exactly that problematic thing.
+* to intended differences in granularity of invariant checking, but again that difference is never motivated.
+* there's a fair amount of Spec# code, why not port some to L42? 
+* just covering a range of structures and drawing inferences from those conversions would be good
+* discussion of idioms like Box and Transform, but based on a more diverse and less biased set of programs.
+
+* convince me the restrictions are not so severe or I have misunderstood them
+* explain why the children call in the GUI case study type checks, and what this discussion about mut aliases to capsule references is about
+* convince me there's more generality to the GUI case study than I'm seeing
+* convince me that the details of the static reasoning bits that lie outside "established" work on reference immutability (e.g., the syntactic checks done for invariant bodies) can be both clearly explained and extended cleanly to a system with real inheritance hierarchies and similar extensions discussed in the paper.
+* "type modifiers" sounds much more general than "reference capabilities," ....
+* According to Gordon's dissertation (Ch. 3.5.5), the Microsoft system also was used for enforcing purity of design-by-contract constructs, though they do not specify the checking protocol. (This is apparently only in his dissertation, not [38].)
+* page 13: The definition of "trusted" is missing details on the inner evaluation context in the second case, which presumably needs to have a hole somewhere
+* Sections 5 and 6 contain good discussion that should come earlier, but are also full of details that really belong in an appendix; I'd move some material earlier, some of the pickier bits to the appendices, and use the extra space to improve the explanation of the background material.
+* but it really needs to argue for why this solution is good, not that it just works.
+* the first example in Section 6 is about rep exposure; why not use reference immuatbility to address that too? 
+* page 16: allowing 'this' to be used more than once without restriction does cause problems, but are there no intermediate restrictions that work? This one is drastic.
+* page 19: Counting tokens and characters in annotations is not useful, and is not something we should be counting. Please remove those, which would set a bad precedent for others. The annotation counts and categories of course are fine.

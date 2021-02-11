@@ -1,0 +1,85 @@
+class method S from(This string)
+@Public Map=Collection$.map(key=S,val=S)
+@Public Set=Collection$.set(S)
+@Public @Cache.Lazy class method S$List allUpLow()=S$List[
+  'Aa;'Bb;'Cc;'Dd;'Ee;'Ff;'Gg;'Hh;'Ii;'Jj;'Kk;'Ll;'Mm;
+  'Nn;'Oo;'Pp;'Qq;'Rr;'Ss;'Tt;'Uu;'Vv;'Ww;'Xx;'Yy;'Zz;
+  ]
+class method S underscores(S that)=(
+  var rest=that
+  var res=S""
+  while rest.startsWith(S"_") (
+    rest:=rest.subString(1\ to=\size)
+    res++=S"_"
+    )
+  res
+  )
+@Public @Cache.Lazy class method Map lowToUp()=(
+  map=Map[]
+  for lu in this.allUpLow() (map.put(
+    key=lu.subString(1\ to=2\)
+    val=lu.subString(0\ to=1\)
+    ))
+  map
+  )
+@Public @Cache.Lazy class method Map upToLow()=(
+  map=Map[]
+  for lu in this.allUpLow() (map.put(
+    key=lu.subString(0\ to=1\)
+    val=lu.subString(1\ to=2\)
+    ))
+  map
+  )
+method S$List identifierParts()={
+  tot=This.from(string=this)
+  us=This.underscores(tot)
+  usSize=us.size()
+  if tot.size()==usSize return S$List[us;S"";S""]<:S$List
+  s1=tot.subString(usSize to=usSize+1\)
+  tail=tot.subString(usSize+1\ to=\size)
+  return S$List[us;s1;tail]<:S$List
+  } 
+@Public method S toStartLow()=(
+  id=this.identifierParts()
+  id.val(0\)++This.low1(char=id.val(1\))++id.val(2\)
+  )
+@Public method S toStartUp()=(
+  id=this.identifierParts()
+  id.val(0\)++This.up1(char=id.val(1\))++id.val(2\)
+  )
+@Public method S toCamelUp()=(
+  id=this.identifierParts()
+  id.val(0\)++This.up1(char=id.val(1\))++This.toCamelLow(id.val(2\))
+  )
+@Public method S toCamelLow()=(
+  id=this.identifierParts()
+  id.val(0\)++This.low1(char=id.val(1\))++This.toCamelLow(id.val(2\))
+  )
+class method S toCamelLow(S that)={
+  if that==S"" return that
+  s1=that.subString(0\ to=1\)
+  res=that.subString(1\ to=\size)
+  if res==S"" return this.low1(char=s1)
+  if s1==S"_" (
+    s2=res.subString(0\ to=1\)
+    res2=res.subString(1\ to=\size)
+    return S"_"++s2++this.toCamelLow(res2)
+    )
+  return this.low1(char=s1)++this.toCamelLow(res)
+  }
+class method S low1(S that)={
+  if that==S"" return that
+  s1=that.subString(0\ to=1\)
+  res=that.subString(1\ to=\size)
+  return this.low1(char=s1)++res
+  }
+class method S low1(S char)={
+  r=this.upToLow().val(key=char)
+  if r return r.val()<:S
+  return char
+  }
+class method S up1(S char)={
+  r=this.lowToUp().val(key=char)
+  if r return r.val()<:S
+  return char
+  }

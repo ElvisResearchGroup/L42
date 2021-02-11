@@ -1,0 +1,124 @@
+\section{Redirect applications}
+
+\subsection{Graph example}
+We now consider an example where Redirect simplifies the code quite a lot:
+We have a \Q@Node@ and \Q@Edge@ concepts for a graph.
+The \Q@Node@ have a list of \Q@Edge@s.
+A \Q@isConnected@ function takes a list of \Q@Node@s.
+A \Q@getConnected@ function takes \Q@Node@ and return a set of \Q@Node@s.
+\begin{lstlisting}
+graphUtils={
+  Edges:list<+{Node start() Node end()}
+  Node:{Edges connections()}
+  Nodes:set<Elem=Node>//note that we do not specify equals/hash
+  static Bool isConnected(Nodes nodes)=
+    if(nodes.size()=0) then true
+    else getConnected(nodes.asList().head()).size()==nodes.size()
+  static Nodes getConnected(Node node)=getConnected(node,Nodes.empty())
+  static Nodes getConnected(Node node,Nodes collected)=
+    if(collected.contains(node)) then collected
+    else connectEdges(node.connections(),collected.add(node))
+  static Nodes connectEdges(Edges e,Nodes collected)=
+    if( e.isEmpty()) then collected
+    else connectEdges(e.tail(),collected.add(e.head().end()))
+  }
+\end{lstlisting}
+
+We have shown the full code instead of omitting implementations to show that
+the code inside of an highly general code like the former is pretty conventional.
+Just declare nested classes as if they was the concrete desired types. Note how we can easly create a new \@Nodes@ by doing \Q@Nodes.empty()@.
+
+Here we show how to instantiate \Q@graphUtils@ to a graph representing cities connected by streets,
+where the streets are annotated with their length, and \Q@Edges@ is a priority queue, to optimize
+finding the shortest path between cities.
+
+\begin{lstlisting}
+Map:{
+  Street:{City start,City end, Int size}
+  City:{}
+  Streets:priorityQueue<Elem=Street><+{    
+    Int geq(Street e1,Street e2)=e1.size()-e2.size()}
+  }<+{
+  Streets:{}
+  City:{Streets connections, Int index}//index identify the node
+  Cities:set<Elem=City><+{
+    Bool eq(City e1,City e2) e1.index==e2.index
+    Int hash(City e) e.index
+    }
+  Cities cities
+  //more methods
+  }
+MapUtils=graphUtils<Nodes=Map.Cities>
+//infers Nodes.List, Node, Edges, Edge
+\end{lstlisting}
+
+In Appending 2 we will show our best attempt to encode this graph example in Java, Rust and Scala.
+In short, we discovered...
+
+\subsection{Loading libraries}
+
+Most languages have a standard library.
+The standard library have two goals:
+\begin{itemize}
+\item Be a set of useful features for programmers to use.
+\item Be a starting point for third party libraries.
+\end{itemize}
+While the first point is quite obvious, the second one is a little surprising: third party libraries will communicate with
+the user code mostly by using standard library types:
+\Q@String@s, \Q@Collection@s and if we are in a pure OO language,
+also \Q@Boolean@s, \Q@Integer@s, \Q@Double@s and so on.
+The number of types involved in just take input and produce output is much larger then one could expect, since all kind of errors need
+to be considered too, and if the language support reflection, all those classes and their errors may end up being transitively required.
+The goal of the standard library is.
+For example, assume a simple library taking in input a \Q@String@
+and producing a \Q@String@: What are its dependencies?
+
+\Q@String@ has an \Q@isEmpty():Boolean@ method, 
+the \Q@Boolean@ has a \Q@toString():String@ method, a circular dependency.
+\Q@String@ has a \Q@size():Integer@ method, and
+a \Q@getChar(Integer pos):Char@ method.
+another typical method of strings is @split(String regex):ListString@,
+returning a list, that extends some general collection, and so on.
+If reflection is not implemented with Mirrors[],
+any of those object would have a \Q@class():Class@ method,
+and \Q@Class@ would have methods to connect with most other reflection classes.
+
+Those dependencies are usually not a problem because we assume the standard library to be fixed and always available.
+Or, if you prefer, we are forced to design programming languages together with their standard library because those dependencies are too hard to manage directly.
+
+With Redirect we can get free from this chain, and every third party library can just declare a the set of dependencies that are really needed.
+A single redirect application can then ``load'' the library in the current scope, where a variation of the standard library is available, but not necessarily exactly the library used to develop such third party library.
+
+For example, a library may only need pass indexes around, without directly
+doing arithmetic, and may never use ..
+
+\begin{lstlisting}
+library={//this code is fully self contained
+  N={}
+  C={ Bool equal(C x)}
+  S={N size(), C getChar(N index)}
+  S myLibFunction(S x)=....
+  Map=interface{
+    S string()
+    C char()
+    N integer()
+    }
+  }
+...
+Int={..}
+Char={..}
+String={..}
+Map=interface{String string() ... }
+LoadedLib=library<Map=Map>
+\end{lstlisting}
+Since the code of $t$ is self contained (do not refer to any class in the outer program, it is possible to just ship it independently of the standard library of the target.
+The code of $library$ can be typechecked once, and then
+any other program may load it as shown.
+Any program defining a \Q@Map@ interface with some types that we expect libraries to rely upon can be used in conjunction with $library$.
+In this example, if \Q@Char@ is not a valid structural subtype of \Q@C@,
+the redirect would fail with a meaningful error message.
+
+By the stability theorem, we get a good formal characterization of what are the acceptable shapes of the program so that the redirect would succeed.
+However, even if the program do not match the expectations of the library,
+it could be possible to tweak the code to make it work.
+...

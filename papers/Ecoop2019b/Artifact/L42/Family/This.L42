@@ -1,0 +1,66 @@
+reuse L42.is/AdamTowel02
+CacheAdamTowel02:Load.cacheTowel()
+
+//Here use DData or EiffelData instead of Data to test their protocols
+Person: Data <>< {
+  S name, var Size daysLived, Size birthday
+  mut method Void processDay(Size dayOfYear) (
+    this.daysLived(this.daysLived() + 1Size)
+    if this.birthday() == dayOfYear (
+      Debug(S"Happy birthday "[this.name()]"!")))
+
+  read method Bool #invariant() (
+    Debug.incrementCounter(S"Invariant")
+    this.name() != S"" & this.daysLived() >= 0Size & this.birthday() >= 0Size & this.birthday() < 365Size)
+}
+Persons: Collections.vector(ofMut: Person)
+
+//Here use DData or EiffelData instead of Data to test their protocols
+Family: Data <>< { 
+  capsule Box box
+  Box: Data <>< {
+    mut Persons parents, mut Persons children
+    mut method Void processDay(Size dayOfYear) (
+      with c in this.#children().#vals() (c.processDay(dayOfYear: dayOfYear))
+      with p in this.#parents().#vals() (p.processDay(dayOfYear: dayOfYear)))}
+
+  class method mut This(capsule Persons parents, capsule Persons children)
+    This(box: Box(parents: parents, children: children))
+  
+  mut method Void processDay(Size dayOfYear)
+    this.#box().processDay(dayOfYear: dayOfYear)
+
+  mut method Void addChild(capsule Person that)
+    this.#box().#children().add(right: that)
+
+  read method Bool #invariant() {
+    Debug.incrementCounter(S"Invariant")
+    with p in this.box().parents().vals() (
+      with c in this.box().children().vals() (
+        if p.daysLived() <= c.daysLived() (return Bool.false())))
+    
+    return Bool.true() }
+}
+
+Main: {
+  fam = Family(parents: Persons[
+      Person(name: S"Bob",   daysLived: 11720Size, birthday:40Size); // 32 years old
+      Person(name: S"Alice", daysLived: 12497Size, birthday:87Size)] // 34 years old
+    children: Persons[])
+
+  with day in Range(365Size) (
+    fam.processDay(dayOfYear: day))
+
+  with day in Range(365Size) (
+    fam.processDay(dayOfYear: day)
+    if day==45Size (
+      fam.addChild(Person(name: S"Tim", daysLived: 0Size, birthday: day))))
+
+  with day in Range(365Size) (
+    fam.processDay(dayOfYear: day)
+    if day==340Size (
+      fam.addChild(Person(name: S"Diana", daysLived: 0Size, birthday: day))))
+
+  Debug.printCounter(S"Invariant")
+  return ExitCode.normal()
+}

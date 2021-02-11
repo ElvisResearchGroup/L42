@@ -1,0 +1,95 @@
+TODO: unsure about New Well formedness: a class with private state but no abstract class private state,
+can not have any non class methods?
+what about classes with only imm constructor? no mut methods?
+
+mdf' in FieldsMdf(L, x, mdf) and P in FieldsPaths(L, x, mdf) iff:
+  class method mdf" _(_ mdf' P x _) in L
+    or mdf" method _ #?f(mdf' P that) in L
+  if mdf in {lent, mut, capsule} then mdf" in {lent, mut, capsule}
+
+mdf' in FieldsAccessMdf(l, x, mdf) iff:
+  mdf" method mdf' P #?f() is in L
+  mdf" != capsule
+  if mdf in {lent, mut, capsule} then mdf" in {read, lent, mut, capsule},
+
+coherent(p) //interfaces are always coherent
+  p.top()={interface implements _ mwts ncs}
+
+coherent(p)
+  p.top()={implements _ mwts ncs} //no interface
+  either for no M in mwts M.mdf=class and M.e=empty //there is no abstract class method
+  or exists xz  and n? such that
+    forall M in mwts, coherent(p;M;xz;n?)
+
+coherent(p;M;xz;n?)
+  M=refine? class method mdf P m__n?(mdf1 P1 x1, ..., mdfn Pn xn) exception _
+  p|-This<=P
+  mdf not in {class, fwd mut, fwd imm}
+  lent not in mdf1..mdfn
+  if mdf in {imm, capsule} then {mdf1..mdfn} disjoint {mut, fwd mut}
+  if read in {mdf1..mdfn) then mdf in {read, lent}
+  {x1, ..., xn} = xz
+  if untrustedClass(p.top()) then m is of form #$m 
+
+coherent(p;M;_;_)
+  M.e!=empty //implemented methods are coherent
+
+coherent(p;M;_;_)
+  M=refine? mdf method _
+  mdf in {lent, mut, capsule}
+  forall refine? class method mdf' _ in p.top(), mdf' not in {lent, mut, capsule}
+
+coherent(p;M;_,x;n?)
+  M=refine? mdf method T #?x__n?(mdf' P' that) exception _
+  p |- imm Void <= T
+  mdf' in {imm, mut, capsule, class}//that is not in {read, lent, fwd mut, fwd imm}
+  mdf in {lent, mut, capsule}
+  if mdf = lent then mdf' != mut
+
+coherent(p;M;_,x;n?)
+  M=refine? mdf method mdf' P' #?x__n?() exception _
+  mdf != class
+  forall P in FieldPath(p.top(), x, mdf), p |- P <= P'
+  coherentGetMdf(mdf',mdf,FieldMdf(p.top(),x, mdf),FieldAccessMdf(p.top(),x, mdf))
+ 
+coherentGetMdf(imm,imm, mdfs0,_)
+  class not in mdfs0
+
+coherentGetMdf(imm,mdf,mdfs0,mdfs1)
+  mdf!=imm
+  mdfs0 subseteq {imm, fwd imm,capsule}
+  {mut, lent} disjoint mdfs1
+
+
+coherentGetMdf(read, _, mdfs0,_)
+  class not in mdfs0
+
+coherentGetMdf(class,_,{class},_)
+
+coherentGetMdf(capsule,capsule,mdfs0,mdfs1)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  imm not in mdfs1
+
+coherentGetMdf(lent,mdf,mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  mdf in {lent, mut, capsule}
+
+coherentGetMdf(mut,mdf,mdfs0,_)
+  mdfs0 subseteq {mut, fwd mut, capsule}
+  mdf in {mut, capsule}
+
+-------------------------------------
+Now for InvariantClose, we just make2 definitions:
+    A field f is validatable iff FM(L, f, read) subseteq {imm, fwd imm, capsule, class}
+    '_ method mdf P #?f();' is an exposer iff:
+        f is a validatable field
+        mdf is mut or lent (note: if it were capsule, a call to the
+method would destroy this)
+
+And say that:
+    this can only (indirectly) be used to access validatable fields in
+#invariant
+    After every update to a validatable field an invariant-check is inserted
+    An exposer can only be called on this //check for nested classes too A{ #f() B:{ ...A().#f()..}}
+    A method that calls an exposer is a capsule-mutator (and hence has
+all the restrictions), if the exposer is mut, need to not return mut/lent, if the exposer is lent, can not return lent

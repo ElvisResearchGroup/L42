@@ -1,4 +1,0 @@
-@default_files = ("main.tex");  # The file to compile if you just run 'latexmk' in this director
-$pdf_mode = 1;                  # Use pdflatex
-$bibtex_use = 2;                # Run bibtex/biber when necessary, delete .bbl on cleanup 
-push @generated_exts, 'xcp';    # Tell latexmk that these files are generated (so they are deleted when you run 'latexmk -C')

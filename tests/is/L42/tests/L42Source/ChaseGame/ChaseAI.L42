@@ -1,0 +1,13 @@
+Vector pos
+Vector speed
+mut method mut $.Entity.Opt target(mut $ that)
+mut method Void moveSpeed(Double rad,I power)
+mut method Void chase(mut $ that)=(
+  selfP=this.pos()
+  target=this.target(that)
+  targetP=if target (target.val().pos())
+    else (this.pos()+this.speed())
+  x=targetP.x()-selfP.x()
+  y=targetP.y()-selfP.y()
+  this.moveSpeed(rad=x.atan2(y),power=1\)
+  )

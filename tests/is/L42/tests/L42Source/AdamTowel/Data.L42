@@ -1,0 +1,211 @@
+@Public Close$Fail=Class$Relax:Message.Native:{[Data$Fail]} 
+
+Close$Meta={
+  class method This #apply()
+  method Library close(Library that,This2.S name,This2.Bool autoNorm)=native{trusted:close} error void
+  #norm{nativeKind=Meta,
+    typeDep=This This1.Close$Fail,This2.S,This2.Bool
+    watched=This1.Close$Fail,This2.S,This2.Bool
+    coherentDep=This1.Close$Fail,
+    nativePar=This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail This1.Close$Fail
+    }}
+
+@Public Close={
+  Name that
+  Bool autoNorm
+  @Public class method This(Name that,Bool autoNorm)
+  @Public ClassOperators={class method This1()=This1('This,autoNorm=Bool.false())}
+  @Public method Trait :(Trait t)[Close$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[Close$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[Close$Fail]={
+    return Close$Meta().close(that,name=this.that().toS(),autoNorm=this.autoNorm())
+    catch error Close$Fail x exception x
+    } 
+  }
+
+@Public AddConstructors$Fail=Class$Relax:Message.Native:{[Data$Fail]}      
+
+AddConstructors$Meta={
+  class method This #apply()
+  method Library addConstructors(Library that,This2.S name,This2.Bool autoNorm,This2.S mutK,This2.S immK)=native{trusted:addConstructors} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.AddConstructors$Fail,This2.S,This2.Bool
+    watched=This1.AddConstructors$Fail,This2.S,This2.Bool
+    coherentDep=This1.AddConstructors$Fail,
+    nativePar=This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail This1.AddConstructors$Fail
+    }}
+
+@Public AddConstructors={
+  Name that
+  Bool autoNorm
+  @Public class method This(Name that,Bool autoNorm)
+  @Public ClassOperators={class method This1()=This1('This,autoNorm=Bool.false())}
+  @Public method Trait :(Trait t)[AddConstructors$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[AddConstructors$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[AddConstructors$Fail]={
+    return AddConstructors$Meta()
+      .addConstructors(that,name=this.that().toS(),autoNorm=this.autoNorm(),mutK=S"#apply",immK=S"#immK")
+    catch error AddConstructors$Fail x exception x
+    }
+  }
+
+@Public Wither$Fail=Class$Relax:Message.Native:{[Data$Fail]}      
+
+Wither$Meta={
+  class method This #apply()
+  method Library wither(Library that,This2.S name,This2.S immK)=native{trusted:wither} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Wither$Fail,This2.S
+    watched=This1.Wither$Fail,This2.S
+    coherentDep=This1.Wither$Fail,
+    nativePar=This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail This1.Wither$Fail
+    }}
+
+@Public Wither={
+  Name that
+  @Public class method This(Name that)
+  @Public ClassOperators={class method This1()=This1('This)}
+  @Public method Trait :(Trait t)[Wither$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[Wither$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[Wither$Fail]={
+    return Wither$Meta()
+      .wither(that,name=this.that().toS(),immK=S"#immK")
+    catch error Wither$Fail x exception x
+    }
+  }
+@Public Defaults$Fail=Class$Relax:Message.Native:{[Data$Fail]}      
+
+Defaults$Meta={
+  class method This #apply()
+  method Library defaults(Library that,This2.S name)=native{trusted:defaults} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Defaults$Fail,This2.S
+    watched=This1.Defaults$Fail,This2.S
+    coherentDep=This1.Defaults$Fail,
+    nativePar=This1.Defaults$Fail This1.Defaults$Fail This1.Defaults$Fail This1.Defaults$Fail This1.Defaults$Fail
+    }}
+
+@Public Defaults={
+  Name that
+  @Public class method This(Name that)
+  @Public ClassOperators={class method This1()=This1('This)}
+  @Public method Trait :(Trait t)[Defaults$Fail]=Trait(this:t.code())
+  @Public method Trait :(class Trait.Lifted l)[Defaults$Fail]=Trait(this:l.code())
+  @Public method Library :(Library that)[Defaults$Fail]={
+    return Defaults$Meta()
+      .defaults(that,name=this.that().toS())
+    catch error Defaults$Fail x exception x
+    }
+  @{applyDefaults}
+  }
+
+AddEqOp=Trait:{
+    method Bool ==(This that)=System.immEquality(this and=that)
+    }
+
+AddNEqOp=Trait:{
+    method Bool ==(This that)
+    method Bool !=(This that)= !(this==that)
+    }
+
+AddReadEqOp=Trait:{
+    read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
+    }
+
+AddHasToS=Trait:{
+  [HasToS] method toS()=System.immToString(System.readClone(this))
+  }
+  
+AddMutClone=Trait:{
+    mut method capsule This mutClone()=(
+      capsule Any any=System.mutClone(this)
+      return any
+      catch return capsule This self self
+      catch return capsule Any _ error void
+      )
+    }
+    
+AddReadClone=Trait:{
+    read method This clone()=(
+      Any any=System.readClone(this)
+      return any
+      catch return This self self
+      catch return Any _ error void
+      )
+    } 
+
+AddImmNorm=Trait:{
+    method This norm()=(
+      Any any=System.immNorm(this)
+      return any
+      catch return This self self
+      catch return Any _ error void
+      )
+    } 
+
+@Public Relax={
+  @Public ClassOperators={class method This2()=This1()}
+  class method This1()=This1('This,check=Bool.false(),autoNorm=Bool.false())
+  class method This1(Name that)=This1(that,check=Bool.false(), autoNorm=Bool.false())
+  class method This1(Name that, Bool autoNorm)=This1(that,check=Bool.false(), autoNorm=autoNorm)
+  }
+
+Name that
+
+Bool check
+
+Bool autoNorm
+
+@Public class method This(Name that,Bool check,Bool autoNorm)
+
+@Public class method This(Name that)=This(that,check=Bool.true(),autoNorm=Bool.false())
+
+@Public class method This(Name that,Bool autoNorm)=This(that,check=Bool.true(),autoNorm=autoNorm)
+
+@Public class method This()=This('This,check=Bool.true(),autoNorm=Bool.false())
+
+@Public ClassOperators={class method This1()=This1()}
+
+@Public method Trait optionallyApply(Trait that,Trait acc)={
+  if this.that()==Name"This" return that:acc 
+  return that['This=>this.that()]:acc
+  catch Any _ return acc
+  }
+@Public class method Void checkCoherent(Library that)[Class$IncoherentClass]=void
+@Public method Library :(Library lib)[Data$Fail]=(this:Trait(lib)).code()
+@Public method Trait :(Trait that)[Data$Fail]=(
+  name=this.that()
+  autoNorm=this.autoNorm()
+  var Trait acc=that
+  acc:=this.optionallyApply(AddHasToS(), acc=acc)
+  acc:=this.optionallyApply(AddEqOp(), acc=acc)
+  acc:=this.optionallyApply(AddReadEqOp(), acc=acc)
+  acc:=this.optionallyApply(AddNEqOp(), acc=acc)
+  acc:=this.optionallyApply(AddMutClone(), acc=acc)
+  acc:=this.optionallyApply(AddReadClone(), acc=acc)
+  acc:=this.optionallyApply(AddImmNorm(), acc=acc)  
+  acc:=AddConstructors(name,autoNorm=autoNorm):acc
+  acc:=Wither(name):acc
+  acc:=Defaults(name):acc
+  acc:=Close(name,autoNorm=autoNorm):acc
+  if this.check() (This.checkCoherent(acc.code()))
+  acc
+  )  
+@AbstractTowel{data}
+/*
+Current behaviour of Data: adds
+  //using Traits
+  -read conventional structural equals//need a wrapper if the type of the argument is not This0?
+  -read conventional structural toString
+  //--missing: -read lift toLibrary capsule val? a method using the structural toString procedure to make the code returning the object
+  //using field informations
+  -imm wither
+  -constructor with as many fwds as possible
+  It closes the state and handle the invariant
+  -using Class: also check for consistency
+Class: check that the library is consistent (and may extract from a trait)
+Class.Abstract and Data.Abstract may not check consistency?
+-We may want to add more fields to personalize the name of the two constructors
+
+//it seams like we do not need special treatment for classes with no fields
+*/

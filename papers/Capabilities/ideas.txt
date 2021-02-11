@@ -1,0 +1,781 @@
+e := e.Cs.m(es)| x:=e1;e2| Cs.f(es) | e0?e1:e2
+M := uses U provides P C m(Cxs) b | MM | CD | ID | uses U provides P static C f(Cxs) b
+b  :=   intrisic | e
+ID :=   provides P interface C {IMs}
+IM :=   uses U provides P C m(Cxs)
+CD :=   provides P class C {Ms} IIs
+II := C { MIs }
+MI := m e
+
+A::= Cs.f| Cs.m|Cs
+U,P := As|*
+==============
+IFoo {
+	...
+}
+
+
+
+StdIO{
+		restricted Void Write(Char c);
+		restricted Char Read();
+}
+
+ReadFoo{
+  FileIO restricted String ReadFoo()FileIO.Read("Foo")
+  }
+
+A{
+  A.Bar Foo() Bar()
+  StdIO Bar() StdIO.Read()
+  }
+
+
+
+=========
+	P: StdIO.Write, StdIO.Read
+	StdIO {
+		Void Write(Char c);
+		Char Read();
+	}
+
+	A {
+	  //I:StdIO
+	  U: ReadWrite
+		int Bar() ReadWrite()
+
+    U:StdIO
+		int Baz() kjhkjhk
+
+		U:StdIO
+		Void ReadWrite()
+			x := StdIO.Read();
+			StdIO.Write(x)
+
+	}
+
+	Foo {
+
+		// D = { Stdio.Read }
+		Void bar() ...
+
+		// D = {Foo.Stuff}
+		// I = {StdIO.Read, StdIO.Write}
+		U: Foo.Stuff
+		Void bab() ...
+
+		U: StdIO
+		Void Stuff()
+			x := StdIO.Read();
+			StdIO.Write(x)
+	}
+
+define A inside e
+  A inside A(es)
+  A inside e:A(es)
+  A inside ctx[e] if A inside e
+
+conventional type system, plus checking for capability ok:
+
+-------------------
+      U;A'|-A:Ok forall A inside e
+(eOk)-------------------
+      U;A'|-e:OK
+
+(*Ok) *;A |- A': Ok
+
+(AinU) A,U;_|-A:Ok
+(AisA) _;A|-A:Ok
+
+
+         U;A |- A'':Ok
+(AP)--------------------- A' in A''.P, [or A''.P = *]
+          U;A|-A':Ok
+
+
+      W;U;A|-A0'':Ok .. U;A|-An'':Ok
+(AU)------------------------------ A0''..An'' =A'.U   A'.b!=intrinsic
+       W;U;A|-A':Ok
+
+===============
+Linearity:
+	For any 'U P C i(xs)'
+		there exists an algorithm that can compute, from only 'U P' and 'CDs \ e'
+			a set D and I,
+			such that:	for any
+
+
+///
+
+
+
+///
+
+
+Dynamic Soudness:
+	W : Ok
+
+	W,W' : Ok
+
+	Then:
+		there is no path A to something in W, such that:
+			W;U;A' |/- A : Ok		(for some U, A')
+		and	W,W'; U; A' |- A : Ok
+
+
+Sugar:		public, path resolution, 'uses' inferance
+
+2.	Generics // Accesibility Paramaters
+
+interface IHashAble[uses a] {
+	uses a
+	public(0) Int hash()
+}
+
+class Foo {
+
+} IHashAble[] {
+	hash() // Can't use RandomNumbers
+}
+
+class HashMap {
+	uses a
+	Object get[a](HashAble[a] key) ...
+
+
+}
+
+
+ISystem[a]   //cap
+MockSystem:Isystem[]{} //normal class instances are normal obj
+class System
+	{
+		ISystem[System] New() intrinsic
+	}
+	ISystem[System]{ ... } //cap class and instance are cap objects
+
+any type with generic access is a cap type
+
+
+
+is cap object
+
+e with x is capability open/avaible
+a cap object do nothing but is a door to do U
+an expression execution can do the U denoted by its cap objects
+
+methods can do special things determined by their uses and provides clause
+ISystem[System].write		// System
+ISystem[].write					//
+
+A method, at minmiumum needs to have in their uses every method it calls, or something that implies
+	ISystem[Syste].write
+uses provides
+
+
+class C{
+  uses System static C new() intrinsic}
+  ISystem[System]{}
+
+ISystem[System] foo()
+	C.new()
+
+
+
+a,U;A|-e:T
+
+G;a;|-e:T
+Mem;empty;U;_|-System.New():ISystem[System] requires System in U
+empty;U;_|-vi:_
+e[x0=v0...xn=en]->*_
+
+class C {
+  uses a
+  static T foo[a](ISystem[a] p) p.ISystem[a].write()
+  //static T foo(ISystem p) p.write()
+}
+
+empty;empty;System;_|-C.foo[System](System.New()):T
+empty|C.foo[System](System.New())->
+i->System{}|C.foo[System](i)->
+i:System;empty;System;_|-C.foo[System](i):T
+i:System;empty;C.foo[System];_|-C.foo[System](i):T
+
+//C.foo(System.New())
+
+
+myHashMap(myFoo);
+
+
+
+
+
+
+
+cap
+
+nor
+Evil{method foo(mut ISystem s) s.format()}
+
+new $Evil().foo(new MockSystem())
+
+
+
+Evil{method foo(ISystem[a] s)s.format()}
+
+ISystem[*] x;
+
+ISystem[] y = (ISystem[])x;
+
+
+// something is Mockable if its of the form
+uses a
+C foo[a]
+
+
+
+3.	Dynamically
+
+
+
+
+interface I0 extends I1{}
+
+
+class B implements I0 { int a(){return 1;}}
+
+
+i would like B to implement IFoo at run time
+
+1) discover the first In that is not loaded yet
+2) create bytecode for interface In extends IFoo,In+1{}
+
+
+if IFoo has a,
+Hack.add(IFoo.class,B.class); //load IFoo
+IFoo f=(IFoo)myB; //requires to load I0, cast is OK
+//if IFoo has (only) a() then is all good
+//if IFoo has (only) b() then you get bytecode load error while loading I0
+f.a()==1
+
+
+Class<?> c=Class.forName("myPackage.Foo");
+
+ClassLoader.loadClass(String className)->bytecode
+
+
+	Library l= LoadLibrary(LibraryAst);
+	T t = Eval[a]<T>(ProgramAST);
+	T res=(T)l.execute[a]("A.B.f")
+
+  Library l=LoadLibrary(LibraryAST.parse(String))
+
+MakeFresh()	// Returns a fresh library name
+
+loadClass("class Fresh { A:{ma() mb()}
+B:{mb()}
+A implements B
+static Void uses StdIO main() StdIO.PrintLn(\"Hello world\"}")
+Void t=(Void)execute[StdIO]("Fresh.main")
+
+
+
+CDs | execute[a]("e") --> CDs | (Object)e
+
+where: 	CDs; {} |- (Object)e : Object		a; |- e : ok
+
+
+CDs execute[a]("Cs.f")-->Cs.f()
+																	Uses a' Object f() in CDs(Cs)
+																	a >= a'
+
+-------------------------------    CD is welltype
+CDs ctx[~`CD`]--> CDs,CD ctx[void]
+
+Ls ctx[~`C { Ms }`]--> Ls,C{Ms} ctx[void]
+where: |- C{Ms} : Ok
+			 C{Ms'} not in Ls
+
+Otherwise
+................... --> !
+
+																	 L.C notin dom(Ls)
+-------------------------------    Ls,L|-L is welltyped
+Ls ctx[~"L"]--> Ls,L ctx[void]
+
+-------------------------------    v is not of form "L"
+Ls ctx[~v]--> Ls ctx[error]        or v="L" and L.C in dom(Ls)
+                                   or not Ls,L|-L
+
+
+T := C | T1 -> T2 | T& | t
+
+TT<>
+-------------------------------    CD is welltyped
+CDs ctx[~_]--> CDs,CD ctx[void]
+
+
+
+Predefined string
+Primitive T->T, bool, identifier
+
+
+provide: ISystem[a].time
+interface ISystem[a] {
+  uses a
+	Int time()
+}
+
+provides CSystem.time
+class CSystem: ISystem[CSystem] {
+  uses CSystem.new
+  static ISystem[CSystem] new() intrinsic
+
+	static int CSystem.time() intrinsic
+  //uses CSystem
+	ISystem[CSystem].time() CSystem.time()
+}
+
+
+an expression G|-e  G contains x:T
+
+an expression  CSystem.new
+an expression that have CSystem can call ISystem[CSystem].time
+an expression that have a can call ISystem[a].time
+
+we have G|-e  G contains x:ISystem[a]
+for example Foo.bar(x)
+
+C {
+	uses []
+	static ISystem[CSystem] new(ISystem[CSystem] w) intrinsic
+
+  uses []
+	ISystem[CSystem] w() intrinsic
+
+} ISystem[CSystem] {
+	ISystem[CSystem].time() this.w().time()
+}
+
+class Bar {
+uses a
+static Void foo[a](ISystem[a] x)
+		// Can indirectly call CSystem.time() ONLY
+    // if the parameter transitivelly contains a Csystem instance
+    // and the originating call had usability permission CSystem.time
+		x.time{}		//CAN only call ISystem[CSystem] if a >= CSystem
+	}
+
+Bar.foo(e)
+//anyway, I can prevent (by failing to typechek) a call to CSystem.time()
+//by typing the Bar.foo(e) without usability permission CSystem.time
+
+an expression that has x:ISystem[a] and usability permission ISystem[CSystem].time
+can call ISystem[CSystem].time
+
+
+
+interface I {
+	Int m1()
+
+	uses IO
+	Int m2()
+
+}
+
+
+interface I[_a] {
+  uses a
+	Int m11()
+
+  uses a
+	Int m12()
+
+	uses IO
+	Int m2()
+}
+
+
+a1 <= a2		I[a2] <= I[a1]
+
+class Foo { ... }
+I[Random.int, Random.bool] {
+		uses Random.int
+		m11() Random.int()
+
+		uses Random.bool
+		m12() Random.int()
+
+	  uses IO
+		m2() IO.O("2");
+}
+
+
+
+
+
+{
+	Void foo[a](I1[a] i)  i.m11()
+}
+
+
+
+
+
+
+
+IO(LoadClass(library))
+
+
+
+
+
+
+
+
+
+
+m(Any x) {
+	return x
+	catch return Foo y y
+	error void
+}
+
+
+catch Any
+
+
+Foo:{ class method Library bar()}
+
+Bar:(return asClassAny(Foo)
+	catch return /*class*/ Foo y y.bar()
+	error void
+)
+
+Num: {
+	add(Num a) "intrisicInt32Plus"
+}
+
+
+
+A:{
+  Library binaryRepr
+  m1():"intrisicInt32Plus"
+  m2():"intrisicInt32Times"
+  foo():ffff
+  }
+
+A.foo(myInt)
+
+
+
+-------------------------
+Friday
+
+1: do we need nested classes?
+
+2: 2 options: P only in classes
+OR         U P in methods and no P in classes
+  how those two options would interact with generic access?
+
+
+interface OStream[a] {
+	uses a
+	Void Write(Char c) {
+		uses a
+		Void WriteString(String s)
+
+		uses a
+		Void WriteLine(String s);
+	}
+
+
+	uses a
+	Void WriteByte(Byte b);
+}
+
+
+
+
+provides A.publ
+class Publ{ }
+
+provides Native // and every other capability restrictied thing
+class Restricted {}
+class A{
+  uses A.pr
+  T pr(T x)..
+
+  uses A.pr
+  T publ(T x)=this.pr(x)
+
+  uses A.pr
+  T publ(T x)=Eval($"B.prCaller({this},{x})")
+}
+class B{
+  uses A.pr
+  static T prCaller(A a,T x)=a.pr(x)
+}
+
+
+uses Publ, Restricted
+Void main() = A.publ()
+
+
+
+
+data MyADT = C1 Int
+							C2 Str
+
+
+
+
+--------------------------------------------------------------------------
+The 42 redirect operator supports all features that any extant generic type system supports.
+
+Generation features:
+	*g1. Varadics
+	*g2. Specilisation / retro-active overriding
+	*g3. Generic Methods
+	g4. Overloads....
+	g5. Abstract Generics
+	g6. Global scopey shit
+			... begin(x) ..
+	g7 Higher Order Types subsuming	[functonal dependencies]
+Type system semantics
+	t1. Non-denotational:				List<int> == List<int>
+	t2. Sub-typing/casting 			IEnumerable<String> <= IEnumerable<Object>
+															(IEnumerable<Object>)((object)new MyIEnumerable<String>)
+	t3. Wildcards
+	*t4. Generic paramater inference
+	t5. SFINAE
+	t6 [Uper bounds]
+---------
+g1,t4, Sure, Varadics is not there and Generic paramater inference need a starting point
+g2 can be done in full 42 but not just redirect
+  method Library aOrB(class Any that){
+    return Refactor.redirect(\"T" into: that)<><{T:{implements A}  ..T.ma()..}
+    catch error Guard
+      return Refactor.redirect(\"T" into: that)<><{T:{implements B}  ..T.mb()..}
+    }
+g3 Generic methods need to be 'outsourced'
+  """
+  F foo=...
+  foo.m<Num>(3)
+  """
+  is ecoded as
+  M:F.provideM(Num)
+  F foo=...
+  M.doM(foo,3)
+  where F.provideM(that)=redirect(T->that)<><{T:{} doM(F that, T x) ...}
+
+
+
+interface ICollection<T> {
+	int count();
+}
+
+interface<T: Comparable> ICollection<T> {
+	int unique();
+}
+
+
+void count_unique<Y, T: ICollection<Y>>(T l) {
+	l.count()
+}
+
+void count_unique<Y: Comparable, T: ICollection<Y>>(T l) {
+	l.unique()
+}
+
+
+CountUnque: {
+	Library provide(class Any that) {
+		redirect(T -> that)      <>< {T:{implements ICollection_Comparable} countUnique(T l) l.unique()}
+		catch redirect(T -> that)<>< {T:{implements ICollection} countUnique(T l) l.count()}
+	}
+}
+
+MyGen: {
+  class method Library (class Any that) = (
+		redT {
+			T: {}
+	    class method Library makeM(class Any that) redT {T:{aa}   m()a}
+	    Num f
+	    ...
+		}
+	  catch redT{
+			T:{}
+	    class method Library makeM(class Any that) redT{ T:{bb}   m()b }
+	    Num g
+	    ..
+		}
+	)
+}
+
+Geny(that): RedT {
+	T: {
+		class method Library(class Any that)
+			/*
+				returns something that looks like:
+				{
+					class method Y bar();
+				}
+			*/
+	}
+	C: T(Num)
+	B: C.Bar()
+}
+
+
+
+
+
+{
+
+C: {
+	class method m1(that) = redT1 {
+	  T1: {..}
+	  class method m2(that) = redT2 {
+	    T2: {..}
+  	  class method T1 meth (T2 x) = ...
+		}
+  }
+}
+
+A: C.m1(Nat)
+B: A.m2(S)
+//B.meth S->Nat
+}
+
+A:MyGen(Foo)
+B:A.makeM(Bar)
+
+
+
+trait Bar {
+	static bar: Int
+}
+
+//foo[A[_] :> Bar]: Int = A[Int].bar()
+
+
+I:{interface
+  class method Library (class Any that)
+  }
+ICall:{interface class method Num ()}
+MyI:{implements I ..}
+
+Foo:{
+  class method Num (I that)
+    Library l=that(Num)+{implements Concept.Classable
+      class method Num bar()
+      method () this.bar()
+      }
+    class Classable code=Location.Lib(l).asClass()
+    return code()
+  }
+Bar:Foo(MyI)
+Bar()
+
+class method Library doFoo(class Any A) { // ... //}
+
+doFoo(MyI) // returns
+	{
+		class method () Int
+	}
+
+class method A foo<T extends Bar<_>>(T a){
+
+  return a.bar()
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+IntMethods: {
+	class method Library Zero() {}
+	class method Library Succ(Library n) push(N) <>< n
+	class method Library IfZero(Library n0, Library then, Library else) (
+		Location.Lib(n0).nested(\"N")
+		catch exception Guard y else
+		then
+    )
+}
+
+class method Library eval(Library l) {
+	x = l."if"
+		...
+}
+
+Library l=...
+
+Eval(l,Selector"m()")
+
+
+
+
+
+
+throw { &myA }
+catch (&B) { } // if B is a non-public base of myA, will not catch
+
+
+
+
+-----------
+
+Haskell and Java both run in undefined behaviour when calling
+C/native code that run in udefined behaviour.
+They could instead use a process pooling to execute native code in another process.
+
+In I we could
+1- just allow truested C calls
+2- allow any C call but implements process pooling
+3- use I itself to implement process pooling.
+
+One advantage of I is that 2 can be implemented as a little wrapper over 3
+in the sense that an I program can just run another program in a sandbox
+
+
+we can have grant capabilies, that can grant capabilities to other code, but can not act directly.
+That is.
+a main starting with * can do anything without control,
+while a main starting with grant[*] can do things only explicitly
+demands[unrestricted_run[a]]
+unrestricted_run[a](Action[a] l) intrinsic // semantly, just calls l();
+
+demands[unrestricted_run[IO,...]]
+
+
+
+
+
+demands[X]
+void foo();
+
+
+demands[X]
+void bar(X) {
+	foo{x}();
+}
+
+
+
+s ="demand[mint_currency]
+	Money mint_currency() = ...;"
+
+demand[Dynamic]
+	// FAILS, IF:
+	//		"mint_currency" can call (directly or indirectly) a function foo
+	//		such that: the caller of load_invoke did not have capability to call foo
+	//			and foo existed before s was loaded
+Money foo() = return load_invoke(s, "mint_currency");

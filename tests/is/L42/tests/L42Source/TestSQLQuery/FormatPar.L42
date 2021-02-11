@@ -1,0 +1,58 @@
+class method S(HasToS that)=(
+  var S s=that.toS()
+  var b=Bool.false()
+  if HasToS.Raw r=that (b:=Bool.true())
+  if b s:=S"'%this.escape(s)'"
+  else s:=this.validate(s)
+  s
+  )
+class method S validate(S that)={//properly propagate S.ParseError
+  if that==S"true" || that==S"false" (return that)
+  _=I.from(string=that)
+  return that
+  }
+class method S escape(S that)=(
+  var res=that
+  res:=res.replace(S.nl() with=S"\n")
+  res:=res.replace(S.dq() with=S"\%S.dq()")
+  res:=res.replace(S"'" with=S"\'")
+  res:=res.replace(S"_" with=S"\_")
+  res:=res.replace(S"\" with=S"\\")
+  res:=res.replace(S.tab() with=S"\t")
+  res:=res.replace(S.percent() with=S"\%S.percent()")
+  //res:=res.replace(?? with=S"\b")
+  //res:=res.replace(?? with=S"\r")
+  //TODO: then check that all the characters are "valid", to avoid unicode surprises?
+  res
+  )
+class method S (S that,S key,HasToS val)=
+  that.replace(S"@%key" with=FormatPar(val))
+
+Terminators = Data:{@Cache.Lazy class method S.List () = S.List[
+    S" "; S.nl(); S.tab();
+    S"."; S","; S";"; S"|"; S":"; S"@";S"'"; S.dq(); S.percent();
+    S")"; S"(";S"]"; S"{";S"}"; S"{";
+    S"="; S"<"; S">"; S"+"; S"-"; S"/"; S"\"; S"*"; S"^"; S"&"; S"!";
+    S"?"; S"$"; S"#";
+    ]}
+
+class method I nextIndex(S that,I current)=(
+  var res=that.size()
+  for o in Terminators() (
+    i=that.indexOf(o, from=current)
+    if i!=I"-1" res:=res.min(i)
+    )
+  res)
+class method S.List xs(S that)={
+  acc=S.List()
+  var res=that
+  loop (
+   i0=res.indexOf(S"@")
+   if i0==I"-1" return acc
+   i1=this.nextIndex(res,current=i0+1I)
+   p=res.subString(i0+1I to=i1)
+   res:=res.subString(i1 to=\size)
+   _=Name"%(p)()"//will throw error if p is not a valid identifier
+   if !acc.contains(p) acc.add(right=p)
+   )
+  }

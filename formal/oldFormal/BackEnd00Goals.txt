@@ -1,0 +1,49 @@
+-----------------------------
+0 Objectives
+-----------------------------
+
+Challenges:
+Generated Java should be
+-incremental
+-fast to compile
+-fast to execute//the less important now
+-executable in parallel
+-the generated class files should be cachable on remote server
+
+key ideas:
+-every L has a unique generated name added during normalization
+-binding process will generate new names for binded (top level and nested)libraries //james suggests: old names may be marked as orphans
+-every 42 execution generate a Resource class that have
+  -current program // current program do not appear in map, current.top() always not LC
+  -map from generate names to program view in that point//programs in map,p.top() always LC
+   (no need to be the most updated program view?)
+ Thus, multiple independent 42 executions can run in parallel, but
+ multiple C:e in an execution needs to be sequential.
+
+
+Starting point:
+  L42N: L42 core, compiled, well typed and normalized, with some types annotated.
+
+Intermediate; only for expressions in meth bodies:
+  L42X: L42N with all subexpressions are xs, and L are replaced with their unique name CN
+
+Destinaton1:
+  L42F: a flattened version where every *executable*
+  class/interface have a top level name
+  this language also contains null, if, bool and so on..
+   -design a process to optimize L42F using those features.
+    Should be so that
+    optimize(optimize(program))=optimize(program)
+
+Destination 2:
+  Java, C++, Javascript,..
+  -design process to convert L42F programs into stuff.
+
+
+Main Differences between 42 and Java/C#/C++ etc
+
+All classes final (dynamic dispatch only for interfaces)
+Expression based
+Exception on local bindings
+Fwd/placeholders
+No primitive types

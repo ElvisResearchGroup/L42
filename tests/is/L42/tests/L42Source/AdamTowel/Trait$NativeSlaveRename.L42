@@ -1,0 +1,15 @@
+NativeSlaveRenameMeta={
+  class method This #apply()
+  method Library #apply(Library that,This2.S oldName,This2.S newName)=native{trusted:nativeSlaveRename} error void
+  //OLD watched=This2.Trait$InvalidName,This2.S
+  #norm{nativeKind=Meta,
+    typeDep=This,This2.Trait$InvalidName,This2.S
+    coherentDep=This2.Trait$InvalidName
+    nativePar=This2.Trait$InvalidName This2.Trait$InvalidName This2.Trait$InvalidName This2.Trait$InvalidName This2.Trait$InvalidName
+    }
+  } 
+@Public class method Library (Library that, S oldName, S newName)[Trait$InvalidName]=(
+  res=NativeSlaveRenameMeta()(that,oldName=oldName,newName=newName)
+  catch error Trait$InvalidName x exception x
+  res
+  )

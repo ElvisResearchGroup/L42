@@ -1,4 +1,0 @@
-@default_files = ("example.tex");   # Tell latexmk to compile these files by default
-$pdf_mode = 1;                      # Use pdflatex
-$bibtex_use = 2;                    # Run bibtex/biber when necessary, delete .bbl on cleanup 
-push @generated_exts, 'pag';        # Tell latexmk that these files are generated

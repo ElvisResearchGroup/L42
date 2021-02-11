@@ -1,0 +1,1074 @@
+//difference w.r.t. 42 formalization
+Have to check parameter lenght
+No type modifiers
++constructor
+No class methods
+No Any/Void/Library
+only new T contains T in e
+library literals not in e
+redirect do not require abstract source
+we do not discuss privatness
+we need to discuss normalization
+------GRAMMAR
+lowerCase=Coden : trait declaration
+UpperCase:Code0 :class declaration//and need to be non abstact
+
+C:{  D:{This2.C.D m()}+{This1.D m()} }      C:E C:L
+C:({  D:{This2.C.D m()}+{This1.D m()} }+{}) C:E
+
+
+C:{  D: {This2.C m()}+{This1 m()} }      C:E C:L
+
+{C: []} // C.D, exists!
+{D: {This2.C m()}+{This1 m()}, C_evil: []}
+SumRes
+---------------------------------------
+		p.equiv(This2.C, This1) == true
+
+{C: throwAway([])}	// C.D ??
+{D: {This2.C m()}+{This1 m()}, C_evil: []}
+SumRes
+---------------------------------------
+		p.equiv(This2.C, This1) == false
+
+
+C:({  D:{This2.C m()}+{This1 m()} }+{}) C:E
+	$ = {...}
+	D = ...
+	$ = LVR
+
+
+
+---------------------------------------------------------------------
+
+LV1={ method Void foo()=this.bar()}
+Lv2={ }
+
+
+
+t={This0 bar() End foo()=End.foo()}
+C:t+{}
+End = t
+
+
+A:B.foo()
+B:A.bar()
+
+
+
+
+class Group<S extends Shape<S>> implements Shape<Group<S>>{}
+
+interface Shape<S extends Shape<S>>{}
+
+shape={
+	interface
+	S={implements This1}
+	...
+}
+shape(S=Foo)
+
+
+T={implements Shape ...}
+group={
+	implements Shape
+	S={implements Shape ...}
+	...
+  }
+TG=group(S=T)
+TGG=group(S=group)
+
+
+struct S<X: T>{...}
+impl<X: T> T for S<X>
+type SS = S<SS>;
+
+trait Marker {
+	type Inner: T
+}
+struct S<M: Marker> { ... }
+// M::Inner
+type SSMarker;
+impl Marker for SSMarker {
+	Inner = SS;
+}
+type SS = S<SSMarker>;
+
+
+ as 42 today  --> rename methods
+
+ impl multiple interfaces works as java
+
+ { implements A
+ 	A = interface{X foo()}}
++ {implements B
+	B = interface{Y foo()}}
+==>
+{ implements A
+	X foo()
+ 	A = interface{X foo()}}
++ {implements B
+	Y foo()
+	B = interface{Y foo()}}
+// ERROR, unless X == Y
+
+normalise({implements Pz mwtz NCz})
+= {implements Pz' mwtz,mwtz' NCz}
+where:
+	Pz' = collect(Pz)
+	mwtz =
+		p| (methods(P0)+....+methods(Pn))\dom(mwtz')
+	where Pz' = P0,...,Pn
+-----------------
+
+top level L is WF
+
+/*minimize(p; P1, P2, Pz) = foo(p, P1, Pz))
+  p.equiv(P1, P2)
+minimize(p; Pz) = Pz
+  otherwise*/
+
+
+foo(p; Pz) = Pz
+	no P1, P2 in Pz such that P1 != P2 and p.equiv(P1, P2)
+
+interface{ implements Ts AMs }
+{implements Ts Ms K?}
+
+-type rules
+-evaluations/boring but needed
+-from[]
+
+
+
+------
+Meta-Check:
+
+E' inside E iff  E=Ctx[E']
+
+A:ID<><{ B foo() B.a()}
+B:ID<><{ A foo() B a()}
+
+A:{ B foo() B.a()}
+B:ID<><{ A foo() B a()}
+
+
+A:{ B foo()B.a()} :Lib?
+B:ID<><{ A foo() B a()}
+
+[B]
+A:{ B foo()B.a()} :Lib?
+B:{ A foo() B a()}
+
+[B]
+A:{ B foo()B.a()} :Lib
+B:{ A foo() B a()}
+
+A:{ B foo()B.a()} :Lib
+B:{ A foo() B a()}:Lib?
+
+A:{ B foo()B.a()} :Lib
+B:{ A foo() B a()}:Lib
+
+
+A:{..}
+C:{}+{
+  B:{This1.A m()}
+  C:{}+{
+    T:{T2 m()} T2:{} T
+   }(T=This0.B)
+  }
+
+
+{
+  This1.B // T => This1.B, T2 => This2.A
+}(T=This0.B)
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------------------
+---------------------------------------------------------
+--list, we can assume is declared independently of map ---
+list:{
+ E:{}
+ Iter:{E next()=..; Bool hasNext()=..;}
+ This empty()=..
+ Void add(E e)=..
+ Iter toIter()=..
+ }
+--map declaration--
+map={
+ TIn:{}
+ TOut:{}
+ CIn:list(E=TIn)
+ COut:list(E=TOut)
+ TOut f(TIn);
+ COut map(CIn c)={
+  COut res=COut.empty()
+  COut.Iter i=c.toIter()
+  while(i.hasNext()){res.add(this.f(i.next()));}
+  return res;
+  }
+ }
+---usage---
+LN:list(E=Num)
+LS:list(E=S)
+MyMapper:map(CIn=LN)(COut=Ls)+{Ls f(Num n)="["+n+"]"; constructor()}
+//full 42   --  MyMapper:Map(LN,Ls,{Ls (Num n)="["+n+"]"})
+LS myLS=MyMapper().map(myLN)
+
+Negate:{
+  MyMapper:map(CIn=LS)(COut=LN)+{LN f(S s)=s.parseNum(); constructor()}
+  Ln(LS v)=MyMapper.map(v)
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+--------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------
+
+Lib,Tn,class Any
+
+Tn+Tn:Tn
+T0<<<Library:Library
+Tn(class1..classn):T0   //Tn+1(class):Tn
+Trait"Name1""Name2" <<< Library:Tn
+
+~T0=Library (abstract)
+
+
+//42
+Reduce:Trait"T,L"<<<{
+  T:{}
+  E:{}
+  L:~List(E)
+  class method T op(T a, E b)
+  class method T (T initial,L list) (
+    var T res=initial
+    with e in list.vals() (res:=This.op(a:res,b:e))
+    res
+    )
+  }
+R:Reduce(S)(Strings)<<<{class method S (S a, S b)a++b}
+R(a:\"",bs:\[\"hi";\"hello"])
+
+
+
+
+--------------------------------
+
+Coden,Class
+
+Coden <+ Coden:Coden
+Coden+1(Class):Coden
+name!Coden:Coden+1
+//~Code0=Code0   (abstract)
+//Coden|Coden:Coden
+
+
+E   ::= L  |  t  |  E <+ E  |  E(Cs=T) // | E || E
+E <+ E // only on L<+L
+
+list = x -> {
+	Elem : { bool equals(Elem) }
+	This$:{}
+	List:list(This$)
+	List split(Elem seperator) ...
+  }[Elem=>x][This.This$:=This]
+
+// split().split(..).split(..)..........
+
+------GRAMMAR
+lowerCase=Coden : trait declaration
+UpperCase:Code0 :class declaration//and need to be non abstact
+
+
+
+id  ::= t|C
+td  ::= t = E
+cd  ::= C = E
+T   ::= Thisn.Cs
+E   ::= L  |  t  |  E <+ E  |  E(T)  |  Cs!E  |  E||E | err
+LI  ::= interface{ implements Ts AMs }
+L   ::= LI | {implements Ts Ms K?}
+LV  ::= LI | {implements Ts MVs K?}
+AM  ::= T m(Txs)
+M   ::= C=E | T m(Txs)e?
+MV  ::= C=L | T m(Txs)e?
+K   ::= constructor(Txs)
+e   ::= x | e.m(es) | this.f | new T(es)
+DE  ::= td | cd
+D   ::= t=V | C=L
+Vn  ::= Cs0!..Csn!L
+V   ::= L| Vn1 ||..||Vnk
+p   ::= DEs e
+CtxV::= [] | CtxV <+ E | V<+ CtxV | CtxV(T) | Cs!CtxV | CtxV||E | Vn||CtxV
+
+---------------------------------------------------------------------
+
+  Ds|- DE -> DE'
+-------------------------------
+  Ds DE DEs e --> Ds DE' DEs e
+
+
+  Ds|- E  ->E'
+------------------------------------
+  Ds|- id=CtxV[E] -> id=CtxV[E']
+
+
+  Ds(t)=L
+------------------------------------
+  Ds|- t  ->L[??]
+
+
+------------------------------------
+  Ds|- L1 <+ L2 -> sum(L1, L2)
+
+
+------------------------------------
+  Ds|- Cs!V1 <+ Cs!V2 -> Cs!(V1+V2)
+
+
+------------------------------------//T fresh
+  Ds|- Cs1!V1 <+ Cs2!V2 -> Cs!V1[Cs1=Cs] <+ Cs!V2[Cs2=Cs]
+
+
+-------------------------------------
+  Ds|- Cs!V||V1  <+  V2  ->  (Cs!V <+ V2)||(V1 <+ V2)
+
+
+------------------------------------
+  Ds|- Cs!V  <+  Cs1!V1||V2  -> (Cs!V <+ Cs1!V1)||(Cs!V <+ V2)
+
+
+------------------------------------L'=redirect(L,Cs0,T)
+  Ds|- (Cs0!..Csn!L)(T)  -> Cs1!..Csn!L'
+  //Note: if the redirect is multi redirect and remove a path in Cs1..Csn in would be fun!
+
+------------------------------------ CtxV not of the form CtxV''[CtxV' || E]
+  Ds|- CtxV[err] -> err
+
+
+-----------------------------
+  Ds|- err||E  -> E
+
+
+-----------------------------
+  Ds|- L||E  -> L
+
+---------------------------------------------
+  Ds|- (Cs!V||V1)(T)  -> Cs!V(T)||(V1(T))
+  Ds|- T!V||E  -> T!V||E'
+-----------------------------
+  Ds|- T!V||E  -> T!V||E'
+
+
+t1=Cs!L1
+t2=Cs!L2
+t3=t1|| <+ t2
+t4=(t1 <+ t2)(A)
+
+Gen:Data<><{
+  Library lib, Path cs
+  method Library (class Any that)
+    Refactor.redirect(this.cs() into:that)<><this.lib()
+  }
+
+Gen:Alphanumeric<><{
+  S that
+  method Library <><(Library that)
+    Use[
+      Resource(\"lib()")<><that;
+      Resource(\"cs()")<><this.that().binaryRepr();
+      ]<><{
+      class method Library lib()
+      class method Library cs()
+      class method Library (class Any that)
+        Refactor.redirect(Path.from(string:S.from(binaryRepr:this.cs()) into:that) <>< this.lib()
+      }
+    }
+
+    S"Hello"
+    "Hello"=={/*@USTRING
+      hello*/}
+
+      {string} {int/float} 8
+      {bytestream} byte[]
+      10
+      +ClassB
+      Object v=
+
+
+//List:Resource(Gen({..},\"Elem"))
+List: Use[Gen()] <>< {class method Library lib() {...}; class method Path cs() Path"Elem"}
+List: Gen"Elem"<><{...}
+ListNum:List(Num)
+
+list: Elem!{...}
+list: x~>[Elem=>x]{...}
+
+specialization:T!{...} || T!{...}
+specialization:x~> [T=>x]{...} || [T=>x]{...}
+
+
+======================================================= // Class -> Class ... -> Library
+E ::= t| LE | E <+ E | E(Tx) | E||E | E[Cs=>Tx] | x ~> E | err
+Tx ::= T | x
+V ::= x -> EEF | L
+EEF ::= y -> EEF | EE
+EE ::=  EEL <+ EE | EE <+ EEL | EE||EEL | EEL[Cs=>x]
+EEL ::= EE | L
+
+
+//CtxV ::= [] | CtxV <+ E  | V <+ CtxV| CtxV(T) | CtxV||E | CtxV[Cs=>T]
+Ctx ::= [] | Ctx <+ E  | E <+ Ctx | Ctx(T) | Ctx||E | E||Ctx | Ctx[Cs=>T] | (x ~> Ctx)
+
+E --> E'
+=> Ctx[E] --> Ctx[E']
+
+E --> E'
+=> Ds id = E; DEs e --> Ds id = E'; DEs e
+
+t --> Ds(t)[??]
+
+L1 <+ L2 --> sum(L1, L2)
+
+L[Cs=>T] --> redirect(L, Cs, T)
+
+
+err||E --> E
+
+L  ||E --> L
+
+E  || err --> E
+
+Ctx not of the form Ctx''[Ctx'||E] or Ctx''[E||Ctx']
+=> Ctx[err] --> err
+
+(x ~> E)(T) --> E[x := T][Cs=>x]
+
+// Sugar...
+(x1 ~> E1) <+ (x2 ~> E2) --> (x3 ~> E1[x1 := x3] <+ E2[x2 := x3])
+
+(x1 ~> E1) || (x2 ~> E2) --> (x3 ~> E1[x1 := x3] || E2[x2 := x3])
+
+x~> L1[Cs=>x] <+ L2[Cs=>x]
+===================================================================
+E1 || E2 // Where E1 and E2 are function-expression..
+==>
+{	x := E1
+	catch E2
+	y := E2
+	catch x
+	(z ~> (x(z) || y(z)))
+}
+
+// where E whill reduce to a lambda...
+E <+ E ==> (x -> E(x) <+ E(x))
+
+err || f ==> f
+f1 || f2 ==> (x -> f1(x) || f2(x))
+
+
+T x -> e  ==> y := e; T x ~> y
+    (where x is not free in e)
+T x -> x ==> T x ~> x
+T x -> e0 | e1 ==> {
+   y :=  (T x -> e0);
+   catch (T x -> e1);
+   z :=  (T x -> e1);
+   catch (T x ~> y(x));
+   T x ~> (y(x) | z(x));
+}
+T x -> Op[e0, ..., en] ==> {
+    y0 := (T x -> e0);
+    ...;
+    yn := (T x -> en);
+    T x ~> Op[y0(x), ..., yn(x)]
+}
+============
+
+  e-->e'
+------------
+\x.e --> e'
+
+
+
+T x -> e  ==> y := e; T x ~> y
+    (where x is not free in e)
+T x -> x ==> T x ~> x
+T x -> Op[e0, ..., en] ==> {
+    y0 := Catch(T x -> e0);
+    ...;
+    yn := Catch(T x -> en);
+    T x ~> Op[y0(x)(x), ..., yn(x)(x)]
+}
+
+Catch(e) := {
+	y := e
+	catch (x ~> err)
+	(x ~> y)
+}
+
+// {}[T=>x]
+// {String foo()}[T=>x] <+ {Int foo()}[T=>x]
+
+L1[T=>x] <+ L2[T=>x] != (L1 <+ L2)[T=>x]
+
+V::=VO  |  Path!VO
+VO := VO|VO | L
+
+MT ::= Code | MT -> MT | Class
+P ::= Thisn T
+
+
+
+E::= t| code | E+E | E[P=>E] | MT x -> E | E(E) | Cs | x | E||E
+
+
+
+
+D |
+
+
+
+
+{
+	x = ex
+	catch (T1 y) ec1(y)
+	catch (T2 y) ec2(y)
+	ey(x)
+}
+
+// ec1: T1 -> R
+// ec2: T2 -> R
+// ey: TX -> R
+
+// : R
+
+ey ex : ec1 : ec2
+
+try ex
+catch ec1
+catch ec2
+else ey
+
+try ex
+else ey
+
+ex ey
+
+// (T!L1)|(Y!L2) == W!(L1[T=W]|L2[Y=W])
+// (T!L1)+(Y!L2) == W!(L1[T=W]+L2[Y=T])
+//hopefully
+// (t1+t2)(A) == t1(A)+t2(A)
+
+T!{T: { t1 }, Y: { y1 }} + Y!{T: { t2 }, Y: { y2 }}
+
+W!{W: { t1[T=W] }, Y: { y1[T=W] }} + W!{T: { t2[Y=W] }, W: { y2[Y=W] }}
+W!{W: { t1[T=W] y2[Y=W] }, Y: { y1[T=W] } T: { t2[Y=W] }}
+
+
+(T!{T: { }, Y: { } T m1(Y)} + Y!{T: { }, Y: { T m() } T m2(Y)} )(A)
+
+(W!{Y: { } W m1(Y), T: { }, W: { T m() } T m2(W)})(A)
+
+({Y: { } A m1(Y), A.m m2(A)})(A)
+
+
+({Y: { } A m1(Y)} + {A.m m2(A)}
+
+==
+(T!{T: { }, Y: { }}(A) + Y!{T: { }, Y: { T m() }}(A))
+
+// (f + g)(A) == f(A) + g(A)
+
+L::={interface? implements Paths Ms }
+M::=td|cd| static? method T m(Txs)e
+e::=x|e.m(es)|Path.m(es)
+
+m = T!{T: {} Baz: ~MyBoxy(T)}
+C: m(Foo)
+B: C.Baz
+
+
+
+
+L1|L2
+
+E1+E2 | E1
+
+(name!(E1|E2)) (A)
+(name1 ! E1 | name2 ! E2) (A)
+
+t: T!E ==> t: T!L (where E==>L)
+
+t1: T!({ T: { Int x() }}|{ T: {}})
+t0: {T: { Int x() }}|{ T: {}}
+t2: T! t0
+C: {};
+y: t(C); //
+
+
+
+
+
+
+
+
+//tList:{ Elem:{} method Elem get(Int x){..}}
+list:Elem!{ Elem:{} method Elem get(Int x){..}}
+
+t:{T:{..} A:{..} ...}
+//g1:T!t 		// T!t
+//g2:A!t
+E ::= <C: P...> E | E ~ P | E P
+
+{
+t:{ A1:{} A2:{} method A m()}
+A:{}
+  {
+  B:{}
+  C: (<A1: t.A1> t~A1)(B)
+  }
+}
+
+C:t
+D:g1(AA)
+
+empty t {
+	empty T { ... }
+	empty A { ... }
+	...
+}
+
+type g1<T: t.T> = t[~t.T];
+
+
+
+
+
+//mini
+reduce:T!L!{
+  T:{}  E:{}  L:list(E)
+  static T op(T a, E b);
+  static T of(T initial,L list) {..}
+}
+
+
+//mini sugar
+reduce:<T,L:list(E)>{
+ //T:{}  L:list(E) E:{}
+  static T op(T a, E b);
+  static T of(T initial,L list) {..}
+}
+
+
+R:reduce(S)(Strings)+{static S op(S a, S b)a + b}
+R.of("", Strings.of("hi","hello"))
+
+
+reduce:T!L!E!{
+  T:{}  E:{}  L:{}
+  static E get(L l, Int index);
+  static Int size(L l);
+  static T op(T a, E b);
+  static T of(T initial,L list) {..}
+}
+
+
+
+intReduce:L!{
+  L:~list(Int)
+  static Int op(Int a, Int b);
+  static Int of(Int initial,This.L list) {..}
+  }
+
+
+trait IntReduce<L: List<Elem=Int>>: Reduce<
+
+
+trait IntReduce<L: List<Elem=Int>> {
+	fn op(a: T, b: Int)->T;
+	fn of(initial: T, list: L)->T {..}
+}
+
+trait List {
+	type Elem;
+	fn get(x: Int)->Self::Elem { .. }
+}
+
+trait GReduce<T, L: GList<Elem>, Elem> {
+	fn op(a: T, b: L::Elem)->T;
+	fn of(initial: T, list: L)->T {..}
+}
+
+greduce: T!E!L! {
+	T: {}
+	E: {}
+	L: ~list(E)
+	static T op(T a, E b);
+  	static T of(T initial,L list) { ... }
+}
+
+R1: greduce(Int, Int, Listy) + {static Int op(Int a, Int b) ...1}
+R2: greduce(Integer64, Integer64, Natural32List) + {static Int op(Int a, T b) ...2}
+R2: greduce(Integer64, Natural32, Natural32List) + {static Int op(Int a, T b) ...2}
+
+// l: Natural32List; <l as GList<Natural32>>.get();
+
+
+
+
+
+
+
+
+T(Ts)!L
+
+fact:
+{T:{R foo()} R:{}  R bar()} == {T:{R foo()} R:{}} +  {R:{}  R bar()}
+
+	T(Ts)!a(A)+T!b(A)==T(Ts)!(a+b)(A)
+
+	T!a + T!b
+
+	(x -> a[T=>x]) + (x -> b[T=>x])
+==	(x -> a[T=>x] + b[T=>x])
+==	(x -> (a + b)[T=>x])
+
+T!{T:{R foo()} R:{}  R bar()} (A)
+!=
+T(R)!{T:{R foo()} R:{}}(A) + T(R)!{T:{} R:{}  R bar()}(A)
+
+
+
+T!L1+T!L2 -->T!(L1+L2) -->T!L3
+
+
+(T!L1 + T!L2) == (x -> (L1[T=>x] + L2[T=>x]))
+
+	(T!X + T!Y) ==> (T!(X+Y))
+
+
+	L
+	L[IP=>P] --> L'
+	L1 + L2
++ 	lambda's
+
+
+
+
+Cs
+
+
+Thisn.Cs
+
+t:{C:{}, t.C m()}
+A:{B:{C:t}}
+== A:{B:{C:{C:{}, C}}
+
+
+
+
+Cs  //from top
+
+top /nested
+A = top level A
+A.B =top level A and inside B
+.B = the nested B inside the trait/class
+//requires only 1 level of nested
+
+C: {}
+Z: {
+	A: { C:{}; ....C m() }
+	B: E {C:{} C   }+{C:{}}
+	C: { }
+} + {..}
+
+
+
+
+sum of conflictig methods is right preferential.
+sum of interfaces is disallowed
+sum of two classes with different constructor declared on both sides is disallowed
+
+
+code ::= {class: Cs Ms Fs CDs} | {interface: Cs AMs }
+CD ::= C: E;
+F ::= T f
+AM ::= T m(Txs);
+CM ::= T m(Txs) = e;
+M ::= AM | CM
+---------------------
+
+
+
+
+java
+
+class Graph<Node,Edge>{
+    abstract Edge make(Node n1, Node n2);
+	newEdge(Node n1, Node n2){new Edge(n1,n2)}
+}
+
+
+	f(x: \1, y: \2);
+
+T!L  <==> x->L[T=>x]
+normalization of (T!L)
+compute Ts
+TF(TFs)!L[T=TF, Ts=TFs]
+
+T!L1+T!L2
+-->
+T1(Ts1)!L1+T2(Ts2)!L2
+-->
+T3(Ts1)!L1[T1=T3]+T3(Ts2)!L2[T2=T3]
+-->
+
+T3(Ts1,Ts2)!(L1[T1=T3]+L2[T2=T3])
+
+
+
+x->L[T=>x] ==
+(class Any x -> (Redirect[\"T", x] <>< L))(Foo)
+
+{T:{}}[T=TF] =={TF:{}}
+
+
+
+T!{T:{R foo()} R:{}  R bar()} (A)
+!=
+T!{T:{R foo()} R:{}}(A) + !{T:{} R:{}  R bar()}(A)
+
+
+T!{T:{R foo()} R:{}} == t(r)!{t:{r foo()} r:{}}
+T!{T:{} R:{}  R bar()} == t!{t:{} R:{} R bar()}
+
+T!L1 + T!L2
+
+t(r)!({t:{r foo()} r:{}} + {t:{} R:{} R bar()})
+
+t(r)!({t:{r foo()} r:{} + R:{} R bar()})
+
+   t(r)!({t:{r foo()} r:{} + R:{} R bar()})(A)
+== {R:{} R bar()}
+
+
+
+
+
+
+
+
+
+
+trait Reduce<T, L: ListTrait> {
+	fn op(a: T, b: L::Elem)->T;
+	fn of(initial: T, list: L)->T {..}
+}
+
+struct R();
+impl Reduce<S, Strings> for R {
+	fn op(a: S, b: S) = a + b;
+}
+
+
+
+
+
+
+
+
+
+ListR:Resource<><{
+  class method Library listT()
+  class method Library (class Any that)Trait(this.listT())"Elem" / that
+  }
+
+ListT:Resource<><{Elem:{}...}
+
+List:{
+  class method Library (class Any that,Size n)= this.gen(that,lib:this.nest(n))
+  class method Library gen(class Any that,Library lib)=Refactor.redirect(\"Elem" into: that)<><lib
+  class method Library nest(Size n)={
+    if n==0Size (return ListT())
+    var Library res=this.nest(n-1Size)
+    res:=Refactor.rename(\"Elem" into: \"This")<><res
+    res:=Refactor.push(\"List")<><res
+    res:=Use[res]<><ListT()
+    return res
+
+   	//Use[ListT()] <>< Refactor.push(\"Elem") <>< nest(n-1);
+    }
+MyList: List(S, n:10Size)
+
+template<typename T, size_t n>
+struct ListN { }
+
+template<typename T>
+struct ListN<T, 0>: List<T> {  }
+
+template<typeanme T>
+struct ListN<T, n>: List<ListN<T, n-1>> { }
+
+
+G:Trait<><{.T:{}..}
+
+G"T"/A.B
+G"T"/Path"A"
+G"T"/Location.Type
+G+G
+
+a+b
+
+impl Add<MyType> for OtherType { ... }
+
+a.foo(b):	// Box<Z>
+
+find a trait 'T' with declerations
+	T<B> { fn add(Box<B>)->R }
+
+--->	a.add(b)
+--->	<a as Add<B>>.add(b)
+
+
+
+a+b
+a.#lplus().#plus(b.#rplus())
+
+a.#plus(b) ||| b.#rplus(a)
+
+a+b
+C:class(A).#plusser(class(B))
+C(a,b)
+
+
+
+Unit:...
+
+M:Unit()
+Kg:Unit()
+KgM:Kg * M
+KgKgM:Unit(Kg times:KgM)
+
+KgKgM(myKg times:myKgM)
+
+myKg*myKgM
+
+interface Plusser { Any method plus(Any) }
+a+b
+a.#plus(b)||| b.#rplus(a) ||| C:class(A).#plusser(class(B)) C(a,b)
+
+
+
+
+C:Trait<><{
+  A:~List(E)
+  B:~List(E)
+  E:{}
+
+  }
+
+
+A:Use[Secret()]<><{
+  method Void foo(){
+    Debug((this.bar()|||this.foo())+1Num)
+    }
+  }
+
+
+
+
+
+
+
+//list of string, containing list of list of S, and so on 10 levels.
+======================================================================
+
+------------------------------------------------------
+A ={
+        B = {}
+        X = ({ This2.A.B m()} <+ { This1.B m()})
+    }(B=T)
+
+t = { A = ... }
+A' = { B = {} X = ...}
+F = LV
+    where LV = { This2.A.B m()} <+ { This1.B m()}
+
+
+
+================================================
+p |- Mz + Mz' = Mz" // elena
+	dom(Mz") = dom(Mz) U dom(Mz')
+
+	if Mid in dom(Mz)\dom(Mz'):
+		Mz"(Mid) = Mz(Mid)
+	if Mid in dom(Mz')\dom(Mz):
+		Mz"(Mid) = Mz'(Mid)
+	if Mid in dom(Mz) intersect dom(Mz'):
+		Mz"(Mid) = p |- Mz(Mid) + Mz'(Mid)
+======================================//elena->marco
+Mz1 <+p Mz2 = Mz1\dom(Mz2), Mz2\dom(Mz1), M1..Mn
+  Mid1..Midn=dom(Mz) intersect dom(Mz')
+  Mz1(Midi) <+p Mz2(Midi) = Mi
+
+Mz <+p Mz' = M1 <+p M1', ..., Mn <+p Mn', Mz1\dom(Mz2), Mz2\dom(Mz1)
+	Mi = Mz(Mid), Mi' = Mz'(Mid)
+		for some Mid
+
+Define p |- Mz <+ Mz' = Mz" // new elana->isaac
+-------------------------------
+
+	M in Mz" iff p |- M in Mz"
+------------------------- forall M
+	p |- Mz + Mz' = Mz"
+
+	Mz(M.Mid) = M
+-------------------- M.Id not in dom(Mz')
+	p |- M in Mz <+ Mz'
+
+
+	Mz'(M.Mid) = M
+----------------------- M.Id not in dom(Mz)
+	p |- M in Mz + Mz'
+
+
+	p |- Mz(M.Mid) + Mz'(M.Mid) = M
+--------------------------------------------
+	p |- M in Mz + Mz'
+=========================================
+
+Define p |+ Mz <+ Mz = Mz // Shuffling
+-----------------------------------------
+    p |- Mz <+ Mz' = Mz"
+----------------------------------- M.Id notin dom(Mz')
+    p |- (M, Mz) <+ Mz' = M, Mz"
+
+    p |- Mz <+ Mz'
+------------------------------------
+	p |- (M, Mz) <+ (M', Mz') = M <+ M',
+	M.Id = M'.Id
+=================================

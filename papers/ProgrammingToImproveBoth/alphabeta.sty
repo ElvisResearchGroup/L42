@@ -1,0 +1,394 @@
+% alphabeta: Greek symbols in text and math
+% *****************************************
+% 
+% :Copyright: © 2010 Günter Milde
+% :Licence:   This work may be distributed and/or modified under the
+%             conditions of the `LaTeX Project Public License`_, either
+%             version 1.3 of this license or any later version.
+% 
+% :Abstract: Use ``\alpha, \beta, ...`` for Greek letters in text and math
+%            mode.
+% 
+% :Identification:
+%  ::
+
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{alphabeta}
+[2016/02/05 v0.13.2 macros for Greek letters in text and math]
+
+% Changelog:
+%   .. class:: borderless
+% 
+%   ====== ========== =========================================================
+%   0.1    2012-06-26 initial version
+%   0.2    2013-05-03 new accent macro names with ``lgrxenc.def`` 0.7
+%   0.3    2013-05-28 use ``lgrenc.def`` from greek-fontenc,
+%   ..                enable Unicode input in math mode.
+%   0.4    2013-09-11 move to greek-fontenc_, support XeTeX/LuaTeX.
+%   0.13   2015-09-04 Support for `variant symbols`.
+%   0.13.2 2016-02-05 Support for standard Unicode text font encoding "TU"
+%                     (new in fontspec v2.5a).
+%   ====== ========== =========================================================
+% 
+% Motivation
+% ==========
+% 
+% By default, the ``\alpha, \beta, ...`` macros for Greek letters
+% are only valid in mathematical mode.
+% 
+% With this package, the math macros are redefined to work in both, text and
+% math mode, so that Greek letters can be specified with the established
+% command names in text, too.
+% 
+% If used together with the ``utf8`` option of inputenc_, literal Unicode
+% characters can be used for Greek symbols in mathematical formulas.
+% 
+% .. Attention::
+%    The macros work well in any font encoding for single symbols.
+%    However, with 8-bit TeX, the automatic font-encoding switches behind the
+%    doors interfere with kerning between letters and replacement of
+%    accent+character with a pre-composed character.
+% 
+%    Therefore, Greek text should be written with the help of babel_ or
+%    polyglossia_ (setting the language to ``greek``) or wrapped in the
+%    provided ``ensuregreek`` macro.  Using babel_ or polyglossia_ also helps
+%    to ensure proper hyphenation.
+% 
+% 
+% Usage
+% =====
+% 
+% .. code:: latex
+% 
+%   \usepackage{alphabeta}
+% 
+% The greek-inputenc_ package provides support for Unicode (utf-8) input
+% of Greek characters with 8-bit TeX and the inputenc_ package:
+% 
+% .. code:: latex
+% 
+%   \usepackage[utf-8]{inputenc}
+%   \usepackage{alphabeta}
+% 
+% 
+% For details see `<alphabeta-doc.tex>`_ and `<alphabeta-doc.pdf>`_.
+% 
+% 
+% Implementation
+% ==============
+% 
+% Requirements
+% ------------
+% 
+% This package extends the `textalpha <textalpha.sty.html>`_ package.
+% Package options are passed on to `textalpha`::
+
+\RequirePackageWithOptions{textalpha}
+
+% Just like `alphabeta`, `textalpha` is part of greek-fontenc_.
+% 
+% This package requires the e-TeX_ extensions (i.e. a not too old TeX
+% distribution) for the ``\ifdefined`` test.
+% 
+% It uses the ``\TextOrMath`` test from the fixltx2e_ standard LaTeX
+% package::
+
+% fixltx2e is not required with releases after 2015
+%\RequirePackage{fixltx2e}
+
+% Postpone the re-definitions
+% ---------------------------
+% 
+% To prevent other packages overwriting the re-defined commands we postpone
+% the next steps until the start of the document body::
+
+\AtBeginDocument{
+
+% Save math macros
+% ----------------
+% 
+% Provide an alias for the standard math commands::
+
+\let\mathGamma\Gamma
+\let\mathDelta\Delta
+\let\mathTheta\Theta
+\let\mathLambda\Lambda
+\let\mathXi\Xi
+\let\mathPi\Pi
+\let\mathSigma\Sigma
+\let\mathUpsilon\Upsilon
+\let\mathPhi\Phi
+\let\mathPsi\Psi
+\let\mathOmega\Omega
+%
+\let\mathalpha\alpha
+\let\mathbeta\beta
+\let\mathgamma\gamma
+\let\mathdelta\delta
+\let\mathepsilon\epsilon
+\let\mathvarepsilon\varepsilon
+\let\mathzeta\zeta
+\let\matheta\eta
+\let\maththeta\theta
+\let\mathvartheta\vartheta
+\let\mathiota\iota
+\let\mathkappa\kappa
+\let\mathlambda\lambda
+\let\mathmu\mu
+\let\mathnu\nu
+\let\mathxi\xi
+\let\mathpi\pi
+\let\mathvarpi\varpi
+\let\mathrho\rho
+\let\mathvarrho\varrho
+\let\mathsigma\sigma
+\let\mathvarsigma\varsigma
+\let\mathfinalsigma\varsigma
+\let\mathtau\tau
+\let\mathupsilon\upsilon
+\let\mathphi\phi
+\let\mathvarphi\varphi
+\let\mathchi\chi
+\let\mathpsi\psi
+\let\mathomega\omega
+% ``\digamma`` is defined by amsmath, provide a fallback
+\providecommand*{\digamma}{\textit{\textdigamma}}
+\let\mathdigamma\digamma
+
+% \varkappa and \varbeta are defined by some math packages
+\ifdefined\varbeta
+  \let\mathvarbeta\varbeta
+\fi
+\ifdefined\varkappa % e.g. with newtxmath
+  \let\mathvarkappa\varkappa
+\fi
+
+% Commands to access Greek letters by name
+% ----------------------------------------
+% 
+% For letters defined in math mode, the commands work in both, text and math.
+% 
+% Some Greek letters look identical to Latin letters and can therefore not be
+% used as variable symbols in math formulas. These letters are not defined in
+% TeX's math mode, we provide an alias to the corrsponding ``\text...``
+% command.
+% 
+% Mathematical notation distinguishes `variant shape symbols`_ for pi, phi,
+% rho, theta (small and capital), beta, and kappa (characters for the latter
+% three symbols are not included in TeX’s math fonts). These variations have
+% no syntactic meaning in Greek text and are not given code-points in the LGR
+% encoding while Unicode defines separate code points for the symbol variants.
+% 
+% Greek Alphabet:
+% 
+% Macros keep their meaning in mathematical mode (i.e. use the same shape as
+% without this package) and refer to GREEK LETTER ... in text. For
+% ``\epsilon`` and ``phi``, this means that the selected symbol variant
+% differs in text vs. math mode. Use ``\varepsilon`` and ``\varphi`` (see
+% section `variant shape symbols`_ below) to select the GREEK LETTER ...” in both,
+% text and math mode.
+% ::
+
+\providecommand*{\Alpha}{\textAlpha}
+\providecommand*{\Beta}{\textBeta}
+\renewcommand*{\Gamma}{\TextOrMath{\textGamma}{\mathGamma}}
+\renewcommand*{\Delta}{\TextOrMath{\textDelta}{\mathDelta}}
+\providecommand*{\Epsilon}{\textEpsilon}
+\providecommand*{\Zeta}{\textZeta}
+\providecommand*{\Eta}{\textEta}
+\renewcommand*{\Theta}{\TextOrMath{\textTheta}{\mathTheta}}
+\providecommand*{\Iota}{\textIota}
+\providecommand*{\Kappa}{\textKappa}
+\renewcommand*{\Lambda}{\TextOrMath{\textLambda}{\mathLambda}}
+\providecommand*{\Mu}{\textMu}
+\providecommand*{\Nu}{\textNu}
+\renewcommand*{\Xi}{\TextOrMath{\textXi}{\mathXi}}
+\providecommand*{\Omicron}{\textOmicron}
+\renewcommand*{\Pi}{\TextOrMath{\textPi}{\mathPi}}
+\providecommand*{\Rho}{\textRho}
+\renewcommand*{\Sigma}{\TextOrMath{\textSigma}{\mathSigma}}
+\providecommand*{\Tau}{\textTau}
+\renewcommand*{\Upsilon}{\TextOrMath{\textUpsilon}{\mathUpsilon}}
+\renewcommand*{\Phi}{\TextOrMath{\textPhi}{\mathPhi}}
+\providecommand*{\Chi}{\textChi}
+\renewcommand*{\Psi}{\TextOrMath{\textPsi}{\mathPsi}}
+\renewcommand*{\Omega}{\TextOrMath{\textOmega}{\mathOmega}}
+%
+\renewcommand*{\alpha}{\TextOrMath{\textalpha}{\mathalpha}}
+\renewcommand*{\beta}{\TextOrMath{\textbeta}{\mathbeta}}
+\renewcommand*{\gamma}{\TextOrMath{\textgamma}{\mathgamma}}
+\renewcommand*{\delta}{\TextOrMath{\textdelta}{\mathdelta}}
+\renewcommand*{\epsilon}{\TextOrMath{\textepsilon}{\mathepsilon}} % ε/ϵ
+\renewcommand*{\zeta}{\TextOrMath{\textzeta}{\mathzeta}}
+\renewcommand*{\eta}{\TextOrMath{\texteta}{\matheta}}
+\renewcommand*{\theta}{\TextOrMath{\texttheta}{\maththeta}}
+\renewcommand*{\iota}{\TextOrMath{\textiota}{\mathiota}}
+\renewcommand*{\kappa}{\TextOrMath{\textkappa}{\mathkappa}}
+\renewcommand*{\lambda}{\TextOrMath{\textlambda}{\mathlambda}}
+\renewcommand*{\mu}{\TextOrMath{\textmu}{\mathmu}}
+\renewcommand*{\nu}{\TextOrMath{\textnu}{\mathnu}}
+\renewcommand*{\xi}{\TextOrMath{\textxi}{\mathxi}}
+\providecommand*{\omicron}{\textomicron}
+\renewcommand*{\pi}{\TextOrMath{\textpi}{\mathpi}}
+\renewcommand*{\rho}{\TextOrMath{\textrho}{\mathrho}}
+\renewcommand*{\sigma}{\TextOrMath{\textsigma}{\mathsigma}}
+\renewcommand*{\varsigma}{\TextOrMath{\textvarsigma}{\mathvarsigma}}
+\providecommand*{\finalsigma}{\varsigma}
+\renewcommand*{\tau}{\TextOrMath{\texttau}{\mathtau}}
+\renewcommand*{\upsilon}{\TextOrMath{\textupsilon}{\mathupsilon}}
+\renewcommand*{\phi}{\TextOrMath{\textphi}{\mathphi}}             % ϕ/φ
+\renewcommand*{\chi}{\TextOrMath{\textchi}{\mathchi}}
+\renewcommand*{\psi}{\TextOrMath{\textpsi}{\mathpsi}}
+\renewcommand*{\omega}{\TextOrMath{\textomega}{\mathomega}}
+
+
+% Archaic letters
+% '''''''''''''''
+% 
+% ::
+
+\renewcommand*{\digamma}{\TextOrMath{\textdigamma}{\mathdigamma}} % ϝ
+\providecommand*{\Digamma}{\textDigamma}     % Ϝ
+\providecommand*{\stigma}{\textstigma}       % ϛ
+\providecommand*{\varstigma}{\textvarstigma} % stigma variant (CB.enc, teubner)
+\providecommand*{\koppa}{\textkoppa}         % ϟ (greek small letter koppa)
+\providecommand*{\qoppa}{\textqoppa}         % ϙ (archaic koppa)
+\providecommand*{\Qoppa}{\textQoppa}         % Ϙ (archaic Koppa)
+\providecommand*{\Stigma}{\textStigma}       % Ϛ (in some fonts ϹΤ ligature)
+\providecommand*{\Sampi}{\textSampi}         % Ϡ
+\providecommand*{\sampi}{\textsampi}         % ϡ
+
+% Variant shape symbols
+% '''''''''''''''''''''
+% 
+% TeX’s concept of “standard” vs. “variant” math symbols does not map to the
+% distinction between GREEK LETTER ... vs. GREEK ... SYMBOL in the Unicode
+% standard (see `<greek-euenc-doc.pdf>`_).
+% 
+% The ``\...symbol``  macros select the GREEK ... SYMBOL in both, text and
+% math mode. For ``\epsilonsymbol`` and ``\phisymbol`` this is the default
+% shape in math mode. The ``\var...`` macros select the shape used by TeX
+% math (or, if not supported, the SYMBOL shape)::
+
+% ..symbol == var..
+\renewcommand*{\varpi}{\TextOrMath{\textpisymbol}{\mathvarpi}}          % ϖ
+\providecommand*{\pisymbol}{\varpi}                                     % ϖ
+\renewcommand*{\varrho}{\TextOrMath{\textrhosymbol}{\mathvarrho}}       % ϱ
+\providecommand*{\rhosymbol}{\TextOrMath{\textrhosymbol}{\mathvarrho}}  % ϱ
+\renewcommand*{\vartheta}{\TextOrMath{\textthetasymbol}{\mathvartheta}} % ϑ
+\providecommand*{\thetasymbol}{\vartheta}                               % ϑ
+% ..symbol != var..
+\renewcommand*{\varepsilon}{\TextOrMath{\textepsilon}{\mathvarepsilon}} % ε
+\providecommand*{\epsilonsymbol}{\TextOrMath{\textepsilonsymbol}{\mathepsilon}} % ϵ
+\renewcommand*{\varphi}{\TextOrMath{\textphi}{\mathvarphi}}             % φ
+\providecommand*{\phisymbol}{\TextOrMath{\textphisymbol}{\mathphi}}     % ϕ
+% only text (in standard 8-bit TeX, may be defined with additional packages):
+\ifdefined\mathvarbeta
+  \renewcommand*{\varbeta}{\TextOrMath{\textbetasymbol}{\mathvarbeta}}  % ϐ
+\else
+  \providecommand*{\varbeta}{\textbetasymbol}
+\fi
+\providecommand*{\betasymbol}{\varbeta}
+\ifdefined\mathvarkappa                                                 % ϰ
+  \renewcommand*{\varkappa}{\TextOrMath{\textkappasymbol}{\mathvarkappa}}
+\else
+  \providecommand*{\varkappa}{\textkappasymbol}
+\fi
+\providecommand*{\kappasymbol}{\varkappa}
+% \Theta/\varTheta are not a symbol variants but upright/italic shape of Theta
+\providecommand*{\Thetasymbol}{\textThetasymbol}                        % ϴ
+
+
+% TextCompositeCommands for the generic macros
+% --------------------------------------------
+% 
+% The NFSS TextComposite mechanism looks for the next token without expanding
+% it. In order to let compositions like ``\ensuregreek{\'\Alpha}`` or
+% ``\ensuregreek{\>"\alpha}`` work as expected we define TextComposites with the
+% `letter name commands`. (Composition only works if the active font encoding
+% is LGR). ::
+
+\ifdefined\XeTeXrevision
+  \input{alphabeta-euenc.def}
+  % \expandafter\endinput % "return"
+\else\ifdefined\luatexversion
+  \input{alphabeta-euenc.def}
+  % \expandafter\endinput % "return"
+\else % 8-bit TeX
+  \input{alphabeta-lgr.def}
+\fi\fi
+
+
+% Re-definition for Greek Unicode input in math mode
+% --------------------------------------------------
+% 
+% Check with ``\ifdefined`` for the definition of
+% ``\DeclareUnicodeCharacter``. In contrast to ``\@ifdefined``, this works
+% without side-effects. It makes the package dependent on the `e-TeX`_
+% extensions but these are standard in all current TeX distributions anyway.
+% 
+% Map Greek characters that are also defined in math mode to the generic
+% macros::
+
+\ifdefined\DeclareUnicodeCharacter
+  \DeclareUnicodeCharacter{0393}{\Gamma}         % Γ
+  \DeclareUnicodeCharacter{0394}{\Delta}         % Δ
+  \DeclareUnicodeCharacter{0398}{\Theta}         % Θ
+  \DeclareUnicodeCharacter{039B}{\Lambda}        % Λ
+  \DeclareUnicodeCharacter{039E}{\Xi}            % Ξ
+  \DeclareUnicodeCharacter{03A0}{\Pi}            % Π
+  \DeclareUnicodeCharacter{03A3}{\Sigma}         % Σ
+  \DeclareUnicodeCharacter{03A5}{\Upsilon}       % Υ
+  \DeclareUnicodeCharacter{03A6}{\Phi}           % Φ
+  \DeclareUnicodeCharacter{03A8}{\Psi}           % Ψ
+  \DeclareUnicodeCharacter{03A9}{\Omega}         % Ω
+
+  \DeclareUnicodeCharacter{03B1}{\alpha}         % α
+  \DeclareUnicodeCharacter{03B2}{\beta}          % β
+  \DeclareUnicodeCharacter{03B3}{\gamma}         % γ
+  \DeclareUnicodeCharacter{03B4}{\delta}         % δ
+  \DeclareUnicodeCharacter{03B5}{\varepsilon}    % ε textepsilon/varepsilon
+  \DeclareUnicodeCharacter{03B6}{\zeta}          % ζ
+  \DeclareUnicodeCharacter{03B7}{\eta}           % η
+  \DeclareUnicodeCharacter{03B8}{\theta}         % θ
+  \DeclareUnicodeCharacter{03B9}{\iota}          % ι
+  \DeclareUnicodeCharacter{03BA}{\kappa}         % κ
+  \DeclareUnicodeCharacter{03BB}{\lambda}        % λ
+  \DeclareUnicodeCharacter{03BC}{\mu}            % μ
+  \DeclareUnicodeCharacter{03BD}{\nu}            % ν
+  \DeclareUnicodeCharacter{03BE}{\xi}            % ξ
+  \DeclareUnicodeCharacter{03C0}{\pi}            % π
+  \DeclareUnicodeCharacter{03C1}{\rho}           % ρ
+  \DeclareUnicodeCharacter{03C2}{\varsigma}      % ς
+  \DeclareUnicodeCharacter{03C3}{\sigma}         % σ
+  \DeclareUnicodeCharacter{03C4}{\tau}           % τ
+  \DeclareUnicodeCharacter{03C5}{\upsilon}       % υ
+  \DeclareUnicodeCharacter{03C6}{\varphi}        % φ textphi/varphi
+  \DeclareUnicodeCharacter{03C7}{\chi}           % χ
+  \DeclareUnicodeCharacter{03C8}{\psi}           % ψ
+  \DeclareUnicodeCharacter{03C9}{\omega}         % ω
+
+  \DeclareUnicodeCharacter{03D1}{\thetasymbol}   % ϑ
+  \DeclareUnicodeCharacter{03D5}{\phisymbol}     % ϕ $\phi$
+  \DeclareUnicodeCharacter{03D6}{\pisymbol}      % ϖ
+  \DeclareUnicodeCharacter{03DD}{\digamma}       % ϝ
+  \DeclareUnicodeCharacter{03F1}{\rhosymbol}     % ϱ
+  \DeclareUnicodeCharacter{03F5}{\epsilonsymbol} % ϵ $\epsilon$
+
+\fi
+
+% ::
+
+} % close the \AtBeginDocument macro
+
+% .. References
+%    ----------
+% .. _LaTeX Project Public License: http://www.latex-project.org/lppl.txt
+% .. _CB Fonts: http://www.ctan.org/pkg/cbgreek-complete
+% .. _babel: http://www.ctan.org/cgi-bin/ctanPackageInformation.py?id=babel
+% .. _e-TeX: http://www.tex.ac.uk/cgi-bin/texfaq2html?label=etex
+% .. _greek-fontenc: http://www.ctan.org/pkg/greek-fontenc
+% .. _greek-inputenc: http://www.ctan.org/pkg/greek-inputenc
+% .. _inputenc: http://www.ctan.org/pkg/inputenc
+% .. _fixltx2e: http://www.ctan.org/pkg/fixltx2e
+% .. _polyglossia: http://www.ctan.org/pkg/polyglossia

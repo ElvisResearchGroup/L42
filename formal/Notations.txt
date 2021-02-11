@@ -1,0 +1,37 @@
+Notation
+--------
+Dot notation and with:
+....
+
+Grammars:
+< ... > indicate character classes
+A -- B to mean anything matching A, but with no sub-string matching B
+When we use a non terminal A in the body of a non terminal B.C,
+if A is not directly defined, we refer to B.A
+
+Qualified polymorphic grammar:
+The same non terminal should not be declare both qualified and unqualified.
+'A.B::=..' declares a non terminal B inside qualifier A.
+If '..' mentioned non terminal C, and A.C exits, then we meant A.C.
+
+A/B.C::=.. is a shortcut for A.C::.. and B.C::=... 
+
+We can mention an unqualified terminal if given the signature of the 
+surrounding notations only one qualified version would make sense. 
+
+We can use A/B.C as a nonterminal from the union of A.C and B.C
+
+A grammar record is declared as Name[name1=nonTerminal1: ..;namen=nonTerminaln]
+and can be created as Name[name1=val1 ..namen=valn], accessed with dot and updated with [..=..].
+names can be omitted for at most 1 nonTerminal of a certain form.
+
+We will use s to denote sequence and z to denote sets. Thus
+xs sequence, xz set,
+[]sequence, {}set
+sequence\i removes the element i from the sequence
+
+for any grammatic form the dot can be used to access subcomponens, as in
+M::= mdf method T m( T1 x1 ..Tn xn)e
+M.xs, M.mdf
+
+M[mdf=mut]=M'

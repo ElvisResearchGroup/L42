@@ -1,0 +1,20 @@
+\section{Changes in Response to Reviewers' Feedback}
+Thanks to to the helpful reviews from VPT, we have made several changes to the paper since it was first submitted. Here we summarise the changes we have made to each paragraph\footnote{Code examples are \emph{not} counted as a paragraph.}:
+
+% Never get a "no line here to end" error ever again!
+\def\n{\ifvmode\indent\fi\\}%
+
+\begin{description}
+\item[Page 1, Paragraph 2:]\n
+Our definition of ``correctness'' is now clearer and more consistent.
+
+\item [Page 1, Pargraphs 2 \& 3:]\n
+We no longer mention that static verification can be ``unpredictable'', and expand more on the problems with statically verifying the output of metaprogramming.
+\item[Page 1, Paragraph 3:]\n We cite a paper that shows metaprogramming to generate optimized code for specific use cases can be much faster than relying on a compiler.
+\item[Page 1, Paragraph 4 \& 5:]\n We introduce traits in more detail, and explicitly state our differences from prior work.
+\item[Page 1, Paragraph 6:]\n We explain the Liskov Substituition principle, as well as provide a citation for it.
+\item[Page 2, Paragraph 4:]\n We extend our discussion to further explain how iterative trait composition works.
+
+\item[Page 4, Paragraph 2 \& 3:]\n We provide more detail on how contracts on the result of metaprogramming can be checked for correctness.
+\item[Page 4, Paragraph 4:]\n We summarise contributions more clearly.
+\end{description}

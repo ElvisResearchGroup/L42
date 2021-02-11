@@ -1,0 +1,249 @@
+
+\section{Introduction}
+
+\paragraph{Quasi Quotation.} Lisp~\cite{pitman1980special}, MetaML~\cite{moggi1999idealized}, Template Haskell~\cite{sheard2002template} and many other approaches use Quasi Quotation (QQ).
+This can be supported by two kinds of special parenthesis as a syntactic sugar to manipulate Abstract Syntax Trees (ASTs).
+Lisp uses (\Q@`@) and (\Q@,@), while here we use
+\Q@[|  |]@  and \Q@$\$$(  )@ (as Template Haskell) 
+for better readability.
+
+\noindent
+The following example explains their meaning: 
+
+\saveSpace
+\begin{lstlisting}
+Int res0=x*x $\Comment{normal code}$
+Expr<x:Int$\vdash$Int> res1=[| x*x |]
+  $\Comment{new Mul(new Var("x"),new Var("x"))}$
+Expr<x:Int$\vdash$Int> res2=[| x* $\$$(12+3) |]
+  $\Comment{new Mul(new Var("x"),new Lit(15))}$
+\end{lstlisting}
+\saveSpace
+
+\noindent
+Here \Q@res1@ is initialized using a ``quotation'' of code.
+This is equivalent to generating the abstract syntax tree by hand, as shown in the comment.
+\Q@res2@ is initialized using a ``quasi-quotation'' of code: a chunk of code with a hole, that is filled by executing an expression.
+
+There are different ways to type QQ.
+In an expression based language, 
+the simplest way is to just have a primitive \Q@Expr@ type,
+representing every type of code.
+This ensures the result is syntactically well formed, but
+it allows for the generation of ill-typed code.
+Another option, for example used by MetaML,
+is to have a parameterized type.
+Here we use \Q@Expr<@$\Gamma\vdash T$\Q@>@; where
+$\Gamma$ keeps track of the free variables and $T$ is the expected type
+of the result.
+This approach is restrictive (see~\cite{servetto2014meta})
+ but ensures that all the resulting code is well typed.
+
+Usually programming with QQ requires thinking about the desired method body,
+ and often allows generating a more efficient body by generating code specialized for some input value.
+A typical example is about generating a \Q@pow@ function, where the exponent is well known.
+The ``inefficient'' version would be:
+
+\saveSpace
+\begin{lstlisting}[language=ML]
+fun power(x:Int,n:Int):Int 
+  = if (n=0) then 1 else x*power(x,n-1);
+power7_a=$\lambda$ x:Int. power x 7;
+\end{lstlisting}
+\saveSpace
+
+\noindent A more ``efficient'' version using QQ would be:
+
+\saveSpace
+\begin{lstlisting}[language=ML]
+fun powerAux(n:Int):Expr<x:Int$\vdash$Int> 
+  = if (n=0) then [|1|] else [|x * $\$$(powerAux(n-1)) |];
+
+fun powerGen(n:Int): Int->Int
+  = compile([| $\lambda$ x. $\$$(powerAux(n)) |]);
+
+power7_b=powerGen 7;
+\end{lstlisting}
+\saveSpace
+
+\noindent As you can see, by generating the abstract syntax tree, we can obtain exactly:
+
+\saveSpace
+\begin{lstlisting}[language=ML]
+power7_b=$\lambda$ x.x*x*x*x*x*x*x*1;
+\end{lstlisting}
+\saveSpace
+
+\noindent On most machines, \Q@power7_b@ runs faster than \Q@power7_a@.
+Metaprogramming applications include more than just speed boosts, but we start with this example because it is very popular and simple.
+
+The code generator above is quite compact, but it is actually \textbf{hiding} (not removing) the complexity of meta-programming.
+A common approach to make the code more explicit is to extract
+logical concepts as functions.
+We can see that the code is proceeding in an inductive fashion:
+we know the code for \Q@pow 0@, and given the code for
+\Q@pow n@  we can create the code for \Q@pow (n+1)@.
+Thus we define \Q@base@ and \Q@inductive@ functions, and we
+use them inside \Q@powerAux@:
+
+\saveSpace
+\begin{lstlisting}[language=ML]
+fun base():Expr< x:Int$\vdash$Int > 
+  = [| 1 |]
+fun inductive(code:Expr< x:Int$\vdash$Int >):Expr< x:Int$\vdash$Int >
+  = [| x * $\$$(code) |]
+
+fun powerAux(n:Int):Expr< x:Int$\vdash$Int >
+  = if (n=0) then base()
+   else inductive ( powerAux(n-1) );
+\end{lstlisting}
+\saveSpace
+
+\noindent Then, we have to bind \Q@x:Int@ to a parameter in a function.
+This is an important conceptual action and thus we make it a function:
+
+\saveSpace
+\begin{lstlisting}[language=ML]
+fun lambdaX(code:Expr< x:Int$\vdash$Int >):Expr<$\vdash$Int->Int > 
+  = [| $\lambda$ x. $\$$( code ) |]
+
+fun powerGen(n: Int):Int->Int
+  = compile(lambdaX(powerAux(n) ))
+\end{lstlisting}
+\saveSpace
+
+The code we obtain is much larger, but is not logically more complex --- it is just showing the logical structure better.
+Note how since QQ works near the code representation,
+a function \Q@Int->Int@ is radically different from
+code with a free variable \Q@x:Int@$\vdash$\Q@Int@, while they are 
+logically similar concepts.
+
+
+\paragraph{Iterative Composition.} We propose Iterative Composition (IC):
+while the unit of composition in QQ is the single AST node, 
+IC enforces a higher level of abstraction and does not work directly on the AST.
+The unit of composition in IC is a \emph{Library}:
+a class body, containing methods and possibly nested classes.
+Libraries are self contained in the sense that they contain no free variables.
+This avoids all scope-extrusion related problems, and (as shown later) enforces local reasoning.
+
+%% (Alex) The following is commented out because it is just confusing to the reader.
+%IC has already been presented in other work~\cite{servetto2014meta};
+% IC's expressive power is shown by examples,
+%but is not compared with QQ; moreover such works suggested IC's expressive power is inferior to QQ.
+
+The core idea of IC~\cite{servetto2014meta} is to  \emph{rely on  operators of code composition inspired by normal
+code reuse}, but lifted to the expression level.
+As a concrete example, in Java operators \Q@+@ and \Q@*@ can be used in the expression \Q@1+2*3@,
+but the operator \Q@extends@ can only be used in the specific context of class declaration, as in
+
+\saveSpace
+\begin{lstlisting}[language=Java]
+class A extends B{/*some code*/ int m(){return 1+super.m();}}
+\end{lstlisting}
+\saveSpace
+
+In our proposed approach, we lift \Q@extends@ and code literals to operator and constants
+that can be used in conventional expressions.
+Class declarations associate a class name with the result of an expression of type \Q@Library@. 
+ We would write the former example as:
+
+\saveSpace
+\begin{lstlisting}
+A = Override[m()<-superM()]( 
+  {/*code of B*/},
+  { /*some code*/ int m(){return 1+this.superM();}}
+  )
+\end{lstlisting}
+\saveSpace
+
+\noindent We support the conventional super call mechanism by annotating the operator with
+the expected super call name: \Q@Override[m()<-superM()](...)@.
+
+
+\noindent
+We can rewrite our \Q@pow@ example 
+in IC:
+
+\saveSpace
+\begin{lstlisting}
+Pow = {
+  static method Library base()
+   ={ method Num pow(Num x)= 1 }$\Comment{Code literal with 1 method "pow(x)"}$
+
+  static method Library inductive()
+   ={$\Comment{Code literal with 2 methods: "pow(x)", "superPow(x)"}$
+    method Num pow(Num x)= x*this.superPow(x)
+    method Num superPow(Num x)$\Comment{no body: it is an abstract method}$
+    }
+  static method Library inductive(Library code)
+   = Override[pow(x)<-superPow(x)](code, this.inductive())
+  
+  static method Library generate(Num y)
+   = if (y==0) then this.base();
+     else this.inductive(generate(y-1))
+  }
+...
+Pow7 = Pow.generate(7)
+$\Comment{That would reduce into the desired code as follows:}$
+Pow7 ={method Num pow(Num x)=x.x*x*x*x*x*x*x*1}
+\end{lstlisting}
+\saveSpace
+
+\noindent In more detail:
+\begin{itemize}
+\item
+\Q@base()@ is a method with no parameter and a \Q@Library@ return type.
+This is equivalent to a non-parameterized version of \Q@Expr@ in QQ.
+However, our approach still guarantees that all the results are well typed.
+\Q@base()@ returns a class with a single method \Q@pow(x)@,
+returning 1.
+\item
+For the inductive case, the method \Q@pow(x)@ of \Q@inductive()@ is defined in terms of
+another method (\Q@superPow(x)@), representing the delegation to
+the former case in the inductive reasoning.
+%Note that the declaration of \Q@superPow(x)@ is an abstract method: a method without body.
+\item Method \Q@inductive(code)@ builds
+the code for \Q@x+1@ from the code for \Q@x@.
+Note how we use \Q@Override@ inside of a normal method body.
+This \Q@Override@ will implement
+\Q@superPow(x)@ using
+the \Q@pow(x)@ body from the induction premise: the \Q@code@ parameter.
+Then, \Q@superPow(x)@ is inlined.
+
+\item Method \Q@generate(y)@ uses recursion to \textbf{iteratively compose} the result, using induction starting from
+the base case.
+Note how this method is logically identical to \Q@powerAux@. However,
+since we always work on the actual self contained code neither \Q@lambdaX@ nor \Q@compile@ are needed.
+\end{itemize}
+
+
+\paragraph{Contributions.} Our approach builds on top of code composition operations like multiple inheritance and generics.
+The literature offers \cite{barnett2004spec,burdy2005overview,muller2016viper} many successful efforts about proving the
+\emph{semantic correctness} 
+of code containing inheritance and generics.
+On the other hand, static verification of code generated with meta-programming is an open research problem.
+We speculate our approach may offer the opportunity to solve this problem,
+and by construction generate statically verified code
+by reusing techniques originally developed to verify normal object-oriented code.
+The contributions of our work are as follows:
+\begin{itemize}
+\item
+In Section~\ref{s:verification} we use examples to demonstrate how to apply conventional object-oriented verification techniques to IC.
+
+\item
+In Section~\ref{s:pattern1} we use examples to show that IC is as expressive as QQ, and that
+generating code using a composition algebra
+is flexible and simple technique, as long as it is combined with
+reasonable programming patterns.
+\item In Section~\ref{s:study}, we discuss our experience implementing metaprogramming libraries for a language where IC is the only support for code reuse. 
+\end{itemize}
+
+In this paper we do not present a formal language semantics. This is partly due to space reasons
+and partly because a similar semantic has been formalized in former work~\cite{servetto2014meta}.
+Here we aim to show programming patterns that use this expressive power in surprising and novel ways.
+
+
+%-------------------------------------------------------------------------------------
+%-------------------------------------------------------------------------------------
+

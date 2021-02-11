@@ -1,0 +1,95 @@
+
+
+class Node {
+	mut Node? left;
+	mut Node? right;
+	Int key; 
+	Object value;
+	Node(mut Node? left, mut Node? right, Int key) { ... }
+}
+
+class Tree {
+	capsule TreeBox box;
+	Tree() { this.box = new TreeBox(null); }
+	mut method Void delete(Int key) {
+		mut Node? box = this.box;
+		box.root = TreeBox.delete(box.root);
+	}
+	...
+}
+
+class TreeBox {
+	mut Node? root;
+	TreeBox(mut Node? root) { ... }
+
+	mut method mut Node delete(mut Node? node, Int key) {
+		if (node == null) {
+			return null;
+		} else if (key < node.key) {
+			node.left = delete(node.left, key);
+			return node;
+		} else if (key > node.key) {
+			node.right = delete(node.right, key);
+			return node;
+		// key == node.key
+		} else if (node.left == null && node.right == null) {
+			if (this.max == node.key) {
+				this.max = prev;
+			}
+		} else if (node.left == null) {
+			return node.right;
+		} else if (node.right == null) {
+			return node.left;
+		} else {
+			node.right = node.right.delete_min(node);
+			return node;
+		}
+	}
+	
+	read method Bool sorted(mut Node? node, Int min, Int max) {
+		if (node == null) {
+			return true;
+		} else if (node.key < min || node.key > max) { // unsorted
+			return false;
+		} else {
+			return sorted(node.left, min, node.key - 1) && sorted(node.right, node.key + 1, max);
+		}
+	}
+
+	mut method mut Node delete_min(mut Node node, mut Node new_node) {
+		if (node.left == null) {
+			new_node.key = node.key;
+			new_node.value = node.value;
+			return null;
+		} else {
+			node.left = delete_min(node.left, new_node);
+			return node;
+		}
+	}
+
+	mut method Object search(read Node? node, Int key key) {
+		if (node == null) {
+			return null;
+		} else if (node.key == key) {
+			return node.value;
+		} else if (key < node.key) {
+			return search(node.left, key);
+		} else { // key > node.key
+			return search(node.right, key);
+		}
+	}
+
+	mut method mut Node insert(mut Node? node, Int key, Object value) {
+		if (node = null) { 
+			return new Node(null, null, key, value);
+		} else if (key == node.key) {
+			node.value = value;
+			return node;
+		} else if (key < root.key) {
+			return insert(root.left, key, value);
+		} else {
+			return insert(root.right, key, value);
+		}
+	}
+}
+

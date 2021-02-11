@@ -1,0 +1,40 @@
+ 
+
+Capability classes: connecting native calls to capability objects.
+
+Bonus:determinism and sound dynamic programming/memoization
+ 
+ 
+ I would like to design a language/technique where libraries can give
+strong guarantees to the (possibly malicious) user;
+for example a method like
+
+  Int distance(Point p){  return sqrt(p.x()*p.x()+p.y()*p.y()); }
+
+Would like to guarantee that it return the distance from 0/0,
+according to what "p" report as "x and y" and that
+it does nothing else (for example, it does not format your hard drive).
+While a lot of research has been made in proving that the behaviour is
+ok if "p" is ok, there is quite little about
+how to guarantee that your hard drive is not wiped (absence of side
+effects) in case p.x() can be overridden to perform arbitrary
+malicious behaviour. (You can refer to the language Joe-E for an
+attempt in this direction)
+
+
+Conventional object capability techniques, would say that "p" can only
+perform operations on capabilities in the ROG of p.
+Thus, the problem is reduced to check that that property of "p", not
+its actual code/behaviour.
+However this is still quite hard to check, since it requires to track
+the whole life time of "p".
+I propose a better solution:
+A reference to a Capability object (objects able to do "privileged
+options") is not sufficient to perform a privileged operation.
+A privileged reference is needed.
+Type modifiers are a very natural choice to statically support level
+of privilege for references (more on this later)
+If our "distance" method was to take a "non privileged" reference to
+"p", then even if a fileAccess object was in ROG(p),
+p.x() would not be able to use it, or if you prefer, the type system
+will prevent a call to p.x() that requires a privileged access.

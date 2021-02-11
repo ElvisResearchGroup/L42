@@ -1,0 +1,88 @@
+[HasToS]
+E = {}
+L = Class.Relax : Trait(Collection.list(E))[clear='This]
+class method Void base(I x, I y, mut L cells)
+class method S toS(I x, I y, read E val)
+@Cache.Now class method Void invariant(read Box box) =
+  if box.cells().size()!=$.Margin.layerSize() error X
+    "The size of the internal list is invalid: %box.cells().size(), but it should be %$.Margin.layerSize()"
+capsule Box box = (
+  cells=L()
+  for x in Range($.Margin.maxX()) (
+    for y in Range($.Margin.maxY()) 
+      This.base(x=x, y=y, cells=cells) 
+    )
+  Box(cells=cells)
+  )
+
+Box = Data:{
+  mut L cells
+  read method S toS()=(
+    var res=S""
+    for x in Range($.Margin.maxX()) (
+      res++=S.nl()
+      for y in Range($.Margin.maxY()) (
+        e=this(x=x,y=y)
+        res++=This1.toS(x=x, y=y, val=e)
+        )
+      )
+    res
+    )
+    
+  read method Iterator2D #iterator() = Iterator2D()
+  read method I #startIndex() = 0I
+  
+  //accessors imm
+  read method E (I x,I y) = this.cells().val($.Coords(x=x, y=y))
+  read method E ($.Cell2D that) = this(x=that.x(), y=that.y())
+
+  mut method Void (I x, I y, E val) = this.#cells().set($.Coords(x=x, y=y), val=val)
+  mut method Void ($.Cell2D that, E val) = this(x=that.x(), y=that.y(), val=val)
+
+  //accessors mut
+  mut method mut E #val(I x, I y) = this.#cells().#val($.Coords(x=x, y=y))
+  mut method mut E #val($.Cell2D that) = this.#val(x=that.x(), y=that.y())
+
+  mut method Void #set(I x, I y, capsule E val) = this.#cells().#set($.Coords(x=x, y=y), val=val)
+  mut method Void #set($.Cell2D that, capsule E val) = this.#set(x=that.x(), y=that.y(), val=val)
+
+  //accessors read
+  read method read E readVal(I x,I y) = this.cells().readVal($.Coords(x=x, y=y))
+  read method read E readVal($.Cell2D that) = this.readVal(x=that.x(), y=that.y())
+  }
+//@Cache.Clear class method Void #set(mut L cells, I x, I y, capsule E val) = 
+//accessors imm
+read method E (I x,I y) = this.box()(x=x, y=y)
+read method E ($.Cell2D that) = this.box()(that)
+
+@Cache.Clear class method Void (mut Box box, I x, I y, E val) = box(x=x, y=y, val=val)
+@Cache.Clear class method Void (mut Box box, $.Cell2D that, E val) = box(that, val=val)
+
+//accessors mut
+@Cache.Clear class method Void #set(mut Box box, I x, I y, capsule E val) = box.#set(x=x, y=y, val=val)
+@Cache.Clear class method Void #set(mut Box box, $.Cell2D that, capsule E val) = box.#set(that, val=val)
+
+//accessors read
+read method read E readVal(I x,I y) = this.box().readVal(x=x, y=y)
+read method read E readVal($.Cell2D that) = this.box().readVal(that)
+  
+/*Action= {interface 
+  method Any (mut Box box) 
+  }
+mut method Any (Action action)
+@Cache.Clear class method Any (mut Box box, Action action) = action(box=box)
+
+ActionTrait = Trait : {[Action]
+  T = {}
+  method T (mut Box box)
+  method T (mut This1 that)={
+    if T x = that(action=this) return x
+    error X"unreachable"
+    }
+  }
+class method Library action(Library that)[_] =
+  Class : ActionTrait['T=>Trait(that).nested()*'#apply(cells)] : that
+*/
+read method Iterator2D #iterator() = Iterator2D()
+read method I #startIndex() = 0I
+read method S toS() = this.box().toS()

@@ -1,1 +1,0 @@
-To be written, info to autoload plugins

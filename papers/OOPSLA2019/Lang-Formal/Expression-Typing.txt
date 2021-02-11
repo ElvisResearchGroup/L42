@@ -1,0 +1,33 @@
+G ::= x1 : T1 ..xn:Tn
+
+(p; G |- e : T) // check that e has type T, where e is inside G(this) (or the main expression, if this not in dom(G)), G is the usual Gamma, and Dz the class table
+=====================================
+
+
+	----------------
+	p; G |- x : G(x)
+
+	
+	p; G |- e0 : T0 .. p; G |- en : Tn
+	-----------------------------------  T m(T1 x1 ... Tn xn) _ in p(T0)
+	p; G |- e0.m(e1 .. en) : T
+
+
+	p; G |- e1 : T1 .. p; G |- en : Tn       if this in dom(G) then p.accessible(G(this), T0)
+	------------------------------------     static T' m(T1 x1 ... Tn xn) _ in  p(T0)
+	p; G |- T0.m(e1 .. en) : T'
+
+
+	p; G |- e : T'                if this in dom(G) then e = this
+	----------------------------  T x in fields(p(T'))
+	p; G |- e.x : T
+
+
+	p; G |- e1 : T1 .. p; G |- e1 : Tn      if this in dom(G) then T = G(this)
+	--------------------------------------- fields(Dz(T))=T1 x1.. Tn xn
+	p; G |- new T(e1 ... en): T
+
+
+	p; G |- e : T
+	---------------------------- T' in p.superTypes(T)
+	p; G |- e : T'

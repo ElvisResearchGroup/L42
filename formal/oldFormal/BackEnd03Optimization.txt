@@ -1,0 +1,147 @@
+-----------------------------
+5 Optimization//later?
+-----------------------------
+Goals:
+-bool/int/float etc should be types directly used in the code and
+their operations should be directly used.
+-Strings/other well known plugin imported data should be directly used too.
+-if and while should be handled without exceptions
+-Opt should be implemented with normal (optionally null) pointers
+-lists (also of mutable objects) should use a primitive vector/arraylist concept
+-classes with a single fields should be "erased" most of the times
+-method inlining should happen often
+-type cases/casts should be simplified away when possible (may be thanks to inlining?)
+-optimization of number/string literal
+
+optimization of number/string literal:
+during de sugaring make them separete functions, then all class method imm Foo are cached the first time they are executed
+(since 42 is compiled on the way, it is as fast as executing them at compile time, and for
+precompiled libraries we can have an operator forcing it)
+-------
+Note: optimizing a local variable seams harder then adding them to the core...
+In case we want to add local var to core, need to happen after /at the same time
+of implementing L42IntoJava.
+
+
+Main idea: a sequence of iteration over
+CT-->CT[CN=nativeOfThatPattern(CT(CN))]
+if CT(CN)= aSpecificPattern
+something like this should work for int,float,arrays and a couple more stuff
+for Opts would work in combination with wrapper class optimization
+
+
+###Optimizations over blocks:
+---
+#Var Local binding optimization
+if a block declare a binding x that:
+-has non interface type
+-is initialized from constructor
+-is only used as receiver //includes is never returned
+-the called methods on it are only get/set
+then you can replace the x with the wrapped type(s) and avoid creation
+of such object.
+TODO: can be extended allowing calls for other kinds of methods?
+//Note, we still have to keep the class in existence, since could be used somewhere else.
+
+###Optimizations over whole classes:
+---
+Example int:
+for some x, CN, m, P, plus,times
+int32Pattern=//input
+class CN{
+  method Library x() getter
+  method CN New_m(x)(Library x) new
+  method CN plus(CN this,CN that)
+    CN.New_m(use P
+    check int32_sum(left:this.x(), right: that.x())
+    error _)
+  method CN times(CN that) ...
+  }//note, not all methods need to be there
+int32Native=//output
+int32Native CN{//here instead we will generate all methods
+  method Library x() int32NativeToLib
+  method CN New_m(Library x) int32NativeFromLib
+  method CN plus(CN this,CN that)int32NativeSum
+  method CN times(CN this,CN that)int32NativeMul
+  }
+  //discuss: can we have two plus methods? can we have extra methods and just leave them be?
+
+WrapperClasses:
+class CN is wrapper if
+- exactly one field,
+- no setter(opt has no setter)
+then
+replace all CN with the field type except for CN.mxs
+CN constructors are simplified away
+CN.f(x,z) setters are x:=z ?? we just said no setter?
+CN.f(x) getter are y=x
+if x passed to a method needing an interface type, then it is wrapped as for throw(see later)?
+all throw x where G(x)=mdf CN in the original program//all throw of form throw x in this language
+are transformed in (mdf CN x'=CN.new(x) throw x') //x will be now of the wrapped type
+all catch throw CN x e,
+if x used outside of throws in e
+are transformed in (mdf?? CN x'=x.field() transformedOf(e)[x'=x] )
+//TODO: check this does not break {..return..} optimization
+
+  //note for marco: I believe/ed that this means redirect need to refuse to work on private P, no idea what that could mean now
+  //oddly correlated note for marco: if we rename all private nested classes to the top level, we can avoid most privacy coupuled; it would only stay for private methods; not sure is what we want
+
+If/While insertion:
+If insertion:
+(T y=CN.#checkTrue(x)  catch exception Void ex1 ex2)
+  replaced with
+if x ex2 else ex1
+  if CT(CN).kind=nativeBool
+
+While insertion
+while cond block
+----------------
+( loop (cond.#checkTrue(),  block ), catch exception Void x void, void)
+
+( loop (x=cond   Bool.#checkTrue( x),  block ), catch exception Void x void, void)
+
+( loop ( x=cond if x breakWhile block) catch exception Void x void, void)
+//If the block does not leak exception Void, we can also avoid the catch
+Throw/cast simplification
+(throw[T,_] ax
+ catch throw T x x
+ _)
+   replaced with
+   ax
+
+Throw/cast simplification
+(throw[T0,_] ax
+ catch throw T1 x x
+ ..
+ catch throw Tn x x
+ e)
+????? need casts ? ifs? type switch?//Note: this is not the patter used in sugar
+
+
+---------
+
+
+
+
+
+
+
+
+
+####### G.typeOf(e) //is it used now?
+G.typeOf(P)=class P if G.p(P) not interface
+otherwise
+G.typeOf(P)=class Any
+(_, x:T,_).typeOf(x)=T
+G.typeOf(void)=imm Void
+G.typeOf(L)=imm Library
+G.typeOf(loop e)=imm Void
+G.typeOf(throw[T1,T2] e)=T1
+G.typeOf( (_[T]) )=T
+G.typeOf( e.m[mdf P](x1:e1..xn:en) )=P::m(x1..xn)//resolved?
+
+//Note for marco: Guess type in formal
+//case use: use the plugin information, not the e!
+
+
+

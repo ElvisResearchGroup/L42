@@ -1,0 +1,54 @@
+reuse [AdamTowel]
+
+Module = Trait : {reuse [AdamTowel]
+  VoxelMap =Organize : Trait({...})['$.Margin=>'This]
+  }
+DeployUnit = Deploy.module(
+  url='VoxelMapTrait
+  code=Module.code()
+  name='VoxelMap
+  )
+  
+VMT = Load : {reuse [#$VoxelMapTrait] }
+VM = Class: VMT : {
+  class method I maxX()=50I
+  class method I maxY()=100I
+  class method I maxZ()=200I
+  }
+Map = Class : Data : VM.map2D(S.List) : {
+  class method Void base(I x, I y, mut S.List cells) = cells.add(S"")
+  class method S toS(I x, I y, read S val) = val.toS()
+  }
+  
+Terra = Class : VM.Physics : {
+  Map = {
+    read method Bool isFull(VM.Cell3D cell) = Bool.false()
+    read method Bool isWater(VM.Cell3D cell) = Bool.false()
+    read method Bool isAir(VM.Cell3D cell) = Bool.true()
+    read method Double gravity()=0.1\
+    read method I maxRadius()= 1I
+    }
+  CellsMap = {
+    Box ={
+      mut method Void ping()=void 
+      }
+    }
+  }  
+Try = (
+  capsule Terra.Entity.Cells cs=Terra.Entity.Cells()
+  mut Terra.Entity.Cells.Box csBox = cs.#box()
+  Debug(csBox.readVal(x=0I, y=0I))
+  void
+  )  
+Main=(
+  p1 = VM.Point3D(x=1\, y=2\, z=3\)
+  {}:Test"pOk"(actual=p1.toS(), expected=S"""
+    |VM.Point3D(x="1.0", y="2.0", z="3.0")
+    """.trim())
+  {}:Test"pKo"((
+    _ = VM.Point3D(x=500\, y=2\, z=3\)
+    catch error Message.Assertion a ( Bool.true() )
+    Bool.false()
+    ))
+  Debug(S"Hello world %p1")
+  )

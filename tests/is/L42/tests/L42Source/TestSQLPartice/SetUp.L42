@@ -1,0 +1,15 @@
+Create=DB.query[Void]"""
+  |CREATE TABLE Person (
+  |  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY(Start with 1, Increment by 1),
+  |  name varchar(255),
+  |  age int,
+  |  height int,
+  |  weight int
+  |  )
+  """
+Populate=(
+  Create(DB.#$of())()
+  catch Message _ void
+  void
+  )
+

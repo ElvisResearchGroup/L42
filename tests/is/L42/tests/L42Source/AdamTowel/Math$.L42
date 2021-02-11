@@ -1,0 +1,55 @@
+Support = Trait : { [HasToS]
+  class method This #from(S$StringBuilder stringLiteral)
+  
+  method This + (This that)
+  method This - (This that)
+  method This * (This that)
+  method This / (This that)
+   
+  read method Bool readEquality(read This that)
+  method Bool ==(This that)
+  method Bool !=(This that)
+ 
+  method Bool >(This that)
+  method Bool <(This that)
+  method Bool >=(This that)
+  method Bool <=(This that)
+  
+  class method This zero()
+  method I ceil()
+  method I floor()
+  method I round()
+  method Double toDouble()
+  }
+
+RandomListTrait=Trait:{
+  E={}
+  L=Class$Relax:Trait(Collection.list(E))[clear='This]
+  class method Void shuffle(mut L that,mut Math$Random r)=(
+    for a in Range(that.size()) (
+      b=r.nextInRange(a to=that.size())
+      tmp=that.val(a)
+      that.set(a val=\val(b))
+      that.set(b val=tmp)
+      )
+    )
+  class method Void #shuffle(mut L that,mut Math$Random r)=(
+    for a in Range(that.size()) (
+      b=r.nextInRange(a to=that.size())
+      tmp=that.#val(a)
+      that.#set(a val=that.#val(b))
+      that.#set(b val=tmp)
+      )
+    )
+  class method E randomChoice(read L that,mut Math$Random r)=
+    that.val(r.nextInRange(0\ to=that.size()))
+  class method mut E #randomChoice(mut L that,mut Math$Random r)=
+    that.#val(r.nextInRange(0\ to=that.size()))
+  }
+class method Library randomList(class Any that)[_]= (
+  //Class:RandomListTrait['L=>that;'E=>that*'val(that)]//not usable yet
+  i = Introspection.Nested.from(classAny=that)
+  m = i.meth(selector='val(that))
+  e = m.returnType().nested().classAny()
+  Class:RandomListTrait['L=>that;'E=>e]
+  )

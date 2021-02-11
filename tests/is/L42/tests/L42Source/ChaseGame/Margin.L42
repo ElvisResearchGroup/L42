@@ -1,0 +1,25 @@
+Double minX
+Double minY
+Double maxX
+Double maxY
+@Cache.Now class method Void invariant(Double minX,Double minY,Double maxX,Double maxY)=
+  if minX>=maxX || minY >= maxY error X
+    "Max less then min: minX=%minX, minY=%minY, maxX=%maxX, maxY=%maxY"
+method Bool isIn(Double x)= x>=this.minX() && x<=this.maxX()
+method Bool isIn(Double y)= y>=this.minY() && y<=this.maxY()
+method Double asIn(Double x)={
+  if x<this.minX() return this.minX()
+  if x>this.maxX() return this.maxX()
+  return x
+  }
+method Double asIn(Double y)={
+  if y<this.minY() return this.minY()
+  if y>this.maxY() return this.maxY()
+  return y
+  }
+method This restrict(Double that)=\(
+  minX=this.minX()+that
+  minY=this.minY()+that
+  maxX=this.maxX()-that
+  maxY=this.maxY()-that
+  )

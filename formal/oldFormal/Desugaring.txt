@@ -1,0 +1,31 @@
+We need to:
+-Design sugared 42 grammar
+-sugared well formedness
+-desugaring process
+
+Here we put ideas for better desugaring:
+
+-use the new pattern in with for closing the iterators with rethrowable errors
+
+-possible new pattern for While:
+while e block
+becomes:
+( var T v = e //how we get that type? Why it can not be a skeletal?
+  //we can instead of duplicating the e,
+  // use guess type to obtain the P, then call P.#false() 
+  //and initialize v for real at the start of the loop instead of the end
+  loop (
+    v.checkIfTrue()
+    block
+    v := e
+    )
+  catch exception Void v1 if v (exception void)
+  void/*unreachable*/
+  )
+  
+ This avoid the concepts of break.
+ OR, on the opposite:
+ if the bool class has a #falseType() and #checkTrue() throw a falseType...
+the sugar could do
+ catch exception guessType(x)::#falseType()
+ and the user could break by doing exception Break()

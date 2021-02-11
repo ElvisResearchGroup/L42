@@ -1,0 +1,607 @@
+\input{svgnam.def} % load svg colours
+
+%----------utility
+\newcommand{\SetAsGlobal}[1]{%
+  \global\setbox#1\hbox{\usebox{#1}}%
+  }
+\newcommand{\makeCsName}[1]{\csname#1\endcsname}
+\newcommand{\makeNewSaveBox}[1]{%
+   \expandafter\newsavebox\csname#1\endcsname%
+   }
+\newcommand{\provideSaveBox}[1]{
+  \ifcsname#1\endcsname%
+   \relax%
+  \else%
+    \makeNewSaveBox{#1}%
+  \fi%
+}
+\newcommand{\SaveWithName}[2]{%
+%  \ifcsname privateNameForSaveWithName#1\endcsname%
+%\makeNewSaveBox{privateNameForSaveWithName#1}
+%  \else%
+%    \relax%
+%  \fi%
+  \provideSaveBox{privateNameForSaveWithName#1}%
+  \SetAsGlobal{\makeCsName{privateNameForSaveWithName#1}}%
+  \sbox{\makeCsName{privateNameForSaveWithName#1}}{#2}%
+  \SetAsGlobal{\makeCsName{privateNameForSaveWithName#1}}%
+}
+\newcommand{\UseName}[1]{%
+  \ifcsname% %this (commented) end line is fundamental
+privateNameForSaveWithName#1\endcsname%
+\usebox{\makeCsName{privateNameForSaveWithName#1}}%
+  \else%
+    [???]%
+  \fi%
+}
+\newcommand{\strongEndLine}{\!\!\!${}_{}$\\*}
+
+%---------importing---------
+\newcommand{\EmbeddedFigure}[4]{
+\begin{figure}[#4]
+\begin{center}
+#1
+\end{center}
+%\HSep
+\caption{#2}\label{fig:#3}
+\end{figure}
+}
+\newcommand{\ImportFigure}[4]{
+\begin{figure}[#4]
+\noindent\!\!\!\!\!\!\!\!
+%\begin{center}
+\input{#1}
+%\noindent\end{center}
+%\HSep
+\caption{#2}\label{fig:#3}
+\end{figure}
+}
+\newcommand{\ImportFigureFullPage}[4]{
+\begin{figure*}[#4]
+%\begin{center}
+\input{#1}
+%\end{center}
+%\HSep
+\caption{#2}\label{fig:#3}
+\end{figure*}
+}
+
+%------------------references----------
+
+\newcommand{\RefToChapter}[1]{Chapter~\ref{ch:#1}}
+\newcommand{\RefToFigure}[1]{Figure~\ref{fig:#1}}
+\newcommand{\RefToSection}[1]{Section~\ref{sect:#1}}
+\newcommand{\RefToTheorem}[1]{Theorem~\ref{theo:#1}}
+\newcommand{\RefToLemma}[1]{Lemma~\ref{lemma:#1}}
+\newcommand{\RefToRule}[1]{%
+%  \ifcsname% %this (commented) end line is fundamental
+%privateNameForSaveWithName#1\endcsname%
+\textsc{(#1)}%
+%  \else%
+%    [???]%
+%  \fi%
+}
+
+%----------table helpers
+\newcommand{\nextColumn}{&}
+\newcommand{\nextColumnBigSpace}{\ &}
+\newcommand{\nextColumnLittleSpace}{\! &}
+\newcommand{\tableEquals}{\nextColumnLittleSpace{=}\nextColumnLittleSpace}
+%----------------metarules---
+\newsavebox{\savePremise}
+\newenvironment{premise}{%
+  \begin{lrbox}{\savePremise}%
+  $\begin{array}{c}%
+  }{%
+  \end{array}$%
+  \end{lrbox}%
+  \SetAsGlobal{\savePremise}
+  }
+\newsavebox{\saveConsequence}
+\newenvironment{consequence}{%
+  \begin{lrbox}{\saveConsequence}%
+  $\begin{array}{l}%
+  }{%
+  \end{array}$%
+  \end{lrbox}%
+  \SetAsGlobal{\saveConsequence}
+  }
+\newsavebox{\saveSideCondition}
+\newenvironment{sideCondition}{%
+  \begin{lrbox}{\saveSideCondition}%
+  $\begin{array}{l}%
+    \mbox{with }\\[-0.5ex]%  %DECOMMENT FOR WITH
+    \,\,\begin{array}{l}% %DECOMMENT FOR WITH
+  }{%
+  \end{array}% %DECOMMENT FOR WITH
+  \end{array}$%
+  \end{lrbox}%
+  \SetAsGlobal{\saveSideCondition}
+  }
+\newcommand{\emptyPremise}{
+  \begin{lrbox}{\savePremise}%
+  \end{lrbox}%
+  \SetAsGlobal{\savePremise}
+  }
+\newcommand{\emptyConsequence}{
+  \begin{lrbox}{\saveConsequence}%
+  \end{lrbox}%
+  \SetAsGlobal{\saveConsequence}
+  }
+\newcommand{\emptySideCondition}{
+  \begin{lrbox}{\saveSideCondition}%
+  \end{lrbox}%
+  \SetAsGlobal{\saveSideCondition}
+  }
+
+\newsavebox{\saveMetaRule}
+\newcommand*{\metaRuleName}{1}
+\newenvironment{MetaRule}[1]{%
+\renewcommand*{\metaRuleName}{#1}%
+\emptyPremise
+\emptyConsequence
+\emptySideCondition
+%empty the local variable
+}{
+\SaveWithName{\metaRuleName}{%
+\DisplayMetaRuleBis{\metaRuleName}{\usebox{\savePremise}}{\usebox{\saveConsequence}}{\usebox{\saveSideCondition}}%
+%\DisplayMetaRule{\metaRuleName}{\usebox{\savePremise}}{\usebox{\saveConsequence}}{\usebox{\saveSideCondition}}%
+}%
+\UseName{\metaRuleName}%
+}
+\newcommand*{\metaRuleNameAux}{1}
+\newenvironment{MetaRuleAux}[2]{%
+\renewcommand*{\metaRuleName}{#1}%
+\renewcommand*{\metaRuleNameAux}{#2}%
+\begin{premise}
+\end{premise}
+\begin{consequence}
+\end{consequence}
+\begin{sideCondition}
+\end{sideCondition}
+%empty the local variable
+}{
+\SaveWithName{\metaRuleNameAux}{%
+%\DisplayMetaRuleBis{\metaRuleName}{\usebox{\savePremise}}{\usebox{\saveConsequence}}{\usebox{\saveSideCondition}}%
+\DisplayMetaRule{\metaRuleName}{\usebox{\savePremise}}{\usebox{\saveConsequence}}{\usebox{\saveSideCondition}}%
+}%
+\UseName{\metaRuleNameAux}%
+}
+
+\newcommand\metaRuleScale{1}
+
+\newcommand{\DisplayMetaRule}[4]{
+  \ensuremath{
+    {\tiny{\textsc{(#1)}}}
+    \displaystyle
+    %\frac{\!\!\scalebox{0.90}[0.90]{#2}\!\!}{\!\!\scalebox{0.90}[0.90]{#3}\!\!}{\scalebox{0.75}[0.75]{#4}}
+	\frac{{#2}}{{#3}}{\scalebox{\metaRuleScale}[\metaRuleScale]{#4}}
+%    \frac{%
+%      \ensuremath{\!\!%
+%      \begin{array}{l}%
+%      #2\\[0.2em]%
+%      \end{array}%
+%      \!\!}%
+%    }{%
+%      \ensuremath{\!\!%
+%      \begin{array}{l}%
+%      \\[-1.1em]#3%
+%      \end{array}%
+%      \!\!}%
+%    }{\!\scalebox{0.75}[0.75]{#4}}
+    }
+  }
+
+\newcommand\DisplayRuleName[1]{
+  \!\!\!\!%
+  \begin{array}[c]{l}%
+    \rotatebox{90}{\scalebox{0.9}{\textsc{(#1)}}}%
+  \!\!\!\!\!\!%
+  \end{array}%
+  }
+\newcommand\DisplayPremise[1]{%
+  \begin{array}{c}%
+  #1%
+  \\[0.5ex]%
+  \end{array}%
+  }
+\newcommand\DisplayConsequence[1]{%
+  \begin{array}{c}%
+  \\[-2ex]%
+  #1%
+  \end{array}%
+  }
+\newcommand{\DisplayMetaRuleBis}[4]{
+\begin{Scaled}{\metaRuleScale}{\metaRuleScale}%{0.95}{0.95}
+\ensuremath{%
+\!\!\!\!\!\!\!\!\!\begin{array}{l}
+\DisplayRuleName{#1}
+\begin{array}{l}%
+\frac{%
+  \!\!\!\!\DisplayPremise{#2}\!\!\!\!%
+}{%
+  \!\!\!\!\DisplayConsequence{#3}\!\!\!\!%
+}\\[-0.5ex]%
+\scalebox{0.95}{\ensuremath{#4}}%
+\end{array}
+\end{array}
+}%ensuremath
+\end{Scaled}
+}
+\newcommand{\DisplayMetaRuleBisOld}[4]{
+\begin{Scaled}{\metaRuleScale}{\metaRuleScale}%{0.95}{0.95}
+\!\!\!\!\!\!\mbox{
+\ensuremath{%
+\!\!\!\!\!\begin{array}{l}
+ \begin{array}[c]{l}
+  \rotatebox{90}{\scalebox{0.9}{\textsc{(#1)}}}
+ \end{array}\! % \ 
+\displaystyle                  %  #1 = nome regola
+\begin{array}{l}
+\ensuremath{\frac{
+\!
+\begin{array}{c}
+#2
+\\[0.25em]
+\end{array}
+\!
+}{
+\!
+\begin{array}{c}
+\\[-0.8em]
+#3
+\end{array}
+\!
+}}\\ 
+\scalebox{0.95}{\ensuremath{#4}}
+\end{array}
+\end{array}
+}%ensuremath
+}%mbox
+\end{Scaled}
+}
+
+
+%----------scaled enviroment-------------
+\newsavebox{\saveScaled}
+\newcommand*{\varScalableEnvironmentWidth}{1}
+\newcommand*{\varScalableEnvironmentHeight}{1}
+\newenvironment{Scaled}[2]{%
+  \renewcommand*{\varScalableEnvironmentWidth}{#1}
+  \renewcommand*{\varScalableEnvironmentHeight}{#2}
+  \begin{lrbox}{\saveScaled}
+  }{
+  \end{lrbox}
+  %\SetAsGlobal{\saveScaled}
+  \noindent\scalebox{\varScalableEnvironmentWidth}[\varScalableEnvironmentHeight]{\usebox{\saveScaled}}
+  }
+
+
+%---------------------------mathHelpers
+\newcommand{\mathArray}{\MathArray}
+\newcommand{\MathArray}[1]{
+\ensuremath{
+  \begin{array}[t]{l}
+  #1
+  \end{array}
+}
+}
+\newcommand{\MathArrayLine}[1]{
+\ensuremath{%
+  \begin{array}{| l}%
+  \\[-2ex]%
+  #1%
+  \\[1ex]%
+  \end{array}%
+  }%
+}
+
+%-------------------------------- comms--------
+\newif\ifsubmit
+\submitfalse
+%\submittrue
+\ifsubmit
+\newcommand{\EZ}[1]{#1} 
+\newcommand{\EZComm}[1]{} 
+\newcommand{\MS}[1]{#1} 
+\newcommand{\MSComm}[1]{} 
+\newcommand{\AP}[1]{#1} 
+\newcommand{\APComm}[1]{} 
+\newcommand{\KJX}[1]{#1} 
+\newcommand{\KJXComm}[1]{} 
+\newcommand{\MAZ}[1]{#1}
+\newcommand{\MAZComm}[1]{}
+
+\ifdefined\AC%
+  \renewcommand{\AC}[1]{#1}%
+\else%
+  \newcommand{\AC}[1]{#1}%
+\fi%
+
+\newcommand{\ACComm}[1]{} 
+\else
+
+
+\newcommand\parcolor[2]{{\leavevmode\color{#1}#2}}
+
+
+\newcommand{\NoteColour}[2]{\parcolor{#1}{#2}}
+\newcommand{\NoteText}[2]{{\parcolor{#1}{#2}}}
+
+%\newcommand{\supresspar}[1]{%
+%	\def\temp{#1}%
+%	\def\ppar{\par}%
+%	\let\oldpar=\par
+%	\ifx\temp\ppar%
+%		\def\par{\let\par=\oldpar}%
+%	\else%
+%	\fi%
+%	#1
+%}
+
+% Marks a new line, as \\
+\newcommand{\NL}{\textbackslash\textbackslash}
+
+\let\munskip=\relax
+\newcommand{\HideNotes}{%
+	\renewcommand{\NoteColour}[2]{##2}%
+	
+	\renewcommand{\NoteText}[2]{}
+
+	% Ignore any spaces before a \XXComm or \XXDel command 	
+	% WARNING: don't put a forced newline or vspace that you want to be chewed up AFTER a \XXComm or \XXDel, e.g. if you want to delete the b line, DONT do this:
+	%	a\\ \XXDel{b}\\ c
+	% remove the \\ after the XXDel or put it inside the \XXDel
+	\let\munskip=\unskip
+}
+\newcommand{\NoNotes}{
+	\let\NoteColour=\undefined
+	\let\NoteText=\undefined
+}
+
+%{prefix}{name}{colour}
+\newcommand{\MakeNoteCommands}[3]{%
+	\expandafter\newcommand\csname#1\endcsname[1]{%
+		\NoteColour{#3}{##1}}%
+	\expandafter\newcommand\csname#1Comm\endcsname[1]{%
+		\munskip\NoteText{#3}{\scriptsize [#2{:} ##1]}}%
+	\expandafter\newcommand\csname#1Del\endcsname[1]{%
+		\munskip\NoteText{#3!60!White}{[##1]}}%
+	\expandafter\newcommand\csname#1Block\endcsname[2]{%
+		\NoteText{#3}{[{\scriptsize #2{:} ##1{| }}}%
+		##2%
+		\NoteText{#3}{]}}%
+}
+
+\MakeNoteCommands{EZ}{Elenna}{Blue} 
+\MakeNoteCommands{MS}{Marco}{Green}
+\MakeNoteCommands{IO}{Isaac}{Blue} % hmm, was Blue before
+\MakeNoteCommands{AP}{Alex}{purple}
+\MakeNoteCommands{KJX}{kjx}{brown}
+\MakeNoteCommands{MAZ}{Max}{purple}
+
+\ifdefined\AC%
+  \renewcommand{\AC}[1]{\textcolor{orange}{#1}}%
+\else%
+  \newcommand{\AC}[1]{\textcolor{orange}{#1}}%
+\fi%
+\newcommand{\ACComm}[1]{\NoteComm{orange}{Andrea}{#1}}
+\fi
+
+
+%------ generic arrow -----------
+%$\raisebox{1em}[0em]{ciao}$
+\newcommand{\UpDownArrow}[3]{
+{
+\xrightarrow[#2]{#1}
+%\raisebox{0em}[0em][0em]{$%
+%  \begin{array}{c}%
+%  \scalebox{0.8}{$#1$}\\[-0.7em]%
+%  #3\\[-0.85em]%
+%  \scalebox{0.8}{$#2$}%
+%  \end{array}%
+%  $}%
+}
+}
+
+%\newcommand{\EnvArrowDim}[4]{
+%{\relax}_{
+%  \substack{
+%    \scalebox{#3}[1]{$#1$}\\
+%    \scalebox{#4}[0.5]{$#2$}
+%  }}
+%}
+
+%\newcommand{\EnvArrow}[2]{
+%    \EnvArrowDim{#1}{#2}{1}{0.75}
+%}
+
+%------ grammatica environment----------
+\newenvironment{grammatica}{$\begin{array}[t]{lcll}}{\end{array}$}
+\newcommand\produzioneDef{%
+  %\scalebox{0.8}[1]{${:}{:}$}\scalebox{0.5}[1]{$=$}%
+  \Coloneqq
+}
+\newcommand{\produzione}[3]{%
+%
+\!\!\!#1%
+%
+&%
+\!\!\!\produzioneDef\!\!%
+&%
+%
+#2%
+&%
+%
+\!\!\mbox{{\small{#3}}}%
+}
+\newcommand{\seguitoProduzione}[2]{%
+&&%
+#1 
+&%
+\!\!\!\mbox{{\small{#2}}}%
+}
+\newcommand{\Terminale}[1]{%
+\ensuremath{%
+\mbox{%
+  %\color{blue}
+  \textbf{\texttt{#1}}%
+  }%
+}%
+}
+\newcommand{\NonTerminale}[1]{\ensuremath{\mathit{#1}}\xspace}
+
+%----------emphatizations---
+
+\newcommand*{\Virgolette}[1]{``#1''}
+
+
+
+
+
+
+
+
+
+%--------------------------------------------------------------------------------------------------------------------------------
+%------------------ausiliarie
+%--------------------------------------------------------------------------------------------------------------------------------
+
+%\definecolor{metaVarColor}{rgb}{0.05,0.3,0.05}
+\definecolor{metaVarColor}{rgb}{0.65,0.1,0.1}
+% enabled
+%\def\V#1{{\color{metaVarColor}\def\V##1{{##1}}\def\color##1{}#1}}
+%\def\Nv#1{{\def\V##1{{##1}}\V{#1}}}
+% disabled:
+\def\V#1{{#1}}
+\def\Nv#1{{#1}}
+
+
+\def\Inverse#1{{\colorbox{black}{\color{white}\def\Inverse##1{{##1}}\def\color##1{}#1}}}
+
+
+\newcommand*{\Aux}[1]{{\scalebox{0.8}[0.8]{\sf #1}}\xspace}
+\newcommand{\Many}[1]{%\V{%
+  \hspace{0.03ex}
+  \overline{\hspace{-0.03ex}#1\hspace{-0.03ex}}%}%
+  \hspace{0.03ex}
+  }
+
+%\newcommand{\Many}[1]{\V{#1\!\Aux{s}}}
+
+
+\newcommand*{\NotSide}[1]{\mbox{not}\ #1}
+%\newcommand*{\ForallSide}[2]{#2\quad\forall #1}
+%\newcommand*{\ForallPremise}[2]{#2\quad\forall #1}
+\newcommand*{\ForallSide}[2]{\forall #1 : #2}
+\newcommand*{\ForallPremise}[2]{\forall #1 :\quad\! #2}
+\newcommand*{\ExistsSide}[2]{#2\quad\exists #1}
+\newcommand*{\ExistsPremise}[2]{#2\quad\exists #1}
+\newcommand*{\ImpliesSide}[2]{#1\mbox{ implies }\ #2}
+\newcommand{\wrt}{w.r.t.\xspace}
+
+
+
+
+%----------proofs--
+\ifdefined\theorem%
+  \relax%
+\else%
+  \newtheorem{theorem}{{\bf Theorem}}%
+\fi%
+
+%\ifdefined\lemma%
+%  \relax%
+%\else%
+%  \newtheorem{lemma}[theorem]{{\bf Lemma}}%
+%\fi%
+
+\ifdefined\proof%
+  \renewenvironment{proof}{{\noindent{\it Proof}.}}{}%
+\else%
+  \newenvironment{proof}{{\noindent{\it Proof}.}}{}%
+\fi%
+
+\ifdefined\qedhere%
+  \relax
+\else{%
+  \ifdefined\qed%
+    \newcommand{\qedhere}{\qed}%
+  \else%
+    \newcommand{\qedhere}{\ensuremath{\square}}%
+\fi}%
+
+  \newcommand{\qedhere}{\ensuremath{\square}}%
+\fi%
+
+
+\newenvironment{ProofOf}[1]{\noindent{\it Proof of Theorem} \ref{#1}.}{}
+
+
+\newcommand*{\CaseLabel}[1]{%
+  \SaveWithName{privateNameForItemLabel}{\ensuremath{#1}}%
+  \item[Case \UseName{privateNameForItemLabel}]\strongEndLine%
+}
+
+\newcommand*{\CaseLabelTyped}[2]{%
+  \SaveWithName{privateNameForItemLabel}{\ensuremath{#1}}%
+  \SaveWithName{privateNameForItemLabelA}{\ensuremath{#2}}%
+  \item[Case \UseName{privateNameForItemLabel}]\strongEndLine%
+  \item[typed by \UseName{privateNameForItemLabelA}]\strongEndLine
+}
+
+
+\newenvironment{CodeExample}[1]{%
+  \vspace{-1ex}
+  ${}_{}$\\
+  \noindent\begin{minipage}{0.04\columnwidth}
+  \rotatebox{90}{\scalebox{0.9}{\textbf{#1}}}
+  \end{minipage}
+  \begin{minipage}{0.95\columnwidth}
+  }
+  {
+  \end{minipage}
+  \vspace{-1ex}
+  ${}_{}$\\
+  }
+
+\newenvironment{CodeExampleBis}[1]{%
+  \vspace{-1ex}
+  ${}_{}$\\
+  \noindent\begin{minipage}{0.04\columnwidth}
+  {\scalebox{0.9}{\textbf{#1}}}
+  \end{minipage}
+  \begin{minipage}{0.95\columnwidth}
+  }
+  {
+  \end{minipage}
+  \vspace{-1ex}
+  ${}_{}$\\
+  }
+
+  
+
+%\newenvironment{SideBox}[1]{%
+%  \vspace{-1ex}
+%  \bO
+%  ${}_{}$\\
+%  \begin{math}\begin{array}{l}
+%  \noindent\begin{minipage}{0.95\columnwidth}
+%  }
+%  {
+%  \end{minipage}
+%  \end{array}\end{math}
+%  \vspace{-1ex}
+%  ${}_{}$\\
+%  \bC
+%  }
+
+\newcommand{\LeftItem}[1]{
+\item[$#1$\hspace{1.8ex}]\hspace{-1.9ex}\parbox[t]{0.97\columnwidth}
+}
+
+
+
+
+
+

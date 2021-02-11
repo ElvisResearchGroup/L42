@@ -1,0 +1,119 @@
+\section{Conclusions and Future Work}
+\label{s:conclusion}
+Our approach follows the principles of \emph{offensive programming}
+~\cite{stephens2015beginning}, where 
+no attempt to fix or recover an invalid object is performed and
+%	\begin{itemize}
+%\item
+ failures (unchecked exceptions)
+		are raised close to their cause: at the end of constructors creating invalid objects and immediately after field updates and instance methods that invalidate their receivers.
+
+%}{3}{[meaning] is not clear} (the operation creating an invalid object), i.e. we ``fail-fast''.    
+%		\item
+%	\end{itemize}
+
+
+%The aim of our work is only to enforce object invariants, so we do not present complexities unnecessary for this purpose.
+Our work builds on a specific form of TMs and OCs, whose
+popularity is growing, and we expect future languages to support some variation of these.
+Crucially, any language already designed with such TMs and OCs
+can also support our invariant protocol with minimal added complexity.
+
+
+We demonstrated the applicability and simplicity of our approach with a GUI example.
+Our invariant protocol performs several orders of magnitude less checks than visible state semantics, and requires much less annotations 
+than Spec\#, (the system with the most comparable goals).
+In appendix~\ref{s:meaning} we formalise our invariant protocol and prove it sound. To stay parametric over the various existing type systems which provably enforce the properties we require for our proof (and much more), we do not formalise any specific type system.
+
+
+One interesting avenue for future work would be to
+use invariants to encode pre and post conditions
+as done by~\cite{Flanagan06hybridtypes}: where pre and post conditions are encoded as the invariants of the parameter and return types (respectively).
+Without good syntax sugar, such an approach could be quite verbose, however it would ensure that a methods precondition holds during the entire execution of a method, and not just the beginning. In addition this could be more efficient than traditional run-time checking when the same argument is used in the invocations of methods with the same pre-condition, as happens often in practice for recursive methods: where many parameters are simply parsed unmodified in recursive calls.
+
+% a method could be declared as taking a class whose invariant corresponds to the method's pre-condition,  and returning a class whose invariant corresponds to the pos-condition.
+
+
+% Such approach may be quite verbose, but would ensure that the precondition on the argument holds for the whole execution of the method, instead of just holding at the beginning.
+
+%It could be worthwhile formalising the minimal type system required by validation.
+
+
+
+%However the restrictions we make to ensures that \Q@validate@ is deterministic, namely those the type-system enforces due to its signature, seem quite flexible and reasonable;
+
+%%%%%examples of things that future work may investigate allowing are deterministic I/O and multi-threading. 
+
+The language we presented here restricts the forms of \Q@invariant@ and capsule mutator methods;
+such strong restrictions allow for sound and efficient injection of invariant checks. 
+These restrictions do not get in the way of writing invariants over immutable data, but the box pattern is required for verifying complex mutable data-structures. We believe this pattern, although verbose, is simple and understandable. While it may be possible for a more complex and fragile type system to reduce the need for the pattern whilst still ensuring our desired semantics, we prioritize simplicity and generality. 
+
+In order to obtain safety, simplicity, and efficiency we traded some expressive power: while can easily verify a doubly linked list of immutable elements, we can not verify a doubly linked lists of mutable elements. Our approach does not prevent correctly implementing such data-structures, but the \Q@invariant@ method can only refer to immutable and encapsulated state, thus it would be unable to access the list's nodes, since they would contain \Q@mut@ references to shared objects.
+In order to verify such data structures we could add a special kind of field which cannot be (transitively) accessed by invariants; such fields could freely refer to any object. We are however unsure if such complexity would be justified.
+
+% To verify those data-structures, in future work
+% we may investigate a special kind of field that
+% could be accessed only using a \Q@mut@ receiver.
+% Such fields would be allowed to refer to not encapsulated state, 
+% and they would be unreachable from the invariant code,that starts from a \Q@read this@.
+
+% \LINE
+% The language we presented here restricts the form of \Q@invariant@ and capsule mutator methods. 
+% We have shown that such restrictions, albeit strong, allow sound and efficient injection of invariant checks. 
+% While our restrictions do not hamper writing invariants over immutable data, invariants over complex mutable % data require the box pattern.  We believe the box pattern, although verbose, is simple and understandable, but % could be improved with syntax sugar.
+
+% Our goals of simplicity and efficiency come at the cost of expressivity: we are unable to express invariants % over non-encapsulated mutable structures, 
+% though a more complex and fragile type system may reduce such limitations. However we believe we have % demonstrated that our limitations are not too severe and that we have achieved our goals.
+% \LINE
+
+%, however such a language is unlikely to be easily understood by programmers;
+%being able to predict whether code would be well typed allows programmers
+%to better take advantage of the language.
+
+For an implementation of our work to be sound, non-deterministic exceptions like stack overflows or out of memory errors cannot be caught in invariants, or else they may use this to behave non-deterministically. Currently L42 never allows catching them, however we could also write a (native) capability method (which can't be used inside an invariant) that allows catching them. Another option worth exploring would be to make such exceptions deterministic, perhaps by giving invariants fixed stack and heap-sizes.
+
+Other directions that could be investigated to improve our work include the addition of syntax-sugar to ease the burden of the box and the transform patterns; type modifier inference, and support for flexible ownership types.
+
+%Our work, in comparison to previous RV techniques,
+%aims to be efficient by limiting the number of validation calls, however we have \REVComm{no empirical evaluation of our approach's performance}{3}{\label{CONTRA1}contradictory to [see footnote \ref{CONTRA2}]}.
+%To improve efficiency it could be worth investigating elision of unnecessary validation calls
+%or even only validating parts of objects (by running the part of \Q@validate@ that could fail).
+
+\begin{comment}
+In literature, both static and run-time verification discuss
+the correctness of common programming patterns in conventional languages.
+Their struggle is proof of how hard it is to deal with the expressive power of unrestricted imperative object oriented programming.
+ Here instead we build on languages using TMs and OCs to tame the use of imperative features. In this way
+we have a fresh start where static variables are disallowed, unchecked exceptions require care to be captured, and I/O is allowed only when an opportune capability object is reachable.
+Following those restrictions allow simpler reasoning.
+The philosophy of our approach is to be like an extended type system: 
+It is the programmer's decision
+to annotate a field with a certain type,
+or the class with a certain \validate.
+If the program is well-typed, they are not questioned in their intent.
+During execution the system is solely responsible for soundly enforcing the invariant protocol.
+This is in sharp contrast with most work in RV, that is often conceived more as a tool to ease debugging:
+both deciding properties and enforcing them is controlled by the programmers.
+This is also different from static verification,
+%where the properties are ensured instead of enforced.
+where the properties are ensured ahead of time instead of being enforced during execution.
+%Static verification is very heavy weight, and often impractical/restrictive.
+
+%Both static and runtime verification
+%aim to monitor a wide range of properties; to this aim they accept a 
+%great deal of complexity, and require the programmer to develop a deep understanding
+%over the behaviour and the structure of code.
+%For example, the specification of method’s pre and post-conditions
+%encode a generalization of the program behaviour in the dedicated specification language.
+%This means that, even in the best case scenario, 
+%using pre/post-conditions the user is required to specify the program semantics twice:
+%first in the specification language and then in the underlying programming language.
+%In comparison, our approach aims to only verify conditions on immutable or well encapsulated state.
+%This makes our approach \emph{ultra-lightweight}:
+%the programmer specifies only the desired \validate{} method.
+
+Moreover, our approach does not aim to replace static or run-time verification,
+but is a building block they can rely upon.
+\end{comment}
+
+%\noindent\textit{Our approach:}

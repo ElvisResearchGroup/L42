@@ -1,0 +1,383 @@
+\begin{comment}
+\subsection{Family}
+We wished to make an example where the performance of L42 and the conventional approach 
+was similar. We forged an example when a Family has a list of parents and a list of children;
+all the childrens need to be younger then their parents and every Person need to have a non empty name and a positive age.  
+We model the pass of time with a \Q@processDay@ method, and we simulate 3 years of life (that is, 3*365 days) of a family of 4.
+The age of a Person grow when its birthday is processed.
+Notably, \Q@processDay@ is a mut method that can potentially mutate any person in the system, thus
+L42 have to run a lot of invariant checks. The object graph here is very shallow: the Family holds the Persons and that is it.
+However, even in this case we get about 10 times less invariant calls: Num in the conventional approach and Num in L42.
+
+\subsection{Spec\# 2papers}
+Our goal in this third case study was to show that even if we do not aim to expressiveness, but to simplicity, soudness and efficiency, we are still able to express a reasonable amount of cases.
+We can express all the examples except ....
+Again, we quantify the annotation burden and we discover....
+
+\section{Stack overflow and Out of memory}
+For our system to be sound,
+Stack overflow and Out of memory errors need to be modeled specially.
+If they are just (unchecked) exceptions then they could be catched to 
+generate non deterministic behaviour inside invariant code.
+
+However, it is possible to use capaility objects to capture them as special system events/signals.
+In this way we can maintain the soundness of our system even in this corner case.
+Of course, another option would be to make them into unrecoverable fatal errors.
+
+
+\section{Invariant protocols}
+-valid: if invariant was called, in a finit time invariant wold return true
+-deeply valid: the object and all the objects in its ROG are valid
+-peer valid: you and all your pears are owned valid
+-owned valid: the object and all the object owned are valid
+-Steady state: a method on that object is not currently executing
+
+sound to your own terms
+  invariant protocol 2 parts
+    1where is supposed to hold
+    2where is acually checked
+
+D/E/J 
+-expected: before/after pmc and after constructor
+-checked: before/after pmc and after constructor  
+*sound (while carefully about non pure invariants) 
+*not good for reasoning [flexible object invariants]
+*slow
+
+spec\#
+-expected:  default contract implies peer-valid
+-checked: after every field update, constructors and expose-statement (pack/unpack in literature)
+  
+L42:
+-expected: the result of any expression and subexpression is deeply valid,
+  except for 'this' inside of constructors and 'invaliant' methods.
+-checks: after every field update, after the constructors, after every exposer.
+
+implies: whenever a method or constructor is called, the ROG of all parameters is valid.
+if the method is not ``invariant'' then also the ROG of this is valid.
+
+ Microsoft code contracts
+ JML
+\end{comment}
+\newpage
+\section{Proof}
+\label{s:proof}
+
+\subsection{Stronger Soundness $\Rightarrow$ Soundness}
+\saveSpace
+Stronger Soundness depends on
+$\mathit{wellEncapsulated}$, $\mathit{monitored}$
+and $OK$:
+
+\indent $\mathit{wellEncapsulated}(\sigma,\e,l_0)$ iff
+$\forall l \in \mathit{erog}(\sigma,l_0), \text{not}\ \mathit{mutatable}(l,\sigma,\e)$.\loseSpace
+
+\noindent The main idea is that an object is well encapsulated if its encapsulated state cannot be
+modified by $e$.
+
+An object is \emph{monitored} if execution
+is currently inside of a monitor for that object, and
+the monitored expression $\e_1$ does not
+contain $l$ as a \emph{proper} subexpression:
+
+\indent $\mathit{monitored}(\e,l)$ iff
+$\e=\ctx_v[M(l;\e_1;\e_2)]$ and either $\e_1=l$, or $l$ is not inside $\e_1$.\loseSpace
+
+A monitored object is associated with an expression that can not observe it, but may
+reference its internal representation directly.
+In this way, we can safely modify its representation before checking its invariant.
+
+The idea is that at the start the object will be valid and $\e_1$ will contain $l$;
+but during reduction, $l$ will be used to
+modify the object; only after that moment, the object may become invalid.
+
+
+\noindent\textbf{Define} $OK(\sigma,e)$:\\
+\indent $\forall l\in\textit{dom}(\sigma)$
+  either\\
+\indent\indent 1. $\mathit{garbage}(l,\sigma,\e)$,\\
+\indent\indent 2. $\mathit{valid}(\sigma,l)$ and $\mathit{wellEncapsulated}(\sigma,\e,l)$, or\\
+\indent\indent 3. $\mathit{monitored}(\e,l)$.
+
+Finally, the system is in a valid state
+if all objects in memory, are either
+%the class of the object has no invariant method;
+not (transitively) reachable from the expression (thus can be garbage collected);
+valid and encapsulated;
+or currently monitored.
+
+\begin{theorem}[Stronger Soundness]
+if $c:\Kw{Cap};\emptyset\vdash \e_0: \T_0$ and
+$c\mapsto\Kw{Cap}\{\_\}|\e_0\rightarrow^+ \sigma|\e$, then
+$OK(\sigma,\e)$.
+\end{theorem}
+\noindent Starting from only the capability object,
+any well typed expression $\e_0$ can be reduced in an arbitrary number of steps,
+and $OK$ will always hold.
+
+\begin{theorem} Stronger Soundness $\Rightarrow$ Soundness
+\end{theorem}
+\begin{proof}
+\noindent By Stronger Sound Validation, each $l$ in the current redex must be $OK$:
+\begin{enumerate}
+	\item If $l$ is \emph{garbage}, it cannot be in the current redex, a contradiction.
+	\item If $\mathit{valid}(\sigma,l)$, then $l$ is valid, so thanks to Determinism
+	no invalid object could be observed.
+	\item Otherwise, if $\mathit{monitored}(\e,l)$ then either:
+	\begin{itemize}
+	 \item we are executing inside of $\e_1$, thus the current redex is inside of a sub-expression of the monitor that does not contain $l$, a contradiction.
+	 \item or we are executing inside $\e_2$:
+	 by our reduction rules, all monitor expressions start with
+	 $\e_2=l$\Q@.invariant()@, thus the first execution step
+	 of $\e_2$ is trusted. Further execution steps are also trusted, since by well formedness the body of invariant methods only use \Q@this@ (now translated to $l$) to read fields.
+	\end{itemize}
+\end{enumerate}
+In any of the possible cases above, Soundness holds for $l$, and so it holds for all redexes.
+\end{proof}
+
+\subsection{Subject Reduction}
+
+\noindent\textbf{Define} $\text{fieldGuarded}(\sigma,\e)$:\\*
+\indent$\forall \ctx$ such that $\e=\ctx[l\singleDot\f] $
+and $\Sigma^\sigma(l).f=\Kw{capsule}\,\_$, and $\f\mathrel{\mathit{inside}} \Sigma^\sigma(l).\mathit{invariant}$\\*
+\indent\indent either
+$\forall T, \forall C, \Sigma^\sigma;\x:\Kw{mut}\,C\,\not\vdash\ctx[\x]:T$, or\\*
+\indent\indent $\ctx=\ctx'[$\Q@M(@$l$\Q@;@$\ctx''$\Q@;@$\e$\Q@)@$]$ and $l$ is contained exactly once in $\ctx''$.
+
+That is, all \Q@mut@ capsule field accesses are individually guarded by monitors.
+Note how we use $C$ in $\x:\Kw{mut}\,C$ to guess the type of the accessed field,
+and that we use the full context $\ctx$, instead of the evaluation context $\ctx_v$,
+to refer to field accesses everywhere in the expression $\e$.
+
+
+\begin{theorem}[Subject Reduction]
+if $\Sigma^{\sigma_0};\emptyset\vdash e_0: T_0$,
+$\sigma_0|e_0\rightarrow \sigma_1|e_1$,
+$OK(\sigma_0,\e_0)$
+and
+$\mathit{fieldGuarded}(\sigma_0,\e_0)$
+then
+$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$,
+$OK(\sigma_1,e_1)$ and
+$\mathit{fieldGuarded}(\sigma_1,\e_1)$
+\end{theorem}
+
+\begin{theorem}
+	Progress + Subject Reduction $\Rightarrow$ Stronger Soundness
+\end{theorem}
+\begin{proof}
+This proof proceeds by induction in the usual manner.
+
+\emph{Base case}: At the start of execution, memory only contains $c$: since $c$ is defined to always be $\mathit{valid}$, and has only \Q@mut@ fields, hence it is trivially $\mathit{wellEncapsulated}$, thus $OK(c\mapsto\Kw{Cap},e)$.
+
+\emph{Induction}: By Progress, we always have another evaluation step to take, by Subject Reduction such a step will preserve $\mathit{OK}$, and so by induction, $\mathit{OK}$ holds after any number of steps.
+
+Note how for the proof garbage collection is important:
+when the \Q@invariant()@ method evaluates to \Q@false@,
+execution can continue only if the offending object is classified as \emph{garbage}.
+\end{proof}
+
+\subsection{Exposer Instrumentation}
+We first introduce a lemma derived from our well formedness criteria and the type system:
+\begin{Lemma}[Exposer Instrumentation]
+If $\sigma_0 | \e_0\rightarrow \sigma_1 |\e_1$ and
+$\text{fieldGuarded}(\sigma_0,\e_0)$
+\\*
+then $\text{fieldGuarded}(\sigma_1,\e_1)$.
+\end{Lemma}
+\begin{proof}
+The only rule that can
+introduce a new field access is \textsc{mcall}.
+In that case, Exposer Instrumentation holds
+by well formedness (all field accesses in methods are of the form \Q@this.f@)
+and since \textsc{mcall} inserts a monitor while invoking capsule mutator methods, and not field accesses themselves. If however the method is not a \Q@mut@ method but still accesses a capsule field, by Mut Field such a field access expression cannot be typed as \Q@mut@ and so no monitor is needed.
+
+Note that \textsc{monitor exit} is fine because monitors are removed only when
+ $e_1$ is a value.
+\end{proof}
+
+\subsection{Proof of Subject Reduction}\saveSpace
+Any reduction step can be obtained
+by exactly one application of the \textsc{ctxv} rule and one other rule. Thus the proof can simply proceed by cases on the other applied rule.
+
+By Subject Reduction Base and Exposer Instrumentation,
+$\Sigma^{\sigma_1};\emptyset\vdash e_1: T_1$ and  $\mathit{fieldGuarded}(\sigma_1,\e_1)$. So we just need to proceed by cases on the reduction rule applied to verify that $OK(\sigma_1,\e_1)$ holds:
+
+
+\begin{enumerate}
+\item (\textsc{update}) $\sigma|l\singleDot f\equals v\rightarrow \sigma'|\e'$:
+	\begin{itemize}
+	  \item By \textsc{update} $\e'=\Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR$, thus $\mathit{monitored}(\e,l)$.
+	  \item Every $l_1$ such that $l\in \mathit{rog}(\sigma,l_1)$ will verify the same case as the former step:
+	  \begin{itemize}
+	  	\item If it was $\mathit{garbage}$, clearly it still is.
+	  	\item If it was $\mathit{monitored}$, it still is.
+	    \item Otherwise it was $\mathit{valid}$ and $\mathit{wellEncapsulated}$:
+			\begin{itemize}
+				\item If $l\in \mathit{erog}(\sigma,l_1)$ we have a contradiction since $mutatable(l, \sigma, e)$, (by MutField)
+		    	\item Otherwise, by our well-formedess criteria that \validate{} only accesses \Q@imm@ and \Q@capsule@ fields, and by Determinism, it is clearly the case that $\mathit{valid}$ still holds;
+				By HeadNotCircular it cannot be the case that $l\in \mathit{erog}(\sigma',l_1)$ and so $l_1$ is still $\mathit{wellEncapsulated}$.
+		  	\end{itemize}
+	  \end{itemize}
+	  \item Every other $l_0$ is not in the reachable object graph of $l$,
+	  thus it being $\mathit{OK}$ could not have been effected by this reduction step.
+	\end{itemize}
+
+\item (\textsc{access}) $\sigma|l\singleDot f \rightarrow \sigma|v$:
+	\begin{itemize}
+		\item If $l$ was $valid$ and $wellEncapsulated$:
+		\begin{itemize}
+			\item If we have now broken $wellEncapsulated$, we must have made something in its \emph{erog} \emph{mutatable}. As we can only type \Q@capsule@ fields as \Q@mut@ and not \Q@imm@ fields, by Field Mut we must have that $f$ is \Q@capsule@ and $l\singleDot f$ is being typed as \Q@mut@. By $\mathit{fieldGuarded}(\sigma_0,\e_0)$ the former step must have been inside a monitor \Q@M(@$l$\Q@;@$\ctx_v[l$\Q@.f@$]$\Q@;@$\e$\Q@)@
+		    and the $l$ under reduction was the only occurrence of $l$.
+		    Since $f$ is a capsule, we know that $l\notin \text{erog}(\sigma,l)$
+		    by Head Not Circular. Thus in our new step $l$ is not\emph{inside} $\ctx_v[v]$. Thus $l$ must be \emph{monitored} and hence it is $OK$.
+
+		    \item Otherwise, $l$ is still $OK$
+    	\end{itemize}
+
+	\item Suppose some other $l_0$ was $wellEncapsulated$ and $valid$:
+	\begin{itemize}
+			\item If $l$ was in the \emph{rog} of $l_0$, by CapsulaeTree, if $l$ was in the \emph{rog} of $l$, then $v$ can only be reached from $l_0$ by passing through $l$, and so we could not have made $l_0$ non-$wellEncapsulated$. In addition, since only things in the $erog$ can be referenced by \Q@invariant@'s validity can not depend on $l$, and by Determinism it is still the case that $l_0$ is $valid$. And so we can't have effected $l_0$ being $OK$.
+			\item Otherwise, this reduction step could not have affected $l_0$, so $l_0$ is still $OK$.
+	\end{itemize}
+
+
+	\item Nothing that was $\mathit{garbage}$ could have been made reachable by this expression, since the only value we produced was $v$ and it was reachable through $l$ (and so could not have been $\mathit{garbage}$), thus $\mathit{garbage}$ is still $OK$.
+
+	\item As we don't change any monitors here, nothing that was $\mathit{monitored}$ could have been made un-$\mathit{monitored}$, and so it is still $OK$.
+\end{itemize}
+
+\item (\textsc{mcall}, \textsc{try enter} and \textsc{try ok}):
+
+	These reduction steps do not modify memory, nor do they modify the memory-locations reachable inside of main-expression, nor do they modify any monitor expressions. Therefore it cannot have any effect on the $\mathit{garbage}$, $wellEncapsulated$, $valid$ (due to Determinism), or $\mathit{monitored}$ properties of any memory locations, thus $\mathit{OK}$ still holds.
+
+\item (\textsc{new}) $\sigma|\Kw{new}\ C\oR\vs\cR\rightarrow \sigma,l\mapsto C\{\vs\}| \Kw{M}\oR l;l;l\singleDot\Kw{invariant}\oR\cR\cR$:
+
+	Clearly the newly created object ($l$) is monitored. As for \textsc{mcall}, other objects and properties are not disturbed, and so $\mathit{OK}$ still holds.
+
+
+\item (\textsc{monitor exit}) $\sigma|\Kw{M}\oR l; v;\Kw{true}\cR\rightarrow \sigma|v$:
+\begin{itemize}
+	\item As monitor expressions are not present in the original source code, it must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l\singleDot\Kw{invariant}\oR\cR$, and it has now (eventually) been reduced to $\Kw{true}$, thus by Determinism $l$ is $valid$.
+
+	\item  If the monitor was introduced by \textsc{update}, then $v = l$. We must have had that $l$ was well encapsulated before \textsc{update} was executed (since it can't have been $garbage$ and $monitored$), as \textsc{update} itself preserves this property and we haven't modified memory in anyway, we must still have that $l$ is $wellEncapsulated$. As $l$ is $valid$ and $wellEncapsulated$ it is $OK$.
+
+	\item If the monitor was introduced by \textsc{mcall}, then it was due to calling a capsule-mutator method that mutated a field $f$.
+	\begin{itemize}
+		\item A location that was $garbage$ obviously still is, and so is also $OK$.
+		\item No location that was $valid$ could have been made invalid since this reduction rule performs no mutation of memory. If a location was $wellEncapsulated$ before, the only way it could be non-$wellEncapsulated$ is if we somehow leaked a \Q@mut@ reference to something, but by our well-formedness rules, $v$ cannot be typed as \Q@mut@ and so we can't have affected $wellEncapsulated$, hence such thing is still $OK$.
+		\item The only location that could have been made un-$monitored$ is $l$ itself. By our well-formedness criteria, $l$ was only used to modify $l.f$, and we have no parameters by which we could have made $l.f$ non-$wellEncapsulated$, since that would violate Capsule Tree. As nothing else in $l$ was modified, and it must have been $wellEncapsulated$ before the \textsc{mcall}, it still is, and since  $l$ is valid, it is $OK$.
+	\end{itemize}
+	\item Otherwise the monitor was introduced by \textsc{new}. Since we require that \Q@capsule@ fields and \Q@imm@ fields are only initialised to \Q@capsule@ and \Q@imm@ expressions, by Capsule Tree the resulting value, $l$, must be $wellEncapsulated$, since $l$ is also $valid$ we have that $l$ is $OK$.
+
+\end{itemize}
+
+\item (\textsc{try error}) $\sigma,\sigma_0|\Kw{try}^\sigma\oC \mathit{error}\cC\ \Kw{catch}\ \oC\e\cC\rightarrow \sigma|\e$:
+
+	By Strong Exception Safety, we know that $\sigma_0$ is $\mathit{garbage}$ with respect to $\ctx_v[\e]$. By our well-formedness criteria, no location inside $\sigma$ could have been $monitored$.
+	Since we don't modify memory, everything in $\sigma_0$ is $\mathit{garbage}$ and nothing inside $\sigma$ was previously monitored, it is still clearly the case that everything in $\sigma$ is $\mathit{OK}$. 
+\end{enumerate}
+
+\section{The Hamster example in Spec\#}
+\label{s:justice}
+\lstset{
+%basicstyle=\footnotesize,
+	language={[Sharp]C}, morekeywords={invariant,ensures,requires,expose,exists}
+}
+
+In this section we describe exactly why we chose to annotate the example from section~\ref{s:intro} in the way we did. For brevity, we will assume the default accessibility is \Q@public@, whilst in both Spec\# and C\#, it is \Q@private@.
+
+\subsection{The \Q@Point@ class} 
+The typical way of writing a \Q@Point@ class in C\# is as follows:
+\begin{lstlisting}
+class Point {
+	double x, y;
+	Point(double x, double y) { this.x = x; this.y = y; }
+}
+\end{lstlisting}
+This works exactly as is in Spec\#, however we have difficulty if we want to define equality of \Q@Point@s (see below).
+
+\subsection{The \Q@Hamster@ class} 
+The \Q@Hamster@ class in C\# would simply be:
+\begin{lstlisting}
+class Hamster {
+	Point pos;
+	Hamster(Point pos) { this.pos = pos; }
+}
+\end{lstlisting}
+Though this is legal in Spec\#, it is practically useless. Spec\# has no way of knowing whether \Q@pos@ is \emph{valid} or \emph{consistent}. If \Q@pos@ is not known to be valid, one will be unable to pass it to almost any method, since by default methods implicitly require their receivers and arguments to be valid (compare this with our invariant protocol, which guarantees that any reachable object is valid).
+If \Q@pos@ is not known to be consistent, one will be unable to mutate it, by updating one of its fields or by passing it as an argument (or receiver) to a non-\Q@Pure@ method.
+Though we don't want \Q@pos@ to ever mutate, Spec\# currently has no way of enforcing that an \emph{instance} of a non-immutable class is itself immutable\footnote{There is a the describes a simple solution to this problem: assign ownership of the object to a special predefined `freezer' object, which never gives up mutation permission~\cite{DBLP:conf/vstte/LeinoMW08}, however this does not appear to have been implemented; this would provide similar flexibility to the TM system we use, which allows an initially mutable object to be promoted to immutable.}, as such we will simply refrain from mutating it.
+
+To enable Spec\# to reason about \Q@pos@'s validity, we will require that it be a \emph{peer} of the enclosing \Q@Hamster@; we can do this by annotating \Q@pos@ with \Q@[Peer]@. Peers are objects that have the same owner, implying that  whenever one is valid and/or consistent, the other one also is. This means that if we have a \Q@Hamster@, we can use its \Q@pos@, in the same ways as we could use the \Q@Hamster@.
+
+To simplify instantiation of \Q@Hamster@s, their constructors will take unowned \Q@Point@s, Spec\# will then automatically make the \Q@Point@ a peer. This is achieved by taking a \Q@[Captured]@ \Q@Point@ in the constructor (note how similar this is to taking a \Q@capsule@ \Q@Point@). Note that unlike our system, this prevents multiple \Q@Hamster@s from sharing the same \Q@Point@, unless both \Q@Hamster@s have the same owner, if \Q@Point@ were immutable, there would be no such restriction.
+
+With the aforementioned modifications, the \Q@Hamster@ becomes:
+\begin{lstlisting}
+class Hamster {
+  [Peer] Point pos;
+  Hamster([Captured] Point pos) { this.pos = pos; }
+}
+\end{lstlisting}
+
+We don't want \Q@Point@ to be an immutable/value type, however if it were, the original annotated version would not have any problems.
+
+\subsection{The \Q@Cage@ class} 
+The natural way to write this class in C\#, if it had native support for class-invariants like Spec\#, would be:
+\begin{lstlisting}
+class Cage {
+  Hamster h;
+  List<Point> path;
+  Cage(Hamster h, List<Point> path) {this.h = h; this.path = path;}
+  invariant this.path.Contains(this.h.pos);
+  void Move() { 
+    int index = this.path.IndexOf(this.h.pos);
+    this.h.pos = this.path[index %$\,$ this.path.Count];
+  } 
+}
+\end{lstlisting}
+However for the above \Q@invariant@ to be admissible in Spec\#, \Q@this.path@ and \Q@this.h@ must both be owned by \Q@this@. In addition, the \emph{elements} of \Q@this.path@ need to be owned by \Q@this@, since \Q@this.path.Conatains@ will read them. Note that \Q@this.h.pos@ also needs to be owned by \Q@this@, however since \Q@pos@ is declared as \Q@[Peer]@, if \Q@this@ owns \Q@this.h@, it also owns \Q@this.h.pos@. To fix the invariant, we will declare \Q@h@, \Q@path@, and the elements of \Q@path@ as \emph{reps} (i.e. they are owned by the containing object). Finally, since \Q@Move@ modifies \Q@this.h@, \Q@this.h@ needs to be made consistent, which requires that the owner (\Q@this@) be made invalid; this can be achieved by using an \Q@expose(this)@ statement. \Q@expose(this){@\emph{body}\Q@}@ marks \Q@this@ as invalid, executes \emph{body}, checks that the invariant of \Q@this@ holds, and marks \Q@this@ valid again.
+As we did with the \Q@Hamster@, we will simply take unowned \Q@h@ and \Q@path@ values, however we also need the elements of \Q@path@ to be unowned; since Spec\# has no \Q@[ElementsCaptured]@ annotation, we will require \Q@path@ to be unowned, and its elements (denoted by \Q@Owner.ElementProxy(path)@) to be owned by the same owner as \Q@path@ (which is \Q@null@).
+\begin{lstlisting}
+class Cage {
+  [Rep] public Hamster h;
+  [Rep, ElementsRep] List<Point> path;
+	
+  Cage([Captured] Hamster h, [Captured] List<Point> path)
+    requires Owner.Same(Owner.ElementProxy(path), path);
+  { this.h = h; this.path = path; }
+	
+  invariant this.path.Contains(this.h.pos);
+  void Move() { 
+    int index = this.path.IndexOf(this.h.pos);
+    expose(this) {this.h.pos = this.path[index % this.path.Count];}
+  } 
+}
+\end{lstlisting}
+
+The above constructor now fails to verify, since Boogie is unconvinced that its precondition actually holds when we initialise \Q@this.path@. This is because the constructor for \Q@Object@ (the default base class if none is provided) is not marked as \Q@[Pure]@; since it is (implicitly) called upon entry to \Q@Cage@'s constructor, Boogie has no idea as to what memory could've mutated, and so doesn't know whether the precondition still holds. The solution is to simply explicitly call it, but at the end of the constructor: \Q@{this.h = h; this.path = path; base();}@.
+
+The above \Q@Cage@ code however does not work, since \Q@List@ operations, such as \Q@Contains@ and \Q@IndexOf@, call the virtual \Q@Object.Equals@ method on \Q@Point@s to compare equality, however \Q@Object.Equals@ implements \emph{reference} equality, whereas we want \emph{value} equality.
+
+\subsection{Defining equality of \Q@Point@s}
+The obvious solution in C\# is to just override \Q@Object.Equals@ accordingly, and let dynamic dispatch handle the rest:
+\begin{lstlisting}
+class Point {
+  .. // as before
+  override bool Equals(Object? o) {
+    Point? that = o as Point;
+    return that != null && this.x == that.x && this.y == that.y;
+  }
+}
+\end{lstlisting}
+However this fails in Spec\# since \Q@Object.Equals@ is annotated with: \Q@[Pure]@\\*\Q@[Reads(ReadsAttribute.Reads.Nothing)]@, and of course every overload of it must also satisfy this. The \Q@Reads@ annotations specifies that the method cannot read fields of \emph{any} object, not even the receiver, this makes overloading the method useless.
+% Our best guess as to why \Q@Object.Equals@ is annotated like that is that they expect it to be the default reference-equality, annotating it like this could aid static verification as it implies that whether or not two objects are equal cannot change, even if their fields are modified.
+
+We resorted to making our own \Q@Equal@ method. Since it is called in \Q@Cage@'s invariant, Spec\# requires it to be annotated as \Q@[Pure]@, and either annotated with \Q@[Reads(ReadsAttribute.Reads.Nothing)]@ or\\* \Q@[Reads(ReadsAttribute.Reads.Owned)]@ (the default, if the method is \Q@[Pure]@). The latter annotation means it can only read fields of objects owned by the \emph{receiver} of the method, as such a \Q@[Pure] bool Equal(Point that)@ method can read the fields of \Q@this@, but not the fields of \Q@that@. Of course this would make the method unusable in \Q@Cage@ since the \Q@Point@s we are comparing equality against do not own each other. As such, the simplest solution is to pass the fields of the other point to the method:
+\begin{lstlisting}
+[Pure] bool Equal(double x, double y) {
+  return x == this.x && y == this.y;}
+\end{lstlisting}
+
+Sadly however this mean we can no longer use \Q@List@'s \Q@Contains@ and \Q@IndexOf@ methods, rather we have to expand out their code manually; making these changes takes us to the version we presented in Section \ref{s:intro}.

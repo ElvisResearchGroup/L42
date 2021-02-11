@@ -1,0 +1,24 @@
+Double x, Double y
+
+method Point2D random(mut Math.Random r) = \(
+  x=r.nextDouble()* Margin.maxX().toDouble()
+  y=r.nextDouble()* Margin.maxY().toDouble()
+  )
+  
+method Point3D to3D(Double z) = \(
+  x=this.x()
+  y=this.y()
+  z=z
+  )
+method Double distance(Point2D other) = this.distance2(other=other).pow(exp=Double"0.5")
+method Double distance2(Point2D other) = (
+  (x1,y1) = this
+  (x2,y2) = other
+  dx=x1-x2
+  dy=y1-y2
+  (dx*dx)+(dy*dy)
+  )
+method Cell2D toCell() = \(
+  x=this.x().round()
+  y=this.y().round()
+  )

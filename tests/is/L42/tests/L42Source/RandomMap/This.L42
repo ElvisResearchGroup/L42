@@ -1,0 +1,13 @@
+reuse [AdamTowel]
+Foo=(
+Debug(Name"A.foo(x).this")
+void
+)
+RandomList={...}
+LoadJ=Load:{reuse[JavaServer]}
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+JavaCode={...}
+Model=Data:JServer.Handler:{...}
+Main={...}

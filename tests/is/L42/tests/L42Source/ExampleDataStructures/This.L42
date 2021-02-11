@@ -1,0 +1,64 @@
+reuse [AdamTowel]
+
+HM=Collection.map(key=S,val=Num)
+
+Example1={
+  Tree={interface}
+  ETree=Data:{[Tree]}
+  FTree=Data:{[Tree]
+    Tree left,
+    Tree right,
+    S label
+    }
+  Main=(
+    et=ETree()
+    myTree=FTree(left=et,right=et,label=S"Hi")
+    Debug(S"Hello world %myTree")
+    )
+  }
+Example2 = {
+  GenTreeTrait = Trait : Organize : Data : {
+    $ = {}
+    T = {}
+    Opt = Collection.optional($)
+    Opt left,
+    Opt right,
+    T label
+    }
+  Tree1 = Class : GenTreeTrait['T=>S]
+  GenTree = {class method Library (class Any that)[_]=
+    Class : GenTreeTrait['T=>S]}
+  Tree = GenTree(S)
+  Main=(
+    myTree=Tree(left=\(), right=\(), label=S"hi")
+    Debug(S"Hello world %myTree.label()")
+    )
+  }
+  
+Example3 = {
+ 
+ /*INCOMPLETE
+              |
+       |            |
+    |    |      |     |
+  1,2,3,4,5 .............
+  */
+  List=Data:{
+    Tree={interface}
+    LTree=Data:{[Tree] Num label}
+    ETree=Data:{[Tree] }
+    FTree=Data:{[Tree]
+      Tree left,
+      Tree right,
+      }
+    Tree tree
+    class method This()=This(tree=ETree())
+    
+    }
+
+  Main=(
+    et=ETree()
+    myTree=FTree(left=et,right=et,label=S"Hi")
+    Debug(S"Hello world %myTree")
+    )
+  }

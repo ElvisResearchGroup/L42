@@ -1,0 +1,133 @@
+reuse [AdamTowel]
+Base = Trait:{reuse [AdamTowel]
+  Unit = {...}
+  TraitSI = Organize : Trait : {
+    Support = Class.Relax : Math.Support
+    //the seven basic units
+    Meter = Unit(Support)
+    Kg = Unit(Support)
+    Second = Unit(Support)
+    Ampere = Unit(Support)
+    Kelvin = Unit(Support)
+    Mole = Unit(Support)
+    Candela = Unit(Support)
+
+    Velocity = Meter.Per(Second)
+//             Unit.CompositUnit(TraitUnit,Meter, per=Second)
+    Meter2 = Meter.Times(Meter)
+    Meter$ = Class.Relax : Meter2.TraitFromMeter : Velocity.TraitFromMeter
+    Acceleration = Velocity.Per(Second)
+    Velocity$ = Class.Relax:Acceleration.TraitFromVelocity
+
+    Meter3 = Meter2.Times(Meter)
+    Meter2$ = Class.Relax : Meter3.TraitFromMeter2
+
+    Hertz=Second.Inverse()  //hertz, 1/S
+    Coulomb=Second.Times(Ampere)
+    Becquerel=Second.Inverse()//use Becquerel(1Support per=mySeconds) to build
+    Second$=Class.Relax:Hertz.TraitFromSecond:Coulomb.TraitFromSecond //can use myNum/24Second to get Hertz
+    
+    Newton=Kg.Times(Acceleration)
+    Density=Kg.Per(Meter3)
+    Kg$=Class.Relax:Newton.TraitFromKg:Density.TraitFromKg
+
+    Pascal=Newton.Per(Meter2)
+    Joule=Newton.Times(Meter)
+    Newton$=Class.Relax:Pascal.TraitFromNewton:Joule.TraitFromNewton
+  
+    Watt=Joule.Per(Second)
+    Gray=Joule.Per(Kg)
+    Sievert=Joule.Per(Kg)//use Sievert(myJ, per=myKg) to build
+    Entropy=Joule.Per(Kelvin)
+    Joule$=Class.Relax:Watt.TraitFromJoule:Gray.TraitFromJoule:Entropy.TraitFromJoule
+    
+    Volt=Watt.Per(Ampere)
+    Watt$=Class.Relax:Volt.TraitFromWatt
+    
+    Farad=Coulomb.Per(Volt)
+    Coulomb$=Class.Relax:Farad.TraitFromCoulomb
+    
+    Ohm=Volt.Times(Ampere)
+    Weber=Volt.Times(Second)
+    Volt$=Class.Relax:Ohm.TraitFromVolt:Weber.TraitFromVolt
+    
+    Siemens=Ohm.Inverse()
+    Ohm$=Class:Siemens.TraitFromOhm
+
+    Tesla=Weber.Per(Meter2)
+    Henry=Weber.Per(Ampere)
+    Weber$=Class.Relax:Tesla.TraitFromWeber:Henry.TraitFromWeber
+        
+    Katal=Mole.Per(Second)
+    Mole$=Class.Relax:Katal.TraitFromMole
+    //constants
+    @Cache.Lazy class method Hertz caesiumTransitionFrequency()
+      =9192631770Hertz
+    @Cache.Lazy class method Velocity speedOfLight()
+      =299792458Velocity
+    @Cache.Lazy class method Joule planckConstant()
+      =Joule"6.62607015"/this.power10(34\)
+    @Cache.Lazy class method Coulomb elementaryCharge()
+      =Coulomb"1.602176634"/this.power10(19\)
+    @Cache.Lazy class method Entropy boltzmannConstant()
+      =Entropy"1.380649"/this.power10(23\)
+    @Cache.Lazy class method Support avogadroConstant()
+      =Support"6.02214076"*this.power10(23\)
+    class method Support power10(I that)={
+      var res=1Support
+      for s in Range(that) (res*=10Support)
+      return res
+      }
+    }
+  }
+  
+DeployUnit=Deploy.module(
+  url='Unit
+  code=Base['TraitSI=>'Unit.TraitSI].code()
+  name='Unit
+  )
+  
+UnitLib=Load:{reuse[#$Unit]}
+
+SI=Class:UnitLib.TraitSI['Support=>Num]
+
+Main=(
+  Debug(S"Playing with units!!")
+  SI.Meter res1= (6SI.Meter +4SI.Meter)*2Num //20M
+  Debug(res1)
+  {}:Test"20Meter"(res1==20SI.Meter)
+  Num res2=42SI.Meter / 2SI.Meter
+  {}:Test"division"(res2==21Num)
+  Num res3=(42SI.Meter).#inner()
+  {}:Test"inner"(res3==42Num)
+  SI.Velocity fast1= 42SI.Meter/0.1SI.Second
+  Debug(fast1)
+  {}:Test"division composite"(fast1==420SI.Velocity)
+  fast2= SI.Velocity"420" //equivalent ways to initialize it
+  fast3= SI.Velocity"840/2"
+  distance1= 60SI.Second * fast1
+  Debug(distance1)
+  {}:Test"times component"(distance1==25200SI.Meter)
+  g= 9.8SI.Acceleration
+  speedAfter= 10SI.Second * g //98 m/s
+  Debug(speedAfter)
+  {}:Test"times compoment"(speedAfter==98SI.Velocity)
+  t=10SI.Second
+  //free fall distance d=(gt^2)/2
+  distance2= (g*t*t)/2Num//490 m after 10s free fall
+  Debug(distance2)
+  {}:Test"free fall"(distance2==490SI.Meter)
+  //Newton=Kg*m/s2 = Kg*Acceleration
+  myRoket= 900SI.Newton
+  gForceOnMe= 80SI.Kg*g //little less than 800
+  myLift= myRoket-gForceOnMe
+  {}:Test"can fly"(myLift>0SI.Newton)
+  if myLift>0SI.Newton (Debug(S"I can fly"))
+  myAcc= myLift / 80SI.Kg
+  Debug(myAcc)
+  {}:Test"acceleration up"(myAcc==1.45SI.Acceleration)
+  reachedHeight= (myAcc*t*t) / 2Num //after 10 sec
+  Debug(reachedHeight)
+  {}:Test"reachedHeight"(reachedHeight==SI.Meter"145/2")
+  Debug(S"End of the program")
+  )

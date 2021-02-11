@@ -1,6 +1,0 @@
-Drop=DB.query[Void]"DROP TABLE Person"
-AfterMain=(
-  db=DB.#$of()
-  //Drop(db)()
-  db.kill()
-  )

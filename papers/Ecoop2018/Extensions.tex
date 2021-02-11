@@ -1,0 +1,493 @@
+\section{Extensions to our model}
+
+\paragraph{Nested classes}:
+A nested class is just another kind of member in a code literal.
+The general idea is that by composing code with \use,
+nested classes with the same name are recursively composed.
+For simplicity, while we discuss nested classes,
+here we do not consider nested traits,
+and all traits and code composition expressions are still at top level.
+In this way all dependencies are about top level names, allowing the type system 
+to consider the class table as a simple map from (nested) types (as both \Q@A@ and \Q@A.B.C@) to their definition.
+
+%\paragraph{Redirect}${}_{}$\\*
+%Redirect is another composition operator that
+%leverage on nested classes to emulate generics;
+%the main idea is that a (fully abstract) nested class can be redirect to
+%another one external to the trait/code literal.
+%For example a linked list can be implement as
+%\begin{lstlisting}
+%list:{ Elem:{}
+%     Cell:{static method Cell of(Elem e,Cell c) 
+%       method Elem e()  method Cell c()
+%       }
+%   method Elem get(int x) ...
+%   ...more methods..
+%   }
+%ListString:list[redirect Elem to String]
+%\end{lstlisting}
+%Note how redirect only influence its input, not the rest of the program.
+
+%An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
+%We show a graph example, where also we can show how to propagate generics:
+%For example
+%\begin{lstlisting}
+%t:{ method boolean reachable(Node start, Node end)/*implements reachability*/
+%     Node:{method ListEdge nodes()}
+%     Edge:{method Node in()  method Node out()}
+%     ListEdge:list[redirect Elem to Edge]
+%     }
+%\end{lstlisting}
+
+
+
+\paragraph{Rename}:
+There are a lots of different forms of rename in
+literature~\cite{deep,ancona2002calculus,bracha1992programming}
+Here we will use a simple variant to rename nested types in other nested types.
+For example 
+\begin{lstlisting}
+t:{ method B m() B:{ method B mb()} }
+D: t[rename B into C]
+\end{lstlisting}
+would flatten to 
+\begin{lstlisting}
+t:{ method B m() B:{ method B mb()} }
+D:{ method C m() C:{ method C mb()} }
+\end{lstlisting}
+Note how the rename only influences its argument.
+Since traits do not induce nominal types, we can
+consistently change their
+internally used names without breaking any code.
+
+%Here we present two variants: one to rename nested types in other nested types
+%and one to rename methods; this also allows to rename an (nested) interface method
+%and having all the implementations renamed as well.
+%Thanks to our division of use and reuse, those renames need to work only inside
+%of their input and global rewriting of the whole program is never needed.
+%
+%Rename modify the method headers, and also all the method calls inside of the input.
+%At a first glimpse, this seems to be not always possible since we are considering to be able to apply those
+%operators also to non well typed code.
+%However, if the expression language is simple enough, it is possible to pre-process the code to
+%annotate the expected receiver type on all method calls by doing a purely syntactic analysis
+%on a single code literal in isolation. 
+%All the expression whose type is guessed to be out of the border of the literal can stay unannotated; they are not going to be renamed anyway.
+%
+%\begin{lstlisting}
+%t:{ I:{interface method int mI() }
+%     A:{implements I  method int mI() 42}
+%     B:{ method int mB(I i, A a, C c) i.mI()+a.mI()+c.mI()}
+%     //mB would be annotated i[I].mI()+a[A].mI()+c.mI()
+%     }
+%D:t[rename A.mI kI]
+%\end{lstlisting}
+% Notice how we are sure that \Q@C@ does not implements \Q@I@ since it is invisible from the outside:
+% traits does not introduce nominal types!
+% 
+% We expect the flattened version for \Q@D@ to be
+%\begin{lstlisting}
+%D:{ I:{interface method int kI() }
+%     A:{implements I  method int kI() 42}
+%     B:{ method int mB(I i, A a, C c) i.kI()+a.kI()+c.mI()}
+%     }
+%\end{lstlisting}
+%
+%Hide can be seen as a variation of rename, where the method/class is renamed to a fresh unguessable name.
+
+
+
+\paragraph{Application to the expression problem. Case Study 3:}${}_{}$\\*
+The above extensions lets us challenge the expression problem~\cite{wadler1998expression},
+with the requirements exposed in~\cite{Zenger-Odersky2005}.
+In the expression problem we have data-variants and operations and we can
+\textbf{extend our solution in both dimensions},
+by adding new data-variants and adding new operations.
+We also aim to \textbf{combine independently developed extensions} so
+that they can be used jointly.
+
+To be really modular, we want our extensions to
+preserve \textbf{type safety}
+and allow \textbf{separate compilation} (no re-type-checking),
+while avoiding \textbf{duplication of source code}.
+
+Following closely
+the example of Zenger and Odersky~\cite{Zenger-Odersky2005},
+we consider a language where the
+expressions \Q@Exp@ can
+be \Q@Num@ (for number literal),
+\Q@Plus@ (for binary plus operator)
+and \Q@Neg@ (for unary minus).
+We then proceed to define operations
+\Q@show@ to convert it into a string,
+ \Q@eval@ to compute the numeric value and 
+\Q@double@ to double the value of each \Q@Num@.
+
+We thus have 3 classes, 1 interface,
+the definition of the state and 3 operations.
+We can model this
+as a table of features, as in~\cite{deep}:
+a (3classes+1interface)*(1state+3operations)
+table composed by 16 traits.
+The features are atomic: they deal with exactly 
+declaring the state of a class
+or defining a single operation for a single class.
+\name avoids the large amount of abstract declarations,
+that clutters the solution in~\cite{deep}.
+Intuitively, we would like our traits to look like the following:
+\begin{lstlisting}
+evalPlus=Use plus, {//eval operation for Plus datavariant
+  Exp:{interface
+    method int eval()}
+  Plus:{implements Exp
+    method int eval(){
+      return this.left().eval()+this.right().eval();}}}
+\end{lstlisting}
+\Q@evalPlus@ uses the trait \Q@plus@ to import the state (\Q@left()@ and \Q@right()@)
+and defines the \Q@eval()@ method from interface \Q@Exp@.
+But, if we were to declare those
+explicitly, we would repeat \Q@Exp@, the abstract
+declaration of \Q@eval()@ and `\Q@implements Exp@'
+for all data-variants.
+Our more abstract solution, to avoid this duplication is to write 
+the trait \Q@eval @with a place-holder \Q@T@ nested class, that can then be renamed
+into the corresponding data-variant.
+Thus, our source code is as follows;
+First we declare the 4 traits to represent the state:
+\newcommand\multiCode{\vspace{-5pt}}
+\saveSpace
+\begin{lstlisting}
+exp={
+  Exp={interface}
+  T={implements Exp}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+num=Use exp[rename T into Num],{//T renamed in Num is summed with current Num
+  Num={method int value()  static method Num of(int value)}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+plus=Use exp[rename T into Plus], {
+  Plus={method Exp left()  method Exp right()
+    static method Plus of(Exp left,Exp right)}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+neg=Use exp[rename T into Neg],{
+  Neg={method Exp term()  static method Neg of(Exp term)}}
+\end{lstlisting}
+Here we define a trait for each data-variant.
+Each trait will contain its version of \Q@Exp@
+and a specific case of expression, with its state.
+Next, we define the operation \Q@eval@ for all the data-variants.
+The former solutions in~\cite{deep}
+required to repeat the state declaration of the 
+data-variant in each operation, while we can just import it.
+
+\begin{lstlisting}
+eval={//concept of Exp.eval() declared once
+  Exp={interface      method int eval()}
+  T={implements Exp}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+evalNum=Use num, eval[rename T into Num],{         //just the implementation
+  Num={ method int eval(){return this.value();} }}//of the specific method
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+evalPlus=Use plus, eval[rename T into Plus], {
+  Plus={ method int eval(){ return this.left().eval()+this.right().eval();} }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+evalNeg=Use neg, eval[rename T into Neg], {Neg={ method int eval(){..}}}
+\end{lstlisting}
+
+The \Q@show@ operation can be trivially defined
+following exactly the same pattern (omitted here for space reasons).
+The operation \Q@double@ is is a challenge for some proposed solution
+to the expression problem, as explained by Zhang and Oliveira~\cite{zhang2017evf}.
+The \Q@double@ operation is called a \emph{transformation}: an operation from \Q@Exp@ to \Q@Exp@.
+Thanks to the separation between use and reuse, and the support
+for self-instantiation of every nested class in a given trait,
+in \name, it does not need any special attention
+and can be coded just like \Q@eval@ and \Q@show@.
+\begin{lstlisting}
+double={
+  Exp={interface      method Exp double()}
+  T={implements Exp}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+doubleNum= Use num, double[rename T in Num],{
+  Num={ method Exp double(){return Num.of(this.value()*2);} }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+doublePlus=Use plus,double[rename T in Plus],{
+  Plus={ method Exp double(){
+    return Plus.of(this.left().double(),this.right().double());}  }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+doubleNeg=...
+\end{lstlisting}
+Here we define a trait for each data-variant implementing the operation \Q@double()@.
+Again, each trait will contain its version of \Q@Exp@ with \Q@double()@
+and a specific case of expression, with the implementation for \Q@double()@
+for that specific case.
+%We can express \Q@double@ with this level of simplicity
+%thanks to the separation between use and reuse:
+%every trait have its own \Q@Exp@,
+%and there is no subtyping between those \Q@Exp@, they can not even
+%see each other.
+
+In our third case study we compare our results with the ones presented
+in Scala~\cite{Zenger-Odersky2005}.
+The proposed solution is not fully modularized as a table,
+so in order to make a more close comparison, we provide an alternative
+version where we isolate all the units of behaviour as we
+have done in \name.
+\begin{minipage}{0.6\textwidth}
+\begin{tabular}{l |l |l}
+&                              lines  &   methods\\
+\hline
+original Scala~\cite{Zenger-Odersky2005}          & 52     &  15=12+3\\
+Scala  isolated units   & 78    &  15=12+3\\
+Scala  glue-code        & 27   &     3\\
+42 traits               & 48=3+4+6+5 + (4+2*3)*3   &    19=4*3+7\\
+42 classes              &   3    &     0\\
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.4\textwidth}
+Scala uses 12=4*3 methods plus 3 extra factory methods (for \Q@double@).
+We use 12=4*3 methods plus our abstract state: 4 fields and 3 constructors.
+\end{minipage}
+
+As we can see, to encode fully isolated units in Scala is
+more verbose,
+but more importantly,
+in \name we can just define a class supporting any subset of operations
+and data-variants by listing the desired traits:
+For example, a solution for \Q@Num@ and \Q@Plus@ (but not \Q@Neg@)
+with \Q@eval@ and \Q@double@ would look like:
+\begin{lstlisting}
+Example=Use evalNum,evalPlus,doubleNum,doublePlus
+\end{lstlisting}
+The composition of all our traits would just require to list all
+of the relevant behaviour; reasonably formatted, it can take up to 3 lines (so a full \name solution would be 48+3=51 lines).
+
+On the other side, the presented solution in Scala requires
+27 lines of glue code to put the traits together.
+This means that a full Scala solution \textbf{requiring a single instantiation with all the traits} would be 78+27=105 lines.
+If we were to require more instantiations with different subset of traits, the glue code would dominate the line count,
+and the Scala solution would end up being up to \textbf{9 times heavier then the
+\name one} (if all the 64 permutations was required).
+
+The line count for \name is very predictable: after defining \Q@exp@ (3) and the state traits(4+6+5),
+for each of the three operations (\Q@eval,show,double@) 
+we just need 4 lines to declare the operation 
+in the interface, and 2 lines for each of the 3 data-variants.
+
+Following~\cite{Zenger-Odersky2005}, after \Q@double@ we present an implementation of \Q@equals@.
+Zenger and Odersky's solution~\cite{Zenger-Odersky2005}, involved double dispatch to avoid casting.
+To show understandable code, we show a simpler solution 
+with a guarded cast (sometime called a typecase).%
+\footnote{
+The interested reader can find a \name implementation of \Q@equals@ with double dispatch
+in the appendix.
+}
+
+The main idea is that  every data-variant  contains
+ the "cast" logic; thus
+ we can modularize that into an \Q@equals@ trait.
+\begin{lstlisting}
+equals:{
+  Exp:{interface
+    method Bool equals(Exp that)}
+  T:{implements Exp
+    method Bool exactEquals(T that)
+    method equals(that){
+      if(T instanceof This) return this.exactEquals(that);
+      else return false;}}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+equalsNum:Use num, equals[rename T into Num],{
+  Num:{method Bool exactEquals(Num that){
+    return this.value().equals(that.value());}  }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+equalsPlus:Use plus, equals[rename T into Plus],{
+  Plus:{method Bool exactEquals(Plus that){
+    return this.left().equals(that.left())&&this.right().equals(that.right());
+  }  }}
+\end{lstlisting}
+\multiCode
+\begin{lstlisting}
+equalsNeg:Use neg, equals[rename T into Neg],{
+  Neg:{method Bool exactEquals(Neg that){
+    return this.term().equals(that.term());}  }}
+\end{lstlisting}
+
+This simple implementation of \Q@equals@
+is much simpler than the one proposed by Zenger and Odersky
+ and can be instantiated without any glue code.
+
+\noindent
+\begin{minipage}{0.46\textwidth}
+\begin{tabular}{l |l |l}
+&                              lines  &   methods\\
+\hline
+original Scala eq           &    40   &   10\\
+isolated Scala eq           &   31    &   10\\
+Scala eq instance           &    29   &    3\\
+42 trait eq d-dispatch      &   21=6+5*3   &    6\\
+42 class dd instance        &    22   &   11\\
+42 traits eq Cast            &   13=7+2*3   &    6\\
+42 class cast instance      &     3   &    0\\
+\end{tabular}
+\end{minipage}
+\begin{minipage}{0.54\textwidth}
+Here the Scala code can be made fully isolated with little
+extra syntactic cost. The original Scala eq is 40 lines and
+contains a part of the glue code mixed inside.
+The isolated version is 31 lines and to merge all the operations together in Scala, it
+takes 29 lines of glue code. Note that this
+is mostly the same glue code from before (27 lines), that
+needs to be manually adapted.
+\end{minipage}
+
+In \name we are
+more compact than Scala both when using the double dispatch (21+22 vs 31+29)
+or the guarded cast (13+3 vs 31+29).
+To instantiate the double dispatch 
+version in \name we need 22 lines of glue code.
+We could remove such glue code using 
+features from the full 42 language, but here we stick to only the features presented in this paper.
+The interesting point is that the nature of our needed glue code 
+is different with respect to the Scala glue code:
+Scala requires lots of trait multiple inheritance declarations to explicitly merge
+nested traits with the same name, while in \name we mostly need 
+to add the negative cases for the double dispatch (as in
+\Q@Sum={method Bool equalToNum(Num that){return false;}}@).
+
+
+%\paragraph{Transformations (and queries)}${}_{}$\\*
+%
+%The expression problem presented up to now is the traditional
+% challenge proposed by~\cite{wadler1998expression};
+%this has been criticized to not really address the fundamental issues
+%since if many transformations have to be defined,
+%it is hard to share common code between them.
+%For example, we shown the \Q@double@ transformation.
+%An equivalent transformation \Q@triple@ (tripling the
+%values of the literals) should be easy to define by
+%reusing all the traversal code and just redefining the
+%case of \Q@Num@.
+%When modularity is not a concern, this
+%can be obtained in Java using the visitor pattern,
+%defining a \Q@CloneVisitor@  and then overriding 
+%only the relevant cases.
+%Consider the Java code below:
+%\begin{lstlisting}
+%class CloneVisitor{
+%  Exp visit(Num n){return new Num(n.value);}
+%  Exp visit(Plus p){return new Plus(p.left.accept(this),p.right.accept(this);}
+%  }
+%class Double extends CloneVisitor{
+%  Exp visit(Lit l){return new Lit(l.inner+1);}
+%  }
+%\end{lstlisting}
+%In \name we can obtain the same kind of code reuse, without the need of introducing 
+%the concepts related to the Visitor Pattern.
+%With redirect, rename and restrict we can have the general operator propagator:
+%\begin{lstlisting}
+%operation:Use lit, sum, {//for sum and lit, easy to extends as before
+%  Arg:{}
+%  Exp:{interface method Exp op(Arg x)}
+%  Lit:{
+%    method Exp op(Arg x){return this}
+%    }
+%  Sum:{
+%    method Exp op(Arg x){
+%      return Sum.of(this.left().op(x),this.right().op(x))
+%      }
+%    }
+%\end{lstlisting}
+%
+%Now, to have \Q@addN@ we can do the following.
+%
+%\begin{lstlisting}
+%opAddn:Use operation
+%  [redirect Arg to Int]
+%  [rename Exp.op(x) to addN(x)]
+%  [restrict Lit.op(x)], {
+%  Lit:{
+%    method Exp addN(Int x){ return Lit.of(inner())+x}
+%    }
+%  }
+%\end{lstlisting}  
+
+
+
+%\paragraph{Full power of redirect}${}_{}$\\*
+%An expressive form of Redirect can be multiple, that is, can redirect may interdependent classes at the same time.
+%We show an example where a specific kind of \Q@Service@ can produce a \Q@Report@, and 
+%\Q@Report@s can be combined together.
+%The goal is to execute a list of such services and produce a collated report.
+%This example also show how to propagate generics:
+%
+%\begin{lstlisting}
+%Service:{interface method Void performService()}
+%serviceCombinator:{
+%  S:{implements Service method R report()  }
+%  
+%  R:{method R combine(R that)   class method R empty() }
+%  
+%  ListS:list[redirect Elem to S]
+%  
+%  class method R doAll(ListS ss){//here we use extended java like syntax
+%    R r=R.empty()
+%    for(S s in ss){
+%      s.performService();
+%      r=r.combine(s.report())
+%      }
+%    return r;
+%  }
+%}
+%PaintingService:serviceCombinator[redirect S to PaintingService]
+%PaintingService:{... method PaintingReport report()..}
+%PaintingReport:{..}
+%\end{lstlisting}
+%
+%The flattened version of \Q@PaintingService@ would look like:
+%\begin{lstlisting}
+%PaintingService:{
+%  ListS:/*the expansion of list[redirect Elem to PaintingService]*/
+%  
+%  class method PaintingReport doAll(ListS ss){
+%    PaintingReport r=PaintingReport.empty()
+%    for(PaintingService s in ss){
+%      s.performService();
+%      r=r.combine(s.report())
+%      }
+%    return r;
+%  }
+%}
+%\end{lstlisting}
+%Where you can note how redirect figured out \Q@R=PaintingReport@ by comparing the structural shape of
+%classes \Q@PaintingService@ and \Q@S@.
+%
+%To encode the former generic code in java you need to write
+%the following headeche inducing interfaces for RService and Report.
+%and require that the services you want to serve implement those.
+%\begin{lstlisting}
+%interface Service{ void performService();}
+%interface Report<R extends Report<R>>{R combine(R that);}
+%interface RService<R extends Report<R>> extends Service{ R report();}
+%\end{lstlisting}
+%Note how we still can not encode the method \Q@empty@.

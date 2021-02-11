@@ -1,0 +1,19 @@
+I x
+I y
+
+class method Cell2D random(mut Math.Random r)=\(
+  x=r.nextInRange(0\ to=Margin.maxX())
+  y=r.nextInRange(0\ to=Margin.maxY())
+  )
+method Point2D toPoint() = \(
+  x=this.x().toDouble()
+  y=this.y().toDouble()
+  )
+method Cell3D to3D(I z) =
+  \(x=this.x(), y=this.y(), z=z)
+  
+method Bool isBorder() = (
+  (x, y) = this
+  x==0I || x==Margin.maxX()-1I
+    || y==0I || y==Margin.maxY()-1I
+  )

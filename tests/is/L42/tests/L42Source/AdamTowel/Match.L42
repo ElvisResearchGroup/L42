@@ -1,0 +1,29 @@
+@Public Some={
+  var Bool pass
+  class method mut This(Bool pass)
+  @Public class method mut This()=This(pass=Bool.false())
+  @Public mut method Bool (Void that)=this.pass()
+  @Public mut method Void add(Bool that)[Void]=if that (this.pass(that) Break())
+  }
+@Public All={
+  var Bool pass
+  class method mut This(Bool pass)
+  @Public class method mut This()=This(pass=Bool.true())
+  @Public mut method Bool (Void that)=this.pass()
+  @Public mut method Void add(Bool that)[Void]=if !that (this.pass(that) Break())
+  }
+@Public None={
+  var Bool pass
+  class method mut This(Bool pass)
+  @Public class method mut This()=This(pass=Bool.true())
+  @Public mut method Bool (Void that)=this.pass()
+  @Public mut method Void add(Bool that)[Void]=if that (this.pass(!that) Break())
+  }
+@Public Count={
+  var I count
+  class method mut This(I count)
+  @Public class method mut This()=This(count=0I)
+  @Public mut method I (Void that)=this.count()
+  @Public mut method Void add(Bool that)[Void]=if that (this.count(\count+1\))
+  }
+@AbstractTowel{match}

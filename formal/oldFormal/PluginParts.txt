@@ -1,0 +1,413 @@
+
+How, on the inside of plugin methods we would call 
+a service class giving us access to 
+"at least" the program and the resources?
+if a method require a IResource as first argument,
+this is provided by the PlgWrapper??
+-write here the model of PlgWrapping/calling
+Old is:
+plgExecutor("PathName",p,new plgName(),
+  (plF,xsF)->plF. 
+  MnameEncoded£xn1£xn2(xsF[0],..,xsF[n]),
+  ()->transl(e),transl(e0),..,transl(en));
+
+
+
+
+  ----------
+  1--42 to Java:
+  use P check m(_this:e0, _javaFullNameParType1:e1.._javaFullNameParTypen:en)
+  if no _this, it must be static.
+  if m=#x, we want the PData//note this have nothing to do with the 42 header #m in step 2 
+  **given a using, I can get the class and the method
+  **and generate the PlgWrapper
+  **method called "new" refers to constructors
+  -----------------
+  PlgWrapperGeneration input: using, translated e te, translated expressions tes
+  we will write `` to embed result of expressions in the code
+variables:
+  T1..Tn obtained from using.xs
+  if static meth or new
+    tes=e1..en
+    parRec=null
+    rec=plgName
+  else
+    tes=e0..en
+    parRec=e0
+    rec=plF
+  
+  if par1 of type PData
+    opt=`Resource.pData(),`
+  else
+    opt=``
+ 
+  if Meth return void
+    ret1=''
+    ret2=return Resources.Void.instance();
+  else 
+    ret1=return
+    ret2=''
+  
+  if static meth
+    call=plgName.name
+  if new
+    call=new plgName
+  else
+    call=plF.name
+----------    
+    
+plgExecutor("`PathName`",p,(plgName)`parRec`,
+  (plF,xsF)->{
+    `T1` _1;..`Tn` _n;
+    try{_1=(`T1`)xsF[0];.._n=(`Tn`)xsF[n-1];}
+    catch(ClassCastException cce){assert false; throw DoNotAct;}
+    ret1 call(`opt` _1,..,_n);
+    ret2
+    },
+  ()->`te`,`te1`,..,`ten`);
+
+  
+
+
+
+  2--Java to 42:
+  2a-given a class I can get all the methods and group them on
+  methName/parameterCount
+  Then, I can generate all the plugin method selectors,
+  and for each group I sort them lexicographically.
+  **Result of 2a is Map<name/num,List<ms>>
+  2b-I expect the user to provide headers in the form
+  (#(num?))?x
+  where x is the meth name in Java and #num count elements in each group.
+    then, given header in 42 and using selector in 42
+    I can generate meth impl in 42.
+  
+Challenges:
+
+-a single plugin should map multiple mutually recursive java classes
+to 42 classes.
+-metaprogramming should be able to generate the 42 classes from the plugin only
+
+void ->Void
+int,String,... ->Library
+
+class it.bla.a.A{
+  int a()
+  B toB()
+  }
+class it.bla.b.B{
+  int b()
+  A toA()
+  static void print(A a)
+  }
+
+A:PlgGen<<{/*@plugin it.bla/a.A*/} //plugin is it.bla, a.A is pluginPart 
+B:PlgGen<<{/*@plugin it.bla/b.B*/}
+//TODO> no, the plugin part should REPEAT the whole path to the class
+//this would allow a standard java class to be included in a plugin.
+
+
+//the primitive plugin will need to know
+1 the pluging wrapper interface
+2 the plugin error message
+I the method headers are repeated, that is all?
+
+PlgGen({
+//@PlgWrapper @PluginMethodUnresponsive
+//@int @Size
+})
+//NOTE: we can not use @Size before is (meta-)defined
+//Thus B toB() will not be generated
+//if the method name has less £x then parameters, additional parameters are
+going to have their number as name 
+
+
+plgPart calling:
+if P plugin is plgUrl/plgPart
+then plugin(p,P,m(xs))=plg, T0,T1..Tn
+plugin(p,P,m(xs),vs, e)
+types: 
+locate Java meth plgPart.m
+void is Void
+ast.Ast.Path is class Any
+anything else is Library
+if meth is static, no _this arg
+
+oncall:
+wrapper with all Object,
+ try-cast and catch retrow message
+  
+
+expected Result: {/*@plugin it.bla/a.A*/ 
+//so, does it need to be on 3 lines? 
+//adding 2 extra lines on any plgclass? ok?
+//makes requiring headers looking less bad?
+  class method
+  mut This0 #from(Library binaryRepr)
+  read method
+  Library #binaryRepr()
+  class method //TODO: update plugin use s to include instanceof as for new
+  Void #exceptionIf(Library binaryRepr) exception This
+    use This check instanceof(_this:binaryRepr)
+    exception This.#from(binaryRepr:binaryRepr)
+
+  class method T #pluginUnresponsive(Library binaryRepr)//provided
+  mdf method Ret m(Par1 p1, Par2 p2)//header provided
+    Ret.from(binaryRepr:
+      use This0 check m(_this:this.binaryRepr(),
+                         _jt1:p1.binaryRepr(),
+                         _jt2:p2.binaryRepr())
+      error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
+      )
+  class method Void m(Par1 p1, Par2 p2)//provided
+    use This0 check m(_jt1:p1.binaryRepr(), _jt2:p2.binaryRepr())
+    error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
+  //if method need PData, # is added; jti computed with reflection
+  
+  class method Ret m() exception E1,E2//provided
+    Ret.from(binaryRepr:(
+      Library res=use This0 check m()
+      error This.pluginUnresponsive({/*plugin it.bla/a.A.m(p1,p2)*/})
+      catch error Library x (
+        E1.#exceptionIf(binaryRepr:x)
+        E2.#exceptionIf(binaryRepr:x)
+        error x
+        )
+      res
+      ))
+  }
+   
+  in java, parse
+  { class method This m()
+    This.from(binaryRepr:(
+      Library res=use This0 check m(_:This.binaryRepr())
+        error This.#pluginUnresponsive(binaryRepr:{/**/})"
+      catch error Library x (
+        This.#exceptionIf(binaryRepr:x)
+        error x
+        )
+      res
+      ))
+  }
+  and
+
+  { class method Void m()
+    (
+      Void res=use This0 check m(_:This.binaryRepr())
+        error This.#pluginUnresponsive(binaryRepr:{/**/})"
+      catch error Library x (
+        This.#exceptionIf(binaryRepr:x)
+        error x
+        )
+      res
+      )
+    }
+  //the catch need to be removed is exceptions is empty
+  
+  get the member, fill
+  mwt.retType
+  mwt.parameters
+  mwt.body.mcall.inner
+  b=mwt.body.mcall.par1
+  u=b.decs(0).inner
+  u.P
+  u.s (edit the xs too)
+  u.es
+  p0=u.es.get().mcall
+  p0.inner + more p0 on need
+  u.inner.mcall.es(0).classb.doc1
+  --
+  mwt.exceptions
+  k0=b.k(0).inner.block.decs(0)
+  k0 add more on need
+  k0.mcall.inner
+  
+  need (p,pluginUrl/classB) to compute the
+  many UsingInfo/Method
+  for all Paths in method par
+    check they have binaryRepr()
+  for ret:
+    check they have from(binaryRepr)
+  for exceptions: 
+    exceptionIf(binaryRepr)
+  for PluginError:
+    check they have from(binaryRepr)
+  OR they are defined internally as plugin with part, as in
+  PlgComplete<><{
+    Foo:{/*@plugin...*/}
+    Bar:{/*@plugin...*/}
+    } 
+plgComplete(p,l){
+  for all nested cs in l: l=l.with(cs=plgComplete1(l,cs.size(),p,l(cs))
+  return l;
+  }
+  
+argLessPData jm=
+  jm.argsize if first is not PData
+  else jm.argsize-1
+  //assert others are not PData?
+plgComplete1(lTop,cs,p,l){
+  if l not plg with part, return l
+    check there is a method
+    class method T #pluginUnresponsive(Library binaryRepr)
+  Class<?>c=locateClass(l)
+  JMethods jms=c.allpublicMethods()
+  mhs=method headers of abstract method in l.getMWTs()
+  s=emptyList
+  for mh in mhs
+    foral T in mh,
+      if T inside lTop check lTop(T[from cs]) is pluginWithPart
+      otherwise T'=T.lessOuters(cs.size()), p(T') has right methods:
+        class method mut This0 #from(Library binaryRepr)
+        for return
+        read method Library #binaryRepr()
+        for parameter
+        class method Void #exceptionIf(Library binaryRepr) exception This
+        for exception
+      //may be faster to cache?
+  
+    if mh has special comment...
+    else
+    methName=mh.s.x
+    methArgs=mh.s.xs.size()
+    jms0={jm in jms| name is methName, argLessPData jm=methArgs}
+    if jms0.size!=1 error from jms0
+    jm=jms.get(0)
+    ui=UsingInfo(c,jm)
+    tu=templateUsing.updateAllStuff(ui,mh)
+    s.add(tu)
+    }
+  return templateWrapper U s U l
+  }
+  
+PlgWrapper:{interface 
+  class method
+  mut This0 from(Library binaryRepr)//is PlgWrapper from outside
+  read method
+  Library #binaryRepr()
+  }
+  
+A:{/*@plugin it.bla/a.A*/
+  implements PlgWrapper
+  
+  refine class method
+  mut This0 from(Library binaryRepr)//refined to return This0
+  
+  refine read method//as normalization already add
+  Library #binaryRepr()
+  
+  read method Size a()
+    Size.from(binaryRepr:
+      use This0 check a(_0:this.binaryRepr())
+      error PluginMethodUnresponsive"plugin it.bla/a.A.a(_0)"
+      )
+/*method B toB()//not generated
+    B.from(binaryRepr:
+      use This0 check toB(_0:this.binaryRepr())
+      error PluginMethodUnresponsive"plugin it.bla/a.A.toB(_0)"      
+      )*/
+  }
+
+However, we can just write the header and force generation
+B:PlgGen<<{/*@plugin it.bla/b.B*/ 
+  method A toA()
+  class method Void print(A a) 
+  }
+  
+B:{/*@plugin it.bla/b.B*/
+  implements PlgWrapper
+  
+  refine class method
+  mut This0 from(Library binaryRepr)//refined to return This0
+
+  read Size b()
+    Size.from(binaryRepr:
+      use This0 check b(_0:this.binaryRepr())
+      error PluginMethodUnresponsive"plugin it.bla/a.B.b(_0)"
+      )
+      
+  method A toA()
+    A.from(binaryRepr:
+      use This0 check toA(_0:this.binaryRepr())
+      error PluginMethodUnresponsive"plugin it.bla/a.B.toA(_0)"      
+      )
+      
+  class method Void print(A a) //also this header is needed, to know "A" as parameter type, plus is giving the parameter the name "a"
+    use This0 check print(_1:a.binaryRepr())
+    error PluginMethodUnresponsive"plugin it.bla/a.B.print(_1)"      
+      )
+  class method Void exceptionIf(Library binaryRepr) exception This{
+    use PlgUtils check ifValidDo(binaryRepr:binaryRepr for:{/*@StringRepr\npluginUrl*/})
+    exception This.from(binaryRepr:binaryRepr)
+    //well, better 2 methods for making This?? should we check or not
+    //plg return valid stuff? 
+    }
+  }
+  
+  
+  How to handle mut plugins?
+  
+class System42{
+  void out(String s)
+  String in()
+  }
+ 
+System42:PlgWrapper.$<<{
+  //@plugin it.bla/system.System42
+  mut method Void out(S s)//we have to repeat the header and add mut..
+  mut method S in()//should we just always require headers?
+  }
+  
+  How to handle exceptions
+
+System42:PlgWrapper.$<<{
+  //@plugin it.bla/system.System42
+  mut method S readFile(S s) exception IOE SecurityE
+    (
+    res=S.from(binaryRepr:
+      use This0 check readFile(_0:this.binaryRepr(),_1:s.binaryRepr())
+      error PluginMethodUnresponsive"plugin .."      
+      )
+    catch error Library x (
+      IOE.exceptionIf(binaryRepr:x)
+      SecurityE.exceptionIf(binaryRepr:x)
+      error x
+      )
+    res
+    )
+  }
+
+  
+  --------------
+  from 42 to call Java:
+  use P check m((x:e)s)
+  if m start with #, java method will require PData
+  if m is "new" or "#new", then we refer to a constructor.
+  names xs are used to identify the method/constructor despite overloading
+  
+  HORRIBLE SOLUTION:
+  from 42 header, the metaprogramming can guess a Java method to call:
+  #numMethName(xs) will call
+  the java method called MethodName 
+  that is in position num in the ordered overloaded.
+  How to ORDER overloaded methods:
+  with xs.size()=n
+  select all the methods with that name and either argument size n or
+  argument size n+1 and the first one is PData.
+  syntetize the 42 s using name that would be needed to call such method
+  lexicographic ordering over such s.
+  
+  BETTERSOLUTION:
+  the user specify a method name m (or new/empty) and a parameter number n
+  If there is only one such method with that name/parameter number n or n+1 with first par PData
+  Proceed.
+  Else error.
+  The user can put a comment with an s, then the method name is ignored and the s is used to syntetize the using
+  if the user do not specify, the method name and parameter number must identify
+  For example 
+  method /*@selector foo(_int,_java_lang_Integer)*/
+  Num myName(Num x,Num y)  
+  
+  @plugin url @plgPart part
+  //needs to be lowercase since is part of the language?
+  //can be tuned so that @Plugin can refer to a class Plugin:{/*@pugin*/}

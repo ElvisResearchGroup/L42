@@ -1,0 +1,55 @@
+reuse [AdamTowel]
+//string % now requires imm, need to require read
+
+Point=Data:{Num x,Num y}
+Points=Collection.list(Point)
+Person=Data:{
+  mut Points homes
+  var Point location
+  S name
+  @Cache.Now class method Void invariant(S name, Point location)=(
+    if name==S"" error X"no empty name"
+    if location.x()==0Num error X"no empty x"
+    )
+  @Cache.Lazy method S methName()=(
+    Debug(S"working")
+    var S res=S""
+    res++=this.name()
+    res++=this.location().x().toS()
+    res
+    )
+  }
+Trip=Data:{
+  Person p1, Person p2
+  @Cache.Eager method S mapTo()=(
+    Debug(S"IN MAP")
+    /*.....*/ S"done"
+    )
+  }
+M0=(
+  Debug(Point(7\,4\))
+  )
+Main=(
+  var imm Point p=Point(x=34\, y=\"43/223")
+  p:=p.with(x=12\)
+  imm Person immBob=(
+    mut Points ps=Points[p; p; p.with(y=3\)]
+    mut Person bob=Person(homes=ps, location=\(x=32\,y=0\), name=S"Bob")
+    bob.#homes().add(p)
+    bob.location(p.with(x=0\))
+    bob
+    )
+  Debug(S"Hello world  bob=%immBob.toS()")
+  Debug(S"bobMeth=%immBob.methName()")
+  Debug(S"bobMeth=%immBob.methName()")
+  Debug(S"-bobMeth=%immBob.methName()")
+  var imm Person bob2=immBob.with(name=S"Bob2")
+  //bob2:=bob2.with(name=S"Bob")
+  Debug(S"bobMeth=%bob2.methName()")
+  t1=Trip(p1=bob2, p2=immBob)
+  t2=Trip(p1=immBob, p2=bob2)
+  t3=Trip(p1=bob2, p2=immBob)
+  for i in Range(5I) (Debug(S"waiting") )
+  Debug(S"trip=%t1.mapTo()")
+  Debug(S"trip=%t1.mapTo()")
+  )

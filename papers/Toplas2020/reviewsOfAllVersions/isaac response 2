@@ -1,0 +1,45 @@
+================== Capsule ================================
+B: it is unclear to me what the capsule, i.e., ownership semantics is, exactly, and how it relates to the well-known owners-as-dominators, and owners-as-modifiers semantics. 
+C:  I would have liked a slightly deeper and more rigorous introduction to the type system. Specifically, the typing rules for "capsule" fields are not entirely clear to me.
+
+	TODO: Marco compare with ownership...
+	We agree we had not properly explain `capsule`
+
+	Capsule expressions and local variables are essentially the same in Pony, L42 and Gordon Et. Al's work.
+	Let the MROG of an object be the set of objects reachable from that object (including the object itself), by only traversing through non imm-fields. Then an object 'o' is typed as a capsule expression (or stored in a capsule local variable), if its MROG is only reachable through that expression/variable.
+
+	Capsule fields in Pony, Gordon Et. Al's work, L42 and this paper must be initilised/updated with capsule expressions. However they differ as to how they can be read, Pony and Gordon Et. Al's work realy on destructive reads (reading a capsule field as capsule/mut also updates it).
+	In the paper, and our implementation of L42, a capsule field is one which is only initilised/updated with 'capsule' expressions, are instance private, reading them returns the same modifier as the reciever of said read, and any `mut method` that accesses it must satisfy the restrictions of a capsule mutator. L42 also supports a similar kind of capsule (see "Flexible recovery of uniqueness and immutability", pg 169 doi:10.1016/j.tcs.2018.09.001), where reading them on a `mut` receiver returns a `lent`, `lent` is a type modifier that is more restricted than `mut` (so the L42 implementation also allows such a field to be accessed in an invariant), however we have not disccused this in the paper as the additional restrictions on `lent`s (over `mut`s) are mostly usefull for safe parralelism, and are not relavent for invariant checks.
+
+	The guarantee we need from the typesystem is that for any object 'o' and capsule field 'f' of o, for all o' in the MROG of 'o.f', 
+	if o".f" = o' (for some object o" and field f"), then either o" is in the MROG of 'o.f', o" = o and f" = f, or f" is not marked as mut or capusle. We also require that o is not reacheable from o.f. We formalise these properties in the Appendix (...). 
+
+	**We will improve the paper by explaining the difference between capsule fields and capsule local variables better.**
+
+D: but means the system can no longer be used for safe concurrency; fine if L42 has none, but again if this is deviating from prior work this must be discussed, and if it's relying on the details of a particular system, some detail of that specific system/paper should be given to contrast with the broad-stokes view of Gordon et al./Clebsch et al./Servetto et al.
+	We should have made it more explicit what we require from capsule fields, namely:
+		* they must only be initilised/updated with a capsule expression
+		* The read of a capsule field is typed with a modifier at least as restrictive as the receiver's.
+		* Capsule fields are instance private
+		* A method that could mutate the ROG of a capsule field of a non-capsule object (in the language as presented in the paper, this only applies for mut methods) must obey our restrictions on capsule mutators.
+
+	Wether a field satisfies the above properties or not is only relavant for invariant checking.
+	The papers of Gordon et al./Clebsch et al./Servetto et al. ensure the same properties about 'capsule expressions and variables'. For safe parralelism, only the type modifiers of expressions/variables that are passed to other threads is relavant, not the fields. However Gordon et al. & Clebsch et al. allow recovering of a capsule reference through destructive reads, L42 (see ...) allows recovering a `lent` by reading a capsule field, which has it's own set of restrictions as to when they are able to be passed to other threads. Whether these features are present is not relavent for invariant checking, provided that the 4 above restrictions are enforced for capsule fields mentioned in the invariant of a method.
+
+D: On lines 372-374, why would it otherwise be possible to "leak out a mut alias to the capsule field?" Even doing this locally violates the soundness semantics for every reference immutability system I've seen
+	That is precisely our point, if a capsule mutator were allowed to have a `mut` return type, we would violate the soundness of our system. In our L42 implementation, since it is not aware of capsule fields, this is not prevented by the type system itself, but rather the implementation of our invariant protocol (i.e. the rule only applies to classes with an invariant method). Our implementation does instead allow the capsule field to be read  as `lent`, in which case `mut` return types are allowed, (since `lent` objects cannot be stored on the heap, and hence can't be reacheable from that mut reference). We wanted to present a simple system, and felt that  mentioning lent would further complicate it. The type systems of Gordon and Pony use destructive reads on field accesses, and then check the invariant after the destructive read, the restrictions on capsule mutators would not be neccesary. However destructive reads are likely to invalidate invariants much more easily than capsule mutators, so we believe our approach to be more flexible.
+	
+	
+D: On lines 374-376: I just don't understand what this sentence is suggesting.
+C: p. 9: "Note that these restrictions do not apply ...": I do not understand this sentence.
+	A field access `x.f` where `x` is capsule, and `f` is a capsule field, then:
+		* capsule variables (like `x`) can only be used once
+		* capsule expressions (like `x`) cannot be aliased from anywhere else in the stack or heap
+		* `x.f` cannot contain `this` in it's ROG (our Head Not Circular assumption, mentioned in appendix...)
+	Thus immediatley after `x.f` is executed, `x` will be unreachable/garabage-collectable. This means, there is no point ensuring that the invariant of `x` is not violated, since no one can ever access it again.
+	Thus the restrictions enforced for capsule-mutators need not apply to a method that contains an access such as `x.f`, in fact we don't even need to enforce instance privateness of `f` (i.e. we can allow `x` to not be `this`). 
+
+There was a typo in that code, on line 683 the `capsule Widgets c` paramater, was mean to be called `cs`. That method works as follows
+* It creates a `new Box`, passing in `cs`, which is promoted to `mut`. (This is sound since the type system prevents the `cs` variable from being used again)
+* It modifies this new Box (which is seen as `mut` now, the fact that `cs` was `capsule` is irrelavent here.
+* it returns `b` as a `capsule` this is sound, as the only variable in scope at the begining of this method was the `capsule Widgets cs`. As we don't have global variables, this means at the beinging of the method call nothing outside of it has a (transitive) reference to `cs` or it's ROG. As we have no global variables, the only objects we can expose for use after the method call, are the ones reacheable from the return value (`b`). Again, as we have no global variables, `b`, and everything it references, must either be in the ROG of `cs`, 

@@ -1,0 +1,20 @@
+@Public class method Void module(Url url,Library code,Name name)
+  [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
+  =Deploy.towel(url=url,code=this.module(code,n=name).code())
+@Public class method Trait module(Library that,Name n)
+  [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
+  =(
+  at=Name"AbstractTowel"
+  //l=removeUnusedCode(l,that)
+  top=Introspection.Nested.from(library=that)
+  i=top.nested(name=at)
+  acc=Trait.Acc(Name$Mapping())
+  for nc in top.nesteds() {
+    name=nc.nameFromRoot()
+    if name==n || name==at return void
+    annotated=nc.innerDoc().annotation(nested=i)
+    if annotated return acc.#squareAdd(name=>at.toS()++name)
+    return acc.#squareAdd(hide=name)
+    }
+  Trait(that)(squareBuilder=acc)[clear=at;n=>'This]
+  )

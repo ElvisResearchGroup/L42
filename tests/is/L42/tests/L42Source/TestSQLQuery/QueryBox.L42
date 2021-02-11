@@ -1,0 +1,24 @@
+ClassOperators={class method class This1()=This1}
+OneQ=Trait:{
+  @Public A={class method mut This(mut Source that)}
+  mut method mut Source #source()
+  read method read Source source()
+  @Public mut method mut A a()=A(this.#source())
+  }
+CloseQ=Trait:{
+  class method mut This(mut Source source)
+  @Public class method mut This(mut Source that)=This(source=that)  
+  }
+class method Library :(Library lib)[MetaFail,Class.IncoherentClass]=Class:this:Trait(lib)
+class method Trait :(Trait trait)[MetaFail]={
+  var res=CloseQ()
+  for n in trait.nested().nesteds() (
+    dest=Name"%(n.outerName().toStartLow())()"
+    res+=OneQ[
+      ignoreSelfRename='A=>n.nameFromRoot();
+      ignoreSelfRename='a()=>dest
+      ]
+    )
+  return Organize:Data:(res+trait)
+  catch Message.Guard g exception MetaFail"".with(cause=g)
+  }

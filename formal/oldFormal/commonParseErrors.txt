@@ -1,0 +1,37 @@
+Writing a class body and leaving out a method keyword
+- causes a parse failure near the close-parenthesis on the method name
+- often with requests for colons, possibly because the parser expects the path to extend further
+
+Confusion between curly brackets for class literals and expressions
+- a perfect parser should search for the keyword 'return'
+- the current parser is probably searching for 'method' keywords
+
+-C:{  } declares a nested class, but many ends up writing C{ }, this cause weird parser errors.
+
+also, for parameter passing: should be "name:expr" but is very easy to write "name expr" or "name=expr"  
+
+Leaving the S off the beginning of a string.  Causes:
+  no viable alternative at input '/*code*/ [no S here]"<string contents>"'
+
+Extending the content of the file, errors during meta-execution:
+----------------------------------------------------------------
+
+IncoherentMWTS (Method With TypeS) happens when there is not exactly one
+ type specifications for a method, 
+even if they agree about everything except the declaration point.
+This can be achieved by:
+- methods with the same specifier are declared in two interfaces,
+  and the class implements both or
+- a class implements a method, without @refine, with the types wrongly repeated
+- a class defines a method, with the syntax for implementing interface methods,
+  even though the method is not declared in an interface
+
+This.DefaultParameter.DefaultValueInvalid[This.MetaGuard.ParameterMismatch[
+Kind:ParameterMismatch
+Path:@.
+Left:mut method lent This1.N fred()
+- fred is a capsule field
+- you are decorating the class with Data
+- Data does not currently support capsule fields
+- consider using a var field and making modified copies of
+  the data that you were planning to mutate

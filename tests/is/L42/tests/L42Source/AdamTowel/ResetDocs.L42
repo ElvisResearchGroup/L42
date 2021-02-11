@@ -1,0 +1,34 @@
+NativeMap={
+  class method mut This of()
+  mut method Void put(This3.NativeName key, This3.S val)=native{trusted:put} error void
+//OLD watched=This3.NativeName,This3.S,This2.Map.OVal,This3.Collection$OutOfBounds
+  #norm{
+    nativeKind=HIMap
+    nativePar=This3.NativeName,This3.S,This2.Map.OVal,This3.Collection$OutOfBounds
+    typeDep=This,This3.NativeName,This3.S,This2.Map.OVal,This3.Collection$OutOfBounds
+    coherentDep=This,This3.NativeName,This3.S,This2.Map.OVal,This3.Collection$OutOfBounds
+    }
+  }
+
+ResetDocsMeta={
+  class method This #apply()
+  method Library #apply(Library that,This1.NativeMap map)=native{trusted:resetDocs} error void
+  //OLD watched=This1,This3.Trait$InvalidName,This1.NativeMap
+  #norm{nativeKind=Meta,
+    typeDep=This,This1,This3.Trait$InvalidName,This1.NativeMap
+    coherentDep=This3.Trait$InvalidName,This1.NativeMap
+    nativePar=This3.Trait$InvalidName This3.Trait$InvalidName This3.Trait$InvalidName This3.Trait$InvalidName This3.Trait$InvalidName
+    }
+  }
+read method read Map self()
+@Public class method mut Map #squareBuilder#resetDocs()=Map.empty()
+@Public read method Library resetDocs(Library that)[Trait$InvalidName]=(
+  NativeMap map=(
+    mut_map=NativeMap.of()
+    for (key,val) in this.self() (mut_map.put(key=key.that(),val=val))
+    mut_map)
+  res=ResetDocsMeta()(that,map=map)
+  catch error Trait$InvalidName x exception x
+  res
+  )
+  

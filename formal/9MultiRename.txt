@@ -1,0 +1,1092 @@
+N::= Cs | P | Cs.s | empty
+|>::= -> | ->* | => | =>*
+Map::= N1|>N1'.. Nn|>Nn'
+Rename::=Rename[p;Cs;Map]
+AddMap::=Cs1->L1..Csn->Ln Cs'1->mwt1..Cs'k->mwtk
+//Note: we will write Cs1->C=L to formally mean Cs1.C-> L
+//indeed the code keeps a map to ncs 
+_______
+#define applyMap(p;Map)=L    completeMap(ns,p,Map)=Map    extendMap(ns,p,Map)=Map
+* applyMap(p;Map0)= L'+LOf(AddMap) //simpler then normal sum:
+//simpler sum: skip normalizing unique numbers, and sum class+interface is never allowed, nor growing interfaces;
+//and implemented(L,Cs)=empty for all the cases. TODO: this looks scary, may be fine in the rename, but how to test it?
+    Map1=extendMap(p,empty,Map0)
+    earlyCheck(p.top,Map1)
+    Map2=completeMap(existingNs,p,Map1)
+    rename(p;Map2;p(This0)) = L';AddMap
+
+* completeMap(ns,p,Cs.C=>empty,Map)=Cs.C=>Cs.C::n,completeMap(ns,p,Map)
+    n= firstPrivateOf(p(Cs),C)//The second parameter is an LDom to ignore (to avoid creating C::3 if 3 was the lowest private number and C::3 was already there)
+* completeMap(ns,p,Cs.C=>empty,Map)=Cs.C=>Cs.C::n,completeMap(ns n,p,Map)
+    undefined firstPrivateOf(p(Cs),C)
+    n notin ns
+* completeMap(ns,p,Cs.m(xs)=>empty,Map)=Cs.m(xs)=>Cs.m::n(xs),completeMap(ns,p,Map)
+    n= firstPrivateOf(p(Cs),m(xs))
+* completeMap(ns,p,Cs.m(xs)=>empty,Map)=Cs.m(xs)=>Cs.m::n(xs),completeMap(ns n,p,Map)
+    undefined firstPrivateOf(p(Cs),m(xs))
+    n notin ns
+
+* extendMap(p, N|>N' Map)=N|>N',extendMap(p,Map)
+    |> notin {=>*,->*}
+* extendMap(p,Cs=>*empty,Map) = Map0 Map1..Mapn extendMap(p,Map)
+    Cs1..Csn=domNC(p(This.Cs))
+    Map0=Cs.Cs1=>empty..,Cs.Csn=>empty
+    Si1..Sik=domS(p(This.Cs.Csi))/p(This.Cs.Csi).Info.refine
+    Mapi=Cs.Csi.Si1=>empty..,Cs.Csi.Sin=>empty
+* extendMap(p,Cs->*empty,Map) = Cs.Cs1->empty..,Cs.Csn->empty extendMap(p,Map)
+    Cs1..Csn=domNC(p(This.Cs))
+    //an interface *can* have its implementation (that is the private nested classes) deleted, if is not watched
+* extendMap(p,Cs=>*P,Map) = Cs.Cs1=>P.Cs1..Cs.Csn=>P.Csn extendMap(p,Map)
+    Cs1..Csn=dom(p(This.Cs))//thus error if P is Any/Void/Library and Cs1..Csn is not empty
+* extendMap(p,Cs=>*Cs',Map) = Cs.Cs1=>Cs'.Cs1..Cs.Csn=>Cs'.Csn extendMap(p,Map)
+    Cs1..Csn=dom(p(This.Cs))
+* extendMap(p,Cs->*Cs',Map) = Cs.Cs1->Cs'.Cs1..Cs.Csn->Cs'.Csn extendMap(p,Map)
+    Cs1..Csn={Cs'| Cs' in domNC(p(This.Cs)) and p(This.Cs.Cs').interface?=empty}
+    //an interface can not have its implementation (that is the private nested classes) moved
+* extendMap(p,empty)=empty
+//* extendMap(p,Cs->*P,Map) is undefined
+_______
+#define allWatched(Core.L,Map)
+* allWatched(L,Map)=allWatched(L\Csz)//all watched without considering Cs1..Csn
+  Csz={Cs| Cs->empty in Map or Cs=>P in Map}
+
+* makeAbstractOk(p,Cs,L?,L,Map)
+    Cs not in allWatched(L,Map)
+    openImplements(p.navigate(Cs))
+    L?=empty or L?.interface?=empty
+    
+_______
+#define earlyCheck(Core.L,Map)  earlyCheck(Core.L,Map,N|>N')
+* earlyCheck(L,Map)
+    forall N|>N' in Map, earlyCheck(L,Map,N|>N') //N not of form empty (implicit by the cases below)
+    if Cs in dom(Map) U cod(Map)
+      then Cs.s|> Cs.s' not in Map
+      
+    if Cs.s in dom(Map) and L(Cs).interface?=interface
+      forall Cs0 in dom(Map) U cod(Map)
+        This0.Cs not in L(Cs0).Ts.Ps[from Cs0;{}]
+    Map is a map, thus no two tuples with the same Cs(.s?) key
+
+* earlyCheck(p,L,Map,N|>N')//p(This0)=L
+    N|> N' not in {empty=><empty>,empty=>P}
+    if N of form Cs, then  Cs in dom(L)
+    if N of form Cs.s, then  Cs in dom(L) and s in dom(L(Cs))
+    N,N' do not have unique numbers
+    if N|>N'= Cs=>P then
+      p(P) exists
+      makeAbstractOk(p,Cs,empty,L,Map)
+      forall s in dom(L(Cs)) where s has no unique n
+        L(Cs)(s).e?=empty
+        if This0.Cs' in (L(Cs)(s).T,L(Cs)(s).pars,L(Cs)(s).exceptions)[from Cs;{}]
+        then Cs'=>P' in Map 
+    if N = Cs.s then N' in {Cs.s',empty}, s!=s'
+    if N = Cs then N' in {Cs',P,empty} Cs!=Cs'
+    if N|>N'of form Cs->empty then makeAbstractOk(p,Cs,empty,L,Map)
+    if N|>N'of form Cs->Cs' then makeAbstractOk(p,Cs,L(Cs),L,Map) 
+    if N|>N'of form Cs.s|>Cs'.s'
+      then Cs=Cs' and size(s.xs)=size(s'.xs)
+    if N|>N' = Cs|>Cs'
+      then Cs"|>Cs' not in Map
+    if N|>N' = Cs.s|>Cs'.s'
+      then Cs".s"|>Cs'.s' not in map
+    if N|>N' = Cs=>Cs' then     //TODO: in code
+      either Cs' notin dom(L) or L(Cs').interface?=L(Cs).interface?
+      if L(Cs)>L(Cs') or L(Cs')>L(Cs) then L(Cs').interface?=empty
+    if N|>N' = Cs->Cs' then
+      either Cs' notin dom(L) or L(Cs').interface?=empty
+* LOf(AddMap) =
+    create a lib containing all the AddMap entries.
+    The constraints on the Map make so that if Cs->L in map,
+    methods of Cs are not added any more, just nested classes
+
+* mwt[s=s'] = mwt[mh=mwt.mh[s=s']][e?=mwt.e?[mwt.xs=s'.xs]]
+
+* Rename usages mwt = mwt'
+    recursively enters in the subterms, keeping track of the additional nesting in Ls, and
+    if P found in LDoms, Cs = LDoms++P and Cs =>Cs' in Rename.Map
+      replace it with p.minimize(This_dept.Cs')
+    if P found in LDoms, Cs = LDoms++P and Cs =>Thisn.Cs' in Rename.Map
+      replace it with This_dept+n.Cs' //or with the primitive P if C => P, P in {Any,Void,Library}     
+    if P found in LDoms, Cs = LDoms++P and Cs.s =>Cs.s' in Rename.Map, then s' is returned
+    if L is a subterm, then keep recursivelly entering in all the subterms,
+      and the new info will be Rename(Info)
+    //NOTE: this is incomplete; to complete it more informally,
+    // if P is of form P.C::n.Cs, P is renamed and the tail .C::n.Cs is appendend to the renamed P'
+    // if P is renamed in a form P'.C::n then P' is recursivelly renamed in P" and P".C::n is returned
+_______
+#define LDoms++P = Cs    LDoms++Cs = Cs'
+* LDoms,LDom1..LDomn++Thisn.Cs = LDoms++Cs
+* Cs++Cs'=Cs.Cs'
+* LDoms++Cs undefined otherwise (there is some LDom not form C)
+_______
+#define L[renameFrom P;p;j] = L'    //A new kind of e[from P;p;j]
+Careful start: It starts with p already in the new position,
+so the first entering in L does not grow j nor the p.
+Otherwise, is exactly like the other e[from P;p;j], but when a path is reached: 
+* Any[from _;_;_]=Any
+* Void[from _;_;_]=Void
+* Library[from _;_;_]=Library
+* Thisn.Cs[from P;p;j] = Thisn.Cs
+    n<j //assert p=L C?1 L1..C?j Lj, C?j=empty or C?j=C::k
+* Thisj.C::k.Cs[from P;p;j;_] = Thisj.C::k.Cs
+* Thisj[from P;p;j;_] = Thisj
+* Thisj.C.Cs[from P;p;j] = p.minimize(This(j+k).Cs1)
+    C has no unique number
+    This0.C.Cs[from P;p] = Thisk.Cs1
+* This(j+1+n).Cs[from P;p;j] = p.minimize(This(j+k).Cs1) //This(j+1+n).Cs points outside
+    This(1+n).Cs[from P;p] = Thisk.Cs1 
+_______
+#define rename(p;Map) = L;AddMap    Rename(L) = L;AddMap    Rename(ncs) = ncs;AddMap    Rename(mwts) = mwts;AddMap    Rename(Info) = Info
+* rename(p;Map) = L2;AddMap,AddMap0
+    Rename[p;cs=empty;Map] p(This0) = L1;AddMap        
+    if empty->Cs' in Map:
+      noCircular(p;L;empty)
+      noExposeUniqueN(Map,empty,L)
+      n=sizeOf(Cs')
+      L2=L1[toAbstract]
+      AddMap0=Cs'->L1[noNesteds][renameFrom Thisn;p.navigate(Cs')]
+    if empty-><empty> in Map:
+      noExposeUniqueN(Map,empty,L)      
+      L2=L1[toAbstract], AddMap0=empty
+      L2={L1.ncs[where C have no unique num]}//and empty info
+    if empty=>Cs' in Map:
+      n=sizeOf(Cs')
+      AddMap0=Cs'->L1[noNesteds][renameFrom Thisn;p.navigate(Cs');0]
+    otherwise L2=L1, AddMap0=empty
+* Rename[p;Cs;Map] L = L1;AddMap,AddMap',AddMap1..AddMapn
+    assert p(Cs)=L
+    L={interface? Ts mwts ncs Info}
+    Rename(mwts) = mwts';AddMap
+    C1..Cn = dom(ncs)
+    Rename[p;Cs.C1;Map](L(C1)) = L'1;AddMap1
+    ..
+    Rename[p;Cs.Cn;Map](L(Cn)) =L'n;AddMapn
+    Rename(ncs[L'1..L'n]) = ncs';AddMap'
+    L1..Lk= subset(L'1..L'n) such that Ci::n in dom(ncs') and !Ci in dom(ncs)//is private but was public
+    p'=p.navigate(Cs)//forceNavigate?
+    L0={interface? Ts mwts' ncs' Rename Info+collectDepsE(p',L1)+..+collectDepsE(p',Ln)}
+    Rename usages L0=L1//only renames Ts, Info and NC docs, the rest already happended
+* Rename(Info) = Info'
+    add close if L is interface and exists a method hiding on p(Cs)
+    if Cs'.m(xs) in Info.usedMethod and origin(Cs'.m(xs)).m(xs)=>Cs'.m::n(xs) in Rename.Map
+      Info' removes the usedMethod and add watched (still, never watch This0)
+    if Cs'.C in Info.typeDep and Cs'.C=>Cs'.C::n in Rename.Map
+      Info' adds the watched+typeDep Cs'  (still, never watch This0)
+    remove from usedMethods all the domain of watched
+    remove from hiddenSupertypes all the now private interfaces
+* Rename empty = empty;empty
+* Rename(mwt mwts) = mwts' mwts";AddMap,AddMap'
+    Rename (Rename usages mwt) = mwts';AddMap
+    Rename mwts = mwts";AddMap'
+* Rename(Docs C=L ncs) = ncs' ncs";AddMap,AddMap',AddMap"
+    Rename[Cs+=C] L = L',AddMap'
+    Rename(Docs C=L') = ncs';AddMap//The code renameUsage of Docs here
+    Rename ncs = ncs";AddMap"
+* Rename(mwt) = mwt;empty
+    Rename.Cs.(mwt.s) notin dom(Map)
+    forall This0.Cs0 in p(Rename.Cs).Ts.Ps[from Rename.Cs;{}],
+      Cs0.(mwt.s) notin dom(Map)
+//TODO: file Rename line540
+How to handle interface methods with ->?
+Was a map not well formedness that we can not -> interface names?
+in this case, it is failing to detect it
+-always?
+-when method -> is induced from ->* ?
+We need to add some tests to TestRename
+* Rename(nc) = nc;empty
+    (Rename.Cs).(nc.C) notin dom(Map)
+---//everywhere when we write Cs we mean Rename.Cs
+//1:  make an interface method private and the interface becomes close    
+* Rename(mwt) = mwt[s'];empty
+    s' has private number
+    either Cs0.(mwt.s)=>Cs0.s' in Map and This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
+    or Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+       s notin Rename.p(Rename.Cs).Info.refined
+       Cs notin allHiddenSupertypes(p.top)//Reason: if it was implemented in an L inside a meth body, we may turn an abstract method private
+       Rename.p(Rename.Cs).interface?=interface 
+    if Rename.p(Rename.Cs).interface?=interface then mwt.e?!=empty
+//2: simple interface method rename
+* Rename(mwt) = empty;Rename.Cs->mwt[s=s']
+    either Cs0.(mwt.s)=>Cs0.s' in Map and This0.Cs0 in p(Cs).Ts.Ps[from Cs;{}]
+    or Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+       s notin Rename.p(Rename.Cs).Info.refined
+       Rename.Cs notin allHiddenSupertypes(p.top)//allHiddenSupertypes excludes redirected and abstracted members
+       Rename.p(Rename.Cs).interface?=interface
+       
+//3: method toAbstract
+* Rename(mwt) = mwt[e?=empty];empty
+    Rename.Cs.(mwt.s)->empty in Map
+    mwt.e?=e//assert Rename.p(Rename.Cs).interface?=empty    
+//4: method super
+* Rename(mwt) = mwt[e?=empty];Cs->mwt[s']
+    Rename.Cs.(mwt.s)->Rename.Cs.s' in Map
+    mwt.e?=e//assert Rename.p(Rename.Cs).interface?=empty
+//5: method rename
+* Rename(mwt) = empty;Cs->mwt[s']
+    Rename.Cs.(mwt.s)=>Rename.Cs.s' in Map
+    Rename.p(Rename.Cs).interface?=empty
+    s notin p(Rename.Cs).Info.refined
+//6:method hide
+* Rename(mwt) = mwt[n1];empty
+    Cs.(mwt.s)=>Rename.Cs.s' in Map
+    s' has private number
+    mwt.e?=e//assert p(Cs).interface?=empty
+    s notin p(Rename.Cs).Info.refined
+//7: nested super
+* Rename(Docs C=L) = Docs C=L[toAbstract];empty -> L'
+    Rename.Cs.C->empty in Rename.Map //bringing at top level
+    L'=L[noNesteds][renameFrom This0.Rename.Cs.C;{};0]
+    noCircular(p;L;(Rename.Cs).C)
+    noExposeUniqueN(Rename.Map,(Rename.Cs).C,L)
+* Rename(Docs C=L) = Docs C=L[toAbstract];Cs'-> C'=L'
+    Rename.Cs.C->Cs'.C' in Rename.Map
+    n=sizeOf(Cs'.C')
+    p=Rename.p.navigate(Cs'.C')//Cs' may not be in dom(p), see forcedNavigate in the code
+    L'=L[noNesteds][renameFrom p.minimize(Thisn.(Rename.Cs.C));p;0]
+    noCircular(p;L;(Rename.Cs).C);
+    noExposeUniqueN(Rename.Map,(Rename.Cs).C,L)
+//8:nested toAbstract
+* Rename(Docs C=L) = Docs C=L[toAbstract];empty
+    noExposeUniqueN(Rename.Map,(Rename.Cs).C,L)
+    Rename.Cs.C-><empty> in Rename.Map
+//9:nested rename
+* Rename(Docs C=L) = (C=L)[onlyNesteds];empty->L'
+    Rename.Cs.C => empty in Map
+    L'=L[noNesteds][renameFrom This0.(Rename.Cs.C);{};0]
+* Rename(Docs C=L) = (C=L)[onlyNesteds];Cs'-> Docs C'=L'//also the Docs need to be frommed
+    Rename.Cs.C => Cs'.C' in Map
+    n=sizeOf(Cs'.C')
+    p=Rename.p.navigate(Cs'.C')//Cs'.C' may not be in dom(p) see forceNavigate in the code
+    L'=L[noNesteds][renameFrom p.minimize(Thisn.(Rename.Cs.C));p;0]
+//10:nested hide
+* Rename(Docs C=L) = (C=L)[onlyNesteds],Docs C::1=L';empty
+    Rename.Cs.C => Rename.Cs.C::n in Map
+    n=sizeOf(Cs.C::n)
+    p=Rename.p.navigate(Cs.C::n)//Cs.C::n is surelly not in dom(p) see forceNavigate in the code
+    L'=L[noNesteds][renameFrom p.minimize(Thisn.(Rename.Cs.C));p;0]
+//11:nested redirect
+* Rename(C=L) = (C=L)[onlyNesteds];empty
+    Cs.C => P in Map
+    P in {Any,Void,Library}
+    L.MWTs=empty
+* Rename(C=L) = (C=L)[onlyNesteds];empty
+    if L.interface? = interface then L.Info.close!=close //we can not redirect closed interfaces
+    Cs.C => Thisn.Cs' in Map
+    P=This(n+sizeOf(Cs.C)).Cs'
+    p=Rename.p.navigate(Cs.C)
+    forall MWT in L.MWTs://they should have been already "internally renamed"
+      p|- p(P)(MWT.s).MH[from P;p]<=MWT.MH
+    if L.interface? = interface then size(L.MWTs) == size(p(P).MWTs) and forall MWT in L.MWTs:
+      p|- MWT.MH<=p(P)(MWT.s).MH[from P;p] //must be eqivalent: <= and =>
+    //for interfaces the error should mention lack of equivalence, not lack of subtyping
+
+//TODO: another operator could be "delegate Cs.s->Cs'.s',
+//generating in Cs.s a method body that is just a call for Cs'.s'
+//this would support scrambling args and or lifting/embedding.
+//complex lift/embed can be obtained by delegate+->+hiding
+//+introspection to find all implemented versions
+_______
+#define noCircular(p;L;Cs)    noExposeUniqueN(Map,Cs,L)    L[toAbstract]=L'    nc[onlyNested]=nc?    L[noNested]=L'
+* noCircular(p;L;Cs0)
+    forall public This0.Cs1 in L.Info.typeDep[from This0.Cs0;{}]\This0.Cs0
+      This0.Cs0 notin p(Cs1)[from This0.Cs1;{}]
+
+* noExposeUniqueN(Map,Cs',L)
+    for all of the P in L.Ts.Ps, or in any non uniquely named method return type, parameter type, exception type or in any Path in docs:
+      if P has unique num and P[from This0.Cs';{}] = This0.Cs.C::n._//path is in the bubble, inside Cs
+      then Cs notin {Cs| Cs->_ in Map or Cs=>P in Map}//more then the not watched: also including Cs->Cs'
+    
+    there is no This0.C::k.Cs in L.Ts.Ps, or in any method return type,
+      parameter type, exception type or in any Path in docs.    
+
+* L[toAbstract] = L' removes all the private nested classes/methods, and make all the methods abstract.
+    The nested classes are left untouched.
+    The info get recomputed as just the typeDep of the set of types used in the methods
+    
+* nc[onlyNested] = nc? returns just a box with the public nested classes,
+    or empty if there is no public nested class.
+    
+* L[noNested] = L' removes all the public nested classes
+
+--------------------------------------------------------------------
+--------------------------------------------------------------------
+OLD NOTES AFTER THIS POINT
+
+      /*  Cs.C ->Cs'.C'   but there is also the case empty->Cs and Cs->empty
+        p=p.forceNavigate(Cs') //p=p.pop() if ->empty
+        from p.normalize(This(size(Cs')).Cs) 
+        // This0.topC.Cs if ->empty
+        // This(size(Cs')+1) if empty->
+        A.B.C into A.B.D   A.B    from This0
+        A.B.C into A.B     A      from This0.B
+        A.B.C into A       0      from This0.A.B
+        A.B.C into A.D     A      from This0.B
+        A.B.C into A.B.C.D A.B.C  from This1
+        A.B.C into A.B.E.F A.B.E  from This1.C
+        
+        A.B.C into A.B.D   A.B.D,  from This0
+        A.B.C into A.B     A.B     from This0.C
+        A.B.C into A       A       from This0.B.C
+        A.B.C into A.D     A.D     from This1.B.C
+        A.B.C into A.B.C.D A.B.C.D from This1   //3.A.B ==
+        A.B.C into A.B.E.F A.B.E.F from This2.C //3.A.B        
+       */
+
+* patternOk(_,Cs.m(x1..xn),Cs.m'(x'1...x'n))
+//example A.foo(a,b)=>A.bar(c,d); the method is renamed and body is adapted to use new par names
+* patternOk(_,Cs.m(x1..xn),Cs'.m'(x'1...x'n))
+    Cs!=Cs'
+    L(Cs)(m(x1..xn)).mdf=class
+//example A.foo(a,b)=>B.bar(c,d); now B watches A
+//delegate B.bar(c,d)=A.foo::1(a=c,b=d), double delegate for usages
+//example A.foo(a,b)=>B.bar(a,c); now B watches A 
+//delegate B.bar(a,c)=c.foo::1(a=a,b=this)    foo::2(a,b)=b.bar(a=a,c=this) 
+* patternOk(L,Cs.m(x1..xn),Cs'.m'(xs))
+    reorder(xs)=x,x1..xn
+//example A.foo(a,b)=>B.bar(a,self,b); now B watches A
+//delegate B.bar(a,self,b)=self.foo::1(a=a,b=b)    foo::2(a,b)=B.bar(a=a,self=this,b=b)    
+* patternOk(L,Cs.m(x1..xn),Cs'.m'(xs))
+    reorder(x1..xn)=xi,xs //xi will become the new 'this'
+    Cs'=L(Cs)(m(x1..xn)).pari.P[from Cs;{}]
+    L(Cs)(m(x1..xn)).mdf==class
+//example A.foo(a,self,b)=>B.bar(a,b); now B watches A
+//delegate B.bar(a,b)=A.foo::1(a=a,self=this,b=b)    foo::2(a,self,b)=self.bar(a=a,b=b)    
+
+/*NOPE,* patternOk(_,Cs.m(x1..xn),Cs'.m'(xs))//Shuffling need to be implemented with delegation, otherwise may be unsound wrt multi method types
+    reorder(xi,xs)=x0 x1..xn //xi is the new 'this' and x0 is the old 'this'
+    //HARD!!how to distinguish this from first/second case? 
+*/
+
+applyMap:
+  collect all watched
+  make a map for all renamed interface methods
+  all individual mappings are ok
+    -methods maps in methods, Cs maps in Cs or P//E
+    -no private names//E
+    -all dom(map) exists in dom(L)//L
+    -no hide abs methods//L
+    -no abstr or -> watched Cs//E
+    -no rename=> of refined methods//L
+    -no rename-> of interface methods//L
+    -meth rename=> follow one of the 4+1 patterns. Only the base pattern is ok with interface methods//E+L
+    -meth rename-> can follow one of the 4+1 patterns and is not an interface method//E+L
+  global mapping is ok:
+    -redirected stuff is all transitivelly redirected//E or L? 
+    -redirected stuff is redirected to OK targets//L, just before trashing such class?
+    -Cs in dom(map) U cod(map), then Cs.m not in dom(map) U cod(map)//E
+    -Cs|>Cs' in map, then Cs"|>Cs' not in map//E
+    -Cs.s|>Cs'.s' in map, then Cs".s"|>Cs'.s' not in map//E
+    -is a map, thus no two tuples with the same key//E
+  
+method renamed in the same class can be directly sum, while method renamed outside will be placed in the map N->body
+  
+  Redirect and undefined Ps:
+the target P was typed, thus all the reachable Ps are typed.
+If a P in the source does not exists, we can just 'accept is a good subtype\supertype for the corresponding P in the destination
+  
+  //renames:
+  renaming an interface method in private:
+    if it was state and implemented is public: error: the class must be close first
+    if implemented is private, state was already private, thus, the interface meth is not state anyway
+  rename only names not nesteds; to request renaming also nested, use 'Foo* or similar
+  operations:
+    Remove+ Cs remove the methods and the interface? and the docs. If no nested, remove also the box
+    Remove- Cs remove all the implementation of the methods and all the private stuff. Must be not watched.
+    References: Cs->P rename all the usages of Cs into P (if P is This0.Cs' is for rename, otherwise for redirect)
+    EmptyRename Cs->Cs' take Cs (no nested) from L, create another L where such content is in Cs' (properly frommed) 
+    InnerSum: apply PLUS on the tweaked L and one extracted EmptyRename L
+  This looks like can be easly done in bulk:
+  Cs=>Cs' = Remove+ Cs, EmptyRename CS->Cs', References Cs->Cs'
+  Cs->Cs' = Remove- Cs, EmptyRename CS->Cs',
+  Cs=>P = Remove+ Cs, References Cs->P
+  //we have 12 options
+  1 R+ E R //full rename  =>
+  2 R- E   //restrict (or super)  ->
+  3 R+ R  //redirect  =>
+  4 //R+ E (identical to R+ E R when possible)
+  5 //R+ (identical to R+ R when possible)
+  6 R- E R //strong rename but leave skeleton
+  7 R- R //redirect but leave skeleton
+  8 R- //make abstract (invoked by Cs->_)  ->_
+  9 E R//copy code and move refs
+  10 E//copy code
+  11 R//redirect but leave full source
+  12//empty op... ok
+  -------
+  More formally
+  
+L[Remove+ Csz,Remove- Csz',References (Cs->P)z]=L0
+L[MovedContent (Cs->Cs')z,References (Cs->P)z]=L1,..Ln //EmptyRename
+Sum L0+..+Ln //normal sum? but the input is broken
+check refine single
+
+Split+Sum
+Split:
+  L[References (Cs->P)z,MovedContent (Cs->Cs')z,Remove+ Csz,Remove- Csz']=L0,L1
+Sum=L0+L1 and can be normal sum? can skip normalizing unique numbers
+
+Split is a cloneVisitorWithProgram, that also collects a map from Cs->L and Cs.s->MWT
+//Should we merge the map directly without a sum? could be a performance optimization later
+
+Source dom is a tree
+Dest dom is a tree (except for Thisn+1.Csz)
+
+MovedContent map:
+  Cs in dom/cod, then Cs.m not in dom/cod
+  Cs->Cs' in map, then Cs"->Cs' not in map //same for Cs.m
+  Cs->Cs' in map, then Cs->Cs" not in map //same for Cs.m
+Remove set:
+  +/-Csz, +/-Cs.sz
+  if Cs in Csz, then Cs.s not in Cs.sz
+Reference map:
+  Cs->P is a map with Cs domain
+-----
+rename meth:
+ -no refine
+ -if moves between classes, must use a delegation pattern to avoid exposing ::0
+ -if not class, then either
+    -extra arg and becomes class
+    -argument swap (exactly one arg MUST have a different name)
+ -if is class, then either
+    -same arg and stay class
+    -argument less and get embedded
+growing maps:
+  for rename meth =>: add all the refined version of this. Note: is ok if it is privately implemented, but need some care
+    In particular, if is implemented in a library literal in a meth body
+hide meth:
+ -no abstract methods
+abs class, or just Cs->Cs'
+ -no watched
+-In all the cases is an error if Cs(.s)? do not exists or is private
+
+
+-------------------
+ThreadPool{
+  method void computeTasksUntil(lock x) {
+    while(!x.tryLock()){
+      Task t=this.tryTask();//find a more efficient version
+      if(t!=null){t.compute();}//can loop on lazy if another Eager loops :(
+      }
+  ThreadPool(int size){
+    class Worker extends Thread{
+      public void run(){while (true){tp.getTask().compute();}}
+      }
+    for(i in size){new Worker().start();}
+    }
+  }
+
+@Catch.Lazy method T y() = e//L42 version
+T y(){//Java version
+    Object localy = this.y
+    if(localy instanceof Lock){
+      tp.computeTasksUntil((Lock)localy);
+      //rentrant non blocking
+      try{if(y instanceof Lock){y=e;}}
+      catch(L42Throwable t){y=t;}
+      finally{localy.release();}
+      }
+    return returnOrThrow(y);
+    }
+Foo(){
+  this.fff=ff//is this safe to read in e?//ok if submit is syncronized?
+  tp.submit(()->y()) // for eagers
+  }
+---------------------------------------------
+Another solution, that repeats some tasks
+---------------------------------------------------
+
+assumptions:
+every lazy/eager have an associated FutureLock(FL) with the following methods:
+-isReady():Bool //true only after a tryPerfom was successfull
+-getOrThrow():T or throws //and may throw an invalid usage if not isReady()
+-tryPerform():Bool
+  //either sequentially do the job in the local worker and res=true or 
+  //the job is being done by another worker and res=false
+-beingDone():Bool //true if tryPerform has ever been called
+-perform():Void //run the lambda, 
+  //lambda exceptions would be stored and not progragated
+-join():T //top level method
+----
+tryPerform(){ //see ct:CT=current thread and tp:TP=thread pool
+  //if this in ct.current error self circular?
+  if this.ready() {return true;}
+  if this.beingDone() {return false;}
+  ct.current.add(this)
+  try{this.beingDone=true;this.perform();this.read=true;}
+  catch(Suppressed s){if(s.fl!=this){throw s;}}//completed by others
+  ct.current.remove()//this can throw a Suppressed if the caller contex 
+  //has been already resolved with repetition
+  return true;
+  }
+
+join(){
+  ct.current.addDep([fl]);
+  fl.countRequested++;
+  while !fl.tryPerform() {
+    if tp.hasFreeWorkers {wait; continue;}
+    fl0=tasks.tryAcquire()
+    if(fl0!=null){unused=fl0.join();}
+    if ct.current matches _,fl[fl1],fl1,_,
+      where fl1.isReady() and fl.isRequested() {
+      throw new Suppressed(fl1)
+      }
+    else{
+      flRepeatable=tp.getRepeatable()//select an fl near the start of
+      //a CT.current queue where the corresponding [fl'] is already computed
+      //such [fl'] is changed to throw a new Suppressed(flRepeatable) when 
+      //the stack goes back to such ct.current.remove()
+      if(flRepeatable==null){wait;continue;}
+      {unused=flRepeatable.join();}
+      }
+    if(tp.leastBusy!=ct){wait;continue;}
+    }
+  fl.countRequested--;
+  ct.current.RemoveDep();
+  return fl.getOrThrow()
+  }
+
+
+S::=FL|FL[FL']
+Current::=S*,FL
+CT={Current current;}
+
+-----------------------------
+
+R::= Cs(.s)? -> Cs'(.s)?' |Cs(.s)? -> trash | //move, toAbstract
+     Cs(.s)? => Cs'(.s)?' |Cs(.s)? => trash | //rename, hide
+     Cs(.s)? => P(.s)?'                   //redirect
+_______
+#define rename(p,Rs,L)=L'
+Rs ordering: 
+first all the nested renames,
+then all the method renames? or just allow only one of the two kinds?
+at minumum: if Cs in Rs, then no Cs.s in Rs
+
+-In all the cases is an error if Cs(.s)? do not exists or is private
+
+Methods: 
+- if an abstract state method is hidden, then the class if first
+  automatically closed.
+OR - no hide abstract user will close manually
+
+
+rename(p,Cs.s->Cs'.s',L)=
+L(Cs), L(Cs') not interface, L(Cs.s) class and not refine
+size(s.xs)=size(s'.xs)
+
+Class method
+The simplest case is when the target is a class method:
+  Conditions:  L(Cs), L(Cs') not interface, L(Cs.s) class and not refine
+  -> leave the abstract signature in place;
+     sum to L(Cs') the method, where all the occurences
+     of 'This' and 'this' are replaced with Thisn.Cs 
+     (with Cs=C1..Cn)
+  => as for ->, but also rename all the references to Cs.s.
+     Remove the abstract signature in Cs.s
+
+Instance method
+  Conditions:  Cs=Cs', L(Cs), not interface, 
+               L(Cs.s)not class and not refine
+  -> leave the abstract signature in place;
+     sum to L(Cs') the method
+  => as for -> but also rename all the references to Cs.s
+     Remove the abstract signature in Cs.s
+--
+ *a refine method can not be renamed '=>'
+  but can be moved '->' normally.
+ *If an instance method is specified, but Cs!=Cs', then
+ automatic lifting is applied:
+ the method body is tweeked so that is turned in a class method that takes 'this' as first argument. The class method is then handled as before.
+ *if an interface source is specified, some issues may arise and are solved as follow:
+ -> does not makes sense. If it was allowed it would add an abstract
+    method to the interface, thus making private nested classes
+    implementing it non coherent, thus ill formed.
+ => propagate the rename to all the classes and interfaces implementing it.
+  Ok only if interface is not privately implemented.
+  in the propagation, when non interface classes are reached, they are threated
+  differently: the old method (implemented or abstract) stays in place, and a new method
+  is added (always implemented), soft delegating to the old one//thus if the method was
+  already present in the destination, it keeps the former body
+ => empty == make private:
+  This is ok even if interface is privately implemented.
+  again for  non interface classes the orphan method survives in place.
+  If a class have another implemented method in place of the destination,
+   such method is first hidden.
+When embeddng a static method onto an interface method,
+  an abstract method is added in the interfaces, and the implementing classes
+  soft delegate to the static method
+  
+  NOPE: If another interface method is in place of the destination,
+   implementations of such method are discarded 
+   (a reasoning on contracts may justify this controversial design)
+ *NOPE: If an interface method need to be lifted at the class level,
+  a body can be syntetised by collecting in a switch all the bodies
+  of the classes implementing it. Then a last method work as a default. For example
+  {
+  I:{interface method Void foo()}
+  A:{implements I method foo()Debug(S"A")} 
+  B:{implements I method foo()Debug(S"B")}
+  C:{implements I }//foo()  abstract
+  D_$_1:{implements I method foo()Debug(S"D")}
+  }[I.foo()=>K.bar(that)]
+  =
+  {
+  I:{interface}
+  A:{implements I method Void foo()Debug(S"A")} 
+  B:{implements I method Void foo()Debug(S"B")}
+  C:{implements I method Void foo()}//foo()  abstract
+  D_$_1:{implements I method foo()Debug(S"D")}//private D
+  K:{class method bar(I that)={
+      if A that return that.foo()
+      if B that return that.foo()
+      if C that return that.foo()
+      if D_$_1 that return that.foo()
+      return This.foo(that)}
+    class method Void foo(I that)//abstract
+  }
+  ------
+  If the specified s' have the same name of s, then the body is not built and the result is just the abstract method Void foo(I that)
+
+  All the references to myI.foo() are now replaced with K.foo(myI),
+  however, what should we do with myA.foo() ? it is relevant for
+  the next step of metaprogramming.
+  
+----
+  Nested classes: 
+  Cs => Cs' works as rename now, I think is also ok for interfaces.
+  Cs => _ need to check that Cs is consistent
+  Cs =>P wors like redirect now, thus can expand the mapping.
+
+  Cs -> _ works as toAbstract now, thus can raise privacy coupuled.
+    It would be nice if we had a 'type' for Cs so that is can be
+    seen as privacy coupuled or not without trying to abstract it.
+  Cs ->Cs'
+    In addition of all the privacy coupuled issues, we also need
+    to considered refined methods and uses of 'this' as discussed
+    last time. Also here we may have a 'type' for Cs, like
+    'this free' to give the information that the code do not use
+    this/This in ways that prevent moving the implementation away.
+    This could be much easier to support than privacy coupuled.
+
+Operators:
+-----------
+1
+close Cs:
+  add to a coherent Cs a private version of all the
+  state methods, and implement all abstract methods by
+  delegating to the corresponding private abstract state method.
+  As an option, can take a name of an invariant method, and
+  in that case it properly add the invariant checks and do 
+  all the needed checks to see if the invariant is valid.
+Errors:
+  -Cs does not exists or is private
+  -Cs is not coherent
+  -provided selector for invariant does not exists or is private
+  -some invariant restrictions are violated.
+
+
+{
+I:{foo()}
+B:{implements I refine foo()a}
+}[I.foo()=>I.bar()]
+={
+I:{bar()}
+B:{implements I refine bar()a}
+}
+
+{
+I:{foo()}
+B:{implements I refine foo()a    bar()b}
+}[I.foo()=>I.bar()]
+=
+{
+I:{bar()}
+B:{implements I refine bar()a    bar_$_1()b}
+}
+
+
+{
+I1:{interface foo() bar()}
+B_$_1:{implements I1 refine foo()a    refine bar()b}
+}[I1.foo()=>I1.bar()]
+=
+{
+I1:{interface bar()}
+B_$_1:{implements I1 refine bar()a }
+}
+
+//controversial case below. Simpler to say that all members of a private nested are private.
+//then, renaming foo in bar if foo is interface is ok if:
+//  foo do not conflicts with bar for any visible case
+//  no interface having bar is privately implemented 'together' with I1
+{
+I1:{interface foo()}
+I2_$_2:{interface bar()}
+B_$_1:{implements I1,I2_$_2 refine foo()a    refine bar()b}
+C:{implements I2_$_2 refine bar() c}
+}[I1.foo()=>I1.bar()]
+//ok, bar in C is refined. Thus we know is a bar from interface
+and it need renaming.
+Thus: when reneming an interface method, all interface method with the same name need to be renamed. If the user do not specify, a numeric pedex is generated.
+user need to give a new name to all the bars, those are consistently renamed.
+-lifting if s have 1 extra arg, embedding if s have 1 less arg (and the first arg type match This0)
+
+-how to embed in an interface? body get trashed, interface is not privatly implemented
+
+
+Cs can be
+  interface
+  proper
+  proper close
+  interface privately implemented
+proper classes
+  rename them is ok,
+  moving them is ok.
+interfaces
+  rename them is ok,
+  moving them is ok,
+    while summing them: subtile subtype violation
+
+  {
+  A:{interface method a()} B:{interface method b()}
+  C_$_1:{implements A refine method a()}
+  }[B=>A] //or also for [B->A]
+  =
+  {
+  A:{interface method a() method b()}
+  C_$_1:{implemens A  refine method a()}//refine method b()
+  }=SubtypeClash
+//A is privatly implemented and operation add method b()
+
+refine methods:
+  nope, never a good target for =>, can we handle ->?
+interface methods://HERE
+  local rename them is ok,
+    //NObut the target name need to be globally renamed
+    on default is renamed in the implemented classes, and is error
+    to hide a refine method.
+    Can be tuned by [rename I.foo()=>I.bar(), B.bar()=>B.foo()]
+    to insert delegation methods B.foo()=this.bar().
+  L[Cs.s=>Cs.s'] //ok if refine s' never appear public
+  moving them makes no sense.
+  lifting them is ok, behaviour is syntetised with switch.
+  class methods can be lifted as well.
+  L[Cs.m(xs)=>Cs'.m'(_this,xs)]
+    ok if Cs' proper class,
+    class method T m(Cs _this, Ts xs)={if T1 _this return...}
+    class method T m'(Cs _this, Ts xs)
+
+  embedding a method in an interface method makes no sense.
+  non-local rename or move makes no sense.
+class methods of proper classes
+  all renames and move works.
+  lifting them makes no sense.
+  can be embedded in a proper class.
+
+given an extend map m:
+close Csz; Rs
+1 apply all the closes
+2 forall the Cs.s=>Cs'.s' and Cs=>Cs'rename the references
+3 forall Cs =>.. mapping remove the Cs,
+  forall Cs ->.. mapping remove the Cs body,
+  forall Cs.s=>.. remove the method declaration
+  forall Cs.s->.. remove the method body
+4 forall  ..->Cs or ..=>Cs mapping sum the moved class bodies
+  forall method mapping move the methods declarations 
+
+
+principles:
+  all visible names should be renamable
+
+
+private interfaces have all methods private
+private class need to have closed state
+well formedness a class with private abstract methods need to have those coherent on their own
+private abstract refine are not well formed
+
+
+{
+  I: {interface method T foo() }
+  B: {implements I
+    class method factory(T foo)
+    refine method T foo()
+    method bar()
+  }
+[rename I.foo => I.bar]
+[close B(???)]
+[E.eq=>_; C.eq->C.eq]
+
+{
+  I: {interface method T foo() }
+  B: {implements I
+    class method factory(T foo) factory_1(foo)
+    class method factory_1(T foo) 
+    refine method T foo() foo_1()
+    method T foo_1()
+    method bar() // try to close bar, fail as not part of constructor
+  }
+
+//ok since B would public open state not coherent
+[rename I.foo => _]
+//B public with coherent close state, unexpected?
+May be:
+  if one is hiding a set of abstract methods, it check that the hidden one is coherent on its own.
+
+what Close should do since multiple constructors exists
+
+/*
+1. Implement interface somewhere else (not inside class decl)
+2. Implement interface multiple times (have a different 'default', or allow manual selecting at each point (I1)A)  (I)(I1)myA != (I)(I2)myA
+3. Only 'see' some methods of implemented interfaces, in different contexts...(((I)A).foo !=> A.foo)
+4. Conflicting name support (implementing interfaces with methods of the same name, having non refine methods with the same name, etc..)
+5. One implementation, for multiple classes at the same time.../automatic implementation
+6. Self type
+-----------
+Guarantees:
+1. One way casting ( (I)(A)a !=> (A)(I)a )
+2. Final methods (we know what (I)a.foo will do.., but maybye not (I)a.bar)
+3. more control on who can and can't implement....
+*/
+
+
+subtype
+semantic indepentent from types
+a.foo() ===(  T x=a, x.foo())
+
+interface I { foo }
+class A: I { foo = e1 } // option 1, myA.foo == ((I)myA).foo == e1
+class B: I { foo = e1; I.foo = e2 } // option 2 myA.foo == e1, ((I)myA).foo == e2
+class B: I { I.foo = e2 } // ! myA.foo , ((I)myA).foo = e2
+
+class C: { 
+  void foo() { return e1; } }
+class B: C {
+  /*new*/ void foo() { return e2; } }
+// myB.foo() == e2, ((C)myC).foo() == e1
+
+
+myC = { bar() this.foo()  foo() 1 }
+myB = myC + { foo() 2 }
+
+myB.foo() == 2, myC.bar() = 1
+
+
+without 4
+{
+I1:{foo()}
+I2:{bar()}
+B:{A_1:{implements I1 I2
+  foo()=e1
+  bar()=e2
+  }}
+}[rename I2.bar => I2.foo]
+with 4
+{
+I1:{foo()}
+I2:{foo()}
+B:{A_1:{implements I1 I2
+  I1.foo()=e1
+  I2.foo()=e2
+  }}
+}[rename I1=>I2]
+
+{
+  I1:{foo()}
+  I2:{bar()}
+  B:{A_1:{implements I2 bar()=e1}}
+}[rename I1=>I2]
+since B privatly implements I2
+  I2 can not get more methods
+
+B privatly implements I1,I2
+B friend of A
+
+{I:{inteface Foo foo()}
+B:{implements I
+  refine Foo foo()
+  class method This (Foo foo)
+  }
+}[hide I.foo()]
+=
+{I:{inteface Foo foo_1()}
+B:{implements I
+  refine Foo foo_1()
+  class method This (Foo foo)
+  }
+}
+===
+{I:{inteface Foo foo_1()}
+B:{implements I
+  Foo foo()this.foo_1()
+  refine foo_1() //this.foo()
+  class method This (Foo foo)
+  }
+}[hide I.foo()]
+
+-------------------------
+{I:{inteface Foo foo()}
+B:{implements I
+  refine Foo foo() e
+  }
+}//[hide I.foo()]
+[rename I.foo()=>I.bar()]//[rename I.foo()=>I.bar(), B.bar()=>B.foo()]
+=
+{I:{inteface Foo bar()}
+B:{implements I
+  refine Foo bar() this.foo() //refine Foo bar() e
+  Foo foo()e //
+  }
+}
+
+B: {
+  Foo foo() e
+}[foo ~> bar] // forward body to bar (insert sig if neccesary)
+-------
+B: {
+  Foo foo() this.bar()
+  Foo bar() e
+}
+[foo => bar, bar ~> foo]
+
+
+{I:{inteface Foo bar()}
+ B:{implements I refine Foo bar() e}
+}[rename I.foo()=>I.bar()]
+
+
+{I:{inteface Foo foo_1()}//case1 //consistent with rename
+B:{implements I  refine Foo foo_1() e } } //bad because no request to mod B
+{I:{inteface Foo foo_1()}//case2 //worst
+B:{implements I  Foo foo() this.foo_1()  refine Foo foo_1() e } }
+{I:{inteface Foo foo_1()}//case3 //good for state/abstract foo()
+B:{implements I  Foo foo() e  refine Foo foo_1() this.foo() } }
+
+{I:{inteface Foo bar()}
+B:{implements I  refine Foo bar() e } } //bad because no request to mod B
+
+
+today
+each Lib has ns
+if Lib declare non-refined member with n, n in owned ns
+if L1,L2 in project, L1 has n, L2 has n implies L1==L2
+
+
+project has ns mentioned
+reuse URL refresh ns with non mentioned ones
+A+B refresh private numbers
+rule top
+B=....
+A=EvilLib.makePrivateCall(B, "m")
+
+X:{
+  B={class method foo_1() }
+  A=Evil(B) --> {class method bar() B.foo_1()}
+}
+
+A=Trait({B={ foo()}
+ bar()B.foo()
+ })
+A[hide B.foo()]
+={B={ foo_1()}
+ bar()B.foo_1()
+ }
+
+X:{
+  B={ foo() }
+  A={ bar() B.foo()}
+}[unhide B.foo]
+
+{A: {TAF foo, TAB bar} B: {TBF foo TBB bar}}
+[A=>B, A.foo=>A.bar, B.bar=>B.foo]
+
+A=>B, B.C => A
+B.C => A, A=>B
+==
+A=>B'; B.C => A; B' => B
+
+A=>B, A.C => D
+==
+A => B'; B'.C => D; B' => B
+
+L[Cs1=>Cs1', Cs2=>Cs2']
+
+L[Cs1' = L[Cs1] + L[Cs1'],
+  Cs2' = L[Cs2] + L[Cs2']]
+
+
+
+
+
+
+{A:{C:{}} B:{C:{foo}}}
+A=>B, B.C=>D
+{B:{} D:{foo}}
+
+{A:{C:{}} B:{C:{foo}}}
+A.C=>D A=>B
+{D:{} B:{C:{foo}}}
+
+
+Option1:
+{A: {TAF+TAB bar} B: {TBF+TBB foo}}
+{B: {TAF+TAB bar      TBF+TBB foo}}
+
+Option2:
+
+{B: {TAF+TBF foo      TAB+TBB bar}}
+{B: {TAF+TBF bar      TAB+TBB foo}}
+
+
+Option1:
+{A: {TAF bar, TAB foo} B: {TBF bar, TBB foo}}
+{B: {TAF+TBF bar, TAB+TBB foo}}
+
+Option2: 
+{B: {TAF+TBF bar, TAB+TBB foo}}
+
+
+
+what if -> is a soft delegate(error on wrong type but can skip the implementation) 
+and multiple -> from the same source can go on different targets?
+could be ok on interfaces too,
+just -> with abstract body is valid only on publicly implemented interfaces
+can be-> + =>, and will be a soft delegate rename
+
+rename=> can not be on privately implemented interface methods
+hide can be on privately implemented interface methods
+---------------
+method rename ->, method rename => or method sum all can not touch a privatly implemented
+interface.
+rename-> of class interface makes no sense
+rename=> of class interface is ok even for hide (and we autohide all the methods in a "special"
+way that can not be done step by step by the user).
+method rename => works on all the subtyping chunk, and is ok only on the method source
+method rename -> works only on implemented class methods
+and move the implementation away
+class rename -> is ok only on non interface non close class
+and just copy the content of the methods in the new place; thus
+a candidate factory would just be an abstract class method returning NOT This0.
+
+all the various lifting/embedding/delegate are not done with -> and =>
+but are other operators (may be still part of the map)
+
+----------
+3 directions:
+rename=> do not change semantic (violated by soft delegates)
+rename=> is very similar to hide //sacrified
+hide interface always possible 
+--------------
+//rename on privatly implemented (nesteds) may be ok, since all other methods have private names
+Trait({
+  I={interface method Void foo()}
+  B::1={[I] method Void foo()=void  method Void bar::1()=void}
+  method Library a()={[I] method Void foo()=void  method Library bar()}
+  })['I.foo()=>'I.bar()]
+=
+{
+  I={interface method Void bar()}
+  B={[I]
+    method Void bar()=void
+    }
+  }
+'stuff == \"stuff"

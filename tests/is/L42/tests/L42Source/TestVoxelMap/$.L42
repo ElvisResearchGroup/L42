@@ -1,0 +1,95 @@
+Margin = {//todo maxX renamed to sizeX and so on? or just x?
+  class method I maxX()
+  class method I maxY()
+  class method I maxZ()
+  class method I layerSize()=this.maxX() * this.maxY()
+  class method Double deltaP()=\"0.4999"
+  class method Double deltaM()=\"-0.4999"
+  }
+Coords = {
+  class method I(I x, I y) =  (x * Margin.maxY()) + y
+  class method I(I x, I y, I z) =
+    (z * Margin.layerSize()) + (x * Margin.maxY()) + y
+  class method I x2(I that)=that/Margin.maxY()
+  class method I y2(I that)=that.mod(Margin.maxY())
+  class method I x3(I that)=that.mod(Margin.layerSize())/Margin.maxY()
+  class method I y3(I that)=that.mod(Margin.layerSize()).mod(Margin.maxY())
+  class method I z3(I that)=that.mod(Margin.layerSize())
+  }
+InRangeTrait = Trait : {...}
+InRangeCell = Class : InRangeTrait['U=>I] : {
+  class method Bool inRange(I that, I to) = that.isInRange(0\ to=to)
+  class method I bound(I that, I to) = that.clamp(0\ to=to)
+  }
+InRangeDouble = Class : InRangeTrait['U=>Double] : {
+  class method Bool inRange(Double that, I to) = (
+    m = to.toDouble() + Margin.deltaP()
+    that >= Margin.deltaM() && that <= to.toDouble()
+    )
+  class method Double bound(Double that, I to) = {
+    if that < Margin.deltaM() return Margin.deltaM()
+    m = to.toDouble() + Margin.deltaP()
+    if that > m return m
+    return that 
+    }
+  }
+
+//Data, fields and invariants for all datatypes
+Cell2D = Data : {I x, I y
+  @Cache.Now class method Void invariant(I x, I y) = 
+    InRangeCell.errorOutOfRange(This, x=x, y=y)
+  }
+Cell3D = Data : {I x, I y, I z
+  @Cache.Now class method Void invariant(I x, I y, I z) = 
+    InRangeCell.errorOutOfRange(This, x=x, y=y, z=z)
+  }
+Point2D = Data : {Double x, Double y
+  @Cache.Now class method Void invariant(Double x, Double y) = 
+    InRangeDouble.errorOutOfRange(This, x=x, y=y)
+  }
+Point3D = Data : {Double x, Double y, Double z
+  @Cache.Now class method Void invariant(Double x, Double y, Double z) = 
+    InRangeDouble.errorOutOfRange(This, x=x, y=y, z=z)
+  }
+Delta2D = Data : {I x, I y}
+Delta3D = Data : {I x, I y, I z}
+Vector2D = Data : {Double x, Double y
+  @Cache.Now class method Void invariant(Double x,Double y) = (
+    if x.toS()==S"NaN" error X"x is NaN"
+    if y.toS()==S"NaN" error X"y is NaN"
+    )}
+Vector3D = Data : {Double x, Double y, Double z
+  @Cache.Now class method Void invariant(Double x, Double y, Double z) = (
+    if x.toS()==S"NaN" error X"x is NaN"
+    if y.toS()==S"NaN" error X"y is NaN"
+    if z.toS()==S"NaN" error X"z is NaN"
+    )}
+
+//List and Opt for all data types
+Cell2D$List = Collection.list(Cell2D)
+Cell2D$Opt = Collection.optional(Cell2D)
+Point2D$List = Collection.list(Point2D)
+Point2D$Opt = Collection.optional(Point2D)
+Delta2D$List = Collection.list(Delta2D)
+Delta2D$Opt = Collection.optional(Delta2D)
+Vector2D$List = Collection.list(Vector2D)
+Vector2D$Opt = Collection.optional(Vector2D)
+
+Cell3D$List = Collection.list(Cell3D)
+Cell3D$Opt = Collection.optional(Cell3D)
+Point3D$List = Collection.list(Point3D)
+Point3D$Opt = Collection.optional(Point3D)
+Delta3D$List = Collection.list(Delta3D)
+Delta3D$Opt = Collection.optional(Delta3D)
+Vector3D$List = Collection.list(Vector3D)
+Vector3D$Opt = Collection.optional(Vector3D)
+
+//Other methods for the datatypes
+Cell2D$ = {...}
+Cell3D$ = {...}
+Delta2D$ = {...}
+Delta3D$ = {...}
+Point2D$ = {...}
+Point3D$ = {...}
+Vector2D$ = {...}
+Vector3D$ = {...}

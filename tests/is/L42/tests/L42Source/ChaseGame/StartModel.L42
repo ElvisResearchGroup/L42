@@ -1,0 +1,17 @@
+mut JServer j
+mut Random r
+class method mut This #$of(S key)=(
+  res=This(
+    stage=JServer.Handler.Map()
+    key=key
+    j=JServer.#$of()
+    r=Random.#$random()
+    )
+  res.setStage(res)
+  res
+  )
+@JServer.Handler mut method Void start(S msg)=(
+  this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
+  this.setStage(EnvModel(j=this.#j(),stage=this.#stage(),key=this.key(),r=this.#r()))
+  whoops JServer.Fail
+  )

@@ -1,0 +1,186 @@
+reuse[AdamTowel]
+
+TestClose1=(
+  code={
+    I n
+    class method mut This(I n)
+    @Cache.Clear class method I double(mut I n)=error void
+    }
+  {}:Test"Close1"(
+    actual={error Data.Close:code catch Data.Close.Fail x return x}
+    expected=S"""
+      |Message This.Data.Close.Fail([###]):
+      |@This1.Cache.Clear class method This1.I double(mut This1.I n)=(..)
+      |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.I n) initializes it as This1.I
+      |[file:[###]
+      """.trim())
+  code2={
+    I n
+    class method mut This(I n)
+    @Cache.Now read method I double()=this.n()+this.n()
+    }
+  {}:Test"Close2"(
+    actual={error Data.Close:code2 catch Data.Close.Fail x return x}
+    expected=S"""
+      |Message This.Data.Close.Fail([###]):
+      |@This1.Cache.Now read method This1.I double()=(..)
+      |can not be made into a cached read method; the receiver modifier must be class but it is read
+      |[file:[###]
+      """.trim())
+  code3={
+    read method I n::0()
+    class method mut This of::0(I n)
+    }
+  {}:Test"Close3"(
+    actual={error Data.Close:code3 catch Data.Close.Fail x return x}
+    expected=S"""
+      |Message This.Data.Close.Fail([###]):
+      |nested class { }
+      |Class is already close
+      |[file:[###]
+      """.trim())
+  code4={
+    capsule S.List that
+    class method mut This(capsule S.List that)
+    @Cache.Now class method I size(read S.List that)=that.size()
+    @Cache.Clear class method I append1(mut S.List thaat)=(
+      thaat.add(S"1")
+      thaat.size()
+      )
+    }
+  {}:Test"Close4"(
+    actual={error Data.Close:code4 catch Data.Close.Fail x return x}
+    expected=S"""
+      |Message This.Data.Close.Fail([###]):
+      |@This1.Cache.Clear class method This1.I append1(mut This1.S.List thaat)=(..)
+      |first parameter does not correspond to a capsule field: the parameter name is not a field
+      |[file:[###]
+      """.trim())
+  code5={
+    I n
+    class method mut This(I n)
+    @Cache.Now class method I double(I nn)=nn+nn
+    }
+  {}:Test"Close5"(
+    actual={error Data.Close:code5 catch Data.Close.Fail x return x}
+    expected=S"""
+      |Message This.Data.Close.Fail([###]):
+      |@This1.Cache.Now class method This1.I double(This1.I nn)=(..)
+      |No candidate getter/exposer with name nn and method modifier imm or read
+      |[file:[###]
+      """.trim())
+  code6={
+    I n
+    class method mut This(fwd imm I n)
+    @Cache.Now class method I double(I n)=n+n
+    }
+  {}:Test"Close6"(
+    actual={error Data.Close:code6 catch Data.Close.Fail x return x}
+    expected=S"""
+      |Message This.Data.Close.Fail([###]):
+      |@This1.Cache.Now class method This1.I double(This1.I n)=(..)
+      |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.I n)
+      |[file:[###]
+      """.trim())
+    )
+TestSum1=(
+  code1a={method Void foo()=void}
+  code1b={method Void foo()=void}
+  {}:Test"Sum1"(
+    actual={error (Trait:code1a)+code1b catch Trait.MethodClash x return x}
+    expected=S"""
+    |Message This.Trait.MethodClash([###]):
+    |method Void foo()=(..)
+    |Conflicting implementation: the method is implemented on both side of the sum
+    |[file:[###]
+    """.trim())
+  code2a={interface method Void foo()}
+  code2b={method Void foo()=void }
+  {}:Test"Sum2"(
+    actual={error (Trait:code2a)+code2b catch Trait.ClassClash x return x}
+    expected=S"""
+    |Message This.Trait.ClassClash([###]):
+    |nested class This={ foo()=(..) }
+    |The nested class can not be turned into an interface; some public methods are implemented
+    |[file:[###]
+    """.trim())
+  )
+Code=Trait:{
+  A={method Void foo()=void}
+  B={method Any foo()=void}
+  C={method Void a(A a)=a.foo()}
+  method Void a(A a)=void
+  }
+TestRename=(
+  {}:Test"MethodClash=>"(
+    actual={error Code['A=>'B] catch Trait.MethodClash x return x}
+    expected=S"""
+      |Message This.Trait.MethodClash([###]):
+      |method Any foo()=(..)
+      |Conflicting implementation: the method is implemented on both side of the sum
+      |[file:[###]
+      """.trim())
+  {}:Test"MethodClash->"(
+    actual={error Code['A->'B] catch Trait.MethodClash x return x}
+    expected=S"""
+      |Message This.Trait.MethodClash([###]):
+      |method Any foo()=(..)
+      |Conflicting implementation: the method is implemented on both side of the sum
+      |[file:[###]
+      """.trim())
+  )
+TestRename2=(
+  {}:Test"MethodClash->"(
+    actual={error Code['C->'This] catch Trait.MethodClash x return x}
+    expected=S"""
+      |Message This.Trait.MethodClash([###]):
+      |method Void a(This.A a)=(..)
+      |Conflicting implementation: the method is implemented on both side of the sum
+      |[file:[###]
+      """.trim())
+  {}:Test"InvalidMap->"(
+    actual={error Code['A.foo()=>Name""][single='A->Name""] catch Trait.InvalidMap x return x}
+    expected=S"""
+      |Message This.Trait.InvalidMap([###]):
+      |nested class { a(a)=(..) A={..} B={..} C={..} }
+      |nested class A
+      |The implementation can not be removed since the class is watched by nested class C
+      |Full mapping:A-><empty>
+      |[file:[###]
+      """.trim())
+  {}:Test"InvalidMap->"(
+    actual={error Code[hide='A.foo()][clearSingle='A] catch Trait.InvalidMap x return x}
+    expected=S"""
+      |Message This.Trait.InvalidMap([###]):
+      |nested class { a(a)=(..) A={..} B={..} C={..} }
+      |nested class A
+      |The implementation can not be removed since the class is watched by nested class C
+      |Full mapping:A-><empty>
+      |[file:[###]
+      """.trim())
+  )
+
+//Testing a funkyer way to test
+TestError=Trait:{
+  T={[Message]}
+  class method This of()
+  method Any()[Message]
+  method S expected()
+  class method Void :1(Library that)[Message]=(
+    s=(This.of().expected()++Test.hole()).trim()
+    (_=This.of()()
+    catch T f (that:Test"ErrorMessage"(expected=s,actual=f.toS()))
+    that:Test"ErrorExpected"(Bool.false())
+    ))
+  }
+TestMethodClashFunky={A=Class:TestError['T=>Trait.MethodClash]:{
+  method Any()[Message]=
+    Code['A=>'B]
+    //Code['A.#equalgt0(other='B)]
+  method S expected()=S"""
+    |Message [###]
+    |method Any foo()=(..)
+    |Conflicting implementation: the method is implemented on both side of the sum
+    |[file:[###]
+    """  
+  }B={}:A}

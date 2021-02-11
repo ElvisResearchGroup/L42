@@ -1,0 +1,164 @@
+TS=Trait:{
+  ColT={class method This from(S string)}
+  class method ColT colT(lent Source source,I i)[_]
+    =ColT.from(string=source.val(i).val())
+  }
+
+TOptS=Trait:{
+  ColT={class method This from(S.Opt optS)}
+  class method ColT colT(lent Source source,I i)[_]
+    =ColT.from(optS=source.val(i))
+  }
+  
+K1=Trait:{
+  mut method mut Source #source()
+  R={class method This #immK(T0 p0)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  class method T0 p0(lent Source source,I i)[Source.Fail]
+  class method S p0()
+  mut method List collectResults()[Source.Fail]=(
+    lent source=this.#source()//inference would fail
+      (
+      res=List()//to allow for promotion res to imm
+      I i0=source.findColumn(label=This.p0())
+      while source.next() (res.add(right=R.#immK(
+        p0=This.p0(source=source,i=i0)
+        )))
+      res
+      )
+    )
+  }
+K2=Trait:{
+  mut method mut Source #source()
+  R={class method This #immK(T0 p0,T1 p1)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  class method T0 p0(lent Source source,I i)[Source.Fail]
+  class method T1 p1(lent Source source,I i)[Source.Fail]
+  class method S p0()
+  class method S p1()
+  mut method List collectResults()[Source.Fail]=(
+    lent source=this.#source()
+      (
+      res=List()
+      I i0=source.findColumn(label=This.p0())
+      I i1=source.findColumn(label=This.p1())
+      while source.next() (res.add(right=R.#immK(
+        p0=This.p0(source=source,i=i0)
+        p1=This.p1(source=source,i=i1)
+        )))
+      res
+      )
+    )
+  }
+K3=Trait:{
+  mut method mut Source #source()
+  R={class method This #immK(T0 p0,T1 p1,T2 p2)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  T2={}
+  class method T0 p0(lent Source source, I i)[Source.Fail]
+  class method T1 p1(lent Source source, I i)[Source.Fail]
+  class method T2 p2(lent Source source, I i)[Source.Fail]
+  class method S p0()
+  class method S p1()
+  class method S p2()
+  mut method List collectResults()[Source.Fail]=(
+    lent source=this.#source()
+      (
+      res=List()
+      I i0=source.findColumn(label=This.p0())
+      I i1=source.findColumn(label=This.p1())
+      I i2=source.findColumn(label=This.p2())
+      while source.next() (res.add(right=R.#immK(
+        p0=This.p0(source=source,i=i0)
+        p1=This.p1(source=source,i=i1)
+        p2=This.p2(source=source,i=i2)
+        )))
+      res
+      )
+    )
+  }
+K4=Trait:{
+  mut method mut Source #source()
+  R={class method This #immK(T0 p0,T1 p1,T2 p2,T3 p3)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  T2={}
+  T3={}
+  class method T0 p0(lent Source source,I i)[Source.Fail]
+  class method T1 p1(lent Source source,I i)[Source.Fail]
+  class method T2 p2(lent Source source,I i)[Source.Fail]
+  class method T3 p3(lent Source source,I i)[Source.Fail]
+  class method S p0()
+  class method S p1()
+  class method S p2()
+  class method S p3()
+  mut method List collectResults()[Source.Fail]=(
+    lent source=this.#source()
+      (
+      res=List()
+      I i0=source.findColumn(label=This.p0())
+      I i1=source.findColumn(label=This.p1())
+      I i2=source.findColumn(label=This.p2())
+      I i3=source.findColumn(label=This.p3())
+      while source.next() (res.add(right=R.#immK(
+        p0=This.p0(source=source,i=i0)
+        p1=This.p1(source=source,i=i1)
+        p2=This.p2(source=source,i=i2)
+        p3=This.p3(source=source,i=i3)
+        )))
+      res
+      )
+    )
+  }
+K5=Trait:{
+  mut method mut Source #source()
+  R={class method This #immK(T0 p0,T1 p1,T2 p2,T3 p3,T4 p4)}
+  List={ class method mut This () mut method Void add(R right) }
+  T0={}
+  T1={}
+  T2={}
+  T3={}
+  T4={}
+  class method T0 p0(lent Source source,I i)[Source.Fail]
+  class method T1 p1(lent Source source,I i)[Source.Fail]
+  class method T2 p2(lent Source source,I i)[Source.Fail]
+  class method T3 p3(lent Source source,I i)[Source.Fail]
+  class method T4 p4(lent Source source,I i)[Source.Fail]
+  class method S p0()
+  class method S p1()
+  class method S p2()
+  class method S p3()
+  class method S p4()
+  mut method List collectResults()[Source.Fail]=(
+    lent source=this.#source()
+      (
+      res=List()
+      I i0=source.findColumn(label=This.p0())
+      I i1=source.findColumn(label=This.p1())
+      I i2=source.findColumn(label=This.p2())
+      I i3=source.findColumn(label=This.p3())
+      I i4=source.findColumn(label=This.p4())
+      while source.next() (res.add(right=R.#immK(
+        p0=This.p0(source=source,i=i0)
+        p1=This.p1(source=source,i=i1)
+        p2=This.p2(source=source,i=i2)
+        p3=This.p3(source=source,i=i3)
+        p4=This.p4(source=source,i=i4)
+        )))
+      res
+      )
+    )
+  }
+class method Traits traits()=Traits[
+  K1();K2();K3();K4();K5();
+  ]
+class method Name.List names()=Name.List[
+  'R.#immK(p0);'R.#immK(p0,p1);'R.#immK(p0,p1,p2);
+  'R.#immK(p0,p1,p2,p3);'R.#immK(p0,p1,p2,p3,p4);
+  ]

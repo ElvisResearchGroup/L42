@@ -1,0 +1,59 @@
+@Public AnyToS={class method S (read Any that)={
+  if read HasToS.Raw s=that return this.escape(s.toS())  
+  if read HasToS s=that return s.toS()
+  return System.immToString(System.readClone(that)) 
+  }
+  class method S escape(S that)=(
+    var res=that
+    res:=res.replace(S.nl() with=S"\n")
+    res:=res.replace(S.dq() with=S"\%S.dq()")
+    res:=res.replace(S"\" with=S"\\")
+    S.dq()++res++S.dq()
+    )
+  }
+TraitEq1=Trait:{
+  Elem={read method Bool readEquality(read This that)}
+  class method Bool equals(read Elem a,read Elem b)=a.readEquality(b)
+  }
+TraitEq2=Trait:{
+  Elem={read method Bool ==(read This that)}
+  class method Bool equals(read Elem a,read Elem b)= a==b
+  }
+TraitEq3=Trait:{
+  Elem={}
+  class method Bool equals(read Elem a,read Elem b)
+    =System.immEquality(System.readClone(a) and=System.readClone(b))
+  }
+class method Trait selectEq(class Any that)={
+  return TraitEq1['Elem=>that]
+  catch Any e1 (
+    return TraitEq2['Elem=>that]
+    catch Any e2 (
+      return TraitEq3['Elem=>that]
+      catch Any e3 error e3
+      )
+    )
+  } 
+//####Opts
+OptNative=Trait:{...}
+OptOps=OptNative+{...}
+OptEqOps=OptOps+{...}
+OptFromSOps=Trait:{...}
+@Public class method Trait optionalTrait()=OptEqOps()
+@Public class method Library optional(class Any that)={
+  var res=this.optionalTrait()['Elem=>that]+This.selectEq(that)
+  (res:=res+OptFromSOps['Elem=>that] catch Any e void void)
+  return Class$Relax:res
+  catch Any e error e
+  }
+//####Lists
+ListNative=Trait:{...}
+ListOps=ListNative + {...}
+ListEqOps=ListOps+{...}
+@Public class method Trait listTrait()=ListEqOps()
+@Public class method Library list(class Any that)={
+  res=this.listTrait()['Elem=>that]+This.selectEq(that)
+  return Class$Relax:res
+  catch Any e error e
+  }
+@AbstractTowel{collection}

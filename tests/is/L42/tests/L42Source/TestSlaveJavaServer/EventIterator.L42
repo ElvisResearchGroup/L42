@@ -1,0 +1,42 @@
+mut This1 that
+mut S.List streams
+class method mut This(mut This1 that, mut S.List streams)
+mut method mut This #iterator()=this
+mut method mut This #varIterator()=this
+read method I #startIndex()=0I
+read method Bool #hasElem(I that)=Bool.true()
+read method Bool #incomplete(I that)=!this.streams().isEmpty()
+mut method Event from(S.Opt oRes)=(
+  if !oRes.isPresent() error X"unexpected Event with null string"
+  this.from(res=oRes.val())
+  )
+mut method Event from(S res)=(
+  index1=res.indexOf(S.nl())
+  if index1==I"-1" error X"unexpected Event format: [[%res]]"
+  key=res.subString(0\ to=index1)
+  index2=res.indexOf(S.nl(),from=index1+1\)
+  if index2==I"-1" error X"unexpected Event format: [[%res]]"
+  id=res.subString(index1+1\ to=index2)
+  msg=res.subString(index2+1\ to=\size)
+  if id==S"##End##" (this.#streams().removeLeft(val=key))
+  Event(key=key, id=id, msg=msg)
+  )
+mut method Event #elem#imm(I that)={
+  var res=this.#that().nextEvent(keys=this.keys())
+  catch Fail f (
+    end = f.text().startsWith(S"java.util.concurrent.CancellationException%S.nl()")
+    if !end && this.that().alive() error f
+    aKey=this.#streams().left()
+    while !this.#streams().isEmpty() (this.#streams().removeRight())
+    return Event(key=aKey, id=S"##Empty##", msg=S"")
+    )
+  return this.from(oRes=res)
+  }
+read method S keys()=(
+  var res=S""
+  for s in this.streams() (res++=s++S.nl())
+  res
+  )
+mut method Event #elem#default(I that)=this.#elem#imm(that)
+mut method Event #elem#read(I that)=this.#elem#imm(that)
+read method Void #close(I that)=void

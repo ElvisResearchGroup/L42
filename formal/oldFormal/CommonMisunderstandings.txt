@@ -1,0 +1,74 @@
+Here we should collect common misunderstanding that can
+arise about 42 semantic
+1----
+in a block, a value thrown in a catch, leaks out of the whole block.
+NOT in the next catch/paragraph-catch
+2------
+var Foo x is
+a label called x that can be attached to many different
+immutable Foo.
+
+mut Foo x is
+a permanent super glued label, initialized on a mutable Foo.
+
+3------
+metaprogramming is "functional" in the sense that new code is created
+but there is no way to modify old code.
+
+
+4-------
+ metaprogramming operators always receive normalized L
+ metaprogramming operators starting from expression e
+ can receive a non typed L only if there as a non typed L inside e
+ 
+5-----
+This kind of code
+C:{ method Void foo() Bar({D:printHI()}) }
+will printHi only once, but execute Bar as
+may times as foo is called.
+Compilation (rule top) in method bodies happens
+ (only once and) before the method can be executed
+ 
+ Bruno:
+ -since sometime code is typed late,
+  then traits are not typed on their own
+-This is a structural type
+-composition conflicts are type errors
+-late typing gives more then Java
+-a java program does not compile if there is
+ not well typed code in it.
+-both "type" criticisims, I felt like my text alone was not enough to
+make you understand the motivations.
+ Criticism: it would be better to typecheck before flattening.
+This SENTENCE IS CONFUSING, makes reader believe
+t : { method int mb(){return this.ma();} }
+B:Use ta, t
+would typecheck
+
+try to explain by example that instead B:Use ta, { method int
+mb(){return this.ma();} } works
+
+
+Criticism: it would be better to typecheck CODE LITERALS before flattening.
+
+
+A:{interface  method B m()}
+B:{implements A}
+works, but 
+
+A:{interface  method B m()}
+B:Data<><{implements A}
+Can not work, and that is ok.
+B is needed to be compiled for A to be typed and thus for {implements A} to be normalized.
+A clean way is to use all interfaces
+A:{interface  method BI m()}
+BI:{interface ..}
+B:Data<><{implements A,BI}
+
+
+
+Desugaring is before all normalization. There is no need to
+merge desugaring and normalization.
+Thus "reuse" keywords are unfolded at desugaring time.
+A program deploying towels and testing them,
+may need to use a load42File plugin to control the desugaring time.

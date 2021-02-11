@@ -1,0 +1,41 @@
+[$.Entity]
+var Vector pos
+var Vector speed
+Double topSpeed
+Double acc
+S img
+S text
+
+mut method Void moveSpeed(Double rad,I power)=(
+  s=this.speed()
+  if power <= 0I (
+    this.speed(s+Vector(x=s.x()*this.break(),y=s.y()*this.break()))
+    )
+  else (
+    for i in Range(power) (
+      this.speed(s.sum(rad=rad,power=this.acc(),max=this.topSpeed()))
+      )
+    )
+  )
+mut method Void moveImpact(mut $ that)=(
+  oldP=this.pos()
+  this.pos((\pos+\speed)**that.margin())
+  for mut e in that.#es() (
+    if !that.sameEntity(a=this,b=e) && Impact(a=this,b=e) ( 
+      if this.onImpact(that,oldP=oldP,impacted=e) Break()
+      )
+    )
+  )
+mut method Bool onImpact(mut $ that,Vector oldP, mut $.Entity impacted)
+
+method paint()={
+  p=this.pos()
+  x=p.x()
+  y=p.y()
+  res=S"%x.ceil();%y.ceil();%this.radius().ceil();0;%this.img()"
+  if this.text()==S"" return res
+  xr=x+(this.radius()/2Double)
+  yr=y-(this.radius()/2Double)
+  res2=S"%xr.ceil();%yr.ceil();%this.radius().ceil();0;text:%this.text()"
+  return res++S.nl()++res2
+  }

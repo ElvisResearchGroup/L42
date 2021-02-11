@@ -1,7 +1,0 @@
-Task=(
-  model=EnvModel.#$of()
-  gui=Gui(j=model.#j(),package=S"miniGui",name='Example,x=800\,y=600\,ping=30\)
-  b1=gui.button(id=S"reset",msg='Pressed,text=S"PressMe")
-  gui"%JavaCode(gui)"
-  for e in model.#j()(\['Example]) (e>>model)
-  )

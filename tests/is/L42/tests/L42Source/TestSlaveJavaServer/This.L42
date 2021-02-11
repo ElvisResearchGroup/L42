@@ -1,0 +1,52 @@
+reuse [AdamTowel]
+Lib=Trait:{reuse [AdamTowel]
+  JavaServer=Trait:Organize:{...}
+  Top={
+    class method Library(S slaveName)[Trait.InvalidName]=Trait.NativeSlaveRename(
+      JavaServer.code()
+      oldName=S"serverSlave"
+      newName=slaveName
+      )
+    }
+  }
+DeployFileSystem = Deploy.module(
+  url='JavaServer
+  code=Lib.code()
+  name='Top
+  )
+  
+J0=Load:{reuse[#$JavaServer]}
+J=J0(slaveName=S"miniGuiSlave{}")
+Model=Data:J.Handler:{
+  var I count, mut J j
+  @J.Handler mut method Void pressButton(S msg)=(
+    this.count(\count+1\)
+    this.#j().submitEvent(key='MiniGuiInput, id='Button, msg='AddBang)
+    whoops J.Fail
+    )
+  }
+
+JavaCode={...}
+Main=(
+  j=J.#$of()
+  j.loadCode(fullName=S"miniGui.MiniGui",code=JavaCode())
+  model=Model(count=0\, j=j)
+  model.pressButton(msg=S"")
+  model.pressButton(msg=S"")
+  model.pressButton(msg=S"")
+  _=j.nextEvent(keys='MiniGui)//wait for the first event timeout
+  text=j.askEvent(key='Ask, id=S"",msg=S"")
+  abc=S.List['A;'B;'C]
+  keys=S.List['MiniGui]//mut: model can update it and add/remove keys to fetch
+  models=J.Handler.Map[key='MiniGui mutVal=model]//mut: models can update it and (un)register models
+  for e in j(keys) i in abc (
+    e>>models
+    text2=j.askEvent(key='Ask, id=S"",msg=S"")
+    Debug(S"[[%text2]]-----")
+    Debug(e)
+    )
+  (j.submitEvent(key='Kill,id=S"",msg=S"")  catch J.Fail f Debug(f))
+  Debug(S"end events %model.count()")
+  Debug(S"[[%text]]")
+  {}:Test"askedText"(expected=S"Press!!!", actual=text.val())
+  )

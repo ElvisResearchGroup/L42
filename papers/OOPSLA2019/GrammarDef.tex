@@ -1,0 +1,190 @@
+\usepackage{xspace}
+\usepackage{xparse}
+\usepackage{tabularx}
+\usepackage{letltxmacro}
+\usepackage{mathtools}
+\usepackage{mathpartir}
+
+\makeatletter
+\newcommand{\@eq}{\,\,\Q{=}\!\,\,}
+% A nice questionmark
+\newcommand{\@code}[1]{\ensuremath{#1}}
+\newcommand{\q}{\ensuremath{?}}
+\newcommand{\Empty}{\ensuremath{\epsilon}\xspace}
+\newcommand{\EmptyZ}{\ensuremath{\emptyset}}
+\newcommand{\rp}[1]{\Q{(}\!#1\Q{)}}
+\newcommand{\cp}[1]{\,\Q{\{}\!\,#1\,\Q{\}}\!}
+\newcommand{\eq}[1]{\,\Q{=}#1}
+\newcommand{\cdc}{\ensuremath{, \ldots, }}
+\newcommand{\ddd}{\ensuremath{\ldots}}
+%%%% Grammar forms
+
+	\newcommand{\@meth}[5]{\@code{#1#2\ #3\rp{#4}#5}}
+
+% Methods: any, static, instance, abstract, abstract instance, abstract static
+\newcommand{\meth}  [4]{\@meth{\static\q\,}{#1}{#2}{#3}{\ #4}}
+\newcommand{\smeth} [4]{\@meth{\static\,}  {#1}{#2}{#3}{\ #4}}
+\newcommand{\imeth} [4]{\@meth{}              {#1}{#2}{#3}{\ #4}}
+\newcommand{\ameth} [3]{\@meth{\static\q\,}{#1}{#2}{#3}{}}
+\newcommand{\asmeth}[3]{\@meth{\static\,}  {#1}{#2}{#3}{}}
+\newcommand{\aimeth}[3]{\@meth{}              {#1}{#2}{#3}{}}
+
+% Nested class
+\newcommand{\ncdd}[1]{\private\q\,#1}
+\newcommand{\ncd}[2]{\cd{\private\q\,#1}{#2}}
+\newcommand{\cd}[2]{\@code{#1\@eq#2}}
+% code literals
+\newcommand{\cl}[3]{\@code{\cp{#1\Q{;}\ #2\Q{;}\ #3}}}
+	
+	%\@code{\ensuremath{\Q@\{@#1\Q{;}\ #2\Q{;}\ #3\,\Q@\}@\!}}}
+
+% what was once a program... but is now a \Sigma
+\newcommand{\Exists}[2]{\ensuremath{\exists #1\text{ such that } #2}}
+\newcommand{\ForAll}[2]{\ensuremath{\forall #1,\ #2}}
+
+%New
+\renewcommand{\This}{\Q{This}\xspace}
+\newcommand{\private}{\Q{private}\xspace}
+\newcommand{\aabstract}{\Q{abstract}\xspace}
+\renewcommand{\interface}{\Q{interface}\xspace}
+\newcommand{\static}{\Q{static}\xspace}
+\newcommand{\new}{\Q{new}\xspace}
+\renewcommand{\this}{\Q{this}\xspace}
+
+\renewcommand{\T}[1][\p]{\ensuremath{\mathbf{T}^{#1}}}
+\newcommand{\E}[1][\p]{\ensuremath{\mathbf{E}^{#1}}}
+
+\NewDocumentCommand{\Tn}{ O{\T} O{n}}{\ensuremath{{#1}^{#2}}}
+%\newcommand{\State}[2]{#1;#2}
+\NewDocumentCommand{\DS}{O{T}O{\Dz}}{\ensuremath{#2; #1}}
+\NewDocumentCommand{\pS}{O{\Ds}O{\DFz}}{\ensuremath{#2; #1}}
+\newcommand{\pSS}[1]{\pS[#1]}
+
+%\renewcommand{\T}[1]{#1\@nextpath}
+%	\newcommand{\@nextpath}{\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
+%	\newcommand{\@gobblenextpath}[1]{\Q!.!\@code{#1}\@ifnextchar\bgroup{\@gobblenextpath}{\xspace}}
+\renewcommand{\.}{\Q!.!\xspace}
+%-------------------
+
+% The sum operator
+\newcommand{\summ}[2]{\@code{#1\ \Q{<+}\ #2}}
+
+% Redirect operator, and redirect map
+\newcommand{\red}[1]{\@code{#1}\,\Q!<!\!\,\@nextCsP{\,\Q!>!}}
+\newcommand{\redm}{\@nextCsP{}}
+	\newcommand{\@nextCsP}[1]{\@ifnextchar\bgroup{\@gobblenextCs{}{#1}}{#1}}
+	\newcommand{\@gobblenextCs}[3]{#1\@code{#3}\@ifnextchar\bgroup{\@eq \@gobblenextP{#2}}{#2\xspace}}
+	\newcommand{\@gobblenextP}[2]{\@code{#2}\@ifnextchar\bgroup{\@gobblenextCs{\Q{,}\,}{#1}}{#1\xspace}}
+
+% new expression, field access expressions, method call expression\
+\newcommand{\en}[2]{\@code{\new\ #1\rp{#2}}}
+\newcommand{\ef}[2]{\@code{#1\Q{.}#2}}
+\newcommand{\ec}[3]{\ef{#1}{#2\rp{#3}}}
+
+% Because mathmode puts too much space
+\newcommand{\Cs}{\ensuremath{\mathit{Cs}}}
+\newcommand{\Csz}{\ensuremath{\mathit{Csz}}}
+\newcommand{\DF}{\ensuremath{\mathit{DF}}}
+\newcommand{\DFs}{\ensuremath{\mathit{DFs}}}
+\newcommand{\DFz}{\ensuremath{\mathit{DFz}}}
+\newcommand{\Ds}{\ensuremath{\mathit{Ds}}}
+\renewcommand{\es}{\ensuremath{\mathit{es}}}
+\newcommand{\id}{\ensuremath{\mathit{id}}}
+\newcommand{\LF}{\ensuremath{\mathit{LF}}}
+\newcommand{\MF}{\ensuremath{\mathit{MF}}}
+\newcommand{\MFz}{\ensuremath{\mathit{MFz}}}
+\newcommand{\Mz}{\ensuremath{\mathit{Mz}}}
+\newcommand{\Tx}{\ensuremath{\mathit{Tx}}}
+\newcommand{\Txs}{\ensuremath{\mathit{Txs}}}
+\newcommand{\Tz}{\ensuremath{\mathit{Tz}}}
+
+\newcommand{\Ok}{\ensuremath{\textbf{Ok}}}
+% Meta-notation
+\newcommand{\mop}[3]{{\ensuremath{{#1}_{.\textbf{#2}({#3})}}}}
+\newcommand{\opn}[1]{{\ensuremath{\textbf{#1}}}}
+\newcommand{\fop}[2]{{\ensuremath{\footnotesize{\textbf{#1}}({#2})}}}
+
+% operators
+
+\renewcommand{\members}[1]{\fop{members}{#1}}
+\newcommand{\idd}[1]{\fop{id}{#1}}
+\renewcommand{\dom}[1]{\fop{dom}{#1}}
+\newcommand{\ran}[1]{\fop{range}{#1}}
+\newcommand{\mdom}[1]{\fop{mdom}{#1}}
+\newcommand{\mini}[2]{#1\op{min}{#2}}
+\newcommand{\minid}[3]{#1\op{min}{#2, #3}}
+\newcommand{\from}[3]{#1\op{from}{#2,#3}}
+
+% Just to typset some words nicecly
+\newcommand{\where}{,\quad\text{where }}
+\newcommand{\wherec}{,\quad\text{where:}}
+\newcommand{\wwhere}{\text{where }}
+\newcommand{\otherwise}{,\quad\text{otherwise}}
+\newcommand{\imp}{\ensuremath{\Rightarrow}}
+\newcommand{\reda}[3]{\ensuremath{{#1[#2]}_{#3}}}
+
+% Environemnts
+
+\newenvironment{defs}{\setlength{\tabcolsep}{0pt}\noindent\tabularx{\textwidth}{l>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
+	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}}
+% a := b
+\NewDocumentCommand{\defi}{m m O{}}{\ensuremath{#1\coloneqq#2}&\llap{\text{#3}}\\}
+% a if b 
+\NewDocumentCommand{\defip}{m m O{}}{\ensuremath{#1\text{ if }#2}&\llap{\text{#3}}\\}
+% a % (for things that are always true)
+\NewDocumentCommand{\defit}{m O{}}{\ensuremath{#1}&\llap{\text{#2}}\\}
+\newcommand{\defii}[1]{\ensuremath{
+		#1\coloneqq\text{\ldots\ simply propagate to the other rules\ \ldots}}\\}
+%   b % indentended, for continuiation of another defi form
+\NewDocumentCommand{\defic}{m O{}}{\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+\NewDocumentCommand{\defin}{m O{}}{#1\\}
+
+\newenvironment{grammar}{%
+	\setlength{\tabcolsep}{0pt}%
+	\noindent\tabularx{\textwidth}{rl>{\hfill}X}\midrule}{\endtabularx\\% This is stupid (if I put a \midrule before the \endtabularx it tries to duplicate it and I get errors...)
+	\begin{tabularx}{\textwidth}{X}\midrule\end{tabularx}%
+}
+\NewDocumentCommand{\produ}{m m O{}}{\ensuremath{#1}&\ensuremath{{}\Coloneqq#2}&\llap{\text{#3}}\\}
+\NewDocumentCommand{\prodc}{m mO{}}{&\ensuremath{\quad\quad#1}&\llap{\text{#2}}\\}
+% --------------
+\newcommand{\defis}{\midrule}
+
+
+\newenvironment{irules}{\noindent\[\begin{array}{c}\midrule}{\unskip\\\midrule\end{array}\]}
+\NewDocumentCommand{\irule}{O{} m O{} m}{%
+	\ifstrempty{#1}{%
+		\inferrule{#2}{#4}
+	}{%
+		\inferrule[(#1)]{#2}{#4}
+	}%
+	\ifstrempty{#3}{}{\!\!\ensuremath{\begin{array}{l}#3\end{array}}}%
+	\qquad}
+\newcommand{\iruleSep}{\unskip\\[5ex]}
+
+%\newcommand{\irule}[3]{%
+%		\everymath={\displaystyle}%
+%		\ensuremath{
+%			\Rulename{#1}\ \frac{\hspace{-0.5em}\begin{array}{c}#2\end{array}\hspace{-0.5em}}{#3}%
+%	}
+%}
+	
+% this version formats things almost exactly the same as \inferrule, whereas mine (above) looks better!
+%\newcommand{\irule}[3]{%
+%	\everymath={\displaystyle}%
+%	\ensuremath{
+%		\begin{array}{l}%
+%		\begin{array}{l}\Rulename{#1}\end{array}\\%
+%		\frac{\hspace{-1em}
+%				\begin{array}{c}#2\end{array}%
+%			\hspace{-1em}}{#3}%
+%		\end{array}%
+%	}\hfill
+%}
+% ----------------------------------------------------------------------------
+%\newcommand{\qquad}{\quad\quad}
+
+\newcommand{\Rulename}[1]{{\textsc{(#1)}}}
+\renewcommand{\ctx}[1]{\ensuremath{\mathcal{E}_#1}\!}
+\renewcommand{\G}{\ensuremath{\Gamma}\xspace}
+\newcommand{\vvdots}{\ensuremath{\smash{\lower 0.5ex \vdots}}\xspace} %just to make them centered and not take up too much space!
+\makeatother

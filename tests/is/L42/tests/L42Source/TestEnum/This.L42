@@ -1,0 +1,26 @@
+reuse [AdamTowel]
+
+/*Point=Data:{Num x,Num y}
+Person=Data:{var Point location, var S name, mut S.List allergies
+  @Cache.Now class method Void invariant(S name)=(
+    if name==S"" error X"empty name"
+    )
+  }*/
+//Unit=Data:{method Void foo()=Debug(S"unitcode")}
+Direction=Collection.Enum:{
+  North={}, East={},South={},Weast={}
+  }
+Main=(
+  {}:Test"north south ovest est"(
+    actual=Direction.Vals()
+    expected=S"[North; East; South; Weast]"
+    )
+  {}:Test"byName"(
+    actual=Direction.Vals(S"North")
+    expected=Direction.Vals().val(0I)
+    )
+  {}:Test"byNameErr"((
+    _=Direction.Vals(S"Northe")
+    catch error S.ParseError x (Bool.true()) 
+    Bool.false()))
+  )

@@ -1,0 +1,109 @@
+reuse[AdamTowel]
+
+TestOptOK={
+  A=Data:{S name}
+  Opt1S=Collection.optional(S)
+  Opt1A=Collection.optional(A)
+  Opt2S=Collection.optional(Opt1S)
+  Opt2A=Collection.optional(Opt1A)
+  Opt3S=Collection.optional(Opt2S)
+  Opt3A=Collection.optional(Opt2A)
+  Main1=(
+    s=S"hi"
+    a=A(name=s)
+    imm opt1S=Opt1S(s)
+    imm opt1A=Opt1A(a)
+    imm opt2S=Opt2S(opt1S)
+    imm opt2A=Opt2A(opt1A)
+    imm opt3S=Opt3S(opt2S)
+    imm opt3A=Opt3A(opt2A)
+    {}:Test"6 true"(opt1S.isPresent())
+    {}:Test"6 true"(opt2S.isPresent())
+    {}:Test"6 true"(opt3S.isPresent())
+    {}:Test"6 true"(opt1A.isPresent())
+    {}:Test"6 true"(opt2A.isPresent())
+    {}:Test"6 true"(opt3A.isPresent())
+    {}:Test"6 get"(actual=opt1S.val() expected=S"hi")
+    {}:Test"6 get"(actual=opt2S.val().val() expected=S"hi")
+    {}:Test"6 get"(actual=opt3S.val().val().val() expected=S"hi")
+    {}:Test"6 get"(actual=opt1A.val() expected=S"A(name[###])")
+    {}:Test"6 get"(actual=opt2A.val().val() expected=S"A(name[###])")
+    {}:Test"6 get"(actual=opt3A.val().val().val() expected=S"A(name[###])")
+    )
+  TestEqToS=(
+    s=S"hi"
+    a=A(name=s)
+    imm opt1S=Opt1S(s)
+    imm opt1A=Opt1A(a)
+    imm opt2S=Opt2S(opt1S)
+    imm opt2A=Opt2A(opt1A)
+    imm opt3S=Opt3S(opt2S)
+    imm opt3A=Opt3A(opt2A)
+    Debug(opt1S)
+    {}:Test"toS"(actual=opt1S
+      expected=S"""
+        |["hi"]
+        """.trim())
+    Debug(opt1A)
+    {}:Test"toS"(actual=opt1A
+      expected=S"""
+        |[A(name="hi")]
+        """.trim())
+    Debug(opt2S)
+    {}:Test"toS"(actual=opt2S
+      expected=S"""
+        |[["hi"]]
+        """.trim())
+    Debug(opt2A)
+    {}:Test"toS"(actual=opt2A
+      expected=S"""
+        |[[A(name="hi")]]
+        """.trim())
+    Debug(opt3S)
+    {}:Test"toS"(actual=opt3S
+      expected=S"""
+        |[[["hi"]]]
+        """.trim())
+    Debug(opt3A)
+    {}:Test"toS"(actual=opt3A
+      expected=S"""
+        |[[[A(name="hi")]]]
+        """.trim())
+    Debug(opt2A==opt3A.val())
+    Debug(Opt2A()<:Opt2A!=opt3A.val())
+    {}:Test"eq"(opt2A==opt3A.val())
+    {}:Test"neq"(Opt2A()<:Opt2A!=opt3A.val())
+    )
+  }
+TestDifferentEqs={
+  A={ 
+    class method This ()
+    read method Bool ==(read This that)=(
+      Log"Opt".write(S"A-eq")
+      Bool.true()
+      )
+    }
+  B={
+    class method This ()
+    read method Bool readEquality(read This that)=(
+      Log"Opt".write(S"B-eq")
+      Bool.true()
+      )
+    }
+  C={class method This ()}
+  OptA=Collection.optional(A)
+  OptB=Collection.optional(B)
+  OptC=Collection.optional(C)
+  Main=(
+    Log"Opt".clear()
+    imm oa=OptA(A())
+    _=oa.allEq(oa)
+    _=OptB(B())<:OptB.allEq(OptB(B()))
+    _=OptC(C())<:OptC.allEq(OptC(C()))
+    Debug(S"logged:")
+    Debug(Log"Opt".#$reader().read())
+    {}:Test"eqLogging"(actual=Log"Opt".#$reader().read()
+      expected=S"A-eqB-eq"
+      )
+    )
+  }

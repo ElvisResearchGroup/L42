@@ -1,0 +1,31 @@
+[HasToS]
+NativeName that
+class method This of(NativeName that)
+method toS()=this.that().toS()
+method This self()=this
+@Public read method Bool readEquality(read This that)=this.toS()==that.toS()
+@Public method Bool ==(This that)=this.toS()==that.toS()
+@Public method S x()=this.that().x()
+@Public method S selector()=this.that().selector()
+@Public method S path()=this.that().path()
+@Public method This with(S x)=\.of(this.that().with(x=x))
+@Public method This with(S selector)=\.of(this.that().with(selector=selector))
+@Public method This with(S path)=\.of(this.that().with(path=path))
+@Public method This ++1(S prefix)={
+  p=this.path()
+  if p==S"This" return this.with(path=prefix)
+  return this.with(path=prefix++S"."++p)
+  }
+@Public class method This from(S string)=\.of(string.toName()) 
+@Public @Cache.Call class method This #from(S$StringBuilder stringLiteral)=\.from(string=stringLiteral.toS())
+// => strong rename, source skeleton disappear; -> weak rename, source skeleton stays;
+@Public method Name$Mapping =>(class Any target)=
+  Name$Mapping().addMap(name=this.that(),classAny=target)
+@Public method Name$Mapping =>(Name other)=
+  Name$Mapping().addMapDoubleArrow(a=this.that(),b=other.that())
+//method Name$Mapping ->(Name other)= /*this is a short circuted operator, so is defined as below*/
+@Public method Bool #shortCircut#minusgt()=Bool.false()
+@Public method Name$Mapping #shortResult#minusgt(Bool that)=error void
+@Public method Name$Mapping #shortProcess#minusgt(Bool that,This other)=
+  Name$Mapping().addMapSingleArrow(a=this.that(),b=other.that())
+@AbstractTowel{name}

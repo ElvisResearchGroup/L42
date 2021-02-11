@@ -1,0 +1,56 @@
+var Bool left
+var Bool right
+var Bool up
+var Bool down
+var S text
+mut method Void moveSpeed(Double rad,I power)
+
+mut method Void input(S msg)={ //typed
+  if msg==S"Backspace" (
+    return this.text(\text.subString(0\ to=(\size-1\).max(0\)))
+    )
+  if msg==S.nl() return this.text(S"")
+  return this.text(\text++msg)
+  }
+mut method Void input(S msg,Bool pressed)={//!pressed==released
+  if msg==S"Left" return this.left(pressed)
+  if msg==S"Right" return this.right(pressed)
+  if msg==S"Up" return this.up(pressed)
+  if msg==S"Down" return this.down(pressed)
+  return void
+  }
+
+mut method Void keyMove()={
+  left=this.left() && !this.right()
+  right=this.right() && !this.left()
+  up=this.up() && !this.down()
+  down=this.down() && !this.up()
+  if !up && !down && !left && !right return this.moveSpeed(rad=0\,power=0\)
+  rad=This.rad(left=left,right=right,up=up,down=down)
+  return this.moveSpeed(rad=rad,power=1\)
+  }
+  
+class method Double rad(Bool left,Bool right,Bool up,Bool down)={
+  a45=45Double*(Vector.tao()/360Double)
+  downR=a45*0Double
+  downRightR=a45*1Double
+  rightR=a45*2Double
+  upRightR=a45*3Double
+  upR=a45*4Double
+  upLeftR=a45*5Double
+  leftR=a45*6Double
+  downLeftR=a45*7Double
+  if up (
+    if left return upLeftR
+    if right return upRightR
+    return upR
+    )
+  if down (
+    if left return downLeftR
+    if right return downRightR
+    return downR
+    )
+  if left return leftR
+  if right return rightR
+  error X"unreachable"
+  }

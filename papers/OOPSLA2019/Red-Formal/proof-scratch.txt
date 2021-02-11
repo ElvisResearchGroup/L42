@@ -1,0 +1,240 @@
+
+  If not CompletedConstraints(p; CCz) and ValidMaps(p; R) != {} then
+   exists p' in SimilarPrograms(p) and R' in ValidMaps(p'; R) such that range(R') not subseteq dom(p)
+
+!A & B!={} => E p' in S s.t. (E R' in V(p') s.t. notRange(R'))
+
+!A & B!={} => !V p' in S, R' in V(p') !notRange(R')
+
+V p' in S, R' in V(p') !notRange(R') => A || B=={}
+===========================================================
+!A & B != {} => E p' in S s.t.    (E R' in V(p') s.t. notRange(R'))
+!A & B != {} => !(V p' in S s.t. !(E R' in V(p') s.t. notRange(R')))
+
+
+!A & B!={} => !(V p' in S, R' in V(p') !notRange(R'))
+
+(V p' in S, R' in V(p') !notRange(R')) => (A || B={})
+
+
+
+-----------
+Theorem 1.b:
+Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidMaps(p'; R)
+  if range(R') subseteq dom(p) then
+  either CompletedConstraints(p;CollectConstraints(p; R)) or ValidMaps(p; R) == {}
+
+By theorem 5, R' in ValidMaps(p; R) thus
+Theorem 1.c:
+Forall (p, R) in ValidProblems, p' in SimilarPrograms(p), R' in ValidMaps(p'; R)
+  if range(R') subseteq dom(p) then CompletedConstraints(p;CollectConstraints(p; R))
+
+Theorem 1.d:
+Forall (p, R) in ValidProblems,
+  if (forall p' in SimilarPrograms(p), ValidMaps(p'; R) = ValidMaps(p; R) && ValidMaps(p; R) != {})
+  then CompletedConstraints(p; CollectConstraints(p; R))
+
+Forall (p, R) in ValidProblems,
+  if !CompletedConstraints(p; CollectConstraints(p; R))
+  then exists p' in SimilarPrograms(p), ValidMaps(p'; R) != ValidMaps(p; R) || ValidMaps(p; R) == {}
+  
+
+Theorem 1.e:
+Forall (p, R) in ValidProblems,  
+  if !CompletedConstraints(p; CCz) and ValidMaps(p; R) != {}
+  then E p' in SimilarPrograms(p), ValidMaps(p'; R) != ValidMaps(p; R)
+
+
+ // If not CompletedConstraints(p; CCz) and ValidMaps(p; R) != {} then
+ //  exists p' in SimilarPrograms(p) and R' in ValidMaps(p'; R) such 
+ // that range(R') not subseteq dom(p)
+
+  if not CompletedConstraints(p; CCz) and ValidMaps(p; R) != {} then
+    exists p' in SimilarPrograms(p), ValidMaps(p'; R) != ValidMaps(p; R)
+
+if not CompltedConstraints(p; CCz) and ValidMaps(p; R) != {}
+  then BestMap(p; R) is undefined
+  
+
+if forall p' in SimilarPrograms(p), ValidMaps(p'; R) == ValidMaps(p; R)
+then CompletedConstraints(p; CCz)
+
+
+if forall p' in SimilarPrograms(p),  ValidMaps(p'; R) / ValidMaps(p; R) == {}//vr do not grow
+then CompletedConstraints(p; CCz)
+
+-when vr can grow
+R' in ValidMaps(p; R),
+range(R') has interface in method parameter
+
+--
+if exists R' in ValidMaps(p; R) s.t. Cs->P in R' has interface that do not appear as ret.type (or implements)
+  p(P) is interface
+  forall m in p(Cs) m.T !=Cs~~
+then exists  p' in SimilarPrograms(p),  ValidMaps(p'; R) != ValidMaps(p; R)
+
+if exists  p' in SimilarPrograms(p),  ValidMaps(p'; R) != ValidMaps(p; R)
+then exists R' in ValidMaps(p; R) s.t. 
+//   Cs->P in R' has interface that do not appear as ret.type (or implements)
+  Cs->P in R' has interface, R do not constraint Cs
+  Cs appear as meth parameter
+  
+---------------------------------------------------
+//if not CompletedConstraints...
+if ValidMaps grow...
+
+
+Well, lets take an R and an R' (assuming ofcourse that R0 != {})
+    where R is valid in the original, and R' is valid in the bigger program (but not the smaler)
+
+    Forall Cs that is unchanged and Cs' that is and is not in the original program,
+        where Cs' is mentioned in Cs.
+    // At least one such Cs and Cs' must exist:
+    // Since Cs' is neccesarily reachable from some Cs" in dom(R0), R(Cs") = R'(Cs")
+
+    So we have:
+        R(Cs) = R'(Cs)
+        R(Cs') != R'(Cs') and R'(Cs') not in dom(p)
+        Cs' in DirectlyReferencedPaths(p(Cs))
+        If p[Cs].s.P = Cs' then we would need
+             p[R(Cs)].s.P <= R'(Cs') //and also p[R(Cs)].s.P <= R(Cs')
+             We obviously have p[R(Cs)].s.P in dom(p)
+                since R(Cs) in dom(p) and is well-typed
+             Making a program bigger can't change superclassses
+             a contradiction, since R'(Cs') is not in dom(p)
+         // And so on for implements
+        Therefore, forall s, Cs' != Cs.s.P and Cs' not in Cs.Pz
+        And so Cs.s.Pi = Cs', for some s and i
+        So we must have:
+            R'(Cs') <= p[R(Cs)].s.Pi
+             R(Cs') <= p[R(Cs)].s.Pi
+        Obviously, p[R(Cs)].s.Pi cant be a concrete class.
+
+V(p') superset V(p)
+  then lets take the R' in V(p') so that exists an R in V(p) 
+  with the smallest amount of differences between R and R'
+
+There must be at least one Cs1->P1 in R that is mapped to Cs1->P1' in R'
+There must be one Cs0->P0 in R that is also mapped to Cs0->P0 in R' and
+exists s such that 
+  p|- P1 <= p[R(Cs0)].s.Ps.i
+  p|- P1' <= p[R(Cs0)].s.Ps.i
+
+
+FROM, last version:
+if forall p' in SimilarPrograms(p),  ValidMaps(p'; R) / ValidMaps(p; R) != {}//vr do not grow
+then CompletedConstraints(p; CCz)
+
+With the above
+Theorem 1.fa:
+if forall p' in SimilarPrograms(p),  ValidMaps(p'; R) / ValidMaps(p; R) == {}//vr do not grow
+then
+exists s, R0 in ValidMaps(p; R)
+Cs0->P1 in R0, (Cs0->P1' in R0' in ValidMaps(p; R'))
+forall s neither p|- P1 <= p[R0(Cs0)].s.Ps.i (nor p|- P1' <= p[R0(Cs0)].s.Ps.i)
+  
+---
+Theorem 1.fb:
+if exists R0 in ValidMaps(p; R) such that:
+  -Cs->P in R0,
+  -forall s not p|- P <= p[R0(_)].s.Ps.i
+then CompletedConstraints(p; CCz)
+
+
+There exists a P such that Cs <= P in CCz:
+  P is an interface
+  _ <= Cs not in CCz
+
+  Let Csz = { Cs' | _ <= Cs' in CCz}
+  Forall Cs' in Csz:
+    Cs does not appear in p(Cs') as a return or implements type
+  Exists Cs' in dom(R) such that
+    Cs is reachable from p(Cs') by only passing through things in Csz
+
+/* It is possible that there exists Cs' in Csz such that
+  Cs' is only reachable from dom(R) by passing through Cs
+*/
+--------------------------------------------
+
+By theorem 5:
+  ValidMaps(p; R) subseteq ValidMaps(p'; R)
+  if R' in V(p')/V(p) then range(R')notin dom(p)
+
+exists R' in V(p'), with range(R') notin dom(p)
+
+------
+if not CompletedConstraints(p; CCz) then there is 
+at least one Cs <=P (without the corresponding) where isInterface(p,P) //easy
+
+then, Cs may be interface or class
+
+if Cs class
+  consider the case where Cs=P was a validMap,
+  then consider p' where P is implemented (again) with P0,
+  clearly Cs=P0 is a validMap such that range not subset
+  B <=Any
+
+otherwise no valid redirection has Cs=P....
+
+EC: {interface implements EB Void m(EB x)}
+EB: {interface Void m(EB x)}
+EV: {method Void m(EB b)}
+{ 
+  B: {interface Void m(B x)}
+  V: {method Void m(B b)}
+  method Void stuff(B b) b.m(b)
+  Class: {implements B Void m(B x) this.m(x)}
+}<V=EV>//B=EC
+*/
+{ 
+  //EC: {interface Void m(EC x)}
+  //V: {method Void m(EC b)}
+  method Void stuff(EC b) b.m(b)
+  Class: {implements EC Void m(EC x) this.m(x)}
+}
+------------------------------
+I:{interface}
+//A:{interface implements I}
+EV: {method Void m(I b)}
+{ 
+  B: {}
+  V: {method Void m(B b)}
+}<V=EV> // EV <= V <= EV, B <= I
+//clearly B=A, B=I
+--------------------------------
+I  = interface {Void m(I)}
+//A  = interface(I)  {Void m(I)}
+EV = class     {Void m(I)}
+{ 
+  B = class    {Void m(B)}
+  V = class    {Void m(B)}
+}< V = EV> // EV <= V <= EV, B <= I
+//clearly B=A, B=I
+---------------------------------
+EC  = interface {EB m()}
+EB  = interface {EC m()}
+
+//EC' = interface(EC)  {EB' m()}
+//EB' = interface(EB)  {EC' m()}
+
+//EC' = interface(EC)  {EB m()}
+EV = class     {Void m(EB)}
+{ 
+  C = class    {B m()}
+  B = class    {C m()}
+  V = class    {Void m(B)}
+  B stuff(B b) = (
+    C x = b.m();
+    x.m())
+
+/*
+  EB stuff(EB b) = (
+    EC' x = b.m();
+    x.m())
+*/
+}< V = EV> // EV <= V <= EV, B <= EC,
+//clearly B=A, B=I
+// B=EB, C=EC and B=EB', C=EC'
+
+B stuff(B b) = b.m().m()
+--------------------------------

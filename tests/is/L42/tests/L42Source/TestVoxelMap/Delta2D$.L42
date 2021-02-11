@@ -1,0 +1,37 @@
+I x, I y
+
+method Cell2D +1 (Cell2D cell) = this + cell
+method Cell2D + (Cell2D cell) = \(x=this.x()+cell.x(), y=this.y()+cell.y())
+method Delta2D + (This that) = \(x=this.x()+that.x(), y=this.y()+that.y())
+
+method Delta2D *1 (I that) = this * that
+method Delta2D * (I that) = 
+  \(x=this.x()*that, y=this.y()*that)
+
+method Vector2D toVector() =
+  \(x=this.x().toDouble(), y=this.y().toDouble())
+method Cell3D to3D(I z) =
+  \(x=this.x(), y=this.y(), z=z)
+  
+@Cache.Lazy class method Delta2D$List adjacent8()=(
+  m = I"-1" //minus, zero and plus
+  z = I"0"
+  p = I"1"
+  \[
+    \(x=m, y=m);\(x=m, y=z);\(x=m, y=p);
+    \(x=z, y=m);            \(x=z, y=p);
+    \(x=p, y=m);\(x=p, y=z);\(x=p, y=p);
+    ]
+  )
+@Cache.Lazy class method Delta2D$List adjacent4()=(
+  m = I"-1" //minus, zero and plus
+  z = I"0"
+  p = I"1"
+  \[
+                \(x=m, y=z);
+    \(x=z, y=m);            \(x=z, y=p);
+                \(x=p, y=z);
+    ]
+  )
+
+//range without borders too
