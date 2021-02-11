@@ -22,6 +22,8 @@ class method class Any type(S that)[MetaFail]={
   if that==S"INTEGER" || that==S"INT" return Num
   if that==S"VARCHAR" || that==S"CHAR" return S
   if that==S"BOOLEAN" || that==S"BOOL" return Bool
+  if that==S"DECIMAL" || that==S"DEC" || that==S"NUMERIC" return Num
+  if that==S"DOUBLE" return Double  
   exception MetaFail"unsupported table type %that"
   }
 class method Trait col(S name,S type)[_]=(
