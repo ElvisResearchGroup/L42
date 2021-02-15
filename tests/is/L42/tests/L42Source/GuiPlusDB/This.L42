@@ -1,9 +1,14 @@
 reuse [AdamTowel]
-//We use 3 libraries: JavaServer, GuiBuilder and Query
-//UnitLib=Load:{reuse[#$Unit]}
+//We use libraries: Unit, JavaServer, GuiBuilder and Query
+Unit = Load:{reuse[Unit]}
 LoadJ = Load:{reuse[JavaServer]}
 LoadGui = Load:{reuse[GuiBuilder]}
 Query = Load:{reuse[Query]}
+
+//Units
+Year = Unit(I)
+Meter = Unit(Num)
+Kg = Unit(Num)
 
 //SQL part
 DbJ = LoadJ(slaveName=S"dbServer{}") //slave for the DB connection
@@ -13,11 +18,12 @@ DB = Query.sql(//instantiate Query for SQL queries
 
 Create = DB.query[Void]"""
   |CREATE TABLE Person (
-  |  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY(Start with 1, Increment by 1),
+  |  id int NOT NULL PRIMARY KEY GENERATED ALWAYS AS IDENTITY
+  |    (Start with 1, Increment by 1),
   |  name varchar(255),
   |  age int,
   |  height decimal(5,2),
-  |  weight decimal(5,2)
+  |  weight decimal(5,1)
   |  )
   """
 PopulateIfEmpty = {//set up the DB tables in case this is the first run
@@ -30,7 +36,7 @@ Table = DB.#$of().tables() //reify the DB tables (here is just Person)
 Queries = DB.QueryBox:{//A box with all the queries we want to support
   @Public All = DB.query[Table.Person.List]"SELECT * FROM Person"
   
-  @Public Insert = DB.query[Void;S;I;Num;Num]"""
+  @Public Insert = DB.query[Void;S;Year;Meter;Kg]"""
     |INSERT INTO Person (name,age,height,weight)
     |Values (@name,@age,@height,@weight)
     """
@@ -41,18 +47,17 @@ Queries = DB.QueryBox:{//A box with all the queries we want to support
 //IQL part
 GuiJ = LoadJ(slaveName=S"miniGuiSlave{}") //slave for IQL and Gui
 IQL = Query.iql(javaServer=GuiJ)//instantiate Query for IQL queries
-//types expected by the IQL queries
-Person = Data:Data.AddList:{S name, I age, Num height, Num weight}
-Key = Data:Data.AddList:{I id}
-PName = Data:Data.AddList:{S name}
 
+Key = Data:Data.AddList:{I id} //types expected by the IQL queries
+PName = Data:Data.AddList:{S name}
+Person = Data:Data.AddList:{S name, Year age, Meter height, Kg weight}
 Dialogs = IQL.QueryBox:{//A box with all the queries we want to support
   @Public AddPersons = IQL.query[Person.List]"""
     | 'Add persons' Pages('Add data for more persons')
     | name 'name' String
     | age  'age'  Integer
     | height 'height' Decimal{regex='[0-9]*\\.[0-9][0-9]'}
-    | weight 'weight' Decimal{regex='[0-9]*\\.[0-9][0-9]'}
+    | weight 'weight' Decimal{regex='[0-9]*\\.[0-9]'}
     """
   @Public RemoveById=IQL.query[Key.List]"""
     | 'Deleting an entry' Single('Entry to delete?')
@@ -65,8 +70,8 @@ Dialogs = IQL.QueryBox:{//A box with all the queries we want to support
   }
 
 //GUI part
-Gui=LoadGui(javaServer=GuiJ)  
-Model=Data:GuiJ.Handler:{ //the model answering to Java events
+Gui = LoadGui(javaServer=GuiJ)  
+Model = Data:GuiJ.Handler:{ //the model answering to Java events
   mut GuiJ j
   mut Queries sql
   mut Dialogs iql

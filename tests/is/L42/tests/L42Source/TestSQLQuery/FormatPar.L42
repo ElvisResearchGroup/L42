@@ -1,15 +1,16 @@
-class method S(HasToS that)=(
-  var S s=that.toS()
-  var b=Bool.false()
-  if HasToS.Raw r=that (b:=Bool.true())
-  if b s:=S"'%this.escape(s)'"
-  else s:=this.validate(s)
-  s
-  )
+class method S(HasToS that) = {
+  S s=that.toS()
+  if that <: HasToS.Raw ( return S"'%this.escape(s)'" )
+  return this.validate(s)
+  }
 class method S validate(S that)={//properly propagate S.ParseError
-  if that==S"true" || that==S"false" (return that)
-  _=I.from(string=that)
+  if that==S"true" || that==S"false" ( return that )
+  _ = Num.from(string=that)
   return that
+  catch error S.ParseError _ (
+    _ = Double.from(string=that)
+    return that
+    )
   }
 class method S escape(S that)=(
   var res=that
