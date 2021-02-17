@@ -6,10 +6,10 @@ class method S(HasToS that) = {
 class method S validate(S that)={//properly propagate S.ParseError
   if that==S"true" || that==S"false" ( return that )
   _ = Num.from(string=that)
-  return that
+  return S"1.*"++that
   catch error S.ParseError _ (
     _ = Double.from(string=that)
-    return that
+    return S"1.*"++that
     )
   }
 class method S escape(S that)=(

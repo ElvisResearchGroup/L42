@@ -80,7 +80,7 @@ Model = Data:GuiJ.Handler:{ //the model answering to Java events
   @GuiJ.Handler mut method Void printAll(S msg)=(
     this.submitEvent(S"tableClear", msg=S"")
     for (id,name,age,height,weight) in this.#sql().all()() (
-      this.submitEvent(S"tableAdd", msg=S"%id,%name,%age,%height,%weight,")
+      this.submitEvent(S"tableAdd", msg=S"%id,%name,%age,%Double(height),%Double(weight),")
       )
     whoops DB.Fail, GuiJ.Fail
     )

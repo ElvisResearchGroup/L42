@@ -47,7 +47,7 @@ class method S ()=S"""
   |    return res.get(index).get(field);
   |    }
   |  String findColumn(String field){
-  |    if(res.isEmpty()){return "";}
+  |    if(keys.isEmpty()){return "";}
   |    return keys.indexOf(field)+"";
   |    }
   |  String getIndex(String that){

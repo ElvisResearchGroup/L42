@@ -35,7 +35,8 @@ class method S (S url)=S"""%%
   |      catch(SQLException e){throw new RuntimeException(e);}
   |      });
   |    }
-  |  String execute(String query)throws SQLException{s.execute(query);return "";}
+  |  String execute(String query)throws SQLException{
+  |    s.execute(query);return "";}
   |  String executeQuery(String query)throws SQLException{
   |    if(r!=null){r.close();}
   |    r=s.executeQuery(query);
