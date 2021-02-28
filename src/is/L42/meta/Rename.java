@@ -31,6 +31,7 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import is.L42.common.From;
 import is.L42.common.Program;
@@ -359,15 +360,41 @@ public class Rename {
     if(that.isEmpty()){return;}
     var l_cs=p._ofCore(that._cs);
     if(l_cs==null){return;}
-    if(l_cs.isInterface()!=l.isInterface()){
-      var info=errFail.intro(l_cs.isInterface()?that.cs:that._cs,false);
-      err(errFail,info+"can not be turned into an interface inside of a rename operation");}
-    if(!l_cs.isInterface()){return;}
-    var lBig=Sum.moreThen(l, l_cs,pathComp(that.cs,that._cs));
-    var l_csBig=Sum.moreThen(l_cs,l,pathComp(that._cs,that.cs));
-    if(!lBig && !l_csBig){return;}
-    var info=errFail.intro(lBig?that._cs:that.cs,false);
-    err(errFail,info+"can not grow inside of a rename operation");
+    if(l_cs.isInterface()==l.isInterface()){
+      if(!l_cs.isInterface()){return;}
+      var lBig=Sum.moreThen(l, l_cs,pathComp(that.cs,that._cs));
+      var l_csBig=Sum.moreThen(l_cs,l,pathComp(that._cs,that.cs));
+      if(!lBig && !l_csBig){return;}
+      var info=errFail.intro(lBig?that._cs:that.cs,false);
+      err(errFail,info+"can not grow inside of a rename operation");      
+      }
+    if(l_cs.isInterface()){checkMakeInterface(that.cs,l,that._cs,l_cs);}
+    else{checkMakeInterface(that._cs,l_cs,that.cs,l);}
+    }
+  private boolean checkCsInStream(List<C>cs1,Stream<P.NCs>s,List<C>csi){
+    return s.anyMatch(pi->{
+      var pj=p.from(pi,0,csi);
+      return pj.n()==0 && pj.cs().equals(cs1);
+      });
+    }
+  private void checkMakeInterface(List<C>cs1,L l1,List<C> cs2,L l2){
+    assert !l1.isInterface();
+    assert l2.isInterface();
+    var ps1=L(l1.ts().stream().map(t->p.from(t.p().toNCs(),0,cs1)));
+    var ps2=L(l2.ts().stream().map(t->p.from(t.p().toNCs(),0,cs2)));
+    var okT=ps1.stream().allMatch(pi->ps2.contains(pi));
+    var okDom=l1.mwts().stream().allMatch(mi->
+      mi.key().hasUniqueNum() || _elem(l2.mwts(),mi.key())!=null);
+    boolean[] okCoh={true};
+    if(okT && okDom) {
+      p.topCore().visitInnerLNoPrivate((li,csi)->{
+        okCoh[0]&=!checkCsInStream(cs1,li.info().coherentDep().stream(),csi);
+        okCoh[0]&=!checkCsInStream(cs1,li.info().metaCoherentDep().stream(),csi);
+        });
+      }
+    if(okT && okDom && okCoh[0]) {return;}
+    var info=errFail.intro(cs1,false);
+    err(errFail,info+"can not be turned into an interface inside of a rename operation");    
     }
   private BiFunction<P,P,Boolean>pathComp(List<C>cs1,List<C>cs2){
     return (p1,p2)->//must be NCs since they are implemented interfaces

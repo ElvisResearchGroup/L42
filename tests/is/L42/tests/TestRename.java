@@ -2069,7 +2069,88 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     does not exists in the redirected destination
     Full mapping:A=>*This.K
     [###]"""/*next test after this line*/)
-    ));}
+  
+  ),new AtomicTest(()->pass("""
+    A={interface #norm{}}
+    B={#norm{}}#norm{}}""","""
+     A.=>*B.
+     ""","""
+    B={interface #norm{}}
+     #norm{}}""")
+
+  ),new AtomicTest(()->pass("""
+    A={interface #norm{}}
+    B={#norm{}}#norm{}}""","""
+    B.=>*A.
+    ""","""
+    A={interface #norm{}}
+    #norm{}}""")
+
+  ),new AtomicTest(()->fail("""
+    A={interface #norm{}}
+    B={#norm{}}
+    C={#norm{typeDep=This1.B coherentDep=This1.B}}
+    #norm{}}""","""
+    B.=>*A.
+    ""","""
+    nested class { A={..} B={..} C={..} }
+    nested class B
+    can not be turned into an interface inside of a rename operation
+    Full mapping:B=>*A
+    [###]""")
+
+   ),new AtomicTest(()->fail("""
+    A={interface #norm{}}
+    B={ method Void foo() #norm{}}
+    #norm{}}""","""
+    B.=>*A.
+    ""","""
+    nested class { A={..} B={..} }
+    nested class B
+    can not be turned into an interface inside of a rename operation
+    Full mapping:B=>*A
+    [###]""")
+
+   ),new AtomicTest(()->pass("""
+    A={interface #norm{}}
+    B={method Void m::1()=void #norm{}}
+    #norm{}}""","""
+    A.=>*B.
+    ""","""
+    B={interface #norm{}}
+    #norm{}}""")
+
+  ),new AtomicTest(()->pass("""
+    A={interface #norm{}}
+    B={method Void m::1()=void #norm{}}
+    #norm{}}""","""
+    B.=>*A.
+    ""","""
+    A={interface #norm{}}
+    #norm{}}""")
+
+  ),new AtomicTest(()->pass("""
+    A={interface #norm{}}
+    B={D::1={#norm{}} #norm{}}
+    #norm{}}""","""
+    A.=>*B.
+    ""","""
+    B={interface #norm{}}
+    #norm{}}""")
+  ),new AtomicTest(()->pass("""
+    A={interface #norm{}}
+    B={D::1={#norm{}} #norm{}}
+    #norm{}}""","""
+    B.=>*A.
+    ""","""
+    A={interface #norm{}}
+    #norm{}}""")
+  ));}
+/*
+ Not Watched
+ No class methods?
+  
+ */
 private static String nested4="""
      A={
        method Void foo(This a,This.B b,This.B.C c,This.B.C.D d)=void

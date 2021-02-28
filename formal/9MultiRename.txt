@@ -89,9 +89,17 @@ _______
       then Cs"|>Cs' not in Map
     if N|>N' = Cs.s|>Cs'.s'
       then Cs".s"|>Cs'.s' not in map
-    if N|>N' = Cs=>Cs' then     //TODO: in code
-      either Cs' notin dom(L) or L(Cs').interface?=L(Cs).interface?
-      if L(Cs)>L(Cs') or L(Cs')>L(Cs) then L(Cs').interface?=empty
+    if N|>N' = Cs=>Cs' then either:    //TODO: in code
+      - Cs' notin dom(L) 
+      - L(Cs').interface?=L(Cs).interface?
+        not L(Cs)>L(Cs')//if one is interface, they are the same
+        not L(Cs')>L(Cs)
+      - L(Cs').interface?!=L(Cs).interface?
+        {Cs1,Cs2}={Cs',Cs}
+        L(Cs1).interface?=empty
+        L(Cs1).Ts.Ps[from This.Cs1;{}]\L(Cs2).Ts.Ps[from This.Cs2;{}]=empty
+        publicDom(L(Cs1).MWTs)\dom(L(Cs2).MWTs)=empty
+        not Cs1 in allRequiredCoherent(L)
     if N|>N' = Cs->Cs' then
       either Cs' notin dom(L) or L(Cs').interface?=empty
 * LOf(AddMap) =

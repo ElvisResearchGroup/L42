@@ -26,9 +26,7 @@ also, does not reset on dots?
 -Bug -add constructor and possibly others remove docs form args of overridden abstract methods
 -DB: test it on a gui, improve error messages, support more parameters
 -Bug Optional toString in internal toString: it just prints the inside;  what happens if null? 
--handle division by zero int, long, Num (and double? how is NAN cached eq?)
--we could avoid a ton of problems if we used the class object instead of null for opts!! But... how to handle Opt String and Opt Integer???
--Rename feature add: must be possible to rename-sum an interface with, at least, an empty class never used. 
+-we could avoid a ton of problems if we used the class object instead of null for opts!! But... how to handle Opt String and Opt Integer??? 
 -Cache.Lazy: it seams to be fine when applied on class methods of natives.
   -test this corner case more; -do we get a good error if we try Cache.Lazy on an imm method of a native?
 -BIG: Find a pattern to enable any native to be mapped on any type; consider loading a library on a towel where S is not native

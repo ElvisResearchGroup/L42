@@ -431,10 +431,46 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      A={ method Void a() K::1={#norm{}} #norm{}}
    #norm{}}"""/*next test after this line*/)
 
+   ),new AtomicTest(()->fail("""
+     A={method Void m()#norm{}} I={interface method Any m() #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={[This1.I] #norm{typeDep=This1.I}}
+     I={interface #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+   method Void m()
+   The methods have different signatures:
+   method Any m()
+   But there is no local refinement between those two signatures
+   [###]"""/*next test after this line*/)
+   //NOTE: we chose not to make a special case for Any!
+   //the test below checks that is ok with both sides to Any
+   ),new AtomicTest(()->pass("""
+     A={method Any m()#norm{}} I={interface method Any m() #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     A={[This1.I] #norm{typeDep=This1.I}}
+     I={interface #norm{}}
+   #norm{}}""",/*expected lib after this line*/"""
+     A={[This1.I] method Any m()#norm{typeDep=This1.I refined=m()}} I={interface method Any m() #norm{}}
+   #norm{}}"""/*next test after this line*/)
+   ),new AtomicTest(()->fail("""
+     I={interface method Any m() #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={ method Any m() #norm{}}
+     C={ #norm{typeDep=This1.I, coherentDep=This1.I}}
+   #norm{}}""",/*expected lib after this line*/"""
+   nested class I={ m() }
+   The nested class can not be turned into an interface; since it is used with 'class' modifier (is required coherent)
+   [###]"""/*next test after this line*/)
+   //Note: exploring minimal conditions to turn interface in class 
+   ),new AtomicTest(()->pass("""
+     I={interface #norm{}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={ #norm{close}}
+   #norm{}}""",/*expected lib after this line*/"""
+     I={interface #norm{close}}
+   #norm{}}"""/*next test after this line*/)
    ));}
-   
-   //TODO: test A{ Void m()} I{interface Any m()} + A={I} I={}
-   //TODO: test A{ Any m()} I{interface Any m()} + A={I} I={}
+//TODO: test add interface with class with a class method
    
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This.C");

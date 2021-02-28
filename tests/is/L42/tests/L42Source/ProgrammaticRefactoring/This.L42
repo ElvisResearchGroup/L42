@@ -1,0 +1,27 @@
+reuse [AdamTowel]
+//Main0 = Debug(S"Hello world")
+
+Code1 = Trait:{
+  A = {interface,  method S m()}
+  B = {[A],        method S m()=S"Hi"                    class method This()}
+  C = {            method S m()=S" world"                class method This()}
+  D = {            method S callBoth()=B().m()++C().m()  class method This()}
+  }
+
+  
+  
+Concrete1 = Class:Code1
+Main1 = Debug(Concrete1.D().callBoth())
+
+Concrete2 = Class:Code1['A.m()=>'A.k()]
+  
+Main2 = (
+  //Debug(Concrete2.D().callBoth())
+  Debug(Code1['A.m()=>'A.k()].nested().toFullS())
+  )
+  
+Concrete3 = Class:Code1['C.m()->'C.superM()]
+  : {C={method S superM() method S m()=this.superM()++S"!" } }
+Main3 = (
+  Debug(Concrete3.D().callBoth())
+  )
