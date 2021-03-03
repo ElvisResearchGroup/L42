@@ -1,6 +1,9 @@
 reuse [AdamTowel]
 //Main0 = Debug(S"Hello world")
-
+Res=Class:Trait({
+  method S originalTop()=S"originalTop"
+  NewTop ={method S newTop()=S"newTop"}
+  })[single='This=>'OriginalTop;single='NewTop=>'This]
 Code1 = Trait:{
   A = {interface,  method S m()}
   B = {[A],        method S m()=S"Hi"                    class method This()}
@@ -25,3 +28,47 @@ Concrete3 = Class:Code1['C.m()->'C.superM()]
 Main3 = (
   Debug(Concrete3.D().callBoth())
   )
+  
+MultiLevel = Trait:{
+  A = {
+    class method S hi() = S"hi"
+    B = {class method S world() = S"world"}
+    }
+  C = {
+    class method Void print() = Debug(A.hi()++D.space()++A.B.world())
+    D = { class method S space() = S" " }
+    }
+  }
+MultiConcrete3 = Class:MultiLevel[ clear='A; ]:{
+  A = {
+    class method S hi() = S"hello"
+    B = {class method S world() = S"42"}
+    }
+  }
+Main5 = MultiConcrete3.C.print() //"hello 42"
+MultiConcrete4 = Class:MultiLevel[ 'A->'SuperA; 'C.D.space()->'C.D.superSpace() ]:{
+  SuperA = { class method S hi() B={class method S world()}}
+  A = {
+    class method S hi() = S"[%SuperA.hi()]"
+    B = {class method S world() = S"[%SuperA.B.world()]"}
+    }
+  C={
+    D={
+      class method S superSpace()
+      class method S space()=S"[%this.superSpace()<:S]"
+      }
+    }
+  }
+Main7 = MultiConcrete4.C.print() //now prints "[hi][ ]42"
+
+
+MultiConcrete5 = Class:Trait({
+  $ = Class.Relax:MultiLevel[ 'A->'SuperA; 'C.D.space()->'C.D.superSpace() ]
+  A = {
+    class method S hi() = S"[%$.SuperA.hi()]"
+    B = {class method S world() = S"[%$.SuperA.B.world()]"}
+    }
+  C={ D={ class method S space()=S"[%$.C.D.superSpace()]" } }
+  })['$=>'This]
+  
+Main8 = MultiConcrete5.C.print() //now prints "[hi][ ]42"
