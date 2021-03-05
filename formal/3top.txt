@@ -70,6 +70,7 @@ _______
     Err not in Rs
 _______
 #define top(CTz,p) => PR    topNC(CTz;p;Cs) => PR    sortHeader(p) = p'    addInfo(p) = p'
+* top(CTz,p') => PR
     Ms=expandMethods(p'(This0).Ms) //Ms = FULL.Ms
     p=p'.update(p'(This0)[Ms=Ms])
     CORE.L = sortHeader(p) IfNotE(CORE.L) PR = headerErr(p)
