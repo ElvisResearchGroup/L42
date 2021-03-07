@@ -2,3 +2,43 @@ reuse [AdamTowel]
 Main=(
   Debug(S"Hello world")
   )
+
+/*difficoult mini example:
+Person with friends
+if none of my friends, or friends friends have my hobby, add me as my friend
+Java 15:
+record Person(String hobby, List<Person>friends){
+  void addSelf(){
+    var sameHobby1=friends.stream().anyMatch(f->f.hobby().equals(hobby));
+    if(sameHobby1){return;}
+    for(var fi:friends){
+      var sameHobby2=fi.friends().stream().anyMatch(f->f.hobby().equals(hobby));
+      if(sameHobby2){return;}
+      }
+    friends.add(this);
+    }
+  }
+*/
+Person = Class:Trait({
+  mut method mut This self()=this
+  Person = Data.AddList:Data:{List={}, S hobby, mut List friends}
+  Person$ = {
+    mut method mut Person self()
+    mut method Void addSelf() = {
+      (self)=this
+      sameHobby1=Match.Some()(for mut f in self.#friends() \add(f.hobby()==self.hobby()))
+      if sameHobby1 (return void)
+      for mut fi in self.#friends() (
+        sameHobby2=Match.Some()(for mut f in fi.#friends() \add(f.hobby()==self.hobby()))
+        if sameHobby2 (return void)
+        )
+      return self.#friends().#add(right=self)
+      }
+    }
+  })['Person$=>'Person]['Person=>'This][hide='self()]
+Main2 = (
+  bob=Person(hobby=S"rage", friends=\())
+  Debug(bob)
+  bob.addSelf()
+  Debug(bob)
+  )

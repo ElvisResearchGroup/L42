@@ -99,7 +99,7 @@ Model = Data:GuiJ.Handler:{ //the model answering to Java events
     whoops DB.Fail, IQL.Fail
     )
   @GuiJ.Handler mut method Void removeByName(S msg)=(
-    for (name) in this.#iql().removeByName()() (//zero or one time
+    for (name) in this.#iql().removeByName()() (//zero or many times
       this.#sql().deleteName()(name=name)
       )
     this.printAll(msg=msg)

@@ -1,0 +1,114 @@
+MetaData = Data:{
+  var I encryptionKey
+  var Bool isEncrypted
+  var I signKey
+  var Bool isSigned
+  var Bool isSignatureVerified
+  }
+  
+AddressBookEntry = Data:{
+  S alias
+  mut S.List receivers
+  mut method Void add(S receiver) = this.#receivers().add(receiver)
+  }
+  
+AddressBook = Collection.list(AddressBookEntry)
+
+//------------
+Client$ = {class method fwd mut This (fwd mut This that)=that}
+Counter$ = {class method fwd mut This (fwd mut This that)=that}
+Email$ = {class method fwd mut This (fwd mut This that)=that}
+
+KeyringEntry = Data:{
+ mut Client$ keyOwner
+ I publicKey
+ }
+Keyring = Collection.list(KeyringEntry) 
+Clients = Collection.list(Client$)
+OptClient = Collection.optional(Client$)
+Counter = {...}
+/*  var I emails
+  mut Clients clients
+  mut method mut Counter self() = this
+  class method mut This(I emails,mut Clients clients)
+  mut method mut Client$ client(I id)
+  mut method mut Client$ client(S address)
+  mut method Void resetClients()
+  }*/
+/*
+Client$ = {[HasToS]
+  mut method mut This self() = this //returns Client$: in C convert C to C$
+  class method mut This self(mut This that) = that //returns Client: in C convert C$ to C
+  }
+*/  
+Email = {...} //uses Counter
+
+//Clients$ = {}
+
+Client = {...} //has a Counter, uses Email, Keyring
+
+
+Counter$ = {...} //creates Client(), uses Clients
+
+//reason for Counter.self()
+//B={ }
+//A = Data:{ B b }
+//As=Collection.list(A)
+//B$ = Data:{ method A foo(As as)=A(b=this)}
+/*
+Client has Counter, OptClient, Email, Keyring
+
+Counter creates Client, has Clients
+
+Email uses Counter
+
+Clients collection with Client
+Keyring collection with Client
+
+just declaring 
+A$
+As
+B$
+Bs
+A=Data:{...}
+B=Data:{...}
+does not work if A uses B methods
+If A do
+  for b in bs ( B.self(b).foo().bar() )
+then A {...} can not be normalized: we do not know of B self/foo type
+Declaring all the abs methods in A$, B$ is also problematic:
+    those may refer to As/Bs
+
+declaring class method fwd mut This(fwd mut This$ that)
+methods helps but:
+We still need to <: annotate the method calls of B(b).foo()
+Worst, B(b) can not be put in the collections Bs
+so for example a B can not put 'this' into a list of Bs
+
+It seams like the general pattern could be:
+-somehow make enough rounds of Organize to get all the classes with all their abstract methods
+-Then, $ classes can have self() methods that provide implementation to those abstract ones.
+Top = {
+  $ = Organize:{
+    A$ = {}
+    As = Collection.list(A$)
+    B$ = {}
+    Bs = Collection.list(B$)
+    A = {.. using A$, As, B$,Bs ..}
+    B = {..}//all abstract methods, and self
+    }
+  A = {..impl using self()..}
+  B = {..impl using self()..}
+  }
+
+Consider the following pattern
+A = {
+  class method Void signatures(B b) = (
+    S _=b.bar()
+    void
+    )
+  class method I foo(B b)=(b.bar().size()) 
+  }
+B = { method S bar()=S""}
+
+*/
