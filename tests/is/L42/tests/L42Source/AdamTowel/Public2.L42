@@ -1,5 +1,5 @@
 //TODO: import the code needed to make after$ work, delete it from Organize, and search for all occurences of Organize
-method Trait after$(Trait that, I max)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
+/*method Trait after$(Trait that, I max)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
   var res=that
   res:=CloseAll(res)
   (var lev=0I while lev<max (//range will come later
@@ -9,4 +9,4 @@ method Trait after$(Trait that, I max)[Data.Close$Fail,Trait$InvalidName,Trait$I
     ))
   catch error S$ParseError e exception Trait$InvalidName(e.text())
   CacheCall:res
-  )
+  )*/

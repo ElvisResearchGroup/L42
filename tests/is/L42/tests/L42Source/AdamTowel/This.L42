@@ -119,7 +119,7 @@ DeployAAA=(
     DelayTyping={}
     @Public Class={...}
     @Public Organize={...}
-    Public$={...}
+    Public2={...}
     Deploy$={...}
     @Public Math={...}
     @Public Range={...}
@@ -164,6 +164,7 @@ DeployAdamTowel={reuse[#$aaa]
       'Trait_InvalidMap=>'Trait.InvalidMap;
       'Deploy_LibraryNotSelfContained=>'Deploy.LibraryNotSelfContained;
       'Long=>'Math.Long;
+      'Public2=>'Public;
       ]
     tot:=Organize(public='Public) : tot
     toDeploy=Class$Relax:tot[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
