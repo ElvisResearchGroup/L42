@@ -20,7 +20,7 @@ Close$Meta={
   @Public method Library :(Library that)[Close$Fail]={
     return Close$Meta().close(that,name=this.that().toS(),autoNorm=this.autoNorm())
     catch error Close$Fail x exception x
-    } 
+    }
   }
 
 @Public AddConstructors$Fail=Class$Relax:Message.Native:{[Data$Fail]}      

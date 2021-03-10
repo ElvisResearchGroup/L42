@@ -1,9 +1,9 @@
 //TODO: divide organize more clearly in multiple decorators that can be used from users
 //now we have 4 fases that should become usable decorators:
-//-CloseAll
+//-CloseAll //NOW IN Data.Close.all
 //-Rename$
 //-Hide non Public
-//-CacheCall
+//-CacheCall //Where?
 
 @Public CacheCall$Fail=Class$Relax:Message.Native:{[Message$Guard]}
 CacheCall$Meta={
@@ -45,7 +45,7 @@ class method This (Name public)=\(public=public,just$=Bool.false())
 class method This(Bool just$)=\(public=Name"",just$=just$) 
 class method This()=\(public=Name"",just$=Bool.false()) 
 
-method I maxLev(Introspection.Nested that)=(
+class method I maxLev(Introspection.Nested that)=(
   var res=0I
   for ni in that.nesteds() (
     tmp=this.maxLev(ni)
@@ -60,7 +60,7 @@ method Trait :(class Trait.Lifted lifted)[Data.Close$Fail,Trait$InvalidName,Trai
   (this:lifted())
   
 method Trait :(Trait trait)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
-  max=this.maxLev(Introspection.Nested.from(library=trait.code()))
+  max=This.maxLev(Introspection.Nested.from(library=trait.code()))
   var res=trait
   (var lev=0I while lev<max (//range will come later
     lev+=1I

@@ -1,12 +1,73 @@
 //TODO: import the code needed to make after$ work, delete it from Organize, and search for all occurences of Organize
-/*method Trait after$(Trait that, I max)[Data.Close$Fail,Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash,CacheCall$Fail]=(
+//TODO: what about CacheCall??? where should it go? in Cache?
+//In general, should all the 'from' method become #apply? is not it just  a 'constructor'?
+@Public ClassOperators = {class method This1() = This1()}
+
+Introspection.Nested public
+Introspection.Nested private
+Invisible ={}
+@Public class method This (Introspection.Nested public, Introspection.Nested private)
+@Public class method This (Introspection.Nested public) = \(
+  public=public,
+  private=Introspection.Nested.from(classAny=Invisible)
+  )
+@Public class method This (Introspection.Nested private) = \(
+  public=Introspection.Nested.from(classAny=Public),
+  private=private
+  )
+@Public class method This()=\(
+  public=Introspection.Nested.from(classAny=Public)
+  private=Introspection.Nested.from(classAny=Invisible)
+  )
+
+@Public method Trait : (Trait that)[
+  ,,Data.Close$Fail
+  ,,Trait$InvalidName
+  ,,Trait$InvalidMap
+  ,,Trait$ClassClash
+  ,,Trait$MethodClash
+  ,,Organize.CacheCall$Fail
+  ,,]=(
+  info=Introspection.Nested.from(library=that.code())//trait.introspection() will come later
+  max=Organize.maxLev(info)
   var res=that
-  res:=CloseAll(res)
+  res:=Data$.Close.all(res, autoNorm=Bool.false())
   (var lev=0I while lev<max (//range will come later
     lev+=1I
-    i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
-    res:=res(squareBuilder=this.mapHide(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
+    i=Introspection.Nested.from(library=res.code())
+    hide=Trait.Acc(Name$Mapping())
+    this.mapHide(hide,n=i,level=max-lev)
+    res:=res(squareBuilder=hide)
     ))
   catch error S$ParseError e exception Trait$InvalidName(e.text())
-  CacheCall:res
-  )*/
+  Organize.CacheCall:res
+  )
+
+method Bool isPrivate(Introspection.Doc that)=
+  that.annotatedAs(nested=this.private())
+method Bool isPublic(Introspection.Doc that)=
+  that.annotatedAs(nested=this.public())
+method Void hideIf(mut Trait.Acc that, Bool hasPublic, Introspection.Doc doc, Name name) = (
+  toHide = (hasPublic && !this.isPublic(doc)) || this.isPrivate(doc)  
+  if toHide that.#squareAdd(hide=name)
+  )
+method Void mapHide(mut Trait.Acc that, Introspection.Nested n, I level)={
+  if level==0I //the level is not the max level, thus we need the return 
+    return this.mapHideBase(that,n=n,level=level)
+  return for ni in n.nesteds() ( this.mapHide(that,n=ni,level=level-1\) )
+  }
+method Void mapHideBase(mut Trait.Acc that, Introspection.Nested n, I level)=(
+  ncs=n.nesteds()
+  ms=n.methods()
+  Bool hasPublic = {
+    for e in ncs ( if this.isPublic(e.outerDoc()) return Bool.true() )
+    for e in ms ( if this.isPublic(e.doc()) return Bool.true() )
+    return Bool.false()
+    }    
+  for e in ncs (
+    this.hideIf(that, hasPublic=hasPublic,doc=e.outerDoc(), name=e.nameFromRoot())
+    )
+  for e in ms (
+    this.hideIf(that, hasPublic=hasPublic,doc=e.doc(), name=e.nameFromRoot())
+    )    
+  )

@@ -5,7 +5,19 @@ class method Void checkCoherent(Introspection.Nested n)[Class$IncoherentClass]=(
   if s!=S"" exception Class$IncoherentClass"%s"
   for ni in n.nesteds() this.checkCoherent(n=ni) 
   )
-
+Close={
+  @Public class method Trait all(Trait that, Bool autoNorm)[Data.Close$Fail]=(
+    n=Introspection.Nested.from(library=that.code())
+    This(that,n=n,autoNorm=autoNorm)  
+    )
+  class method Trait (Trait that,Introspection.Nested n, Bool autoNorm)[Data.Close$Fail]=(
+    var res=that
+    for ni in n.nesteds() ( res:=this(res,n=ni,autoNorm=autoNorm) )
+    var toClose=!n.isInterface() && !n.isClose()
+    if toClose ( res:=Data.Close(n.nameFromRoot(),autoNorm=autoNorm):res )
+    res
+    )
+  }
 //Extra features that can be manually added as in
 //Point = Data:Data.AddList:{Num x, Num y} 
 TraitAddList = Trait({
