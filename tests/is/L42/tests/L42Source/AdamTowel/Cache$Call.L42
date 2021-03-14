@@ -1,0 +1,17 @@
+@Public Fail=Class$Relax:Message.Native:{[Message$Guard]}
+Meta={
+  class method This #apply()
+  method Library cacheCall(Library that)=native{trusted:cacheCall} error void
+  #norm{nativeKind=Meta,
+    typeDep=This0 This1.Fail,This2.S
+    watched=This1.Fail,This2.S
+    coherentDep=This1.Fail,
+    nativePar=This1.Fail This1.Fail This1.Fail This1.Fail This1.Fail
+    }}
+@Public ClassOperators={class method class This1 ()=This1}
+@Public class method Trait :(Trait t)[Fail]=Trait(this:t.code())
+@Public class method Trait :(class Trait.Lifted l)[Fail]=Trait(this:l.code())
+@Public class method Library :(Library that)[Fail]={
+  return Meta().cacheCall(that)
+  catch error Fail x exception x
+  }

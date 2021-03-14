@@ -1,4 +1,4 @@
-$ = Organize(just$=\.true()) : {...}
+$ = Organize:{...}
 //Map2D and Map3D
 
 Iterator2D = {
@@ -28,4 +28,4 @@ CellBoundingBox = Data : {...}
 
 Cilinder = Data : {...}
 
-Physics = Organize(just$=\.true()) : Trait({...})['TopBox=>'CellsMap.Box]
+Physics = Organize:Trait({...})['TopBox=>'CellsMap.Box]

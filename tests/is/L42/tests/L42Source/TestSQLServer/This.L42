@@ -10,7 +10,7 @@ Lib=Trait:{reuse [AdamTowel]
        +Trait.LiftS(packageName)['#apply()=>'codePackageName()]
        +Trait.LiftS(className)['#apply()=>'codeName()]
 
-      return Class:Organize:this.trait()['J=>javaServer]:t
+      return Class:Public:Organize:this.trait()['J=>javaServer]:t
       catch Trait.InvalidMap im exception im
       whoops Message.Guard
       }

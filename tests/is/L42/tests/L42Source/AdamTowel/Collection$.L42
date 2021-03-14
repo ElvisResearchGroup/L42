@@ -1,29 +1,26 @@
 //###Maps
 MapNative=Trait:{...}
 MapOps=Trait:{...}
-TraitMap=MapNative+MapOps
+TraitMap=Public2:MapNative:MapOps
 @Public class method Trait mapTrait()=TraitMap()
 @Public class method Library map(class Any key,class Any val)={
-  res=this.mapTrait()['Key=>key;'Val=>val]
-  return Organize:Class$Relax:res
+  return this.mapTrait()['Key=>key;'Val=>val].code()
   catch Any e error e
   }
 //###Sets
 SetNative=Trait:{...}
 SetOps=Trait:{...}
-TraitSet=SetNative+SetOps
+TraitSet=Public2:SetNative:SetOps
 @Public class method Trait setTrait()=TraitSet()
 @Public class method Library set(class Any that)={
-  res=this.setTrait()['Key=>that]
-  return Organize:Class$Relax:res
+  return this.setTrait()['Key=>that].code()
   catch Any e error e
   }
 
 // read linked list
-LinkedListOps = Trait({...})['L=>'This]
+LinkedListOps = Public2:Trait({...})['L=>'This]
 @Public class method Trait linkedListTrait() = LinkedListOps()
 @Public class method Library linkedList(class Any that) = {
-  res=this.linkedListTrait()['Elem=>that]
-  return Organize : Class$Relax : res
+  return this.linkedListTrait()['Elem=>that].code()
   catch Any e error e
   }

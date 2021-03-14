@@ -8,7 +8,7 @@ Foo={
     Log"Foo".write(S"foo called")
     )
   }
-MkTest=Organize:{
+MkTest=Cache.Call:{
   class method Void callFoo()=Foo.foo()
   }
 TestCacheCall=(

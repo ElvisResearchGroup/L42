@@ -3,6 +3,27 @@ Main=(
   Debug(S"Hello world")
   )
 
+AA=(
+  lib={
+    Foo={}
+    @Foo method Void bar()=void
+    method Void beer()=void
+    }
+  foo1=Introspection.Nested.from(library=lib).nested(name='Foo)
+  doc=Introspection.Nested.from(library=lib).meth(selector='bar()).doc()
+  Debug(doc.annotatedAs(nested=foo1))
+  foo2=doc.docs().left().nested()
+  Debug(foo1)
+  Debug(foo2)
+  Debug(foo1==foo2)
+  Public(public=Introspection.Nested.from(library=lib).nested(name='Foo)):lib
+  )
+//      Public(private=Info(X))
+Point = Public(private=Introspection.Nested.from(classAny=X)):Data:{Num x, Num y
+  //@Public method Num xx()=this.x()
+  @X method This with(Num x)
+  //@X method This self()=this
+  }
 /*difficoult mini example:
 Person with friends
 if none of my friends, or friends friends have my hobby, add me as my friend

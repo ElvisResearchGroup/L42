@@ -19,6 +19,6 @@ class method Trait :(Trait trait)[MetaFail]={
       ignoreSelfRename='a()=>dest
       ]
     )
-  return Organize:Data:(res+trait)
+  return Public:Organize:Data:(res+trait)
   catch Message.Guard g exception MetaFail"".with(cause=g)
   }

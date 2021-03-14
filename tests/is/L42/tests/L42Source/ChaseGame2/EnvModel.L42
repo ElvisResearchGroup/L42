@@ -1,4 +1,4 @@
-$=Organize(just$=\.true()):{
+$=Organize:{
   $={}//Can not drop this nesting since we need to declare Entity methods in $
   Entity={interface
     mut $ model
@@ -106,7 +106,7 @@ mut method Void removeQueue(mut $.Entity that)=(
   S"Person=Data:{S name,I age}";
   S"Task={}:Test%S.dq()Test1%(S.dq())(expected=42I, actual=40I+2I)";
   S"MyTrait['A=>'B]";
-  S"Top=Organize:Data:{...}";
+  S"Top=Public:Organize:Data:{...}";
   ]
 @JServer.Handler mut method Void ping(S msg)=
   if this.running() this.runningPing(msg=msg)

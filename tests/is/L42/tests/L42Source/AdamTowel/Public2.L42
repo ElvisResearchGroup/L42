@@ -1,6 +1,3 @@
-//TODO: import the code needed to make after$ work, delete it from Organize, and search for all occurences of Organize
-//TODO: what about CacheCall??? where should it go? in Cache?
-//In general, should all the 'from' method become #apply? is not it just  a 'constructor'?
 @Public ClassOperators = {class method This1() = This1()}
 
 Introspection.Nested public
@@ -19,19 +16,19 @@ Invisible ={}
   public=Introspection.Nested.from(classAny=Public)
   private=Introspection.Nested.from(classAny=Invisible)
   )
-
+@Public method Library : (Library lib)[_] = (this:Trait(lib)).code()
 @Public method Trait : (Trait that)[
   ,,Data.Close$Fail
   ,,Trait$InvalidName
   ,,Trait$InvalidMap
   ,,Trait$ClassClash
   ,,Trait$MethodClash
-  ,,Organize.CacheCall$Fail
+  ,,Cache$Call.Fail
   ,,]=(
   info=Introspection.Nested.from(library=that.code())//trait.introspection() will come later
   max=Organize.maxLev(info)
   var res=that
-  res:=Data$.Close.all(res, autoNorm=Bool.false())
+  res:=Data$Close.all(res, autoNorm=Bool.false())
   (var lev=0I while lev<max (//range will come later
     lev+=1I
     i=Introspection.Nested.from(library=res.code())
@@ -40,13 +37,17 @@ Invisible ={}
     res:=res(squareBuilder=hide)
     ))
   catch error S$ParseError e exception Trait$InvalidName(e.text())
-  Organize.CacheCall:res
+  Cache$Call:res
   )
-
+method Bool normEq(Introspection.Doc doc, Introspection.Nested other) = {
+  if other.isBinded() return doc.annotatedAs(nested=other)
+  norm = doc.root().nested(name=other.nameFromRoot())
+  return doc.annotatedAs(nested=norm)
+  }
 method Bool isPrivate(Introspection.Doc that)=
-  that.annotatedAs(nested=this.private())
+  this.normEq(doc=that,other=this.private())
 method Bool isPublic(Introspection.Doc that)=
-  that.annotatedAs(nested=this.public())
+  this.normEq(doc=that,other=this.public())
 method Void hideIf(mut Trait.Acc that, Bool hasPublic, Introspection.Doc doc, Name name) = (
   toHide = (hasPublic && !this.isPublic(doc)) || this.isPrivate(doc)  
   if toHide that.#squareAdd(hide=name)
@@ -68,6 +69,7 @@ method Void mapHideBase(mut Trait.Acc that, Introspection.Nested n, I level)=(
     this.hideIf(that, hasPublic=hasPublic,doc=e.outerDoc(), name=e.nameFromRoot())
     )
   for e in ms (
-    this.hideIf(that, hasPublic=hasPublic,doc=e.doc(), name=e.nameFromRoot())
+    if !e.isRefined()
+      this.hideIf(that, hasPublic=hasPublic,doc=e.doc(), name=e.nameFromRoot())
     )    
   )

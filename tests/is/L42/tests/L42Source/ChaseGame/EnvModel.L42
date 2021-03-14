@@ -1,4 +1,4 @@
-$=Organize(just$=\.true()):{
+$=Organize:{
   $={}
   Entity={interface
     Bool solid
@@ -89,7 +89,7 @@ class method mut This (mut JServer j, mut JServer.Handler.Map stage,S key, mut R
   S"Person=Data:{S name,I age}";
   S"Task={}:Test%S.dq()Test1%(S.dq())(expected=42I, actual=40I+2I)";
   S"MyTrait['A=>'B]";
-  S"Top=Organize:Data:{...}";
+  S"Top=Public:Organize:Data:{...}";
   ]
 @JServer.Handler mut method Void ping(S msg)=(
   speed=230I

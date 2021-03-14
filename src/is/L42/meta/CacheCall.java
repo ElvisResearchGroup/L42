@@ -12,6 +12,7 @@ import java.util.function.Function;
 
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
@@ -20,23 +21,45 @@ import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
+import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.tools.General;
+import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
     /*
      if a method m annotated @Cache.Calls is called
      using an expression e with no free variables
      generate "class method m_num::0()=native{trusted:lazyCache} e"
      in the same library, and replace the call with
-     "This.m_num::0()"
-     Recursivelly do the same task on all the nested libraries (also in method bodies)
+     "This.m_num::0()".
+     //??If the class is not closed, generate a private closed nested class instead.
+     Private methods annotated lazyCache whose body is not a block are not explored.
+     Recursively do the same task on all the nested libraries (also in method bodies)
      */
 public class CacheCall{
   public static Core.L of(Program p,Function<L42£LazyMsg,L42Any>wrap){
     return of(p,new MetaError(wrap));
     }
+  static Core.PCastT _head(Core.L l){
+    if(l.info().close() ||l.isInterface()) {return null;}
+    Resources.allBusyUpTo+=1;
+    while(Resources.usedUniqueNs.contains(Resources.allBusyUpTo)){
+      Resources.allBusyUpTo+=1;
+      }
+    C c=new C("CacheCall",Resources.allBusyUpTo);
+    P.NCs nc=new P.NCs(0,List.of(c));
+    return new Core.PCastT(l.pos(), nc, new Core.T(Mdf.Class,L(), nc));
+    } 
+  static List<Core.L.NC> addHead(Core.PCastT _head,ArrayList<MWT>mwts,List<Core.L.NC>ncs){
+    if(_head==null || mwts.isEmpty()){return ncs;}
+    throw General.todo();
+    //Must also compute the info for the new nested
+    }
   static Core.L of(Program p,MetaError err){
     var l=p.topCore();
+    Core.PCastT _head=_head(l);
+    ArrayList<MWT>nestedMwts=new ArrayList<>();
     List<MWT>mwts=L(newMwts->{
-      for(int i:range(l.mwts())){newMwts.add(handleMWT(p,newMwts, i, err));}
+      for(int i:range(l.mwts())){newMwts.add(handleMWT(_head,p,_head==null?newMwts:nestedMwts, i, err));}
       });
     boolean mustConsistentThis0=mwts.size()!=l.mwts().size();
     List<NC>ncs=L(l.ncs(),(newNCs,nci)->{
@@ -44,7 +67,7 @@ public class CacheCall{
       var li=of(pi,err);
       newNCs.add(nci.withL(li));
       });
-    var res=l.withMwts(mwts).withNcs(ncs);
+    var res=l.withMwts(mwts).withNcs(addHead(_head,nestedMwts,ncs));
     if(mustConsistentThis0) {
       var i=res.info();
       var td=i.typeDep();
@@ -55,23 +78,27 @@ public class CacheCall{
       }
     return res;
     }
-  public static Core.L.MWT handleMWT(Program p,ArrayList<MWT> mwts,int index,MetaError err){
+  public static Core.L.MWT handleMWT(Core.PCastT _head, Program p,ArrayList<MWT> mwts,int index,MetaError err){
     var mwt=p.topCore().mwts().get(index);
     if(mwt._e()==null) {return mwt;}
+    var skip=!(mwt._e() instanceof Core.Block) && Utils.match(p, err,"callCache", mwt);
+    if(skip){return mwt;}
     var name=mwt.key().m()+"_"+index;
     G g=G.of(mwt.mh());
-    var visitor=new CacheCallCloneVisitor(p, g, mwts, name, err);
+    var visitor=new CacheCallCloneVisitor(_head,p, g, mwts, name, err);
     return mwt.with_e(visitor.visitE(mwt._e()));
     }
   }
 class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
+  Core.PCastT _head;
   ArrayList<MWT> newMWTs;
   HashSet<String> fv=new HashSet<>();
   MetaError err;
   String name;
   int num=0;
-  public CacheCallCloneVisitor(Program p, G g,ArrayList<MWT> mwts,String name,MetaError err){
+  public CacheCallCloneVisitor(Core.PCastT _head, Program p, G g,ArrayList<MWT> mwts,String name,MetaError err){
     super(p, g);
+    this._head=_head;
     this.name=name;//unique names in format methName_methIndex
     this.err=err;//index would be sufficient, but the methName helps for debugging
     this.newMWTs=mwts;
@@ -121,14 +148,26 @@ class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
     if(!mwt.mh().t().mdf().isImm()){err.throwErr(mwt,"Call Cache methods must return an imm result");}
     //TODO: extend it to allow class result?
     if(!mwt.mh().exceptions().isEmpty()){err.throwErr(mwt,"Call Cache methods can not throw exceptions");}
-    //TODO: now will generate all the subcached too. Should we recognize the issue, use the original m (before super)
+    //TODO: now it will generate all the subcached too. This is good for Core.L insite the e, but could be
+    //ineffective otherwise.
+    //Should we recognize the issue, use the original m (before super)
     //and discard the intermediates using a store/acc like for fv?
     S sel=new S(name+"_"+num,L(),0);
     num+=1;
     var resT=p().from(mwt.mh().t().withDocs(L()),ncs);    
     var mh=new Core.MH(Mdf.Class,L(),resT,sel,L(),L());
     var newMwt=new Core.L.MWT(m.poss(),L(), mh,"trusted:lazyCache",m);
+    var res = Utils.ThisCall(m.pos(), sel,L());
+    if(_head!=null) {
+      res=res.withXP(_head);
+      newMwt=newMwt.accept(new CloneVisitor(){
+        @Override public P visitP(P p){
+          if(!p.isNCs()) {return p;}
+          return p.toNCs().withN(p.toNCs().n()+1);
+          }
+        });
+    }
     this.newMWTs.add(newMwt);
-    return Utils.ThisCall(m.pos(), sel,L());
+    return res;
     }
   }

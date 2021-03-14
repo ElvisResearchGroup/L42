@@ -3,29 +3,20 @@ package is.L42.common;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
-import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
-import static is.L42.tools.General.todo;
 import static is.L42.tools.General.typeFilter;
 import static is.L42.tools.General.unreachable;
 
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Supplier;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import is.L42.constraints.FreshNames;
@@ -36,7 +27,6 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
-import is.L42.generated.Half;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
 import is.L42.generated.Mdf;
@@ -216,6 +206,13 @@ public class Program implements Visitable<Program>{
     }
   public T from(T t,P.NCs source){return fromVisitor(source).visitT(t);}
   public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
+  public Core.L.MWT from(Core.L.MWT mwt,P.NCs source){
+    var mh=from(mwt.mh(),source);
+    var docs=fromDocs(mwt.docs(),source);
+    Core.E e=null;
+    if(mwt._e()!=null){e=from(mwt._e(),source);}
+    return new MWT(mwt.poss(),docs,mh,mwt.nativeUrl(),mwt._e());
+    }
   public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
   public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source).visitDocs(docs);}
   public ST from(ST st,P.NCs source){return fromVisitor(source).visitST(st);}

@@ -8,12 +8,12 @@ TestOrganizeWrongDollarStays=(
   Debug(Full(res))
   {}:Test"Public"(actual=Full(res)
     expected=S"""
-      |{A={#typed{close}}$A={#typed{close}}Foo={
-      |  read method This1.$A a()=(..)
-      |  class method This #apply(This1.$A a)=(..)
-      |  #typed{close}
+      |{A={#typed{}}$A={#typed{}}Foo={
+      |  read method This1.$A a()
+      |  class method This #apply(This1.$A a)
+      |  #typed{}
       |  }
-      |#norm{close}}
+      |#norm{}}
       """)
   )
 TestOrganize0=(
@@ -24,18 +24,18 @@ TestOrganize0=(
     }
   n1=Introspection.Nested.from(library=lib).nested(name='Public2)
   n2=Introspection.Nested.from(library=lib).nested(name='A)
-  organize=Organize(public='Public2)
+  p=Trait({Public2={}}).nested().nested(name='Public2)
+  pub=Public(public=p)
   {}:Test"eqOk"(n1==n1)
   {}:Test"annotatedAs"(n2.outerDoc().annotatedAs(nested=n1))
-  res=organize:lib
+  res=pub:Organize:lib
   {}:Test"Public"(actual=Full(res)
   expected=S"""
     |{@<private>A={method<private>b()#typed{typeDep=<private>watched=This1 close}}#norm{typeDep=<private>close}}
     """)
   )
 TestOrganize1=(
-  organize=Organize()
-  res=organize:{
+  res=Public:Organize:{
     @Public A={method B b()}
     B={}
     }
@@ -55,11 +55,11 @@ TestOrganize=(
     |{method Void m3()A={
     |  method Void m1()
     |  method Void m2()
-    |  #typed{close}
+    |  #typed{}
     |  }
-    |#norm{close}}
+    |#norm{}}
     """)
-  res2=Organize:{
+  res2=Public:Organize:{
     @Public A={method Void m1()=void}
     A$={@Public method Void m2()=void}
     $={method Void m3()=void}

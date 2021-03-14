@@ -1,11 +1,9 @@
-@Public class method Void module(Url url,Library code,Name name)
-  [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
+@Public class method Void module(Url url,Library code,Name name)[_]
   =Deploy.towel(url=url,code=this.module(code,n=name).code())
-@Public class method Trait module(Library that,Name n)
-  [Trait$InvalidName,Trait$InvalidMap,Trait$MethodClash,Trait$ClassClash]
+@Public class method Trait module(Library that,Name n)[_]
   =(
   at=Name"AbstractTowel"
-  //l=removeUnusedCode(l,that)
+  //l=removeUnusedCode(l,that)//TODO: is it happening internally somewhere?
   top=Introspection.Nested.from(library=that)
   i=top.nested(name=at)
   acc=Trait.Acc(Name$Mapping())
@@ -16,5 +14,5 @@
     if annotated return acc.#squareAdd(name=>at.toS()++name)
     return acc.#squareAdd(hide=name)
     }
-  Trait(that)(squareBuilder=acc)[clear=at;n=>'This]
+  Cache$Call:Trait(that)(squareBuilder=acc)[clear=at;n=>'This]
   )

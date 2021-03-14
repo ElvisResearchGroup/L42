@@ -15,7 +15,7 @@ Lib=TraitInterface:{reuse [AdamTowel]
     mut method Void write(S fileName,S content)
     mut method S read(S fileName)
     }
-  FileSystem$Real=Organize:{[FileSystem]
+  FileSystem$Real=Public:{[FileSystem]
     @Public class method mut This #$of()=this.#$of::0()
     class method mut This #$of::0()
     @Public mut method Void makeDirs(S fileName)=(

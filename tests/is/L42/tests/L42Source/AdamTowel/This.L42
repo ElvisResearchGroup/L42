@@ -118,8 +118,11 @@ DeployAAA=(
       ]
     DelayTyping={}
     @Public Class={...}
+    Cache$Call={...}
     @Public Organize={...}
+    Data$Close={...}
     Public2={...}
+    Collection$={...}
     Deploy$={...}
     @Public Math={...}
     @Public Range={...}
@@ -127,7 +130,6 @@ DeployAAA=(
     @Public Load={...}
     System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
     System$JavaException=Class:Message.Native:{[Message$Guard]}
-    Collection$={...}
     Data$={...}
     @Public Collection$Enum={...}
     S$=Class:Trait({...})['Map.OVal=>'Opt]
@@ -166,7 +168,9 @@ DeployAdamTowel={reuse[#$aaa]
       'Long=>'Math.Long;
       'Public2=>'Public;
       ]
-    tot:=Organize(public='Public) : tot
+    tot:=Organize:tot
+    pub=Introspection.Nested.from(library=tot.code()).nested(name='Public)
+    tot:=Cache$Call:Public2(public=pub):tot
     toDeploy=Class$Relax:tot[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
     Debug(Introspection.Nested.from(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)

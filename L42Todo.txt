@@ -1,4 +1,22 @@
-1680 tests passing
+Check Cache.Call with deploy:
+Call.Cache must be applied on all closed or will get wrong..
+what to do on open?
+-check that Cache.Call applied twice have no effect!!!!
+-Bug rename: if a class is cleared and a method return type is
+This2.XX::n it will give an assertion error instead of a 42 exception
+-clone vs mutClone naming: what is the best naming? the guide is ambigus
+--Certain objects like lists can offer a single read->capsule clone
+--other needs clone+mutClone... should we always offer clone+mutClone instead?
+In general, should all the 'from' method become #apply? is not it just  a 'constructor'?
+In progress: "Cache.Call:" should be used before deploy/deployModule, not in Public
+Error reporting Bug: 
+A ={B.C}
+B=Baz:{
+  C={}
+  D=A.foo() //requires A, that requires B.C,
+  //A can not be compiled yet, even if C is typed.
+  //B.C will not be detected as a missing dependency from the current CircularityIssue :-( 
+  }
 -Bug: it should require parenthesis around the for body!! 
 A =(ss=S.List[]
   for a in ss ss.add(a)
