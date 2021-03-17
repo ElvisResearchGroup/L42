@@ -14,6 +14,7 @@ import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
 import is.L42.generated.Mdf;
@@ -45,14 +46,16 @@ public class CacheCall{
     while(Resources.usedUniqueNs.contains(Resources.allBusyUpTo)){
       Resources.allBusyUpTo+=1;
       }
-    C c=new C("CacheCall",Resources.allBusyUpTo);
+    C c=new C("CacheCallPrivate",Resources.allBusyUpTo);
     P.NCs nc=new P.NCs(0,List.of(c));
     return new Core.PCastT(l.pos(), nc, new Core.T(Mdf.Class,L(), nc));
     } 
-  static List<Core.L.NC> addHead(Core.PCastT _head,ArrayList<MWT>mwts,List<Core.L.NC>ncs){
+  static List<Core.L.NC> addHead(Core.PCastT _head,ArrayList<MWT>mwts,List<Core.L.NC>ncs,Info info){
     if(_head==null || mwts.isEmpty()){return ncs;}
-    throw General.todo();
-    //Must also compute the info for the new nested
+    info=info.accept(CacheCallCloneVisitor.addThis1).withClose(true);
+    var innerL=new Core.L(mwts.get(0).poss(),false,L(),mwts,L(), info,L());
+    var nc=new Core.L.NC(mwts.get(0).poss(), L(), _head.p().toNCs().cs().get(0),innerL);
+    return pushL(ncs,nc);    
     }
   static Core.L of(Program p,MetaError err){
     var l=p.topCore();
@@ -67,16 +70,22 @@ public class CacheCall{
       var li=of(pi,err);
       newNCs.add(nci.withL(li));
       });
-    var res=l.withMwts(mwts).withNcs(addHead(_head,nestedMwts,ncs));
-    if(mustConsistentThis0) {
-      var i=res.info();
+    var i=l.info();
+    if(mustConsistentThis0){      
       var td=i.typeDep();
       var cd=i.coherentDep();
       if(!td.contains(P.pThis0)){i=i.withTypeDep(pushL(td,P.pThis0));}
       if(!cd.contains(P.pThis0)){i=i.withCoherentDep(pushL(cd,P.pThis0));}
-      res=res.withInfo(i);
       }
-    return res;
+    var res=l.withMwts(mwts).withNcs(addHead(_head,nestedMwts,ncs,i));
+    if(_head!=null && !nestedMwts.isEmpty()){
+      var headP=_head.p().toNCs();
+      var td=i.typeDep();
+      var cd=i.coherentDep();
+      if(!td.contains(headP)){i=i.withTypeDep(pushL(td,headP));}
+      if(!cd.contains(headP)){i=i.withCoherentDep(pushL(cd,headP));}      
+      }
+    return res.withInfo(i);
     }
   public static Core.L.MWT handleMWT(Core.PCastT _head, Program p,ArrayList<MWT> mwts,int index,MetaError err){
     var mwt=p.topCore().mwts().get(index);
@@ -134,6 +143,12 @@ class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
     return CacheCall.of(p().push(l),err);
     }
   //handling mcall
+  static final CloneVisitor addThis1=new CloneVisitor(){
+    @Override public P visitP(P p){
+      if(!p.isNCs()) {return p;}
+      return p.toNCs().withN(p.toNCs().n()+1);
+      }
+    };
   @Override public Core.MCall visitMCall(Core.MCall m){
     m=super.visitMCall(m);//also compute fv
     if(!fv.isEmpty()){return m;}
@@ -160,12 +175,7 @@ class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
     var res = Utils.ThisCall(m.pos(), sel,L());
     if(_head!=null) {
       res=res.withXP(_head);
-      newMwt=newMwt.accept(new CloneVisitor(){
-        @Override public P visitP(P p){
-          if(!p.isNCs()) {return p;}
-          return p.toNCs().withN(p.toNCs().n()+1);
-          }
-        });
+      newMwt=newMwt.accept(addThis1);
     }
     this.newMWTs.add(newMwt);
     return res;

@@ -184,11 +184,11 @@ public class Deps{
     public ArrayList<P.NCs> empty(){return typePs;}
     @Override public void visitL(Full.L l){throw bug();}
     @Override public void visitL(Core.L l){
-      l.visitInnerLNoPrivate((li,csi)->this.innerVisitL(l,li,csi));
+      l.visitInnerLNoPrivate((li,csi)->this.innerVisitL(l,li,csi,false));
       }
-    private void innerVisitL(L l,L li,List<C> csi){
+    private void innerVisitL(L l,L li,List<C> csi,boolean inMethFlag){
       Program pcsi=(lastC==null?p0.push(l):p0.push(lastC,l)).navigate(csi);
-      try{innerVisitL(pcsi,l,li,csi);}
+      try{innerVisitL(pcsi,l,li,csi,inMethFlag);}
       catch(EndError.PathNotExistent pne){
         new CloneVisitorWithProgram(pcsi){
           @Override public Info visitInfo(Info info){return info;}
@@ -200,9 +200,11 @@ public class Deps{
         throw pne;
         }
       }
-    private void innerVisitL(Program pcsi,L l,L li,List<C> csi){
+    private void innerVisitL(Program pcsi,L l,L li,List<C> csi,boolean inMethFlag){
       for(var p:li.info().typeDep()){skipAct(p, csi, l,typePs::add);}
-      for(var p:li.info().coherentDep()){skipAct(p, csi, l,metaCohePs::add);}
+      if(inMethFlag){
+        for(var p:li.info().coherentDep()){skipAct(p, csi, l,metaCohePs::add);}
+        }
       for(var p:li.info().metaCoherentDep()){skipAct(p, csi, l,metaCohePs::add);}
       for(var p:li.info().watched()){skipAct(p, csi, l,w->addWatched(pcsi, w));}
       for(var pathSel:li.info().usedMethods()){

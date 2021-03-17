@@ -333,24 +333,30 @@ _______
 
 * collectDeps(p,Docs C=L)= collectDeps(p♥Docs)
     C not of form _::n
-* collectDeps(p,Docs C::n=L)= collectDeps(p♥Docs)+collectDepsE(p,L)
+* collectDeps(p,Docs C::n=L)= collectDeps(p♥Docs)+collectDepsL(p;L;empty)
 
 * collectDeps(p; T) =  Info[typeDep=T.P] + collectDeps(p; T.Docs)
 * collectDeps(p; Doc) = Info[typeDep={P| @P._ inside Doc}]
 _______
-#define collectDepsE(p;CORE.e?)= Info    Ps[skipThis0;Cs;CORE.L] = Ps'
+#define collectDepsL(p;L;inMethFlag?)= Info collectDepsE(p;CORE.e?)= Info    Ps[skipThis0;Cs;CORE.L] = Ps'
 //collectDepsE(p;L) adds NCs dependencies and relies on cached Info
-* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = Info[empty]
-* collectDepsE(p;CORE.L) = Info1+..+Infon 
+* collectDepsL(p;CORE.L;inMethFlag?) = Info1+..+Infon 
     Cs1..Csn=dom(CORE.L)//Note: This0 in dom(Core.L)
     Li=CORE.L(Csi)
+    if inMethFlag?=empty
+      Ps=Li.Info.metaCoherentDep
+    otherwise
+      Ps=Li.Info.coherentDep U Li.Info.metaCoherentDep
     Infoi=Info[
       typeDep=Li.Info.typeDep[skipThis0;Csi;CORE.L]
-      metaCoherentDep=(Li.Info.coherentDep U Li.Info.metaCoherentDep)[skipThis0;Csi;CORE.L]
+      metaCoherentDep=Ps[skipThis0;Csi;CORE.L]
       watched=Li.Info.watched[skipThis0;Csi;CORE.L]
       usedMethods=Li.Info.usedMethods[skipThis0;Csi;CORE.L] //trivially propagating the "s" part
       hiddenSupertypes=(Li.Ts.Ps.filterUniqueNumbers U Li.Info.hiddenSupertypes)[skipThis0;Csi;CORE.L]      
       ]
+
+* collectDepsE(p;empty) = collectDepsE(p;x) = collectDepsE(p;void) = Info[empty]
+* collectDepsE(p;CORE.L) = collectDepsL(p;CORE.L;inMethFlag)
 * collectDepsE(p; e0.m( x1=e1 .. xn=en ) )= collectDepsE(p;e0) +..+ collectDepsE(p;en)+Info[watched=P? usedMethods=(P.s)?]
     e0=xP,
     P=G(xP)
