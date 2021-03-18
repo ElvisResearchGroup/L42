@@ -24,7 +24,7 @@ class method This(NativeMethod that)=\(i=that)
     )))
 @Public method Bool isRefined()=this.i().isRefined()
 @Public method Bool isAbstract()=this.i().isAbstract()
-@Public method Nested info()=\(this.i().info())
+@Public method Nested info()=\(native=this.i().info())
 @Public method Name nameFromRoot()=\.of(this.i().nameFromRoot())
 @Public method S position()=this.i().position()
 

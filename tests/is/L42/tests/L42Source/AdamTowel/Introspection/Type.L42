@@ -4,5 +4,5 @@ class method This(NativeType that)=\(i=that)
 @{return a string in the set "read","imm","fwd imm","mut","fwd mut","lent","capsule","class"}
 @Public method S mdf()=this.i().mdf()
 @Public method Doc doc()=\(this.i().doc())
-@Public method Nested info()=\(this.i().info())
+@Public method Nested info()=\(native=this.i().info())
 method toS()=this.i().toS()

@@ -9,17 +9,17 @@ AA=(
     @Foo method Void bar()=void
     method Void beer()=void
     }
-  foo1=Introspection.Nested.from(library=lib).nested(name='Foo)
-  doc=Introspection.Nested.from(library=lib).meth(selector='bar()).doc()
+  foo1=Introspection.Nested(library=lib).nested(name='Foo)
+  doc=Introspection.Nested(library=lib).meth(selector='bar()).doc()
   Debug(doc.annotatedAs(nested=foo1))
   foo2=doc.docs().left().info()
   Debug(foo1)
   Debug(foo2)
   Debug(foo1==foo2)
-  Public(public=Introspection.Nested.from(library=lib).nested(name='Foo)):lib
+  Public(public=Introspection.Nested(library=lib).nested(name='Foo)):lib
   )
 //      Public(private=Info(X))
-Point = Public(private=Introspection.Nested.from(classAny=X)):Data:{Num x, Num y
+Point = Public(private=Introspection.Nested(X)):Data:{Num x, Num y
   //@Public method Num xx()=this.x()
   @X method This with(Num x)
   //@X method This self()=this

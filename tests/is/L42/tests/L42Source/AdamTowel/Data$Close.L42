@@ -1,5 +1,5 @@
 @Public class method Trait all(Trait that, Bool autoNorm)[Data.Close$Fail]=(
-  n=Introspection.Nested.from(library=that.code())
+  n=Introspection.Nested(library=that.code())
   This(that,n=n,autoNorm=autoNorm)  
   )
 class method Trait (Trait that,Introspection.Nested n, Bool autoNorm)[Data.Close$Fail]=(

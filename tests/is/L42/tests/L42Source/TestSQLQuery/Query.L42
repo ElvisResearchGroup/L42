@@ -9,11 +9,11 @@ SquareBuilder={
   class method mut This #squareBuilder#query()=This(\())
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #squareAdd(class Any that)
-    =this.#that().add(right=Info.from(classAny=that))
+    =this.#that().add(right=Info(that))
   method Library #from(S.StringBuilder stringLiteral)[MetaFail]={
     query=stringLiteral.toS()
     xs=FormatPar.xs(query)
-    if Info.from(classAny=Void)==this.that().left() (
+    if Info(Void)==this.that().left() (
       return Class:This1(types=this.that(),query=query,xs=xs).queryExecute()
       )
     r=this.that().left().meth(selector='left()).returnType().info()

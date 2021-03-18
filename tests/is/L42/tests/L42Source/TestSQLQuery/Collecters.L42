@@ -1,13 +1,13 @@
 TS=Trait:{
-  ColT={class method This from(S string)}
+  ColT={class method This (S string)}
   class method ColT colT(lent Source source,I i)[_]
-    =ColT.from(string=source.val(i).val())
+    =ColT(string=source.val(i).val())
   }
 
 TOptS=Trait:{
-  ColT={class method This from(S.Opt optS)}
+  ColT={class method This (S.Opt optS)}
   class method ColT colT(lent Source source,I i)[_]
-    =ColT.from(optS=source.val(i))
+    =ColT(optS=source.val(i))
   }
   
 K1=Trait:{

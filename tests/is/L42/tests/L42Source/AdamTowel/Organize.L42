@@ -15,11 +15,11 @@ class method I maxLev(Introspection.Nested that)=(
   this:lifted()
   
 @Public method Trait :(Trait trait)[_]=(
-  max=This.maxLev(Introspection.Nested.from(library=trait.code()))
+  max=This.maxLev(Introspection.Nested(library=trait.code()))
   var res=trait
   (var lev=0I while lev<max (//range will come later
     lev+=1I
-    i=Introspection.Nested.from(library=res.code())//trait.introspection() will come later
+    i=Introspection.Nested(library=res.code())//trait.introspection() will come later
     res:=res(squareBuilder=this.mapRename$(Trait.Acc(Name$Mapping()),n=i,level=max-lev))
     ))
   res

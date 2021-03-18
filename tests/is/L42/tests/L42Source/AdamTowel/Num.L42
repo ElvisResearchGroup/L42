@@ -1,6 +1,6 @@
 [This1.HasToS]
 class method This zero()
-class method This from(This1.S string)=string.toNum()
+class method This #apply(This1.S string)=string.toNum()
 method This #plus0(This that)=native{trusted:OP+} error void
 method This #times0(This that)=native{trusted:OP*} error void
 method This #divide0(This that)=native{trusted:OP/} error void
@@ -20,12 +20,12 @@ read method This1.S toS()=native{trusted:toS} error void
   This1.S s=stringLiteral.toS()
   s.toNum()
   )
-method This1.Double toDouble() = This1.Double<:class This1.Double.from(num=this)
+method This1.Double toDouble() = This1.Double<:class This1.Double.#apply(num=this)
 
 #norm{nativeKind=BigRational
   typeDep=This,This1.S,This1.Bool,This1.S$StringBuilder,This1.HasToS,This1.AbstractTowel,This1.Cache.Call,This1.Double
   coherentDep=This,This1.Bool,This1.S,This1.Double,
-  usedMethods=This1.S.toNum(), This1.Bool.not(), This1.S$StringBuilder.toS(), This1.S.toNum(),This1.Double.from(num)
+  usedMethods=This1.S.toNum(), This1.Bool.not(), This1.S$StringBuilder.toS(), This1.S.toNum(),This1.Double.#apply(num)
   refined=toS()
   }
 @This1.AbstractTowel{num}

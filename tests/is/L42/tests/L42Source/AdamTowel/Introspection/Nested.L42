@@ -1,16 +1,16 @@
 [HasToS]
 NativeNested i
-class method This(NativeNested that)=\(i=that)
+class method This(NativeNested native)=\(i=native)
 
-@Public class method This from(class Any classAny)=\(\.fromClass(classAny))
+@Public class method This (class Any that)=\(native=\.fromClass(that))
   
-@Public class method This from(Library library)=\(\.fromLibrary(library))
+@Public class method This (Library library)=\(native=\.fromLibrary(library))
   
-@Public method This nested(Name name)=\(this.i().nestedByName(name=name.that()))
+@Public method This nested(Name name)=\(native=this.i().nestedByName(name=name.that()))
 
 @Public method S outerName()=this.i().outerName()
 
-@Public method This outer()=\(this.i().outer())
+@Public method This outer()=\(native=this.i().outer())
 
 @Public method Doc outerDoc()=\(this.i().outerDoc())
 
@@ -20,7 +20,7 @@ class method This(NativeNested that)=\(i=that)
   size=this.i().nestedNum()
   var i=0I
   while i<size (
-    \add(Nested$(this.i().nestedIn(i)))
+    \add(Nested$(native=this.i().nestedIn(i)))
     i+=1I//sadly, range will be added later
     )))
 @Public method Method$List methods()=\()((
@@ -62,7 +62,7 @@ class method This(NativeNested that)=\(i=that)
 
 @Public method S toFullS()=this.i().toFullString()
 
-@Public method This root()=\(this.i().root())  
+@Public method This root()=\(native=this.i().root())  
 
 @Public method Name nameFromRoot()=\.of(this.i().nameFromRoot())
 

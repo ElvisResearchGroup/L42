@@ -1,7 +1,7 @@
 [This1.HasToS]
 class method This zero()
-class method This from(This1.S string)=string.toDouble()
-class method This from(This1.Num num)=native{trusted:fromNum} error void
+class method This #apply(This1.S string)=string.toDouble()
+class method This #apply(This1.Num num)=native{trusted:fromNum} error void
 method This1.Num toNum()=This1.S<:class This1.S.doubleToNum(that=this)
 method This #plus0(This that)=native{trusted:OP+} error void
 method This #times0(This that)=native{trusted:OP*} error void

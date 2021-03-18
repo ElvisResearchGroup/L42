@@ -4,7 +4,7 @@
   =(
   at=Name"AbstractTowel"
   //l=removeUnusedCode(l,that)//TODO: is it happening internally somewhere?
-  top=Introspection.Nested.from(library=that)
+  top=Introspection.Nested(library=that)
   i=top.nested(name=at)
   acc=Trait.Acc(Name$Mapping())
   for nc in top.nesteds() {

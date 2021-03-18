@@ -8,7 +8,7 @@ class method This()=\(deps=this.baseDeps())
   
 N={//To shorten the creation of the list baseDeps
   ClassOperators={class method class This1()=This1}
-  class method Introspection.Nested:(class Any a)=\.from(classAny=a)
+  class method Introspection.Nested:(class Any a)=\(a)
   }
 class method mut Introspection.Nested$List baseDeps()=\[
   N:Public;
@@ -42,8 +42,8 @@ class method mut Introspection.Nested$List baseDeps()=\[
   N:Range;
   ]
 method Trait.Acc collect(Library that)=(
-  atIn=Introspection.Nested.from(library=that).nested(name='AbstractTowel)
-  atOut=Introspection.Nested.from(classAny=AbstractTowel)
+  atIn=Introspection.Nested(library=that).nested(name='AbstractTowel)
+  atOut=Introspection.Nested(AbstractTowel)
   acc=Trait.Acc(Name$Mapping())
   for nci in atIn.nesteds() (
     src=nci.innerDoc().annotation(nested=atIn).val().texts().left()

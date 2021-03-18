@@ -25,7 +25,7 @@ class method This sum(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
 @Public method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lib)
 @Public method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lifted.code())
 @Public method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=trait.code())
-@Public method Introspection$Nested info()=Introspection$Nested.from(library=this.code())
+@Public method Introspection$Nested info()=Introspection$Nested(library=this.code())
 @Public DocMap={ }
 @Public Acc={
   var Name$Mapping that

@@ -2,7 +2,7 @@ TraitS=Trait:{
   A={}
   class method S () =
     native{trusted:lazyCache}
-    Introspection.Nested.from(classAny=A)
+    Introspection.Nested(A)
       .outerDoc().docs().left().texts().left()
   }
 class method Trait (S that)={(

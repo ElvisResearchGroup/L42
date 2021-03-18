@@ -3,12 +3,12 @@ Extra=Trait:{[HasToS,Message,Message$Guard]
   class method mut This (S that)
   class method This #from(S$StringBuilder stringLiteral)
     =This(stringLiteral.toS())
-  method toS()=Introspection$Nested.from(classAny=This).msgTitle(text=this.text())
+  method toS()=Introspection$Nested(This).msgTitle(text=this.text())
   method Message #whoopsed(Library atPos)=This(
     S"""%
       |%this.text()
       |Whoopsed in position:
-      |  %Introspection$Nested.from(library=atPos).position()
+      |  %Introspection$Nested(library=atPos).position()
       """
     )
   }

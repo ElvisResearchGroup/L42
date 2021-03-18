@@ -1,7 +1,7 @@
 [This1.HasToS]
 @This1.Public class method This zero()
-@This1.Public class method This from(This1.S string)=string.toLong()
-@This1.Public class method This from(This1.Num num)=native{trusted:fromNum} error void
+@This1.Public class method This #apply(This1.S string)=string.toLong()
+@This1.Public class method This #apply(This1.Num num)=native{trusted:fromNum} error void
 @This1.Public method This1.Num toNum(This denominator)=This1.S<:class This1.S.longToNum(that=this,denominator=denominator)
 @This1.Public method This #plus0(This that)=native{trusted:OP+} error void
 @This1.Public method This #times0(This that)=native{trusted:OP*} error void

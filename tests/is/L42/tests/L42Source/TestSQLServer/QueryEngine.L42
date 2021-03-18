@@ -37,7 +37,7 @@ class method mut This(mut J j)
   }
 @Public mut method I findColumn(S label)[Fail]={
   index=this.#j().askEvent(key=This.codeName(), id='findColumn(label),msg=label)
-  return I.from(string=index.val())
+  return I(string=index.val())
   catch J.Fail x exception Fail"%x"
   }
 @Public mut method S.Opt val(I that)[Fail]={

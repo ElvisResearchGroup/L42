@@ -2,8 +2,8 @@ AlphanumericTrait = Trait:{
   [HasToS]
   S that
   method toS()=this.that()
-  @Cache.Call class method This #from(S$StringBuilder stringLiteral)=this.from(string=stringLiteral.toS())
-  class method This from(S string)
+  @Cache.Call class method This #from(S$StringBuilder stringLiteral)=this(string=stringLiteral.toS())
+  class method This (S string)
   }
 @Public method Trait trait()=AlphanumericTrait()
 @Public method Trait(Trait trait)[Message$Guard] = (

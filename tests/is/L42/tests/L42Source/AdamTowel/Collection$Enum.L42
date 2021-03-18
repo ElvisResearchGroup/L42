@@ -3,7 +3,7 @@ Fail=Message:{[Message$Guard]}
 class method Library:(Library that)[Fail]=(this:Trait(that)).code()
 class method Trait :(Trait trait)[Fail]={
   var res=TraitEnumBase()
-  for n in Introspection.Nested.from(library=trait.code()).nesteds() (//trait.info().nesteds()
+  for n in Introspection.Nested(library=trait.code()).nesteds() (//trait.info().nesteds()
     step=TraitEnumStep['E=>n.nameFromRoot()]
     base=res['Vals.next()=>'Vals.prev()]
     res:=(step+base)[hide='Vals.prev()]
@@ -30,7 +30,7 @@ TraitEnumStep=Trait:{interface
       =System.immEquality(System.readClone(this) and=System.readClone(that))
     method ==(that)=this.readEquality(that)
     method !=(that)=!this.readEquality(that)
-    method toS()=Introspection.Nested.from(classAny=This).outerName().toS()
+    method toS()=Introspection.Nested(This).outerName().toS()
     }
   List={method This withAlsoRight(This1 that)}
   Vals={

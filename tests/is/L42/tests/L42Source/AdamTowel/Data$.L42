@@ -1,5 +1,5 @@
 class method Void checkCoherent(Library that)[Class$IncoherentClass]=
-  this.checkCoherent(n=Introspection.Nested.from(library=that))
+  this.checkCoherent(n=Introspection.Nested(library=that))
 class method Void checkCoherent(Introspection.Nested n)[Class$IncoherentClass]=(
   S s=n.isCoherent()
   if s!=S"" exception Class$IncoherentClass"%s"

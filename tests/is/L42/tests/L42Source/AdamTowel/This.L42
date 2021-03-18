@@ -69,8 +69,8 @@ DeployAAA=(
     @Public System={...}
     @Public S$StringBuilder={...}//end of circular dependency for S
     Introspection$Nested={
-      class method This from(Library library)=error void
-      class method This from(class Any classAny)=error void
+      class method This (Library library)=error void
+      class method This (class Any that)=error void
       method S msgTitle(S text)=error void
       method S position()=error void
       }
@@ -169,7 +169,7 @@ DeployAdamTowel={reuse[#$aaa]
       'Public2=>'Public;
       ]
     tot:=Organize:tot
-    pub=Introspection.Nested.from(library=tot.code()).nested(name='Public)
+    pub=Introspection.Nested(library=tot.code()).nested(name='Public)
     tot:=Cache$Call:Public2(public=pub):tot//renamed before Public closes Introspection
       ['Introspection.Nested=>'Introspection]
       ['Introspection=>'Info]
@@ -177,7 +177,7 @@ DeployAdamTowel={reuse[#$aaa]
       [single='This=>'AbstractTowel.Top]
       [hide='AbstractTowel.Top]
       
-    Debug(Introspection.Nested.from(library=toDeploy).toFullS())
+    Debug(Introspection.Nested(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)
     )
   }

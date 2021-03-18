@@ -7,7 +7,7 @@ method Name self()
   else this.self() => nested.nameFromRoot()
 
 @Public method class Any *1(class Any that)[_]=
-  (Introspection.Nested.from(classAny=that)*this).classAny()
+  (Introspection.Nested(that)*this).classAny()
 
 @Public method Introspection.Nested *1(Introspection.Nested n)[_]={
   (path,selector,x)=this.self()

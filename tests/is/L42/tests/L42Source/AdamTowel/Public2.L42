@@ -6,15 +6,15 @@ Invisible ={}
 @Public class method This (Introspection.Nested public, Introspection.Nested private)
 @Public class method This (Introspection.Nested public) = \(
   public=public,
-  private=Introspection.Nested.from(classAny=Invisible)
+  private=Introspection.Nested(Invisible)
   )
 @Public class method This (Introspection.Nested private) = \(
-  public=Introspection.Nested.from(classAny=Public),
+  public=Introspection.Nested(Public),
   private=private
   )
 @Public class method This()=\(
-  public=Introspection.Nested.from(classAny=Public)
-  private=Introspection.Nested.from(classAny=Invisible)
+  public=Introspection.Nested(Public)
+  private=Introspection.Nested(Invisible)
   )
 @Public method Library : (Library lib)[_] = (this:Trait(lib)).code()
 @Public method Trait : (Trait that)[
@@ -25,13 +25,13 @@ Invisible ={}
   ,,Trait$MethodClash
   ,,Cache$Call.Fail
   ,,]=(
-  info=Introspection.Nested.from(library=that.code())//trait.introspection() will come later
+  info=Introspection.Nested(library=that.code())//trait.introspection() will come later
   max=Organize.maxLev(info)
   var res=that
   res:=Data$Close.all(res, autoNorm=Bool.false())
   (var lev=0I while lev<max (//range will come later
     lev+=1I
-    i=Introspection.Nested.from(library=res.code())
+    i=Introspection.Nested(library=res.code())
     hide=Trait.Acc(Name$Mapping())
     this.mapHide(hide,n=i,level=max-lev)
     res:=res(squareBuilder=hide)

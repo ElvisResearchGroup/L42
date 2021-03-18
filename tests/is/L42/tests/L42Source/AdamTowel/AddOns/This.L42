@@ -15,7 +15,7 @@ Bool$={
   class method This false()
   class method This true()
   method Void #checkTrue()[Void]
-  class method This from(S string)=if string==S"true" This.true() else This.false()
+  class method This (S string)=if string==S"true" This.true() else This.false()
   }
 TraitMinMax=Trait:{
   method Bool <(This that)
@@ -50,13 +50,13 @@ Math$Long=Class$Relax:TraitMinMax:TraitRangeTo:TraitRangeMax:{
   }
 Num$=Class$Relax:TraitMinMax:TraitRangeMax:{
   [Math.Numeric]
-  method Math.Long toLong()=Long.from(num=this)//Long=>Math.Long is renamed later, mentioning it we delay typing of This
+  method Math.Long toLong()=Long(num=this)//Long=>Math.Long is renamed later, mentioning it we delay typing of This
   class method This (Math.Numeric that) = that.toNum()
   method I floor()=this.toDouble().floor()
   method I ceil()=this.toDouble().ceil()
   method I round()=this.toDouble().round()
   method Double toDouble()
-  method I toI()=I.from(num=this)
+  method I toI()=I(num=this)
   method This toNum()=this
   }
 Double$=Class$Relax:TraitMinMax:TraitRangeMax:{

@@ -1,4 +1,4 @@
-class method S from(This string)
+class method S (This string)
 @Public Map=Collection$.map(key=S,val=S)
 @Public Set=Collection$.set(S)
 @Public @Cache.Lazy class method S$List allUpLow()=S$List[
@@ -31,7 +31,7 @@ class method S underscores(S that)=(
   map
   )
 method S$List identifierParts()={
-  tot=This.from(string=this)
+  tot=This(string=this)
   us=This.underscores(tot)
   usSize=us.size()
   if tot.size()==usSize return S$List[us;S"";S""]<:S$List
