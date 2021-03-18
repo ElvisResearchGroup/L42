@@ -51,7 +51,7 @@ ActionTrait = Trait : {[Action]
     }
   }
 class method Library action(Library that)[_] =
-  Class : ActionTrait['T=>Trait(that).nested()*'#apply(cells)] : that
+  Class : ActionTrait['T=>Trait(that).info()*'#apply(cells)] : that
 
 mut method Void #set(I x, I y,I z, capsule E val)
 @Cache.Clear class method Void #set(mut L cells, I x, I y,I z, capsule E val) = 

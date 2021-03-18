@@ -81,7 +81,7 @@ ActionTrait = Trait : {[Action]
     }
   }
 class method Library action(Library that)[_] =
-  Class : ActionTrait['T=>Trait(that).nested()*'#apply(cells)] : that
+  Class : ActionTrait['T=>Trait(that).info()*'#apply(cells)] : that
 */
 read method Iterator2D #iterator() = Iterator2D()
 read method I #startIndex() = 0I

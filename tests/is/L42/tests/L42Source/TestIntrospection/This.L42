@@ -1,7 +1,7 @@
 reuse[AdamTowel]
 
 Full={class method S (Trait that)=
-  Introspection.Nested.from(library=that.code()).toFullS()
+  that.info().toFullS()
   }
 TestFullS=(
   {}:Test"fullS"(actual=Full(Trait:{ method Void foo(S that)=void  method B bar() B={}})
@@ -37,11 +37,11 @@ ExampleAnn={@{exampleAnn}}
 
 TestMeth=(
   lib={ method Void foo(S that)=void  method B bar() B={}}
-  n=Introspection.Nested.from(library=lib)
+  n=Trait(lib).info()
   b=n.nesteds().val(0I)
   foo=n.methods().val(0\)
   bar=n.methods().val(1\)
-  b2=bar.returnType().nested()
+  b2=bar.returnType().info()
   {}:Test"self1String"(expected=b actual=b2)
   //{}:Test"self1"(b.nameFromRoot()==b2.nameFromRoot())
   {}:Test"self1"(b==b2)
@@ -49,15 +49,15 @@ TestMeth=(
   )
 TestAnn=(
   lib={ @ExampleAnn B={method Void foo(S that)=void}}
-  n=Introspection.Nested.from(library=lib).nesteds().val(0I)
-  clazz=n.outerDoc().docs().left().nested()
+  n=Trait(lib).info().nesteds().val(0I)
+  clazz=n.outerDoc().docs().left().info()
   s=clazz.innerDoc().docs().left().texts().left()
   {}:Test"0"(expected=S"exampleAnn", actual=s)
   )
 TestFromLib=(
   lib={method Void foo(S that)=void @{hi} B={method Void foo(S that)=void}}
   {}:Test"1"(
-    actual=Introspection.Nested.from(library=lib)
+    actual=Trait(lib).info()
     expected=S"""
       |{ foo(that)=(..) B={..} }
       |
@@ -65,7 +65,7 @@ TestFromLib=(
       |Line:[###]
       |Column:[###]
       """.trim())
-  n=Introspection.Nested.from(library=lib).nesteds().val(0I)      
+  n=Trait(lib).info().nesteds().val(0I)      
   {}:Test"2"(actual=n
     expected=S"""
       |{ foo(that)=(..) }
@@ -74,7 +74,7 @@ TestFromLib=(
       |Line:[###]
       |Column:[###]
       """.trim())
-  {}:Test"3"(actual=Introspection.Nested.from(library=lib).nesteds(),
+  {}:Test"3"(actual=Trait(lib).info().nesteds(),
     expected=S"""
       |[{ foo(that)=(..) }
       |

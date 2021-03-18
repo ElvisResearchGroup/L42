@@ -5,7 +5,7 @@
   class method Trait +1(Library lib)[Trait$ClassClash,Trait$MethodClash]
   class method Trait (mut Acc squareBuilder)[Trait$InvalidName,Trait$InvalidMap,Trait$ClassClash,Trait$MethodClash]
   class method Trait resetDocs(mut DocMap squareBuilder)[Trait$InvalidName]
-  class method Introspection$Nested nested()
+  class method Introspection$Nested info()
   }
 @Public ClassOperators={class method Trait()=Trait()}
 @Public Library code
@@ -25,7 +25,7 @@ class method This sum(Library a,Library b)[Trait$ClassClash,Trait$MethodClash]={
 @Public method This :(Library lib)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lib)
 @Public method This :(class Lifted lifted)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=lifted.code())
 @Public method This :(This trait)[Trait$ClassClash,Trait$MethodClash]=This.sum(a=this.code(),b=trait.code())
-@Public method Introspection$Nested nested()=Introspection$Nested.from(library=this.code())
+@Public method Introspection$Nested info()=Introspection$Nested.from(library=this.code())
 @Public DocMap={ }
 @Public Acc={
   var Name$Mapping that
@@ -72,6 +72,6 @@ ToLibrary=Name$Mapping().resource({[Lifted]
   method (squareBuilder)=ClassOperators()(squareBuilder=squareBuilder)
   method resetDocs(squareBuilder)=ClassOperators().resetDocs(squareBuilder=squareBuilder)
   ClassOperators={class method Trait()=This1()}
-  method nested()=ClassOperators().nested()
+  method info()=ClassOperators().info()
   },name=Name"of()".that())
 @AbstractTowel{trait}

@@ -17,7 +17,7 @@ InductiveTrait=Trait:{[Handler$]
     =Class.Relax:this:Trait(that)
   class method Trait #colon0(Trait trait)[Fail]={
     var Trait res=BaseTrait()
-    for m in trait.nested().methods() (
+    for m in trait.info().methods() (
       if m.doc().annotatedAs(Handler$) (
         var sel=m.selector()
         index=sel.indexOf(S"(")

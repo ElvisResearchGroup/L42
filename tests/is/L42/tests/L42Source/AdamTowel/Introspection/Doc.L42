@@ -20,7 +20,7 @@ class method This(NativeDoc that)=\(i=that)
     i+=1I//sadly, range will be added later
   )))
 @Public method Bool hasAnnotation()=this.i().hasAnnotation()
-@Public method Nested nested()=\(this.i().nested())
+@Public method Nested info()=\(this.i().info())
 @Public method Name name()=\.of(this.i().name())
 
 method toS()=this.i().toS()
@@ -28,12 +28,12 @@ method toS()=this.i().toS()
 @Public method Bool annotatedAs(class Any that)=this.annotatedAs(nested=\.from(classAny=that))
 @Public method Bool annotatedAs(Nested nested)={
   @DelayTyping Void _=void//delays typing so Doc$ do not get typed before is merged
-  if this.hasAnnotation() && this.nested()==nested return Bool.true()
+  if this.hasAnnotation() && this.info()==nested return Bool.true()
   return Match.Some()(for d in this.docs() \add(d.annotatedAs(nested=nested)))
   }
 @Public method Doc$Opt annotation(class Any that)=this.annotation(nested=\.from(classAny=that))
 @Public method Doc$Opt annotation(Nested nested)={
-  if this.hasAnnotation() && this.nested()==nested 
+  if this.hasAnnotation() && this.info()==nested 
     return Doc$Opt(this)<:Doc$Opt//TODO: should we tweak the TS since this was known from the block?
   for d in this.docs() (
     tmp=d.annotation(nested=nested)<:Doc$Opt

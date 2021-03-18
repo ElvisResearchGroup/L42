@@ -170,8 +170,13 @@ DeployAdamTowel={reuse[#$aaa]
       ]
     tot:=Organize:tot
     pub=Introspection.Nested.from(library=tot.code()).nested(name='Public)
-    tot:=Cache$Call:Public2(public=pub):tot
-    toDeploy=Class$Relax:tot[single='This=>'AbstractTowel.Top][hide='AbstractTowel.Top]
+    tot:=Cache$Call:Public2(public=pub):tot//renamed before Public closes Introspection
+      ['Introspection.Nested=>'Introspection]
+      ['Introspection=>'Info]
+    toDeploy=Class$Relax:tot
+      [single='This=>'AbstractTowel.Top]
+      [hide='AbstractTowel.Top]
+      
     Debug(Introspection.Nested.from(library=toDeploy).toFullS())
     Deploy.towel(url='AdamTowel,code=toDeploy)
     )

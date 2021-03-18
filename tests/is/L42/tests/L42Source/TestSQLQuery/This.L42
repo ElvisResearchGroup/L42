@@ -92,7 +92,7 @@ Main=(
   )
 Table=DB.#$of().tables()
 AfterMain=(
-  s=Introspection.Nested.from(classAny=Table.Foo).toFullS()
+  s=Info.from(classAny=Table.Foo).toFullS()
   Debug(s)
   {}:Test""(expected=S"""
     |{[This2.HasToS]

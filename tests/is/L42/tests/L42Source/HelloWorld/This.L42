@@ -12,7 +12,7 @@ AA=(
   foo1=Introspection.Nested.from(library=lib).nested(name='Foo)
   doc=Introspection.Nested.from(library=lib).meth(selector='bar()).doc()
   Debug(doc.annotatedAs(nested=foo1))
-  foo2=doc.docs().left().nested()
+  foo2=doc.docs().left().info()
   Debug(foo1)
   Debug(foo2)
   Debug(foo1==foo2)

@@ -4,11 +4,11 @@ Main=(
   Debug(S"Hello world")
   sOpt=S"nativeKind=Opt nativePar=This1.S"
   
-  s0=Base.nested().toFullS()
+  s0=Base.info().toFullS()
   {}:Test""(s0.contains(sOpt))
   Debug(s0.contains(sOpt))
   
-  s1=Base[clear='This].nested().toFullS()
+  s1=Base[clear='This].info().toFullS()
   {}:Test""(s1.contains(sOpt))
   Debug(s1.contains(sOpt))
   Debug(s1)

@@ -4,20 +4,20 @@ FormatPar={...}
 Collecters={...}
 Executers={...}
 SquareBuilder={
-  mut Introspection.Nested.List that
-  class method mut This (mut Introspection.Nested.List that)
+  mut Info.List that
+  class method mut This (mut Info.List that)
   class method mut This #squareBuilder#query()=This(\())
   class method Bool #shortCircutSquare()=Bool.true()
   mut method Void #squareAdd(class Any that)
-    =this.#that().add(right=Introspection.Nested.from(classAny=that))
+    =this.#that().add(right=Info.from(classAny=that))
   method Library #from(S.StringBuilder stringLiteral)[MetaFail]={
     query=stringLiteral.toS()
     xs=FormatPar.xs(query)
-    if Introspection.Nested.from(classAny=Void)==this.that().left() (
+    if Info.from(classAny=Void)==this.that().left() (
       return Class:This1(types=this.that(),query=query,xs=xs).queryExecute()
       )
-    r=this.that().left().meth(selector='left()).returnType().nested()
-    ms=Introspection.Method.List()(for m in r.methods() (
+    r=this.that().left().meth(selector='left()).returnType().info()
+    ms=Info.Method.List()(for m in r.methods() (
       if m.selector().toS().startsWith(S"#immK(") \add(m)
       ))
     if ms.size()!=1I exception MetaFail"Not exactly one canditate #immK constructor:%ms"
@@ -27,12 +27,12 @@ SquareBuilder={
     }
   }
 //----------
-Introspection.Nested.List types
+Info.List types
 S query
 S.List xs
-class method This(Introspection.Nested.List types,S query,S.List xs)
+class method This(Info.List types,S query,S.List xs)
 
-method Trait makeCR(Introspection.Method k,S nameErr)[_,MetaFail]=(
+method Trait makeCR(Info.Method k,S nameErr)[_,MetaFail]=(
   n=k.parameters().size()-1I
   if n==0I exception MetaFail
     "The provided type can not have zero fields: %nameErr"
@@ -42,12 +42,12 @@ method Trait makeCR(Introspection.Method k,S nameErr)[_,MetaFail]=(
   for i in Range(n) ( res:=this.field(res,i=i,k=k) )//from 0 to n-1
   res[Collecters.names().val(n-1I)=>Name"R.%k.selector()"]
   )
-method Trait field(Trait that, I i,Introspection.Method k)[_]=(
+method Trait field(Trait that, I i,Info.Method k)[_]=(
   n=Name"p%(i)()"
   nsourcei=Name"p%(i)(source,i)"
   f_s=Trait.LiftS(k.nameFromRoot().xs().val(i))['#apply()=>n]
   tSrc=Name"T%(i)"
-  tDest=k.parameters().val(i+1I).nested().classAny()
+  tDest=k.parameters().val(i+1I).info().classAny()
   Trait factory={
     return Collecters.TOptS['ColT=>tDest;'colT(source,i)=>nsourcei]
     catch Message.Guard _
@@ -86,7 +86,7 @@ TraitK=Trait:{
   class method mut This (mut Source source)
   class method mut This (mut Source that)=This(source=that)
   }
-method Trait queryWithResult(Introspection.Method k, Introspection.Nested r)[_]=(
+method Trait queryWithResult(Info.Method k, Info r)[_]=(
   makeCR=this.makeCR(k=k nameErr=r.outerName())
   executeQ=this.makeExecuteQ()
   (TraitK+makeCR+executeQ+Executers.TraitExecuteQuery)[

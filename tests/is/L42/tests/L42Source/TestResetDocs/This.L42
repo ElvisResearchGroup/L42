@@ -4,16 +4,16 @@ Main=(
   v1=Base.resetDocs[key='A val='Nope]
   v2=Base.resetDocs[key='A val=\""]
   v3=Base.resetDocs[key='A val=\""; key='This val=\"hello world"]
-  Debug(v1.nested().toFullS())
-  {}:Test"v1"(actual=v1.nested().toFullS()
+  Debug(v1.info().toFullS())
+  {}:Test"v1"(actual=v1.info().toFullS()
     expected=S"{method Void b()=(..)@{Nope}A={#typed{}}#typed{}}"
     )
-  Debug(v2.nested().toFullS())
-  {}:Test"v2"(actual=v2.nested().toFullS()
+  Debug(v2.info().toFullS())
+  {}:Test"v2"(actual=v2.info().toFullS()
     expected=S"{method Void b()=(..)A={#typed{}}#typed{}}"
     )
-  Debug(v3.nested().toFullS())
-  {}:Test"v3"(actual=v3.nested().toFullS()
+  Debug(v3.info().toFullS())
+  {}:Test"v3"(actual=v3.info().toFullS()
     expected=S"{method Void b()=(..)A={#typed{}}#typed{}@{hello world}}"
     )
   )

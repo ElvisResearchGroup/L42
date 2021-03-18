@@ -80,7 +80,7 @@ method S className()=Name$Mapping().pathName(this.classAny())
 method S superInterfaces()={
   i=this.implements()
   if i.isEmpty() return S""
-  var res=S"("++i.left().nested()<:This.className()
-  for t in i.withoutLeft() (res++=S", "++t.nested()<:This.className())
+  var res=S"("++i.left().info()<:This.className()
+  for t in i.withoutLeft() (res++=S", "++t.info()<:This.className())
   return res++S")"
   } 

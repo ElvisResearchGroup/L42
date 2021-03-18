@@ -72,25 +72,25 @@ TraitInverse=TraitHasSupport:{
     })
   }
   
-class method Library (Introspection.Nested that, Introspection.Nested and)[NotValidUnit,NotSameSupport]
+class method Library (Info that, Info and)[NotValidUnit,NotSameSupport]
   =this(i1=that,i2=and,trait=TraitTimes())
-class method Library (Introspection.Nested that, Introspection.Nested per)[NotValidUnit,NotSameSupport]
+class method Library (Info that, Info per)[NotValidUnit,NotSameSupport]
   =this(i1=that,i2=per,trait=TraitDiv())
-class method Introspection.Type tOf(Introspection.Nested that)[NotValidUnit]={
+class method Info.Type tOf(Info that)[NotValidUnit]={
   return that.meth(selector='#inner()).returnType()
   catch error Collection.NoElementInOpt e exception NotValidUnit
     " Provided class %that.outerName() do not offers 'method Support #inner()'"
     .with(cause=e)
   }
-class method Library (Introspection.Nested i1, Introspection.Nested i2,Trait trait)[NotValidUnit, NotSameSupport]={
+class method Library (Info i1, Info i2,Trait trait)[NotValidUnit, NotSameSupport]={
   //check i1.#inner() and i2.#inner() are same type t
   t1=this.tOf(i1)
   t2=this.tOf(i2)
-  if t1.nested()!=t2.nested() exception NotSameSupport
-    "Provided classes %i1.outerName() (%t1.nested().outerName()) and %i2.outerName() (%t2.nested().outerName()) have different supports."
-  if !t1.nested().isBinded() exception NotValidUnit
+  if t1.info()!=t2.info() exception NotSameSupport
+    "Provided classes %i1.outerName() (%t1.info().outerName()) and %i2.outerName() (%t2.info().outerName()) have different supports."
+  if !t1.info().isBinded() exception NotValidUnit
     "Provided class %i1.outerName() 'method Support #inner()' return type must be declared externally"
-  cAny=t1.nested().classAny()
+  cAny=t1.info().classAny()
   res=TraitUnit['Support=>cAny]
   Trait traitRes={
     if i1==i2 return trait[
@@ -109,8 +109,8 @@ class method Library (Introspection.Nested i1, Introspection.Nested i2,Trait tra
     "The provided classes %i1.outerName() and %i2.outerName() are not  valid Unit classes."
     .with(cause=g)
   }
-class method Library (Introspection.Nested inverse)[NotValidUnit]={
-  support=this.tOf(inverse).nested()
+class method Library (Info inverse)[NotValidUnit]={
+  support=this.tOf(inverse).info()
   if !support.isBinded() exception NotValidUnit
     "Provided class %inverse.outerName() 'method Support #inner()' return type must be declared externally"
   cAny=support.classAny()

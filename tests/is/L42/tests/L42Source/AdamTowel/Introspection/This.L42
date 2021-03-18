@@ -47,7 +47,7 @@ NativeType={
 
   method This2.S mdf()=native{trusted:mdf}error void
   method This1.NativeDoc doc()=native{trusted:doc}error void
-  method This1.NativeNested nested()=native{trusted:nested}error void
+  method This1.NativeNested info()=native{trusted:nested}error void
   read method This2.S toS()=native{trusted:toS}error void
   
   #norm{nativeKind=Type
@@ -64,7 +64,7 @@ NativeDoc={
   method This docIn(This2.I that)=native{trusted:docIn}error void
   method This2.S textIn(This2.I that)=native{trusted:textIn}error void
   method This2.Bool hasAnnotation()=native{trusted:hasAnnotation}error void
-  method This1.NativeNested nested()=native{trusted:nested}error void
+  method This1.NativeNested info()=native{trusted:nested}error void
   method This2.NativeName name()=native{trusted:name}error void
       
   read method This2.S toS()=native{trusted:toS}error void
@@ -84,7 +84,7 @@ NativeMethod={
   method This1.NativeType excIn(This2.I that)=native{trusted:excIn}error void
   method This2.Bool isRefined()=native{trusted:isRefined}error void
   method This2.Bool isAbstract()=native{trusted:isAbstract}error void
-  method This1.NativeNested nested()=native{trusted:nested}error void
+  method This1.NativeNested info()=native{trusted:nested}error void
   method This2.NativeName nameFromRoot()=native{trusted:nameFromRoot}error void
   method This2.S position()=native{trusted:position}error void
   read method This2.S toS()=native{trusted:toS}error void

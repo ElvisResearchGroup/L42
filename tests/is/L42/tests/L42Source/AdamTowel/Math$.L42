@@ -51,6 +51,6 @@ class method Library randomList(class Any that)[_]= (
   //Class:RandomListTrait['L=>that;'E=>that*'val(that)]//not usable yet
   i = Introspection.Nested.from(classAny=that)
   m = i.meth(selector='val(that))
-  e = m.returnType().nested().classAny()
+  e = m.returnType().info().classAny()
   Class:RandomListTrait['L=>that;'E=>e]
   )

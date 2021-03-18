@@ -15,9 +15,9 @@ method Name self()
   if selector==S"" return i
   m=i.meth(selector=selector)
   if x==S"this" return i
-  if x==S"" return m.returnType().nested()
+  if x==S"" return m.returnType().info()
   for xi in this.xs(), ti in m.parameters() (
-    if xi==x return ti.nested()
+    if xi==x return ti.info()
     )
   error X"unreachable"
   }

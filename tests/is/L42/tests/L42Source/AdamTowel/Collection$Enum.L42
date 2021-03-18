@@ -3,7 +3,7 @@ Fail=Message:{[Message$Guard]}
 class method Library:(Library that)[Fail]=(this:Trait(that)).code()
 class method Trait :(Trait trait)[Fail]={
   var res=TraitEnumBase()
-  for n in Introspection.Nested.from(library=trait.code()).nesteds() (//trait.nested().nesteds()
+  for n in Introspection.Nested.from(library=trait.code()).nesteds() (//trait.info().nesteds()
     step=TraitEnumStep['E=>n.nameFromRoot()]
     base=res['Vals.next()=>'Vals.prev()]
     res:=(step+base)[hide='Vals.prev()]

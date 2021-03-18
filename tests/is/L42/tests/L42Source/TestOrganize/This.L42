@@ -1,7 +1,7 @@
 reuse[AdamTowel]
 
 Full={class method S (Library that)=
-  Introspection.Nested.from(library=that).toFullS()
+  Trait(that).info().toFullS()
   }
 TestOrganizeWrongDollarStays=(
   res=Organize:{A={} $A={} Foo={$A a, class method This ($A a)}}
@@ -22,9 +22,9 @@ TestOrganize0=(
     @Public2 A={method B b()}
     B={}
     }
-  n1=Introspection.Nested.from(library=lib).nested(name='Public2)
-  n2=Introspection.Nested.from(library=lib).nested(name='A)
-  p=Trait({Public2={}}).nested().nested(name='Public2)
+  n1=Trait(lib).info().nested(name='Public2)
+  n2=Trait(lib).info().nested(name='A)
+  p=Trait({Public2={}}).info().nested(name='Public2)
   pub=Public(public=p)
   {}:Test"eqOk"(n1==n1)
   {}:Test"annotatedAs"(n2.outerDoc().annotatedAs(nested=n1))
