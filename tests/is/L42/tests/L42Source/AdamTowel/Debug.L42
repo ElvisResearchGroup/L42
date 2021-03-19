@@ -16,10 +16,10 @@ method This1.Bool mutStructuralEquality(mut Any that,read Any and)=
   native{trusted:mutStructuralEquality} error void
 method This1.Bool immEquality(Any that,Any and)=
   native{trusted:immEquality} error void
-method capsule Any mutClone(mut Any that)=
-  native{trusted:mutClone} error void
-method Any readClone(read Any that)=
-  native{trusted:readClone} error void
+method capsule Any capsuleClone(mut Any that)=
+  native{trusted:capsuleClone} error void
+method Any immClone(read Any that)=
+  native{trusted:immClone} error void
 method Any immNorm(Any that)=
   native{trusted:immNorm} error void
 method This1.S immToString(Any that)=

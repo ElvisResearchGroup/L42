@@ -109,25 +109,25 @@ AddNEqOp=Trait:{
     }
 
 AddReadEqOp=Trait:{
-    read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
+    read method Bool readEquality(read This that)=System.immEquality(System.immClone(this) and=System.immClone(that))
     }
 
 AddHasToS=Trait:{
-  [HasToS] method toS()=System.immToString(System.readClone(this))
+  [HasToS] method toS()=System.immToString(System.immClone(this))
   }
   
-AddMutClone=Trait:{
-    mut method capsule This mutClone()=(
-      capsule Any any=System.mutClone(this)
+AddCapsuleClone=Trait:{
+    mut method capsule This capsuleClone()=(
+      capsule Any any=System.capsuleClone(this)
       return any
       catch return capsule This self self
       catch return capsule Any _ error void
       )
     }
     
-AddReadClone=Trait:{
+AddImmClone=Trait:{
     read method This clone()=(
-      Any any=System.readClone(this)
+      Any any=System.immClone(this)
       return any
       catch return This self self
       catch return Any _ error void
@@ -181,8 +181,8 @@ Bool autoNorm
   acc:=this.optionallyApply(AddEqOp(), acc=acc)
   acc:=this.optionallyApply(AddReadEqOp(), acc=acc)
   acc:=this.optionallyApply(AddNEqOp(), acc=acc)
-  acc:=this.optionallyApply(AddMutClone(), acc=acc)
-  acc:=this.optionallyApply(AddReadClone(), acc=acc)
+  acc:=this.optionallyApply(AddCapsuleClone(), acc=acc)
+  acc:=this.optionallyApply(AddImmClone(), acc=acc)
   acc:=this.optionallyApply(AddImmNorm(), acc=acc)  
   acc:=AddConstructors(name,autoNorm=autoNorm):acc
   acc:=Wither(name):acc

@@ -1,7 +1,7 @@
 @Public AnyToS={class method S (read Any that)={
   if read HasToS.Raw s=that return this.escape(s.toS())  
   if read HasToS s=that return s.toS()
-  return System.immToString(System.readClone(that)) 
+  return System.immToString(System.immClone(that)) 
   }
   class method S escape(S that)=(
     var res=that
@@ -22,7 +22,7 @@ TraitEq2=Trait:{
 TraitEq3=Trait:{
   Elem={}
   class method Bool equals(read Elem a,read Elem b)
-    =System.immEquality(System.readClone(a) and=System.readClone(b))
+    =System.immEquality(System.immClone(a) and=System.immClone(b))
   }
 class method Trait selectEq(class Any that)={
   return TraitEq1['Elem=>that]

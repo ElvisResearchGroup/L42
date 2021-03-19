@@ -51,7 +51,9 @@ public class NativeDispatch {
     if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);return;}
     String nativeOp=nativeUrl.substring("trusted:".length());
     var k=TrustedKind._fromString(nativeKind,j.p());
+    assert k!=null :nativeKind;
     var op=TrustedOp._fromString(nativeOp);
+    assert op!=null :nativeOp;
     assert op._of(k)!=null:k+" "+op;//type checking should avoid this
     //op._of(k).of(false, mwt,j);//before type checking guranteed there was no need of "true", now type checking just make a warning
     try{

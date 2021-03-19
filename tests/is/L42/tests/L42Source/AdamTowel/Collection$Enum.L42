@@ -27,7 +27,7 @@ TraitEnumStep=Trait:{interface
     class method This()
     class method Void sealed()=void
     method readEquality(that)
-      =System.immEquality(System.readClone(this) and=System.readClone(that))
+      =System.immEquality(System.immClone(this) and=System.immClone(that))
     method ==(that)=this.readEquality(that)
     method !=(that)=!this.readEquality(that)
     method toS()=Introspection.Nested(This).outerName().toS()

@@ -45,7 +45,7 @@ read method capsule This clone()=(
   res = This(capacity=size)
   var i=0I
   while i<size (
-    if Elem ei = System.readClone(this.readVal(i)) (
+    if Elem ei = System.immClone(this.readVal(i)) (
       res.add(ei) //always matches
       )
     i := i.#succ()

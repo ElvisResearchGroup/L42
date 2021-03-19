@@ -283,10 +283,10 @@ public enum TrustedOp {
   SystemImmEquality("immEquality",trustedIO(
     "return L42CacheMap.structurallyEqualNorm(%2$s,%3$s);",
     sig(Immutable,Immutable,Bool,Immutable,Any,Immutable,Any))),
-  SystemMutClone("mutClone",trustedIO(
+  SystemCapsuleClone("capsuleClone",trustedIO(
     "return L42CacheMap.dup(%2$s);",
     sig(Immutable,Capsule,Any,Mutable,Any))),
-  SystemReadClone("readClone",trustedIO(
+  SystemImmClone("immClone",trustedIO(
     "return L42CacheMap.dupAndNormalize(%2$s);",
     sig(Immutable,Immutable,Any,Readable,Any))),  
   SystemImmNorm("immNorm",trustedIO(

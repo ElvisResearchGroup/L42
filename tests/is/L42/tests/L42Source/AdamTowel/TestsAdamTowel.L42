@@ -187,9 +187,9 @@ TestEqualities=(
   {}:Test"ImmEq4"(System.immEquality(i1 and=i2))
   
   mut Couple mutCouple = Couple(p1=immPerson, p2=immPerson)
-  {}:Test"MutClone1"(!System.mutReferenceEquality(mutCouple and=System.mutClone(mutCouple)))
-  {}:Test"MutClone2"(System.mutStructuralEquality(mutCouple and=System.mutClone(mutCouple)))
-  {}:Test"ReadClone1"(System.immEquality(System.readClone(mutCouple) and=System.readClone(mutCouple)))
+  {}:Test"CapsuleClone1"(!System.mutReferenceEquality(mutCouple and=System.capsuleClone(mutCouple)))
+  {}:Test"CapsuleClone2"(System.mutStructuralEquality(mutCouple and=System.capsuleClone(mutCouple)))
+  {}:Test"ImmClone1"(System.immEquality(System.immClone(mutCouple) and=System.immClone(mutCouple)))
   void
   )
 

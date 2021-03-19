@@ -5,7 +5,7 @@ read method Bool isPresent()
 read method Bool !()
 method Bool ==(This that)=System.immEquality(this and=that)
 method Bool !=(This that)= !(this==that)
-read method Bool readEquality(read This that)=System.immEquality(System.readClone(this) and=System.readClone(that))
+read method Bool readEquality(read This that)=System.immEquality(System.immClone(this) and=System.immClone(that))
 
 read method Bool allEq(read This that)={
   if this.isPresent() != that.isPresent() return Bool.false()

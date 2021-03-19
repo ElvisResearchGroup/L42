@@ -12,7 +12,8 @@ method ping()=(
   this.moveImpact()
   )
 mut method Bool onImpact(Vector oldP, mut $.Entity impacted)=(
-  if impacted<:mut Player (this.#model().playerIsHit())
+  //if impacted<:mut Player (this.#model().playerIsHit())
+  if mut Player p=impacted (this.#model().playerIsHit())
   this.pos(oldP)
   this.speed(\(x=0\,y=0\))
   Bool.false()
