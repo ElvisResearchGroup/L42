@@ -284,7 +284,7 @@ public enum TrustedOp {
     "return L42CacheMap.structurallyEqualNorm(%2$s,%3$s);",
     sig(Immutable,Immutable,Bool,Immutable,Any,Immutable,Any))),
   SystemCapsuleClone("capsuleClone",trustedIO(
-    "return L42CacheMap.dup(%2$s);",
+    "return L42CacheMap.dup(%2$s);",//Note: any way to turn a read into a capsule would violate object capability restrictions
     sig(Immutable,Capsule,Any,Mutable,Any))),
   SystemImmClone("immClone",trustedIO(
     "return L42CacheMap.dupAndNormalize(%2$s);",

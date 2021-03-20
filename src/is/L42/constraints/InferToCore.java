@@ -155,8 +155,8 @@ public class InferToCore extends UndefinedCollectorVisitor{
     Core.T t=infer(k.stz(),k.e().poss());
     if(t.p().isNCs()) {
       var ex=new Core.EX(k.e().pos(),k.x());
-      var pt=i.p().navigate(t.p().toNCs());
-      Resources.inferenceHandler().ex(ex,pt);
+      var pt=i.p()._navigate(t.p().toNCs());
+      if(pt!=null){Resources.inferenceHandler().ex(ex,pt);}
       }
     i=i.withG(i.g().plusEq(k.x(),t));
     Core.E e=compute(k.e());

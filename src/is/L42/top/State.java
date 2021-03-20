@@ -163,8 +163,8 @@ public class State implements Serializable{
     P pRes=wellTyped(p,ce,deps,allNCs);//propagate errors //ncs is passed just to provide better errors
     Core.E e=adapt(ce,pRes);
     Coherence.coherentAllPs(p,deps.cohePs,alreadyCoherent);
-    Core.L l;
     Resources.inferenceHandler().nc(e, p);
+    Core.L l;
     if(e instanceof Core.L){l=(Core.L)e;}
     else{l=reduce(p,c0,e,allByteCode,allLibs);}//propagate errors
     System.err.println(c0+ " reduced");
