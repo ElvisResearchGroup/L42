@@ -2,24 +2,49 @@ reuse [AdamTowel]
 Main=(
   Debug(S"Hello world")
   )
+Foo = Data.AddConstructors('This, autoNorm=Bool.true()):{
+  var I foo
+  }
 
+A = Organize:{
+  Foo={ }
+  Foo$={
+    method Foo self()=this
+    @Late
+    }
+  }
+Late = {}
+
+MyProgram = Public(private=\(X)):{
+  Person = Data:{
+    @Public var S name
+    var I age
+    @Public class method mut This (S name, I age)//S age
+    @Public mut method Void birthDay() = this.age(\age+1I)
+    }
+  Car = Data:{
+    capsule Person driver //try also with mut
+    @X @Cache.Now class method Void drivingAge(read Person driver) =
+      X[driver.age()>=18I]
+    }
+  }
 AA=(
   lib={
     Foo={}
     @Foo method Void bar()=void
     method Void beer()=void
     }
-  foo1=Introspection.Nested(library=lib).nested(name='Foo)
-  doc=Introspection.Nested(library=lib).meth(selector='bar()).doc()
+  foo1=Info(library=lib).nested(name='Foo)
+  doc=Info(library=lib).meth(selector='bar()).doc()
   Debug(doc.annotatedAs(nested=foo1))
   foo2=doc.docs().left().info()
   Debug(foo1)
   Debug(foo2)
   Debug(foo1==foo2)
-  Public(public=Introspection.Nested(library=lib).nested(name='Foo)):lib
+  Public(public=Info(library=lib).nested(name='Foo)):lib
   )
 //      Public(private=Info(X))
-Point = Public(private=Introspection.Nested(X)):Data:{Num x, Num y
+Point = Public(private=Info(X)):Data:{Num x, Num y
   //@Public method Num xx()=this.x()
   @X method This with(Num x)
   //@X method This self()=this

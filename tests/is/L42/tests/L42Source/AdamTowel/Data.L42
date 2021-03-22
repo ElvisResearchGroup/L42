@@ -126,7 +126,7 @@ AddCapsuleClone=Trait:{
     }
     
 AddImmClone=Trait:{
-    read method This clone()=(
+    read method This immClone()=(
       Any any=System.immClone(this)
       return any
       catch return This self self
