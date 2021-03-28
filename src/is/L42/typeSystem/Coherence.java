@@ -86,6 +86,7 @@ public class Coherence {
     return true;
     }
   public static boolean validConstructorSignature(Program p,MH mh){
+    if(!mh.mdf().isClass()){return false;}
     Mdf mdf=mh.t().mdf();
     if(!p._isSubtype(P.pThis0,mh.t().p())){return false;}
     if(mdf.isIn(Class,MutableFwd,ImmutableFwd)){return false;}

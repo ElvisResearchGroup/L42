@@ -122,7 +122,8 @@ public class K extends GuessFields{
       }
     var mut=match(Mdf.Mutable,List.of(Mdf.Readable,Mdf.Immutable,Mdf.Lent),optionsGet) &&  match(null,List.of(Mdf.Mutable,Mdf.Capsule),optionsSet);
     var lentCaps=match(null,List.of(Mdf.Readable,Mdf.Lent),optionsGet) &&  match(null,L(Mdf.Capsule),optionsSet);
-    if(mut){return new T(Mdf.MutableFwd,L(),p);}
+    if(mut && !autoNormed){return new T(Mdf.MutableFwd,L(),p);}
+    if(mut && autoNormed){return new T(Mdf.Mutable,L(),p);}
     if(caps || lentCaps){return new T(Mdf.Capsule,L(),p);}
     throw err.throwErr(getters.get(x).get(0),"ambiguous field modifier; can not be neither class, mut, imm or capsule");
     }

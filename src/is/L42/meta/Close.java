@@ -89,7 +89,8 @@ public class Close extends GuessFields{
     J newJ=new J(p.update(l,false),null,null,true){//so that it ignore public abstract methods
       public Coherence newCoherence(Program p){return new Coherence(p,true);}
       };
-    assert newJ.isCoherent:"";
+    assert newJ.isCoherent:
+      "";
     assert newJ.fields!=null:"";
     //TODO: need more? is this needed?//that is, can this code be triggered?
     if (this.countMutCache!=0){
@@ -247,7 +248,9 @@ public class Close extends GuessFields{
   public void processK(MWT m){
     if(!this.autoNormed) {processState(m,false);return;}
     if(!mNormOk()){err.throwErr(m,"class can not use eager cache with invalid norm method");}
-    if(!m.mh().t().mdf().isImm()){err.throwErr(m,"class can not use eager cache with mutable fields");}
+    var hasFwd=m.mh().pars().stream().anyMatch(t->t.mdf().isIn(Mdf.MutableFwd,Mdf.ImmutableFwd));
+    if(hasFwd){err.throwErr(m,"abstract state operation with fwd parameters can not be prenormalized");}
+    if(!m.mh().t().mdf().isImm()){err.throwErr(m,"only imm objects can be prenormalized");}
     processState(m,true);
     }
   public void processGetter(MWT m){processState(m,false);}

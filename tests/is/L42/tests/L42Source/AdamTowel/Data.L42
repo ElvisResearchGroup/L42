@@ -37,14 +37,14 @@ AddConstructors$Meta={
 
 @Public AddConstructors={
   Name that
-  Bool autoNorm
-  @Public class method This(Name that,Bool autoNorm)
-  @Public ClassOperators={class method This1()=This1('This,autoNorm=Bool.false())}
+  Bool noFwd
+  @Public class method This(Name that,Bool noFwd)
+  @Public ClassOperators={class method This1()=This1('This,noFwd=Bool.false())}
   @Public method Trait :(Trait t)[AddConstructors$Fail]=Trait(this:t.code())
   @Public method Trait :(class Trait.Lifted l)[AddConstructors$Fail]=Trait(this:l.code())
   @Public method Library :(Library that)[AddConstructors$Fail]={
     return AddConstructors$Meta()
-      .addConstructors(that,name=this.that().toS(),autoNorm=this.autoNorm(),mutK=S"#apply",immK=S"#immK")
+      .addConstructors(that,name=this.that().toS(),autoNorm=this.noFwd(),mutK=S"#apply",immK=S"#immK")
     catch error AddConstructors$Fail x exception x
     }
   }
@@ -171,20 +171,29 @@ Bool autoNorm
   return that['This=>this.that()]:acc
   catch Any _ return acc
   }
+
+@Public class method Trait addHasToS()=AddHasToS()
+@Public class method Trait addEqOp()=AddEqOp()
+@Public class method Trait addReadEqOp()=AddReadEqOp()
+@Public class method Trait addNEqOp()=AddNEqOp()
+@Public class method Trait addCapsuleClone()=AddCapsuleClone()
+@Public class method Trait addImmClone()=AddImmClone()
+@Public class method Trait addImmNorm()=AddImmNorm()
+  
 @Public class method Void checkCoherent(Library that)[Class$IncoherentClass]=void
 @Public method Library :(Library lib)[Data$Fail]=(this:Trait(lib)).code()
 @Public method Trait :(Trait that)[Data$Fail]=(
   name=this.that()
   autoNorm=this.autoNorm()
   var Trait acc=that
-  acc:=this.optionallyApply(AddHasToS(), acc=acc)
-  acc:=this.optionallyApply(AddEqOp(), acc=acc)
-  acc:=this.optionallyApply(AddReadEqOp(), acc=acc)
-  acc:=this.optionallyApply(AddNEqOp(), acc=acc)
-  acc:=this.optionallyApply(AddCapsuleClone(), acc=acc)
-  acc:=this.optionallyApply(AddImmClone(), acc=acc)
-  acc:=this.optionallyApply(AddImmNorm(), acc=acc)  
-  acc:=AddConstructors(name,autoNorm=autoNorm):acc
+  acc:=this.optionallyApply(This.addHasToS(), acc=acc)
+  acc:=this.optionallyApply(This.addEqOp(), acc=acc)
+  acc:=this.optionallyApply(This.addReadEqOp(), acc=acc)
+  acc:=this.optionallyApply(This.addNEqOp(), acc=acc)
+  acc:=this.optionallyApply(This.addCapsuleClone(), acc=acc)
+  acc:=this.optionallyApply(This.addImmClone(), acc=acc)
+  acc:=this.optionallyApply(This.addImmNorm(), acc=acc)  
+  acc:=AddConstructors(name,noFwd=autoNorm):acc
   acc:=Wither(name):acc
   acc:=Defaults(name):acc
   acc:=Close(name,autoNorm=autoNorm):acc

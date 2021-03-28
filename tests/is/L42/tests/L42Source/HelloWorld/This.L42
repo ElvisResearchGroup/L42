@@ -2,9 +2,74 @@ reuse [AdamTowel]
 Main=(
   Debug(S"Hello world")
   )
-Foo = Data.AddConstructors('This, autoNorm=Bool.true()):{
-  var I foo
+Value = Decorator:Data:{
+  I x=0I
+  method Trait(Trait trait)[Message.Guard]
+    = Data('This,autoNorm=Bool.true()):trait
   }
+DataNoWither = Decorator:Data:{
+  Name that=Name"This"
+  Bool autoNorm=Bool.false()
+  Bool relax=Bool.false()
+
+  method Trait(Trait trait)[Message.Guard] = (
+    name=this.that()
+    autoNorm=this.autoNorm()
+    data = Data(name,autoNorm=autoNorm)
+    var Trait acc=trait
+    acc:=data.optionallyApply(Data.addHasToS(), acc=acc)
+    acc:=data.optionallyApply(Data.addEqOp(), acc=acc)
+    acc:=data.optionallyApply(Data.addReadEqOp(), acc=acc)
+    acc:=data.optionallyApply(Data.addNEqOp(), acc=acc)
+    acc:=data.optionallyApply(Data.addCapsuleClone(), acc=acc)
+    acc:=data.optionallyApply(Data.addImmClone(), acc=acc)
+    acc:=data.optionallyApply(Data.addImmNorm(), acc=acc)  
+    acc:=Data.AddConstructors(name,noFwd=autoNorm):acc
+    //acc:=Data.Wither(name):acc//for example, we can just skip this line
+    acc:=Data.Defaults(name):acc
+    acc:=Data.Close(name,autoNorm=autoNorm):acc
+    if !this.relax() (Data.checkCoherent(acc.code()))
+    acc
+    )
+  }
+Alphanumeric = Decorator:{
+  AlphanumericTrait = Trait:{[HasToS]
+    S that
+    method toS()=this.that()
+    @Cache.Call class method This #from(S.StringBuilder stringLiteral) = 
+      this(string=stringLiteral.toS())
+    class method This (S string)
+    }
+  method Trait(Trait trait)[Message.Guard] = 
+    Data('This,autoNorm=Bool.true()):AlphanumericTrait():trait
+  }
+Buzz = Value:{S ohNo}
+/*LateExample = {
+  Point = Data:{I x, I y}
+  Game = Organize:{
+    NPC$ = {}
+    Map = Collection.map(key=Point, val=NPC$)
+    NPC = Data:{
+      var Point location
+      var I lifePoints
+      var mut This target
+      mut method Void step(mut Map$ map) = void
+      }
+    Map$ = {
+      mut method Void stepAll() = for (mut val) in this<:mut @Late Map
+        (val<:mut NPC).step(map=this)
+      mut method Void add(mut NPC that) = this.#put(key=that.location(), val=that)
+      mut method Void remove(mut NPC that) = this.remove(key=that.location())
+      mut method Void move(mut NPC that,Point to) = (
+        this.remove(that)
+        that.location(to)
+        this.add(that)
+        )
+      mut method mut NPC get(Point that) = this<:mut Map.#val(key=that).#val()
+      }
+    }
+  Late = {}
+  }*/
 
 A = Organize:{
   Foo={ }
