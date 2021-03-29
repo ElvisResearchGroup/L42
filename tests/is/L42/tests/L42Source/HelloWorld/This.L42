@@ -2,6 +2,68 @@ reuse [AdamTowel]
 Main=(
   Debug(S"Hello world")
   )
+EnumDec = {
+
+TraitEnumBase = Trait:{
+  List = {class method mut This()}
+  Vals = { class method List next() = List() }
+  }
+TraitEnumStep = Trait:{interface
+  class method Void sealed()
+  read method Bool readEquality(read This that)
+  method Bool ==(This that)
+  method Bool !=(This that)
+  E = {[This1,HasToS]
+    class method This of::0()
+    class method This() = {
+      if This self = System.immNorm(this.of::0()) ( return self )
+      error X"unreachable"
+      }
+    class method Void sealed() = void
+    method readEquality(that) = 
+      System.immEquality(System.immClone(this) and=System.immClone(that))
+    method ==(that) = this.readEquality(that)
+    method !=(that) = !this.readEquality(that)
+    method toS() = Info(This).outerName().toS()
+    }
+  List = { method This withAlsoRight(This1 that) }
+  Vals = {
+    class method List prev()
+    class method List next() = this.prev().withAlsoRight(E())
+    }
+  }
+TraitCacheVals = Organize:Trait:{
+  $ = {interface[HasToS],    read method Bool readEquality(read This that) }
+  List = Collection.list($)
+  Map = Collection.map(key=S val=$)
+  Vals = Data.Relax:{
+    class method List next()
+    @Cache.Lazy class method List () = this.next()
+    @Cache.Lazy class method Map map() = \()( for e in this() \put(key=e.toS() val=e) )
+    class method $ (S that) = {
+      return this.map().val(key=that).val()
+      catch error Any _ error S.ParseError(S"""
+        |Invalid enumeration name: %(that).
+        |Valid enumeration names are %this()
+        """)
+      }
+    }
+  }
+Enum = Decorator:{
+  method Trait(Trait trait)[Message.Guard] = (
+    var res = TraitEnumBase()
+    for (nameFromRoot) in trait.info().nesteds() (
+      step = TraitEnumStep['E=>nameFromRoot]
+      base = res['Vals.next()=>'Vals.prev()]
+      res := (step+base)[hide='Vals.prev()]
+      )
+    res := (res+TraitCacheVals)[hide='Vals.next()]
+    (res+trait)[hide='sealed()]
+    )
+  }
+Directions=Enum:{Left={},Top={},Right={}}
+  }
+
 Value = Decorator:Data:{
   I x=0I
   method Trait(Trait trait)[Message.Guard]
