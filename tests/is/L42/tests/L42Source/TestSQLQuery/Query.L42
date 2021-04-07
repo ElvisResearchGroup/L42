@@ -16,14 +16,25 @@ SquareBuilder={
     if Info(Void)==this.that().left() (
       return Class:This1(types=this.that(),query=query,xs=xs).queryExecute()
       )
+    q=This1(types=this.that(),query=query,xs=xs)
     r=this.that().left().meth(selector='left()).returnType().info()
-    ms=Info.Method.List()(for m in r.methods() (
+    return Class:q.queryWithResult(k=this.selectedFactory(r=r), r=r)
+    catch Message.Guard g exception MetaFail"".with(cause=g)
+    }
+  method Info.Method selectedFactory(Info r)[MetaFail] = {
+    msImm=Info.Method.List()(for m in r.methods() (
       if m.selector().toS().startsWith(S"#immK(") \add(m)
       ))
-    if ms.size()!=1I exception MetaFail"Not exactly one canditate #immK constructor:%ms"
-    q=This1(types=this.that(),query=query,xs=xs)
-    return Class:q.queryWithResult(k=ms.val(0\), r=r)
-    catch Message.Guard g exception MetaFail"".with(cause=g)
+    msApp=Info.Method.List()(for m in r.methods() (
+      if m.selector().toS().startsWith(S"#apply(") \add(m)
+      ))
+    if msImm.size()==1I return msImm.val(0\)
+    if msApp.size()==1I return msApp.val(0\)
+    exception MetaFail"""%
+      |Not exactly one candidate #immK or #apply constructor:
+      |candidate #immK: %msImm
+      |candidate #apply: %msApp
+      """
     }
   }
 //----------

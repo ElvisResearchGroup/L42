@@ -1,6 +1,18 @@
 reuse [AdamTowel]
 Main=(
-  Debug(S"Hello world")
+  x=42I
+  //Debug(S"eeHello world %(x//t)")
+  Debug(S"eeHello world %(x/*t*/)")
+  Debug(S"""%
+    | foo = %(S"hi")
+    | bar = %[(buz = 2I*x
+    |         buz)]
+    | amazing = %(/*(*/S"""%%
+    |    | hello %%x %x)!!
+    |  """)
+    |eeHello world %(x//t
+    |) ff
+    """)
   )
 EnumDec = {
 

@@ -34,14 +34,14 @@ PopulateIfEmpty = {//set up the DB tables in case this is the first run
 Table = DB.#$of().tables() //reify the DB tables (here is just Person)
 
 Queries = DB.QueryBox:{//A box with all the queries we want to support
-  @Public All = DB.query[Table.Person.List]"SELECT * FROM Person"
+  All = DB.query[Table.Person.List]"SELECT * FROM Person"
   
-  @Public Insert = DB.query[Void;S;Year;Meter;Kg]"""
+  Insert = DB.query[Void;S;Year;Meter;Kg]"""
     |INSERT INTO Person (name,age,height,weight)
     |Values (@name,@age,@height,@weight)
     """
-  @Public DeleteId = DB.query[Void;I]"DELETE FROM Person WHERE id=@id"
-  @Public DeleteName = DB.query[Void;S]"DELETE FROM Person WHERE name=@name"
+  DeleteId = DB.query[Void;I]"DELETE FROM Person WHERE id=@id"
+  DeleteName = DB.query[Void;S]"DELETE FROM Person WHERE name=@name"
   }
 
 //IQL part
@@ -52,18 +52,18 @@ Key = Data:Data.AddList:{I id} //types expected by the IQL queries
 PName = Data:Data.AddList:{S name}
 Person = Data:Data.AddList:{S name, Year age, Meter height, Kg weight}
 Dialogs = IQL.QueryBox:{//A box with all the queries we want to support
-  @Public AddPersons = IQL.query[Person.List]"""
+  AddPersons = IQL.query[Person.List]"""
     | 'Add persons' Pages('Add data for more persons')
     | name 'name' String
     | age  'age'  Integer
     | height 'height' Decimal{regex='[0-9]*\\.[0-9][0-9]'}
     | weight 'weight' Decimal{regex='[0-9]*\\.[0-9]'}
     """
-  @Public RemoveById=IQL.query[Key.List]"""
+  RemoveById=IQL.query[Key.List]"""
     | 'Deleting an entry' Single('Entry to delete?')
     | id 'index' String
     """
-  @Public RemoveByName = IQL.query[PName.List]"""
+  RemoveByName = IQL.query[S.List]"""
     | 'Deleting entries' Tabular('Entries to delete?')
     | name 'name' String
     """
