@@ -63,7 +63,7 @@ Dialogs = IQL.QueryBox:{//A box with all the queries we want to support
     | 'Deleting an entry' Single('Entry to delete?')
     | id 'index' String
     """
-  RemoveByName = IQL.query[S.List]"""
+  RemoveByName = IQL.query[PName.List]"""
     | 'Deleting entries' Tabular('Entries to delete?')
     | name 'name' String
     """
