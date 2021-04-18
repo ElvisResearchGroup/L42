@@ -1,0 +1,13 @@
+reuse [AdamTowel]
+Main=(
+  Debug(S"Hello world")
+  )
+Foo={...
+  Bar={
+    Bar1={...}
+    }
+  }
+
+Main2=(
+  Debug(Foo.hello()++S" "++Foo.Bar.Bar1.world())
+  )

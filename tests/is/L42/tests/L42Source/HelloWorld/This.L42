@@ -1,18 +1,67 @@
 reuse [AdamTowel]
+Direction = Collection.Enum:{interface
+  method This opposite()
+  North = {[This1] class method This() method This1 opposite()=South() }
+  East = {[This1] class method This() method This1 opposite()=West() }
+  South = {[This1] class method This() method This1 opposite()=North() }
+  West = {[This1] class method This() method This1 opposite()=East() }
+  }
+Direction2 = Collection.Enum:{
+  method This opposite()
+  North2 = {method This1 opposite()=South() }
+  East = {method This1 opposite()=West() }
+  South = {method This1 opposite()=North2() }
+  West = {method This1 opposite()=East() }
+  }
+Late2 = {}
+
+AAA = {
+  
+  Point = Data:{I x, I y}
+Game = Organize:{
+  NPC$ = {}
+  Map$ = Collection.map(key=Point, val=NPC$)
+  NPC = Data:{
+    var Point location
+    var I lifePoints
+    var mut This target
+    mut method Void step(mut Map$ map) = void
+    }
+  Map = {
+    mut method Void add(mut NPC that) = this.#put(key=that.location(), val=that)
+    mut method Void remove(mut NPC that) = this.remove(key=that.location())
+    mut method Void move(mut NPC that,Point to) = (
+      this.remove(that)
+      that.location(to)
+      this.add(that)
+      )
+    mut method mut NPC get(Point that) =
+      (this<:mut @Deploy{after @Game} Map$).#val(key=that).#val()
+mut method Void stepAll() =
+      for (mut val) in this<:mut Map$
+        (val<:mut NPC).step(map=this)
+    }
+  }
+  
+  }
+MainDir2=(
+  Debug(Direction2.Vals())
+  )
+
 Main=(
   x=42I
   //Debug(S"eeHello world %(x//t)")
   Debug(S"eeHello world %(x/*t*/)")
-  Debug(S"""%
-    | foo = %(S"hi")
-    | bar = %[(buz = 2I*x
-    |         buz)]
-    | amazing = %(/*(*/S"""%%
-    |    | hello %%x %x)!!
-    |  """)
-    |eeHello world %(x//t
-    |) ff
-    """)
+//  Debug(S"""%
+//    | foo = %(S"hi")
+//    | bar = %[(buz = 2I*x
+//    |         buz)]
+//    | amazing = %(/*(*/S"""%%
+//    |    | hello %%x %x)!!
+//    |  """)
+//    |eeHello world %(x//t
+//    |) ff
+//    """)
   )
 EnumDec = {
 
