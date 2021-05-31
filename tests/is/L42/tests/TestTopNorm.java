@@ -1,38 +1,20 @@
 package is.L42.tests;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
 
-import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
-import is.L42.common.Parse;
-import is.L42.common.Program;
 import is.L42.common.Constants;
-import is.L42.constraints.FreshNames;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.NotWellFormed;
-import is.L42.common.EndError.PathNotExistent;
 import is.L42.common.EndError.TypeError;
 import is.L42.generated.Core;
-import is.L42.generated.Full;
-import is.L42.generated.P;
-import is.L42.generated.Pos;
 import is.L42.platformSpecific.javaTranslation.Resources;
-import is.L42.tools.AtomicTest;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
-import is.L42.translationToJava.Loader;
-import is.L42.visitors.FullL42Visitor;
-import is.L42.visitors.WellFormedness;
 
 import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.range;
-import static is.L42.tools.General.unreachable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static is.L42.common.Err.hole;
 
@@ -41,6 +23,15 @@ public class TestTopNorm{
   @Test public void t1(){top(
     "{}",
     "{#norm{}}"
+  //Take 93 sec to fail, much more than normally serialized ones [towelToS]
+  /*);}@Test public void sourceUrls(){top("""
+    {reuse [towelToS]
+    Main=(
+      Debug(S"Hello world")
+      )
+    }""",
+    "{Trash={class method Void #apply(Library that)=void #typed{}}Task={#typed{}}#norm{}}"*/    
+  //Take 26/19 sec
   );}@Test public void onlineUrls(){top("""
     {
     Trash={class method Void (Library that)=void}

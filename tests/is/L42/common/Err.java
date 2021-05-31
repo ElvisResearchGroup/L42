@@ -16,7 +16,7 @@ public class Err {
     cmp2 = cmp2.trim();
     try{assertTrue(ErrMsg.strCmpAux(cmp1, cmp2,Err.hole));}
     catch(AssertionFailedError e){
-      assertEquals(cmp1, cmp2);
+      assertEquals(cmp2,cmp1);
       throw unreachable();
       }
     return true;

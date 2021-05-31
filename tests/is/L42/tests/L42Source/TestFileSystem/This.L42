@@ -1,97 +1,111 @@
 reuse [AdamTowel]
 
-TraitInterface=Trait:{interface
-  S={}
-  mut method Void makeDirs(S fileName)
-  mut method Void delete(S fileName)
-  mut method Void write(S fileName,S content)
-  mut method S read(S fileName)
-  }
-Lib=TraitInterface:{reuse [AdamTowel]
-  FileSystem={interface 
-    Fail=Message:{[Message.Guard]}
-    mut method Void makeDirs(S fileName)
-    mut method Void delete(S fileName)
-    mut method Void write(S fileName,S content)
-    mut method S read(S fileName)
-    }
-  FileSystem$Real=Public:{[FileSystem]
-    @Public class method mut This #$of()=this.#$of::0()
-    class method mut This #$of::0()
-    @Public mut method Void makeDirs(S fileName)=(
-      _=This.#$mkdirs(fileName=fileName)
-      void
-      )
-    @Public mut method Void delete(S fileName)=(
-      _=This.#$delete(fileName=fileName)
-      void
-      )
-    @Public mut method Void write(S fileName,S content)=(
-      _=This.#$write(fileName=fileName,content=content)
-      catch System.JavaException x error FileSystem.Fail"%x.text()"
-      void
-      )
-    @Public mut method S read(S fileName)=(
-      s=This.#$read(fileName=fileName)
-      catch System.JavaException x error FileSystem.Fail"%x.text()"
-      s
-      )
-    class method S #$mkdirs(S fileName)=native{
-      ioSlave{}{
-      new java.io.File(#1).mkdirs();return "";//should we return the bool result?
-      }} error void
-    class method S #$delete(S fileName)=native{
-      ioSlave{}{
-      new java.io.File(#1).delete();return "";
-      }} error void
-    class method S #$write(S fileName,S content)[System.JavaException]=native{
-      ioSlave{}{
-      try(var p=new java.io.PrintWriter(#1)){p.print(#2);return "";}
-      catch(java.io.IOException ioe){throw new Error(ioe.getClass()+ioe.getMessage());}
-      }} error void
-    class method S #$read(S fileName)[System.JavaException]=native{
-      ioSlave{}{
-      try{
-        var path=new java.io.File(#1).toPath();
-        var bytes=java.nio.file.Files.readAllBytes(path);
-        return new String(bytes);
-        }
-      catch(java.nio.file.NoSuchFileException fnf){
-        String location="File '"+#1+"' not present in folder '";
-        location+=new java.io.File(".").getCanonicalFile();
-        location +="'\nexisting files are:   ";
-        for (var pathname : new java.io.File(".").list()) {
-          location +="'"+pathname+"'   ";
-          }
-        throw new Error(location);
-        }
-      }} error void
-    }
-  }
-DeployFileSystem = Deploy.module(
-  url='FileSystem
-  code=Lib['FileSystem$Real=>'FileSystem.Real].code()
-  name='FileSystem
-  )
-  
-FS=Load:{reuse[#$FileSystem]}
+Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
+//class method S #$of()=S"ghp_..."
 
+//Module 1
+HttpRequest = Trait:{...}
+HttpRequestDeployed = Deploy.module(
+  Class:HttpRequest['HttpRequest$Real=>'HttpRequest.Real],
+  n='HttpRequest) //ready for load
+
+//Module 2, depends from Module 1; inlines it internally
+GitWriterLib = Trait({...})['GitWriter.HttpRequest.Fail=>'GitWriter.Fail]
+GitWriterDeployed = Deploy.module( //ready for load
+  Class:GitWriterLib, n='GitWriter)
+  [hide='This.#apply(info,pre,center,contentBase64)]
+
+//actually instantiate GW, we need it later
+GW = Load:GitWriterDeployed.code()
+/*
+With the right secret, the code above would test GW, but it is very slow,
+so much that it is not worth keeping this test
+UseGW = (
+  GW.#$of(
+    token=Secret.#$of()
+    message=S"now from 42 string repr"
+    )(
+    user=S"example42gdrive"
+    repository=S"Example1"
+    path=S"bar2/foo.txt"
+    contentBase64=S"AbbbbA=="
+    )
+  )
+*/
+
+//Module 3
+DeployLib = Trait:{...}
+DeployLibDeployed = Deploy.module( //ready for load
+  Class:DeployLib, n='LoadDeploy)
+
+//now we can actually deploy on git
+LoadDeploy = Load:DeployLibDeployed.code()
+DeployGit = LoadDeploy.with(writer=GW)
+Writer = {class method mut GW #$of(S that) = 
+  GW.#$of(token=Secret.#$of(), message=that++S" automatic release 42V0.95")
+  }
+
+
+//Module 0  -- Towel AdamTowel
+TaskDeployAdams = DeployGit.towel(Trait({reuse [AdamTowel]})
+  on=Url"github.com/Language42/is/AdamsTowel.L42"
+  writer=Writer.#$of(S"AdamsTowel")
+  )
+
+
+//Module 1
+TaskDeployHttpRequest = DeployGit.towel(HttpRequestDeployed()
+  on=Url"github.com/Language42/is/HttpRequest.L42"
+  writer=Writer.#$of(S"HttpRequest")
+  )
+//Module 2
+TaskDeployGitWriterDeployed = DeployGit.towel(GitWriterDeployed()
+  on=Url"github.com/Language42/is/GitWriter.L42"
+  writer=Writer.#$of(S"GitWriter")
+  )
+//Module 3
+TaskDeployDeployLib = DeployGit.towel(DeployLibDeployed()
+  on=Url"github.com/Language42/is/Deploy.L42"
+  writer=Writer.#$of(S"Deploy")
+  )
+//Module 4
+FSLib = Trait:{...}//may be not needed to be together here?
+TaskDeployFS = DeployGit.module(FSLib['FileSystem$Real=>'FileSystem.Real]
+  name='FileSystem
+  on=Url"github.com/Language42/is/FileSystem.L42"
+  writer=Writer.#$of(S"File System")
+  )
+
+//FS=Load:{reuse[#$github.com/example42gdrive/Example1/blob/main/FileSystem.L42?raw=true]}
+//FS=Load:{reuse[#$github.com/example42gdrive/Example1/FileSystem]}
+FS=Load:{reuse[#$L42.is/FileSystem]}
 Main=(
   f=FS.Real.#$of()
-  S s=f.read(fileName=S"ExampleInputFile.txt")
+  S s=f.read(Url"ExampleInputFile.txt")
   Debug(S"[[%s]]")
   {}:Test"OnDisk"(actual=s expected=S"This is some text in a file")
-  _=f.write(fileName=S"Example1.txt",content=S"SomeContent")
-  S s0=f.read(fileName=S"Example1.txt")
+  _=f.write(on=Url"Example1.txt",content=S"SomeContent")
+  S s0=f.read(Url"Example1.txt")
   Debug(S"[[%s0]]")
   {}:Test"NovelData"(actual=s0 expected=S"SomeContent")
-  _=f.delete(fileName=S"Example1.txt")
-  S s1=f.read(fileName=S"Example1.txt")
-  catch error FS.Fail pe (
-    Debug(S"{{%pe}}")
-    {}:Test"NovelDataDeleted"(actual=pe expected=
-      S"Message This.FS.Fail([###])[###]'Example1.txt'[###]existing files are:[###]")
+  _=f.delete(Url"Example1.txt")
+  ( f2=FS.Real.#$of()
+    S s1=f2.read(Url"Example1.txt")
+    catch FS.Fail pe (
+      Debug(S"{{%pe}}")
+      {}:Test"NovelDataDeleted"(actual=pe expected=
+        S"Message This.FS.Fail([###])[###]'Example1.txt'[###]existing files are:[###]")
+      )
+    Debug(S"[[%s1]]")
+    {}:Test"NovelDataDeletedFail"(Bool.false())
     )
-  Debug(S"[[%s1]]")
-  {}:Test"NovelDataDeletedFail"(Bool.false())
   )
+/*
+ExampleToDeploy=Trait:{reuse [AdamTowel] method S foo()=S"hi"}
+Main2 = (
+  Debug(S"gggg")
+  f=FS.Real.#$of()
+  f.write(fileName=S"c/d/testToSTowel.L42" content=S"hi")
+  FS.Deploy.towel(ExampleToDeploy.code() on=\"file://a/b/testToSTowel.L42")(f)
+  )
+*/

@@ -177,8 +177,8 @@ DeployAdamTowel={reuse[#$aaa]
       [single='This=>'AbstractTowel.Top]
       [hide='AbstractTowel.Top]
       
-    Debug(Introspection.Nested(library=toDeploy).toFullS())
-    Deploy.towel(url='AdamTowel,code=toDeploy)
+    //Debug(Introspection.Nested(library=toDeploy).toFullS())
+    Deploy.DeployMeta.of().deployLibrary('AdamTowel,lib=toDeploy)
     )
   }
 //Testing step2:

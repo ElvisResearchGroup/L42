@@ -57,14 +57,21 @@ import static is.L42.nativeCode.TrustedKind.TrustedIO;
 import static is.L42.nativeCode.TrustedKind.Type;
 import static is.L42.nativeCode.TrustedKind.Vector;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
+import is.L42.meta.MetaError;
+import is.L42.platformSpecific.javaTranslation.L42Any;
+import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
+import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.generated.Core.T;
+import is.L42.generated.Core;
 import is.L42.generated.P;
     
 public enum TrustedOp {
@@ -309,6 +316,11 @@ public enum TrustedOp {
     Meta,use("return %s.deployLibrary(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
   DeployJar("deployJar",Map.of(
           Meta,use("return %s.deployJar(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
+  DeployLibraryToBase64("deployLibraryToBase64",Map.of(
+    Meta,use("return %s.deployLibraryToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),      
+  DeployJarToBase64("deployJarToBase64",Map.of(
+      Meta,use("return %s.deployJarToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),      
+
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
   Resource("resource",Map.of(
@@ -520,6 +532,7 @@ public enum TrustedOp {
   Contains("contains",Map.of(String,use("return %s.contains(%s);",sigI(Bool,String)))),
   Replace("replace",Map.of(String,use("return %s.replace(%s,%s);",sigI(String,String,String)))),
   IndexOf("indexOf",Map.of(String,use("return %s.indexOf(%s,%s);",sigI(Int,String,Int)))),
+  LastIndexOf("lastIndexOf",Map.of(String,use("return %s.lastIndexOf(%s,%s);",sigI(Int,String,Int)))),
   Trim("trim",Map.of(String,use("return %s.trim();",sigI(String)))),
   RandomNextSeed("randomNextSeed",Map.of(Long,use(//same algorithm of java.utils.Random in 2020. Should not matter if it changes
     "return (%s * 0x5DEECE66DL + 0xBL) & ((1L<<48)-1);",

@@ -1,51 +1,33 @@
 package is.L42.platformSpecific.javaTranslation;
 
-import static is.L42.tools.General.popL;
-import static is.L42.tools.General.pushL;
-
 import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.Base64;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Set;
-import java.util.concurrent.Callable;
-import java.util.concurrent.ExecutionException;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.TimeoutException;
-import java.util.function.BiConsumer;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 import java.util.stream.Stream;
-
-import com.google.common.io.Files;
 
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.Full;
-import is.L42.generated.P;
-import is.L42.generated.Pos;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
-import safeNativeCode.utils.Utils;
 
 public class Resources {
+  public static Encoder encoder = Base64.getMimeEncoder();
+  public static Decoder decoder = Base64.getMimeDecoder();
   public static Loader loader=new Loader();
   private static HashMap<String,String> logs=new HashMap<>();
   public static HashMap<String,String> logs(){return logs;}

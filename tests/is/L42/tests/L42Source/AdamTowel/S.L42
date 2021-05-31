@@ -22,6 +22,7 @@ method This sum(This0 that)=native{trusted:OP+} error void
 @This1.Public method This1.Bool contains(This that)=native{trusted:contains}error void
 @This1.Public method This replace(This that,This with)=native{trusted:replace}error void
 @This1.Public method This1.I indexOf(This that,This1.I from)=native{trusted:indexOf}error void
+@This1.Public method This1.I lastIndexOf(This that,This1.I from)=native{trusted:lastIndexOf}error void
 @This1.Public method This subString(This1.I that,This1.I to)=native{trusted:subString}error void
 @This1.Public method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
 @This1.Public method This1.Bool endsWith(This that)=native{trusted:endsWith}error void
@@ -47,6 +48,7 @@ method This sum(This0 that)=native{trusted:OP+} error void
   b
   ))  
 @This1.Public method This1.I indexOf(This that)=this.indexOf(that=that,from=This1.I<:class This1.I.zero())
+@This1.Public method This1.I lastIndexOf(This that)=this.lastIndexOf(that=that,from=this.size())
 
 @This1.Public Opt={
   read method This2.Bool isPresent()

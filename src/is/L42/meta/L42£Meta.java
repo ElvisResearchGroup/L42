@@ -7,6 +7,7 @@ import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unreachable;
 
+import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -141,7 +142,25 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
           }});
       return l;
       }
-  
+  public String deployLibraryToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+    var err=new MetaError(wrap);
+    Core.L l=libraryCloseAndTyped(l42Lib, err);
+    var auxOut = new ByteArrayOutputStream();
+    try(var out = new ObjectOutputStream(auxOut)){
+      out.writeObject(l);
+      out.flush();
+      byte[] arr = auxOut.toByteArray();
+      //arr=java.util.Arrays.copyOfRange(arr,0,75);//-50//100//1000
+      String res= Resources.encoder.encodeToString(arr);
+      System.out.println("Lenght of encode towel is "+res.length());
+      return res;
+      }
+    catch(IOException e) { throw unreachable(); }//unreachable
+    }
+  public String deployJarToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+    throw todo();    
+    }
+
   public L42£Void deployLibrary(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
     Core.L l=libraryCloseAndTyped(l42Lib, err);
