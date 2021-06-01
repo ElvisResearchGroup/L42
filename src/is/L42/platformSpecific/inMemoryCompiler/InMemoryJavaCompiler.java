@@ -229,7 +229,10 @@ public class InMemoryJavaCompiler {
       }
     }
   public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, ArrayList<? super SClassFile> newBytecode) throws CompilationError {
-    var out=new ArrayList<ClassFile>();
+	  for(SourceFile s : files)
+    	System.out.println(s.contents);
+	  
+	var out=new ArrayList<ClassFile>();
     try{return auxCompile(env,files,out);}
     finally{
       for(var o:out){

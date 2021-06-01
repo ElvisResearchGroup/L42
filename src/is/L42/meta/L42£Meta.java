@@ -285,5 +285,4 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
   public static final Class<L42£Meta> _class=L42£Meta.class;
   public static final EqCache<L42£Meta> myCache=new EqCache<>(TrustedKind.Meta);
   @Override public EqCache<L42£Meta> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£Meta.class,myCache);}
   }

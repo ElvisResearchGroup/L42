@@ -204,6 +204,5 @@ public final class L42£BigRational extends L42NoFields.Eq<L42£BigRational> imp
   public static final Class<L42£BigRational> _class=L42£BigRational.class;
   public static final EqCache<L42£BigRational> myCache=new EqCache<>(TrustedKind.BigRational);
   @Override public EqCache<L42£BigRational> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£BigRational.class,myCache);}
   @Override public L42£BigRational newInstance(){throw unreachable();}
   }

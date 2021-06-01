@@ -93,7 +93,6 @@ public class L42£Method extends L42NoFields.Eq<L42£Method>{
   public static final Class<L42£Method> _class=L42£Method.class;
   public static final EqCache<L42£Method> myCache=new EqCache<>(TrustedKind.Method);
   @Override public EqCache<L42£Method> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£Method.class,myCache);}
   static public L42£Method instance=new L42£Method("",L42£Nested.instanceVoid,L42£Name.empty.withSelector("#apply()")).myNorm();//TODO: invalid method??
   @Override public L42£Method newInstance(){return instance;}
   }

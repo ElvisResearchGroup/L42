@@ -68,5 +68,4 @@ public class L42£LazyMsg extends L42NoFields.Eq<L42£LazyMsg>{
   public static final Class<L42£LazyMsg> _class = L42£LazyMsg.class;
   public static final EqCache<L42£LazyMsg> myCache=new EqCache<>(TrustedKind.LazyMessage);
   @Override public EqCache<L42£LazyMsg> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£LazyMsg.class, myCache);}
   }

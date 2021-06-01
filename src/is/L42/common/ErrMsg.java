@@ -225,7 +225,8 @@ public class ErrMsg {
   ;}public static String leakedExceptionFromMethCall(Object _1){return
   "An exception is leaked out of this expression ("+_1+")"
   ;}public static String methodDoesNotExists(S attempted,List<MWT> others){return
-  methodDoesNotExists(attempted,options(attempted,others))
+  //methodDoesNotExists(attempted,options(attempted,others))
+  methodDoesNotExists(attempted,"error: unavailable")
   ;}public static String methodDoesNotExists(Object attempted,Object others){return
   "Method "+attempted+" does not exists. Existing methods are:\n"+others+"\n"
 
