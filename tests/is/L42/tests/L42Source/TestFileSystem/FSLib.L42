@@ -1,5 +1,4 @@
-reuse [AdamTowel]
-
+reuse [AdamsTowel]
 FileSystem = {interface 
   Fail=Message:{[Message.Guard]}
   mut method Void makeDirs(Url that)[Fail]
@@ -45,16 +44,22 @@ FileSystem$Real = Public:{
     )
   class method S #$mkdirs(S fileName)[System.JavaException] = native{
     ioSlave{}{
-    new java.io.File(#1).mkdirs();return "";//should we return the bool result?
+    var file=#1.startsWith("file://")?
+      new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
+    file.mkdirs();return "";//should we return the bool result?
     }} error void
   class method S #$delete(S fileName)[System.JavaException] = native{
-    ioSlave{}{
-    new java.io.File(#1).delete();return "";
+    ioSlave{}{ 
+    var file=#1.startsWith("file://")?
+      new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
+    file.delete();return "";
     }} error void
   class method S #$write(S fileName,S content)[System.JavaException] = native{
     ioSlave{}{
     try{
-      java.nio.file.Files.write(new java.io.File(#1).toPath(), #2.getBytes());
+      var file=#1.startsWith("file://")?
+        new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
+      java.nio.file.Files.write(file.toPath(), #2.getBytes());
       return "";
       }
     catch(java.io.IOException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
@@ -63,7 +68,9 @@ FileSystem$Real = Public:{
     ioSlave{}{
     byte[] content=java.util.Base64.getMimeDecoder().decode(#2);
     try{
-      java.nio.file.Files.write(new java.io.File(#1).toPath(), content);
+      var file=#1.startsWith("file://")?
+        new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
+      java.nio.file.Files.write(file.toPath(), content);
       return "";
       }
     catch(java.io.IOException ioe){throw new Error(ioe.getClass()+"\n"+ioe.getMessage());}
@@ -71,8 +78,9 @@ FileSystem$Real = Public:{
   class method S #$read(S fileName)[System.JavaException] = native{
     ioSlave{}{
     try{
-      var path=new java.io.File(#1).toPath();
-      var bytes=java.nio.file.Files.readAllBytes(path);
+      var file=#1.startsWith("file://")?
+        new java.io.File(new java.net.URI(#1)):new java.io.File(#1);
+      var bytes=java.nio.file.Files.readAllBytes(file.toPath());
       return new String(bytes);
       }
     catch(java.nio.file.NoSuchFileException fnf){

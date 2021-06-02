@@ -40,14 +40,17 @@ public class TestToNameUrl {
   @Test public void testUrl3(){check("https://www.google.com/nope/b",
       "NameUrl[fullName=https://www.google.com/nope/b.L42, fullPath=https://www.google.com/nope/b.L42]");}
 
-  //    https://github.com/example42gdrive/Example1/blob/main/FileSystem.L42?raw=true
+  //    https://github.com/example42gdrive/Example1/blob/HEAD/FileSystem.L42?raw=true
   @Test public void testGitUrl1(){check("github.com/name/repo/b.L42",
-      "NameUrl[fullName=https://github.com/name/repo/blob/main/b.L42?raw=true, fullPath=https://github.com/name/repo/blob/main/b.L42?raw=true]");}
-  @Test public void testGitUrl2(){check("https://github.com/name/repo/blob/main/b",
-      "NameUrl[fullName=https://github.com/name/repo/blob/main/b.L42?raw=true, fullPath=https://github.com/name/repo/blob/main/b.L42?raw=true]");}
+      "NameUrl[fullName=https://github.com/name/repo/blob/HEAD/b.L42?raw=true, fullPath=https://github.com/name/repo/blob/HEAD/b.L42?raw=true]");}
+  @Test public void testGitUrl2(){check("https://github.com/name/repo/blob/HEAD/b",
+      "NameUrl[fullName=https://github.com/name/repo/blob/HEAD/b.L42?raw=true, fullPath=https://github.com/name/repo/blob/HEAD/b.L42?raw=true]");}
   @Test public void testGitUrl3(){check("https://github.com/name/repo/blob/dfe3324/b",
       "NameUrl[fullName=https://github.com/name/repo/blob/dfe3324/b.L42?raw=true, fullPath=https://github.com/name/repo/blob/dfe3324/b.L42?raw=true]");}
 
-  @Test public void test42Url1(){check("L42.is/AdamsTowel",
-      "NameUrl[fullName=https://github.com/Language42/is/blob/main/AdamsTowel.L42?raw=true, fullPath=https://github.com/Language42/is/blob/main/AdamsTowel.L42?raw=true]");}
+  @Test public void test42Url1(){check("AdamsTowel",
+      "NameUrl[fullName=localhost\\AdamsTowel.L42, fullPath=[###]/localhost/AdamsTowel.L42]");}
+  @Test public void test42Url2(){check("L42.is/AdamsTowel",
+      "NameUrl[fullName=https://github.com/Language42/is/blob/HEAD/AdamsTowel.L42?raw=true, fullPath=https://github.com/Language42/is/blob/HEAD/AdamsTowel.L42?raw=true]");}
+
   }

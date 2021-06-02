@@ -150,10 +150,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       out.writeObject(l);
       out.flush();
       byte[] arr = auxOut.toByteArray();
-      //arr=java.util.Arrays.copyOfRange(arr,0,75);//-50//100//1000
-      String res= Resources.encoder.encodeToString(arr);
-      System.out.println("Lenght of encode towel is "+res.length());
-      return res;
+      return Resources.encoder.encodeToString(arr);
       }
     catch(IOException e) { throw unreachable(); }//unreachable
     }

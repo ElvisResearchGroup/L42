@@ -36,7 +36,7 @@ public class TestTopNorm{
     {
     Trash={class method Void (Library that)=void}
     Task=Trash({
-      reuse [L42.is/AdamTowel]
+      reuse [L42.is/AdamsTowel]
       Main=Debug(S"ok")
       })
     }
@@ -991,7 +991,7 @@ public class TestTopNorm{
     """
     );}
   @Test public void sumTypeStaysOk(){topFail(EndError.PathNotExistent.class,"""
-    {reuse [AdamTowel]
+    {reuse [AdamsTowel]
      A=Trait:{method B b(B b)=b.foo()}
      C=A:{}
      B={method This b()=this}
@@ -1000,7 +1000,7 @@ public class TestTopNorm{
     );}
   //Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""
-      {reuse [AdamTowel]
+      {reuse [AdamsTowel]
       Foo={
         class method Bool isK(Bool a)=
           a && a && a && a && a && a && a &&

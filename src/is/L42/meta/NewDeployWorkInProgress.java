@@ -137,7 +137,7 @@ void meth(
   String fileName="";
   var prefixes=Map.of(
       "raw.githubusercontent.com/","main/",
-      "github.com/","blob/main/",
+      "github.com/","blob/HEAD/",
       "api.github.com/repos/","contents/"
       );
   for(var s:prefixes.entrySet()){
@@ -147,7 +147,7 @@ void meth(
       }
     }
   //https://raw.githubusercontent.com/example42gdrive/Example1/main/bar2/foo.txt
-  //https://github.com/example42gdrive/Example1/blob/main/bar2/foo.txt
+  //https://github.com/example42gdrive/Example1/blob/HEAD/bar2/foo.txt
   //https://api.github.com/repos/example42gdrive/Example1/contents/bar2/foo.txt
   meth(user, repository, token, fileName, contentE, message);
 }

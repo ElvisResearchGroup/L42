@@ -181,7 +181,10 @@ public class State implements Serializable{
   protected Program flagTyped(Program p1) throws EndError{
     Program p=FlagTyped.flagTyped(Resources.loader,p1);//but can be overridden as a testing handler
     try {Resources.loader.loadNow(p,allByteCode,allLibs);}
-    catch (CompilationError e) {throw new Error(e);}
+    catch (CompilationError e) {
+      var err=ErrMsg.nativeInlinedInvalid(e);
+      throw new EndError.InlinedNativeInvalid(List.of(),err);
+      }
     return p;
     }
   private Core.E adapt(Core.E ce, P path) {

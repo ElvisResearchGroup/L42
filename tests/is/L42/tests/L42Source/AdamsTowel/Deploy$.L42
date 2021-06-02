@@ -1,0 +1,19 @@
+//@Public class method Void module(Url url,Library code,Name name)[_]
+  //=Deploy.towelPrimitive(url=url.toS(),code=this.module(code,n=name).code())
+//  =Deploy.DeployMeta.of().deployLibrary(url.toS(),lib=this.module(code,n=name).code())
+@Public class method Trait module(Library that,Name n)[_]
+  =(
+  at=Name"AbstractTowel"
+  //l=removeUnusedCode(l,that)//TODO: is it happening internally somewhere?
+  top=Introspection.Nested(library=that)
+  i=top.nested(name=at)
+  acc=Trait.Acc(Name$Mapping())
+  for nc in top.nesteds() {
+    name=nc.nameFromRoot()
+    if name==n || name==at return void
+    annotated=nc.innerDoc().annotation(nested=i)
+    if annotated return acc.#squareAdd(name=>at.toS()++name)
+    return acc.#squareAdd(hide=name)
+    }
+  Cache$Call:Trait(that)(squareBuilder=acc)[clear=at;n=>'This]
+  )

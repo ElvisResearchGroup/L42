@@ -35,7 +35,7 @@ public interface ToNameUrl{
   
 //TODO: add gitapi?
   static ToNameUrl forGitUrl=(url)->{
-    //https://github.com/example42gdrive/Example1/blob/main/FileSystem.L42?raw=true
+    //https://github.com/example42gdrive/Example1/blob/HEAD/FileSystem.L42?raw=true
     String rest=removePrefix(url,"https://github.com/","http://github.com/","github.com/");
     var index1=rest.indexOf("/");
     if(index1==-1){return Optional.empty();}
@@ -43,7 +43,7 @@ public interface ToNameUrl{
     if(index2==-1){return Optional.empty();}
     var userRep=rest.substring(0,index2+1);// "username/reponame/"
     rest=rest.substring(index2+1,rest.length());
-    if(!rest.startsWith("blob/")){rest="blob/main/"+rest;}
+    if(!rest.startsWith("blob/")){rest="blob/HEAD/"+rest;}
     rest=removeSuffix(rest,".L42?raw=true","?raw=true",".L42","");
     rest=removeSuffix(rest,"/","");
     rest="https://github.com/"+userRep+rest+".L42?raw=true";

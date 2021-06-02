@@ -34,7 +34,7 @@ public class ReadURL {
       }
     catch(FileNotFoundException e){throw new EndError.UrlNotExistent(poss,url);}
     //catch(StreamCorruptedException sce) {res=parseSource(info.fullPath);}
-    catch(IOException e){throw new Error(e);}
+    catch(IOException e){throw new Error(e);}//TODO: on urls one time I've got an error code 500
     //TODO: check it is really well typed?
     //should well formedness be sufficient? +checking all info=typed?
     cache.put(info.fullName(),res);

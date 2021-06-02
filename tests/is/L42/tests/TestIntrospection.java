@@ -8,7 +8,7 @@ import is.L42.platformSpecific.javaTranslation.Resources;
 
 public class TestIntrospection extends is.L42.tools.TestL42Bridge {
   public static Stream<L42Test> test() throws IOException, URISyntaxException {
-    //DeployAdamTowel.test();
+    //DeployAdamsTowel.test();
     Resources.clearResKeepReuse();
     var res=TestIntrospection.class.getResource("L42Source/TestIntrospection");
     is.L42.main.Main.main(Paths.get(res.toURI()).toString());

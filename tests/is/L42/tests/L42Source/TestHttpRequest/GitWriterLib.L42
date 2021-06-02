@@ -1,0 +1,103 @@
+reuse [AdamsTowel]
+GitWriter = Data:{//slave name can be renamed with Trait.NativeSlaveRename(code,oldName,newName)
+  HttpRequest = Load:This2.HttpRequestDeployed.code()
+  mut HttpRequest httpRequest
+  S token
+  S message
+  class method mut This #$of(S token,S message) = \(
+    httpRequest=HttpRequest.Real.#$of()
+    token=token, message=message
+    )
+  mut method Bool (S info, S pre, S center, S contentBase64)[HttpRequest.Fail] = {
+    preS=pre.size()
+    if !info.startsWith(pre) return \.false()
+    index1 = info.indexOf(S"/" from=preS)
+    if index1==I"-1" return \.false()
+    index2 = info.indexOf(center from=index1+1I)
+    if index2==I"-1" return \.false()
+    user = info.subString(preS to=index1)
+    repository = info.subString(index1+1I to=index2)
+    S path=info.subString(index2+center.size() to=\size)
+    this(user=user,repository=repository,path=path,contentBase64=contentBase64)
+    return \.true()
+    } 
+  mut method Void write(Url on, S contentBase64)[HttpRequest.Fail] = (
+    var info=on.toS()
+    for s in S.List[S"https://";S"http://"]
+      if on.toS().startsWith(s)
+        info:=on.toS().subString(s.size() to=\size)
+    res = this(info=info, pre=S"raw.githubusercontent.com/", center=S"/HEAD/", contentBase64=contentBase64)
+      || this(info=info, pre=S"api.github.com/repos/", center=S"/contents/", contentBase64=contentBase64)
+      || this(info=info, pre=S"github.com/", center=S"/blob/HEAD/", contentBase64=contentBase64)
+      || this(info=info, pre=S"github.com/", center=S"/", contentBase64=contentBase64)
+    if !res error X"Invalid url: %on"
+    )
+  mut method S getSha(S user, S repository, S path, S branch)[HttpRequest.Fail] = {
+    //Note the following https://api.github.com/repos/Language42/is
+    //can give info about the  "default_branch",
+    indexP = path.lastIndexOf(S"/")
+    fileName = if indexP == I"-1" path else path.subString(indexP+1I to=\size)
+    encPath = if indexP == I"-1" S"" else
+      S":"++path.subString(0I to=indexP).replace(S"/" with=S"%S.percent()2F")
+    url1 = S"https://api.github.com/repos/%user/%repository/git/trees/%branch%encPath"
+    request1 = S"""%
+      |GET %url1
+      |Authorization: token %this.token()
+      |Accept: application/vnd.github.v3+json
+      """
+    (statusCode1,body1) = this.#httpRequest()(request=request1, body=S"")
+    if statusCode1!=200I return S""
+    S hasSha = body1
+    catch HttpRequest.Fail x return S""
+    q=S.dq()
+    qSha=q++S"sha"++q++S":"++q
+    qPath=q++S"path"++q++S":"++q++fileName++q
+    index0 = hasSha.indexOf(qPath)
+    if index0==I"-1" return S""
+    index1 = hasSha.lastIndexOf(S"{" from=index0)
+    if index1==I"-1" error X"""%
+      |JSON Formatting issue:
+      |an entry for the file %fileName seems to exists in GIT
+      |but is not in a JSON object.
+      |Here is the full JSON:
+      |%hasSha
+      """
+    index2 = hasSha.indexOf(qSha from=index1+1I)
+    if index2==I"-1" || index2>hasSha.indexOf(S"}" from=index1)
+      error X"File %fileName exists in GIT but the sha field is missing"
+    index3 = hasSha.indexOf(q++S"," from=index2+qSha.size())
+    res = hasSha.subString(index2+qSha.size(), to=index3)
+    return S",%S.nl()"++qSha++res++q
+    }
+  mut method Void (S user, S repository, S path, S contentBase64)[HttpRequest.Fail] = (
+    S sha = this.getSha(user=user,repository=repository,path=path,branch=S"HEAD")
+    //Debug(S"user=%user, repository=%repository, path=%path")
+    (token,message) = this
+    url2 = S"https://api.github.com/repos/%user/%repository/contents/%path"
+    request2 = S"""%
+      |PUT %url2
+      |Authorization: token %token
+      |Accept: application/vnd.github.v3+json
+      """
+    S c = {
+      index = contentBase64.indexOf(S.nl())
+      if index==I"-1" return contentBase64
+      crnl = contentBase64.subString(index-1I to=index+1I)
+      return contentBase64.replace(crnl with=S"")
+      }
+    body = S"""%
+      |{
+      |"owner": "%user",
+      |"repo": "%repository",
+      |"message": "%message",
+      |"content": "%c"%sha
+      |} 
+      """
+    (statusCode2,body2) = this.#httpRequest()(request=request2, body=body)
+    if statusCode2!=200I && statusCode2 !=201I error HttpRequest.Fail"""%
+        | Expected response was 200-201 but we got %statusCode2 instead.
+        | Response body below:
+        | %body2
+        """
+    )
+  }

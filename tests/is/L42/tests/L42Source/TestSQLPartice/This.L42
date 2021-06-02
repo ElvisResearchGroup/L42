@@ -1,8 +1,8 @@
-reuse [AdamTowel]
+reuse [AdamsTowel]
 //We use 3 libraries: JavaServer, GuiBuilder and Query
-LoadJ = Load:{reuse[JavaServer]}
-LoadGui = Load:{reuse[GuiBuilder]}
-Query = Load:{reuse[Query]}
+LoadJ = Load:{reuse[L42.is/JavaServer]}
+LoadGui = Load:{reuse[L42.is/GuiBuilder]}
+Query = Load:{reuse[L42.is/Query]}
 
 //SQL part
 DbJ = LoadJ(slaveName=S"dbServer{}") //slave for the DB connection

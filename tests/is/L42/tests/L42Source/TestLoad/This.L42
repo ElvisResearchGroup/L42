@@ -1,17 +1,28 @@
-reuse[AdamTowel]
+reuse[AdamsTowel]
 
 Base=Trait:{
-  reuse[AdamTowel]
+  reuse[AdamsTowel]
   Main={class method S hello(S that)=S"hello %that"}
   }
-Deployed0=Load:Deploy.module(Base.code(),n='Main)<:Trait.code()
-Deployed1=Deploy.module(
-  url='MiniLib
-  code=Base.code()
+  
+Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
+//class method S #$of()=S"ghp_..."
+GW = Load:{reuse[L42.is/GitWriter]}
+LoadDeploy = Load:{reuse[L42.is/Deploy]}
+DeployGit = LoadDeploy.with(writer=GW)
+
+Deployed0 = Load:Class.Relax:System.module(Base.code(),n='Main)
+
+Deployed1 = DeployGit.module(Base()
   name='Main
-  )
-Deployed2=Load:{reuse[#$MiniLib]}
-Deployed3={B={A=Load:{reuse[#$MiniLib]}}}
+  on=Url"github.com/Language42/is/MiniLib.L42"
+  writer=GW.#$of(
+    token=Secret.#$of(),
+    message=S"Test library MiniLib "++S" automatic release 42V0.95"
+  ))  
+
+Deployed2 = Load:{reuse[#$L42.is/MiniLib]}
+Deployed3 = {B={A=Load:{reuse[#$L42.is/MiniLib]}}}
 
 Test1=(
   {}:Test"BaseLocal"(
@@ -28,9 +39,3 @@ Test1=(
     actual=Deployed3.B.A.hello(S"L42")
     )
   )
-  
-  /*
-TODO:
-- remove unused code in load
-- load must throw error if the map can not be completed
-*/

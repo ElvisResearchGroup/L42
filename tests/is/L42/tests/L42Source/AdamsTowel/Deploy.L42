@@ -1,0 +1,22 @@
+DeployMeta={
+  class method This of()
+  class method This #apply()
+  method Void deployLibrary(This2.S that,Library lib)=
+    native{trusted:deployLibrary} error void
+  method Void deployJar(This2.S that,Library lib)=
+    native{trusted:deployJar} error void
+  method This2.S deployLibraryToBase64(Library lib)=
+    native{trusted:deployLibraryToBase64} error void
+  method This2.S deployJarToBase64(Library lib)=
+    native{trusted:deployJarToBase64} error void
+  #norm{nativeKind=Meta,
+    typeDep=This This2.Deploy$LibraryNotSelfContained,This2.S
+    watched=This2.Deploy$LibraryNotSelfContained,This2.S
+    coherentDep=This2.Deploy$LibraryNotSelfContained,This2.S
+    nativePar=This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained
+    }}
+@Public class method S towelToS(Library that)=
+  DeployMeta.of()<:imm DeployMeta.deployLibraryToBase64(lib=that)
+//become the method that return the S in base64
+@Public class method Void jar(Url url,Library code)=
+  DeployMeta.of()<:imm DeployMeta.deployJar(url.toS(),lib=code)

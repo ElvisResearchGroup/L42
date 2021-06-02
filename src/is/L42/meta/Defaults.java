@@ -49,7 +49,7 @@ import is.L42.typeSystem.TypeManipulation;
      * TODO: in the future, consider a boolean option to give error if the method is present with the right types but implemented?
      * TODO: for now, the default methods must have no exceptions, we can add exception subtype
      * Note: the default generation happens only for methods with either no annotations or also the 'applyDefaults' annotation;\
-     * In AdamTowel such annotation is Data.Defaults
+     * In AdamsTowel such annotation is Data.Defaults
      */
 public class Defaults{
   MetaError err;

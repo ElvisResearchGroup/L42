@@ -1,7 +1,7 @@
-reuse [AdamTowel]
-LoadJ=Load:{reuse[JavaServer]}
+reuse [AdamsTowel]
+LoadJ=Load:{reuse[L42.is/JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")
-LoadGui=Load:{reuse[GuiBuilder]}
+LoadGui=Load:{reuse[L42.is/GuiBuilder]}
 Gui=LoadGui(javaServer=JServer)
 
 Pulse=Data:{

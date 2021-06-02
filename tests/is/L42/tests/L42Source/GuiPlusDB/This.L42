@@ -1,9 +1,9 @@
-reuse [AdamTowel]
+reuse [AdamsTowel]
 //We use libraries: Unit, JavaServer, GuiBuilder and Query
-Unit = Load:{reuse[Unit]}
-LoadJ = Load:{reuse[JavaServer]}
-LoadGui = Load:{reuse[GuiBuilder]}
-Query = Load:{reuse[Query]}
+Unit = Load:{reuse[L42.is/Unit]}
+LoadJ = Load:{reuse[L42.is/JavaServer]}
+LoadGui = Load:{reuse[L42.is/GuiBuilder]}
+Query = Load:{reuse[L42.is/Query]}
 
 //Units
 Year = Unit(I)

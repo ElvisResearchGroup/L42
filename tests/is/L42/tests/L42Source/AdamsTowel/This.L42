@@ -1,0 +1,186 @@
+//Step 1: the minimal infrastructure to deploy a towel
+S={
+  class method This empty()
+  #norm{nativeKind=String, nativePar=This1.ParseErr
+    typeDep=This,This1.ParseErr
+    watched=This1.ParseErr
+    coherentDep=This1.ParseErr
+  }}
+ParseErr={class method This empty() #norm{nativeKind=LazyMessage typeDep=This}}
+DeployMeta={
+  class method This of()
+  class method This #apply()
+  method Void deployLibrary(This1.S that,Library lib)=
+    native{trusted:deployLibrary} error void
+  #norm{nativeKind=Meta,
+    typeDep=This This1.ParseErr,This1.S
+    watched=This1.ParseErr,This1.S
+    coherentDep=This1.ParseErr,
+    nativePar=This1.ParseErr This1.ParseErr This1.ParseErr This1.ParseErr This1.ParseErr
+    }}
+
+Debug={
+  class method This of()
+  method Void strDebug(This1.S that)=
+    native{trusted:strDebug} error void
+    #norm{typeDep=This, This1.S, nativeKind=TrustedIO, watched=This1.S}        
+  }
+S$StringBuilder={
+  class method mut This of()
+  mut method Void _a()=
+    native{trusted:'a'} error void
+  read method This1.S toS()=
+    native{trusted:toS} error void
+    #norm{nativeKind=StringBuilder
+      typeDep=This,This1.S
+      watched=This1.S
+      coherentDep=This1.S 
+      }
+  }
+//Step 2: Base towel, all the main functionalities are there
+// but miss some details and do not have encapsulation
+DeployAAA=(
+  lib={
+    Public$={}
+    @Public$ AbstractTowel={}
+    @Public$ Public={@AbstractTowel{public}}
+    @Public Cache={...}    
+    @Public HasToS={interface
+      read method S toS()
+      Raw={interface [This1]}
+      @AbstractTowel{hasToS}
+      }
+    //HasEquals={ }//NOPE: == hava a base. A trait can add to a class extends any, and to an interface (as a new base) and to the ones implementing the base.
+    //List can take a class method Boolean equals(Elem e1,Elem e2)
+    @Public Break={
+      class method Void ()[Void]=exception void
+      class method Void (Void that)[Void]=exception void
+      @AbstractTowel{break}}
+    @Public Bool={...}
+    @Public I={...}
+    @Public Double={...}
+    Long={...}
+    @Public Num={...}
+    @Public S={...}
+    NativeName={...}
+    BootStrapping={...}
+    @Public S$ParseError={...}//can not use BaseErrorTrait() since circular dependence from S
+    @Public Debug={...}
+    @Public System={...}
+    @Public S$StringBuilder={...}//end of circular dependency for S
+    Introspection$Nested={
+      class method This (Library library)=error void
+      class method This (class Any that)=error void
+      method S msgTitle(S text)=error void
+      method S position()=error void
+      }
+    @Public Match={...}
+    @Public Url={...}
+    BaseErrorTrait={...}
+    @Public Trait$MethodClash=BaseErrorTrait()
+    @Public Trait$ClassClash=BaseErrorTrait()
+    @Public Trait$InvalidName=BaseErrorTrait()
+    @Public Trait$InvalidMap=BaseErrorTrait()
+    @Public Deploy$LibraryNotSelfContained=BaseErrorTrait()
+    @Public Test={...}
+    @Public Log={...}
+    @Public Name$Mapping={...}
+    @Public Name={...}
+    @Public Trait={...}
+    Class$Relax={...}
+    @Public Deploy={...}
+    @Public Message={...}
+    @Public Message$Guard={interface [Message]}
+    @Public Message$Assertion={interface[Message]}
+    MessageTrait=Trait:{...}
+    NativeMessageTrait={...}
+    @Public X=Message:{...}
+    @Public Decorator={...}
+    @Public Collection$IterationIncomplete=Message:{[Message$Guard]}
+    @Public Collection$OperationUndefinedOnEmpty=Message:{[Message$Guard]}
+    @Public Collection$NoElementInOpt=Class$Relax:Message.Native:{[Message$Guard]}
+    @Public Collection$OutOfBounds=Class$Relax:Message.Native:{[Message$Guard]}
+    @Public Collection$ElementNotImm=Class$Relax:Message.Native:{[Message$Guard]}
+    @Public Collection$ElementNotMut=Class$Relax:Message.Native:{[Message$Guard]}    
+    @Public Collection={...}
+    @Public S$List=Collection.list(S)
+    @Public Name$List=Collection.list(Name)
+    Bool$List=Collection.list(Bool)
+    I$List=Collection.list(I)
+    Double$List=Collection.list(Double)
+    Long$List=Collection.list(Long)
+    Num$List=Collection.list(Num)
+    @Public Data$Fail={interface [Message$Guard]}
+    Class$IncoherentClass=Message:{[Data$Fail]}
+    @Public Data={...}
+    @Public Introspection=Class$Relax:Trait({...})[
+      'Nested$=>'Nested;'Type$=>'Type;'Doc$=>'Doc;'Method$=>'Method
+      ]
+    DelayTyping={}
+    @Public Class={...}
+    Cache$Call={...}
+    @Public Organize={...}
+    Data$Close={...}
+    Public2={...}
+    Collection$={...}
+    Deploy$={...}
+    @Public Math={...}
+    @Public Range={...}
+    Load$={}
+    @Public Load={...}
+    @Public System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
+    @Public System$JavaException=Class:Message.Native:{[Message$Guard]}
+    Data$={...}
+    @Public Collection$Enum={...}
+    S$=Class:Trait({...})['Map.OVal=>'Opt]
+    Name$={...}
+    Trait$DocMap=Class:Trait({
+      Map=Collection$.map(key=Name,val=S)
+      ResetDocs={...}
+      read method read This self()=this
+      })['Map=>'This]['ResetDocs=>'This]
+    @Public Trait$LiftS={...}
+    @Public Trait$NativeSlaveRename={...}
+    BootStrapping$={...}
+    Math$Random={...}
+    Math$={...}
+    S$Alphanumeric=Decorator.$:{...}
+    X$=Class:Trait({...})['XX=>'This]    
+    }
+  mut S$StringBuilder sb=S$StringBuilder.of()
+  sb._a() sb._a() sb._a()
+  DeployMeta.of().deployLibrary(sb.toS(),lib=lib)
+  )
+//Deploy step2:
+DeployAdamsTowel={reuse[#$aaa]
+  AddOns=(
+    var tot=Trait({...})[
+      clear='Introspection$Nested;
+      clear='BootStrapping;
+      clear='Data.checkCoherent(that);
+      ][
+      'S_ParseError=>'S.ParseError;
+      'Trait_MethodClash=>'Trait.MethodClash;
+      'Trait_ClassClash=>'Trait.ClassClash;
+      'Trait_InvalidName=>'Trait.InvalidName;
+      'Trait_InvalidMap=>'Trait.InvalidMap;
+      'Deploy_LibraryNotSelfContained=>'Deploy.LibraryNotSelfContained;
+      'Long=>'Math.Long;
+      'Public2=>'Public;
+      ]
+    tot:=Organize:tot
+    pub=Introspection.Nested(library=tot.code()).nested(name='Public)
+    tot:=Cache$Call:Public2(public=pub):tot//renamed before Public closes Introspection
+      ['Introspection.Nested=>'Introspection]
+      ['Introspection=>'Info]
+      ['Deploy=>'System]
+    toDeploy=Class$Relax:tot
+      [single='This=>'AbstractTowel.Top]
+      [hide='AbstractTowel.Top]
+      
+    //Debug(Introspection.Nested(library=toDeploy).toFullS())
+    Deploy.DeployMeta.of().deployLibrary('AdamsTowel,lib=toDeploy)
+    )
+  }
+//Testing step2:
+TestsAdamsTowel={...}

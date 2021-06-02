@@ -1,5 +1,5 @@
-reuse [AdamTowel]
-VMT = Load : {reuse [VoxelMapTrait] }
+reuse [AdamsTowel]
+VMT = Load : {reuse [L42.is/VoxelMapTrait] }
 V = Class: VMT : {
   class method I maxX()=64\
   class method I maxY()=64\
@@ -23,9 +23,9 @@ BoolExpansion = Class: Data: CellularExpansion(BoolMap): {
   }
 HeightExpansion = Class: Data: CellularExpansion(IMap): {...}
 
-LoadJ=Load:{reuse[JavaServer]}
+LoadJ=Load:{reuse[L42.is/JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")
-LoadGui=Load:{reuse[GuiBuilder]}
+LoadGui=Load:{reuse[L42.is/GuiBuilder]}
 Gui=LoadGui(javaServer=JServer)
 JavaCode={...}
 Model=Data:JServer.Handler:{...}

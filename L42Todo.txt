@@ -1,3 +1,6 @@
+- remove unused code in load (what did I ment here?)
+- load must throw error if the map can not be completed
+-IDE formatting: the // in http://.. is seen as a comment in the 'reuse[]'
 -the l42 project need to encapsulate all used libraries under private class loaders?
  --otherwise, users of the slaves will need to know about those!
 -in guide first occurence of Module is unfortunate
@@ -18,8 +21,7 @@ B=Baz:{
 -Bug: it should require parenthesis around the for body!! 
 A =(ss=S.List[]
   for a in ss ss.add(a)
-  Debug(ss) )
-TODO: it should be AdamsTowel instead of AdamTowel for a better joke  
+  Debug(ss) )  
 Export a version of 42 and make it accessible from the tutorial
 -autocomplete, takes 9 for a (
 also, does not reset on dots?

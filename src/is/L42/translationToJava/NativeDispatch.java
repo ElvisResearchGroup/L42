@@ -182,7 +182,8 @@ public class NativeDispatch {
     if(mwt.mh().exceptions().size()!=1){return "throw new Error(ex);";}
     var t=mwt.mh().exceptions().get(0);
     Program pErr=j.p()._navigate(t.p().toNCs());
-    if(!pErr.topCore().info().nativeKind().equals(TrustedKind.LazyMessage.name())){return "throw ex;";}
+    var notLazy = !pErr.topCore().info().nativeKind().equals(TrustedKind.LazyMessage.name());
+    if(notLazy){return "throw new Error(ex);";}
     return java.lang.String.format("""
       String msg=ex.getClass().getName()+"\\n"+ex.getMessage();
       throw new L42Exception(%s.wrap(new L42£LazyMsg(msg)));

@@ -1,96 +1,34 @@
-reuse [AdamTowel]
+reuse [AdamsTowel]
 
 Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git access token, as in
 //class method S #$of()=S"ghp_..."
 
-//Module 1
-HttpRequest = Trait:{...}
-HttpRequestDeployed = Deploy.module(
-  Class:HttpRequest['HttpRequest$Real=>'HttpRequest.Real],
-  n='HttpRequest) //ready for load
-
-//Module 2, depends from Module 1; inlines it internally
-GitWriterLib = Trait({...})['GitWriter.HttpRequest.Fail=>'GitWriter.Fail]
-GitWriterDeployed = Deploy.module( //ready for load
-  Class:GitWriterLib, n='GitWriter)
-  [hide='This.#apply(info,pre,center,contentBase64)]
-
-//actually instantiate GW, we need it later
-GW = Load:GitWriterDeployed.code()
-/*
-With the right secret, the code above would test GW, but it is very slow,
-so much that it is not worth keeping this test
-UseGW = (
-  GW.#$of(
-    token=Secret.#$of()
-    message=S"now from 42 string repr"
-    )(
-    user=S"example42gdrive"
-    repository=S"Example1"
-    path=S"bar2/foo.txt"
-    contentBase64=S"AbbbbA=="
-    )
-  )
-*/
-
-//Module 3
-DeployLib = Trait:{...}
-DeployLibDeployed = Deploy.module( //ready for load
-  Class:DeployLib, n='LoadDeploy)
-
-//now we can actually deploy on git
-LoadDeploy = Load:DeployLibDeployed.code()
+GW = Load:{reuse[L42.is/GitWriter]}
+LoadDeploy = Load:{reuse[L42.is/Deploy]}
 DeployGit = LoadDeploy.with(writer=GW)
-Writer = {class method mut GW #$of(S that) = 
-  GW.#$of(token=Secret.#$of(), message=that++S" automatic release 42V0.95")
-  }
-
-
-//Module 0  -- Towel AdamTowel
-TaskDeployAdams = DeployGit.towel(Trait({reuse [AdamTowel]})
-  on=Url"github.com/Language42/is/AdamsTowel.L42"
-  writer=Writer.#$of(S"AdamsTowel")
-  )
-
-
-//Module 1
-TaskDeployHttpRequest = DeployGit.towel(HttpRequestDeployed()
-  on=Url"github.com/Language42/is/HttpRequest.L42"
-  writer=Writer.#$of(S"HttpRequest")
-  )
-//Module 2
-TaskDeployGitWriterDeployed = DeployGit.towel(GitWriterDeployed()
-  on=Url"github.com/Language42/is/GitWriter.L42"
-  writer=Writer.#$of(S"GitWriter")
-  )
-//Module 3
-TaskDeployDeployLib = DeployGit.towel(DeployLibDeployed()
-  on=Url"github.com/Language42/is/Deploy.L42"
-  writer=Writer.#$of(S"Deploy")
-  )
-//Module 4
-FSLib = Trait:{...}//may be not needed to be together here?
+FSLib = Trait:{...}
 TaskDeployFS = DeployGit.module(FSLib['FileSystem$Real=>'FileSystem.Real]
   name='FileSystem
   on=Url"github.com/Language42/is/FileSystem.L42"
-  writer=Writer.#$of(S"File System")
-  )
+  writer=GW.#$of(
+    token=Secret.#$of(),
+    message=S"File System"++S" automatic release 42V0.95"
+  ))
 
-//FS=Load:{reuse[#$github.com/example42gdrive/Example1/blob/main/FileSystem.L42?raw=true]}
-//FS=Load:{reuse[#$github.com/example42gdrive/Example1/FileSystem]}
-FS=Load:{reuse[#$L42.is/FileSystem]}
-Main=(
-  f=FS.Real.#$of()
-  S s=f.read(Url"ExampleInputFile.txt")
+FS = Load:{reuse[#$L42.is/FileSystem]}
+Main = (
+  f = FS.Real.#$of()
+  //S s = f.read(Url"file:///C:.. works.. but is not a portable test..L42Source/TestFileSystem/ExampleInputFile.txt")
+  S s = f.read(Url"ExampleInputFile.txt")
   Debug(S"[[%s]]")
   {}:Test"OnDisk"(actual=s expected=S"This is some text in a file")
-  _=f.write(on=Url"Example1.txt",content=S"SomeContent")
-  S s0=f.read(Url"Example1.txt")
+  _ = f.write(on=Url"Example1.txt",content=S"SomeContent")
+  S s0 = f.read(Url"Example1.txt")
   Debug(S"[[%s0]]")
   {}:Test"NovelData"(actual=s0 expected=S"SomeContent")
-  _=f.delete(Url"Example1.txt")
-  ( f2=FS.Real.#$of()
-    S s1=f2.read(Url"Example1.txt")
+  _ = f.delete(Url"Example1.txt")
+  ( f2 = FS.Real.#$of()
+    S s1 = f2.read(Url"Example1.txt")
     catch FS.Fail pe (
       Debug(S"{{%pe}}")
       {}:Test"NovelDataDeleted"(actual=pe expected=
@@ -101,7 +39,7 @@ Main=(
     )
   )
 /*
-ExampleToDeploy=Trait:{reuse [AdamTowel] method S foo()=S"hi"}
+ExampleToDeploy=Trait:{reuse [AdamsTowel] method S foo()=S"hi"}
 Main2 = (
   Debug(S"gggg")
   f=FS.Real.#$of()

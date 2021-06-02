@@ -154,9 +154,9 @@ public class TestCachingCases {
     ));}
 @Test void adamChangeVarLength1(){passMany(
   List.of(
-    "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
-    "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
-    "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}"
+    "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
+    "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
+    "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}"
   ),List.of(
     "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
     "NCiO:Main2,NCiC:Main2,",
@@ -164,10 +164,10 @@ public class TestCachingCases {
   ));}
 @Test void adamChangeVarLength2(){passMany(
     List.of(
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main4\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}"
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main34\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main4\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}"
     ),List.of(
       "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
       "NCiO:Main2,NCiC:Main2,topC:0,",
@@ -177,9 +177,9 @@ public class TestCachingCases {
 
 @Test void adamChangeSameLength(){passMany(
     List.of(
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main4\")}"
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main2\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main3\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main4\")}"
     ),List.of(
       "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
       "NCiO:Main2,NCiC:Main2,",
@@ -189,9 +189,9 @@ public class TestCachingCases {
 
 @Test void adamChangeMiddle(){passMany(
     List.of(
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world2\") ) Main2=Debug(S\"Main\")}",
-      "{reuse [AdamTowel] Main1=(Debug(S\"Hello world3\") ) Main2=Debug(S\"MaiW\")}"
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world1\") ) Main2=Debug(S\"Main\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world2\") ) Main2=Debug(S\"Main\")}",
+      "{reuse [AdamsTowel] Main1=(Debug(S\"Hello world3\") ) Main2=Debug(S\"MaiW\")}"
     ),List.of(
       "topO:0,NCiO:Main1,NCiC:Main1,NCiO:Main2,NCiC:Main2,topC:0,",
       "NCiO:Main1,NCiC:Main1,",
@@ -199,9 +199,9 @@ public class TestCachingCases {
     ));}
 
 @Test void repetedName(){
-  var code0="{reuse [AdamTowel] Foo=Debug(S\"@@@@foo\")}";
-  var code1="{reuse [AdamTowel] Test={} Bar=Debug(S\"####bar\") Foo=Debug(S\"@@foo@@\")}";
-  var code2="{reuse [AdamTowel] Bar=Debug(S\"####bar\") Foo=Debug(S\"@@foo@@\")}";
+  var code0="{reuse [AdamsTowel] Foo=Debug(S\"@@@@foo\")}";
+  var code1="{reuse [AdamsTowel] Test={} Bar=Debug(S\"####bar\") Foo=Debug(S\"@@foo@@\")}";
+  var code2="{reuse [AdamsTowel] Bar=Debug(S\"####bar\") Foo=Debug(S\"@@foo@@\")}";
   var cache=new CachedTop(L(),L());//round 0
   Resources.clearResKeepReuse();
   Init.topCache(cache,code0);
@@ -217,9 +217,9 @@ public class TestCachingCases {
   assertEquals(Resources.out(),"####bar\n@@foo@@\n");
   }
 @Test void repetedNameSelector(){
-  var code0="{reuse[MiniLib] A={}}";
-  var code1="{reuse[MiniLib] class method Void hello(Void that)=that B={} A={}}";
-  var code2="{reuse[MiniLib] B={} A={}}";
+  var code0="{reuse[L42.is/MiniLib] A={}}";
+  var code1="{reuse[L42.is/MiniLib] class method Void hello(Void that)=that B={} A={}}";
+  var code2="{reuse[L42.is/MiniLib] B={} A={}}";
   var cache=new CachedTop(L(),L());//round 0
   Resources.clearResKeepReuse();
   Init.topCache(cache,code0);
@@ -249,7 +249,7 @@ public static void timeNow(String msg) {
   }
 void cacheOnFile1(){
   String code="""
-      {reuse[AdamTowel]
+      {reuse[AdamsTowel]
       A=Log"A".clear()
       B=Log"A".write(S"B")
       C=Debug(S"DoingC:"++Log"A".#$reader().read())}
@@ -285,12 +285,12 @@ void cacheOnFile1(){
   //ClassLoader.getSystemClassLoader().setDefaultAssertionStatus(false);
   //"".getClass().getClassLoader()
   String code1="""
-    {reuse [AdamTowel]
+    {reuse [AdamsTowel]
     Main1=(Debug(S"Hello world1") )
     Main2=Debug(S"Main41")}
     """;
   String code2="""
-      {reuse [AdamTowel]
+      {reuse [AdamsTowel]
       Main1=(Debug(S"Hello world1") )
       Main2=Debug(S"Main42")}
       """;
@@ -318,7 +318,7 @@ void cacheOnFile1(){
   }
 @Test void hashDollarEDiff(){
   String code="""
-      {reuse[AdamTowel]
+      {reuse[AdamsTowel]
       A=Log"A".clear()//also the test environment clears the log
       B=Log"A".write(S"B")
       C=Debug(S"DoingC:"++Log"A".#$reader().read())}

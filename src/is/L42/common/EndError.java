@@ -27,6 +27,9 @@ public abstract class EndError extends RuntimeException{
   public final List<Pos> poss;
   private final String msgPart;
   private String msg=null;
+  public static class InlinedNativeInvalid extends EndError{
+    public InlinedNativeInvalid(List<Pos> poss, String msg) { super(poss, msg);}
+    }
   public static class InferenceFailure extends EndError{
     public InferenceFailure(List<Pos> poss, String msg) { super(poss, msg);}
     }

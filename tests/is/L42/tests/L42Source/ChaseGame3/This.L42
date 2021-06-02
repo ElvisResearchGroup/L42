@@ -1,10 +1,10 @@
-reuse [AdamTowel]
-LoadJ=Load:{reuse[JavaServer]}
+reuse [AdamsTowel]
+LoadJ=Load:{reuse[L42.is/JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")
-LoadGui=Load:{reuse[GuiBuilder]}
+LoadGui=Load:{reuse[L42.is/GuiBuilder]}
 Gui=LoadGui(javaServer=JServer)
 
-VMT = Load : {reuse [#$VoxelMapTrait] }
+VMT = Load : {reuse [#$L42.is/VoxelMapTrait] }
 VM = Class: VMT : {
   class method I maxX()=50I
   class method I maxY()=100I

@@ -1,0 +1,30 @@
+//check if deploy also use Public and cacheLiterals
+//-it is doing Cache.Call but not Public
+
+//if native code does not compile, we do not get a compile error but a java mess
+//method S fileProtocol()=S"file://"
+//TODO: check if currently FS handles filenames starting with S"file://" or S"file:///" or S"file://localhost/"
+//the old Deploy in adam towel need a different way to be exposed
+//TODO: using https:// in the reuse causes a java exception
+//using a wrong url causes a EOFException in java
+//TODO: on java side, remove the \r\n, or at least the \r?
+//For the guide: nested return, how does it work? can A a={  B b={ return A()}} skip a curly?
+//TODO: wrong java syntax causes a java error, not a 42 compile error
+reuse [AdamsTowel]
+LoadDeploy = {
+  class method Library with(class Any writer)[_] = Class:DeployTrait['Writer=>writer]
+  DeployTrait=Trait:{
+    Writer={
+      Fail={}
+      mut method Void write(Url on, S contentBase64)[Fail]
+      }
+    class method Void towel(Trait that, Url on, mut Writer writer)[_] = (
+      content=System.towelToS(that.code())
+      _=writer.write(on=on, contentBase64=content)
+      void
+      )
+    class method Void module(Trait that, Name name, Url on, mut Writer writer)[_] = 
+      This.towel(System.module(that.code(),n=name), on=on, writer=writer)
+    //@Public class method This jar(Library that,Url on)=\(that,on=on,kind=3I)
+    }
+  }

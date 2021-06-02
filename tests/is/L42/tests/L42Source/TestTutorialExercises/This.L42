@@ -1,4 +1,4 @@
-reuse [AdamTowel]
+reuse [AdamsTowel]
 MaxOfList = {//static method pattern
   UndefinedOnEmpty = Message:{[Message.Guard]}
   //Max is undefined on empty lists.
@@ -47,12 +47,12 @@ FilterUpTo = {
     )
   }
 
-FileSystem = Load:{reuse[FileSystem]}
+FileSystem = Load:{reuse[L42.is/FileSystem]}
 
 ReadSelf = {
   class method
-  S (mut FileSystem that) = (
-    S s=that.read(fileName=S"This.L42")
+  S (mut FileSystem that)[FileSystem.Fail] = (
+    S s=that.read(Url"This.L42")
     Debug(S"[[%s]]")
     s
     //_=f.write(fileName=S"Example1.txt",content=S"SomeContent")
@@ -79,7 +79,7 @@ Main = (
     actual=FilterUpTo(S.List[S"a";S"ab";S"abc"] size=2I))
     
   {}:Test""(actual=ReadSelf(FileSystem.Real.#$of())
-    expected=S"reuse [AdamTowel]%S.nl()MaxOfList = [###]")
+    expected=S"reuse [AdamsTowel]%S.nl()MaxOfList = [###]")
   )
   
 Point = Data:{I x, I y
