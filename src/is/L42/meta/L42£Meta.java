@@ -19,6 +19,7 @@ import java.util.function.Function;
 import is.L42.cache.L42CacheMap;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
+import is.L42.common.ErrMsg;
 import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.generated.C;
@@ -150,14 +151,10 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       out.writeObject(l);
       out.flush();
       byte[] arr = auxOut.toByteArray();
-      return Resources.encoder.encodeToString(arr);
+      return Resources.encoder.encodeToString(arr).replace("\r\n","");
       }
     catch(IOException e) { throw unreachable(); }//unreachable
     }
-  public String deployJarToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
-    throw todo();    
-    }
-
   public L42£Void deployLibrary(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
     Core.L l=libraryCloseAndTyped(l42Lib, err);
@@ -178,6 +175,21 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     //the same type of the String
     return L42£Void.instance;
     }
+  public String deployJarToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+    var err=new MetaError(wrap);
+    Core.L l=libraryCloseAndTyped(l42Lib, err);
+    var mainS=S.parse("#$main()");
+    var main=_elem(l.mwts(),mainS);
+    if(main==null){ err.throwErr(mainS,"Method "+mainS+" not defined inside of the deployed code"); }
+    try{ return ToJar.ofBase64(l); }
+    catch (FileNotFoundException e) {throw unreachable();}
+    catch (IOException e) {throw unreachable();}
+    catch (CompilationError e) {
+      throw new EndError.InlinedNativeInvalid(l.poss(),
+        ErrMsg.nativeInlinedInvalid(e.getMessage()));
+      }
+    }
+  //TODO: to remove, should become dead code soon
   public L42£Void deployJar(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
       var err=new MetaError(wrap);
       Core.L l=libraryCloseAndTyped(l42Lib, err);
@@ -185,7 +197,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       var mainS=S.parse("#$main()");
       var main=_elem(l.mwts(),mainS);
       if(main==null){ err.throwErr(mainS,"Method "+mainS+" not defined inside of the deployed code"); }
-      try{ new ToJar().of(fullPath,l); }
+      try{ ToJar.ofPath(fullPath,l); }
       catch (FileNotFoundException e) {throw unreachable();}
       catch (IOException e) {
         e.printStackTrace();

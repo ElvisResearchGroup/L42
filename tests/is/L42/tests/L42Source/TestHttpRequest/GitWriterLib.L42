@@ -33,7 +33,7 @@ GitWriter = Data:{//slave name can be renamed with Trait.NativeSlaveRename(code,
     if !res error X"Invalid url: %on"
     )
   mut method S getSha(S user, S repository, S path, S branch)[HttpRequest.Fail] = {
-    //Note the following https://api.github.com/repos/Language42/is
+    //Note: the following https://api.github.com/repos/Language42/is
     //can give info about the  "default_branch",
     indexP = path.lastIndexOf(S"/")
     fileName = if indexP == I"-1" path else path.subString(indexP+1I to=\size)
@@ -79,18 +79,12 @@ GitWriter = Data:{//slave name can be renamed with Trait.NativeSlaveRename(code,
       |Authorization: token %token
       |Accept: application/vnd.github.v3+json
       """
-    S c = {
-      index = contentBase64.indexOf(S.nl())
-      if index==I"-1" return contentBase64
-      crnl = contentBase64.subString(index-1I to=index+1I)
-      return contentBase64.replace(crnl with=S"")
-      }
     body = S"""%
       |{
       |"owner": "%user",
       |"repo": "%repository",
       |"message": "%message",
-      |"content": "%c"%sha
+      |"content": "%contentBase64"%sha
       |} 
       """
     (statusCode2,body2) = this.#httpRequest()(request=request2, body=body)
