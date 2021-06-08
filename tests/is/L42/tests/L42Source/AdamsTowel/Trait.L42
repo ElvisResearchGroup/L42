@@ -74,4 +74,19 @@ ToLibrary=Name$Mapping().resource({[Lifted]
   ClassOperators={class method Trait()=This1()}
   method info()=ClassOperators().info()
   },name=Name"of()".that())
+  
+  
+RemoveUnusedCode={
+  class method This #apply()
+  method Library removeUnusedCode(Library that)=native{trusted:removeUnusedCode} error void
+  #norm{nativeKind=Meta,
+    typeDep=This,This2.Trait$MethodClash
+    coherentDep=This,This2.Trait$MethodClash
+    nativePar=This2.Trait$MethodClash This2.Trait$MethodClash This2.Trait$MethodClash This2.Trait$MethodClash This2.Trait$MethodClash
+    }}//Note: removeUnusedCode should not raise any error anyway
+
+@Public method This removeUnusedCode()=
+  Trait(RemoveUnusedCode().removeUnusedCode(this.code()))
+
+  
 @AbstractTowel{trait}

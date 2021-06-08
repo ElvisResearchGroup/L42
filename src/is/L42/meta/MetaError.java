@@ -45,7 +45,8 @@ public class MetaError{
     String elem="";
     if(fault instanceof P){
       var p=(P)fault;
-      assert !p.hasUniqueNum();
+      assert !p.hasUniqueNum():
+        "";
       elem+=p+"\n";
       }
     if(fault instanceof List){

@@ -97,14 +97,14 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     return res;
     }
   S renamedS(P.NCs path,S s){
-    List<C> currentP=_topCs(whereFromTop(),path);
+    List<C> currentP=CloneRenameUsages._topCs(whereFromTop(),path);
     if(currentP==null){return s;}
     Arrow a=r.map.get(new Arrow(currentP,s));
     if(a==null || !a.full){return s;}
     assert a._sOut!=null;
     return a._sOut;
     }
-  static List<C> _topCs(List<? extends LDom> ldoms,P.NCs p){//the result is not wrapped in an unmodifiable list
+  public static List<C> _topCs(List<? extends LDom> ldoms,P.NCs p){//the result is not wrapped in an unmodifiable list
     if(p.n()>ldoms.size()){return null;}
     if(p.n()==ldoms.size()){return p.cs();}
     ArrayList<C> res=new ArrayList<>();

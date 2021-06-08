@@ -5,14 +5,14 @@ Secret = {...}//THIS FILE IS NOT COMMITTED. You have to fill it with you git acc
 
 //Module 1
 HttpRequest = Trait:{...}
-HttpRequestDeployed = System.module(
+HttpRequestDeployed = System.extractModule(
   Class:HttpRequest['HttpRequest$Real=>'HttpRequest.Real],
-  n='HttpRequest) //ready for load
+  name='HttpRequest) //ready for load
 
 //Module 2, depends from Module 1; inlines it internally
 GitWriterLib = Trait({...})['GitWriter.HttpRequest.Fail=>'GitWriter.Fail]
-GitWriterDeployed = System.module( //ready for load
-  Class:GitWriterLib, n='GitWriter)[
+GitWriterDeployed = System.extractModule( //ready for load
+  Class:GitWriterLib, name='GitWriter)[
     hide='This.#apply(info,pre,center,contentBase64);
     hide='This.getSha(user,repository,path,branch);
     ]
@@ -37,8 +37,8 @@ UseGW = (
 
 //Module 3
 DeployLib = Trait:{...}
-DeployLibDeployed = System.module( //ready for load
-  Class:DeployLib, n='LoadDeploy)
+DeployLibDeployed = System.extractModule( //ready for load
+  Class:DeployLib, name='LoadDeploy)
 
 //now we can actually deploy on git
 LoadDeploy = Load:DeployLibDeployed.code()
@@ -46,6 +46,9 @@ DeployGit = LoadDeploy.with(writer=GW)
 Writer = {class method mut GW #$of(S that) = 
   GW.#$of(token=Secret.#$of(), message=that++S" automatic release 42V0.95")
   }
+
+
+
 
 //Module 0  -- Towel AdamsTowel --> AdamsTowel
 TaskDeployAdams = DeployGit.towel(Trait({reuse [AdamsTowel]})
@@ -67,6 +70,20 @@ TaskDeployGitWriterDeployed = DeployGit.towel(GitWriterDeployed()
 TaskDeployDeployLib = DeployGit.towel(DeployLibDeployed()
   on=Url"github.com/Language42/is/Deploy.L42"
   writer=Writer.#$of(S"Deploy")
+  )
+
+ToJar=Trait:{reuse [AdamsTowel]
+  Point = Data:{Num x, Num y, Any note}
+  A={class method Void foo()=(
+    p = Point(x=3Num,y=5Num, note=Name"Info.info()")
+    Debug(S"hello WORLD ToJar %p")
+    )}
+  class method Void #$main()=A.foo()
+  }
+  
+DeployJar = DeployGit.jar(ToJar()
+  on=Url"github.com/Language42/is/ExampleJar.jar"
+  writer=Writer.#$of(S" Example Jar")
   )
   
 AllDone = {}:Test"All done reached"(Bool.true())

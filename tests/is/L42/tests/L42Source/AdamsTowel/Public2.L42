@@ -37,7 +37,7 @@ Invisible ={}
     res:=res(squareBuilder=hide)
     ))
   catch error S$ParseError e exception Trait$InvalidName(e.text())
-  Cache$Call:res
+  res
   )
 method Bool normEq(Introspection.Doc doc, Introspection.Nested other) = {
   if other.isBinded() return doc.annotatedAs(nested=other)

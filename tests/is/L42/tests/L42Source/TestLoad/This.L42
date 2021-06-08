@@ -11,7 +11,7 @@ GW = Load:{reuse[L42.is/GitWriter]}
 LoadDeploy = Load:{reuse[L42.is/Deploy]}
 DeployGit = LoadDeploy.with(writer=GW)
 
-Deployed0 = Load:Class.Relax:System.module(Base.code(),n='Main)
+Deployed0 = Load:Class.Relax:System.extractModule(Base.code(),name='Main)
 
 Deployed1 = DeployGit.module(Base()
   name='Main

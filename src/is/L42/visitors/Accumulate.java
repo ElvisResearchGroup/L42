@@ -22,7 +22,7 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
     }
   protected T result=empty();
   public T acc(){return this.result;}
-  public T empty(){return null;}//can be overrided, but is often left to null  
+  public T empty(){return null;}//can be overrided, but is often left to null
   public static abstract class SkipL<T> extends Accumulate<T>{
     @Override public void visitL(Full.L l){}
     @Override public void visitL(Core.L l){}

@@ -20,44 +20,8 @@ record CommitFileOrGitHub() {
   /*
    serialize deserialize IS faster then parsing
    //fix todo class method S #$readBase64(S fileName)[System.JavaException]=error X"todo"
-   -trait instead of Library
-   git:
-   -read token file? extra parameter?
-   -use java to gittit?
-   4-test loading of stuff done with this new fs+deploy
-   7-remove deployJar 
-   
-   in Library,
-   out write out?
-   - missing bit is a java Consumer<byte[]>
-   42 standard can provide a toJar: Library -> S (Base64)
-   then we can write a library that:
-     - takes such string and save it to a file? (a twist on the existing File IO?)
-     - takes much more info and write it to git
-     - takes an url and dispatch on one of the two
-   
-   FileSystem should be in the towel? //NO
-   --DeployLibrary becomes a primitiveDeploy and does not get @Public
-   it deploys to /primitiveDeploy instead of localhost
-   --DeployJar disappear
-   --add DeployLibToS and DeployLibJarToS
-   -Make a new github project
-      L42Libraries
-   -Make a Deploy module (it will selfdeploy and deploy the FS too :) )
-     -it will also Deploy adamtowel on L42Libraries
-   -reuse will hardcode that L42.is/ translates to ??L42Libraries/
-   
-   
-   -----
-   Deploy$ line 1 is module
-   
-   ----
-   
-   DeployLibrary("deployLibrary",Map.of(
-    Meta,use("return %s.deployLibrary(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
-   DeployJar("deployJar",Map.of(
-    Meta,use("return %s.deployJar(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
-
+   7-remove deployJar
+   -System.deployModule better name/parname
    */
 }
 record CommitGitHubFile(

@@ -1,5 +1,3 @@
-//DONE: on java side, remove the \r\n, or at least the \r?
-//do the Jar deploy!
 reuse [AdamsTowel]
 LoadDeploy = {
   class method Library with(class Any writer)[_] = Class:DeployTrait['Writer=>writer]
@@ -9,12 +7,17 @@ LoadDeploy = {
       mut method Void write(Url on, S contentBase64)[Fail]
       }
     class method Void towel(Trait that, Url on, mut Writer writer)[_] = (
-      content=System.towelToS(that.code())
+      res=Cache.Call:that.removeUnusedCode()
+      content=System.towelToS(res.code())
       _=writer.write(on=on, contentBase64=content)
       void
       )
     class method Void module(Trait that, Name name, Url on, mut Writer writer)[_] = 
-      This.towel(System.module(that.code(),n=name), on=on, writer=writer)
-    //@Public class method This jar(Library that,Url on)=\(that,on=on,kind=3I)
+      This.towel(System.extractModule(that.code(),name=name), on=on, writer=writer)
+    class method Void jar(Trait that,Url on, mut Writer writer)[_] = (
+      content=System.jarToS(that.code())
+      _=writer.write(on=on, contentBase64=content)
+      void
+      )
     }
   }

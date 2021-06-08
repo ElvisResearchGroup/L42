@@ -1,10 +1,8 @@
 DeployMeta={
   class method This of()
   class method This #apply()
-  method Void deployLibrary(This2.S that,Library lib)=
-    native{trusted:deployLibrary} error void
-  method Void deployJar(This2.S that,Library lib)=
-    native{trusted:deployJar} error void
+  method Void #$deployLibrary(This2.S that,Library lib)=
+    native{trusted:#$deployLibrary} error void
   method This2.S deployLibraryToBase64(Library lib)=
     native{trusted:deployLibraryToBase64} error void
   method This2.S deployJarToBase64(Library lib)=
@@ -17,6 +15,5 @@ DeployMeta={
     }}
 @Public class method S towelToS(Library that)=
   DeployMeta.of()<:imm DeployMeta.deployLibraryToBase64(lib=that)
-//become the method that return the S in base64
-@Public class method Void jar(Url url,Library code)=
-  DeployMeta.of()<:imm DeployMeta.deployJar(url.toS(),lib=code)
+@Public class method S jarToS(Library that)=
+  DeployMeta.of()<:imm DeployMeta.deployJarToBase64(lib=that)

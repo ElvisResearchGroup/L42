@@ -117,13 +117,13 @@ public class General {
     for(int i=0;i<size;i++){res.add(l.get(i));}
     return Collections.unmodifiableList(res);
     }
-  public static <T> List<T>pushL(T e,List<T>l){
+  public static <T> List<T>pushL(T e,List<? extends T>l){
     ArrayList<T> res=new ArrayList<>();
     res.add(e);
     res.addAll(l);
     return Collections.unmodifiableList(res);
     }
-  public static <T> List<T>pushL(List<T>l,T e){
+  public static <T> List<T>pushL(List<? extends T>l,T e){
     ArrayList<T> res=new ArrayList<>();
     res.addAll(l);
     res.add(e);

@@ -312,14 +312,12 @@ public enum TrustedOp {
       Lib,String,String,String,String,String))
     )),
   //####META####
-  DeployLibrary("deployLibrary",Map.of(
+  DeployLibrary("#$deployLibrary",Map.of(
     Meta,use("return %s.deployLibrary(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
-  DeployJar("deployJar",Map.of(
-          Meta,use("return %s.deployJar(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
   DeployLibraryToBase64("deployLibraryToBase64",Map.of(
     Meta,use("return %s.deployLibraryToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),      
   DeployJarToBase64("deployJarToBase64",Map.of(
-      Meta,use("return %s.deployJarToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),      
+      Meta,use("return %s.deployJarToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),
 
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),
@@ -337,6 +335,8 @@ public enum TrustedOp {
     Meta,use("return %s.resetDocs(%s,%s,%Gen1::wrap);",sigI(Lib,Lib,HIMap)))),
   NativeSlaveRename("nativeSlaveRename",Map.of(
       Meta,use("return %s.nativeSlaveRename(%s,%s,%s,%Gen1::wrap);",sigI(Lib,Lib,String,String)))),
+  RemoveUnusedCode("removeUnusedCode",Map.of(
+      Meta,use("return %s.removeUnusedCode(%s);",sigI(Lib,Lib)))),
   Wither("wither",Map.of(
     Meta,use("return %s.wither(%s,%s,%Gen1::wrap,%s);",sigI(Lib,Lib,String,String)))),
   AddMapP("addMapP",Map.of(

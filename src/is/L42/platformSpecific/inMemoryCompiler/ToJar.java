@@ -41,7 +41,8 @@ public abstract class ToJar {
         {OutputStream output(){return stream;}}
         .of(lib);
       stream.flush();
-      return Resources.encoder.encodeToString(stream.toByteArray());
+      return Resources.encoder.encodeToString(stream.toByteArray())
+        .replace("\r\n","");
     }
   }
   long timeNow=System.currentTimeMillis();

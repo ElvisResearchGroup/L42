@@ -1,11 +1,7 @@
 package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.L;
-import static is.L42.tools.General.mergeU;
-import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.todo;
-import static is.L42.tools.General.unreachable;
+import static is.L42.tools.General.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.FileNotFoundException;
@@ -65,6 +61,11 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     L l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new ResetDocs().apply(pIn,map,wrap));
+    }
+  public L42£Library removeUnusedCode(L42£Library input){
+    L l=input.unwrap;
+    L res=new RemoveUnusedCode().of(l);
+    return wrapL(res);
     }
   public L42£Library wither(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
     L l=input.unwrap;
@@ -126,16 +127,22 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       Program p=Program.flat(l);
       l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient
         @Override public P visitP(P p){
-          boolean open=p.isNCs() && (p.toNCs().n()>p().dept() || this.p()._ofCore(p)==null);
-          if(open){
-            err.throwErr(p,"Path "+p+" not defined inside of deployed code");
-            }
-          return p;
+          if(!p.isNCs()) {return p;}
+          boolean out=p.toNCs().n()>p().dept();
+          if(out){err.throwErr(p,"Path "+p+" not defined inside of deployed code");}
+          boolean missed=this.p()._ofCore(p)==null;
+          if(!missed){return p;}
+          var cs=popLRight(p.toNCs().cs());
+          var p0=new P.NCs(p.toNCs().n(),cs);
+          var loc=this.p()._ofCore(p0);
+          if(loc==null){
+            throw new AssertionError("Path "+p+" not defined,  nor  "+p0);}
+          throw new AssertionError("Path "+p+" not defined in "+loc.poss());
           }
         });
       try {ProgramTypeSystem.type(true, p);}
       catch(EndError e){
-        err.throwErr(l42Lib,e.toString());
+        throw err.throwErr(l42Lib,e.toString());
         }
       l=l.accept(new CloneVisitor(){
         @Override public Core.L.Info visitInfo(Core.L.Info info){
@@ -162,17 +169,11 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     try(
       var file=new FileOutputStream(fullPath.toFile()); 
       var out=new ObjectOutputStream(file);
-      ){
-      out.writeObject(l);
-      }
-    catch (FileNotFoundException e) {throw unreachable();}
+      ){ out.writeObject(l); }
+    //catch (FileNotFoundException e) {throw unreachable();}
     catch (IOException e) {
-      e.printStackTrace();
-      throw todo();
+      throw err.throwErr(fullPath,"Failed to read file:\n"+e.getMessage());
       }
-    //TODO: should throw a non deterministic exception as for 
-    //memory overflow/stack overflow. It should be error S,
-    //the same type of the String
     return L42£Void.instance;
     }
   public String deployJarToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
@@ -189,30 +190,6 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
         ErrMsg.nativeInlinedInvalid(e.getMessage()));
       }
     }
-  //TODO: to remove, should become dead code soon
-  public L42£Void deployJar(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
-      var err=new MetaError(wrap);
-      Core.L l=libraryCloseAndTyped(l42Lib, err);
-      Path fullPath=Constants.localhost.resolve(s+".jar");
-      var mainS=S.parse("#$main()");
-      var main=_elem(l.mwts(),mainS);
-      if(main==null){ err.throwErr(mainS,"Method "+mainS+" not defined inside of the deployed code"); }
-      try{ ToJar.ofPath(fullPath,l); }
-      catch (FileNotFoundException e) {throw unreachable();}
-      catch (IOException e) {
-        e.printStackTrace();
-        throw todo();
-        }
-      catch (CompilationError e) {
-        e.printStackTrace();
-        throw todo();
-        }
-      //TODO: should throw a non deterministic exception as for 
-      //memory overflow/stack overflow. It should be error S,
-      //the same type of the String
-      return L42£Void.instance;
-      }
-
   public L42£Library sifo(L42£Library input,L42Any top,Function<L42£LazyMsg,L42Any>wrap){
     L l=input.unwrap;
     var pathTop=unwrapPath(top).toNCs();
