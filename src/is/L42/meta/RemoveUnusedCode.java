@@ -122,8 +122,6 @@ class CollectFix{
         var key0=pushL(key,mwt.key());
         this.novel.put(key0,mwt);
         this.all.put(key0,mwt);
-//        var visitor1=new AccumulateUsedNames(p0,cs0);
-//        visitor1.visitMWT(mwt);
         }
       }
     }
@@ -135,8 +133,11 @@ class CollectFix{
     List<C> _topCs(P.NCs p){
       var inC=whereFromTop.isEmpty() || whereFromTop.get(whereFromTop.size()-1) instanceof C;
       var inC2=whereFromTop.size()>1 && whereFromTop.get(whereFromTop.size()-2) instanceof C;
-      var inBody=inC2 && (this.p.pTails.isEmpty()||!this.p.pTails.hasC());
-      var where= inBody || inC?whereFromTop:popLRight(whereFromTop);
+      var inTopMeth=!inC && whereFromTop.size()==1;
+      var inMetaBody= (inTopMeth||inC2) && (
+        !this.p.pTails.isEmpty() && !this.p.pTails.hasC()
+        );
+      var where= inMetaBody || inC?whereFromTop:popLRight(whereFromTop);
       return CloneRenameUsages._topCs(where,p);
       }
     private void processP(P p){
@@ -145,14 +146,18 @@ class CollectFix{
       if(ls==null){return;}
       if(all.containsKey(ls)){return;}
       if(ls.isEmpty()){return;}
-      var out=Program.flat(topLib)._ofCore(popLRight(ls));
+      addAllPrefixes(ls);
+      }
+    private void addAllPrefixes(List<C> ls){
+      var ls0=popLRight(ls);
+      var out=Program.flat(topLib)._ofCore(ls0);
       var nci=_elem(out.ncs(),ls.get(ls.size()-1));
       assert nci!=null:
         "";
       novel.put(ls,nci);
       all.put(ls, nci);
+      if(!ls0.isEmpty()){addAllPrefixes(ls0);}
       }
-    //@Override public void visitInfo(Info i){}
     @Override public void visitL(Core.L l){
       visitLWithP(l,p.push(l));
       }
@@ -201,9 +206,11 @@ class CollectFix{
 //1-collect all List<LDom>
 //1a-all=[], new=[], swap=collect all public List<LDom>
 //1b-forall ds in swap collect all used names in new
+//  all the prefixes of the used are used
+//  all methods of used native and interfaces are marked as used, even if unused
+//  all refined methods of used classes are marked as used.
 //1c all+=swap, swap=new, new=[]
 //1d back to b, until change
-//1e: all the prefixes of the used are used
 //2-clone visitor keep only the stuff in visitedLDom
 class RestVisitor extends CloneVisitor{
   Set<List<?extends LDom>> rest;
@@ -268,16 +275,9 @@ class RestVisitor extends CloneVisitor{
     }
   }
 public class RemoveUnusedCode {
-  private Stream<List<? extends LDom>> prefixes(List<? extends LDom> ls){
-    if(ls.size()<=1){return Stream.of(ls);}
-    return Stream.concat(Stream.of(ls),prefixes(popLRight(ls)));
-    }
   public Core.L of(Core.L l){
     var rest=precompute(l);
-    var allRest=rest.all.keySet().stream()
-      .flatMap(ls->prefixes(ls))
-      .collect(Collectors.toCollection(LinkedHashSet::new));
-    return l.accept(new RestVisitor(allRest));
+    return l.accept(new RestVisitor(rest.all.keySet()));
     }
   public CollectFix precompute(Core.L l){
     return new CollectFix(l);

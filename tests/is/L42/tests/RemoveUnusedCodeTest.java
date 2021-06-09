@@ -12,7 +12,8 @@ import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-
+import is.L42.generated.S;
+import is.L42.meta.Arrow;
 import is.L42.meta.RemoveUnusedCode;
 import is.L42.meta.Rename;
 import is.L42.platformSpecific.javaTranslation.L42Any;
@@ -23,24 +24,34 @@ import is.L42.top.Init;
 import is.L42.top.UniqueNsRefresher;
 
 class RemoveUnusedCodeTest {
-  Core.L hide(Core.L l,String ... cs){
+  Core.L hide(Core.L l,List<Arrow> renames){
     try{
-      List<C> csList=L(Stream.of(cs).map(s->new C(s,-1)));
-      var renames=List.of(new is.L42.meta.Arrow(csList,null,true,true,null,null,null));
       Function<L42£LazyMsg,L42Any>wrap=lm->{throw new Error(lm.getMsg());};
       return new Rename(new UniqueNsRefresher())
         .apply(Program.flat(l),new C("TOP",-1),l,
         renames,wrap,wrap,wrap,wrap);
       }
     catch(Throwable t){return l;}
-  }
+    }
+  Arrow cs(String... cs){
+    List<C> csList=L(Stream.of(cs).map(s->new C(s,-1)));
+    return new Arrow(csList,null,true,true,null,null,null);
+    }
+  Arrow s_cs(String sel,String... cs){
+    List<C> csList=L(Stream.of(cs).map(s->new C(s,-1)));
+    return new Arrow(csList,S.parse(sel),true,false,null,null,null);
+    }
   void checkDeps(String lib,String expected,String expectedRes){
     Resources.clearResKeepReuse();
     Core.L l1=Init.topCache(new CachedTop(L(),L()),"{"+lib+"}");
-    l1=hide(l1,"B_");
-    l1=hide(l1,"C_");
-    l1=hide(l1,"A","B_");
-    l1=hide(l1,"A","C_");
+    l1=hide(l1,List.of(cs("B_")));
+    l1=hide(l1,List.of(cs("C_")));
+    l1=hide(l1,List.of(cs("A","B_")));
+    l1=hide(l1,List.of(cs("A","C_")));
+    l1=hide(l1,List.of(s_cs("f_()","A")));
+    l1=hide(l1,List.of(s_cs("a_()","A")));
+    l1=hide(l1,List.of(s_cs("f_()")));
+    l1=hide(l1,List.of(s_cs("a_()")));
     String res=""+new RemoveUnusedCode().precompute(l1);
     String tot=""+new RemoveUnusedCode().of(l1);
     Err.strCmp(res,expected);
@@ -309,6 +320,7 @@ class RemoveUnusedCodeTest {
     A
     A.foo()
     C_::1.B::2
+    C_::1
     C_::1.B::2.bar::3()
     ""","""
     A={method Void foo()=
@@ -338,6 +350,7 @@ class RemoveUnusedCodeTest {
       A
       A.foo()
       C_::1.I::2
+      C_::1
       C_::1.B::2
       C_::1.I::2.bar::3()
       C_::1.I::2.beer::3()
@@ -376,6 +389,7 @@ class RemoveUnusedCodeTest {
       A
       A.foo()
       C_::1.B::2
+      C_::1
       C_::1.I::2.bar::3()
       C_::1.I::2
       C_::1.B::2.bar::3()
@@ -398,9 +412,78 @@ class RemoveUnusedCodeTest {
       #norm{typeDep=This}
       """);}
   
+
+  
+  @Test void testPrivOnlyInInfo1() {checkDeps("""
+    A = {
+      B_={#norm{}}
+      #norm{typeDep=This.B_}}
+    ""","""
+    A
+    ""","""
+    A={#typed{typeDep=This}}#norm{}
+    """);}
+  @Test void testPrivOnlyInInfo2() {checkDeps("""
+    A = {
+      method Library code()={
+        B={#norm{}}
+        #norm{typeDep=This.B}}
+      }
+    ""","""
+    A
+    A.code()
+    ""","""
+    A={method Library code()= {
+        B={#norm{}}
+        #typed{typeDep=This.B}}
+      #typed{}}
+    #norm{}
+    """);}
+  @Test void testPrivOnlyInInfo3() {checkDeps("""
+    method Library code()={
+      B={#norm{}}
+      #norm{typeDep=This.B}}
+    ""","""
+    code()
+    ""","""
+    method Library code()= {
+      B={#norm{}}
+      #norm{typeDep=This.B}}
+    #norm{}
+    """);}
+  @Test void testPrivMeth() {checkDeps("""
+      A = {
+        method Void foo()=this.f_()
+        method Void f_()=void 
+        }
+      ""","""
+      A
+      A.foo()
+      A.f_::1()
+      ""","""
+      A={
+        method Void foo()=this.f_::1()
+        method Void f_::1()=void
+        #typed{}}
+      #norm{}
+      """);}
+  @Test void testPrivMethTop() {checkDeps("""
+      method Void foo()=this.f_()
+      method Void f_()=void 
+      ""","""
+      foo()
+      f_::1()
+      ""","""
+      method Void foo()=this.f_::1()
+      method Void f_::1()=void
+      #norm{}
+      """);}
+
   //se un metodo e' refined/native non e' rimosso.
   //ma se non e' rimosso, allora potrebbe usare nel corpo o nell'header degli altri tipi.
   //quindi devo aggiungerlo alla visita in qualche modo.
 }
 //what if an nc is kept as a box?
 //TODO: should boxes be kept EMPTY??? it would be more effective too
+//TODO: is not well typed code well formed if a path name is dangling?
+//if so, there is an error case for RemoveUnusedCode? if not... is it checked?
