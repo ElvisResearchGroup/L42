@@ -1,39 +1,17 @@
 package is.L42.introspection;
 
-import static is.L42.tools.General.merge;
-import static is.L42.tools.General.popLRight;
-import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.todo;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
-import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.L42ValueCache;
-import is.L42.common.Program;
-import is.L42.generated.C;
-import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
-
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+
+import is.L42.cache.L42CacheMap;
 import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.MH;
-import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
-import is.L42.generated.Pos;
-import is.L42.meta.L42£Meta;
 import is.L42.meta.L42£Name;
 import is.L42.meta.MetaError;
 import is.L42.nativeCode.TrustedKind;
-import is.L42.platformSpecific.javaTranslation.L42Any;
-import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
-import is.L42.platformSpecific.javaTranslation.L42£Library;
-import is.L42.platformSpecific.javaTranslation.Resources;
-import is.L42.tools.General;
 
 public class L42£Method extends L42NoFields.Eq<L42£Method>{
   static public L42£Method fromNested(String pos,L42£Nested nested,L42£Name name){

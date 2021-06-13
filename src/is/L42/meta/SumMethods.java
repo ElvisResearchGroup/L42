@@ -6,7 +6,6 @@ import static is.L42.tools.General.L;
 import java.util.ArrayList;
 import java.util.List;
 
-import is.L42.common.Program;
 import is.L42.generated.Core.L.MWT;
 
 //92 wither too

@@ -10,7 +10,6 @@ import is.L42.generated.Core.L;
 import is.L42.generated.LDom;
 import is.L42.generated.P;
 import is.L42.generated.S;
-import is.L42.meta.Arrow;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;
 import is.L42.visitors.CloneVisitor;

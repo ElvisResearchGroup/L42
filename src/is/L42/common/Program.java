@@ -211,7 +211,7 @@ public class Program implements Visitable<Program>{
     var docs=fromDocs(mwt.docs(),source);
     Core.E e=null;
     if(mwt._e()!=null){e=from(mwt._e(),source);}
-    return new MWT(mwt.poss(),docs,mh,mwt.nativeUrl(),mwt._e());
+    return new MWT(mwt.poss(),docs,mh,mwt.nativeUrl(),e);
     }
   public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
   public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source).visitDocs(docs);}

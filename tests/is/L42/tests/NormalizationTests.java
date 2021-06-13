@@ -27,7 +27,6 @@ import is.L42.cache.exampleobjs.R2;
 import is.L42.cache.exampleobjs.S1;
 import is.L42.cache.exampleobjs.Singleton;
 import is.L42.nativeCode.Flags;
-import is.L42.nativeCode.TrustedKind;
 
 public class NormalizationTests {
   

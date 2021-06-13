@@ -1,23 +1,15 @@
 package is.L42.tests;
 
 import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Parse;
 import is.L42.generated.Core;
-import is.L42.generated.Full;
 import is.L42.generated.X;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FV;
-import is.L42.visitors.FullL42Visitor;
-
-
-import static is.L42.tests.TestHelpers.*;
-import static is.L42.tools.General.range;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

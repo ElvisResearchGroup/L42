@@ -6,25 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.junit.jupiter.api.Assertions.fail;
 
-import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
-import java.util.stream.IntStream;
-
 import org.junit.jupiter.api.Test;
 
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.common.ReadURL;
-import is.L42.constraints.FreshNames;
 import is.L42.generated.Core;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
-import is.L42.top.State;
-import is.L42.translationToJava.Loader;
 
 public class TestCachingCases {
 @Test void base(){pass("{A0={B1={} B2={} B3={}}}",

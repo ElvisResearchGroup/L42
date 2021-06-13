@@ -4,26 +4,17 @@ import static is.L42.tools.General.L;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.Parse;
-import is.L42.common.Program;
 import is.L42.generated.Core;
-import is.L42.generated.Full;
-import is.L42.generated.LDom;
-import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42Exception;
-import is.L42.platformSpecific.javaTranslation.L42Return;
 import is.L42.platformSpecific.javaTranslation.L42Throwable;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;

@@ -1,10 +1,8 @@
 package is.L42.typeSystem;
 
-import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.L;
-import static is.L42.tools.General.range;
 import static is.L42.generated.Mdf.*;
 import static is.L42.generated.ThrowKind.*;
+import static is.L42.tools.General.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,14 +10,25 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import is.L42.generated.Core.*;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Mdf;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.Core.Block;
+import is.L42.generated.Core.D;
+import is.L42.generated.Core.E;
+import is.L42.generated.Core.EVoid;
+import is.L42.generated.Core.EX;
+import is.L42.generated.Core.K;
+import is.L42.generated.Core.L;
+import is.L42.generated.Core.Loop;
+import is.L42.generated.Core.MCall;
+import is.L42.generated.Core.OpUpdate;
+import is.L42.generated.Core.PCastT;
+import is.L42.generated.Core.T;
+import is.L42.generated.Core.Throw;
+import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;

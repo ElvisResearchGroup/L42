@@ -1,11 +1,7 @@
 package is.L42.visitors;
 
-import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;
@@ -14,7 +10,6 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Full.D;
 import is.L42.generated.ThrowKind;
-import is.L42.generated.X;
 class HasReturn extends PropagatorCollectorVisitor{
   boolean find=false;
   public static boolean of(Full.E e){

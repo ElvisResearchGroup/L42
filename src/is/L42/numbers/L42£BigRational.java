@@ -2,19 +2,9 @@ package is.L42.numbers;
 
 import static is.L42.tools.General.unreachable;
 
-import java.io.Reader;
 import java.math.BigInteger;
-import java.math.MathContext;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
 
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 

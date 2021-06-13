@@ -1,35 +1,27 @@
 package is.L42.translationToJava;
 
-import java.io.IOException;
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.checkNoException;
+
 import java.lang.reflect.InvocationTargetException;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.function.Consumer;
+
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
-import is.L42.generated.P;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
-import is.L42.tools.General;
-import is.L42.tools.InductiveSet;
-import is.L42.typeSystem.Coherence;
 import is.L42.visitors.WellFormedness;
-
-import static is.L42.tools.General.L;
-import static is.L42.tools.General.checkNoException;
 
 class Element{
   public Element(L l,List<C> path,String cIds,SourceFile source){

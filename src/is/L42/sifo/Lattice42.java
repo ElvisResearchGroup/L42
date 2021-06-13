@@ -1,12 +1,8 @@
 package is.L42.sifo;
 
-import static is.L42.tools.General.L;
-
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import is.L42.common.Program;

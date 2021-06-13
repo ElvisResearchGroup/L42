@@ -5,10 +5,9 @@ import static is.L42.tools.General.unreachable;
 import java.util.List;
 import java.util.Map;
 
-import is.L42.cache.L42Cache;
 import is.L42.cache.KeyNorm2D;
+import is.L42.cache.L42Cache;
 import is.L42.cache.NormResult;
-import is.L42.tools.General;
 
 public abstract class L42ValueCache<Type> implements L42Cache<Type> {
 

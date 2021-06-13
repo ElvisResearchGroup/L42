@@ -1,33 +1,12 @@
 package is.L42.platformSpecific.javaTranslation;
 
-import static is.L42.tools.General.todo;
-import static is.L42.tools.General.unreachable;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.cache.L42SingletonCache;
-import is.L42.cache.nativecache.L42ValueCache;
-import is.L42.common.Constants;
-import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
-import is.L42.common.Program;
-import is.L42.generated.Core;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
-import is.L42.meta.MetaError;
-import is.L42.typeSystem.ProgramTypeSystem;
-import is.L42.visitors.CloneVisitor;
-import is.L42.visitors.CloneVisitorWithProgram;
 
 public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
   private L42£TrustedIO(){}
@@ -56,10 +35,10 @@ public class L42£TrustedIO extends L42NoFields<L42£TrustedIO>{
       }
     }
   public L42£Void testActualExpected(L42£Library hasPos,String name, String actual, String expected,String message,String hole){
-    System.out.println("testActualExpected");
-    System.out.println(name);
-    System.out.println(actual);
-    System.out.println(expected);
+    //System.out.println("testActualExpected");
+    //System.out.println(name);
+    //System.out.println(actual);
+    //System.out.println(expected);
     boolean cond=hole.isEmpty()?actual.equals(expected):ErrMsg.strCmpAux(actual,expected,hole);
     Pos pos=hasPos.unwrap.pos();
     assert !name.contains("\n");

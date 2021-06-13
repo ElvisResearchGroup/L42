@@ -1,5 +1,8 @@
 package is.L42.meta;
 
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.pushL;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -8,18 +11,14 @@ import java.util.function.Function;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.P;
-import is.L42.main.Main;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.PathSel;
+import is.L42.generated.P;
 import is.L42.maps.L42£ImmMap;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
-import is.L42.tools.General;
 import is.L42.visitors.CloneVisitor;
-
-import static is.L42.tools.General.*;
 
 public class ResetDocs extends CloneVisitor{
   MetaError err;

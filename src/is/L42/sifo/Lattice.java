@@ -3,15 +3,11 @@ package is.L42.sifo;
 import static is.L42.tools.General.L;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import com.google.common.collect.Lists;
-
-import is.L42.generated.P;
 import is.L42.tools.General;
 
 public abstract class Lattice<T> {

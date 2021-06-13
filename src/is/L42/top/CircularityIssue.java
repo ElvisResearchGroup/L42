@@ -1,17 +1,16 @@
 package is.L42.top;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
+import is.L42.generated.Core;
 import is.L42.generated.Core.E;
 import is.L42.generated.Core.L;
-import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.P;
-import is.L42.generated.Pos;
 
 public class CircularityIssue {
   List<P.NCs> typePs; Program p; E e;List<Full.L.NC>moreNCs;

@@ -1,22 +1,18 @@
 package is.L42.platformSpecific.javaTranslation;
 
 import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.todo;
 
 import java.io.Serializable;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-import is.L42.cache.L42Cachable;
-import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Core.L;
 import is.L42.generated.P;
 import is.L42.tools.General;
-import is.L42.generated.Core.L;
 
 public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any,Serializable{
   Program originP;

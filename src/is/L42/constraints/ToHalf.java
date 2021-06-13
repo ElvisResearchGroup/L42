@@ -1,35 +1,31 @@
 package is.L42.constraints;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unique;
-import static is.L42.tools.General.unreachable;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.function.Predicate;
 import java.util.stream.Stream;
 
 import is.L42.common.CTz;
-import is.L42.common.EndError;
 import is.L42.common.NameMangling;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.Core.EVoid;
 import is.L42.generated.Full;
+import is.L42.generated.Full.D;
+import is.L42.generated.Full.E;
+import is.L42.generated.Full.Par;
+import is.L42.generated.Full.VarTx;
 import is.L42.generated.Half;
 import is.L42.generated.Half.K;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.Op.OpKind;
-import is.L42.typeSystem.TypeManipulation;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -37,17 +33,10 @@ import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.generated.Y;
-import is.L42.generated.Full.Call;
-import is.L42.generated.Full.Cast;
-import is.L42.generated.Full.D;
-import is.L42.generated.Full.E;
-import is.L42.generated.Full.If;
-import is.L42.generated.Full.Par;
-import is.L42.generated.Full.VarTx;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.Returning;
 import is.L42.visitors.UndefinedCollectorVisitor;
-import is.L42.visitors.Visitable;
 
 public class ToHalf extends UndefinedCollectorVisitor{
   public static class Res<T>{

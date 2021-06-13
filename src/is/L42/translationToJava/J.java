@@ -1,24 +1,16 @@
 package is.L42.translationToJava;
 
 import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
-import static is.L42.tools.General.popL;
-import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.range;
+import static is.L42.tools.General.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 import is.L42.common.G;
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.generated.Core.D;
-import is.L42.generated.Core.E;
 import is.L42.generated.Core.L.MWT;
 import is.L42.nativeCode.CacheNowGenerator;
 import is.L42.nativeCode.CacheLazyGenerator;
@@ -31,12 +23,10 @@ import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.S;
-import is.L42.generated.ST;
 import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.typeSystem.Coherence;
-import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.FV;
 import is.L42.visitors.ToSTrait;
 
@@ -695,11 +685,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     kw("@Override");
     refineMethHeader(mh);
     refineMethBody(mh);
-    }
-  private void staticMethHeader(MH mh) {
-    var res=staticMethHeaderStr(mh);
-    assert res.size()==1;
-    c(res.get(0));
     }
   private List<String> staticMethHeaderStr(MH mh) {
     var retT=typeNameStr(mh.t());

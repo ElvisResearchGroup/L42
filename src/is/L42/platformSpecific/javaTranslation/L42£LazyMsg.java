@@ -1,25 +1,9 @@
 package is.L42.platformSpecific.javaTranslation;
 
-import static is.L42.tools.General.todo;
-import static is.L42.tools.General.unreachable;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
-import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.L42ValueCache;
-import is.L42.common.Program;
-import is.L42.generated.Core;
-import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedKind;
-import is.L42.typeSystem.ProgramTypeSystem;
-import is.L42.visitors.CloneVisitor;
 
 public class L42£LazyMsg extends L42NoFields.Eq<L42£LazyMsg>{
   private static Supplier<String> base=()->"";

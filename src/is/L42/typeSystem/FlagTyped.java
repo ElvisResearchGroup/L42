@@ -5,11 +5,9 @@ import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.typeFilter;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;
@@ -18,10 +16,6 @@ import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.P;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.ClassFile;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
-import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitor;

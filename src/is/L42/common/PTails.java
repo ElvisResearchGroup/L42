@@ -2,10 +2,6 @@ package is.L42.common;
 
 import static is.L42.tools.General.bug;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.LL;

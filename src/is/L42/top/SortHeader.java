@@ -4,37 +4,27 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popL;
-import static is.L42.tools.General.todo;
-import static is.L42.tools.General.typeFilter;
-import static is.L42.tools.General.unique;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
 import is.L42.common.Constants;
 import is.L42.common.EndError;
+import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
-import is.L42.common.EndError.InvalidImplements;
-import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Core.L.Info;
+import is.L42.generated.Core.MH;
+import is.L42.generated.Core.T;
 import is.L42.generated.Full;
+import is.L42.generated.Full.L.M;
+import is.L42.generated.LDom;
 import is.L42.generated.LL;
-import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
-import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.MH;
-import is.L42.generated.Core.T;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Full.L.M;
-import is.L42.generated.Full.L.NC;
-import is.L42.generated.LDom;
-import is.L42.generated.P.NCs;
 import is.L42.typeSystem.TypeManipulation;
 
 class SortHeader{

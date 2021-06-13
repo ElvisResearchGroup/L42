@@ -1,8 +1,5 @@
 package is.L42.cache;
 
-import java.util.Arrays;
-import java.util.HashSet;
-
 public class L42StandardCache<T extends L42Cachable<T>> extends AbstractStructuredCache<T>{
   @Override public Object f(T t,int i){return t.getField(i);}
   @Override public void setF(T t,int i,Object o){t.setField(i,o);}

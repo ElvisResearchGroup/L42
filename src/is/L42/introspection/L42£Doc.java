@@ -1,13 +1,11 @@
 package is.L42.introspection;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.todo;
 
 import java.util.Collections;
 import java.util.List;
 
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Program;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.P;

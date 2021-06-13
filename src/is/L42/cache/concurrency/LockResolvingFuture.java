@@ -1,6 +1,5 @@
 package is.L42.cache.concurrency;
 
-import java.util.Collections;
 import java.util.IdentityHashMap;
 import java.util.Map;
 import java.util.Set;

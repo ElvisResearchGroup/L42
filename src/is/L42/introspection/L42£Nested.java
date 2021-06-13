@@ -1,28 +1,23 @@
 package is.L42.introspection;
 
+import static is.L42.generated.LDom._elem;
+import static is.L42.tools.General.L;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.todo;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
-
-import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.L;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
-import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
-import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.meta.L42£Meta;
@@ -34,7 +29,6 @@ import is.L42.platformSpecific.javaTranslation.L42ClassAny;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
-import is.L42.tools.General;
 import is.L42.typeSystem.Coherence;
 
 public class L42£Nested extends L42NoFields.Eq<L42£Nested>{

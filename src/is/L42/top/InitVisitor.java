@@ -10,11 +10,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
@@ -32,8 +30,6 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
-import is.L42.nativeCode.TrustedKind;
-import is.L42.typeSystem.ProgramTypeSystem;
 import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.WellFormedness;
 

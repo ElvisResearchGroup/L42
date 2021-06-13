@@ -1,14 +1,8 @@
 package is.L42.maps;
 
-import static is.L42.tools.General.range;
 import static is.L42.tools.General.unreachable;
 
-import java.util.function.Supplier;
-
-import is.L42.cache.AbstractStructuredCache;
 import is.L42.cache.L42Cachable;
-import is.L42.cache.L42Cache;
-import is.L42.nativeCode.TrustedKind;
 
 public abstract class L42£AbsSet<K,Inner,Self>implements L42Cachable<Self>{
   Inner inner=null;

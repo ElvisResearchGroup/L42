@@ -1,17 +1,13 @@
 package is.L42.nativeCode;
 
+import static is.L42.nativeCode.TT.*;
+import static is.L42.nativeCode.TrustedKind.TrustedIO;
 import static is.L42.tools.General.range;
 
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
-
-import static is.L42.nativeCode.OpUtils.use;
-import static is.L42.nativeCode.Signature.sigI;
-import static is.L42.nativeCode.TT.*;
-import static is.L42.nativeCode.TrustedKind.String;
-import static is.L42.nativeCode.TrustedKind.TrustedIO;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;

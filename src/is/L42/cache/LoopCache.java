@@ -2,12 +2,10 @@ package is.L42.cache;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.Consumer;
 
 class CircleEntry<T>{
   Set<Object>equivClasses;

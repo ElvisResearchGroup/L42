@@ -1,23 +1,9 @@
 package is.L42.cache;
 
-import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
-import static is.L42.tools.General.unreachable;
-
-import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.IdentityHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
 
-import is.L42.cache.nativecache.BoolCache;
 import is.L42.nativeCode.Flags;
 import is.L42.nativeCode.TrustedKind;
-import is.L42.tools.General;
 
 public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>>{
   @Override public Object f(ArrayList<?> t, int i){return t.get(i+1);}

@@ -2,25 +2,16 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
-import static is.L42.tools.General.merge;
 import static is.L42.tools.General.mergeNew;
-import static is.L42.tools.General.mergeU;
-import static is.L42.tools.General.popL;
 import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.unreachable;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 import is.L42.common.G;
 import is.L42.common.Program;
-import is.L42.generated.P;
-import is.L42.generated.S;
-import is.L42.generated.X;
-import is.L42.top.Deps;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
@@ -32,9 +23,12 @@ import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
+import is.L42.generated.P;
+import is.L42.generated.S;
+import is.L42.generated.X;
+import is.L42.top.Deps;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CloneVisitorWithProgram;
-import is.L42.visitors.WellFormedness;
 
 class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
   CloneRenameUsages(Rename r){

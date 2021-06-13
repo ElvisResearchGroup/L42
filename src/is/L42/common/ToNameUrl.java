@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import is.L42.common.ToNameUrl.NameUrl;
 import is.L42.generated.Pos;
 
 public interface ToNameUrl{

@@ -4,34 +4,26 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.Mdf;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
-import is.L42.generated.Core.EX;
-import is.L42.generated.Core.L;
 import is.L42.generated.Core.T;
+import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
-import is.L42.typeSystem.Coherence;
 
 public class Wither {
   MetaError err;

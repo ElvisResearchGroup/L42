@@ -8,32 +8,26 @@ import static is.L42.tools.General.uniqueWrap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
-import java.util.function.Function;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.Core.PathSel;
-import is.L42.generated.Core.T;
-import is.L42.generated.Full;
-import is.L42.generated.LL;
-import is.L42.generated.P;
-import is.L42.generated.ThrowKind;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
-import is.L42.generated.P.NCs;
-import is.L42.generated.Pos;
+import is.L42.generated.Core.PathSel;
+import is.L42.generated.Core.T;
+import is.L42.generated.Full;
+import is.L42.generated.LL;
+import is.L42.generated.P;
 import is.L42.generated.S;
-import is.L42.typeSystem.TypeManipulation;
+import is.L42.generated.ThrowKind;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitorWithProgram;
-import is.L42.visitors.PropagatorCollectorVisitor;
 
 
 public class Deps{

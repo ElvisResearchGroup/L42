@@ -2,27 +2,22 @@ package is.L42.constraints;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.merge;
-import static is.L42.tools.General.range;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-import is.L42.common.G;
 import is.L42.common.Program;
-import is.L42.generated.Core;
 import is.L42.generated.Core.Block;
-import is.L42.generated.Core.E;
 import is.L42.generated.Core.K;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MCall;
-import is.L42.visitors.Accumulate;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
-import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
+import is.L42.visitors.Accumulate;
 
 public class InferExceptions {
   Program p;public InferExceptions(Program p){this.p=p;}

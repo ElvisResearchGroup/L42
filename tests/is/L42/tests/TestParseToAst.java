@@ -12,11 +12,8 @@ import is.L42.common.Parse;
 import is.L42.generated.Full;
 import is.L42.tools.AtomicTest;
 
-import static is.L42.tests.TestHelpers.*;
 import static is.L42.tools.General.range;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class TestParseToAst
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->

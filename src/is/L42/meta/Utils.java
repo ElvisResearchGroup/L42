@@ -1,7 +1,6 @@
 package is.L42.meta;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.merge;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.range;
 
@@ -13,7 +12,6 @@ import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
-import is.L42.tools.General;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
@@ -21,6 +19,7 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.tools.General;
 
 public class Utils {
   public static Core.PCastT This0=new Core.PCastT(null,P.pThis0,P.coreThis0.withMdf(Mdf.Class));

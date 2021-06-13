@@ -1,45 +1,20 @@
 package is.L42.translationToJava;
 
-import static is.L42.nativeCode.TrustedKind.*;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.StringReader;
-import java.io.StringWriter;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLClassLoader;
-import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
-import java.util.function.Function;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.Core;
-import is.L42.generated.Core.E;
-import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
-import is.L42.generated.L42AuxParser.NativeKindContext;
-import is.L42.meta.MetaError;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
-import is.L42.generated.P;
-import is.L42.platformSpecific.javaTranslation.L42Any;
-import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
-import is.L42.platformSpecific.javaTranslation.Resources;
-import safeNativeCode.slave.Functions;
-import safeNativeCode.slave.Slave;
-import safeNativeCode.slave.host.ProcessSlave;
 
 public class NativeDispatch {
   public static List<String>xs(MWT mwt){

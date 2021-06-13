@@ -1,19 +1,9 @@
 package is.L42.meta;
 
-import static is.L42.tools.General.L;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
 import java.util.function.Function;
-import java.util.regex.Pattern;
 
-import is.L42.common.Program;
-import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
-import is.L42.generated.Core.PathSel;
-import is.L42.maps.L42£ImmMap;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.translationToJava.NativeDispatch;

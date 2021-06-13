@@ -1,7 +1,4 @@
 package is.L42.maps;
-import java.util.function.Supplier;
-import is.L42.cache.L42Cache;
-import is.L42.maps.L42£AbsMap.MapCache;
 import is.L42.nativeCode.TrustedKind;
 public class L42£MutMap<K,T> extends L42£AbsMap<K,T,L42£MutMap<K,T>>{
   public T processVal(T val){return val;}

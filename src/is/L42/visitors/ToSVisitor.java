@@ -4,14 +4,10 @@ import static is.L42.tools.General.popL;
 import static is.L42.tools.General.range;
 
 import java.util.List;
-import java.util.function.Function;
 import java.util.function.IntConsumer;
-import java.util.stream.Collectors;
-
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.generated.*;
-import is.L42.generated.Core.T;
 
 public class ToSVisitor implements ToSTrait{
   @Override public ToSTrait.ToSState state(){return state;}

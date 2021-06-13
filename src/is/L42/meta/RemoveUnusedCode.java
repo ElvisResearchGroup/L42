@@ -1,10 +1,12 @@
 package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.*;
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.popLRight;
+import static is.L42.tools.General.pushL;
+import static is.L42.tools.General.unreachable;
 
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -14,13 +16,11 @@ import java.util.stream.Stream;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.LDom;
 import is.L42.generated.P;
-import is.L42.tools.General;
 import is.L42.top.Deps;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;

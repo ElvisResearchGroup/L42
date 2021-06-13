@@ -3,7 +3,6 @@ package is.L42.cache.exampleobjs;
 import java.io.Serializable;
 
 import is.L42.cache.L42Cachable;
-import is.L42.cache.L42StandardCache;
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 

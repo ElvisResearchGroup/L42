@@ -1,15 +1,14 @@
 package is.L42.nativeCode;
 
 import static is.L42.tools.General.bug;
-import static is.L42.tools.General.todo;
 
 import java.util.ArrayList;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
+import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
-import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.S;
 import is.L42.generated.X;

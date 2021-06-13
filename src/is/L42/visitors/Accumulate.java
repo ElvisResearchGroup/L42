@@ -1,14 +1,9 @@
 package is.L42.visitors;
 
-import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import is.L42.generated.Core;
 import is.L42.generated.Full;

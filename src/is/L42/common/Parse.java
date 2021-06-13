@@ -22,8 +22,6 @@ import is.L42.generated.Full;
 import is.L42.generated.Full.E;
 import is.L42.generated.L42AuxLexer;
 import is.L42.generated.L42AuxParser;
-import is.L42.generated.L42AuxParser.CsPContext;
-import is.L42.generated.L42AuxParser.DocContext;
 import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
 import is.L42.generated.L42AuxParser.NudePathSelXContext;
@@ -31,9 +29,6 @@ import is.L42.generated.L42AuxParser.TopDocContext;
 import is.L42.generated.L42Lexer;
 import is.L42.generated.L42Parser;
 import is.L42.generated.L42Parser.NudeEContext;
-import is.L42.generated.L42Parser.NudePContext;
-import is.L42.generated.LL;
-import is.L42.nativeCode.TrustedOp;
 import is.L42.visitors.AuxVisitor;
 import is.L42.visitors.FullL42Visitor;
 

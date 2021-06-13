@@ -1,9 +1,7 @@
 package is.L42.typeSystem;
 
 import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.L;
 import static is.L42.tools.General.range;
-import static is.L42.generated.Mdf.*;
 import static is.L42.generated.ThrowKind.*;
 
 import java.util.ArrayList;
@@ -20,7 +18,6 @@ import is.L42.common.Program;
 import is.L42.generated.Core;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
-import is.L42.generated.ThrowKind;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.visitors.UndefinedCollectorVisitor;
 

@@ -1,45 +1,22 @@
 package is.L42.common;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.stream.IntStream;
-
-import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
 import static is.L42.tools.General.mergeU;
-import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.range;
-import static is.L42.tools.General.toOneOr;
-import static is.L42.tools.General.typeFilter;
 
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.function.Consumer;
 
 import is.L42.constraints.FreshNames;
 import is.L42.constraints.ToHalf;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
-import is.L42.generated.Op;
-import is.L42.generated.P;
-import is.L42.generated.Psi;
-import is.L42.generated.S;
 import is.L42.generated.ST;
-import is.L42.generated.ST.STMeth;
-import is.L42.generated.ST.STOp;
 import is.L42.generated.Y;
 import is.L42.tools.InductiveSet;
 /*

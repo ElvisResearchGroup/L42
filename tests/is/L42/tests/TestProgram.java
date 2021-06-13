@@ -1,7 +1,5 @@
 package is.L42.tests;
 
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.ErrMsg;
@@ -10,17 +8,10 @@ import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
-import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.PathNotExistent;
 import is.L42.generated.Core;
-import is.L42.generated.Full;
 import is.L42.generated.P;
-import is.L42.generated.Pos;
 import is.L42.tools.AtomicTest;
-import is.L42.visitors.FullL42Visitor;
-
-import static is.L42.tests.TestHelpers.*;
-import static is.L42.tools.General.unreachable;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 

@@ -5,28 +5,23 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.typeFilter;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.atomic.AtomicReference;
 
 import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
-import is.L42.generated.P;
 import is.L42.generated.ST;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;
-import is.L42.visitors.PropagatorCollectorVisitor;
 
 interface LayerE extends Serializable{
   Half.E e();

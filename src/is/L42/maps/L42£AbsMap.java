@@ -1,23 +1,8 @@
 package is.L42.maps;
-import static is.L42.tools.General.unreachable;
-
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
-import java.util.Map;
-import java.util.Objects;
-import java.util.function.Supplier;
-import java.util.stream.Stream;
 
-import is.L42.cache.AbstractStructuredCache;
-import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
-import is.L42.maps.L42£Set.SetCache;
-import is.L42.nativeCode.TrustedKind;
-import is.L42.numbers.L42£BigRational;
-import is.L42.platformSpecific.javaTranslation.L42NoFields;
-import is.L42.platformSpecific.javaTranslation.L42NoFields.EqCache;
-import is.L42.tools.General;
 public abstract class L42£AbsMap<K,T,Self> extends L42£AbsSet<K,LinkedHashMap<K,T>,Self>{
   T[] vals=null;
   public int size(){return inner==null?0:inner.size();}

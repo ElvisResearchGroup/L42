@@ -1,8 +1,5 @@
 package is.L42.cache.concurrency;
 
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 public class ExampleWrapper {
   public static String a() {return "a";}
   static CachedRes<String> cB=new CachedRes<>(){public String op(){

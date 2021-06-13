@@ -7,13 +7,12 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Base64.Decoder;
+import java.util.Base64.Encoder;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Set;
-import java.util.Base64.Decoder;
-import java.util.Base64.Encoder;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
@@ -171,8 +170,8 @@ public class Resources {
   public static void breakHere(){//poor man attempt to add breakpoints to generated java
     System.out.println("java debugger Breakpoint");
     String s=Arrays.asList(Thread.currentThread().getStackTrace()).toString();
-    //if(s.contains("TestCircularObjects£n0£_£cBase£n71")) {
-    //  System.out.println();//example conditional breakpoint
-    //  }
+    if(s.contains("My_TestCircularObjects£n0£_£cBase£n71")) {
+      System.out.println();//example conditional breakpoint
+      }
     }
   }

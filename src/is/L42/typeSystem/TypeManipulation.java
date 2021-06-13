@@ -1,24 +1,16 @@
 package is.L42.typeSystem;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
-import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.stream.Stream;
 
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.Core;
-import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.EX;
-import is.L42.generated.Core.PCastT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.XP;
 import is.L42.generated.Full;

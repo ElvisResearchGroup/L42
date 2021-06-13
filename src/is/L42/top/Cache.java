@@ -4,9 +4,8 @@ import static is.L42.tools.General.bug;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.function.Function;
+
 import is.L42.common.EndError;
-import is.L42.common.Program;
 
 class R implements Serializable{
   final EndError _err;final G _g;final Object _obj;

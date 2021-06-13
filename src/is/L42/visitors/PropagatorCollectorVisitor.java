@@ -1,6 +1,4 @@
 package is.L42.visitors;
-import java.util.List;
-
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.generated.*;

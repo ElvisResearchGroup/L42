@@ -1,14 +1,10 @@
 package is.L42.cache;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.toOneOr;
 import static is.L42.tools.General.toOneOrBug;
-import static is.L42.tools.General.todo;
 import static is.L42.tools.General.unreachable;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;

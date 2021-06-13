@@ -4,9 +4,6 @@ import static is.L42.tools.General.L;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.X;

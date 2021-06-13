@@ -2,7 +2,6 @@ package is.L42.platformSpecific.javaTranslation;
 
 import is.L42.cache.L42Cachable;
 import is.L42.cache.nativecache.L42ValueCache;
-import is.L42.generated.P;
 import is.L42.tools.General;
 
 public abstract class L42NoFields<T> implements L42Cachable<T>{

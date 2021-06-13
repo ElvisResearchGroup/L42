@@ -1,29 +1,11 @@
 package is.L42.tests;
 
-import java.net.URI;
-import java.nio.file.Paths;
-import java.util.HashSet;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
-
 import org.junit.jupiter.api.Test;
 
 import is.L42.common.Balance;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Err;
-import is.L42.common.Parse;
-import is.L42.generated.Core;
-import is.L42.generated.Full;
-import is.L42.generated.X;
-import is.L42.tools.AtomicTest;
-import is.L42.visitors.FV;
-import is.L42.visitors.FullL42Visitor;
-
-
-import static is.L42.tests.TestHelpers.*;
-import static is.L42.tools.General.range;
 
 public class TestBalance{
   public static void pass(String input){

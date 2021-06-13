@@ -15,7 +15,6 @@ import is.L42.generated.ST;
 import is.L42.generated.X;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FV;
-import is.L42.generated.Half;
 
 public class GX {
   final private Map<X,List<ST>> xInT;

@@ -9,7 +9,6 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.function.BiFunction;
 
 import com.google.common.cache.CacheBuilder;
 
@@ -17,7 +16,6 @@ import is.L42.cache.nativecache.BoolCache;
 import is.L42.cache.nativecache.ByteCache;
 import is.L42.cache.nativecache.CharCache;
 import is.L42.cache.nativecache.DoubleCache;
-import is.L42.cache.nativecache.FlagsCache;
 import is.L42.cache.nativecache.FloatCache;
 import is.L42.cache.nativecache.IntCache;
 import is.L42.cache.nativecache.LongCache;

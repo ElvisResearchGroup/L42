@@ -5,14 +5,12 @@ import lombok.experimental.Wither;
 
 import java.util.List;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
-import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
+import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 import static is.L42.tools.General.*;
-
 
 public class Full {
   public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}

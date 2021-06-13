@@ -16,14 +16,9 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.tools.General;
-import is.L42.generated.Core.PathSel;
 import is.L42.generated.Full;
-import is.L42.generated.Core.EVoid;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.L42AuxParser.InfoBodyContext;
 import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.PathContext;
-import is.L42.generated.L42AuxParser.UsedMethodsContext;
 
 final class InfoSupplier implements Supplier<Core.L.Info> {
   private final Result<InfoContext> r;

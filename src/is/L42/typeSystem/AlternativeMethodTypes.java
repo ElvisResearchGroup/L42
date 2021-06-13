@@ -10,7 +10,6 @@ import java.util.List;
 
 import is.L42.common.Program;
 import is.L42.generated.Core;
-import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.MethT;
 import is.L42.generated.P;

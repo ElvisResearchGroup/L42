@@ -17,7 +17,7 @@ public abstract class CachedRes<T>{
   @SuppressWarnings("deprecation")
   public static void killAll() {
     List<ForkJoinWorkerThread> threadsOld=new ArrayList<>(threads);
-    System.err.println(threads.size());
+    //System.err.println(threads.size());
     threads.clear();
     pool.shutdown();
     threadsOld.forEach(t->t.stop());

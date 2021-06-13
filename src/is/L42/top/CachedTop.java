@@ -2,7 +2,6 @@ package is.L42.top;
 
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
-import static is.L42.tools.General.pushL;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,7 +18,6 @@ import java.util.stream.Stream;
 
 import is.L42.common.Program;
 import is.L42.generated.Core;
-import is.L42.introspection.L42£Nested;
 
 
 public class CachedTop implements Serializable{
@@ -98,19 +96,19 @@ public class CachedTop implements Serializable{
     return (Program)r._obj;
     }
   void dbgPrint(G g,G gc){
-    String str=gc==null?"null":gc.getClass().getSimpleName();
-    System.err.println("Cache comparing "+g.getClass().getSimpleName()+" "+str);
-    Object l=g.layer();
-    LayerL p=null;
-    if(l instanceof LayerL){p=(LayerL)l;}
-    if(l instanceof LayerE){p=((LayerE)l).layerL();}
-    if(p!=null && p!=LayerL.empty()){System.err.println("New Pos Is:"+p.p().path());}
+    //String str=gc==null?"null":gc.getClass().getSimpleName();
+    //System.err.println("Cache comparing "+g.getClass().getSimpleName()+" "+str);
+    //Object l=g.layer();
+    //LayerL p=null;
+    //if(l instanceof LayerL){p=(LayerL)l;}
+    //if(l instanceof LayerE){p=((LayerE)l).layerL();}
+    //if(p!=null && p!=LayerL.empty()){System.err.println("New Pos Is:"+p.p().path());}
     if(gc==null){return;}
-    Object lc=gc.layer();
-    LayerL pc=null;
-    if(lc instanceof LayerL){pc=(LayerL)lc;}   
-    if(lc instanceof LayerE){pc=((LayerE)lc).layerL();}
-    if(pc!=null && pc!=LayerL.empty()){System.err.println("Cached Pos Is:"+pc.p().path());}
+    //Object lc=gc.layer();
+    //LayerL pc=null;
+    //if(lc instanceof LayerL){pc=(LayerL)lc;}   
+    //if(lc instanceof LayerE){pc=((LayerE)lc).layerL();}
+    //if(pc!=null && pc!=LayerL.empty()){System.err.println("Cached Pos Is:"+pc.p().path());}
     }
   R openClose(G g0){
     //TestCachingCases.timeNow("open "+g0.getClass().getSimpleName());
