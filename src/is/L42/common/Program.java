@@ -6,7 +6,6 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
 import static is.L42.tools.General.range;
-import static is.L42.tools.General.toOneOrBug;
 import static is.L42.tools.General.typeFilter;
 import static is.L42.tools.General.unreachable;
 
