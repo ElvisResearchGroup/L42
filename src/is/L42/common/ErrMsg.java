@@ -85,6 +85,8 @@ public class ErrMsg {
   ;}public static String needBlockOps(Object _1){return
   "expressions with more then one kind of binary operator need to be disambiguated with parenthesis: "+_1
 
+//  ;}public static String returnMdfInconsistent(Object _1){return  
+//  "catch return is using different modifiers for the catched types: "+_1
   ;}public static String nameUsedInCatchOrMatch(Object _1){return  
   "name "+_1+ " used in catch or in forward match; it may not be initialized"
   ;}public static String noFullL(Object _1){return    

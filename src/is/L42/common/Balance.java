@@ -73,7 +73,7 @@ public class Balance{
     currentPos=0;
     //fail in StrSL
     if(fails(State.StrSL)){throw new EndError.NotWellFormed(
-      L(pos(fileName,currentLine,currentPos)),
+      L(pos(fileName,currentLine-1,currentPos)),
       "Unclosed string literal"
       );}
       //swap StrMLPadding if State.StrMLText

@@ -82,7 +82,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     }
   @Override public void visitThrow(Throw e){
     if(e.thr()!=Return){visitExpecting(e.e(),Immutable);return;}
-    var general=TypeManipulation._mostGeneralMdf(mdfs);
+    var general=TypeManipulation._mostSpecificMdf(mdfs);
     errIf(general==null,e,ErrMsg.invalidSetOfMdfs(mdfs));
     visitExpecting(e.e(),TypeManipulation.fwdOf(general));
     }
@@ -160,10 +160,14 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       }
     }
   private void visitBlockDirect(Block e){
-    var mdfs2=new HashSet<Mdf>(mdfs);
+    var mdfs2=new HashSet<Mdf>();
     for(K k:e.ks()){typeK(k,mdfs2);}
     G g1=g;
-    if(e.ks().stream().anyMatch(k->k.thr()==Error)){g1=g.toRead();}
+    var hasErr=e.ks().stream().anyMatch(k->k.thr()==Error);
+    var hasRet=e.ks().stream().anyMatch(k->k.thr()==Return);
+    //var hasRetAny=e.ks().stream().anyMatch(k->k.thr()==Return && k.t().p().equals(P.pAny));
+    if(hasErr){g1=g.toRead();}
+    if(!hasRet) {mdfs2.addAll(mdfs);}  
     var oldMdfs=mdfs;
     mdfs=mdfs2;
     G oldG=g;

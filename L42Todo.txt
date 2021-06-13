@@ -1,5 +1,5 @@
--TODO release IDE: we need to discover how to embed the bins inside the jar,
-  and we need to read the js/css from a resouce file inside a jar.
+- Should shortcircut squre have a shortut desugar for []
+- How often desugar generates "(void)" or similar?
 - For the guide: nested return, how does it work? can A a={  B b={ return A()}} skip a curly?
 - remove unused code in load (what did I ment here?)
 - load must throw error if the map can not be completed
@@ -25,7 +25,6 @@ B=Baz:{
 A =(ss=S.List[]
   for a in ss ss.add(a)
   Debug(ss) )  
-Export a version of 42 and make it accessible from the tutorial
 -autocomplete, takes 9 for a (
 also, does not reset on dots?
 -X.Pre should throw a X.Pre instead of an X?

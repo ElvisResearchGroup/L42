@@ -111,10 +111,12 @@ _______
 #define Q |- ks : P | Ts; Ps    Q |-k : P | Ts; Ps
 * Q |- k1..kn : P | Ts1 U..U Tsn; Ps1 U..U Psn //(catchMany)
     forall i in 1..n Q |-ki : P | Tsi; Psi
+
 * Q |- catch throw T0 x e : P | T?; P? //(catch)
     Q[G=Q.G,x:T0] |- e : P
     if throw=exception then P?=T0.P, else P?=empty
     if throw=return then T?=T0, else T?=empty
+    if throw=error then T?=P?=empty
     if T0.mdf=class then either T0.P=Any or Q.p(T0.P).interface?=empty
 _______
 #define p;G;Ts |= e : mdf 
@@ -129,7 +131,7 @@ _______
     imm <= mdf
     p;G;mdfs |= e : imm
 * p;G;mdfs |= return e : mdf //(throw-return)
-    p;G;mdfs |= e : fwdOf(mostGeneralMdf(mdfs))
+    p;G;mdfs |= e : fwdOf(mostSpecificMdf(mdfs))
 * p;G;mdfs |= throw e : mdf //(throw)
     p;G;mdfs |= e : imm
     throw != return
@@ -153,8 +155,10 @@ _______
     p;G;mdfs' |= Ks : mdf' |mdfs"
     G'=toRead(G) if error in Ks.throws
     G'=G otherwise
-    p;G';mdfs' U mdfs" |= Ds | G0
-    p;G,(G0\dom(G));mdfs' |= e0 : mdf'
+    if return in Ks.throws mdfs = mdfs"
+    else mdfs = mdfs' U mdfs"
+    p;G';mdfs |= Ds | G0
+    p;G,(G0\dom(G));mdfs' |= e0 : mdf'    
 _______
 #define p;G;mdfs |= Ds | G' // The resulting G' is the enriched G containing info about Ds too.
 * p;G0;mdfs |= var?0 T0 x0=e0 ..var?n Tn xn=en,  Ds | G3  //(Ds)

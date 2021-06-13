@@ -1,7 +1,7 @@
 package is.L42.typeSystem;
 
 import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.range;
+import static is.L42.tools.General.*;
 import static is.L42.generated.ThrowKind.*;
 
 import java.util.ArrayList;
@@ -126,6 +126,22 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     assert !TypeManipulation.fwd_or_fwdP_in(t.mdf());
     _computed=P.pVoid;
     }
+  /*void checkCollectedTs(ArrayList<T> ts1){
+    if(ts1.isEmpty()) {return;}
+    if(ts1.size()>1){
+      var count=ts1.stream().map(t->t.mdf()).distinct().count();
+      errIf(count!=1,e,ErrMsg.returnMdfInconsistent(ts1));
+      }
+    T last=ts1.get(ts1.size()-1);
+    if(last.p().equals(P.pAny)){return;}
+    
+    for(T1 in Q.Ts, forall T2 in Tsi T1.mdf=T2.mdf
+    var allTs=pushL(this.ts,t);
+    var count=allTs.stream().map(ti->ti.mdf()).distinct().count();
+    errIf(count!=1,k.e(),ErrMsg.returnMdfInconsistent(allTs));
+
+    
+    }*/
   @Override public void visitBlock(Block e){
     var ts1=new ArrayList<T>(ts);
     var ps1=new ArrayList<P>(ps);
@@ -168,7 +184,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     var oldG=g;
     g=g.plusEq(k.x(),k.t());
     visitE(k.e());
-    g=oldG;
+    g=oldG;    
     fillNonDeterministicError(k.e().poss(),t.p());
     if(k.thr()==Return){ts1.add(t);}
     if(k.thr()==Exception){ps1.add(t.p());}

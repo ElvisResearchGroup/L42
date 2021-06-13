@@ -357,33 +357,6 @@ public class Program implements Visitable<Program>{
     if(ps.size()!=1){return null;}
     return new T(_mdf,L(),ps.get(0));
     }
-  //-----------
-  public T _chooseSpecificT(List<T> ts,List<Pos> poss){
-    Mdf _mdf=_mostSpecificMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
-    if(_mdf==null){return null;}
-    var ps=L(ts.stream()
-      .map(ti->ti.p())
-      .filter(pi->isSubtype(pi,ts.stream().map(ti->ti.p())))
-      .distinct());
-    if(ps.size()!=1){return null;}
-    return new T(_mdf,L(),ps.get(0));
-    }
-  private Mdf _mostSpecificMdf(Set<Mdf> mdfs){
-    var g=specificEnoughMdf(mdfs);
-    return g.stream().filter(mdf->g.stream()
-      .allMatch(mdf1->isSubtype(mdf1, mdf)))
-      .reduce(toOneOrBug()).orElse(null);
-    }
-  private List<Mdf> specificEnoughMdf(Set<Mdf> mdfs){
-    return L(c->{
-      for(Mdf mdf:Mdf.values()){
-        if(mdf.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
-        if(mdfs.stream().allMatch(mdf1->isSubtype(mdf,mdf1))){
-          c.add(mdf);
-          }
-        }
-      });
-    }
   private static boolean cleanPushed(PTails pTails){
     if(pTails.isEmpty()){return true;}
     if(!pTails.hasC()){return false;}

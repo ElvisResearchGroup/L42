@@ -6,6 +6,7 @@ import static is.L42.tools.General.toOneOrBug;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.G;
@@ -17,6 +18,7 @@ import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import static is.L42.generated.Mdf.*;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 import is.L42.generated.S;
 public class TypeManipulation {
 
@@ -132,6 +134,32 @@ public class TypeManipulation {
     return g.stream().filter(mdf->g.stream()
       .allMatch(mdf1->Program.isSubtype(mdf, mdf1)))
       .reduce(toOneOrBug()).orElse(null);
+    }
+  public static T _chooseSpecificT(Program p,List<T> ts,List<Pos> poss){
+    Mdf _mdf=_mostSpecificMdf(ts.stream().map(t->t.mdf()).collect(Collectors.toSet()));
+    if(_mdf==null){return null;}
+    var ps=L(ts.stream()
+      .map(ti->ti.p())
+      .filter(pi->p.isSubtype(pi,ts.stream().map(ti->ti.p())))
+      .distinct());
+    if(ps.size()!=1){return null;}
+    return new T(_mdf,L(),ps.get(0));
+    }
+  public static Mdf _mostSpecificMdf(Set<Mdf> mdfs){
+    var g=specificEnoughMdf(mdfs);
+    return g.stream().filter(mdf->g.stream()
+      .allMatch(mdf1->Program.isSubtype(mdf1, mdf)))
+      .reduce(toOneOrBug()).orElse(null);
+    }
+  public static List<Mdf> specificEnoughMdf(Set<Mdf> mdfs){
+    return L(c->{
+      for(Mdf mdf:Mdf.values()){
+        if(mdf.isIn(Mdf.ImmutablePFwd,Mdf.MutablePFwd)){continue;}
+        if(mdfs.stream().allMatch(mdf1->Program.isSubtype(mdf,mdf1))){
+          c.add(mdf);
+          }
+        }
+      });
     }
   public static Mdf fwdOf(Mdf m){
     if(m.isIn(Immutable,ImmutablePFwd)){return ImmutableFwd;}

@@ -1,0 +1,107 @@
+reuse [L42.is/AdamsTowel]
+
+C0={
+  class method mut This #apply()
+  class method mut This bar2()=(
+    Void fresh0_curlyX=(
+      mut This c1=This<:class This.#apply()
+      This c2=(
+        Void fresh2_curlyX=(
+          Void fresh4_underscore=return c1
+          void)
+        catch return read This fresh3_curlyX1 fresh3_curlyX1
+        error void)
+      Void fresh5_underscore=return c1
+      void)
+    catch return read This fresh1_curlyX1 fresh1_curlyX1
+    error void)
+  #norm{typeDep=This coherentDep=This}
+  }
+/*C1={
+    class method mut This()
+    class method This bar()=(
+      mut This c1=This()
+      This c2=(
+        return c1
+        catch return This y y
+        )
+      return c1
+      catch return mut This x x
+      )
+    class method mut This bar2()={
+      mut This c1=This()
+      This c2={
+        return c1
+        }
+      return c1
+      }
+    }*/
+
+//Bug, to test in a test type system
+/*A={
+  class method Num.List foo()=(
+    mut l=Num.List[]
+    return l
+    catch return mut Num.List x x
+    )
+  class method mut Num.List bar()=(
+    mut l=Num.List[]
+    Num.List v=(
+      //return 3Num
+      return l
+      catch return Num.List y y
+      )
+    Debug(l)
+    Debug(v)
+    l.add(right=3Num)
+    Debug(v)
+    return l
+    catch return mut Num.List x x
+    )
+  class method mut Num.List bar0()=(
+    Void nope1=(mut l=Num.List[]
+      Num.List v=(
+        Void nope2=(if Bool.false() return l void)
+        catch return Num.List y y
+        Num.List[]
+        )
+      if Bool.false() return l
+      void
+      )
+    catch return mut Num.List x x
+    error void
+    )
+  
+  class method mut Num.List bar2()={
+    mut l=Num.List()
+    Num.List v={
+      return l
+      }
+    return l
+    }
+  }
+*/
+
+Main=(
+  Debug(S"Hello wor")
+  //Debug(S"Hello wor;ld %A.bar()")
+  )
+//tested unclosed string literal
+//tested unclosed par
+//tested meth not existant
+//test path not existant
+
+//Error reporting Bug: 
+/*A = {B.C f}
+B=Baz:{
+  C={}
+  D=A.foo() //requires A, that requires B.C,
+  //A can not be compiled yet, even if C is typed.
+  //B.C will not be detected as a missing dependency from the current CircularityIssue :-( 
+  }
+*/
+
+//-Bug: it should require parenthesis around the for body!! 
+//A =(ss=S.List[]
+//  for a in ss ss.add(a)
+//  Debug(ss) )  

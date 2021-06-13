@@ -26,6 +26,7 @@ import is.L42.generated.ThrowKind;
 import is.L42.generated.X;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.InductiveSet;
+import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
 
@@ -59,7 +60,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     List<T> ts=L(stz,(c,sti)->{
       var stzi=sets.compute(sti);
       var tz=typeFilter(stzi.stream(),T.class);
-      var speci=i.p()._chooseSpecificT(tz, poss);
+      var speci=TypeManipulation._chooseSpecificT(i.p(),tz, poss);
       if(speci!=null){c.add(speci);}
       else{tzErr.addAll(tz);}
       });

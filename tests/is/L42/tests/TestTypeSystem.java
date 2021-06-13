@@ -775,6 +775,20 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
   class method read A mutA(mut A a)=(read res=A().foo() res)
   class method A immA(mut A a)=(read res=A().foo() res)
   """,ErrMsg.subTypeExpected("[###]","[###]"))
+),new AtomicTest(()->fail("""    
+  C1={
+    class method mut This()
+    class method This bar()=(
+      mut This c1=This()
+      This c2=(
+        return c1
+        catch return This y y
+        )
+      return c1
+      catch return mut This x x
+      )
+    }
+    """,ErrMsg.subTypeExpected(hole,hole))
 ));}
 
 public static void pass(String program){

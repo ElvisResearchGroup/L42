@@ -876,7 +876,7 @@ public static void chooseGeneralT(String in,String out){
 public static void chooseSpecificT(String in,String out){
   Full.L fl=(Full.L)Program.parse("{method Void m("+in+")}").top;
   var ts=((Full.L.MWT)fl.ms().get(0)).mh().pars();
-  var res=p0._chooseSpecificT(L(ts.stream().map(TypeManipulation::toCore)),L());
+  var res=TypeManipulation._chooseSpecificT(p0,L(ts.stream().map(TypeManipulation::toCore)),L());
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
