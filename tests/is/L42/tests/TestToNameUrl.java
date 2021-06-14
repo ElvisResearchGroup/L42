@@ -19,7 +19,7 @@ public class TestToNameUrl {
     catch(EndError.UrlNotExistent une) {}
     }
   @Test public void testBase(){check("a",
-      "[###]localhost\\a.L42, fullPath=[###]/localhost/a.L42]");}
+      "[###]localhost[###]a.L42, fullPath=[###]/localhost/a.L42]");}
   @Test public void testEmpty(){checkErr(""
       );}
   @Test public void testSpaces1(){checkErr(" "
@@ -49,7 +49,7 @@ public class TestToNameUrl {
       "NameUrl[fullName=https://github.com/name/repo/blob/dfe3324/b.L42?raw=true, fullPath=https://github.com/name/repo/blob/dfe3324/b.L42?raw=true]");}
 
   @Test public void test42Url1(){check("AdamsTowel",
-      "NameUrl[fullName=localhost\\AdamsTowel.L42, fullPath=[###]/localhost/AdamsTowel.L42]");}
+      "NameUrl[fullName=localhost[###]AdamsTowel.L42, fullPath=[###]/localhost/AdamsTowel.L42]");}
   @Test public void test42Url2(){check("L42.is/AdamsTowel",
       "NameUrl[fullName=https://github.com/Language42/is/blob/HEAD/AdamsTowel.L42?raw=true, fullPath=https://github.com/Language42/is/blob/HEAD/AdamsTowel.L42?raw=true]");}
 
