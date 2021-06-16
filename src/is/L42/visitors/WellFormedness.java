@@ -332,6 +332,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       lastPos=dj._e().poss();
       err(ErrMsg.needBlock(dj._e()));
       }
+    if(!b.ds().isEmpty() && b.ks().isEmpty() && b._e()!=null){
+      var lastD=b.ds().get(b.ds().size()-1);
+      if(!CheckBlockNeeded.of(lastD._e(),true)){return;}
+      lastPos=lastD._e().poss();
+      err(ErrMsg.needBlock(lastD._e()));
+      }
     if(b.ks().isEmpty()){return;}
     var hasAfter=b.ds().size()>b.dsAfter();
     if(!hasAfter && b._e()==null){return;}

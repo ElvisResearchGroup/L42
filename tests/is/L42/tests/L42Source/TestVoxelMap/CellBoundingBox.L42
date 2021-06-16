@@ -6,9 +6,9 @@ $.Cell3D highCorner
   yOk = lowCorner.y()<highCorner.y()
   zOk = lowCorner.z()<highCorner.z()
   if !( xOk && yOk && zOk) (
-    xOkMsg = if xOk S"" else S"(invalid)"
-    yOkMsg = if yOk S"" else S"(invalid)"
-    zOkMsg = if zOk S"" else S"(invalid)"
+    xOkMsg = ( if xOk S"" else S"(invalid)" )
+    yOkMsg = ( if yOk S"" else S"(invalid)" )
+    zOkMsg = ( if zOk S"" else S"(invalid)" )
     error X"""%
       |Invalid CellBoundingBox:
       |  x= %lowCorner.x() < %highCorner.x()  %xOkMsg

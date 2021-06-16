@@ -107,8 +107,8 @@ method This +(Elem right)=this.withAlso(\size,val=right)
 method This +1(Elem left)=this.withAlso(0\,val=left)
 
 method This ++(This right)=This()((
-    for e in this \add(e)
-    for e in right \add(e)
+    for e in this ( \add(e) )
+    for e in right ( \add(e) )
     ))
 
 //#################Withs

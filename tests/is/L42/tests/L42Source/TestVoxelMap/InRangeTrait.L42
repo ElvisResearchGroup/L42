@@ -17,8 +17,8 @@ class method U bound(U z) = this.bound(z, to=Margin.maxZ())
 class method Void errorOutOfRange(class Any that, U x, U y) =
   if !this(x=x,y=y) (
     name=Info(that).outerName()
-    xRange = if this(x=x) S"" else S"(out of range)"
-    yRange = if this(y=y) S"" else S"(out of range)"
+    xRange = ( if this(x=x) S"" else S"(out of range)" )
+    yRange = ( if this(y=y) S"" else S"(out of range)" )
     error X"""%
       |Instance of class %name has some out of range coordinates:
       | x=%x; %xRange
@@ -28,9 +28,9 @@ class method Void errorOutOfRange(class Any that, U x, U y) =
 class method Void errorOutOfRange(class Any that, U x, U y, U z) =
   if !this(x=x,y=y, z=z) (
     name=Info(that).outerName()
-    xRange = if this(x=x) S"" else S"(out of range)"
-    yRange = if this(y=y) S"" else S"(out of range)"
-    zRange = if this(z=z) S"" else S"(out of range)"
+    xRange = ( if this(x=x) S"" else S"(out of range)" )
+    yRange = ( if this(y=y) S"" else S"(out of range)" )
+    zRange = ( if this(z=z) S"" else S"(out of range)" )
     error X"""%
       |Instance of class %name has some out of range coordinates:
       | x=%x; %xRange

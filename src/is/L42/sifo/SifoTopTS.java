@@ -404,6 +404,9 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
   private boolean isTop(T t){return isTop(getSifoAnn(t.docs()));}
   private boolean isTop(P sifo){return lattice.getTop().equals(sifo);}
 
+  private boolean isBottom(T t){return isBottom(getSifoAnn(t.docs()));}
+  private boolean isBottom(P sifo){return lattice.getBottom().equals(sifo);}
+
   String listTToString(List<T> t0n) {
     return listPToString(t0n.stream().map(t -> getSifoAnn(t.docs())).collect(Collectors.toList()));
     }
@@ -429,6 +432,8 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     var t0n=L(Stream.concat(Stream.of(expected),e.ks().stream().map(k->k.t())));
     if(hasErr){//T0..Tn: the result type+the types of catches
       if(t0n.stream().allMatch(t->isTop(t))){return;}
+      var allBottom=g.dom().stream().allMatch(x->isBottom(g._of(x)));
+      if(allBottom && t0n.stream().allMatch(t->isBottom(t))){return;}
       throw new EndError.TypeError(e.poss(), allMustTopErr(listTToString(t0n), lattice.getTop()));
       }
     for(T ti:t0n){

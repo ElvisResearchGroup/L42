@@ -990,13 +990,13 @@ public class TestTopNorm{
     #typed{typeDep=This}}#norm{}}          
     """
     );}
-  @Test public void sumTypeStaysOk(){topFail(EndError.PathNotExistent.class,"""
+  @Test public void sumTypeStaysOk(){topFail(EndError.TypeError.class,"""
     {reuse [AdamsTowel]
      A=Trait:{method B b(B b)=b.foo()}
      C=A:{}
      B={method This b()=this}
      Main=Debug(S"ok")}
-    """,hole+ErrMsg.pathNotExistant("This1.B",hole)
+    """,hole+ErrMsg.uncompiledDependency(hole,"This1.B",hole)
     );}
   //Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""

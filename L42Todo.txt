@@ -13,18 +13,6 @@
 This2.XX::n it will give an assertion error instead of a 42 exception
 In general, should all the 'from' method become #apply? is not it just  a 'constructor'?
 In progress: "Cache.Call:" should be used before deploy/deployModule, not in Public
-Error reporting Bug: 
-A ={B.C}
-B=Baz:{
-  C={}
-  D=A.foo() //requires A, that requires B.C,
-  //A can not be compiled yet, even if C is typed.
-  //B.C will not be detected as a missing dependency from the current CircularityIssue :-( 
-  }
--Bug: it should require parenthesis around the for body!! 
-A =(ss=S.List[]
-  for a in ss ss.add(a)
-  Debug(ss) )  
 -autocomplete, takes 9 for a (
 also, does not reset on dots?
 -X.Pre should throw a X.Pre instead of an X?

@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 
 import is.L42.common.EndError;
+import is.L42.common.EndError.PathNotExistent;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.generated.Core;
@@ -11,6 +12,7 @@ import is.L42.generated.Core.E;
 import is.L42.generated.Core.L;
 import is.L42.generated.Full;
 import is.L42.generated.P;
+import static is.L42.tools.General.*;
 
 public class CircularityIssue {
   List<P.NCs> typePs; Program p; E e;List<Full.L.NC>moreNCs;
@@ -31,7 +33,23 @@ public class CircularityIssue {
   public void reportError(P.NCs path,L l0) {
     for(var pj:typePs){p.of(pj,e.poss());}//good error if pj does not exists
     var p0=p.navigate(path);
-    for(var pi:l0.info().typeDep()){p0.of(pi,l0.poss());}
+    for(var pi:l0.info().typeDep()){
+      try{p0.of(pi,l0.poss());}
+      catch(PathNotExistent pne){
+        var subPi=pi;
+        while(!subPi.cs().isEmpty()){
+          var cs=subPi.cs();
+          subPi=subPi.withCs(popLRight(cs));
+          try{
+            p0.of(subPi,l0.poss());
+            subPi=subPi.withCs(cs);
+            break;
+            }
+          catch(PathNotExistent moreLoops){}
+        }
+        throw new EndError.TypeError(l0.poss(),ErrMsg.uncompiledDependency(path,pi,subPi));
+        }
+      }
     HashSet<P> untypedDeps=new HashSet<>();
     reportError(untypedDeps,path,l0);
     throw new EndError.TypeError(l0.poss(),ErrMsg.untypedDependency(path,untypedDeps));

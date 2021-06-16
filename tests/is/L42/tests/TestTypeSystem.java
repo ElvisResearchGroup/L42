@@ -789,6 +789,72 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
       )
     }
     """,ErrMsg.subTypeExpected(hole,hole))
+),new AtomicTest(()->pass("""    
+  C1={
+    class method mut This()
+    class method mut This bar()={
+      mut This c1=This()
+      This c2={
+        return This()<:This
+        }
+      return c1
+      }
+    }
+  """)    
+),new AtomicTest(()->pass("""    
+  C1={
+    class method mut This()
+    class method This bar()={
+      return This()
+      }
+    }
+  """) 
+),new AtomicTest(()->pass("""    
+  C1={
+    class method mut This()
+    class method This bar()=(
+      This c2=( 
+        return This()
+        catch return This a a
+        )
+      return This()        
+      catch return mut This b b
+      )
+    }
+  """)
+//below: sadly for now typing a method body is stronger then typing a local var
+),new AtomicTest(()->fail("""    
+  C1={
+    class method mut This()
+    class method This bar()=(
+      This res=(
+        return This()
+        catch return read This a a
+        )
+      res
+      )
+    }
+  """,hole)
+),new AtomicTest(()->pass("""    
+  C1={
+    class method mut This()
+    class method This bar()=(
+      return This()
+      catch return read This a a
+      )
+    }
+  """)    
+),new AtomicTest(()->pass("""    
+  C1={
+    class method mut This()
+    class method This bar()=(
+      (return This() catch error Any x void)
+      catch return read This fresh1_curlyX1 fresh1_curlyX1
+      error void
+      )
+    }
+  """)
+    
 ));}
 
 public static void pass(String program){

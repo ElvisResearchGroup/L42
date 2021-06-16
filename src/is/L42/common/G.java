@@ -33,7 +33,10 @@ public class G {
       
       }
     return res;
-    } 
+    }
+  public Set<X> dom(){
+    return Collections.unmodifiableSet(xInT.keySet()); 
+    }
   public static G empty() {
     return new G(Collections.emptyMap(),Collections.emptySet());
     }
