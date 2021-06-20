@@ -1,4 +1,18 @@
 reuse [AdamsTowel]
+Foo={
+  class method Num foo(Bool bla) = (
+    Num res = (
+      Void unused= (
+        if bla return 1Num 
+        return 2Num
+        )
+      catch return Num x x
+      )
+    res
+    )
+  }
+    
+
 Direction = Collection.Enum:{interface
   method This opposite()
   North = {[This1] class method This() method This1 opposite()=South() }
@@ -36,7 +50,8 @@ Game = Organize:{
       this.add(that)
       )
     mut method mut NPC get(Point that) =
-      (this<:mut @Deploy{after @Game} Map$).#val(key=that).#val()
+      (this<:mut @Break{after @Game} Map$).#val(key=that).#val()
+      //any path with a suggestive name would do instead of @Break
 mut method Void stepAll() =
       for (mut val) in this<:mut Map$
         (val<:mut NPC).step(map=this)

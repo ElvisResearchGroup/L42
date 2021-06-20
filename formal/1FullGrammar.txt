@@ -306,6 +306,7 @@ _______
     forall D' in Ds: not returning(D'.e) // would be dead code after
     forall K in Ks: returning(K.e)
     hasReturn(Ds1.es,Ds2.es,Ks.es)
+    "catch return" not anywhere in {Ds1 Ks WHOOPS? Ds2}
 
 * returning(throw e)
 * returning(loop e)

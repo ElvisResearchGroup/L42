@@ -1,23 +1,17 @@
-- add to well formedness: in a {catch throw} throw !=return
+-for {return } without a second pair of Ds' after the Ks,
+can we just make it without the nested block, simply adding the catchReturn at the end of the Ks
 - Should shortcircut squre have a shortut desugar for []
 - How often desugar generates "(void)" or similar?
-- Note For the guide: nested return: outer return types are hidden
 - remove unused code in load (what did I ment here?)
 - load must throw error if the map can not be completed
 -IDE formatting: the // in http://.. is seen as a comment in the 'reuse[]'
 -the l42 project need to encapsulate all used libraries under private class loaders?
  --otherwise, users of the slaves will need to know about those!
--in guide first occurence of Module is unfortunate
-  options to replace: static class, utility class, component
--declaration for vector of num >> list of num?
 -Bug rename: if a class is cleared and a method return type is
 This2.XX::n it will give an assertion error instead of a 42 exception
 In general, should all the 'from' method become #apply? is not it just  a 'constructor'?
-In progress: "Cache.Call:" should be used before deploy/deployModule, not in Public
 -autocomplete, takes 9 for a (
 also, does not reset on dots?
--X.Pre should throw a X.Pre instead of an X?
--Must test X[] and X.Pre, may make a X.Condition decorator that adds new stuff like X and X.Pre?
 -Rename SQL tests and add some explicit iql tests.. how?
 -should typeDep and coherentDep always contains explicitly the roots of the unique names one?
     now it is inconsistent. Also, what about depending from This0?
@@ -25,7 +19,7 @@ also, does not reset on dots?
 -db: null can also be input to the query
 -handle division by zero int, long, Num (and double? how is NAN cached eq?)
 -Test cut() when object are removed, it may give a out of bound exception anyway?
--Easy: when printing positions sort them by file
+-Involved butvEasy: when printing positions sort them by file
 -for pluggable type systems and field docs: it is very sad that
  @Foo T bar put the annotation on the field but imm @Foo bar puts it on the type
 -Bug: if you have a sum that sums wrong types for a field, we get a cache assertion fail.

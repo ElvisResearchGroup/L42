@@ -20,15 +20,15 @@ import is.L42.translationToJava.NativeDispatch;
 
 enum TT implements TrustedT{Lib,Void,Any,Gen1,Gen2,Gen3,Gen4,This}
 class OpUtils{
-  static String vectorGet(boolean mut,boolean self){
+  static String listGet(boolean mut,boolean self){
     //Note: on different Java versions multiline strings are composed differenlty!
     //the "non indented" .wrap is needed, otherwise we would patter match
     // ""Gen3."" on some systems and ""Gen3  ."" on some others
     String tName="ArrayList";
-    if(self){tName="L42£SelfVector";}
+    if(self){tName="L42£SelfList";}
     String flagName="";
     if(self){flagName="Flag";}
-    return vectorExc2("Object tmp=(("+tName+")%1$s).get"+flagName+"(%2$s*2+2);\n"+"""
+    return listExc2("Object tmp=(("+tName+")%1$s).get"+flagName+"(%2$s*2+2);\n"+"""
       if(tmp==is.L42.nativeCode.Flags."""+(mut?"MutElem":"ImmElem")+"""
         ){return %1$s.get(%2$s*2+1);}
       throw new L42Error(%Gen"""+(mut?"4":"3")+"""
@@ -36,23 +36,23 @@ class OpUtils{
         "#val called, but the element in position "+%2$s+" was inserted as"""+(mut?" immutable\"":" mutable\"")+"""
         )));
     """);}
-    static String vectorOp(String op,boolean mut,boolean self){
+    static String listOp(String op,boolean mut,boolean self){
       String tName="ArrayList";
-      if(self) {tName="L42£SelfVector";}
-      return vectorExc2(//ok also for SelfVector since add/set take object
+      if(self) {tName="L42£SelfList";}
+      return listExc2(//ok also for SelfList since add/set take object
         "%1$s."
         +op+"(%2$s*2+1,%3$s);(("+tName+")%1$s)."
         +op+"(%2$s*2+2,is.L42.nativeCode.Flags."+(mut?"MutElem":"ImmElem")
         +");return L42£Void.instance;"
         );
       }
-    static String vectorOpRemove(){
-      return vectorExc2("%1$s.remove(%2$s*2+2);%1$s.remove(%2$s*2+1);return L42£Void.instance;");
+    static String listOpRemove(){
+      return listExc2("%1$s.remove(%2$s*2+2);%1$s.remove(%2$s*2+1);return L42£Void.instance;");
       }
-    static String vectorReadGet(){
-      return vectorExc2("return %s.get(%s*2+1);");
+    static String listReadGet(){
+      return listExc2("return %s.get(%s*2+1);");
       }
-    private static final String vectorExc2(String body){
+    private static final String listExc2(String body){
       return "try{"+body+"}"+
         "catch(IndexOutOfBoundsException oob){throw new L42Error(%Gen2.wrap(new L42£LazyMsg(oob.getMessage())));}";
       }
@@ -120,17 +120,17 @@ class OpUtils{
       String wrapperT=J.classNameStr(pOfGen);
       return wrapperT+".myCache.rawFieldCache(null,0)";
       }
-    static Generator vectorKs(boolean self){return (type,mwt,j)->{
+    static Generator listKs(boolean self){return (type,mwt,j)->{
       Signature sig0=Signature.sig(Mdf.Class,Mdf.Mutable,This,Mdf.Immutable,TrustedKind.Int);
       if(type && typingUse(j.p(),mwt,sig0)){j.c("");return;}//TODO: here and in use: why j.c("")??
       if(!self){
-        String s=OpUtils.makeVector(j,"%2$s");
+        String s=OpUtils.makeList(j,"%2$s");
         s=s.formatted(NativeDispatch.xs(mwt).toArray());
         j.c(s);
         }
-      else{j.c("return new L42£SelfVector();");}
+      else{j.c("return new L42£SelfList();");}
       };}
-    static public String makeVector(J j,String size){
+    static public String makeList(J j,String size){
       String typeName=j.typeNameStr(j.p());
       return "var res=new "+typeName+"("+size+"+1); "+
         "var res0=(ArrayList)res; "+

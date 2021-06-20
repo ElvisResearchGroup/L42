@@ -26,7 +26,7 @@ public class ArrayListCache extends AbstractStructuredCache<ArrayList<?>>{
   //above, if t==null, this cache is used for an Optional ArrayList, and the empty optional is
   //the normalized verion of itself
   @Override public int fn(ArrayList<?> t){return t.size()-1;}
-  @Override public Object typename(){return TrustedKind.Vector;}
+  @Override public Object typename(){return TrustedKind.List;}
   @Override public L42Cache<?> rawFieldCache(Object o,int i){
       if(i%2!=0){return Flags.cache;}
       if(o!=null) {return L42CacheMap.getCacheObject(o);}

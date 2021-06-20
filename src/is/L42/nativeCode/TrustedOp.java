@@ -371,63 +371,63 @@ public enum TrustedOp {
   ExcIn("excIn",method("%s.excIn(%s)",sigI(Type,Int),1)),
   IsRefined("isRefined",method("%s.isRefined()",sigI(Bool))),
   IsAbstract("isAbstract",method("%s.isAbstract()",sigI(Bool))),
-  //####VECTOR####
-  VectorK("vectorK",Map.of(
-    Vector,vectorKs(false),
-    SelfVector,vectorKs(true)
+  //####List####
+  ListK("listK",Map.of(
+    List,listKs(false),
+    SelfList,listKs(true)
     )),
   IsEmpty("isEmpty",Map.of(
-    Vector,use("return %s.size()==1;",sig(Readable,Immutable,Bool)),
-    SelfVector,use("return %s.size()==1;",sig(Readable,Immutable,Bool))
+    List,use("return %s.size()==1;",sig(Readable,Immutable,Bool)),
+    SelfList,use("return %s.size()==1;",sig(Readable,Immutable,Bool))
     )),
   Size("size",Map.of(
-    Vector,use("return (%s.size()-1)/2;",sig(Readable,Immutable,Int)),
-    SelfVector,use("return (%s.size()-1)/2;",sig(Readable,Immutable,Int)),
+    List,use("return (%s.size()-1)/2;",sig(Readable,Immutable,Int)),
+    SelfList,use("return (%s.size()-1)/2;",sig(Readable,Immutable,Int)),
     HIMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HMMap,use("return  %s.size();",sig(Readable,Immutable,Int)),
     HSet,use("return  %s.size();",sig(Readable,Immutable,Int)),
     String,use("return %s.length();",sig(Readable,Immutable,Int))
     )),
   ReadVal("readVal",Map.of(
-    Vector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
-    SelfVector,use(vectorReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
+    List,use(listReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
+    SelfList,use(listReadGet(),sig(Readable,Readable,Gen1,Immutable,Int)),
     HMMap,use(mapOutOfBound(
       "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
       ),sig(Readable,Readable,Gen2,Immutable,Int))
     )),
   ImmVal("immVal",Map.of(
-    Vector,use(vectorGet(false,false),sig(Readable,Immutable,Gen1,Immutable,Int)),
-    SelfVector,use(vectorGet(false,true),sig(Readable,Immutable,Gen1,Immutable,Int)),
+    List,use(listGet(false,false),sig(Readable,Immutable,Gen1,Immutable,Int)),
+    SelfList,use(listGet(false,true),sig(Readable,Immutable,Gen1,Immutable,Int)),
     HIMap,use(mapOutOfBound(
       "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
       ),sig(Readable,Immutable,Gen2,Immutable,Int))
     )),
   HashVal("#val",Map.of(
-    Vector,use(vectorGet(true,false),sig(Mutable,Mutable,Gen1,Immutable,Int)),
-    SelfVector,use(vectorGet(true,true),sig(Mutable,Mutable,Gen1,Immutable,Int)),
+    List,use(listGet(true,false),sig(Mutable,Mutable,Gen1,Immutable,Int)),
+    SelfList,use(listGet(true,true),sig(Mutable,Mutable,Gen1,Immutable,Int)),
     HMMap,use(mapOutOfBound(
       "return %s.valIndex(%s);","return %s.valIndex(%s).unwrap;"
       ),sig(Mutable,Mutable,Gen2,Immutable,Int))
     )), 
   SetImm("setImm",Map.of(
-    Vector,use(vectorOp("set",false,false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)),
-    SelfVector,use(vectorOp("set",false,true),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1))
+    List,use(listOp("set",false,false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)),
+    SelfList,use(listOp("set",false,true),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1))
     )),
   SetMut("setMut",Map.of(
-    Vector,use(vectorOp("set",true,false),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)),
-    SelfVector,use(vectorOp("set",true,true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1))
+    List,use(listOp("set",true,false),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)),
+    SelfList,use(listOp("set",true,true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1))
     )),
   AddImm("addImm",Map.of(
-    Vector,use(vectorOp("add",false,false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)),
-    SelfVector,use(vectorOp("add",false,true),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1))
+    List,use(listOp("add",false,false),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1)),
+    SelfList,use(listOp("add",false,true),sig(Mutable,Immutable,Void,Immutable,Int,Immutable,Gen1))
     )),
   AddMut("addMut",Map.of(
-    Vector,use(vectorOp("add",true,false),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)),
-    SelfVector,use(vectorOp("add",true,true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1))
+    List,use(listOp("add",true,false),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1)),
+    SelfList,use(listOp("add",true,true),sig(Mutable,Immutable,Void,Immutable,Int,Mutable,Gen1))
     )),
   Remove("remove",Map.of(
-    Vector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)),
-    SelfVector,use(vectorOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int))
+    List,use(listOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int)),
+    SelfList,use(listOpRemove(),sig(Mutable,Immutable,Void,Immutable,Int))
     )),
   //MAPs
   ImmKey("immKey",Map.of(
@@ -633,9 +633,9 @@ public enum TrustedOp {
     for(T t:mwt.mh().exceptions()){addT(c,t);}
     c.removeIf(p->p.hasUniqueNum());
     if(info.nativePar().isEmpty()){return andParsFrom(c,info,0);}//to avoid out of order errors
-    if(!List.of("Vector","SelfVector","Opt","HSet","SelfHSet","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
+    if(!java.util.List.of("List","SelfList","Opt","HSet","SelfHSet","HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,0);} 
     c.removeIf(p->p.equals(info.nativePar().get(0)));//remove only removes the first occurence
-    if(info.nativePar().size()<2 || !List.of("HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,1);}
+    if(info.nativePar().size()<2 || !java.util.List.of("HIMap","HMMap").contains(info.nativeKind())){return andParsFrom(c,info,1);}
     c.removeIf(p->p.equals(info.nativePar().get(1)));//remove only removes the first occurence
     return andParsFrom(c,info,2);
     }

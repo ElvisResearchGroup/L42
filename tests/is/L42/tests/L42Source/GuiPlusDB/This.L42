@@ -1,9 +1,9 @@
 reuse [AdamsTowel]
 //We use libraries: Unit, JavaServer, GuiBuilder and Query
-Unit = Load:{reuse[L42.is/Unit]}
-LoadJ = Load:{reuse[L42.is/JavaServer]}
-LoadGui = Load:{reuse[L42.is/GuiBuilder]}
-Query = Load:{reuse[L42.is/Query]}
+Unit = Load:{reuse [L42.is/Unit]}
+LoadJ = Load:{reuse [L42.is/JavaServer]}
+LoadGui = Load:{reuse [L42.is/GuiBuilder]}
+Query = Load:{reuse [L42.is/Query]}
 
 //Units
 Year = Unit(I)
@@ -99,6 +99,7 @@ Model = Data:GuiJ.Handler:{ //the model answering to Java events
     whoops DB.Fail, IQL.Fail
     )
   @GuiJ.Handler mut method Void removeByName(S msg)=(
+    Debug(S"ddd"++msg)
     for (name) in this.#iql().removeByName()() (//zero or many times
       this.#sql().deleteName()(name=name)
       )
@@ -120,9 +121,9 @@ OpenGui = {class method Void (mut GuiJ j)[_] = (
     |{addNorth(screen1,buttons);}
     |%gui.button(id=S"addPerson",msg='PressedAdd,text=S"add")
     |{addFlow(buttons,addPerson);}
-    |%gui.button(id=S"removeById",msg='PressedRemove,text=S"remove by id")
+    |%gui.button(id=S"removeById",msg='PressedRemoveId,text=S"remove by id")
     |{addFlow(buttons,removeById);}
-    |%gui.button(id=S"removeByName",msg='PressedRemove,text=S"remove by name")
+    |%gui.button(id=S"removeByName",msg='PressedRemoveName,text=S"remove by name")
     |{addFlow(buttons,removeByName);}
     |%gui.button(id=S"printAll" msg='PressedPrint text=S"printAll")
     |{addFlow(buttons,printAll);}

@@ -193,7 +193,7 @@ public class Loader {
     import is.L42.maps.L42£Set;
     import is.L42.maps.L42£ImmMap;
     import is.L42.maps.L42£MutMap;
-    import is.L42.maps.L42£SelfVector;
+    import is.L42.maps.L42£SelfList;
     import is.L42.platformSpecific.javaTranslation.Resources;
     import java.util.List;
     import java.util.ArrayList;

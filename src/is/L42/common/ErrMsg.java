@@ -281,6 +281,8 @@ public class ErrMsg {
   "last statement does not guarantee block termination"
   ;}public static String catchStatementDoesNotGuaranteeBlockTermination(int i){return
   "catch statement "+i+" does not guarantee block termination"
+  ;}public static String curlyWithCatchReturn(){return
+      "curly block has explicit 'catch return' inside"
   ;}public static String curlyWithNoReturn(){return
   "curly block do not have any return statement"
   ;}public static String nonVarBindingOpUpdate(Object x,Object op){return

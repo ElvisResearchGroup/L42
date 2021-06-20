@@ -1,4 +1,3 @@
-Guarded = Message:{[Message$Guard]}//an always active kind of X
 Check = Data:{ Bool res, S msg }
 Checks = Class:Trait(Collection.list(Check))[hide='#squareAdd(that)]:{
   mut method Void add(Check that)
@@ -18,32 +17,45 @@ Checks = Class:Trait(Collection.list(Check))[hide='#squareAdd(that)]:{
   }
   
 EnableAssertions={class method Bool ()=\.true()}
-TraitXAssertList = Trait:{
-  class method S introMsg()
-  class method Void (mut Checks squareBuilder) = {
-    if Match.All()(for ci in squareBuilder \add(ci.res())) return void
-    var S msg=this.introMsg()
-    for ci in squareBuilder (
-      if !ci.res() msg++=S.nl()++ci.msg()
-      )
-    error this.raiseError(msg=msg)
+
+Condition = Decorator.$:{
+  TraitXAssertList = Trait:{
+    class method S introMsg()
+    class method Void (mut Checks squareBuilder) = {
+      if Match.All()(for ci in squareBuilder \add(ci.res())) return void
+      var S msg=this.introMsg()
+      for ci in squareBuilder (
+        if !ci.res() msg++=S.nl()++ci.msg()
+        )
+      error this.raiseError(msg=msg)
+      }
+    class method mut Checks #squareBuilder() = Checks()
+    class method Bool #shortCircutSquare()
+    class method Void raiseError(S msg)
     }
-  class method mut Checks #squareBuilder() = Checks()
-  class method Bool #shortCircutSquare()
-  class method Void raiseError(S msg)
+    
+  @Public method Trait trait() = TraitXAssertList()
+  
+  @Public method Trait(Trait trait)[Message$Guard] = ( 
+    res = Message:this.trait():trait
+    catch Message$Guard g exception g //all exceptions are added Guard as supertype later on
+    catch Any x error x//thus this does not have any real effect, but makes the TS happy
+    res 
+    )
   }
-XX=Class:TraitXAssertList:{
+  
+XX=Class:Condition.TraitXAssertList:{
   class method S introMsg() = S"Some failed (post)conditions:"
   class method Bool #shortCircutSquare() = EnableAssertions()
   class method Void raiseError(S msg) = error X"%msg"
   }
-Pre=Class:TraitXAssertList:{
-  class method S introMsg() = S"Some failed preconditions:"
-  class method Bool #shortCircutSquare() = EnableAssertions()
-  class method Void raiseError(S msg) = error X"%msg"
-  }
-Guarded$=Class:TraitXAssertList:{
+Guarded = Condition:{[Message$Guard] //an always active kind of X
   class method S introMsg() = S"Some failed guards:"
   class method Bool #shortCircutSquare() = \.false()
   class method Void raiseError(S msg) = error Guarded"%msg"
+  }
+Pre = Condition:{[Message$Assertion]
+  class method S introMsg() = S"Some failed preconditions:"
+  class method Bool #shortCircutSquare() = EnableAssertions()
+  class method Void raiseError(S msg) = error Pre"%msg"
   }

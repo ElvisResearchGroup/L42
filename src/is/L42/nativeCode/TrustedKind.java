@@ -4,7 +4,6 @@ import static is.L42.tools.General.bug;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.todo;
 
-import java.util.List;
 import java.util.function.Function;
 
 import is.L42.common.EndError;
@@ -100,29 +99,29 @@ public enum TrustedKind implements TrustedT{
     }
     @Override public boolean typePluginK(Program p,MH mh){return immTypePluginK(p,mh);}
     },
-  Vector("ArrayList"){@Override public String factory(J j,MWT mwt){
+  List("ArrayList"){@Override public String factory(J j,MWT mwt){
       assert mwt.key().xs().isEmpty();
       assert j.p().topCore().info().nativePar().size()==4;
-      return OpUtils.makeVector(j,"0");      
+      return OpUtils.makeList(j,"0");      
       }
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 3;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public TrustedKind specialize(Program p,List<P>nativePars){
+    @Override public TrustedKind specialize(Program p,java.util.List<P>nativePars){
         if(!nativePars.get(0).equals(P.pThis0)){return this;}
-        return SelfVector;
+        return SelfList;
         }
     },
-  SelfVector("L42£SelfVector"){@Override public String factory(J j,MWT mwt){
+  SelfList("L42£SelfList"){@Override public String factory(J j,MWT mwt){
     assert mwt.key().xs().isEmpty();
     assert j.p().topCore().info().nativePar().size()==4;
-    return "return new L42£SelfVector();";      
+    return "return new L42£SelfList();";      
     }
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 3;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
     @Override public String typeNameStr(Program p,J j){
-      return "L42£SelfVector";
+      return "L42£SelfList";
       }
     },
   HIMap("L42£ImmMap"){@Override public String factory(J j,MWT mwt){return mapFactory(j,mwt);}
@@ -147,7 +146,7 @@ public enum TrustedKind implements TrustedT{
     @Override public int genericNumber(){return 1;}
     @Override public int genExceptionNumber(){return 1;}
     @Override public boolean typePluginK(Program p,MH mh){return mutTypePluginK(p,mh);}
-    @Override public TrustedKind specialize(Program p,List<P>nativePars){
+    @Override public TrustedKind specialize(Program p,java.util.List<P>nativePars){
       if(!nativePars.get(0).equals(P.pThis0)){return this;}
       throw todo();//TODO:
       /*For circular sets and maps, and for any kind of nativeKind where
@@ -231,7 +230,7 @@ public enum TrustedKind implements TrustedT{
     if(res==null){return null;}
     return res.specialize(p,p.topCore().info().nativePar());
     }
-  public TrustedKind specialize(Program p,List<P>nativePars){return this;}
+  public TrustedKind specialize(Program p,java.util.List<P>nativePars){return this;}
   public static TrustedKind _rawFromString(String s){
     if(s.isEmpty()){return AnyKind;}
     for (TrustedKind t : TrustedKind.values()) {

@@ -1,5 +1,5 @@
 class method mut This #apply()
-class method mut This #apply(This2.I capacity)=native{trusted:vectorK} error void
+class method mut This #apply(This2.I capacity)=native{trusted:listK} error void
 read method This2.Bool isEmpty()=native{trusted:isEmpty} error void
 read method This2.I size()=native{trusted:size} error void
 read method read This0.Elem readVal(This2.I that)=native{trusted:readVal} error void
@@ -12,7 +12,7 @@ mut method Void #add(This2.I that,mut This0.Elem val)=native{trusted:addMut} err
 mut method Void remove(This2.I that)=native{trusted:remove} error void
 
 Elem={#norm{}}
-#norm{nativeKind=Vector, nativePar=This0.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
+#norm{nativeKind=List, nativePar=This0.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
   typeDep=This,This2.I,This2.Bool, This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut
   coherentDep=This,This2.Bool,This2.I,This.Elem,This2.Collection$OutOfBounds,This2.Collection$ElementNotImm,This2.Collection$ElementNotMut  
   }

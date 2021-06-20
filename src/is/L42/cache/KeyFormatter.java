@@ -127,8 +127,8 @@ class FormatTrusted implements FormatKind{
     return "\""+res+"\"";
     }
   }
-class FormatVector extends Format42{
-  public FormatVector(P.NCs hint,KeyFormatter f, int lineN,Object o){
+class FormatList extends Format42{
+  public FormatList(P.NCs hint,KeyFormatter f, int lineN,Object o){
     super(hint,f,lineN,o);
     }
   @Override public String format(boolean isInterface, int size){
@@ -160,7 +160,7 @@ class KeyFormatter{
     }
   public FormatKind newFormatKind(P.NCs hint,int lineN,Object o){
     var cache=(L42Cache<?>)k.lines()[lineN][0];
-    if(cache.typename() == TrustedKind.Vector){return new FormatVector(hint,this,lineN,o);}
+    if(cache.typename() == TrustedKind.List){return new FormatList(hint,this,lineN,o);}
     if(cache.typename() instanceof TrustedKind){return new FormatTrusted(hint,this,lineN,o);}
     if(cache.typename() instanceof String[]){return new Format42(hint,this,lineN,o);}
     assert false:
@@ -191,7 +191,7 @@ class KeyFormatter{
   private P.NCs _computeHint(P.NCs source, Core.L l, X x){
     if(l==null){
       l=p._ofCore(source);
-      assert l.info().nativeKind().equals("Vector");
+      assert l.info().nativeKind().equals("List");
       P res= p.from(l.info().nativePar().get(0),source);
       if(res.isNCs()){return res.toNCs();}
       return null;

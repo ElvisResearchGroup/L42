@@ -10,22 +10,6 @@ import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Full.D;
 import is.L42.generated.ThrowKind;
-class HasReturn extends PropagatorCollectorVisitor{
-  boolean find=false;
-  public static boolean of(Full.E e){
-    var v=new HasReturn();
-    v.visitE(e);
-    return v.find;
-    }
-    @Override public void visitThrow(Full.Throw thr){
-      if(thr.thr()==ThrowKind.Return){find=true;}
-      }
-    @Override public void visitL(Full.L l){}
-    @Override public void visitL(Core.L l){}
-    @Override public void visitBlock(Full.Block b){
-      if(!b.isCurly()){super.visitBlock(b);}
-      }
-  }
 public class Returning extends UndefinedCollectorVisitor{
   public static void ofBlock(Full.Block b){
     assert b.isCurly();    
@@ -44,11 +28,28 @@ public class Returning extends UndefinedCollectorVisitor{
       throw new EndError.NotWellFormed(b.ks().get(i).e().poss(),
         ErrMsg.catchStatementDoesNotGuaranteeBlockTermination(i));
       }
-    var res=Stream.concat(b.ds().stream().map(d->d._e()), b.ks().stream().map(k->k.e()))
-    .filter(HasReturn::of).findFirst();
-    if(!res.isEmpty()){return;}
+    boolean[]hasRes={false};
+    boolean[]hasCatchRet={false};
+    b.accept(new PropagatorCollectorVisitor(){
+      @Override public void visitThrow(Full.Throw thr){
+        super.visitThrow(thr);
+        hasRes[0]|=thr.thr().equals(ThrowKind.Return);
+        }
+      @Override public void visitK(Full.K k){
+        super.visitK(k);
+        hasCatchRet[0]|=ThrowKind.Return.equals(k._thr());
+        }
+      @Override public void visitL(Full.L l){}
+      @Override public void visitL(Core.L l){}
+      @Override public void visitBlock(Full.Block b0){
+        if(!b0.isCurly()||b==b0){super.visitBlock(b0);}
+        }
+    });
+    if(hasRes[0] && !hasCatchRet[0]){return;}
+    if(!hasRes[0]) {throw new EndError.NotWellFormed(b.poss(),
+      ErrMsg.curlyWithNoReturn());}
     throw new EndError.NotWellFormed(b.poss(),
-      ErrMsg.curlyWithNoReturn());
+        ErrMsg.curlyWithCatchReturn());
     }
   public static boolean of(Full.E e){
     assert e!=null;

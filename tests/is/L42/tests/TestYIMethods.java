@@ -856,8 +856,23 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      method This #shortResult#andand()
      method This #shortProcess#andand(This that, This other)
      """)
-     
-  ));}
+),new AtomicTest(()->pass("""
+  method class Any v()={ imm Any a={ return void } return Void}
+  ""","""
+  method class Any v()=(
+    Void fresh0_curlyX=(
+      Any a=(
+        Void fresh2_curlyX=(
+          Void fresh4_underscore=return void
+          void)
+      catch return Any fresh3_curlyX1 fresh3_curlyX1
+      error void)
+    Void fresh5_underscore=return Void<:class Void
+    void)
+  catch return class Any fresh1_curlyX1 fresh1_curlyX1
+  error void)
+  """     
+  )));}
 static Program p0=Program.parse("""
   {
    method Void m()
