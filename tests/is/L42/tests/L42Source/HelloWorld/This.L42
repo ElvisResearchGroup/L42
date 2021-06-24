@@ -1,5 +1,17 @@
 reuse [AdamsTowel]
-Foo={
+
+DoubleDealer = Data:{
+  Num left, Num right
+  @Cache.Now class method Num someNum(Num left)=left
+  @Cache.Now class method Num someNum(Num right)=right
+  }
+MainScream = (
+  dd=DoubleDealer(left=4\, right=2\)
+  Debug(dd.someNum())
+  )
+
+
+/*Foo={
   class method Num foo(Bool bla) = (
     Num res = (
       Void unused= (
@@ -10,7 +22,7 @@ Foo={
       )
     res
     )
-  }
+  }*/
     
 
 Direction = Collection.Enum:{interface

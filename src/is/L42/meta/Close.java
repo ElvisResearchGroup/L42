@@ -15,6 +15,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import is.L42.common.EndError;
+import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -34,6 +35,7 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.tools.General;
 import is.L42.translationToJava.J;
 import is.L42.typeSystem.Coherence;
+import is.L42.visitors.WellFormedness;
 
 public class Close extends GuessFields{
   Program p;
@@ -79,6 +81,14 @@ public class Close extends GuessFields{
     if(!i.typeDep().contains(P.pThis0)){i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));}
     if(mustAddThis0Coherence && !i.coherentDep().contains(P.pThis0)){
       i=i.withCoherentDep(pushL(i.coherentDep(),P.pThis0));
+      }
+    //check that there is no dup in new MWTs
+    long countNew=newMWTs.stream().map(m->m.key()).distinct().count();
+    if(countNew<newMWTs.size()) {
+      var all=L(newMWTs.stream().map(m->m.key()));
+      var dups=WellFormedness.dups(all);
+      var mErr=_elem(newMWTs,dups.get(0));
+      err.throwErr(mErr, "Close is attempting to create multiple versions of methods "+dups);
       }
     var mwts=new SumMethods(err).sum(oldMWTs, newMWTs);
     l= l.withMwts(mwts).withInfo(i);

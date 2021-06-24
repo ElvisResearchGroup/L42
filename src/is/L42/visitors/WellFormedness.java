@@ -254,7 +254,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err(ErrMsg.duplicatedName(dups));
       } 
     }
-  private<T> List<T> dups(List<T> es) {
+  public static <T> List<T> dups(List<T> es) {
     Set<T> all=new HashSet<>(es);
     List<T> res=new ArrayList<>(es);
     for(T t:all) {res.remove(t);}
