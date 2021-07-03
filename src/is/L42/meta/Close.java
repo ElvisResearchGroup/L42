@@ -15,7 +15,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import is.L42.common.EndError;
-import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
@@ -29,7 +28,9 @@ import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.nativeCode.CacheLazyGenerator;
 import is.L42.nativeCode.CacheNowGenerator;
+import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.tools.General;
@@ -59,8 +60,12 @@ public class Close extends GuessFields{
     assert res.wf();
     return res;
     }
+  J oldJ;
+  boolean noMutFields;
   private Core.L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
     this.p=p;
+    this.oldJ=new J(p,null,null,true);
+    this.noMutFields=CacheLazyGenerator.noMutFields(oldJ,p.topCore());
     this.err=new MetaError(wrap);
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
@@ -93,7 +98,9 @@ public class Close extends GuessFields{
     var mwts=new SumMethods(err).sum(oldMWTs, newMWTs);
     l= l.withMwts(mwts).withInfo(i);
     J newJ=new J(p.update(l,false),null,null,true){//so that it ignore public abstract methods
-      public Coherence newCoherence(Program p){return new Coherence(p,true);}
+      public Coherence newCoherence(Program p){return new Coherence(p,true){
+        public boolean checkNativeKind(TrustedKind tK){return false;}
+        };}
       };
     assert newJ.isCoherent:
       "";
@@ -273,7 +280,13 @@ public class Close extends GuessFields{
     if(!m.mh().t().mdf().isIn(Mdf.Immutable, Mdf.Class, Mdf.Readable)){err.throwErr(m,"can not be made cached; the return type modifier must be imm, class or read; but it is "+m.mh().t().mdf().inner);}
     }
   public void processLazyCache(MWT m){
-    if(!m.mh().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
+    //if(!m.mh().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
+    if(!m.mh().mdf().isIn(Mdf.Immutable,Mdf.Readable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
+    if(m.mh().mdf().isRead() && !noMutFields){
+      err.throwErr(m,"can not be made cached; the receiver modifier is read but not all fields are imm, capsule or class");
+      }
+    //Note: this is ok now, on the native layer we check that all fields must be private+only imm/capsule/class
+    //otherwise, if there was a mut field, then the lazy on read would be able to access (non encapsulated) mut fields
     checkZeroPars(m);
     checkRetAndBody(m);
     //TODO: edit here to add multi parameter lazy cached imm/class

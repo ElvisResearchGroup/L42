@@ -13,6 +13,7 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.translationToJava.J;
@@ -120,15 +121,17 @@ class OpUtils{
       String wrapperT=J.classNameStr(pOfGen);
       return wrapperT+".myCache.rawFieldCache(null,0)";
       }
-    static Generator listKs(boolean self){return (type,mwt,j)->{
-      Signature sig0=Signature.sig(Mdf.Class,Mdf.Mutable,This,Mdf.Immutable,TrustedKind.Int);
-      if(type && typingUse(j.p(),mwt,sig0)){j.c("");return;}//TODO: here and in use: why j.c("")??
-      if(!self){
+    static Generator listKs(boolean self){return new Generator(){
+      public void check(boolean allowAbs,MWT mwt,J j){
+        Signature sig0=Signature.sig(Mdf.Class,Mdf.Mutable,This,Mdf.Immutable,TrustedKind.Int);
+        typingUse(j.p(),mwt,sig0,allowAbs);
+        }
+      public void generate(MWT mwt,J j){
+        if(self){ j.c("return new L42£SelfList();"); return;}
         String s=OpUtils.makeList(j,"%2$s");
         s=s.formatted(NativeDispatch.xs(mwt).toArray());
         j.c(s);
         }
-      else{j.c("return new L42£SelfList();");}
       };}
     static public String makeList(J j,String size){
       String typeName=j.typeNameStr(j.p());
@@ -145,7 +148,7 @@ class OpUtils{
       var u=use(pattern,Signature.sig(Mdf.Mutable,Mdf.Immutable,Void));
       return Map.of(TrustedKind.StringBuilder,u);
       }
-    static boolean typingUse(Program p, MWT mwt,Signature sig){
+    public static void typingUse(Program p, MWT mwt,Signature sig,boolean allowAbs){
       assert sig!=null;
       assert sig.parMdfs.size()==sig.parTs.size();
       if(sig.parTs.size()!=mwt.mh().pars().size()){
@@ -154,15 +157,14 @@ class OpUtils{
         }
       checkMdf(mwt,sig,mwt.mh().mdf(),sig.methMdf);
       var t=mwt.mh().t();
-      checkSingle(p,mwt,sig,t.p(),t.mdf(),sig.retT,sig.retMdf);
+      checkSingle(p,mwt,sig,t.p(),t.mdf(),sig.retT,sig.retMdf,allowAbs);
       for(int i:range(mwt.mh().pars().size())){
         var pi=mwt.mh().pars().get(i).p();
         var mdfi=mwt.mh().pars().get(i).mdf();
         var tti=sig.parTs.get(i);
         var tmdfi=sig.parMdfs.get(i);
-        checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi);
+        checkSingle(p,mwt,sig,pi,mdfi,tti,tmdfi,allowAbs);
         }
-      return true;
       }
     private static void checkGen(int i,Program p,MWT mwt,Signature sig,P pi){
       assert p.topCore().info().nativePar().size()>i;
@@ -177,7 +179,13 @@ class OpUtils{
           ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,mdfi,tmdfi));
         }
       }
-    private static void checkSingle(Program p,MWT mwt,Signature sig,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi){
+    public static boolean allAbs(Core.L l){
+      var noNative=l.info().nativeKind().isEmpty();
+      var allAbs=l.mwts().stream().allMatch(mi->mi._e()==null);
+      var hasClass=l.mwts().stream().anyMatch(mi->mi.mh().mdf().isClass());
+      return noNative && allAbs && hasClass;
+      }
+    private static void checkSingle(Program p,MWT mwt,Signature sig,P pi,Mdf mdfi,TrustedT tti,Mdf tmdfi,boolean allowAbs){
       checkMdf(mwt,sig,mdfi,tmdfi);
       if(tti instanceof TrustedKind){
         var ki=(TrustedKind)tti;
@@ -185,7 +193,9 @@ class OpUtils{
         assert li!=null:
           pi+" "+p.pop().topCore();
         var kind=li.info().nativeKind();
-        if(!kind.isEmpty() && ki==TrustedKind._fromString(kind,p.navigate(pi.toNCs()))){return;}
+        var progi=p.navigate(pi.toNCs());
+        if(!kind.isEmpty() && ki==TrustedKind._fromString(kind,progi)){return;}
+        if(allowAbs && kind.isEmpty() && allAbs(progi.topCore())){return;}
         throw new EndError.TypeError(mwt._e().poss(),
           ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,pi,ki));            
         }
@@ -219,7 +229,7 @@ class OpUtils{
     }
   static Function<Program,String> optChoice(String opt,String optOpt){
     return p->{
-      if(!TrustedKind.isOptOpt(p)){return opt;}
+      if(!TrustedKind.isOptOpt(p,false)){return opt;}
       return optOpt;
       }; 
     }
@@ -230,14 +240,16 @@ class OpUtils{
       if(i.nativePar().size()<3){return opt;}//a better error will happen in other places
       var pOpt=i.nativePar().get(2);
       if(!pOpt.isNCs()){return opt;}//a better error will happen in other places
-      if(!TrustedKind.isOptOpt(p.navigate(pOpt.toNCs()))){return opt;}
+      if(!TrustedKind.isOptOpt(p.navigate(pOpt.toNCs()),false)){return opt;}
       return optOpt;
       }; 
     }
-  static Generator use(Function<Program,String> s0,Signature sig){
-    return (type,mwt,j)->{
+  static Generator use(Function<Program,String> s0,Signature sig){ return new Generator() {
+    @Override public void check(boolean allowAbs,MWT mwt,J j){
+      typingUse(j.p(),mwt,sig,allowAbs);
+      }
+    @Override public void generate(MWT mwt,J j){
       Program p=j.p();
-      if(type && typingUse(p,mwt,sig)){j.c("");return;}
       String s=s0.apply(p);
       s = replaceGen(j,p,s,P.pThis0,"%This");
       for(int i:range(p.topCore().info().nativePar())){
@@ -245,8 +257,8 @@ class OpUtils{
         s = replaceGen(j, p, s, geni,"%Gen"+(i+1));
         }           
       j.c(s.formatted(NativeDispatch.xs(mwt).toArray()));
-      };
-    }
+      }
+    };}
   private static String replaceGen(J j,Program p,String s,P geni,String genName) {
     if(s.contains(genName+".")){
       String geniS=J.classNameStr(p.navigate(geni.toNCs()));

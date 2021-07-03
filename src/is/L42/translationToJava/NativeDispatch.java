@@ -30,10 +30,9 @@ public class NativeDispatch {
     var op=TrustedOp._fromString(nativeOp);
     assert op!=null :nativeOp;
     assert op._of(k)!=null:k+" "+op;//type checking should avoid this
-    //op._of(k).of(false, mwt,j);//before type checking guranteed there was no need of "true", now type checking just make a warning
     try{
-      op._of(k).of(true, mwt,j);
       k.checkNativePars(j.p(),true);
+      op._of(k).check(false, mwt,j);
       }
     catch(EndError.TypeError te){
       j.c("return ");
@@ -41,7 +40,7 @@ public class NativeDispatch {
       j.c(";");
       return;
       }
-    op._of(k).of(false, mwt,j);
+    op._of(k).generate(mwt,j);
     }
   public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
     var k=TrustedKind._fromString(nativeKind,j.p());
@@ -60,11 +59,12 @@ public class NativeDispatch {
       int endName=s.indexOf("{");
       int endNamePar=s.indexOf("}");
       endLine=s.indexOf("\n");
-      int preEndLine=s.indexOf("{\n");
       if(endName==-1 || endNamePar==-1){errorMsg+="Slave parameters missing\n";}
       else{assert endName<endNamePar:endName+" "+endNamePar+" "+s;}
       if(endNamePar>endLine){errorMsg+="Slave name and parameters need to sit on one line\n";}
-      if(preEndLine+1!=endLine){errorMsg+="Slave name parameters must end with '}{\\n' and be followed by native code\n";}
+      int preEndLine=s.lastIndexOf("{",endLine);
+      String ending=s.substring(preEndLine+1,endLine);
+      if(!ending.isBlank()){errorMsg+="Slave name parameters must end with '}{\\n' and be followed by native code\n";}
       slaveName=s.substring(0,endName).trim();
       if(!p.matcher(slaveName).matches()){errorMsg+="Invalid Slave name: ["+slaveName+"] \n";}
       String nativeData = s.substring(endName+1,endNamePar).trim()+"\n";

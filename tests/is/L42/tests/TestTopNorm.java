@@ -998,6 +998,51 @@ public class TestTopNorm{
      Main=Debug(S"ok")}
     """,hole+ErrMsg.uncompiledDependency(hole,"This1.B",hole)
     );}
+  @Test public void passCacheCore(){top("""
+    {
+    C = {class method mut This()   read method Any doIt() = void}
+    A = {
+      class method Void of() = void
+      mut method mut C inner::0()
+      class method mut This of::0(mut C inner)
+      class method mut This of(mut C inner) = this.of::0(inner=inner)
+      imm method Void ft() = native{trusted:lazyCache} void
+      }
+    B = A.of()
+    }
+  """);}
+  @Test public void failCacheCore1(){topFail(EndError.TypeError.class,"""
+    {
+    C = {class method mut This()   read method Any doIt() = void}
+    A = {
+      class method Void of() = void
+      read method read C inner::0()
+      mut method mut C #inner::0()
+      class method mut This of::0(mut C inner)
+      class method mut This of(mut C inner) = this.of::0(inner=inner)
+      read method Any ft() = native{trusted:lazyCache}
+        this.inner::0().doIt()
+      }
+    B = A.of()
+    }
+  """,hole+ErrMsg.nativeBodyInvalidThis(true,hole,hole)
+        );}
+  @Test public void passCacheCore1(){top("""
+    {//no mut fields this time
+    C = {class method mut This()   read method Any doIt() = void}
+    A = {
+      class method Void of() = void
+      read method read C inner::0()
+      mut method C #inner::0()
+      class method mut This of::0(C inner)
+      class method mut This of(C inner) = this.of::0(inner=inner)
+      read method Any ft() = native{trusted:lazyCache}
+        this.inner::0().doIt()
+      }
+    B = A.of()
+    }
+  """
+  );}
   //Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""
       {reuse [AdamsTowel]
@@ -1042,6 +1087,12 @@ public static void top(String program,String out){
     var res=Init.topCache(new CachedTop(L(),L()),program);
     assertEquals(res,Core.L.parse(out));
     });
+  }
+public static void top(String program){
+  Resources.clearResKeepReuse();
+  Constants.testWithNoUpdatePopChecks(()->
+    Init.topCache(new CachedTop(L(),L()),program)
+    );
   }
 public static void topFail(Class<?> kind,String program,String ...output){
   Resources.clearResKeepReuse();

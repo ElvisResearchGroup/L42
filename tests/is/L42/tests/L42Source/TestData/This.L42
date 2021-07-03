@@ -132,8 +132,36 @@ TestDataCacheErrors={
         @Cache.LazyRead class method Num m(Num bar)=bar
         }))
     )
+  Trait2Meth = Trait:{
+    S a, S b
+    @Cache.Now class method S foo(S a)=a
+    @Cache.Now class method S foo(S b)=b
+    }
+  Main2Meth = {}:Test"two methods generated with same name"(expected=S"""
+    |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+    |@This2.Cache.LazyRead class method This2.Num m(This2.Num bar)=(..)
+    |No candidate getter/exposer with name bar and method modifier imm or read[###]
+    """.trim(),actual=(_=Data:Trait2Meth() catch Message x x error void))
+  TraitBadLazyOnRead = Trait:{
+    mut Num.List that
+    @Cache.Lazy read method S meth()=(
+      Log"meth".write(S"CalledOn %this.that()")
+      this.that().toS()
+      )
+    }
+  MainBadLazyOnRead = {}:Test"lazy read on class with mut fields"(expected=S"""
+    |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
+    |@This2.Cache.LazyRead class method This2.Num m(This2.Num bar)=(..)
+    |No candidate getter/exposer with name bar and method modifier imm or read[###]
+    """.trim(),actual=(_=Data:TraitBadLazyOnRead() catch Message x x error void))
+  GoodLazyOnRead=Data:{
+    Num.List that
+    @Cache.Lazy read method S meth()=(
+      Log"meth".write(S"CalledOn %this.that()")
+      this.that().toS()
+      )
+    }
   }
-
 TestDataInterface={
   Shape={interface [HasToS]
     S that

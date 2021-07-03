@@ -57,7 +57,8 @@ _______
       Q[typed; p; MWT.G; empty; MWT.exceptions.Ps] |- e : MWT.T.P
       mdf in bodyTypes(MWT.Ts.mdfs->MWT.T.mdf)  //MWT.Ts.mdfs includes the "this mdfs"
       p;MWT.G;empty |= e :_ <=mdf //TODO: do in code
-      if MWT.native?!=empty then typePlugin(p;MWT) //currently *very* relaxed, otherwise breaks metalevel soundness 
+      if MWT.native?!=empty then typePlugin(typed;p;MWT) 
+      //currently *very* relaxed, otherwise breaks metalevel soundness 
       if (_ catch error imm P x _ _) in MWT.e and p(P).Info.nativeKind=NonDeterministicError
         then MWT.s starts with #$ 
 _______
@@ -287,6 +288,11 @@ _______
     either CORE.L.interface?=interface
     or class not in MHs.mdfs and CORE.L.Info.native=empty//no abstract class method
     or exists xz  and n? such that: forall MH in MHs, coherent(p;MHs;MH;xz;n?)
+    typed?=empty if we are executing under coherent(p,CORE.e)
+    typed?=typed otherwise 
+    forall MWT in Core.L.MWTs such that MWT.native!=empty
+      typePlugin(typed?;p;MWT)
+      
 * coherent(p;_;class method T m::n?(T1 x1..Tn xn)_;xz;n?)
     x1..xn = xz
     p |- This0 <= T.P
@@ -294,7 +300,7 @@ _______
     T.mdf not in {class, fwd mut, fwd imm}
     if T.mdf in {imm, capsule} then mdfs subseteq {imm, fwd imm, capsule, class}
     if read or lent in mdfs then T.mdf in {read, lent}
-    p(This0).Info.native!= empty then typePluginK(p;MWT) 
+    p(This0).Info.native!=empty then typePluginK(p;MWT) 
 * coherent(p;MHs;mdf' method T m::n?(_)_;_;n?) //by well formedness if n is present is the same, but it may be absent.
     forall class method mdf _(_)_ in MHs:  !(mdf canAlsoBe mdf') //allowed abstract
 * coherent(p;_;mdf method T #sx::n?(mdf' P' that)_;_,x;n?) //Note: #sx::n? match any number of # and an x with an optional n

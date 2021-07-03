@@ -601,7 +601,7 @@ public enum TrustedOp {
   //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
   ;
   public final String inner;
-  Map<TrustedKind,Generator>code;
+  final Map<TrustedKind,Generator>code;
   public Generator _of(TrustedKind k){
     assert k!=null;
     var res=code.get(k);

@@ -45,8 +45,8 @@ public class Main {
       var location=pTails.printCs();
       if(!location.isEmpty()){location+=".";}
       location+=Resources.currentC;
-      var l=Resources.currentP.topCore();
-      location+="\n      in "+l.poss();
+      //var l=Resources.currentP.topCore();
+      location+="\n      in "+Resources.currentPos;
       Resources.err("While performing reduction on "+location);
       if(ee.getClass()==L42Exception.class){Resources.err("L42 terminated with exception");}
       else{Resources.err("L42 terminated with error");}

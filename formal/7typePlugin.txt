@@ -1,18 +1,33 @@
 In this file we define the typing constrants for some of the plugins.
-
+Summary:
+Typing is ok if the required native kinds are there OR they are fully abstract
+ - full consistency requires the required native kinds to be there
+ - It is not required for well formedness consistency checks; 
+     the ones happenings for private nesteds and closed classes.
+ - J inside Close does not require it either
+ - when generating java, it checks, but not on the AnyKind/AnyNativeKind
 _______
-#define typePlugin(p;MWT)    typePlugin(p;MWT;balCurly)
-* typePlugin(p;MWT)=typePlugin(p;MWT;MWT.nativeUrl)
+#define typePluginK(p;MWT)
+  checks if the method is ok as a native constructor for p.top
+_______
+#define typePlugin(typed?;p;MWT)    typePlugin(typed?;p;MWT;balCurly)
+* typePlugin(typed?;p;MWT)=typePlugin(typed?;p;MWT;MWT.nativeUrl)
 
-* typePlugin(p;MWT;balCurly)
-    balCurly in {cacheLazy,cacheEager} 
+* typePlugin(typed?;p;MWT;balCurly)
+    balcurly in {.. some native trusted operation..}
+    forall T in MWT.MH, either:
+      T may be constrained to be of another trusted nativeKind.
+      T is all abstract and typed?=typed 
+    
+* typePlugin(typed?;p;MWT;balCurly)//the implemented version is more relaxed. CacheLazy can be applied on read in some cases
+    balCurly in {cacheLazy,cacheEager}
     MWT.mdf in {imm,class}
     MWT.T.mdf in {imm,class}
     MWT.pars=empty
     //Note: we allow exceptions
     MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
 
-* typePlugin(p;MWT;cacheNow)
+* typePlugin(typed?;p;MWT;cacheNow)
     MHs={MWT.MH| MWT in p(This0).MWTs, MWT.e?=empty}
     MWT.mdf=read
     MWT.T.mdf in {imm,class}

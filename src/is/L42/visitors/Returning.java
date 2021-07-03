@@ -2,8 +2,6 @@ package is.L42.visitors;
 
 import static is.L42.tools.General.range;
 
-import java.util.stream.Stream;
-
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.generated.Core;

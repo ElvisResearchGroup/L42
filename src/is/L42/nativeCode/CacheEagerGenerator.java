@@ -10,7 +10,7 @@ import is.L42.translationToJava.J;
 
 public class CacheEagerGenerator extends CacheLazyGenerator{
   @Override void readCache(J j,String name){throw bug();}
-  @Override void typeCache(MWT mwt, J j){
+  @Override public void check(boolean allowAbs, MWT mwt, J j){//allowAbs correctly unused
     var p=mwt._e().poss();
     MH mh=mwt.mh();
     var url=mwt.nativeUrl();
@@ -18,6 +18,6 @@ public class CacheEagerGenerator extends CacheLazyGenerator{
       throw new EndError.TypeError(p,ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),url,mh,
         "immutable methods",mh.mdf(),"immutable"));
       }
-    super.typeCache(mwt,j);
+    super.check(allowAbs,mwt,j);
     }
   }

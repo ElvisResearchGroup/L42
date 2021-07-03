@@ -20,6 +20,7 @@ import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.generated.C;
 import is.L42.generated.Core;
+import is.L42.generated.Pos;
 import is.L42.translationToJava.Loader;
 import safeNativeCode.slave.Slave;
 import safeNativeCode.slave.host.ProcessSlave;
@@ -66,9 +67,11 @@ public class Resources {
   public static int allBusyUpTo=0;
   public static Program currentP;
   public static C currentC;
-  public static void setLibsCached(Program p,C c,ArrayList<L42£Library> libs){
+  public static Pos currentPos;
+  public static void setLibsCached(Program p,C c,Pos pos,ArrayList<L42£Library> libs){
     currentP=p;
     currentC=c;
+    currentPos=pos;
     libsCached=libs;
     }
   public static L42£Library ofLib(int id){

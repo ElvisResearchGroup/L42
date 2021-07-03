@@ -14,6 +14,8 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
+import is.L42.nativeCode.TrustedKind;
+import is.L42.generated.Pos;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
@@ -21,6 +23,7 @@ import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoa
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
+import is.L42.typeSystem.Coherence;
 import is.L42.visitors.WellFormedness;
 
 class Element{
@@ -77,13 +80,13 @@ public class Loader {
     var files=L(new SourceFile(metaPackage+name+"£E",code));
     ClassLoader classes=InMemoryJavaCompiler.compile(classLoader,files,outNewBytecode);
     assert classes==classLoader;
-    var res=runMainName(p,c,name);
+    var res=runMainName(p,c,e.pos(),name);
     assert checkNoException(()->res.wf());
     assert checkNoException(()->WellFormedness.checkInfo(p.push(Resources.currentC,res),res));
     return res;
     }
-  public Core.L runMainName(Program p, C c,String name) throws InvocationTargetException{
-    Resources.setLibsCached(p,c,libs);
+  public Core.L runMainName(Program p, C c,Pos pos,String name) throws InvocationTargetException{
+    Resources.setLibsCached(p,c,pos,libs);
     try{
       L42£Library res=(L42£Library)classLoader.loadClass(metaPackage+name+"£E")
         .getDeclaredMethod("execute")
@@ -153,7 +156,14 @@ public class Loader {
     if(name.isEmpty()){return;}
     if(this.loaded.contains(name)){return;}
     if(!isOkToJava(p,name)){return;}
-    J j=new J(p,G.empty(),libs,false);
+    J j=new J(p,G.empty(),libs,false){
+      public Coherence newCoherence(Program p) {return new Coherence(p,false){
+        public boolean checkNativeKind(TrustedKind tK){
+          return tK!=TrustedKind.AnyKind 
+              && tK!=TrustedKind.AnyNativeKind;
+          }
+        };}
+      };
     j.mkClass();
     String code=header+j.result().toString();
     //var e=new Element(l,J.classNamePath(p),name,new SourceFile(metaPackage+name,code));

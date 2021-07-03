@@ -10,8 +10,10 @@ import java.util.ArrayList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarOutputStream;
 
+import is.L42.common.Constants;
 import is.L42.common.Program;
 import is.L42.generated.C;
+import is.L42.generated.Pos;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 
@@ -24,7 +26,7 @@ public class ResourceSerialized implements Serializable{
   ResourceSerialized(Program p,ArrayList<L42£Library> libs){this.p=p;this.libs=libs;}
   public static void loadResource(InputStream in){
     ResourceSerialized res=load(in);
-    Resources.setLibsCached(res.p,new C("Top",-1),res.libs);
+    Resources.setLibsCached(res.p,new C("Top",-1),new Pos(Constants.dummy.toUri(),0,0),res.libs);
     }
   public void save(JarOutputStream target,long time) throws IOException{
     JarEntry entry = new JarEntry(fileName);

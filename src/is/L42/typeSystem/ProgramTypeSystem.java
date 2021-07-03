@@ -34,7 +34,7 @@ public class ProgramTypeSystem {
     }
   public static void type(boolean typed,Program p){
     L l=p.topCore();
-    checkNativeConstraints(p,false);
+    checkNativeConstraints(p);
     J j=new J(p,null,null,true);
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
     for(MWT mwt:l.mwts()){
@@ -44,10 +44,15 @@ public class ProgramTypeSystem {
     for(NC nc:l.ncs()){
       var pushed=p.push(nc.key(),nc.l());
       if(typed||nc.key().hasUniqueNum()){type(true,pushed);}
-      if(nc.key().hasUniqueNum()){new Coherence(pushed,false).isCoherent(false);}
+      if(nc.key().hasUniqueNum()){new Coherence(pushed,false){
+        public boolean checkNativeKind(TrustedKind tK){return false;}
+        }.isCoherent(false);}
       }
     if(l.info().close()){
-      new Coherence(p,true).isCoherent(false);}
+      new Coherence(p,true){
+        public boolean checkNativeKind(TrustedKind tK){return false;}
+        }.isCoherent(false);
+      }
     List<S> estimatedRefined=L(l.ts(),(c,ti)->{
       var pi=ti.p().toNCs();
       var li=p._ofCore(pi);
@@ -63,13 +68,13 @@ public class ProgramTypeSystem {
     //var ok=new HashSet<>(estimatedRefined).equals(new HashSet<>(l.info().refined()));
     //errIf(!ok,l.poss(),ErrMsg.mismatchRefine(estimatedRefined,l.info().refined()));
     }
-  public static void checkNativeConstraints(Program p,boolean checkLazy){
+  public static void checkNativeConstraints(Program p){
     var l=p.topCore();
     var info=l.info();
     if(info.nativeKind().isEmpty()){return;}
     var nk=TrustedKind._fromString(info.nativeKind(),p);
     assert nk!=null;
-    nk.checkNativePars(p,checkLazy);
+    nk.checkNativePars(p,true);
     }
   public static void typeMWT(Program p,MWT mwt,J j){
     if(mwt._e()!=null){typeMethE(p,mwt.mh(),mwt._e());}
@@ -105,14 +110,9 @@ public class ProgramTypeSystem {
       }
     return null;    
     }
-  public static void warningOnErr(Runnable r){
-    try{r.run();}
-    catch(EndError.TypeError te){
-      System.err.println("WARNING: plugin type not satified\n"+te.getMessage());
-      }
-    }
   private static void typePlugin(Program p, MWT mwt,J j) {
-    warningOnErr(()->auxTypePlugin(p,mwt,j));
+    //warningOnErr(()->auxTypePlugin(p,mwt,j));
+    auxTypePlugin(p,mwt,j);
     }
   private static void auxTypePlugin(Program p, MWT mwt,J j) {
     String nativeUrl=mwt.nativeUrl();
@@ -133,7 +133,7 @@ public class ProgramTypeSystem {
     var g=op._of(k);
     errIf(g==null,mwt._e().poss(),
       ErrMsg.nativeReceiverInvalid(mwt.nativeUrl(),nativeKind));
-    g.of(true,mwt,j);
+    g.check(true,mwt,j);
     }
   private static void typeMethE(Program p,MH mh, E e){
     var g=G.of(mh);

@@ -1,13 +1,6 @@
 package is.L42.typeSystem;
 
-import static is.L42.generated.Mdf.Capsule;
-import static is.L42.generated.Mdf.Class;
-import static is.L42.generated.Mdf.Immutable;
-import static is.L42.generated.Mdf.ImmutableFwd;
-import static is.L42.generated.Mdf.Lent;
-import static is.L42.generated.Mdf.Mutable;
-import static is.L42.generated.Mdf.MutableFwd;
-import static is.L42.generated.Mdf.Readable;
+import static is.L42.generated.Mdf.*;
 import static is.L42.tools.General.L;
 
 import java.util.ArrayList;
@@ -26,7 +19,10 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.nativeCode.Generator;
 import is.L42.nativeCode.TrustedKind;
+import is.L42.nativeCode.TrustedOp;
+import is.L42.translationToJava.J;
 
 public class Coherence {
   public final Program p;
@@ -41,7 +37,8 @@ public class Coherence {
       });
     classMhs=L(mhs.stream().filter(mh->mh.mdf().isClass()));
     }
-    
+  //Note: this is checking if the class on itself can be coherent
+  //does not checks for the coherentDep to be coherent too
   public boolean isCoherent(boolean justResult){
     if(p.topCore().isInterface()){return true;}
     if(classMhs.isEmpty()){
@@ -83,8 +80,41 @@ public class Coherence {
         throw new EndError.CoherentError(p.topCore().poss(),
           ErrMsg.nonCoherentMethod(mh.key()));}
       }
+    for(var mwt:p.topCore().mwts()){
+      if(mwt.nativeUrl().isEmpty()){ continue; }
+      if(!mwt.nativeUrl().startsWith("trusted:")){ continue; }
+      //TODO: what to do for untrusted ones taking/returning strings
+      String nativeOp=mwt.nativeUrl().substring("trusted:".length());
+      String k=p.topCore().info().nativeKind();
+      var tK=TrustedKind._fromString(k,p);
+      var tOp=TrustedOp._fromString(nativeOp);
+      assert tOp!=null:mwt.nativeUrl();
+      Generator sig=tOp._of(tK);
+      assert sig!=null:tK+" "+tOp;
+      J j=new J(p,null,null,false){
+        @Override public boolean precomputeCoherent(){return false;}
+        };
+      if(!checkNativeKind(tK)){ continue; }
+      if(!justResult){
+        sig.check(false, mwt,j);
+        tK.checkNativePars(p,false);
+        continue;
+        }
+      try{
+        sig.check(false, mwt,j);
+        tK.checkNativePars(p,false);
+        }
+      catch(EndError.TypeError t){
+        return false;
+        }
+      }
     return true;
     }
+  public boolean checkNativeKind(TrustedKind tK){//Note: method designed to be overridden
+    return !onlyPrivate
+      && tK!=TrustedKind.AnyKind 
+      && tK!=TrustedKind.AnyNativeKind;
+    } 
   public static boolean validConstructorSignature(Program p,MH mh){
     if(!mh.mdf().isClass()){return false;}
     Mdf mdf=mh.t().mdf();

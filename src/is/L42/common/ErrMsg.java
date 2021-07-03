@@ -262,13 +262,13 @@ public class ErrMsg {
   ;}public static String nativeKindInvalidSelector(Object _1,Object _2){return
   "native kind "+_1+" can not be applied on #$ method "+_2
   ;}public static String nativeBodyInvalidThis(boolean isNative,Object _1,Object mh){return
-  isNative?"native":""+" body "+_1+" has selector "+mh+"; uses this for more then just accesses a imm/capsule field"
+  (isNative?"native":"")+" body "+_1+" has selector "+mh+"; uses this for more then just accesses a imm/capsule field"
   ;}public static String nativeBodyInvalidThisCount(boolean isNative,Object _1,Object mh){return
-  isNative?"native":""+" body "+_1+" has selector "+mh+"; uses this more then 1 time"
+  (isNative?"native":"")+" body "+_1+" has selector "+mh+"; uses this more then 1 time"
   ;}public static String nativeBodyInvalidExceptions(boolean isNative,Object _1,Object mh){return
-  isNative?"native":""+" body "+_1+" has selector "+mh+"; this method must have an empty throw exception clause"
+  (isNative?"native":"")+" body "+_1+" has selector "+mh+"; this method must have an empty throw exception clause"
   ;}public static String nativeParameterInvalidKind(boolean isNative,Object _1,Object mh,Object sig,Object _3,Object _4){return
-  isNative?"native":""+" body "+_1+" has selector "+mh+"; required "+sig+" but the type "+_3+" is not of kind "+_4
+  (isNative?"native":"")+" body "+_1+" has selector "+mh+"; required "+sig+" but the type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
   "The class is not coherent. Candidate factory parameters are: "+_1
   ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object meths,Object pos){return
