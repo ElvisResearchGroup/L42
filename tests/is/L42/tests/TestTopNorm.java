@@ -1043,7 +1043,50 @@ public class TestTopNorm{
     }
   """
   );}
-  //Disabled: send the Java compiler in loop
+@Test public void nonDetErrorRecognizedError(){topFail(EndError.TypeError.class,"""
+  {reuse [AdamsTowel]
+  Looping={
+    class method Void loop()=this.loop()
+    class method Void loopStop()=(//would need #$ name to compile
+      Debug(S"Start")
+      Looping.loop()
+      catch error System.NonDeterministicError e ( void )
+      void
+      )
+    }
+  }
+  """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
+  );}
+@Test public void nonDetErrorRecognizedException(){topFail(EndError.TypeError.class,"""
+  {reuse [AdamsTowel]
+  Looping={//could pass, but we fail for consistency?
+    class method Void loop()=this.loop()
+    class method Void loopStop()=(//would need #$ name to compile
+      Debug(S"Start")
+      Looping.loop()
+      catch exception System.NonDeterministicError e ( void )
+      void
+      )
+    }
+  }
+  """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
+  );}
+@Test public void nonDetErrorRecognizedReturn(){topFail(EndError.TypeError.class,"""
+    {reuse [AdamsTowel]
+    Looping={//could pass, but we fail for consistency?
+      class method Void loop()=this.loop()
+      class method Void loopStop()=(//would need #$ name to compile
+        Debug(S"Start")
+        Looping.loop()
+        catch return System.NonDeterministicError e ( void )
+        void
+        )
+      }
+    }
+    """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
+    );}
+
+//Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""
       {reuse [AdamsTowel]
       Foo={

@@ -178,7 +178,7 @@ public class ErrMsg {
   ;}public static String thisNumberOutOfScope(Object _1){return
   "Path "+_1+" this number is out of the scope of the program"  
   ;}public static String pathNotExistant(Object _1, Object others){return
-  "Path "+_1+" not existant."+others  
+  "Path "+Err.pathToS(_1)+" not existant."+others  
   ;}public static String urlNotExistant(Object _1){return
   "Url "+_1+" not existant."
   ;}public static String interfaceImplementsItself(Object ts){return
