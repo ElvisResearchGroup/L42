@@ -108,6 +108,8 @@ _______
     Y[expectedT=imm Void]!(Ds Ks WHOOPS? Ds2 void) = e; _; STz; CTz
     K = catch return Y.expectedT,STz x' x'
     x, x' fresh
+* Y!{Ds Ks WHOOPS? } = Y!(Ds Ks catch return Y.expectedT,STz x' x' WHOOPS? error void)//May try to implement
+    
 * Y!e[pars] = Y!e.#apply[pars]
 * Y!\x[pars]= Y!(\x(squareBuilder=Y.squareBuilder(x,pars)))
 * Y!e.m[pars]= Y!(e.m(squareBuilder=Y.squareBuilder(m,pars)))
@@ -171,6 +173,7 @@ _______
 
 _______
 #define Y.squareBuilder(m,pars)=e 
+* Y.squareBuilder(m) = \.#squareBuilder#m() //See how much this simplifies the core code
 * Y.squareBuilder(m,par1..parn) = (
     x=\.#squareBuilder#m()//will be just #squareBuilder if m==#apply
     if \.#shortCircutSquare() (

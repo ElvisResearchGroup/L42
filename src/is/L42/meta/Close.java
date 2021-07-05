@@ -65,7 +65,7 @@ public class Close extends GuessFields{
   private Core.L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
     this.p=p;
     this.oldJ=new J(p,null,null,true);
-    this.noMutFields=CacheLazyGenerator.noMutFields(oldJ,p.topCore());
+    this.noMutFields=CacheLazyGenerator.noMutFields(oldJ,p.topCore(),false);
     this.err=new MetaError(wrap);
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}

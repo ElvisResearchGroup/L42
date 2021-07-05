@@ -138,10 +138,11 @@ TestDataCacheErrors={
     @Cache.Now class method S foo(S b)=b
     }
   Main2Meth = {}:Test"two methods generated with same name"(expected=S"""
-    |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
-    |@This2.Cache.LazyRead class method This2.Num m(This2.Num bar)=(..)
-    |No candidate getter/exposer with name bar and method modifier imm or read[###]
-    """.trim(),actual=(_=Data:Trait2Meth() catch Message x x error void))
+    |Message This1.Data.Close.Fail([###]):
+    |@This2.Cache.Now read method This2.S foo()=native{trusted:readNowCache} (..)
+    |Close is attempting to create multiple versions of methods [foo()]
+    |[###]
+    """.trim(),actual=(_=Data:Trait2Meth() catch Message x x error X"oh no! Main2Meth passed"))
   TraitBadLazyOnRead = Trait:{
     mut Num.List that
     @Cache.Lazy read method S meth()=(
@@ -150,10 +151,10 @@ TestDataCacheErrors={
       )
     }
   MainBadLazyOnRead = {}:Test"lazy read on class with mut fields"(expected=S"""
-    |Message This1.Data.Close.Fail(This1.HasToS, This1.Message, This1.Message.Guard, This1.Data.Fail):
-    |@This2.Cache.LazyRead class method This2.Num m(This2.Num bar)=(..)
-    |No candidate getter/exposer with name bar and method modifier imm or read[###]
-    """.trim(),actual=(_=Data:TraitBadLazyOnRead() catch Message x x error void))
+    |Message This1.Data.Close.Fail([###]):
+    |@This2.Cache.Lazy read method This2.S meth()=(..)
+    |can not be made cached; the receiver modifier is read but not all fields are imm, capsule or class[###]
+    """.trim(),actual=(_=Data:TraitBadLazyOnRead() catch Message x x error X"oh no! MainBadLazyOnRead passed"))
   GoodLazyOnRead=Data:{
     Num.List that
     @Cache.Lazy read method S meth()=(

@@ -40,11 +40,11 @@ public class CacheLazyGenerator implements Generator{
     if(!mh.mdf().isRead()){ return; }
     var l=j.p().topCore();
     checkClose(l);
-    if(!noMutFields(j, l)){checkOnlyThisCallFields(mwt,j);}
+    if(!noMutFields(j, l,true)){checkOnlyThisCallFields(mwt,j);}
     }
-  public static boolean noMutFields(J j, L l) {
+  public static boolean noMutFields(J j, L l,boolean alreadyClosed) {
     return l.mwts().stream()
-        .filter(m->m.key().hasUniqueNum()
+        .filter(m->(!alreadyClosed ||m.key().hasUniqueNum())
           && m._e()==null 
           && !m.mh().mdf().isClass()
           && m.key().xs().isEmpty())
