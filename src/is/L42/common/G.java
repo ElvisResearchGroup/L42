@@ -70,7 +70,8 @@ public class G {
     }
   public T of(X x) {
     T res= xInT.get(x);
-    assert res!=null: x;
+    assert res!=null:
+      x;
     return res;
     }
   public T _of(X x) {

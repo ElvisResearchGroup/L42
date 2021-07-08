@@ -1,6 +1,7 @@
 package is.L42.meta;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.range;
 
 import java.util.ArrayList;
@@ -106,9 +107,9 @@ public class Defaults{
         nonDefT.set(i,ti);
         }
       }
-    mh=new MH(mh.mdf(),mh.docs(),mh.t(),s,L(nonDefT.stream()),mh.exceptions());
-    E e=Utils.thisCall(pos,m.key(), L(es.stream()));
-    e=new Core.Block(pos, L(ds.stream()), L(), e);
+    mh=new MH(mh.mdf(),mh.docs(),mh.t(),s,LL(nonDefT),mh.exceptions());
+    E e=Utils.thisCall(pos,m.key(), LL(es));
+    e=new Core.Block(pos, LL(ds), L(), e);
     return Stream.of(new MWT(m.poss(),L(),mh,"",e));
     }
   public boolean okDef(MWT d,MWT m, T t, X x,List<X> oldXs){

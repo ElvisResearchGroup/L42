@@ -2,6 +2,7 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.checkNoException;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.pushL;
@@ -361,12 +362,12 @@ public class Sum {
       ArrayList<P.NCs> typeDep=new ArrayList<>(info3.typeDep());
       var mapped=map.get(cs);
       if(mapped!=null){useMapped(ts3,refineds, imwts, typeDep, mapped);}
-      info3=info3.withTypeDep(L(typeDep.stream())).withRefined(L(refineds.stream()));
+      info3=info3.withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
       List<MWT>mwts3=plusIMWTs(imwts,l1,l2);
       List<NC> ncs3=plusNCs(ncs1, ncs2);
       List<Doc> doc3=mergeU(l1.docs(),l2.docs());
       List<Pos> pos=mergeU(l1.poss(),l2.poss());
-      return new Core.L(pos, isInterface3, L(ts3.stream()), mwts3, ncs3, info3, doc3);
+      return new Core.L(pos, isInterface3, LL(ts3), mwts3, ncs3, info3, doc3);
       }
     private void useMapped(ArrayList<T> ts3,LinkedHashSet<S> refineds, ArrayList<IMWT> imwts, ArrayList<P.NCs> typeDep,LinkedHashSet<List<C>> mapped){
       Program p;
@@ -518,7 +519,7 @@ public class Sum {
       ArrayList<P.NCs> typeDep=new ArrayList<>(l.info().typeDep());
       useMapped(ts,refineds,imwts,typeDep,mapped);
       List<MWT>mwts=plusIMWTs(imwts,l,l);
-      Info info=l.info().withTypeDep(L(typeDep.stream())).withRefined(L(refineds.stream()));
+      Info info=l.info().withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
       return l.withTs(ts).withMwts(mwts).withInfo(info);
       }
     List<MWT> plusIMWTs(ArrayList<IMWT> that,Core.L l1,Core.L l2){return L(c->plusIMWTs(c,that,l1,l2));}

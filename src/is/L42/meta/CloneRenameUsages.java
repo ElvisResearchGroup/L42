@@ -2,6 +2,7 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.mergeNew;
 import static is.L42.tools.General.popLRight;
 import static is.L42.tools.General.pushL;
@@ -265,9 +266,9 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
         newUsedMethods.add(ps);
         }
       assert newWatched.stream().noneMatch(p->p.equals(P.pThis0) || p.hasUniqueNum()):newWatched;
-      res=new Info(res.isTyped(),L(newTypeDep.stream()),
+      res=new Info(res.isTyped(),LL(newTypeDep),
         res.coherentDep(),res.metaCoherentDep(),
-        L(newWatched.stream()),L(newUsedMethods.stream()),
+        LL(newWatched),LL(newUsedMethods),
         L(res.hiddenSupertypes().stream().filter(p->!p.hasUniqueNum())),
         res.refined(),
         close,

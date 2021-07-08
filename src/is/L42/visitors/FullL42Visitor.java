@@ -379,7 +379,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     Full.T t=ts0.get(0);
     List<X> xs=L(ctx.x(),(c,xi)->c.add(visitX(xi)));
     int excStart=xs.size()+1;
-    List<Full.T> pars=L(ts0.subList(1, excStart).stream());
+    List<Full.T> pars=LL(ts0.subList(1, excStart));
     List<Full.T> exceptions=checkAllEmptyMdf(pos,ts0.subList(excStart,ts0.size()));
     appendFwdErrorOnM(ctx.mOp().m());
     S s=opt(ctx.mOp().m(),new S("",xs,-1),s0->parseM(s0.getText().replace(" ", "")).withXs(xs));

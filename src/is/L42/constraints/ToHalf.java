@@ -1,6 +1,7 @@
 package is.L42.constraints;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
@@ -105,7 +106,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       }    
     y=oldY;
     List<ST> stzRes=L(stz,sti->new ST.STMeth(sti, s, -1));
-    commit(new Half.MCall(pos, xp, s,L(esRes.stream())),stzRes,unique(retST));
+    commit(new Half.MCall(pos, xp, s,LL(esRes)),stzRes,unique(retST));
     }
   List<ST> expectedRes(Half.XP xp){
     if(xp instanceof Core.EX){return y.g()._of(((Core.EX)xp).x());}
@@ -284,7 +285,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     resST.addAll(res.resSTz);
     retSTKs.addAll(res.retSTz);
     removeRets(ks,retSTDs,retSTKs);
-    commit(new Half.Block(block.pos(),L(ds.stream()),L(ks.stream()),res.e),resST,retSTKs);
+    commit(new Half.Block(block.pos(),LL(ds),LL(ks),res.e),resST,retSTKs);
     y=oldY;
     }
   private void removeRets(ArrayList<K> ks, ArrayList<ST> all,ArrayList<ST> dest){
@@ -461,7 +462,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       c.add(makeDec(null, xi, ei));
       });
     if(!ds.isEmpty()){
-      visitBlock(makeBlock(binOp.pos(), ds, binOp.withEs(L(xps.stream()))));
+      visitBlock(makeBlock(binOp.pos(), ds, binOp.withEs(LL(xps))));
       return;
       }
     ArrayList<List<ST>> opArgs=new ArrayList<>();
@@ -476,7 +477,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
       retSTz.addAll(ri.retSTz);
       });
     this.y=oldY;
-    var resST=new ST.STOp(binOp.op(),L(opArgs.stream()));
+    var resST=new ST.STOp(binOp.op(),LL(opArgs));
     commit(new Half.BinOp(binOp.pos(),binOp.op(), es), L(resST), retSTz);
     }
   private Full.BinOp applyAssociativity(Full.BinOp b){

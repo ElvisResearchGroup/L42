@@ -2,6 +2,7 @@ package is.L42.meta;
 
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.checkNoException;
 import static is.L42.tools.General.merge;
 import static is.L42.tools.General.popLRight;
@@ -743,16 +744,25 @@ public class Rename {
       if(!n.key().hasUniqueNum()){c.add(n);}
       });
     L l=new L(l0.poss(),l0.isInterface(),l0.ts(),mwts,L(),Info.empty,l0.docs());
-    List<P.NCs> typeDep=L(c->{
-      var acc=new Accumulate<Void>(){
-        @Override public
-        void visitP(P p){if(p.isNCs() && !c.contains(p)){c.add(p.toNCs());}}
-        };
-      l.accept(acc);
-      for(var nc:ncs){acc.visitDocs(nc.docs());}
-      });
-    Info i=l0.info();    
-    i=new Info(i.isTyped(),typeDep,L(),L(),L(),L(),L(),i.refined(),false, "",L(), -1);
+    List<P.NCs> watched=new ArrayList<>();
+    List<P.NCs> typeDep=new ArrayList<>();
+    var acc=new Accumulate<Void>(){
+      @Override public void visitP(P p){
+        if(!p.isNCs() || typeDep.contains(p)){return;}
+        var pi=p.toNCs();
+        typeDep.add(pi);
+        if(!pi.hasUniqueNum()){return;}
+        var csCut=L(pi.cs().stream().takeWhile(c->!c.hasUniqueNum()));
+        pi=pi.withCs(csCut);
+        if(!typeDep.contains(pi)){typeDep.add(pi);}
+        watched.add(pi);
+        }
+      };
+    l.accept(acc);
+    for(var nc:ncs){acc.visitDocs(nc.docs());}
+    Info i=l0.info();
+    i=new Info(i.isTyped(),LL(typeDep),L(),
+      L(),LL(watched),L(),L(),i.refined(),false, "",L(), -1);
     return l.withNcs(ncs).withInfo(i);
     }
   static Program forcedNavigate(Program p,List<C> cs){

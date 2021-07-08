@@ -4,6 +4,7 @@ import static is.L42.generated.Mdf.Capsule;
 import static is.L42.generated.Mdf.Lent;
 import static is.L42.generated.Mdf.Mutable;
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -136,6 +137,6 @@ public class Init {
       if(mi instanceof Full.L.F fi){expandM(res,fi);}
       else{res.add(mi);}
       }
-    return L(res.stream());
+    return LL(res);
     }
   }

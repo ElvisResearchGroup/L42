@@ -2145,7 +2145,30 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
     ""","""
     A={interface #norm{}}
     #norm{}}""")
-  ));}
+  ),new AtomicTest(()->pass("""
+    A::1={ #norm{}}
+    B={method This1.A::1 foo() #norm{typeDep=This1,This1.A::1 watched=This1}}
+    #norm{}}""","""
+    B.->*
+    ""","""
+    method This.A::1 foo()
+    A::1={#norm{}}
+    B={method This1.A::1 foo()
+      #norm{typeDep=This1.A::1, This1 watched=This1}}
+    #norm{typeDep=This, This.A::1}}
+    """)
+  ),new AtomicTest(()->pass("""
+    A::1={ #norm{}}
+    B={method This1.A::1 foo() #norm{typeDep=This1,This1.A::1 watched=This1}}
+    #norm{}}""","""
+    B.->*<empty>
+    ""","""
+    A::1={#norm{}}
+    B={method This1.A::1 foo()
+    #norm{typeDep=This1.A::1, This1 watched=This1}}
+    #norm{}}
+    """)    
+));}
 /*
  Not Watched
  No class methods?

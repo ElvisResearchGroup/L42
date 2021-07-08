@@ -1,6 +1,7 @@
 package is.L42.constraints;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.bug;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
@@ -123,7 +124,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
     var receiver=xps.get(psi.i());
     List<Core.E> args=new ArrayList<>(xps);
     args.remove(psi.i());
-    args=L(args.stream());
+    args=LL(args);
     commit(new Core.MCall(binOp.pos(),receiver,psi.s(),args));
     }
   @Override public void visitThrow(Half.Throw thr){

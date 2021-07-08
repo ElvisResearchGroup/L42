@@ -128,7 +128,7 @@ public class General {
     res.add(e);
     return Collections.unmodifiableList(res);
     }
-
+  public static <T> List<T>LL(List<T> s){return Collections.unmodifiableList(s);}
   public static <T> List<T>L(Stream<T> s){return s.collect(Collectors.toUnmodifiableList());}
   public static <T> List<T>L(){return Collections.emptyList();}
   public static <T> List<T>L(T e){return Collections.singletonList(e);}

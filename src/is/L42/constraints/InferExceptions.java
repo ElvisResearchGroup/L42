@@ -1,6 +1,7 @@
 package is.L42.constraints;
 
 import static is.L42.tools.General.L;
+import static is.L42.tools.General.LL;
 import static is.L42.tools.General.merge;
 
 import java.util.ArrayList;
@@ -39,7 +40,7 @@ public class InferExceptions {
       for(var m:mwts){for(var t:m.mh().exceptions()){
         if(t.p().isNCs() && !td.contains(t.p())){td.add(t.p().toNCs());}
         }}
-      if(td.size()>info.typeDep().size()){info=info.withTypeDep(L(td.stream()));}
+      if(td.size()>info.typeDep().size()){info=info.withTypeDep(LL(td));}
       p=p.update(l.withMwts(mwts).withInfo(info),false);
       current=next;
       }

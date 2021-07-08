@@ -192,7 +192,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     var fvs=new ArrayList<X>();
     int split=splitDs(mutDs,fvs);
     var away=mutDs.subList(0, split+1);
-    var txe=L(away.stream());
+    var txe=L(away.stream());//ok, needs to copy 'away'
     int size=mutDs.size();
     away.clear();
     assert size==split+1+mutDs.size():size+" "+split+" "+mutDs.size();
