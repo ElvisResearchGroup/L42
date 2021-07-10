@@ -8,6 +8,8 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
@@ -24,6 +26,7 @@ import is.L42.generated.Core.L;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
+import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.maps.L42£ImmMap;
 import is.L42.nativeCode.TrustedKind;
@@ -121,7 +124,8 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     var tmp=meta.renames.stream().map(a->a.withStar());
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
-  public static Core.L libraryCloseAndTyped(L42£Library l42Lib, MetaError err){
+  private static Pos noPos=new Pos(URI.create("InternalHidden"),0,0);
+  public static Core.L libraryCloseAndTyped(String fauxFileName, L42£Library l42Lib, MetaError err){
       Core.L l=l42Lib.unwrap;
       assert l.wf();
       Program p=Program.flat(l);
@@ -144,15 +148,57 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       catch(EndError e){
         throw err.throwErr(l42Lib,e.toString());
         }
-      l=l.accept(new CloneVisitor(){
+      l=l.accept(new CloneVisitor(){//info->typed; pos->anonimized
+        List<Pos>poss(List<Pos>poss){
+          return poss.stream()
+            .<Pos>map(p->p.withFileName(fileName(p.fileName())))
+            .toList();
+          }
+        URI fileName(URI uri){
+          String p=uri.getPath();
+          int i=p.lastIndexOf("/");
+          if(i!=-1) {
+            p=p.substring(i+1);}
+          try{return new URI(fauxFileName+"/"+p);}
+          catch (URISyntaxException e){throw new Error(e);}
+          }
+        public Core.EX visitEX(Core.EX x){return super.visitEX(x.withPos(noPos));}
+        public Core.PCastT visitPCastT(Core.PCastT pCastT){
+          return super.visitPCastT(pCastT.withPos(noPos));
+          }          
+        public Core.EVoid visitEVoid(Core.EVoid eVoid){return eVoid.withPos(noPos);}
+
+        public Core.L visitL(Core.L l){return super.visitL(l.withPoss(poss(l.poss())));}
+
+        public Core.L.MWT visitMWT(Core.L.MWT mwt){
+          return super.visitMWT(mwt.withPoss(poss(mwt.poss())));
+          }
+        public Core.L.NC visitNC(Core.L.NC nc){
+          return super.visitNC(nc.withPoss(poss(nc.poss())));
+          }
+        public Core.MCall visitMCall(Core.MCall mCall){
+          return super.visitMCall(mCall.withPos(noPos));
+          }          
+        public Core.Block visitBlock(Core.Block block){
+          return super.visitBlock(block.withPos(noPos));
+          }
+        public Core.Loop visitLoop(Core.Loop loop){
+          return super.visitLoop(loop.withPos(noPos));
+          }          
+        public Core.Throw visitThrow(Core.Throw thr){
+          return super.visitThrow(thr.withPos(noPos));
+          }          
+        public Core.OpUpdate visitOpUpdate(Core.OpUpdate opUpdate){
+          return super.visitOpUpdate(opUpdate.withPos(noPos));
+          }
         @Override public Core.L.Info visitInfo(Core.L.Info info){
           return info.withTyped(true);
           }});
       return l;
       }
-  public String deployLibraryToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+  public String deployLibraryToBase64(String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=libraryCloseAndTyped(l42Lib, err);
+    Core.L l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
     var auxOut = new ByteArrayOutputStream();
     try(var out = new ObjectOutputStream(auxOut)){
       out.writeObject(l);
@@ -162,9 +208,9 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       }
     catch(IOException e) { throw unreachable(); }//unreachable
     }
-  public L42£Void deployLibrary(String s, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+  public L42£Void deployLibrary(String s, String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=libraryCloseAndTyped(l42Lib, err);
+    Core.L l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
     Path fullPath=Constants.localhost.resolve(s+".L42");
     try(
       var file=new FileOutputStream(fullPath.toFile()); 
@@ -176,9 +222,9 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       }
     return L42£Void.instance;
     }
-  public String deployJarToBase64(L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
+  public String deployJarToBase64(String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=libraryCloseAndTyped(l42Lib, err);
+    Core.L l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
     var mainS=S.parse("#$main()");
     var main=_elem(l.mwts(),mainS);
     if(main==null){ err.throwErr(mainS,"Method "+mainS+" not defined inside of the deployed code"); }

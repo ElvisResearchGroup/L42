@@ -103,7 +103,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method A.foo(x)
    is already abstract
    Full mapping:A.foo(x)-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={ method Void foo(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -126,7 +126,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    """,/*expected after this line*/"""
    method Void bar(Void y)=(..)
    Conflicting implementation: the method is implemented on both side of the sum
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={ method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z) #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -145,7 +145,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    refined method method A.foo(x)
    can not be directly renamed
    Full mapping:A.foo(x)=>A.bar(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={ method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z) #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -164,7 +164,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method A.foo(x)
    is abstract, thus it can not be hidden
    Full mapping:A.foo(x)=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      I={interface method Void foo(Void x) #norm{}}
      A={[This1.I] method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z)
@@ -176,7 +176,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    refined method method A.foo(x)
    can not be directly renamed
    Full mapping:A.foo(x)=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={interface method Void bar() #norm{}}
      D={interface [This1.A] method Void bar() #norm{typeDep=This1.A refined=bar()}}
@@ -206,7 +206,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class D
    The implementation can not be removed since the class is watched by nested class B
    Full mapping:D-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
    A={interface method Void bar::1()#norm{close}}
    D={[This1.A]method Void bar::1()=void
@@ -218,7 +218,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class D
    The implementation can not be removed; a close interface is implemented
    Full mapping:D-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
   ),new AtomicTest(()->pass("""
      A={interface method Void foo(Void x) method Void bar() #norm{}}
      D={interface [This1.A] method Void foo(Void x) method Void bar() #norm{typeDep=This1.A refined=foo(x) bar()}}
@@ -253,7 +253,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method DC.foo(x)
    is abstract, thus it can not be hidden
    Full mapping:A.foo(x)=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={interface method Void foo(Void x) #norm{}}
      B={#norm{typeDep=This1.A hiddenSupertypes=This1.A}}
@@ -264,7 +264,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    The method A.foo(x)
    can not be made private since is implemented by private parts of nested class B
    Full mapping:A.foo(x)=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      I={interface method Void foo(Void x) #norm{}}
      A={interface [This1.I] method Void foo(Void x)
@@ -276,7 +276,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    refined method method A.foo(x)
    can not be directly renamed
    Full mapping:A.foo(x)=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    //now again but rename instead of hide
    ),new AtomicTest(()->pass("""
      A={interface method Void foo(Void x) method Void bar() #norm{}}
@@ -328,7 +328,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    The method A.foo(x)
    can not be renamed since is implemented by private parts of nested class B
    Full mapping:A.foo(x)=>A.beer(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      I={interface method Void foo(Void x) #norm{}}
      A={interface [This1.I] method Void foo(Void x)
@@ -340,7 +340,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    refined method method A.foo(x)
    can not be directly renamed
    Full mapping:A.foo(x)=>A.beer(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
 //---
    ),new AtomicTest(()->fail("""
      A={#norm{}}
@@ -351,7 +351,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class C
    does not exists
    Full mapping:C=>B
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -361,7 +361,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    mapping: A=>B.s(x)
    Can not rename a nested class into a method
    Full mapping:A=>B.s(x)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x  #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -371,7 +371,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    mapping: A.s(x)=>B
    Can not rename a method into a nested class
    Full mapping:A.s(x)=>B
-   [file:[###]"""/*next test after this line*/)   
+   file:[###]"""/*next test after this line*/)   
    ),new AtomicTest(()->fail("""
      A={#norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -381,7 +381,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method A.s(x)
    does not exists
    Full mapping:A.s(x)=>A.s(x)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -391,7 +391,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    mapping: A.s(x)=>A.s(x)
    Can not rename a method on itself
    Full mapping:A.s(x)=>A.s(x)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x method Void s(Void z)=z #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -400,7 +400,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    Two different methods are renamed into method A.s(y)
    Full mapping:A.s(x)=>A.s(y);A.s(z)=>A.s(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x method Void s(Void z)=z #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -409,7 +409,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    Two different methods are renamed into method A.s(y)
    Full mapping:A.s(x)->A.s(y);A.s(z)->A.s(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -418,7 +418,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    Rename map contains two entries for A.s(x)
    Full mapping:A.s(x)=>A.s(y);A.s(x)=>A.s(k)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -427,7 +427,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    Rename map contains two entries for A.s(x)
    Full mapping:A.s(x)->A.s(y);A.s(x)=>A.s(k)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -436,7 +436,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    Rename map contains two entries for A.s(x)
    Full mapping:A.s(x)=>A.s(y);A.s(x)->A.s(k)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={method Void s(Void x)=x method Void s(Void y) 
       method Void userY()=this.s(y=void) 
@@ -520,7 +520,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    mapping: A=>A
    Can not rename a nested class on itself
    Full mapping:A=>A
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}} C={#norm{typeDep=This1.A watched=This1.A}}
    #norm{}}""",/*rename map after this line*/"""
@@ -530,7 +530,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    The implementation can not be removed since the class is watched by nested class C
    Full mapping:A->B
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -539,7 +539,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    methods can only be renamed from inside the same nested class, but the following mapping is present: A.s(x)=>B.s(y)
    Full mapping:A.s(x)=>B.s(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -548,7 +548,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    methods renames need to keep the same number of parameters, but the following mapping is present: A.s(x)=>A.s(y,z)
    Full mapping:A.s(x)=>A.s(y,z)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}} B={#norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -557,7 +557,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} B={..} }
    Two different nested class are renamed into nested class C
    Full mapping:A=>C;B=>C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -569,7 +569,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already involved in the rename; thus method A.s(x)
    can not be renamed
    Full mapping:A=>C;A.s(x)=>A.s(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void s(Void x)=x #norm{}} B={#norm{}}
    #norm{}}""",/*rename map after this line*/"""
@@ -581,7 +581,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already involved in the rename; thus method A.s(x)
    can not be renamed
    Full mapping:B=>A;A.s(x)=>A.s(y)
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
 //redirect from now on
    ),new AtomicTest(()->fail("""
      A={method This1.B s(This1.B x)=x #norm{typeDep=This1.B}} B={#norm{}}
@@ -593,7 +593,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    Redirected classes need to be fully abstract and method This1.B s(This1.B x)=(..)
    is implemented
    Full mapping:A=>This.K
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={#norm{}} B={#norm{typeDep=This1.A watched=This1.A}}
    #norm{}} K={#typed{}}""",/*rename map after this line*/"""
@@ -603,7 +603,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    The implementation can not be removed since the class is watched by nested class B
    Full mapping:A=>This.K
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method This1.B s(This1.B x) #norm{typeDep=This1.B}} B={#norm{}}
    #norm{}} K={#typed{}}""",/*rename map after this line*/"""
@@ -613,7 +613,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    Also nested class B
    need to be redirected to an outer path
    Full mapping:A=>This.K
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    //nested classes
     ),new AtomicTest(()->pass("""
      A={
@@ -647,7 +647,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    The implementation can not be removed since the class is watched by nested class A.C
    Full mapping:A-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
      AA={
        method This1.B s(This1.B x, This.C c)=x
@@ -686,7 +686,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    The implementation can not be removed since the class is watched by nested class A.C
    Full mapping:A->C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      A={
        method Void s(This1.B x)=x.a(a=this)
@@ -699,7 +699,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    Code can not be extracted since is circularly depended from nested class B
    Full mapping:A->C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      A={
        method This.D::2 s()=this.s()
@@ -712,7 +712,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    Code can not be extracted since it exposes uniquely numbered path nested class D::2
    Full mapping:A->C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
      B={
        method This1.C s(This1.C c)=c
@@ -768,7 +768,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class B
    Code can not be extracted since is circularly depended from nested class C
    Full mapping:B->This
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
 
     ),new AtomicTest(()->pass("""
      method This.C s(This.C c)=c
@@ -799,7 +799,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class This
    Code can not be extracted since it exposes uniquely numbered path nested class D::2
    Full mapping:This->C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      method This.C s(This.C x)=x
      C={#norm{typeDep=This1 watched=This1}}
@@ -810,7 +810,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class This
    The implementation can not be removed since the class is watched by nested class C
    Full mapping:This->C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->fail("""
      method Void v()
      B={#norm{typeDep=This1}}
@@ -821,7 +821,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class This
    Code can not be extracted since is circularly depended from nested class B
    Full mapping:This->C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
      method Void v()=void
      method Void v::2()=void
@@ -845,7 +845,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class This
    The implementation can not be removed since the class is watched by nested class B
    Full mapping:This-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={
        method Void v::0()=void
@@ -885,7 +885,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    method A.v1()
    method A.v2()
    Full mapping:A=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
      method This.B aa(This.A a)=a.a()
      A={
@@ -978,7 +978,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    Invalid method inheritance for b():
    the return type Void is not a subtype of the inherited type This2.EA
    Full mapping:A=>This.EA;B=>This.EB
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
     ),new AtomicTest(()->pass("""
     method Void a(This.A a)=void
     A={method Void foo()=void #norm{}}
@@ -1024,7 +1024,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    The implementation can not be removed since the class is watched by nested class C
    Full mapping:A-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
     A={interface method Void foo() #typed{}}
     B={[This1.A] method Void foo()=void #typed{typeDep=This1.A refined=foo()}}
@@ -1037,7 +1037,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already involved in the rename; thus method A.foo()
    can not be renamed: is an interface method refined by such nested class
    Full mapping:A.foo()=>A.bar();B=>C
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    
   ),new AtomicTest(()->fail("""
     A={method Void foo() #typed{}}
@@ -1048,7 +1048,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    'This' can not be hidden
    Full mapping:This=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
   ),new AtomicTest(()->fail("""
     A={method Void foo() #typed{}}
     #typed{}}
@@ -1058,7 +1058,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    'This' can not be redirected away
    Full mapping:This=>Any
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
   ),new AtomicTest(()->pass("""
      A={method This foo() #typed{typeDep=This}}
      B={method This foo() #typed{typeDep=This}}
@@ -1198,7 +1198,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    Rename map contains two entries for A.B
    Full mapping:A=>*D;A.B=>K
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={B={#norm{}}#norm{}}
      K={#norm{}}
@@ -1208,7 +1208,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} K={..} }
    Two different nested class are renamed into nested class D.B
    Full mapping:A=>*D;K=>D.B
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      A={method Void foo()=void B={#norm{}}#norm{}}
      #norm{}}""",/*rename map after this line*/"""
@@ -1217,7 +1217,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class { A={..} }
    transitive rename only applicable on nested classes
    Full mapping:A.foo()=>*D.bar()
-   [file:[###]"""/*next test after this line*/)   
+   file:[###]"""/*next test after this line*/)   
    ),new AtomicTest(()->fail("""
      A={method Void foo() B={#norm{}}#norm{}}
      #norm{}}""",/*rename map after this line*/"""
@@ -1228,7 +1228,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A.B
    can not be redirected on a nested of Void
    Full mapping:A=>*Void
-   [file:[###]"""/*next test after this line*/)   
+   file:[###]"""/*next test after this line*/)   
    ),new AtomicTest(()->pass("""
      A={B={#norm{}}#norm{}}
      K={#norm{}}
@@ -1309,7 +1309,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    is already involved in the rename; thus method A.foo()
    can not be renamed
    Full mapping:A.foo()=>A.bar();A=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={method Void foo()=void #norm{}}
      C={method Void a(This1.A a)=a.foo() 
@@ -1426,7 +1426,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    The method J2.a()
    can not be made private since is implemented by private parts of nested class A
    Full mapping:J1=><empty>;J2.a()=><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      J1={interface #norm{}}
      J2={interface method Void a() #norm{}}
@@ -1726,7 +1726,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    The method I.foo()
    can not be made private since is implemented by private parts of nested class C
    Full mapping:I=>*<empty>;C=>*<empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->fail("""
      method This.A bar(This.A a)
      K::1={#norm{}}
@@ -1739,7 +1739,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class This
    can not be turned into an interface inside of a rename operation
    Full mapping:This=>A
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      method This.A bar(This.A a)
      K::1={#norm{}}
@@ -1836,7 +1836,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    does not exists
    Full mapping:A->*<empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={I={interface method Void foo() #norm{}} #norm{}}
      D={[This1.A.I] method Void foo()=void
@@ -1871,7 +1871,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
    nested class A
    Code can not be extracted since it exposes uniquely numbered path nested class B.C::1
    Full mapping:A-><empty>;B-><empty>
-   [file:[###]"""/*next test after this line*/)
+   file:[###]"""/*next test after this line*/)
 
    ),new AtomicTest(()->pass("""
      A={ method Void m()=void

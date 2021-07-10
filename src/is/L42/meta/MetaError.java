@@ -15,6 +15,7 @@ import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
+import is.L42.common.ErrMsg;
 
 public class MetaError{
   Function<L42£LazyMsg,L42Any>wrap;
@@ -92,15 +93,15 @@ public class MetaError{
   public String pos(Object fault){
     if(fault instanceof Core.L){
       var l=(Core.L)fault;
-      return l.poss().toString();
+      return ErrMsg.posString(l.poss());
       }
     if(fault instanceof Core.L.MWT){
       var mwt=(Core.L.MWT)fault;
-      return mwt.poss().toString();
+      return ErrMsg.posString(mwt.poss());
       }
     if(fault instanceof HasPos){
       var f=(HasPos)fault;
-      return f.poss().toString();
+      return ErrMsg.posString(f.poss());
       }
     return "[Position unknown]";
     }

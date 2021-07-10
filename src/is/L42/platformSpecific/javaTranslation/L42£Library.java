@@ -39,7 +39,7 @@ public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any
     }
   @Override public int hashCode(){
     int res=originName==null?0:originName.hashCode();//purposely ignoring originP
-    return res*31+originL.poss().toString().hashCode(); 
+    return res;//unstable and slow *31+originL.poss().toString().hashCode(); 
     }
   @Override public boolean eq(L42£Library l){
     if(this==l){return true;}

@@ -10,7 +10,7 @@ ParseErr={class method This empty() #norm{nativeKind=LazyMessage typeDep=This}}
 DeployMeta={
   class method This of()
   class method This #apply()
-  method Void #$deployLibrary(This1.S that,Library lib)=
+  method Void #$deployLibrary(This1.S that,This1.S fauxName,Library lib)=
     native{trusted:#$deployLibrary} error void
   #norm{nativeKind=Meta,
     typeDep=This This1.ParseErr,This1.S
@@ -149,7 +149,7 @@ DeployAAA=(
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()
-  DeployMeta.of().#$deployLibrary(sb.toS(),lib=lib)
+  DeployMeta.of().#$deployLibrary(sb.toS(),fauxName=sb.toS(),lib=lib)
   )
 //Deploy step2:
 DeployAdamsTowel={reuse[#$aaa]
@@ -179,7 +179,7 @@ DeployAdamsTowel={reuse[#$aaa]
       [hide='AbstractTowel.Top]
       //could this just be [single='This=>'AbstractTowel] 
       .removeUnusedCode()
-    Deploy.DeployMeta.of().#$deployLibrary('AdamsTowel,lib=toDeploy)
+    Deploy.DeployMeta.of().#$deployLibrary('AdamsTowel,fauxName='AdamsTowel,lib=toDeploy)
     )
   }
 //Testing step2:

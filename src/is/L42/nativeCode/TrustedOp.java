@@ -256,11 +256,11 @@ public enum TrustedOp {
     )),
   //####META####
   DeployLibrary("#$deployLibrary",Map.of(
-    Meta,use("return %s.deployLibrary(%s,%s,%Gen1::wrap);",sigI(Void,String,Lib)))),
+    Meta,use("return %s.deployLibrary(%s,%s,%s,%Gen1::wrap);",sigI(Void,String,String,Lib)))),
   DeployLibraryToBase64("deployLibraryToBase64",Map.of(
-    Meta,use("return %s.deployLibraryToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),      
+    Meta,use("return %s.deployLibraryToBase64(%s,%s,%Gen1::wrap);",sigI(String,String,Lib)))),      
   DeployJarToBase64("deployJarToBase64",Map.of(
-      Meta,use("return %s.deployJarToBase64(%s,%Gen1::wrap);",sigI(String,Lib)))),
+      Meta,use("return %s.deployJarToBase64(%s,%s,%Gen1::wrap);",sigI(String,String,Lib)))),
 
   SimpleSum("simpleSum",Map.of(
     Meta,use("return %s.simpleSum(%s,%s,%Gen1::wrap,%Gen2::wrap);",sigI(Lib,Lib,Lib)))),

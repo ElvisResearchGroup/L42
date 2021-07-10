@@ -2,9 +2,11 @@ package is.L42.common;
 
 import static is.L42.tools.General.L;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -57,11 +59,38 @@ public class ErrMsg {
     if(m.contains(hint)){return 3;}
     return 4;
     }
+  private static int uriPriority(URI uri1,URI uri2){
+    if(uri1.equals(uri2)){ return 0; }
+    String s1=uri1.toASCIIString();
+    String s2=uri2.toASCIIString();
+    var s1File=s1.startsWith("file:");
+    var s2File=s2.startsWith("file:");
+    var s1Adams=s1.startsWith("AdamsTowel/");
+    var s2Adams=s2.startsWith("AdamsTowel/");
+    if(s1File && !s2File) { return -1;}
+    if(!s1File && s2File) { return 1;}
+    if(s1Adams && !s2Adams) { return 1;}
+    if(!s1Adams && s2Adams) { return -1;}
+    return uri1.compareTo(uri2);
+    }
+  public static String singlePosString(URI uri,List<Pos>poss){
+    return uri.toString()+"\n"+poss.stream()
+      .map(p->"line " + p.line() + ":" + p.column()+"\n")
+      .collect(Collectors.joining());
+    }
+  @SuppressWarnings("unchecked")
+  public static String oPosString(Object o){
+    if(!(o instanceof List<?> l) || l.isEmpty()){return o.toString();}
+    if(!(l.get(0) instanceof Pos)){return o.toString();}
+    return posString((List<Pos>)l);
+    }
   public static String posString(List<Pos>poss){
     if(poss==null){return "[no position]";}
-    String res="";
-    for(Pos pos:poss){res+=pos;}
-    return res;
+    Map<URI,List<Pos>> ps=poss.stream().collect(Collectors.groupingBy(p->p.fileName()));
+    return ps.entrySet().stream()
+      .sorted((e1,e2)->uriPriority(e1.getKey(),e2.getKey()))
+      .map(e->singlePosString(e.getKey(),e.getValue()))
+      .collect(Collectors.joining());
     }
    public static String duplicatedNameAny(){return
   "duplicated names: [Any];  'Any' is implicitly present as an implemented interface"
@@ -168,7 +197,7 @@ public class ErrMsg {
   ;}public static String zeroNumberForNonThis(Object _1){return
   "The unique number 0 can only be used to call methods on 'this', but it is used in "+_1
   ;}public static String nonUniqueNumber(Object _1,Object _2){return
-  "The unique numbers "+_1+" are in the domain of more then one library literal; others are in positions \n"+_2
+  "The unique numbers "+_1+" are in the domain of more then one library literal; others are in positions \n"+ErrMsg.oPosString(_2)
   ;}public static String moreThenOneMethodOrigin(Object _1,Object _2){return
   "The method "+_1+" is inherited from multiple interfaces, and do not have a single origin. Origins are "+_2
   ;}public static String noMethodOrigin(Object _1,Object _2){return
@@ -272,7 +301,7 @@ public class ErrMsg {
   ;}public static String nonCoherentNoSetOfFields(Object _1){return
   "The class is not coherent. Candidate factory parameters are: "+_1
   ;}public static String nonCoherentPrivateStateAndPublicAbstractMethods(Object meths,Object pos){return
-  "The class is not coherent. It has private state but also abstract methods:"+meths+", the first one is in positions:"+pos
+  "The class is not coherent. It has private state but also abstract methods:"+meths+", the first one is in positions:"+ErrMsg.oPosString(pos)
   ;}public static String nativeFactoryAbsent(Object _1){return
   "The class is not coherent. It is declared with native kind "+_1+" but has no factory method"  
   ;}public static String nonCoherentMethod(Object _1){return

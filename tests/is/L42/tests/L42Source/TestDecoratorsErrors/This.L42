@@ -12,7 +12,7 @@ TestClose1=(
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Clear class method This1.I double(mut This1.I n)=(..)
       |first parameter does not correspond to a capsule field; constructor class method mut This #apply(This1.I n) initializes it as This1.I
-      |[file:[###]
+      |file:[###]
       """.trim())
   code2={
     I n
@@ -25,7 +25,7 @@ TestClose1=(
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now read method This1.I double()=(..)
       |can not be made into a cached read method; the receiver modifier must be class but it is read
-      |[file:[###]
+      |file:[###]
       """.trim())
   code3={
     read method I n::0()
@@ -37,7 +37,7 @@ TestClose1=(
       |Message This.Data.Close.Fail([###]):
       |nested class { }
       |Class is already close
-      |[file:[###]
+      |file:[###]
       """.trim())
   code4={
     capsule S.List that
@@ -54,7 +54,7 @@ TestClose1=(
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Clear class method This1.I append1(mut This1.S.List thaat)=(..)
       |first parameter does not correspond to a capsule field: the parameter name is not a field
-      |[file:[###]
+      |file:[###]
       """.trim())
   code5={
     I n
@@ -67,7 +67,7 @@ TestClose1=(
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now class method This1.I double(This1.I nn)=(..)
       |No candidate getter/exposer with name nn and method modifier imm or read
-      |[file:[###]
+      |file:[###]
       """.trim())
   code6={
     I n
@@ -80,7 +80,7 @@ TestClose1=(
       |Message This.Data.Close.Fail([###]):
       |@This1.Cache.Now class method This1.I double(This1.I n)=(..)
       |parameter n is initialized with fwd in the constructor class method mut This #apply(fwd imm This1.I n)
-      |[file:[###]
+      |file:[###]
       """.trim())
     )
 TestSum1=(
@@ -92,7 +92,7 @@ TestSum1=(
     |Message This.Trait.MethodClash([###]):
     |method Void foo()=(..)
     |Conflicting implementation: the method is implemented on both side of the sum
-    |[file:[###]
+    |file:[###]
     """.trim())
   code2a={interface method Void foo()}
   code2b={method Void foo()=void }
@@ -102,7 +102,7 @@ TestSum1=(
     |Message This.Trait.ClassClash([###]):
     |nested class This={ foo()=(..) }
     |The nested class can not be turned into an interface; some public methods are implemented
-    |[file:[###]
+    |file:[###]
     """.trim())
   )
 Code=Trait:{
@@ -118,7 +118,7 @@ TestRename=(
       |Message This.Trait.MethodClash([###]):
       |method Any foo()=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
-      |[file:[###]
+      |file:[###]
       """.trim())
   {}:Test"MethodClash->"(
     actual={error Code['A->'B] catch Trait.MethodClash x return x}
@@ -126,7 +126,7 @@ TestRename=(
       |Message This.Trait.MethodClash([###]):
       |method Any foo()=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
-      |[file:[###]
+      |file:[###]
       """.trim())
   )
 TestRename2=(
@@ -136,7 +136,7 @@ TestRename2=(
       |Message This.Trait.MethodClash([###]):
       |method Void a(This.A a)=(..)
       |Conflicting implementation: the method is implemented on both side of the sum
-      |[file:[###]
+      |file:[###]
       """.trim())
   {}:Test"InvalidMap->"(
     actual={error Code['A.foo()=>Name""][single='A->Name""] catch Trait.InvalidMap x return x}
@@ -146,8 +146,11 @@ TestRename2=(
       |nested class A
       |The implementation can not be removed since the class is watched by nested class C
       |Full mapping:A-><empty>
-      |[file:[###]
-      """.trim())
+      |file:[###]
+      |line 108:11
+      |AdamsTowel/Trait.L42
+      |line 14:36
+      """)
   {}:Test"InvalidMap->"(
     actual={error Code[hide='A.foo()][clearSingle='A] catch Trait.InvalidMap x return x}
     expected=S"""
@@ -156,7 +159,7 @@ TestRename2=(
       |nested class A
       |The implementation can not be removed since the class is watched by nested class C
       |Full mapping:A-><empty>
-      |[file:[###]
+      |file:[###]
       """.trim())
   )
 
@@ -181,6 +184,6 @@ TestMethodClashFunky={A=Class:TestError['T=>Trait.MethodClash]:{
     |Message [###]
     |method Any foo()=(..)
     |Conflicting implementation: the method is implemented on both side of the sum
-    |[file:[###]
+    |file:[###]
     """  
   }B={}:A}

@@ -8,14 +8,14 @@ LoadDeploy = {
       }
     class method Void towel(Trait that, Url on, mut Writer writer)[_] = (
       res=Cache.Call:that.removeUnusedCode()
-      content=System.towelToS(res.code())
+      content=System.towelToS(res.code(),fauxName=on.toS())
       _=writer.write(on=on, contentBase64=content)
       void
       )
     class method Void module(Trait that, Name name, Url on, mut Writer writer)[_] = 
       This.towel(System.extractModule(that.code(),name=name), on=on, writer=writer)
     class method Void jar(Trait that,Url on, mut Writer writer)[_] = (
-      content=System.jarToS(that.code())
+      content=System.jarToS(that.code(),fauxName=on.toS())
       _=writer.write(on=on, contentBase64=content)
       void
       )

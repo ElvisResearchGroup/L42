@@ -1,11 +1,11 @@
 DeployMeta={
   class method This of()
   class method This #apply()
-  method Void #$deployLibrary(This2.S that,Library lib)=
+  method Void #$deployLibrary(This2.S that,This2.S fauxName,Library lib)=
     native{trusted:#$deployLibrary} error void
-  method This2.S deployLibraryToBase64(Library lib)=
+  method This2.S deployLibraryToBase64(This2.S fauxName,Library lib)=
     native{trusted:deployLibraryToBase64} error void
-  method This2.S deployJarToBase64(Library lib)=
+  method This2.S deployJarToBase64(This2.S fauxName,Library lib)=
     native{trusted:deployJarToBase64} error void
   #norm{nativeKind=Meta,
     typeDep=This This2.Deploy$LibraryNotSelfContained,This2.S
@@ -13,7 +13,7 @@ DeployMeta={
     coherentDep=This2.Deploy$LibraryNotSelfContained,This2.S
     nativePar=This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained This2.Deploy$LibraryNotSelfContained
     }}
-@Public class method S towelToS(Library that)=
-  DeployMeta.of()<:imm DeployMeta.deployLibraryToBase64(lib=that)
-@Public class method S jarToS(Library that)=
-  DeployMeta.of()<:imm DeployMeta.deployJarToBase64(lib=that)
+@Public class method S towelToS(Library that,S fauxName)=
+  DeployMeta.of()<:imm DeployMeta.deployLibraryToBase64(fauxName=fauxName,lib=that)
+@Public class method S jarToS(Library that,S fauxName)=
+  DeployMeta.of()<:imm DeployMeta.deployJarToBase64(fauxName=fauxName,lib=that)

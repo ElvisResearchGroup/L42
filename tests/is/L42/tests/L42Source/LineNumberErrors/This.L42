@@ -1,5 +1,6 @@
 reuse [L42.is/AdamsTowel]
 
+A=Message:{method S text()=S"nope"}
 
 Main=(
   Debug(S"Hello wor")
@@ -12,8 +13,8 @@ Main=(
 
 
 //-Bug: it should require parenthesis around the for body!! 
-A = (
+B = (
   ss=S.List[]
-  for a in ss (ss.add(a))
+  for a in ss ss.add(a)
   Debug(ss) 
   )
