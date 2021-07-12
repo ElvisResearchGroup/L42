@@ -30,5 +30,4 @@ public class L42£NonDeterministicError extends L42NoFields.Eq<L42£NonDetermini
   public static final Class<L42£NonDeterministicError> _class = L42£NonDeterministicError.class;
   public static final EqCache<L42£NonDeterministicError> myCache=new EqCache<>(TrustedKind.NonDeterministicError);
   @Override public EqCache<L42£NonDeterministicError> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£NonDeterministicError.class, myCache);}
   }

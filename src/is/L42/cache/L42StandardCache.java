@@ -5,12 +5,16 @@ public class L42StandardCache<T extends L42Cachable<T>> extends AbstractStructur
   @Override public void setF(T t,int i,Object o){t.setField(i,o);}
   @Override protected T newInstance(T t){return t.newInstance();}
   private final Object typename;
-  private L42Cache<?>[] caches;
     L42StandardCache(Object typename, Class<? extends T> myClass) {
     this.typename = typename;   
-    L42CacheMap.addCacheableType(myClass, this);
     }  
-  public void lateInitialize(Class<?>...classes){caches=L42CacheMap.getCacheArray(classes);}
+  public L42Cache<?>[] caches;
+  public void lateInitialize(Class<?>...classes){
+	caches = new L42Cache<?>[classes.length];
+	for(int i = 0; i < classes.length; i++) {
+	  caches[i] = L42CacheMap.getCacheObjectFromClass(classes[i]);
+	  }
+  	}
   @Override protected void add(KeyNorm2D key, T t) {
     super.add(key,t);
     t.setNorm(t);
