@@ -11,7 +11,6 @@ public class L42SingletonCache<T> implements L42Cache<T> {
   L42SingletonCache(Object typename, Class<? extends T> myClass) {
     this.typename = typename;
     this.key = new KeyNorm2D(new Object[][] { { this } });
-    L42CacheMap.addCacheableType(myClass, this);
     }
   
   @Override 

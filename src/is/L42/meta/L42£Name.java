@@ -99,7 +99,6 @@ public class L42£Name extends L42NoFields.Eq<L42£Name>{
   public static final Class<L42£Name> _class=L42£Name.class;
   public static final EqCache<L42£Name> myCache=new EqCache<>(TrustedKind.Name);
   @Override public EqCache<L42£Name> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£Name.class,myCache);}
   static public L42£Name instance=new L42£Name("<hidden name>",L(),null,null).myNorm();//parse("");//private name
   static public L42£Name empty=new L42£Name("This",L(),null,null).myNorm();//parse("This");
   @Override public L42£Name newInstance(){return instance;}

@@ -2,9 +2,10 @@ package is.L42.cache;
 
 import static is.L42.tools.General.unreachable;
 
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +27,6 @@ import is.L42.platformSpecific.javaTranslation.L42NoFields;
 
 public class L42CacheMap {
   
-  //TODO: Change to string to get rid of reflection maybe?
-  private static final Map<Class<?>, L42Cache<?>> commander;
  
   private static final CacheBuilder<Object,Object> builder = CacheBuilder.newBuilder().softValues(); 
   public static final L42Cache<?> intCache=new IntCache();
@@ -42,74 +41,39 @@ public class L42CacheMap {
   public static final L42Cache<?> flagsCache=Flags.cache;
   public static final L42Cache<?> arrayListCache=new ArrayListCache();
 
-  static {    
-    commander = new HashMap<>();
-    commander.put(int.class, intCache);
-    commander.put(Integer.class, intCache);
-    commander.put(boolean.class, boolCache);
-    commander.put(Boolean.class, boolCache);
-    commander.put(float.class, floatCache);
-    commander.put(Float.class, floatCache);
-    commander.put(double.class, doubleCache);
-    commander.put(Double.class, doubleCache);
-    commander.put(long.class, longCache);
-    commander.put(Long.class, longCache);
-    commander.put(short.class, shortCache);
-    commander.put(Short.class, shortCache);
-    commander.put(byte.class, byteCache);
-    commander.put(Byte.class, byteCache);
-    commander.put(char.class, charCache);
-    commander.put(Character.class, charCache);
-    commander.put(String.class, stringCache);
-    commander.put(Flags.class, flagsCache);
-    commander.put(ArrayList.class,arrayListCache);
-    }
   
-  /**
-   * Adds a cacheable type using the given class and cache object.
-   * Once added, the specified cache will be returned by further
-   * calls to <code>getCacheObject(...)</code> and indirectly
-   * by calls to <code>normalize(...)</code> and
-   * <code>isNorm()</code>
-   * 
-   * @param <T> The type of the cache
-   * @param class_ The class object representing the type
-   * @param cache The relevant cache object
-   */
-  static <T,C extends L42Cache<T>> C addCacheableType(Class<? extends T> class_, C cache) {
-    commander.put(class_, cache);
-    return cache;
-    }
-  
-  /**
-   * Given a class object, retrieves the 
-   * @param <T>
-   * @param class_
-   * @return
-   */
-  @SuppressWarnings("unchecked")
-  public static <T> L42Cache<T> getCacheObject(Class<T> class_) {//NOTE: public only for testing
-    //if(class_==ArrayList.class){return (L42Cache<T>) arrayListCache;}
-    assert cacheUnderControl();
-    return (L42Cache<T>) commander.get(class_);
-    }
-  
-  private static boolean cacheUnderControl(){
-    String s=List.of(Thread.currentThread().getStackTrace()).toString();
-    assert s.contains(".lateInitialize(") 
-      //|| s.contains("ArrayListCacheForType")
-      || s.contains(".NormalizationTests.")
-      || s.contains(".readObjToString("):
-      s;
-    return true;    
-    }
-    
   static L42Cache<?>[] getCacheArray(Class<?> ... classes) {
     L42Cache<?>[] caches = new L42Cache<?>[classes.length];
     for(int i = 0; i < classes.length; i++) {
       caches[i] = getCacheObject(classes[i]);
       }
     return caches;
+    }
+  
+  @SuppressWarnings("unchecked")
+  public static <T> L42Cache<T> getCacheObjectFromClass(Class<T> class_) {
+    if(class_ == null){ return null; }
+	if(L42Cachable.class.isAssignableFrom(class_)) {
+      try {
+	    MethodHandle handle = MethodHandles.lookup().findStaticGetter(class_, "myCache", L42Cache.class);
+	    return (L42Cache<T>) handle.invoke(null);
+	    } 
+      catch(Throwable t) {
+	    throw new Error(t);	
+	    }
+      }
+    if(class_.equals(String.class)){return (L42Cache<T>) stringCache;}
+	if(class_.equals(ArrayList.class)){return ((L42Cache<T>) arrayListCache);}
+	if(class_.equals(Integer.class) || class_.equals(int.class)){return (L42Cache<T>) intCache;}
+	if(class_.equals(Float.class) || class_.equals(float.class)){return (L42Cache<T>) floatCache;}
+	if(class_.equals(Double.class) || class_.equals(double.class)){return (L42Cache<T>) doubleCache;}
+	if(class_.equals(Long.class) || class_.equals(long.class)){return (L42Cache<T>) longCache;}
+	if(class_.equals(Short.class) || class_.equals(short.class)){return (L42Cache<T>) shortCache;}
+	if(class_.equals(Character.class) || class_.equals(char.class)){return (L42Cache<T>) charCache;}
+	if(class_.equals(Byte.class) || class_.equals(byte.class)){return (L42Cache<T>) byteCache;}
+	if(class_.equals(Boolean.class) || class_.equals(boolean.class)){return (L42Cache<T>) boolCache;}
+	if(class_.equals(Flags.class)){return (L42Cache<T>) flagsCache;}
+	return null;
     }
   
   @SuppressWarnings("unchecked") //NOTE: public only for testing
@@ -135,11 +99,9 @@ public class L42CacheMap {
     return cache.normalize(t);
     }
   
-  @SuppressWarnings("unchecked") 
   static <T> boolean isNorm(T t) {
     if(t == null) { return true; }
-    if(t instanceof L42Cachable) { return ((L42Cachable<?>) t).isNorm(); }
-    L42Cache<T> cache = getCacheObject((Class<T>) t.getClass());
+    L42Cache<T> cache = getCacheObject(t);
     return cache.isNorm(t);
     }
   @SuppressWarnings("unchecked")
@@ -150,7 +112,7 @@ public class L42CacheMap {
     if(cache!=null){return cache.isNorm(fi);}
     assert List.of(Thread.currentThread().getStackTrace())
       .toString().contains(".NormalizationTests.");//line after just for tests
-    return getCacheObject((Class<T>) t.getClass()).isNorm(t);
+    return getCacheObject(t).isNorm(t);
     }
   
   @SuppressWarnings("unchecked")
@@ -272,9 +234,17 @@ public class L42CacheMap {
     }
   
   public static void clearAllCaches() {
-    for(L42Cache<?> cache : commander.values()) {
-      cache.clear();
-      }
+    intCache.clear();
+    boolCache.clear();
+    floatCache.clear();
+    doubleCache.clear();
+    longCache.clear();
+    shortCache.clear();
+    byteCache.clear();
+    charCache.clear();
+    stringCache.clear();
+    flagsCache.clear();
+    arrayListCache.clear();
     }
   
   public static synchronized <T> L42SingletonCache<T> newSingletonCache(Object name, Class<? extends T> class_) {
@@ -287,10 +257,6 @@ public class L42CacheMap {
   
   public static synchronized <T extends L42Cachable<T>> void lateInitialize(L42StandardCache<T> cache, Class<?> ... classes) {
     cache.lateInitialize(classes);
-    }
-  
-  public static synchronized <T, C extends L42Cache<T>> void addCachableType_synchronized(Class<? extends T> class_, C cache) {
-    addCacheableType(class_, cache);
     }
   
   public static synchronized <T> T dupAndNormalize(T t) {
