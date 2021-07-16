@@ -23,6 +23,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
+import java.util.regex.MatchResult;
+import java.util.regex.Pattern;
+import java.util.stream.Stream;
 
 import javax.tools.Diagnostic;
 import javax.tools.DiagnosticListener;
@@ -36,6 +39,7 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 
+import is.L42.perftests.PerfCounters;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 
 public class InMemoryJavaCompiler {
@@ -249,6 +253,24 @@ public class InMemoryJavaCompiler {
       }
     }
   public static MapClassLoader compile(ClassLoader env,List<SourceFile> files, ArrayList<? super SClassFile> newBytecode) throws CompilationError {
+    if(PerfCounters.isEnabled()) {
+      for(SourceFile file : files) {
+        int classes = (int) Pattern.compile("(public class)|(public static class)|(public interface)").matcher(file.contents).results().count();
+        int chars = file.contents.length();
+        int sloc = (int) Pattern.compile("\n").matcher(file.contents).results().count();
+        int methods = (int) Pattern.compile("((public|protected|private|static|final|synchronized) )+[A-Za-z£][A-Za-z0-9£]*(\\<[^ ]*\\>)? [A-Za-z£][A-Za-z0-9£]*\\(").matcher(file.contents).results().count();
+        int trycatch = (int) Pattern.compile("try\\{").matcher(file.contents).results().count();
+        int switchzero = (int) Pattern.compile("switch\\(0\\)").matcher(file.contents).results().count();
+        PerfCounters.inc("javac.sourcefiles");
+        PerfCounters.add("javac.classes", classes);
+        PerfCounters.add("javac.chars", chars);
+        PerfCounters.add("javac.sloc", sloc);
+        PerfCounters.add("javac.methods", methods);
+        PerfCounters.add("javac.trycatch", trycatch);
+        PerfCounters.add("javac.switchzero", switchzero);
+        System.out.println(file.contents);
+        }
+      }
     var out=new ArrayList<ClassFile>();
     try{return auxCompile(env,files,out);}
     finally{

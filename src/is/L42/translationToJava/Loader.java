@@ -14,8 +14,10 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
-import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Pos;
+import is.L42.nativeCode.TrustedKind;
+import is.L42.perftests.CoreNodeCounter;
+import is.L42.perftests.PerfCounters;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
@@ -156,6 +158,11 @@ public class Loader {
     if(name.isEmpty()){return;}
     if(this.loaded.contains(name)){return;}
     if(!isOkToJava(p,name)){return;}
+    if(PerfCounters.isEnabled()) {
+      CoreNodeCounter ctr = new CoreNodeCounter();
+      ctr.visitL(p.topCore());
+      PerfCounters.add("core.nodes", ctr.getNodeCount());
+      }
     J j=new J(p,G.empty(),libs,false){
       public Coherence newCoherence(Program p) {return new Coherence(p,false){
         public boolean checkNativeKind(TrustedKind tK){

@@ -11,7 +11,9 @@ import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
-public class TestL42Bridge{
+import is.L42.common.PerfCounted;
+
+public class TestL42Bridge extends PerfCounted {
   static final String separator = "<<<<STRCMP>>>>";
   @MethodSource
   @ParameterizedTest(name = "{index}: {0}")

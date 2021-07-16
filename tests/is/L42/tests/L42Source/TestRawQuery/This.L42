@@ -25,7 +25,7 @@ LoadDeploy = Load:{reuse[L42.is/Deploy]}
 DeployGit = LoadDeploy.with(writer=GW)
 TaskDeployRawQuery = DeployGit.module(Lib()
   name='Top
-  on=Url"github.com/Language42/is/RawQuery.L42"
+  on=Secret.repo(),
   writer=GW.#$of(
     token=Secret.#$of(),
     message=S"Raw Query"++S" automatic release 42V0.95"
