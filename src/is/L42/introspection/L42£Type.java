@@ -1,5 +1,6 @@
 package is.L42.introspection;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.common.Program;
 import is.L42.generated.Core.T;
@@ -58,8 +59,8 @@ public class L42£Type extends L42NoFields.Eq<L42£Type>{
     return nested.eq(that.nested);
     }
   public static final Class<L42£Nested> _class=L42£Nested.class;
-  public static final EqCache<L42£Type> myCache=new EqCache<>(TrustedKind.Type);
-  @Override public EqCache<L42£Type> myCache(){return myCache;}
+  public static final L42Cache<L42£Type> myCache=new EqCache<>(TrustedKind.Type);
+  @Override public L42Cache<L42£Type> myCache(){return myCache;}
   static public L42£Type instance=new L42£Type("imm",L42£Doc.instance,L42£Nested.instanceVoid).myNorm();
   @Override public L42£Type newInstance(){return instance;}
   }

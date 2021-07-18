@@ -9,6 +9,7 @@ import static is.L42.tools.General.pushL;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.common.EndError;
 import is.L42.common.Program;
@@ -213,8 +214,8 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
       && this.rootL.equals(that.rootL);
     }
   public static final Class<L42£Nested> _class=L42£Nested.class;
-  public static final EqCache<L42£Nested> myCache=new EqCache<>(TrustedKind.Nested);
-  @Override public EqCache<L42£Nested> myCache(){return myCache;}
+  public static final L42Cache<L42£Nested> myCache=new EqCache<>(TrustedKind.Nested);
+  @Override public L42Cache<L42£Nested> myCache(){return myCache;}
   static public L42£Nested instanceAny=new L42£Nested("",Program.emptyL,Program.emptyLInterface,L42£Name.empty,P.pAny).myNorm();
   static public L42£Nested instanceLibrary=new L42£Nested("",Program.emptyL,Program.emptyL,L42£Name.empty,P.pVoid).myNorm();
   static public L42£Nested instanceVoid=new L42£Nested("",Program.emptyL,Program.emptyL,L42£Name.empty,P.pLibrary).myNorm();

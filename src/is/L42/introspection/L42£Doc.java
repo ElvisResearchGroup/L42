@@ -5,6 +5,7 @@ import static is.L42.tools.General.L;
 import java.util.Collections;
 import java.util.List;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.common.Program;
 import is.L42.generated.Core.Doc;
@@ -68,8 +69,8 @@ public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
     }
   public String toString(){return doc.toString();}
   public static final Class<L42£Doc> _class=L42£Doc.class;
-  public static final EqCache<L42£Doc> myCache=new EqCache<>(TrustedKind.Doc);
-  @Override public EqCache<L42£Doc> myCache(){return myCache;}
+  public static final L42Cache<L42£Doc> myCache=new EqCache<>(TrustedKind.Doc);
+  @Override public L42Cache<L42£Doc> myCache(){return myCache;}
   static Doc emptyDoc=new Doc(null,L(),L());
   static public L42£Doc instance=new L42£Doc(L42£Nested.instanceVoid,L42£Name.empty,emptyDoc).myNorm();
   @Override public L42£Doc newInstance(){return instance;}

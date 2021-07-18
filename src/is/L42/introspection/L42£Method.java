@@ -3,6 +3,7 @@ package is.L42.introspection;
 import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
@@ -69,8 +70,8 @@ public class L42£Method extends L42NoFields.Eq<L42£Method>{
       && nameFromRoot._s.equals(that.nameFromRoot._s);
     }
   public static final Class<L42£Method> _class=L42£Method.class;
-  public static final EqCache<L42£Method> myCache=new EqCache<>(TrustedKind.Method);
-  @Override public EqCache<L42£Method> myCache(){return myCache;}
+  public static final L42Cache<L42£Method> myCache=new EqCache<>(TrustedKind.Method);
+  @Override public L42Cache<L42£Method> myCache(){return myCache;}
   static public L42£Method instance=new L42£Method("",L42£Nested.instanceVoid,L42£Name.empty.withSelector("#apply()")).myNorm();//TODO: invalid method??
   @Override public L42£Method newInstance(){return instance;}
   }

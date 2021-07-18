@@ -1,5 +1,6 @@
 package is.L42.platformSpecific.javaTranslation;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.nativeCode.TrustedKind;
 
@@ -28,6 +29,6 @@ public class L42£NonDeterministicError extends L42NoFields.Eq<L42£NonDetermini
     }
   @Override public int hashCode(){return msg.hashCode();}      
   public static final Class<L42£NonDeterministicError> _class = L42£NonDeterministicError.class;
-  public static final EqCache<L42£NonDeterministicError> myCache=new EqCache<>(TrustedKind.NonDeterministicError);
-  @Override public EqCache<L42£NonDeterministicError> myCache(){return myCache;}
+  public static final L42Cache<L42£NonDeterministicError> myCache=new EqCache<>(TrustedKind.NonDeterministicError);
+  @Override public L42Cache<L42£NonDeterministicError> myCache(){return myCache;}
   }

@@ -2,6 +2,7 @@ package is.L42.platformSpecific.javaTranslation;
 
 import java.util.function.Supplier;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.nativeCode.TrustedKind;
 
@@ -50,6 +51,6 @@ public class L42£LazyMsg extends L42NoFields.Eq<L42£LazyMsg>{
     return lazy.hashCode();
     }
   public static final Class<L42£LazyMsg> _class = L42£LazyMsg.class;
-  public static final EqCache<L42£LazyMsg> myCache=new EqCache<>(TrustedKind.LazyMessage);
-  @Override public EqCache<L42£LazyMsg> myCache(){return myCache;}
+  public static final L42Cache<L42£LazyMsg> myCache=new EqCache<>(TrustedKind.LazyMessage);
+  @Override public L42Cache<L42£LazyMsg> myCache(){return myCache;}
   }

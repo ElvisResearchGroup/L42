@@ -23,7 +23,7 @@ public class L42£SelfList implements L42Cachable<L42£SelfList>{
   @Override public int numFields(){return inner.size()-1;}
   @Override public L42£SelfList newInstance(){return new L42£SelfList();}
   @Override public L42Cache<L42£SelfList> myCache(){return myCache;}
-  public static final SelfListCache myCache=new SelfListCache();
+  public static final L42Cache<L42£SelfList> myCache=new SelfListCache();
   public static class SelfListCache extends AbsSetCache<L42£SelfList>{
     public SelfListCache(){super();}
     @Override public Object f(L42£SelfList t, int i){return t.getField(i);}

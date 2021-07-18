@@ -10,6 +10,7 @@ import java.util.IdentityHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Stream;
 
 import com.google.common.cache.CacheBuilder;
 
@@ -51,29 +52,29 @@ public class L42CacheMap {
     }
   
   @SuppressWarnings("unchecked")
-  public static <T> L42Cache<T> getCacheObjectFromClass(Class<T> class_) {
-    if(class_ == null){ return null; }
-	if(L42Cachable.class.isAssignableFrom(class_)) {
+  public static <T> L42Cache<T> getCacheObjectFromClass(Class<T> clazz) {
+    if(clazz == null){ return null; }
+	  if(L42Cachable.class.isAssignableFrom(clazz)) {
       try {
-	    MethodHandle handle = MethodHandles.lookup().findStaticGetter(class_, "myCache", L42Cache.class);
-	    return (L42Cache<T>) handle.invoke(null);
-	    } 
-      catch(Throwable t) {
-	    throw new Error(t);	
-	    }
+        //var f=clazz.getField("myCache");
+        //return (L42Cache<T>) f.get(null);
+        MethodHandle handle = MethodHandles.lookup().findStaticGetter(clazz, "myCache", L42Cache.class);
+	      return (L42Cache<T>) handle.invoke();
+	      } 
+      catch(Throwable t) {throw new Error(t);}
       }
-    if(class_.equals(String.class)){return (L42Cache<T>) stringCache;}
-	if(class_.equals(ArrayList.class)){return ((L42Cache<T>) arrayListCache);}
-	if(class_.equals(Integer.class) || class_.equals(int.class)){return (L42Cache<T>) intCache;}
-	if(class_.equals(Float.class) || class_.equals(float.class)){return (L42Cache<T>) floatCache;}
-	if(class_.equals(Double.class) || class_.equals(double.class)){return (L42Cache<T>) doubleCache;}
-	if(class_.equals(Long.class) || class_.equals(long.class)){return (L42Cache<T>) longCache;}
-	if(class_.equals(Short.class) || class_.equals(short.class)){return (L42Cache<T>) shortCache;}
-	if(class_.equals(Character.class) || class_.equals(char.class)){return (L42Cache<T>) charCache;}
-	if(class_.equals(Byte.class) || class_.equals(byte.class)){return (L42Cache<T>) byteCache;}
-	if(class_.equals(Boolean.class) || class_.equals(boolean.class)){return (L42Cache<T>) boolCache;}
-	if(class_.equals(Flags.class)){return (L42Cache<T>) flagsCache;}
-	return null;
+    if(clazz.equals(String.class)){return (L42Cache<T>) stringCache;}
+	  if(clazz.equals(ArrayList.class)){return ((L42Cache<T>) arrayListCache);}
+	  if(clazz.equals(Integer.class) || clazz.equals(int.class)){return (L42Cache<T>) intCache;}
+	  if(clazz.equals(Float.class) || clazz.equals(float.class)){return (L42Cache<T>) floatCache;}
+	  if(clazz.equals(Double.class) || clazz.equals(double.class)){return (L42Cache<T>) doubleCache;}
+	  if(clazz.equals(Long.class) || clazz.equals(long.class)){return (L42Cache<T>) longCache;}
+	  if(clazz.equals(Short.class) || clazz.equals(short.class)){return (L42Cache<T>) shortCache;}
+	  if(clazz.equals(Character.class) || clazz.equals(char.class)){return (L42Cache<T>) charCache;}
+	  if(clazz.equals(Byte.class) || clazz.equals(byte.class)){return (L42Cache<T>) byteCache;}
+	  if(clazz.equals(Boolean.class) || clazz.equals(boolean.class)){return (L42Cache<T>) boolCache;}
+	  if(clazz.equals(Flags.class)){return (L42Cache<T>) flagsCache;}
+	  return null;
     }
   
   @SuppressWarnings("unchecked") //NOTE: public only for testing

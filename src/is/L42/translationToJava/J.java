@@ -378,8 +378,8 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     List<Boolean>is=is0;
     List<String>ps=ps0;
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
-    c("public static final L42StandardCache<"+jC+"> myCache=L42CacheMap.newStandardCache("+jCName+","+jC+"._class);");nl();
-    c("static{L42CacheMap.lateInitialize(myCache,new Class<?>[]{");
+    c("public static final L42Cache<"+jC+"> myCache=L42CacheMap.newStandardCache("+jCName+","+jC+"._class);");nl();
+    c("static{L42CacheMap.lateInitialize((L42StandardCache<"+jC+">)myCache,new Class<?>[]{");
     seq(range(ps),i->is.get(i)?"null":addDotClass(ps.get(i)),",");
     c("});}");nl();
     c("@Override public L42Cache<"+jC+"> myCache(){return myCache;}");nl();

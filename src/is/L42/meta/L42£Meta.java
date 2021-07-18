@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.function.Function;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
@@ -334,6 +335,6 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       }
 
   public static final Class<L42£Meta> _class=L42£Meta.class;
-  public static final EqCache<L42£Meta> myCache=new EqCache<>(TrustedKind.Meta);
-  @Override public EqCache<L42£Meta> myCache(){return myCache;}
+  public static final L42Cache<L42£Meta> myCache=new EqCache<>(TrustedKind.Meta);
+  @Override public L42Cache<L42£Meta> myCache(){return myCache;}
   }

@@ -27,7 +27,7 @@ public class L42£Set<K> extends L42£AbsSet<K,LinkedHashSet<K>,L42£Set<K>>{
   public static final Class<L42£Set<?>> _class=(Class<L42£Set<?>>)(Object)L42£Set.class;
   @SuppressWarnings("unchecked")
   @Override public L42Cache<L42£Set<K>> myCache(){return ((SetCache<K>)myCache);}
-  public static final SetCache<?> myCache=new SetCache<Object>();
+  public static final L42Cache<?> myCache=new SetCache<Object>();
   public static class SetCache<K> extends AbsSetCache<L42£Set<K>>{
     @Override public Object f(L42£Set<K> t, int i){
       t.loadIteration();

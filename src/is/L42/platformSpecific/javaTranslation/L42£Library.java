@@ -6,6 +6,7 @@ import java.io.Serializable;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
 import is.L42.common.Program;
 import is.L42.generated.C;
@@ -71,6 +72,6 @@ public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any
     else{localPath=localPath.withCs(pushL(localPath.cs(),originName));}
     }
   public static final Class<L42£Library> _class = L42£Library.class;
-  public static final EqCache<L42£Library> myCache=new EqCache<>("L42£Library");
-  @Override public EqCache<L42£Library> myCache(){return myCache;}
+  public static final L42Cache<L42£Library> myCache=new EqCache<>("L42£Library");
+  @Override public L42Cache<L42£Library> myCache(){return myCache;}
   }

@@ -13,7 +13,7 @@ public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {
     this.unwrap=p;
     }
   
-  public static final L42ValueCache<L42ClassAny> myCache = new L42ValueCache<L42ClassAny>() {
+  public static final L42Cache<L42ClassAny> myCache = new L42ValueCache<L42ClassAny>() {
 
     @Override 
     public String typename() { 
