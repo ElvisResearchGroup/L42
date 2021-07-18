@@ -1,0 +1,22 @@
+mut J j
+method Bool hitOrMiss(I col, I row)
+@JServer.Handler mut method Void fire(S msg)=(//player press button
+  count=I(msg)
+  row=count/11I //-1 to go 0-9
+  col=count.mod(11I) //-1 to go 0-9
+  res=this.hitOrMiss(col=col,row=row)
+  id=if res S"hit" else S"miss"
+  this.#j().submitEvent(key='BattleShip.Refresh, id=id, msg=msg)
+  )
+mut method Void drawShips(read)=(
+  
+  this.#j().submitEvent(key='Example.ChangeScreen, id='Game, msg=S"0")
+  this.pings(0\)
+  this.running(\.true())
+  this.es($.Entity.List[
+    mutVal=this.#player();
+    mutVal=this.rat(text=S"Apollo",x=140\, y=230\);
+    mutVal=this.rat(text=S"Zeus",x=240\, y=130\);
+    mutVal=this.rat(text=S"Minerva",x=540\, y=530\);])
+  whoops JServer.Fail
+  )

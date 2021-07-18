@@ -1,0 +1,98 @@
+[HasToS]
+Elem = {}
+L = Class.Relax : Trait(Collection.list(Elem))[clear='This]
+read method read L inner::0()
+mut method mut L #inner::0()
+@Public read method read L asList()=this.inner::0()
+class method mut This of::0(fwd mut L inner)
+@Public class method mut This(mut L that)=(
+  (tot)=This.dimensions()
+  X[that.size()==tot msg=S"Wrong size list: size %that.size() != %tot"]
+  copy=L()(for e in that \add(e))
+  This.of::0(inner=copy)
+  )
+@Public class method This #immK(L that)=(
+  (tot)=This.dimensions()
+  X[that.size()==tot msg=S"Wrong size list: size %that.size() != %tot"]
+  This.of::0(inner=that)
+  )
+class method S row()
+class method S col()
+@Public @Cache.Lazy class method Dimensions dimensions() = Dimensions(
+  row=I(string=This.row())
+  col=I(string=This.col())
+  )
+//accessors imm
+@Public read method Elem val(I row,I col) = this.val(\(row=row,col=col))
+@Public read method Elem val(Coord that) = this.inner::0().val(that.index())
+@Public mut method Void set(I row, I col, Elem val) = this.set(\(row=row,col=col),val=val)
+@Public mut method Void set(Coord that, Elem val) = this.#inner::0().set(that.index(),val=val)
+//accessors mut
+@Public mut method mut Elem #val(I row, I col) = this.#val(\(row=row,col=col))
+@Public mut method mut Elem #val(Coord that) = this.#inner::0().#val(that.index())
+@Public mut method Void #set(I row, I col, mut Elem val) = this.#set(\(row=row,col=col),val=val)
+@Public mut method Void #set(Coord that, mut Elem val) = this.#inner::0().#set(that.index(),val=val)
+
+//accessors read
+@Public read method read Elem readVal(I row,I col) = this.readVal(\(row=row,col=col))
+@Public read method read Elem readVal(Coord that) = this.inner::0().readVal(that.index())
+
+read method S toS()=(
+  (row,col)=This.dimensions()
+  var res=S""
+  for rowi in Range(row) (
+    for coli in Range(col) (
+      e=this.val(row=rowi,col=coli)
+      res++=S"|"++This.elemToS(row=rowi, col=coli, val=e)
+      )
+    res++=S"|"++S.nl()
+    )
+  res
+  )
+class method S elemToS(I row, I col, read Elem val) = Collection.AnyToS(val)
+
+@Public read method read This vals()=this
+@Public mut method mut This #vals()=this
+@Public read method read This #iterator()=this
+@Public mut method mut This #varIterator()=this
+//--those below may even become a reusable trait
+@Public read method I #startIndex()=this.inner::0().#startIndex()
+@Public read method Bool #hasElem(I that)=this.inner::0().#hasElem(that)
+@Public read method Bool #incomplete(I that)=this.inner::0().#incomplete(that)
+@Public read method Elem #elem#imm(I that)=this.inner::0().#elem#imm(that)
+@Public mut method mut Elem #elem#mut(I that)=this.#inner::0().#elem#mut(that)
+@Public read method Elem #elem#default(I that)=this.inner::0().#elem#default(that)
+@Public read method read Elem #elem#read(I that)=this.inner::0().#elem#read(that)
+@Public mut method mut Elem #update#mut(I that, mut Elem val)=this.#inner::0().#update#mut(that,val=val)
+@Public mut method Elem #update#imm(I that, Elem val)=this.#inner::0().#update#imm(that,val=val)
+@Public mut method Elem #update#default(I that, Elem val)=this.#inner::0().#update#default(that,val=val)
+@Public read method Void #close(I that)=this.inner::0().#close(that)
+//--------
+@Public Coord = Data:{
+  I row, I col
+  @Cache.Now class method Void invariant(I row, I col) = (
+    (row0,col0)=This1.dimensions()
+    X[
+      row>=0I && row<row0  msg=S"row=%row, but it must be between 0 and %row0";
+      col>=0I && col<col0  msg=S"col=%col, but it must be between 0 and %col0";
+      ]
+    )
+  class method This (I index) = \(
+    row=index/This1.dimensions().col()
+    col=index.mod(This1.dimensions().col())
+    )
+  method I index() = ( this.row()*This1.dimensions().col() )+this.col()
+  }
+@Public read method Iterator coords() = Iterator()
+@Public Iterator = {
+  class method This ()
+  method Iterator #iterator() = this
+  method Void #close(I that) = void
+  method Bool #incomplete(I that) = that < This1.dimensions().tot()
+  method Coord #elem#default(I that) = \(index=that)
+  method Bool #hasElem(I that) = that < This1.dimensions().tot()
+  method I #startIndex() = 0I
+  }
+/*
+for (row,col) in matrix.coords(), var? e in matrix (..)
+*/

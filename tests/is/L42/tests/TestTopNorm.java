@@ -769,15 +769,27 @@ public class TestTopNorm{
       ) 
     }
     """,ErrMsg.castOnPathOnlyValidIfNotInterface(hole)
+  );}@Test public void t68_0(){topFail(EndError.TypeError.class,"""
+    {reuse[aaa]
+    Main=(
+      Deploy.DeployMeta.of().#$deployLibrary(S"ba",fauxName=S"ba",lib={
+        A={
+         class method imm Library foo()={imm method imm Void retrived()#typed{}}
+         #typed{}}
+         }) 
+      )
+    FailHere=Void.foo()
+    }
+    """,hole
   );}@Test public void t68(){top("""
     {reuse[ba]
-     C=A.foo() 
-    }
+       C=A.foo() 
+      }
     ""","""
     {
-      A={
-        class method imm Library foo()={imm method imm Void retrived()#typed{}}
-        #typed{}}
+    A={
+      class method imm Library foo()={imm method imm Void retrived()#typed{}}
+      #typed{}}
       C={imm method imm Void retrived()#typed{}}
       #norm{}}
     """

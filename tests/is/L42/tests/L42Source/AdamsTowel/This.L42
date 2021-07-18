@@ -122,7 +122,6 @@ DeployAAA=(
     @Public Organize={...}
     Data$Close={...}
     Public2={...}
-    Collection$={...}
     Deploy$={...}
     @Public Math={...}
     @Public Range={...}
@@ -130,10 +129,11 @@ DeployAAA=(
     @Public Load={...}
     @Public System$NonDeterministicError=Class:NativeMessageTrait.NonDeterministic
     @Public System$JavaException=Class:Message.Native:{[Message$Guard]}
-    Data$={...}
-    @Public Collection$Enum={...}
-    S$=Class:Trait({...})['Map.OVal=>'Opt]
     Name$={...}
+    Collection$={...}
+    S$=Class:Trait({...})['Map.OVal=>'Opt]
+    @Public Collection$Enum={...}
+    Data$={...}    
     Trait$DocMap=Class:Trait({
       Map=Collection$.map(key=Name,val=S)
       ResetDocs={...}
@@ -145,7 +145,8 @@ DeployAAA=(
     Math$Random={...}
     Math$={...}
     S$Alphanumeric=Decorator.$:{...}
-    X$=Class:Trait({...})['XX=>'This]    
+    X$=Class:Trait({...})['XX=>'This]
+    Collection2={...}    
     }
   mut S$StringBuilder sb=S$StringBuilder.of()
   sb._a() sb._a() sb._a()
@@ -167,6 +168,7 @@ DeployAdamsTowel={reuse[#$aaa]
       'Deploy_LibraryNotSelfContained=>'Deploy.LibraryNotSelfContained;
       'Long=>'Math.Long;
       'Public2=>'Public;
+      'Collection2=>'Collection;
       ]
     tot:=Organize:tot
     pub=Introspection.Nested(library=tot.code()).nested(name='Public)

@@ -40,3 +40,40 @@ TestWithData={
     {}:Test"a"(Point(x=3\,y=5\)==Point(x=3\,y=5\))
     )
   }
+SGrid=Collection.matrix(S.List,row=7I,col=3I)
+TestMatrix=(
+   mut SGrid s=SGrid(\[
+     S"a1";S"b1";S"c1";
+     S"a2";S"b2";S"c2";
+     S"a3";S"b3";S"c3";
+     S"a4";S"b4";S"c4";
+     S"a5";S"b5";S"c5";
+     S"a6";S"b6";S"c6";
+     S"a7";S"b7";S"c7";
+     ])
+   Debug(s)
+   {}:Test"toS"(actual=s.toS() expected=S"""
+     ||"a1"|"b1"|"c1"|
+     ||"a2"|"b2"|"c2"|
+     ||"a3"|"b3"|"c3"|
+     ||"a4"|"b4"|"c4"|
+     ||"a5"|"b5"|"c5"|
+     ||"a6"|"b6"|"c6"|
+     ||"a7"|"b7"|"c7"|
+     """)
+   {}:Test"asList().toS"(actual=s.asList().toS() expected=S"""
+     |["a1"; "b1"; "c1"; "a2"; "b2"; "c2"; "a3"; "b3"; "c3"; "a4"; "b4"; "c4"; "a5"; "b5"; "c5"; "a6"; "b6"; "c6"; "a7"; "b7"; "c7"]
+     """.trim())
+   for (row,col) in s.coords(), var v in s (
+     if row==col v:=S"W"
+     )
+   {}:Test"toS"(actual=s.toS() expected=S"""
+     ||"W"|"b1"|"c1"|
+     ||"a2"|"W"|"c2"|
+     ||"a3"|"b3"|"W"|
+     ||"a4"|"b4"|"c4"|
+     ||"a5"|"b5"|"c5"|
+     ||"a6"|"b6"|"c6"|
+     ||"a7"|"b7"|"c7"|
+     """)
+   )

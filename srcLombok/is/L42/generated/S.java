@@ -19,4 +19,8 @@ S implements LDom,Visitable<S>{@Override public S accept(CloneVisitor cv){return
     assert s!=null;
     return s;
     }
+  public S toCore() {
+    if(!this.m.isEmpty()) {return this;} 
+    return this.withM("#apply");
+    }
   }

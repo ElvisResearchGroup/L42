@@ -11,12 +11,12 @@ public final class Arrow{
   public Arrow(List<C> cs, S _s) {this(cs,_s,false,false,null,null,null);}
   public Arrow(List<C> cs, S _s, boolean full,boolean star, P _path, List<C> _cs, S _sOut) {
     this.cs = cs;
-    this._s = _s;
+    this._s = (_s==null?null:_s.toCore());
     this.full = full;
     this.star=star;
     this._path = _path;
     this._cs = _cs;
-    this._sOut = _sOut;
+    this._sOut = (_sOut==null?null:_sOut.toCore());
     assert _path==null || _cs==null;
     assert _sOut==null || _cs!=null;
     }

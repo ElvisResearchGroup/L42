@@ -1,0 +1,40 @@
+reuse [L42.is/AdamsTowel]
+Left={}
+Right={}
+
+//LoadJ=Load:{reuse[L42.is/JavaServer]}
+//JServer=LoadJ(slaveName=S"javaServer{}")
+//LoadGui=Load:{reuse[L42.is/GuiBuilder]}
+//Gui=LoadGui(javaServer=JServer)
+Matrix={...}
+SGrid=Matrix(S.List,row=7I,col=3I)
+Main=(
+   mut SGrid s=SGrid(\[
+     S"a1";S"b1";S"c1";
+     S"a2";S"b2";S"c2";
+     S"a3";S"b3";S"c3";
+     S"a4";S"b4";S"c4";
+     S"a5";S"b5";S"c5";
+     S"a6";S"b6";S"c6";
+     S"a7";S"b7";S"c7";
+     ])
+   Debug(s)
+   Debug(s.asList())
+   for (row,col) in s.coords(), var v in s (
+     if row==col v:=S"nope"
+     )
+   Debug(s)
+   )
+//Board={...}
+//EnvModel=Data:JServer.Handler:{...}
+//JavaCode={...}
+//Main={...}
+
+/*
+
+We can hava a variant where both players ships are on the same board
+this will be a grid of Cell
+Cell:{@Left Bool left, @Right Bool right}
+so that if you have Left permisssions you can read the left field
+we can have an implicit invariant that not left and right
+*/

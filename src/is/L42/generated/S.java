@@ -41,6 +41,10 @@ public final class S implements LDom, Visitable<S> {
     assert s != null;
     return s;
   }
+  public S toCore() {
+    if(!this.m.isEmpty()) {return this;} 
+    return this.withM("#apply");
+  }
 
   @java.lang.SuppressWarnings("all")
   public S(final String m, final List<X> xs, final int uniqueNum) {

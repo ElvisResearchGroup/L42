@@ -1,0 +1,25 @@
+@Public  Dimensions=Data:{I row, I col
+  @Cache.Now class method Void invariant(I row, I col) = 
+    X$[row>0I msg=S"row must be >0 but row=%row";
+      col>0I msg=S"col must be >0 but col=%col"]
+  method I tot() = this.row()*this.col()
+  }
+MatrixTrait=Trait:{...}
+@Public class method Trait matrixTrait()=MatrixTrait()
+
+@Public class method Library matrix(class Any that,I row, I col)[_ Collection$NoElementInOpt] = (
+  class Any e = {
+    //return that*Name"left()" //still unavailable
+    eRes=Name$.Times(Name"left()",n=Introspection.Nested(that))
+    return eRes.classAny()
+    catch error Collection$NoElementInOpt x exception Collection$NoElementInOpt"""%
+      |The provided class Any is not a kind of List 
+      |%x.text()
+      """
+    }
+  _ = Dimensions(row=row,col=col)//to throw error if needed
+  rowT = Trait$LiftS(row.toS())['()=>'row()]
+  colT = Trait$LiftS(col.toS())['()=>'col()]
+  res = this.matrixTrait()['Elem=>e;'L=>that]
+  Class:Public2:res:rowT:colT
+  )
