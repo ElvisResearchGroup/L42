@@ -70,7 +70,6 @@ public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
   public static final Class<L42£Doc> _class=L42£Doc.class;
   public static final EqCache<L42£Doc> myCache=new EqCache<>(TrustedKind.Doc);
   @Override public EqCache<L42£Doc> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£Doc.class,myCache);}
   static Doc emptyDoc=new Doc(null,L(),L());
   static public L42£Doc instance=new L42£Doc(L42£Nested.instanceVoid,L42£Name.empty,emptyDoc).myNorm();
   @Override public L42£Doc newInstance(){return instance;}

@@ -215,7 +215,6 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
   public static final Class<L42£Nested> _class=L42£Nested.class;
   public static final EqCache<L42£Nested> myCache=new EqCache<>(TrustedKind.Nested);
   @Override public EqCache<L42£Nested> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£Nested.class,myCache);}
   static public L42£Nested instanceAny=new L42£Nested("",Program.emptyL,Program.emptyLInterface,L42£Name.empty,P.pAny).myNorm();
   static public L42£Nested instanceLibrary=new L42£Nested("",Program.emptyL,Program.emptyL,L42£Name.empty,P.pVoid).myNorm();
   static public L42£Nested instanceVoid=new L42£Nested("",Program.emptyL,Program.emptyL,L42£Name.empty,P.pLibrary).myNorm();

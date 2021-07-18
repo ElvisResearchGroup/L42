@@ -73,5 +73,4 @@ public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any
   public static final Class<L42£Library> _class = L42£Library.class;
   public static final EqCache<L42£Library> myCache=new EqCache<>("L42£Library");
   @Override public EqCache<L42£Library> myCache(){return myCache;}
-  static{L42CacheMap.addCachableType_synchronized(L42£Library.class, myCache);}
   }
