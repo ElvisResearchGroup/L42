@@ -25,7 +25,7 @@ mut method Void alive::0(Bool that)
   S res=This.#$loadCode(fullName=fullName,code=code)
   this.alive::0(Bool.true())
   catch System.JavaException x (exception Fail"%x.text()")
-  if res!=S"" exception Fail"""
+  if res!=S"" exception Fail"""%
     |Unexpected result of loading code:
     |%res
     """
