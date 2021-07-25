@@ -1,0 +1,50 @@
+Board = Data:{[HasToS]
+  Ships ships
+  @Cache.Now class method Void invariant(Ships ships)=(
+    void//TODO:
+    )
+  method FireResult fire(Ships.Coord coord, Shots shots) = FireResult(
+    coord = coord,
+    shots = shots,
+    answer = this.fireAnswer(coord=coord,shots=shots)
+    )
+  method Answer fireAnswer(Ships.Coord coord, Shots shots) = {
+    ship = this.ships().val(coord)
+    if ship==Ship.None() return Answer.Miss()
+    hits = Match.Count()(
+      for s in this.ships().asList(), h in shots.asList() \add(s==ship && h!=S"")
+      )
+    if hits+1I!=ship.size() return Answer.Hit()
+    return ship.answer()
+    }
+  //method toS()=this.ships().toS()//TODO; toS bug if removed, do not print 'list2' ??
+  }
+Player={interface 
+  class method Board allShips(mut Math.Random rand)
+  class method mut Player of(Board board,mut Math.Random rand, mut ResultSigner signer)
+  mut method Void round(mut Player other)
+  mut method ResultSigner.Signed declassify(ResultSigner.Signed that)
+  }
+
+AIPlayer = Data:{...}
+
+ExampleGame = (
+//victory cond
+//miss/hit/sink
+  r1=Math.Random.#$random()
+  r2=Math.Random.#$random()
+  s1=ResultSigner.#$of(id=S"1")
+  s2=ResultSigner.#$of(id=S"2")
+  b2=AIPlayer.allShips(rand=r1)
+  b1=AIPlayer.allShips(rand=r2)
+  p1=AIPlayer(board=b1,rand=r1,signer=s1)
+  p2=AIPlayer(board=b2,rand=r2,signer=s2)
+  Debug(b1)
+  Debug(b2)
+  for i in Range(90I) (
+    p1.round(other=p2)
+    p2.round(other=p1)
+    )
+  Debug(p1.myShots())
+  Debug(p2.myShots())
+  )

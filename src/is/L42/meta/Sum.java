@@ -470,7 +470,8 @@ public class Sum {
       if(!lCs.info().refined().contains(s)){return false;}
       for(T t:lCs.ts()){
         if(!t.p().isNCs()){continue;}
-        Program pIn=p.navigate(cs);
+        Program pIn=p._navigate(cs);
+        if(pIn==null){return false;}//Unclear, should be return false or continue?
         var ncs=t.p().toNCs();
         Core.L li=pIn._ofCore(ncs);
         if(li==null){continue;}

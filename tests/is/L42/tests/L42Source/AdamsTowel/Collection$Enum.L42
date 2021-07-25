@@ -21,13 +21,15 @@ TraitEnumBase=Trait:{interface
 TraitEnumStep=Trait:{interface
   class method Void sealed()
   read method Bool readEquality(read This that)
+  read method This immClone()
   method Bool ==(This that)
   method Bool !=(This that)
   E={[This1,HasToS]
     class method This()
     class method Void sealed()=void
-    method readEquality(that)
-      =System.immEquality(System.immClone(this) and=System.immClone(that))
+    read method This immClone()=This()
+    method readEquality(that) =
+      System.immEquality(this.immClone() and=that.immClone())
     method ==(that)=this.readEquality(that)
     method !=(that)=!this.readEquality(that)
     method toS()=Introspection.Nested(This).outerName().toS()

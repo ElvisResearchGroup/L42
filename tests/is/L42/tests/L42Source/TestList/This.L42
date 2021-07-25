@@ -77,3 +77,17 @@ TestMatrix=(
      ||"a7"|"b7"|"c7"|
      """)
    )
+A=Data.AddList:Data:{}
+AGrid=Collection.matrix(A.List,row=2I,col=2I)
+AGridBox=Data:{AGrid grid}
+MainSGridBox=(
+  s=AGridBox(grid=\(\[A();A();A();A()]))
+  {}:Test"StringDagNotFirst"(actual=s.toS(), expected=S"""
+    |AGridBox(grid=aGrid1)
+    |  where:
+    |    aGrid1 = AGrid(inner=list2)
+    |    a3 = A()
+    |    list2 = ____
+    """
+    )
+  )

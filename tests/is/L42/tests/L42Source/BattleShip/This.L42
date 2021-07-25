@@ -1,30 +1,59 @@
-reuse [L42.is/AdamsTowel]
-Left={}
-Right={}
+reuse [AdamsTowel]
+Left = {}
+Right = {}
+Signer = Public:{...}
+NumSigner = Signer(Num)
+TestSigner = (
+  a=NumSigner.#$of(id=S"a")
+  b=NumSigner.#$of(id=S"b")
+  NumSigner.Signed sa=a(label=S"myA",data=15Num)
+  NumSigner.Signed sb=b(label=S"myB",data=150Num)
+  Debug(sa.data())
+  Debug(a.mine(sa))
+  Debug(sb.data())
+  )
+
+Answer = Collection.Enum:{
+  method S repr()
+  Miss={method S repr()=S"*"}
+  Hit={method S repr()=S"+"}
+  SinkCarrier={method S repr()=S"c"}
+  SinkBattleship={method S repr()=S"b"}
+  SinkSubmarine={method S repr()=S"s"}
+  SinkDestroyer={method S repr()=S"d"}
+  SinkPatrolboat={method S repr()=S"p"}
+  }
+  
+Ship = Collection.Enum:{ 
+  method I size()
+  method Answer answer()
+  Carrier={method I size()=5I  method Answer answer()=Answer.SinkCarrier()}
+  Battleship={method I size()=4I  method Answer answer()=Answer.SinkBattleship()}
+  Submarine={method I size()=3I  method Answer answer()=Answer.SinkSubmarine()}
+  Destroyer={method I size()=3I  method Answer answer()=Answer.SinkDestroyer()}
+  Patrolboat={method I size()=2I method Answer answer()=Answer.SinkPatrolboat()}
+  None={method I size()=0I  method Answer answer()=Answer.Miss()}
+  }
+Ships = Class:Trait(Collection.matrix(Ship.List,row=10I,col=10I))[clear='elemToS(row,col,val)]:{
+  class method mut This()=\(Ship.List()(for i in Range(100I) \add(Ship.None())))
+  class method S elemToS(I row, I col, read Ship val) = 
+    if val.immClone()==Ship.None() S" "
+    else val.immClone().answer().repr()
+  }
+Shots = Class:Trait(Collection.matrix(S.List,row=10I,col=10I))[clear='elemToS(row,col,val)]:{
+  class method mut This()=\(S.List()(for i in Range(100I) \add(S"")))
+  class method S elemToS(I row, I col, read S val) = if val.toS()==S"" S" " else val.toS()
+  }
+
+FireResult = Data:{Ships.Coord coord, Shots shots, Answer answer}
+ResultSigner = Signer(FireResult)
+Main = {...}
 
 //LoadJ=Load:{reuse[L42.is/JavaServer]}
 //JServer=LoadJ(slaveName=S"javaServer{}")
 //LoadGui=Load:{reuse[L42.is/GuiBuilder]}
 //Gui=LoadGui(javaServer=JServer)
-Matrix={...}
-SGrid=Matrix(S.List,row=7I,col=3I)
-Main=(
-   mut SGrid s=SGrid(\[
-     S"a1";S"b1";S"c1";
-     S"a2";S"b2";S"c2";
-     S"a3";S"b3";S"c3";
-     S"a4";S"b4";S"c4";
-     S"a5";S"b5";S"c5";
-     S"a6";S"b6";S"c6";
-     S"a7";S"b7";S"c7";
-     ])
-   Debug(s)
-   Debug(s.asList())
-   for (row,col) in s.coords(), var v in s (
-     if row==col v:=S"nope"
-     )
-   Debug(s)
-   )
+
 //Board={...}
 //EnvModel=Data:JServer.Handler:{...}
 //JavaCode={...}

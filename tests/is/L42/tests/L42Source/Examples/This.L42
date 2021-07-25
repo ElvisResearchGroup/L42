@@ -1,0 +1,11 @@
+reuse [L42.is/AdamsTowel]
+Point=Data.AddList:Data:{Num x, Num y}
+Main=(
+  p=Point(x=3\,y=4\).with(x=\x+\y)
+  ps=Point.List[\(x=1\,y=2\);\(x=3\,y=4\);\(x=5\,y=6\);]
+  ss=S.List()(for (x,y) in ps \add(S"%(x+y)"))
+  //ssb=S.List()(for s in ss for s2 in ss \add(s++s2))
+  //s0=ss.reduce()(for s in \vals \add(\acc++s))
+  //b=Match.Some()(for s in ss \add(s.size()==0I))
+  Debug(ss)
+  )

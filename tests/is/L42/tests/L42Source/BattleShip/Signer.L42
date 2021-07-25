@@ -1,0 +1,15 @@
+SignerTrait = Trait({
+  T = {}
+  S id
+  read method Bool mine(Signed that)=this.id()==that.id()
+  read method Bool mine(Signed that,S label)=this.id()==that.id() && label==that.label()
+  class method mut This #$of(S id)
+  mut method Signed (S label,T data)=\(id=this.id(),label=label,data=data)
+  Signed = Data.Close:{
+    S id, S label, T data
+    class method This(S id, S label, T data)
+    }
+  })[hide='Signed(id,label,data)]
+@Public class method Trait trait() = SignerTrait()
+@Public class method Library (class Any that)[_] = Class:this.trait()['T=>that]
+
