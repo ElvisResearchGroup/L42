@@ -1,6 +1,7 @@
 package is.L42.cache;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -65,7 +66,9 @@ public class KeyNorm2D {
       builder.append('v');
       builder.append(i);
       builder.append(" : ");
-      builder.append(((L42Cache<?>) line[0]).typename());
+      Object tn = ((L42Cache<?>) line[0]).typename();
+      if(tn instanceof String[]) { builder.append(Arrays.toString((String[]) tn)); }
+      else { builder.append(tn.toString()); };
       for(int j = 1; j < line.length; j++) {
         builder.append(' ');
         builder.append(line[j] == null ? "null" : line[j].toString().replace('\n', ' '));

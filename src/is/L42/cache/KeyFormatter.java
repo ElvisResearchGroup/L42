@@ -8,6 +8,7 @@ import static is.L42.tools.General.unreachable;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -49,7 +50,7 @@ class Format42 implements FormatKind{
   static boolean isInterfaceNativePar(int i,P.NCs path){
     var p=Resources.currentP.navigate(path);
     var pars=p.topCore().info().nativePar();
-    if(pars.size()<i){return false;}
+    if(pars.size()<=i){return false;}
     var pi=p.from(pars.get(i),path);
     return Resources.currentP._ofCore(pi).isInterface();
     }
@@ -105,10 +106,18 @@ class Format42 implements FormatKind{
     this.f=f;
     this.o=o;
     if(hint!=null){this.path=hint;assert null!=f.p._ofCore(path);return;}
-    var names=(String[])cache.typename();
-    List<C> cs=L(range(names.length),(c,i)->c.add(fromS(names[i])));
-    this.path=f.p.minimize(P.of(f.p.dept(), cs));
-    assert null!=f.p._ofCore(path):cs;
+    var oNames=cache.typename();
+    if(oNames instanceof String[] names) {
+      List<C> cs=L(range(names.length),(c,i)->c.add(fromS(names[i])));
+      this.path=f.p.minimize(P.of(f.p.dept(), cs));
+      assert null!=f.p._ofCore(path):cs;
+      return;
+      }
+    if(oNames instanceof TrustedKind tk){
+      this.path=P.pThis0;//only in the fixpoint for non-trees
+      return;
+      }
+    assert false:oNames+" "+oNames.getClass();
     }
   @Override public String specialS(){return null;}
   @Override public P path(){return path;}
@@ -215,7 +224,9 @@ class KeyFormatter{
     FormatKind first=f.newFormatKind(null,0,o);
     String res=first.format(true,0);
     if(f.expanded.isEmpty()){return res;}
+    var before=f.expanded.keySet().stream().collect(Collectors.toSet());
     res=first.format(true,0);
+    f.fixPoint(o,before);
     res+="\n  where:\n"+f.expanded.entrySet().stream()
       .sorted((e1,e2)->e1.getKey()-e2.getKey())
       .map(e->"    "+e.getValue().get())
@@ -224,5 +235,17 @@ class KeyFormatter{
       res=f.varName(first.path())+"0 = "+res;
       }
     return res;
+    }
+  void fixPoint(Object o,Set<Integer>before){
+    var after=this.expanded.keySet().stream().collect(Collectors.toSet());
+    boolean more=false;
+    for(var a:after) {
+      if(before.contains(a)) {continue;}
+      more=true;
+      FormatKind novel=this.newFormatKind(null,a,o);
+      novel.format(true,0);
+      }
+    if(!more){return;}
+    fixPoint(o,after);
     }
   }
