@@ -1,10 +1,12 @@
 In guide: discuss System.nonDetermisticError; need to be in an #$ valid context, true for error,exception and return
 =#$//should this be required to unlock #$ in its transivite main
 
+(file 4toHalf line 106) Full->Half->Core
 -for {return } without a second pair of Ds' after the Ks,
 can we just make it without the nested block, simply adding the catchReturn at the end of the Ks
 - Should shortcircut square have a shortut desugar for e[]
-- How often desugar generates "(void)" or similar? (e)
+- How often desugar generates "(void)" or similar? (e) instead of void or e
+
 
 - remove unused code in load (what did I ment here?)
 - load must throw error if the map can not be completed(what did I ment here?)

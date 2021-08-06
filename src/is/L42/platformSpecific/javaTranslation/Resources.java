@@ -28,7 +28,7 @@ import safeNativeCode.slave.host.ProcessSlave;
 public class Resources {
   public static Encoder encoder = Base64.getMimeEncoder();
   public static Decoder decoder = Base64.getMimeDecoder();
-  public static Loader loader=new Loader();
+  public static Loader loader;//=new Loader(); created during topCache
   private static HashMap<String,String> logs=new HashMap<>();
   public static HashMap<String,String> logs(){return logs;}
   private static StringBuffer compiledNesteds=new StringBuffer();//StringBuffer is the synchronized StringBuilder
