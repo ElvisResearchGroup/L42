@@ -1,0 +1,10 @@
+mut Math.Random rand
+Shots myShots
+mut method Ships.Coord fire() = {
+  loop (
+    row = this.#rand().nextInRange(0I to=10I)
+    col = this.#rand().nextInRange(0I to=10I)
+    free = this.myShots().val(row=row,col=col)==S""
+    if free return \(row=row,col=col)
+    )
+  }

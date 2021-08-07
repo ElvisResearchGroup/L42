@@ -1,0 +1,80 @@
+SelfL={}//generic security label
+OtherL={}//generic security label
+OtherPlayer={ 
+  class method Board allShips(mut Math.Random rand)
+  mut method Bool round(mut This1 other)
+  mut method ResultSigner.Signed declassify(@OtherL ResultSigner.Signed that)
+  }
+Declassify = { mut method ResultSigner.Signed (@SelfL ResultSigner.Signed that) }
+
+@OtherL Board board
+mut Math.Random rand
+ResultSigner signer
+mut Declassify declassify
+var Shots myShots = Shots()
+var Shots otherShots = Shots()
+var Bool myRound
+class method Board allShips(mut Math.Random rand) = \(ships=(
+  ships = Ships()
+  this.fill(Ship.Carrier(),ships=ships,rand=rand)
+  this.fill(Ship.Battleship(),ships=ships,rand=rand)
+  this.fill(Ship.Submarine(),ships=ships,rand=rand)
+  this.fill(Ship.Destroyer(),ships=ships,rand=rand)
+  this.fill(Ship.Patrolboat(),ships=ships,rand=rand)
+  ships
+  ))
+    
+class method Void fill(Ship that,mut Ships ships,lent Math.Random rand) =
+  while !this.fill1(that,ships=ships,rand=rand) (void)
+    
+class method Bool fill1(Ship that,mut Ships ships,lent Math.Random rand) = {
+  row = rand.nextInRange(0I to=10I)
+  col = rand.nextInRange(0I to=10I)
+  vertical = rand.nextInRange(0I to=2I)==0I
+  for delta in Range(0I to=that.size()) (
+    rowi = (if vertical row+delta else row)
+    coli = (if vertical col else col+delta)
+    if rowi>=10I || coli>=10I return Bool.false()
+    if ships.val(row=rowi,col=coli)!=Ship.None() return Bool.false()
+    )
+  for delta in Range(0I to=that.size()) (
+    rowi = (if vertical row+delta else row)
+    coli = (if vertical col else col+delta)
+    ships.set(row=rowi,col=coli,val=that)
+    )
+  return Bool.true()
+  }
+mut method Ships.Coord fire()
+mut method ResultSigner.Signed declassify(@SelfL ResultSigner.Signed that) = (
+  ResultSigner.Signed res=this.#declassify()(that)
+  (shots,coord,answer) = res.data()
+  X[shots==this.otherShots();!this.myRound()]
+  this.otherShots(shots.with(row=coord.row(),col=coord.col(),val=answer.repr()))
+  this.myRound(Bool.true())
+  res
+  )
+
+read method Bool win(Shots that) = 
+  Match.Count()(for s in that \add(s==S"" || s==S"*"))+17I==100I
+mut method Bool round(mut OtherPlayer other) = (
+  X[this.myRound(); !this.win(this.myShots()); !this.win(this.otherShots())]
+  coord = this.fire()
+  //TODO: @Left? generic @Self, @Other? //TODO: self complete does not work for 'this.' (or parameters)
+  @OtherL FireResult res = this.board().fire(coord=coord,shots=this.myShots())
+  ResultSigner s=this.signer()
+  @OtherL ResultSigner.Signed signed = s(label=coord.toS(),data=res)
+  ResultSigner.Signed freeSigned=other.declassify(signed)
+  X[this.signer().mine(freeSigned,label=coord.toS())]
+  r=freeSigned.data().answer().repr()
+  this.myShots(\myShots.with(row=coord.row(),col=coord.col(),val=r))
+  this.myRound(Bool.false())
+  this.win(this.myShots())
+  )
+read method Bool agreeToLose() = (
+  X[
+  this.myRound() msg=S"Cant lose in my turn";//turn passes after move
+  !this.win(this.myShots()) msg=S"Cant lose if I won";
+  this.win(this.otherShots()) msg=S"Other is not winning"
+  ]
+  Bool.true()
+  )

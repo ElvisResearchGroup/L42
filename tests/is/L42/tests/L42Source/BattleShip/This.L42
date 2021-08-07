@@ -1,6 +1,11 @@
 reuse [AdamsTowel]
-Left = {}
-Right = {}
+LoadJ=Load:{reuse[L42.is/JavaServer]}
+JServer=LoadJ(slaveName=S"javaServer{}")
+LoadGui=Load:{reuse[L42.is/GuiBuilder]}
+Gui=LoadGui(javaServer=JServer)
+
+Sifo=Load:{reuse[L42.is/Sifo]}
+
 Signer = Public:{...}
 NumSigner = Signer(Num)
 TestSigner = (
@@ -49,17 +54,10 @@ FireResult = Data:{Ships.Coord coord, Shots shots, Answer answer}
 ResultSigner = Signer(FireResult)
 Main = {...}
 
-//LoadJ=Load:{reuse[L42.is/JavaServer]}
-//JServer=LoadJ(slaveName=S"javaServer{}")
-//LoadGui=Load:{reuse[L42.is/GuiBuilder]}
-//Gui=LoadGui(javaServer=JServer)
-
-//Board={...}
-//EnvModel=Data:JServer.Handler:{...}
-//JavaCode={...}
-//Main={...}
-
 /*
+-TODOS:
+board invariant
+GUI
 
 We can hava a variant where both players ships are on the same board
 this will be a grid of Cell

@@ -4,7 +4,7 @@ SignerTrait = Trait({
   read method Bool mine(Signed that)=this.id()==that.id()
   read method Bool mine(Signed that,S label)=this.id()==that.id() && label==that.label()
   class method mut This #$of(S id)
-  mut method Signed (S label,T data)=\(id=this.id(),label=label,data=data)
+  read method Signed (S label,T data)=\(id=this.id(),label=label,data=data)
   Signed = Data.Close:{
     S id, S label, T data
     class method This(S id, S label, T data)

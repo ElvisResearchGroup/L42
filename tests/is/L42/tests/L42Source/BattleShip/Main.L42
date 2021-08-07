@@ -1,8 +1,16 @@
+Coords = Collection.list(Ships.Coord)
 Board = Data:{[HasToS]
   Ships ships
   @Cache.Now class method Void invariant(Ships ships)=(
-    void//TODO:
-    )
+  totShips=17I//5I+4I+3I+3I+2I
+  countNone=Match.Count()(for s in ships \add(s==Ship.None()))
+  X[countNone+totShips==100I]
+  for s in Ship.Vals() (if s!=Ship.None() (
+    coords=Coords()(for si in ships, c in ships.coords(), if si==s \add(c))
+    X[coords.size()==s.size()]
+    //TODO: check the coords touch each other
+    ))
+  )
   method FireResult fire(Ships.Coord coord, Shots shots) = FireResult(
     coord = coord,
     shots = shots,
@@ -17,34 +25,38 @@ Board = Data:{[HasToS]
     if hits+1I!=ship.size() return Answer.Hit()
     return ship.answer()
     }
-  //method toS()=this.ships().toS()//TODO; toS bug if removed, do not print 'list2' ??
+  method toS()=this.ships().toS()
   }
-Player={interface 
-  class method Board allShips(mut Math.Random rand)
-  class method mut Player of(Board board,mut Math.Random rand, mut ResultSigner signer)
-  mut method Void round(mut Player other)
-  mut method ResultSigner.Signed declassify(ResultSigner.Signed that)
+PlayerTrait = Trait:{...}
+RandomFireTrait = Trait:{...}
+
+//Board={...}
+//EnvModel=Data:JServer.Handler:{...}
+//JavaCode={...}
+
+Player1 = Sifo:{}
+Player2 = Sifo:{}
+Top=Sifo:{[Player1,Player2]}
+DeclassifyP1 = {
+  class method mut This #$of()
+  mut method ResultSigner.Signed (@Player1 ResultSigner.Signed that) = that
   }
-
-AIPlayer = Data:{...}
-
-ExampleGame = (
-//victory cond
-//miss/hit/sink
-  r1=Math.Random.#$random()
-  r2=Math.Random.#$random()
-  s1=ResultSigner.#$of(id=S"1")
-  s2=ResultSigner.#$of(id=S"2")
-  b2=AIPlayer.allShips(rand=r1)
-  b1=AIPlayer.allShips(rand=r2)
-  p1=AIPlayer(board=b1,rand=r1,signer=s1)
-  p2=AIPlayer(board=b2,rand=r2,signer=s2)
-  Debug(b1)
-  Debug(b2)
-  for i in Range(90I) (
-    p1.round(other=p2)
-    p2.round(other=p1)
-    )
-  Debug(p1.myShots())
-  Debug(p2.myShots())
-  )
+DeclassifyP2 = {
+  class method mut This #$of()
+  mut method ResultSigner.Signed (@Player2 ResultSigner.Signed that) = that
+  }
+SifoBattleShip = Sifo(Top):{
+  Players=Class:Trait({
+    AIPlayer1 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player1;'OtherL=>Player2]:RandomFireTrait
+    AIPlayer2 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player2;'OtherL=>Player1]:RandomFireTrait
+    })[
+      'AIPlayer1.OtherPlayer=>'AIPlayer2;
+      'AIPlayer2.OtherPlayer=>'AIPlayer1;
+      'AIPlayer1.Declassify=>DeclassifyP1;
+      'AIPlayer2.Declassify=>DeclassifyP2;
+      ]
+  ExampleGame = {...}
+  //example GUI here?
+  }
+ExampleGame = SifoBattleShip.ExampleGame.#$of()
+//run GUI here?
