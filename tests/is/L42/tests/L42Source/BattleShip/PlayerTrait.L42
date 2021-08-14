@@ -59,13 +59,12 @@ read method Bool win(Shots that) =
 mut method Bool round(mut OtherPlayer other) = (
   X[this.myRound(); !this.win(this.myShots()); !this.win(this.otherShots())]
   coord = this.fire()
-  //TODO: @Left? generic @Self, @Other? //TODO: self complete does not work for 'this.' (or parameters)
   @OtherL FireResult res = this.board().fire(coord=coord,shots=this.myShots())
-  ResultSigner s=this.signer()
+  ResultSigner s = this.signer()
   @OtherL ResultSigner.Signed signed = s(label=coord.toS(),data=res)
   ResultSigner.Signed freeSigned=other.declassify(signed)
   X[this.signer().mine(freeSigned,label=coord.toS())]
-  r=freeSigned.data().answer().repr()
+  r = freeSigned.data().answer().repr()
   this.myShots(\myShots.with(row=coord.row(),col=coord.col(),val=r))
   this.myRound(Bool.false())
   this.win(this.myShots())
