@@ -170,9 +170,11 @@ public class InferToCore extends UndefinedCollectorVisitor{
     return d.x().equals(x) && d.t().mdf().isRead();
     }
   private List<Core.D> auxDs(List<X> fv, List<Half.D> ds0,List<Pos>poss) {
-    if(ds0.isEmpty()){return L();}
-    Half.D d=ds0.get(0);
-    List<Half.D> ds=popL(ds0);
+    //was recursive. For very ds, coming from long strings, could go in stack overflow.
+    //Refactored to be iterative
+    return L(ds0.stream().map(di->ds1(fv,di,poss)));
+  }
+  private Core.D ds1(List<X> fv, Half.D d,List<Pos>poss) {
     Core.T t=infer(d._mdf(),d.stz(),d.e().poss());//not the final t
     Core.E e1=compute(d.e());
     var fvE=FV.of(e1.visitable());
@@ -194,13 +196,12 @@ public class InferToCore extends UndefinedCollectorVisitor{
     if(toImm){t1=t.withMdf(Mdf.Immutable);}
     else if(toMut){t1=t.withMdf(Mdf.Mutable);}
     i=i.withG(i.g().plusEq(d.x(), t1));
-    var recursive=auxDs(fv,ds,poss);
     if(t1.p().isNCs()) {
       var ex=new Core.EX(d.e().pos(),d.x());
       var pt1=i.p()._navigate(t1.p().toNCs());
       if(pt1!=null){Resources.inferenceHandler().ex(ex, pt1);}
       }
-    return pushL(new Core.D(d.isVar(),t1,d.x(),e1),recursive); 
+    return new Core.D(d.isVar(),t1,d.x(),e1); 
     }
   @Override public void visitD(Half.D d){uc();}
   @Override public void visitK(Half.K k){uc();}
