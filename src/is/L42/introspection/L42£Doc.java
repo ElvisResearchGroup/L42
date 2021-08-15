@@ -4,9 +4,9 @@ import static is.L42.tools.General.L;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import is.L42.cache.L42Cache;
-import is.L42.cache.L42CacheMap;
 import is.L42.common.Program;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.P;
@@ -67,7 +67,9 @@ public class L42£Doc extends L42NoFields.Eq<L42£Doc>{
       && nameFromRoot.eq(that.nameFromRoot)
       && doc.equals(that.doc);
     }
-  public String toString(){return doc.toString();}
+  public String toString(){
+    return doc.docs().stream().map(Doc::toString).collect(Collectors.joining(" "));
+    }
   public static final Class<L42£Doc> _class=L42£Doc.class;
   public static final L42Cache<L42£Doc> myCache=new EqCache<>(TrustedKind.Doc);
   @Override public L42Cache<L42£Doc> myCache(){return myCache;}

@@ -1,5 +1,28 @@
 reuse[AdamsTowel]
 
+TestLate={
+  class method Library (Library that)=(
+    i=Trait(that).info()
+    that:Test"a"(expected=S"imm This" actual=i.meth(selector='a()).returnType())
+    that:Test"s"(expected=S"imm This1.S" actual=i.meth(selector='s()).returnType())
+    that:Test"b"({
+      _=i.meth(selector='b()).returnType()
+      catch error Collection.NoElementInOpt _ return Bool.true()
+      return Bool.false()
+      })
+    that:Test"athat"(expected=S"[mut This; imm This]" actual=i.meth(selector='a(that)).parameters())
+    that:Test"sthat"(expected=S"[mut This; imm This1.S]" actual=i.meth(selector='s(that)).parameters())
+    that:Test"bthat"({
+      _=i.meth(selector='b(that)).parameters()
+      catch error Collection.NoElementInOpt _ return Bool.true()
+      return Bool.false()
+      })
+    that
+    )
+  }
+A=TestLate({var A a, var S s, var B b,})
+B={A a}
+
 Full={class method S (Trait that)=
   that.info().toFullS()
   }
@@ -81,5 +104,5 @@ TestFromLib=(
       |File name:[###]]
       """.trim())
   {}:Test"4"(actual=n.outerName(), expected=S"B")
-  {}:Test"5"(actual=n.outerDoc(), expected=S"@{@{hi}}")
+  {}:Test"5"(actual=n.outerDoc(), expected=S"@{hi}")
   )

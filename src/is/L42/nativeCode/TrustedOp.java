@@ -364,7 +364,7 @@ public enum TrustedOp {
   HasAnnotation("hasAnnotation",doc("%s.hasAnnotation()",sigI(Bool))),
   NameOp("name",doc("%s.name()",sigI(Name),2)),
   //####Method####
-  ReturnType("returnType",method("%s.returnType()",sigI(Type))),
+  ReturnType("returnType",method("%s.returnType()",sigI(Type),1)),
   ParNum("parNum",method("%s.parNum()",sigI(Int))),
   ParIn("parIn",method("%s.parIn(%s)",sigI(Type,Int),1)),
   ExcNum("excNum",method("%s.excNum()",sigI(Int))),

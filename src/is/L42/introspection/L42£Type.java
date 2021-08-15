@@ -30,7 +30,10 @@ public class L42£Type extends L42NoFields.Eq<L42£Type>{
       return L42£Type.fromClass(t.mdf().inner,resDoc, pi);
       }
     P.NCs pj=Program.emptyP.from(pi,nameFromRoot.cs);
-    if(pj.n()!=0){return L42£Type.fromClass(t.mdf().inner,resDoc, pj);}
+    if(pj.n()!=0){
+      pj=pj.withN(pj.n()-1);
+      return L42£Type.fromClass(t.mdf().inner,resDoc, pj);
+      }
     return L42£Type.fromLibrary(t.mdf().inner,resDoc,L42£Name.fromCs(pj.cs()));
     }
   static public L42£Type fromLibrary(String mdf,L42£Doc doc,L42£Name name){
@@ -48,10 +51,16 @@ public class L42£Type extends L42NoFields.Eq<L42£Type>{
     this.nested=nested;
     } 
   @Override public String toString(){
-    if(nested.isBinded()){
-      return mdf+" "+doc+" "+nested._classAny;
+    var cs="";
+    if(!nested.isBinded()){cs=""+nested.nameFromRoot;}
+    else {
+      var c=nested._classAny;
+      if(!c.isNCs()){cs=""+nested._classAny;}
+      else{cs=""+c.toNCs().withN(c.toNCs().n()+1);}
       }
-    return mdf+" "+doc+" "+nested.nameFromRoot;
+    var docS=doc.toString();
+    if(!docS.isEmpty()) {docS+=" ";}
+    return mdf+" "+docS+cs;
     }
   @Override public boolean eq(L42£Type that){
     if(!mdf.equals(that.mdf)){return false;}

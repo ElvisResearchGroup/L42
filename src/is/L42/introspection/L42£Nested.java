@@ -59,8 +59,13 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     }*/
   static public L42£Nested fromClass(P.NCs clazz){
     L l=Resources.currentP._ofCore(clazz);
-    assert l!=null:
-      clazz;
+    if(l==null){
+      var alt=EndError.PathNotExistent.alternatives(Resources.currentP,clazz);
+      throw new IndexOutOfBoundsException(
+        clazz+" not in the domain of the program.\n"
+        + "It may be mispelled, or it may be still waiting compilation"
+        +alt);
+      }
     return new L42£Nested(posStr(l.poss()),l,l,L42£Name.empty,clazz).myNorm();
     }
   static public L42£Nested fromLibrary(L42£Library l){

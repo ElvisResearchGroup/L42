@@ -53,15 +53,18 @@ public abstract class EndError extends RuntimeException{
     public PathNotExistent(List<Pos> poss,List<C> cs,C c) {
       super(poss, ErrMsg.pathNotExistant(cs, ""));
       }
-    static String makeMsg(Program p,P.NCs path) {
-      if(path.cs().isEmpty()){return ErrMsg.pathNotExistant(path, "");}
+    public static String alternatives(Program p,P.NCs path) {
       var os=new ArrayList<P>();
       var pi=defined(p,path);
       var defined=p._ofCore(pi);
       for(var ni:defined.ncs()){
         os.add(pi.withCs(pushL(pi.cs(),ni.key())));
         }
-      return ErrMsg.pathNotExistant(path, "\nAvailable paths are: "+os);
+      return "\nAvailable paths are: "+os;
+      }
+    static String makeMsg(Program p,P.NCs path) {
+      if(path.cs().isEmpty()){return ErrMsg.pathNotExistant(path, "");}
+      return ErrMsg.pathNotExistant(path,alternatives(p, path));
       }
     static P.NCs defined(Program p,P.NCs path) {
       var cs=popLRight(path.cs());
