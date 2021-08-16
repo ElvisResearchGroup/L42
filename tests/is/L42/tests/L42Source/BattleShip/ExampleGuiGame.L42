@@ -1,0 +1,48 @@
+JavaCode={...}
+class method Void #$of()[_] = (
+  j=JServer.#$of()
+  r1=Math.Random.#$random()
+  r2=Math.Random.#$random()
+  imm s1=ResultSigner.#$of(id=S"1")
+  imm s2=ResultSigner.#$of(id=S"2")
+  b2=Players.GUIPlayer1.allShips(rand=r1)
+  b1=Players.AIPlayer2.allShips(rand=r2)
+  p1=Players.GUIPlayer1(board=b1,rand=r1,signer=s1,declassify=DeclassifyP1.#$of(),myRound=Bool.true())
+  p2=Players.AIPlayer2(board=b2,rand=r2,signer=s2,declassify=DeclassifyP2.#$of(),myRound=Bool.false())
+  Debug(b1)
+  Debug(b2)
+  res=this.playGame(j=j, p1=p1,p2=p2)
+  Debug(p1.myShots())
+  Debug(p2.myShots())
+  Debug(res)
+  )
+class method S playGame(mut JServer j, mut Players.GUIPlayer1 p1, mut Players.AIPlayer2 p2)[_] = {
+  //TODO: why we do not need the BoxLayout import?
+  //TODO: Handler must take the Trait class too, not just the Trait instance :-(
+  Gui(j=j,package=S"battleShip",
+    imports=S"""%
+      | %Gui.defaultImports()
+      | import java.awt.GridLayout;
+      | import java.awt.BorderLayout;
+      | import java.util.List;
+      | import java.util.stream.Stream;
+      """,
+    name='BattleShip,x=800\,y=600\,ping=3000\)"%JavaCode()"
+  var rounds = 0I
+  for e in j(\['BattleShip]) (
+    e>>p1
+    if p1.ready() (
+      Debug(e)
+      rounds += 1I
+      winP1 = p1.round(other=p2)
+      //p1.updateGUI(j=j)
+      if winP1 && p2.agreeToLose()
+        return S"Player1 wins the game after %rounds rounds"
+      winP2 = p2.round(other=p1)
+      p1.updateGUI(j=j)
+      if winP2 && p1.agreeToLose()
+        return S"Player2 wins the game after %rounds rounds"
+        )
+    )
+  return S"Gui stopped before the game was completed"
+  }

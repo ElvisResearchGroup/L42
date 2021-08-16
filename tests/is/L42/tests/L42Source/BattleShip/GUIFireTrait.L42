@@ -1,0 +1,28 @@
+mut Math.Random rand
+var Shots.Coord nextShot=Shots.Coord(index=0I)
+var Bool ready=Bool.false()
+Shots myShots
+Shots otherShots
+
+@JServer.Handler mut method Void fire(S msg) = (
+  i=I(string=msg)
+  c=Shots.Coord(index=i)
+  free=this.myShots().val(c)==S""
+  catch error Message x ( Debug(x) )
+  this.nextShot(c)
+  this.ready(free)
+  )
+mut method Ships.Coord fire() = (
+  X[this.ready()]
+  this.ready(Bool.false())
+  \(index=this.nextShot().index())
+  )
+
+mut method Void updateGUI(mut JServer j)[_] = (
+  Debug(S"mine")
+  Debug(this.myShots())
+  Debug(S"other")
+  Debug(this.otherShots())
+  j.submitEvent(key='BattleShip.Display, id='MyShots, msg=this.myShots().toS())
+  j.submitEvent(key='BattleShip.Display, id='OtherShots, msg=this.otherShots().toS())
+  )
