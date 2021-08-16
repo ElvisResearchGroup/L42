@@ -14,7 +14,12 @@ mut Declassify declassify
 var Shots myShots = Shots()
 var Shots otherShots = Shots()
 var Bool myRound
-class method Board allShips(mut Math.Random rand) = \(ships=(
+
+class method mut This (
+  fwd imm @OtherL Board board,fwd mut Math.Random rand,fwd imm ResultSigner signer,
+  fwd mut Declassify declassify,fwd imm Bool myRound)
+
+class method @SelfL Board allShips(mut Math.Random rand) = \(ships=(
   ships = Ships()
   this.fill(Ship.Carrier(),ships=ships,rand=rand)
   this.fill(Ship.Battleship(),ships=ships,rand=rand)
