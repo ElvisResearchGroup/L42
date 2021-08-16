@@ -30,10 +30,6 @@ Board = Data:{[HasToS]
 PlayerTrait = Trait:{...}
 RandomFireTrait = Trait:{...}
 
-//Board={...}
-//EnvModel=Data:JServer.Handler:{...}
-//JavaCode={...}
-
 Player1 = Sifo:{}
 Player2 = Sifo:{}
 Top=Sifo:{[Player1,Player2]}
@@ -45,7 +41,7 @@ DeclassifyP2 = {
   class method mut This #$of()
   mut method ResultSigner.Signed (@Player2 ResultSigner.Signed that) = that
   }
-SifoBattleShip = Sifo(Top):{
+SifoBattleShipAIAI = Sifo(Top):{
   Players=Class:Trait({
     AIPlayer1 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player1;'OtherL=>Player2]:RandomFireTrait
     AIPlayer2 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player2;'OtherL=>Player1]:RandomFireTrait
@@ -56,7 +52,41 @@ SifoBattleShip = Sifo(Top):{
       'AIPlayer2.Declassify=>DeclassifyP2;
       ]
   ExampleGame = {...}
-  //example GUI here?
   }
-ExampleGame = SifoBattleShip.ExampleGame.#$of()
-//run GUI here?
+ExampleGame = SifoBattleShipAIAI.ExampleGame.#$of()
+
+//Board={...}
+GUIFireTrait = Trait:{...}
+SifoBattleShipGUIAI = Sifo(Top):{
+  Players=Class:Trait({
+    GUIPlayer1 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player1;'OtherL=>Player2]:JServer.Handler:GUIFireTrait()
+    AIPlayer2 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player2;'OtherL=>Player1]:RandomFireTrait
+    })[
+      'GUIPlayer1.OtherPlayer=>'AIPlayer2;
+      'AIPlayer2.OtherPlayer=>'GUIPlayer1;
+      'GUIPlayer1.Declassify=>DeclassifyP1;
+      'AIPlayer2.Declassify=>DeclassifyP2;
+      ]
+  ExampleGUIGame = {...}
+  }
+ExampleGUIGame = SifoBattleShipGUIAI.ExampleGUIGame.#$of()
+//first, select a random board and just play.
+//Then, also have a phase to ask to approve a random board.
+/*Task=(
+  //why we do not need the BoxLayout import?
+  //model=StartModel.#$of(key='Example)
+  j=JServer.#$of()
+  gui=Gui(j=j,package=S"battleShip",
+    imports=S"""%
+      | %Gui.defaultImports()
+      | import java.awt.GridLayout;
+      | import java.awt.BorderLayout;
+      """,
+    name='BattleShip,x=800\,y=600\,ping=3000\)
+  //b1=gui.button(id=S"reset",msg='Pressed,text=S"PressMe")
+  gui"%JavaCode(gui)"
+  for e in j(\['BattleShip]) (
+    //e>>model.#stage()
+    Debug(e)
+    )
+  )*/

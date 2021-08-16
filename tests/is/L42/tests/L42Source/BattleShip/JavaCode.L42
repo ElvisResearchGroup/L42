@@ -1,83 +1,79 @@
-class method S (mut Gui that)=(
-  reset=that.button(id=S"reset",msg='Pressed,text=S"Reset")
-  start=that.button(id=S"start",msg='Pressed,text=S"Start")
-  S"""%
-    |JPanel grids=new JPanel();
-    |{grids.setLayout(new BoxLayout(grids, BoxLayout.Y_AXIS));}
-    |Grid1010 myButtons=new Grid1010(){Grid1010 elem(){return b();}};
-    |Grid1010 myShips=new Grid1010(){Grid1010 elem(){return t();}};
-    |{grids.add(myShips);}
-    |{grids.add(myButtons);}
-    |abstract class Grid1010 extends JComponent{
-    |  {
-    |    this.setLayout(new GridLayout(11,11));
-    |    this
-    |    .l("  ").l("A").l("B").l("C").l("D").l("E").l("F").l("G").l("H").l("I").l("J")
-    |    .l(" 1").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 2").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 3").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 4").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 5").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 6").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 7").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l(" 8").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l( "9").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    .l("10").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
-    |    ;}
-    |  void setText(int x, int y,String text){
-    |    var cell=(x+1)*(y+1);
-    |    var c=this.getComponent(cell);
-    |    if(c instanceof JButton b){b.setText(text);}
-    |    if(c instanceof JLabel l){l.setText(text);}
-    |    }
-    |  Grid1010 l(String text){this.add(new JLabel(text));return this;}
-    |  Grid1010 t(){this.add(new JLabel("   "));return this;}
-    |  Grid1010 b(){
-    |    var bb=new JButton("   ");
-    |    var count=this.getComponentCount();
-    |    var row=count/11;//-1 to go 0-9
-    |    var col=count%11;//-1 to go 0-9
-    |    bb.addActionListener(e->
-    |      event.submitEvent("BattleShip","fire",count+"")
-    |      //System.out.println("pressed button"+count+ " in row="+row+" col="+col);
-    |      //bb.setText("X");//will send message to 42
-    |      );
-    |    this.add(bb);
-    |    return this;
-    |    }
-    |  abstract Grid1010 elem();
-    |  }
-    |JPanel texts=new JPanel();
-    |class Updatable extends JLabel{
-    |  void update(String text){this.setText(b+text);}
-    |  String b;
-    |  Updatable(String b,String base){
-    |    this.b=b;
-    |    update(base);
-    |    texts.add(this);
-    |    }
-    |  }
-    |{
-    |  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    |  this.getRootPane().setLayout(new BorderLayout());
-    |  this.getRootPane().add(grids,BorderLayout.CENTER);
-    |  this.getRootPane().add(texts,BorderLayout.SOUTH);
-    |  texts.setLayout(new BoxLayout(texts, BoxLayout.Y_AXIS));
-    |  }
-    |Updatable totShots=new Updatable("  tot shots: ","0");
-    |Updatable totMisses=new Updatable("  tot misses: ","0");
-    |Updatable totHits=new Updatable("  tot hits: ","0");
-    |Updatable remainingHits=new Updatable("  remaining hits: ","20");
-    |{
-    |  event.registerEvent("BattleShip.Refresh",(k,id,msg)->{
-    |    //id="hit"/"miss" msg=index
-    |    int count=Integer.parseInt(msg);
-    |    int row=count/11;//-1 to go 0-9
-    |    int col=count%11;//-1 to go 0-9
-    |    var isHit=id.equals("hit");
-    |    myShips.setText(row,col,isHit?"O":"X");
-    |    //myButtons.setText(int x, int y,String text)
-    |    });
-    |  }
+class method S ()=S"""
+  |JPanel grids=new JPanel();
+  |{grids.setLayout(new BoxLayout(grids, BoxLayout.Y_AXIS));}
+  |Grid1010 myButtons=new Grid1010(){Grid1010 elem(){return b();}};
+  |Grid1010 myShips=new Grid1010(){Grid1010 elem(){return t();}};
+  |{grids.add(myShips);}
+  |{grids.add(myButtons);}
+  |abstract class Grid1010 extends JComponent{
+  |  {
+  |    this.setLayout(new GridLayout(11,11));
+  |    this
+  |    .l("  ").l("A").l("B").l("C").l("D").l("E").l("F").l("G").l("H").l("I").l("J")
+  |    .l(" 1").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 2").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 3").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 4").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 5").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 6").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 7").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l(" 8").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l( "9").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    .l("10").elem().elem().elem().elem().elem().elem().elem().elem().elem().elem()
+  |    ;}
+  |  void setText(int x, int y,String text){
+  |    var cell=(x+1)*11+(y+1);
+  |    var c=this.getComponent(cell);
+  |    if(c instanceof JButton b){b.setText(text);}
+  |    if(c instanceof JLabel l){l.setText(text);}
+  |    }
+  |  Grid1010 l(String text){this.add(new JLabel(text));return this;}
+  |  Grid1010 t(){this.add(new JLabel("   "));return this;}
+  |  Grid1010 b(){
+  |    var bb=new JButton("   ");
+  |    var count=this.getComponentCount();
+  |    var row=count/11-1;// 0-9
+  |    var col=count%11-1;// 0-9
+  |    bb.addActionListener(e->event.submitEvent("BattleShip","fire",(row*10+col)+""));
+  |    this.add(bb);
+  |    return this;
+  |    }
+  |  abstract Grid1010 elem();
+  |  }
+  |JPanel texts=new JPanel();
+  |class Updatable extends JLabel{
+  |  void update(String text){this.setText(b+text);}
+  |  String b;
+  |  Updatable(String b,String base){
+  |    this.b=b;
+  |    update(base);
+  |    texts.add(this);
+  |    }
+  |  }
+  |{
+  |  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+  |  this.setLayout(new BorderLayout());
+  |  this.add(grids,BorderLayout.CENTER);
+  |  this.add(texts,BorderLayout.SOUTH);
+  |  texts.setLayout(new BoxLayout(texts, BoxLayout.Y_AXIS));
+  |  }
+  |Updatable totShots=new Updatable("  tot shots: ","0");
+  |Updatable totMisses=new Updatable("  tot misses: ","0");
+  |Updatable totHits=new Updatable("  tot hits: ","0");
+  |Updatable remainingHits=new Updatable("  remaining hits: ","20");
+  |void display(String msg, Grid1010 grid){
+  |  List<List<String>>res=msg.lines()
+  |    .map(s->s.trim())
+  |    .map(s->s.substring(1,s.length()-1))
+  |    .map(s->List.of(s.split("\\|")))
+  |    .toList();
+  |  for(int row=0;row<10;row++){
+  |    for(int col=0;col<10;col++){
+  |      var txt=res.get(row).get(col);
+  |      grid.setText(row,col,txt);
+  |      }
+  |    }
+  |  }
+  |{event.registerEvent("BattleShip.Display","MyShots",(k,id,msg)->display(msg,myButtons));}
+  |{event.registerEvent("BattleShip.Display","OtherShots",(k,id,msg)->display(msg,myShips));}
   """
-  )
