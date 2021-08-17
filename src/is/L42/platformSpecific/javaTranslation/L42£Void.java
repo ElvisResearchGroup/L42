@@ -7,7 +7,6 @@ import java.util.function.BiConsumer;
 
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.L42SingletonCache;
 import is.L42.generated.P;
 
 public class L42£Void extends L42NoFields<L42£Void> implements L42Any{

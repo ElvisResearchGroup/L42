@@ -38,17 +38,30 @@ class InitVisitor extends CloneVisitorWithProgram{
   FreshNames f;
   Program pStart;
   HashMap<Integer,List<Pos>> uniqueNs=new HashMap<>();
+  
+  private Path resolveSystemIndependent(Path path,String inner,List<Pos>poss){
+    Path res=path.resolve(inner);
+    String lastName=res.getName(res.getNameCount()-1).toString();
+    if(!lastName.equals(inner)) {
+      throw new EndError.InvalidImplements(poss,ErrMsg.dotDotDotSouceRepeated(inner,res));
+      }
+    return res;
+    }
+  private Path systemIndependentPath(Path outerPath,String inner,List<Pos>poss){
+    Path path=resolveSystemIndependent(outerPath,inner,poss);
+    if(Files.exists(path) && Files.isDirectory(path)){
+      return path.resolve("This.L42");
+      }
+    if(!Files.exists(path)){return resolveSystemIndependent(outerPath,inner+".L42",poss);}
+    return path;
+    }
   LL addDots(Full.L s){
     LDom cms=getLastCMs();
     if(cms==null ||!(cms instanceof C)){
       throw new EndError.InvalidImplements(s.poss(),ErrMsg.invalidDotDotDotLocation());} 
     C lastC=(C)cms;
     Path outerPath=Paths.get(s.pos().fileName()).getParent();
-    Path path=outerPath.resolve(lastC.inner());
-    if(Files.exists(path) && Files.isDirectory(path)){
-      path=path.resolve("This.L42");
-      }
-    else if(!Files.exists(path)){path=outerPath.resolve(lastC.inner()+".L42");}
+    Path path=systemIndependentPath(outerPath,lastC.inner(),s.poss());
     LL dots;try {dots=Parse.sureProgram(path,Parse.codeFromPath(path)).top;}
     catch(IOException ioe){
       throw new EndError.InvalidImplements(s.poss(),ErrMsg.dotDotDotSouceNotExistant(path));
@@ -86,7 +99,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       for(var ti:l.ts()){
         var pi=p().from(ti.p(),p);
         if(isDefined(s,pi,l.poss())){return true;}
-        }//searching transitivelly instead of using Info.refine on purpose
+        }//searching transitively instead of using Info.refine on purpose
       return false;
       }
     void checkUniqueNs(Full.L l){

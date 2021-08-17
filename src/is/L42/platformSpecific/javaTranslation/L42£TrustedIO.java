@@ -4,7 +4,6 @@ import java.util.stream.Collectors;
 
 import is.L42.cache.L42Cache;
 import is.L42.cache.L42CacheMap;
-import is.L42.cache.L42SingletonCache;
 import is.L42.common.ErrMsg;
 import is.L42.generated.Pos;
 

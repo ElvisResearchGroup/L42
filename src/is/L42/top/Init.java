@@ -7,6 +7,7 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.LL;
 
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -59,6 +60,9 @@ public class Init {
   //we can parsing initialised programs.
   //this also twist pTails with C so that the C={} have the right content
   public static Program init(Program p,FreshNames f){
+    var outer=Paths.get(p.top.pos().fileName()).getParent();
+    var fsOk=new CheckFileSystemPortable(outer);
+    fsOk.makeError(p.top.poss());
     var ll=initTop(p,f);
     if(p.pTails.isEmpty()){return p.update(ll);}
     var tail=p.update(ll).pop();

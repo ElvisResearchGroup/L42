@@ -27,7 +27,7 @@ import is.L42.top.State;
 import is.L42.typeSystem.ProgramTypeSystem;
 
 public class TestSifoTypeSystem
-extends AtomicTest.Tester{@SuppressWarnings("preview")
+extends AtomicTest.Tester{
 public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
 //---------------
   pass(testMeth("class method @Left A main(@Left A a)=a"))

@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import is.L42.cache.L42Cache;
-import is.L42.cache.L42CacheMap;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.generated.C;

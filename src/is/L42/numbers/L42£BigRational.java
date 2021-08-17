@@ -5,7 +5,6 @@ import static is.L42.tools.General.unreachable;
 import java.math.BigInteger;
 
 import is.L42.cache.L42Cache;
-import is.L42.cache.L42CacheMap;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42NoFields;
 

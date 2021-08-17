@@ -1,12 +1,6 @@
 package is.L42.constraints;
 
-import static is.L42.tools.General.L;
-import static is.L42.tools.General.LL;
-import static is.L42.tools.General.bug;
-import static is.L42.tools.General.popL;
-import static is.L42.tools.General.pushL;
-import static is.L42.tools.General.typeFilter;
-
+import static is.L42.tools.General.*;
 import java.util.ArrayList;
 import java.util.List;
 

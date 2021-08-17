@@ -345,6 +345,12 @@ public class ErrMsg {
   "Invalid '...' location: no other file is identified"
   ;}public static String dotDotDotSouceNotExistant(Object _1){return
   "There is no source file in the location "+_1+", identified by the '...'"
+  ;}public static String dotDotDotSouceNotPortable(Object top,Object bad,Object repeated){return
+  "The files under the top level root "+top+" are not portable on different operative systems:\n"+
+  "Bad file names: "+bad+"\n"+
+  "Repeated (except for case) file names: "+repeated+"\n"
+  ;}public static String dotDotDotSouceRepeated(Object _1,Object _2){return
+  "The file names "+_1+" and "+_2+" would clash on case insensitive file systems; thus they are not portable on different operative systems"
   ;}public static String dotDotDotCoreSouceWithMs(){return
   "'...' identifying a core library literal must be of form {...}, but here other members are provided"
   ;}public static String missedTypeDep(Object ps){return
