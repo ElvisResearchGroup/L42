@@ -41,6 +41,8 @@ class InitVisitor extends CloneVisitorWithProgram{
   
   private Path resolveSystemIndependent(Path path,String inner,List<Pos>poss){
     Path res=path.resolve(inner);
+    try{res=res.toFile().getCanonicalFile().toPath();}
+    catch(IOException e) {}
     String lastName=res.getName(res.getNameCount()-1).toString();
     if(!lastName.equals(inner)) {
       throw new EndError.InvalidImplements(poss,ErrMsg.dotDotDotSouceRepeated(inner,res));

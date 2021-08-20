@@ -7,19 +7,28 @@ OtherPlayer={
   }
 Declassify = { mut method ResultSigner.Signed (@SelfL ResultSigner.Signed that) }
 
-@OtherL Board board
+@Public SelfBoard={ imm @SelfL Board that, class method This(@SelfL Board that) }
+@Public OtherBoard={ imm @OtherL Board that, class method This(@OtherL Board that) }
+
+SelfBoard selfBoard
+OtherBoard otherBoard
+read method @OtherL Board board()=this.otherBoard().that()
 mut Math.Random rand
 ResultSigner signer
 mut Declassify declassify
-var Shots myShots = Shots()
-var Shots otherShots = Shots()
+var Shots myShots=Shots()
+var Shots otherShots=Shots()
 var Bool myRound
+@Public class method mut This (
+  fwd imm SelfBoard selfBoard
+  fwd imm OtherBoard otherBoard
+  fwd mut Math.Random rand
+  fwd imm ResultSigner signer
+  fwd mut Declassify declassify
+  fwd imm Bool myRound
+  )
 
-class method mut This (
-  fwd imm @OtherL Board board,fwd mut Math.Random rand,fwd imm ResultSigner signer,
-  fwd mut Declassify declassify,fwd imm Bool myRound)
-
-class method @SelfL Board allShips(mut Math.Random rand) = \(ships=(
+@Public class method @SelfL Board allShips(mut Math.Random rand) = \(ships=(
   ships = Ships()
   this.fill(Ship.Carrier(),ships=ships,rand=rand)
   this.fill(Ship.Battleship(),ships=ships,rand=rand)
@@ -50,10 +59,16 @@ class method Bool fill1(Ship that,mut Ships ships,lent Math.Random rand) = {
   return Bool.true()
   }
 mut method Ships.Coord fire()
-mut method ResultSigner.Signed declassify(@SelfL ResultSigner.Signed that) = (
+@Public mut method ResultSigner.Signed declassify(@SelfL ResultSigner.Signed that) = (
   ResultSigner.Signed res=this.#declassify()(that)
   (shots,coord,answer) = res.data()
   X[shots==this.otherShots();!this.myRound()]
+  @SelfL Board board0 = this.selfBoard().that()
+  @SelfL FireResult res0 = board0.fire(coord=coord,shots=this.otherShots())
+  ResultSigner s = this.signer()
+  @SelfL ResultSigner.Signed signed0 = s(label=coord.toS(),data=res0)
+  (answer0) = this.#declassify()(signed0).data()
+  X[answer==answer0]
   this.otherShots(shots.with(row=coord.row(),col=coord.col(),val=answer.repr()))
   this.myRound(Bool.true())
   res
@@ -61,7 +76,7 @@ mut method ResultSigner.Signed declassify(@SelfL ResultSigner.Signed that) = (
 
 read method Bool win(Shots that) = 
   Match.Count()(for s in that \add(s==S"" || s==S"*"))+17I==100I
-mut method Bool round(mut OtherPlayer other) = (
+@Public mut method Bool round(mut OtherPlayer other) = (
   X[this.myRound(); !this.win(this.myShots()); !this.win(this.otherShots())]
   coord = this.fire()
   @OtherL FireResult res = this.board().fire(coord=coord,shots=this.myShots())
@@ -74,7 +89,7 @@ mut method Bool round(mut OtherPlayer other) = (
   this.myRound(Bool.false())
   this.win(this.myShots())
   )
-read method Bool agreeToLose() = (
+@Public read method Bool agreeToLose() = (
   X[
   this.myRound() msg=S"Cant lose in my turn";//turn passes after move
   !this.win(this.myShots()) msg=S"Cant lose if I won";

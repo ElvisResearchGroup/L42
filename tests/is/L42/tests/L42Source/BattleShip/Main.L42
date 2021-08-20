@@ -33,6 +33,16 @@ RandomFireTrait = Trait:{...}
 Player1 = Sifo:{}
 Player2 = Sifo:{}
 Top=Sifo:{[Player1,Player2]}
+
+Example1=Sifo(Top):{
+  A={
+    imm @Player1 S foo
+    S bar
+    class method This (@Player1 S foo, S bar)
+    class method This of(@Player1 S foo, S bar)=This(foo=foo,bar=bar)
+    }
+  }
+
 DeclassifyP1 = {
   class method mut This #$of()
   mut method ResultSigner.Signed (@Player1 ResultSigner.Signed that) = that
@@ -71,22 +81,3 @@ SifoBattleShipGUIAI = Sifo(Top):{
   }
 ExampleGUIGame = SifoBattleShipGUIAI.ExampleGUIGame.#$of()
 //first, select a random board and just play.
-//Then, also have a phase to ask to approve a random board.
-/*Task=(
-  //why we do not need the BoxLayout import?
-  //model=StartModel.#$of(key='Example)
-  j=JServer.#$of()
-  gui=Gui(j=j,package=S"battleShip",
-    imports=S"""%
-      | %Gui.defaultImports()
-      | import java.awt.GridLayout;
-      | import java.awt.BorderLayout;
-      """,
-    name='BattleShip,x=800\,y=600\,ping=3000\)
-  //b1=gui.button(id=S"reset",msg='Pressed,text=S"PressMe")
-  gui"%JavaCode(gui)"
-  for e in j(\['BattleShip]) (
-    //e>>model.#stage()
-    Debug(e)
-    )
-  )*/

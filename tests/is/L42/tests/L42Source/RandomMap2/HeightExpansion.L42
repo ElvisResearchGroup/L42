@@ -52,7 +52,7 @@ mut method Void addMontains(I that) = (
     for p in this.mountainTops() ( if p.z()>=h this.addSeed(p.to2D() val=h) )
     Debug(S"-- start growing for h=%h; seeds size=%this.seeds().size()")
     for attempts in Range(150\) (
-      if this.seeds().size()>=(lastSize*9I)/10I Break()
+      if this.seeds().size()>=(lastSize*9I)/10I ( Break() )
       this.grow(percent=30\)
       )
     lastSize:=this.seeds().size()
@@ -81,7 +81,7 @@ mut method Void addShores() = (
     )
   max = V.layerSize() / 2I
   for attempts in Range(150\) (
-      if c.seeds().size() >= max Break()
+      if c.seeds().size() >= max ( Break() )
       c.grow(percent=10\)
       )
   map = this.#cells()

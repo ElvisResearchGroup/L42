@@ -167,7 +167,7 @@ public class Coherence {
       if(mh.mdf().isClass()){//factory
         if(!canAlsoBe(mh.t().mdf(),mdf)){return;}
         int index=mh.key().xs().indexOf(x);
-        assert index!=-1: x+" "+mh;
+        if(index==-1){return;}
         c.add(mh.pars().get(index));
         return;
         }//else is setter
