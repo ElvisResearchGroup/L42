@@ -1,4 +1,5 @@
 reuse [AdamsTowel]
+
 LoadJ=Load:{reuse[L42.is/JavaServer]}
 JServer=LoadJ(slaveName=S"javaServer{}")
 LoadGui=Load:{reuse[L42.is/GuiBuilder]}
@@ -7,16 +8,8 @@ Gui=LoadGui(javaServer=JServer)
 Sifo=Load:{reuse[L42.is/Sifo]}
 
 Signer = Public:{...}
+
 NumSigner = Signer(Num)
-TestSigner = (
-  a=NumSigner.#$of(id=S"a")
-  b=NumSigner.#$of(id=S"b")
-  NumSigner.Signed sa=a(label=S"myA",data=15Num)
-  NumSigner.Signed sb=b(label=S"myB",data=150Num)
-  Debug(sa.data())
-  Debug(a.mine(sa))
-  Debug(sb.data())
-  )
 
 Answer = Collection.Enum:{
   method S repr()
@@ -51,17 +44,7 @@ Shots = Class:Trait(Collection.matrix(S.List,row=10I,col=10I))[clear='elemToS(ro
   }
 
 FireResult = Data:{Ships.Coord coord, Shots shots, Answer answer}
+
 ResultSigner = Signer(FireResult)
+
 Main = {...}
-
-/*
--TODOS:
-board invariant
-GUI
-
-We can hava a variant where both players ships are on the same board
-this will be a grid of Cell
-Cell:{@Left Bool left, @Right Bool right}
-so that if you have Left permisssions you can read the left field
-we can have an implicit invariant that not left and right
-*/

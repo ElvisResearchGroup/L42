@@ -15,6 +15,7 @@ InductiveTrait=Trait:{[Handler$]
   class method class This #apply()=This
   class method Library #colon0(Library that)[Fail]
     =Class.Relax:this:Trait(that)
+  class method Trait #colon0(class Trait.Lifted lifted)[Fail]=this:lifted()
   class method Trait #colon0(Trait trait)[Fail]={
     var Trait res=BaseTrait()
     for m in trait.info().methods() (

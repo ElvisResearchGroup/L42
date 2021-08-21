@@ -89,6 +89,7 @@ read method Bool win(Shots that) =
   this.myRound(Bool.false())
   this.win(this.myShots())
   )
+  
 @Public read method Bool agreeToLose() = (
   X[
   this.myRound() msg=S"Cant lose in my turn";//turn passes after move

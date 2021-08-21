@@ -40,27 +40,11 @@ class method S ()=S"""
   |    }
   |  abstract Grid1010 elem();
   |  }
-  |JPanel texts=new JPanel();
-  |class Updatable extends JLabel{
-  |  void update(String text){this.setText(b+text);}
-  |  String b;
-  |  Updatable(String b,String base){
-  |    this.b=b;
-  |    update(base);
-  |    texts.add(this);
-  |    }
-  |  }
   |{
   |  setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
   |  this.setLayout(new BorderLayout());
   |  this.add(grids,BorderLayout.CENTER);
-  |  this.add(texts,BorderLayout.SOUTH);
-  |  texts.setLayout(new BoxLayout(texts, BoxLayout.Y_AXIS));
   |  }
-  |Updatable totShots=new Updatable("  tot shots: ","0");
-  |Updatable totMisses=new Updatable("  tot misses: ","0");
-  |Updatable totHits=new Updatable("  tot hits: ","0");
-  |Updatable remainingHits=new Updatable("  remaining hits: ","20");
   |void display(String msg, Grid1010 grid){
   |  List<List<String>>res=msg.lines()
   |    .map(s->s.trim())

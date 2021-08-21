@@ -1,5 +1,6 @@
 mut Math.Random rand
 Shots myShots
+
 mut method Ships.Coord fire() = {
   loop (
     row = this.#rand().nextInRange(0I to=10I)

@@ -15,8 +15,6 @@ class method Void #$of()[_] = (
   Debug(res)
   )
 class method S playGame(mut JServer j, mut Players.GUIPlayer1 p1, mut Players.AIPlayer2 p2)[_] = {
-  //TODO: why we do not need the BoxLayout import?
-  //TODO: Handler must take the Trait class too, not just the Trait instance :-(
   Gui(j=j,package=S"battleShip",
     imports=S"""%
       | %Gui.defaultImports()
@@ -33,7 +31,6 @@ class method S playGame(mut JServer j, mut Players.GUIPlayer1 p1, mut Players.AI
       Debug(e)
       rounds += 1I
       winP1 = p1.round(other=p2)
-      //p1.updateGUI(j=j)
       if winP1 && p2.agreeToLose()
         return S"Player1 wins the game after %rounds rounds"
       winP2 = p2.round(other=p1)

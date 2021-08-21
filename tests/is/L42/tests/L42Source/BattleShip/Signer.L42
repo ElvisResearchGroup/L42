@@ -10,6 +10,8 @@ SignerTrait = Trait({
     class method This(S id, S label, T data)
     }
   })[hide='Signed(id,label,data)]
+  
 @Public class method Trait trait() = SignerTrait()
+
 @Public class method Library (class Any that)[_] = Class:this.trait()['T=>that]
 

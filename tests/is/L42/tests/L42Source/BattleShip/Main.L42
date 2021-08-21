@@ -1,17 +1,27 @@
 Coords = Collection.list(Ships.Coord)
 Board = Data:{[HasToS]
   Ships ships
-  @Cache.Now class method Void invariant(Ships ships)=(
-  totShips=17I//5I+4I+3I+3I+2I
-  countNone=Match.Count()(for s in ships \add(s==Ship.None()))
-  X[countNone+totShips==100I]
-  for s in Ship.Vals() (if s!=Ship.None() (
-    coords=Coords()(for si in ships, c in ships.coords(), if si==s \add(c))
-    X[coords.size()==s.size()]
-    //TODO: check the coords touch each other
+  @Cache.Now class method Void invariant(Ships ships) = (
+    totShips=17I//5I+4I+3I+3I+2I
+    countNone=Match.Count()(for s in ships \add(s==Ship.None()))
+    X[countNone+totShips==100I]
+    for s in Ship.Vals() (if s!=Ship.None() (
+      imm coords=Coords()(for si in ships, c in ships.coords(), if si==s \add(c))
+      imm rows=I.List()(for (row) in coords \add(row))
+      imm cols=I.List()(for (col) in coords \add(col))
+      X[coords.size()==s.size()]
+      X[This.allEq(rows) || This.allEq(cols)]
+      X[This.allContact(rows) || This.allContact(cols)]
+      ))
+    )
+  class method Bool allEq(I.List that) = Match.All()(
+    for e in that \add(e==that.left())
+    )
+  class method Bool allContact(I.List that) = Match.All()((
+    min=that.reduce()( for e in \vals \add(\acc.min(e)) )
+    for i in Range(min to=min+that.size()) \add(i in that)
     ))
-  )
-  method FireResult fire(Ships.Coord coord, Shots shots) = FireResult(
+  method FireResult fire(Ships.Coord coord, Shots shots) = \(
     coord = coord,
     shots = shots,
     answer = this.fireAnswer(coord=coord,shots=shots)
@@ -65,11 +75,10 @@ SifoBattleShipAIAI = Sifo(Top):{
   }
 ExampleGame = SifoBattleShipAIAI.ExampleGame.#$of()
 
-//Board={...}
 GUIFireTrait = Trait:{...}
 SifoBattleShipGUIAI = Sifo(Top):{
   Players=Class:Trait({
-    GUIPlayer1 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player1;'OtherL=>Player2]:JServer.Handler:GUIFireTrait()
+    GUIPlayer1 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player1;'OtherL=>Player2]:JServer.Handler:GUIFireTrait
     AIPlayer2 = Class.Relax:Data.Relax:PlayerTrait['SelfL=>Player2;'OtherL=>Player1]:RandomFireTrait
     })[
       'GUIPlayer1.OtherPlayer=>'AIPlayer2;
@@ -79,5 +88,7 @@ SifoBattleShipGUIAI = Sifo(Top):{
       ]
   ExampleGUIGame = {...}
   }
-ExampleGUIGame = SifoBattleShipGUIAI.ExampleGUIGame.#$of()
-//first, select a random board and just play.
+  
+//ExampleGUIGame = SifoBattleShipGUIAI.ExampleGUIGame.#$of()
+
+TestCompletes = {}:Test"Battleship completes"(Bool.true())
