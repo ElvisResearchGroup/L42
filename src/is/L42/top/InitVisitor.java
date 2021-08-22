@@ -6,6 +6,7 @@ import static is.L42.tools.General.merge;
 import static is.L42.tools.General.range;
 import static is.L42.tools.General.unique;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -41,11 +42,15 @@ class InitVisitor extends CloneVisitorWithProgram{
   
   private Path resolveSystemIndependent(Path path,String inner,List<Pos>poss){
     Path res=path.resolve(inner);
-    try{res=res.toFile().getCanonicalFile().toPath();}
+    File f=res.toFile();
+    try{res=f.getCanonicalFile().toPath();}
     catch(IOException e) {}
     String lastName=res.getName(res.getNameCount()-1).toString();
     if(!lastName.equals(inner)) {
       throw new EndError.InvalidImplements(poss,ErrMsg.dotDotDotSouceRepeated(inner,res));
+      }
+    if(f.isHidden()) {
+      throw new EndError.InvalidImplements(poss,ErrMsg.dotDotDotSouceHidden(inner));
       }
     return res;
     }

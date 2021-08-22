@@ -351,6 +351,8 @@ public class ErrMsg {
   "Repeated (except for case) file names: "+repeated+"\n"
   ;}public static String dotDotDotSouceRepeated(Object _1,Object _2){return
   "The file names "+_1+" and "+_2+" would clash on case insensitive file systems; thus they are not portable on different operative systems"
+  ;}public static String dotDotDotSouceHidden(Object _1){return
+  "The file name "+_1+" is hidden; this behaviour would not be portable on different operative systems"
   ;}public static String dotDotDotCoreSouceWithMs(){return
   "'...' identifying a core library literal must be of form {...}, but here other members are provided"
   ;}public static String missedTypeDep(Object ps){return
