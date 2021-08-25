@@ -14,6 +14,9 @@ import is.L42.platformSpecific.javaTranslation.L42Throwable;
 //in that moment, the main is also not blocked on any join
 //Thus Cache.killAll() it is a #$ System method
 public abstract class CachedRes<T>{
+  public static void killIfBusy(){
+    if(!pool.isQuiescent()){killAll();}
+  }
   @SuppressWarnings("deprecation")
   public static void killAll() {
     List<ForkJoinWorkerThread> threadsOld=new ArrayList<>(threads);

@@ -224,6 +224,8 @@ public enum TrustedOp {
     "return %s.clearLog(%s);",sigI(Void,String))),
   ReadLog("#$readLog",trustedIO(
     "return %s.readLog(%s);",sigI(String,String))),
+  StopCacheEager("#$stopCacheEager",trustedIO(
+      "is.L42.cache.concurrency.CachedRes.killAll();return L42£Void.instance;",sigI(Void))),  
   SystemMutReferenceEquality("mutReferenceEquality",trustedIO(
     "return %2$s==%3$s;",
     sig(Immutable,Immutable,Bool,Mutable,Any,Readable,Any))),

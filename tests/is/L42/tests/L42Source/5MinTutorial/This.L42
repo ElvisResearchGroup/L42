@@ -3,6 +3,7 @@ reuse [L42.is/AdamsTowel]
 Point = Data:{...}
 
 Main2=(
+Cache.#$stopCacheEager()
   p = Point(x=12\,y=42\)
   Debug(S"Hello world again %p")
   p2 = p.with(x=34\)

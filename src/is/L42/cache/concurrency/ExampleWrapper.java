@@ -46,7 +46,7 @@ patterns:
     in clear: clear() on Cache.Lazy, clear();startEager(); on Cache.Eager; clear();startNow() on Cache.Now;     
 -There must be no Cache.Now on imm methods
 -Cache.Now can only be on class methods retrofitted on read ones.
--Cache.Lazy can be on on class methods retrofitted on read ones or on imm methods
+//?? -Cache.Lazy can be on on class methods retrofitted on read ones or on imm methods
 -Cache.Eager can be on on class methods retrofitted on read ones or on imm methods
    what happen on clear cache?
    
@@ -54,7 +54,4 @@ patterns:
    clear happens on mutation
    a mutable object is only visible to 1 task
    -no other tasks are waiting on a lazy/eager since they can not see the object
-   
-   
-   
 */

@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
+import is.L42.cache.concurrency.CachedRes;
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.generated.C;
@@ -106,6 +107,7 @@ public class Resources {
   public static void clearResKeepReuse() {
     libsCached=null;
     killAllSlaves();
+    CachedRes.killIfBusy();
     usedUniqueNs.clear();
     allBusyUpTo=0;
     out=new StringBuffer();

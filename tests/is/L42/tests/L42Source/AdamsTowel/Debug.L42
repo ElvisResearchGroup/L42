@@ -28,6 +28,8 @@ method This1.S immToString(Any that)=
 method Void addToLog(This1.S logName,This1.S text)=native{trusted:addToLog} error void
 method Void clearLog(This1.S logName)=native{trusted:clearLog} error void
 method This1.S #$readLog(This1.S logName)=native{trusted:#$readLog} error void
+method Void #$stopCacheEager()=native{trusted:#$stopCacheEager} error void
+
   
 #norm{nativeKind=TrustedIO
   typeDep=This,This1.HasToS,This1.S,This1.Bool,This1.AbstractTowel,This1.Public

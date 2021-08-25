@@ -44,7 +44,7 @@ DeployAAA=(
     Public$={}
     @Public$ AbstractTowel={}
     @Public$ Public={@AbstractTowel{public}}
-    @Public Cache={...}    
+    @Public Cache={...}  
     @Public HasToS={interface
       read method S toS()
       Raw={interface [This1]}
@@ -119,6 +119,7 @@ DeployAAA=(
     DelayTyping={}
     @Public Class={...}
     Cache$Call={...}
+    Cache$={class method Void #$stopCacheEager() = Debug.of().#$stopCacheEager()}
     @Public Organize={...}
     Data$Close={...}
     Public2={...}
