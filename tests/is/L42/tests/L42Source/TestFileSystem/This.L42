@@ -9,7 +9,7 @@ DeployGit = LoadDeploy.with(writer=GW)
 FSLib = Trait:{...}
 TaskDeployFS = DeployGit.module(FSLib['FileSystem$Real=>'FileSystem.Real]
   name='FileSystem
-  on=Url"github.com/Language42/is/FileSystem.L42"
+  on=Url"github.com/%Secret.repo()/FileSystem.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
     message=S"File System"++S" automatic release 42V0.95"

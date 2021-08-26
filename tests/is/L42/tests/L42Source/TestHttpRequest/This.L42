@@ -52,23 +52,23 @@ Writer = {class method mut GW #$of(S that) =
 
 //Module 0  -- Towel AdamsTowel --> AdamsTowel
 TaskDeployAdams = DeployGit.towel(Trait({reuse [AdamsTowel]})
-  on=Url"github.com/Language42/is/AdamsTowel.L42"
+  on=Url"github.com/%Secret.repo()/AdamsTowel.L42"
   writer=Writer.#$of(S"AdamsTowel")
   )
 
 //Module 1
 TaskDeployHttpRequest = DeployGit.towel(HttpRequestDeployed()
-  on=Url"github.com/Language42/is/HttpRequest.L42"
+  on=Url"github.com/%Secret.repo()/HttpRequest.L42"
   writer=Writer.#$of(S"HttpRequest")
   )
 //Module 2
 TaskDeployGitWriterDeployed = DeployGit.towel(GitWriterDeployed()
-  on=Url"github.com/Language42/is/GitWriter.L42"
+  on=Url"github.com/%Secret.repo()/GitWriter.L42"
   writer=Writer.#$of(S"GitWriter")
   )
 //Module 3
 TaskDeployDeployLib = DeployGit.towel(DeployLibDeployed()
-  on=Url"github.com/Language42/is/Deploy.L42"
+  on=Url"github.com/%Secret.repo()/Deploy.L42"
   writer=Writer.#$of(S"Deploy")
   )
 
@@ -82,7 +82,7 @@ ToJar=Trait:{reuse [AdamsTowel]
   }
   
 DeployJar = DeployGit.jar(ToJar()
-  on=Url"github.com/Language42/is/ExampleJar.jar"
+  on=Url"github.com/%Secret.repo()/ExampleJar.L42"
   writer=Writer.#$of(S" Example Jar")
   )
   

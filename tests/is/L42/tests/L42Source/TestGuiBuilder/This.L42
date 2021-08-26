@@ -13,7 +13,7 @@ DeployGit = LoadDeploy.with(writer=GW)
 
 TaskDeployGuiBuilder=DeployGit.module(Module()
   name='Top
-  on=Url"github.com/Language42/is/GuiBuilder.L42"
+  on=Url"github.com/%Secret.repo()/GuiBuilder.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
     message=S"Gui Builder"++S" automatic release 42V0.95"
