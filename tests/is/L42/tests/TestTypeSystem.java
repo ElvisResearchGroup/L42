@@ -104,7 +104,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method B()
      method Void leaking()[B]=void
      }}
-     """,ErrMsg.leakedExceptionFromMethCall(hole))
+     """,ErrMsg.leakedExceptionFromMethCall(hole).get())
    ),new AtomicTest(()->
    pass("""
    A={B={
@@ -120,7 +120,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method B()
      method Void leaking()[B]=void
      }}
-    """,ErrMsg.leakedExceptionFromMethCall(hole))
+    """,ErrMsg.leakedExceptionFromMethCall(hole).get())
    ),new AtomicTest(()->
    pass("""
    A={B={
@@ -220,7 +220,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    """)
    ),new AtomicTest(()->fail("""
    C={class method mut This k()}A={B={method class C main()=C.k()}}
-   """,ErrMsg.methCallResultIncompatibleWithExpected(hole,hole))
+   """,ErrMsg.methCallResultIncompatibleWithExpected(hole,hole).get())
    ),new AtomicTest(()->pass("""
    D={class method This k()}A={B={method read Any main()=error D.k()}}
    """)
@@ -488,7 +488,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      class method Void bar()[D]=void
      }
    A={B={method read Any main()=D.foo()}}
-   """,ErrMsg.leakedExceptionFromMethCall(hole))
+   """,ErrMsg.leakedExceptionFromMethCall(hole).get())
 
    ),new AtomicTest(()->fail("""
    C={

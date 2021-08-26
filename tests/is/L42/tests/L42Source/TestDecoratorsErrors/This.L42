@@ -91,7 +91,7 @@ TestSum1=(
     expected=S"""
     |Message This.Trait.MethodClash([###]):
     |method Void foo()=(..)
-    |Conflicting implementation: the method is implemented on both side of the sum
+    |Conflicting implementation: the method is implemented on both sides of the sum
     |file:[###]
     """.trim())
   code2a={interface method Void foo()}
@@ -117,7 +117,7 @@ TestRename=(
     expected=S"""
       |Message This.Trait.MethodClash([###]):
       |method Any foo()=(..)
-      |Conflicting implementation: the method is implemented on both side of the sum
+      |Conflicting implementation: the method is implemented on both sides of the sum
       |file:[###]
       """.trim())
   {}:Test"MethodClash->"(
@@ -125,7 +125,7 @@ TestRename=(
     expected=S"""
       |Message This.Trait.MethodClash([###]):
       |method Any foo()=(..)
-      |Conflicting implementation: the method is implemented on both side of the sum
+      |Conflicting implementation: the method is implemented on both sides of the sum
       |file:[###]
       """.trim())
   )
@@ -135,7 +135,7 @@ TestRename2=(
     expected=S"""
       |Message This.Trait.MethodClash([###]):
       |method Void a(This.A a)=(..)
-      |Conflicting implementation: the method is implemented on both side of the sum
+      |Conflicting implementation: the method is implemented on both sides of the sum
       |file:[###]
       """.trim())
   {}:Test"InvalidMap->"(
@@ -183,7 +183,7 @@ TestMethodClashFunky={A=Class:TestError['T=>Trait.MethodClash]:{
   method S expected()=S"""
     |Message [###]
     |method Any foo()=(..)
-    |Conflicting implementation: the method is implemented on both side of the sum
+    |Conflicting implementation: the method is implemented on both sides of the sum
     |file:[###]
     """  
   }B={}:A}

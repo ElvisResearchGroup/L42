@@ -1,21 +1,23 @@
 package is.L42.typeSystem;
 
 import static is.L42.generated.LDom._elem;
-import static is.L42.tools.General.*;
 import static is.L42.generated.ThrowKind.*;
+import static is.L42.tools.General.*;
+import static is.L42.typeSystem.ProgramTypeSystem.errIf;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import is.L42.generated.Core.*;
-import is.L42.generated.Core.L.MWT;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.Core;
+import is.L42.generated.Core.*;
+import is.L42.generated.Core.L.MWT;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedKind;
@@ -47,28 +49,24 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     visitE(e);
     expected=oldE;
     }
-  void errIf(boolean cond,E e,String msg){
-    if(cond){
-    throw new EndError.TypeError(e.poss(),msg);}
-    }
   void mustSubPath(P p1,P p2,List<Pos>poss){
     if(!p._isSubtype(p1, p2)){
       throw new EndError.TypeError(poss,ErrMsg.subTypeExpected(p1,p2));
       }
     }  
   @Override public void visitEVoid(EVoid e){
-    errIf(expected!=P.pAny && expected!=P.pVoid,e,
+    errIf(expected!=P.pAny && expected!=P.pVoid,e.poss(),
       ErrMsg.invalidExpectedTypeForVoidLiteral(expected));
     _computed=P.pVoid;
     }
   @Override public void visitPCastT(PCastT e){
-    errIf(!e.t().mdf().isClass(),e,ErrMsg.castOnPathMustBeClass(e.t()));
+    errIf(!e.t().mdf().isClass(),e.poss(),ErrMsg.castOnPathMustBeClass(e.t()));
     mustSubPath(e.p(),e.t().p(),e.poss());
     mustSubPath(e.t().p(),expected,e.poss());
     if(e.t().p()==P.pAny){return;}
     L l=p._ofCore(e.p());
     boolean ok=e.t().p()==P.pAny || !l.isInterface();
-    errIf(!ok,e,ErrMsg.castOnPathOnlyValidIfNotInterface(e.p()));
+    errIf(!ok,e.poss(),ErrMsg.castOnPathOnlyValidIfNotInterface(e.p()));
     _computed=e.t().p();
     }
   @Override public void visitL(L e){
@@ -93,7 +91,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     boolean find=false;
     if(e.thr()==Exception){find=tryAlternatives(ps.stream(),computed);}
     else{find=tryAlternatives(ts.stream().map(t->t.p()),computed);}
-    errIf(!find,e,ErrMsg.leakedThrow(e.thr().inner+" "+computed));
+    errIf(!find,e.poss(),ErrMsg.leakedThrow(e.thr().inner+" "+computed));
     _computed=null;
     }
   private boolean tryAlternatives(Stream<P> stream,P computed){
@@ -106,7 +104,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     assert l!=null:
     "";
     MWT mwt=_elem(l.mwts(),e.s());
-    errIf(mwt==null,e,ErrMsg.methodDoesNotExists(e.s(),l.mwts()));
+    errIf(mwt==null,e.poss(),ErrMsg.methodDoesNotExists(e.s(),l.mwts()));
     MH mh=p.from(mwt.mh(),p0.toNCs());
     mustSubPath(mh.t().p(),expected,e.poss());
     visitExpecting(e.xP(),p0);
@@ -115,7 +113,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
       }
     for(T ti:mh.exceptions()){
       var err=ps.stream().noneMatch(pj->p._isSubtype(ti.p(),pj));
-      errIf(err,e,ErrMsg.leakedExceptionFromMethCall(ti.p()));
+      errIf(err,e.poss(),ErrMsg.leakedExceptionFromMethCall(ti.p()));
       }
     _computed=mh.t().p();
     }
@@ -191,7 +189,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     if(!t.mdf().isClass()){return _computed;}
     var l=p._ofCore(t.p());
     boolean anyOrNotInterface=t.p()==P.pAny ||!l.isInterface();
-    errIf(!anyOrNotInterface,k.e(),ErrMsg.castOnPathOnlyValidIfNotInterface(t.p()));
+    errIf(!anyOrNotInterface,k.e().poss(),ErrMsg.castOnPathOnlyValidIfNotInterface(t.p()));
     return _computed;
     }
   }
