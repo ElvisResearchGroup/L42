@@ -1,6 +1,8 @@
 package is.L42.common;
 
 import java.io.File;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.InvalidPathException;
@@ -31,7 +33,28 @@ public interface ToNameUrl{
       .findFirst()
       .orElseThrow(MalformedURLException::new);
     }
-  
+  //Store in variable to avoid repeated reflection calls and try-catch
+  //Possible future TODO: Generalize this as a callable method with a class, var name parameter
+  static String l42IsRepoPath = getL42IsRepoPath();
+  static String getL42IsRepoPath() {
+    try {
+      Class<?> override = Class.forName("is.L42.override.L42IsRepoPathOverride");
+      MethodHandle handle = MethodHandles.lookup().findStaticGetter(override, "l42IsRepoPathOverride", String.class);
+      return (String) handle.invoke();
+      } 
+    catch (ClassNotFoundException e) {
+      return "Language42/is";
+      } 
+    catch (NoSuchFieldException e) {
+      throw new Error("Override class is.L42.override.L42IsRepoPathOverride found, but no field called (String) l42IsRepoPathOverride", e);
+      } 
+    catch (IllegalAccessException e) {
+      throw new Error("Override class is.L42.override.L42IsRepoPathOverride found, but field l42IsRepoPathOverride not accessible", e);
+      } 
+    catch (Throwable e) {
+      throw new Error("Override class is.L42.override.L42IsRepoPathOverride found, but there was an error reading field l42IsRepoPathOverride. (Perhaps variable is undefined?)", e);
+      }
+    }
 //TODO: add gitapi?
   static ToNameUrl forGitUrl=(url)->{
     //https://github.com/example42gdrive/Example1/blob/HEAD/FileSystem.L42?raw=true
@@ -51,7 +74,7 @@ public interface ToNameUrl{
   //https://github.com/Language42/is
   static ToNameUrl forL42Is=(url)->{
     String rest=removePrefix(url,"https://L42.is/","http://L42.is/","L42.is/");
-      return forGitUrl.apply("https://github.com/Language42/is/"+rest);
+      return forGitUrl.apply("https://github.com/"+l42IsRepoPath+"/"+rest);
     };
   static ToNameUrl forFile=(url)->{
     if(url.isBlank() || url.contains(" ")){return Optional.empty();}

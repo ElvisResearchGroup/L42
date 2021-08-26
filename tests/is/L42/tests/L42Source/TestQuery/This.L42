@@ -52,7 +52,7 @@ TaskDeployQuery = DeployGit.module(
     [clear='Top.RawQuery.trait();hide='Top.Source]
     ['Top.RawQuery=>'Top]
   name='Top //TODO: it would work if we renamed Top in This?
-  on=Url"github.com/Language42/is/Query.L42"
+  on=Url"github.com/%Secret.repo()/Query.L42",
   writer=GW.#$of(
     token=Secret.#$of(),
     message=S"Query"++S" automatic release 42V0.95"
