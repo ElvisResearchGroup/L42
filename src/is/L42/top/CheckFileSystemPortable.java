@@ -32,11 +32,7 @@ public class CheckFileSystemPortable{
     for(var p:okPaths) {checkRepeatedPaths(p);}
     okPaths.removeAll(repeatedPaths);
     }
-  HashSet<Path> visited=new HashSet<>();
   public void walkIn1(Path path) {
-    assert !visited.contains(path):
-      path;
-    visited.add(path);
     try (Stream<Path> walk = Files.walk(path,1)) {//the first one is guaranteed to be the root
       walk.skip(1).forEach(this::checkSystemIndependentPath);
       }
@@ -57,21 +53,31 @@ public class CheckFileSystemPortable{
     "$BadClus", "$Secure", "$Upcase", "$Extend", "$Quota", "$ObjId", "$Reparse",
     ""
     );
-  static final Pattern regex = Pattern.compile("[a-zA-Z0-9\\_\\-\\$]*");
+  static final Pattern regex = Pattern.compile(//POSIX + $,
+      "^[a-zA-Z0-9\\_\\-\\$]+$");// but . is handled separately
   public void checkSystemIndependentPath(Path path){
-    String lastName=path.getName(path.getNameCount()-1).toString();
-    if(lastName.endsWith(".")) { badPaths.add(path); return; }
+    String lastName=path.getFileName().toString();
+    //too dangerous even for ignored ones
+    if(lastName.equals(".") || lastName.equals("..")) { badPaths.add(path); return; }
     boolean skip=path.toFile().isHidden() || lastName.startsWith(".");
     if(skip){ return; }
-    if(lastName.length()>248) { badPaths.add(path); return; }
-    //path.toFile().isSystem()//system files??
-    String[] parts=lastName.split("\\.");
-    for(var p:parts) { 
-      if(!regex.matcher(p).matches()) { badPaths.add(path); return; }
-      }
-    var ko=forbiddenWin.stream().filter(
-      f->Stream.of(parts).anyMatch(p->p.equalsIgnoreCase(f))
-      ).count();
+    var badSizeEndStart=lastName.length()>248 
+        ||lastName.endsWith(".") 
+        ||lastName.endsWith("-") 
+        || lastName.startsWith("-");
+    if(badSizeEndStart) { badPaths.add(path); return; }
+    var i=lastName.indexOf(".");
+    var fileName=i==-1?lastName:lastName.substring(0,i);
+    var extension=i==-1?"":lastName.substring(i+1);
+    var extensionDots=extension.contains(".");
+    if(extensionDots){ badPaths.add(path); return; }
+    var badDir=isDirectory(path) && i!=-1;
+    if(badDir){ badPaths.add(path); return; }
+    var badFileName=!regex.matcher(fileName).matches();
+    var badExtension=!extension.isEmpty() && !regex.matcher(extension).matches();
+    if(badFileName||badExtension) { badPaths.add(path); return; }
+    var ko=forbiddenWin.stream()
+      .filter(f->fileName.equalsIgnoreCase(f)).count();
     if(ko!=0){ badPaths.add(path); return; }
     okPaths.add(path);
     walkIn1(path);//recursive exploration
