@@ -5,7 +5,7 @@ not all the code examples come from us.
 
 \subsection{An interactive GUI}
 \label{s:case-study}
-We start by presenting our GUI example; a program that interact with the real world using I/O.
+We start by presenting our GUI example; a program that interacts with the real world using I/O.
 It demonstrates how to verify invariants over cyclic mutable object graphs.
 Our example is particularly relevant since, as with most GUI frameworks, it uses the \emph{composite} programming pattern; arguably one of the most fundamental patterns in OO.
 
@@ -68,13 +68,13 @@ read method Bool invariant() {
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.
 
 \newlength{\imglength}%
-\setlength{\imglength}{0.30\textwidth}%
+\setlength{\imglength}{0.40\textwidth}%
 \columnsep=0.5em%
 \begin{wrapfigure}{r}{\imglength}%
 	\setbox0=\hbox{\strut}%
-	\vspace{-3\ht0}%
+%	\vspace{-3\ht0}%
     \includegraphics[width=\imglength]{GuiImg}%
-	\vspace{-3\ht0}%
+%	\vspace{-3\ht0}%
 \end{wrapfigure}
 \SS
 \subheading{Our Experiment}
@@ -98,10 +98,15 @@ however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footn
 % visible state semantic when qualified/unqualified method calls or field accesses are performed.
 % However, in our GUI example those corner cases are
 % not relevant. To be sure, we implemented both of their strategies and obtained the same results.
-When we ran our test case following the D approach, the \Q!invariant()! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times; %\footnote{%
+When we ran our test case following the D approach, the \Q!invariant()! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times;%
+\footnote{
+This difference is caused by Eiffel treating getters specilly, and skipping invariant checks when calling a getter.
+Thus, even ignoring getter methods, the visible state semantic would still run 14 millions of invariant checks.
+}%
+ %\footnote{%
 %We expect all (sound) runtime approaches based on visible state semantics ~\cite{feldman2006jose,fahndrich2010embedded,abercrombie2002jcontractor,tran2003design} to produce similar results.}
 in comparison our invariant protocol only performed $77$ calls. The number of checks is exponential in the depth of the GUI: the invariant of a \Q@SafeMovable@ will call the \Q@width()@, \Q@height()@, \Q@left()@, and \Q@top()@ methods of its children, which may themselves be \Q@SafeMovable@s, and hence such calls may invoke further invariant checks. Note that \Q!width()! and \Q!height()! are simply getters for fields, whereas the other two are non-trivial \emph{methods}.
-Concluding, we shown that when an invariant check queries other objects with invariants the visible state semantics may cause an exponential explosion in the number of checks.
+Concluding, we have shown that when an invariant check queries other objects with invariants the visible state semantics may cause an exponential explosion in the number of checks.
 
  % Since we only use \Q@this@ to perform method calls, the invariant is not recursively checked on \Q@this@, if it were we would get an infinite recursion.
 % Note that 42 represents field accesses as method calls, this is similar to the Eiffel uniform access principle; but for a fair comparison with D we treat private accesses to them like field accesses.
@@ -121,7 +126,7 @@ Concluding, we shown that when an invariant check queries other objects with inv
 % The gui library abstract away all the details of drawing and events; the user code need only to provide concrete classes implementing the \Q@Widget@ interface.
 
 \subheading{Spec\# Comparison}
-We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behalves differently.}; that relies on pack/unpack; also called inhale/exhale or the boogie methodology.
+We also encoded our example in Spec\#\footnote{We compiled Spec\# using the latest available source (from 19/9/2014). The verifier available online at \url{rise4fun.com/SpecSharp} behaves differently.}; that relies on pack/unpack; also called inhale/exhale or the boogie methodology.
 In pack/unpack, an object's invariant is checked only by the explicit pack operations.
 In order for this to be sound, some form of aliasing and/or mutation control is necessary. Spec\# uses a theorem prover, together with source code annotations.
 Spec\# can be used for full static verification, but it conveniently allows invariant checks to be performed at runtime, whilst statically verifying aliasing, purity and other similar standard properties.
@@ -164,7 +169,7 @@ for the \emph{program} that defines and displays the \Q@SafeMovable@s and our GU
 % Totals 	 $59$ $37
 \!\!\!Tokens (except \Q@.,;(){}[]@ and whitespace)\!\!\!
 %(ecluding \Q@;,@ characters, white-space, or parentheses/brackets.) 
-	& $106$ & $34$ & $18$ & $18$  \\  \hline
+	& $106$ & $34$ & $19$ & $18$  \\  \hline
 % $140$  & $37$
 Characters (with minimal whitespace) 
 	& $619$ & $207$ & $74$ & $60$ \\ \hline

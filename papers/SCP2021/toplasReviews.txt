@@ -1,3 +1,8 @@
+//do we rely on final this.m calls in any example? can we get rid of them?
+//we should find a way to use the new style but keep the old style proof?
+
+
+
     Recommendation #1: Reject
 
     Associate Editor
@@ -36,27 +41,59 @@
     - Muller et al.'s Modular Invariants for Layered Object Structures, Science of Computer Programming 62(3), October 2006.
     - Drossopolou et al.'s A Unified Framework for Verification Techniques for Object Invariants, ECOOP'08.
 
-    Muller et al's paper is especially critical.  It adds a lightweight extension to visible state semantics for more precise checking in the presence of universe types.  Previously I agreed with the other ECOOP reviewer that simply on principle the two should be closely compared because their goals and high level approach were so similar.  But in this version of the paper I now understand the weakened notion of capsule in this work much better (because the explanation has improved!), and have substantial questions about it.  I'll elaborate on other questions about this later, but the most important is that since the notion of capsule in this paper now allows readonly references into clusters, it's no longer related to the notions of external uniqueness driving Gordon et al., Pony, and the earlier L42 papers.  In fact, it more closely resembles a combination of those ideas (with weaker isolation) with Universe Types' rep qualifier.  This then leads to considering the role of 'read' capabilities in this system as analagous to Universe Types' 'any' qualifier --- there, as here, an any (resp. read) reference can point into the ROG of a rep (resp. capsule) reference.  So not only were the systems close to begin with, but the weakening of capsule makes this variant of L42 *closer* to universe types than before, making the settings of this paper and Muller et al.'s even closer than I realized they were.  I will not support acceptance of this paper without a careful comparison to Muller et al.'s work.
+    Muller et al's paper is especially critical.  It adds a lightweight extension to visible state semantics for more precise checking in the presence of universe types.  Previously I agreed with the other ECOOP reviewer that simply on principle the two should be closely compared because their goals and high level approach were so similar.  But in this version of the paper I now understand the weakened notion of capsule in this work much better (because the explanation has improved!), and have substantial questions about it.  I'll elaborate on other questions about this later, but the most important is that since the notion of capsule in this paper now allows readonly references into clusters, it's no longer related to the notions of external uniqueness driving Gordon et al., Pony, and the earlier L42 papers.  In fact, it more closely resembles a combination of those ideas (with weaker isolation) with Universe Types' rep qualifier.  This then leads to considering the role of 'read' capabilities in this system as analagous to Universe Types' 'any' qualifier --- there, as here, an any (resp. read) reference can point into the ROG of a rep (resp. capsule) reference. 
+//NO!! a capsule field does not hold a capsule reference.
+//A read reference can point into a capsule field but NOT inside a capsule reference.
+//Can this be phrased as a comparision with Muller et al.'s work?
+
+ So not only were the systems close to begin with, but the weakening of capsule makes this variant of L42 *closer* to universe types than before, making the settings of this paper and Muller et al.'s even closer than I realized they were.  I will not support acceptance of this paper without a careful comparison to Muller et al.'s work.
 
     That's not to say this paper needs to be strictly better in all possible ways than Muller et al's: I just want a clear discussion of the differences, and the relatively strengths and weaknesses of each approach.
 
-    Some possible strengths (or at least differences) might be related to my other questions about capsule.  Setting aside that capsule here now permits external (read only) references into  capsule's ROG, many of the restrictions on capsule mutators seem to basically encode a requirement that capsule mutators use capsule fields in a way that makes sure you could basically apply recovery/promotion after poking around inside a capsule.  Even with this weaker capsule notion, you could give weaker versions of promotion/recovery (I'm just going to call it recovery because I'm more used to that terminology, but I'm not strongly opinionated on it), and perhaps that translates into some kind of advantage over Muller et al's approach (to the best of my knowledge there's never been a discussion of applying recovery in universe types, even though some form of it would probably work.  The discussion of capsule mutators sounds like reading off the recover rules in Gordon et al. or Clebsch et al.'s papers, or like reading off the rule for invoking a method on an isolated receiver in Gordon et al.'s system (which is proven sound by "wrapping" a use of recovery around the proof of the expanded method body).  The description here has a similar flavor.  Am I misunderstanding something deep here, or is this really just a hyper-specialized form of recovery?
+    Some possible strengths (or at least differences) might be related to my other questions about capsule.  Setting aside that capsule here now permits external (read only) references into  capsule's ROG, many of the restrictions on capsule mutators seem to basically encode a requirement that capsule mutators use capsule fields in a way that makes sure you could basically apply recovery/promotion after poking around inside a capsule.
+//NO! you can not possibly recover a capsule field since it is not a capsule reference
+
+  Even with this weaker capsule notion, you could give weaker versions of promotion/recovery (I'm just going to call it recovery because I'm more used to that terminology, but I'm not strongly opinionated on it), and perhaps that translates into some kind of advantage over Muller et al's approach (to the best of my knowledge there's never been a discussion of applying recovery in universe types, even though some form of it would probably work. 
+//Above, this is the big comparision: objects need to be born 'encapsulated'
+
+ The discussion of capsule mutators sounds like reading off the recover rules in Gordon et al. or Clebsch et al.'s papers, or like reading off the rule for invoking a method on an isolated receiver in Gordon et al.'s system (which is proven sound by "wrapping" a use of recovery around the proof of the expanded method body).  The description here has a similar flavor.  Am I misunderstanding something deep here, or is this really just a hyper-specialized form of recovery?
+//It is a higly specialized form of recovery in the sense of opening encapsulation, doing stuff, 
+//and then recovering encapsulation. It is not a form of promotion, since the property
+// existed also before
 
     The similarity to invoking methods on isolated refs in Gordon et al.'s C# dialect and in Pony leads to a couple related questions:
 
     - Why is the restriction on capsule mutators that the field can only be mentioned once?  Why not simply require that all mentions are direct method invocations on capsule fields (i.e., a bunch of uses of recovery)?
+//It would be possible, the proposed approach is simpler and can encode the latter
+ 
     - Why not make the protocol to check invariants after any use of recover (i.e., call to method on capsule field)?  Maybe this assumes more than you want about the specific type system details.
+//Ignore, you can just divide it in more methods yourself
 
     Overall, I really like the ideas in this paper's ideas and general techniques.  The paper is generally very well written, with lots of examples that I found to be clear, pedagogically valuable, and useful (but not sufficient) for comparing to other work.  However, when reading the appendices with proofs I ran into a range of new concerns about technical errors and lack of precision, though I think these are all fixable.  I'd really like to see a version of this paper with the following fixes:
 
+//Main POINTS
     - A detailed comparison to Muller et al's 2006 paper
+//no recovery makes it hard to use,+allowed observable broken invariants
     - A detailed comparison to Drossopoulou et al.'s 2008 paper (can you use that framework to improve comparison to other systems?)
+//same?? should we check?
     - Convincing answers to my questions above about the differences between this weakened capsule notion and rep in universe types, and about the details of capsule mutators vs. recovery
+//included in muller? basically, difference between capsule field and capsule ref
     - A good explanation for *why* the notion of capsule was weakened to allow external read-only references into the capsule's ROG
+//It is not, see above
     - A bit more detail about the non-termination concerns in the main theorem (that part of the main paper is unclear about how it handles the possibility that a state update may cause the invariant execution to diverge)
+//never observed broken then?
     - More clarity on the interaction of IO and invariants: clearly IO introduces nondeterminism, but the paper doesn't really make clear exactly how *this approach* handles that.  I see the mention of $c$ in the statement of theorem 1, but how does that make the result significantly different then not including $c$ at all?
+//When discussing pure, repeat no IO
+
     - More clarity on the statement of Theorem 1, particularly why that is the result we want and what the real role of the trusted predicate is.
-    - Please explain why Assumption 10 isn't incredibly restrictive: that assumption and the try reduction rules make it look like it's forbidden for a try body to mutate any heap location that existed prior to the try.  This seems incredibly problematic for real programs, and notably *none* of your evaluations actually consider uses of exceptions (or, for that matter, IO), so there's no evidence presented that this isn't a very severe restriction.  If the evidence would come from the SES paper, then please (a) recall some of that evidence here in the paper, and (b) explain why the combination with the assumed mutability type system doesn't lead to additional restrictions.
+//TODO
+    - Please explain why Assumption 10 isn't incredibly restrictive: that assumption and the try reduction rules make it look like it's forbidden for a try body to mutate any heap location that existed prior to the try.  This seems incredibly problematic for real programs, and notably *none* of your evaluations actually consider uses of exceptions (or, for that matter, IO), so there's no evidence presented that this isn't a very severe restriction.
+//Ignore?
+
+  If the evidence would come from the SES paper, then please (a) recall some of that evidence here in the paper, and (b) explain why the combination with the assumed mutability type system doesn't lead to additional restrictions.
+//No? ignore?
+
+//below, Isaac?
     - A fixed version of Lemma 2 (see comments below).
     - A cleaned up version of Theorem 2.  This proof is supposed to be an induction proof, but is written in such a way that it groups cases that prove similar parts of the conclusion's disjunction together. This makes it hard to verify the proof actually hits all of the cases. See more comments below.
     - An explanation / fix for Lemma 3, which seems to only be true if you assume there's no promotion/recovery in the system, contrary to much of the paper's text.
@@ -66,18 +103,44 @@
     Below are various comments as I read the paper.
     I'll use the red line numbers, which seem to generally line up better with the text:
     - p2, lines 53--55: This sounds *more relaxed* than visible state, since there are times this approach permits broken invariants that visible state does not. Maybe "stricter" isn't the right notion here; instead, maybe it's more accurate to be more specific and say the approach is "stricter about when invariants may be *observed* as broken (i.e., never vs. sometimes)"
+//NOPE, it would only make the text more confusing
+
     - p2 line 61: This code formatting is reminiscent of the awkward compromises we make to fit into conference page limits.  This is a journal submission; please don't do this. (applies throughout)
+//OK review code formatting across all the document to make it more standard
+
     - p2 line 84: This makes it seem like for a class with N fields involved in the invariant, it might be necessary to have 2^N separate updates which reuse existing field values for calls to the box....
+//???
     - p2 lines 91--92: This sounds like a redefinition of "involved in execution" vs visible state semantics. Generally the prose on "involved in execution" seems to alternate between suggesting that any reference that is receiver of an active stack frame counts as involved, and suggesting that anything that's not reachable from the *current* receiver is not involved (even if it's in the ROG of an earlier receiver on the stack).  Please try to make these more uniform.
-    - p3 lines 103--104: "...anywhere on the call stacks is potentially invalid" This appears to be true here as well: in the case where the invariant on the first version of Range would be violated, it's also violated midway through the BoxRange version as well, so this isn't a useful distinction.  The distinction is whether or not it's possible to *observe* the violated invariant.
+//Done; Improved the sentence in 91 92
+    - p3 lines 103--104: "...anywhere on the call stacks is potentially invalid" This appears to be true here as well: in the case where the invariant on the first version of Range would be violated, it's also violated midway through the BoxRange version as well, so this isn't a useful distinction.
+The distinction is whether or not it's possible to *observe* the violated invariant.
+//True, I think I improved here
     - p5 line 204: Didn't an earlier footnote suggest you were moving away from the "type modifier" language of earlier L42 papers?
-    - p5 lines 216--218: This over-states a subtlety: Pony (and I believe L42 is the same) allows non-destructive reads, but the result is only useful for object identity / pointer comparisons, nothing else. Since the original Detlefs definition of rep exposure was about unauthorized mutation when returning interior pointers, I'd argue these systems still prevent rep exposure.
+//Ignore, I think we are right there using the type modifier terminology
+
+    - p5 lines 216--218: This over-states a subtlety: Pony (and I believe L42 is the same) allows non-destructive reads, but the result is only useful for object identity / pointer comparisons, nothing else.
+//False: either this funky rev is a Pony author and we misunderstood pony,
+//or limited scope usages of stuff is allowed, like a.foo.bar() when foo is a capsule field.
+
+ Since the original Detlefs definition of rep exposure was about unauthorized mutation when returning interior pointers, I'd argue these systems still prevent rep exposure.
+//TODO should we make it a weaker statement anyway? there are many interpretation for rep exposure it seams...
     - p7 line 295: "mut/capsule methods" Have you actually defined what these are?  I'd expect to see some text near the introduction of the various capabilities that states an X method is a method with receiver paramter assuming capability X.
+//DONE
     - p7 lines303--306: Don't *all* IO methods potentially throw errors that appear non-deterministic from within the program? (e.g., out of disk space, pipe full, etc. can still apply to println)
+//I removed the sentence that help recognizing the problem. Still, it is true that
+//in this work we do not mention the concept of 'non determistic exception' and how we handle them
+
     - p7 line 308: You still haven't explained how to read this method signature; anyone who doesn't already work with typed reference capabilities won't automatically understand what the "read" means here
+//DONE
+
     - p7 line 335: missing apostrophe in "L42s"
+//DONE
+
     - p8 lines 352--357: The intro suggests this will be a novel form of capsule, but if what follows is really new, then these *aren't* the critical differentiating properties, because they're true of all the prior RC/reference immutability systems you cite.
+//Ignore: No, this is just a new form of capsule fields
+
     - p8 line 369 area: This sort of hurts the paper's case that this can be used with "any" reference capability system (in the sense of reference immutability / readonly references).  This capsule definition *is not consistent with the meaning of capsule elsewhere*.  Capsule / isolated / iso was so named elsewhere because it corresponded to a strong structural property about reachability paths in graphs --- a property that *does* enforce absence of rep exposure, already!
+//Ignore: again, he refuses to accept that capsule references are different wrt capsule fields
 
     This version of capsule seems like a very, VERY awkward way to basically require that the body of a capsule mutator is a valid block of code for recovery/promotion.  Why not simply require capsule mutators to have bodies of the form:
     var tmp = dread(o.f);
@@ -85,41 +148,121 @@
     o.f = dread(o.f);
     ???
     All these extra requirements on mut and read parameters are basically handled by the restrictions on recovery/promotion blocks.
+//Ignore or explain? No they are not. In particular you could use a 'read' this inside the body.
+//such a 'this' would be broken (since the field is now null)
 
     - p8 line 372: this restriction to only mentioning the field once seems very severe
+//Ignore or explain that we just use a static method in full 42
     - p8 line 376: Again, all the prior approaches already ensure these properties!
+//Ignore, plain false
+
     - p8 lines 381--383: Why not simply invoke the invariant after every use of recovery for an object field??? (which still requires a bit of syntax fiddling, but not to this extent, and avoids conflating mutable access to capsule internals inside a promotion with a "new" form of capsule)
+//Ignore, the two ways can be expressed in term of each other.
     - p8 footnote 12: I don't think this is quite true.  I mean, you could have both notions of capsule in the language (I'd keep the original called capsule, and again I feel like this version is closer to Universe Types' rep qualifier), but I'd be slightly concerned the two could interact in a way that could subvert race freedom (though I could be wrong)
+//DONE, I have explained much better, and I have cited a paper describing how 42 already 
+//has many kinds of capsule fields and we are just adding yet another one on top of a big pile
+
     - p9 lines 396--397: Okay, unrestricted read references into capsules is new.... but then this notion of capsule is closer to owner-as-modifier's rep!  Why not just use rep? And at that point, how is this really that different from Muller et al.'s 2006 paper which you cite? What exactly is the motivation for weakening capsules in this way?
-    - p11 line 475: You should just cut this section, and the discussion elsewhere of the FFI.  Of course if the guarantees rely on the type system, and you can circumvent the type system, you can break this behavior.  This extends to L42's OC-style IO: what if an object holds a capsule reference to a file IO object? It might return that the invariant holds only when the first bytes of some file are 'asdf'.  Trying to suggest L42 avoids these problems is overclaiming; or if L42 actually prevents even the situation I described, you should clearly explain why it does so, under what assumptions, and why comparable assumptions couldn't be made of the related systems.
+//DONE? hope it is included in my handling of the above?
+
+    - p11 line 475: You should just cut this section, and the discussion elsewhere of the FFI.  Of course if the guarantees rely on the type system, and you can circumvent the type system, you can break this behavior.  This extends to L42's OC-style IO: what if an object holds a capsule reference to a file IO object? It might return that the invariant holds only when the first bytes of some file are 'asdf'. Trying to suggest L42 avoids these problems is overclaiming; or if L42 actually prevents even the situation I described, you should clearly explain why it does so, under what assumptions, and why comparable assumptions couldn't be made of the related systems.
+//DONE: the rev is saying to either remove those cases or add the one he cared about.
+//We added that discussion just before 475
+
+
     - p13 line 557: Certainly allowing 'this' to escape the local scope causes problems, but it seems like the restriction you *actually* want is just that all uses of this are invocations on capsule fields.  Doing that multiple times should pose no issue, since the "capsuleness" is preserved each time (notwithstanding my comments about it no longer being capsule)
+//Ignore, you can just call many capsule mutators
+
     - p12 line 565: A different question: why check the invariant when a capsule mutator method returns (i.e., addHeavy returns), rather than when the *capsule mutation itself * (the call to add on the capsule this.items) returns?  This plus relying more heavily on recovery would let this example check, *soundly*.
+//Ignore or explain? The idea is that a capsule mutatore does capture capsule mutation itself
+//without constraining it to be represented by a meth call on the capsule field content
+
     - p13 figure 1: I find this custom font to be quite difficult to read
+//Ignore, anyway something have changed in the new format anyway
+
     - p13 line 615: Please just write "locations".  I spent a couple minutes looking back and ahead to see if you defined $ls$ anywhere before figuring this out.
+//DONE
     - p14 Update rule: So the invariant is checked after *every* field update, even though invariants can only mention capsule and imm fields of their receivers? Since you have the class table and instance types at runtime, why not split this --- surely your implementation doesn't do this, slowing down code without invariants?  One could argue it's an "obvious and trivially sound" optimization to split, I suppose.
+//Done, Yes, mentioned.
+
     - p14 rules for Try: I don't understand these rules.  Why is try annotated with the original heap?  More critically, it appears that SES requires the body of a try block *strictly extend* heaps, and may not perform *any* mutations at all to existing cells.  This seems incredibly restrictive, and also seems more restrictive than my understanding of the earlier SES introduction.
+//DONE: clarified that this only applied to unchecked exceptions/errors
+
     - p14 line 670: "standard, except for our handling of monitor expressions." AND the SES rules (perhaps standard for SES, but I don't think those are as well-known as they perhaps should be)
+//Ignore? true consideration, but I think the rev themself is unsure of their comment here
+
     - p15 trusted definition: Why do we need this definition of trusted redexes?  I guess intuitively maybe it's to deal with the fact that any failures should come from invariant failures, but that should be made clear (and if that's not it then I'm quite confused)
+//TODO or Ignore? The current text looks pretty clear to me, but the rev got confused... how?
+
     - p15 Theorem 1: This seems immediately suspect: what if the invariant is to count by increments of 1 from x until it is equal to y (notice I didn't say while cnt < y, so this can diverge in your model...) I think you're missing some termination assumptions somewhere... The definition of trusted only refers to the top level monitoring of an invariant (before the invariant call is expanded), and cases where a field of a monitored location is being accessed in service to its invariant evaluation.  But it seems like a diverging invariant is both possible and would have redexes not matching this notion of trusted.
-    - p17 lines 797--799: This seems like an unreasonably naive comparison: how many checks would run *ignoring getters*?  This comparison seems too hung up on modeling D or Eiffel semantics, which are somewhat orthogonal to visible state semantics.  You could do visible state semantics in Java, or in an extension to Gordon et al.'s C# work (per personal communication with Gordon, who I believe also mentioned some work adapting MSR's Code Contracts system in his dissertation).  Nearly all the extra checks just described surely come from calls to the height and width getters *called by the invariants themselves*.Wait, the only reason the two would be different if they're both doing visible state semantics is if one was treating getters differently: please be clearer, as the current text before the numbers makes it sound like Eiffell will treat the fields as true methods for invariant checking, but clearly is must not to have a lower number of checks than D.
+//DONE, added explanation on why non terminating invariants are no problem
+
+    - p17 lines 797--799: This seems like an unreasonably naive comparison:
+//This text below is very confusing
+how many checks would run *ignoring getters*?
+This comparison seems too hung up on modeling D or Eiffel semantics, which are somewhat orthogonal to visible state semantics.
+You could do visible state semantics in Java, or in an extension to Gordon et al.'s C# work 
+(per personal communication with Gordon, who I believe also mentioned some work adapting MSR's Code Contracts system in his dissertation).
+Nearly all the extra checks just described surely come from calls to the height and width getters *called by the invariants themselves*.
+Wait, the only reason the two would be different if they're both doing visible state semantics is if one was treating getters differently:
+please be clearer, as the current text before the numbers makes it sound like Eiffell will treat the fields as true methods for invariant checking,
+but clearly is must not to have a lower number of checks than D.
+//DONE? I think I handled it in a foot note?
+
+
     - p18 line 836: Is this the reason for the weak capsule semantics?  The backpointer from buttons to containers?  This would be independently interesting, since it's actually not about allowing arbitrary read-only references into capsules, but more like allowing readonly references "out" of one capsule into an enclosing capsule.
+//Ignore? I can not follow, and I do not think this is what happens in our code example
+
     - p23: This is a good set of comparisons: I'd like to see this for the Muller and Drossopoulou papers. The Muller paper in particular seems a lot like this, given that the weakened capsule version in this paper is very similar to rep in owner-as-modifier universe types
+//Ignore, ok? just prase here?
+
     - Section 7: I really like this section
     - p25 lines 1220--1224: Very nice
     - p28 lines 13365--1369: very nice
     - p30 lines 1466--1468, the JML citation: This huge author list in the inline citation suggests an error with the bibtex entry's author formatting
+//Ignore, no, it is correct. Anyway the new stile just uses the number
     - p38 line 1822: Should be "the set of *locations reachable from..." instead of adding an s to a *singular* metavariable
+//DONE
+
     - line 1827: "means for a location $l$ to be mutable..." This applies throughout. Metavariables act as proper nouns grammatically, while you keep using them as common nouns.  The difference is whether it makes sense to mix them with (in)definite articles (i.e., the/a/an).  The location $l$ may have some property just as the journal TOPLAS has some properties, but it's ungrammatical to say the/a TOPLAS.
-    - p38 lines 1833--1834: I wish you'd explain this notion of encapsulated a bit better, because the notions of encapsulation I'm most familiar with depend only on heap topology and field declarations, and are independent of the particular expression. I think this definition of encapsulation means that a location is considered encapsulated within a given full context if everything reachable from it and mutatable in E[l] is not reachable from E with that single(!) use of l removed --- i.e., that single use of l is the connection that makes any mutatable object in its rog mutatable vs. not. Is that right? If so please add it, because I had to stare at those definitions for a bit for it to make sense.
+//Ignore, I understand, but it would be terrible to do it.
+
+    - p38 lines 1833--1834: I wish you'd explain this notion of encapsulated a bit better, because the notions of encapsulation I'm most familiar with depend only on heap topology and field declarations, and are independent of the particular expression.
+//TODO: we may want to anticipate this misconception earlier? it is connected with the next point
+
+ I think this definition of encapsulation means that a location is considered encapsulated within a given full context if everything reachable from it and mutatable in E[l] is not reachable from E with that single(!) use of l removed --- i.e., that single use of l is the connection that makes any mutatable object in its rog mutatable vs. not. Is that right? If so please add it, because I had to stare at those definitions for a bit for it to make sense.
+//DONE: added clarification.. abait not exactly what rev think 
+
     - p38 Assumption 3: How would this be related to simply assuming that substitution preserves types?  I realize this is specific to methods, but it it satisfied as long as types are preserved by well-typed substitution, or is there something in here that's a stricter requirement?
+//TODO: Isaac, I'm quite confused... what was this about? why Ctx and e are arbitrarely selected from the method body?
+
     - p39 line 1864: grammar: "an immutable object [can]not also be mutable"
+//DONE
+
     - p39 Assumption 9: You still haven't actually explained the details of your method signature syntax, and now it's tripping me up.  If it's tripping me up, you can safely assume most other readers of this paper will be similarly confused.  It took me a while to convince myself that Assumption 9 part 2 meant that if the method was declared as *returning* a read capability, then it cannot be typed as returning a mut capability.  At first I thought the read was the receiver capability.  Even just replacing the first underscore in the C.m lookup with something like $\mu_{recv}$ would help.
+//Ignore. We now explained a little better in the text, and
+//expanding it here would be unreasanable
+
     - p40 Lemma 2: Reading this I think the assumptions about all nondeterminism stemming from mut methods on Caps should be promoted to an Assumption.
+//TODO: Unsure... conceptually, he is right, we are Assuming that object capabilities are properly implemented
+//On the other side, we encoded it in our language semantic same as
+//field access and so on... so...
+
     - p40: Lemma 2's proof is not a valid proof.  First, is says it's by induction, but induction on what?  The "base case" looks like inversion on the first reduction step, which then proves the first step was deterministic.  The "inductive" case seems to start from that premise.  But then I cannot tell why this "inductively assume" bit is valid.  This proof structure doesn't appear to be inductive, but a progressive refinement of the premise, with the "inductively assume" bit seeming to be a statement of an unnamed and ill-stated separate lemma which would be proven by induction on the transitive reduction relation.  If that's correct, please fix this proof.  If I'm incorrect, then please fix up the text here to be much clearer about what's being inducted upon, and where some of these assumptions are coming from.
+//TODO: Isaac, can you understand the issue here?
+
     - p40 line 1957: "informally described in [Section] 3"
+//DONE
     - p41 line 1963: The text should explicitly say the induction is on the reduction part of the validState assumption.
+//TODO: is it the case?
+
     - p41: I cannot follow the structure of Theorem 2's proof. The broad strokes look right, and individual pieces look plausible, but the structure is not a proper proof by induction.  I would expect the structure to take the form: by induction on the reduction showing it's a valid state, for each possible reduction case, show capsuleNotCircular && ((wellEncapsulated && notCapsuleMutating) || headNotObservable).  I would expect to see each reduction rule listed exactly once, with an explanation of which possible set of things for the conclusion was appropriate to prove in each case.  Instead, the proof lists a set of reduction rules for capsuleNotCircular, a set fo wellEncapsulated, a set for notCapsulMutating, and a set for headNotObservable.  The sets overlap (which sort of makes sense given that there are conjunctions to prove), but this has essentially taken what would be individual cases of a standard proof and scattered bits and pieces in an alternative grouping.  This makes it very difficult to to check that all cases were considered, and that the various considerations for each occurrence of the repeated rules are consistent with each other. Notice that Theorem 3 follows the structure I would expect.
+//TODO: Isaac, we can try to clarify this, but this should not become a massive task!
+
     - p44 Lemma 3: This seems to contradict the paper's claims that this approach could work for Gordon et al.'s system, Pony, or L42.  In fact, one of the key reasons for recovery/promotion existing was to support easy initialization of cyclic immutable structures!  I'm also not convinced that this proof actually considers all of the relevant cases. The second case considered assumes the only way for a new expression to return something immutable is if all constructor arguments were immutable, but this is only true if you assume promotion doesn't exist.
+//TODO: I do not know how to explain away the rev issues without going too much in the details on how stuff works in 42.
+//Isaac, should we Ignore this or discuss about it?
+
 
     Referee: 2
 
@@ -146,21 +289,34 @@
     ==================
 
     (1) Re: Footnote 2 on pages 2/3, while I agree that the wrapper objects are probably not a big deal in many settings, it seems to me that in the examples later in the paper it would be hard to optimize them away, given that their separation from their children is exploited quite heavily.
+//Ignore? I'm not sure how to handle this comment.
+//The patterns are needed to support the type system in proving properties. The optimizer would just need to preserve the semantic. 
+
     (2) In the annotation burden comparison table between Spec# and L42, the L42 program has 19 annotations with only 18 tokens. This is probably a type, but if not, could you explain how that works?
+//DONE, It must have been a typo, now we say 19 in both cases
+
     (3) I understand the need for restricting state changes within try-blocks, however, that also seems to be a quite severe restriction to me. For example, in the box/widget example, I expect that I'd want to try moving a box and revert if that happens to violate some invariant.
     However, since I can't affect any outside state within a try-block, I couldn't try moving a box and then continue with it outside of the try-block. In general, is there something interesting coming out of catching invariant violations other than aborting a whole part of the program?
+//Ignore? in a response I would write:
+//Aborting a whole part of a program is very interesting on its own.
 
     Organizational suggestions
     ==========================
 
     (1) Move everything except the bodies of the proofs from the appendix to the main paper
-    (2) Introduce some grammatical distinctions in the language for things that are distinctions
-    (3) More signposting and clarity about what things are supposed to give intuition and what things are supposed to be formal statements
-    (4) Re-organize the proof of capsule-field soundness
-
     @(1) I only understood what was going on after having gone through the first half of the appendix.
     There doesn't seem to be a good reason to keep this part out of the main paper; rather, it should go into section 5 so all the formal definitions are kept together.
     This should include the lemma and theorem statements, the concrete proofs of them can stay in the appendix.
+//TODO: Discuss
+
+    (2) Introduce some grammatical distinctions in the language for things that are distinctions
+
+//??? Ignore?
+    (3) More signposting and clarity about what things are supposed to give intuition and what things are supposed to be formal statements
+//Ignore? To vage to apply? may have been already improved anyway?
+    (4) Re-organize the proof of capsule-field soundness
+//TODO: is the one also rev1 complained about?
+
 
     @(2) Some of the formal constructs in the paper seem to value brevity over clarity.
     First, I mistook the list of well-formedness criteria on page 14 for something informal.
@@ -168,18 +324,24 @@
     I only realized later that one of the well-formedness criteria guarantees that there is never an expression to evaluate there.
     This could easily be avoided by not defining field accessor expressions to have an expression on the LHS.
     Rather, something like a pre-value (either a location l or a variable x that is going to be substituted away before evaluation gets there) would formally express the well-formedness requirement and make it clear in other definitions what's going on.
+//TODO: add clarifications in the text near the syntax? I'm against adding even more formal syntax.
 
     Second, monitor expressions for updates, constructors, and method calls could be distinguished better.
     This would avoid the several instances in the proofs where one has to reason about where a monitor expression could be coming from.
+//TODO: would it actually help?
 
     Lastly, the redexes with locations are quite confusing to read when they are involved in theorem statements, because they implicitly introduce a quantifier.
     Those statements would be slightly longer, but a lot clearer if they would use a metafunction to extract the locations from a redex and an appropriate quantifier over them (in particular: Theorem 1).
+//TODO: discuss? can we simply clarify in the text?
 
     @(3) Reading section four, I first mistook it as an attempt at a formal argument that wasn't quite formal enough (as in showing by example that all potential problematic cases are covered).
     That was obviously a mistake on my part; reading it again after having understood the rest of the paper this part makes perfect sense to give intuition on why certain design decisions are as they are.
     As such, better signposting about what the section is supposed to do and that a formalization of its parts will follow later should suffice.
     Another possibility is to merge it into section three, making clearer that it's still explaining the main parts of the presented approach.
+//Ignore? I think this the start of section 4 is already very clear.
+
     The opposite goes for the already-mentioned list of well-formedness criteria on page 14, which should be more clearly sign-posted as being an actual part of the formalism (or made more formal).
+//Ignore? it is standard to just list them in text. We could call them 'formal well formedness'? but it feels silly.
 
     @(4) While it makes sense to split the "and" part of the proof and doing capsuleNotCircular first, the "or"-part after that is a bit messy, as you start trying to prove one thing and then end up proving the other in various cases.
     Re-organizing that part to just be a case analysis on reductions should make this proof much clearer.
@@ -189,46 +351,59 @@
 
     (1) While field access doesn't need to have its own evaluation context case, there are two locations where you assume that full contexts do have a case for field accesses: Page 39, Line 26/1884, and Page 40, Line 42/1950.
     It seems to me that this needs to be added to the grammar.
+//DONE: added [].f (and e.f=[] for consistency)
     As far as I can tell, this doesn't affect any of the reasoning about various definitions like immutable and mutatable, but you should better also verify those again.
+//Ignore? I also thing this does not affect anything else
 
     (2) The font you use for keywords in L42 is really hard to read, both in the main text and in Figures 1 and 2.
+//Ignore, changed anyway in the new style
 
     (3) Sections 1 and 2 were mostly easy to follow, the big exception is that I don't know what "representation exposure" means exactly, and it features more than once, so it would be nice to have a brief explanation.
+//DONE already for rev1?
 
     Stylistic Nits
     ==============
     - \citet is a great citation macro available in acmart that puts the Authors' names outside of the bracket. For example, on Page 3, Line 40/134, \citet{gordon2012} would result in "Gordon et al. [2012]" instead of "[Gordon et al. 2012]" (making it unnecessary for you to write out "Gordon et al." yourself before that).
     Other good places for applying it: Page 11, Line 6/493; Page 30, Line 8/1426; Page 31, Line 29/1495; Page 33, Line 21/1586
+//Ignore, good to know but not needed in the new style
 
     - On page 24, at the beginning of section 7, you state that "one has to program in an uncommon and very defensive style".
     That might be honest, but it might be worth adding a sentence stating why it's worth it anyway.
+//TODO: discuss what to say
 
     - Page 43, Line 44/2099: If you leave this in the appendix, a reminder of the definition of valid would be useful
+//TODO: depends on reaction to the comment before
 
     Typos
     =====
-
-    - Page 3, Line 43/137: dataraces -> data races
-    - Page 5, Line 22/215: provides -> provide
-    - Page 7, Line 25/316: receivers -> receiver's
-    - Page 15, Line 28/711: interact -> interacts
-    - Page 17, Line 21/802: we shown -> we have shown
-    - Page 20, Line 29/957: [sudden newline]
-    - Page 23, Line 10/1085: mains -> main
-    - Page 26, Line 5/1227: Widgets -> Widget's
-    - Page 27, Line 26/1298: where -> were
-    - Page 28, Lines 6-9/1326ff: there seems to be an extra parameter "scale" in the recursive call that was removed from the signature and replaced with a constant in the last line?
-    - Page 38, Line 11/1821: missing an \exists f (compare with line 16/1826)
-    - Page 38, Footnote 26: "We use the term mutatable to distinguish from immutable" seems a bit weird to me. Maybe adding a "not" before "immutable" would make it better
-    - Page 39, Line 43/1902: I'm assuming the inner full context in Lemma 1 needs a '
-    - Page 40, Line 11/1919: I'm assuming the last part should be "not mutatable(\sigma'', E_v, e'', l')" - in which case that l is missing a '
-    - Page 40, Line 24/1932: by -> be
+//Some done, but some marked with TODO need Isaac support
+    - Page 3, Line 43/137: dataraces -> data races  //DONE
+    - Page 5, Line 22/215: provides -> provide //sentence changed
+    - Page 7, Line 25/316: receivers -> receiver's ///DONE
+    - Page 15, Line 28/711: interact -> interacts //DONE
+    - Page 17, Line 21/802: we shown -> we have shown//DONE
+    - Page 20, Line 29/957: [sudden newline]//DONE
+    - Page 23, Line 10/1085: mains -> main //DONE
+    - Page 26, Line 5/1227: Widgets -> Widget's //DONE
+    - Page 27, Line 26/1298: where -> were //DONE
+    - Page 28, Lines 6-9/1326ff: there seems to be an extra parameter "scale" in the recursive call that was removed from the signature and replaced with a constant in the last line? //DONE
+    - Page 38, Line 11/1821: missing an \exists f (compare with line 16/1826)//DONE, good spotting!!
+    - Page 38, Footnote 26: "We use the term mutatable to distinguish from immutable" seems a bit weird to me. Maybe adding a "not" before "immutable" would make it better//DONE, not sure what is better
+    - Page 39, Line 43/1902: I'm assuming the inner full context in Lemma 1 needs a '//DONE
+    - Page 40, Line 11/1919: I'm assuming the last part should be "not mutatable(\sigma'', E_v, e'', l')" - in which case that l is missing a '//DONE
+    - Page 40, Line 24/1932: by -> be//DONE
     - Page 42: Line 29/2035: I'm assuming that it should be "any field accesses on l'." (missing ')
+//TODO: Isaac, I'm not sure above, can you check?
     - Page 42: Line 44/2050: Probably "capsuleFields(\sigma, l')" (missing ')
+//TODO: Isaac, I'm not sure above, can you check?
     - Page 43: Line 4/2059: \sigma' has technically not been defined
+//TODO: Isaac, how do we handle this?
     - Page 44, Lines 21-22/2125-2126: I think it should be "if l was not in the rog [...] l' is still valid" (remove "an", missing ')
-    - Page 44, Line 26/2130: of -> off
+//TODO: Isaac, I'm not sure above, I think is connected with the corrections before
+    - Page 44, Line 26/2130: of -> off//DONE
     - Page 45, Line 6/2159: I think there needs to be some appropriate indexing on the field corresponding to the initializer variable
+//TODO: I'm not sure what they mean here
+
 
     Referee: 3
 
@@ -239,135 +414,140 @@
 
     Unfortunately I can't recommend accepting the paper for TOPLAS. I have several concerns about specific points and their explanations, which I'll explain below. My biggest and main concern is that the invariant protocol explained is not at all competitive with the state-of-the-art in this area. As the authors themselves note, there have been a great deal of works in proposing various competing notions of invariant protocol, many of these more than 10 years old. These are largely motivated by concerns which the authors' work appears (intentionally) not to address, and challenges which either do not apply in this setting (due to dynamic checking) or which are not given appropriate weight, in my view - it seems that the motivations for much of the existing work are not considered. The resulting protocol (as the submission shows) results in code which, when compared directly with Spec# encourages an extremely similar programming style and supports extremely similar patterns (with extremely similar limitations). While the overhead required to support the presented technique is certainly lower, I would expect to see a substantial improvement in which code can be handled and/or what benefits these give for clients of this code. By contrast, it seems that the proposed protocol actually has more limitations. Given that these comparisons are mostly with approaches which have not been actively developed for many years now, I don't have the impression that this is a big enough step forward for a TOPLAS paper.
 
-    My understanding is that much of the existing work presents many different answers to the question: When can invariants be temporarily broken, when can they be assumed? The reasons this question is challenging and has such a wide range of existing proposed solutions is (at least) that invariants depending on mutable state cannot, in general, usefully hold at all points of program execution. This is true even for invariants of single objects: an object storing a list of integers plus an integer field caching the sum of the list can only have an invariant expressing that the cached sum is the correct sum and still be modified if, temporarily, between modifying one value and the other, the invariant is allowed to be broken. Further examples can be found in all papers on visible-states/visibility-based invariants (as in Spec#). The definition of visible states used in Müller et al. (and I believe in other works) enforces that invariants must be reestablished before making calls (e.g. to peer objects, in Spec#). This is in order to guarantee (modularly) that invariants indeed hold in all visible states of the object; via call-backs, one could otherwise violate the visible states semantics. The submitted work states a different understanding of visible states semantics (e.g. "adding such a call is however allowed by visible state semantics" and "any object that has an active method call anywhere on the call stacks is potentially invalid"); this is not the approach used in Spec# for visibility-based invariants nor, to my knowledge, any other more-recent works on object invariants; that a different notion was perhaps implemented for JML (but not in Eiffel, I think?) originally indeed leads to difficulties, but this is not the current state-of-the-art in this area. This seems to be an important and fundamental comparison which is not made accurately in this motivation section.
+    My understanding is that much of the existing work presents many different answers to the question: When can invariants be temporarily broken, when can they be assumed? The reasons this question is challenging and has such a wide range of existing proposed solutions is (at least) that invariants depending on mutable state cannot, in general, usefully hold at all points of program execution. This is true even for invariants of single objects: an object storing a list of integers plus an integer field caching the sum of the list can only have an invariant expressing that the cached sum is the correct sum and still be modified if, temporarily, between modifying one value and the other, the invariant is allowed to be broken. Further examples can be found in all papers on visible-states/visibility-based invariants (as in Spec#). The definition of visible states used in Müller et al. (and I believe in other works) enforces that invariants must be reestablished before making calls (e.g. to peer objects, in Spec#). This is in order to guarantee (modularly) that invariants indeed hold in all visible states of the object; via call-backs, one could otherwise violate the visible states semantics.
+---------------
+ The submitted work states a different understanding of visible states semantics (e.g. "adding such a call is however allowed by visible state semantics"
+//It is allowed full stop in all the 'run-time verification work
+//To discuss:Isaac, should we clarify something in the paper here?
+ and "any object that has an active method call anywhere on the call stacks is potentially invalid"); 
+this is not the approach used in Spec# for visibility-based invariants
+//This is also true in Spec#, but we have a different type for the open objects.
+//I think this is very clear in our texts...
 
-    The presented approach (e.g. on the Range example) deals with this situation by moving the updates and invariant into a separate object from which the original is guaranteed unreachable. This is instead analogous (as becomes clear later in the submission) to using ownership-based invariants in Spec#; effectively, the call to the sub-object acts as an "unpack", and its return acts as a "pack" (except that the situation is stricter in this submission, since I believe that unpacked objects can still be accessed and read from, just without knowing their invariants to be true). Rather than writing additional expose statements around this code, in the BoxRange approach, the code which temporarily violates the invariant must be moved to a different object. I find this alternative approach interesting, but it is not clearly simpler to program with to me, and certainly does not appear to have fewer limitations than ownership-based invariants in Spec#. In particular, this enforces a similarly rigid topology on the heap, at least with respect to where invariants can be, and where mutations of the state on which they depend can be; for any invariants depending on other objects, it appears these must be sub-objects in this sense, and a hierarchical organisation emerges, very similarly to the ownership-structure imposed by Spec#.
+ nor, to my knowledge, any other more-recent works on object invariants; that a different notion was perhaps implemented for JML (but not in Eiffel, I think?) originally indeed leads to difficulties, but this is not the current state-of-the-art in this area. This seems to be an important and fundamental comparison which is not made accurately in this motivation section.
 
-    Spec# (which is now rather old), combines these two ideas of hierarchical ownership-based invariants and "flat" visibility-based invariants. Why? Because ownership-based invariants are not sufficient for many examples; verifying data structures with any kind of invariants about intended paths to the same object (e.g. doubly-linked lists, trees with parent pointers, etc.) necessarily require invariants which relate the mutable fields of multiple objects, and which must be temporarily broken in code where the invariants are visible. I am not convinced that Spec#'s approach is the best there could be (and indeed work on invariant protocols continued afterwards due to even its limitations), but it seems that the need for this flexibility is not addressed in this submission, while it is the motivation for most of the work which has come in between.
+    The presented approach (e.g. on the Range example) deals with this situation by moving the updates and invariant into a separate object from which the original is guaranteed unreachable. This is instead analogous (as becomes clear later in the submission) to using ownership-based invariants in Spec#; effectively, the call to the sub-object acts as an "unpack", and its return acts as a "pack" (except that the situation is stricter in this submission, since I believe that unpacked objects can still be accessed and read from, just without knowing their invariants to be true). Rather than writing additional expose statements around this code, in the BoxRange approach, the code which temporarily violates the invariant must be moved to a different object. I find this alternative approach interesting, but it is not clearly simpler to program with to me,
+//This is not our point, our point is that the FORMALISM/LANGUAGE is simpler. Where should we clarify?
 
-    The other key point which is not discussed is that the fast majority of prior techniques aim to enable modular, static verification of their invariant policies; Spec#'s approach is certainly an example of such a technique. There is no motivation for why the presented technique has been enforced (only) by runtime checking. I am curious as to why there is no consideration of static verification here: would it be possible in principle to use the presented invariant protocol for static verification? I believe that the answer is yes, but the necessity of sticking to a rigid hierarchical protocol for the invariants depending on mutable state means that many proofs would become less local/modular. For example, the graph encoding on page 28 (which is very interesting!) is claimed to preserve the invariants for arbitrary transformations to the graph. This claim is undoubtedly true, but, having looked at the cited "hardest problem" example, I don't think the comparison with a challenge for static reasoning is really fair. In particular, having read about the cited example (I think this is the PIP from the cited paper, and could perhaps be elaborated here) it seems difficult to prove nicely because one modifies a path in a graph one node at a time; unboundedly many objects may have changed by the time these updates have finished, but accumulating these as one monolithic proof obligation at the end of the updates would be cumbersome (requiring notions of paths in graphs, etc.) and would not reflect the local nature of the implementation. However, the technique presented here does not provide a solution to these difficulties; instead it would force the runtime checking of every node in the entire graph, regardless of whether these were modified or not. This is not sufficient to solve the challenge presented in a static setting, and arguably does not solve it efficiently in a dynamic one.
+ and certainly does not appear to have fewer limitations than ownership-based invariants in Spec#. In particular, this enforces a similarly rigid topology on the heap, at least with respect to where invariants can be, and where mutations of the state on which they depend can be; for any invariants depending on other objects, it appears these must be sub-objects in this sense, and a hierarchical organisation emerges, very similarly to the ownership-structure imposed by Spec#.
+
+    Spec# (which is now rather old), combines these two ideas of hierarchical ownership-based invariants and "flat" visibility-based invariants. Why? Because ownership-based invariants are not sufficient for many examples; verifying data structures with any kind of invariants about intended paths to the same object (e.g. doubly-linked lists, trees with parent pointers, etc.) necessarily require invariants which relate the mutable fields of multiple objects, and which must be temporarily broken in code where the invariants are visible.
+//I'm not convinced of this statement above. He said "necessarily must"
+//I think there could be work arounds.
+
+ I am not convinced that Spec#'s approach is the best there could be (and indeed work on invariant protocols continued afterwards due to even its limitations), but it seems that the need for this flexibility is not addressed in this submission, while it is the motivation for most of the work which has come in between.
+
+    The other key point which is not discussed is that the fast majority of prior techniques aim to enable modular, static verification of their invariant policies; Spec#'s approach is certainly an example of such a technique. There is no motivation for why the presented technique has been enforced (only) by runtime checking.
+//Ignore, sure, we are not doing the work you would like to read.
+
+ I am curious as to why there is no consideration of static verification here: would it be possible in principle to use the presented invariant protocol for static verification? I believe that the answer is yes, but the necessity of sticking to a rigid hierarchical protocol for the invariants depending on mutable state means that many proofs would become less local/modular.
+//Why?
+ For example, the graph encoding on page 28 (which is very interesting!) is claimed to preserve the invariants for arbitrary transformations to the graph. This claim is undoubtedly true, but, having looked at the cited "hardest problem" example, I don't think the comparison with a challenge for static reasoning is really fair. In particular, having read about the cited example (I think this is the PIP from the cited paper, and could perhaps be elaborated here) it seems difficult to prove nicely because one modifies a path in a graph one node at a time; unboundedly many objects may have changed by the time these updates have finished, but accumulating these as one monolithic proof obligation at the end of the updates would be cumbersome (requiring notions of paths in graphs, etc.) and would not reflect the local nature of the implementation.
+//No!! the whole point of that example is that there is no requirement for the mutations/invariants on graphs to be local to nodes at all.
+//So, of course we have to check all the invariants after, since the
+//mutation operation had write access to all of those nodes.
+
+ However, the technique presented here does not provide a solution to these difficulties; instead it would force the runtime checking of every node in the entire graph, regardless of whether these were modified or not.
+//Because the whole goal of the "hardest problem" is to have non local invariants in a circular graph setting!!
+
+ This is not sufficient to solve the challenge presented in a static setting, and arguably does not solve it efficiently in a dynamic one.
 
     While I do think that simplicity is important, and the annotation overhead and language design here look neat by comparison with Spec#, the fact that this comparison is with a relatively old technique with more flexibility (in terms of the invariant patterns supported) and which is designed to enable modular static verification of these invariants, makes this simplicity less impactful by itself. I would be very interested to see whether this technique can be developed further to handle more invariant examples from more-recent work, although I suspect this would necessitate additional mechanisms.
 
     Misc comments:
 
     36: given the wealth of works out there (many of which are cited), I would perhaps not say these are the "two main protocols"; they are indeed underlying ideas which show up in many works (albeit with a different notion of visible states semantics than the one presented, as commented above).
+//Ignore? and what should we say instead?
 
     75: "Range class with the desired client interface": in at least some situations one wants client code to also know of invariants; the fact that the invariant is now missing from the object at the least changes this interface.
+//Ignore? No, the Range class has the same invariant in both example.
+//are they confused with the BoxRange class?
 
     157: I somehow expected Rust to fit here too; does it not?
+//Ignore, of course not, but defending it here would break the flow
 
     224/225: the discussion of promotion and recovery is very brief; these are not very commonly-known concepts, and need some careful introduction here.
+//Ignore? otherwise the paper would be even longer.
 
     240: "may still be able to encapsulate" - I didn't understand this point; after "rampant aliasing" how could this be possible?
+//Ignore? again, we can not explain all the needed related work in detail
 
     252: these restrictions are not really explained; I also didn't know what it meant to throw an object; does this mean some object representing the type of exception?
+//Ignore?? the restrictions are expanded in the formal part.
+//Also, how can 'throwing an object' confuse them?
 
     257: this seems to be a strict loss of expressiveness: I assume that programmers frequently want to use exceptions to abruptly terminate side-effectful computations; it seems that this would be prevented (at least if those side-effects were in any way observable to the catching code). Why is this not a serious limitation in practice?
+//DONE, we added some text around for rev1, this is only for unchecked exceptions.
 
     265: "code that does not possess an alias..." - this idea is not explained.
+//DONE I changed the sentence, not sure if it is much better now...
 
     270 "would not be provided by static methods" - why not?
+//Ignore?? what do you mean???
     "instantiation is kept under control by carefully..." - it's unclear what this sentence means.
+//Ignore? looks so clear to me...
 
     286 "not been whitelisted..." - this concept has not been introduced, nor the restrictions/approach explained.
     "capability classes" appear without being introduced, as do "capability operations".
+//Ignore, really? we are defining them in the text...
 
     320: "method that in turn satisfies these restrictions" - not sure what this means.
+//Ignore, is this rev expert reading techinical works?
 
     329: "There is a line of work" - I think the cited work is good, but it is one of very many such papers.
+//Ignore, I agree, so? we have sooo many citations already!
 
     358: "o itself cannot be seen" - not sure what this means.
+//Ignore, it is made more clear in the formal part?
+//I do not think we can make it more clear without breaking the flow
 
-    363: "... does not make a method a capsule mutator" - it wasn't clear to me why not when I read this - I suppose it would be worth reminding of the difference between object/reference capabilities here?
+    363: "... does not make a method a capsule mutator" - it wasn't clear to me why not
+//Ignore, what do you mean 'why not'? we are defining it like this...
+//are you asking why we are defining it like this?
 
+ when I read this - I suppose it would be worth reminding of the difference between object/reference capabilities here?
+//Ignore, Why?
     364: "novel capsule fields" - the footnote also claims these a different but compatible with other work. Please explain the differences/novelties here.
+//Ignore, the text around have changed anyway.
 
     589: I don't know if this is the journal format, but the code font looks extremely squashed.
+//Ignore, changed with the style anyway
 
     819: "Thus the code is equivalently verified" - it doesn't seem clear how to conclude this (or exactly what is meant) from the above.
+//Ignore, I think it is clear what it means and it is clear that is a
+//sigtly informal notion.
+
     "whose unsound heuristic" - what is this? What is unsound?
+//Ignore, is this rev asking us to explain in detail any thing he does not know?
 
     829: "behaves differently" -typo here, also - in what way differently?
+//DONE typo, and yes, this rev wants us to explain any single thing that we mention.
 
     pg 18: I liked the discussion after the table; I'm not so sure what to make of the counts of characters/tokens. The final sentence before 6.2 seems a bit subjective; at least it's hard to understand the evidence from the brief discussion before it.
+//Ignore, nothing to do here
 
     967: "looses" should say "loses"
+//DONE
 
     976: in terms of comparison with the state-of-the-art, I think it would be reasonable to include this footnote explicitly in the original discussion (regardless of its implementation status).
+//Ignore, I think it is better as a footnote.
 
     1051: "prevents the exponential explosion" - I wasn't sure which technique this was referring to.
+//Ignore? what is their problem here?
 
-    1476: I did not find this statement convincing: a very wide variety of approaches are grouped together as failing "our strict requirements", but those requirements are not set in stone - looked at another way, I believe that these approaches attempt to support more-flexible programming styles and examples which cannot be supported by the presented technique; in that sense, they do not fit because these requirements appear to be too strict.
+    1476: I did not find this statement convincing: a very wide variety of approaches are grouped together as failing "our strict requirements", but those requirements are not set in stone -
+//Ignore, sure, you do not need to what we ask, we just notice that
+//those works do not do what we ask.. can we?
 
-    1487: Static verification has more flexible and fine-grained annotations - why would this be? Presumably anything which could be checked statically could be checked dynamically? I think static checking is a harder problem; either these annotations are needed for that reason, or because these techniques actually support more?
+ looked at another way, I believe that these approaches attempt to support more-flexible programming styles and examples which cannot be supported by the presented technique; in that sense, they do not fit because these requirements appear to be too strict.
+//Ignore, sure, we are not blaming them... we are just stating a fact.
+
+    1487: Static verification has more flexible and fine-grained annotations - why would this be? Presumably anything which could be checked statically could be checked dynamically?
+//FALSE? statically you can check foralls and exists.
+
+ I think static checking is a harder problem; either these annotations are needed for that reason, or because these techniques actually support more?
     "relies on a fragile theorem prover"- I'm not sure what to make of this claim; it doesn't seem justified here.
+//Ignore, does this rev have any practical experience with timeouts?
 
     "Dafny is also generally highly restrictive..." - I don't understand what this means - does Dafny have restrictions on reference mutation (like the presented work)?
-
-Hi Alex.
-Giving a fast look to those:
-The first wanted a revision, not a rejection
-The second was keen to accept?
-The third is not very clear from the text....
-So... why we got rejected?
-
-What should we do at this point? try to discover who is it rev 1 and
-invite him to join the paper?
-
- 
-Hi Alex.
-Giving a fast look to those:
-The first wanted a revision, not a rejection
-The second was keen to accept?
-The third is not very clear from the text....
-So... why we got rejected?
-
-What should we do at this point? try to discover who is it rev 1 and
-invite him to join the paper?
-
-12 Oct 2020, 19:46
-	
-to me
-How about addressing the reviewer one including comparing with recent work and specifically with:
-
-Muller et al.'s Modular Invariants for Layered Object Structures, Science of Computer Programming 62(3), October 2006.
-> - Drossopolou et al.'s A Unified Framework for Verification Techniques for Object Invariants, ECOOP'08.
-
-If you can do that comparison and still consider this work different we can send it to JOT.
-
-If you want higher venue then we can ask one of: Tobias, Sophia or Peter M. To be a co author?
-
-Thoughts?
-
-Cheers,
-Alex.
-
-
-
-Cheers,
-Alex.
-From: Marco Servetto <marco.servetto@gmail.com>
-Sent: Saturday, October 10, 2020 10:38:56 AM
-To: Alex Potanin <alex.potanin@vuw.ac.nz>
-Subject: Re: FW: TOPLAS-00007-2020 Decision
- 
-Hi Alex.
-Giving a fast look to those:
-The first wanted a revision, not a rejection
-The second was keen to accept?
-The third is not very clear from the text....
-So... why we got rejected?
-
-What should we do at this point? try to discover who is it rev 1 and
-invite him to join the paper?
-
-	
-to Alex
-Hi Alex.
-In my head we did already compare with those two works,
-however in the head of the reviewer we did not or we did not do it enough.
-As the rev also said, the type system in those two works have no
-recovery (thus, they are not very usable)
-Also, those two works have the conventional invariants that can be seen broken.
-So... quite different in my opinion... but the rev seams to disagree.
+//Ignore

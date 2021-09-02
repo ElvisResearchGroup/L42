@@ -50,6 +50,10 @@ Despite the code for \Q@Person.invariant()@ intuitively looking correct and dete
 In particular, note how in the presence of dynamic class loading, we have no way of knowing what the type of \Q@name@ could be. Since our system allows non-determinism only through capability objects, and 
 restricts their creation, the above example is prevented.
 
+Moreover, since our systems allows  
+non-determinism only through \Q@mut@ methods on capability objects, 
+even if an object has a \Q@capsule@ field referring to a file IO object, it would be unable to read such file during an invariant, since a \Q@mut@ reference would be required, but only a \Q@read@ reference would be available.
+
 \subheading{Allowing Internal Mutation Through Back Doors?}
 Rust~\cite{matsakis2014rust} and Javari~\cite{TschantzErnst05}
 allow interior mutability:

@@ -14,17 +14,17 @@ To express our type system assumptions, we first need some auxiliary definitions
 \indent $\immut(\s, e, l)$ iff $\exists \E, l'$ such that:
 \begin{iitemize}
 \item $e = \E[l']$, \tyr{l'}{\Kw{imm}\,\_}, and $l \in \rog(\s, l')$, or
-\item $\reach(\s, e, l')$, $\Ss(l').f = \Kw{imm}\,\_$, and $l \in \rog(\s, \s[l'.f])$.
+\item $\reach(\s, e, l')$, $\exists f$ such that $\Ss(l').f = \Kw{imm}\,\_$, and $l \in \rog(\s, \s[l'.f])$.
 \end{iitemize}
 
-\noindent We define the \mrog of an $l$ to be the $l'$s reachable from $l$ by traversing through any number of \Q!mut! and \Q!capsule! fields:\\
+\noindent We define the \mrog of an $l$ to be the locations reachable from $l$ by traversing through any number of \Q!mut! and \Q!capsule! fields:\\
 \indent $l' \in \mrog(\s, l)$ iff:%
 \begin{iitemize}
 	\item $l' = l$ or
 	\item $\exists f$ such that $\Ss(l).f \in \{\Kw{capsule}\,\_, \Kw{mut}\,\_\}$, and $l' \in \mrog(\s, \s[l.f])$
 \end{iitemize}
 
-\noindent Now we can define what it means for an $l$ to be \muty\footnote{We use the term \muty to distinguish from \immut: an object might be neither \muty nor \immut, e.g. if there are only \Q!read! references to it.} by a sub-expression $e$, found in \E: something in $l$ is reachable from a \Q!mut! reference in $e$, by passing through any number of \Q!mut! and \Q!capsule! fields:\\
+\noindent Now we can define what it means for an $l$ to be \muty\footnote{We use the term \muty to distinguish from `not \immut': an object might be neither \muty nor \immut, e.g. if there are only \Q!read! references to it.} by a sub-expression $e$, found in \E: something in $l$ is reachable from a \Q!mut! reference in $e$, by passing through any number of \Q!mut! and \Q!capsule! fields:\\
 \indent $\muty(\s, \E, e, l)$ iff $\exists \E',l'$ such that:
 \begin{iitemize}
 	\item $e = \E'[l']$, $\tyr[\E']{l'}{\Kw{mut}\,\_,}$ and
@@ -35,6 +35,10 @@ To express our type system assumptions, we first need some auxiliary definitions
 \indent $\encap(\s, \E, l)$ iff $\forall l' \in \rog(\s, l)$, if $\muty(\s, \h, \E[l], l')$, then 
 not $\reach(\s, \E, l')$.
 
+That is, a location $l$ is encapsulated within a given memory and main expression 
+if everything in its $\mrog$ would be unreachable from that main expression with a single use of 
+$l$ removed.
+That single use of $l$ is the connection preventing those mutatable object from being garbage collectable.
 
 \subheading{Axiomatic Type Properties}
 Here we assume a slight variation of the usual \thm{Subject Reduction}: a (sub) expression obtained using any number of reductions, from a well-typed and well-formed initial $\s_0|e_0$, is also well-typed:
@@ -72,7 +76,8 @@ where:
 \indent then $\emptyset; \G; \E \vdash e : \mdf\,\_$ iff $\Ss; \emptyset; \EV[\E'[\Kw{this}\coloneqq l,x_1\coloneqq v_1,\ldots,x_n\coloneqq v_n]] \vdash e' : \mdf\,\_$.
 \end{Assumption}
 
-\noindent Now we define formal properties about our RCs, thus giving them meaning. First we require that an \immut object not also be \muty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut!/\Q!capsule! reference and through \Q!mut!/\Q!capsule! fields:%
+\noindent Now we define formal properties about our RCs, thus giving them meaning. First we require that
+an \immut object can not also be \muty: i.e. an object reachable from an \Q!imm! reference/field cannot also be reached from a \Q!mut!/\Q!capsule! reference and through \Q!mut!/\Q!capsule! fields:%
 \SS\begin{Assumption}[Imm Consistency]\rm\ \\
 \indent If $\VS(\s, e)$ and $\immut(\s, e, l)$, then not $\muty(\s, \h, e, l)$.
 
@@ -119,7 +124,7 @@ If $\VS(\s', \E[\Kw{try}^{\s_0}\oC e_0\cC\ \Kw{catch}\ \oC e_1\cC])$, then\\
 
 We use strong exception safety to prove that locations preserved by \Q@try@ blocks are never monitored (this is important as it means that a \Q!catch! that catches a monitor failure will not be able to see the responsible object):%
 \SS\begin{Lemma}[Unmonitored Try]\rm
-	If $\VS(\s, e)$, $\forall \E$, if $e = \E[\Kw{try}^{\s_0}\oC\E[\M{l}{\_}{\_}]\cC\,\_])$, then $l\notin\s_0$
+	If $\VS(\s, e)$, $\forall \E$, if $e = \E[\Kw{try}^{\s_0}\oC\E'[\M{l}{\_}{\_}]\cC\,\_])$, then $l\notin\s_0$
 \end{Lemma}\SS
 \begin{proof}
 The proof is by induction: after 0 reduction steps, $e$ cannot contain a monitor expression by the definition of \VS. If this property holds for $\VS(\s, e)$ but not for $\s'|e'$ with $\s|e\rightarrow \s'|e'$, we must have applied the \textsc{update}, \textsc{mcall}, or \textsc{new} rules; since our well-formedness rules on method bodies prevent any other reduction step from introducing a monitor expression. If the reduction was a \textsc{new}, $l$ will be fresh, so it could not have been in $\s_0$. If the reduction was an \textsc{update}, by \thm{Mut Update}, $l$ must have been \Q!mut!, similarly \textsc{mcall} will only introduce a monitor over a call to a \Q!mut! method, so by \thm{Type Consistency}, $l$ was \Q!mut!; either way we have that $l$ was \muty, since our reductions never change the $\s_0$ annotation, by \thm{Strong Exception Safety}, we have that $l \notin \s_0$.
@@ -132,7 +137,7 @@ We can use our object capability discipline (described in Section \ref{s:formali
 \item[] $\s|\EV[l.\invariant] \rightarrow \s'|\EV[e'] \rightarrow^{+} \s''|\EV[e'']$,
 \end{iitemize}
 
-\indent then $\s'' = \s,\_$, $\s|\EV[l.\invariant] \Rightarrow^+ \s''|\EV[e'']$, and $\forall l' \in \dom(\s)$, not $\muty(\s'', \EV, e'', l)$.
+\indent then $\s'' = \s,\_$, $\s|\EV[l.\invariant] \Rightarrow^+ \s''|\EV[e'']$, and $\forall l' \in \dom(\s)$, not $\muty(\s'', \EV, e'', l')$.
 \end{Lemma}\SS
 \begin{proof}
 The proof will proceed by induction.
@@ -142,7 +147,7 @@ By our well-formedness rules, the \Q!invariant()! method takes a \Q!read! \Q!thi
 
 The only non-deterministic single reduction steps are for calls to \Q!mut! methods on a \Q!Cap!; however \Q!invariant()! is a \Q!read! method, so even if $l$ = $c$, we have $\s|\EV[l.\invariant] \Rightarrow \s'|\EV[e']$. In addition, since \textsc{mcall} does not mutate $\s'$ with have $\s' = \s$.
 
-\emph{Inductive case}: Consider $\s|\EV[l.\invariant] \Rightarrow^+ \s'|\EV[e'] \rightarrow \s''|\EV[e'']$. We inductively assume that $\forall l' \in \dom(\s)$, not $\muty(\s', \EV, e', l)$; thus by \thm{Mut Consistency}, each such $l'$ is not \muty in $e'$. We also inductively assume that $\s' = \s,\_$, since nothing in $\s$ was \muty: by \thm{Mut Update}, our reduction can't have modified anything in \s, i.e. $\s'' = \s,\_$. As our reduction rules never remove things from memory, $c \in \dom(\s)$, so it can't by $\muty$ in $e'$. By definition of \Q!Cap!, no other instances of \Q!Cap! exist, thus by \thm{Type Consistency}, no \Q!mut! methods of \Q!Cap! can be called; since calling such a method is the only way to get a non-deterministic reduction, we have $\s'|\EV[e'] \Rightarrow \s''|\EV[e'']$.
+\emph{Inductive case}: Consider $\s|\EV[l.\invariant] \Rightarrow^+ \s'|\EV[e'] \rightarrow \s''|\EV[e'']$. We inductively assume that $\forall l' \in \dom(\s)$, not $\muty(\s', \EV, e', l)$; thus by \thm{Mut Consistency}, each such $l'$ is not \muty in $e'$. We also inductively assume that $\s' = \s,\_$, since nothing in $\s$ was \muty: by \thm{Mut Update}, our reduction can't have modified anything in \s, i.e. $\s'' = \s,\_$. As our reduction rules never remove things from memory, $c \in \dom(\s)$, so it can't be $\muty$ in $e'$. By definition of \Q!Cap!, no other instances of \Q!Cap! exist, thus by \thm{Type Consistency}, no \Q!mut! methods of \Q!Cap! can be called; since calling such a method is the only way to get a non-deterministic reduction, we have $\s'|\EV[e'] \Rightarrow \s''|\EV[e'']$.
 \end{proof}
 
 %Thanks to how our reduction rules are designed, especially \textsc{try error},
@@ -185,7 +190,7 @@ Now we define and prove important properties about our novel \Q!capsule! fields.
 \item not $\reach(\s, e', l)$.
 \end{iitemize}
 
-\noindent Now we formally state the core properties of our \Q!capsule! fields (informally described in \ref{s:protocol}):%
+\noindent Now we formally state the core properties of our \Q!capsule! fields (informally described in Section \ref{s:protocol}):%
 \SS\begin{theorem}[Capsule Field Soundness]\rm
 If $\VS(\s, e)$ then $\forall l$, if $\reach(\s, e, l)$, then:\\
 \indent $\HNC(\s, l)$ and either:
@@ -346,7 +351,7 @@ Now we assume that everything reachable from the previous \VS was \valid or \mon
 
 	\item (\textsc{monitor exit}) $\s|\M{l}{v}{\Kw{true}}\rightarrow \s|v$:
 	\begin{itemize}
-	\item[] By our \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started of as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \valid. This rule does not modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors on other $l$s, thus every other pre-existing $l'$ is still \valid (due to \thm{Determinism}), or \mony.
+	\item[] By our \VS and our well-formedness requirements on method bodies, the monitor expression must have been introduced by \textsc{update}, \textsc{mcall}, or \textsc{new}. In each case the 3\textsuperscript{rd} expression started off as $l.\invariant$, and it has now (eventually) been reduced to $\Kw{true}$, thus by \thm{Determinism} $l$ is \valid. This rule does not modify pre-existing memory, introduce pre-existing $l$s into the main expression, nor remove monitors on other $l$s, thus every other pre-existing $l'$ is still \valid (due to \thm{Determinism}), or \mony.
 	\end{itemize}
 
 		\item (\textsc{new}) $\s|\EV[\Kw{new}\ C\oR\vs\cR]\rightarrow \s,l\mapsto C\{\vs\}|\EV[ \M{l}{l}{l.\invariant}]$:
