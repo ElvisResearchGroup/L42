@@ -120,8 +120,11 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
         if(res!=null){res.add(currentMdf);}        
         }
       }
-    if(lastErr.msgPart().startsWith("Incompatible modifiers for method call")){throw lastErr;}
-    errIf(true,e,ErrMsg.methCallNoCompatibleMdfParametersSignature(e.s(),wrongParameters));
+    if(lastErr.ismethCallNoCompatibleMdfParametersSignature()){throw lastErr;}
+    var msg=ErrMsg.methCallNoCompatibleMdfParametersSignature(e.s(),wrongParameters);
+    throw new EndError.TypeError(e.poss(),msg){
+      public boolean ismethCallNoCompatibleMdfParametersSignature(){return true;}
+      };
     }
   @Override public void visitOpUpdate(OpUpdate e){
     mustSubMdf(Immutable,expected,e.poss());

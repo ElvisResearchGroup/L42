@@ -18,7 +18,7 @@ public abstract class EndError extends RuntimeException{
     this.msgPart=msg;
     this.poss=poss;
     }
-  public String msgPart(){return msgPart;}
+  public boolean ismethCallNoCompatibleMdfParametersSignature(){return false;}//override handler
   @Override public String getMessage(){
     if(msg==null){msg=ErrMsg.posString(poss)+msgPart+computeMsg();}
     return msg;
