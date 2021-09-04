@@ -256,8 +256,7 @@ This is a very strong statement because $\valid(\s,l)$ requires
 the invariant of $l$ to deterministically terminate, and termination is a difficoult 
 property to ensure.
 Our setting do ensure termination of the invariant of any $l$ in a redex.
-Non terminating \Q@invariant()@ methods can be encoded, but they
-would cause the monitor expression to never terminate. Thus, an
+This works because non terminating \Q@invariant()@ methods would cause the monitor expression to never terminate. Thus, an
 $l$ with a non terminating \Q@invariant()@ is never involved in an untrusted redex.
 Invariants are determistic computations in function of the state of $l$.
 If $l$ is in a redex, a monitor expresson must have terminated after the object instantion
