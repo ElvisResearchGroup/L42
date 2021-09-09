@@ -118,7 +118,8 @@ public class Deps{
       "trusted:lazyCache",
       "trusted:eagerCache",
       "trusted:invalidateCache",
-      "trusted:readNowCache"
+      "trusted:readNowCache",
+      "trusted:forkJoin"
       );
   public Deps collectDeps(Program p0, List<MWT> mwts){
     var deps=new DepsV(p0);

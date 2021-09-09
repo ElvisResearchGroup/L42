@@ -17,9 +17,14 @@ public class CacheNowGenerator extends CacheLazyGenerator{
     }
   @Override public void check(boolean allowAbs, MWT mwt, J j){//allowAbs correctly unused
     MH mh=mwt.mh();
+    var natUrl=mwt.nativeUrl();
     if(!mh.mdf().isRead()){
       throw new EndError.TypeError(mwt._e().poss(),
-        ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),"readable methods",mh.mdf(),"readable methods"));
+        ErrMsg.nativeParameterInvalidKind(!natUrl.isEmpty(),natUrl,mh,"readable methods",mh.mdf(),"readable methods"));
+      }
+    if(!mh.exceptions().isEmpty()){
+      throw new EndError.TypeError(mwt._e().poss(),
+        ErrMsg.nativeParameterInvalidKind(!natUrl.isEmpty(),natUrl,mh,"no exceptions",mh.exceptions(),"exceptions declared"));
       }
     super.check(allowAbs,mwt, j);
     }

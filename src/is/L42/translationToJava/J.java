@@ -415,7 +415,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
     c("}}");nl();
     if(needClearCache()){generateClearCache();}
     }
-  private boolean needClearCache(){return !fields.xs.isEmpty() && fields.cacheReadLazy.size()+fields.cacheNow.size()!=0;}
+  public boolean needClearCache(){return !fields.xs.isEmpty() && fields.cacheReadLazy.size()+fields.cacheNow.size()!=0;}
   private void generateClearCache() { 
     c("public void clearCache(){");indent();nl();
     for(MWT mwti:fields.cacheReadLazy){
@@ -427,7 +427,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       c("this."+name+"="+name+"(this);");nl();
       }
     c("}");deIndent();nl();
-
    }
   private void addCachableMethodsNoFields(String jC,String jCName){
     c("static final Class<"+jC+"> _class="+jC+".class;");nl();
@@ -569,14 +568,6 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       NativeDispatch.nativeCode(k,mwt,this);
       return;
       }
-    if(CacheNowGenerator.isCapsuleMutator(mwt,this) && needClearCache()){
-      c("var Res=");
-      visitE(mwt._e());
-      c(";");    
-      c("£xthis.clearCache();");
-      c("return Res;");
-      return;
-      }    
     if(mwt._e()!=null){
       c("return ");
       visitE(mwt._e());

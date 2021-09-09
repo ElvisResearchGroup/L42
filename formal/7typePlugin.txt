@@ -32,14 +32,16 @@ _______
     MWT.mdf=read
     MWT.T.mdf in {imm,class}
     MWT.pars=empty
-    //Note: we allow exceptions. I can not find a problem for it on 5/7/2020. Note, this is not a capsule mutator but an invariant
+    MWT.exceptions=empty
+    //exceptions empty, otherwise when called after clearCache could be try-catched
     MWT.s not of form #$_(_)//is sufficient since bridges must be mut/lent
     forall ctx such that MWT.e=ctx[this],exists ctx' such that
       ctx=ctx'[[].m::0()] and immOrCapsule(MHs,m::0)
     clearCacheGood(p(This0),MHs)
 //Note:we can not just use a read invariant method with no constraints, because we could have
 //this.beer().see(this); return !this.isEmpty() and now beer see a possibly broken this. 
-    
+
+* typePlugin(typed?;p;MWT;forkJoin) = forkJoin(p(This0), MWT)    
 _______
 #define immOrCapsule(MHs,m)    clearCacheGood(L,MHs)
 * immOrCapsule(MHs,#sx::0)
@@ -69,3 +71,34 @@ _______
     //NOTE: if the capsule exposers was to return lent 
     //then it would be MWT.T.mdf !=lent, but
     //now capsule exposers only return mut.
+    
+_______
+#define forkJoin(L, MWT)    okE(G,e,L)    clearOn(L,s)= x::0
+* forkJoin(L, MWT) holds iff:
+    MWT.e =(Ds e)
+    MWT.exceptions=empty
+    forall D in Ds okE(MWT.G,D.e)
+    forall D in Ds, FV(D.e) disjoint dom(Ds)
+    forall D1, D2 in Ds where
+        D1!=D2,
+        D1.e=ctx[this.m(x1=e1..xn=en)],
+        D2.e=ctx'[this.m'(x'1=e'1..x'k=e'n)]
+        x'=clearOn(L,m(x1..xn))
+        x"=clearOn(L,m'(x'1..x'k))
+      we have x'!=x"
+
+* okE(G,e,L)
+    recursivelly propagates on the structure of 'e', but
+* okE(G,x,L) holds iff 
+    either G(x) undefined
+    or G(x).mdf in {imm,capsule,class}
+    or G(x).mdf=read and G(this).mdf in {imm,capsule,class,read}
+* okE(G,this.m(x1=e1..xn=en),L) holds iff
+    okE(G,e1,L)..okE(G,en,L) holds
+    either G(this).mdf in {imm,capsule,class,read}
+    or G(this).mdf in {mut,lent} 
+      and clearOn(L,m(x1..xn)) is defined
+  
+* clearOn(L,s)= x::0
+    L(s)= MH=native{...clear..} ctx[this.#?x::0()]
+    //the field name, if any, that selector s is a clear method for.

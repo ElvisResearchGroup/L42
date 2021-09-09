@@ -290,6 +290,8 @@ public class ErrMsg {
   "native slave invalid:"+_1
   ;}public static String nativeKindInvalidSelector(Object _1,Object _2){return
   "native kind "+_1+" can not be applied on #$ method "+_2
+  ;}public static String nativeKindInvalidNativeKind(Object mh,Object expected,Object actual){return
+  "method "+mh+" must be annotated native as "+expected+" but it is "+(actual.toString().isEmpty()?"<empty>":actual)
   ;}public static String nativeBodyInvalidThis(boolean isNative,Object _1,Object mh){return
   (isNative?"native":"")+" body "+_1+" has selector "+mh+"; uses this for more then just accesses a imm/capsule field"
   ;}public static String nativeBodyInvalidThisCount(boolean isNative,Object _1,Object mh){return

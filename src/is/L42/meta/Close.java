@@ -280,8 +280,9 @@ public class Close extends GuessFields{
     if(!m.mh().t().mdf().isIn(Mdf.Immutable, Mdf.Class, Mdf.Readable)){err.throwErr(m,"can not be made cached; the return type modifier must be imm, class or read; but it is "+m.mh().t().mdf().inner);}
     }
   public void processLazyCache(MWT m){
-    //if(!m.mh().mdf().isIn(Mdf.Immutable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
-    if(!m.mh().mdf().isIn(Mdf.Immutable,Mdf.Readable, Mdf.Class)){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached; the method is annotated native "+m.nativeUrl());}
+    var immReadOrClass=m.mh().mdf().isIn(Mdf.Immutable,Mdf.Readable, Mdf.Class);
+    if(!immReadOrClass){err.throwErr(m,"can not be made cached; the receiver modifier must be imm or class but it is "+m.mh().mdf().inner);}
     if(m.mh().mdf().isRead() && !noMutFields){
       err.throwErr(m,"can not be made cached; the receiver modifier is read but not all fields are imm, capsule or class");
       }
@@ -293,6 +294,7 @@ public class Close extends GuessFields{
     oldMWTs.add(m.withNativeUrl("trusted:lazyCache"));
     }
   public void processEagerCache(MWT m){
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached; the method is annotated native "+m.nativeUrl());}
     if(!m.mh().mdf().isImm()){err.throwErr(m,"can not be made cached; the receiver modifier must be imm but it is "+m.mh().mdf().inner);}
     checkZeroPars(m);
     checkRetAndBody(m);
@@ -302,6 +304,7 @@ public class Close extends GuessFields{
     processClassToRead(ClassToRead.LazyRead,m);
     }
   public void processInvalidate(MWT m){
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached; the method is annotated native "+m.nativeUrl());}
     mustAddThis0Coherence=true;//will use This0
     if(m.key().xs().isEmpty()){
       err.throwErr(m,"first parameter must refer to a capsule field as mut or lent");
@@ -333,6 +336,7 @@ public class Close extends GuessFields{
     var mh1=new MH(Mdf.Mutable,m.mh().docs(),m.mh().t(),s1,ts1,m.mh().exceptions());
     var m1=m.withMh(mh1);
     m1=m1.with_e(Utils.ThisCall(pos,s,exs1));
+    m1=m1.withNativeUrl("trusted:invalidateCache");
     newMWTs.add(m1);
     oldMWTs.add(m);
     }
@@ -351,6 +355,7 @@ public class Close extends GuessFields{
       }
     }
   public void processClassToRead(ClassToRead ctr,MWT m){
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached; the method is annotated native "+m.nativeUrl());}
     checkRetAndBody(m);
     checkClassRec(m);
     mustAddThis0Coherence=true;//will use This0

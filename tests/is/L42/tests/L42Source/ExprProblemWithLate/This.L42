@@ -1,0 +1,132 @@
+reuse [L42.is/AdamsTowel]
+Case = Decorator:{
+  method Trait (Trait trait)[Message.Guard] =
+    Data('This,autoNorm=Bool.true()):trait
+  }
+Base = Trait:{//base is defined exactly as before
+  Node  = {interface}
+  Nodes = Collection.list(Node)
+  P     = Case:{[Node] S text}
+  H1    = Case:{[Node] S text}
+  Div   = Case:{[Node] Nodes nodes}
+  Divs  = Collection.list(Div)
+  Head  = Case:{[Node]}
+  Body  = Case:{[Node] Divs divs}
+  Html  = Case:{[Node] Head head, Body body}
+  A     = Case:{[Node] Url href, S text}
+  }
+Abs = Base[clear='This]//a fully abstract Base
+
+ToHtml = Trait({
+  Dom  = Class.Relax:Abs:{Node = { method S toHtml() }}
+  P    = { method S toHtml() = S"<P>%(this<:@Late Dom.P).text()</P>" }
+  H1   = { method S toHtml() = S"<H1>%(this<:@Late Dom.H1).text()</H1>" }
+  Div  = { method S toHtml() = {
+    var ss = S""
+    for e in (this<:@Late Dom.Div).nodes() (ss++=e.toHtml())
+    return S"<Div>%ss</Div>"
+    }}
+  Head = { method S toHtml() = S"<Head></Head>" }
+  Body = { method S toHtml() = {
+    var ss = S""
+    for e in (this<:@Late Dom.Body).divs() ( ss++=e.toHtml() )
+    return S"<Body>%ss</Body>"
+    }}
+  Html = { method S toHtml() = {
+    (head,body) = (this<:@Late Dom.Html)
+    return S"<Div>%head.toHtml() %body.toHtml()</Div>" 
+    }}
+  A    = { method S toHtml() = {
+    (href,text) = (this<:@Late Dom.A)
+    return S"<A href=%href>%text</A>" 
+    }}
+  })['Dom=>'This]
+
+Late = {}
+
+WithH2 = Trait({
+  Dom = Class.Relax:Abs
+  H2  = Case:{[Dom.Node] S text}
+  })['Dom=>'This]
+
+JustToHtml = Class:Base:ToHtml
+
+JustH2 = Class:Base:WithH2
+
+All = Class:Trait({
+  Dom = Class.Relax:Base:WithH2:ToHtml
+  H2  = { method S toHtml() = S"<H2>%(this<:@All Dom.H2).text()</H2>" }
+  })['Dom=>'This]
+
+Clone = Trait({
+  Dom = Class.Relax:Abs:{
+    Node = {interface method This op() }
+    Div  = {[Node]    method This op() }
+    Head = {[Node]    method This op() }
+    Body = {[Node]    method This op() }
+    }
+  Extra = {
+    class method S text(S that) = that
+    class method Url url(Url that) = that
+    }
+  P     = { method Dom.Node op() = {
+    text = Extra.text((this<:@Clone Dom.P).text())
+    return Dom.P(text=text) 
+    }}
+  H1    = { method Dom.Node op() = {
+    text = Extra.text((this<:@Clone Dom.H1).text())
+    return Dom.H1(text=text) 
+    }}
+  Div   = { method Dom.Div op() = {
+    ns = (this<:@Clone Dom.Div).nodes()
+    return Dom.Div(nodes=Dom.Nodes()( for e in ns \add(e.op()) ))
+    }}
+  Head  = { method Dom.Head op() = (this<:@Clone Dom.Head) }
+  Body  = { method Dom.Body op() = Dom.Body(divs=Dom.Divs()((
+    divs = (this<:@Clone Dom.Body).divs()
+    for e in divs \add(e.op())
+    )))}
+  Html  = { method Dom.Html op() = {
+    (head, body) = (this<:@Clone Dom.Html)
+    return Dom.Html( head=head.op() body=body.op() )
+    }}
+  A={ method Dom.Node op() = {
+    (href,text) = (this<:@Clone Dom.A)
+    return Dom.A(href=Extra.url(href) text=Extra.text(text))
+    }}
+  })['Dom=>'This]
+
+ToItalian = Trait({
+  Dom = Class.Relax:Clone
+    ['Node.op()=>'Node.toItalian()]
+    [clear='Extra.text(that)]
+  Extra = { //we override Extra.text
+    class method S text(S that) =
+      S"Pizza!!!"++that
+    }
+  })['Dom=>'This][hide='Extra]
+
+PInDiv = Trait({
+  Dom = Class.Relax:Clone
+    ['Node.op()=>'Node.pInDiv()]
+    ['P.pInDiv()->'P.superPInDiv()]
+  P   = { method Dom.Node pInDiv() = {//we override P.pInDiv calling super
+      p = (this<:@PInDiv Dom.P).superPInDiv()
+      return Dom.Div(nodes=Dom.Nodes[p])
+      }
+    }
+  })['Dom=>'This][hide='Extra]
+
+Main = (
+  ast=All.A(href=Url"www.google.com" text=S" google url ")
+  Debug(S"Hello world %ast.toHtml()")
+  )
+
+N=Class:Base:ToItalian:PInDiv
+Main2=(
+  dom=N.Div(nodes=N.Nodes[N.P(text=S"Hello");N.H1(text=S"World")])
+  Debug(dom.toItalian())  
+  //prints N.Div(nodes=[N.P(text="Pizza!!!Hello"); N.H1(text="Pizza!!!World")])
+  Debug(dom.pInDiv())
+  //prints N.Div(nodes=[N.Div(nodes=[N.P(text="Hello")]); N.H1(text="World")])
+  )

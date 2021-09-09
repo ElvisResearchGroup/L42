@@ -53,7 +53,7 @@ public class CacheLazyGenerator implements Generator{
   void checkOnlyThisCallFields(MWT mwt,J j){
     mwt._e().visitable().accept(new Accumulate.SkipL<Void>(){
       @Override public void visitMCall(Core.MCall m){
-        if(isThisCall(m)){immOrCapsule(false,mwt,j,m.s());return;}
+        if(InvalidateCacheGenerator.isThisCall(m)){immOrCapsule(false,mwt,j,m.s());return;}
         super.visitMCall(m);//only pass if 0 args, thus no need of super
         }  
       @Override public void visitX(X x){//this in meth calls may be filtered above
@@ -85,8 +85,10 @@ public class CacheLazyGenerator implements Generator{
     Core.L l=j.p().topCore();
     checkClose(l);
     for(var mwt:l.mwts()){
-      if(isCapsuleMutator(mwt,j)){validCapsuleMutator(mwt,j);}
+      if(InvalidateCacheGenerator.isCapsuleMutator(mwt,j)){
+        InvalidateCacheGenerator.isAnnotatedAsCapsuleMutator(mwt);
         }
+      }
     j.cachedClearCacheGood=true;
     }
   private void checkClose(Core.L l) {
@@ -94,63 +96,6 @@ public class CacheLazyGenerator implements Generator{
       throw new EndError.TypeError(l.poss(),ErrMsg.mustHaveCloseState());
       }
   }
-  static public boolean isCapsuleMutator(MWT mwt,J j){
-    var ch=j.ch;
-    if(mwt._e()==null){return false;}
-    if(!mwt.mh().mdf().isIn(Mdf.Mutable,Mdf.Lent)){return false;}
-    var thises=new Accumulate.SkipL<ArrayList<Core.MCall>>(){
-      @Override public ArrayList<Core.MCall> empty(){return new ArrayList<>();}
-      @Override public void visitMCall(Core.MCall m){
-        if(isThisCall(m)){acc().add(m);}
-        super.visitMCall(m);
-        }}.of(mwt._e().visitable());
-    for(var mci:thises){
-      if(!mci.s().hasUniqueNum() || mci.s().uniqueNum()!=0){continue;}
-      X x=Coherence.fieldName(mci.s());
-      assert j.fields!=null:
-        "";
-      if(!j.fields.xs.contains(x)){continue;}
-      boolean caps=ch.fieldTs(x,Mdf.Mutable).stream().allMatch(t->t.mdf().isCapsule());
-      if(!caps){continue;}
-      boolean mut=ch.mhs.stream().anyMatch(m->
-        m.s().equals(mci.s()) && m.t().mdf().isIn(Mdf.Mutable,Mdf.Lent));
-      if(!mut){continue;}
-      return true;
-      }
-    return false;
-    }
-  void  validCapsuleMutator(MWT mwt,J j){
-    if(!mwt.mh().exceptions().isEmpty()){
-      throw new EndError.TypeError(mwt._e().poss(),ErrMsg.nativeBodyInvalidExceptions(!mwt.nativeUrl().isEmpty(),"capsuleMutator",mwt.mh()));
-      } 
-    if(mwt.mh().t().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.MutableFwd)){
-      throw new EndError.TypeError(mwt._e().poss(),
-          ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),
-            "not mutable or lent",mwt.mh().t(),"imm, capsule, class or read"));
-      }
-    for(var t:mwt.mh().pars()){
-      if(t.mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.Readable)){
-        throw new EndError.TypeError(mwt._e().poss(),
-            ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),
-              "not mutable, lent or read",t,"not mutable, lent or read"));
-        }
-      }
-    var thises=new Accumulate.SkipL<int[]>(){
-      @Override public int[] empty(){return new int[]{0};}
-      @Override public void visitX(X x){
-        if(!x.inner().equals("this")){return;}
-        acc()[0]++;
-        }}.of(mwt._e().visitable())[0];
-      if(thises!=1){
-        throw new EndError.TypeError(mwt._e().poss(),ErrMsg.nativeBodyInvalidThisCount(
-          !mwt.nativeUrl().isEmpty(),"capsuleMutator",mwt.mh()));
-        }      
-    }
-  static boolean isThisCall(Core.MCall m){
-    if(!(m.xP() instanceof Core.EX)){return false;}
-    var ex=(Core.EX)m.xP();
-    return ex.x().inner().equals("this");
-    }
   public static String nameFromS(S s) {
     assert s.xs().isEmpty();
     String name="£k"+s.m().replace("#", "£h");

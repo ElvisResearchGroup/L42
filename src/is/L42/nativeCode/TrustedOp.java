@@ -600,7 +600,8 @@ public enum TrustedOp {
   CacheLazy("lazyCache",Map.of(AnyKind,new CacheLazyGenerator())),
   CacheEager("eagerCache",Map.of(AnyKind,new CacheEagerGenerator())),
   CacheNow("readNowCache",Map.of(AnyKind,new CacheNowGenerator())),
-  //ClearCache("clearCache",Map.of(AnyKind,new ClearCacheGenerator())),
+  ForkJoin("forkJoin",Map.of(AnyKind,new ForkJoinGenerator())),
+  ClearCache("invalidateCache",Map.of(AnyKind,new InvalidateCacheGenerator())),
   ;
   public final String inner;
   final Map<TrustedKind,Generator>code;
