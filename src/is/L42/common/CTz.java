@@ -13,12 +13,15 @@ import java.util.function.Consumer;
 import is.L42.constraints.FreshNames;
 import is.L42.constraints.ToHalf;
 import is.L42.generated.Core;
+import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.ST;
 import is.L42.generated.Y;
 import is.L42.tools.InductiveSet;
+import is.L42.visitors.Accumulate;
+import is.L42.visitors.CloneVisitor;
 /*
     
 //what to do when the program expands?
@@ -32,7 +35,10 @@ public class CTz{
   public int hashCode() {return inner.hashCode();}
   private Map<ST,List<ST>> inner=new HashMap<>();
   public Set<Map.Entry<ST,List<ST>>> entries(){return Collections.unmodifiableSet(inner.entrySet());}
-  public CTz(Map<ST,List<ST>> innerImm){this.inner.putAll(innerImm);}
+  public CTz(Map<ST,List<ST>> innerImm){
+    this.inner.putAll(innerImm);
+    assert coherent(null);  
+    }
   public CTz(Program p,Map<ST,List<ST>> innerImm){
     for(var e:innerImm.entrySet()){
       var k=p.solve(e.getKey());
@@ -40,6 +46,7 @@ public class CTz{
       var v=L(e.getValue().stream().map(p::solve));
       this.inner.put(k, v);
       }
+    assert coherent(p);
     }
   public CTz(){}
   public Map<ST,List<ST>> releaseMap(){
@@ -53,6 +60,15 @@ public class CTz{
     return res.replace("imm ","");
     }
   public boolean coherent(Program p){
+    var visitor=new Accumulate<Void>() {
+      @Override public void visitDoc(Doc d){assert false:
+        "";} 
+      };
+    inner.entrySet().forEach(e->{
+      visitor.visitST(e.getKey());
+      visitor.visitSTz(e.getValue());
+      });
+    if(p==null){ return true; }
     for(var e:inner.entrySet()){
       assert !(e.getKey() instanceof T):e.getKey();
       assert p.solve(e.getKey())==e.getKey():
@@ -70,6 +86,7 @@ public class CTz{
       if(st instanceof T){continue;}
       plusAcc(p,st,stz1);
       }
+    assert coherent(p);
     }
   public void plusAcc(Program p,ST st,List<ST>stz1){
     assert coherent(p);

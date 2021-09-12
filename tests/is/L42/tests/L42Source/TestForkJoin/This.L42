@@ -1,0 +1,72 @@
+reuse [AdamsTowel]
+A={
+  class method Num foo(Num a)=native{trusted:forkJoin} (
+    Num tmp1=a+1Num
+    Num tmp2=a*2Num
+    a+tmp1+tmp2
+    )
+  }
+
+Main=(
+  Debug(S"Hello world %A.foo(a=3Num)")
+  {}:Test"done"(Bool.true())
+  )
+B1=Data:{
+  @Cache.ForkJoin class method Num foo(Num a) = (
+    Num tmp1=a+1Num
+    Num tmp2=a*2Num
+    a+tmp1+tmp2
+    )
+  }
+
+TraitBody1 = Trait:{
+  capsule S.List ss1
+  capsule S.List ss2
+  @Cache.Clear class method I cMss11(mut S.List ss1 S that) = (
+    ss1.add(that)
+    ss1.size()
+    )
+  @Cache.Clear class method I cMss21(mut S.List ss2 S that) = (
+    ss2.add(that)
+    ss2.size()
+    )
+  @Cache.Clear class method I cMss12(mut S.List ss1 S that) = (
+    ss1.add(that)
+    ss1.size()
+    )
+  @Cache.Clear class method I cMss22(mut S.List ss2 S that) = (
+    ss2.add(that)
+    ss2.size()
+    )
+  mut method I cMss11(S that)
+  mut method I cMss12(S that)
+  mut method I cMss21(S that)
+  mut method I cMss22(S that)
+  }
+Body1=Class:Data:TraitBody1:{
+  @Cache.ForkJoin mut method I foo(S that) = (
+    I size1=this.cMss11(that)
+    I size2=this.cMss21(that)
+    size1+size2
+    )
+  }
+Main1=(
+  b=Body1(ss1=S.List[S"a"],ss2=S.List[S"b"])
+  Debug(b.foo(S"more"))
+  {}:Test"passWithData"(Bool.true())
+  )
+MainErrs = (
+  S str={_=Data:TraitBody1:{
+      mut method I cMss11(S that)
+      mut method I cMss12(S that)
+      @Cache.ForkJoin mut method I foo(S that) = (
+        I size1=this.cMss11(that)
+        I size2=this.cMss12(that)
+        size1+size2
+        )}
+    catch Data.Close.Fail f return f.toS()
+    return S""
+    }
+  {}:Test""(actual=str expected=S
+  "[###]native method mut method This1.I foo(This1.S that) , parallel declarations are mutating capsule fields [ss1()] on multiple [###]")
+  )

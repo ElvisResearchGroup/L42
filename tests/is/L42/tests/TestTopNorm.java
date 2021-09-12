@@ -249,7 +249,7 @@ public class TestTopNorm{
         //for now we disable those types to avoid some type loops
       void )} void)}
     ""","""
-    {Res={#typed{}}#norm{}}                                          
+    {Res={#typed{}}#norm{}}                                      
     """
   );}@Test public void fwdInitDelegate(){top("""
     {A={
@@ -1097,6 +1097,175 @@ public class TestTopNorm{
     }
     """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
     );}
+
+@Test public void forkJoinErrShapeInvalid(){topFail(EndError.TypeError.class,"""
+    {A={
+      class method mut This ()
+      read method read This meth() = this
+      method A foo(A a)=native{trusted:forkJoin} {
+        A tmp1=this.meth()
+        A tmp2=a.meth()
+        return this
+        }
+      }    }
+    """,ErrMsg.nativeBodyShapeInvalid(hole, hole)
+    );}
+@Test public void forkJoin1Mut(){top("""
+    {A={
+      class method mut This ()
+      read method read This meth() = this
+      method A foo(mut A a)=native{trusted:forkJoin} (
+        read A tmp1=this.meth()
+        read A tmp2=a.meth()
+        this
+        )
+      }    }
+    """);}
+@Test public void forkJoinErr2Mut(){topFail(EndError.TypeError.class,"""
+    {A={    
+      class method mut This ()
+      read method read This meth() = this
+      method A foo(mut A a,mut A b)=native{trusted:forkJoin} (
+        read A tmp1=a.meth()
+        read A tmp2=b.meth()
+        this
+        )
+      }    }
+    """,ErrMsg.nativeBodyShapeInvalid(hole, hole)
+    );}
+
+@Test public void forkJoin2CapsMut(){top("""
+    { B={ class method mut This() }
+      A={
+      mut method mut B #b::0()      
+      class method mut This of ()=this.of::0(b=B())    
+      class method mut This of::0(capsule B b)
+      mut method Void meth() = native{trusted:invalidateCache} ( _=this.#b::0() void)
+      mut method Void foo()=native{trusted:forkJoin} (
+        Void tmp1=this.meth()
+        Void tmp2=void
+        void
+        )
+      }    }
+    """
+    );}
+
+@Test public void forkJoin1CapsMut(){top("""
+    { B={ class method mut This() }
+      A={
+      mut method mut B #b::0()      
+      class method mut This of ()=this.of::0(b=B())    
+      class method mut This of::0(capsule B b)
+      mut method Void meth() = native{trusted:invalidateCache} ( _=this.#b::0() void)
+      mut method Void foo()=native{trusted:forkJoin} (
+        Void tmp1=this.meth()
+        Void tmp2=void
+        void
+        )
+      }    }
+    """
+    );}
+
+@Test public void forkJoin2capsMut(){top("""
+    { B={ class method mut This() }
+      A={
+      mut method mut B #b1::0()
+      mut method mut B #b2::0()      
+      class method mut This of ()=this.of::0(b1=B(),b2=B())    
+      class method mut This of::0(capsule B b1,capsule B b2)
+      mut method Void meth11() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth21() = native{trusted:invalidateCache} ( _=this.#b2::0() void)
+      mut method Void meth12() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth22() = native{trusted:invalidateCache} ( _=this.#b2::0() void)      
+      mut method Void foo()=native{trusted:forkJoin} (
+        Void tmp1=this.meth11()
+        Void tmp2=this.meth21()
+        void
+        )
+      }    }
+    """
+    );}
+@Test public void forkJoin2capsMut2(){top("""
+    { B={ class method mut This() }
+      A={
+      mut method mut B #b1::0()
+      mut method mut B #b2::0()      
+      class method mut This of ()=this.of::0(b1=B(),b2=B())    
+      class method mut This of::0(capsule B b1,capsule B b2)
+      mut method Void meth11() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth21() = native{trusted:invalidateCache} ( _=this.#b2::0() void)
+      mut method Void meth12() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth22() = native{trusted:invalidateCache} ( _=this.#b2::0() void)      
+      mut method Void foo()=native{trusted:forkJoin} (
+        Void tmp1=( this.meth11() this.meth12() )
+        Void tmp2=( this.meth21() this.meth22() )
+        void
+        )
+      }    }
+    """
+    );}
+
+@Test public void forkJoinErr2capsMutOverlap(){topFail(EndError.TypeError.class,"""
+    { B={ class method mut This() }
+      A={
+      mut method mut B #b1::0()
+      mut method mut B #b2::0()      
+      class method mut This of ()=this.of::0(b1=B(),b2=B())    
+      class method mut This of::0(capsule B b1,capsule B b2)
+      mut method Void meth11() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth21() = native{trusted:invalidateCache} ( _=this.#b2::0() void)
+      mut method Void meth12() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth22() = native{trusted:invalidateCache} ( _=this.#b2::0() void)      
+      mut method Void foo()=native{trusted:forkJoin} (
+        Void tmp1=this.meth11()
+        Void tmp2=this.meth12()
+        void
+        )
+      }    }
+    """,hole
+    );}
+@Test public void forkJoinErr2capsMut2Overlap(){topFail(EndError.TypeError.class,"""
+    { B={ class method mut This() }
+      A={
+      mut method mut B #b1::0()
+      mut method mut B #b2::0()      
+      class method mut This of ()=this.of::0(b1=B(),b2=B())    
+      class method mut This of::0(capsule B b1,capsule B b2)
+      mut method Void meth11() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth21() = native{trusted:invalidateCache} ( _=this.#b2::0() void)
+      mut method Void meth12() = native{trusted:invalidateCache} ( _=this.#b1::0() void)
+      mut method Void meth22() = native{trusted:invalidateCache} ( _=this.#b2::0() void)      
+      mut method Void foo()=native{trusted:forkJoin} (
+        Void tmp1=( this.meth11() this.meth21() )
+        Void tmp2=( this.meth21() this.meth22() )
+        void
+        )
+      }    }
+    """,hole
+    );}
+@Test public void wasAssertErrorOnBadPathDept(){top("""
+  {AA={}
+  WasAssertError = (_={method AA foo() = this.bar()} {})}
+  """);}
+@Test public void variantOfAboveThatWasNotBuggy(){topFail(EndError.TypeError.class,"""
+  {AA={}
+  WasAssertError = (_={} {method AA foo() = this.bar()})}
+  """,hole);}
+@Test public void variantOfAboveThatWasStillBuggy(){topFail(EndError.TypeError.class,"""
+  {AA={}
+  WasAssertError = (_={method AA foo() = this.bar()} {method AA foo() = this.bar()})}
+  """,hole);}
+@Test public void variant2OfAboveThatWasNotBuggy(){top("""
+  {AA={}
+  WasAssertError = (_={method AA foo() = this.bar()} void)}
+  """);}
+@Test public void variantOfAboveRequiringCTz(){top("""
+  {AA={method AA bb()}
+  WasAssertError = (
+    _={method AA foo() = this.bar()}
+    _={method AA foo() = (aa=this.bar().bb() aa)}//requires to infer the type of .bar()
+    {})}
+  """);}
 
 //Disabled: send the Java compiler in loop
   /*@Test*/ public void t_manyAnds(){top("""

@@ -9,12 +9,14 @@ import static is.L42.tools.General.range;
 import static is.L42.tools.General.typeFilter;
 import static is.L42.tools.General.unreachable;
 
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -67,7 +69,11 @@ public class Program implements Visitable<Program>{
     return _ofCore(path.toNCs());    
     }
   public Core.L _ofCore(P.NCs path){return this.pop(path.n())._ofCore(path.cs());}
-  public Core.L _ofCore(List<C> path){return (Core.L)top._cs(path);}
+  public Core.L _ofCore(List<C> path){
+    LL res=top._cs(path);
+    if(res==null || res.isFullL()){ return null; }
+    return (Core.L)res;
+    }
   public LL of(P path,List<Pos>errs){
     if(path==P.pAny){return emptyLInterface;}
     if(path==P.pVoid){return emptyL;}
@@ -184,18 +190,19 @@ public class Program implements Visitable<Program>{
     }    
   public Core.E from(Core.E e,P.NCs source){
     assert minimize(source)==source;
-    return fromVisitor(source).visitE(e);
+    return fromVisitor(source,false).visitE(e);
     }
-  private CloneVisitor fromVisitor(P.NCs source){
+  private CloneVisitor fromVisitor(P.NCs source,boolean needMinimize){
     return new CloneVisitor(){
       @Override public P visitP(P p){
-        return from(p,source);
+        return from(needMinimize?minimize(p):p,source);
         }
         @Override public ST visitSTMeth(ST.STMeth st){
         return solve(super.visitSTMeth(st));
         }
       @Override public ST visitSTOp(ST.STOp st){
-        return solve(super.visitSTOp(st));
+        var st0=super.visitSTOp(st);
+        return solve(st0);
         }
       @Override public Full.L visitL(Full.L l){throw bug();}
       @Override public Core.L visitL(Core.L l){
@@ -203,8 +210,8 @@ public class Program implements Visitable<Program>{
         }
       };
     }
-  public T from(T t,P.NCs source){return fromVisitor(source).visitT(t);}
-  public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source).visitMH(mh);}
+  public T from(T t,P.NCs source){return fromVisitor(source,false).visitT(t);}
+  public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source,false).visitMH(mh);}
   public Core.L.MWT from(Core.L.MWT mwt,P.NCs source){
     var mh=from(mwt.mh(),source);
     var docs=fromDocs(mwt.docs(),source);
@@ -212,15 +219,16 @@ public class Program implements Visitable<Program>{
     if(mwt._e()!=null){e=from(mwt._e(),source);}
     return new MWT(mwt.poss(),docs,mh,mwt.nativeUrl(),e);
     }
-  public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source).visitTs(ts);}
-  public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source).visitDocs(docs);}
-  public ST from(ST st,P.NCs source){return fromVisitor(source).visitST(st);}
-  public List<ST> fromSTz(List<ST> stz,P.NCs source){return fromVisitor(source).visitSTz(stz);}
-  public CTz from(Map<ST,List<ST>> ctz,P.NCs source){
+  public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source,false).visitTs(ts);}
+  public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source,false).visitDocs(docs);}
+  public ST from(ST st,P.NCs source,boolean needMinimize){return fromVisitor(source,needMinimize).visitST(st);}
+  public List<ST> fromSTz(List<ST> stz,P.NCs source,boolean needMinimize){return fromVisitor(source,needMinimize).visitSTz(stz);}
+  public CTz from(Map<ST,List<ST>> ctz,P.NCs source,boolean needMinimize){
     var res=new CTz();
     for(var e:ctz.entrySet()){
-      ST st=from(e.getKey(),source);
-      List<ST> stz=fromSTz(e.getValue(),source);
+      ST st=from(e.getKey(),source,needMinimize);
+      List<ST> stz=fromSTz(e.getValue(),source,needMinimize);
+      //stz=this.minimize(stz);
       if(!(st instanceof Core.T)){res.plusAcc(this, st, stz);}
       }
     return res;
@@ -243,7 +251,8 @@ public class Program implements Visitable<Program>{
     return _isSubtype(subT.p(),superT.p());
     }
   public Boolean _isSubtype(P subP,P superP){//return null if path do not exists as core
-    assert minimize(subP)==subP;
+    assert minimize(subP)==subP:
+      subP+" "+minimize(subP);
     assert minimize(superP)==superP;
     if(superP==P.pAny){return true;}
     if(subP.equals(superP)){return true;}
@@ -363,7 +372,15 @@ public class Program implements Visitable<Program>{
     return pTails.ll().inDom(c) && cleanPushed(pTails.tail());
     }
   public List<ST> solve(List<ST> stz){return L(stz,sti->solve(sti));}
+  private static class UnDocST extends CloneVisitor{
+    static T of(T t){
+      if(t.docs().isEmpty()){ return t; }
+      return t.withDocs(List.of());
+      }
+    @Override public T visitT(T t){ return of(t); }
+    }
   public ST solve(ST st){
+    st=new UnDocST().visitST(st);
     if(st instanceof T){return st;}
     if(st instanceof ST.STMeth){return solve((ST.STMeth)st);}
     if(st instanceof ST.STOp){return solve((ST.STOp)st);}
@@ -379,10 +396,10 @@ public class Program implements Visitable<Program>{
     if(pOfP0==null){return stsi.withSt(st);}
     var mwt= _elem(pOfP0.mwts(),stsi.s());
     if(mwt==null){return stsi.withSt(st);}
-    if(stsi.i()==-1){return from(mwt.mh().t(),p0);}
+    if(stsi.i()==-1){return UnDocST.of(from(mwt.mh().t(),p0));}
     assert stsi.i()<=mwt.mh().s().xs().size();
-    if(stsi.i()==0){return new Core.T(mwt.mh().mdf(),mwt.mh().docs(),p0);}
-    return from(mwt.mh().pars().get(stsi.i()-1),p0);
+    if(stsi.i()==0){return new Core.T(mwt.mh().mdf(),L(),p0);}
+    return UnDocST.of(from(mwt.mh().pars().get(stsi.i()-1),p0));
     }
   public ST solve(ST.STOp st){
     List<List<ST>> minStzi=L(st.stzs(),stzi->solve(stzi));
@@ -397,7 +414,7 @@ public class Program implements Visitable<Program>{
     if(options.size()!=1){return st.withStzs(minStzi);}
     assert options.size()==1;
     Psi psi=options.iterator().next();
-    return from(_elem(_ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p());
+    return UnDocST.of(from(_elem(_ofCore(psi.p()).mwts(),psi.s()).mh().t(),psi.p()));
     }
   static List<List<T>> tzsToTsz(List<List<T>> tzs){
     assert !tzs.isEmpty();
@@ -487,5 +504,52 @@ public class Program implements Visitable<Program>{
     if(a.isEmpty() || b.isEmpty()){return false;}
     if(!a.ll().equals(b.ll())){return false;}
     return eqTails(a.tail(),b.tail());
+    }
+  public static Map<ST, List<ST>> pruneThis0(Map<ST, List<ST>> map) {
+    return map.entrySet().stream()
+      .<Map.Entry<ST, List<ST>>>mapMulti(Program::pruneThis0)
+      .collect(Collectors.toUnmodifiableMap(Map.Entry::getKey, Map.Entry::getValue));
+    }
+  private static void pruneThis0(Map.Entry<ST, List<ST>> e, Consumer<Map.Entry<ST, List<ST>>> c) {
+    var visitor=new CloneVisitor(){
+      @Override public T visitT(Core.T t){
+        var p0=t.p();
+        var p=visitP(p0);
+        if(p==null){ return null; }
+        return new Core.T(t.mdf(),List.of(), p);
+        }
+      @Override public P visitP(P p){
+        if(!p.isNCs()){ return p; }
+        var pp=p.toNCs();
+        if(pp.n()==0){ return null; }
+        return pp.withN(pp.n()-1);
+        }
+        @Override public ST visitSTMeth(ST.STMeth stMeth){
+          var s0=stMeth.s();
+          var st0=stMeth.st();
+          var st=visitST(st0);
+          if(st==null){ return null; }
+          return new ST.STMeth(st, s0, stMeth.i());
+          }
+      @Override public ST visitSTOp(ST.STOp stOp){
+        List<List<ST>> zs=stOp.stzs().stream().map(ss->{
+          List<ST> res=ss.stream().map(this::visitST).filter(s->s!=null).toList();
+          if(res.size()!=ss.size()){ return null; }
+          return res;
+          }).filter(ss->ss!=null).toList();
+        if(zs.size()!=stOp.stzs().size()){ return null; }
+        return stOp.withStzs(zs);
+        }
+      };
+    ST key=e.getKey();
+    List<ST> val=e.getValue();
+    key=key.visitable().accept(visitor);
+    if(key==null){ return; }
+    val=val.stream()
+      .<ST>map(st->st.visitable().accept(visitor))
+      .filter(t->t!=null).toList();
+    //if(val.size()!=e.getValue().size()) { return; }
+    if(val.isEmpty()){ return; }
+    c.accept(new AbstractMap.SimpleEntry<>(key,val));
     }
   }

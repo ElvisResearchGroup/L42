@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.X;
 
 public class ErrMsg {
   public static String trimExpression(String e){
@@ -280,6 +281,8 @@ public class ErrMsg {
   "native kind "+kind+" requires the parameter "+p+" "+msg
   ;}public static String nativeParameterCountInvalid(Object _1,Object _2,Object _3){return
   "native body "+_1+" has selector "+_2+" but the parameters need to be "+_3
+  ;}public static String nativeBodyShapeInvalid(Object mh,Object shape){return
+  "native body "+mh+" body is not of shape "+shape
   ;}public static String nativeKindParCountInvalid(Object _1,Object _2,Object _3){return
   "native kind "+_1+" requires "+_2+" nativePar parameters, but "+_3+" are declared"
   ;}public static String nativeKindInvalid(Object _1){return
@@ -296,8 +299,12 @@ public class ErrMsg {
   (isNative?"native":"")+" body "+_1+" has selector "+mh+"; uses this for more then just accesses a imm/capsule field"
   ;}public static String nativeBodyInvalidThisCount(boolean isNative,Object _1,Object mh){return
   (isNative?"native":"")+" body "+_1+" has selector "+mh+"; uses this more then 1 time"
-  ;}public static String nativeBodyInvalidExceptions(boolean isNative,Object _1,Object mh){return
-  (isNative?"native":"")+" body "+_1+" has selector "+mh+"; this method must have an empty throw exception clause"
+  ;}public static String nativeBodyInvalidDsFV(MWT mwt,List<X> xs){return
+  "native method "+mwt.mh()+" "+mwt.nativeUrl()+", parallel declarations can not refer to each other, but "+xs+" are internally referred"
+  ;}public static String nativeBodyDisjointCapsuleFields(MWT mwt,List<S> ss){return
+  "native method "+mwt.mh()+" "+mwt.nativeUrl()+", parallel declarations are mutating capsule fields "+ss+" on multiple branches"
+  ;}public static String nativeBodyInvalidExceptions(MWT mwt){return
+  "native "+mwt.nativeUrl()+" with selector "+mwt.mh().key()+"; this method must have an empty throw exception clause, but it is "+mwt.mh()
   ;}public static String nativeParameterInvalidKind(boolean isNative,Object _1,Object mh,Object sig,Object _3,Object _4){return
   (isNative?"native":"")+" body "+_1+" has selector "+mh+"; required "+sig+" but the type "+_3+" is not of kind "+_4
   ;}public static String nonCoherentNoSetOfFields(Object _1){return

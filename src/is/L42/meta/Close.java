@@ -30,6 +30,7 @@ import is.L42.generated.S;
 import is.L42.generated.X;
 import is.L42.nativeCode.CacheLazyGenerator;
 import is.L42.nativeCode.CacheNowGenerator;
+import is.L42.nativeCode.ForkJoinGenerator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -129,6 +130,7 @@ public class Close extends GuessFields{
       processAllowedAbs(m);//we just let it alone
       return;
       }
+    if(match("forkJoin",m)){processForkJoin(m);return;}
     if(match("lazyCache",m)){processLazyCache(m);return;}
     if(match("eagerCache",m)){processEagerCache(m);return;}
     if(match("lazyReadCache",m)){countMutCache++;processLazyReadCache(m);return;}
@@ -279,6 +281,29 @@ public class Close extends GuessFields{
     if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached, since it is already native");}
     if(!m.mh().t().mdf().isIn(Mdf.Immutable, Mdf.Class, Mdf.Readable)){err.throwErr(m,"can not be made cached; the return type modifier must be imm, class or read; but it is "+m.mh().t().mdf().inner);}
     }
+  public void processForkJoin(MWT m){
+    if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made forkJoin; the method is annotated native "+m.nativeUrl());}
+    var fjG=new ForkJoinGenerator(){
+      protected void err(List<Pos>pos,String msg){
+        err.throwErr(m,msg);
+        }
+      protected S _clearOn(Core.L l,S s){
+        var old=_elem(l.mwts(),s);
+        if(old!=null && old._e()!=null){ return super._clearOn(l, s); }
+        List<MWT> classMWTs=l.mwts().stream()
+          .filter(m->
+            match("invalidateCache",m) &&
+            m.key().withXs(m.key().xs().subList(1,m.key().xs().size())).equals(s))
+          .toList();
+        if(classMWTs.size()!=1){ return null; }
+        MWT classMWT=classMWTs.get(0);
+        X x=classMWT.key().xs().get(0);
+        return new S(x.inner(),List.of(),-1);
+        }      
+      };
+    fjG.check(false, m, oldJ);
+    oldMWTs.add(m.withNativeUrl("trusted:forkJoin"));
+    }
   public void processLazyCache(MWT m){
     if(!m.nativeUrl().isEmpty()){err.throwErr(m,"can not be made cached; the method is annotated native "+m.nativeUrl());}
     var immReadOrClass=m.mh().mdf().isIn(Mdf.Immutable,Mdf.Readable, Mdf.Class);
@@ -367,9 +392,9 @@ public class Close extends GuessFields{
     var mh1=new MH(Mdf.Readable,m.mh().docs(),m.mh().t(),s1,General.L(),General.L());
     var old=_elem(p.topCore().mwts(),s1);
     if(old!=null){
-      if(old._e()!=null){return;}//Do nothing if the method s1 is already present and implemented
+      //if(old._e()!=null){return;}//Do nothing if the method s1 is already present and implemented
       boolean eq=Utils.equalMH(old.mh(),mh1);
-      if(!eq){err.throwErr(old,"Generated method "+mh1+" would conflict with existent abstract method "+old.mh());}
+      if(!eq || old._e()!=null){err.throwErr(old,"Generated method "+mh1+" would conflict with existent abstract method "+old.mh());}
       oldMWTs.add(old);
       }
     var m1=m.withMh(mh1);//m1: the no arg meth calling the static method s

@@ -73,22 +73,23 @@ _______
     //now capsule exposers only return mut.
     
 _______
-#define forkJoin(L, MWT)    okE(G,e,L)    clearOn(L,s)= x::0
+#define forkJoin(L, MWT)    okE(G,e,L)    okEMut(G,e)    clearOn(L,s)= x::0
 * forkJoin(L, MWT) holds iff:
-    MWT.e =(Ds e)
+    MWT.e =(D1..Dn e)
     MWT.exceptions=empty
-    forall D in Ds okE(MWT.G,D.e)
-    forall D in Ds, FV(D.e) disjoint dom(Ds)
-    forall D1, D2 in Ds where
-        D1!=D2,
-        D1.e=ctx[this.m(x1=e1..xn=en)],
-        D2.e=ctx'[this.m'(x'1=e'1..x'k=e'n)]
-        x'=clearOn(L,m(x1..xn))
-        x"=clearOn(L,m'(x'1..x'k))
-      we have x'!=x"
+    either forall i in 1..n okE(MWT.G,Di.e)
+    or forall i in 1..n\i okEMut(MWT.G,Di.e)
+    forall i in 1..n, FV(Di.e) disjoint dom(D1..Dn)
+    forall ij in 1..n where
+        i!=j,
+        Di.e=ctx[this.m(x1=e1..xn=en)],
+        Dj.e=ctx'[this.m'(x'1=e'1..x'k=e'n)]
+        s=clearOn(L,m(x1..xn))
+        s'=clearOn(L,m'(x'1..x'k))
+      we have s!=s'
 
 * okE(G,e,L)
-    recursivelly propagates on the structure of 'e', but
+    recursively propagates on the structure of 'e', but
 * okE(G,x,L) holds iff 
     either G(x) undefined
     or G(x).mdf in {imm,capsule,class}
@@ -98,7 +99,13 @@ _______
     either G(this).mdf in {imm,capsule,class,read}
     or G(this).mdf in {mut,lent} 
       and clearOn(L,m(x1..xn)) is defined
-  
+
+* okEMut(G,e)
+    recursively propagates on the structure of 'e', but
+* okEMut(G,x) holds iff 
+    either G(x) undefined
+    or G(x).mdf in {imm,capsule,class}
+
 * clearOn(L,s)= x::0
     L(s)= MH=native{...clear..} ctx[this.#?x::0()]
     //the field name, if any, that selector s is a clear method for.

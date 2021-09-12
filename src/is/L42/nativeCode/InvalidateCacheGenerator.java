@@ -48,7 +48,7 @@ public class InvalidateCacheGenerator implements Generator{
       throw new EndError.TypeError(mwt._e().poss(),ErrMsg.nativeKindInvalidNativeKind(mwt.mh(),"trusted:invalidateCache",mwt.nativeUrl()));
       }
     if(!mwt.mh().exceptions().isEmpty()){
-      throw new EndError.TypeError(mwt._e().poss(),ErrMsg.nativeBodyInvalidExceptions(!mwt.nativeUrl().isEmpty(),"capsuleMutator",mwt.mh()));
+      throw new EndError.TypeError(mwt._e().poss(),ErrMsg.nativeBodyInvalidExceptions(mwt));
       } 
     if(mwt.mh().t().mdf().isIn(Mdf.Mutable,Mdf.Lent,Mdf.MutableFwd)){
       throw new EndError.TypeError(mwt._e().poss(),

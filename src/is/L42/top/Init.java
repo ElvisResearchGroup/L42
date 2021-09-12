@@ -11,6 +11,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 
 import is.L42.common.CTz;
 import is.L42.common.Constants;
@@ -94,7 +95,7 @@ public class Init {
     //TestCachingCases.timeNow("begin1");
     Resources.loader=new Loader();
     //TestCachingCases.timeNow("begin2");
-    LayerE l=LayerL.empty().push(this.p.top,new CTz().releaseMap());
+    LayerE l=LayerL.empty().push(this.p.top,Map.of());
     //TestCachingCases.timeNow("begin3");
     R res=c.openClose(new GLOpen(l,makeState()));
     if(res.isErr()){throw res._err;}

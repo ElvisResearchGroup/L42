@@ -84,7 +84,8 @@ public class State implements Serializable{
       Full.L topL=(Full.L)p.top;
       Core.L coreL=SortHeader.coreTop(p,uniqueId++);
       Program p0=p.update(coreL,false);
-      CTz ctz=p0.from(ctzMap,P.pThis1);
+      //CTz ctz=new CTz(ctzMap);//was p0.from(ctzMap,P.pThis1);
+      CTz ctz=p0.from(ctzMap,P.pThis0,true);//we are in a new context, where we could do more 'solve' 
       assert ctz.coherent(p0);
       //next line, is called mhs to be closer to the formalism
       List<MWT> mhs=L(coreL.mwts().stream().filter(mi->_elem(topL.ms(), mi.key())!=null));

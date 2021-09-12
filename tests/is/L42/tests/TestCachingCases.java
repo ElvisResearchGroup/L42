@@ -76,7 +76,13 @@ public class TestCachingCases {
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() method Void diff(D d)=(_=d.bar() void)}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
     "");}
-@Test void changeTrashIllTypedCTzDeep(){pass(
+@Test void deep0Level_changeTrashIllTypedCTzDeep(){pass(
+    "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() method Void diff(D d)=(_=d.bar() void)}} {})} Late={}}",
+    "{A0={B1=(_aux={D={method Library foo()[Late]=this.bar() method Void diff(D d)=(_=d.bar() void)}} {})} Late={}}",
+    "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",
+    "NCiO:A0,NCiO:B1,NCiO:D,topO:3,topC:3,NCiC:D,topC:2,NCiC:B1,");}
+
+@Test void deep1Level_changeTrashIllTypedCTzDeep(){pass(
     "{A0={B1=(_aux={D={method Void foo()[Late]=this.bar() Inner={method Void diff(D d)=(_=d.bar() void)}}} {})} Late={}}",
     "{A0={B1=(_aux={D={method Library foo()[Late]=this.bar() Inner={method Void diff(D d)=(_=d.bar() void)}}} {})} Late={}}",
     "topO:0,NCiO:A0,topO:1,NCiO:B1,topO:2,NCiO:D,topO:3,NCiO:Inner,topO:4,topC:4,NCiC:Inner,topC:3,NCiC:D,topC:2,topO:2,topC:2,NCiC:B1,topC:1,NCiC:A0,NCiO:Late,topO:1,topC:1,NCiC:Late,topC:0,",

@@ -18,6 +18,7 @@ import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.LDom;
 import is.L42.generated.LL;
+import is.L42.generated.P;
 import is.L42.generated.ST;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.visitors.Accumulate;
@@ -200,12 +201,14 @@ class GLOpen extends G{
     List<Half.E> e1n;
     //TestCachingCases.timeNow("GLOpen6");
     if(eq){
-      p2=((LayerL)rc._g.layer()).p();;
+      p2=((LayerL)rc._g.layer()).p();
       ctz=((LayerL)rc._g.layer()).ctz();
       e1n=((LayerL)rc._g.layer()).e1n();
       }
     else{
-      State.TopOpenOut out=s2.topOpen(p,state.uniqueId==0?Collections.emptyMap():layer.ctz());
+      Map<ST,List<ST>> ctzMap=Collections.emptyMap();
+      if(state.uniqueId!=0){ ctzMap=p.from(layer.ctz(),P.pThis1,false).releaseMap(); }
+      State.TopOpenOut out=s2.topOpen(p,ctzMap);
       p2=out.p;
       ctz=out.releasedMap;
       e1n=out.e1n;
@@ -235,13 +238,13 @@ class GLClose extends G{
     if(eq && rc.isErr()){return rc;}
     State s2=(eq?rc._g.state:state).copy();
     CTz ctz=new CTz(layer.ctz());
+    assert ctz.coherent(layer.p());
     assert !eq || layer.ctz().equals(l2.ctz()); 
     Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     LayerE l=layer.layerE();
     Half.E newE=set(l.e(),res);
-    l=l.layerL().push(newE,ctz.releaseMap());
-    Full.L newL=_get(newE);
-    if(newL!=null){return new R(new GLOpen(l,s2),res);}
+    l=l.layerL().push(newE,Program.pruneThis0(ctz.releaseMap()));
+    if(_get(newE)!=null){ return new R(new GLOpen(l,s2),res); }
     return new R(new GEClose(l,s2),res);
     }
   public boolean needOpen(){return false;}
@@ -284,8 +287,14 @@ class GEOpen extends G{
     //TODO: the meta e should not touch the ctzMap anyway, right?
     //var ctzMap=eq?((LayerE)rc._g.layer()).ctz():ctz.releaseMap();
     var ctzMap=layer.ctz();
-    LayerE newLayer=layer.push(e,ctzMap);
-    if(l==null){return new R(new GEClose(newLayer,s2),e);}
+    if(l==null){
+      LayerE newLayer=layer.push(e,ctzMap);
+      return new R(new GEClose(newLayer,s2),e);
+      }
+    //TODO: we moved the following
+    //CTz ctzNested=layer.p().from(ctzMap,P.pThis1,false);
+    //assert ctzNested.coherent(layer.p());
+    LayerE newLayer=layer.push(e,ctzMap);//ctzNested.releaseMap()
     return new R(new GLOpen(newLayer,s2),e);
     }
   public R _close(G gc,R rc){throw bug();}
@@ -326,7 +335,9 @@ class GEClose extends G{
     //It seams like we need to do the new CTz that internally copies the data
     Program p=eq?(Program)rc._obj:s2.topNCiClose(currentP,popL.index(),popL.ncs(),currentE,new CTz(layer.ctz()));
     popL=popL.layerE().push(p, popL.index()+1,popL.ncs(),popL.ms(),popL.e1n(),normalize(p,popL.ctz()));
-    if(popL.index()<popL.ncs().size()){return new R(new GEOpen(popL,s2),p);}
+    if(popL.index()<popL.ncs().size()){
+      return new R(new GEOpen(popL,s2),p);
+      }
     return new R(new GLClose(popL,s2),p);
     }
   private Map<ST, List<ST>> normalize(Program p, Map<ST, List<ST>> ctz) {
