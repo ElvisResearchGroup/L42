@@ -58,7 +58,7 @@ public abstract class CachedRes<T>{
     val=CompletableFuture.supplyAsync(this::op,pool);
     }
   public synchronized T join(){
-    if(val==null || localPool!=pool){
+    if(val==null || (localPool!=pool && !val.isDone())){
       val=null;
       localPool=null;
       startNow();

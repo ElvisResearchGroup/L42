@@ -66,7 +66,7 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      @{bar}method Void m()=void
    #norm{}}""",/*expected lib after this line*/"""
    @{foo}method Void m()=(..)
-   Conflicting implementation: the method is implemented on both side of the sum
+   Conflicting implementation: the method is implemented on both sides of the sum
    file:[###]
    """/*next test after this line*/)
    ),new AtomicTest(()->pass("""

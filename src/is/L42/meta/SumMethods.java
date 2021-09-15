@@ -40,7 +40,9 @@ public record SumMethods(MetaError err){
     boolean eqMH=Utils.equalMH(ai.mh(),bi.mh());
     boolean abs1=ai._e()==null;
     boolean abs2=bi._e()==null;
-    if(!abs1 && !abs2){err.throwErr(ai,Sum.Plus.errConflict);}
+    if(!abs1 && !abs2){
+      if(true)throw new NullPointerException();
+      err.throwErr(ai,Sum.Plus.errConflict);}
     if(!eqMH){err.throwErr(ai,"The methods have different signatures:\n"+err.intro(bi,false));}
     if(abs2){return Utils.accDoc(ai,bi);} //this keeps ai body
     return Utils.accDoc(ai,bi).with_e(bi._e()).withNativeUrl(bi.nativeUrl());

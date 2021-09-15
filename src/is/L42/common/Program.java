@@ -548,7 +548,6 @@ public class Program implements Visitable<Program>{
     val=val.stream()
       .<ST>map(st->st.visitable().accept(visitor))
       .filter(t->t!=null).toList();
-    //if(val.size()!=e.getValue().size()) { return; }
     if(val.isEmpty()){ return; }
     c.accept(new AbstractMap.SimpleEntry<>(key,val));
     }

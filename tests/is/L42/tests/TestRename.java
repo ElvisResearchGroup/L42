@@ -125,7 +125,7 @@ public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
      A.foo(x)->A.bar(y)
    """,/*expected after this line*/"""
    method Void bar(Void y)=(..)
-   Conflicting implementation: the method is implemented on both side of the sum
+   Conflicting implementation: the method is implemented on both sides of the sum
    file:[###]"""/*next test after this line*/)
    ),new AtomicTest(()->pass("""
      A={ method Void foo(Void x)=x method Void user(Void z)=this.foo(x=z) #norm{}}

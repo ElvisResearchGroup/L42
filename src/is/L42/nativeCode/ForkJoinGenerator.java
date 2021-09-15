@@ -5,6 +5,7 @@ import static is.L42.generated.LDom._elem;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -18,6 +19,7 @@ import is.L42.generated.Core.MH;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.tools.General;
 import is.L42.translationToJava.J;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.FV;
@@ -27,7 +29,7 @@ public class ForkJoinGenerator implements Generator{
     throw new EndError.TypeError(pos,msg);
     }
   void shapeErr(){
-    err(pos,ErrMsg.nativeBodyShapeInvalid(mh,"(Ds e)"));
+    err(pos,ErrMsg.nativeBodyShapeInvalid(mh,"(Ds e), with more then one declaration in Ds"));
     }
   void shapeErrMdf(String msg){
     err(pos,ErrMsg.nativeBodyShapeInvalid(mh,"parallelizable:\n"+msg));
@@ -57,6 +59,7 @@ public class ForkJoinGenerator implements Generator{
     if(!mh.exceptions().isEmpty()){exceptionErr();return;}
     if(!(mwt._e() instanceof Core.Block block)){shapeErr();return;}
     if(!block.ks().isEmpty()){shapeErr(); return;}
+    if(block.ds().size()<=1){shapeErr(); return;}
     var ds=block.ds();
     G g=G.of(mwt.mh());
     List<List<S>> allCapsuleMutators=new ArrayList<>();
@@ -171,9 +174,11 @@ public class ForkJoinGenerator implements Generator{
       }.of(e.visitable());
     }
   @Override public void generate(MWT mwt, J j) {
-    j.c("return ");
-    j.visitE(mwt._e());
-    j.c(";");j.nl();
-    return;
+    if(!(mwt._e() instanceof Core.Block block)){throw General.bug();}
+    assert block.ks().isEmpty();
+    assert block.ds().size()>1;
+    var ds=block.ds();
+    var e=block.e();
+    j.generateForkJoin(ds,e);
     }
   }

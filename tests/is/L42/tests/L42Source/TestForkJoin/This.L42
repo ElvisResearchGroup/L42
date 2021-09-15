@@ -1,9 +1,17 @@
 reuse [AdamsTowel]
 A={
   class method Num foo(Num a)=native{trusted:forkJoin} (
-    Num tmp1=a+1Num
-    Num tmp2=a*2Num
+    Num tmp1=this.foo1(val=a+1Num)
+    Num tmp2=this.foo2(val=a*2Num)
     a+tmp1+tmp2
+    )
+  class method Num foo1(Num val)=(
+    for i in Range(5I) ( Debug(S"foo1 %val"))
+    val
+    )
+  class method Num foo2(Num val)=(
+    for i in Range(5I) ( Debug(S"foo2 %val"))
+    val
     )
   }
 
@@ -70,3 +78,110 @@ MainErrs = (
   {}:Test""(actual=str expected=S
   "[###]native method mut method This1.I foo(This1.S that) , parallel declarations are mutating capsule fields [ss1()] on multiple [###]")
   )
+  
+UpdateList=Public:Data:{
+  @Public class method S map(S that)=that++that
+  @Public class method Void (mut S.List that) = this(current=0I,data=that)
+  
+  class method Void (I current, mut S.List data) = (
+    if current<data.size() 
+      this(current=current,elem=data.val(current),data=data)
+    )
+  @Cache.ForkJoin class method Void (I current, S elem, mut S.List data) =(
+    S newElem=this.map(elem)
+    this(current=current+1I,data=data)
+    data.set(current,val=newElem)
+    )
+  }
+MainUpdate=(
+  mut S.List data=S.List[S"a";S"b";S"c";S"d";S"e";]
+  Debug(data)
+  UpdateList(data)
+  Debug(data)
+  {}:Test""(actual=data expected=S"""
+    |["aa"; "bb"; "cc"; "dd"; "ee"]
+    """.trim())
+  )
+ThisMutable1 = {
+  Foo=Data:{var S data //could be much more involved
+    mut method Void op(I that)=this.data(this.data()++that.toS())
+    }
+  Tree={interface [HasToS]
+    mut method Void op(I that)
+    }
+  Node=Data:{[Tree] 
+    capsule Tree left, capsule Tree right
+    @Cache.ForkJoin mut method Void op(I that) = (
+      this.leftOp(that)
+      this.rightOp(that)
+      void
+      )
+    @Cache.Clear class method Void leftOp(mut Tree left,I that) = left.op(that)
+    @Cache.Clear class method Void rightOp(mut Tree right,I that) = right.op(that)
+    }
+  Leaf=Class:Trait({[Tree]}):Data:{
+    capsule Foo label
+    //mut method Void op(I that)
+    @Cache.Clear class method Void op(mut Foo label,I that) = label.op(that)
+    }
+  MainTree=(
+    mut Tree top=Node(
+      left=Node(
+        left=Leaf(label=\(data=S"1"))
+        right=Leaf(label=\(data=S"2"))
+        )
+      right=Node(
+        left=Leaf(label=\(data=S"3"))
+        right=Leaf(label=\(data=S"4"))
+        )
+      )
+    Debug(top)
+    top.op(15I)
+    Debug(top)
+    {}:Test""(actual=top, expected=S"""
+    |Node(left=Node(left=Leaf(label=(data=115)), right=Leaf(label=(data=215))), right=Node(left=Leaf(label=(data=315)), right=Leaf(label=(data=415))))
+    """.trim())
+    )
+  }
+  
+ThisMutable2 = {
+  Foo=Data:{var S data
+    mut method Void op(I a, S b)=this.data(this.data()++a.toS())
+    }
+  Tree={interface [HasToS]
+    mut method Void op(I a, S b)
+    }
+  Node=Data:{[Tree] 
+    capsule Tree left, capsule Tree right
+    @Cache.ForkJoin mut method Void op(I a, S b) = (
+      this.leftOp(a=a,b=b)
+      this.rightOp(a=a,b=b)
+      void
+      )
+    @Cache.Clear class method Void leftOp(mut Tree left,I a, S b) = left.op(a=a,b=b)
+    @Cache.Clear class method Void rightOp(mut Tree right,I a, S b) = right.op(a=a,b=b)
+    }
+  Leaf=Data:{[Tree]
+    capsule Foo label
+    //mut method Void op(I a, S b)
+    @Cache.Clear class method Void op(mut Foo label,I a, S b) = label.op(a=a,b=b)
+    }
+  MainTree=(
+    mut Tree top=Node(
+      left=Node(
+        left=Leaf(label=\(data=S"1"))
+        right=Leaf(label=\(data=S"2"))
+        )
+      right=Node(
+        left=Leaf(label=\(data=S"3"))
+        right=Leaf(label=\(data=S"4"))
+        )
+      )
+    Debug(top)
+    top.op(a=15I b=S"hello")
+    Debug(top)
+    {}:Test""(actual=top, expected=S"""
+    |Node(left=Node(left=Leaf(label=(data=115)), right=Leaf(label=(data=215))), right=Node(left=Leaf(label=(data=315)), right=Leaf(label=(data=415))))
+    """.trim())
+    )
+  }

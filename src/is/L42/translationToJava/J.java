@@ -12,7 +12,6 @@ import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.L.MWT;
-import is.L42.nativeCode.CacheNowGenerator;
 import is.L42.nativeCode.CacheLazyGenerator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
@@ -559,6 +558,49 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
       }
     c(");");
     nl();c("}");deIndent();nl();    
+    }
+  public void generateForkJoin(List<D>ds,Core.E e){
+    //D1..Dn D e ==
+    //(T1 x1;..Tn xn; T x;
+    //CachedRes<T1> cf_x1=CachedRes(e1);cf_x1.startEager();
+    //..CachedRes<Tn> cf_xn=CachedRes(en);cf_xn.startEager();
+    //CachedRes<T> cf_x=CachedRes(e);cf_x.startNow();
+    //x1=cf_x1.join();..x1=cf_x1.join();x=cf_x.join();
+    //e)
+    //This should have an acceptable semantic also if some of the es use CachedRes.killAll
+    //but we need testing.
+    //If it get stuck, it is still an acceptable semantic, as a non deterministic exception that takes
+    //forever to raise.
+    //Can this be used to make a timeout operation in 42? may be not?
+    var oldG=g;
+    g=g.plusEq(ds);
+    dec(ds);
+    for(D d:ds.subList(0,ds.size()-1)){ openForkJoinD(d,false); }
+    openForkJoinD(ds.get(ds.size()-1),true);
+    for(D d:ds){ joinForkJoinD(d); }
+    kw("return");visitE(e);
+    c(";");nl();
+    g=oldG;
+    }
+  private void openForkJoinD(D d,boolean last){
+    String sT=typeNameStr(d.t().p());
+    String name="£j"+d.x();
+    String bT=boxed(sT);
+    c("CachedRes<"+bT+"> "+name
+    +"=new CachedRes<"+bT+">(){public "
+        +bT+" op(){return ");
+    var oldWrap=wrap;
+    wrap(g.of(d.x()).p());
+    visitE(d.e());
+    wrap(oldWrap);
+    c(";}};");
+    nl();
+    if(!last){ c(name+".startEager();"); }
+    else{ c(name+".startNow();"); }
+    nl();
+    }
+  private void joinForkJoinD(D d){
+    kw("£x"+d.x()+"=£j"+d.x()+".join();");
     }
   private void methBody(MWT mwt){
     if(!isCoherent){cThrowError();return;}

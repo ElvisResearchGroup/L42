@@ -427,7 +427,7 @@ public class Sum {
         this.addC(nc1.key()).plus(nc1.l(),nc2.l())
         );
       }
-    public static final String errConflict="Conflicting implementation: the method is implemented on both side of the sum";
+    public static final String errConflict="Conflicting implementation: the method is implemented on both sides of the sum";
     IMWT plus(IMWT imwt1,IMWT imwt2,Core.L l1,Core.L l2){
       boolean eqMH=Utils.equalMH(imwt1.mwt.mh(),imwt2.mwt.mh());
       boolean abs1=imwt1.mwt._e()==null;
