@@ -1259,7 +1259,7 @@ public class TestTopNorm{
   {AA={}
   WasAssertError = (_={method AA foo() = this.bar()} void)}
   """);}
-@Test public void variantOfAboveRequiringCTz(){top("""
+/*@Test correctly failing, since we restricted the CTz*/ public void variantOfAboveRequiringCTz(){top("""
   {AA={method AA bb()}
   WasAssertError = (
     _={method AA foo() = this.bar()}
