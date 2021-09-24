@@ -80,6 +80,8 @@ Any field accessed from an \Q!imm! reference produces an \Q!imm! reference; thus
 \end{itemize}
 A common misconception of this line of work is that a \Q!mut! field would always refer to a mutable object.
 Classes declares RCs for their methods and fields types, but  what kinds of objects are stored in an object fields depend also on the kind of the object: a \Q!mut! field of a mutable object will contain a mutable object; but a \Q!mut! field of an immutable object will contain an immutable object.
+This is different with respect to many other approaches, where the
+declarations determine what to expect, and any information from the context must be explicit passed to the type using, for example, a generic reference capability parameter.
 
 
 Another common misconception is the belief that \Q!capsule! fields and \Q!capsule! local variables always hold \Q!capsule! references.
@@ -102,7 +104,10 @@ Pony and L42's \Q!capsule! fields
 % do not prevent representation exposure.
 %These forms of \Q!capsule! fields
  are useful for safe parallelism but not invariant checking. \footnote{It may seem surprising that 
-those weaker forms of encapsulation are still suffcient to ensure safe parallelim. In Appendix [??] we expand on how they handle this, but it is unrelated to the presented work.}
+those weaker forms of encapsulation are still suffcient to ensure safe parallelism. 
+The detailed way L42 parallelism works is unrelated to the presented work.
+Please refer to \url{L42.is/tutorial.xhtml} (sections 5 and 6) for more information on parallelism in L42.
+}
 
 %; while Gordon \etal's cannot be read non-destructively.
 In Section~\ref{s:protocol} we present a novel kind of \Q!capsule! field 

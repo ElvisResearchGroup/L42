@@ -1,4 +1,34 @@
 \vspace{-1ex}
+\section[Integration in L42]{Integration in L42}
+\label{s:related}
+\vspace{-1ex}
+L42 libraries relies on a very expressive form of metaprogramming to generate a lot of boilerplate/redundant code. In L42 many tasks can be  either manually performed by writing code directly, or partially automatized by code generation.
+The restrictions that \Q@invariant@ methods can only access fields and that capsule mutators can only access \Q@this@ once are abstracted away by asking the 
+user to write a \Q@class method@ (similar to a Java static method) taking appropriate parameters and using metaprogramming to generate an instance method following our restrictions.
+Our restrictions are also checked by the type system, so even if the user side step metaprogramming and write those special methods by hand, they still can not violate our invariants.
+
+In the last version of L42, invariants has been integrated with caching and automatic parallelism; it would be out of the scope of this article to explain 
+in details this integration, but the overall idea is that an invariant
+is seen as a \Q@Void@ cached value that is always kept up to date whenever the object is visible, while some forms of parallelism can be seen as cached values that are eagerly computed in parallel when the corresponding object is created.
+
+To make this work more accessible to programmers expert in Java/C\#,
+we have shown our examples in a more Java-like syntax.
+Here you can see some example of invariant checking in full L42 syntax relying on the class decorator \Q@Data@ and the annotations \Q@Cache.Now@ and \Q@Cache.Clear@ to annotate invariant methods and capsule mutators.
+
+\begin{lstlisting}
+ShippingList = Data:{
+  capsule Items items
+  @Cache.Now class method
+  Void invariant(read Items items) =
+    X[items.weight()<=300Num]
+  @Cache.Clear class method
+  Void addItem(mut Items items,Item item) =
+    items.add(item)
+  }
+\end{lstlisting}
+In this example, \Q@Data@ generates a factory method, a method \Q@addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string.
+Please refer to \url{L42.is/tutorial.xhtml} for more information.
+\vspace{-1ex}
 \section[Related Work]{Related Work}
 \label{s:related}
 \vspace{-1ex}

@@ -120,6 +120,11 @@ It is important to note that unlike most prior work, we soundly handle catching 
 We describe our case studies in Section~\ref{s:case-studyAll}.
 Our approach may seem very restrictive;
 the programming patterns in Section~\ref{s:patterns} show how our approach does not hamper expressiveness; in particular we show how batch mutation operations can be performed with a single invariant check, and how the state of a `broken' object can be safely passed around.
+
+We proposed our approach for integration in the L42 language, and after minor reworking it has been accepted, and the current version of L42 integrated our 
+invariant checking protocol in a cohesive way with the support for caching and parallelism.
+Section ~\ref{s:integration} discusses the details of this integration.
+
 % In Appendix \ref{s:runtime-verification}, we discuss more related work on runtime verification.
 
 
