@@ -14,8 +14,8 @@ import is.L42.common.EndError.TypeError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
-import is.L42.generated.C;
-import is.L42.generated.P;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -536,7 +536,7 @@ public static void pass(String program){
   Program p=Program.flat(init.topCache(new CachedTop(L(),L())));
   ProgramTypeSystem.type(true, p);
   TestTypeSystem.allCoherent(p);
-  var top=new P.NCs(0,List.of(new C("A",-1),new C("Top",-1)));
+  var top=P.NCs.of(0,List.of(C.of("A",-1),C.of("Top",-1)));
   new SifoTopTS(p,top).visitL(p.topCore());//a visitor
   }
 public static void failC(String program,String...out){

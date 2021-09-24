@@ -14,13 +14,13 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.LDom;
-import is.L42.generated.P;
 import is.L42.top.Deps;
 import is.L42.visitors.Accumulate;
 import is.L42.visitors.CloneVisitor;

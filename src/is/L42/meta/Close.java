@@ -16,7 +16,9 @@ import java.util.function.Supplier;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L.Info;
@@ -24,10 +26,8 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
-import is.L42.generated.X;
 import is.L42.nativeCode.CacheLazyGenerator;
 import is.L42.nativeCode.CacheNowGenerator;
 import is.L42.nativeCode.ForkJoinGenerator;
@@ -233,7 +233,7 @@ public class Close extends GuessFields{
   private Core.E addNorm(Core.E e){
     String varName="x";
     for(X xi:fieldNames) {varName+=xi.inner();}
-    X x=new X(varName);
+    X x=X.of(varName);
     var d=new Core.D(false,P.coreThis0,x, e);
     var body=new Core.MCall(e.pos(),new Core.EX(e.pos(), x),normS,L());
     return new Core.Block(e.pos(),L(d),L(),body);

@@ -13,13 +13,13 @@ import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.D;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
-import is.L42.generated.X;
 import is.L42.typeSystem.TypeManipulation;
 
 public class G {

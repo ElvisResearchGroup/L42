@@ -5,6 +5,8 @@ import java.util.List;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.visitors.CloneVisitor;
 
 public class Half {

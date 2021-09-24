@@ -20,12 +20,12 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Parse;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.maps.L42£ImmMap;
@@ -137,7 +137,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
           boolean missed=this.p()._ofCore(p)==null;
           if(!missed){return p;}
           var cs=popLRight(p.toNCs().cs());
-          var p0=new P.NCs(p.toNCs().n(),cs);
+          var p0=P.NCs.of(p.toNCs().n(),cs);
           var loc=this.p()._ofCore(p0);
           if(loc==null){
             throw new AssertionError("Path "+p+" not defined,  nor  "+p0);}

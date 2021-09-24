@@ -23,23 +23,14 @@ import is.L42.constraints.FreshNames;
 import is.L42.constraints.InferExceptions;
 import is.L42.constraints.InferToCore;
 import is.L42.constraints.ToHalf;
-import is.L42.generated.C;
-import is.L42.generated.Core;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
+import is.L42.generated.*;
 import is.L42.generated.Core.MH;
-import is.L42.generated.Full;
 import is.L42.generated.Full.L.NC;
-import is.L42.generated.Half;
-import is.L42.generated.I;
-import is.L42.generated.LL;
-import is.L42.generated.Mdf;
-import is.L42.generated.P;
-import is.L42.generated.Pos;
-import is.L42.generated.S;
-import is.L42.generated.ST;
-import is.L42.generated.X;
-import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
@@ -190,7 +181,7 @@ public class State implements Serializable{
     }
   private Core.E adapt(Core.E ce, P path) {
     if(path==P.pLibrary){return ce;}
-    X x=new X(freshNames.fresh("main"));
+    X x=X.of(freshNames.fresh("main"));
     if(path==P.pVoid){
       Core.D d=new Core.D(false,P.coreVoid,x,ce);
       return new Core.Block(ce.pos(),L(d),L(),Program.emptyL);

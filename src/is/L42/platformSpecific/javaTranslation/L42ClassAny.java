@@ -3,7 +3,7 @@ package is.L42.platformSpecific.javaTranslation;
 import is.L42.cache.L42Cachable;
 import is.L42.cache.L42Cache;
 import is.L42.cache.nativecache.L42ValueCache;
-import is.L42.generated.P;
+import is.L42.flyweight.P;
 import is.L42.tools.General;
 
 public class L42ClassAny implements L42Any, L42Cachable<L42ClassAny> {

@@ -4,10 +4,10 @@ import static is.L42.generated.LDom._elem;
 import static is.L42.tools.General.L;
 
 import is.L42.cache.L42Cache;
+import is.L42.flyweight.P;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.meta.L42£Name;
 import is.L42.meta.MetaError;
 import is.L42.nativeCode.TrustedKind;

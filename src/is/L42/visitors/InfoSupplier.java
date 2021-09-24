@@ -10,9 +10,9 @@ import java.util.function.Supplier;
 
 import is.L42.common.ErrMsg;
 import is.L42.common.Parse.Result;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.L42AuxParser;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.tools.General;

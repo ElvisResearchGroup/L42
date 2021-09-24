@@ -3,6 +3,7 @@ package is.L42.generated;
 
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.C;
 
 public final class I {
   private final C _c;

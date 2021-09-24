@@ -15,7 +15,7 @@ import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
 import is.L42.constraints.InferToCore;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
@@ -918,7 +918,7 @@ public static List<Core.L.MWT> processIn(String l){
     });
   return L(mhs,hes,(c,mhi,ei)->{
     if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;}
-    I i=new I(new C("C",-1),p,G.of(mhi));
+    I i=new I(C.of("C",-1),p,G.of(mhi));
     var cei=new InferToCore(i,ctz).compute(ei);
     var mwt=new Core.L.MWT(L(),L(),mhi,"",cei);
     c.add(mwt);

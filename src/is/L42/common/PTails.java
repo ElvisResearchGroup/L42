@@ -2,7 +2,7 @@ package is.L42.common;
 
 import static is.L42.tools.General.bug;
 
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.LL;
 import is.L42.visitors.CloneVisitor;

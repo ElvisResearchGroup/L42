@@ -11,13 +11,14 @@ import java.util.stream.Stream;
 
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.XP;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import static is.L42.generated.Mdf.*;
-import is.L42.generated.P;
+
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 public class TypeManipulation {

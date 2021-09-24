@@ -16,7 +16,7 @@ import is.L42.common.EndError.TypeError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;

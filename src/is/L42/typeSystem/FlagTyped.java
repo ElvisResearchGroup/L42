@@ -12,10 +12,10 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
-import is.L42.generated.P;
 import is.L42.tools.InductiveSet;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitor;

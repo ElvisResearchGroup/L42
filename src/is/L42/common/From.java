@@ -6,9 +6,9 @@ import static is.L42.tools.General.bug;
 import java.util.ArrayList;
 import java.util.List;
 
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
-import is.L42.generated.P;
 import is.L42.top.Deps;
 import is.L42.visitors.CloneVisitor;
 

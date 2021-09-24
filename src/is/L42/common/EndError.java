@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
 
-import is.L42.generated.C;
-import is.L42.generated.P;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Pos;
 
 public abstract class EndError extends RuntimeException {

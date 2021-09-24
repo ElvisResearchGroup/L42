@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import is.L42.common.Program;
-import is.L42.generated.P;
+import is.L42.flyweight.P;
 
 public class Lattice42 extends Lattice<P>{
   Program p;

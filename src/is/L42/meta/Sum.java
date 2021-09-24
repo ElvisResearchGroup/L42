@@ -20,7 +20,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L.Info;
@@ -29,7 +30,6 @@ import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.LL;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;

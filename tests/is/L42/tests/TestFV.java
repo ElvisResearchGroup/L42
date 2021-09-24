@@ -6,8 +6,8 @@ import java.util.stream.Stream;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Parse;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
-import is.L42.generated.X;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FV;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -50,7 +50,7 @@ public static void pass(String input,String ...output){
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
   var fv=FV.of(r.res.visitable());
   var out=new HashSet<X>();
-  for(var o:output){out.add(new X(o));}
+  for(var o:output){out.add(X.of(o));}
   if(out.containsAll(fv)){return;}
   assertEquals(fv.toString(),out.toString());
   }

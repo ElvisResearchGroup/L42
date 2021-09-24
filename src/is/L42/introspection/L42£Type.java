@@ -2,8 +2,8 @@ package is.L42.introspection;
 
 import is.L42.cache.L42Cache;
 import is.L42.common.Program;
+import is.L42.flyweight.P;
 import is.L42.generated.Core.T;
-import is.L42.generated.P;
 import is.L42.meta.L42£Meta;
 import is.L42.meta.L42£Name;
 import is.L42.nativeCode.TrustedKind;

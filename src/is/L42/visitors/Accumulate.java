@@ -5,10 +5,10 @@ import static is.L42.tools.General.range;
 
 import java.util.HashMap;
 
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
-import is.L42.generated.P;
-import is.L42.generated.X;
 
 public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
   public T of(Visitable<?> e){

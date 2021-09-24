@@ -9,6 +9,10 @@ import is.L42.visitors.Visitable;
 import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
+
 import static is.L42.tools.General.*;
 
 public class Core {

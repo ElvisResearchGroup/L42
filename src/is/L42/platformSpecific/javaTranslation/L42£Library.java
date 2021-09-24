@@ -8,10 +8,10 @@ import java.util.function.BiConsumer;
 
 import is.L42.cache.L42Cache;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
-import is.L42.generated.P;
 import is.L42.tools.General;
 
 public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any,Serializable{

@@ -16,7 +16,7 @@ import java.util.jar.JarOutputStream;
 import java.util.jar.Manifest;
 
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.Info;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
@@ -46,7 +46,7 @@ public abstract class ToJar {
   long timeNow=System.currentTimeMillis();
   abstract OutputStream output();
   public void of(Core.L lib) throws IOException, CompilationError {
-    var nc=new Core.L.NC(lib.poss(),L(),new C("Top",-1), lib);
+    var nc=new Core.L.NC(lib.poss(),L(),C.of("Top",-1), lib);
     var info=Info.empty.withTyped(true);
     lib=new Core.L(lib.poss(),false,L(),L(),L(nc), info, L());
     Program p=Program.flat(lib);

@@ -10,15 +10,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import is.L42.common.Parse;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Full;
 import is.L42.generated.L42AuxBaseVisitor;
 import is.L42.generated.L42AuxParser;
 import is.L42.generated.L42AuxParser.NudeCsPContext;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
-import is.L42.generated.X;
 
 public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
   private final Pos pos;
@@ -47,9 +47,9 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
   @Override public C visitC(L42AuxParser.CContext ctx) {
     String s=ctx.getText();
     int i=s.indexOf("::");
-    if(i==-1){return new C(s,-1);}
+    if(i==-1){return C.of(s,-1);}
     int u=Integer.parseInt(s.substring(i+2));
-    return new C(s.substring(0,i),u);
+    return C.of(s.substring(0,i),u);
     }
   @Override public Integer visitThisKw(L42AuxParser.ThisKwContext ctx) {
     String s=ctx.getText().substring(4);
@@ -93,7 +93,7 @@ public final class AuxVisitor extends L42AuxBaseVisitor<Object> {
     }
     
   @Override public X visitX(L42AuxParser.XContext ctx) {
-    return new X(ctx.getText());
+    return X.of(ctx.getText());
     }
 
   @Override public Full.Doc visitTopDocText(L42AuxParser.TopDocTextContext ctx) {

@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
-import is.L42.generated.P;
 import is.L42.generated.ST;
-import is.L42.generated.X;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FV;
 

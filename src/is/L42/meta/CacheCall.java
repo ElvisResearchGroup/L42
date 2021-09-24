@@ -12,13 +12,13 @@ import java.util.function.Function;
 
 import is.L42.common.G;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -45,8 +45,8 @@ public class CacheCall{
     while(Resources.usedUniqueNs.contains(Resources.allBusyUpTo)){
       Resources.allBusyUpTo+=1;
       }
-    C c=new C("CacheCallPrivate",Resources.allBusyUpTo);
-    P.NCs nc=new P.NCs(0,List.of(c));
+    C c=C.of("CacheCallPrivate",Resources.allBusyUpTo);
+    P.NCs nc=P.NCs.of(0,List.of(c));
     return new Core.PCastT(l.pos(), nc, new Core.T(Mdf.Class,L(), nc));
     } 
   static List<Core.L.NC> addHead(Core.PCastT _head,ArrayList<MWT>mwts,List<Core.L.NC>ncs,Info info){
