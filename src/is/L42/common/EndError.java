@@ -5,27 +5,38 @@ import static is.L42.tools.General.pushL;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Supplier;
 
 import is.L42.generated.C;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
 
-public abstract class EndError extends RuntimeException{
-  public EndError(List<Pos> poss,String msg){
-    //assert poss!=null: msg;
+public abstract class EndError extends RuntimeException {
+  public EndError(List<Pos> poss,Supplier<String> msg){
     assert msg!=null;
-    if(!msg.isEmpty() && !msg.endsWith("\n")){msg+="\n";}
-    this.msgPart=msg;
+    this.msgPartSupplier=()->{String m = msg.get(); return (!m.isEmpty() && !m.endsWith("\n")) ? m + '\n' : m; };
     this.poss=poss;
     }
   public boolean ismethCallNoCompatibleMdfParametersSignature(){return false;}//override handler
+  public EndError(List<Pos> poss,String msg){
+    //assert poss!=null;
+    assert msg!=null: msg;
+    if(!msg.isEmpty() && !msg.endsWith("\n")) { msg += "\n"; }
+    this.msgPartString = msg;
+    this.msgPartSupplier = null;
+    this.poss=poss;
+    }
+  public String msgPart(){
+    if(msgPartString == null) { msgPartString = msgPartSupplier.get(); }
+    return msgPartString;
+    }
   @Override public String getMessage(){
-    if(msg==null){msg=ErrMsg.posString(poss)+msgPart+computeMsg();}
+    if(msg==null){msg=ErrMsg.posString(poss)+this.msgPart();}
     return msg;
     }
-  public String computeMsg(){return "";};//override handler
   public final List<Pos> poss;
-  private final String msgPart;
+  private String msgPartString;
+  private final Supplier<String> msgPartSupplier;
   private String msg=null;
   public static class InlinedNativeInvalid extends EndError{
     public InlinedNativeInvalid(List<Pos> poss, String msg) { super(poss, msg);}
@@ -76,6 +87,7 @@ public abstract class EndError extends RuntimeException{
     }
   public static class TypeError extends EndError{
     public TypeError(List<Pos> poss, String msg) { super(poss, msg);}
+    public TypeError(List<Pos> poss, Supplier<String> msg) { super(poss, msg);}
     }
   public static class CoherentError extends EndError{
     public CoherentError(List<Pos> poss, String msg) { super(poss, msg);}

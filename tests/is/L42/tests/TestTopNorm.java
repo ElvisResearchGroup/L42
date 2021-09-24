@@ -1067,7 +1067,7 @@ public class TestTopNorm{
       )
     }
   }
-  """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
+  """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole).get()
   );}
 @Test public void nonDetErrorRecognizedException(){topFail(EndError.TypeError.class,"""
   {reuse [AdamsTowel]
@@ -1081,7 +1081,7 @@ public class TestTopNorm{
       )
     }
   }
-  """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
+  """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole).get()
   );}
 @Test public void nonDetErrorRecognizedReturn(){topFail(EndError.TypeError.class,"""
     {reuse [AdamsTowel]
@@ -1095,7 +1095,7 @@ public class TestTopNorm{
         )
       }
     }
-    """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole)
+    """,ErrMsg.nonDetermisticErrorOnlyHD(hole, hole).get()
     );}
 
 @Test public void forkJoinErrShapeInvalid(){topFail(EndError.TypeError.class,"""

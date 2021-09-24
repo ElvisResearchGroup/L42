@@ -1,8 +1,16 @@
 package is.L42.typeSystem;
 
-import static is.L42.generated.Mdf.*;
-import static is.L42.generated.ThrowKind.*;
-import static is.L42.tools.General.*;
+import static is.L42.generated.Mdf.Capsule;
+import static is.L42.generated.Mdf.Class;
+import static is.L42.generated.Mdf.Immutable;
+import static is.L42.generated.Mdf.ImmutableFwd;
+import static is.L42.generated.Mdf.ImmutablePFwd;
+import static is.L42.generated.Mdf.Mutable;
+import static is.L42.generated.ThrowKind.Error;
+import static is.L42.generated.ThrowKind.Return;
+import static is.L42.tools.General.L;
+import static is.L42.tools.General.range;
+import static is.L42.typeSystem.ProgramTypeSystem.errIf;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -15,19 +23,7 @@ import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.generated.Core;
-import is.L42.generated.Core.Block;
-import is.L42.generated.Core.D;
-import is.L42.generated.Core.E;
-import is.L42.generated.Core.EVoid;
-import is.L42.generated.Core.EX;
-import is.L42.generated.Core.K;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.Loop;
-import is.L42.generated.Core.MCall;
-import is.L42.generated.Core.OpUpdate;
-import is.L42.generated.Core.PCastT;
-import is.L42.generated.Core.T;
-import is.L42.generated.Core.Throw;
+import is.L42.generated.Core.*;
 import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.Pos;
@@ -55,10 +51,6 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     visitE(e);
     expected=oldE;
     }
-  void errIf(boolean cond,E e,String msg){
-    if(cond){
-    throw new EndError.TypeError(e.poss(),msg);}
-    }
   void mustSubMdf(Mdf m1,Mdf m2,List<Pos> poss){
     if(!Program.isSubtype(m1, m2)){
       throw new EndError.TypeError(poss,ErrMsg.subTypeExpected(m1,m2));
@@ -83,7 +75,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
   @Override public void visitThrow(Throw e){
     if(e.thr()!=Return){visitExpecting(e.e(),Immutable);return;}
     var general=TypeManipulation._mostSpecificMdf(mdfs);
-    errIf(general==null,e,ErrMsg.invalidSetOfMdfs(mdfs));
+    errIf(general==null,e.poss(),ErrMsg.invalidSetOfMdfs(mdfs));
     visitExpecting(e.e(),TypeManipulation.fwdOf(general));
     }
   @Override public void visitMCall(MCall e){
@@ -92,7 +84,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     var meths=L(meths0.stream().filter(m->Program.isSubtype(m.mdf(),expected)));
     //TODO: use the "canAlsoBe" to further filter on the set of methods,
     //this can also be used to give better error messages line "class method called on non class"
-    errIf(meths.isEmpty(),e,ErrMsg.methCallResultIncompatibleWithExpected(e.s(),expected));
+    errIf(meths.isEmpty(),e.poss(),ErrMsg.methCallResultIncompatibleWithExpected(e.s(),expected));
     List<E> es=L(c->{c.add(e.xP());c.addAll(e.es());});
     var oldG=g;
     var oldExpected=expected;
@@ -208,7 +200,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     if(TypeManipulation.fwd_or_fwdP_inMdfs(mdfs)){
       List<D> errs=L(txe.stream().filter(di->fvs.contains(di.x())));
       if(!errs.isEmpty()){//TODO: errIf may not be the best abstraction...
-        errIf(true,errs.get(0).e(),ErrMsg.mayLeakUnresolvedFwd(errs.get(0).x()));
+        errIf(true,errs.get(0).e().poss(),ErrMsg.mayLeakUnresolvedFwd(errs.get(0).x()));
         }
       assert txe.size()==1;//TODO: if this is true we can optimize above, avoiding streams
       }
