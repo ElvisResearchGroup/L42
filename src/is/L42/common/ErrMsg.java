@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -246,25 +247,24 @@ public class ErrMsg {
   "Path "+_1+" can not be used as a operator receiver for "+_2
   ;}public static String invalidExpectedTypeForVoidLiteral(Object _1){return
   "\"void\" is only of type \"Void\", but the program requires it to be of type "+_1
-  ;}public static String castOnPathMustBeClass(Object _1){return
-  "cast on paths must have the class modifier, but "+_1+" is provided"
+  ;}public static Supplier<String> castOnPathMustBeClass(Object _1){return
+  ()->"cast on paths must have the class modifier, but "+_1+" is provided"
   ;}public static String subTypeExpected(Object _1,Object _2){return
   "the path "+_1+" is not a subtype of "+_2
   ;}public static String castOnPathOnlyValidIfNotInterface(Object _1){return
   "except for Any, path casts can not be applied on interfaces, but "+_1+" is declared as interface"
   ;}public static String leakedThrow(Object _1){return
   "An "+_1+" is leaked out of this expression"
-  ;}public static String leakedExceptionFromMethCall(Object _1){return
-  "An exception is leaked out of this expression ("+_1+")"
-  ;}public static String methodDoesNotExists(S attempted,List<MWT> others){return
-  methodDoesNotExists(attempted,options(attempted,others))
+  ;}public static Supplier<String> leakedExceptionFromMethCall(Object _1){return
+  ()->"An exception is leaked out of this expression ("+_1+")"
+  ;}public static Supplier<String> methodDoesNotExists(S attempted,List<MWT> others){return
+  ()->methodDoesNotExists(attempted,options(attempted,others))
   ;}public static String methodDoesNotExists(Object attempted,Object others){return
   "Method "+attempted+" does not exists. Existing methods are:\n"+others+"\n"
-
   ;}public static String invalidSetOfMdfs(Object _1){return
   "Invalid set of modifiers for the expected type of a return: "+_1
-  ;}public static String methCallResultIncompatibleWithExpected(Object _1,Object _2){return
-  "for method "+_1+", method call result type is incompatible with the expected modifier: "+_2
+  ;}public static Supplier<String> methCallResultIncompatibleWithExpected(Object _1,Object _2){return
+  ()->"for method "+_1+", method call result type is incompatible with the expected modifier: "+_2
   ;}public static String methCallNoCompatibleMdfParametersSignature(Object _1,Object _2){return
   "Incompatible modifiers for method call.\nFor method "+_1+", method call parameter signature is incompatible with the parameters expected signature: "+_2
   ;}public static String mayLeakUnresolvedFwd(Object _1){return
@@ -335,8 +335,8 @@ public class ErrMsg {
   "methods "+s+", bridging effectful #$ non determinism have modifier "+mdf+", but only {mut,lent,capsule} are allowed"
   ;}public static String bridgeViolatedByFactory(Object bi,Object fi){return
   "methods "+bi+", bridging effectful #$ non determinism could be invoked through factory "+fi+", that has no #$"
-  ;}public static String nonDetermisticErrorOnlyHD(Object m,Object e){return
-  "method "+m+" catches the non deterministic error "+e+". Only #$ methods are allowed to catch non deterministic errors."
+  ;}public static Supplier<String> nonDetermisticErrorOnlyHD(Object m,Object e){return
+  ()->"method "+m+" catches the non deterministic error "+e+". Only #$ methods are allowed to catch non deterministic errors."
   ;}public static String mustHaveCloseState(){return
   "the core library literal must be a close class. Caused by Cache.Now methods"
   ;}public static String mustHaveCloseStateBridge(Object fs,Object bs){return

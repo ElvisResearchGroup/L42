@@ -5,6 +5,7 @@ import static is.L42.tools.General.L;
 
 import java.util.HashSet;
 import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import is.L42.common.EndError;
@@ -27,7 +28,12 @@ import is.L42.translationToJava.NativeDispatch;
 
 public class ProgramTypeSystem {
   Program p;
-  static void errIf(boolean cond,List<Pos> poss,String msg){
+  public static void errIf(boolean cond,List<Pos> poss,String msg){
+    if(cond){
+      throw new EndError.TypeError(poss,msg);
+      }
+    }
+  public static void errIf(boolean cond,List<Pos> poss,Supplier<String> msg){
     if(cond){
       throw new EndError.TypeError(poss,msg);
       }

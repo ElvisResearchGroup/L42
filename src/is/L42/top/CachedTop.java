@@ -12,6 +12,7 @@ import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -24,7 +25,11 @@ public class CachedTop implements Serializable{
   final List<G> cached;
   final List<R>cachedR;
   public CachedTop(List<G> cached,List<R>cachedR){
-    this.cached=cached;
+    //Ensures that consistent holds without having to constantly re-check cached G's
+    this.cached=Collections.unmodifiableList(cached);
+    for(var e:cached){
+      assert cached.stream().noneMatch(e0->e0!=e && e0.state==e.state);
+      }
     this.cachedR=cachedR;
     }
   public void fakeRunWithNoChange() {
@@ -59,11 +64,11 @@ public class CachedTop implements Serializable{
     //return Stream.of(p.topCore());
     }
   public CachedTop toNextCache(){return new CachedTop(performed,performedR);}
-  final ArrayList<G> performed=new ArrayList<>();
+  //Gradual consistency checks assume that this array is not altered outside of this class
+  private final ArrayList<G> performed=new ArrayList<>();
   final ArrayList<R> performedR=new ArrayList<>();
   boolean ok=true;
   G _getCached(){
-    assert consistent();
     if(!ok){return null;}
     if(performed.size()>=cached.size()){return null;}
     return cached.get(performed.size());
@@ -74,21 +79,12 @@ public class CachedTop implements Serializable{
     return cachedR.get(performed.size());
     }
   void addPerformed(G g,R r){
-    assert consistent();
+    //We've already previously checked for consistency
+    //This check ensures the new state is not present in any list, and therefore should meet any consistency requirements
+    assert cached.stream().noneMatch(e0->e0.state==g.state);
+    assert performed.stream().noneMatch(e0->e0!=g && e0.state==g.state);
     performed.add(g);
     performedR.add(r);
-    assert consistent();
-    }  
-  boolean consistent(){
-    for(var e:cached){
-      assert cached.stream().noneMatch(e0->e0!=e && e0.state==e.state);
-      assert performed.stream().noneMatch(e0->e0.state==e.state);
-      }
-    for(var e:performed){
-      assert cached.stream().noneMatch(e0->e0.state==e.state);
-      assert performed.stream().noneMatch(e0->e0!=e && e0.state==e.state);
-      }
-    return true;
     }  
   Program top(G g){
     R r=openClose(g);
