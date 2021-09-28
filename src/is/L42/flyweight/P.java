@@ -6,7 +6,9 @@ import static is.L42.tools.General.bug;
 
 import java.io.ObjectStreamException;
 import java.util.List;
-import java.util.WeakHashMap;
+import java.util.Map;
+
+import com.google.common.cache.CacheBuilder;
 
 import is.L42.common.Constants;
 import is.L42.common.Parse;
@@ -74,7 +76,8 @@ public sealed interface P extends Visitable<P> permits PrimitiveP, P.NCs {
       return false;
       }
     private static record NCsI(int n, List<C> cs) {}
-    private static final WeakHashMap<NCsI, NCs> created = new WeakHashMap<>();
+    @SuppressWarnings("unchecked")
+    private static final Map<NCsI, NCs> created = (Map<NCsI, NCs>) ((Map<?,?>) CacheBuilder.newBuilder().weakValues().build().asMap());
     private static void perfCountNCsOf(NCsI ci) {
       PerfCounters.inc("invoke.P.NCs.init.total");
       if(!created.containsKey(ci)) {

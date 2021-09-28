@@ -5,7 +5,9 @@ import static is.L42.tools.General.L;
 
 import java.io.ObjectStreamException;
 import java.util.List;
-import java.util.WeakHashMap;
+import java.util.Map;
+
+import com.google.common.cache.CacheBuilder;
 
 import is.L42.common.Constants;
 import is.L42.perftests.PerfCounters;
@@ -20,7 +22,8 @@ public final class X implements Visitable<X> {
   @Override public String toString() { return Constants.toS.apply(this); }
   @Override public boolean wf() { return Constants.wf.test(this); }
   private final String inner;
-  private static final WeakHashMap<String, X> created = new WeakHashMap<>();
+  @SuppressWarnings("unchecked")
+  private static final Map<String, X> created = (Map<String, X>) ((Map<?,?>) CacheBuilder.newBuilder().weakValues().build().asMap());
   private static void perfCountXOf(String s) {
     PerfCounters.inc("invoke.X.init.total");
     if(!created.containsKey(s)) {

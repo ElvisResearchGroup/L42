@@ -2,7 +2,9 @@
 package is.L42.flyweight;
 
 import java.io.ObjectStreamException;
-import java.util.WeakHashMap;
+import java.util.Map;
+
+import com.google.common.cache.CacheBuilder;
 
 import is.L42.common.Constants;
 import is.L42.generated.LDom;
@@ -20,7 +22,8 @@ public final class C implements LDom, Visitable<C> {
   private final String inner;
   private final int uniqueNum;
   private static record CI(String inner, int uniqueNum) {}
-  private static final WeakHashMap<CI, C> created = new WeakHashMap<>();
+  @SuppressWarnings("unchecked")
+  private static final Map<CI, C> created = (Map<CI, C>) ((Map<?,?>) CacheBuilder.newBuilder().weakValues().build().asMap());
   private static void perfCountCOf(CI ci) {
     PerfCounters.inc("invoke.C.init.total");
     if(!created.containsKey(ci)) {
