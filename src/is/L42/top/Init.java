@@ -28,6 +28,7 @@ import is.L42.generated.Mdf;
 import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.X;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.PropagatorCollectorVisitor;
@@ -89,7 +90,7 @@ public class Init {
     return i.topCache(c);
     }
   protected State makeState(){//overriddable for tests
-    return new State(f,new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>());
+    return new State(f,new ArrayList<>(),0,new JavaCodeStore(),new ArrayList<>());
     }
   public Core.L topCache(CachedTop c){
     //TestCachingCases.timeNow("begin1");

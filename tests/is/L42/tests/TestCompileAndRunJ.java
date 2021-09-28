@@ -1,19 +1,21 @@
 package is.L42.tests;
 
+import static is.L42.tools.General.L;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.fail;
+
 import java.util.ArrayList;
 import java.util.stream.Stream;
 
 import is.L42.common.Program;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
 import is.L42.translationToJava.Loader;
-import static is.L42.tools.General.L;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class TestCompileAndRunJ
 extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->
@@ -226,7 +228,7 @@ public static Program base(String s){
   }
 public static Loader loadBase(Program p,boolean print) throws CompilationError{
   Loader loader=new Loader();
-  try{loader.loadNow(p,new ArrayList<>(),new ArrayList<>());}
+  try{loader.loadNow(p,new JavaCodeStore(),new ArrayList<>());}
   catch(CompilationError ce){
     if(print){System.err.println(loader);}
     throw ce;

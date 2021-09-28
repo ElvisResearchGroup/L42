@@ -1,12 +1,12 @@
 package is.L42.tests;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Test;
 
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
+import is.L42.platformSpecific.inMemoryCompiler.SourceFile;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 
 public class TestInMemoryCompiler {
 
@@ -23,7 +23,7 @@ public class TestInMemoryCompiler {
         + "  } "
         + "} ");
     List<SourceFile> files = List.of(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new ArrayList<>());
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new JavaCodeStore());
     RunningUtils.runMain(classes,"math.Calculator");
     }
   @Test public void test2() throws Throwable {
@@ -40,7 +40,7 @@ public class TestInMemoryCompiler {
         + "  } "
         + "} ");
     List<SourceFile> files = List.of(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new ArrayList<>());
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new JavaCodeStore());
     RunningUtils.runMain(classes,"math.Calculator");
   }
   @Test public void test2bis() throws Throwable {
@@ -58,7 +58,7 @@ public class TestInMemoryCompiler {
         + "  }} "
         );
     List<SourceFile> files = List.of(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new ArrayList<>());
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new JavaCodeStore());
     RunningUtils.runMain(classes,"math.Calculator");
     }
   public static class TestClass {
@@ -75,14 +75,14 @@ public class TestInMemoryCompiler {
         + "} "
         );
     List<SourceFile> files = List.of(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new ArrayList<>());
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new JavaCodeStore());
     RunningUtils.runMain(classes,"math.Calculator");
     }
   @Test public void test2Files() throws Throwable {
     SourceFile[] file = {
-        new SourceFile("math.Calculator",
+        new SourceFile("math.Calculator2",
         "package math;"
-        + "class Calculator2 { "
+        + "public class Calculator2 { "
         + "  public void testAdd() { "
         + "    System.out.println(200+300); "
         + "  }} "
@@ -97,7 +97,7 @@ public class TestInMemoryCompiler {
         + "} "
         )};
     List<SourceFile> files = List.of(file);
-    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new ArrayList<>());
+    ClassLoader classes=InMemoryJavaCompiler.compile(ClassLoader.getSystemClassLoader(),files,new JavaCodeStore());
     RunningUtils.runMain(classes,"math.Calculator");
     }
   }
