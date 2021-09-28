@@ -14,7 +14,7 @@ SifoTest={
   PaycardExample=Sifo(Top):{...}
   Main=(
     _=Log(S"Examples Starting").#$reader()
-    DatabaseExample.main()
+    DatabaseExample.testDb()
     BankExample.Main()
     EmailExample.Counter().example()
     PaycardExample.Main()
