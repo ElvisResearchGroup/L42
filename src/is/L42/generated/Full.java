@@ -7,6 +7,10 @@ import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
+
 import static is.L42.tools.General.*;
 
 public class Full {

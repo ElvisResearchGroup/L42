@@ -15,25 +15,16 @@ import java.util.stream.Stream;
 import is.L42.common.CTz;
 import is.L42.common.NameMangling;
 import is.L42.common.Program;
-import is.L42.generated.C;
-import is.L42.generated.Core;
-import is.L42.generated.Full;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
+import is.L42.generated.*;
 import is.L42.generated.Full.D;
 import is.L42.generated.Full.E;
 import is.L42.generated.Full.Par;
 import is.L42.generated.Full.VarTx;
-import is.L42.generated.Half;
 import is.L42.generated.Half.K;
-import is.L42.generated.Mdf;
-import is.L42.generated.Op;
 import is.L42.generated.Op.OpKind;
-import is.L42.generated.P;
-import is.L42.generated.Pos;
-import is.L42.generated.S;
-import is.L42.generated.ST;
-import is.L42.generated.ThrowKind;
-import is.L42.generated.X;
-import is.L42.generated.Y;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.Returning;
@@ -425,7 +416,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
         X xi=freshX("whoops");
         var exi=new Core.EX(p,xi);
         var s=new S("#whoopsed",L(),-1);
-        X atPos=new X("atPos");
+        X atPos=X.of("atPos");
         Par par=new Par(null,L(atPos),L(Program.emptyL.withPoss(L(p))));
         //Ki = catch exception Ti xi error 
         Full.E errE=new Full.Call(p,exi,s,false,L(par));
@@ -446,7 +437,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     y=oldY;
     return new Res<>(kr,res.resSTz,res.retSTz);
     }
-  private X freshX(String s){return new X(fresh.fresh(s));}
+  private X freshX(String s){return X.of(fresh.fresh(s));}
   @Override public void visitBinOp(Full.BinOp binOp){
     assert binOp.es().size()>=2:binOp.es();
     while(binOp.es().size()!=2 && binOp.op().kind!=OpKind.RelationalOp){
@@ -506,7 +497,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     S sc=NameMangling.shortCircuit(b.op());
     S sr=NameMangling.shortResult(b.op());
     S sp=NameMangling.shortProcess(b.op());
-    X other=new X("other");
+    X other=X.of("other");
     Par par1=new Par(ex,L(),L());
     Par par2=new Par(ex,L(other),L(e1));
     var scCall=new Full.Call(p,e0,sc,false,Par.emptys);
@@ -839,10 +830,10 @@ public class ToHalf extends UndefinedCollectorVisitor{
   private static final S stringAddAllS=S.parse("#stringAddAll()");
   private static final S stringAddExprS=S.parse("#stringAddExpr()");
   private static final S fromS=S.parse("#from()");
-  private static final C classOperators=new C("ClassOperators",-1);
-  private static final List<X> squareBuilderX=L(new X("squareBuilder"));
-  private static final List<X> stringLiteralX=L(new X("stringLiteral"));
-  private static final List<X> valX=L(new X("val"));
+  private static final C classOperators=C.of("ClassOperators",-1);
+  private static final List<X> squareBuilderX=L(X.of("squareBuilder"));
+  private static final List<X> stringLiteralX=L(X.of("stringLiteral"));
+  private static final List<X> valX=L(X.of("val"));
   private static final Full.VarTx immVoid_=new Full.VarTx(false,new Full.T(Mdf.Immutable,L(),L(),P.pVoid),null,null);
  
 }

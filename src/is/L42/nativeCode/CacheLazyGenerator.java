@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Mdf;
 import is.L42.generated.S;
-import is.L42.generated.X;
 import is.L42.translationToJava.J;
 import is.L42.typeSystem.Coherence;
 import is.L42.visitors.Accumulate;

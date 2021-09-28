@@ -12,16 +12,16 @@ import java.util.stream.IntStream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
-import is.L42.generated.X;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 

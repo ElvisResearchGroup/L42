@@ -27,6 +27,8 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Block;
 import is.L42.generated.Core.D;
@@ -45,10 +47,8 @@ import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
 import is.L42.generated.Core.Throw;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.ThrowKind;
-import is.L42.generated.X;
 import is.L42.typeSystem.AlternativeMethodTypes;
 import is.L42.typeSystem.Coherence;
 import is.L42.typeSystem.TypeManipulation;
@@ -94,7 +94,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
   public SifoTopTS(Program p,P.NCs top){
     this.p=p;
     var s=top.cs().size();
-    var ttop=new P.NCs(0,L(top.cs().get(s-1)));
+    var ttop=P.NCs.of(0,L(top.cs().get(s-1)));
     startDept=-1;
     var pp=p.navigate(popLRight(top.cs()));
     this.lattice=new Lattice42(pp,ttop);

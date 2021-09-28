@@ -8,6 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
@@ -15,10 +17,8 @@ import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
-import is.L42.generated.X;
 import is.L42.tools.General;
 
 public class Utils {

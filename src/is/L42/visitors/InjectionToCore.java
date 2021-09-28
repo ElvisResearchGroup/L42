@@ -6,11 +6,11 @@ import java.util.List;
 import java.util.function.Function;
 
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.Core.EVoid;

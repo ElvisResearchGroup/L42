@@ -3,10 +3,10 @@ package is.L42.common;
 import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 
+import is.L42.flyweight.X;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
 import is.L42.generated.S;
-import is.L42.generated.X;
 
 public class NameMangling {
   private static final S hashApply=new S("#apply",L(),-1);

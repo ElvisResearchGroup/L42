@@ -9,12 +9,12 @@ import java.util.function.Function;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.LL;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.translationToJava.J;
 
 public enum TrustedKind implements TrustedT{

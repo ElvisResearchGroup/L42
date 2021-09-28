@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 import is.L42.cache.concurrency.CachedRes;
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
 import is.L42.translationToJava.Loader;

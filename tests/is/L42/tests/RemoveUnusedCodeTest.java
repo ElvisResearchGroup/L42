@@ -10,7 +10,7 @@ import org.junit.jupiter.api.Test;
 
 import is.L42.common.Err;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.S;
 import is.L42.meta.Arrow;
@@ -28,17 +28,17 @@ class RemoveUnusedCodeTest {
     try{
       Function<L42£LazyMsg,L42Any>wrap=lm->{throw new Error(lm.getMsg());};
       return new Rename(new UniqueNsRefresher())
-        .apply(Program.flat(l),new C("TOP",-1),l,
+        .apply(Program.flat(l),C.of("TOP",-1),l,
         renames,wrap,wrap,wrap,wrap);
       }
     catch(Throwable t){return l;}
     }
   Arrow cs(String... cs){
-    List<C> csList=L(Stream.of(cs).map(s->new C(s,-1)));
+    List<C> csList=L(Stream.of(cs).map(s->C.of(s,-1)));
     return new Arrow(csList,null,true,true,null,null,null);
     }
   Arrow s_cs(String sel,String... cs){
-    List<C> csList=L(Stream.of(cs).map(s->new C(s,-1)));
+    List<C> csList=L(Stream.of(cs).map(s->C.of(s,-1)));
     return new Arrow(csList,S.parse(sel),true,false,null,null,null);
     }
   void checkDeps(String lib,String expected,String expectedRes){

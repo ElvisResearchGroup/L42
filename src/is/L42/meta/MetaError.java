@@ -7,15 +7,15 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
-import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.HasPos;
-import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42Error;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 
 public class MetaError{
   Function<L42£LazyMsg,L42Any>wrap;

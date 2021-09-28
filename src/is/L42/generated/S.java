@@ -6,6 +6,7 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
+import is.L42.flyweight.X;
 
 public final class S implements LDom, Visitable<S> {
   @Override

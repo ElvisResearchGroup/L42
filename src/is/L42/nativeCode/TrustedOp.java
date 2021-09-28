@@ -14,8 +14,8 @@ import java.util.Map;
 
 import is.L42.generated.Core.L.Info;
 import is.L42.generated.Core.L.MWT;
+import is.L42.flyweight.P;
 import is.L42.generated.Core.T;
-import is.L42.generated.P;
     
 public enum TrustedOp {
   //booleans

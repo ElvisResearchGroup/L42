@@ -3,8 +3,8 @@ package is.L42.meta;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import is.L42.generated.C;
-import is.L42.generated.P;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.S;
 
 public final class Arrow{

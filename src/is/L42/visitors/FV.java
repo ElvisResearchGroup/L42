@@ -8,10 +8,10 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Pos;
-import is.L42.generated.X;
 import is.L42.generated.Core.OpUpdate;
 
 public class FV extends PropagatorCollectorVisitor{

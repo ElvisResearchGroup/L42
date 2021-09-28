@@ -28,6 +28,9 @@ import is.L42.common.ErrMsg;
 import is.L42.common.PTails;
 import is.L42.common.Parse;
 import is.L42.common.Program;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.*;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Full.VarTx;
@@ -127,7 +130,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   @Override public X visitX(XContext ctx) {
     check(ctx);
-    return new X(ctx.getText());
+    return X.of(ctx.getText());
     }
   @Override public Full.Call visitFCall(FCallContext ctx) {
     check(ctx);
@@ -421,7 +424,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     if(csP.cs().size()==1){c=csP.cs().get(0);}
     if(c==null){
       this.errors.append(pos+ErrMsg.notValidC(csP));
-      c=new C("InvalidName",-1);
+      c=C.of("InvalidName",-1);
       }
     return new Full.L.NC(pos,docs,c,e);
     }
@@ -447,7 +450,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     }
   @Override public Full.SlashX visitSlashX(SlashXContext ctx) {
     String x=ctx.SlashX().getText().substring(1);
-    return new Full.SlashX(pos(ctx), new X(x));
+    return new Full.SlashX(pos(ctx), X.of(x));
     }
 
   @Override public Full.E visitEPostfix(EPostfixContext ctx) {
@@ -622,7 +625,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
       if(csP.cs().size()==1){c=csP.cs().get(0);}
       if(c==null){
         this.errors.append(e.pos()+ErrMsg.notValidC(csP));
-        c=new C("InvalidName",-1);
+        c=C.of("InvalidName",-1);
         }
       tail=tail.pTailC(c,(LL)visitFullL((FullLContext)ci));
       }

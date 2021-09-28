@@ -14,10 +14,10 @@ import java.util.stream.Collectors;
 
 import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
-import is.L42.generated.P;
-import is.L42.generated.X;
 import is.L42.maps.L42£AbsMap.MapCache;
 import is.L42.maps.L42£Set.SetCache;
 import is.L42.nativeCode.TrustedKind;
@@ -95,10 +95,10 @@ class Format42 implements FormatKind{
     }
   private C fromS(String s){
     int colon=s.indexOf(":");
-    if(colon==-1){return new C(s,-1);}
+    if(colon==-1){return C.of(s,-1);}
     String a=s.substring(0,colon);
     String b=s.substring(colon+2);
-    return new C(a,Integer.parseInt(b));
+    return C.of(a,Integer.parseInt(b));
     }
   public Format42(P.NCs hint,KeyFormatter f, int lineN,Object o) {
     this.cache=(L42Cache<?>)f.k.lines()[lineN][0];

@@ -11,10 +11,10 @@ import java.util.stream.Stream;
 
 import is.L42.common.CTz;
 import is.L42.common.Program;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
 import is.L42.generated.Op;
-import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.ST;
 import is.L42.tools.AtomicTest;

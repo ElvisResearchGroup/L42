@@ -3,6 +3,8 @@ package is.L42.generated;
 
 import java.util.function.Function;
 import java.util.List;
+
+import is.L42.flyweight.C;
 import is.L42.visitors.Visitable;
 
 public interface LL extends Full.Leaf, Half.E, HasVisitable, HasPos {

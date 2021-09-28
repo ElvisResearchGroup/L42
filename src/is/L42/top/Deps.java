@@ -12,7 +12,8 @@ import java.util.function.Consumer;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
 import is.L42.generated.Core.L;
@@ -23,7 +24,6 @@ import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
 import is.L42.generated.LL;
-import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.generated.ThrowKind;
 import is.L42.visitors.Accumulate;

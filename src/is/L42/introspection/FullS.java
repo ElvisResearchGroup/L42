@@ -5,11 +5,11 @@ import static is.L42.tools.General.L;
 import java.util.List;
 import java.util.function.Predicate;
 
+import is.L42.flyweight.P;
 import is.L42.generated.Core.L;
 import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.T;
-import is.L42.generated.P;
 import is.L42.visitors.ToSVisitor;
 
 public class FullS extends ToSVisitor{

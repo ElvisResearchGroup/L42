@@ -5,7 +5,7 @@ import java.util.List;
 
 import is.L42.common.G;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.LDom;

@@ -4,11 +4,11 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
 import is.L42.generated.LDom;
-import is.L42.generated.P;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.General;

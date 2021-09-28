@@ -11,14 +11,14 @@ import java.util.Set;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
-import is.L42.generated.C;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
 import is.L42.generated.Mdf;
-import is.L42.generated.P;
 import is.L42.generated.S;
-import is.L42.generated.X;
 import is.L42.nativeCode.Generator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
@@ -217,7 +217,7 @@ public class Coherence {
   public static X fieldName(S s){
     String x=s.m();
     while(x.startsWith("#")){x=x.substring(1);}
-    return new X(x);
+    return X.of(x);
     }
   public boolean coherent(MH mh, Set<X> xz){
     if(mh.mdf().isClass()){return coherentClass(mh,xz);}

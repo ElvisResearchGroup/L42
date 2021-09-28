@@ -4,9 +4,10 @@ import static is.L42.tools.General.L;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
-import is.L42.generated.X;
 
 public class Bindings extends PropagatorCollectorVisitor{
   public static List<X> of(Visitable<?> v){

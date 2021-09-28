@@ -1,6 +1,9 @@
 package is.L42.visitors;
 import is.L42.common.PTails;
 import is.L42.common.Program;
+import is.L42.flyweight.C;
+import is.L42.flyweight.P;
+import is.L42.flyweight.X;
 import is.L42.generated.*;
 
 public class UndefinedCollectorVisitor implements CollectorVisitor{

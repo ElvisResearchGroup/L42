@@ -9,8 +9,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import is.L42.flyweight.P;
 import is.L42.generated.Core;
-import is.L42.generated.P;
 import is.L42.generated.Pos;
 
 public class ReadURL {

@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
 
-import is.L42.generated.X;
+import is.L42.flyweight.X;
 
 public class FreshNames implements Serializable{
   int current=0;
