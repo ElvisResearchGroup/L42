@@ -17,7 +17,7 @@ import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
 import is.L42.generated.C;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.tools.AtomicTest;
@@ -860,18 +860,18 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void pass(String program){
   Resources.clearResKeepReuse();
   class StateForTest extends State{
-    public StateForTest(FreshNames f,ArrayList<HashSet<List<C>>>c, int u,ArrayList<SClassFile> b,ArrayList<L42£Library> l){
+    public StateForTest(FreshNames f,ArrayList<HashSet<List<C>>>c, int u,JavaCodeStore b,ArrayList<L42£Library> l){
       super(f,c,u,b,l);
       }
     @Override protected Program flagTyped(Program p) throws EndError{return p;}
     @Override public State copy(){
       return new StateForTest(freshNames.copy(),copyAlreadyCoherent(),
-        uniqueId,new ArrayList<>(allByteCode),new ArrayList<>(allLibs));
+        uniqueId,allByteCode.next(),new ArrayList<>(allLibs));
       }
     }
   Init init=new Init("{"+program+"}"){
     @Override protected State makeState(){
-      return new StateForTest(f,new ArrayList<>(),0,new ArrayList<>(),new ArrayList<>());
+      return new StateForTest(f,new ArrayList<>(),0,new JavaCodeStore(),new ArrayList<>());
       }
     };
   Program p=Program.flat(init.topCache(new CachedTop(L(),L())));

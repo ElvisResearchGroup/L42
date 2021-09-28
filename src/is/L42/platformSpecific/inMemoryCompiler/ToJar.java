@@ -19,9 +19,7 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L.Info;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.Loader;
@@ -52,7 +50,7 @@ public abstract class ToJar {
     var info=Info.empty.withTyped(true);
     lib=new Core.L(lib.poss(),false,L(),L(),L(nc), info, L());
     Program p=Program.flat(lib);
-    var files=new ArrayList<SClassFile>();
+    var files=new JavaCodeStore();
     var libs= new ArrayList<L42£Library>();
     var loader=new Loader();
     loader.loadNow(p, files, libs);
@@ -68,15 +66,15 @@ public abstract class ToJar {
     InMemoryJavaCompiler.compile(loader.classLoader,fileMain,files);
     of(files,new ResourceSerialized(p,libs));
     }
-  public void of(ArrayList<SClassFile>files,ResourceSerialized res) throws IOException {
+  public void of(JavaCodeStore files,ResourceSerialized res) throws IOException {
     var manifest = new Manifest();
     manifest.getMainAttributes().put(Attributes.Name.MANIFEST_VERSION, "1.0");
     try(
       var target = new JarOutputStream(output(), manifest);
       ){
       res.save(target,timeNow);
-      for(var f : files) {
-        addSingle(target,f.name.replace(".",File.separator)+".class",f.toCF().getBytes());
+      for(var f : files.getAllCompiled().values()) {
+        addSingle(target,f.name.replace(".",File.separator)+".class",f.getBytes());
         }
       }
     }

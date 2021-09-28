@@ -3,13 +3,13 @@ package is.L42.platformSpecific.javaEvents;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
+import is.L42.platformSpecific.inMemoryCompiler.SourceFile;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import safeNativeCode.utils.Utils;
 
 public class LoadJavaCode {
@@ -31,7 +31,7 @@ public class LoadJavaCode {
     ClassLoader classes = InMemoryJavaCompiler.compile(
         //ClassLoader.getSystemClassLoader()
         LoadJavaCode.class.getClassLoader()
-        ,files,new ArrayList<>());
+        ,files,new JavaCodeStore()); 
     var k=classes.loadClass(fullName).getConstructor(Event.class);
     k.newInstance(e);
     }

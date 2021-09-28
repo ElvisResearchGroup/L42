@@ -41,7 +41,7 @@ import is.L42.generated.ST;
 import is.L42.generated.X;
 import is.L42.generated.Y;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.typeSystem.Coherence;
@@ -53,14 +53,14 @@ import is.L42.visitors.WellFormedness;
 
 public class State implements Serializable{
   public State(FreshNames freshNames,ArrayList<HashSet<List<C>>>alreadyCoherent, int uniqueId,
-      ArrayList<SClassFile> allByteCode,ArrayList<L42£Library> allLibs){
+      JavaCodeStore allByteCode,ArrayList<L42£Library> allLibs){
     this.freshNames=freshNames;this.alreadyCoherent=alreadyCoherent;this.uniqueId=uniqueId;
     this.allByteCode=allByteCode;this.allLibs=allLibs;
     }
   protected final FreshNames freshNames;
   protected final ArrayList<HashSet<List<C>>> alreadyCoherent;
   protected int uniqueId;
-  protected final ArrayList<SClassFile> allByteCode;
+  protected final JavaCodeStore allByteCode;
   protected final ArrayList<L42£Library> allLibs;
   
   protected ArrayList<HashSet<List<C>>> copyAlreadyCoherent(){
@@ -70,7 +70,7 @@ public class State implements Serializable{
     }
   public State copy(){
     return new State(freshNames.copy(),copyAlreadyCoherent(),
-      uniqueId,new ArrayList<>(allByteCode),new ArrayList<>(allLibs));
+      uniqueId,this.allByteCode.next(),new ArrayList<>(allLibs));
     }
   TopOpenOut topOpen(Program p,Map<ST,List<ST>> ctzMap){return new TopOpenOut(p,ctzMap);}
   public class TopOpenOut{
@@ -174,9 +174,9 @@ public class State implements Serializable{
     Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1=p.update(updateInfo(p,e,nc),false);
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
-    assert Resources.loader.bytecodeSize()==allByteCode.size():Resources.loader.bytecodeSize()+" "+allByteCode.size();
+    //assert Resources.loader.bytecodeSize()==allByteCode.size():Resources.loader.bytecodeSize()+" "+allByteCode.size();
     p1=flagTyped(p1);//propagate errors
-    assert Resources.loader.bytecodeSize()==allByteCode.size():Resources.loader.bytecodeSize()+" "+allByteCode.size();
+    //assert Resources.loader.bytecodeSize()==allByteCode.size():Resources.loader.bytecodeSize()+" "+allByteCode.size();
     return p1; 
     }
   protected Program flagTyped(Program p1) throws EndError{
@@ -222,7 +222,7 @@ public class State implements Serializable{
     return cmp;
     }
   private static final S toLibraryS=S.parse("#toLibrary()");
-  private Core.L reduce(Program p,C c,Core.E e,ArrayList<? super SClassFile> outNewBytecode,ArrayList<? super L42£Library> newLibs)throws EndError {
+  private Core.L reduce(Program p,C c,Core.E e,JavaCodeStore outNewBytecode,ArrayList<? super L42£Library> newLibs)throws EndError {
     try{return Resources.loader.runNow(p, c, e,outNewBytecode,newLibs);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}
@@ -274,9 +274,9 @@ public class State implements Serializable{
     if(obj == null){return false;}
     if(getClass() != obj.getClass()){return false;}
     State other = (State) obj;
-    if(allByteCode.size()!=other.allByteCode.size()){return false;}
+    //if(allByteCode.size()!=other.allByteCode.size()){return false;}
     //seams like there is some compiler freedom :( if(!allByteCode.equals(other.allByteCode)){return false;}
-    if(allLibs.size()!=other.allLibs.size()){return false;}
+    //if(allLibs.size()!=other.allLibs.size()){return false;}
     //libs define a complex equality, that eventually check the whole surrunding program, and is ok for those to be different in this context.
     //if(!allLibs.equals(other.allLibs)){return false;}
     if(!alreadyCoherent.equals(other.alreadyCoherent)){return false;}
