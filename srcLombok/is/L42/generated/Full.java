@@ -11,7 +11,7 @@ import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 import static is.L42.tools.General.*;
-
+import is.L42.flyweight.*;
 public class Full {
   public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}
   public static interface Leaf extends E{}
@@ -23,7 +23,7 @@ public class Full {
   L implements LL,Leaf,Visitable<LL>{@Override public Visitable<LL>visitable(){return this;}@Override public LL accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     boolean isDots; String reuseUrl; boolean isInterface; List<T> ts; List<M>ms; List<Doc>docs;
     public static interface M extends LDom.HasKey,HasWf,HasPos,HasVisitable{List<Doc> docs();E _e();Visitable<? extends M> visitable();}
-    @Override public L withCs(List<C>cs,Function<NC,NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
+    @Override public L withCs(List<C>cs,Function<NC,NC>fullF,Function<Core.NC,Core.NC>coreF){
       assert !cs.isEmpty();
       assert inDom(cs.get(0));
       return this.withMs(L(ms,d->{

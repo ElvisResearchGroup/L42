@@ -6,7 +6,7 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Mdf;
 import is.L42.translationToJava.J;
 import is.L42.typeSystem.Coherence;

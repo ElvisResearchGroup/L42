@@ -8,6 +8,7 @@ import java.util.function.IntConsumer;
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
@@ -92,7 +93,7 @@ public class ToSVisitor implements ToSTrait{
     kw("void");
     }
   public boolean headerNewLine(){return false;}//to override
-  public void visitL(Core.L l){
+  public void visitL(CoreL l){
     boolean inline=HasMultilinePart.inline(l) &&!headerNewLine();
     c("{");
     if(!inline){indent();}
@@ -112,7 +113,7 @@ public class ToSVisitor implements ToSTrait{
     if(!inline){deIndent();nl();}
     }
     
-  public void visitInfo(Core.L.Info info){
+  public void visitInfo(Core.Info info){
     separeFromChar();
     if(info.isTyped()){c("#typed{");}
     else {c("#norm{");}
@@ -146,7 +147,7 @@ public class ToSVisitor implements ToSTrait{
     c(label+"=");
     c(o.toString());
     } 
-  public void visitMWT(Core.L.MWT mwt){
+  public void visitMWT(Core.MWT mwt){
     visitDocs(mwt.docs());
     visitMH(mwt.mh());
     var _e0=mwt._e();
@@ -159,7 +160,7 @@ public class ToSVisitor implements ToSTrait{
     if(_e0!=null){visitE(_e0);}
     }
   
-  public void visitNC(Core.L.NC nc){
+  public void visitNC(Core.NC nc){
     visitDocs(nc.docs());
     visitC(nc.key());
     c("="); 

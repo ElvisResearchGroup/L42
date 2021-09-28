@@ -10,6 +10,7 @@ import java.util.function.Supplier;
 
 import is.L42.common.ErrMsg;
 import is.L42.common.Parse.Result;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.L42AuxParser;
@@ -20,7 +21,7 @@ import is.L42.generated.Full;
 import is.L42.generated.L42AuxParser.InfoContext;
 import is.L42.generated.L42AuxParser.PathContext;
 
-final class InfoSupplier implements Supplier<Core.L.Info> {
+final class InfoSupplier implements Supplier<Core.Info> {
   private final Result<InfoContext> r;
   private final Pos pos;
   List<P.NCs> typeDep=null;
@@ -34,7 +35,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
   String nativeKind=null;
   List<P> nativePar=null;
   Integer _uniqueId=null;
-  Core.L.Info result;
+  Core.Info result;
   AuxVisitor av;
   InjectionToCore inject;
   InfoSupplier(InjectionToCore inject, Result<InfoContext> r, Pos pos) {
@@ -68,31 +69,31 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     if(z==null){return;}
     if(get.get()!=null){
       inject.errors.append(pos+ ErrMsg.repeatedInfo(name));
-      result= Core.L.Info.empty;
+      result= Core.Info.empty;
       }
     set.accept(L(as.apply(z),(c,ei)->c.add(f.apply(ei))));
     if(get.get().isEmpty()){
       inject.errors.append(pos+ErrMsg.emptyInfo(name));
-      result= Core.L.Info.empty;
+      result= Core.Info.empty;
       }
     }
   <Z,E>void fillElem(String name, Z z,Function<Z,E>s, Supplier<E> get, Consumer<E> set,Predicate<E>empty){
     if(z==null){return;}
     if(get.get()!=null){
       inject.errors.append(pos+ ErrMsg.repeatedInfo(name));
-      result= Core.L.Info.empty;
+      result= Core.Info.empty;
       }
     set.accept(s.apply(z));
     if(empty.test(get.get())){
       inject.errors.append(pos+ErrMsg.emptyInfo(name));
-      result= Core.L.Info.empty;
+      result= Core.Info.empty;
       }
     }
   void boolFlag(String name, Object z,Supplier<Boolean> get, Consumer<Boolean> set){
     if(z==null){return;}    
     if(get.get()!=null){
       inject.errors.append(pos + ErrMsg.repeatedInfo(name));
-      result= Core.L.Info.empty;
+      result= Core.Info.empty;
       }
     set.accept(true);
     }
@@ -101,10 +102,10 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     if(get.get()==null){set.accept(def);}
     }
 
-  @Override public Core.L.Info get(){
+  @Override public Core.Info get(){
     if (r.hasErr()){
       inject.errors.append(pos + ErrMsg.malformedInfo(r.errorsTokenizer+"\n"+r.errorsParser));
-      return Core.L.Info.empty;
+      return Core.Info.empty;
       }
     boolean isTyped=r.res.infoNorm()==null;
     for(var b:r.res.infoBody()){
@@ -135,7 +136,7 @@ final class InfoSupplier implements Supplier<Core.L.Info> {
     nullToDef(()->nativeKind,v->nativeKind=v,"");
     nullToDef(()->nativePar,v->nativePar=v,General.<P>L());
     nullToDef(()->_uniqueId,v->_uniqueId=v,-1);
-    return new Core.L.Info(isTyped,typeDep,coherentDep,metaCoherentDep,friends,usedMethods,
+    return new Core.Info(isTyped,typeDep,coherentDep,metaCoherentDep,friends,usedMethods,
       privateSupertypes,refined,close,
       nativeKind,nativePar,_uniqueId);
     }

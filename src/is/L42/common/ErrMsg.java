@@ -11,10 +11,10 @@ import java.util.function.Supplier;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import is.L42.generated.Core.L.MWT;
 import is.L42.flyweight.X;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
+import is.L42.generated.Core.MWT;
 
 public class ErrMsg {
   public static String trimExpression(String e){

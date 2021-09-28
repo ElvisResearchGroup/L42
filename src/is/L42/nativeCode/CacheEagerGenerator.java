@@ -4,8 +4,8 @@ import static is.L42.tools.General.bug;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.translationToJava.J;
 
 public class CacheEagerGenerator extends CacheLazyGenerator{

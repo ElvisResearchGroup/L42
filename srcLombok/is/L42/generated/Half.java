@@ -7,6 +7,7 @@ import is.L42.visitors.CollectorVisitor;
 import is.L42.visitors.Visitable;
 import is.L42.common.Constants;
 import is.L42.visitors.CloneVisitor;
+import is.L42.flyweight.*;
 
 public class Half {
   public static interface E extends HasPos,HasWf,HasVisitable{Visitable<? extends E> visitable();}

@@ -6,11 +6,11 @@ import java.util.ArrayList;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Mdf;
 import is.L42.generated.S;
 import is.L42.translationToJava.J;
@@ -42,7 +42,7 @@ public class CacheLazyGenerator implements Generator{
     checkClose(l);
     if(!noMutFields(j, l,true)){checkOnlyThisCallFields(mwt,j);}
     }
-  public static boolean noMutFields(J j, L l,boolean alreadyClosed) {
+  public static boolean noMutFields(J j, CoreL l,boolean alreadyClosed) {
     return l.mwts().stream()
         .filter(m->(!alreadyClosed ||m.key().hasUniqueNum())
           && m._e()==null 
@@ -82,7 +82,7 @@ public class CacheLazyGenerator implements Generator{
     }
   public void clearCacheGood(J j){
     if(j.cachedClearCacheGood){return;}
-    Core.L l=j.p().topCore();
+    CoreL l=j.p().topCore();
     checkClose(l);
     for(var mwt:l.mwts()){
       if(InvalidateCacheGenerator.isCapsuleMutator(mwt,j)){
@@ -91,7 +91,7 @@ public class CacheLazyGenerator implements Generator{
       }
     j.cachedClearCacheGood=true;
     }
-  private void checkClose(Core.L l) {
+  private void checkClose(CoreL l) {
     if(!l.info().close()){
       throw new EndError.TypeError(l.poss(),ErrMsg.mustHaveCloseState());
       }

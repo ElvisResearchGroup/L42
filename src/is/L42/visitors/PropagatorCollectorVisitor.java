@@ -2,9 +2,13 @@ package is.L42.visitors;
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
+import is.L42.generated.Core.Info;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 
 public class PropagatorCollectorVisitor implements CollectorVisitor{
   @Override public void visitC(C c){}
@@ -35,7 +39,7 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     
   @Override public void visitEVoid(Core.EVoid eVoid){}
   
-  @Override public void visitL(Core.L l){
+  @Override public void visitL(CoreL l){
     visitTs(l.ts());
     visitMWTs(l.mwts());
     visitNCs(l.ncs());
@@ -43,7 +47,7 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitDocs(l.docs());
     }
     
-  @Override public void visitInfo(Core.L.Info info){
+  @Override public void visitInfo(Info info){
     visitPs(info.typeDep());
     visitPs(info.coherentDep());
     visitPs(info.metaCoherentDep());
@@ -53,14 +57,14 @@ public class PropagatorCollectorVisitor implements CollectorVisitor{
     visitSs(info.refined());
     }
     
-  @Override public void visitMWT(Core.L.MWT mwt){
+  @Override public void visitMWT(MWT mwt){
     visitDocs(mwt.docs());
     visitMH(mwt.mh());
     var _e0=mwt._e();
     if(_e0!=null){visitE(_e0);}
     }
   
-  @Override public void visitNC(Core.L.NC nc){
+  @Override public void visitNC(NC nc){
     visitDocs(nc.docs());
     visitC(nc.key());
     visitL(nc.l());

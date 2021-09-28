@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 import is.L42.cache.nativecache.L42ValueCache;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
-import is.L42.generated.Core;
 import is.L42.maps.L42£AbsMap.MapCache;
 import is.L42.maps.L42£Set.SetCache;
 import is.L42.nativeCode.TrustedKind;
@@ -190,14 +190,14 @@ class KeyFormatter{
     expanded.put(id,()->name+" = "+k.format(true,size));
     return name;    
     }
-  public String formatDispatch(P.NCs hint,P.NCs source,Core.L l,X x, Object o, boolean isInterface, int size) {
+  public String formatDispatch(P.NCs hint,P.NCs source,CoreL l,X x, Object o, boolean isInterface, int size) {
     int id=((KeyVarID)o).value();
     var cache=(L42Cache<?>)k.lines()[id][0];
     boolean isNative=cache.typename()instanceof TrustedKind;
     if(hint==null && isNative){hint=_computeHint(source, l, x);}
     return formatDispatchId(id,hint,o,isInterface,size);
     }
-  private P.NCs _computeHint(P.NCs source, Core.L l, X x){
+  private P.NCs _computeHint(P.NCs source, CoreL l, X x){
     if(l==null){
       l=p._ofCore(source);
       assert l.info().nativeKind().equals("List");

@@ -24,12 +24,12 @@ import is.L42.constraints.InferExceptions;
 import is.L42.constraints.InferToCore;
 import is.L42.constraints.ToHalf;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.*;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Full.L.NC;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
@@ -73,7 +73,7 @@ public class State implements Serializable{
       alreadyCoherent.add(new HashSet<>());
       assert p.dept()+1>=alreadyCoherent.size(): p.dept()+"!="+alreadyCoherent.size();
       Full.L topL=(Full.L)p.top;
-      Core.L coreL=SortHeader.coreTop(p,uniqueId++);
+      CoreL coreL=SortHeader.coreTop(p,uniqueId++);
       Program p0=p.update(coreL,false);
       //CTz ctz=new CTz(ctzMap);//was p0.from(ctzMap,P.pThis1);
       CTz ctz=p0.from(ctzMap,P.pThis0,true);//we are in a new context, where we could do more 'solve' 
@@ -98,10 +98,10 @@ public class State implements Serializable{
       e1n.add(hq.e);
       }
     }
-  Core.L topClose(Program p1,List<Full.L.M> ms,List<Half.E> e1n,CTz ctz){
+  CoreL topClose(Program p1,List<Full.L.M> ms,List<Half.E> e1n,CTz ctz){
     Resources.notifyCompiledNC("topC:"+p1.dept()+",");
     List<MWT> mhs=L(p1.topCore().mwts().stream().filter(mi->_elem(ms, mi.key())!=null));
-    assert p1.top instanceof Core.L;
+    assert p1.top instanceof CoreL;
     assert p1.topCore().wf();
     List<Core.E> coreE1n=L(mhs,e1n,(c,mhi,_ei)->{
       if(_ei==null){c.add(null);return;}
@@ -114,7 +114,7 @@ public class State implements Serializable{
       String nat=(memi instanceof Full.L.MWT)?((Full.L.MWT)memi).nativeUrl():"";
       c.add(mhi.withNativeUrl(nat).with_e(_ei));
       });
-    Core.L l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
+    CoreL l=updateInfo(p1,coreMWTs);//mwt'1..mwt'n
     assert l.info()._uniqueId()!=-1;
     List<S> sz=L(coreMWTs,(c,m)->{
       var _m=_elem(ms,m.key());
@@ -156,13 +156,13 @@ public class State implements Serializable{
     Core.E e=adapt(ce,pRes);
     Coherence.coherentAllPs(p,deps.cohePs,alreadyCoherent);
     Resources.inferenceHandler().nc(e, p);
-    Core.L l;
-    if(e instanceof Core.L){l=(Core.L)e;}
+    CoreL l;
+    if(e instanceof CoreL){l=(CoreL)e;}
     else{l=reduce(p,c0,e,allByteCode,allLibs);}//propagate errors
     System.err.println(c0+ " reduced");
     assert l!=null:c0+" "+e;
     //now, generating the new nc and adding it to the top of the program
-    Core.L.NC nc=new Core.L.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
+    Core.NC nc=new Core.NC(poss, TypeManipulation.toCoreDocs(docs), c0, l);
     Program p1=p.update(updateInfo(p,e,nc),false);
     //note: we generate also the last round of bytecode to be cache friendly (if a new nested is added afterwards)
     //assert Resources.loader.bytecodeSize()==allByteCode.size():Resources.loader.bytecodeSize()+" "+allByteCode.size();
@@ -191,7 +191,7 @@ public class State implements Serializable{
     return new Core.Block(ce.pos(),L(d),L(),mCall);
     }
   private P wellTyped(Program p, Core.E ce,Deps deps,List<Full.L.NC>moreNCs)  throws EndError{
-    var depsV=deps.new DepsV(p){@Override public void visitL(Core.L l){return;}};
+    var depsV=deps.new DepsV(p){@Override public void visitL(CoreL l){return;}};
     depsV.of(ce.visitable());
     new CircularityIssue(deps.typePs,p,ce,moreNCs).checkNotIllTyped();
     var pts=new PathTypeSystem(false,p,G.empty(),L(),L(P.pAny),P.pAny);
@@ -213,7 +213,7 @@ public class State implements Serializable{
     return cmp;
     }
   private static final S toLibraryS=S.parse("#toLibrary()");
-  private Core.L reduce(Program p,C c,Core.E e,JavaCodeStore outNewBytecode,ArrayList<? super L42£Library> newLibs)throws EndError {
+  private CoreL reduce(Program p,C c,Core.E e,JavaCodeStore outNewBytecode,ArrayList<? super L42£Library> newLibs)throws EndError {
     try{return Resources.loader.runNow(p, c, e,outNewBytecode,newLibs);}
     catch(InvocationTargetException e1){
       if(e1.getCause()instanceof RuntimeException){throw (RuntimeException) e1.getCause();}
@@ -222,9 +222,9 @@ public class State implements Serializable{
       }
     catch(CompilationError e1){throw new Error(e1);}
     }
-  private Core.L updateInfo(Program p1,Core.E source, Core.L.NC nc) {
+  private CoreL updateInfo(Program p1,Core.E source, Core.NC nc) {
     //if nc.key().hasUniqueNum() this can cause a type error in the outer (is ok)
-    Core.L l=p1.topCore();
+    CoreL l=p1.topCore();
     if(!(source instanceof LL)){
       nc=nc.withL(new UniqueNsRefresher(true).refreshUniqueNs(nc.l()));
       }
@@ -235,19 +235,19 @@ public class State implements Serializable{
     l=l.withNcs(pushL(l.ncs(),nc)).withInfo(info);
     return l;
     }
-  private Core.L updateInfo(Program p, List<Core.L.MWT>mwts) {
-    Core.L l=(Core.L)p.top;
-    List<Core.L.MWT> mwts0=L(l.mwts(),(c,m)->{
+  private CoreL updateInfo(Program p, List<Core.MWT>mwts) {
+    CoreL l=(CoreL)p.top;
+    List<Core.MWT> mwts0=L(l.mwts(),(c,m)->{
       var newM=_elem(mwts,m.key());
       if(newM==null){c.add(m);return;}
       });
     assert mwts0.size()+mwts.size()==l.mwts().size();
     Deps collected=new Deps().collectDeps(p,mwts);
-    Info info=collected.toInfo(true);
+    Core.Info info=collected.toInfo(true);
     var allMwts=merge(mwts,mwts0);
     var bridges=WellFormedness.bridge(allMwts);
     var closeState=!WellFormedness.hasOpenState(l.isInterface(),allMwts,l.ncs(),bridges);
-    Info info1=l.info().sumInfo(info).withClose(closeState);
+    Core.Info info1=l.info().sumInfo(info).withClose(closeState);
     return l.withMwts(allMwts).withInfo(info1);
     }
   @Override public int hashCode(){

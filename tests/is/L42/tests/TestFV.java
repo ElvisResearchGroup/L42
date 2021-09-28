@@ -6,8 +6,8 @@ import java.util.stream.Stream;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Parse;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.X;
-import is.L42.generated.Core;
 import is.L42.tools.AtomicTest;
 import is.L42.visitors.FV;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -57,7 +57,7 @@ public static void pass(String input,String ...output){
 public static void failC(String input,String ...output){
   var r=Parse.e(Constants.dummy,inCore(input));
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  var c=(Core.L)r.res;
+  var c=(CoreL)r.res;
   var e=c.mwts().get(0)._e();
   try{FV.of(e.visitable());}
   catch(EndError.NotWellFormed nwf){
@@ -69,7 +69,7 @@ public static void failC(String input,String ...output){
 public static void passC(String input){
   var r=Parse.e(Constants.dummy,inCore(input));
   assert !r.hasErr():r.errorsParser+" "+r.errorsTokenizer+" "+r.errorsVisitor;
-  var c=(Core.L)r.res;
+  var c=(CoreL)r.res;
   var e=c.mwts().get(0)._e();
   FV.of(e.visitable());// may throw NotWellFormed
   }

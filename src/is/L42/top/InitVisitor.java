@@ -21,10 +21,11 @@ import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
-import is.L42.generated.Core.L.Info;
+import is.L42.generated.Core.Info;
 import is.L42.generated.Full.CsP;
 import is.L42.visitors.CloneVisitorWithProgram;
 import is.L42.visitors.WellFormedness;
@@ -84,7 +85,7 @@ class InitVisitor extends CloneVisitorWithProgram{
     if(!p.isNCs()){return false;}
     LL l=p().of(p,pos);
     if(l.isFullL()){return isDefined(s,p.toNCs(),(Full.L)l);}
-    return isDefined(s,p.toNCs(),(Core.L)l);
+    return isDefined(s,p.toNCs(),(CoreL)l);
     }
   boolean isDefined(S s,P.NCs p,Full.L l){
     boolean found=l.ms().stream().anyMatch(m->m.key().equals(s));
@@ -95,7 +96,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       }
     return false;
     }
-    boolean isDefined(S s,P.NCs p,Core.L l){
+    boolean isDefined(S s,P.NCs p,CoreL l){
       boolean found=l.mwts().stream().anyMatch(m->m.key().equals(s));
       if(found){return true;}
       for(var ti:l.ts()){
@@ -118,7 +119,7 @@ class InitVisitor extends CloneVisitorWithProgram{
         });
       checkUniqueNsCommon(pos, ns);
       }
-  void checkUniqueNs(Core.L l){
+  void checkUniqueNs(CoreL l){
     var pos=l.poss();
     List<P> ps=L(l.ts().stream().map(t->t.p()));
     List<Integer> ns=L(c->{
@@ -152,7 +153,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       }
     LL res=addDots(s);
     if(res.isFullL()){return super.visitL((Full.L)res);}
-    return super.visitL((Core.L)res);
+    return super.visitL((CoreL)res);
     }
   @Override public LL fullLHandler(Full.L s){
     if(s.isDots()){throw bug();}
@@ -165,8 +166,8 @@ class InitVisitor extends CloneVisitorWithProgram{
     //TODO: the above test is dangerous, it may encounter ... or reuse, and then we do not know if it is in the domain (good AssertionError)
     return s;        
     }
-  void checkInfo(Core.L l){WellFormedness.checkInfo(p(),l);}
-  @Override public Core.L coreLHandler(Core.L s){
+  void checkInfo(CoreL l){WellFormedness.checkInfo(p(),l);}
+  @Override public CoreL coreLHandler(CoreL s){
     s=super.coreLHandler(s);
     checkUniqueNs(s);
     checkInfo(s);
@@ -208,7 +209,7 @@ class InitVisitor extends CloneVisitorWithProgram{
       if(ki.equals(d)){dn=i;}
       if(ki.equals(c)){
         var nci=(Full.L.NC)fl.ms().get(i);
-        if(nci._e() instanceof Core.L){cn=-2;}
+        if(nci._e() instanceof CoreL){cn=-2;}
         else{cn=i;}
         }
       }

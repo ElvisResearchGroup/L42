@@ -14,12 +14,13 @@ import java.util.stream.Stream;
 
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.E;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.S;
@@ -43,9 +44,9 @@ import is.L42.typeSystem.TypeManipulation;
      */
 public class Defaults{
   MetaError err;
-  Core.L l;
+  CoreL l;
   Program p;
-  public Core.L of(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
+  public CoreL of(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap){
     err=new MetaError(wrap);
     if(cs.isEmpty()){this.p=p;this.l=p.topCore();return of();}
     var pIn=p.navigate(cs);
@@ -56,7 +57,7 @@ public class Defaults{
     assert res.wf();
     return res;
     }
-  Core.L of(){
+  CoreL of(){
     fillDefs();
     var newMWTs=L(l.mwts().stream().flatMap(this::of));
     return l.withMwts(new SumMethods(err).sum(l.mwts(), newMWTs));

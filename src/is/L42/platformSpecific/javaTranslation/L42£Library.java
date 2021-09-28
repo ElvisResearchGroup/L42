@@ -9,18 +9,17 @@ import java.util.function.BiConsumer;
 import is.L42.cache.L42Cache;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
-import is.L42.generated.Core.L;
 import is.L42.tools.General;
 
 public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any,Serializable{
   Program originP;
   private Program currentP=null;
-  public L unwrap=null;
+  public CoreL unwrap=null;
   private P.NCs localPath=null;
   public P.NCs localPath(){return localPath;}
-  L originL;
+  CoreL originL;
   C originName=null;
   public static final L42£Library pathInstance;static{
     class L42£LibraryFwd extends L42£Library implements L42Fwd{
@@ -66,7 +65,7 @@ public class L42£Library extends L42NoFields.Eq<L42£Library> implements L42Any
     //current:C1'..Ck'
     //{..}[from Thisk.C1..Cn;currentP]
     localPath=P.of(pathC.size(),pathO);
-    unwrap=(Core.L)currentP.from(originL,localPath);
+    unwrap=(CoreL)currentP.from(originL,localPath);
     if(this.originName==null){localPath=null;}
     else{localPath=localPath.withCs(pushL(localPath.cs(),originName));}
     }

@@ -4,9 +4,13 @@ import java.util.List;
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
+import is.L42.generated.Core.Info;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 
 public interface CollectorVisitor {
   default void visitE(Core.E e){e.visitable().accept(this);}
@@ -17,32 +21,32 @@ public interface CollectorVisitor {
   default void visitXP(Core.XP xP){xP.visitable().accept(this);}
   default void visitXP(Half.XP xP){xP.visitable().accept(this);}
 
-  default void visitEs(List<Core.E> es){es.forEach(this::visitE);}
-  default void visitPs(List<? extends P> ps){ps.forEach(this::visitP);}
-  default void visitSs(List<S> ss){ss.forEach(this::visitS);}
-  default void visitPathSels(List<Core.PathSel> pathSels){pathSels.forEach(this::visitPathSel);}
-  default void visitXPs(List<Core.XP> xPs){xPs.forEach(this::visitXP);}
-  default void visitFullEs(List<Full.E> es){es.forEach(this::visitE);}
-  default void visitHalfEs(List<Half.E> es){es.forEach(this::visitE);}
-  default void visitHalfXPs(List<Half.XP> xPs){xPs.forEach(this::visitXP);}
-  default void visitCs(List<C> cs){cs.forEach(this::visitC);}
-  default void visitXs(List<X> xs){xs.forEach(this::visitX);}
-  default void visitSTz(List<ST> stz){stz.forEach(this::visitST);}
-  default void visitMWTs(List<Core.L.MWT> mwts){mwts.forEach(this::visitMWT);}
-  default void visitNCs(List<Core.L.NC> ncs){ncs.forEach(this::visitNC);}
-  default void visitDs(List<Core.D> ds){ds.forEach(this::visitD);}
-  default void visitKs(List<Core.K> ks){ks.forEach(this::visitK);}
-  default void visitTs(List<Core.T> ts){ts.forEach(this::visitT);}
-  default void visitDocs(List<Core.Doc> docs){docs.forEach(this::visitDoc);}
-  default void visitHalfDs(List<Half.D> ds){ds.forEach(this::visitD);}
-  default void visitHalfKs(List<Half.K> ks){ks.forEach(this::visitK);}
-  default void visitFullMs(List<Full.L.M> ms){ms.forEach(this::visitM);}
-  default void visitFullDs(List<Full.D> ds){ds.forEach(this::visitD);}  
-  default void visitFullVarTxs(List<Full.VarTx> varTxs){varTxs.forEach(this::visitVarTx);}
-  default void visitFullKs(List<Full.K> ks){ks.forEach(this::visitK);}
-  default void visitFullPars(List<Full.Par> pars){pars.forEach(this::visitPar);}
-  default void visitFullTs(List<Full.T> ts){ts.forEach(this::visitT);}
-  default void visitFullDocs(List<Full.Doc> docs){docs.forEach(this::visitDoc);}
+  default void visitEs(List<Core.E> es){ for(var e:es){this.visitE(e);} }
+  default void visitPs(List<? extends P> ps){ for(var p:ps){this.visitP(p);} }
+  default void visitSs(List<S> ss){ for(var s:ss){this.visitS(s);} }
+  default void visitPathSels(List<Core.PathSel> pathSels){ for(var s:pathSels){this.visitPathSel(s);} }
+  default void visitXPs(List<Core.XP> xPs){ for(var x:xPs){this.visitXP(x);} }
+  default void visitFullEs(List<Full.E> es){ for(var e:es){this.visitE(e);} }
+  default void visitHalfEs(List<Half.E> es){ for(var e:es){this.visitE(e);} }
+  default void visitHalfXPs(List<Half.XP> xPs){ for(var x:xPs){this.visitXP(x);} }
+  default void visitCs(List<C> cs){ for(var c:cs){this.visitC(c);} }
+  default void visitXs(List<X> xs){ for(var x:xs){this.visitX(x);} }
+  default void visitSTz(List<ST> stz){ for(var s:stz){this.visitST(s);} }
+  default void visitMWTs(List<MWT> mwts){ for(var mwt:mwts){this.visitMWT(mwt);} }
+  default void visitNCs(List<NC> ncs){ for(var nc:ncs){this.visitNC(nc);} }
+  default void visitDs(List<Core.D> ds){ for(var d:ds){this.visitD(d);} }
+  default void visitKs(List<Core.K> ks){ for(var k:ks){this.visitK(k);} }
+  default void visitTs(List<Core.T> ts){ for(var t:ts){this.visitT(t);} }
+  default void visitDocs(List<Core.Doc> docs){ for(var doc:docs){this.visitDoc(doc);} }
+  default void visitHalfDs(List<Half.D> ds){ for(var d:ds){this.visitD(d);} }
+  default void visitHalfKs(List<Half.K> ks){ for(var k:ks){this.visitK(k);} }
+  default void visitFullMs(List<Full.L.M> ms){ for(var m:ms){this.visitM(m);} }
+  default void visitFullDs(List<Full.D> ds){ for(var d:ds){this.visitD(d);} }  
+  default void visitFullVarTxs(List<Full.VarTx> varTxs){ for(var varTx:varTxs){this.visitVarTx(varTx);} }
+  default void visitFullKs(List<Full.K> ks){ for(var k:ks){this.visitK(k);} }
+  default void visitFullPars(List<Full.Par> pars){ for(var par:pars){this.visitPar(par);} }
+  default void visitFullTs(List<Full.T> ts){ for(var t:ts){this.visitT(t);} }
+  default void visitFullDocs(List<Full.Doc> docs){ for(var doc:docs){this.visitDoc(doc);} }
   
   void visitC(C c);
   void visitP(P p);
@@ -53,10 +57,10 @@ public interface CollectorVisitor {
   void visitEX(Core.EX x);
   void visitPCastT(Core.PCastT pCastT);
   void visitEVoid(Core.EVoid eVoid);
-  void visitL(Core.L l);
-  void visitInfo(Core.L.Info info);
-  void visitMWT(Core.L.MWT mwt);
-  void visitNC(Core.L.NC nc);
+  void visitL(CoreL l);
+  void visitInfo(Info info);
+  void visitMWT(MWT mwt);
+  void visitNC(NC nc);
   void visitMCall(Core.MCall mCall);
   void visitBlock(Core.Block block);
   void visitLoop(Core.Loop loop);

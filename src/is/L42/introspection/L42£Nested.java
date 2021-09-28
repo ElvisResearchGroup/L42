@@ -13,11 +13,11 @@ import is.L42.cache.L42Cache;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.T;
 import is.L42.generated.Pos;
 import is.L42.meta.L42£Meta;
@@ -57,7 +57,7 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     return fromClass(p.withCs(pushL(p.cs(),_top)));
     }*/
   static public L42£Nested fromClass(P.NCs clazz){
-    L l=Resources.currentP._ofCore(clazz);
+    CoreL l=Resources.currentP._ofCore(clazz);
     if(l==null){
       var alt=EndError.PathNotExistent.alternatives(Resources.currentP,clazz);
       throw new IndexOutOfBoundsException(
@@ -70,13 +70,13 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
   static public L42£Nested fromLibrary(L42£Library l){
     return fromLibrary(l.unwrap);
     }
-  static public L42£Nested fromLibrary(L l){
+  static public L42£Nested fromLibrary(CoreL l){
     return new L42£Nested(posStr(l.poss()),l,l,L42£Name.empty,null).myNorm();
     }
   public L42£Nested nestedByName(L42£Name name){
     assert name!=L42£Name.instance:
     "";
-    L l=rootL._cs(name.cs);
+    CoreL l=rootL._cs(name.cs);
     if(l==null){
       throw new IndexOutOfBoundsException(name+" not in the domain of the nested class; the domain is: "+rootL.domNC());
       }//throw err name invalid
@@ -171,14 +171,14 @@ public class L42£Nested extends L42NoFields.Eq<L42£Nested>{
     return new L42ClassAny(_classAny);
     }
   final String position;
-  final L currentL;
+  final CoreL currentL;
   final List<NC> publicNCs;
   final List<MWT> publicMWTs;
   final List<T> publicTs;
-  final L rootL;
+  final CoreL rootL;
   final L42£Name nameFromRoot;
   final P _classAny;
-  private L42£Nested(String position,L currentL,L rootL,L42£Name nameFromRoot,P _classAny){
+  private L42£Nested(String position,CoreL currentL,CoreL rootL,L42£Name nameFromRoot,P _classAny){
     this.position=position;
     this.currentL=currentL;
     this.rootL=rootL;

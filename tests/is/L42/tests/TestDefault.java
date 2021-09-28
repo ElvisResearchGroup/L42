@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import is.L42.common.Err;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.meta.Defaults;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -150,7 +150,7 @@ public static void pass(String sl1,String sl2,String[]msg){
   Init init1=new Init("{"+sl1+"#norm{}}");
   Init init2=new Init("{"+sl2+"#norm{}}");
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
-  Core.L lRes=new Defaults().of(init1.p,L(),wrap);
+  CoreL lRes=new Defaults().of(init1.p,L(),wrap);
   assertEquals(lRes, init2.p.topCore());
   }
 static class FailErr extends Error{}

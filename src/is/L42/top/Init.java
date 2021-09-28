@@ -19,9 +19,9 @@ import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
-import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Full.CsP;
 import is.L42.generated.LL;
@@ -75,11 +75,11 @@ public class Init {
     pStart.top.wf();
     return pStart.top.visitable().accept(new InitVisitor(f,pStart));
     }
-  public static Core.L topCache(CachedTop c,String code){
+  public static CoreL topCache(CachedTop c,String code){
     //TestCachingCases.timeNow("begin0");
     return new Init(code).topCache(c);
     }    
-  public static Core.L topCache(CachedTop c,Path initialPath,String code){
+  public static CoreL topCache(CachedTop c,Path initialPath,String code){
     Init i;try{i=new Init(initialPath,code);}
     catch(EndError e){//well formedness or the like. Anyway, cache is untouched
       c.fakeRunWithNoChange();
@@ -91,7 +91,7 @@ public class Init {
   protected State makeState(){//overriddable for tests
     return new State(f,new ArrayList<>(),0,new JavaCodeStore(),new ArrayList<>());
     }
-  public Core.L topCache(CachedTop c){
+  public CoreL topCache(CachedTop c){
     //TestCachingCases.timeNow("begin1");
     Resources.loader=new Loader();
     //TestCachingCases.timeNow("begin2");
@@ -99,7 +99,7 @@ public class Init {
     //TestCachingCases.timeNow("begin3");
     R res=c.openClose(new GLOpen(l,makeState()));
     if(res.isErr()){throw res._err;}
-    return (Core.L)res._obj;    
+    return (CoreL)res._obj;    
     }
   public static P resolveCsP(Program p,CsP s) {
   if(s._p()!=null){return InitVisitor.min(s._p(),p,s.poss());}

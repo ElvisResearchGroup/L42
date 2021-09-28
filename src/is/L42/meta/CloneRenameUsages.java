@@ -14,15 +14,15 @@ import java.util.List;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MCall;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
@@ -110,9 +110,9 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     res.addAll(p.cs());
     return res;
     }
-  @Override public L pushedOp(L l) {return infoRename.renameUsageInfo(this.p(),l);}
+  @Override public CoreL pushedOp(CoreL l) {return infoRename.renameUsageInfo(this.p(),l);}
 
-  @Override public L visitL(L l){
+  @Override public CoreL visitL(CoreL l){
     var key=getLastCMs();
     var inner=key instanceof S || this.whereFromTop().stream().anyMatch(k->k instanceof S);
     if(inner){
@@ -127,9 +127,9 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     assert l.info().usedMethods().stream().noneMatch(u->l.info().watched().contains(u.p()));
     Info i=infoForNewPrivateNesteds(l.ncs(),ncs1,l.info());
     assert i.usedMethods().stream().noneMatch(u->i.watched().contains(u.p()));
-    List<T> ts1=visitTs(l.ts());
-    List<Doc> docs1=visitDocs(l.docs());
-    return doPushedOp(new L(l.poss(),l.isInterface(),ts1,mwts1,ncs1,i,docs1));    
+    List<T> ts1=list(l.ts());
+    List<Doc> docs1=list(l.docs());
+    return doPushedOp(new CoreL(l.poss(),l.isInterface(),ts1,mwts1,ncs1,i,docs1));    
     }
   Info infoForNewPrivateNesteds(List<NC> ncs0,List<NC> ncs1,Info former){
     Deps d=new Deps();
@@ -228,7 +228,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
       if(w.n()==0){return false;}
       return !p0.pop(w.n()).inPrivate();
       }
-    public L renameUsageInfo(Program p0,L l){
+    public CoreL renameUsageInfo(Program p0,CoreL l){
       Info res=l.info().accept(this);
       boolean close=res.close();
       if(l.isInterface() && !close){
@@ -276,7 +276,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
         );
       return l.withInfo(res);
       }
-    @Override public L visitL(L l){throw unreachable();}
+    @Override public CoreL visitL(CoreL l){throw unreachable();}
     @Override public P visitP(P path){return CloneRenameUsages.this.visitP(path);}
     @Override public List<S> visitInfoSs(List<S> ss){
       return L(ss,(c,s)->{
@@ -289,7 +289,7 @@ class CloneRenameUsages extends CloneVisitorWithProgram.WithG{
     @Override public S visitS(S s){//for how we use this, we can assume it is inside an Info.refined
       var p0=CloneRenameUsages.this.p();
       for(var t:p0.topCore().ts()){
-        L l=p0._ofCore(t.p());
+        CoreL l=p0._ofCore(t.p());
         //if l is null, it was made private.
         //The only case where s is renamed and also P is renamed, is if s is made private
         if(l==null){continue;} 

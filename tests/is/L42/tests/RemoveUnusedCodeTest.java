@@ -11,7 +11,7 @@ import org.junit.jupiter.api.Test;
 import is.L42.common.Err;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.S;
 import is.L42.meta.Arrow;
 import is.L42.meta.RemoveUnusedCode;
@@ -24,7 +24,7 @@ import is.L42.top.Init;
 import is.L42.top.UniqueNsRefresher;
 
 class RemoveUnusedCodeTest {
-  Core.L hide(Core.L l,List<Arrow> renames){
+  CoreL hide(CoreL l,List<Arrow> renames){
     try{
       Function<L42£LazyMsg,L42Any>wrap=lm->{throw new Error(lm.getMsg());};
       return new Rename(new UniqueNsRefresher())
@@ -43,7 +43,7 @@ class RemoveUnusedCodeTest {
     }
   void checkDeps(String lib,String expected,String expectedRes){
     Resources.clearResKeepReuse();
-    Core.L l1=Init.topCache(new CachedTop(L(),L()),"{"+lib+"}");
+    CoreL l1=Init.topCache(new CachedTop(L(),L()),"{"+lib+"}");
     l1=hide(l1,List.of(cs("B_")));
     l1=hide(l1,List.of(cs("C_")));
     l1=hide(l1,List.of(cs("A","B_")));

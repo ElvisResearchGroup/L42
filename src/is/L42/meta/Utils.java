@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
@@ -32,7 +32,7 @@ public class Utils {
     }
   public static boolean match(Program p,MetaError err,String target,MWT forErr,Doc d){
     if(d._pathSel()==null){return false;}
-    L ld=p._ofCore(d._pathSel().p());
+    CoreL ld=p._ofCore(d._pathSel().p());
     if(ld==null){
       err.throwErr(forErr,"annotation "+d._pathSel().p()+" not existent");}
     for(var di:ld.docs()){

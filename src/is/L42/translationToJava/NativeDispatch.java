@@ -11,8 +11,9 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MWT;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.nativeCode.TrustedOp;
 
@@ -20,7 +21,7 @@ public class NativeDispatch {
   public static List<String>xs(MWT mwt){
     return L(Stream.concat(Stream.of("£xthis"), mwt.mh().s().xs().stream().map(x->"£x"+x.inner())));
     }
-  public static void nativeCode(String nativeKind,Core.L.MWT mwt,J j){
+  public static void nativeCode(String nativeKind,MWT mwt,J j){
     assert j!=null;
     String nativeUrl=mwt.nativeUrl();
     if(!nativeUrl.startsWith("trusted:")){untrusted(nativeKind,nativeUrl,mwt,j);return;}
@@ -42,7 +43,7 @@ public class NativeDispatch {
       }
     op._of(k).generate(mwt,j);
     }
-  public static String nativeFactory(J j,String nativeKind, Core.L.MWT mwt) {
+  public static String nativeFactory(J j,String nativeKind, MWT mwt) {
     var k=TrustedKind._fromString(nativeKind,j.p());
     return k.factory(j,mwt);
     }
@@ -121,6 +122,7 @@ public class NativeDispatch {
         +"throw new Error(\"Java code was returning null, but the expected result is not optional\");}}).get();}";
       }
     for(int i:range(xs)){toLambda=toLambda.replaceAll("#"+i, xs.get(i));}
+    //TODO: sanitize returns? like string remove \r?
     j.c(java.lang.String.format("""
     try{
       var slave=Resources.loadSlave(%s,%s,"%s",new Object(){});

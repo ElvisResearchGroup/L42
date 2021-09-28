@@ -20,6 +20,7 @@ import is.L42.cache.concurrency.CachedRes;
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
 import is.L42.translationToJava.Loader;
@@ -165,7 +166,7 @@ public class Resources {
     }
   public interface InferenceHandler{
     default void ex(Core.EX ex, Program p) {}
-    default void mwt(Core.L.MWT mwt, Program p) {}
+    default void mwt(Core.MWT mwt, Program p) {}
     default void nc(Core.E e, Program p) {}
     }
   private static InferenceHandler inferenceHandler=new InferenceHandler(){};

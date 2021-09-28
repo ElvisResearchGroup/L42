@@ -19,11 +19,11 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.*;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Full.D;
 import is.L42.generated.Op.OpKind;
@@ -45,7 +45,7 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
     super.visitL(l);
     accLL(l);
     }
-  @Override public void visitL(Core.L l){
+  @Override public void visitL(CoreL l){
     super.visitL(l);
     accLL(l);
     }
@@ -62,7 +62,7 @@ class AccumulateUnique extends Accumulate<Map<Integer,List<LL>>>{
       for(var m:l.ms()){acc(ll,m.key());}
       }
     else{
-      Core.L l=(Core.L)ll;
+      CoreL l=(CoreL)ll;
       for(var m:l.mwts()){acc(ll,m.key());}
       for(var m:l.ncs()){acc(ll,m.key());}
       }
@@ -78,7 +78,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     setAll.removeAll(setSome);
     throw new EndError.NotWellFormed(pos,err.apply(unique(setAll)));
     }
-  public static boolean coherentInfo(Program p,Info i){
+  public static boolean coherentInfo(Program p,Core.Info i){
     i.accept(new PropagatorCollectorVisitor(){
       @Override public void visitP(P path){
         assert p.minimize(path)==path:
@@ -88,14 +88,14 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     assert i.usedMethods().stream().noneMatch(u->i.watched().contains(u.p()));
     return true;
     }
-  public static boolean checkInfo(Program p,Core.L l){
+  public static boolean checkInfo(Program p,CoreL l){
     Deps deps=new Deps().collectDeps(p,l.mwts());
     deps.collectDepsNCs(p,l.ncs());    
     deps.collectDocs(p,l.docs());
     deps.collectTs(p,l.ts());
     ArrayList<S> refined=new ArrayList<>();
     Deps.collectRefined(p,refined);
-    Info i=deps.toInfo(false);
+    Core.Info i=deps.toInfo(false);
     //l can be different from p().top because all nested stuff has been inited in l and not in p().top
     checkMissing(i.typeDep(),l.info().typeDep(),l.poss(),ErrMsg::missedTypeDep);
     checkMissing(i.coherentDep(),l.info().coherentDep(),l.poss(),ErrMsg::missedCoheDep);
@@ -125,11 +125,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     checkInfoMeth(p,l);  
     return true;
     }
-  public static boolean checkInfoMeth(Program p,Core.L l){
+  public static boolean checkInfoMeth(Program p,CoreL l){
     for (var m:l.mwts()){
       if(m._e()==null){continue;}
       m._e().visitable().accept(new PropagatorCollectorVisitor(){
-        @Override public void visitL(Core.L l){
+        @Override public void visitL(CoreL l){
           checkInfo(p.push(l),l);
           }
         });
@@ -141,7 +141,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     v.accept(tos);
     return true;
     }
-  public static boolean allMinimized(Program p,LDom _last,Core.L l){
+  public static boolean allMinimized(Program p,LDom _last,CoreL l){
     if (_last==null || _last instanceof S){p=p.push(l);}
     else{ p=p.push((C)_last,l);}
     new CloneVisitorWithProgram(p){
@@ -462,7 +462,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     lastPos=l.poss();
     err(ErrMsg.noFullL(l));
     }
-  @Override public void visitMWT(Core.L.MWT mwt){
+  @Override public void visitMWT(Core.MWT mwt){
     lastPos=mwt.poss();
     boolean privateState=mwt.key().hasUniqueNum() && mwt._e()==null;
     if(privateState && lastIsInterface){
@@ -697,13 +697,13 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         }}
       }    
     }
-  private <PP extends P> void typedContains(Core.L.Info info,Stream<PP> others,String name){
+  private <PP extends P> void typedContains(Core.Info info,Stream<PP> others,String name){
     var extra=L(others.filter(o->o.isNCs() && !info.typeDep().contains(o)));
     if(!extra.isEmpty()){
       throw new EndError.NotWellFormed(lastPos,ErrMsg.infoPathNotInTyped(name,extra));
       }
     }
-  @Override public void visitInfo(Core.L.Info info){
+  @Override public void visitInfo(Core.Info info){
     typedContains(info,info.coherentDep().stream(),"coherentDep");
     typedContains(info,info.metaCoherentDep().stream(),"metaCoherentDep");
     typedContains(info,info.hiddenSupertypes().stream(),"hiddenSupertypes");
@@ -719,12 +719,12 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         }
       }
     }
-  public void superVisitL(Core.L l){
+  public void superVisitL(CoreL l){
     lastPos=l.poss();
     lastIsInterface=l.isInterface();
     super.visitL(l);
     }
-  @Override public void visitL(Core.L l){
+  @Override public void visitL(CoreL l){
     lastPos=l.poss();
     new WellFormedness().superVisitL(l);
     checkAllImmMdf(l.ts());
@@ -809,8 +809,8 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     }
   private void validPrivateNested(List<Pos> pos,C key, Full.E e) {
     lastPos=pos;
-    if(!(e instanceof Core.L)){err(ErrMsg.privateNestedNotCore(key));}
-    var l=(Core.L)e;
+    if(!(e instanceof CoreL)){err(ErrMsg.privateNestedNotCore(key));}
+    var l=(CoreL)e;
     for(var m:l.ncs()){
       if(m.key().hasUniqueNum()){continue;}
       lastPos=m.poss();
@@ -823,10 +823,10 @@ public class WellFormedness extends PropagatorCollectorVisitor{
       err(ErrMsg.privateNestedPrivateMember(m.key()));
       }       
     }
-  private static boolean hasOpenState(Core.L l,List<Core.L.MWT>bridges){
+  private static boolean hasOpenState(CoreL l,List<Core.MWT>bridges){
     return hasOpenState(l.isInterface(),l.mwts(),l.ncs(),bridges);
     }
-  public static boolean hasOpenState(boolean isInterface,List<Core.L.MWT>mwts,List<Core.L.NC>ncs, List<Core.L.MWT>bridges){
+  public static boolean hasOpenState(boolean isInterface,List<Core.MWT>mwts,List<Core.NC>ncs, List<Core.MWT>bridges){
     if(mwts.stream().anyMatch(m->m.key().uniqueNum()==0)){return false;}
     if(ncs.stream().anyMatch(n->n.key().uniqueNum()==0)){return false;}
     if(isInterface){return true;}
@@ -848,7 +848,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
         }});
     return res[0];
     }
-  public static List<Core.L.MWT> bridge(List<Core.L.MWT> mwts){
+  public static List<Core.MWT> bridge(List<Core.MWT> mwts){
     return L(mwts.stream().filter(m->m._e()!=null &&
       isBridgeMeth(m.key().m(),m.nativeUrl(),m._e().visitable())));
     }

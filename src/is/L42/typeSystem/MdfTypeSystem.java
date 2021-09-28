@@ -22,6 +22,7 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
@@ -62,7 +63,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
   @Override public void visitPCastT(PCastT e){
     mustSubMdf(Class, expected,e.poss());
     }
-  @Override public void visitL(L e){
+  @Override public void visitL(CoreL e){
     mustSubMdf(Immutable, expected,e.poss());
     }
   @Override public void visitEX(EX e){
@@ -135,7 +136,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     catch(EndError.TypeError te){
       var lentG=oldG.toLent();
       e.accept(new PropagatorCollectorVisitor(){
-        @Override public void visitL(Core.L l){}
+        @Override public void visitL(CoreL l){}
         @Override public void visitEX(EX x){
           if(oldG._of(x.x())==null){return;}
           if(lentG._of(x.x())==null){throw te;}

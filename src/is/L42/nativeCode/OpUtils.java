@@ -12,9 +12,9 @@ import java.util.function.Function;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Mdf;
 import is.L42.translationToJava.J;
 import is.L42.translationToJava.NativeDispatch;
@@ -179,7 +179,7 @@ class OpUtils{
           ErrMsg.nativeParameterInvalidKind(!mwt.nativeUrl().isEmpty(),mwt.nativeUrl(),mwt.mh(),sig,mdfi,tmdfi));
         }
       }
-    public static boolean allAbs(Core.L l){
+    public static boolean allAbs(CoreL l){
       var noNative=l.info().nativeKind().isEmpty();
       var allAbs=l.mwts().stream().allMatch(mi->mi._e()==null);
       var hasClass=l.mwts().stream().anyMatch(mi->mi.mh().mdf().isClass());

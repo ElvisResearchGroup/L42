@@ -1,78 +1,64 @@
 package is.L42.visitors;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
+
 import static is.L42.tools.General.*;
 
 public class CloneVisitor {
   public final ST visitST(ST st){return st.visitable().accept(this);}
 
   public final Core.E visitE(Core.E e){return e.visitable().accept(this);}
-  
-  public final List<Core.E> visitEs(List<Core.E> es){return L(es,this::visitE);}
 
   public final Core.XP visitXP(Core.XP xP){return xP.visitable().accept(this);}
 
-  public final List<P> visitPs(List<P> ps){return L(ps,this::visitP);}
-
-  public final List<Core.XP> visitXPs(List<Core.XP> xPs){return L(xPs,this::visitXP);}
-
   public final Full.E visitE(Full.E e){return e.visitable().accept(this);}
-
-  public final List<Full.E> visitFullEs(List<Full.E> es){return L(es,this::visitE);}
 
   public final Full.L.M visitM(Full.L.M m){return m.visitable().accept(this);}
 
   public final Half.E visitE(Half.E e){return e.visitable().accept(this);}
 
-  public final List<Half.E> visitHalfEs(List<Half.E> es){return L(es,this::visitE);}
-
   public final Half.XP visitXP(Half.XP xP){return xP.visitable().accept(this);}
 
-  public final List<Half.XP> visitHalfXPs(List<Half.XP> xPs){return L(xPs,this::visitXP);}
-
-  public final List<C> visitCs(List<C> cs){return L(cs,this::visitC);}
-
-  public final List<X> visitXs(List<X> xs){return L(xs,this::visitX);}
-  
-  public final List<ST> visitSTz(List<ST> stz){return L(stz,this::visitST);}
-
-  public final List<Core.L.MWT> visitMWTs(List<Core.L.MWT> mwts){return L(mwts,this::visitMWT);}
-  
-  public final List<Core.L.NC> visitNCs(List<Core.L.NC> ncs){return L(ncs,this::visitNC);}
-  
-  public final List<Core.D> visitDs(List<Core.D> ds){return L(ds,this::visitD);}
-    
-  public final List<Core.K> visitKs(List<Core.K> ks){return L(ks,this::visitK);}
-
-  public final List<Core.T> visitTs(List<Core.T> ts){return L(ts,this::visitT);}
-
-  public final List<Core.Doc> visitDocs(List<Core.Doc> docs){return L(docs,this::visitDoc);}
-
-  public final List<Half.D> visitHalfDs(List<Half.D> ds){return L(ds,this::visitD);}
-
-  public final List<Half.K> visitHalfKs(List<Half.K> ks){return L(ks,this::visitK);}
-    
-  public final List<Full.L.M> visitFullMs(List<Full.L.M> ms){return L(ms,this::visitM);}
-
-  public final List<Full.D> visitFullDs(List<Full.D> ds){return L(ds,this::visitD);}  
-
-  public final List<Full.VarTx> visitFullVarTxs(List<Full.VarTx> varTxs){return L(varTxs,this::visitVarTx);}
-
-  public final List<Full.K> visitFullKs(List<Full.K> ks){return L(ks,this::visitK);}
-
-  public final List<Full.Par> visitFullPars(List<Full.Par> pars){return L(pars,this::visitPar);}
-
-  public final List<Full.T> visitFullTs(List<Full.T> ts){return L(ts,this::visitT);}
-
-  public final List<Full.Doc> visitFullDocs(List<Full.Doc> docs){return L(docs,this::visitDoc);}
-
-  
+  public final <T extends Visitable<T>> List<T> list(List<T>a){//not reusing L for performance reason/lambda creation
+    if(a.isEmpty()){return L();}
+    int size=a.size();
+    ArrayList<T> res=new ArrayList<>(size);
+    boolean change=false;
+    for(int i=0;i<size;i++){
+      var e0=a.get(i);
+      var e=e0.accept(this);
+      change|=e0!=e;
+      if(e!=null){res.add(e);}
+      }
+    if(!change){return a;}
+    return Collections.unmodifiableList(res);
+    }
+  public final <T extends HasVisitable> List<T> listRoot(List<T>a){//not reusing L for performance reason/lambda creation
+    if(a.isEmpty()){return L();}
+    int size=a.size();
+    ArrayList<T> res=new ArrayList<>(size);
+    boolean change=false;
+    for(int i=0;i<size;i++){
+      var e0=a.get(i);
+      @SuppressWarnings("unchecked")
+      T e=(T)e0.visitable().accept(this);
+      change|=e0!=e;
+      if(e!=null){res.add(e);}
+      }
+    if(!change){return a;}
+    return Collections.unmodifiableList(res);
+    }
   //------------
   
   public C visitC(C c){return c;}
@@ -80,7 +66,7 @@ public class CloneVisitor {
   public P visitP(P p){return p;}
 
   public S visitS(S s){
-    return s.withXs(visitXs(s.xs()));
+    return s.withXs(list(s.xs()));
     }
 
   public X visitX(X x){return x;}
@@ -95,7 +81,7 @@ public class CloneVisitor {
     }
 
   public ST visitSTOp(ST.STOp stOp){//note: different ret type
-    var zs=L(stOp.stzs(),this::visitSTz);
+    List<List<ST>> zs=L(stOp.stzs(),this::listRoot);
     return stOp.withStzs(zs);
     }
 
@@ -112,19 +98,19 @@ public class CloneVisitor {
     
   public Core.EVoid visitEVoid(Core.EVoid eVoid){return eVoid;}
   
-  public Core.L visitL(Core.L l){
+  public CoreL visitL(CoreL l){
     var ts0=l.ts();
     var mwts0=l.mwts();
     var ncs0=l.ncs();
     var info0=l.info();
     var docs0=l.docs();
-    var ts=visitTs(ts0);
-    var mwts=visitMWTs(mwts0);
-    var ncs=visitNCs(ncs0);
+    var ts=list(ts0);
+    var mwts=list(mwts0);
+    var ncs=list(ncs0);
     var info=visitInfo(info0);
-    var docs=visitDocs(docs0);
+    var docs=list(docs0);
     if(ts0==ts && mwts==mwts0 && ncs==ncs0 && info==info0 && docs==docs0){return l;}
-    return new Core.L(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
+    return new CoreL(l.poss(),l.isInterface(),ts,mwts,ncs,info,docs);
     }
   public List<P.NCs> visitInfoTypeDep(List<P.NCs> ps){
       return visitInfoAlsoUnique(ps);
@@ -174,7 +160,7 @@ public class CloneVisitor {
       c.add(s0);
       });
     }    
-  public Core.L.Info visitInfo(Core.L.Info info){
+  public Core.Info visitInfo(Core.Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
     var metaCoherentDep0=info.metaCoherentDep();
@@ -191,34 +177,34 @@ public class CloneVisitor {
     var watched=visitInfoWatched(watched0);
     var hiddenSupertypes=visitInfoHiddenSupertypes(hiddenSupertypes0);
     var refined=visitInfoSs(refined0);
-    var nativePar=visitPs(nativePar0);    
-    var res=new Core.L.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched,
+    var nativePar=list(nativePar0);    
+    var res=new Core.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched,
       usedMethods,hiddenSupertypes,refined,
       info.close(),info.nativeKind(),nativePar,info._uniqueId());
     if(res.equals(info)){return info;}
     return res;
     }
     
-  public Core.L.MWT visitMWT(Core.L.MWT mwt){
+  public MWT visitMWT(MWT mwt){
     var docs0=mwt.docs();
     var mh0=mwt.mh();
     var _e0=mwt._e();
-    var docs=visitDocs(docs0);
+    var docs=list(docs0);
     var mh=visitMH(mh0);
     var _e=_e0==null?null:visitE(_e0);
     if(docs==docs0 && mh==mh0 && _e==_e0){return mwt;}
-    return new Core.L.MWT(mwt.poss(),docs, mh, mwt.nativeUrl(), _e);
+    return new MWT(mwt.poss(),docs, mh, mwt.nativeUrl(), _e);
     }
   
-  public Core.L.NC visitNC(Core.L.NC nc){
+  public NC visitNC(NC nc){
     var docs0=nc.docs();
     var c0=nc.key();
     var l0=nc.l();
-    var docs=visitDocs(docs0);
+    var docs=list(docs0);
     var c=visitC(c0);
     var l=visitL(l0);
     if(docs==docs0 && c==c0 && l==l0){return nc;}
-    return new Core.L.NC(nc.poss(), docs, c, l);
+    return new NC(nc.poss(), docs, c, l);
     }
 
   public Core.MCall visitMCall(Core.MCall mCall){
@@ -227,7 +213,7 @@ public class CloneVisitor {
     var es0=mCall.es();
     var xP=visitXP(xP0);
     var s=visitS(s0);
-    var es=visitEs(es0);
+    var es=listRoot(es0);
     if(xP==xP0 && s==s0 && es==es0){return mCall;}
     return new Core.MCall(mCall.pos(),xP, s, es);
     }
@@ -236,8 +222,8 @@ public class CloneVisitor {
     var ds0=block.ds();
     var ks0=block.ks();
     var e0=block.e();
-    var ds=visitDs(ds0);
-    var ks=visitKs(ks0);
+    var ds=list(ds0);
+    var ks=list(ks0);
     var e=visitE(e0);
     if(ds==ds0 && ks==ks0 && e==e0){return block;}
     return new Core.Block(block.pos(), ds, ks, e);
@@ -285,7 +271,7 @@ public class CloneVisitor {
   public Core.T visitT(Core.T t){
     var docs0=t.docs();
     var p0=t.p();
-    var docs=visitDocs(docs0);
+    var docs=list(docs0);
     var p=visitP(p0);
     return new Core.T(t.mdf(), docs, p);
     }
@@ -294,7 +280,7 @@ public class CloneVisitor {
     var pathSel0=doc._pathSel();
     var docs0=doc.docs();
     var pathSel=pathSel0==null?null:visitPathSel(pathSel0);
-    var docs=visitDocs(docs0);
+    var docs=list(docs0);
     if(docs==docs0 && pathSel==pathSel0){return doc;}
     return new Core.Doc(pathSel, doc.texts(), docs);
     }
@@ -316,11 +302,11 @@ public class CloneVisitor {
     var s0=mh.s();
     var pars0=mh.pars();
     var exceptions0=mh.exceptions();
-    var docs=visitDocs(docs0);
+    var docs=list(docs0);
     var t=visitT(t0);
     var s=visitS(s0);
-    var pars=visitTs(pars0);
-    var exceptions=visitTs(exceptions0);
+    var pars=list(pars0);
+    var exceptions=list(exceptions0);
     if(docs==docs0 && t==t0 && s==s0 && pars==pars0 && exceptions==exceptions0){return mh;}
     return new Core.MH(mh.mdf(),docs,t,s,pars,exceptions);
     }
@@ -329,17 +315,17 @@ public class CloneVisitor {
     var p0=pCastT.p();
     var stz0=pCastT.stz();
     var p=visitP(p0);
-    var stz=visitSTz(stz0);
+    var stz=listRoot(stz0);
     if(p==p0 && stz==stz0){return pCastT;}
     return new Half.PCastT(pCastT.pos(), p, stz);
     }
     
   public Half.SlashCastT visitSlashCastT(Half.SlashCastT slash){
-    return slash.withStz(visitSTz(slash.stz()));
+    return slash.withStz(listRoot(slash.stz()));
     }
     
   public Half.BinOp visitBinOp(Half.BinOp binOp){
-    return binOp.withEs(visitHalfXPs(binOp.es()));
+    return binOp.withEs(listRoot(binOp.es()));
     }
     
   public Half.MCall visitMCall(Half.MCall mCall){
@@ -348,7 +334,7 @@ public class CloneVisitor {
     var es0=mCall.es();
     var xP=visitXP(xP0);
     var s=visitS(s0);
-    var es=visitHalfEs(es0);
+    var es=listRoot(es0);
     if(xP==xP0 && s==s0 && es==es0){return mCall;}
     return new Half.MCall(mCall.pos(),xP,s,es);
     }
@@ -357,8 +343,8 @@ public class CloneVisitor {
     var ds0=block.ds();
     var ks0=block.ks();
     var e0=block.e();
-    var ds=visitHalfDs(ds0);
-    var ks=visitHalfKs(ks0);
+    var ds=list(ds0);
+    var ks=list(ks0);
     var e=visitE(e0);
     if(ds==ds0 && ks==ks0 && e==e0){return block;}
     return new Half.Block(block.pos(),ds,ks,e);
@@ -382,7 +368,7 @@ public class CloneVisitor {
     var stz0=d.stz();
     var x0=d.x();
     var e0=d.e();
-    var stz=visitSTz(stz0);
+    var stz=listRoot(stz0);
     var x=visitX(x0);
     var e=visitE(e0);
     if(stz==stz0 && x==x0 && e==e0){return d;}
@@ -393,7 +379,7 @@ public class CloneVisitor {
     var stz0=k.stz();
     var x0=k.x();
     var e0=k.e();
-    var stz=visitSTz(stz0);
+    var stz=listRoot(stz0);
     var x=visitX(x0);
     var e=visitE(e0);
     if(stz==stz0 && e==e0){return k;}
@@ -403,16 +389,16 @@ public class CloneVisitor {
   public Full.CsP visitCsP(Full.CsP csP){
     if(csP.cs().isEmpty()){return csP.with_p(visitP(csP._p()));}
     assert csP._p()==null;
-    return csP.withCs(visitCs(csP.cs()));
+    return csP.withCs(list(csP.cs()));
     }
     
   public LL visitL(Full.L l){
     var ts0=l.ts();
     var ms0=l.ms();
     var docs0=l.docs();
-    var ts=visitFullTs(ts0);
-    var ms=visitFullMs(ms0);
-    var docs=visitFullDocs(docs0);
+    var ts=list(ts0);
+    var ms=listRoot(ms0);
+    var docs=list(docs0);
     if(ts==ts0 && ms==ms0 && docs==docs0){return l;}
     return new Full.L(l.pos(),l.isDots(),l.reuseUrl(),l.isInterface(),ts,ms,docs);
     }
@@ -422,7 +408,7 @@ public class CloneVisitor {
     var t0=f.t();
     var s0=f.key();
     var _e0=f._e();
-    var docs=visitFullDocs(docs0);
+    var docs=list(docs0);
     var t=visitT(t0);
     var s=visitS(s0);
     var _e=_e0==null?_e0:_e0.visitable().accept(this);
@@ -434,7 +420,7 @@ public class CloneVisitor {
     var docs0=mi.docs();
     var s0=mi.key();
     var e0=mi.e();
-    var docs=visitFullDocs(docs0);
+    var docs=list(docs0);
     var s=visitS(s0);
     var e=visitE(e0);
     if(docs==docs0 && s==s0 && e==e0){return mi;}
@@ -445,7 +431,7 @@ public class CloneVisitor {
     var docs0=mwt.docs();
     var mh0=mwt.mh();
     var _e0=mwt._e();
-    var docs=visitFullDocs(docs0);
+    var docs=list(docs0);
     var mh=visitMH(mh0);
     var _e=_e0==null?null:visitE(_e0);
     if(docs==docs0 && mh==mh0 && _e==_e0){return mwt;}
@@ -456,7 +442,7 @@ public class CloneVisitor {
     var docs0=nc.docs();
     var c0=nc.key();
     var e0=nc.e();
-    var docs=visitFullDocs(docs0);
+    var docs=list(docs0);
     var c=visitC(c0);
     var e=visitE(e0);
     if(docs==docs0 && c==c0 && e==e0){return nc;}
@@ -468,7 +454,7 @@ public class CloneVisitor {
   public Full.SlashX visitSlashX(Full.SlashX slashX){return slashX;}//note, is right to not propagate on the x
   
   public Full.EString visitEString(Full.EString eString){
-    return eString.withEs(visitFullEs(eString.es()));
+    return eString.withEs(listRoot(eString.es()));
     }
   
   public Full.EPathSel visitEPathSel(Full.EPathSel ePathSel){
@@ -480,7 +466,7 @@ public class CloneVisitor {
     }
 
   public Full.BinOp visitBinOp(Full.BinOp binOp){
-    return binOp.withEs(visitFullEs(binOp.es()));
+    return binOp.withEs(listRoot(binOp.es()));
     }
     
   public Full.Cast visitCast(Full.Cast cast){
@@ -498,7 +484,7 @@ public class CloneVisitor {
     var pars0=call.pars();
     var e=visitE(e0);
     var s=s0==null?null:visitS(s0);
-    var pars=visitFullPars(pars0);
+    var pars=list(pars0);
     if(e==e0 && s==s0 && pars==pars0){return call;}
     return new Full.Call(call.pos(),e,s,call.isSquare(),pars);
     }
@@ -508,9 +494,9 @@ public class CloneVisitor {
     var ks0=block.ks();
     var ts0=block.whoopsed();
     var e0=block._e();
-    var ds=visitFullDs(ds0);
-    var ks=visitFullKs(ks0);
-    var ts=visitFullTs(ts0);
+    var ds=list(ds0);
+    var ks=list(ks0);
+    var ts=list(ts0);
     var e=e0==null?null:visitE(e0);
     if(ds==ds0 && ks==ks0 && ts==ts0 && e==e0){return block;}
     return new Full.Block(block.pos(),block.isCurly(),ds,block.dsAfter(),ks,ts,e);
@@ -530,7 +516,7 @@ public class CloneVisitor {
   public Full.For visitFor(Full.For sFor){
     var ds0=sFor.ds();
     var b0=sFor.body();
-    var ds=visitFullDs(ds0);
+    var ds=list(ds0);
     var b=visitE(b0);
     if(ds==ds0 && b==b0){return sFor;}
     return new Full.For(sFor.pos(),ds,b);
@@ -555,7 +541,7 @@ public class CloneVisitor {
     var then0=sIf.then();
     var _else0=sIf._else();
     var c=c0==null?null:visitE(c0);
-    var ds=visitFullDs(ds0);
+    var ds=list(ds0);
     var then=visitE(then0);
     var _else=_else0==null?null:visitE(_else0);
     if(c==c0 && ds==ds0 && then==then0 && _else==_else0){return sIf;}
@@ -566,7 +552,7 @@ public class CloneVisitor {
     var txs0=d.varTxs();
     var e0=d._e();
     var tx=tx0==null?null:visitVarTx(tx0);
-    var txs=visitFullVarTxs(txs0);
+    var txs=list(txs0);
     var e=e0==null?null:visitE(e0);
     if(tx==tx0 && txs==txs0 && e==e0){return d;}
     return new Full.D(tx,txs,e);
@@ -597,8 +583,8 @@ public class CloneVisitor {
     var xs0=par.xs();
     var es0=par.es();
     var e=e0==null?null:visitE(e0);
-    var xs=visitXs(xs0);
-    var es=visitFullEs(es0);
+    var xs=list(xs0);
+    var es=listRoot(es0);
     if(e==e0 && xs==xs0 && es==es0){return par;}
     return new Full.Par(e,xs,es);
     }
@@ -607,8 +593,8 @@ public class CloneVisitor {
     var docs0=t.docs();
     var cs0=t.cs();
     var _p0=t._p();
-    var docs=visitFullDocs(docs0);
-    var cs=visitCs(cs0);
+    var docs=list(docs0);
+    var cs=list(cs0);
     var _p=_p0==null?null:visitP(_p0);
     if(docs==docs0 && cs==cs0 && _p==_p0){return t;}
     return new Full.T(t._mdf(),docs,cs,_p);
@@ -618,7 +604,7 @@ public class CloneVisitor {
     var pathSel0=doc._pathSel();
     var docs0=doc.docs();
     var pathSel=pathSel0==null?null:visitPathSel(pathSel0);
-    var docs=visitFullDocs(docs0);
+    var docs=list(docs0);
     if(pathSel==pathSel0 && docs==docs0){return doc;}
     return new Full.Doc(pathSel,doc.texts(),docs);
     }
@@ -628,7 +614,7 @@ public class CloneVisitor {
     var _p0=pathSel._p();
     var s0=pathSel._s();
     var x0=pathSel._x();
-    var cs=cs0=visitCs(cs0);
+    var cs=cs0=list(cs0);
     var _p=_p0==null?null:visitP(_p0);
     var s=s0==null?null:visitS(s0);
     var x=x0==null?null:visitX(x0);
@@ -642,11 +628,11 @@ public class CloneVisitor {
     var s0=mh.s();
     var pars0=mh.pars();
     var exceptions0=mh.exceptions();
-    var docs=visitFullDocs(docs0);
+    var docs=list(docs0);
     var t=visitT(t0);
     var s=visitS(s0);
-    var pars=visitFullTs(pars0);
-    var exceptions=visitFullTs(exceptions0);
+    var pars=list(pars0);
+    var exceptions=list(exceptions0);
     if(docs==docs0 && t==t0 && s==s0 && pars==pars0 && exceptions==exceptions0){return mh;}
     return new Full.MH(mh._mdf(),docs,t,mh._op(),mh.n(),s,pars,mh.infer(),exceptions);
     }
@@ -659,7 +645,7 @@ public class CloneVisitor {
     if(t.isEmpty()){return t;}
     LL ll=t.ll().visitable().accept(this);
     PTails tail=t.tail().accept(this);
-    if(!t.hasC()){return tail.pTailSingle((Core.L)ll);}
+    if(!t.hasC()){return tail.pTailSingle((CoreL)ll);}
     return tail.pTailC(visitC(t.c()),ll);    
     }
   }

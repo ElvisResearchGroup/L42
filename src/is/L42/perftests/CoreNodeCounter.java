@@ -2,7 +2,11 @@ package is.L42.perftests;
 
 import java.util.List;
 
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
+import is.L42.generated.Core.Info;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.visitors.PropagatorCollectorVisitor;
 
 public class CoreNodeCounter extends PropagatorCollectorVisitor {
@@ -32,11 +36,11 @@ public class CoreNodeCounter extends PropagatorCollectorVisitor {
     super.visitXPs(xPs);
     this.ctr++;
     }
-  public void visitMWTs(List<Core.L.MWT> mwts){
+  public void visitMWTs(List<MWT> mwts){
     super.visitMWTs(mwts);
     this.ctr++;
     }
-  public void visitNCs(List<Core.L.NC> ncs){
+  public void visitNCs(List<NC> ncs){
     super.visitNCs(ncs);
     this.ctr++;
     }
@@ -68,19 +72,19 @@ public class CoreNodeCounter extends PropagatorCollectorVisitor {
     super.visitEVoid(eVoid);
     this.ctr++;
     }
-  public void visitL(Core.L l){
+  public void visitL(CoreL l){
     super.visitL(l);
     this.ctr++;
     }
-  public void visitInfo(Core.L.Info info){
+  public void visitInfo(Info info){
     super.visitInfo(info);
     this.ctr++;
     }
-  public void visitMWT(Core.L.MWT mwt){
+  public void visitMWT(MWT mwt){
     super.visitMWT(mwt);
     this.ctr++;
     }
-  public void visitNC(Core.L.NC nc){
+  public void visitNC(NC nc){
     super.visitNC(nc);
     this.ctr++;
     }

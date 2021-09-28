@@ -11,8 +11,8 @@ import org.junit.jupiter.api.Test;
 
 import is.L42.common.Err;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
 import is.L42.meta.Sum;
 import is.L42.platformSpecific.javaTranslation.L42Any;
 import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
@@ -486,12 +486,12 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
 public static void pass(String sl1,String sl2,String sl3){
   Resources.clearResKeepReuse();
   Init init1=new Init("{A={"+sl1+"#norm{}}");
-  Core.L l1=init1.p._ofCore(P.of(0,List.of(C.of("A",-1))));
+  CoreL l1=init1.p._ofCore(P.of(0,List.of(C.of("A",-1))));
   Init init2=new Init("{A={"+sl2+"#norm{}}");
-  Core.L l2=init2.p._ofCore(P.of(0,List.of(C.of("A",-1))));
-  Core.L l3Actual=new Sum().compose(init1.p,C.of("A",-1),l1, l2,(Function<L42£LazyMsg,L42Any>)null,null);
+  CoreL l2=init2.p._ofCore(P.of(0,List.of(C.of("A",-1))));
+  CoreL l3Actual=new Sum().compose(init1.p,C.of("A",-1),l1, l2,(Function<L42£LazyMsg,L42Any>)null,null);
   Init init3=new Init("{A={"+sl3+"#norm{}}");
-  Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(C.of("A",-1))));
+  CoreL l3Expected=init3.p._ofCore(P.of(0,List.of(C.of("A",-1))));
   assertEquals(l3Expected, l3Actual);
   }
 static class FailErr extends Error{}
@@ -499,9 +499,9 @@ public static void fail(String sl1,String sl2,String err){
   Resources.clearResKeepReuse();
   String[]msg={null};
   Init init1=new Init("{A={"+sl1+"#norm{}}");
-  Core.L l1=init1.p._ofCore(P.of(0,List.of(C.of("A",-1))));
+  CoreL l1=init1.p._ofCore(P.of(0,List.of(C.of("A",-1))));
   Init init2=new Init("{A={"+sl2+"#norm{}}");
-  Core.L l2=init2.p._ofCore(P.of(0,List.of(C.of("A",-1))));
+  CoreL l2=init2.p._ofCore(P.of(0,List.of(C.of("A",-1))));
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
   try{new Sum().compose(init1.p,C.of("A",-1),l1,l2,wrap,wrap);Assertions.fail();}
   catch(FailErr fe){}

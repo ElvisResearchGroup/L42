@@ -15,10 +15,9 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
 import is.L42.generated.Core.*;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.visitors.UndefinedCollectorVisitor;
@@ -64,12 +63,12 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     mustSubPath(e.p(),e.t().p(),e.poss());
     mustSubPath(e.t().p(),expected,e.poss());
     if(e.t().p()==P.pAny){return;}
-    L l=p._ofCore(e.p());
+    CoreL l=p._ofCore(e.p());
     boolean ok=e.t().p()==P.pAny || !l.isInterface();
     errIf(!ok,e.poss(),ErrMsg.castOnPathOnlyValidIfNotInterface(e.p()));
     _computed=e.t().p();
     }
-  @Override public void visitL(L e){
+  @Override public void visitL(CoreL e){
     mustSubPath(P.pLibrary,expected,e.poss());
     if(isDeep){ProgramTypeSystem.type(true,p.push(e));}
     _computed=P.pLibrary;
@@ -99,7 +98,7 @@ public class PathTypeSystem extends UndefinedCollectorVisitor{
     }
   @Override public void visitMCall(MCall e){
     P p0=TypeManipulation.guess(g,e.xP());
-    Core.L l;try{l=p._ofCore(p0);}
+    CoreL l;try{l=p._ofCore(p0);}
     catch(AssertionError ae){throw new AssertionError(p0.toString(),ae);}
     assert l!=null:
     "";

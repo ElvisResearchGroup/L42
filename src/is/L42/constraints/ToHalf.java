@@ -16,6 +16,7 @@ import is.L42.common.CTz;
 import is.L42.common.NameMangling;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
@@ -66,7 +67,7 @@ public class ToHalf extends UndefinedCollectorVisitor{
     et=y.p().solve(et);
     return et.stream().allMatch(e->e.equals(P.coreClassAny));
     }
-  @Override public void visitL(Core.L l){commit(l,L(P.coreLibrary),L());}
+  @Override public void visitL(CoreL l){commit(l,L(P.coreLibrary),L());}
   @Override public void visitL(Full.L l){commit(l,L(P.coreLibrary),L());}
 
   @Override public void visitEX(Core.EX x){

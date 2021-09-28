@@ -27,15 +27,15 @@ import java.util.stream.Stream;
 import is.L42.common.From;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.T;
 import is.L42.generated.LDom;
 import is.L42.generated.S;
@@ -87,15 +87,15 @@ public class Rename {
     var val=addMapNCs.get(cs);
     if(val!=null){
       if(_elem(val, c)!=null){return;}
-      val.add(new L.NC(L(),L(), c,Program.emptyL));
+      val.add(new NC(L(),L(), c,Program.emptyL));
       return;
       }
     mayAdd(cs);
     val=new ArrayList<>();
-    val.add(new L.NC(L(),L(), c,Program.emptyL));
+    val.add(new NC(L(),L(), c,Program.emptyL));
     addMapNCs.put(cs,val);
     }
-  L addMapTop=Program.emptyL;
+  CoreL addMapTop=Program.emptyL;
   LinkedHashMap<Arrow,Arrow> map;
   final UniqueNsRefresher fresh;
   Program p;//includes the top level L
@@ -109,7 +109,7 @@ public class Rename {
   LinkedHashSet<List<C>> allHiddenSupertypes;
   C cOut;
   
-  void makeAbstractOk(L _l,List<C> cs){
+  void makeAbstractOk(CoreL _l,List<C> cs){
     if(allWatched.contains(cs)){err(errFail,errFail.intro(cs,false)
       +"The implementation can not be removed since the class is watched by "
       +errFail.intro(watchedBy(p.topCore(),cs),false));}
@@ -118,13 +118,13 @@ public class Rename {
     Sum.openImplements(p.navigate(cs),
       s->err(errFail,errFail.intro(cs,false)+"The implementation can not be removed; "+s));
     }
-  private boolean deepCheckInfo(Program p,Core.L l){
+  private boolean deepCheckInfo(Program p,CoreL l){
     l.visitInnerL((li,csi)->{
       assert checkNoException(()->WellFormedness.checkInfo(p.navigate(csi),li)): ""+li;
       });
     return true;
     }
-  public Core.L apply(Program pOut,C cOut,Core.L l,List<Arrow>list,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+  public CoreL apply(Program pOut,C cOut,CoreL l,List<Arrow>list,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     this.list=list;
     this.p=pOut.push(cOut,l);
     this.cOut=cOut;
@@ -138,13 +138,13 @@ public class Rename {
     assert WellFormedness.allMinimized(pOut,cOut,l);
     for(var a:list){miniAddMap(new Arrow(a.cs,a._s),a);}    
     cs=L();
-    L res=applyMap();
+    CoreL res=applyMap();
     assert res.wf();
     assert WellFormedness.allMinimized(pOut,cOut,res);
     assert deepCheckInfo(pOut.push(cOut,res),res);
     return res;
     }
-  L applyMap(){
+  CoreL applyMap(){
     extendMap();
     allWatched=Sum.allFromInfo(p.topCore(),(c,li,csi)->{
       if(isDeleted(csi)){return;}
@@ -156,13 +156,13 @@ public class Rename {
       });
     earlyCheck();
     completeMap();
-    L l1=renameTop();
-    L l2=lOfAddMap();
+    CoreL l1=renameTop();
+    CoreL l2=lOfAddMap();
     assert checkNoDupDomain(l1);
     assert checkNoDupDomain(l2);
     return new Sum().compose(true,p.pop(),cOut,l1,l2,errC,errM);
     }
-  boolean checkNoDupDomain(Core.L l){
+  boolean checkNoDupDomain(CoreL l){
     for(int i:range(l.mwts())){
       for(int j:range(i+1,l.mwts().size())){
         assert !l.mwts().get(i).key().equals(l.mwts().get(j).key()):
@@ -182,7 +182,7 @@ public class Rename {
       }
     map.put(key,val);
     }
-  void addedArrow(Arrow a,Arrow src,List<C>csi,L li,Map<Arrow,Arrow> map){
+  void addedArrow(Arrow a,Arrow src,List<C>csi,CoreL li,Map<Arrow,Arrow> map){
     if(!a.full && li.isInterface() && a._cs!=null){assert a._path==null;return;}
     assert a._s==null && a._sOut==null;
     if(csi.isEmpty() && !a.isEmpty()){//either isCs or isP, if csi is empty, is simple
@@ -227,11 +227,11 @@ public class Rename {
         });
       }
     }
-  int firstPrivateOf(IdentityHashMap<Core.L,Integer>map,Core.L l,LDom lDom){
+  int firstPrivateOf(IdentityHashMap<CoreL,Integer>map,CoreL l,LDom lDom){
     return map.computeIfAbsent(l,l0->fresh.firstPrivateOf(l0,lDom));
     }
   void completeMap(){
-    var assignedPrivates=new IdentityHashMap<Core.L,Integer>();
+    var assignedPrivates=new IdentityHashMap<CoreL,Integer>();
     for(Arrow a:map.values()){
       if(!a.full || !a.isEmpty()){continue;}
       if(a._s!=null){
@@ -252,7 +252,7 @@ public class Rename {
       a._cs=pushL(popped,top.withUniqueNum(n));
       }
     }
-  List<C> culpritOf(L l,List<C> cs,Function<L,List<P.NCs>>f){//uses the map
+  List<C> culpritOf(CoreL l,List<C> cs,Function<CoreL,List<P.NCs>>f){//uses the map
     return Sum.culpritFromInfo(l,(li,csi)->{
       if(isDeleted(csi)){return null;}
       for(var w:f.apply(li)){
@@ -261,8 +261,8 @@ public class Rename {
       return null;
       });
     }
-  List<C> watchedBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().watched());}
-  List<C> hiddenBy(L l,List<C> cs){return culpritOf(l,cs,li->li.info().hiddenSupertypes());}
+  List<C> watchedBy(CoreL l,List<C> cs){return culpritOf(l,cs,li->li.info().watched());}
+  List<C> hiddenBy(CoreL l,List<C> cs){return culpritOf(l,cs,li->li.info().hiddenSupertypes());}
   boolean isDeleted(List<C>csi){
     var a=map.get(new Arrow(csi,null));
     return a!=null && ((!a.full && a.isEmpty() )|| a.isP());
@@ -299,14 +299,14 @@ public class Rename {
       }
     assert !domCodom.contains(null);
     for(var a:map.values()){
-      L l=p._ofCore(a.cs);
+      CoreL l=p._ofCore(a.cs);
       if(!a.isMeth()){continue;}
       assert a.cs.equals(a._cs);
       if(domCodom.contains(a.cs)){errAlreadyInvolved(a, a.cs,errFail.intro(a.cs,a._s));}
       assert l!=null;
       if(!l.isInterface()){continue;}
       for(var cs:domCodom){
-        L li=p._ofCore(cs);
+        CoreL li=p._ofCore(cs);
         if(li==null){continue;}
         for(T t:li.ts()){
           List<C> cs0=Sum._publicCsOfP(t.p(), cs);
@@ -323,7 +323,7 @@ public class Rename {
     }
   void earlyCheck(Arrow that){
     earlyCheckNoUniqueNum(that);
-    L l=p._ofCore(that.cs);
+    CoreL l=p._ofCore(that.cs);
     if(l==null){err(errName,errName.intro(that.cs,false)+"does not exists");}
     if(that._s!=null){earlyCheckHasS(that,l);return;}
     if(that.isMeth()){err(errFail,"mapping: "+that.toStringErr()+"\nCan not rename a nested class into a method");}
@@ -363,7 +363,7 @@ public class Rename {
       return pj.n()==0 && pj.cs().equals(cs1);
       });
     }
-  private void checkMakeInterface(List<C>cs1,L l1,List<C> cs2,L l2){
+  private void checkMakeInterface(List<C>cs1,CoreL l1,List<C> cs2,CoreL l2){
     assert !l1.isInterface();
     assert l2.isInterface();
     var ps1=L(l1.ts().stream().map(t->p.from(t.p().toNCs(),0,cs1)));
@@ -386,7 +386,7 @@ public class Rename {
     return (p1,p2)->//must be NCs since they are implemented interfaces
       p.from(p1.toNCs(),cs1).equals(p.from(p2.toNCs(), cs2));
     }
-  private void earlyCheckHasS(Arrow that, L l) {
+  private void earlyCheckHasS(Arrow that, CoreL l) {
     MWT mwt=_elem(l.mwts(),that._s);
     if(mwt==null){err(errName,errName.intro(that.cs,that._s)+"does not exists");}
     if(!that.isEmpty() &&!that.isMeth()){
@@ -412,7 +412,7 @@ public class Rename {
     if(that._cs!=null){priv&=that._cs.stream().anyMatch(c->c.hasUniqueNum());}
     if(priv){err(errFail,"A mapping using unique numbers was attempted");}//Should it be prevented before
     }
-  private void earlyCheckPOne(List<C> cs,P path, L l){
+  private void earlyCheckPOne(List<C> cs,P path, CoreL l){
     var ok=!path.isNCs() || p._ofCore(path.toNCs().withN(path.toNCs().n()+1))!=null;
     if(!ok){err(errName,errName.intro(path,false)+"does not exists in the redirected destination");}
     makeAbstractOk(null,cs);
@@ -441,8 +441,8 @@ public class Rename {
     this.cs=pushL(this.cs,c);
     return old;
     }
-  L lOfAddMap(){return lOfAddMapAux(addMapTop,L());}
-  L lOfAddMapAux(L l,List<C> cs){//if A.B.C in the map, then A.B is also in the map, and a nested class for C=_ is present. It may point just to emptyL
+  CoreL lOfAddMap(){return lOfAddMapAux(addMapTop,L());}
+  CoreL lOfAddMapAux(CoreL l,List<C> cs){//if A.B.C in the map, then A.B is also in the map, and a nested class for C=_ is present. It may point just to emptyL
     List<MWT> mwts=L(c->{
       c.addAll(l.mwts());
       c.addAll(addMapMWTs.getOrDefault(cs,L()));
@@ -450,7 +450,7 @@ public class Rename {
     List<NC> ncs=L(c->{
       c.addAll(l.ncs());
       for(NC nci:addMapNCs.getOrDefault(cs,L())){
-        L li=lOfAddMapAux(nci.l(),pushL(cs,nci.key()));
+        CoreL li=lOfAddMapAux(nci.l(),pushL(cs,nci.key()));
         c.add(nci.withL(li));
         }
       });
@@ -475,8 +475,8 @@ public class Rename {
     assert e!=null;
     return mwt.withMh(mh).with_e(e);
     }
-  L renameTop(){
-    L l1=renameL(p.topCore());
+  CoreL renameTop(){
+    CoreL l1=renameL(p.topCore());
     Arrow a=map.get(new Arrow(L(),null));
     if(a==null){return l1;}
     if(a.isMeth()){return l1;}
@@ -485,7 +485,7 @@ public class Rename {
     assert a.isCs();
     if(!a.full){noCircular(l1,L());}
     P.NCs src=P.of(a._cs.size(),L());
-    L l=noNesteds(l1);
+    CoreL l=noNesteds(l1);
     l=fromAndPushThis0Out(forcedNavigate(p,a._cs),l,src);
     int last=a._cs.size()-1;
     addMapNCs(a._cs.subList(0,last),new NC(L(),L(),a._cs.get(last),l));
@@ -493,9 +493,9 @@ public class Rename {
     return onlyNesteds(l1);
     //TODO: discuss, should the label by #typed, #norm or something else?
     }
-  static L fromAndPushThis0Out(Program prg,L l,P.NCs src){
+  static CoreL fromAndPushThis0Out(Program prg,CoreL l,P.NCs src){
     return new From(prg,src,0){//0+start since p is placed in the new l position
-      L start(L l){return superVisitL(l);}
+      CoreL start(CoreL l){return superVisitL(l);}
       Program forAssert(){
         Program res=forcedNavigate(program().pop(j()+src.n()),src.cs());
         List<C> path=program().path();
@@ -532,12 +532,12 @@ public class Rename {
         }
       }.start(l);
     }
-  L renameL(L l){return new CloneRenameUsages(this).visitL(l);}
+  CoreL renameL(CoreL l){return new CloneRenameUsages(this).visitL(l);}
   List<NC> renameNCs(CloneRenameUsages r,List<NC> ncs){return L(ncs,(c,nci)->{
     var oldCs=this.addC(nci.key());
-    L li=this.renameL(nci.l());
+    CoreL li=this.renameL(nci.l());
     this.cs=oldCs;
-    List<Doc> docs=r.visitDocs(nci.docs());
+    List<Doc> docs=r.list(nci.docs());
     c.addAll(renameNC(nci.withL(li).withDocs(docs)));    
     });}
   List<NC> renameNC(NC nc){
@@ -572,7 +572,7 @@ public class Rename {
       return L(rename4superMeth(mwt,e._sOut));
       }
     assert e.isMeth();
-    L l=p._ofCore(e.cs);
+    CoreL l=p._ofCore(e.cs);
     assert l!=null;
     if(l.info().refined().contains(mwt.key())){
       err(errFail,"refined method "+errFail.intro(cs,mwt.key())+"can not be directly renamed");
@@ -585,7 +585,7 @@ public class Rename {
     return rename5meth(mwt,e._sOut);
     }
   List<MWT> notDirectlyRenamed(MWT mwt){
-    L l=p._ofCore(cs);
+    CoreL l=p._ofCore(cs);
     assert l!=null;
     for(T t:l.ts()){
       List<C> cs0=Sum._publicCsOfP(t.p(), cs);
@@ -598,7 +598,7 @@ public class Rename {
       }
     return L(mwt);
     }
-  MWT rename1hideInterfaceMeth(L l,MWT mwt,S s1){
+  MWT rename1hideInterfaceMeth(CoreL l,MWT mwt,S s1){
     if(allHiddenSupertypes.contains(cs)){
       err(errFail,()->"The "+errFail.intro(cs,mwt.key())
           +"can not be made private since is implemented by private parts of "
@@ -633,13 +633,13 @@ public class Rename {
     }
   void nestedInNewPosition(NC nc,Arrow a,boolean moveDocs){
     if(a._cs.isEmpty()){
-      L l1=noNesteds(nc.l());
+      CoreL l1=noNesteds(nc.l());
       addMapTop=fromAndPushThis0Out(this.p,l1,P.of(0,a.cs));
       return;
       }
     var cs1=popLRight(a._cs);
     Program p=forcedNavigate(this.p,a._cs);
-    L l1=nc.l();
+    CoreL l1=nc.l();
     l1=noNesteds(l1);
     var src=p.minimize(P.of(a._cs.size(),a.cs));
     l1=fromAndPushThis0Out(p,l1,src);
@@ -699,7 +699,7 @@ public class Rename {
     if(!a._path.isNCs()){errRedirect(a.cs, a._path,nc.l().mwts().get(0),"the method does not exists");}
     P.NCs path=a._path.toNCs();
     path=path.withN(path.n()+1);
-    L l=this.p._ofCore(path);
+    CoreL l=this.p._ofCore(path);
     assert l!=null:"";
     Program p=this.p.navigate(a.cs);
     String interfMsg=nc.l().isInterface()?"Redirected interfaces must have all equivalent methods.\n":"";
@@ -736,14 +736,14 @@ public class Rename {
       +extraMsg);
     }
 
-  L toAbstract(L l0){
+  CoreL toAbstract(CoreL l0){
     List<MWT> mwts=L(l0.mwts(),(c,m)->{
       if(!m.key().hasUniqueNum()){c.add(m.with_e(null).withNativeUrl(""));}
       });
     List<NC> ncs=L(l0.ncs(),(c,n)->{
       if(!n.key().hasUniqueNum()){c.add(n);}
       });
-    L l=new L(l0.poss(),l0.isInterface(),l0.ts(),mwts,L(),Info.empty,l0.docs());
+    CoreL l=new CoreL(l0.poss(),l0.isInterface(),l0.ts(),mwts,L(),Info.empty,l0.docs());
     List<P.NCs> watched=new ArrayList<>();
     List<P.NCs> typeDep=new ArrayList<>();
     var acc=new Accumulate<Void>(){
@@ -772,11 +772,11 @@ public class Rename {
       }
     return p;
     }
-  void noCircular(L l,List<C>cs0){
+  void noCircular(CoreL l,List<C>cs0){
     for(var pi:l.info().typeDep()){
       var csi=Sum._publicCsOfP(pi, cs0);
       if(csi==null){continue;}
-      L li=p._ofCore(csi);
+      CoreL li=p._ofCore(csi);
       if(csi.equals(cs0)){continue;}
       if(li==null){continue;}
       for(var pj:li.info().typeDep()){
@@ -799,7 +799,7 @@ public class Rename {
       +"Code can not be extracted since it exposes uniquely numbered path "
       +errFail.intro(p.cs(),false));
     }
-  void noExposeUniqueN(List<C> cs,L l){
+  void noExposeUniqueN(List<C> cs,CoreL l){
     l.accept(new Accumulate<Void>(){
       @Override public void visitMWT(MWT mwt){
         if(mwt.key().hasUniqueNum()){return;}
@@ -813,7 +813,7 @@ public class Rename {
         }
       });
     }
-  L onlyNesteds(L l){
+  CoreL onlyNesteds(CoreL l){
     List<NC> ncs=L(l.ncs().stream().filter(nci->!nci.key().hasUniqueNum()));
     Deps deps=new Deps();
     for(var nc:ncs){deps.collectDocs(forcedNavigate(p, cs),nc.docs());}
@@ -825,7 +825,7 @@ public class Rename {
     if(l.ncs().isEmpty()){return null;}
     return nc.withL(l).withDocs(L());
     }
-  L noNesteds(L l){
+  CoreL noNesteds(CoreL l){
     List<NC> ncs=L(l.ncs(),(c,nci)->{
       if(nci.key().hasUniqueNum()){c.add(nci);}
       });
@@ -833,9 +833,9 @@ public class Rename {
     }  
   abstract class TweakPs extends CloneVisitor{
     int level=-1;
-    @Override public L visitL(L l){
+    @Override public CoreL visitL(CoreL l){
       level+=1;
-      L res=super.visitL(l);
+      CoreL res=super.visitL(l);
       level-=1;
       return res;
       }

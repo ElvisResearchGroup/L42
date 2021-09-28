@@ -17,13 +17,14 @@ import java.util.function.Supplier;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
@@ -46,7 +47,7 @@ public class Close extends GuessFields{
   HashSet<X> fieldNames=new HashSet<>();
   ArrayList<MWT> newMWTs=new ArrayList<>();
   ArrayList<MWT> oldMWTs=new ArrayList<>();
-  public Core.L close(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap){
+  public CoreL close(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap){
     this.autoNormed|=autoNorm;
     if(cs.isEmpty()){
       var res=close(p,wrap);
@@ -63,7 +64,7 @@ public class Close extends GuessFields{
     }
   J oldJ;
   boolean noMutFields;
-  private Core.L close(Program p,Function<L42£LazyMsg,L42Any>wrap){
+  private CoreL close(Program p,Function<L42£LazyMsg,L42Any>wrap){
     this.p=p;
     this.oldJ=new J(p,null,null,true);
     this.noMutFields=CacheLazyGenerator.noMutFields(oldJ,p.topCore(),false);
@@ -113,7 +114,7 @@ public class Close extends GuessFields{
       }
     return l;
     }
-  private void errorAmbiguousK(Core.L l,MH k){
+  private void errorAmbiguousK(CoreL l,MH k){
     Supplier<Object> t=()->l.mwts().stream().filter(m->m.mh()==k).reduce(toOneOrBug()).get();
     Supplier<String> msg=()->"abstract class method "+k.key()
       +" is an ambiguos constructor; all those fields should be initialized: "+
@@ -287,7 +288,7 @@ public class Close extends GuessFields{
       protected void err(List<Pos>pos,String msg){
         err.throwErr(m,msg);
         }
-      protected S _clearOn(Core.L l,S s){
+      protected S _clearOn(CoreL l,S s){
         var old=_elem(l.mwts(),s);
         if(old!=null && old._e()!=null){ return super._clearOn(l, s); }
         List<MWT> classMWTs=l.mwts().stream()

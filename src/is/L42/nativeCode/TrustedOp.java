@@ -12,9 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
 import is.L42.flyweight.P;
+import is.L42.generated.Core.Info;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
     
 public enum TrustedOp {

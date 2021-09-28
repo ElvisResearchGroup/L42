@@ -5,6 +5,7 @@ import static is.L42.tools.General.L;
 import java.util.ArrayList;
 import java.util.List;
 
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -38,7 +39,7 @@ public class Bindings extends PropagatorCollectorVisitor{
     }
   @Override public void visitL(Full.L L){}
   //core part
-  @Override public void visitL(Core.L L){}
+  @Override public void visitL(CoreL L){}
   @Override public void visitBlock(Core.Block b){
     super.visitBlock(b);
     result.addAll(FV.domDs(b.ds()));

@@ -8,7 +8,8 @@ import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.NameMangling;
-import is.L42.flyweight.X;
+import is.L42.flyweight.*;
+import is.L42.flyweight.P.*;
 import is.L42.generated.*;
 import is.L42.generated.Core.T;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -16,6 +17,7 @@ import is.L42.tools.InductiveSet;
 import is.L42.typeSystem.TypeManipulation;
 import is.L42.visitors.FV;
 import is.L42.visitors.UndefinedCollectorVisitor;
+
 
 public class InferToCore extends UndefinedCollectorVisitor{
   I i;
@@ -79,7 +81,7 @@ public class InferToCore extends UndefinedCollectorVisitor{
   @Override public void visitEX(Core.EX x){commit(x);}
   @Override public void visitEVoid(Core.EVoid eVoid){commit(eVoid);}
   @Override public void visitL(Full.L l){throw bug();}
-  @Override public void visitL(Core.L l){commit(l);}
+  @Override public void visitL(CoreL l){commit(l);}
   @Override public void visitPCastT(Half.PCastT pCastT){
     commit(new Core.PCastT(pCastT.pos(), pCastT.p(),infer(Mdf.Class,pCastT.stz(),pCastT.poss())));
     }

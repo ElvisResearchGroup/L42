@@ -21,13 +21,13 @@ import java.util.function.Supplier;
 
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.T;
 import is.L42.generated.LL;
 import is.L42.generated.Pos;
@@ -51,11 +51,11 @@ public class Sum {
   LinkedHashSet<List<C>> allWatchedLeft;
   LinkedHashSet<List<C>> allRequiredCoherentLeft;
   LinkedHashSet<List<C>> allHiddenSupertypesLeft;
-  Core.L topLeft;
-  Core.L topRight;
+  CoreL topLeft;
+  CoreL topRight;
   Program pOut;
   C cOut;
-  public Core.L compose(Program pOut,C cOut,Core.L l1, Core.L l2_,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
+  public CoreL compose(Program pOut,C cOut,CoreL l1, CoreL l2_,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     var l2=normalizePrivates(l2_,otherNs(l1));
     MetaError errC=new MetaError(wrapC);
     MetaError errM=new MetaError(wrapM);
@@ -69,7 +69,7 @@ public class Sum {
     assert checkNoException(()->WellFormedness.checkInfo(pOut.push(cOut,res),res));
     return res;
     }
-  public Core.L compose(boolean inRename,Program pOut,C cOut,Core.L l1, Core.L l2,MetaError errC,MetaError errM){
+  public CoreL compose(boolean inRename,Program pOut,C cOut,CoreL l1, CoreL l2,MetaError errC,MetaError errM){
     this.pOut=pOut;
     this.cOut=cOut;
     this.errC=errC;
@@ -89,12 +89,12 @@ public class Sum {
       l2.visitInnerLNoPrivate((li,csi)->growHiddenError(l2, l1, csi));
       }*/
     Plus plus=new Plus(L());
-    Core.L l=plus.plus(l1, l2);
+    CoreL l=plus.plus(l1, l2);
     wellFormedRefineAndNoCircularImplements(l);
     return l;
     }
-  private void fillMaps(Core.L l1, Core.L l2) {
-    General.Consumer3<LinkedHashSet<List<C>>,Core.L,List<C>> f;//needed for type inference
+  private void fillMaps(CoreL l1, CoreL l2) {
+    General.Consumer3<LinkedHashSet<List<C>>,CoreL,List<C>> f;//needed for type inference
     f=(c,li,csi)->{for(var w:li.info().hiddenSupertypes()){addPublicCsOfP(w,csi,c);}};
     allHiddenSupertypesLeft=allFromInfo(l1,f);
     allHiddenSupertypesRight=allFromInfo(l2,f);
@@ -115,7 +115,7 @@ public class Sum {
     Supplier<String> msg=()->ss.get()+"\n"+errM.pos(fault2.mwt)+"\n-----\n";
     return errM.throwErr(fault1.mwt,msg);
     }
-  RuntimeException err(List<C> f1,Core.L l1,Core.L l2,Supplier<String> ss){
+  RuntimeException err(List<C> f1,CoreL l1,CoreL l2,Supplier<String> ss){
     Supplier<String> msg=()->
       errC.introName(f1)+errC.intro(l1,false)
       +(l2==null?"":errC.introName(f1)+errC.intro(l2,false))
@@ -124,7 +124,7 @@ public class Sum {
     var lazy=new L42£LazyMsg(msg);
     throw new L42Error(errC.wrap.apply(lazy));
     }
-  private static HashSet<Integer> otherNs(Core.L other){
+  private static HashSet<Integer> otherNs(CoreL other){
     return new Accumulate<HashSet<Integer>>(){
       @Override public HashSet<Integer>empty(){return new HashSet<>();}
       @Override public void visitMWT(MWT mwt){
@@ -137,7 +137,7 @@ public class Sum {
         }
       }.of(other);
     }
-  private static Core.L normalizePrivates(Core.L l,HashSet<Integer>otherNs){
+  private static CoreL normalizePrivates(CoreL l,HashSet<Integer>otherNs){
     otherNs.remove(0);
     HashMap<Integer,Integer>next=new HashMap<>();
     for(int i:otherNs){
@@ -160,7 +160,7 @@ public class Sum {
         }
       });
     }
-  private void wellFormedRefineAndNoCircularImplements(Core.L l){
+  private void wellFormedRefineAndNoCircularImplements(CoreL l){
     l.visitInnerLNoPrivate((li,csi)->{
       if(li.ts().size()<=1){return;}
       HashMap<S,P>nonRefined=new HashMap<>();
@@ -180,7 +180,7 @@ public class Sum {
         }
       });
     }
-  private void growHiddenError(Core.L l1, Core.L l2, List<C> cs) {
+  private void growHiddenError(CoreL l1, CoreL l2, List<C> cs) {
     var l2cs=l2._cs(cs);
     if(l2cs==null){return;}
     var l1cs=l1._cs(cs);
@@ -189,7 +189,7 @@ public class Sum {
     assert !l1cs.info().close();
     err(cs,l1cs,l2cs,()->errGrowHidden+errC.intro(l2cs,false).stripTrailing());
     }
-  public  static List<C> culpritFromInfo(Core.L l,BiFunction<Core.L,List<C>,List<C>> f){
+  public  static List<C> culpritFromInfo(CoreL l,BiFunction<CoreL,List<C>,List<C>> f){
     Object[] res={null};
     l.visitInnerLNoPrivate((li,csi)->{
       if(res[0]==null){res[0]=f.apply(li,csi);}
@@ -197,7 +197,7 @@ public class Sum {
     @SuppressWarnings("unchecked") var list = (List<C>)res[0];
     return list;    
     }
-  public static LinkedHashSet<List<C>> allFromInfo(Core.L l,General.Consumer3<LinkedHashSet<List<C>>,Core.L,List<C>> f){
+  public static LinkedHashSet<List<C>> allFromInfo(CoreL l,General.Consumer3<LinkedHashSet<List<C>>,CoreL,List<C>> f){
     LinkedHashSet<List<C>> res=new LinkedHashSet<>();
     l.visitInnerLNoPrivate((li,csi)->f.accept(res,li,csi));
     return res;
@@ -206,10 +206,10 @@ public class Sum {
     var cs=_publicCsOfP(p, csi);
     if(cs!=null){c.add(cs);}
     }
-  public static boolean moreThen(Core.L l1,Core.L l2){
+  public static boolean moreThen(CoreL l1,CoreL l2){
     return moreThen(l1,l2,(p1,p2)->p1.equals(p2));
     }
-  public static boolean moreThen(Core.L l1,Core.L l2,BiFunction<P,P,Boolean>pathComp){
+  public static boolean moreThen(CoreL l1,CoreL l2,BiFunction<P,P,Boolean>pathComp){
     if(!l2.isInterface()){return false;}
     for(T t1:l1.ts()){
       if(l2.ts().stream().noneMatch(t2->pathComp.apply(t1.p(),t2.p()))){return true;}
@@ -219,7 +219,7 @@ public class Sum {
       }
     return false;
     }
-  public static boolean implemented(Core.L l,List<C> cs){
+  public static boolean implemented(CoreL l,List<C> cs){
     boolean[]wasIn={false};
     l.visitInnerLNoPrivate((li,csi)->{//could short circut to be faster
       for(T ti:li.ts()){
@@ -237,7 +237,7 @@ public class Sum {
       });
     return wasIn[0];
     }
-  public void singleMap(Core.L l1,Core.L l2){
+  public void singleMap(CoreL l1,CoreL l2){
     l1.visitInnerLNoPrivate((li,csi)->singleMapOne(li,l1,l2,csi));
     l2.visitInnerLNoPrivate((li,csi)->singleMapOne(li,l2,l1,csi));
     }
@@ -265,16 +265,16 @@ public class Sum {
       }
     return P.of(0,L(that.stream().skip(into.size())));
     }
-  public void singleMapOne(Core.L lInner,Core.L lTopThis,Core.L lTopOther,List<C>cs){
+  public void singleMapOne(CoreL lInner,CoreL lTopThis,CoreL lTopOther,List<C>cs){
     LinkedHashSet<List<C>> res=map.get(cs);
     boolean inMap=res!=null;
     if(!inMap){res=new LinkedHashSet<>();}
     for(T t:lInner.ts()){
       var cst=_publicCsOfP(t.p(),cs);
       if(cst==null){continue;}
-      Core.L liCs=lTopThis._cs(cst);
+      CoreL liCs=lTopThis._cs(cst);
       if(liCs==null){continue;}
-      Core.L ljCs=lTopOther._cs(cst);
+      CoreL ljCs=lTopOther._cs(cst);
       if(ljCs==null){continue;}
       if(Sum.moreThen(ljCs,liCs)){
         res.add(cst);
@@ -290,7 +290,7 @@ public class Sum {
       }
     if(!inMap && !res.isEmpty()){map.put(cs, res);}
     }
-  public static void paths(ArrayList<P.NCs> c,Core.L l,Program p0,P.NCs source){
+  public static void paths(ArrayList<P.NCs> c,CoreL l,Program p0,P.NCs source){
     //Can be false when called under rename, since emptyLs are added 
     //assert l.isInterface(); 
     l.withNcs(L()).accept(new Accumulate<Void>(){
@@ -310,7 +310,7 @@ public class Sum {
       if(path.hasUniqueNum()){err.accept("a private interface is implemented");}
       LL l=p.pop(path.n()).top._cs(path.cs());
       if(l==null || l.isFullL()){err.accept("an undefined interface is implemented");}
-      if(((Core.L)l).info().close()){err.accept("a close interface is implemented");}
+      if(((CoreL)l).info().close()){err.accept("a close interface is implemented");}
       }
     }
   class Plus{
@@ -318,7 +318,7 @@ public class Sum {
     public Plus(List<C> cs) {this.cs=cs;}
     List<C> cs;
     Plus addC(C c){return new Plus(this,c);}
-    Core.L plus(Core.L l1,Core.L l2){
+    CoreL plus(CoreL l1,CoreL l2){
       boolean isInterface3=plusInterface(l1.isInterface(),l2.isInterface(),l1,l2);
       ArrayList<T> ts3=new ArrayList<>(l1.ts());
       for(T t:l2.ts()){plusEqualTs(ts3,t);}
@@ -367,7 +367,7 @@ public class Sum {
       List<NC> ncs3=plusNCs(ncs1, ncs2);
       List<Doc> doc3=mergeU(l1.docs(),l2.docs());
       List<Pos> pos=mergeU(l1.poss(),l2.poss());
-      return new Core.L(pos, isInterface3, LL(ts3), mwts3, ncs3, info3, doc3);
+      return new CoreL(pos, isInterface3, LL(ts3), mwts3, ncs3, info3, doc3);
       }
     private void useMapped(ArrayList<T> ts3,LinkedHashSet<S> refineds, ArrayList<IMWT> imwts, ArrayList<P.NCs> typeDep,LinkedHashSet<List<C>> mapped){
       Program p;
@@ -405,7 +405,7 @@ public class Sum {
     private void plusEqualTs(ArrayList<T> ts3, T t){
       if(ts3.stream().noneMatch(t3->t3.p().equals(t.p()))){ts3.add(t);}
       }
-    void addAllFromCsi(Core.L top,List<C> csi,ArrayList<IMWT> imwts){
+    void addAllFromCsi(CoreL top,List<C> csi,ArrayList<IMWT> imwts){
        var in=top._cs(csi);
        if(in==null){return;}
        for(var m:in.mwts()){
@@ -428,7 +428,7 @@ public class Sum {
         );
       }
     public static final String errConflict="Conflicting implementation: the method is implemented on both sides of the sum";
-    IMWT plus(IMWT imwt1,IMWT imwt2,Core.L l1,Core.L l2){
+    IMWT plus(IMWT imwt1,IMWT imwt2,CoreL l1,CoreL l2){
       boolean eqMH=Utils.equalMH(imwt1.mwt.mh(),imwt2.mwt.mh());
       boolean abs1=imwt1.mwt._e()==null;
       boolean abs2=imwt2.mwt._e()==null;
@@ -465,7 +465,7 @@ public class Sum {
           :"But there is no local refinement between those two signatures");
       throw err(imwt1,imwt2,()->msg);
       }
-    boolean loseSafe(Core.L l,Core.L lCs,S s,MH mh){
+    boolean loseSafe(CoreL l,CoreL lCs,S s,MH mh){
       Program p=pOut.push(cOut,l);
       if(!lCs.info().refined().contains(s)){return false;}
       for(T t:lCs.ts()){
@@ -473,7 +473,7 @@ public class Sum {
         Program pIn=p._navigate(cs);
         if(pIn==null){return false;}//Unclear, should be return false or continue?
         var ncs=t.p().toNCs();
-        Core.L li=pIn._ofCore(ncs);
+        CoreL li=pIn._ofCore(ncs);
         if(li==null){continue;}
         var e=_elem(li.mwts(),s);
         if(e==null){continue;}
@@ -509,7 +509,7 @@ public class Sum {
           }
         });    
       }
-    private Core.L plusOnlyMap(Core.L top, Core.L l) {
+    private CoreL plusOnlyMap(CoreL top, CoreL l) {
       var mapped=map.get(cs);
       if(mapped==null){return l;}
       ArrayList<T> ts=new ArrayList<>(l.ts());
@@ -523,8 +523,8 @@ public class Sum {
       Info info=l.info().withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
       return l.withTs(ts).withMwts(mwts).withInfo(info);
       }
-    List<MWT> plusIMWTs(ArrayList<IMWT> that,Core.L l1,Core.L l2){return L(c->plusIMWTs(c,that,l1,l2));}
-    void plusIMWTs(ArrayList<MWT> c,ArrayList<IMWT> that,Core.L l1,Core.L l2){
+    List<MWT> plusIMWTs(ArrayList<IMWT> that,CoreL l1,CoreL l2){return L(c->plusIMWTs(c,that,l1,l2));}
+    void plusIMWTs(ArrayList<MWT> c,ArrayList<IMWT> that,CoreL l1,CoreL l2){
       //would be more efficient to start from the end and accumulate the sum in the center...
       //but would mess up the ordering
       while(!that.isEmpty()){
@@ -545,7 +545,7 @@ public class Sum {
         c.add(current.mwt);
         }
       }
-    boolean plusInterface(boolean interface1,boolean interface2,Core.L topLeftCs,Core.L topRightCs){
+    boolean plusInterface(boolean interface1,boolean interface2,CoreL topLeftCs,CoreL topRightCs){
       if(interface1 && interface2){
         if(!topLeftCs.info().close() && !topRightCs.info().close()){return true;}
         err(cs,topLeftCs,topRightCs,()->"One of the two interfaces in "+errC.intro(cs,false)
@@ -567,7 +567,7 @@ public class Sum {
       Program pCs=pOut.push(cOut,topRight).navigate(cs);
       return differentInterfaces(allRequiredCoherentRight,allWatchedRight,topRightCs,pCs);
       }
-    boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, Core.L topCs,Program pCs){
+    boolean differentInterfaces(LinkedHashSet<List<C>> coherents,LinkedHashSet<List<C>> watcheds, CoreL topCs,Program pCs){
       if(inRename){return true;} 
       var errCoherent=errBase+"since it is used with 'class' modifier (is required coherent)";
       if(coherents.contains(cs)){err(cs,topCs,null,()->errCoherent);}
@@ -583,12 +583,12 @@ public class Sum {
   }  
 class IMWT{
   final boolean isInterface;
-  final Core.L.MWT mwt;
+  final MWT mwt;
   @Override public String toString(){
     return "IMWT("+isInterface+","+mwt+")"; 
     }
-  IMWT(boolean isInterface,Core.L.MWT mwt){this.isInterface=isInterface;this.mwt=mwt;}
-  public static List<IMWT> of(boolean isInterface,List<Core.L.MWT> mwts){
+  IMWT(boolean isInterface,MWT mwt){this.isInterface=isInterface;this.mwt=mwt;}
+  public static List<IMWT> of(boolean isInterface,List<MWT> mwts){
     return L(mwts,(c,m)->c.add(new IMWT(isInterface,m)));
     }
   }

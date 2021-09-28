@@ -13,7 +13,7 @@ import java.util.stream.Collectors;
 
 import is.L42.common.EndError;
 import is.L42.common.Parse;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.platformSpecific.javaTranslation.L42Exception;
 import is.L42.platformSpecific.javaTranslation.L42Throwable;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -35,7 +35,7 @@ public class Main {
     run(path.resolve("This.L42"),c);
     if(caching){c.toNextCache().saveCache(path);}
     }
-  public static Core.L run(Path path,CachedTop c) throws IOException {
+  public static CoreL run(Path path,CachedTop c) throws IOException {
     try{
       var code=Parse.codeFromPath(path);
       return Init.topCache(c,path,code);    

@@ -8,7 +8,7 @@ import is.L42.common.Constants;
 import is.L42.common.EndError.InvalidImplements;
 import is.L42.common.EndError.NotWellFormed;
 import is.L42.common.EndError.TypeError;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
@@ -1309,7 +1309,7 @@ public static void top(String program,String out){
   Resources.clearResKeepReuse();
   Constants.testWithNoUpdatePopChecks(()->{
     var res=Init.topCache(new CachedTop(L(),L()),program);
-    assertEquals(res,Core.L.parse(out));
+    assertEquals(res,CoreL.parse(out));
     });
   }
 public static void top(String program){

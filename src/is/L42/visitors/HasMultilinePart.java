@@ -1,5 +1,7 @@
 package is.L42.visitors;
 import java.util.List;
+
+import is.L42.flyweight.CoreL;
 import is.L42.generated.*;
 
 public class HasMultilinePart extends PropagatorCollectorVisitor implements java.util.function.Function<Visitable<?>,Boolean>{
@@ -16,7 +18,7 @@ public class HasMultilinePart extends PropagatorCollectorVisitor implements java
       }
     super.visitDoc(doc);
     }    
-  @Override public void visitL(Core.L l){acc|=!inline(l);}
+  @Override public void visitL(CoreL l){acc|=!inline(l);}
 
   @Override public void visitL(Full.L l){acc|=!inline(l);}
 
@@ -34,7 +36,7 @@ public class HasMultilinePart extends PropagatorCollectorVisitor implements java
     return false;
     }  
     
-  static boolean inline(Core.L l){
+  static boolean inline(CoreL l){
     if(hasMultilinePart(l.ts())){return false;}
     if(hasMultilinePart(l.mwts())){return false;}
     if(hasMultilinePart(l.ncs())){return false;}

@@ -13,8 +13,8 @@ import org.junit.jupiter.api.Assertions;
 
 import is.L42.common.Err;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
 import is.L42.generated.S;
 import is.L42.meta.Arrow;
 import is.L42.meta.Rename;
@@ -69,7 +69,7 @@ public static void fail(String sl1,String s2,String err){
   Resources.clearResKeepReuse();
   String[]msg={null};
   Init init1=new Init("{Outer={"+sl1+"#norm{}}");
-  Core.L l1=init1.p._ofCore(P.of(0,List.of(C.of("Outer",-1))));
+  CoreL l1=init1.p._ofCore(P.of(0,List.of(C.of("Outer",-1))));
   Function<L42£LazyMsg,L42Any>wrap=lm->{msg[0]=lm.getMsg();throw new FailErr();};
   try{new Rename(new UniqueNsRefresher()).apply(init1.p,C.of("Outer",-1),l1,map(s2),wrap,wrap,wrap,wrap);Assertions.fail();}
   catch(FailErr fe){}
@@ -78,10 +78,10 @@ public static void fail(String sl1,String s2,String err){
 public static void pass(String sl1,String s2,String sl3){
   Resources.clearResKeepReuse();
   Init init1=new Init("{Outer={"+sl1+"#norm{}}");
-  Core.L l1=init1.p._ofCore(P.of(0,List.of(C.of("Outer",-1))));
-  Core.L l3Actual=new Rename(new UniqueNsRefresher()).apply(init1.p,C.of("Outer",-1),l1,map(s2),null,null,null,null);
+  CoreL l1=init1.p._ofCore(P.of(0,List.of(C.of("Outer",-1))));
+  CoreL l3Actual=new Rename(new UniqueNsRefresher()).apply(init1.p,C.of("Outer",-1),l1,map(s2),null,null,null,null);
   Init init3=new Init("{Outer={"+sl3+"#norm{}}");
-  Core.L l3Expected=init3.p._ofCore(P.of(0,List.of(C.of("Outer",-1))));
+  CoreL l3Expected=init3.p._ofCore(P.of(0,List.of(C.of("Outer",-1))));
   assertEquals(l3Expected, l3Actual);
   }
 public static Stream<AtomicTest>test(){return Stream.of(new AtomicTest(()->

@@ -13,8 +13,7 @@ import is.L42.visitors.Visitable;
 import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
-import is.L42.flyweight.C;
-import is.L42.generated.Core.L.SFunction;
+import is.L42.flyweight.*;
 import is.L42.perftests.PerfCounters;
 
 import static is.L42.tools.General.*;
@@ -47,137 +46,60 @@ public class Core {
   EVoid implements Leaf,Full.Leaf,Half.Leaf,Visitable<EVoid>{@Override public Visitable<EVoid>visitable(){return this;}@Override public EVoid accept(CloneVisitor cv){return cv.visitEVoid(this);}@Override public void accept(CollectorVisitor cv){cv.visitEVoid(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}Pos pos;
     }
   @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
-  L implements LL,Leaf,Half.Leaf,Visitable<L>{@Override public Visitable<L>visitable(){return this;}@Override public L accept(CloneVisitor cv){return cv.visitL(this);}@Override public void accept(CollectorVisitor cv){cv.visitL(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-    List<Pos> poss; public Pos pos(){return poss.get(0);}
-    boolean isInterface;
-    List<T> ts;
-    List<MWT>mwts;
-    List<NC>ncs;
-    Info info;
+  MWT implements LDom.HasKey, Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+    List<Pos> poss;
+    List<Doc>docs; 
+    MH mh; 
+    String nativeUrl;
+    E _e;
+    @Override public S key(){return mh.s();}}
+  @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
+  NC implements LDom.HasKey, Visitable<NC>{@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+    List<Pos> poss;
     List<Doc>docs;
-    @Override public L withCs(List<C>cs,Function<Full.L.NC,Full.L.NC>fullF,Function<Core.L.NC,Core.L.NC>coreF){
-      assert !cs.isEmpty();
-      assert domNC().contains(cs.get(0));
-      return this.withNcs(L(ncs,nc->{
-        if(!nc.key().equals(cs.get(0))){return nc;}
-        if(cs.size()==1){return coreF.apply(nc);}
-        return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
-        }));   
-      }
-    //Strangely, having this lambda live inside the method was causing millions of allocs
-    interface SFunction<A, R> extends Function<A, R>, Serializable {} 
-    final SFunction<C, Boolean> inDomFun = c2->ncs.stream().anyMatch(m -> c2 == m.key());
-    HashMap<C, Boolean> inDomCache = new HashMap<>();
-    @Override
-    public boolean inDom(C c) {
-      if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.inDom(C).total"); }
-      return inDomCache.computeIfAbsent(c, inDomFun);
-      }
-    public L _cs(List<C> cs){
-      if(cs.isEmpty()){return this;}
-      C c=cs.get(0);
-      var res=LDom._elem(ncs, c);
-      if(res==null){return null;}
-      return res.l()._cs(cs.subList(1,cs.size()));
-      }
-    public boolean inDom(List<C> cs){return _cs(cs)!=null;}
-    List<C> cacheDomNC = null;
-    @Override public List<C> domNC() {
-      if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.domNC.total"); }
-      if(this.cacheDomNC != null) { return this.cacheDomNC; }
-      if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.domNC.distinct"); }
-      return this.cacheDomNC = L(ncs.stream().map(m -> m.key()));
-      }
-    @Override public L c(C c){
-      var res=LDom._elem(ncs, c);
-      if(res==null){throw new LL.NotInDom(this, c);}
-      return res.l();
-      }
-    @Override public L cs(List<C> cs){
-      if(cs.isEmpty()){return this;}
-      if(cs.size()==1){return this.c(cs.get(0));}
-      return this.c(cs.get(0)).cs(cs.subList(1,cs.size()));
-      }
-    public static L parse(String s) {
-      var r = is.L42.common.Parse.e(Constants.dummy, s);
-      assert !r.hasErr():r;
-      assert r.res != null;
-      return (L)r.res;
-      }
-    public void visitInnerL(InnerLAction a){a.start(this);}
-    public void visitInnerLNoPrivate(InnerLActionNoPrivate a){a.start(this);}
-    public static interface InnerLAction{
-      void innerL(Core.L li,List<C> cs);
-      default void start(Core.L l){step(l,L());}
-      default boolean filterOut(Core.L.NC nc){return false;}
-      default void step(Core.L li,List<C> cs){
-        innerL(li,cs);
-        for(var ncj:li.ncs()){
-          if(filterOut(ncj)){continue;}
-          var newCs=pushL(cs,ncj.key());
-          step(ncj.l(),newCs);
-          }
-        }
-      }
-    public static interface InnerLActionNoPrivate extends InnerLAction{
-      default boolean filterOut(Core.L.NC nc){return nc.key().hasUniqueNum();}
-      }
-    @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
-    MWT implements LDom.HasKey, Visitable<MWT>{@Override public MWT accept(CloneVisitor cv){return cv.visitMWT(this);}@Override public void accept(CollectorVisitor cv){cv.visitMWT(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      List<Pos> poss;
-      List<Doc>docs; 
-      MH mh; 
-      String nativeUrl;
-      E _e;
-      @Override public S key(){return mh.s();}}
-    @EqualsAndHashCode(exclude={"poss"})@Value @Wither public static class
-    NC implements LDom.HasKey, Visitable<NC>{@Override public NC accept(CloneVisitor cv){return cv.visitNC(this);}@Override public void accept(CollectorVisitor cv){cv.visitNC(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      List<Pos> poss;
-      List<Doc>docs;
-      C key;
-      L l;
-      }
-    @Value @Wither public static class
-    Info implements Visitable<Info>{@Override public Info accept(CloneVisitor cv){return cv.visitInfo(this);}@Override public void accept(CollectorVisitor cv){cv.visitInfo(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
-      boolean isTyped; 
-      List<P.NCs> typeDep;
-      List<P.NCs> coherentDep;
-      List<P.NCs> metaCoherentDep;
-      List<P.NCs> watched;
-      List<PathSel> usedMethods;
-      List<P.NCs> hiddenSupertypes;
-      List<S>refined;
-      boolean close;
-      String nativeKind;
-      List<P> nativePar;
-      int _uniqueId;
-      public static final Info empty=new Core.L.Info(false,L(),L(),L(),L(),L(),L(),L(),false,"",L(),-1);
-      public Info sumInfo(Info info2) {
-        Info info1=this;
-        assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
-        assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
-        assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
-        var allW=mergeU(info1.watched(),info2.watched());
-        List<Core.PathSel> allU=L(c->{//avoid the ps in watched
-          for(var ps:info1.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
-          for(var ps:info2.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
-          });
-        Info res=new Info(info1.isTyped() && info2.isTyped(),
-          mergeU(info1.typeDep(),info2.typeDep()),
-          mergeU(info1.coherentDep(),info2.coherentDep()),
-          mergeU(info1.metaCoherentDep(),info2.metaCoherentDep()),
-          allW,allU,
-          mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
-          mergeU(info1.refined(),info2.refined()),
-          info1.close() || info2.close(),
-          info1.nativeKind()+info2.nativeKind(),
-          info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
-          Math.max(info1._uniqueId(),info2._uniqueId())
-          );
-        if(res.equals(info1)){return info1;}
-        if(res.equals(info2)){return info2;}
-        return res;
-        }
+    C key;
+    CoreL l;
+    }
+  @Value @Wither public static class
+  Info implements Visitable<Info>{@Override public Info accept(CloneVisitor cv){return cv.visitInfo(this);}@Override public void accept(CollectorVisitor cv){cv.visitInfo(this);}@Override public String toString(){return Constants.toS.apply(this);}@Override public boolean wf(){return Constants.wf.test(this);}
+    boolean isTyped; 
+    List<P.NCs> typeDep;
+    List<P.NCs> coherentDep;
+    List<P.NCs> metaCoherentDep;
+    List<P.NCs> watched;
+    List<PathSel> usedMethods;
+    List<P.NCs> hiddenSupertypes;
+    List<S>refined;
+    boolean close;
+    String nativeKind;
+    List<P> nativePar;
+    int _uniqueId;
+    public static final Info empty=new Info(false,L(),L(),L(),L(),L(),L(),L(),false,"",L(),-1);
+    public Info sumInfo(Info info2) {
+      Info info1=this;
+      assert info1._uniqueId()==-1 || info2._uniqueId()==-1;
+      assert info1.nativeKind().equals("") || info2.nativeKind().equals("");
+      assert info1.nativePar().isEmpty() || info2.nativePar().isEmpty();
+      var allW=mergeU(info1.watched(),info2.watched());
+      List<Core.PathSel> allU=L(c->{//avoid the ps in watched
+        for(var ps:info1.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
+        for(var ps:info2.usedMethods()){if(!allW.contains(ps.p()) && !c.contains(ps)){c.add(ps);}}
+        });
+      Info res=new Info(info1.isTyped() && info2.isTyped(),
+        mergeU(info1.typeDep(),info2.typeDep()),
+        mergeU(info1.coherentDep(),info2.coherentDep()),
+        mergeU(info1.metaCoherentDep(),info2.metaCoherentDep()),
+        allW,allU,
+        mergeU(info1.hiddenSupertypes(),info2.hiddenSupertypes()),
+        mergeU(info1.refined(),info2.refined()),
+        info1.close() || info2.close(),
+        info1.nativeKind()+info2.nativeKind(),
+        info1.nativePar().isEmpty()?info2.nativePar():info1.nativePar(),
+        Math.max(info1._uniqueId(),info2._uniqueId())
+        );
+      if(res.equals(info1)){return info1;}
+      if(res.equals(info2)){return info2;}
+      return res;
       }
     }
   @EqualsAndHashCode(exclude={"pos"})@Value @Wither public static class

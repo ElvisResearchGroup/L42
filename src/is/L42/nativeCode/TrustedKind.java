@@ -9,10 +9,10 @@ import java.util.function.Function;
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.LL;
 import is.L42.generated.Mdf;
 import is.L42.translationToJava.J;
@@ -281,7 +281,7 @@ public enum TrustedKind implements TrustedT{
   public static boolean isValidLazyMessage(LL li,boolean noAbs){
     if(li.isFullL()){ return false; }
     var lm=TrustedKind.LazyMessage.name();
-    var l=(Core.L)li;
+    var l=(CoreL)li;
     if(l.info().nativeKind().equals(lm)){ return true; } 
     return noAbs && OpUtils.allAbs(l);
     }

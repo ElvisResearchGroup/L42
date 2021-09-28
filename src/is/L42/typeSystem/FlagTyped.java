@@ -13,9 +13,9 @@ import java.util.stream.Stream;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L;
 import is.L42.tools.InductiveSet;
 import is.L42.translationToJava.Loader;
 import is.L42.visitors.CloneVisitor;
@@ -39,18 +39,18 @@ public class FlagTyped {
     p=p.update(flagL(typable,p),false);
     return p;
     }
-  private static Core.L.MWT flagMWT(Core.L.MWT mwt){
+  private static Core.MWT flagMWT(Core.MWT mwt){
     if(mwt._e()==null){return mwt;}
     return mwt.with_e(new CloneVisitor(){
-      @Override public Core.L visitL(Core.L l){
+      @Override public CoreL visitL(CoreL l){
         return l.withInfo(l.info().withTyped(true));
         }
       }.visitE(mwt._e()));
     }
-  private static Core.L flagL(List<List<C>> typable,Program p){
+  private static CoreL flagL(List<List<C>> typable,Program p){
     return new CloneVisitorWithProgram(p){
-      @Override public Core.L.MWT visitMWT(Core.L.MWT mwt){return mwt;}
-      @Override public Core.L coreLHandler(Core.L l){
+      @Override public Core.MWT visitMWT(Core.MWT mwt){return mwt;}
+      @Override public CoreL coreLHandler(CoreL l){
         l=super.coreLHandler(l);
         var where=this.whereFromTop();
         List<C> cs=typeFilter(where.stream(),C.class);
@@ -66,7 +66,7 @@ public class FlagTyped {
   private static List<List<C>> typable(Program p){
     var dom=new ArrayList<List<C>>();
     dom.add(L());
-    Core.L l=p.topCore();
+    CoreL l=p.topCore();
     for(var nc:l.ncs()){
       var entry=L(nc.key());
       recDom(dom,entry,nc.l());
@@ -76,7 +76,7 @@ public class FlagTyped {
       .filter(e->!untypable.contains(e))
       .sorted((l1,l2)->l1.toString().compareTo(l2.toString())));
     }
-  private static Set<List<C>> untypable(Program p,ArrayList<List<C>> dom, L l) {
+  private static Set<List<C>> untypable(Program p,ArrayList<List<C>> dom, CoreL l) {
     return new InductiveSet<Integer,List<C>>(){
       @Override public void rule(Integer k, Consumer<List<C>> set) {
         set.accept(L());
@@ -101,7 +101,7 @@ public class FlagTyped {
         }
       }.compute(0);
     }
-  private static void recDom(ArrayList<List<C>> dom, List<C> entry,Core.L l){
+  private static void recDom(ArrayList<List<C>> dom, List<C> entry,CoreL l){
     dom.add(entry);
     for(var nc:l.ncs()){
       var entry2=pushL(entry,nc.key());

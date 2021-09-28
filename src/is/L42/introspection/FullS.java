@@ -5,10 +5,11 @@ import static is.L42.tools.General.L;
 import java.util.List;
 import java.util.function.Predicate;
 
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.Info;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.T;
 import is.L42.visitors.ToSVisitor;
 
@@ -22,7 +23,7 @@ public void visitMWT(MWT mwt){
 public void visitNC(NC nc){
   if(!nc.key().hasUniqueNum()){super.visitNC(nc);}
   }
-public void visitInfo(L.Info info){
+public void visitInfo(Info info){
   //TODO: do we need to print "has private implements"?
   //I used to think it was a (virtual) info, but may be "close" is sufficient?
   //in this case, we may have to remove the method hasHiddenImplements.

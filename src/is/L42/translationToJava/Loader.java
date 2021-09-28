@@ -11,8 +11,8 @@ import java.util.List;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L;
 import is.L42.generated.Pos;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.perftests.CoreNodeCounter;
@@ -28,10 +28,10 @@ import is.L42.typeSystem.Coherence;
 import is.L42.visitors.WellFormedness;
 
 class Element{
-  public Element(L l,List<C> path,String cIds,SourceFile source){
+  public Element(CoreL l,List<C> path,String cIds,SourceFile source){
     this.l=l;this.path=path;this.cIds=cIds;this.source=source;
     }
-  Core.L l;
+  CoreL l;
   List<C> path;
   String cIds;
   SourceFile source; 
@@ -56,7 +56,7 @@ public class Loader {
       }
     classLoader.updateMap(bytecode);
     }
-  public Core.L runNow(Program p,C c,Core.E e,JavaCodeStore outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
+  public CoreL runNow(Program p,C c,Core.E e,JavaCodeStore outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),libs,false){
       @Override public boolean precomputeCoherent(){return false;}
@@ -77,7 +77,7 @@ public class Loader {
     assert checkNoException(()->WellFormedness.checkInfo(p.push(Resources.currentC,res),res));
     return res;
     }
-  public Core.L runMainName(Program p, C c,Pos pos,String name) throws InvocationTargetException{
+  public CoreL runMainName(Program p, C c,Pos pos,String name) throws InvocationTargetException{
     Resources.setLibsCached(p,c,pos,libs);
     try{
       L42£Library res=(L42£Library)classLoader.loadClass(metaPackage+name+"£E")

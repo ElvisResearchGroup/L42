@@ -34,7 +34,7 @@ import java.util.stream.Collectors;
 import org.junit.jupiter.api.Test;
 
 import is.L42.common.Program;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Mdf;
 import is.L42.generated.MethT;
 import is.L42.typeSystem.TypeManipulation;
@@ -62,7 +62,7 @@ public static List<MethT> dataSet=new ArrayList<>();
         }
       }
     }
-  static Program p=Program.flat(Core.L.parse("{#norm{}}"));
+  static Program p=Program.flat(CoreL.parse("{#norm{}}"));
 
   @Test
   public void test0(){

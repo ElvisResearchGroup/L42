@@ -10,10 +10,11 @@ import java.util.function.Function;
 
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.PathSel;
 import is.L42.maps.L42£ImmMap;
 import is.L42.platformSpecific.javaTranslation.L42Any;
@@ -26,11 +27,11 @@ public class ResetDocs extends CloneVisitor{
   HashMap<PathSel,String> reDocs;
   List<C>csIn=L();
   final ArrayList<PathSel>processed=new ArrayList<>();
-  public L apply(Program pIn, L42£ImmMap<?,?> map, Function<L42£LazyMsg, L42Any> wrap) {
+  public CoreL apply(Program pIn, L42£ImmMap<?,?> map, Function<L42£LazyMsg, L42Any> wrap) {
     err=new MetaError(wrap);
     p=pIn;
     setReDocs(map);
-    L res=processTop();
+    CoreL res=processTop();
     checkAllProcessed();
     return res;
     }
@@ -42,8 +43,8 @@ public class ResetDocs extends CloneVisitor{
         err.intro(ps.p().toNCs().cs(), ps._s())+"does not exists");
       }
     }
-  private L processTop(){
-    Core.L top=p.topCore();
+  private CoreL processTop(){
+    CoreL top=p.topCore();
     top=top.accept(this);
     var topKey=new PathSel(P.of(0,L()),null,null);
     var doc=reDocs.get(topKey);
@@ -55,7 +56,7 @@ public class ResetDocs extends CloneVisitor{
     if(current._s()!=null && current._s().hasUniqueNum()){return;}
     err.throwErr(p.topCore(),err.intro(current.p().toNCs().cs(), current._s())+"contains unique numbers");
     }
-  @Override public Core.L.NC visitNC(Core.L.NC nc){
+  @Override public NC visitNC(NC nc){
     var oldCsIn=csIn;
     csIn=pushL(csIn,nc.key());
     nc=super.visitNC(nc);
@@ -68,7 +69,7 @@ public class ResetDocs extends CloneVisitor{
     csIn=oldCsIn;
     return nc;
     }
-  @Override public Core.L.MWT visitMWT(Core.L.MWT mwt){
+  @Override public MWT visitMWT(MWT mwt){
     var current=new PathSel(P.of(0,csIn),mwt.key(),null);
     var doc=reDocs.get(current);
     if(doc==null){return mwt;}

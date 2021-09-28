@@ -21,9 +21,9 @@ import is.L42.common.ErrMsg;
 import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
@@ -57,41 +57,41 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     this.toString=renames.toString();
     }
   public L42£Library nativeSlaveRename(L42£Library input,String oldName,String newName,Function<L42£LazyMsg,L42Any>wrap){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     return wrapL(new NativeSlaveNames().apply(l,oldName,newName,wrap));
     }
   public L42£Library resetDocs(L42£Library input,L42£ImmMap<?,?> map,Function<L42£LazyMsg,L42Any>wrap){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new ResetDocs().apply(pIn,map,wrap));
     }
   public L42£Library removeUnusedCode(L42£Library input){
-    L l=input.unwrap;
-    L res=new RemoveUnusedCode().of(l);
+    CoreL l=input.unwrap;
+    CoreL res=new RemoveUnusedCode().of(l);
     return wrapL(res);
     }
   public L42£Library wither(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new Wither().wither(pIn,unwrapCs(cs),wrap,immK));
     }
   public L42£Library defaults(L42£Library input,String cs,Function<L42£LazyMsg,L42Any>wrap){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new Defaults().of(pIn,unwrapCs(cs),wrap));
     }
   public L42£Library addConstructors(L42£Library input,String cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new K().k(pIn,unwrapCs(cs),autoNorm,wrap,mutK,immK));
     }
   public L42£Library cacheCall(L42£Library input,Function<L42£LazyMsg,L42Any>wrap){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(CacheCall.of(pIn,wrap));
     }
   public L42£Library close(L42£Library input,String cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pIn=Resources.currentP.push(Resources.currentC,l);
     return wrapL(new Close().close(pIn,unwrapCs(cs),autoNorm,wrap));    
     } 
@@ -125,8 +125,8 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     return new L42£Meta(mergeU(renames,L(tmp)));
     }
   private static Pos noPos=new Pos(URI.create("InternalHidden"),0,0);
-  public static Core.L libraryCloseAndTyped(String fauxFileName, L42£Library l42Lib, MetaError err){
-      Core.L l=l42Lib.unwrap;
+  public static CoreL libraryCloseAndTyped(String fauxFileName, L42£Library l42Lib, MetaError err){
+      CoreL l=l42Lib.unwrap;
       assert l.wf();
       Program p=Program.flat(l);
       l.accept(new CloneVisitorWithProgram(p){//could be an accumulator visitor to be more efficient
@@ -168,12 +168,12 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
           }          
         public Core.EVoid visitEVoid(Core.EVoid eVoid){return eVoid.withPos(noPos);}
 
-        public Core.L visitL(Core.L l){return super.visitL(l.withPoss(poss(l.poss())));}
+        public CoreL visitL(CoreL l){return super.visitL(l.withPoss(poss(l.poss())));}
 
-        public Core.L.MWT visitMWT(Core.L.MWT mwt){
+        public Core.MWT visitMWT(Core.MWT mwt){
           return super.visitMWT(mwt.withPoss(poss(mwt.poss())));
           }
-        public Core.L.NC visitNC(Core.L.NC nc){
+        public Core.NC visitNC(Core.NC nc){
           return super.visitNC(nc.withPoss(poss(nc.poss())));
           }
         public Core.MCall visitMCall(Core.MCall mCall){
@@ -191,14 +191,14 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
         public Core.OpUpdate visitOpUpdate(Core.OpUpdate opUpdate){
           return super.visitOpUpdate(opUpdate.withPos(noPos));
           }
-        @Override public Core.L.Info visitInfo(Core.L.Info info){
+        @Override public Core.Info visitInfo(Core.Info info){
           return info.withTyped(true);
           }});
       return l;
       }
   public String deployLibraryToBase64(String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
+    CoreL l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
     var auxOut = new ByteArrayOutputStream();
     try(var out = new ObjectOutputStream(auxOut)){
       out.writeObject(l);
@@ -210,7 +210,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     }
   public L42£Void deployLibrary(String s, String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
+    CoreL l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
     Path fullPath=Constants.localhost.resolve(s+".L42");
     try(
       var file=new FileOutputStream(fullPath.toFile()); 
@@ -224,7 +224,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     }
   public String deployJarToBase64(String fauxFileName, L42£Library l42Lib,Function<L42£LazyMsg,L42Any>wrap){
     var err=new MetaError(wrap);
-    Core.L l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
+    CoreL l=libraryCloseAndTyped(fauxFileName, l42Lib, err);
     var mainS=S.parse("#$main()");
     var main=_elem(l.mwts(),mainS);
     if(main==null){ err.throwErr(mainS,"Method "+mainS+" not defined inside of the deployed code"); }
@@ -237,7 +237,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
       }
     }
   public L42£Library sifo(L42£Library input,L42Any top,Function<L42£LazyMsg,L42Any>wrap){
-    L l=input.unwrap;
+    CoreL l=input.unwrap;
     var pathTop=unwrapPath(top).toNCs();
     pathTop=pathTop.withN(pathTop.n());
     var pIn=Resources.currentP.push(Resources.currentC,l);
@@ -257,8 +257,8 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     }
   public L42£Library applyMap(L42£Library input,Function<L42£LazyMsg,L42Any>wrapName,Function<L42£LazyMsg,L42Any>wrapFail,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
     try{
-      L l=input.unwrap;
-      L res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
+      CoreL l=input.unwrap;
+      CoreL res=new Rename(new UniqueNsRefresher()).apply(Resources.currentP,Resources.currentC,l,
         L(renames.stream().map(a->a.copy())),
         wrapName, wrapFail, wrapC, wrapM);
       return wrapL(res);
@@ -289,7 +289,7 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     assert path0.isNCs() && path0.toNCs().n()==0;
     return path0.toNCs().cs();
     }
-  private static L42£Library wrapL(L res){
+  private static L42£Library wrapL(CoreL res){
     var res0=new L42£Library(Resources.currentP.push(Resources.currentC,res));
     assert res0.unwrap==null;
     res0.currentProgram(Resources.currentP);
@@ -298,23 +298,23 @@ public class L42£Meta extends L42NoFields.Eq<L42£Meta>{
     }
   private static S applyS=S.parse("#apply()");
   public L42£Library resource(L42£Library that,L42£Name name){
-    L l=addThis1().visitL(that.unwrap);
+    CoreL l=addThis1().visitL(that.unwrap);
     S sName=applyS;
     if(name._s!=null || name._s.xs().isEmpty()){sName=name._s;}
     var mh=new Core.MH(Mdf.Class,L(),P.coreLibrary,sName,L(),L());
-    var meth=new Core.L.MWT(l.poss(),L(),mh,"",l);
+    var meth=new Core.MWT(l.poss(),L(),mh,"",l);
     Deps deps=new Deps().collectDepsE(Resources.currentP,l);
-    var res=new Core.L(l.poss(), false, L(), L(meth), L(), deps.toInfo(l.info().isTyped()),L());
+    var res=new CoreL(l.poss(), false, L(), L(meth), L(), deps.toInfo(l.info().isTyped()),L());
     return wrapL(res);
     }
   public L42£Library simpleSum(L42£Library a, L42£Library b,Function<L42£LazyMsg,L42Any>wrapC,Function<L42£LazyMsg,L42Any>wrapM){
-    L res=new Sum().compose(Resources.currentP,Resources.currentC,a.unwrap, b.unwrap, wrapC, wrapM);
+    CoreL res=new Sum().compose(Resources.currentP,Resources.currentC,a.unwrap, b.unwrap, wrapC, wrapM);
     return wrapL(res);
     }
   private static CloneVisitor addThis1(){
     return new CloneVisitor(){
       int dept=0;
-      @Override public Core.L visitL(Core.L l){
+      @Override public CoreL visitL(CoreL l){
         dept+=1;
         var res=super.visitL(l);
         dept-=1;

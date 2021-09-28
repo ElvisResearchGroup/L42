@@ -13,8 +13,8 @@ import is.L42.common.CTz;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
 import is.L42.generated.LDom;
@@ -240,7 +240,7 @@ class GLClose extends G{
     CTz ctz=new CTz(layer.ctz());
     assert ctz.coherent(layer.p());
     assert !eq || layer.ctz().equals(l2.ctz()); 
-    Core.L res=eq?(Core.L)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
+    CoreL res=eq?(CoreL)rc._obj:s2.topClose(layer.p(),layer.ms(),layer.e1n(),ctz);
     LayerE l=layer.layerE();
     Half.E newE=set(l.e(),res);
     l=l.layerL().push(newE,Program.pruneThis0(ctz.releaseMap()));
@@ -251,10 +251,10 @@ class GLClose extends G{
   static Full.L _get(Half.E e){
     return new Accumulate<Full.L>(){
       @Override public void visitL(Full.L l){if(result==null){result=l;}}
-      @Override public void visitL(Core.L l){return;}
+      @Override public void visitL(CoreL l){return;}
       }.of(e.visitable());
     }
-  static Half.E set(Half.E e,Core.L coreL){
+  static Half.E set(Half.E e,CoreL coreL){
     return new CloneVisitor(){
       boolean updated=false;
       @Override public LL visitL(Full.L l){
@@ -262,7 +262,7 @@ class GLClose extends G{
         updated=true;
         return coreL;
         }
-      @Override public Core.L visitL(Core.L l){return l;}
+      @Override public CoreL visitL(CoreL l){return l;}
       }.visitE(e);
     }
   }

@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import is.L42.common.Constants;
 import is.L42.common.EndError;
 import is.L42.common.Program;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.top.CachedTop;
 import is.L42.top.Init;
@@ -354,7 +354,7 @@ void pass(String code,String expectedExe1,String expectedExe2){
 void pass(String code1,String code2,String expectedExe1,String expectedExe2){
   pass(code1,code2,expectedExe1,expectedExe2,"",null);
   }
-void pass(String code1,String code2,String expectedExe1,String expectedExe2,String expectedExe3,Core.L resetReuseds){
+void pass(String code1,String code2,String expectedExe1,String expectedExe2,String expectedExe3,CoreL resetReuseds){
   Resources.clearResKeepReuse();
   var cache1=new CachedTop(L(),L());
   Init.topCache(cache1,code1);

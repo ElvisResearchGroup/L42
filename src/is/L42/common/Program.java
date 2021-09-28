@@ -22,11 +22,11 @@ import java.util.stream.Stream;
 
 import is.L42.constraints.FreshNames;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
 import is.L42.generated.Core.T;
 import is.L42.top.Init;
@@ -48,22 +48,22 @@ public class Program implements Visitable<Program>{
     //assert Constants.newFwProgram(this);
     }
   public static Program flat(LL top){return new Program(top,PTails.empty);}
-  public static final Core.L emptyL=new Core.L(L(),false,L(),L(),L(),Core.L.Info.empty.withTyped(true),L());
-  public static final Core.L emptyLInterface=emptyL.withInterface(true);
+  public static final CoreL emptyL=new CoreL(L(),false,L(),L(),L(),Core.Info.empty.withTyped(true),L());
+  public static final CoreL emptyLInterface=emptyL.withInterface(true);
   public static final Program emptyP=Program.flat(Program.emptyL);
 
-  public Core.L topCore(){return (Core.L)top;}
-  public Core.L _ofCore(P path){
+  public CoreL topCore(){return (CoreL)top;}
+  public CoreL _ofCore(P path){
     if(path==P.pAny){return emptyLInterface;}
     if(path==P.pVoid){return emptyL;}
     if(path==P.pLibrary){return emptyL;}
     return _ofCore(path.toNCs());    
     }
-  public Core.L _ofCore(P.NCs path){return this.pop(path.n())._ofCore(path.cs());}
-  public Core.L _ofCore(List<C> path){
+  public CoreL _ofCore(P.NCs path){return this.pop(path.n())._ofCore(path.cs());}
+  public CoreL _ofCore(List<C> path){
     LL res=top._cs(path);
     if(res==null || res.isFullL()){ return null; }
-    return (Core.L)res;
+    return (CoreL)res;
     }
   public LL of(P path,List<Pos>errs){
     if(path==P.pAny){return emptyLInterface;}
@@ -91,7 +91,7 @@ public class Program implements Visitable<Program>{
       }
     var newTop=pTails.ll().withCs(L(pTails.c()),
       nc->nc.withE(top),
-      nc->nc.withL((Core.L)top)
+      nc->nc.withL((CoreL)top)
       );
     return new Program(newTop,pTails.tail());
     }
@@ -196,24 +196,24 @@ public class Program implements Visitable<Program>{
         return solve(st0);
         }
       @Override public Full.L visitL(Full.L l){throw bug();}
-      @Override public Core.L visitL(Core.L l){
+      @Override public CoreL visitL(CoreL l){
         return new From(Program.this,source,0).visitL(l);
         }
       };
     }
   public T from(T t,P.NCs source){return fromVisitor(source,false).visitT(t);}
   public Core.MH from(Core.MH mh,P.NCs source){return fromVisitor(source,false).visitMH(mh);}
-  public Core.L.MWT from(Core.L.MWT mwt,P.NCs source){
+  public Core.MWT from(Core.MWT mwt,P.NCs source){
     var mh=from(mwt.mh(),source);
     var docs=fromDocs(mwt.docs(),source);
     Core.E e=null;
     if(mwt._e()!=null){e=from(mwt._e(),source);}
-    return new MWT(mwt.poss(),docs,mh,mwt.nativeUrl(),e);
+    return new Core.MWT(mwt.poss(),docs,mh,mwt.nativeUrl(),e);
     }
-  public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source,false).visitTs(ts);}
-  public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source,false).visitDocs(docs);}
+  public List<T> from(List<T> ts,P.NCs source){return fromVisitor(source,false).list(ts);}
+  public List<Doc> fromDocs(List<Doc> docs,P.NCs source){return fromVisitor(source,false).list(docs);}
   public ST from(ST st,P.NCs source,boolean needMinimize){return fromVisitor(source,needMinimize).visitST(st);}
-  public List<ST> fromSTz(List<ST> stz,P.NCs source,boolean needMinimize){return fromVisitor(source,needMinimize).visitSTz(stz);}
+  public List<ST> fromSTz(List<ST> stz,P.NCs source,boolean needMinimize){return fromVisitor(source,needMinimize).listRoot(stz);}
   public CTz from(Map<ST,List<ST>> ctz,P.NCs source,boolean needMinimize){
     var res=new CTz();
     for(var e:ctz.entrySet()){
@@ -283,7 +283,7 @@ public class Program implements Visitable<Program>{
     if(_elem(fTop.ms(),c)!=null){return acc;}
     if(!url.isEmpty()){
       if(url.startsWith("#$")){return acc;}
-      Core.L cTop = Constants.readURL.apply(url,poss);
+      CoreL cTop = Constants.readURL.apply(url,poss);
       if(cTop.domNC().contains(c)){return acc;}
       throw new EndError.PathNotExistent(poss,cs,c);
       }
@@ -427,7 +427,7 @@ public class Program implements Visitable<Program>{
     P.NCs tip=tmp.toNCs();
     var l=_ofCore(tip);
     if(l==null){return false;}
-    List<MWT> mwts=l.mwts();
+    List<Core.MWT> mwts=l.mwts();
     List<MH> mhs=L(mwts.stream()
       .map(m->m.mh())
       .filter(m->

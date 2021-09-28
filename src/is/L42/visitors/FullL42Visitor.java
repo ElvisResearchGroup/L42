@@ -29,6 +29,7 @@ import is.L42.common.PTails;
 import is.L42.common.Parse;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
@@ -296,7 +297,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
     List<Full.T>ts=opt(ctx.header(),empty,h->checkAllEmptyMdf(pos,L(h.t(),(c,ti)->c.add(visitT(ti)))));
     List<Full.L.M> ms=L(ctx.fullM(),(c,mi)->c.add(visitFullM(mi)));
     List<Full.Doc> docs=L(ctx.doc(),(c,di)->c.add(visitDoc(di)));
-    Core.L.Info info=opt(ctx.info(),null,this::visitInfo);
+    Core.Info info=opt(ctx.info(),null,this::visitInfo);
     Full.L res=new Full.L(pos, isDots, reuseUrl, isInterface, ts, ms, docs);
     if(info!=null){return new InjectionToCore(errors,eVoid)._inject(res,info);}
     return res; 
@@ -595,7 +596,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
       Op.fromString(ctx.OpUpdate().getText()),
       visitE(ctx.e()));    
     }
-  @Override public Core.L.Info visitInfo(InfoContext ctx) {
+  @Override public Core.Info visitInfo(InfoContext ctx) {
     check(ctx);
     var pos=pos(ctx);
     var s=fixPos(pos);
@@ -617,7 +618,7 @@ public class FullL42Visitor implements L42Visitor<Object>{
       var ci=ctx.getChild(i);
       if (!(ci instanceof FullLContext)){continue;}
       if(ctx.getChild(i-1) instanceof FullLContext){
-        tail=tail.pTailSingle((Core.L)visitFullL((FullLContext)ci));
+        tail=tail.pTailSingle((CoreL)visitFullL((FullLContext)ci));
         continue;
         }
       Full.CsP csP=visitCsP((CsPContext)ctx.getChild(i-3));

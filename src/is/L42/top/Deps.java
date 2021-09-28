@@ -13,13 +13,12 @@ import java.util.function.Consumer;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Core.Doc;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.Core.T;
 import is.L42.generated.Full;
@@ -88,9 +87,9 @@ public class Deps{
     var p1=p0.pop(pi.n());
     if(!p1.inPrivate()){hiddenSupertypes.add(pi);}
     }
-  public Info toInfo(boolean typed){
+  public Core.Info toInfo(boolean typed){
     var uWatched=uniqueWrap(watched);
-    return new Info(typed,
+    return new Core.Info(typed,
       /*typeDep*/ uniqueWrap(typePs),
       /*coherentDep*/ uniqueWrap(cohePs),
       /*metaCoherentDep*/ uniqueWrap(metaCohePs),
@@ -156,14 +155,14 @@ public class Deps{
           if(m.key() instanceof S){refined.add((S)m.key());} 
           }
         }
-      else{for(var m:((Core.L)ll).mwts()){refined.add(m.key());}}
+      else{for(var m:((CoreL)ll).mwts()){refined.add(m.key());}}
       }
     }
-  public static void skipAct(P.NCs pi,List<C> cs,L l,Consumer<P.NCs>act){
+  public static void skipAct(P.NCs pi,List<C> cs,CoreL l,Consumer<P.NCs>act){
     var tmp=_skipThis0(pi,cs,l);
     if(tmp!=null){act.accept(tmp);}
     }
-  private static P.NCs _skipThis0(P.NCs pi,List<C> cs,L l){
+  private static P.NCs _skipThis0(P.NCs pi,List<C> cs,CoreL l){
     if(pi.n()<=cs.size()){
       var cs0=cs.subList(0, cs.size()-pi.n());
       cs0=merge(cs0,pi.cs());
@@ -178,15 +177,15 @@ public class Deps{
     DepsV(Program p0){this.p0=p0;}
     public ArrayList<P.NCs> empty(){return typePs;}
     @Override public void visitL(Full.L l){throw bug();}
-    @Override public void visitL(Core.L l){
+    @Override public void visitL(CoreL l){
       l.visitInnerLNoPrivate((li,csi)->this.innerVisitL(l,li,csi,false));
       }
-    private void innerVisitL(L l,L li,List<C> csi,boolean inMethFlag){
+    private void innerVisitL(CoreL l,CoreL li,List<C> csi,boolean inMethFlag){
       Program pcsi=(lastC==null?p0.push(l):p0.push(lastC,l)).navigate(csi);
       try{innerVisitL(pcsi,l,li,csi,inMethFlag);}
       catch(EndError.PathNotExistent pne){
         new CloneVisitorWithProgram(pcsi){
-          @Override public Info visitInfo(Info info){return info;}
+          @Override public Core.Info visitInfo(Core.Info info){return info;}
           @Override public P visitP(P path){
             this.p().of(path,this.poss);//propagate path not existent error with good position
             return path;
@@ -195,7 +194,7 @@ public class Deps{
         throw pne;
         }
       }
-    private void innerVisitL(Program pcsi,L l,L li,List<C> csi,boolean inMethFlag){
+    private void innerVisitL(Program pcsi,CoreL l,CoreL li,List<C> csi,boolean inMethFlag){
       for(var p:li.info().typeDep()){skipAct(p, csi, l,typePs::add);}
       if(inMethFlag){
         for(var p:li.info().coherentDep()){skipAct(p, csi, l,metaCohePs::add);}

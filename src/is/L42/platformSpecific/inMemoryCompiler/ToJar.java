@@ -17,15 +17,16 @@ import java.util.jar.Manifest;
 
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.Info;
+import is.L42.generated.Core.Info;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.translationToJava.Loader;
 
 public abstract class ToJar {
-  public static void ofPath(Path jarName,Core.L lib) throws IOException, CompilationError{
+  public static void ofPath(Path jarName,CoreL lib) throws IOException, CompilationError{
     try(var stream=Files.newOutputStream(jarName)){
       new ToJar()
         {OutputStream output(){return stream;}}
@@ -33,7 +34,7 @@ public abstract class ToJar {
       stream.flush();
     }
   }
-  public static String ofBase64(Core.L lib) throws IOException, CompilationError{
+  public static String ofBase64(CoreL lib) throws IOException, CompilationError{
     try(var stream=new ByteArrayOutputStream()){
       new ToJar()
         {OutputStream output(){return stream;}}
@@ -45,10 +46,10 @@ public abstract class ToJar {
   }
   long timeNow=System.currentTimeMillis();
   abstract OutputStream output();
-  public void of(Core.L lib) throws IOException, CompilationError {
-    var nc=new Core.L.NC(lib.poss(),L(),C.of("Top",-1), lib);
+  public void of(CoreL lib) throws IOException, CompilationError {
+    var nc=new Core.NC(lib.poss(),L(),C.of("Top",-1), lib);
     var info=Info.empty.withTyped(true);
-    lib=new Core.L(lib.poss(),false,L(),L(),L(nc), info, L());
+    lib=new CoreL(lib.poss(),false,L(),L(),L(nc), info, L());
     Program p=Program.flat(lib);
     var files=new JavaCodeStore();
     var libs= new ArrayList<L42£Library>();

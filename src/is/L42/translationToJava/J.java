@@ -11,13 +11,14 @@ import is.L42.common.G;
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core.D;
-import is.L42.generated.Core.L.MWT;
 import is.L42.nativeCode.CacheLazyGenerator;
 import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.LL;
 import is.L42.generated.Core;
@@ -158,7 +159,7 @@ public class J extends is.L42.visitors.UndefinedCollectorVisitor implements ToST
   @Override public void visitEVoid(Core.EVoid eVoid){
     kw("L42£Void.instance");
     }
-  @Override public void visitL(Core.L l){
+  @Override public void visitL(CoreL l){
     kw("Resources.ofLib("+libToMap(p.push(l))+")");
     }
 

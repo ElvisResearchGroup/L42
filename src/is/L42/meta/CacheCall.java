@@ -13,11 +13,10 @@ import java.util.function.Function;
 import is.L42.common.G;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.Info;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Mdf;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.L42Any;
@@ -36,10 +35,10 @@ import is.L42.visitors.CloneVisitorWithProgram;
      Recursively do the same task on all the nested libraries (also in method bodies)
      */
 public class CacheCall{
-  public static Core.L of(Program p,Function<L42£LazyMsg,L42Any>wrap){
+  public static CoreL of(Program p,Function<L42£LazyMsg,L42Any>wrap){
     return of(p,new MetaError(wrap));
     }
-  static Core.PCastT _head(Core.L l){
+  static Core.PCastT _head(CoreL l){
     if(l.info().close() ||l.isInterface()) {return null;}
     Resources.allBusyUpTo+=1;
     while(Resources.usedUniqueNs.contains(Resources.allBusyUpTo)){
@@ -49,14 +48,14 @@ public class CacheCall{
     P.NCs nc=P.NCs.of(0,List.of(c));
     return new Core.PCastT(l.pos(), nc, new Core.T(Mdf.Class,L(), nc));
     } 
-  static List<Core.L.NC> addHead(Core.PCastT _head,ArrayList<MWT>mwts,List<Core.L.NC>ncs,Info info){
+  static List<Core.NC> addHead(Core.PCastT _head,ArrayList<MWT>mwts,List<Core.NC>ncs,Core.Info info){
     if(_head==null || mwts.isEmpty()){return ncs;}
     info=info.accept(CacheCallCloneVisitor.addThis1).withClose(true);
-    var innerL=new Core.L(mwts.get(0).poss(),false,L(),mwts,L(), info,L());
-    var nc=new Core.L.NC(mwts.get(0).poss(), L(), _head.p().toNCs().cs().get(0),innerL);
+    var innerL=new CoreL(mwts.get(0).poss(),false,L(),mwts,L(), info,L());
+    var nc=new Core.NC(mwts.get(0).poss(), L(), _head.p().toNCs().cs().get(0),innerL);
     return pushL(ncs,nc);    
     }
-  static Core.L of(Program p,MetaError err){
+  static CoreL of(Program p,MetaError err){
     var l=p.topCore();
     Core.PCastT _head=_head(l);
     ArrayList<MWT>nestedMwts=new ArrayList<>();
@@ -64,7 +63,7 @@ public class CacheCall{
       for(int i:range(l.mwts())){newMwts.add(handleMWT(_head,p,_head==null?newMwts:nestedMwts, i, err));}
       });
     boolean mustConsistentThis0=mwts.size()!=l.mwts().size();
-    List<NC>ncs=L(l.ncs(),(newNCs,nci)->{
+    List<Core.NC>ncs=L(l.ncs(),(newNCs,nci)->{
       var pi=p.push(nci.key(),nci.l());
       var li=of(pi,err);
       newNCs.add(nci.withL(li));
@@ -86,7 +85,7 @@ public class CacheCall{
       }
     return res.withInfo(i);
     }
-  public static Core.L.MWT handleMWT(Core.PCastT _head, Program p,ArrayList<MWT> mwts,int index,MetaError err){
+  public static MWT handleMWT(Core.PCastT _head, Program p,ArrayList<MWT> mwts,int index,MetaError err){
     var mwt=p.topCore().mwts().get(index);
     if(mwt._e()==null) {return mwt;}
     var skip=!(mwt._e() instanceof Core.Block) && Utils.match(p, err,"callCache", mwt);
@@ -138,7 +137,7 @@ class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
     return res;
     }
   //handling nested coreL
-  @Override public Core.L visitL(Core.L l){
+  @Override public CoreL visitL(CoreL l){
     return CacheCall.of(p().push(l),err);
     }
   //handling mcall
@@ -170,7 +169,7 @@ class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
     num+=1;
     var resT=p().from(mwt.mh().t().withDocs(L()),ncs);    
     var mh=new Core.MH(Mdf.Class,L(),resT,sel,L(),L());
-    var newMwt=new Core.L.MWT(m.poss(),L(), mh,"trusted:lazyCache",m);
+    var newMwt=new MWT(m.poss(),L(), mh,"trusted:lazyCache",m);
     var res = Utils.ThisCall(m.pos(), sel,L());
     if(_head!=null) {
       res=res.withXP(_head);

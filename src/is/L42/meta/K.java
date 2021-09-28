@@ -11,10 +11,11 @@ import java.util.function.Supplier;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.S;
@@ -46,7 +47,7 @@ import is.L42.typeSystem.TypeManipulation;
        -imm fields are fwd iff not used by any readCache and there is no eagerCache 
      */
 public class K extends GuessFields{
-  public Core.L k(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+  public CoreL k(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     this.autoNormed|=autoNorm;
     err=new MetaError(wrap);
     if(cs.isEmpty()){return k(p,wrap,mutK,immK);}
@@ -57,7 +58,7 @@ public class K extends GuessFields{
     assert res.wf();
     return res;
     }
-  public Core.L k(Program p,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+  public CoreL k(Program p,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
     try{S.parse(mutK+"()");S.parse(immK+"()");}

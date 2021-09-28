@@ -3,7 +3,7 @@ package is.L42.common;
 import static is.L42.tools.General.bug;
 
 import is.L42.flyweight.C;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.LL;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
@@ -26,12 +26,12 @@ public abstract class PTails implements Visitable<PTails>{
   public boolean isEmpty(){return true;}
   public boolean hasC(){throw bug();}
   public C c(){throw bug();}
-  public Core.L coreL(){throw bug();}
+  public CoreL coreL(){throw bug();}
   public LL ll(){throw bug();}
   public PTails tail(){throw bug();}
   public static final PTails empty=new PTails(){};
   public PTails pTailSingle(LL l){return new PTails(){
-    public Core.L coreL(){return (Core.L)l;}
+    public CoreL coreL(){return (CoreL)l;}
     public LL ll(){return l;}
     public boolean hasC(){return false;}
     public boolean isEmpty(){return false;}
@@ -42,9 +42,9 @@ public abstract class PTails implements Visitable<PTails>{
     public boolean isEmpty(){return false;}
     public C c(){return c;}
     public LL ll(){return ll;}
-    public Core.L coreL(){
+    public CoreL coreL(){
       if(ll.isFullL()){throw bug();}
-      return (Core.L)ll;
+      return (CoreL)ll;
       }
     public PTails tail(){return PTails.this;}
     };}

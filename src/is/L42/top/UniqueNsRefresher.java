@@ -5,9 +5,9 @@ import java.util.HashSet;
 import java.util.List;
 
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L;
 import is.L42.generated.LDom;
 import is.L42.generated.S;
 import is.L42.platformSpecific.javaTranslation.Resources;
@@ -22,18 +22,18 @@ public class UniqueNsRefresher extends CloneVisitor{
   HashMap<Integer,Integer> refreshed=new HashMap<>();
   boolean scope;public UniqueNsRefresher(boolean scope){this.scope=scope;}
   public UniqueNsRefresher(){this(false);}
-  L refreshUniqueNs(L l){
+  CoreL refreshUniqueNs(CoreL l){
     if(scope){l.accept(new PropagatorCollectorVisitor(){
-      @Override public void visitNC(Core.L.NC nc){
+      @Override public void visitNC(Core.NC nc){
         if(!nc.key().hasUniqueNum()){return;}
         refreshed.put(nc.key().uniqueNum(),UniqueNsRefresher.this.firstFreshUnique());
         }
-      @Override public void visitMWT(Core.L.MWT mwt){
+      @Override public void visitMWT(Core.MWT mwt){
         if(!mwt.key().hasUniqueNum()){return;}
         refreshed.put(mwt.key().uniqueNum(),UniqueNsRefresher.this.firstFreshUnique());
         }
       });}
-    L res=l.accept(this);
+    CoreL res=l.accept(this);
     used.addAll(newUsed);
     Resources.allBusyUpTo=upTo;
     return res;
@@ -66,7 +66,7 @@ public class UniqueNsRefresher extends CloneVisitor{
     if(!s.hasUniqueNum() || s.uniqueNum()==0){return s;}
     return s.withUniqueNum(updatedFor(s.uniqueNum()));
     }
-  public int firstPrivateOf(L l,LDom name){
+  public int firstPrivateOf(CoreL l,LDom name){
     int count=0;
     int res=Integer.MAX_VALUE;
     for(var nci:l.ncs()){

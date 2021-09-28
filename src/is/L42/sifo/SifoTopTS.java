@@ -27,6 +27,7 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
@@ -37,7 +38,6 @@ import is.L42.generated.Core.E;
 import is.L42.generated.Core.EVoid;
 import is.L42.generated.Core.EX;
 import is.L42.generated.Core.K;
-import is.L42.generated.Core.L;
 import is.L42.generated.Core.Loop;
 import is.L42.generated.Core.MCall;
 import is.L42.generated.Core.MH;
@@ -99,7 +99,7 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
     var pp=p.navigate(popLRight(top.cs()));
     this.lattice=new Lattice42(pp,ttop);
     }  
-  @Override public void visitNC(Core.L.NC nc){
+  @Override public void visitNC(Core.NC nc){
      Program oldP=p;
      p=p.push(nc.key(),nc.l());
      startDept+=1;
@@ -127,14 +127,14 @@ public class SifoTopTS extends is.L42.visitors.PropagatorCollectorVisitor{
         }
       }
     }
-  @Override public void visitL(L l){
+  @Override public void visitL(CoreL l){
     super.visitL(l);
     var vis=new SifoTypeSystem(startDept,p,G.empty(),L(),Set.of(),P.coreVoid,this.lattice);
     var c=new Coherence(p,false);    
     c.isCoherent(false);//check if is coherent ant throw errors otherwise
     for(MH k:c.classMhs){kParsOk(k,vis,c);}
     }
-  @Override public void visitMWT(Core.L.MWT m){
+  @Override public void visitMWT(Core.MWT m){
     var mh=m.mh();
     var g=G.of(mh,mh.docs());
     var vis=new SifoTypeSystem(startDept,p,g,mh.exceptions(),Set.of(),mh.t(),this.lattice);
@@ -232,7 +232,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
      }
   @Override public void visitEVoid(EVoid e){}
   @Override public void visitPCastT(PCastT e){}
-  @Override public void visitL(L e){}
+  @Override public void visitL(CoreL e){}
   P getSifoAnn(List<Doc>docs){
     List<P.NCs> paths=sifos(docs);
     if(paths.isEmpty()) {return lattice.getBottom();}

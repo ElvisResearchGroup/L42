@@ -5,9 +5,11 @@ import static is.L42.tools.General.range;
 
 import java.util.HashMap;
 
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Full;
 
 public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
@@ -20,11 +22,11 @@ public abstract class Accumulate<T> extends PropagatorCollectorVisitor{
   public T empty(){return null;}//can be overrided, but is often left to null
   public static abstract class SkipL<T> extends Accumulate<T>{
     @Override public void visitL(Full.L l){}
-    @Override public void visitL(Core.L l){}
+    @Override public void visitL(CoreL l){}
     }
   public static abstract class WithG<T> extends SkipL<T>{
     private final HashMap<X,Core.T> g=new HashMap<>();
-    @Override public void visitMWT(Core.L.MWT mwt){
+    @Override public void visitMWT(MWT mwt){
       assert g.isEmpty();
       visitDocs(mwt.docs());
       visitMH(mwt.mh());

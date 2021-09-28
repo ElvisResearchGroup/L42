@@ -8,6 +8,7 @@ import java.util.stream.Stream;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -99,7 +100,7 @@ public class FV extends PropagatorCollectorVisitor{
      .filter(vtx->vtx!=null);
      }
   //core part
-  @Override public void visitL(Core.L L){}
+  @Override public void visitL(CoreL L){}
   @Override public void visitBlock(Core.Block b){
     var acc=store();
     var domDs=domDs(b.ds());

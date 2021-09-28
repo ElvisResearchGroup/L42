@@ -6,7 +6,7 @@ import static is.L42.tools.General.L;
 import java.util.ArrayList;
 import java.util.List;
 
-import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.MWT;
 
 //92 wither too
 /* summing methods for classes (not interfaces)

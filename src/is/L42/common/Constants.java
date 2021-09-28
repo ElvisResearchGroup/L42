@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Full;
 import is.L42.generated.Pos;
 import is.L42.visitors.ToSVisitor;
@@ -22,7 +22,7 @@ public class Constants{
   public static Function<Visitable<?>,String> toS=ToSVisitor::of;
   public static Predicate<Visitable<?>> wf=WellFormedness::of;
   public static Function<PTails,Full.L> readFolder=ReadFolder::of;
-  public static BiFunction<String,List<Pos>,Core.L> readURL=ReadURL::of;
+  public static BiFunction<String,List<Pos>,CoreL> readURL=ReadURL::of;
   private static final HashMap<String,Program> fwPrograms=new HashMap<>();
   public static void refresh(){fwPrograms.clear();}
   public static Path localhost=Paths.get("localhost");

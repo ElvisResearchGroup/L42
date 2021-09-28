@@ -15,10 +15,12 @@ import java.util.stream.Stream;
 
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
+import is.L42.generated.Core.Info;
 import is.L42.generated.Core.MCall;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Core.PathSel;
 import is.L42.generated.LDom;
 import is.L42.top.Deps;
@@ -45,7 +47,7 @@ import is.L42.visitors.CloneVisitor;
 class CollectPublic extends Accumulate<Map<List<? extends LDom>,Object>>{
   public Map<List<? extends LDom>,Object> empty(){return new LinkedHashMap<>();}
   List<LDom> current=List.of();
-  @Override public void visitNC(Core.L.NC nc){
+  @Override public void visitNC(NC nc){
     var aux=current;
     try{
       if(nc.key().hasUniqueNum()){return;}
@@ -55,7 +57,7 @@ class CollectPublic extends Accumulate<Map<List<? extends LDom>,Object>>{
       }
     finally{current=aux;}
   }
-  @Override public void visitMWT(Core.L.MWT mwt){
+  @Override public void visitMWT(MWT mwt){
     var aux=current;
     try{
       if(mwt.key().hasUniqueNum()){return;}
@@ -67,7 +69,7 @@ class CollectPublic extends Accumulate<Map<List<? extends LDom>,Object>>{
     }
   }
 class CollectFix{
-  final Core.L topLib;
+  final CoreL topLib;
   Map<List<? extends LDom>,Object> all=new LinkedHashMap<>();
   Map<List<? extends LDom>,Object> novel=new LinkedHashMap<>();
   Map<List<? extends LDom>,Object> current;
@@ -78,7 +80,7 @@ class CollectFix{
         .collect(Collectors.joining(".")))
       .collect(Collectors.joining("\n"));
     }
-  CollectFix(Core.L lib){
+  CollectFix(CoreL lib){
     topLib=lib;
     current=new CollectPublic().of(lib);
     all.putAll(current);
@@ -106,7 +108,7 @@ class CollectFix{
       return;
       }
     assert cs.size()==key.size();
-    var nc=(Core.L.NC)value;
+    var nc=(NC)value;
     var cs0=popLRight(cs);
     Program p=Program.flat(topLib).navigate(cs);
     Program p0=Program.flat(topLib).navigate(cs0);
@@ -158,10 +160,10 @@ class CollectFix{
       all.put(ls, nci);
       if(!ls0.isEmpty()){addAllPrefixes(ls0);}
       }
-    @Override public void visitL(Core.L l){
+    @Override public void visitL(CoreL l){
       visitLWithP(l,p.push(l));
       }
-    public void visitLWithP(Core.L l,Program pp){
+    public void visitLWithP(CoreL l,Program pp){
       var v=new AccumulateUsedNames(pp,whereFromTop);
       v.visitTs(l.ts());
       for(var mwt:l.mwts()){
@@ -172,7 +174,7 @@ class CollectFix{
       v.visitInfo(l.info());
       v.visitDocs(l.docs());
       }
-    @Override public void visitNC(Core.L.NC nc){
+    @Override public void visitNC(NC nc){
       this.visitDocs(nc.docs());
       Program pp=p.push(nc.key());
       var v = new AccumulateUsedNames(
@@ -216,7 +218,7 @@ class RestVisitor extends CloneVisitor{
   Set<List<?extends LDom>> rest;
   List<?extends LDom> where=L();
   RestVisitor(Set<List<?extends LDom>> rest){this.rest=rest;}
-  boolean keepMWT(MWT mwt,Core.L l){
+  boolean keepMWT(MWT mwt,CoreL l){
     var fullKey=pushL(where,mwt.key());
     var res=rest.contains(fullKey);
     assert !l.isInterface() || res;
@@ -224,7 +226,7 @@ class RestVisitor extends CloneVisitor{
     assert !l.info().refined().contains(mwt.key()) || res;
     return res;    
     }
-  @Override public Core.L visitL(Core.L l){
+  @Override public CoreL visitL(CoreL l){
     var ts0=l.ts();
     var mwts0=l.mwts();
     var ncs0=l.ncs();
@@ -234,18 +236,18 @@ class RestVisitor extends CloneVisitor{
     var ncs=L(ncs0.stream().flatMap(this::_visitNC));
     var info=visitInfo(info0);
     if(mwts==mwts0 && ncs==ncs0 && info==info0){return l;}
-    return new Core.L(l.poss(),l.isInterface(),ts0,mwts,ncs,info,docs0);
+    return new CoreL(l.poss(),l.isInterface(),ts0,mwts,ncs,info,docs0);
     }
-  @Override public Core.L.MWT visitMWT(Core.L.MWT mwt){throw unreachable();}
-  @Override public Core.L.NC visitNC(Core.L.NC nc){throw unreachable();}
-  public Stream<Core.L.NC> _visitNC(Core.L.NC nc){
+  @Override public MWT visitMWT(MWT mwt){throw unreachable();}
+  @Override public NC visitNC(NC nc){throw unreachable();}
+  public Stream<NC> _visitNC(NC nc){
     var where0=pushL(where,nc.key());
     if(!rest.contains(where0)) {return Stream.of();}
     var aux=where;
     try{where=where0;return Stream.of(super.visitNC(nc));}
     finally{where=aux;}
     }
-  public Core.L.Info visitInfo(Core.L.Info info){
+  public Info visitInfo(Info info){
     var typeDep0=info.typeDep();
     var coherentDep0=info.coherentDep();
     var metaCoherentDep0=info.metaCoherentDep();
@@ -258,7 +260,7 @@ class RestVisitor extends CloneVisitor{
     var typeDep=omitUnused(typeDep0);
     var coherentDep=omitUnused(coherentDep0);
     var metaCoherentDep=omitUnused(metaCoherentDep0);
-    var res=new Core.L.Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched0,
+    var res=new Info(info.isTyped(),typeDep,coherentDep,metaCoherentDep,watched0,
       usedMethods0,hiddenSupertypes0,refined0,
       info.close(),info.nativeKind(),nativePar0,info._uniqueId());
     if(res.equals(info)){return info;}
@@ -275,11 +277,11 @@ class RestVisitor extends CloneVisitor{
     }
   }
 public class RemoveUnusedCode {
-  public Core.L of(Core.L l){
+  public CoreL of(CoreL l){
     var rest=precompute(l);
     return l.accept(new RestVisitor(rest.all.keySet()));
     }
-  public CollectFix precompute(Core.L l){
+  public CollectFix precompute(CoreL l){
     return new CollectFix(l);
     }
   }

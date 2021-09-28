@@ -4,7 +4,7 @@ import static is.L42.tools.General.range;
 
 import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Full;
 import is.L42.generated.Full.D;
 import is.L42.generated.ThrowKind;
@@ -38,7 +38,7 @@ public class Returning extends UndefinedCollectorVisitor{
         hasCatchRet[0]|=ThrowKind.Return.equals(k._thr());
         }
       @Override public void visitL(Full.L l){}
-      @Override public void visitL(Core.L l){}
+      @Override public void visitL(CoreL l){}
       @Override public void visitBlock(Full.Block b0){
         if(!b0.isCurly()||b==b0){super.visitBlock(b0);}
         }

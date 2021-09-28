@@ -16,6 +16,7 @@ import is.L42.common.Program;
 import is.L42.constraints.FreshNames;
 import is.L42.constraints.InferToCore;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Half;
@@ -895,7 +896,7 @@ public static void chooseSpecificT(String in,String out){
   assertEquals(out,""+res);
   }  
 public static void pass(String l,String out){
-  Core.L cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool usedMethods=This.Bool.k(),This.Bool.#checkTrue()}}").topCore();
+  CoreL cl=Program.parse("{"+out+" #norm{typeDep=This This.$plus0 This.Bool coherentDep=This This.$plus0 This.Bool usedMethods=This.Bool.k(),This.Bool.#checkTrue()}}").topCore();
   var ces=processIn(l);
   assertEquals(ces,cl.mwts());
   }
@@ -903,7 +904,7 @@ public static void fail(Class<?> kind,String l,String ...err){
   checkFail(()->processIn(l),err, kind);
   }
 
-public static List<Core.L.MWT> processIn(String l){
+public static List<Core.MWT> processIn(String l){
   FreshNames fresh=new FreshNames();
   Full.L fl=(Full.L)Program.parse("{"+l+"}").top;
   List<Full.L.MWT> mwts=L(fl.ms(),(c,m)->{if(m instanceof Full.L.MWT){c.add((Full.L.MWT)m);}});
@@ -911,16 +912,16 @@ public static List<Core.L.MWT> processIn(String l){
   List<Core.MH> mhs=L(mwts,(c,mi)->c.add(TypeManipulation.toCore(mi.mh())));
   Program p=p0.update(p0.topCore().withMwts(L(c->{
     c.addAll(p0.topCore().mwts());
-    for(var mh:mhs){c.add(new Core.L.MWT(L(),L(),mh,"",null));}
+    for(var mh:mhs){c.add(new Core.MWT(L(),L(),mh,"",null));}
     })));
   List<Half.E> hes=L(mhs,mwts,(c,mhi,mi)->{
     c.add(ctz._add(fresh,p, mhi, mi._e()));
     });
   return L(mhs,hes,(c,mhi,ei)->{
-    if(ei==null){c.add(new Core.L.MWT(L(),L(),mhi,"",null));return;}
+    if(ei==null){c.add(new Core.MWT(L(),L(),mhi,"",null));return;}
     I i=new I(C.of("C",-1),p,G.of(mhi));
     var cei=new InferToCore(i,ctz).compute(ei);
-    var mwt=new Core.L.MWT(L(),L(),mhi,"",cei);
+    var mwt=new Core.MWT(L(),L(),mhi,"",cei);
     c.add(mwt);
     }); 
   }

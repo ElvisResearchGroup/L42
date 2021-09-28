@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Mdf;
@@ -91,7 +92,7 @@ public class AlternativeMethodTypes {
   static public MethT _mtDeclared(Program p, P.NCs path, S s){
     var l=p._ofCore(path);
     if(l==null){return null;}
-    var mwt=(Core.L.MWT)_elem(l.mwts(),s);
+    var mwt=(Core.MWT)_elem(l.mwts(),s);
     if(mwt==null){return null;}
     var mh=mwt.mh();
     List<Mdf> mdfs=L(c->{

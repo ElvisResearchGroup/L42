@@ -2,6 +2,7 @@ package is.L42.visitors;
 import is.L42.common.PTails;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.*;
@@ -18,10 +19,10 @@ public class UndefinedCollectorVisitor implements CollectorVisitor{
   @Override public void visitEX(Core.EX x){uc();}
   @Override public void visitPCastT(Core.PCastT pCastT){uc();}
   @Override public void visitEVoid(Core.EVoid eVoid){uc();}
-  @Override public void visitL(Core.L l){uc();}
-  @Override public void visitInfo(Core.L.Info info){uc();}
-  @Override public void visitMWT(Core.L.MWT mwt){uc();}
-  @Override public void visitNC(Core.L.NC nc){uc();}
+  @Override public void visitL(CoreL l){uc();}
+  @Override public void visitInfo(Core.Info info){uc();}
+  @Override public void visitMWT(Core.MWT mwt){uc();}
+  @Override public void visitNC(Core.NC nc){uc();}
   @Override public void visitMCall(Core.MCall mCall){uc();}
   @Override public void visitBlock(Core.Block block){uc();}
   @Override public void visitLoop(Core.Loop loop){uc();}

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.function.Function;
 
 import is.L42.common.ErrMsg;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
@@ -14,6 +15,8 @@ import is.L42.generated.Op;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
 import is.L42.generated.Core.EVoid;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 
 public class InjectionToCore extends UndefinedCollectorVisitor{
   public StringBuilder errors;
@@ -23,15 +26,20 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     this.errors = errors;
     this.eVoid = eVoid;
   }
-  private Core.L makeErr(List<Pos> poss,Core.L.Info info, String hint){
+  Function<Full.E,Core.E>injectLE=this::_inject;//optimization to avoid too many lambda creations
+  Function<Full.D,Core.D>injectLD=this::_inject;
+  Function<Full.K,Core.K>injectLK=this::_inject;
+  Function<Full.T,Core.T>injectLT=this::_inject;
+  Function<Full.Doc,Core.Doc>injectLDoc=this::_inject;
+  private CoreL makeErr(List<Pos> poss,Core.Info info, String hint){
     assert info!=null;
-    var errRes=new Core.L(poss,false, L(),L(),L(),info,L());
+    var errRes=new CoreL(poss,false, L(),L(),L(),info,L());
     errors.append(ErrMsg.posString(poss)+hint);
     return errRes;
     }
   @Override public void visitEX(Core.EX x){result=x;}
   @Override public void visitEVoid(Core.EVoid eVoid){result=eVoid;}
-  @Override public void visitL(Core.L l){result=l;}
+  @Override public void visitL(CoreL l){result=l;}
   @Override public void visitL(Full.L l){
     errors.append(ErrMsg.posString(l.poss())+ErrMsg.malformedCoreFullL()+"\n");
     result=null;
@@ -50,7 +58,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(call.pars().get(0)._that()!=null){result=null;return;}
     var r=_inject(call.e());
     if(r==null || !(r instanceof Core.XP)){result=null;return;}
-    var es=_injectL(call.pars().get(0).es(),this::_inject);
+    var es=_injectL(call.pars().get(0).es(),injectLE);
     if(es==null){result=null;return;}
     S s=call._s().withXs(call.pars().get(0).xs());
     result=new Core.MCall(call.pos(),(Core.XP)r, s, es); 
@@ -59,8 +67,8 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
   @Override public void visitBlock(Full.Block b){
     if(b.isCurly() || b.ds().size()!=b.dsAfter()){result=null;return;}
     if(b._e()==null || !b.whoopsed().isEmpty()){result=null;return;}
-    var ds=_injectL(b.ds(),this::_inject);
-    var ks=_injectL(b.ks(),this::_inject);
+    var ds=_injectL(b.ds(),injectLD);
+    var ks=_injectL(b.ks(),injectLK);
     var e=_inject(b._e());
     if(ds==null||ks==null ||e==null){result=null;return;}
     result=new Core.Block(b.pos(), ds, ks, e);
@@ -81,7 +89,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(r==null){return;}
     result=new Core.OpUpdate(opUpdate.pos(),opUpdate.x(),r);
     }
-  public Core.L _inject(Full.L res,Core.L.Info info) {
+  public CoreL _inject(Full.L res,Core.Info info) {
     assert info!=null;
     if(res.isDots() || !res.reuseUrl().isEmpty()){
       return makeErr(res.poss(),info,ErrMsg.malformedCoreHeader(info));
@@ -98,10 +106,10 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
     if(mwts.size()+ncs.size()!=res.ms().size()){
       return makeErr(res.poss(),info,ErrMsg.malformedCoreMember(info));
       }
-    List<Core.T>cts=_injectL(res.ts(),this::_inject);
-    List<Core.L.MWT>cmwts=L(mwts,(c,mi)->c.add(_inject(mi)));
-    List<Core.L.NC>cncs=L(ncs,(c,ni)->c.add(_inject(ni)));
-    List<Core.Doc>cdocs=_injectL(res.docs(),this::_inject);
+    List<Core.T>cts=_injectL(res.ts(),injectLT);
+    List<MWT>cmwts=L(mwts,(c,mi)->c.add(_inject(mi)));
+    List<NC>cncs=L(ncs,(c,ni)->c.add(_inject(ni)));
+    List<Core.Doc>cdocs=_injectL(res.docs(),injectLDoc);
     if(cts==null){
       return makeErr(res.poss(),info,ErrMsg.malformedCoreTs(info));
       }      
@@ -117,7 +125,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       assert !missing.isEmpty();
       return makeErr(res.poss(),info,ErrMsg.malformedCoreMWT(info,missing));
       }      
-    return new Core.L(res.poss(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
+    return new CoreL(res.poss(),res.isInterface(), cts, cmwts, cncs, info, cdocs); 
     }
   public Core.E _inject(Full.E e) {
     visitE(e);return this.result;
@@ -125,43 +133,43 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
 
   public Core.T _inject(Full.T t) {
     if(t==null){return null;}
-    List<Core.Doc>docs=_injectL(t.docs(),this::_inject);
+    List<Core.Doc>docs=_injectL(t.docs(),injectLDoc);
     if(docs==null){return null;}
     if(t._p()==null){return null;}
     assert t.cs().isEmpty(); 
     return new Core.T(inject(t._mdf()), docs, t._p());    
     }
 
-  public Core.L.MWT _inject(Full.L.MWT mwt) {
+  public MWT _inject(Full.L.MWT mwt) {
     try{
-      var docs=_injectL(mwt.docs(),this::_inject);
+      var docs=_injectL(mwt.docs(),injectLDoc);
       var mh=_inject(mwt.mh());
       if(docs==null || mh==null){return null;}
-      if(mwt._e()==null){return new Core.L.MWT(L(mwt.pos()), docs, mh, mwt.nativeUrl(),null);}
+      if(mwt._e()==null){return new MWT(L(mwt.pos()), docs, mh, mwt.nativeUrl(),null);}
       mwt._e().visitable().accept(this);
       if(result==null){return null;}
-      return new Core.L.MWT(L(mwt.pos()), docs, mh, mwt.nativeUrl(),result);
+      return new MWT(L(mwt.pos()), docs, mh, mwt.nativeUrl(),result);
       }
     catch(UndefinedCase uc){return null;}
     }
   public Mdf inject(Mdf mdf) {return mdf==null?Mdf.Immutable:mdf;}
     
   public Core.MH _inject(Full.MH mh) {
-    var docs=_injectL(mh.docs(),this::_inject);
-    var pars=_injectL(mh.pars(),this::_inject);
-    var exceptions=_injectL(mh.exceptions(),this::_inject);
+    var docs=_injectL(mh.docs(),injectLDoc);
+    var pars=_injectL(mh.pars(),injectLT);
+    var exceptions=_injectL(mh.exceptions(),injectLT);
     var t=_inject(mh.t());
     if(mh.s().m().isEmpty() || mh._op()!=null || docs==null
       || pars==null || exceptions==null ||t==null){return null;}
     return new Core.MH(inject(mh._mdf()), docs, t, mh.s(), pars, exceptions);
     }
 
-  public Core.L.NC _inject(Full.L.NC nc) {
-    var docs=_injectL(nc.docs(),this::_inject);
-    Core.L l=null;
-    if (nc.e() instanceof Core.L){l=(Core.L)nc.e();}
+  public NC _inject(Full.L.NC nc) {
+    var docs=_injectL(nc.docs(),injectLDoc);
+    CoreL l=null;
+    if (nc.e() instanceof CoreL){l=(CoreL)nc.e();}
     if(docs==null || l==null){return null;}
-    return new Core.L.NC(L(nc.pos()), docs, nc.key(),l);
+    return new NC(L(nc.pos()), docs, nc.key(),l);
     }
   public P _inject(Full.CsP csP) {return csP._p();}
 
@@ -171,7 +179,7 @@ public class InjectionToCore extends UndefinedCollectorVisitor{
       ps=_inject(d._pathSel());
       if(ps==null){return null;}
       }
-    var docs=_injectL(d.docs(),this::_inject);
+    var docs=_injectL(d.docs(),injectLDoc);
     if(docs==null){return null;}
     return new Core.Doc(ps,d.texts(),docs);
     }

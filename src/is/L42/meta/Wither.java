@@ -13,11 +13,12 @@ import java.util.stream.IntStream;
 import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.flyweight.X;
 import is.L42.generated.Core;
-import is.L42.generated.Core.L.MWT;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
 import is.L42.generated.Core.T;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
@@ -28,7 +29,7 @@ import is.L42.platformSpecific.javaTranslation.L42£LazyMsg;
 public class Wither {
   MetaError err;
   Pos pos;
-  public Core.L wither(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
+  public CoreL wither(Program p,List<C> cs,Function<L42£LazyMsg,L42Any>wrap,String immK){
     err=new MetaError(wrap);
     if(cs.isEmpty()){return wither(p,wrap,immK);}
     var pIn=p.navigate(cs);
@@ -38,7 +39,7 @@ public class Wither {
     assert res.wf();
     return res;
     }
-  public Core.L wither(Program p,Function<L42£LazyMsg,L42Any>wrap,String immK){
+  public CoreL wither(Program p,Function<L42£LazyMsg,L42Any>wrap,String immK){
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
     try{S.parse(immK+"()");}

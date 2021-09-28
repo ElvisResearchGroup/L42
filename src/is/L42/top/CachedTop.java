@@ -18,7 +18,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import is.L42.common.Program;
-import is.L42.generated.Core;
+import is.L42.flyweight.CoreL;
 
 
 public class CachedTop implements Serializable{
@@ -36,10 +36,10 @@ public class CachedTop implements Serializable{
     performed.addAll(cached);
     performedR.addAll(cachedR);
     }
-  public Optional<Core.L> lastTopL(){
+  public Optional<CoreL> lastTopL(){
     return cachedR.stream().flatMap(this::_lastTopL).reduce((a, b)->b);
     }
-  private Stream<Core.L> _lastTopL(R r){
+  private Stream<CoreL> _lastTopL(R r){
     if(r.isErr()) {return Stream.of();}
     if(!(r._obj instanceof Program)) {return Stream.of();}
     Program p=(Program)r._obj;

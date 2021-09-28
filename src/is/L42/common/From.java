@@ -6,8 +6,9 @@ import static is.L42.tools.General.bug;
 import java.util.ArrayList;
 import java.util.List;
 
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
-import is.L42.generated.Core;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Full;
 import is.L42.top.Deps;
 import is.L42.visitors.CloneVisitor;
@@ -21,8 +22,8 @@ public class From extends CloneVisitor{
   public int j(){return j;}
   public Program program(){return program;}
   @Override public Full.L visitL(Full.L l){throw bug();}
-  public Core.L superVisitL(Core.L l){return super.visitL(l);}//Needed for code reuse
-  @Override public Core.L visitL(Core.L l){
+  public CoreL superVisitL(CoreL l){return super.visitL(l);}//Needed for code reuse
+  @Override public CoreL visitL(CoreL l){
     int oldJ=j;
     Program oldP=program;
     j+=1;
@@ -32,8 +33,8 @@ public class From extends CloneVisitor{
     program=oldP;
     return res;
     }
-  @Override public Core.L.NC visitNC(Core.L.NC nc){
-    nc=nc.withDocs(visitDocs(nc.docs()));
+  @Override public NC visitNC(NC nc){
+    nc=nc.withDocs(list(nc.docs()));
     int oldJ=j;
     Program oldP=program;
     j+=1;

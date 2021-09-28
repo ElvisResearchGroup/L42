@@ -12,12 +12,12 @@ import is.L42.common.EndError;
 import is.L42.common.ErrMsg;
 import is.L42.common.G;
 import is.L42.common.Program;
+import is.L42.flyweight.CoreL;
 import is.L42.flyweight.P;
 import is.L42.generated.Core.E;
-import is.L42.generated.Core.L;
-import is.L42.generated.Core.L.MWT;
-import is.L42.generated.Core.L.NC;
 import is.L42.generated.Core.MH;
+import is.L42.generated.Core.MWT;
+import is.L42.generated.Core.NC;
 import is.L42.generated.Mdf;
 import is.L42.generated.Pos;
 import is.L42.generated.S;
@@ -39,7 +39,7 @@ public class ProgramTypeSystem {
       }
     }
   public static void type(boolean typed,Program p){
-    L l=p.topCore();
+    CoreL l=p.topCore();
     checkNativeConstraints(p);
     J j=new J(p,null,null,true);
     assert l.ts().stream().allMatch(t->p._ofCore(t.p()).isInterface());
