@@ -3,6 +3,8 @@ import lombok.Value;
 import lombok.EqualsAndHashCode;
 import lombok.experimental.Wither;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 import is.L42.visitors.CloneVisitor;
@@ -11,6 +13,9 @@ import is.L42.visitors.Visitable;
 import is.L42.visitors.InjectionToCore;
 import is.L42.common.Constants;
 import is.L42.common.Parse;
+import is.L42.flyweight.C;
+import is.L42.generated.Core.L.SFunction;
+import is.L42.perftests.PerfCounters;
 
 import static is.L42.tools.General.*;
 
@@ -59,8 +64,14 @@ public class Core {
         return nc.withL(nc.l.withCs(popL(cs), fullF,coreF));
         }));   
       }
-    @Override public boolean inDom(C c){
-      return ncs.stream().anyMatch(m->c.equals(m.key()));
+    //Strangely, having this lambda live inside the method was causing millions of allocs
+    interface SFunction<A, R> extends Function<A, R>, Serializable {} 
+    final SFunction<C, Boolean> inDomFun = c2->ncs.stream().anyMatch(m -> c2 == m.key());
+    HashMap<C, Boolean> inDomCache = new HashMap<>();
+    @Override
+    public boolean inDom(C c) {
+      if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.inDom(C).total"); }
+      return inDomCache.computeIfAbsent(c, inDomFun);
       }
     public L _cs(List<C> cs){
       if(cs.isEmpty()){return this;}
@@ -70,7 +81,13 @@ public class Core {
       return res.l()._cs(cs.subList(1,cs.size()));
       }
     public boolean inDom(List<C> cs){return _cs(cs)!=null;}
-    @Override public List<C> domNC(){return L(ncs.stream().map(m->m.key()));}
+    List<C> cacheDomNC = null;
+    @Override public List<C> domNC() {
+      if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.domNC.total"); }
+      if(this.cacheDomNC != null) { return this.cacheDomNC; }
+      if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.domNC.distinct"); }
+      return this.cacheDomNC = L(ncs.stream().map(m -> m.key()));
+      }
     @Override public L c(C c){
       var res=LDom._elem(ncs, c);
       if(res==null){throw new LL.NotInDom(this, c);}
