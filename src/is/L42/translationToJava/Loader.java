@@ -5,7 +5,6 @@ import static is.L42.tools.General.checkNoException;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -14,13 +13,15 @@ import is.L42.common.Program;
 import is.L42.generated.C;
 import is.L42.generated.Core;
 import is.L42.generated.Core.L;
-import is.L42.nativeCode.TrustedKind;
 import is.L42.generated.Pos;
+import is.L42.nativeCode.TrustedKind;
+import is.L42.perftests.CoreNodeCounter;
+import is.L42.perftests.PerfCounters;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler;
 import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.CompilationError;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.MapClassLoader.SClassFile;
-import is.L42.platformSpecific.inMemoryCompiler.InMemoryJavaCompiler.SourceFile;
+import is.L42.platformSpecific.inMemoryCompiler.JavaCodeStore;
+import is.L42.platformSpecific.inMemoryCompiler.MapClassLoader;
+import is.L42.platformSpecific.inMemoryCompiler.SourceFile;
 import is.L42.platformSpecific.javaTranslation.L42£Library;
 import is.L42.platformSpecific.javaTranslation.Resources;
 import is.L42.typeSystem.Coherence;
@@ -45,27 +46,17 @@ public class Loader {
   public int libsCachedSize(){return libs.size();}//needed for double checking on caching
   public int bytecodeSize(){return classLoader.map().size();}//needed for double checking on caching
   final HashSet<String>loaded=new HashSet<>();
-  public final MapClassLoader classLoader=new MapClassLoader(new HashMap<>(),ClassLoader.getSystemClassLoader());
-  public void loadByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
+  public final MapClassLoader classLoader=InMemoryJavaCompiler.newClassLoader(ClassLoader.getSystemClassLoader());
+  public void loadByteCodeFromCache(JavaCodeStore bytecode,List<L42£Library>newLibs){
     libs.clear();
     libs.addAll(newLibs);
-    for(var e:bytecode){
-      classLoader.map().computeIfAbsent(e.name,k->{
-        assert !loaded.contains(e.name);
-        loaded.add(e.name.substring("is.L42.metaGenerated.".length()));
-        return e.toCF();
-        });
+    for(var e:bytecode.getAllSources().values()) {
+        if(e.className.startsWith("is.L42.metaGenerated"))
+          loaded.add(e.className.substring("is.L42.metaGenerated.".length()));
       }
+    classLoader.updateMap(bytecode);
     }
-  public boolean checkByteCodeFromCache(List<SClassFile> bytecode,List<L42£Library>newLibs){
-    assert libs.equals(newLibs);
-    for(var e:bytecode){
-      var cf=classLoader.map().get(e.name);
-      assert cf.equalBytes(e);
-      }
-    return true;
-    }
-  public Core.L runNow(Program p,C c,Core.E e,ArrayList<? super SClassFile> outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
+  public Core.L runNow(Program p,C c,Core.E e,JavaCodeStore outNewBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError, InvocationTargetException{
     int oldLibNum=libs.size();
     J j=new J(p,G.empty(),libs,false){
       @Override public boolean precomputeCoherent(){return false;}
@@ -97,7 +88,7 @@ public class Loader {
       throw new Error(errs);
       }
     }
-  public void loadNow(Program p,ArrayList<? super SClassFile> newBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError{
+  public void loadNow(Program p,JavaCodeStore newBytecode,ArrayList<? super L42£Library> newLibs) throws CompilationError{
     ArrayList<SourceFile> files=new ArrayList<>();
     this.notOkToJava.clear();
     int oldLibNum=libs.size();
@@ -122,6 +113,9 @@ public class Loader {
     return !res;
     }
   boolean notOkToJava(Program p,String name,HashSet<String> mayBeOkToJava){
+    if(this.classLoader.map().hasFile("is.L42.metaGenerated."+name)) { 
+      return false; 
+      }
     if(loaded.contains(name)){return false;}//already in Java
     if(okToJava.contains(name)){return false;}//already verified to be ok
     if(notOkToJava.contains(name)){return true;}
@@ -156,6 +150,11 @@ public class Loader {
     if(name.isEmpty()){return;}
     if(this.loaded.contains(name)){return;}
     if(!isOkToJava(p,name)){return;}
+    if(PerfCounters.isEnabled()) {
+      CoreNodeCounter ctr = new CoreNodeCounter();
+      ctr.visitL(p.topCore());
+      PerfCounters.add("core.nodes", ctr.getNodeCount());
+      }
     J j=new J(p,G.empty(),libs,false){
       public Coherence newCoherence(Program p) {return new Coherence(p,false){
         public boolean checkNativeKind(TrustedKind tK){
