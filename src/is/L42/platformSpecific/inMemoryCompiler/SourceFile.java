@@ -18,7 +18,7 @@ public class SourceFile implements Serializable, JavaFileObject {
   protected final URI uri;
   protected final Kind kind;
   public SourceFile(String className, String contents) {
-    if(className.contains("$")) { throw new Error("Illegal class name; contains '$'"); }
+    if(className.contains("$")) { throw new Error("Illegal class name; " + className + "contains '$'"); }
     this.uri = InMemoryJavaCompiler.strToUrl(className,Kind.SOURCE);
     this.kind = Kind.SOURCE;
     this.className = className;

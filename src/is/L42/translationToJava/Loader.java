@@ -64,6 +64,7 @@ public class Loader {
     j.visitE(e);//the goal here is not to generate the p.top class
     newLibs.addAll(libs.subList(oldLibNum,libs.size()));
     String name="£c"+c.inner()+"£n"+p.topCore().info()._uniqueId();
+    name=name.replace("$", "£d");
     if(!p.pTails.isEmpty()){name=J.classNameStr(p)+name;}
     String code=header+"\npublic class "+name+"£E"+
       "{public static L42£Library execute(){return "  
