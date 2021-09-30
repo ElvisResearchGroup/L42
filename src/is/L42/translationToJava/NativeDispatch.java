@@ -128,7 +128,7 @@ public class NativeDispatch {
       var slave=Resources.loadSlave(%s,%s,"%s",new Object(){});
       var res=slave.call(%s).get();
       %s
-      return res;
+      return Resources.sanitizeJavaRes(res);
       }
     catch(safeNativeCode.exceptions.SlaveException ex){%s}
     catch(java.util.concurrent.CancellationException|java.rmi.RemoteException ex){%s}

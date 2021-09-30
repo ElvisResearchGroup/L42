@@ -13,14 +13,16 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 import java.util.function.Consumer;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import is.L42.cache.concurrency.CachedRes;
 import is.L42.common.Program;
 import is.L42.common.ReadURL;
 import is.L42.flyweight.C;
-import is.L42.flyweight.CoreL;
 import is.L42.generated.Core;
 import is.L42.generated.Pos;
 import is.L42.translationToJava.Loader;
@@ -125,6 +127,33 @@ public class Resources {
   public static Path initialPath(){
     var t=top();
     return Paths.get(t.top.pos().fileName()).getParent();
+    }
+  @SuppressWarnings("unchecked")
+  public static <T> T sanitizeJavaRes(T t) {
+    if(t==null){return t;}
+    if(t instanceof String s){return (T)sanitizeString(s);}
+    assert t instanceof Integer || t instanceof Float;//Will need to add a few other cases
+    return t;
+    }
+  private static String sanitizeString(String s){
+    return s.chars()
+      .filter(Resources::charOk)
+      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+      .toString();
+    }
+  static final private Set<Integer> allowed=IntStream.of(
+    '(',')','[',']','<','>',
+    '&','|','*','+','-','=',
+    '/','!','?',';',':',',',
+    '.',' ','~','@','#','$',
+    '%','`','^','_','\\','{',
+    '}','"','\'','\n','\t'    
+    ).boxed().collect(Collectors.toUnmodifiableSet());
+  private static boolean charOk(int i){
+    var low= i>='a' & i<='z';
+    var upper= i>='A' & i<='Z';
+    var num=i>='0' & i<='9';
+    return low || upper || num || allowed.contains(i);
     }
   /*static{//Not needed here, but in the slave code!
     var sup=Utils.getIsJavaClass();
