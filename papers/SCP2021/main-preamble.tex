@@ -3,10 +3,14 @@
 \usepackage{wrapfig}
 \usepackage{etoolbox}
 \usepackage{xparse}
-
 %\usepackage[stable]{footmisc}
 %
 \makeatletter
+% Make code font lighter?
+\DeclareFontSeriesDefault[tt]{md}{l}
+\DeclareFontSeriesDefault[tt]{bf}{m}
+\renewcommand{\ttdefault}{lmtt}
+
 \DeclareOldFontCommand{\rm}{\normalfont\rmfamily}{\mathrm}
 \DeclareOldFontCommand{\sf}{\normalfont\sffamily}{\mathsf}
 \DeclareOldFontCommand{\tt}{\normalfont\ttfamily}{\mathtt}

@@ -75,15 +75,83 @@
 //included in muller? basically, difference between capsule field and capsule ref
     - A good explanation for *why* the notion of capsule was weakened to allow external read-only references into the capsule's ROG
 //It is not, see above
+// Isaac: he was correctly referring to capsule fields, maybe we should just call them something else like Rep fields... 
+// we don't have to change the implementation just mention that it reuses an already existing language feature
+// It probably is worth changing the terminology as reviewers keep getting confused!! 
     - A bit more detail about the non-termination concerns in the main theorem (that part of the main paper is unclear about how it handles the possibility that a state update may cause the invariant execution to diverge)
-//never observed broken then?
+//never observed broken then? //Isaac: yes, but just make an explicit point in the text neer the theorem that this is allowed
     - More clarity on the interaction of IO and invariants: clearly IO introduces nondeterminism, but the paper doesn't really make clear exactly how *this approach* handles that.  I see the mention of $c$ in the statement of theorem 1, but how does that make the result significantly different then not including $c$ at all?
 //When discussing pure, repeat no IO
 
     - More clarity on the statement of Theorem 1, particularly why that is the result we want and what the real role of the trusted predicate is.
 //TODO
+//ISAAC: I wonder if it's worthwhile removing "validState" and using something like my big arrow?
+//Assuming they do understand validState an explanation like this might help?
+//	This says that for any object involved in execution (i.e. one that is an operand of an expression that is about to be reduced) either it's invariant holds (because ".invariant()" deterministically reduces to true) or we are
+//	reading it's fields as part of a runtime invariant check. Note that it is very important that we allow 'trusted' evaluations like this, otherwise an invariant
+//	would never be able to distinguish 'valid' vs 'invalid' object, other than by always returning true or false. (alternatively the invariant could take all the object's fields as paramaters???)
+//After some thought it appears that the formalism of trusted would actually allow something like this:
+// (it's a bit ugly as I need to create a cyclic object and you don't have a let recursive or null):
+// interface MaybeC {
+//    read method imm Bool isC()
+//    read method read C val() }
+// class NotC implements MaybeC {
+//    read method imm Bool isC() false
+//    read method read C val() this.val() } // fail to terminate (alternatively, we could raise an exception by creating an object whose invariant is false)
+// class BoxC implements MaybeC { // this needs to be different from C, or my example won't work
+//    read C c
+//    read method imm Bool isC() true
+//    read method read C val() this.c }
+// class C {
+//   read MaybeC f;
+//	 imm Int i;
+//   read method imm Bool invariant()
+//		new F().observe(this.f) && this.i == 0 }
+//
+// class F {
+//	imm Bool observe(read MaybeC c)
+//		c.isC() ? c.val().i == 0 : true } // should always return true right? the invariant of C says this should always hold!
+//
+// Of course the above program will be rejected as you can't read a 'read' field in an invariant
+// But that's not the point, how do we know there isn't a behaviourally equivalent program that isn't rejected?
+// What we want is our Theorem 1 to tell us that this is impossible, but it doesn't
+//
+// Now suppose the main expression is:
+//       let cyclic := new C(new NotC(), 0);
+//		 cyclic.f = new BoxC(cyclic);
+//       cyclic.i = 1; // We've broken the invariant!
+//
+// Now let's consider how reduction proceeds once we get to the third line:
+// (The square brackets denote redex)
+// (note that throughout rl1.invariant() will deterministically reduce to 'false')
+//	    l1↦C{l2,0}, l2↦BoxC{l1}         |[l1.i = 1]
+///	--> l1↦C{l2,1}, l2↦BoxC{l1}         |M(l1;l1;[l1.invariant()])
+///	--> l1↦C{l2,1}, l2↦BoxC{l1}         |M(l1;l1;[new F()].observe(l1.f) && l1.i == 0)
+///	--> l1↦C{l2,1}, l2↦BoxC{l1}, l3↦F{}|M(l1;l1;l3.observe([l1.f]) && l1.i == 0)
+//		now our main expression has form E[rl1] = M(l;l;E'[rl1]) where E' = m.observe(□) && l1.i == 0 and rl1 = l1.f
+//		so we have trusted(E, l1.f) so Theorem 1 is happy
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;[m.observe(l2)] && l1.i == 0)
+//		the redex doesn't mention 'l1' at all, so Theorem1 is happy (this is why it is important that I didn't just make C implement MaybeC)
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;([l2.isC()] ? l2.val().i == 0 : true) && l1.i == 0)
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;[true ? l2.val().i == 0 : true] && l1.i == 0)
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;([l2.val()].i == 0) && l1.i == 0)
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;([l1.i] == 0) && l1.i == 0)
+//     now the current redex rl1 = l1.i, and the main expression is of form E[rl1] = M(l;l;E'[rl1])
+//	   so we are trusted; so theorem 1 is sitll happy. But l1 is broken! and we are observing it from outside of 'l1'!
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;[1 == 0] && l1.i == 0)
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;[false && l1.i == 0])
+//  --> l1↦C{l2,1}, l2↦BoxC{l1}, m ↦ F{}|M(l1;l1;false)
+//	ERROR! l1 is broken, but F just observed it
+// As you can see at each point above that l1 was in the current redex, we were in a trusted state, so Theorem 1 has not been broken at all
+//
+// My point is thus that theorem1 is not strong enough
+// What we need is some explicit encoding of stack frames (remeber they ^ and ~ operators? you loved; you could also have that method bodies have a 'return' and then 'return e' is a runtime expression)
+// Alternatively we could have a predicate on the ROG of each object involved in exectuion, but that's relies on the fact that an expression can only see new objects or those in the rogs of any of it's sub-expressions/operands
+
+
     - Please explain why Assumption 10 isn't incredibly restrictive: that assumption and the try reduction rules make it look like it's forbidden for a try body to mutate any heap location that existed prior to the try.  This seems incredibly problematic for real programs, and notably *none* of your evaluations actually consider uses of exceptions (or, for that matter, IO), so there's no evidence presented that this isn't a very severe restriction.
-//Ignore?
+//Ignore? 
+// Isaac: just remind the reader at that point that this is only modelling unchecked exceptions! a try Catching checked exceptions that cannot be thrown by invariant need not be restricted 
 
   If the evidence would come from the SES paper, then please (a) recall some of that evidence here in the paper, and (b) explain why the combination with the assumed mutability type system doesn't lead to additional restrictions.
 //No? ignore?
@@ -91,7 +159,9 @@
 //below, Isaac?
     - A fixed version of Lemma 2 (see comments below).
     - A cleaned up version of Theorem 2.  This proof is supposed to be an induction proof, but is written in such a way that it groups cases that prove similar parts of the conclusion's disjunction together. This makes it hard to verify the proof actually hits all of the cases. See more comments below.
+    // Isaac: easy fix, just list the non-mutatinag rules at the end
     - An explanation / fix for Lemma 3, which seems to only be true if you assume there's no promotion/recovery in the system, contrary to much of the paper's text.
+// Isaac: this doesn't forbid promotion or circular imm references/objects, rather it's a restriction on imm fields only, and no system I'm aware off involves promoting the modifier of a field; moreover, if some expression (mut x =...; ...; x) does a promotion to imm, it would still be impossible to do x.f = x while x is mut as f can only contain an imm reference, and x is not imm yet! Youd essentially need a let recursive or structural typing to break our lemma.
 
     This is quite a few things to address, but they seem doable, I am very much intrigued by the work, and I would really like to see a future fixed version. So my personal recommendation is major revision.
 
@@ -99,7 +169,7 @@
     I'll use the red line numbers, which seem to generally line up better with the text:
     - p2, lines 53--55: This sounds *more relaxed* than visible state, since there are times this approach permits broken invariants that visible state does not. Maybe "stricter" isn't the right notion here; instead, maybe it's more accurate to be more specific and say the approach is "stricter about when invariants may be *observed* as broken (i.e., never vs. sometimes)"
 //NOPE, it would only make the text more confusing
-
+//Isaac: what?? when can an invariant be broken in our system but not visible state? (assuming the invariant methodbis private, or else it will cyclically require and ensure itself...)
     - p2 line 61: This code formatting is reminiscent of the awkward compromises we make to fit into conference page limits.  This is a journal submission; please don't do this. (applies throughout)
 //OK review code formatting across all the document to make it more standard
 
@@ -116,6 +186,7 @@ The distinction is whether or not it's possible to *observe* the violated invari
     - p5 lines 216--218: This over-states a subtlety: Pony (and I believe L42 is the same) allows non-destructive reads, but the result is only useful for object identity / pointer comparisons, nothing else.
 //False: either this funky rev is a Pony author and we misunderstood pony,
 //or limited scope usages of stuff is allowed, like a.foo.bar() when foo is a capsule field.
+// Isaac: pony allows non destructive reads to an identity (and message passing) only reference and normal destructive reads, unless they've changed things lately
 
  Since the original Detlefs definition of rep exposure was about unauthorized mutation when returning interior pointers, I'd argue these systems still prevent rep exposure.
 //TODO should we make it a weaker statement anyway? there are many interpretation for rep exposure it seams...
@@ -124,6 +195,7 @@ The distinction is whether or not it's possible to *observe* the violated invari
     - p7 lines303--306: Don't *all* IO methods potentially throw errors that appear non-deterministic from within the program? (e.g., out of disk space, pipe full, etc. can still apply to println)
 //I removed the sentence that help recognizing the problem. Still, it is true that
 //in this work we do not mention the concept of 'non determistic exception' and how we handle them
+//Isaac: for a non-deterministic exception is equivalent to a normal exception in a method that also calls a cap method; so as long as these non deterministic exceptions are ONLY thrown by Cap methods, it makes no difference. (so no random threadinterrupted exceptions halfway through an invariant check) 
 
     - p7 line 308: You still haven't explained how to read this method signature; anyone who doesn't already work with typed reference capabilities won't automatically understand what the "read" means here
 //DONE
@@ -221,6 +293,7 @@ but clearly is must not to have a lower number of checks than D.
 
     - line 1827: "means for a location $l$ to be mutable..." This applies throughout. Metavariables act as proper nouns grammatically, while you keep using them as common nouns.  The difference is whether it makes sense to mix them with (in)definite articles (i.e., the/a/an).  The location $l$ may have some property just as the journal TOPLAS has some properties, but it's ungrammatical to say the/a TOPLAS.
 //Ignore, I understand, but it would be terrible to do it.
+// Isaac: yes you should not say 'the $l$' just '$l$' is correct.
 
     - p38 lines 1833--1834: I wish you'd explain this notion of encapsulated a bit better, because the notions of encapsulation I'm most familiar with depend only on heap topology and field declarations, and are independent of the particular expression.
 //TODO: we may want to anticipate this misconception earlier? it is connected with the next point
@@ -230,6 +303,10 @@ but clearly is must not to have a lower number of checks than D.
 
     - p38 Assumption 3: How would this be related to simply assuming that substitution preserves types?  I realize this is specific to methods, but it it satisfied as long as types are preserved by well-typed substitution, or is there something in here that's a stricter requirement?
 //TODO: Isaac, I'm quite confused... what was this about? why Ctx and e are arbitrarely selected from the method body?
+//  I was trying, and failed, to account for the possibility of different expressions having different types in different contexts, and not just dependent on Gamma, this was to model promotion.
+// In particular, smply ensuring the type of the body itself doesn't change is not sufficient to ensure that references inside the body haven't had there type modifiers changed.
+// The correct way to axiomatise this type system would be to abstract over some unspecified typing context, say Phi, together with Gamma, and then have Gamma, Phi |- e
+// Passing the Ctx on the LHS of |- was anwapproximation of doing that, but I recall that it severally limited what the type system was allowed to do.
 
     - p39 line 1864: grammar: "an immutable object [can]not also be mutable"
 //DONE
@@ -242,10 +319,10 @@ but clearly is must not to have a lower number of checks than D.
 //TODO: Unsure... conceptually, he is right, we are Assuming that object capabilities are properly implemented
 //On the other side, we encoded it in our language semantic same as
 //field access and so on... so...
-
+//Isaac: it's a bit funny as the reduction rules don't model calls on Cap, they are outside, but he is right, we can ads "Assumption 0" or something to the top of our description of Cap. 
     - p40: Lemma 2's proof is not a valid proof.  First, is says it's by induction, but induction on what?  The "base case" looks like inversion on the first reduction step, which then proves the first step was deterministic.  The "inductive" case seems to start from that premise.  But then I cannot tell why this "inductively assume" bit is valid.  This proof structure doesn't appear to be inductive, but a progressive refinement of the premise, with the "inductively assume" bit seeming to be a statement of an unnamed and ill-stated separate lemma which would be proven by induction on the transitive reduction relation.  If that's correct, please fix this proof.  If I'm incorrect, then please fix up the text here to be much clearer about what's being inducted upon, and where some of these assumptions are coming from.
 //TODO: Isaac, can you understand the issue here?
-
+//Isaac: it is inductive on the number of normal reductions, in addition I'm implicitly proving a stronger lemma, I can expand this out to make both explicit.
     - p40 line 1957: "informally described in [Section] 3"
 //DONE
     - p41 line 1963: The text should explicitly say the induction is on the reduction part of the validState assumption.
@@ -253,11 +330,11 @@ but clearly is must not to have a lower number of checks than D.
 
     - p41: I cannot follow the structure of Theorem 2's proof. The broad strokes look right, and individual pieces look plausible, but the structure is not a proper proof by induction.  I would expect the structure to take the form: by induction on the reduction showing it's a valid state, for each possible reduction case, show capsuleNotCircular && ((wellEncapsulated && notCapsuleMutating) || headNotObservable).  I would expect to see each reduction rule listed exactly once, with an explanation of which possible set of things for the conclusion was appropriate to prove in each case.  Instead, the proof lists a set of reduction rules for capsuleNotCircular, a set fo wellEncapsulated, a set for notCapsulMutating, and a set for headNotObservable.  The sets overlap (which sort of makes sense given that there are conjunctions to prove), but this has essentially taken what would be individual cases of a standard proof and scattered bits and pieces in an alternative grouping.  This makes it very difficult to to check that all cases were considered, and that the various considerations for each occurrence of the repeated rules are consistent with each other. Notice that Theorem 3 follows the structure I would expect.
 //TODO: Isaac, we can try to clarify this, but this should not become a massive task!
-
+// Isaac: sure I can rewrite it his way, sorry I keep trying to make things more succinct by doing this completely non standardly
     - p44 Lemma 3: This seems to contradict the paper's claims that this approach could work for Gordon et al.'s system, Pony, or L42.  In fact, one of the key reasons for recovery/promotion existing was to support easy initialization of cyclic immutable structures!  I'm also not convinced that this proof actually considers all of the relevant cases. The second case considered assumes the only way for a new expression to return something immutable is if all constructor arguments were immutable, but this is only true if you assume promotion doesn't exist.
 //TODO: I do not know how to explain away the rev issues without going too much in the details on how stuff works in 42.
 //Isaac, should we Ignore this or discuss about it?
-
+//Isaac: as I explained above this is a misunderstanding of what that lemma is doing, we can just add a sentence or two making it clear
 
     Referee: 2
 
@@ -303,14 +380,16 @@ but clearly is must not to have a lower number of checks than D.
     There doesn't seem to be a good reason to keep this part out of the main paper; rather, it should go into section 5 so all the formal definitions are kept together.
     This should include the lemma and theorem statements, the concrete proofs of them can stay in the appendix.
 //TODO: Discuss
-
+//Isaac: Assuming we don't have a page limit problem, then yes I agree, especially the type system assumptions
     (2) Introduce some grammatical distinctions in the language for things that are distinctions
 
 //??? Ignore?
+//Isaac: what in the world are they trying to say???
     (3) More signposting and clarity about what things are supposed to give intuition and what things are supposed to be formal statements
 //Ignore? To vage to apply? may have been already improved anyway?
     (4) Re-organize the proof of capsule-field soundness
 //TODO: is the one also rev1 complained about?
+//Isaac: no one likes my well organised simple and sound proof styles!
 
 
     @(2) Some of the formal constructs in the paper seem to value brevity over clarity.
@@ -320,20 +399,29 @@ but clearly is must not to have a lower number of checks than D.
     This could easily be avoided by not defining field accessor expressions to have an expression on the LHS.
     Rather, something like a pre-value (either a location l or a variable x that is going to be substituted away before evaluation gets there) would formally express the well-formedness requirement and make it clear in other definitions what's going on.
 //TODO: add clarifications in the text near the syntax? I'm against adding even more formal syntax.
-
+//Isaac: yes I agree completely, it's a very simple and conventional change that would make it more readable
     Second, monitor expressions for updates, constructors, and method calls could be distinguished better.
     This would avoid the several instances in the proofs where one has to reason about where a monitor expression could be coming from.
 //TODO: would it actually help?
-
+//Isaac: I could only find one place in the proof where we care where the M came from (Theorem 2, case 2b) so I think it would just complicate things more
     Lastly, the redexes with locations are quite confusing to read when they are involved in theorem statements, because they implicitly introduce a quantifier.
     Those statements would be slightly longer, but a lot clearer if they would use a metafunction to extract the locations from a redex and an appropriate quantifier over them (in particular: Theorem 1).
 //TODO: discuss? can we simply clarify in the text?
+//Isaac: yes I agree, when re-reading things the 'rl' confused me. I suggest changing it to a context:
+// ℰ_r ::= □.m(v…) | v1.m(v2… □ v3…) | □.f | □.f = v | v.f = □ | new C(v1… □ v2…)  where … means overbar
+// Then use ℰr[l] everywhere we use rl
+// I think it would be an easy change and make it much more clear
+//I particular got confused with the subscript l, because it makes it look like it's just a name for a metavariable
+// but in actuality 'r' is a metavariable taking 'l' as a parameter 
+// (unlike ℰv which *is* the name of a metavariable, not a 'ℰ' taking a 'v' as a paramater)
 
     @(3) Reading section four, I first mistook it as an attempt at a formal argument that wasn't quite formal enough (as in showing by example that all potential problematic cases are covered).
     That was obviously a mistake on my part; reading it again after having understood the rest of the paper this part makes perfect sense to give intuition on why certain design decisions are as they are.
     As such, better signposting about what the section is supposed to do and that a formalization of its parts will follow later should suffice.
     Another possibility is to merge it into section three, making clearer that it's still explaining the main parts of the presented approach.
 //Ignore? I think this the start of section 4 is already very clear.
+//Isaac: "In this section we will show examples of using our system, and how relaxing any of our requirements would break the soundness of our protocol."
+// Maybe if we make it the first sentence and not the second?
 
     The opposite goes for the already-mentioned list of well-formedness criteria on page 14, which should be more clearly sign-posted as being an actual part of the formalism (or made more formal).
 //Ignore? it is standard to just list them in text. We could call them 'formal well formedness'? but it feels silly.
@@ -352,6 +440,8 @@ but clearly is must not to have a lower number of checks than D.
 
     (2) The font you use for keywords in L42 is really hard to read, both in the main text and in Figures 1 and 2.
 //Ignore, changed anyway in the new style
+//Isaac: no, the font in Figure 1 has not changed, it is your horrible squished thing you use to fit things in page limits
+//as we're submitting to a journal it should be fine to use a normal font and split the grammar definition over more lines.
 
     (3) Sections 1 and 2 were mostly easy to follow, the big exception is that I don't know what "representation exposure" means exactly, and it features more than once, so it would be nice to have a brief explanation.
 //DONE already for rev1?
@@ -365,9 +455,13 @@ but clearly is must not to have a lower number of checks than D.
     - On page 24, at the beginning of section 7, you state that "one has to program in an uncommon and very defensive style".
     That might be honest, but it might be worth adding a sentence stating why it's worth it anyway.
 //TODO: discuss what to say
+// Isaac: means it forces programmars to think more about their invariants and hopefully break them less often?
+// also you're lazy and don't want to complicate the language?
 
     - Page 43, Line 44/2099: If you leave this in the appendix, a reminder of the definition of valid would be useful
 //TODO: depends on reaction to the comment before
+//Isaac: yes, I should have restated the key definitions in the appendex, even if we do move some parts to the main body
+//it would still be a good idea
 
     Typos
     =====
@@ -398,7 +492,7 @@ but clearly is must not to have a lower number of checks than D.
     - Page 44, Line 26/2130: of -> off//DONE
     - Page 45, Line 6/2159: I think there needs to be some appropriate indexing on the field corresponding to the initializer variable
 //TODO: I'm not sure what they mean here
-
+//Isaac: um, could I have the pdf you submitted with the correct line numbers so I can find these points???
 
     Referee: 3
 
@@ -418,7 +512,7 @@ but clearly is must not to have a lower number of checks than D.
 this is not the approach used in Spec# for visibility-based invariants
 //This is also true in Spec#, but we have a different type for the open objects.
 //I think this is very clear in our texts...
-
+//Isaac: I thought we clearly said Spec# does *not* use visibile state semantics, so this shouldn't be contradictory
  nor, to my knowledge, any other more-recent works on object invariants; that a different notion was perhaps implemented for JML (but not in Eiffel, I think?) originally indeed leads to difficulties, but this is not the current state-of-the-art in this area. This seems to be an important and fundamental comparison which is not made accurately in this motivation section.
 
     The presented approach (e.g. on the Range example) deals with this situation by moving the updates and invariant into a separate object from which the original is guaranteed unreachable. This is instead analogous (as becomes clear later in the submission) to using ownership-based invariants in Spec#; effectively, the call to the sub-object acts as an "unpack", and its return acts as a "pack" (except that the situation is stricter in this submission, since I believe that unpacked objects can still be accessed and read from, just without knowing their invariants to be true). Rather than writing additional expose statements around this code, in the BoxRange approach, the code which temporarily violates the invariant must be moved to a different object. I find this alternative approach interesting, but it is not clearly simpler to program with to me,
@@ -453,7 +547,7 @@ this is not the approach used in Spec# for visibility-based invariants
 
     36: given the wealth of works out there (many of which are cited), I would perhaps not say these are the "two main protocols"; they are indeed underlying ideas which show up in many works (albeit with a different notion of visible states semantics than the one presented, as commented above).
 //Ignore? and what should we say instead?
-
+//Isaac: yes he is right, we should use a different term, say that are the two main 'styles' of protocols?
     75: "Range class with the desired client interface": in at least some situations one wants client code to also know of invariants; the fact that the invariant is now missing from the object at the least changes this interface.
 //Ignore? No, the Range class has the same invariant in both example.
 //are they confused with the BoxRange class?
@@ -470,7 +564,7 @@ this is not the approach used in Spec# for visibility-based invariants
     252: these restrictions are not really explained; I also didn't know what it meant to throw an object; does this mean some object representing the type of exception?
 //Ignore?? the restrictions are expanded in the formal part.
 //Also, how can 'throwing an object' confuse them?
-
+//Isaac: throwing an exception that references an object? but yes I'm surprised they got confused there
     257: this seems to be a strict loss of expressiveness: I assume that programmers frequently want to use exceptions to abruptly terminate side-effectful computations; it seems that this would be prevented (at least if those side-effects were in any way observable to the catching code). Why is this not a serious limitation in practice?
 //DONE, we added some text around for rev1, this is only for unchecked exceptions.
 
@@ -478,7 +572,7 @@ this is not the approach used in Spec# for visibility-based invariants
 //DONE I changed the sentence, not sure if it is much better now...
 
     270 "would not be provided by static methods" - why not?
-//Ignore?? what do you mean???
+//Ignore?? what do you mean??? //Isaac: we then give an example explaining exactly this!
     "instantiation is kept under control by carefully..." - it's unclear what this sentence means.
 //Ignore? looks so clear to me...
 
@@ -546,3 +640,5 @@ this is not the approach used in Spec# for visibility-based invariants
 
     "Dafny is also generally highly restrictive..." - I don't understand what this means - does Dafny have restrictions on reference mutation (like the presented work)?
 //Ignore
+
+//Isaac: I don't think this reviewer has good reading comprehension..., nor should we have to triple the size of our paper to explain every bit of other work we mention in detail...
