@@ -39,12 +39,16 @@ AddConstructors$Meta={
   Name that
   Bool noFwd
   @Public class method This(Name that,Bool noFwd)
-  @Public ClassOperators={class method This1()=This1('This,noFwd=Bool.false())}
+  @Public class method This (S string) =
+   \(\(string=string),noFwd=Bool.false()) 
+  @Public class method This #from(S$StringBuilder stringLiteral) = 
+    \(string=stringLiteral.toS())
+  @Public ClassOperators={class method This1()=This1('This(),noFwd=Bool.false())}
   @Public method Trait :(Trait t)[AddConstructors$Fail]=Trait(this:t.code())
   @Public method Trait :(class Trait.Lifted l)[AddConstructors$Fail]=Trait(this:l.code())
   @Public method Library :(Library that)[AddConstructors$Fail]={
     return AddConstructors$Meta()
-      .addConstructors(that,name=this.that().toS(),autoNorm=this.noFwd(),mutK=S"#apply",immK=S"#immK")
+      .addConstructors(that,name=this.that().path(),autoNorm=this.noFwd(),mutK=this.that().selector(),immK=S"#immK")
     catch error AddConstructors$Fail x exception x
     }
   }
@@ -144,10 +148,14 @@ AddImmNorm=Trait:{
     } 
 
 @Public Relax={
-  @Public ClassOperators={class method This2()=This1()}
+  ClassOperators={class method This2()=This1()}
   class method This1()=This1('This,check=Bool.false(),autoNorm=Bool.false())
   class method This1(Name that)=This1(that,check=Bool.false(), autoNorm=Bool.false())
   class method This1(Name that, Bool autoNorm)=This1(that,check=Bool.false(), autoNorm=autoNorm)
+  class method This1 (S string) =
+    This(\(string=string)) 
+  class method This1 #from(S$StringBuilder stringLiteral) = 
+    This(string=stringLiteral.toS())
   }
 
 Name that
@@ -164,11 +172,17 @@ Bool autoNorm
 
 @Public class method This()=This('This,check=Bool.true(),autoNorm=Bool.false())
 
+@Public class method This (S string) =
+ \(\(string=string)) 
+@Public class method This #from(S$StringBuilder stringLiteral) = 
+  \(string=stringLiteral.toS())
+
 @Public ClassOperators={class method This1()=This1()}
 
 @Public method Trait optionallyApply(Trait that,Trait acc)={
-  if this.that()==Name"This" return that:acc 
-  return that['This=>this.that()]:acc
+  cs=Name(string=this.that().path())
+  if cs==Name"This" return that:acc 
+  return that['This=>cs]:acc
   catch Any _ return acc
   }
 
@@ -184,6 +198,7 @@ Bool autoNorm
 @Public method Library :(Library lib)[Data$Fail]=(this:Trait(lib)).code()
 @Public method Trait :(Trait that)[Data$Fail]=(
   name=this.that()
+  cs=Name(string=name.path())
   autoNorm=this.autoNorm()
   var Trait acc=that
   acc:=this.optionallyApply(This.addHasToS(), acc=acc)
@@ -194,9 +209,9 @@ Bool autoNorm
   acc:=this.optionallyApply(This.addImmClone(), acc=acc)
   acc:=this.optionallyApply(This.addImmNorm(), acc=acc)  
   acc:=AddConstructors(name,noFwd=autoNorm):acc
-  acc:=Wither(name):acc
-  acc:=Defaults(name):acc
-  acc:=Close(name,autoNorm=autoNorm):acc
+  acc:=Wither(cs):acc
+  acc:=Defaults(cs):acc
+  acc:=Close(cs,autoNorm=autoNorm):acc
   if this.check() (This.checkCoherent(acc.code()))
   acc
   )  

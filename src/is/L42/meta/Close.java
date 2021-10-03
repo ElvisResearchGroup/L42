@@ -71,7 +71,7 @@ public class Close extends GuessFields{
     this.err=new MetaError(wrap);
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
-    addGettersSetters(p);
+    addGettersSetters(p,null);
     for(var m:this.abs){
       if(!Coherence.validConstructorSignature(p, m.mh())){continue;}
       if(!m.key().xs().containsAll(getters.keySet())){continue;}

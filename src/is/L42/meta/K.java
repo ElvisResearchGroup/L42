@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import is.L42.common.EndError;
 import is.L42.common.Program;
 import is.L42.flyweight.C;
 import is.L42.flyweight.CoreL;
@@ -47,7 +46,8 @@ import is.L42.typeSystem.TypeManipulation;
        -imm fields are fwd iff not used by any readCache and there is no eagerCache 
      */
 public class K extends GuessFields{
-  public CoreL k(Program p,List<C> cs,boolean autoNorm,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+  public CoreL k(Program p,List<C> cs,boolean autoNorm,
+      Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
     this.autoNormed|=autoNorm;
     err=new MetaError(wrap);
     if(cs.isEmpty()){return k(p,wrap,mutK,immK);}
@@ -59,14 +59,26 @@ public class K extends GuessFields{
     return res;
     }
   public CoreL k(Program p,Function<L42£LazyMsg,L42Any>wrap,String mutK,String immK){
+    if(mutK.isEmpty()){ mutK="#apply"; }
+    if(mutK.startsWith("(")){ mutK="#apply"+mutK;}//TODO: or This( or Cs(.. ? or not?
     var l=p.topCore();
     if(l.info().close()){err.throwErr(l,"Class is already close");}
-    try{S.parse(mutK+"()");S.parse(immK+"()");}
-    catch(EndError ee){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
-    if(mutK.equals(immK)){err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK);}
-    addGettersSetters(p);
+    List<X>_pars=null;
+    if(mutK.contains("(")){
+      L42£Name s;try{s=L42£Name.parse(mutK);}
+      catch(NumberFormatException ee){throw invalidConstructorNames(mutK, immK, l);}
+      if(!s.x().isEmpty()){throw invalidConstructorNames(mutK, immK, l);}
+      S ss=S.parse(s.selector());
+      mutK=ss.m();
+      _pars=ss.xs();
+      }
+    try{L42£Name.parse(mutK+"()");L42£Name.parse(immK+"()");}
+    catch(NumberFormatException ee){throw invalidConstructorNames(mutK, immK, l);}
+    if(mutK.equals(immK)){throw invalidConstructorNames(mutK, immK, l);}
+    addGettersSetters(p,_pars);
     boolean veryImm=gettersAllImm && setters.isEmpty();
     List<X> xs=L(getters.keySet().stream());//deterministic: it is a LinkedHashMap
+    if(_pars!=null){xs=requiredPars(l,xs,_pars);}
     List<T> mutTs=L(xs,(c,x)->c.add(forgeT(x)));
     List<T> immTs=L(mutTs,this::forgeTImm);
     S mutS=new S(mutK,xs,-1);
@@ -88,6 +100,15 @@ public class K extends GuessFields{
     i=i.withTypeDep(pushL(i.typeDep(),P.pThis0));
     return l.withMwts(newMWT).withInfo(i);
     }
+  private List<X> requiredPars(CoreL l,List<X> computed, List<X> required){
+    assert required.containsAll(computed);//can not be guessed if it is not required
+    if(required.size()==computed.size()){ return required; }
+    var missing=required.stream().filter(x->!computed.contains(x)).toList();
+    throw err.throwErr(l,"unrecognized provided constructor fields: "+missing); 
+  }
+  private RuntimeException invalidConstructorNames(String mutK, String immK, CoreL l) {
+    return err.throwErr(l,"invalid provided constructor names: "+mutK+", "+immK); 
+  }
   public T forgeTImm(T t){
     if(t.mdf().isCapsule()){return t.withMdf(Mdf.Immutable);} 
     if(t.mdf().isFwdMut()){return t.withMdf(Mdf.ImmutableFwd);}

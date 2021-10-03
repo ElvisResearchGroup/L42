@@ -35,7 +35,7 @@ public final class S implements LDom, Visitable<S> {
 
   public static S parse(String str) {
     var res = is.L42.common.Parse.ctxPathSelX(Constants.dummy, str);
-    assert !res.hasErr();
+    assert !res.hasErr():str;
     Full.PathSel ps = new is.L42.visitors.AuxVisitor(null).visitPathSelX(res.res.pathSelX());
     assert ps != null;
     S s = ps._s();

@@ -27,9 +27,9 @@ import is.L42.visitors.CloneVisitorWithProgram;
     /*
      if a method m annotated @Cache.Calls is called
      using an expression e with no free variables
-     generate "class method m_num::0()=native{trusted:lazyCache} e"
+     generate "class method m_num::id()=native{trusted:lazyCache} e"
      in the same library, and replace the call with
-     "This.m_num::0()".
+     "This.m_num::id()".
      //??If the class is not closed, generate a private closed nested class instead.
      Private methods annotated lazyCache whose body is not a block are not explored.
      Recursively do the same task on all the nested libraries (also in method bodies)
@@ -39,7 +39,7 @@ public class CacheCall{
     return of(p,new MetaError(wrap));
     }
   static Core.PCastT _head(CoreL l){
-    if(l.info().close() ||l.isInterface()) {return null;}
+    if(l.info().close() || l.isInterface()) {return null;}
     Resources.allBusyUpTo+=1;
     while(Resources.usedUniqueNs.contains(Resources.allBusyUpTo)){
       Resources.allBusyUpTo+=1;
@@ -58,9 +58,10 @@ public class CacheCall{
   static CoreL of(Program p,MetaError err){
     var l=p.topCore();
     Core.PCastT _head=_head(l);
+    int headUId=(_head==null)?0:++Resources.allBusyUpTo;
     ArrayList<MWT>nestedMwts=new ArrayList<>();
     List<MWT>mwts=L(newMwts->{
-      for(int i:range(l.mwts())){newMwts.add(handleMWT(_head,p,_head==null?newMwts:nestedMwts, i, err));}
+      for(int i:range(l.mwts())){newMwts.add(handleMWT(_head,headUId,p,_head==null?newMwts:nestedMwts, i, err));}
       });
     boolean mustConsistentThis0=mwts.size()!=l.mwts().size();
     List<Core.NC>ncs=L(l.ncs(),(newNCs,nci)->{
@@ -85,27 +86,29 @@ public class CacheCall{
       }
     return res.withInfo(i);
     }
-  public static MWT handleMWT(Core.PCastT _head, Program p,ArrayList<MWT> mwts,int index,MetaError err){
+  public static MWT handleMWT(Core.PCastT _head, int headUId, Program p,ArrayList<MWT> mwts,int index,MetaError err){
     var mwt=p.topCore().mwts().get(index);
     if(mwt._e()==null) {return mwt;}
     var skip=!(mwt._e() instanceof Core.Block) && Utils.match(p, err,"callCache", mwt);
     if(skip){return mwt;}
     var name=mwt.key().m()+"_"+index;
     G g=G.of(mwt.mh());
-    var visitor=new CacheCallCloneVisitor(_head,p, g, mwts, name, err);
+    var visitor=new CacheCallCloneVisitor(_head, headUId, p, g, mwts, name, err);
     return mwt.with_e(visitor.visitE(mwt._e()));
     }
   }
 class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
   Core.PCastT _head;
+  int headUId;
   ArrayList<MWT> newMWTs;
   HashSet<String> fv=new HashSet<>();
   MetaError err;
   String name;
   int num=0;
-  public CacheCallCloneVisitor(Core.PCastT _head, Program p, G g,ArrayList<MWT> mwts,String name,MetaError err){
+  public CacheCallCloneVisitor(Core.PCastT _head, int headUId, Program p, G g,ArrayList<MWT> mwts,String name,MetaError err){
     super(p, g);
     this._head=_head;
+    this.headUId=headUId;
     this.name=name;//unique names in format methName_methIndex
     this.err=err;//index would be sufficient, but the methName helps for debugging
     this.newMWTs=mwts;
@@ -165,7 +168,7 @@ class CacheCallCloneVisitor extends CloneVisitorWithProgram.WithG{
     //ineffective otherwise.
     //Should we recognize the issue, use the original m (before super)
     //and discard the intermediates using a store/acc like for fv?
-    S sel=new S(name+"_"+num,L(),0);
+    S sel=new S(name+"_"+num,L(),headUId);
     num+=1;
     var resT=p().from(mwt.mh().t().withDocs(L()),ncs);    
     var mh=new Core.MH(Mdf.Class,L(),resT,sel,L(),L());

@@ -383,6 +383,7 @@ TestReadCache={
   B={
     read method read S.List that::0()
     mut method mut S.List #that::0()
+    class method mut This of(capsule S.List that)=\.of::0(that)
     class method mut This of::0(capsule S.List that)
     mut method Void addOne()=
       native{trusted:invalidateCache}
@@ -394,7 +395,7 @@ TestReadCache={
     }
   Task2=(
     Log"Foo".clear()
-    mut B a=B.of::0(S.List[\"hello"])
+    mut B a=B.of(S.List[\"hello"])
     {}:Test"res1"(expected=1I, actual=a.m())
     {}:Test"res2"(expected=1I, actual=a.m())
     {}:Test"cacheRepeating"(expected=S"ACT.",actual=Log"Foo".#$reader().read())

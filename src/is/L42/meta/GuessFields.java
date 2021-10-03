@@ -21,12 +21,14 @@ public class GuessFields {
   boolean gettersAllImm=true;
   LinkedHashMap<X,List<MWT>> setters=new LinkedHashMap<>();
 
-  public void addGettersSetters(Program p) {
+  public void addGettersSetters(Program p,List<X> _pars) {
     var l=p.topCore();
     for(var m:l.mwts()){
       if(m._e()==null){
         this.abs.add(m);
-        _addGettersSetters(m);
+        var allowed=_pars==null?true:_pars.stream()
+          .anyMatch(xi->xi.inner().contains(m.key().m()));
+        if(allowed){_addGettersSetters(m);}
         }
       if(Utils.match(p, err, "readNowCache",m)){
         this.fieldsUsedInReadCache.addAll(m.key().xs());
@@ -34,7 +36,7 @@ public class GuessFields {
       if(Utils.match(p, err, "eagerCache",m)){this.autoNormed=true;}
       }
     }
-  void _addGettersSetters(MWT m){      
+  void _addGettersSetters(MWT m){
     if(m.key().xs().size()>1){return;}
     X x=Coherence.fieldName(m.mh());
     if(m.key().xs().size()==1){

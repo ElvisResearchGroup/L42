@@ -561,7 +561,11 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitMCall(m);
     var rec=m.xP();
     boolean wrong=m.s().hasUniqueNum() && m.s().uniqueNum()==0
-      && rec instanceof Core.EX && !((Core.EX)rec).x().equals(X.thisX); 
+      && !(
+        (rec instanceof Core.EX  x && x.x().equals(X.thisX))
+        ||
+        (rec instanceof Core.PCastT p && p.p().equals(P.pThis0))
+        ); 
     if(wrong){err(ErrMsg.zeroNumberForNonThis(m));}
     }
   @Override public void visitIf(Full.If i){
