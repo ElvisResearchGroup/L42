@@ -50,7 +50,7 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
     }));
   }
   //Strangely, having this lambda live inside the method was causing millions of allocs 
-  final Function<C, Boolean> inDomFun;
+  final Function<C, Boolean> inDomFun;//TODO: we could instead having a LinkedHashSet of ncs
   HashMap<C, Boolean> inDomCache = new HashMap<>();
   @Override public boolean inDom(C c) {
     if(PerfCounters.isEnabled()){ PerfCounters.inc("invoke.L.inDom(C).total"); }
@@ -65,12 +65,7 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
     }
   public boolean inDom(List<C> cs){ return _cs(cs) != null; }
   List<C> cacheDomNC = null;
-  @Override public List<C> domNC(){
-    if(PerfCounters.isEnabled()){ PerfCounters.inc("invoke.L.domNC.total"); }
-    if(this.cacheDomNC != null){ return this.cacheDomNC; }
-    if(PerfCounters.isEnabled()) { PerfCounters.inc("invoke.L.domNC.distinct"); }
-    return this.cacheDomNC = L(ncs.stream().map(m -> m.key()));
-    }
+  @Override public List<C> domNC(){ return this.cacheDomNC; }
   @Override public CoreL c(C c){
     NC res = LDom._elem(ncs, c);
     if (res == null){ throw new LL.NotInDom(this, c); }
@@ -105,6 +100,7 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
   public static interface InnerLActionNoPrivate extends CoreL.InnerLAction {
     default boolean filterOut(NC nc){ return nc.key().hasUniqueNum(); }
     }
+  
   public CoreL(List<Pos> poss, boolean isInterface, List<T> ts, List<MWT> mwts, List<NC> ncs, Info info, List<Doc> docs){
     this.poss = poss;
     this.isInterface = isInterface;
@@ -113,7 +109,10 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
     this.ncs = ncs;
     this.info = info;
     this.docs = docs;
-    this.inDomFun = (Function<C, Boolean>&Serializable)c2->ncs.stream().anyMatch(m -> c2 == m.key());
+    @SuppressWarnings("unchecked")
+    var fun=(Function<C, Boolean>&Serializable)c2->this.ncs.stream().anyMatch(m -> c2 == m.key());
+    this.inDomFun = fun;
+    this.cacheDomNC = L(ncs.stream().map(m -> m.key()));
     }  
   public List<Pos> poss(){ return this.poss; }
   public boolean isInterface(){ return this.isInterface; }
