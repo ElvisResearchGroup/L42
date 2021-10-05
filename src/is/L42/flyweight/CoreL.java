@@ -1,20 +1,23 @@
 package is.L42.flyweight;
 
 import static is.L42.tools.General.L;
-import static is.L42.tools.General.mergeU;
 import static is.L42.tools.General.popL;
 import static is.L42.tools.General.pushL;
-import is.L42.generated.Core.*;
+
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.function.Function;
 
 import is.L42.common.Constants;
-import is.L42.flyweight.P.NCs;
-import is.L42.generated.*;
+import is.L42.generated.Core.*;
 import is.L42.generated.Full;
-import is.L42.generated.LDom.HasKey;
+import is.L42.generated.Half;
+import is.L42.generated.LDom;
+import is.L42.generated.LL;
+import is.L42.generated.Pos;
 import is.L42.perftests.PerfCounters;
 import is.L42.visitors.CloneVisitor;
 import is.L42.visitors.CollectorVisitor;
@@ -42,12 +45,13 @@ public final class CoreL implements LL, Leaf, Half.Leaf, Visitable<CoreL> {
   
   @Override public CoreL withCs(List<C> cs, Function<Full.L.NC, Full.L.NC> fullF, Function<NC, NC> coreF){
     assert !cs.isEmpty();
-    assert domNC().contains(cs.get(0));
-    return this.withNcs(L(ncs,nc -> {
-      if (!nc.key().equals(cs.get(0))){ return nc; }
-      if (cs.size() == 1) { return coreF.apply(nc); }
-      return nc.withL(nc.l().withCs(popL(cs), fullF, coreF));
-    }));
+    int i = this.domNC().indexOf(cs.get(0));
+    assert i != -1;
+    List<NC> newNCs = new ArrayList<>(this.ncs);
+    NC nc = this.ncs.get(i);
+    if(cs.size() == 1) { newNCs.set(i, coreF.apply(nc)); }
+    else { newNCs.set(i, nc.withL(nc.l().withCs(popL(cs), fullF, coreF))); }
+    return this.withNcs(Collections.unmodifiableList(newNCs));
   }
   //Strangely, having this lambda live inside the method was causing millions of allocs 
   final Function<C, Boolean> inDomFun;//TODO: we could instead having a LinkedHashSet of ncs
