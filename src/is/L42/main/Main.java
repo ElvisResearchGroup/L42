@@ -8,6 +8,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -25,8 +26,18 @@ public class Main {
     String name = arg[0];
     assert name != null;
     Path path=Paths.get(name);
-    boolean isDir=Files.exists(path) && Files.isDirectory(path);
-    if(!Files.exists(path)){path=Paths.get(name+".L42");}
+    boolean exists=Files.exists(path);
+    boolean isDir=exists && Files.isDirectory(path);
+    if(exists && !isDir){
+      System.err.println("Provided path "+path.toAbsolutePath()+" must be a directory");
+      return;
+      }
+    if(!exists){ Files.createDirectories(path); }
+    Path thisFile=path.resolve("This.L42");
+    if(!Files.exists(thisFile)){
+      Files.createFile(thisFile);//create an empty This.L42 file in the selected folder
+      Files.write(thisFile, defaultMain.getBytes());
+      }
     run(path,isDir,false);      
     }
   public static void run(Path path,boolean isDir,boolean caching) throws IOException {
@@ -121,4 +132,10 @@ public class Main {
     for(var m:c.getMethods()){Resources.err(m.getName()+" "+m.toString());}
     for(var m:c.getFields()){Resources.err(m.getName());}
     }
+  public static final String defaultMain="""
+      reuse [L42.is/AdamsTowel]
+      Main=(
+        Debug(S"Hello world")
+        )
+      """;
   }
