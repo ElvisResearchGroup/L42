@@ -76,8 +76,7 @@ public sealed interface P extends Visitable<P> permits PrimitiveP, P.NCs {
       return false;
       }
     private static record NCsI(int n, List<C> cs) {}
-    @SuppressWarnings("unchecked")
-    private static final Map<NCsI, NCs> created = (Map<NCsI, NCs>) ((Map<?,?>) CacheBuilder.newBuilder().weakValues().build().asMap());
+    private static final Map<NCsI, NCs> created = CacheBuilder.newBuilder().weakValues().<NCsI, NCs>build().asMap();
     private static void perfCountNCsOf(NCsI ci) {
       PerfCounters.inc("invoke.P.NCs.init.total");
       if(!created.containsKey(ci)) {

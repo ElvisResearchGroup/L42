@@ -22,8 +22,7 @@ public final class C implements LDom, Visitable<C> {
   private final String inner;
   private final int uniqueNum;
   private static record CI(String inner, int uniqueNum) {}
-  @SuppressWarnings("unchecked")
-  private static final Map<CI, C> created = (Map<CI, C>) ((Map<?,?>) CacheBuilder.newBuilder().weakValues().build().asMap());
+  private static final Map<CI, C> created = CacheBuilder.newBuilder().weakValues().<CI, C>build().asMap();
   private static void perfCountCOf(CI ci) {
     PerfCounters.inc("invoke.C.init.total");
     if(!created.containsKey(ci)) {

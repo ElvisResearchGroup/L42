@@ -22,8 +22,7 @@ public final class X implements Visitable<X> {
   @Override public String toString() { return Constants.toS.apply(this); }
   @Override public boolean wf() { return Constants.wf.test(this); }
   private final String inner;
-  @SuppressWarnings("unchecked")
-  private static final Map<String, X> created = (Map<String, X>) ((Map<?,?>) CacheBuilder.newBuilder().weakValues().build().asMap());
+  private static final Map<String, X> created =CacheBuilder.newBuilder().weakValues().<String, X>build().asMap();
   private static void perfCountXOf(String s) {
     PerfCounters.inc("invoke.X.init.total");
     if(!created.containsKey(s)) {
