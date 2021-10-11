@@ -465,6 +465,15 @@ public enum TrustedOp {
   //String
   StartsWith("startsWith",Map.of(String,use("return %s.startsWith(%s);",sigI(Bool,String)))),
   EndsWith("endsWith",Map.of(String,use("return %s.endsWith(%s);",sigI(Bool,String)))),
+  StartsWithOff("startsWithOff",Map.of(String,use("return %s.startsWith(%s,%s);",sigI(Bool,String,Int)))),
+  EndsWithOff("endsWithOff",Map.of(String,use("""
+    String all=%s;
+    String sub=%s;
+    int index=%s;
+    if(index<0 || index>all.length()){return false;}
+    String subS=all.substring(0,all.length()-index);
+    return subS.endsWith(sub);
+    """,sigI(Bool,String,Int)))),
   SubString("subString",Map.of(String,use("""
     try{return %1$s.substring(%2$s,%3$s);}
     catch(StringIndexOutOfBoundsException nfe){

@@ -26,6 +26,8 @@ method This sum(This0 that)=native{trusted:OP+} error void
 @This1.Public method This subString(This1.I that,This1.I to)=native{trusted:subString}error void
 @This1.Public method This1.Bool startsWith(This that)=native{trusted:startsWith}error void
 @This1.Public method This1.Bool endsWith(This that)=native{trusted:endsWith}error void
+@This1.Public method This1.Bool startsWith(This that,This1.I leftOffSet)=native{trusted:startsWithOff}error void
+@This1.Public method This1.Bool endsWith(This that,This1.I rightOffSet)=native{trusted:endsWithOff}error void
 @This1.Public method This trim()=native{trusted:trim}error void
 @This1.Public class method This dq()=This<:class This.#from(stringLiteral=(
   mut This1.S$StringBuilder b=This1.S$StringBuilder<:class This1.S$StringBuilder.#stringLiteralBuilder()
