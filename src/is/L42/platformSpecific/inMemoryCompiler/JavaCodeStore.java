@@ -31,20 +31,14 @@ public class JavaCodeStore implements Serializable {
     }
   public JavaCodeStore next() { return new JavaCodeStore(this); }
   public Optional<ClassFile> getClassFile(String name) {
-    ClassFile file = compiled.get(name);
-    if(file == null) {
-      if(prev != null) { return prev.getClassFile(name); }
-      return Optional.empty();
-      } 
-    return Optional.of(file); 
+    ClassFile cf = this.getAllCompiled().get(name);
+    if(cf == null) { return Optional.empty(); }
+    return Optional.of(cf);
     }
   public SourceFile getSourceFile(String name) {
-    SourceFile file = sources.get(name);
-    if(file == null) {
-      if(prev != null) { return prev.getSourceFile(name); }
-      throw new Error("Tried to get non-existent file");
-      } 
-    return file; 
+    SourceFile sf = this.getAllSources().get(name);
+    if(sf == null) { throw new Error("Tried to get non-existent file"); }
+    return sf;
     }
   public ResolvedClassRefs getDependencies(String name) { return this.depMap.get(name); }
   public boolean hasFile(String name) {
@@ -53,18 +47,21 @@ public class JavaCodeStore implements Serializable {
     return false;
   }
   public boolean hasFileInner(String name) {
-    if(compiled.containsKey(name)) { return true; }
-    if(sources.containsKey(name)) { return true; }
-    if(this.prev != null) { return prev.hasFileInner(name); }
+    if(this.getAllCompiled().containsKey(name)) { return true; }
+    if(this.getAllSources().containsKey(name)) { return true; }
     return false;
     }
-  public void putCompiled(String name, ClassFile cf) { compiled.put(name, cf); }
+  public void putCompiled(String name, ClassFile cf) { 
+    this.getAllCompiled().put(name, cf);
+    compiled.put(name, cf); 
+    }
   public void putSources(Collection<SourceFile> sfs) { this.putSources(sfs, null); }
   public void putSources(Collection<SourceFile> sfs, Collection<SourceFile> noDepsAnalysis) {
     this.getAllSourcesCache = null;
     Map<String, ClassRefs> classMap = new HashMap<>();
     for(SourceFile file : sfs) {
       String pname = file.className.substring(0, file.className.lastIndexOf("."));
+      this.getAllSources().put(file.className, file);
       sources.put(file.className, file);
       packages.add(pname);
       if(pname.equals("is.L42.metaGenerated")) {
@@ -100,17 +97,15 @@ public class JavaCodeStore implements Serializable {
   public Map<String, ClassFile> getAllCompiled() {
     if(getAllCompiledCache == null) {
       this.getAllCompiledCache = this.prev == null ? new HashMap<>() : new HashMap<>(this.prev.getAllCompiled());
+      this.getAllCompiledCache.putAll(this.compiled);
       }
-    //Refresh in case we've been edited.
-    getAllCompiledCache.putAll(this.compiled);
     return getAllCompiledCache;
     }
   private transient Map<String, SourceFile> getAllSourcesCache = null; 
   public Map<String, SourceFile> getAllSources() {
     if(getAllSourcesCache == null) {
-      Map<String, SourceFile> prev = this.prev == null ? new HashMap<>() : new HashMap<>(this.prev.getAllSources());
-      prev.putAll(this.sources);
-      getAllSourcesCache = prev;
+      this.getAllSourcesCache = this.prev == null ? new HashMap<>() : new HashMap<>(this.prev.getAllSources());
+      this.getAllSourcesCache.putAll(this.sources);
       }
     return getAllSourcesCache;
     }
@@ -128,8 +123,10 @@ public class JavaCodeStore implements Serializable {
     return this.sources.size() + (this.prev != null ? this.prev.size() : 0);
     }
   public ClassFile computeIfAbsentClass(String name, Function<String, ClassFile> sup) {
-    this.getAllCompiledCache = null;
-    if(prev != null && prev.hasFile(name)) { return prev.computeIfAbsentClass(name, sup); }
-    return this.compiled.computeIfAbsent(name, sup); 
+    ClassFile ret;
+    if(prev != null && prev.hasFile(name)) { ret = prev.computeIfAbsentClass(name, sup); } 
+    else { ret = this.compiled.computeIfAbsent(name, sup); }
+    this.getAllCompiled().put(name, ret);
+    return ret;
     }
   }
