@@ -5,13 +5,14 @@ import static is.L42.tools.General.L;
 import static is.L42.tools.General.bug;
 
 import java.io.ObjectStreamException;
+import java.lang.ref.WeakReference;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.common.cache.CacheBuilder;
-
 import is.L42.common.Constants;
 import is.L42.common.Parse;
+import is.L42.flyweight.P.NCs;
 import is.L42.generated.Core;
 import is.L42.generated.Full;
 import is.L42.generated.Mdf;
@@ -76,7 +77,14 @@ public sealed interface P extends Visitable<P> permits PrimitiveP, P.NCs {
       return false;
       }
     private static record NCsI(int n, List<C> cs) {}
-    private static final Map<NCsI, NCs> created = CacheBuilder.newBuilder().weakValues().<NCsI, NCs>build().asMap();
+    //So... why not just use a cache?
+    //Yes this would avoid the ternary on of()
+    //However, something about caches of NCsI->NCs has an
+    //inefficient computeIfAbsent method. I don't 
+    //know why this doesn't apply to X.of(), but
+    //implementing it this way is over 2x as fast
+    //according to profiling
+    private static final Map<NCsI, WeakReference<NCs>> created = new HashMap<>();
     private static void perfCountNCsOf(NCsI ci) {
       PerfCounters.inc("invoke.P.NCs.init.total");
       if(!created.containsKey(ci)) {
@@ -86,7 +94,7 @@ public sealed interface P extends Visitable<P> permits PrimitiveP, P.NCs {
     public static NCs of(int n, List<C> cs) {
       NCsI ci = new NCsI(n, cs);
       if(PerfCounters.isEnabled()) { perfCountNCsOf(ci); }
-      return created.computeIfAbsent(ci, ci2->new NCs(ci2.n, ci2.cs));
+      return created.compute(ci, (ci2, ref)->(ref == null || ref.get() == null) ? new WeakReference<>(new NCs(ci2.n, ci2.cs)) : ref).get();
       }
     Object readResolve() throws ObjectStreamException {
       return of(this.n, this.cs);
@@ -94,7 +102,7 @@ public sealed interface P extends Visitable<P> permits PrimitiveP, P.NCs {
     private NCs(final int n, final List<C> cs) {
       this.n = n;
       //This is necessary for some reason. Serialization exceptions?
-      this.cs = List.copyOf(cs);
+      this.cs = cs;
     }
     public int n() { return this.n; }
     public List<C> cs() { return this.cs; }
