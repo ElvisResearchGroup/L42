@@ -231,17 +231,16 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     if(!d.isVar()){return;}
     if(!d.t().mdf().isIn(Mdf.Capsule,Mdf.ImmutableFwd,Mdf.MutableFwd)){return;}
     err(ErrMsg.varBindingCanNotBe(d.t().mdf().inner));    
-    }    
+    }
   @Override public void visitS(S s){
     super.visitS(s);
     okXs(s.xs());
     }
   private void okXs(List<X>xs) { 
     for(X x:xs){
-      if(x.inner().equals("this")){
-       err(ErrMsg.duplicatedNameThis());}
+      if(x == X.thisX){ err(ErrMsg.duplicatedNameThis());}
       }
-    long size=xs.stream().map(X::inner).distinct().count();
+    long size=xs.stream().distinct().count();
     if(size!=xs.size()){
       List<X> dups=dups(xs);
       err(ErrMsg.duplicatedName(dups));
@@ -257,7 +256,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
     super.visitPar(par);
     okXs(par.xs());
     if(par._that()==null){return;}
-    if(par.xs().stream().map(X::inner).noneMatch(x->x.equals("that"))){return;}
+    if(par.xs().stream().noneMatch(x->x==X.thatX)){return;}
     err(ErrMsg.duplicatedNameThat());
     }
   @Override public void visitThrow(Full.Throw t){
@@ -385,7 +384,7 @@ public class WellFormedness extends PropagatorCollectorVisitor{
   private void preDeclare(boolean var,X x) {
     if(x==null){return;}
     if(declared.contains(x)){err(ErrMsg.redefinedName(x));}
-    if(x.inner().equals("this")){err(ErrMsg.duplicatedNameThis());}
+    if(x==X.thisX){err(ErrMsg.duplicatedNameThis());}
     declared.add(x);
     if(var){declaredVar.add(x);}
     }
