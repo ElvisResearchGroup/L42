@@ -67,6 +67,7 @@ read method Bool invariant() {
 
 Here \Q@SafeMovable.overlap@ is a static method that simply checks that the bounds of the widgets don't overlap. The call to \Q@this.inside(w1)@ similarly checks that the widget is not outside the bounds of \Q@this@; this instance method call is allowed as \Q@inside(w)@ only uses \Q@this@ to access its \Q!imm! and \Q!capsule! fields.
 
+\begin{comment}
 \newlength{\imglength}%
 \setlength{\imglength}{0.40\textwidth}%
 \columnsep=0.5em%
@@ -76,6 +77,8 @@ Here \Q@SafeMovable.overlap@ is a static method that simply checks that the boun
     \includegraphics[width=\imglength]{GuiImg}%
 %	\vspace{-3\ht0}%
 \end{wrapfigure}
+\end{comment}
+\IOComm{Somehow everything after this image seems to be forced into one column mode...; it also wasn't position correctly; so I've just commented it out for the moment!}\\
 \SS
 \subheading{Our Experiment}
 As shown in the figure to the right, counting both \Q@SafeMovable@s and \Q@Button@s, our main method creates $21$ widgets: a top level (green) \Q@SafeMovable@ without buttons, containing $4$ (red, blue, and black) \Q@SafeMovable@s with

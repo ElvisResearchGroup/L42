@@ -11,8 +11,8 @@ We say that an object's invariant holds when its \Q@invariant()@ method would re
 
 Invariants are designed to hold most of the time, however it is commonly required to (temporarily) violate invariants while performing complex sequences of mutations.
 To support this behaviour, most invariant protocols present in the literature allow invariants to be broken and observed broken.
-The two main protocols are the \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Pack-Unpack/Boogie methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
-In the visible state semantics, invariants can be broken when a method on the object is active (that is, currently executing).
+The two main forms of invariant protocols are \emph{visible state semantics} \cite{Meyer:1988:OSC:534929} and the \emph{Pack-Unpack/Boogie methodology}~\cite{DBLP:journals/jot/BarnettDFLS04}.
+In visible state semantics, invariants can be broken when a method on the object is active (that is, currently executing).
 Some interpretations of the visible state are more permissive, requiring the invariants of receivers to hold only before and after every public method call, and after constructors. 
 In the pack-unpack approach, objects are either in a `packed' or `unpacked' state, 
 the invariant of `packed' objects must hold, whereas unpacked objects can be broken.
@@ -102,7 +102,7 @@ to soundly enforce our strict invariant protocol.
 Our solution only requires 
 that all code is well-typed, and works in the presence of mutation, I/O, non-determinism, and exceptions, all under an open world assumption.
 
-We formalise our approach and, in Appendix~\ref{s:proof}, prove that our use of Reference and Object Capabilities soundly enforces our invariant protocol.
+We formalise our approach and, in \ref{s:proof}, prove that our use of Reference and Object Capabilities soundly enforces our invariant protocol.
 
 We have fully implemented our protocol in L42\footnote{
 Our implementation is implemented by checking that a given class conforms to our protocol, and injecting invariant checks in the appropriate places.

@@ -47,7 +47,7 @@
 \newtheorem{Lemma}[llemma]{Lemma}
 
 \input{../Def/Def}
-
+\renewcommand\scaleKw{1} % Turn off the horrible keyword squashing in the formalism
 
 % The following code defines a macro, \markLine that puts it’s argument in the margins on either side of the next line
 % it can be called multiple times for the same line, causing the arguments to placed next to eachother
@@ -121,7 +121,7 @@
 \newcommand{\newmathword}[2]{\def#1{\ensuremath{\mathit{#2}}\xspace}	}
 \newmathword{\HNO}{headNotObservable}
 \newmathword{\dom}{dom}
-\newmathword{\HNC}{capsuleNotCircular}
+\newmathword{\CNC}{capsuleNotCircular}
 \newmathword{\NCM}{notCapsuleMutating}
 \newmathword{\WE}{wellEncapsulated}
 \newmathword{\rog}{rog}
@@ -156,6 +156,7 @@
 \providecommand\G{}
 \renewcommand{\G}{\ensuremath{\Gamma}\xspace}
 \newcommand{\EV}{\ensuremath{\ctx_v{}}\xspace}
+\newcommand{\ER}{\ensuremath{\ctx_r{}}\xspace}
 \newcommand{\E}{\ensuremath{\ctx}\xspace}
 \newcommand{\s}{\ensuremath{\sigma}\xspace}
 %\renewcommand{\e}{\ensuremath{\sigma}\xspace}
