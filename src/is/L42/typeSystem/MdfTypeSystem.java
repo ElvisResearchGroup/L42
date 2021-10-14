@@ -164,6 +164,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
     //var hasRetAny=e.ks().stream().anyMatch(k->k.thr()==Return && k.t().p().equals(P.pAny));
     if(hasErr){g1=g.toRead();}
     if(!hasRet) {mdfs2.addAll(mdfs);}  
+    if(g1==g) { g1=g.copy(); }
     var oldMdfs=mdfs;
     mdfs=mdfs2;
     G oldG=g;
@@ -213,7 +214,7 @@ public class MdfTypeSystem extends UndefinedCollectorVisitor{
       });
     if(fwdInFreeMdfs){g2=g0.plusEqFwdP(txe);}
     else{g2=g0.plusEq(txe);}
-    return g2; 
+    return g2;
     }
   private int splitDs(List<D> ds,ArrayList<X> xs){//cut will be from 0 to i included
     if (ds.isEmpty()){return 0;}

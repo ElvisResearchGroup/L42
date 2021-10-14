@@ -525,7 +525,7 @@ class SifoTypeSystem extends UndefinedCollectorVisitor{
     return acc.update(d.x(),t.withDocs(newDocs));
     }
   private G growG(List<D>allDs){
-    G res=g.plusEq(allDs);
+    G res = g.copy().plusEq(allDs);
     for(D d:allDs){res=growG1(res,d);}
     return res;
     }
