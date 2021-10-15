@@ -3,7 +3,7 @@
 \lstset{morekeywords={fwd}}
 
 As previously discussed, instead of providing a concrete set of typing rules, we provide a set of properties that the type system needs to ensure.
-We will express such properties using type judgements of the form $\ty{e}{T}$. This judgement form allows an $l$ to be typed with different types based on how it is used, e.g. we might have $\S;\G;\h.m\oR l \cR \vdash l : \Kw{mut}\ C$  and $\S;\G;l.m\oR \h \cR \nvdash l : \Kw{mut}\ C$, where $m$ is a \Q!mut! method taking a \Q!read! parameter. Importantly, we allow types to change during reduction (such as to model promotions), but do not allow the types inside methods to change when they are called (see the \thm{Method Consistency} assumption below). We could additionally extend the judgement form to take additional information (such as the past history of reduction), so that a main expression that was produced from one program can have a different RC than that produced by another, but this would just add noise to our assumptions and proofs without making them more interesting.
+We will express such properties using type judgements of the form $\ty{e}{T}$. This judgement form allows an $l$ to be typed with different types based on how it is used, e.g. we might have $\S;\G;\h.m\oR l \cR \vdash l : \Kw{mut}\ C$  and $\S;\G;l.m\oR \h \cR \nvdash l : \Kw{mut}\ C$, where $m$ is a \Q!mut! method taking a \Q!read! parameter. Importantly, we allow types to change during reduction (such as to model promotions), but do not allow the type of any sub-expression of a method's body to change when they are called (see the \thm{Method Consistency} assumption below). We could additionally extend the judgement form to take additional information (such as the past history of reduction), so that a main expression that was produced from one program can have a different RC than that produced by another, but this would just add noise to our assumptions and proofs without making them more interesting.
 
 \subheading{Auxiliary Definitions}
 To express our type system assumptions, we first need some auxiliary definitions. We define what it means for an $l$ to be \reach from an expression or context:\\
@@ -396,7 +396,7 @@ The proof is by induction; obviously the property holds in the initial $\s|e$, s
 \end{ienumerate}
 \end{proof}
 
-Note that the above only applies to \Q!imm! \emph{fields}: \Q!imm! \emph{references} to cyclic objects can be created by storing a cyclic reference in an objects field, and then promoting a reference to the object to \Q!imm!. However, as the object must have been \Q!mut! when the cyclic reference was created, this cannot be stored in an \Q!imm! \emph{field}, although future accesses to said field may be typed as \Q!imm!. \IOComm{very badly worded, I'm tired, I can improve this another day.}
+Note that the above only applies to \Q!imm! \emph{fields}: \Q!imm! \emph{references} to cyclic objects can be created by promoting a \Q!mut! reference, however the cycle must pass through a \emph{field} declared as \Q!read! or \Q!mut!, but such fields cannot be referenced in the invariant method.
 
 \setcounter{theorem}{0}\LS
 We can now finally prove the soundness of our invariant protocol:
