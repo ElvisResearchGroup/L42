@@ -469,8 +469,23 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
    #norm{}}""",/*expected lib after this line*/"""
      I={interface #norm{close}}
    #norm{}}"""/*next test after this line*/)
+   //TODO: test add interface with class with a class method
+   //Below, testing sum with external interface
+   ),new AtomicTest(()->pass(
+   """
+   OutI={interface #norm{}}
+   ""","""
+     A={interface #norm{}}
+     I={interface [This2.OutI,This1.A] #norm{typeDep=This2.OutI,This1.A}}
+   #norm{}}""",/*second lib after this line*/"""
+     I={interface #norm{}}
+     B={[This1.I] #norm{typeDep=This1.I}}
+   #norm{}}""",/*expected lib after this line*/"""
+     A={interface #norm{}}
+     I={interface [This2.OutI,This1.A] #norm{typeDep=This2.OutI,This1.A}}
+     B={[This1.I,This1.A,This2.OutI] #norm{typeDep=This1.I,This2.OutI,This1.A}}
+   #norm{}}"""/*next test after this line*/)
    ));}
-//TODO: test add interface with class with a class method
    
    @Test public void test2(){
      miniFrom("A.B","A.B.C","This.C");
@@ -484,13 +499,16 @@ extends AtomicTest.Tester{public static Stream<AtomicTest>test(){return Stream.o
      assertEquals(pRes,Sum.miniFrom(pInto.toNCs().cs(),pThat.toNCs().cs()));
      }
 public static void pass(String sl1,String sl2,String sl3){
+  pass("",sl1,sl2,sl3);
+  }
+public static void pass(String pre,String sl1,String sl2,String sl3){
   Resources.clearResKeepReuse();
-  Init init1=new Init("{A={"+sl1+"#norm{}}");
+  Init init1=new Init("{"+pre+"A={"+sl1+"#norm{}}");
   CoreL l1=init1.p._ofCore(P.of(0,List.of(C.of("A",-1))));
-  Init init2=new Init("{A={"+sl2+"#norm{}}");
+  Init init2=new Init("{"+pre+"A={"+sl2+"#norm{}}");
   CoreL l2=init2.p._ofCore(P.of(0,List.of(C.of("A",-1))));
   CoreL l3Actual=new Sum().compose(init1.p,C.of("A",-1),l1, l2,(Function<L42£LazyMsg,L42Any>)null,null);
-  Init init3=new Init("{A={"+sl3+"#norm{}}");
+  Init init3=new Init("{"+pre+"A={"+sl3+"#norm{}}");
   CoreL l3Expected=init3.p._ofCore(P.of(0,List.of(C.of("A",-1))));
   assertEquals(l3Expected, l3Actual);
   }

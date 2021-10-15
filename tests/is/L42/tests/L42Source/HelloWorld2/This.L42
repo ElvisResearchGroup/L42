@@ -1,58 +1,77 @@
 reuse [AdamsTowel]
 Main=(
-  Debug(S"Hello world")
+  Debug(S"Hello wgorld")
   )
 JSon = Organize:{
-  Value = {interface}
-  Member = Data:{S name, Value val}
-  Object = Class:Trait({[Value]}):Collection.list(Member)
+  Value = {interface [HasToS]}
+  Object = Class:Trait({[Value]}):Collection.map(key=S,val=Value)
   Array = Class:Trait({[Value]}):Collection.list(Value)
   String = S.Alphanumeric:{[Value] class method This (S string) = This(string) } 
   Number = S.Alphanumeric:{[Value] class method This (S string) = This(string) }
   Bool$ = Collection.Enum:{[Value] True={} False={} }
   Null = Data:{[Value]}
-  Parse =Data:{
+  Parse = Data:{
     Fail = Message:{[Message.Guard]}
     S text
     var I index
+    
     read method Bool *(S that) = this.text().startsWith(that, leftOffSet=this.index())
+    
+    read method Bool over() = this.text().size()>=this.index()
+    
     mut method Void skipWs() = while this*S" " || this*S.nl() || this*S.tab() (this.index(\index+1\))
-    class method Value (S that) = This(text=that,index=0I)<:This.value()//why this compiles? it is inferring mut This?
+    
+    class method Value (S that) = This(text=that,index=0I)<:mut This.value()
+    
     mut method Value value() = {
       this.skipWs()
-      if this*S"null" return Null()
-      if this*S"true" return Bool.True()
-      if this*S"false" return Bool.False()
+      if this*S"null" return Null()<:Value
+      //if this*S"true" return Bool$.True()<:Value
+      //if this*S"false" return Bool$.False()<:Value
       if this*S.dq() return this.string()
       if this*S"{" return this.object()
       if this*S"[" return this.array()
       return this.number()
       }
-    mut method Value string()=(
-      this.index(\index+1\)
-      start=this.index()
-      while !(this*S.dq()) (///no , this may just run out to infinity
-        while !(this*S"\") || !(this*S.dq()) (this.index(\index+1\))
+      
+    mut method Value string() = (
+      start=this.index()+1I
+      while !this.over() && !(this*S.dq()) (
+        this.index(\index+1\)
         if this*S"\" this.escape()
         )
+      if !(this*S.dq()) error Fail""
+      this.index(\index+1\)
+      String(string=this.text().subString(start to=this.index()-1\))
       )
-    mut method void escape() = {
+    mut method Void escape() = {
       this.index(\index+1\)
       symb=this*S.dq() || this*S"\" || this*S"/" 
       feeds=symb || this*S"n" ||this*S"r"||this*S"t"
       all = feeds|| this*S"b" || this*S"f"
       if all return void
-      if !this*S"u" error this.hex()hex hex hex hex
+      if !(this*S"u") error Fail""
+      //this.hex() this.hex() this.hex() this.hex()
+      (hex1 hex2 hex3 hex4)=this
+      return void
       }
-    mut method Value hex()=(
+    @Cache.Lazy class method S.List goodHex()=\[S"A";S"B";S"C";S"D";S"E";S"F";S"a";S"b";S"c";S"d";S"e";S"f"]
+    mut method Void hex()=(
       this.index(\index+1\)
-      //digit | 'A' . 'F' | 'a' . 'f'
+      ok=Match.Some()( for h in This.goodHex() \add(this*h) )
+      if !ok error Fail""
       )
     mut method Value object()=(error X"")
     mut method Value array()=(error X"")
     mut method Value number()=(error X"")
     }
   }
+
+Mah = (
+  //JSon.Value v=JSon.String"hello"
+  JSon.Value v=JSon.Parse(text=S"%S.dq() hello %S.dq()",index=0\).string()
+  Debug(S"second %v")
+  )
 
   
 /*

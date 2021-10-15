@@ -500,12 +500,12 @@ public class Sum {
         for(var mi:a){
           var other=_elem(b,mi.key());
           if(other==null){
-            c.add(mi.withL(addC(mi.key()).plusOnlyMap(topLeft,mi.l())));}
+            c.add(mi.withL(addC(mi.key()).plusOnlyMap(topRight,mi.l())));}//topLeft
           else{c.add(plus(mi,other));}
           }
         for(var mi:b){
           var other=_elem(a,mi.key());
-          if(other==null){c.add(mi.withL(addC(mi.key()).plusOnlyMap(topRight,mi.l())));}
+          if(other==null){c.add(mi.withL(addC(mi.key()).plusOnlyMap(topLeft,mi.l())));}//topRight
           }
         });    
       }
@@ -519,9 +519,25 @@ public class Sum {
       LinkedHashSet<S> refineds=new LinkedHashSet<>(l.info().refined());
       ArrayList<P.NCs> typeDep=new ArrayList<>(l.info().typeDep());
       useMapped(ts,refineds,imwts,typeDep,mapped);
+      useMappedExternalInterfaces(top, mapped, ts);
       List<MWT>mwts=plusIMWTs(imwts,l,l);
       Info info=l.info().withTypeDep(LL(typeDep)).withRefined(L(refineds.stream()));
       return l.withTs(ts).withMwts(mwts).withInfo(info);
+      }
+    private void useMappedExternalInterfaces(CoreL top, LinkedHashSet<List<C>> mapped, ArrayList<T> ts) {
+      for(var csi:mapped){
+        CoreL li=top._cs(csi);
+        assert li!=null;
+        Program p;
+        if(!topLeft.inDom(csi)){p=pOut.push(cOut,topRight).navigate(csi);}
+        else{p=pOut.push(cOut,topLeft).navigate(csi);}        
+        for(T ti:li.ts()){
+          P.NCs out=p.from(ti.p().toNCs(),csi);
+          if(out.n()==0){ continue; }
+          out=out.withN(out.n()+cs.size());
+          plusEqualTs(ts,P.coreThis0.withP(out));
+          }
+        }
       }
     List<MWT> plusIMWTs(ArrayList<IMWT> that,CoreL l1,CoreL l2){return L(c->plusIMWTs(c,that,l1,l2));}
     void plusIMWTs(ArrayList<MWT> c,ArrayList<IMWT> that,CoreL l1,CoreL l2){

@@ -1,0 +1,121 @@
+reuse [L42.is/AdamsTowel]
+
+SortTrait = Trait({
+  L = {}
+  Ls = Collection.list(L)
+  class method Bool leq(L that, L and)
+  Ls list
+  class method This (Ls list)
+  // This is bad. It allocates a new list but I couldn't find any sublist/peek method in the stdlib so it'll do for now
+  class method Ls subList(Ls that, I start, I end) = (
+    X.Pre[end >= start; end <= that.size()]
+    iter = that.vals(that=start, to=end)
+    Ls(capacity=end - start)( for x in iter \add(x) )
+    )
+  @Cache.Eager method Ls () = {
+    (list) = this
+    (size) = list
+    if size <= 1I ( return list )
+    half = size / 2I
+    
+    left = This(list=This.subList(list, start=0I, end=half))
+    right = This(list=This.subList(list, start=half, end=size))
+    return This.merge(left=left(), right=right())
+  }
+  class method Ls merge(Ls left, Ls right) = {
+    if left.isEmpty() ( return right )
+    lSize=left.size()
+    rSize=right.size()
+    return Ls(capacity=lSize + rSize)((
+      var lhs = 0I
+      var rhs = 0I
+      while lhs < lSize && rhs < rSize (
+        l = left.val(lhs)
+        r = right.val(rhs)
+        if This.leq(l and=r) ( \add(l), lhs += 1I )
+        else ( \add(r), rhs += 1I )
+        )
+      for x in left.vals(lhs, to=lSize) ( \add(x) )
+      for x in right.vals(rhs, to=rSize) ( \add(x) )
+    ))
+    }
+  })[clear='Ls]
+Sort = Decorator:Data:{
+  class Any that
+  class method This () = This(Any)
+  method Trait(Trait trait)[Message.Guard] =
+    Data:SortTrait['L=>this.that()*'left(); 'Ls=>this.that()]:trait
+  }
+SortNums = Sort(Num.List):{class method Bool leq(Num that, Num and) = that<=and}
+Main = (
+  size = 1000I
+  imm nums=Num.List(capacity=size)((
+    rng = Math.Random(seed=3546457547\)
+    for i in Range(size) ( \add(rng.nextLong().toNum()) )
+    ))
+  Debug(nums)
+  Debug( SortNums(list=nums)() )
+  Debug(S"Done!")
+  )
+
+//Main = Debug(S"works?")
+/*
+NumsUtils = Class:ListUtils['L=>Num]
+
+MSortComp = Data:{
+  NumsUtils.Ls list
+  @Cache.Eager method NumsUtils.Ls () = {
+    list = this.list()
+    if list.size() <= 1I (return list)
+    half = list.size() / 2I
+    
+    This left = This(list=NumsUtils.subList(l=list, start=0I, end=half))
+    return This.merge(left=left(), right=This(list=NumsUtils.subList(l=list, start=half, end=list.size()))())
+  }
+  
+  class method NumsUtils.Ls merge(NumsUtils.Ls left, NumsUtils.Ls right) = {
+    if left.isEmpty() (return right)
+    capsule NumsUtils.Ls res = (
+      mut NumsUtils.Ls res1 = NumsUtils.Ls(capacity=left.size() + right.size())
+      var lhs = 0I
+      var rhs = 0I
+      
+      // I was going to use multiple iteration here but IterationIncomplete makes that unergonomic
+      while (lhs < left.size() && rhs < right.size()) (
+        a = left.val(that=lhs)
+        b = right.val(that=rhs)
+        
+        if a <= b (
+          res1.add(that=a)
+          lhs := lhs + 1I
+        )
+        else (
+          res1.add(that=b)
+          rhs := rhs + 1I
+        )
+      )
+      
+      for x in left.vals(that=lhs, to=left.size()) (res1.add(that=x))
+      for x in right.vals(that=rhs, to=right.size()) (res1.add(that=x))
+
+      res1
+    )
+    
+    return res
+  }
+}
+
+Main = (
+  capsule unsortedList = (
+    mut Math.Random rng = Math.Random(seed=3546457547Math.Long)
+    size = 1000I
+    mut NumsUtils.Ls randomL = NumsUtils.Ls(capacity=size)
+    for i in Range(size) (randomL.add(that=rng.nextLong().toNum()))
+    Debug(randomL)
+    randomL
+  )
+
+  Debug(MSortComp(list=unsortedList)())
+  Debug(S"Done!")
+)
+*/
