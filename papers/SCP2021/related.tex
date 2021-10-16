@@ -7,24 +7,24 @@ in detail this integration, but the overall idea is that an invariant
 is seen as a \Q@Void@ cached value that is always kept up to date whenever the object is visible. L42 also supports eager cached methods, which get computed in parallel when an instance of the corresponding class is created.
 
 L42 libraries rely on a very expressive form of metaprogramming to generate a lot of boilerplate/redundant code. In L42 many tasks can be  either manually performed by writing code directly, or partially automated by code generation.
-L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and capsule mutators. Such method's don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.
+L42 allows writing \Q@class@ methods (similar to a static method in Java) with appropriate parameters instead of \Q!invariant!s method and capsule mutators. The bodies of such methods don't have special restrictions as they cannot see \Q!this!, instead the meta-programming generates appropriate instance methods, conforming to our restrictions, which call the user provided \Q!class! methods.
 
-Our restrictions are also checked by the type system, so even if the user manually write these methods, instead of relying on the metaprogramming, they still cannot break our invariant protocol.
+Our restrictions are also checked by the type system, so even if the user manually writes these methods, instead of relying on the metaprogramming, they still cannot break our invariant protocol.
 
 To make this work more accessible to programmers familiar with Java/C\#, we have shown our examples in a more Java-like syntax. Here you can see our \Q!ShippingList! example from Section \ref{s:immutable} in the full L42 Syntax:
 \begin{lstlisting}
 ShippingList = Data:{
   capsule Items items
-  @Cache.Now
+  @$$Cache.Now
   class method Void invariant(read Items items) =
     X[items.weight()<=300Num]
-  @Cache.Clear
+  @$$Cache.Clear
   class method Void addItem(mut Items items,Item item) =
     items.add(item)
 }
 \end{lstlisting}
 In this example, the \Q@Data@ decorator generates a factory method, a method \Q@addItem(Item item)@ and a lot of other utility methods, including equality and conversion to string.
-The \Q!@Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@Cache.Clear! method is called.
+The \Q!@$$Cache.Now! annotation causes the \Q!invariant! method to be automatically computed, and recomputed every time a \Q!@$$Cache.Clear! method is called.
 Please refer to \url{L42.is/tutorial.xhtml} for more information.
 \vspace{-1ex}
 \section[Related Work]{Related Work}
