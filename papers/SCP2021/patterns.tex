@@ -44,7 +44,7 @@ class Account{
   }}
 \end{lstlisting}
 The idea here is that \Q!transfer(ts)! will first check to see if the account holder wishes to accept the transaction, it will then compute the full transaction (which could cache the result and/or do some I/O), and then execute each transfer in the transaction. We specifically want to allow an individual \Q!Transfer! to raise the \Q!expenses! field by more than the \Q!income!, however we don't want an entire \Q!Transaction! to do this. 
-Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q!expose! block: during its body (the \Q!for! loop) we don't know or care if \Q!this.invariant()! is \Q!true!, but at the end it will be checked. For this to make sense, we make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!: it cannot assume that the invariant of \Q!Account! holds, and it is allowed to modify the fields of \Q!that! without needing to check it. Though capsule mutators can be used to perform batch operations like the above, they can only take immutable and capsule objects. This means that they can perform no non-deterministic I/O (due to our OCs system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such a batch operation.
+Our capsule mutator (\Q!transferInner!) allows this by behaving like a Spec\# \Q!expose! block: during its body (the \Q!for! loop) we don't know or care if \Q!this.invariant()! is \Q!true!, but at the end it will be checked. For this to make sense, we make \Q!Transfer.execute! take an \Q!AccountBox! instead of an \Q!Account!: it cannot assume that the invariant of \Q!Account! holds, and it is allowed to modify the fields of \Q!that! without needing to check it. Though capsule mutators can be used to perform batch operations like the above, they can only take immutable and capsule objects. This means that they can perform no non-deterministic I/O (due to our OC system), and other externally accessible objects (such as a \Q!mut Transaction!) cannot be mutated during such a batch operation.
 
 As you can see, adding support for features like \Q!invalid! and \Q!expose! is unnecessary, and would likely require making the type system significantly more complicated as well as burdening the language with more core syntactic forms.
 
@@ -217,7 +217,7 @@ of \Q@Node@s.
 Users of this library can define personalised kinds of nodes,
 with their own personalised sub invariant.
 The library will ensure that no matter how the library is used, for any accessible \Q@Graph@, each user defined sub invariant of its \Q@Node@s holds.
-Note that those sub invariants are not restricted to be only about the local state of a node; since they can explore the state of all of the reachable nodes, they may even depend upon the whole graph.
+Note that those sub invariants are not restricted to the local state of a node; since they can explore the state of all reachable nodes, they may even depend upon the whole graph.
 
 The \Q@Node@s are guaranteed to be encapsulated by the \Q@Graph@, however they can be arbitrarily modified by user defined transformations using the Transform Pattern.
 \begin{lstlisting}
