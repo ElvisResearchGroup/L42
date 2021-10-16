@@ -99,7 +99,7 @@ however due to the `uniform access principle'~\cite{Meyer:1992:EL:129093}%\footn
 % not relevant. To be sure, we implemented both of their strategies and obtained the same results.
 When we ran our test case following the D approach, the \Q!invariant()! method was called $52,734,053$ times, whereas the Eiffel approach `only' called it $14,816,207$ times;%
 \footnote{
-This difference is caused by Eiffel treating getters especially, and skipping invariant checks when calling a getter.
+This difference is caused by Eiffel treating getters specially, and skipping invariant checks when calling a getter.
 Thus, even ignoring getter methods, the visible state semantic would still run 14 millions of invariant checks.
 }%
  %\footnote{%
